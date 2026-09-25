@@ -1,0 +1,8 @@
+[package]
+name = "i5h"
+description = "Core contract between a verified i5h kernel and its untrusted shell"
+edition.workspace = true
+license.workspace = true
+version.workspace = true
+
+[dependencies]

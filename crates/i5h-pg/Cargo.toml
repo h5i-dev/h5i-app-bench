@@ -1,0 +1,14 @@
+[package]
+name = "i5h-pg"
+description = "PostgreSQL engine for i5h: tenant-scoped snapshots, SERIALIZABLE execution with retry, idempotency"
+edition.workspace = true
+license.workspace = true
+version.workspace = true
+
+[dependencies]
+i5h.workspace = true
+tokio.workspace = true
+tokio-postgres.workspace = true
+deadpool-postgres = { workspace = true, features = ["rt_tokio_1"] }
+bytes = "1"
+tracing.workspace = true

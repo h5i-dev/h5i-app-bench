@@ -1,0 +1,33 @@
+[workspace]
+resolver = "2"
+members = [
+    "crates/i5h",
+    "crates/i5h-pg",
+    "crates/i5h-http",
+    "examples/docs/kernel",
+    "examples/docs/server",
+]
+
+[workspace.package]
+edition = "2021"
+license = "Apache-2.0"
+version = "0.1.0"
+
+[workspace.dependencies]
+i5h = { path = "crates/i5h" }
+i5h-pg = { path = "crates/i5h-pg" }
+i5h-http = { path = "crates/i5h-http" }
+docs-kernel = { path = "examples/docs/kernel" }
+axum = "0.8"
+tokio = { version = "1", features = ["macros", "rt-multi-thread", "time", "signal"] }
+tokio-postgres = "0.7"
+deadpool-postgres = "0.14"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+hmac = "0.12"
+sha2 = "0.10"
+hex = "0.4"
+rand = "0.8"
+proptest = "1"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
