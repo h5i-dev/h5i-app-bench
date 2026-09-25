@@ -44,8 +44,8 @@ async fn review_workflow_over_http() {
     let (_, v) = call(&app, Some(&alice), json!({"cmd": "create_document", "project": p, "title": "t", "body": "b"})).await;
     let d = v["created"].as_u64().unwrap();
 
-    // Bob is not a member yet.
-    assert_eq!(call(&app, Some(&bob), json!({"cmd": "get_document", "doc": d})).await.0, StatusCode::FORBIDDEN);
+    // Bob is not a member yet, so the document looks missing to him.
+    assert_eq!(call(&app, Some(&bob), json!({"cmd": "get_document", "doc": d})).await.0, StatusCode::NOT_FOUND);
     call(&app, Some(&alice), json!({"cmd": "set_member", "project": p, "user": 2, "role": "owner"})).await;
     call(&app, Some(&alice), json!({"cmd": "submit", "doc": d})).await;
 

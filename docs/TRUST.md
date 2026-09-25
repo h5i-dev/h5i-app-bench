@@ -3,15 +3,15 @@
 ## Proven in Lean (about the extracted kernel)
 
 The kernel's `transition` and `apply` are translated from Rust to Lean by
-Charon and Aeneas. The theorems in `lean/` are about that translation. See
-`lean/README.md` for the list.
+Charon and Aeneas. For the example app, the spec is
+`examples/docs/proofs/Spec.lean` and the theorems are in `Theorems.lean` next to it.
 
 ## Enforced by structure (no proof needed)
 
 | Property | How |
 |---|---|
-| Handlers go through the kernel | App code gets `I5h::respond` / `Engine::execute`, never a DB handle. |
-| Tenant isolation | The engine loads and writes only rows with `tenant_id = K::tenant(actor)`. Kernel rows carry no tenant id, so the kernel cannot name another tenant. |
+| Handlers go through the kernel | App code gets `I5h::respond` / `Engine::execute`, never a DB handle. A handler that opens its own connection bypasses this; deploy so only the engine has the DB credentials. |
+| Tenant isolation | The engine loads and writes only rows with `tenant_id = K::tenant(actor)`. Kernel rows carry no tenant id, so the kernel cannot name another tenant. A Lean theorem about this would be trivial, so it is not claimed as proven. |
 | Every column is persisted | `table!` must list every field or it does not compile. |
 
 ## Assumed (trusted, not verified)

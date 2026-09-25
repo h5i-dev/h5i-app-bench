@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+# Extract the example kernel to Lean: Rust -> LLBC (Charon) -> Lean (Aeneas).
+# Starting from transition/apply skips Debug/Default impls, which only exist
+# as axioms in Aeneas.
+set -euo pipefail
+root=$(cd "$(dirname "$0")/.." && pwd)
+tmp=$(mktemp -d)
+trap 'rm -rf "$tmp"' EXIT
+(cd "$root/examples/docs/kernel" && charon cargo --preset=aeneas \
+  --start-from docs_kernel::transition --start-from docs_kernel::apply \
+  --dest-file "$tmp/docs_kernel.llbc")
+aeneas -backend lean "$tmp/docs_kernel.llbc" -dest "$root/examples/docs/proofs"
