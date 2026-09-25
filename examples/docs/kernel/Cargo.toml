@@ -1,0 +1,9 @@
+[package]
+name = "docs-kernel"
+description = "Verified kernel of the i5h example app: projects, members, documents"
+edition.workspace = true
+license.workspace = true
+version.workspace = true
+
+# No dependencies: this crate is extracted to Lean by Charon + Aeneas.
+[dependencies]
