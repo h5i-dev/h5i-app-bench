@@ -60,7 +60,7 @@ password.
 | `crates/i5h` | `Kernel` trait, in-memory reference engine, proof library `I5hLib` |
 | `crates/i5h-pg` | PostgreSQL engine: tenant-scoped snapshots, retries, idempotency, role lockdown |
 | `crates/i5h-http` | axum integration: `Actor` extractor, `I5h::respond`, `rpc_router` |
-| `crates/i5h-schema` | `schema!`: declare kernel rows once, get the structs and their table mappings |
+| `crates/i5h-schema` | `schema!`: declare kernel rows once, get the structs, their table mappings, their SQL encoding, and the Lean spec and lemmas for that encoding |
 | `crates/i5h-sql`, `i5h-token`, `i5h-json` | extracted and proven shell pieces |
 | `examples/docs` | example kernel, server, and proofs |
 | `examples/kellnr` | Kellnr authorization port |

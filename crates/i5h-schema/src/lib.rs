@@ -12,6 +12,9 @@
 //! }
 //! ```
 //!
+//! With `mapping docs_tables for docs_kernel, lean "../proofs/Schema.lean";`
+//! it also keeps that Lean file (row encodings and their lemmas) current.
+//!
 //! This defines `Member` with its key fields first, exactly as written, so the
 //! kernel stays plain Rust for Aeneas, and gives it `TABLE`, `KEY_LEN` and
 //! `to_row` (via `i5h_sql::Column`; the kernel depends on `i5h-sql`). It also defines a macro `docs_tables!`
@@ -20,12 +23,13 @@
 //! `schema_tables()` and `schema_write()`, which stores the kernel's encoded
 //! table writes. Keys and columns are listed once, here.
 
-#![no_std]
+#[doc(hidden)]
+pub mod lean;
 
 #[macro_export]
 macro_rules! schema {
     (
-        mapping $mapping:ident for $krate:ident;
+        mapping $mapping:ident for $krate:ident $(, lean $lean:literal)?;
         $(
             $(#[$attr:meta])*
             $vis:vis struct $name:ident in $table:literal {
@@ -42,6 +46,7 @@ macro_rules! schema {
             }
         )*
         $crate::__rows! { [0] $( $name [$($k)*] [$($c)*] )* }
+        $crate::__lean! { [$($lean)?] $krate; $( $name $table [$($k : $kt),*] [$($c : $ct),*] )* }
         $crate::__mapping! { ($) $mapping $krate; $( $name $table [$($k)*] [$($c)*] )* }
     };
 }
@@ -108,6 +113,37 @@ macro_rules! __rows {
             }
         }
         $crate::__rows! { [$($i)* + 1] $($rest)* }
+    };
+}
+
+/// With `lean "path"`: a function rendering the Lean side of the schema, and
+/// a test that the file at `path` (relative to the kernel crate) is current.
+#[doc(hidden)]
+#[macro_export]
+macro_rules! __lean {
+    ([] $($rest:tt)*) => {};
+    ([$lean:literal] $krate:ident; $( $name:ident $table:literal [$($k:ident : $kt:ty),*] [$($c:ident : $ct:ty),*] )*) => {
+        #[doc(hidden)]
+        pub fn __i5h_lean_schema() -> ::std::string::String {
+            let rows: ::std::vec::Vec<$crate::lean::RowDecl> = ::std::vec![
+                $( (
+                    stringify!($name),
+                    $table,
+                    ::std::vec![
+                        $((stringify!($k), ::std::any::type_name::<$kt>()),)*
+                        $((stringify!($c), ::std::any::type_name::<$ct>()),)*
+                    ],
+                    0 $(+ $crate::__one!($k))*,
+                ), )*
+            ];
+            $crate::lean::render(stringify!($krate), &rows)
+        }
+
+        #[cfg(test)]
+        #[test]
+        fn i5h_lean_schema_is_current() {
+            $crate::lean::check(concat!(env!("CARGO_MANIFEST_DIR"), "/", $lean), &__i5h_lean_schema());
+        }
     };
 }
 

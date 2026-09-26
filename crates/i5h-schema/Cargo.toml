@@ -5,5 +5,5 @@ edition.workspace = true
 license.workspace = true
 version.workspace = true
 
-# Only macro_rules: a kernel can depend on it and still be extracted by Charon.
+# Macros, plus the Lean renderer they call from tests; extraction never reaches it.
 [dependencies]
