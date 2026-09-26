@@ -121,3 +121,35 @@ async fn concurrent_idempotent_retries_run_once() {
     assert!(replies.windows(2).all(|w| w[0] == w[1]));
     assert_eq!(pg.snapshot(TenantId(t)).await.unwrap().projects.len(), 1);
 }
+
+/// Keys are scoped per user: another user reusing a key runs their own command.
+#[tokio::test]
+async fn idempotency_key_is_per_user() {
+    let pg = engine_or_skip!(EngineConfig::default());
+    let t = fresh_tenant();
+    let (owner, outsider) = (principal(t, 1), principal(t, 2));
+    let k::Reply::Created(p) = pg.execute(&owner, &k::Command::CreateProject { name: vec![] }).await.unwrap().unwrap() else {
+        panic!()
+    };
+    let cmd = k::Command::SetMember { project: p, user: 3, role: k::Role::Viewer };
+    assert_eq!(pg.execute_idempotent(&owner, "same", &cmd).await.unwrap(), Ok(k::Reply::Done));
+    assert_eq!(pg.execute_idempotent(&outsider, "same", &cmd).await.unwrap(), Err(k::Error::Forbidden));
+}
+
+/// Any reply can be replayed, including documents.
+#[tokio::test]
+async fn keyed_read_replays() {
+    let pg = engine_or_skip!(EngineConfig::default());
+    let t = fresh_tenant();
+    let u = principal(t, 1);
+    let k::Reply::Created(p) = pg.execute(&u, &k::Command::CreateProject { name: vec![] }).await.unwrap().unwrap() else {
+        panic!()
+    };
+    let doc = k::Command::CreateDocument { project: p, title: b"t".to_vec(), body: vec![0, 255, b'"'] };
+    let k::Reply::Created(d) = pg.execute(&u, &doc).await.unwrap().unwrap() else { panic!() };
+    let get = k::Command::GetDocument { doc: d };
+    let first = pg.execute_idempotent(&u, "read", &get).await.unwrap();
+    let again = pg.execute_idempotent(&u, "read", &get).await.unwrap();
+    assert!(matches!(first, Ok(k::Reply::Doc(_))));
+    assert_eq!(first, again);
+}

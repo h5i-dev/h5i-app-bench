@@ -1,4 +1,5 @@
 import DocsKernel
+import I5hLib.Tables
 /-!
 # Specification of the example app
 
@@ -53,16 +54,13 @@ def owners (ms : List Member) (p : Nat) : Nat :=
 
 /-! ## Meaning of a write set (what the database must store) -/
 
-/-- Replace the first element with the same key, or append. -/
-def upsert {α} (key : α → Nat × Nat) (x : α) : List α → List α
-  | [] => [x]
-  | y :: ys => if key y = key x then x :: ys else y :: upsert key x ys
+-- `I5hLib.upsert`: replace the row with the same key, or append.
 
 def applyWrite (s : St) : Write → St
-  | .PutProject p => { s with projects := upsert (fun q => (q.id.val, 0)) p s.projects }
-  | .PutMember m => { s with members := upsert (fun n => (n.project.val, n.user.val)) m s.members }
+  | .PutProject p => { s with projects := I5hLib.upsert (fun q => (q.id.val, 0)) p s.projects }
+  | .PutMember m => { s with members := I5hLib.upsert (fun n => (n.project.val, n.user.val)) m s.members }
   | .DelMember p u => { s with members := s.members.filter (fun n => ¬(n.project = p ∧ n.user = u)) }
-  | .PutDocument d => { s with docs := upsert (fun e => (e.id.val, 0)) d s.docs }
+  | .PutDocument d => { s with docs := I5hLib.upsert (fun e => (e.id.val, 0)) d s.docs }
   | .DelDocument i => { s with docs := s.docs.filter (fun e => e.id ≠ i) }
   | .SetCounter c => { s with next := c.next_id.val }
 

@@ -1,18 +1,19 @@
 //! axum integration. Mount i5h in your own axum app: extract [`Actor`], build a
 //! kernel command, call [`I5h::respond`]. Or merge [`rpc_router`].
 //!
-//! The authenticator and the JSON codec are trusted, not verified. Keep them
-//! small. Permission decisions belong in the kernel.
+//! Request decoding is trusted, not verified; the theorems cover every
+//! command anyway. Token parsing and reply writing are verified
+//! (`i5h-token`, `i5h-json`). Permission decisions belong in the kernel.
 
 use axum::extract::{FromRef, FromRequestParts, State};
 use axum::http::request::Parts;
-use axum::http::{HeaderMap, StatusCode};
+use axum::http::{header, HeaderMap, StatusCode};
 use axum::response::{IntoResponse, Response};
 use axum::routing::post;
 use axum::{Json, Router};
 use i5h::Kernel;
 use i5h_pg::{DbError, Engine, ReplyCodec, Store};
-use serde_json::{json, Value};
+use i5h_json::Value;
 use std::sync::Arc;
 use std::time::{SystemTime, UNIX_EPOCH};
 
@@ -24,7 +25,7 @@ pub trait Authenticator<K: Kernel>: Send + Sync + 'static {
 }
 
 pub trait Api<K: Kernel>: Send + Sync + 'static {
-    fn decode_command(body: Value) -> Result<K::Command, String>;
+    fn decode_command(body: serde_json::Value) -> Result<K::Command, String>;
     fn encode_reply(reply: &K::Reply) -> Value;
     fn encode_error(err: &K::Error) -> (StatusCode, Value);
 }
@@ -108,7 +109,7 @@ where
     async fn from_request_parts(parts: &mut Parts, state: &St) -> Result<Self, Self::Rejection> {
         let auth = Auth::<K>::from_ref(state);
         auth.0.authenticate(&parts.headers).map(Actor).map_err(|AuthError(m)| {
-            (StatusCode::UNAUTHORIZED, Json(json!({ "error": m }))).into_response()
+            reply(StatusCode::UNAUTHORIZED, error_body(&m))
         })
     }
 }
@@ -152,17 +153,15 @@ impl<K: Kernel, S: Store<K>> I5h<K, S> {
             None => self.engine.execute(&actor.0, &cmd).await,
         };
         match result {
-            Ok(Ok(reply)) => (StatusCode::OK, Json(S::encode_reply(&reply))).into_response(),
+            Ok(Ok(r)) => reply(StatusCode::OK, S::encode_reply(&r)),
             Ok(Err(refusal)) => {
                 let (status, body) = S::encode_error(&refusal);
-                (status, Json(body)).into_response()
+                reply(status, body)
             }
-            Err(DbError::IdempotencyConflict) => {
-                (StatusCode::UNPROCESSABLE_ENTITY, Json(json!({ "error": "idempotency key reused" }))).into_response()
-            }
+            Err(DbError::IdempotencyConflict) => reply(StatusCode::UNPROCESSABLE_ENTITY, error_body("idempotency key reused")),
             Err(e) => {
                 tracing::error!(error = %e, "request failed");
-                (StatusCode::SERVICE_UNAVAILABLE, Json(json!({ "error": "unavailable" }))).into_response()
+                reply(StatusCode::SERVICE_UNAVAILABLE, error_body("unavailable"))
             }
         }
     }
@@ -177,13 +176,28 @@ where
     Router::new().route("/rpc", post(rpc::<K, S>)).with_state(i5h)
 }
 
-async fn rpc<K, S>(State(i5h): State<I5h<K, S>>, actor: Actor<K>, headers: HeaderMap, body: Json<Value>) -> Response
+async fn rpc<K, S>(
+    State(i5h): State<I5h<K, S>>,
+    actor: Actor<K>,
+    headers: HeaderMap,
+    body: Json<serde_json::Value>,
+) -> Response
 where
     K: Kernel,
     S: Store<K> + ReplyCodec<K> + Api<K>,
 {
     match S::decode_command(body.0) {
         Ok(cmd) => i5h.respond(&actor, cmd, &headers).await,
-        Err(m) => (StatusCode::BAD_REQUEST, Json(json!({ "error": m }))).into_response(),
+        Err(m) => reply(StatusCode::BAD_REQUEST, error_body(&m)),
     }
+}
+
+/// Every response body goes through the verified writer (`i5h-json`).
+pub fn reply(status: StatusCode, body: Value) -> Response {
+    (status, [(header::CONTENT_TYPE, "application/json")], body.to_bytes()).into_response()
+}
+
+/// `{"error": <message>}`.
+pub fn error_body(msg: &str) -> Value {
+    Value::obj([("error", Value::str(msg))])
 }

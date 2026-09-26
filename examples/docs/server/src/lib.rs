@@ -6,7 +6,7 @@ use i5h::{Kernel, TenantId};
 use i5h_pg::{ddl, delete, key, load, table, upsert, DbError, PgField, ReplyCodec, Store, Table, Value};
 use i5h_pg::tokio_postgres::Transaction;
 use serde::{Deserialize, Serialize};
-use serde_json::{json, Value as Json};
+use i5h_json::Value as Out;
 
 pub struct DocsApp;
 
@@ -176,11 +176,6 @@ impl From<CommandJson> for k::Command {
     }
 }
 
-fn text(b: &[u8]) -> String {
-    // Kernel text only ever comes from JSON strings, so this is lossless.
-    String::from_utf8_lossy(b).into_owned()
-}
-
 fn status_str(s: k::Status) -> &'static str {
     match s {
         k::Status::Draft => "draft",
@@ -190,30 +185,37 @@ fn status_str(s: k::Status) -> &'static str {
     }
 }
 
-fn doc_json(d: &k::Document) -> Json {
-    json!({
-        "id": d.id, "project": d.project, "author": d.author,
-        "title": text(&d.title), "body": text(&d.body),
-        "status": status_str(d.status), "approver": d.approver, "version": d.version,
-    })
+// Titles and bodies come from JSON strings, so they are valid UTF-8 and the
+// writer passes them through unchanged.
+fn doc_json(d: &k::Document) -> Out {
+    Out::obj([
+        ("id", d.id.into()),
+        ("project", d.project.into()),
+        ("author", d.author.into()),
+        ("title", Out::Str(d.title.clone())),
+        ("body", Out::Str(d.body.clone())),
+        ("status", status_str(d.status).into()),
+        ("approver", d.approver.into()),
+        ("version", d.version.into()),
+    ])
 }
 
 impl i5h_http::Api<DocsApp> for DocsStore {
-    fn decode_command(body: Json) -> Result<k::Command, String> {
+    fn decode_command(body: serde_json::Value) -> Result<k::Command, String> {
         serde_json::from_value::<CommandJson>(body).map(Into::into).map_err(|e| e.to_string())
     }
 
-    fn encode_reply(r: &k::Reply) -> Json {
+    fn encode_reply(r: &k::Reply) -> Out {
         match r {
-            k::Reply::Created(id) => json!({ "created": id }),
-            k::Reply::Done => json!({ "ok": true }),
-            k::Reply::Version(v) => json!({ "version": v }),
+            k::Reply::Created(id) => Out::obj([("created", (*id).into())]),
+            k::Reply::Done => Out::obj([("ok", true.into())]),
+            k::Reply::Version(v) => Out::obj([("version", (*v).into())]),
             k::Reply::Doc(d) => doc_json(d),
-            k::Reply::Docs(ds) => Json::Array(ds.iter().map(doc_json).collect()),
+            k::Reply::Docs(ds) => Out::Arr(ds.iter().map(doc_json).collect()),
         }
     }
 
-    fn encode_error(e: &k::Error) -> (StatusCode, Json) {
+    fn encode_error(e: &k::Error) -> (StatusCode, Out) {
         let (status, code) = match e {
             k::Error::NotFound => (StatusCode::NOT_FOUND, "not_found"),
             k::Error::Forbidden => (StatusCode::FORBIDDEN, "forbidden"),
@@ -223,37 +225,107 @@ impl i5h_http::Api<DocsApp> for DocsStore {
             k::Error::SelfApproval => (StatusCode::FORBIDDEN, "self_approval"),
             k::Error::Overflow => (StatusCode::INTERNAL_SERVER_ERROR, "overflow"),
         };
-        (status, json!({ "error": code }))
+        (status, i5h_http::error_body(code))
     }
 }
 
 /// Stored idempotent replies are the JSON rendering. Replay decodes back to
 /// an opaque reply that re-renders identically.
+/// Lossless form of a reply for the idempotency table, so any reply
+/// (including documents) can be replayed.
+#[derive(Serialize, Deserialize)]
+enum StoredReply {
+    Created(u64),
+    Done,
+    Version(u64),
+    Doc(StoredDoc),
+    Docs(Vec<StoredDoc>),
+}
+
+#[derive(Serialize, Deserialize)]
+struct StoredDoc {
+    id: u64,
+    project: u64,
+    author: u64,
+    title: Vec<u8>,
+    body: Vec<u8>,
+    status: u8,
+    approver: Option<u64>,
+    version: u64,
+}
+
+impl From<&k::Document> for StoredDoc {
+    fn from(d: &k::Document) -> Self {
+        let status = match d.status {
+            k::Status::Draft => 0,
+            k::Status::InReview => 1,
+            k::Status::Approved => 2,
+            k::Status::Published => 3,
+        };
+        StoredDoc {
+            id: d.id,
+            project: d.project,
+            author: d.author,
+            title: d.title.clone(),
+            body: d.body.clone(),
+            status,
+            approver: d.approver,
+            version: d.version,
+        }
+    }
+}
+
+impl TryFrom<StoredDoc> for k::Document {
+    type Error = String;
+    fn try_from(d: StoredDoc) -> Result<Self, String> {
+        let status = match d.status {
+            0 => k::Status::Draft,
+            1 => k::Status::InReview,
+            2 => k::Status::Approved,
+            3 => k::Status::Published,
+            n => return Err(format!("bad status {n}")),
+        };
+        Ok(k::Document {
+            id: d.id,
+            project: d.project,
+            author: d.author,
+            title: d.title,
+            body: d.body,
+            status,
+            approver: d.approver,
+            version: d.version,
+        })
+    }
+}
+
 impl ReplyCodec<DocsApp> for DocsStore {
     fn fingerprint(cmd: &k::Command) -> Vec<u8> {
         format!("{cmd:?}").into_bytes()
     }
 
+    fn scope(actor: &k::Principal) -> String {
+        format!("u{}", actor.user)
+    }
+
     fn encode(r: &k::Reply) -> Vec<u8> {
-        serde_json::to_vec(&<DocsStore as i5h_http::Api<DocsApp>>::encode_reply(r)).unwrap_or_default()
+        let stored = match r {
+            k::Reply::Created(id) => StoredReply::Created(*id),
+            k::Reply::Done => StoredReply::Done,
+            k::Reply::Version(v) => StoredReply::Version(*v),
+            k::Reply::Doc(d) => StoredReply::Doc(d.into()),
+            k::Reply::Docs(ds) => StoredReply::Docs(ds.iter().map(Into::into).collect()),
+        };
+        serde_json::to_vec(&stored).expect("stored replies serialize")
     }
 
     fn decode(b: &[u8]) -> Result<k::Reply, String> {
-        decode_reply(b)
+        let stored: StoredReply = serde_json::from_slice(b).map_err(|e| e.to_string())?;
+        Ok(match stored {
+            StoredReply::Created(id) => k::Reply::Created(id),
+            StoredReply::Done => k::Reply::Done,
+            StoredReply::Version(v) => k::Reply::Version(v),
+            StoredReply::Doc(d) => k::Reply::Doc(d.try_into()?),
+            StoredReply::Docs(ds) => k::Reply::Docs(ds.into_iter().map(TryInto::try_into).collect::<Result<_, _>>()?),
+        })
     }
-}
-
-fn decode_reply(b: &[u8]) -> Result<k::Reply, String> {
-    let v: Json = serde_json::from_slice(b).map_err(|e| e.to_string())?;
-    let num = |f: &str| v.get(f).and_then(Json::as_u64);
-    if let Some(id) = num("created") {
-        return Ok(k::Reply::Created(id));
-    }
-    if let Some(ver) = num("version") {
-        return Ok(k::Reply::Version(ver));
-    }
-    if v.get("ok").is_some() {
-        return Ok(k::Reply::Done);
-    }
-    Err(format!("not a replayable reply: {v}"))
 }

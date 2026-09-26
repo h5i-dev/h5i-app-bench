@@ -322,6 +322,7 @@ dependencies = [
  "http-body-util",
  "i5h",
  "i5h-http",
+ "i5h-json",
  "i5h-pg",
  "proptest",
  "serde",
@@ -599,11 +600,20 @@ version = "0.1.0"
 dependencies = [
  "axum",
  "i5h",
+ "i5h-json",
  "i5h-pg",
  "i5h-token",
  "libcrux-hmac",
  "serde_json",
  "tracing",
+]
+
+[[package]]
+name = "i5h-json"
+version = "0.1.0"
+dependencies = [
+ "proptest",
+ "serde_json",
 ]
 
 [[package]]
@@ -652,6 +662,10 @@ dependencies = [
  "futures-util",
  "wasm-bindgen",
 ]
+
+[[package]]
+name = "kellnr-kernel"
+version = "0.1.0"
 
 [[package]]
 name = "lazy_static"

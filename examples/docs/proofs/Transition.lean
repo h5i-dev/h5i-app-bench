@@ -1,6 +1,7 @@
 import Lemmas
+import I5hLib
 /-! Specs for the non-loop helpers of `transition`. -/
-open Aeneas Aeneas.Std Result docs_kernel docs_kernel.Spec
+open Aeneas Aeneas.Std Result docs_kernel docs_kernel.Spec I5hLib
 
 namespace docs_kernel.TransitionLemmas
 
@@ -84,30 +85,10 @@ theorem with_status_spec (d : Document) (st : Status) (ap : Option U64) :
   step*
   all_goals (simp_all [U64.rMax, U64.max_eq]; try scalar_tac)
 
-/-- Lift a property of successful results to a postcondition. -/
-def OnOk (P : alloc.vec.Vec Write → Reply → Prop) : core.result.Result (alloc.vec.Vec Write × Reply) Error → Prop
-  | .Ok (ws, r) => P ws r
-  | .Err _ => True
-
-theorem of_spec {a s c P} (hs : transition a s c ⦃ OnOk P ⦄) {ws r}
-    (h : transition a s c = .ok (.Ok (ws, r))) : P ws r := by
-  obtain ⟨o, ho, hp⟩ := (WP.spec_equiv_exists _ _).1 hs
-  rw [h, Result.ok.injEq] at ho
-  subst ho
-  exact hp
-
 /-- Only owners may approve or manage, and owners may also write. -/
 theorem allowed_write_of {s : St} {u p : Nat} {a : Action}
     (ha : a = .Approve ∨ a = .Manage) (h : allowed s u p a) : allowed s u p .Write := by
   unfold allowed at *
   split at h <;> rename_i r _ <;> [cases r <;> rcases ha with rfl | rfl <;> simp_all [policy]; simp at h]
-
-/-- Symbolically execute `transition`, leaving one goal per path. -/
-macro "walk" : tactic => `(tactic| (
-  unfold transition
-  split <;> step* <;> (repeat' (first | step | split | simp only [WP.spec_ok, bind_tc_ok, bind_ok]))
-  all_goals (try (rename_i v _; cases v))
-  all_goals (try (first | dsimp only | (split; dsimp only)))
-  all_goals (repeat' (first | step | split | simp only [WP.spec_ok, bind_tc_ok, bind_ok]))))
 
 end docs_kernel.TransitionLemmas

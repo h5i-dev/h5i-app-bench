@@ -65,15 +65,16 @@ jobs:
       - run: lake build
       # No sorry, no native_decide, only standard axioms.
       - run: ../../../scripts/ci-lean-gate.sh
-      # SQL planner and token parser proofs share the pinned Aeneas packages.
-      - name: Build i5h-sql and i5h-token proofs
+      # These projects share the docs project's pinned Aeneas packages.
+      - name: Build the other extracted-crate proofs
         working-directory: .
         run: |
-          for d in crates/i5h-sql/proofs crates/i5h-token/proofs; do
+          for d in crates/i5h-sql/proofs crates/i5h-token/proofs crates/i5h-json/proofs examples/kellnr/proofs; do
             mkdir -p "$d/.lake"
             ln -sfn "$GITHUB_WORKSPACE/examples/docs/proofs/.lake/packages" "$d/.lake/packages"
             (cd "$d" && lake build)
             if grep -n -w -e sorry -e native_decide "$d"/*.lean; then exit 1; fi
+            if grep -n "^axiom" "$d"/*.lean; then exit 1; fi
           done
       # Engine protocol model (plain Lean, no dependencies).
       - name: Build engine protocol model
@@ -99,4 +100,14 @@ jobs:
           echo "$RUNNER_TEMP/aeneas/bin" >> "$GITHUB_PATH"
           echo "$RUNNER_TEMP/charon/bin" >> "$GITHUB_PATH"
       - run: scripts/extract.sh
-      - run: git diff --exit-code -- examples/docs/proofs/DocsKernel.lean
+      - run: scripts/extract-sql.sh
+      - run: scripts/extract-token.sh
+      - run: scripts/extract-json.sh
+      - run: scripts/extract-kellnr.sh
+      - run: |
+          git diff --exit-code -- \
+            examples/docs/proofs/DocsKernel.lean \
+            crates/i5h-sql/proofs/I5hSql.lean \
+            crates/i5h-token/proofs/I5hToken.lean \
+            crates/i5h-json/proofs/I5hJson.lean \
+            examples/kellnr/proofs/KellnrKernel.lean

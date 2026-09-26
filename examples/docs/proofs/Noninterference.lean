@@ -1,6 +1,6 @@
 import Transition
 import Apply
-open Aeneas Aeneas.Std Result docs_kernel docs_kernel.Spec docs_kernel.TransitionLemmas
+open Aeneas Aeneas.Std Result docs_kernel docs_kernel.Spec docs_kernel.TransitionLemmas I5hLib
 
 namespace docs_kernel.Theorems
 
@@ -114,10 +114,6 @@ theorem authDoc_view (s : St) (u id : Nat) (a : Action) (hn : (s.docs.map (·.id
   | some d => by_cases hr : allowed s u d.project.val .Read = true <;> simp [Option.filter, hr]
 
 /-! ## From specs to equations -/
-
-theorem eq_ok_of_spec {α} {m : Result α} {v : α} (h : m ⦃ x => x = v ⦄) : m = ok v := by
-  obtain ⟨y, hy, rfl⟩ := (WP.spec_equiv_exists _ _).1 h
-  exact hy
 
 theorem can_ok (s : Snapshot) (u p : U64) (a : Action) :
     can s u p a = ok (allowed (Snapshot.toSt s) u.val p.val a) :=

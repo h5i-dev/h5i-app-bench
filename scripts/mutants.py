@@ -122,6 +122,14 @@ def check(name, edits, keep):
         for f in os.listdir(PROOFS):
             if f.endswith(".lean") or f in ("lake-manifest.json", "lean-toolchain", "lakefile.lean"):
                 shutil.copy(os.path.join(PROOFS, f), proofs)
+        # The proof library is required by relative path; point it at the real one.
+        lib = os.path.join(ROOT, "crates/i5h/proofs")
+        for f in ("lakefile.lean", "lake-manifest.json"):
+            path = os.path.join(proofs, f)
+            with open(path) as fh:
+                text = fh.read().replace("../../../crates/i5h/proofs", lib)
+            with open(path, "w") as fh:
+                fh.write(text)
 
         # Rust must still compile, or the mutant is invalid.
         if run(["cargo", "check", "-q", "-p", "docs-kernel"], tmp, log) != 0:

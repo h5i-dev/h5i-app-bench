@@ -1,0 +1,13 @@
+[package]
+name = "i5h-json"
+description = "JSON writer for i5h replies, extracted to Lean and proven"
+edition.workspace = true
+license.workspace = true
+version.workspace = true
+
+# No dependencies: the writer is extracted to Lean by Charon + Aeneas.
+[dependencies]
+
+[dev-dependencies]
+serde_json.workspace = true
+proptest.workspace = true

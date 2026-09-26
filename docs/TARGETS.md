@@ -26,3 +26,17 @@ tests only), Rauthy and Kanidm (identity-protocol logic).
 3. **crates.io** delete/yank/owner rules for credibility, with GitHub team
    membership as an input fact.
 4. **Conduit** as the baseline for comparing effort against a plain app.
+
+## Results
+
+### Kellnr (2026-09-25): done
+
+`examples/kellnr/` models Kellnr's registry authorization before and after
+PR #1243. On the fixed code, Lean proves that a read-only non-admin commits
+nothing (any login path), that ACL and yank writes need an admin or owner, the
+last-owner rule, and the restricted-download rule. On the old code, Lean
+proves the read-only theorem false with a concrete session login that adds an
+owner, and a token login that grants a group. Effort: 329 extracted Rust lines,
+a 60-line spec, 466 proof lines, 61 lines of counterexamples. See
+`examples/kellnr/README.md` for what is and is not modeled.
+

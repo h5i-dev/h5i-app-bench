@@ -9,6 +9,8 @@ members = [
     "examples/docs/difftest",
     "crates/i5h-sql",
     "crates/i5h-token",
+    "examples/kellnr/kernel",
+    "crates/i5h-json",
 ]
 
 [workspace.package]
@@ -21,6 +23,7 @@ i5h = { path = "crates/i5h" }
 i5h-pg = { path = "crates/i5h-pg" }
 i5h-http = { path = "crates/i5h-http" }
 i5h-token = { path = "crates/i5h-token" }
+i5h-json = { path = "crates/i5h-json" }
 i5h-sql = { path = "crates/i5h-sql" }
 docs-kernel = { path = "examples/docs/kernel" }
 axum = "0.8"
