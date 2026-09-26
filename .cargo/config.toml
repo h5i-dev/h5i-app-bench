@@ -1,0 +1,2 @@
+[alias]
+i5h-verify = "run -q -p xtask -- verify"

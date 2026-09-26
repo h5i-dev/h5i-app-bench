@@ -45,7 +45,7 @@ properties is secondary.
 - `schema!` macro, in the style of Yesod's Persistent: one declaration generates kernel types, table mappings, and a Lean spec skeleton.
 - Proof automation: policies as data, generated obligations per command, custom tactics. Target: 0 hand-written Lean lines for a typical command, under 20 for a business invariant. Started: `I5hLib` (`crates/i5h/proofs`) proves Aeneas search and fold loops once (`loop_search`, `loop_fold`), defines table writes, and provides `walk` and `i5h_step`; a kernel loop now needs about 8 lines instead of 20 to 50, and the example's proofs went from 1312 to 1006 lines.
 - LLM-written proofs; humans review the policy table and invariant list.
-- `cargo i5h verify` runs extraction, proofs, and the mutation suite.
+- `cargo i5h-verify` runs the CI checks locally: tests, bans, extraction drift, every proof project with the sorry/axiom gates; `--full` adds the mutation suite, the differential test and the trace check. Done (`xtask/`).
 
 ## Phase 3: remove MVP simplifications
 
