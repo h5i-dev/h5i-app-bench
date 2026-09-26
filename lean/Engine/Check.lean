@@ -1,5 +1,7 @@
 import Std.Data.HashMap
 import Engine.Proofs
+import Engine.Scopes
+import Engine.Lock
 /-!
 # Exhaustive search on small instances
 
@@ -9,18 +11,32 @@ the search explores the real protocol. `#eval` runs it on a tiny kernel.
 
 namespace Engine
 
-variable {S Cmd Reply Key : Type} [DecidableEq Cmd] [DecidableEq Key]
+variable {S W Cmd Reply Key : Type} [DecidableEq Cmd] [DecidableEq Key]
+
+def Phase.isActive : Phase S W Cmd Reply Key → Bool
+  | .active .. => true
+  | _ => false
+
+theorem idle_iff (sys : Sys S W Cmd Reply Key) :
+    sys.clients.all (fun c => !c.phase.isActive) = true ↔ Idle sys := by
+  simp only [List.all_eq_true, Bool.not_eq_eq_eq_not, Bool.not_true, Idle]
+  constructor
+  · intro h c hc snap d hph; have := h c hc; simp [hph, Phase.isActive] at this
+  · intro h c hc; cases hph : c.phase <;> simp [Phase.isActive]; exact h c hc _ _ hph
 
 /-- Successors caused by client `i`. -/
-def moves (step : S → Cmd → Option (S × Reply)) (check : Bool) (sys : Sys S Cmd Reply Key)
-    (i : Nat) (c : Client S Cmd Reply Key) : List (Sys S Cmd Reply Key) :=
-  let set (ph : Phase S Cmd Reply Key) : Sys S Cmd Reply Key :=
+def moves (step : S → W → Cmd → Option (S × Reply)) (check locking : Bool) (sys : Sys S W Cmd Reply Key)
+    (i : Nat) (c : Client S W Cmd Reply Key) : List (Sys S W Cmd Reply Key) :=
+  let set (ph : Phase S W Cmd Reply Key) : Sys S W Cmd Reply Key :=
     { sys with clients := sys.clients.set i ({ c with phase := ph }) }
   match c.phase with
-  | .ready => [set (.active sys.db (plan step sys.db c.req))]
+  | .ready =>
+    if !locking || sys.clients.all (fun c => !c.phase.isActive) then
+      [set (.active sys.db (plan step sys.db c.req))]
+    else []
   | .done _ => []
   | .active snap d =>
-    let others : List (Sys S Cmd Reply Key) :=
+    let others : List (Sys S W Cmd Reply Key) :=
       match d with
       | .replay r => [set (.done (.ok r))]
       | .refuse => [set (.done .refused)]
@@ -33,22 +49,27 @@ def moves (step : S → Cmd → Option (S × Reply)) (check : Bool) (sys : Sys S
           else [])
     set .ready :: others
 
-def next (step : S → Cmd → Option (S × Reply)) (check : Bool) (sys : Sys S Cmd Reply Key) :
-    List (Sys S Cmd Reply Key) :=
+def next (step : S → W → Cmd → Option (S × Reply)) (check locking : Bool) (sys : Sys S W Cmd Reply Key) :
+    List (Sys S W Cmd Reply Key) :=
   (List.range sys.clients.length).flatMap fun i =>
     match sys.clients[i]? with
-    | some c => moves step check sys i c
+    | some c => moves step check locking sys i c
     | none => []
 
-theorem mem_next {step : S → Cmd → Option (S × Reply)} {check a b}
-    (h : b ∈ next step check (a : Sys S Cmd Reply Key)) : Step step check a b := by
+theorem mem_next {step : S → W → Cmd → Option (S × Reply)} {check locking a b}
+    (h : b ∈ next step check locking (a : Sys S W Cmd Reply Key)) : Step step check locking a b := by
   simp only [next, List.mem_flatMap, List.mem_range] at h
   obtain ⟨i, -, h⟩ := h
   split at h
   · rename_i c hc
     unfold moves at h
     split at h
-    · simp at h; subst h; exact .begin hc (by assumption)
+    · split at h
+      · rename_i hl
+        simp at h; subst h
+        refine .begin hc (by assumption) (fun hk => (idle_iff a).1 ?_)
+        simpa [hk] using hl
+      · simp at h
     · simp at h
     · rename_i snap d hph
       simp only [List.mem_cons] at h
@@ -72,11 +93,18 @@ theorem mem_next {step : S → Cmd → Option (S × Reply)} {check a b}
             · simp at h
   · simp at h
 
-theorem next_complete {step : S → Cmd → Option (S × Reply)} {check a b}
-    (h : Step step check (a : Sys S Cmd Reply Key) b) : b ∈ next step check a := by
+theorem next_complete {step : S → W → Cmd → Option (S × Reply)} {check locking a b}
+    (h : Step step check locking (a : Sys S W Cmd Reply Key) b) : b ∈ next step check locking a := by
   simp only [next, List.mem_flatMap, List.mem_range]
   cases h with
-  | @begin i c hc hr => exact ⟨i, (List.getElem?_eq_some_iff.1 hc).1, by simp [hc, moves, hr]⟩
+  | @begin i c hc hr hl =>
+    refine ⟨i, (List.getElem?_eq_some_iff.1 hc).1, ?_⟩
+    have : (!locking || a.clients.all (fun c => !c.phase.isActive)) = true := by
+      cases locking
+      · rfl
+      · simpa using (idle_iff a).2 (hl rfl)
+    simp only [hc, moves, hr, this, if_true]
+    simp
   | @replay i c snap r hc hph => exact ⟨i, (List.getElem?_eq_some_iff.1 hc).1, by simp [hc, moves, hph]⟩
   | @refuse i c snap hc hph => exact ⟨i, (List.getElem?_eq_some_iff.1 hc).1, by simp [hc, moves, hph]⟩
   | @conflict i c snap hc hph => exact ⟨i, (List.getElem?_eq_some_iff.1 hc).1, by simp [hc, moves, hph]⟩
@@ -131,14 +159,14 @@ def search {α} [BEq α] [Hashable α] (next : α → List α) (ok : α → Bool
 
 /-! ## A tiny kernel: a counter capped at 3 -/
 
-def counter (s : Nat) (n : Nat) : Option (Nat × Nat) :=
+def counter (s : Nat) (_ : Nat) (n : Nat) : Option (Nat × Nat) :=
   if s + n ≤ 3 then some (s + n, s + n) else none
 
 /-- Two sends of the same keyed request, plus one request without a key. -/
-def reqs : List (Req Nat Nat) := [⟨1, some 7⟩, ⟨1, some 7⟩, ⟨2, none⟩]
+def reqs : List (Req Nat Nat Nat) := [⟨0, 1, some 7⟩, ⟨0, 1, some 7⟩, ⟨0, 2, none⟩]
 
 /-- The properties, as a check on one state. -/
-def okState (sys : Sys Nat Nat Nat Nat) : Bool :=
+def okState (sys : Sys Nat Nat Nat Nat Nat) : Bool :=
   run counter 0 sys.db.log == some sys.db.state &&
   decide (sys.db.log.filterMap (·.key)).Nodup &&
   sys.clients.all fun c =>
@@ -150,8 +178,8 @@ def okState (sys : Sys Nat Nat Nat Nat) : Bool :=
     | _, _ => true
 
 /-- A compact view of a state for printing traces. -/
-def brief (sys : Sys Nat Nat Nat Nat) : String :=
-  let ph (c : Client Nat Nat Nat Nat) : String :=
+def brief (sys : Sys Nat Nat Nat Nat Nat) : String :=
+  let ph (c : Client Nat Nat Nat Nat Nat) : String :=
     match c.phase with
     | .ready => "ready"
     | .active snap _ => s!"active@v{snap.ver}"
@@ -161,13 +189,13 @@ def brief (sys : Sys Nat Nat Nat Nat) : String :=
 
 -- The real engine: exhaustive, no violation.
 #eval
-  let (n, cex) := search (next counter true) okState (init 0 reqs)
+  let (n, cex) := search (next counter true false) okState (init 0 reqs)
   s!"engine: {n} states explored, violation: {cex.isSome}"
 
 -- Same kernel, but COMMIT skips the conflict check: a lost update.
 #eval show IO Unit from do
-  let two : List (Req Nat Nat) := [⟨1, none⟩, ⟨1, none⟩]
-  let (n, cex) := search (next counter false) okState (init 0 two)
+  let two : List (Req Nat Nat Nat) := [⟨0, 1, none⟩, ⟨0, 1, none⟩]
+  let (n, cex) := search (next counter false false) okState (init 0 two)
   match cex with
   | none => IO.println s!"broken engine: {n} states, no violation"
   | some path =>
@@ -181,5 +209,11 @@ def brief (sys : Sys Nat Nat Nat Nat) : String :=
 #print axioms fresh_decision
 #print axioms mem_next
 #print axioms next_complete
+#print axioms replay_in_scope
+#print axioms replay_same_actor
+#print axioms rust_keys_scoped
+#print axioms tenant_keys_leak
+#print axioms locked_current
+#print axioms locked_commit_ok
 
 end Engine

@@ -9,9 +9,10 @@ some state the model can be in. Successors come only from `next`, which is
 proven equal to `Step`, so an accepted trace is a run of the model
 (`check_sound`).
 
-Instantiation: the state is the commit count, commands are fingerprints (or
-`req<id>` without a key), replies are hex strings. The kernel is read off the
-trace's `kernel` events, and must be a function of (version, command).
+Instantiation: the state is the commit count, actors are idempotency scopes
+(empty without a key), commands are fingerprints (or `req<id>` without a key),
+replies are hex strings. The kernel is read off the trace's `kernel` events,
+and must be a function of (version, actor, command).
 
 Event order: the engine emits events from several connections, so the recorded
 order can differ from the database order. Events are sorted into bands by the
@@ -25,10 +26,10 @@ namespace Engine.Trace
 
 open Lean
 
-abbrev St := Sys Nat String String String
+abbrev St := Sys Nat String String String String
 
 inductive Ev where
-  | start (cmd : String) (key : Option String)
+  | start (who cmd : String) (key : Option String)
   | begin (ver : Nat)
   | kernel (ver : Nat) (write : Bool) (reply : String)
   | replay (reply : String)
@@ -54,7 +55,7 @@ def parseLine (seq : Nat) (s : String) : Except String Rec := do
   let str (f : String) := j.getObjValAs? String f
   let nat (f : String) := j.getObjValAs? Nat f
   let ev : Ev ← match tag with
-    | "start" => pure (.start (← str "cmd") (str "key").toOption)
+    | "start" => pure (.start (← str "who") (← str "cmd") (str "key").toOption)
     | "begin" => pure (.begin (← nat "ver"))
     | "kernel" => pure (.kernel (← nat "ver") (← j.getObjValAs? Bool "write") (← str "reply"))
     | "replay" => pure (.replay (← str "reply"))
@@ -68,16 +69,16 @@ def parseLine (seq : Nat) (s : String) : Except String Rec := do
 
 /-! ## The kernel, as observed -/
 
-/-- `(version, command) ↦ reply` for writes; absent means refused. -/
-abbrev Table := List ((Nat × String) × Option String)
+/-- `(version, actor, command) ↦ reply` for writes; absent means refused. -/
+abbrev Table := List ((Nat × String × String) × Option String)
 
-def kstep (t : Table) (s : Nat) (c : String) : Option (Nat × String) :=
-  match t.lookup (s, c) with
+def kstep (t : Table) (s : Nat) (w c : String) : Option (Nat × String) :=
+  match t.lookup (s, w, c) with
   | some (some r) => some (s + 1, r)
   | _ => none
 
-/-- Build the table; the kernel must give one verdict per (version, command). -/
-def table (cmds : List (Nat × String)) (recs : List Rec) : Except String Table :=
+/-- Build the table; the kernel must give one verdict per (version, actor, command). -/
+def table (cmds : List (Nat × String × String)) (recs : List Rec) : Except String Table :=
   recs.foldlM (init := []) fun t r =>
     match r.ev with
     | .kernel v w reply =>
@@ -124,14 +125,14 @@ def isStep : Ev → Bool
   | .start .. | .kernel .. => false
   | _ => true
 
-def advance (step : Nat → String → Option (Nat × String)) (i : Nat) (ev : Ev) (xs : List St) : List St :=
+def advance (step : Nat → String → String → Option (Nat × String)) (i : Nat) (ev : Ev) (xs : List St) : List St :=
   if isStep ev then
-    (xs.flatMap fun a => (next step true a).filter (fits i ev a)).eraseDups
+    (xs.flatMap fun a => (next step true false a).filter (fits i ev a)).eraseDups
   else xs.filter (keep i ev)
 
-theorem advance_sound {step : Nat → String → Option (Nat × String)} {reqs i ev xs}
-    (h : ∀ a ∈ xs, Reachable step true 0 reqs a) :
-    ∀ b ∈ advance step i ev xs, Reachable step true 0 reqs b := by
+theorem advance_sound {step : Nat → String → String → Option (Nat × String)} {reqs i ev xs}
+    (h : ∀ a ∈ xs, Reachable step true false 0 reqs a) :
+    ∀ b ∈ advance step i ev xs, Reachable step true false 0 reqs b := by
   intro b hb
   unfold advance at hb
   split at hb
@@ -140,7 +141,7 @@ theorem advance_sound {step : Nat → String → Option (Nat × String)} {reqs i
     exact .step (h a ha) (mem_next (List.mem_filter.1 hb).1)
   · exact h b (List.mem_filter.1 hb).1
 
-def replay (step : Nat → String → Option (Nat × String)) (idx : List (Nat × Nat)) :
+def replay (step : Nat → String → String → Option (Nat × String)) (idx : List (Nat × Nat)) :
     List Rec → List St → Except String (List St)
   | [], xs => pure xs
   | r :: rs, xs =>
@@ -151,9 +152,9 @@ def replay (step : Nat → String → Option (Nat × String)) (idx : List (Nat �
       if ys.isEmpty then throw s!"request {r.req}: {repr r.ev} is not a model step here (seq {r.seq})"
       else replay step idx rs ys
 
-theorem replay_sound {step : Nat → String → Option (Nat × String)} {reqs idx recs xs ys}
-    (h : ∀ a ∈ xs, Reachable step true 0 reqs a) (hr : replay step idx recs xs = .ok ys) :
-    ∀ b ∈ ys, Reachable step true 0 reqs b := by
+theorem replay_sound {step : Nat → String → String → Option (Nat × String)} {reqs idx recs xs ys}
+    (h : ∀ a ∈ xs, Reachable step true false 0 reqs a) (hr : replay step idx recs xs = .ok ys) :
+    ∀ b ∈ ys, Reachable step true false 0 reqs b := by
   induction recs generalizing xs with
   | nil => simp only [replay, pure, Except.pure, Except.ok.injEq] at hr; subst hr; exact h
   | cons r rs ih =>
@@ -203,18 +204,18 @@ structure Report where
   states : Nat
 
 /-- The properties proven for all reachable states, evaluated on the final ones. -/
-def final (step : Nat → String → Option (Nat × String)) (sys : St) : Bool :=
+def final (step : Nat → String → String → Option (Nat × String)) (sys : St) : Bool :=
   run step 0 sys.db.log == some sys.db.state &&
   decide (sys.db.log.filterMap (·.key)).Nodup
 
 def checkTenant (recs : List Rec) : Except String Report := do
   let starts := recs.filterMap fun r =>
     match r.ev with
-    | .start c k => some (r.req, (⟨c, k⟩ : Req String String))
+    | .start w c k => some (r.req, (⟨w, c, k⟩ : Req String String String))
     | _ => none
   let reqs := starts.map (·.2)
   let idx := (starts.map (·.1)).zipIdx
-  let cmds := starts.map fun (q, rq) => (q, rq.cmd)
+  let cmds := starts.map fun (q, rq) => (q, (rq.who, rq.cmd))
   let t ← table cmds recs
   let step := kstep t
   let ys ← replay step idx (linearize recs) [init 0 reqs]
@@ -223,9 +224,9 @@ def checkTenant (recs : List Rec) : Except String Report := do
   return ⟨recs.length, reqs.length, commits, ys.length⟩
 
 /-- Accepted traces are runs of the model. -/
-theorem check_sound {reqs : List (Req String String)} {step idx recs ys}
+theorem check_sound {reqs : List (Req String String String)} {step idx recs ys}
     (hr : replay step idx recs [init 0 reqs] = .ok ys) :
-    ∀ b ∈ ys, Reachable step true 0 reqs b :=
+    ∀ b ∈ ys, Reachable step true false 0 reqs b :=
   replay_sound (fun a ha => by simp at ha; subst ha; exact .init) hr
 
 end Engine.Trace

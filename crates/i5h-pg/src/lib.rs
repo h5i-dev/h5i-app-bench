@@ -163,8 +163,9 @@ const FRAMEWORK_DDL: &str = "CREATE TABLE IF NOT EXISTS i5h_idempotency (
 /// Strings are hex so traces stay plain ASCII.
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub enum Event {
-    /// A request enters the engine. `cmd` is the fingerprint (keyed) or `req<id>`.
-    Start { tenant: u64, req: u64, cmd: String, key: Option<String> },
+    /// A request enters the engine. `who` is the idempotency scope (empty
+    /// without a key); `cmd` is the fingerprint (keyed) or `req<id>`.
+    Start { tenant: u64, req: u64, who: String, cmd: String, key: Option<String> },
     /// The attempt's snapshot sees `ver` commits.
     Begin { tenant: u64, req: u64, ver: u64 },
     /// The kernel's verdict on that snapshot. Not a model step; feeds the checker's kernel table.
@@ -185,9 +186,12 @@ impl Event {
         let q = |s: &str| format!("\"{s}\"");
         let key = |k: &Option<String>| k.as_deref().map(q).unwrap_or_else(|| "null".into());
         match self {
-            Event::Start { tenant, req, cmd, key: k } => {
-                format!(r#"{{"ev":"start","tenant":{tenant},"req":{req},"cmd":{},"key":{}}}"#, q(cmd), key(k))
-            }
+            Event::Start { tenant, req, who, cmd, key: k } => format!(
+                r#"{{"ev":"start","tenant":{tenant},"req":{req},"who":{},"cmd":{},"key":{}}}"#,
+                q(who),
+                q(cmd),
+                key(k)
+            ),
             Event::Begin { tenant, req, ver } => format!(r#"{{"ev":"begin","tenant":{tenant},"req":{req},"ver":{ver}}}"#),
             Event::Kernel { tenant, req, ver, write, reply } => format!(
                 r#"{{"ev":"kernel","tenant":{tenant},"req":{req},"ver":{ver},"write":{write},"reply":{}}}"#,
@@ -367,16 +371,11 @@ impl<K: Kernel, S: Store<K>> Engine<K, S> {
         let tenant = K::tenant(actor);
         let mut tr = self.trace.as_ref().map(|f| {
             let req = self.next_req.fetch_add(1, Ordering::Relaxed);
-            // The kernel depends on the actor too, so the model's command is scope + fingerprint.
-            let cmd = idem
-                .as_ref()
-                .map(|i| {
-                    let scope = i.key.split('/').next().unwrap_or("");
-                    format!("{}.{}", hex(scope.as_bytes()), hex(&i.fingerprint))
-                })
-                .unwrap_or_else(|| format!("req{req}"));
+            // The model's actor is the scope; the engine matches a repeated key on the fingerprint alone.
+            let who = idem.as_ref().map(|i| hex(i.key.split('/').next().unwrap_or("").as_bytes())).unwrap_or_default();
+            let cmd = idem.as_ref().map(|i| hex(&i.fingerprint)).unwrap_or_else(|| format!("req{req}"));
             let key = idem.as_ref().map(|i| hex(i.key.as_bytes()));
-            f(Event::Start { tenant: tenant.0, req, cmd, key });
+            f(Event::Start { tenant: tenant.0, req, who, cmd, key });
             Tr { f, tenant: tenant.0, req, ver: None }
         });
         for attempt in 0..self.config.max_attempts {

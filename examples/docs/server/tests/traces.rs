@@ -75,7 +75,7 @@ fn lines(raw: &[&str]) -> Vec<String> {
 /// A lost COMMIT under a key: both outcomes are runs of the model, a second apply is not.
 #[test]
 fn lost_commit_cases() {
-    let start = r#"{"ev":"start","tenant":1,"req":0,"cmd":"aa","key":"6b"}"#;
+    let start = r#"{"ev":"start","tenant":1,"req":0,"who":"","cmd":"aa","key":"6b"}"#;
     let first = [
         start,
         r#"{"ev":"begin","tenant":1,"req":0,"ver":0}"#,
