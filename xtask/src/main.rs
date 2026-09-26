@@ -18,6 +18,7 @@ const PROJECTS: &[(&str, Option<&str>, Option<&str>)] = &[
     ("crates/i5h-token/proofs", Some("scripts/extract-token.sh"), Some("crates/i5h-token/proofs/generated/I5hToken.lean")),
     ("crates/i5h-json/proofs", Some("scripts/extract-json.sh"), Some("crates/i5h-json/proofs/generated/I5hJson.lean")),
     ("examples/tutorials/calculator/proofs", Some("scripts/extract-calculator.sh"), Some("examples/tutorials/calculator/proofs/generated/CalculatorKernel.lean")),
+    ("examples/tutorials/board/proofs", Some("scripts/extract-board.sh"), Some("examples/tutorials/board/proofs/generated/BoardKernel.lean")),
     ("crates/i5h/proofs", None, None),
     ("lean", None, None),
 ];
