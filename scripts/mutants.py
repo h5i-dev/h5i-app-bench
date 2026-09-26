@@ -22,7 +22,7 @@ import time
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 KERNEL = os.path.join(ROOT, "examples/docs/kernel")
 PROOFS = os.path.join(ROOT, "examples/docs/proofs")
-THEOREMS = ["Theorems", "Invariants", "Noninterference"]
+THEOREMS = ["Theorems", "Invariants", "Noninterference", "Frame"]
 
 # name -> list of (old, new) replacements in kernel/src/lib.rs
 MUTANTS = {
@@ -78,6 +78,10 @@ MUTANTS = {
     "effect_to_fixed_destination": [
         ("Some(dest) => Some(Effect {\n                    dest,",
          "Some(dest) => Some(Effect {\n                    dest: 0,"),
+    ],
+    "scope_too_narrow": [
+        ("Command::SetWebhook { project, .. } => Scope::Project(*project),",
+         "Command::SetWebhook { .. } => Scope::Counter,"),
     ],
     "manage_any_project": [
         ("            role,\n        } => {\n            if !can(snap, user, *project, Action::Manage) {",
@@ -151,7 +155,8 @@ def check(name, edits, keep):
             return name, "invalid (rust)", tmp
         llbc = os.path.join(tmp, "docs_kernel.llbc")
         rc = run(["charon", "cargo", "--preset=aeneas", "--start-from", "docs_kernel::transition",
-                  "--start-from", "docs_kernel::apply", "--dest-file", llbc], os.path.join(tmp, "kernel"), log)
+                  "--start-from", "docs_kernel::apply", "--start-from", "docs_kernel::read_scope",
+                  "--dest-file", llbc], os.path.join(tmp, "kernel"), log)
         if rc != 0:
             return name, "invalid (charon)", tmp
         if run(["aeneas", "-backend", "lean", llbc, "-dest", proofs], tmp, log) != 0:

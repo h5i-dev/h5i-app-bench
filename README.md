@@ -33,6 +33,8 @@ review workflow), for every actor, state and command:
   what that user may see;
 - effects (webhooks) go only to the destination the project registered,
   and only when a writer publishes an approved document;
+- a command's result depends only on one project's rows, so the server loads
+  just those instead of the whole tenant;
 - the kernel never panics.
 
 The shell is proven where it can be: the SQL statement planner

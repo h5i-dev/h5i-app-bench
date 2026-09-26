@@ -153,3 +153,22 @@ async fn keyed_read_replays() {
     assert!(matches!(first, Ok(k::Reply::Doc(_))));
     assert_eq!(first, again);
 }
+
+/// `load_for` returns exactly the slice the frame theorem is about.
+#[tokio::test]
+async fn scoped_load_is_the_proven_slice() {
+    let pg = engine_or_skip!(EngineConfig::default());
+    for seed in 0..10 {
+        let tenant = fresh_tenant();
+        let mut rng = Rng(1000 + seed);
+        for step in 0..60 {
+            let actor = principal(tenant, 1 + rng.next(4));
+            let _ = pg.execute(&actor, &random_command(&mut rng)).await.expect("db");
+            let probe = random_command(&mut rng);
+            let full = pg.snapshot(TenantId(tenant)).await.unwrap();
+            let want = normalize(slice(&full, k::read_scope(&probe)));
+            let got = normalize(pg.snapshot_for(TenantId(tenant), &probe).await.unwrap());
+            assert_eq!(got, want, "seed {seed} step {step}: {probe:?}");
+        }
+    }
+}

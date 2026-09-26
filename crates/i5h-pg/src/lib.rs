@@ -12,7 +12,7 @@ mod roles;
 mod table;
 
 pub use roles::{lockdown, lockdown_sql};
-pub use table::{column_of, ddl, delete, key, load, upsert, ColumnDef, Kind, PgField, Table, Value};
+pub use table::{column_of, ddl, delete, key, load, load_where, upsert, ColumnDef, Kind, PgField, Table, Value};
 
 use deadpool_postgres::{Config, Runtime};
 use i5h::{Kernel, TenantId};
@@ -116,6 +116,13 @@ pub trait Store<K: Kernel>: Send + Sync + 'static {
     fn tables() -> Vec<&'static str>;
 
     fn load(tx: &Tx<'_>, tenant: TenantId) -> impl Future<Output = Result<K::Snapshot, DbError>> + Send;
+
+    /// The rows `cmd` reads. Defaults to the whole tenant; a store may load
+    /// less only if the kernel's result is provably the same (a frame theorem).
+    fn load_for(tx: &Tx<'_>, tenant: TenantId, cmd: &K::Command) -> impl Future<Output = Result<K::Snapshot, DbError>> + Send {
+        let _ = cmd;
+        Self::load(tx, tenant)
+    }
 
     /// A later `load` must return `K::apply(before, ws)`.
     fn write(tx: &Tx<'_>, tenant: TenantId, ws: &K::WriteSet) -> impl Future<Output = Result<(), DbError>> + Send;
@@ -314,6 +321,15 @@ impl<K: Kernel, S: Store<K>> Engine<K, S> {
         Ok(snap)
     }
 
+    /// What `cmd` would read for this tenant, for tests of `Store::load_for`.
+    pub async fn snapshot_for(&self, tenant: TenantId, cmd: &K::Command) -> Result<K::Snapshot, DbError> {
+        let mut client = self.pool.0.get().await.map_err(|e| DbError::Pool(e.to_string()))?;
+        let tx = client.build_transaction().isolation_level(IsolationLevel::Serializable).read_only(true).start().await?;
+        let snap = S::load_for(&Tx(&tx), tenant, cmd).await?;
+        tx.commit().await?;
+        Ok(snap)
+    }
+
     /// Outer error: infrastructure. Inner error: the kernel refused.
     pub async fn execute(&self, actor: &K::Principal, cmd: &K::Command) -> Result<Result<K::Reply, K::Error>, DbError> {
         self.run(actor, cmd, None).await
@@ -465,7 +481,7 @@ impl<K: Kernel, S: Store<K>> Engine<K, S> {
                 return Ok(Attempt::Replayed(reply));
             }
         }
-        let snap = S::load(&Tx(&tx), tenant).await?;
+        let snap = S::load_for(&Tx(&tx), tenant, cmd).await?;
         let decision = K::transition(actor, &snap, cmd);
         // Replies are only comparable when a codec exists (keyed requests).
         let encoded = match (&decision, idem) {

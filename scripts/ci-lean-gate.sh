@@ -15,12 +15,14 @@ if hits=$(grep -n -w -e sorry -e native_decide $files); then
   fail=1
 fi
 
-theorems="allows_eq transition_total apply_eq authorized reply_confined inv_preserved reachable_inv noninterference"
+theorems="Theorems.allows_eq Theorems.transition_total Theorems.apply_eq Theorems.authorized
+  Theorems.reply_confined Theorems.inv_preserved Theorems.reachable_inv Theorems.noninterference
+  Frame.transition_frame"
 mkdir -p .lake/ci
 {
   # Modules holding the main theorems.
-  for m in Theorems Invariants Noninterference; do echo "import $m"; done
-  for t in $theorems; do echo "#print axioms docs_kernel.Theorems.$t"; done
+  for m in Theorems Invariants Noninterference Frame; do echo "import $m"; done
+  for t in $theorems; do echo "#print axioms docs_kernel.$t"; done
 } > .lake/ci/Axioms.lean
 out=$(lake env lean .lake/ci/Axioms.lean 2>&1)
 status=$?
@@ -30,7 +32,7 @@ if [ $status -ne 0 ]; then
   fail=1
 fi
 for t in $theorems; do
-  line=$(grep -F "'docs_kernel.Theorems.$t'" <<<"$out" || true)
+  line=$(grep -F "'docs_kernel.$t'" <<<"$out" || true)
   if [ -z "$line" ]; then
     echo "error: no axiom report for $t"
     fail=1

@@ -79,9 +79,6 @@ i5h_schema::schema! {
     }
 }
 
-
-
-
 // Hand-written: the derived impl clones `Option<u64>`, which Aeneas models
 // only as an axiom.
 impl Clone for Document {
@@ -99,7 +96,6 @@ impl Clone for Document {
     }
 }
 
-
 #[derive(Clone, Debug, PartialEq, Eq, Default)]
 pub struct Snapshot {
     pub counter: Counter,
@@ -108,7 +104,6 @@ pub struct Snapshot {
     pub documents: Vec<Document>,
     pub webhooks: Vec<Webhook>,
 }
-
 
 /// A message to deliver outside the database, through the outbox.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -339,6 +334,35 @@ fn with_status(d: Document, status: Status, approver: Option<u64>) -> Result<Doc
         approver,
         version: d.version + 1,
     })
+}
+
+/// What a command reads. The server loads only these rows; the proofs show
+/// `transition` gives the same result on that slice as on the whole tenant.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum Scope {
+    /// Only the id counter.
+    Counter,
+    /// The counter and every row of one project.
+    Project(u64),
+    /// The counter and every row of the project this document belongs to.
+    Document(u64),
+}
+
+pub fn read_scope(cmd: &Command) -> Scope {
+    match cmd {
+        Command::CreateProject { .. } => Scope::Counter,
+        Command::SetMember { project, .. } => Scope::Project(*project),
+        Command::RemoveMember { project, .. } => Scope::Project(*project),
+        Command::CreateDocument { project, .. } => Scope::Project(*project),
+        Command::SetWebhook { project, .. } => Scope::Project(*project),
+        Command::ListDocuments { project } => Scope::Project(*project),
+        Command::EditDocument { doc, .. } => Scope::Document(*doc),
+        Command::Submit { doc } => Scope::Document(*doc),
+        Command::Approve { doc } => Scope::Document(*doc),
+        Command::Publish { doc } => Scope::Document(*doc),
+        Command::DeleteDocument { doc } => Scope::Document(*doc),
+        Command::GetDocument { doc } => Scope::Document(*doc),
+    }
 }
 
 pub fn transition(
