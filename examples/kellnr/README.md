@@ -1,62 +1,53 @@
-# Kellnr authorization, before and after PR #1243
+# Kellnr
 
-[Kellnr](https://github.com/kellnr/kellnr) is a private crate registry on
+[Kellnr](https://github.com/kellnr/kellnr) is a private crate registry built on
 axum. [PR #1243](https://github.com/kellnr/kellnr/pull/1243) (commit 45043ee)
 fixed a privilege escalation: session logins hardcoded `is_read_only: false`,
 and the crate-group endpoints skipped `check_can_modify`, so a read-only user
-could change crate owners and ACLs.
+could change crate owners and access lists.
 
-`kernel/` models `crates/registry/src/kellnr_api.rs` as an i5h kernel.
-`transition` follows the code after the PR; `transition_pre1243` the code
-before it. They share everything except the two lines the PR changed.
+This example models `crates/registry/src/kellnr_api.rs` as an i5h kernel with
+two variants. `transition` follows the code after the PR and
+`transition_pre1243` the code before it, and the two share everything except
+the lines the PR changed.
 
-## What is proven (`proofs/`)
+## The model
 
-For every principal, login path, state and command, about the extracted
-`transition`:
+The kernel models the checks `check_ownership`, `check_can_modify` and
+`check_download_auth`, how session and token logins build a `MaybeUser`, and
+the endpoints for single owners, crate users, crate groups, yanking,
+publishing (its authorization only) and downloads.
 
-- `read_only_commits_nothing`: a read-only non-admin commits no write at all.
-- `writes_authorized`: every ACL or yank write comes from an admin or an owner
-  of that crate; publishing a new crate makes the publisher its first owner.
-- `owner_removal_needs_two` and `owner_remains`: an owner can only be removed
-  from a crate with at least two owners (unless ownerless crates are allowed),
-  so with unique owner rows one always remains.
-- `download_authorized`: a restricted crate is served only to a token of an
-  admin, owner, crate user or member of a granted group.
-- `transition_total`: no input makes the kernel fail.
+It leaves out `remove_owner` with several users at once, whose last-owner
+check differs slightly, as well as `add_empty_crate`, required crate fields,
+storage, webhooks, session expiry and the web UI routes. Names are numeric
+ids. `apply` is written in Rust and tested but not extracted, so the theorems
+are about the write sets the kernel returns.
 
-About `transition_pre1243` (`Counterexample.lean`):
+## Theorems
 
-- `pre1243_violates_read_only`: the first theorem is false for the old code.
-  Witness: user 1 is read-only, owns crate 7, logs in by session, and adds an
-  owner (`pre1243_session_adds_owner`).
-- `pre1243_token_adds_group`: the same user, by token, grants a group.
-- `fixed_refuses_session`, `fixed_refuses_group`: the fixed kernel returns
-  `ReadOnlyModify` on both.
+The following hold for every principal, login path, state and command of the
+fixed kernel:
 
-All theorems depend only on `propext`, `Classical.choice` and `Quot.sound`.
+| Theorem | Statement |
+|---|---|
+| `read_only_commits_nothing` | A read-only user who is not an admin commits no write at all. |
+| `writes_authorized` | Every access-list or yank write comes from an admin or an owner of that crate, and publishing a new crate makes the publisher its first owner. |
+| `owner_removal_needs_two`, `owner_remains` | An owner can only be removed from a crate with at least two owners (unless ownerless crates are allowed), so one owner always remains. |
+| `download_authorized` | A restricted crate is served only to an admin, an owner, a crate user or a member of a granted group. |
+| `transition_total` | No input makes the kernel fail. |
 
-## Fidelity
+For the code before the PR, `Counterexample.lean` proves the first theorem
+false (`pre1243_violates_read_only`). In `pre1243_session_adds_owner`, user 1 is read-only, owns crate 7,
+logs in with a session and adds an owner, and in `pre1243_token_adds_group`
+the same user grants a group through a token. The fixed kernel refuses both
+with `ReadOnlyModify` (`fixed_refuses_session`, `fixed_refuses_group`).
 
-Modeled: the checks `check_ownership`, `check_can_modify`,
-`check_download_auth`; `MaybeUser` construction for session and token logins;
-the single-user owner endpoints, crate users, crate groups, yank, unyank,
-publish (authorization only) and download.
+All theorems depend only on Lean's standard axioms.
 
-Not modeled: `remove_owner` with several users at once (its last-owner check
-differs slightly), `add_empty_crate`, required crate fields, storage, webhooks,
-sessions expiring, and the web UI routes. Names are numeric ids. `apply` is
-written in Rust and tested, but not extracted; the theorems are about the
-write sets.
-
-## Build
+## Building the proofs
 
 ```
-../../scripts/extract-kellnr.sh      # regenerate proofs/generated/KellnrKernel.lean
-cd proofs && lake build              # .lake/packages -> ../../docs/proofs/.lake/packages
+../../scripts/extract-kellnr.sh      # regenerates proofs/generated/KellnrKernel.lean
+cd proofs && lake build
 ```
-
-## Size (2026-09-25)
-
-Rust kernel: 374 code lines (329 extracted). Spec: 60 lines. Proofs: 466
-lines (about 1.4 per extracted kernel line). Counterexamples: 61 lines.

@@ -118,6 +118,18 @@ theorem searchFrom_find {α β} (l : List α) (P : α → Bool) (f : α → β) 
     · rw [searchFrom_found hk hp]; simp [hp]
     · rw [searchFrom_skip hk hp, ih (k + 1) (by omega)]; simp [hp]
 
+/-- A lookup with a default: the first match's `f`, or `d`. -/
+theorem searchFrom_findD {α β} (l : List α) (P : α → Bool) (f : α → β) (d : β) (k : Nat) :
+    searchFrom l P (fun _ x => f x) d k = (((l.drop k).find? P).map f).getD d := by
+  induction h : l.length - k generalizing k with
+  | zero => rw [searchFrom_end (by omega), List.drop_eq_nil_of_le (by omega)]; rfl
+  | succ n ih =>
+    have hk : k < l.length := by omega
+    rw [List.drop_eq_getElem_cons hk, List.find?_cons]
+    by_cases hp : P l[k]
+    · rw [searchFrom_found hk hp]; simp [hp]
+    · rw [searchFrom_skip hk hp, ih (k + 1) (by omega)]; simp [hp]
+
 /-- A search that returns a constant: `found` if any element from `k` on
 satisfies `P`, else `missing`. Covers "all" checks (`false`/`true`) and
 "exists" checks (`true`/`false`). -/

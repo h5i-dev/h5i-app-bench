@@ -1,11 +1,24 @@
-//! PostgreSQL engine for i5h kernels.
+//! A PostgreSQL engine for i5h kernels.
 //!
-//! Per request: BEGIN SERIALIZABLE, optional tenant advisory lock, replay a
-//! stored idempotent reply if any, load snapshot, run `transition`, write,
-//! COMMIT. A serialization failure or lost connection restarts from BEGIN, so a
-//! decision is never reused on a snapshot it was not computed from. A connection
-//! lost during COMMIT is retried only under an idempotency key; otherwise the
-//! caller gets `DbError::CommitUnknown`.
+//! [`Engine`] runs each request in one SERIALIZABLE transaction: it loads the
+//! caller's tenant through a [`Store`], calls the kernel's `transition`, writes
+//! the result and commits. If the transaction fails to serialize or the
+//! connection drops, the engine starts again from `BEGIN`, so a decision is
+//! never applied to a snapshot it was not computed from. With an idempotency
+//! key, a command runs at most once and a repeated request gets the stored
+//! reply; without one, a connection lost during `COMMIT` is reported as
+//! [`DbError::CommitUnknown`] because the engine cannot tell whether it landed.
+//!
+//! Stores only see an opaque [`Tx`], and the pool is opaque as well, so
+//! application code cannot run SQL of its own.
+//!
+//! # Example
+//!
+//! ```ignore
+//! let engine = Engine::<Calc, CalcStore>::new(pool(&database_url, 8)?, EngineConfig::default());
+//! engine.install_schema().await?;
+//! let reply = engine.execute(&actor, &Command::Get).await?;
+//! ```
 
 pub mod migrate;
 pub mod outbox;

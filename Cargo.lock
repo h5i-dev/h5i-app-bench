@@ -169,6 +169,31 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "fc652a48c352aef3ea3aed32080501cf3ef6ed5da78602a020c991775b0aff04"
 
 [[package]]
+name = "calculator-kernel"
+version = "0.1.0"
+dependencies = [
+ "i5h-schema",
+ "i5h-sql",
+]
+
+[[package]]
+name = "calculator-server"
+version = "0.1.0"
+dependencies = [
+ "axum",
+ "calculator-kernel",
+ "i5h",
+ "i5h-http",
+ "i5h-json",
+ "i5h-pg",
+ "serde",
+ "serde_json",
+ "tokio",
+ "tracing",
+ "tracing-subscriber",
+]
+
+[[package]]
 name = "cc"
 version = "1.5.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"

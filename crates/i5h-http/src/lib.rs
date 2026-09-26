@@ -1,9 +1,28 @@
-//! axum integration. Mount i5h in your own axum app: extract [`Actor`], build a
-//! kernel command, call [`I5h::respond`]. Or merge [`rpc_router`].
+//! Integration between i5h and axum.
 //!
-//! Request decoding is trusted, not verified; the theorems cover every
-//! command anyway. Token parsing and reply writing are verified
-//! (`i5h-token`, `i5h-json`). Permission decisions belong in the kernel.
+//! You can mount i5h in any axum application. A handler takes an [`Actor`],
+//! which authenticates the request, builds a kernel command from the request,
+//! and calls [`I5h::respond`], which runs the command and renders the reply.
+//! If JSON commands are enough, merge [`rpc_router`] to get a ready-made
+//! `POST /rpc` route instead.
+//!
+//! Decoding requests into commands is trusted rather than verified, although
+//! the kernel's theorems hold for every command, so a wrong decoding cannot do
+//! anything a client could not ask for directly. Token parsing and reply
+//! rendering use the verified `i5h-token` and `i5h-json` crates.
+//!
+//! # Example
+//!
+//! ```ignore
+//! async fn approve(State(app): State<App>, actor: Actor<DocsApp>, Path(doc): Path<u64>, h: HeaderMap) -> Response {
+//!     app.respond(&actor, Command::Approve { doc }, &h).await
+//! }
+//!
+//! let router = Router::new()
+//!     .route("/documents/{id}/approve", post(approve))
+//!     .with_state(app.clone())
+//!     .merge(rpc_router(app));
+//! ```
 
 use axum::extract::{FromRef, FromRequestParts, State};
 use axum::http::request::Parts;

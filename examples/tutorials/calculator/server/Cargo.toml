@@ -1,0 +1,19 @@
+[package]
+name = "calculator-server"
+description = "Tutorial 1: the calculator's HTTP server and PostgreSQL store"
+edition.workspace = true
+license.workspace = true
+version.workspace = true
+
+[dependencies]
+i5h.workspace = true
+i5h-pg.workspace = true
+i5h-http.workspace = true
+i5h-json.workspace = true
+calculator-kernel.workspace = true
+axum.workspace = true
+tokio.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+tracing.workspace = true
+tracing-subscriber.workspace = true

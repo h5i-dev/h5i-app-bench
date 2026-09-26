@@ -1,0 +1,19 @@
+import Lake
+open Lake DSL
+
+-- Pinned to the Aeneas commit that generated generated/CalculatorKernel.lean.
+require aeneas from git
+  "https://github.com/AeneasVerif/aeneas" @ "b86120db3183b0107eb5f2637b11c424cd06ef1c" / "backends/lean"
+
+require i5h_lib from "../../../../crates/i5h/proofs"
+
+package calculator_proofs
+
+-- Generated Lean: the extracted Rust (scripts/extract-calculator.sh). Do not edit.
+lean_lib Generated where
+  srcDir := "generated"
+  roots := #[`CalculatorKernel]
+
+-- Hand-written spec and proofs.
+@[default_target] lean_lib Proofs where
+  roots := #[`Spec, `Proofs]
