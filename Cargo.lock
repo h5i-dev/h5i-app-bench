@@ -312,6 +312,9 @@ dependencies = [
 [[package]]
 name = "docs-kernel"
 version = "0.1.0"
+dependencies = [
+ "i5h-schema",
+]
 
 [[package]]
 name = "docs-server"
@@ -629,6 +632,10 @@ dependencies = [
  "tokio-postgres",
  "tracing",
 ]
+
+[[package]]
+name = "i5h-schema"
+version = "0.1.0"
 
 [[package]]
 name = "i5h-sql"

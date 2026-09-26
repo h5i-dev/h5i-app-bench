@@ -1,0 +1,9 @@
+[package]
+name = "i5h-schema"
+description = "Declare kernel row types once; get the structs and their table mappings"
+edition.workspace = true
+license.workspace = true
+version.workspace = true
+
+# Only macro_rules: a kernel can depend on it and still be extracted by Charon.
+[dependencies]

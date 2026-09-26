@@ -34,30 +34,53 @@ pub enum Status {
     Published,
 }
 
-#[derive(Clone, Debug, PartialEq, Eq)]
-pub struct Project {
-    pub id: u64,
-    pub name: Text,
+// Row types, declared once: the server derives its table mappings from this
+// (`docs_kernel::docs_tables!`).
+i5h_schema::schema! {
+    mapping docs_tables for docs_kernel;
+
+    #[derive(Clone, Debug, PartialEq, Eq)]
+    pub struct Project in "projects" {
+        key { id: u64 }
+        name: Text,
+    }
+
+    #[derive(Clone, Debug, PartialEq, Eq)]
+    pub struct Member in "members" {
+        key { project: u64, user: u64 }
+        role: Role,
+    }
+
+    #[derive(Debug, PartialEq, Eq)]
+    pub struct Document in "documents" {
+        key { id: u64 }
+        project: u64,
+        author: u64,
+        title: Text,
+        body: Text,
+        status: Status,
+        approver: Option<u64>,
+        version: u64,
+    }
+
+    #[derive(Clone, Debug, PartialEq, Eq, Default)]
+    pub struct Counter in "counters" {
+        key {}
+        next_id: u64,
+    }
+
+    /// A project's notification target. `dest` names an entry in the
+    /// operator's destination registry, never a URL, so users cannot point
+    /// the server at a host of their choosing.
+    #[derive(Clone, Copy, Debug, PartialEq, Eq)]
+    pub struct Webhook in "webhooks" {
+        key { project: u64 }
+        dest: u64,
+    }
 }
 
-#[derive(Clone, Debug, PartialEq, Eq)]
-pub struct Member {
-    pub project: u64,
-    pub user: u64,
-    pub role: Role,
-}
 
-#[derive(Debug, PartialEq, Eq)]
-pub struct Document {
-    pub id: u64,
-    pub project: u64,
-    pub author: u64,
-    pub title: Text,
-    pub body: Text,
-    pub status: Status,
-    pub approver: Option<u64>,
-    pub version: u64,
-}
+
 
 // Hand-written: the derived impl clones `Option<u64>`, which Aeneas models
 // only as an axiom.
@@ -76,10 +99,6 @@ impl Clone for Document {
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Eq, Default)]
-pub struct Counter {
-    pub next_id: u64,
-}
 
 #[derive(Clone, Debug, PartialEq, Eq, Default)]
 pub struct Snapshot {
@@ -90,14 +109,6 @@ pub struct Snapshot {
     pub webhooks: Vec<Webhook>,
 }
 
-/// A project's notification target. `dest` names an entry in the operator's
-/// destination registry, never a URL, so users cannot point the server at a
-/// host of their choosing.
-#[derive(Clone, Copy, Debug, PartialEq, Eq)]
-pub struct Webhook {
-    pub project: u64,
-    pub dest: u64,
-}
 
 /// A message to deliver outside the database, through the outbox.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]

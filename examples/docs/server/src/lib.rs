@@ -3,7 +3,7 @@
 use axum::http::StatusCode;
 use docs_kernel as k;
 use i5h::{Kernel, TenantId};
-use i5h_pg::{ddl, delete, key, load, table, upsert, DbError, PgField, ReplyCodec, Store, Table, Tx, Value};
+use i5h_pg::{delete, key, load, upsert, DbError, PgField, ReplyCodec, Store, Tx, Value};
 use serde::{Deserialize, Serialize};
 use i5h_json::Value as Out;
 
@@ -53,14 +53,8 @@ macro_rules! enum_field {
 enum_field!(k::Role { Viewer = 0, Editor = 1, Owner = 2 });
 enum_field!(k::Status { Draft = 0, InReview = 1, Approved = 2, Published = 3 });
 
-table!(DocsApp, k::Counter => "counters" { key: [], cols: [next_id] });
-table!(DocsApp, k::Project => "projects" { key: [id], cols: [name] });
-table!(DocsApp, k::Member => "members" { key: [project, user], cols: [role] });
-table!(DocsApp, k::Document => "documents" {
-    key: [id],
-    cols: [project, author, title, body, status, approver, version],
-});
-table!(DocsApp, k::Webhook => "webhooks" { key: [project], cols: [dest] });
+// Table mappings for every row type, from the kernel's `schema!` block.
+docs_kernel::docs_tables!(DocsApp);
 
 /// Outbox payload for a publish notification: ids only, no document content.
 pub fn effect_payload(e: &k::Effect) -> Vec<u8> {
@@ -77,23 +71,11 @@ pub struct DocsStore;
 
 impl Store<DocsApp> for DocsStore {
     fn ddl() -> Vec<String> {
-        vec![
-            ddl::<DocsApp, k::Counter>(),
-            ddl::<DocsApp, k::Project>(),
-            ddl::<DocsApp, k::Member>(),
-            ddl::<DocsApp, k::Document>(),
-            ddl::<DocsApp, k::Webhook>(),
-        ]
+        schema_ddl()
     }
 
     fn tables() -> Vec<&'static str> {
-        vec![
-            <k::Counter as Table<DocsApp>>::NAME,
-            <k::Project as Table<DocsApp>>::NAME,
-            <k::Member as Table<DocsApp>>::NAME,
-            <k::Document as Table<DocsApp>>::NAME,
-            <k::Webhook as Table<DocsApp>>::NAME,
-        ]
+        schema_tables()
     }
 
     async fn load(tx: &Tx<'_>, t: TenantId) -> Result<k::Snapshot, DbError> {
