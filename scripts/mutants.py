@@ -22,7 +22,7 @@ import time
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 KERNEL = os.path.join(ROOT, "examples/docs/kernel")
 PROOFS = os.path.join(ROOT, "examples/docs/proofs")
-THEOREMS = ["Theorems", "Invariants", "Noninterference", "Frame", "Check", "Storage", "Load"]
+THEOREMS = ["Theorems", "Invariants", "Noninterference", "Frame", "Check", "Storage", "Load", "Scoped"]
 
 # name -> list of (old, new) replacements in kernel/src/lib.rs
 MUTANTS = {
@@ -105,6 +105,9 @@ MUTANTS = {
     "fresh_counter_not_zero": [
         ("        Some(Counter { next_id: 0 })", "        Some(Counter { next_id: 1 })"),
     ],
+    "scope_uses_doc_id": [
+        ("                    Some(ds[0].project)", "                    Some(ds[0].id)"),
+    ],
     "manage_any_project": [
         ("            role,\n        } => {\n            if !can(snap, user, *project, Action::Manage) {",
          "            role,\n        } => {\n            if false {"),
@@ -181,7 +184,7 @@ def check(name, edits, keep):
         llbc = os.path.join(tmp, "docs_kernel.llbc")
         rc = run(["charon", "cargo", "--preset=aeneas", "--start-from", "docs_kernel::transition",
                   "--start-from", "docs_kernel::apply", "--start-from", "docs_kernel::read_scope",
-                  "--start-from", "docs_kernel::check_inv", "--start-from", "docs_kernel::sql_writes", "--start-from", "docs_kernel::decode",
+                  "--start-from", "docs_kernel::check_inv", "--start-from", "docs_kernel::sql_writes", "--start-from", "docs_kernel::decode", "--start-from", "docs_kernel::scoped_project",
                   "--include", "i5h_sql",
                   "--dest-file", llbc], os.path.join(tmp, "kernel"), log)
         if rc != 0:

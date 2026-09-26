@@ -2195,8 +2195,32 @@ def decode (r : Rows) : Result (Option Snapshot) := do
             ok (some
               { counter := counter1, projects, members, documents, webhooks })
 
+/-- [docs_kernel::scoped_project]:
+    Source: 'examples/docs/kernel/src/lib.rs', lines 823:0-838:1
+    Visibility: public -/
+def scoped_project
+  (scope : Scope) (doc_rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)) :
+  Result (Option Std.U64)
+  := do
+  match scope with
+  | Scope.Counter => ok none
+  | Scope.Project p => ok (some p)
+  | Scope.Document _ =>
+    let o ← Document.from_rows doc_rows
+    match o with
+    | none => ok none
+    | some ds =>
+      let i := alloc.vec.Vec.len ds
+      if i > 0#usize
+      then
+        let d ←
+          alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Document)
+            ds 0#usize
+        ok (some d.project)
+      else ok none
+
 /-- [docs_kernel::apply]: loop body 0:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 825:4-828:5
+    Source: 'examples/docs/kernel/src/lib.rs', lines 844:4-847:5
     Visibility: public -/
 @[rust_loop_body]
 def apply_loop.body
@@ -2215,7 +2239,7 @@ def apply_loop.body
   else ok (done s)
 
 /-- [docs_kernel::apply]: loop 0:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 825:4-828:5
+    Source: 'examples/docs/kernel/src/lib.rs', lines 844:4-847:5
     Visibility: public -/
 @[rust_loop]
 def apply_loop
@@ -2227,14 +2251,14 @@ def apply_loop
     (s, i)
 
 /-- [docs_kernel::apply]:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 822:0-830:1
+    Source: 'examples/docs/kernel/src/lib.rs', lines 841:0-849:1
     Visibility: public -/
 def apply (snap : Snapshot) (ws : alloc.vec.Vec Write) : Result Snapshot := do
   let s ← Snapshot.Insts.CoreCloneClone.clone snap
   apply_loop ws s 0#usize
 
 /-- [docs_kernel::projects_owned]: loop body 0:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 840:4-847:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 859:4-866:1 -/
 @[rust_loop_body]
 def projects_owned_loop.body
   (s : Snapshot) (i : Std.Usize) : Result (ControlFlow Std.Usize Bool) := do
@@ -2252,7 +2276,7 @@ def projects_owned_loop.body
   else ok (done true)
 
 /-- [docs_kernel::projects_owned]: loop 0:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 840:4-847:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 859:4-866:1 -/
 @[rust_loop]
 def projects_owned_loop (s : Snapshot) (i : Std.Usize) : Result Bool := do
   loop
@@ -2260,13 +2284,13 @@ def projects_owned_loop (s : Snapshot) (i : Std.Usize) : Result Bool := do
     i
 
 /-- [docs_kernel::projects_owned]:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 838:0-847:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 857:0-866:1 -/
 @[reducible]
 def projects_owned (s : Snapshot) : Result Bool := do
   projects_owned_loop s 0#usize
 
 /-- [docs_kernel::members_in_projects]: loop body 0:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 851:4-858:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 870:4-877:1 -/
 @[rust_loop_body]
 def members_in_projects_loop.body
   (s : Snapshot) (i : Std.Usize) : Result (ControlFlow Std.Usize Bool) := do
@@ -2284,7 +2308,7 @@ def members_in_projects_loop.body
   else ok (done true)
 
 /-- [docs_kernel::members_in_projects]: loop 0:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 851:4-858:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 870:4-877:1 -/
 @[rust_loop]
 def members_in_projects_loop (s : Snapshot) (i : Std.Usize) : Result Bool := do
   loop
@@ -2292,13 +2316,13 @@ def members_in_projects_loop (s : Snapshot) (i : Std.Usize) : Result Bool := do
     i
 
 /-- [docs_kernel::members_in_projects]:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 849:0-858:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 868:0-877:1 -/
 @[reducible]
 def members_in_projects (s : Snapshot) : Result Bool := do
   members_in_projects_loop s 0#usize
 
 /-- [docs_kernel::docs_in_projects]: loop body 0:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 862:4-869:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 881:4-888:1 -/
 @[rust_loop_body]
 def docs_in_projects_loop.body
   (s : Snapshot) (i : Std.Usize) : Result (ControlFlow Std.Usize Bool) := do
@@ -2316,7 +2340,7 @@ def docs_in_projects_loop.body
   else ok (done true)
 
 /-- [docs_kernel::docs_in_projects]: loop 0:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 862:4-869:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 881:4-888:1 -/
 @[rust_loop]
 def docs_in_projects_loop (s : Snapshot) (i : Std.Usize) : Result Bool := do
   loop
@@ -2324,13 +2348,13 @@ def docs_in_projects_loop (s : Snapshot) (i : Std.Usize) : Result Bool := do
     i
 
 /-- [docs_kernel::docs_in_projects]:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 860:0-869:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 879:0-888:1 -/
 @[reducible]
 def docs_in_projects (s : Snapshot) : Result Bool := do
   docs_in_projects_loop s 0#usize
 
 /-- [docs_kernel::hooks_in_projects]: loop body 0:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 873:4-880:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 892:4-899:1 -/
 @[rust_loop_body]
 def hooks_in_projects_loop.body
   (s : Snapshot) (i : Std.Usize) : Result (ControlFlow Std.Usize Bool) := do
@@ -2348,7 +2372,7 @@ def hooks_in_projects_loop.body
   else ok (done true)
 
 /-- [docs_kernel::hooks_in_projects]: loop 0:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 873:4-880:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 892:4-899:1 -/
 @[rust_loop]
 def hooks_in_projects_loop (s : Snapshot) (i : Std.Usize) : Result Bool := do
   loop
@@ -2356,13 +2380,13 @@ def hooks_in_projects_loop (s : Snapshot) (i : Std.Usize) : Result Bool := do
     i
 
 /-- [docs_kernel::hooks_in_projects]:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 871:0-880:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 890:0-899:1 -/
 @[reducible]
 def hooks_in_projects (s : Snapshot) : Result Bool := do
   hooks_in_projects_loop s 0#usize
 
 /-- [docs_kernel::project_dup_after]: loop body 0:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 885:4-892:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 904:4-911:1 -/
 @[rust_loop_body]
 def project_dup_after_loop.body
   (v : alloc.vec.Vec Project) (i : Std.Usize) (j : Std.Usize) :
@@ -2382,7 +2406,7 @@ def project_dup_after_loop.body
   else ok (done false)
 
 /-- [docs_kernel::project_dup_after]: loop 0:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 885:4-892:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 904:4-911:1 -/
 @[rust_loop]
 def project_dup_after_loop
   (v : alloc.vec.Vec Project) (i : Std.Usize) (j : Std.Usize) :
@@ -2393,14 +2417,14 @@ def project_dup_after_loop
     j
 
 /-- [docs_kernel::project_dup_after]:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 883:0-892:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 902:0-911:1 -/
 def project_dup_after
   (v : alloc.vec.Vec Project) (i : Std.Usize) : Result Bool := do
   let j ← i + 1#usize
   project_dup_after_loop v i j
 
 /-- [docs_kernel::project_ids_unique]: loop body 0:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 896:4-903:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 915:4-922:1 -/
 @[rust_loop_body]
 def project_ids_unique_loop.body
   (v : alloc.vec.Vec Project) (i : Std.Usize) :
@@ -2417,7 +2441,7 @@ def project_ids_unique_loop.body
   else ok (done true)
 
 /-- [docs_kernel::project_ids_unique]: loop 0:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 896:4-903:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 915:4-922:1 -/
 @[rust_loop]
 def project_ids_unique_loop
   (v : alloc.vec.Vec Project) (i : Std.Usize) : Result Bool := do
@@ -2426,13 +2450,13 @@ def project_ids_unique_loop
     i
 
 /-- [docs_kernel::project_ids_unique]:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 894:0-903:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 913:0-922:1 -/
 @[reducible]
 def project_ids_unique (v : alloc.vec.Vec Project) : Result Bool := do
   project_ids_unique_loop v 0#usize
 
 /-- [docs_kernel::member_dup_after]: loop body 0:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 1:0-914:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 1:0-933:1 -/
 @[rust_loop_body]
 def member_dup_after_loop.body
   (v : alloc.vec.Vec Member) (i : Std.Usize) (j : Std.Usize) :
@@ -2456,7 +2480,7 @@ def member_dup_after_loop.body
   else ok (done false)
 
 /-- [docs_kernel::member_dup_after]: loop 0:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 1:0-914:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 1:0-933:1 -/
 @[rust_loop]
 def member_dup_after_loop
   (v : alloc.vec.Vec Member) (i : Std.Usize) (j : Std.Usize) :
@@ -2467,14 +2491,14 @@ def member_dup_after_loop
     j
 
 /-- [docs_kernel::member_dup_after]:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 905:0-914:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 924:0-933:1 -/
 def member_dup_after
   (v : alloc.vec.Vec Member) (i : Std.Usize) : Result Bool := do
   let j ← i + 1#usize
   member_dup_after_loop v i j
 
 /-- [docs_kernel::member_keys_unique]: loop body 0:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 918:4-925:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 937:4-944:1 -/
 @[rust_loop_body]
 def member_keys_unique_loop.body
   (v : alloc.vec.Vec Member) (i : Std.Usize) :
@@ -2491,7 +2515,7 @@ def member_keys_unique_loop.body
   else ok (done true)
 
 /-- [docs_kernel::member_keys_unique]: loop 0:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 918:4-925:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 937:4-944:1 -/
 @[rust_loop]
 def member_keys_unique_loop
   (v : alloc.vec.Vec Member) (i : Std.Usize) : Result Bool := do
@@ -2500,13 +2524,13 @@ def member_keys_unique_loop
     i
 
 /-- [docs_kernel::member_keys_unique]:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 916:0-925:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 935:0-944:1 -/
 @[reducible]
 def member_keys_unique (v : alloc.vec.Vec Member) : Result Bool := do
   member_keys_unique_loop v 0#usize
 
 /-- [docs_kernel::doc_dup_after]: loop body 0:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 929:4-936:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 948:4-955:1 -/
 @[rust_loop_body]
 def doc_dup_after_loop.body
   (v : alloc.vec.Vec Document) (i : Std.Usize) (j : Std.Usize) :
@@ -2526,7 +2550,7 @@ def doc_dup_after_loop.body
   else ok (done false)
 
 /-- [docs_kernel::doc_dup_after]: loop 0:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 929:4-936:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 948:4-955:1 -/
 @[rust_loop]
 def doc_dup_after_loop
   (v : alloc.vec.Vec Document) (i : Std.Usize) (j : Std.Usize) :
@@ -2537,14 +2561,14 @@ def doc_dup_after_loop
     j
 
 /-- [docs_kernel::doc_dup_after]:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 927:0-936:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 946:0-955:1 -/
 def doc_dup_after
   (v : alloc.vec.Vec Document) (i : Std.Usize) : Result Bool := do
   let j ← i + 1#usize
   doc_dup_after_loop v i j
 
 /-- [docs_kernel::doc_ids_unique]: loop body 0:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 940:4-947:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 959:4-966:1 -/
 @[rust_loop_body]
 def doc_ids_unique_loop.body
   (v : alloc.vec.Vec Document) (i : Std.Usize) :
@@ -2561,7 +2585,7 @@ def doc_ids_unique_loop.body
   else ok (done true)
 
 /-- [docs_kernel::doc_ids_unique]: loop 0:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 940:4-947:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 959:4-966:1 -/
 @[rust_loop]
 def doc_ids_unique_loop
   (v : alloc.vec.Vec Document) (i : Std.Usize) : Result Bool := do
@@ -2570,13 +2594,13 @@ def doc_ids_unique_loop
     i
 
 /-- [docs_kernel::doc_ids_unique]:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 938:0-947:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 957:0-966:1 -/
 @[reducible]
 def doc_ids_unique (v : alloc.vec.Vec Document) : Result Bool := do
   doc_ids_unique_loop v 0#usize
 
 /-- [docs_kernel::hook_dup_after]: loop body 0:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 951:4-958:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 970:4-977:1 -/
 @[rust_loop_body]
 def hook_dup_after_loop.body
   (v : alloc.vec.Vec Webhook) (i : Std.Usize) (j : Std.Usize) :
@@ -2596,7 +2620,7 @@ def hook_dup_after_loop.body
   else ok (done false)
 
 /-- [docs_kernel::hook_dup_after]: loop 0:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 951:4-958:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 970:4-977:1 -/
 @[rust_loop]
 def hook_dup_after_loop
   (v : alloc.vec.Vec Webhook) (i : Std.Usize) (j : Std.Usize) :
@@ -2607,14 +2631,14 @@ def hook_dup_after_loop
     j
 
 /-- [docs_kernel::hook_dup_after]:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 949:0-958:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 968:0-977:1 -/
 def hook_dup_after
   (v : alloc.vec.Vec Webhook) (i : Std.Usize) : Result Bool := do
   let j ← i + 1#usize
   hook_dup_after_loop v i j
 
 /-- [docs_kernel::hook_projects_unique]: loop body 0:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 962:4-969:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 981:4-988:1 -/
 @[rust_loop_body]
 def hook_projects_unique_loop.body
   (v : alloc.vec.Vec Webhook) (i : Std.Usize) :
@@ -2631,7 +2655,7 @@ def hook_projects_unique_loop.body
   else ok (done true)
 
 /-- [docs_kernel::hook_projects_unique]: loop 0:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 962:4-969:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 981:4-988:1 -/
 @[rust_loop]
 def hook_projects_unique_loop
   (v : alloc.vec.Vec Webhook) (i : Std.Usize) : Result Bool := do
@@ -2640,13 +2664,13 @@ def hook_projects_unique_loop
     i
 
 /-- [docs_kernel::hook_projects_unique]:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 960:0-969:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 979:0-988:1 -/
 @[reducible]
 def hook_projects_unique (v : alloc.vec.Vec Webhook) : Result Bool := do
   hook_projects_unique_loop v 0#usize
 
 /-- [docs_kernel::projects_fresh]: loop body 0:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 973:4-980:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 992:4-999:1 -/
 @[rust_loop_body]
 def projects_fresh_loop.body
   (s : Snapshot) (i : Std.Usize) : Result (ControlFlow Std.Usize Bool) := do
@@ -2663,7 +2687,7 @@ def projects_fresh_loop.body
   else ok (done true)
 
 /-- [docs_kernel::projects_fresh]: loop 0:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 973:4-980:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 992:4-999:1 -/
 @[rust_loop]
 def projects_fresh_loop (s : Snapshot) (i : Std.Usize) : Result Bool := do
   loop
@@ -2671,13 +2695,13 @@ def projects_fresh_loop (s : Snapshot) (i : Std.Usize) : Result Bool := do
     i
 
 /-- [docs_kernel::projects_fresh]:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 971:0-980:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 990:0-999:1 -/
 @[reducible]
 def projects_fresh (s : Snapshot) : Result Bool := do
   projects_fresh_loop s 0#usize
 
 /-- [docs_kernel::docs_fresh]: loop body 0:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 984:4-991:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 1003:4-1010:1 -/
 @[rust_loop_body]
 def docs_fresh_loop.body
   (s : Snapshot) (i : Std.Usize) : Result (ControlFlow Std.Usize Bool) := do
@@ -2694,7 +2718,7 @@ def docs_fresh_loop.body
   else ok (done true)
 
 /-- [docs_kernel::docs_fresh]: loop 0:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 984:4-991:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 1003:4-1010:1 -/
 @[rust_loop]
 def docs_fresh_loop (s : Snapshot) (i : Std.Usize) : Result Bool := do
   loop
@@ -2702,13 +2726,13 @@ def docs_fresh_loop (s : Snapshot) (i : Std.Usize) : Result Bool := do
     i
 
 /-- [docs_kernel::docs_fresh]:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 982:0-991:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 1001:0-1010:1 -/
 @[reducible]
 def docs_fresh (s : Snapshot) : Result Bool := do
   docs_fresh_loop s 0#usize
 
 /-- [docs_kernel::doc_well_formed]:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 994:0-1004:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 1013:0-1023:1 -/
 def doc_well_formed (d : Document) : Result Bool := do
   let approved ←
     match d.status with
@@ -2723,7 +2747,7 @@ def doc_well_formed (d : Document) : Result Bool := do
               else ok false
 
 /-- [docs_kernel::docs_well_formed]: loop body 0:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 1008:4-1015:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 1027:4-1034:1 -/
 @[rust_loop_body]
 def docs_well_formed_loop.body
   (v : alloc.vec.Vec Document) (i : Std.Usize) :
@@ -2742,7 +2766,7 @@ def docs_well_formed_loop.body
   else ok (done true)
 
 /-- [docs_kernel::docs_well_formed]: loop 0:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 1008:4-1015:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 1027:4-1034:1 -/
 @[rust_loop]
 def docs_well_formed_loop
   (v : alloc.vec.Vec Document) (i : Std.Usize) : Result Bool := do
@@ -2751,13 +2775,13 @@ def docs_well_formed_loop
     i
 
 /-- [docs_kernel::docs_well_formed]:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 1006:0-1015:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 1025:0-1034:1 -/
 @[reducible]
 def docs_well_formed (v : alloc.vec.Vec Document) : Result Bool := do
   docs_well_formed_loop v 0#usize
 
 /-- [docs_kernel::check_inv]:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 1017:0-1029:1
+    Source: 'examples/docs/kernel/src/lib.rs', lines 1036:0-1048:1
     Visibility: public -/
 def check_inv (s : Snapshot) : Result Bool := do
   let b ← projects_owned s
