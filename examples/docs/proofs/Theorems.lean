@@ -24,7 +24,7 @@ theorem transition_total (a : Principal) (s : Snapshot) (c : Command) :
 /-- `apply` computes the list semantics of a write set, as long as no vector
 overflows `usize`. -/
 theorem apply_eq (s : Snapshot) (ws : alloc.vec.Vec Write)
-    (h : s.projects.length + s.members.length + s.documents.length + ws.length < Usize.max) :
+    (h : s.projects.length + s.members.length + s.documents.length + s.webhooks.length + ws.length < Usize.max) :
     ∃ s', apply s ws = .ok s' ∧ Snapshot.toSt s' = applyAll (Snapshot.toSt s) ws.val :=
   (WP.spec_equiv_exists _ _).1 (ApplyLemmas.apply_spec s ws h)
 
@@ -62,9 +62,9 @@ theorem authorized (a : Principal) (s : Snapshot) (c : Command) ws r
   all_goals (
     intro w hw
     simp [*] at hw
-    subst hw
-    simp_all [writeAllowed, statusStep, Snapshot.toSt]
-    try (have e := ‹_ = v1›; subst e; simp_all [writeAllowed, statusStep, Snapshot.toSt]))
+    (first | subst hw | (rcases hw with hw | hw <;> subst hw)) <;>
+    (simp_all [writeAllowed, statusStep, Snapshot.toSt]
+     try (have e := ‹_ = v1›; subst e; simp_all [writeAllowed, statusStep, Snapshot.toSt])))
 
 /-- Replies contain only documents the caller may read. -/
 theorem reply_confined (a : Principal) (s : Snapshot) (c : Command) ws r

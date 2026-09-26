@@ -7,6 +7,7 @@
 //! lost during COMMIT is retried only under an idempotency key; otherwise the
 //! caller gets `DbError::CommitUnknown`.
 
+pub mod outbox;
 mod roles;
 mod table;
 
@@ -37,7 +38,8 @@ impl Tx<'_> {
 
 /// Connection pool owned by an `Engine`. Opaque, so app code cannot take a
 /// raw connection from it.
-pub struct Pool(deadpool_postgres::Pool);
+#[derive(Clone)]
+pub struct Pool(pub(crate) deadpool_postgres::Pool);
 
 #[derive(Debug)]
 pub enum DbError {
@@ -133,7 +135,7 @@ pub trait ReplyCodec<K: Kernel>: Send + Sync + 'static {
 /// Advisory lock key held while installing the schema ("i5h\0", 1).
 const SCHEMA_LOCK: (i32, i32) = (0x6935_6800, 1);
 
-pub(crate) const FRAMEWORK_TABLES: &[&str] = &["i5h_idempotency"];
+pub(crate) const FRAMEWORK_TABLES: &[&str] = &["i5h_idempotency", "i5h_outbox"];
 
 const FRAMEWORK_DDL: &str = "CREATE TABLE IF NOT EXISTS i5h_idempotency (
   tenant_id BIGINT NOT NULL,
@@ -276,12 +278,23 @@ impl<K: Kernel, S: Store<K>> Engine<K, S> {
 
     /// Idempotent. Concurrent callers serialize on an advisory lock, since
     /// `CREATE TABLE IF NOT EXISTS` itself races on a fresh database.
+    /// A dispatcher for effects queued with [`outbox::enqueue`], sharing this engine's pool.
+    pub fn dispatcher<E: Send + Sync, D: outbox::Deliver<E>>(
+        &self,
+        registry: std::collections::HashMap<u64, E>,
+        deliver: D,
+        config: outbox::DispatchConfig,
+    ) -> outbox::Dispatcher<E, D> {
+        outbox::Dispatcher::new(self.pool.clone(), registry, deliver, config)
+    }
+
     pub async fn install_schema(&self) -> Result<(), DbError> {
         let mut client = self.pool.0.get().await.map_err(|e| DbError::Pool(e.to_string()))?;
         let tx = client.transaction().await?;
         // Two-int form: a separate key space from the per-tenant bigint locks.
         tx.execute("SELECT pg_advisory_xact_lock($1, $2)", &[&SCHEMA_LOCK.0, &SCHEMA_LOCK.1]).await?;
         tx.batch_execute(FRAMEWORK_DDL).await?;
+        tx.batch_execute(outbox::OUTBOX_DDL).await?;
         if self.trace.is_some() {
             tx.batch_execute(TRACE_DDL).await?;
         }

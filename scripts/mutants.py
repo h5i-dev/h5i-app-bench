@@ -71,6 +71,14 @@ MUTANTS = {
          "fn find_document_or_missing(docs: &Vec<Document>, id: u64) -> Result<Document, Error> {\n"
          "    match find_document(docs, id) {\n        Some(d) => Ok(d),\n        None => Err(Error::NotFound),\n    }\n}\n\nfn one(w: Write)"),
     ],
+    "webhook_without_manage": [
+        ("Command::SetWebhook { project, dest } => {\n            if !can(snap, user, *project, Action::Manage) {",
+         "Command::SetWebhook { project, dest } => {\n            if false {"),
+    ],
+    "effect_to_fixed_destination": [
+        ("Some(dest) => Some(Effect {\n                    dest,",
+         "Some(dest) => Some(Effect {\n                    dest: 0,"),
+    ],
     "manage_any_project": [
         ("            role,\n        } => {\n            if !can(snap, user, *project, Action::Manage) {",
          "            role,\n        } => {\n            if false {"),

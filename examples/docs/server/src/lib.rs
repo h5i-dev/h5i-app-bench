@@ -60,6 +60,18 @@ table!(DocsApp, k::Document => "documents" {
     key: [id],
     cols: [project, author, title, body, status, approver, version],
 });
+table!(DocsApp, k::Webhook => "webhooks" { key: [project], cols: [dest] });
+
+/// Outbox payload for a publish notification: ids only, no document content.
+pub fn effect_payload(e: &k::Effect) -> Vec<u8> {
+    Out::Obj(vec![
+        (b"event".to_vec(), Out::Str(b"published".to_vec())),
+        (b"project".to_vec(), Out::Num(e.project)),
+        (b"doc".to_vec(), Out::Num(e.doc)),
+        (b"version".to_vec(), Out::Num(e.version)),
+    ])
+    .to_bytes()
+}
 
 pub struct DocsStore;
 
@@ -70,6 +82,7 @@ impl Store<DocsApp> for DocsStore {
             ddl::<DocsApp, k::Project>(),
             ddl::<DocsApp, k::Member>(),
             ddl::<DocsApp, k::Document>(),
+            ddl::<DocsApp, k::Webhook>(),
         ]
     }
 
@@ -79,6 +92,7 @@ impl Store<DocsApp> for DocsStore {
             <k::Project as Table<DocsApp>>::NAME,
             <k::Member as Table<DocsApp>>::NAME,
             <k::Document as Table<DocsApp>>::NAME,
+            <k::Webhook as Table<DocsApp>>::NAME,
         ]
     }
 
@@ -89,6 +103,7 @@ impl Store<DocsApp> for DocsStore {
             projects: load::<DocsApp, _>(tx, t).await?,
             members: load::<DocsApp, _>(tx, t).await?,
             documents: load::<DocsApp, _>(tx, t).await?,
+            webhooks: load::<DocsApp, _>(tx, t).await?,
         })
     }
 
@@ -103,6 +118,9 @@ impl Store<DocsApp> for DocsStore {
                 k::Write::PutDocument(d) => upsert::<DocsApp, _>(tx, t, d).await?,
                 k::Write::DelDocument(id) => delete::<DocsApp, k::Document>(tx, t, &[key::<DocsApp, _>(id)?]).await?,
                 k::Write::SetCounter(c) => upsert::<DocsApp, _>(tx, t, c).await?,
+                k::Write::PutWebhook(w) => upsert::<DocsApp, _>(tx, t, w).await?,
+                k::Write::DelWebhook(p) => delete::<DocsApp, k::Webhook>(tx, t, &[key::<DocsApp, _>(p)?]).await?,
+                k::Write::Emit(e) => i5h_pg::outbox::enqueue(tx, t, e.dest, &effect_payload(e)).await?,
             }
         }
         Ok(())
@@ -153,6 +171,7 @@ pub enum CommandJson {
     DeleteDocument { doc: u64 },
     GetDocument { doc: u64 },
     ListDocuments { project: u64 },
+    SetWebhook { project: u64, dest: Option<u64> },
 }
 
 impl From<CommandJson> for k::Command {
@@ -171,6 +190,7 @@ impl From<CommandJson> for k::Command {
             J::DeleteDocument { doc } => k::Command::DeleteDocument { doc },
             J::GetDocument { doc } => k::Command::GetDocument { doc },
             J::ListDocuments { project } => k::Command::ListDocuments { project },
+            J::SetWebhook { project, dest } => k::Command::SetWebhook { project, dest },
         }
     }
 }

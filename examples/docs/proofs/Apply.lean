@@ -7,7 +7,7 @@ namespace docs_kernel.ApplyLemmas
 
 /-- No vector can overflow: each write adds at most one row. -/
 def Room (s : Snapshot) (n : Nat) : Prop :=
-  s.projects.length + s.members.length + s.documents.length + n < Usize.max
+  s.projects.length + s.members.length + s.documents.length + s.webhooks.length + n < Usize.max
 
 theorem u8vec_clone (v : alloc.vec.Vec U8) : alloc.vec.CloneVec.clone core.clone.CloneU8 v = ok v :=
   vec_clone_eq _ v (fun _ => rfl)
@@ -24,15 +24,20 @@ theorem document_clone (d : Document) : Document.Insts.CoreCloneClone.clone d = 
 theorem counter_clone (c : Counter) : Counter.Insts.CoreCloneClone.clone c = ok c := by
   simp [Counter.Insts.CoreCloneClone.clone, lift]
 
+theorem webhook_clone (w : Webhook) : Webhook.Insts.CoreCloneClone.clone w = ok w := rfl
+
+theorem effect_clone (e : Effect) : Effect.Insts.CoreCloneClone.clone e = ok e := rfl
+
 theorem write_clone (w : Write) : Write.Insts.CoreCloneClone.clone w = ok w := by
   cases w <;> simp [Write.Insts.CoreCloneClone.clone, project_clone, member_clone,
-    document_clone, counter_clone, lift]
+    document_clone, counter_clone, webhook_clone, effect_clone, lift]
 
 theorem snapshot_clone (s : Snapshot) : Snapshot.Insts.CoreCloneClone.clone s = ok s := by
   simp [Snapshot.Insts.CoreCloneClone.clone, counter_clone,
     vec_clone_eq Project.Insts.CoreCloneClone s.projects project_clone,
     vec_clone_eq Member.Insts.CoreCloneClone s.members member_clone,
-    vec_clone_eq Document.Insts.CoreCloneClone s.documents document_clone]
+    vec_clone_eq Document.Insts.CoreCloneClone s.documents document_clone,
+    vec_clone_eq Webhook.Insts.CoreCloneClone s.webhooks webhook_clone]
 
 @[step]
 theorem member_clone_spec (m : Member) : Member.Insts.CoreCloneClone.clone m ⦃ m' => m' = m ⦄ := by
@@ -106,8 +111,34 @@ theorem del_document_loop_spec (v : alloc.vec.Vec Document) (id : U64) (out : al
   · intro r hr; rw [hr, foldl_filter, hout, filter_split]
   · intro o j hj ho; have := v.len_ineq; unfold del_document_loop.body; i5h_step
 
+@[step]
+theorem put_webhook_loop_spec (v : alloc.vec.Vec Webhook) (w : Webhook) (i : Usize)
+    (hi : i.val ≤ v.length) (hroom : v.length < Usize.max)
+    (hpre : upsert (fun h => (h.project.val, 0)) w v.val =
+      v.val.take i.val ++ upsert (fun h => (h.project.val, 0)) w (v.val.drop i.val)) :
+    put_webhook_loop v w i ⦃ v' => v'.val = upsert (fun h => (h.project.val, 0)) w v.val ⦄ := by
+  unfold put_webhook_loop
+  apply WP.spec_mono (loop_search v.val (fun h => decide ((h.project.val, 0) = (w.project.val, 0)))
+    (fun x : alloc.vec.Vec Webhook => x.val) (fun j _ => v.val.set j w) (v.val ++ [w]) _ ?_ i hi)
+  · intro r hr; rw [hr]; exact upsert_loop_result (fun h : Webhook => (h.project.val, 0)) w _ _ hi hpre
+  · intro j hj; unfold put_webhook_loop.body; i5h_step
+
+@[step]
+theorem del_webhook_loop_spec (v : alloc.vec.Vec Webhook) (p : U64) (out : alloc.vec.Vec Webhook)
+    (i : Usize) (hi : i.val ≤ v.length)
+    (hout : out.val = (v.val.take i.val).filter (fun h => h.project ≠ p)) :
+    del_webhook_loop v p out i ⦃ v' => v'.val = v.val.filter (fun h => h.project ≠ p) ⦄ := by
+  unfold del_webhook_loop
+  apply WP.spec_mono (loop_fold v.val (fun x : alloc.vec.Vec Webhook => x.val)
+    (fun acc h => if decide (h.project ≠ p) then acc ++ [h] else acc)
+    (fun x k => x.length ≤ k) (fun x => del_webhook_loop.body v p x.1 x.2) ?_ out i hi
+    (by rw [alloc.vec.Vec.length, hout]; exact (List.length_filter_le _ _).trans (List.length_take_le _ _)))
+  · intro r hr; rw [hr, foldl_filter, hout, filter_split]
+  · intro o j hj ho; have := v.len_ineq; unfold del_webhook_loop.body; i5h_step
+
 /-- Total rows in a snapshot. -/
-def total (s : Snapshot) : Nat := s.projects.length + s.members.length + s.documents.length
+def total (s : Snapshot) : Nat :=
+  s.projects.length + s.members.length + s.documents.length + s.webhooks.length
 
 @[step]
 theorem apply_write_spec (s : Snapshot) (w : Write) (h : total s < Usize.max) :
@@ -123,6 +154,7 @@ theorem apply_write_spec (s : Snapshot) (w : Write) (h : total s < Usize.max) :
         | (have := upsert_length (fun q : Project => (q.id.val, 0)) ‹_› s.projects.val; omega)
         | (have := upsert_length (fun n : Member => (n.project.val, n.user.val)) ‹_› s.members.val; omega)
         | (have := upsert_length (fun e : Document => (e.id.val, 0)) ‹_› s.documents.val; omega)
+        | (have := upsert_length (fun h : Webhook => (h.project.val, 0)) ‹_› s.webhooks.val; omega)
         | grind [List.length_filter_le]
     | simp
 

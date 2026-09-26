@@ -26,6 +26,7 @@ pub fn normalize(mut s: k::Snapshot) -> k::Snapshot {
     s.projects.sort_by_key(|p| p.id);
     s.members.sort_by_key(|m| (m.project, m.user));
     s.documents.sort_by_key(|d| d.id);
+    s.webhooks.sort_by_key(|w| w.project);
     s
 }
 
@@ -42,7 +43,7 @@ pub fn random_command(r: &mut Rng) -> k::Command {
     let id = |r: &mut Rng| r.next(8);
     let text = |r: &mut Rng| format!("t{}", r.next(100)).into_bytes();
     let role = |r: &mut Rng| [k::Role::Viewer, k::Role::Editor, k::Role::Owner][r.next(3) as usize];
-    match r.next(11) {
+    match r.next(12) {
         0 => k::Command::CreateProject { name: text(r) },
         1 => k::Command::SetMember { project: id(r), user: 1 + r.next(4), role: role(r) },
         2 => k::Command::RemoveMember { project: id(r), user: 1 + r.next(4) },
@@ -53,6 +54,7 @@ pub fn random_command(r: &mut Rng) -> k::Command {
         7 => k::Command::Publish { doc: id(r) },
         8 => k::Command::DeleteDocument { doc: id(r) },
         9 => k::Command::GetDocument { doc: id(r) },
-        _ => k::Command::ListDocuments { project: id(r) },
+        10 => k::Command::ListDocuments { project: id(r) },
+        _ => k::Command::SetWebhook { project: id(r), dest: if r.next(3) == 0 { None } else { Some(r.next(3)) } },
     }
 }

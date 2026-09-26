@@ -31,6 +31,8 @@ review workflow), for every actor, state and command:
   references, unique keys, approver rules);
 - noninterference: a user's result, including error codes, depends only on
   what that user may see;
+- effects (webhooks) go only to the destination the project registered,
+  and only when a writer publishes an approved document;
 - the kernel never panics.
 
 The shell is proven where it can be: the SQL statement planner

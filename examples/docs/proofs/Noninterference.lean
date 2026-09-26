@@ -53,6 +53,15 @@ theorem docs_view (ms : List Member) (ds : List Document) (u p : Nat)
   intro d _
   by_cases hp : d.project.val = p <;> simp [hp, h]
 
+theorem webhookOf_view (ms : List Member) (hs : List Webhook) (u p : Nat)
+    (h : (roleOf ms p u).isSome = true) :
+    webhookOf (hs.filter (fun w => (roleOf ms w.project.val u).isSome)) p = webhookOf hs p := by
+  unfold webhookOf
+  rw [find?_filter_of_imp]
+  intro w _ hw
+  simp only [decide_eq_true_eq] at hw
+  rw [hw]; exact h
+
 theorem allowed_read (s : St) (u p : Nat) :
     allowed s u p .Read = (roleOf s.members p u).isSome := by
   unfold allowed
@@ -140,7 +149,9 @@ theorem view_parts :
     s₁.members.val.filter (fun m => (roleOf s₁.members.val m.project.val a.user.val).isSome) =
       s₂.members.val.filter (fun m => (roleOf s₂.members.val m.project.val a.user.val).isSome) ∧
     s₁.documents.val.filter (fun d => (roleOf s₁.members.val d.project.val a.user.val).isSome) =
-      s₂.documents.val.filter (fun d => (roleOf s₂.members.val d.project.val a.user.val).isSome) := by
+      s₂.documents.val.filter (fun d => (roleOf s₂.members.val d.project.val a.user.val).isSome) ∧
+    s₁.webhooks.val.filter (fun w => (roleOf s₁.members.val w.project.val a.user.val).isSome) =
+      s₂.webhooks.val.filter (fun w => (roleOf s₂.members.val w.project.val a.user.val).isSome) := by
   simpa [view, Snapshot.toSt] using hv
 
 theorem role_same (p : Nat) :
@@ -176,15 +187,28 @@ theorem readable_same :
     (Snapshot.toSt s₁).docs.filter (fun d => allowed (Snapshot.toSt s₁) a.user.val d.project.val .Read) =
       (Snapshot.toSt s₂).docs.filter (fun d => allowed (Snapshot.toSt s₂) a.user.val d.project.val .Read) := by
   simp only [allowed_read]
-  exact (view_parts a s₁ s₂ hv).2.2
+  exact (view_parts a s₁ s₂ hv).2.2.1
 
 theorem docs_same (p : Nat) (h : (roleOf s₂.members.val p a.user.val).isSome = true) :
     s₁.documents.val.filter (fun d => d.project.val = p) =
       s₂.documents.val.filter (fun d => d.project.val = p) := by
-  have hd := (view_parts a s₁ s₂ hv).2.2
+  have hd := (view_parts a s₁ s₂ hv).2.2.1
   have h' : (roleOf s₁.members.val p a.user.val).isSome = true := by
     rw [role_same a s₁ s₂ hv]; exact h
   rw [← docs_view _ _ _ p h', hd, docs_view _ _ _ p h]
+
+theorem webhook_of_same (p : U64) (h : (roleOf s₂.members.val p.val a.user.val).isSome = true) :
+    webhook_of s₁.webhooks p = webhook_of s₂.webhooks p := by
+  have hw := (view_parts a s₁ s₂ hv).2.2.2
+  have h' : (roleOf s₁.members.val p.val a.user.val).isSome = true := by
+    rw [role_same a s₁ s₂ hv]; exact h
+  have hsame : webhookOf s₁.webhooks.val p.val = webhookOf s₂.webhooks.val p.val := by
+    rw [← webhookOf_view _ _ _ _ h', hw, webhookOf_view _ _ _ _ h]
+  obtain ⟨r₁, e₁, hr₁⟩ := (WP.spec_equiv_exists _ _).1 (Lemmas.webhook_of_spec s₁.webhooks p)
+  obtain ⟨r₂, e₂, hr₂⟩ := (WP.spec_equiv_exists _ _).1 (Lemmas.webhook_of_spec s₂.webhooks p)
+  rw [e₁, e₂]
+  congr 1
+  exact Option.map_injective (fun x y hxy => UScalar.eq_of_val_eq hxy) (hr₁.trans (hsame.trans hr₂.symm))
 
 include h₁ h₂ in
 theorem authorized_doc_same (id : U64) (act : Action) :
@@ -244,9 +268,23 @@ theorem noninterference (a : Principal) (s₁ s₂ : Snapshot) (c : Command)
   | EditDocument d bo v => simp only [transition, hdoc]
   | Submit d => simp only [transition, hdoc]
   | Approve d => simp only [transition, hdoc]
-  | Publish d => simp only [transition, hdoc]
+  | Publish d =>
+    simp only [transition]
+    rw [hdoc d .Write, authorized_doc_ok]
+    cases hd : authDoc (Snapshot.toSt s₂) a.user.val d.val .Write with
+    | Err e => simp only [bind_ok]
+    | Ok v =>
+      -- The writer can read the project, so its webhook is in the user's view.
+      have hs := isSome_of_allowed (authDoc_ok hd).2.2
+      simp only [bind_ok, with_status]
+      split_ifs
+      · simp only [bind_ok]
+      · simp only [bind_ok, bind_assoc_eq, Std.bind_assoc]
+        rw [webhook_of_same a s₁ s₂ hv v.project hs]
   | DeleteDocument d => simp only [transition, hdoc]
   | GetDocument d => simp only [transition, hdoc]
+  | SetWebhook p w =>
+    simp only [transition, can_ok, allowed_same a s₁ s₂ hv]
   | ListDocuments p =>
     simp only [transition, can_ok, allowed_same a s₁ s₂ hv]
     by_cases hc : allowed (Snapshot.toSt s₂) a.user.val p.val .Read = true

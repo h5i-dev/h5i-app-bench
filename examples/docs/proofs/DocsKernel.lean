@@ -184,14 +184,35 @@ def Counter.Insts.CoreCloneClone.clone (self : Counter) : Result Counter := do
   let i ← lift (core.clone.impls.CloneU64.clone self.next_id)
   ok { next_id := i }
 
+/-- [docs_kernel::Webhook]
+    Source: 'examples/docs/kernel/src/lib.rs', lines 97:0-100:1
+    Visibility: public -/
+structure Webhook where
+  project : Std.U64
+  dest : Std.U64
+
+/-- [docs_kernel::{impl core::clone::Clone for docs_kernel::Webhook}::clone]:
+    Source: 'examples/docs/kernel/src/lib.rs', lines 96:9-96:14
+    Visibility: public -/
+def Webhook.Insts.CoreCloneClone.clone (self : Webhook) : Result Webhook := do
+  ok self
+
+/-- Trait implementation: [docs_kernel::{impl core::clone::Clone for docs_kernel::Webhook}]
+    Source: 'examples/docs/kernel/src/lib.rs', lines 96:9-96:14 -/
+@[reducible]
+def Webhook.Insts.CoreCloneClone : core.clone.Clone Webhook := {
+  clone := Webhook.Insts.CoreCloneClone.clone
+}
+
 /-- [docs_kernel::Snapshot]
-    Source: 'examples/docs/kernel/src/lib.rs', lines 85:0-90:1
+    Source: 'examples/docs/kernel/src/lib.rs', lines 85:0-91:1
     Visibility: public -/
 structure Snapshot where
   counter : Counter
   projects : alloc.vec.Vec Project
   members : alloc.vec.Vec Member
   documents : alloc.vec.Vec Document
+  webhooks : alloc.vec.Vec Webhook
 
 /-- [docs_kernel::{impl core::clone::Clone for docs_kernel::Snapshot}::clone]:
     Source: 'examples/docs/kernel/src/lib.rs', lines 84:9-84:14
@@ -203,10 +224,34 @@ def Snapshot.Insts.CoreCloneClone.clone
   let v1 ← alloc.vec.CloneVec.clone Member.Insts.CoreCloneClone self.members
   let v2 ←
     alloc.vec.CloneVec.clone Document.Insts.CoreCloneClone self.documents
-  ok { counter := c, projects := v, members := v1, documents := v2 }
+  let v3 ←
+    alloc.vec.CloneVec.clone Webhook.Insts.CoreCloneClone self.webhooks
+  ok
+    {
+      counter := c,
+      projects := v,
+      members := v1,
+      documents := v2,
+      webhooks := v3
+    }
+
+/-- [docs_kernel::Effect]
+    Source: 'examples/docs/kernel/src/lib.rs', lines 104:0-109:1
+    Visibility: public -/
+structure Effect where
+  dest : Std.U64
+  project : Std.U64
+  doc : Std.U64
+  version : Std.U64
+
+/-- [docs_kernel::{impl core::clone::Clone for docs_kernel::Effect}::clone]:
+    Source: 'examples/docs/kernel/src/lib.rs', lines 103:9-103:14
+    Visibility: public -/
+def Effect.Insts.CoreCloneClone.clone (self : Effect) : Result Effect := do
+  ok self
 
 /-- [docs_kernel::Write]
-    Source: 'examples/docs/kernel/src/lib.rs', lines 93:0-100:1
+    Source: 'examples/docs/kernel/src/lib.rs', lines 112:0-122:1
     Visibility: public -/
 @[discriminant isize]
 inductive Write where
@@ -216,9 +261,12 @@ inductive Write where
 | PutDocument : Document → Write
 | DelDocument : Std.U64 → Write
 | SetCounter : Counter → Write
+| PutWebhook : Webhook → Write
+| DelWebhook : Std.U64 → Write
+| Emit : Effect → Write
 
 /-- [docs_kernel::{impl core::clone::Clone for docs_kernel::Write}::clone]:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 92:9-92:14
+    Source: 'examples/docs/kernel/src/lib.rs', lines 111:9-111:14
     Visibility: public -/
 def Write.Insts.CoreCloneClone.clone (self : Write) : Result Write := do
   match self with
@@ -241,9 +289,18 @@ def Write.Insts.CoreCloneClone.clone (self : Write) : Result Write := do
   | Write.SetCounter __self_0 =>
     let c ← Counter.Insts.CoreCloneClone.clone __self_0
     ok (Write.SetCounter c)
+  | Write.PutWebhook __self_0 =>
+    let w ← Webhook.Insts.CoreCloneClone.clone __self_0
+    ok (Write.PutWebhook w)
+  | Write.DelWebhook __self_0 =>
+    let i ← lift (core.clone.impls.CloneU64.clone __self_0)
+    ok (Write.DelWebhook i)
+  | Write.Emit __self_0 =>
+    let e ← Effect.Insts.CoreCloneClone.clone __self_0
+    ok (Write.Emit e)
 
 /-- [docs_kernel::Command]
-    Source: 'examples/docs/kernel/src/lib.rs', lines 103:0-144:1
+    Source: 'examples/docs/kernel/src/lib.rs', lines 125:0-171:1
     Visibility: public -/
 @[discriminant isize]
 inductive Command where
@@ -262,9 +319,10 @@ inductive Command where
 | DeleteDocument : Std.U64 → Command
 | GetDocument : Std.U64 → Command
 | ListDocuments : Std.U64 → Command
+| SetWebhook : Std.U64 → Option Std.U64 → Command
 
 /-- [docs_kernel::Reply]
-    Source: 'examples/docs/kernel/src/lib.rs', lines 147:0-153:1
+    Source: 'examples/docs/kernel/src/lib.rs', lines 174:0-180:1
     Visibility: public -/
 @[discriminant isize]
 inductive Reply where
@@ -275,7 +333,7 @@ inductive Reply where
 | Docs : alloc.vec.Vec Document → Reply
 
 /-- [docs_kernel::Error]
-    Source: 'examples/docs/kernel/src/lib.rs', lines 156:0-164:1
+    Source: 'examples/docs/kernel/src/lib.rs', lines 183:0-191:1
     Visibility: public -/
 @[discriminant isize]
 inductive Error where
@@ -288,7 +346,7 @@ inductive Error where
 | Overflow : Error
 
 /-- [docs_kernel::allows]:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 167:0-181:1
+    Source: 'examples/docs/kernel/src/lib.rs', lines 194:0-208:1
     Visibility: public -/
 def allows (role : Role) (action : Action) : Result Bool := do
   match role with
@@ -307,7 +365,7 @@ def allows (role : Role) (action : Action) : Result Bool := do
   | Role.Owner => ok true
 
 /-- [docs_kernel::role_of]: loop body 0:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 1:0-192:1
+    Source: 'examples/docs/kernel/src/lib.rs', lines 1:0-219:1
     Visibility: public -/
 @[rust_loop_body]
 def role_of_loop.body
@@ -332,7 +390,7 @@ def role_of_loop.body
   else ok (done none)
 
 /-- [docs_kernel::role_of]: loop 0:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 1:0-192:1
+    Source: 'examples/docs/kernel/src/lib.rs', lines 1:0-219:1
     Visibility: public -/
 @[rust_loop]
 def role_of_loop
@@ -345,7 +403,7 @@ def role_of_loop
     i
 
 /-- [docs_kernel::role_of]:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 183:0-192:1
+    Source: 'examples/docs/kernel/src/lib.rs', lines 210:0-219:1
     Visibility: public -/
 @[reducible]
 def role_of
@@ -355,7 +413,7 @@ def role_of
   role_of_loop members project user 0#usize
 
 /-- [docs_kernel::can]:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 195:0-200:1
+    Source: 'examples/docs/kernel/src/lib.rs', lines 222:0-227:1
     Visibility: public -/
 def can
   (snap : Snapshot) (user : Std.U64) (project : Std.U64) (action : Action) :
@@ -367,7 +425,7 @@ def can
   | some role => allows role action
 
 /-- [docs_kernel::find_document]: loop body 0:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 215:4-222:1
+    Source: 'examples/docs/kernel/src/lib.rs', lines 242:4-249:1
     Visibility: public -/
 @[rust_loop_body]
 def find_document_loop.body
@@ -388,7 +446,7 @@ def find_document_loop.body
   else ok (done none)
 
 /-- [docs_kernel::find_document]: loop 0:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 215:4-222:1
+    Source: 'examples/docs/kernel/src/lib.rs', lines 242:4-249:1
     Visibility: public -/
 @[rust_loop]
 def find_document_loop
@@ -400,7 +458,7 @@ def find_document_loop
     i
 
 /-- [docs_kernel::find_document]:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 213:0-222:1
+    Source: 'examples/docs/kernel/src/lib.rs', lines 240:0-249:1
     Visibility: public -/
 @[reducible]
 def find_document
@@ -410,7 +468,7 @@ def find_document
   find_document_loop docs id 0#usize
 
 /-- [docs_kernel::count_owners]: loop body 0:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 0:0-232:5
+    Source: 'examples/docs/kernel/src/lib.rs', lines 0:0-259:5
     Visibility: public -/
 @[rust_loop_body]
 def count_owners_loop.body
@@ -438,7 +496,7 @@ def count_owners_loop.body
   else ok (done n)
 
 /-- [docs_kernel::count_owners]: loop 0:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 0:0-232:5
+    Source: 'examples/docs/kernel/src/lib.rs', lines 0:0-259:5
     Visibility: public -/
 @[rust_loop]
 def count_owners_loop
@@ -451,7 +509,7 @@ def count_owners_loop
     (n, i)
 
 /-- [docs_kernel::count_owners]:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 224:0-234:1
+    Source: 'examples/docs/kernel/src/lib.rs', lines 251:0-261:1
     Visibility: public -/
 @[reducible]
 def count_owners
@@ -459,7 +517,7 @@ def count_owners
   count_owners_loop members project 0#u64 0#usize
 
 /-- [docs_kernel::documents_in]: loop body 0:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 239:4-244:5
+    Source: 'examples/docs/kernel/src/lib.rs', lines 266:4-271:5
     Visibility: public -/
 @[rust_loop_body]
 def documents_in_loop.body
@@ -486,7 +544,7 @@ def documents_in_loop.body
   else ok (done out)
 
 /-- [docs_kernel::documents_in]: loop 0:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 239:4-244:5
+    Source: 'examples/docs/kernel/src/lib.rs', lines 266:4-271:5
     Visibility: public -/
 @[rust_loop]
 def documents_in_loop
@@ -499,7 +557,7 @@ def documents_in_loop
     (out, i)
 
 /-- [docs_kernel::documents_in]:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 236:0-246:1
+    Source: 'examples/docs/kernel/src/lib.rs', lines 263:0-273:1
     Visibility: public -/
 @[reducible]
 def documents_in
@@ -508,8 +566,50 @@ def documents_in
   := do
   documents_in_loop docs project (alloc.vec.Vec.new Document) 0#usize
 
+/-- [docs_kernel::webhook_of]: loop body 0:
+    Source: 'examples/docs/kernel/src/lib.rs', lines 277:4-284:1
+    Visibility: public -/
+@[rust_loop_body]
+def webhook_of_loop.body
+  (hooks : alloc.vec.Vec Webhook) (project : Std.U64) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize (Option Std.U64))
+  := do
+  let i1 := alloc.vec.Vec.len hooks
+  if i < i1
+  then
+    let w ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Webhook) hooks
+        i
+    if w.project = project
+    then ok (done (some w.dest))
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else ok (done none)
+
+/-- [docs_kernel::webhook_of]: loop 0:
+    Source: 'examples/docs/kernel/src/lib.rs', lines 277:4-284:1
+    Visibility: public -/
+@[rust_loop]
+def webhook_of_loop
+  (hooks : alloc.vec.Vec Webhook) (project : Std.U64) (i : Std.Usize) :
+  Result (Option Std.U64)
+  := do
+  loop
+    (fun i1 => webhook_of_loop.body hooks project i1)
+    i
+
+/-- [docs_kernel::webhook_of]:
+    Source: 'examples/docs/kernel/src/lib.rs', lines 275:0-284:1
+    Visibility: public -/
+@[reducible]
+def webhook_of
+  (hooks : alloc.vec.Vec Webhook) (project : Std.U64) :
+  Result (Option Std.U64)
+  := do
+  webhook_of_loop hooks project 0#usize
+
 /-- [docs_kernel::fresh_id]:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 248:0-254:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 286:0-292:1 -/
 def fresh_id
   (snap : Snapshot) :
   Result (core.result.Result (Std.U64 × Counter) Error)
@@ -521,7 +621,7 @@ def fresh_id
     ok (core.result.Result.Ok (snap.counter.next_id, { next_id := i }))
 
 /-- [docs_kernel::authorized_doc]:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 258:0-271:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 296:0-309:1 -/
 def authorized_doc
   (snap : Snapshot) (user : Std.U64) (doc : Std.U64) (action : Action) :
   Result (core.result.Result Document Error)
@@ -540,12 +640,12 @@ def authorized_doc
     else ok (core.result.Result.Err Error.NotFound)
 
 /-- [docs_kernel::one]:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 273:0-277:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 311:0-315:1 -/
 def one (w : Write) : Result (alloc.vec.Vec Write) := do
   alloc.vec.Vec.push (alloc.vec.Vec.new Write) w
 
 /-- [docs_kernel::with_status]:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 279:0-293:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 317:0-331:1 -/
 def with_status
   (d : Document) (status : Status) (approver : Option Std.U64) :
   Result (core.result.Result Document Error)
@@ -557,7 +657,7 @@ def with_status
     ok (core.result.Result.Ok { d with status, approver, version := i })
 
 /-- [docs_kernel::transition]:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 295:0-483:1
+    Source: 'examples/docs/kernel/src/lib.rs', lines 333:0-548:1
     Visibility: public -/
 def transition
   (actor : Principal) (snap : Snapshot) (cmd : Command) :
@@ -729,8 +829,24 @@ def transition
         let r1 ← with_status v Status.Published v.approver
         match r1 with
         | core.result.Result.Ok v1 =>
-          let v2 ← one (Write.PutDocument v1)
-          ok (core.result.Result.Ok (v2, Reply.Version v1.version))
+          let o ← webhook_of snap.webhooks v1.project
+          let effect ←
+            match o with
+            | none => ok none
+            | some dest =>
+              ok (some
+                ({
+                   dest,
+                   project := v1.project,
+                   doc := v1.id,
+                   version := v1.version
+                 } : Effect))
+          let ws ← one (Write.PutDocument v1)
+          match effect with
+          | none => ok (core.result.Result.Ok (ws, Reply.Version v1.version))
+          | some eff =>
+            let ws1 ← alloc.vec.Vec.push ws (Write.Emit eff)
+            ok (core.result.Result.Ok (ws1, Reply.Version v1.version))
         | core.result.Result.Err e => ok (core.result.Result.Err e)
     | core.result.Result.Err e => ok (core.result.Result.Err e)
   | Command.DeleteDocument doc =>
@@ -753,9 +869,20 @@ def transition
       let v ← documents_in snap.documents project
       ok (core.result.Result.Ok (alloc.vec.Vec.new Write, Reply.Docs v))
     else ok (core.result.Result.Err Error.Forbidden)
+  | Command.SetWebhook project dest =>
+    let b ← can snap actor.user project Action.Manage
+    if b
+    then
+      let w ←
+        match dest with
+        | none => ok (Write.DelWebhook project)
+        | some d => ok (Write.PutWebhook { project, dest := d })
+      let v ← one w
+      ok (core.result.Result.Ok (v, Reply.Done))
+    else ok (core.result.Result.Err Error.Forbidden)
 
 /-- [docs_kernel::put_project]: loop body 0:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 487:4-495:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 552:4-560:1 -/
 @[rust_loop_body]
 def put_project_loop.body
   (v : alloc.vec.Vec Project) (p : Project) (i : Std.Usize) :
@@ -779,7 +906,7 @@ def put_project_loop.body
        ok (done v1)
 
 /-- [docs_kernel::put_project]: loop 0:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 487:4-495:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 552:4-560:1 -/
 @[rust_loop]
 def put_project_loop
   (v : alloc.vec.Vec Project) (p : Project) (i : Std.Usize) :
@@ -790,7 +917,7 @@ def put_project_loop
     i
 
 /-- [docs_kernel::put_project]:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 485:0-495:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 550:0-560:1 -/
 @[reducible]
 def put_project
   (v : alloc.vec.Vec Project) (p : Project) :
@@ -799,7 +926,7 @@ def put_project
   put_project_loop v p 0#usize
 
 /-- [docs_kernel::put_member]: loop body 0:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 1:0-507:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 1:0-572:1 -/
 @[rust_loop_body]
 def put_member_loop.body
   (v : alloc.vec.Vec Member) (m : Member) (i : Std.Usize) :
@@ -827,7 +954,7 @@ def put_member_loop.body
        ok (done v1)
 
 /-- [docs_kernel::put_member]: loop 0:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 1:0-507:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 1:0-572:1 -/
 @[rust_loop]
 def put_member_loop
   (v : alloc.vec.Vec Member) (m : Member) (i : Std.Usize) :
@@ -838,14 +965,14 @@ def put_member_loop
     i
 
 /-- [docs_kernel::put_member]:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 497:0-507:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 562:0-572:1 -/
 @[reducible]
 def put_member
   (v : alloc.vec.Vec Member) (m : Member) : Result (alloc.vec.Vec Member) := do
   put_member_loop v m 0#usize
 
 /-- [docs_kernel::put_document]: loop body 0:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 511:4-519:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 576:4-584:1 -/
 @[rust_loop_body]
 def put_document_loop.body
   (v : alloc.vec.Vec Document) (d : Document) (i : Std.Usize) :
@@ -869,7 +996,7 @@ def put_document_loop.body
        ok (done v1)
 
 /-- [docs_kernel::put_document]: loop 0:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 511:4-519:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 576:4-584:1 -/
 @[rust_loop]
 def put_document_loop
   (v : alloc.vec.Vec Document) (d : Document) (i : Std.Usize) :
@@ -880,7 +1007,7 @@ def put_document_loop
     i
 
 /-- [docs_kernel::put_document]:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 509:0-519:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 574:0-584:1 -/
 @[reducible]
 def put_document
   (v : alloc.vec.Vec Document) (d : Document) :
@@ -889,7 +1016,7 @@ def put_document
   put_document_loop v d 0#usize
 
 /-- [docs_kernel::del_member]: loop body 0:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 524:4-529:5 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 589:4-594:5 -/
 @[rust_loop_body]
 def del_member_loop.body
   (v : alloc.vec.Vec Member) (project : Std.U64) (user : Std.U64)
@@ -920,7 +1047,7 @@ def del_member_loop.body
   else ok (done out)
 
 /-- [docs_kernel::del_member]: loop 0:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 524:4-529:5 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 589:4-594:5 -/
 @[rust_loop]
 def del_member_loop
   (v : alloc.vec.Vec Member) (project : Std.U64) (user : Std.U64)
@@ -932,7 +1059,7 @@ def del_member_loop
     (out, i)
 
 /-- [docs_kernel::del_member]:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 521:0-531:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 586:0-596:1 -/
 @[reducible]
 def del_member
   (v : alloc.vec.Vec Member) (project : Std.U64) (user : Std.U64) :
@@ -941,7 +1068,7 @@ def del_member
   del_member_loop v project user (alloc.vec.Vec.new Member) 0#usize
 
 /-- [docs_kernel::del_document]: loop body 0:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 536:4-541:5 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 601:4-606:5 -/
 @[rust_loop_body]
 def del_document_loop.body
   (v : alloc.vec.Vec Document) (id : Std.U64) (out : alloc.vec.Vec Document)
@@ -966,7 +1093,7 @@ def del_document_loop.body
   else ok (done out)
 
 /-- [docs_kernel::del_document]: loop 0:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 536:4-541:5 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 601:4-606:5 -/
 @[rust_loop]
 def del_document_loop
   (v : alloc.vec.Vec Document) (id : Std.U64) (out : alloc.vec.Vec Document)
@@ -978,7 +1105,7 @@ def del_document_loop
     (out, i)
 
 /-- [docs_kernel::del_document]:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 533:0-543:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 598:0-608:1 -/
 @[reducible]
 def del_document
   (v : alloc.vec.Vec Document) (id : Std.U64) :
@@ -986,8 +1113,95 @@ def del_document
   := do
   del_document_loop v id (alloc.vec.Vec.new Document) 0#usize
 
+/-- [docs_kernel::put_webhook]: loop body 0:
+    Source: 'examples/docs/kernel/src/lib.rs', lines 612:4-620:1 -/
+@[rust_loop_body]
+def put_webhook_loop.body
+  (v : alloc.vec.Vec Webhook) (w : Webhook) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize (alloc.vec.Vec Webhook))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let w1 ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Webhook) v i
+    if w1.project = w.project
+    then
+      let (_, index_mut_back) ←
+        alloc.vec.Vec.index_mut (core.slice.index.SliceIndexUsizeSlice Webhook)
+          v i
+      let v1 := index_mut_back w
+      ok (done v1)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else let v1 ← alloc.vec.Vec.push v w
+       ok (done v1)
+
+/-- [docs_kernel::put_webhook]: loop 0:
+    Source: 'examples/docs/kernel/src/lib.rs', lines 612:4-620:1 -/
+@[rust_loop]
+def put_webhook_loop
+  (v : alloc.vec.Vec Webhook) (w : Webhook) (i : Std.Usize) :
+  Result (alloc.vec.Vec Webhook)
+  := do
+  loop
+    (fun i1 => put_webhook_loop.body v w i1)
+    i
+
+/-- [docs_kernel::put_webhook]:
+    Source: 'examples/docs/kernel/src/lib.rs', lines 610:0-620:1 -/
+@[reducible]
+def put_webhook
+  (v : alloc.vec.Vec Webhook) (w : Webhook) :
+  Result (alloc.vec.Vec Webhook)
+  := do
+  put_webhook_loop v w 0#usize
+
+/-- [docs_kernel::del_webhook]: loop body 0:
+    Source: 'examples/docs/kernel/src/lib.rs', lines 625:4-630:5 -/
+@[rust_loop_body]
+def del_webhook_loop.body
+  (v : alloc.vec.Vec Webhook) (project : Std.U64) (out : alloc.vec.Vec Webhook)
+  (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Webhook) × Std.Usize) (alloc.vec.Vec
+    Webhook))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let w ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Webhook) v i
+    let out1 ←
+      if w.project != project
+      then alloc.vec.Vec.push out w
+      else ok out
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
+  else ok (done out)
+
+/-- [docs_kernel::del_webhook]: loop 0:
+    Source: 'examples/docs/kernel/src/lib.rs', lines 625:4-630:5 -/
+@[rust_loop]
+def del_webhook_loop
+  (v : alloc.vec.Vec Webhook) (project : Std.U64) (out : alloc.vec.Vec Webhook)
+  (i : Std.Usize) :
+  Result (alloc.vec.Vec Webhook)
+  := do
+  loop
+    (fun (out1, i1) => del_webhook_loop.body v project out1 i1)
+    (out, i)
+
+/-- [docs_kernel::del_webhook]:
+    Source: 'examples/docs/kernel/src/lib.rs', lines 622:0-632:1 -/
+@[reducible]
+def del_webhook
+  (v : alloc.vec.Vec Webhook) (project : Std.U64) :
+  Result (alloc.vec.Vec Webhook)
+  := do
+  del_webhook_loop v project (alloc.vec.Vec.new Webhook) 0#usize
+
 /-- [docs_kernel::apply_write]:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 545:0-554:1
+    Source: 'examples/docs/kernel/src/lib.rs', lines 634:0-646:1
     Visibility: public -/
 def apply_write (s : Snapshot) (w : Write) : Result Snapshot := do
   match w with
@@ -1007,9 +1221,16 @@ def apply_write (s : Snapshot) (w : Write) : Result Snapshot := do
     let v ← del_document s.documents id
     ok { s with documents := v }
   | Write.SetCounter c => ok { s with counter := c }
+  | Write.PutWebhook w1 =>
+    let v ← put_webhook s.webhooks w1
+    ok { s with webhooks := v }
+  | Write.DelWebhook p =>
+    let v ← del_webhook s.webhooks p
+    ok { s with webhooks := v }
+  | Write.Emit _ => ok s
 
 /-- [docs_kernel::apply]: loop body 0:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 560:4-563:5
+    Source: 'examples/docs/kernel/src/lib.rs', lines 652:4-655:5
     Visibility: public -/
 @[rust_loop_body]
 def apply_loop.body
@@ -1028,7 +1249,7 @@ def apply_loop.body
   else ok (done s)
 
 /-- [docs_kernel::apply]: loop 0:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 560:4-563:5
+    Source: 'examples/docs/kernel/src/lib.rs', lines 652:4-655:5
     Visibility: public -/
 @[rust_loop]
 def apply_loop
@@ -1040,7 +1261,7 @@ def apply_loop
     (s, i)
 
 /-- [docs_kernel::apply]:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 557:0-565:1
+    Source: 'examples/docs/kernel/src/lib.rs', lines 649:0-657:1
     Visibility: public -/
 def apply (snap : Snapshot) (ws : alloc.vec.Vec Write) : Result Snapshot := do
   let s ← Snapshot.Insts.CoreCloneClone.clone snap

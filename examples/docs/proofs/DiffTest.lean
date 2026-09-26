@@ -50,9 +50,11 @@ def document : P Document := do
   pure { id := ← u64, project := ← u64, author := ← u64, title := ← vec u8, body := ← vec u8,
          status := ← status, approver := ← opt u64, version := ← u64 }
 
+def webhook : P Webhook := do pure { project := ← u64, dest := ← u64 }
+
 def snapshot : P Snapshot := do
   pure { counter := { next_id := ← u64 }, projects := ← vec project, members := ← vec member,
-         documents := ← vec document }
+         documents := ← vec document, webhooks := ← vec webhook }
 
 def command : P Command := do
   match (← nat) with
@@ -67,6 +69,7 @@ def command : P Command := do
   | 8 => return .DeleteDocument (← u64)
   | 9 => return .GetDocument (← u64)
   | 10 => return .ListDocuments (← u64)
+  | 11 => return .SetWebhook (← u64) (← opt u64)
   | _ => failure
 
 def case : P (Principal × Snapshot × Command) := do
@@ -93,9 +96,11 @@ def eDoc (d : Document) : List Nat :=
 
 def eList {α : Type} (f : α → List Nat) (l : List α) : List Nat := l.length :: (l.map f).flatten
 
+def eHook (w : Webhook) : List Nat := [w.project.val, w.dest.val]
+
 def eSnap (s : Snapshot) : List Nat :=
   s.counter.next_id.val :: eList eProject s.projects.val ++ eList eMember s.members.val ++
-  eList eDoc s.documents.val
+  eList eDoc s.documents.val ++ eList eHook s.webhooks.val
 
 def eWrite : Write → List Nat
   | .PutProject p => 0 :: eProject p
@@ -104,6 +109,9 @@ def eWrite : Write → List Nat
   | .PutDocument d => 3 :: eDoc d
   | .DelDocument i => [4, i.val]
   | .SetCounter c => [5, c.next_id.val]
+  | .PutWebhook w => 6 :: eHook w
+  | .DelWebhook p => [7, p.val]
+  | .Emit e => [8, e.dest.val, e.project.val, e.doc.val, e.version.val]
 
 def eReply : Reply → List Nat
   | .Created i => [0, i.val]

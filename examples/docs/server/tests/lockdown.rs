@@ -51,8 +51,21 @@ async fn only_engine_role_can_write() {
     // The engine role works end to end.
     let engine = Engine::<DocsApp, DocsStore>::new(pool(&with_db(&url, Some("i5h_engine"), db), 2).unwrap(), EngineConfig::default());
     let t = fresh_tenant();
-    let r = engine.execute(&principal(t, 1), &k::Command::CreateProject { name: b"p".to_vec() }).await.unwrap();
-    assert!(matches!(r, Ok(k::Reply::Created(_))));
+    let (a, b) = (principal(t, 1), principal(t, 2));
+    let run = |p: k::Principal, c: k::Command| {
+        let engine = &engine;
+        async move { engine.execute(&p, &c).await.unwrap().unwrap() }
+    };
+    let k::Reply::Created(p) = run(a, k::Command::CreateProject { name: b"p".to_vec() }).await else { panic!() };
+    // Publishing with a webhook also inserts into the outbox as the engine role.
+    run(a, k::Command::SetMember { project: p, user: 2, role: k::Role::Owner }).await;
+    run(a, k::Command::SetWebhook { project: p, dest: Some(1) }).await;
+    let k::Reply::Created(d) = run(a, k::Command::CreateDocument { project: p, title: vec![], body: vec![] }).await else {
+        panic!()
+    };
+    run(a, k::Command::Submit { doc: d }).await;
+    run(b, k::Command::Approve { doc: d }).await;
+    run(a, k::Command::Publish { doc: d }).await;
 
     // Any other role is refused, for writes and reads.
     let other = connect(&with_db(&url, Some("i5h_other"), db)).await;
@@ -61,6 +74,7 @@ async fn only_engine_role_can_write() {
         "UPDATE documents SET body = 'x'",
         "DELETE FROM members",
         "SELECT * FROM i5h_idempotency",
+        "SELECT * FROM i5h_outbox",
     ] {
         let err = other.batch_execute(sql).await.unwrap_err();
         assert_eq!(err.code(), Some(&SqlState::INSUFFICIENT_PRIVILEGE), "{sql}");
