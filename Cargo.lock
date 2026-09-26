@@ -33,6 +33,7 @@ name = "atuin-kernel"
 version = "0.1.0"
 dependencies = [
  "i5h-schema",
+ "i5h-sql",
 ]
 
 [[package]]
@@ -321,6 +322,7 @@ name = "docs-kernel"
 version = "0.1.0"
 dependencies = [
  "i5h-schema",
+ "i5h-sql",
 ]
 
 [[package]]

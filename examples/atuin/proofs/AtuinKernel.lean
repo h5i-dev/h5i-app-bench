@@ -28,7 +28,7 @@ inductive Principal where
 | User : Std.U64 → Principal
 
 /-- [atuin_kernel::User]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 37:12-40:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 39:12-42:13
     Visibility: public -/
 structure User where
   id : Std.U64
@@ -52,7 +52,7 @@ def User.Insts.CoreCloneClone : core.clone.Clone User := {
 }
 
 /-- [atuin_kernel::Session]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 37:12-40:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 39:12-42:13
     Visibility: public -/
 structure Session where
   user : Std.U64
@@ -74,7 +74,7 @@ def Session.Insts.CoreCloneClone : core.clone.Clone Session := {
 }
 
 /-- [atuin_kernel::Record]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 37:12-40:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 39:12-42:13
     Visibility: public -/
 structure Record where
   user : Std.U64
@@ -102,7 +102,7 @@ def Record.Insts.CoreCloneClone : core.clone.Clone Record := {
 }
 
 /-- [atuin_kernel::Settings]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 37:12-40:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 39:12-42:13
     Visibility: public -/
 structure Settings where
   open_registration : Bool
@@ -118,7 +118,7 @@ def Settings.Insts.CoreCloneClone.clone
   ok { open_registration := b, max_record_size := i }
 
 /-- [atuin_kernel::Counter]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 37:12-40:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 39:12-42:13
     Visibility: public -/
 structure Counter where
   next_id : Std.U64
@@ -485,7 +485,7 @@ def all_fit (max : Std.U64) (rs : alloc.vec.Vec NewRecord) : Result Bool := do
   all_fit_loop max rs 0#usize
 
 /-- [atuin_kernel::next_records]: loop body 0:
-    Source: 'examples/atuin/kernel/src/lib.rs', lines 1:0-244:5 -/
+    Source: 'examples/atuin/kernel/src/lib.rs', lines 1:0-232:5 -/
 @[rust_loop_body]
 def next_records_loop.body
   (rs : alloc.vec.Vec Record) (user : Std.U64) (host : Std.U64) (tag : Std.U64)
@@ -525,7 +525,7 @@ def next_records_loop.body
   else ok (done out)
 
 /-- [atuin_kernel::next_records]: loop 0:
-    Source: 'examples/atuin/kernel/src/lib.rs', lines 1:0-244:5 -/
+    Source: 'examples/atuin/kernel/src/lib.rs', lines 1:0-232:5 -/
 @[rust_loop]
 def next_records_loop
   (rs : alloc.vec.Vec Record) (user : Std.U64) (host : Std.U64) (tag : Std.U64)
@@ -539,7 +539,7 @@ def next_records_loop
     (out, i)
 
 /-- [atuin_kernel::next_records]:
-    Source: 'examples/atuin/kernel/src/lib.rs', lines 223:0-246:1 -/
+    Source: 'examples/atuin/kernel/src/lib.rs', lines 211:0-234:1 -/
 @[reducible]
 def next_records
   (rs : alloc.vec.Vec Record) (user : Std.U64) (host : Std.U64) (tag : Std.U64)
@@ -550,7 +550,7 @@ def next_records
     0#usize
 
 /-- [atuin_kernel::status_of]: loop body 0:
-    Source: 'examples/atuin/kernel/src/lib.rs', lines 251:4-256:5 -/
+    Source: 'examples/atuin/kernel/src/lib.rs', lines 239:4-244:5 -/
 @[rust_loop_body]
 def status_of_loop.body
   (rs : alloc.vec.Vec Record) (user : Std.U64)
@@ -572,7 +572,7 @@ def status_of_loop.body
   else ok (done out)
 
 /-- [atuin_kernel::status_of]: loop 0:
-    Source: 'examples/atuin/kernel/src/lib.rs', lines 251:4-256:5 -/
+    Source: 'examples/atuin/kernel/src/lib.rs', lines 239:4-244:5 -/
 @[rust_loop]
 def status_of_loop
   (rs : alloc.vec.Vec Record) (user : Std.U64)
@@ -584,7 +584,7 @@ def status_of_loop
     (out, i)
 
 /-- [atuin_kernel::status_of]:
-    Source: 'examples/atuin/kernel/src/lib.rs', lines 248:0-258:1 -/
+    Source: 'examples/atuin/kernel/src/lib.rs', lines 236:0-246:1 -/
 @[reducible]
 def status_of
   (rs : alloc.vec.Vec Record) (user : Std.U64) :
@@ -594,7 +594,7 @@ def status_of
     0#usize
 
 /-- [atuin_kernel::to_writes]: loop body 0:
-    Source: 'examples/atuin/kernel/src/lib.rs', lines 263:4-273:5 -/
+    Source: 'examples/atuin/kernel/src/lib.rs', lines 251:4-261:5 -/
 @[rust_loop_body]
 def to_writes_loop.body
   (user : Std.U64) (rs : alloc.vec.Vec NewRecord) (out : alloc.vec.Vec Write)
@@ -617,7 +617,7 @@ def to_writes_loop.body
   else ok (done out)
 
 /-- [atuin_kernel::to_writes]: loop 0:
-    Source: 'examples/atuin/kernel/src/lib.rs', lines 263:4-273:5 -/
+    Source: 'examples/atuin/kernel/src/lib.rs', lines 251:4-261:5 -/
 @[rust_loop]
 def to_writes_loop
   (user : Std.U64) (rs : alloc.vec.Vec NewRecord) (out : alloc.vec.Vec Write)
@@ -629,7 +629,7 @@ def to_writes_loop
     (out, i)
 
 /-- [atuin_kernel::to_writes]:
-    Source: 'examples/atuin/kernel/src/lib.rs', lines 260:0-275:1 -/
+    Source: 'examples/atuin/kernel/src/lib.rs', lines 248:0-263:1 -/
 @[reducible]
 def to_writes
   (user : Std.U64) (rs : alloc.vec.Vec NewRecord) :
@@ -638,7 +638,7 @@ def to_writes
   to_writes_loop user rs (alloc.vec.Vec.new Write) 0#usize
 
 /-- [atuin_kernel::signed_in]:
-    Source: 'examples/atuin/kernel/src/lib.rs', lines 278:0-289:1 -/
+    Source: 'examples/atuin/kernel/src/lib.rs', lines 266:0-277:1 -/
 def signed_in
   (snap : Snapshot) (actor : Principal) : Result (Option Std.U64) := do
   match actor with
@@ -650,12 +650,12 @@ def signed_in
     else ok none
 
 /-- [atuin_kernel::one]:
-    Source: 'examples/atuin/kernel/src/lib.rs', lines 291:0-295:1 -/
+    Source: 'examples/atuin/kernel/src/lib.rs', lines 279:0-283:1 -/
 def one (w : Write) : Result (alloc.vec.Vec Write) := do
   alloc.vec.Vec.push (alloc.vec.Vec.new Write) w
 
 /-- [atuin_kernel::step]:
-    Source: 'examples/atuin/kernel/src/lib.rs', lines 297:0-418:1 -/
+    Source: 'examples/atuin/kernel/src/lib.rs', lines 285:0-406:1 -/
 def step
   (actor : Principal) (snap : Snapshot) (cmd : Command) (require_reauth : Bool)
   :
@@ -762,7 +762,7 @@ def step
       ok (core.result.Result.Ok (v, Reply.Done))
 
 /-- [atuin_kernel::transition]:
-    Source: 'examples/atuin/kernel/src/lib.rs', lines 421:0-427:1
+    Source: 'examples/atuin/kernel/src/lib.rs', lines 409:0-415:1
     Visibility: public -/
 def transition
   (actor : Principal) (snap : Snapshot) (cmd : Command) :
@@ -771,7 +771,7 @@ def transition
   step actor snap cmd true
 
 /-- [atuin_kernel::transition_current]:
-    Source: 'examples/atuin/kernel/src/lib.rs', lines 430:0-436:1
+    Source: 'examples/atuin/kernel/src/lib.rs', lines 418:0-424:1
     Visibility: public -/
 def transition_current
   (actor : Principal) (snap : Snapshot) (cmd : Command) :
@@ -780,7 +780,7 @@ def transition_current
   step actor snap cmd false
 
 /-- [atuin_kernel::put_user]: loop body 0:
-    Source: 'examples/atuin/kernel/src/lib.rs', lines 440:4-448:1 -/
+    Source: 'examples/atuin/kernel/src/lib.rs', lines 428:4-436:1 -/
 @[rust_loop_body]
 def put_user_loop.body
   (v : alloc.vec.Vec User) (u : User) (i : Std.Usize) :
@@ -804,7 +804,7 @@ def put_user_loop.body
        ok (done v1)
 
 /-- [atuin_kernel::put_user]: loop 0:
-    Source: 'examples/atuin/kernel/src/lib.rs', lines 440:4-448:1 -/
+    Source: 'examples/atuin/kernel/src/lib.rs', lines 428:4-436:1 -/
 @[rust_loop]
 def put_user_loop
   (v : alloc.vec.Vec User) (u : User) (i : Std.Usize) :
@@ -815,14 +815,14 @@ def put_user_loop
     i
 
 /-- [atuin_kernel::put_user]:
-    Source: 'examples/atuin/kernel/src/lib.rs', lines 438:0-448:1 -/
+    Source: 'examples/atuin/kernel/src/lib.rs', lines 426:0-436:1 -/
 @[reducible]
 def put_user
   (v : alloc.vec.Vec User) (u : User) : Result (alloc.vec.Vec User) := do
   put_user_loop v u 0#usize
 
 /-- [atuin_kernel::put_session]: loop body 0:
-    Source: 'examples/atuin/kernel/src/lib.rs', lines 452:4-460:1 -/
+    Source: 'examples/atuin/kernel/src/lib.rs', lines 440:4-448:1 -/
 @[rust_loop_body]
 def put_session_loop.body
   (v : alloc.vec.Vec Session) (s : Session) (i : Std.Usize) :
@@ -846,7 +846,7 @@ def put_session_loop.body
        ok (done v1)
 
 /-- [atuin_kernel::put_session]: loop 0:
-    Source: 'examples/atuin/kernel/src/lib.rs', lines 452:4-460:1 -/
+    Source: 'examples/atuin/kernel/src/lib.rs', lines 440:4-448:1 -/
 @[rust_loop]
 def put_session_loop
   (v : alloc.vec.Vec Session) (s : Session) (i : Std.Usize) :
@@ -857,7 +857,7 @@ def put_session_loop
     i
 
 /-- [atuin_kernel::put_session]:
-    Source: 'examples/atuin/kernel/src/lib.rs', lines 450:0-460:1 -/
+    Source: 'examples/atuin/kernel/src/lib.rs', lines 438:0-448:1 -/
 @[reducible]
 def put_session
   (v : alloc.vec.Vec Session) (s : Session) :
@@ -866,7 +866,7 @@ def put_session
   put_session_loop v s 0#usize
 
 /-- [atuin_kernel::put_record]: loop body 0:
-    Source: 'examples/atuin/kernel/src/lib.rs', lines 1:0-472:1 -/
+    Source: 'examples/atuin/kernel/src/lib.rs', lines 1:0-460:1 -/
 @[rust_loop_body]
 def put_record_loop.body
   (v : alloc.vec.Vec Record) (r : Record) (i : Std.Usize) :
@@ -902,7 +902,7 @@ def put_record_loop.body
        ok (done v1)
 
 /-- [atuin_kernel::put_record]: loop 0:
-    Source: 'examples/atuin/kernel/src/lib.rs', lines 1:0-472:1 -/
+    Source: 'examples/atuin/kernel/src/lib.rs', lines 1:0-460:1 -/
 @[rust_loop]
 def put_record_loop
   (v : alloc.vec.Vec Record) (r : Record) (i : Std.Usize) :
@@ -913,14 +913,14 @@ def put_record_loop
     i
 
 /-- [atuin_kernel::put_record]:
-    Source: 'examples/atuin/kernel/src/lib.rs', lines 462:0-472:1 -/
+    Source: 'examples/atuin/kernel/src/lib.rs', lines 450:0-460:1 -/
 @[reducible]
 def put_record
   (v : alloc.vec.Vec Record) (r : Record) : Result (alloc.vec.Vec Record) := do
   put_record_loop v r 0#usize
 
 /-- [atuin_kernel::del_user]: loop body 0:
-    Source: 'examples/atuin/kernel/src/lib.rs', lines 477:4-482:5 -/
+    Source: 'examples/atuin/kernel/src/lib.rs', lines 465:4-470:5 -/
 @[rust_loop_body]
 def del_user_loop.body
   (v : alloc.vec.Vec User) (id : Std.U64) (out : alloc.vec.Vec User)
@@ -944,7 +944,7 @@ def del_user_loop.body
   else ok (done out)
 
 /-- [atuin_kernel::del_user]: loop 0:
-    Source: 'examples/atuin/kernel/src/lib.rs', lines 477:4-482:5 -/
+    Source: 'examples/atuin/kernel/src/lib.rs', lines 465:4-470:5 -/
 @[rust_loop]
 def del_user_loop
   (v : alloc.vec.Vec User) (id : Std.U64) (out : alloc.vec.Vec User)
@@ -956,14 +956,14 @@ def del_user_loop
     (out, i)
 
 /-- [atuin_kernel::del_user]:
-    Source: 'examples/atuin/kernel/src/lib.rs', lines 474:0-484:1 -/
+    Source: 'examples/atuin/kernel/src/lib.rs', lines 462:0-472:1 -/
 @[reducible]
 def del_user
   (v : alloc.vec.Vec User) (id : Std.U64) : Result (alloc.vec.Vec User) := do
   del_user_loop v id (alloc.vec.Vec.new User) 0#usize
 
 /-- [atuin_kernel::del_session]: loop body 0:
-    Source: 'examples/atuin/kernel/src/lib.rs', lines 489:4-494:5 -/
+    Source: 'examples/atuin/kernel/src/lib.rs', lines 477:4-482:5 -/
 @[rust_loop_body]
 def del_session_loop.body
   (v : alloc.vec.Vec Session) (user : Std.U64) (out : alloc.vec.Vec Session)
@@ -988,7 +988,7 @@ def del_session_loop.body
   else ok (done out)
 
 /-- [atuin_kernel::del_session]: loop 0:
-    Source: 'examples/atuin/kernel/src/lib.rs', lines 489:4-494:5 -/
+    Source: 'examples/atuin/kernel/src/lib.rs', lines 477:4-482:5 -/
 @[rust_loop]
 def del_session_loop
   (v : alloc.vec.Vec Session) (user : Std.U64) (out : alloc.vec.Vec Session)
@@ -1000,7 +1000,7 @@ def del_session_loop
     (out, i)
 
 /-- [atuin_kernel::del_session]:
-    Source: 'examples/atuin/kernel/src/lib.rs', lines 486:0-496:1 -/
+    Source: 'examples/atuin/kernel/src/lib.rs', lines 474:0-484:1 -/
 @[reducible]
 def del_session
   (v : alloc.vec.Vec Session) (user : Std.U64) :
@@ -1009,7 +1009,7 @@ def del_session
   del_session_loop v user (alloc.vec.Vec.new Session) 0#usize
 
 /-- [atuin_kernel::del_records_of]: loop body 0:
-    Source: 'examples/atuin/kernel/src/lib.rs', lines 501:4-506:5 -/
+    Source: 'examples/atuin/kernel/src/lib.rs', lines 489:4-494:5 -/
 @[rust_loop_body]
 def del_records_of_loop.body
   (v : alloc.vec.Vec Record) (user : Std.U64) (out : alloc.vec.Vec Record)
@@ -1034,7 +1034,7 @@ def del_records_of_loop.body
   else ok (done out)
 
 /-- [atuin_kernel::del_records_of]: loop 0:
-    Source: 'examples/atuin/kernel/src/lib.rs', lines 501:4-506:5 -/
+    Source: 'examples/atuin/kernel/src/lib.rs', lines 489:4-494:5 -/
 @[rust_loop]
 def del_records_of_loop
   (v : alloc.vec.Vec Record) (user : Std.U64) (out : alloc.vec.Vec Record)
@@ -1046,7 +1046,7 @@ def del_records_of_loop
     (out, i)
 
 /-- [atuin_kernel::del_records_of]:
-    Source: 'examples/atuin/kernel/src/lib.rs', lines 498:0-508:1 -/
+    Source: 'examples/atuin/kernel/src/lib.rs', lines 486:0-496:1 -/
 @[reducible]
 def del_records_of
   (v : alloc.vec.Vec Record) (user : Std.U64) :
@@ -1055,7 +1055,7 @@ def del_records_of
   del_records_of_loop v user (alloc.vec.Vec.new Record) 0#usize
 
 /-- [atuin_kernel::apply_write]:
-    Source: 'examples/atuin/kernel/src/lib.rs', lines 510:0-520:1
+    Source: 'examples/atuin/kernel/src/lib.rs', lines 498:0-508:1
     Visibility: public -/
 def apply_write (s : Snapshot) (w : Write) : Result Snapshot := do
   match w with
@@ -1078,7 +1078,7 @@ def apply_write (s : Snapshot) (w : Write) : Result Snapshot := do
   | Write.SetCounter c => ok { s with counter := c }
 
 /-- [atuin_kernel::apply]: loop body 0:
-    Source: 'examples/atuin/kernel/src/lib.rs', lines 526:4-529:5
+    Source: 'examples/atuin/kernel/src/lib.rs', lines 514:4-517:5
     Visibility: public -/
 @[rust_loop_body]
 def apply_loop.body
@@ -1097,7 +1097,7 @@ def apply_loop.body
   else ok (done s)
 
 /-- [atuin_kernel::apply]: loop 0:
-    Source: 'examples/atuin/kernel/src/lib.rs', lines 526:4-529:5
+    Source: 'examples/atuin/kernel/src/lib.rs', lines 514:4-517:5
     Visibility: public -/
 @[rust_loop]
 def apply_loop
@@ -1109,7 +1109,7 @@ def apply_loop
     (s, i)
 
 /-- [atuin_kernel::apply]:
-    Source: 'examples/atuin/kernel/src/lib.rs', lines 523:0-531:1
+    Source: 'examples/atuin/kernel/src/lib.rs', lines 511:0-519:1
     Visibility: public -/
 def apply (snap : Snapshot) (ws : alloc.vec.Vec Write) : Result Snapshot := do
   let s ← Snapshot.Insts.CoreCloneClone.clone snap
