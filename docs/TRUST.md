@@ -31,10 +31,10 @@ Charon and Aeneas. For the example app, the spec is
 ## Deployment
 
 1. As an admin, create the engine's login role: `CREATE ROLE app_engine LOGIN PASSWORD '...'`. Not a superuser, not the table owner.
-2. As the admin, run `Engine::install_schema`, then `i5h_pg::lockdown::<App, Store>(&admin_client, "i5h_owner", "app_engine")`. It is idempotent; rerun after adding tables.
+2. As the admin, run `Engine::install_schema`, then `i5h_pg::lockdown::<App, Store>(admin_url, "i5h_owner", "app_engine")`. It is idempotent; rerun after adding tables.
 3. Run the server with `DATABASE_URL` for `app_engine`. Other roles get `permission denied` on i5h tables (`tests/lockdown.rs`).
 
-Gaps: `i5h_pg` re-exports `tokio_postgres` because `Store` impls need `Transaction`, so `cargo-deny` alone cannot stop an app crate from using the driver through the re-export. The role lockdown is what enforces A8 at runtime.
+`Store` impls get an opaque `i5h_pg::Tx` that offers only `load`, `upsert` and `delete`, and `i5h_pg::Pool` is opaque too, so app code has no path to the driver; `cargo deny check bans` rejects the driver in any non-dev dependency. The role lockdown still backs this at runtime, and a superuser login bypasses both.
 
 ## Connection loss
 

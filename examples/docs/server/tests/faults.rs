@@ -5,8 +5,8 @@ use common::*;
 use docs_kernel as k;
 use docs_server::{principal, DocsApp, DocsStore};
 use i5h::TenantId;
-use i5h_pg::tokio_postgres::{self, NoTls, Transaction};
-use i5h_pg::{pool, DbError, Engine, EngineConfig, ReplyCodec, Store};
+use tokio_postgres::NoTls;
+use i5h_pg::{pool, DbError, Engine, EngineConfig, ReplyCodec, Store, Tx};
 use std::sync::atomic::{AtomicI32, AtomicU8, Ordering::SeqCst};
 use std::sync::Arc;
 use tokio::sync::{Mutex, Notify};
@@ -23,9 +23,9 @@ static SERIAL: Mutex<()> = Mutex::const_new(());
 /// DocsStore that can stop at a chosen point so a test can kill its connection.
 struct FaultStore;
 
-async fn maybe_pause(tx: &Transaction<'_>, at: u8) -> Result<(), DbError> {
+async fn maybe_pause(tx: &Tx<'_>, at: u8) -> Result<(), DbError> {
     if PAUSE_AT.compare_exchange(at, 0, SeqCst, SeqCst).is_ok() {
-        let pid: i32 = tx.query_one("SELECT pg_backend_pid()", &[]).await?.get(0);
+        let pid = tx.backend_pid().await?;
         PID.store(pid, SeqCst);
         PAUSED.notify_one();
         RESUME.notified().await;
@@ -42,12 +42,12 @@ impl Store<DocsApp> for FaultStore {
         DocsStore::tables()
     }
 
-    async fn load(tx: &Transaction<'_>, t: TenantId) -> Result<k::Snapshot, DbError> {
+    async fn load(tx: &Tx<'_>, t: TenantId) -> Result<k::Snapshot, DbError> {
         maybe_pause(tx, 1).await?;
         DocsStore::load(tx, t).await
     }
 
-    async fn write(tx: &Transaction<'_>, t: TenantId, ws: &Vec<k::Write>) -> Result<(), DbError> {
+    async fn write(tx: &Tx<'_>, t: TenantId, ws: &Vec<k::Write>) -> Result<(), DbError> {
         DocsStore::write(tx, t, ws).await?;
         maybe_pause(tx, 2).await
     }

@@ -12,3 +12,7 @@ deny = [
     { crate = "diesel", reason = "database access goes through i5h-pg" },
     { crate = "sea-orm", reason = "database access goes through i5h-pg" },
 ]
+
+[graph]
+# Tests may use the driver to inject faults; shipped code may not.
+exclude-dev = true

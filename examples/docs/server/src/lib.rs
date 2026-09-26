@@ -3,8 +3,7 @@
 use axum::http::StatusCode;
 use docs_kernel as k;
 use i5h::{Kernel, TenantId};
-use i5h_pg::{ddl, delete, key, load, table, upsert, DbError, PgField, ReplyCodec, Store, Table, Value};
-use i5h_pg::tokio_postgres::Transaction;
+use i5h_pg::{ddl, delete, key, load, table, upsert, DbError, PgField, ReplyCodec, Store, Table, Tx, Value};
 use serde::{Deserialize, Serialize};
 use i5h_json::Value as Out;
 
@@ -83,7 +82,7 @@ impl Store<DocsApp> for DocsStore {
         ]
     }
 
-    async fn load(tx: &Transaction<'_>, t: TenantId) -> Result<k::Snapshot, DbError> {
+    async fn load(tx: &Tx<'_>, t: TenantId) -> Result<k::Snapshot, DbError> {
         let counter = load::<DocsApp, k::Counter>(tx, t).await?.pop().unwrap_or_default();
         Ok(k::Snapshot {
             counter,
@@ -93,7 +92,7 @@ impl Store<DocsApp> for DocsStore {
         })
     }
 
-    async fn write(tx: &Transaction<'_>, t: TenantId, ws: &Vec<k::Write>) -> Result<(), DbError> {
+    async fn write(tx: &Tx<'_>, t: TenantId, ws: &Vec<k::Write>) -> Result<(), DbError> {
         for w in ws {
             match w {
                 k::Write::PutProject(p) => upsert::<DocsApp, _>(tx, t, p).await?,
