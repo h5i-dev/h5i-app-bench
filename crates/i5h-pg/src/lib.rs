@@ -13,7 +13,7 @@ mod roles;
 mod table;
 
 pub use roles::{lockdown, lockdown_sql};
-pub use table::{column_of, ddl, delete, key, load, load_where, run_planned, upsert, ColumnDef, Kind, PgField, Table, Value};
+pub use table::{column_of, ddl, delete, key, load, load_rows, load_rows_where, load_where, run_planned, upsert, ColumnDef, Kind, PgField, Table, Value};
 pub use i5h_sql as sql;
 
 use deadpool_postgres::{Config, Runtime};

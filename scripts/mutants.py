@@ -22,7 +22,7 @@ import time
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 KERNEL = os.path.join(ROOT, "examples/docs/kernel")
 PROOFS = os.path.join(ROOT, "examples/docs/proofs")
-THEOREMS = ["Theorems", "Invariants", "Noninterference", "Frame", "Check", "Storage"]
+THEOREMS = ["Theorems", "Invariants", "Noninterference", "Frame", "Check", "Storage", "Load"]
 
 # name -> list of (old, new) replacements in kernel/src/lib.rs
 MUTANTS = {
@@ -97,6 +97,13 @@ MUTANTS = {
     "counter_not_stored": [
         ("Write::SetCounter(c) => Some(put(Counter::TABLE, Counter::KEY_LEN, c.to_row())),",
          "Write::SetCounter(_) => None,"),
+    ],
+    "role_decoded_wrong": [
+        ("                } else if *n == 1 {\n                    Some(Role::Editor)",
+         "                } else if *n == 1 {\n                    Some(Role::Owner)"),
+    ],
+    "fresh_counter_not_zero": [
+        ("        Some(Counter { next_id: 0 })", "        Some(Counter { next_id: 1 })"),
     ],
     "manage_any_project": [
         ("            role,\n        } => {\n            if !can(snap, user, *project, Action::Manage) {",
@@ -174,7 +181,7 @@ def check(name, edits, keep):
         llbc = os.path.join(tmp, "docs_kernel.llbc")
         rc = run(["charon", "cargo", "--preset=aeneas", "--start-from", "docs_kernel::transition",
                   "--start-from", "docs_kernel::apply", "--start-from", "docs_kernel::read_scope",
-                  "--start-from", "docs_kernel::check_inv", "--start-from", "docs_kernel::sql_writes",
+                  "--start-from", "docs_kernel::check_inv", "--start-from", "docs_kernel::sql_writes", "--start-from", "docs_kernel::decode",
                   "--include", "i5h_sql",
                   "--dest-file", llbc], os.path.join(tmp, "kernel"), log)
         if rc != 0:

@@ -3,9 +3,10 @@
 use axum::http::StatusCode;
 use docs_kernel as k;
 use i5h::{Kernel, TenantId};
-use i5h_pg::{key, load, load_where, DbError, PgField, ReplyCodec, Store, Tx, Value};
+use i5h_pg::{load_rows, load_rows_where, DbError, PgField, ReplyCodec, Store, Tx, Value};
 use serde::{Deserialize, Serialize};
 use i5h_json::Value as Out;
+use i5h_pg::sql::Column;
 
 pub struct DocsApp;
 
@@ -69,6 +70,10 @@ pub fn effect_payload(e: &k::Effect) -> Vec<u8> {
 
 pub struct DocsStore;
 
+fn decode(rows: &k::Rows) -> Result<k::Snapshot, DbError> {
+    k::decode(rows).ok_or_else(|| DbError::Decode("stored rows do not decode".into()))
+}
+
 impl Store<DocsApp> for DocsStore {
     fn ddl() -> Vec<String> {
         let mut ddl = schema_ddl();
@@ -81,40 +86,42 @@ impl Store<DocsApp> for DocsStore {
         schema_tables()
     }
 
+    // Rows are decoded by the kernel (`decode`, proven in `Load.lean`).
     async fn load(tx: &Tx<'_>, t: TenantId) -> Result<k::Snapshot, DbError> {
-        let counter = load::<DocsApp, k::Counter>(tx, t).await?.pop().unwrap_or_default();
-        Ok(k::Snapshot {
-            counter,
-            projects: load::<DocsApp, _>(tx, t).await?,
-            members: load::<DocsApp, _>(tx, t).await?,
-            documents: load::<DocsApp, _>(tx, t).await?,
-            webhooks: load::<DocsApp, _>(tx, t).await?,
-        })
+        let rows = k::Rows {
+            counter: load_rows::<DocsApp, k::Counter>(tx, t).await?,
+            projects: load_rows::<DocsApp, k::Project>(tx, t).await?,
+            members: load_rows::<DocsApp, k::Member>(tx, t).await?,
+            documents: load_rows::<DocsApp, k::Document>(tx, t).await?,
+            webhooks: load_rows::<DocsApp, k::Webhook>(tx, t).await?,
+        };
+        decode(&rows)
     }
 
     /// Exactly `Frame.slice` in the proofs: the counter, plus every row of the
     /// command's project. `transition_frame` proves the kernel's result is the
     /// same as on the whole tenant.
     async fn load_for(tx: &Tx<'_>, t: TenantId, cmd: &k::Command) -> Result<k::Snapshot, DbError> {
-        let counter = load::<DocsApp, k::Counter>(tx, t).await?.pop().unwrap_or_default();
+        let counter = load_rows::<DocsApp, k::Counter>(tx, t).await?;
         let project = match k::read_scope(cmd) {
             k::Scope::Counter => None,
             k::Scope::Project(p) => Some(p),
             k::Scope::Document(d) => {
-                let docs: Vec<k::Document> = load_where::<DocsApp, _>(tx, t, "id", key::<DocsApp, _>(&d)?).await?;
+                let rows = load_rows_where::<DocsApp, k::Document>(tx, t, "id", &Column::to_val(&d)).await?;
+                let docs = k::Document::from_rows(&rows).ok_or_else(|| DbError::Decode("documents row".into()))?;
                 docs.first().map(|doc| doc.project)
             }
         };
         let Some(p) = project else {
-            return Ok(k::Snapshot { counter, ..Default::default() });
+            return decode(&k::Rows { counter, ..Default::default() });
         };
-        let p = key::<DocsApp, _>(&p)?;
-        Ok(k::Snapshot {
+        let p = Column::to_val(&p);
+        decode(&k::Rows {
             counter,
-            projects: load_where::<DocsApp, _>(tx, t, "id", p.clone()).await?,
-            members: load_where::<DocsApp, _>(tx, t, "project", p.clone()).await?,
-            documents: load_where::<DocsApp, _>(tx, t, "project", p.clone()).await?,
-            webhooks: load_where::<DocsApp, _>(tx, t, "project", p).await?,
+            projects: load_rows_where::<DocsApp, k::Project>(tx, t, "id", &p).await?,
+            members: load_rows_where::<DocsApp, k::Member>(tx, t, "project", &p).await?,
+            documents: load_rows_where::<DocsApp, k::Document>(tx, t, "project", &p).await?,
+            webhooks: load_rows_where::<DocsApp, k::Webhook>(tx, t, "project", &p).await?,
         })
     }
 

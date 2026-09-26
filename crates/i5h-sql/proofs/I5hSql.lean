@@ -57,7 +57,7 @@ def Val.Insts.CoreCloneClone : core.clone.Clone Val := {
 }
 
 /-- [i5h_sql::Write]
-    Source: 'crates/i5h-sql/src/lib.rs', lines 57:0-62:1
+    Source: 'crates/i5h-sql/src/lib.rs', lines 99:0-104:1
     Visibility: public -/
 @[discriminant isize]
 inductive Write where
@@ -65,7 +65,7 @@ inductive Write where
 | Del : Std.U32 → alloc.vec.Vec Val → Write
 
 /-- [i5h_sql::Stmt]
-    Source: 'crates/i5h-sql/src/lib.rs', lines 66:0-69:1
+    Source: 'crates/i5h-sql/src/lib.rs', lines 108:0-111:1
     Visibility: public -/
 @[discriminant isize]
 inductive Stmt where
@@ -73,7 +73,7 @@ inductive Stmt where
 | Delete : Std.U32 → alloc.vec.Vec Val → Stmt
 
 /-- [i5h_sql::prefix]: loop body 0:
-    Source: 'crates/i5h-sql/src/lib.rs', lines 1:0-78:5
+    Source: 'crates/i5h-sql/src/lib.rs', lines 1:0-120:5
     Visibility: public -/
 @[rust_loop_body]
 def prefix_loop.body
@@ -96,7 +96,7 @@ def prefix_loop.body
   else ok (done out)
 
 /-- [i5h_sql::prefix]: loop 0:
-    Source: 'crates/i5h-sql/src/lib.rs', lines 1:0-78:5
+    Source: 'crates/i5h-sql/src/lib.rs', lines 1:0-120:5
     Visibility: public -/
 @[rust_loop]
 def prefix_loop
@@ -109,7 +109,7 @@ def prefix_loop
     (out, i)
 
 /-- [i5h_sql::prefix]:
-    Source: 'crates/i5h-sql/src/lib.rs', lines 72:0-80:1
+    Source: 'crates/i5h-sql/src/lib.rs', lines 114:0-122:1
     Visibility: public -/
 @[reducible]
 def «prefix»
@@ -117,7 +117,7 @@ def «prefix»
   prefix_loop row n (alloc.vec.Vec.new Val) 0#usize
 
 /-- [i5h_sql::suffix]: loop body 0:
-    Source: 'crates/i5h-sql/src/lib.rs', lines 86:4-89:5
+    Source: 'crates/i5h-sql/src/lib.rs', lines 128:4-131:5
     Visibility: public -/
 @[rust_loop_body]
 def suffix_loop.body
@@ -136,7 +136,7 @@ def suffix_loop.body
   else ok (done out)
 
 /-- [i5h_sql::suffix]: loop 0:
-    Source: 'crates/i5h-sql/src/lib.rs', lines 86:4-89:5
+    Source: 'crates/i5h-sql/src/lib.rs', lines 128:4-131:5
     Visibility: public -/
 @[rust_loop]
 def suffix_loop
@@ -148,7 +148,7 @@ def suffix_loop
     (out, i)
 
 /-- [i5h_sql::suffix]:
-    Source: 'crates/i5h-sql/src/lib.rs', lines 83:0-91:1
+    Source: 'crates/i5h-sql/src/lib.rs', lines 125:0-133:1
     Visibility: public -/
 @[reducible]
 def suffix
@@ -156,7 +156,7 @@ def suffix
   suffix_loop row (alloc.vec.Vec.new Val) n
 
 /-- [i5h_sql::plan_one]:
-    Source: 'crates/i5h-sql/src/lib.rs', lines 93:0-101:1
+    Source: 'crates/i5h-sql/src/lib.rs', lines 135:0-143:1
     Visibility: public -/
 def plan_one (w : Write) : Result Stmt := do
   match w with
@@ -170,7 +170,7 @@ def plan_one (w : Write) : Result Stmt := do
     ok (Stmt.Delete table v)
 
 /-- [i5h_sql::plan]: loop body 0:
-    Source: 'crates/i5h-sql/src/lib.rs', lines 107:4-110:5
+    Source: 'crates/i5h-sql/src/lib.rs', lines 149:4-152:5
     Visibility: public -/
 @[rust_loop_body]
 def plan_loop.body
@@ -189,7 +189,7 @@ def plan_loop.body
   else ok (done out)
 
 /-- [i5h_sql::plan]: loop 0:
-    Source: 'crates/i5h-sql/src/lib.rs', lines 107:4-110:5
+    Source: 'crates/i5h-sql/src/lib.rs', lines 149:4-152:5
     Visibility: public -/
 @[rust_loop]
 def plan_loop
@@ -201,7 +201,7 @@ def plan_loop
     (out, i)
 
 /-- [i5h_sql::plan]:
-    Source: 'crates/i5h-sql/src/lib.rs', lines 104:0-112:1
+    Source: 'crates/i5h-sql/src/lib.rs', lines 146:0-154:1
     Visibility: public -/
 @[reducible]
 def plan (ws : alloc.vec.Vec Write) : Result (alloc.vec.Vec Stmt) := do

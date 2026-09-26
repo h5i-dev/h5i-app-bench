@@ -47,7 +47,7 @@ macro_rules! schema {
 }
 
 /// Per row type: its table number (declaration order), key length, and
-/// encoding as SQL values, key first. Plain Rust, so Aeneas extracts it.
+/// encoding as SQL values (key first) with its inverse. Plain Rust, so Aeneas extracts it.
 #[doc(hidden)]
 #[macro_export]
 macro_rules! __rows {
@@ -62,6 +62,49 @@ macro_rules! __rows {
                 $(out.push(::i5h_sql::Column::to_val(&self.$k));)*
                 $(out.push(::i5h_sql::Column::to_val(&self.$c));)*
                 out
+            }
+
+            /// Inverse of `to_row`; `None` if the row has the wrong shape.
+            pub fn from_row(row: &Vec<::i5h_sql::Val>) -> Option<Self> {
+                if row.len() != 0 $(+ $crate::__one!($k))* $(+ $crate::__one!($c))* {
+                    return None;
+                }
+                let mut i: usize = 0;
+                $(
+                    let $k = match ::i5h_sql::Column::from_val(&row[i]) {
+                        Some(x) => x,
+                        None => return None,
+                    };
+                    i += 1;
+                )*
+                $(
+                    let $c = match ::i5h_sql::Column::from_val(&row[i]) {
+                        Some(x) => x,
+                        None => return None,
+                    };
+                    i += 1;
+                )*
+                let _ = i;
+                Some($name { $($k,)* $($c,)* })
+            }
+
+            /// Every row decoded, in order; `None` if any row fails.
+            pub fn from_rows(rows: &Vec<Vec<::i5h_sql::Val>>) -> Option<Vec<Self>> {
+                let mut out = Vec::new();
+                let mut ok = true;
+                let mut i = 0;
+                while i < rows.len() {
+                    match Self::from_row(&rows[i]) {
+                        Some(x) => out.push(x),
+                        None => ok = false,
+                    }
+                    i += 1;
+                }
+                if ok {
+                    Some(out)
+                } else {
+                    None
+                }
             }
         }
         $crate::__rows! { [$($i)* + 1] $($rest)* }
