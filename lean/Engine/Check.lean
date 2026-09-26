@@ -2,6 +2,7 @@ import Std.Data.HashMap
 import Engine.Proofs
 import Engine.Scopes
 import Engine.Lock
+import Engine.Outbox
 /-!
 # Exhaustive search on small instances
 
@@ -215,5 +216,9 @@ def brief (sys : Sys Nat Nat Nat Nat Nat) : String :=
 #print axioms tenant_keys_leak
 #print axioms locked_current
 #print axioms locked_commit_ok
+#print axioms Outbox.sent_committed
+#print axioms Outbox.key_fixes_content
+#print axioms Outbox.delivered_sent
+#print axioms Outbox.dead_reason
 
 end Engine
