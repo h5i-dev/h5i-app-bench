@@ -1,0 +1,9 @@
+[package]
+name = "xtask"
+description = "Repository checks: `cargo i5h-verify`"
+edition.workspace = true
+license.workspace = true
+version.workspace = true
+publish = false
+
+[dependencies]

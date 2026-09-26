@@ -1,6 +1,7 @@
 [workspace]
 resolver = "2"
 members = [
+    "xtask",
     "crates/i5h",
     "crates/i5h-pg",
     "crates/i5h-http",
