@@ -66,7 +66,12 @@ password.
 | `examples/kellnr` | Kellnr authorization port |
 | `examples/atuin` | Atuin sync server account and record port |
 | `lean/` | engine protocol model and trace checker |
-| `docs/` | [`ROADMAP.md`](docs/ROADMAP.md), [`TRUST.md`](docs/TRUST.md), [`TARGETS.md`](docs/TARGETS.md) |
+| `docs/` | [`ROADMAP.md`](docs/ROADMAP.md), [`TRUST.md`](docs/TRUST.md), [`TARGETS.md`](docs/TARGETS.md), [`NUMBERS.md`](docs/NUMBERS.md) |
+
+Each proof project (`*/proofs`) keeps generated Lean apart from what people
+write: `generated/` holds the extracted Rust and the `schema!` output, which
+tools rewrite and CI checks for drift; the top level holds the hand-written
+spec and proofs.
 
 ## Running the example
 

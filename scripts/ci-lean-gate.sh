@@ -7,8 +7,8 @@ proofs="$root/examples/docs/proofs"
 cd "$proofs"
 fail=0
 
-# DocsKernel.lean is generated; everything else is hand-written.
-files=$(ls *.lean | grep -v -x -e DocsKernel.lean -e lakefile.lean)
+# Generated files live in generated/; these are the hand-written ones.
+files=$(ls *.lean | grep -v -x -e lakefile.lean)
 if hits=$(grep -n -w -e sorry -e native_decide $files); then
   echo "error: sorry or native_decide in proofs:"
   echo "$hits"

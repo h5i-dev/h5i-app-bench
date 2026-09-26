@@ -12,7 +12,7 @@
 //! }
 //! ```
 //!
-//! With `mapping docs_tables for docs_kernel, lean "../proofs/Schema.lean";`
+//! With `mapping docs_tables for docs_kernel, lean "../proofs/generated/Schema.lean";`
 //! it also keeps that Lean file (row encodings and their lemmas) current.
 //!
 //! This defines `Member` with its key fields first, exactly as written, so the

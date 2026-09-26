@@ -8,4 +8,4 @@ trap 'rm -rf "$tmp"' EXIT
   --start-from atuin_kernel::transition --start-from atuin_kernel::transition_current \
   --start-from atuin_kernel::apply \
   --dest-file "$tmp/atuin_kernel.llbc")
-aeneas -backend lean "$tmp/atuin_kernel.llbc" -dest "$root/examples/atuin/proofs"
+aeneas -backend lean "$tmp/atuin_kernel.llbc" -dest "$root/examples/atuin/proofs/generated"

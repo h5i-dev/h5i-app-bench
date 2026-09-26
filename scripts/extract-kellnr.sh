@@ -7,4 +7,4 @@ trap 'rm -rf "$tmp"' EXIT
 (cd "$root/examples/kellnr/kernel" && charon cargo --preset=aeneas \
   --start-from kellnr_kernel::transition --start-from kellnr_kernel::transition_pre1243 \
   --dest-file "$tmp/kellnr_kernel.llbc")
-aeneas -backend lean "$tmp/kellnr_kernel.llbc" -dest "$root/examples/kellnr/proofs"
+aeneas -backend lean "$tmp/kellnr_kernel.llbc" -dest "$root/examples/kellnr/proofs/generated"

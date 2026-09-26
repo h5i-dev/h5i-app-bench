@@ -65,6 +65,6 @@ The proofs reuse `I5hLib`'s loop lemmas and `walk`.
 ## Build
 
 ```
-scripts/extract-atuin.sh        # regenerate AtuinKernel.lean
+scripts/extract-atuin.sh        # regenerate proofs/generated/AtuinKernel.lean
 cd examples/atuin/proofs && lake build
 ```
