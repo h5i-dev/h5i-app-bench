@@ -6,7 +6,7 @@ import Apply
 Each theorem quantifies over every actor and every command, so a faulty JSON
 decoder cannot produce a command these theorems do not cover.
 -/
-open Aeneas Aeneas.Std Result docs_kernel docs_kernel.Spec docs_kernel.TransitionLemmas
+open Aeneas Aeneas.Std Result docs_kernel docs_kernel.Spec docs_kernel.TransitionLemmas I5hLib
 
 namespace docs_kernel.Theorems
 
@@ -17,7 +17,7 @@ theorem allows_eq (r : Role) (a : Action) : allows r a = .ok (policy r a) := by
 /-- No input makes the kernel fail: no panic, overflow, or bad index. -/
 theorem transition_total (a : Principal) (s : Snapshot) (c : Command) :
     ∃ r, transition a s c = .ok r := by
-  have h : transition a s c ⦃ _ => True ⦄ := by walk
+  have h : transition a s c ⦃ _ => True ⦄ := by walk transition
   obtain ⟨r, hr, _⟩ := (WP.spec_equiv_exists _ _).1 h
   exact ⟨r, hr⟩
 
@@ -42,7 +42,7 @@ theorem authorized (a : Principal) (s : Snapshot) (c : Command) ws r
     (hinv : Inv (Snapshot.toSt s)) (h : transition a s c = .ok (.Ok (ws, r))) :
     ∀ w ∈ ws.val, writeAllowed (Snapshot.toSt s) a.user.val w := by
   refine of_spec (P := fun ws _ => ∀ w ∈ ws.val, writeAllowed (Snapshot.toSt s) a.user.val w) ?_ h
-  walk
+  walk transition
   all_goals (simp only [OnOk]; try trivial)
   all_goals (try (simp_all [writeAllowed, Snapshot.toSt]; done))
   all_goals (try (
@@ -72,7 +72,7 @@ theorem reply_confined (a : Principal) (s : Snapshot) (c : Command) ws r
     replyAllowed (Snapshot.toSt s) a.user.val r := by
   have hs : transition a s c ⦃ res => ∀ ws r, res = .Ok (ws, r) →
       replyAllowed (Snapshot.toSt s) a.user.val r ⦄ := by
-    walk
+    walk transition
     all_goals (intro ws' r' hr; cases hr; try simp only [replyAllowed])
     · -- GetDocument
       rename_i hr; rw [r_post] at hr

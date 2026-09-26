@@ -1,6 +1,6 @@
 import Transition
 import Apply
-open Aeneas Aeneas.Std Result docs_kernel docs_kernel.Spec docs_kernel.TransitionLemmas
+open Aeneas Aeneas.Std Result docs_kernel docs_kernel.Spec docs_kernel.TransitionLemmas I5hLib
 
 namespace docs_kernel.Theorems
 
@@ -9,110 +9,6 @@ theorem u64_val_inj {x y : U64} : x.val = y.val ↔ x = y := by
   · intro h; exact UScalar.eq_of_val_eq h
   · rintro rfl; rfl
 
-/-! ## Lists -/
-
-section Lists
-variable {α β : Type}
-
-theorem mem_upsert_of {k : α → Nat × Nat} {x z : α} {l : List α}
-    (h : z ∈ upsert k x l) : z = x ∨ z ∈ l := by
-  induction l with
-  | nil => simp [upsert] at h; exact Or.inl h
-  | cons y ys ih =>
-    unfold upsert at h
-    split at h
-    · simp at h; rcases h with h | h
-      · exact Or.inl h
-      · exact Or.inr (List.mem_cons_of_mem _ h)
-    · simp at h; rcases h with h | h
-      · exact Or.inr (h ▸ List.mem_cons_self)
-      · rcases ih h with h | h
-        · exact Or.inl h
-        · exact Or.inr (List.mem_cons_of_mem _ h)
-
-theorem mem_upsert_self (k : α → Nat × Nat) (x : α) (l : List α) : x ∈ upsert k x l := by
-  induction l with
-  | nil => simp [upsert]
-  | cons y ys ih => unfold upsert; split <;> simp [ih]
-
-theorem mem_upsert_of_ne {k : α → Nat × Nat} {x z : α} {l : List α}
-    (hz : z ∈ l) (hk : k z ≠ k x) : z ∈ upsert k x l := by
-  induction l with
-  | nil => simp at hz
-  | cons y ys ih =>
-    unfold upsert
-    simp at hz
-    split
-    · rename_i hy
-      rcases hz with rfl | hz
-      · exact absurd hy hk
-      · exact List.mem_cons_of_mem _ hz
-    · rcases hz with rfl | hz
-      · exact List.mem_cons_self
-      · exact List.mem_cons_of_mem _ (ih hz)
-
-/-- With unique keys, `upsert` replaces exactly the row with `x`'s key. -/
-theorem mem_upsert_iff {k : α → Nat × Nat} {x z : α} {l : List α} (hl : (l.map k).Nodup) :
-    z ∈ upsert k x l ↔ z = x ∨ (z ∈ l ∧ k z ≠ k x) := by
-  constructor
-  · intro h
-    induction l with
-    | nil => simp [upsert] at h; exact Or.inl h
-    | cons y ys ih =>
-      simp only [List.map_cons, List.nodup_cons, List.mem_map] at hl
-      unfold upsert at h
-      split at h
-      · rename_i hy
-        simp at h; rcases h with h | h
-        · exact Or.inl h
-        · right; refine ⟨List.mem_cons_of_mem _ h, ?_⟩
-          intro hzk; exact hl.1 ⟨z, h, hzk.trans hy.symm⟩
-      · rename_i hy
-        simp at h; rcases h with rfl | h
-        · exact Or.inr ⟨List.mem_cons_self, hy⟩
-        · rcases ih hl.2 h with h | ⟨h1, h2⟩
-          · exact Or.inl h
-          · exact Or.inr ⟨List.mem_cons_of_mem _ h1, h2⟩
-  · rintro (rfl | ⟨hz, hk⟩)
-    · exact mem_upsert_self k _ l
-    · exact mem_upsert_of_ne hz hk
-
-theorem nodup_map_upsert (k : α → Nat × Nat) (g : α → β) (hk : ∀ a b, k a = k b ↔ g a = g b)
-    (x : α) (l : List α) (h : (l.map g).Nodup) : ((upsert k x l).map g).Nodup := by
-  induction l with
-  | nil => simp [upsert]
-  | cons y ys ih =>
-    simp only [List.map_cons, List.nodup_cons, List.mem_map] at h
-    unfold upsert
-    split
-    · rename_i hy
-      simp only [List.map_cons, List.nodup_cons, List.mem_map]
-      refine ⟨?_, h.2⟩
-      rintro ⟨z, hz, hzg⟩
-      exact h.1 ⟨z, hz, hzg.trans ((hk y x).1 hy).symm⟩
-    · rename_i hy
-      simp only [List.map_cons, List.nodup_cons, List.mem_map]
-      refine ⟨?_, ih h.2⟩
-      rintro ⟨z, hz, hzg⟩
-      rcases mem_upsert_of hz with rfl | hz
-      · exact hy ((hk _ _).2 hzg.symm)
-      · exact h.1 ⟨z, hz, hzg⟩
-
-theorem nodup_map_k_of_g (k : α → Nat × Nat) (g : α → β) (hk : ∀ a b, k a = k b ↔ g a = g b)
-    (l : List α) (h : (l.map g).Nodup) : (l.map k).Nodup := by
-  induction l with
-  | nil => simp
-  | cons y ys ih =>
-    simp only [List.map_cons, List.nodup_cons, List.mem_map] at h ⊢
-    refine ⟨?_, ih h.2⟩
-    rintro ⟨z, hz, hzk⟩
-    exact h.1 ⟨z, hz, (hk _ _).1 hzk⟩
-
-theorem nodup_map_filter (g : α → β) (p : α → Bool) (l : List α) (h : (l.map g).Nodup) :
-    ((l.filter p).map g).Nodup :=
-  (List.Sublist.map g List.filter_sublist).nodup h
-
-end Lists
 
 /-! ## Keys -/
 
@@ -375,7 +271,7 @@ theorem inv_preserved (a : Principal) (s : Snapshot) (c : Command) ws r
     (hinv : Inv (Snapshot.toSt s)) (h : transition a s c = .ok (.Ok (ws, r))) :
     Inv (applyAll (Snapshot.toSt s) ws.val) := by
   refine of_spec (P := fun ws _ => Inv (applyAll (Snapshot.toSt s) ws.val)) ?_ h
-  walk
+  walk transition
   all_goals (simp only [OnOk]; try trivial)
   all_goals (simp_all only [applyAll, List.foldl, List.nil_append, List.cons_append,
     vec_new_val, List.foldl_cons])

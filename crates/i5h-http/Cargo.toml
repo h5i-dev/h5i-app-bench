@@ -11,5 +11,6 @@ i5h-pg.workspace = true
 axum.workspace = true
 serde_json.workspace = true
 i5h-token.workspace = true
+i5h-json.workspace = true
 libcrux-hmac = "0.0.8"
 tracing.workspace = true
