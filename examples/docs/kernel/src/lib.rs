@@ -87,6 +87,25 @@ pub struct Snapshot {
     pub projects: Vec<Project>,
     pub members: Vec<Member>,
     pub documents: Vec<Document>,
+    pub webhooks: Vec<Webhook>,
+}
+
+/// A project's notification target. `dest` names an entry in the operator's
+/// destination registry, never a URL, so users cannot point the server at a
+/// host of their choosing.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct Webhook {
+    pub project: u64,
+    pub dest: u64,
+}
+
+/// A message to deliver outside the database, through the outbox.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct Effect {
+    pub dest: u64,
+    pub project: u64,
+    pub doc: u64,
+    pub version: u64,
 }
 
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -97,6 +116,9 @@ pub enum Write {
     PutDocument(Document),
     DelDocument(u64),
     SetCounter(Counter),
+    PutWebhook(Webhook),
+    DelWebhook(u64),
+    Emit(Effect),
 }
 
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -140,6 +162,11 @@ pub enum Command {
     },
     ListDocuments {
         project: u64,
+    },
+    /// Set (`Some`) or clear (`None`) the project's webhook.
+    SetWebhook {
+        project: u64,
+        dest: Option<u64>,
     },
 }
 
@@ -243,6 +270,17 @@ pub fn documents_in(docs: &Vec<Document>, project: u64) -> Vec<Document> {
         i += 1;
     }
     out
+}
+
+pub fn webhook_of(hooks: &Vec<Webhook>, project: u64) -> Option<u64> {
+    let mut i = 0;
+    while i < hooks.len() {
+        if hooks[i].project == project {
+            return Some(hooks[i].dest);
+        }
+        i += 1;
+    }
+    None
 }
 
 fn fresh_id(snap: &Snapshot) -> Result<(u64, Counter), Error> {
@@ -454,7 +492,21 @@ pub fn transition(
                 Err(e) => return Err(e),
             };
             let v = e.version;
-            Ok((one(Write::PutDocument(e)), Reply::Version(v)))
+            let effect = match webhook_of(&snap.webhooks, e.project) {
+                Some(dest) => Some(Effect {
+                    dest,
+                    project: e.project,
+                    doc: e.id,
+                    version: v,
+                }),
+                None => None,
+            };
+            let mut ws = one(Write::PutDocument(e));
+            match effect {
+                Some(eff) => ws.push(Write::Emit(eff)),
+                None => {}
+            }
+            Ok((ws, Reply::Version(v)))
         }
         Command::DeleteDocument { doc } => {
             let d = match authorized_doc(snap, user, *doc, Action::Manage) {
@@ -469,6 +521,19 @@ pub fn transition(
                 Err(e) => return Err(e),
             };
             Ok((Vec::new(), Reply::Doc(d)))
+        }
+        Command::SetWebhook { project, dest } => {
+            if !can(snap, user, *project, Action::Manage) {
+                return Err(Error::Forbidden);
+            }
+            let w = match dest {
+                Some(d) => Write::PutWebhook(Webhook {
+                    project: *project,
+                    dest: *d,
+                }),
+                None => Write::DelWebhook(*project),
+            };
+            Ok((one(w), Reply::Done))
         }
         Command::ListDocuments { project } => {
             if !can(snap, user, *project, Action::Read) {
@@ -542,6 +607,30 @@ fn del_document(v: &Vec<Document>, id: u64) -> Vec<Document> {
     out
 }
 
+fn put_webhook(v: &mut Vec<Webhook>, w: Webhook) {
+    let mut i = 0;
+    while i < v.len() {
+        if v[i].project == w.project {
+            v[i] = w;
+            return;
+        }
+        i += 1;
+    }
+    v.push(w);
+}
+
+fn del_webhook(v: &Vec<Webhook>, project: u64) -> Vec<Webhook> {
+    let mut out = Vec::new();
+    let mut i = 0;
+    while i < v.len() {
+        if v[i].project != project {
+            out.push(v[i]);
+        }
+        i += 1;
+    }
+    out
+}
+
 pub fn apply_write(s: &mut Snapshot, w: Write) {
     match w {
         Write::PutProject(p) => put_project(&mut s.projects, p),
@@ -550,6 +639,9 @@ pub fn apply_write(s: &mut Snapshot, w: Write) {
         Write::PutDocument(d) => put_document(&mut s.documents, d),
         Write::DelDocument(id) => s.documents = del_document(&s.documents, id),
         Write::SetCounter(c) => s.counter = c,
+        Write::PutWebhook(w) => put_webhook(&mut s.webhooks, w),
+        Write::DelWebhook(p) => s.webhooks = del_webhook(&s.webhooks, p),
+        Write::Emit(_) => {}
     }
 }
 

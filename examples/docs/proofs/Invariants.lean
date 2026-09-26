@@ -23,6 +23,11 @@ theorem mkey_iff (a b : Member) : mkey a = mkey b ↔ (a.project, a.user) = (b.p
 theorem dkey_iff (a b : Document) : dkey a = dkey b ↔ a.id = b.id := by
   simp [dkey, ← u64_val_inj]
 
+def hkey (w : Webhook) : Nat × Nat := (w.project.val, 0)
+
+theorem hkey_iff (a b : Webhook) : hkey a = hkey b ↔ a.project = b.project := by
+  simp [hkey, ← u64_val_inj]
+
 /-! ## Owners and roles -/
 
 theorem owners_pos_iff (ms : List Member) (p : Nat) :
@@ -142,6 +147,10 @@ theorem inv_create_project {s : St} (hi : Inv s) (c : Counter) (p : Project) (u 
   · intro d hd; have := hi.doc_fresh d hd; ((try dsimp only at *); omega)
   · exact hi.four_eyes
   · exact hi.approver_iff
+  · intro w hw
+    obtain ⟨q, hq, h⟩ := hi.hook_proj w hw
+    exact ⟨q, (hP q).2 (Or.inr hq), h⟩
+  · exact hi.hook_keys
 
 theorem inv_put_member {s : St} (hi : Inv s) (m : Member)
     (hproj : ∃ q ∈ s.projects, q.id = m.project)
@@ -227,6 +236,8 @@ theorem inv_create_doc {s : St} (hi : Inv s) (c : Counter) (d : Document)
     rcases (hD z).1 hz with rfl | hz
     · simp [hst, hap]
     · exact hi.approver_iff z hz
+  · exact hi.hook_proj
+  · exact hi.hook_keys
 
 theorem inv_put_doc {s : St} (hi : Inv s) (d old : Document)
     (hold : old ∈ s.docs) (hid : old.id = d.id) (hp : old.project = d.project)
@@ -264,6 +275,26 @@ theorem inv_del_doc {s : St} (hi : Inv s) (i : U64) : Inv (applyWrite s (.DelDoc
   · intro z hz; simp only [List.mem_filter] at hz; exact hi.four_eyes z hz.1
   · intro z hz; simp only [List.mem_filter] at hz; exact hi.approver_iff z hz.1
 
+theorem inv_put_webhook {s : St} (hi : Inv s) (w : Webhook)
+    (hproj : ∃ q ∈ s.projects, q.id = w.project) : Inv (applyWrite s (.PutWebhook w)) := by
+  simp only [applyWrite]
+  have hk := nodup_map_k_of_g _ _ hkey_iff _ hi.hook_keys
+  refine { hi with hook_proj := ?_, hook_keys := ?_ }
+  · intro z hz
+    rcases (mem_upsert_iff (x := w) hk).1 hz with rfl | ⟨hz, _⟩
+    · exact hproj
+    · exact hi.hook_proj z hz
+  · exact nodup_map_upsert _ _ hkey_iff _ _ hi.hook_keys
+
+theorem inv_del_webhook {s : St} (hi : Inv s) (p : U64) : Inv (applyWrite s (.DelWebhook p)) := by
+  simp only [applyWrite]
+  refine { hi with hook_proj := ?_, hook_keys := ?_ }
+  · intro z hz; simp only [List.mem_filter] at hz; exact hi.hook_proj z hz.1
+  · exact nodup_map_filter _ _ _ hi.hook_keys
+
+/-- Effects leave through the outbox; the state is unchanged. -/
+@[simp] theorem applyWrite_emit (s : St) (e : Effect) : applyWrite s (.Emit e) = s := rfl
+
 theorem vec_new_val (α : Type) : (alloc.vec.Vec.new α).val = [] := rfl
 
 /-- Successful transitions preserve the invariants. -/
@@ -274,7 +305,7 @@ theorem inv_preserved (a : Principal) (s : Snapshot) (c : Command) ws r
   walk transition
   all_goals (simp only [OnOk]; try trivial)
   all_goals (simp_all only [applyAll, List.foldl, List.nil_append, List.cons_append,
-    vec_new_val, List.foldl_cons])
+    vec_new_val, List.foldl_cons, applyWrite_emit])
   all_goals simp only [Snapshot.toSt] at *
   -- SetMember
   all_goals try (
@@ -294,6 +325,11 @@ theorem inv_preserved (a : Principal) (s : Snapshot) (c : Command) ws r
       | simp_all)
   -- DeleteDocument
   all_goals try exact inv_del_doc hinv _
+  -- SetWebhook
+  all_goals try exact inv_del_webhook hinv _
+  all_goals try (
+    obtain ⟨q, hq, hqid⟩ := allowed_proj hinv b_post.symm
+    exact inv_put_webhook hinv _ ⟨q, hq, u64_val_inj.1 hqid⟩)
   -- CreateProject
   all_goals try exact inv_create_project hinv _ _ a.user r_post.2 rfl
   -- CreateDocument

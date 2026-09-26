@@ -69,4 +69,13 @@ theorem documents_in_spec (ds : alloc.vec.Vec Document) (p : U64) :
     have := ds.len_ineq
     unfold documents_in_loop.body; i5h_step
 
+@[step]
+theorem webhook_of_spec (hs : alloc.vec.Vec Webhook) (p : U64) :
+    webhook_of hs p ⦃ r => r.map (·.val) = webhookOf hs.val p.val ⦄ := by
+  unfold webhook_of webhook_of_loop
+  apply WP.spec_mono (loop_search hs.val (fun w => decide (w.project.val = p.val))
+    (fun r => r.map (·.val)) (fun _ w => some w.dest.val) none _ ?_ 0#usize (by simp))
+  · intro r hr; rw [hr, searchFrom_find]; simp [webhookOf]
+  · intro j hj; unfold webhook_of_loop.body; i5h_step
+
 end docs_kernel.Lemmas

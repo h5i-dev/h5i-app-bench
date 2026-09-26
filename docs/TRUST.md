@@ -57,4 +57,4 @@ to be preserved by `transition` + `apply` holds in the database.
   is evaluated again against the new state.
 - Schema migrations: an invariant proven for the old kernel says nothing about
   data written by the old kernel and read by a new one.
-- Side effects outside the database (payments, email) need an outbox.
+- Effects are delivered at least once, not exactly once: the receiver must drop duplicates by the delivery key. The dispatcher's registry (id to endpoint) and the `Deliver` implementation are trusted; checking the endpoint's address (no private ranges, no redirects) belongs there.

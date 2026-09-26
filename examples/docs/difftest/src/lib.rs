@@ -65,11 +65,16 @@ fn list<T>(out: &mut Vec<u64>, xs: &[T], f: fn(&mut Vec<u64>, &T)) {
     xs.iter().for_each(|x| f(out, x));
 }
 
+fn hook(out: &mut Vec<u64>, w: &Webhook) {
+    out.extend([w.project, w.dest]);
+}
+
 fn snapshot(out: &mut Vec<u64>, s: &Snapshot) {
     out.push(s.counter.next_id);
     list(out, &s.projects, project);
     list(out, &s.members, member);
     list(out, &s.documents, doc);
+    list(out, &s.webhooks, hook);
 }
 
 fn command(out: &mut Vec<u64>, c: &Command) {
@@ -108,6 +113,13 @@ fn command(out: &mut Vec<u64>, c: &Command) {
         Command::DeleteDocument { doc } => out.extend([8, *doc]),
         Command::GetDocument { doc } => out.extend([9, *doc]),
         Command::ListDocuments { project } => out.extend([10, *project]),
+        Command::SetWebhook { project, dest } => {
+            out.extend([11, *project]);
+            match dest {
+                None => out.push(0),
+                Some(d) => out.extend([1, *d]),
+            }
+        }
     }
 }
 
@@ -128,6 +140,12 @@ fn write(out: &mut Vec<u64>, w: &Write) {
         }
         Write::DelDocument(i) => out.extend([4, *i]),
         Write::SetCounter(c) => out.extend([5, c.next_id]),
+        Write::PutWebhook(w) => {
+            out.push(6);
+            hook(out, w)
+        }
+        Write::DelWebhook(p) => out.extend([7, *p]),
+        Write::Emit(e) => out.extend([8, e.dest, e.project, e.doc, e.version]),
     }
 }
 
@@ -222,7 +240,7 @@ pub fn command_in(r: &mut Rng, s: &Snapshot) -> Command {
         Some(d) if r.below(3) > 0 => d.version,
         _ => 1 + r.below(4),
     };
-    match r.below(11) {
+    match r.below(12) {
         0 => Command::CreateProject { name: text(r) },
         1 => Command::SetMember {
             project: pid(r),
@@ -248,7 +266,8 @@ pub fn command_in(r: &mut Rng, s: &Snapshot) -> Command {
         7 => Command::Publish { doc: id(r) },
         8 => Command::DeleteDocument { doc: id(r) },
         9 => Command::GetDocument { doc: id(r) },
-        _ => Command::ListDocuments { project: pid(r) },
+        10 => Command::ListDocuments { project: pid(r) },
+        _ => Command::SetWebhook { project: pid(r), dest: if r.below(3) == 0 { None } else { Some(r.below(3)) } },
     }
 }
 

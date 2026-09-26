@@ -22,7 +22,8 @@ For every actor, every snapshot and every command:
 - `apply_eq`: `apply` matches the list semantics the database must implement.
 - `authorized`: every write of a successful command is allowed by the policy,
   judged against the state before the command (four-eyes rule and status
-  workflow included).
+  workflow included). An emitted effect goes only to the destination its
+  project registered, and only when a writer publishes an approved document.
 - `reply_confined`: replies contain only documents the caller may read.
 - `inv_preserved`, `reachable_inv`: every reachable state has an owner per
   project, valid references, unique keys, fresh ids, the four-eyes rule, and
@@ -51,7 +52,9 @@ writes, and `walk` / `i5h_step` execute extracted code symbolically.
 
 ## Size (2026-09-25)
 
-Rust kernel: 520 code lines. Hand-written Lean for this app: 1006 lines, of
-which the spec is 122 and proofs are 884 (about 1.7 proof lines per kernel
-line; 1312 before the shared library). The library is 313 lines and is not
-specific to this app. The mutation suite catches 12 of 12 injected bugs.
+Rust kernel: 602 code lines. Hand-written Lean for this app: 1124 lines, of
+which the spec is 139 and proofs are 985 (about 1.6 proof lines per kernel
+line; 2.3 before the shared library). The library is 313 lines and is not
+specific to this app. Adding webhooks and effects (82 kernel lines) took 17
+spec lines and 101 proof lines. The mutation suite catches 14 of 14 injected
+bugs.
