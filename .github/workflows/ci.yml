@@ -69,7 +69,7 @@ jobs:
       - name: Build the other extracted-crate proofs
         working-directory: .
         run: |
-          for d in crates/i5h-sql/proofs crates/i5h-token/proofs crates/i5h-json/proofs examples/kellnr/proofs; do
+          for d in crates/i5h-sql/proofs crates/i5h-token/proofs crates/i5h-json/proofs examples/kellnr/proofs examples/atuin/proofs; do
             mkdir -p "$d/.lake"
             ln -sfn "$GITHUB_WORKSPACE/examples/docs/proofs/.lake/packages" "$d/.lake/packages"
             (cd "$d" && lake build)
@@ -104,10 +104,12 @@ jobs:
       - run: scripts/extract-token.sh
       - run: scripts/extract-json.sh
       - run: scripts/extract-kellnr.sh
+      - run: scripts/extract-atuin.sh
       - run: |
           git diff --exit-code -- \
             examples/docs/proofs/DocsKernel.lean \
             crates/i5h-sql/proofs/I5hSql.lean \
             crates/i5h-token/proofs/I5hToken.lean \
             crates/i5h-json/proofs/I5hJson.lean \
-            examples/kellnr/proofs/KellnrKernel.lean
+            examples/kellnr/proofs/KellnrKernel.lean \
+            examples/atuin/proofs/AtuinKernel.lean

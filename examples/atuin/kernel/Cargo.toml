@@ -1,0 +1,10 @@
+[package]
+name = "atuin-kernel"
+description = "Atuin sync server's account and record rules as an i5h kernel"
+edition.workspace = true
+license.workspace = true
+version.workspace = true
+
+# Extracted to Lean by Charon + Aeneas. i5h-schema is macros only.
+[dependencies]
+i5h-schema.workspace = true

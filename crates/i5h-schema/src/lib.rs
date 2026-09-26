@@ -27,16 +27,16 @@ macro_rules! schema {
         $(
             $(#[$attr:meta])*
             $vis:vis struct $name:ident in $table:literal {
-                key { $($k:ident : $kt:ty),* $(,)? }
-                $($c:ident : $ct:ty),* $(,)?
+                key { $($(#[$kattr:meta])* $k:ident : $kt:ty),* $(,)? }
+                $($(#[$cattr:meta])* $c:ident : $ct:ty),* $(,)?
             }
         )*
     ) => {
         $(
             $(#[$attr])*
             $vis struct $name {
-                $(pub $k: $kt,)*
-                $(pub $c: $ct,)*
+                $($(#[$kattr])* pub $k: $kt,)*
+                $($(#[$cattr])* pub $c: $ct,)*
             }
         )*
         $crate::__mapping! { ($) $mapping $krate; $( $name $table [$($k)*] [$($c)*] )* }

@@ -48,6 +48,10 @@ structure, and what is still trusted.
 `examples/kellnr` applies this to a real bug: Kellnr's authorization before and
 after PR #1243. Lean proves the fixed code keeps read-only users from changing
 anything, and proves the old code wrong with a concrete counterexample.
+`examples/atuin` ports the Atuin sync server's account and record rules:
+user isolation and clean account deletion are proven, and for its open issue
+#3297 Lean shows today's code lets a session delete an account without the
+password.
 
 ## Layout
 
@@ -60,6 +64,7 @@ anything, and proves the old code wrong with a concrete counterexample.
 | `crates/i5h-sql`, `i5h-token`, `i5h-json` | extracted and proven shell pieces |
 | `examples/docs` | example kernel, server, and proofs |
 | `examples/kellnr` | Kellnr authorization port |
+| `examples/atuin` | Atuin sync server account and record port |
 | `lean/` | engine protocol model and trace checker |
 | `docs/` | [`ROADMAP.md`](docs/ROADMAP.md), [`TRUST.md`](docs/TRUST.md), [`TARGETS.md`](docs/TARGETS.md) |
 

@@ -13,6 +13,7 @@ use std::time::Instant;
 const PROJECTS: &[(&str, Option<&str>, Option<&str>)] = &[
     ("examples/docs/proofs", Some("scripts/extract.sh"), Some("examples/docs/proofs/DocsKernel.lean")),
     ("examples/kellnr/proofs", Some("scripts/extract-kellnr.sh"), Some("examples/kellnr/proofs/KellnrKernel.lean")),
+    ("examples/atuin/proofs", Some("scripts/extract-atuin.sh"), Some("examples/atuin/proofs/AtuinKernel.lean")),
     ("crates/i5h-sql/proofs", Some("scripts/extract-sql.sh"), Some("crates/i5h-sql/proofs/I5hSql.lean")),
     ("crates/i5h-token/proofs", Some("scripts/extract-token.sh"), Some("crates/i5h-token/proofs/I5hToken.lean")),
     ("crates/i5h-json/proofs", Some("scripts/extract-json.sh"), Some("crates/i5h-json/proofs/I5hJson.lean")),

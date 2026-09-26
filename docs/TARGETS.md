@@ -40,3 +40,14 @@ owner, and a token login that grants a group. Effort: 329 extracted Rust lines,
 a 60-line spec, 466 proof lines, 61 lines of counterexamples. See
 `examples/kellnr/README.md` for what is and is not modeled.
 
+
+### Atuin (2026-09-26): done
+
+`examples/atuin/` models the sync server's account and record rules (at
+5b10eb0). Lean proves user isolation, that replies contain only the caller's
+records, that deleting an account leaves no session or record behind, unique
+users and names, and the record size cap, for every command. For issue #3297
+(delete without password, still open), Lean proves the fixed kernel requires
+the password and that Atuin's current behavior lets any signed-in user delete
+without it. Effort: 470 kernel lines, a 65-line spec, 660 proof lines (about
+1.4 per kernel line). See `examples/atuin/README.md`.
