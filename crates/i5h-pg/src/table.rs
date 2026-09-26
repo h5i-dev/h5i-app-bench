@@ -6,6 +6,7 @@
 use crate::DbError;
 use bytes::BytesMut;
 use i5h::TenantId;
+use i5h_sql::{Stmt, Val, Write as SqlWrite};
 use tokio_postgres::types::{to_sql_checked, IsNull, ToSql, Type};
 use tokio_postgres::{Row, Transaction};
 
@@ -255,47 +256,92 @@ pub async fn load<A, T: Table<A>>(tx: &Transaction<'_>, tenant: TenantId) -> Res
 
 /// Insert or overwrite the tenant's row with `row`'s key.
 pub async fn upsert<A, T: Table<A>>(tx: &Transaction<'_>, tenant: TenantId, row: &T) -> Result<(), DbError> {
-    let cols = T::columns();
-    let names: Vec<_> = cols.iter().map(|c| q(c.name)).collect();
-    let placeholders: Vec<_> = (2..=cols.len() + 1).map(|i| format!("${i}")).collect();
-    let mut conflict = vec!["tenant_id".to_string()];
-    conflict.extend(names[..T::KEY_LEN].iter().cloned());
-    let rest = &names[T::KEY_LEN..];
-    let action = if rest.is_empty() {
-        "DO NOTHING".to_string()
-    } else {
-        let sets: Vec<_> = rest.iter().map(|n| format!("{n} = EXCLUDED.{n}")).collect();
-        format!("DO UPDATE SET {}", sets.join(", "))
-    };
-    let sql = format!(
-        "INSERT INTO {} (tenant_id, {}) VALUES ($1, {}) ON CONFLICT ({}) {}",
-        q(T::NAME),
-        names.join(", "),
-        placeholders.join(", "),
-        conflict.join(", "),
-        action
-    );
-    let tid = Value::Int(tenant_param(tenant)?);
-    let vals = row.to_values()?;
-    let mut params: Vec<&(dyn ToSql + Sync)> = vec![&tid];
-    params.extend(vals.iter().map(|v| v as &(dyn ToSql + Sync)));
-    tx.execute(&sql, &params).await?;
-    Ok(())
+    let vals: Vec<Val> = row.to_values()?.iter().map(to_val).collect();
+    let w = SqlWrite::Put { table: 0, key_len: T::KEY_LEN as u32, row: vals };
+    run_stmt::<A, T>(tx, tenant, planned(w)).await
 }
 
 /// Delete the tenant's row of `T` whose key columns equal `key`.
 pub async fn delete<A, T: Table<A>>(tx: &Transaction<'_>, tenant: TenantId, key: &[Value]) -> Result<(), DbError> {
+    let w = SqlWrite::Del { table: 0, key: key.iter().map(to_val).collect() };
+    run_stmt::<A, T>(tx, tenant, planned(w)).await
+}
+
+/// The statement `i5h_sql::plan` (proven in Lean) gives for one write.
+fn planned(w: SqlWrite) -> Stmt {
+    let mut stmts = i5h_sql::plan(&vec![w]);
+    stmts.pop().expect("plan gives one statement per write")
+}
+
+// Trusted part of A4: the SQL text for a planned statement. An upsert stores
+// `key ++ rest` at `key`; a delete removes the row at `key`. Both are scoped
+// to the tenant, whose id is part of every primary key.
+async fn run_stmt<A, T: Table<A>>(tx: &Transaction<'_>, tenant: TenantId, stmt: Stmt) -> Result<(), DbError> {
     let cols = T::columns();
-    if key.len() != T::KEY_LEN {
-        return Err(DbError::Decode(format!("{}: key has {} values, expected {}", T::NAME, key.len(), T::KEY_LEN)));
-    }
-    let conds: Vec<_> = cols[..T::KEY_LEN].iter().enumerate().map(|(i, c)| format!(" AND {} = ${}", q(c.name), i + 2)).collect();
-    let sql = format!("DELETE FROM {} WHERE tenant_id = $1{}", q(T::NAME), conds.concat());
+    let names: Vec<_> = cols.iter().map(|c| q(c.name)).collect();
     let tid = Value::Int(tenant_param(tenant)?);
-    let mut params: Vec<&(dyn ToSql + Sync)> = vec![&tid];
-    params.extend(key.iter().map(|v| v as &(dyn ToSql + Sync)));
-    tx.execute(&sql, &params).await?;
+    match stmt {
+        Stmt::Upsert { key, rest, .. } => {
+            if key.len() != T::KEY_LEN || key.len() + rest.len() != cols.len() {
+                return Err(DbError::Decode(format!("{}: row does not match its columns", T::NAME)));
+            }
+            let placeholders: Vec<_> = (2..=cols.len() + 1).map(|i| format!("${i}")).collect();
+            let mut conflict = vec!["tenant_id".to_string()];
+            conflict.extend(names[..T::KEY_LEN].iter().cloned());
+            let rest_names = &names[T::KEY_LEN..];
+            // With no non-key columns the stored row equals its key, so keeping it is replacing it.
+            let action = if rest_names.is_empty() {
+                "DO NOTHING".to_string()
+            } else {
+                let sets: Vec<_> = rest_names.iter().map(|n| format!("{n} = EXCLUDED.{n}")).collect();
+                format!("DO UPDATE SET {}", sets.join(", "))
+            };
+            let sql = format!(
+                "INSERT INTO {} (tenant_id, {}) VALUES ($1, {}) ON CONFLICT ({}) {}",
+                q(T::NAME),
+                names.join(", "),
+                placeholders.join(", "),
+                conflict.join(", "),
+                action
+            );
+            let vals = key.iter().chain(rest.iter()).map(from_val).collect::<Result<Vec<_>, _>>()?;
+            let mut params: Vec<&(dyn ToSql + Sync)> = vec![&tid];
+            params.extend(vals.iter().map(|v| v as &(dyn ToSql + Sync)));
+            tx.execute(&sql, &params).await?;
+        }
+        Stmt::Delete { key, .. } => {
+            if key.len() != T::KEY_LEN {
+                return Err(DbError::Decode(format!("{}: key has {} values, expected {}", T::NAME, key.len(), T::KEY_LEN)));
+            }
+            let conds: Vec<_> = names[..T::KEY_LEN].iter().enumerate().map(|(i, n)| format!(" AND {} = ${}", n, i + 2)).collect();
+            let sql = format!("DELETE FROM {} WHERE tenant_id = $1{}", q(T::NAME), conds.concat());
+            let vals = key.iter().map(from_val).collect::<Result<Vec<_>, _>>()?;
+            let mut params: Vec<&(dyn ToSql + Sync)> = vec![&tid];
+            params.extend(vals.iter().map(|v| v as &(dyn ToSql + Sync)));
+            tx.execute(&sql, &params).await?;
+        }
+    }
     Ok(())
+}
+
+fn to_val(v: &Value) -> Val {
+    match v {
+        Value::Int(i) => Val::Int(*i),
+        Value::Bool(b) => Val::Bool(*b),
+        Value::Text(s) => Val::Text(s.clone().into_bytes()),
+        Value::Bytes(b) => Val::Bytes(b.clone()),
+        Value::Null => Val::Null,
+    }
+}
+
+fn from_val(v: &Val) -> Result<Value, DbError> {
+    Ok(match v {
+        Val::Int(i) => Value::Int(*i),
+        Val::Bool(b) => Value::Bool(*b),
+        Val::Text(b) => Value::Text(String::from_utf8(b.clone()).map_err(|e| DbError::Decode(e.to_string()))?),
+        Val::Bytes(b) => Value::Bytes(b.clone()),
+        Val::Null => Value::Null,
+    })
 }
 
 /// Convert a key field for [`delete`].

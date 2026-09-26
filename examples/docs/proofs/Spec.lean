@@ -8,6 +8,12 @@ the policy table below. Nothing here refers to the kernel's own helpers
 -/
 open Aeneas Aeneas.Std
 
+namespace docs_kernel
+
+deriving instance DecidableEq for Role, Action, Status
+
+end docs_kernel
+
 namespace docs_kernel.Spec
 
 /-! ## Policy (the requirement, typed in from the product spec) -/
@@ -81,6 +87,8 @@ structure Inv (s : St) : Prop where
   someone other than their author. -/
   four_eyes : ∀ d ∈ s.docs, d.status = .Approved ∨ d.status = .Published →
     ∃ a, d.approver = some a ∧ a ≠ d.author
+  /-- A document names an approver exactly when it is approved or published. -/
+  approver_iff : ∀ d ∈ s.docs, d.approver.isSome ↔ (d.status = .Approved ∨ d.status = .Published)
 
 def init : St := ⟨0, [], [], []⟩
 

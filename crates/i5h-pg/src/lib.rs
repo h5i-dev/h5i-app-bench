@@ -2,11 +2,15 @@
 //!
 //! Per request: BEGIN SERIALIZABLE, optional tenant advisory lock, replay a
 //! stored idempotent reply if any, load snapshot, run `transition`, write,
-//! COMMIT. A serialization failure restarts from BEGIN, so a decision is never
-//! reused on a snapshot it was not computed from.
+//! COMMIT. A serialization failure or lost connection restarts from BEGIN, so a
+//! decision is never reused on a snapshot it was not computed from. A connection
+//! lost during COMMIT is retried only under an idempotency key; otherwise the
+//! caller gets `DbError::CommitUnknown`.
 
+mod roles;
 mod table;
 
+pub use roles::{lockdown, lockdown_sql};
 pub use table::{column_of, ddl, delete, key, load, upsert, ColumnDef, Kind, PgField, Table, Value};
 
 use deadpool_postgres::{Config, Pool, Runtime};
@@ -28,6 +32,8 @@ pub enum DbError {
     Decode(String),
     IdempotencyConflict,
     RetriesExhausted,
+    /// The connection dropped during COMMIT, so it may or may not have committed.
+    CommitUnknown(tokio_postgres::Error),
 }
 
 impl std::fmt::Display for DbError {
@@ -38,6 +44,7 @@ impl std::fmt::Display for DbError {
             DbError::Decode(e) => write!(f, "decode: {e}"),
             DbError::IdempotencyConflict => write!(f, "idempotency key reused for a different command"),
             DbError::RetriesExhausted => write!(f, "too many serialization failures"),
+            DbError::CommitUnknown(e) => write!(f, "commit outcome unknown: {e}"),
         }
     }
 }
@@ -58,8 +65,28 @@ impl DbError {
         }
     }
 
+    /// Safe to rerun from BEGIN: the attempt certainly did not commit.
     fn is_retryable(&self) -> bool {
-        matches!(self.code(), Some(c) if *c == SqlState::T_R_SERIALIZATION_FAILURE || *c == SqlState::T_R_DEADLOCK_DETECTED)
+        match self {
+            DbError::Postgres(e) => {
+                e.is_closed()
+                    || matches!(e.code(), Some(c) if *c == SqlState::T_R_SERIALIZATION_FAILURE
+                        || *c == SqlState::T_R_DEADLOCK_DETECTED
+                        || *c == SqlState::ADMIN_SHUTDOWN
+                        || *c == SqlState::CRASH_SHUTDOWN)
+            }
+            _ => false,
+        }
+    }
+}
+
+/// An error from COMMIT without a server error code means the connection was lost
+/// after COMMIT may have reached the server.
+fn commit_error(e: tokio_postgres::Error) -> DbError {
+    if e.code().is_some() {
+        DbError::Postgres(e)
+    } else {
+        DbError::CommitUnknown(e)
     }
 }
 
@@ -68,6 +95,9 @@ impl DbError {
 pub trait Store<K: Kernel>: Send + Sync + 'static {
     /// Usually `vec![ddl::<A, Row>(), ...]`.
     fn ddl() -> Vec<String>;
+
+    /// Names of the tables created by `ddl`, for [`lockdown`].
+    fn tables() -> Vec<&'static str>;
 
     fn load(tx: &Transaction<'_>, tenant: TenantId) -> impl Future<Output = Result<K::Snapshot, DbError>> + Send;
 
@@ -82,6 +112,8 @@ pub trait ReplyCodec<K: Kernel>: Send + Sync + 'static {
     fn encode(reply: &K::Reply) -> Vec<u8>;
     fn decode(bytes: &[u8]) -> Result<K::Reply, String>;
 }
+
+pub(crate) const FRAMEWORK_TABLES: &[&str] = &["i5h_idempotency"];
 
 const FRAMEWORK_DDL: &str = "CREATE TABLE IF NOT EXISTS i5h_idempotency (
   tenant_id BIGINT NOT NULL,
@@ -143,10 +175,6 @@ impl<K: Kernel, S: Store<K>> Engine<K, S> {
         Engine { pool, config, stats: EngineStats::default(), _marker: PhantomData }
     }
 
-    pub fn pool(&self) -> &Pool {
-        &self.pool
-    }
-
     pub async fn install_schema(&self) -> Result<(), DbError> {
         let client = self.pool.get().await.map_err(|e| DbError::Pool(e.to_string()))?;
         client.batch_execute(FRAMEWORK_DDL).await?;
@@ -201,7 +229,12 @@ impl<K: Kernel, S: Store<K>> Engine<K, S> {
                     self.stats.replays.fetch_add(1, Ordering::Relaxed);
                     return Ok(Ok(r));
                 }
-                Err(e) if e.is_retryable() || (idem.is_some() && e.code() == Some(&SqlState::UNIQUE_VIOLATION)) => {
+                // With a key, a retry after an unknown commit replays or reruns safely.
+                Err(e)
+                    if e.is_retryable()
+                        || (idem.is_some()
+                            && (e.code() == Some(&SqlState::UNIQUE_VIOLATION) || matches!(e, DbError::CommitUnknown(_)))) =>
+                {
                     self.stats.retries.fetch_add(1, Ordering::Relaxed);
                     tracing::debug!(attempt, error = %e, "retrying transaction");
                     tokio::time::sleep(backoff(attempt)).await;
@@ -255,7 +288,7 @@ impl<K: Kernel, S: Store<K>> Engine<K, S> {
                     )
                     .await?;
                 }
-                tx.commit().await?;
+                tx.commit().await.map_err(commit_error)?;
                 Ok(Attempt::Done(Ok(reply)))
             }
         }

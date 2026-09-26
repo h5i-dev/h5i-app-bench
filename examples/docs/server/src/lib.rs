@@ -3,7 +3,7 @@
 use axum::http::StatusCode;
 use docs_kernel as k;
 use i5h::{Kernel, TenantId};
-use i5h_pg::{ddl, delete, key, load, table, upsert, DbError, PgField, ReplyCodec, Store, Value};
+use i5h_pg::{ddl, delete, key, load, table, upsert, DbError, PgField, ReplyCodec, Store, Table, Value};
 use i5h_pg::tokio_postgres::Transaction;
 use serde::{Deserialize, Serialize};
 use serde_json::{json, Value as Json};
@@ -71,6 +71,15 @@ impl Store<DocsApp> for DocsStore {
             ddl::<DocsApp, k::Project>(),
             ddl::<DocsApp, k::Member>(),
             ddl::<DocsApp, k::Document>(),
+        ]
+    }
+
+    fn tables() -> Vec<&'static str> {
+        vec![
+            <k::Counter as Table<DocsApp>>::NAME,
+            <k::Project as Table<DocsApp>>::NAME,
+            <k::Member as Table<DocsApp>>::NAME,
+            <k::Document as Table<DocsApp>>::NAME,
         ]
     }
 

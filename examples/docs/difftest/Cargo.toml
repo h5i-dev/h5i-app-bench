@@ -1,0 +1,10 @@
+[package]
+name = "docs-difftest"
+description = "Differential test: Rust kernel vs its Aeneas-extracted Lean translation"
+edition.workspace = true
+license.workspace = true
+version.workspace = true
+publish = false
+
+[dependencies]
+docs-kernel.workspace = true

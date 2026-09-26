@@ -10,11 +10,9 @@ use axum::http::{HeaderMap, StatusCode};
 use axum::response::{IntoResponse, Response};
 use axum::routing::post;
 use axum::{Json, Router};
-use hmac::{Hmac, Mac};
 use i5h::Kernel;
 use i5h_pg::{DbError, Engine, ReplyCodec, Store};
 use serde_json::{json, Value};
-use sha2::Sha256;
 use std::sync::Arc;
 use std::time::{SystemTime, UNIX_EPOCH};
 
@@ -42,36 +40,37 @@ impl<K: Kernel> HmacAuth<K> {
         HmacAuth { secret: secret.into(), principal }
     }
 
-    fn sign(&self, payload: &str) -> String {
-        let mut mac = Hmac::<Sha256>::new_from_slice(&self.secret).expect("hmac accepts any key length");
-        mac.update(payload.as_bytes());
-        hex::encode(mac.finalize().into_bytes())
+    fn tag(&self, payload: &[u8]) -> Vec<u8> {
+        libcrux_hmac::hmac(libcrux_hmac::Algorithm::Sha256, &self.secret, payload, None)
     }
 
     pub fn issue(&self, tenant: u64, user: u64, ttl_secs: u64) -> String {
-        let payload = format!("v1.{tenant}.{user}.{}", now() + ttl_secs);
-        let sig = self.sign(&payload);
-        format!("{payload}.{sig}")
+        let payload = i5h_token::encode_payload(tenant, user, now() + ttl_secs);
+        let token = i5h_token::join(&payload, &self.tag(&payload));
+        String::from_utf8(token).expect("tokens are ascii")
     }
 
+    /// Parsing is verified (`i5h-token/proofs`): the signed payload names
+    /// exactly one tenant, user and expiry.
     fn verify(&self, token: &str) -> Result<(u64, u64), AuthError> {
         let err = |m: &str| AuthError(m.to_string());
-        let (payload, sig) = token.rsplit_once('.').ok_or_else(|| err("malformed token"))?;
-        let mut mac = Hmac::<Sha256>::new_from_slice(&self.secret).expect("hmac accepts any key length");
-        mac.update(payload.as_bytes());
-        let sig = hex::decode(sig).map_err(|_| err("malformed signature"))?;
-        mac.verify_slice(&sig).map_err(|_| err("bad signature"))?;
-        let parts: Vec<_> = payload.split('.').collect();
-        let [ver, tenant, user, exp] = parts[..] else { return Err(err("malformed token")) };
-        if ver != "v1" {
-            return Err(err("unknown token version"));
+        let t = i5h_token::parse(token.as_bytes()).ok_or_else(|| err("malformed token"))?;
+        if !ct_eq(&self.tag(&t.payload), &t.sig) {
+            return Err(err("bad signature"));
         }
-        let num = |s: &str| s.parse::<u64>().map_err(|_| err("malformed token"));
-        if num(exp)? < now() {
+        if t.exp < now() {
             return Err(err("token expired"));
         }
-        Ok((num(tenant)?, num(user)?))
+        Ok((t.tenant, t.user))
     }
+}
+
+/// Constant-time equality, so the comparison does not leak the tag.
+fn ct_eq(a: &[u8], b: &[u8]) -> bool {
+    if a.len() != b.len() {
+        return false;
+    }
+    a.iter().zip(b).fold(0u8, |acc, (x, y)| acc | (x ^ y)) == 0
 }
 
 impl<K: Kernel> Authenticator<K> for HmacAuth<K> {
