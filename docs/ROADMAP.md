@@ -57,7 +57,7 @@ properties is secondary.
 
 - Port 2 or 3 axum apps from the target survey.
 - Where a target had a past vulnerability, show the proof fails on the vulnerable version and passes on the fix.
-  Done for Kellnr (`examples/kellnr`): the read-only theorem is proven for the code after PR #1243 and disproven, with a concrete session login that adds an owner, for the code before it. See `docs/TARGETS.md`.
+  Done for Kellnr (`examples/kellnr`): the read-only theorem is proven for the code after PR #1243 and disproven, with a concrete session login that adds an owner, for the code before it. Done for Atuin (`examples/atuin`): user isolation, reply confinement, no orphaned rows after account deletion, and the size cap are proven; for issue #3297 (delete without password, still open), the requested behavior is proven for a fixed kernel and Atuin's current behavior is proven to allow it. See `docs/TARGETS.md`.
 - Publish the numbers; run a pilot.
 
 ## Irreducible trust

@@ -9,11 +9,11 @@ replace the row with the same key, or append.
 namespace I5hLib
 
 /-- Replace the first row with `x`'s key by `x`, or append `x`. -/
-def upsert {α} (key : α → Nat × Nat) (x : α) : List α → List α
+def upsert {α} {κ : Type} [DecidableEq κ] (key : α → κ) (x : α) : List α → List α
   | [] => [x]
   | y :: ys => if key y = key x then x :: ys else y :: upsert key x ys
 
-theorem upsert_eq {α} (key : α → Nat × Nat) (x : α) (l : List α) :
+theorem upsert_eq {α} {κ : Type} [DecidableEq κ] (key : α → κ) (x : α) (l : List α) :
     upsert key x l = upsertBy (fun y => decide (key y = key x)) x l := by
   induction l with
   | nil => rfl
@@ -21,7 +21,7 @@ theorem upsert_eq {α} (key : α → Nat × Nat) (x : α) (l : List α) :
 
 /-- What an upsert loop started at `i` returns, when the prefix before `i`
 has no match. -/
-theorem upsert_loop_result {α} (key : α → Nat × Nat) (x : α) (v : List α) (i : Nat)
+theorem upsert_loop_result {α} {κ : Type} [DecidableEq κ] (key : α → κ) (x : α) (v : List α) (i : Nat)
     (hi : i ≤ v.length) (hpre : upsert key x v = v.take i ++ upsert key x (v.drop i)) :
     searchFrom v (fun q => decide (key q = key x)) (fun j _ => v.set j x) (v ++ [x]) i =
       upsert key x v := by
@@ -32,7 +32,7 @@ theorem filter_split {α} (P : α → Bool) (l : List α) (k : Nat) :
     (l.take k).filter P ++ (l.drop k).filter P = l.filter P := by
   rw [← List.filter_append, List.take_append_drop]
 
-theorem upsert_length {α} (key : α → Nat × Nat) (x : α) (l : List α) :
+theorem upsert_length {α} {κ : Type} [DecidableEq κ] (key : α → κ) (x : α) (l : List α) :
     (upsert key x l).length ≤ l.length + 1 := by
   induction l with
   | nil => simp [upsert]
@@ -41,7 +41,7 @@ theorem upsert_length {α} (key : α → Nat × Nat) (x : α) (l : List α) :
 section Lists
 variable {α β : Type}
 
-theorem mem_upsert_of {k : α → Nat × Nat} {x z : α} {l : List α}
+theorem mem_upsert_of {κ : Type} [DecidableEq κ] {k : α → κ} {x z : α} {l : List α}
     (h : z ∈ upsert k x l) : z = x ∨ z ∈ l := by
   induction l with
   | nil => simp [upsert] at h; exact Or.inl h
@@ -57,12 +57,12 @@ theorem mem_upsert_of {k : α → Nat × Nat} {x z : α} {l : List α}
         · exact Or.inl h
         · exact Or.inr (List.mem_cons_of_mem _ h)
 
-theorem mem_upsert_self (k : α → Nat × Nat) (x : α) (l : List α) : x ∈ upsert k x l := by
+theorem mem_upsert_self {κ : Type} [DecidableEq κ] (k : α → κ) (x : α) (l : List α) : x ∈ upsert k x l := by
   induction l with
   | nil => simp [upsert]
   | cons y ys ih => unfold upsert; split <;> simp [ih]
 
-theorem mem_upsert_of_ne {k : α → Nat × Nat} {x z : α} {l : List α}
+theorem mem_upsert_of_ne {κ : Type} [DecidableEq κ] {k : α → κ} {x z : α} {l : List α}
     (hz : z ∈ l) (hk : k z ≠ k x) : z ∈ upsert k x l := by
   induction l with
   | nil => simp at hz
@@ -79,7 +79,7 @@ theorem mem_upsert_of_ne {k : α → Nat × Nat} {x z : α} {l : List α}
       · exact List.mem_cons_of_mem _ (ih hz)
 
 /-- With unique keys, `upsert` replaces exactly the row with `x`'s key. -/
-theorem mem_upsert_iff {k : α → Nat × Nat} {x z : α} {l : List α} (hl : (l.map k).Nodup) :
+theorem mem_upsert_iff {κ : Type} [DecidableEq κ] {k : α → κ} {x z : α} {l : List α} (hl : (l.map k).Nodup) :
     z ∈ upsert k x l ↔ z = x ∨ (z ∈ l ∧ k z ≠ k x) := by
   constructor
   · intro h
@@ -104,7 +104,7 @@ theorem mem_upsert_iff {k : α → Nat × Nat} {x z : α} {l : List α} (hl : (l
     · exact mem_upsert_self k _ l
     · exact mem_upsert_of_ne hz hk
 
-theorem nodup_map_upsert (k : α → Nat × Nat) (g : α → β) (hk : ∀ a b, k a = k b ↔ g a = g b)
+theorem nodup_map_upsert {κ : Type} [DecidableEq κ] (k : α → κ) (g : α → β) (hk : ∀ a b, k a = k b ↔ g a = g b)
     (x : α) (l : List α) (h : (l.map g).Nodup) : ((upsert k x l).map g).Nodup := by
   induction l with
   | nil => simp [upsert]
@@ -125,7 +125,7 @@ theorem nodup_map_upsert (k : α → Nat × Nat) (g : α → β) (hk : ∀ a b, 
       · exact hy ((hk _ _).2 hzg.symm)
       · exact h.1 ⟨z, hz, hzg⟩
 
-theorem nodup_map_k_of_g (k : α → Nat × Nat) (g : α → β) (hk : ∀ a b, k a = k b ↔ g a = g b)
+theorem nodup_map_k_of_g {κ : Type} [DecidableEq κ] (k : α → κ) (g : α → β) (hk : ∀ a b, k a = k b ↔ g a = g b)
     (l : List α) (h : (l.map g).Nodup) : (l.map k).Nodup := by
   induction l with
   | nil => simp

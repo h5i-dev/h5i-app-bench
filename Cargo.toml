@@ -9,6 +9,7 @@ members = [
     "examples/docs/kernel",
     "examples/docs/server",
     "examples/docs/difftest",
+    "examples/atuin/kernel",
     "crates/i5h-sql",
     "crates/i5h-token",
     "examples/kellnr/kernel",
