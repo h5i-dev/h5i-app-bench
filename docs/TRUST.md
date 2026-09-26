@@ -51,8 +51,10 @@ to be preserved by `transition` + `apply` holds in the database.
 
 ## Not covered yet
 
-- Reads are whole-tenant snapshots. Narrower reads need a proof that the
-  transition only depends on the part that was loaded.
+- Scoped reads: `DocsStore::load_for` must return exactly `Frame.slice`; that
+  mapping from a scope to SQL is tested, not proven. `transition_frame`
+  proves the kernel's result on the slice equals its result on the whole
+  tenant.
 - Refusals are not stored under idempotency keys. A retried refused command
   is evaluated again against the new state.
 - Schema migrations: an invariant proven for the old kernel says nothing about

@@ -58,3 +58,23 @@ pub fn random_command(r: &mut Rng) -> k::Command {
         _ => k::Command::SetWebhook { project: id(r), dest: if r.next(3) == 0 { None } else { Some(r.next(3)) } },
     }
 }
+
+/// `Frame.slice` from the proofs, for checking `DocsStore::load_for`.
+pub fn slice(s: &k::Snapshot, scope: k::Scope) -> k::Snapshot {
+    let keep = |p: u64| k::Snapshot {
+        counter: s.counter.clone(),
+        projects: s.projects.iter().filter(|q| q.id == p).cloned().collect(),
+        members: s.members.iter().filter(|m| m.project == p).cloned().collect(),
+        documents: s.documents.iter().filter(|d| d.project == p).cloned().collect(),
+        webhooks: s.webhooks.iter().filter(|w| w.project == p).cloned().collect(),
+    };
+    let counter_only = k::Snapshot { counter: s.counter.clone(), ..Default::default() };
+    match scope {
+        k::Scope::Counter => counter_only,
+        k::Scope::Project(p) => keep(p),
+        k::Scope::Document(d) => match s.documents.iter().find(|x| x.id == d) {
+            Some(doc) => keep(doc.project),
+            None => counter_only,
+        },
+    }
+}

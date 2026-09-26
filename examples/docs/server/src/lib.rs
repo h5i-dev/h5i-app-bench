@@ -3,7 +3,7 @@
 use axum::http::StatusCode;
 use docs_kernel as k;
 use i5h::{Kernel, TenantId};
-use i5h_pg::{delete, key, load, upsert, DbError, PgField, ReplyCodec, Store, Tx, Value};
+use i5h_pg::{delete, key, load, load_where, upsert, DbError, PgField, ReplyCodec, Store, Tx, Value};
 use serde::{Deserialize, Serialize};
 use i5h_json::Value as Out;
 
@@ -71,7 +71,10 @@ pub struct DocsStore;
 
 impl Store<DocsApp> for DocsStore {
     fn ddl() -> Vec<String> {
-        schema_ddl()
+        let mut ddl = schema_ddl();
+        // Scoped reads filter documents by project.
+        ddl.push("CREATE INDEX IF NOT EXISTS documents_by_project ON documents (tenant_id, project)".into());
+        ddl
     }
 
     fn tables() -> Vec<&'static str> {
@@ -86,6 +89,32 @@ impl Store<DocsApp> for DocsStore {
             members: load::<DocsApp, _>(tx, t).await?,
             documents: load::<DocsApp, _>(tx, t).await?,
             webhooks: load::<DocsApp, _>(tx, t).await?,
+        })
+    }
+
+    /// Exactly `Frame.slice` in the proofs: the counter, plus every row of the
+    /// command's project. `transition_frame` proves the kernel's result is the
+    /// same as on the whole tenant.
+    async fn load_for(tx: &Tx<'_>, t: TenantId, cmd: &k::Command) -> Result<k::Snapshot, DbError> {
+        let counter = load::<DocsApp, k::Counter>(tx, t).await?.pop().unwrap_or_default();
+        let project = match k::read_scope(cmd) {
+            k::Scope::Counter => None,
+            k::Scope::Project(p) => Some(p),
+            k::Scope::Document(d) => {
+                let docs: Vec<k::Document> = load_where::<DocsApp, _>(tx, t, "id", key::<DocsApp, _>(&d)?).await?;
+                docs.first().map(|doc| doc.project)
+            }
+        };
+        let Some(p) = project else {
+            return Ok(k::Snapshot { counter, ..Default::default() });
+        };
+        let p = key::<DocsApp, _>(&p)?;
+        Ok(k::Snapshot {
+            counter,
+            projects: load_where::<DocsApp, _>(tx, t, "id", p.clone()).await?,
+            members: load_where::<DocsApp, _>(tx, t, "project", p.clone()).await?,
+            documents: load_where::<DocsApp, _>(tx, t, "project", p.clone()).await?,
+            webhooks: load_where::<DocsApp, _>(tx, t, "project", p).await?,
         })
     }
 

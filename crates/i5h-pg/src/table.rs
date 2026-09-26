@@ -255,6 +255,28 @@ pub async fn load<A, T: Table<A>>(tx: &Tx<'_>, tenant: TenantId) -> Result<Vec<T
     rows.iter().map(|r| read_row(&cols, r).and_then(|v| T::from_values(&v))).collect()
 }
 
+/// The tenant's rows of `T` whose `column` equals `value`, in key order.
+/// `column` must be one of `T`'s columns.
+pub async fn load_where<A, T: Table<A>>(tx: &Tx<'_>, tenant: TenantId, column: &str, value: Value) -> Result<Vec<T>, DbError> {
+    let cols = T::columns();
+    if !cols.iter().any(|c| c.name == column) {
+        return Err(DbError::Decode(format!("{} has no column {column}", T::NAME)));
+    }
+    let names: Vec<_> = cols.iter().map(|c| q(c.name)).collect();
+    let order = &names[..T::KEY_LEN];
+    let order = if order.is_empty() { String::new() } else { format!(" ORDER BY {}", order.join(", ")) };
+    let sql = format!(
+        "SELECT {} FROM {} WHERE tenant_id = $1 AND {} = $2{}",
+        names.join(", "),
+        q(T::NAME),
+        q(column),
+        order
+    );
+    let tid = tenant_param(tenant)?;
+    let rows = tx.0.query(&sql, &[&tid, &value]).await?;
+    rows.iter().map(|r| read_row(&cols, r).and_then(|v| T::from_values(&v))).collect()
+}
+
 /// Insert or overwrite the tenant's row with `row`'s key.
 pub async fn upsert<A, T: Table<A>>(tx: &Tx<'_>, tenant: TenantId, row: &T) -> Result<(), DbError> {
     let vals: Vec<Val> = row.to_values()?.iter().map(to_val).collect();
