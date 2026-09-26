@@ -17,11 +17,11 @@ fi
 
 theorems="Theorems.allows_eq Theorems.transition_total Theorems.apply_eq Theorems.authorized
   Theorems.reply_confined Theorems.inv_preserved Theorems.reachable_inv Theorems.noninterference
-  Frame.transition_frame"
+  Frame.transition_frame Check.check_inv_spec"
 mkdir -p .lake/ci
 {
   # Modules holding the main theorems.
-  for m in Theorems Invariants Noninterference Frame; do echo "import $m"; done
+  for m in Theorems Invariants Noninterference Frame Check; do echo "import $m"; done
   for t in $theorems; do echo "#print axioms docs_kernel.$t"; done
 } > .lake/ci/Axioms.lean
 out=$(lake env lean .lake/ci/Axioms.lean 2>&1)

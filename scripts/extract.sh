@@ -7,6 +7,6 @@ root=$(cd "$(dirname "$0")/.." && pwd)
 tmp=$(mktemp -d)
 trap 'rm -rf "$tmp"' EXIT
 (cd "$root/examples/docs/kernel" && charon cargo --preset=aeneas \
-  --start-from docs_kernel::transition --start-from docs_kernel::apply --start-from docs_kernel::read_scope \
+  --start-from docs_kernel::transition --start-from docs_kernel::apply --start-from docs_kernel::read_scope --start-from docs_kernel::check_inv \
   --dest-file "$tmp/docs_kernel.llbc")
 aeneas -backend lean "$tmp/docs_kernel.llbc" -dest "$root/examples/docs/proofs"

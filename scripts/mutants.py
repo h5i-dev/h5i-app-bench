@@ -22,7 +22,7 @@ import time
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 KERNEL = os.path.join(ROOT, "examples/docs/kernel")
 PROOFS = os.path.join(ROOT, "examples/docs/proofs")
-THEOREMS = ["Theorems", "Invariants", "Noninterference", "Frame"]
+THEOREMS = ["Theorems", "Invariants", "Noninterference", "Frame", "Check"]
 
 # name -> list of (old, new) replacements in kernel/src/lib.rs
 MUTANTS = {
@@ -82,6 +82,9 @@ MUTANTS = {
     "scope_too_narrow": [
         ("Command::SetWebhook { project, .. } => Scope::Project(*project),",
          "Command::SetWebhook { .. } => Scope::Counter,"),
+    ],
+    "checker_skips_doc_ids": [
+        ("        && doc_ids_unique(&s.documents)\n", ""),
     ],
     "manage_any_project": [
         ("            role,\n        } => {\n            if !can(snap, user, *project, Action::Manage) {",
@@ -156,6 +159,7 @@ def check(name, edits, keep):
         llbc = os.path.join(tmp, "docs_kernel.llbc")
         rc = run(["charon", "cargo", "--preset=aeneas", "--start-from", "docs_kernel::transition",
                   "--start-from", "docs_kernel::apply", "--start-from", "docs_kernel::read_scope",
+                  "--start-from", "docs_kernel::check_inv",
                   "--dest-file", llbc], os.path.join(tmp, "kernel"), log)
         if rc != 0:
             return name, "invalid (charon)", tmp

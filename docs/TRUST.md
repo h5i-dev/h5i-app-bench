@@ -57,6 +57,7 @@ to be preserved by `transition` + `apply` holds in the database.
   tenant.
 - Refusals are not stored under idempotency keys. A retried refused command
   is evaluated again against the new state.
-- Schema migrations: an invariant proven for the old kernel says nothing about
-  data written by the old kernel and read by a new one.
+- Migrations are checked, not proven: `Engine::migrate` commits only if every
+  tenant passes the proven-exact checker afterwards. Checking cost grows with
+  the data; very large tenants need the check batched.
 - Effects are delivered at least once, not exactly once: the receiver must drop duplicates by the delivery key. The dispatcher's registry (id to endpoint) and the `Deliver` implementation are trusted; checking the endpoint's address (no private ranges, no redirects) belongs there.

@@ -139,6 +139,29 @@ theorem nodup_map_filter (g : α → β) (p : α → Bool) (l : List α) (h : (l
     ((l.filter p).map g).Nodup :=
   (List.Sublist.map g List.filter_sublist).nodup h
 
+/-- Keys are unique iff no element has a later element with the same key. -/
+theorem nodup_map_iff_no_later {α β} (g : α → β) (l : List α) [DecidableEq β] :
+    (l.map g).Nodup ↔ ∀ i (hi : i < l.length), ((l.drop (i + 1)).any (fun y => decide (g y = g l[i]))) = false := by
+  rw [List.Nodup, List.pairwise_map, List.pairwise_iff_getElem]
+  constructor
+  · intro h i hi
+    rw [Bool.eq_false_iff]
+    intro hany
+    simp only [List.any_eq_true, decide_eq_true_eq] at hany
+    obtain ⟨y, hy, hgy⟩ := hany
+    obtain ⟨j, hj, rfl⟩ := List.getElem_of_mem hy
+    rw [List.getElem_drop] at hgy
+    exact h i (i + 1 + j) hi (by simp at hj; omega) (by omega) hgy.symm
+  · intro h i j hi hj hij hg
+    have := h i hi
+    rw [Bool.eq_false_iff] at this
+    apply this
+    simp only [List.any_eq_true, decide_eq_true_eq]
+    refine ⟨l[j], ?_, hg.symm⟩
+    have : j = (i + 1) + (j - (i + 1)) := by omega
+    rw [List.mem_iff_getElem]
+    exact ⟨j - (i + 1), by simp; omega, by rw [List.getElem_drop]; congr 1; omega⟩
+
 end Lists
 
 end I5hLib

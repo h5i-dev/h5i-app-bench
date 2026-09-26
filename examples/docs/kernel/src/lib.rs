@@ -691,6 +691,205 @@ pub fn apply(snap: &Snapshot, ws: &Vec<Write>) -> Snapshot {
     s
 }
 
+// ---- Invariant checker ----
+//
+// `check_inv` returns true exactly when the Lean `Inv` holds (proven in
+// `proofs/Check.lean`). Migrations run it on every tenant before committing.
+// Each check searches for a counterexample.
+
+fn projects_owned(s: &Snapshot) -> bool {
+    let mut i = 0;
+    while i < s.projects.len() {
+        if count_owners(&s.members, s.projects[i].id) == 0 {
+            return false;
+        }
+        i += 1;
+    }
+    true
+}
+
+fn members_in_projects(s: &Snapshot) -> bool {
+    let mut i = 0;
+    while i < s.members.len() {
+        if !project_exists(&s.projects, s.members[i].project) {
+            return false;
+        }
+        i += 1;
+    }
+    true
+}
+
+fn docs_in_projects(s: &Snapshot) -> bool {
+    let mut i = 0;
+    while i < s.documents.len() {
+        if !project_exists(&s.projects, s.documents[i].project) {
+            return false;
+        }
+        i += 1;
+    }
+    true
+}
+
+fn hooks_in_projects(s: &Snapshot) -> bool {
+    let mut i = 0;
+    while i < s.webhooks.len() {
+        if !project_exists(&s.projects, s.webhooks[i].project) {
+            return false;
+        }
+        i += 1;
+    }
+    true
+}
+
+/// Is there a later project with the same id as `v[i]`?
+fn project_dup_after(v: &Vec<Project>, i: usize) -> bool {
+    let mut j = i + 1;
+    while j < v.len() {
+        if v[j].id == v[i].id {
+            return true;
+        }
+        j += 1;
+    }
+    false
+}
+
+fn project_ids_unique(v: &Vec<Project>) -> bool {
+    let mut i = 0;
+    while i < v.len() {
+        if project_dup_after(v, i) {
+            return false;
+        }
+        i += 1;
+    }
+    true
+}
+
+fn member_dup_after(v: &Vec<Member>, i: usize) -> bool {
+    let mut j = i + 1;
+    while j < v.len() {
+        if v[j].project == v[i].project && v[j].user == v[i].user {
+            return true;
+        }
+        j += 1;
+    }
+    false
+}
+
+fn member_keys_unique(v: &Vec<Member>) -> bool {
+    let mut i = 0;
+    while i < v.len() {
+        if member_dup_after(v, i) {
+            return false;
+        }
+        i += 1;
+    }
+    true
+}
+
+fn doc_dup_after(v: &Vec<Document>, i: usize) -> bool {
+    let mut j = i + 1;
+    while j < v.len() {
+        if v[j].id == v[i].id {
+            return true;
+        }
+        j += 1;
+    }
+    false
+}
+
+fn doc_ids_unique(v: &Vec<Document>) -> bool {
+    let mut i = 0;
+    while i < v.len() {
+        if doc_dup_after(v, i) {
+            return false;
+        }
+        i += 1;
+    }
+    true
+}
+
+fn hook_dup_after(v: &Vec<Webhook>, i: usize) -> bool {
+    let mut j = i + 1;
+    while j < v.len() {
+        if v[j].project == v[i].project {
+            return true;
+        }
+        j += 1;
+    }
+    false
+}
+
+fn hook_projects_unique(v: &Vec<Webhook>) -> bool {
+    let mut i = 0;
+    while i < v.len() {
+        if hook_dup_after(v, i) {
+            return false;
+        }
+        i += 1;
+    }
+    true
+}
+
+fn projects_fresh(s: &Snapshot) -> bool {
+    let mut i = 0;
+    while i < s.projects.len() {
+        if s.projects[i].id >= s.counter.next_id {
+            return false;
+        }
+        i += 1;
+    }
+    true
+}
+
+fn docs_fresh(s: &Snapshot) -> bool {
+    let mut i = 0;
+    while i < s.documents.len() {
+        if s.documents[i].id >= s.counter.next_id {
+            return false;
+        }
+        i += 1;
+    }
+    true
+}
+
+/// Four-eyes rule and "approver present exactly when approved or published".
+fn doc_well_formed(d: &Document) -> bool {
+    let approved = match d.status {
+        Status::Approved => true,
+        Status::Published => true,
+        _ => false,
+    };
+    match d.approver {
+        Some(a) => approved && a != d.author,
+        None => !approved,
+    }
+}
+
+fn docs_well_formed(v: &Vec<Document>) -> bool {
+    let mut i = 0;
+    while i < v.len() {
+        if !doc_well_formed(&v[i]) {
+            return false;
+        }
+        i += 1;
+    }
+    true
+}
+
+pub fn check_inv(s: &Snapshot) -> bool {
+    projects_owned(s)
+        && members_in_projects(s)
+        && docs_in_projects(s)
+        && project_ids_unique(&s.projects)
+        && member_keys_unique(&s.members)
+        && doc_ids_unique(&s.documents)
+        && projects_fresh(s)
+        && docs_fresh(s)
+        && docs_well_formed(&s.documents)
+        && hooks_in_projects(s)
+        && hook_projects_unique(&s.webhooks)
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -700,6 +899,47 @@ mod tests {
             Ok((ws, r)) => (apply(s, &ws), Ok(r)),
             Err(e) => (s.clone(), Err(e)),
         }
+    }
+
+    #[test]
+    fn reachable_states_pass_the_invariant_check() {
+        let mut s = Snapshot::default();
+        assert!(check_inv(&s));
+        let mut r: u64 = 7;
+        for _ in 0..2000 {
+            r = r
+                .wrapping_mul(6364136223846793005)
+                .wrapping_add(1442695040888963407);
+            let pick = |k: u64| (r >> (33 + k)) % 6;
+            let cmd = match pick(0) % 7 {
+                0 => Command::CreateProject { name: vec![] },
+                1 => Command::SetMember {
+                    project: pick(1),
+                    user: 1 + pick(2) % 3,
+                    role: Role::Owner,
+                },
+                2 => Command::CreateDocument {
+                    project: pick(1),
+                    title: vec![],
+                    body: vec![],
+                },
+                3 => Command::Submit { doc: pick(1) },
+                4 => Command::Approve { doc: pick(1) },
+                5 => Command::Publish { doc: pick(1) },
+                _ => Command::SetWebhook {
+                    project: pick(1),
+                    dest: Some(1),
+                },
+            };
+            let user = 1 + pick(3) % 3;
+            if let Ok((ws, _)) = transition(&Principal { org: 1, user }, &s, &cmd) {
+                s = apply(&s, &ws);
+            }
+            assert!(check_inv(&s), "{cmd:?}");
+        }
+        let mut broken = s.clone();
+        broken.counter.next_id = 0;
+        assert!(broken.projects.is_empty() || !check_inv(&broken));
     }
 
     #[test]
