@@ -420,19 +420,16 @@ theorem stored_equiv {db : Db Val} {s s' : St} (e : Equiv s s') (hi : Inv s) (hs
   simp only [readBack]
   exact find_perm (·.take (kl t)) (encC_perm e c t).symm (wellKeyedC c s hi t).1 k
 
-theorem decode_spec (r : Rows) (s : St) (c : Bool) (hc : c = false → s.next = 0) (hb : s.next < 2 ^ 64)
-    (hp : ∀ t, (rowsOf r t).Perm (encC c s t)) :
-    decode r ⦃ o => ∃ snap, o = some snap ∧ Equiv s (Snapshot.toSt snap) ⦄ := by
-  have h0 : (r.projects.val.map (·.val)).Perm (s.projects.map projRow) := by simpa [rowsOf, encC, enc] using hp 0
-  have h1 : (r.members.val.map (·.val)).Perm (s.members.map memberRow) := by simpa [rowsOf, encC, enc] using hp 1
-  have h2 : (r.documents.val.map (·.val)).Perm (s.docs.map docRow) := by simpa [rowsOf, encC, enc] using hp 2
-  have h4 : (r.webhooks.val.map (·.val)).Perm (s.webhooks.map hookRow) := by simpa [rowsOf, encC, enc] using hp 4
-  have h3 : (r.counter.val.map (·.val)).Perm (if c then [counterRow s.next] else []) := by
-    simpa [rowsOf, encC] using hp 3
-  obtain ⟨lp, ep, pp⟩ := perm_of_map_inj _ projRow_inj _ _ h0
-  obtain ⟨lm, em, pm⟩ := perm_of_map_inj _ memberRow_inj _ _ h1
-  obtain ⟨ld, ed, pd⟩ := perm_of_map_inj _ docRow_inj _ _ h2
-  obtain ⟨lw, ew, pw⟩ := perm_of_map_inj _ hookRow_inj _ _ h4
+/-- Decoding rows whose tables encode `lp`, `lm`, `ld`, `lw` (in that order)
+and whose counter table holds `s`'s counter. -/
+theorem decode_lists (r : Rows) (s : St) (c : Bool) (hc : c = false → s.next = 0) (hb : s.next < 2 ^ 64)
+    (h3 : (r.counter.val.map (·.val)).Perm (if c then [counterRow s.next] else []))
+    (lp : List Project) (ep : r.projects.val.map (·.val) = lp.map projRow)
+    (lm : List Member) (em : r.members.val.map (·.val) = lm.map memberRow)
+    (ld : List Document) (ed : r.documents.val.map (·.val) = ld.map docRow)
+    (lw : List Webhook) (ew : r.webhooks.val.map (·.val) = lw.map hookRow) :
+    decode r ⦃ o => ∃ snap, o = some snap ∧ snap.counter.next_id.val = s.next ∧
+      snap.projects.val = lp ∧ snap.members.val = lm ∧ snap.documents.val = ld ∧ snap.webhooks.val = lw ⦄ := by
   let cnt : Counter := { next_id := ⟨BitVec.ofNat _ s.next⟩ }
   have hcnt : cnt.next_id.val = s.next := by
     simp only [cnt, UScalar.val, BitVec.toNat_ofNat]
@@ -463,9 +460,25 @@ theorem decode_spec (r : Rows) (s : St) (c : Bool) (hc : c = false → s.next = 
   step with webhook_from_rows r.webhooks lw ew as ⟨ o3, vw, h3v, hvw ⟩
   subst hok h0v h1v h2v h3v
   simp only [WP.spec_ok]
-  refine ⟨_, rfl, ?_⟩
-  exact ⟨hk, by simp [Snapshot.toSt, hvp, pp], by simp [Snapshot.toSt, hvm, pm],
-    by simp [Snapshot.toSt, hvd, pd], by simp [Snapshot.toSt, hvw, pw]⟩
+  exact ⟨_, rfl, hk, hvp, hvm, hvd, hvw⟩
+
+theorem decode_spec (r : Rows) (s : St) (c : Bool) (hc : c = false → s.next = 0) (hb : s.next < 2 ^ 64)
+    (hp : ∀ t, (rowsOf r t).Perm (encC c s t)) :
+    decode r ⦃ o => ∃ snap, o = some snap ∧ Equiv s (Snapshot.toSt snap) ⦄ := by
+  have h0 : (r.projects.val.map (·.val)).Perm (s.projects.map projRow) := by simpa [rowsOf, encC, enc] using hp 0
+  have h1 : (r.members.val.map (·.val)).Perm (s.members.map memberRow) := by simpa [rowsOf, encC, enc] using hp 1
+  have h2 : (r.documents.val.map (·.val)).Perm (s.docs.map docRow) := by simpa [rowsOf, encC, enc] using hp 2
+  have h4 : (r.webhooks.val.map (·.val)).Perm (s.webhooks.map hookRow) := by simpa [rowsOf, encC, enc] using hp 4
+  have h3 : (r.counter.val.map (·.val)).Perm (if c then [counterRow s.next] else []) := by
+    simpa [rowsOf, encC] using hp 3
+  obtain ⟨lp, ep, pp⟩ := perm_of_map_inj _ projRow_inj _ _ h0
+  obtain ⟨lm, em, pm⟩ := perm_of_map_inj _ memberRow_inj _ _ h1
+  obtain ⟨ld, ed, pd⟩ := perm_of_map_inj _ docRow_inj _ _ h2
+  obtain ⟨lw, ew, pw⟩ := perm_of_map_inj _ hookRow_inj _ _ h4
+  apply WP.spec_mono (decode_lists r s c hc hb h3 lp ep lm em ld ed lw ew)
+  rintro o ⟨snap, rfl, hk, hvp, hvm, hvd, hvw⟩
+  exact ⟨snap, rfl, ⟨hk, by simp [Snapshot.toSt, hvp, pp], by simp [Snapshot.toSt, hvm, pm],
+    by simp [Snapshot.toSt, hvd, pd], by simp [Snapshot.toSt, hvw, pw]⟩⟩
 
 /-! ## Main theorems -/
 

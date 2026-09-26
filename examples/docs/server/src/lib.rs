@@ -98,23 +98,21 @@ impl Store<DocsApp> for DocsStore {
         decode(&rows)
     }
 
-    /// Exactly `Frame.slice` in the proofs: the counter, plus every row of the
-    /// command's project. `transition_frame` proves the kernel's result is the
-    /// same as on the whole tenant.
+    /// The counter plus every row of the command's project, picked by the
+    /// kernel's `scoped_project`. `Scoped.scoped_sound` proves the decoded
+    /// result is `Frame.slice` of a snapshot the rows hold, and
+    /// `transition_frame` that the kernel's result is the same as on it.
     async fn load_for(tx: &Tx<'_>, t: TenantId, cmd: &k::Command) -> Result<k::Snapshot, DbError> {
         let counter = load_rows::<DocsApp, k::Counter>(tx, t).await?;
-        let project = match k::read_scope(cmd) {
-            k::Scope::Counter => None,
-            k::Scope::Project(p) => Some(p),
-            k::Scope::Document(d) => {
-                let rows = load_rows_where::<DocsApp, k::Document>(tx, t, "id", &Column::to_val(&d)).await?;
-                let docs = k::Document::from_rows(&rows).ok_or_else(|| DbError::Decode("documents row".into()))?;
-                docs.first().map(|doc| doc.project)
-            }
+        let scope = k::read_scope(cmd);
+        let doc_rows = match scope {
+            k::Scope::Document(d) => load_rows_where::<DocsApp, k::Document>(tx, t, "id", &Column::to_val(&d)).await?,
+            _ => Vec::new(),
         };
-        let Some(p) = project else {
+        let Some(p) = k::scoped_project(&scope, &doc_rows) else {
             return decode(&k::Rows { counter, ..Default::default() });
         };
+        // `Scoped.lean` models each query by the column index it filters on.
         let p = Column::to_val(&p);
         decode(&k::Rows {
             counter,

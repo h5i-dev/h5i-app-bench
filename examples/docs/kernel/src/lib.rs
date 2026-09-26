@@ -818,6 +818,25 @@ pub fn decode(r: &Rows) -> Option<Snapshot> {
     }
 }
 
+/// The project whose rows a scoped load reads, if any. For a document
+/// scope, `doc_rows` are the stored rows with that document's id.
+pub fn scoped_project(scope: &Scope, doc_rows: &Vec<Vec<i5h_sql::Val>>) -> Option<u64> {
+    match scope {
+        Scope::Counter => None,
+        Scope::Project(p) => Some(*p),
+        Scope::Document(_) => match Document::from_rows(doc_rows) {
+            Some(ds) => {
+                if ds.len() > 0 {
+                    Some(ds[0].project)
+                } else {
+                    None
+                }
+            }
+            None => None,
+        },
+    }
+}
+
 /// Meaning of a write set. The Postgres store must agree with this.
 pub fn apply(snap: &Snapshot, ws: &Vec<Write>) -> Snapshot {
     let mut s = snap.clone();

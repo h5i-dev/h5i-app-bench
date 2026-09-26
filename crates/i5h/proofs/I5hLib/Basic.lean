@@ -32,4 +32,11 @@ theorem eq_ok_of_spec {α} {m : Result α} {v : α} (h : m ⦃ x => x = v ⦄) :
   obtain ⟨y, hy, rfl⟩ := (WP.spec_equiv_exists _ _).1 h
   exact hy
 
+/-- The postcondition holds of the value a successful computation returns. -/
+theorem post_of_ok {α} {m : Result α} {P : α → Prop} {x : α} (h : m ⦃ P ⦄) (he : m = ok x) : P x := by
+  obtain ⟨y, hy, hp⟩ := (WP.spec_equiv_exists _ _).1 h
+  rw [he, Result.ok.injEq] at hy
+  subst hy
+  exact hp
+
 end I5hLib
