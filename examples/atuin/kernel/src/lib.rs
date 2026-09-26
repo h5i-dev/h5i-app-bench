@@ -207,18 +207,6 @@ fn all_fit(max: u64, rs: &Vec<NewRecord>) -> bool {
     true
 }
 
-fn records_of(rs: &Vec<Record>, user: u64) -> Vec<Record> {
-    let mut out = Vec::new();
-    let mut i = 0;
-    while i < rs.len() {
-        if rs[i].user == user {
-            out.push(rs[i].clone());
-        }
-        i += 1;
-    }
-    out
-}
-
 /// The caller's records in one series from index `start`, at most `count`.
 fn next_records(
     rs: &Vec<Record>,

@@ -680,6 +680,77 @@ pub fn apply_write(s: &mut Snapshot, w: Write) {
     }
 }
 
+// ---- Row encoding (A4) ----
+
+// Must match the server's `enum_field!` numbering, which reads these back.
+impl i5h_sql::Column for Role {
+    fn to_val(&self) -> i5h_sql::Val {
+        match self {
+            Role::Viewer => i5h_sql::Val::Int(0),
+            Role::Editor => i5h_sql::Val::Int(1),
+            Role::Owner => i5h_sql::Val::Int(2),
+        }
+    }
+}
+
+impl i5h_sql::Column for Status {
+    fn to_val(&self) -> i5h_sql::Val {
+        match self {
+            Status::Draft => i5h_sql::Val::Int(0),
+            Status::InReview => i5h_sql::Val::Int(1),
+            Status::Approved => i5h_sql::Val::Int(2),
+            Status::Published => i5h_sql::Val::Int(3),
+        }
+    }
+}
+
+fn put(table: u32, key_len: u32, row: Vec<i5h_sql::Val>) -> i5h_sql::Write {
+    i5h_sql::Write::Put { table, key_len, row }
+}
+
+fn key1(a: u64) -> Vec<i5h_sql::Val> {
+    let mut k = Vec::new();
+    k.push(i5h_sql::Column::to_val(&a));
+    k
+}
+
+fn key2(a: u64, b: u64) -> Vec<i5h_sql::Val> {
+    let mut k = Vec::new();
+    k.push(i5h_sql::Column::to_val(&a));
+    k.push(i5h_sql::Column::to_val(&b));
+    k
+}
+
+/// The table rows one write stores, or `None` for an outbox effect.
+pub fn sql_write(w: &Write) -> Option<i5h_sql::Write> {
+    match w {
+        Write::PutProject(p) => Some(put(Project::TABLE, Project::KEY_LEN, p.to_row())),
+        Write::PutMember(m) => Some(put(Member::TABLE, Member::KEY_LEN, m.to_row())),
+        Write::DelMember(p, u) => Some(i5h_sql::Write::Del { table: Member::TABLE, key: key2(*p, *u) }),
+        Write::PutDocument(d) => Some(put(Document::TABLE, Document::KEY_LEN, d.to_row())),
+        Write::DelDocument(id) => Some(i5h_sql::Write::Del { table: Document::TABLE, key: key1(*id) }),
+        Write::SetCounter(c) => Some(put(Counter::TABLE, Counter::KEY_LEN, c.to_row())),
+        Write::PutWebhook(h) => Some(put(Webhook::TABLE, Webhook::KEY_LEN, h.to_row())),
+        Write::DelWebhook(p) => Some(i5h_sql::Write::Del { table: Webhook::TABLE, key: key1(*p) }),
+        Write::Emit(_) => None,
+    }
+}
+
+/// The table writes of a write set, in order. The server plans and runs
+/// exactly these; Lean proves they store what `apply` computes.
+pub fn sql_writes(ws: &Vec<Write>) -> Vec<i5h_sql::Write> {
+    let mut out = Vec::new();
+    let mut i = 0;
+    while i < ws.len() {
+        match sql_write(&ws[i]) {
+            Some(w) => out.push(w),
+            None => {}
+        }
+        i += 1;
+    }
+    out
+}
+
 /// Meaning of a write set. The Postgres store must agree with this.
 pub fn apply(snap: &Snapshot, ws: &Vec<Write>) -> Snapshot {
     let mut s = snap.clone();

@@ -5,6 +5,8 @@ edition.workspace = true
 license.workspace = true
 version.workspace = true
 
-# Extracted to Lean by Charon + Aeneas. i5h-schema is macros only.
+# Extracted to Lean by Charon + Aeneas. i5h-schema is macros only;
+# i5h-sql supplies the row encoding, extracted with the kernel.
 [dependencies]
 i5h-schema.workspace = true
+i5h-sql.workspace = true

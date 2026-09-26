@@ -100,7 +100,21 @@ macro_rules! int_field {
         }
     )*};
 }
-int_field!(u8, u16, u32, u64, i64);
+int_field!(u8, u16, u32, i64);
+
+// Bits kept, as `i5h_sql::Column` does: above `i64::MAX` is stored negative.
+impl<A> PgField<A> for u64 {
+    const KIND: Kind = Kind::Int;
+    fn to_value(&self) -> Result<Value, DbError> {
+        Ok(Value::Int(*self as i64))
+    }
+    fn from_value(v: &Value) -> Result<Self, DbError> {
+        match v {
+            Value::Int(i) => Ok(*i as u64),
+            _ => Err(bad("u64", v)),
+        }
+    }
+}
 
 impl<A> PgField<A> for bool {
     const KIND: Kind = Kind::Bool;
@@ -288,6 +302,13 @@ pub async fn upsert<A, T: Table<A>>(tx: &Tx<'_>, tenant: TenantId, row: &T) -> R
 pub async fn delete<A, T: Table<A>>(tx: &Tx<'_>, tenant: TenantId, key: &[Value]) -> Result<(), DbError> {
     let w = SqlWrite::Del { table: 0, key: key.iter().map(to_val).collect() };
     run_stmt::<A, T>(tx.0, tenant, planned(w)).await
+}
+
+/// Run one planned statement on `T`'s table. Kernels that encode their own
+/// rows (`schema!`'s `to_row`) plan with `i5h_sql::plan` and run each
+/// statement here; the schema mapping macro does the dispatch.
+pub async fn run_planned<A, T: Table<A>>(tx: &Tx<'_>, tenant: TenantId, stmt: Stmt) -> Result<(), DbError> {
+    run_stmt::<A, T>(tx.0, tenant, stmt).await
 }
 
 /// The statement `i5h_sql::plan` (proven in Lean) gives for one write.

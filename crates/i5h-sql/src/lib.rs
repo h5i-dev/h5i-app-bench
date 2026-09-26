@@ -13,6 +13,45 @@ pub enum Val {
     Null,
 }
 
+/// How a kernel field is stored. Integers keep their bits: a `u64` above
+/// `i64::MAX` is stored as a negative `BIGINT`.
+pub trait Column {
+    fn to_val(&self) -> Val;
+}
+
+impl Column for u64 {
+    fn to_val(&self) -> Val {
+        Val::Int(*self as i64)
+    }
+}
+
+impl Column for u32 {
+    fn to_val(&self) -> Val {
+        Val::Int(*self as i64)
+    }
+}
+
+impl Column for bool {
+    fn to_val(&self) -> Val {
+        Val::Bool(*self)
+    }
+}
+
+impl Column for Vec<u8> {
+    fn to_val(&self) -> Val {
+        Val::Bytes(self.clone())
+    }
+}
+
+impl<T: Column> Column for Option<T> {
+    fn to_val(&self) -> Val {
+        match self {
+            Some(x) => x.to_val(),
+            None => Val::Null,
+        }
+    }
+}
+
 /// One row-level write on a tenant's table.
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub enum Write {

@@ -22,7 +22,7 @@ import time
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 KERNEL = os.path.join(ROOT, "examples/docs/kernel")
 PROOFS = os.path.join(ROOT, "examples/docs/proofs")
-THEOREMS = ["Theorems", "Invariants", "Noninterference", "Frame", "Check"]
+THEOREMS = ["Theorems", "Invariants", "Noninterference", "Frame", "Check", "Storage"]
 
 # name -> list of (old, new) replacements in kernel/src/lib.rs
 MUTANTS = {
@@ -86,6 +86,18 @@ MUTANTS = {
     "checker_skips_doc_ids": [
         ("        && doc_ids_unique(&s.documents)\n", ""),
     ],
+    "del_member_key_swapped": [
+        ("Write::DelMember(p, u) => Some(i5h_sql::Write::Del { table: Member::TABLE, key: key2(*p, *u) }),",
+         "Write::DelMember(p, u) => Some(i5h_sql::Write::Del { table: Member::TABLE, key: key2(*u, *p) }),"),
+    ],
+    "webhook_in_wrong_table": [
+        ("Write::PutWebhook(h) => Some(put(Webhook::TABLE, Webhook::KEY_LEN, h.to_row())),",
+         "Write::PutWebhook(h) => Some(put(Project::TABLE, Webhook::KEY_LEN, h.to_row())),"),
+    ],
+    "counter_not_stored": [
+        ("Write::SetCounter(c) => Some(put(Counter::TABLE, Counter::KEY_LEN, c.to_row())),",
+         "Write::SetCounter(_) => None,"),
+    ],
     "manage_any_project": [
         ("            role,\n        } => {\n            if !can(snap, user, *project, Action::Manage) {",
          "            role,\n        } => {\n            if false {"),
@@ -93,11 +105,12 @@ MUTANTS = {
 }
 
 SCHEMA = os.path.join(ROOT, "crates/i5h-schema")
+SQL = os.path.join(ROOT, "crates/i5h-sql")
 
-# The kernel and its only dependency, the i5h-schema macros.
+# The kernel and its dependencies: the i5h-schema macros and i5h-sql.
 WORKSPACE_TOML = """[workspace]
 resolver = "2"
-members = ["kernel", "i5h-schema"]
+members = ["kernel", "i5h-schema", "i5h-sql"]
 
 [workspace.package]
 edition = "2021"
@@ -106,6 +119,7 @@ version = "0.1.0"
 
 [workspace.dependencies]
 i5h-schema = { path = "i5h-schema" }
+i5h-sql = { path = "i5h-sql" }
 """
 
 
@@ -130,6 +144,7 @@ def check(name, edits, keep):
     try:
         shutil.copytree(KERNEL, os.path.join(tmp, "kernel"), ignore=shutil.ignore_patterns("target"))
         shutil.copytree(SCHEMA, os.path.join(tmp, "i5h-schema"), ignore=shutil.ignore_patterns("target"))
+        shutil.copytree(SQL, os.path.join(tmp, "i5h-sql"), ignore=shutil.ignore_patterns("target", "proofs"))
         with open(os.path.join(tmp, "Cargo.toml"), "w") as f:
             f.write(WORKSPACE_TOML)
         lib = os.path.join(tmp, "kernel/src/lib.rs")
@@ -159,7 +174,8 @@ def check(name, edits, keep):
         llbc = os.path.join(tmp, "docs_kernel.llbc")
         rc = run(["charon", "cargo", "--preset=aeneas", "--start-from", "docs_kernel::transition",
                   "--start-from", "docs_kernel::apply", "--start-from", "docs_kernel::read_scope",
-                  "--start-from", "docs_kernel::check_inv",
+                  "--start-from", "docs_kernel::check_inv", "--start-from", "docs_kernel::sql_writes",
+                  "--include", "i5h_sql",
                   "--dest-file", llbc], os.path.join(tmp, "kernel"), log)
         if rc != 0:
             return name, "invalid (charon)", tmp

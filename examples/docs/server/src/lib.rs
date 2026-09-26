@@ -3,7 +3,7 @@
 use axum::http::StatusCode;
 use docs_kernel as k;
 use i5h::{Kernel, TenantId};
-use i5h_pg::{delete, key, load, load_where, upsert, DbError, PgField, ReplyCodec, Store, Tx, Value};
+use i5h_pg::{key, load, load_where, DbError, PgField, ReplyCodec, Store, Tx, Value};
 use serde::{Deserialize, Serialize};
 use i5h_json::Value as Out;
 
@@ -118,20 +118,13 @@ impl Store<DocsApp> for DocsStore {
         })
     }
 
+    // Rows are encoded by the kernel (`sql_writes`, proven to store what
+    // `apply` computes); effects go to the outbox.
     async fn write(tx: &Tx<'_>, t: TenantId, ws: &Vec<k::Write>) -> Result<(), DbError> {
+        schema_write(tx, t, &k::sql_writes(ws)).await?;
         for w in ws {
-            match w {
-                k::Write::PutProject(p) => upsert::<DocsApp, _>(tx, t, p).await?,
-                k::Write::PutMember(m) => upsert::<DocsApp, _>(tx, t, m).await?,
-                k::Write::DelMember(p, u) => {
-                    delete::<DocsApp, k::Member>(tx, t, &[key::<DocsApp, _>(p)?, key::<DocsApp, _>(u)?]).await?
-                }
-                k::Write::PutDocument(d) => upsert::<DocsApp, _>(tx, t, d).await?,
-                k::Write::DelDocument(id) => delete::<DocsApp, k::Document>(tx, t, &[key::<DocsApp, _>(id)?]).await?,
-                k::Write::SetCounter(c) => upsert::<DocsApp, _>(tx, t, c).await?,
-                k::Write::PutWebhook(w) => upsert::<DocsApp, _>(tx, t, w).await?,
-                k::Write::DelWebhook(p) => delete::<DocsApp, k::Webhook>(tx, t, &[key::<DocsApp, _>(p)?]).await?,
-                k::Write::Emit(e) => i5h_pg::outbox::enqueue(tx, t, e.dest, &effect_payload(e)).await?,
+            if let k::Write::Emit(e) = w {
+                i5h_pg::outbox::enqueue(tx, t, e.dest, &effect_payload(e)).await?;
             }
         }
         Ok(())
