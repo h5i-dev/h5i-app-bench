@@ -58,9 +58,17 @@ writes, and `walk` / `i5h_step` execute extracted code symbolically.
 
 ## Size (2026-09-25)
 
-Rust kernel: 602 code lines. Hand-written Lean for this app: 1124 lines, of
-which the spec is 139 and proofs are 985 (about 1.6 proof lines per kernel
-line; 2.3 before the shared library). The library is 313 lines and is not
-specific to this app. Adding webhooks and effects (82 kernel lines) took 17
-spec lines and 101 proof lines. The mutation suite catches 14 of 14 injected
-bugs.
+Rust kernel: 801 code lines, including `read_scope` and the invariant checker.
+Hand-written Lean for this app: 1576 lines, of which the spec is 139 and
+proofs are 1437 (about 1.8 proof lines per kernel line). The shared library
+`I5hLib` is 352 lines and is not specific to this app.
+
+Per feature, after the library existed:
+
+| Feature | Kernel lines | Spec lines | Proof lines |
+|---|---|---|---|
+| Webhooks and effects | 82 | 17 | 101 |
+| Partial snapshots (`read_scope`, `Frame.lean`) | 32 | 0 | 160 |
+| Invariant checker (`check_inv`, `Check.lean`) | 167 | 0 | 292 |
+
+The mutation suite catches 16 of 16 injected bugs.

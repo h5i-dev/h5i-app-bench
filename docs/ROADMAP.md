@@ -16,7 +16,7 @@ properties is secondary.
 | A7 | Charon, Aeneas, Lean are faithful and sound | trusted, with checks: `#print axioms` gate (standard axioms only) and a Rust-vs-Lean differential test (`scripts/difftest.sh`, 55k cases, no mismatch) | stays trusted |
 | A8 | No handler bypasses the engine | enforced: stores see only an opaque `Tx` and the pool is opaque, so app code cannot reach the driver; `cargo deny check bans` rejects database crates outside `i5h-pg`; `i5h_pg::lockdown` role separation at runtime. All run in CI | superuser logins stay out of scope |
 | A9 | Running code is the extracted code | CI re-extracts every kernel (docs, Kellnr) and extracted crate (`i5h-sql`, `i5h-token`, `i5h-json`) with pinned Charon/Aeneas and fails on any diff | done |
-| A10 | The spec says what we meant | human review of a 122-line spec; mutation suite catches 12/12 injected bugs (`scripts/mutants.py`); the Kellnr port proves the pre-#1243 bug is caught | concrete scenario theorems; more mutants |
+| A10 | The spec says what we meant | human review of a 139-line spec; mutation suite catches 16/16 injected bugs (`scripts/mutants.py`); the Kellnr port proves the pre-#1243 bug is caught | concrete scenario theorems; more mutants |
 
 ## Phase 0: proofs on the example app
 
