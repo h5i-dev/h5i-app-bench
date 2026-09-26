@@ -118,6 +118,20 @@ theorem searchFrom_find {α β} (l : List α) (P : α → Bool) (f : α → β) 
     · rw [searchFrom_found hk hp]; simp [hp]
     · rw [searchFrom_skip hk hp, ih (k + 1) (by omega)]; simp [hp]
 
+/-- A search that returns a constant: `found` if any element from `k` on
+satisfies `P`, else `missing`. Covers "all" checks (`false`/`true`) and
+"exists" checks (`true`/`false`). -/
+theorem searchFrom_const {α γ} (l : List α) (P : α → Bool) (b c : γ) (k : Nat) :
+    searchFrom l P (fun _ _ => b) c k = if (l.drop k).any P then b else c := by
+  induction h : l.length - k generalizing k with
+  | zero => rw [searchFrom_end (by omega), List.drop_eq_nil_of_le (by omega)]; simp
+  | succ n ih =>
+    have hk : k < l.length := by omega
+    rw [List.drop_eq_getElem_cons hk, List.any_cons]
+    by_cases hp : P l[k]
+    · rw [searchFrom_found hk hp]; simp [hp]
+    · rw [searchFrom_skip hk hp, ih (k + 1) (by omega)]; simp [hp]
+
 /-- Replace the first element satisfying `P` by `x`, or append `x`. -/
 def upsertBy {α} (P : α → Bool) (x : α) : List α → List α
   | [] => [x]

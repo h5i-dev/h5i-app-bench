@@ -7,6 +7,7 @@
 //! lost during COMMIT is retried only under an idempotency key; otherwise the
 //! caller gets `DbError::CommitUnknown`.
 
+pub mod migrate;
 pub mod outbox;
 mod roles;
 mod table;
@@ -50,6 +51,8 @@ pub enum DbError {
     RetriesExhausted,
     /// The connection dropped during COMMIT, so it may or may not have committed.
     CommitUnknown(tokio_postgres::Error),
+    /// A migration left `tenant` failing the invariant check; it was rolled back.
+    InvariantViolated { tenant: u64, migrations: String },
 }
 
 impl std::fmt::Display for DbError {
@@ -61,6 +64,9 @@ impl std::fmt::Display for DbError {
             DbError::IdempotencyConflict => write!(f, "idempotency key reused for a different command"),
             DbError::RetriesExhausted => write!(f, "too many serialization failures"),
             DbError::CommitUnknown(e) => write!(f, "commit outcome unknown: {e}"),
+            DbError::InvariantViolated { tenant, migrations } => {
+                write!(f, "migrations [{migrations}] break the invariants of tenant {tenant}; rolled back")
+            }
         }
     }
 }
@@ -312,10 +318,11 @@ impl<K: Kernel, S: Store<K>> Engine<K, S> {
         Ok(())
     }
 
-    /// Committed state of a tenant, for tests.
+    /// Committed state of a tenant, for tests. Read-only and deferrable, so it
+    /// never fails with a serialization error.
     pub async fn snapshot(&self, tenant: TenantId) -> Result<K::Snapshot, DbError> {
         let mut client = self.pool.0.get().await.map_err(|e| DbError::Pool(e.to_string()))?;
-        let tx = client.build_transaction().isolation_level(IsolationLevel::Serializable).read_only(true).start().await?;
+        let tx = client.build_transaction().isolation_level(IsolationLevel::Serializable).read_only(true).deferrable(true).start().await?;
         let snap = S::load(&Tx(&tx), tenant).await?;
         tx.commit().await?;
         Ok(snap)
@@ -324,7 +331,7 @@ impl<K: Kernel, S: Store<K>> Engine<K, S> {
     /// What `cmd` would read for this tenant, for tests of `Store::load_for`.
     pub async fn snapshot_for(&self, tenant: TenantId, cmd: &K::Command) -> Result<K::Snapshot, DbError> {
         let mut client = self.pool.0.get().await.map_err(|e| DbError::Pool(e.to_string()))?;
-        let tx = client.build_transaction().isolation_level(IsolationLevel::Serializable).read_only(true).start().await?;
+        let tx = client.build_transaction().isolation_level(IsolationLevel::Serializable).read_only(true).deferrable(true).start().await?;
         let snap = S::load_for(&Tx(&tx), tenant, cmd).await?;
         tx.commit().await?;
         Ok(snap)

@@ -35,6 +35,7 @@ review workflow), for every actor, state and command:
   and only when a writer publishes an approved document;
 - a command's result depends only on one project's rows, so the server loads
   just those instead of the whole tenant;
+- the invariant checker migrations run is exact: true iff the invariants hold;
 - the kernel never panics.
 
 The shell is proven where it can be: the SQL statement planner

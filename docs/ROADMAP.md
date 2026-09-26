@@ -51,7 +51,7 @@ properties is secondary.
 
 - Partial snapshots: each command declares its reads, with a proven theorem that the decision depends only on them. Done for the docs example: `read_scope` (extracted) names the counter plus one project's rows, `transition_frame` proves the result equals the whole-tenant result, and `DocsStore::load_for` loads just that slice (checked against the Lean `slice` in `tests/postgres.rs`).
 - Effects and an outbox: SSRF allowlist theorem; exactly-once external calls using the Phase 1 protocol model. Done for the docs example: `authorized` proves an effect goes only to the destination its project registered, and only when a writer publishes an approved document; `i5h_pg::outbox` stores effects in the request's transaction and delivers them at least once with a stable key, only to ids in the operator's registry (`tests/outbox.rs`). Open: model the dispatcher in `lean/`.
-- Migrations as pure functions from old snapshot to new, with a proof that old invariants imply new ones.
+- Migrations as pure functions from old snapshot to new, with a proof that old invariants imply new ones. Done differently, and cheaper: migrations are checked, not proven. `Engine::migrate` runs pending SQL in one transaction and then runs the app's checker on every tenant, rolling back on any failure. The docs checker `check_inv` is extracted and proven exact (`check_inv_spec`: true iff `Inv`), so a committed migration leaves every tenant satisfying the invariants (`tests/migrations.rs`).
 
 ## Phase 4: real applications
 
