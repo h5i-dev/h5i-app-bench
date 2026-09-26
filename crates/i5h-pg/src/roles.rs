@@ -42,14 +42,16 @@ pub fn lockdown_sql<K: Kernel, S: Store<K>>(owner: &str, engine_role: &str) -> R
 }
 
 /// Make `owner` own the i5h tables and let only `engine_role` touch their rows.
-/// `admin` must be allowed to create roles and change table owners.
-pub async fn lockdown<K: Kernel, S: Store<K>>(
-    admin: &tokio_postgres::Client,
-    owner: &str,
-    engine_role: &str,
-) -> Result<(), DbError> {
-    for stmt in lockdown_sql::<K, S>(owner, engine_role)? {
+/// `admin_url` must log in as a role allowed to create roles and change table
+/// owners.
+pub async fn lockdown<K: Kernel, S: Store<K>>(admin_url: &str, owner: &str, engine_role: &str) -> Result<(), DbError> {
+    let stmts = lockdown_sql::<K, S>(owner, engine_role)?;
+    let (admin, conn) = tokio_postgres::connect(admin_url, tokio_postgres::NoTls).await?;
+    let conn = tokio::spawn(conn);
+    for stmt in stmts {
         admin.batch_execute(&stmt).await?;
     }
+    drop(admin);
+    let _ = conn.await;
     Ok(())
 }

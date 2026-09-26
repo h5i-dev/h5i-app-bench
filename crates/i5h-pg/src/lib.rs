@@ -13,7 +13,7 @@ mod table;
 pub use roles::{lockdown, lockdown_sql};
 pub use table::{column_of, ddl, delete, key, load, upsert, ColumnDef, Kind, PgField, Table, Value};
 
-use deadpool_postgres::{Config, Pool, Runtime};
+use deadpool_postgres::{Config, Runtime};
 use i5h::{Kernel, TenantId};
 use std::future::Future;
 use std::marker::PhantomData;
@@ -23,8 +23,21 @@ use std::time::Duration;
 use tokio_postgres::error::SqlState;
 use tokio_postgres::{IsolationLevel, NoTls, Transaction};
 
-pub use deadpool_postgres;
-pub use tokio_postgres;
+/// The transaction a `Store` works in. It only offers the table operations
+/// in this crate, so a store cannot run arbitrary SQL.
+pub struct Tx<'a>(pub(crate) &'a Transaction<'a>);
+
+impl Tx<'_> {
+    /// Backend process id, so fault tests can kill this connection.
+    #[cfg(feature = "testing")]
+    pub async fn backend_pid(&self) -> Result<i32, DbError> {
+        Ok(self.0.query_one("SELECT pg_backend_pid()", &[]).await?.get(0))
+    }
+}
+
+/// Connection pool owned by an `Engine`. Opaque, so app code cannot take a
+/// raw connection from it.
+pub struct Pool(deadpool_postgres::Pool);
 
 #[derive(Debug)]
 pub enum DbError {
@@ -100,10 +113,10 @@ pub trait Store<K: Kernel>: Send + Sync + 'static {
     /// Names of the tables created by `ddl`, for [`lockdown`].
     fn tables() -> Vec<&'static str>;
 
-    fn load(tx: &Transaction<'_>, tenant: TenantId) -> impl Future<Output = Result<K::Snapshot, DbError>> + Send;
+    fn load(tx: &Tx<'_>, tenant: TenantId) -> impl Future<Output = Result<K::Snapshot, DbError>> + Send;
 
     /// A later `load` must return `K::apply(before, ws)`.
-    fn write(tx: &Transaction<'_>, tenant: TenantId, ws: &K::WriteSet) -> impl Future<Output = Result<(), DbError>> + Send;
+    fn write(tx: &Tx<'_>, tenant: TenantId, ws: &K::WriteSet) -> impl Future<Output = Result<(), DbError>> + Send;
 }
 
 /// Needed to replay stored replies for idempotency keys.
@@ -234,7 +247,7 @@ pub fn pool(url: &str, max_size: usize) -> Result<Pool, DbError> {
     let mut cfg = Config::new();
     cfg.url = Some(url.to_string());
     cfg.pool = Some(deadpool_postgres::PoolConfig::new(max_size));
-    cfg.create_pool(Some(Runtime::Tokio1), NoTls).map_err(|e| DbError::Pool(e.to_string()))
+    cfg.create_pool(Some(Runtime::Tokio1), NoTls).map(Pool).map_err(|e| DbError::Pool(e.to_string()))
 }
 
 struct Idem<'a, K: Kernel> {
@@ -264,7 +277,7 @@ impl<K: Kernel, S: Store<K>> Engine<K, S> {
     /// Idempotent. Concurrent callers serialize on an advisory lock, since
     /// `CREATE TABLE IF NOT EXISTS` itself races on a fresh database.
     pub async fn install_schema(&self) -> Result<(), DbError> {
-        let mut client = self.pool.get().await.map_err(|e| DbError::Pool(e.to_string()))?;
+        let mut client = self.pool.0.get().await.map_err(|e| DbError::Pool(e.to_string()))?;
         let tx = client.transaction().await?;
         // Two-int form: a separate key space from the per-tenant bigint locks.
         tx.execute("SELECT pg_advisory_xact_lock($1, $2)", &[&SCHEMA_LOCK.0, &SCHEMA_LOCK.1]).await?;
@@ -281,9 +294,9 @@ impl<K: Kernel, S: Store<K>> Engine<K, S> {
 
     /// Committed state of a tenant, for tests.
     pub async fn snapshot(&self, tenant: TenantId) -> Result<K::Snapshot, DbError> {
-        let mut client = self.pool.get().await.map_err(|e| DbError::Pool(e.to_string()))?;
+        let mut client = self.pool.0.get().await.map_err(|e| DbError::Pool(e.to_string()))?;
         let tx = client.build_transaction().isolation_level(IsolationLevel::Serializable).read_only(true).start().await?;
-        let snap = S::load(&tx, tenant).await?;
+        let snap = S::load(&Tx(&tx), tenant).await?;
         tx.commit().await?;
         Ok(snap)
     }
@@ -331,7 +344,7 @@ impl<K: Kernel, S: Store<K>> Engine<K, S> {
         });
         for attempt in 0..self.config.max_attempts {
             self.stats.attempts.fetch_add(1, Ordering::Relaxed);
-            let mut client = self.pool.get().await.map_err(|e| DbError::Pool(e.to_string()))?;
+            let mut client = self.pool.0.get().await.map_err(|e| DbError::Pool(e.to_string()))?;
             let result = match self.lock(&client, tenant).await {
                 Ok(()) => {
                     let r = self.attempt(&mut client, tenant, actor, cmd, idem.as_ref(), tr.as_mut()).await;
@@ -439,7 +452,7 @@ impl<K: Kernel, S: Store<K>> Engine<K, S> {
                 return Ok(Attempt::Replayed(reply));
             }
         }
-        let snap = S::load(&tx, tenant).await?;
+        let snap = S::load(&Tx(&tx), tenant).await?;
         let decision = K::transition(actor, &snap, cmd);
         // Replies are only comparable when a codec exists (keyed requests).
         let encoded = match (&decision, idem) {
@@ -461,7 +474,7 @@ impl<K: Kernel, S: Store<K>> Engine<K, S> {
                 Ok(Attempt::Done(Err(refusal)))
             }
             Ok((ws, reply)) => {
-                S::write(&tx, tenant, &ws).await?;
+                S::write(&Tx(&tx), tenant, &ws).await?;
                 if let (Some(idem), Some(bytes)) = (idem, &encoded) {
                     tx.execute(
                         "INSERT INTO i5h_idempotency (tenant_id, key, fingerprint, reply) VALUES ($1, $2, $3, $4)",

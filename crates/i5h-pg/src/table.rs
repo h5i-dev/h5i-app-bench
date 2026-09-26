@@ -8,6 +8,7 @@ use bytes::BytesMut;
 use i5h::TenantId;
 use i5h_sql::{Stmt, Val, Write as SqlWrite};
 use tokio_postgres::types::{to_sql_checked, IsNull, ToSql, Type};
+use crate::Tx;
 use tokio_postgres::{Row, Transaction};
 
 /// A column value.
@@ -243,28 +244,28 @@ fn read_row(cols: &[ColumnDef], row: &Row) -> Result<Vec<Value>, DbError> {
 }
 
 /// All of the tenant's rows of `T`, in key order.
-pub async fn load<A, T: Table<A>>(tx: &Transaction<'_>, tenant: TenantId) -> Result<Vec<T>, DbError> {
+pub async fn load<A, T: Table<A>>(tx: &Tx<'_>, tenant: TenantId) -> Result<Vec<T>, DbError> {
     let cols = T::columns();
     let names: Vec<_> = cols.iter().map(|c| q(c.name)).collect();
     let order = &names[..T::KEY_LEN];
     let order = if order.is_empty() { String::new() } else { format!(" ORDER BY {}", order.join(", ")) };
     let sql = format!("SELECT {} FROM {} WHERE tenant_id = $1{}", names.join(", "), q(T::NAME), order);
     let tid = tenant_param(tenant)?;
-    let rows = tx.query(&sql, &[&tid]).await?;
+    let rows = tx.0.query(&sql, &[&tid]).await?;
     rows.iter().map(|r| read_row(&cols, r).and_then(|v| T::from_values(&v))).collect()
 }
 
 /// Insert or overwrite the tenant's row with `row`'s key.
-pub async fn upsert<A, T: Table<A>>(tx: &Transaction<'_>, tenant: TenantId, row: &T) -> Result<(), DbError> {
+pub async fn upsert<A, T: Table<A>>(tx: &Tx<'_>, tenant: TenantId, row: &T) -> Result<(), DbError> {
     let vals: Vec<Val> = row.to_values()?.iter().map(to_val).collect();
     let w = SqlWrite::Put { table: 0, key_len: T::KEY_LEN as u32, row: vals };
-    run_stmt::<A, T>(tx, tenant, planned(w)).await
+    run_stmt::<A, T>(tx.0, tenant, planned(w)).await
 }
 
 /// Delete the tenant's row of `T` whose key columns equal `key`.
-pub async fn delete<A, T: Table<A>>(tx: &Transaction<'_>, tenant: TenantId, key: &[Value]) -> Result<(), DbError> {
+pub async fn delete<A, T: Table<A>>(tx: &Tx<'_>, tenant: TenantId, key: &[Value]) -> Result<(), DbError> {
     let w = SqlWrite::Del { table: 0, key: key.iter().map(to_val).collect() };
-    run_stmt::<A, T>(tx, tenant, planned(w)).await
+    run_stmt::<A, T>(tx.0, tenant, planned(w)).await
 }
 
 /// The statement `i5h_sql::plan` (proven in Lean) gives for one write.

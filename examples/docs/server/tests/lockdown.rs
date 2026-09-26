@@ -3,7 +3,7 @@ mod common;
 use common::*;
 use docs_kernel as k;
 use docs_server::{principal, DocsApp, DocsStore};
-use i5h_pg::tokio_postgres::{self, error::SqlState, NoTls};
+use tokio_postgres::{error::SqlState, NoTls};
 use i5h_pg::{lockdown, pool, Engine, EngineConfig};
 
 async fn connect(url: &str) -> tokio_postgres::Client {
@@ -44,9 +44,8 @@ async fn only_engine_role_can_write() {
     let admin_url = with_db(&url, None, db);
     let admin_engine = Engine::<DocsApp, DocsStore>::new(pool(&admin_url, 2).unwrap(), EngineConfig::default());
     admin_engine.install_schema().await.unwrap();
-    let admin = connect(&admin_url).await;
     for _ in 0..2 {
-        lockdown::<DocsApp, DocsStore>(&admin, "i5h_owner", "i5h_engine").await.unwrap();
+        lockdown::<DocsApp, DocsStore>(&admin_url, "i5h_owner", "i5h_engine").await.unwrap();
     }
 
     // The engine role works end to end.
@@ -68,6 +67,6 @@ async fn only_engine_role_can_write() {
     }
 
     // A bad role name is rejected before any SQL runs.
-    assert!(lockdown::<DocsApp, DocsStore>(&admin, "x; DROP TABLE projects", "i5h_engine").await.is_err());
+    assert!(lockdown::<DocsApp, DocsStore>(&admin_url, "x; DROP TABLE projects", "i5h_engine").await.is_err());
 
 }
