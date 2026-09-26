@@ -85,14 +85,20 @@ MUTANTS = {
     ],
 }
 
+SCHEMA = os.path.join(ROOT, "crates/i5h-schema")
+
+# The kernel and its only dependency, the i5h-schema macros.
 WORKSPACE_TOML = """[workspace]
 resolver = "2"
-members = ["kernel"]
+members = ["kernel", "i5h-schema"]
 
 [workspace.package]
 edition = "2021"
 license = "Apache-2.0"
 version = "0.1.0"
+
+[workspace.dependencies]
+i5h-schema = { path = "i5h-schema" }
 """
 
 
@@ -116,6 +122,7 @@ def check(name, edits, keep):
     log = os.path.join(tmp, "log.txt")
     try:
         shutil.copytree(KERNEL, os.path.join(tmp, "kernel"), ignore=shutil.ignore_patterns("target"))
+        shutil.copytree(SCHEMA, os.path.join(tmp, "i5h-schema"), ignore=shutil.ignore_patterns("target"))
         with open(os.path.join(tmp, "Cargo.toml"), "w") as f:
             f.write(WORKSPACE_TOML)
         lib = os.path.join(tmp, "kernel/src/lib.rs")
