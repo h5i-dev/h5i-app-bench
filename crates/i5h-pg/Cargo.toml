@@ -12,3 +12,4 @@ tokio-postgres.workspace = true
 deadpool-postgres = { workspace = true, features = ["rt_tokio_1"] }
 bytes = "1"
 tracing.workspace = true
+i5h-sql.workspace = true

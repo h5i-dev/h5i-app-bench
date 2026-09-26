@@ -10,7 +10,7 @@ Charon and Aeneas. For the example app, the spec is
 
 | Property | How |
 |---|---|
-| Handlers go through the kernel | App code gets `I5h::respond` / `Engine::execute`, never a DB handle. A handler that opens its own connection bypasses this; deploy so only the engine has the DB credentials. |
+| Handlers go through the kernel | App code gets `I5h::respond` / `Engine::execute`, never a DB handle. `cargo deny check bans` (`deny.toml`) rejects database crates in any workspace crate but `i5h-pg`. `i5h_pg::lockdown` makes a NOLOGIN role own the i5h tables and grants row access only to the engine's role (see Deployment below). |
 | Tenant isolation | The engine loads and writes only rows with `tenant_id = K::tenant(actor)`. Kernel rows carry no tenant id, so the kernel cannot name another tenant. A Lean theorem about this would be trivial, so it is not claimed as proven. |
 | Every column is persisted | `table!` must list every field or it does not compile. |
 
@@ -18,12 +18,29 @@ Charon and Aeneas. For the example app, the spec is
 
 | Component | Assumption | Mitigation |
 |---|---|---|
-| `Authenticator` | Returns the principal that sent the request. | Small HMAC implementation; tests for forged and missing tokens. |
+| `Authenticator` | Returns the principal that sent the request. | Token parsing is extracted and proven: an accepted token's signed payload is exactly `enc(tenant, user, exp)`, so a signature covers one identity. HMAC-SHA256 from libcrux 0.0.8 (HACL*-verified, pre-1.0). Still trusted: the secret key and its storage, the clock for expiry, constant-time tag comparison (`ct_eq`). |
 | JSON codec | Decodes the body into the command the client meant. | `deny_unknown_fields`; tagged enum. |
-| `i5h-pg` table mapping | After commit, `load` returns `apply(before, ws)`. | Differential test against `MemoryEngine` on random command sequences. |
+| `i5h-pg` table mapping (A4) | Rows map to columns in field order (`table!`), and the SQL template in `table.rs::run_stmt` does what `Sem.exec` says: `INSERT ... ON CONFLICT (pk) DO UPDATE` stores `key ++ rest` at `key`, `DELETE ... WHERE pk = key` removes it. | Which statements run is decided by `i5h_sql::plan`, extracted and proven in `crates/i5h-sql/proofs` (`extracted_plan_sound`: running the plan equals applying the writes to keyed tables, keys stay unique). The row mapping and template are covered by the differential test against `MemoryEngine`. |
 | PostgreSQL | SERIALIZABLE commits are equivalent to some serial order. | Documented PostgreSQL guarantee. Retries restart from the snapshot read. |
+| Engine protocol | Retries never reuse a stale decision; a lost connection never half-applies a request. | Lean model `lean/Engine` proves the protocol serializable, at most once per idempotency key, and free of stale decisions, for any kernel. The Rust engine is checked against it only by review, plus fault-injection tests (`examples/docs/server/tests/faults.rs`). |
+| Deployment | The engine does not log in as a superuser, and no other service gets its credentials. | Superusers bypass table grants; nothing in i5h can stop that. |
 | Charon / Aeneas / Lean | The translation is faithful and the checker is sound. | Upstream tools. |
 | axum, hyper, tokio | Deliver requests and responses intact. | Widely used. |
+
+## Deployment
+
+1. As an admin, create the engine's login role: `CREATE ROLE app_engine LOGIN PASSWORD '...'`. Not a superuser, not the table owner.
+2. As the admin, run `Engine::install_schema`, then `i5h_pg::lockdown::<App, Store>(&admin_client, "i5h_owner", "app_engine")`. It is idempotent; rerun after adding tables.
+3. Run the server with `DATABASE_URL` for `app_engine`. Other roles get `permission denied` on i5h tables (`tests/lockdown.rs`).
+
+Gaps: `i5h_pg` re-exports `tokio_postgres` because `Store` impls need `Transaction`, so `cargo-deny` alone cannot stop an app crate from using the driver through the re-export. The role lockdown is what enforces A8 at runtime.
+
+## Connection loss
+
+A connection lost before COMMIT is retried from BEGIN. A connection lost during
+COMMIT may or may not have committed: under an idempotency key the engine
+retries (the key makes it safe); without one it returns `DbError::CommitUnknown`
+and the caller must not assume either outcome.
 
 ## Consequence
 

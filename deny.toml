@@ -1,0 +1,14 @@
+# Only i5h-pg may talk to the database directly (ROADMAP A8).
+# Run: cargo deny check bans
+
+[bans]
+multiple-versions = "allow"
+wildcards = "allow"
+deny = [
+    { crate = "tokio-postgres", wrappers = ["i5h-pg", "deadpool-postgres"], reason = "database access goes through i5h-pg" },
+    { crate = "deadpool-postgres", wrappers = ["i5h-pg"], reason = "database access goes through i5h-pg" },
+    { crate = "postgres", reason = "database access goes through i5h-pg" },
+    { crate = "sqlx", reason = "database access goes through i5h-pg" },
+    { crate = "diesel", reason = "database access goes through i5h-pg" },
+    { crate = "sea-orm", reason = "database access goes through i5h-pg" },
+]

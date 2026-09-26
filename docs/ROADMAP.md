@@ -7,16 +7,16 @@ properties is secondary.
 
 | # | Assumption | Today | Target |
 |---|---|---|---|
-| A1 | Authenticator returns the real sender | trusted (our HMAC code) | token parsing extracted and proven; verified HMAC; key management stays trusted (Phase 1) |
-| A2 | JSON decoder is faithful | trusted | not needed for security theorems, which quantify over all commands (Phase 0) |
+| A1 | Authenticator returns the real sender | token parsing extracted and proven canonical (`crates/i5h-token/proofs`); HMAC from libcrux (HACL*-verified). Remaining: key management, encoder round trip proven only at spec level | key management stays trusted |
+| A2 | JSON decoder is faithful | not needed for security: every theorem quantifies over all commands | still needed for functional correctness only |
 | A3 | Reply encoder adds nothing | trusted | rendering extracted; proven to output only reply fields (Phase 1) |
-| A4 | Postgres store matches `apply` | tested | statement generation extracted and proven; only "Postgres implements its statements" remains (Phase 1) |
+| A4 | Postgres store matches `apply` | statement planning extracted and proven (`crates/i5h-sql`); row-to-column mapping and the SQL template trusted, covered by the differential test | prove the docs kernel's `applyAll` equals `readBack` of the planned rows, so the example's own write mapping is covered too |
 | A5 | SERIALIZABLE commits equal a serial order | trusted | stays trusted (documented PostgreSQL guarantee) |
-| A6 | Engine protocol (retry, idempotency, lock) is correct | tested | Lean model of the protocol, proven; fault-injection tests on the Rust engine (Phase 1) |
-| A7 | Charon, Aeneas, Lean are faithful and sound | trusted | stays trusted; `#print axioms` gate and Rust-vs-Lean differential tests (Phase 0) |
-| A8 | No handler bypasses the engine | convention | dedicated DB role for i5h tables; `cargo-deny` ban on DB crates outside the engine (Phase 1) |
-| A9 | Running code is the extracted code | unchecked | CI re-extracts and fails on any diff (Phase 0) |
-| A10 | The spec says what we meant | human review | kept small and readable; proof mutation suite; concrete scenario theorems (Phase 0 onward) |
+| A6 | Engine protocol (retry, idempotency, lock) is correct | Lean model in `lean/` proven: serializable commits, at most once per key, no stale decisions; exhaustive search on a small instance. Rust engine tested with fault injection; its match with the model is by review | tie the model to the Rust code (e.g. trace checking in the fault tests) |
+| A7 | Charon, Aeneas, Lean are faithful and sound | trusted, with checks: `#print axioms` gate (standard axioms only) and a Rust-vs-Lean differential test (`scripts/difftest.sh`, 55k cases, no mismatch) | stays trusted |
+| A8 | No handler bypasses the engine | enforced: `i5h_pg::lockdown` role separation (tested) and `cargo deny check bans`, both run in CI; remaining gap is the `tokio_postgres` re-export, and superuser logins | close the re-export gap |
+| A9 | Running code is the extracted code | CI re-extracts with pinned Charon/Aeneas and fails on any diff (verified locally; first GitHub run pending) | same for `i5h-sql` and `i5h-token` |
+| A10 | The spec says what we meant | human review of a 125-line spec; mutation suite catches 12/12 injected bugs (`scripts/mutants.py`) | concrete scenario theorems; more mutants |
 
 ## Phase 0: proofs on the example app
 
