@@ -60,4 +60,4 @@ to be preserved by `transition` + `apply` holds in the database.
 - Migrations are checked, not proven: `Engine::migrate` commits only if every
   tenant passes the proven-exact checker afterwards. Checking cost grows with
   the data; very large tenants need the check batched.
-- Effects are delivered at least once, not exactly once: the receiver must drop duplicates by the delivery key. The dispatcher's registry (id to endpoint) and the `Deliver` implementation are trusted; checking the endpoint's address (no private ranges, no redirects) belongs there.
+- Effects are delivered at least once, not exactly once: the receiver must drop duplicates by the delivery key. `Outbox.key_fixes_content` proves that is enough: sends with one key always carry the same endpoint and committed payload (in the model; the Rust dispatcher is tested, not traced). The dispatcher's registry (id to endpoint) and the `Deliver` implementation are trusted; checking the endpoint's address (no private ranges, no redirects) belongs there.
