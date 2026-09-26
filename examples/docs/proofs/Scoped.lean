@@ -11,7 +11,7 @@ and that satisfies `Inv`. With `transition_frame` and `store_sound`, running
 a command on the scoped load and storing its writes keeps `DbInv`.
 -/
 open Aeneas Aeneas.Std Result docs_kernel docs_kernel.Spec I5hLib I5hLib.Sql docs_kernel.Storage
-  docs_kernel.Load docs_kernel.Frame
+  docs_kernel.Load docs_kernel.Frame docs_kernel.Schema
 
 namespace docs_kernel.Scoped
 
@@ -72,26 +72,26 @@ that filter applied to a full snapshot the rows hold. -/
 theorem decode_filtered (db : Db Val) (s : St) (c : Bool) (hi : Inv s) (hdb : db = readBack kl (encC c s))
     (hc : c = false → s.next = 0) (hb : s.next < 2 ^ 64) (hf : Fits s) (r : Rows)
     (h3 : Sel db 3 (fun _ => True) (r.counter.val.map (·.val)))
-    (Fp : Project → Bool) (Qp : List Val → Prop) (hQp : ∀ x, Qp (projRow x) ↔ Fp x = true)
+    (Fp : Project → Bool) (Qp : List Val → Prop) (hQp : ∀ x, Qp (Project.row x) ↔ Fp x = true)
     (h0 : Sel db 0 Qp (r.projects.val.map (·.val)))
-    (Fm : Member → Bool) (Qm : List Val → Prop) (hQm : ∀ x, Qm (memberRow x) ↔ Fm x = true)
+    (Fm : Member → Bool) (Qm : List Val → Prop) (hQm : ∀ x, Qm (Member.row x) ↔ Fm x = true)
     (h1 : Sel db 1 Qm (r.members.val.map (·.val)))
-    (Fd : Document → Bool) (Qd : List Val → Prop) (hQd : ∀ x, Qd (docRow x) ↔ Fd x = true)
+    (Fd : Document → Bool) (Qd : List Val → Prop) (hQd : ∀ x, Qd (Document.row x) ↔ Fd x = true)
     (h2 : Sel db 2 Qd (r.documents.val.map (·.val)))
-    (Fw : Webhook → Bool) (Qw : List Val → Prop) (hQw : ∀ x, Qw (hookRow x) ↔ Fw x = true)
+    (Fw : Webhook → Bool) (Qw : List Val → Prop) (hQw : ∀ x, Qw (Webhook.row x) ↔ Fw x = true)
     (h4 : Sel db 4 Qw (r.webhooks.val.map (·.val))) :
     decode r ⦃ o => ∃ snap : Snapshot, Equiv s (Snapshot.toSt snap) ∧
       o = some (⟨snap.counter, filterV Fp snap.projects, filterV Fm snap.members,
         filterV Fd snap.documents, filterV Fw snap.webhooks⟩ : Snapshot) ⦄ := by
   have h3' : (r.counter.val.map (·.val)).Perm (if c then [counterRow s.next] else []) := by
     simpa [encC] using sel_perm db s c hi hdb 3 _ _ h3
-  obtain ⟨lp, ep, pp⟩ := sel_decoded _ projRow_inj s.projects Fp Qp hQp _
+  obtain ⟨lp, ep, pp⟩ := sel_decoded _ Project.row_inj s.projects Fp Qp hQp _
     (by simpa [encC, enc] using sel_perm db s c hi hdb 0 _ _ h0)
-  obtain ⟨lm, em, pm⟩ := sel_decoded _ memberRow_inj s.members Fm Qm hQm _
+  obtain ⟨lm, em, pm⟩ := sel_decoded _ Member.row_inj s.members Fm Qm hQm _
     (by simpa [encC, enc] using sel_perm db s c hi hdb 1 _ _ h1)
-  obtain ⟨ld, ed, pd⟩ := sel_decoded _ docRow_inj s.docs Fd Qd hQd _
+  obtain ⟨ld, ed, pd⟩ := sel_decoded _ Document.row_inj s.docs Fd Qd hQd _
     (by simpa [encC, enc] using sel_perm db s c hi hdb 2 _ _ h2)
-  obtain ⟨lw, ew, pw⟩ := sel_decoded _ hookRow_inj s.webhooks Fw Qw hQw _
+  obtain ⟨lw, ew, pw⟩ := sel_decoded _ Webhook.row_inj s.webhooks Fw Qw hQw _
     (by simpa [encC, enc] using sel_perm db s c hi hdb 4 _ _ h4)
   apply WP.spec_mono (decode_lists r s c hc hb h3' lp ep lm em ld ed lw ew)
   rintro o ⟨d, rfl, hk, hvp, hvm, hvd, hvw⟩
@@ -115,16 +115,16 @@ theorem decode_filtered (db : Db Val) (s : St) (c : Bool) (hi : Inv s) (hdb : db
   refine ⟨rfl, alloc.vec.Vec.ext _ _ ?_, alloc.vec.Vec.ext _ _ ?_, alloc.vec.Vec.ext _ _ ?_,
     alloc.vec.Vec.ext _ _ ?_⟩ <;> simp [snap, alloc.vec.Vec.from_val, *]
 
-theorem col_proj (p : U64) (x : Project) : ColIs 0 (int p.val) (projRow x) ↔ decide (x.id.val = p.val) = true := by
-  simp [ColIs, projRow, int_u64]
-theorem col_member (p : U64) (x : Member) : ColIs 0 (int p.val) (memberRow x) ↔ decide (x.project.val = p.val) = true := by
-  simp [ColIs, memberRow, int_u64]
-theorem col_doc (p : U64) (x : Document) : ColIs 1 (int p.val) (docRow x) ↔ decide (x.project.val = p.val) = true := by
-  simp [ColIs, docRow, int_u64]
-theorem col_hook (p : U64) (x : Webhook) : ColIs 0 (int p.val) (hookRow x) ↔ decide (x.project.val = p.val) = true := by
-  simp [ColIs, hookRow, int_u64]
-theorem col_doc_id (d : U64) (x : Document) : ColIs 0 (int d.val) (docRow x) ↔ decide (x.id.val = d.val) = true := by
-  simp [ColIs, docRow, int_u64]
+theorem col_proj (p : U64) (x : Project) : ColIs 0 (int p.val) (Project.row x) ↔ decide (x.id.val = p.val) = true := by
+  simp [ColIs, Project.row, int_u64]
+theorem col_member (p : U64) (x : Member) : ColIs 0 (int p.val) (Member.row x) ↔ decide (x.project.val = p.val) = true := by
+  simp [ColIs, Member.row, int_u64]
+theorem col_doc (p : U64) (x : Document) : ColIs 1 (int p.val) (Document.row x) ↔ decide (x.project.val = p.val) = true := by
+  simp [ColIs, Document.row, int_u64]
+theorem col_hook (p : U64) (x : Webhook) : ColIs 0 (int p.val) (Webhook.row x) ↔ decide (x.project.val = p.val) = true := by
+  simp [ColIs, Webhook.row, int_u64]
+theorem col_doc_id (d : U64) (x : Document) : ColIs 0 (int d.val) (Document.row x) ↔ decide (x.id.val = d.val) = true := by
+  simp [ColIs, Document.row, int_u64]
 
 theorem sel_empty (db : Db Val) (t : Nat) : Sel db t (fun _ => False) [] := by simp [Sel]
 
@@ -190,7 +190,7 @@ theorem scoped_sound (db : Db Val) (s : St) (c : Bool) (hi : Inv s) (hdb : db = 
     intro r h3 _ hp
     exact load_keep db s c hi hdb hc hb hf r h3 p (hp p rfl)
   | Document d =>
-    obtain ⟨ld, ed, pd⟩ := sel_decoded _ docRow_inj s.docs (fun x => decide (x.id.val = d.val)) _
+    obtain ⟨ld, ed, pd⟩ := sel_decoded _ Document.row_inj s.docs (fun x => decide (x.id.val = d.val)) _
       (col_doc_id d) _ (by simpa [encC, enc] using sel_perm db s c hi hdb 2 _ _ (hd d rfl))
     unfold scoped_project
     step with document_from_rows rd ld ed as ⟨ o, v, ho, hv ⟩

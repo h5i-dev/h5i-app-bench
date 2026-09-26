@@ -1,5 +1,5 @@
 import Spec
-import I5hLib
+import Schema
 /-!
 # What the store writes (A4)
 
@@ -15,80 +15,35 @@ The server stores a write set by running `i5h_sql::plan` on the kernel's own
 `I5hLib.Sql` gives statements their PostgreSQL meaning (trusted), and the
 `i5h-sql` proofs show the extracted `plan` computes `planA`.
 -/
-open Aeneas Aeneas.Std Result docs_kernel docs_kernel.Spec I5hLib I5hLib.Sql
+open Aeneas Aeneas.Std Result docs_kernel docs_kernel.Spec I5hLib I5hLib.Sql docs_kernel.Schema
 
 namespace docs_kernel.Storage
 
-abbrev Val := i5h_sql.Val
-
-/-- A `u64` column: its bits as a `BIGINT`. -/
-def int (n : Nat) : Val := .Int ⟨BitVec.ofNat _ n⟩
-
-def roleV : Role → Val
-  | .Viewer => .Int 0#i64
-  | .Editor => .Int 1#i64
-  | .Owner => .Int 2#i64
-
-def statusV : Status → Val
-  | .Draft => .Int 0#i64
-  | .InReview => .Int 1#i64
-  | .Approved => .Int 2#i64
-  | .Published => .Int 3#i64
-
-def optV : Option U64 → Val
-  | some x => int x.val
-  | none => .Null
-
-/-! ## Rows, key columns first (tables numbered as declared in `schema!`) -/
-
-def projRow (p : Project) : List Val := [int p.id.val, .Bytes p.name]
-def memberRow (m : Member) : List Val := [int m.project.val, int m.user.val, roleV m.role]
-def docRow (d : Document) : List Val :=
-  [int d.id.val, int d.project.val, int d.author.val, .Bytes d.title, .Bytes d.body,
-    statusV d.status, optV d.approver, int d.version.val]
+/-- The counter table's one row, for counter `n`. -/
 def counterRow (n : Nat) : List Val := [int n]
-def hookRow (h : Webhook) : List Val := [int h.project.val, int h.dest.val]
 
-/-- Key length per table. -/
-def kl : Nat → Nat
-  | 0 => 1 | 1 => 2 | 2 => 1 | 3 => 0 | 4 => 1 | _ => 0
+@[simp] theorem Counter.row_eq (c : Counter) : Counter.row c = counterRow c.next_id.val := rfl
 
 /-- The rows a state is stored as. -/
 def enc (s : St) : Tables Val
-  | 0 => s.projects.map projRow
-  | 1 => s.members.map memberRow
-  | 2 => s.docs.map docRow
+  | 0 => s.projects.map Project.row
+  | 1 => s.members.map Member.row
+  | 2 => s.docs.map Document.row
   | 3 => [counterRow s.next]
-  | 4 => s.webhooks.map hookRow
+  | 4 => s.webhooks.map Webhook.row
   | _ => []
 
 /-- The table write for one kernel write; effects go to the outbox instead. -/
 def sqlA : Write → Option (AWrite Val)
-  | .PutProject p => some (.put 0 1 (projRow p))
-  | .PutMember m => some (.put 1 2 (memberRow m))
+  | .PutProject p => some (.put 0 1 (Project.row p))
+  | .PutMember m => some (.put 1 2 (Member.row m))
   | .DelMember p u => some (.del 1 [int p.val, int u.val])
-  | .PutDocument d => some (.put 2 1 (docRow d))
+  | .PutDocument d => some (.put 2 1 (Document.row d))
   | .DelDocument i => some (.del 2 [int i.val])
   | .SetCounter c => some (.put 3 0 (counterRow c.next_id.val))
-  | .PutWebhook h => some (.put 4 1 (hookRow h))
+  | .PutWebhook h => some (.put 4 1 (Webhook.row h))
   | .DelWebhook p => some (.del 4 [int p.val])
   | .Emit _ => none
-
-/-! ## Keys are encoded injectively -/
-
-theorem int_inj {a b : Nat} (ha : a < 2 ^ 64) (hb : b < 2 ^ 64) (h : int a = int b) : a = b := by
-  simp only [int, i5h_sql.Val.Int.injEq, IScalar.mk.injEq] at h
-  have := congrArg BitVec.toNat h
-  simp only [BitVec.toNat_ofNat] at this
-  rwa [Nat.mod_eq_of_lt (by simpa using ha), Nat.mod_eq_of_lt (by simpa using hb)] at this
-
-@[simp] theorem u64_val_eq (x y : U64) : x.val = y.val ↔ x = y :=
-  ⟨fun h => by scalar_tac, fun h => h ▸ rfl⟩
-
-theorem int_u64 (x y : U64) : int x.val = int y.val ↔ x = y := by
-  refine ⟨fun h => ?_, fun h => h ▸ rfl⟩
-  have := int_inj (by scalar_tac) (by scalar_tac) h
-  scalar_tac
 
 /-! ## Row writes commute with encoding -/
 
@@ -123,31 +78,31 @@ theorem encode_step (s : St) (w : Write) :
     simp only [sqlA, applyW, applyWrite]
     split
     · subst_vars
-      exact map_upsert _ _ 1 _ _ (fun y => by simp [projRow, int_u64])
+      exact map_upsert _ _ 1 _ _ (fun y => by simp [Project.row, int_u64])
     · rename_i ht; rcases t with _ | _ | _ | _ | _ | t <;> simp_all [enc]
   | PutMember m =>
     simp only [sqlA, applyW, applyWrite]
     split
     · subst_vars
-      exact map_upsert _ _ 2 _ _ (fun y => by simp [memberRow, int_u64])
+      exact map_upsert _ _ 2 _ _ (fun y => by simp [Member.row, int_u64])
     · rename_i ht; rcases t with _ | _ | _ | _ | _ | t <;> simp_all [enc]
   | DelMember p u =>
     simp only [sqlA, applyW, applyWrite]
     split
     · subst_vars
-      exact map_filter _ _ 2 _ _ (fun y => by simp [memberRow, int_u64])
+      exact map_filter _ _ 2 _ _ (fun y => by simp [Member.row, int_u64])
     · rename_i ht; rcases t with _ | _ | _ | _ | _ | t <;> simp_all [enc]
   | PutDocument d =>
     simp only [sqlA, applyW, applyWrite]
     split
     · subst_vars
-      exact map_upsert _ _ 1 _ _ (fun y => by simp [docRow, int_u64])
+      exact map_upsert _ _ 1 _ _ (fun y => by simp [Document.row, int_u64])
     · rename_i ht; rcases t with _ | _ | _ | _ | _ | t <;> simp_all [enc]
   | DelDocument i =>
     simp only [sqlA, applyW, applyWrite]
     split
     · subst_vars
-      exact map_filter _ _ 1 _ _ (fun y => by simp [docRow, int_u64])
+      exact map_filter _ _ 1 _ _ (fun y => by simp [Document.row, int_u64])
     · rename_i ht; rcases t with _ | _ | _ | _ | _ | t <;> simp_all [enc]
   | SetCounter c =>
     simp only [sqlA, applyW, applyWrite]
@@ -158,13 +113,13 @@ theorem encode_step (s : St) (w : Write) :
     simp only [sqlA, applyW, applyWrite]
     split
     · subst_vars
-      exact map_upsert _ _ 1 _ _ (fun y => by simp [hookRow, int_u64])
+      exact map_upsert _ _ 1 _ _ (fun y => by simp [Webhook.row, int_u64])
     · rename_i ht; rcases t with _ | _ | _ | _ | _ | t <;> simp_all [enc]
   | DelWebhook p =>
     simp only [sqlA, applyW, applyWrite]
     split
     · subst_vars
-      exact map_filter _ _ 1 _ _ (fun y => by simp [hookRow, int_u64])
+      exact map_filter _ _ 1 _ _ (fun y => by simp [Webhook.row, int_u64])
     · rename_i ht; rcases t with _ | _ | _ | _ | _ | t <;> simp_all [enc]
   | Emit e => simp [sqlA, applyWrite]
 
@@ -193,25 +148,25 @@ theorem nodup_keys {α κ : Type} (l : List α) (key : α → List Val) (id : α
 theorem wellKeyed (s : St) (h : Inv s) : WellKeyed kl (enc s) := by
   intro t
   rcases t with _ | _ | _ | _ | _ | t
-  · refine ⟨?_, by simp [enc, kl, projRow]⟩
+  · refine ⟨?_, by simp [enc, kl, Project.row]⟩
     simp only [enc, kl, List.map_map]
-    exact nodup_keys _ _ (·.id) (fun x y e => by simpa [projRow, int_u64] using e) h.proj_keys
-  · refine ⟨?_, by simp [enc, kl, memberRow]⟩
+    exact nodup_keys _ _ (·.id) (fun x y e => by simpa [Project.row, int_u64] using e) h.proj_keys
+  · refine ⟨?_, by simp [enc, kl, Member.row]⟩
     simp only [enc, kl, List.map_map]
     exact nodup_keys _ _ (fun m => (m.project, m.user))
-      (fun x y e => by simp [memberRow, int_u64] at e; simp [e]) h.member_keys
-  · refine ⟨?_, by simp [enc, kl, docRow]⟩
+      (fun x y e => by simp [Member.row, int_u64] at e; simp [e]) h.member_keys
+  · refine ⟨?_, by simp [enc, kl, Document.row]⟩
     simp only [enc, kl, List.map_map]
-    exact nodup_keys _ _ (·.id) (fun x y e => by simpa [docRow, int_u64] using e) h.doc_keys
+    exact nodup_keys _ _ (·.id) (fun x y e => by simpa [Document.row, int_u64] using e) h.doc_keys
   · simp [enc, kl, counterRow]
-  · refine ⟨?_, by simp [enc, kl, hookRow]⟩
+  · refine ⟨?_, by simp [enc, kl, Webhook.row]⟩
     simp only [enc, kl, List.map_map]
-    exact nodup_keys _ _ (·.project) (fun x y e => by simpa [hookRow, int_u64] using e) h.hook_keys
+    exact nodup_keys _ _ (·.project) (fun x y e => by simpa [Webhook.row, int_u64] using e) h.hook_keys
   · simp [enc]
 
 theorem writeOk (w : Write) (a : AWrite Val) (h : sqlA w = some a) : WriteOk kl a := by
   cases w <;> simp only [sqlA, Option.some.injEq, reduceCtorEq] at h
-  all_goals (subst h; simp [WriteOk, kl, projRow, memberRow, docRow, counterRow, hookRow])
+  all_goals (subst h; simp [WriteOk, kl, Project.row, Member.row, Document.row, counterRow, Webhook.row])
 
 /-- Storing a write set: if the tenant's rows hold a valid state `s`, running
 the planned statements leaves exactly the rows of `applyAll s ws`. -/
@@ -229,51 +184,6 @@ theorem stored (s : St) (ws : List Write) (h : Inv s) :
 def Write.abs : i5h_sql.Write → AWrite Val
   | .Put t n row => .put t.val n.val row.val
   | .Del t k => .del t.val k.val
-
-theorem u64_to_val_eq (x : U64) : U64.Insts.I5h_sqlColumn.to_val x = ok (int x.val) := by
-  unfold U64.Insts.I5h_sqlColumn.to_val int
-  simp only [lift, UScalar.hcast]
-  rw [← UScalar.bv_toNat, BitVec.ofNat_toNat]
-  simp [BitVec.zeroExtend]
-
-@[step]
-theorem u64_to_val (x : U64) : U64.Insts.I5h_sqlColumn.to_val x ⦃ v => v = int x.val ⦄ := by
-  simp [u64_to_val_eq]
-
-theorem u8vec_clone (v : alloc.vec.Vec U8) : alloc.vec.CloneVec.clone core.clone.CloneU8 v = ok v :=
-  vec_clone_eq _ v (fun _ => rfl)
-
-@[step]
-theorem bytes_to_val (v : alloc.vec.Vec U8) :
-    alloc.vec.VecU8.Insts.I5h_sqlColumn.to_val v ⦃ x => x = .Bytes v ⦄ := by
-  simp [alloc.vec.VecU8.Insts.I5h_sqlColumn.to_val, u8vec_clone]
-
-@[step]
-theorem role_to_val (r : Role) : Role.Insts.I5h_sqlColumn.to_val r ⦃ x => x = roleV r ⦄ := by
-  cases r <;> simp [Role.Insts.I5h_sqlColumn.to_val, roleV]
-
-@[step]
-theorem status_to_val (r : Status) : Status.Insts.I5h_sqlColumn.to_val r ⦃ x => x = statusV r ⦄ := by
-  cases r <;> simp [Status.Insts.I5h_sqlColumn.to_val, statusV]
-
-@[step]
-theorem opt_to_val (o : Option U64) :
-    core.option.Option.Insts.I5h_sqlColumn.to_val U64.Insts.I5h_sqlColumn o ⦃ x => x = optV o ⦄ := by
-  cases o with
-  | none => simp [core.option.Option.Insts.I5h_sqlColumn.to_val, optV]
-  | some x => simpa [core.option.Option.Insts.I5h_sqlColumn.to_val, optV] using u64_to_val x
-
-@[step] theorem project_row (p : Project) : Project.to_row p ⦃ v => v.val = projRow p ⦄ := by
-  unfold Project.to_row; step* <;> simp_all [projRow]
-@[step] theorem member_row (m : Member) : Member.to_row m ⦃ v => v.val = memberRow m ⦄ := by
-  unfold Member.to_row; step* <;> simp_all [memberRow]
-@[step] theorem document_row (d : Document) : Document.to_row d ⦃ v => v.val = docRow d ⦄ := by
-  have := usize_max_le
-  unfold Document.to_row; step* <;> simp_all [docRow] <;> scalar_tac
-@[step] theorem counter_row (c : Counter) : Counter.to_row c ⦃ v => v.val = counterRow c.next_id.val ⦄ := by
-  unfold Counter.to_row; step* <;> simp_all [counterRow]
-@[step] theorem webhook_row (h : Webhook) : Webhook.to_row h ⦃ v => v.val = hookRow h ⦄ := by
-  unfold Webhook.to_row; step* <;> simp_all [hookRow]
 
 @[step] theorem key1_spec (a : U64) : key1 a ⦃ v => v.val = [int a.val] ⦄ := by
   unfold key1; step* <;> simp_all

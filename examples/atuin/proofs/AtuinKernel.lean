@@ -28,7 +28,7 @@ inductive Principal where
 | User : Std.U64 → Principal
 
 /-- [atuin_kernel::User]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 39:12-42:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 43:12-46:13
     Visibility: public -/
 structure User where
   id : Std.U64
@@ -52,7 +52,7 @@ def User.Insts.CoreCloneClone : core.clone.Clone User := {
 }
 
 /-- [atuin_kernel::Session]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 39:12-42:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 43:12-46:13
     Visibility: public -/
 structure Session where
   user : Std.U64
@@ -74,7 +74,7 @@ def Session.Insts.CoreCloneClone : core.clone.Clone Session := {
 }
 
 /-- [atuin_kernel::Record]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 39:12-42:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 43:12-46:13
     Visibility: public -/
 structure Record where
   user : Std.U64
@@ -102,7 +102,7 @@ def Record.Insts.CoreCloneClone : core.clone.Clone Record := {
 }
 
 /-- [atuin_kernel::Settings]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 39:12-42:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 43:12-46:13
     Visibility: public -/
 structure Settings where
   open_registration : Bool
@@ -118,7 +118,7 @@ def Settings.Insts.CoreCloneClone.clone
   ok { open_registration := b, max_record_size := i }
 
 /-- [atuin_kernel::Counter]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 39:12-42:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 43:12-46:13
     Visibility: public -/
 structure Counter where
   next_id : Std.U64

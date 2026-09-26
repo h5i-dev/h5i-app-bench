@@ -231,7 +231,7 @@ impl_def Status.Insts.CoreCmpPartialEqStatus : core.cmp.PartialEq Status Status
 }
 
 /-- [docs_kernel::Project]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 39:12-42:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 43:12-46:13
     Visibility: public -/
 structure Project where
   id : Std.U64
@@ -253,7 +253,7 @@ def Project.Insts.CoreCloneClone : core.clone.Clone Project := {
 }
 
 /-- [docs_kernel::Member]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 39:12-42:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 43:12-46:13
     Visibility: public -/
 structure Member where
   project : Std.U64
@@ -277,7 +277,7 @@ def Member.Insts.CoreCloneClone : core.clone.Clone Member := {
 }
 
 /-- [docs_kernel::Counter]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 39:12-42:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 43:12-46:13
     Visibility: public -/
 structure Counter where
   next_id : Std.U64
@@ -290,7 +290,7 @@ def Counter.Insts.CoreCloneClone.clone (self : Counter) : Result Counter := do
   ok { next_id := i }
 
 /-- [docs_kernel::Webhook]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 39:12-42:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 43:12-46:13
     Visibility: public -/
 structure Webhook where
   project : Std.U64
@@ -310,7 +310,7 @@ def Webhook.Insts.CoreCloneClone : core.clone.Clone Webhook := {
 }
 
 /-- [docs_kernel::Document]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 39:12-42:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 43:12-46:13
     Visibility: public -/
 structure Document where
   id : Std.U64
@@ -1516,7 +1516,7 @@ def key2 (a : Std.U64) (b : Std.U64) : Result (alloc.vec.Vec i5h_sql.Val) := do
   alloc.vec.Vec.push k v1
 
 /-- [docs_kernel::{docs_kernel::Webhook}::to_row]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 60:12-65:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 65:12-70:13
     Visibility: public -/
 def Webhook.to_row (self : Webhook) : Result (alloc.vec.Vec i5h_sql.Val) := do
   let v ← U64.Insts.I5h_sqlColumn.to_val self.project
@@ -1525,14 +1525,14 @@ def Webhook.to_row (self : Webhook) : Result (alloc.vec.Vec i5h_sql.Val) := do
   alloc.vec.Vec.push out v1
 
 /-- [docs_kernel::{docs_kernel::Counter}::to_row]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 60:12-65:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 65:12-70:13
     Visibility: public -/
 def Counter.to_row (self : Counter) : Result (alloc.vec.Vec i5h_sql.Val) := do
   let v ← U64.Insts.I5h_sqlColumn.to_val self.next_id
   alloc.vec.Vec.push (alloc.vec.Vec.new i5h_sql.Val) v
 
 /-- [docs_kernel::{docs_kernel::Document}::to_row]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 60:12-65:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 65:12-70:13
     Visibility: public -/
 def Document.to_row
   (self : Document) : Result (alloc.vec.Vec i5h_sql.Val) := do
@@ -1556,7 +1556,7 @@ def Document.to_row
   alloc.vec.Vec.push out6 v7
 
 /-- [docs_kernel::{docs_kernel::Member}::to_row]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 60:12-65:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 65:12-70:13
     Visibility: public -/
 def Member.to_row (self : Member) : Result (alloc.vec.Vec i5h_sql.Val) := do
   let v ← U64.Insts.I5h_sqlColumn.to_val self.project
@@ -1567,7 +1567,7 @@ def Member.to_row (self : Member) : Result (alloc.vec.Vec i5h_sql.Val) := do
   alloc.vec.Vec.push out1 v2
 
 /-- [docs_kernel::{docs_kernel::Project}::to_row]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 60:12-65:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 65:12-70:13
     Visibility: public -/
 def Project.to_row (self : Project) : Result (alloc.vec.Vec i5h_sql.Val) := do
   let v ← U64.Insts.I5h_sqlColumn.to_val self.id
@@ -1576,37 +1576,37 @@ def Project.to_row (self : Project) : Result (alloc.vec.Vec i5h_sql.Val) := do
   alloc.vec.Vec.push out v1
 
 /-- [docs_kernel::{docs_kernel::Webhook}::KEY_LEN]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 58:12-58:64
+    Source: 'crates/i5h-schema/src/lib.rs', lines 63:12-63:64
     Visibility: public -/
 @[global_simps, irreducible]
 def Webhook.KEY_LEN : Result Std.U32 := 0#u32 + 1#u32
 
 /-- [docs_kernel::{docs_kernel::Counter}::KEY_LEN]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 58:12-58:64
+    Source: 'crates/i5h-schema/src/lib.rs', lines 63:12-63:64
     Visibility: public -/
 @[global_simps, irreducible] def Counter.KEY_LEN : Std.U32 := 0#u32
 
 /-- [docs_kernel::{docs_kernel::Document}::KEY_LEN]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 58:12-58:64
+    Source: 'crates/i5h-schema/src/lib.rs', lines 63:12-63:64
     Visibility: public -/
 @[global_simps, irreducible]
 def Document.KEY_LEN : Result Std.U32 := 0#u32 + 1#u32
 
 /-- [docs_kernel::{docs_kernel::Member}::KEY_LEN]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 58:12-58:64
+    Source: 'crates/i5h-schema/src/lib.rs', lines 63:12-63:64
     Visibility: public -/
 @[global_simps, irreducible]
 def Member.KEY_LEN : Result Std.U32 := do let i ← 0#u32 + 1#u32
                                           i + 1#u32
 
 /-- [docs_kernel::{docs_kernel::Project}::KEY_LEN]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 58:12-58:64
+    Source: 'crates/i5h-schema/src/lib.rs', lines 63:12-63:64
     Visibility: public -/
 @[global_simps, irreducible]
 def Project.KEY_LEN : Result Std.U32 := 0#u32 + 1#u32
 
 /-- [docs_kernel::{docs_kernel::Webhook}::TABLE]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 57:12-57:42
+    Source: 'crates/i5h-schema/src/lib.rs', lines 62:12-62:42
     Visibility: public -/
 @[global_simps, irreducible]
 def Webhook.TABLE : Result Std.U32 := do
@@ -1616,7 +1616,7 @@ def Webhook.TABLE : Result Std.U32 := do
   i2 + 1#u32
 
 /-- [docs_kernel::{docs_kernel::Counter}::TABLE]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 57:12-57:42
+    Source: 'crates/i5h-schema/src/lib.rs', lines 62:12-62:42
     Visibility: public -/
 @[global_simps, irreducible]
 def Counter.TABLE : Result Std.U32 := do
@@ -1625,19 +1625,19 @@ def Counter.TABLE : Result Std.U32 := do
   i1 + 1#u32
 
 /-- [docs_kernel::{docs_kernel::Document}::TABLE]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 57:12-57:42
+    Source: 'crates/i5h-schema/src/lib.rs', lines 62:12-62:42
     Visibility: public -/
 @[global_simps, irreducible]
 def Document.TABLE : Result Std.U32 := do let i ← 0#u32 + 1#u32
                                           i + 1#u32
 
 /-- [docs_kernel::{docs_kernel::Member}::TABLE]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 57:12-57:42
+    Source: 'crates/i5h-schema/src/lib.rs', lines 62:12-62:42
     Visibility: public -/
 @[global_simps, irreducible] def Member.TABLE : Result Std.U32 := 0#u32 + 1#u32
 
 /-- [docs_kernel::{docs_kernel::Project}::TABLE]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 57:12-57:42
+    Source: 'crates/i5h-schema/src/lib.rs', lines 62:12-62:42
     Visibility: public -/
 @[global_simps, irreducible] def Project.TABLE : Std.U32 := 0#u32
 
@@ -1744,7 +1744,7 @@ structure Rows where
   webhooks : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)
 
 /-- [docs_kernel::{docs_kernel::Webhook}::from_row]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 68:12-89:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 73:12-94:13
     Visibility: public -/
 def Webhook.from_row
   (row : alloc.vec.Vec i5h_sql.Val) : Result (Option Webhook) := do
@@ -1772,7 +1772,7 @@ def Webhook.from_row
         ok (some { project := x, dest := x1 })
 
 /-- [docs_kernel::{docs_kernel::Webhook}::from_rows]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 96:16-102:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 101:16-107:17
     Visibility: public -/
 @[rust_loop_body]
 def Webhook.from_rows_loop.body
@@ -1799,7 +1799,7 @@ def Webhook.from_rows_loop.body
   else ok (done (out, ok1))
 
 /-- [docs_kernel::{docs_kernel::Webhook}::from_rows]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 96:16-102:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 101:16-107:17
     Visibility: public -/
 @[rust_loop]
 def Webhook.from_rows_loop
@@ -1812,7 +1812,7 @@ def Webhook.from_rows_loop
     (out, ok1, i)
 
 /-- [docs_kernel::{docs_kernel::Webhook}::from_rows]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 92:12-108:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 97:12-113:13
     Visibility: public -/
 def Webhook.from_rows
   (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)) :
@@ -1825,7 +1825,7 @@ def Webhook.from_rows
   else ok none
 
 /-- [docs_kernel::{docs_kernel::Document}::from_row]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 68:12-89:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 73:12-94:13
     Visibility: public -/
 def Document.from_row
   (row : alloc.vec.Vec i5h_sql.Val) : Result (Option Document) := do
@@ -1919,7 +1919,7 @@ def Document.from_row
                       })
 
 /-- [docs_kernel::{docs_kernel::Document}::from_rows]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 96:16-102:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 101:16-107:17
     Visibility: public -/
 @[rust_loop_body]
 def Document.from_rows_loop.body
@@ -1946,7 +1946,7 @@ def Document.from_rows_loop.body
   else ok (done (out, ok1))
 
 /-- [docs_kernel::{docs_kernel::Document}::from_rows]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 96:16-102:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 101:16-107:17
     Visibility: public -/
 @[rust_loop]
 def Document.from_rows_loop
@@ -1959,7 +1959,7 @@ def Document.from_rows_loop
     (out, ok1, i)
 
 /-- [docs_kernel::{docs_kernel::Document}::from_rows]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 92:12-108:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 97:12-113:13
     Visibility: public -/
 def Document.from_rows
   (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)) :
@@ -1972,7 +1972,7 @@ def Document.from_rows
   else ok none
 
 /-- [docs_kernel::{docs_kernel::Member}::from_row]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 68:12-89:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 73:12-94:13
     Visibility: public -/
 def Member.from_row
   (row : alloc.vec.Vec i5h_sql.Val) : Result (Option Member) := do
@@ -2009,7 +2009,7 @@ def Member.from_row
           ok (some { project := x, user := x1, role := x2 })
 
 /-- [docs_kernel::{docs_kernel::Member}::from_rows]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 96:16-102:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 101:16-107:17
     Visibility: public -/
 @[rust_loop_body]
 def Member.from_rows_loop.body
@@ -2036,7 +2036,7 @@ def Member.from_rows_loop.body
   else ok (done (out, ok1))
 
 /-- [docs_kernel::{docs_kernel::Member}::from_rows]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 96:16-102:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 101:16-107:17
     Visibility: public -/
 @[rust_loop]
 def Member.from_rows_loop
@@ -2049,7 +2049,7 @@ def Member.from_rows_loop
     (out, ok1, i)
 
 /-- [docs_kernel::{docs_kernel::Member}::from_rows]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 92:12-108:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 97:12-113:13
     Visibility: public -/
 def Member.from_rows
   (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)) :
@@ -2062,7 +2062,7 @@ def Member.from_rows
   else ok none
 
 /-- [docs_kernel::{docs_kernel::Project}::from_row]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 68:12-89:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 73:12-94:13
     Visibility: public -/
 def Project.from_row
   (row : alloc.vec.Vec i5h_sql.Val) : Result (Option Project) := do
@@ -2089,7 +2089,7 @@ def Project.from_row
                    ok (some { id := x, «name» := x1 })
 
 /-- [docs_kernel::{docs_kernel::Project}::from_rows]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 96:16-102:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 101:16-107:17
     Visibility: public -/
 @[rust_loop_body]
 def Project.from_rows_loop.body
@@ -2116,7 +2116,7 @@ def Project.from_rows_loop.body
   else ok (done (out, ok1))
 
 /-- [docs_kernel::{docs_kernel::Project}::from_rows]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 96:16-102:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 101:16-107:17
     Visibility: public -/
 @[rust_loop]
 def Project.from_rows_loop
@@ -2129,7 +2129,7 @@ def Project.from_rows_loop
     (out, ok1, i)
 
 /-- [docs_kernel::{docs_kernel::Project}::from_rows]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 92:12-108:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 97:12-113:13
     Visibility: public -/
 def Project.from_rows
   (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)) :
@@ -2142,7 +2142,7 @@ def Project.from_rows
   else ok none
 
 /-- [docs_kernel::{docs_kernel::Counter}::from_row]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 68:12-89:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 73:12-94:13
     Visibility: public -/
 def Counter.from_row
   (row : alloc.vec.Vec i5h_sql.Val) : Result (Option Counter) := do

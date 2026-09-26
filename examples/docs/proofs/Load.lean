@@ -8,71 +8,9 @@ The server loads a tenant's rows and decodes them with the kernel's
 keeps a database invariant: the rows always stand for a state satisfying
 `Inv`, whatever order the database returns them in.
 -/
-open Aeneas Aeneas.Std Result docs_kernel docs_kernel.Spec I5hLib I5hLib.Sql docs_kernel.Storage
+open Aeneas Aeneas.Std Result docs_kernel docs_kernel.Spec I5hLib I5hLib.Sql docs_kernel.Storage docs_kernel.Schema
 
 namespace docs_kernel.Load
-
-/-! ## Each column decodes what it encoded -/
-
-theorem u64_from_val (x : U64) : U64.Insts.I5h_sqlColumn.from_val (int x.val) = ok (some x) := by
-  simp only [U64.Insts.I5h_sqlColumn.from_val, int, lift, IScalar.hcast]
-  rw [← UScalar.bv_toNat, BitVec.ofNat_toNat]
-  simp [BitVec.signExtend_eq]
-
-theorem bytes_from_val (v : alloc.vec.Vec U8) :
-    alloc.vec.VecU8.Insts.I5h_sqlColumn.from_val (.Bytes v) = ok (some v) := by
-  simp [alloc.vec.VecU8.Insts.I5h_sqlColumn.from_val, u8vec_clone]
-
-theorem role_from_val (r : Role) : Role.Insts.I5h_sqlColumn.from_val (roleV r) = ok (some r) := by
-  cases r <;> simp [Role.Insts.I5h_sqlColumn.from_val, roleV]
-
-theorem status_from_val (r : Status) : Status.Insts.I5h_sqlColumn.from_val (statusV r) = ok (some r) := by
-  cases r <;> simp [Status.Insts.I5h_sqlColumn.from_val, statusV]
-
-theorem opt_from_val (o : Option U64) :
-    core.option.Option.Insts.I5h_sqlColumn.from_val U64.Insts.I5h_sqlColumn (optV o) = ok (some o) := by
-  cases o with
-  | none => simp [core.option.Option.Insts.I5h_sqlColumn.from_val, optV]
-  | some x =>
-    simp only [core.option.Option.Insts.I5h_sqlColumn.from_val, optV, int]
-    rw [← int, u64_from_val]
-    simp
-
-/-! ## Each row decodes what it encoded -/
-
-/-- Step through a generated `from_row`, reading each column from the known row. -/
-macro "row_tac" : tactic => `(tactic| (
-  repeat (first
-    | (step*; done)
-    | (simp_all only [projRow, memberRow, docRow, counterRow, hookRow, List.getElem_cons_zero,
-        List.getElem_cons_succ, Nat.zero_add, Nat.reduceAdd, u64_from_val, bytes_from_val,
-        role_from_val, status_from_val, opt_from_val, bind_tc_ok]; step*))
-  all_goals simp_all))
-
-theorem project_from_row (p : Project) (v : alloc.vec.Vec Val) (h : v.val = projRow p) :
-    Project.from_row v ⦃ o => o = some p ⦄ := by
-  have hl : v.length = 2 := by simp [alloc.vec.Vec.length, h, projRow]
-  unfold Project.from_row; row_tac
-
-theorem member_from_row (m : Member) (v : alloc.vec.Vec Val) (h : v.val = memberRow m) :
-    Member.from_row v ⦃ o => o = some m ⦄ := by
-  have hl : v.length = 3 := by simp [alloc.vec.Vec.length, h, memberRow]
-  unfold Member.from_row; row_tac
-
-theorem document_from_row (d : Document) (v : alloc.vec.Vec Val) (h : v.val = docRow d) :
-    Document.from_row v ⦃ o => o = some d ⦄ := by
-  have hl : v.length = 8 := by simp [alloc.vec.Vec.length, h, docRow]
-  unfold Document.from_row; row_tac
-
-theorem counter_from_row (c : Counter) (v : alloc.vec.Vec Val) (h : v.val = counterRow c.next_id.val) :
-    Counter.from_row v ⦃ o => o = some c ⦄ := by
-  have hl : v.length = 1 := by simp [alloc.vec.Vec.length, h, counterRow]
-  unfold Counter.from_row; row_tac
-
-theorem webhook_from_row (w : Webhook) (v : alloc.vec.Vec Val) (h : v.val = hookRow w) :
-    Webhook.from_row v ⦃ o => o = some w ⦄ := by
-  have hl : v.length = 2 := by simp [alloc.vec.Vec.length, h, hookRow]
-  unfold Webhook.from_row; row_tac
 
 /-! ## A table decodes what it encoded -/
 
@@ -129,7 +67,7 @@ theorem rows_loop {T : Type} (F : alloc.vec.Vec Val → Result (Option T)) (f : 
   · simp
 
 theorem project_from_rows (rows : alloc.vec.Vec (alloc.vec.Vec Val)) (l : List Project)
-    (h : rows.val.map (·.val) = l.map projRow) :
+    (h : rows.val.map (·.val) = l.map Project.row) :
     Project.from_rows rows ⦃ o => ∃ v, o = some v ∧ v.val = l ⦄ := by
   have e : Project.from_rows_loop rows (alloc.vec.Vec.new Project) true 0#usize =
       loop (fun x => rowsBody Project.from_row rows x.1 x.2.1 x.2.2) (alloc.vec.Vec.new Project, true, 0#usize) := by
@@ -139,13 +77,13 @@ theorem project_from_rows (rows : alloc.vec.Vec (alloc.vec.Vec Val)) (l : List P
     split <;> (try rfl)
     congr 1; funext v; congr 1; funext o; cases o <;> rfl
   have hl : Project.from_rows_loop rows (alloc.vec.Vec.new Project) true 0#usize ⦃ r => r.2 = true ∧ r.1.val = l ⦄ := by
-    rw [e]; exact rows_loop Project.from_row projRow (fun x v hv => project_from_row x v hv) rows l h
+    rw [e]; exact rows_loop Project.from_row Project.row (fun x v hv => Project.from_row_spec x v hv) rows l h
   unfold Project.from_rows
   step with hl
   simp [ok1_post, l_post]
 
 theorem member_from_rows (rows : alloc.vec.Vec (alloc.vec.Vec Val)) (l : List Member)
-    (h : rows.val.map (·.val) = l.map memberRow) :
+    (h : rows.val.map (·.val) = l.map Member.row) :
     Member.from_rows rows ⦃ o => ∃ v, o = some v ∧ v.val = l ⦄ := by
   have e : Member.from_rows_loop rows (alloc.vec.Vec.new Member) true 0#usize =
       loop (fun x => rowsBody Member.from_row rows x.1 x.2.1 x.2.2) (alloc.vec.Vec.new Member, true, 0#usize) := by
@@ -155,13 +93,13 @@ theorem member_from_rows (rows : alloc.vec.Vec (alloc.vec.Vec Val)) (l : List Me
     split <;> (try rfl)
     congr 1; funext v; congr 1; funext o; cases o <;> rfl
   have hl : Member.from_rows_loop rows (alloc.vec.Vec.new Member) true 0#usize ⦃ r => r.2 = true ∧ r.1.val = l ⦄ := by
-    rw [e]; exact rows_loop Member.from_row memberRow (fun x v hv => member_from_row x v hv) rows l h
+    rw [e]; exact rows_loop Member.from_row Member.row (fun x v hv => Member.from_row_spec x v hv) rows l h
   unfold Member.from_rows
   step with hl
   simp [ok1_post, l_post]
 
 theorem document_from_rows (rows : alloc.vec.Vec (alloc.vec.Vec Val)) (l : List Document)
-    (h : rows.val.map (·.val) = l.map docRow) :
+    (h : rows.val.map (·.val) = l.map Document.row) :
     Document.from_rows rows ⦃ o => ∃ v, o = some v ∧ v.val = l ⦄ := by
   have e : Document.from_rows_loop rows (alloc.vec.Vec.new Document) true 0#usize =
       loop (fun x => rowsBody Document.from_row rows x.1 x.2.1 x.2.2) (alloc.vec.Vec.new Document, true, 0#usize) := by
@@ -171,13 +109,13 @@ theorem document_from_rows (rows : alloc.vec.Vec (alloc.vec.Vec Val)) (l : List 
     split <;> (try rfl)
     congr 1; funext v; congr 1; funext o; cases o <;> rfl
   have hl : Document.from_rows_loop rows (alloc.vec.Vec.new Document) true 0#usize ⦃ r => r.2 = true ∧ r.1.val = l ⦄ := by
-    rw [e]; exact rows_loop Document.from_row docRow (fun x v hv => document_from_row x v hv) rows l h
+    rw [e]; exact rows_loop Document.from_row Document.row (fun x v hv => Document.from_row_spec x v hv) rows l h
   unfold Document.from_rows
   step with hl
   simp [ok1_post, l_post]
 
 theorem webhook_from_rows (rows : alloc.vec.Vec (alloc.vec.Vec Val)) (l : List Webhook)
-    (h : rows.val.map (·.val) = l.map hookRow) :
+    (h : rows.val.map (·.val) = l.map Webhook.row) :
     Webhook.from_rows rows ⦃ o => ∃ v, o = some v ∧ v.val = l ⦄ := by
   have e : Webhook.from_rows_loop rows (alloc.vec.Vec.new Webhook) true 0#usize =
       loop (fun x => rowsBody Webhook.from_row rows x.1 x.2.1 x.2.2) (alloc.vec.Vec.new Webhook, true, 0#usize) := by
@@ -187,7 +125,7 @@ theorem webhook_from_rows (rows : alloc.vec.Vec (alloc.vec.Vec Val)) (l : List W
     split <;> (try rfl)
     congr 1; funext v; congr 1; funext o; cases o <;> rfl
   have hl : Webhook.from_rows_loop rows (alloc.vec.Vec.new Webhook) true 0#usize ⦃ r => r.2 = true ∧ r.1.val = l ⦄ := by
-    rw [e]; exact rows_loop Webhook.from_row hookRow (fun x v hv => webhook_from_row x v hv) rows l h
+    rw [e]; exact rows_loop Webhook.from_row Webhook.row (fun x v hv => Webhook.from_row_spec x v hv) rows l h
   unfold Webhook.from_rows
   step with hl
   simp [ok1_post, l_post]
@@ -240,24 +178,6 @@ theorem perm_of_map_inj {α β : Type} (f : α → β) (hf : Function.Injective 
       exact (Function.invFun_eq ⟨y, rfl⟩).symm
     · have := h.map (Function.invFun f)
       rwa [List.map_map, Function.invFun_comp hf, List.map_id] at this
-
-/-! ## Rows are encoded injectively -/
-
-@[simp] theorem roleV_inj (a b : Role) : roleV a = roleV b ↔ a = b := by
-  cases a <;> cases b <;> simp [roleV]
-@[simp] theorem statusV_inj (a b : Status) : statusV a = statusV b ↔ a = b := by
-  cases a <;> cases b <;> simp [statusV]
-@[simp] theorem optV_inj (a b : Option U64) : optV a = optV b ↔ a = b := by
-  cases a <;> cases b <;> simp only [optV, reduceCtorEq, Option.some.injEq, int_u64] <;> simp [int]
-
-theorem projRow_inj : Function.Injective projRow := by
-  intro p q h; cases p; cases q; simp_all [projRow, int_u64]
-theorem memberRow_inj : Function.Injective memberRow := by
-  intro p q h; cases p; cases q; simp_all [memberRow, int_u64]
-theorem docRow_inj : Function.Injective docRow := by
-  intro p q h; cases p; cases q; simp_all [docRow, int_u64]
-theorem hookRow_inj : Function.Injective hookRow := by
-  intro p q h; cases p; cases q; simp_all [hookRow, int_u64]
 
 /-! ## The database invariant -/
 
@@ -424,10 +344,10 @@ theorem stored_equiv {db : Db Val} {s s' : St} (e : Equiv s s') (hi : Inv s) (hs
 and whose counter table holds `s`'s counter. -/
 theorem decode_lists (r : Rows) (s : St) (c : Bool) (hc : c = false → s.next = 0) (hb : s.next < 2 ^ 64)
     (h3 : (r.counter.val.map (·.val)).Perm (if c then [counterRow s.next] else []))
-    (lp : List Project) (ep : r.projects.val.map (·.val) = lp.map projRow)
-    (lm : List Member) (em : r.members.val.map (·.val) = lm.map memberRow)
-    (ld : List Document) (ed : r.documents.val.map (·.val) = ld.map docRow)
-    (lw : List Webhook) (ew : r.webhooks.val.map (·.val) = lw.map hookRow) :
+    (lp : List Project) (ep : r.projects.val.map (·.val) = lp.map Project.row)
+    (lm : List Member) (em : r.members.val.map (·.val) = lm.map Member.row)
+    (ld : List Document) (ed : r.documents.val.map (·.val) = ld.map Document.row)
+    (lw : List Webhook) (ew : r.webhooks.val.map (·.val) = lw.map Webhook.row) :
     decode r ⦃ o => ∃ snap, o = some snap ∧ snap.counter.next_id.val = s.next ∧
       snap.projects.val = lp ∧ snap.members.val = lm ∧ snap.documents.val = ld ∧ snap.webhooks.val = lw ⦄ := by
   let cnt : Counter := { next_id := ⟨BitVec.ofNat _ s.next⟩ }
@@ -451,7 +371,7 @@ theorem decode_lists (r : Rows) (s : St) (c : Bool) (hc : c = false → s.next =
       simp only [hne, if_false]
       step as ⟨ w, hw ⟩
       have hw' : w.val = counterRow cnt.next_id.val := by rw [hcnt, hw]; simp [hv, hvv]
-      step with counter_from_row cnt w hw' as ⟨ o, ho ⟩
+      step with Counter.from_row_spec cnt w (by rw [Counter.row_eq]; exact hw') as ⟨ o, ho ⟩
       exact ⟨cnt, ho, hcnt⟩
   step with hctr as ⟨ o, k, hok, hk ⟩
   step with project_from_rows r.projects lp ep as ⟨ o0, vp, h0v, hvp ⟩
@@ -465,16 +385,16 @@ theorem decode_lists (r : Rows) (s : St) (c : Bool) (hc : c = false → s.next =
 theorem decode_spec (r : Rows) (s : St) (c : Bool) (hc : c = false → s.next = 0) (hb : s.next < 2 ^ 64)
     (hp : ∀ t, (rowsOf r t).Perm (encC c s t)) :
     decode r ⦃ o => ∃ snap, o = some snap ∧ Equiv s (Snapshot.toSt snap) ⦄ := by
-  have h0 : (r.projects.val.map (·.val)).Perm (s.projects.map projRow) := by simpa [rowsOf, encC, enc] using hp 0
-  have h1 : (r.members.val.map (·.val)).Perm (s.members.map memberRow) := by simpa [rowsOf, encC, enc] using hp 1
-  have h2 : (r.documents.val.map (·.val)).Perm (s.docs.map docRow) := by simpa [rowsOf, encC, enc] using hp 2
-  have h4 : (r.webhooks.val.map (·.val)).Perm (s.webhooks.map hookRow) := by simpa [rowsOf, encC, enc] using hp 4
+  have h0 : (r.projects.val.map (·.val)).Perm (s.projects.map Project.row) := by simpa [rowsOf, encC, enc] using hp 0
+  have h1 : (r.members.val.map (·.val)).Perm (s.members.map Member.row) := by simpa [rowsOf, encC, enc] using hp 1
+  have h2 : (r.documents.val.map (·.val)).Perm (s.docs.map Document.row) := by simpa [rowsOf, encC, enc] using hp 2
+  have h4 : (r.webhooks.val.map (·.val)).Perm (s.webhooks.map Webhook.row) := by simpa [rowsOf, encC, enc] using hp 4
   have h3 : (r.counter.val.map (·.val)).Perm (if c then [counterRow s.next] else []) := by
     simpa [rowsOf, encC] using hp 3
-  obtain ⟨lp, ep, pp⟩ := perm_of_map_inj _ projRow_inj _ _ h0
-  obtain ⟨lm, em, pm⟩ := perm_of_map_inj _ memberRow_inj _ _ h1
-  obtain ⟨ld, ed, pd⟩ := perm_of_map_inj _ docRow_inj _ _ h2
-  obtain ⟨lw, ew, pw⟩ := perm_of_map_inj _ hookRow_inj _ _ h4
+  obtain ⟨lp, ep, pp⟩ := perm_of_map_inj _ Project.row_inj _ _ h0
+  obtain ⟨lm, em, pm⟩ := perm_of_map_inj _ Member.row_inj _ _ h1
+  obtain ⟨ld, ed, pd⟩ := perm_of_map_inj _ Document.row_inj _ _ h2
+  obtain ⟨lw, ew, pw⟩ := perm_of_map_inj _ Webhook.row_inj _ _ h4
   apply WP.spec_mono (decode_lists r s c hc hb h3 lp ep lm em ld ed lw ew)
   rintro o ⟨snap, rfl, hk, hvp, hvm, hvd, hvw⟩
   exact ⟨snap, rfl, ⟨hk, by simp [Snapshot.toSt, hvp, pp], by simp [Snapshot.toSt, hvm, pm],
