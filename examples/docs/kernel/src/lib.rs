@@ -691,6 +691,22 @@ impl i5h_sql::Column for Role {
             Role::Owner => i5h_sql::Val::Int(2),
         }
     }
+    fn from_val(v: &i5h_sql::Val) -> Option<Role> {
+        match v {
+            i5h_sql::Val::Int(n) => {
+                if *n == 0 {
+                    Some(Role::Viewer)
+                } else if *n == 1 {
+                    Some(Role::Editor)
+                } else if *n == 2 {
+                    Some(Role::Owner)
+                } else {
+                    None
+                }
+            }
+            _ => None,
+        }
+    }
 }
 
 impl i5h_sql::Column for Status {
@@ -700,6 +716,24 @@ impl i5h_sql::Column for Status {
             Status::InReview => i5h_sql::Val::Int(1),
             Status::Approved => i5h_sql::Val::Int(2),
             Status::Published => i5h_sql::Val::Int(3),
+        }
+    }
+    fn from_val(v: &i5h_sql::Val) -> Option<Status> {
+        match v {
+            i5h_sql::Val::Int(n) => {
+                if *n == 0 {
+                    Some(Status::Draft)
+                } else if *n == 1 {
+                    Some(Status::InReview)
+                } else if *n == 2 {
+                    Some(Status::Approved)
+                } else if *n == 3 {
+                    Some(Status::Published)
+                } else {
+                    None
+                }
+            }
+            _ => None,
         }
     }
 }
@@ -749,6 +783,39 @@ pub fn sql_writes(ws: &Vec<Write>) -> Vec<i5h_sql::Write> {
         i += 1;
     }
     out
+}
+
+/// A tenant's stored rows per table, in whatever order the database
+/// returned them.
+#[derive(Clone, Debug, Default, PartialEq, Eq)]
+pub struct Rows {
+    pub counter: Vec<Vec<i5h_sql::Val>>,
+    pub projects: Vec<Vec<i5h_sql::Val>>,
+    pub members: Vec<Vec<i5h_sql::Val>>,
+    pub documents: Vec<Vec<i5h_sql::Val>>,
+    pub webhooks: Vec<Vec<i5h_sql::Val>>,
+}
+
+/// The snapshot stored rows stand for. A tenant without a counter row has
+/// counter 0. `None` if a row does not decode.
+pub fn decode(r: &Rows) -> Option<Snapshot> {
+    let counter = if r.counter.len() == 0 {
+        Some(Counter { next_id: 0 })
+    } else {
+        Counter::from_row(&r.counter[0])
+    };
+    match (
+        counter,
+        Project::from_rows(&r.projects),
+        Member::from_rows(&r.members),
+        Document::from_rows(&r.documents),
+        Webhook::from_rows(&r.webhooks),
+    ) {
+        (Some(counter), Some(projects), Some(members), Some(documents), Some(webhooks)) => {
+            Some(Snapshot { counter, projects, members, documents, webhooks })
+        }
+        _ => None,
+    }
 }
 
 /// Meaning of a write set. The Postgres store must agree with this.

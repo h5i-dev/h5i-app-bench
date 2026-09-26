@@ -32,15 +32,31 @@ inductive i5h_sql.Val where
 | Null : i5h_sql.Val
 
 /-- Trait declaration: [i5h_sql::Column]
-    Source: 'crates/i5h-sql/src/lib.rs', lines 18:0-18:16
+    Source: 'crates/i5h-sql/src/lib.rs', lines 19:0-19:23
     Name pattern: [i5h_sql::Column]
     Visibility: public -/
 @[rust_trait "i5h_sql::Column"]
 structure i5h_sql.Column (Self : Type) where
   to_val : Self → Result i5h_sql.Val
+  from_val : i5h_sql.Val → Result (Option Self)
+
+/-- [i5h_sql::{impl i5h_sql::Column for u64}::from_val]:
+    Source: 'crates/i5h-sql/src/lib.rs', lines 28:4-28:39
+    Name pattern: [i5h_sql::{i5h_sql::Column<u64>}::from_val]
+    Visibility: public -/
+@[rust_fun "i5h_sql::{i5h_sql::Column<u64>}::from_val"]
+def U64.Insts.I5h_sqlColumn.from_val
+  (v : i5h_sql.Val) : Result (Option Std.U64) := do
+  match v with
+  | i5h_sql.Val.Int i => let i1 ← lift (IScalar.hcast .U64 i)
+                         ok (some i1)
+  | i5h_sql.Val.Bool _ => ok none
+  | i5h_sql.Val.Text _ => ok none
+  | i5h_sql.Val.Bytes _ => ok none
+  | i5h_sql.Val.Null => ok none
 
 /-- [i5h_sql::{impl i5h_sql::Column for u64}::to_val]:
-    Source: 'crates/i5h-sql/src/lib.rs', lines 23:4-23:27
+    Source: 'crates/i5h-sql/src/lib.rs', lines 25:4-25:27
     Name pattern: [i5h_sql::{i5h_sql::Column<u64>}::to_val]
     Visibility: public -/
 @[rust_fun "i5h_sql::{i5h_sql::Column<u64>}::to_val"]
@@ -49,15 +65,16 @@ def U64.Insts.I5h_sqlColumn.to_val (self : Std.U64) : Result i5h_sql.Val := do
   ok (i5h_sql.Val.Int i)
 
 /-- Trait implementation: [i5h_sql::{impl i5h_sql::Column for u64}]
-    Source: 'crates/i5h-sql/src/lib.rs', lines 22:0-22:19
+    Source: 'crates/i5h-sql/src/lib.rs', lines 24:0-24:19
     Name pattern: [i5h_sql::Column<u64>] -/
 @[reducible, rust_trait_impl "i5h_sql::Column<u64>"]
 def U64.Insts.I5h_sqlColumn : i5h_sql.Column Std.U64 := {
   to_val := U64.Insts.I5h_sqlColumn.to_val
+  from_val := U64.Insts.I5h_sqlColumn.from_val
 }
 
 /-- [i5h_sql::{impl i5h_sql::Column for alloc::vec::Vec<u8>}::to_val]:
-    Source: 'crates/i5h-sql/src/lib.rs', lines 41:4-41:27
+    Source: 'crates/i5h-sql/src/lib.rs', lines 67:4-67:27
     Name pattern: [i5h_sql::{i5h_sql::Column<alloc::vec::Vec<u8>>}::to_val]
     Visibility: public -/
 @[rust_fun "i5h_sql::{i5h_sql::Column<alloc::vec::Vec<u8>>}::to_val"]
@@ -66,8 +83,24 @@ def alloc.vec.VecU8.Insts.I5h_sqlColumn.to_val
   let v ← alloc.vec.CloneVec.clone core.clone.CloneU8 self
   ok (i5h_sql.Val.Bytes v)
 
+/-- [i5h_sql::{impl i5h_sql::Column for alloc::vec::Vec<u8>}::from_val]:
+    Source: 'crates/i5h-sql/src/lib.rs', lines 70:4-70:43
+    Name pattern: [i5h_sql::{i5h_sql::Column<alloc::vec::Vec<u8>>}::from_val]
+    Visibility: public -/
+@[rust_fun "i5h_sql::{i5h_sql::Column<alloc::vec::Vec<u8>>}::from_val"]
+def alloc.vec.VecU8.Insts.I5h_sqlColumn.from_val
+  (v : i5h_sql.Val) : Result (Option (alloc.vec.Vec Std.U8)) := do
+  match v with
+  | i5h_sql.Val.Int _ => ok none
+  | i5h_sql.Val.Bool _ => ok none
+  | i5h_sql.Val.Text _ => ok none
+  | i5h_sql.Val.Bytes b =>
+    let v1 ← alloc.vec.CloneVec.clone core.clone.CloneU8 b
+    ok (some v1)
+  | i5h_sql.Val.Null => ok none
+
 /-- [i5h_sql::{impl i5h_sql::Column for core::option::Option<T>}::to_val]:
-    Source: 'crates/i5h-sql/src/lib.rs', lines 47:4-47:27
+    Source: 'crates/i5h-sql/src/lib.rs', lines 80:4-80:27
     Name pattern: [i5h_sql::{i5h_sql::Column<core::option::Option<@T>>}::to_val]
     Visibility: public -/
 @[rust_fun "i5h_sql::{i5h_sql::Column<core::option::Option<@T>>}::to_val"]
@@ -79,8 +112,40 @@ def core.option.Option.Insts.I5h_sqlColumn.to_val
   | none => ok i5h_sql.Val.Null
   | some x => ColumnInst.to_val x
 
+/-- [i5h_sql::{impl i5h_sql::Column for core::option::Option<T>}::from_val]:
+    Source: 'crates/i5h-sql/src/lib.rs', lines 86:4-86:45
+    Name pattern: [i5h_sql::{i5h_sql::Column<core::option::Option<@T>>}::from_val]
+    Visibility: public -/
+@[rust_fun "i5h_sql::{i5h_sql::Column<core::option::Option<@T>>}::from_val"]
+def core.option.Option.Insts.I5h_sqlColumn.from_val
+  {T : Type} (ColumnInst : i5h_sql.Column T) (v : i5h_sql.Val) :
+  Result (Option (Option T))
+  := do
+  match v with
+  | i5h_sql.Val.Int _ =>
+    let o ← ColumnInst.from_val v
+    match o with
+    | none => ok none
+    | some _ => ok (some o)
+  | i5h_sql.Val.Bool _ =>
+    let o ← ColumnInst.from_val v
+    match o with
+    | none => ok none
+    | some _ => ok (some o)
+  | i5h_sql.Val.Text _ =>
+    let o ← ColumnInst.from_val v
+    match o with
+    | none => ok none
+    | some _ => ok (some o)
+  | i5h_sql.Val.Bytes _ =>
+    let o ← ColumnInst.from_val v
+    match o with
+    | none => ok none
+    | some _ => ok (some o)
+  | i5h_sql.Val.Null => ok (some none)
+
 /-- [i5h_sql::Write]
-    Source: 'crates/i5h-sql/src/lib.rs', lines 57:0-57:14
+    Source: 'crates/i5h-sql/src/lib.rs', lines 99:0-99:14
     Name pattern: [i5h_sql::Write]
     Visibility: public -/
 @[discriminant isize, rust_type "i5h_sql::Write"]
@@ -1374,8 +1439,28 @@ def Role.Insts.I5h_sqlColumn.to_val (self : Role) : Result i5h_sql.Val := do
   | Role.Editor => ok (i5h_sql.Val.Int 1#i64)
   | Role.Owner => ok (i5h_sql.Val.Int 2#i64)
 
+/-- [docs_kernel::{impl i5h_sql::Column for docs_kernel::Role}::from_val]:
+    Source: 'examples/docs/kernel/src/lib.rs', lines 694:4-709:5
+    Visibility: public -/
+def Role.Insts.I5h_sqlColumn.from_val
+  (v : i5h_sql.Val) : Result (Option Role) := do
+  match v with
+  | i5h_sql.Val.Int n =>
+    if n = 0#i64
+    then ok (some Role.Viewer)
+    else
+      if n = 1#i64
+      then ok (some Role.Editor)
+      else if n = 2#i64
+           then ok (some Role.Owner)
+           else ok none
+  | i5h_sql.Val.Bool _ => ok none
+  | i5h_sql.Val.Text _ => ok none
+  | i5h_sql.Val.Bytes _ => ok none
+  | i5h_sql.Val.Null => ok none
+
 /-- [docs_kernel::{impl i5h_sql::Column for docs_kernel::Status}::to_val]:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 697:4-704:5
+    Source: 'examples/docs/kernel/src/lib.rs', lines 713:4-720:5
     Visibility: public -/
 def Status.Insts.I5h_sqlColumn.to_val
   (self : Status) : Result i5h_sql.Val := do
@@ -1385,8 +1470,31 @@ def Status.Insts.I5h_sqlColumn.to_val
   | Status.Approved => ok (i5h_sql.Val.Int 2#i64)
   | Status.Published => ok (i5h_sql.Val.Int 3#i64)
 
+/-- [docs_kernel::{impl i5h_sql::Column for docs_kernel::Status}::from_val]:
+    Source: 'examples/docs/kernel/src/lib.rs', lines 721:4-738:5
+    Visibility: public -/
+def Status.Insts.I5h_sqlColumn.from_val
+  (v : i5h_sql.Val) : Result (Option Status) := do
+  match v with
+  | i5h_sql.Val.Int n =>
+    if n = 0#i64
+    then ok (some Status.Draft)
+    else
+      if n = 1#i64
+      then ok (some Status.InReview)
+      else
+        if n = 2#i64
+        then ok (some Status.Approved)
+        else if n = 3#i64
+             then ok (some Status.Published)
+             else ok none
+  | i5h_sql.Val.Bool _ => ok none
+  | i5h_sql.Val.Text _ => ok none
+  | i5h_sql.Val.Bytes _ => ok none
+  | i5h_sql.Val.Null => ok none
+
 /-- [docs_kernel::put]:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 707:0-709:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 741:0-743:1 -/
 def put
   (table : Std.U32) (key_len : Std.U32) (row : alloc.vec.Vec i5h_sql.Val) :
   Result i5h_sql.Write
@@ -1394,13 +1502,13 @@ def put
   ok (i5h_sql.Write.Put table key_len row)
 
 /-- [docs_kernel::key1]:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 711:0-715:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 745:0-749:1 -/
 def key1 (a : Std.U64) : Result (alloc.vec.Vec i5h_sql.Val) := do
   let v ← U64.Insts.I5h_sqlColumn.to_val a
   alloc.vec.Vec.push (alloc.vec.Vec.new i5h_sql.Val) v
 
 /-- [docs_kernel::key2]:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 717:0-722:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 751:0-756:1 -/
 def key2 (a : Std.U64) (b : Std.U64) : Result (alloc.vec.Vec i5h_sql.Val) := do
   let v ← U64.Insts.I5h_sqlColumn.to_val a
   let k ← alloc.vec.Vec.push (alloc.vec.Vec.new i5h_sql.Val) v
@@ -1534,7 +1642,7 @@ def Document.TABLE : Result Std.U32 := do let i ← 0#u32 + 1#u32
 @[global_simps, irreducible] def Project.TABLE : Std.U32 := 0#u32
 
 /-- [docs_kernel::sql_write]:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 725:0-737:1
+    Source: 'examples/docs/kernel/src/lib.rs', lines 759:0-771:1
     Visibility: public -/
 def sql_write (w : Write) : Result (Option i5h_sql.Write) := do
   match w with
@@ -1581,7 +1689,7 @@ def sql_write (w : Write) : Result (Option i5h_sql.Write) := do
   | Write.Emit _ => ok none
 
 /-- [docs_kernel::sql_writes]: loop body 0:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 744:4-750:5
+    Source: 'examples/docs/kernel/src/lib.rs', lines 778:4-784:5
     Visibility: public -/
 @[rust_loop_body]
 def sql_writes_loop.body
@@ -1605,7 +1713,7 @@ def sql_writes_loop.body
   else ok (done out)
 
 /-- [docs_kernel::sql_writes]: loop 0:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 744:4-750:5
+    Source: 'examples/docs/kernel/src/lib.rs', lines 778:4-784:5
     Visibility: public -/
 @[rust_loop]
 def sql_writes_loop
@@ -1618,15 +1726,477 @@ def sql_writes_loop
     (out, i)
 
 /-- [docs_kernel::sql_writes]:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 741:0-752:1
+    Source: 'examples/docs/kernel/src/lib.rs', lines 775:0-786:1
     Visibility: public -/
 @[reducible]
 def sql_writes
   (ws : alloc.vec.Vec Write) : Result (alloc.vec.Vec i5h_sql.Write) := do
   sql_writes_loop ws (alloc.vec.Vec.new i5h_sql.Write) 0#usize
 
+/-- [docs_kernel::Rows]
+    Source: 'examples/docs/kernel/src/lib.rs', lines 791:0-797:1
+    Visibility: public -/
+structure Rows where
+  counter : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)
+  projects : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)
+  members : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)
+  documents : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)
+  webhooks : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)
+
+/-- [docs_kernel::{docs_kernel::Webhook}::from_row]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 68:12-89:13
+    Visibility: public -/
+def Webhook.from_row
+  (row : alloc.vec.Vec i5h_sql.Val) : Result (Option Webhook) := do
+  let i := alloc.vec.Vec.len row
+  let i1 ← 0#usize + 1#usize
+  let i2 ← i1 + 1#usize
+  if i != i2
+  then ok none
+  else
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice i5h_sql.Val)
+        row 0#usize
+    let o ← U64.Insts.I5h_sqlColumn.from_val v
+    match o with
+    | none => ok none
+    | some x =>
+      let v1 ←
+        alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice i5h_sql.Val)
+          row i1
+      let o1 ← U64.Insts.I5h_sqlColumn.from_val v1
+      match o1 with
+      | none => ok none
+      | some x1 =>
+        let _ ← i1 + 1#usize
+        ok (some { project := x, dest := x1 })
+
+/-- [docs_kernel::{docs_kernel::Webhook}::from_rows]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 96:16-102:17
+    Visibility: public -/
+@[rust_loop_body]
+def Webhook.from_rows_loop.body
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val))
+  (out : alloc.vec.Vec Webhook) (ok1 : Bool) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Webhook) × Bool × Std.Usize)
+    ((alloc.vec.Vec Webhook) × Bool))
+  := do
+  let i1 := alloc.vec.Vec.len rows
+  if i < i1
+  then
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice (alloc.vec.Vec
+        i5h_sql.Val)) rows i
+    let o ← Webhook.from_row v
+    let (out1, ok2) ←
+      match o with
+      | none => ok (out, false)
+      | some x => do
+                  let out2 ← alloc.vec.Vec.push out x
+                  ok (out2, ok1)
+    let i2 ← i + 1#usize
+    ok (cont (out1, ok2, i2))
+  else ok (done (out, ok1))
+
+/-- [docs_kernel::{docs_kernel::Webhook}::from_rows]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 96:16-102:17
+    Visibility: public -/
+@[rust_loop]
+def Webhook.from_rows_loop
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val))
+  (out : alloc.vec.Vec Webhook) (ok1 : Bool) (i : Std.Usize) :
+  Result ((alloc.vec.Vec Webhook) × Bool)
+  := do
+  loop
+    (fun (out1, ok2, i1) => Webhook.from_rows_loop.body rows out1 ok2 i1)
+    (out, ok1, i)
+
+/-- [docs_kernel::{docs_kernel::Webhook}::from_rows]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 92:12-108:13
+    Visibility: public -/
+def Webhook.from_rows
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)) :
+  Result (Option (alloc.vec.Vec Webhook))
+  := do
+  let (out, ok1) ←
+    Webhook.from_rows_loop rows (alloc.vec.Vec.new Webhook) true 0#usize
+  if ok1
+  then ok (some out)
+  else ok none
+
+/-- [docs_kernel::{docs_kernel::Document}::from_row]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 68:12-89:13
+    Visibility: public -/
+def Document.from_row
+  (row : alloc.vec.Vec i5h_sql.Val) : Result (Option Document) := do
+  let i := alloc.vec.Vec.len row
+  let i1 ← 0#usize + 1#usize
+  let i2 ← i1 + 1#usize
+  let i3 ← i2 + 1#usize
+  let i4 ← i3 + 1#usize
+  let i5 ← i4 + 1#usize
+  let i6 ← i5 + 1#usize
+  let i7 ← i6 + 1#usize
+  let i8 ← i7 + 1#usize
+  if i != i8
+  then ok none
+  else
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice i5h_sql.Val)
+        row 0#usize
+    let o ← U64.Insts.I5h_sqlColumn.from_val v
+    match o with
+    | none => ok none
+    | some x =>
+      let v1 ←
+        alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice i5h_sql.Val)
+          row i1
+      let o1 ← U64.Insts.I5h_sqlColumn.from_val v1
+      match o1 with
+      | none => ok none
+      | some x1 =>
+        let i9 ← i1 + 1#usize
+        let v2 ←
+          alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+            i5h_sql.Val) row i9
+        let o2 ← U64.Insts.I5h_sqlColumn.from_val v2
+        match o2 with
+        | none => ok none
+        | some x2 =>
+          let i10 ← i9 + 1#usize
+          let v3 ←
+            alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+              i5h_sql.Val) row i10
+          let o3 ← alloc.vec.VecU8.Insts.I5h_sqlColumn.from_val v3
+          match o3 with
+          | none => ok none
+          | some x3 =>
+            let i11 ← i10 + 1#usize
+            let v4 ←
+              alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+                i5h_sql.Val) row i11
+            let o4 ← alloc.vec.VecU8.Insts.I5h_sqlColumn.from_val v4
+            match o4 with
+            | none => ok none
+            | some x4 =>
+              let i12 ← i11 + 1#usize
+              let v5 ←
+                alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+                  i5h_sql.Val) row i12
+              let o5 ← Status.Insts.I5h_sqlColumn.from_val v5
+              match o5 with
+              | none => ok none
+              | some x5 =>
+                let i13 ← i12 + 1#usize
+                let v6 ←
+                  alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+                    i5h_sql.Val) row i13
+                let o6 ←
+                  core.option.Option.Insts.I5h_sqlColumn.from_val
+                    U64.Insts.I5h_sqlColumn v6
+                match o6 with
+                | none => ok none
+                | some x6 =>
+                  let i14 ← i13 + 1#usize
+                  let v7 ←
+                    alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+                      i5h_sql.Val) row i14
+                  let o7 ← U64.Insts.I5h_sqlColumn.from_val v7
+                  match o7 with
+                  | none => ok none
+                  | some x7 =>
+                    let _ ← i14 + 1#usize
+                    ok (some
+                      {
+                        id := x,
+                        project := x1,
+                        author := x2,
+                        title := x3,
+                        body := x4,
+                        status := x5,
+                        approver := x6,
+                        version := x7
+                      })
+
+/-- [docs_kernel::{docs_kernel::Document}::from_rows]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 96:16-102:17
+    Visibility: public -/
+@[rust_loop_body]
+def Document.from_rows_loop.body
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val))
+  (out : alloc.vec.Vec Document) (ok1 : Bool) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Document) × Bool × Std.Usize)
+    ((alloc.vec.Vec Document) × Bool))
+  := do
+  let i1 := alloc.vec.Vec.len rows
+  if i < i1
+  then
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice (alloc.vec.Vec
+        i5h_sql.Val)) rows i
+    let o ← Document.from_row v
+    let (out1, ok2) ←
+      match o with
+      | none => ok (out, false)
+      | some x => do
+                  let out2 ← alloc.vec.Vec.push out x
+                  ok (out2, ok1)
+    let i2 ← i + 1#usize
+    ok (cont (out1, ok2, i2))
+  else ok (done (out, ok1))
+
+/-- [docs_kernel::{docs_kernel::Document}::from_rows]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 96:16-102:17
+    Visibility: public -/
+@[rust_loop]
+def Document.from_rows_loop
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val))
+  (out : alloc.vec.Vec Document) (ok1 : Bool) (i : Std.Usize) :
+  Result ((alloc.vec.Vec Document) × Bool)
+  := do
+  loop
+    (fun (out1, ok2, i1) => Document.from_rows_loop.body rows out1 ok2 i1)
+    (out, ok1, i)
+
+/-- [docs_kernel::{docs_kernel::Document}::from_rows]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 92:12-108:13
+    Visibility: public -/
+def Document.from_rows
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)) :
+  Result (Option (alloc.vec.Vec Document))
+  := do
+  let (out, ok1) ←
+    Document.from_rows_loop rows (alloc.vec.Vec.new Document) true 0#usize
+  if ok1
+  then ok (some out)
+  else ok none
+
+/-- [docs_kernel::{docs_kernel::Member}::from_row]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 68:12-89:13
+    Visibility: public -/
+def Member.from_row
+  (row : alloc.vec.Vec i5h_sql.Val) : Result (Option Member) := do
+  let i := alloc.vec.Vec.len row
+  let i1 ← 0#usize + 1#usize
+  let i2 ← i1 + 1#usize
+  let i3 ← i2 + 1#usize
+  if i != i3
+  then ok none
+  else
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice i5h_sql.Val)
+        row 0#usize
+    let o ← U64.Insts.I5h_sqlColumn.from_val v
+    match o with
+    | none => ok none
+    | some x =>
+      let v1 ←
+        alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice i5h_sql.Val)
+          row i1
+      let o1 ← U64.Insts.I5h_sqlColumn.from_val v1
+      match o1 with
+      | none => ok none
+      | some x1 =>
+        let i4 ← i1 + 1#usize
+        let v2 ←
+          alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+            i5h_sql.Val) row i4
+        let o2 ← Role.Insts.I5h_sqlColumn.from_val v2
+        match o2 with
+        | none => ok none
+        | some x2 =>
+          let _ ← i4 + 1#usize
+          ok (some { project := x, user := x1, role := x2 })
+
+/-- [docs_kernel::{docs_kernel::Member}::from_rows]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 96:16-102:17
+    Visibility: public -/
+@[rust_loop_body]
+def Member.from_rows_loop.body
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val))
+  (out : alloc.vec.Vec Member) (ok1 : Bool) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Member) × Bool × Std.Usize)
+    ((alloc.vec.Vec Member) × Bool))
+  := do
+  let i1 := alloc.vec.Vec.len rows
+  if i < i1
+  then
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice (alloc.vec.Vec
+        i5h_sql.Val)) rows i
+    let o ← Member.from_row v
+    let (out1, ok2) ←
+      match o with
+      | none => ok (out, false)
+      | some x => do
+                  let out2 ← alloc.vec.Vec.push out x
+                  ok (out2, ok1)
+    let i2 ← i + 1#usize
+    ok (cont (out1, ok2, i2))
+  else ok (done (out, ok1))
+
+/-- [docs_kernel::{docs_kernel::Member}::from_rows]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 96:16-102:17
+    Visibility: public -/
+@[rust_loop]
+def Member.from_rows_loop
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val))
+  (out : alloc.vec.Vec Member) (ok1 : Bool) (i : Std.Usize) :
+  Result ((alloc.vec.Vec Member) × Bool)
+  := do
+  loop
+    (fun (out1, ok2, i1) => Member.from_rows_loop.body rows out1 ok2 i1)
+    (out, ok1, i)
+
+/-- [docs_kernel::{docs_kernel::Member}::from_rows]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 92:12-108:13
+    Visibility: public -/
+def Member.from_rows
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)) :
+  Result (Option (alloc.vec.Vec Member))
+  := do
+  let (out, ok1) ←
+    Member.from_rows_loop rows (alloc.vec.Vec.new Member) true 0#usize
+  if ok1
+  then ok (some out)
+  else ok none
+
+/-- [docs_kernel::{docs_kernel::Project}::from_row]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 68:12-89:13
+    Visibility: public -/
+def Project.from_row
+  (row : alloc.vec.Vec i5h_sql.Val) : Result (Option Project) := do
+  let i := alloc.vec.Vec.len row
+  let i1 ← 0#usize + 1#usize
+  let i2 ← i1 + 1#usize
+  if i != i2
+  then ok none
+  else
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice i5h_sql.Val)
+        row 0#usize
+    let o ← U64.Insts.I5h_sqlColumn.from_val v
+    match o with
+    | none => ok none
+    | some x =>
+      let v1 ←
+        alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice i5h_sql.Val)
+          row i1
+      let o1 ← alloc.vec.VecU8.Insts.I5h_sqlColumn.from_val v1
+      match o1 with
+      | none => ok none
+      | some x1 => let _ ← i1 + 1#usize
+                   ok (some { id := x, «name» := x1 })
+
+/-- [docs_kernel::{docs_kernel::Project}::from_rows]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 96:16-102:17
+    Visibility: public -/
+@[rust_loop_body]
+def Project.from_rows_loop.body
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val))
+  (out : alloc.vec.Vec Project) (ok1 : Bool) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Project) × Bool × Std.Usize)
+    ((alloc.vec.Vec Project) × Bool))
+  := do
+  let i1 := alloc.vec.Vec.len rows
+  if i < i1
+  then
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice (alloc.vec.Vec
+        i5h_sql.Val)) rows i
+    let o ← Project.from_row v
+    let (out1, ok2) ←
+      match o with
+      | none => ok (out, false)
+      | some x => do
+                  let out2 ← alloc.vec.Vec.push out x
+                  ok (out2, ok1)
+    let i2 ← i + 1#usize
+    ok (cont (out1, ok2, i2))
+  else ok (done (out, ok1))
+
+/-- [docs_kernel::{docs_kernel::Project}::from_rows]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 96:16-102:17
+    Visibility: public -/
+@[rust_loop]
+def Project.from_rows_loop
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val))
+  (out : alloc.vec.Vec Project) (ok1 : Bool) (i : Std.Usize) :
+  Result ((alloc.vec.Vec Project) × Bool)
+  := do
+  loop
+    (fun (out1, ok2, i1) => Project.from_rows_loop.body rows out1 ok2 i1)
+    (out, ok1, i)
+
+/-- [docs_kernel::{docs_kernel::Project}::from_rows]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 92:12-108:13
+    Visibility: public -/
+def Project.from_rows
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)) :
+  Result (Option (alloc.vec.Vec Project))
+  := do
+  let (out, ok1) ←
+    Project.from_rows_loop rows (alloc.vec.Vec.new Project) true 0#usize
+  if ok1
+  then ok (some out)
+  else ok none
+
+/-- [docs_kernel::{docs_kernel::Counter}::from_row]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 68:12-89:13
+    Visibility: public -/
+def Counter.from_row
+  (row : alloc.vec.Vec i5h_sql.Val) : Result (Option Counter) := do
+  let i := alloc.vec.Vec.len row
+  let i1 ← 0#usize + 1#usize
+  if i != i1
+  then ok none
+  else
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice i5h_sql.Val)
+        row 0#usize
+    let o ← U64.Insts.I5h_sqlColumn.from_val v
+    match o with
+    | none => ok none
+    | some x => ok (some { next_id := x })
+
+/-- [docs_kernel::decode]:
+    Source: 'examples/docs/kernel/src/lib.rs', lines 801:0-819:1
+    Visibility: public -/
+def decode (r : Rows) : Result (Option Snapshot) := do
+  let i := alloc.vec.Vec.len r.counter
+  let counter ←
+    if i = 0#usize
+    then ok (some ({ next_id := 0#u64 } : Counter))
+    else
+      do
+      let v ←
+        alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+          (alloc.vec.Vec i5h_sql.Val)) r.counter 0#usize
+      Counter.from_row v
+  let o ← Project.from_rows r.projects
+  let o1 ← Member.from_rows r.members
+  let o2 ← Document.from_rows r.documents
+  let o3 ← Webhook.from_rows r.webhooks
+  match counter with
+  | none => ok none
+  | some counter1 =>
+    match o with
+    | none => ok none
+    | some projects =>
+      match o1 with
+      | none => ok none
+      | some members =>
+        match o2 with
+        | none => ok none
+        | some documents =>
+          match o3 with
+          | none => ok none
+          | some webhooks =>
+            ok (some
+              { counter := counter1, projects, members, documents, webhooks })
+
 /-- [docs_kernel::apply]: loop body 0:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 758:4-761:5
+    Source: 'examples/docs/kernel/src/lib.rs', lines 825:4-828:5
     Visibility: public -/
 @[rust_loop_body]
 def apply_loop.body
@@ -1645,7 +2215,7 @@ def apply_loop.body
   else ok (done s)
 
 /-- [docs_kernel::apply]: loop 0:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 758:4-761:5
+    Source: 'examples/docs/kernel/src/lib.rs', lines 825:4-828:5
     Visibility: public -/
 @[rust_loop]
 def apply_loop
@@ -1657,14 +2227,14 @@ def apply_loop
     (s, i)
 
 /-- [docs_kernel::apply]:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 755:0-763:1
+    Source: 'examples/docs/kernel/src/lib.rs', lines 822:0-830:1
     Visibility: public -/
 def apply (snap : Snapshot) (ws : alloc.vec.Vec Write) : Result Snapshot := do
   let s ← Snapshot.Insts.CoreCloneClone.clone snap
   apply_loop ws s 0#usize
 
 /-- [docs_kernel::projects_owned]: loop body 0:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 773:4-780:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 840:4-847:1 -/
 @[rust_loop_body]
 def projects_owned_loop.body
   (s : Snapshot) (i : Std.Usize) : Result (ControlFlow Std.Usize Bool) := do
@@ -1682,7 +2252,7 @@ def projects_owned_loop.body
   else ok (done true)
 
 /-- [docs_kernel::projects_owned]: loop 0:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 773:4-780:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 840:4-847:1 -/
 @[rust_loop]
 def projects_owned_loop (s : Snapshot) (i : Std.Usize) : Result Bool := do
   loop
@@ -1690,13 +2260,13 @@ def projects_owned_loop (s : Snapshot) (i : Std.Usize) : Result Bool := do
     i
 
 /-- [docs_kernel::projects_owned]:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 771:0-780:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 838:0-847:1 -/
 @[reducible]
 def projects_owned (s : Snapshot) : Result Bool := do
   projects_owned_loop s 0#usize
 
 /-- [docs_kernel::members_in_projects]: loop body 0:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 784:4-791:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 851:4-858:1 -/
 @[rust_loop_body]
 def members_in_projects_loop.body
   (s : Snapshot) (i : Std.Usize) : Result (ControlFlow Std.Usize Bool) := do
@@ -1714,7 +2284,7 @@ def members_in_projects_loop.body
   else ok (done true)
 
 /-- [docs_kernel::members_in_projects]: loop 0:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 784:4-791:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 851:4-858:1 -/
 @[rust_loop]
 def members_in_projects_loop (s : Snapshot) (i : Std.Usize) : Result Bool := do
   loop
@@ -1722,13 +2292,13 @@ def members_in_projects_loop (s : Snapshot) (i : Std.Usize) : Result Bool := do
     i
 
 /-- [docs_kernel::members_in_projects]:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 782:0-791:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 849:0-858:1 -/
 @[reducible]
 def members_in_projects (s : Snapshot) : Result Bool := do
   members_in_projects_loop s 0#usize
 
 /-- [docs_kernel::docs_in_projects]: loop body 0:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 795:4-802:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 862:4-869:1 -/
 @[rust_loop_body]
 def docs_in_projects_loop.body
   (s : Snapshot) (i : Std.Usize) : Result (ControlFlow Std.Usize Bool) := do
@@ -1746,7 +2316,7 @@ def docs_in_projects_loop.body
   else ok (done true)
 
 /-- [docs_kernel::docs_in_projects]: loop 0:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 795:4-802:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 862:4-869:1 -/
 @[rust_loop]
 def docs_in_projects_loop (s : Snapshot) (i : Std.Usize) : Result Bool := do
   loop
@@ -1754,13 +2324,13 @@ def docs_in_projects_loop (s : Snapshot) (i : Std.Usize) : Result Bool := do
     i
 
 /-- [docs_kernel::docs_in_projects]:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 793:0-802:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 860:0-869:1 -/
 @[reducible]
 def docs_in_projects (s : Snapshot) : Result Bool := do
   docs_in_projects_loop s 0#usize
 
 /-- [docs_kernel::hooks_in_projects]: loop body 0:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 806:4-813:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 873:4-880:1 -/
 @[rust_loop_body]
 def hooks_in_projects_loop.body
   (s : Snapshot) (i : Std.Usize) : Result (ControlFlow Std.Usize Bool) := do
@@ -1778,7 +2348,7 @@ def hooks_in_projects_loop.body
   else ok (done true)
 
 /-- [docs_kernel::hooks_in_projects]: loop 0:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 806:4-813:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 873:4-880:1 -/
 @[rust_loop]
 def hooks_in_projects_loop (s : Snapshot) (i : Std.Usize) : Result Bool := do
   loop
@@ -1786,13 +2356,13 @@ def hooks_in_projects_loop (s : Snapshot) (i : Std.Usize) : Result Bool := do
     i
 
 /-- [docs_kernel::hooks_in_projects]:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 804:0-813:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 871:0-880:1 -/
 @[reducible]
 def hooks_in_projects (s : Snapshot) : Result Bool := do
   hooks_in_projects_loop s 0#usize
 
 /-- [docs_kernel::project_dup_after]: loop body 0:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 818:4-825:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 885:4-892:1 -/
 @[rust_loop_body]
 def project_dup_after_loop.body
   (v : alloc.vec.Vec Project) (i : Std.Usize) (j : Std.Usize) :
@@ -1812,7 +2382,7 @@ def project_dup_after_loop.body
   else ok (done false)
 
 /-- [docs_kernel::project_dup_after]: loop 0:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 818:4-825:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 885:4-892:1 -/
 @[rust_loop]
 def project_dup_after_loop
   (v : alloc.vec.Vec Project) (i : Std.Usize) (j : Std.Usize) :
@@ -1823,14 +2393,14 @@ def project_dup_after_loop
     j
 
 /-- [docs_kernel::project_dup_after]:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 816:0-825:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 883:0-892:1 -/
 def project_dup_after
   (v : alloc.vec.Vec Project) (i : Std.Usize) : Result Bool := do
   let j ← i + 1#usize
   project_dup_after_loop v i j
 
 /-- [docs_kernel::project_ids_unique]: loop body 0:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 829:4-836:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 896:4-903:1 -/
 @[rust_loop_body]
 def project_ids_unique_loop.body
   (v : alloc.vec.Vec Project) (i : Std.Usize) :
@@ -1847,7 +2417,7 @@ def project_ids_unique_loop.body
   else ok (done true)
 
 /-- [docs_kernel::project_ids_unique]: loop 0:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 829:4-836:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 896:4-903:1 -/
 @[rust_loop]
 def project_ids_unique_loop
   (v : alloc.vec.Vec Project) (i : Std.Usize) : Result Bool := do
@@ -1856,13 +2426,13 @@ def project_ids_unique_loop
     i
 
 /-- [docs_kernel::project_ids_unique]:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 827:0-836:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 894:0-903:1 -/
 @[reducible]
 def project_ids_unique (v : alloc.vec.Vec Project) : Result Bool := do
   project_ids_unique_loop v 0#usize
 
 /-- [docs_kernel::member_dup_after]: loop body 0:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 1:0-847:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 1:0-914:1 -/
 @[rust_loop_body]
 def member_dup_after_loop.body
   (v : alloc.vec.Vec Member) (i : Std.Usize) (j : Std.Usize) :
@@ -1886,7 +2456,7 @@ def member_dup_after_loop.body
   else ok (done false)
 
 /-- [docs_kernel::member_dup_after]: loop 0:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 1:0-847:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 1:0-914:1 -/
 @[rust_loop]
 def member_dup_after_loop
   (v : alloc.vec.Vec Member) (i : Std.Usize) (j : Std.Usize) :
@@ -1897,14 +2467,14 @@ def member_dup_after_loop
     j
 
 /-- [docs_kernel::member_dup_after]:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 838:0-847:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 905:0-914:1 -/
 def member_dup_after
   (v : alloc.vec.Vec Member) (i : Std.Usize) : Result Bool := do
   let j ← i + 1#usize
   member_dup_after_loop v i j
 
 /-- [docs_kernel::member_keys_unique]: loop body 0:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 851:4-858:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 918:4-925:1 -/
 @[rust_loop_body]
 def member_keys_unique_loop.body
   (v : alloc.vec.Vec Member) (i : Std.Usize) :
@@ -1921,7 +2491,7 @@ def member_keys_unique_loop.body
   else ok (done true)
 
 /-- [docs_kernel::member_keys_unique]: loop 0:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 851:4-858:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 918:4-925:1 -/
 @[rust_loop]
 def member_keys_unique_loop
   (v : alloc.vec.Vec Member) (i : Std.Usize) : Result Bool := do
@@ -1930,13 +2500,13 @@ def member_keys_unique_loop
     i
 
 /-- [docs_kernel::member_keys_unique]:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 849:0-858:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 916:0-925:1 -/
 @[reducible]
 def member_keys_unique (v : alloc.vec.Vec Member) : Result Bool := do
   member_keys_unique_loop v 0#usize
 
 /-- [docs_kernel::doc_dup_after]: loop body 0:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 862:4-869:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 929:4-936:1 -/
 @[rust_loop_body]
 def doc_dup_after_loop.body
   (v : alloc.vec.Vec Document) (i : Std.Usize) (j : Std.Usize) :
@@ -1956,7 +2526,7 @@ def doc_dup_after_loop.body
   else ok (done false)
 
 /-- [docs_kernel::doc_dup_after]: loop 0:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 862:4-869:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 929:4-936:1 -/
 @[rust_loop]
 def doc_dup_after_loop
   (v : alloc.vec.Vec Document) (i : Std.Usize) (j : Std.Usize) :
@@ -1967,14 +2537,14 @@ def doc_dup_after_loop
     j
 
 /-- [docs_kernel::doc_dup_after]:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 860:0-869:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 927:0-936:1 -/
 def doc_dup_after
   (v : alloc.vec.Vec Document) (i : Std.Usize) : Result Bool := do
   let j ← i + 1#usize
   doc_dup_after_loop v i j
 
 /-- [docs_kernel::doc_ids_unique]: loop body 0:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 873:4-880:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 940:4-947:1 -/
 @[rust_loop_body]
 def doc_ids_unique_loop.body
   (v : alloc.vec.Vec Document) (i : Std.Usize) :
@@ -1991,7 +2561,7 @@ def doc_ids_unique_loop.body
   else ok (done true)
 
 /-- [docs_kernel::doc_ids_unique]: loop 0:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 873:4-880:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 940:4-947:1 -/
 @[rust_loop]
 def doc_ids_unique_loop
   (v : alloc.vec.Vec Document) (i : Std.Usize) : Result Bool := do
@@ -2000,13 +2570,13 @@ def doc_ids_unique_loop
     i
 
 /-- [docs_kernel::doc_ids_unique]:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 871:0-880:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 938:0-947:1 -/
 @[reducible]
 def doc_ids_unique (v : alloc.vec.Vec Document) : Result Bool := do
   doc_ids_unique_loop v 0#usize
 
 /-- [docs_kernel::hook_dup_after]: loop body 0:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 884:4-891:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 951:4-958:1 -/
 @[rust_loop_body]
 def hook_dup_after_loop.body
   (v : alloc.vec.Vec Webhook) (i : Std.Usize) (j : Std.Usize) :
@@ -2026,7 +2596,7 @@ def hook_dup_after_loop.body
   else ok (done false)
 
 /-- [docs_kernel::hook_dup_after]: loop 0:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 884:4-891:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 951:4-958:1 -/
 @[rust_loop]
 def hook_dup_after_loop
   (v : alloc.vec.Vec Webhook) (i : Std.Usize) (j : Std.Usize) :
@@ -2037,14 +2607,14 @@ def hook_dup_after_loop
     j
 
 /-- [docs_kernel::hook_dup_after]:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 882:0-891:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 949:0-958:1 -/
 def hook_dup_after
   (v : alloc.vec.Vec Webhook) (i : Std.Usize) : Result Bool := do
   let j ← i + 1#usize
   hook_dup_after_loop v i j
 
 /-- [docs_kernel::hook_projects_unique]: loop body 0:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 895:4-902:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 962:4-969:1 -/
 @[rust_loop_body]
 def hook_projects_unique_loop.body
   (v : alloc.vec.Vec Webhook) (i : Std.Usize) :
@@ -2061,7 +2631,7 @@ def hook_projects_unique_loop.body
   else ok (done true)
 
 /-- [docs_kernel::hook_projects_unique]: loop 0:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 895:4-902:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 962:4-969:1 -/
 @[rust_loop]
 def hook_projects_unique_loop
   (v : alloc.vec.Vec Webhook) (i : Std.Usize) : Result Bool := do
@@ -2070,13 +2640,13 @@ def hook_projects_unique_loop
     i
 
 /-- [docs_kernel::hook_projects_unique]:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 893:0-902:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 960:0-969:1 -/
 @[reducible]
 def hook_projects_unique (v : alloc.vec.Vec Webhook) : Result Bool := do
   hook_projects_unique_loop v 0#usize
 
 /-- [docs_kernel::projects_fresh]: loop body 0:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 906:4-913:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 973:4-980:1 -/
 @[rust_loop_body]
 def projects_fresh_loop.body
   (s : Snapshot) (i : Std.Usize) : Result (ControlFlow Std.Usize Bool) := do
@@ -2093,7 +2663,7 @@ def projects_fresh_loop.body
   else ok (done true)
 
 /-- [docs_kernel::projects_fresh]: loop 0:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 906:4-913:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 973:4-980:1 -/
 @[rust_loop]
 def projects_fresh_loop (s : Snapshot) (i : Std.Usize) : Result Bool := do
   loop
@@ -2101,13 +2671,13 @@ def projects_fresh_loop (s : Snapshot) (i : Std.Usize) : Result Bool := do
     i
 
 /-- [docs_kernel::projects_fresh]:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 904:0-913:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 971:0-980:1 -/
 @[reducible]
 def projects_fresh (s : Snapshot) : Result Bool := do
   projects_fresh_loop s 0#usize
 
 /-- [docs_kernel::docs_fresh]: loop body 0:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 917:4-924:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 984:4-991:1 -/
 @[rust_loop_body]
 def docs_fresh_loop.body
   (s : Snapshot) (i : Std.Usize) : Result (ControlFlow Std.Usize Bool) := do
@@ -2124,7 +2694,7 @@ def docs_fresh_loop.body
   else ok (done true)
 
 /-- [docs_kernel::docs_fresh]: loop 0:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 917:4-924:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 984:4-991:1 -/
 @[rust_loop]
 def docs_fresh_loop (s : Snapshot) (i : Std.Usize) : Result Bool := do
   loop
@@ -2132,13 +2702,13 @@ def docs_fresh_loop (s : Snapshot) (i : Std.Usize) : Result Bool := do
     i
 
 /-- [docs_kernel::docs_fresh]:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 915:0-924:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 982:0-991:1 -/
 @[reducible]
 def docs_fresh (s : Snapshot) : Result Bool := do
   docs_fresh_loop s 0#usize
 
 /-- [docs_kernel::doc_well_formed]:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 927:0-937:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 994:0-1004:1 -/
 def doc_well_formed (d : Document) : Result Bool := do
   let approved ←
     match d.status with
@@ -2153,7 +2723,7 @@ def doc_well_formed (d : Document) : Result Bool := do
               else ok false
 
 /-- [docs_kernel::docs_well_formed]: loop body 0:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 941:4-948:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 1008:4-1015:1 -/
 @[rust_loop_body]
 def docs_well_formed_loop.body
   (v : alloc.vec.Vec Document) (i : Std.Usize) :
@@ -2172,7 +2742,7 @@ def docs_well_formed_loop.body
   else ok (done true)
 
 /-- [docs_kernel::docs_well_formed]: loop 0:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 941:4-948:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 1008:4-1015:1 -/
 @[rust_loop]
 def docs_well_formed_loop
   (v : alloc.vec.Vec Document) (i : Std.Usize) : Result Bool := do
@@ -2181,13 +2751,13 @@ def docs_well_formed_loop
     i
 
 /-- [docs_kernel::docs_well_formed]:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 939:0-948:1 -/
+    Source: 'examples/docs/kernel/src/lib.rs', lines 1006:0-1015:1 -/
 @[reducible]
 def docs_well_formed (v : alloc.vec.Vec Document) : Result Bool := do
   docs_well_formed_loop v 0#usize
 
 /-- [docs_kernel::check_inv]:
-    Source: 'examples/docs/kernel/src/lib.rs', lines 950:0-962:1
+    Source: 'examples/docs/kernel/src/lib.rs', lines 1017:0-1029:1
     Visibility: public -/
 def check_inv (s : Snapshot) : Result Bool := do
   let b ← projects_owned s

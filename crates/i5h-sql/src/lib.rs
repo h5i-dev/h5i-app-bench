@@ -13,15 +13,23 @@ pub enum Val {
     Null,
 }
 
-/// How a kernel field is stored. Integers keep their bits: a `u64` above
-/// `i64::MAX` is stored as a negative `BIGINT`.
-pub trait Column {
+/// How a kernel field is stored and read back. Integers keep their bits: a
+/// `u64` above `i64::MAX` is stored as a negative `BIGINT`. `from_val` must
+/// undo `to_val`; the kernel proofs check this for each field type used.
+pub trait Column: Sized {
     fn to_val(&self) -> Val;
+    fn from_val(v: &Val) -> Option<Self>;
 }
 
 impl Column for u64 {
     fn to_val(&self) -> Val {
         Val::Int(*self as i64)
+    }
+    fn from_val(v: &Val) -> Option<u64> {
+        match v {
+            Val::Int(i) => Some(*i as u64),
+            _ => None,
+        }
     }
 }
 
@@ -29,11 +37,29 @@ impl Column for u32 {
     fn to_val(&self) -> Val {
         Val::Int(*self as i64)
     }
+    fn from_val(v: &Val) -> Option<u32> {
+        match v {
+            Val::Int(i) => {
+                if *i >= 0 && *i <= u32::MAX as i64 {
+                    Some(*i as u32)
+                } else {
+                    None
+                }
+            }
+            _ => None,
+        }
+    }
 }
 
 impl Column for bool {
     fn to_val(&self) -> Val {
         Val::Bool(*self)
+    }
+    fn from_val(v: &Val) -> Option<bool> {
+        match v {
+            Val::Bool(b) => Some(*b),
+            _ => None,
+        }
     }
 }
 
@@ -41,13 +67,29 @@ impl Column for Vec<u8> {
     fn to_val(&self) -> Val {
         Val::Bytes(self.clone())
     }
+    fn from_val(v: &Val) -> Option<Vec<u8>> {
+        match v {
+            Val::Bytes(b) => Some(b.clone()),
+            _ => None,
+        }
+    }
 }
 
+/// `None` is SQL `NULL`, so `T` must never encode to `NULL` itself.
 impl<T: Column> Column for Option<T> {
     fn to_val(&self) -> Val {
         match self {
             Some(x) => x.to_val(),
             None => Val::Null,
+        }
+    }
+    fn from_val(v: &Val) -> Option<Option<T>> {
+        match v {
+            Val::Null => Some(None),
+            _ => match T::from_val(v) {
+                Some(x) => Some(Some(x)),
+                None => None,
+            },
         }
     }
 }
