@@ -151,6 +151,31 @@ dependencies = [
 ]
 
 [[package]]
+name = "board-kernel"
+version = "0.1.0"
+dependencies = [
+ "i5h-schema",
+ "i5h-sql",
+]
+
+[[package]]
+name = "board-server"
+version = "0.1.0"
+dependencies = [
+ "axum",
+ "board-kernel",
+ "i5h",
+ "i5h-http",
+ "i5h-json",
+ "i5h-pg",
+ "serde",
+ "serde_json",
+ "tokio",
+ "tracing",
+ "tracing-subscriber",
+]
+
+[[package]]
 name = "bumpalo"
 version = "3.20.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"

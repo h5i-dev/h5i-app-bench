@@ -279,4 +279,4 @@ of the framework in full.
 3. Prove that a command leaves every other user's memory unchanged, by stating
    the result with `memOf` for a user `u ≠ a.user` after `apply`.
 
-The next tutorial, a bulletin board, adds permissions and invariants.
+The [next tutorial](../board/TUTORIAL.md), a bulletin board, adds permissions and invariants.
