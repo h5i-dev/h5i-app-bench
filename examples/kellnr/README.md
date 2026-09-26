@@ -52,7 +52,7 @@ write sets.
 ## Build
 
 ```
-../../scripts/extract-kellnr.sh      # regenerate proofs/KellnrKernel.lean
+../../scripts/extract-kellnr.sh      # regenerate proofs/generated/KellnrKernel.lean
 cd proofs && lake build              # .lake/packages -> ../../docs/proofs/.lake/packages
 ```
 

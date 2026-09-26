@@ -8,4 +8,4 @@ trap 'rm -rf "$tmp"' EXIT
 (cd "$root/crates/i5h-sql" && charon cargo --preset=aeneas \
   --start-from i5h_sql::plan \
   --dest-file "$tmp/i5h_sql.llbc")
-aeneas -backend lean "$tmp/i5h_sql.llbc" -dest "$root/crates/i5h-sql/proofs"
+aeneas -backend lean "$tmp/i5h_sql.llbc" -dest "$root/crates/i5h-sql/proofs/generated"

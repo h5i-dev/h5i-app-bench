@@ -11,12 +11,12 @@ use std::time::Instant;
 
 /// Proof projects: directory, extraction script, generated file.
 const PROJECTS: &[(&str, Option<&str>, Option<&str>)] = &[
-    ("examples/docs/proofs", Some("scripts/extract.sh"), Some("examples/docs/proofs/DocsKernel.lean")),
-    ("examples/kellnr/proofs", Some("scripts/extract-kellnr.sh"), Some("examples/kellnr/proofs/KellnrKernel.lean")),
-    ("examples/atuin/proofs", Some("scripts/extract-atuin.sh"), Some("examples/atuin/proofs/AtuinKernel.lean")),
-    ("crates/i5h-sql/proofs", Some("scripts/extract-sql.sh"), Some("crates/i5h-sql/proofs/I5hSql.lean")),
-    ("crates/i5h-token/proofs", Some("scripts/extract-token.sh"), Some("crates/i5h-token/proofs/I5hToken.lean")),
-    ("crates/i5h-json/proofs", Some("scripts/extract-json.sh"), Some("crates/i5h-json/proofs/I5hJson.lean")),
+    ("examples/docs/proofs", Some("scripts/extract.sh"), Some("examples/docs/proofs/generated/DocsKernel.lean")),
+    ("examples/kellnr/proofs", Some("scripts/extract-kellnr.sh"), Some("examples/kellnr/proofs/generated/KellnrKernel.lean")),
+    ("examples/atuin/proofs", Some("scripts/extract-atuin.sh"), Some("examples/atuin/proofs/generated/AtuinKernel.lean")),
+    ("crates/i5h-sql/proofs", Some("scripts/extract-sql.sh"), Some("crates/i5h-sql/proofs/generated/I5hSql.lean")),
+    ("crates/i5h-token/proofs", Some("scripts/extract-token.sh"), Some("crates/i5h-token/proofs/generated/I5hToken.lean")),
+    ("crates/i5h-json/proofs", Some("scripts/extract-json.sh"), Some("crates/i5h-json/proofs/generated/I5hJson.lean")),
     ("crates/i5h/proofs", None, None),
     ("lean", None, None),
 ];
@@ -71,18 +71,19 @@ fn have_cargo_sub(sub: &str) -> bool {
 }
 
 /// Hand-written Lean files must not use sorry or native_decide; no file may declare an axiom.
-fn lean_scan(dir: &Path, generated: Option<&str>) -> Outcome {
+fn lean_scan(dir: &Path) -> Outcome {
     let mut bad = Vec::new();
     let Ok(entries) = std::fs::read_dir(dir) else { return Outcome::Fail(format!("{} missing", dir.display())) };
     let mut files: Vec<PathBuf> = entries.flatten().map(|e| e.path()).filter(|p| p.extension().is_some_and(|x| x == "lean")).collect();
-    for sub in ["Engine", "I5hLib"] {
+    for sub in ["Engine", "I5hLib", "generated"] {
         if let Ok(e) = std::fs::read_dir(dir.join(sub)) {
             files.extend(e.flatten().map(|e| e.path()).filter(|p| p.extension().is_some_and(|x| x == "lean")));
         }
     }
     for f in files {
         let text = std::fs::read_to_string(&f).unwrap_or_default();
-        let is_generated = generated.is_some_and(|g| f.ends_with(Path::new(g).file_name().unwrap()));
+        // Generated Lean (extracted kernels, schema! output) lives in generated/.
+        let is_generated = f.parent().is_some_and(|p| p.ends_with("generated"));
         for (i, line) in text.lines().enumerate() {
             let code = line.split("--").next().unwrap_or("");
             let words = |w: &str| code.split(|c: char| !c.is_alphanumeric() && c != '_').any(|t| t == w);
@@ -134,13 +135,13 @@ fn main() -> ExitCode {
         }
     }
     let lake = have("lake");
-    for (dir, _, generated) in PROJECTS {
+    for (dir, _, _) in PROJECTS {
         cx.step(&format!("lean {dir}"), |r| {
             if !lake {
                 return Outcome::Skip("lake not on PATH".into());
             }
             match run(&r.join(dir), "lake", &["build"]) {
-                Outcome::Pass => lean_scan(&r.join(dir), *generated),
+                Outcome::Pass => lean_scan(&r.join(dir)),
                 other => other,
             }
         });

@@ -169,6 +169,7 @@ def check(name, edits, keep):
         for f in os.listdir(PROOFS):
             if f.endswith(".lean") or f in ("lake-manifest.json", "lean-toolchain", "lakefile.lean"):
                 shutil.copy(os.path.join(PROOFS, f), proofs)
+        shutil.copytree(os.path.join(PROOFS, "generated"), os.path.join(proofs, "generated"))
         # The proof library is required by relative path; point it at the real one.
         lib = os.path.join(ROOT, "crates/i5h/proofs")
         for f in ("lakefile.lean", "lake-manifest.json"):
@@ -189,7 +190,7 @@ def check(name, edits, keep):
                   "--dest-file", llbc], os.path.join(tmp, "kernel"), log)
         if rc != 0:
             return name, "invalid (charon)", tmp
-        if run(["aeneas", "-backend", "lean", llbc, "-dest", proofs], tmp, log) != 0:
+        if run(["aeneas", "-backend", "lean", llbc, "-dest", os.path.join(proofs, "generated")], tmp, log) != 0:
             return name, "invalid (aeneas)", tmp
         rc = run(["lake", "build"] + THEOREMS, proofs, log)
         if name == "baseline":

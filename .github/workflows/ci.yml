@@ -74,7 +74,7 @@ jobs:
             ln -sfn "$GITHUB_WORKSPACE/examples/docs/proofs/.lake/packages" "$d/.lake/packages"
             (cd "$d" && lake build)
             if grep -n -w -e sorry -e native_decide "$d"/*.lean; then exit 1; fi
-            if grep -n "^axiom" "$d"/*.lean; then exit 1; fi
+            if grep -n "^axiom" "$d"/*.lean "$d"/generated/*.lean; then exit 1; fi
           done
       # Engine protocol model (plain Lean, no dependencies).
       - name: Build engine protocol model
@@ -107,9 +107,9 @@ jobs:
       - run: scripts/extract-atuin.sh
       - run: |
           git diff --exit-code -- \
-            examples/docs/proofs/DocsKernel.lean \
-            crates/i5h-sql/proofs/I5hSql.lean \
-            crates/i5h-token/proofs/I5hToken.lean \
-            crates/i5h-json/proofs/I5hJson.lean \
-            examples/kellnr/proofs/KellnrKernel.lean \
-            examples/atuin/proofs/AtuinKernel.lean
+            examples/docs/proofs/generated/DocsKernel.lean \
+            crates/i5h-sql/proofs/generated/I5hSql.lean \
+            crates/i5h-token/proofs/generated/I5hToken.lean \
+            crates/i5h-json/proofs/generated/I5hJson.lean \
+            examples/kellnr/proofs/generated/KellnrKernel.lean \
+            examples/atuin/proofs/generated/AtuinKernel.lean

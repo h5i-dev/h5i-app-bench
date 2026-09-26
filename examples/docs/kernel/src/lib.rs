@@ -37,7 +37,7 @@ pub enum Status {
 // Row types, declared once: the server derives its table mappings from this
 // (`docs_kernel::docs_tables!`).
 i5h_schema::schema! {
-    mapping docs_tables for docs_kernel, lean "../proofs/Schema.lean";
+    mapping docs_tables for docs_kernel, lean "../proofs/generated/Schema.lean";
 
     #[derive(Clone, Debug, PartialEq, Eq)]
     pub struct Project in "projects" {
