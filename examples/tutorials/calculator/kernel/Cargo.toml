@@ -1,0 +1,11 @@
+[package]
+name = "calculator-kernel"
+description = "Tutorial 1: the verified kernel of a calculator web app"
+edition.workspace = true
+license.workspace = true
+version.workspace = true
+
+# Extracted to Lean by Charon + Aeneas (scripts/extract-calculator.sh).
+[dependencies]
+i5h-schema.workspace = true
+i5h-sql.workspace = true

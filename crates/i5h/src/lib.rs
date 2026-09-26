@@ -1,8 +1,39 @@
-//! Core contract of i5h: a pure, verified kernel driven by an untrusted shell.
+//! The core types of i5h: the [`Kernel`] trait and an in-memory reference engine.
 //!
-//! The kernel crate has no dependencies and stays inside the Rust subset that
-//! Aeneas translates to Lean. The shell authenticates, loads a snapshot, calls
-//! `transition`, and commits the returned write set. See `docs/TRUST.md`.
+//! An i5h application implements [`Kernel`] by pointing it at a pure
+//! `transition` function, which decides what a command does, and an `apply`
+//! function, which says what committing its writes means. Both are written in
+//! the subset of Rust that Aeneas translates to Lean, so that properties of the
+//! application can be proven about the code that runs.
+//!
+//! [`MemoryEngine`] runs a kernel in memory, one command at a time. Any real
+//! engine, such as the PostgreSQL engine in `i5h-pg`, must behave like it on
+//! its committed requests, which makes it useful as a reference in tests.
+//!
+//! # Example
+//!
+//! ```ignore
+//! impl Kernel for Calc {
+//!     type Principal = Principal;
+//!     type Snapshot = Snapshot;
+//!     type Command = Command;
+//!     type WriteSet = Option<Memory>;
+//!     type Reply = Reply;
+//!     type Error = Error;
+//!
+//!     fn tenant(actor: &Principal) -> TenantId {
+//!         TenantId(actor.org)
+//!     }
+//!
+//!     fn transition(actor: &Principal, snap: &Snapshot, cmd: &Command) -> Result<(Option<Memory>, Reply), Error> {
+//!         kernel::transition(actor, snap, cmd)
+//!     }
+//!
+//!     fn apply(snap: &Snapshot, w: &Option<Memory>) -> Snapshot {
+//!         kernel::apply(snap, w)
+//!     }
+//! }
+//! ```
 
 use std::collections::HashMap;
 use std::sync::Mutex;

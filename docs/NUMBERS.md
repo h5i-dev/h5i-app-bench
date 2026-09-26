@@ -18,6 +18,23 @@ encoding and decoding, and scoped loads. The part comparable to Kellnr and
 Atuin (spec, authorization, replies, invariants) is 865 Lean lines, about 1.3
 per kernel line once those features' kernel code is set aside.
 
+For the document service, each feature added after the shared library
+existed cost the following (lines of Rust kernel, Lean specification and Lean
+proof):
+
+| Feature | Kernel | Spec | Proofs |
+|---|---|---|---|
+| Webhooks and effects | 82 | 17 | 101 |
+| Partial snapshots (`read_scope`, `Frame.lean`) | 32 | 0 | 160 |
+| Invariant checker (`check_inv`, `Check.lean`) | 167 | 0 | 292 |
+| Row encoding (`sql_writes`, `Storage.lean`) | 58 | 40 | 239 |
+| Row decoding (`decode`, `Load.lean`) | 61 | 26 | 411 |
+| Scoped loads (`scoped_project`, `Scoped.lean`) | 17 | 20 | 211 |
+
+The generated `Schema.lean` (155 lines) replaced about 170 hand-written lines
+in `Storage.lean` and `Load.lean`, and the application writes 31 lines of
+`Columns.lean` for its two enums.
+
 Shared, written once:
 
 | Piece | Rust | Lean |

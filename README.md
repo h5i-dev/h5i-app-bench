@@ -1,105 +1,80 @@
-# i5h (icefish)
+# i5h
 
-A Rust web framework where the part that decides who may do what is proven
-correct in Lean 4.
+`i5h` (pronounced "icefish") is a Rust web framework in which the part of an
+application that decides who may do what is proven correct in Lean 4.
 
-An i5h app has two halves:
+## High level features
 
-- a **kernel**: one pure function `transition(actor, snapshot, command) ->
-  (writes, reply)`, written in plain Rust that [Aeneas](https://github.com/AeneasVerif/aeneas)
-  translates to Lean. Permission checks and business rules live here, and the
-  theorems are about this translated code.
-- a **shell**: axum routes, authentication, PostgreSQL. The shell loads the
-  caller's tenant snapshot, runs the kernel, and commits the writes in one
-  SERIALIZABLE transaction. App code never gets a database handle.
+- Write the application logic as a single pure function in ordinary Rust, and
+  prove theorems about the code that actually runs, because
+  [Aeneas](https://github.com/AeneasVerif/aeneas) translates that Rust to Lean.
+- Serve the application with [axum](https://github.com/tokio-rs/axum): an
+  extractor authenticates the caller and `I5h::respond` runs the command, so
+  handlers never hold a database connection.
+- Store state in PostgreSQL through an engine that runs each request in a
+  SERIALIZABLE transaction, retries on conflict, and runs a command at most
+  once per idempotency key.
+- Declare table rows once with `schema!`, which generates the Rust structs, the
+  table mappings, and the Lean definitions for their SQL encoding.
 
-```
-HTTP (axum) ──► Actor<K> ──► I5h::respond ──► Engine: BEGIN, load, transition, write, COMMIT
-                                                              │
-                                                  kernel (Rust) ══ Aeneas ══► Lean proofs
-```
+## Usage example
 
-## What is proven
+The kernel is one function that decides what a command does. This one, from
+the calculator tutorial, keeps one number per user:
 
-For the example app in `examples/docs` (projects, members, documents with a
-review workflow), for every actor, state and command:
-
-- every committed write is allowed by the policy table, including the
-  four-eyes rule and the status workflow;
-- replies contain only documents the caller may read;
-- every reachable state keeps its invariants (an owner per project, valid
-  references, unique keys, approver rules);
-- noninterference: a user's result, including error codes, depends only on
-  what that user may see;
-- effects (webhooks) go only to the destination the project registered,
-  and only when a writer publishes an approved document;
-- a command's result depends only on one project's rows, so the server loads
-  just those instead of the whole tenant;
-- the invariant checker migrations run is exact: true iff the invariants hold;
-- the kernel never panics.
-
-The shell is proven where it can be: the SQL statement planner
-(`crates/i5h-sql`), the token parser and encoder (`crates/i5h-token`), the JSON
-reply writer (`crates/i5h-json`), and a model of the engine's retry and
-idempotency protocol (`lean/`), which engine traces are checked against.
-[`docs/TRUST.md`](docs/TRUST.md) lists what is proven, what is enforced by
-structure, and what is still trusted.
-
-`examples/kellnr` applies this to a real bug: Kellnr's authorization before and
-after PR #1243. Lean proves the fixed code keeps read-only users from changing
-anything, and proves the old code wrong with a concrete counterexample.
-`examples/atuin` ports the Atuin sync server's account and record rules:
-user isolation and clean account deletion are proven, and for its open issue
-#3297 Lean shows today's code lets a session delete an account without the
-password.
-
-## Layout
-
-| Path | Contents |
-|---|---|
-| `crates/i5h` | `Kernel` trait, in-memory reference engine, proof library `I5hLib` |
-| `crates/i5h-pg` | PostgreSQL engine: tenant-scoped snapshots, retries, idempotency, role lockdown |
-| `crates/i5h-http` | axum integration: `Actor` extractor, `I5h::respond`, `rpc_router` |
-| `crates/i5h-schema` | `schema!`: declare kernel rows once, get the structs, their table mappings, their SQL encoding, and the Lean spec and lemmas for that encoding |
-| `crates/i5h-sql`, `i5h-token`, `i5h-json` | extracted and proven shell pieces |
-| `examples/docs` | example kernel, server, and proofs |
-| `examples/kellnr` | Kellnr authorization port |
-| `examples/atuin` | Atuin sync server account and record port |
-| `lean/` | engine protocol model and trace checker |
-| `docs/` | [`ROADMAP.md`](docs/ROADMAP.md), [`TRUST.md`](docs/TRUST.md), [`TARGETS.md`](docs/TARGETS.md), [`NUMBERS.md`](docs/NUMBERS.md) |
-
-Each proof project (`*/proofs`) keeps generated Lean apart from what people
-write: `generated/` holds the extracted Rust and the `schema!` output, which
-tools rewrite and CI checks for drift; the top level holds the hand-written
-spec and proofs.
-
-## Running the example
-
-```
-docker run -d -p 127.0.0.1:55432:5432 -e POSTGRES_USER=i5h -e POSTGRES_PASSWORD=i5h postgres:17
-export DATABASE_URL=postgres://i5h:i5h@127.0.0.1:55432/i5h I5H_SECRET=dev-secret
-I5H_ISSUE=1:1 cargo run -p docs-server        # prints a token for org 1, user 1
-cargo run -p docs-server                      # serves on 127.0.0.1:8080
-curl -H "Authorization: Bearer <token>" -d '{"cmd":"create_project","name":"p"}' localhost:8080/rpc
+```rust
+pub fn transition(actor: &Principal, snap: &Snapshot, cmd: &Command) -> Result<(Option<Memory>, Reply), Error> {
+    match cmd {
+        Command::Set { value } => Ok((Some(Memory { user: actor.user, value: *value }), Reply::Value(*value))),
+        Command::Apply { op, arg } => {
+            let m = memory_of(&snap.memories, actor.user);
+            match compute(*op, m, *arg) {
+                Ok(v) => Ok((Some(Memory { user: actor.user, value: v }), Reply::Value(v))),
+                Err(e) => Err(e),
+            }
+        }
+        Command::Get => Ok((None, Reply::Value(memory_of(&snap.memories, actor.user)))),
+    }
+}
 ```
 
-## Verifying
+The server around it is an ordinary axum application:
 
-`cargo i5h-verify` runs the same checks as CI:
+```rust
+let engine = Arc::new(Engine::<Calc, CalcStore>::new(pool(&url, 8)?, EngineConfig::default()));
+engine.install_schema().await?;
+let app = I5h::new(engine, HmacAuth::<Calc>::new(secret, principal));
+let router = Router::new().route("/healthz", get(|| async { "ok" })).merge(rpc_router(app));
+axum::serve(TcpListener::bind("127.0.0.1:8080").await?, router).await?;
+```
 
-- Rust tests (set `I5H_TEST_DATABASE_URL`),
-- `cargo deny check bans` (only `i5h-pg` may use a database driver),
-- re-extraction of every kernel with Charon and Aeneas, failing on drift,
-- `lake build` of every proof project, rejecting `sorry`, `native_decide`
-  and `axiom`, and checking that the main theorems use only Lean's standard
-  axioms.
+After the kernel is translated to Lean, you can prove properties of it, for
+example that after any successful command a `get` by the same user returns its
+result:
 
-`cargo i5h-verify --full` adds:
+```lean
+theorem get_after (a : Principal) (s s' : Snapshot) (c : Command) (w : Option Memory) (v : U64)
+    (hroom : s.memories.length < Usize.max)
+    (ht : transition a s c = ok (.Ok (w, .Value v))) (hs : apply s w = ok s') :
+    transition a s' .Get = ok (.Ok (none, .Value v))
+```
 
-- the mutation suite (injected kernel bugs must break a proof),
-- the Rust-vs-Lean differential test,
-- the engine trace check.
+The [calculator tutorial](examples/tutorials/calculator/TUTORIAL.md) builds
+this application and its proofs step by step.
 
-Toolchain: Rust stable, [elan](https://github.com/leanprover/elan) (Lean
-v4.31.0), and for extraction Charon and Aeneas at the commit pinned in the
-proof lakefiles. Tools that are missing are reported as skipped, not passed.
+## Examples
+
+The [examples](examples) folder contains the [tutorials](examples/tutorials),
+a document service with projects, members and a review workflow, and ports of
+the authorization rules of [Kellnr](https://github.com/kellnr/kellnr) and
+[Atuin](https://github.com/atuinsh/atuin). Each example has its own README
+describing what its proofs cover.
+
+## Design
+
+[`docs/DESIGN.md`](docs/DESIGN.md) describes how i5h is structured and what is
+proven, and [`docs/TRUST.md`](docs/TRUST.md) lists what the proofs rely on.
+
+## License
+
+This project is licensed under the [Apache-2.0 license](LICENSE).
