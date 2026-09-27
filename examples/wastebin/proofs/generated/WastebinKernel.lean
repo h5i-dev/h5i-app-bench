@@ -19,15 +19,237 @@ set_option maxRecDepth 2048
 
 namespace wastebin_kernel
 
-/-- [wastebin_kernel::Counter]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 43:12-46:13
+/-- [i5h_sql::Val]
+    Source: 'crates/i5h-sql/src/lib.rs', lines 8:0-8:12
+    Name pattern: [i5h_sql::Val]
     Visibility: public -/
-structure Counter where
-  next_id : Std.U64
-  last_uid : Std.U64
+@[discriminant isize, rust_type "i5h_sql::Val"]
+inductive i5h_sql.Val where
+| Int : Std.I64 → i5h_sql.Val
+| Bool : Bool → i5h_sql.Val
+| Text : alloc.vec.Vec Std.U8 → i5h_sql.Val
+| Bytes : alloc.vec.Vec Std.U8 → i5h_sql.Val
+| Null : i5h_sql.Val
+
+/-- Trait declaration: [i5h_sql::Column]
+    Source: 'crates/i5h-sql/src/lib.rs', lines 19:0-19:23
+    Name pattern: [i5h_sql::Column]
+    Visibility: public -/
+@[rust_trait "i5h_sql::Column"]
+structure i5h_sql.Column (Self : Type) where
+  to_val : Self → Result i5h_sql.Val
+  from_val : i5h_sql.Val → Result (Option Self)
+
+/-- [i5h_sql::{impl i5h_sql::Column for u64}::from_val]:
+    Source: 'crates/i5h-sql/src/lib.rs', lines 28:4-28:39
+    Name pattern: [i5h_sql::{i5h_sql::Column<u64>}::from_val]
+    Visibility: public -/
+@[rust_fun "i5h_sql::{i5h_sql::Column<u64>}::from_val"]
+def U64.Insts.I5h_sqlColumn.from_val
+  (v : i5h_sql.Val) : Result (Option Std.U64) := do
+  match v with
+  | i5h_sql.Val.Int i => let i1 ← lift (IScalar.hcast .U64 i)
+                         ok (some i1)
+  | i5h_sql.Val.Bool _ => ok none
+  | i5h_sql.Val.Text _ => ok none
+  | i5h_sql.Val.Bytes _ => ok none
+  | i5h_sql.Val.Null => ok none
+
+/-- [i5h_sql::{impl i5h_sql::Column for u64}::to_val]:
+    Source: 'crates/i5h-sql/src/lib.rs', lines 25:4-25:27
+    Name pattern: [i5h_sql::{i5h_sql::Column<u64>}::to_val]
+    Visibility: public -/
+@[rust_fun "i5h_sql::{i5h_sql::Column<u64>}::to_val"]
+def U64.Insts.I5h_sqlColumn.to_val (self : Std.U64) : Result i5h_sql.Val := do
+  let i ← lift (UScalar.hcast .I64 self)
+  ok (i5h_sql.Val.Int i)
+
+/-- Trait implementation: [i5h_sql::{impl i5h_sql::Column for u64}]
+    Source: 'crates/i5h-sql/src/lib.rs', lines 24:0-24:19
+    Name pattern: [i5h_sql::Column<u64>] -/
+@[reducible, rust_trait_impl "i5h_sql::Column<u64>"]
+def U64.Insts.I5h_sqlColumn : i5h_sql.Column Std.U64 := {
+  to_val := U64.Insts.I5h_sqlColumn.to_val
+  from_val := U64.Insts.I5h_sqlColumn.from_val
+}
+
+/-- [i5h_sql::{impl i5h_sql::Column for bool}::to_val]:
+    Source: 'crates/i5h-sql/src/lib.rs', lines 55:4-55:27
+    Name pattern: [i5h_sql::{i5h_sql::Column<bool>}::to_val]
+    Visibility: public -/
+@[rust_fun "i5h_sql::{i5h_sql::Column<bool>}::to_val"]
+def Bool.Insts.I5h_sqlColumn.to_val (self : Bool) : Result i5h_sql.Val := do
+  ok (i5h_sql.Val.Bool self)
+
+/-- [i5h_sql::{impl i5h_sql::Column for bool}::from_val]:
+    Source: 'crates/i5h-sql/src/lib.rs', lines 58:4-58:40
+    Name pattern: [i5h_sql::{i5h_sql::Column<bool>}::from_val]
+    Visibility: public -/
+@[rust_fun "i5h_sql::{i5h_sql::Column<bool>}::from_val"]
+def Bool.Insts.I5h_sqlColumn.from_val
+  (v : i5h_sql.Val) : Result (Option Bool) := do
+  match v with
+  | i5h_sql.Val.Int _ => ok none
+  | i5h_sql.Val.Bool b => ok (some b)
+  | i5h_sql.Val.Text _ => ok none
+  | i5h_sql.Val.Bytes _ => ok none
+  | i5h_sql.Val.Null => ok none
+
+/-- [i5h_sql::{impl i5h_sql::Column for alloc::vec::Vec<u8>}::to_val]:
+    Source: 'crates/i5h-sql/src/lib.rs', lines 67:4-67:27
+    Name pattern: [i5h_sql::{i5h_sql::Column<alloc::vec::Vec<u8>>}::to_val]
+    Visibility: public -/
+@[rust_fun "i5h_sql::{i5h_sql::Column<alloc::vec::Vec<u8>>}::to_val"]
+def alloc.vec.VecU8.Insts.I5h_sqlColumn.to_val
+  (self : alloc.vec.Vec Std.U8) : Result i5h_sql.Val := do
+  let v ← alloc.vec.CloneVec.clone core.clone.CloneU8 self
+  ok (i5h_sql.Val.Bytes v)
+
+/-- [i5h_sql::{impl i5h_sql::Column for alloc::vec::Vec<u8>}::from_val]:
+    Source: 'crates/i5h-sql/src/lib.rs', lines 70:4-70:43
+    Name pattern: [i5h_sql::{i5h_sql::Column<alloc::vec::Vec<u8>>}::from_val]
+    Visibility: public -/
+@[rust_fun "i5h_sql::{i5h_sql::Column<alloc::vec::Vec<u8>>}::from_val"]
+def alloc.vec.VecU8.Insts.I5h_sqlColumn.from_val
+  (v : i5h_sql.Val) : Result (Option (alloc.vec.Vec Std.U8)) := do
+  match v with
+  | i5h_sql.Val.Int _ => ok none
+  | i5h_sql.Val.Bool _ => ok none
+  | i5h_sql.Val.Text _ => ok none
+  | i5h_sql.Val.Bytes b =>
+    let v1 ← alloc.vec.CloneVec.clone core.clone.CloneU8 b
+    ok (some v1)
+  | i5h_sql.Val.Null => ok none
+
+/-- [i5h_sql::{impl i5h_sql::Column for core::option::Option<T>}::to_val]:
+    Source: 'crates/i5h-sql/src/lib.rs', lines 80:4-80:27
+    Name pattern: [i5h_sql::{i5h_sql::Column<core::option::Option<@T>>}::to_val]
+    Visibility: public -/
+@[rust_fun "i5h_sql::{i5h_sql::Column<core::option::Option<@T>>}::to_val"]
+def core.option.Option.Insts.I5h_sqlColumn.to_val
+  {T : Type} (ColumnInst : i5h_sql.Column T) (self : Option T) :
+  Result i5h_sql.Val
+  := do
+  match self with
+  | none => ok i5h_sql.Val.Null
+  | some x => ColumnInst.to_val x
+
+/-- [i5h_sql::{impl i5h_sql::Column for core::option::Option<T>}::from_val]:
+    Source: 'crates/i5h-sql/src/lib.rs', lines 86:4-86:45
+    Name pattern: [i5h_sql::{i5h_sql::Column<core::option::Option<@T>>}::from_val]
+    Visibility: public -/
+@[rust_fun "i5h_sql::{i5h_sql::Column<core::option::Option<@T>>}::from_val"]
+def core.option.Option.Insts.I5h_sqlColumn.from_val
+  {T : Type} (ColumnInst : i5h_sql.Column T) (v : i5h_sql.Val) :
+  Result (Option (Option T))
+  := do
+  match v with
+  | i5h_sql.Val.Int _ =>
+    let o ← ColumnInst.from_val v
+    match o with
+    | none => ok none
+    | some _ => ok (some o)
+  | i5h_sql.Val.Bool _ =>
+    let o ← ColumnInst.from_val v
+    match o with
+    | none => ok none
+    | some _ => ok (some o)
+  | i5h_sql.Val.Text _ =>
+    let o ← ColumnInst.from_val v
+    match o with
+    | none => ok none
+    | some _ => ok (some o)
+  | i5h_sql.Val.Bytes _ =>
+    let o ← ColumnInst.from_val v
+    match o with
+    | none => ok none
+    | some _ => ok (some o)
+  | i5h_sql.Val.Null => ok (some none)
+
+/-- [i5h_sql::{impl i5h_sql::Zero for u64}::zero]:
+    Source: 'crates/i5h-sql/src/lib.rs', lines 104:4-104:20
+    Name pattern: [i5h_sql::{i5h_sql::Zero<u64>}::zero]
+    Visibility: public -/
+@[rust_fun "i5h_sql::{i5h_sql::Zero<u64>}::zero"]
+def U64.Insts.I5h_sqlZero.zero : Result Std.U64 := do
+  ok 0#u64
+
+/-- [i5h_sql::val_eq]:
+    Source: 'crates/i5h-sql/src/lib.rs', lines 134:0-134:39
+    Name pattern: [i5h_sql::val_eq]
+    Visibility: public -/
+@[rust_fun "i5h_sql::val_eq"]
+def i5h_sql.val_eq (a : i5h_sql.Val) (b : i5h_sql.Val) : Result Bool := do
+  match a with
+  | i5h_sql.Val.Int x =>
+    match b with
+    | i5h_sql.Val.Int y => ok (x = y)
+    | i5h_sql.Val.Bool _ => ok false
+    | i5h_sql.Val.Text _ => ok false
+    | i5h_sql.Val.Bytes _ => ok false
+    | i5h_sql.Val.Null => ok false
+  | i5h_sql.Val.Bool x =>
+    match b with
+    | i5h_sql.Val.Int _ => ok false
+    | i5h_sql.Val.Bool y => ok (x = y)
+    | i5h_sql.Val.Text _ => ok false
+    | i5h_sql.Val.Bytes _ => ok false
+    | i5h_sql.Val.Null => ok false
+  | i5h_sql.Val.Text x =>
+    match b with
+    | i5h_sql.Val.Int _ => ok false
+    | i5h_sql.Val.Bool _ => ok false
+    | i5h_sql.Val.Text y =>
+      alloc.vec.partial_eq.PartialEqVec.eq core.cmp.PartialEqU8 x y
+    | i5h_sql.Val.Bytes _ => ok false
+    | i5h_sql.Val.Null => ok false
+  | i5h_sql.Val.Bytes x =>
+    match b with
+    | i5h_sql.Val.Int _ => ok false
+    | i5h_sql.Val.Bool _ => ok false
+    | i5h_sql.Val.Text _ => ok false
+    | i5h_sql.Val.Bytes y =>
+      alloc.vec.partial_eq.PartialEqVec.eq core.cmp.PartialEqU8 x y
+    | i5h_sql.Val.Null => ok false
+  | i5h_sql.Val.Null =>
+    match b with
+    | i5h_sql.Val.Int _ => ok false
+    | i5h_sql.Val.Bool _ => ok false
+    | i5h_sql.Val.Text _ => ok false
+    | i5h_sql.Val.Bytes _ => ok false
+    | i5h_sql.Val.Null => ok true
+
+/-- [i5h_sql::has_col]:
+    Source: 'crates/i5h-sql/src/lib.rs', lines 160:0-160:59
+    Name pattern: [i5h_sql::has_col]
+    Visibility: public -/
+@[rust_fun "i5h_sql::has_col"]
+def i5h_sql.has_col
+  (row : alloc.vec.Vec i5h_sql.Val) (col : Std.U32) (val : i5h_sql.Val) :
+  Result Bool
+  := do
+  let i ← lift (UScalar.cast .Usize col)
+  let i1 := alloc.vec.Vec.len row
+  if i < i1
+  then
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice i5h_sql.Val)
+        row i
+    i5h_sql.val_eq v val
+  else ok false
+
+/-- [i5h_sql::Write]
+    Source: 'crates/i5h-sql/src/lib.rs', lines 171:0-171:14
+    Name pattern: [i5h_sql::Write]
+    Visibility: public -/
+@[discriminant isize, rust_type "i5h_sql::Write"]
+inductive i5h_sql.Write where
+| Put : Std.U32 → Std.U32 → alloc.vec.Vec i5h_sql.Val → i5h_sql.Write
+| Del : Std.U32 → alloc.vec.Vec i5h_sql.Val → i5h_sql.Write
+| DelWhere : Std.U32 → Std.U32 → i5h_sql.Val → i5h_sql.Write
 
 /-- [wastebin_kernel::Paste]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 43:12-46:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 111:12-114:13
     Visibility: public -/
 structure Paste where
   id : Std.U64
@@ -38,6 +260,665 @@ structure Paste where
   burn : Bool
   lock : Option Std.U64
 
+/-- [wastebin_kernel::Counter]
+    Source: 'crates/i5h-schema/src/lib.rs', lines 111:12-114:13
+    Visibility: public -/
+structure Counter where
+  next_id : Std.U64
+  last_uid : Std.U64
+
+/-- [wastebin_kernel::{wastebin_kernel::Paste}::TABLE]
+    Source: 'crates/i5h-schema/src/lib.rs', lines 132:12-132:60
+    Visibility: public -/
+@[global_simps, irreducible] def Paste.TABLE : Std.U32 := 0#u32
+
+/-- [wastebin_kernel::{wastebin_kernel::Counter}::TABLE]
+    Source: 'crates/i5h-schema/src/lib.rs', lines 132:12-132:60
+    Visibility: public -/
+@[global_simps, irreducible] def Counter.TABLE : Std.U32 := 1#u32
+
+/-- [wastebin_kernel::{wastebin_kernel::Paste}::KEY_LEN]
+    Source: 'crates/i5h-schema/src/lib.rs', lines 133:12-133:62
+    Visibility: public -/
+@[global_simps, irreducible] def Paste.KEY_LEN : Std.U32 := 1#u32
+
+/-- [wastebin_kernel::{wastebin_kernel::Counter}::KEY_LEN]
+    Source: 'crates/i5h-schema/src/lib.rs', lines 133:12-133:62
+    Visibility: public -/
+@[global_simps, irreducible] def Counter.KEY_LEN : Std.U32 := 0#u32
+
+/-- [wastebin_kernel::{wastebin_kernel::Paste}::to_row]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 135:12-140:13
+    Visibility: public -/
+def Paste.to_row (self : Paste) : Result (alloc.vec.Vec i5h_sql.Val) := do
+  let v ← U64.Insts.I5h_sqlColumn.to_val self.id
+  let out ← alloc.vec.Vec.push (alloc.vec.Vec.new i5h_sql.Val) v
+  let v1 ← U64.Insts.I5h_sqlColumn.to_val self.slug
+  let out1 ← alloc.vec.Vec.push out v1
+  let v2 ← U64.Insts.I5h_sqlColumn.to_val self.owner
+  let out2 ← alloc.vec.Vec.push out1 v2
+  let v3 ← alloc.vec.VecU8.Insts.I5h_sqlColumn.to_val self.text
+  let out3 ← alloc.vec.Vec.push out2 v3
+  let v4 ←
+    core.option.Option.Insts.I5h_sqlColumn.to_val U64.Insts.I5h_sqlColumn
+      self.expires
+  let out4 ← alloc.vec.Vec.push out3 v4
+  let v5 ← Bool.Insts.I5h_sqlColumn.to_val self.burn
+  let out5 ← alloc.vec.Vec.push out4 v5
+  let v6 ←
+    core.option.Option.Insts.I5h_sqlColumn.to_val U64.Insts.I5h_sqlColumn
+      self.lock
+  alloc.vec.Vec.push out5 v6
+
+/-- [wastebin_kernel::{wastebin_kernel::Counter}::to_row]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 135:12-140:13
+    Visibility: public -/
+def Counter.to_row (self : Counter) : Result (alloc.vec.Vec i5h_sql.Val) := do
+  let v ← U64.Insts.I5h_sqlColumn.to_val self.next_id
+  let out ← alloc.vec.Vec.push (alloc.vec.Vec.new i5h_sql.Val) v
+  let v1 ← U64.Insts.I5h_sqlColumn.to_val self.last_uid
+  alloc.vec.Vec.push out v1
+
+/-- [wastebin_kernel::{wastebin_kernel::Counter}::from_row]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 143:12-164:13
+    Visibility: public -/
+def Counter.from_row
+  (row : alloc.vec.Vec i5h_sql.Val) : Result (Option Counter) := do
+  let i := alloc.vec.Vec.len row
+  let i1 ← 0#usize + 1#usize
+  let i2 ← i1 + 1#usize
+  if i != i2
+  then ok none
+  else
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice i5h_sql.Val)
+        row 0#usize
+    let o ← U64.Insts.I5h_sqlColumn.from_val v
+    match o with
+    | none => ok none
+    | some x =>
+      let v1 ←
+        alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice i5h_sql.Val)
+          row i1
+      let o1 ← U64.Insts.I5h_sqlColumn.from_val v1
+      match o1 with
+      | none => ok none
+      | some x1 =>
+        let _ ← i1 + 1#usize
+        ok (some { next_id := x, last_uid := x1 })
+
+/-- [wastebin_kernel::{wastebin_kernel::Paste}::from_row]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 143:12-164:13
+    Visibility: public -/
+def Paste.from_row
+  (row : alloc.vec.Vec i5h_sql.Val) : Result (Option Paste) := do
+  let i := alloc.vec.Vec.len row
+  let i1 ← 0#usize + 1#usize
+  let i2 ← i1 + 1#usize
+  let i3 ← i2 + 1#usize
+  let i4 ← i3 + 1#usize
+  let i5 ← i4 + 1#usize
+  let i6 ← i5 + 1#usize
+  let i7 ← i6 + 1#usize
+  if i != i7
+  then ok none
+  else
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice i5h_sql.Val)
+        row 0#usize
+    let o ← U64.Insts.I5h_sqlColumn.from_val v
+    match o with
+    | none => ok none
+    | some x =>
+      let v1 ←
+        alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice i5h_sql.Val)
+          row i1
+      let o1 ← U64.Insts.I5h_sqlColumn.from_val v1
+      match o1 with
+      | none => ok none
+      | some x1 =>
+        let i8 ← i1 + 1#usize
+        let v2 ←
+          alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+            i5h_sql.Val) row i8
+        let o2 ← U64.Insts.I5h_sqlColumn.from_val v2
+        match o2 with
+        | none => ok none
+        | some x2 =>
+          let i9 ← i8 + 1#usize
+          let v3 ←
+            alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+              i5h_sql.Val) row i9
+          let o3 ← alloc.vec.VecU8.Insts.I5h_sqlColumn.from_val v3
+          match o3 with
+          | none => ok none
+          | some x3 =>
+            let i10 ← i9 + 1#usize
+            let v4 ←
+              alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+                i5h_sql.Val) row i10
+            let o4 ←
+              core.option.Option.Insts.I5h_sqlColumn.from_val
+                U64.Insts.I5h_sqlColumn v4
+            match o4 with
+            | none => ok none
+            | some x4 =>
+              let i11 ← i10 + 1#usize
+              let v5 ←
+                alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+                  i5h_sql.Val) row i11
+              let o5 ← Bool.Insts.I5h_sqlColumn.from_val v5
+              match o5 with
+              | none => ok none
+              | some x5 =>
+                let i12 ← i11 + 1#usize
+                let v6 ←
+                  alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+                    i5h_sql.Val) row i12
+                let o6 ←
+                  core.option.Option.Insts.I5h_sqlColumn.from_val
+                    U64.Insts.I5h_sqlColumn v6
+                match o6 with
+                | none => ok none
+                | some x6 =>
+                  let _ ← i12 + 1#usize
+                  ok (some
+                    {
+                      id := x,
+                      slug := x1,
+                      owner := x2,
+                      text := x3,
+                      expires := x4,
+                      burn := x5,
+                      lock := x6
+                    })
+
+/-- [wastebin_kernel::{wastebin_kernel::Paste}::from_rows]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Visibility: public -/
+@[rust_loop_body]
+def Paste.from_rows_loop.body
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val))
+  (out : alloc.vec.Vec Paste) (ok1 : Bool) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Paste) × Bool × Std.Usize)
+    ((alloc.vec.Vec Paste) × Bool))
+  := do
+  let i1 := alloc.vec.Vec.len rows
+  if i < i1
+  then
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice (alloc.vec.Vec
+        i5h_sql.Val)) rows i
+    let o ← Paste.from_row v
+    let (out1, ok2) ←
+      match o with
+      | none => ok (out, false)
+      | some x => do
+                  let out2 ← alloc.vec.Vec.push out x
+                  ok (out2, ok1)
+    let i2 ← i + 1#usize
+    ok (cont (out1, ok2, i2))
+  else ok (done (out, ok1))
+
+/-- [wastebin_kernel::{wastebin_kernel::Paste}::from_rows]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Visibility: public -/
+@[rust_loop]
+def Paste.from_rows_loop
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val))
+  (out : alloc.vec.Vec Paste) (ok1 : Bool) (i : Std.Usize) :
+  Result ((alloc.vec.Vec Paste) × Bool)
+  := do
+  loop
+    (fun (out1, ok2, i1) => Paste.from_rows_loop.body rows out1 ok2 i1)
+    (out, ok1, i)
+
+/-- [wastebin_kernel::{wastebin_kernel::Paste}::from_rows]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 167:12-183:13
+    Visibility: public -/
+def Paste.from_rows
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)) :
+  Result (Option (alloc.vec.Vec Paste))
+  := do
+  let (out, ok1) ←
+    Paste.from_rows_loop rows (alloc.vec.Vec.new Paste) true 0#usize
+  if ok1
+  then ok (some out)
+  else ok none
+
+/-- [wastebin_kernel::{wastebin_kernel::Counter}::from_rows]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Visibility: public -/
+@[rust_loop_body]
+def Counter.from_rows_loop.body
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val))
+  (out : alloc.vec.Vec Counter) (ok1 : Bool) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Counter) × Bool × Std.Usize)
+    ((alloc.vec.Vec Counter) × Bool))
+  := do
+  let i1 := alloc.vec.Vec.len rows
+  if i < i1
+  then
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice (alloc.vec.Vec
+        i5h_sql.Val)) rows i
+    let o ← Counter.from_row v
+    let (out1, ok2) ←
+      match o with
+      | none => ok (out, false)
+      | some x => do
+                  let out2 ← alloc.vec.Vec.push out x
+                  ok (out2, ok1)
+    let i2 ← i + 1#usize
+    ok (cont (out1, ok2, i2))
+  else ok (done (out, ok1))
+
+/-- [wastebin_kernel::{wastebin_kernel::Counter}::from_rows]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Visibility: public -/
+@[rust_loop]
+def Counter.from_rows_loop
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val))
+  (out : alloc.vec.Vec Counter) (ok1 : Bool) (i : Std.Usize) :
+  Result ((alloc.vec.Vec Counter) × Bool)
+  := do
+  loop
+    (fun (out1, ok2, i1) => Counter.from_rows_loop.body rows out1 ok2 i1)
+    (out, ok1, i)
+
+/-- [wastebin_kernel::{wastebin_kernel::Counter}::from_rows]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 167:12-183:13
+    Visibility: public -/
+def Counter.from_rows
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)) :
+  Result (Option (alloc.vec.Vec Counter))
+  := do
+  let (out, ok1) ←
+    Counter.from_rows_loop rows (alloc.vec.Vec.new Counter) true 0#usize
+  if ok1
+  then ok (some out)
+  else ok none
+
+/-- [wastebin_kernel::{wastebin_kernel::Paste}::sql_put]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 186:12-188:13
+    Visibility: public -/
+def Paste.sql_put (self : Paste) : Result i5h_sql.Write := do
+  let v ← Paste.to_row self
+  ok (i5h_sql.Write.Put Paste.TABLE Paste.KEY_LEN v)
+
+/-- [wastebin_kernel::{wastebin_kernel::Counter}::sql_put]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 186:12-188:13
+    Visibility: public -/
+def Counter.sql_put (self : Counter) : Result i5h_sql.Write := do
+  let v ← Counter.to_row self
+  ok (i5h_sql.Write.Put Counter.TABLE Counter.KEY_LEN v)
+
+/-- [wastebin_kernel::{wastebin_kernel::Counter}::from_one]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 203:12-211:13
+    Visibility: public -/
+def Counter.from_one
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)) :
+  Result (Option Counter)
+  := do
+  let i := alloc.vec.Vec.len rows
+  if i = 0#usize
+  then
+    let i1 ← U64.Insts.I5h_sqlZero.zero
+    ok (some { next_id := i1, last_uid := i1 })
+  else
+    let i1 := alloc.vec.Vec.len rows
+    if i1 = 1#usize
+    then
+      let v ←
+        alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+          (alloc.vec.Vec i5h_sql.Val)) rows 0#usize
+      Counter.from_row v
+    else ok none
+
+/-- [wastebin_kernel::{wastebin_kernel::Paste}::put]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 219:16-227:13
+    Visibility: public -/
+@[rust_loop_body]
+def Paste.put_loop.body
+  (v : alloc.vec.Vec Paste) (x : Paste) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize (alloc.vec.Vec Paste))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let p ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Paste) v i
+    if p.id = x.id
+    then
+      let (_, index_mut_back) ←
+        alloc.vec.Vec.index_mut (core.slice.index.SliceIndexUsizeSlice Paste) v
+          i
+      let v1 := index_mut_back x
+      ok (done v1)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else let v1 ← alloc.vec.Vec.push v x
+       ok (done v1)
+
+/-- [wastebin_kernel::{wastebin_kernel::Paste}::put]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 219:16-227:13
+    Visibility: public -/
+@[rust_loop]
+def Paste.put_loop
+  (v : alloc.vec.Vec Paste) (x : Paste) (i : Std.Usize) :
+  Result (alloc.vec.Vec Paste)
+  := do
+  loop
+    (fun i1 => Paste.put_loop.body v x i1)
+    i
+
+/-- [wastebin_kernel::{wastebin_kernel::Paste}::put]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 217:12-227:13
+    Visibility: public -/
+@[reducible]
+def Paste.put
+  (v : alloc.vec.Vec Paste) (x : Paste) : Result (alloc.vec.Vec Paste) := do
+  Paste.put_loop v x 0#usize
+
+/-- [wastebin_kernel::{impl core::clone::Clone for wastebin_kernel::Paste}::clone]:
+    Source: 'examples/wastebin/kernel/src/lib.rs', lines 64:4-74:5
+    Visibility: public -/
+def Paste.Insts.CoreCloneClone.clone (self : Paste) : Result Paste := do
+  let v ← alloc.vec.CloneVec.clone core.clone.CloneU8 self.text
+  ok { self with text := v }
+
+/-- [wastebin_kernel::{wastebin_kernel::Paste}::del]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 233:16-238:17
+    Visibility: public -/
+@[rust_loop_body]
+def Paste.del_loop.body
+  (v : alloc.vec.Vec Paste) (id : Std.U64) (out : alloc.vec.Vec Paste)
+  (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Paste) × Std.Usize) (alloc.vec.Vec
+    Paste))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let p ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Paste) v i
+    let out1 ←
+      if p.id = id
+      then ok out
+      else
+        do
+        let p1 ← Paste.Insts.CoreCloneClone.clone p
+        alloc.vec.Vec.push out p1
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
+  else ok (done out)
+
+/-- [wastebin_kernel::{wastebin_kernel::Paste}::del]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 233:16-238:17
+    Visibility: public -/
+@[rust_loop]
+def Paste.del_loop
+  (v : alloc.vec.Vec Paste) (id : Std.U64) (out : alloc.vec.Vec Paste)
+  (i : Std.Usize) :
+  Result (alloc.vec.Vec Paste)
+  := do
+  loop
+    (fun (out1, i1) => Paste.del_loop.body v id out1 i1)
+    (out, i)
+
+/-- [wastebin_kernel::{wastebin_kernel::Paste}::del]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 230:12-240:13
+    Visibility: public -/
+@[reducible]
+def Paste.del
+  (v : alloc.vec.Vec Paste) (id : Std.U64) : Result (alloc.vec.Vec Paste) := do
+  Paste.del_loop v id (alloc.vec.Vec.new Paste) 0#usize
+
+/-- [wastebin_kernel::{wastebin_kernel::Paste}::del_where]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 246:16-251:17
+    Visibility: public -/
+@[rust_loop_body]
+def Paste.del_where_loop.body
+  (v : alloc.vec.Vec Paste) (col : Std.U32) (val : i5h_sql.Val)
+  (out : alloc.vec.Vec Paste) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Paste) × Std.Usize) (alloc.vec.Vec
+    Paste))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let p ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Paste) v i
+    let v1 ← Paste.to_row p
+    let b ← i5h_sql.has_col v1 col val
+    let out1 ←
+      if b
+      then ok out
+      else
+        do
+        let p1 ← Paste.Insts.CoreCloneClone.clone p
+        alloc.vec.Vec.push out p1
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
+  else ok (done out)
+
+/-- [wastebin_kernel::{wastebin_kernel::Paste}::del_where]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 246:16-251:17
+    Visibility: public -/
+@[rust_loop]
+def Paste.del_where_loop
+  (v : alloc.vec.Vec Paste) (col : Std.U32) (val : i5h_sql.Val)
+  (out : alloc.vec.Vec Paste) (i : Std.Usize) :
+  Result (alloc.vec.Vec Paste)
+  := do
+  loop
+    (fun (out1, i1) => Paste.del_where_loop.body v col val out1 i1)
+    (out, i)
+
+/-- [wastebin_kernel::{wastebin_kernel::Paste}::del_where]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 243:12-253:13
+    Visibility: public -/
+@[reducible]
+def Paste.del_where
+  (v : alloc.vec.Vec Paste) (col : Std.U32) (val : i5h_sql.Val) :
+  Result (alloc.vec.Vec Paste)
+  := do
+  Paste.del_where_loop v col val (alloc.vec.Vec.new Paste) 0#usize
+
+/-- [wastebin_kernel::{wastebin_kernel::Paste}::sql_del]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 256:12-260:13
+    Visibility: public -/
+def Paste.sql_del (id : Std.U64) : Result i5h_sql.Write := do
+  let v ← U64.Insts.I5h_sqlColumn.to_val id
+  let key ← alloc.vec.Vec.push (alloc.vec.Vec.new i5h_sql.Val) v
+  ok (i5h_sql.Write.Del Paste.TABLE key)
+
+/-- [wastebin_kernel::{wastebin_kernel::Paste}::sql_del_where]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 263:12-265:13
+    Visibility: public -/
+def Paste.sql_del_where
+  (col : Std.U32) (val : i5h_sql.Val) : Result i5h_sql.Write := do
+  ok (i5h_sql.Write.DelWhere Paste.TABLE col val)
+
+/-- [wastebin_kernel::Snapshot]
+    Source: 'crates/i5h-schema/src/lib.rs', lines 278:8-280:9
+    Visibility: public -/
+structure Snapshot where
+  counter : Counter
+  pastes : alloc.vec.Vec Paste
+
+/-- [wastebin_kernel::Rows]
+    Source: 'crates/i5h-schema/src/lib.rs', lines 285:8-287:9
+    Visibility: public -/
+structure Rows where
+  counter : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)
+  pastes : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)
+
+/-- [wastebin_kernel::decode]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 290:8-298:9
+    Visibility: public -/
+def decode (r : Rows) : Result (Option Snapshot) := do
+  let o ← Counter.from_one r.counter
+  match o with
+  | none => ok none
+  | some x =>
+    let o1 ← Paste.from_rows r.pastes
+    match o1 with
+    | none => ok none
+    | some x1 => ok (some { counter := x, pastes := x1 })
+
+/-- [wastebin_kernel::Write]
+    Source: 'examples/wastebin/kernel/src/lib.rs', lines 92:0-96:1
+    Visibility: public -/
+@[discriminant isize]
+inductive Write where
+| PutPaste : Paste → Write
+| DelPaste : Std.U64 → Write
+| SetCounter : Counter → Write
+
+/-- [wastebin_kernel::apply_write]:
+    Source: 'examples/wastebin/kernel/src/lib.rs', lines 314:0-320:1 -/
+def apply_write (s : Snapshot) (w : Write) : Result Snapshot := do
+  match w with
+  | Write.PutPaste p =>
+    let v ← Paste.put s.pastes p
+    ok { s with pastes := v }
+  | Write.DelPaste id =>
+    let v ← Paste.del s.pastes id
+    ok { s with pastes := v }
+  | Write.SetCounter c => ok { s with counter := c }
+
+/-- [wastebin_kernel::{impl core::clone::Clone for wastebin_kernel::Counter}::clone]:
+    Source: 'examples/wastebin/kernel/src/lib.rs', lines 53:13-53:18
+    Visibility: public -/
+def Counter.Insts.CoreCloneClone.clone (self : Counter) : Result Counter := do
+  ok self
+
+/-- [wastebin_kernel::{impl core::clone::Clone for wastebin_kernel::Write}::clone]:
+    Source: 'examples/wastebin/kernel/src/lib.rs', lines 91:9-91:14
+    Visibility: public -/
+def Write.Insts.CoreCloneClone.clone (self : Write) : Result Write := do
+  match self with
+  | Write.PutPaste __self_0 =>
+    let p ← Paste.Insts.CoreCloneClone.clone __self_0
+    ok (Write.PutPaste p)
+  | Write.DelPaste __self_0 =>
+    let i ← lift (core.clone.impls.CloneU64.clone __self_0)
+    ok (Write.DelPaste i)
+  | Write.SetCounter __self_0 =>
+    let c ← Counter.Insts.CoreCloneClone.clone __self_0
+    ok (Write.SetCounter c)
+
+/-- Trait implementation: [wastebin_kernel::{impl core::clone::Clone for wastebin_kernel::Paste}]
+    Source: 'examples/wastebin/kernel/src/lib.rs', lines 63:0-75:1 -/
+@[reducible]
+def Paste.Insts.CoreCloneClone : core.clone.Clone Paste := {
+  clone := Paste.Insts.CoreCloneClone.clone
+}
+
+/-- [wastebin_kernel::{impl core::clone::Clone for wastebin_kernel::Snapshot}::clone]:
+    Source: 'examples/wastebin/kernel/src/lib.rs', lines 33:13-33:18
+    Visibility: public -/
+def Snapshot.Insts.CoreCloneClone.clone
+  (self : Snapshot) : Result Snapshot := do
+  let c ← Counter.Insts.CoreCloneClone.clone self.counter
+  let v ← alloc.vec.CloneVec.clone Paste.Insts.CoreCloneClone self.pastes
+  ok { counter := c, pastes := v }
+
+/-- [wastebin_kernel::apply]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 308:12-311:13
+    Visibility: public -/
+@[rust_loop_body]
+def apply_loop.body
+  (ws : alloc.vec.Vec Write) (s : Snapshot) (i : Std.Usize) :
+  Result (ControlFlow (Snapshot × Std.Usize) Snapshot)
+  := do
+  let i1 := alloc.vec.Vec.len ws
+  if i < i1
+  then
+    let w ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Write) ws i
+    let w1 ← Write.Insts.CoreCloneClone.clone w
+    let s1 ← apply_write s w1
+    let i2 ← i + 1#usize
+    ok (cont (s1, i2))
+  else ok (done s)
+
+/-- [wastebin_kernel::apply]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 308:12-311:13
+    Visibility: public -/
+@[rust_loop]
+def apply_loop
+  (ws : alloc.vec.Vec Write) (s : Snapshot) (i : Std.Usize) :
+  Result Snapshot
+  := do
+  loop
+    (fun (s1, i1) => apply_loop.body ws s1 i1)
+    (s, i)
+
+/-- [wastebin_kernel::apply]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 305:8-313:9
+    Visibility: public -/
+def apply (snap : Snapshot) (ws : alloc.vec.Vec Write) : Result Snapshot := do
+  let s ← Snapshot.Insts.CoreCloneClone.clone snap
+  apply_loop ws s 0#usize
+
+/-- [wastebin_kernel::sql_write]:
+    Source: 'examples/wastebin/kernel/src/lib.rs', lines 323:0-329:1 -/
+def sql_write
+  (w : Write) (out : alloc.vec.Vec i5h_sql.Write) :
+  Result (alloc.vec.Vec i5h_sql.Write)
+  := do
+  match w with
+  | Write.PutPaste p => let w1 ← Paste.sql_put p
+                        alloc.vec.Vec.push out w1
+  | Write.DelPaste id => let w1 ← Paste.sql_del id
+                         alloc.vec.Vec.push out w1
+  | Write.SetCounter c =>
+    let w1 ← Counter.sql_put c
+    alloc.vec.Vec.push out w1
+
+/-- [wastebin_kernel::sql_writes]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 320:12-323:13
+    Visibility: public -/
+@[rust_loop_body]
+def sql_writes_loop.body
+  (ws : alloc.vec.Vec Write) (out : alloc.vec.Vec i5h_sql.Write)
+  (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec i5h_sql.Write) × Std.Usize)
+    (alloc.vec.Vec i5h_sql.Write))
+  := do
+  let i1 := alloc.vec.Vec.len ws
+  if i < i1
+  then
+    let w ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Write) ws i
+    let out1 ← sql_write w out
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
+  else ok (done out)
+
+/-- [wastebin_kernel::sql_writes]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 320:12-323:13
+    Visibility: public -/
+@[rust_loop]
+def sql_writes_loop
+  (ws : alloc.vec.Vec Write) (out : alloc.vec.Vec i5h_sql.Write)
+  (i : Std.Usize) :
+  Result (alloc.vec.Vec i5h_sql.Write)
+  := do
+  loop
+    (fun (out1, i1) => sql_writes_loop.body ws out1 i1)
+    (out, i)
+
+/-- [wastebin_kernel::sql_writes]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 317:8-325:9
+    Visibility: public -/
+@[reducible]
+def sql_writes
+  (ws : alloc.vec.Vec Write) : Result (alloc.vec.Vec i5h_sql.Write) := do
+  sql_writes_loop ws (alloc.vec.Vec.new i5h_sql.Write) 0#usize
+
 /-- [wastebin_kernel::Principal]
     Source: 'examples/wastebin/kernel/src/lib.rs', lines 21:0-28:1
     Visibility: public -/
@@ -45,42 +926,6 @@ structure Principal where
   uids : alloc.vec.Vec Std.U64
   now : Std.U64
   fresh : Std.U64
-
-/-- [wastebin_kernel::{impl core::clone::Clone for wastebin_kernel::Counter}::clone]:
-    Source: 'examples/wastebin/kernel/src/lib.rs', lines 47:13-47:18
-    Visibility: public -/
-def Counter.Insts.CoreCloneClone.clone (self : Counter) : Result Counter := do
-  ok self
-
-/-- [wastebin_kernel::{impl core::clone::Clone for wastebin_kernel::Paste}::clone]:
-    Source: 'examples/wastebin/kernel/src/lib.rs', lines 58:4-68:5
-    Visibility: public -/
-def Paste.Insts.CoreCloneClone.clone (self : Paste) : Result Paste := do
-  let v ← alloc.vec.CloneVec.clone core.clone.CloneU8 self.text
-  ok { self with text := v }
-
-/-- Trait implementation: [wastebin_kernel::{impl core::clone::Clone for wastebin_kernel::Paste}]
-    Source: 'examples/wastebin/kernel/src/lib.rs', lines 57:0-69:1 -/
-@[reducible]
-def Paste.Insts.CoreCloneClone : core.clone.Clone Paste := {
-  clone := Paste.Insts.CoreCloneClone.clone
-}
-
-/-- [wastebin_kernel::Snapshot]
-    Source: 'examples/wastebin/kernel/src/lib.rs', lines 72:0-75:1
-    Visibility: public -/
-structure Snapshot where
-  counter : Counter
-  pastes : alloc.vec.Vec Paste
-
-/-- [wastebin_kernel::{impl core::clone::Clone for wastebin_kernel::Snapshot}::clone]:
-    Source: 'examples/wastebin/kernel/src/lib.rs', lines 71:9-71:14
-    Visibility: public -/
-def Snapshot.Insts.CoreCloneClone.clone
-  (self : Snapshot) : Result Snapshot := do
-  let c ← Counter.Insts.CoreCloneClone.clone self.counter
-  let v ← alloc.vec.CloneVec.clone Paste.Insts.CoreCloneClone self.pastes
-  ok { counter := c, pastes := v }
 
 /-- [wastebin_kernel::Command]
     Source: 'examples/wastebin/kernel/src/lib.rs', lines 78:0-89:1
@@ -97,30 +942,6 @@ inductive Command where
 | Fetch : Std.U64 → Option Std.U64 → Command
 | Delete : Std.U64 → Command
 | Purge : Command
-
-/-- [wastebin_kernel::Write]
-    Source: 'examples/wastebin/kernel/src/lib.rs', lines 92:0-96:1
-    Visibility: public -/
-@[discriminant isize]
-inductive Write where
-| PutPaste : Paste → Write
-| DelPaste : Std.U64 → Write
-| SetCounter : Counter → Write
-
-/-- [wastebin_kernel::{impl core::clone::Clone for wastebin_kernel::Write}::clone]:
-    Source: 'examples/wastebin/kernel/src/lib.rs', lines 91:9-91:14
-    Visibility: public -/
-def Write.Insts.CoreCloneClone.clone (self : Write) : Result Write := do
-  match self with
-  | Write.PutPaste __self_0 =>
-    let p ← Paste.Insts.CoreCloneClone.clone __self_0
-    ok (Write.PutPaste p)
-  | Write.DelPaste __self_0 =>
-    let i ← lift (core.clone.impls.CloneU64.clone __self_0)
-    ok (Write.DelPaste i)
-  | Write.SetCounter __self_0 =>
-    let c ← Counter.Insts.CoreCloneClone.clone __self_0
-    ok (Write.SetCounter c)
 
 /-- [wastebin_kernel::Shown]
     Source: 'examples/wastebin/kernel/src/lib.rs', lines 100:0-105:1
@@ -488,141 +1309,5 @@ def transition_pre190
   | Command.Fetch _ _ => transition a s cmd
   | Command.Delete _ => transition a s cmd
   | Command.Purge => transition a s Command.Purge
-
-/-- [wastebin_kernel::put_paste]: loop body 0:
-    Source: 'examples/wastebin/kernel/src/lib.rs', lines 314:4-322:1 -/
-@[rust_loop_body]
-def put_paste_loop.body
-  (v : alloc.vec.Vec Paste) (p : Paste) (i : Std.Usize) :
-  Result (ControlFlow Std.Usize (alloc.vec.Vec Paste))
-  := do
-  let i1 := alloc.vec.Vec.len v
-  if i < i1
-  then
-    let p1 ←
-      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Paste) v i
-    if p1.id = p.id
-    then
-      let (_, index_mut_back) ←
-        alloc.vec.Vec.index_mut (core.slice.index.SliceIndexUsizeSlice Paste) v
-          i
-      let v1 := index_mut_back p
-      ok (done v1)
-    else let i2 ← i + 1#usize
-         ok (cont i2)
-  else let v1 ← alloc.vec.Vec.push v p
-       ok (done v1)
-
-/-- [wastebin_kernel::put_paste]: loop 0:
-    Source: 'examples/wastebin/kernel/src/lib.rs', lines 314:4-322:1 -/
-@[rust_loop]
-def put_paste_loop
-  (v : alloc.vec.Vec Paste) (p : Paste) (i : Std.Usize) :
-  Result (alloc.vec.Vec Paste)
-  := do
-  loop
-    (fun i1 => put_paste_loop.body v p i1)
-    i
-
-/-- [wastebin_kernel::put_paste]:
-    Source: 'examples/wastebin/kernel/src/lib.rs', lines 312:0-322:1 -/
-@[reducible]
-def put_paste
-  (v : alloc.vec.Vec Paste) (p : Paste) : Result (alloc.vec.Vec Paste) := do
-  put_paste_loop v p 0#usize
-
-/-- [wastebin_kernel::del_paste]: loop body 0:
-    Source: 'examples/wastebin/kernel/src/lib.rs', lines 327:4-332:5 -/
-@[rust_loop_body]
-def del_paste_loop.body
-  (v : alloc.vec.Vec Paste) (id : Std.U64) (out : alloc.vec.Vec Paste)
-  (i : Std.Usize) :
-  Result (ControlFlow ((alloc.vec.Vec Paste) × Std.Usize) (alloc.vec.Vec
-    Paste))
-  := do
-  let i1 := alloc.vec.Vec.len v
-  if i < i1
-  then
-    let p ←
-      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Paste) v i
-    let out1 ←
-      if p.id != id
-      then
-        do
-        let p1 ← Paste.Insts.CoreCloneClone.clone p
-        alloc.vec.Vec.push out p1
-      else ok out
-    let i2 ← i + 1#usize
-    ok (cont (out1, i2))
-  else ok (done out)
-
-/-- [wastebin_kernel::del_paste]: loop 0:
-    Source: 'examples/wastebin/kernel/src/lib.rs', lines 327:4-332:5 -/
-@[rust_loop]
-def del_paste_loop
-  (v : alloc.vec.Vec Paste) (id : Std.U64) (out : alloc.vec.Vec Paste)
-  (i : Std.Usize) :
-  Result (alloc.vec.Vec Paste)
-  := do
-  loop
-    (fun (out1, i1) => del_paste_loop.body v id out1 i1)
-    (out, i)
-
-/-- [wastebin_kernel::del_paste]:
-    Source: 'examples/wastebin/kernel/src/lib.rs', lines 324:0-334:1 -/
-@[reducible]
-def del_paste
-  (v : alloc.vec.Vec Paste) (id : Std.U64) : Result (alloc.vec.Vec Paste) := do
-  del_paste_loop v id (alloc.vec.Vec.new Paste) 0#usize
-
-/-- [wastebin_kernel::apply_write]:
-    Source: 'examples/wastebin/kernel/src/lib.rs', lines 336:0-342:1 -/
-def apply_write (s : Snapshot) (w : Write) : Result Snapshot := do
-  match w with
-  | Write.PutPaste p =>
-    let v ← put_paste s.pastes p
-    ok { s with pastes := v }
-  | Write.DelPaste id =>
-    let v ← del_paste s.pastes id
-    ok { s with pastes := v }
-  | Write.SetCounter c => ok { s with counter := c }
-
-/-- [wastebin_kernel::apply]: loop body 0:
-    Source: 'examples/wastebin/kernel/src/lib.rs', lines 348:4-351:5
-    Visibility: public -/
-@[rust_loop_body]
-def apply_loop.body
-  (ws : alloc.vec.Vec Write) (s : Snapshot) (i : Std.Usize) :
-  Result (ControlFlow (Snapshot × Std.Usize) Snapshot)
-  := do
-  let i1 := alloc.vec.Vec.len ws
-  if i < i1
-  then
-    let w ←
-      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Write) ws i
-    let w1 ← Write.Insts.CoreCloneClone.clone w
-    let s1 ← apply_write s w1
-    let i2 ← i + 1#usize
-    ok (cont (s1, i2))
-  else ok (done s)
-
-/-- [wastebin_kernel::apply]: loop 0:
-    Source: 'examples/wastebin/kernel/src/lib.rs', lines 348:4-351:5
-    Visibility: public -/
-@[rust_loop]
-def apply_loop
-  (ws : alloc.vec.Vec Write) (s : Snapshot) (i : Std.Usize) :
-  Result Snapshot
-  := do
-  loop
-    (fun (s1, i1) => apply_loop.body ws s1 i1)
-    (s, i)
-
-/-- [wastebin_kernel::apply]:
-    Source: 'examples/wastebin/kernel/src/lib.rs', lines 345:0-353:1
-    Visibility: public -/
-def apply (snap : Snapshot) (ws : alloc.vec.Vec Write) : Result Snapshot := do
-  let s ← Snapshot.Insts.CoreCloneClone.clone snap
-  apply_loop ws s 0#usize
 
 end wastebin_kernel
