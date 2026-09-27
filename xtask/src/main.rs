@@ -19,6 +19,12 @@ const PROJECTS: &[(&str, Option<&str>, Option<&str>)] = &[
     ("crates/i5h-json/proofs", Some("scripts/extract-json.sh"), Some("crates/i5h-json/proofs/generated/I5hJson.lean")),
     ("examples/tutorials/calculator/proofs", Some("scripts/extract-calculator.sh"), Some("examples/tutorials/calculator/proofs/generated/CalculatorKernel.lean")),
     ("examples/tutorials/board/proofs", Some("scripts/extract-board.sh"), Some("examples/tutorials/board/proofs/generated/BoardKernel.lean")),
+    ("examples/wastebin/proofs", Some("scripts/extract-wastebin.sh"), Some("examples/wastebin/proofs/generated/WastebinKernel.lean")),
+    ("examples/conduit/proofs", Some("scripts/extract-conduit.sh"), Some("examples/conduit/proofs/generated/ConduitKernel.lean")),
+    ("examples/cratesio/proofs", Some("scripts/extract-cratesio.sh"), Some("examples/cratesio/proofs/generated/CratesioKernel.lean")),
+    ("examples/tutorials/ledger/proofs", Some("scripts/extract-ledger.sh"), Some("examples/tutorials/ledger/proofs/generated/LedgerKernel.lean")),
+    ("examples/tutorials/inbox/proofs", Some("scripts/extract-inbox.sh"), Some("examples/tutorials/inbox/proofs/generated/InboxKernel.lean")),
+    ("examples/tutorials/booking/proofs", Some("scripts/extract-booking.sh"), Some("examples/tutorials/booking/proofs/generated/BookingKernel.lean")),
     ("crates/i5h/proofs", None, None),
     ("lean", None, None),
 ];
