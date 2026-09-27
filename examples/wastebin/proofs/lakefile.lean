@@ -12,8 +12,8 @@ package wastebin_proofs
 -- Generated Lean: the extracted Rust (scripts/extract-wastebin.sh). Do not edit.
 lean_lib Generated where
   srcDir := "generated"
-  roots := #[`WastebinKernel]
+  roots := #[`WastebinKernel, `Schema]
 
 -- Hand-written specification and proofs.
 @[default_target] lean_lib Proofs where
-  roots := #[`Spec, `Commands, `Theorems, `Apply, `Preview, `Scenarios]
+  roots := #[`Spec, `Commands, `Theorems, `Apply, `Storage, `Preview, `Scenarios]
