@@ -26,10 +26,12 @@ shows it. The paste page (`/{id}`) and the other read routes (`/raw/{id}`,
 paste gets the same refusal. `Purge` deletes every expired paste, like
 `wastebin-ctl purge`, and the server runs it with `wastebin-server purge`.
 
-The kernel has no clock and no random numbers. The server's `Shell` reads
-the time and draws a random slug for every request and puts both into the
-`Principal`, next to the uids from the cookie, so a client cannot choose them.
-A retried transaction reuses the same principal, so a retry sees the same time.
+The kernel has no clock and no random numbers. The server's `Shell` draws a
+random slug for every request and puts it into the `Principal`, next to the
+uids from the cookie, and the engine stamps each attempt with the database's
+time (`Kernel::stamp`), so a client chooses neither. The engine runs with
+`monotonic`, so a paste that has expired never comes back because a later
+request carries an earlier time.
 
 Some parts are left out. Wastebin encrypts a password-protected paste with
 ChaCha20-Poly1305 under a key derived with Argon2; here the shell stores a
@@ -92,8 +94,9 @@ cookie are refused, a paste is served until its expiry and is gone after it,
 purge removes it, and the right password opens a locked paste while a missing
 or wrong one is refused.
 
-The proofs trust the shell to report the time, to draw slugs at random, to
-check the cookie's signature and to fingerprint passwords. All theorems
+The proofs trust the engine's clock to report the time, and the shell to draw
+slugs at random, to check the cookie's signature and to fingerprint
+passwords. All theorems
 depend only on Lean's standard axioms.
 
 ## Running it

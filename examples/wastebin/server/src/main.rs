@@ -1,5 +1,5 @@
 use std::sync::Arc;
-use wastebin_server::{purge, router, App, Shell, WastebinEngine};
+use wastebin_server::{config, purge, router, App, Shell, WastebinEngine};
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -8,7 +8,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let secret = std::env::var("WASTEBIN_SIGNING_KEY")?;
     let addr = std::env::var("LISTEN").unwrap_or_else(|_| "127.0.0.1:8088".into());
 
-    let engine = Arc::new(WastebinEngine::new(i5h_pg::pool(&i5h_pg::with_schema(&url, "wastebin")?, 8)?, i5h_pg::EngineConfig::default()));
+    let engine = Arc::new(WastebinEngine::new(i5h_pg::pool(&i5h_pg::with_schema(&url, "wastebin")?, 8)?, config()));
     engine.install_schema().await?;
 
     // `wastebin-server purge` deletes expired pastes and exits.

@@ -7,14 +7,13 @@ use axum::response::Response;
 use axum::routing::post;
 use axum::{Json, Router};
 use cratesio_kernel as k;
-use i5h::{Kernel, TenantId};
+use i5h::{Kernel, TenantId, Timestamp};
 use i5h_http::{error_body, reply, Actor, Api, AuthError, Authenticator, HmacAuth, I5h};
 use i5h_json::Value as Out;
-use i5h_pg::{delete, key, load, delete_where, upsert, DbError, Engine, ReplyCodec, Store, Tx};
+use i5h_pg::{delete, key, load, delete_where, upsert, DbError, Engine, EngineConfig, ReplyCodec, Store, Tx};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::sync::Arc;
-use std::time::{SystemTime, UNIX_EPOCH};
 
 /// Marker type the framework's traits hang off.
 pub struct Cratesio;
@@ -38,6 +37,18 @@ impl Kernel for Cratesio {
     fn apply(snap: &k::Snapshot, ws: &Vec<k::Write>) -> k::Snapshot {
         k::apply(snap, ws)
     }
+
+    /// The engine's time, in the kernel's Unix seconds.
+    fn stamp(actor: &mut k::Principal, now: Timestamp) {
+        actor.now = now.secs();
+    }
+}
+
+/// The engine settings the server runs with: the database's clock, never
+/// going back, so a lock that has ended or an invitation that has expired
+/// stays so.
+pub fn config() -> EngineConfig {
+    EngineConfig::default().database_time()
 }
 
 // One table per row type, from the kernel's `schema!`.
@@ -358,7 +369,6 @@ impl Authenticator<Cratesio> for CratesAuth {
             principal(user, k::Via::Token(tid))
         };
         p.registry = self.registry;
-        p.now = SystemTime::now().duration_since(UNIX_EPOCH).map(|d| d.as_secs()).unwrap_or(0);
         p.teams = self.teams.get(&p.user).cloned().unwrap_or_default();
         Ok(p)
     }
