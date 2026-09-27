@@ -12,8 +12,9 @@ application that decides who may do what is proven correct in Lean 4.
   extractor authenticates the caller and `I5h::respond` runs the command, so
   handlers never hold a database connection.
 - Store state in PostgreSQL through an engine that runs each request in a
-  SERIALIZABLE transaction, retries on conflict, and runs a command at most
-  once per idempotency key.
+  SERIALIZABLE transaction, retries on conflict, runs a command at most once
+  per idempotency key, and gives the kernel the time from one clock that can
+  be kept from going back.
 - Declare table rows once with `schema!`, which generates the Rust structs, the
   table mappings, and the Lean definitions for their SQL encoding.
 
