@@ -690,8 +690,49 @@ theorem decode_spec (r : Rows) (E : Tables Val)
             if sizes.is_empty() { "0".to_string() } else { sizes.join(" + ") }
         );
 
+        let hone_args: Vec<String> = ones.iter().map(|i| format!("(hone {i} rfl (by rw [hf.init]; rfl))")).collect();
+        let _ = writeln!(
+            s,
+            "
+/-! ## Loading
+
+An app's `Storage.lean` gives its storage as an `I5hLib.Store.App` numbered
+like this schema: its state's encoding (`enc`), the table writes of each
+write (`sql`), and what a write does to the state (`step`). -/
+
+section Load
+variable {{St W : Type}} (A : App St W Val) (toSt : {sname} → St)
+
+/-- How an app's storage matches this schema: same key lengths and row
+types, and a snapshot's state encodes as the snapshot's rows. -/
+structure Fits : Prop where
+  kl : A.kl = kl
+  rows : A.IsRow = IsRow
+  enc : ∀ s, A.enc (toSt s) = {sname}.enc s
+  init : A.enc A.init = {sname}.enc {sname}.empty
+  nil : ∀ s t, {n} ≤ t → A.enc s t = []
+
+variable {{A toSt}}
+
+/-- Loading: the rows a `SELECT` of every table returns from a database the
+store produced decode to the state it holds, up to row order. -/
+theorem loaded (hf : Fits A toSt) {{db : Db Val}} {{s : St}} (h : A.Served db s) (r : Rows)
+    (hl : Lists kl db (Rows.tabs r)) :
+    decode r ⦃ o => ∃ snap, o = some snap ∧ A.Equiv (toSt snap) s ⦄ := by
+  obtain ⟨-, hrow, hone⟩ := A.served_holds h
+  have hR := A.served_lists h _ (by rw [hf.kl]; exact hl)
+  rw [hf.rows] at hrow
+  rw [hf.kl] at hone
+  apply WP.spec_mono (decode_spec r (A.enc s) hrow {} (hf.nil s)
+    (fun t => by rw [← hf.init]; exact hR t))
+  rintro o ⟨snap, rfl, hp⟩
+  exact ⟨snap, rfl, fun t => by rw [hf.enc]; exact hp t⟩
+
+end Load",
+            hone_args.join(" ")
+        );
+
         if let Some(w) = writes {
-            let hone_args: Vec<String> = ones.iter().map(|i| format!("(hone {i} rfl (by rw [hf.init]; rfl))")).collect();
             let _ = writeln!(
                 s,
                 "
@@ -759,26 +800,8 @@ theorem sql_writes_spec' (f : {w} → List (AWrite Val))
     · simp only [WP.spec_ok, FoldStep, and_true]
       scalar_tac
 
-/-! ## The server's store
-
-An app's `Storage.lean` gives its storage as an `I5hLib.Store.App` numbered
-like this schema: its state's encoding (`enc`), the table writes of each
-write (`sql`, which `sql_write` computes), and `applyWrite`. -/
-
 section Store
 variable {{St : Type}} (A : App St {w} Val) (toSt : {sname} → St)
-
-/-- How an app's storage matches this schema: same key lengths and row types,
-a snapshot's state encodes as the snapshot's rows, and `sql_write` computes
-`A.sql`. -/
-structure Fits : Prop where
-  kl : A.kl = kl
-  rows : A.IsRow = IsRow
-  enc : ∀ s, A.enc (toSt s) = {sname}.enc s
-  init : A.enc A.init = {sname}.enc {sname}.empty
-  nil : ∀ s t, {n} ≤ t → A.enc s t = []
-  sql : ∀ w out, out.length + (A.sql w).length ≤ Usize.max →
-    sql_write w out ⦃ out' => out'.val.map sqlW = out.val.map sqlW ++ A.sql w ⦄
 
 /-- The databases the server produces from an empty tenant, and the state
 each holds. Each request loads every table (the trusted `SELECT`s, `Lists`),
@@ -795,37 +818,30 @@ inductive Served : Db Val → St → Prop
 
 variable {{A toSt}}
 
-theorem loaded (hf : Fits A toSt) {{db : Db Val}} {{s : St}} (h : A.Served db s) (r : Rows)
-    (hl : Lists kl db (Rows.tabs r)) :
-    decode r ⦃ o => ∃ snap, o = some snap ∧ A.Equiv (toSt snap) s ⦄ := by
-  obtain ⟨-, hrow, hone⟩ := A.served_holds h
-  have hR := A.served_lists h _ (by rw [hf.kl]; exact hl)
-  rw [hf.rows] at hrow
-  rw [hf.kl] at hone
-  apply WP.spec_mono (decode_spec r (A.enc s) hrow {} (hf.nil s)
-    (fun t => by rw [← hf.init]; exact hR t))
-  rintro o ⟨snap, rfl, hp⟩
-  exact ⟨snap, rfl, fun t => by rw [hf.enc]; exact hp t⟩
+/-- `sql_write` computes the app's table writes. -/
+def SqlFits (A : App St {w} Val) : Prop :=
+  ∀ w out, out.length + (A.sql w).length ≤ Usize.max →
+    sql_write w out ⦃ out' => out'.val.map sqlW = out.val.map sqlW ++ A.sql w ⦄
 
-theorem served_app (hf : Fits A toSt) {{db : Db Val}} {{s : St}} (h : Served A toSt db s) : A.Served db s := by
+theorem served_app (hf : Fits A toSt) (hs : SqlFits A) {{db : Db Val}} {{s : St}} (h : Served A toSt db s) :
+    A.Served db s := by
   induction h with
   | fresh => exact .fresh
   | commit _ hl hd hn hv hr ih =>
     obtain ⟨snap', he, hq⟩ := post_of_ok (loaded hf ih _ hl) hd
     cases he
-    rw [post_of_ok (sql_writes_spec' A.sql hf.sql _ hn) hv, ← hf.kl] at hr
+    rw [post_of_ok (sql_writes_spec' A.sql hs _ hn) hv, ← hf.kl] at hr
     exact .commit ih hq hr
 
 /-- The store holds what `apply` computes: every database the server produces
 reads back exactly the rows of the state its commits computed (`Holds`), and
 loading it decodes to that state, up to row order. -/
-theorem stored (hf : Fits A toSt) {{db : Db Val}} {{s : St}} (h : Served A toSt db s) :
+theorem stored (hf : Fits A toSt) (hs : SqlFits A) {{db : Db Val}} {{s : St}} (h : Served A toSt db s) :
     A.Holds db (A.enc s) ∧
       ∀ r, Lists kl db (Rows.tabs r) → decode r ⦃ o => ∃ snap, o = some snap ∧ A.Equiv (toSt snap) s ⦄ :=
-  ⟨(A.served_holds (served_app hf h)).1, loaded hf (served_app hf h)⟩
+  ⟨(A.served_holds (served_app hf hs h)).1, loaded hf (served_app hf hs h)⟩
 
-end Store",
-                hone_args.join(" ")
+end Store"
             );
         }
     }

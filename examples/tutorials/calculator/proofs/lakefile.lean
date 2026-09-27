@@ -12,8 +12,8 @@ package calculator_proofs
 -- Generated Lean: the extracted Rust (scripts/extract-calculator.sh). Do not edit.
 lean_lib Generated where
   srcDir := "generated"
-  roots := #[`CalculatorKernel]
+  roots := #[`CalculatorKernel, `Schema]
 
 -- Hand-written spec and proofs.
 @[default_target] lean_lib Proofs where
-  roots := #[`Spec, `Proofs]
+  roots := #[`Spec, `Proofs, `Storage]
