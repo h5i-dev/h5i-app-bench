@@ -19,7 +19,7 @@ generated files (the extracted kernels and `Schema.lean`).
 | tutorial 2, board | 221 | 45 | 469 | 2.1 |
 | tutorial 3, ledger | 180 | 29 | 445 | 2.5 |
 | tutorial 4, inbox | 239 | 41 | 591 | 2.5 |
-| tutorial 5, booking | 268 | 57 | 605 | 2.3 |
+| tutorial 5, booking | 268 | 61 | 678 | 2.5 |
 
 Every app now has scenario theorems (runs of the extracted kernel on concrete
 states), and the ports have counterexamples for upstream bugs; both are
