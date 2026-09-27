@@ -62,8 +62,10 @@ pub struct HmacAuth<K: Kernel> {
 
 impl<K: Kernel> HmacAuth<K> {
     /// `principal` builds the kernel's principal from a verified token. It
-    /// runs once per request, before any retry, so it is also the place to
-    /// stamp inputs such as the current time.
+    /// runs once per request, before any retry, so it is also the place for
+    /// per-request inputs such as a random slug. The time is not one of them:
+    /// the engine reads it per attempt and passes it to `Kernel::stamp`.
+    /// Token expiry is checked against this process's system clock.
     pub fn new(secret: impl Into<Vec<u8>>, principal: impl Fn(u64, u64) -> K::Principal + Send + Sync + 'static) -> Self {
         HmacAuth { secret: secret.into(), principal: Box::new(principal), scheme: "Bearer", anonymous: None }
     }

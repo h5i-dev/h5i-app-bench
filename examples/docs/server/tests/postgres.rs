@@ -65,7 +65,7 @@ async fn tenants_do_not_see_each_other() {
 /// tenant lock this relies on SERIALIZABLE + retry to keep one owner.
 #[tokio::test]
 async fn concurrent_owner_removal_keeps_an_owner() {
-    let pg = Arc::new(engine_or_skip!(EngineConfig { tenant_lock: false, max_attempts: 50 }));
+    let pg = Arc::new(engine_or_skip!(EngineConfig { tenant_lock: false, max_attempts: 50, ..Default::default() }));
     for _ in 0..20 {
         let t = fresh_tenant();
         let (u1, u2) = (principal(t, 1), principal(t, 2));
@@ -104,7 +104,7 @@ async fn idempotency_key_runs_once() {
 
 #[tokio::test]
 async fn concurrent_idempotent_retries_run_once() {
-    let pg = Arc::new(engine_or_skip!(EngineConfig { tenant_lock: false, max_attempts: 50 }));
+    let pg = Arc::new(engine_or_skip!(EngineConfig { tenant_lock: false, max_attempts: 50, ..Default::default() }));
     let t = fresh_tenant();
     let mut tasks = vec![];
     for _ in 0..8 {
