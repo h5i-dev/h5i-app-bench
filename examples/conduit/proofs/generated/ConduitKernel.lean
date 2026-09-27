@@ -19,6 +19,150 @@ set_option maxRecDepth 2048
 
 namespace conduit_kernel
 
+/-- [i5h_sql::Val]
+    Source: 'crates/i5h-sql/src/lib.rs', lines 8:0-8:12
+    Name pattern: [i5h_sql::Val]
+    Visibility: public -/
+@[discriminant isize, rust_type "i5h_sql::Val"]
+inductive i5h_sql.Val where
+| Int : Std.I64 → i5h_sql.Val
+| Bool : Bool → i5h_sql.Val
+| Text : alloc.vec.Vec Std.U8 → i5h_sql.Val
+| Bytes : alloc.vec.Vec Std.U8 → i5h_sql.Val
+| Null : i5h_sql.Val
+
+/-- [i5h_sql::{impl i5h_sql::Column for u64}::to_val]:
+    Source: 'crates/i5h-sql/src/lib.rs', lines 25:4-25:27
+    Name pattern: [i5h_sql::{i5h_sql::Column<u64>}::to_val]
+    Visibility: public -/
+@[rust_fun "i5h_sql::{i5h_sql::Column<u64>}::to_val"]
+def U64.Insts.I5h_sqlColumn.to_val (self : Std.U64) : Result i5h_sql.Val := do
+  let i ← lift (UScalar.hcast .I64 self)
+  ok (i5h_sql.Val.Int i)
+
+/-- [i5h_sql::{impl i5h_sql::Column for u64}::from_val]:
+    Source: 'crates/i5h-sql/src/lib.rs', lines 28:4-28:39
+    Name pattern: [i5h_sql::{i5h_sql::Column<u64>}::from_val]
+    Visibility: public -/
+@[rust_fun "i5h_sql::{i5h_sql::Column<u64>}::from_val"]
+def U64.Insts.I5h_sqlColumn.from_val
+  (v : i5h_sql.Val) : Result (Option Std.U64) := do
+  match v with
+  | i5h_sql.Val.Int i => let i1 ← lift (IScalar.hcast .U64 i)
+                         ok (some i1)
+  | i5h_sql.Val.Bool _ => ok none
+  | i5h_sql.Val.Text _ => ok none
+  | i5h_sql.Val.Bytes _ => ok none
+  | i5h_sql.Val.Null => ok none
+
+/-- [i5h_sql::{impl i5h_sql::Column for alloc::vec::Vec<u8>}::to_val]:
+    Source: 'crates/i5h-sql/src/lib.rs', lines 67:4-67:27
+    Name pattern: [i5h_sql::{i5h_sql::Column<alloc::vec::Vec<u8>>}::to_val]
+    Visibility: public -/
+@[rust_fun "i5h_sql::{i5h_sql::Column<alloc::vec::Vec<u8>>}::to_val"]
+def alloc.vec.VecU8.Insts.I5h_sqlColumn.to_val
+  (self : alloc.vec.Vec Std.U8) : Result i5h_sql.Val := do
+  let v ← alloc.vec.CloneVec.clone core.clone.CloneU8 self
+  ok (i5h_sql.Val.Bytes v)
+
+/-- [i5h_sql::{impl i5h_sql::Column for alloc::vec::Vec<u8>}::from_val]:
+    Source: 'crates/i5h-sql/src/lib.rs', lines 70:4-70:43
+    Name pattern: [i5h_sql::{i5h_sql::Column<alloc::vec::Vec<u8>>}::from_val]
+    Visibility: public -/
+@[rust_fun "i5h_sql::{i5h_sql::Column<alloc::vec::Vec<u8>>}::from_val"]
+def alloc.vec.VecU8.Insts.I5h_sqlColumn.from_val
+  (v : i5h_sql.Val) : Result (Option (alloc.vec.Vec Std.U8)) := do
+  match v with
+  | i5h_sql.Val.Int _ => ok none
+  | i5h_sql.Val.Bool _ => ok none
+  | i5h_sql.Val.Text _ => ok none
+  | i5h_sql.Val.Bytes b =>
+    let v1 ← alloc.vec.CloneVec.clone core.clone.CloneU8 b
+    ok (some v1)
+  | i5h_sql.Val.Null => ok none
+
+/-- [i5h_sql::{impl i5h_sql::Zero for u64}::zero]:
+    Source: 'crates/i5h-sql/src/lib.rs', lines 104:4-104:20
+    Name pattern: [i5h_sql::{i5h_sql::Zero<u64>}::zero]
+    Visibility: public -/
+@[rust_fun "i5h_sql::{i5h_sql::Zero<u64>}::zero"]
+def U64.Insts.I5h_sqlZero.zero : Result Std.U64 := do
+  ok 0#u64
+
+/-- [i5h_sql::val_eq]:
+    Source: 'crates/i5h-sql/src/lib.rs', lines 134:0-134:39
+    Name pattern: [i5h_sql::val_eq]
+    Visibility: public -/
+@[rust_fun "i5h_sql::val_eq"]
+def i5h_sql.val_eq (a : i5h_sql.Val) (b : i5h_sql.Val) : Result Bool := do
+  match a with
+  | i5h_sql.Val.Int x =>
+    match b with
+    | i5h_sql.Val.Int y => ok (x = y)
+    | i5h_sql.Val.Bool _ => ok false
+    | i5h_sql.Val.Text _ => ok false
+    | i5h_sql.Val.Bytes _ => ok false
+    | i5h_sql.Val.Null => ok false
+  | i5h_sql.Val.Bool x =>
+    match b with
+    | i5h_sql.Val.Int _ => ok false
+    | i5h_sql.Val.Bool y => ok (x = y)
+    | i5h_sql.Val.Text _ => ok false
+    | i5h_sql.Val.Bytes _ => ok false
+    | i5h_sql.Val.Null => ok false
+  | i5h_sql.Val.Text x =>
+    match b with
+    | i5h_sql.Val.Int _ => ok false
+    | i5h_sql.Val.Bool _ => ok false
+    | i5h_sql.Val.Text y =>
+      alloc.vec.partial_eq.PartialEqVec.eq core.cmp.PartialEqU8 x y
+    | i5h_sql.Val.Bytes _ => ok false
+    | i5h_sql.Val.Null => ok false
+  | i5h_sql.Val.Bytes x =>
+    match b with
+    | i5h_sql.Val.Int _ => ok false
+    | i5h_sql.Val.Bool _ => ok false
+    | i5h_sql.Val.Text _ => ok false
+    | i5h_sql.Val.Bytes y =>
+      alloc.vec.partial_eq.PartialEqVec.eq core.cmp.PartialEqU8 x y
+    | i5h_sql.Val.Null => ok false
+  | i5h_sql.Val.Null =>
+    match b with
+    | i5h_sql.Val.Int _ => ok false
+    | i5h_sql.Val.Bool _ => ok false
+    | i5h_sql.Val.Text _ => ok false
+    | i5h_sql.Val.Bytes _ => ok false
+    | i5h_sql.Val.Null => ok true
+
+/-- [i5h_sql::has_col]:
+    Source: 'crates/i5h-sql/src/lib.rs', lines 160:0-160:59
+    Name pattern: [i5h_sql::has_col]
+    Visibility: public -/
+@[rust_fun "i5h_sql::has_col"]
+def i5h_sql.has_col
+  (row : alloc.vec.Vec i5h_sql.Val) (col : Std.U32) (val : i5h_sql.Val) :
+  Result Bool
+  := do
+  let i ← lift (UScalar.cast .Usize col)
+  let i1 := alloc.vec.Vec.len row
+  if i < i1
+  then
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice i5h_sql.Val)
+        row i
+    i5h_sql.val_eq v val
+  else ok false
+
+/-- [i5h_sql::Write]
+    Source: 'crates/i5h-sql/src/lib.rs', lines 171:0-171:14
+    Name pattern: [i5h_sql::Write]
+    Visibility: public -/
+@[discriminant isize, rust_type "i5h_sql::Write"]
+inductive i5h_sql.Write where
+| Put : Std.U32 → Std.U32 → alloc.vec.Vec i5h_sql.Val → i5h_sql.Write
+| Del : Std.U32 → alloc.vec.Vec i5h_sql.Val → i5h_sql.Write
+| DelWhere : Std.U32 → Std.U32 → i5h_sql.Val → i5h_sql.Write
+
 /-- [conduit_kernel::Principal]
     Source: 'examples/conduit/kernel/src/lib.rs', lines 19:0-22:1
     Visibility: public -/
@@ -26,66 +170,40 @@ structure Principal where
   org : Std.U64
   user : Std.U64
 
-/-- [conduit_kernel::User]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 43:12-46:13
+/-- [conduit_kernel::Counter]
+    Source: 'crates/i5h-schema/src/lib.rs', lines 111:12-114:13
     Visibility: public -/
-structure User where
+structure Counter where
+  last_user : Std.U64
+  last_article : Std.U64
+  last_comment : Std.U64
+
+/-- [conduit_kernel::Comment]
+    Source: 'crates/i5h-schema/src/lib.rs', lines 111:12-114:13
+    Visibility: public -/
+structure Comment where
   id : Std.U64
-  username : alloc.vec.Vec Std.U8
-  email : alloc.vec.Vec Std.U8
-  password : alloc.vec.Vec Std.U8
-  bio : alloc.vec.Vec Std.U8
-  image : alloc.vec.Vec Std.U8
+  article : Std.U64
+  author : Std.U64
+  body : alloc.vec.Vec Std.U8
+  created : Std.U64
 
-/-- [conduit_kernel::{impl core::clone::Clone for conduit_kernel::User}::clone]:
-    Source: 'examples/conduit/kernel/src/lib.rs', lines 28:13-28:18
+/-- [conduit_kernel::Favorite]
+    Source: 'crates/i5h-schema/src/lib.rs', lines 111:12-114:13
     Visibility: public -/
-def User.Insts.CoreCloneClone.clone (self : User) : Result User := do
-  let i ← lift (core.clone.impls.CloneU64.clone self.id)
-  let v ← alloc.vec.CloneVec.clone core.clone.CloneU8 self.username
-  let v1 ← alloc.vec.CloneVec.clone core.clone.CloneU8 self.email
-  let v2 ← alloc.vec.CloneVec.clone core.clone.CloneU8 self.password
-  let v3 ← alloc.vec.CloneVec.clone core.clone.CloneU8 self.bio
-  let v4 ← alloc.vec.CloneVec.clone core.clone.CloneU8 self.image
-  ok
-    {
-      id := i,
-      username := v,
-      email := v1,
-      password := v2,
-      bio := v3,
-      image := v4
-    }
+structure Favorite where
+  article : Std.U64
+  user : Std.U64
 
-/-- Trait implementation: [conduit_kernel::{impl core::clone::Clone for conduit_kernel::User}]
-    Source: 'examples/conduit/kernel/src/lib.rs', lines 28:13-28:18 -/
-@[reducible]
-def User.Insts.CoreCloneClone : core.clone.Clone User := {
-  clone := User.Insts.CoreCloneClone.clone
-}
-
-/-- [conduit_kernel::Follow]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 43:12-46:13
+/-- [conduit_kernel::Tag]
+    Source: 'crates/i5h-schema/src/lib.rs', lines 111:12-114:13
     Visibility: public -/
-structure Follow where
-  follower : Std.U64
-  followed : Std.U64
-
-/-- [conduit_kernel::{impl core::clone::Clone for conduit_kernel::Follow}::clone]:
-    Source: 'examples/conduit/kernel/src/lib.rs', lines 39:13-39:18
-    Visibility: public -/
-def Follow.Insts.CoreCloneClone.clone (self : Follow) : Result Follow := do
-  ok self
-
-/-- Trait implementation: [conduit_kernel::{impl core::clone::Clone for conduit_kernel::Follow}]
-    Source: 'examples/conduit/kernel/src/lib.rs', lines 39:13-39:18 -/
-@[reducible]
-def Follow.Insts.CoreCloneClone : core.clone.Clone Follow := {
-  clone := Follow.Insts.CoreCloneClone.clone
-}
+structure Tag where
+  article : Std.U64
+  tag : alloc.vec.Vec Std.U8
 
 /-- [conduit_kernel::Article]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 43:12-46:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 111:12-114:13
     Visibility: public -/
 structure Article where
   id : Std.U64
@@ -97,8 +215,91 @@ structure Article where
   created : Std.U64
   updated : Std.U64
 
+/-- [conduit_kernel::Follow]
+    Source: 'crates/i5h-schema/src/lib.rs', lines 111:12-114:13
+    Visibility: public -/
+structure Follow where
+  follower : Std.U64
+  followed : Std.U64
+
+/-- [conduit_kernel::User]
+    Source: 'crates/i5h-schema/src/lib.rs', lines 111:12-114:13
+    Visibility: public -/
+structure User where
+  id : Std.U64
+  username : alloc.vec.Vec Std.U8
+  email : alloc.vec.Vec Std.U8
+  password : alloc.vec.Vec Std.U8
+  bio : alloc.vec.Vec Std.U8
+  image : alloc.vec.Vec Std.U8
+
+/-- [conduit_kernel::Snapshot]
+    Source: 'crates/i5h-schema/src/lib.rs', lines 278:8-280:9
+    Visibility: public -/
+structure Snapshot where
+  counter : Counter
+  users : alloc.vec.Vec User
+  follows : alloc.vec.Vec Follow
+  articles : alloc.vec.Vec Article
+  tags : alloc.vec.Vec Tag
+  favorites : alloc.vec.Vec Favorite
+  comments : alloc.vec.Vec Comment
+
+/-- [conduit_kernel::{impl core::clone::Clone for conduit_kernel::Counter}::clone]:
+    Source: 'examples/conduit/kernel/src/lib.rs', lines 89:13-89:18
+    Visibility: public -/
+def Counter.Insts.CoreCloneClone.clone (self : Counter) : Result Counter := do
+  ok self
+
+/-- [conduit_kernel::{impl core::clone::Clone for conduit_kernel::Comment}::clone]:
+    Source: 'examples/conduit/kernel/src/lib.rs', lines 79:13-79:18
+    Visibility: public -/
+def Comment.Insts.CoreCloneClone.clone (self : Comment) : Result Comment := do
+  let i ← lift (core.clone.impls.CloneU64.clone self.id)
+  let i1 ← lift (core.clone.impls.CloneU64.clone self.article)
+  let i2 ← lift (core.clone.impls.CloneU64.clone self.author)
+  let v ← alloc.vec.CloneVec.clone core.clone.CloneU8 self.body
+  let i3 ← lift (core.clone.impls.CloneU64.clone self.created)
+  ok { id := i, article := i1, author := i2, body := v, created := i3 }
+
+/-- Trait implementation: [conduit_kernel::{impl core::clone::Clone for conduit_kernel::Comment}]
+    Source: 'examples/conduit/kernel/src/lib.rs', lines 79:13-79:18 -/
+@[reducible]
+def Comment.Insts.CoreCloneClone : core.clone.Clone Comment := {
+  clone := Comment.Insts.CoreCloneClone.clone
+}
+
+/-- [conduit_kernel::{impl core::clone::Clone for conduit_kernel::Favorite}::clone]:
+    Source: 'examples/conduit/kernel/src/lib.rs', lines 74:13-74:18
+    Visibility: public -/
+def Favorite.Insts.CoreCloneClone.clone
+  (self : Favorite) : Result Favorite := do
+  ok self
+
+/-- Trait implementation: [conduit_kernel::{impl core::clone::Clone for conduit_kernel::Favorite}]
+    Source: 'examples/conduit/kernel/src/lib.rs', lines 74:13-74:18 -/
+@[reducible]
+def Favorite.Insts.CoreCloneClone : core.clone.Clone Favorite := {
+  clone := Favorite.Insts.CoreCloneClone.clone
+}
+
+/-- [conduit_kernel::{impl core::clone::Clone for conduit_kernel::Tag}::clone]:
+    Source: 'examples/conduit/kernel/src/lib.rs', lines 69:13-69:18
+    Visibility: public -/
+def Tag.Insts.CoreCloneClone.clone (self : Tag) : Result Tag := do
+  let i ← lift (core.clone.impls.CloneU64.clone self.article)
+  let v ← alloc.vec.CloneVec.clone core.clone.CloneU8 self.tag
+  ok { article := i, tag := v }
+
+/-- Trait implementation: [conduit_kernel::{impl core::clone::Clone for conduit_kernel::Tag}]
+    Source: 'examples/conduit/kernel/src/lib.rs', lines 69:13-69:18 -/
+@[reducible]
+def Tag.Insts.CoreCloneClone : core.clone.Clone Tag := {
+  clone := Tag.Insts.CoreCloneClone.clone
+}
+
 /-- [conduit_kernel::{impl core::clone::Clone for conduit_kernel::Article}::clone]:
-    Source: 'examples/conduit/kernel/src/lib.rs', lines 44:13-44:18
+    Source: 'examples/conduit/kernel/src/lib.rs', lines 56:13-56:18
     Visibility: public -/
 def Article.Insts.CoreCloneClone.clone (self : Article) : Result Article := do
   let i ← lift (core.clone.impls.CloneU64.clone self.id)
@@ -122,111 +323,54 @@ def Article.Insts.CoreCloneClone.clone (self : Article) : Result Article := do
     }
 
 /-- Trait implementation: [conduit_kernel::{impl core::clone::Clone for conduit_kernel::Article}]
-    Source: 'examples/conduit/kernel/src/lib.rs', lines 44:13-44:18 -/
+    Source: 'examples/conduit/kernel/src/lib.rs', lines 56:13-56:18 -/
 @[reducible]
 def Article.Insts.CoreCloneClone : core.clone.Clone Article := {
   clone := Article.Insts.CoreCloneClone.clone
 }
 
-/-- [conduit_kernel::Tag]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 43:12-46:13
+/-- [conduit_kernel::{impl core::clone::Clone for conduit_kernel::Follow}::clone]:
+    Source: 'examples/conduit/kernel/src/lib.rs', lines 51:13-51:18
     Visibility: public -/
-structure Tag where
-  article : Std.U64
-  tag : alloc.vec.Vec Std.U8
-
-/-- [conduit_kernel::{impl core::clone::Clone for conduit_kernel::Tag}::clone]:
-    Source: 'examples/conduit/kernel/src/lib.rs', lines 57:13-57:18
-    Visibility: public -/
-def Tag.Insts.CoreCloneClone.clone (self : Tag) : Result Tag := do
-  let i ← lift (core.clone.impls.CloneU64.clone self.article)
-  let v ← alloc.vec.CloneVec.clone core.clone.CloneU8 self.tag
-  ok { article := i, tag := v }
-
-/-- Trait implementation: [conduit_kernel::{impl core::clone::Clone for conduit_kernel::Tag}]
-    Source: 'examples/conduit/kernel/src/lib.rs', lines 57:13-57:18 -/
-@[reducible]
-def Tag.Insts.CoreCloneClone : core.clone.Clone Tag := {
-  clone := Tag.Insts.CoreCloneClone.clone
-}
-
-/-- [conduit_kernel::Favorite]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 43:12-46:13
-    Visibility: public -/
-structure Favorite where
-  article : Std.U64
-  user : Std.U64
-
-/-- [conduit_kernel::{impl core::clone::Clone for conduit_kernel::Favorite}::clone]:
-    Source: 'examples/conduit/kernel/src/lib.rs', lines 62:13-62:18
-    Visibility: public -/
-def Favorite.Insts.CoreCloneClone.clone
-  (self : Favorite) : Result Favorite := do
+def Follow.Insts.CoreCloneClone.clone (self : Follow) : Result Follow := do
   ok self
 
-/-- Trait implementation: [conduit_kernel::{impl core::clone::Clone for conduit_kernel::Favorite}]
-    Source: 'examples/conduit/kernel/src/lib.rs', lines 62:13-62:18 -/
+/-- Trait implementation: [conduit_kernel::{impl core::clone::Clone for conduit_kernel::Follow}]
+    Source: 'examples/conduit/kernel/src/lib.rs', lines 51:13-51:18 -/
 @[reducible]
-def Favorite.Insts.CoreCloneClone : core.clone.Clone Favorite := {
-  clone := Favorite.Insts.CoreCloneClone.clone
+def Follow.Insts.CoreCloneClone : core.clone.Clone Follow := {
+  clone := Follow.Insts.CoreCloneClone.clone
 }
 
-/-- [conduit_kernel::Comment]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 43:12-46:13
+/-- [conduit_kernel::{impl core::clone::Clone for conduit_kernel::User}::clone]:
+    Source: 'examples/conduit/kernel/src/lib.rs', lines 40:13-40:18
     Visibility: public -/
-structure Comment where
-  id : Std.U64
-  article : Std.U64
-  author : Std.U64
-  body : alloc.vec.Vec Std.U8
-  created : Std.U64
-
-/-- [conduit_kernel::{impl core::clone::Clone for conduit_kernel::Comment}::clone]:
-    Source: 'examples/conduit/kernel/src/lib.rs', lines 67:13-67:18
-    Visibility: public -/
-def Comment.Insts.CoreCloneClone.clone (self : Comment) : Result Comment := do
+def User.Insts.CoreCloneClone.clone (self : User) : Result User := do
   let i ← lift (core.clone.impls.CloneU64.clone self.id)
-  let i1 ← lift (core.clone.impls.CloneU64.clone self.article)
-  let i2 ← lift (core.clone.impls.CloneU64.clone self.author)
-  let v ← alloc.vec.CloneVec.clone core.clone.CloneU8 self.body
-  let i3 ← lift (core.clone.impls.CloneU64.clone self.created)
-  ok { id := i, article := i1, author := i2, body := v, created := i3 }
+  let v ← alloc.vec.CloneVec.clone core.clone.CloneU8 self.username
+  let v1 ← alloc.vec.CloneVec.clone core.clone.CloneU8 self.email
+  let v2 ← alloc.vec.CloneVec.clone core.clone.CloneU8 self.password
+  let v3 ← alloc.vec.CloneVec.clone core.clone.CloneU8 self.bio
+  let v4 ← alloc.vec.CloneVec.clone core.clone.CloneU8 self.image
+  ok
+    {
+      id := i,
+      username := v,
+      email := v1,
+      password := v2,
+      bio := v3,
+      image := v4
+    }
 
-/-- Trait implementation: [conduit_kernel::{impl core::clone::Clone for conduit_kernel::Comment}]
-    Source: 'examples/conduit/kernel/src/lib.rs', lines 67:13-67:18 -/
+/-- Trait implementation: [conduit_kernel::{impl core::clone::Clone for conduit_kernel::User}]
+    Source: 'examples/conduit/kernel/src/lib.rs', lines 40:13-40:18 -/
 @[reducible]
-def Comment.Insts.CoreCloneClone : core.clone.Clone Comment := {
-  clone := Comment.Insts.CoreCloneClone.clone
+def User.Insts.CoreCloneClone : core.clone.Clone User := {
+  clone := User.Insts.CoreCloneClone.clone
 }
-
-/-- [conduit_kernel::Counter]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 43:12-46:13
-    Visibility: public -/
-structure Counter where
-  last_user : Std.U64
-  last_article : Std.U64
-  last_comment : Std.U64
-
-/-- [conduit_kernel::{impl core::clone::Clone for conduit_kernel::Counter}::clone]:
-    Source: 'examples/conduit/kernel/src/lib.rs', lines 77:13-77:18
-    Visibility: public -/
-def Counter.Insts.CoreCloneClone.clone (self : Counter) : Result Counter := do
-  ok self
-
-/-- [conduit_kernel::Snapshot]
-    Source: 'examples/conduit/kernel/src/lib.rs', lines 88:0-96:1
-    Visibility: public -/
-structure Snapshot where
-  counter : Counter
-  users : alloc.vec.Vec User
-  follows : alloc.vec.Vec Follow
-  articles : alloc.vec.Vec Article
-  tags : alloc.vec.Vec Tag
-  favorites : alloc.vec.Vec Favorite
-  comments : alloc.vec.Vec Comment
 
 /-- [conduit_kernel::{impl core::clone::Clone for conduit_kernel::Snapshot}::clone]:
-    Source: 'examples/conduit/kernel/src/lib.rs', lines 87:9-87:14
+    Source: 'examples/conduit/kernel/src/lib.rs', lines 28:13-28:18
     Visibility: public -/
 def Snapshot.Insts.CoreCloneClone.clone
   (self : Snapshot) : Result Snapshot := do
@@ -2219,185 +2363,313 @@ def transition_upstream
   := do
   step actor s cmd true
 
-/-- [conduit_kernel::put_user]: loop body 0:
-    Source: 'examples/conduit/kernel/src/lib.rs', lines 1030:4-1038:1 -/
+/-- [conduit_kernel::TAG_ARTICLE]
+    Source: 'examples/conduit/kernel/src/lib.rs', lines 1029:0-1029:27 -/
+@[global_simps, irreducible] def TAG_ARTICLE : Std.U32 := 0#u32
+
+/-- [conduit_kernel::FAVORITE_ARTICLE]
+    Source: 'examples/conduit/kernel/src/lib.rs', lines 1030:0-1030:32 -/
+@[global_simps, irreducible] def FAVORITE_ARTICLE : Std.U32 := 0#u32
+
+/-- [conduit_kernel::COMMENT_ARTICLE]
+    Source: 'examples/conduit/kernel/src/lib.rs', lines 1031:0-1031:31 -/
+@[global_simps, irreducible] def COMMENT_ARTICLE : Std.U32 := 1#u32
+
+/-- [conduit_kernel::{conduit_kernel::Comment}::to_row]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 135:12-140:13
+    Visibility: public -/
+def Comment.to_row (self : Comment) : Result (alloc.vec.Vec i5h_sql.Val) := do
+  let v ← U64.Insts.I5h_sqlColumn.to_val self.id
+  let out ← alloc.vec.Vec.push (alloc.vec.Vec.new i5h_sql.Val) v
+  let v1 ← U64.Insts.I5h_sqlColumn.to_val self.article
+  let out1 ← alloc.vec.Vec.push out v1
+  let v2 ← U64.Insts.I5h_sqlColumn.to_val self.author
+  let out2 ← alloc.vec.Vec.push out1 v2
+  let v3 ← alloc.vec.VecU8.Insts.I5h_sqlColumn.to_val self.body
+  let out3 ← alloc.vec.Vec.push out2 v3
+  let v4 ← U64.Insts.I5h_sqlColumn.to_val self.created
+  alloc.vec.Vec.push out3 v4
+
+/-- [conduit_kernel::{conduit_kernel::Comment}::del_where]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 246:16-251:17
+    Visibility: public -/
 @[rust_loop_body]
-def put_user_loop.body
-  (v : alloc.vec.Vec User) (x : User) (i : Std.Usize) :
-  Result (ControlFlow Std.Usize (alloc.vec.Vec User))
+def Comment.del_where_loop.body
+  (v : alloc.vec.Vec Comment) (col : Std.U32) (val : i5h_sql.Val)
+  (out : alloc.vec.Vec Comment) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Comment) × Std.Usize) (alloc.vec.Vec
+    Comment))
   := do
   let i1 := alloc.vec.Vec.len v
   if i < i1
   then
-    let u ←
-      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice User) v i
-    if u.id = x.id
-    then
-      let (_, index_mut_back) ←
-        alloc.vec.Vec.index_mut (core.slice.index.SliceIndexUsizeSlice User) v
-          i
-      let v1 := index_mut_back x
-      ok (done v1)
-    else let i2 ← i + 1#usize
-         ok (cont i2)
-  else let v1 ← alloc.vec.Vec.push v x
-       ok (done v1)
-
-/-- [conduit_kernel::put_user]: loop 0:
-    Source: 'examples/conduit/kernel/src/lib.rs', lines 1030:4-1038:1 -/
-@[rust_loop]
-def put_user_loop
-  (v : alloc.vec.Vec User) (x : User) (i : Std.Usize) :
-  Result (alloc.vec.Vec User)
-  := do
-  loop
-    (fun i1 => put_user_loop.body v x i1)
-    i
-
-/-- [conduit_kernel::put_user]:
-    Source: 'examples/conduit/kernel/src/lib.rs', lines 1028:0-1038:1 -/
-@[reducible]
-def put_user
-  (v : alloc.vec.Vec User) (x : User) : Result (alloc.vec.Vec User) := do
-  put_user_loop v x 0#usize
-
-/-- [conduit_kernel::put_follow]: loop body 0:
-    Source: 'examples/conduit/kernel/src/lib.rs', lines 1:0-1050:1 -/
-@[rust_loop_body]
-def put_follow_loop.body
-  (v : alloc.vec.Vec Follow) (x : Follow) (i : Std.Usize) :
-  Result (ControlFlow Std.Usize (alloc.vec.Vec Follow))
-  := do
-  let i1 := alloc.vec.Vec.len v
-  if i < i1
-  then
-    let f ←
-      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Follow) v i
-    if f.follower = x.follower
-    then
-      if f.followed = x.followed
-      then
-        let (_, index_mut_back) ←
-          alloc.vec.Vec.index_mut (core.slice.index.SliceIndexUsizeSlice
-            Follow) v i
-        let v1 := index_mut_back x
-        ok (done v1)
-      else let i2 ← i + 1#usize
-           ok (cont i2)
-    else let i2 ← i + 1#usize
-         ok (cont i2)
-  else let v1 ← alloc.vec.Vec.push v x
-       ok (done v1)
-
-/-- [conduit_kernel::put_follow]: loop 0:
-    Source: 'examples/conduit/kernel/src/lib.rs', lines 1:0-1050:1 -/
-@[rust_loop]
-def put_follow_loop
-  (v : alloc.vec.Vec Follow) (x : Follow) (i : Std.Usize) :
-  Result (alloc.vec.Vec Follow)
-  := do
-  loop
-    (fun i1 => put_follow_loop.body v x i1)
-    i
-
-/-- [conduit_kernel::put_follow]:
-    Source: 'examples/conduit/kernel/src/lib.rs', lines 1040:0-1050:1 -/
-@[reducible]
-def put_follow
-  (v : alloc.vec.Vec Follow) (x : Follow) : Result (alloc.vec.Vec Follow) := do
-  put_follow_loop v x 0#usize
-
-/-- [conduit_kernel::del_follow]: loop body 0:
-    Source: 'examples/conduit/kernel/src/lib.rs', lines 1055:4-1060:5 -/
-@[rust_loop_body]
-def del_follow_loop.body
-  (v : alloc.vec.Vec Follow) (x : Follow) (out : alloc.vec.Vec Follow)
-  (i : Std.Usize) :
-  Result (ControlFlow ((alloc.vec.Vec Follow) × Std.Usize) (alloc.vec.Vec
-    Follow))
-  := do
-  let i1 := alloc.vec.Vec.len v
-  if i < i1
-  then
-    let f ←
-      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Follow) v i
+    let c ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Comment) v i
+    let v1 ← Comment.to_row c
+    let b ← i5h_sql.has_col v1 col val
     let out1 ←
-      if f.follower = x.follower
-      then if f.followed = x.followed
-           then ok out
-           else alloc.vec.Vec.push out f
-      else alloc.vec.Vec.push out f
+      if b
+      then ok out
+      else
+        do
+        let c1 ← Comment.Insts.CoreCloneClone.clone c
+        alloc.vec.Vec.push out c1
     let i2 ← i + 1#usize
     ok (cont (out1, i2))
   else ok (done out)
 
-/-- [conduit_kernel::del_follow]: loop 0:
-    Source: 'examples/conduit/kernel/src/lib.rs', lines 1055:4-1060:5 -/
+/-- [conduit_kernel::{conduit_kernel::Comment}::del_where]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 246:16-251:17
+    Visibility: public -/
 @[rust_loop]
-def del_follow_loop
-  (v : alloc.vec.Vec Follow) (x : Follow) (out : alloc.vec.Vec Follow)
-  (i : Std.Usize) :
-  Result (alloc.vec.Vec Follow)
+def Comment.del_where_loop
+  (v : alloc.vec.Vec Comment) (col : Std.U32) (val : i5h_sql.Val)
+  (out : alloc.vec.Vec Comment) (i : Std.Usize) :
+  Result (alloc.vec.Vec Comment)
   := do
   loop
-    (fun (out1, i1) => del_follow_loop.body v x out1 i1)
+    (fun (out1, i1) => Comment.del_where_loop.body v col val out1 i1)
     (out, i)
 
-/-- [conduit_kernel::del_follow]:
-    Source: 'examples/conduit/kernel/src/lib.rs', lines 1052:0-1062:1 -/
+/-- [conduit_kernel::{conduit_kernel::Comment}::del_where]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 243:12-253:13
+    Visibility: public -/
 @[reducible]
-def del_follow
-  (v : alloc.vec.Vec Follow) (x : Follow) : Result (alloc.vec.Vec Follow) := do
-  del_follow_loop v x (alloc.vec.Vec.new Follow) 0#usize
+def Comment.del_where
+  (v : alloc.vec.Vec Comment) (col : Std.U32) (val : i5h_sql.Val) :
+  Result (alloc.vec.Vec Comment)
+  := do
+  Comment.del_where_loop v col val (alloc.vec.Vec.new Comment) 0#usize
 
-/-- [conduit_kernel::put_article]: loop body 0:
-    Source: 'examples/conduit/kernel/src/lib.rs', lines 1066:4-1074:1 -/
+/-- [conduit_kernel::{conduit_kernel::Favorite}::to_row]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 135:12-140:13
+    Visibility: public -/
+def Favorite.to_row
+  (self : Favorite) : Result (alloc.vec.Vec i5h_sql.Val) := do
+  let v ← U64.Insts.I5h_sqlColumn.to_val self.article
+  let out ← alloc.vec.Vec.push (alloc.vec.Vec.new i5h_sql.Val) v
+  let v1 ← U64.Insts.I5h_sqlColumn.to_val self.user
+  alloc.vec.Vec.push out v1
+
+/-- [conduit_kernel::{conduit_kernel::Favorite}::del_where]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 246:16-251:17
+    Visibility: public -/
 @[rust_loop_body]
-def put_article_loop.body
-  (v : alloc.vec.Vec Article) (x : Article) (i : Std.Usize) :
-  Result (ControlFlow Std.Usize (alloc.vec.Vec Article))
+def Favorite.del_where_loop.body
+  (v : alloc.vec.Vec Favorite) (col : Std.U32) (val : i5h_sql.Val)
+  (out : alloc.vec.Vec Favorite) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Favorite) × Std.Usize) (alloc.vec.Vec
+    Favorite))
   := do
   let i1 := alloc.vec.Vec.len v
   if i < i1
   then
-    let a ←
-      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Article) v i
-    if a.id = x.id
-    then
-      let (_, index_mut_back) ←
-        alloc.vec.Vec.index_mut (core.slice.index.SliceIndexUsizeSlice Article)
-          v i
-      let v1 := index_mut_back x
-      ok (done v1)
-    else let i2 ← i + 1#usize
-         ok (cont i2)
-  else let v1 ← alloc.vec.Vec.push v x
-       ok (done v1)
+    let f ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Favorite) v i
+    let v1 ← Favorite.to_row f
+    let b ← i5h_sql.has_col v1 col val
+    let out1 ←
+      if b
+      then ok out
+      else
+        do
+        let f1 ← Favorite.Insts.CoreCloneClone.clone f
+        alloc.vec.Vec.push out f1
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
+  else ok (done out)
 
-/-- [conduit_kernel::put_article]: loop 0:
-    Source: 'examples/conduit/kernel/src/lib.rs', lines 1066:4-1074:1 -/
+/-- [conduit_kernel::{conduit_kernel::Favorite}::del_where]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 246:16-251:17
+    Visibility: public -/
 @[rust_loop]
-def put_article_loop
-  (v : alloc.vec.Vec Article) (x : Article) (i : Std.Usize) :
-  Result (alloc.vec.Vec Article)
+def Favorite.del_where_loop
+  (v : alloc.vec.Vec Favorite) (col : Std.U32) (val : i5h_sql.Val)
+  (out : alloc.vec.Vec Favorite) (i : Std.Usize) :
+  Result (alloc.vec.Vec Favorite)
   := do
   loop
-    (fun i1 => put_article_loop.body v x i1)
-    i
+    (fun (out1, i1) => Favorite.del_where_loop.body v col val out1 i1)
+    (out, i)
 
-/-- [conduit_kernel::put_article]:
-    Source: 'examples/conduit/kernel/src/lib.rs', lines 1064:0-1074:1 -/
+/-- [conduit_kernel::{conduit_kernel::Favorite}::del_where]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 243:12-253:13
+    Visibility: public -/
 @[reducible]
-def put_article
-  (v : alloc.vec.Vec Article) (x : Article) :
-  Result (alloc.vec.Vec Article)
+def Favorite.del_where
+  (v : alloc.vec.Vec Favorite) (col : Std.U32) (val : i5h_sql.Val) :
+  Result (alloc.vec.Vec Favorite)
   := do
-  put_article_loop v x 0#usize
+  Favorite.del_where_loop v col val (alloc.vec.Vec.new Favorite) 0#usize
 
-/-- [conduit_kernel::del_article]: loop body 0:
-    Source: 'examples/conduit/kernel/src/lib.rs', lines 1079:4-1084:5 -/
+/-- [conduit_kernel::{conduit_kernel::Tag}::to_row]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 135:12-140:13
+    Visibility: public -/
+def Tag.to_row (self : Tag) : Result (alloc.vec.Vec i5h_sql.Val) := do
+  let v ← U64.Insts.I5h_sqlColumn.to_val self.article
+  let out ← alloc.vec.Vec.push (alloc.vec.Vec.new i5h_sql.Val) v
+  let v1 ← alloc.vec.VecU8.Insts.I5h_sqlColumn.to_val self.tag
+  alloc.vec.Vec.push out v1
+
+/-- [conduit_kernel::{conduit_kernel::Tag}::del_where]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 246:16-251:17
+    Visibility: public -/
 @[rust_loop_body]
-def del_article_loop.body
+def Tag.del_where_loop.body
+  (v : alloc.vec.Vec Tag) (col : Std.U32) (val : i5h_sql.Val)
+  (out : alloc.vec.Vec Tag) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Tag) × Std.Usize) (alloc.vec.Vec Tag))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let t ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Tag) v i
+    let v1 ← Tag.to_row t
+    let b ← i5h_sql.has_col v1 col val
+    let out1 ←
+      if b
+      then ok out
+      else
+        do
+        let t1 ← Tag.Insts.CoreCloneClone.clone t
+        alloc.vec.Vec.push out t1
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
+  else ok (done out)
+
+/-- [conduit_kernel::{conduit_kernel::Tag}::del_where]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 246:16-251:17
+    Visibility: public -/
+@[rust_loop]
+def Tag.del_where_loop
+  (v : alloc.vec.Vec Tag) (col : Std.U32) (val : i5h_sql.Val)
+  (out : alloc.vec.Vec Tag) (i : Std.Usize) :
+  Result (alloc.vec.Vec Tag)
+  := do
+  loop
+    (fun (out1, i1) => Tag.del_where_loop.body v col val out1 i1)
+    (out, i)
+
+/-- [conduit_kernel::{conduit_kernel::Tag}::del_where]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 243:12-253:13
+    Visibility: public -/
+@[reducible]
+def Tag.del_where
+  (v : alloc.vec.Vec Tag) (col : Std.U32) (val : i5h_sql.Val) :
+  Result (alloc.vec.Vec Tag)
+  := do
+  Tag.del_where_loop v col val (alloc.vec.Vec.new Tag) 0#usize
+
+/-- [conduit_kernel::{conduit_kernel::Comment}::del]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 233:16-238:17
+    Visibility: public -/
+@[rust_loop_body]
+def Comment.del_loop.body
+  (v : alloc.vec.Vec Comment) (id : Std.U64) (out : alloc.vec.Vec Comment)
+  (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Comment) × Std.Usize) (alloc.vec.Vec
+    Comment))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let c ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Comment) v i
+    let out1 ←
+      if c.id = id
+      then ok out
+      else
+        do
+        let c1 ← Comment.Insts.CoreCloneClone.clone c
+        alloc.vec.Vec.push out c1
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
+  else ok (done out)
+
+/-- [conduit_kernel::{conduit_kernel::Comment}::del]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 233:16-238:17
+    Visibility: public -/
+@[rust_loop]
+def Comment.del_loop
+  (v : alloc.vec.Vec Comment) (id : Std.U64) (out : alloc.vec.Vec Comment)
+  (i : Std.Usize) :
+  Result (alloc.vec.Vec Comment)
+  := do
+  loop
+    (fun (out1, i1) => Comment.del_loop.body v id out1 i1)
+    (out, i)
+
+/-- [conduit_kernel::{conduit_kernel::Comment}::del]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 230:12-240:13
+    Visibility: public -/
+@[reducible]
+def Comment.del
+  (v : alloc.vec.Vec Comment) (id : Std.U64) :
+  Result (alloc.vec.Vec Comment)
+  := do
+  Comment.del_loop v id (alloc.vec.Vec.new Comment) 0#usize
+
+/-- [conduit_kernel::{conduit_kernel::Favorite}::del]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 233:16-238:17
+    Visibility: public -/
+@[rust_loop_body]
+def Favorite.del_loop.body
+  (v : alloc.vec.Vec Favorite) (article : Std.U64) (user : Std.U64)
+  (out : alloc.vec.Vec Favorite) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Favorite) × Std.Usize) (alloc.vec.Vec
+    Favorite))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let f ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Favorite) v i
+    let out1 ←
+      if f.article = article
+      then
+        if f.user = user
+        then ok out
+        else
+          do
+          let f1 ← Favorite.Insts.CoreCloneClone.clone f
+          alloc.vec.Vec.push out f1
+      else
+        do
+        let f1 ← Favorite.Insts.CoreCloneClone.clone f
+        alloc.vec.Vec.push out f1
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
+  else ok (done out)
+
+/-- [conduit_kernel::{conduit_kernel::Favorite}::del]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 233:16-238:17
+    Visibility: public -/
+@[rust_loop]
+def Favorite.del_loop
+  (v : alloc.vec.Vec Favorite) (article : Std.U64) (user : Std.U64)
+  (out : alloc.vec.Vec Favorite) (i : Std.Usize) :
+  Result (alloc.vec.Vec Favorite)
+  := do
+  loop
+    (fun (out1, i1) => Favorite.del_loop.body v article user out1 i1)
+    (out, i)
+
+/-- [conduit_kernel::{conduit_kernel::Favorite}::del]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 230:12-240:13
+    Visibility: public -/
+@[reducible]
+def Favorite.del
+  (v : alloc.vec.Vec Favorite) (article : Std.U64) (user : Std.U64) :
+  Result (alloc.vec.Vec Favorite)
+  := do
+  Favorite.del_loop v article user (alloc.vec.Vec.new Favorite) 0#usize
+
+/-- [conduit_kernel::{conduit_kernel::Article}::del]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 233:16-238:17
+    Visibility: public -/
+@[rust_loop_body]
+def Article.del_loop.body
   (v : alloc.vec.Vec Article) (id : Std.U64) (out : alloc.vec.Vec Article)
   (i : Std.Usize) :
   Result (ControlFlow ((alloc.vec.Vec Article) × Std.Usize) (alloc.vec.Vec
@@ -2409,41 +2681,197 @@ def del_article_loop.body
     let a ←
       alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Article) v i
     let out1 ←
-      if a.id != id
-      then
+      if a.id = id
+      then ok out
+      else
         do
         let a1 ← Article.Insts.CoreCloneClone.clone a
         alloc.vec.Vec.push out a1
-      else ok out
     let i2 ← i + 1#usize
     ok (cont (out1, i2))
   else ok (done out)
 
-/-- [conduit_kernel::del_article]: loop 0:
-    Source: 'examples/conduit/kernel/src/lib.rs', lines 1079:4-1084:5 -/
+/-- [conduit_kernel::{conduit_kernel::Article}::del]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 233:16-238:17
+    Visibility: public -/
 @[rust_loop]
-def del_article_loop
+def Article.del_loop
   (v : alloc.vec.Vec Article) (id : Std.U64) (out : alloc.vec.Vec Article)
   (i : Std.Usize) :
   Result (alloc.vec.Vec Article)
   := do
   loop
-    (fun (out1, i1) => del_article_loop.body v id out1 i1)
+    (fun (out1, i1) => Article.del_loop.body v id out1 i1)
     (out, i)
 
-/-- [conduit_kernel::del_article]:
-    Source: 'examples/conduit/kernel/src/lib.rs', lines 1076:0-1086:1 -/
+/-- [conduit_kernel::{conduit_kernel::Article}::del]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 230:12-240:13
+    Visibility: public -/
 @[reducible]
-def del_article
+def Article.del
   (v : alloc.vec.Vec Article) (id : Std.U64) :
   Result (alloc.vec.Vec Article)
   := do
-  del_article_loop v id (alloc.vec.Vec.new Article) 0#usize
+  Article.del_loop v id (alloc.vec.Vec.new Article) 0#usize
 
-/-- [conduit_kernel::put_tag]: loop body 0:
-    Source: 'examples/conduit/kernel/src/lib.rs', lines 1:0-1098:1 -/
+/-- [conduit_kernel::{conduit_kernel::Follow}::del]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 233:16-238:17
+    Visibility: public -/
 @[rust_loop_body]
-def put_tag_loop.body
+def Follow.del_loop.body
+  (v : alloc.vec.Vec Follow) (follower : Std.U64) (followed : Std.U64)
+  (out : alloc.vec.Vec Follow) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Follow) × Std.Usize) (alloc.vec.Vec
+    Follow))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let f ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Follow) v i
+    let out1 ←
+      if f.follower = follower
+      then
+        if f.followed = followed
+        then ok out
+        else
+          do
+          let f1 ← Follow.Insts.CoreCloneClone.clone f
+          alloc.vec.Vec.push out f1
+      else
+        do
+        let f1 ← Follow.Insts.CoreCloneClone.clone f
+        alloc.vec.Vec.push out f1
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
+  else ok (done out)
+
+/-- [conduit_kernel::{conduit_kernel::Follow}::del]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 233:16-238:17
+    Visibility: public -/
+@[rust_loop]
+def Follow.del_loop
+  (v : alloc.vec.Vec Follow) (follower : Std.U64) (followed : Std.U64)
+  (out : alloc.vec.Vec Follow) (i : Std.Usize) :
+  Result (alloc.vec.Vec Follow)
+  := do
+  loop
+    (fun (out1, i1) => Follow.del_loop.body v follower followed out1 i1)
+    (out, i)
+
+/-- [conduit_kernel::{conduit_kernel::Follow}::del]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 230:12-240:13
+    Visibility: public -/
+@[reducible]
+def Follow.del
+  (v : alloc.vec.Vec Follow) (follower : Std.U64) (followed : Std.U64) :
+  Result (alloc.vec.Vec Follow)
+  := do
+  Follow.del_loop v follower followed (alloc.vec.Vec.new Follow) 0#usize
+
+/-- [conduit_kernel::{conduit_kernel::Comment}::put]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 219:16-227:13
+    Visibility: public -/
+@[rust_loop_body]
+def Comment.put_loop.body
+  (v : alloc.vec.Vec Comment) (x : Comment) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize (alloc.vec.Vec Comment))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let c ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Comment) v i
+    if c.id = x.id
+    then
+      let (_, index_mut_back) ←
+        alloc.vec.Vec.index_mut (core.slice.index.SliceIndexUsizeSlice Comment)
+          v i
+      let v1 := index_mut_back x
+      ok (done v1)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else let v1 ← alloc.vec.Vec.push v x
+       ok (done v1)
+
+/-- [conduit_kernel::{conduit_kernel::Comment}::put]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 219:16-227:13
+    Visibility: public -/
+@[rust_loop]
+def Comment.put_loop
+  (v : alloc.vec.Vec Comment) (x : Comment) (i : Std.Usize) :
+  Result (alloc.vec.Vec Comment)
+  := do
+  loop
+    (fun i1 => Comment.put_loop.body v x i1)
+    i
+
+/-- [conduit_kernel::{conduit_kernel::Comment}::put]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 217:12-227:13
+    Visibility: public -/
+@[reducible]
+def Comment.put
+  (v : alloc.vec.Vec Comment) (x : Comment) :
+  Result (alloc.vec.Vec Comment)
+  := do
+  Comment.put_loop v x 0#usize
+
+/-- [conduit_kernel::{conduit_kernel::Favorite}::put]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 219:16-227:13
+    Visibility: public -/
+@[rust_loop_body]
+def Favorite.put_loop.body
+  (v : alloc.vec.Vec Favorite) (x : Favorite) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize (alloc.vec.Vec Favorite))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let f ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Favorite) v i
+    if f.article = x.article
+    then
+      if f.user = x.user
+      then
+        let (_, index_mut_back) ←
+          alloc.vec.Vec.index_mut (core.slice.index.SliceIndexUsizeSlice
+            Favorite) v i
+        let v1 := index_mut_back x
+        ok (done v1)
+      else let i2 ← i + 1#usize
+           ok (cont i2)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else let v1 ← alloc.vec.Vec.push v x
+       ok (done v1)
+
+/-- [conduit_kernel::{conduit_kernel::Favorite}::put]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 219:16-227:13
+    Visibility: public -/
+@[rust_loop]
+def Favorite.put_loop
+  (v : alloc.vec.Vec Favorite) (x : Favorite) (i : Std.Usize) :
+  Result (alloc.vec.Vec Favorite)
+  := do
+  loop
+    (fun i1 => Favorite.put_loop.body v x i1)
+    i
+
+/-- [conduit_kernel::{conduit_kernel::Favorite}::put]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 217:12-227:13
+    Visibility: public -/
+@[reducible]
+def Favorite.put
+  (v : alloc.vec.Vec Favorite) (x : Favorite) :
+  Result (alloc.vec.Vec Favorite)
+  := do
+  Favorite.put_loop v x 0#usize
+
+/-- [conduit_kernel::{conduit_kernel::Tag}::put]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 219:16-227:13
+    Visibility: public -/
+@[rust_loop_body]
+def Tag.put_loop.body
   (v : alloc.vec.Vec Tag) (x : Tag) (i : Std.Usize) :
   Result (ControlFlow Std.Usize (alloc.vec.Vec Tag))
   := do
@@ -2470,88 +2898,93 @@ def put_tag_loop.body
   else let v1 ← alloc.vec.Vec.push v x
        ok (done v1)
 
-/-- [conduit_kernel::put_tag]: loop 0:
-    Source: 'examples/conduit/kernel/src/lib.rs', lines 1:0-1098:1 -/
+/-- [conduit_kernel::{conduit_kernel::Tag}::put]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 219:16-227:13
+    Visibility: public -/
 @[rust_loop]
-def put_tag_loop
+def Tag.put_loop
   (v : alloc.vec.Vec Tag) (x : Tag) (i : Std.Usize) :
   Result (alloc.vec.Vec Tag)
   := do
   loop
-    (fun i1 => put_tag_loop.body v x i1)
+    (fun i1 => Tag.put_loop.body v x i1)
     i
 
-/-- [conduit_kernel::put_tag]:
-    Source: 'examples/conduit/kernel/src/lib.rs', lines 1088:0-1098:1 -/
+/-- [conduit_kernel::{conduit_kernel::Tag}::put]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 217:12-227:13
+    Visibility: public -/
 @[reducible]
-def put_tag
+def Tag.put
   (v : alloc.vec.Vec Tag) (x : Tag) : Result (alloc.vec.Vec Tag) := do
-  put_tag_loop v x 0#usize
+  Tag.put_loop v x 0#usize
 
-/-- [conduit_kernel::del_tags_of]: loop body 0:
-    Source: 'examples/conduit/kernel/src/lib.rs', lines 1103:4-1108:5 -/
+/-- [conduit_kernel::{conduit_kernel::Article}::put]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 219:16-227:13
+    Visibility: public -/
 @[rust_loop_body]
-def del_tags_of_loop.body
-  (v : alloc.vec.Vec Tag) (article : Std.U64) (out : alloc.vec.Vec Tag)
-  (i : Std.Usize) :
-  Result (ControlFlow ((alloc.vec.Vec Tag) × Std.Usize) (alloc.vec.Vec Tag))
+def Article.put_loop.body
+  (v : alloc.vec.Vec Article) (x : Article) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize (alloc.vec.Vec Article))
   := do
   let i1 := alloc.vec.Vec.len v
   if i < i1
   then
-    let t ←
-      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Tag) v i
-    let out1 ←
-      if t.article != article
-      then
-        do
-        let t1 ← Tag.Insts.CoreCloneClone.clone t
-        alloc.vec.Vec.push out t1
-      else ok out
-    let i2 ← i + 1#usize
-    ok (cont (out1, i2))
-  else ok (done out)
+    let a ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Article) v i
+    if a.id = x.id
+    then
+      let (_, index_mut_back) ←
+        alloc.vec.Vec.index_mut (core.slice.index.SliceIndexUsizeSlice Article)
+          v i
+      let v1 := index_mut_back x
+      ok (done v1)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else let v1 ← alloc.vec.Vec.push v x
+       ok (done v1)
 
-/-- [conduit_kernel::del_tags_of]: loop 0:
-    Source: 'examples/conduit/kernel/src/lib.rs', lines 1103:4-1108:5 -/
+/-- [conduit_kernel::{conduit_kernel::Article}::put]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 219:16-227:13
+    Visibility: public -/
 @[rust_loop]
-def del_tags_of_loop
-  (v : alloc.vec.Vec Tag) (article : Std.U64) (out : alloc.vec.Vec Tag)
-  (i : Std.Usize) :
-  Result (alloc.vec.Vec Tag)
+def Article.put_loop
+  (v : alloc.vec.Vec Article) (x : Article) (i : Std.Usize) :
+  Result (alloc.vec.Vec Article)
   := do
   loop
-    (fun (out1, i1) => del_tags_of_loop.body v article out1 i1)
-    (out, i)
+    (fun i1 => Article.put_loop.body v x i1)
+    i
 
-/-- [conduit_kernel::del_tags_of]:
-    Source: 'examples/conduit/kernel/src/lib.rs', lines 1100:0-1110:1 -/
+/-- [conduit_kernel::{conduit_kernel::Article}::put]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 217:12-227:13
+    Visibility: public -/
 @[reducible]
-def del_tags_of
-  (v : alloc.vec.Vec Tag) (article : Std.U64) :
-  Result (alloc.vec.Vec Tag)
+def Article.put
+  (v : alloc.vec.Vec Article) (x : Article) :
+  Result (alloc.vec.Vec Article)
   := do
-  del_tags_of_loop v article (alloc.vec.Vec.new Tag) 0#usize
+  Article.put_loop v x 0#usize
 
-/-- [conduit_kernel::put_favorite]: loop body 0:
-    Source: 'examples/conduit/kernel/src/lib.rs', lines 1:0-1122:1 -/
+/-- [conduit_kernel::{conduit_kernel::Follow}::put]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 219:16-227:13
+    Visibility: public -/
 @[rust_loop_body]
-def put_favorite_loop.body
-  (v : alloc.vec.Vec Favorite) (x : Favorite) (i : Std.Usize) :
-  Result (ControlFlow Std.Usize (alloc.vec.Vec Favorite))
+def Follow.put_loop.body
+  (v : alloc.vec.Vec Follow) (x : Follow) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize (alloc.vec.Vec Follow))
   := do
   let i1 := alloc.vec.Vec.len v
   if i < i1
   then
     let f ←
-      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Favorite) v i
-    if f.article = x.article
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Follow) v i
+    if f.follower = x.follower
     then
-      if f.user = x.user
+      if f.followed = x.followed
       then
         let (_, index_mut_back) ←
           alloc.vec.Vec.index_mut (core.slice.index.SliceIndexUsizeSlice
-            Favorite) v i
+            Follow) v i
         let v1 := index_mut_back x
         ok (done v1)
       else let i2 ← i + 1#usize
@@ -2561,131 +2994,44 @@ def put_favorite_loop.body
   else let v1 ← alloc.vec.Vec.push v x
        ok (done v1)
 
-/-- [conduit_kernel::put_favorite]: loop 0:
-    Source: 'examples/conduit/kernel/src/lib.rs', lines 1:0-1122:1 -/
+/-- [conduit_kernel::{conduit_kernel::Follow}::put]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 219:16-227:13
+    Visibility: public -/
 @[rust_loop]
-def put_favorite_loop
-  (v : alloc.vec.Vec Favorite) (x : Favorite) (i : Std.Usize) :
-  Result (alloc.vec.Vec Favorite)
+def Follow.put_loop
+  (v : alloc.vec.Vec Follow) (x : Follow) (i : Std.Usize) :
+  Result (alloc.vec.Vec Follow)
   := do
   loop
-    (fun i1 => put_favorite_loop.body v x i1)
+    (fun i1 => Follow.put_loop.body v x i1)
     i
 
-/-- [conduit_kernel::put_favorite]:
-    Source: 'examples/conduit/kernel/src/lib.rs', lines 1112:0-1122:1 -/
+/-- [conduit_kernel::{conduit_kernel::Follow}::put]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 217:12-227:13
+    Visibility: public -/
 @[reducible]
-def put_favorite
-  (v : alloc.vec.Vec Favorite) (x : Favorite) :
-  Result (alloc.vec.Vec Favorite)
-  := do
-  put_favorite_loop v x 0#usize
+def Follow.put
+  (v : alloc.vec.Vec Follow) (x : Follow) : Result (alloc.vec.Vec Follow) := do
+  Follow.put_loop v x 0#usize
 
-/-- [conduit_kernel::del_favorite]: loop body 0:
-    Source: 'examples/conduit/kernel/src/lib.rs', lines 1127:4-1132:5 -/
+/-- [conduit_kernel::{conduit_kernel::User}::put]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 219:16-227:13
+    Visibility: public -/
 @[rust_loop_body]
-def del_favorite_loop.body
-  (v : alloc.vec.Vec Favorite) (x : Favorite) (out : alloc.vec.Vec Favorite)
-  (i : Std.Usize) :
-  Result (ControlFlow ((alloc.vec.Vec Favorite) × Std.Usize) (alloc.vec.Vec
-    Favorite))
+def User.put_loop.body
+  (v : alloc.vec.Vec User) (x : User) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize (alloc.vec.Vec User))
   := do
   let i1 := alloc.vec.Vec.len v
   if i < i1
   then
-    let f ←
-      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Favorite) v i
-    let out1 ←
-      if f.article = x.article
-      then if f.user = x.user
-           then ok out
-           else alloc.vec.Vec.push out f
-      else alloc.vec.Vec.push out f
-    let i2 ← i + 1#usize
-    ok (cont (out1, i2))
-  else ok (done out)
-
-/-- [conduit_kernel::del_favorite]: loop 0:
-    Source: 'examples/conduit/kernel/src/lib.rs', lines 1127:4-1132:5 -/
-@[rust_loop]
-def del_favorite_loop
-  (v : alloc.vec.Vec Favorite) (x : Favorite) (out : alloc.vec.Vec Favorite)
-  (i : Std.Usize) :
-  Result (alloc.vec.Vec Favorite)
-  := do
-  loop
-    (fun (out1, i1) => del_favorite_loop.body v x out1 i1)
-    (out, i)
-
-/-- [conduit_kernel::del_favorite]:
-    Source: 'examples/conduit/kernel/src/lib.rs', lines 1124:0-1134:1 -/
-@[reducible]
-def del_favorite
-  (v : alloc.vec.Vec Favorite) (x : Favorite) :
-  Result (alloc.vec.Vec Favorite)
-  := do
-  del_favorite_loop v x (alloc.vec.Vec.new Favorite) 0#usize
-
-/-- [conduit_kernel::del_favorites_of]: loop body 0:
-    Source: 'examples/conduit/kernel/src/lib.rs', lines 1139:4-1144:5 -/
-@[rust_loop_body]
-def del_favorites_of_loop.body
-  (v : alloc.vec.Vec Favorite) (article : Std.U64)
-  (out : alloc.vec.Vec Favorite) (i : Std.Usize) :
-  Result (ControlFlow ((alloc.vec.Vec Favorite) × Std.Usize) (alloc.vec.Vec
-    Favorite))
-  := do
-  let i1 := alloc.vec.Vec.len v
-  if i < i1
-  then
-    let f ←
-      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Favorite) v i
-    let out1 ←
-      if f.article != article
-      then alloc.vec.Vec.push out f
-      else ok out
-    let i2 ← i + 1#usize
-    ok (cont (out1, i2))
-  else ok (done out)
-
-/-- [conduit_kernel::del_favorites_of]: loop 0:
-    Source: 'examples/conduit/kernel/src/lib.rs', lines 1139:4-1144:5 -/
-@[rust_loop]
-def del_favorites_of_loop
-  (v : alloc.vec.Vec Favorite) (article : Std.U64)
-  (out : alloc.vec.Vec Favorite) (i : Std.Usize) :
-  Result (alloc.vec.Vec Favorite)
-  := do
-  loop
-    (fun (out1, i1) => del_favorites_of_loop.body v article out1 i1)
-    (out, i)
-
-/-- [conduit_kernel::del_favorites_of]:
-    Source: 'examples/conduit/kernel/src/lib.rs', lines 1136:0-1146:1 -/
-@[reducible]
-def del_favorites_of
-  (v : alloc.vec.Vec Favorite) (article : Std.U64) :
-  Result (alloc.vec.Vec Favorite)
-  := do
-  del_favorites_of_loop v article (alloc.vec.Vec.new Favorite) 0#usize
-
-/-- [conduit_kernel::put_comment]: loop body 0:
-    Source: 'examples/conduit/kernel/src/lib.rs', lines 1150:4-1158:1 -/
-@[rust_loop_body]
-def put_comment_loop.body
-  (v : alloc.vec.Vec Comment) (x : Comment) (i : Std.Usize) :
-  Result (ControlFlow Std.Usize (alloc.vec.Vec Comment))
-  := do
-  let i1 := alloc.vec.Vec.len v
-  if i < i1
-  then
-    let c ←
-      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Comment) v i
-    if c.id = x.id
+    let u ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice User) v i
+    if u.id = x.id
     then
       let (_, index_mut_back) ←
-        alloc.vec.Vec.index_mut (core.slice.index.SliceIndexUsizeSlice Comment)
-          v i
+        alloc.vec.Vec.index_mut (core.slice.index.SliceIndexUsizeSlice User) v
+          i
       let v1 := index_mut_back x
       ok (done v1)
     else let i2 ← i + 1#usize
@@ -2693,163 +3039,1447 @@ def put_comment_loop.body
   else let v1 ← alloc.vec.Vec.push v x
        ok (done v1)
 
-/-- [conduit_kernel::put_comment]: loop 0:
-    Source: 'examples/conduit/kernel/src/lib.rs', lines 1150:4-1158:1 -/
+/-- [conduit_kernel::{conduit_kernel::User}::put]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 219:16-227:13
+    Visibility: public -/
 @[rust_loop]
-def put_comment_loop
-  (v : alloc.vec.Vec Comment) (x : Comment) (i : Std.Usize) :
-  Result (alloc.vec.Vec Comment)
+def User.put_loop
+  (v : alloc.vec.Vec User) (x : User) (i : Std.Usize) :
+  Result (alloc.vec.Vec User)
   := do
   loop
-    (fun i1 => put_comment_loop.body v x i1)
+    (fun i1 => User.put_loop.body v x i1)
     i
 
-/-- [conduit_kernel::put_comment]:
-    Source: 'examples/conduit/kernel/src/lib.rs', lines 1148:0-1158:1 -/
+/-- [conduit_kernel::{conduit_kernel::User}::put]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 217:12-227:13
+    Visibility: public -/
 @[reducible]
-def put_comment
-  (v : alloc.vec.Vec Comment) (x : Comment) :
-  Result (alloc.vec.Vec Comment)
-  := do
-  put_comment_loop v x 0#usize
-
-/-- [conduit_kernel::del_comment]: loop body 0:
-    Source: 'examples/conduit/kernel/src/lib.rs', lines 1163:4-1168:5 -/
-@[rust_loop_body]
-def del_comment_loop.body
-  (v : alloc.vec.Vec Comment) (id : Std.U64) (out : alloc.vec.Vec Comment)
-  (i : Std.Usize) :
-  Result (ControlFlow ((alloc.vec.Vec Comment) × Std.Usize) (alloc.vec.Vec
-    Comment))
-  := do
-  let i1 := alloc.vec.Vec.len v
-  if i < i1
-  then
-    let c ←
-      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Comment) v i
-    let out1 ←
-      if c.id != id
-      then
-        do
-        let c1 ← Comment.Insts.CoreCloneClone.clone c
-        alloc.vec.Vec.push out c1
-      else ok out
-    let i2 ← i + 1#usize
-    ok (cont (out1, i2))
-  else ok (done out)
-
-/-- [conduit_kernel::del_comment]: loop 0:
-    Source: 'examples/conduit/kernel/src/lib.rs', lines 1163:4-1168:5 -/
-@[rust_loop]
-def del_comment_loop
-  (v : alloc.vec.Vec Comment) (id : Std.U64) (out : alloc.vec.Vec Comment)
-  (i : Std.Usize) :
-  Result (alloc.vec.Vec Comment)
-  := do
-  loop
-    (fun (out1, i1) => del_comment_loop.body v id out1 i1)
-    (out, i)
-
-/-- [conduit_kernel::del_comment]:
-    Source: 'examples/conduit/kernel/src/lib.rs', lines 1160:0-1170:1 -/
-@[reducible]
-def del_comment
-  (v : alloc.vec.Vec Comment) (id : Std.U64) :
-  Result (alloc.vec.Vec Comment)
-  := do
-  del_comment_loop v id (alloc.vec.Vec.new Comment) 0#usize
-
-/-- [conduit_kernel::del_comments_of]: loop body 0:
-    Source: 'examples/conduit/kernel/src/lib.rs', lines 1175:4-1180:5 -/
-@[rust_loop_body]
-def del_comments_of_loop.body
-  (v : alloc.vec.Vec Comment) (article : Std.U64) (out : alloc.vec.Vec Comment)
-  (i : Std.Usize) :
-  Result (ControlFlow ((alloc.vec.Vec Comment) × Std.Usize) (alloc.vec.Vec
-    Comment))
-  := do
-  let i1 := alloc.vec.Vec.len v
-  if i < i1
-  then
-    let c ←
-      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Comment) v i
-    let out1 ←
-      if c.article != article
-      then
-        do
-        let c1 ← Comment.Insts.CoreCloneClone.clone c
-        alloc.vec.Vec.push out c1
-      else ok out
-    let i2 ← i + 1#usize
-    ok (cont (out1, i2))
-  else ok (done out)
-
-/-- [conduit_kernel::del_comments_of]: loop 0:
-    Source: 'examples/conduit/kernel/src/lib.rs', lines 1175:4-1180:5 -/
-@[rust_loop]
-def del_comments_of_loop
-  (v : alloc.vec.Vec Comment) (article : Std.U64) (out : alloc.vec.Vec Comment)
-  (i : Std.Usize) :
-  Result (alloc.vec.Vec Comment)
-  := do
-  loop
-    (fun (out1, i1) => del_comments_of_loop.body v article out1 i1)
-    (out, i)
-
-/-- [conduit_kernel::del_comments_of]:
-    Source: 'examples/conduit/kernel/src/lib.rs', lines 1172:0-1182:1 -/
-@[reducible]
-def del_comments_of
-  (v : alloc.vec.Vec Comment) (article : Std.U64) :
-  Result (alloc.vec.Vec Comment)
-  := do
-  del_comments_of_loop v article (alloc.vec.Vec.new Comment) 0#usize
+def User.put
+  (v : alloc.vec.Vec User) (x : User) : Result (alloc.vec.Vec User) := do
+  User.put_loop v x 0#usize
 
 /-- [conduit_kernel::apply_write]:
-    Source: 'examples/conduit/kernel/src/lib.rs', lines 1184:0-1201:1 -/
+    Source: 'examples/conduit/kernel/src/lib.rs', lines 1035:0-1056:1 -/
 def apply_write (s : Snapshot) (w : Write) : Result Snapshot := do
   match w with
-  | Write.PutUser x => let v ← put_user s.users x
+  | Write.PutUser x => let v ← User.put s.users x
                        ok { s with users := v }
   | Write.PutFollow x =>
-    let v ← put_follow s.follows x
+    let v ← Follow.put s.follows x
     ok { s with follows := v }
   | Write.DelFollow x =>
-    let v ← del_follow s.follows x
+    let v ← Follow.del s.follows x.follower x.followed
     ok { s with follows := v }
   | Write.PutArticle x =>
-    let v ← put_article s.articles x
+    let v ← Article.put s.articles x
     ok { s with articles := v }
   | Write.DelArticle id =>
-    let v ← del_article s.articles id
+    let v ← Article.del s.articles id
     ok { s with articles := v }
-  | Write.PutTag x => let v ← put_tag s.tags x
+  | Write.PutTag x => let v ← Tag.put s.tags x
                       ok { s with tags := v }
   | Write.DelTagsOf id =>
-    let v ← del_tags_of s.tags id
-    ok { s with tags := v }
+    let v ← U64.Insts.I5h_sqlColumn.to_val id
+    let v1 ← Tag.del_where s.tags TAG_ARTICLE v
+    ok { s with tags := v1 }
   | Write.PutFavorite x =>
-    let v ← put_favorite s.favorites x
+    let v ← Favorite.put s.favorites x
     ok { s with favorites := v }
   | Write.DelFavorite x =>
-    let v ← del_favorite s.favorites x
+    let v ← Favorite.del s.favorites x.article x.user
     ok { s with favorites := v }
   | Write.DelFavoritesOf id =>
-    let v ← del_favorites_of s.favorites id
-    ok { s with favorites := v }
+    let v ← U64.Insts.I5h_sqlColumn.to_val id
+    let v1 ← Favorite.del_where s.favorites FAVORITE_ARTICLE v
+    ok { s with favorites := v1 }
   | Write.PutComment x =>
-    let v ← put_comment s.comments x
+    let v ← Comment.put s.comments x
     ok { s with comments := v }
   | Write.DelComment id =>
-    let v ← del_comment s.comments id
+    let v ← Comment.del s.comments id
     ok { s with comments := v }
   | Write.DelCommentsOf id =>
-    let v ← del_comments_of s.comments id
-    ok { s with comments := v }
+    let v ← U64.Insts.I5h_sqlColumn.to_val id
+    let v1 ← Comment.del_where s.comments COMMENT_ARTICLE v
+    ok { s with comments := v1 }
   | Write.SetCounter c => ok { s with counter := c }
 
+/-- [conduit_kernel::{conduit_kernel::Comment}::TABLE]
+    Source: 'crates/i5h-schema/src/lib.rs', lines 132:12-132:60
+    Visibility: public -/
+@[global_simps, irreducible] def Comment.TABLE : Std.U32 := 5#u32
+
+/-- [conduit_kernel::{conduit_kernel::Comment}::sql_del_where]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 263:12-265:13
+    Visibility: public -/
+def Comment.sql_del_where
+  (col : Std.U32) (val : i5h_sql.Val) : Result i5h_sql.Write := do
+  ok (i5h_sql.Write.DelWhere Comment.TABLE col val)
+
+/-- [conduit_kernel::{conduit_kernel::Favorite}::TABLE]
+    Source: 'crates/i5h-schema/src/lib.rs', lines 132:12-132:60
+    Visibility: public -/
+@[global_simps, irreducible] def Favorite.TABLE : Std.U32 := 4#u32
+
+/-- [conduit_kernel::{conduit_kernel::Favorite}::sql_del_where]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 263:12-265:13
+    Visibility: public -/
+def Favorite.sql_del_where
+  (col : Std.U32) (val : i5h_sql.Val) : Result i5h_sql.Write := do
+  ok (i5h_sql.Write.DelWhere Favorite.TABLE col val)
+
+/-- [conduit_kernel::{conduit_kernel::Tag}::TABLE]
+    Source: 'crates/i5h-schema/src/lib.rs', lines 132:12-132:60
+    Visibility: public -/
+@[global_simps, irreducible] def Tag.TABLE : Std.U32 := 3#u32
+
+/-- [conduit_kernel::{conduit_kernel::Tag}::sql_del_where]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 263:12-265:13
+    Visibility: public -/
+def Tag.sql_del_where
+  (col : Std.U32) (val : i5h_sql.Val) : Result i5h_sql.Write := do
+  ok (i5h_sql.Write.DelWhere Tag.TABLE col val)
+
+/-- [conduit_kernel::{conduit_kernel::Comment}::sql_del]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 256:12-260:13
+    Visibility: public -/
+def Comment.sql_del (id : Std.U64) : Result i5h_sql.Write := do
+  let v ← U64.Insts.I5h_sqlColumn.to_val id
+  let key ← alloc.vec.Vec.push (alloc.vec.Vec.new i5h_sql.Val) v
+  ok (i5h_sql.Write.Del Comment.TABLE key)
+
+/-- [conduit_kernel::{conduit_kernel::Favorite}::sql_del]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 256:12-260:13
+    Visibility: public -/
+def Favorite.sql_del
+  (article : Std.U64) (user : Std.U64) : Result i5h_sql.Write := do
+  let v ← U64.Insts.I5h_sqlColumn.to_val article
+  let key ← alloc.vec.Vec.push (alloc.vec.Vec.new i5h_sql.Val) v
+  let v1 ← U64.Insts.I5h_sqlColumn.to_val user
+  let key1 ← alloc.vec.Vec.push key v1
+  ok (i5h_sql.Write.Del Favorite.TABLE key1)
+
+/-- [conduit_kernel::{conduit_kernel::Article}::TABLE]
+    Source: 'crates/i5h-schema/src/lib.rs', lines 132:12-132:60
+    Visibility: public -/
+@[global_simps, irreducible] def Article.TABLE : Std.U32 := 2#u32
+
+/-- [conduit_kernel::{conduit_kernel::Article}::sql_del]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 256:12-260:13
+    Visibility: public -/
+def Article.sql_del (id : Std.U64) : Result i5h_sql.Write := do
+  let v ← U64.Insts.I5h_sqlColumn.to_val id
+  let key ← alloc.vec.Vec.push (alloc.vec.Vec.new i5h_sql.Val) v
+  ok (i5h_sql.Write.Del Article.TABLE key)
+
+/-- [conduit_kernel::{conduit_kernel::Follow}::TABLE]
+    Source: 'crates/i5h-schema/src/lib.rs', lines 132:12-132:60
+    Visibility: public -/
+@[global_simps, irreducible] def Follow.TABLE : Std.U32 := 1#u32
+
+/-- [conduit_kernel::{conduit_kernel::Follow}::sql_del]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 256:12-260:13
+    Visibility: public -/
+def Follow.sql_del
+  (follower : Std.U64) (followed : Std.U64) : Result i5h_sql.Write := do
+  let v ← U64.Insts.I5h_sqlColumn.to_val follower
+  let key ← alloc.vec.Vec.push (alloc.vec.Vec.new i5h_sql.Val) v
+  let v1 ← U64.Insts.I5h_sqlColumn.to_val followed
+  let key1 ← alloc.vec.Vec.push key v1
+  ok (i5h_sql.Write.Del Follow.TABLE key1)
+
+/-- [conduit_kernel::{conduit_kernel::Counter}::to_row]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 135:12-140:13
+    Visibility: public -/
+def Counter.to_row (self : Counter) : Result (alloc.vec.Vec i5h_sql.Val) := do
+  let v ← U64.Insts.I5h_sqlColumn.to_val self.last_user
+  let out ← alloc.vec.Vec.push (alloc.vec.Vec.new i5h_sql.Val) v
+  let v1 ← U64.Insts.I5h_sqlColumn.to_val self.last_article
+  let out1 ← alloc.vec.Vec.push out v1
+  let v2 ← U64.Insts.I5h_sqlColumn.to_val self.last_comment
+  alloc.vec.Vec.push out1 v2
+
+/-- [conduit_kernel::{conduit_kernel::Counter}::KEY_LEN]
+    Source: 'crates/i5h-schema/src/lib.rs', lines 133:12-133:62
+    Visibility: public -/
+@[global_simps, irreducible] def Counter.KEY_LEN : Std.U32 := 0#u32
+
+/-- [conduit_kernel::{conduit_kernel::Counter}::TABLE]
+    Source: 'crates/i5h-schema/src/lib.rs', lines 132:12-132:60
+    Visibility: public -/
+@[global_simps, irreducible] def Counter.TABLE : Std.U32 := 6#u32
+
+/-- [conduit_kernel::{conduit_kernel::Counter}::sql_put]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 186:12-188:13
+    Visibility: public -/
+def Counter.sql_put (self : Counter) : Result i5h_sql.Write := do
+  let v ← Counter.to_row self
+  ok (i5h_sql.Write.Put Counter.TABLE Counter.KEY_LEN v)
+
+/-- [conduit_kernel::{conduit_kernel::Comment}::KEY_LEN]
+    Source: 'crates/i5h-schema/src/lib.rs', lines 133:12-133:62
+    Visibility: public -/
+@[global_simps, irreducible] def Comment.KEY_LEN : Std.U32 := 1#u32
+
+/-- [conduit_kernel::{conduit_kernel::Comment}::sql_put]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 186:12-188:13
+    Visibility: public -/
+def Comment.sql_put (self : Comment) : Result i5h_sql.Write := do
+  let v ← Comment.to_row self
+  ok (i5h_sql.Write.Put Comment.TABLE Comment.KEY_LEN v)
+
+/-- [conduit_kernel::{conduit_kernel::Favorite}::KEY_LEN]
+    Source: 'crates/i5h-schema/src/lib.rs', lines 133:12-133:62
+    Visibility: public -/
+@[global_simps, irreducible] def Favorite.KEY_LEN : Std.U32 := 2#u32
+
+/-- [conduit_kernel::{conduit_kernel::Favorite}::sql_put]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 186:12-188:13
+    Visibility: public -/
+def Favorite.sql_put (self : Favorite) : Result i5h_sql.Write := do
+  let v ← Favorite.to_row self
+  ok (i5h_sql.Write.Put Favorite.TABLE Favorite.KEY_LEN v)
+
+/-- [conduit_kernel::{conduit_kernel::Tag}::KEY_LEN]
+    Source: 'crates/i5h-schema/src/lib.rs', lines 133:12-133:62
+    Visibility: public -/
+@[global_simps, irreducible] def Tag.KEY_LEN : Std.U32 := 2#u32
+
+/-- [conduit_kernel::{conduit_kernel::Tag}::sql_put]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 186:12-188:13
+    Visibility: public -/
+def Tag.sql_put (self : Tag) : Result i5h_sql.Write := do
+  let v ← Tag.to_row self
+  ok (i5h_sql.Write.Put Tag.TABLE Tag.KEY_LEN v)
+
+/-- [conduit_kernel::{conduit_kernel::Article}::to_row]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 135:12-140:13
+    Visibility: public -/
+def Article.to_row (self : Article) : Result (alloc.vec.Vec i5h_sql.Val) := do
+  let v ← U64.Insts.I5h_sqlColumn.to_val self.id
+  let out ← alloc.vec.Vec.push (alloc.vec.Vec.new i5h_sql.Val) v
+  let v1 ← U64.Insts.I5h_sqlColumn.to_val self.author
+  let out1 ← alloc.vec.Vec.push out v1
+  let v2 ← alloc.vec.VecU8.Insts.I5h_sqlColumn.to_val self.slug
+  let out2 ← alloc.vec.Vec.push out1 v2
+  let v3 ← alloc.vec.VecU8.Insts.I5h_sqlColumn.to_val self.title
+  let out3 ← alloc.vec.Vec.push out2 v3
+  let v4 ← alloc.vec.VecU8.Insts.I5h_sqlColumn.to_val self.description
+  let out4 ← alloc.vec.Vec.push out3 v4
+  let v5 ← alloc.vec.VecU8.Insts.I5h_sqlColumn.to_val self.body
+  let out5 ← alloc.vec.Vec.push out4 v5
+  let v6 ← U64.Insts.I5h_sqlColumn.to_val self.created
+  let out6 ← alloc.vec.Vec.push out5 v6
+  let v7 ← U64.Insts.I5h_sqlColumn.to_val self.updated
+  alloc.vec.Vec.push out6 v7
+
+/-- [conduit_kernel::{conduit_kernel::Article}::KEY_LEN]
+    Source: 'crates/i5h-schema/src/lib.rs', lines 133:12-133:62
+    Visibility: public -/
+@[global_simps, irreducible] def Article.KEY_LEN : Std.U32 := 1#u32
+
+/-- [conduit_kernel::{conduit_kernel::Article}::sql_put]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 186:12-188:13
+    Visibility: public -/
+def Article.sql_put (self : Article) : Result i5h_sql.Write := do
+  let v ← Article.to_row self
+  ok (i5h_sql.Write.Put Article.TABLE Article.KEY_LEN v)
+
+/-- [conduit_kernel::{conduit_kernel::Follow}::to_row]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 135:12-140:13
+    Visibility: public -/
+def Follow.to_row (self : Follow) : Result (alloc.vec.Vec i5h_sql.Val) := do
+  let v ← U64.Insts.I5h_sqlColumn.to_val self.follower
+  let out ← alloc.vec.Vec.push (alloc.vec.Vec.new i5h_sql.Val) v
+  let v1 ← U64.Insts.I5h_sqlColumn.to_val self.followed
+  alloc.vec.Vec.push out v1
+
+/-- [conduit_kernel::{conduit_kernel::Follow}::KEY_LEN]
+    Source: 'crates/i5h-schema/src/lib.rs', lines 133:12-133:62
+    Visibility: public -/
+@[global_simps, irreducible] def Follow.KEY_LEN : Std.U32 := 2#u32
+
+/-- [conduit_kernel::{conduit_kernel::Follow}::sql_put]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 186:12-188:13
+    Visibility: public -/
+def Follow.sql_put (self : Follow) : Result i5h_sql.Write := do
+  let v ← Follow.to_row self
+  ok (i5h_sql.Write.Put Follow.TABLE Follow.KEY_LEN v)
+
+/-- [conduit_kernel::{conduit_kernel::User}::to_row]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 135:12-140:13
+    Visibility: public -/
+def User.to_row (self : User) : Result (alloc.vec.Vec i5h_sql.Val) := do
+  let v ← U64.Insts.I5h_sqlColumn.to_val self.id
+  let out ← alloc.vec.Vec.push (alloc.vec.Vec.new i5h_sql.Val) v
+  let v1 ← alloc.vec.VecU8.Insts.I5h_sqlColumn.to_val self.username
+  let out1 ← alloc.vec.Vec.push out v1
+  let v2 ← alloc.vec.VecU8.Insts.I5h_sqlColumn.to_val self.email
+  let out2 ← alloc.vec.Vec.push out1 v2
+  let v3 ← alloc.vec.VecU8.Insts.I5h_sqlColumn.to_val self.password
+  let out3 ← alloc.vec.Vec.push out2 v3
+  let v4 ← alloc.vec.VecU8.Insts.I5h_sqlColumn.to_val self.bio
+  let out4 ← alloc.vec.Vec.push out3 v4
+  let v5 ← alloc.vec.VecU8.Insts.I5h_sqlColumn.to_val self.image
+  alloc.vec.Vec.push out4 v5
+
+/-- [conduit_kernel::{conduit_kernel::User}::KEY_LEN]
+    Source: 'crates/i5h-schema/src/lib.rs', lines 133:12-133:62
+    Visibility: public -/
+@[global_simps, irreducible] def User.KEY_LEN : Std.U32 := 1#u32
+
+/-- [conduit_kernel::{conduit_kernel::User}::TABLE]
+    Source: 'crates/i5h-schema/src/lib.rs', lines 132:12-132:60
+    Visibility: public -/
+@[global_simps, irreducible] def User.TABLE : Std.U32 := 0#u32
+
+/-- [conduit_kernel::{conduit_kernel::User}::sql_put]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 186:12-188:13
+    Visibility: public -/
+def User.sql_put (self : User) : Result i5h_sql.Write := do
+  let v ← User.to_row self
+  ok (i5h_sql.Write.Put User.TABLE User.KEY_LEN v)
+
+/-- [conduit_kernel::sql_write]:
+    Source: 'examples/conduit/kernel/src/lib.rs', lines 1059:0-1076:1 -/
+def sql_write
+  (w : Write) (out : alloc.vec.Vec i5h_sql.Write) :
+  Result (alloc.vec.Vec i5h_sql.Write)
+  := do
+  match w with
+  | Write.PutUser x => let w1 ← User.sql_put x
+                       alloc.vec.Vec.push out w1
+  | Write.PutFollow x => let w1 ← Follow.sql_put x
+                         alloc.vec.Vec.push out w1
+  | Write.DelFollow x =>
+    let w1 ← Follow.sql_del x.follower x.followed
+    alloc.vec.Vec.push out w1
+  | Write.PutArticle x =>
+    let w1 ← Article.sql_put x
+    alloc.vec.Vec.push out w1
+  | Write.DelArticle id =>
+    let w1 ← Article.sql_del id
+    alloc.vec.Vec.push out w1
+  | Write.PutTag x => let w1 ← Tag.sql_put x
+                      alloc.vec.Vec.push out w1
+  | Write.DelTagsOf id =>
+    let v ← U64.Insts.I5h_sqlColumn.to_val id
+    let w1 ← Tag.sql_del_where TAG_ARTICLE v
+    alloc.vec.Vec.push out w1
+  | Write.PutFavorite x =>
+    let w1 ← Favorite.sql_put x
+    alloc.vec.Vec.push out w1
+  | Write.DelFavorite x =>
+    let w1 ← Favorite.sql_del x.article x.user
+    alloc.vec.Vec.push out w1
+  | Write.DelFavoritesOf id =>
+    let v ← U64.Insts.I5h_sqlColumn.to_val id
+    let w1 ← Favorite.sql_del_where FAVORITE_ARTICLE v
+    alloc.vec.Vec.push out w1
+  | Write.PutComment x =>
+    let w1 ← Comment.sql_put x
+    alloc.vec.Vec.push out w1
+  | Write.DelComment id =>
+    let w1 ← Comment.sql_del id
+    alloc.vec.Vec.push out w1
+  | Write.DelCommentsOf id =>
+    let v ← U64.Insts.I5h_sqlColumn.to_val id
+    let w1 ← Comment.sql_del_where COMMENT_ARTICLE v
+    alloc.vec.Vec.push out w1
+  | Write.SetCounter c =>
+    let w1 ← Counter.sql_put c
+    alloc.vec.Vec.push out w1
+
+/-- [conduit_kernel::{conduit_kernel::Counter}::from_row]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 143:12-164:13
+    Visibility: public -/
+def Counter.from_row
+  (row : alloc.vec.Vec i5h_sql.Val) : Result (Option Counter) := do
+  let i := alloc.vec.Vec.len row
+  let i1 ← 0#usize + 1#usize
+  let i2 ← i1 + 1#usize
+  let i3 ← i2 + 1#usize
+  if i != i3
+  then ok none
+  else
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice i5h_sql.Val)
+        row 0#usize
+    let o ← U64.Insts.I5h_sqlColumn.from_val v
+    match o with
+    | none => ok none
+    | some x =>
+      let v1 ←
+        alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice i5h_sql.Val)
+          row i1
+      let o1 ← U64.Insts.I5h_sqlColumn.from_val v1
+      match o1 with
+      | none => ok none
+      | some x1 =>
+        let i4 ← i1 + 1#usize
+        let v2 ←
+          alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+            i5h_sql.Val) row i4
+        let o2 ← U64.Insts.I5h_sqlColumn.from_val v2
+        match o2 with
+        | none => ok none
+        | some x2 =>
+          let _ ← i4 + 1#usize
+          ok (some { last_user := x, last_article := x1, last_comment := x2 })
+
+/-- [conduit_kernel::{conduit_kernel::User}::from_row]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 143:12-164:13
+    Visibility: public -/
+def User.from_row
+  (row : alloc.vec.Vec i5h_sql.Val) : Result (Option User) := do
+  let i := alloc.vec.Vec.len row
+  let i1 ← 0#usize + 1#usize
+  let i2 ← i1 + 1#usize
+  let i3 ← i2 + 1#usize
+  let i4 ← i3 + 1#usize
+  let i5 ← i4 + 1#usize
+  let i6 ← i5 + 1#usize
+  if i != i6
+  then ok none
+  else
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice i5h_sql.Val)
+        row 0#usize
+    let o ← U64.Insts.I5h_sqlColumn.from_val v
+    match o with
+    | none => ok none
+    | some x =>
+      let v1 ←
+        alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice i5h_sql.Val)
+          row i1
+      let o1 ← alloc.vec.VecU8.Insts.I5h_sqlColumn.from_val v1
+      match o1 with
+      | none => ok none
+      | some x1 =>
+        let i7 ← i1 + 1#usize
+        let v2 ←
+          alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+            i5h_sql.Val) row i7
+        let o2 ← alloc.vec.VecU8.Insts.I5h_sqlColumn.from_val v2
+        match o2 with
+        | none => ok none
+        | some x2 =>
+          let i8 ← i7 + 1#usize
+          let v3 ←
+            alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+              i5h_sql.Val) row i8
+          let o3 ← alloc.vec.VecU8.Insts.I5h_sqlColumn.from_val v3
+          match o3 with
+          | none => ok none
+          | some x3 =>
+            let i9 ← i8 + 1#usize
+            let v4 ←
+              alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+                i5h_sql.Val) row i9
+            let o4 ← alloc.vec.VecU8.Insts.I5h_sqlColumn.from_val v4
+            match o4 with
+            | none => ok none
+            | some x4 =>
+              let i10 ← i9 + 1#usize
+              let v5 ←
+                alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+                  i5h_sql.Val) row i10
+              let o5 ← alloc.vec.VecU8.Insts.I5h_sqlColumn.from_val v5
+              match o5 with
+              | none => ok none
+              | some x5 =>
+                let _ ← i10 + 1#usize
+                ok (some
+                  {
+                    id := x,
+                    username := x1,
+                    email := x2,
+                    password := x3,
+                    bio := x4,
+                    image := x5
+                  })
+
+/-- [conduit_kernel::{conduit_kernel::Follow}::from_row]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 143:12-164:13
+    Visibility: public -/
+def Follow.from_row
+  (row : alloc.vec.Vec i5h_sql.Val) : Result (Option Follow) := do
+  let i := alloc.vec.Vec.len row
+  let i1 ← 0#usize + 1#usize
+  let i2 ← i1 + 1#usize
+  if i != i2
+  then ok none
+  else
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice i5h_sql.Val)
+        row 0#usize
+    let o ← U64.Insts.I5h_sqlColumn.from_val v
+    match o with
+    | none => ok none
+    | some x =>
+      let v1 ←
+        alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice i5h_sql.Val)
+          row i1
+      let o1 ← U64.Insts.I5h_sqlColumn.from_val v1
+      match o1 with
+      | none => ok none
+      | some x1 =>
+        let _ ← i1 + 1#usize
+        ok (some { follower := x, followed := x1 })
+
+/-- [conduit_kernel::{conduit_kernel::Article}::from_row]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 143:12-164:13
+    Visibility: public -/
+def Article.from_row
+  (row : alloc.vec.Vec i5h_sql.Val) : Result (Option Article) := do
+  let i := alloc.vec.Vec.len row
+  let i1 ← 0#usize + 1#usize
+  let i2 ← i1 + 1#usize
+  let i3 ← i2 + 1#usize
+  let i4 ← i3 + 1#usize
+  let i5 ← i4 + 1#usize
+  let i6 ← i5 + 1#usize
+  let i7 ← i6 + 1#usize
+  let i8 ← i7 + 1#usize
+  if i != i8
+  then ok none
+  else
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice i5h_sql.Val)
+        row 0#usize
+    let o ← U64.Insts.I5h_sqlColumn.from_val v
+    match o with
+    | none => ok none
+    | some x =>
+      let v1 ←
+        alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice i5h_sql.Val)
+          row i1
+      let o1 ← U64.Insts.I5h_sqlColumn.from_val v1
+      match o1 with
+      | none => ok none
+      | some x1 =>
+        let i9 ← i1 + 1#usize
+        let v2 ←
+          alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+            i5h_sql.Val) row i9
+        let o2 ← alloc.vec.VecU8.Insts.I5h_sqlColumn.from_val v2
+        match o2 with
+        | none => ok none
+        | some x2 =>
+          let i10 ← i9 + 1#usize
+          let v3 ←
+            alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+              i5h_sql.Val) row i10
+          let o3 ← alloc.vec.VecU8.Insts.I5h_sqlColumn.from_val v3
+          match o3 with
+          | none => ok none
+          | some x3 =>
+            let i11 ← i10 + 1#usize
+            let v4 ←
+              alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+                i5h_sql.Val) row i11
+            let o4 ← alloc.vec.VecU8.Insts.I5h_sqlColumn.from_val v4
+            match o4 with
+            | none => ok none
+            | some x4 =>
+              let i12 ← i11 + 1#usize
+              let v5 ←
+                alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+                  i5h_sql.Val) row i12
+              let o5 ← alloc.vec.VecU8.Insts.I5h_sqlColumn.from_val v5
+              match o5 with
+              | none => ok none
+              | some x5 =>
+                let i13 ← i12 + 1#usize
+                let v6 ←
+                  alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+                    i5h_sql.Val) row i13
+                let o6 ← U64.Insts.I5h_sqlColumn.from_val v6
+                match o6 with
+                | none => ok none
+                | some x6 =>
+                  let i14 ← i13 + 1#usize
+                  let v7 ←
+                    alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+                      i5h_sql.Val) row i14
+                  let o7 ← U64.Insts.I5h_sqlColumn.from_val v7
+                  match o7 with
+                  | none => ok none
+                  | some x7 =>
+                    let _ ← i14 + 1#usize
+                    ok (some
+                      {
+                        id := x,
+                        author := x1,
+                        slug := x2,
+                        title := x3,
+                        description := x4,
+                        body := x5,
+                        created := x6,
+                        updated := x7
+                      })
+
+/-- [conduit_kernel::{conduit_kernel::Tag}::from_row]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 143:12-164:13
+    Visibility: public -/
+def Tag.from_row (row : alloc.vec.Vec i5h_sql.Val) : Result (Option Tag) := do
+  let i := alloc.vec.Vec.len row
+  let i1 ← 0#usize + 1#usize
+  let i2 ← i1 + 1#usize
+  if i != i2
+  then ok none
+  else
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice i5h_sql.Val)
+        row 0#usize
+    let o ← U64.Insts.I5h_sqlColumn.from_val v
+    match o with
+    | none => ok none
+    | some x =>
+      let v1 ←
+        alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice i5h_sql.Val)
+          row i1
+      let o1 ← alloc.vec.VecU8.Insts.I5h_sqlColumn.from_val v1
+      match o1 with
+      | none => ok none
+      | some x1 => let _ ← i1 + 1#usize
+                   ok (some { article := x, tag := x1 })
+
+/-- [conduit_kernel::{conduit_kernel::Favorite}::from_row]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 143:12-164:13
+    Visibility: public -/
+def Favorite.from_row
+  (row : alloc.vec.Vec i5h_sql.Val) : Result (Option Favorite) := do
+  let i := alloc.vec.Vec.len row
+  let i1 ← 0#usize + 1#usize
+  let i2 ← i1 + 1#usize
+  if i != i2
+  then ok none
+  else
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice i5h_sql.Val)
+        row 0#usize
+    let o ← U64.Insts.I5h_sqlColumn.from_val v
+    match o with
+    | none => ok none
+    | some x =>
+      let v1 ←
+        alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice i5h_sql.Val)
+          row i1
+      let o1 ← U64.Insts.I5h_sqlColumn.from_val v1
+      match o1 with
+      | none => ok none
+      | some x1 =>
+        let _ ← i1 + 1#usize
+        ok (some { article := x, user := x1 })
+
+/-- [conduit_kernel::{conduit_kernel::Comment}::from_row]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 143:12-164:13
+    Visibility: public -/
+def Comment.from_row
+  (row : alloc.vec.Vec i5h_sql.Val) : Result (Option Comment) := do
+  let i := alloc.vec.Vec.len row
+  let i1 ← 0#usize + 1#usize
+  let i2 ← i1 + 1#usize
+  let i3 ← i2 + 1#usize
+  let i4 ← i3 + 1#usize
+  let i5 ← i4 + 1#usize
+  if i != i5
+  then ok none
+  else
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice i5h_sql.Val)
+        row 0#usize
+    let o ← U64.Insts.I5h_sqlColumn.from_val v
+    match o with
+    | none => ok none
+    | some x =>
+      let v1 ←
+        alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice i5h_sql.Val)
+          row i1
+      let o1 ← U64.Insts.I5h_sqlColumn.from_val v1
+      match o1 with
+      | none => ok none
+      | some x1 =>
+        let i6 ← i1 + 1#usize
+        let v2 ←
+          alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+            i5h_sql.Val) row i6
+        let o2 ← U64.Insts.I5h_sqlColumn.from_val v2
+        match o2 with
+        | none => ok none
+        | some x2 =>
+          let i7 ← i6 + 1#usize
+          let v3 ←
+            alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+              i5h_sql.Val) row i7
+          let o3 ← alloc.vec.VecU8.Insts.I5h_sqlColumn.from_val v3
+          match o3 with
+          | none => ok none
+          | some x3 =>
+            let i8 ← i7 + 1#usize
+            let v4 ←
+              alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+                i5h_sql.Val) row i8
+            let o4 ← U64.Insts.I5h_sqlColumn.from_val v4
+            match o4 with
+            | none => ok none
+            | some x4 =>
+              let _ ← i8 + 1#usize
+              ok (some
+                {
+                  id := x,
+                  article := x1,
+                  author := x2,
+                  body := x3,
+                  created := x4
+                })
+
+/-- [conduit_kernel::{conduit_kernel::User}::from_rows]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Visibility: public -/
+@[rust_loop_body]
+def User.from_rows_loop.body
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)) (out : alloc.vec.Vec User)
+  (ok1 : Bool) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec User) × Bool × Std.Usize)
+    ((alloc.vec.Vec User) × Bool))
+  := do
+  let i1 := alloc.vec.Vec.len rows
+  if i < i1
+  then
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice (alloc.vec.Vec
+        i5h_sql.Val)) rows i
+    let o ← User.from_row v
+    let (out1, ok2) ←
+      match o with
+      | none => ok (out, false)
+      | some x => do
+                  let out2 ← alloc.vec.Vec.push out x
+                  ok (out2, ok1)
+    let i2 ← i + 1#usize
+    ok (cont (out1, ok2, i2))
+  else ok (done (out, ok1))
+
+/-- [conduit_kernel::{conduit_kernel::User}::from_rows]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Visibility: public -/
+@[rust_loop]
+def User.from_rows_loop
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)) (out : alloc.vec.Vec User)
+  (ok1 : Bool) (i : Std.Usize) :
+  Result ((alloc.vec.Vec User) × Bool)
+  := do
+  loop
+    (fun (out1, ok2, i1) => User.from_rows_loop.body rows out1 ok2 i1)
+    (out, ok1, i)
+
+/-- [conduit_kernel::{conduit_kernel::User}::from_rows]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 167:12-183:13
+    Visibility: public -/
+def User.from_rows
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)) :
+  Result (Option (alloc.vec.Vec User))
+  := do
+  let (out, ok1) ←
+    User.from_rows_loop rows (alloc.vec.Vec.new User) true 0#usize
+  if ok1
+  then ok (some out)
+  else ok none
+
+/-- [conduit_kernel::{conduit_kernel::Follow}::from_rows]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Visibility: public -/
+@[rust_loop_body]
+def Follow.from_rows_loop.body
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val))
+  (out : alloc.vec.Vec Follow) (ok1 : Bool) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Follow) × Bool × Std.Usize)
+    ((alloc.vec.Vec Follow) × Bool))
+  := do
+  let i1 := alloc.vec.Vec.len rows
+  if i < i1
+  then
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice (alloc.vec.Vec
+        i5h_sql.Val)) rows i
+    let o ← Follow.from_row v
+    let (out1, ok2) ←
+      match o with
+      | none => ok (out, false)
+      | some x => do
+                  let out2 ← alloc.vec.Vec.push out x
+                  ok (out2, ok1)
+    let i2 ← i + 1#usize
+    ok (cont (out1, ok2, i2))
+  else ok (done (out, ok1))
+
+/-- [conduit_kernel::{conduit_kernel::Follow}::from_rows]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Visibility: public -/
+@[rust_loop]
+def Follow.from_rows_loop
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val))
+  (out : alloc.vec.Vec Follow) (ok1 : Bool) (i : Std.Usize) :
+  Result ((alloc.vec.Vec Follow) × Bool)
+  := do
+  loop
+    (fun (out1, ok2, i1) => Follow.from_rows_loop.body rows out1 ok2 i1)
+    (out, ok1, i)
+
+/-- [conduit_kernel::{conduit_kernel::Follow}::from_rows]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 167:12-183:13
+    Visibility: public -/
+def Follow.from_rows
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)) :
+  Result (Option (alloc.vec.Vec Follow))
+  := do
+  let (out, ok1) ←
+    Follow.from_rows_loop rows (alloc.vec.Vec.new Follow) true 0#usize
+  if ok1
+  then ok (some out)
+  else ok none
+
+/-- [conduit_kernel::{conduit_kernel::Article}::from_rows]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Visibility: public -/
+@[rust_loop_body]
+def Article.from_rows_loop.body
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val))
+  (out : alloc.vec.Vec Article) (ok1 : Bool) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Article) × Bool × Std.Usize)
+    ((alloc.vec.Vec Article) × Bool))
+  := do
+  let i1 := alloc.vec.Vec.len rows
+  if i < i1
+  then
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice (alloc.vec.Vec
+        i5h_sql.Val)) rows i
+    let o ← Article.from_row v
+    let (out1, ok2) ←
+      match o with
+      | none => ok (out, false)
+      | some x => do
+                  let out2 ← alloc.vec.Vec.push out x
+                  ok (out2, ok1)
+    let i2 ← i + 1#usize
+    ok (cont (out1, ok2, i2))
+  else ok (done (out, ok1))
+
+/-- [conduit_kernel::{conduit_kernel::Article}::from_rows]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Visibility: public -/
+@[rust_loop]
+def Article.from_rows_loop
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val))
+  (out : alloc.vec.Vec Article) (ok1 : Bool) (i : Std.Usize) :
+  Result ((alloc.vec.Vec Article) × Bool)
+  := do
+  loop
+    (fun (out1, ok2, i1) => Article.from_rows_loop.body rows out1 ok2 i1)
+    (out, ok1, i)
+
+/-- [conduit_kernel::{conduit_kernel::Article}::from_rows]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 167:12-183:13
+    Visibility: public -/
+def Article.from_rows
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)) :
+  Result (Option (alloc.vec.Vec Article))
+  := do
+  let (out, ok1) ←
+    Article.from_rows_loop rows (alloc.vec.Vec.new Article) true 0#usize
+  if ok1
+  then ok (some out)
+  else ok none
+
+/-- [conduit_kernel::{conduit_kernel::Tag}::from_rows]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Visibility: public -/
+@[rust_loop_body]
+def Tag.from_rows_loop.body
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)) (out : alloc.vec.Vec Tag)
+  (ok1 : Bool) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Tag) × Bool × Std.Usize)
+    ((alloc.vec.Vec Tag) × Bool))
+  := do
+  let i1 := alloc.vec.Vec.len rows
+  if i < i1
+  then
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice (alloc.vec.Vec
+        i5h_sql.Val)) rows i
+    let o ← Tag.from_row v
+    let (out1, ok2) ←
+      match o with
+      | none => ok (out, false)
+      | some x => do
+                  let out2 ← alloc.vec.Vec.push out x
+                  ok (out2, ok1)
+    let i2 ← i + 1#usize
+    ok (cont (out1, ok2, i2))
+  else ok (done (out, ok1))
+
+/-- [conduit_kernel::{conduit_kernel::Tag}::from_rows]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Visibility: public -/
+@[rust_loop]
+def Tag.from_rows_loop
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)) (out : alloc.vec.Vec Tag)
+  (ok1 : Bool) (i : Std.Usize) :
+  Result ((alloc.vec.Vec Tag) × Bool)
+  := do
+  loop
+    (fun (out1, ok2, i1) => Tag.from_rows_loop.body rows out1 ok2 i1)
+    (out, ok1, i)
+
+/-- [conduit_kernel::{conduit_kernel::Tag}::from_rows]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 167:12-183:13
+    Visibility: public -/
+def Tag.from_rows
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)) :
+  Result (Option (alloc.vec.Vec Tag))
+  := do
+  let (out, ok1) ←
+    Tag.from_rows_loop rows (alloc.vec.Vec.new Tag) true 0#usize
+  if ok1
+  then ok (some out)
+  else ok none
+
+/-- [conduit_kernel::{conduit_kernel::Favorite}::from_rows]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Visibility: public -/
+@[rust_loop_body]
+def Favorite.from_rows_loop.body
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val))
+  (out : alloc.vec.Vec Favorite) (ok1 : Bool) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Favorite) × Bool × Std.Usize)
+    ((alloc.vec.Vec Favorite) × Bool))
+  := do
+  let i1 := alloc.vec.Vec.len rows
+  if i < i1
+  then
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice (alloc.vec.Vec
+        i5h_sql.Val)) rows i
+    let o ← Favorite.from_row v
+    let (out1, ok2) ←
+      match o with
+      | none => ok (out, false)
+      | some x => do
+                  let out2 ← alloc.vec.Vec.push out x
+                  ok (out2, ok1)
+    let i2 ← i + 1#usize
+    ok (cont (out1, ok2, i2))
+  else ok (done (out, ok1))
+
+/-- [conduit_kernel::{conduit_kernel::Favorite}::from_rows]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Visibility: public -/
+@[rust_loop]
+def Favorite.from_rows_loop
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val))
+  (out : alloc.vec.Vec Favorite) (ok1 : Bool) (i : Std.Usize) :
+  Result ((alloc.vec.Vec Favorite) × Bool)
+  := do
+  loop
+    (fun (out1, ok2, i1) => Favorite.from_rows_loop.body rows out1 ok2 i1)
+    (out, ok1, i)
+
+/-- [conduit_kernel::{conduit_kernel::Favorite}::from_rows]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 167:12-183:13
+    Visibility: public -/
+def Favorite.from_rows
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)) :
+  Result (Option (alloc.vec.Vec Favorite))
+  := do
+  let (out, ok1) ←
+    Favorite.from_rows_loop rows (alloc.vec.Vec.new Favorite) true 0#usize
+  if ok1
+  then ok (some out)
+  else ok none
+
+/-- [conduit_kernel::{conduit_kernel::Comment}::from_rows]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Visibility: public -/
+@[rust_loop_body]
+def Comment.from_rows_loop.body
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val))
+  (out : alloc.vec.Vec Comment) (ok1 : Bool) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Comment) × Bool × Std.Usize)
+    ((alloc.vec.Vec Comment) × Bool))
+  := do
+  let i1 := alloc.vec.Vec.len rows
+  if i < i1
+  then
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice (alloc.vec.Vec
+        i5h_sql.Val)) rows i
+    let o ← Comment.from_row v
+    let (out1, ok2) ←
+      match o with
+      | none => ok (out, false)
+      | some x => do
+                  let out2 ← alloc.vec.Vec.push out x
+                  ok (out2, ok1)
+    let i2 ← i + 1#usize
+    ok (cont (out1, ok2, i2))
+  else ok (done (out, ok1))
+
+/-- [conduit_kernel::{conduit_kernel::Comment}::from_rows]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Visibility: public -/
+@[rust_loop]
+def Comment.from_rows_loop
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val))
+  (out : alloc.vec.Vec Comment) (ok1 : Bool) (i : Std.Usize) :
+  Result ((alloc.vec.Vec Comment) × Bool)
+  := do
+  loop
+    (fun (out1, ok2, i1) => Comment.from_rows_loop.body rows out1 ok2 i1)
+    (out, ok1, i)
+
+/-- [conduit_kernel::{conduit_kernel::Comment}::from_rows]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 167:12-183:13
+    Visibility: public -/
+def Comment.from_rows
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)) :
+  Result (Option (alloc.vec.Vec Comment))
+  := do
+  let (out, ok1) ←
+    Comment.from_rows_loop rows (alloc.vec.Vec.new Comment) true 0#usize
+  if ok1
+  then ok (some out)
+  else ok none
+
+/-- [conduit_kernel::{conduit_kernel::Counter}::from_rows]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Visibility: public -/
+@[rust_loop_body]
+def Counter.from_rows_loop.body
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val))
+  (out : alloc.vec.Vec Counter) (ok1 : Bool) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Counter) × Bool × Std.Usize)
+    ((alloc.vec.Vec Counter) × Bool))
+  := do
+  let i1 := alloc.vec.Vec.len rows
+  if i < i1
+  then
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice (alloc.vec.Vec
+        i5h_sql.Val)) rows i
+    let o ← Counter.from_row v
+    let (out1, ok2) ←
+      match o with
+      | none => ok (out, false)
+      | some x => do
+                  let out2 ← alloc.vec.Vec.push out x
+                  ok (out2, ok1)
+    let i2 ← i + 1#usize
+    ok (cont (out1, ok2, i2))
+  else ok (done (out, ok1))
+
+/-- [conduit_kernel::{conduit_kernel::Counter}::from_rows]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Visibility: public -/
+@[rust_loop]
+def Counter.from_rows_loop
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val))
+  (out : alloc.vec.Vec Counter) (ok1 : Bool) (i : Std.Usize) :
+  Result ((alloc.vec.Vec Counter) × Bool)
+  := do
+  loop
+    (fun (out1, ok2, i1) => Counter.from_rows_loop.body rows out1 ok2 i1)
+    (out, ok1, i)
+
+/-- [conduit_kernel::{conduit_kernel::Counter}::from_rows]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 167:12-183:13
+    Visibility: public -/
+def Counter.from_rows
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)) :
+  Result (Option (alloc.vec.Vec Counter))
+  := do
+  let (out, ok1) ←
+    Counter.from_rows_loop rows (alloc.vec.Vec.new Counter) true 0#usize
+  if ok1
+  then ok (some out)
+  else ok none
+
+/-- [conduit_kernel::{conduit_kernel::Counter}::from_one]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 203:12-211:13
+    Visibility: public -/
+def Counter.from_one
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)) :
+  Result (Option Counter)
+  := do
+  let i := alloc.vec.Vec.len rows
+  if i = 0#usize
+  then
+    let i1 ← U64.Insts.I5h_sqlZero.zero
+    ok (some { last_user := i1, last_article := i1, last_comment := i1 })
+  else
+    let i1 := alloc.vec.Vec.len rows
+    if i1 = 1#usize
+    then
+      let v ←
+        alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+          (alloc.vec.Vec i5h_sql.Val)) rows 0#usize
+      Counter.from_row v
+    else ok none
+
+/-- [conduit_kernel::{conduit_kernel::User}::del]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 233:16-238:17
+    Visibility: public -/
+@[rust_loop_body]
+def User.del_loop.body
+  (v : alloc.vec.Vec User) (id : Std.U64) (out : alloc.vec.Vec User)
+  (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec User) × Std.Usize) (alloc.vec.Vec User))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let u ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice User) v i
+    let out1 ←
+      if u.id = id
+      then ok out
+      else
+        do
+        let u1 ← User.Insts.CoreCloneClone.clone u
+        alloc.vec.Vec.push out u1
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
+  else ok (done out)
+
+/-- [conduit_kernel::{conduit_kernel::User}::del]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 233:16-238:17
+    Visibility: public -/
+@[rust_loop]
+def User.del_loop
+  (v : alloc.vec.Vec User) (id : Std.U64) (out : alloc.vec.Vec User)
+  (i : Std.Usize) :
+  Result (alloc.vec.Vec User)
+  := do
+  loop
+    (fun (out1, i1) => User.del_loop.body v id out1 i1)
+    (out, i)
+
+/-- [conduit_kernel::{conduit_kernel::User}::del]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 230:12-240:13
+    Visibility: public -/
+@[reducible]
+def User.del
+  (v : alloc.vec.Vec User) (id : Std.U64) : Result (alloc.vec.Vec User) := do
+  User.del_loop v id (alloc.vec.Vec.new User) 0#usize
+
+/-- [conduit_kernel::{conduit_kernel::Tag}::del]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 233:16-238:17
+    Visibility: public -/
+@[rust_loop_body]
+def Tag.del_loop.body
+  (v : alloc.vec.Vec Tag) (article : Std.U64) (tag : alloc.vec.Vec Std.U8)
+  (out : alloc.vec.Vec Tag) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Tag) × Std.Usize) (alloc.vec.Vec Tag))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let t ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Tag) v i
+    let out1 ←
+      if t.article = article
+      then
+        do
+        let b ←
+          alloc.vec.partial_eq.PartialEqVec.eq core.cmp.PartialEqU8 t.tag tag
+        if b
+        then ok out
+        else
+          let t1 ← Tag.Insts.CoreCloneClone.clone t
+          alloc.vec.Vec.push out t1
+      else
+        do
+        let t1 ← Tag.Insts.CoreCloneClone.clone t
+        alloc.vec.Vec.push out t1
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
+  else ok (done out)
+
+/-- [conduit_kernel::{conduit_kernel::Tag}::del]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 233:16-238:17
+    Visibility: public -/
+@[rust_loop]
+def Tag.del_loop
+  (v : alloc.vec.Vec Tag) (article : Std.U64) (tag : alloc.vec.Vec Std.U8)
+  (out : alloc.vec.Vec Tag) (i : Std.Usize) :
+  Result (alloc.vec.Vec Tag)
+  := do
+  loop
+    (fun (out1, i1) => Tag.del_loop.body v article tag out1 i1)
+    (out, i)
+
+/-- [conduit_kernel::{conduit_kernel::Tag}::del]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 230:12-240:13
+    Visibility: public -/
+@[reducible]
+def Tag.del
+  (v : alloc.vec.Vec Tag) (article : Std.U64) (tag : alloc.vec.Vec Std.U8) :
+  Result (alloc.vec.Vec Tag)
+  := do
+  Tag.del_loop v article tag (alloc.vec.Vec.new Tag) 0#usize
+
+/-- [conduit_kernel::{conduit_kernel::User}::del_where]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 246:16-251:17
+    Visibility: public -/
+@[rust_loop_body]
+def User.del_where_loop.body
+  (v : alloc.vec.Vec User) (col : Std.U32) (val : i5h_sql.Val)
+  (out : alloc.vec.Vec User) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec User) × Std.Usize) (alloc.vec.Vec User))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let u ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice User) v i
+    let v1 ← User.to_row u
+    let b ← i5h_sql.has_col v1 col val
+    let out1 ←
+      if b
+      then ok out
+      else
+        do
+        let u1 ← User.Insts.CoreCloneClone.clone u
+        alloc.vec.Vec.push out u1
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
+  else ok (done out)
+
+/-- [conduit_kernel::{conduit_kernel::User}::del_where]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 246:16-251:17
+    Visibility: public -/
+@[rust_loop]
+def User.del_where_loop
+  (v : alloc.vec.Vec User) (col : Std.U32) (val : i5h_sql.Val)
+  (out : alloc.vec.Vec User) (i : Std.Usize) :
+  Result (alloc.vec.Vec User)
+  := do
+  loop
+    (fun (out1, i1) => User.del_where_loop.body v col val out1 i1)
+    (out, i)
+
+/-- [conduit_kernel::{conduit_kernel::User}::del_where]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 243:12-253:13
+    Visibility: public -/
+@[reducible]
+def User.del_where
+  (v : alloc.vec.Vec User) (col : Std.U32) (val : i5h_sql.Val) :
+  Result (alloc.vec.Vec User)
+  := do
+  User.del_where_loop v col val (alloc.vec.Vec.new User) 0#usize
+
+/-- [conduit_kernel::{conduit_kernel::Follow}::del_where]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 246:16-251:17
+    Visibility: public -/
+@[rust_loop_body]
+def Follow.del_where_loop.body
+  (v : alloc.vec.Vec Follow) (col : Std.U32) (val : i5h_sql.Val)
+  (out : alloc.vec.Vec Follow) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Follow) × Std.Usize) (alloc.vec.Vec
+    Follow))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let f ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Follow) v i
+    let v1 ← Follow.to_row f
+    let b ← i5h_sql.has_col v1 col val
+    let out1 ←
+      if b
+      then ok out
+      else
+        do
+        let f1 ← Follow.Insts.CoreCloneClone.clone f
+        alloc.vec.Vec.push out f1
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
+  else ok (done out)
+
+/-- [conduit_kernel::{conduit_kernel::Follow}::del_where]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 246:16-251:17
+    Visibility: public -/
+@[rust_loop]
+def Follow.del_where_loop
+  (v : alloc.vec.Vec Follow) (col : Std.U32) (val : i5h_sql.Val)
+  (out : alloc.vec.Vec Follow) (i : Std.Usize) :
+  Result (alloc.vec.Vec Follow)
+  := do
+  loop
+    (fun (out1, i1) => Follow.del_where_loop.body v col val out1 i1)
+    (out, i)
+
+/-- [conduit_kernel::{conduit_kernel::Follow}::del_where]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 243:12-253:13
+    Visibility: public -/
+@[reducible]
+def Follow.del_where
+  (v : alloc.vec.Vec Follow) (col : Std.U32) (val : i5h_sql.Val) :
+  Result (alloc.vec.Vec Follow)
+  := do
+  Follow.del_where_loop v col val (alloc.vec.Vec.new Follow) 0#usize
+
+/-- [conduit_kernel::{conduit_kernel::Article}::del_where]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 246:16-251:17
+    Visibility: public -/
+@[rust_loop_body]
+def Article.del_where_loop.body
+  (v : alloc.vec.Vec Article) (col : Std.U32) (val : i5h_sql.Val)
+  (out : alloc.vec.Vec Article) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Article) × Std.Usize) (alloc.vec.Vec
+    Article))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let a ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Article) v i
+    let v1 ← Article.to_row a
+    let b ← i5h_sql.has_col v1 col val
+    let out1 ←
+      if b
+      then ok out
+      else
+        do
+        let a1 ← Article.Insts.CoreCloneClone.clone a
+        alloc.vec.Vec.push out a1
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
+  else ok (done out)
+
+/-- [conduit_kernel::{conduit_kernel::Article}::del_where]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 246:16-251:17
+    Visibility: public -/
+@[rust_loop]
+def Article.del_where_loop
+  (v : alloc.vec.Vec Article) (col : Std.U32) (val : i5h_sql.Val)
+  (out : alloc.vec.Vec Article) (i : Std.Usize) :
+  Result (alloc.vec.Vec Article)
+  := do
+  loop
+    (fun (out1, i1) => Article.del_where_loop.body v col val out1 i1)
+    (out, i)
+
+/-- [conduit_kernel::{conduit_kernel::Article}::del_where]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 243:12-253:13
+    Visibility: public -/
+@[reducible]
+def Article.del_where
+  (v : alloc.vec.Vec Article) (col : Std.U32) (val : i5h_sql.Val) :
+  Result (alloc.vec.Vec Article)
+  := do
+  Article.del_where_loop v col val (alloc.vec.Vec.new Article) 0#usize
+
+/-- [conduit_kernel::{conduit_kernel::User}::sql_del]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 256:12-260:13
+    Visibility: public -/
+def User.sql_del (id : Std.U64) : Result i5h_sql.Write := do
+  let v ← U64.Insts.I5h_sqlColumn.to_val id
+  let key ← alloc.vec.Vec.push (alloc.vec.Vec.new i5h_sql.Val) v
+  ok (i5h_sql.Write.Del User.TABLE key)
+
+/-- [conduit_kernel::{conduit_kernel::Tag}::sql_del]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 256:12-260:13
+    Visibility: public -/
+def Tag.sql_del
+  (article : Std.U64) (tag : alloc.vec.Vec Std.U8) : Result i5h_sql.Write := do
+  let v ← U64.Insts.I5h_sqlColumn.to_val article
+  let key ← alloc.vec.Vec.push (alloc.vec.Vec.new i5h_sql.Val) v
+  let v1 ← alloc.vec.VecU8.Insts.I5h_sqlColumn.to_val tag
+  let key1 ← alloc.vec.Vec.push key v1
+  ok (i5h_sql.Write.Del Tag.TABLE key1)
+
+/-- [conduit_kernel::{conduit_kernel::User}::sql_del_where]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 263:12-265:13
+    Visibility: public -/
+def User.sql_del_where
+  (col : Std.U32) (val : i5h_sql.Val) : Result i5h_sql.Write := do
+  ok (i5h_sql.Write.DelWhere User.TABLE col val)
+
+/-- [conduit_kernel::{conduit_kernel::Follow}::sql_del_where]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 263:12-265:13
+    Visibility: public -/
+def Follow.sql_del_where
+  (col : Std.U32) (val : i5h_sql.Val) : Result i5h_sql.Write := do
+  ok (i5h_sql.Write.DelWhere Follow.TABLE col val)
+
+/-- [conduit_kernel::{conduit_kernel::Article}::sql_del_where]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 263:12-265:13
+    Visibility: public -/
+def Article.sql_del_where
+  (col : Std.U32) (val : i5h_sql.Val) : Result i5h_sql.Write := do
+  ok (i5h_sql.Write.DelWhere Article.TABLE col val)
+
+/-- [conduit_kernel::Rows]
+    Source: 'crates/i5h-schema/src/lib.rs', lines 285:8-287:9
+    Visibility: public -/
+structure Rows where
+  counter : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)
+  users : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)
+  follows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)
+  articles : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)
+  tags : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)
+  favorites : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)
+  comments : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)
+
+/-- [conduit_kernel::decode]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 290:8-298:9
+    Visibility: public -/
+def decode (r : Rows) : Result (Option Snapshot) := do
+  let o ← Counter.from_one r.counter
+  match o with
+  | none => ok none
+  | some x =>
+    let o1 ← User.from_rows r.users
+    match o1 with
+    | none => ok none
+    | some x1 =>
+      let o2 ← Follow.from_rows r.follows
+      match o2 with
+      | none => ok none
+      | some x2 =>
+        let o3 ← Article.from_rows r.articles
+        match o3 with
+        | none => ok none
+        | some x3 =>
+          let o4 ← Tag.from_rows r.tags
+          match o4 with
+          | none => ok none
+          | some x4 =>
+            let o5 ← Favorite.from_rows r.favorites
+            match o5 with
+            | none => ok none
+            | some x5 =>
+              let o6 ← Comment.from_rows r.comments
+              match o6 with
+              | none => ok none
+              | some x6 =>
+                ok (some
+                  {
+                    counter := x,
+                    users := x1,
+                    follows := x2,
+                    articles := x3,
+                    tags := x4,
+                    favorites := x5,
+                    comments := x6
+                  })
+
 /-- [conduit_kernel::apply]: loop body 0:
-    Source: 'examples/conduit/kernel/src/lib.rs', lines 1207:4-1210:5
+    Source: 'crates/i5h-schema/src/lib.rs', lines 308:12-311:13
     Visibility: public -/
 @[rust_loop_body]
 def apply_loop.body
@@ -2868,7 +4498,7 @@ def apply_loop.body
   else ok (done s)
 
 /-- [conduit_kernel::apply]: loop 0:
-    Source: 'examples/conduit/kernel/src/lib.rs', lines 1207:4-1210:5
+    Source: 'crates/i5h-schema/src/lib.rs', lines 308:12-311:13
     Visibility: public -/
 @[rust_loop]
 def apply_loop
@@ -2880,10 +4510,51 @@ def apply_loop
     (s, i)
 
 /-- [conduit_kernel::apply]:
-    Source: 'examples/conduit/kernel/src/lib.rs', lines 1204:0-1212:1
+    Source: 'crates/i5h-schema/src/lib.rs', lines 305:8-313:9
     Visibility: public -/
 def apply (snap : Snapshot) (ws : alloc.vec.Vec Write) : Result Snapshot := do
   let s ← Snapshot.Insts.CoreCloneClone.clone snap
   apply_loop ws s 0#usize
+
+/-- [conduit_kernel::sql_writes]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 320:12-323:13
+    Visibility: public -/
+@[rust_loop_body]
+def sql_writes_loop.body
+  (ws : alloc.vec.Vec Write) (out : alloc.vec.Vec i5h_sql.Write)
+  (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec i5h_sql.Write) × Std.Usize)
+    (alloc.vec.Vec i5h_sql.Write))
+  := do
+  let i1 := alloc.vec.Vec.len ws
+  if i < i1
+  then
+    let w ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Write) ws i
+    let out1 ← sql_write w out
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
+  else ok (done out)
+
+/-- [conduit_kernel::sql_writes]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 320:12-323:13
+    Visibility: public -/
+@[rust_loop]
+def sql_writes_loop
+  (ws : alloc.vec.Vec Write) (out : alloc.vec.Vec i5h_sql.Write)
+  (i : Std.Usize) :
+  Result (alloc.vec.Vec i5h_sql.Write)
+  := do
+  loop
+    (fun (out1, i1) => sql_writes_loop.body ws out1 i1)
+    (out, i)
+
+/-- [conduit_kernel::sql_writes]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 317:8-325:9
+    Visibility: public -/
+@[reducible]
+def sql_writes
+  (ws : alloc.vec.Vec Write) : Result (alloc.vec.Vec i5h_sql.Write) := do
+  sql_writes_loop ws (alloc.vec.Vec.new i5h_sql.Write) 0#usize
 
 end conduit_kernel

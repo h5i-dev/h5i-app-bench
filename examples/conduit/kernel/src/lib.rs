@@ -22,7 +22,19 @@ pub struct Principal {
 }
 
 i5h_schema::schema! {
-    mapping conduit_tables for conduit_kernel;
+    mapping conduit_tables for conduit_kernel, writes Write, lean "../proofs/generated/Schema.lean";
+
+    /// The whole site. Conduit has a single tenant.
+    #[derive(Clone, Debug, Default, PartialEq, Eq)]
+    pub struct Snapshot {
+        counter: Counter,
+        users: Vec<User>,
+        follows: Vec<Follow>,
+        articles: Vec<Article>,
+        tags: Vec<Tag>,
+        favorites: Vec<Favorite>,
+        comments: Vec<Comment>,
+    }
 
     /// `password` is a hash made by the shell. An empty `image` means none.
     #[derive(Clone, Debug, PartialEq, Eq)]
@@ -81,18 +93,6 @@ i5h_schema::schema! {
         last_article: u64,
         last_comment: u64,
     }
-}
-
-/// The whole site. Conduit has a single tenant.
-#[derive(Clone, Debug, Default, PartialEq, Eq)]
-pub struct Snapshot {
-    pub counter: Counter,
-    pub users: Vec<User>,
-    pub follows: Vec<Follow>,
-    pub articles: Vec<Article>,
-    pub tags: Vec<Tag>,
-    pub favorites: Vec<Favorite>,
-    pub comments: Vec<Comment>,
 }
 
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -1025,190 +1025,54 @@ pub fn transition_upstream(actor: &Principal, s: &Snapshot, cmd: &Command) -> Ou
 
 /* Apply */
 
-fn put_user(v: &mut Vec<User>, x: User) {
-    let mut i = 0;
-    while i < v.len() {
-        if v[i].id == x.id {
-            v[i] = x;
-            return;
-        }
-        i += 1;
-    }
-    v.push(x);
-}
+// Column numbers, in `to_row` order, that the cascades delete by.
+const TAG_ARTICLE: u32 = 0;
+const FAVORITE_ARTICLE: u32 = 0;
+const COMMENT_ARTICLE: u32 = 1;
 
-fn put_follow(v: &mut Vec<Follow>, x: Follow) {
-    let mut i = 0;
-    while i < v.len() {
-        if v[i].follower == x.follower && v[i].followed == x.followed {
-            v[i] = x;
-            return;
-        }
-        i += 1;
-    }
-    v.push(x);
-}
-
-fn del_follow(v: &Vec<Follow>, x: Follow) -> Vec<Follow> {
-    let mut out = Vec::new();
-    let mut i = 0;
-    while i < v.len() {
-        if !(v[i].follower == x.follower && v[i].followed == x.followed) {
-            out.push(v[i]);
-        }
-        i += 1;
-    }
-    out
-}
-
-fn put_article(v: &mut Vec<Article>, x: Article) {
-    let mut i = 0;
-    while i < v.len() {
-        if v[i].id == x.id {
-            v[i] = x;
-            return;
-        }
-        i += 1;
-    }
-    v.push(x);
-}
-
-fn del_article(v: &Vec<Article>, id: u64) -> Vec<Article> {
-    let mut out = Vec::new();
-    let mut i = 0;
-    while i < v.len() {
-        if v[i].id != id {
-            out.push(v[i].clone());
-        }
-        i += 1;
-    }
-    out
-}
-
-fn put_tag(v: &mut Vec<Tag>, x: Tag) {
-    let mut i = 0;
-    while i < v.len() {
-        if v[i].article == x.article && v[i].tag == x.tag {
-            v[i] = x;
-            return;
-        }
-        i += 1;
-    }
-    v.push(x);
-}
-
-fn del_tags_of(v: &Vec<Tag>, article: u64) -> Vec<Tag> {
-    let mut out = Vec::new();
-    let mut i = 0;
-    while i < v.len() {
-        if v[i].article != article {
-            out.push(v[i].clone());
-        }
-        i += 1;
-    }
-    out
-}
-
-fn put_favorite(v: &mut Vec<Favorite>, x: Favorite) {
-    let mut i = 0;
-    while i < v.len() {
-        if v[i].article == x.article && v[i].user == x.user {
-            v[i] = x;
-            return;
-        }
-        i += 1;
-    }
-    v.push(x);
-}
-
-fn del_favorite(v: &Vec<Favorite>, x: Favorite) -> Vec<Favorite> {
-    let mut out = Vec::new();
-    let mut i = 0;
-    while i < v.len() {
-        if !(v[i].article == x.article && v[i].user == x.user) {
-            out.push(v[i]);
-        }
-        i += 1;
-    }
-    out
-}
-
-fn del_favorites_of(v: &Vec<Favorite>, article: u64) -> Vec<Favorite> {
-    let mut out = Vec::new();
-    let mut i = 0;
-    while i < v.len() {
-        if v[i].article != article {
-            out.push(v[i]);
-        }
-        i += 1;
-    }
-    out
-}
-
-fn put_comment(v: &mut Vec<Comment>, x: Comment) {
-    let mut i = 0;
-    while i < v.len() {
-        if v[i].id == x.id {
-            v[i] = x;
-            return;
-        }
-        i += 1;
-    }
-    v.push(x);
-}
-
-fn del_comment(v: &Vec<Comment>, id: u64) -> Vec<Comment> {
-    let mut out = Vec::new();
-    let mut i = 0;
-    while i < v.len() {
-        if v[i].id != id {
-            out.push(v[i].clone());
-        }
-        i += 1;
-    }
-    out
-}
-
-fn del_comments_of(v: &Vec<Comment>, article: u64) -> Vec<Comment> {
-    let mut out = Vec::new();
-    let mut i = 0;
-    while i < v.len() {
-        if v[i].article != article {
-            out.push(v[i].clone());
-        }
-        i += 1;
-    }
-    out
-}
-
+/// What one write does to the state. `schema!` runs it over a write set
+/// (`apply`).
 fn apply_write(s: &mut Snapshot, w: Write) {
     match w {
-        Write::PutUser(x) => put_user(&mut s.users, x),
-        Write::PutFollow(x) => put_follow(&mut s.follows, x),
-        Write::DelFollow(x) => s.follows = del_follow(&s.follows, x),
-        Write::PutArticle(x) => put_article(&mut s.articles, x),
-        Write::DelArticle(id) => s.articles = del_article(&s.articles, id),
-        Write::PutTag(x) => put_tag(&mut s.tags, x),
-        Write::DelTagsOf(id) => s.tags = del_tags_of(&s.tags, id),
-        Write::PutFavorite(x) => put_favorite(&mut s.favorites, x),
-        Write::DelFavorite(x) => s.favorites = del_favorite(&s.favorites, x),
-        Write::DelFavoritesOf(id) => s.favorites = del_favorites_of(&s.favorites, id),
-        Write::PutComment(x) => put_comment(&mut s.comments, x),
-        Write::DelComment(id) => s.comments = del_comment(&s.comments, id),
-        Write::DelCommentsOf(id) => s.comments = del_comments_of(&s.comments, id),
+        Write::PutUser(x) => User::put(&mut s.users, x),
+        Write::PutFollow(x) => Follow::put(&mut s.follows, x),
+        Write::DelFollow(x) => s.follows = Follow::del(&s.follows, x.follower, x.followed),
+        Write::PutArticle(x) => Article::put(&mut s.articles, x),
+        Write::DelArticle(id) => s.articles = Article::del(&s.articles, id),
+        Write::PutTag(x) => Tag::put(&mut s.tags, x),
+        Write::DelTagsOf(id) => s.tags = Tag::del_where(&s.tags, TAG_ARTICLE, &i5h_sql::Column::to_val(&id)),
+        Write::PutFavorite(x) => Favorite::put(&mut s.favorites, x),
+        Write::DelFavorite(x) => s.favorites = Favorite::del(&s.favorites, x.article, x.user),
+        Write::DelFavoritesOf(id) => {
+            s.favorites = Favorite::del_where(&s.favorites, FAVORITE_ARTICLE, &i5h_sql::Column::to_val(&id))
+        }
+        Write::PutComment(x) => Comment::put(&mut s.comments, x),
+        Write::DelComment(id) => s.comments = Comment::del(&s.comments, id),
+        Write::DelCommentsOf(id) => {
+            s.comments = Comment::del_where(&s.comments, COMMENT_ARTICLE, &i5h_sql::Column::to_val(&id))
+        }
         Write::SetCounter(c) => s.counter = c,
     }
 }
 
-/// What committing a write set means. The PostgreSQL store must agree.
-pub fn apply(snap: &Snapshot, ws: &Vec<Write>) -> Snapshot {
-    let mut s = snap.clone();
-    let mut i = 0;
-    while i < ws.len() {
-        apply_write(&mut s, ws[i].clone());
-        i += 1;
+/// The table writes one write makes. A cascade deletes by column value.
+fn sql_write(w: &Write, out: &mut Vec<i5h_sql::Write>) {
+    match w {
+        Write::PutUser(x) => out.push(x.sql_put()),
+        Write::PutFollow(x) => out.push(x.sql_put()),
+        Write::DelFollow(x) => out.push(Follow::sql_del(x.follower, x.followed)),
+        Write::PutArticle(x) => out.push(x.sql_put()),
+        Write::DelArticle(id) => out.push(Article::sql_del(*id)),
+        Write::PutTag(x) => out.push(x.sql_put()),
+        Write::DelTagsOf(id) => out.push(Tag::sql_del_where(TAG_ARTICLE, i5h_sql::Column::to_val(id))),
+        Write::PutFavorite(x) => out.push(x.sql_put()),
+        Write::DelFavorite(x) => out.push(Favorite::sql_del(x.article, x.user)),
+        Write::DelFavoritesOf(id) => out.push(Favorite::sql_del_where(FAVORITE_ARTICLE, i5h_sql::Column::to_val(id))),
+        Write::PutComment(x) => out.push(x.sql_put()),
+        Write::DelComment(id) => out.push(Comment::sql_del(*id)),
+        Write::DelCommentsOf(id) => out.push(Comment::sql_del_where(COMMENT_ARTICLE, i5h_sql::Column::to_val(id))),
+        Write::SetCounter(c) => out.push(c.sql_put()),
     }
-    s
 }
 
 #[cfg(test)]
