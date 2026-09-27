@@ -222,7 +222,9 @@ theorem sql_writes_spec (ws : alloc.vec.Vec Write) :
 /-- End to end, on the extracted encoder: if the tenant's rows hold a valid
 state, running the plan of `sql_writes ws` leaves exactly the rows of
 `applyAll s ws`. Valid means `Inv`, which holds in every reachable state
-(`reachable_inv`). -/
+(`reachable_inv`). The rows of `enc s` include the counter row, so this covers
+a tenant past its first counter write; `Load.sql_writes_storedC` covers a
+fresh tenant too. -/
 theorem sql_writes_stored (s : St) (h : Inv s) (ws : alloc.vec.Vec Write) :
     sql_writes ws ⦃ v =>
       execAll (readBack kl (enc s)) ((v.val.map Write.abs).map planA) =

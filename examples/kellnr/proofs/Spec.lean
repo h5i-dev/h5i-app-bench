@@ -80,4 +80,43 @@ def downloadAllowed (s : St) (p : Principal) (k : Nat) : Prop :=
     (isAdmin s p.user.val ∨ isOwner s k p.user.val ∨ isCrateUser s k p.user.val ∨
       inGrantedGroup s k p.user.val)
 
+/-! ## Committing writes -/
+
+/-- Add a row unless the pair is already there. -/
+def putPair (l : List Pair) (x : Pair) : List Pair :=
+  if hasPair l x.a.val x.b.val then l else l ++ [x]
+
+/-- Remove every row with this pair. -/
+def delPair (l : List Pair) (x : Pair) : List Pair :=
+  l.filter fun o => ¬(o.a.val = x.a.val ∧ o.b.val = x.b.val)
+
+/-- Replace the first row for the same crate and version. -/
+def setYanked : List Version → Version → List Version
+  | [], _ => []
+  | v :: vs, x => if v.krate.val = x.krate.val ∧ v.vers.val = x.vers.val then x :: vs else v :: setYanked vs x
+
+def applyWrite (s : St) : Write → St
+  | .AddOwner x => { s with owners := putPair s.owners x }
+  | .DelOwner x => { s with owners := delPair s.owners x }
+  | .AddCrateUser x => { s with crateUsers := putPair s.crateUsers x }
+  | .DelCrateUser x => { s with crateUsers := delPair s.crateUsers x }
+  | .AddCrateGroup x => { s with crateGroups := putPair s.crateGroups x }
+  | .DelCrateGroup x => { s with crateGroups := delPair s.crateGroups x }
+  | .SetYanked v => { s with versions := setYanked s.versions v }
+  | .AddCrate k => { s with crates := s.crates ++ [k] }
+  | .AddVersion v => { s with versions := s.versions ++ [v] }
+
+def applyAll (s : St) (ws : List Write) : St := ws.foldl applyWrite s
+
+/-- The states reachable from an empty registry. Accounts, group members and
+settings are managed outside the kernel, so any step may change them. -/
+inductive Reachable : St → Prop
+  | init (users : List User) (members : List Pair) (ownerless restricted : Bool) :
+      Reachable ⟨users, [], [], [], [], [], members, ownerless, restricted⟩
+  | step {p s c ws r} : Reachable (Snapshot.toSt s) → transition p s c = .ok (.Ok (ws, r)) →
+      Reachable (applyAll (Snapshot.toSt s) ws.val)
+  | admin {s} (users : List User) (members : List Pair) (ownerless restricted : Bool) :
+      Reachable s → Reachable ⟨users, s.crates, s.versions, s.owners, s.crateUsers, s.crateGroups,
+        members, ownerless, restricted⟩
+
 end kellnr_kernel.Spec

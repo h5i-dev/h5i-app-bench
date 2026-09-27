@@ -17,6 +17,8 @@ them later. Modeled actions:
 - `expire`: a lease runs out, so another dispatcher may claim the row, even
   while a slow one still holds it.
 
+All dispatchers share one registry `reg`, fixed for the run.
+
 Properties, for every reachable state:
 - `sent_committed`: every send comes from a row, carries its payload, and goes
   to the endpoint the registry gives its destination.
@@ -348,6 +350,18 @@ theorem delivered_sent {s : Sys E P} (h : Reachable reg max s) :
 theorem dead_reason {s : Sys E P} (h : Reachable reg max s) :
     ∀ r ∈ s.rows, r.dead → reg r.dest = none ∨ max ≤ r.attempts :=
   (good_reachable h).dead
+
+/-- A slow dispatcher's lease expires, a second one claims the row, and both
+send: two calls with one key, the case `key_fixes_content` is about. -/
+theorem duplicate_send : ∃ s : Sys Nat Nat, Reachable (fun d => some d) 3 s ∧
+    s.sent.length = 2 ∧ ∀ m ∈ s.sent, m.key = (0, 0) :=
+  ⟨_, .step (.step (.step (.step (.step (.step .init
+    (.enqueue (t := 0) (d := 5) (p := 9)))
+    (.claim (w := 0) (List.mem_singleton_self _) rfl))
+    (.expire (id := 0)))
+    (.claim (w := 1) (List.mem_singleton_self _) rfl))
+    (.send (h := ⟨0, 0, .claimed⟩) (ok := true) (by simp) rfl rfl rfl))
+    (.send (h := ⟨1, 0, .claimed⟩) (ok := true) (by simp) rfl rfl rfl), rfl, by simp⟩
 
 end
 

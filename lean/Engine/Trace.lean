@@ -19,7 +19,8 @@ order can differ from the database order. Events are sorted into bands by the
 versions they carry: `begin v` sits after the commit that made version `v`,
 `commit w` just before version `w` is visible. Other events stay right after
 their request's `begin`. Steps of different clients that touch nothing shared
-commute, so this loses nothing.
+commute, so this loses nothing (argued, not proven: `check_sound` is about
+the reordered events).
 -/
 
 namespace Engine.Trace
@@ -165,6 +166,56 @@ theorem replay_sound {step : Nat → String → String → Option (Nat × String
       · simp at hr
       · exact ih (advance_sound h) hr
 
+/-- A model run from `a` to `c` that the events `recs` explain one by one:
+each step event is a `Step` of its client that `fits` it, and each other
+event passes `keep`. -/
+inductive Explains (step : Nat → String → String → Option (Nat × String)) (idx : List (Nat × Nat)) :
+    List Rec → St → St → Prop
+  | nil {a} : Explains step idx [] a a
+  | step {r rs i a b c} : idx.lookup r.req = some i → isStep r.ev = true → Step step true false a b →
+      fits i r.ev a b = true → Explains step idx rs b c → Explains step idx (r :: rs) a c
+  | skip {r rs i a c} : idx.lookup r.req = some i → isStep r.ev = false → keep i r.ev a = true →
+      Explains step idx rs a c → Explains step idx (r :: rs) a c
+
+theorem replay_explains {step : Nat → String → String → Option (Nat × String)} {idx recs xs ys}
+    (hr : replay step idx recs xs = .ok ys) : ∀ b ∈ ys, ∃ a ∈ xs, Explains step idx recs a b := by
+  induction recs generalizing xs with
+  | nil =>
+    simp only [replay, pure, Except.pure, Except.ok.injEq] at hr; subst hr
+    exact fun b hb => ⟨b, hb, .nil⟩
+  | cons r rs ih =>
+    simp only [replay] at hr
+    split at hr
+    · simp at hr
+    · rename_i i hi
+      split at hr
+      · simp at hr
+      · intro b hb
+        obtain ⟨a', ha', he⟩ := ih hr b hb
+        unfold advance at ha'
+        split at ha'
+        · rename_i hs
+          rw [List.mem_eraseDups, List.mem_flatMap] at ha'
+          obtain ⟨a, ha, hm⟩ := ha'
+          obtain ⟨hn, hf⟩ := List.mem_filter.1 hm
+          exact ⟨a, ha, .step hi hs (mem_next hn) hf he⟩
+        · rename_i hs
+          obtain ⟨ha, hk⟩ := List.mem_filter.1 ha'
+          exact ⟨a', ha, .skip hi (by simpa using hs) hk he⟩
+
+theorem replay_ne_nil {step : Nat → String → String → Option (Nat × String)} {idx recs xs ys}
+    (hx : xs ≠ []) (hr : replay step idx recs xs = .ok ys) : ys ≠ [] := by
+  induction recs generalizing xs with
+  | nil => simp only [replay, pure, Except.pure, Except.ok.injEq] at hr; exact hr ▸ hx
+  | cons r rs ih =>
+    simp only [replay] at hr
+    split at hr
+    · simp at hr
+    · split at hr
+      · simp at hr
+      · rename_i he
+        exact ih (by simpa using he) hr
+
 /-! ## Ordering -/
 
 /-- A lost COMMIT from snapshot `v` landed iff version `v + 1` shows up with no
@@ -223,10 +274,15 @@ def checkTenant (recs : List Rec) : Except String Report := do
   let commits := recs.countP fun r => match r.ev with | .commit .. => true | _ => false
   return ⟨recs.length, reqs.length, commits, ys.length⟩
 
-/-- Accepted traces are runs of the model. -/
+/-- Accepted traces are runs of the model: the checker ends in at least one
+state, and each is reached from the initial state by a run whose steps the
+events explain in order. -/
 theorem check_sound {reqs : List (Req String String String)} {step idx recs ys}
     (hr : replay step idx recs [init 0 reqs] = .ok ys) :
-    ∀ b ∈ ys, Reachable step true false 0 reqs b :=
-  replay_sound (fun a ha => by simp at ha; subst ha; exact .init) hr
+    ys ≠ [] ∧ ∀ b ∈ ys, Reachable step true false 0 reqs b ∧ Explains step idx recs (init 0 reqs) b := by
+  refine ⟨replay_ne_nil (by simp) hr, fun b hb => ⟨?_, ?_⟩⟩
+  · exact replay_sound (fun a ha => by simp at ha; subst ha; exact .init) hr b hb
+  · obtain ⟨a, ha, he⟩ := replay_explains hr b hb
+    simp at ha; subst ha; exact he
 
 end Engine.Trace

@@ -22,6 +22,7 @@ ids, hold in every state the board can reach, however many commands run.
 | `proofs/Commands.lean` | one lemma per command describing what it writes |
 | `proofs/Theorems.lean` | the permission and invariant theorems |
 | `proofs/Apply.lean` | the proof that committing a write set does what the specification says |
+| `proofs/Scenario.lean` | a concrete run that meets the theorems' hypotheses |
 
 ## Running the application
 
@@ -213,7 +214,9 @@ Most cases follow directly from the command lemmas. Demotion needs one more
 step, because the kernel checks that there are at least two moderators while
 the policy requires a moderator other than the one being removed. The lemma
 `other_mod` bridges the two, and it uses the invariant that moderator keys are
-unique; this is why `authorized` assumes `Inv`.
+unique; this is why `authorized` assumes `Inv`. Once `reachable_inv` below is
+proven, `authorized_reachable` drops that assumption for every reachable
+state.
 
 ## Proving the invariants
 
@@ -234,6 +237,13 @@ The same case analysis also gives two facts that relate the states before and
 after a command. `author_kept` says that no command changes the author of an
 existing post, and `moderator_kept` says that once the board has a moderator,
 it always has one.
+
+Theorems with hypotheses can hold for the wrong reason: if no state satisfied
+them, they would say nothing. `Scenario.lean` rules this out with a concrete
+run. Alice appoints herself and posts "hi", `s2_reachable` proves the state
+she reaches is `Reachable`, and in it Bob cannot delete her post
+(`bob_cannot_delete`) and she cannot demote herself, the last moderator
+(`last_moderator_stays`).
 
 ## Committing a write set
 

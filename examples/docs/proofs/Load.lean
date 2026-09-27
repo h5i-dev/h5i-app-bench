@@ -271,6 +271,22 @@ theorem stored_step (db : Db Val) (s : St) (ws : List Write) (hi : Inv s) (hs : 
     obtain ⟨w, _, hw⟩ := List.mem_filterMap.1 ha
     exact writeOk w a hw
 
+/-- `Storage.sql_writes_stored` for every tenant, including a fresh one with no
+counter row (`c = false`; with `s = init` that is the empty database, see
+`fresh`): the planned statements leave exactly the rows of `applyAll`, with a
+counter row once some write sets it. -/
+theorem sql_writes_storedC (c : Bool) (s : St) (h : Inv s) (ws : alloc.vec.Vec Write) :
+    sql_writes ws ⦃ v =>
+      execAll (readBack kl (encC c s)) ((v.val.map Write.abs).map planA) =
+        readBack kl (encC (c || ws.val.any setsCounter) (applyAll s ws.val)) ⦄ := by
+  apply WP.spec_mono (sql_writes_spec ws)
+  intro v hv
+  rw [hv, ← encodeC_applyAll]
+  refine ((plan_sound kl _ _ (wellKeyedC c s h) ?_).1).symm
+  intro a ha
+  obtain ⟨w, _, hw⟩ := List.mem_filterMap.1 ha
+  exact writeOk w a hw
+
 /-! ## Loading -/
 
 /-- Trusted (a tenant-filtered `SELECT`): the loader returns every stored row
@@ -413,7 +429,7 @@ theorem load_sound (db : Db Val) (hdb : DbInv db) (r : Rows) (hl : Lists db (row
 
 /-- Storing the result of any successful command on a loaded snapshot keeps
 `DbInv`. With `fresh` and `load_sound`, every tenant's rows hold a state
-satisfying `Inv`, forever. -/
+satisfying `Inv`, forever (`Scoped.served_inv`). -/
 theorem store_sound (db : Db Val) (snap : Snapshot) (hi : Inv (Snapshot.toSt snap))
     (hs : Stored db (Snapshot.toSt snap)) (a : Principal) (c : Command) ws reply
     (h : transition a snap c = .ok (.Ok (ws, reply))) :

@@ -44,7 +44,7 @@ Lean library with its own `srcDir`, so module names do not change.
 ## Proofs in this repository
 
 The document service in `examples/docs` has projects, members and a review
-workflow. For every actor, state and command, Lean checks that each committed
+workflow. For every actor, reachable state and command, Lean checks that each committed
 write is allowed by the policy table (including the four-eyes rule), that
 replies contain only documents the caller may read, and that every reachable
 state keeps its invariants. It also checks that a user's result, including
