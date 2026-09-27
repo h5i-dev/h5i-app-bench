@@ -1,0 +1,11 @@
+[package]
+name = "wastebin-kernel"
+description = "The paste rules of Wastebin as a verified i5h kernel"
+edition.workspace = true
+license.workspace = true
+version.workspace = true
+
+# Extracted to Lean by Charon + Aeneas (scripts/extract-wastebin.sh).
+[dependencies]
+i5h-schema.workspace = true
+i5h-sql.workspace = true
