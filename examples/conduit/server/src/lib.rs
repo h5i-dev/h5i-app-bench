@@ -6,7 +6,7 @@ pub mod api;
 
 use conduit_kernel as k;
 use i5h::{Kernel, TenantId};
-use i5h_pg::{delete, delete_where, key, load, upsert, DbError, ReplyCodec, Store, Tx};
+use i5h_pg::{DbError, ReplyCodec, Store, Tx};
 use serde::{Deserialize, Serialize};
 
 /// Conduit is one site, so every caller is in this tenant.
@@ -56,48 +56,15 @@ impl Store<Conduit> for ConduitStore {
 
     /// Rows come back in key order, so articles and comments are in id
     /// order, which is the order `apply` keeps them in.
+    // Rows are decoded by the kernel's `decode`, and a write set is stored as
+    // the table writes of its `sql_writes`; `Storage.lean` proves the store
+    // then holds what `apply` computes.
     async fn load(tx: &Tx<'_>, t: TenantId) -> Result<k::Snapshot, DbError> {
-        Ok(k::Snapshot {
-            counter: load::<Conduit, k::Counter>(tx, t).await?.pop().unwrap_or_default(),
-            users: load::<Conduit, _>(tx, t).await?,
-            follows: load::<Conduit, _>(tx, t).await?,
-            articles: load::<Conduit, _>(tx, t).await?,
-            tags: load::<Conduit, _>(tx, t).await?,
-            favorites: load::<Conduit, _>(tx, t).await?,
-            comments: load::<Conduit, _>(tx, t).await?,
-        })
+        schema_load(tx, t).await
     }
 
     async fn write(tx: &Tx<'_>, t: TenantId, ws: &Vec<k::Write>) -> Result<(), DbError> {
-        for w in ws {
-            match w {
-                k::Write::PutUser(x) => upsert::<Conduit, _>(tx, t, x).await?,
-                k::Write::PutFollow(f) => upsert::<Conduit, _>(tx, t, f).await?,
-                k::Write::DelFollow(f) => {
-                    delete::<Conduit, k::Follow>(tx, t, &[key::<Conduit, _>(&f.follower)?, key::<Conduit, _>(&f.followed)?]).await?
-                }
-                k::Write::PutArticle(a) => upsert::<Conduit, _>(tx, t, a).await?,
-                k::Write::DelArticle(id) => delete::<Conduit, k::Article>(tx, t, &[key::<Conduit, _>(id)?]).await?,
-                k::Write::PutTag(x) => upsert::<Conduit, _>(tx, t, x).await?,
-                k::Write::DelTagsOf(id) => {
-                    delete_where::<Conduit, k::Tag>(tx, t, "article", key::<Conduit, _>(id)?).await?
-                }
-                k::Write::PutFavorite(f) => upsert::<Conduit, _>(tx, t, f).await?,
-                k::Write::DelFavorite(f) => {
-                    delete::<Conduit, k::Favorite>(tx, t, &[key::<Conduit, _>(&f.article)?, key::<Conduit, _>(&f.user)?]).await?
-                }
-                k::Write::DelFavoritesOf(id) => {
-                    delete_where::<Conduit, k::Favorite>(tx, t, "article", key::<Conduit, _>(id)?).await?
-                }
-                k::Write::PutComment(c) => upsert::<Conduit, _>(tx, t, c).await?,
-                k::Write::DelComment(id) => delete::<Conduit, k::Comment>(tx, t, &[key::<Conduit, _>(id)?]).await?,
-                k::Write::DelCommentsOf(id) => {
-                    delete_where::<Conduit, k::Comment>(tx, t, "article", key::<Conduit, _>(id)?).await?
-                }
-                k::Write::SetCounter(c) => upsert::<Conduit, _>(tx, t, c).await?,
-            }
-        }
-        Ok(())
+        schema_store(tx, t, ws).await
     }
 }
 

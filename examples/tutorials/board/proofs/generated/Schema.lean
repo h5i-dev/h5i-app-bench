@@ -391,7 +391,9 @@ macro "schema_step" " [" ls:Lean.Parser.Tactic.simpLemma,* "]" : tactic => `(tac
   intro s w; funext t
   cases w <;> cases_table t <;>
     simp [applyAllW, applyW, upsert, Post.putA, Post.table, Post.keyLen, Post.delA, Post.delWhereA, Moderator.putA, Moderator.table, Moderator.keyLen, Moderator.delA, Moderator.delWhereA, Counter.putA, Counter.table, Counter.keyLen, Counter.row, $ls,*] <;>
-    exact map_filter_of _ _ _ _ (fun y => by simp [Post.row, Moderator.row, Counter.row])))
+    first
+      | exact map_filter_of _ _ _ _ (fun y => by simp [Post.row, Moderator.row, Counter.row])
+      | (congr 1; exact List.filter_congr (fun y _ => by simp [Post.row, Moderator.row, Counter.row]))))
 
 /-- Every table write is well formed and writes a row of its table:
 `schema_ok [sqlA]`. -/

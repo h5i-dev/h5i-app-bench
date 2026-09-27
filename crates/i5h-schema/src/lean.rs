@@ -560,7 +560,9 @@ macro \"schema_step\" \" [\" ls:Lean.Parser.Tactic.simpLemma,* \"]\" : tactic =>
   intro s w; funext t
   cases w <;> cases_table t <;>
     simp [applyAllW, applyW, upsert, {simp_rows}, $ls,*] <;>
-    exact map_filter_of _ _ _ _ (fun y => by simp [{}])))
+    first
+      | exact map_filter_of _ _ _ _ (fun y => by simp [{}])
+      | (congr 1; exact List.filter_congr (fun y _ => by simp [{}]))))
 
 /-- Every table write is well formed and writes a row of its table:
 `schema_ok [sqlA]`. -/
@@ -576,6 +578,7 @@ macro \"schema_init\" \" [\" ls:Lean.Parser.Tactic.simpLemma,* \"]\" : tactic =>
 macro \"schema_rows\" \" [\" ls:Lean.Parser.Tactic.simpLemma,* \"]\" : tactic => `(tactic| (
   intro t r h; cases_table t <;> simp [$ls,*] at h <;> subst h <;> first {}))",
         tcases.replace("| t", "| $t:ident").replace("_ | ", "_ | "),
+        rows_only.join(", "),
         rows_only.join(", "),
         if single_witness.is_empty() { "| rfl".to_string() } else { single_witness.iter().map(|w| format!("| {w}")).collect::<Vec<_>>().join(" ") }
     );
