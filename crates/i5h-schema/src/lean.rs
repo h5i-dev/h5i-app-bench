@@ -306,7 +306,11 @@ pub fn render(krate: &str, rows: &[RowDecl], snap: Option<&SnapDecl>, writes: Op
         let names_f: Vec<String> = fields.iter().map(|(f, _)| format!("`{f}`")).collect();
         let cols: Vec<String> = fields.iter().map(|(f, ty)| expr(&col(ty), &format!("x.{f}"))).collect();
         let nf = fields.len();
-        let clone_extra = if fields.iter().any(|(_, ty)| matches!(col(ty), Col::Prim(Prim::Bytes))) { "u8vec_clone, " } else { "" };
+        let mut clone_extra = String::new();
+        if fields.iter().any(|(_, ty)| matches!(col(ty), Col::Prim(Prim::Bytes))) {
+            clone_extra.push_str("u8vec_clone, ");
+        }
+
         let _ = writeln!(s, "\n/-! ## `{name}` (table `{table}`) -/\n");
         let _ = writeln!(s, "/-- Columns {}. -/\ndef {name}.row (x : {name}) : List Val :=\n  [{}]\n", names_f.join(", "), cols.join(", "));
         let _ = writeln!(s, "def {name}.table : Nat := {i}\ndef {name}.keyLen : Nat := {key_len}\n");

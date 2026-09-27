@@ -184,6 +184,7 @@ theorem stored (s : St) (ws : List Write) (h : Inv s) :
 def Write.abs : i5h_sql.Write → AWrite Val
   | .Put t n row => .put t.val n.val row.val
   | .Del t k => .del t.val k.val
+  | .DelWhere t c v => .delWhere t.val c.val v
 
 @[step] theorem key1_spec (a : U64) : key1 a ⦃ v => v.val = [int a.val] ⦄ := by
   unfold key1; step* <;> simp_all
