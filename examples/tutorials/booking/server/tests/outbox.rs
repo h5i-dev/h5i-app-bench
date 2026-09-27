@@ -18,17 +18,11 @@ static SERIAL: tokio::sync::Mutex<()> = tokio::sync::Mutex::const_new(());
 
 type Pg = Engine<BookingApp, BookingStore>;
 
-/// The test database's URL, created on first use.
-async fn database() -> Option<String> {
+/// The test database, with this test's tables in their own schema so no
+/// other app's dispatcher sees its outbox.
+fn database() -> Option<String> {
     let url = std::env::var("I5H_TEST_DATABASE_URL").ok()?;
-    let (c, conn) = tokio_postgres::connect(&url, NoTls).await.unwrap();
-    tokio::spawn(conn);
-    if let Err(e) = c.batch_execute("CREATE DATABASE i5h_booking_outbox").await {
-        let dup = e.code().is_some_and(|c| c.code() == "42P04" || c.code() == "23505");
-        assert!(dup, "{e}");
-    }
-    let (base, _) = url.rsplit_once('/').unwrap();
-    Some(format!("{base}/i5h_booking_outbox"))
+    Some(i5h_pg::with_schema(&url, "booking_outbox").unwrap())
 }
 
 /// Idempotency-Key and body of one POST.
@@ -103,7 +97,7 @@ async fn rows(url: &str, org: u64) -> Vec<(bool, bool, i32)> {
 }
 
 async fn setup() -> Option<(String, Pg)> {
-    let url = database().await?;
+    let url = database()?;
     let pg = Pg::new(pool(&url, 4).unwrap(), EngineConfig::default());
     pg.install_schema().await.unwrap();
     Some((url, pg))

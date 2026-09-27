@@ -24,7 +24,7 @@ async fn store_agrees_with_apply() {
         eprintln!("I5H_TEST_DATABASE_URL not set; skipping");
         return;
     };
-    let pg = Engine::<Board, BoardStore>::new(pool(&url, 4).unwrap(), EngineConfig::default());
+    let pg = Engine::<Board, BoardStore>::new(pool(&i5h_pg::with_schema(&url, "board").unwrap(), 4).unwrap(), EngineConfig::default());
     pg.install_schema().await.unwrap();
     let mem = MemoryEngine::<Board>::default();
     let org = std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).unwrap().as_nanos() as u64 % (1 << 50);

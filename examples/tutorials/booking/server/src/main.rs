@@ -26,7 +26,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         return Ok(());
     }
 
-    let engine = Arc::new(Engine::<BookingApp, BookingStore>::new(pool(&url, 8)?, EngineConfig::default()));
+    let engine = Arc::new(Engine::<BookingApp, BookingStore>::new(pool(&i5h_pg::with_schema(&url, "booking")?, 8)?, EngineConfig::default()));
     engine.install_schema().await?;
 
     // Send committed notifications once a second.

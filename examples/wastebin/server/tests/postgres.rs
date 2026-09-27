@@ -24,7 +24,7 @@ fn sorted(mut s: k::Snapshot) -> k::Snapshot {
 static DB: tokio::sync::Mutex<()> = tokio::sync::Mutex::const_new(());
 
 async fn engine(url: &str) -> WastebinEngine {
-    let pg = WastebinEngine::new(pool(url, 4).unwrap(), EngineConfig::default());
+    let pg = WastebinEngine::new(pool(&i5h_pg::with_schema(url, "wastebin").unwrap(), 4).unwrap(), EngineConfig::default());
     pg.install_schema().await.unwrap();
     pg
 }

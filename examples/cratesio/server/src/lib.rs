@@ -10,7 +10,7 @@ use cratesio_kernel as k;
 use i5h::{Kernel, TenantId};
 use i5h_http::{error_body, reply, Actor, Api, AuthError, Authenticator, HmacAuth, I5h};
 use i5h_json::Value as Out;
-use i5h_pg::{delete, key, load, load_where, upsert, DbError, Engine, ReplyCodec, Store, Tx};
+use i5h_pg::{delete, key, load, delete_where, upsert, DbError, Engine, ReplyCodec, Store, Tx};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::sync::Arc;
@@ -44,18 +44,6 @@ impl Kernel for Cratesio {
 cratesio_kernel::cratesio_tables!(Cratesio);
 
 pub struct CratesStore;
-
-/// Delete every row of `T` that belongs to crate `krate`.
-async fn delete_of<T, F>(tx: &Tx<'_>, t: TenantId, krate: u64, key_of: F) -> Result<(), DbError>
-where
-    T: i5h_pg::Table<Cratesio>,
-    F: Fn(&T) -> Result<Vec<i5h_pg::Value>, DbError>,
-{
-    for row in load_where::<Cratesio, T>(tx, t, "krate", key::<Cratesio, _>(&krate)?).await? {
-        delete::<Cratesio, T>(tx, t, &key_of(&row)?).await?;
-    }
-    Ok(())
-}
 
 impl Store<Cratesio> for CratesStore {
     fn ddl() -> Vec<String> {
@@ -101,18 +89,10 @@ impl Store<Cratesio> for CratesStore {
                 k::Write::PutDep(x) => upsert::<C, _>(tx, t, x).await?,
                 k::Write::DelCrate(krate) => {
                     delete::<C, k::Krate>(tx, t, &[key::<C, _>(krate)?]).await?;
-                    delete_of::<k::Version, _>(tx, t, *krate, |v| Ok(vec![key::<C, _>(&v.krate)?, key::<C, _>(&v.num)?]))
-                        .await?;
-                    delete_of::<k::Owner, _>(tx, t, *krate, |o| {
-                        Ok(vec![key::<C, _>(&o.krate)?, key::<C, _>(&o.owner)?, key::<C, _>(&o.team)?])
-                    })
-                    .await?;
-                    delete_of::<k::Invite, _>(tx, t, *krate, |i| Ok(vec![key::<C, _>(&i.krate)?, key::<C, _>(&i.user)?]))
-                        .await?;
-                    delete_of::<k::Dep, _>(tx, t, *krate, |d| {
-                        Ok(vec![key::<C, _>(&d.krate)?, key::<C, _>(&d.num)?, key::<C, _>(&d.on)?])
-                    })
-                    .await?;
+                    delete_where::<C, k::Version>(tx, t, "krate", key::<C, _>(krate)?).await?;
+                    delete_where::<C, k::Owner>(tx, t, "krate", key::<C, _>(krate)?).await?;
+                    delete_where::<C, k::Invite>(tx, t, "krate", key::<C, _>(krate)?).await?;
+                    delete_where::<C, k::Dep>(tx, t, "krate", key::<C, _>(krate)?).await?;
                 }
                 k::Write::SetCounter(c) => upsert::<C, _>(tx, t, c).await?,
             }
@@ -352,12 +332,8 @@ pub fn parse_teams(spec: &str) -> Result<HashMap<u64, Vec<u64>>, String> {
     Ok(out)
 }
 
-fn bearer(v: &HeaderValue) -> Result<HeaderMap, AuthError> {
-    let s = v.to_str().map_err(|_| AuthError("bad header".into()))?;
-    let mut h = HeaderMap::new();
-    let value = HeaderValue::from_str(&format!("Bearer {}", s.trim())).map_err(|_| AuthError("bad header".into()))?;
-    h.insert("authorization", value);
-    Ok(h)
+fn text(v: &HeaderValue) -> Result<&str, AuthError> {
+    v.to_str().map(str::trim).map_err(|_| AuthError("bad header".into()))
 }
 
 fn cookie_session(headers: &HeaderMap) -> Option<&str> {
@@ -368,17 +344,18 @@ fn cookie_session(headers: &HeaderMap) -> Option<&str> {
 impl Authenticator<Cratesio> for CratesAuth {
     fn authenticate(&self, headers: &HeaderMap) -> Result<k::Principal, AuthError> {
         let mut p = if let Some(s) = cookie_session(headers) {
-            self.session.authenticate(&bearer(&HeaderValue::from_str(s).map_err(|_| AuthError("bad cookie".into()))?)?)?
+            let (sid, user) = self.session.verify(s)?;
+            principal(user, k::Via::Cookie(sid))
         } else if let Some(v) = headers.get("x-github-login") {
-            self.github.authenticate(&bearer(v)?)?
+            principal(self.github.verify(text(v)?)?.1, k::Via::GitHub)
         } else if let Some(v) = headers.get("x-operator") {
-            self.operator.authenticate(&bearer(v)?)?
+            principal(self.operator.verify(text(v)?)?.1, k::Via::Operator)
         } else {
             // Cargo sends the API token in `Authorization`, with or without `Bearer`.
             let v = headers.get("authorization").ok_or_else(|| AuthError("this action requires authentication".into()))?;
-            let raw = v.to_str().map_err(|_| AuthError("bad header".into()))?;
-            let raw = raw.strip_prefix("Bearer ").unwrap_or(raw);
-            self.token.authenticate(&bearer(&HeaderValue::from_str(raw).map_err(|_| AuthError("bad header".into()))?)?)?
+            let raw = text(v)?;
+            let (tid, user) = self.token.verify(raw.strip_prefix("Bearer ").unwrap_or(raw))?;
+            principal(user, k::Via::Token(tid))
         };
         p.registry = self.registry;
         p.now = SystemTime::now().duration_since(UNIX_EPOCH).map(|d| d.as_secs()).unwrap_or(0);
@@ -402,23 +379,9 @@ impl axum::extract::FromRef<AppState> for i5h_http::Auth<Cratesio> {
     }
 }
 
-async fn run(state: &AppState, actor: &Actor<Cratesio>, cmd: k::Command) -> Result<k::Reply, Response> {
-    match state.app.engine().execute(&actor.0, &cmd).await {
-        Ok(Ok(r)) => Ok(r),
-        Ok(Err(e)) => {
-            let (status, body) = CratesStore::encode_error(&e);
-            Err(reply(status, body))
-        }
-        Err(e) => {
-            tracing::error!(error = %e, "request failed");
-            Err(reply(StatusCode::SERVICE_UNAVAILABLE, error_body("unavailable")))
-        }
-    }
-}
-
 /// The end of the OAuth flow: sign in and set the session cookie.
-async fn authorize(State(state): State<AppState>, actor: Actor<Cratesio>) -> Response {
-    match run(&state, &actor, k::Command::Authorize).await {
+async fn authorize(State(state): State<AppState>, actor: Actor<Cratesio>, headers: HeaderMap) -> Response {
+    match state.app.run(&actor, k::Command::Authorize, &headers).await {
         Ok(k::Reply::SignedIn { user, session }) => {
             let cookie = state.auth.session_cookie(session, user);
             let mut res = reply(StatusCode::OK, Out::obj([("user", user.into())]));
@@ -432,13 +395,13 @@ async fn authorize(State(state): State<AppState>, actor: Actor<Cratesio>) -> Res
 }
 
 /// Create an API token and return its secret, once.
-async fn new_token(State(state): State<AppState>, actor: Actor<Cratesio>, Json(body): Json<serde_json::Value>) -> Response {
+async fn new_token(State(state): State<AppState>, actor: Actor<Cratesio>, headers: HeaderMap, Json(body): Json<serde_json::Value>) -> Response {
     let scopes = match serde_json::from_value::<ScopesJson>(body).map_err(|e| e.to_string()).and_then(scopes) {
         Ok(s) => s,
         Err(m) => return reply(StatusCode::BAD_REQUEST, error_body(&m)),
     };
     let user = actor.0.user;
-    match run(&state, &actor, k::Command::CreateToken { scopes }).await {
+    match state.app.run(&actor, k::Command::CreateToken { scopes }, &headers).await {
         Ok(k::Reply::TokenCreated(id)) => {
             let secret = state.auth.api_token(id, user);
             reply(StatusCode::OK, Out::obj([("id", id.into()), ("token", Out::str(&secret))]))
@@ -455,9 +418,9 @@ struct DeleteJson {
 }
 
 /// Delete a crate. The download count comes from the operator's table.
-async fn delete_crate(State(state): State<AppState>, actor: Actor<Cratesio>, Json(body): Json<DeleteJson>) -> Response {
+async fn delete_crate(State(state): State<AppState>, actor: Actor<Cratesio>, headers: HeaderMap, Json(body): Json<DeleteJson>) -> Response {
     let downloads = state.downloads.get(&body.krate).copied().unwrap_or(0);
-    match run(&state, &actor, k::Command::DeleteCrate { krate: body.krate, downloads }).await {
+    match state.app.run(&actor, k::Command::DeleteCrate { krate: body.krate, downloads }, &headers).await {
         Ok(r) => reply(StatusCode::OK, CratesStore::encode_reply(&r)),
         Err(res) => res,
     }
@@ -472,7 +435,7 @@ async fn rpc(State(state): State<AppState>, actor: Actor<Cratesio>, headers: Hea
 }
 
 pub fn router(engine: Arc<Engine<Cratesio, CratesStore>>, auth: Arc<CratesAuth>, downloads: Downloads) -> Router {
-    let app = I5h::new(engine, SharedAuth(auth.clone()));
+    let app = I5h::new(engine, auth.clone());
     let state = AppState { app, auth, downloads };
     Router::new()
         .route("/session/authorize", post(authorize))
@@ -482,11 +445,3 @@ pub fn router(engine: Arc<Engine<Cratesio, CratesStore>>, auth: Arc<CratesAuth>,
         .with_state(state)
 }
 
-/// Lets the engine handle and the routes share one authenticator.
-struct SharedAuth(Arc<CratesAuth>);
-
-impl Authenticator<Cratesio> for SharedAuth {
-    fn authenticate(&self, headers: &HeaderMap) -> Result<k::Principal, AuthError> {
-        self.0.authenticate(headers)
-    }
-}

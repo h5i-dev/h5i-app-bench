@@ -7,7 +7,7 @@
 use crate::{DbError, Store, FRAMEWORK_TABLES};
 use i5h::Kernel;
 
-fn ident(name: &str) -> Result<&str, DbError> {
+pub(crate) fn ident(name: &str) -> Result<&str, DbError> {
     let ok = !name.is_empty() && name.chars().all(|c| c.is_ascii_alphanumeric() || c == '_');
     if ok {
         Ok(name)
@@ -23,6 +23,8 @@ pub fn lockdown_sql<K: Kernel, S: Store<K>>(owner: &str, engine_role: &str) -> R
         "DO $$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = '{owner}') \
          THEN CREATE ROLE \"{owner}\" NOLOGIN; END IF; END $$"
     )];
+    // Tables resolve through the admin connection's search path.
+    sql.push(format!("DO $$ BEGIN EXECUTE format('GRANT USAGE ON SCHEMA %I TO %I', current_schema(), '{engine}'); END $$"));
     let tables = FRAMEWORK_TABLES.iter().copied().chain(S::tables());
     for t in tables {
         let t = ident(t)?;
