@@ -2,12 +2,14 @@ import Std.Data.HashMap
 import Engine.Proofs
 import Engine.Scopes
 import Engine.Lock
+import Engine.Clock
 import Engine.Outbox
 /-!
 # Exhaustive search on small instances
 
-`next` lists the successors of a state. It is proven to be exactly `Step`, so
-the search explores the real protocol. `#eval` runs it on a tiny kernel.
+`next` lists the successors of a state. A new attempt may begin at any time in
+the list `ts`. It is proven to be exactly `Step` for those times, so the search
+explores the real protocol. `#eval` runs it on a tiny kernel.
 -/
 
 namespace Engine
@@ -25,15 +27,16 @@ theorem idle_iff (sys : Sys S W Cmd Reply Key) :
   · intro h c hc snap d hph; have := h c hc; simp [hph, Phase.isActive] at this
   · intro h c hc; cases hph : c.phase <;> simp [Phase.isActive]; exact h c hc _ _ hph
 
-/-- Successors caused by client `i`. -/
-def moves (step : S → W → Cmd → Option (S × Reply)) (check locking : Bool) (sys : Sys S W Cmd Reply Key)
-    (i : Nat) (c : Client S W Cmd Reply Key) : List (Sys S W Cmd Reply Key) :=
+/-- Successors caused by client `i`; attempts begin at the times in `ts`. -/
+def moves (step : S → W → Nat → Cmd → Option (S × Reply)) (check locking mono : Bool) (ts : List Nat)
+    (sys : Sys S W Cmd Reply Key) (i : Nat) (c : Client S W Cmd Reply Key) : List (Sys S W Cmd Reply Key) :=
   let set (ph : Phase S W Cmd Reply Key) : Sys S W Cmd Reply Key :=
     { sys with clients := sys.clients.set i ({ c with phase := ph }) }
   match c.phase with
   | .ready =>
     if !locking || sys.clients.all (fun c => !c.phase.isActive) then
-      [set (.active sys.db (plan step sys.db c.req))]
+      (ts.filter fun t => !mono || decide (lastTime sys.db.log ≤ t)).map fun t =>
+        { sys with clients := sys.clients.set i ({ c with phase := .active sys.db (plan step sys.db c.req t), now := t }) }
     else []
   | .done _ => []
   | .active snap d =>
@@ -45,20 +48,20 @@ def moves (step : S → W → Cmd → Option (S × Reply)) (check locking : Bool
       | .write s r =>
         set (afterLost c.req) ::
           (if !check || decide (snap.ver = sys.db.ver) then
-            [⟨sys.db.commit c.req s r, sys.clients.set i ({ c with phase := .done (.ok r) })⟩,
-             ⟨sys.db.commit c.req s r, sys.clients.set i ({ c with phase := afterLost c.req })⟩]
+            [⟨sys.db.commit c.req c.now s r, sys.clients.set i ({ c with phase := .done (.ok r) })⟩,
+             ⟨sys.db.commit c.req c.now s r, sys.clients.set i ({ c with phase := afterLost c.req })⟩]
           else [])
     set .ready :: others
 
-def next (step : S → W → Cmd → Option (S × Reply)) (check locking : Bool) (sys : Sys S W Cmd Reply Key) :
-    List (Sys S W Cmd Reply Key) :=
+def next (step : S → W → Nat → Cmd → Option (S × Reply)) (check locking mono : Bool) (ts : List Nat)
+    (sys : Sys S W Cmd Reply Key) : List (Sys S W Cmd Reply Key) :=
   (List.range sys.clients.length).flatMap fun i =>
     match sys.clients[i]? with
-    | some c => moves step check locking sys i c
+    | some c => moves step check locking mono ts sys i c
     | none => []
 
-theorem mem_next {step : S → W → Cmd → Option (S × Reply)} {check locking a b}
-    (h : b ∈ next step check locking (a : Sys S W Cmd Reply Key)) : Step step check locking a b := by
+theorem mem_next {step : S → W → Nat → Cmd → Option (S × Reply)} {check locking mono ts a b}
+    (h : b ∈ next step check locking mono ts (a : Sys S W Cmd Reply Key)) : Step step check locking mono a b := by
   simp only [next, List.mem_flatMap, List.mem_range] at h
   obtain ⟨i, -, h⟩ := h
   split at h
@@ -67,9 +70,11 @@ theorem mem_next {step : S → W → Cmd → Option (S × Reply)} {check locking
     split at h
     · split at h
       · rename_i hl
-        simp at h; subst h
-        refine .begin hc (by assumption) (fun hk => (idle_iff a).1 ?_)
-        simpa [hk] using hl
+        simp only [List.mem_map, List.mem_filter] at h
+        obtain ⟨t, ⟨-, ht⟩, rfl⟩ := h
+        refine .begin hc (by assumption) (fun hk => (idle_iff a).1 ?_) (fun hm => ?_)
+        · simpa [hk] using hl
+        · simpa [hm] using ht
       · simp at h
     · simp at h
     · rename_i snap d hph
@@ -94,18 +99,26 @@ theorem mem_next {step : S → W → Cmd → Option (S × Reply)} {check locking
             · simp at h
   · simp at h
 
-theorem next_complete {step : S → W → Cmd → Option (S × Reply)} {check locking a b}
-    (h : Step step check locking (a : Sys S W Cmd Reply Key) b) : b ∈ next step check locking a := by
+/-- Every step is found, if `ts` holds the times the clients hold afterwards
+(in particular the time a new attempt began at). -/
+theorem next_complete {step : S → W → Nat → Cmd → Option (S × Reply)} {check locking mono ts a b}
+    (h : Step step check locking mono (a : Sys S W Cmd Reply Key) b) (hts : ∀ c ∈ b.clients, c.now ∈ ts) :
+    b ∈ next step check locking mono ts a := by
   simp only [next, List.mem_flatMap, List.mem_range]
   cases h with
-  | @begin i c hc hr hl =>
+  | @begin i c t hc hr hl hm =>
     refine ⟨i, (List.getElem?_eq_some_iff.1 hc).1, ?_⟩
     have : (!locking || a.clients.all (fun c => !c.phase.isActive)) = true := by
       cases locking
       · rfl
       · simpa using (idle_iff a).2 (hl rfl)
-    simp only [hc, moves, hr, this, if_true]
-    simp
+    have ht : t ∈ ts := hts _ (List.mem_set (List.getElem?_eq_some_iff.1 hc).1 _)
+    have hm' : (!mono || decide (lastTime a.db.log ≤ t)) = true := by
+      cases mono
+      · rfl
+      · simpa using hm rfl
+    simp only [hc, moves, hr, this, if_true, List.mem_map, List.mem_filter]
+    exact ⟨t, ⟨ht, hm'⟩, rfl⟩
   | @replay i c snap r hc hph => exact ⟨i, (List.getElem?_eq_some_iff.1 hc).1, by simp [hc, moves, hph]⟩
   | @refuse i c snap hc hph => exact ⟨i, (List.getElem?_eq_some_iff.1 hc).1, by simp [hc, moves, hph]⟩
   | @conflict i c snap hc hph => exact ⟨i, (List.getElem?_eq_some_iff.1 hc).1, by simp [hc, moves, hph]⟩
@@ -160,7 +173,7 @@ def search {α} [BEq α] [Hashable α] (next : α → List α) (ok : α → Bool
 
 /-! ## A tiny kernel: a counter capped at 3 -/
 
-def counter (s : Nat) (_ : Nat) (n : Nat) : Option (Nat × Nat) :=
+def counter (s : Nat) (_ _ : Nat) (n : Nat) : Option (Nat × Nat) :=
   if s + n ≤ 3 then some (s + n, s + n) else none
 
 /-- Two sends of the same keyed request, plus one request without a key. -/
@@ -171,22 +184,23 @@ def reqs : List (Req Nat Nat Nat) := [⟨0, 1, some 7⟩, ⟨0, 1, some 7⟩, �
 /-- A keyed request whose COMMIT reply is lost retries and gets the stored
 reply: one commit, and the caller sees its result. -/
 theorem lost_commit_replayed : ∃ sys : Sys Nat Nat Nat Nat Nat,
-    Reachable counter true true 0 [⟨0, 1, some 7⟩] sys ∧ sys.db.log.length = 1 ∧
-    sys.clients = [⟨⟨0, 1, some 7⟩, .done (.ok 1)⟩] :=
+    Reachable counter true true true 0 [⟨0, 1, some 7⟩] sys ∧ sys.db.log.length = 1 ∧
+    sys.clients = [⟨⟨0, 1, some 7⟩, .done (.ok 1), 0⟩] :=
   ⟨_, .step (.step (.step (.step .init
-    (.begin (i := 0) rfl rfl (fun _ => by simp [Idle, init])))
+    (.begin (i := 0) (t := 0) rfl rfl (fun _ => by simp [Idle, init]) (fun _ => by simp [init, initDB, lastTime])))
     (.commitLost (i := 0) rfl rfl (fun _ => rfl)))
-    (.begin (i := 0) rfl rfl (fun _ => by simp [Idle, init, afterLost])))
+    (.begin (i := 0) (t := 0) rfl rfl (fun _ => by simp [Idle, init, afterLost])
+      (fun _ => by simp [init, initDB, DB.commit, lastTime])))
     (.replay (i := 0) rfl rfl), rfl, rfl⟩
 
 /-- Without the conflict check, two requests decided on one snapshot both
 commit and the log no longer replays to the state: `serializable` needs it. -/
 theorem unchecked_lost_update : ∃ sys : Sys Nat Nat Nat Nat Nat,
-    Reachable counter false false 0 [⟨0, 1, none⟩, ⟨0, 1, none⟩] sys ∧
+    Reachable counter false false false 0 [⟨0, 1, none⟩, ⟨0, 1, none⟩] sys ∧
     run counter 0 sys.db.log ≠ some sys.db.state :=
   ⟨_, .step (.step (.step (.step .init
-    (.begin (i := 0) rfl rfl (fun h => nomatch h)))
-    (.begin (i := 1) rfl rfl (fun h => nomatch h)))
+    (.begin (i := 0) (t := 0) rfl rfl (fun h => nomatch h) (fun h => nomatch h)))
+    (.begin (i := 1) (t := 0) rfl rfl (fun h => nomatch h) (fun h => nomatch h)))
     (.commit (i := 0) rfl rfl (fun h => nomatch h)))
     (.commit (i := 1) rfl rfl (fun h => nomatch h)), by decide⟩
 
@@ -194,6 +208,7 @@ theorem unchecked_lost_update : ∃ sys : Sys Nat Nat Nat Nat Nat,
 def okState (sys : Sys Nat Nat Nat Nat Nat) : Bool :=
   run counter 0 sys.db.log == some sys.db.state &&
   decide (sys.db.log.filterMap (·.key)).Nodup &&
+  decide ((sys.db.log.map (·.time)).Pairwise (· ≤ ·)) &&
   sys.clients.all fun c =>
     match c.req.key, c.phase with
     | some k, .done (.ok r) =>
@@ -214,13 +229,13 @@ def brief (sys : Sys Nat Nat Nat Nat Nat) : String :=
 
 -- The real engine: exhaustive, no violation.
 #eval
-  let (n, cex) := search (next counter true false) okState (init 0 reqs)
+  let (n, cex) := search (next counter true false true [0, 1]) okState (init 0 reqs)
   s!"engine: {n} states explored, violation: {cex.isSome}"
 
 -- Same kernel, but COMMIT skips the conflict check: a lost update.
 #eval show IO Unit from do
   let two : List (Req Nat Nat Nat) := [⟨0, 1, none⟩, ⟨0, 1, none⟩]
-  let (n, cex) := search (next counter false false) okState (init 0 two)
+  let (n, cex) := search (next counter false false false [0]) okState (init 0 two)
   match cex with
   | none => IO.println s!"broken engine: {n} states, no violation"
   | some path =>
@@ -244,6 +259,8 @@ def brief (sys : Sys Nat Nat Nat Nat Nat) : String :=
 #print axioms Outbox.key_fixes_content
 #print axioms Outbox.delivered_sent
 #print axioms Outbox.dead_reason
+#print axioms times_monotone
+#print axioms clock_back
 #print axioms lost_commit_replayed
 #print axioms unchecked_lost_update
 #print axioms Outbox.duplicate_send
