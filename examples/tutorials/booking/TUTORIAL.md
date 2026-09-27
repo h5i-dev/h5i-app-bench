@@ -412,15 +412,19 @@ booking `[1, 2)`, `adjacent_accepted` shows that `[2, 3)` is accepted with the
 expected writes and notification, `overlap_refused` shows that `[1, 3)` gets
 `Taken`, and further scenarios cover a booking in the past, a stranger's and a
 late cancellation, and the owner's and the admin's cancellations.
+The `i5h_eval` tactic uses the registered loop specs to make each of these
+concrete command checks a one-line proof.
 `s1_reachable` shows that the state with the first booking is reachable, by
 running `AddAdmin`, `CreateRoom` and `Book` from the empty service, so the
 theorems about reachable states apply to it.
 
 ## Committing a write set
 
-`Apply.lean` proves that the kernel's `apply` computes `Spec.applyAll`, with
-the same loop lemmas as the second tutorial. `Emit` is the identity on both
-sides.
+`schema!` generates `apply`, the table operations and their loop lemmas.
+`Apply.lean` proves that its write dispatch computes `Spec.applyAll`; `Emit`
+does not change the tables. `Storage.lean` instantiates the shared store
+theorem, proving that the planned SQL writes leave exactly those rows and that
+loading them decodes the resulting state up to row order.
 
 ## Time that never goes back
 

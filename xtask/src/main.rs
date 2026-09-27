@@ -162,6 +162,7 @@ fn main() -> ExitCode {
     });
     if full {
         cx.step("mutation suite", |r| run(r, "python3", &["scripts/mutants.py"]));
+        cx.step("app mutation suite", |r| run(r, "python3", &["scripts/mutants-apps.py"]));
         cx.step("rust vs lean differential test", |r| run(r, "bash", &["scripts/difftest.sh"]));
         cx.step("engine traces vs model", |r| {
             if !db {

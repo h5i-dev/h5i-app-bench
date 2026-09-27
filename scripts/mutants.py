@@ -185,10 +185,13 @@ def check(name, edits, keep):
         if run(["cargo", "check", "-q", "-p", "docs-kernel"], tmp, log) != 0:
             return name, "invalid (rust)", tmp
         llbc = os.path.join(tmp, "docs_kernel.llbc")
+        schema_items = subprocess.check_output(
+            ["bash", os.path.join(ROOT, "scripts/schema-items.sh"), "docs_kernel"], text=True
+        ).split()
         rc = run(["charon", "cargo", "--preset=aeneas", "--start-from", "docs_kernel::transition",
                   "--start-from", "docs_kernel::apply", "--start-from", "docs_kernel::read_scope",
                   "--start-from", "docs_kernel::check_inv", "--start-from", "docs_kernel::sql_writes", "--start-from", "docs_kernel::decode", "--start-from", "docs_kernel::scoped_project",
-                  "--include", "i5h_sql",
+                  *schema_items, "--include", "i5h_sql",
                   "--dest-file", llbc], os.path.join(tmp, "kernel"), log)
         if rc != 0:
             return name, "invalid (charon)", tmp
@@ -205,7 +208,7 @@ def check(name, edits, keep):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("-j", type=int, default=6)
+    ap.add_argument("-j", type=int, default=3)
     ap.add_argument("--keep", action="store_true", help="keep temp dirs for inspection")
     ap.add_argument("names", nargs="*")
     args = ap.parse_args()
