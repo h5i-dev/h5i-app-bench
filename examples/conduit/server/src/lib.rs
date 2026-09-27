@@ -6,7 +6,7 @@ pub mod api;
 
 use conduit_kernel as k;
 use i5h::{Kernel, TenantId};
-use i5h_pg::{delete, key, load, load_where, upsert, DbError, ReplyCodec, Store, Tx};
+use i5h_pg::{delete, delete_where, key, load, upsert, DbError, ReplyCodec, Store, Tx};
 use serde::{Deserialize, Serialize};
 
 /// Conduit is one site, so every caller is in this tenant.
@@ -45,21 +45,6 @@ conduit_kernel::conduit_tables!(Conduit);
 
 pub struct ConduitStore;
 
-/// Deletes every row of `T` whose `column` is `id`, by key. This is the
-/// `on delete cascade` of upstream's schema, requested by the kernel.
-async fn delete_where<T: i5h_pg::Table<Conduit>>(
-    tx: &Tx<'_>,
-    t: TenantId,
-    column: &str,
-    id: u64,
-    key_of: impl Fn(&T) -> Result<Vec<i5h_pg::Value>, DbError>,
-) -> Result<(), DbError> {
-    for row in load_where::<Conduit, T>(tx, t, column, key::<Conduit, _>(&id)?).await? {
-        delete::<Conduit, T>(tx, t, &key_of(&row)?).await?;
-    }
-    Ok(())
-}
-
 impl Store<Conduit> for ConduitStore {
     fn ddl() -> Vec<String> {
         schema_ddl()
@@ -95,25 +80,19 @@ impl Store<Conduit> for ConduitStore {
                 k::Write::DelArticle(id) => delete::<Conduit, k::Article>(tx, t, &[key::<Conduit, _>(id)?]).await?,
                 k::Write::PutTag(x) => upsert::<Conduit, _>(tx, t, x).await?,
                 k::Write::DelTagsOf(id) => {
-                    delete_where::<k::Tag>(tx, t, "article", *id, |r| {
-                        Ok(vec![key::<Conduit, _>(&r.article)?, key::<Conduit, _>(&r.tag)?])
-                    })
-                    .await?
+                    delete_where::<Conduit, k::Tag>(tx, t, "article", key::<Conduit, _>(id)?).await?
                 }
                 k::Write::PutFavorite(f) => upsert::<Conduit, _>(tx, t, f).await?,
                 k::Write::DelFavorite(f) => {
                     delete::<Conduit, k::Favorite>(tx, t, &[key::<Conduit, _>(&f.article)?, key::<Conduit, _>(&f.user)?]).await?
                 }
                 k::Write::DelFavoritesOf(id) => {
-                    delete_where::<k::Favorite>(tx, t, "article", *id, |r| {
-                        Ok(vec![key::<Conduit, _>(&r.article)?, key::<Conduit, _>(&r.user)?])
-                    })
-                    .await?
+                    delete_where::<Conduit, k::Favorite>(tx, t, "article", key::<Conduit, _>(id)?).await?
                 }
                 k::Write::PutComment(c) => upsert::<Conduit, _>(tx, t, c).await?,
                 k::Write::DelComment(id) => delete::<Conduit, k::Comment>(tx, t, &[key::<Conduit, _>(id)?]).await?,
                 k::Write::DelCommentsOf(id) => {
-                    delete_where::<k::Comment>(tx, t, "article", *id, |r| Ok(vec![key::<Conduit, _>(&r.id)?])).await?
+                    delete_where::<Conduit, k::Comment>(tx, t, "article", key::<Conduit, _>(id)?).await?
                 }
                 k::Write::SetCounter(c) => upsert::<Conduit, _>(tx, t, c).await?,
             }

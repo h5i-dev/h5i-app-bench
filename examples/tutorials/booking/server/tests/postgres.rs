@@ -27,7 +27,7 @@ async fn store_agrees_with_apply() {
         eprintln!("I5H_TEST_DATABASE_URL not set; skipping");
         return;
     };
-    let pg = Engine::<BookingApp, BookingStore>::new(pool(&url, 4).unwrap(), EngineConfig::default());
+    let pg = Engine::<BookingApp, BookingStore>::new(pool(&i5h_pg::with_schema(&url, "booking").unwrap(), 4).unwrap(), EngineConfig::default());
     pg.install_schema().await.unwrap();
     let mem = MemoryEngine::<BookingApp>::default();
     let org = std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).unwrap().as_nanos() as u64 % (1 << 50);
@@ -74,7 +74,7 @@ async fn store_agrees_with_apply() {
     assert_eq!(a, b);
     assert!(expected.len() > 20, "the run books and cancels");
 
-    let (c, conn) = tokio_postgres::connect(&url, NoTls).await.unwrap();
+    let (c, conn) = tokio_postgres::connect(&i5h_pg::with_schema(&url, "booking").unwrap(), NoTls).await.unwrap();
     tokio::spawn(conn);
     let rows: Vec<(i64, Vec<u8>)> = c
         .query("SELECT dest, payload FROM i5h_outbox WHERE tenant_id = $1 ORDER BY id", &[&(org as i64)])

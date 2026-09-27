@@ -12,7 +12,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let secret = std::env::var("I5H_SECRET")?;
     let addr = std::env::var("LISTEN").unwrap_or_else(|_| "127.0.0.1:8080".into());
 
-    let engine = Arc::new(Engine::<Conduit, ConduitStore>::new(pool(&url, 8)?, EngineConfig::default()));
+    let engine = Arc::new(Engine::<Conduit, ConduitStore>::new(pool(&i5h_pg::with_schema(&url, "conduit")?, 8)?, EngineConfig::default()));
     engine.install_schema().await?;
     let app = App { engine, auth: Arc::new(ConduitAuth::new(secret.clone())), secret: Arc::new(secret.into_bytes()) };
     let router = Router::new().route("/healthz", get(|| async { "ok" })).merge(router(app));

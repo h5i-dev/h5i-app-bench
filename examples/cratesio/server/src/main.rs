@@ -30,7 +30,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     }
 
     let url = std::env::var("DATABASE_URL")?;
-    let engine = Arc::new(Engine::<Cratesio, CratesStore>::new(pool(&url, 8)?, EngineConfig::default()));
+    let engine = Arc::new(Engine::<Cratesio, CratesStore>::new(pool(&i5h_pg::with_schema(&url, "cratesio")?, 8)?, EngineConfig::default()));
     engine.install_schema().await?;
     let app = router(engine, auth, Arc::new(downloads)).route("/healthz", axum::routing::get(|| async { "ok" }));
 

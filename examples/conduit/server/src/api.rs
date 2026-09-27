@@ -3,7 +3,7 @@
 
 use crate::{principal, Conduit, ConduitStore, TENANT};
 use axum::extract::{FromRef, Path, Query, State};
-use axum::http::{HeaderMap, HeaderValue, StatusCode};
+use axum::http::{HeaderMap, StatusCode};
 use axum::response::Response;
 use axum::routing::{delete, get, post};
 use axum::{Json, Router};
@@ -42,14 +42,11 @@ impl Authenticator<Conduit> for ConduitAuth {
         };
         let h = h.to_str().map_err(|_| AuthError("bad authorization header".into()))?;
         let token = h.strip_prefix("Token ").or_else(|| h.strip_prefix("Bearer ")).ok_or_else(|| AuthError("expected a token".into()))?;
-        let mut bearer = HeaderMap::new();
-        let v = HeaderValue::from_str(&format!("Bearer {token}")).map_err(|_| AuthError("bad token".into()))?;
-        bearer.insert("authorization", v);
-        let p = self.hmac.authenticate(&bearer)?;
-        if p.org != TENANT {
+        let (org, user) = self.hmac.verify(token)?;
+        if org != TENANT {
             return Err(AuthError("wrong site".into()));
         }
-        Ok(p)
+        Ok(principal(org, user))
     }
 }
 

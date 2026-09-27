@@ -28,7 +28,7 @@ async fn store_agrees_with_apply() {
         eprintln!("I5H_TEST_DATABASE_URL not set; skipping");
         return;
     };
-    let pg = Engine::<Inbox, InboxStore>::new(pool(&url, 4).unwrap(), EngineConfig::default());
+    let pg = Engine::<Inbox, InboxStore>::new(pool(&i5h_pg::with_schema(&url, "inbox").unwrap(), 4).unwrap(), EngineConfig::default());
     pg.install_schema().await.unwrap();
     let mem = MemoryEngine::<Inbox>::default();
     let org = std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).unwrap().as_nanos() as u64 % (1 << 50);

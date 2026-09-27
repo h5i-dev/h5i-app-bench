@@ -26,7 +26,7 @@ mod roles;
 mod table;
 
 pub use roles::{lockdown, lockdown_sql};
-pub use table::{column_of, ddl, delete, key, load, load_rows, load_rows_where, load_where, run_planned, upsert, ColumnDef, Kind, PgField, Table, Value};
+pub use table::{column_of, ddl, delete, delete_where, key, load, load_rows, load_rows_where, load_where, run_planned, upsert, ColumnDef, Kind, PgField, Table, Value};
 pub use i5h_sql as sql;
 
 use deadpool_postgres::{Config, Runtime};
@@ -276,6 +276,16 @@ pub struct Engine<K: Kernel, S: Store<K>> {
     _marker: PhantomData<fn() -> (K, S)>,
 }
 
+/// `url` with the app's tables in PostgreSQL schema `schema`, so apps that
+/// share a database never share a table (or the idempotency and outbox
+/// tables). `install_schema` creates the schema; pass the same schema in
+/// `lockdown`'s admin URL.
+pub fn with_schema(url: &str, schema: &str) -> Result<String, DbError> {
+    roles::ident(schema)?;
+    let sep = if url.contains('?') { '&' } else { '?' };
+    Ok(format!("{url}{sep}options=-c%20search_path%3D{schema}"))
+}
+
 pub fn pool(url: &str, max_size: usize) -> Result<Pool, DbError> {
     let mut cfg = Config::new();
     cfg.url = Some(url.to_string());
@@ -324,6 +334,13 @@ impl<K: Kernel, S: Store<K>> Engine<K, S> {
         let tx = client.transaction().await?;
         // Two-int form: a separate key space from the per-tenant bigint locks.
         tx.execute("SELECT pg_advisory_xact_lock($1, $2)", &[&SCHEMA_LOCK.0, &SCHEMA_LOCK.1]).await?;
+        // The first schema on the search path, as set by `with_schema`.
+        let path: String = tx.query_one("SELECT current_setting('search_path')", &[]).await?.get(0);
+        if let Some(first) = path.split(',').next().map(|s| s.trim().trim_matches('"')) {
+            if first != "$user" && first != "public" {
+                tx.batch_execute(&format!("CREATE SCHEMA IF NOT EXISTS \"{}\"", roles::ident(first)?)).await?;
+            }
+        }
         tx.batch_execute(FRAMEWORK_DDL).await?;
         tx.batch_execute(outbox::OUTBOX_DDL).await?;
         if self.trace.is_some() {

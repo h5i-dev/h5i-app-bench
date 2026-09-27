@@ -20,7 +20,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         return Ok(());
     }
 
-    let engine = Arc::new(Engine::<Ledger, LedgerStore>::new(pool(&url, 8)?, EngineConfig::default()));
+    let engine = Arc::new(Engine::<Ledger, LedgerStore>::new(pool(&i5h_pg::with_schema(&url, "ledger")?, 8)?, EngineConfig::default()));
     engine.install_schema().await?;
     let app = I5h::new(engine, auth);
     let router = Router::new().route("/healthz", get(|| async { "ok" })).merge(rpc_router(app));
