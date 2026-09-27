@@ -47,7 +47,21 @@ pub struct Principal {
 }
 
 i5h_schema::schema! {
-    mapping cratesio_tables for cratesio_kernel;
+    mapping cratesio_tables for cratesio_kernel, writes Write, lean "../proofs/generated/Schema.lean";
+
+    /// The registry's state.
+    #[derive(Clone, Debug, Default, PartialEq, Eq)]
+    pub struct Snapshot {
+        counter: Counter,
+        users: Vec<User>,
+        sessions: Vec<Session>,
+        tokens: Vec<Token>,
+        crates: Vec<Krate>,
+        versions: Vec<Version>,
+        owners: Vec<Owner>,
+        invites: Vec<Invite>,
+        deps: Vec<Dep>,
+    }
 
     /// `lock_until == 0` with `locked` means locked indefinitely.
     #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -121,20 +135,6 @@ i5h_schema::schema! {
         next_session: u64,
         next_token: u64,
     }
-}
-
-/// The registry's state.
-#[derive(Clone, Debug, Default, PartialEq, Eq)]
-pub struct Snapshot {
-    pub counter: Counter,
-    pub users: Vec<User>,
-    pub sessions: Vec<Session>,
-    pub tokens: Vec<Token>,
-    pub crates: Vec<Krate>,
-    pub versions: Vec<Version>,
-    pub owners: Vec<Owner>,
-    pub invites: Vec<Invite>,
-    pub deps: Vec<Dep>,
 }
 
 /// The scopes of a new token (`NewApiTokenRequest`).
@@ -995,218 +995,58 @@ pub fn transition_pre14760(p: &Principal, s: &Snapshot, cmd: &Command) -> Outcom
 
 /* ---------- apply ---------- */
 
-fn put_user(v: &mut Vec<User>, x: User) {
-    let mut i = 0;
-    while i < v.len() {
-        if v[i].id == x.id {
-            v[i] = x;
-            return;
-        }
-        i += 1;
-    }
-    v.push(x);
-}
+/// The column every cascade deletes by: the crate, first in each child table.
+const KRATE: u32 = 0;
 
-fn put_session(v: &mut Vec<Session>, x: Session) {
-    let mut i = 0;
-    while i < v.len() {
-        if v[i].id == x.id {
-            v[i] = x;
-            return;
-        }
-        i += 1;
-    }
-    v.push(x);
-}
-
-fn put_token(v: &mut Vec<Token>, x: Token) {
-    let mut i = 0;
-    while i < v.len() {
-        if v[i].id == x.id {
-            v[i] = x;
-            return;
-        }
-        i += 1;
-    }
-    v.push(x);
-}
-
-fn put_crate(v: &mut Vec<Krate>, x: Krate) {
-    let mut i = 0;
-    while i < v.len() {
-        if v[i].id == x.id {
-            v[i] = x;
-            return;
-        }
-        i += 1;
-    }
-    v.push(x);
-}
-
-fn put_version(v: &mut Vec<Version>, x: Version) {
-    let mut i = 0;
-    while i < v.len() {
-        if v[i].krate == x.krate && v[i].num == x.num {
-            v[i] = x;
-            return;
-        }
-        i += 1;
-    }
-    v.push(x);
-}
-
-fn put_owner(v: &mut Vec<Owner>, x: Owner) {
-    let mut i = 0;
-    while i < v.len() {
-        if v[i].krate == x.krate && v[i].owner == x.owner && v[i].team == x.team {
-            v[i] = x;
-            return;
-        }
-        i += 1;
-    }
-    v.push(x);
-}
-
-fn put_invite(v: &mut Vec<Invite>, x: Invite) {
-    let mut i = 0;
-    while i < v.len() {
-        if v[i].krate == x.krate && v[i].user == x.user {
-            v[i] = x;
-            return;
-        }
-        i += 1;
-    }
-    v.push(x);
-}
-
-fn put_dep(v: &mut Vec<Dep>, x: Dep) {
-    let mut i = 0;
-    while i < v.len() {
-        if v[i].krate == x.krate && v[i].num == x.num && v[i].on == x.on {
-            v[i] = x;
-            return;
-        }
-        i += 1;
-    }
-    v.push(x);
-}
-
-fn del_owner(v: &Vec<Owner>, x: Owner) -> Vec<Owner> {
-    let mut out = Vec::new();
-    let mut i = 0;
-    while i < v.len() {
-        if !(v[i].krate == x.krate && v[i].owner == x.owner && v[i].team == x.team) {
-            out.push(v[i]);
-        }
-        i += 1;
-    }
-    out
-}
-
-fn del_invite(v: &Vec<Invite>, krate: u64, user: u64) -> Vec<Invite> {
-    let mut out = Vec::new();
-    let mut i = 0;
-    while i < v.len() {
-        if !(v[i].krate == krate && v[i].user == user) {
-            out.push(v[i]);
-        }
-        i += 1;
-    }
-    out
-}
-
-fn del_crate(v: &Vec<Krate>, k: u64) -> Vec<Krate> {
-    let mut out = Vec::new();
-    let mut i = 0;
-    while i < v.len() {
-        if v[i].id != k {
-            out.push(v[i]);
-        }
-        i += 1;
-    }
-    out
-}
-
-fn del_versions_of(v: &Vec<Version>, k: u64) -> Vec<Version> {
-    let mut out = Vec::new();
-    let mut i = 0;
-    while i < v.len() {
-        if v[i].krate != k {
-            out.push(v[i]);
-        }
-        i += 1;
-    }
-    out
-}
-
-fn del_owners_of(v: &Vec<Owner>, k: u64) -> Vec<Owner> {
-    let mut out = Vec::new();
-    let mut i = 0;
-    while i < v.len() {
-        if v[i].krate != k {
-            out.push(v[i]);
-        }
-        i += 1;
-    }
-    out
-}
-
-fn del_invites_of(v: &Vec<Invite>, k: u64) -> Vec<Invite> {
-    let mut out = Vec::new();
-    let mut i = 0;
-    while i < v.len() {
-        if v[i].krate != k {
-            out.push(v[i]);
-        }
-        i += 1;
-    }
-    out
-}
-
-fn del_deps_of(v: &Vec<Dep>, k: u64) -> Vec<Dep> {
-    let mut out = Vec::new();
-    let mut i = 0;
-    while i < v.len() {
-        if v[i].krate != k {
-            out.push(v[i]);
-        }
-        i += 1;
-    }
-    out
-}
-
+/// What one write does to the state. `schema!` runs it over a write set
+/// (`apply`).
 fn apply_write(s: &mut Snapshot, w: Write) {
     match w {
-        Write::PutUser(x) => put_user(&mut s.users, x),
-        Write::PutSession(x) => put_session(&mut s.sessions, x),
-        Write::PutToken(x) => put_token(&mut s.tokens, x),
-        Write::PutCrate(x) => put_crate(&mut s.crates, x),
-        Write::PutVersion(x) => put_version(&mut s.versions, x),
-        Write::PutOwner(x) => put_owner(&mut s.owners, x),
-        Write::DelOwner(x) => s.owners = del_owner(&s.owners, x),
-        Write::PutInvite(x) => put_invite(&mut s.invites, x),
-        Write::DelInvite(k, u) => s.invites = del_invite(&s.invites, k, u),
-        Write::PutDep(x) => put_dep(&mut s.deps, x),
+        Write::PutUser(x) => User::put(&mut s.users, x),
+        Write::PutSession(x) => Session::put(&mut s.sessions, x),
+        Write::PutToken(x) => Token::put(&mut s.tokens, x),
+        Write::PutCrate(x) => Krate::put(&mut s.crates, x),
+        Write::PutVersion(x) => Version::put(&mut s.versions, x),
+        Write::PutOwner(x) => Owner::put(&mut s.owners, x),
+        Write::DelOwner(x) => s.owners = Owner::del(&s.owners, x.krate, x.owner, x.team),
+        Write::PutInvite(x) => Invite::put(&mut s.invites, x),
+        Write::DelInvite(k, u) => s.invites = Invite::del(&s.invites, k, u),
+        Write::PutDep(x) => Dep::put(&mut s.deps, x),
         Write::DelCrate(k) => {
-            s.crates = del_crate(&s.crates, k);
-            s.versions = del_versions_of(&s.versions, k);
-            s.owners = del_owners_of(&s.owners, k);
-            s.invites = del_invites_of(&s.invites, k);
-            s.deps = del_deps_of(&s.deps, k);
+            let key = i5h_sql::Column::to_val(&k);
+            s.crates = Krate::del(&s.crates, k);
+            s.versions = Version::del_where(&s.versions, KRATE, &key);
+            s.owners = Owner::del_where(&s.owners, KRATE, &key);
+            s.invites = Invite::del_where(&s.invites, KRATE, &key);
+            s.deps = Dep::del_where(&s.deps, KRATE, &key);
         }
         Write::SetCounter(c) => s.counter = c,
     }
 }
 
-/// What committing a write set means. The PostgreSQL store must agree.
-pub fn apply(snap: &Snapshot, ws: &Vec<Write>) -> Snapshot {
-    let mut s = snap.clone();
-    let mut i = 0;
-    while i < ws.len() {
-        apply_write(&mut s, ws[i]);
-        i += 1;
+/// The table writes one write makes. Deleting a crate deletes its rows in
+/// the child tables by column value.
+fn sql_write(w: &Write, out: &mut Vec<i5h_sql::Write>) {
+    match w {
+        Write::PutUser(x) => out.push(x.sql_put()),
+        Write::PutSession(x) => out.push(x.sql_put()),
+        Write::PutToken(x) => out.push(x.sql_put()),
+        Write::PutCrate(x) => out.push(x.sql_put()),
+        Write::PutVersion(x) => out.push(x.sql_put()),
+        Write::PutOwner(x) => out.push(x.sql_put()),
+        Write::DelOwner(x) => out.push(Owner::sql_del(x.krate, x.owner, x.team)),
+        Write::PutInvite(x) => out.push(x.sql_put()),
+        Write::DelInvite(k, u) => out.push(Invite::sql_del(*k, *u)),
+        Write::PutDep(x) => out.push(x.sql_put()),
+        Write::DelCrate(k) => {
+            out.push(Krate::sql_del(*k));
+            out.push(Version::sql_del_where(KRATE, i5h_sql::Column::to_val(k)));
+            out.push(Owner::sql_del_where(KRATE, i5h_sql::Column::to_val(k)));
+            out.push(Invite::sql_del_where(KRATE, i5h_sql::Column::to_val(k)));
+            out.push(Dep::sql_del_where(KRATE, i5h_sql::Column::to_val(k)));
+        }
+        Write::SetCounter(c) => out.push(c.sql_put()),
     }
-    s
 }
 
 #[cfg(test)]

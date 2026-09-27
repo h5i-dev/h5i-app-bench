@@ -19,6 +19,209 @@ set_option maxRecDepth 2048
 
 namespace cratesio_kernel
 
+/-- [i5h_sql::Val]
+    Source: 'crates/i5h-sql/src/lib.rs', lines 8:0-8:12
+    Name pattern: [i5h_sql::Val]
+    Visibility: public -/
+@[discriminant isize, rust_type "i5h_sql::Val"]
+inductive i5h_sql.Val where
+| Int : Std.I64 → i5h_sql.Val
+| Bool : Bool → i5h_sql.Val
+| Text : alloc.vec.Vec Std.U8 → i5h_sql.Val
+| Bytes : alloc.vec.Vec Std.U8 → i5h_sql.Val
+| Null : i5h_sql.Val
+
+/-- Trait declaration: [i5h_sql::Column]
+    Source: 'crates/i5h-sql/src/lib.rs', lines 19:0-19:23
+    Name pattern: [i5h_sql::Column]
+    Visibility: public -/
+@[rust_trait "i5h_sql::Column"]
+structure i5h_sql.Column (Self : Type) where
+  to_val : Self → Result i5h_sql.Val
+  from_val : i5h_sql.Val → Result (Option Self)
+
+/-- [i5h_sql::{impl i5h_sql::Column for u64}::from_val]:
+    Source: 'crates/i5h-sql/src/lib.rs', lines 28:4-28:39
+    Name pattern: [i5h_sql::{i5h_sql::Column<u64>}::from_val]
+    Visibility: public -/
+@[rust_fun "i5h_sql::{i5h_sql::Column<u64>}::from_val"]
+def U64.Insts.I5h_sqlColumn.from_val
+  (v : i5h_sql.Val) : Result (Option Std.U64) := do
+  match v with
+  | i5h_sql.Val.Int i => let i1 ← lift (IScalar.hcast .U64 i)
+                         ok (some i1)
+  | i5h_sql.Val.Bool _ => ok none
+  | i5h_sql.Val.Text _ => ok none
+  | i5h_sql.Val.Bytes _ => ok none
+  | i5h_sql.Val.Null => ok none
+
+/-- [i5h_sql::{impl i5h_sql::Column for u64}::to_val]:
+    Source: 'crates/i5h-sql/src/lib.rs', lines 25:4-25:27
+    Name pattern: [i5h_sql::{i5h_sql::Column<u64>}::to_val]
+    Visibility: public -/
+@[rust_fun "i5h_sql::{i5h_sql::Column<u64>}::to_val"]
+def U64.Insts.I5h_sqlColumn.to_val (self : Std.U64) : Result i5h_sql.Val := do
+  let i ← lift (UScalar.hcast .I64 self)
+  ok (i5h_sql.Val.Int i)
+
+/-- Trait implementation: [i5h_sql::{impl i5h_sql::Column for u64}]
+    Source: 'crates/i5h-sql/src/lib.rs', lines 24:0-24:19
+    Name pattern: [i5h_sql::Column<u64>] -/
+@[reducible, rust_trait_impl "i5h_sql::Column<u64>"]
+def U64.Insts.I5h_sqlColumn : i5h_sql.Column Std.U64 := {
+  to_val := U64.Insts.I5h_sqlColumn.to_val
+  from_val := U64.Insts.I5h_sqlColumn.from_val
+}
+
+/-- [i5h_sql::{impl i5h_sql::Column for bool}::to_val]:
+    Source: 'crates/i5h-sql/src/lib.rs', lines 55:4-55:27
+    Name pattern: [i5h_sql::{i5h_sql::Column<bool>}::to_val]
+    Visibility: public -/
+@[rust_fun "i5h_sql::{i5h_sql::Column<bool>}::to_val"]
+def Bool.Insts.I5h_sqlColumn.to_val (self : Bool) : Result i5h_sql.Val := do
+  ok (i5h_sql.Val.Bool self)
+
+/-- [i5h_sql::{impl i5h_sql::Column for bool}::from_val]:
+    Source: 'crates/i5h-sql/src/lib.rs', lines 58:4-58:40
+    Name pattern: [i5h_sql::{i5h_sql::Column<bool>}::from_val]
+    Visibility: public -/
+@[rust_fun "i5h_sql::{i5h_sql::Column<bool>}::from_val"]
+def Bool.Insts.I5h_sqlColumn.from_val
+  (v : i5h_sql.Val) : Result (Option Bool) := do
+  match v with
+  | i5h_sql.Val.Int _ => ok none
+  | i5h_sql.Val.Bool b => ok (some b)
+  | i5h_sql.Val.Text _ => ok none
+  | i5h_sql.Val.Bytes _ => ok none
+  | i5h_sql.Val.Null => ok none
+
+/-- [i5h_sql::{impl i5h_sql::Column for core::option::Option<T>}::to_val]:
+    Source: 'crates/i5h-sql/src/lib.rs', lines 80:4-80:27
+    Name pattern: [i5h_sql::{i5h_sql::Column<core::option::Option<@T>>}::to_val]
+    Visibility: public -/
+@[rust_fun "i5h_sql::{i5h_sql::Column<core::option::Option<@T>>}::to_val"]
+def core.option.Option.Insts.I5h_sqlColumn.to_val
+  {T : Type} (ColumnInst : i5h_sql.Column T) (self : Option T) :
+  Result i5h_sql.Val
+  := do
+  match self with
+  | none => ok i5h_sql.Val.Null
+  | some x => ColumnInst.to_val x
+
+/-- [i5h_sql::{impl i5h_sql::Column for core::option::Option<T>}::from_val]:
+    Source: 'crates/i5h-sql/src/lib.rs', lines 86:4-86:45
+    Name pattern: [i5h_sql::{i5h_sql::Column<core::option::Option<@T>>}::from_val]
+    Visibility: public -/
+@[rust_fun "i5h_sql::{i5h_sql::Column<core::option::Option<@T>>}::from_val"]
+def core.option.Option.Insts.I5h_sqlColumn.from_val
+  {T : Type} (ColumnInst : i5h_sql.Column T) (v : i5h_sql.Val) :
+  Result (Option (Option T))
+  := do
+  match v with
+  | i5h_sql.Val.Int _ =>
+    let o ← ColumnInst.from_val v
+    match o with
+    | none => ok none
+    | some _ => ok (some o)
+  | i5h_sql.Val.Bool _ =>
+    let o ← ColumnInst.from_val v
+    match o with
+    | none => ok none
+    | some _ => ok (some o)
+  | i5h_sql.Val.Text _ =>
+    let o ← ColumnInst.from_val v
+    match o with
+    | none => ok none
+    | some _ => ok (some o)
+  | i5h_sql.Val.Bytes _ =>
+    let o ← ColumnInst.from_val v
+    match o with
+    | none => ok none
+    | some _ => ok (some o)
+  | i5h_sql.Val.Null => ok (some none)
+
+/-- [i5h_sql::{impl i5h_sql::Zero for u64}::zero]:
+    Source: 'crates/i5h-sql/src/lib.rs', lines 104:4-104:20
+    Name pattern: [i5h_sql::{i5h_sql::Zero<u64>}::zero]
+    Visibility: public -/
+@[rust_fun "i5h_sql::{i5h_sql::Zero<u64>}::zero"]
+def U64.Insts.I5h_sqlZero.zero : Result Std.U64 := do
+  ok 0#u64
+
+/-- [i5h_sql::val_eq]:
+    Source: 'crates/i5h-sql/src/lib.rs', lines 134:0-134:39
+    Name pattern: [i5h_sql::val_eq]
+    Visibility: public -/
+@[rust_fun "i5h_sql::val_eq"]
+def i5h_sql.val_eq (a : i5h_sql.Val) (b : i5h_sql.Val) : Result Bool := do
+  match a with
+  | i5h_sql.Val.Int x =>
+    match b with
+    | i5h_sql.Val.Int y => ok (x = y)
+    | i5h_sql.Val.Bool _ => ok false
+    | i5h_sql.Val.Text _ => ok false
+    | i5h_sql.Val.Bytes _ => ok false
+    | i5h_sql.Val.Null => ok false
+  | i5h_sql.Val.Bool x =>
+    match b with
+    | i5h_sql.Val.Int _ => ok false
+    | i5h_sql.Val.Bool y => ok (x = y)
+    | i5h_sql.Val.Text _ => ok false
+    | i5h_sql.Val.Bytes _ => ok false
+    | i5h_sql.Val.Null => ok false
+  | i5h_sql.Val.Text x =>
+    match b with
+    | i5h_sql.Val.Int _ => ok false
+    | i5h_sql.Val.Bool _ => ok false
+    | i5h_sql.Val.Text y =>
+      alloc.vec.partial_eq.PartialEqVec.eq core.cmp.PartialEqU8 x y
+    | i5h_sql.Val.Bytes _ => ok false
+    | i5h_sql.Val.Null => ok false
+  | i5h_sql.Val.Bytes x =>
+    match b with
+    | i5h_sql.Val.Int _ => ok false
+    | i5h_sql.Val.Bool _ => ok false
+    | i5h_sql.Val.Text _ => ok false
+    | i5h_sql.Val.Bytes y =>
+      alloc.vec.partial_eq.PartialEqVec.eq core.cmp.PartialEqU8 x y
+    | i5h_sql.Val.Null => ok false
+  | i5h_sql.Val.Null =>
+    match b with
+    | i5h_sql.Val.Int _ => ok false
+    | i5h_sql.Val.Bool _ => ok false
+    | i5h_sql.Val.Text _ => ok false
+    | i5h_sql.Val.Bytes _ => ok false
+    | i5h_sql.Val.Null => ok true
+
+/-- [i5h_sql::has_col]:
+    Source: 'crates/i5h-sql/src/lib.rs', lines 160:0-160:59
+    Name pattern: [i5h_sql::has_col]
+    Visibility: public -/
+@[rust_fun "i5h_sql::has_col"]
+def i5h_sql.has_col
+  (row : alloc.vec.Vec i5h_sql.Val) (col : Std.U32) (val : i5h_sql.Val) :
+  Result Bool
+  := do
+  let i ← lift (UScalar.cast .Usize col)
+  let i1 := alloc.vec.Vec.len row
+  if i < i1
+  then
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice i5h_sql.Val)
+        row i
+    i5h_sql.val_eq v val
+  else ok false
+
+/-- [i5h_sql::Write]
+    Source: 'crates/i5h-sql/src/lib.rs', lines 171:0-171:14
+    Name pattern: [i5h_sql::Write]
+    Visibility: public -/
+@[discriminant isize, rust_type "i5h_sql::Write"]
+inductive i5h_sql.Write where
+| Put : Std.U32 → Std.U32 → alloc.vec.Vec i5h_sql.Val → i5h_sql.Write
+| Del : Std.U32 → alloc.vec.Vec i5h_sql.Val → i5h_sql.Write
+| DelWhere : Std.U32 → Std.U32 → i5h_sql.Val → i5h_sql.Write
+
 /-- [cratesio_kernel::DELETE_WINDOW]
     Source: 'examples/cratesio/kernel/src/lib.rs', lines 15:0-15:41
     Visibility: public -/
@@ -65,51 +268,56 @@ structure Principal where
   now : Std.U64
   teams : alloc.vec.Vec Std.U64
 
-/-- [cratesio_kernel::User]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 43:12-46:13
+/-- [cratesio_kernel::Counter]
+    Source: 'crates/i5h-schema/src/lib.rs', lines 111:12-114:13
     Visibility: public -/
-structure User where
-  id : Std.U64
-  admin : Bool
-  locked : Bool
-  lock_until : Std.U64
-  verified : Bool
+structure Counter where
+  next_session : Std.U64
+  next_token : Std.U64
 
-/-- [cratesio_kernel::{impl core::clone::Clone for cratesio_kernel::User}::clone]:
-    Source: 'examples/cratesio/kernel/src/lib.rs', lines 53:13-53:18
+/-- [cratesio_kernel::Dep]
+    Source: 'crates/i5h-schema/src/lib.rs', lines 111:12-114:13
     Visibility: public -/
-def User.Insts.CoreCloneClone.clone (self : User) : Result User := do
-  ok self
+structure Dep where
+  krate : Std.U64
+  num : Std.U64
+  on : Std.U64
 
-/-- Trait implementation: [cratesio_kernel::{impl core::clone::Clone for cratesio_kernel::User}]
-    Source: 'examples/cratesio/kernel/src/lib.rs', lines 53:13-53:18 -/
-@[reducible]
-def User.Insts.CoreCloneClone : core.clone.Clone User := {
-  clone := User.Insts.CoreCloneClone.clone
-}
-
-/-- [cratesio_kernel::Session]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 43:12-46:13
+/-- [cratesio_kernel::Invite]
+    Source: 'crates/i5h-schema/src/lib.rs', lines 111:12-114:13
     Visibility: public -/
-structure Session where
-  id : Std.U64
+structure Invite where
+  krate : Std.U64
   user : Std.U64
+  inviter : Std.U64
+  expires : Std.U64
 
-/-- [cratesio_kernel::{impl core::clone::Clone for cratesio_kernel::Session}::clone]:
-    Source: 'examples/cratesio/kernel/src/lib.rs', lines 62:13-62:18
+/-- [cratesio_kernel::Owner]
+    Source: 'crates/i5h-schema/src/lib.rs', lines 111:12-114:13
     Visibility: public -/
-def Session.Insts.CoreCloneClone.clone (self : Session) : Result Session := do
-  ok self
+structure Owner where
+  krate : Std.U64
+  owner : Std.U64
+  team : Bool
 
-/-- Trait implementation: [cratesio_kernel::{impl core::clone::Clone for cratesio_kernel::Session}]
-    Source: 'examples/cratesio/kernel/src/lib.rs', lines 62:13-62:18 -/
-@[reducible]
-def Session.Insts.CoreCloneClone : core.clone.Clone Session := {
-  clone := Session.Insts.CoreCloneClone.clone
-}
+/-- [cratesio_kernel::Version]
+    Source: 'crates/i5h-schema/src/lib.rs', lines 111:12-114:13
+    Visibility: public -/
+structure Version where
+  krate : Std.U64
+  num : Std.U64
+  yanked : Bool
+  publisher : Std.U64
+
+/-- [cratesio_kernel::Krate]
+    Source: 'crates/i5h-schema/src/lib.rs', lines 111:12-114:13
+    Visibility: public -/
+structure Krate where
+  id : Std.U64
+  created : Std.U64
 
 /-- [cratesio_kernel::Token]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 43:12-46:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 111:12-114:13
     Visibility: public -/
 structure Token where
   id : Std.U64
@@ -123,140 +331,25 @@ structure Token where
   expires : Std.U64
   revoked : Bool
 
-/-- [cratesio_kernel::{impl core::clone::Clone for cratesio_kernel::Token}::clone]:
-    Source: 'examples/cratesio/kernel/src/lib.rs', lines 71:13-71:18
+/-- [cratesio_kernel::Session]
+    Source: 'crates/i5h-schema/src/lib.rs', lines 111:12-114:13
     Visibility: public -/
-def Token.Insts.CoreCloneClone.clone (self : Token) : Result Token := do
-  ok self
-
-/-- Trait implementation: [cratesio_kernel::{impl core::clone::Clone for cratesio_kernel::Token}]
-    Source: 'examples/cratesio/kernel/src/lib.rs', lines 71:13-71:18 -/
-@[reducible]
-def Token.Insts.CoreCloneClone : core.clone.Clone Token := {
-  clone := Token.Insts.CoreCloneClone.clone
-}
-
-/-- [cratesio_kernel::Krate]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 43:12-46:13
-    Visibility: public -/
-structure Krate where
+structure Session where
   id : Std.U64
-  created : Std.U64
-
-/-- [cratesio_kernel::{impl core::clone::Clone for cratesio_kernel::Krate}::clone]:
-    Source: 'examples/cratesio/kernel/src/lib.rs', lines 85:13-85:18
-    Visibility: public -/
-def Krate.Insts.CoreCloneClone.clone (self : Krate) : Result Krate := do
-  ok self
-
-/-- Trait implementation: [cratesio_kernel::{impl core::clone::Clone for cratesio_kernel::Krate}]
-    Source: 'examples/cratesio/kernel/src/lib.rs', lines 85:13-85:18 -/
-@[reducible]
-def Krate.Insts.CoreCloneClone : core.clone.Clone Krate := {
-  clone := Krate.Insts.CoreCloneClone.clone
-}
-
-/-- [cratesio_kernel::Version]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 43:12-46:13
-    Visibility: public -/
-structure Version where
-  krate : Std.U64
-  num : Std.U64
-  yanked : Bool
-  publisher : Std.U64
-
-/-- [cratesio_kernel::{impl core::clone::Clone for cratesio_kernel::Version}::clone]:
-    Source: 'examples/cratesio/kernel/src/lib.rs', lines 91:13-91:18
-    Visibility: public -/
-def Version.Insts.CoreCloneClone.clone (self : Version) : Result Version := do
-  ok self
-
-/-- Trait implementation: [cratesio_kernel::{impl core::clone::Clone for cratesio_kernel::Version}]
-    Source: 'examples/cratesio/kernel/src/lib.rs', lines 91:13-91:18 -/
-@[reducible]
-def Version.Insts.CoreCloneClone : core.clone.Clone Version := {
-  clone := Version.Insts.CoreCloneClone.clone
-}
-
-/-- [cratesio_kernel::Owner]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 43:12-46:13
-    Visibility: public -/
-structure Owner where
-  krate : Std.U64
-  owner : Std.U64
-  team : Bool
-
-/-- [cratesio_kernel::{impl core::clone::Clone for cratesio_kernel::Owner}::clone]:
-    Source: 'examples/cratesio/kernel/src/lib.rs', lines 100:13-100:18
-    Visibility: public -/
-def Owner.Insts.CoreCloneClone.clone (self : Owner) : Result Owner := do
-  ok self
-
-/-- Trait implementation: [cratesio_kernel::{impl core::clone::Clone for cratesio_kernel::Owner}]
-    Source: 'examples/cratesio/kernel/src/lib.rs', lines 100:13-100:18 -/
-@[reducible]
-def Owner.Insts.CoreCloneClone : core.clone.Clone Owner := {
-  clone := Owner.Insts.CoreCloneClone.clone
-}
-
-/-- [cratesio_kernel::Invite]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 43:12-46:13
-    Visibility: public -/
-structure Invite where
-  krate : Std.U64
   user : Std.U64
-  inviter : Std.U64
-  expires : Std.U64
 
-/-- [cratesio_kernel::{impl core::clone::Clone for cratesio_kernel::Invite}::clone]:
-    Source: 'examples/cratesio/kernel/src/lib.rs', lines 105:13-105:18
+/-- [cratesio_kernel::User]
+    Source: 'crates/i5h-schema/src/lib.rs', lines 111:12-114:13
     Visibility: public -/
-def Invite.Insts.CoreCloneClone.clone (self : Invite) : Result Invite := do
-  ok self
-
-/-- Trait implementation: [cratesio_kernel::{impl core::clone::Clone for cratesio_kernel::Invite}]
-    Source: 'examples/cratesio/kernel/src/lib.rs', lines 105:13-105:18 -/
-@[reducible]
-def Invite.Insts.CoreCloneClone : core.clone.Clone Invite := {
-  clone := Invite.Insts.CoreCloneClone.clone
-}
-
-/-- [cratesio_kernel::Dep]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 43:12-46:13
-    Visibility: public -/
-structure Dep where
-  krate : Std.U64
-  num : Std.U64
-  on : Std.U64
-
-/-- [cratesio_kernel::{impl core::clone::Clone for cratesio_kernel::Dep}::clone]:
-    Source: 'examples/cratesio/kernel/src/lib.rs', lines 113:13-113:18
-    Visibility: public -/
-def Dep.Insts.CoreCloneClone.clone (self : Dep) : Result Dep := do
-  ok self
-
-/-- Trait implementation: [cratesio_kernel::{impl core::clone::Clone for cratesio_kernel::Dep}]
-    Source: 'examples/cratesio/kernel/src/lib.rs', lines 113:13-113:18 -/
-@[reducible]
-def Dep.Insts.CoreCloneClone : core.clone.Clone Dep := {
-  clone := Dep.Insts.CoreCloneClone.clone
-}
-
-/-- [cratesio_kernel::Counter]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 43:12-46:13
-    Visibility: public -/
-structure Counter where
-  next_session : Std.U64
-  next_token : Std.U64
-
-/-- [cratesio_kernel::{impl core::clone::Clone for cratesio_kernel::Counter}::clone]:
-    Source: 'examples/cratesio/kernel/src/lib.rs', lines 118:13-118:18
-    Visibility: public -/
-def Counter.Insts.CoreCloneClone.clone (self : Counter) : Result Counter := do
-  ok self
+structure User where
+  id : Std.U64
+  admin : Bool
+  locked : Bool
+  lock_until : Std.U64
+  verified : Bool
 
 /-- [cratesio_kernel::Snapshot]
-    Source: 'examples/cratesio/kernel/src/lib.rs', lines 128:0-138:1
+    Source: 'crates/i5h-schema/src/lib.rs', lines 278:8-280:9
     Visibility: public -/
 structure Snapshot where
   counter : Counter
@@ -269,8 +362,118 @@ structure Snapshot where
   invites : alloc.vec.Vec Invite
   deps : alloc.vec.Vec Dep
 
+/-- [cratesio_kernel::{impl core::clone::Clone for cratesio_kernel::Counter}::clone]:
+    Source: 'examples/cratesio/kernel/src/lib.rs', lines 132:13-132:18
+    Visibility: public -/
+def Counter.Insts.CoreCloneClone.clone (self : Counter) : Result Counter := do
+  ok self
+
+/-- [cratesio_kernel::{impl core::clone::Clone for cratesio_kernel::Dep}::clone]:
+    Source: 'examples/cratesio/kernel/src/lib.rs', lines 127:13-127:18
+    Visibility: public -/
+def Dep.Insts.CoreCloneClone.clone (self : Dep) : Result Dep := do
+  ok self
+
+/-- Trait implementation: [cratesio_kernel::{impl core::clone::Clone for cratesio_kernel::Dep}]
+    Source: 'examples/cratesio/kernel/src/lib.rs', lines 127:13-127:18 -/
+@[reducible]
+def Dep.Insts.CoreCloneClone : core.clone.Clone Dep := {
+  clone := Dep.Insts.CoreCloneClone.clone
+}
+
+/-- [cratesio_kernel::{impl core::clone::Clone for cratesio_kernel::Invite}::clone]:
+    Source: 'examples/cratesio/kernel/src/lib.rs', lines 119:13-119:18
+    Visibility: public -/
+def Invite.Insts.CoreCloneClone.clone (self : Invite) : Result Invite := do
+  ok self
+
+/-- Trait implementation: [cratesio_kernel::{impl core::clone::Clone for cratesio_kernel::Invite}]
+    Source: 'examples/cratesio/kernel/src/lib.rs', lines 119:13-119:18 -/
+@[reducible]
+def Invite.Insts.CoreCloneClone : core.clone.Clone Invite := {
+  clone := Invite.Insts.CoreCloneClone.clone
+}
+
+/-- [cratesio_kernel::{impl core::clone::Clone for cratesio_kernel::Owner}::clone]:
+    Source: 'examples/cratesio/kernel/src/lib.rs', lines 114:13-114:18
+    Visibility: public -/
+def Owner.Insts.CoreCloneClone.clone (self : Owner) : Result Owner := do
+  ok self
+
+/-- Trait implementation: [cratesio_kernel::{impl core::clone::Clone for cratesio_kernel::Owner}]
+    Source: 'examples/cratesio/kernel/src/lib.rs', lines 114:13-114:18 -/
+@[reducible]
+def Owner.Insts.CoreCloneClone : core.clone.Clone Owner := {
+  clone := Owner.Insts.CoreCloneClone.clone
+}
+
+/-- [cratesio_kernel::{impl core::clone::Clone for cratesio_kernel::Version}::clone]:
+    Source: 'examples/cratesio/kernel/src/lib.rs', lines 105:13-105:18
+    Visibility: public -/
+def Version.Insts.CoreCloneClone.clone (self : Version) : Result Version := do
+  ok self
+
+/-- Trait implementation: [cratesio_kernel::{impl core::clone::Clone for cratesio_kernel::Version}]
+    Source: 'examples/cratesio/kernel/src/lib.rs', lines 105:13-105:18 -/
+@[reducible]
+def Version.Insts.CoreCloneClone : core.clone.Clone Version := {
+  clone := Version.Insts.CoreCloneClone.clone
+}
+
+/-- [cratesio_kernel::{impl core::clone::Clone for cratesio_kernel::Krate}::clone]:
+    Source: 'examples/cratesio/kernel/src/lib.rs', lines 99:13-99:18
+    Visibility: public -/
+def Krate.Insts.CoreCloneClone.clone (self : Krate) : Result Krate := do
+  ok self
+
+/-- Trait implementation: [cratesio_kernel::{impl core::clone::Clone for cratesio_kernel::Krate}]
+    Source: 'examples/cratesio/kernel/src/lib.rs', lines 99:13-99:18 -/
+@[reducible]
+def Krate.Insts.CoreCloneClone : core.clone.Clone Krate := {
+  clone := Krate.Insts.CoreCloneClone.clone
+}
+
+/-- [cratesio_kernel::{impl core::clone::Clone for cratesio_kernel::Token}::clone]:
+    Source: 'examples/cratesio/kernel/src/lib.rs', lines 85:13-85:18
+    Visibility: public -/
+def Token.Insts.CoreCloneClone.clone (self : Token) : Result Token := do
+  ok self
+
+/-- Trait implementation: [cratesio_kernel::{impl core::clone::Clone for cratesio_kernel::Token}]
+    Source: 'examples/cratesio/kernel/src/lib.rs', lines 85:13-85:18 -/
+@[reducible]
+def Token.Insts.CoreCloneClone : core.clone.Clone Token := {
+  clone := Token.Insts.CoreCloneClone.clone
+}
+
+/-- [cratesio_kernel::{impl core::clone::Clone for cratesio_kernel::Session}::clone]:
+    Source: 'examples/cratesio/kernel/src/lib.rs', lines 76:13-76:18
+    Visibility: public -/
+def Session.Insts.CoreCloneClone.clone (self : Session) : Result Session := do
+  ok self
+
+/-- Trait implementation: [cratesio_kernel::{impl core::clone::Clone for cratesio_kernel::Session}]
+    Source: 'examples/cratesio/kernel/src/lib.rs', lines 76:13-76:18 -/
+@[reducible]
+def Session.Insts.CoreCloneClone : core.clone.Clone Session := {
+  clone := Session.Insts.CoreCloneClone.clone
+}
+
+/-- [cratesio_kernel::{impl core::clone::Clone for cratesio_kernel::User}::clone]:
+    Source: 'examples/cratesio/kernel/src/lib.rs', lines 67:13-67:18
+    Visibility: public -/
+def User.Insts.CoreCloneClone.clone (self : User) : Result User := do
+  ok self
+
+/-- Trait implementation: [cratesio_kernel::{impl core::clone::Clone for cratesio_kernel::User}]
+    Source: 'examples/cratesio/kernel/src/lib.rs', lines 67:13-67:18 -/
+@[reducible]
+def User.Insts.CoreCloneClone : core.clone.Clone User := {
+  clone := User.Insts.CoreCloneClone.clone
+}
+
 /-- [cratesio_kernel::{impl core::clone::Clone for cratesio_kernel::Snapshot}::clone]:
-    Source: 'examples/cratesio/kernel/src/lib.rs', lines 127:9-127:14
+    Source: 'examples/cratesio/kernel/src/lib.rs', lines 53:13-53:18
     Visibility: public -/
 def Snapshot.Insts.CoreCloneClone.clone
   (self : Snapshot) : Result Snapshot := do
@@ -347,6 +550,12 @@ inductive Write where
 | PutDep : Dep → Write
 | DelCrate : Std.U64 → Write
 | SetCounter : Counter → Write
+
+/-- [cratesio_kernel::{impl core::clone::Clone for cratesio_kernel::Write}::clone]:
+    Source: 'examples/cratesio/kernel/src/lib.rs', lines 174:9-174:14
+    Visibility: public -/
+def Write.Insts.CoreCloneClone.clone (self : Write) : Result Write := do
+  ok self
 
 /-- [cratesio_kernel::Reply]
     Source: 'examples/cratesio/kernel/src/lib.rs', lines 193:0-198:1
@@ -1822,324 +2031,429 @@ def transition_pre14760
   := do
   run p s cmd false
 
-/-- [cratesio_kernel::put_user]: loop body 0:
-    Source: 'examples/cratesio/kernel/src/lib.rs', lines 1000:4-1008:1 -/
+/-- [cratesio_kernel::KRATE]
+    Source: 'examples/cratesio/kernel/src/lib.rs', lines 999:0-999:21 -/
+@[global_simps, irreducible] def KRATE : Std.U32 := 0#u32
+
+/-- [cratesio_kernel::{cratesio_kernel::Dep}::to_row]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 135:12-140:13
+    Visibility: public -/
+def Dep.to_row (self : Dep) : Result (alloc.vec.Vec i5h_sql.Val) := do
+  let v ← U64.Insts.I5h_sqlColumn.to_val self.krate
+  let out ← alloc.vec.Vec.push (alloc.vec.Vec.new i5h_sql.Val) v
+  let v1 ← U64.Insts.I5h_sqlColumn.to_val self.num
+  let out1 ← alloc.vec.Vec.push out v1
+  let v2 ← U64.Insts.I5h_sqlColumn.to_val self.on
+  alloc.vec.Vec.push out1 v2
+
+/-- [cratesio_kernel::{cratesio_kernel::Dep}::del_where]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 246:16-251:17
+    Visibility: public -/
 @[rust_loop_body]
-def put_user_loop.body
-  (v : alloc.vec.Vec User) (x : User) (i : Std.Usize) :
-  Result (ControlFlow Std.Usize (alloc.vec.Vec User))
+def Dep.del_where_loop.body
+  (v : alloc.vec.Vec Dep) (col : Std.U32) (val : i5h_sql.Val)
+  (out : alloc.vec.Vec Dep) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Dep) × Std.Usize) (alloc.vec.Vec Dep))
   := do
   let i1 := alloc.vec.Vec.len v
   if i < i1
   then
-    let u ←
-      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice User) v i
-    if u.id = x.id
-    then
-      let (_, index_mut_back) ←
-        alloc.vec.Vec.index_mut (core.slice.index.SliceIndexUsizeSlice User) v
-          i
-      let v1 := index_mut_back x
-      ok (done v1)
-    else let i2 ← i + 1#usize
-         ok (cont i2)
-  else let v1 ← alloc.vec.Vec.push v x
-       ok (done v1)
+    let d ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Dep) v i
+    let v1 ← Dep.to_row d
+    let b ← i5h_sql.has_col v1 col val
+    let out1 ←
+      if b
+      then ok out
+      else
+        do
+        let d1 ← Dep.Insts.CoreCloneClone.clone d
+        alloc.vec.Vec.push out d1
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
+  else ok (done out)
 
-/-- [cratesio_kernel::put_user]: loop 0:
-    Source: 'examples/cratesio/kernel/src/lib.rs', lines 1000:4-1008:1 -/
+/-- [cratesio_kernel::{cratesio_kernel::Dep}::del_where]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 246:16-251:17
+    Visibility: public -/
 @[rust_loop]
-def put_user_loop
-  (v : alloc.vec.Vec User) (x : User) (i : Std.Usize) :
-  Result (alloc.vec.Vec User)
+def Dep.del_where_loop
+  (v : alloc.vec.Vec Dep) (col : Std.U32) (val : i5h_sql.Val)
+  (out : alloc.vec.Vec Dep) (i : Std.Usize) :
+  Result (alloc.vec.Vec Dep)
   := do
   loop
-    (fun i1 => put_user_loop.body v x i1)
-    i
+    (fun (out1, i1) => Dep.del_where_loop.body v col val out1 i1)
+    (out, i)
 
-/-- [cratesio_kernel::put_user]:
-    Source: 'examples/cratesio/kernel/src/lib.rs', lines 998:0-1008:1 -/
+/-- [cratesio_kernel::{cratesio_kernel::Dep}::del_where]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 243:12-253:13
+    Visibility: public -/
 @[reducible]
-def put_user
-  (v : alloc.vec.Vec User) (x : User) : Result (alloc.vec.Vec User) := do
-  put_user_loop v x 0#usize
+def Dep.del_where
+  (v : alloc.vec.Vec Dep) (col : Std.U32) (val : i5h_sql.Val) :
+  Result (alloc.vec.Vec Dep)
+  := do
+  Dep.del_where_loop v col val (alloc.vec.Vec.new Dep) 0#usize
 
-/-- [cratesio_kernel::put_session]: loop body 0:
-    Source: 'examples/cratesio/kernel/src/lib.rs', lines 1012:4-1020:1 -/
+/-- [cratesio_kernel::{cratesio_kernel::Invite}::to_row]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 135:12-140:13
+    Visibility: public -/
+def Invite.to_row (self : Invite) : Result (alloc.vec.Vec i5h_sql.Val) := do
+  let v ← U64.Insts.I5h_sqlColumn.to_val self.krate
+  let out ← alloc.vec.Vec.push (alloc.vec.Vec.new i5h_sql.Val) v
+  let v1 ← U64.Insts.I5h_sqlColumn.to_val self.user
+  let out1 ← alloc.vec.Vec.push out v1
+  let v2 ← U64.Insts.I5h_sqlColumn.to_val self.inviter
+  let out2 ← alloc.vec.Vec.push out1 v2
+  let v3 ← U64.Insts.I5h_sqlColumn.to_val self.expires
+  alloc.vec.Vec.push out2 v3
+
+/-- [cratesio_kernel::{cratesio_kernel::Invite}::del_where]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 246:16-251:17
+    Visibility: public -/
 @[rust_loop_body]
-def put_session_loop.body
-  (v : alloc.vec.Vec Session) (x : Session) (i : Std.Usize) :
-  Result (ControlFlow Std.Usize (alloc.vec.Vec Session))
-  := do
-  let i1 := alloc.vec.Vec.len v
-  if i < i1
-  then
-    let s ←
-      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Session) v i
-    if s.id = x.id
-    then
-      let (_, index_mut_back) ←
-        alloc.vec.Vec.index_mut (core.slice.index.SliceIndexUsizeSlice Session)
-          v i
-      let v1 := index_mut_back x
-      ok (done v1)
-    else let i2 ← i + 1#usize
-         ok (cont i2)
-  else let v1 ← alloc.vec.Vec.push v x
-       ok (done v1)
-
-/-- [cratesio_kernel::put_session]: loop 0:
-    Source: 'examples/cratesio/kernel/src/lib.rs', lines 1012:4-1020:1 -/
-@[rust_loop]
-def put_session_loop
-  (v : alloc.vec.Vec Session) (x : Session) (i : Std.Usize) :
-  Result (alloc.vec.Vec Session)
-  := do
-  loop
-    (fun i1 => put_session_loop.body v x i1)
-    i
-
-/-- [cratesio_kernel::put_session]:
-    Source: 'examples/cratesio/kernel/src/lib.rs', lines 1010:0-1020:1 -/
-@[reducible]
-def put_session
-  (v : alloc.vec.Vec Session) (x : Session) :
-  Result (alloc.vec.Vec Session)
-  := do
-  put_session_loop v x 0#usize
-
-/-- [cratesio_kernel::put_token]: loop body 0:
-    Source: 'examples/cratesio/kernel/src/lib.rs', lines 1024:4-1032:1 -/
-@[rust_loop_body]
-def put_token_loop.body
-  (v : alloc.vec.Vec Token) (x : Token) (i : Std.Usize) :
-  Result (ControlFlow Std.Usize (alloc.vec.Vec Token))
-  := do
-  let i1 := alloc.vec.Vec.len v
-  if i < i1
-  then
-    let t ←
-      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Token) v i
-    if t.id = x.id
-    then
-      let (_, index_mut_back) ←
-        alloc.vec.Vec.index_mut (core.slice.index.SliceIndexUsizeSlice Token) v
-          i
-      let v1 := index_mut_back x
-      ok (done v1)
-    else let i2 ← i + 1#usize
-         ok (cont i2)
-  else let v1 ← alloc.vec.Vec.push v x
-       ok (done v1)
-
-/-- [cratesio_kernel::put_token]: loop 0:
-    Source: 'examples/cratesio/kernel/src/lib.rs', lines 1024:4-1032:1 -/
-@[rust_loop]
-def put_token_loop
-  (v : alloc.vec.Vec Token) (x : Token) (i : Std.Usize) :
-  Result (alloc.vec.Vec Token)
-  := do
-  loop
-    (fun i1 => put_token_loop.body v x i1)
-    i
-
-/-- [cratesio_kernel::put_token]:
-    Source: 'examples/cratesio/kernel/src/lib.rs', lines 1022:0-1032:1 -/
-@[reducible]
-def put_token
-  (v : alloc.vec.Vec Token) (x : Token) : Result (alloc.vec.Vec Token) := do
-  put_token_loop v x 0#usize
-
-/-- [cratesio_kernel::put_crate]: loop body 0:
-    Source: 'examples/cratesio/kernel/src/lib.rs', lines 1036:4-1044:1 -/
-@[rust_loop_body]
-def put_crate_loop.body
-  (v : alloc.vec.Vec Krate) (x : Krate) (i : Std.Usize) :
-  Result (ControlFlow Std.Usize (alloc.vec.Vec Krate))
-  := do
-  let i1 := alloc.vec.Vec.len v
-  if i < i1
-  then
-    let k ←
-      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Krate) v i
-    if k.id = x.id
-    then
-      let (_, index_mut_back) ←
-        alloc.vec.Vec.index_mut (core.slice.index.SliceIndexUsizeSlice Krate) v
-          i
-      let v1 := index_mut_back x
-      ok (done v1)
-    else let i2 ← i + 1#usize
-         ok (cont i2)
-  else let v1 ← alloc.vec.Vec.push v x
-       ok (done v1)
-
-/-- [cratesio_kernel::put_crate]: loop 0:
-    Source: 'examples/cratesio/kernel/src/lib.rs', lines 1036:4-1044:1 -/
-@[rust_loop]
-def put_crate_loop
-  (v : alloc.vec.Vec Krate) (x : Krate) (i : Std.Usize) :
-  Result (alloc.vec.Vec Krate)
-  := do
-  loop
-    (fun i1 => put_crate_loop.body v x i1)
-    i
-
-/-- [cratesio_kernel::put_crate]:
-    Source: 'examples/cratesio/kernel/src/lib.rs', lines 1034:0-1044:1 -/
-@[reducible]
-def put_crate
-  (v : alloc.vec.Vec Krate) (x : Krate) : Result (alloc.vec.Vec Krate) := do
-  put_crate_loop v x 0#usize
-
-/-- [cratesio_kernel::put_version]: loop body 0:
-    Source: 'examples/cratesio/kernel/src/lib.rs', lines 1:0-1056:1 -/
-@[rust_loop_body]
-def put_version_loop.body
-  (v : alloc.vec.Vec Version) (x : Version) (i : Std.Usize) :
-  Result (ControlFlow Std.Usize (alloc.vec.Vec Version))
-  := do
-  let i1 := alloc.vec.Vec.len v
-  if i < i1
-  then
-    let v1 ←
-      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Version) v i
-    if v1.krate = x.krate
-    then
-      if v1.num = x.num
-      then
-        let (_, index_mut_back) ←
-          alloc.vec.Vec.index_mut (core.slice.index.SliceIndexUsizeSlice
-            Version) v i
-        let v2 := index_mut_back x
-        ok (done v2)
-      else let i2 ← i + 1#usize
-           ok (cont i2)
-    else let i2 ← i + 1#usize
-         ok (cont i2)
-  else let v1 ← alloc.vec.Vec.push v x
-       ok (done v1)
-
-/-- [cratesio_kernel::put_version]: loop 0:
-    Source: 'examples/cratesio/kernel/src/lib.rs', lines 1:0-1056:1 -/
-@[rust_loop]
-def put_version_loop
-  (v : alloc.vec.Vec Version) (x : Version) (i : Std.Usize) :
-  Result (alloc.vec.Vec Version)
-  := do
-  loop
-    (fun i1 => put_version_loop.body v x i1)
-    i
-
-/-- [cratesio_kernel::put_version]:
-    Source: 'examples/cratesio/kernel/src/lib.rs', lines 1046:0-1056:1 -/
-@[reducible]
-def put_version
-  (v : alloc.vec.Vec Version) (x : Version) :
-  Result (alloc.vec.Vec Version)
-  := do
-  put_version_loop v x 0#usize
-
-/-- [cratesio_kernel::put_owner]: loop body 0:
-    Source: 'examples/cratesio/kernel/src/lib.rs', lines 1:0-1068:1 -/
-@[rust_loop_body]
-def put_owner_loop.body
-  (v : alloc.vec.Vec Owner) (x : Owner) (i : Std.Usize) :
-  Result (ControlFlow Std.Usize (alloc.vec.Vec Owner))
-  := do
-  let i1 := alloc.vec.Vec.len v
-  if i < i1
-  then
-    let o ←
-      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Owner) v i
-    if o.krate = x.krate
-    then
-      if o.owner = x.owner
-      then
-        if o.team = x.team
-        then
-          let (_, index_mut_back) ←
-            alloc.vec.Vec.index_mut (core.slice.index.SliceIndexUsizeSlice
-              Owner) v i
-          let v1 := index_mut_back x
-          ok (done v1)
-        else let i2 ← i + 1#usize
-             ok (cont i2)
-      else let i2 ← i + 1#usize
-           ok (cont i2)
-    else let i2 ← i + 1#usize
-         ok (cont i2)
-  else let v1 ← alloc.vec.Vec.push v x
-       ok (done v1)
-
-/-- [cratesio_kernel::put_owner]: loop 0:
-    Source: 'examples/cratesio/kernel/src/lib.rs', lines 1:0-1068:1 -/
-@[rust_loop]
-def put_owner_loop
-  (v : alloc.vec.Vec Owner) (x : Owner) (i : Std.Usize) :
-  Result (alloc.vec.Vec Owner)
-  := do
-  loop
-    (fun i1 => put_owner_loop.body v x i1)
-    i
-
-/-- [cratesio_kernel::put_owner]:
-    Source: 'examples/cratesio/kernel/src/lib.rs', lines 1058:0-1068:1 -/
-@[reducible]
-def put_owner
-  (v : alloc.vec.Vec Owner) (x : Owner) : Result (alloc.vec.Vec Owner) := do
-  put_owner_loop v x 0#usize
-
-/-- [cratesio_kernel::put_invite]: loop body 0:
-    Source: 'examples/cratesio/kernel/src/lib.rs', lines 1:0-1080:1 -/
-@[rust_loop_body]
-def put_invite_loop.body
-  (v : alloc.vec.Vec Invite) (x : Invite) (i : Std.Usize) :
-  Result (ControlFlow Std.Usize (alloc.vec.Vec Invite))
+def Invite.del_where_loop.body
+  (v : alloc.vec.Vec Invite) (col : Std.U32) (val : i5h_sql.Val)
+  (out : alloc.vec.Vec Invite) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Invite) × Std.Usize) (alloc.vec.Vec
+    Invite))
   := do
   let i1 := alloc.vec.Vec.len v
   if i < i1
   then
     let i2 ←
       alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Invite) v i
-    if i2.krate = x.krate
-    then
-      if i2.user = x.user
-      then
-        let (_, index_mut_back) ←
-          alloc.vec.Vec.index_mut (core.slice.index.SliceIndexUsizeSlice
-            Invite) v i
-        let v1 := index_mut_back x
-        ok (done v1)
-      else let i3 ← i + 1#usize
-           ok (cont i3)
-    else let i3 ← i + 1#usize
-         ok (cont i3)
-  else let v1 ← alloc.vec.Vec.push v x
-       ok (done v1)
+    let v1 ← Invite.to_row i2
+    let b ← i5h_sql.has_col v1 col val
+    let out1 ←
+      if b
+      then ok out
+      else
+        do
+        let i3 ← Invite.Insts.CoreCloneClone.clone i2
+        alloc.vec.Vec.push out i3
+    let i3 ← i + 1#usize
+    ok (cont (out1, i3))
+  else ok (done out)
 
-/-- [cratesio_kernel::put_invite]: loop 0:
-    Source: 'examples/cratesio/kernel/src/lib.rs', lines 1:0-1080:1 -/
+/-- [cratesio_kernel::{cratesio_kernel::Invite}::del_where]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 246:16-251:17
+    Visibility: public -/
 @[rust_loop]
-def put_invite_loop
-  (v : alloc.vec.Vec Invite) (x : Invite) (i : Std.Usize) :
+def Invite.del_where_loop
+  (v : alloc.vec.Vec Invite) (col : Std.U32) (val : i5h_sql.Val)
+  (out : alloc.vec.Vec Invite) (i : Std.Usize) :
   Result (alloc.vec.Vec Invite)
   := do
   loop
-    (fun i1 => put_invite_loop.body v x i1)
-    i
+    (fun (out1, i1) => Invite.del_where_loop.body v col val out1 i1)
+    (out, i)
 
-/-- [cratesio_kernel::put_invite]:
-    Source: 'examples/cratesio/kernel/src/lib.rs', lines 1070:0-1080:1 -/
+/-- [cratesio_kernel::{cratesio_kernel::Invite}::del_where]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 243:12-253:13
+    Visibility: public -/
 @[reducible]
-def put_invite
-  (v : alloc.vec.Vec Invite) (x : Invite) : Result (alloc.vec.Vec Invite) := do
-  put_invite_loop v x 0#usize
+def Invite.del_where
+  (v : alloc.vec.Vec Invite) (col : Std.U32) (val : i5h_sql.Val) :
+  Result (alloc.vec.Vec Invite)
+  := do
+  Invite.del_where_loop v col val (alloc.vec.Vec.new Invite) 0#usize
 
-/-- [cratesio_kernel::put_dep]: loop body 0:
-    Source: 'examples/cratesio/kernel/src/lib.rs', lines 1:0-1092:1 -/
+/-- [cratesio_kernel::{cratesio_kernel::Owner}::to_row]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 135:12-140:13
+    Visibility: public -/
+def Owner.to_row (self : Owner) : Result (alloc.vec.Vec i5h_sql.Val) := do
+  let v ← U64.Insts.I5h_sqlColumn.to_val self.krate
+  let out ← alloc.vec.Vec.push (alloc.vec.Vec.new i5h_sql.Val) v
+  let v1 ← U64.Insts.I5h_sqlColumn.to_val self.owner
+  let out1 ← alloc.vec.Vec.push out v1
+  let v2 ← Bool.Insts.I5h_sqlColumn.to_val self.team
+  alloc.vec.Vec.push out1 v2
+
+/-- [cratesio_kernel::{cratesio_kernel::Owner}::del_where]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 246:16-251:17
+    Visibility: public -/
 @[rust_loop_body]
-def put_dep_loop.body
+def Owner.del_where_loop.body
+  (v : alloc.vec.Vec Owner) (col : Std.U32) (val : i5h_sql.Val)
+  (out : alloc.vec.Vec Owner) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Owner) × Std.Usize) (alloc.vec.Vec
+    Owner))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let o ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Owner) v i
+    let v1 ← Owner.to_row o
+    let b ← i5h_sql.has_col v1 col val
+    let out1 ←
+      if b
+      then ok out
+      else
+        do
+        let o1 ← Owner.Insts.CoreCloneClone.clone o
+        alloc.vec.Vec.push out o1
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
+  else ok (done out)
+
+/-- [cratesio_kernel::{cratesio_kernel::Owner}::del_where]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 246:16-251:17
+    Visibility: public -/
+@[rust_loop]
+def Owner.del_where_loop
+  (v : alloc.vec.Vec Owner) (col : Std.U32) (val : i5h_sql.Val)
+  (out : alloc.vec.Vec Owner) (i : Std.Usize) :
+  Result (alloc.vec.Vec Owner)
+  := do
+  loop
+    (fun (out1, i1) => Owner.del_where_loop.body v col val out1 i1)
+    (out, i)
+
+/-- [cratesio_kernel::{cratesio_kernel::Owner}::del_where]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 243:12-253:13
+    Visibility: public -/
+@[reducible]
+def Owner.del_where
+  (v : alloc.vec.Vec Owner) (col : Std.U32) (val : i5h_sql.Val) :
+  Result (alloc.vec.Vec Owner)
+  := do
+  Owner.del_where_loop v col val (alloc.vec.Vec.new Owner) 0#usize
+
+/-- [cratesio_kernel::{cratesio_kernel::Version}::to_row]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 135:12-140:13
+    Visibility: public -/
+def Version.to_row (self : Version) : Result (alloc.vec.Vec i5h_sql.Val) := do
+  let v ← U64.Insts.I5h_sqlColumn.to_val self.krate
+  let out ← alloc.vec.Vec.push (alloc.vec.Vec.new i5h_sql.Val) v
+  let v1 ← U64.Insts.I5h_sqlColumn.to_val self.num
+  let out1 ← alloc.vec.Vec.push out v1
+  let v2 ← Bool.Insts.I5h_sqlColumn.to_val self.yanked
+  let out2 ← alloc.vec.Vec.push out1 v2
+  let v3 ← U64.Insts.I5h_sqlColumn.to_val self.publisher
+  alloc.vec.Vec.push out2 v3
+
+/-- [cratesio_kernel::{cratesio_kernel::Version}::del_where]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 246:16-251:17
+    Visibility: public -/
+@[rust_loop_body]
+def Version.del_where_loop.body
+  (v : alloc.vec.Vec Version) (col : Std.U32) (val : i5h_sql.Val)
+  (out : alloc.vec.Vec Version) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Version) × Std.Usize) (alloc.vec.Vec
+    Version))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let v1 ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Version) v i
+    let v2 ← Version.to_row v1
+    let b ← i5h_sql.has_col v2 col val
+    let out1 ←
+      if b
+      then ok out
+      else
+        do
+        let v3 ← Version.Insts.CoreCloneClone.clone v1
+        alloc.vec.Vec.push out v3
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
+  else ok (done out)
+
+/-- [cratesio_kernel::{cratesio_kernel::Version}::del_where]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 246:16-251:17
+    Visibility: public -/
+@[rust_loop]
+def Version.del_where_loop
+  (v : alloc.vec.Vec Version) (col : Std.U32) (val : i5h_sql.Val)
+  (out : alloc.vec.Vec Version) (i : Std.Usize) :
+  Result (alloc.vec.Vec Version)
+  := do
+  loop
+    (fun (out1, i1) => Version.del_where_loop.body v col val out1 i1)
+    (out, i)
+
+/-- [cratesio_kernel::{cratesio_kernel::Version}::del_where]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 243:12-253:13
+    Visibility: public -/
+@[reducible]
+def Version.del_where
+  (v : alloc.vec.Vec Version) (col : Std.U32) (val : i5h_sql.Val) :
+  Result (alloc.vec.Vec Version)
+  := do
+  Version.del_where_loop v col val (alloc.vec.Vec.new Version) 0#usize
+
+/-- [cratesio_kernel::{cratesio_kernel::Invite}::del]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 233:16-238:17
+    Visibility: public -/
+@[rust_loop_body]
+def Invite.del_loop.body
+  (v : alloc.vec.Vec Invite) (krate : Std.U64) (user : Std.U64)
+  (out : alloc.vec.Vec Invite) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Invite) × Std.Usize) (alloc.vec.Vec
+    Invite))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let i2 ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Invite) v i
+    let out1 ←
+      if i2.krate = krate
+      then
+        if i2.user = user
+        then ok out
+        else
+          do
+          let i3 ← Invite.Insts.CoreCloneClone.clone i2
+          alloc.vec.Vec.push out i3
+      else
+        do
+        let i3 ← Invite.Insts.CoreCloneClone.clone i2
+        alloc.vec.Vec.push out i3
+    let i3 ← i + 1#usize
+    ok (cont (out1, i3))
+  else ok (done out)
+
+/-- [cratesio_kernel::{cratesio_kernel::Invite}::del]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 233:16-238:17
+    Visibility: public -/
+@[rust_loop]
+def Invite.del_loop
+  (v : alloc.vec.Vec Invite) (krate : Std.U64) (user : Std.U64)
+  (out : alloc.vec.Vec Invite) (i : Std.Usize) :
+  Result (alloc.vec.Vec Invite)
+  := do
+  loop
+    (fun (out1, i1) => Invite.del_loop.body v krate user out1 i1)
+    (out, i)
+
+/-- [cratesio_kernel::{cratesio_kernel::Invite}::del]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 230:12-240:13
+    Visibility: public -/
+@[reducible]
+def Invite.del
+  (v : alloc.vec.Vec Invite) (krate : Std.U64) (user : Std.U64) :
+  Result (alloc.vec.Vec Invite)
+  := do
+  Invite.del_loop v krate user (alloc.vec.Vec.new Invite) 0#usize
+
+/-- [cratesio_kernel::{cratesio_kernel::Owner}::del]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 233:16-238:17
+    Visibility: public -/
+@[rust_loop_body]
+def Owner.del_loop.body
+  (v : alloc.vec.Vec Owner) (krate : Std.U64) (owner : Std.U64) (team : Bool)
+  (out : alloc.vec.Vec Owner) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Owner) × Std.Usize) (alloc.vec.Vec
+    Owner))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let o ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Owner) v i
+    let out1 ←
+      if o.krate = krate
+      then
+        if o.owner = owner
+        then
+          if o.team = team
+          then ok out
+          else
+            do
+            let o1 ← Owner.Insts.CoreCloneClone.clone o
+            alloc.vec.Vec.push out o1
+        else
+          do
+          let o1 ← Owner.Insts.CoreCloneClone.clone o
+          alloc.vec.Vec.push out o1
+      else
+        do
+        let o1 ← Owner.Insts.CoreCloneClone.clone o
+        alloc.vec.Vec.push out o1
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
+  else ok (done out)
+
+/-- [cratesio_kernel::{cratesio_kernel::Owner}::del]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 233:16-238:17
+    Visibility: public -/
+@[rust_loop]
+def Owner.del_loop
+  (v : alloc.vec.Vec Owner) (krate : Std.U64) (owner : Std.U64) (team : Bool)
+  (out : alloc.vec.Vec Owner) (i : Std.Usize) :
+  Result (alloc.vec.Vec Owner)
+  := do
+  loop
+    (fun (out1, i1) => Owner.del_loop.body v krate owner team out1 i1)
+    (out, i)
+
+/-- [cratesio_kernel::{cratesio_kernel::Owner}::del]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 230:12-240:13
+    Visibility: public -/
+@[reducible]
+def Owner.del
+  (v : alloc.vec.Vec Owner) (krate : Std.U64) (owner : Std.U64) (team : Bool) :
+  Result (alloc.vec.Vec Owner)
+  := do
+  Owner.del_loop v krate owner team (alloc.vec.Vec.new Owner) 0#usize
+
+/-- [cratesio_kernel::{cratesio_kernel::Krate}::del]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 233:16-238:17
+    Visibility: public -/
+@[rust_loop_body]
+def Krate.del_loop.body
+  (v : alloc.vec.Vec Krate) (id : Std.U64) (out : alloc.vec.Vec Krate)
+  (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Krate) × Std.Usize) (alloc.vec.Vec
+    Krate))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let k ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Krate) v i
+    let out1 ←
+      if k.id = id
+      then ok out
+      else
+        do
+        let k1 ← Krate.Insts.CoreCloneClone.clone k
+        alloc.vec.Vec.push out k1
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
+  else ok (done out)
+
+/-- [cratesio_kernel::{cratesio_kernel::Krate}::del]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 233:16-238:17
+    Visibility: public -/
+@[rust_loop]
+def Krate.del_loop
+  (v : alloc.vec.Vec Krate) (id : Std.U64) (out : alloc.vec.Vec Krate)
+  (i : Std.Usize) :
+  Result (alloc.vec.Vec Krate)
+  := do
+  loop
+    (fun (out1, i1) => Krate.del_loop.body v id out1 i1)
+    (out, i)
+
+/-- [cratesio_kernel::{cratesio_kernel::Krate}::del]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 230:12-240:13
+    Visibility: public -/
+@[reducible]
+def Krate.del
+  (v : alloc.vec.Vec Krate) (id : Std.U64) : Result (alloc.vec.Vec Krate) := do
+  Krate.del_loop v id (alloc.vec.Vec.new Krate) 0#usize
+
+/-- [cratesio_kernel::{cratesio_kernel::Dep}::put]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 219:16-227:13
+    Visibility: public -/
+@[rust_loop_body]
+def Dep.put_loop.body
   (v : alloc.vec.Vec Dep) (x : Dep) (i : Std.Usize) :
   Result (ControlFlow Std.Usize (alloc.vec.Vec Dep))
   := do
@@ -2168,356 +2482,400 @@ def put_dep_loop.body
   else let v1 ← alloc.vec.Vec.push v x
        ok (done v1)
 
-/-- [cratesio_kernel::put_dep]: loop 0:
-    Source: 'examples/cratesio/kernel/src/lib.rs', lines 1:0-1092:1 -/
+/-- [cratesio_kernel::{cratesio_kernel::Dep}::put]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 219:16-227:13
+    Visibility: public -/
 @[rust_loop]
-def put_dep_loop
+def Dep.put_loop
   (v : alloc.vec.Vec Dep) (x : Dep) (i : Std.Usize) :
   Result (alloc.vec.Vec Dep)
   := do
   loop
-    (fun i1 => put_dep_loop.body v x i1)
+    (fun i1 => Dep.put_loop.body v x i1)
     i
 
-/-- [cratesio_kernel::put_dep]:
-    Source: 'examples/cratesio/kernel/src/lib.rs', lines 1082:0-1092:1 -/
+/-- [cratesio_kernel::{cratesio_kernel::Dep}::put]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 217:12-227:13
+    Visibility: public -/
 @[reducible]
-def put_dep
+def Dep.put
   (v : alloc.vec.Vec Dep) (x : Dep) : Result (alloc.vec.Vec Dep) := do
-  put_dep_loop v x 0#usize
+  Dep.put_loop v x 0#usize
 
-/-- [cratesio_kernel::del_owner]: loop body 0:
-    Source: 'examples/cratesio/kernel/src/lib.rs', lines 1097:4-1102:5 -/
+/-- [cratesio_kernel::{cratesio_kernel::Invite}::put]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 219:16-227:13
+    Visibility: public -/
 @[rust_loop_body]
-def del_owner_loop.body
-  (v : alloc.vec.Vec Owner) (x : Owner) (out : alloc.vec.Vec Owner)
-  (i : Std.Usize) :
-  Result (ControlFlow ((alloc.vec.Vec Owner) × Std.Usize) (alloc.vec.Vec
-    Owner))
-  := do
-  let i1 := alloc.vec.Vec.len v
-  if i < i1
-  then
-    let o ←
-      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Owner) v i
-    let out1 ←
-      if o.krate = x.krate
-      then
-        if o.owner = x.owner
-        then if o.team = x.team
-             then ok out
-             else alloc.vec.Vec.push out o
-        else alloc.vec.Vec.push out o
-      else alloc.vec.Vec.push out o
-    let i2 ← i + 1#usize
-    ok (cont (out1, i2))
-  else ok (done out)
-
-/-- [cratesio_kernel::del_owner]: loop 0:
-    Source: 'examples/cratesio/kernel/src/lib.rs', lines 1097:4-1102:5 -/
-@[rust_loop]
-def del_owner_loop
-  (v : alloc.vec.Vec Owner) (x : Owner) (out : alloc.vec.Vec Owner)
-  (i : Std.Usize) :
-  Result (alloc.vec.Vec Owner)
-  := do
-  loop
-    (fun (out1, i1) => del_owner_loop.body v x out1 i1)
-    (out, i)
-
-/-- [cratesio_kernel::del_owner]:
-    Source: 'examples/cratesio/kernel/src/lib.rs', lines 1094:0-1104:1 -/
-@[reducible]
-def del_owner
-  (v : alloc.vec.Vec Owner) (x : Owner) : Result (alloc.vec.Vec Owner) := do
-  del_owner_loop v x (alloc.vec.Vec.new Owner) 0#usize
-
-/-- [cratesio_kernel::del_invite]: loop body 0:
-    Source: 'examples/cratesio/kernel/src/lib.rs', lines 1109:4-1114:5 -/
-@[rust_loop_body]
-def del_invite_loop.body
-  (v : alloc.vec.Vec Invite) (krate : Std.U64) (user : Std.U64)
-  (out : alloc.vec.Vec Invite) (i : Std.Usize) :
-  Result (ControlFlow ((alloc.vec.Vec Invite) × Std.Usize) (alloc.vec.Vec
-    Invite))
+def Invite.put_loop.body
+  (v : alloc.vec.Vec Invite) (x : Invite) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize (alloc.vec.Vec Invite))
   := do
   let i1 := alloc.vec.Vec.len v
   if i < i1
   then
     let i2 ←
       alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Invite) v i
-    let out1 ←
-      if i2.krate = krate
-      then if i2.user = user
-           then ok out
-           else alloc.vec.Vec.push out i2
-      else alloc.vec.Vec.push out i2
-    let i3 ← i + 1#usize
-    ok (cont (out1, i3))
-  else ok (done out)
+    if i2.krate = x.krate
+    then
+      if i2.user = x.user
+      then
+        let (_, index_mut_back) ←
+          alloc.vec.Vec.index_mut (core.slice.index.SliceIndexUsizeSlice
+            Invite) v i
+        let v1 := index_mut_back x
+        ok (done v1)
+      else let i3 ← i + 1#usize
+           ok (cont i3)
+    else let i3 ← i + 1#usize
+         ok (cont i3)
+  else let v1 ← alloc.vec.Vec.push v x
+       ok (done v1)
 
-/-- [cratesio_kernel::del_invite]: loop 0:
-    Source: 'examples/cratesio/kernel/src/lib.rs', lines 1109:4-1114:5 -/
+/-- [cratesio_kernel::{cratesio_kernel::Invite}::put]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 219:16-227:13
+    Visibility: public -/
 @[rust_loop]
-def del_invite_loop
-  (v : alloc.vec.Vec Invite) (krate : Std.U64) (user : Std.U64)
-  (out : alloc.vec.Vec Invite) (i : Std.Usize) :
+def Invite.put_loop
+  (v : alloc.vec.Vec Invite) (x : Invite) (i : Std.Usize) :
   Result (alloc.vec.Vec Invite)
   := do
   loop
-    (fun (out1, i1) => del_invite_loop.body v krate user out1 i1)
-    (out, i)
+    (fun i1 => Invite.put_loop.body v x i1)
+    i
 
-/-- [cratesio_kernel::del_invite]:
-    Source: 'examples/cratesio/kernel/src/lib.rs', lines 1106:0-1116:1 -/
+/-- [cratesio_kernel::{cratesio_kernel::Invite}::put]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 217:12-227:13
+    Visibility: public -/
 @[reducible]
-def del_invite
-  (v : alloc.vec.Vec Invite) (krate : Std.U64) (user : Std.U64) :
-  Result (alloc.vec.Vec Invite)
-  := do
-  del_invite_loop v krate user (alloc.vec.Vec.new Invite) 0#usize
+def Invite.put
+  (v : alloc.vec.Vec Invite) (x : Invite) : Result (alloc.vec.Vec Invite) := do
+  Invite.put_loop v x 0#usize
 
-/-- [cratesio_kernel::del_crate]: loop body 0:
-    Source: 'examples/cratesio/kernel/src/lib.rs', lines 1121:4-1126:5 -/
+/-- [cratesio_kernel::{cratesio_kernel::Owner}::put]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 219:16-227:13
+    Visibility: public -/
 @[rust_loop_body]
-def del_crate_loop.body
-  (v : alloc.vec.Vec Krate) (k : Std.U64) (out : alloc.vec.Vec Krate)
-  (i : Std.Usize) :
-  Result (ControlFlow ((alloc.vec.Vec Krate) × Std.Usize) (alloc.vec.Vec
-    Krate))
+def Owner.put_loop.body
+  (v : alloc.vec.Vec Owner) (x : Owner) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize (alloc.vec.Vec Owner))
   := do
   let i1 := alloc.vec.Vec.len v
   if i < i1
   then
-    let k1 ←
-      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Krate) v i
-    let out1 ← if k1.id != k
-                 then alloc.vec.Vec.push out k1
-                 else ok out
-    let i2 ← i + 1#usize
-    ok (cont (out1, i2))
-  else ok (done out)
+    let o ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Owner) v i
+    if o.krate = x.krate
+    then
+      if o.owner = x.owner
+      then
+        if o.team = x.team
+        then
+          let (_, index_mut_back) ←
+            alloc.vec.Vec.index_mut (core.slice.index.SliceIndexUsizeSlice
+              Owner) v i
+          let v1 := index_mut_back x
+          ok (done v1)
+        else let i2 ← i + 1#usize
+             ok (cont i2)
+      else let i2 ← i + 1#usize
+           ok (cont i2)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else let v1 ← alloc.vec.Vec.push v x
+       ok (done v1)
 
-/-- [cratesio_kernel::del_crate]: loop 0:
-    Source: 'examples/cratesio/kernel/src/lib.rs', lines 1121:4-1126:5 -/
+/-- [cratesio_kernel::{cratesio_kernel::Owner}::put]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 219:16-227:13
+    Visibility: public -/
 @[rust_loop]
-def del_crate_loop
-  (v : alloc.vec.Vec Krate) (k : Std.U64) (out : alloc.vec.Vec Krate)
-  (i : Std.Usize) :
-  Result (alloc.vec.Vec Krate)
+def Owner.put_loop
+  (v : alloc.vec.Vec Owner) (x : Owner) (i : Std.Usize) :
+  Result (alloc.vec.Vec Owner)
   := do
   loop
-    (fun (out1, i1) => del_crate_loop.body v k out1 i1)
-    (out, i)
+    (fun i1 => Owner.put_loop.body v x i1)
+    i
 
-/-- [cratesio_kernel::del_crate]:
-    Source: 'examples/cratesio/kernel/src/lib.rs', lines 1118:0-1128:1 -/
+/-- [cratesio_kernel::{cratesio_kernel::Owner}::put]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 217:12-227:13
+    Visibility: public -/
 @[reducible]
-def del_crate
-  (v : alloc.vec.Vec Krate) (k : Std.U64) : Result (alloc.vec.Vec Krate) := do
-  del_crate_loop v k (alloc.vec.Vec.new Krate) 0#usize
+def Owner.put
+  (v : alloc.vec.Vec Owner) (x : Owner) : Result (alloc.vec.Vec Owner) := do
+  Owner.put_loop v x 0#usize
 
-/-- [cratesio_kernel::del_versions_of]: loop body 0:
-    Source: 'examples/cratesio/kernel/src/lib.rs', lines 1133:4-1138:5 -/
+/-- [cratesio_kernel::{cratesio_kernel::Version}::put]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 219:16-227:13
+    Visibility: public -/
 @[rust_loop_body]
-def del_versions_of_loop.body
-  (v : alloc.vec.Vec Version) (k : Std.U64) (out : alloc.vec.Vec Version)
-  (i : Std.Usize) :
-  Result (ControlFlow ((alloc.vec.Vec Version) × Std.Usize) (alloc.vec.Vec
-    Version))
+def Version.put_loop.body
+  (v : alloc.vec.Vec Version) (x : Version) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize (alloc.vec.Vec Version))
   := do
   let i1 := alloc.vec.Vec.len v
   if i < i1
   then
     let v1 ←
       alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Version) v i
-    let out1 ← if v1.krate != k
-                 then alloc.vec.Vec.push out v1
-                 else ok out
-    let i2 ← i + 1#usize
-    ok (cont (out1, i2))
-  else ok (done out)
+    if v1.krate = x.krate
+    then
+      if v1.num = x.num
+      then
+        let (_, index_mut_back) ←
+          alloc.vec.Vec.index_mut (core.slice.index.SliceIndexUsizeSlice
+            Version) v i
+        let v2 := index_mut_back x
+        ok (done v2)
+      else let i2 ← i + 1#usize
+           ok (cont i2)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else let v1 ← alloc.vec.Vec.push v x
+       ok (done v1)
 
-/-- [cratesio_kernel::del_versions_of]: loop 0:
-    Source: 'examples/cratesio/kernel/src/lib.rs', lines 1133:4-1138:5 -/
+/-- [cratesio_kernel::{cratesio_kernel::Version}::put]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 219:16-227:13
+    Visibility: public -/
 @[rust_loop]
-def del_versions_of_loop
-  (v : alloc.vec.Vec Version) (k : Std.U64) (out : alloc.vec.Vec Version)
-  (i : Std.Usize) :
+def Version.put_loop
+  (v : alloc.vec.Vec Version) (x : Version) (i : Std.Usize) :
   Result (alloc.vec.Vec Version)
   := do
   loop
-    (fun (out1, i1) => del_versions_of_loop.body v k out1 i1)
-    (out, i)
+    (fun i1 => Version.put_loop.body v x i1)
+    i
 
-/-- [cratesio_kernel::del_versions_of]:
-    Source: 'examples/cratesio/kernel/src/lib.rs', lines 1130:0-1140:1 -/
+/-- [cratesio_kernel::{cratesio_kernel::Version}::put]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 217:12-227:13
+    Visibility: public -/
 @[reducible]
-def del_versions_of
-  (v : alloc.vec.Vec Version) (k : Std.U64) :
+def Version.put
+  (v : alloc.vec.Vec Version) (x : Version) :
   Result (alloc.vec.Vec Version)
   := do
-  del_versions_of_loop v k (alloc.vec.Vec.new Version) 0#usize
+  Version.put_loop v x 0#usize
 
-/-- [cratesio_kernel::del_owners_of]: loop body 0:
-    Source: 'examples/cratesio/kernel/src/lib.rs', lines 1145:4-1150:5 -/
+/-- [cratesio_kernel::{cratesio_kernel::Krate}::put]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 219:16-227:13
+    Visibility: public -/
 @[rust_loop_body]
-def del_owners_of_loop.body
-  (v : alloc.vec.Vec Owner) (k : Std.U64) (out : alloc.vec.Vec Owner)
-  (i : Std.Usize) :
-  Result (ControlFlow ((alloc.vec.Vec Owner) × Std.Usize) (alloc.vec.Vec
-    Owner))
+def Krate.put_loop.body
+  (v : alloc.vec.Vec Krate) (x : Krate) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize (alloc.vec.Vec Krate))
   := do
   let i1 := alloc.vec.Vec.len v
   if i < i1
   then
-    let o ←
-      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Owner) v i
-    let out1 ← if o.krate != k
-                 then alloc.vec.Vec.push out o
-                 else ok out
-    let i2 ← i + 1#usize
-    ok (cont (out1, i2))
-  else ok (done out)
+    let k ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Krate) v i
+    if k.id = x.id
+    then
+      let (_, index_mut_back) ←
+        alloc.vec.Vec.index_mut (core.slice.index.SliceIndexUsizeSlice Krate) v
+          i
+      let v1 := index_mut_back x
+      ok (done v1)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else let v1 ← alloc.vec.Vec.push v x
+       ok (done v1)
 
-/-- [cratesio_kernel::del_owners_of]: loop 0:
-    Source: 'examples/cratesio/kernel/src/lib.rs', lines 1145:4-1150:5 -/
+/-- [cratesio_kernel::{cratesio_kernel::Krate}::put]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 219:16-227:13
+    Visibility: public -/
 @[rust_loop]
-def del_owners_of_loop
-  (v : alloc.vec.Vec Owner) (k : Std.U64) (out : alloc.vec.Vec Owner)
-  (i : Std.Usize) :
-  Result (alloc.vec.Vec Owner)
+def Krate.put_loop
+  (v : alloc.vec.Vec Krate) (x : Krate) (i : Std.Usize) :
+  Result (alloc.vec.Vec Krate)
   := do
   loop
-    (fun (out1, i1) => del_owners_of_loop.body v k out1 i1)
-    (out, i)
+    (fun i1 => Krate.put_loop.body v x i1)
+    i
 
-/-- [cratesio_kernel::del_owners_of]:
-    Source: 'examples/cratesio/kernel/src/lib.rs', lines 1142:0-1152:1 -/
+/-- [cratesio_kernel::{cratesio_kernel::Krate}::put]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 217:12-227:13
+    Visibility: public -/
 @[reducible]
-def del_owners_of
-  (v : alloc.vec.Vec Owner) (k : Std.U64) : Result (alloc.vec.Vec Owner) := do
-  del_owners_of_loop v k (alloc.vec.Vec.new Owner) 0#usize
+def Krate.put
+  (v : alloc.vec.Vec Krate) (x : Krate) : Result (alloc.vec.Vec Krate) := do
+  Krate.put_loop v x 0#usize
 
-/-- [cratesio_kernel::del_invites_of]: loop body 0:
-    Source: 'examples/cratesio/kernel/src/lib.rs', lines 1157:4-1162:5 -/
+/-- [cratesio_kernel::{cratesio_kernel::Token}::put]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 219:16-227:13
+    Visibility: public -/
 @[rust_loop_body]
-def del_invites_of_loop.body
-  (v : alloc.vec.Vec Invite) (k : Std.U64) (out : alloc.vec.Vec Invite)
-  (i : Std.Usize) :
-  Result (ControlFlow ((alloc.vec.Vec Invite) × Std.Usize) (alloc.vec.Vec
-    Invite))
+def Token.put_loop.body
+  (v : alloc.vec.Vec Token) (x : Token) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize (alloc.vec.Vec Token))
   := do
   let i1 := alloc.vec.Vec.len v
   if i < i1
   then
-    let i2 ←
-      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Invite) v i
-    let out1 ← if i2.krate != k
-                 then alloc.vec.Vec.push out i2
-                 else ok out
-    let i3 ← i + 1#usize
-    ok (cont (out1, i3))
-  else ok (done out)
+    let t ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Token) v i
+    if t.id = x.id
+    then
+      let (_, index_mut_back) ←
+        alloc.vec.Vec.index_mut (core.slice.index.SliceIndexUsizeSlice Token) v
+          i
+      let v1 := index_mut_back x
+      ok (done v1)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else let v1 ← alloc.vec.Vec.push v x
+       ok (done v1)
 
-/-- [cratesio_kernel::del_invites_of]: loop 0:
-    Source: 'examples/cratesio/kernel/src/lib.rs', lines 1157:4-1162:5 -/
+/-- [cratesio_kernel::{cratesio_kernel::Token}::put]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 219:16-227:13
+    Visibility: public -/
 @[rust_loop]
-def del_invites_of_loop
-  (v : alloc.vec.Vec Invite) (k : Std.U64) (out : alloc.vec.Vec Invite)
-  (i : Std.Usize) :
-  Result (alloc.vec.Vec Invite)
+def Token.put_loop
+  (v : alloc.vec.Vec Token) (x : Token) (i : Std.Usize) :
+  Result (alloc.vec.Vec Token)
   := do
   loop
-    (fun (out1, i1) => del_invites_of_loop.body v k out1 i1)
-    (out, i)
+    (fun i1 => Token.put_loop.body v x i1)
+    i
 
-/-- [cratesio_kernel::del_invites_of]:
-    Source: 'examples/cratesio/kernel/src/lib.rs', lines 1154:0-1164:1 -/
+/-- [cratesio_kernel::{cratesio_kernel::Token}::put]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 217:12-227:13
+    Visibility: public -/
 @[reducible]
-def del_invites_of
-  (v : alloc.vec.Vec Invite) (k : Std.U64) :
-  Result (alloc.vec.Vec Invite)
-  := do
-  del_invites_of_loop v k (alloc.vec.Vec.new Invite) 0#usize
+def Token.put
+  (v : alloc.vec.Vec Token) (x : Token) : Result (alloc.vec.Vec Token) := do
+  Token.put_loop v x 0#usize
 
-/-- [cratesio_kernel::del_deps_of]: loop body 0:
-    Source: 'examples/cratesio/kernel/src/lib.rs', lines 1169:4-1174:5 -/
+/-- [cratesio_kernel::{cratesio_kernel::Session}::put]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 219:16-227:13
+    Visibility: public -/
 @[rust_loop_body]
-def del_deps_of_loop.body
-  (v : alloc.vec.Vec Dep) (k : Std.U64) (out : alloc.vec.Vec Dep)
-  (i : Std.Usize) :
-  Result (ControlFlow ((alloc.vec.Vec Dep) × Std.Usize) (alloc.vec.Vec Dep))
+def Session.put_loop.body
+  (v : alloc.vec.Vec Session) (x : Session) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize (alloc.vec.Vec Session))
   := do
   let i1 := alloc.vec.Vec.len v
   if i < i1
   then
-    let d ←
-      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Dep) v i
-    let out1 ← if d.krate != k
-                 then alloc.vec.Vec.push out d
-                 else ok out
-    let i2 ← i + 1#usize
-    ok (cont (out1, i2))
-  else ok (done out)
+    let s ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Session) v i
+    if s.id = x.id
+    then
+      let (_, index_mut_back) ←
+        alloc.vec.Vec.index_mut (core.slice.index.SliceIndexUsizeSlice Session)
+          v i
+      let v1 := index_mut_back x
+      ok (done v1)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else let v1 ← alloc.vec.Vec.push v x
+       ok (done v1)
 
-/-- [cratesio_kernel::del_deps_of]: loop 0:
-    Source: 'examples/cratesio/kernel/src/lib.rs', lines 1169:4-1174:5 -/
+/-- [cratesio_kernel::{cratesio_kernel::Session}::put]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 219:16-227:13
+    Visibility: public -/
 @[rust_loop]
-def del_deps_of_loop
-  (v : alloc.vec.Vec Dep) (k : Std.U64) (out : alloc.vec.Vec Dep)
-  (i : Std.Usize) :
-  Result (alloc.vec.Vec Dep)
+def Session.put_loop
+  (v : alloc.vec.Vec Session) (x : Session) (i : Std.Usize) :
+  Result (alloc.vec.Vec Session)
   := do
   loop
-    (fun (out1, i1) => del_deps_of_loop.body v k out1 i1)
-    (out, i)
+    (fun i1 => Session.put_loop.body v x i1)
+    i
 
-/-- [cratesio_kernel::del_deps_of]:
-    Source: 'examples/cratesio/kernel/src/lib.rs', lines 1166:0-1176:1 -/
+/-- [cratesio_kernel::{cratesio_kernel::Session}::put]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 217:12-227:13
+    Visibility: public -/
 @[reducible]
-def del_deps_of
-  (v : alloc.vec.Vec Dep) (k : Std.U64) : Result (alloc.vec.Vec Dep) := do
-  del_deps_of_loop v k (alloc.vec.Vec.new Dep) 0#usize
+def Session.put
+  (v : alloc.vec.Vec Session) (x : Session) :
+  Result (alloc.vec.Vec Session)
+  := do
+  Session.put_loop v x 0#usize
+
+/-- [cratesio_kernel::{cratesio_kernel::User}::put]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 219:16-227:13
+    Visibility: public -/
+@[rust_loop_body]
+def User.put_loop.body
+  (v : alloc.vec.Vec User) (x : User) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize (alloc.vec.Vec User))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let u ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice User) v i
+    if u.id = x.id
+    then
+      let (_, index_mut_back) ←
+        alloc.vec.Vec.index_mut (core.slice.index.SliceIndexUsizeSlice User) v
+          i
+      let v1 := index_mut_back x
+      ok (done v1)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else let v1 ← alloc.vec.Vec.push v x
+       ok (done v1)
+
+/-- [cratesio_kernel::{cratesio_kernel::User}::put]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 219:16-227:13
+    Visibility: public -/
+@[rust_loop]
+def User.put_loop
+  (v : alloc.vec.Vec User) (x : User) (i : Std.Usize) :
+  Result (alloc.vec.Vec User)
+  := do
+  loop
+    (fun i1 => User.put_loop.body v x i1)
+    i
+
+/-- [cratesio_kernel::{cratesio_kernel::User}::put]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 217:12-227:13
+    Visibility: public -/
+@[reducible]
+def User.put
+  (v : alloc.vec.Vec User) (x : User) : Result (alloc.vec.Vec User) := do
+  User.put_loop v x 0#usize
 
 /-- [cratesio_kernel::apply_write]:
-    Source: 'examples/cratesio/kernel/src/lib.rs', lines 1178:0-1199:1 -/
+    Source: 'examples/cratesio/kernel/src/lib.rs', lines 1003:0-1025:1 -/
 def apply_write (s : Snapshot) (w : Write) : Result Snapshot := do
   match w with
-  | Write.PutUser x => let v ← put_user s.users x
+  | Write.PutUser x => let v ← User.put s.users x
                        ok { s with users := v }
   | Write.PutSession x =>
-    let v ← put_session s.sessions x
+    let v ← Session.put s.sessions x
     ok { s with sessions := v }
   | Write.PutToken x =>
-    let v ← put_token s.tokens x
+    let v ← Token.put s.tokens x
     ok { s with tokens := v }
   | Write.PutCrate x =>
-    let v ← put_crate s.crates x
+    let v ← Krate.put s.crates x
     ok { s with crates := v }
   | Write.PutVersion x =>
-    let v ← put_version s.versions x
+    let v ← Version.put s.versions x
     ok { s with versions := v }
   | Write.PutOwner x =>
-    let v ← put_owner s.owners x
+    let v ← Owner.put s.owners x
     ok { s with owners := v }
   | Write.DelOwner x =>
-    let v ← del_owner s.owners x
+    let v ← Owner.del s.owners x.krate x.owner x.team
     ok { s with owners := v }
   | Write.PutInvite x =>
-    let v ← put_invite s.invites x
+    let v ← Invite.put s.invites x
     ok { s with invites := v }
   | Write.DelInvite k u =>
-    let v ← del_invite s.invites k u
+    let v ← Invite.del s.invites k u
     ok { s with invites := v }
-  | Write.PutDep x => let v ← put_dep s.deps x
+  | Write.PutDep x => let v ← Dep.put s.deps x
                       ok { s with deps := v }
   | Write.DelCrate k =>
-    let v ← del_crate s.crates k
-    let v1 ← del_versions_of s.versions k
-    let v2 ← del_owners_of s.owners k
-    let v3 ← del_invites_of s.invites k
-    let v4 ← del_deps_of s.deps k
+    let key ← U64.Insts.I5h_sqlColumn.to_val k
+    let v ← Krate.del s.crates k
+    let v1 ← Version.del_where s.versions KRATE key
+    let v2 ← Owner.del_where s.owners KRATE key
+    let v3 ← Invite.del_where s.invites KRATE key
+    let v4 ← Dep.del_where s.deps KRATE key
     ok
       {
         s
@@ -2526,8 +2884,1866 @@ def apply_write (s : Snapshot) (w : Write) : Result Snapshot := do
       }
   | Write.SetCounter c => ok { s with counter := c }
 
+/-- [cratesio_kernel::{cratesio_kernel::Dep}::TABLE]
+    Source: 'crates/i5h-schema/src/lib.rs', lines 132:12-132:60
+    Visibility: public -/
+@[global_simps, irreducible] def Dep.TABLE : Std.U32 := 7#u32
+
+/-- [cratesio_kernel::{cratesio_kernel::Dep}::sql_del_where]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 263:12-265:13
+    Visibility: public -/
+def Dep.sql_del_where
+  (col : Std.U32) (val : i5h_sql.Val) : Result i5h_sql.Write := do
+  ok (i5h_sql.Write.DelWhere Dep.TABLE col val)
+
+/-- [cratesio_kernel::{cratesio_kernel::Invite}::TABLE]
+    Source: 'crates/i5h-schema/src/lib.rs', lines 132:12-132:60
+    Visibility: public -/
+@[global_simps, irreducible] def Invite.TABLE : Std.U32 := 6#u32
+
+/-- [cratesio_kernel::{cratesio_kernel::Invite}::sql_del_where]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 263:12-265:13
+    Visibility: public -/
+def Invite.sql_del_where
+  (col : Std.U32) (val : i5h_sql.Val) : Result i5h_sql.Write := do
+  ok (i5h_sql.Write.DelWhere Invite.TABLE col val)
+
+/-- [cratesio_kernel::{cratesio_kernel::Owner}::TABLE]
+    Source: 'crates/i5h-schema/src/lib.rs', lines 132:12-132:60
+    Visibility: public -/
+@[global_simps, irreducible] def Owner.TABLE : Std.U32 := 5#u32
+
+/-- [cratesio_kernel::{cratesio_kernel::Owner}::sql_del_where]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 263:12-265:13
+    Visibility: public -/
+def Owner.sql_del_where
+  (col : Std.U32) (val : i5h_sql.Val) : Result i5h_sql.Write := do
+  ok (i5h_sql.Write.DelWhere Owner.TABLE col val)
+
+/-- [cratesio_kernel::{cratesio_kernel::Version}::TABLE]
+    Source: 'crates/i5h-schema/src/lib.rs', lines 132:12-132:60
+    Visibility: public -/
+@[global_simps, irreducible] def Version.TABLE : Std.U32 := 4#u32
+
+/-- [cratesio_kernel::{cratesio_kernel::Version}::sql_del_where]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 263:12-265:13
+    Visibility: public -/
+def Version.sql_del_where
+  (col : Std.U32) (val : i5h_sql.Val) : Result i5h_sql.Write := do
+  ok (i5h_sql.Write.DelWhere Version.TABLE col val)
+
+/-- [cratesio_kernel::{cratesio_kernel::Invite}::sql_del]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 256:12-260:13
+    Visibility: public -/
+def Invite.sql_del
+  (krate : Std.U64) (user : Std.U64) : Result i5h_sql.Write := do
+  let v ← U64.Insts.I5h_sqlColumn.to_val krate
+  let key ← alloc.vec.Vec.push (alloc.vec.Vec.new i5h_sql.Val) v
+  let v1 ← U64.Insts.I5h_sqlColumn.to_val user
+  let key1 ← alloc.vec.Vec.push key v1
+  ok (i5h_sql.Write.Del Invite.TABLE key1)
+
+/-- [cratesio_kernel::{cratesio_kernel::Owner}::sql_del]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 256:12-260:13
+    Visibility: public -/
+def Owner.sql_del
+  (krate : Std.U64) (owner : Std.U64) (team : Bool) :
+  Result i5h_sql.Write
+  := do
+  let v ← U64.Insts.I5h_sqlColumn.to_val krate
+  let key ← alloc.vec.Vec.push (alloc.vec.Vec.new i5h_sql.Val) v
+  let v1 ← U64.Insts.I5h_sqlColumn.to_val owner
+  let key1 ← alloc.vec.Vec.push key v1
+  let v2 ← Bool.Insts.I5h_sqlColumn.to_val team
+  let key2 ← alloc.vec.Vec.push key1 v2
+  ok (i5h_sql.Write.Del Owner.TABLE key2)
+
+/-- [cratesio_kernel::{cratesio_kernel::Krate}::TABLE]
+    Source: 'crates/i5h-schema/src/lib.rs', lines 132:12-132:60
+    Visibility: public -/
+@[global_simps, irreducible] def Krate.TABLE : Std.U32 := 3#u32
+
+/-- [cratesio_kernel::{cratesio_kernel::Krate}::sql_del]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 256:12-260:13
+    Visibility: public -/
+def Krate.sql_del (id : Std.U64) : Result i5h_sql.Write := do
+  let v ← U64.Insts.I5h_sqlColumn.to_val id
+  let key ← alloc.vec.Vec.push (alloc.vec.Vec.new i5h_sql.Val) v
+  ok (i5h_sql.Write.Del Krate.TABLE key)
+
+/-- [cratesio_kernel::{cratesio_kernel::Counter}::to_row]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 135:12-140:13
+    Visibility: public -/
+def Counter.to_row (self : Counter) : Result (alloc.vec.Vec i5h_sql.Val) := do
+  let v ← U64.Insts.I5h_sqlColumn.to_val self.next_session
+  let out ← alloc.vec.Vec.push (alloc.vec.Vec.new i5h_sql.Val) v
+  let v1 ← U64.Insts.I5h_sqlColumn.to_val self.next_token
+  alloc.vec.Vec.push out v1
+
+/-- [cratesio_kernel::{cratesio_kernel::Counter}::KEY_LEN]
+    Source: 'crates/i5h-schema/src/lib.rs', lines 133:12-133:62
+    Visibility: public -/
+@[global_simps, irreducible] def Counter.KEY_LEN : Std.U32 := 0#u32
+
+/-- [cratesio_kernel::{cratesio_kernel::Counter}::TABLE]
+    Source: 'crates/i5h-schema/src/lib.rs', lines 132:12-132:60
+    Visibility: public -/
+@[global_simps, irreducible] def Counter.TABLE : Std.U32 := 8#u32
+
+/-- [cratesio_kernel::{cratesio_kernel::Counter}::sql_put]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 186:12-188:13
+    Visibility: public -/
+def Counter.sql_put (self : Counter) : Result i5h_sql.Write := do
+  let v ← Counter.to_row self
+  ok (i5h_sql.Write.Put Counter.TABLE Counter.KEY_LEN v)
+
+/-- [cratesio_kernel::{cratesio_kernel::Dep}::KEY_LEN]
+    Source: 'crates/i5h-schema/src/lib.rs', lines 133:12-133:62
+    Visibility: public -/
+@[global_simps, irreducible] def Dep.KEY_LEN : Std.U32 := 3#u32
+
+/-- [cratesio_kernel::{cratesio_kernel::Dep}::sql_put]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 186:12-188:13
+    Visibility: public -/
+def Dep.sql_put (self : Dep) : Result i5h_sql.Write := do
+  let v ← Dep.to_row self
+  ok (i5h_sql.Write.Put Dep.TABLE Dep.KEY_LEN v)
+
+/-- [cratesio_kernel::{cratesio_kernel::Invite}::KEY_LEN]
+    Source: 'crates/i5h-schema/src/lib.rs', lines 133:12-133:62
+    Visibility: public -/
+@[global_simps, irreducible] def Invite.KEY_LEN : Std.U32 := 2#u32
+
+/-- [cratesio_kernel::{cratesio_kernel::Invite}::sql_put]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 186:12-188:13
+    Visibility: public -/
+def Invite.sql_put (self : Invite) : Result i5h_sql.Write := do
+  let v ← Invite.to_row self
+  ok (i5h_sql.Write.Put Invite.TABLE Invite.KEY_LEN v)
+
+/-- [cratesio_kernel::{cratesio_kernel::Owner}::KEY_LEN]
+    Source: 'crates/i5h-schema/src/lib.rs', lines 133:12-133:62
+    Visibility: public -/
+@[global_simps, irreducible] def Owner.KEY_LEN : Std.U32 := 3#u32
+
+/-- [cratesio_kernel::{cratesio_kernel::Owner}::sql_put]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 186:12-188:13
+    Visibility: public -/
+def Owner.sql_put (self : Owner) : Result i5h_sql.Write := do
+  let v ← Owner.to_row self
+  ok (i5h_sql.Write.Put Owner.TABLE Owner.KEY_LEN v)
+
+/-- [cratesio_kernel::{cratesio_kernel::Version}::KEY_LEN]
+    Source: 'crates/i5h-schema/src/lib.rs', lines 133:12-133:62
+    Visibility: public -/
+@[global_simps, irreducible] def Version.KEY_LEN : Std.U32 := 2#u32
+
+/-- [cratesio_kernel::{cratesio_kernel::Version}::sql_put]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 186:12-188:13
+    Visibility: public -/
+def Version.sql_put (self : Version) : Result i5h_sql.Write := do
+  let v ← Version.to_row self
+  ok (i5h_sql.Write.Put Version.TABLE Version.KEY_LEN v)
+
+/-- [cratesio_kernel::{cratesio_kernel::Krate}::to_row]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 135:12-140:13
+    Visibility: public -/
+def Krate.to_row (self : Krate) : Result (alloc.vec.Vec i5h_sql.Val) := do
+  let v ← U64.Insts.I5h_sqlColumn.to_val self.id
+  let out ← alloc.vec.Vec.push (alloc.vec.Vec.new i5h_sql.Val) v
+  let v1 ← U64.Insts.I5h_sqlColumn.to_val self.created
+  alloc.vec.Vec.push out v1
+
+/-- [cratesio_kernel::{cratesio_kernel::Krate}::KEY_LEN]
+    Source: 'crates/i5h-schema/src/lib.rs', lines 133:12-133:62
+    Visibility: public -/
+@[global_simps, irreducible] def Krate.KEY_LEN : Std.U32 := 1#u32
+
+/-- [cratesio_kernel::{cratesio_kernel::Krate}::sql_put]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 186:12-188:13
+    Visibility: public -/
+def Krate.sql_put (self : Krate) : Result i5h_sql.Write := do
+  let v ← Krate.to_row self
+  ok (i5h_sql.Write.Put Krate.TABLE Krate.KEY_LEN v)
+
+/-- [cratesio_kernel::{cratesio_kernel::Token}::to_row]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 135:12-140:13
+    Visibility: public -/
+def Token.to_row (self : Token) : Result (alloc.vec.Vec i5h_sql.Val) := do
+  let v ← U64.Insts.I5h_sqlColumn.to_val self.id
+  let out ← alloc.vec.Vec.push (alloc.vec.Vec.new i5h_sql.Val) v
+  let v1 ← U64.Insts.I5h_sqlColumn.to_val self.user
+  let out1 ← alloc.vec.Vec.push out v1
+  let v2 ← Bool.Insts.I5h_sqlColumn.to_val self.legacy
+  let out2 ← alloc.vec.Vec.push out1 v2
+  let v3 ← Bool.Insts.I5h_sqlColumn.to_val self.publish_new
+  let out3 ← alloc.vec.Vec.push out2 v3
+  let v4 ← Bool.Insts.I5h_sqlColumn.to_val self.publish_update
+  let out4 ← alloc.vec.Vec.push out3 v4
+  let v5 ← Bool.Insts.I5h_sqlColumn.to_val self.yank
+  let out5 ← alloc.vec.Vec.push out4 v5
+  let v6 ← Bool.Insts.I5h_sqlColumn.to_val self.change_owners
+  let out6 ← alloc.vec.Vec.push out5 v6
+  let v7 ←
+    core.option.Option.Insts.I5h_sqlColumn.to_val U64.Insts.I5h_sqlColumn
+      self.krate
+  let out7 ← alloc.vec.Vec.push out6 v7
+  let v8 ← U64.Insts.I5h_sqlColumn.to_val self.expires
+  let out8 ← alloc.vec.Vec.push out7 v8
+  let v9 ← Bool.Insts.I5h_sqlColumn.to_val self.revoked
+  alloc.vec.Vec.push out8 v9
+
+/-- [cratesio_kernel::{cratesio_kernel::Token}::KEY_LEN]
+    Source: 'crates/i5h-schema/src/lib.rs', lines 133:12-133:62
+    Visibility: public -/
+@[global_simps, irreducible] def Token.KEY_LEN : Std.U32 := 1#u32
+
+/-- [cratesio_kernel::{cratesio_kernel::Token}::TABLE]
+    Source: 'crates/i5h-schema/src/lib.rs', lines 132:12-132:60
+    Visibility: public -/
+@[global_simps, irreducible] def Token.TABLE : Std.U32 := 2#u32
+
+/-- [cratesio_kernel::{cratesio_kernel::Token}::sql_put]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 186:12-188:13
+    Visibility: public -/
+def Token.sql_put (self : Token) : Result i5h_sql.Write := do
+  let v ← Token.to_row self
+  ok (i5h_sql.Write.Put Token.TABLE Token.KEY_LEN v)
+
+/-- [cratesio_kernel::{cratesio_kernel::Session}::to_row]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 135:12-140:13
+    Visibility: public -/
+def Session.to_row (self : Session) : Result (alloc.vec.Vec i5h_sql.Val) := do
+  let v ← U64.Insts.I5h_sqlColumn.to_val self.id
+  let out ← alloc.vec.Vec.push (alloc.vec.Vec.new i5h_sql.Val) v
+  let v1 ← U64.Insts.I5h_sqlColumn.to_val self.user
+  alloc.vec.Vec.push out v1
+
+/-- [cratesio_kernel::{cratesio_kernel::Session}::KEY_LEN]
+    Source: 'crates/i5h-schema/src/lib.rs', lines 133:12-133:62
+    Visibility: public -/
+@[global_simps, irreducible] def Session.KEY_LEN : Std.U32 := 1#u32
+
+/-- [cratesio_kernel::{cratesio_kernel::Session}::TABLE]
+    Source: 'crates/i5h-schema/src/lib.rs', lines 132:12-132:60
+    Visibility: public -/
+@[global_simps, irreducible] def Session.TABLE : Std.U32 := 1#u32
+
+/-- [cratesio_kernel::{cratesio_kernel::Session}::sql_put]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 186:12-188:13
+    Visibility: public -/
+def Session.sql_put (self : Session) : Result i5h_sql.Write := do
+  let v ← Session.to_row self
+  ok (i5h_sql.Write.Put Session.TABLE Session.KEY_LEN v)
+
+/-- [cratesio_kernel::{cratesio_kernel::User}::to_row]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 135:12-140:13
+    Visibility: public -/
+def User.to_row (self : User) : Result (alloc.vec.Vec i5h_sql.Val) := do
+  let v ← U64.Insts.I5h_sqlColumn.to_val self.id
+  let out ← alloc.vec.Vec.push (alloc.vec.Vec.new i5h_sql.Val) v
+  let v1 ← Bool.Insts.I5h_sqlColumn.to_val self.admin
+  let out1 ← alloc.vec.Vec.push out v1
+  let v2 ← Bool.Insts.I5h_sqlColumn.to_val self.locked
+  let out2 ← alloc.vec.Vec.push out1 v2
+  let v3 ← U64.Insts.I5h_sqlColumn.to_val self.lock_until
+  let out3 ← alloc.vec.Vec.push out2 v3
+  let v4 ← Bool.Insts.I5h_sqlColumn.to_val self.verified
+  alloc.vec.Vec.push out3 v4
+
+/-- [cratesio_kernel::{cratesio_kernel::User}::KEY_LEN]
+    Source: 'crates/i5h-schema/src/lib.rs', lines 133:12-133:62
+    Visibility: public -/
+@[global_simps, irreducible] def User.KEY_LEN : Std.U32 := 1#u32
+
+/-- [cratesio_kernel::{cratesio_kernel::User}::TABLE]
+    Source: 'crates/i5h-schema/src/lib.rs', lines 132:12-132:60
+    Visibility: public -/
+@[global_simps, irreducible] def User.TABLE : Std.U32 := 0#u32
+
+/-- [cratesio_kernel::{cratesio_kernel::User}::sql_put]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 186:12-188:13
+    Visibility: public -/
+def User.sql_put (self : User) : Result i5h_sql.Write := do
+  let v ← User.to_row self
+  ok (i5h_sql.Write.Put User.TABLE User.KEY_LEN v)
+
+/-- [cratesio_kernel::sql_write]:
+    Source: 'examples/cratesio/kernel/src/lib.rs', lines 1029:0-1050:1 -/
+def sql_write
+  (w : Write) (out : alloc.vec.Vec i5h_sql.Write) :
+  Result (alloc.vec.Vec i5h_sql.Write)
+  := do
+  match w with
+  | Write.PutUser x => let w1 ← User.sql_put x
+                       alloc.vec.Vec.push out w1
+  | Write.PutSession x =>
+    let w1 ← Session.sql_put x
+    alloc.vec.Vec.push out w1
+  | Write.PutToken x => let w1 ← Token.sql_put x
+                        alloc.vec.Vec.push out w1
+  | Write.PutCrate x => let w1 ← Krate.sql_put x
+                        alloc.vec.Vec.push out w1
+  | Write.PutVersion x =>
+    let w1 ← Version.sql_put x
+    alloc.vec.Vec.push out w1
+  | Write.PutOwner x => let w1 ← Owner.sql_put x
+                        alloc.vec.Vec.push out w1
+  | Write.DelOwner x =>
+    let w1 ← Owner.sql_del x.krate x.owner x.team
+    alloc.vec.Vec.push out w1
+  | Write.PutInvite x => let w1 ← Invite.sql_put x
+                         alloc.vec.Vec.push out w1
+  | Write.DelInvite k u =>
+    let w1 ← Invite.sql_del k u
+    alloc.vec.Vec.push out w1
+  | Write.PutDep x => let w1 ← Dep.sql_put x
+                      alloc.vec.Vec.push out w1
+  | Write.DelCrate k =>
+    let w1 ← Krate.sql_del k
+    let out1 ← alloc.vec.Vec.push out w1
+    let v ← U64.Insts.I5h_sqlColumn.to_val k
+    let w2 ← Version.sql_del_where KRATE v
+    let out2 ← alloc.vec.Vec.push out1 w2
+    let w3 ← Owner.sql_del_where KRATE v
+    let out3 ← alloc.vec.Vec.push out2 w3
+    let w4 ← Invite.sql_del_where KRATE v
+    let out4 ← alloc.vec.Vec.push out3 w4
+    let w5 ← Dep.sql_del_where KRATE v
+    alloc.vec.Vec.push out4 w5
+  | Write.SetCounter c =>
+    let w1 ← Counter.sql_put c
+    alloc.vec.Vec.push out w1
+
+/-- [cratesio_kernel::{cratesio_kernel::Counter}::from_row]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 143:12-164:13
+    Visibility: public -/
+def Counter.from_row
+  (row : alloc.vec.Vec i5h_sql.Val) : Result (Option Counter) := do
+  let i := alloc.vec.Vec.len row
+  let i1 ← 0#usize + 1#usize
+  let i2 ← i1 + 1#usize
+  if i != i2
+  then ok none
+  else
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice i5h_sql.Val)
+        row 0#usize
+    let o ← U64.Insts.I5h_sqlColumn.from_val v
+    match o with
+    | none => ok none
+    | some x =>
+      let v1 ←
+        alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice i5h_sql.Val)
+          row i1
+      let o1 ← U64.Insts.I5h_sqlColumn.from_val v1
+      match o1 with
+      | none => ok none
+      | some x1 =>
+        let _ ← i1 + 1#usize
+        ok (some { next_session := x, next_token := x1 })
+
+/-- [cratesio_kernel::{cratesio_kernel::User}::from_row]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 143:12-164:13
+    Visibility: public -/
+def User.from_row
+  (row : alloc.vec.Vec i5h_sql.Val) : Result (Option User) := do
+  let i := alloc.vec.Vec.len row
+  let i1 ← 0#usize + 1#usize
+  let i2 ← i1 + 1#usize
+  let i3 ← i2 + 1#usize
+  let i4 ← i3 + 1#usize
+  let i5 ← i4 + 1#usize
+  if i != i5
+  then ok none
+  else
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice i5h_sql.Val)
+        row 0#usize
+    let o ← U64.Insts.I5h_sqlColumn.from_val v
+    match o with
+    | none => ok none
+    | some x =>
+      let v1 ←
+        alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice i5h_sql.Val)
+          row i1
+      let o1 ← Bool.Insts.I5h_sqlColumn.from_val v1
+      match o1 with
+      | none => ok none
+      | some x1 =>
+        let i6 ← i1 + 1#usize
+        let v2 ←
+          alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+            i5h_sql.Val) row i6
+        let o2 ← Bool.Insts.I5h_sqlColumn.from_val v2
+        match o2 with
+        | none => ok none
+        | some x2 =>
+          let i7 ← i6 + 1#usize
+          let v3 ←
+            alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+              i5h_sql.Val) row i7
+          let o3 ← U64.Insts.I5h_sqlColumn.from_val v3
+          match o3 with
+          | none => ok none
+          | some x3 =>
+            let i8 ← i7 + 1#usize
+            let v4 ←
+              alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+                i5h_sql.Val) row i8
+            let o4 ← Bool.Insts.I5h_sqlColumn.from_val v4
+            match o4 with
+            | none => ok none
+            | some x4 =>
+              let _ ← i8 + 1#usize
+              ok (some
+                {
+                  id := x,
+                  admin := x1,
+                  locked := x2,
+                  lock_until := x3,
+                  verified := x4
+                })
+
+/-- [cratesio_kernel::{cratesio_kernel::Session}::from_row]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 143:12-164:13
+    Visibility: public -/
+def Session.from_row
+  (row : alloc.vec.Vec i5h_sql.Val) : Result (Option Session) := do
+  let i := alloc.vec.Vec.len row
+  let i1 ← 0#usize + 1#usize
+  let i2 ← i1 + 1#usize
+  if i != i2
+  then ok none
+  else
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice i5h_sql.Val)
+        row 0#usize
+    let o ← U64.Insts.I5h_sqlColumn.from_val v
+    match o with
+    | none => ok none
+    | some x =>
+      let v1 ←
+        alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice i5h_sql.Val)
+          row i1
+      let o1 ← U64.Insts.I5h_sqlColumn.from_val v1
+      match o1 with
+      | none => ok none
+      | some x1 => let _ ← i1 + 1#usize
+                   ok (some { id := x, user := x1 })
+
+/-- [cratesio_kernel::{cratesio_kernel::Token}::from_row]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 143:12-164:13
+    Visibility: public -/
+def Token.from_row
+  (row : alloc.vec.Vec i5h_sql.Val) : Result (Option Token) := do
+  let i := alloc.vec.Vec.len row
+  let i1 ← 0#usize + 1#usize
+  let i2 ← i1 + 1#usize
+  let i3 ← i2 + 1#usize
+  let i4 ← i3 + 1#usize
+  let i5 ← i4 + 1#usize
+  let i6 ← i5 + 1#usize
+  let i7 ← i6 + 1#usize
+  let i8 ← i7 + 1#usize
+  let i9 ← i8 + 1#usize
+  let i10 ← i9 + 1#usize
+  if i != i10
+  then ok none
+  else
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice i5h_sql.Val)
+        row 0#usize
+    let o ← U64.Insts.I5h_sqlColumn.from_val v
+    match o with
+    | none => ok none
+    | some x =>
+      let v1 ←
+        alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice i5h_sql.Val)
+          row i1
+      let o1 ← U64.Insts.I5h_sqlColumn.from_val v1
+      match o1 with
+      | none => ok none
+      | some x1 =>
+        let i11 ← i1 + 1#usize
+        let v2 ←
+          alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+            i5h_sql.Val) row i11
+        let o2 ← Bool.Insts.I5h_sqlColumn.from_val v2
+        match o2 with
+        | none => ok none
+        | some x2 =>
+          let i12 ← i11 + 1#usize
+          let v3 ←
+            alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+              i5h_sql.Val) row i12
+          let o3 ← Bool.Insts.I5h_sqlColumn.from_val v3
+          match o3 with
+          | none => ok none
+          | some x3 =>
+            let i13 ← i12 + 1#usize
+            let v4 ←
+              alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+                i5h_sql.Val) row i13
+            let o4 ← Bool.Insts.I5h_sqlColumn.from_val v4
+            match o4 with
+            | none => ok none
+            | some x4 =>
+              let i14 ← i13 + 1#usize
+              let v5 ←
+                alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+                  i5h_sql.Val) row i14
+              let o5 ← Bool.Insts.I5h_sqlColumn.from_val v5
+              match o5 with
+              | none => ok none
+              | some x5 =>
+                let i15 ← i14 + 1#usize
+                let v6 ←
+                  alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+                    i5h_sql.Val) row i15
+                let o6 ← Bool.Insts.I5h_sqlColumn.from_val v6
+                match o6 with
+                | none => ok none
+                | some x6 =>
+                  let i16 ← i15 + 1#usize
+                  let v7 ←
+                    alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+                      i5h_sql.Val) row i16
+                  let o7 ←
+                    core.option.Option.Insts.I5h_sqlColumn.from_val
+                      U64.Insts.I5h_sqlColumn v7
+                  match o7 with
+                  | none => ok none
+                  | some x7 =>
+                    let i17 ← i16 + 1#usize
+                    let v8 ←
+                      alloc.vec.Vec.index
+                        (core.slice.index.SliceIndexUsizeSlice i5h_sql.Val) row
+                        i17
+                    let o8 ← U64.Insts.I5h_sqlColumn.from_val v8
+                    match o8 with
+                    | none => ok none
+                    | some x8 =>
+                      let i18 ← i17 + 1#usize
+                      let v9 ←
+                        alloc.vec.Vec.index
+                          (core.slice.index.SliceIndexUsizeSlice i5h_sql.Val)
+                          row i18
+                      let o9 ← Bool.Insts.I5h_sqlColumn.from_val v9
+                      match o9 with
+                      | none => ok none
+                      | some x9 =>
+                        let _ ← i18 + 1#usize
+                        ok (some
+                          {
+                            id := x,
+                            user := x1,
+                            legacy := x2,
+                            publish_new := x3,
+                            publish_update := x4,
+                            yank := x5,
+                            change_owners := x6,
+                            krate := x7,
+                            expires := x8,
+                            revoked := x9
+                          })
+
+/-- [cratesio_kernel::{cratesio_kernel::Krate}::from_row]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 143:12-164:13
+    Visibility: public -/
+def Krate.from_row
+  (row : alloc.vec.Vec i5h_sql.Val) : Result (Option Krate) := do
+  let i := alloc.vec.Vec.len row
+  let i1 ← 0#usize + 1#usize
+  let i2 ← i1 + 1#usize
+  if i != i2
+  then ok none
+  else
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice i5h_sql.Val)
+        row 0#usize
+    let o ← U64.Insts.I5h_sqlColumn.from_val v
+    match o with
+    | none => ok none
+    | some x =>
+      let v1 ←
+        alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice i5h_sql.Val)
+          row i1
+      let o1 ← U64.Insts.I5h_sqlColumn.from_val v1
+      match o1 with
+      | none => ok none
+      | some x1 => let _ ← i1 + 1#usize
+                   ok (some { id := x, created := x1 })
+
+/-- [cratesio_kernel::{cratesio_kernel::Version}::from_row]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 143:12-164:13
+    Visibility: public -/
+def Version.from_row
+  (row : alloc.vec.Vec i5h_sql.Val) : Result (Option Version) := do
+  let i := alloc.vec.Vec.len row
+  let i1 ← 0#usize + 1#usize
+  let i2 ← i1 + 1#usize
+  let i3 ← i2 + 1#usize
+  let i4 ← i3 + 1#usize
+  if i != i4
+  then ok none
+  else
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice i5h_sql.Val)
+        row 0#usize
+    let o ← U64.Insts.I5h_sqlColumn.from_val v
+    match o with
+    | none => ok none
+    | some x =>
+      let v1 ←
+        alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice i5h_sql.Val)
+          row i1
+      let o1 ← U64.Insts.I5h_sqlColumn.from_val v1
+      match o1 with
+      | none => ok none
+      | some x1 =>
+        let i5 ← i1 + 1#usize
+        let v2 ←
+          alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+            i5h_sql.Val) row i5
+        let o2 ← Bool.Insts.I5h_sqlColumn.from_val v2
+        match o2 with
+        | none => ok none
+        | some x2 =>
+          let i6 ← i5 + 1#usize
+          let v3 ←
+            alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+              i5h_sql.Val) row i6
+          let o3 ← U64.Insts.I5h_sqlColumn.from_val v3
+          match o3 with
+          | none => ok none
+          | some x3 =>
+            let _ ← i6 + 1#usize
+            ok (some { krate := x, num := x1, yanked := x2, publisher := x3 })
+
+/-- [cratesio_kernel::{cratesio_kernel::Owner}::from_row]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 143:12-164:13
+    Visibility: public -/
+def Owner.from_row
+  (row : alloc.vec.Vec i5h_sql.Val) : Result (Option Owner) := do
+  let i := alloc.vec.Vec.len row
+  let i1 ← 0#usize + 1#usize
+  let i2 ← i1 + 1#usize
+  let i3 ← i2 + 1#usize
+  if i != i3
+  then ok none
+  else
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice i5h_sql.Val)
+        row 0#usize
+    let o ← U64.Insts.I5h_sqlColumn.from_val v
+    match o with
+    | none => ok none
+    | some x =>
+      let v1 ←
+        alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice i5h_sql.Val)
+          row i1
+      let o1 ← U64.Insts.I5h_sqlColumn.from_val v1
+      match o1 with
+      | none => ok none
+      | some x1 =>
+        let i4 ← i1 + 1#usize
+        let v2 ←
+          alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+            i5h_sql.Val) row i4
+        let o2 ← Bool.Insts.I5h_sqlColumn.from_val v2
+        match o2 with
+        | none => ok none
+        | some x2 =>
+          let _ ← i4 + 1#usize
+          ok (some { krate := x, owner := x1, team := x2 })
+
+/-- [cratesio_kernel::{cratesio_kernel::Invite}::from_row]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 143:12-164:13
+    Visibility: public -/
+def Invite.from_row
+  (row : alloc.vec.Vec i5h_sql.Val) : Result (Option Invite) := do
+  let i := alloc.vec.Vec.len row
+  let i1 ← 0#usize + 1#usize
+  let i2 ← i1 + 1#usize
+  let i3 ← i2 + 1#usize
+  let i4 ← i3 + 1#usize
+  if i != i4
+  then ok none
+  else
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice i5h_sql.Val)
+        row 0#usize
+    let o ← U64.Insts.I5h_sqlColumn.from_val v
+    match o with
+    | none => ok none
+    | some x =>
+      let v1 ←
+        alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice i5h_sql.Val)
+          row i1
+      let o1 ← U64.Insts.I5h_sqlColumn.from_val v1
+      match o1 with
+      | none => ok none
+      | some x1 =>
+        let i5 ← i1 + 1#usize
+        let v2 ←
+          alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+            i5h_sql.Val) row i5
+        let o2 ← U64.Insts.I5h_sqlColumn.from_val v2
+        match o2 with
+        | none => ok none
+        | some x2 =>
+          let i6 ← i5 + 1#usize
+          let v3 ←
+            alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+              i5h_sql.Val) row i6
+          let o3 ← U64.Insts.I5h_sqlColumn.from_val v3
+          match o3 with
+          | none => ok none
+          | some x3 =>
+            let _ ← i6 + 1#usize
+            ok (some { krate := x, user := x1, inviter := x2, expires := x3 })
+
+/-- [cratesio_kernel::{cratesio_kernel::Dep}::from_row]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 143:12-164:13
+    Visibility: public -/
+def Dep.from_row (row : alloc.vec.Vec i5h_sql.Val) : Result (Option Dep) := do
+  let i := alloc.vec.Vec.len row
+  let i1 ← 0#usize + 1#usize
+  let i2 ← i1 + 1#usize
+  let i3 ← i2 + 1#usize
+  if i != i3
+  then ok none
+  else
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice i5h_sql.Val)
+        row 0#usize
+    let o ← U64.Insts.I5h_sqlColumn.from_val v
+    match o with
+    | none => ok none
+    | some x =>
+      let v1 ←
+        alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice i5h_sql.Val)
+          row i1
+      let o1 ← U64.Insts.I5h_sqlColumn.from_val v1
+      match o1 with
+      | none => ok none
+      | some x1 =>
+        let i4 ← i1 + 1#usize
+        let v2 ←
+          alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+            i5h_sql.Val) row i4
+        let o2 ← U64.Insts.I5h_sqlColumn.from_val v2
+        match o2 with
+        | none => ok none
+        | some x2 =>
+          let _ ← i4 + 1#usize
+          ok (some { krate := x, num := x1, on := x2 })
+
+/-- [cratesio_kernel::{cratesio_kernel::User}::from_rows]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Visibility: public -/
+@[rust_loop_body]
+def User.from_rows_loop.body
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)) (out : alloc.vec.Vec User)
+  (ok1 : Bool) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec User) × Bool × Std.Usize)
+    ((alloc.vec.Vec User) × Bool))
+  := do
+  let i1 := alloc.vec.Vec.len rows
+  if i < i1
+  then
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice (alloc.vec.Vec
+        i5h_sql.Val)) rows i
+    let o ← User.from_row v
+    let (out1, ok2) ←
+      match o with
+      | none => ok (out, false)
+      | some x => do
+                  let out2 ← alloc.vec.Vec.push out x
+                  ok (out2, ok1)
+    let i2 ← i + 1#usize
+    ok (cont (out1, ok2, i2))
+  else ok (done (out, ok1))
+
+/-- [cratesio_kernel::{cratesio_kernel::User}::from_rows]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Visibility: public -/
+@[rust_loop]
+def User.from_rows_loop
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)) (out : alloc.vec.Vec User)
+  (ok1 : Bool) (i : Std.Usize) :
+  Result ((alloc.vec.Vec User) × Bool)
+  := do
+  loop
+    (fun (out1, ok2, i1) => User.from_rows_loop.body rows out1 ok2 i1)
+    (out, ok1, i)
+
+/-- [cratesio_kernel::{cratesio_kernel::User}::from_rows]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 167:12-183:13
+    Visibility: public -/
+def User.from_rows
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)) :
+  Result (Option (alloc.vec.Vec User))
+  := do
+  let (out, ok1) ←
+    User.from_rows_loop rows (alloc.vec.Vec.new User) true 0#usize
+  if ok1
+  then ok (some out)
+  else ok none
+
+/-- [cratesio_kernel::{cratesio_kernel::Session}::from_rows]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Visibility: public -/
+@[rust_loop_body]
+def Session.from_rows_loop.body
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val))
+  (out : alloc.vec.Vec Session) (ok1 : Bool) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Session) × Bool × Std.Usize)
+    ((alloc.vec.Vec Session) × Bool))
+  := do
+  let i1 := alloc.vec.Vec.len rows
+  if i < i1
+  then
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice (alloc.vec.Vec
+        i5h_sql.Val)) rows i
+    let o ← Session.from_row v
+    let (out1, ok2) ←
+      match o with
+      | none => ok (out, false)
+      | some x => do
+                  let out2 ← alloc.vec.Vec.push out x
+                  ok (out2, ok1)
+    let i2 ← i + 1#usize
+    ok (cont (out1, ok2, i2))
+  else ok (done (out, ok1))
+
+/-- [cratesio_kernel::{cratesio_kernel::Session}::from_rows]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Visibility: public -/
+@[rust_loop]
+def Session.from_rows_loop
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val))
+  (out : alloc.vec.Vec Session) (ok1 : Bool) (i : Std.Usize) :
+  Result ((alloc.vec.Vec Session) × Bool)
+  := do
+  loop
+    (fun (out1, ok2, i1) => Session.from_rows_loop.body rows out1 ok2 i1)
+    (out, ok1, i)
+
+/-- [cratesio_kernel::{cratesio_kernel::Session}::from_rows]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 167:12-183:13
+    Visibility: public -/
+def Session.from_rows
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)) :
+  Result (Option (alloc.vec.Vec Session))
+  := do
+  let (out, ok1) ←
+    Session.from_rows_loop rows (alloc.vec.Vec.new Session) true 0#usize
+  if ok1
+  then ok (some out)
+  else ok none
+
+/-- [cratesio_kernel::{cratesio_kernel::Token}::from_rows]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Visibility: public -/
+@[rust_loop_body]
+def Token.from_rows_loop.body
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val))
+  (out : alloc.vec.Vec Token) (ok1 : Bool) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Token) × Bool × Std.Usize)
+    ((alloc.vec.Vec Token) × Bool))
+  := do
+  let i1 := alloc.vec.Vec.len rows
+  if i < i1
+  then
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice (alloc.vec.Vec
+        i5h_sql.Val)) rows i
+    let o ← Token.from_row v
+    let (out1, ok2) ←
+      match o with
+      | none => ok (out, false)
+      | some x => do
+                  let out2 ← alloc.vec.Vec.push out x
+                  ok (out2, ok1)
+    let i2 ← i + 1#usize
+    ok (cont (out1, ok2, i2))
+  else ok (done (out, ok1))
+
+/-- [cratesio_kernel::{cratesio_kernel::Token}::from_rows]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Visibility: public -/
+@[rust_loop]
+def Token.from_rows_loop
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val))
+  (out : alloc.vec.Vec Token) (ok1 : Bool) (i : Std.Usize) :
+  Result ((alloc.vec.Vec Token) × Bool)
+  := do
+  loop
+    (fun (out1, ok2, i1) => Token.from_rows_loop.body rows out1 ok2 i1)
+    (out, ok1, i)
+
+/-- [cratesio_kernel::{cratesio_kernel::Token}::from_rows]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 167:12-183:13
+    Visibility: public -/
+def Token.from_rows
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)) :
+  Result (Option (alloc.vec.Vec Token))
+  := do
+  let (out, ok1) ←
+    Token.from_rows_loop rows (alloc.vec.Vec.new Token) true 0#usize
+  if ok1
+  then ok (some out)
+  else ok none
+
+/-- [cratesio_kernel::{cratesio_kernel::Krate}::from_rows]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Visibility: public -/
+@[rust_loop_body]
+def Krate.from_rows_loop.body
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val))
+  (out : alloc.vec.Vec Krate) (ok1 : Bool) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Krate) × Bool × Std.Usize)
+    ((alloc.vec.Vec Krate) × Bool))
+  := do
+  let i1 := alloc.vec.Vec.len rows
+  if i < i1
+  then
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice (alloc.vec.Vec
+        i5h_sql.Val)) rows i
+    let o ← Krate.from_row v
+    let (out1, ok2) ←
+      match o with
+      | none => ok (out, false)
+      | some x => do
+                  let out2 ← alloc.vec.Vec.push out x
+                  ok (out2, ok1)
+    let i2 ← i + 1#usize
+    ok (cont (out1, ok2, i2))
+  else ok (done (out, ok1))
+
+/-- [cratesio_kernel::{cratesio_kernel::Krate}::from_rows]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Visibility: public -/
+@[rust_loop]
+def Krate.from_rows_loop
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val))
+  (out : alloc.vec.Vec Krate) (ok1 : Bool) (i : Std.Usize) :
+  Result ((alloc.vec.Vec Krate) × Bool)
+  := do
+  loop
+    (fun (out1, ok2, i1) => Krate.from_rows_loop.body rows out1 ok2 i1)
+    (out, ok1, i)
+
+/-- [cratesio_kernel::{cratesio_kernel::Krate}::from_rows]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 167:12-183:13
+    Visibility: public -/
+def Krate.from_rows
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)) :
+  Result (Option (alloc.vec.Vec Krate))
+  := do
+  let (out, ok1) ←
+    Krate.from_rows_loop rows (alloc.vec.Vec.new Krate) true 0#usize
+  if ok1
+  then ok (some out)
+  else ok none
+
+/-- [cratesio_kernel::{cratesio_kernel::Version}::from_rows]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Visibility: public -/
+@[rust_loop_body]
+def Version.from_rows_loop.body
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val))
+  (out : alloc.vec.Vec Version) (ok1 : Bool) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Version) × Bool × Std.Usize)
+    ((alloc.vec.Vec Version) × Bool))
+  := do
+  let i1 := alloc.vec.Vec.len rows
+  if i < i1
+  then
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice (alloc.vec.Vec
+        i5h_sql.Val)) rows i
+    let o ← Version.from_row v
+    let (out1, ok2) ←
+      match o with
+      | none => ok (out, false)
+      | some x => do
+                  let out2 ← alloc.vec.Vec.push out x
+                  ok (out2, ok1)
+    let i2 ← i + 1#usize
+    ok (cont (out1, ok2, i2))
+  else ok (done (out, ok1))
+
+/-- [cratesio_kernel::{cratesio_kernel::Version}::from_rows]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Visibility: public -/
+@[rust_loop]
+def Version.from_rows_loop
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val))
+  (out : alloc.vec.Vec Version) (ok1 : Bool) (i : Std.Usize) :
+  Result ((alloc.vec.Vec Version) × Bool)
+  := do
+  loop
+    (fun (out1, ok2, i1) => Version.from_rows_loop.body rows out1 ok2 i1)
+    (out, ok1, i)
+
+/-- [cratesio_kernel::{cratesio_kernel::Version}::from_rows]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 167:12-183:13
+    Visibility: public -/
+def Version.from_rows
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)) :
+  Result (Option (alloc.vec.Vec Version))
+  := do
+  let (out, ok1) ←
+    Version.from_rows_loop rows (alloc.vec.Vec.new Version) true 0#usize
+  if ok1
+  then ok (some out)
+  else ok none
+
+/-- [cratesio_kernel::{cratesio_kernel::Owner}::from_rows]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Visibility: public -/
+@[rust_loop_body]
+def Owner.from_rows_loop.body
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val))
+  (out : alloc.vec.Vec Owner) (ok1 : Bool) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Owner) × Bool × Std.Usize)
+    ((alloc.vec.Vec Owner) × Bool))
+  := do
+  let i1 := alloc.vec.Vec.len rows
+  if i < i1
+  then
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice (alloc.vec.Vec
+        i5h_sql.Val)) rows i
+    let o ← Owner.from_row v
+    let (out1, ok2) ←
+      match o with
+      | none => ok (out, false)
+      | some x => do
+                  let out2 ← alloc.vec.Vec.push out x
+                  ok (out2, ok1)
+    let i2 ← i + 1#usize
+    ok (cont (out1, ok2, i2))
+  else ok (done (out, ok1))
+
+/-- [cratesio_kernel::{cratesio_kernel::Owner}::from_rows]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Visibility: public -/
+@[rust_loop]
+def Owner.from_rows_loop
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val))
+  (out : alloc.vec.Vec Owner) (ok1 : Bool) (i : Std.Usize) :
+  Result ((alloc.vec.Vec Owner) × Bool)
+  := do
+  loop
+    (fun (out1, ok2, i1) => Owner.from_rows_loop.body rows out1 ok2 i1)
+    (out, ok1, i)
+
+/-- [cratesio_kernel::{cratesio_kernel::Owner}::from_rows]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 167:12-183:13
+    Visibility: public -/
+def Owner.from_rows
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)) :
+  Result (Option (alloc.vec.Vec Owner))
+  := do
+  let (out, ok1) ←
+    Owner.from_rows_loop rows (alloc.vec.Vec.new Owner) true 0#usize
+  if ok1
+  then ok (some out)
+  else ok none
+
+/-- [cratesio_kernel::{cratesio_kernel::Invite}::from_rows]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Visibility: public -/
+@[rust_loop_body]
+def Invite.from_rows_loop.body
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val))
+  (out : alloc.vec.Vec Invite) (ok1 : Bool) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Invite) × Bool × Std.Usize)
+    ((alloc.vec.Vec Invite) × Bool))
+  := do
+  let i1 := alloc.vec.Vec.len rows
+  if i < i1
+  then
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice (alloc.vec.Vec
+        i5h_sql.Val)) rows i
+    let o ← Invite.from_row v
+    let (out1, ok2) ←
+      match o with
+      | none => ok (out, false)
+      | some x => do
+                  let out2 ← alloc.vec.Vec.push out x
+                  ok (out2, ok1)
+    let i2 ← i + 1#usize
+    ok (cont (out1, ok2, i2))
+  else ok (done (out, ok1))
+
+/-- [cratesio_kernel::{cratesio_kernel::Invite}::from_rows]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Visibility: public -/
+@[rust_loop]
+def Invite.from_rows_loop
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val))
+  (out : alloc.vec.Vec Invite) (ok1 : Bool) (i : Std.Usize) :
+  Result ((alloc.vec.Vec Invite) × Bool)
+  := do
+  loop
+    (fun (out1, ok2, i1) => Invite.from_rows_loop.body rows out1 ok2 i1)
+    (out, ok1, i)
+
+/-- [cratesio_kernel::{cratesio_kernel::Invite}::from_rows]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 167:12-183:13
+    Visibility: public -/
+def Invite.from_rows
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)) :
+  Result (Option (alloc.vec.Vec Invite))
+  := do
+  let (out, ok1) ←
+    Invite.from_rows_loop rows (alloc.vec.Vec.new Invite) true 0#usize
+  if ok1
+  then ok (some out)
+  else ok none
+
+/-- [cratesio_kernel::{cratesio_kernel::Dep}::from_rows]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Visibility: public -/
+@[rust_loop_body]
+def Dep.from_rows_loop.body
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)) (out : alloc.vec.Vec Dep)
+  (ok1 : Bool) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Dep) × Bool × Std.Usize)
+    ((alloc.vec.Vec Dep) × Bool))
+  := do
+  let i1 := alloc.vec.Vec.len rows
+  if i < i1
+  then
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice (alloc.vec.Vec
+        i5h_sql.Val)) rows i
+    let o ← Dep.from_row v
+    let (out1, ok2) ←
+      match o with
+      | none => ok (out, false)
+      | some x => do
+                  let out2 ← alloc.vec.Vec.push out x
+                  ok (out2, ok1)
+    let i2 ← i + 1#usize
+    ok (cont (out1, ok2, i2))
+  else ok (done (out, ok1))
+
+/-- [cratesio_kernel::{cratesio_kernel::Dep}::from_rows]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Visibility: public -/
+@[rust_loop]
+def Dep.from_rows_loop
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)) (out : alloc.vec.Vec Dep)
+  (ok1 : Bool) (i : Std.Usize) :
+  Result ((alloc.vec.Vec Dep) × Bool)
+  := do
+  loop
+    (fun (out1, ok2, i1) => Dep.from_rows_loop.body rows out1 ok2 i1)
+    (out, ok1, i)
+
+/-- [cratesio_kernel::{cratesio_kernel::Dep}::from_rows]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 167:12-183:13
+    Visibility: public -/
+def Dep.from_rows
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)) :
+  Result (Option (alloc.vec.Vec Dep))
+  := do
+  let (out, ok1) ←
+    Dep.from_rows_loop rows (alloc.vec.Vec.new Dep) true 0#usize
+  if ok1
+  then ok (some out)
+  else ok none
+
+/-- [cratesio_kernel::{cratesio_kernel::Counter}::from_rows]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Visibility: public -/
+@[rust_loop_body]
+def Counter.from_rows_loop.body
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val))
+  (out : alloc.vec.Vec Counter) (ok1 : Bool) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Counter) × Bool × Std.Usize)
+    ((alloc.vec.Vec Counter) × Bool))
+  := do
+  let i1 := alloc.vec.Vec.len rows
+  if i < i1
+  then
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice (alloc.vec.Vec
+        i5h_sql.Val)) rows i
+    let o ← Counter.from_row v
+    let (out1, ok2) ←
+      match o with
+      | none => ok (out, false)
+      | some x => do
+                  let out2 ← alloc.vec.Vec.push out x
+                  ok (out2, ok1)
+    let i2 ← i + 1#usize
+    ok (cont (out1, ok2, i2))
+  else ok (done (out, ok1))
+
+/-- [cratesio_kernel::{cratesio_kernel::Counter}::from_rows]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Visibility: public -/
+@[rust_loop]
+def Counter.from_rows_loop
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val))
+  (out : alloc.vec.Vec Counter) (ok1 : Bool) (i : Std.Usize) :
+  Result ((alloc.vec.Vec Counter) × Bool)
+  := do
+  loop
+    (fun (out1, ok2, i1) => Counter.from_rows_loop.body rows out1 ok2 i1)
+    (out, ok1, i)
+
+/-- [cratesio_kernel::{cratesio_kernel::Counter}::from_rows]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 167:12-183:13
+    Visibility: public -/
+def Counter.from_rows
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)) :
+  Result (Option (alloc.vec.Vec Counter))
+  := do
+  let (out, ok1) ←
+    Counter.from_rows_loop rows (alloc.vec.Vec.new Counter) true 0#usize
+  if ok1
+  then ok (some out)
+  else ok none
+
+/-- [cratesio_kernel::{cratesio_kernel::Counter}::from_one]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 203:12-211:13
+    Visibility: public -/
+def Counter.from_one
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)) :
+  Result (Option Counter)
+  := do
+  let i := alloc.vec.Vec.len rows
+  if i = 0#usize
+  then
+    let i1 ← U64.Insts.I5h_sqlZero.zero
+    ok (some { next_session := i1, next_token := i1 })
+  else
+    let i1 := alloc.vec.Vec.len rows
+    if i1 = 1#usize
+    then
+      let v ←
+        alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+          (alloc.vec.Vec i5h_sql.Val)) rows 0#usize
+      Counter.from_row v
+    else ok none
+
+/-- [cratesio_kernel::{cratesio_kernel::User}::del]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 233:16-238:17
+    Visibility: public -/
+@[rust_loop_body]
+def User.del_loop.body
+  (v : alloc.vec.Vec User) (id : Std.U64) (out : alloc.vec.Vec User)
+  (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec User) × Std.Usize) (alloc.vec.Vec User))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let u ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice User) v i
+    let out1 ←
+      if u.id = id
+      then ok out
+      else
+        do
+        let u1 ← User.Insts.CoreCloneClone.clone u
+        alloc.vec.Vec.push out u1
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
+  else ok (done out)
+
+/-- [cratesio_kernel::{cratesio_kernel::User}::del]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 233:16-238:17
+    Visibility: public -/
+@[rust_loop]
+def User.del_loop
+  (v : alloc.vec.Vec User) (id : Std.U64) (out : alloc.vec.Vec User)
+  (i : Std.Usize) :
+  Result (alloc.vec.Vec User)
+  := do
+  loop
+    (fun (out1, i1) => User.del_loop.body v id out1 i1)
+    (out, i)
+
+/-- [cratesio_kernel::{cratesio_kernel::User}::del]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 230:12-240:13
+    Visibility: public -/
+@[reducible]
+def User.del
+  (v : alloc.vec.Vec User) (id : Std.U64) : Result (alloc.vec.Vec User) := do
+  User.del_loop v id (alloc.vec.Vec.new User) 0#usize
+
+/-- [cratesio_kernel::{cratesio_kernel::Session}::del]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 233:16-238:17
+    Visibility: public -/
+@[rust_loop_body]
+def Session.del_loop.body
+  (v : alloc.vec.Vec Session) (id : Std.U64) (out : alloc.vec.Vec Session)
+  (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Session) × Std.Usize) (alloc.vec.Vec
+    Session))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let s ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Session) v i
+    let out1 ←
+      if s.id = id
+      then ok out
+      else
+        do
+        let s1 ← Session.Insts.CoreCloneClone.clone s
+        alloc.vec.Vec.push out s1
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
+  else ok (done out)
+
+/-- [cratesio_kernel::{cratesio_kernel::Session}::del]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 233:16-238:17
+    Visibility: public -/
+@[rust_loop]
+def Session.del_loop
+  (v : alloc.vec.Vec Session) (id : Std.U64) (out : alloc.vec.Vec Session)
+  (i : Std.Usize) :
+  Result (alloc.vec.Vec Session)
+  := do
+  loop
+    (fun (out1, i1) => Session.del_loop.body v id out1 i1)
+    (out, i)
+
+/-- [cratesio_kernel::{cratesio_kernel::Session}::del]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 230:12-240:13
+    Visibility: public -/
+@[reducible]
+def Session.del
+  (v : alloc.vec.Vec Session) (id : Std.U64) :
+  Result (alloc.vec.Vec Session)
+  := do
+  Session.del_loop v id (alloc.vec.Vec.new Session) 0#usize
+
+/-- [cratesio_kernel::{cratesio_kernel::Token}::del]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 233:16-238:17
+    Visibility: public -/
+@[rust_loop_body]
+def Token.del_loop.body
+  (v : alloc.vec.Vec Token) (id : Std.U64) (out : alloc.vec.Vec Token)
+  (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Token) × Std.Usize) (alloc.vec.Vec
+    Token))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let t ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Token) v i
+    let out1 ←
+      if t.id = id
+      then ok out
+      else
+        do
+        let t1 ← Token.Insts.CoreCloneClone.clone t
+        alloc.vec.Vec.push out t1
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
+  else ok (done out)
+
+/-- [cratesio_kernel::{cratesio_kernel::Token}::del]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 233:16-238:17
+    Visibility: public -/
+@[rust_loop]
+def Token.del_loop
+  (v : alloc.vec.Vec Token) (id : Std.U64) (out : alloc.vec.Vec Token)
+  (i : Std.Usize) :
+  Result (alloc.vec.Vec Token)
+  := do
+  loop
+    (fun (out1, i1) => Token.del_loop.body v id out1 i1)
+    (out, i)
+
+/-- [cratesio_kernel::{cratesio_kernel::Token}::del]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 230:12-240:13
+    Visibility: public -/
+@[reducible]
+def Token.del
+  (v : alloc.vec.Vec Token) (id : Std.U64) : Result (alloc.vec.Vec Token) := do
+  Token.del_loop v id (alloc.vec.Vec.new Token) 0#usize
+
+/-- [cratesio_kernel::{cratesio_kernel::Version}::del]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 233:16-238:17
+    Visibility: public -/
+@[rust_loop_body]
+def Version.del_loop.body
+  (v : alloc.vec.Vec Version) (krate : Std.U64) (num : Std.U64)
+  (out : alloc.vec.Vec Version) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Version) × Std.Usize) (alloc.vec.Vec
+    Version))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let v1 ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Version) v i
+    let out1 ←
+      if v1.krate = krate
+      then
+        if v1.num = num
+        then ok out
+        else
+          do
+          let v2 ← Version.Insts.CoreCloneClone.clone v1
+          alloc.vec.Vec.push out v2
+      else
+        do
+        let v2 ← Version.Insts.CoreCloneClone.clone v1
+        alloc.vec.Vec.push out v2
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
+  else ok (done out)
+
+/-- [cratesio_kernel::{cratesio_kernel::Version}::del]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 233:16-238:17
+    Visibility: public -/
+@[rust_loop]
+def Version.del_loop
+  (v : alloc.vec.Vec Version) (krate : Std.U64) (num : Std.U64)
+  (out : alloc.vec.Vec Version) (i : Std.Usize) :
+  Result (alloc.vec.Vec Version)
+  := do
+  loop
+    (fun (out1, i1) => Version.del_loop.body v krate num out1 i1)
+    (out, i)
+
+/-- [cratesio_kernel::{cratesio_kernel::Version}::del]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 230:12-240:13
+    Visibility: public -/
+@[reducible]
+def Version.del
+  (v : alloc.vec.Vec Version) (krate : Std.U64) (num : Std.U64) :
+  Result (alloc.vec.Vec Version)
+  := do
+  Version.del_loop v krate num (alloc.vec.Vec.new Version) 0#usize
+
+/-- [cratesio_kernel::{cratesio_kernel::Dep}::del]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 233:16-238:17
+    Visibility: public -/
+@[rust_loop_body]
+def Dep.del_loop.body
+  (v : alloc.vec.Vec Dep) (krate : Std.U64) (num : Std.U64) (on : Std.U64)
+  (out : alloc.vec.Vec Dep) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Dep) × Std.Usize) (alloc.vec.Vec Dep))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let d ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Dep) v i
+    let out1 ←
+      if d.krate = krate
+      then
+        if d.num = num
+        then
+          if d.on = on
+          then ok out
+          else
+            do
+            let d1 ← Dep.Insts.CoreCloneClone.clone d
+            alloc.vec.Vec.push out d1
+        else
+          do
+          let d1 ← Dep.Insts.CoreCloneClone.clone d
+          alloc.vec.Vec.push out d1
+      else
+        do
+        let d1 ← Dep.Insts.CoreCloneClone.clone d
+        alloc.vec.Vec.push out d1
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
+  else ok (done out)
+
+/-- [cratesio_kernel::{cratesio_kernel::Dep}::del]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 233:16-238:17
+    Visibility: public -/
+@[rust_loop]
+def Dep.del_loop
+  (v : alloc.vec.Vec Dep) (krate : Std.U64) (num : Std.U64) (on : Std.U64)
+  (out : alloc.vec.Vec Dep) (i : Std.Usize) :
+  Result (alloc.vec.Vec Dep)
+  := do
+  loop
+    (fun (out1, i1) => Dep.del_loop.body v krate num on out1 i1)
+    (out, i)
+
+/-- [cratesio_kernel::{cratesio_kernel::Dep}::del]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 230:12-240:13
+    Visibility: public -/
+@[reducible]
+def Dep.del
+  (v : alloc.vec.Vec Dep) (krate : Std.U64) (num : Std.U64) (on : Std.U64) :
+  Result (alloc.vec.Vec Dep)
+  := do
+  Dep.del_loop v krate num on (alloc.vec.Vec.new Dep) 0#usize
+
+/-- [cratesio_kernel::{cratesio_kernel::User}::del_where]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 246:16-251:17
+    Visibility: public -/
+@[rust_loop_body]
+def User.del_where_loop.body
+  (v : alloc.vec.Vec User) (col : Std.U32) (val : i5h_sql.Val)
+  (out : alloc.vec.Vec User) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec User) × Std.Usize) (alloc.vec.Vec User))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let u ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice User) v i
+    let v1 ← User.to_row u
+    let b ← i5h_sql.has_col v1 col val
+    let out1 ←
+      if b
+      then ok out
+      else
+        do
+        let u1 ← User.Insts.CoreCloneClone.clone u
+        alloc.vec.Vec.push out u1
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
+  else ok (done out)
+
+/-- [cratesio_kernel::{cratesio_kernel::User}::del_where]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 246:16-251:17
+    Visibility: public -/
+@[rust_loop]
+def User.del_where_loop
+  (v : alloc.vec.Vec User) (col : Std.U32) (val : i5h_sql.Val)
+  (out : alloc.vec.Vec User) (i : Std.Usize) :
+  Result (alloc.vec.Vec User)
+  := do
+  loop
+    (fun (out1, i1) => User.del_where_loop.body v col val out1 i1)
+    (out, i)
+
+/-- [cratesio_kernel::{cratesio_kernel::User}::del_where]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 243:12-253:13
+    Visibility: public -/
+@[reducible]
+def User.del_where
+  (v : alloc.vec.Vec User) (col : Std.U32) (val : i5h_sql.Val) :
+  Result (alloc.vec.Vec User)
+  := do
+  User.del_where_loop v col val (alloc.vec.Vec.new User) 0#usize
+
+/-- [cratesio_kernel::{cratesio_kernel::Session}::del_where]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 246:16-251:17
+    Visibility: public -/
+@[rust_loop_body]
+def Session.del_where_loop.body
+  (v : alloc.vec.Vec Session) (col : Std.U32) (val : i5h_sql.Val)
+  (out : alloc.vec.Vec Session) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Session) × Std.Usize) (alloc.vec.Vec
+    Session))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let s ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Session) v i
+    let v1 ← Session.to_row s
+    let b ← i5h_sql.has_col v1 col val
+    let out1 ←
+      if b
+      then ok out
+      else
+        do
+        let s1 ← Session.Insts.CoreCloneClone.clone s
+        alloc.vec.Vec.push out s1
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
+  else ok (done out)
+
+/-- [cratesio_kernel::{cratesio_kernel::Session}::del_where]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 246:16-251:17
+    Visibility: public -/
+@[rust_loop]
+def Session.del_where_loop
+  (v : alloc.vec.Vec Session) (col : Std.U32) (val : i5h_sql.Val)
+  (out : alloc.vec.Vec Session) (i : Std.Usize) :
+  Result (alloc.vec.Vec Session)
+  := do
+  loop
+    (fun (out1, i1) => Session.del_where_loop.body v col val out1 i1)
+    (out, i)
+
+/-- [cratesio_kernel::{cratesio_kernel::Session}::del_where]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 243:12-253:13
+    Visibility: public -/
+@[reducible]
+def Session.del_where
+  (v : alloc.vec.Vec Session) (col : Std.U32) (val : i5h_sql.Val) :
+  Result (alloc.vec.Vec Session)
+  := do
+  Session.del_where_loop v col val (alloc.vec.Vec.new Session) 0#usize
+
+/-- [cratesio_kernel::{cratesio_kernel::Token}::del_where]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 246:16-251:17
+    Visibility: public -/
+@[rust_loop_body]
+def Token.del_where_loop.body
+  (v : alloc.vec.Vec Token) (col : Std.U32) (val : i5h_sql.Val)
+  (out : alloc.vec.Vec Token) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Token) × Std.Usize) (alloc.vec.Vec
+    Token))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let t ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Token) v i
+    let v1 ← Token.to_row t
+    let b ← i5h_sql.has_col v1 col val
+    let out1 ←
+      if b
+      then ok out
+      else
+        do
+        let t1 ← Token.Insts.CoreCloneClone.clone t
+        alloc.vec.Vec.push out t1
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
+  else ok (done out)
+
+/-- [cratesio_kernel::{cratesio_kernel::Token}::del_where]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 246:16-251:17
+    Visibility: public -/
+@[rust_loop]
+def Token.del_where_loop
+  (v : alloc.vec.Vec Token) (col : Std.U32) (val : i5h_sql.Val)
+  (out : alloc.vec.Vec Token) (i : Std.Usize) :
+  Result (alloc.vec.Vec Token)
+  := do
+  loop
+    (fun (out1, i1) => Token.del_where_loop.body v col val out1 i1)
+    (out, i)
+
+/-- [cratesio_kernel::{cratesio_kernel::Token}::del_where]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 243:12-253:13
+    Visibility: public -/
+@[reducible]
+def Token.del_where
+  (v : alloc.vec.Vec Token) (col : Std.U32) (val : i5h_sql.Val) :
+  Result (alloc.vec.Vec Token)
+  := do
+  Token.del_where_loop v col val (alloc.vec.Vec.new Token) 0#usize
+
+/-- [cratesio_kernel::{cratesio_kernel::Krate}::del_where]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 246:16-251:17
+    Visibility: public -/
+@[rust_loop_body]
+def Krate.del_where_loop.body
+  (v : alloc.vec.Vec Krate) (col : Std.U32) (val : i5h_sql.Val)
+  (out : alloc.vec.Vec Krate) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Krate) × Std.Usize) (alloc.vec.Vec
+    Krate))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let k ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Krate) v i
+    let v1 ← Krate.to_row k
+    let b ← i5h_sql.has_col v1 col val
+    let out1 ←
+      if b
+      then ok out
+      else
+        do
+        let k1 ← Krate.Insts.CoreCloneClone.clone k
+        alloc.vec.Vec.push out k1
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
+  else ok (done out)
+
+/-- [cratesio_kernel::{cratesio_kernel::Krate}::del_where]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 246:16-251:17
+    Visibility: public -/
+@[rust_loop]
+def Krate.del_where_loop
+  (v : alloc.vec.Vec Krate) (col : Std.U32) (val : i5h_sql.Val)
+  (out : alloc.vec.Vec Krate) (i : Std.Usize) :
+  Result (alloc.vec.Vec Krate)
+  := do
+  loop
+    (fun (out1, i1) => Krate.del_where_loop.body v col val out1 i1)
+    (out, i)
+
+/-- [cratesio_kernel::{cratesio_kernel::Krate}::del_where]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 243:12-253:13
+    Visibility: public -/
+@[reducible]
+def Krate.del_where
+  (v : alloc.vec.Vec Krate) (col : Std.U32) (val : i5h_sql.Val) :
+  Result (alloc.vec.Vec Krate)
+  := do
+  Krate.del_where_loop v col val (alloc.vec.Vec.new Krate) 0#usize
+
+/-- [cratesio_kernel::{cratesio_kernel::User}::sql_del]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 256:12-260:13
+    Visibility: public -/
+def User.sql_del (id : Std.U64) : Result i5h_sql.Write := do
+  let v ← U64.Insts.I5h_sqlColumn.to_val id
+  let key ← alloc.vec.Vec.push (alloc.vec.Vec.new i5h_sql.Val) v
+  ok (i5h_sql.Write.Del User.TABLE key)
+
+/-- [cratesio_kernel::{cratesio_kernel::Session}::sql_del]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 256:12-260:13
+    Visibility: public -/
+def Session.sql_del (id : Std.U64) : Result i5h_sql.Write := do
+  let v ← U64.Insts.I5h_sqlColumn.to_val id
+  let key ← alloc.vec.Vec.push (alloc.vec.Vec.new i5h_sql.Val) v
+  ok (i5h_sql.Write.Del Session.TABLE key)
+
+/-- [cratesio_kernel::{cratesio_kernel::Token}::sql_del]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 256:12-260:13
+    Visibility: public -/
+def Token.sql_del (id : Std.U64) : Result i5h_sql.Write := do
+  let v ← U64.Insts.I5h_sqlColumn.to_val id
+  let key ← alloc.vec.Vec.push (alloc.vec.Vec.new i5h_sql.Val) v
+  ok (i5h_sql.Write.Del Token.TABLE key)
+
+/-- [cratesio_kernel::{cratesio_kernel::Version}::sql_del]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 256:12-260:13
+    Visibility: public -/
+def Version.sql_del
+  (krate : Std.U64) (num : Std.U64) : Result i5h_sql.Write := do
+  let v ← U64.Insts.I5h_sqlColumn.to_val krate
+  let key ← alloc.vec.Vec.push (alloc.vec.Vec.new i5h_sql.Val) v
+  let v1 ← U64.Insts.I5h_sqlColumn.to_val num
+  let key1 ← alloc.vec.Vec.push key v1
+  ok (i5h_sql.Write.Del Version.TABLE key1)
+
+/-- [cratesio_kernel::{cratesio_kernel::Dep}::sql_del]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 256:12-260:13
+    Visibility: public -/
+def Dep.sql_del
+  (krate : Std.U64) (num : Std.U64) (on : Std.U64) : Result i5h_sql.Write := do
+  let v ← U64.Insts.I5h_sqlColumn.to_val krate
+  let key ← alloc.vec.Vec.push (alloc.vec.Vec.new i5h_sql.Val) v
+  let v1 ← U64.Insts.I5h_sqlColumn.to_val num
+  let key1 ← alloc.vec.Vec.push key v1
+  let v2 ← U64.Insts.I5h_sqlColumn.to_val on
+  let key2 ← alloc.vec.Vec.push key1 v2
+  ok (i5h_sql.Write.Del Dep.TABLE key2)
+
+/-- [cratesio_kernel::{cratesio_kernel::User}::sql_del_where]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 263:12-265:13
+    Visibility: public -/
+def User.sql_del_where
+  (col : Std.U32) (val : i5h_sql.Val) : Result i5h_sql.Write := do
+  ok (i5h_sql.Write.DelWhere User.TABLE col val)
+
+/-- [cratesio_kernel::{cratesio_kernel::Session}::sql_del_where]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 263:12-265:13
+    Visibility: public -/
+def Session.sql_del_where
+  (col : Std.U32) (val : i5h_sql.Val) : Result i5h_sql.Write := do
+  ok (i5h_sql.Write.DelWhere Session.TABLE col val)
+
+/-- [cratesio_kernel::{cratesio_kernel::Token}::sql_del_where]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 263:12-265:13
+    Visibility: public -/
+def Token.sql_del_where
+  (col : Std.U32) (val : i5h_sql.Val) : Result i5h_sql.Write := do
+  ok (i5h_sql.Write.DelWhere Token.TABLE col val)
+
+/-- [cratesio_kernel::{cratesio_kernel::Krate}::sql_del_where]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 263:12-265:13
+    Visibility: public -/
+def Krate.sql_del_where
+  (col : Std.U32) (val : i5h_sql.Val) : Result i5h_sql.Write := do
+  ok (i5h_sql.Write.DelWhere Krate.TABLE col val)
+
+/-- [cratesio_kernel::Rows]
+    Source: 'crates/i5h-schema/src/lib.rs', lines 285:8-287:9
+    Visibility: public -/
+structure Rows where
+  counter : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)
+  users : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)
+  sessions : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)
+  tokens : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)
+  crates : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)
+  versions : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)
+  owners : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)
+  invites : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)
+  deps : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)
+
+/-- [cratesio_kernel::decode]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 290:8-298:9
+    Visibility: public -/
+def decode (r : Rows) : Result (Option Snapshot) := do
+  let o ← Counter.from_one r.counter
+  match o with
+  | none => ok none
+  | some x =>
+    let o1 ← User.from_rows r.users
+    match o1 with
+    | none => ok none
+    | some x1 =>
+      let o2 ← Session.from_rows r.sessions
+      match o2 with
+      | none => ok none
+      | some x2 =>
+        let o3 ← Token.from_rows r.tokens
+        match o3 with
+        | none => ok none
+        | some x3 =>
+          let o4 ← Krate.from_rows r.crates
+          match o4 with
+          | none => ok none
+          | some x4 =>
+            let o5 ← Version.from_rows r.versions
+            match o5 with
+            | none => ok none
+            | some x5 =>
+              let o6 ← Owner.from_rows r.owners
+              match o6 with
+              | none => ok none
+              | some x6 =>
+                let o7 ← Invite.from_rows r.invites
+                match o7 with
+                | none => ok none
+                | some x7 =>
+                  let o8 ← Dep.from_rows r.deps
+                  match o8 with
+                  | none => ok none
+                  | some x8 =>
+                    ok (some
+                      {
+                        counter := x,
+                        users := x1,
+                        sessions := x2,
+                        tokens := x3,
+                        crates := x4,
+                        versions := x5,
+                        owners := x6,
+                        invites := x7,
+                        deps := x8
+                      })
+
 /-- [cratesio_kernel::apply]: loop body 0:
-    Source: 'examples/cratesio/kernel/src/lib.rs', lines 1205:4-1208:5
+    Source: 'crates/i5h-schema/src/lib.rs', lines 308:12-311:13
     Visibility: public -/
 @[rust_loop_body]
 def apply_loop.body
@@ -2539,13 +4755,14 @@ def apply_loop.body
   then
     let w ←
       alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Write) ws i
-    let s1 ← apply_write s w
+    let w1 ← Write.Insts.CoreCloneClone.clone w
+    let s1 ← apply_write s w1
     let i2 ← i + 1#usize
     ok (cont (s1, i2))
   else ok (done s)
 
 /-- [cratesio_kernel::apply]: loop 0:
-    Source: 'examples/cratesio/kernel/src/lib.rs', lines 1205:4-1208:5
+    Source: 'crates/i5h-schema/src/lib.rs', lines 308:12-311:13
     Visibility: public -/
 @[rust_loop]
 def apply_loop
@@ -2557,10 +4774,51 @@ def apply_loop
     (s, i)
 
 /-- [cratesio_kernel::apply]:
-    Source: 'examples/cratesio/kernel/src/lib.rs', lines 1202:0-1210:1
+    Source: 'crates/i5h-schema/src/lib.rs', lines 305:8-313:9
     Visibility: public -/
 def apply (snap : Snapshot) (ws : alloc.vec.Vec Write) : Result Snapshot := do
   let s ← Snapshot.Insts.CoreCloneClone.clone snap
   apply_loop ws s 0#usize
+
+/-- [cratesio_kernel::sql_writes]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 320:12-323:13
+    Visibility: public -/
+@[rust_loop_body]
+def sql_writes_loop.body
+  (ws : alloc.vec.Vec Write) (out : alloc.vec.Vec i5h_sql.Write)
+  (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec i5h_sql.Write) × Std.Usize)
+    (alloc.vec.Vec i5h_sql.Write))
+  := do
+  let i1 := alloc.vec.Vec.len ws
+  if i < i1
+  then
+    let w ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Write) ws i
+    let out1 ← sql_write w out
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
+  else ok (done out)
+
+/-- [cratesio_kernel::sql_writes]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 320:12-323:13
+    Visibility: public -/
+@[rust_loop]
+def sql_writes_loop
+  (ws : alloc.vec.Vec Write) (out : alloc.vec.Vec i5h_sql.Write)
+  (i : Std.Usize) :
+  Result (alloc.vec.Vec i5h_sql.Write)
+  := do
+  loop
+    (fun (out1, i1) => sql_writes_loop.body ws out1 i1)
+    (out, i)
+
+/-- [cratesio_kernel::sql_writes]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 317:8-325:9
+    Visibility: public -/
+@[reducible]
+def sql_writes
+  (ws : alloc.vec.Vec Write) : Result (alloc.vec.Vec i5h_sql.Write) := do
+  sql_writes_loop ws (alloc.vec.Vec.new i5h_sql.Write) 0#usize
 
 end cratesio_kernel
