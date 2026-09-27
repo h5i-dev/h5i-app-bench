@@ -19,8 +19,166 @@ set_option maxRecDepth 2048
 
 namespace inbox_kernel
 
+/-- [i5h_sql::Val]
+    Source: 'crates/i5h-sql/src/lib.rs', lines 8:0-8:12
+    Name pattern: [i5h_sql::Val]
+    Visibility: public -/
+@[discriminant isize, rust_type "i5h_sql::Val"]
+inductive i5h_sql.Val where
+| Int : Std.I64 → i5h_sql.Val
+| Bool : Bool → i5h_sql.Val
+| Text : alloc.vec.Vec Std.U8 → i5h_sql.Val
+| Bytes : alloc.vec.Vec Std.U8 → i5h_sql.Val
+| Null : i5h_sql.Val
+
+/-- [i5h_sql::{impl i5h_sql::Column for u64}::to_val]:
+    Source: 'crates/i5h-sql/src/lib.rs', lines 25:4-25:27
+    Name pattern: [i5h_sql::{i5h_sql::Column<u64>}::to_val]
+    Visibility: public -/
+@[rust_fun "i5h_sql::{i5h_sql::Column<u64>}::to_val"]
+def U64.Insts.I5h_sqlColumn.to_val (self : Std.U64) : Result i5h_sql.Val := do
+  let i ← lift (UScalar.hcast .I64 self)
+  ok (i5h_sql.Val.Int i)
+
+/-- [i5h_sql::{impl i5h_sql::Column for u64}::from_val]:
+    Source: 'crates/i5h-sql/src/lib.rs', lines 28:4-28:39
+    Name pattern: [i5h_sql::{i5h_sql::Column<u64>}::from_val]
+    Visibility: public -/
+@[rust_fun "i5h_sql::{i5h_sql::Column<u64>}::from_val"]
+def U64.Insts.I5h_sqlColumn.from_val
+  (v : i5h_sql.Val) : Result (Option Std.U64) := do
+  match v with
+  | i5h_sql.Val.Int i => let i1 ← lift (IScalar.hcast .U64 i)
+                         ok (some i1)
+  | i5h_sql.Val.Bool _ => ok none
+  | i5h_sql.Val.Text _ => ok none
+  | i5h_sql.Val.Bytes _ => ok none
+  | i5h_sql.Val.Null => ok none
+
+/-- [i5h_sql::{impl i5h_sql::Column for bool}::to_val]:
+    Source: 'crates/i5h-sql/src/lib.rs', lines 55:4-55:27
+    Name pattern: [i5h_sql::{i5h_sql::Column<bool>}::to_val]
+    Visibility: public -/
+@[rust_fun "i5h_sql::{i5h_sql::Column<bool>}::to_val"]
+def Bool.Insts.I5h_sqlColumn.to_val (self : Bool) : Result i5h_sql.Val := do
+  ok (i5h_sql.Val.Bool self)
+
+/-- [i5h_sql::{impl i5h_sql::Column for bool}::from_val]:
+    Source: 'crates/i5h-sql/src/lib.rs', lines 58:4-58:40
+    Name pattern: [i5h_sql::{i5h_sql::Column<bool>}::from_val]
+    Visibility: public -/
+@[rust_fun "i5h_sql::{i5h_sql::Column<bool>}::from_val"]
+def Bool.Insts.I5h_sqlColumn.from_val
+  (v : i5h_sql.Val) : Result (Option Bool) := do
+  match v with
+  | i5h_sql.Val.Int _ => ok none
+  | i5h_sql.Val.Bool b => ok (some b)
+  | i5h_sql.Val.Text _ => ok none
+  | i5h_sql.Val.Bytes _ => ok none
+  | i5h_sql.Val.Null => ok none
+
+/-- [i5h_sql::{impl i5h_sql::Column for alloc::vec::Vec<u8>}::to_val]:
+    Source: 'crates/i5h-sql/src/lib.rs', lines 67:4-67:27
+    Name pattern: [i5h_sql::{i5h_sql::Column<alloc::vec::Vec<u8>>}::to_val]
+    Visibility: public -/
+@[rust_fun "i5h_sql::{i5h_sql::Column<alloc::vec::Vec<u8>>}::to_val"]
+def alloc.vec.VecU8.Insts.I5h_sqlColumn.to_val
+  (self : alloc.vec.Vec Std.U8) : Result i5h_sql.Val := do
+  let v ← alloc.vec.CloneVec.clone core.clone.CloneU8 self
+  ok (i5h_sql.Val.Bytes v)
+
+/-- [i5h_sql::{impl i5h_sql::Column for alloc::vec::Vec<u8>}::from_val]:
+    Source: 'crates/i5h-sql/src/lib.rs', lines 70:4-70:43
+    Name pattern: [i5h_sql::{i5h_sql::Column<alloc::vec::Vec<u8>>}::from_val]
+    Visibility: public -/
+@[rust_fun "i5h_sql::{i5h_sql::Column<alloc::vec::Vec<u8>>}::from_val"]
+def alloc.vec.VecU8.Insts.I5h_sqlColumn.from_val
+  (v : i5h_sql.Val) : Result (Option (alloc.vec.Vec Std.U8)) := do
+  match v with
+  | i5h_sql.Val.Int _ => ok none
+  | i5h_sql.Val.Bool _ => ok none
+  | i5h_sql.Val.Text _ => ok none
+  | i5h_sql.Val.Bytes b =>
+    let v1 ← alloc.vec.CloneVec.clone core.clone.CloneU8 b
+    ok (some v1)
+  | i5h_sql.Val.Null => ok none
+
+/-- [i5h_sql::val_eq]:
+    Source: 'crates/i5h-sql/src/lib.rs', lines 134:0-134:39
+    Name pattern: [i5h_sql::val_eq]
+    Visibility: public -/
+@[rust_fun "i5h_sql::val_eq"]
+def i5h_sql.val_eq (a : i5h_sql.Val) (b : i5h_sql.Val) : Result Bool := do
+  match a with
+  | i5h_sql.Val.Int x =>
+    match b with
+    | i5h_sql.Val.Int y => ok (x = y)
+    | i5h_sql.Val.Bool _ => ok false
+    | i5h_sql.Val.Text _ => ok false
+    | i5h_sql.Val.Bytes _ => ok false
+    | i5h_sql.Val.Null => ok false
+  | i5h_sql.Val.Bool x =>
+    match b with
+    | i5h_sql.Val.Int _ => ok false
+    | i5h_sql.Val.Bool y => ok (x = y)
+    | i5h_sql.Val.Text _ => ok false
+    | i5h_sql.Val.Bytes _ => ok false
+    | i5h_sql.Val.Null => ok false
+  | i5h_sql.Val.Text x =>
+    match b with
+    | i5h_sql.Val.Int _ => ok false
+    | i5h_sql.Val.Bool _ => ok false
+    | i5h_sql.Val.Text y =>
+      alloc.vec.partial_eq.PartialEqVec.eq core.cmp.PartialEqU8 x y
+    | i5h_sql.Val.Bytes _ => ok false
+    | i5h_sql.Val.Null => ok false
+  | i5h_sql.Val.Bytes x =>
+    match b with
+    | i5h_sql.Val.Int _ => ok false
+    | i5h_sql.Val.Bool _ => ok false
+    | i5h_sql.Val.Text _ => ok false
+    | i5h_sql.Val.Bytes y =>
+      alloc.vec.partial_eq.PartialEqVec.eq core.cmp.PartialEqU8 x y
+    | i5h_sql.Val.Null => ok false
+  | i5h_sql.Val.Null =>
+    match b with
+    | i5h_sql.Val.Int _ => ok false
+    | i5h_sql.Val.Bool _ => ok false
+    | i5h_sql.Val.Text _ => ok false
+    | i5h_sql.Val.Bytes _ => ok false
+    | i5h_sql.Val.Null => ok true
+
+/-- [i5h_sql::has_col]:
+    Source: 'crates/i5h-sql/src/lib.rs', lines 160:0-160:59
+    Name pattern: [i5h_sql::has_col]
+    Visibility: public -/
+@[rust_fun "i5h_sql::has_col"]
+def i5h_sql.has_col
+  (row : alloc.vec.Vec i5h_sql.Val) (col : Std.U32) (val : i5h_sql.Val) :
+  Result Bool
+  := do
+  let i ← lift (UScalar.cast .Usize col)
+  let i1 := alloc.vec.Vec.len row
+  if i < i1
+  then
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice i5h_sql.Val)
+        row i
+    i5h_sql.val_eq v val
+  else ok false
+
+/-- [i5h_sql::Write]
+    Source: 'crates/i5h-sql/src/lib.rs', lines 171:0-171:14
+    Name pattern: [i5h_sql::Write]
+    Visibility: public -/
+@[discriminant isize, rust_type "i5h_sql::Write"]
+inductive i5h_sql.Write where
+| Put : Std.U32 → Std.U32 → alloc.vec.Vec i5h_sql.Val → i5h_sql.Write
+| Del : Std.U32 → alloc.vec.Vec i5h_sql.Val → i5h_sql.Write
+| DelWhere : Std.U32 → Std.U32 → i5h_sql.Val → i5h_sql.Write
+
 /-- [inbox_kernel::Message]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 43:12-46:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 111:12-114:13
     Visibility: public -/
 structure Message where
   sender : Std.U64
@@ -32,26 +190,396 @@ structure Message where
   recipient_deleted : Bool
 
 /-- [inbox_kernel::Block]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 43:12-46:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 111:12-114:13
     Visibility: public -/
 structure Block where
   owner : Std.U64
   sender : Std.U64
 
-/-- [inbox_kernel::MAX_TEXT]
-    Source: 'examples/tutorials/inbox/kernel/src/lib.rs', lines 10:0-10:33
+/-- [inbox_kernel::{inbox_kernel::Message}::TABLE]
+    Source: 'crates/i5h-schema/src/lib.rs', lines 132:12-132:60
     Visibility: public -/
-@[global_simps, irreducible] def MAX_TEXT : Std.Usize := 1000#usize
+@[global_simps, irreducible] def Message.TABLE : Std.U32 := 0#u32
 
-/-- [inbox_kernel::Principal]
-    Source: 'examples/tutorials/inbox/kernel/src/lib.rs', lines 14:0-17:1
+/-- [inbox_kernel::{inbox_kernel::Block}::TABLE]
+    Source: 'crates/i5h-schema/src/lib.rs', lines 132:12-132:60
     Visibility: public -/
-structure Principal where
-  org : Std.U64
-  user : Std.U64
+@[global_simps, irreducible] def Block.TABLE : Std.U32 := 1#u32
+
+/-- [inbox_kernel::{inbox_kernel::Message}::KEY_LEN]
+    Source: 'crates/i5h-schema/src/lib.rs', lines 133:12-133:62
+    Visibility: public -/
+@[global_simps, irreducible] def Message.KEY_LEN : Std.U32 := 3#u32
+
+/-- [inbox_kernel::{inbox_kernel::Block}::KEY_LEN]
+    Source: 'crates/i5h-schema/src/lib.rs', lines 133:12-133:62
+    Visibility: public -/
+@[global_simps, irreducible] def Block.KEY_LEN : Std.U32 := 2#u32
+
+/-- [inbox_kernel::{inbox_kernel::Message}::to_row]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 135:12-140:13
+    Visibility: public -/
+def Message.to_row (self : Message) : Result (alloc.vec.Vec i5h_sql.Val) := do
+  let v ← U64.Insts.I5h_sqlColumn.to_val self.sender
+  let out ← alloc.vec.Vec.push (alloc.vec.Vec.new i5h_sql.Val) v
+  let v1 ← U64.Insts.I5h_sqlColumn.to_val self.recipient
+  let out1 ← alloc.vec.Vec.push out v1
+  let v2 ← U64.Insts.I5h_sqlColumn.to_val self.seq
+  let out2 ← alloc.vec.Vec.push out1 v2
+  let v3 ← alloc.vec.VecU8.Insts.I5h_sqlColumn.to_val self.text
+  let out3 ← alloc.vec.Vec.push out2 v3
+  let v4 ← Bool.Insts.I5h_sqlColumn.to_val self.read
+  let out4 ← alloc.vec.Vec.push out3 v4
+  let v5 ← Bool.Insts.I5h_sqlColumn.to_val self.sender_deleted
+  let out5 ← alloc.vec.Vec.push out4 v5
+  let v6 ← Bool.Insts.I5h_sqlColumn.to_val self.recipient_deleted
+  alloc.vec.Vec.push out5 v6
+
+/-- [inbox_kernel::{inbox_kernel::Block}::to_row]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 135:12-140:13
+    Visibility: public -/
+def Block.to_row (self : Block) : Result (alloc.vec.Vec i5h_sql.Val) := do
+  let v ← U64.Insts.I5h_sqlColumn.to_val self.owner
+  let out ← alloc.vec.Vec.push (alloc.vec.Vec.new i5h_sql.Val) v
+  let v1 ← U64.Insts.I5h_sqlColumn.to_val self.sender
+  alloc.vec.Vec.push out v1
+
+/-- [inbox_kernel::{inbox_kernel::Message}::from_row]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 143:12-164:13
+    Visibility: public -/
+def Message.from_row
+  (row : alloc.vec.Vec i5h_sql.Val) : Result (Option Message) := do
+  let i := alloc.vec.Vec.len row
+  let i1 ← 0#usize + 1#usize
+  let i2 ← i1 + 1#usize
+  let i3 ← i2 + 1#usize
+  let i4 ← i3 + 1#usize
+  let i5 ← i4 + 1#usize
+  let i6 ← i5 + 1#usize
+  let i7 ← i6 + 1#usize
+  if i != i7
+  then ok none
+  else
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice i5h_sql.Val)
+        row 0#usize
+    let o ← U64.Insts.I5h_sqlColumn.from_val v
+    match o with
+    | none => ok none
+    | some x =>
+      let v1 ←
+        alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice i5h_sql.Val)
+          row i1
+      let o1 ← U64.Insts.I5h_sqlColumn.from_val v1
+      match o1 with
+      | none => ok none
+      | some x1 =>
+        let i8 ← i1 + 1#usize
+        let v2 ←
+          alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+            i5h_sql.Val) row i8
+        let o2 ← U64.Insts.I5h_sqlColumn.from_val v2
+        match o2 with
+        | none => ok none
+        | some x2 =>
+          let i9 ← i8 + 1#usize
+          let v3 ←
+            alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+              i5h_sql.Val) row i9
+          let o3 ← alloc.vec.VecU8.Insts.I5h_sqlColumn.from_val v3
+          match o3 with
+          | none => ok none
+          | some x3 =>
+            let i10 ← i9 + 1#usize
+            let v4 ←
+              alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+                i5h_sql.Val) row i10
+            let o4 ← Bool.Insts.I5h_sqlColumn.from_val v4
+            match o4 with
+            | none => ok none
+            | some x4 =>
+              let i11 ← i10 + 1#usize
+              let v5 ←
+                alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+                  i5h_sql.Val) row i11
+              let o5 ← Bool.Insts.I5h_sqlColumn.from_val v5
+              match o5 with
+              | none => ok none
+              | some x5 =>
+                let i12 ← i11 + 1#usize
+                let v6 ←
+                  alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+                    i5h_sql.Val) row i12
+                let o6 ← Bool.Insts.I5h_sqlColumn.from_val v6
+                match o6 with
+                | none => ok none
+                | some x6 =>
+                  let _ ← i12 + 1#usize
+                  ok (some
+                    {
+                      sender := x,
+                      recipient := x1,
+                      seq := x2,
+                      text := x3,
+                      read := x4,
+                      sender_deleted := x5,
+                      recipient_deleted := x6
+                    })
+
+/-- [inbox_kernel::{inbox_kernel::Block}::from_row]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 143:12-164:13
+    Visibility: public -/
+def Block.from_row
+  (row : alloc.vec.Vec i5h_sql.Val) : Result (Option Block) := do
+  let i := alloc.vec.Vec.len row
+  let i1 ← 0#usize + 1#usize
+  let i2 ← i1 + 1#usize
+  if i != i2
+  then ok none
+  else
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice i5h_sql.Val)
+        row 0#usize
+    let o ← U64.Insts.I5h_sqlColumn.from_val v
+    match o with
+    | none => ok none
+    | some x =>
+      let v1 ←
+        alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice i5h_sql.Val)
+          row i1
+      let o1 ← U64.Insts.I5h_sqlColumn.from_val v1
+      match o1 with
+      | none => ok none
+      | some x1 =>
+        let _ ← i1 + 1#usize
+        ok (some { owner := x, sender := x1 })
+
+/-- [inbox_kernel::{inbox_kernel::Message}::from_rows]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Visibility: public -/
+@[rust_loop_body]
+def Message.from_rows_loop.body
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val))
+  (out : alloc.vec.Vec Message) (ok1 : Bool) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Message) × Bool × Std.Usize)
+    ((alloc.vec.Vec Message) × Bool))
+  := do
+  let i1 := alloc.vec.Vec.len rows
+  if i < i1
+  then
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice (alloc.vec.Vec
+        i5h_sql.Val)) rows i
+    let o ← Message.from_row v
+    let (out1, ok2) ←
+      match o with
+      | none => ok (out, false)
+      | some x => do
+                  let out2 ← alloc.vec.Vec.push out x
+                  ok (out2, ok1)
+    let i2 ← i + 1#usize
+    ok (cont (out1, ok2, i2))
+  else ok (done (out, ok1))
+
+/-- [inbox_kernel::{inbox_kernel::Message}::from_rows]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Visibility: public -/
+@[rust_loop]
+def Message.from_rows_loop
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val))
+  (out : alloc.vec.Vec Message) (ok1 : Bool) (i : Std.Usize) :
+  Result ((alloc.vec.Vec Message) × Bool)
+  := do
+  loop
+    (fun (out1, ok2, i1) => Message.from_rows_loop.body rows out1 ok2 i1)
+    (out, ok1, i)
+
+/-- [inbox_kernel::{inbox_kernel::Message}::from_rows]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 167:12-183:13
+    Visibility: public -/
+def Message.from_rows
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)) :
+  Result (Option (alloc.vec.Vec Message))
+  := do
+  let (out, ok1) ←
+    Message.from_rows_loop rows (alloc.vec.Vec.new Message) true 0#usize
+  if ok1
+  then ok (some out)
+  else ok none
+
+/-- [inbox_kernel::{inbox_kernel::Block}::from_rows]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Visibility: public -/
+@[rust_loop_body]
+def Block.from_rows_loop.body
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val))
+  (out : alloc.vec.Vec Block) (ok1 : Bool) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Block) × Bool × Std.Usize)
+    ((alloc.vec.Vec Block) × Bool))
+  := do
+  let i1 := alloc.vec.Vec.len rows
+  if i < i1
+  then
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice (alloc.vec.Vec
+        i5h_sql.Val)) rows i
+    let o ← Block.from_row v
+    let (out1, ok2) ←
+      match o with
+      | none => ok (out, false)
+      | some x => do
+                  let out2 ← alloc.vec.Vec.push out x
+                  ok (out2, ok1)
+    let i2 ← i + 1#usize
+    ok (cont (out1, ok2, i2))
+  else ok (done (out, ok1))
+
+/-- [inbox_kernel::{inbox_kernel::Block}::from_rows]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Visibility: public -/
+@[rust_loop]
+def Block.from_rows_loop
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val))
+  (out : alloc.vec.Vec Block) (ok1 : Bool) (i : Std.Usize) :
+  Result ((alloc.vec.Vec Block) × Bool)
+  := do
+  loop
+    (fun (out1, ok2, i1) => Block.from_rows_loop.body rows out1 ok2 i1)
+    (out, ok1, i)
+
+/-- [inbox_kernel::{inbox_kernel::Block}::from_rows]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 167:12-183:13
+    Visibility: public -/
+def Block.from_rows
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)) :
+  Result (Option (alloc.vec.Vec Block))
+  := do
+  let (out, ok1) ←
+    Block.from_rows_loop rows (alloc.vec.Vec.new Block) true 0#usize
+  if ok1
+  then ok (some out)
+  else ok none
+
+/-- [inbox_kernel::{inbox_kernel::Message}::sql_put]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 186:12-188:13
+    Visibility: public -/
+def Message.sql_put (self : Message) : Result i5h_sql.Write := do
+  let v ← Message.to_row self
+  ok (i5h_sql.Write.Put Message.TABLE Message.KEY_LEN v)
+
+/-- [inbox_kernel::{inbox_kernel::Block}::sql_put]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 186:12-188:13
+    Visibility: public -/
+def Block.sql_put (self : Block) : Result i5h_sql.Write := do
+  let v ← Block.to_row self
+  ok (i5h_sql.Write.Put Block.TABLE Block.KEY_LEN v)
+
+/-- [inbox_kernel::{inbox_kernel::Message}::put]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 219:16-227:13
+    Visibility: public -/
+@[rust_loop_body]
+def Message.put_loop.body
+  (v : alloc.vec.Vec Message) (x : Message) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize (alloc.vec.Vec Message))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let m ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Message) v i
+    if m.sender = x.sender
+    then
+      if m.recipient = x.recipient
+      then
+        if m.seq = x.seq
+        then
+          let (_, index_mut_back) ←
+            alloc.vec.Vec.index_mut (core.slice.index.SliceIndexUsizeSlice
+              Message) v i
+          let v1 := index_mut_back x
+          ok (done v1)
+        else let i2 ← i + 1#usize
+             ok (cont i2)
+      else let i2 ← i + 1#usize
+           ok (cont i2)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else let v1 ← alloc.vec.Vec.push v x
+       ok (done v1)
+
+/-- [inbox_kernel::{inbox_kernel::Message}::put]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 219:16-227:13
+    Visibility: public -/
+@[rust_loop]
+def Message.put_loop
+  (v : alloc.vec.Vec Message) (x : Message) (i : Std.Usize) :
+  Result (alloc.vec.Vec Message)
+  := do
+  loop
+    (fun i1 => Message.put_loop.body v x i1)
+    i
+
+/-- [inbox_kernel::{inbox_kernel::Message}::put]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 217:12-227:13
+    Visibility: public -/
+@[reducible]
+def Message.put
+  (v : alloc.vec.Vec Message) (x : Message) :
+  Result (alloc.vec.Vec Message)
+  := do
+  Message.put_loop v x 0#usize
+
+/-- [inbox_kernel::{inbox_kernel::Block}::put]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 219:16-227:13
+    Visibility: public -/
+@[rust_loop_body]
+def Block.put_loop.body
+  (v : alloc.vec.Vec Block) (x : Block) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize (alloc.vec.Vec Block))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let b ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Block) v i
+    if b.owner = x.owner
+    then
+      if b.sender = x.sender
+      then
+        let (_, index_mut_back) ←
+          alloc.vec.Vec.index_mut (core.slice.index.SliceIndexUsizeSlice Block)
+            v i
+        let v1 := index_mut_back x
+        ok (done v1)
+      else let i2 ← i + 1#usize
+           ok (cont i2)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else let v1 ← alloc.vec.Vec.push v x
+       ok (done v1)
+
+/-- [inbox_kernel::{inbox_kernel::Block}::put]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 219:16-227:13
+    Visibility: public -/
+@[rust_loop]
+def Block.put_loop
+  (v : alloc.vec.Vec Block) (x : Block) (i : Std.Usize) :
+  Result (alloc.vec.Vec Block)
+  := do
+  loop
+    (fun i1 => Block.put_loop.body v x i1)
+    i
+
+/-- [inbox_kernel::{inbox_kernel::Block}::put]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 217:12-227:13
+    Visibility: public -/
+@[reducible]
+def Block.put
+  (v : alloc.vec.Vec Block) (x : Block) : Result (alloc.vec.Vec Block) := do
+  Block.put_loop v x 0#usize
 
 /-- [inbox_kernel::{impl core::clone::Clone for inbox_kernel::Message}::clone]:
-    Source: 'examples/tutorials/inbox/kernel/src/lib.rs', lines 24:13-24:18
+    Source: 'examples/tutorials/inbox/kernel/src/lib.rs', lines 31:13-31:18
     Visibility: public -/
 def Message.Insts.CoreCloneClone.clone (self : Message) : Result Message := do
   let i ← lift (core.clone.impls.CloneU64.clone self.sender)
@@ -72,57 +600,300 @@ def Message.Insts.CoreCloneClone.clone (self : Message) : Result Message := do
       recipient_deleted := b2
     }
 
-/-- Trait implementation: [inbox_kernel::{impl core::clone::Clone for inbox_kernel::Message}]
-    Source: 'examples/tutorials/inbox/kernel/src/lib.rs', lines 24:13-24:18 -/
+/-- [inbox_kernel::{inbox_kernel::Message}::del]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 233:16-238:17
+    Visibility: public -/
+@[rust_loop_body]
+def Message.del_loop.body
+  (v : alloc.vec.Vec Message) (sender : Std.U64) (recipient : Std.U64)
+  (seq : Std.U64) (out : alloc.vec.Vec Message) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Message) × Std.Usize) (alloc.vec.Vec
+    Message))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let m ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Message) v i
+    let out1 ←
+      if m.sender = sender
+      then
+        if m.recipient = recipient
+        then
+          if m.seq = seq
+          then ok out
+          else
+            do
+            let m1 ← Message.Insts.CoreCloneClone.clone m
+            alloc.vec.Vec.push out m1
+        else
+          do
+          let m1 ← Message.Insts.CoreCloneClone.clone m
+          alloc.vec.Vec.push out m1
+      else
+        do
+        let m1 ← Message.Insts.CoreCloneClone.clone m
+        alloc.vec.Vec.push out m1
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
+  else ok (done out)
+
+/-- [inbox_kernel::{inbox_kernel::Message}::del]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 233:16-238:17
+    Visibility: public -/
+@[rust_loop]
+def Message.del_loop
+  (v : alloc.vec.Vec Message) (sender : Std.U64) (recipient : Std.U64)
+  (seq : Std.U64) (out : alloc.vec.Vec Message) (i : Std.Usize) :
+  Result (alloc.vec.Vec Message)
+  := do
+  loop
+    (fun (out1, i1) => Message.del_loop.body v sender recipient seq out1 i1)
+    (out, i)
+
+/-- [inbox_kernel::{inbox_kernel::Message}::del]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 230:12-240:13
+    Visibility: public -/
 @[reducible]
-def Message.Insts.CoreCloneClone : core.clone.Clone Message := {
-  clone := Message.Insts.CoreCloneClone.clone
-}
+def Message.del
+  (v : alloc.vec.Vec Message) (sender : Std.U64) (recipient : Std.U64)
+  (seq : Std.U64) :
+  Result (alloc.vec.Vec Message)
+  := do
+  Message.del_loop v sender recipient seq (alloc.vec.Vec.new Message) 0#usize
 
 /-- [inbox_kernel::{impl core::clone::Clone for inbox_kernel::Block}::clone]:
-    Source: 'examples/tutorials/inbox/kernel/src/lib.rs', lines 34:13-34:18
+    Source: 'examples/tutorials/inbox/kernel/src/lib.rs', lines 41:13-41:18
     Visibility: public -/
 def Block.Insts.CoreCloneClone.clone (self : Block) : Result Block := do
   ok self
 
-/-- Trait implementation: [inbox_kernel::{impl core::clone::Clone for inbox_kernel::Block}]
-    Source: 'examples/tutorials/inbox/kernel/src/lib.rs', lines 34:13-34:18 -/
+/-- [inbox_kernel::{inbox_kernel::Block}::del]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 233:16-238:17
+    Visibility: public -/
+@[rust_loop_body]
+def Block.del_loop.body
+  (v : alloc.vec.Vec Block) (owner : Std.U64) (sender : Std.U64)
+  (out : alloc.vec.Vec Block) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Block) × Std.Usize) (alloc.vec.Vec
+    Block))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let b ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Block) v i
+    let out1 ←
+      if b.owner = owner
+      then
+        if b.sender = sender
+        then ok out
+        else
+          do
+          let b1 ← Block.Insts.CoreCloneClone.clone b
+          alloc.vec.Vec.push out b1
+      else
+        do
+        let b1 ← Block.Insts.CoreCloneClone.clone b
+        alloc.vec.Vec.push out b1
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
+  else ok (done out)
+
+/-- [inbox_kernel::{inbox_kernel::Block}::del]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 233:16-238:17
+    Visibility: public -/
+@[rust_loop]
+def Block.del_loop
+  (v : alloc.vec.Vec Block) (owner : Std.U64) (sender : Std.U64)
+  (out : alloc.vec.Vec Block) (i : Std.Usize) :
+  Result (alloc.vec.Vec Block)
+  := do
+  loop
+    (fun (out1, i1) => Block.del_loop.body v owner sender out1 i1)
+    (out, i)
+
+/-- [inbox_kernel::{inbox_kernel::Block}::del]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 230:12-240:13
+    Visibility: public -/
 @[reducible]
-def Block.Insts.CoreCloneClone : core.clone.Clone Block := {
-  clone := Block.Insts.CoreCloneClone.clone
-}
+def Block.del
+  (v : alloc.vec.Vec Block) (owner : Std.U64) (sender : Std.U64) :
+  Result (alloc.vec.Vec Block)
+  := do
+  Block.del_loop v owner sender (alloc.vec.Vec.new Block) 0#usize
+
+/-- [inbox_kernel::{inbox_kernel::Message}::del_where]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 246:16-251:17
+    Visibility: public -/
+@[rust_loop_body]
+def Message.del_where_loop.body
+  (v : alloc.vec.Vec Message) (col : Std.U32) (val : i5h_sql.Val)
+  (out : alloc.vec.Vec Message) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Message) × Std.Usize) (alloc.vec.Vec
+    Message))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let m ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Message) v i
+    let v1 ← Message.to_row m
+    let b ← i5h_sql.has_col v1 col val
+    let out1 ←
+      if b
+      then ok out
+      else
+        do
+        let m1 ← Message.Insts.CoreCloneClone.clone m
+        alloc.vec.Vec.push out m1
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
+  else ok (done out)
+
+/-- [inbox_kernel::{inbox_kernel::Message}::del_where]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 246:16-251:17
+    Visibility: public -/
+@[rust_loop]
+def Message.del_where_loop
+  (v : alloc.vec.Vec Message) (col : Std.U32) (val : i5h_sql.Val)
+  (out : alloc.vec.Vec Message) (i : Std.Usize) :
+  Result (alloc.vec.Vec Message)
+  := do
+  loop
+    (fun (out1, i1) => Message.del_where_loop.body v col val out1 i1)
+    (out, i)
+
+/-- [inbox_kernel::{inbox_kernel::Message}::del_where]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 243:12-253:13
+    Visibility: public -/
+@[reducible]
+def Message.del_where
+  (v : alloc.vec.Vec Message) (col : Std.U32) (val : i5h_sql.Val) :
+  Result (alloc.vec.Vec Message)
+  := do
+  Message.del_where_loop v col val (alloc.vec.Vec.new Message) 0#usize
+
+/-- [inbox_kernel::{inbox_kernel::Block}::del_where]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 246:16-251:17
+    Visibility: public -/
+@[rust_loop_body]
+def Block.del_where_loop.body
+  (v : alloc.vec.Vec Block) (col : Std.U32) (val : i5h_sql.Val)
+  (out : alloc.vec.Vec Block) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Block) × Std.Usize) (alloc.vec.Vec
+    Block))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let b ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Block) v i
+    let v1 ← Block.to_row b
+    let b1 ← i5h_sql.has_col v1 col val
+    let out1 ←
+      if b1
+      then ok out
+      else
+        do
+        let b2 ← Block.Insts.CoreCloneClone.clone b
+        alloc.vec.Vec.push out b2
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
+  else ok (done out)
+
+/-- [inbox_kernel::{inbox_kernel::Block}::del_where]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 246:16-251:17
+    Visibility: public -/
+@[rust_loop]
+def Block.del_where_loop
+  (v : alloc.vec.Vec Block) (col : Std.U32) (val : i5h_sql.Val)
+  (out : alloc.vec.Vec Block) (i : Std.Usize) :
+  Result (alloc.vec.Vec Block)
+  := do
+  loop
+    (fun (out1, i1) => Block.del_where_loop.body v col val out1 i1)
+    (out, i)
+
+/-- [inbox_kernel::{inbox_kernel::Block}::del_where]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 243:12-253:13
+    Visibility: public -/
+@[reducible]
+def Block.del_where
+  (v : alloc.vec.Vec Block) (col : Std.U32) (val : i5h_sql.Val) :
+  Result (alloc.vec.Vec Block)
+  := do
+  Block.del_where_loop v col val (alloc.vec.Vec.new Block) 0#usize
+
+/-- [inbox_kernel::{inbox_kernel::Message}::sql_del]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 256:12-260:13
+    Visibility: public -/
+def Message.sql_del
+  (sender : Std.U64) (recipient : Std.U64) (seq : Std.U64) :
+  Result i5h_sql.Write
+  := do
+  let v ← U64.Insts.I5h_sqlColumn.to_val sender
+  let key ← alloc.vec.Vec.push (alloc.vec.Vec.new i5h_sql.Val) v
+  let v1 ← U64.Insts.I5h_sqlColumn.to_val recipient
+  let key1 ← alloc.vec.Vec.push key v1
+  let v2 ← U64.Insts.I5h_sqlColumn.to_val seq
+  let key2 ← alloc.vec.Vec.push key1 v2
+  ok (i5h_sql.Write.Del Message.TABLE key2)
+
+/-- [inbox_kernel::{inbox_kernel::Block}::sql_del]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 256:12-260:13
+    Visibility: public -/
+def Block.sql_del
+  (owner : Std.U64) (sender : Std.U64) : Result i5h_sql.Write := do
+  let v ← U64.Insts.I5h_sqlColumn.to_val owner
+  let key ← alloc.vec.Vec.push (alloc.vec.Vec.new i5h_sql.Val) v
+  let v1 ← U64.Insts.I5h_sqlColumn.to_val sender
+  let key1 ← alloc.vec.Vec.push key v1
+  ok (i5h_sql.Write.Del Block.TABLE key1)
+
+/-- [inbox_kernel::{inbox_kernel::Message}::sql_del_where]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 263:12-265:13
+    Visibility: public -/
+def Message.sql_del_where
+  (col : Std.U32) (val : i5h_sql.Val) : Result i5h_sql.Write := do
+  ok (i5h_sql.Write.DelWhere Message.TABLE col val)
+
+/-- [inbox_kernel::{inbox_kernel::Block}::sql_del_where]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 263:12-265:13
+    Visibility: public -/
+def Block.sql_del_where
+  (col : Std.U32) (val : i5h_sql.Val) : Result i5h_sql.Write := do
+  ok (i5h_sql.Write.DelWhere Block.TABLE col val)
 
 /-- [inbox_kernel::Snapshot]
-    Source: 'examples/tutorials/inbox/kernel/src/lib.rs', lines 42:0-45:1
+    Source: 'crates/i5h-schema/src/lib.rs', lines 278:8-280:9
     Visibility: public -/
 structure Snapshot where
   messages : alloc.vec.Vec Message
   blocks : alloc.vec.Vec Block
 
-/-- [inbox_kernel::{impl core::clone::Clone for inbox_kernel::Snapshot}::clone]:
-    Source: 'examples/tutorials/inbox/kernel/src/lib.rs', lines 41:9-41:14
+/-- [inbox_kernel::Rows]
+    Source: 'crates/i5h-schema/src/lib.rs', lines 285:8-287:9
     Visibility: public -/
-def Snapshot.Insts.CoreCloneClone.clone
-  (self : Snapshot) : Result Snapshot := do
-  let v ← alloc.vec.CloneVec.clone Message.Insts.CoreCloneClone self.messages
-  let v1 ← alloc.vec.CloneVec.clone Block.Insts.CoreCloneClone self.blocks
-  ok { messages := v, blocks := v1 }
+structure Rows where
+  messages : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)
+  blocks : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)
 
-/-- [inbox_kernel::Command]
-    Source: 'examples/tutorials/inbox/kernel/src/lib.rs', lines 48:0-56:1
+/-- [inbox_kernel::decode]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 290:8-298:9
     Visibility: public -/
-@[discriminant isize]
-inductive Command where
-| Send : Std.U64 → alloc.vec.Vec Std.U8 → Command
-| Inbox : Command
-| Sent : Command
-| MarkRead : Std.U64 → Std.U64 → Command
-| Delete : Std.U64 → Std.U64 → Std.U64 → Command
-| Block : Std.U64 → Command
-| Unblock : Std.U64 → Command
+def decode (r : Rows) : Result (Option Snapshot) := do
+  let o ← Message.from_rows r.messages
+  match o with
+  | none => ok none
+  | some x =>
+    let o1 ← Block.from_rows r.blocks
+    match o1 with
+    | none => ok none
+    | some x1 => ok (some { messages := x, blocks := x1 })
 
 /-- [inbox_kernel::Write]
-    Source: 'examples/tutorials/inbox/kernel/src/lib.rs', lines 59:0-63:1
+    Source: 'examples/tutorials/inbox/kernel/src/lib.rs', lines 60:0-64:1
     Visibility: public -/
 @[discriminant isize]
 inductive Write where
@@ -130,8 +901,22 @@ inductive Write where
 | PutBlock : Block → Write
 | DelBlock : Block → Write
 
+/-- [inbox_kernel::apply_write]:
+    Source: 'examples/tutorials/inbox/kernel/src/lib.rs', lines 236:0-242:1 -/
+def apply_write (s : Snapshot) (w : Write) : Result Snapshot := do
+  match w with
+  | Write.PutMessage m =>
+    let v ← Message.put s.messages m
+    ok { s with messages := v }
+  | Write.PutBlock b =>
+    let v ← Block.put s.blocks b
+    ok { s with blocks := v }
+  | Write.DelBlock b =>
+    let v ← Block.del s.blocks b.owner b.sender
+    ok { s with blocks := v }
+
 /-- [inbox_kernel::{impl core::clone::Clone for inbox_kernel::Write}::clone]:
-    Source: 'examples/tutorials/inbox/kernel/src/lib.rs', lines 58:9-58:14
+    Source: 'examples/tutorials/inbox/kernel/src/lib.rs', lines 59:9-59:14
     Visibility: public -/
 def Write.Insts.CoreCloneClone.clone (self : Write) : Result Write := do
   match self with
@@ -145,8 +930,151 @@ def Write.Insts.CoreCloneClone.clone (self : Write) : Result Write := do
     let b ← Block.Insts.CoreCloneClone.clone __self_0
     ok (Write.DelBlock b)
 
+/-- Trait implementation: [inbox_kernel::{impl core::clone::Clone for inbox_kernel::Block}]
+    Source: 'examples/tutorials/inbox/kernel/src/lib.rs', lines 41:13-41:18 -/
+@[reducible]
+def Block.Insts.CoreCloneClone : core.clone.Clone Block := {
+  clone := Block.Insts.CoreCloneClone.clone
+}
+
+/-- Trait implementation: [inbox_kernel::{impl core::clone::Clone for inbox_kernel::Message}]
+    Source: 'examples/tutorials/inbox/kernel/src/lib.rs', lines 31:13-31:18 -/
+@[reducible]
+def Message.Insts.CoreCloneClone : core.clone.Clone Message := {
+  clone := Message.Insts.CoreCloneClone.clone
+}
+
+/-- [inbox_kernel::{impl core::clone::Clone for inbox_kernel::Snapshot}::clone]:
+    Source: 'examples/tutorials/inbox/kernel/src/lib.rs', lines 23:13-23:18
+    Visibility: public -/
+def Snapshot.Insts.CoreCloneClone.clone
+  (self : Snapshot) : Result Snapshot := do
+  let v ← alloc.vec.CloneVec.clone Message.Insts.CoreCloneClone self.messages
+  let v1 ← alloc.vec.CloneVec.clone Block.Insts.CoreCloneClone self.blocks
+  ok { messages := v, blocks := v1 }
+
+/-- [inbox_kernel::apply]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 308:12-311:13
+    Visibility: public -/
+@[rust_loop_body]
+def apply_loop.body
+  (ws : alloc.vec.Vec Write) (s : Snapshot) (i : Std.Usize) :
+  Result (ControlFlow (Snapshot × Std.Usize) Snapshot)
+  := do
+  let i1 := alloc.vec.Vec.len ws
+  if i < i1
+  then
+    let w ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Write) ws i
+    let w1 ← Write.Insts.CoreCloneClone.clone w
+    let s1 ← apply_write s w1
+    let i2 ← i + 1#usize
+    ok (cont (s1, i2))
+  else ok (done s)
+
+/-- [inbox_kernel::apply]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 308:12-311:13
+    Visibility: public -/
+@[rust_loop]
+def apply_loop
+  (ws : alloc.vec.Vec Write) (s : Snapshot) (i : Std.Usize) :
+  Result Snapshot
+  := do
+  loop
+    (fun (s1, i1) => apply_loop.body ws s1 i1)
+    (s, i)
+
+/-- [inbox_kernel::apply]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 305:8-313:9
+    Visibility: public -/
+def apply (snap : Snapshot) (ws : alloc.vec.Vec Write) : Result Snapshot := do
+  let s ← Snapshot.Insts.CoreCloneClone.clone snap
+  apply_loop ws s 0#usize
+
+/-- [inbox_kernel::sql_write]:
+    Source: 'examples/tutorials/inbox/kernel/src/lib.rs', lines 245:0-251:1 -/
+def sql_write
+  (w : Write) (out : alloc.vec.Vec i5h_sql.Write) :
+  Result (alloc.vec.Vec i5h_sql.Write)
+  := do
+  match w with
+  | Write.PutMessage m =>
+    let w1 ← Message.sql_put m
+    alloc.vec.Vec.push out w1
+  | Write.PutBlock b => let w1 ← Block.sql_put b
+                        alloc.vec.Vec.push out w1
+  | Write.DelBlock b =>
+    let w1 ← Block.sql_del b.owner b.sender
+    alloc.vec.Vec.push out w1
+
+/-- [inbox_kernel::sql_writes]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 320:12-323:13
+    Visibility: public -/
+@[rust_loop_body]
+def sql_writes_loop.body
+  (ws : alloc.vec.Vec Write) (out : alloc.vec.Vec i5h_sql.Write)
+  (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec i5h_sql.Write) × Std.Usize)
+    (alloc.vec.Vec i5h_sql.Write))
+  := do
+  let i1 := alloc.vec.Vec.len ws
+  if i < i1
+  then
+    let w ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Write) ws i
+    let out1 ← sql_write w out
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
+  else ok (done out)
+
+/-- [inbox_kernel::sql_writes]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 320:12-323:13
+    Visibility: public -/
+@[rust_loop]
+def sql_writes_loop
+  (ws : alloc.vec.Vec Write) (out : alloc.vec.Vec i5h_sql.Write)
+  (i : Std.Usize) :
+  Result (alloc.vec.Vec i5h_sql.Write)
+  := do
+  loop
+    (fun (out1, i1) => sql_writes_loop.body ws out1 i1)
+    (out, i)
+
+/-- [inbox_kernel::sql_writes]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 317:8-325:9
+    Visibility: public -/
+@[reducible]
+def sql_writes
+  (ws : alloc.vec.Vec Write) : Result (alloc.vec.Vec i5h_sql.Write) := do
+  sql_writes_loop ws (alloc.vec.Vec.new i5h_sql.Write) 0#usize
+
+/-- [inbox_kernel::MAX_TEXT]
+    Source: 'examples/tutorials/inbox/kernel/src/lib.rs', lines 10:0-10:33
+    Visibility: public -/
+@[global_simps, irreducible] def MAX_TEXT : Std.Usize := 1000#usize
+
+/-- [inbox_kernel::Principal]
+    Source: 'examples/tutorials/inbox/kernel/src/lib.rs', lines 14:0-17:1
+    Visibility: public -/
+structure Principal where
+  org : Std.U64
+  user : Std.U64
+
+/-- [inbox_kernel::Command]
+    Source: 'examples/tutorials/inbox/kernel/src/lib.rs', lines 49:0-57:1
+    Visibility: public -/
+@[discriminant isize]
+inductive Command where
+| Send : Std.U64 → alloc.vec.Vec Std.U8 → Command
+| Inbox : Command
+| Sent : Command
+| MarkRead : Std.U64 → Std.U64 → Command
+| Delete : Std.U64 → Std.U64 → Std.U64 → Command
+| Block : Std.U64 → Command
+| Unblock : Std.U64 → Command
+
 /-- [inbox_kernel::Reply]
-    Source: 'examples/tutorials/inbox/kernel/src/lib.rs', lines 66:0-70:1
+    Source: 'examples/tutorials/inbox/kernel/src/lib.rs', lines 67:0-71:1
     Visibility: public -/
 @[discriminant isize]
 inductive Reply where
@@ -155,7 +1083,7 @@ inductive Reply where
 | Messages : alloc.vec.Vec Message → Reply
 
 /-- [inbox_kernel::Error]
-    Source: 'examples/tutorials/inbox/kernel/src/lib.rs', lines 73:0-78:1
+    Source: 'examples/tutorials/inbox/kernel/src/lib.rs', lines 74:0-79:1
     Visibility: public -/
 @[discriminant isize]
 inductive Error where
@@ -165,12 +1093,12 @@ inductive Error where
 | Overflow : Error
 
 /-- [inbox_kernel::one]:
-    Source: 'examples/tutorials/inbox/kernel/src/lib.rs', lines 82:0-86:1 -/
+    Source: 'examples/tutorials/inbox/kernel/src/lib.rs', lines 83:0-87:1 -/
 def one (w : Write) : Result (alloc.vec.Vec Write) := do
   alloc.vec.Vec.push (alloc.vec.Vec.new Write) w
 
 /-- [inbox_kernel::text_ok]:
-    Source: 'examples/tutorials/inbox/kernel/src/lib.rs', lines 89:0-91:1
+    Source: 'examples/tutorials/inbox/kernel/src/lib.rs', lines 90:0-92:1
     Visibility: public -/
 def text_ok (t : alloc.vec.Vec Std.U8) : Result Bool := do
   let i := alloc.vec.Vec.len t
@@ -180,7 +1108,7 @@ def text_ok (t : alloc.vec.Vec Std.U8) : Result Bool := do
   else ok false
 
 /-- [inbox_kernel::is_blocked]: loop body 0:
-    Source: 'examples/tutorials/inbox/kernel/src/lib.rs', lines 1:0-102:1
+    Source: 'examples/tutorials/inbox/kernel/src/lib.rs', lines 1:0-103:1
     Visibility: public -/
 @[rust_loop_body]
 def is_blocked_loop.body
@@ -204,7 +1132,7 @@ def is_blocked_loop.body
   else ok (done false)
 
 /-- [inbox_kernel::is_blocked]: loop 0:
-    Source: 'examples/tutorials/inbox/kernel/src/lib.rs', lines 1:0-102:1
+    Source: 'examples/tutorials/inbox/kernel/src/lib.rs', lines 1:0-103:1
     Visibility: public -/
 @[rust_loop]
 def is_blocked_loop
@@ -217,7 +1145,7 @@ def is_blocked_loop
     i
 
 /-- [inbox_kernel::is_blocked]:
-    Source: 'examples/tutorials/inbox/kernel/src/lib.rs', lines 93:0-102:1
+    Source: 'examples/tutorials/inbox/kernel/src/lib.rs', lines 94:0-103:1
     Visibility: public -/
 @[reducible]
 def is_blocked
@@ -227,7 +1155,7 @@ def is_blocked
   is_blocked_loop bs owner sender 0#usize
 
 /-- [inbox_kernel::last_seq]: loop body 0:
-    Source: 'examples/tutorials/inbox/kernel/src/lib.rs', lines 1:0-122:5
+    Source: 'examples/tutorials/inbox/kernel/src/lib.rs', lines 1:0-123:5
     Visibility: public -/
 @[rust_loop_body]
 def last_seq_loop.body
@@ -260,7 +1188,7 @@ def last_seq_loop.body
   else ok (done last)
 
 /-- [inbox_kernel::last_seq]: loop 0:
-    Source: 'examples/tutorials/inbox/kernel/src/lib.rs', lines 1:0-122:5
+    Source: 'examples/tutorials/inbox/kernel/src/lib.rs', lines 1:0-123:5
     Visibility: public -/
 @[rust_loop]
 def last_seq_loop
@@ -273,7 +1201,7 @@ def last_seq_loop
     (last, i)
 
 /-- [inbox_kernel::last_seq]:
-    Source: 'examples/tutorials/inbox/kernel/src/lib.rs', lines 105:0-124:1
+    Source: 'examples/tutorials/inbox/kernel/src/lib.rs', lines 106:0-125:1
     Visibility: public -/
 @[reducible]
 def last_seq
@@ -283,7 +1211,7 @@ def last_seq
   last_seq_loop ms «from» «to» none 0#usize
 
 /-- [inbox_kernel::find_message]: loop body 0:
-    Source: 'examples/tutorials/inbox/kernel/src/lib.rs', lines 1:0-135:1
+    Source: 'examples/tutorials/inbox/kernel/src/lib.rs', lines 1:0-136:1
     Visibility: public -/
 @[rust_loop_body]
 def find_message_loop.body
@@ -313,7 +1241,7 @@ def find_message_loop.body
   else ok (done none)
 
 /-- [inbox_kernel::find_message]: loop 0:
-    Source: 'examples/tutorials/inbox/kernel/src/lib.rs', lines 1:0-135:1
+    Source: 'examples/tutorials/inbox/kernel/src/lib.rs', lines 1:0-136:1
     Visibility: public -/
 @[rust_loop]
 def find_message_loop
@@ -326,7 +1254,7 @@ def find_message_loop
     i
 
 /-- [inbox_kernel::find_message]:
-    Source: 'examples/tutorials/inbox/kernel/src/lib.rs', lines 126:0-135:1
+    Source: 'examples/tutorials/inbox/kernel/src/lib.rs', lines 127:0-136:1
     Visibility: public -/
 @[reducible]
 def find_message
@@ -337,7 +1265,7 @@ def find_message
   find_message_loop ms «from» «to» seq 0#usize
 
 /-- [inbox_kernel::mailbox]: loop body 0:
-    Source: 'examples/tutorials/inbox/kernel/src/lib.rs', lines 141:4-151:5
+    Source: 'examples/tutorials/inbox/kernel/src/lib.rs', lines 142:4-152:5
     Visibility: public -/
 @[rust_loop_body]
 def mailbox_loop.body
@@ -382,7 +1310,7 @@ def mailbox_loop.body
   else ok (done out)
 
 /-- [inbox_kernel::mailbox]: loop 0:
-    Source: 'examples/tutorials/inbox/kernel/src/lib.rs', lines 141:4-151:5
+    Source: 'examples/tutorials/inbox/kernel/src/lib.rs', lines 142:4-152:5
     Visibility: public -/
 @[rust_loop]
 def mailbox_loop
@@ -395,7 +1323,7 @@ def mailbox_loop
     (out, i)
 
 /-- [inbox_kernel::mailbox]:
-    Source: 'examples/tutorials/inbox/kernel/src/lib.rs', lines 138:0-153:1
+    Source: 'examples/tutorials/inbox/kernel/src/lib.rs', lines 139:0-154:1
     Visibility: public -/
 @[reducible]
 def mailbox
@@ -405,7 +1333,7 @@ def mailbox
   mailbox_loop ms user incoming (alloc.vec.Vec.new Message) 0#usize
 
 /-- [inbox_kernel::send]:
-    Source: 'examples/tutorials/inbox/kernel/src/lib.rs', lines 155:0-182:1 -/
+    Source: 'examples/tutorials/inbox/kernel/src/lib.rs', lines 156:0-183:1 -/
 def send
   (user : Std.U64) (s : Snapshot) («to» : Std.U64)
   (text : alloc.vec.Vec Std.U8) :
@@ -455,7 +1383,7 @@ def send
   else ok (core.result.Result.Err Error.BadText)
 
 /-- [inbox_kernel::mark_read]:
-    Source: 'examples/tutorials/inbox/kernel/src/lib.rs', lines 184:0-195:1 -/
+    Source: 'examples/tutorials/inbox/kernel/src/lib.rs', lines 185:0-196:1 -/
 def mark_read
   (user : Std.U64) (s : Snapshot) («from» : Std.U64) (seq : Std.U64) :
   Result (core.result.Result ((alloc.vec.Vec Write) × Reply) Error)
@@ -471,7 +1399,7 @@ def mark_read
       ok (core.result.Result.Ok (v, Reply.Done))
 
 /-- [inbox_kernel::delete]:
-    Source: 'examples/tutorials/inbox/kernel/src/lib.rs', lines 197:0-216:1 -/
+    Source: 'examples/tutorials/inbox/kernel/src/lib.rs', lines 198:0-217:1 -/
 def delete
   (user : Std.U64) (s : Snapshot) («from» : Std.U64) («to» : Std.U64)
   (seq : Std.U64) :
@@ -536,7 +1464,7 @@ def delete
         ok (core.result.Result.Ok (v, Reply.Done))
 
 /-- [inbox_kernel::transition]:
-    Source: 'examples/tutorials/inbox/kernel/src/lib.rs', lines 220:0-231:1
+    Source: 'examples/tutorials/inbox/kernel/src/lib.rs', lines 221:0-232:1
     Visibility: public -/
 def transition
   (actor : Principal) (s : Snapshot) (cmd : Command) :
@@ -559,198 +1487,5 @@ def transition
   | Command.Unblock u =>
     let v ← one (Write.DelBlock { owner := actor.user, sender := u })
     ok (core.result.Result.Ok (v, Reply.Done))
-
-/-- [inbox_kernel::put_message]: loop body 0:
-    Source: 'examples/tutorials/inbox/kernel/src/lib.rs', lines 1:0-243:1 -/
-@[rust_loop_body]
-def put_message_loop.body
-  (v : alloc.vec.Vec Message) (m : Message) (i : Std.Usize) :
-  Result (ControlFlow Std.Usize (alloc.vec.Vec Message))
-  := do
-  let i1 := alloc.vec.Vec.len v
-  if i < i1
-  then
-    let m1 ←
-      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Message) v i
-    if m1.sender = m.sender
-    then
-      if m1.recipient = m.recipient
-      then
-        if m1.seq = m.seq
-        then
-          let (_, index_mut_back) ←
-            alloc.vec.Vec.index_mut (core.slice.index.SliceIndexUsizeSlice
-              Message) v i
-          let v1 := index_mut_back m
-          ok (done v1)
-        else let i2 ← i + 1#usize
-             ok (cont i2)
-      else let i2 ← i + 1#usize
-           ok (cont i2)
-    else let i2 ← i + 1#usize
-         ok (cont i2)
-  else let v1 ← alloc.vec.Vec.push v m
-       ok (done v1)
-
-/-- [inbox_kernel::put_message]: loop 0:
-    Source: 'examples/tutorials/inbox/kernel/src/lib.rs', lines 1:0-243:1 -/
-@[rust_loop]
-def put_message_loop
-  (v : alloc.vec.Vec Message) (m : Message) (i : Std.Usize) :
-  Result (alloc.vec.Vec Message)
-  := do
-  loop
-    (fun i1 => put_message_loop.body v m i1)
-    i
-
-/-- [inbox_kernel::put_message]:
-    Source: 'examples/tutorials/inbox/kernel/src/lib.rs', lines 233:0-243:1 -/
-@[reducible]
-def put_message
-  (v : alloc.vec.Vec Message) (m : Message) :
-  Result (alloc.vec.Vec Message)
-  := do
-  put_message_loop v m 0#usize
-
-/-- [inbox_kernel::put_block]: loop body 0:
-    Source: 'examples/tutorials/inbox/kernel/src/lib.rs', lines 1:0-255:1 -/
-@[rust_loop_body]
-def put_block_loop.body
-  (v : alloc.vec.Vec Block) (b : Block) (i : Std.Usize) :
-  Result (ControlFlow Std.Usize (alloc.vec.Vec Block))
-  := do
-  let i1 := alloc.vec.Vec.len v
-  if i < i1
-  then
-    let b1 ←
-      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Block) v i
-    if b1.owner = b.owner
-    then
-      if b1.sender = b.sender
-      then
-        let (_, index_mut_back) ←
-          alloc.vec.Vec.index_mut (core.slice.index.SliceIndexUsizeSlice Block)
-            v i
-        let v1 := index_mut_back b
-        ok (done v1)
-      else let i2 ← i + 1#usize
-           ok (cont i2)
-    else let i2 ← i + 1#usize
-         ok (cont i2)
-  else let v1 ← alloc.vec.Vec.push v b
-       ok (done v1)
-
-/-- [inbox_kernel::put_block]: loop 0:
-    Source: 'examples/tutorials/inbox/kernel/src/lib.rs', lines 1:0-255:1 -/
-@[rust_loop]
-def put_block_loop
-  (v : alloc.vec.Vec Block) (b : Block) (i : Std.Usize) :
-  Result (alloc.vec.Vec Block)
-  := do
-  loop
-    (fun i1 => put_block_loop.body v b i1)
-    i
-
-/-- [inbox_kernel::put_block]:
-    Source: 'examples/tutorials/inbox/kernel/src/lib.rs', lines 245:0-255:1 -/
-@[reducible]
-def put_block
-  (v : alloc.vec.Vec Block) (b : Block) : Result (alloc.vec.Vec Block) := do
-  put_block_loop v b 0#usize
-
-/-- [inbox_kernel::del_block]: loop body 0:
-    Source: 'examples/tutorials/inbox/kernel/src/lib.rs', lines 260:4-265:5 -/
-@[rust_loop_body]
-def del_block_loop.body
-  (v : alloc.vec.Vec Block) (b : Block) (out : alloc.vec.Vec Block)
-  (i : Std.Usize) :
-  Result (ControlFlow ((alloc.vec.Vec Block) × Std.Usize) (alloc.vec.Vec
-    Block))
-  := do
-  let i1 := alloc.vec.Vec.len v
-  if i < i1
-  then
-    let b1 ←
-      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Block) v i
-    let out1 ←
-      if b1.owner = b.owner
-      then if b1.sender = b.sender
-           then ok out
-           else alloc.vec.Vec.push out b1
-      else alloc.vec.Vec.push out b1
-    let i2 ← i + 1#usize
-    ok (cont (out1, i2))
-  else ok (done out)
-
-/-- [inbox_kernel::del_block]: loop 0:
-    Source: 'examples/tutorials/inbox/kernel/src/lib.rs', lines 260:4-265:5 -/
-@[rust_loop]
-def del_block_loop
-  (v : alloc.vec.Vec Block) (b : Block) (out : alloc.vec.Vec Block)
-  (i : Std.Usize) :
-  Result (alloc.vec.Vec Block)
-  := do
-  loop
-    (fun (out1, i1) => del_block_loop.body v b out1 i1)
-    (out, i)
-
-/-- [inbox_kernel::del_block]:
-    Source: 'examples/tutorials/inbox/kernel/src/lib.rs', lines 257:0-267:1 -/
-@[reducible]
-def del_block
-  (v : alloc.vec.Vec Block) (b : Block) : Result (alloc.vec.Vec Block) := do
-  del_block_loop v b (alloc.vec.Vec.new Block) 0#usize
-
-/-- [inbox_kernel::apply_write]:
-    Source: 'examples/tutorials/inbox/kernel/src/lib.rs', lines 269:0-275:1 -/
-def apply_write (s : Snapshot) (w : Write) : Result Snapshot := do
-  match w with
-  | Write.PutMessage m =>
-    let v ← put_message s.messages m
-    ok { s with messages := v }
-  | Write.PutBlock b =>
-    let v ← put_block s.blocks b
-    ok { s with blocks := v }
-  | Write.DelBlock b =>
-    let v ← del_block s.blocks b
-    ok { s with blocks := v }
-
-/-- [inbox_kernel::apply]: loop body 0:
-    Source: 'examples/tutorials/inbox/kernel/src/lib.rs', lines 281:4-284:5
-    Visibility: public -/
-@[rust_loop_body]
-def apply_loop.body
-  (ws : alloc.vec.Vec Write) (s : Snapshot) (i : Std.Usize) :
-  Result (ControlFlow (Snapshot × Std.Usize) Snapshot)
-  := do
-  let i1 := alloc.vec.Vec.len ws
-  if i < i1
-  then
-    let w ←
-      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Write) ws i
-    let w1 ← Write.Insts.CoreCloneClone.clone w
-    let s1 ← apply_write s w1
-    let i2 ← i + 1#usize
-    ok (cont (s1, i2))
-  else ok (done s)
-
-/-- [inbox_kernel::apply]: loop 0:
-    Source: 'examples/tutorials/inbox/kernel/src/lib.rs', lines 281:4-284:5
-    Visibility: public -/
-@[rust_loop]
-def apply_loop
-  (ws : alloc.vec.Vec Write) (s : Snapshot) (i : Std.Usize) :
-  Result Snapshot
-  := do
-  loop
-    (fun (s1, i1) => apply_loop.body ws s1 i1)
-    (s, i)
-
-/-- [inbox_kernel::apply]:
-    Source: 'examples/tutorials/inbox/kernel/src/lib.rs', lines 278:0-286:1
-    Visibility: public -/
-def apply (snap : Snapshot) (ws : alloc.vec.Vec Write) : Result Snapshot := do
-  let s ← Snapshot.Insts.CoreCloneClone.clone snap
-  apply_loop ws s 0#usize
 
 end inbox_kernel

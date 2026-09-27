@@ -428,14 +428,8 @@ def {name}.delWhereA (col : Nat) (val : Val) : AWrite Val := .delWhere {name}.ta
 /-! Row writes on the encoding are the list operations. -/
 
 @[simp] theorem {name}.map_put (x : {name}) (l : List {name}) :
-    upsert (·.take {key_len}) ({name}.row x) (l.map {name}.row) = (upsert ({kf}) x l).map {name}.row := by
-  induction l with
-  | nil => rfl
-  | cons y ys ih =>
-    by_cases hk : {} = {}
-    · simp [upsert, hk, {name}.row]
-    · have : ¬ ({name}.row y).take {key_len} = ({name}.row x).take {key_len} := by simpa [{name}.row] using hk
-      simp only [List.map_cons, upsert, this, hk, if_false]; rw [ih]
+    upsert (·.take {key_len}) ({name}.row x) (l.map {name}.row) = (upsert ({kf}) x l).map {name}.row :=
+  map_upsert _ _ _ _ _ (fun y => by simp [{name}.row])
 
 @[simp] theorem {name}.map_del {} (l : List {name}) :
     (l.map {name}.row).filter (fun r => !decide (r.take {key_len} = [{}])) =
@@ -446,8 +440,6 @@ def {name}.delWhereA (col : Nat) (val : Val) : AWrite Val := .delWhere {name}.ta
     (l.map {name}.row).filter (fun r => !decide (r[col]? = some val)) =
       (l.filter (fun y => !decide (({name}.row y)[col]? = some val))).map {name}.row := by
   rw [List.filter_map]; rfl",
-            key_of("y"),
-            key_of("x"),
             params.join(" "),
             key_vals.join(", "),
             key_is("y")

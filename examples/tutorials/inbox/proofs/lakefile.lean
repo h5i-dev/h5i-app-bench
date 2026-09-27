@@ -12,8 +12,8 @@ package inbox_proofs
 -- Generated Lean: the extracted Rust (scripts/extract-inbox.sh). Do not edit.
 lean_lib Generated where
   srcDir := "generated"
-  roots := #[`InboxKernel]
+  roots := #[`InboxKernel, `Schema]
 
 -- Hand-written specification and proofs.
 @[default_target] lean_lib Proofs where
-  roots := #[`Spec, `Commands, `Theorems, `Noninterference, `Apply, `Scenarios]
+  roots := #[`Spec, `Commands, `Theorems, `Noninterference, `Apply, `Storage, `Scenarios]

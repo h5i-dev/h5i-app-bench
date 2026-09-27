@@ -154,14 +154,8 @@ def Post.delWhereA (col : Nat) (val : Val) : AWrite Val := .delWhere Post.table 
 /-! Row writes on the encoding are the list operations. -/
 
 @[simp] theorem Post.map_put (x : Post) (l : List Post) :
-    upsert (·.take 1) (Post.row x) (l.map Post.row) = (upsert (fun y => y.id) x l).map Post.row := by
-  induction l with
-  | nil => rfl
-  | cons y ys ih =>
-    by_cases hk : y.id = x.id
-    · simp [upsert, hk, Post.row]
-    · have : ¬ (Post.row y).take 1 = (Post.row x).take 1 := by simpa [Post.row] using hk
-      simp only [List.map_cons, upsert, this, hk, if_false]; rw [ih]
+    upsert (·.take 1) (Post.row x) (l.map Post.row) = (upsert (fun y => y.id) x l).map Post.row :=
+  map_upsert _ _ _ _ _ (fun y => by simp [Post.row])
 
 @[simp] theorem Post.map_del (id : U64) (l : List Post) :
     (l.map Post.row).filter (fun r => !decide (r.take 1 = [int id.val])) =
@@ -245,14 +239,8 @@ def Moderator.delWhereA (col : Nat) (val : Val) : AWrite Val := .delWhere Modera
 /-! Row writes on the encoding are the list operations. -/
 
 @[simp] theorem Moderator.map_put (x : Moderator) (l : List Moderator) :
-    upsert (·.take 1) (Moderator.row x) (l.map Moderator.row) = (upsert (fun y => y.user) x l).map Moderator.row := by
-  induction l with
-  | nil => rfl
-  | cons y ys ih =>
-    by_cases hk : y.user = x.user
-    · simp [upsert, hk, Moderator.row]
-    · have : ¬ (Moderator.row y).take 1 = (Moderator.row x).take 1 := by simpa [Moderator.row] using hk
-      simp only [List.map_cons, upsert, this, hk, if_false]; rw [ih]
+    upsert (·.take 1) (Moderator.row x) (l.map Moderator.row) = (upsert (fun y => y.user) x l).map Moderator.row :=
+  map_upsert _ _ _ _ _ (fun y => by simp [Moderator.row])
 
 @[simp] theorem Moderator.map_del (user : U64) (l : List Moderator) :
     (l.map Moderator.row).filter (fun r => !decide (r.take 1 = [int user.val])) =

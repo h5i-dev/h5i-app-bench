@@ -19,7 +19,16 @@ pub struct Principal {
 }
 
 i5h_schema::schema! {
-    mapping booking_tables for booking_kernel;
+    mapping booking_tables for booking_kernel, writes Write, lean "../proofs/generated/Schema.lean";
+
+    /// One organization's state.
+    #[derive(Clone, Debug, Default, PartialEq, Eq)]
+    pub struct Snapshot {
+        counter: Counter,
+        admins: Vec<Admin>,
+        rooms: Vec<Room>,
+        bookings: Vec<Booking>,
+    }
 
     #[derive(Clone, Copy, Debug, PartialEq, Eq)]
     pub struct Admin in "admins" {
@@ -47,15 +56,6 @@ i5h_schema::schema! {
         key {}
         next_id: u64,
     }
-}
-
-/// One organization's state.
-#[derive(Clone, Debug, Default, PartialEq, Eq)]
-pub struct Snapshot {
-    pub counter: Counter,
-    pub admins: Vec<Admin>,
-    pub rooms: Vec<Room>,
-    pub bookings: Vec<Booking>,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -246,75 +246,30 @@ pub fn transition(actor: &Principal, s: &Snapshot, cmd: &Command) -> Outcome {
     }
 }
 
-fn put_admin(v: &mut Vec<Admin>, x: Admin) {
-    let mut i = 0;
-    while i < v.len() {
-        if v[i].user == x.user {
-            v[i] = x;
-            return;
-        }
-        i += 1;
-    }
-    v.push(x);
-}
-
-fn put_room(v: &mut Vec<Room>, x: Room) {
-    let mut i = 0;
-    while i < v.len() {
-        if v[i].id == x.id {
-            v[i] = x;
-            return;
-        }
-        i += 1;
-    }
-    v.push(x);
-}
-
-fn put_booking(v: &mut Vec<Booking>, x: Booking) {
-    let mut i = 0;
-    while i < v.len() {
-        if v[i].id == x.id {
-            v[i] = x;
-            return;
-        }
-        i += 1;
-    }
-    v.push(x);
-}
-
-fn del_booking(v: &Vec<Booking>, id: u64) -> Vec<Booking> {
-    let mut out = Vec::new();
-    let mut i = 0;
-    while i < v.len() {
-        if v[i].id != id {
-            out.push(v[i]);
-        }
-        i += 1;
-    }
-    out
-}
-
+/// What one write does to the state. `schema!` runs it over a write set
+/// (`apply`).
 fn apply_write(s: &mut Snapshot, w: Write) {
     match w {
-        Write::PutAdmin(x) => put_admin(&mut s.admins, x),
-        Write::PutRoom(x) => put_room(&mut s.rooms, x),
-        Write::PutBooking(x) => put_booking(&mut s.bookings, x),
-        Write::DelBooking(id) => s.bookings = del_booking(&s.bookings, id),
+        Write::PutAdmin(x) => Admin::put(&mut s.admins, x),
+        Write::PutRoom(x) => Room::put(&mut s.rooms, x),
+        Write::PutBooking(x) => Booking::put(&mut s.bookings, x),
+        Write::DelBooking(id) => s.bookings = Booking::del(&s.bookings, id),
         Write::SetCounter(c) => s.counter = c,
         // Effects leave through the outbox; they change no table.
         Write::Emit(_) => {}
     }
 }
 
-/// What committing a write set means. The PostgreSQL store must agree.
-pub fn apply(snap: &Snapshot, ws: &Vec<Write>) -> Snapshot {
-    let mut s = snap.clone();
-    let mut i = 0;
-    while i < ws.len() {
-        apply_write(&mut s, ws[i]);
-        i += 1;
+/// The table writes one write makes; an effect makes none.
+fn sql_write(w: &Write, out: &mut Vec<i5h_sql::Write>) {
+    match w {
+        Write::PutAdmin(x) => out.push(x.sql_put()),
+        Write::PutRoom(x) => out.push(x.sql_put()),
+        Write::PutBooking(x) => out.push(x.sql_put()),
+        Write::DelBooking(id) => out.push(Booking::sql_del(*id)),
+        Write::SetCounter(c) => out.push(c.sql_put()),
+        Write::Emit(_) => {}
     }
-    s
 }
 
 #[cfg(test)]

@@ -143,14 +143,8 @@ def Account.delWhereA (col : Nat) (val : Val) : AWrite Val := .delWhere Account.
 /-! Row writes on the encoding are the list operations. -/
 
 @[simp] theorem Account.map_put (x : Account) (l : List Account) :
-    upsert (·.take 1) (Account.row x) (l.map Account.row) = (upsert (fun y => y.id) x l).map Account.row := by
-  induction l with
-  | nil => rfl
-  | cons y ys ih =>
-    by_cases hk : y.id = x.id
-    · simp [upsert, hk, Account.row]
-    · have : ¬ (Account.row y).take 1 = (Account.row x).take 1 := by simpa [Account.row] using hk
-      simp only [List.map_cons, upsert, this, hk, if_false]; rw [ih]
+    upsert (·.take 1) (Account.row x) (l.map Account.row) = (upsert (fun y => y.id) x l).map Account.row :=
+  map_upsert _ _ _ _ _ (fun y => by simp [Account.row])
 
 @[simp] theorem Account.map_del (id : U64) (l : List Account) :
     (l.map Account.row).filter (fun r => !decide (r.take 1 = [int id.val])) =

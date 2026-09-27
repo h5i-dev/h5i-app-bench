@@ -4,7 +4,7 @@
 use axum::http::StatusCode;
 use i5h::{Kernel, TenantId};
 use i5h_json::Value as Out;
-use i5h_pg::{delete, key, load, upsert, DbError, ReplyCodec, Store, Tx};
+use i5h_pg::{DbError, ReplyCodec, Store, Tx};
 use inbox_kernel as k;
 use serde::{Deserialize, Serialize};
 
@@ -50,22 +50,15 @@ impl Store<Inbox> for InboxStore {
         schema_tables()
     }
 
+    // Rows are decoded by the kernel's `decode`, and a write set is stored as
+    // the table writes of its `sql_writes`; `Storage.lean` proves the store
+    // then holds what `apply` computes.
     async fn load(tx: &Tx<'_>, t: TenantId) -> Result<k::Snapshot, DbError> {
-        Ok(k::Snapshot { messages: load::<Inbox, _>(tx, t).await?, blocks: load::<Inbox, _>(tx, t).await? })
+        schema_load(tx, t).await
     }
 
     async fn write(tx: &Tx<'_>, t: TenantId, ws: &Vec<k::Write>) -> Result<(), DbError> {
-        for w in ws {
-            match w {
-                k::Write::PutMessage(m) => upsert::<Inbox, _>(tx, t, m).await?,
-                k::Write::PutBlock(b) => upsert::<Inbox, _>(tx, t, b).await?,
-                k::Write::DelBlock(b) => {
-                    let keys = [key::<Inbox, _>(&b.owner)?, key::<Inbox, _>(&b.sender)?];
-                    delete::<Inbox, k::Block>(tx, t, &keys).await?
-                }
-            }
-        }
-        Ok(())
+        schema_store(tx, t, ws).await
     }
 }
 
