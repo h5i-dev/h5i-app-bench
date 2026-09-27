@@ -132,4 +132,26 @@ theorem extracted_plan_sound (kl : Nat → Nat) (ws : alloc.vec.Vec Write) (tabs
   rw [hss, ← List.map_map]
   exact (plan_sound kl _ tabs hk (by simpa using hw)).1.symm
 
+/-- From an empty database, running every batch's plan in order gives the
+keyed-table result of all the writes. Discharges `WellKeyed`. -/
+theorem history_sound (kl : Nat → Nat) (bs : List (List (AWrite Val)))
+    (hw : ∀ b ∈ bs, ∀ w ∈ b, WriteOk kl w) :
+    execAll (fun _ _ => none) (bs.flatMap (·.map planA)) =
+      readBack kl (applyAllW kl (fun _ => []) bs.flatten) := by
+  have hk : WellKeyed kl (V := Val) (fun _ => []) := fun _ => by simp
+  have h := (plan_sound kl bs.flatten (fun _ => []) hk
+    (fun w hw' => by
+      obtain ⟨b, hb, hwb⟩ := List.mem_flatten.1 hw'
+      exact hw b hb w hwb)).1
+  have e0 : readBack kl (V := Val) (fun _ => []) = fun _ _ => none := by
+    funext t k; simp [readBack]
+  rw [h, e0, List.map_flatten]
+  rfl
+
+/-- Non-vacuity: a put then a delete of another key leaves the put's row. -/
+example : execAll (fun _ _ => none)
+    ([AWrite.put 0 1 [Val.Int 1#i64, Val.Bool true], AWrite.del 0 [Val.Int 2#i64]].map planA)
+      0 [Val.Int 1#i64] = some [Val.Int 1#i64, Val.Bool true] := by
+  simp [execAll, exec, planA]
+
 end i5h_sql.Sem

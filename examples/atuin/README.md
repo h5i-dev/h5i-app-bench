@@ -37,13 +37,14 @@ principal, state and command.
 | Theorem | Statement |
 |---|---|
 | `step_total` | The kernel never fails. |
-| `isolation` | Every write touches only the caller's own account or the account being created. |
+| `isolation` | Every write touches only the caller's own account or the account being created (the next id, which the invariants keep unused). |
 | `reply_confined` | `NextRecords` and `Status` return only the caller's records. |
 | `inv_preserved`, `reachable_inv` | In every reachable state, sessions and records belong to existing users (so deleting an account leaves nothing behind), ids and usernames are unique, ids are fresh, and stored records respect the size cap. |
 | `registration_closed` | Closed registration refuses every sign-up. |
 | `change_needs_password` | A password change without the current password fails. |
 | `delete_needs_password` | In `transition`, deleting an account requires the password. |
 | `current_deletes_without_password` | In `transition_current`, any signed-in user can delete their account without the password. |
+| `deletes_with_password`, `register_opens` | The fixed kernel still deletes an account given the password, and an open server accepts a sign-up, so the theorems above do not hold by refusing everything. |
 
 All of them depend only on Lean's standard axioms (`propext`,
 `Classical.choice` and `Quot.sound`).

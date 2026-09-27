@@ -208,11 +208,17 @@ With these two lemmas, the theorems about `transition` are short:
 | `apply_correct` | `apply` returns `eval`'s result or its refusal, and writes the result to the caller's memory |
 | `writes_own_memory` | a command writes only the caller's row |
 | `get_after` | after any successful command, a `get` by the same user returns its result |
+| `others_unchanged` | after any successful command, every other user's memory is unchanged |
 
-`get_after` also goes through `apply`, the function that defines what
-committing a write means, and which the PostgreSQL store must agree with. In
-this tutorial that agreement is tested; the document service in `examples/docs`
-proves it (see `examples/docs/proofs/Storage.lean`).
+`get_after` and `others_unchanged` also go through `apply`, the function that
+defines what committing a write means, and which the PostgreSQL store must
+agree with. In this tutorial that agreement is tested; the document service in
+`examples/docs` proves it (see `examples/docs/proofs/Storage.lean`).
+
+`get_after` assumes that the command succeeded and that its write was
+committed. `set_then_get` checks that these hypotheses can hold: on an empty
+snapshot, a user sets 5 and then reads 5 back. `sub_refused` shows a
+refusal: subtracting 1 from an empty memory returns `Underflow`.
 
 Finally, you can check that the proofs assume nothing beyond Lean's three
 standard axioms:
@@ -256,8 +262,8 @@ the proof covers every input. Undo the change before you continue.
 ## Limits of the proofs
 
 The theorems are about the Rust code as translated by Aeneas, and they cover
-the arithmetic, the refusals, the isolation between users, the `get` round trip
-and the absence of panics. The framework enforces the rest of the request path
+the arithmetic, the refusals, the isolation between users
+(`others_unchanged`), the `get` round trip and the absence of panics. The framework enforces the rest of the request path
 by construction: every request runs through `transition` in a SERIALIZABLE
 transaction, tenants are kept apart, and a retry with an idempotency key runs a
 command at most once.
@@ -276,7 +282,8 @@ of the framework in full.
    of `compute_spec`; `step*` does most of the work.
 2. Add a `Clear` command that resets the caller's memory to 0, and extend
    `get_after` to cover it.
-3. Prove that a command leaves every other user's memory unchanged, by stating
-   the result with `memOf` for a user `u ≠ a.user` after `apply`.
+3. Delete the proof of `others_unchanged` and write it again. It combines
+   `writes_own_memory` and `apply_spec` with a small lemma about `memOf` after
+   an `upsert` for a different user.
 
 The [next tutorial](../board/TUTORIAL.md), a bulletin board, adds permissions and invariants.

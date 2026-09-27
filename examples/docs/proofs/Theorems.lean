@@ -66,6 +66,21 @@ theorem authorized (a : Principal) (s : Snapshot) (c : Command) ws r
     (simp_all [writeAllowed, statusStep, Snapshot.toSt]
      try (have e := ‹_ = v1›; subst e; simp_all [writeAllowed, statusStep, Snapshot.toSt])))
 
+/-- An effect is emitted only together with the write that publishes its
+document. With `authorized`, only a writer publishing an approved document
+triggers one. -/
+theorem emit_publishes (a : Principal) (s : Snapshot) (c : Command) ws r
+    (h : transition a s c = .ok (.Ok (ws, r))) :
+    ∀ e, Write.Emit e ∈ ws.val → ∃ d, Write.PutDocument d ∈ ws.val ∧ d.id = e.doc ∧
+      d.project = e.project ∧ d.status = .Published := by
+  refine of_spec (P := fun ws _ => ∀ e, Write.Emit e ∈ ws.val → ∃ d, Write.PutDocument d ∈ ws.val ∧
+    d.id = e.doc ∧ d.project = e.project ∧ d.status = .Published) ?_ h
+  walk transition
+  all_goals (simp only [OnOk]; try trivial)
+  all_goals (intro e he; simp_all)
+  obtain ⟨_, _, rfl⟩ := ‹∃ _, _ ∧ _›
+  rfl
+
 /-- Replies contain only documents the caller may read. -/
 theorem reply_confined (a : Principal) (s : Snapshot) (c : Command) ws r
     (h : transition a s c = .ok (.Ok (ws, r))) :

@@ -337,8 +337,9 @@ theorem at_most_one {l : List Pair} {k u : Nat}
   rw [List.nodup_replicate] at hn
   simpa using hn
 
-/-- With unique owner rows, deleting one owner of a crate that has two leaves one. -/
-theorem owner_remains (s : St) (k u : Nat)
+/-- With unique owner rows, deleting one owner of a crate that has two leaves
+one. `Invariants.owner_remains` discharges the uniqueness for reachable states. -/
+theorem owner_remains_of_unique (s : St) (k u : Nat)
     (hnd : (s.owners.map fun o => (o.a.val, o.b.val)).Nodup) (h2 : 2 ≤ ownerCount s k) :
     1 ≤ ((s.owners.filter fun o => ¬(o.a.val = k ∧ o.b.val = u)).filter (·.a.val = k)).length := by
   have h1 := at_most_one (k := k) (u := u) hnd

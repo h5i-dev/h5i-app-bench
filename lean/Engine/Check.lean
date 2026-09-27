@@ -166,6 +166,30 @@ def counter (s : Nat) (_ : Nat) (n : Nat) : Option (Nat × Nat) :=
 /-- Two sends of the same keyed request, plus one request without a key. -/
 def reqs : List (Req Nat Nat Nat) := [⟨0, 1, some 7⟩, ⟨0, 1, some 7⟩, ⟨0, 2, none⟩]
 
+/-! ## Scenarios: the guarded cases occur -/
+
+/-- A keyed request whose COMMIT reply is lost retries and gets the stored
+reply: one commit, and the caller sees its result. -/
+theorem lost_commit_replayed : ∃ sys : Sys Nat Nat Nat Nat Nat,
+    Reachable counter true true 0 [⟨0, 1, some 7⟩] sys ∧ sys.db.log.length = 1 ∧
+    sys.clients = [⟨⟨0, 1, some 7⟩, .done (.ok 1)⟩] :=
+  ⟨_, .step (.step (.step (.step .init
+    (.begin (i := 0) rfl rfl (fun _ => by simp [Idle, init])))
+    (.commitLost (i := 0) rfl rfl (fun _ => rfl)))
+    (.begin (i := 0) rfl rfl (fun _ => by simp [Idle, init, afterLost])))
+    (.replay (i := 0) rfl rfl), rfl, rfl⟩
+
+/-- Without the conflict check, two requests decided on one snapshot both
+commit and the log no longer replays to the state: `serializable` needs it. -/
+theorem unchecked_lost_update : ∃ sys : Sys Nat Nat Nat Nat Nat,
+    Reachable counter false false 0 [⟨0, 1, none⟩, ⟨0, 1, none⟩] sys ∧
+    run counter 0 sys.db.log ≠ some sys.db.state :=
+  ⟨_, .step (.step (.step (.step .init
+    (.begin (i := 0) rfl rfl (fun h => nomatch h)))
+    (.begin (i := 1) rfl rfl (fun h => nomatch h)))
+    (.commit (i := 0) rfl rfl (fun h => nomatch h)))
+    (.commit (i := 1) rfl rfl (fun h => nomatch h)), by decide⟩
+
 /-- The properties, as a check on one state. -/
 def okState (sys : Sys Nat Nat Nat Nat Nat) : Bool :=
   run counter 0 sys.db.log == some sys.db.state &&
@@ -220,5 +244,8 @@ def brief (sys : Sys Nat Nat Nat Nat Nat) : String :=
 #print axioms Outbox.key_fixes_content
 #print axioms Outbox.delivered_sent
 #print axioms Outbox.dead_reason
+#print axioms lost_commit_replayed
+#print axioms unchecked_lost_update
+#print axioms Outbox.duplicate_send
 
 end Engine

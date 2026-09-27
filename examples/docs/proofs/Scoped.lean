@@ -9,6 +9,8 @@ import Frame
 `Frame.slice snap sc` for a full snapshot `snap` that the tenant's rows hold
 and that satisfies `Inv`. With `transition_frame` and `store_sound`, running
 a command on the scoped load and storing its writes keeps `DbInv`.
+`served_inv` puts the steps together: every database the server produces
+from an empty tenant satisfies `DbInv`.
 -/
 open Aeneas Aeneas.Std Result docs_kernel docs_kernel.Spec I5hLib I5hLib.Sql docs_kernel.Storage
   docs_kernel.Load docs_kernel.Frame docs_kernel.Schema
@@ -248,5 +250,112 @@ theorem scoped_command (db : Db Val) (s : St) (hi : Inv s) (hs : Stored db s) (h
   have hi' := inv_equiv e hi
   rw [transition_frame a snap cmd hi' sc hsc] at ht
   exact store_sound db snap hi' (stored_equiv e hi ⟨c, hc, hb, hdb⟩) a cmd ws reply ht
+
+/-! ## Every database the server produces -/
+
+/-- The tenant databases the server can produce from an empty tenant. Each
+request loads rows (all of them with `load`, or a scope's with `load_for`),
+decodes them, runs a command that succeeds and stores its writes. The loads
+are the trusted `SELECT`s (`Lists`, `Sel`); a scoped load also needs the
+tables to fit in a `Vec`. -/
+inductive Served : Db Val → Prop
+  | fresh : Served (fun _ _ => none)
+  | full {db : Db Val} {r : Rows} {snap : Snapshot} {a : Principal} {cmd : Command} {ws reply}
+      {v : alloc.vec.Vec i5h_sql.Write} :
+      Served db → Lists db (rowsOf r) → decode r = ok (some snap) →
+      transition a snap cmd = .ok (.Ok (ws, reply)) → sql_writes ws = ok v →
+      Served (execAll db ((v.val.map Write.abs).map planA))
+  | part {db : Db Val} {a : Principal} {cmd : Command} {sc : Scope}
+      {rd : alloc.vec.Vec (alloc.vec.Vec Val)} {op : Option U64} {r : Rows} {snap : Snapshot} {ws reply}
+      {v : alloc.vec.Vec i5h_sql.Write} :
+      Served db → (∀ s, Spec.Inv s → Stored db s → Fits s) → read_scope cmd = ok sc →
+      (∀ d, sc = .Document d → Sel db 2 (ColIs 0 (int d.val)) (rd.val.map (·.val))) →
+      scoped_project sc rd = ok op → Sel db 3 (fun _ => True) (r.counter.val.map (·.val)) →
+      (op = none → NoRows r) → (∀ p, op = some p → ProjectRows db p r) →
+      decode r = ok (some snap) → transition a snap cmd = .ok (.Ok (ws, reply)) →
+      sql_writes ws = ok v → Served (execAll db ((v.val.map Write.abs).map planA))
+
+/-- The database invariant, as one statement: every database the server
+produces holds a state satisfying `Inv`, whichever load path each request
+took and in whatever order the rows came back. -/
+theorem served_inv {db : Db Val} (h : Served db) : DbInv db := by
+  induction h with
+  | fresh => exact fresh
+  | full _ hl hdec ht hv ih =>
+    obtain ⟨snap', e, hi, hs⟩ := post_of_ok (load_sound _ ih _ hl) hdec
+    cases e
+    have := post_of_ok (store_sound _ _ hi hs _ _ _ _ ht) hv
+    exact this
+  | part _ hf hsc hd hop h3 hn hp hdec ht hv ih =>
+    obtain ⟨s, hi, hs⟩ := ih
+    have := post_of_ok (scoped_command _ s hi hs (hf s hi hs) _ _ _ hsc _ hd _ hop _ h3 hn hp _ hdec _ _ ht) hv
+    exact this
+
+/-! ## The hypotheses hold together -/
+
+/-- `CreateProject` succeeds while the counter has room. -/
+theorem create_spec (a : Principal) (s : Snapshot) (n : alloc.vec.Vec U8) (h : s.counter.next_id.val < U64.max) :
+    transition a s (.CreateProject n) ⦃ r => ∃ ws c, r = .Ok (ws, .Created s.counter.next_id) ∧
+      ws.val = [.SetCounter c, .PutProject ⟨s.counter.next_id, n⟩, .PutMember ⟨s.counter.next_id, a.user, .Owner⟩] ⦄ := by
+  unfold transition
+  step as ⟨ r, hr ⟩
+  rcases r with ⟨id, c⟩ | e
+  · obtain ⟨rfl, _⟩ := hr
+    simp only
+    step*
+  · simp at hr; omega
+
+theorem exists_of_spec {α} {m : Result α} {P : α → Prop} (h : m ⦃ P ⦄) : ∃ x, m = ok x ∧ P x := by
+  obtain ⟨y, hy, hp⟩ := (WP.spec_equiv_exists _ _).1 h
+  exact ⟨y, hy, hp⟩
+
+def emptyRows : Rows := ⟨alloc.vec.Vec.new _, alloc.vec.Vec.new _, alloc.vec.Vec.new _,
+  alloc.vec.Vec.new _, alloc.vec.Vec.new _⟩
+
+/-- The hypotheses of `Served.full` hold together: a fresh tenant's first
+request, creating a project, stores that project's row. -/
+theorem served_create (a : Principal) (n : alloc.vec.Vec U8) :
+    ∃ db, Served db ∧ db 0 [int 0] = some [int 0, .Bytes n] := by
+  obtain ⟨o, hdec, snap, rfl, e⟩ := exists_of_spec (decode_spec emptyRows init false (fun _ => rfl)
+    (by simp [init]) (fun t => by rcases t with _ | _ | _ | _ | _ | t <;> simp [rowsOf, emptyRows, encC, enc, init]))
+  have h0 : snap.counter.next_id = 0#u64 := by
+    have := e.next; simp [Snapshot.toSt, init] at this; scalar_tac
+  obtain ⟨r, ht, ws, c, rfl, hws⟩ := exists_of_spec (create_spec a snap n (by rw [h0]; scalar_tac))
+  obtain ⟨v, hv, hvv⟩ := exists_of_spec (sql_writes_spec ws)
+  refine ⟨_, .full .fresh (fun t => ?_) hdec ht hv, ?_⟩
+  · rcases t with _ | _ | _ | _ | _ | t <;> simp [rowsOf, emptyRows]
+  · rw [hvv, hws, h0]
+    simp [execAll, exec, sqlA, planA, Project.row, counterRow]
+
+/-- An empty tenant fits in a `Vec`. -/
+theorem fresh_fits (s : St) (h : Stored (fun _ _ => none) s) : Fits s := by
+  obtain ⟨c, -, -, hdb⟩ := h
+  have e : ∀ t, encC c s t = [] ∨ t = 3 := fun t => by
+    by_cases ht : t = 3
+    · exact .inr ht
+    · left
+      cases hl : encC c s t with
+      | nil => rfl
+      | cons x xs =>
+        have := congrFun (congrFun hdb t) (x.take (kl t))
+        simp [readBack, hl] at this
+  have e0 := e 0; have e1 := e 1; have e2 := e 2; have e4 := e 4
+  simp [encC, enc] at e0 e1 e2 e4
+  simp [Fits, e0, e1, e2, e4]
+
+/-- The same on the scoped path, which the server takes for requests. -/
+theorem served_create_scoped (a : Principal) (n : alloc.vec.Vec U8) :
+    ∃ db, Served db ∧ db 0 [int 0] = some [int 0, .Bytes n] := by
+  obtain ⟨o, hdec, snap, rfl, e⟩ := exists_of_spec (decode_spec emptyRows init false (fun _ => rfl)
+    (by simp [init]) (fun t => by rcases t with _ | _ | _ | _ | _ | t <;> simp [rowsOf, emptyRows, encC, enc, init]))
+  have h0 : snap.counter.next_id = 0#u64 := by
+    have := e.next; simp [Snapshot.toSt, init] at this; scalar_tac
+  obtain ⟨r, ht, ws, c, rfl, hws⟩ := exists_of_spec (create_spec a snap n (by rw [h0]; scalar_tac))
+  obtain ⟨v, hv, hvv⟩ := exists_of_spec (sql_writes_spec ws)
+  refine ⟨_, .part (sc := .Counter) (rd := alloc.vec.Vec.new _) (op := none) .fresh
+    (fun s _ hs => fresh_fits s hs) rfl (by simp) rfl ?_ (fun _ => ⟨rfl, rfl, rfl, rfl⟩) (by simp) hdec ht hv, ?_⟩
+  · simp [Sel, emptyRows]
+  · rw [hvv, hws, h0]
+    simp [execAll, exec, sqlA, planA, Project.row, counterRow]
 
 end docs_kernel.Scoped

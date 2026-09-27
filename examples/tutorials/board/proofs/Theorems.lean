@@ -187,6 +187,12 @@ theorem reachable_inv {s : St} (h : Reachable s) : Inv s := by
   | init => exact init_inv
   | step _ ht ih => exact inv_preserved _ _ _ _ _ ih ht
 
+/-- `authorized` on reachable states, where `Inv` need not be assumed. -/
+theorem authorized_reachable (a : Principal) (s : Snapshot) (c : Command) ws r
+    (hr : Reachable (Snapshot.toSt s)) (h : transition a s c = .ok (.Ok (ws, r))) :
+    ∀ w ∈ ws.val, allowed (Snapshot.toSt s) a.user.val w :=
+  authorized a s c ws r (reachable_inv hr) h
+
 /-! ## Two facts across a step -/
 
 theorem same_post {s : St} (hi : Inv s) {p q : Post} (hp : p ∈ s.posts) (hq : q ∈ s.posts) (h : p.id = q.id) :

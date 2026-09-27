@@ -137,4 +137,38 @@ theorem current_deletes_without_password (s : Snapshot) (id : U64) (hu : ∃ u �
   obtain ⟨o, ho, ws, rfl⟩ := (WP.spec_equiv_exists _ _).1 hs
   exact ⟨ws, ho⟩
 
+/-! ## Scenarios
+
+The guarded commands still succeed when they should, so the theorems above do
+not hold by refusing everything. -/
+
+/-- With the fix, a signed-in user who gives the password deletes the account. -/
+theorem deletes_with_password (s : Snapshot) (id : U64) (hu : ∃ u ∈ s.users.val, u.id = id) :
+    ∃ ws, transition (.User id) s (.DeleteAccount true) = .ok (.Ok (ws, .Done)) := by
+  have hs : transition (.User id) s (.DeleteAccount true) ⦃ o => ∃ ws, o = .Ok (ws, .Done) ⦄ := by
+    obtain ⟨u, hu1, hu2⟩ := hu
+    unfold transition step
+    step*
+    all_goals (try simp_all)
+    simp only [signedIn, Snapshot.toSt] at o_post
+    rw [if_pos (List.any_eq_true.2 ⟨u, hu1, by simp [hu2]⟩)] at o_post
+    simp at o_post
+  obtain ⟨o, ho, ws, rfl⟩ := (WP.spec_equiv_exists _ _).1 hs
+  exact ⟨ws, ho⟩
+
+def v8 (l : List U8) (h : l.length ≤ Usize.max := by simp only [List.length_cons, List.length_nil]; scalar_tac) :
+    alloc.vec.Vec U8 := alloc.vec.Vec.from l h
+
+/-- A fresh server with open registration and no size cap. -/
+def fresh : Snapshot :=
+  ⟨⟨0#u64⟩, ⟨true, 0#u64⟩, alloc.vec.Vec.new _, alloc.vec.Vec.new _, alloc.vec.Vec.new _⟩
+
+/-- Signing up as "a" on an open server creates user 0, in both variants. -/
+theorem register_opens (b : Bool) :
+    step .Anonymous fresh (.Register (v8 [97#u8]) (v8 [1#u8]) (v8 [2#u8])) b ⦃ o =>
+      ∃ ws, o = .Ok (ws, .Registered 0#u64) ∧ ws.val.length = 3 ⦄ := by
+  unfold step
+  step*
+  all_goals (simp_all [fresh, v8, byteOK, U64.rMax, U64.max_eq]; try scalar_tac)
+
 end atuin_kernel.Theorems

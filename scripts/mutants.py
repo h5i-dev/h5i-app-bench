@@ -22,7 +22,9 @@ import time
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 KERNEL = os.path.join(ROOT, "examples/docs/kernel")
 PROOFS = os.path.join(ROOT, "examples/docs/proofs")
-THEOREMS = ["Theorems", "Invariants", "Noninterference", "Frame", "Check", "Storage", "Load", "Scoped"]
+# Scenarios runs the extracted kernel on concrete states, so it catches
+# mutants that break a run without breaking a theorem.
+THEOREMS = ["Theorems", "Invariants", "Noninterference", "Frame", "Check", "Storage", "Load", "Scoped", "Scenarios"]
 
 # name -> list of (old, new) replacements in kernel/src/lib.rs
 MUTANTS = {
