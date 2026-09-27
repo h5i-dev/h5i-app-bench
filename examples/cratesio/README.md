@@ -35,7 +35,10 @@ its versions, owners, invitations and dependencies. The operator locks and
 unlocks accounts and sets the admin flag.
 
 The shell supplies three facts that the kernel trusts: the current time, the
-caller's GitHub teams, and a crate's download count. crates.io asks GitHub for
+caller's GitHub teams, and a crate's download count. The time comes from the
+engine, which reads the database's clock on every attempt and never goes back
+within a registry (`monotonic`), so a lock that has ended or an invitation
+that has expired stays so. crates.io asks GitHub for
 team membership on each request; here the server reads it from its
 configuration (`I5H_TEAMS`) and passes it in the principal, so the proofs hold
 for whatever teams the shell reports, and the report itself is not verified.

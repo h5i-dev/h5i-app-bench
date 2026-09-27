@@ -1,9 +1,9 @@
 use axum::routing::get;
 use axum::Router;
-use booking_server::{parse_registry, principal, BookingApp, BookingStore, Notifier};
+use booking_server::{config, parse_registry, principal, BookingApp, BookingStore, Notifier};
 use i5h_http::{rpc_router, HmacAuth, I5h};
 use i5h_pg::outbox::DispatchConfig;
-use i5h_pg::{pool, Engine, EngineConfig};
+use i5h_pg::{pool, Engine};
 use std::sync::Arc;
 use std::time::Duration;
 
@@ -26,7 +26,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         return Ok(());
     }
 
-    let engine = Arc::new(Engine::<BookingApp, BookingStore>::new(pool(&i5h_pg::with_schema(&url, "booking")?, 8)?, EngineConfig::default()));
+    let engine = Arc::new(Engine::<BookingApp, BookingStore>::new(pool(&i5h_pg::with_schema(&url, "booking")?, 8)?, config()));
     engine.install_schema().await?;
 
     // Send committed notifications once a second.

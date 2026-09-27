@@ -1,11 +1,12 @@
 //! The PostgreSQL store agrees with the kernel's `apply`: random commands run
 //! through the real engine and through `MemoryEngine` give the same replies
-//! and the same final state. Needs I5H_TEST_DATABASE_URL; skips otherwise.
+//! and the same final state, on a test clock that moves forward.
+//! Needs I5H_TEST_DATABASE_URL; skips otherwise.
 
 use cratesio_kernel as k;
 use cratesio_server::{CratesStore, Cratesio};
-use i5h::{MemoryEngine, TenantId};
-use i5h_pg::{pool, Engine, EngineConfig};
+use i5h::{MemoryEngine, TenantId, Timestamp};
+use i5h_pg::{pool, Clock, Engine, EngineConfig, ManualClock};
 
 fn rng(state: &mut u64, n: u64) -> u64 {
     *state = state.wrapping_mul(6364136223846793005).wrapping_add(1442695040888963407);
@@ -72,7 +73,9 @@ async fn store_agrees_with_apply() {
         eprintln!("I5H_TEST_DATABASE_URL not set; skipping");
         return;
     };
-    let pg = Engine::<Cratesio, CratesStore>::new(pool(&i5h_pg::with_schema(&url, "cratesio").unwrap(), 4).unwrap(), EngineConfig::default());
+    let clock = ManualClock::default();
+    let config = EngineConfig { clock: Clock::Manual(clock.clone()), monotonic: true, ..Default::default() };
+    let pg = Engine::<Cratesio, CratesStore>::new(pool(&i5h_pg::with_schema(&url, "cratesio").unwrap(), 4).unwrap(), config);
     pg.install_schema().await.unwrap();
     let mem = MemoryEngine::<Cratesio>::default();
     let registry = std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).unwrap().as_nanos() as u64 % (1 << 50);
@@ -116,9 +119,10 @@ async fn store_agrees_with_apply() {
             2 => k::Via::Token(rng(&mut s, 6)),
             _ => k::Via::Operator,
         };
-        let actor = k::Principal { registry, user, via, now, teams: teams_of(user) };
+        let actor = k::Principal { registry, user, via, now: 0, teams: teams_of(user) };
+        clock.set(Timestamp::from_secs(now));
         let got = pg.execute(&actor, &cmd).await.unwrap();
-        let want = mem.execute(&actor, &cmd);
+        let want = mem.execute_at(&actor, Timestamp::from_secs(now), &cmd);
         assert_eq!(got, want, "{cmd:?} by {actor:?}");
         ok += got.is_ok() as u32;
         if let Err(e) = &got {

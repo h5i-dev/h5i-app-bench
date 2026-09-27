@@ -1,14 +1,16 @@
 //! The PostgreSQL store agrees with the kernel's `apply`: random commands run
 //! through the real engine and through `transition` and `apply` in memory
 //! (what `MemoryEngine` does, but starting from the database's state) give
-//! the same replies and the same final state. Then a burn-after-reading paste goes through the
-//! HTTP routes. Needs I5H_TEST_DATABASE_URL; skips otherwise.
+//! the same replies and the same final state, on a test clock that jumps
+//! back and forth. Then a burn-after-reading paste goes through the HTTP
+//! routes. Needs I5H_TEST_DATABASE_URL; skips otherwise.
 
-use i5h_pg::{pool, EngineConfig};
+use i5h::{Kernel, Timestamp};
+use i5h_pg::{pool, Clock, EngineConfig, ManualClock};
 use std::sync::Arc;
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
 use wastebin_kernel as k;
-use wastebin_server::{router, App, Shell, WastebinEngine, TENANT};
+use wastebin_server::{router, App, Shell, Wastebin, WastebinEngine, TENANT};
 
 fn rng(state: &mut u64, n: u64) -> u64 {
     *state = state.wrapping_mul(6364136223846793005).wrapping_add(1442695040888963407);
@@ -23,8 +25,8 @@ fn sorted(mut s: k::Snapshot) -> k::Snapshot {
 // Both tests use the single Wastebin tenant, so they must not interleave.
 static DB: tokio::sync::Mutex<()> = tokio::sync::Mutex::const_new(());
 
-async fn engine(url: &str) -> WastebinEngine {
-    let pg = WastebinEngine::new(pool(&i5h_pg::with_schema(url, "wastebin").unwrap(), 4).unwrap(), EngineConfig::default());
+async fn engine(url: &str, config: EngineConfig) -> WastebinEngine {
+    let pg = WastebinEngine::new(pool(&i5h_pg::with_schema(url, "wastebin").unwrap(), 4).unwrap(), config);
     pg.install_schema().await.unwrap();
     pg
 }
@@ -36,7 +38,9 @@ async fn store_agrees_with_apply() {
         return;
     };
     let _guard = DB.lock().await;
-    let pg = engine(&url).await;
+    // Not monotonic: the time jumps around, to reach expiry from both sides.
+    let clock = ManualClock::default();
+    let pg = engine(&url, EngineConfig { clock: Clock::Manual(clock.clone()), ..Default::default() }).await;
     // Earlier runs leave pastes behind; the model starts where the database is.
     let mut mem = pg.snapshot(TENANT).await.unwrap();
 
@@ -49,7 +53,11 @@ async fn store_agrees_with_apply() {
             2 => vec![2],
             _ => vec![2, 1],
         };
-        let actor = k::Principal { uids, now: 100 + rng(&mut s, 20), fresh: 1_000 + rng(&mut s, 8) };
+        let now = Timestamp::from_secs(100 + rng(&mut s, 20));
+        clock.set(now);
+        let actor = k::Principal { uids, now: 0, fresh: 1_000 + rng(&mut s, 8) };
+        let mut stamped = actor.clone();
+        Wastebin::stamp(&mut stamped, now);
         let key = |s: &mut u64| match rng(s, 3) {
             0 => None,
             n => Some(n),
@@ -72,7 +80,7 @@ async fn store_agrees_with_apply() {
             _ => k::Command::Purge,
         };
         let got = pg.execute(&actor, &cmd).await.unwrap();
-        let want = match k::transition(&actor, &mem, &cmd) {
+        let want = match k::transition(&stamped, &mem, &cmd) {
             Ok((ws, r)) => {
                 mem = k::apply(&mem, &ws);
                 Ok(r)
@@ -116,7 +124,7 @@ async fn link_preview_does_not_burn() {
         return;
     };
     let _guard = DB.lock().await;
-    let engine = Arc::new(engine(&url).await);
+    let engine = Arc::new(engine(&url, wastebin_server::config()).await);
     let app = App { engine, shell: Arc::new(Shell::new(b"test key".to_vec())) };
     let listener = tokio::net::TcpListener::bind("127.0.0.1:0").await.unwrap();
     let addr = listener.local_addr().unwrap().to_string();

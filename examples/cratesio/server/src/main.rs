@@ -1,5 +1,5 @@
-use cratesio_server::{parse_teams, router, CratesAuth, CratesStore, Cratesio};
-use i5h_pg::{pool, Engine, EngineConfig};
+use cratesio_server::{config, parse_teams, router, CratesAuth, CratesStore, Cratesio};
+use i5h_pg::{pool, Engine};
 use std::collections::HashMap;
 use std::sync::Arc;
 
@@ -30,7 +30,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     }
 
     let url = std::env::var("DATABASE_URL")?;
-    let engine = Arc::new(Engine::<Cratesio, CratesStore>::new(pool(&i5h_pg::with_schema(&url, "cratesio")?, 8)?, EngineConfig::default()));
+    let engine = Arc::new(Engine::<Cratesio, CratesStore>::new(pool(&i5h_pg::with_schema(&url, "cratesio")?, 8)?, config()));
     engine.install_schema().await?;
     let app = router(engine, auth, Arc::new(downloads)).route("/healthz", axum::routing::get(|| async { "ok" }));
 
