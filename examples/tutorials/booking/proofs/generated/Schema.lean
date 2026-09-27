@@ -134,7 +134,7 @@ def Admin.delA (user : U64) : AWrite Val := .del Admin.table [int user.val]
 def Admin.delWhereA (col : Nat) (val : Val) : AWrite Val := .delWhere Admin.table col val
 
 @[step] theorem Admin.sql_del_spec (user : U64) : Admin.sql_del user ⦃ w => sqlW w = Admin.delA user ⦄ := by
-  unfold Admin.sql_del; step*; simp_all [sqlW, Admin.delA, Admin.table, Admin.TABLE]
+  unfold Admin.sql_del; step* <;> simp_all [sqlW, Admin.delA, Admin.table, Admin.TABLE] <;> scalar_tac
 
 @[step] theorem Admin.sql_del_where_spec (col : U32) (val : Val) :
     Admin.sql_del_where col val ⦃ w => sqlW w = Admin.delWhereA col.val val ⦄ := by
@@ -219,7 +219,7 @@ def Room.delA (id : U64) : AWrite Val := .del Room.table [int id.val]
 def Room.delWhereA (col : Nat) (val : Val) : AWrite Val := .delWhere Room.table col val
 
 @[step] theorem Room.sql_del_spec (id : U64) : Room.sql_del id ⦃ w => sqlW w = Room.delA id ⦄ := by
-  unfold Room.sql_del; step*; simp_all [sqlW, Room.delA, Room.table, Room.TABLE]
+  unfold Room.sql_del; step* <;> simp_all [sqlW, Room.delA, Room.table, Room.TABLE] <;> scalar_tac
 
 @[step] theorem Room.sql_del_where_spec (col : U32) (val : Val) :
     Room.sql_del_where col val ⦃ w => sqlW w = Room.delWhereA col.val val ⦄ := by
@@ -304,7 +304,7 @@ def Booking.delA (id : U64) : AWrite Val := .del Booking.table [int id.val]
 def Booking.delWhereA (col : Nat) (val : Val) : AWrite Val := .delWhere Booking.table col val
 
 @[step] theorem Booking.sql_del_spec (id : U64) : Booking.sql_del id ⦃ w => sqlW w = Booking.delA id ⦄ := by
-  unfold Booking.sql_del; step*; simp_all [sqlW, Booking.delA, Booking.table, Booking.TABLE]
+  unfold Booking.sql_del; step* <;> simp_all [sqlW, Booking.delA, Booking.table, Booking.TABLE] <;> scalar_tac
 
 @[step] theorem Booking.sql_del_where_spec (col : U32) (val : Val) :
     Booking.sql_del_where col val ⦃ w => sqlW w = Booking.delWhereA col.val val ⦄ := by

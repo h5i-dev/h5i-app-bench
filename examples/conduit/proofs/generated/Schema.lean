@@ -145,7 +145,7 @@ def User.delA (id : U64) : AWrite Val := .del User.table [int id.val]
 def User.delWhereA (col : Nat) (val : Val) : AWrite Val := .delWhere User.table col val
 
 @[step] theorem User.sql_del_spec (id : U64) : User.sql_del id ⦃ w => sqlW w = User.delA id ⦄ := by
-  unfold User.sql_del; step*; simp_all [sqlW, User.delA, User.table, User.TABLE]
+  unfold User.sql_del; step* <;> simp_all [sqlW, User.delA, User.table, User.TABLE] <;> scalar_tac
 
 @[step] theorem User.sql_del_where_spec (col : U32) (val : Val) :
     User.sql_del_where col val ⦃ w => sqlW w = User.delWhereA col.val val ⦄ := by
@@ -230,7 +230,7 @@ def Follow.delA (follower : U64) (followed : U64) : AWrite Val := .del Follow.ta
 def Follow.delWhereA (col : Nat) (val : Val) : AWrite Val := .delWhere Follow.table col val
 
 @[step] theorem Follow.sql_del_spec (follower : U64) (followed : U64) : Follow.sql_del follower followed ⦃ w => sqlW w = Follow.delA follower followed ⦄ := by
-  unfold Follow.sql_del; step*; simp_all [sqlW, Follow.delA, Follow.table, Follow.TABLE]
+  unfold Follow.sql_del; step* <;> simp_all [sqlW, Follow.delA, Follow.table, Follow.TABLE] <;> scalar_tac
 
 @[step] theorem Follow.sql_del_where_spec (col : U32) (val : Val) :
     Follow.sql_del_where col val ⦃ w => sqlW w = Follow.delWhereA col.val val ⦄ := by
@@ -315,7 +315,7 @@ def Article.delA (id : U64) : AWrite Val := .del Article.table [int id.val]
 def Article.delWhereA (col : Nat) (val : Val) : AWrite Val := .delWhere Article.table col val
 
 @[step] theorem Article.sql_del_spec (id : U64) : Article.sql_del id ⦃ w => sqlW w = Article.delA id ⦄ := by
-  unfold Article.sql_del; step*; simp_all [sqlW, Article.delA, Article.table, Article.TABLE]
+  unfold Article.sql_del; step* <;> simp_all [sqlW, Article.delA, Article.table, Article.TABLE] <;> scalar_tac
 
 @[step] theorem Article.sql_del_where_spec (col : U32) (val : Val) :
     Article.sql_del_where col val ⦃ w => sqlW w = Article.delWhereA col.val val ⦄ := by
@@ -400,7 +400,7 @@ def Tag.delA (article : U64) (tag : alloc.vec.Vec U8) : AWrite Val := .del Tag.t
 def Tag.delWhereA (col : Nat) (val : Val) : AWrite Val := .delWhere Tag.table col val
 
 @[step] theorem Tag.sql_del_spec (article : U64) (tag : alloc.vec.Vec U8) : Tag.sql_del article tag ⦃ w => sqlW w = Tag.delA article tag ⦄ := by
-  unfold Tag.sql_del; step*; simp_all [sqlW, Tag.delA, Tag.table, Tag.TABLE]
+  unfold Tag.sql_del; step* <;> simp_all [sqlW, Tag.delA, Tag.table, Tag.TABLE] <;> scalar_tac
 
 @[step] theorem Tag.sql_del_where_spec (col : U32) (val : Val) :
     Tag.sql_del_where col val ⦃ w => sqlW w = Tag.delWhereA col.val val ⦄ := by
@@ -485,7 +485,7 @@ def Favorite.delA (article : U64) (user : U64) : AWrite Val := .del Favorite.tab
 def Favorite.delWhereA (col : Nat) (val : Val) : AWrite Val := .delWhere Favorite.table col val
 
 @[step] theorem Favorite.sql_del_spec (article : U64) (user : U64) : Favorite.sql_del article user ⦃ w => sqlW w = Favorite.delA article user ⦄ := by
-  unfold Favorite.sql_del; step*; simp_all [sqlW, Favorite.delA, Favorite.table, Favorite.TABLE]
+  unfold Favorite.sql_del; step* <;> simp_all [sqlW, Favorite.delA, Favorite.table, Favorite.TABLE] <;> scalar_tac
 
 @[step] theorem Favorite.sql_del_where_spec (col : U32) (val : Val) :
     Favorite.sql_del_where col val ⦃ w => sqlW w = Favorite.delWhereA col.val val ⦄ := by
@@ -570,7 +570,7 @@ def Comment.delA (id : U64) : AWrite Val := .del Comment.table [int id.val]
 def Comment.delWhereA (col : Nat) (val : Val) : AWrite Val := .delWhere Comment.table col val
 
 @[step] theorem Comment.sql_del_spec (id : U64) : Comment.sql_del id ⦃ w => sqlW w = Comment.delA id ⦄ := by
-  unfold Comment.sql_del; step*; simp_all [sqlW, Comment.delA, Comment.table, Comment.TABLE]
+  unfold Comment.sql_del; step* <;> simp_all [sqlW, Comment.delA, Comment.table, Comment.TABLE] <;> scalar_tac
 
 @[step] theorem Comment.sql_del_where_spec (col : U32) (val : Val) :
     Comment.sql_del_where col val ⦃ w => sqlW w = Comment.delWhereA col.val val ⦄ := by

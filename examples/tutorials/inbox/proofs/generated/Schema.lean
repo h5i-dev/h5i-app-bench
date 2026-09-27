@@ -148,7 +148,7 @@ def Message.delA (sender : U64) (recipient : U64) (seq : U64) : AWrite Val := .d
 def Message.delWhereA (col : Nat) (val : Val) : AWrite Val := .delWhere Message.table col val
 
 @[step] theorem Message.sql_del_spec (sender : U64) (recipient : U64) (seq : U64) : Message.sql_del sender recipient seq ⦃ w => sqlW w = Message.delA sender recipient seq ⦄ := by
-  unfold Message.sql_del; step*; simp_all [sqlW, Message.delA, Message.table, Message.TABLE]
+  unfold Message.sql_del; step* <;> simp_all [sqlW, Message.delA, Message.table, Message.TABLE] <;> scalar_tac
 
 @[step] theorem Message.sql_del_where_spec (col : U32) (val : Val) :
     Message.sql_del_where col val ⦃ w => sqlW w = Message.delWhereA col.val val ⦄ := by
@@ -233,7 +233,7 @@ def Block.delA (owner : U64) (sender : U64) : AWrite Val := .del Block.table [in
 def Block.delWhereA (col : Nat) (val : Val) : AWrite Val := .delWhere Block.table col val
 
 @[step] theorem Block.sql_del_spec (owner : U64) (sender : U64) : Block.sql_del owner sender ⦃ w => sqlW w = Block.delA owner sender ⦄ := by
-  unfold Block.sql_del; step*; simp_all [sqlW, Block.delA, Block.table, Block.TABLE]
+  unfold Block.sql_del; step* <;> simp_all [sqlW, Block.delA, Block.table, Block.TABLE] <;> scalar_tac
 
 @[step] theorem Block.sql_del_where_spec (col : U32) (val : Val) :
     Block.sql_del_where col val ⦃ w => sqlW w = Block.delWhereA col.val val ⦄ := by

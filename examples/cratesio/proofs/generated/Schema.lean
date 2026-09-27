@@ -162,7 +162,7 @@ def User.delA (id : U64) : AWrite Val := .del User.table [int id.val]
 def User.delWhereA (col : Nat) (val : Val) : AWrite Val := .delWhere User.table col val
 
 @[step] theorem User.sql_del_spec (id : U64) : User.sql_del id ⦃ w => sqlW w = User.delA id ⦄ := by
-  unfold User.sql_del; step*; simp_all [sqlW, User.delA, User.table, User.TABLE]
+  unfold User.sql_del; step* <;> simp_all [sqlW, User.delA, User.table, User.TABLE] <;> scalar_tac
 
 @[step] theorem User.sql_del_where_spec (col : U32) (val : Val) :
     User.sql_del_where col val ⦃ w => sqlW w = User.delWhereA col.val val ⦄ := by
@@ -247,7 +247,7 @@ def Session.delA (id : U64) : AWrite Val := .del Session.table [int id.val]
 def Session.delWhereA (col : Nat) (val : Val) : AWrite Val := .delWhere Session.table col val
 
 @[step] theorem Session.sql_del_spec (id : U64) : Session.sql_del id ⦃ w => sqlW w = Session.delA id ⦄ := by
-  unfold Session.sql_del; step*; simp_all [sqlW, Session.delA, Session.table, Session.TABLE]
+  unfold Session.sql_del; step* <;> simp_all [sqlW, Session.delA, Session.table, Session.TABLE] <;> scalar_tac
 
 @[step] theorem Session.sql_del_where_spec (col : U32) (val : Val) :
     Session.sql_del_where col val ⦃ w => sqlW w = Session.delWhereA col.val val ⦄ := by
@@ -332,7 +332,7 @@ def Token.delA (id : U64) : AWrite Val := .del Token.table [int id.val]
 def Token.delWhereA (col : Nat) (val : Val) : AWrite Val := .delWhere Token.table col val
 
 @[step] theorem Token.sql_del_spec (id : U64) : Token.sql_del id ⦃ w => sqlW w = Token.delA id ⦄ := by
-  unfold Token.sql_del; step*; simp_all [sqlW, Token.delA, Token.table, Token.TABLE]
+  unfold Token.sql_del; step* <;> simp_all [sqlW, Token.delA, Token.table, Token.TABLE] <;> scalar_tac
 
 @[step] theorem Token.sql_del_where_spec (col : U32) (val : Val) :
     Token.sql_del_where col val ⦃ w => sqlW w = Token.delWhereA col.val val ⦄ := by
@@ -417,7 +417,7 @@ def Krate.delA (id : U64) : AWrite Val := .del Krate.table [int id.val]
 def Krate.delWhereA (col : Nat) (val : Val) : AWrite Val := .delWhere Krate.table col val
 
 @[step] theorem Krate.sql_del_spec (id : U64) : Krate.sql_del id ⦃ w => sqlW w = Krate.delA id ⦄ := by
-  unfold Krate.sql_del; step*; simp_all [sqlW, Krate.delA, Krate.table, Krate.TABLE]
+  unfold Krate.sql_del; step* <;> simp_all [sqlW, Krate.delA, Krate.table, Krate.TABLE] <;> scalar_tac
 
 @[step] theorem Krate.sql_del_where_spec (col : U32) (val : Val) :
     Krate.sql_del_where col val ⦃ w => sqlW w = Krate.delWhereA col.val val ⦄ := by
@@ -502,7 +502,7 @@ def Version.delA (krate : U64) (num : U64) : AWrite Val := .del Version.table [i
 def Version.delWhereA (col : Nat) (val : Val) : AWrite Val := .delWhere Version.table col val
 
 @[step] theorem Version.sql_del_spec (krate : U64) (num : U64) : Version.sql_del krate num ⦃ w => sqlW w = Version.delA krate num ⦄ := by
-  unfold Version.sql_del; step*; simp_all [sqlW, Version.delA, Version.table, Version.TABLE]
+  unfold Version.sql_del; step* <;> simp_all [sqlW, Version.delA, Version.table, Version.TABLE] <;> scalar_tac
 
 @[step] theorem Version.sql_del_where_spec (col : U32) (val : Val) :
     Version.sql_del_where col val ⦃ w => sqlW w = Version.delWhereA col.val val ⦄ := by
@@ -587,7 +587,7 @@ def Owner.delA (krate : U64) (owner : U64) (team : Bool) : AWrite Val := .del Ow
 def Owner.delWhereA (col : Nat) (val : Val) : AWrite Val := .delWhere Owner.table col val
 
 @[step] theorem Owner.sql_del_spec (krate : U64) (owner : U64) (team : Bool) : Owner.sql_del krate owner team ⦃ w => sqlW w = Owner.delA krate owner team ⦄ := by
-  unfold Owner.sql_del; step*; simp_all [sqlW, Owner.delA, Owner.table, Owner.TABLE]
+  unfold Owner.sql_del; step* <;> simp_all [sqlW, Owner.delA, Owner.table, Owner.TABLE] <;> scalar_tac
 
 @[step] theorem Owner.sql_del_where_spec (col : U32) (val : Val) :
     Owner.sql_del_where col val ⦃ w => sqlW w = Owner.delWhereA col.val val ⦄ := by
@@ -672,7 +672,7 @@ def Invite.delA (krate : U64) (user : U64) : AWrite Val := .del Invite.table [in
 def Invite.delWhereA (col : Nat) (val : Val) : AWrite Val := .delWhere Invite.table col val
 
 @[step] theorem Invite.sql_del_spec (krate : U64) (user : U64) : Invite.sql_del krate user ⦃ w => sqlW w = Invite.delA krate user ⦄ := by
-  unfold Invite.sql_del; step*; simp_all [sqlW, Invite.delA, Invite.table, Invite.TABLE]
+  unfold Invite.sql_del; step* <;> simp_all [sqlW, Invite.delA, Invite.table, Invite.TABLE] <;> scalar_tac
 
 @[step] theorem Invite.sql_del_where_spec (col : U32) (val : Val) :
     Invite.sql_del_where col val ⦃ w => sqlW w = Invite.delWhereA col.val val ⦄ := by
@@ -757,7 +757,7 @@ def Dep.delA (krate : U64) (num : U64) (on : U64) : AWrite Val := .del Dep.table
 def Dep.delWhereA (col : Nat) (val : Val) : AWrite Val := .delWhere Dep.table col val
 
 @[step] theorem Dep.sql_del_spec (krate : U64) (num : U64) (on : U64) : Dep.sql_del krate num on ⦃ w => sqlW w = Dep.delA krate num on ⦄ := by
-  unfold Dep.sql_del; step*; simp_all [sqlW, Dep.delA, Dep.table, Dep.TABLE]
+  unfold Dep.sql_del; step* <;> simp_all [sqlW, Dep.delA, Dep.table, Dep.TABLE] <;> scalar_tac
 
 @[step] theorem Dep.sql_del_where_spec (col : U32) (val : Val) :
     Dep.sql_del_where col val ⦃ w => sqlW w = Dep.delWhereA col.val val ⦄ := by

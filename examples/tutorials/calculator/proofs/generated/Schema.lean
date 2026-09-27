@@ -131,7 +131,7 @@ def Memory.delA (user : U64) : AWrite Val := .del Memory.table [int user.val]
 def Memory.delWhereA (col : Nat) (val : Val) : AWrite Val := .delWhere Memory.table col val
 
 @[step] theorem Memory.sql_del_spec (user : U64) : Memory.sql_del user ⦃ w => sqlW w = Memory.delA user ⦄ := by
-  unfold Memory.sql_del; step*; simp_all [sqlW, Memory.delA, Memory.table, Memory.TABLE]
+  unfold Memory.sql_del; step* <;> simp_all [sqlW, Memory.delA, Memory.table, Memory.TABLE] <;> scalar_tac
 
 @[step] theorem Memory.sql_del_where_spec (col : U32) (val : Val) :
     Memory.sql_del_where col val ⦃ w => sqlW w = Memory.delWhereA col.val val ⦄ := by

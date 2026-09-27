@@ -411,7 +411,7 @@ def {name}.delA {} : AWrite Val := .del {name}.table [{}]
 def {name}.delWhereA (col : Nat) (val : Val) : AWrite Val := .delWhere {name}.table col val
 
 @[step] theorem {name}.sql_del_spec {} : {name}.sql_del {} ⦃ w => sqlW w = {name}.delA {} ⦄ := by
-  unfold {name}.sql_del; step*; simp_all [sqlW, {name}.delA, {name}.table, {name}.TABLE]
+  unfold {name}.sql_del; step* <;> simp_all [sqlW, {name}.delA, {name}.table, {name}.TABLE] <;> scalar_tac
 
 @[step] theorem {name}.sql_del_where_spec (col : U32) (val : Val) :
     {name}.sql_del_where col val ⦃ w => sqlW w = {name}.delWhereA col.val val ⦄ := by

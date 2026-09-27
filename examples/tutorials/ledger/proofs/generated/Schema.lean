@@ -134,7 +134,7 @@ def Account.delA (id : U64) : AWrite Val := .del Account.table [int id.val]
 def Account.delWhereA (col : Nat) (val : Val) : AWrite Val := .delWhere Account.table col val
 
 @[step] theorem Account.sql_del_spec (id : U64) : Account.sql_del id ⦃ w => sqlW w = Account.delA id ⦄ := by
-  unfold Account.sql_del; step*; simp_all [sqlW, Account.delA, Account.table, Account.TABLE]
+  unfold Account.sql_del; step* <;> simp_all [sqlW, Account.delA, Account.table, Account.TABLE] <;> scalar_tac
 
 @[step] theorem Account.sql_del_where_spec (col : U32) (val : Val) :
     Account.sql_del_where col val ⦃ w => sqlW w = Account.delWhereA col.val val ⦄ := by
