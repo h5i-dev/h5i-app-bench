@@ -1,0 +1,11 @@
+[package]
+name = "booking-kernel"
+description = "Tutorial 5: the verified kernel of a meeting-room booking service"
+edition.workspace = true
+license.workspace = true
+version.workspace = true
+
+# Extracted to Lean by Charon + Aeneas (scripts/extract-booking.sh).
+[dependencies]
+i5h-schema.workspace = true
+i5h-sql.workspace = true
