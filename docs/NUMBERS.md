@@ -1,16 +1,36 @@
 # Numbers
 
-Measured on 2026-09-26 at the commit that added this file. Lines exclude
-blank lines and comments. "Hand-written Lean" excludes generated files (the
-extracted kernels and `Schema.lean`).
+Measured on 2026-09-27. Lines exclude blank lines, comments, doc comments
+and Rust test modules; the 2026-09-26 figures counted doc comments, so they
+were a little higher. "Hand-written Lean" includes the spec and excludes
+generated files (the extracted kernels and `Schema.lean`).
 
 ## Proof effort per app
 
 | App | Kernel (Rust) | Spec (Lean) | Hand-written Lean | Lean per kernel line |
 |---|---|---|---|---|
-| `examples/docs` | 1,008 | 139 | 2,430 | 2.4 |
-| `examples/kellnr` | 409 | 60 | 587 | 1.4 |
-| `examples/atuin` | 519 | 65 | 725 | 1.4 |
+| `examples/docs` | 936 | 108 | 2,524 | 2.7 |
+| `examples/kellnr` | 374 | 71 | 810 | 2.2 |
+| `examples/atuin` | 459 | 51 | 631 | 1.4 |
+| `examples/wastebin` | 275 | 51 | 717 | 2.6 |
+| `examples/conduit` | 1,063 | 127 | 1,804 | 1.7 |
+| `examples/cratesio` | 1,030 | 142 | 1,627 | 1.6 |
+| tutorial 1, calculator | 114 | 11 | 168 | 1.5 |
+| tutorial 2, board | 221 | 45 | 469 | 2.1 |
+| tutorial 3, ledger | 180 | 29 | 445 | 2.5 |
+| tutorial 4, inbox | 239 | 41 | 591 | 2.5 |
+| tutorial 5, booking | 268 | 57 | 605 | 2.3 |
+
+Every app now has scenario theorems (runs of the extracted kernel on concrete
+states), and the ports have counterexamples for upstream bugs; both are
+counted above. Kellnr grew since 2026-09-26 because its `apply` is now
+extracted and its owner invariant proven over reachable states. Conduit, the
+baseline plain app, has 1,077 lines of upstream handlers with inline SQL
+against 1,063 kernel lines here, so its proofs cost about 1.7 Lean lines per
+line of the original handlers.
+
+Moving 37 lemmas that the apps had each written again into `I5hLib` cut the
+apps' Lean by 486 lines and grew the library by 258.
 
 The docs app carries more than its authorization rules: its proofs also cover
 noninterference, partial snapshots, the migration checker, the SQL row
@@ -39,7 +59,7 @@ Shared, written once:
 
 | Piece | Rust | Lean |
 |---|---|---|
-| `I5hLib` (loop lemmas, tables, SQL semantics, tactics) | — | 508 |
+| `I5hLib` (loop lemmas, tables, lists, scalars, SQL semantics, tactics) | — | 715 |
 | `i5h-sql` (statement planner) | 141 | 118 |
 | `i5h-token` (token parser and encoder) | 197 | 963 |
 | `i5h-json` (reply writer) | 207 | 427 |
@@ -74,3 +94,10 @@ On a 128-core machine:
 | i5h engine | stale snapshot possible under the tenant lock | fixed by taking the lock before `BEGIN`; `Engine.locked_current` now proves every attempt under the lock reads the current database |
 | Kellnr (before PR #1243) | a read-only session could add crate owners | the read-only theorem fails; Lean gives the counterexample |
 | Atuin (issue #3297, open) | a session alone can delete the account | proven for Atuin's current rules; the fix is proven to require the password |
+| i5h engine | apps sharing a database shared tables, idempotency keys and the outbox; one app's dispatcher marked another's effects dead | the new examples' tests; fixed with one PostgreSQL schema per app |
+| Wastebin (before 632ddf2, issue #190) | a link preview's GET burned a burn-after-reading paste | `preview_broken`: a reachable counterexample; `preview_fixed` for the current code |
+| Wastebin (current) | `/raw`, `/dl` and `/md` still burn a paste on a plain GET | `raw_link_burns` |
+| Conduit (issue #16, open) | `favorited` means "favorited any article" | `upstream_violates_reply_spec` |
+| Conduit (unreported) | the `?favorited=` filter lists every article once the user favorited one | `favorited_filter` |
+| crates.io (before PR #14760) | a locked account could sign in | `pre14760_violates_lock` |
+| crates.io (current) | the emailed invitation link does not check the lock, so a locked user can still become an owner | found while porting; in `examples/cratesio/README.md` |
