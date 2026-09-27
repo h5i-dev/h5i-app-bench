@@ -64,11 +64,17 @@ this application and its proofs step by step.
 
 ## Examples
 
-The [examples](examples) folder contains the [tutorials](examples/tutorials),
+The [examples](examples) folder contains five [tutorials](examples/tutorials),
 a document service with projects, members and a review workflow, and ports of
-the authorization rules of [Kellnr](https://github.com/kellnr/kellnr) and
-[Atuin](https://github.com/atuinsh/atuin). Each example has its own README
-describing what its proofs cover.
+real applications: the RealWorld backend
+[Conduit](https://github.com/launchbadge/realworld-axum-sqlx), the pastebin
+[Wastebin](https://github.com/matze/wastebin), the ownership rules of
+[crates.io](https://github.com/rust-lang/crates.io), and the authorization
+rules of [Kellnr](https://github.com/kellnr/kellnr) and
+[Atuin](https://github.com/atuinsh/atuin). Each port reproduces a real bug of
+its upstream project as a Lean counterexample and proves that a fixed kernel
+does not have it. Each example has its own README describing what its proofs
+cover.
 
 ## Design
 

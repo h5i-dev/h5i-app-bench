@@ -15,8 +15,8 @@ properties is secondary.
 | A6 | Engine protocol (retry, idempotency, lock) is correct | Lean model in `lean/` proven: serializable commits, at most once per key, no stale decisions. Requests carry their actor, and a repeated key is matched on the fingerprint alone, as in the Rust engine: `replay_in_scope` proves a caller only sees replies committed in its own scope when keys name their scope, `rust_keys_scoped` that the engine's `scope/key` keys do, and `tenant_keys_leak` gives a concrete run where tenant-only keys hand one user another's reply (the bug the trace check found). The tenant lock is modeled (`locking`): `locked_current` proves every attempt under it reads the current database, so COMMIT's conflict check never fails. Traces from the Rust engine are checked against the model by `tracecheck`, proven sound (`check_sound`), now with the scope as the actor. The outbox dispatcher is modeled too (`Engine.Outbox`) | check dispatcher traces against `Engine.Outbox` |
 | A7 | Charon, Aeneas, Lean are faithful and sound | trusted, with checks: `#print axioms` gate (standard axioms only) and a Rust-vs-Lean differential test (`scripts/difftest.sh`, 55k cases, no mismatch) | stays trusted |
 | A8 | No handler bypasses the engine | enforced: stores see only an opaque `Tx` and the pool is opaque, so app code cannot reach the driver; `cargo deny check bans` rejects database crates outside `i5h-pg`; `i5h_pg::lockdown` role separation at runtime. All run in CI | superuser logins stay out of scope |
-| A9 | Running code is the extracted code | CI re-extracts every kernel (docs, Kellnr) and extracted crate (`i5h-sql`, `i5h-token`, `i5h-json`) with pinned Charon/Aeneas and fails on any diff | done |
-| A10 | The spec says what we meant | human review of a 139-line spec; mutation suite catches 22/22 injected bugs (`scripts/mutants.py`); the Kellnr port proves the pre-#1243 bug is caught; `examples/docs/proofs/Scenarios.lean` runs the extracted kernel from the empty state to a four-eyes publish that emits an effect, so the guarded behavior is reachable | scenario theorems for the other apps; more mutants |
+| A9 | Running code is the extracted code | CI re-extracts every kernel (docs, the ports, the tutorials) and extracted crate (`i5h-sql`, `i5h-token`, `i5h-json`) with pinned Charon/Aeneas and fails on any diff | done |
+| A10 | The spec says what we meant | human review of a 139-line spec; mutation suite catches 22/22 injected bugs (`scripts/mutants.py`); the Kellnr port proves the pre-#1243 bug is caught; `examples/docs/proofs/Scenarios.lean` runs the extracted kernel from the empty state to a four-eyes publish that emits an effect, so the guarded behavior is reachable; every other app has scenario theorems too, and each port a counterexample for a real upstream bug | more mutants, for the other apps too |
 
 ## Phase 0: proofs on the example app
 
@@ -58,7 +58,28 @@ properties is secondary.
 - Port 2 or 3 axum apps from the target survey.
 - Where a target had a past vulnerability, show the proof fails on the vulnerable version and passes on the fix.
   Done for Kellnr (`examples/kellnr`): the read-only theorem is proven for the code after PR #1243 and disproven, with a concrete session login that adds an owner, for the code before it. Done for Atuin (`examples/atuin`): user isolation, reply confinement, no orphaned rows after account deletion, and the size cap are proven; for issue #3297 (delete without password, still open), the requested behavior is proven for a fixed kernel and Atuin's current behavior is proven to allow it. See `docs/TARGETS.md`.
+  Done for Wastebin (`examples/wastebin`, issue #190, link previews burned pastes), Conduit (`examples/conduit`, issue #16, wrong `favorited` flag) and crates.io (`examples/cratesio`, PR #14760, locked accounts signed in), each with a PostgreSQL server.
 - Publish the numbers; run a pilot.
+
+## Found while porting
+
+The ports needed things the framework did not have. Done:
+
+- Apps sharing a database shared tables, idempotency keys and the outbox. `with_schema` gives each app a PostgreSQL schema.
+- Cascading deletes by a non-key column: `delete_where`.
+- Routes whose reply becomes a credential (a session cookie, an API token): `I5h::run` returns the reply unrendered.
+- `HmacAuth` takes closures, so the principal can carry configuration and the time; `verify` is public, the scheme is configurable (`Token` for RealWorld), and a missing header can map to an anonymous principal.
+- `MemoryEngine::with_snapshot` starts a reference run from a database's state.
+- The outbox sends each batch in commit order.
+
+Open:
+
+- A clock. Apps put the time in the principal (see DESIGN.md). One clock for all servers (the database's), and time that never goes back in commit order per tenant, would let proofs assume monotonic time.
+- Per-actor loads. The engine loads the whole tenant, so a user's command costs O(tenant) and its latency depends on other users' data. `Store::load_for` takes the command; an actor-aware version needs a frame theorem per app, as the document service has.
+- Idempotency scopes for anonymous callers. All callers without an identity share one scope; `ReplyCodec::scope` should be able to refuse keys.
+- A `u64` column is `BIGINT`, so values of 2^63 or more fail at runtime.
+- Generating `Apply.lean` from `schema!`: its loop lemmas differ only in the key projection.
+- A tactic that runs the extracted kernel on concrete data for scenario theorems. Loops are `partial_fixpoint`, so `decide` does not work and each app collects its loop specs as equations.
 
 ## Irreducible trust
 
