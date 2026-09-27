@@ -6,7 +6,7 @@ use booking_kernel as k;
 use i5h::{Kernel, TenantId};
 use i5h_json::Value as Out;
 use i5h_pg::outbox::{self, Deliver, Delivery};
-use i5h_pg::{delete, key, load, upsert, DbError, ReplyCodec, Store, Tx};
+use i5h_pg::{DbError, ReplyCodec, Store, Tx};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
@@ -79,26 +79,20 @@ impl Store<BookingApp> for BookingStore {
         schema_tables()
     }
 
+    // Rows are decoded by the kernel's `decode`.
     async fn load(tx: &Tx<'_>, t: TenantId) -> Result<k::Snapshot, DbError> {
-        Ok(k::Snapshot {
-            counter: load::<BookingApp, k::Counter>(tx, t).await?.pop().unwrap_or_default(),
-            admins: load::<BookingApp, _>(tx, t).await?,
-            rooms: load::<BookingApp, _>(tx, t).await?,
-            bookings: load::<BookingApp, _>(tx, t).await?,
-        })
+        schema_load(tx, t).await
     }
 
     // Notifications go into the outbox in the same transaction as the rows,
     // so they exist exactly when the booking or cancellation commits.
+    // Table writes go through the kernel's `sql_writes` (`Storage.lean`
+    // proves the store holds what `apply` computes); effects to the outbox.
     async fn write(tx: &Tx<'_>, t: TenantId, ws: &Vec<k::Write>) -> Result<(), DbError> {
+        schema_store(tx, t, ws).await?;
         for w in ws {
-            match w {
-                k::Write::PutAdmin(a) => upsert::<BookingApp, _>(tx, t, a).await?,
-                k::Write::PutRoom(r) => upsert::<BookingApp, _>(tx, t, r).await?,
-                k::Write::PutBooking(b) => upsert::<BookingApp, _>(tx, t, b).await?,
-                k::Write::DelBooking(id) => delete::<BookingApp, k::Booking>(tx, t, &[key::<BookingApp, _>(id)?]).await?,
-                k::Write::SetCounter(c) => upsert::<BookingApp, _>(tx, t, c).await?,
-                k::Write::Emit(e) => outbox::enqueue(tx, t, e.dest, &effect_payload(e)).await?,
+            if let k::Write::Emit(e) = w {
+                outbox::enqueue(tx, t, e.dest, &effect_payload(e)).await?;
             }
         }
         Ok(())

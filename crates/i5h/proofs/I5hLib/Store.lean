@@ -169,6 +169,19 @@ theorem exists_map {α β : Type} (f : α → β) (R : List β) (h : ∀ r ∈ R
     obtain ⟨l, hl⟩ := ih (fun r' hr => h r' (by simp [hr]))
     exact ⟨x :: l, by simp [hl]⟩
 
+/-- An upsert on encoded rows is the encoding of an upsert, when the key
+columns say exactly what the key says. -/
+theorem map_upsert {α β κ : Type} [DecidableEq κ] (key : α → κ) (f : α → List β) (n : Nat) (x : α) (l : List α)
+    (h : ∀ y, (f y).take n = (f x).take n ↔ key y = key x) :
+    upsert (·.take n) (f x) (l.map f) = (upsert key x l).map f := by
+  induction l with
+  | nil => rfl
+  | cons y ys ih =>
+    by_cases hk : key y = key x
+    · simp [upsert, hk, (h y).2 hk]
+    · have : ¬ (f y).take n = (f x).take n := fun e => hk ((h y).1 e)
+      simp only [List.map_cons, upsert, this, hk, if_false, ih]
+
 /-- A filter on encoded rows is the encoding of a filter. -/
 theorem map_filter_of {α β : Type} (f : α → β) (p : β → Bool) (q : α → Bool) (l : List α) (h : ∀ x, p (f x) = q x) :
     (l.map f).filter p = (l.filter q).map f := by

@@ -140,14 +140,8 @@ def Memory.delWhereA (col : Nat) (val : Val) : AWrite Val := .delWhere Memory.ta
 /-! Row writes on the encoding are the list operations. -/
 
 @[simp] theorem Memory.map_put (x : Memory) (l : List Memory) :
-    upsert (·.take 1) (Memory.row x) (l.map Memory.row) = (upsert (fun y => y.user) x l).map Memory.row := by
-  induction l with
-  | nil => rfl
-  | cons y ys ih =>
-    by_cases hk : y.user = x.user
-    · simp [upsert, hk, Memory.row]
-    · have : ¬ (Memory.row y).take 1 = (Memory.row x).take 1 := by simpa [Memory.row] using hk
-      simp only [List.map_cons, upsert, this, hk, if_false]; rw [ih]
+    upsert (·.take 1) (Memory.row x) (l.map Memory.row) = (upsert (fun y => y.user) x l).map Memory.row :=
+  map_upsert _ _ _ _ _ (fun y => by simp [Memory.row])
 
 @[simp] theorem Memory.map_del (user : U64) (l : List Memory) :
     (l.map Memory.row).filter (fun r => !decide (r.take 1 = [int user.val])) =
