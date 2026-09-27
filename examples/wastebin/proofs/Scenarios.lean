@@ -61,6 +61,12 @@ theorem slug_taken :
   step*
   all_goals simp_all [s0, p0, author, vecOf]
 
+/-- A zero second expiry is rejected before any paste is written. -/
+theorem zero_expiry_refused :
+    transition author s0 (.Create (vecOf []) (some 0#u32) false none)
+      ⦃ o => o = .Err .BadExpiry ⦄ := by
+  i5h_eval (transition create deadline) [s0, p0, author, vecOf]
+
 /-! ## Deleting -/
 
 theorem owner_deletes :

@@ -310,6 +310,10 @@ pub fn render(krate: &str, rows: &[RowDecl], snap: Option<&SnapDecl>, writes: Op
         if fields.iter().any(|(_, ty)| matches!(col(ty), Col::Prim(Prim::Bytes))) {
             clone_extra.push_str("u8vec_clone, ");
         }
+        let own_clones: String = fields.iter().filter_map(|(_, ty)| match col(ty) {
+            Col::Own(t) => Some(format!("\n  try (simp [{t}.Insts.CoreCloneClone.clone])")),
+            _ => None,
+        }).collect();
 
         let _ = writeln!(s, "\n/-! ## `{name}` (table `{table}`) -/\n");
         let _ = writeln!(s, "/-- Columns {}. -/\ndef {name}.row (x : {name}) : List Val :=\n  [{}]\n", names_f.join(", "), cols.join(", "));
@@ -325,7 +329,7 @@ pub fn render(krate: &str, rows: &[RowDecl], snap: Option<&SnapDecl>, writes: Op
         );
         let _ = writeln!(
             s,
-            "theorem {name}.clone_eq (x : {name}) : {name}.Insts.CoreCloneClone.clone x = ok x := by\n  simp [{name}.Insts.CoreCloneClone.clone, {clone_extra}lift]\n"
+            "theorem {name}.clone_eq (x : {name}) : {name}.Insts.CoreCloneClone.clone x = ok x := by\n  simp [{name}.Insts.CoreCloneClone.clone, {clone_extra}lift]{own_clones}\n"
         );
         let _ = writeln!(
             s,

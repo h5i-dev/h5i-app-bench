@@ -405,9 +405,10 @@ happens. The refusals are there too: `bob_cannot_withdraw`,
 
 ## Committing a write set
 
-`Apply.lean` proves that the kernel's `apply` computes `Spec.applyAll`, as in
-the second tutorial. The ledger has a single upsert loop, covered by
-`loop_search`, and the loop over the writes, covered by `loop_fold`.
+`schema!` generates the ledger's upsert and `apply` loops with their proofs.
+`Apply.lean` proves that the dispatch over writes computes `Spec.applyAll`.
+`Storage.lean` instantiates the shared theorem connecting those writes to
+the rows PostgreSQL holds and the state its load decodes.
 
 ## Introducing a bug
 

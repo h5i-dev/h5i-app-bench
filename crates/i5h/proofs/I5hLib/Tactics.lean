@@ -26,4 +26,20 @@ macro_rules
     all_goals (try (first | dsimp only | (split; dsimp only)))
     all_goals (repeat' (first | step | split | simp only [WP.spec_ok, bind_tc_ok, bind_ok]))))
 
+/-- Evaluate a concrete extracted kernel call. `step*` uses every applicable
+`@[step]` specification, including the generated table and loop specs; the
+given definitions and lemmas reduce the remaining concrete data. -/
+macro "i5h_eval" " (" f:ident g:ident ")" " [" ls:Lean.Parser.Tactic.simpLemma,* "]" : tactic => `(tactic| (
+  unfold $f $g
+  step*
+  all_goals (simp_all [$ls,*])
+  all_goals (try scalar_tac)))
+
+/-- Variant for a command whose concrete run calls a third named helper. -/
+macro "i5h_eval" " (" f:ident g:ident h:ident ")" " [" ls:Lean.Parser.Tactic.simpLemma,* "]" : tactic => `(tactic| (
+  unfold $f $g $h
+  step*
+  all_goals (simp_all [$ls,*])
+  all_goals (try scalar_tac)))
+
 end I5hLib

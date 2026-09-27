@@ -216,6 +216,7 @@ theorem Member.row_inj : Function.Injective Member.row := by
 
 theorem Member.clone_eq (x : Member) : Member.Insts.CoreCloneClone.clone x = ok x := by
   simp [Member.Insts.CoreCloneClone.clone, lift]
+  try (simp [Role.Insts.CoreCloneClone.clone])
 
 @[step] theorem Member.clone_spec (x : Member) : Member.Insts.CoreCloneClone.clone x ⦃ y => y = x ⦄ := by
   rw [Member.clone_eq]; simp
@@ -301,6 +302,7 @@ theorem Document.row_inj : Function.Injective Document.row := by
 
 theorem Document.clone_eq (x : Document) : Document.Insts.CoreCloneClone.clone x = ok x := by
   simp [Document.Insts.CoreCloneClone.clone, u8vec_clone, lift]
+  try (simp [Status.Insts.CoreCloneClone.clone])
 
 @[step] theorem Document.clone_spec (x : Document) : Document.Insts.CoreCloneClone.clone x ⦃ y => y = x ⦄ := by
   rw [Document.clone_eq]; simp

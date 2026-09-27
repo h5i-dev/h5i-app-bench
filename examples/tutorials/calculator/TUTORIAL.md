@@ -211,9 +211,12 @@ With these two lemmas, the theorems about `transition` are short:
 | `others_unchanged` | after any successful command, every other user's memory is unchanged |
 
 `get_after` and `others_unchanged` also go through `apply`, the function that
-defines what committing a write means, and which the PostgreSQL store must
-agree with. In this tutorial that agreement is tested; the document service in
-`examples/docs` proves it (see `examples/docs/proofs/Storage.lean`).
+defines what committing a write means. `schema!` generates its row operation,
+SQL writes and decoder. `proofs/Storage.lean` instantiates the shared
+`I5hLib.Store` theorem: after any sequence of commits, the database holds the
+rows of the computed state and loading them decodes that state, up to row
+order. The PostgreSQL statement and `SELECT` semantics remain the trusted
+boundary.
 
 `get_after` assumes that the command succeeded and that its write was
 committed. `set_then_get` checks that these hypotheses can hold: on an empty
