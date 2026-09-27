@@ -47,11 +47,13 @@ def app : App St Write Val where
 theorem fits : Fits app Snapshot.toSt where
   kl := rfl
   rows := rfl
-  enc s := by funext t; rcases t with _ | _ | _ | t <;> rfl
-  init := by funext t; rcases t with _ | _ | _ | t <;> rfl
-  nil s t h := by rcases t with _ | _ | _ | t <;> first | omega | rfl
-  sql w out h := by
-    unfold sql_write; cases w <;> simp only [app, sqlA, List.length_singleton] at h ⊢ <;> step* <;> simp_all
+  enc s := by funext t; cases_table t <;> rfl
+  init := by funext t; cases_table t <;> rfl
+  nil s t h := by cases_table t <;> first | omega | rfl
+
+theorem sql_fits : SqlFits app := by
+  intro w out h
+  unfold sql_write; cases w <;> simp only [app, sqlA, List.length_singleton] at h ⊢ <;> step* <;> simp_all
 
 /-- The store holds what `apply` computes: every database the server produces
 from an empty tenant reads back exactly the rows of the state `applyAll` gives
@@ -59,6 +61,6 @@ for its commits, and loading it decodes to that state, up to row order. -/
 theorem stored {db : Db Val} {s : St} (h : Served app Snapshot.toSt db s) :
     app.Holds db (enc s) ∧
       ∀ r, Lists kl db (Rows.tabs r) → decode r ⦃ o => ∃ snap, o = some snap ∧ app.Equiv (Snapshot.toSt snap) s ⦄ :=
-  Schema.stored fits h
+  Schema.stored fits sql_fits h
 
 end board_kernel.Storage

@@ -19,6 +19,116 @@ set_option maxRecDepth 2048
 
 namespace calculator_kernel
 
+/-- [i5h_sql::Val]
+    Source: 'crates/i5h-sql/src/lib.rs', lines 8:0-8:12
+    Name pattern: [i5h_sql::Val]
+    Visibility: public -/
+@[discriminant isize, rust_type "i5h_sql::Val"]
+inductive i5h_sql.Val where
+| Int : Std.I64 → i5h_sql.Val
+| Bool : Bool → i5h_sql.Val
+| Text : alloc.vec.Vec Std.U8 → i5h_sql.Val
+| Bytes : alloc.vec.Vec Std.U8 → i5h_sql.Val
+| Null : i5h_sql.Val
+
+/-- [i5h_sql::{impl i5h_sql::Column for u64}::to_val]:
+    Source: 'crates/i5h-sql/src/lib.rs', lines 25:4-25:27
+    Name pattern: [i5h_sql::{i5h_sql::Column<u64>}::to_val]
+    Visibility: public -/
+@[rust_fun "i5h_sql::{i5h_sql::Column<u64>}::to_val"]
+def U64.Insts.I5h_sqlColumn.to_val (self : Std.U64) : Result i5h_sql.Val := do
+  let i ← lift (UScalar.hcast .I64 self)
+  ok (i5h_sql.Val.Int i)
+
+/-- [i5h_sql::{impl i5h_sql::Column for u64}::from_val]:
+    Source: 'crates/i5h-sql/src/lib.rs', lines 28:4-28:39
+    Name pattern: [i5h_sql::{i5h_sql::Column<u64>}::from_val]
+    Visibility: public -/
+@[rust_fun "i5h_sql::{i5h_sql::Column<u64>}::from_val"]
+def U64.Insts.I5h_sqlColumn.from_val
+  (v : i5h_sql.Val) : Result (Option Std.U64) := do
+  match v with
+  | i5h_sql.Val.Int i => let i1 ← lift (IScalar.hcast .U64 i)
+                         ok (some i1)
+  | i5h_sql.Val.Bool _ => ok none
+  | i5h_sql.Val.Text _ => ok none
+  | i5h_sql.Val.Bytes _ => ok none
+  | i5h_sql.Val.Null => ok none
+
+/-- [i5h_sql::val_eq]:
+    Source: 'crates/i5h-sql/src/lib.rs', lines 134:0-134:39
+    Name pattern: [i5h_sql::val_eq]
+    Visibility: public -/
+@[rust_fun "i5h_sql::val_eq"]
+def i5h_sql.val_eq (a : i5h_sql.Val) (b : i5h_sql.Val) : Result Bool := do
+  match a with
+  | i5h_sql.Val.Int x =>
+    match b with
+    | i5h_sql.Val.Int y => ok (x = y)
+    | i5h_sql.Val.Bool _ => ok false
+    | i5h_sql.Val.Text _ => ok false
+    | i5h_sql.Val.Bytes _ => ok false
+    | i5h_sql.Val.Null => ok false
+  | i5h_sql.Val.Bool x =>
+    match b with
+    | i5h_sql.Val.Int _ => ok false
+    | i5h_sql.Val.Bool y => ok (x = y)
+    | i5h_sql.Val.Text _ => ok false
+    | i5h_sql.Val.Bytes _ => ok false
+    | i5h_sql.Val.Null => ok false
+  | i5h_sql.Val.Text x =>
+    match b with
+    | i5h_sql.Val.Int _ => ok false
+    | i5h_sql.Val.Bool _ => ok false
+    | i5h_sql.Val.Text y =>
+      alloc.vec.partial_eq.PartialEqVec.eq core.cmp.PartialEqU8 x y
+    | i5h_sql.Val.Bytes _ => ok false
+    | i5h_sql.Val.Null => ok false
+  | i5h_sql.Val.Bytes x =>
+    match b with
+    | i5h_sql.Val.Int _ => ok false
+    | i5h_sql.Val.Bool _ => ok false
+    | i5h_sql.Val.Text _ => ok false
+    | i5h_sql.Val.Bytes y =>
+      alloc.vec.partial_eq.PartialEqVec.eq core.cmp.PartialEqU8 x y
+    | i5h_sql.Val.Null => ok false
+  | i5h_sql.Val.Null =>
+    match b with
+    | i5h_sql.Val.Int _ => ok false
+    | i5h_sql.Val.Bool _ => ok false
+    | i5h_sql.Val.Text _ => ok false
+    | i5h_sql.Val.Bytes _ => ok false
+    | i5h_sql.Val.Null => ok true
+
+/-- [i5h_sql::has_col]:
+    Source: 'crates/i5h-sql/src/lib.rs', lines 160:0-160:59
+    Name pattern: [i5h_sql::has_col]
+    Visibility: public -/
+@[rust_fun "i5h_sql::has_col"]
+def i5h_sql.has_col
+  (row : alloc.vec.Vec i5h_sql.Val) (col : Std.U32) (val : i5h_sql.Val) :
+  Result Bool
+  := do
+  let i ← lift (UScalar.cast .Usize col)
+  let i1 := alloc.vec.Vec.len row
+  if i < i1
+  then
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice i5h_sql.Val)
+        row i
+    i5h_sql.val_eq v val
+  else ok false
+
+/-- [i5h_sql::Write]
+    Source: 'crates/i5h-sql/src/lib.rs', lines 171:0-171:14
+    Name pattern: [i5h_sql::Write]
+    Visibility: public -/
+@[discriminant isize, rust_type "i5h_sql::Write"]
+inductive i5h_sql.Write where
+| Put : Std.U32 → Std.U32 → alloc.vec.Vec i5h_sql.Val → i5h_sql.Write
+| Del : Std.U32 → alloc.vec.Vec i5h_sql.Val → i5h_sql.Write
+| DelWhere : Std.U32 → Std.U32 → i5h_sql.Val → i5h_sql.Write
+
 /-- [calculator_kernel::Principal]
     Source: 'examples/tutorials/calculator/kernel/src/lib.rs', lines 9:0-12:1
     Visibility: public -/
@@ -27,33 +137,33 @@ structure Principal where
   user : Std.U64
 
 /-- [calculator_kernel::Memory]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 43:12-46:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 111:12-114:13
     Visibility: public -/
 structure Memory where
   user : Std.U64
   value : Std.U64
 
+/-- [calculator_kernel::Snapshot]
+    Source: 'crates/i5h-schema/src/lib.rs', lines 278:8-280:9
+    Visibility: public -/
+structure Snapshot where
+  memories : alloc.vec.Vec Memory
+
 /-- [calculator_kernel::{impl core::clone::Clone for calculator_kernel::Memory}::clone]:
-    Source: 'examples/tutorials/calculator/kernel/src/lib.rs', lines 19:13-19:18
+    Source: 'examples/tutorials/calculator/kernel/src/lib.rs', lines 25:13-25:18
     Visibility: public -/
 def Memory.Insts.CoreCloneClone.clone (self : Memory) : Result Memory := do
   ok self
 
 /-- Trait implementation: [calculator_kernel::{impl core::clone::Clone for calculator_kernel::Memory}]
-    Source: 'examples/tutorials/calculator/kernel/src/lib.rs', lines 19:13-19:18 -/
+    Source: 'examples/tutorials/calculator/kernel/src/lib.rs', lines 25:13-25:18 -/
 @[reducible]
 def Memory.Insts.CoreCloneClone : core.clone.Clone Memory := {
   clone := Memory.Insts.CoreCloneClone.clone
 }
 
-/-- [calculator_kernel::Snapshot]
-    Source: 'examples/tutorials/calculator/kernel/src/lib.rs', lines 28:0-30:1
-    Visibility: public -/
-structure Snapshot where
-  memories : alloc.vec.Vec Memory
-
 /-- [calculator_kernel::{impl core::clone::Clone for calculator_kernel::Snapshot}::clone]:
-    Source: 'examples/tutorials/calculator/kernel/src/lib.rs', lines 27:9-27:14
+    Source: 'examples/tutorials/calculator/kernel/src/lib.rs', lines 20:13-20:18
     Visibility: public -/
 def Snapshot.Insts.CoreCloneClone.clone
   (self : Snapshot) : Result Snapshot := do
@@ -192,58 +302,305 @@ def transition
     let i ← memory_of snap.memories actor.user
     ok (core.result.Result.Ok (none, Reply.Value i))
 
-/-- [calculator_kernel::put_memory]: loop body 0:
-    Source: 'examples/tutorials/calculator/kernel/src/lib.rs', lines 127:4-135:1 -/
+/-- [calculator_kernel::{calculator_kernel::Memory}::put]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 219:16-227:13
+    Visibility: public -/
 @[rust_loop_body]
-def put_memory_loop.body
-  (ms : alloc.vec.Vec Memory) (m : Memory) (i : Std.Usize) :
+def Memory.put_loop.body
+  (v : alloc.vec.Vec Memory) (x : Memory) (i : Std.Usize) :
   Result (ControlFlow Std.Usize (alloc.vec.Vec Memory))
   := do
-  let i1 := alloc.vec.Vec.len ms
+  let i1 := alloc.vec.Vec.len v
   if i < i1
   then
-    let m1 ←
-      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Memory) ms i
-    if m1.user = m.user
+    let m ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Memory) v i
+    if m.user = x.user
     then
       let (_, index_mut_back) ←
         alloc.vec.Vec.index_mut (core.slice.index.SliceIndexUsizeSlice Memory)
-          ms i
-      let ms1 := index_mut_back m
-      ok (done ms1)
+          v i
+      let v1 := index_mut_back x
+      ok (done v1)
     else let i2 ← i + 1#usize
          ok (cont i2)
-  else let ms1 ← alloc.vec.Vec.push ms m
-       ok (done ms1)
+  else let v1 ← alloc.vec.Vec.push v x
+       ok (done v1)
 
-/-- [calculator_kernel::put_memory]: loop 0:
-    Source: 'examples/tutorials/calculator/kernel/src/lib.rs', lines 127:4-135:1 -/
+/-- [calculator_kernel::{calculator_kernel::Memory}::put]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 219:16-227:13
+    Visibility: public -/
 @[rust_loop]
-def put_memory_loop
-  (ms : alloc.vec.Vec Memory) (m : Memory) (i : Std.Usize) :
+def Memory.put_loop
+  (v : alloc.vec.Vec Memory) (x : Memory) (i : Std.Usize) :
   Result (alloc.vec.Vec Memory)
   := do
   loop
-    (fun i1 => put_memory_loop.body ms m i1)
+    (fun i1 => Memory.put_loop.body v x i1)
     i
 
-/-- [calculator_kernel::put_memory]:
-    Source: 'examples/tutorials/calculator/kernel/src/lib.rs', lines 125:0-135:1 -/
+/-- [calculator_kernel::{calculator_kernel::Memory}::put]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 217:12-227:13
+    Visibility: public -/
 @[reducible]
-def put_memory
-  (ms : alloc.vec.Vec Memory) (m : Memory) :
-  Result (alloc.vec.Vec Memory)
-  := do
-  put_memory_loop ms m 0#usize
+def Memory.put
+  (v : alloc.vec.Vec Memory) (x : Memory) : Result (alloc.vec.Vec Memory) := do
+  Memory.put_loop v x 0#usize
 
 /-- [calculator_kernel::apply]:
-    Source: 'examples/tutorials/calculator/kernel/src/lib.rs', lines 138:0-145:1
+    Source: 'examples/tutorials/calculator/kernel/src/lib.rs', lines 126:0-133:1
     Visibility: public -/
 def apply (snap : Snapshot) (w : Option Memory) : Result Snapshot := do
   let s ← Snapshot.Insts.CoreCloneClone.clone snap
   match w with
   | none => ok s
-  | some m => let v ← put_memory s.memories m
+  | some m => let v ← Memory.put s.memories m
               ok { memories := v }
+
+/-- [calculator_kernel::{calculator_kernel::Memory}::to_row]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 135:12-140:13
+    Visibility: public -/
+def Memory.to_row (self : Memory) : Result (alloc.vec.Vec i5h_sql.Val) := do
+  let v ← U64.Insts.I5h_sqlColumn.to_val self.user
+  let out ← alloc.vec.Vec.push (alloc.vec.Vec.new i5h_sql.Val) v
+  let v1 ← U64.Insts.I5h_sqlColumn.to_val self.value
+  alloc.vec.Vec.push out v1
+
+/-- [calculator_kernel::{calculator_kernel::Memory}::KEY_LEN]
+    Source: 'crates/i5h-schema/src/lib.rs', lines 133:12-133:62
+    Visibility: public -/
+@[global_simps, irreducible] def Memory.KEY_LEN : Std.U32 := 1#u32
+
+/-- [calculator_kernel::{calculator_kernel::Memory}::TABLE]
+    Source: 'crates/i5h-schema/src/lib.rs', lines 132:12-132:60
+    Visibility: public -/
+@[global_simps, irreducible] def Memory.TABLE : Std.U32 := 0#u32
+
+/-- [calculator_kernel::{calculator_kernel::Memory}::sql_put]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 186:12-188:13
+    Visibility: public -/
+def Memory.sql_put (self : Memory) : Result i5h_sql.Write := do
+  let v ← Memory.to_row self
+  ok (i5h_sql.Write.Put Memory.TABLE Memory.KEY_LEN v)
+
+/-- [calculator_kernel::sql_writes]:
+    Source: 'examples/tutorials/calculator/kernel/src/lib.rs', lines 136:0-143:1
+    Visibility: public -/
+def sql_writes (w : Option Memory) : Result (alloc.vec.Vec i5h_sql.Write) := do
+  match w with
+  | none => ok (alloc.vec.Vec.new i5h_sql.Write)
+  | some m =>
+    let w1 ← Memory.sql_put m
+    alloc.vec.Vec.push (alloc.vec.Vec.new i5h_sql.Write) w1
+
+/-- [calculator_kernel::{calculator_kernel::Memory}::from_row]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 143:12-164:13
+    Visibility: public -/
+def Memory.from_row
+  (row : alloc.vec.Vec i5h_sql.Val) : Result (Option Memory) := do
+  let i := alloc.vec.Vec.len row
+  let i1 ← 0#usize + 1#usize
+  let i2 ← i1 + 1#usize
+  if i != i2
+  then ok none
+  else
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice i5h_sql.Val)
+        row 0#usize
+    let o ← U64.Insts.I5h_sqlColumn.from_val v
+    match o with
+    | none => ok none
+    | some x =>
+      let v1 ←
+        alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice i5h_sql.Val)
+          row i1
+      let o1 ← U64.Insts.I5h_sqlColumn.from_val v1
+      match o1 with
+      | none => ok none
+      | some x1 => let _ ← i1 + 1#usize
+                   ok (some { user := x, value := x1 })
+
+/-- [calculator_kernel::{calculator_kernel::Memory}::from_rows]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Visibility: public -/
+@[rust_loop_body]
+def Memory.from_rows_loop.body
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val))
+  (out : alloc.vec.Vec Memory) (ok1 : Bool) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Memory) × Bool × Std.Usize)
+    ((alloc.vec.Vec Memory) × Bool))
+  := do
+  let i1 := alloc.vec.Vec.len rows
+  if i < i1
+  then
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice (alloc.vec.Vec
+        i5h_sql.Val)) rows i
+    let o ← Memory.from_row v
+    let (out1, ok2) ←
+      match o with
+      | none => ok (out, false)
+      | some x => do
+                  let out2 ← alloc.vec.Vec.push out x
+                  ok (out2, ok1)
+    let i2 ← i + 1#usize
+    ok (cont (out1, ok2, i2))
+  else ok (done (out, ok1))
+
+/-- [calculator_kernel::{calculator_kernel::Memory}::from_rows]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Visibility: public -/
+@[rust_loop]
+def Memory.from_rows_loop
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val))
+  (out : alloc.vec.Vec Memory) (ok1 : Bool) (i : Std.Usize) :
+  Result ((alloc.vec.Vec Memory) × Bool)
+  := do
+  loop
+    (fun (out1, ok2, i1) => Memory.from_rows_loop.body rows out1 ok2 i1)
+    (out, ok1, i)
+
+/-- [calculator_kernel::{calculator_kernel::Memory}::from_rows]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 167:12-183:13
+    Visibility: public -/
+def Memory.from_rows
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)) :
+  Result (Option (alloc.vec.Vec Memory))
+  := do
+  let (out, ok1) ←
+    Memory.from_rows_loop rows (alloc.vec.Vec.new Memory) true 0#usize
+  if ok1
+  then ok (some out)
+  else ok none
+
+/-- [calculator_kernel::{calculator_kernel::Memory}::del]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 233:16-238:17
+    Visibility: public -/
+@[rust_loop_body]
+def Memory.del_loop.body
+  (v : alloc.vec.Vec Memory) (user : Std.U64) (out : alloc.vec.Vec Memory)
+  (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Memory) × Std.Usize) (alloc.vec.Vec
+    Memory))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let m ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Memory) v i
+    let out1 ←
+      if m.user = user
+      then ok out
+      else
+        do
+        let m1 ← Memory.Insts.CoreCloneClone.clone m
+        alloc.vec.Vec.push out m1
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
+  else ok (done out)
+
+/-- [calculator_kernel::{calculator_kernel::Memory}::del]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 233:16-238:17
+    Visibility: public -/
+@[rust_loop]
+def Memory.del_loop
+  (v : alloc.vec.Vec Memory) (user : Std.U64) (out : alloc.vec.Vec Memory)
+  (i : Std.Usize) :
+  Result (alloc.vec.Vec Memory)
+  := do
+  loop
+    (fun (out1, i1) => Memory.del_loop.body v user out1 i1)
+    (out, i)
+
+/-- [calculator_kernel::{calculator_kernel::Memory}::del]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 230:12-240:13
+    Visibility: public -/
+@[reducible]
+def Memory.del
+  (v : alloc.vec.Vec Memory) (user : Std.U64) :
+  Result (alloc.vec.Vec Memory)
+  := do
+  Memory.del_loop v user (alloc.vec.Vec.new Memory) 0#usize
+
+/-- [calculator_kernel::{calculator_kernel::Memory}::del_where]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 246:16-251:17
+    Visibility: public -/
+@[rust_loop_body]
+def Memory.del_where_loop.body
+  (v : alloc.vec.Vec Memory) (col : Std.U32) (val : i5h_sql.Val)
+  (out : alloc.vec.Vec Memory) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Memory) × Std.Usize) (alloc.vec.Vec
+    Memory))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let m ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Memory) v i
+    let v1 ← Memory.to_row m
+    let b ← i5h_sql.has_col v1 col val
+    let out1 ←
+      if b
+      then ok out
+      else
+        do
+        let m1 ← Memory.Insts.CoreCloneClone.clone m
+        alloc.vec.Vec.push out m1
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
+  else ok (done out)
+
+/-- [calculator_kernel::{calculator_kernel::Memory}::del_where]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 246:16-251:17
+    Visibility: public -/
+@[rust_loop]
+def Memory.del_where_loop
+  (v : alloc.vec.Vec Memory) (col : Std.U32) (val : i5h_sql.Val)
+  (out : alloc.vec.Vec Memory) (i : Std.Usize) :
+  Result (alloc.vec.Vec Memory)
+  := do
+  loop
+    (fun (out1, i1) => Memory.del_where_loop.body v col val out1 i1)
+    (out, i)
+
+/-- [calculator_kernel::{calculator_kernel::Memory}::del_where]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 243:12-253:13
+    Visibility: public -/
+@[reducible]
+def Memory.del_where
+  (v : alloc.vec.Vec Memory) (col : Std.U32) (val : i5h_sql.Val) :
+  Result (alloc.vec.Vec Memory)
+  := do
+  Memory.del_where_loop v col val (alloc.vec.Vec.new Memory) 0#usize
+
+/-- [calculator_kernel::{calculator_kernel::Memory}::sql_del]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 256:12-260:13
+    Visibility: public -/
+def Memory.sql_del (user : Std.U64) : Result i5h_sql.Write := do
+  let v ← U64.Insts.I5h_sqlColumn.to_val user
+  let key ← alloc.vec.Vec.push (alloc.vec.Vec.new i5h_sql.Val) v
+  ok (i5h_sql.Write.Del Memory.TABLE key)
+
+/-- [calculator_kernel::{calculator_kernel::Memory}::sql_del_where]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 263:12-265:13
+    Visibility: public -/
+def Memory.sql_del_where
+  (col : Std.U32) (val : i5h_sql.Val) : Result i5h_sql.Write := do
+  ok (i5h_sql.Write.DelWhere Memory.TABLE col val)
+
+/-- [calculator_kernel::Rows]
+    Source: 'crates/i5h-schema/src/lib.rs', lines 285:8-287:9
+    Visibility: public -/
+structure Rows where
+  memories : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)
+
+/-- [calculator_kernel::decode]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 290:8-298:9
+    Visibility: public -/
+def decode (r : Rows) : Result (Option Snapshot) := do
+  let o ← Memory.from_rows r.memories
+  match o with
+  | none => ok none
+  | some x => ok (some { memories := x })
 
 end calculator_kernel
