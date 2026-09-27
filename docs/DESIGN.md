@@ -57,9 +57,9 @@ the invariants hold for the database and not only for kernel states.
 
 The framework is proven where it can be. The SQL statement planner, the token
 parser and encoder, and the JSON writer are extracted and proven. The engine's
-retry, idempotency and locking protocol and the outbox dispatcher are modeled
-in `lean/`, and traces recorded from the Rust engine are checked against the
-model.
+retry, idempotency, locking and clock protocol and the outbox dispatcher are
+modeled in `lean/`, and traces recorded from the Rust engine are checked
+against the model.
 
 Five ports test the approach on real code, and each one reproduces a known
 bug: the property fails, with a concrete counterexample, on the code before
@@ -85,13 +85,28 @@ noninterference, and interval invariants with effects.
 
 `transition` is pure, so anything it needs from outside, such as the current
 time, a random slug or a fact from another service, arrives as an input that
-the shell fills in. Put such inputs in the principal, which the authenticator
-builds once per request, rather than in the command, which the client
-chooses: a client that picks the time can book the past. Since the engine
-retries with the same principal, a retry decides against the same inputs,
-and since theorems quantify over every principal, they hold for any value the
-shell supplies. What they cannot say is that the value is true, so each app's
-README names these inputs as trusted.
+the shell fills in. Put such inputs in the principal rather than in the
+command, which the client chooses: a client that picks the time can book the
+past. Since theorems quantify over every principal, they hold for any value
+the shell supplies. What they cannot say is that the value is true, so each
+app's README names these inputs as trusted.
+
+The time comes from the engine. Each attempt reads the configured `Clock`
+inside its transaction (the process's clock, PostgreSQL's
+`transaction_timestamp()`, or a test clock) and passes it to
+`Kernel::stamp`, which copies it into the principal right before
+`transition`. Time is a `Timestamp` in microseconds since the Unix epoch;
+kernels that count seconds take `secs()`. A retry reads the clock again, so
+a decision is made at the time of the attempt that commits it, and an
+idempotent replay matches on the command's fingerprint, which leaves the time
+out. With `EngineConfig::monotonic`, the engine keeps each tenant's latest
+commit time in `i5h_clock` and never uses an earlier one, so time never goes
+back in commit order within a tenant. The Lean model proves this
+(`Engine.times_monotone`), traces record each attempt's time, and
+`I5hLib.ReachableT` lets an app prove properties that need it, such as
+`started_stays` in the booking tutorial. Other inputs, such as a random slug,
+are drawn once per request by the authenticator, so a retry sees the same
+value.
 
 ## One schema per app
 
