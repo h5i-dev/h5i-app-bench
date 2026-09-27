@@ -9,7 +9,7 @@ admin registered for the room, such as a display next to the door.
 
 The application builds on the [second tutorial](../board/TUTORIAL.md), whose
 permission policy, invariants and `Reachable` states you will use again. It
-adds three things. The kernel has no clock, so the server has to pass it the
+adds three things. The kernel has no clock, so the engine has to pass it the
 current time, and you have to decide how much to trust it. The invariant is
 about intervals: no two bookings of a room overlap, in every state the service
 can reach. And a command now has effects outside the database, which go
@@ -26,6 +26,7 @@ and only when its change is committed.
 | `proofs/Theorems.lean` | the permission, invariant and notification theorems |
 | `proofs/Apply.lean` | the proof that committing a write set does what the specification says |
 | `proofs/Scenarios.lean` | concrete runs of the extracted code |
+| `proofs/Clock.lean` | a theorem that needs time to move forward, and a run where it does not |
 
 ## Running the application
 
@@ -104,11 +105,13 @@ pub struct Principal {
 }
 ```
 
-The server fills in `now` when it authenticates a request, and the JSON
-decoder has no field for it. A request gets its time once, when it arrives, so
-the engine's retries after a serialization failure decide against the same
-time, and an idempotent retry that arrives later still gets the stored reply,
-because the reply is matched on the command alone.
+The engine fills in `now`, and the JSON decoder has no field for it. Each
+attempt reads the engine's clock inside its transaction and passes the time
+to `Kernel::stamp`, which copies it into the principal right before
+`transition`. A retry after a serialization failure reads the clock again, so
+the decision that commits is always made at the time of the attempt that
+commits it. An idempotent retry that arrives later still gets the stored
+reply, because the reply is matched on the command alone.
 
 ### Rooms and bookings
 
@@ -197,12 +200,27 @@ back request leaves nothing behind.
 k::Write::Emit(e) => outbox::enqueue(tx, t, e.dest, &effect_payload(e)).await?,
 ```
 
-The time comes from `principal`, the function that turns a verified token
-into a `Principal`:
+`principal` turns a verified token into a `Principal` and leaves `now` at 0.
+The engine's time replaces it through `stamp`, which converts the engine's
+microseconds to the kernel's seconds:
 
 ```rust
-pub fn principal(org: u64, user: u64) -> k::Principal {
-    k::Principal { org, user, now: now() }
+impl Kernel for BookingApp {
+    // ...
+    fn stamp(actor: &mut k::Principal, now: Timestamp) {
+        actor.now = now.secs();
+    }
+}
+```
+
+The engine reads the time from its `EngineConfig`. The service uses the
+database's clock, PostgreSQL's `transaction_timestamp()`, so that every
+server of one database agrees on the time, and turns on `monotonic`, which
+the section on time below explains:
+
+```rust
+pub fn config() -> EngineConfig {
+    EngineConfig::default().database_time() // Clock::Database, monotonic: true
 }
 ```
 
@@ -237,7 +255,8 @@ tokio::spawn(async move {
 ```
 
 There are two tests. `tests/postgres.rs` runs random commands, at a clock that
-moves forward, through PostgreSQL and through `MemoryEngine`, and checks that
+moves forward (`Clock::Manual` for the engine, `MemoryEngine::execute_at` for
+the reference), through PostgreSQL and through `MemoryEngine`, and checks that
 the replies and the final states agree and that the outbox holds exactly the
 notifications of the commands that succeeded, in order. `tests/outbox.rs`
 starts a small HTTP receiver and checks that a booking and a cancellation are
@@ -294,7 +313,8 @@ structure Inv (s : St) : Prop where
 `Reachable` is the same as on the board. Since it allows a step by any
 principal, it allows any time at every step, including a clock that goes
 backwards. Every theorem about reachable states therefore holds whatever the
-server's clock says.
+engine's clock says. A theorem that needs time to move forward uses
+`ReachableT` instead, which the section on time below introduces.
 
 ## Describing each command
 
@@ -402,6 +422,61 @@ theorems about reachable states apply to it.
 the same loop lemmas as the second tutorial. `Emit` is the identity on both
 sides.
 
+## Time that never goes back
+
+The rule "owners cancel before the start" is meant to say more than what one
+command checks: once a booking has started, its owner can no longer cancel
+it. That reading needs time to move forward. If one request commits at 10:05,
+after the booking started at 10:00, and a later request carries 9:55, the
+owner cancels a meeting that the service already treated as under way.
+
+With several servers, or one whose clock is corrected backwards, this
+happens. PostgreSQL orders transactions, not clocks, so a request that
+commits later may carry an earlier time. The engine's `monotonic` option
+rules it out. The engine keeps the time of each tenant's latest commit in the
+table `i5h_clock` and uses the later of that and the clock, reading and
+advancing the row in the request's transaction. The Lean model of the engine
+proves that committed times then never decrease in commit order within a
+tenant (`times_monotone` in `lean/Engine/Clock.lean`), for any clock, and
+the trace check tests the Rust engine against it.
+
+In the proofs, `I5hLib` provides `ReachableT`, reachability paired with the
+time of the latest commit, whose step requires the principal's time to be no
+earlier, and `StepsT`, the same from a given state for callers that pass a
+filter. `Spec.lean` instantiates them for this service:
+
+```lean
+abbrev ReachableT : St → Nat → Prop :=
+  I5hLib.ReachableT transition (·.now.val) Snapshot.toSt (fun st ws => applyAll st ws.val) init
+
+abbrev StepsT (allow : Principal → St → Prop) : St → Nat → St → Nat → Prop :=
+  I5hLib.StepsT transition (·.now.val) Snapshot.toSt (fun st ws => applyAll st ws.val) allow
+```
+
+`Clock.lean` proves that once a commit has happened at or after a booking's
+start, only an admin can remove it:
+
+```lean
+theorem started_stays {st st' : St} {t t' : Nat} (hr : ReachableT st t)
+    (h : StepsT (fun a st => ¬ isAdmin st a.user.val) st t st' t') {b : Booking}
+    (hb : b ∈ st.bookings) (hstart : b.start_at.val ≤ t) : b ∈ st'.bookings
+```
+
+The proof follows `I5hLib.StepsT.preserve`: every step by a non-admin keeps
+the booking, since `Book` uses a fresh id and `Cancel` of this booking needs
+an admin or a time before its start, which is at most `t` and so before the
+step's time. The invariants come from `Reachable`, because every timed run is
+a run (`reachableT_reachable`).
+
+The theorem is false without monotonic time, and `clock_back_cancels` shows
+it on the extracted code. The admin sets up room 0 and user 2 books `[1, 2)`
+at time 0, user 3 lists the bookings at time 5, and then user 2, who is not an
+admin, cancels the booking with a clock that reads 0. Every step is accepted,
+and only the last one goes back in time, which is the one `StepsT` excludes.
+`tests/postgres.rs` runs the same sequence on PostgreSQL: without `monotonic`
+the cancellation succeeds, and with it the engine uses the later time and the
+kernel answers `started`.
+
 ## Introducing a bug
 
 The classic mistake with intervals is to treat them as closed, so that two
@@ -447,11 +522,13 @@ Had `free_spec` been stated as an implication, the bug would have passed.
 The theorems hold for every value of `now`, so a wrong clock cannot create
 overlapping bookings or send a notification to the wrong place. It can make
 the service accept a booking that has already started or let an owner cancel
-one that is under way, since "future" means future according to the server.
-The shell's clock is therefore part of the trusted base, like the JSON decoder.
-With several servers, their clocks may disagree, and PostgreSQL orders the
-transactions, not the clocks, so a request that commits later may carry an
-earlier time.
+one that is under way, since "future" means future according to the engine.
+The clock is therefore part of the trusted base, like the JSON decoder. The
+service reads the database's clock, so its servers agree with each other,
+but nothing checks that the database's clock is right. With `monotonic`, a
+clock that is behind cannot take the service back in time, but a clock that
+is ahead moves every later request forward until the real time catches up.
+`started_stays` covers only runs of the engine with `monotonic` on.
 
 Notifications are delivered at least once. A dispatcher that crashes after a
 POST but before recording it sends it again with the same key, and the

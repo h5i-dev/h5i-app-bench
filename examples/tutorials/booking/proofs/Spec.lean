@@ -93,4 +93,15 @@ inductive Reachable : St → Prop
   | step {a s c ws r} : Reachable (Snapshot.toSt s) → transition a s c = .ok (.Ok (ws, r)) →
       Reachable (applyAll (Snapshot.toSt s) ws.val)
 
+/-- The states reachable when the engine keeps time from going back
+(`EngineConfig::monotonic`), with the time of the latest commit: no command
+runs at an earlier time than the one before it. -/
+abbrev ReachableT : St → Nat → Prop :=
+  I5hLib.ReachableT transition (·.now.val) Snapshot.toSt (fun st ws => applyAll st ws.val) init
+
+/-- Runs from a state at a time, of commands by callers that pass `allow`,
+with time never going back. -/
+abbrev StepsT (allow : Principal → St → Prop) : St → Nat → St → Nat → Prop :=
+  I5hLib.StepsT transition (·.now.val) Snapshot.toSt (fun st ws => applyAll st ws.val) allow
+
 end booking_kernel.Spec
