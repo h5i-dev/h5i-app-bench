@@ -12,8 +12,8 @@ package ledger_proofs
 -- Generated Lean: the extracted Rust (scripts/extract-ledger.sh). Do not edit.
 lean_lib Generated where
   srcDir := "generated"
-  roots := #[`LedgerKernel]
+  roots := #[`LedgerKernel, `Schema]
 
 -- Hand-written specification and proofs.
 @[default_target] lean_lib Proofs where
-  roots := #[`Spec, `Commands, `Theorems, `Apply, `Scenarios]
+  roots := #[`Spec, `Commands, `Theorems, `Apply, `Storage, `Scenarios]
