@@ -5,6 +5,7 @@ root=$(cd "$(dirname "$0")/.." && pwd)
 tmp=$(mktemp -d)
 trap 'rm -rf "$tmp"' EXIT
 (cd "$root/examples/tutorials/ledger/kernel" && charon cargo --preset=aeneas \
-  --start-from ledger_kernel::transition --start-from ledger_kernel::apply \
+  --start-from ledger_kernel::transition $(bash "$root/scripts/schema-items.sh" ledger_kernel) \
+  --include i5h_sql \
   --dest-file "$tmp/ledger_kernel.llbc")
 aeneas -backend lean "$tmp/ledger_kernel.llbc" -dest "$root/examples/tutorials/ledger/proofs/generated"

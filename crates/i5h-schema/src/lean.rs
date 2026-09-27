@@ -534,13 +534,13 @@ theorem {name}.from_rows_spec (rows : alloc.vec.Vec (alloc.vec.Vec Val)) (l : Li
     let _ = writeln!(s, "  | _ => fun _ => False");
 
     let table_of = |t: &str| names.iter().position(|n| *n == t).unwrap_or_else(|| panic!("schema!: no row type {t}"));
-    let simp_rows = {
+    let writes_simp = |single_rows: bool| {
         let mut l: Vec<String> = Vec::new();
         for (name, _, _, key_len) in rows {
             l.push(format!("{name}.putA"));
             l.push(format!("{name}.table"));
             l.push(format!("{name}.keyLen"));
-            if *key_len == 0 {
+            if *key_len == 0 && single_rows {
                 l.push(format!("{name}.row"));
             }
             if *key_len > 0 {
@@ -550,6 +550,8 @@ theorem {name}.from_rows_spec (rows : alloc.vec.Vec (alloc.vec.Vec Val)) (l : Li
         }
         l.join(", ")
     };
+    let simp_rows = writes_simp(true);
+    let simp_ok = writes_simp(false);
     let rows_only: Vec<String> = names.iter().map(|n| format!("{n}.row")).collect();
     let single_witness: Vec<String> = singles.iter().map(|n| format!("exact ⟨{n}.zero, rfl⟩")).collect();
 
@@ -572,7 +574,7 @@ macro \"schema_step\" \" [\" ls:Lean.Parser.Tactic.simpLemma,* \"]\" : tactic =>
 `schema_ok [sqlA]`. -/
 macro \"schema_ok\" \" [\" ls:Lean.Parser.Tactic.simpLemma,* \"]\" : tactic => `(tactic| (
   intro w; cases w <;>
-    simp [WriteOk, RowOk, IsRow, {simp_rows}, $ls,*]))
+    simp [WriteOk, RowOk, IsRow, {simp_ok}, $ls,*]))
 
 /-- A fresh tenant's tables: `schema_init [enc, init]`. -/
 macro \"schema_init\" \" [\" ls:Lean.Parser.Tactic.simpLemma,* \"]\" : tactic => `(tactic| (

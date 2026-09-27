@@ -409,7 +409,7 @@ macro "schema_step" " [" ls:Lean.Parser.Tactic.simpLemma,* "]" : tactic => `(tac
 `schema_ok [sqlA]`. -/
 macro "schema_ok" " [" ls:Lean.Parser.Tactic.simpLemma,* "]" : tactic => `(tactic| (
   intro w; cases w <;>
-    simp [WriteOk, RowOk, IsRow, Post.putA, Post.table, Post.keyLen, Post.delA, Post.delWhereA, Moderator.putA, Moderator.table, Moderator.keyLen, Moderator.delA, Moderator.delWhereA, Counter.putA, Counter.table, Counter.keyLen, Counter.row, $ls,*]))
+    simp [WriteOk, RowOk, IsRow, Post.putA, Post.table, Post.keyLen, Post.delA, Post.delWhereA, Moderator.putA, Moderator.table, Moderator.keyLen, Moderator.delA, Moderator.delWhereA, Counter.putA, Counter.table, Counter.keyLen, $ls,*]))
 
 /-- A fresh tenant's tables: `schema_init [enc, init]`. -/
 macro "schema_init" " [" ls:Lean.Parser.Tactic.simpLemma,* "]" : tactic => `(tactic| (
