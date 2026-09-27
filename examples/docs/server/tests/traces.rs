@@ -37,7 +37,8 @@ fn project(name: &str) -> k::Command {
 }
 
 fn cfg(lock: bool) -> EngineConfig {
-    EngineConfig { tenant_lock: lock, max_attempts: 100 }
+    // The database clock under `monotonic`, so the checker also checks that time never goes back.
+    EngineConfig { tenant_lock: lock, max_attempts: 100, ..Default::default() }.database_time()
 }
 
 /// Every event kind: commit, replay, key conflict, refusal.
@@ -102,6 +103,30 @@ fn lost_commit_cases() {
         r#"{"ev":"commit","tenant":1,"req":0,"ver":2,"reply":"02"}"#,
     ]);
     reject("lost_applied_twice", &lines(&twice));
+}
+
+/// Under `monotonic`, an attempt that begins before a commit it sees is rejected.
+#[test]
+fn clock_cases() {
+    let run = |mono: bool, second: u64| {
+        let r0 = format!(r#"{{"ev":"start","tenant":1,"req":0,"who":"","cmd":"req0","key":null,"mono":{mono}}}"#);
+        let r1 = format!(r#"{{"ev":"start","tenant":1,"req":1,"who":"","cmd":"req1","key":null,"mono":{mono}}}"#);
+        let b1 = format!(r#"{{"ev":"begin","tenant":1,"req":1,"ver":1,"now":{second}}}"#);
+        let k1 = format!(r#"{{"ev":"kernel","tenant":1,"req":1,"ver":1,"now":{second},"write":true,"reply":""}}"#);
+        vec![
+            r0,
+            r1,
+            r#"{"ev":"begin","tenant":1,"req":0,"ver":0,"now":5}"#.to_string(),
+            r#"{"ev":"kernel","tenant":1,"req":0,"ver":0,"now":5,"write":true,"reply":""}"#.to_string(),
+            r#"{"ev":"commit","tenant":1,"req":0,"ver":1,"reply":""}"#.to_string(),
+            b1,
+            k1,
+            r#"{"ev":"commit","tenant":1,"req":1,"ver":2,"reply":""}"#.to_string(),
+        ]
+    };
+    check("clock_forward", &run(true, 7));
+    check("clock_back_allowed", &run(false, 3));
+    reject("clock_back_monotonic", &run(true, 3));
 }
 
 async fn same_key_retries(lock: bool) {

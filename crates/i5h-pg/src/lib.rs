@@ -12,6 +12,14 @@
 //! Stores only see an opaque [`Tx`], and the pool is opaque as well, so
 //! application code cannot run SQL of its own.
 //!
+//! Each attempt reads the time from the configured [`Clock`] inside its
+//! transaction and hands it to [`Kernel::stamp`](i5h::Kernel::stamp) before
+//! `transition`. A retry reads the clock again, so a decision is always made
+//! at the time of the attempt that commits it. With
+//! [`EngineConfig::monotonic`], the engine keeps the latest committed time per
+//! tenant and never uses an earlier one, so time never goes back in commit
+//! order within a tenant (proven for the model in `lean/Engine/Clock.lean`).
+//!
 //! # Example
 //!
 //! ```ignore
@@ -27,6 +35,7 @@ mod table;
 
 pub use roles::{lockdown, lockdown_sql};
 pub use table::{column_of, ddl, delete, delete_where, key, load, load_rows, load_rows_where, load_where, run_planned, upsert, ColumnDef, Kind, PgField, Table, Value};
+pub use i5h::Timestamp;
 pub use i5h_sql as sql;
 
 use deadpool_postgres::{Config, Runtime};
@@ -150,7 +159,8 @@ pub trait Store<K: Kernel>: Send + Sync + 'static {
 
 /// Needed to replay stored replies for idempotency keys.
 pub trait ReplyCodec<K: Kernel>: Send + Sync + 'static {
-    /// Rejects a key reused for a different command.
+    /// Rejects a key reused for a different command. Leave the time out: a
+    /// retried request arrives later and must still match.
     fn fingerprint(cmd: &K::Command) -> Vec<u8>;
     /// Who owns a key. Keys are stored per scope, so one user cannot replay
     /// another user's reply. Must not contain `/`.
@@ -162,7 +172,7 @@ pub trait ReplyCodec<K: Kernel>: Send + Sync + 'static {
 /// Advisory lock key held while installing the schema ("i5h\0", 1).
 const SCHEMA_LOCK: (i32, i32) = (0x6935_6800, 1);
 
-pub(crate) const FRAMEWORK_TABLES: &[&str] = &["i5h_idempotency", "i5h_outbox"];
+pub(crate) const FRAMEWORK_TABLES: &[&str] = &["i5h_idempotency", "i5h_outbox", "i5h_clock"];
 
 const FRAMEWORK_DDL: &str = "CREATE TABLE IF NOT EXISTS i5h_idempotency (
   tenant_id BIGINT NOT NULL,
@@ -170,6 +180,10 @@ const FRAMEWORK_DDL: &str = "CREATE TABLE IF NOT EXISTS i5h_idempotency (
   fingerprint BYTEA NOT NULL,
   reply BYTEA NOT NULL,
   PRIMARY KEY (tenant_id, key)
+);
+CREATE TABLE IF NOT EXISTS i5h_clock (
+  tenant_id BIGINT PRIMARY KEY,
+  last BIGINT NOT NULL
 )";
 
 /// One protocol step, for checking runs against the Lean model in `lean/Engine`.
@@ -177,12 +191,13 @@ const FRAMEWORK_DDL: &str = "CREATE TABLE IF NOT EXISTS i5h_idempotency (
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub enum Event {
     /// A request enters the engine. `who` is the idempotency scope (empty
-    /// without a key); `cmd` is the fingerprint (keyed) or `req<id>`.
-    Start { tenant: u64, req: u64, who: String, cmd: String, key: Option<String> },
-    /// The attempt's snapshot sees `ver` commits.
-    Begin { tenant: u64, req: u64, ver: u64 },
-    /// The kernel's verdict on that snapshot. Not a model step; feeds the checker's kernel table.
-    Kernel { tenant: u64, req: u64, ver: u64, write: bool, reply: String },
+    /// without a key); `cmd` is the fingerprint (keyed) or `req<id>`;
+    /// `mono` is [`EngineConfig::monotonic`].
+    Start { tenant: u64, req: u64, who: String, cmd: String, key: Option<String>, mono: bool },
+    /// The attempt's snapshot sees `ver` commits; its clock read `now`.
+    Begin { tenant: u64, req: u64, ver: u64, now: u64 },
+    /// The kernel's verdict on that snapshot at `now`. Not a model step; feeds the checker's kernel table.
+    Kernel { tenant: u64, req: u64, ver: u64, now: u64, write: bool, reply: String },
     Replay { tenant: u64, req: u64, reply: String },
     Conflict { tenant: u64, req: u64 },
     Refuse { tenant: u64, req: u64 },
@@ -199,15 +214,17 @@ impl Event {
         let q = |s: &str| format!("\"{s}\"");
         let key = |k: &Option<String>| k.as_deref().map(q).unwrap_or_else(|| "null".into());
         match self {
-            Event::Start { tenant, req, who, cmd, key: k } => format!(
-                r#"{{"ev":"start","tenant":{tenant},"req":{req},"who":{},"cmd":{},"key":{}}}"#,
+            Event::Start { tenant, req, who, cmd, key: k, mono } => format!(
+                r#"{{"ev":"start","tenant":{tenant},"req":{req},"who":{},"cmd":{},"key":{},"mono":{mono}}}"#,
                 q(who),
                 q(cmd),
                 key(k)
             ),
-            Event::Begin { tenant, req, ver } => format!(r#"{{"ev":"begin","tenant":{tenant},"req":{req},"ver":{ver}}}"#),
-            Event::Kernel { tenant, req, ver, write, reply } => format!(
-                r#"{{"ev":"kernel","tenant":{tenant},"req":{req},"ver":{ver},"write":{write},"reply":{}}}"#,
+            Event::Begin { tenant, req, ver, now } => {
+                format!(r#"{{"ev":"begin","tenant":{tenant},"req":{req},"ver":{ver},"now":{now}}}"#)
+            }
+            Event::Kernel { tenant, req, ver, now, write, reply } => format!(
+                r#"{{"ev":"kernel","tenant":{tenant},"req":{req},"ver":{ver},"now":{now},"write":{write},"reply":{}}}"#,
                 q(reply)
             ),
             Event::Replay { tenant, req, reply } => {
@@ -244,6 +261,41 @@ struct Tr<'a> {
     req: u64,
     /// Snapshot version of the current attempt, once `Begin` was emitted.
     ver: Option<u64>,
+    /// Time of the current attempt.
+    now: u64,
+}
+
+/// Where the engine reads the time. Every attempt reads it once, inside its
+/// transaction.
+#[derive(Clone, Debug, Default)]
+pub enum Clock {
+    /// This process's system clock. Servers on several machines use several clocks.
+    #[default]
+    System,
+    /// PostgreSQL's `transaction_timestamp()`: one clock for every server of a database.
+    Database,
+    /// Always this time. For tests.
+    Fixed(Timestamp),
+    /// Whatever the handle was last set to. For tests that move time.
+    Manual(ManualClock),
+}
+
+/// A clock that tests set by hand; clones share the time.
+#[derive(Clone, Debug, Default)]
+pub struct ManualClock(Arc<AtomicU64>);
+
+impl ManualClock {
+    pub fn new(t: Timestamp) -> Self {
+        ManualClock(Arc::new(AtomicU64::new(t.0)))
+    }
+
+    pub fn set(&self, t: Timestamp) {
+        self.0.store(t.0, Ordering::SeqCst);
+    }
+
+    pub fn get(&self) -> Timestamp {
+        Timestamp(self.0.load(Ordering::SeqCst))
+    }
 }
 
 #[derive(Clone, Debug)]
@@ -251,11 +303,27 @@ pub struct EngineConfig {
     pub max_attempts: u32,
     /// Advisory lock per tenant. Only reduces retries; SERIALIZABLE gives correctness.
     pub tenant_lock: bool,
+    /// Where each attempt reads the time.
+    pub clock: Clock,
+    /// Never let time go back in commit order within a tenant. The engine
+    /// keeps the latest committed time in `i5h_clock` and uses the later of
+    /// it and the clock. Costs one read per attempt and one write per commit,
+    /// and makes a tenant's writes conflict with each other, which the tenant
+    /// lock already serializes.
+    pub monotonic: bool,
 }
 
 impl Default for EngineConfig {
     fn default() -> Self {
-        EngineConfig { max_attempts: 20, tenant_lock: true }
+        EngineConfig { max_attempts: 20, tenant_lock: true, clock: Clock::System, monotonic: false }
+    }
+}
+
+impl EngineConfig {
+    /// The database's clock, never going back. Apps whose kernels decide on
+    /// time should use this.
+    pub fn database_time(self) -> Self {
+        EngineConfig { clock: Clock::Database, monotonic: true, ..self }
     }
 }
 
@@ -405,8 +473,8 @@ impl<K: Kernel, S: Store<K>> Engine<K, S> {
             let who = idem.as_ref().map(|i| hex(i.key.split('/').next().unwrap_or("").as_bytes())).unwrap_or_default();
             let cmd = idem.as_ref().map(|i| hex(&i.fingerprint)).unwrap_or_else(|| format!("req{req}"));
             let key = idem.as_ref().map(|i| hex(i.key.as_bytes()));
-            f(Event::Start { tenant: tenant.0, req, who, cmd, key });
-            Tr { f, tenant: tenant.0, req, ver: None }
+            f(Event::Start { tenant: tenant.0, req, who, cmd, key, mono: self.config.monotonic });
+            Tr { f, tenant: tenant.0, req, ver: None, now: 0 }
         });
         for attempt in 0..self.config.max_attempts {
             self.stats.attempts.fetch_add(1, Ordering::Relaxed);
@@ -484,11 +552,18 @@ impl<K: Kernel, S: Store<K>> Engine<K, S> {
     ) -> Result<Attempt<K>, DbError> {
         let tid = table::tenant_param(tenant)?;
         let tx = client.build_transaction().isolation_level(IsolationLevel::Serializable).start().await?;
+        let ver = match tr {
+            Some(_) => {
+                let row = tx.query_opt("SELECT ver FROM i5h_trace_version WHERE tenant_id = $1", &[&tid]).await?;
+                row.map(|r| r.get::<_, i64>(0)).unwrap_or(0) as u64
+            }
+            None => 0,
+        };
+        let now = self.read_clock(&tx, tid).await?;
         if let Some(t) = tr.as_deref_mut() {
-            let row = tx.query_opt("SELECT ver FROM i5h_trace_version WHERE tenant_id = $1", &[&tid]).await?;
-            let ver = row.map(|r| r.get::<_, i64>(0)).unwrap_or(0) as u64;
-            (t.f)(Event::Begin { tenant: t.tenant, req: t.req, ver });
+            (t.f)(Event::Begin { tenant: t.tenant, req: t.req, ver, now: now.0 });
             t.ver = Some(ver);
+            t.now = now.0;
         }
         let emit = |tr: &Option<&mut Tr<'_>>, ev: fn(u64, u64) -> Event| {
             if let Some(t) = tr {
@@ -519,7 +594,9 @@ impl<K: Kernel, S: Store<K>> Engine<K, S> {
             }
         }
         let snap = S::load_for(&Tx(&tx), tenant, cmd).await?;
-        let decision = K::transition(actor, &snap, cmd);
+        let mut actor = actor.clone();
+        K::stamp(&mut actor, now);
+        let decision = K::transition(&actor, &snap, cmd);
         // Replies are only comparable when a codec exists (keyed requests).
         let encoded = match (&decision, idem) {
             (Ok((_, reply)), Some(idem)) => Some((idem.encode)(reply)),
@@ -528,7 +605,7 @@ impl<K: Kernel, S: Store<K>> Engine<K, S> {
         let reply_repr = encoded.as_deref().map(hex).unwrap_or_default();
         if let Some(t) = tr.as_deref() {
             let ver = t.ver.unwrap_or(0);
-            (t.f)(Event::Kernel { tenant: t.tenant, req: t.req, ver, write: decision.is_ok(), reply: reply_repr.clone() });
+            (t.f)(Event::Kernel { tenant: t.tenant, req: t.req, ver, now: t.now, write: decision.is_ok(), reply: reply_repr.clone() });
         }
         match decision {
             Err(refusal) => {
@@ -545,6 +622,14 @@ impl<K: Kernel, S: Store<K>> Engine<K, S> {
                     tx.execute(
                         "INSERT INTO i5h_idempotency (tenant_id, key, fingerprint, reply) VALUES ($1, $2, $3, $4)",
                         &[&tid, &idem.key, &idem.fingerprint, bytes],
+                    )
+                    .await?;
+                }
+                if self.config.monotonic {
+                    tx.execute(
+                        "INSERT INTO i5h_clock (tenant_id, last) VALUES ($1, $2)
+                         ON CONFLICT (tenant_id) DO UPDATE SET last = EXCLUDED.last",
+                        &[&tid, &time_param(now)?],
                     )
                     .await?;
                 }
@@ -570,6 +655,35 @@ impl<K: Kernel, S: Store<K>> Engine<K, S> {
             }
         }
     }
+}
+
+impl<K: Kernel, S: Store<K>> Engine<K, S> {
+    /// The attempt's time. Under `monotonic`, never before the tenant's latest
+    /// commit. This transaction reads that commit's row, so a concurrent
+    /// commit makes this attempt fail to serialize and retry with a new time.
+    async fn read_clock(&self, tx: &Transaction<'_>, tid: i64) -> Result<Timestamp, DbError> {
+        let clock = match &self.config.clock {
+            Clock::System => Timestamp::now(),
+            Clock::Database => {
+                let row = tx
+                    .query_one("SELECT (extract(epoch FROM transaction_timestamp()) * 1000000)::bigint", &[])
+                    .await?;
+                Timestamp(row.get::<_, i64>(0).max(0) as u64)
+            }
+            Clock::Fixed(t) => *t,
+            Clock::Manual(m) => m.get(),
+        };
+        if !self.config.monotonic {
+            return Ok(clock);
+        }
+        let last = tx.query_opt("SELECT last FROM i5h_clock WHERE tenant_id = $1", &[&tid]).await?;
+        let last = Timestamp(last.map(|r| r.get::<_, i64>(0)).unwrap_or(0).max(0) as u64);
+        Ok(clock.max(last))
+    }
+}
+
+fn time_param(t: Timestamp) -> Result<i64, DbError> {
+    i64::try_from(t.0).map_err(|_| DbError::Decode(format!("time {} does not fit in BIGINT", t.0)))
 }
 
 fn backoff(attempt: u32) -> Duration {
