@@ -42,12 +42,38 @@ structure User where
   is_admin : Bool
   is_read_only : Bool
 
+/-- [kellnr_kernel::{impl core::clone::Clone for kellnr_kernel::User}::clone]:
+    Source: 'examples/kellnr/kernel/src/lib.rs', lines 22:9-22:14
+    Visibility: public -/
+def User.Insts.CoreCloneClone.clone (self : User) : Result User := do
+  ok self
+
+/-- Trait implementation: [kellnr_kernel::{impl core::clone::Clone for kellnr_kernel::User}]
+    Source: 'examples/kellnr/kernel/src/lib.rs', lines 22:9-22:14 -/
+@[reducible]
+def User.Insts.CoreCloneClone : core.clone.Clone User := {
+  clone := User.Insts.CoreCloneClone.clone
+}
+
 /-- [kellnr_kernel::Krate]
     Source: 'examples/kellnr/kernel/src/lib.rs', lines 30:0-33:1
     Visibility: public -/
 structure Krate where
   id : Std.U64
   restricted : Bool
+
+/-- [kellnr_kernel::{impl core::clone::Clone for kellnr_kernel::Krate}::clone]:
+    Source: 'examples/kellnr/kernel/src/lib.rs', lines 29:9-29:14
+    Visibility: public -/
+def Krate.Insts.CoreCloneClone.clone (self : Krate) : Result Krate := do
+  ok self
+
+/-- Trait implementation: [kellnr_kernel::{impl core::clone::Clone for kellnr_kernel::Krate}]
+    Source: 'examples/kellnr/kernel/src/lib.rs', lines 29:9-29:14 -/
+@[reducible]
+def Krate.Insts.CoreCloneClone : core.clone.Clone Krate := {
+  clone := Krate.Insts.CoreCloneClone.clone
+}
 
 /-- [kellnr_kernel::Version]
     Source: 'examples/kellnr/kernel/src/lib.rs', lines 36:0-40:1
@@ -57,6 +83,19 @@ structure Version where
   vers : Std.U64
   yanked : Bool
 
+/-- [kellnr_kernel::{impl core::clone::Clone for kellnr_kernel::Version}::clone]:
+    Source: 'examples/kellnr/kernel/src/lib.rs', lines 35:9-35:14
+    Visibility: public -/
+def Version.Insts.CoreCloneClone.clone (self : Version) : Result Version := do
+  ok self
+
+/-- Trait implementation: [kellnr_kernel::{impl core::clone::Clone for kellnr_kernel::Version}]
+    Source: 'examples/kellnr/kernel/src/lib.rs', lines 35:9-35:14 -/
+@[reducible]
+def Version.Insts.CoreCloneClone : core.clone.Clone Version := {
+  clone := Version.Insts.CoreCloneClone.clone
+}
+
 /-- [kellnr_kernel::Pair]
     Source: 'examples/kellnr/kernel/src/lib.rs', lines 45:0-48:1
     Visibility: public -/
@@ -64,12 +103,32 @@ structure Pair where
   a : Std.U64
   b : Std.U64
 
+/-- [kellnr_kernel::{impl core::clone::Clone for kellnr_kernel::Pair}::clone]:
+    Source: 'examples/kellnr/kernel/src/lib.rs', lines 44:9-44:14
+    Visibility: public -/
+def Pair.Insts.CoreCloneClone.clone (self : Pair) : Result Pair := do
+  ok self
+
+/-- Trait implementation: [kellnr_kernel::{impl core::clone::Clone for kellnr_kernel::Pair}]
+    Source: 'examples/kellnr/kernel/src/lib.rs', lines 44:9-44:14 -/
+@[reducible]
+def Pair.Insts.CoreCloneClone : core.clone.Clone Pair := {
+  clone := Pair.Insts.CoreCloneClone.clone
+}
+
 /-- [kellnr_kernel::Settings]
     Source: 'examples/kellnr/kernel/src/lib.rs', lines 51:0-54:1
     Visibility: public -/
 structure Settings where
   allow_ownerless_crates : Bool
   new_crates_restricted : Bool
+
+/-- [kellnr_kernel::{impl core::clone::Clone for kellnr_kernel::Settings}::clone]:
+    Source: 'examples/kellnr/kernel/src/lib.rs', lines 50:9-50:14
+    Visibility: public -/
+def Settings.Insts.CoreCloneClone.clone
+  (self : Settings) : Result Settings := do
+  ok self
 
 /-- [kellnr_kernel::Snapshot]
     Source: 'examples/kellnr/kernel/src/lib.rs', lines 57:0-66:1
@@ -83,6 +142,35 @@ structure Snapshot where
   crate_users : alloc.vec.Vec Pair
   crate_groups : alloc.vec.Vec Pair
   group_members : alloc.vec.Vec Pair
+
+/-- [kellnr_kernel::{impl core::clone::Clone for kellnr_kernel::Snapshot}::clone]:
+    Source: 'examples/kellnr/kernel/src/lib.rs', lines 56:9-56:14
+    Visibility: public -/
+def Snapshot.Insts.CoreCloneClone.clone
+  (self : Snapshot) : Result Snapshot := do
+  let s ← Settings.Insts.CoreCloneClone.clone self.settings
+  let v ← alloc.vec.CloneVec.clone User.Insts.CoreCloneClone self.users
+  let v1 ← alloc.vec.CloneVec.clone Krate.Insts.CoreCloneClone self.crates
+  let v2 ←
+    alloc.vec.CloneVec.clone Version.Insts.CoreCloneClone self.versions
+  let v3 ← alloc.vec.CloneVec.clone Pair.Insts.CoreCloneClone self.owners
+  let v4 ←
+    alloc.vec.CloneVec.clone Pair.Insts.CoreCloneClone self.crate_users
+  let v5 ←
+    alloc.vec.CloneVec.clone Pair.Insts.CoreCloneClone self.crate_groups
+  let v6 ←
+    alloc.vec.CloneVec.clone Pair.Insts.CoreCloneClone self.group_members
+  ok
+    {
+      settings := s,
+      users := v,
+      crates := v1,
+      versions := v2,
+      owners := v3,
+      crate_users := v4,
+      crate_groups := v5,
+      group_members := v6
+    }
 
 /-- [kellnr_kernel::Write]
     Source: 'examples/kellnr/kernel/src/lib.rs', lines 69:0-79:1
@@ -697,5 +785,186 @@ def transition_pre1243
   Result (core.result.Result ((alloc.vec.Vec Write) × Reply) Error)
   := do
   run p s cmd false
+
+/-- [kellnr_kernel::put_pair]:
+    Source: 'examples/kellnr/kernel/src/lib.rs', lines 388:0-392:1 -/
+def put_pair
+  (v : alloc.vec.Vec Pair) (x : Pair) : Result (alloc.vec.Vec Pair) := do
+  let b ← has_pair v x.a x.b
+  if b
+  then ok v
+  else alloc.vec.Vec.push v x
+
+/-- [kellnr_kernel::del_pair]: loop body 0:
+    Source: 'examples/kellnr/kernel/src/lib.rs', lines 397:4-402:5 -/
+@[rust_loop_body]
+def del_pair_loop.body
+  (v : alloc.vec.Vec Pair) (x : Pair) (out : alloc.vec.Vec Pair)
+  (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Pair) × Std.Usize) (alloc.vec.Vec Pair))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let p ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Pair) v i
+    let out1 ←
+      if p.a = x.a
+      then if p.b = x.b
+           then ok out
+           else alloc.vec.Vec.push out p
+      else alloc.vec.Vec.push out p
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
+  else ok (done out)
+
+/-- [kellnr_kernel::del_pair]: loop 0:
+    Source: 'examples/kellnr/kernel/src/lib.rs', lines 397:4-402:5 -/
+@[rust_loop]
+def del_pair_loop
+  (v : alloc.vec.Vec Pair) (x : Pair) (out : alloc.vec.Vec Pair)
+  (i : Std.Usize) :
+  Result (alloc.vec.Vec Pair)
+  := do
+  loop
+    (fun (out1, i1) => del_pair_loop.body v x out1 i1)
+    (out, i)
+
+/-- [kellnr_kernel::del_pair]:
+    Source: 'examples/kellnr/kernel/src/lib.rs', lines 394:0-404:1 -/
+@[reducible]
+def del_pair
+  (v : alloc.vec.Vec Pair) (x : Pair) : Result (alloc.vec.Vec Pair) := do
+  del_pair_loop v x (alloc.vec.Vec.new Pair) 0#usize
+
+/-- [kellnr_kernel::set_yanked]: loop body 0:
+    Source: 'examples/kellnr/kernel/src/lib.rs', lines 1:0-415:1 -/
+@[rust_loop_body]
+def set_yanked_loop.body
+  (v : alloc.vec.Vec Version) (x : Version) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize (alloc.vec.Vec Version))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let v1 ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Version) v i
+    if v1.krate = x.krate
+    then
+      if v1.vers = x.vers
+      then
+        let (_, index_mut_back) ←
+          alloc.vec.Vec.index_mut (core.slice.index.SliceIndexUsizeSlice
+            Version) v i
+        let v2 := index_mut_back x
+        ok (done v2)
+      else let i2 ← i + 1#usize
+           ok (cont i2)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else ok (done v)
+
+/-- [kellnr_kernel::set_yanked]: loop 0:
+    Source: 'examples/kellnr/kernel/src/lib.rs', lines 1:0-415:1 -/
+@[rust_loop]
+def set_yanked_loop
+  (v : alloc.vec.Vec Version) (x : Version) (i : Std.Usize) :
+  Result (alloc.vec.Vec Version)
+  := do
+  loop
+    (fun i1 => set_yanked_loop.body v x i1)
+    i
+
+/-- [kellnr_kernel::set_yanked]:
+    Source: 'examples/kellnr/kernel/src/lib.rs', lines 406:0-415:1 -/
+@[reducible]
+def set_yanked
+  (v : alloc.vec.Vec Version) (x : Version) :
+  Result (alloc.vec.Vec Version)
+  := do
+  set_yanked_loop v x 0#usize
+
+/-- [kellnr_kernel::apply]: loop body 0:
+    Source: 'examples/kellnr/kernel/src/lib.rs', lines 422:4-435:5
+    Visibility: public -/
+@[rust_loop_body]
+def apply_loop.body
+  (ws : alloc.vec.Vec Write) (s : Snapshot) (i : Std.Usize) :
+  Result (ControlFlow (Snapshot × Std.Usize) Snapshot)
+  := do
+  let i1 := alloc.vec.Vec.len ws
+  if i < i1
+  then
+    let w ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Write) ws i
+    let (v, v1, v2, v3, v4) ←
+      match w with
+      | Write.AddOwner x =>
+        do
+        let v5 ← put_pair s.owners x
+        ok (s.crates, s.versions, v5, s.crate_users, s.crate_groups)
+      | Write.DelOwner x =>
+        do
+        let v5 ← del_pair s.owners x
+        ok (s.crates, s.versions, v5, s.crate_users, s.crate_groups)
+      | Write.AddCrateUser x =>
+        do
+        let v5 ← put_pair s.crate_users x
+        ok (s.crates, s.versions, s.owners, v5, s.crate_groups)
+      | Write.DelCrateUser x =>
+        do
+        let v5 ← del_pair s.crate_users x
+        ok (s.crates, s.versions, s.owners, v5, s.crate_groups)
+      | Write.AddCrateGroup x =>
+        do
+        let v5 ← put_pair s.crate_groups x
+        ok (s.crates, s.versions, s.owners, s.crate_users, v5)
+      | Write.DelCrateGroup x =>
+        do
+        let v5 ← del_pair s.crate_groups x
+        ok (s.crates, s.versions, s.owners, s.crate_users, v5)
+      | Write.SetYanked x =>
+        do
+        let v5 ← set_yanked s.versions x
+        ok (s.crates, v5, s.owners, s.crate_users, s.crate_groups)
+      | Write.AddCrate k =>
+        do
+        let v5 ← alloc.vec.Vec.push s.crates k
+        ok (v5, s.versions, s.owners, s.crate_users, s.crate_groups)
+      | Write.AddVersion v5 =>
+        do
+        let v6 ← alloc.vec.Vec.push s.versions v5
+        ok (s.crates, v6, s.owners, s.crate_users, s.crate_groups)
+    let i2 ← i + 1#usize
+    ok (cont
+      ({
+         s
+           with
+           crates := v,
+           versions := v1,
+           owners := v2,
+           crate_users := v3,
+           crate_groups := v4
+       }, i2))
+  else ok (done s)
+
+/-- [kellnr_kernel::apply]: loop 0:
+    Source: 'examples/kellnr/kernel/src/lib.rs', lines 422:4-435:5
+    Visibility: public -/
+@[rust_loop]
+def apply_loop
+  (ws : alloc.vec.Vec Write) (s : Snapshot) (i : Std.Usize) :
+  Result Snapshot
+  := do
+  loop
+    (fun (s1, i1) => apply_loop.body ws s1 i1)
+    (s, i)
+
+/-- [kellnr_kernel::apply]:
+    Source: 'examples/kellnr/kernel/src/lib.rs', lines 419:0-437:1
+    Visibility: public -/
+def apply (snap : Snapshot) (ws : alloc.vec.Vec Write) : Result Snapshot := do
+  let s ← Snapshot.Insts.CoreCloneClone.clone snap
+  apply_loop ws s 0#usize
 
 end kellnr_kernel

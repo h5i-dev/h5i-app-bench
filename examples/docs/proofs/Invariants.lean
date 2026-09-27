@@ -4,12 +4,6 @@ open Aeneas Aeneas.Std Result docs_kernel docs_kernel.Spec docs_kernel.Transitio
 
 namespace docs_kernel.Theorems
 
-theorem u64_val_inj {x y : U64} : x.val = y.val ↔ x = y := by
-  constructor
-  · intro h; exact UScalar.eq_of_val_eq h
-  · rintro rfl; rfl
-
-
 /-! ## Keys -/
 
 def pkey (q : Project) : Nat × Nat := (q.id.val, 0)
@@ -17,16 +11,16 @@ def mkey (n : Member) : Nat × Nat := (n.project.val, n.user.val)
 def dkey (e : Document) : Nat × Nat := (e.id.val, 0)
 
 theorem pkey_iff (a b : Project) : pkey a = pkey b ↔ a.id = b.id := by
-  simp [pkey, ← u64_val_inj]
+  simp [pkey, ← u64_val_eq]
 theorem mkey_iff (a b : Member) : mkey a = mkey b ↔ (a.project, a.user) = (b.project, b.user) := by
-  simp [mkey, ← u64_val_inj]
+  simp [mkey, ← u64_val_eq]
 theorem dkey_iff (a b : Document) : dkey a = dkey b ↔ a.id = b.id := by
-  simp [dkey, ← u64_val_inj]
+  simp [dkey, ← u64_val_eq]
 
 def hkey (w : Webhook) : Nat × Nat := (w.project.val, 0)
 
 theorem hkey_iff (a b : Webhook) : hkey a = hkey b ↔ a.project = b.project := by
-  simp [hkey, ← u64_val_inj]
+  simp [hkey, ← u64_val_eq]
 
 /-! ## Owners and roles -/
 
@@ -99,14 +93,6 @@ theorem roleOf_of_mem {ms : List Member} (hk : (ms.map mkey).Nodup) {n : Member}
   rw [hm, this]; rfl
 
 /-! ## Preservation, one lemma per kind of write set -/
-
-theorem mem_upsert_fresh {α : Type} {k : α → Nat × Nat} {x z : α} {l : List α}
-    (hf : ∀ y ∈ l, k y ≠ k x) : z ∈ upsert k x l ↔ z = x ∨ z ∈ l := by
-  constructor
-  · exact mem_upsert_of
-  · rintro (rfl | hz)
-    · exact mem_upsert_self k _ l
-    · exact mem_upsert_of_ne hz (hf z hz)
 
 theorem inv_create_project {s : St} (hi : Inv s) (c : Counter) (p : Project) (u : U64)
     (hc : c.next_id.val = s.next + 1) (hp : p.id.val = s.next) :
@@ -295,8 +281,6 @@ theorem inv_del_webhook {s : St} (hi : Inv s) (p : U64) : Inv (applyWrite s (.De
 /-- Effects leave through the outbox; the state is unchanged. -/
 @[simp] theorem applyWrite_emit (s : St) (e : Effect) : applyWrite s (.Emit e) = s := rfl
 
-theorem vec_new_val (α : Type) : (alloc.vec.Vec.new α).val = [] := rfl
-
 /-- Successful transitions preserve the invariants. -/
 theorem inv_preserved (a : Principal) (s : Snapshot) (c : Command) ws r
     (hinv : Inv (Snapshot.toSt s)) (h : transition a s c = .ok (.Ok (ws, r))) :
@@ -311,7 +295,7 @@ theorem inv_preserved (a : Principal) (s : Snapshot) (c : Command) ws r
   all_goals try (
     refine inv_put_member hinv _ ?_ ?_
     · obtain ⟨q, hq, hqid⟩ := allowed_proj hinv b_post.symm
-      exact ⟨q, hq, u64_val_inj.1 hqid⟩
+      exact ⟨q, hq, (u64_val_eq _ _).1 hqid⟩
     · first
       | (right; left; rw [← o_post]; simp; done)
       | (left; simp_all; done)
@@ -329,13 +313,13 @@ theorem inv_preserved (a : Principal) (s : Snapshot) (c : Command) ws r
   all_goals try exact inv_del_webhook hinv _
   all_goals try (
     obtain ⟨q, hq, hqid⟩ := allowed_proj hinv b_post.symm
-    exact inv_put_webhook hinv _ ⟨q, hq, u64_val_inj.1 hqid⟩)
+    exact inv_put_webhook hinv _ ⟨q, hq, (u64_val_eq _ _).1 hqid⟩)
   -- CreateProject
   all_goals try exact inv_create_project hinv _ _ a.user r_post.2 rfl
   -- CreateDocument
   all_goals try (
     obtain ⟨q, hq, hqid⟩ := allowed_proj hinv b_post.symm
-    exact inv_create_doc hinv _ _ r_post.2 rfl ⟨q, hq, u64_val_inj.1 hqid⟩ rfl rfl)
+    exact inv_create_doc hinv _ _ r_post.2 rfl ⟨q, hq, (u64_val_eq _ _).1 hqid⟩ rfl rfl)
   -- EditDocument, Submit, Approve, Publish
   all_goals try (
     obtain ⟨hf, hread, hact⟩ := authDoc_ok r_post.symm

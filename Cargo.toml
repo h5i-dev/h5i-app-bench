@@ -18,6 +18,18 @@ members = [
     "examples/tutorials/calculator/server",
     "examples/tutorials/board/kernel",
     "examples/tutorials/board/server",
+    "examples/wastebin/kernel",
+    "examples/wastebin/server",
+    "examples/conduit/kernel",
+    "examples/conduit/server",
+    "examples/cratesio/kernel",
+    "examples/cratesio/server",
+    "examples/tutorials/ledger/kernel",
+    "examples/tutorials/ledger/server",
+    "examples/tutorials/inbox/kernel",
+    "examples/tutorials/inbox/server",
+    "examples/tutorials/booking/kernel",
+    "examples/tutorials/booking/server",
 ]
 
 [workspace.package]

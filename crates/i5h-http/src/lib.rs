@@ -49,15 +49,36 @@ pub trait Api<K: Kernel>: Send + Sync + 'static {
     fn encode_error(err: &K::Error) -> (StatusCode, Value);
 }
 
-/// Bearer tokens of the form `v1.<tenant>.<user>.<expiry-unix>.<hex hmac-sha256>`.
+type MakePrincipal<K> = Box<dyn Fn(u64, u64) -> <K as Kernel>::Principal + Send + Sync>;
+
+/// Tokens of the form `v1.<tenant>.<user>.<expiry-unix>.<hex hmac-sha256>`,
+/// sent as `Authorization: Bearer <token>`.
 pub struct HmacAuth<K: Kernel> {
     secret: Vec<u8>,
-    principal: fn(tenant: u64, user: u64) -> K::Principal,
+    principal: MakePrincipal<K>,
+    scheme: &'static str,
+    anonymous: Option<K::Principal>,
 }
 
 impl<K: Kernel> HmacAuth<K> {
-    pub fn new(secret: impl Into<Vec<u8>>, principal: fn(u64, u64) -> K::Principal) -> Self {
-        HmacAuth { secret: secret.into(), principal }
+    /// `principal` builds the kernel's principal from a verified token. It
+    /// runs once per request, before any retry, so it is also the place to
+    /// stamp inputs such as the current time.
+    pub fn new(secret: impl Into<Vec<u8>>, principal: impl Fn(u64, u64) -> K::Principal + Send + Sync + 'static) -> Self {
+        HmacAuth { secret: secret.into(), principal: Box::new(principal), scheme: "Bearer", anonymous: None }
+    }
+
+    /// Accept `Authorization: <scheme> <token>` instead of `Bearer`.
+    pub fn with_scheme(mut self, scheme: &'static str) -> Self {
+        self.scheme = scheme;
+        self
+    }
+
+    /// Requests without an `Authorization` header act as `p`, which the
+    /// kernel then treats as it sees fit.
+    pub fn or_anonymous(mut self, p: K::Principal) -> Self {
+        self.anonymous = Some(p);
+        self
     }
 
     fn tag(&self, payload: &[u8]) -> Vec<u8> {
@@ -70,9 +91,10 @@ impl<K: Kernel> HmacAuth<K> {
         String::from_utf8(token).expect("tokens are ascii")
     }
 
-    /// Parsing is verified (`i5h-token/proofs`): the signed payload names
-    /// exactly one tenant, user and expiry.
-    fn verify(&self, token: &str) -> Result<(u64, u64), AuthError> {
+    /// The tenant and user of a valid token. Parsing is verified
+    /// (`i5h-token/proofs`): the signed payload names exactly one tenant, user
+    /// and expiry.
+    pub fn verify(&self, token: &str) -> Result<(u64, u64), AuthError> {
         let err = |m: &str| AuthError(m.to_string());
         let t = i5h_token::parse(token.as_bytes()).ok_or_else(|| err("malformed token"))?;
         if !ct_eq(&self.tag(&t.payload), &t.sig) {
@@ -95,11 +117,22 @@ fn ct_eq(a: &[u8], b: &[u8]) -> bool {
 
 impl<K: Kernel> Authenticator<K> for HmacAuth<K> {
     fn authenticate(&self, headers: &HeaderMap) -> Result<K::Principal, AuthError> {
-        let h = headers.get("authorization").ok_or_else(|| AuthError("missing authorization".into()))?;
+        let Some(h) = headers.get("authorization") else {
+            return self.anonymous.clone().ok_or_else(|| AuthError("missing authorization".into()));
+        };
         let h = h.to_str().map_err(|_| AuthError("bad authorization header".into()))?;
-        let token = h.strip_prefix("Bearer ").ok_or_else(|| AuthError("expected bearer token".into()))?;
+        let token = h
+            .strip_prefix(self.scheme)
+            .and_then(|t| t.strip_prefix(' '))
+            .ok_or_else(|| AuthError(format!("expected {} token", self.scheme)))?;
         let (tenant, user) = self.verify(token)?;
         Ok((self.principal)(tenant, user))
+    }
+}
+
+impl<K: Kernel, A: Authenticator<K>> Authenticator<K> for Arc<A> {
+    fn authenticate(&self, headers: &HeaderMap) -> Result<K::Principal, AuthError> {
+        (**self).authenticate(headers)
     }
 }
 
@@ -166,21 +199,35 @@ impl<K: Kernel, S: Store<K>> I5h<K, S> {
     where
         S: ReplyCodec<K> + Api<K>,
     {
+        match self.run(actor, cmd, headers).await {
+            Ok(r) => reply(StatusCode::OK, S::encode_reply(&r)),
+            Err(res) => res,
+        }
+    }
+
+    /// Like [`respond`](Self::respond), but hands a successful reply back
+    /// unrendered, for replies that need more than `Api::encode_reply`, such
+    /// as issuing a token or setting a cookie. Refusals and failures come
+    /// back rendered.
+    pub async fn run(&self, actor: &Actor<K>, cmd: K::Command, headers: &HeaderMap) -> Result<K::Reply, Response>
+    where
+        S: ReplyCodec<K> + Api<K>,
+    {
         let key = headers.get("idempotency-key").and_then(|v| v.to_str().ok());
         let result = match key {
             Some(k) => self.engine.execute_idempotent(&actor.0, k, &cmd).await,
             None => self.engine.execute(&actor.0, &cmd).await,
         };
         match result {
-            Ok(Ok(r)) => reply(StatusCode::OK, S::encode_reply(&r)),
+            Ok(Ok(r)) => Ok(r),
             Ok(Err(refusal)) => {
                 let (status, body) = S::encode_error(&refusal);
-                reply(status, body)
+                Err(reply(status, body))
             }
-            Err(DbError::IdempotencyConflict) => reply(StatusCode::UNPROCESSABLE_ENTITY, error_body("idempotency key reused")),
+            Err(DbError::IdempotencyConflict) => Err(reply(StatusCode::UNPROCESSABLE_ENTITY, error_body("idempotency key reused"))),
             Err(e) => {
                 tracing::error!(error = %e, "request failed");
-                reply(StatusCode::SERVICE_UNAVAILABLE, error_body("unavailable"))
+                Err(reply(StatusCode::SERVICE_UNAVAILABLE, error_body("unavailable")))
             }
         }
     }

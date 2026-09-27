@@ -7,8 +7,7 @@ open Aeneas Aeneas.Std Result calculator_kernel calculator_kernel.Spec I5hLib
 
 namespace calculator_kernel.Proofs
 
-@[simp] theorem u64_val_eq (x y : U64) : x.val = y.val ↔ x = y :=
-  ⟨fun h => by scalar_tac, fun h => h ▸ rfl⟩
+attribute [simp] u64_val_eq
 
 /-- The Rust overflow check for `a * b`, in plain arithmetic. -/
 theorem mul_check (a b : Nat) (hb : 0 < b) : (2 ^ 64 - 1) / b < a ↔ 2 ^ 64 ≤ a * b := by
@@ -147,5 +146,59 @@ theorem get_after (a : Principal) (s s' : Snapshot) (c : Command) (w : Option Me
     · simp only at hs'; rw [hxv, hs', hv]
     · simp only at hs'; rw [hxv, hs']; exact memOf_upsert_self _ ⟨a.user, v⟩
   simp [(u64_val_eq x v).1 this]
+
+theorem memOf_upsert_other (l : List Memory) (m : Memory) (u : Nat) (hu : u ≠ m.user.val) :
+    memOf (upsert (·.user) m l) u = memOf l u := by
+  induction l with
+  | nil => simp [upsert, memOf, Ne.symm hu]
+  | cons x xs ih =>
+    by_cases h : x.user = m.user
+    · simp [upsert, h, memOf, Ne.symm hu]
+    · simp only [upsert, h, if_false]
+      by_cases hx : x.user.val = u
+      · simp [memOf, hx]
+      · simpa [memOf, hx] using ih
+
+/-- Isolation: after any successful command by `a`, committing its write
+leaves every other user's memory unchanged. -/
+theorem others_unchanged (a : Principal) (s s' : Snapshot) (c : Command) (w : Option Memory) (reply : Reply)
+    (hroom : s.memories.length < Usize.max)
+    (ht : transition a s c = ok (.Ok (w, reply))) (hs : apply s w = ok s')
+    (u : Nat) (hu : u ≠ a.user.val) :
+    memOf s'.memories.val u = memOf s.memories.val u := by
+  have hown := post_of_ok (writes_own_memory a s c) ht w reply rfl
+  have hs' := post_of_ok (apply_spec s w hroom) hs
+  cases w with
+  | none => simp only at hs'; rw [hs']
+  | some m =>
+    simp only at hs'
+    rw [hs']
+    exact memOf_upsert_other _ m u (by rw [hown m rfl]; exact hu)
+
+/-! ## A concrete run
+
+`get_after` assumes the command succeeded and its write was committed. Here
+both happen: on an empty snapshot, Alice sets 5 and then reads 5 back, while
+subtracting 1 from her empty memory is refused. -/
+
+def alice : Principal := ⟨0#u64, 1#u64⟩
+def empty : Snapshot := ⟨alloc.vec.Vec.new Memory⟩
+
+theorem set_then_get : ∃ s', apply empty (some ⟨alice.user, 5#u64⟩) = ok s' ∧
+    transition alice s' .Get = ok (.Ok (none, .Value 5#u64)) := by
+  have hroom : empty.memories.length < Usize.max := by simp [empty]; scalar_tac
+  have ht : transition alice empty (.Set 5#u64) = ok (.Ok (some ⟨alice.user, 5#u64⟩, .Value 5#u64)) := by
+    simp [transition]
+  obtain ⟨s', hs, -⟩ := (WP.spec_equiv_exists _ _).1 (apply_spec empty (some ⟨alice.user, 5#u64⟩) hroom)
+  exact ⟨s', hs, get_after alice empty s' _ _ _ hroom ht hs⟩
+
+theorem sub_refused : transition alice empty (.Apply .Sub 1#u64) = ok (.Err .Underflow) := by
+  obtain ⟨r, hr⟩ := transition_total alice empty (.Apply .Sub 1#u64)
+  have h := post_of_ok (apply_correct alice empty .Sub 1#u64) hr
+  have hm : memOf empty.memories.val alice.user.val = 0 := by simp [empty, memOf]
+  rw [hr]
+  rcases r with ⟨w, ⟨v⟩⟩ | e <;> simp only [hm, eval] at h
+  · simp at h
+  · cases e <;> simp at h ⊢
 
 end calculator_kernel.Proofs

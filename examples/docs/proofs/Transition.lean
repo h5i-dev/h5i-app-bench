@@ -27,13 +27,6 @@ theorem one_spec (w : Write) : one w ⦃ v => v.val = [w] ⦄ := by
   unfold one
   step*
 
-@[step]
-theorem vec_u8_clone_spec (v : alloc.vec.Vec U8) :
-    alloc.vec.CloneVec.clone core.clone.CloneU8 v ⦃ v' => v' = v ⦄ := by
-  unfold alloc.vec.CloneVec.clone
-  step*
-  subst_vars; rfl
-
 /-- `authorized_doc` as a list function: hidden and missing documents both
 give `NotFound`. -/
 def authDoc (s : St) (u id : Nat) (a : Action) : core.result.Result Document Error :=

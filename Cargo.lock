@@ -176,6 +176,32 @@ dependencies = [
 ]
 
 [[package]]
+name = "booking-kernel"
+version = "0.1.0"
+dependencies = [
+ "i5h-schema",
+ "i5h-sql",
+]
+
+[[package]]
+name = "booking-server"
+version = "0.1.0"
+dependencies = [
+ "axum",
+ "booking-kernel",
+ "i5h",
+ "i5h-http",
+ "i5h-json",
+ "i5h-pg",
+ "serde",
+ "serde_json",
+ "tokio",
+ "tokio-postgres",
+ "tracing",
+ "tracing-subscriber",
+]
+
+[[package]]
 name = "bumpalo"
 version = "3.20.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -272,6 +298,32 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "0c9ea0ac24bc397ab3c98583a3c9ba74fa56b09a4449bbe172b9b1ddb016027a"
 
 [[package]]
+name = "conduit-kernel"
+version = "0.1.0"
+dependencies = [
+ "i5h-schema",
+ "i5h-sql",
+]
+
+[[package]]
+name = "conduit-server"
+version = "0.1.0"
+dependencies = [
+ "axum",
+ "conduit-kernel",
+ "i5h",
+ "i5h-http",
+ "i5h-json",
+ "i5h-pg",
+ "libcrux-hmac",
+ "serde",
+ "serde_json",
+ "tokio",
+ "tracing",
+ "tracing-subscriber",
+]
+
+[[package]]
 name = "const-oid"
 version = "0.10.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -295,6 +347,31 @@ dependencies = [
  "bindgen",
  "cc",
  "pkg-config",
+]
+
+[[package]]
+name = "cratesio-kernel"
+version = "0.1.0"
+dependencies = [
+ "i5h-schema",
+ "i5h-sql",
+]
+
+[[package]]
+name = "cratesio-server"
+version = "0.1.0"
+dependencies = [
+ "axum",
+ "cratesio-kernel",
+ "i5h",
+ "i5h-http",
+ "i5h-json",
+ "i5h-pg",
+ "serde",
+ "serde_json",
+ "tokio",
+ "tracing",
+ "tracing-subscriber",
 ]
 
 [[package]]
@@ -705,6 +782,31 @@ name = "i5h-token"
 version = "0.1.0"
 
 [[package]]
+name = "inbox-kernel"
+version = "0.1.0"
+dependencies = [
+ "i5h-schema",
+ "i5h-sql",
+]
+
+[[package]]
+name = "inbox-server"
+version = "0.1.0"
+dependencies = [
+ "axum",
+ "i5h",
+ "i5h-http",
+ "i5h-json",
+ "i5h-pg",
+ "inbox-kernel",
+ "serde",
+ "serde_json",
+ "tokio",
+ "tracing",
+ "tracing-subscriber",
+]
+
+[[package]]
 name = "itertools"
 version = "0.13.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -739,6 +841,31 @@ name = "lazy_static"
 version = "1.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "bbd2bcb4c963f2ddae06a2efc7e9f3591312473c50c6685e1f298068316e66fe"
+
+[[package]]
+name = "ledger-kernel"
+version = "0.1.0"
+dependencies = [
+ "i5h-schema",
+ "i5h-sql",
+]
+
+[[package]]
+name = "ledger-server"
+version = "0.1.0"
+dependencies = [
+ "axum",
+ "i5h",
+ "i5h-http",
+ "i5h-json",
+ "i5h-pg",
+ "ledger-kernel",
+ "serde",
+ "serde_json",
+ "tokio",
+ "tracing",
+ "tracing-subscriber",
+]
 
 [[package]]
 name = "libc"
@@ -1801,6 +1928,33 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "23f0c9c52aa7cd7d77769a4cfe2a9adb1b331f489a41d912ce14513d5ab995c6"
 dependencies = [
  "unicode-ident",
+]
+
+[[package]]
+name = "wastebin-kernel"
+version = "0.1.0"
+dependencies = [
+ "i5h-schema",
+ "i5h-sql",
+]
+
+[[package]]
+name = "wastebin-server"
+version = "0.1.0"
+dependencies = [
+ "axum",
+ "getrandom 0.3.4",
+ "i5h",
+ "i5h-http",
+ "i5h-json",
+ "i5h-pg",
+ "libcrux-hmac",
+ "serde",
+ "serde_json",
+ "tokio",
+ "tracing",
+ "tracing-subscriber",
+ "wastebin-kernel",
 ]
 
 [[package]]

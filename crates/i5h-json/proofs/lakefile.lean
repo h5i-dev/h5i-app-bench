@@ -5,6 +5,8 @@ open Lake DSL
 require aeneas from git
   "https://github.com/AeneasVerif/aeneas" @ "b86120db3183b0107eb5f2637b11c424cd06ef1c" / "backends/lean"
 
+require i5h_lib from "../../i5h/proofs"
+
 package json_proofs
 
 -- Generated Lean: the extracted Rust (scripts/extract-json.sh). Do not edit.

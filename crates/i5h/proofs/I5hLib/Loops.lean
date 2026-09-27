@@ -171,12 +171,51 @@ theorem foldl_count {α} (P : α → Bool) (l : List α) (c : Nat) :
     l.foldl (fun c x => c + if P x then 1 else 0) c = c + (l.filter P).length := by
   induction l generalizing c with
   | nil => simp
-  | cons y ys ih => rw [List.foldl_cons, ih]; by_cases hp : P y <;> simp [hp, List.filter_cons]; omega
+  | cons y ys ih => rw [List.foldl_cons, ih]; by_cases hp : P y <;> simp [hp]; omega
 
 theorem foldl_filter {α} (P : α → Bool) (l acc : List α) :
     l.foldl (fun acc x => if P x then acc ++ [x] else acc) acc = acc ++ l.filter P := by
   induction l generalizing acc with
   | nil => simp
-  | cons y ys ih => rw [List.foldl_cons, ih]; by_cases hp : P y <;> simp [hp, List.filter_cons]
+  | cons y ys ih => rw [List.foldl_cons, ih]; by_cases hp : P y <;> simp [hp]
+
+/-- A search from 0 that returns constants: `b` if some element satisfies `P`, else `c`. -/
+theorem search_bool {α γ} (l : List α) (P : α → Bool) (b c : γ) (r : γ)
+    (hr : r = searchFrom l P (fun _ _ => b) c (↑(0#usize : Usize))) : r = if l.any P then b else c := by
+  rw [hr, searchFrom_const, UScalar.ofNatCore_val_eq, List.drop_zero]
+
+/-- An "exists" search from 0. -/
+theorem search_any {α} (l : List α) (P : α → Bool) (r : Bool)
+    (hr : r = searchFrom l P (fun _ _ => true) false (↑(0#usize : Usize))) : r = l.any P := by
+  rw [search_bool _ _ _ _ _ hr]; cases l.any P <;> rfl
+
+/-- A lookup from 0 that returns the first match. -/
+theorem search_find {α} (l : List α) (P : α → Bool) (r : Option α)
+    (hr : r = searchFrom l P (fun _ x => some x) none (↑(0#usize : Usize))) : r = l.find? P := by
+  rw [hr, show (fun (_ : Nat) (x : α) => some x) = (fun _ x => some (_root_.id x)) from rfl,
+    searchFrom_find, UScalar.ofNatCore_val_eq, List.drop_zero]; simp
+
+/-- An "all" check: no element satisfies `P`. -/
+theorem searchFrom_all {α} (l : List α) (P : α → Bool) :
+    searchFrom l P (fun _ _ => false) true 0 = true ↔ ∀ x ∈ l, P x = false := by
+  rw [searchFrom_const]; simp
+
+theorem foldl_map {α β} (f : α → β) (l : List α) (acc : List β) :
+    l.foldl (fun acc x => acc ++ [f x]) acc = acc ++ l.map f := by
+  induction l generalizing acc with
+  | nil => simp
+  | cons x xs ih => simp [ih]
+
+theorem foldl_snoc {α} (l acc : List α) : l.foldl (fun acc x => acc ++ [x]) acc = acc ++ l := by
+  induction l generalizing acc with
+  | nil => simp
+  | cons y ys ih => rw [List.foldl_cons, ih]; simp
+
+/-- A loop that pushes `f x` for each `x` satisfying `P`. -/
+theorem foldl_filter_map {α β} (P : α → Bool) (f : α → β) (l : List α) (acc : List β) :
+    l.foldl (fun acc x => if P x then acc ++ [f x] else acc) acc = acc ++ (l.filter P).map f := by
+  induction l generalizing acc with
+  | nil => simp
+  | cons x xs ih => by_cases h : P x <;> simp [h, ih]
 
 end I5hLib

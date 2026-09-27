@@ -19,11 +19,13 @@ theorems="Theorems.allows_eq Theorems.transition_total Theorems.apply_eq Theorem
   Theorems.reply_confined Theorems.inv_preserved Theorems.reachable_inv Theorems.noninterference
   Frame.transition_frame Check.check_inv_spec Storage.encode_applyAll Storage.stored
   Storage.sql_writes_spec Storage.sql_writes_stored Load.fresh Load.decode_spec Load.load_sound
-  Load.store_sound Scoped.scoped_sound Scoped.scoped_command"
+  Load.store_sound Load.sql_writes_storedC Scoped.scoped_sound Scoped.scoped_command Scoped.served_inv
+  Theorems.emit_publishes Scenarios.authorized_reachable Scenarios.noninterference_reachable
+  Scenarios.transition_frame_reachable Scenarios.published_reachable"
 mkdir -p .lake/ci
 {
   # Modules holding the main theorems.
-  for m in Theorems Invariants Noninterference Frame Check Storage Load Scoped; do echo "import $m"; done
+  for m in Theorems Invariants Noninterference Frame Check Storage Load Scoped Scenarios; do echo "import $m"; done
   for t in $theorems; do echo "#print axioms docs_kernel.$t"; done
 } > .lake/ci/Axioms.lean
 out=$(lake env lean .lake/ci/Axioms.lean 2>&1)

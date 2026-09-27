@@ -8,15 +8,6 @@ namespace atuin_kernel.Invariants
 
 /-! ## Lists -/
 
-/-- Inserting a row whose key is new appends it. -/
-theorem upsert_fresh {α κ} [DecidableEq κ] (k : α → κ) (x : α) (l : List α) (h : ∀ y ∈ l, k y ≠ k x) :
-    upsert k x l = l ++ [x] := by
-  induction l with
-  | nil => rfl
-  | cons y ys ih =>
-    simp only [upsert, if_neg (h y List.mem_cons_self), List.cons_append]
-    rw [ih (fun z hz => h z (List.mem_cons_of_mem _ hz))]
-
 /-- Replacing a row by one with the same `g` leaves the `g` column unchanged. -/
 theorem map_upsert_same {α κ β} [DecidableEq κ] (k : α → κ) (g : α → β) (x y : α) (l : List α)
     (hn : (l.map k).Nodup) (hy : y ∈ l) (hk : k y = k x) (hg : g y = g x) :
@@ -34,9 +25,6 @@ theorem map_upsert_same {α κ β} [DecidableEq κ] (k : α → κ) (g : α → 
       rcases List.mem_cons.1 hy with rfl | hy'
       · exact absurd hk hz
       · rw [ih hn.2 hy']
-
-theorem u64_val_inj {x y : U64} : x.val = y.val ↔ x = y :=
-  ⟨fun h => UScalar.eq_of_val_eq h, fun h => h ▸ rfl⟩
 
 /-! ## One lemma per kind of write set -/
 
@@ -175,8 +163,6 @@ theorem signedIn_exists {s : St} {a : Principal} {n : Nat} (h : signedIn s a = s
       exact ⟨v, hv, by rw [hid, h]⟩
     · simp at h
 
-theorem vec_new_val (α : Type) : (alloc.vec.Vec.new α).val = [] := rfl
-
 /-- Successful transitions preserve the invariants, in both variants. -/
 theorem inv_preserved (a : Principal) (s : Snapshot) (c : Command) (b : Bool) ws r
     (hinv : Inv (Snapshot.toSt s)) (h : step a s c b = .ok (.Ok (ws, r))) :
@@ -217,7 +203,7 @@ theorem inv_preserved (a : Principal) (s : Snapshot) (c : Command) (b : Bool) ws
     subst_vars
     apply inv_put_records u _ _ hinv
     · obtain ⟨w, hw, hid⟩ := signedIn_exists o_post.symm
-      exact ⟨w, hw, u64_val_inj.1 hid⟩
+      exact ⟨w, hw, (u64_val_eq _ _).1 hid⟩
     · intro x hx hm
       have hall := ‹(!List.any _ _) = true›
       simp only [Bool.not_eq_true', List.any_eq_false, Bool.not_eq_false] at hall

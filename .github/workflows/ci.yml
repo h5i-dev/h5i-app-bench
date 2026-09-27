@@ -69,7 +69,7 @@ jobs:
       - name: Build the other extracted-crate proofs
         working-directory: .
         run: |
-          for d in crates/i5h-sql/proofs crates/i5h-token/proofs crates/i5h-json/proofs examples/kellnr/proofs examples/atuin/proofs examples/tutorials/calculator/proofs examples/tutorials/board/proofs; do
+          for d in crates/i5h-sql/proofs crates/i5h-token/proofs crates/i5h-json/proofs examples/kellnr/proofs examples/atuin/proofs examples/tutorials/calculator/proofs examples/tutorials/board/proofs examples/wastebin/proofs examples/conduit/proofs examples/cratesio/proofs examples/tutorials/ledger/proofs examples/tutorials/inbox/proofs examples/tutorials/booking/proofs; do
             mkdir -p "$d/.lake"
             ln -sfn "$GITHUB_WORKSPACE/examples/docs/proofs/.lake/packages" "$d/.lake/packages"
             (cd "$d" && lake build)
@@ -107,6 +107,12 @@ jobs:
       - run: scripts/extract-atuin.sh
       - run: scripts/extract-calculator.sh
       - run: scripts/extract-board.sh
+      - run: scripts/extract-wastebin.sh
+      - run: scripts/extract-conduit.sh
+      - run: scripts/extract-cratesio.sh
+      - run: scripts/extract-ledger.sh
+      - run: scripts/extract-inbox.sh
+      - run: scripts/extract-booking.sh
       - run: |
           git diff --exit-code -- \
             examples/docs/proofs/generated/DocsKernel.lean \
@@ -116,4 +122,10 @@ jobs:
             examples/kellnr/proofs/generated/KellnrKernel.lean \
             examples/atuin/proofs/generated/AtuinKernel.lean \
             examples/tutorials/calculator/proofs/generated/CalculatorKernel.lean \
-            examples/tutorials/board/proofs/generated/BoardKernel.lean
+            examples/tutorials/board/proofs/generated/BoardKernel.lean \
+            examples/wastebin/proofs/generated/WastebinKernel.lean \
+            examples/conduit/proofs/generated/ConduitKernel.lean \
+            examples/cratesio/proofs/generated/CratesioKernel.lean \
+            examples/tutorials/ledger/proofs/generated/LedgerKernel.lean \
+            examples/tutorials/inbox/proofs/generated/InboxKernel.lean \
+            examples/tutorials/booking/proofs/generated/BookingKernel.lean

@@ -9,9 +9,6 @@ namespace docs_kernel.ApplyLemmas
 def Room (s : Snapshot) (n : Nat) : Prop :=
   s.projects.length + s.members.length + s.documents.length + s.webhooks.length + n < Usize.max
 
-theorem u8vec_clone (v : alloc.vec.Vec U8) : alloc.vec.CloneVec.clone core.clone.CloneU8 v = ok v :=
-  vec_clone_eq _ v (fun _ => rfl)
-
 theorem project_clone (p : Project) : Project.Insts.CoreCloneClone.clone p = ok p := by
   simp [Project.Insts.CoreCloneClone.clone, u8vec_clone, lift]
 

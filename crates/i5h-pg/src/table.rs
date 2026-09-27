@@ -327,6 +327,19 @@ pub async fn upsert<A, T: Table<A>>(tx: &Tx<'_>, tenant: TenantId, row: &T) -> R
 }
 
 /// Delete the tenant's row of `T` whose key columns equal `key`.
+/// Delete the tenant's rows of `T` whose `column` equals `value`, in one
+/// statement. For cascades: the kernel's write says which rows go, and
+/// `apply` must mean the same filter.
+pub async fn delete_where<A, T: Table<A>>(tx: &Tx<'_>, tenant: TenantId, column: &str, value: Value) -> Result<(), DbError> {
+    if !T::columns().iter().any(|c| c.name == column) {
+        return Err(DbError::Decode(format!("{} has no column {column}", T::NAME)));
+    }
+    let tid = tenant_param(tenant)?;
+    let sql = format!("DELETE FROM {} WHERE tenant_id = $1 AND {} = $2", q(T::NAME), q(column));
+    tx.0.execute(&sql, &[&tid, &value]).await?;
+    Ok(())
+}
+
 pub async fn delete<A, T: Table<A>>(tx: &Tx<'_>, tenant: TenantId, key: &[Value]) -> Result<(), DbError> {
     let w = SqlWrite::Del { table: 0, key: key.iter().map(to_val).collect() };
     run_stmt::<A, T>(tx.0, tenant, planned(w)).await

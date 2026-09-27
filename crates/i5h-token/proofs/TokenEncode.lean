@@ -1,7 +1,7 @@
 import TokenProofs
 /-! The extracted encoder computes `enc` and `joinS`, so `parse` reads back
 what `encode_payload` and `join` write. -/
-open Aeneas Aeneas.Std Result i5h_token i5h_token.Spec i5h_token.Proofs
+open Aeneas Aeneas.Std Result i5h_token i5h_token.Spec i5h_token.Proofs I5hLib
 
 namespace i5h_token.Encode
 

@@ -414,7 +414,8 @@ fn set_yanked(v: &mut Vec<Version>, x: Version) {
     }
 }
 
-/// Meaning of a write set. Not extracted; the theorems are about writes.
+/// What committing a write set means. Owner, crate-user and group rows are
+/// added only if absent, so each pair is stored once.
 pub fn apply(snap: &Snapshot, ws: &Vec<Write>) -> Snapshot {
     let mut s = snap.clone();
     let mut i = 0;

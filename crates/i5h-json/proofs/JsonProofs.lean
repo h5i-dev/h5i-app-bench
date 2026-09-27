@@ -1,7 +1,8 @@
 import I5hJson
 import JsonSpec
+import I5hLib.Basic
 /-! The extracted writer computes `Spec.print`. -/
-open Aeneas Aeneas.Std Result i5h_json i5h_json.Spec
+open Aeneas Aeneas.Std Result i5h_json i5h_json.Spec I5hLib
 
 namespace i5h_json.Proofs
 
@@ -16,11 +17,6 @@ theorem hex_digit_spec (n : U8) (h : n.val < 16) : hex_digit n ⦃ r => r.val = 
 
 theorem esc_cons (c : Nat) (l : List Nat) : esc (c :: l) = escByte c ++ esc l := by
   simp [esc]
-
-theorem u8_eq_iff (x y : U8) : x = y ↔ x.val = y.val := by
-  constructor
-  · rintro rfl; rfl
-  · intro h; scalar_tac
 
 @[step]
 theorem push_escaped_byte_spec (o : alloc.vec.Vec U8) (c : U8)
@@ -328,5 +324,31 @@ from the opening quote recovers exactly the string, and whatever follows. -/
 theorem write_str_contained (s : alloc.vec.Vec U8) (rest : List Nat) :
     lexStr (esc (B s.val) ++ 34 :: rest) = some (B s.val, rest) :=
   lex_esc _ _ (fun c hc => by simp only [B, List.mem_map] at hc; obtain ⟨x, -, rfl⟩ := hc; scalar_tac)
+
+/-- Where the `j`th token is a string or key, the output holds it quoted and escaped
+right after the first `j` tokens and their separator, and lexing from its
+opening quote stops at its own closing quote. -/
+theorem write_str_at (toks : alloc.vec.Vec Tok)
+    (hb : (print (toks.val.map toT)).length + 21 < Usize.max)
+    (j : Nat) (hj : j < toks.length) (s : alloc.vec.Vec U8) (hs : toks.val[j]'(by simpa using hj) = .Str s ∨ toks.val[j]'(by simpa using hj) = .Key s) :
+    write toks ⦃ r => ∃ post,
+      B r.val = (((toks.val.map toT).take j).foldl step ([], false)).1 ++
+        (if (((toks.val.map toT).take j).foldl step ([], false)).2 then [44] else []) ++
+        34 :: (esc (B s.val) ++ 34 :: post) ∧
+      lexStr (esc (B s.val) ++ 34 :: post) = some (B s.val, post) ⦄ := by
+  apply WP.spec_mono (write_spec toks hb)
+  intro r hr
+  set L := toks.val.map toT
+  have hjL : j < L.length := by simpa [L] using hj
+  obtain ⟨post, hpost⟩ := fold_prefix (L.drop (j + 1)) ((L.take (j + 1)).foldl step ([], false))
+  rw [hr, print, ← List.take_append_drop (j + 1) L, List.foldl_append, hpost,
+    take_succ_fold L j hjL]
+  rcases hs with hs | hs
+  · have hLj : L[j] = .str (B s.val) := by simp [L, hs, toT]
+    refine ⟨post, ?_, write_str_contained s post⟩
+    rw [hLj]; simp [step, isClose, tokBytes]
+  · have hLj : L[j] = .key (B s.val) := by simp [L, hs, toT]
+    refine ⟨58 :: post, ?_, write_str_contained s _⟩
+    rw [hLj]; simp [step, isClose, tokBytes]
 
 end i5h_json.Proofs

@@ -10,6 +10,11 @@ macro "i5h_step" : tactic => `(tactic| (
   step* <;> (repeat' (first | step | split)) <;>
     simp only [I5hLib.SearchStep, I5hLib.FoldStep] <;> simp_all <;> try scalar_tac))
 
+/-- `i5h_step` with extra simp lemmas, for a loop predicate that is a named def. -/
+macro "i5h_step" " [" ls:Lean.Parser.Tactic.simpLemma,* "]" : tactic => `(tactic| (
+  step* <;> (repeat' (first | step | split)) <;>
+    simp only [I5hLib.SearchStep, I5hLib.FoldStep] <;> simp_all [$ls,*] <;> try scalar_tac))
+
 /-- Execute `f` symbolically, leaving one goal per path. Splits `if`s and
 `match`es and destructures returned pairs. -/
 syntax "walk " ident : tactic

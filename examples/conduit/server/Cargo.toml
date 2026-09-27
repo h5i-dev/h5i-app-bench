@@ -1,0 +1,21 @@
+[package]
+name = "conduit-server"
+description = "The RealWorld Conduit API on the verified conduit kernel, with a PostgreSQL store"
+edition.workspace = true
+license.workspace = true
+version.workspace = true
+
+[dependencies]
+i5h.workspace = true
+i5h-pg.workspace = true
+i5h-http.workspace = true
+i5h-json.workspace = true
+conduit-kernel = { path = "../kernel" }
+axum.workspace = true
+tokio.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+tracing.workspace = true
+tracing-subscriber.workspace = true
+# Already in the tree through i5h-http; used for password hashes.
+libcrux-hmac = "0.0.8"

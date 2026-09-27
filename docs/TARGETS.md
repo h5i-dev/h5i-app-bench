@@ -26,6 +26,9 @@ tests only), Rauthy and Kanidm (identity-protocol logic).
 3. **crates.io** delete/yank/owner rules for credibility, with GitHub team
    membership as an input fact.
 4. **Conduit** as the baseline for comparing effort against a plain app.
+5. **Wastebin** for time-dependent rules (expiry, burn after reading).
+
+All five are done; see Results.
 
 ## Results
 
@@ -51,3 +54,53 @@ users and names, and the record size cap, for every command. For issue #3297
 the password and that Atuin's current behavior lets any signed-in user delete
 without it. Effort: 470 kernel lines, a 65-line spec, 660 proof lines (about
 1.4 per kernel line). See `examples/atuin/README.md`.
+
+
+### Wastebin (2026-09-27): done
+
+`examples/wastebin/` ports Wastebin's paste rules (at b27a2ab) to a kernel
+with a PostgreSQL server; the shell supplies the time and random slugs.
+Lean proves that the kernel never fails, that every write is allowed (only
+the owner deletes a live ordinary paste), unique ids and slugs, that a read
+shows only the requested paste and never an expired one, and that a
+burn-after-reading paste is shown at most once. For issue #190 (link
+previews burned pastes), Lean proves the paste page is preview-safe after
+commit 632ddf2 and gives a reachable counterexample for the code before it;
+`/raw` links still burn on a plain GET. Effort: 275 kernel lines, a 51-line
+spec, 700 proof lines (about 2.5 per kernel line). See
+`examples/wastebin/README.md`.
+
+
+### Conduit (2026-09-27): done
+
+`examples/conduit/` ports the RealWorld backend of realworld-axum-sqlx (at
+f1b2565), every route, with a PostgreSQL server that speaks the RealWorld JSON
+API. Lean proves that only an article's author edits or deletes it and its
+rows, only a comment's author deletes the comment, follow and favorite writes
+touch only the caller's rows, and, over reachable states, unique users, emails
+and slugs, unique follow and favorite pairs, and no tag, favorite or comment
+left pointing at a deleted article. Every reply equals a specification
+function of the state and the caller, and every write replies with what a read
+would show afterwards; the feed holds only followed authors. For issue #16
+(open), Lean shows that upstream's `favorited` query, which omits the article,
+breaks that reply theorem on a two-article state, and that its `?favorited=`
+filter has the same flaw. Effort: 888 kernel lines plus 170 for `apply`
+against 1077 lines of upstream handlers, a 127-line spec, 1611 proof lines and
+213 lines of scenarios and counterexamples (about 1.5 proof lines per upstream
+handler line). See `examples/conduit/README.md`.
+
+
+### crates.io (2026-09-27): done
+
+`examples/cratesio/` models crate ownership, publishing, yanking, owner
+invitations, API token scopes and crate deletion (at 067b45e), with a
+PostgreSQL server. Lean proves that every write is allowed by a policy stated
+over Full and Publish rights, that a token writes only within its endpoint
+and crate scopes, that every crate keeps a user owner, that versions are
+removed only with their crate, the deletion rules (age, owners, downloads,
+reverse dependencies), and that the kernel never fails. For PR #14760, Lean
+proves that after the fix a locked user commits nothing, and gives a locked
+sign-in that succeeds before it. GitHub team membership, the clock and
+download counts are input facts. Effort: 1026 kernel lines, a 142-line spec,
+1516 proof lines (about 1.5 per kernel line), `lake build` 1:48. See
+`examples/cratesio/README.md`.

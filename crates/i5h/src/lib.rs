@@ -89,6 +89,12 @@ impl<K: Kernel> MemoryEngine<K> {
         Ok(reply)
     }
 
+    /// Start `tenant` from `snap`, e.g. what a database already holds.
+    pub fn with_snapshot(self, tenant: TenantId, snap: K::Snapshot) -> Self {
+        self.tenants.lock().unwrap().insert(tenant, snap);
+        self
+    }
+
     pub fn snapshot(&self, tenant: TenantId) -> K::Snapshot {
         self.tenants.lock().unwrap().get(&tenant).cloned().unwrap_or_default()
     }

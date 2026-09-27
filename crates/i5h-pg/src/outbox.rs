@@ -104,6 +104,9 @@ impl<E: Send + Sync, D: Deliver<E>> Dispatcher<E, D> {
                 &[&self.config.lease_secs, &self.config.batch],
             )
             .await?;
+        // RETURNING has no order; send a batch in commit order.
+        let mut rows = rows;
+        rows.sort_by_key(|r| r.get::<_, i64>(0));
         let mut pass = Pass::default();
         for row in rows {
             let (id, tenant, dest, payload, attempts): (i64, i64, i64, Vec<u8>, i32) =

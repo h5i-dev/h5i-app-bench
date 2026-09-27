@@ -18,25 +18,31 @@ from `schema!`. Everything else is written by hand.
 | `Frame.lean` | A command's result depends only on the rows its scope names. |
 | `Check.lean` | The invariant checker used by migrations is exact. |
 | `Storage.lean`, `Load.lean`, `Scoped.lean` | The rows the server writes and reads back. |
+| `Scenarios.lean` | The main theorems for reachable states, and a concrete run of the kernel that publishes a document under the four-eyes rule. |
 
 ## Theorems
 
-The following hold for every actor, snapshot and command.
+The following hold for every actor and command. `authorized`, `noninterference` and
+`transition_frame` assume the snapshot satisfies the invariants, which
+`reachable_inv` proves for every reachable state.
 
 | Theorem | Statement |
 |---|---|
 | `allows_eq` | The kernel's permission table is the one in the specification. |
 | `transition_total` | The kernel never fails, so it never panics, overflows or indexes out of bounds. |
-| `apply_eq` | `apply` computes the meaning of a write set that the database must implement. |
-| `authorized` | Every write of a successful command is allowed by the policy, judged against the state before the command, including the four-eyes rule and the status workflow. An effect goes only to the destination its project registered, and only when a writer publishes an approved document. |
+| `apply_eq` | `apply` computes the meaning of a write set that the database must implement, as long as no table overflows `usize`. |
+| `authorized` | Every write of a successful command is allowed by the policy, judged against the state before the command, including the four-eyes rule, the status workflow and the counter step. An effect goes only to the destination its project registered, and only when a writer publishes an approved document (with `emit_publishes`: the same write set publishes it). |
 | `reply_confined` | Replies contain only documents the caller may read. |
 | `inv_preserved`, `reachable_inv` | Every reachable state has an owner for each project, valid references, unique keys and fresh ids, and it satisfies the four-eyes rule; a document names an approver exactly when it is approved or published. |
-| `noninterference` | Two states that look the same to a user give that user the same result, including error codes. The id counter is a declared exception. |
+| `noninterference` | Two valid states that look the same to a user give that user the same result, including error codes. The id counter is a declared exception. |
 | `transition_frame` | A command's result depends only on the counter and one project's rows, which is why the server loads only those. |
+| `authorized_reachable`, `noninterference_reachable`, `transition_frame_reachable` | The three theorems above for reachable states, with no assumption on the snapshot. |
+| `published_reachable` | A concrete run reaches a state with a document published under the four-eyes rule; the runs in `Scenarios.lean` also show that publishing emits an effect and that the view and the scopes hide rows. |
 | `check_inv_spec` | `check_inv` returns true exactly when the invariants hold, so migrations can refuse changes that break one. |
-| `sql_writes_stored` | When the tenant's rows hold a valid state, running the statements the server plans for a write set leaves exactly the rows of the new state, under the PostgreSQL meaning of upsert and delete. |
+| `sql_writes_stored`, `sql_writes_storedC` | When the tenant's rows hold a valid state, running the statements the server plans for a write set leaves exactly the rows of the new state, under the PostgreSQL meaning of upsert and delete. The second covers a fresh tenant that has no counter row yet. |
 | `fresh`, `load_sound`, `store_sound` | An empty tenant holds a valid state, loading rows in any order decodes to a valid state that the rows hold, and storing the writes of any successful command keeps it that way. As a result, the invariants hold for the database itself. |
 | `scoped_sound`, `scoped_command` | The server's scoped loads decode to exactly the slice that `transition_frame` talks about, so storing the resulting writes keeps the database valid as well. This assumes that each table has at most `usize::MAX` rows. |
+| `served_inv` | Every database the server produces from an empty tenant, loading all rows or a scope's rows for each request, holds a valid state. `served_create` and `served_create_scoped` show the hypotheses hold together. |
 
 Every theorem depends only on Lean's standard axioms (`propext`,
 `Classical.choice` and `Quot.sound`), which `scripts/ci-lean-gate.sh` checks.

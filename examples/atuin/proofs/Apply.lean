@@ -4,9 +4,6 @@ open Aeneas Aeneas.Std Result atuin_kernel atuin_kernel.Spec atuin_kernel.Lemmas
 
 namespace atuin_kernel.ApplyLemmas
 
-theorem u64_val_inj {x y : U64} : x.val = y.val ↔ x = y :=
-  ⟨fun h => UScalar.eq_of_val_eq h, fun h => h ▸ rfl⟩
-
 /-- Total rows in a snapshot. -/
 def total (s : Snapshot) : Nat := s.users.length + s.sessions.length + s.records.length
 
@@ -68,7 +65,7 @@ theorem put_record_loop_spec (v : alloc.vec.Vec Record) (x : Record) (i : Usize)
     all_goals (try left)
     all_goals (
       refine ⟨by scalar_tac, ?_⟩
-      try simp only [u64_val_inj] at *
+      try simp only [u64_val_eq] at *
       simp_all [rkey])
 
 @[step]

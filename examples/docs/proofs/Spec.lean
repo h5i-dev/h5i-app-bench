@@ -144,7 +144,7 @@ def writeAllowed (s : St) (u : Nat) : Write → Prop
            else allowed s u d.project.val .Write)
   | .DelDocument i =>
       ∃ d, findDoc s.docs i.val = some d ∧ allowed s u d.project.val .Manage
-  | .SetCounter _ => True
+  | .SetCounter c => c.next_id.val = s.next + 1
   | .PutWebhook w => allowed s u w.project.val .Manage
   | .DelWebhook p => allowed s u p.val .Manage
   | .Emit e =>
