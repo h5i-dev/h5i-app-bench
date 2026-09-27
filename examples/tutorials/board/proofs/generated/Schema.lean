@@ -145,7 +145,7 @@ def Post.delA (id : U64) : AWrite Val := .del Post.table [int id.val]
 def Post.delWhereA (col : Nat) (val : Val) : AWrite Val := .delWhere Post.table col val
 
 @[step] theorem Post.sql_del_spec (id : U64) : Post.sql_del id ⦃ w => sqlW w = Post.delA id ⦄ := by
-  unfold Post.sql_del; step*; simp_all [sqlW, Post.delA, Post.table, Post.TABLE]
+  unfold Post.sql_del; step* <;> simp_all [sqlW, Post.delA, Post.table, Post.TABLE] <;> scalar_tac
 
 @[step] theorem Post.sql_del_where_spec (col : U32) (val : Val) :
     Post.sql_del_where col val ⦃ w => sqlW w = Post.delWhereA col.val val ⦄ := by
@@ -230,7 +230,7 @@ def Moderator.delA (user : U64) : AWrite Val := .del Moderator.table [int user.v
 def Moderator.delWhereA (col : Nat) (val : Val) : AWrite Val := .delWhere Moderator.table col val
 
 @[step] theorem Moderator.sql_del_spec (user : U64) : Moderator.sql_del user ⦃ w => sqlW w = Moderator.delA user ⦄ := by
-  unfold Moderator.sql_del; step*; simp_all [sqlW, Moderator.delA, Moderator.table, Moderator.TABLE]
+  unfold Moderator.sql_del; step* <;> simp_all [sqlW, Moderator.delA, Moderator.table, Moderator.TABLE] <;> scalar_tac
 
 @[step] theorem Moderator.sql_del_where_spec (col : U32) (val : Val) :
     Moderator.sql_del_where col val ⦃ w => sqlW w = Moderator.delWhereA col.val val ⦄ := by

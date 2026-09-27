@@ -173,7 +173,7 @@ def Paste.delA (id : U64) : AWrite Val := .del Paste.table [int id.val]
 def Paste.delWhereA (col : Nat) (val : Val) : AWrite Val := .delWhere Paste.table col val
 
 @[step] theorem Paste.sql_del_spec (id : U64) : Paste.sql_del id ⦃ w => sqlW w = Paste.delA id ⦄ := by
-  unfold Paste.sql_del; step*; simp_all [sqlW, Paste.delA, Paste.table, Paste.TABLE]
+  unfold Paste.sql_del; step* <;> simp_all [sqlW, Paste.delA, Paste.table, Paste.TABLE] <;> scalar_tac
 
 @[step] theorem Paste.sql_del_where_spec (col : U32) (val : Val) :
     Paste.sql_del_where col val ⦃ w => sqlW w = Paste.delWhereA col.val val ⦄ := by

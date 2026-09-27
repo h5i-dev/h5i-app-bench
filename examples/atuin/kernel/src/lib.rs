@@ -15,7 +15,16 @@ pub enum Principal {
 }
 
 i5h_schema::schema! {
-    mapping atuin_tables for atuin_kernel;
+    mapping atuin_tables for atuin_kernel, writes Write, lean "../proofs/generated/Schema.lean";
+
+    #[derive(Clone, Debug, PartialEq, Eq, Default)]
+    pub struct Snapshot {
+        counter: Counter,
+        settings: Settings,
+        users: Vec<User>,
+        sessions: Vec<Session>,
+        records: Vec<Record>,
+    }
 
     #[derive(Clone, Debug, PartialEq, Eq)]
     pub struct User in "users" {
@@ -51,15 +60,6 @@ i5h_schema::schema! {
         key {}
         next_id: u64,
     }
-}
-
-#[derive(Clone, Debug, PartialEq, Eq, Default)]
-pub struct Snapshot {
-    pub counter: Counter,
-    pub settings: Settings,
-    pub users: Vec<User>,
-    pub sessions: Vec<Session>,
-    pub records: Vec<Record>,
 }
 
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -423,99 +423,34 @@ pub fn transition_current(
     step(actor, snap, cmd, false)
 }
 
-fn put_user(v: &mut Vec<User>, u: User) {
-    let mut i = 0;
-    while i < v.len() {
-        if v[i].id == u.id {
-            v[i] = u;
-            return;
-        }
-        i += 1;
-    }
-    v.push(u);
-}
+/// The column a user's records are deleted by: `user`, first in the key.
+const RECORD_USER: u32 = 0;
 
-fn put_session(v: &mut Vec<Session>, s: Session) {
-    let mut i = 0;
-    while i < v.len() {
-        if v[i].user == s.user {
-            v[i] = s;
-            return;
-        }
-        i += 1;
-    }
-    v.push(s);
-}
-
-fn put_record(v: &mut Vec<Record>, r: Record) {
-    let mut i = 0;
-    while i < v.len() {
-        if v[i].user == r.user && v[i].host == r.host && v[i].tag == r.tag && v[i].idx == r.idx {
-            v[i] = r;
-            return;
-        }
-        i += 1;
-    }
-    v.push(r);
-}
-
-fn del_user(v: &Vec<User>, id: u64) -> Vec<User> {
-    let mut out = Vec::new();
-    let mut i = 0;
-    while i < v.len() {
-        if v[i].id != id {
-            out.push(v[i].clone());
-        }
-        i += 1;
-    }
-    out
-}
-
-fn del_session(v: &Vec<Session>, user: u64) -> Vec<Session> {
-    let mut out = Vec::new();
-    let mut i = 0;
-    while i < v.len() {
-        if v[i].user != user {
-            out.push(v[i].clone());
-        }
-        i += 1;
-    }
-    out
-}
-
-fn del_records_of(v: &Vec<Record>, user: u64) -> Vec<Record> {
-    let mut out = Vec::new();
-    let mut i = 0;
-    while i < v.len() {
-        if v[i].user != user {
-            out.push(v[i].clone());
-        }
-        i += 1;
-    }
-    out
-}
-
+/// What one write does to the state. `schema!` runs it over a write set
+/// (`apply`).
 pub fn apply_write(s: &mut Snapshot, w: Write) {
     match w {
-        Write::PutUser(u) => put_user(&mut s.users, u),
-        Write::DelUser(id) => s.users = del_user(&s.users, id),
-        Write::PutSession(x) => put_session(&mut s.sessions, x),
-        Write::DelSession(u) => s.sessions = del_session(&s.sessions, u),
-        Write::PutRecord(r) => put_record(&mut s.records, r),
-        Write::DelRecordsOf(u) => s.records = del_records_of(&s.records, u),
+        Write::PutUser(u) => User::put(&mut s.users, u),
+        Write::DelUser(id) => s.users = User::del(&s.users, id),
+        Write::PutSession(x) => Session::put(&mut s.sessions, x),
+        Write::DelSession(u) => s.sessions = Session::del(&s.sessions, u),
+        Write::PutRecord(r) => Record::put(&mut s.records, r),
+        Write::DelRecordsOf(u) => s.records = Record::del_where(&s.records, RECORD_USER, &i5h_sql::Column::to_val(&u)),
         Write::SetCounter(c) => s.counter = c,
     }
 }
 
-/// Meaning of a write set. The Postgres store must agree with this.
-pub fn apply(snap: &Snapshot, ws: &Vec<Write>) -> Snapshot {
-    let mut s = snap.clone();
-    let mut i = 0;
-    while i < ws.len() {
-        apply_write(&mut s, ws[i].clone());
-        i += 1;
+/// The table writes one write makes.
+fn sql_write(w: &Write, out: &mut Vec<i5h_sql::Write>) {
+    match w {
+        Write::PutUser(u) => out.push(u.sql_put()),
+        Write::DelUser(id) => out.push(User::sql_del(*id)),
+        Write::PutSession(x) => out.push(x.sql_put()),
+        Write::DelSession(u) => out.push(Session::sql_del(*u)),
+        Write::PutRecord(r) => out.push(r.sql_put()),
+        Write::DelRecordsOf(u) => out.push(Record::sql_del_where(RECORD_USER, i5h_sql::Column::to_val(u))),
+        Write::SetCounter(c) => out.push(c.sql_put()),
     }
-    s
 }
 
 #[cfg(test)]
