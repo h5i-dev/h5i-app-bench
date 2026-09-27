@@ -6,20 +6,6 @@ namespace docs_kernel.Theorems
 
 /-! ## List facts: what the kernel reads for user `u` is fixed by `view` -/
 
-theorem find?_filter_of_imp {α} {l : List α} {p q : α → Bool}
-    (h : ∀ x ∈ l, p x = true → q x = true) : (l.filter q).find? p = l.find? p := by
-  induction l with
-  | nil => rfl
-  | cons x xs ih =>
-    have ih' := ih (fun y hy => h y (List.mem_cons_of_mem _ hy))
-    by_cases hq : q x = true
-    · simp [hq, List.find?_cons, ih']
-    · have hp : p x = false := by
-        cases hpx : p x
-        · rfl
-        · exact absurd (h x List.mem_cons_self hpx) hq
-      simp [hq, hp, ih']
-
 /-- A role lookup in the user's view agrees with the full lookup, for the
 user's own projects and for the user's own membership. -/
 theorem roleOf_view (ms : List Member) (u p t : Nat)

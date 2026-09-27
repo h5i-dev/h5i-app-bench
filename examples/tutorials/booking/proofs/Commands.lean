@@ -11,8 +11,7 @@ open Aeneas Aeneas.Std Result booking_kernel booking_kernel.Spec I5hLib
 
 namespace booking_kernel.Commands
 
-@[simp] theorem u64_val_eq (x y : U64) : x.val = y.val ↔ x = y :=
-  ⟨fun h => by scalar_tac, fun h => h ▸ rfl⟩
+attribute [simp] u64_val_eq
 
 /-! ## Helpers -/
 
@@ -34,9 +33,7 @@ namespace booking_kernel.Commands
   unfold find_room find_room_loop
   apply WP.spec_mono (loop_search v.val (fun r => decide (r.id = id)) (fun o : Option Room => o)
     (fun _ r => some r) none _ ?_ 0#usize (by simp))
-  · intro r hr
-    rw [hr, show (fun (_ : Nat) (r : Room) => some r) = (fun _ x => some (_root_.id x)) from rfl, searchFrom_find]
-    simp
+  · intro r hr; rw [search_find _ _ _ hr]; simp
   · intro j hj; unfold find_room_loop.body; i5h_step
 
 @[step] theorem find_booking_spec (v : alloc.vec.Vec Booking) (id : U64) :
@@ -44,9 +41,7 @@ namespace booking_kernel.Commands
   unfold find_booking find_booking_loop
   apply WP.spec_mono (loop_search v.val (fun b => decide (b.id = id)) (fun o : Option Booking => o)
     (fun _ b => some b) none _ ?_ 0#usize (by simp))
-  · intro r hr
-    rw [hr, show (fun (_ : Nat) (b : Booking) => some b) = (fun _ x => some (_root_.id x)) from rfl, searchFrom_find]
-    simp
+  · intro r hr; rw [search_find _ _ _ hr]; simp
   · intro j hj; unfold find_booking_loop.body; i5h_step
 
 /-- `free` holds exactly when `[st, en)` is apart from every booking of the room. -/
@@ -92,9 +87,7 @@ theorem add_admin_spec (u : U64) (s : Snapshot) (target : U64) :
   dsimp only
   split <;> step*
   all_goals
-    intro ws rep h
-    simp only [core.result.Result.Ok.injEq, Prod.mk.injEq] at h
-    obtain ⟨rfl, rfl⟩ := h
+    intro ws rep h; obtain ⟨rfl, rfl⟩ := ok_inj h
   all_goals try exact ⟨.inl (by simpa [isAdmin, Snapshot.toSt] using b_post.1 ‹b = true›), v_post⟩
   refine ⟨.inr ⟨?_, by simpa using ‹decide (target = u) = true›⟩, v_post⟩
   have := ‹s.admins.len = 0#usize›
@@ -109,9 +102,7 @@ theorem create_room_spec (u : U64) (s : Snapshot) (dest : U64) :
   step*
   -- Left: `next_id + 1` cannot overflow, and the result.
   all_goals try (simp only [core.num.U64.MAX, U64.rMax] at *; scalar_tac)
-  intro ws rep h
-  simp only [core.result.Result.Ok.injEq, Prod.mk.injEq] at h
-  obtain ⟨rfl, rfl⟩ := h
+  intro ws rep h; obtain ⟨rfl, rfl⟩ := ok_inj h
   refine ⟨by simpa [isAdmin, Snapshot.toSt] using b_post.1 ‹b = true›, _, i_post, ?_⟩
   simp [ws1_post, ws_post]
 
@@ -129,9 +120,7 @@ theorem book_spec (a : Principal) (s : Snapshot) (room st en : U64) :
   unfold book
   step*
   all_goals try (simp only [core.num.U64.MAX, U64.rMax] at *; scalar_tac)
-  intro ws rep h
-  simp only [core.result.Result.Ok.injEq, Prod.mk.injEq] at h
-  obtain ⟨rfl, rfl⟩ := h
+  intro ws rep h; obtain ⟨rfl, rfl⟩ := ok_inj h
   refine ⟨r, by rw [← findRoom_toSt, ← o_post]; assumption, by scalar_tac, by scalar_tac,
     fun c hc hr => b_post.1 ‹_› c hc hr, _, i_post, ?_⟩
   simp [ws2_post, ws1_post, ws_post, newBooking]
@@ -161,9 +150,7 @@ theorem cancel_spec (a : Principal) (s : Snapshot) (id : U64) :
   unfold cancel
   step*
   all_goals
-    intro ws rep h
-    simp only [core.result.Result.Ok.injEq, Prod.mk.injEq] at h
-    obtain ⟨rfl, rfl⟩ := h
+    intro ws rep h; obtain ⟨rfl, rfl⟩ := ok_inj h
   all_goals have hb : findBooking (Snapshot.toSt s) id.val = some b := by rw [← findBooking_toSt, ← o_post]; assumption
   all_goals have hr : findRoom (Snapshot.toSt s) b.room.val = some r := by rw [← findRoom_toSt, ← o1_post]; assumption
   · exact ⟨b, r, hb, .inl (by simpa [isAdmin, Snapshot.toSt] using b1_post.1 ‹_›), hr, by simp [ws1_post, ws_post]⟩

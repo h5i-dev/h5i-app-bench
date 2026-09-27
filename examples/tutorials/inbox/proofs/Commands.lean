@@ -10,8 +10,7 @@ open Aeneas Aeneas.Std Result inbox_kernel inbox_kernel.Spec I5hLib
 
 namespace inbox_kernel.Commands
 
-@[simp] theorem u64_val_eq (x y : U64) : x.val = y.val ↔ x = y :=
-  ⟨fun h => by scalar_tac, fun h => h ▸ rfl⟩
+attribute [simp] u64_val_eq
 
 /-! ## Helpers, as list functions -/
 
@@ -35,15 +34,8 @@ def lastSeq (ms : List Message) (f t : U64) : Option U64 := ms.foldl (lastStep f
 def kept (u : U64) (incoming : Bool) (m : Message) : Bool :=
   if incoming then m.recipient = u && !m.recipient_deleted else m.sender = u && !m.sender_deleted
 
-theorem u8vec_clone (v : alloc.vec.Vec U8) : alloc.vec.CloneVec.clone core.clone.CloneU8 v = ok v :=
-  vec_clone_eq _ v (fun _ => rfl)
-
 theorem message_clone (m : Message) : Message.Insts.CoreCloneClone.clone m = ok m := by
   simp [Message.Insts.CoreCloneClone.clone, u8vec_clone, lift]
-
-@[step] theorem u8vec_clone_spec (v : alloc.vec.Vec U8) :
-    alloc.vec.CloneVec.clone core.clone.CloneU8 v ⦃ w => w = v ⦄ := by
-  simp [u8vec_clone]
 
 @[step] theorem message_clone_spec (m : Message) : Message.Insts.CoreCloneClone.clone m ⦃ q => q = m ⦄ := by
   simp [message_clone]
@@ -64,10 +56,8 @@ theorem one_eq (w : Write) : one w = ok (alloc.vec.Vec.from [w] (by simp; scalar
   unfold is_blocked is_blocked_loop
   apply WP.spec_mono (loop_search bs.val (blockedBy o s) (fun b : Bool => b)
     (fun _ _ => true) false _ ?_ 0#usize (by simp))
-  · intro r hr
-    rw [hr, searchFrom_const]
-    cases h : bs.val.any (blockedBy o s) <;> simp [h]
-  · intro j hj; unfold is_blocked_loop.body; i5h_step <;> simp_all [blockedBy] <;> scalar_tac
+  · intro r hr; exact search_any _ _ _ hr
+  · intro j hj; unfold is_blocked_loop.body; i5h_step [blockedBy]
 
 @[step] theorem last_seq_spec (ms : alloc.vec.Vec Message) (f t : U64) :
     last_seq ms f t ⦃ o => o = lastSeq ms.val f t ⦄ := by
@@ -77,17 +67,15 @@ theorem one_eq (w : Write) : one w = ok (alloc.vec.Vec.from [w] (by simp; scalar
   · intro r hr; rw [hr]; rfl
   · intro o j hj _
     unfold last_seq_loop.body
-    i5h_step <;> simp_all [lastStep] <;> scalar_tac
+    i5h_step [lastStep]
 
 @[step] theorem find_message_spec (ms : alloc.vec.Vec Message) (f t q : U64) :
     find_message ms f t q ⦃ o => o = ms.val.find? (keyIs f t q) ⦄ := by
   unfold find_message find_message_loop
   apply WP.spec_mono (loop_search ms.val (keyIs f t q) (fun o : Option Message => o)
     (fun _ m => some m) none _ ?_ 0#usize (by simp))
-  · intro r hr
-    rw [hr, show (fun (_ : Nat) (m : Message) => some m) = (fun _ x => some (_root_.id x)) from rfl, searchFrom_find]
-    simp
-  · intro j hj; unfold find_message_loop.body; i5h_step <;> simp_all [keyIs] <;> scalar_tac
+  · intro r hr; exact search_find _ _ _ hr
+  · intro j hj; unfold find_message_loop.body; i5h_step [keyIs]
 
 @[step] theorem mailbox_spec (ms : alloc.vec.Vec Message) (u : U64) (incoming : Bool) :
     mailbox ms u incoming ⦃ v => v.val = ms.val.filter (kept u incoming) ⦄ := by
@@ -162,9 +150,7 @@ theorem send_spec (u : U64) (s : Snapshot) (d : U64) (t : alloc.vec.Vec U8) :
   all_goals have hb := lastSeq_bound s.messages.val u d
   all_goals rw [← o_post] at hb
   all_goals
-    intro ws rep h
-    simp only [core.result.Result.Ok.injEq, Prod.mk.injEq] at h
-    obtain ⟨rfl, rfl⟩ := h
+    intro ws rep h; obtain ⟨rfl, rfl⟩ := ok_inj h
     refine ⟨b_post.1 ‹_›, by simpa [b1_post] using ‹¬b1 = true›, ?_⟩
   · refine ⟨0#u64, fun m hm hf ht => ?_, by simp [v1_post, v_post], rfl⟩
     have := hb m hm hf ht

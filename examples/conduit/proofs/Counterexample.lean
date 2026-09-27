@@ -14,20 +14,17 @@ The `?favorited=` filter of the listing has the same mistake: upstream lists
 every article as soon as the named user has favorited one of them.
 -/
 open Aeneas Aeneas.Std Result conduit_kernel conduit_kernel.Spec conduit_kernel.Helpers
-  conduit_kernel.Commands conduit_kernel.Replies
+  conduit_kernel.Commands conduit_kernel.Replies I5hLib
 
 namespace conduit_kernel.Counterexample
 
-def vec {α} (l : List α) (h : l.length ≤ Usize.max := by simp only [List.length_cons, List.length_nil]; scalar_tac) :
-    alloc.vec.Vec α := alloc.vec.Vec.from l h
-
 def empty : Text := alloc.vec.Vec.new U8
-def slugA : Text := vec [97#u8]
-def slugB : Text := vec [98#u8]
-def bobName : Text := vec [98#u8, 111#u8, 98#u8]
+def slugA : Text := vecOf [97#u8]
+def slugB : Text := vecOf [98#u8]
+def bobName : Text := vecOf [98#u8, 111#u8, 98#u8]
 
-def alice : User := ⟨1#u64, vec [97#u8, 108#u8], vec [97#u8], empty, empty, empty⟩
-def bobUser : User := ⟨2#u64, bobName, vec [98#u8], empty, empty, empty⟩
+def alice : User := ⟨1#u64, vecOf [97#u8, 108#u8], vecOf [97#u8], empty, empty, empty⟩
+def bobUser : User := ⟨2#u64, bobName, vecOf [98#u8], empty, empty, empty⟩
 def artA : Article := ⟨1#u64, 1#u64, slugA, slugA, empty, empty, 0#u64, 0#u64⟩
 def artB : Article := ⟨2#u64, 1#u64, slugB, slugB, empty, empty, 0#u64, 0#u64⟩
 
@@ -36,12 +33,12 @@ def bob : Principal := ⟨1#u64, 2#u64⟩
 /-- Alice wrote "a" and "b"; Bob favorited "a". -/
 def s0 : Snapshot where
   counter := ⟨2#u64, 2#u64, 0#u64⟩
-  users := vec [alice, bobUser]
-  follows := vec []
-  articles := vec [artA, artB]
-  tags := vec []
-  favorites := vec [⟨1#u64, 2#u64⟩]
-  comments := vec []
+  users := vecOf [alice, bobUser]
+  follows := vecOf []
+  articles := vecOf [artA, artB]
+  tags := vecOf []
+  favorites := vecOf [⟨1#u64, 2#u64⟩]
+  comments := vecOf []
 
 
 theorem s0_facts :

@@ -1,7 +1,8 @@
 import I5hToken
 import TokenSpec
+import I5hLib.Basic
 /-! The extracted token code computes `TokenSpec`. -/
-open Aeneas Aeneas.Std Result i5h_token i5h_token.Spec
+open Aeneas Aeneas.Std Result i5h_token i5h_token.Spec I5hLib
 
 namespace i5h_token.Proofs
 
@@ -320,11 +321,6 @@ theorem byte_at (tok : Slice U8) (k : Nat) (c : U8) (hk : k < tok.length) (h : c
 theorem opt_eq {α β : Type} {o : Option α} {f : α → β} {x : Option β} {c : Prop} [Decidable c]
     (hc : c) (h : o.map f = if c then x else none) : x = o.map f := by
   rw [h, if_pos hc]
-
-theorem u8_eq_iff (x y : U8) : x = y ↔ x.val = y.val := by
-  constructor
-  · rintro rfl; rfl
-  · intro h; scalar_tac
 
 theorem usize_eq_iff (x y : Usize) : x = y ↔ x.val = y.val := by
   constructor

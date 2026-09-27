@@ -100,17 +100,11 @@ def docWF (d : Document) : Bool :=
   | some a => decide ((d.status = .Approved ∨ d.status = .Published) ∧ a ≠ d.author)
   | none => !decide (d.status = .Approved ∨ d.status = .Published)
 
-theorem u64_bne (a b : U64) : (a != b) = !decide (a.val = b.val) := by
-  have h : a = b ↔ a.val = b.val := ⟨fun h => h ▸ rfl, UScalar.eq_of_val_eq⟩
-  by_cases hab : a = b
-  · subst hab; simp
-  · simp [bne, hab, h.not.mp hab]
-
 @[step]
 theorem doc_well_formed_spec (d : Document) : doc_well_formed d ⦃ b => b = docWF d ⦄ := by
   unfold doc_well_formed docWF
   rcases d with ⟨_, _, _, _, _, st, ap, _⟩
-  cases st <;> cases ap <;> simp [WP.spec_ok, u64_bne]
+  cases st <;> cases ap <;> simp [WP.spec_ok, u64_bne, u64_val_eq]
 
 @[step]
 theorem docs_well_formed_spec (v : alloc.vec.Vec Document) :

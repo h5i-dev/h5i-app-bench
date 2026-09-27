@@ -6,7 +6,7 @@ Concrete runs of the extracted kernel. They show that the guarded actions do
 happen for the right caller and are refused for the wrong one, so the
 theorems do not hold because nothing is ever allowed.
 -/
-open Aeneas Aeneas.Std Result cratesio_kernel cratesio_kernel.Spec cratesio_kernel.Counterexample
+open Aeneas Aeneas.Std Result cratesio_kernel cratesio_kernel.Spec cratesio_kernel.Counterexample I5hLib
 
 namespace cratesio_kernel.Scenarios
 
@@ -15,25 +15,25 @@ team 7. Bob (user 2) is in team 7. Carol (user 3) is locked. Alice has token 1
 (yank, crate 11 only) and token 2 (yank, crate 10 only). -/
 def reg : Snapshot where
   counter := ⟨4#u64, 3#u64⟩
-  users := vec [⟨1#u64, false, false, 0#u64, true⟩, ⟨2#u64, false, false, 0#u64, true⟩,
+  users := vecOf [⟨1#u64, false, false, 0#u64, true⟩, ⟨2#u64, false, false, 0#u64, true⟩,
     ⟨3#u64, false, true, 0#u64, true⟩]
-  sessions := vec [⟨1#u64, 1#u64⟩, ⟨2#u64, 2#u64⟩, ⟨3#u64, 3#u64⟩]
-  tokens := vec [⟨1#u64, 1#u64, false, false, false, true, false, some 11#u64, 0#u64, false⟩,
+  sessions := vecOf [⟨1#u64, 1#u64⟩, ⟨2#u64, 2#u64⟩, ⟨3#u64, 3#u64⟩]
+  tokens := vecOf [⟨1#u64, 1#u64, false, false, false, true, false, some 11#u64, 0#u64, false⟩,
     ⟨2#u64, 1#u64, false, false, false, true, false, some 10#u64, 0#u64, false⟩]
-  crates := vec [⟨10#u64, 0#u64⟩]
-  versions := vec [⟨10#u64, 1#u64, false, 1#u64⟩]
-  owners := vec [⟨10#u64, 1#u64, false⟩, ⟨10#u64, 7#u64, true⟩]
-  invites := vec []
-  deps := vec []
+  crates := vecOf [⟨10#u64, 0#u64⟩]
+  versions := vecOf [⟨10#u64, 1#u64, false, 1#u64⟩]
+  owners := vecOf [⟨10#u64, 1#u64, false⟩, ⟨10#u64, 7#u64, true⟩]
+  invites := vecOf []
+  deps := vecOf []
 
-def alice : Principal := ⟨1#u64, 1#u64, .Cookie 1#u64, 100#u64, vec []⟩
-def bob : Principal := ⟨1#u64, 2#u64, .Cookie 2#u64, 100#u64, vec [7#u64]⟩
-def carol : Principal := ⟨1#u64, 3#u64, .Cookie 3#u64, 100#u64, vec []⟩
+def alice : Principal := ⟨1#u64, 1#u64, .Cookie 1#u64, 100#u64, vecOf []⟩
+def bob : Principal := ⟨1#u64, 2#u64, .Cookie 2#u64, 100#u64, vecOf [7#u64]⟩
+def carol : Principal := ⟨1#u64, 3#u64, .Cookie 3#u64, 100#u64, vecOf []⟩
 
 /-! The loop helpers as equations, so `simp` can run them on concrete lists. -/
 
 section
-open Lemmas I5hLib
+open Lemmas
 
 theorem ev_find_user (v : alloc.vec.Vec User) (k : U64) : find_user v k = ok (v.val.find? (·.id = k)) :=
   eq_ok_of_spec (find_user_spec v k)
@@ -87,7 +87,7 @@ macro "run_kernel" : tactic => `(tactic| (
   simp [ev_find_user, ev_find_session, ev_find_token, ev_find_crate, ev_find_version, ev_find_invite,
     ev_has_owner, ev_is_member, ev_other_user_owner, ev_has_reverse_dep, ev_crate_exists, ev_deps_known,
     ev_is_locked, ev_token_live, ev_endpoint_ok, ev_crate_ok, ev_team_owner_in, Snapshot.toSt,
-    lockedAt, live, endpointOk, crateOk, Lemmas.otherUserOwner, reg, vec, alice, bob, carol]))
+    lockedAt, live, endpointOk, crateOk, Lemmas.otherUserOwner, reg, vecOf, alice, bob, carol]))
 
 /-- Finish a scenario whose command succeeds. -/
 macro "ok_writes" : tactic => `(tactic| (
@@ -99,7 +99,7 @@ macro "ok_writes" : tactic => `(tactic| (
 
 /-- Bob publishes a new version through team 7 (Publish rights). -/
 theorem team_member_publishes :
-    transition bob reg (.Publish 10#u64 2#u64 (vec [])) ⦃ o =>
+    transition bob reg (.Publish 10#u64 2#u64 (vecOf [])) ⦃ o =>
       ∃ ws r, o = .Ok (ws, r) ∧ ws.val = [.PutVersion ⟨10#u64, 2#u64, false, 2#u64⟩] ⦄ := by
   run_kernel
   all_goals ok_writes
@@ -128,20 +128,20 @@ theorem last_user_owner_stays :
 
 /-- Alice's token 1 is scoped to crate 11, so it cannot yank crate 10. -/
 theorem token_out_of_scope :
-    transition ⟨1#u64, 1#u64, .Token 1#u64, 100#u64, vec []⟩ reg (.Yank 10#u64 1#u64 true) ⦃ o =>
+    transition ⟨1#u64, 1#u64, .Token 1#u64, 100#u64, vecOf []⟩ reg (.Yank 10#u64 1#u64 true) ⦃ o =>
       o = .Err .ScopeMismatch ⦄ := by
   run_kernel
 
 /-- Her token 2 is scoped to crate 10 and yanks it. -/
 theorem token_in_scope :
-    transition ⟨1#u64, 1#u64, .Token 2#u64, 100#u64, vec []⟩ reg (.Yank 10#u64 1#u64 true) ⦃ o =>
+    transition ⟨1#u64, 1#u64, .Token 2#u64, 100#u64, vecOf []⟩ reg (.Yank 10#u64 1#u64 true) ⦃ o =>
       ∃ ws r, o = .Ok (ws, r) ∧ ws.val = [.PutVersion ⟨10#u64, 1#u64, true, 1#u64⟩] ⦄ := by
   run_kernel
   all_goals ok_writes
 
 /-- Carol's account is locked: even a valid session does nothing. -/
 theorem locked_session_refused :
-    transition carol reg (.Publish 20#u64 1#u64 (vec [])) ⦃ o => o = .Err .AccountLocked ⦄ := by
+    transition carol reg (.Publish 20#u64 1#u64 (vecOf [])) ⦃ o => o = .Err .AccountLocked ⦄ := by
   run_kernel
 
 /-- Alice deletes crate 10 within 72 hours of publishing it. -/
@@ -153,7 +153,7 @@ theorem owner_deletes_new_crate :
 
 /-- Four days later, the crate has two owners (Alice and team 7), so it stays. -/
 theorem old_shared_crate_stays :
-    transition ⟨1#u64, 1#u64, .Cookie 1#u64, 345600#u64, vec []⟩ reg (.DeleteCrate 10#u64 0#u64) ⦃ o =>
+    transition ⟨1#u64, 1#u64, .Cookie 1#u64, 345600#u64, vecOf []⟩ reg (.DeleteCrate 10#u64 0#u64) ⦃ o =>
       o = .Err .MultipleOwners ⦄ := by
   run_kernel
   step*
@@ -164,17 +164,17 @@ theorem old_shared_crate_stays :
 User 1 signs up, then the operator locks the account. So the hypothesis of
 `locked_commits_nothing` holds in reachable states, not only in `s0`. -/
 
-def empty : Snapshot := ⟨⟨0#u64, 0#u64⟩, vec [], vec [], vec [], vec [], vec [], vec [], vec [], vec []⟩
+def empty : Snapshot := ⟨⟨0#u64, 0#u64⟩, vecOf [], vecOf [], vecOf [], vecOf [], vecOf [], vecOf [], vecOf [], vecOf []⟩
 
 def signedUp : Snapshot :=
-  ⟨⟨1#u64, 0#u64⟩, vec [⟨1#u64, false, false, 0#u64, false⟩], vec [⟨0#u64, 1#u64⟩], vec [], vec [], vec [], vec [],
-    vec [], vec []⟩
+  ⟨⟨1#u64, 0#u64⟩, vecOf [⟨1#u64, false, false, 0#u64, false⟩], vecOf [⟨0#u64, 1#u64⟩], vecOf [], vecOf [], vecOf [], vecOf [],
+    vecOf [], vecOf []⟩
 
 def lockedReg : Snapshot :=
-  ⟨⟨1#u64, 0#u64⟩, vec [⟨1#u64, false, true, 0#u64, false⟩], vec [⟨0#u64, 1#u64⟩], vec [], vec [], vec [], vec [],
-    vec [], vec []⟩
+  ⟨⟨1#u64, 0#u64⟩, vecOf [⟨1#u64, false, true, 0#u64, false⟩], vecOf [⟨0#u64, 1#u64⟩], vecOf [], vecOf [], vecOf [], vecOf [],
+    vecOf [], vecOf []⟩
 
-def op : Principal := ⟨1#u64, 0#u64, .Operator, 1000#u64, vec []⟩
+def op : Principal := ⟨1#u64, 0#u64, .Operator, 1000#u64, vecOf []⟩
 
 theorem sign_up_step :
     transition gh empty .Authorize ⦃ o => ∃ ws r, o = .Ok (ws, r) ∧

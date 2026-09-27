@@ -64,10 +64,6 @@ theorem writes_of (a : Principal) (s : Snapshot) (c : Command) ws r
     obtain ⟨rfl, rfl⟩ := h
     exact .inr (.inr (.inr (.inr (.inr ⟨x, by simp [alloc.vec.Vec.from_val, u], rfl⟩))))
 
-theorem ok_of {α} {m : Result α} {P : α → Prop} (h : m ⦃ P ⦄) : ∃ r, m = ok r := by
-  obtain ⟨r, hr, -⟩ := (WP.spec_equiv_exists _ _).1 h
-  exact ⟨r, hr⟩
-
 /-- No command makes the kernel fail: no panic, overflow or bad index. -/
 theorem transition_total (a : Principal) (s : Snapshot) (c : Command) : ∃ r, transition a s c = ok r := by
   cases c <;> simp only [transition]
@@ -125,24 +121,6 @@ theorem writes_confined (a : Principal) (s : Snapshot) (c : Command) ws r
 
 /-! ## Everyone else's rows stay as they were -/
 
-theorem filter_upsert {α κ} [DecidableEq κ] (k : α → κ) (p : α → Bool) (x : α) (l : List α)
-    (hx : p x = false) (hk : ∀ y, k y = k x → p y = false) : (upsert k x l).filter p = l.filter p := by
-  induction l with
-  | nil => simp [upsert, hx]
-  | cons y ys ih =>
-    unfold upsert
-    split
-    · rename_i hy
-      simp [hx, hk y hy]
-    · simp only [List.filter_cons, ih]
-
-theorem filter_filter_of {α} (p q : α → Bool) (l : List α) (h : ∀ y, q y = false → p y = false) :
-    (l.filter q).filter p = l.filter p := by
-  rw [List.filter_filter]
-  apply List.filter_congr
-  intro y _
-  cases hq : q y <;> simp [h y, hq]
-
 theorem others_write (s : St) (u : Nat) (w : Write) (hw : touches u w) :
     others (applyWrite s w) u = others s u := by
   cases w with
@@ -162,9 +140,9 @@ theorem others_write (s : St) (u : Nat) (w : Write) (hw : touches u w) :
   | DelBlock b =>
     simp only [touches] at hw
     simp only [others, applyWrite, Prod.mk.injEq, true_and]
-    refine filter_filter_of _ _ _ (fun y hy => ?_)
+    refine filter_filter_of_imp _ _ _ (fun y _ hp => Bool.eq_true_of_not_eq_false (fun hy => ?_))
     simp only [blockKey, ne_eq, decide_eq_false_iff_not, Decidable.not_not, Prod.mk.injEq] at hy
-    simp [hy.1, hw]
+    simp [hy.1, hw] at hp
 
 theorem others_applyAll (s : St) (u : Nat) (ws : List Write) (hw : ∀ w ∈ ws, touches u w) :
     others (applyAll s ws) u = others s u := by

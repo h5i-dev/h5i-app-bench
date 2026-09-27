@@ -11,45 +11,6 @@ open Aeneas Aeneas.Std Result inbox_kernel inbox_kernel.Spec inbox_kernel.Comman
 
 namespace inbox_kernel.Noninterference
 
-/-! ## List facts: what a helper reads for `u` survives filtering by `u` -/
-
-theorem any_filter_of_imp {α} (l : List α) (p q : α → Bool) (h : ∀ x, p x = true → q x = true) :
-    (l.filter q).any p = l.any p := by
-  induction l with
-  | nil => rfl
-  | cons x xs ih =>
-    by_cases hq : q x = true
-    · simp [hq, ih]
-    · have hp : p x = false := by cases hpx : p x <;> simp_all
-      simp [hq, hp, ih]
-
-theorem find?_filter_of_imp {α} (l : List α) (p q : α → Bool) (h : ∀ x, p x = true → q x = true) :
-    (l.filter q).find? p = l.find? p := by
-  induction l with
-  | nil => rfl
-  | cons x xs ih =>
-    by_cases hq : q x = true
-    · simp [hq, List.find?_cons, ih]
-    · have hp : p x = false := by cases hpx : p x <;> simp_all
-      simp [hq, hp, ih]
-
-theorem filter_filter_of_imp {α} (l : List α) (p q : α → Bool) (h : ∀ x, p x = true → q x = true) :
-    (l.filter q).filter p = l.filter p := by
-  rw [List.filter_filter]
-  apply List.filter_congr
-  intro x _
-  cases hp : p x <;> simp [hp, h x]
-
-/-- A fold step that ignores elements outside `q` gives the same result on `l.filter q`. -/
-theorem foldl_filter_of_skip {α β} (l : List α) (g : β → α → β) (q : α → Bool) (b : β)
-    (h : ∀ b x, q x = false → g b x = b) : (l.filter q).foldl g b = l.foldl g b := by
-  induction l generalizing b with
-  | nil => rfl
-  | cons x xs ih =>
-    by_cases hq : q x = true
-    · simp [hq, ih]
-    · simp [hq, h b x (by simpa using hq), ih]
-
 /-! ## The helpers as equations -/
 
 theorem is_blocked_ok (bs : alloc.vec.Vec Block) (o s : U64) :
@@ -79,7 +40,7 @@ theorem blocks_same :
 theorem is_blocked_same (d : U64) : is_blocked s₁.blocks d u = is_blocked s₂.blocks d u := by
   have hi : ∀ b, blockedBy d u b = true → decide (b.sender.val = u.val) = true := by
     intro b hb; simp only [blockedBy, Bool.and_eq_true, decide_eq_true_eq] at hb; simp [hb.2]
-  rw [is_blocked_ok, is_blocked_ok, ← any_filter_of_imp _ _ _ hi, ← any_filter_of_imp s₂.blocks.val _ _ hi,
+  rw [is_blocked_ok, is_blocked_ok, ← any_filter_of_imp _ _ _ (fun b _ => hi b), ← any_filter_of_imp s₂.blocks.val _ _ (fun b _ => hi b),
     blocks_same u s₁ s₂ hv]
 
 theorem last_seq_same (d : U64) : last_seq s₁.messages u d = last_seq s₂.messages u d := by
@@ -97,15 +58,16 @@ theorem find_message_same (f t q : U64) (h : f = u ∨ t = u) :
     intro m hm
     simp only [keyIs, Bool.and_eq_true, decide_eq_true_eq] at hm
     rcases h with rfl | rfl <;> simp [involves, hm.1.1, hm.1.2]
-  rw [find_message_ok, find_message_ok, ← find?_filter_of_imp _ _ _ hi,
-    ← find?_filter_of_imp s₂.messages.val _ _ hi, msgs_same u s₁ s₂ hv]
+  rw [find_message_ok, find_message_ok, ← find?_filter_of_imp _ _ _ (fun m _ => hi m),
+    ← find?_filter_of_imp s₂.messages.val _ _ (fun m _ => hi m), msgs_same u s₁ s₂ hv]
 
 theorem mailbox_same (inc : Bool) : mailbox s₁.messages u inc = mailbox s₂.messages u inc := by
   obtain ⟨v₁, e₁, h₁⟩ := Theorems.mailbox_ok s₁.messages u inc
   obtain ⟨v₂, e₂, h₂⟩ := Theorems.mailbox_ok s₂.messages u inc
   have hi : ∀ m, kept u inc m = true → involves u.val m = true := fun _ h => Theorems.kept_involves h
   rw [e₁, e₂, alloc.vec.Vec.ext v₁ v₂ (by
-    rw [h₁, h₂, ← filter_filter_of_imp _ _ _ hi, ← filter_filter_of_imp s₂.messages.val _ _ hi,
+    rw [h₁, h₂, ← filter_filter_of_imp _ _ _ (fun m _ => hi m),
+      ← filter_filter_of_imp s₂.messages.val _ _ (fun m _ => hi m),
       msgs_same u s₁ s₂ hv])]
 
 end

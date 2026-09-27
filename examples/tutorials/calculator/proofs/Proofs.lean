@@ -7,8 +7,7 @@ open Aeneas Aeneas.Std Result calculator_kernel calculator_kernel.Spec I5hLib
 
 namespace calculator_kernel.Proofs
 
-@[simp] theorem u64_val_eq (x y : U64) : x.val = y.val ↔ x = y :=
-  ⟨fun h => by scalar_tac, fun h => h ▸ rfl⟩
+attribute [simp] u64_val_eq
 
 /-- The Rust overflow check for `a * b`, in plain arithmetic. -/
 theorem mul_check (a b : Nat) (hb : 0 < b) : (2 ^ 64 - 1) / b < a ↔ 2 ^ 64 ≤ a * b := by

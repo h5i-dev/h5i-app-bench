@@ -38,7 +38,7 @@ theorem put_message_loop_spec (v : alloc.vec.Vec Message) (m : Message) (i : Usi
   apply WP.spec_mono (loop_search v.val (fun q => decide (msgKey q = msgKey m))
     (fun y : alloc.vec.Vec Message => y.val) (fun j _ => v.val.set j m) (v.val ++ [m]) _ ?_ i hi)
   · intro r hr; rw [hr]; exact upsert_loop_result msgKey m _ _ hi hpre
-  · intro j hj; unfold put_message_loop.body; i5h_step <;> simp_all [msgKey] <;> scalar_tac
+  · intro j hj; unfold put_message_loop.body; i5h_step [msgKey]
 
 @[step]
 theorem put_block_loop_spec (v : alloc.vec.Vec Block) (b : Block) (i : Usize)
@@ -49,7 +49,7 @@ theorem put_block_loop_spec (v : alloc.vec.Vec Block) (b : Block) (i : Usize)
   apply WP.spec_mono (loop_search v.val (fun q => decide (blockKey q = blockKey b))
     (fun y : alloc.vec.Vec Block => y.val) (fun j _ => v.val.set j b) (v.val ++ [b]) _ ?_ i hi)
   · intro r hr; rw [hr]; exact upsert_loop_result blockKey b _ _ hi hpre
-  · intro j hj; unfold put_block_loop.body; i5h_step <;> simp_all [blockKey] <;> scalar_tac
+  · intro j hj; unfold put_block_loop.body; i5h_step [blockKey]
 
 @[step]
 theorem del_block_loop_spec (v : alloc.vec.Vec Block) (b : Block) (out : alloc.vec.Vec Block)
@@ -62,7 +62,7 @@ theorem del_block_loop_spec (v : alloc.vec.Vec Block) (b : Block) (out : alloc.v
     (fun w j => w.length ≤ j) (fun x => del_block_loop.body v b x.1 x.2) ?_ out i hi
     (by rw [alloc.vec.Vec.length, hout]; exact (List.length_filter_le _ _).trans (List.length_take_le _ _)))
   · intro r hr; rw [hr, foldl_filter, hout, filter_split]
-  · intro o j hj ho; have := v.len_ineq; unfold del_block_loop.body; i5h_step <;> simp_all [blockKey] <;> scalar_tac
+  · intro o j hj ho; have := v.len_ineq; unfold del_block_loop.body; i5h_step [blockKey]
 
 /-! ## One write, then the whole set -/
 

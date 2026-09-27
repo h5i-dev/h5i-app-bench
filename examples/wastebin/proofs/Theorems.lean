@@ -87,10 +87,6 @@ theorem writes_of {T : Kernel} (hT : Variant T) (a : Principal) (s : Snapshot) (
     | View k _ key => exact .inr (fetch_deletes h)
     | _ => exact main _ ws r h
 
-theorem ok_of {α} {m : Result α} {P : α → Prop} (h : m ⦃ P ⦄) : ∃ r, m = ok r := by
-  obtain ⟨r, hr, -⟩ := (WP.spec_equiv_exists _ _).1 h
-  exact ⟨r, hr⟩
-
 /-- No command makes the kernel fail: no panic, overflow or bad index. -/
 theorem transition_total (a : Principal) (s : Snapshot) (c : Command) : ∃ r, transition a s c = ok r := by
   cases c <;> simp only [transition]
@@ -150,14 +146,6 @@ theorem applyAll_dels (st : St) (ids : List U64) :
     congr 1
     funext p
     simp [and_comm]
-
-theorem upsert_fresh {α κ} [DecidableEq κ] (k : α → κ) (x : α) (l : List α) (h : ∀ y ∈ l, k y ≠ k x) :
-    upsert k x l = l ++ [x] := by
-  induction l with
-  | nil => rfl
-  | cons y ys ih =>
-    simp only [upsert, if_neg (h y List.mem_cons_self), List.cons_append]
-    rw [ih (fun z hz => h z (List.mem_cons_of_mem _ hz))]
 
 theorem applyAll_create (st : St) (p : Paste) (cnt : Counter) (h : ∀ q ∈ st.pastes, q.id ≠ p.id) :
     applyAll st [.PutPaste p, .SetCounter cnt] = ⟨cnt.next_id.val, cnt.last_uid.val, st.pastes ++ [p]⟩ := by

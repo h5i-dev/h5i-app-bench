@@ -216,7 +216,7 @@ every command goes through except `send`, where Lean stops with two programs
 that differ in one call (the goal is shortened):
 
 ```
-error: Noninterference.lean:108:13: unsolved goals
+error: Noninterference.lean:70:13: unsolved goals
 case Send
 a : Principal
 s₁ s₂ : Snapshot
@@ -321,14 +321,14 @@ The proof in `Noninterference.lean` shows, for each helper, that it returns
 the same value in both states. The idea is always the same: a helper only
 looks at rows that match a condition, and when the condition implies
 `involves u`, it may as well look at the filtered list, which is the view.
-For lookups this is a list fact,
+For lookups this is a list fact from `I5hLib`,
 
 ```lean
-theorem find?_filter_of_imp {α} (l : List α) (p q : α → Bool) (h : ∀ x, p x = true → q x = true) :
+theorem find?_filter_of_imp (l : List α) (p q : α → Bool) (h : ∀ x ∈ l, p x = true → q x = true) :
     (l.filter q).find? p = l.find? p
 ```
 
-and there are similar facts for `any`, `filter` and `foldl`. With them,
+and `I5hLib` has similar facts for `any`, `filter` and `foldl`. With them,
 `find_message_same` states that a lookup by a key naming `u` gives the same
 answer in both states, `is_blocked_same` does the same for the block that
 names `u` as the sender, and so on. The theorem itself is then a case per
@@ -390,7 +390,7 @@ After re-extracting, every lemma in `Commands.lean` and every theorem in
 message it should not. Only noninterference fails:
 
 ```
-error: Noninterference.lean:129:4: unsolved goals
+error: Noninterference.lean:91:4: unsolved goals
 case neg
 a : Principal
 s₁ s₂ : Snapshot
@@ -459,3 +459,5 @@ steps is outside the theorem.
 3. Add a `Purge` step that removes a message once both sides have deleted it.
    Does `send_fresh` still hold? Can a key `(from, to, seq)` ever name two
    different messages over time, and how would you state that?
+
+The [next tutorial](../booking/TUTORIAL.md), meeting rooms, adds time as an input, invariants about intervals, and effects outside the database.

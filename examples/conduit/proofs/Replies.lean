@@ -78,50 +78,6 @@ theorem feed_only_followed (a : Principal) (s : Snapshot) (lim off : U64) ws vs
 
 /-! ## Writes: the reply shows the state after the write -/
 
-section Counting
-variable {α κ : Type} [DecidableEq κ]
-
-theorem length_filter_upsert (k : α → κ) (p : α → Bool) (x : α) (l : List α)
-    (hp : ∀ y, k y = k x → p y = p x) :
-    ((upsert k x l).filter p).length =
-      (l.filter p).length + (if l.any (fun y => k y = k x) then 0 else if p x then 1 else 0) := by
-  induction l with
-  | nil => simp [upsert]; split <;> simp_all
-  | cons y ys ih =>
-    unfold upsert
-    by_cases hy : k y = k x
-    · simp [hy, hp y hy, List.filter_cons]; split <;> simp
-    · simp only [hy, if_false, List.filter_cons, List.any_cons, decide_false, Bool.false_or]
-      split <;> simp [ih] <;> omega
-
-theorem length_filter_remove (k : α → κ) (p : α → Bool) (kx : κ) (l : List α) (hl : (l.map k).Nodup)
-    (hp : ∀ y, k y = kx → p y = true) :
-    ((l.filter (fun y => ¬ k y = kx)).filter p).length =
-      (l.filter p).length - (if l.any (fun y => k y = kx) then 1 else 0) := by
-  induction l with
-  | nil => simp
-  | cons y ys ih =>
-    simp only [List.map_cons, List.nodup_cons, List.mem_map] at hl
-    by_cases hy : k y = kx
-    · have hf : (ys.filter fun y => ¬ k y = kx) = ys := by
-        rw [List.filter_eq_self]; intro z hz; simp only [decide_eq_true_eq]
-        intro hkz; exact hl.1 ⟨z, hz, hkz.trans hy.symm⟩
-      rw [List.filter_cons_of_neg (by simp [hy]), hf, List.filter_cons_of_pos (hp y hy)]
-      simp [hy]
-    · have hpos : ys.any (fun z => decide (k z = kx)) = true → 1 ≤ (ys.filter p).length := by
-        intro hany; obtain ⟨z, hz, hkz⟩ := List.any_eq_true.1 hany
-        exact List.length_pos_of_mem (List.mem_filter.2 ⟨hz, hp z (by simpa using hkz)⟩)
-      have ih' := ih hl.2
-      rw [List.filter_cons_of_pos (by simp [hy]), List.any_cons]
-      simp only [hy, decide_false, Bool.false_or]
-      by_cases hpy : p y = true
-      · rw [List.filter_cons_of_pos hpy, List.filter_cons_of_pos hpy]
-        simp only [List.length_cons, ih']
-        split <;> simp_all <;> omega
-      · rw [List.filter_cons_of_neg hpy, List.filter_cons_of_neg hpy, ih']
-
-end Counting
-
 theorem profile_same {s t : St} (hu : s.users = t.users) (hf : s.follows = t.follows) (v id : U64) :
     authorOf s v id = authorOf t v id := by
   simp [authorOf, userById, profileOf, follows, hu, hf]
@@ -173,14 +129,6 @@ theorem unfavorite_reply (a : Principal) (s : Snapshot) (slug : Text) ws v
 
 theorem userById_same {s t : St} (hu : s.users = t.users) : userById s = userById t := by
   funext id; simp [userById, hu]
-
-theorem upsert_fresh {α κ} [DecidableEq κ] (k : α → κ) (x : α) (l : List α) (h : ∀ y ∈ l, k y ≠ k x) :
-    upsert k x l = l ++ [x] := by
-  induction l with
-  | nil => rfl
-  | cons y ys ih =>
-    unfold upsert
-    rw [if_neg (h y List.mem_cons_self), ih (fun z hz => h z (List.mem_cons_of_mem _ hz))]; rfl
 
 /-- Writing the tags of a new article appends them. -/
 theorem applyAll_put_tags (s : St) (id : U64) (l : List Text) (hl : l.Nodup)

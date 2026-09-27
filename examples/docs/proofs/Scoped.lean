@@ -160,7 +160,7 @@ theorem load_counter (db : Db Val) (s : St) (c : Bool) (hi : Inv s) (hdb : db = 
 theorem doc_ids_nodup (l : List Document) (h : (l.map (·.id)).Nodup) : (l.map (fun x => x.id.val)).Nodup := by
   have e : l.map (fun x => x.id.val) = (l.map (·.id)).map (·.val) := by simp
   rw [e]
-  exact h.map (fun a b hab => (u64_val_eq a b).1 hab)
+  exact h.map (fun a b hab => (I5hLib.u64_val_eq a b).1 hab)
 
 theorem findDoc_equiv (s : St) (hi : Inv s) (snap : Snapshot) (e : Equiv s (Snapshot.toSt snap))
     (d : Nat) (doc : Document) :

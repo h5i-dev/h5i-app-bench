@@ -52,10 +52,6 @@ theorem writes_of (a : Principal) (s : Snapshot) (c : Command) ws r
     obtain ⟨hu, ht, hl, hws⟩ := post_of_ok (demote_spec a.user s tg) h ws r rfl
     exact .inr (.inr (.inr (.inr (.inr ⟨tg, hu, ht, hl, hws⟩))))
 
-theorem ok_of {α} {m : Result α} {P : α → Prop} (h : m ⦃ P ⦄) : ∃ r, m = ok r := by
-  obtain ⟨r, hr, -⟩ := (WP.spec_equiv_exists _ _).1 h
-  exact ⟨r, hr⟩
-
 /-- No command makes the kernel fail: no panic, overflow or bad index. -/
 theorem transition_total (a : Principal) (s : Snapshot) (c : Command) : ∃ r, transition a s c = ok r := by
   cases c <;> simp only [transition]

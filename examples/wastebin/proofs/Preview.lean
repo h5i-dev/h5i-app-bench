@@ -43,21 +43,18 @@ theorem preview_fixed : PreviewSafe transition := by
 
 /-! ## The counterexample -/
 
-def vec {α} (l : List α) (h : l.length ≤ Usize.max := by simp only [List.length_cons, List.length_nil]; scalar_tac) :
-    alloc.vec.Vec α := alloc.vec.Vec.from l h
-
 /-- A burn-after-reading paste with slug 7, owned by uid 1. -/
-def p0 : Paste := ⟨0#u64, 7#u64, 1#u64, vec [], none, true, none⟩
+def p0 : Paste := ⟨0#u64, 7#u64, 1#u64, vecOf [], none, true, none⟩
 
-def empty : Snapshot := ⟨⟨0#u64, 0#u64⟩, vec []⟩
-def s0 : Snapshot := ⟨⟨1#u64, 1#u64⟩, vec [p0]⟩
+def empty : Snapshot := ⟨⟨0#u64, 0#u64⟩, vecOf []⟩
+def s0 : Snapshot := ⟨⟨1#u64, 1#u64⟩, vecOf [p0]⟩
 
 /-- A first-time visitor whose request draws slug 7. -/
-def author : Principal := ⟨vec [], 100#u64, 7#u64⟩
+def author : Principal := ⟨vecOf [], 100#u64, 7#u64⟩
 /-- A link preview bot. -/
-def bot : Principal := ⟨vec [], 100#u64, 0#u64⟩
+def bot : Principal := ⟨vecOf [], 100#u64, 0#u64⟩
 
-def createP0 : Command := .Create (vec []) none true none
+def createP0 : Command := .Create (vecOf []) none true none
 
 theorem create_p0 :
     transition author empty createP0 ⦃ o => ∃ ws r, o = .Ok (ws, r) ∧
@@ -65,7 +62,7 @@ theorem create_p0 :
   simp only [transition, createP0]
   unfold create deadline owner_for
   step*
-  all_goals simp_all [empty, author, p0, vec, core.num.U64.MAX, U64.rMax]
+  all_goals simp_all [empty, author, p0, vecOf, core.num.U64.MAX, U64.rMax]
   step*
   simp_all
   refine ⟨?_, ?_, ?_⟩ <;> (apply UScalar.eq_of_val_eq; simp_all)
@@ -77,10 +74,10 @@ theorem s0_reachable {T : Kernel} (hT : Variant T) : Reachable T (Snapshot.toSt 
     rcases hT with rfl | rfl
     · exact ho
     · rw [pre190_eq]; exact ho
-  have h0 : Snapshot.toSt empty = init := by simp [Snapshot.toSt, empty, init, vec]
+  have h0 : Snapshot.toSt empty = init := by simp [Snapshot.toSt, empty, init, vecOf]
   have hr : Reachable T (Snapshot.toSt empty) := h0 ▸ Steps.refl
   have h1 : applyAll (Snapshot.toSt empty) ws.val = Snapshot.toSt s0 := by
-    rw [hws]; simp [applyAll, applyWrite, upsert, Snapshot.toSt, empty, s0, vec]
+    rw [hws]; simp [applyAll, applyWrite, upsert, Snapshot.toSt, empty, s0, vecOf]
   exact h1 ▸ Steps.step hr ho'
 
 /-- Before the fix, the bot's plain request shows the paste and burns it. -/
@@ -91,7 +88,7 @@ theorem pre190_bot_burns :
   simp only
   unfold fetch read
   step*
-  all_goals simp_all [s0, p0, bot, vec, isExpired]
+  all_goals simp_all [s0, p0, bot, vecOf, isExpired]
 
 /-- `PreviewSafe` is false for the code before the fix. -/
 theorem preview_broken : ¬ PreviewSafe transition_pre190 := by

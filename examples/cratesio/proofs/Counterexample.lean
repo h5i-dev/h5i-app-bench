@@ -6,27 +6,24 @@ User 1 is locked. Before the PR, the OAuth callback still wrote a session
 for them; after it, the callback refuses. `locked_commits_nothing` is
 therefore false for the old code.
 -/
-open Aeneas Aeneas.Std Result cratesio_kernel cratesio_kernel.Spec cratesio_kernel.Theorems
+open Aeneas Aeneas.Std Result cratesio_kernel cratesio_kernel.Spec cratesio_kernel.Theorems I5hLib
 
 namespace cratesio_kernel.Counterexample
-
-def vec {α} (l : List α) (h : l.length ≤ Usize.max := by simp only [List.length_cons, List.length_nil]; scalar_tac) :
-    alloc.vec.Vec α := alloc.vec.Vec.from l h
 
 /-- User 1 is locked with no end date. -/
 def s0 : Snapshot where
   counter := ⟨0#u64, 0#u64⟩
-  users := vec [⟨1#u64, false, true, 0#u64, true⟩]
-  sessions := vec []
-  tokens := vec []
-  crates := vec []
-  versions := vec []
-  owners := vec []
-  invites := vec []
-  deps := vec []
+  users := vecOf [⟨1#u64, false, true, 0#u64, true⟩]
+  sessions := vecOf []
+  tokens := vecOf []
+  crates := vecOf []
+  versions := vecOf []
+  owners := vecOf []
+  invites := vecOf []
+  deps := vecOf []
 
 /-- GitHub vouches for user 1 at time 1000. -/
-def gh : Principal := ⟨1#u64, 1#u64, .GitHub, 1000#u64, vec []⟩
+def gh : Principal := ⟨1#u64, 1#u64, .GitHub, 1000#u64, vecOf []⟩
 
 theorem s0_locked : lockedNow (Snapshot.toSt s0) gh := ⟨_, rfl, rfl⟩
 
@@ -36,7 +33,7 @@ theorem pre14760_signs_in :
       ∃ ws r, o = .Ok (ws, r) ∧ ws.val = [.PutSession ⟨0#u64, 1#u64⟩, .SetCounter ⟨1#u64, 0#u64⟩] ⦄ := by
   unfold transition_pre14760 run authorize
   step*
-  all_goals simp_all [s0, gh, vec, core.num.U64.MAX, U64.rMax]
+  all_goals simp_all [s0, gh, vecOf, core.num.U64.MAX, U64.rMax]
   all_goals scalar_tac
 
 /-- After the PR: refused with the lock. -/
@@ -44,7 +41,7 @@ theorem fixed_refuses :
     transition gh s0 .Authorize ⦃ o => o = .Err .AccountLocked ⦄ := by
   unfold transition run authorize
   step*
-  all_goals simp_all [s0, gh, vec, lockedAt, core.num.U64.MAX, U64.rMax]
+  all_goals simp_all [s0, gh, vecOf, lockedAt, core.num.U64.MAX, U64.rMax]
   all_goals scalar_tac
 
 /-- `locked_commits_nothing` does not hold before the PR. -/

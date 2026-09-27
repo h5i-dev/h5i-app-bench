@@ -9,17 +9,7 @@ open Aeneas Aeneas.Std Result cratesio_kernel cratesio_kernel.Spec I5hLib
 
 namespace cratesio_kernel.Lemmas
 
-@[simp] theorem u64_val_eq (x y : U64) : x.val = y.val ↔ x = y :=
-  ⟨fun h => by scalar_tac, fun h => h ▸ rfl⟩
-
-theorem search_bool {α} (l : List α) (P : α → Bool) (b c : Bool) (r : Bool)
-    (hr : r = searchFrom l P (fun _ _ => b) c (↑(0#usize : Usize))) : r = if l.any P then b else c := by
-  rw [hr, searchFrom_const, UScalar.ofNatCore_val_eq, List.drop_zero]
-
-theorem search_find {α} (l : List α) (P : α → Bool) (r : Option α)
-    (hr : r = searchFrom l P (fun _ x => some x) none (↑(0#usize : Usize))) : r = l.find? P := by
-  rw [hr, show (fun (_ : Nat) (x : α) => some x) = (fun _ x => some (id x)) from rfl, searchFrom_find]
-  simp
+attribute [simp] u64_val_eq
 
 /-! ## Lookups -/
 
@@ -243,12 +233,6 @@ def scopeOk (tok : Option Token) (allow : Bool) (e : Endpoint) (k : Option U64) 
   have : a.val / 86400 + 29 < 2 ^ 64 := by scalar_tac
   step*
   all_goals (simp only [DAY, DOWNLOADS_PER_MONTH] at *; try scalar_tac)
-
-theorem foldl_map {α β} (f : α → β) (l : List α) (acc : List β) :
-    l.foldl (fun acc x => acc ++ [f x]) acc = acc ++ l.map f := by
-  induction l generalizing acc with
-  | nil => simp
-  | cons x xs ih => simp [ih]
 
 /-- The dependency rows of version `n` of crate `k`. -/
 def depWrites (k n : U64) (ds : List U64) : List Write := ds.map (fun d => .PutDep ⟨k, n, d⟩)

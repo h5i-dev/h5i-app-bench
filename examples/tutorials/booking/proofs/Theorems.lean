@@ -49,10 +49,6 @@ theorem writes_of (a : Principal) (s : Snapshot) (c : Command) ws r
     rw [← h.1]
     rfl
 
-theorem ok_of {α} {m : Result α} {P : α → Prop} (h : m ⦃ P ⦄) : ∃ r, m = ok r := by
-  obtain ⟨r, hr, -⟩ := (WP.spec_equiv_exists _ _).1 h
-  exact ⟨r, hr⟩
-
 /-- No command makes the kernel fail: no panic, overflow or bad index. -/
 theorem transition_total (a : Principal) (s : Snapshot) (c : Command) : ∃ r, transition a s c = ok r := by
   cases c <;> simp only [transition]
@@ -107,15 +103,6 @@ theorem findRoom_mem {s : St} {id : Nat} {r : Room} (h : findRoom s id = some r)
 theorem findBooking_mem {s : St} {id : Nat} {b : Booking} (h : findBooking s id = some b) :
     b ∈ s.bookings ∧ b.id.val = id :=
   ⟨List.mem_of_find?_eq_some h, by simpa using List.find?_some h⟩
-
-/-- Upserting a row whose key is new appends it. -/
-theorem upsert_fresh {α κ : Type} [DecidableEq κ] (key : α → κ) (x : α) (l : List α)
-    (h : ∀ y ∈ l, key y ≠ key x) : upsert key x l = l ++ [x] := by
-  induction l with
-  | nil => rfl
-  | cons y ys ih =>
-    simp only [List.mem_cons, forall_eq_or_imp] at h
-    simp [upsert, h.1, ih h.2]
 
 theorem apart_comm {s₁ e₁ s₂ e₂ : Nat} : Apart s₁ e₁ s₂ e₂ → Apart s₂ e₂ s₁ e₁ :=
   Or.symm

@@ -12,17 +12,6 @@ namespace cratesio_kernel.Invariants
 
 /-! ## Lists -/
 
-/-- `upsert` keeps a row with every key the list had. -/
-theorem key_kept {α κ : Type} [DecidableEq κ] (key : α → κ) (x : α) {l : List α} {y : α} (hy : y ∈ l) :
-    ∃ z ∈ upsert key x l, key z = key y := by
-  by_cases h : key y = key x
-  · exact ⟨x, mem_upsert_self key x l, h.symm⟩
-  · exact ⟨y, mem_upsert_of_ne hy h, rfl⟩
-
-theorem nodup_upsert {α κ : Type} [DecidableEq κ] (key : α → κ) (x : α) {l : List α} (h : (l.map key).Nodup) :
-    ((upsert key x l).map key).Nodup :=
-  nodup_map_upsert key key (fun _ _ => Iff.rfl) x l h
-
 theorem hasCrate_iff (s : St) (k : U64) : hasCrate s k = true ↔ ∃ c ∈ s.crates, c.id = k := by
   simp [hasCrate]
 
@@ -32,9 +21,6 @@ theorem hasCrate_mono {s s' : St} (hc : ∀ c ∈ s.crates, ∃ c' ∈ s'.crates
   obtain ⟨c, hc1, rfl⟩ := (hasCrate_iff s k).1 h
   obtain ⟨c', hc', he⟩ := hc c hc1
   exact (hasCrate_iff s' _).2 ⟨c', hc', he⟩
-
-theorem find_mem {α} {l : List α} {P : α → Bool} {x : α} (h : l.find? P = some x) : x ∈ l ∧ P x = true :=
-  ⟨List.mem_of_find?_eq_some h, List.find?_some h⟩
 
 /-! ## Dependency rows -/
 
@@ -74,7 +60,7 @@ theorem applyAll_cons (s : St) (w : Write) (l : List Write) : applyAll s (w :: l
 
 theorem applyAll_nil (s : St) : applyAll s [] = s := rfl
 
-theorem userOf_mem {s : St} {u : U64} {x : User} (h : userOf s u = some x) : x ∈ s.users := (find_mem h).1
+theorem userOf_mem {s : St} {u : U64} {x : User} (h : userOf s u = some x) : x ∈ s.users := (find?_mem h).1
 
 /-! ## Each effect keeps the invariants -/
 
@@ -327,11 +313,11 @@ theorem inv_step {s : St} {p : Principal} {fixed : Bool} {c : Command} {l : List
   | signIn cn _ _ _ _ h1 h2 => exact inv_signIn hi p cn h1 h2
   | verify => exact inv_putUser hi _
   | newToken _ _ cn _ h1 h2 => exact inv_newToken hi _ cn rfl h1 h2
-  | revoke _ _ _ t _ _ ht _ => exact inv_revoke hi t (find_mem ht).1
+  | revoke _ _ _ t _ _ ht _ => exact inv_revoke hi t (find?_mem ht).1
   | publishNew u _ k n ds hs _ hd => exact inv_publishNew hi u k n p.now ds.val (userOf_mem hs.1) hd
   | publishUpdate u _ k n ds _ _ hd hk => exact inv_publishUpdate hi u k n ds.val hk hd
   | yank _ _ v k n y _ _ hv =>
-    obtain ⟨hm, hp⟩ := find_mem hv
+    obtain ⟨hm, hp⟩ := find?_mem hv
     simp only [decide_eq_true_eq] at hp
     exact inv_yank hi ⟨k, n, y, v.publisher⟩ (hp.1 ▸ hi.version_crates v hm)
   | invite _ _ _ _ hg => obtain ⟨_, _, _, hk, _⟩ := hg; exact inv_invite hi _ hk
@@ -339,7 +325,7 @@ theorem inv_step {s : St} {p : Principal} {fixed : Bool} {c : Command} {l : List
   | removeOwner _ k o t _ ho => exact inv_removeOwner hi k o t ho
   | decline u _ k _ _ => exact inv_decline hi k u.id
   | accept u _ k _ i hs _ hin =>
-    obtain ⟨hm, hp⟩ := find_mem hin
+    obtain ⟨hm, hp⟩ := find?_mem hin
     simp only [decide_eq_true_eq] at hp
     exact inv_accept hi k u (userOf_mem hs.1) (hp.1 ▸ hi.invite_crates i hm)
   | delete _ _ _ k _ _ _ _ _ _ hr => exact inv_delete hi k hr

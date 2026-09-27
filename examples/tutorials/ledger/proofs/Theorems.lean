@@ -54,10 +54,6 @@ theorem writes_of (a : Principal) (s : Snapshot) (c : Command) ws r
     left
     exact ⟨rfl, by rw [← h.1]; rfl⟩
 
-theorem ok_of {α} {m : Result α} {P : α → Prop} (h : m ⦃ P ⦄) : ∃ r, m = ok r := by
-  obtain ⟨r, hr, -⟩ := (WP.spec_equiv_exists _ _).1 h
-  exact ⟨r, hr⟩
-
 /-- No command makes the kernel fail: no panic, overflow or bad index. -/
 theorem transition_total (a : Principal) (s : Snapshot) (c : Command) : ∃ r, transition a s c = ok r := by
   cases c <;> simp only [transition]
@@ -67,42 +63,6 @@ theorem transition_total (a : Principal) (s : Snapshot) (c : Command) : ∃ r, t
   · exact ok_of (transfer_spec _ _ _ _ _)
   · exact ⟨.Ok (alloc.vec.Vec.new Write, .Accounts s.accounts),
       by simp [vec_clone_eq Account.Insts.CoreCloneClone s.accounts (fun _ => rfl)]⟩
-
-/-! ## Sums over lists -/
-
-/-- Upserting `x` changes the sum of `f` by `f x` minus the value of the row
-it replaces, or 0 if it appends. -/
-theorem sum_upsert {α κ} [DecidableEq κ] (key : α → κ) (f : α → Nat) (x : α) (l : List α) :
-    ((upsert key x l).map f).sum + ((l.find? (fun y => key y = key x)).map f).getD 0 =
-      (l.map f).sum + f x := by
-  induction l with
-  | nil => simp [upsert]
-  | cons y ys ih =>
-    by_cases h : key y = key x
-    · simp [upsert, h]; omega
-    · simp [upsert, h]; omega
-
-theorem le_sum {α} (f : α → Nat) {l : List α} {a : α} (ha : a ∈ l) : f a ≤ (l.map f).sum := by
-  induction l with
-  | nil => simp at ha
-  | cons y ys ih =>
-    simp only [List.map_cons, List.sum_cons]
-    rcases List.mem_cons.1 ha with rfl | h
-    · omega
-    · have := ih h; omega
-
-/-- Two different rows add up to at most the sum. -/
-theorem add_le_sum {α} (f : α → Nat) {l : List α} {a b : α} (ha : a ∈ l) (hb : b ∈ l) (hne : a ≠ b) :
-    f a + f b ≤ (l.map f).sum := by
-  induction l with
-  | nil => simp at ha
-  | cons y ys ih =>
-    simp only [List.map_cons, List.sum_cons]
-    rcases List.mem_cons.1 ha with rfl | ha' <;> rcases List.mem_cons.1 hb with rfl | hb'
-    · exact absurd rfl hne
-    · have := le_sum f hb'; omega
-    · have := le_sum f ha'; omega
-    · have := ih ha' hb'; omega
 
 /-! ## Accounts after a write -/
 

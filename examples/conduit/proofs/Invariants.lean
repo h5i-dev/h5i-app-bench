@@ -13,49 +13,15 @@ namespace conduit_kernel.Invariants
 
 /-! ## Keyed tables -/
 
-section Lists
-variable {α β κ : Type} [DecidableEq κ]
-
-/-- Upserting by key keeps a second attribute unique, if no other row has
-`x`'s value of it (usernames, emails, slugs). -/
-theorem nodup_map_upsert_attr (k : α → κ) (g : α → β) (x : α) (l : List α)
-    (hk : (l.map k).Nodup) (hg : (l.map g).Nodup) (hx : ∀ y ∈ l, g y = g x → k y = k x) :
-    ((upsert k x l).map g).Nodup := by
-  induction l with
-  | nil => simp [upsert]
-  | cons y ys ih =>
-    simp only [List.map_cons, List.nodup_cons, List.mem_map] at hk hg
-    unfold upsert
-    split
-    · rename_i hyx
-      simp only [List.map_cons, List.nodup_cons, List.mem_map, not_exists, not_and]
-      refine ⟨fun z hz hgz => hk.1 ⟨z, hz, ?_⟩, hg.2⟩
-      rw [hx z (List.mem_cons_of_mem _ hz) hgz, hyx]
-    · rename_i hyx
-      simp only [List.map_cons, List.nodup_cons, List.mem_map, not_exists, not_and]
-      refine ⟨fun z hz hgz => ?_, ih hk.2 hg.2 (fun z hz => hx z (List.mem_cons_of_mem _ hz))⟩
-      rcases mem_upsert_of hz with rfl | hz
-      · exact hyx (hx y List.mem_cons_self hgz.symm)
-      · exact hg.1 ⟨z, hz, hgz⟩
-
-/-- Every key present before an upsert is still present. -/
-theorem key_kept_upsert (k : α → κ) (x : α) (l : List α) (z : α) (hz : z ∈ l) :
-    ∃ y ∈ upsert k x l, k y = k z := by
-  by_cases h : k z = k x
-  · exact ⟨x, mem_upsert_self k x l, h.symm⟩
-  · exact ⟨z, mem_upsert_of_ne hz h, rfl⟩
-
-end Lists
-
 theorem isUser_upsert {s : St} {x : User} {v : U64} (h : isUser s v) :
     ∃ y ∈ upsert (·.id) x s.users, y.id = v := by
   obtain ⟨z, hz, rfl⟩ := h
-  exact key_kept_upsert (·.id) x s.users z hz
+  exact key_kept (·.id) x hz
 
 theorem isArticle_upsert {s : St} {a : Article} {v : U64} (h : isArticle s v) :
     ∃ y ∈ upsert (·.id) a s.articles, y.id = v := by
   obtain ⟨z, hz, rfl⟩ := h
-  exact key_kept_upsert (·.id) a s.articles z hz
+  exact key_kept (·.id) a hz
 
 /-! ## One lemma per kind of write -/
 
@@ -268,7 +234,7 @@ theorem owner_of_any {α β} [DecidableEq β] (l : List α) (g : α → β) (key
     | none => exact absurd hgy (not_taken l g v hz y hy)
     | some z =>
       simp [hz] at hn
-      obtain ⟨hzl, hzv⟩ := find_mem hz
+      obtain ⟨hzl, hzv⟩ := find?_mem hz
       simp at hzv
       rw [List.inj_on_of_nodup_map hg hy hzl (hgy.trans hzv.symm), hn]
 

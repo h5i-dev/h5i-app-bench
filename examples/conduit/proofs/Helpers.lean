@@ -10,6 +10,8 @@ open Aeneas Aeneas.Std Result conduit_kernel conduit_kernel.Spec I5hLib
 
 namespace conduit_kernel.Helpers
 
+attribute [simp] u64_val_eq u64_bne usize_cast_u64
+
 /-! ## Both variants of the favorite flag -/
 
 def favFlag (up : Bool) (s : St) (u a : U64) : Bool :=
@@ -27,18 +29,6 @@ def listedWith (up : Bool) (s : St) (tag : Option Text) (author fav : Option U64
 
 /-! ## Lists -/
 
-theorem foldl_filter_map {α β} (P : α → Bool) (f : α → β) (l : List α) (acc : List β) :
-    l.foldl (fun acc x => if P x then acc ++ [f x] else acc) acc = acc ++ (l.filter P).map f := by
-  induction l generalizing acc with
-  | nil => simp
-  | cons y ys ih => rw [List.foldl_cons, ih]; by_cases hp : P y <;> simp [hp, List.filter_cons]
-
-theorem foldl_map_acc {α β} (f : α → β) (l : List α) (acc : List β) :
-    l.foldl (fun acc x => acc ++ [f x]) acc = acc ++ l.map f := by
-  induction l generalizing acc with
-  | nil => simp
-  | cons y ys ih => rw [List.foldl_cons, ih]; simp
-
 theorem length_filter_map_le {α β} (P : α → Bool) (f : α → β) (l : List α) (k : Nat) :
     ((l.take k).filter P |>.map f).length ≤ k := by
   simp only [List.length_map]
@@ -54,16 +44,6 @@ theorem distinct_length_le {α} [DecidableEq α] (l acc : List α) :
     split <;> simp <;> omega
 
 /-! ## Scalars, clones, equality -/
-
-@[simp] theorem u64_val_eq (x y : U64) : x.val = y.val ↔ x = y :=
-  ⟨fun h => by scalar_tac, fun h => h ▸ rfl⟩
-
-theorem u8vec_clone (v : Text) : alloc.vec.CloneVec.clone core.clone.CloneU8 v = ok v :=
-  vec_clone_eq _ v (fun _ => rfl)
-
-@[step] theorem u8vec_clone_spec (v : Text) :
-    alloc.vec.CloneVec.clone core.clone.CloneU8 v ⦃ w => w = v ⦄ := by
-  simp [u8vec_clone]
 
 theorem user_clone (x : User) : User.Insts.CoreCloneClone.clone x = ok x := by
   simp [User.Insts.CoreCloneClone.clone, u8vec_clone, lift]
@@ -89,62 +69,10 @@ theorem tag_clone (x : Tag) : Tag.Insts.CoreCloneClone.clone x = ok x := by
 @[step] theorem tag_clone_spec (x : Tag) : Tag.Insts.CoreCloneClone.clone x ⦃ y => y = x ⦄ := by
   simp [tag_clone]
 
-theorem allM_u8 (l : List (U8 × U8)) :
-    List.allM (fun (p : U8 × U8) => core.cmp.PartialEqU8.eq p.1 p.2) l =
-      ok (l.all (fun p => decide (p.1 = p.2))) := by
-  induction l with
-  | nil => rfl
-  | cons p ps ih =>
-    by_cases h : p.1 = p.2 <;> simp [List.allM, liftFun2, h, ih] <;> rfl
-
-theorem zip_all_eq (a b : List U8) (h : a.length = b.length) :
-    (List.zip a b).all (fun p => decide (p.1 = p.2)) = decide (a = b) := by
-  induction a generalizing b with
-  | nil => cases b <;> simp_all
-  | cons x xs ih =>
-    cases b with
-    | nil => simp at h
-    | cons y ys =>
-      simp only [List.length_cons, Nat.add_right_cancel_iff] at h
-      simp [List.zip_cons_cons, ih ys h]
-
-/-- `==` on byte strings. -/
-@[step]
-theorem vec_u8_eq_spec (v w : Text) :
-    alloc.vec.partial_eq.PartialEqVec.eq core.cmp.PartialEqU8 v w ⦃ b => b = decide (v = w) ⦄ := by
-  unfold alloc.vec.partial_eq.PartialEqVec.eq
-  split
-  · rename_i hlen
-    rw [show (fun (x : U8 × U8) => match x with | (x0, x1) => core.cmp.PartialEqU8.eq x0 x1) =
-        (fun p => core.cmp.PartialEqU8.eq p.1 p.2) from rfl, allM_u8]
-    simp only [WP.spec_ok]
-    rw [zip_all_eq _ _ hlen]; exact decide_eq_decide.2 (alloc.vec.Vec.eq_iff v w).symm
-  · rename_i hlen
-    simp only [WP.spec_ok]
-    have : v ≠ w := fun h => hlen (by simp [h])
-    simp [this]
-
-@[simp] theorem usize_cast_u64 (n : Usize) : (UScalar.cast .U64 n).val = n.val := by
-  rw [UScalar.cast_val_eq]; apply Nat.mod_eq_of_lt
-  have h1 := usize_max_le; have h2 : n.val ≤ Usize.max := by scalar_tac
-  rw [U64.max_def] at h1; simp [U64.numBits] at h1; simp; omega
-
 @[step] theorem one_spec (w : Write) : one w ⦃ v => v.val = [w] ⦄ := by
   unfold one; step*
 
-@[simp] theorem u64_bne (x y : U64) : (x != y) = !decide (x = y) := by
-  by_cases h : x = y <;> simp [h]
-
 /-! ## Lookups -/
-
-theorem search_bool {α} (l : List α) (P : α → Bool) (r : Bool)
-    (hr : r = searchFrom l P (fun _ _ => true) false (↑(0#usize : Usize))) : r = l.any P := by
-  rw [hr, searchFrom_const, UScalar.ofNatCore_val_eq, List.drop_zero]; cases l.any P <;> rfl
-
-theorem search_find {α} (l : List α) (P : α → Bool) (r : Option α)
-    (hr : r = searchFrom l P (fun _ x => some x) none (↑(0#usize : Usize))) : r = l.find? P := by
-  rw [hr, show (fun (_ : Nat) (x : α) => some x) = (fun _ x => some (_root_.id x)) from rfl,
-    searchFrom_find, UScalar.ofNatCore_val_eq, List.drop_zero]; simp
 
 @[step] theorem find_user_spec (us : alloc.vec.Vec User) (id : U64) :
     find_user us id ⦃ o => o = us.val.find? (·.id = id) ⦄ := by
@@ -191,7 +119,7 @@ theorem search_find {α} (l : List α) (P : α → Bool) (r : Option α)
   unfold is_following is_following_loop
   apply WP.spec_mono (loop_search fs.val (fun f => decide (f.follower = u ∧ f.followed = v)) (fun b : Bool => b)
     (fun _ _ => true) false _ ?_ 0#usize (by simp))
-  · intro r hr; exact search_bool _ _ _ hr
+  · intro r hr; exact search_any _ _ _ hr
   · intro j hj; unfold is_following_loop.body; i5h_step
 
 @[step] theorem is_favorited_spec (fs : alloc.vec.Vec Favorite) (a u : U64) :
@@ -199,7 +127,7 @@ theorem search_find {α} (l : List α) (P : α → Bool) (r : Option α)
   unfold is_favorited is_favorited_loop
   apply WP.spec_mono (loop_search fs.val (fun f => decide (f.article = a ∧ f.user = u)) (fun b : Bool => b)
     (fun _ _ => true) false _ ?_ 0#usize (by simp))
-  · intro r hr; exact search_bool _ _ _ hr
+  · intro r hr; exact search_any _ _ _ hr
   · intro j hj; unfold is_favorited_loop.body; i5h_step
 
 @[step] theorem has_favorite_spec (fs : alloc.vec.Vec Favorite) (u : U64) :
@@ -207,7 +135,7 @@ theorem search_find {α} (l : List α) (P : α → Bool) (r : Option α)
   unfold has_favorite has_favorite_loop
   apply WP.spec_mono (loop_search fs.val (fun f => decide (f.user = u)) (fun b : Bool => b)
     (fun _ _ => true) false _ ?_ 0#usize (by simp))
-  · intro r hr; exact search_bool _ _ _ hr
+  · intro r hr; exact search_any _ _ _ hr
   · intro j hj; unfold has_favorite_loop.body; i5h_step
 
 @[step] theorem has_favorite_except_spec (fs : alloc.vec.Vec Favorite) (u a : U64) :
@@ -215,7 +143,7 @@ theorem search_find {α} (l : List α) (P : α → Bool) (r : Option α)
   unfold has_favorite_except has_favorite_except_loop
   apply WP.spec_mono (loop_search fs.val (fun f => decide (f.user = u ∧ f.article ≠ a)) (fun b : Bool => b)
     (fun _ _ => true) false _ ?_ 0#usize (by simp))
-  · intro r hr; exact search_bool _ _ _ hr
+  · intro r hr; exact search_any _ _ _ hr
   · intro j hj; unfold has_favorite_except_loop.body; i5h_step
 
 @[step] theorem has_tag_spec (ts : alloc.vec.Vec Tag) (a : U64) (t : Text) :
@@ -223,7 +151,7 @@ theorem search_find {α} (l : List α) (P : α → Bool) (r : Option α)
   unfold has_tag has_tag_loop
   apply WP.spec_mono (loop_search ts.val (fun x => decide (x.article = a ∧ x.tag = t)) (fun b : Bool => b)
     (fun _ _ => true) false _ ?_ 0#usize (by simp))
-  · intro r hr; exact search_bool _ _ _ hr
+  · intro r hr; exact search_any _ _ _ hr
   · intro j hj; unfold has_tag_loop.body; i5h_step
 
 @[step] theorem contains_text_spec (v : alloc.vec.Vec Text) (t : Text) :
@@ -231,7 +159,7 @@ theorem search_find {α} (l : List α) (P : α → Bool) (r : Option α)
   unfold contains_text contains_text_loop
   apply WP.spec_mono (loop_search v.val (fun x => decide (x = t)) (fun b : Bool => b)
     (fun _ _ => true) false _ ?_ 0#usize (by simp))
-  · intro r hr; exact search_bool _ _ _ hr
+  · intro r hr; exact search_any _ _ _ hr
   · intro j hj; unfold contains_text_loop.body; i5h_step
 
 theorem find_user_by_name_eq (us : alloc.vec.Vec User) (n : Text) :
@@ -318,7 +246,7 @@ theorem find_comment_eq (v : alloc.vec.Vec Comment) (id : U64) :
   apply WP.spec_mono (loop_fold v.val (fun w : alloc.vec.Vec ArticleView => w.val.map ArticleView.toView)
     (fun acc x => acc ++ [viewWith up (Snapshot.toSt s) u x])
     (fun w j => w.length ≤ j) (fun x => views_loop.body s u v up x.1 x.2) ?_ _ 0#usize (by simp) (by simp))
-  · intro r hr; rw [hr, foldl_map_acc]; simp
+  · intro r hr; rw [hr, foldl_map]; simp
   · intro o j hj ho; have := v.len_ineq; unfold views_loop.body; i5h_step
 
 @[step] theorem comment_views_spec (s : Snapshot) (u a : U64) :
@@ -363,11 +291,6 @@ theorem getElem_page (v : List Article) (off lim j : Nat) (h : j < ((v.reverse.d
   simp only [List.getElem_take, List.getElem_drop, List.getElem_reverse]
   congr 1; simp at h; omega
 
-theorem foldl_snoc {α} (l acc : List α) : l.foldl (fun acc x => acc ++ [x]) acc = acc ++ l := by
-  induction l generalizing acc with
-  | nil => simp
-  | cons y ys ih => rw [List.foldl_cons, ih]; simp
-
 theorem page_loop_spec (v : alloc.vec.Vec Article) (lim : U64) (start : Usize) (off : Nat)
     (hs : off + start.val = v.length) :
     page_loop v lim (alloc.vec.Vec.new Article) start 0#usize ⦃ w => w.val = pageOf v.val off lim.val ⦄ := by
@@ -395,12 +318,6 @@ theorem page_loop_spec (v : alloc.vec.Vec Article) (lim : U64) (start : Usize) (
       simp only [FoldStep, and_true]; rw [hlen]; scalar_tac
     · simp only [FoldStep, and_true]; rw [hlen]; scalar_tac
 
-theorem u64_cast_usize (x : U64) (h : x.val ≤ Usize.max) : (UScalar.cast .Usize x).val = x.val := by
-  rw [UScalar.cast_val_eq]; apply Nat.mod_eq_of_lt
-  have h2 : Usize.max < 2 ^ UScalarTy.Usize.numBits := by
-    rw [Usize.max_def, Usize.numBits_def]; exact Nat.sub_lt (Nat.two_pow_pos _) Nat.one_pos
-  omega
-
 @[step] theorem page_spec (v : alloc.vec.Vec Article) (off lim : U64) :
     page v off lim ⦃ w => w.val = pageOf v.val off.val lim.val ⦄ := by
   unfold page
@@ -421,7 +338,7 @@ theorem u64_cast_usize (x : U64) (h : x.val ≤ Usize.max) : (UScalar.cast .Usiz
   apply WP.spec_mono (loop_fold tags.val (fun w : alloc.vec.Vec Write => w.val)
     (fun acc t => acc ++ [.PutTag ⟨a, t⟩]) (fun w j => w.length ≤ ws.length + j)
     (fun x => tag_writes_loop.body a tags x.1 x.2) ?_ _ 0#usize (by simp) (by simp))
-  · intro r hr; rw [hr, foldl_map_acc]; simp
+  · intro r hr; rw [hr, foldl_map]; simp
   · intro o j hj ho; unfold tag_writes_loop.body; i5h_step
 
 /-! ## Small helpers -/
