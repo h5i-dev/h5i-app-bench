@@ -1,5 +1,5 @@
 import Spec
-import I5hLib
+import Schema
 /-!
 # Proofs about the extracted calculator
 -/
@@ -83,32 +83,16 @@ theorem writes_own_memory (a : Principal) (s : Snapshot) (c : Command) :
 
 /-! ## What committing does -/
 
-theorem memory_clone (m : Memory) : Memory.Insts.CoreCloneClone.clone m = ok m := by
-  simp [Memory.Insts.CoreCloneClone.clone]
-
-theorem snapshot_clone (s : Snapshot) : Snapshot.Insts.CoreCloneClone.clone s = ok s := by
-  simp [Snapshot.Insts.CoreCloneClone.clone, vec_clone_eq Memory.Insts.CoreCloneClone s.memories memory_clone]
-
-theorem put_memory_spec (ms : alloc.vec.Vec Memory) (m : Memory) (hroom : ms.length < Usize.max) :
-    put_memory ms m ⦃ v => v.val = upsert (·.user) m ms.val ⦄ := by
-  unfold put_memory put_memory_loop
-  apply WP.spec_mono (loop_search ms.val (fun q => decide (q.user = m.user))
-    (fun x : alloc.vec.Vec Memory => x.val) (fun j _ => ms.val.set j m) (ms.val ++ [m]) _ ?_ 0#usize (by simp))
-  · intro r hr
-    rw [hr, show ((0#usize : Usize) : Nat) = 0 from rfl]
-    exact upsert_loop_result (·.user) m ms.val 0 (Nat.zero_le _) (by simp)
-  · intro j hj; unfold put_memory_loop.body; i5h_step
-
 /-- Committing a write replaces (or adds) that user's row. -/
 theorem apply_spec (s : Snapshot) (w : Option Memory) (hroom : s.memories.length < Usize.max) :
     apply s w ⦃ s' => s'.memories.val = match w with
       | none => s.memories.val
       | some m => upsert (·.user) m s.memories.val ⦄ := by
   unfold apply
-  rw [snapshot_clone]
+  rw [Schema.Snapshot.clone_eq]
   cases w with
   | none => simp
-  | some m => step with put_memory_spec _ m hroom; simp_all
+  | some m => step with Schema.Memory.put_spec _ m hroom; simp_all
 
 theorem memOf_upsert_self (l : List Memory) (m : Memory) : memOf (upsert (·.user) m l) m.user.val = m.value.val := by
   induction l with

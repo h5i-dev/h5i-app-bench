@@ -12,8 +12,8 @@ package board_proofs
 -- Generated Lean: the extracted Rust (scripts/extract-board.sh). Do not edit.
 lean_lib Generated where
   srcDir := "generated"
-  roots := #[`BoardKernel]
+  roots := #[`BoardKernel, `Schema]
 
 -- Hand-written specification and proofs.
 @[default_target] lean_lib Proofs where
-  roots := #[`Spec, `Commands, `Theorems, `Apply, `Scenario]
+  roots := #[`Spec, `Commands, `Theorems, `Apply, `Storage, `Scenario]

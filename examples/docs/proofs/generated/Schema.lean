@@ -6,11 +6,14 @@ import Columns
 /-!
 # Rows of `docs_kernel` as SQL values
 
-Key columns first; tables numbered in declaration order.
+Key columns first; tables numbered in declaration order. Each function
+`schema!` generates has its lemma here.
 -/
-open Aeneas Aeneas.Std Result docs_kernel I5hLib
+open Aeneas Aeneas.Std Result docs_kernel I5hLib I5hLib.Sql I5hLib.Store
 
 namespace docs_kernel.Schema
+
+open Classical
 
 abbrev Val := i5h_sql.Val
 
@@ -84,6 +87,30 @@ theorem opt_from_val (o : Option U64) :
 @[step] theorem Status_col_to_val (x : Status) : Status.Insts.I5h_sqlColumn.to_val x ⦃ v => v = Status.col x ⦄ := by
   simp [Status.col_to_val]
 
+@[step] theorem u64_zero : U64.Insts.I5h_sqlZero.zero ⦃ x => x = (0#u64 : U64) ⦄ := by
+  simp [U64.Insts.I5h_sqlZero.zero]
+
+/-! ## Comparing encoded columns -/
+
+@[step] theorem val_eq_spec (a b : Val) : i5h_sql.val_eq a b ⦃ r => (r = true ↔ a = b) ⦄ := by
+  cases a <;> cases b <;> simp only [i5h_sql.val_eq] <;> first
+    | exact WP.spec_mono (vec_u8_eq_spec _ _) (fun r h => by simp [h])
+    | simp
+
+@[step] theorem has_col_spec (row : alloc.vec.Vec Val) (col : U32) (val : Val) :
+    i5h_sql.has_col row col val ⦃ r => (r = true ↔ row.val[col.val]? = some val) ⦄ := by
+  unfold i5h_sql.has_col
+  step*
+  · rename_i h; simp_all [List.getElem?_eq_getElem (show col.val < row.val.length by scalar_tac)]
+  · rename_i h; simp only [Bool.false_eq_true, false_iff]
+    rw [List.getElem?_eq_none (by scalar_tac)]; simp
+
+/-- A table write as a list value. -/
+def sqlW : i5h_sql.Write → AWrite Val
+  | .Put t n row => .put t.val n.val row.val
+  | .Del t k => .del t.val k.val
+  | .DelWhere t c v => .delWhere t.val c.val v
+
 /-! ## `Project` (table `projects`) -/
 
 /-- Columns `id`, `name`. -/
@@ -93,12 +120,81 @@ def Project.row (x : Project) : List Val :=
 def Project.table : Nat := 0
 def Project.keyLen : Nat := 1
 
+@[simp] theorem Project.row_length (x : Project) : (Project.row x).length = 2 := rfl
+
 @[step] theorem Project.to_row_spec (x : Project) : Project.to_row x ⦃ v => v.val = Project.row x ⦄ := by
   have := usize_max_le
   unfold Project.to_row; step* <;> simp_all [Project.row] <;> scalar_tac
 
 theorem Project.row_inj : Function.Injective Project.row := by
   intro a b h; cases a; cases b; simp_all [Project.row]
+
+theorem Project.clone_eq (x : Project) : Project.Insts.CoreCloneClone.clone x = ok x := by
+  simp [Project.Insts.CoreCloneClone.clone, u8vec_clone, lift]
+
+@[step] theorem Project.clone_spec (x : Project) : Project.Insts.CoreCloneClone.clone x ⦃ y => y = x ⦄ := by
+  rw [Project.clone_eq]; simp
+
+def Project.putA (x : Project) : AWrite Val := .put Project.table Project.keyLen (Project.row x)
+
+@[step] theorem Project.sql_put_spec (x : Project) : Project.sql_put x ⦃ w => sqlW w = Project.putA x ⦄ := by
+  unfold Project.sql_put; step*; simp_all [sqlW, Project.putA, Project.table, Project.keyLen, Project.TABLE, Project.KEY_LEN]
+
+/-- `put`: insert, or replace the row with the same key. -/
+@[step] theorem Project.put_spec (v : alloc.vec.Vec Project) (x : Project) (h : v.length < Usize.max) :
+    Project.put v x ⦃ v' => v'.val = upsert (fun y => y.id) x v.val ⦄ := by
+  unfold Project.put Project.put_loop
+  apply WP.spec_mono (loop_search v.val (fun q => decide (q.id = x.id))
+    (fun y : alloc.vec.Vec Project => y.val) (fun j _ => v.val.set j x) (v.val ++ [x]) _ ?_ 0#usize (by simp))
+  · intro r hr; rw [hr, show ((0#usize : Usize) : Nat) = 0 from rfl]
+    exact upsert_loop_result (fun y => y.id) x _ 0 (Nat.zero_le _) (by simp)
+  · intro j hj; unfold Project.put_loop.body; i5h_step
+
+/-- `del`: the rows without this key. -/
+@[step] theorem Project.del_spec (v : alloc.vec.Vec Project) (id : U64) :
+    Project.del v id ⦃ v' => v'.val = v.val.filter (fun y => ¬(y.id = id)) ⦄ := by
+  unfold Project.del Project.del_loop
+  apply WP.spec_mono (loop_fold v.val (fun w : alloc.vec.Vec Project => w.val)
+    (fun acc y => if decide ¬(y.id = id) then acc ++ [y] else acc)
+    (fun w j => w.length ≤ j) (fun x => Project.del_loop.body v id x.1 x.2) ?_ _ 0#usize (by simp) (by simp))
+  · intro r hr; rw [hr, foldl_filter]; simp
+  · intro o j hj ho; have := v.len_ineq; unfold Project.del_loop.body; i5h_step
+
+/-- `del_where`: the rows whose encoded column `col` does not hold `val`. -/
+@[step] theorem Project.del_where_spec (v : alloc.vec.Vec Project) (col : U32) (val : Val) :
+    Project.del_where v col val ⦃ v' => v'.val = v.val.filter (fun y => ¬((Project.row y)[col.val]? = some val)) ⦄ := by
+  unfold Project.del_where Project.del_where_loop
+  apply WP.spec_mono (loop_fold v.val (fun w : alloc.vec.Vec Project => w.val)
+    (fun acc y => if decide ¬((Project.row y)[col.val]? = some val) then acc ++ [y] else acc)
+    (fun w j => w.length ≤ j) (fun x => Project.del_where_loop.body v col val x.1 x.2) ?_ _ 0#usize (by simp) (by simp))
+  · intro r hr; rw [hr, foldl_filter]; simp
+  · intro o j hj ho; have := v.len_ineq; unfold Project.del_where_loop.body; i5h_step
+
+def Project.delA (id : U64) : AWrite Val := .del Project.table [int id.val]
+def Project.delWhereA (col : Nat) (val : Val) : AWrite Val := .delWhere Project.table col val
+
+@[step] theorem Project.sql_del_spec (id : U64) : Project.sql_del id ⦃ w => sqlW w = Project.delA id ⦄ := by
+  unfold Project.sql_del; step* <;> simp_all [sqlW, Project.delA, Project.table, Project.TABLE] <;> scalar_tac
+
+@[step] theorem Project.sql_del_where_spec (col : U32) (val : Val) :
+    Project.sql_del_where col val ⦃ w => sqlW w = Project.delWhereA col.val val ⦄ := by
+  unfold Project.sql_del_where; simp [sqlW, Project.delWhereA, Project.table, Project.TABLE]
+
+/-! Row writes on the encoding are the list operations. -/
+
+@[simp] theorem Project.map_put (x : Project) (l : List Project) :
+    upsert (·.take 1) (Project.row x) (l.map Project.row) = (upsert (fun y => y.id) x l).map Project.row :=
+  map_upsert _ _ _ _ _ (fun y => by simp [Project.row])
+
+@[simp] theorem Project.map_del (id : U64) (l : List Project) :
+    (l.map Project.row).filter (fun r => !decide (r.take 1 = [int id.val])) =
+      (l.filter (fun y => !decide (y.id = id))).map Project.row :=
+  map_filter_of _ _ _ _ (fun y => by simp [Project.row])
+
+@[simp] theorem Project.map_del_where (col : Nat) (val : Val) (l : List Project) :
+    (l.map Project.row).filter (fun r => !decide (r[col]? = some val)) =
+      (l.filter (fun y => !decide ((Project.row y)[col]? = some val))).map Project.row := by
+  rw [List.filter_map]; rfl
 
 /-! ## `Member` (table `members`) -/
 
@@ -109,12 +205,81 @@ def Member.row (x : Member) : List Val :=
 def Member.table : Nat := 1
 def Member.keyLen : Nat := 2
 
+@[simp] theorem Member.row_length (x : Member) : (Member.row x).length = 3 := rfl
+
 @[step] theorem Member.to_row_spec (x : Member) : Member.to_row x ⦃ v => v.val = Member.row x ⦄ := by
   have := usize_max_le
   unfold Member.to_row; step* <;> simp_all [Member.row] <;> scalar_tac
 
 theorem Member.row_inj : Function.Injective Member.row := by
   intro a b h; cases a; cases b; simp_all [Member.row]
+
+theorem Member.clone_eq (x : Member) : Member.Insts.CoreCloneClone.clone x = ok x := by
+  simp [Member.Insts.CoreCloneClone.clone, lift]
+
+@[step] theorem Member.clone_spec (x : Member) : Member.Insts.CoreCloneClone.clone x ⦃ y => y = x ⦄ := by
+  rw [Member.clone_eq]; simp
+
+def Member.putA (x : Member) : AWrite Val := .put Member.table Member.keyLen (Member.row x)
+
+@[step] theorem Member.sql_put_spec (x : Member) : Member.sql_put x ⦃ w => sqlW w = Member.putA x ⦄ := by
+  unfold Member.sql_put; step*; simp_all [sqlW, Member.putA, Member.table, Member.keyLen, Member.TABLE, Member.KEY_LEN]
+
+/-- `put`: insert, or replace the row with the same key. -/
+@[step] theorem Member.put_spec (v : alloc.vec.Vec Member) (x : Member) (h : v.length < Usize.max) :
+    Member.put v x ⦃ v' => v'.val = upsert (fun y => (y.project, y.user)) x v.val ⦄ := by
+  unfold Member.put Member.put_loop
+  apply WP.spec_mono (loop_search v.val (fun q => decide ((q.project, q.user) = (x.project, x.user)))
+    (fun y : alloc.vec.Vec Member => y.val) (fun j _ => v.val.set j x) (v.val ++ [x]) _ ?_ 0#usize (by simp))
+  · intro r hr; rw [hr, show ((0#usize : Usize) : Nat) = 0 from rfl]
+    exact upsert_loop_result (fun y => (y.project, y.user)) x _ 0 (Nat.zero_le _) (by simp)
+  · intro j hj; unfold Member.put_loop.body; i5h_step
+
+/-- `del`: the rows without this key. -/
+@[step] theorem Member.del_spec (v : alloc.vec.Vec Member) (project : U64) (user : U64) :
+    Member.del v project user ⦃ v' => v'.val = v.val.filter (fun y => ¬(y.project = project ∧ y.user = user)) ⦄ := by
+  unfold Member.del Member.del_loop
+  apply WP.spec_mono (loop_fold v.val (fun w : alloc.vec.Vec Member => w.val)
+    (fun acc y => if decide ¬(y.project = project ∧ y.user = user) then acc ++ [y] else acc)
+    (fun w j => w.length ≤ j) (fun x => Member.del_loop.body v project user x.1 x.2) ?_ _ 0#usize (by simp) (by simp))
+  · intro r hr; rw [hr, foldl_filter]; simp
+  · intro o j hj ho; have := v.len_ineq; unfold Member.del_loop.body; i5h_step
+
+/-- `del_where`: the rows whose encoded column `col` does not hold `val`. -/
+@[step] theorem Member.del_where_spec (v : alloc.vec.Vec Member) (col : U32) (val : Val) :
+    Member.del_where v col val ⦃ v' => v'.val = v.val.filter (fun y => ¬((Member.row y)[col.val]? = some val)) ⦄ := by
+  unfold Member.del_where Member.del_where_loop
+  apply WP.spec_mono (loop_fold v.val (fun w : alloc.vec.Vec Member => w.val)
+    (fun acc y => if decide ¬((Member.row y)[col.val]? = some val) then acc ++ [y] else acc)
+    (fun w j => w.length ≤ j) (fun x => Member.del_where_loop.body v col val x.1 x.2) ?_ _ 0#usize (by simp) (by simp))
+  · intro r hr; rw [hr, foldl_filter]; simp
+  · intro o j hj ho; have := v.len_ineq; unfold Member.del_where_loop.body; i5h_step
+
+def Member.delA (project : U64) (user : U64) : AWrite Val := .del Member.table [int project.val, int user.val]
+def Member.delWhereA (col : Nat) (val : Val) : AWrite Val := .delWhere Member.table col val
+
+@[step] theorem Member.sql_del_spec (project : U64) (user : U64) : Member.sql_del project user ⦃ w => sqlW w = Member.delA project user ⦄ := by
+  unfold Member.sql_del; step* <;> simp_all [sqlW, Member.delA, Member.table, Member.TABLE] <;> scalar_tac
+
+@[step] theorem Member.sql_del_where_spec (col : U32) (val : Val) :
+    Member.sql_del_where col val ⦃ w => sqlW w = Member.delWhereA col.val val ⦄ := by
+  unfold Member.sql_del_where; simp [sqlW, Member.delWhereA, Member.table, Member.TABLE]
+
+/-! Row writes on the encoding are the list operations. -/
+
+@[simp] theorem Member.map_put (x : Member) (l : List Member) :
+    upsert (·.take 2) (Member.row x) (l.map Member.row) = (upsert (fun y => (y.project, y.user)) x l).map Member.row :=
+  map_upsert _ _ _ _ _ (fun y => by simp [Member.row])
+
+@[simp] theorem Member.map_del (project : U64) (user : U64) (l : List Member) :
+    (l.map Member.row).filter (fun r => !decide (r.take 2 = [int project.val, int user.val])) =
+      (l.filter (fun y => !decide (y.project = project ∧ y.user = user))).map Member.row :=
+  map_filter_of _ _ _ _ (fun y => by simp [Member.row])
+
+@[simp] theorem Member.map_del_where (col : Nat) (val : Val) (l : List Member) :
+    (l.map Member.row).filter (fun r => !decide (r[col]? = some val)) =
+      (l.filter (fun y => !decide ((Member.row y)[col]? = some val))).map Member.row := by
+  rw [List.filter_map]; rfl
 
 /-! ## `Document` (table `documents`) -/
 
@@ -125,12 +290,81 @@ def Document.row (x : Document) : List Val :=
 def Document.table : Nat := 2
 def Document.keyLen : Nat := 1
 
+@[simp] theorem Document.row_length (x : Document) : (Document.row x).length = 8 := rfl
+
 @[step] theorem Document.to_row_spec (x : Document) : Document.to_row x ⦃ v => v.val = Document.row x ⦄ := by
   have := usize_max_le
   unfold Document.to_row; step* <;> simp_all [Document.row] <;> scalar_tac
 
 theorem Document.row_inj : Function.Injective Document.row := by
   intro a b h; cases a; cases b; simp_all [Document.row]
+
+theorem Document.clone_eq (x : Document) : Document.Insts.CoreCloneClone.clone x = ok x := by
+  simp [Document.Insts.CoreCloneClone.clone, u8vec_clone, lift]
+
+@[step] theorem Document.clone_spec (x : Document) : Document.Insts.CoreCloneClone.clone x ⦃ y => y = x ⦄ := by
+  rw [Document.clone_eq]; simp
+
+def Document.putA (x : Document) : AWrite Val := .put Document.table Document.keyLen (Document.row x)
+
+@[step] theorem Document.sql_put_spec (x : Document) : Document.sql_put x ⦃ w => sqlW w = Document.putA x ⦄ := by
+  unfold Document.sql_put; step*; simp_all [sqlW, Document.putA, Document.table, Document.keyLen, Document.TABLE, Document.KEY_LEN]
+
+/-- `put`: insert, or replace the row with the same key. -/
+@[step] theorem Document.put_spec (v : alloc.vec.Vec Document) (x : Document) (h : v.length < Usize.max) :
+    Document.put v x ⦃ v' => v'.val = upsert (fun y => y.id) x v.val ⦄ := by
+  unfold Document.put Document.put_loop
+  apply WP.spec_mono (loop_search v.val (fun q => decide (q.id = x.id))
+    (fun y : alloc.vec.Vec Document => y.val) (fun j _ => v.val.set j x) (v.val ++ [x]) _ ?_ 0#usize (by simp))
+  · intro r hr; rw [hr, show ((0#usize : Usize) : Nat) = 0 from rfl]
+    exact upsert_loop_result (fun y => y.id) x _ 0 (Nat.zero_le _) (by simp)
+  · intro j hj; unfold Document.put_loop.body; i5h_step
+
+/-- `del`: the rows without this key. -/
+@[step] theorem Document.del_spec (v : alloc.vec.Vec Document) (id : U64) :
+    Document.del v id ⦃ v' => v'.val = v.val.filter (fun y => ¬(y.id = id)) ⦄ := by
+  unfold Document.del Document.del_loop
+  apply WP.spec_mono (loop_fold v.val (fun w : alloc.vec.Vec Document => w.val)
+    (fun acc y => if decide ¬(y.id = id) then acc ++ [y] else acc)
+    (fun w j => w.length ≤ j) (fun x => Document.del_loop.body v id x.1 x.2) ?_ _ 0#usize (by simp) (by simp))
+  · intro r hr; rw [hr, foldl_filter]; simp
+  · intro o j hj ho; have := v.len_ineq; unfold Document.del_loop.body; i5h_step
+
+/-- `del_where`: the rows whose encoded column `col` does not hold `val`. -/
+@[step] theorem Document.del_where_spec (v : alloc.vec.Vec Document) (col : U32) (val : Val) :
+    Document.del_where v col val ⦃ v' => v'.val = v.val.filter (fun y => ¬((Document.row y)[col.val]? = some val)) ⦄ := by
+  unfold Document.del_where Document.del_where_loop
+  apply WP.spec_mono (loop_fold v.val (fun w : alloc.vec.Vec Document => w.val)
+    (fun acc y => if decide ¬((Document.row y)[col.val]? = some val) then acc ++ [y] else acc)
+    (fun w j => w.length ≤ j) (fun x => Document.del_where_loop.body v col val x.1 x.2) ?_ _ 0#usize (by simp) (by simp))
+  · intro r hr; rw [hr, foldl_filter]; simp
+  · intro o j hj ho; have := v.len_ineq; unfold Document.del_where_loop.body; i5h_step
+
+def Document.delA (id : U64) : AWrite Val := .del Document.table [int id.val]
+def Document.delWhereA (col : Nat) (val : Val) : AWrite Val := .delWhere Document.table col val
+
+@[step] theorem Document.sql_del_spec (id : U64) : Document.sql_del id ⦃ w => sqlW w = Document.delA id ⦄ := by
+  unfold Document.sql_del; step* <;> simp_all [sqlW, Document.delA, Document.table, Document.TABLE] <;> scalar_tac
+
+@[step] theorem Document.sql_del_where_spec (col : U32) (val : Val) :
+    Document.sql_del_where col val ⦃ w => sqlW w = Document.delWhereA col.val val ⦄ := by
+  unfold Document.sql_del_where; simp [sqlW, Document.delWhereA, Document.table, Document.TABLE]
+
+/-! Row writes on the encoding are the list operations. -/
+
+@[simp] theorem Document.map_put (x : Document) (l : List Document) :
+    upsert (·.take 1) (Document.row x) (l.map Document.row) = (upsert (fun y => y.id) x l).map Document.row :=
+  map_upsert _ _ _ _ _ (fun y => by simp [Document.row])
+
+@[simp] theorem Document.map_del (id : U64) (l : List Document) :
+    (l.map Document.row).filter (fun r => !decide (r.take 1 = [int id.val])) =
+      (l.filter (fun y => !decide (y.id = id))).map Document.row :=
+  map_filter_of _ _ _ _ (fun y => by simp [Document.row])
+
+@[simp] theorem Document.map_del_where (col : Nat) (val : Val) (l : List Document) :
+    (l.map Document.row).filter (fun r => !decide (r[col]? = some val)) =
+      (l.filter (fun y => !decide ((Document.row y)[col]? = some val))).map Document.row := by
+  rw [List.filter_map]; rfl
 
 /-! ## `Counter` (table `counters`) -/
 
@@ -141,12 +375,28 @@ def Counter.row (x : Counter) : List Val :=
 def Counter.table : Nat := 3
 def Counter.keyLen : Nat := 0
 
+@[simp] theorem Counter.row_length (x : Counter) : (Counter.row x).length = 1 := rfl
+
 @[step] theorem Counter.to_row_spec (x : Counter) : Counter.to_row x ⦃ v => v.val = Counter.row x ⦄ := by
   have := usize_max_le
   unfold Counter.to_row; step* <;> simp_all [Counter.row] <;> scalar_tac
 
 theorem Counter.row_inj : Function.Injective Counter.row := by
   intro a b h; cases a; cases b; simp_all [Counter.row]
+
+theorem Counter.clone_eq (x : Counter) : Counter.Insts.CoreCloneClone.clone x = ok x := by
+  simp [Counter.Insts.CoreCloneClone.clone, lift]
+
+@[step] theorem Counter.clone_spec (x : Counter) : Counter.Insts.CoreCloneClone.clone x ⦃ y => y = x ⦄ := by
+  rw [Counter.clone_eq]; simp
+
+def Counter.putA (x : Counter) : AWrite Val := .put Counter.table Counter.keyLen (Counter.row x)
+
+@[step] theorem Counter.sql_put_spec (x : Counter) : Counter.sql_put x ⦃ w => sqlW w = Counter.putA x ⦄ := by
+  unfold Counter.sql_put; step*; simp_all [sqlW, Counter.putA, Counter.table, Counter.keyLen, Counter.TABLE, Counter.KEY_LEN]
+
+/-- A fresh tenant's `Counter`: all zeros. -/
+def Counter.zero : Counter := { next_id := 0#u64 }
 
 /-! ## `Webhook` (table `webhooks`) -/
 
@@ -157,12 +407,81 @@ def Webhook.row (x : Webhook) : List Val :=
 def Webhook.table : Nat := 4
 def Webhook.keyLen : Nat := 1
 
+@[simp] theorem Webhook.row_length (x : Webhook) : (Webhook.row x).length = 2 := rfl
+
 @[step] theorem Webhook.to_row_spec (x : Webhook) : Webhook.to_row x ⦃ v => v.val = Webhook.row x ⦄ := by
   have := usize_max_le
   unfold Webhook.to_row; step* <;> simp_all [Webhook.row] <;> scalar_tac
 
 theorem Webhook.row_inj : Function.Injective Webhook.row := by
   intro a b h; cases a; cases b; simp_all [Webhook.row]
+
+theorem Webhook.clone_eq (x : Webhook) : Webhook.Insts.CoreCloneClone.clone x = ok x := by
+  simp [Webhook.Insts.CoreCloneClone.clone, lift]
+
+@[step] theorem Webhook.clone_spec (x : Webhook) : Webhook.Insts.CoreCloneClone.clone x ⦃ y => y = x ⦄ := by
+  rw [Webhook.clone_eq]; simp
+
+def Webhook.putA (x : Webhook) : AWrite Val := .put Webhook.table Webhook.keyLen (Webhook.row x)
+
+@[step] theorem Webhook.sql_put_spec (x : Webhook) : Webhook.sql_put x ⦃ w => sqlW w = Webhook.putA x ⦄ := by
+  unfold Webhook.sql_put; step*; simp_all [sqlW, Webhook.putA, Webhook.table, Webhook.keyLen, Webhook.TABLE, Webhook.KEY_LEN]
+
+/-- `put`: insert, or replace the row with the same key. -/
+@[step] theorem Webhook.put_spec (v : alloc.vec.Vec Webhook) (x : Webhook) (h : v.length < Usize.max) :
+    Webhook.put v x ⦃ v' => v'.val = upsert (fun y => y.project) x v.val ⦄ := by
+  unfold Webhook.put Webhook.put_loop
+  apply WP.spec_mono (loop_search v.val (fun q => decide (q.project = x.project))
+    (fun y : alloc.vec.Vec Webhook => y.val) (fun j _ => v.val.set j x) (v.val ++ [x]) _ ?_ 0#usize (by simp))
+  · intro r hr; rw [hr, show ((0#usize : Usize) : Nat) = 0 from rfl]
+    exact upsert_loop_result (fun y => y.project) x _ 0 (Nat.zero_le _) (by simp)
+  · intro j hj; unfold Webhook.put_loop.body; i5h_step
+
+/-- `del`: the rows without this key. -/
+@[step] theorem Webhook.del_spec (v : alloc.vec.Vec Webhook) (project : U64) :
+    Webhook.del v project ⦃ v' => v'.val = v.val.filter (fun y => ¬(y.project = project)) ⦄ := by
+  unfold Webhook.del Webhook.del_loop
+  apply WP.spec_mono (loop_fold v.val (fun w : alloc.vec.Vec Webhook => w.val)
+    (fun acc y => if decide ¬(y.project = project) then acc ++ [y] else acc)
+    (fun w j => w.length ≤ j) (fun x => Webhook.del_loop.body v project x.1 x.2) ?_ _ 0#usize (by simp) (by simp))
+  · intro r hr; rw [hr, foldl_filter]; simp
+  · intro o j hj ho; have := v.len_ineq; unfold Webhook.del_loop.body; i5h_step
+
+/-- `del_where`: the rows whose encoded column `col` does not hold `val`. -/
+@[step] theorem Webhook.del_where_spec (v : alloc.vec.Vec Webhook) (col : U32) (val : Val) :
+    Webhook.del_where v col val ⦃ v' => v'.val = v.val.filter (fun y => ¬((Webhook.row y)[col.val]? = some val)) ⦄ := by
+  unfold Webhook.del_where Webhook.del_where_loop
+  apply WP.spec_mono (loop_fold v.val (fun w : alloc.vec.Vec Webhook => w.val)
+    (fun acc y => if decide ¬((Webhook.row y)[col.val]? = some val) then acc ++ [y] else acc)
+    (fun w j => w.length ≤ j) (fun x => Webhook.del_where_loop.body v col val x.1 x.2) ?_ _ 0#usize (by simp) (by simp))
+  · intro r hr; rw [hr, foldl_filter]; simp
+  · intro o j hj ho; have := v.len_ineq; unfold Webhook.del_where_loop.body; i5h_step
+
+def Webhook.delA (project : U64) : AWrite Val := .del Webhook.table [int project.val]
+def Webhook.delWhereA (col : Nat) (val : Val) : AWrite Val := .delWhere Webhook.table col val
+
+@[step] theorem Webhook.sql_del_spec (project : U64) : Webhook.sql_del project ⦃ w => sqlW w = Webhook.delA project ⦄ := by
+  unfold Webhook.sql_del; step* <;> simp_all [sqlW, Webhook.delA, Webhook.table, Webhook.TABLE] <;> scalar_tac
+
+@[step] theorem Webhook.sql_del_where_spec (col : U32) (val : Val) :
+    Webhook.sql_del_where col val ⦃ w => sqlW w = Webhook.delWhereA col.val val ⦄ := by
+  unfold Webhook.sql_del_where; simp [sqlW, Webhook.delWhereA, Webhook.table, Webhook.TABLE]
+
+/-! Row writes on the encoding are the list operations. -/
+
+@[simp] theorem Webhook.map_put (x : Webhook) (l : List Webhook) :
+    upsert (·.take 1) (Webhook.row x) (l.map Webhook.row) = (upsert (fun y => y.project) x l).map Webhook.row :=
+  map_upsert _ _ _ _ _ (fun y => by simp [Webhook.row])
+
+@[simp] theorem Webhook.map_del (project : U64) (l : List Webhook) :
+    (l.map Webhook.row).filter (fun r => !decide (r.take 1 = [int project.val])) =
+      (l.filter (fun y => !decide (y.project = project))).map Webhook.row :=
+  map_filter_of _ _ _ _ (fun y => by simp [Webhook.row])
+
+@[simp] theorem Webhook.map_del_where (col : Nat) (val : Val) (l : List Webhook) :
+    (l.map Webhook.row).filter (fun r => !decide (r[col]? = some val)) =
+      (l.filter (fun y => !decide ((Webhook.row y)[col]? = some val))).map Webhook.row := by
+  rw [List.filter_map]; rfl
 
 /-! ## Decoding -/
 
@@ -198,6 +517,94 @@ theorem Webhook.from_row_spec (x : Webhook) (v : alloc.vec.Vec Val) (h : v.val =
   have hl : v.length = 2 := by simp [alloc.vec.Vec.length, h, Webhook.row]
   unfold Webhook.from_row; row_tac
 
+theorem Project.from_rows_spec (rows : alloc.vec.Vec (alloc.vec.Vec Val)) (l : List Project)
+    (h : rows.val.map (·.val) = l.map Project.row) :
+    Project.from_rows rows ⦃ o => ∃ v, o = some v ∧ v.val = l ⦄ := by
+  have e : Project.from_rows_loop rows (alloc.vec.Vec.new Project) true 0#usize =
+      loop (fun x => rowsBody Project.from_row rows x.1 x.2.1 x.2.2) (alloc.vec.Vec.new Project, true, 0#usize) := by
+    unfold Project.from_rows_loop; congr 1; funext ⟨a, b, c⟩
+    simp only []; unfold Project.from_rows_loop.body rowsBody
+    dsimp only
+    split <;> (try rfl)
+    congr 1; funext v; congr 1; funext o; cases o <;> rfl
+  have hl : Project.from_rows_loop rows (alloc.vec.Vec.new Project) true 0#usize ⦃ r => r.2 = true ∧ r.1.val = l ⦄ := by
+    rw [e]; exact rows_loop Project.from_row Project.row (fun x v hv => Project.from_row_spec x v hv) rows l h
+  unfold Project.from_rows
+  step with hl
+  simp [ok1_post, l_post]
+
+theorem Member.from_rows_spec (rows : alloc.vec.Vec (alloc.vec.Vec Val)) (l : List Member)
+    (h : rows.val.map (·.val) = l.map Member.row) :
+    Member.from_rows rows ⦃ o => ∃ v, o = some v ∧ v.val = l ⦄ := by
+  have e : Member.from_rows_loop rows (alloc.vec.Vec.new Member) true 0#usize =
+      loop (fun x => rowsBody Member.from_row rows x.1 x.2.1 x.2.2) (alloc.vec.Vec.new Member, true, 0#usize) := by
+    unfold Member.from_rows_loop; congr 1; funext ⟨a, b, c⟩
+    simp only []; unfold Member.from_rows_loop.body rowsBody
+    dsimp only
+    split <;> (try rfl)
+    congr 1; funext v; congr 1; funext o; cases o <;> rfl
+  have hl : Member.from_rows_loop rows (alloc.vec.Vec.new Member) true 0#usize ⦃ r => r.2 = true ∧ r.1.val = l ⦄ := by
+    rw [e]; exact rows_loop Member.from_row Member.row (fun x v hv => Member.from_row_spec x v hv) rows l h
+  unfold Member.from_rows
+  step with hl
+  simp [ok1_post, l_post]
+
+theorem Document.from_rows_spec (rows : alloc.vec.Vec (alloc.vec.Vec Val)) (l : List Document)
+    (h : rows.val.map (·.val) = l.map Document.row) :
+    Document.from_rows rows ⦃ o => ∃ v, o = some v ∧ v.val = l ⦄ := by
+  have e : Document.from_rows_loop rows (alloc.vec.Vec.new Document) true 0#usize =
+      loop (fun x => rowsBody Document.from_row rows x.1 x.2.1 x.2.2) (alloc.vec.Vec.new Document, true, 0#usize) := by
+    unfold Document.from_rows_loop; congr 1; funext ⟨a, b, c⟩
+    simp only []; unfold Document.from_rows_loop.body rowsBody
+    dsimp only
+    split <;> (try rfl)
+    congr 1; funext v; congr 1; funext o; cases o <;> rfl
+  have hl : Document.from_rows_loop rows (alloc.vec.Vec.new Document) true 0#usize ⦃ r => r.2 = true ∧ r.1.val = l ⦄ := by
+    rw [e]; exact rows_loop Document.from_row Document.row (fun x v hv => Document.from_row_spec x v hv) rows l h
+  unfold Document.from_rows
+  step with hl
+  simp [ok1_post, l_post]
+
+theorem Counter.from_one_spec (rows : alloc.vec.Vec (alloc.vec.Vec Val)) (l : List Counter)
+    (hl : l.length ≤ 1) (h : rows.val.map (·.val) = l.map Counter.row) :
+    Counter.from_one rows ⦃ o => o = some (l.headD Counter.zero) ⦄ := by
+  unfold Counter.from_one
+  match l, hl with
+  | [], _ =>
+    have hr : rows.val = [] := by simpa using h
+    have h0 : rows.len = 0#usize := by scalar_tac
+    rw [if_pos h0]; step*; simp_all [Counter.zero]
+  | [x], _ =>
+    obtain ⟨v, hv, hvv⟩ : ∃ v, rows.val = [v] ∧ v.val = Counter.row x := by
+      simp only [List.map_cons, List.map_nil] at h
+      obtain ⟨v, rest⟩ := List.map_eq_singleton_iff.1 h
+      exact ⟨v, rest.1, rest.2⟩
+    have h0 : ¬ rows.len = 0#usize := by scalar_tac
+    have h1 : rows.len = 1#usize := by scalar_tac
+    rw [if_neg h0, if_pos h1]
+    step as ⟨ w, hw ⟩
+    have : w.val = Counter.row x := by rw [hw]; simp [hv, hvv]
+    step with Counter.from_row_spec x w this
+    simp_all
+
+theorem Webhook.from_rows_spec (rows : alloc.vec.Vec (alloc.vec.Vec Val)) (l : List Webhook)
+    (h : rows.val.map (·.val) = l.map Webhook.row) :
+    Webhook.from_rows rows ⦃ o => ∃ v, o = some v ∧ v.val = l ⦄ := by
+  have e : Webhook.from_rows_loop rows (alloc.vec.Vec.new Webhook) true 0#usize =
+      loop (fun x => rowsBody Webhook.from_row rows x.1 x.2.1 x.2.2) (alloc.vec.Vec.new Webhook, true, 0#usize) := by
+    unfold Webhook.from_rows_loop; congr 1; funext ⟨a, b, c⟩
+    simp only []; unfold Webhook.from_rows_loop.body rowsBody
+    dsimp only
+    split <;> (try rfl)
+    congr 1; funext v; congr 1; funext o; cases o <;> rfl
+  have hl : Webhook.from_rows_loop rows (alloc.vec.Vec.new Webhook) true 0#usize ⦃ r => r.2 = true ∧ r.1.val = l ⦄ := by
+    rw [e]; exact rows_loop Webhook.from_row Webhook.row (fun x v hv => Webhook.from_row_spec x v hv) rows l h
+  unfold Webhook.from_rows
+  step with hl
+  simp [ok1_post, l_post]
+
+/-! ## Tables -/
+
 /-- Key length per table. -/
 def kl : Nat → Nat
   | 0 => 1
@@ -206,5 +613,47 @@ def kl : Nat → Nat
   | 3 => 0
   | 4 => 1
   | _ => 0
+
+@[simp] theorem kl_0 : kl 0 = 1 := rfl
+@[simp] theorem kl_1 : kl 1 = 2 := rfl
+@[simp] theorem kl_2 : kl 2 = 1 := rfl
+@[simp] theorem kl_3 : kl 3 = 0 := rfl
+@[simp] theorem kl_4 : kl 4 = 1 := rfl
+
+/-- `row` encodes a value of table `t`'s row type. -/
+def IsRow : Nat → List Val → Prop
+  | 0 => fun r => ∃ x : Project, r = Project.row x
+  | 1 => fun r => ∃ x : Member, r = Member.row x
+  | 2 => fun r => ∃ x : Document, r = Document.row x
+  | 3 => fun r => ∃ x : Counter, r = Counter.row x
+  | 4 => fun r => ∃ x : Webhook, r = Webhook.row x
+  | _ => fun _ => False
+
+/-- Split a goal about table `t` into one goal per table. -/
+macro "cases_table " t:ident : tactic => `(tactic| rcases $t:ident with _ | _ | _ | _ | _ | $t:ident)
+
+/-- The table writes of a write turn the encoding of a state into the
+encoding of the next: `schema_step [enc, sqlA, applyWrite]`. -/
+macro "schema_step" " [" ls:Lean.Parser.Tactic.simpLemma,* "]" : tactic => `(tactic| (
+  intro s w; funext t
+  cases w <;> cases_table t <;>
+    simp [applyAllW, applyW, upsert, Project.putA, Project.table, Project.keyLen, Project.delA, Project.delWhereA, Member.putA, Member.table, Member.keyLen, Member.delA, Member.delWhereA, Document.putA, Document.table, Document.keyLen, Document.delA, Document.delWhereA, Counter.putA, Counter.table, Counter.keyLen, Counter.row, Webhook.putA, Webhook.table, Webhook.keyLen, Webhook.delA, Webhook.delWhereA, $ls,*] <;>
+    first
+      | exact map_filter_of _ _ _ _ (fun y => by simp [Project.row, Member.row, Document.row, Counter.row, Webhook.row])
+      | (congr 1; exact List.filter_congr (fun y _ => by simp [Project.row, Member.row, Document.row, Counter.row, Webhook.row]))))
+
+/-- Every table write is well formed and writes a row of its table:
+`schema_ok [sqlA]`. -/
+macro "schema_ok" " [" ls:Lean.Parser.Tactic.simpLemma,* "]" : tactic => `(tactic| (
+  intro w; cases w <;>
+    simp [WriteOk, RowOk, IsRow, Project.putA, Project.table, Project.keyLen, Project.delA, Project.delWhereA, Member.putA, Member.table, Member.keyLen, Member.delA, Member.delWhereA, Document.putA, Document.table, Document.keyLen, Document.delA, Document.delWhereA, Counter.putA, Counter.table, Counter.keyLen, Webhook.putA, Webhook.table, Webhook.keyLen, Webhook.delA, Webhook.delWhereA, $ls,*]))
+
+/-- A fresh tenant's tables: `schema_init [enc, init]`. -/
+macro "schema_init" " [" ls:Lean.Parser.Tactic.simpLemma,* "]" : tactic => `(tactic| (
+  intro t; cases_table t <;> simp [InitOk, $ls,*]))
+
+/-- A fresh tenant's rows are rows of their tables: `schema_rows [enc, init]`. -/
+macro "schema_rows" " [" ls:Lean.Parser.Tactic.simpLemma,* "]" : tactic => `(tactic| (
+  intro t r h; cases_table t <;> simp [$ls,*] at h <;> subst h <;> first | exact ⟨Counter.zero, rfl⟩))
 
 end docs_kernel.Schema

@@ -17,7 +17,14 @@ pub struct Principal {
 }
 
 i5h_schema::schema! {
-    mapping inbox_tables for inbox_kernel;
+    mapping inbox_tables for inbox_kernel, writes Write, lean "../proofs/generated/Schema.lean";
+
+    /// One organization's state.
+    #[derive(Clone, Debug, Default, PartialEq, Eq)]
+    pub struct Snapshot {
+        messages: Vec<Message>,
+        blocks: Vec<Block>,
+    }
 
     /// The `seq`-th message from `sender` to `recipient`. Each side hides it
     /// from their own view with a flag; the row stays for the other side.
@@ -37,12 +44,6 @@ i5h_schema::schema! {
     }
 }
 
-/// One organization's state.
-#[derive(Clone, Debug, Default, PartialEq, Eq)]
-pub struct Snapshot {
-    pub messages: Vec<Message>,
-    pub blocks: Vec<Block>,
-}
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub enum Command {
@@ -230,59 +231,23 @@ pub fn transition(actor: &Principal, s: &Snapshot, cmd: &Command) -> Outcome {
     }
 }
 
-fn put_message(v: &mut Vec<Message>, m: Message) {
-    let mut i = 0;
-    while i < v.len() {
-        if v[i].sender == m.sender && v[i].recipient == m.recipient && v[i].seq == m.seq {
-            v[i] = m;
-            return;
-        }
-        i += 1;
-    }
-    v.push(m);
-}
-
-fn put_block(v: &mut Vec<Block>, b: Block) {
-    let mut i = 0;
-    while i < v.len() {
-        if v[i].owner == b.owner && v[i].sender == b.sender {
-            v[i] = b;
-            return;
-        }
-        i += 1;
-    }
-    v.push(b);
-}
-
-fn del_block(v: &Vec<Block>, b: Block) -> Vec<Block> {
-    let mut out = Vec::new();
-    let mut i = 0;
-    while i < v.len() {
-        if !(v[i].owner == b.owner && v[i].sender == b.sender) {
-            out.push(v[i]);
-        }
-        i += 1;
-    }
-    out
-}
-
+/// What one write does to the state. `schema!` runs it over a write set
+/// (`apply`).
 fn apply_write(s: &mut Snapshot, w: Write) {
     match w {
-        Write::PutMessage(m) => put_message(&mut s.messages, m),
-        Write::PutBlock(b) => put_block(&mut s.blocks, b),
-        Write::DelBlock(b) => s.blocks = del_block(&s.blocks, b),
+        Write::PutMessage(m) => Message::put(&mut s.messages, m),
+        Write::PutBlock(b) => Block::put(&mut s.blocks, b),
+        Write::DelBlock(b) => s.blocks = Block::del(&s.blocks, b.owner, b.sender),
     }
 }
 
-/// What committing a write set means. The PostgreSQL store must agree.
-pub fn apply(snap: &Snapshot, ws: &Vec<Write>) -> Snapshot {
-    let mut s = snap.clone();
-    let mut i = 0;
-    while i < ws.len() {
-        apply_write(&mut s, ws[i].clone());
-        i += 1;
+/// The table writes one write makes.
+fn sql_write(w: &Write, out: &mut Vec<i5h_sql::Write>) {
+    match w {
+        Write::PutMessage(m) => out.push(m.sql_put()),
+        Write::PutBlock(b) => out.push(b.sql_put()),
+        Write::DelBlock(b) => out.push(Block::sql_del(b.owner, b.sender)),
     }
-    s
 }
 
 #[cfg(test)]

@@ -12,7 +12,7 @@ package atuin_proofs
 -- Generated Lean: the extracted Rust (scripts/extract-atuin.sh). Do not edit.
 lean_lib Generated where
   srcDir := "generated"
-  roots := #[`AtuinKernel]
+  roots := #[`AtuinKernel, `Schema]
 
 -- Hand-written specs and proofs.
 @[default_target] lean_lib Proofs where

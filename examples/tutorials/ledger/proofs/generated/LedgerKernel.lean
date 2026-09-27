@@ -19,8 +19,126 @@ set_option maxRecDepth 2048
 
 namespace ledger_kernel
 
+/-- [i5h_sql::Val]
+    Source: 'crates/i5h-sql/src/lib.rs', lines 8:0-8:12
+    Name pattern: [i5h_sql::Val]
+    Visibility: public -/
+@[discriminant isize, rust_type "i5h_sql::Val"]
+inductive i5h_sql.Val where
+| Int : Std.I64 → i5h_sql.Val
+| Bool : Bool → i5h_sql.Val
+| Text : alloc.vec.Vec Std.U8 → i5h_sql.Val
+| Bytes : alloc.vec.Vec Std.U8 → i5h_sql.Val
+| Null : i5h_sql.Val
+
+/-- [i5h_sql::{impl i5h_sql::Column for u64}::to_val]:
+    Source: 'crates/i5h-sql/src/lib.rs', lines 25:4-25:27
+    Name pattern: [i5h_sql::{i5h_sql::Column<u64>}::to_val]
+    Visibility: public -/
+@[rust_fun "i5h_sql::{i5h_sql::Column<u64>}::to_val"]
+def U64.Insts.I5h_sqlColumn.to_val (self : Std.U64) : Result i5h_sql.Val := do
+  let i ← lift (UScalar.hcast .I64 self)
+  ok (i5h_sql.Val.Int i)
+
+/-- [i5h_sql::{impl i5h_sql::Column for u64}::from_val]:
+    Source: 'crates/i5h-sql/src/lib.rs', lines 28:4-28:39
+    Name pattern: [i5h_sql::{i5h_sql::Column<u64>}::from_val]
+    Visibility: public -/
+@[rust_fun "i5h_sql::{i5h_sql::Column<u64>}::from_val"]
+def U64.Insts.I5h_sqlColumn.from_val
+  (v : i5h_sql.Val) : Result (Option Std.U64) := do
+  match v with
+  | i5h_sql.Val.Int i => let i1 ← lift (IScalar.hcast .U64 i)
+                         ok (some i1)
+  | i5h_sql.Val.Bool _ => ok none
+  | i5h_sql.Val.Text _ => ok none
+  | i5h_sql.Val.Bytes _ => ok none
+  | i5h_sql.Val.Null => ok none
+
+/-- [i5h_sql::{impl i5h_sql::Zero for u64}::zero]:
+    Source: 'crates/i5h-sql/src/lib.rs', lines 104:4-104:20
+    Name pattern: [i5h_sql::{i5h_sql::Zero<u64>}::zero]
+    Visibility: public -/
+@[rust_fun "i5h_sql::{i5h_sql::Zero<u64>}::zero"]
+def U64.Insts.I5h_sqlZero.zero : Result Std.U64 := do
+  ok 0#u64
+
+/-- [i5h_sql::val_eq]:
+    Source: 'crates/i5h-sql/src/lib.rs', lines 134:0-134:39
+    Name pattern: [i5h_sql::val_eq]
+    Visibility: public -/
+@[rust_fun "i5h_sql::val_eq"]
+def i5h_sql.val_eq (a : i5h_sql.Val) (b : i5h_sql.Val) : Result Bool := do
+  match a with
+  | i5h_sql.Val.Int x =>
+    match b with
+    | i5h_sql.Val.Int y => ok (x = y)
+    | i5h_sql.Val.Bool _ => ok false
+    | i5h_sql.Val.Text _ => ok false
+    | i5h_sql.Val.Bytes _ => ok false
+    | i5h_sql.Val.Null => ok false
+  | i5h_sql.Val.Bool x =>
+    match b with
+    | i5h_sql.Val.Int _ => ok false
+    | i5h_sql.Val.Bool y => ok (x = y)
+    | i5h_sql.Val.Text _ => ok false
+    | i5h_sql.Val.Bytes _ => ok false
+    | i5h_sql.Val.Null => ok false
+  | i5h_sql.Val.Text x =>
+    match b with
+    | i5h_sql.Val.Int _ => ok false
+    | i5h_sql.Val.Bool _ => ok false
+    | i5h_sql.Val.Text y =>
+      alloc.vec.partial_eq.PartialEqVec.eq core.cmp.PartialEqU8 x y
+    | i5h_sql.Val.Bytes _ => ok false
+    | i5h_sql.Val.Null => ok false
+  | i5h_sql.Val.Bytes x =>
+    match b with
+    | i5h_sql.Val.Int _ => ok false
+    | i5h_sql.Val.Bool _ => ok false
+    | i5h_sql.Val.Text _ => ok false
+    | i5h_sql.Val.Bytes y =>
+      alloc.vec.partial_eq.PartialEqVec.eq core.cmp.PartialEqU8 x y
+    | i5h_sql.Val.Null => ok false
+  | i5h_sql.Val.Null =>
+    match b with
+    | i5h_sql.Val.Int _ => ok false
+    | i5h_sql.Val.Bool _ => ok false
+    | i5h_sql.Val.Text _ => ok false
+    | i5h_sql.Val.Bytes _ => ok false
+    | i5h_sql.Val.Null => ok true
+
+/-- [i5h_sql::has_col]:
+    Source: 'crates/i5h-sql/src/lib.rs', lines 160:0-160:59
+    Name pattern: [i5h_sql::has_col]
+    Visibility: public -/
+@[rust_fun "i5h_sql::has_col"]
+def i5h_sql.has_col
+  (row : alloc.vec.Vec i5h_sql.Val) (col : Std.U32) (val : i5h_sql.Val) :
+  Result Bool
+  := do
+  let i ← lift (UScalar.cast .Usize col)
+  let i1 := alloc.vec.Vec.len row
+  if i < i1
+  then
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice i5h_sql.Val)
+        row i
+    i5h_sql.val_eq v val
+  else ok false
+
+/-- [i5h_sql::Write]
+    Source: 'crates/i5h-sql/src/lib.rs', lines 171:0-171:14
+    Name pattern: [i5h_sql::Write]
+    Visibility: public -/
+@[discriminant isize, rust_type "i5h_sql::Write"]
+inductive i5h_sql.Write where
+| Put : Std.U32 → Std.U32 → alloc.vec.Vec i5h_sql.Val → i5h_sql.Write
+| Del : Std.U32 → alloc.vec.Vec i5h_sql.Val → i5h_sql.Write
+| DelWhere : Std.U32 → Std.U32 → i5h_sql.Val → i5h_sql.Write
+
 /-- [ledger_kernel::Account]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 43:12-46:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 111:12-114:13
     Visibility: public -/
 structure Account where
   id : Std.U64
@@ -28,12 +146,602 @@ structure Account where
   balance : Std.U64
 
 /-- [ledger_kernel::Ledger]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 43:12-46:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 111:12-114:13
     Visibility: public -/
 structure Ledger where
   next_id : Std.U64
   deposited : Std.U64
   withdrawn : Std.U64
+
+/-- [ledger_kernel::{ledger_kernel::Account}::TABLE]
+    Source: 'crates/i5h-schema/src/lib.rs', lines 132:12-132:60
+    Visibility: public -/
+@[global_simps, irreducible] def Account.TABLE : Std.U32 := 0#u32
+
+/-- [ledger_kernel::{ledger_kernel::Ledger}::TABLE]
+    Source: 'crates/i5h-schema/src/lib.rs', lines 132:12-132:60
+    Visibility: public -/
+@[global_simps, irreducible] def Ledger.TABLE : Std.U32 := 1#u32
+
+/-- [ledger_kernel::{ledger_kernel::Account}::KEY_LEN]
+    Source: 'crates/i5h-schema/src/lib.rs', lines 133:12-133:62
+    Visibility: public -/
+@[global_simps, irreducible] def Account.KEY_LEN : Std.U32 := 1#u32
+
+/-- [ledger_kernel::{ledger_kernel::Ledger}::KEY_LEN]
+    Source: 'crates/i5h-schema/src/lib.rs', lines 133:12-133:62
+    Visibility: public -/
+@[global_simps, irreducible] def Ledger.KEY_LEN : Std.U32 := 0#u32
+
+/-- [ledger_kernel::{ledger_kernel::Account}::to_row]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 135:12-140:13
+    Visibility: public -/
+def Account.to_row (self : Account) : Result (alloc.vec.Vec i5h_sql.Val) := do
+  let v ← U64.Insts.I5h_sqlColumn.to_val self.id
+  let out ← alloc.vec.Vec.push (alloc.vec.Vec.new i5h_sql.Val) v
+  let v1 ← U64.Insts.I5h_sqlColumn.to_val self.owner
+  let out1 ← alloc.vec.Vec.push out v1
+  let v2 ← U64.Insts.I5h_sqlColumn.to_val self.balance
+  alloc.vec.Vec.push out1 v2
+
+/-- [ledger_kernel::{ledger_kernel::Ledger}::to_row]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 135:12-140:13
+    Visibility: public -/
+def Ledger.to_row (self : Ledger) : Result (alloc.vec.Vec i5h_sql.Val) := do
+  let v ← U64.Insts.I5h_sqlColumn.to_val self.next_id
+  let out ← alloc.vec.Vec.push (alloc.vec.Vec.new i5h_sql.Val) v
+  let v1 ← U64.Insts.I5h_sqlColumn.to_val self.deposited
+  let out1 ← alloc.vec.Vec.push out v1
+  let v2 ← U64.Insts.I5h_sqlColumn.to_val self.withdrawn
+  alloc.vec.Vec.push out1 v2
+
+/-- [ledger_kernel::{ledger_kernel::Ledger}::from_row]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 143:12-164:13
+    Visibility: public -/
+def Ledger.from_row
+  (row : alloc.vec.Vec i5h_sql.Val) : Result (Option Ledger) := do
+  let i := alloc.vec.Vec.len row
+  let i1 ← 0#usize + 1#usize
+  let i2 ← i1 + 1#usize
+  let i3 ← i2 + 1#usize
+  if i != i3
+  then ok none
+  else
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice i5h_sql.Val)
+        row 0#usize
+    let o ← U64.Insts.I5h_sqlColumn.from_val v
+    match o with
+    | none => ok none
+    | some x =>
+      let v1 ←
+        alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice i5h_sql.Val)
+          row i1
+      let o1 ← U64.Insts.I5h_sqlColumn.from_val v1
+      match o1 with
+      | none => ok none
+      | some x1 =>
+        let i4 ← i1 + 1#usize
+        let v2 ←
+          alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+            i5h_sql.Val) row i4
+        let o2 ← U64.Insts.I5h_sqlColumn.from_val v2
+        match o2 with
+        | none => ok none
+        | some x2 =>
+          let _ ← i4 + 1#usize
+          ok (some { next_id := x, deposited := x1, withdrawn := x2 })
+
+/-- [ledger_kernel::{ledger_kernel::Account}::from_row]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 143:12-164:13
+    Visibility: public -/
+def Account.from_row
+  (row : alloc.vec.Vec i5h_sql.Val) : Result (Option Account) := do
+  let i := alloc.vec.Vec.len row
+  let i1 ← 0#usize + 1#usize
+  let i2 ← i1 + 1#usize
+  let i3 ← i2 + 1#usize
+  if i != i3
+  then ok none
+  else
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice i5h_sql.Val)
+        row 0#usize
+    let o ← U64.Insts.I5h_sqlColumn.from_val v
+    match o with
+    | none => ok none
+    | some x =>
+      let v1 ←
+        alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice i5h_sql.Val)
+          row i1
+      let o1 ← U64.Insts.I5h_sqlColumn.from_val v1
+      match o1 with
+      | none => ok none
+      | some x1 =>
+        let i4 ← i1 + 1#usize
+        let v2 ←
+          alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+            i5h_sql.Val) row i4
+        let o2 ← U64.Insts.I5h_sqlColumn.from_val v2
+        match o2 with
+        | none => ok none
+        | some x2 =>
+          let _ ← i4 + 1#usize
+          ok (some { id := x, owner := x1, balance := x2 })
+
+/-- [ledger_kernel::{ledger_kernel::Account}::from_rows]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Visibility: public -/
+@[rust_loop_body]
+def Account.from_rows_loop.body
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val))
+  (out : alloc.vec.Vec Account) (ok1 : Bool) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Account) × Bool × Std.Usize)
+    ((alloc.vec.Vec Account) × Bool))
+  := do
+  let i1 := alloc.vec.Vec.len rows
+  if i < i1
+  then
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice (alloc.vec.Vec
+        i5h_sql.Val)) rows i
+    let o ← Account.from_row v
+    let (out1, ok2) ←
+      match o with
+      | none => ok (out, false)
+      | some x => do
+                  let out2 ← alloc.vec.Vec.push out x
+                  ok (out2, ok1)
+    let i2 ← i + 1#usize
+    ok (cont (out1, ok2, i2))
+  else ok (done (out, ok1))
+
+/-- [ledger_kernel::{ledger_kernel::Account}::from_rows]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Visibility: public -/
+@[rust_loop]
+def Account.from_rows_loop
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val))
+  (out : alloc.vec.Vec Account) (ok1 : Bool) (i : Std.Usize) :
+  Result ((alloc.vec.Vec Account) × Bool)
+  := do
+  loop
+    (fun (out1, ok2, i1) => Account.from_rows_loop.body rows out1 ok2 i1)
+    (out, ok1, i)
+
+/-- [ledger_kernel::{ledger_kernel::Account}::from_rows]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 167:12-183:13
+    Visibility: public -/
+def Account.from_rows
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)) :
+  Result (Option (alloc.vec.Vec Account))
+  := do
+  let (out, ok1) ←
+    Account.from_rows_loop rows (alloc.vec.Vec.new Account) true 0#usize
+  if ok1
+  then ok (some out)
+  else ok none
+
+/-- [ledger_kernel::{ledger_kernel::Ledger}::from_rows]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Visibility: public -/
+@[rust_loop_body]
+def Ledger.from_rows_loop.body
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val))
+  (out : alloc.vec.Vec Ledger) (ok1 : Bool) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Ledger) × Bool × Std.Usize)
+    ((alloc.vec.Vec Ledger) × Bool))
+  := do
+  let i1 := alloc.vec.Vec.len rows
+  if i < i1
+  then
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice (alloc.vec.Vec
+        i5h_sql.Val)) rows i
+    let o ← Ledger.from_row v
+    let (out1, ok2) ←
+      match o with
+      | none => ok (out, false)
+      | some x => do
+                  let out2 ← alloc.vec.Vec.push out x
+                  ok (out2, ok1)
+    let i2 ← i + 1#usize
+    ok (cont (out1, ok2, i2))
+  else ok (done (out, ok1))
+
+/-- [ledger_kernel::{ledger_kernel::Ledger}::from_rows]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Visibility: public -/
+@[rust_loop]
+def Ledger.from_rows_loop
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val))
+  (out : alloc.vec.Vec Ledger) (ok1 : Bool) (i : Std.Usize) :
+  Result ((alloc.vec.Vec Ledger) × Bool)
+  := do
+  loop
+    (fun (out1, ok2, i1) => Ledger.from_rows_loop.body rows out1 ok2 i1)
+    (out, ok1, i)
+
+/-- [ledger_kernel::{ledger_kernel::Ledger}::from_rows]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 167:12-183:13
+    Visibility: public -/
+def Ledger.from_rows
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)) :
+  Result (Option (alloc.vec.Vec Ledger))
+  := do
+  let (out, ok1) ←
+    Ledger.from_rows_loop rows (alloc.vec.Vec.new Ledger) true 0#usize
+  if ok1
+  then ok (some out)
+  else ok none
+
+/-- [ledger_kernel::{ledger_kernel::Account}::sql_put]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 186:12-188:13
+    Visibility: public -/
+def Account.sql_put (self : Account) : Result i5h_sql.Write := do
+  let v ← Account.to_row self
+  ok (i5h_sql.Write.Put Account.TABLE Account.KEY_LEN v)
+
+/-- [ledger_kernel::{ledger_kernel::Ledger}::sql_put]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 186:12-188:13
+    Visibility: public -/
+def Ledger.sql_put (self : Ledger) : Result i5h_sql.Write := do
+  let v ← Ledger.to_row self
+  ok (i5h_sql.Write.Put Ledger.TABLE Ledger.KEY_LEN v)
+
+/-- [ledger_kernel::{ledger_kernel::Ledger}::from_one]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 203:12-211:13
+    Visibility: public -/
+def Ledger.from_one
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)) :
+  Result (Option Ledger)
+  := do
+  let i := alloc.vec.Vec.len rows
+  if i = 0#usize
+  then
+    let i1 ← U64.Insts.I5h_sqlZero.zero
+    ok (some { next_id := i1, deposited := i1, withdrawn := i1 })
+  else
+    let i1 := alloc.vec.Vec.len rows
+    if i1 = 1#usize
+    then
+      let v ←
+        alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+          (alloc.vec.Vec i5h_sql.Val)) rows 0#usize
+      Ledger.from_row v
+    else ok none
+
+/-- [ledger_kernel::{ledger_kernel::Account}::put]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 219:16-227:13
+    Visibility: public -/
+@[rust_loop_body]
+def Account.put_loop.body
+  (v : alloc.vec.Vec Account) (x : Account) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize (alloc.vec.Vec Account))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let a ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Account) v i
+    if a.id = x.id
+    then
+      let (_, index_mut_back) ←
+        alloc.vec.Vec.index_mut (core.slice.index.SliceIndexUsizeSlice Account)
+          v i
+      let v1 := index_mut_back x
+      ok (done v1)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else let v1 ← alloc.vec.Vec.push v x
+       ok (done v1)
+
+/-- [ledger_kernel::{ledger_kernel::Account}::put]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 219:16-227:13
+    Visibility: public -/
+@[rust_loop]
+def Account.put_loop
+  (v : alloc.vec.Vec Account) (x : Account) (i : Std.Usize) :
+  Result (alloc.vec.Vec Account)
+  := do
+  loop
+    (fun i1 => Account.put_loop.body v x i1)
+    i
+
+/-- [ledger_kernel::{ledger_kernel::Account}::put]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 217:12-227:13
+    Visibility: public -/
+@[reducible]
+def Account.put
+  (v : alloc.vec.Vec Account) (x : Account) :
+  Result (alloc.vec.Vec Account)
+  := do
+  Account.put_loop v x 0#usize
+
+/-- [ledger_kernel::{impl core::clone::Clone for ledger_kernel::Account}::clone]:
+    Source: 'examples/tutorials/ledger/kernel/src/lib.rs', lines 24:13-24:18
+    Visibility: public -/
+def Account.Insts.CoreCloneClone.clone (self : Account) : Result Account := do
+  ok self
+
+/-- [ledger_kernel::{ledger_kernel::Account}::del]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 233:16-238:17
+    Visibility: public -/
+@[rust_loop_body]
+def Account.del_loop.body
+  (v : alloc.vec.Vec Account) (id : Std.U64) (out : alloc.vec.Vec Account)
+  (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Account) × Std.Usize) (alloc.vec.Vec
+    Account))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let a ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Account) v i
+    let out1 ←
+      if a.id = id
+      then ok out
+      else
+        do
+        let a1 ← Account.Insts.CoreCloneClone.clone a
+        alloc.vec.Vec.push out a1
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
+  else ok (done out)
+
+/-- [ledger_kernel::{ledger_kernel::Account}::del]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 233:16-238:17
+    Visibility: public -/
+@[rust_loop]
+def Account.del_loop
+  (v : alloc.vec.Vec Account) (id : Std.U64) (out : alloc.vec.Vec Account)
+  (i : Std.Usize) :
+  Result (alloc.vec.Vec Account)
+  := do
+  loop
+    (fun (out1, i1) => Account.del_loop.body v id out1 i1)
+    (out, i)
+
+/-- [ledger_kernel::{ledger_kernel::Account}::del]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 230:12-240:13
+    Visibility: public -/
+@[reducible]
+def Account.del
+  (v : alloc.vec.Vec Account) (id : Std.U64) :
+  Result (alloc.vec.Vec Account)
+  := do
+  Account.del_loop v id (alloc.vec.Vec.new Account) 0#usize
+
+/-- [ledger_kernel::{ledger_kernel::Account}::del_where]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 246:16-251:17
+    Visibility: public -/
+@[rust_loop_body]
+def Account.del_where_loop.body
+  (v : alloc.vec.Vec Account) (col : Std.U32) (val : i5h_sql.Val)
+  (out : alloc.vec.Vec Account) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Account) × Std.Usize) (alloc.vec.Vec
+    Account))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let a ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Account) v i
+    let v1 ← Account.to_row a
+    let b ← i5h_sql.has_col v1 col val
+    let out1 ←
+      if b
+      then ok out
+      else
+        do
+        let a1 ← Account.Insts.CoreCloneClone.clone a
+        alloc.vec.Vec.push out a1
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
+  else ok (done out)
+
+/-- [ledger_kernel::{ledger_kernel::Account}::del_where]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 246:16-251:17
+    Visibility: public -/
+@[rust_loop]
+def Account.del_where_loop
+  (v : alloc.vec.Vec Account) (col : Std.U32) (val : i5h_sql.Val)
+  (out : alloc.vec.Vec Account) (i : Std.Usize) :
+  Result (alloc.vec.Vec Account)
+  := do
+  loop
+    (fun (out1, i1) => Account.del_where_loop.body v col val out1 i1)
+    (out, i)
+
+/-- [ledger_kernel::{ledger_kernel::Account}::del_where]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 243:12-253:13
+    Visibility: public -/
+@[reducible]
+def Account.del_where
+  (v : alloc.vec.Vec Account) (col : Std.U32) (val : i5h_sql.Val) :
+  Result (alloc.vec.Vec Account)
+  := do
+  Account.del_where_loop v col val (alloc.vec.Vec.new Account) 0#usize
+
+/-- [ledger_kernel::{ledger_kernel::Account}::sql_del]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 256:12-260:13
+    Visibility: public -/
+def Account.sql_del (id : Std.U64) : Result i5h_sql.Write := do
+  let v ← U64.Insts.I5h_sqlColumn.to_val id
+  let key ← alloc.vec.Vec.push (alloc.vec.Vec.new i5h_sql.Val) v
+  ok (i5h_sql.Write.Del Account.TABLE key)
+
+/-- [ledger_kernel::{ledger_kernel::Account}::sql_del_where]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 263:12-265:13
+    Visibility: public -/
+def Account.sql_del_where
+  (col : Std.U32) (val : i5h_sql.Val) : Result i5h_sql.Write := do
+  ok (i5h_sql.Write.DelWhere Account.TABLE col val)
+
+/-- [ledger_kernel::Snapshot]
+    Source: 'crates/i5h-schema/src/lib.rs', lines 278:8-280:9
+    Visibility: public -/
+structure Snapshot where
+  ledger : Ledger
+  accounts : alloc.vec.Vec Account
+
+/-- [ledger_kernel::Rows]
+    Source: 'crates/i5h-schema/src/lib.rs', lines 285:8-287:9
+    Visibility: public -/
+structure Rows where
+  ledger : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)
+  accounts : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)
+
+/-- [ledger_kernel::decode]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 290:8-298:9
+    Visibility: public -/
+def decode (r : Rows) : Result (Option Snapshot) := do
+  let o ← Ledger.from_one r.ledger
+  match o with
+  | none => ok none
+  | some x =>
+    let o1 ← Account.from_rows r.accounts
+    match o1 with
+    | none => ok none
+    | some x1 => ok (some { ledger := x, accounts := x1 })
+
+/-- [ledger_kernel::Write]
+    Source: 'examples/tutorials/ledger/kernel/src/lib.rs', lines 51:0-54:1
+    Visibility: public -/
+@[discriminant isize]
+inductive Write where
+| PutAccount : Account → Write
+| SetLedger : Ledger → Write
+
+/-- [ledger_kernel::apply_write]:
+    Source: 'examples/tutorials/ledger/kernel/src/lib.rs', lines 187:0-192:1 -/
+def apply_write (s : Snapshot) (w : Write) : Result Snapshot := do
+  match w with
+  | Write.PutAccount a =>
+    let v ← Account.put s.accounts a
+    ok { s with accounts := v }
+  | Write.SetLedger l => ok { s with ledger := l }
+
+/-- [ledger_kernel::{impl core::clone::Clone for ledger_kernel::Write}::clone]:
+    Source: 'examples/tutorials/ledger/kernel/src/lib.rs', lines 50:9-50:14
+    Visibility: public -/
+def Write.Insts.CoreCloneClone.clone (self : Write) : Result Write := do
+  ok self
+
+/-- [ledger_kernel::{impl core::clone::Clone for ledger_kernel::Ledger}::clone]:
+    Source: 'examples/tutorials/ledger/kernel/src/lib.rs', lines 31:13-31:18
+    Visibility: public -/
+def Ledger.Insts.CoreCloneClone.clone (self : Ledger) : Result Ledger := do
+  ok self
+
+/-- Trait implementation: [ledger_kernel::{impl core::clone::Clone for ledger_kernel::Account}]
+    Source: 'examples/tutorials/ledger/kernel/src/lib.rs', lines 24:13-24:18 -/
+@[reducible]
+def Account.Insts.CoreCloneClone : core.clone.Clone Account := {
+  clone := Account.Insts.CoreCloneClone.clone
+}
+
+/-- [ledger_kernel::{impl core::clone::Clone for ledger_kernel::Snapshot}::clone]:
+    Source: 'examples/tutorials/ledger/kernel/src/lib.rs', lines 18:13-18:18
+    Visibility: public -/
+def Snapshot.Insts.CoreCloneClone.clone
+  (self : Snapshot) : Result Snapshot := do
+  let l ← Ledger.Insts.CoreCloneClone.clone self.ledger
+  let v ← alloc.vec.CloneVec.clone Account.Insts.CoreCloneClone self.accounts
+  ok { ledger := l, accounts := v }
+
+/-- [ledger_kernel::apply]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 308:12-311:13
+    Visibility: public -/
+@[rust_loop_body]
+def apply_loop.body
+  (ws : alloc.vec.Vec Write) (s : Snapshot) (i : Std.Usize) :
+  Result (ControlFlow (Snapshot × Std.Usize) Snapshot)
+  := do
+  let i1 := alloc.vec.Vec.len ws
+  if i < i1
+  then
+    let w ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Write) ws i
+    let w1 ← Write.Insts.CoreCloneClone.clone w
+    let s1 ← apply_write s w1
+    let i2 ← i + 1#usize
+    ok (cont (s1, i2))
+  else ok (done s)
+
+/-- [ledger_kernel::apply]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 308:12-311:13
+    Visibility: public -/
+@[rust_loop]
+def apply_loop
+  (ws : alloc.vec.Vec Write) (s : Snapshot) (i : Std.Usize) :
+  Result Snapshot
+  := do
+  loop
+    (fun (s1, i1) => apply_loop.body ws s1 i1)
+    (s, i)
+
+/-- [ledger_kernel::apply]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 305:8-313:9
+    Visibility: public -/
+def apply (snap : Snapshot) (ws : alloc.vec.Vec Write) : Result Snapshot := do
+  let s ← Snapshot.Insts.CoreCloneClone.clone snap
+  apply_loop ws s 0#usize
+
+/-- [ledger_kernel::sql_write]:
+    Source: 'examples/tutorials/ledger/kernel/src/lib.rs', lines 195:0-200:1 -/
+def sql_write
+  (w : Write) (out : alloc.vec.Vec i5h_sql.Write) :
+  Result (alloc.vec.Vec i5h_sql.Write)
+  := do
+  match w with
+  | Write.PutAccount a =>
+    let w1 ← Account.sql_put a
+    alloc.vec.Vec.push out w1
+  | Write.SetLedger l => let w1 ← Ledger.sql_put l
+                         alloc.vec.Vec.push out w1
+
+/-- [ledger_kernel::sql_writes]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 320:12-323:13
+    Visibility: public -/
+@[rust_loop_body]
+def sql_writes_loop.body
+  (ws : alloc.vec.Vec Write) (out : alloc.vec.Vec i5h_sql.Write)
+  (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec i5h_sql.Write) × Std.Usize)
+    (alloc.vec.Vec i5h_sql.Write))
+  := do
+  let i1 := alloc.vec.Vec.len ws
+  if i < i1
+  then
+    let w ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Write) ws i
+    let out1 ← sql_write w out
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
+  else ok (done out)
+
+/-- [ledger_kernel::sql_writes]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 320:12-323:13
+    Visibility: public -/
+@[rust_loop]
+def sql_writes_loop
+  (ws : alloc.vec.Vec Write) (out : alloc.vec.Vec i5h_sql.Write)
+  (i : Std.Usize) :
+  Result (alloc.vec.Vec i5h_sql.Write)
+  := do
+  loop
+    (fun (out1, i1) => sql_writes_loop.body ws out1 i1)
+    (out, i)
+
+/-- [ledger_kernel::sql_writes]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 317:8-325:9
+    Visibility: public -/
+@[reducible]
+def sql_writes
+  (ws : alloc.vec.Vec Write) : Result (alloc.vec.Vec i5h_sql.Write) := do
+  sql_writes_loop ws (alloc.vec.Vec.new i5h_sql.Write) 0#usize
 
 /-- [ledger_kernel::Principal]
     Source: 'examples/tutorials/ledger/kernel/src/lib.rs', lines 10:0-13:1
@@ -41,41 +749,6 @@ structure Ledger where
 structure Principal where
   org : Std.U64
   user : Std.U64
-
-/-- [ledger_kernel::{impl core::clone::Clone for ledger_kernel::Account}::clone]:
-    Source: 'examples/tutorials/ledger/kernel/src/lib.rs', lines 18:13-18:18
-    Visibility: public -/
-def Account.Insts.CoreCloneClone.clone (self : Account) : Result Account := do
-  ok self
-
-/-- Trait implementation: [ledger_kernel::{impl core::clone::Clone for ledger_kernel::Account}]
-    Source: 'examples/tutorials/ledger/kernel/src/lib.rs', lines 18:13-18:18 -/
-@[reducible]
-def Account.Insts.CoreCloneClone : core.clone.Clone Account := {
-  clone := Account.Insts.CoreCloneClone.clone
-}
-
-/-- [ledger_kernel::{impl core::clone::Clone for ledger_kernel::Ledger}::clone]:
-    Source: 'examples/tutorials/ledger/kernel/src/lib.rs', lines 25:13-25:18
-    Visibility: public -/
-def Ledger.Insts.CoreCloneClone.clone (self : Ledger) : Result Ledger := do
-  ok self
-
-/-- [ledger_kernel::Snapshot]
-    Source: 'examples/tutorials/ledger/kernel/src/lib.rs', lines 36:0-39:1
-    Visibility: public -/
-structure Snapshot where
-  ledger : Ledger
-  accounts : alloc.vec.Vec Account
-
-/-- [ledger_kernel::{impl core::clone::Clone for ledger_kernel::Snapshot}::clone]:
-    Source: 'examples/tutorials/ledger/kernel/src/lib.rs', lines 35:9-35:14
-    Visibility: public -/
-def Snapshot.Insts.CoreCloneClone.clone
-  (self : Snapshot) : Result Snapshot := do
-  let l ← Ledger.Insts.CoreCloneClone.clone self.ledger
-  let v ← alloc.vec.CloneVec.clone Account.Insts.CoreCloneClone self.accounts
-  ok { ledger := l, accounts := v }
 
 /-- [ledger_kernel::Command]
     Source: 'examples/tutorials/ledger/kernel/src/lib.rs', lines 42:0-48:1
@@ -87,14 +760,6 @@ inductive Command where
 | Withdraw : Std.U64 → Std.U64 → Command
 | Transfer : Std.U64 → Std.U64 → Std.U64 → Command
 | List : Command
-
-/-- [ledger_kernel::Write]
-    Source: 'examples/tutorials/ledger/kernel/src/lib.rs', lines 51:0-54:1
-    Visibility: public -/
-@[discriminant isize]
-inductive Write where
-| PutAccount : Account → Write
-| SetLedger : Ledger → Write
 
 /-- [ledger_kernel::Reply]
     Source: 'examples/tutorials/ledger/kernel/src/lib.rs', lines 57:0-62:1
@@ -284,95 +949,5 @@ def transition
   | Command.List =>
     let v ← alloc.vec.CloneVec.clone Account.Insts.CoreCloneClone s.accounts
     ok (core.result.Result.Ok (alloc.vec.Vec.new Write, Reply.Accounts v))
-
-/-- [ledger_kernel::put_account]: loop body 0:
-    Source: 'examples/tutorials/ledger/kernel/src/lib.rs', lines 187:4-195:1 -/
-@[rust_loop_body]
-def put_account_loop.body
-  (v : alloc.vec.Vec Account) (a : Account) (i : Std.Usize) :
-  Result (ControlFlow Std.Usize (alloc.vec.Vec Account))
-  := do
-  let i1 := alloc.vec.Vec.len v
-  if i < i1
-  then
-    let a1 ←
-      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Account) v i
-    if a1.id = a.id
-    then
-      let (_, index_mut_back) ←
-        alloc.vec.Vec.index_mut (core.slice.index.SliceIndexUsizeSlice Account)
-          v i
-      let v1 := index_mut_back a
-      ok (done v1)
-    else let i2 ← i + 1#usize
-         ok (cont i2)
-  else let v1 ← alloc.vec.Vec.push v a
-       ok (done v1)
-
-/-- [ledger_kernel::put_account]: loop 0:
-    Source: 'examples/tutorials/ledger/kernel/src/lib.rs', lines 187:4-195:1 -/
-@[rust_loop]
-def put_account_loop
-  (v : alloc.vec.Vec Account) (a : Account) (i : Std.Usize) :
-  Result (alloc.vec.Vec Account)
-  := do
-  loop
-    (fun i1 => put_account_loop.body v a i1)
-    i
-
-/-- [ledger_kernel::put_account]:
-    Source: 'examples/tutorials/ledger/kernel/src/lib.rs', lines 185:0-195:1 -/
-@[reducible]
-def put_account
-  (v : alloc.vec.Vec Account) (a : Account) :
-  Result (alloc.vec.Vec Account)
-  := do
-  put_account_loop v a 0#usize
-
-/-- [ledger_kernel::apply_write]:
-    Source: 'examples/tutorials/ledger/kernel/src/lib.rs', lines 197:0-202:1 -/
-def apply_write (s : Snapshot) (w : Write) : Result Snapshot := do
-  match w with
-  | Write.PutAccount a =>
-    let v ← put_account s.accounts a
-    ok { s with accounts := v }
-  | Write.SetLedger l => ok { s with ledger := l }
-
-/-- [ledger_kernel::apply]: loop body 0:
-    Source: 'examples/tutorials/ledger/kernel/src/lib.rs', lines 208:4-211:5
-    Visibility: public -/
-@[rust_loop_body]
-def apply_loop.body
-  (ws : alloc.vec.Vec Write) (s : Snapshot) (i : Std.Usize) :
-  Result (ControlFlow (Snapshot × Std.Usize) Snapshot)
-  := do
-  let i1 := alloc.vec.Vec.len ws
-  if i < i1
-  then
-    let w ←
-      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Write) ws i
-    let s1 ← apply_write s w
-    let i2 ← i + 1#usize
-    ok (cont (s1, i2))
-  else ok (done s)
-
-/-- [ledger_kernel::apply]: loop 0:
-    Source: 'examples/tutorials/ledger/kernel/src/lib.rs', lines 208:4-211:5
-    Visibility: public -/
-@[rust_loop]
-def apply_loop
-  (ws : alloc.vec.Vec Write) (s : Snapshot) (i : Std.Usize) :
-  Result Snapshot
-  := do
-  loop
-    (fun (s1, i1) => apply_loop.body ws s1 i1)
-    (s, i)
-
-/-- [ledger_kernel::apply]:
-    Source: 'examples/tutorials/ledger/kernel/src/lib.rs', lines 205:0-213:1
-    Visibility: public -/
-def apply (snap : Snapshot) (ws : alloc.vec.Vec Write) : Result Snapshot := do
-  let s ← Snapshot.Insts.CoreCloneClone.clone snap
-  apply_loop ws s 0#usize
 
 end ledger_kernel

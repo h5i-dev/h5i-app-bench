@@ -11,22 +11,22 @@ pub struct Principal {
     pub user: u64,
 }
 
-// One table, `memories`, keyed by user. `schema!` defines the struct and the
-// server's table mapping from this one declaration.
+// One table, `memories`, keyed by user. `schema!` defines the structs, the
+// table operations, and the server's table mapping from this one declaration.
 i5h_schema::schema! {
-    mapping calc_tables for calculator_kernel;
+    mapping calc_tables for calculator_kernel, lean "../proofs/generated/Schema.lean";
+
+    /// One tenant's state: every user's memory.
+    #[derive(Clone, Debug, Default, PartialEq, Eq)]
+    pub struct Snapshot {
+        memories: Vec<Memory>,
+    }
 
     #[derive(Clone, Copy, Debug, PartialEq, Eq)]
     pub struct Memory in "memories" {
         key { user: u64 }
         value: u64,
     }
-}
-
-/// One tenant's state: every user's memory.
-#[derive(Clone, Debug, Default, PartialEq, Eq)]
-pub struct Snapshot {
-    pub memories: Vec<Memory>,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -121,27 +121,25 @@ pub fn transition(actor: &Principal, snap: &Snapshot, cmd: &Command) -> Result<(
     }
 }
 
-/// Replace the row with `m`'s user, or append it.
-fn put_memory(ms: &mut Vec<Memory>, m: Memory) {
-    let mut i = 0;
-    while i < ms.len() {
-        if ms[i].user == m.user {
-            ms[i] = m;
-            return;
-        }
-        i += 1;
-    }
-    ms.push(m);
-}
-
-/// What committing a write set means. The PostgreSQL store must agree.
+/// What committing a write set means: `Memory::put` (from `schema!`)
+/// replaces the row with `m`'s user, or appends it.
 pub fn apply(snap: &Snapshot, w: &Option<Memory>) -> Snapshot {
     let mut s = snap.clone();
     match w {
-        Some(m) => put_memory(&mut s.memories, *m),
+        Some(m) => Memory::put(&mut s.memories, *m),
         None => {}
     }
     s
+}
+
+/// The table writes the server stores for a write set.
+pub fn sql_writes(w: &Option<Memory>) -> Vec<i5h_sql::Write> {
+    let mut out = Vec::new();
+    match w {
+        Some(m) => out.push(m.sql_put()),
+        None => {}
+    }
+    out
 }
 
 #[cfg(test)]
