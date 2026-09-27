@@ -260,7 +260,7 @@ fn read_row(cols: &[ColumnDef], row: &Row) -> Result<Vec<Value>, DbError> {
 /// The tenant's rows of `T` as column values, in key order; with `filter`,
 /// only rows whose column equals the value.
 async fn select<A, T: Table<A>>(
-    tx: &Tx<'_>,
+    tx: &Transaction<'_>,
     tenant: TenantId,
     filter: Option<(&str, Value)>,
 ) -> Result<Vec<Vec<Value>>, DbError> {
@@ -272,7 +272,7 @@ async fn select<A, T: Table<A>>(
     let rows = match filter {
         None => {
             let sql = format!("SELECT {} FROM {} WHERE tenant_id = $1{}", names.join(", "), q(T::NAME), order);
-            tx.0.query(&sql, &[&tid]).await?
+            tx.query(&sql, &[&tid]).await?
         }
         Some((column, value)) => {
             if !cols.iter().any(|c| c.name == column) {
@@ -285,7 +285,7 @@ async fn select<A, T: Table<A>>(
                 q(column),
                 order
             );
-            tx.0.query(&sql, &[&tid, &value]).await?
+            tx.query(&sql, &[&tid, &value]).await?
         }
     };
     rows.iter().map(|r| read_row(&cols, r)).collect()
@@ -293,19 +293,19 @@ async fn select<A, T: Table<A>>(
 
 /// All of the tenant's rows of `T`, in key order.
 pub async fn load<A, T: Table<A>>(tx: &Tx<'_>, tenant: TenantId) -> Result<Vec<T>, DbError> {
-    select::<A, T>(tx, tenant, None).await?.iter().map(|v| T::from_values(v)).collect()
+    select::<A, T>(tx.0, tenant, None).await?.iter().map(|v| T::from_values(v)).collect()
 }
 
 /// The tenant's rows of `T` whose `column` equals `value`, in key order.
 /// `column` must be one of `T`'s columns.
 pub async fn load_where<A, T: Table<A>>(tx: &Tx<'_>, tenant: TenantId, column: &str, value: Value) -> Result<Vec<T>, DbError> {
-    select::<A, T>(tx, tenant, Some((column, value))).await?.iter().map(|v| T::from_values(v)).collect()
+    select::<A, T>(tx.0, tenant, Some((column, value))).await?.iter().map(|v| T::from_values(v)).collect()
 }
 
 /// All of the tenant's rows of `T`, undecoded, for a kernel that decodes its
 /// own rows (`schema!`'s `from_rows`).
 pub async fn load_rows<A, T: Table<A>>(tx: &Tx<'_>, tenant: TenantId) -> Result<Vec<Vec<Val>>, DbError> {
-    Ok(select::<A, T>(tx, tenant, None).await?.iter().map(|r| r.iter().map(to_val).collect()).collect())
+    Ok(select::<A, T>(tx.0, tenant, None).await?.iter().map(|r| r.iter().map(to_val).collect()).collect())
 }
 
 /// Like [`load_rows`], only rows whose `column` equals `value`.
@@ -316,7 +316,7 @@ pub async fn load_rows_where<A, T: Table<A>>(
     value: &Val,
 ) -> Result<Vec<Vec<Val>>, DbError> {
     let value = from_val(value)?;
-    Ok(select::<A, T>(tx, tenant, Some((column, value))).await?.iter().map(|r| r.iter().map(to_val).collect()).collect())
+    Ok(select::<A, T>(tx.0, tenant, Some((column, value))).await?.iter().map(|r| r.iter().map(to_val).collect()).collect())
 }
 
 /// Insert or overwrite the tenant's row with `row`'s key.
@@ -394,18 +394,34 @@ async fn run_stmt<A, T: Table<A>>(tx: &Transaction<'_>, tenant: TenantId, stmt: 
             params.extend(vals.iter().map(|v| v as &(dyn ToSql + Sync)));
             tx.execute(&sql, &params).await?;
         }
-        Stmt::Delete { key, .. } => {
-            if key.len() != T::KEY_LEN {
-                return Err(DbError::Decode(format!("{}: key has {} values, expected {}", T::NAME, key.len(), T::KEY_LEN)));
+        Stmt::DeleteWhere { col, val, .. } => {
+            // A SELECT of the matching rows (`I5hLib.Sql.Sel`, trusted), then
+            // a keyed delete of each; `Sql.runs_exec` proves this is `exec`.
+            let Some(c) = cols.get(col as usize) else {
+                return Err(DbError::Decode(format!("{} has no column {col}", T::NAME)));
+            };
+            for row in select::<A, T>(tx, tenant, Some((c.name, from_val(&val)?))).await? {
+                let row: Vec<Val> = row.iter().map(to_val).collect();
+                delete_key::<A, T>(tx, &tid, &i5h_sql::prefix(&row, T::KEY_LEN)).await?;
             }
-            let conds: Vec<_> = names[..T::KEY_LEN].iter().enumerate().map(|(i, n)| format!(" AND {} = ${}", n, i + 2)).collect();
-            let sql = format!("DELETE FROM {} WHERE tenant_id = $1{}", q(T::NAME), conds.concat());
-            let vals = key.iter().map(from_val).collect::<Result<Vec<_>, _>>()?;
-            let mut params: Vec<&(dyn ToSql + Sync)> = vec![&tid];
-            params.extend(vals.iter().map(|v| v as &(dyn ToSql + Sync)));
-            tx.execute(&sql, &params).await?;
         }
+        Stmt::Delete { key, .. } => delete_key::<A, T>(tx, &tid, &key).await?,
     }
+    Ok(())
+}
+
+/// `DELETE` the tenant's row of `T` at `key`.
+async fn delete_key<A, T: Table<A>>(tx: &Transaction<'_>, tid: &Value, key: &[Val]) -> Result<(), DbError> {
+    if key.len() != T::KEY_LEN {
+        return Err(DbError::Decode(format!("{}: key has {} values, expected {}", T::NAME, key.len(), T::KEY_LEN)));
+    }
+    let cols = T::columns();
+    let conds: Vec<_> = cols[..T::KEY_LEN].iter().enumerate().map(|(i, c)| format!(" AND {} = ${}", q(c.name), i + 2)).collect();
+    let sql = format!("DELETE FROM {} WHERE tenant_id = $1{}", q(T::NAME), conds.concat());
+    let vals = key.iter().map(from_val).collect::<Result<Vec<_>, _>>()?;
+    let mut params: Vec<&(dyn ToSql + Sync)> = vec![tid];
+    params.extend(vals.iter().map(|v| v as &(dyn ToSql + Sync)));
+    tx.execute(&sql, &params).await?;
     Ok(())
 }
 

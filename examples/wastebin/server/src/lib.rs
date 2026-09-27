@@ -10,7 +10,7 @@ use axum::{Json, Router};
 use i5h::{Kernel, TenantId, Timestamp};
 use i5h_http::{error_body, reply, AuthError, Authenticator};
 use i5h_json::Value as Out;
-use i5h_pg::{delete, key, load, upsert, DbError, Engine, EngineConfig, ReplyCodec, Store, Tx};
+use i5h_pg::{DbError, Engine, EngineConfig, ReplyCodec, Store, Tx};
 use serde::{Deserialize, Serialize};
 use std::sync::Arc;
 use wastebin_kernel as k;
@@ -67,22 +67,15 @@ impl Store<Wastebin> for WastebinStore {
         schema_tables()
     }
 
+    // Rows are decoded by the kernel's `decode`, and a write set is stored as
+    // the table writes of its `sql_writes`; `Storage.lean` proves the store
+    // then holds what `apply` computes.
     async fn load(tx: &Tx<'_>, t: TenantId) -> Result<k::Snapshot, DbError> {
-        Ok(k::Snapshot {
-            counter: load::<Wastebin, k::Counter>(tx, t).await?.pop().unwrap_or_default(),
-            pastes: load::<Wastebin, _>(tx, t).await?,
-        })
+        schema_load(tx, t).await
     }
 
     async fn write(tx: &Tx<'_>, t: TenantId, ws: &Vec<k::Write>) -> Result<(), DbError> {
-        for w in ws {
-            match w {
-                k::Write::PutPaste(p) => upsert::<Wastebin, _>(tx, t, p).await?,
-                k::Write::DelPaste(id) => delete::<Wastebin, k::Paste>(tx, t, &[key::<Wastebin, _>(id)?]).await?,
-                k::Write::SetCounter(c) => upsert::<Wastebin, _>(tx, t, c).await?,
-            }
-        }
-        Ok(())
+        schema_store(tx, t, ws).await
     }
 }
 

@@ -4,7 +4,7 @@
 use axum::http::StatusCode;
 use i5h::{Kernel, TenantId};
 use i5h_json::Value as Out;
-use i5h_pg::{load, upsert, DbError, ReplyCodec, Store, Tx};
+use i5h_pg::{DbError, ReplyCodec, Store, Tx};
 use ledger_kernel as k;
 use serde::{Deserialize, Serialize};
 
@@ -50,21 +50,15 @@ impl Store<Ledger> for LedgerStore {
         schema_tables()
     }
 
+    // Rows are decoded by the kernel's `decode`, and a write set is stored as
+    // the table writes of its `sql_writes`; `Storage.lean` proves the store
+    // then holds what `apply` computes.
     async fn load(tx: &Tx<'_>, t: TenantId) -> Result<k::Snapshot, DbError> {
-        Ok(k::Snapshot {
-            ledger: load::<Ledger, k::Ledger>(tx, t).await?.pop().unwrap_or_default(),
-            accounts: load::<Ledger, _>(tx, t).await?,
-        })
+        schema_load(tx, t).await
     }
 
     async fn write(tx: &Tx<'_>, t: TenantId, ws: &Vec<k::Write>) -> Result<(), DbError> {
-        for w in ws {
-            match w {
-                k::Write::PutAccount(a) => upsert::<Ledger, _>(tx, t, a).await?,
-                k::Write::SetLedger(l) => upsert::<Ledger, _>(tx, t, l).await?,
-            }
-        }
-        Ok(())
+        schema_store(tx, t, ws).await
     }
 }
 

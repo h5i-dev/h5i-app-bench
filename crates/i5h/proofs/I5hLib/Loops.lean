@@ -206,6 +206,12 @@ theorem foldl_map {α β} (f : α → β) (l : List α) (acc : List β) :
   | nil => simp
   | cons x xs ih => simp [ih]
 
+theorem foldl_append_flatMap {α β} (f : α → List β) (l : List α) (acc : List β) :
+    l.foldl (fun acc x => acc ++ f x) acc = acc ++ l.flatMap f := by
+  induction l generalizing acc with
+  | nil => simp
+  | cons x xs ih => simp [ih]
+
 theorem foldl_snoc {α} (l acc : List α) : l.foldl (fun acc x => acc ++ [x]) acc = acc ++ l := by
   induction l generalizing acc with
   | nil => simp
