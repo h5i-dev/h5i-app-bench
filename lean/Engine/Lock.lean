@@ -19,7 +19,7 @@ set_option linter.unusedSectionVars false
 namespace Engine
 
 variable {S W Cmd Reply Key : Type} [DecidableEq Cmd] [DecidableEq Key]
-variable {step : S → W → Cmd → Option (S × Reply)} {s₀ : S} {reqs : List (Req W Cmd Key)} {check : Bool}
+variable {step : S → W → Nat → Cmd → Option (S × Reply)} {s₀ : S} {reqs : List (Req W Cmd Key)} {check mono : Bool}
 
 /-- At most one attempt is active, and it read the current database. -/
 def LockInv (sys : Sys S W Cmd Reply Key) : Prop :=
@@ -47,10 +47,10 @@ theorem lockInv_leave {sys : Sys S W Cmd Reply Key} (g : LockInv sys) {i c snap 
   · rw [getElem?_set_ne' hji] at hj
     exact absurd hph' ((g i c snap d hc hph).2 j c' hji hj snap' d')
 
-theorem lockInv_step {a b : Sys S W Cmd Reply Key} (g : LockInv a) (h : Step step check true a b) :
+theorem lockInv_step {a b : Sys S W Cmd Reply Key} (g : LockInv a) (h : Step step check true mono a b) :
     LockInv b := by
   cases h with
-  | @begin i c hc hr hl =>
+  | @begin i c t hc hr hl _ =>
     have hidle := hl rfl
     intro j c' snap' d' hj hph'
     by_cases hji : j = i
@@ -73,21 +73,21 @@ theorem lockInv_step {a b : Sys S W Cmd Reply Key} (g : LockInv a) (h : Step ste
   | @lostBeforeCommit i c snap s r hc hph =>
     exact lockInv_leave g hc hph _ _ (by unfold afterLost; split <;> simp)
 
-theorem lockInv_reachable {sys : Sys S W Cmd Reply Key} (h : Reachable step check true s₀ reqs sys) :
+theorem lockInv_reachable {sys : Sys S W Cmd Reply Key} (h : Reachable step check true mono s₀ reqs sys) :
     LockInv sys := by
   induction h with
   | init => intro i c snap d hc hph; simp [init] at hc; obtain ⟨_, _, rfl⟩ := hc; simp at hph
   | step _ hs ih => exact lockInv_step ih hs
 
 /-- Under the lock, every active attempt read the current database. -/
-theorem locked_current {sys : Sys S W Cmd Reply Key} (h : Reachable step check true s₀ reqs sys) :
+theorem locked_current {sys : Sys S W Cmd Reply Key} (h : Reachable step check true mono s₀ reqs sys) :
     ∀ c ∈ sys.clients, ∀ snap d, c.phase = .active snap d → snap = sys.db := by
   intro c hc snap d hph
   obtain ⟨i, hi⟩ := List.getElem?_of_mem hc
   exact (lockInv_reachable h i c snap d hi hph).1
 
 /-- Under the lock, COMMIT's conflict check always passes. -/
-theorem locked_commit_ok {sys : Sys S W Cmd Reply Key} (h : Reachable step check true s₀ reqs sys) :
+theorem locked_commit_ok {sys : Sys S W Cmd Reply Key} (h : Reachable step check true mono s₀ reqs sys) :
     ∀ c ∈ sys.clients, ∀ snap s r, c.phase = .active snap (.write s r) → snap.ver = sys.db.ver := by
   intro c hc snap s r hph
   rw [locked_current h c hc snap _ hph]
