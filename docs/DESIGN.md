@@ -33,7 +33,8 @@ HTTP (axum) ──► Actor<K> ──► I5h::respond ──► Engine: BEGIN, l
 | `crates/i5h-sql`, `i5h-token`, `i5h-json` | shell components that are extracted and proven |
 | `examples/tutorials` | step-by-step tutorials |
 | `examples/docs` | the document service, the largest example |
-| `examples/kellnr`, `examples/atuin` | ports of real authorization code |
+| `examples/kellnr`, `examples/atuin` | ports of real authorization code, kernels and proofs only |
+| `examples/wastebin`, `examples/conduit`, `examples/cratesio` | ports of real applications, with servers |
 | `lean/` | the engine protocol model and the trace checker |
 
 Each proof project (`*/proofs`) keeps generated Lean in `generated/`, which
@@ -44,8 +45,8 @@ Lean library with its own `srcDir`, so module names do not change.
 ## Proofs in this repository
 
 The document service in `examples/docs` has projects, members and a review
-workflow. For every actor, reachable state and command, Lean checks that each committed
-write is allowed by the policy table (including the four-eyes rule), that
+workflow. For every actor, reachable state and command, Lean checks that each
+committed write is allowed by the policy table (including the four-eyes rule), that
 replies contain only documents the caller may read, and that every reachable
 state keeps its invariants. It also checks that a user's result, including
 error codes, depends only on what that user may see, that webhooks go only to
@@ -60,13 +61,82 @@ retry, idempotency and locking protocol and the outbox dispatcher are modeled
 in `lean/`, and traces recorded from the Rust engine are checked against the
 model.
 
-Two ports test the approach on real code. `examples/kellnr` models Kellnr's
-authorization before and after PR #1243; Lean proves that the fixed code keeps
-read-only users from changing anything, and it produces a concrete
-counterexample for the old code. `examples/atuin` ports the account and record
-rules of the Atuin sync server, proves user isolation and clean account
-deletion, and shows that the current code lets a session delete an account
-without the password (issue #3297).
+Five ports test the approach on real code, and each one reproduces a known
+bug: the property fails, with a concrete counterexample, on the code before
+the fix, and holds after it. `examples/kellnr` models Kellnr's authorization
+around PR #1243, where read-only users could change owners. `examples/atuin`
+ports the account and record rules of the Atuin sync server and shows that a
+session alone can delete an account (issue #3297). `examples/wastebin` ports
+Wastebin's paste rules, including expiry and burn after reading, and shows
+that link previews burned pastes before commit 632ddf2 (issue #190).
+`examples/conduit` ports every route of the RealWorld backend
+realworld-axum-sqlx, proves every reply equal to a specification of the state
+and the caller, and shows that upstream's `favorited` flag is wrong (issue
+#16). `examples/cratesio` ports crates.io's ownership, token scope and
+deletion rules and shows that locked accounts could still sign in before PR
+#14760. The last three have PostgreSQL servers, and porting them found three
+more problems upstream, listed in [NUMBERS.md](NUMBERS.md).
+
+The [tutorials](../examples/tutorials) teach one kind of property each:
+functional correctness, permissions and invariants, conservation of a sum,
+noninterference, and interval invariants with effects.
+
+## Inputs from the shell
+
+`transition` is pure, so anything it needs from outside, such as the current
+time, a random slug or a fact from another service, arrives as an input that
+the shell fills in. Put such inputs in the principal, which the authenticator
+builds once per request, rather than in the command, which the client
+chooses: a client that picks the time can book the past. Since the engine
+retries with the same principal, a retry decides against the same inputs,
+and since theorems quantify over every principal, they hold for any value the
+shell supplies. What they cannot say is that the value is true, so each app's
+README names these inputs as trusted.
+
+## One schema per app
+
+Tables are plain PostgreSQL tables named by `schema!`, and the engine's own
+tables (idempotency keys, the outbox) have fixed names. Two apps that share a
+database would therefore share tables, and one app's outbox dispatcher would
+claim the other's effects. `i5h_pg::with_schema(url, "app")` gives an app a
+PostgreSQL schema of its own, which `install_schema` creates. Every example
+except the document service uses one.
+
+## Proof patterns
+
+The examples prove their theorems in the same order, and the order has held
+up across all of them.
+
+1. Each helper that loops over a table gets a specification in terms of lists
+   (`find?`, `any`, `filter`, `upsert`), proven once with `loop_search` or
+   `loop_fold` from `I5hLib`.
+2. Each command gets one lemma that says what a successful run writes and
+   which facts about the state made it succeed. These are the only proofs that
+   look at the extracted code.
+3. The command lemmas are summed up as one statement: a successful command
+   writes one of a few shapes of write set. Board and ledger use a
+   disjunction; the larger ports use an inductive `Effect` relation and
+   `cases` on it, which scales better.
+4. Every theorem is then a case analysis over that summary: the permission
+   theorem against a policy stated per kind of write, one lemma per kind of
+   state change for the invariant, and an induction over `Reachable` to show
+   the invariant holds in every state the app can reach. Theorems that need
+   the invariant are stated for reachable states, so it is never a free
+   hypothesis.
+5. `Apply.lean` proves that the kernel's `apply` computes the specification's
+   `applyAll`, one loop lemma per table.
+6. Scenario theorems run the extracted kernel on small concrete states. They
+   show that the guarded behavior actually happens, which rules out a kernel
+   that satisfies the theorems by refusing everything, and they build a
+   reachable state, which shows the hypotheses of the reachable-state
+   theorems can hold.
+
+A past bug is modeled as a second transition function that differs from the
+fixed one in one command, and the counterexample is a scenario theorem for
+the old function. Confidentiality is stated as noninterference over a `view`
+of the state (`examples/tutorials/inbox`, `examples/docs`), and reply
+correctness as equality with a specification function
+(`examples/conduit`).
 
 ## Checks
 
