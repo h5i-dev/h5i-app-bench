@@ -146,12 +146,9 @@ async fn bookings_and_cancellations_are_posted_to_the_room_endpoint() {
 
     let b = k::Booking { id, room: r, user: 2, start_at: 2000, end_at: 3000 };
     let cancelled = effect_payload(&k::Effect { dest: 7, event: k::Event::Cancelled, booking: b });
-    // One pass may deliver in any order.
-    let mut bodies: Vec<Vec<u8>> = rx.seen().into_iter().map(|(_, body)| body).collect();
-    let mut want = vec![booked(b, 7), cancelled];
-    bodies.sort();
-    want.sort();
-    assert_eq!(bodies, want);
+    // A pass sends in commit order.
+    let bodies: Vec<Vec<u8>> = rx.seen().into_iter().map(|(_, body)| body).collect();
+    assert_eq!(bodies, vec![booked(b, 7), cancelled]);
     assert_eq!(rows(&url, org).await, vec![(true, false, 1), (true, false, 1)]);
 }
 

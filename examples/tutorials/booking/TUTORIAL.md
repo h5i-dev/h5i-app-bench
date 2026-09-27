@@ -455,9 +455,10 @@ earlier time.
 
 Notifications are delivered at least once. A dispatcher that crashes after a
 POST but before recording it sends it again with the same key, and the
-receiver has to drop the repeat. Deliveries are not ordered either: a
-cancellation may arrive before the booking it cancels, so a receiver should
-order by booking and event rather than by arrival. A notification to a
+receiver has to drop the repeat. A dispatcher sends each batch in commit
+order, but a delivery that fails is retried later, so a cancellation may still
+arrive before the booking it cancels, and a receiver should order by booking
+and event rather than by arrival. A notification to a
 destination missing from the registry, or one that failed on every attempt,
 is marked dead and never sent. The kernel theorems stop at the destination id.
 The dispatcher's properties are proven about a model of its protocol rather
