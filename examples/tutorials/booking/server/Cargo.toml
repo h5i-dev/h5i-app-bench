@@ -1,0 +1,24 @@
+[package]
+name = "booking-server"
+description = "Tutorial 5: the booking service's HTTP server, PostgreSQL store and outbox dispatcher"
+edition.workspace = true
+license.workspace = true
+version.workspace = true
+
+[dependencies]
+i5h.workspace = true
+i5h-pg.workspace = true
+i5h-http.workspace = true
+i5h-json.workspace = true
+booking-kernel = { path = "../kernel" }
+axum.workspace = true
+# `net` and `io-util` for the notifier's HTTP POST.
+tokio = { workspace = true, features = ["net", "io-util"] }
+serde.workspace = true
+serde_json.workspace = true
+tracing.workspace = true
+tracing-subscriber.workspace = true
+
+[dev-dependencies]
+# The outbox test creates its own database and reads outbox rows.
+tokio-postgres.workspace = true
