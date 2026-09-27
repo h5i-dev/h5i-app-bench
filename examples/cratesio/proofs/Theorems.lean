@@ -236,7 +236,7 @@ theorem token_scoped (p : Principal) (s : Snapshot) (c : Command) ws r (tid : U6
     exact ⟨t, _, _, htk, hl, rfl, hsc.2.1, hsc.2.2⟩
   | accept u tok k _ i hs hsc hin =>
     obtain ⟨t, rfl, htk, hl⟩ := token_of_signed hs hv
-    obtain ⟨hm, hp⟩ := find_mem hin
+    obtain ⟨hm, hp⟩ := find?_mem hin
     simp only [decide_eq_true_eq] at hp
     have hk : hasCrate st k = true := hp.1 ▸ hi.invite_crates i hm
     intro w hw; simp only [List.mem_cons, List.not_mem_nil, or_false] at hw
@@ -283,7 +283,7 @@ theorem versions_kept (p : Principal) (s : Snapshot) (c : Command) ws r
   | yank u _ v0 k n y _ _ hv0 =>
     left
     simp only [applyAll_cons, applyAll_nil, applyWrite]
-    obtain ⟨hm, hp⟩ := find_mem hv0
+    obtain ⟨hm, hp⟩ := find?_mem hv0
     simp only [decide_eq_true_eq] at hp
     by_cases hkey : (v.krate, v.num) = (k, n)
     · -- `v` is the yanked version; its publisher is kept.

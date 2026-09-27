@@ -10,8 +10,7 @@ open Aeneas Aeneas.Std Result ledger_kernel ledger_kernel.Spec I5hLib
 
 namespace ledger_kernel.Commands
 
-@[simp] theorem u64_val_eq (x y : U64) : x.val = y.val ↔ x = y :=
-  ⟨fun h => by scalar_tac, fun h => h ▸ rfl⟩
+attribute [simp] u64_val_eq
 
 /-! ## Helpers -/
 
@@ -23,9 +22,7 @@ namespace ledger_kernel.Commands
   unfold find_account find_account_loop
   apply WP.spec_mono (loop_search v.val (fun a => decide (a.id = id)) (fun o : Option Account => o)
     (fun _ a => some a) none _ ?_ 0#usize (by simp))
-  · intro r hr
-    rw [hr, show (fun (_ : Nat) (a : Account) => some a) = (fun _ x => some (_root_.id x)) from rfl, searchFrom_find]
-    simp
+  · intro r hr; rw [search_find _ _ _ hr]; simp
   · intro j hj; unfold find_account_loop.body; i5h_step
 
 theorem find_eq (s : Snapshot) (id : U64) :
@@ -51,9 +48,7 @@ theorem deposit_spec (u : U64) (s : Snapshot) (id amt : U64) :
   unfold deposit
   step*
   all_goals try (simp only [core.num.U64.MAX, U64.rMax] at *; scalar_tac)
-  intro ws rep h
-  simp only [core.result.Result.Ok.injEq, Prod.mk.injEq] at h
-  obtain ⟨rfl, rfl⟩ := h
+  intro ws rep h; obtain ⟨rfl, rfl⟩ := ok_inj h
   have hf : findAcc (Snapshot.toSt s) id.val = some a := by rw [← find_eq, ← o_post]; exact ‹o = some a›
   exact ⟨a, hf, by simpa using ‹¬(a.owner != u) = true›, i1, i2, i1_post, i2_post, v_post⟩
 
@@ -67,9 +62,7 @@ theorem withdraw_spec (u : U64) (s : Snapshot) (id amt : U64) :
   unfold withdraw
   step*
   all_goals try (simp only [core.num.U64.MAX, U64.rMax] at *; scalar_tac)
-  intro ws rep h
-  simp only [core.result.Result.Ok.injEq, Prod.mk.injEq] at h
-  obtain ⟨rfl, rfl⟩ := h
+  intro ws rep h; obtain ⟨rfl, rfl⟩ := ok_inj h
   have hf : findAcc (Snapshot.toSt s) id.val = some a := by rw [← find_eq, ← o_post]; exact ‹o = some a›
   exact ⟨a, hf, by simpa using ‹¬(a.owner != u) = true›, by scalar_tac, i1, i2, i1_post, i2_post, v_post⟩
 
@@ -84,9 +77,7 @@ theorem transfer_spec (u : U64) (s : Snapshot) (src dst amt : U64) :
   unfold transfer
   step*
   all_goals try (simp only [core.num.U64.MAX, U64.rMax] at *; scalar_tac)
-  intro ws rep h
-  simp only [core.result.Result.Ok.injEq, Prod.mk.injEq] at h
-  obtain ⟨rfl, rfl⟩ := h
+  intro ws rep h; obtain ⟨rfl, rfl⟩ := ok_inj h
   have ha : findAcc (Snapshot.toSt s) src.val = some a := by rw [← find_eq, ← o_post]; exact ‹o = some a›
   have hb : findAcc (Snapshot.toSt s) dst.val = some b := by rw [← find_eq, ← o1_post]; exact ‹o1 = some b›
   exact ⟨‹¬src = dst›, a, b, ha, by simpa using ‹¬(a.owner != u) = true›, by scalar_tac, hb,

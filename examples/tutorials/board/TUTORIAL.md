@@ -266,7 +266,7 @@ if p.author == user || is_moderator(&s.moderators, p.author) {
 After re-extracting, the proof of `delete_spec` fails:
 
 ```
-error: Commands.lean:101:28: Type mismatch: After simplification, term
+error: Commands.lean:87:28: Type mismatch: After simplification, term
   b_post.mp h✝¹
  has type
   ∃ m ∈ ↑s.moderators, m.user = p.author
@@ -298,3 +298,5 @@ with `apply` as well.
    column on `Post`.
 3. Prove that a user who is neither an author nor a moderator can never cause
    a post to be deleted, stated directly in terms of `transition`.
+
+The [next tutorial](../ledger/TUTORIAL.md), a ledger, proves arithmetic invariants over whole tables.

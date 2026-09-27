@@ -237,7 +237,7 @@ and `omega` is enough once they have been turned into `Nat`s.
 
 Each write replaces one row of the accounts table, so the proofs about the
 total need to know how replacing a row changes a sum. `I5hLib.upsert`
-replaces the first row with the same key, or appends one. The lemma
+replaces the first row with the same key, or appends one. The library lemma
 `sum_upsert` states the effect on any sum, with no assumption about the list:
 
 ```lean
@@ -258,7 +258,7 @@ theorem total_put (s : St) (a : Account) :
       total s + a.balance.val
 ```
 
-The second fact bounds single rows by the sum. `le_sum` says that one row is
+The second fact, also in `I5hLib`, bounds single rows by the sum. `le_sum` says that one row is
 at most the sum, and `add_le_sum` says that two different rows together are:
 
 ```lean
@@ -424,7 +424,7 @@ the credited one, both computed from the old balance, and the account gains
 `amount`. After re-extracting, `lake build` stops in `transfer_spec`:
 
 ```
-error: Commands.lean:92:9: Tactic `assumption` failed
+error: Commands.lean:83:9: Tactic `assumption` failed
 ...
 ha : findAcc (Snapshot.toSt s) ↑src = some a
 hb : findAcc (Snapshot.toSt s) ↑dst = some b
@@ -437,7 +437,7 @@ establishes it any more. It is tempting to delete the promise from
 transfer case of `total_after`:
 
 ```
-error: Theorems.lean:190:4: omega could not prove the goal:
+error: Theorems.lean:150:4: omega could not prove the goal:
 a possible counterexample may satisfy the constraints
   ...
 where
@@ -484,3 +484,5 @@ test checks) and the tools remain trusted.
    column on `Account`, and prove that no successful withdrawal exceeds it.
 3. Prove that no command changes the owner of an existing account, and use it
    to state `only_owner_debits` across a whole sequence of commands.
+
+The [next tutorial](../inbox/TUTORIAL.md), private messages, proves that users learn nothing about messages that are not theirs.

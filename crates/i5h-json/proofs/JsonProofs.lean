@@ -1,7 +1,8 @@
 import I5hJson
 import JsonSpec
+import I5hLib.Basic
 /-! The extracted writer computes `Spec.print`. -/
-open Aeneas Aeneas.Std Result i5h_json i5h_json.Spec
+open Aeneas Aeneas.Std Result i5h_json i5h_json.Spec I5hLib
 
 namespace i5h_json.Proofs
 
@@ -16,11 +17,6 @@ theorem hex_digit_spec (n : U8) (h : n.val < 16) : hex_digit n ⦃ r => r.val = 
 
 theorem esc_cons (c : Nat) (l : List Nat) : esc (c :: l) = escByte c ++ esc l := by
   simp [esc]
-
-theorem u8_eq_iff (x y : U8) : x = y ↔ x.val = y.val := by
-  constructor
-  · rintro rfl; rfl
-  · intro h; scalar_tac
 
 @[step]
 theorem push_escaped_byte_spec (o : alloc.vec.Vec U8) (c : U8)

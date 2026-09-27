@@ -56,23 +56,20 @@ inductive Effect (s : Snapshot) (u : U64) : List Write → Prop
 
 /-! ## Lookups -/
 
-theorem find_mem {α} {p : α → Bool} {l : List α} {x : α} (h : l.find? p = some x) : x ∈ l ∧ p x = true :=
-  ⟨List.mem_of_find?_eq_some h, List.find?_some h⟩
-
 theorem userById_some {s : St} {u : U64} {me : User} (h : userById s u = some me) : me ∈ s.users ∧ me.id = u := by
-  have := find_mem h; simpa using this
+  have := find?_mem h; simpa using this
 
 theorem userByName_some {s : St} {n : Text} {x : User} (h : userByName s n = some x) :
     x ∈ s.users ∧ x.username = n := by
-  have := find_mem h; simpa using this
+  have := find?_mem h; simpa using this
 
 theorem articleBySlug_some {s : St} {n : Text} {a : Article} (h : articleBySlug s n = some a) :
     a ∈ s.articles ∧ a.slug = n := by
-  have := find_mem h; simpa using this
+  have := find?_mem h; simpa using this
 
 theorem commentById_some {s : St} {id : U64} {c : Comment} (h : commentById s id = some c) :
     c ∈ s.comments ∧ c.id = id := by
-  have := find_mem h; simpa using this
+  have := find?_mem h; simpa using this
 
 theorem distinct_nodup_aux {α} [DecidableEq α] (l acc : List α) (h : acc.Nodup) :
     (l.foldl (fun acc x => if acc.any (· = x) then acc else acc ++ [x]) acc).Nodup := by
@@ -172,10 +169,6 @@ theorem effect_of (a : Principal) (s : Snapshot) (c : Command) (up : Bool) ws r
     obtain ⟨v, hv, -⟩ := (WP.spec_equiv_exists _ _).1 (all_tags_spec s.tags)
     rw [hv] at h; simp only [bind_ok, Result.ok.injEq, core.result.Result.Ok.injEq, Prod.mk.injEq] at h
     rw [ws_nil h.1.symm]; exact .none
-
-theorem ok_of {α} {m : Result α} {P : α → Prop} (h : m ⦃ P ⦄) : ∃ r, m = ok r := by
-  obtain ⟨r, hr, -⟩ := (WP.spec_equiv_exists _ _).1 h
-  exact ⟨r, hr⟩
 
 /-- The kernel never fails: no panic, overflow or bad index, in either variant. -/
 theorem step_total (a : Principal) (s : Snapshot) (c : Command) (up : Bool) : ∃ r, step a s c up = ok r := by

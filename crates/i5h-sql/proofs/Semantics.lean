@@ -1,5 +1,6 @@
 import I5hSql
 import I5hLib.Sql
+import I5hLib.Basic
 /-!
 # The extracted planner, and what its statements mean
 
@@ -23,16 +24,8 @@ def Write.abs : Write → AWrite Val
 
 /-! ## The extracted planner computes `planA` -/
 
-theorem clone_bytes (v : alloc.vec.Vec U8) :
-    alloc.vec.CloneVec.clone core.clone.CloneU8 v = ok v := by
-  have h := Slice.clone_spec (clone := liftFun1 core.clone.impls.CloneU8.clone) (s := v.slice)
-    (fun _ _ => rfl)
-  rw [WP.spec_equiv_exists] at h
-  obtain ⟨s', hs, rfl⟩ := h
-  simp [alloc.vec.CloneVec.clone, hs]
-
 theorem val_clone (x : Val) : Val.Insts.CoreCloneClone.clone x = ok x := by
-  cases x <;> simp [Val.Insts.CoreCloneClone.clone, clone_bytes, lift]
+  cases x <;> simp [Val.Insts.CoreCloneClone.clone, u8vec_clone, lift]
 
 @[step]
 theorem val_clone_spec (x : Val) : Val.Insts.CoreCloneClone.clone x ⦃ y => y = x ⦄ := by

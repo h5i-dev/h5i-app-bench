@@ -414,7 +414,7 @@ if v[i].room == room && start_at <= v[i].end_at && v[i].start_at <= end_at {
 After re-extracting, `lake build` fails in the proof of `free_spec`:
 
 ```
-error: Commands.lean:74:2: unsolved goals
+error: Commands.lean:69:2: unsolved goals
 case h1
 v : alloc.vec.Vec Booking
 room st en : U64

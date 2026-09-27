@@ -1,4 +1,5 @@
 import Lemmas
+import I5hLib.Basic
 /-!
 # Theorems about the extracted Kellnr kernel (after PR #1243)
 
@@ -93,14 +94,11 @@ theorem guarded_token_spec (s : Snapshot) (p : Principal) (k : U64) :
   rw [← ho]
   cases o <;> step* <;> simp_all
 
-/-- A spec that pins the result down is an equation. -/
-theorem eq_of_spec {α} {m : Result α} {x : α} (h : m ⦃ r => r = x ⦄) : m = ok x := by
-  obtain ⟨y, hy, rfl⟩ := (WP.spec_equiv_exists _ _).1 h; exact hy
-
 theorem check_download_auth_eq (s : Snapshot) (p : Principal) (k : U64) :
     check_download_auth s k p = ok (dl (Snapshot.toSt s) p k.val) := by
-  simp only [check_download_auth, eq_of_spec (find_crate_spec _ _), eq_of_spec (token_user_spec _ _),
-    eq_of_spec (has_pair_spec _ _ _), eq_of_spec (is_crate_group_user_spec _ _ _), bind_tc_ok, bind_ok]
+  simp only [check_download_auth, I5hLib.eq_ok_of_spec (find_crate_spec _ _),
+    I5hLib.eq_ok_of_spec (token_user_spec _ _), I5hLib.eq_ok_of_spec (has_pair_spec _ _ _),
+    I5hLib.eq_ok_of_spec (is_crate_group_user_spec _ _ _), bind_tc_ok, bind_ok]
   unfold dl restricted isCrateUser isOwner
   have hc : (Snapshot.toSt s).crates = s.crates.val := rfl
   rw [hc]

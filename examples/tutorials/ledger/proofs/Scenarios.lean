@@ -12,24 +12,20 @@ open Aeneas Aeneas.Std Result ledger_kernel ledger_kernel.Spec ledger_kernel.Com
 
 namespace ledger_kernel.Scenarios
 
-@[simp] theorem max_val : core.num.U64.MAX.val = 2 ^ 64 - 1 := by
-  simp [core.num.U64.MAX, U64.rMax]
-
-def vec (l : List Account) (h : l.length ≤ Usize.max := by scalar_tac) : alloc.vec.Vec Account :=
-  alloc.vec.Vec.from l h
+attribute [simp] u64_max_val
 
 def alice : Principal := ⟨1#u64, 1#u64⟩
 def bob : Principal := ⟨1#u64, 2#u64⟩
 
-def s0 : Snapshot := ⟨⟨0#u64, 0#u64, 0#u64⟩, vec []⟩
+def s0 : Snapshot := ⟨⟨0#u64, 0#u64, 0#u64⟩, vecOf []⟩
 -- Alice opens account 0.
-def s1 : Snapshot := ⟨⟨1#u64, 0#u64, 0#u64⟩, vec [⟨0#u64, 1#u64, 0#u64⟩]⟩
+def s1 : Snapshot := ⟨⟨1#u64, 0#u64, 0#u64⟩, vecOf [⟨0#u64, 1#u64, 0#u64⟩]⟩
 -- Bob opens account 1.
-def s2 : Snapshot := ⟨⟨2#u64, 0#u64, 0#u64⟩, vec [⟨0#u64, 1#u64, 0#u64⟩, ⟨1#u64, 2#u64, 0#u64⟩]⟩
+def s2 : Snapshot := ⟨⟨2#u64, 0#u64, 0#u64⟩, vecOf [⟨0#u64, 1#u64, 0#u64⟩, ⟨1#u64, 2#u64, 0#u64⟩]⟩
 -- Alice deposits 100.
-def s3 : Snapshot := ⟨⟨2#u64, 100#u64, 0#u64⟩, vec [⟨0#u64, 1#u64, 100#u64⟩, ⟨1#u64, 2#u64, 0#u64⟩]⟩
+def s3 : Snapshot := ⟨⟨2#u64, 100#u64, 0#u64⟩, vecOf [⟨0#u64, 1#u64, 100#u64⟩, ⟨1#u64, 2#u64, 0#u64⟩]⟩
 -- Alice transfers 30 to Bob.
-def s4 : Snapshot := ⟨⟨2#u64, 100#u64, 0#u64⟩, vec [⟨0#u64, 1#u64, 70#u64⟩, ⟨1#u64, 2#u64, 30#u64⟩]⟩
+def s4 : Snapshot := ⟨⟨2#u64, 100#u64, 0#u64⟩, vecOf [⟨0#u64, 1#u64, 70#u64⟩, ⟨1#u64, 2#u64, 30#u64⟩]⟩
 
 /-- `c` by `a` succeeds in `s` and leads to `s'`. -/
 def Runs (s : Snapshot) (a : Principal) (c : Command) (s' : Snapshot) : Prop :=
@@ -44,14 +40,14 @@ theorem reachable_next {s s' : Snapshot} {a : Principal} {c : Command}
 `step*` the arithmetic. -/
 macro "run" : tactic => `(tactic| (
   unfold Runs
-  simp [transition, «open», deposit, withdraw, transfer, eq_ok_of_spec (find_account_spec _ _), vec,
+  simp [transition, «open», deposit, withdraw, transfer, eq_ok_of_spec (find_account_spec _ _), vecOf,
     s0, s1, s2, s3, alice, bob]
   step*
   all_goals first
     | (exfalso; have := congrArg UScalar.val ‹_ = core.num.U64.MAX›; simp [U64.rMax] at this)
-    | (simp only [max_val, U64.rMax] at *; scalar_tac)
+    | (simp only [u64_max_val, U64.rMax] at *; scalar_tac)
     | (refine ⟨_, ⟨_, rfl⟩, ?_⟩
-       simp [*, applyAll, applyWrite, Snapshot.toSt, s1, s2, s3, s4, vec, upsert]
+       simp [*, applyAll, applyWrite, Snapshot.toSt, s1, s2, s3, s4, vecOf, upsert]
        try (first | scalar_tac | (constructor <;> scalar_tac)))
     | simp))
 
@@ -71,32 +67,32 @@ theorem reachable_s4 : Reachable (Snapshot.toSt s4) := reachable_next reachable_
 /-- The hypotheses of `transfer_succeeds` hold in `s3`. -/
 theorem transfer_succeeds_s3 : ∃ ws r, transition alice s3 (.Transfer 0#u64 1#u64 30#u64) = ok (.Ok (ws, r)) :=
   transfer_succeeds alice s3 _ _ _ ⟨0#u64, 1#u64, 100#u64⟩ ⟨1#u64, 2#u64, 0#u64⟩ reachable_s3 (by decide)
-    (by simp [findAcc, Snapshot.toSt, s3, vec]) rfl (by simp) (by simp [findAcc, Snapshot.toSt, s3, vec])
+    (by simp [findAcc, Snapshot.toSt, s3, vecOf]) rfl (by simp) (by simp [findAcc, Snapshot.toSt, s3, vecOf])
 
 /-- Deposits 100, withdrawals 0, and the accounts hold 70 + 30. -/
 theorem s4_conserved : total (Snapshot.toSt s4) = 100 ∧ (Snapshot.toSt s4).deposited = 100 := by
-  simp [total, Snapshot.toSt, s4, vec]
+  simp [total, Snapshot.toSt, s4, vecOf]
 
 /-! ## Refusals -/
 
 theorem bob_cannot_withdraw : transition bob s3 (.Withdraw 0#u64 5#u64) = ok (.Err .Forbidden) := by
-  simp [transition, withdraw, eq_ok_of_spec (find_account_spec _ _), vec, s3, bob]
+  simp [transition, withdraw, eq_ok_of_spec (find_account_spec _ _), vecOf, s3, bob]
 
 theorem bob_cannot_transfer : transition bob s3 (.Transfer 0#u64 1#u64 5#u64) = ok (.Err .Forbidden) := by
-  simp [transition, transfer, eq_ok_of_spec (find_account_spec _ _), vec, s3, bob]
+  simp [transition, transfer, eq_ok_of_spec (find_account_spec _ _), vecOf, s3, bob]
 
 theorem no_self_transfer : transition alice s3 (.Transfer 0#u64 0#u64 5#u64) = ok (.Err .SameAccount) := by
   simp [transition, transfer]
 
 theorem no_overdraft : transition alice s3 (.Withdraw 0#u64 101#u64) = ok (.Err .Insufficient) := by
-  simp [transition, withdraw, eq_ok_of_spec (find_account_spec _ _), vec, s3, alice]
+  simp [transition, withdraw, eq_ok_of_spec (find_account_spec _ _), vecOf, s3, alice]
 
 /-- The deposit limit is real: total deposits cannot pass 2^64 - 1. -/
 theorem deposit_overflow :
     transition alice s3 (.Deposit 0#u64 18446744073709551615#u64) = ok (.Err .Overflow) := by
   apply eq_ok_of_spec
-  simp [transition, deposit, s3, alice, eq_ok_of_spec (find_account_spec _ _), vec]
+  simp [transition, deposit, s3, alice, eq_ok_of_spec (find_account_spec _ _), vecOf]
   step*
-  all_goals (simp only [max_val, U64.rMax] at *; scalar_tac)
+  all_goals (simp only [u64_max_val, U64.rMax] at *; scalar_tac)
 
 end ledger_kernel.Scenarios

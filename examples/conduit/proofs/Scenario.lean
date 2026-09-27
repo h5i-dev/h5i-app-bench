@@ -7,16 +7,16 @@ actions do happen for the right user and are refused for the others, so the
 permission theorems do not hold because nothing is allowed.
 -/
 open Aeneas Aeneas.Std Result conduit_kernel conduit_kernel.Spec conduit_kernel.Helpers
-  conduit_kernel.Commands conduit_kernel.Counterexample
+  conduit_kernel.Commands conduit_kernel.Counterexample I5hLib
 
 namespace conduit_kernel.Scenario
 
-def hi : Text := vec [104#u8, 105#u8]
+def hi : Text := vecOf [104#u8, 105#u8]
 
 /-- `s0`, plus Bob's comment on "a". -/
 def s1 : Snapshot := { s0 with
   counter := ⟨2#u64, 2#u64, 1#u64⟩
-  comments := vec [⟨1#u64, 1#u64, 2#u64, hi, 0#u64⟩] }
+  comments := vecOf [⟨1#u64, 1#u64, 2#u64, hi, 0#u64⟩] }
 
 def aliceP : Principal := ⟨1#u64, 1#u64⟩
 def anon : Principal := ⟨1#u64, 0#u64⟩
@@ -91,7 +91,7 @@ theorem bob_follows_alice :
   run follow
 
 theorem slug_taken :
-    transition aliceP s1 (.CreateArticle slugB slugB empty empty (vec []) 5#u64) ⦃ o => o = .Err .SlugTaken ⦄ := by
+    transition aliceP s1 (.CreateArticle slugB slugB empty empty (vecOf []) 5#u64) ⦃ o => o = .Err .SlugTaken ⦄ := by
   run create_article
 
 theorem bob_favorites_b :
@@ -109,11 +109,11 @@ theorem anyone_signs_up :
 Six commands lead from the empty site to `s1`, so the theorems stated over
 `Reachable` states apply to it. -/
 
-def t0 : Snapshot := ⟨⟨0#u64, 0#u64, 0#u64⟩, vec [], vec [], vec [], vec [], vec [], vec []⟩
-def t1 : Snapshot := { t0 with counter := ⟨1#u64, 0#u64, 0#u64⟩, users := vec [alice] }
-def t2 : Snapshot := { t0 with counter := ⟨2#u64, 0#u64, 0#u64⟩, users := vec [alice, bobUser] }
-def t3 : Snapshot := { t2 with counter := ⟨2#u64, 1#u64, 0#u64⟩, articles := vec [artA] }
-def t4 : Snapshot := { t2 with counter := ⟨2#u64, 2#u64, 0#u64⟩, articles := vec [artA, artB] }
+def t0 : Snapshot := ⟨⟨0#u64, 0#u64, 0#u64⟩, vecOf [], vecOf [], vecOf [], vecOf [], vecOf [], vecOf []⟩
+def t1 : Snapshot := { t0 with counter := ⟨1#u64, 0#u64, 0#u64⟩, users := vecOf [alice] }
+def t2 : Snapshot := { t0 with counter := ⟨2#u64, 0#u64, 0#u64⟩, users := vecOf [alice, bobUser] }
+def t3 : Snapshot := { t2 with counter := ⟨2#u64, 1#u64, 0#u64⟩, articles := vecOf [artA] }
+def t4 : Snapshot := { t2 with counter := ⟨2#u64, 2#u64, 0#u64⟩, articles := vecOf [artA, artB] }
 
 theorem reach_step {s t : Snapshot} {a : Principal} {c : Command} {L : List Write}
     (hs : Reachable (Snapshot.toSt s)) (hrun : transition a s c ⦃ o => ∃ ws r, o = .Ok (ws, r) ∧ ws.val = L ⦄)
@@ -142,24 +142,24 @@ theorem step2 : transition anon t1 (.Register bobName bobUser.email empty) ⦃ o
   all_goals simp_all [bobUser, empty, core.num.U64.MAX, U64.rMax]
   all_goals first | scalar_tac | rfl
 
-theorem step3 : transition aliceP t2 (.CreateArticle slugA slugA empty empty (vec []) 0#u64) ⦃ o =>
+theorem step3 : transition aliceP t2 (.CreateArticle slugA slugA empty empty (vecOf []) 0#u64) ⦃ o =>
     ∃ ws r, o = .Ok (ws, r) ∧ ws.val = [.SetCounter ⟨2#u64, 1#u64, 0#u64⟩, .PutArticle artA] ⦄ := by
   have h1 : List.find? (fun x => decide (x.id = aliceP.user)) t2.users.val = some alice := rfl
   have h2 : List.find? (fun x => decide (x.slug = slugA)) t2.articles.val = none := rfl
   have hc : t2.counter = ⟨2#u64, 0#u64, 0#u64⟩ := rfl
   simp only [transition, step, create_article, find_user_eq, find_article_eq, bind_ok, h1, h2]
   step*
-  all_goals simp_all [alice, artA, core.num.U64.MAX, U64.rMax, distinct, vec]
+  all_goals simp_all [alice, artA, core.num.U64.MAX, U64.rMax, distinct, vecOf]
   all_goals first | scalar_tac | rfl
 
-theorem step4 : transition aliceP t3 (.CreateArticle slugB slugB empty empty (vec []) 0#u64) ⦃ o =>
+theorem step4 : transition aliceP t3 (.CreateArticle slugB slugB empty empty (vecOf []) 0#u64) ⦃ o =>
     ∃ ws r, o = .Ok (ws, r) ∧ ws.val = [.SetCounter ⟨2#u64, 2#u64, 0#u64⟩, .PutArticle artB] ⦄ := by
   have h1 : List.find? (fun x => decide (x.id = aliceP.user)) t3.users.val = some alice := rfl
   have h2 : List.find? (fun x => decide (x.slug = slugB)) t3.articles.val = none := rfl
   have hc : t3.counter = ⟨2#u64, 1#u64, 0#u64⟩ := rfl
   simp only [transition, step, create_article, find_user_eq, find_article_eq, bind_ok, h1, h2]
   step*
-  all_goals simp_all [alice, artB, core.num.U64.MAX, U64.rMax, distinct, vec]
+  all_goals simp_all [alice, artB, core.num.U64.MAX, U64.rMax, distinct, vecOf]
   all_goals first | scalar_tac | rfl
 
 theorem step5 : transition bobP t4 (.Favorite slugA) ⦃ o =>

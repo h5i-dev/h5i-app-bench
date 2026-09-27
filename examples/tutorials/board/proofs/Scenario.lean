@@ -23,10 +23,6 @@ def s1 : Snapshot := ⟨⟨0#u64⟩, alloc.vec.Vec.new Post, alloc.vec.Vec.from 
 def s2 : Snapshot :=
   ⟨⟨1#u64⟩, alloc.vec.Vec.from [⟨0#u64, 1#u64, hi⟩] (by scalar_tac), alloc.vec.Vec.from [⟨1#u64⟩] (by scalar_tac)⟩
 
-theorem eq_of_spec {α} {m : Result α} {x : α} (h : m ⦃ r => r = x ⦄) : m = ok x := by
-  obtain ⟨r, hr, rfl⟩ := (WP.spec_equiv_exists _ _).1 h
-  exact hr
-
 theorem run {a s c r} {P : alloc.vec.Vec Write → Prop}
     (h : transition a s c ⦃ o => ∃ ws, o = .Ok (ws, r) ∧ P ws ⦄) :
     ∃ ws, transition a s c = ok (.Ok (ws, r)) ∧ P ws := by
@@ -70,14 +66,14 @@ theorem s2_reachable : Reachable (Snapshot.toSt s2) := by
 
 /-- Bob is neither the author nor a moderator. -/
 theorem bob_cannot_delete : transition bob s2 (.Delete 0#u64) = ok (.Err .Forbidden) := by
-  apply eq_of_spec
+  apply eq_ok_of_spec
   simp only [transition]; unfold delete
   repeat' (first | step | split)
   all_goals simp_all [s2, bob]
 
 /-- The last moderator stays. -/
 theorem last_moderator_stays : transition alice s2 (.Demote 1#u64) = ok (.Err .LastModerator) := by
-  apply eq_of_spec
+  apply eq_ok_of_spec
   simp only [transition]; unfold demote
   repeat' (first | step | split)
   all_goals simp_all [s2, alice]

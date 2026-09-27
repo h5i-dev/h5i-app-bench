@@ -10,20 +10,12 @@ open Aeneas Aeneas.Std Result wastebin_kernel wastebin_kernel.Spec I5hLib
 
 namespace wastebin_kernel.Commands
 
-@[simp] theorem u64_val_eq (x y : U64) : x.val = y.val ↔ x = y :=
-  ⟨fun h => by scalar_tac, fun h => h ▸ rfl⟩
+attribute [simp] u64_val_eq
 
 /-! ## Helpers -/
 
-theorem u8vec_clone (v : alloc.vec.Vec U8) : alloc.vec.CloneVec.clone core.clone.CloneU8 v = ok v :=
-  vec_clone_eq _ v (fun _ => rfl)
-
 theorem paste_clone (p : Paste) : Paste.Insts.CoreCloneClone.clone p = ok p := by
   simp [Paste.Insts.CoreCloneClone.clone, u8vec_clone]
-
-@[step] theorem u8vec_clone_spec (v : alloc.vec.Vec U8) :
-    alloc.vec.CloneVec.clone core.clone.CloneU8 v ⦃ w => w = v ⦄ := by
-  simp [u8vec_clone]
 
 @[step] theorem paste_clone_spec (p : Paste) : Paste.Insts.CoreCloneClone.clone p ⦃ q => q = p ⦄ := by
   simp [paste_clone]
@@ -40,9 +32,7 @@ theorem paste_clone (p : Paste) : Paste.Insts.CoreCloneClone.clone p = ok p := b
   unfold find_slug find_slug_loop
   apply WP.spec_mono (loop_search ps.val (fun p => decide (p.slug = k)) (fun o : Option Paste => o)
     (fun _ p => some p) none _ ?_ 0#usize (by simp))
-  · intro r hr
-    rw [hr, show (fun (_ : Nat) (p : Paste) => some p) = (fun _ x => some (_root_.id x)) from rfl, searchFrom_find]
-    simp
+  · intro r hr; rw [search_find _ _ _ hr]; simp
   · intro j hj; unfold find_slug_loop.body; i5h_step
 
 @[step] theorem has_uid_spec (uids : alloc.vec.Vec U64) (u : U64) :
@@ -73,9 +63,7 @@ theorem findSlug_eq (s : Snapshot) (k : U64) :
       (uids.val.head? = some o ∧ l = last) ∨ (uids.val = [] ∧ o.val = last.val + 1 ∧ l = o) ⦄ := by
   unfold owner_for
   step*
-  · intro o l h
-    simp only [core.result.Result.Ok.injEq, Prod.mk.injEq] at h
-    obtain ⟨rfl, rfl⟩ := h
+  · intro o l h; obtain ⟨rfl, rfl⟩ := ok_inj h
     left
     refine ⟨?_, rfl⟩
     have hl : 0 < uids.val.length := by have := ‹uids.len > 0#usize›; scalar_tac
@@ -83,9 +71,7 @@ theorem findSlug_eq (s : Snapshot) (k : U64) :
     | nil => simp [hu] at hl
     | cons x xs => simp_all
   · simp_all [core.num.U64.MAX, U64.rMax]; scalar_tac
-  · intro o l h
-    simp only [core.result.Result.Ok.injEq, Prod.mk.injEq] at h
-    obtain ⟨rfl, rfl⟩ := h
+  · intro o l h; obtain ⟨rfl, rfl⟩ := ok_inj h
     right
     refine ⟨?_, by scalar_tac, rfl⟩
     have hl : uids.val.length = 0 := by have := ‹¬uids.len > 0#usize›; scalar_tac
@@ -107,9 +93,7 @@ theorem create_spec (a : Principal) (s : Snapshot) (t : alloc.vec.Vec U8) (e : O
   obtain ⟨owner, lu⟩ := o1
   step*
   · simp only [core.num.U64.MAX, U64.rMax] at *; scalar_tac
-  intro ws rep h
-  simp only [core.result.Result.Ok.injEq, Prod.mk.injEq] at h
-  obtain ⟨rfl, rfl⟩ := h
+  intro ws rep h; obtain ⟨rfl, rfl⟩ := ok_inj h
   have ho := r1_post owner lu ‹_›
   refine ⟨⟨s.counter.next_id, a.fresh, owner, v, t, b, lock⟩, ⟨i, lu⟩, rfl, rfl, v_post, rfl, rfl, r_post t ‹_›, ?_, ?_, by scalar_tac,
     by simp [ws1_post, ws_post], rfl⟩
@@ -134,9 +118,7 @@ theorem read_spec (a : Principal) (p : Paste) (key : Option U64) :
   unfold read
   step*
   all_goals
-    intro ws rep h
-    simp only [core.result.Result.Ok.injEq, Prod.mk.injEq] at h
-    obtain ⟨rfl, rfl⟩ := h
+    intro ws rep h; obtain ⟨rfl, rfl⟩ := ok_inj h
     simp_all [ReadPost, Shows, Unlocked]
 
 theorem fetch_spec (a : Principal) (s : Snapshot) (k : U64) (key : Option U64) :
@@ -173,21 +155,15 @@ theorem delete_spec (a : Principal) (s : Snapshot) (k : U64) :
         ws.val = [.DelPaste p.id] ∧ rep = .Done ⦄ := by
   unfold delete
   step*
-  intro ws rep h
-  simp only [core.result.Result.Ok.injEq, Prod.mk.injEq] at h
-  obtain ⟨rfl, rfl⟩ := h
+  intro ws rep h; obtain ⟨rfl, rfl⟩ := ok_inj h
   exact ⟨_, by rw [findSlug_eq, ← o_post]; assumption, b_post.1 ‹_›, v_post, rfl⟩
 
 def purgeStep (now : Nat) (acc : List Write) (p : Paste) : List Write :=
   if isExpired now p then acc ++ [.DelPaste p.id] else acc
 
 theorem foldl_purgeStep (now : Nat) (l : List Paste) (acc : List Write) :
-    l.foldl (purgeStep now) acc = acc ++ (l.filter (isExpired now)).map (fun p => .DelPaste p.id) := by
-  induction l generalizing acc with
-  | nil => simp
-  | cons p ps ih =>
-    rw [List.foldl_cons, ih]
-    by_cases h : isExpired now p <;> simp [purgeStep, h]
+    l.foldl (purgeStep now) acc = acc ++ (l.filter (isExpired now)).map (fun p => .DelPaste p.id) :=
+  foldl_filter_map _ _ l acc
 
 /-- Purge deletes exactly the expired pastes. -/
 theorem purge_spec (now : U64) (s : Snapshot) :

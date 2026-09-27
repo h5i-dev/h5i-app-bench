@@ -247,7 +247,7 @@ scripts/extract-calculator.sh && (cd examples/tutorials/calculator/proofs && lak
 Lean stops at the `Sub` case and shows the goal it could not prove:
 
 ```
-error: Proofs.lean:30:11: unsolved goals
+error: Proofs.lean:29:11: unsolved goals
 case h1
 a b : U64
 h✝ : a ≤ b

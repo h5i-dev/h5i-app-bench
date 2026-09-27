@@ -10,20 +10,12 @@ open Aeneas Aeneas.Std Result board_kernel board_kernel.Spec I5hLib
 
 namespace board_kernel.Commands
 
-@[simp] theorem u64_val_eq (x y : U64) : x.val = y.val ↔ x = y :=
-  ⟨fun h => by scalar_tac, fun h => h ▸ rfl⟩
+attribute [simp] u64_val_eq
 
 /-! ## Helpers -/
 
-theorem u8vec_clone (v : alloc.vec.Vec U8) : alloc.vec.CloneVec.clone core.clone.CloneU8 v = ok v :=
-  vec_clone_eq _ v (fun _ => rfl)
-
 theorem post_clone (p : Post) : Post.Insts.CoreCloneClone.clone p = ok p := by
   simp [Post.Insts.CoreCloneClone.clone, u8vec_clone, lift]
-
-@[step] theorem u8vec_clone_spec (v : alloc.vec.Vec U8) :
-    alloc.vec.CloneVec.clone core.clone.CloneU8 v ⦃ w => w = v ⦄ := by
-  simp [u8vec_clone]
 
 @[step] theorem post_clone_spec (p : Post) : Post.Insts.CoreCloneClone.clone p ⦃ q => q = p ⦄ := by
   simp [post_clone]
@@ -41,9 +33,7 @@ theorem post_clone (p : Post) : Post.Insts.CoreCloneClone.clone p = ok p := by
   unfold find_post find_post_loop
   apply WP.spec_mono (loop_search ps.val (fun p => decide (p.id = id)) (fun o : Option Post => o)
     (fun _ p => some p) none _ ?_ 0#usize (by simp))
-  · intro r hr
-    rw [hr, show (fun (_ : Nat) (p : Post) => some p) = (fun _ x => some (_root_.id x)) from rfl, searchFrom_find]
-    simp
+  · intro r hr; rw [search_find _ _ _ hr]; simp
   · intro j hj; unfold find_post_loop.body; i5h_step
 
 @[step] theorem is_moderator_spec (ms : alloc.vec.Vec Moderator) (u : U64) :
@@ -77,9 +67,7 @@ theorem edit_spec (u : U64) (s : Snapshot) (id : U64) (t : alloc.vec.Vec U8) :
         ws.val = [.PutPost ⟨id, u, t⟩] ⦄ := by
   unfold edit
   step*
-  intro ws rep h
-  simp only [core.result.Result.Ok.injEq, Prod.mk.injEq] at h
-  obtain ⟨rfl, rfl⟩ := h
+  intro ws rep h; obtain ⟨rfl, rfl⟩ := ok_inj h
   have ha : p.author = u := by simpa using ‹¬(p.author != u) = true›
   have hf : findPost (Snapshot.toSt s) id.val = some p := by
     simp only [findPost, Snapshot.toSt]; rw [← o_post]; exact ‹o = some p›
@@ -93,9 +81,7 @@ theorem delete_spec (u : U64) (s : Snapshot) (id : U64) :
   unfold delete
   step*
   all_goals
-    intro ws rep h
-    simp only [core.result.Result.Ok.injEq, Prod.mk.injEq] at h
-    obtain ⟨rfl, rfl⟩ := h
+    intro ws rep h; obtain ⟨rfl, rfl⟩ := ok_inj h
   all_goals have hf : findPost (Snapshot.toSt s) id.val = some p := by simp only [findPost, Snapshot.toSt]; rw [← o_post]; exact ‹o = some p›
   · exact ⟨⟨p, hf, .inl ‹p.author = u›⟩, v_post⟩
   · exact ⟨⟨p, hf, .inr (by simpa [isMod, Snapshot.toSt] using b_post.1 ‹b = true›)⟩, v_post⟩
@@ -108,9 +94,7 @@ theorem promote_spec (u : U64) (s : Snapshot) (target : U64) :
   dsimp only
   split <;> step*
   all_goals
-    intro ws rep h
-    simp only [core.result.Result.Ok.injEq, Prod.mk.injEq] at h
-    obtain ⟨rfl, rfl⟩ := h
+    intro ws rep h; obtain ⟨rfl, rfl⟩ := ok_inj h
   -- The caller is a moderator.
   all_goals try exact ⟨.inl (by simpa [isMod, Snapshot.toSt] using b_post.1 ‹b = true›), v_post⟩
   -- There is no moderator yet, and the caller appoints themselves.
@@ -125,9 +109,7 @@ theorem demote_spec (u : U64) (s : Snapshot) (target : U64) :
         2 ≤ (Snapshot.toSt s).mods.length ∧ ws.val = [.DelModerator target] ⦄ := by
   unfold demote
   step*
-  intro ws rep h
-  simp only [core.result.Result.Ok.injEq, Prod.mk.injEq] at h
-  obtain ⟨rfl, rfl⟩ := h
+  intro ws rep h; obtain ⟨rfl, rfl⟩ := ok_inj h
   refine ⟨by simpa [isMod, Snapshot.toSt] using b_post.1 ‹b = true›,
     by simpa [isMod, Snapshot.toSt] using b1_post.1 ‹b1 = true›,
     by have := ‹¬s.moderators.len ≤ 1#usize›; simp only [Snapshot.toSt]; scalar_tac, v_post⟩

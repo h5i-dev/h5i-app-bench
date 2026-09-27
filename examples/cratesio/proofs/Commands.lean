@@ -14,10 +14,6 @@ namespace cratesio_kernel.Commands
 /-- Close an arithmetic side condition left by `step*`. -/
 macro "side" : tactic => `(tactic| ((try simp only [core.num.U64.MAX, U64.rMax, MAX_DEPS] at *); scalar_tac))
 
-theorem ok_inj {ws : alloc.vec.Vec Write} {rep : Reply} {ws' rep'}
-    (h : (core.result.Result.Ok (ws', rep') : core.result.Result _ Error) = .Ok (ws, rep)) : ws' = ws ∧ rep' = rep := by
-  simp only [core.result.Result.Ok.injEq, Prod.mk.injEq] at h; exact h
-
 theorem authorize_spec (p : Principal) (s : Snapshot) (fixed : Bool) :
     authorize p s fixed ⦃ r => ∀ ws rep, r = .Ok (ws, rep) → p.via = .GitHub ∧
       ∃ c : Counter, c.next_session.val = s.counter.next_session.val + 1 ∧ c.next_token = s.counter.next_token ∧
@@ -326,10 +322,6 @@ theorem writes_of (p : Principal) (s : Snapshot) (c : Command) (fixed : Bool) ws
   all_goals
     obtain ⟨hv, u, x, hu, hid, hver, hws⟩ := post_of_ok (operator_spec _ _ _ _ _ _ _) h ws r rfl
     rw [hws]; exact .operator u x hv (by rw [hid, userOf_id hu]; exact hu) hver
-
-theorem ok_of {α} {m : Result α} {P : α → Prop} (h : m ⦃ P ⦄) : ∃ r, m = ok r := by
-  obtain ⟨r, hr, -⟩ := (WP.spec_equiv_exists _ _).1 h
-  exact ⟨r, hr⟩
 
 /-- No input makes the kernel fail: no panic, overflow or bad index. -/
 theorem run_total (p : Principal) (s : Snapshot) (c : Command) (fixed : Bool) : ∃ r, run p s c fixed = ok r := by
