@@ -1,0 +1,21 @@
+[package]
+name = "wastebin-server"
+description = "Wastebin's paste rules served over HTTP from a verified i5h kernel"
+edition.workspace = true
+license.workspace = true
+version.workspace = true
+
+[dependencies]
+i5h.workspace = true
+i5h-pg.workspace = true
+i5h-http.workspace = true
+i5h-json.workspace = true
+wastebin-kernel = { path = "../kernel" }
+axum.workspace = true
+tokio.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+tracing.workspace = true
+tracing-subscriber.workspace = true
+libcrux-hmac = "0.0.8"
+getrandom = "0.3"
