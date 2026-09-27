@@ -4,3 +4,6 @@ import I5hLib.Lists
 import I5hLib.Tables
 import I5hLib.Tactics
 import I5hLib.Sql
+import I5hLib.Time
+import I5hLib.Store
+import I5hLib.Decode

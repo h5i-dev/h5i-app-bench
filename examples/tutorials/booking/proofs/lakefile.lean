@@ -12,8 +12,8 @@ package booking_proofs
 -- Generated Lean: the extracted Rust (scripts/extract-booking.sh). Do not edit.
 lean_lib Generated where
   srcDir := "generated"
-  roots := #[`BookingKernel]
+  roots := #[`BookingKernel, `Schema]
 
 -- Hand-written specification and proofs.
 @[default_target] lean_lib Proofs where
-  roots := #[`Spec, `Commands, `Theorems, `Apply, `Scenarios]
+  roots := #[`Spec, `Commands, `Theorems, `Apply, `Storage, `Scenarios, `Clock]

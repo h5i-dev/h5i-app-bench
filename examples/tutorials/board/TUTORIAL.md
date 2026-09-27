@@ -22,6 +22,7 @@ ids, hold in every state the board can reach, however many commands run.
 | `proofs/Commands.lean` | one lemma per command describing what it writes |
 | `proofs/Theorems.lean` | the permission and invariant theorems |
 | `proofs/Apply.lean` | the proof that committing a write set does what the specification says |
+| `proofs/Storage.lean` | the proof that SQL writes and loads hold that same state |
 | `proofs/Scenario.lean` | a concrete run that meets the theorems' hypotheses |
 
 ## Running the application
@@ -248,10 +249,11 @@ she reaches is `Reachable`, and in it Bob cannot delete her post
 ## Committing a write set
 
 The theorems describe the new state with `Spec.applyAll`, the meaning of a
-write set on lists. `Apply.lean` proves that the kernel's `apply`, which the
-reference engine runs, computes exactly that. Each of its loops is covered by
-a lemma from `I5hLib`: `loop_search` for the upserts, and `loop_fold` for the
-deletes and for the loop over the writes.
+write set on lists. `schema!` generates the kernel's `apply` and its table
+operations, with their loop lemmas. `Apply.lean` proves that the dispatch over
+`Write` computes `Spec.applyAll`. `Storage.lean` then instantiates
+`I5hLib.Store`: the database reached by running the planned SQL writes holds
+exactly those rows, and a load decodes the same state up to row order.
 
 ## Introducing a bug
 

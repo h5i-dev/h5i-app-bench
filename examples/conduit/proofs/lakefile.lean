@@ -12,8 +12,8 @@ package conduit_proofs
 -- Generated Lean: the extracted Rust (scripts/extract-conduit.sh). Do not edit.
 lean_lib Generated where
   srcDir := "generated"
-  roots := #[`ConduitKernel]
+  roots := #[`ConduitKernel, `Schema]
 
 -- Hand-written specification and proofs.
 @[default_target] lean_lib Proofs where
-  roots := #[`Spec, `Helpers, `Commands, `Apply, `Theorems, `Invariants, `Replies, `Counterexample, `Scenario]
+  roots := #[`Spec, `Helpers, `Commands, `Apply, `Storage, `Theorems, `Invariants, `Replies, `Counterexample, `Scenario]

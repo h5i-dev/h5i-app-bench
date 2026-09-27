@@ -5,6 +5,7 @@ root=$(cd "$(dirname "$0")/.." && pwd)
 tmp=$(mktemp -d)
 trap 'rm -rf "$tmp"' EXIT
 (cd "$root/examples/tutorials/inbox/kernel" && charon cargo --preset=aeneas \
-  --start-from inbox_kernel::transition --start-from inbox_kernel::apply \
+  --start-from inbox_kernel::transition $(bash "$root/scripts/schema-items.sh" inbox_kernel) \
+  --include i5h_sql \
   --dest-file "$tmp/inbox_kernel.llbc")
 aeneas -backend lean "$tmp/inbox_kernel.llbc" -dest "$root/examples/tutorials/inbox/proofs/generated"

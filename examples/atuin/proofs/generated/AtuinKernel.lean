@@ -19,6 +19,180 @@ set_option maxRecDepth 2048
 
 namespace atuin_kernel
 
+/-- [i5h_sql::Val]
+    Source: 'crates/i5h-sql/src/lib.rs', lines 8:0-8:12
+    Name pattern: [i5h_sql::Val]
+    Visibility: public -/
+@[discriminant isize, rust_type "i5h_sql::Val"]
+inductive i5h_sql.Val where
+| Int : Std.I64 → i5h_sql.Val
+| Bool : Bool → i5h_sql.Val
+| Text : alloc.vec.Vec Std.U8 → i5h_sql.Val
+| Bytes : alloc.vec.Vec Std.U8 → i5h_sql.Val
+| Null : i5h_sql.Val
+
+/-- [i5h_sql::{impl i5h_sql::Column for u64}::to_val]:
+    Source: 'crates/i5h-sql/src/lib.rs', lines 25:4-25:27
+    Name pattern: [i5h_sql::{i5h_sql::Column<u64>}::to_val]
+    Visibility: public -/
+@[rust_fun "i5h_sql::{i5h_sql::Column<u64>}::to_val"]
+def U64.Insts.I5h_sqlColumn.to_val (self : Std.U64) : Result i5h_sql.Val := do
+  let i ← lift (UScalar.hcast .I64 self)
+  ok (i5h_sql.Val.Int i)
+
+/-- [i5h_sql::{impl i5h_sql::Column for u64}::from_val]:
+    Source: 'crates/i5h-sql/src/lib.rs', lines 28:4-28:39
+    Name pattern: [i5h_sql::{i5h_sql::Column<u64>}::from_val]
+    Visibility: public -/
+@[rust_fun "i5h_sql::{i5h_sql::Column<u64>}::from_val"]
+def U64.Insts.I5h_sqlColumn.from_val
+  (v : i5h_sql.Val) : Result (Option Std.U64) := do
+  match v with
+  | i5h_sql.Val.Int i => let i1 ← lift (IScalar.hcast .U64 i)
+                         ok (some i1)
+  | i5h_sql.Val.Bool _ => ok none
+  | i5h_sql.Val.Text _ => ok none
+  | i5h_sql.Val.Bytes _ => ok none
+  | i5h_sql.Val.Null => ok none
+
+/-- [i5h_sql::{impl i5h_sql::Column for bool}::to_val]:
+    Source: 'crates/i5h-sql/src/lib.rs', lines 55:4-55:27
+    Name pattern: [i5h_sql::{i5h_sql::Column<bool>}::to_val]
+    Visibility: public -/
+@[rust_fun "i5h_sql::{i5h_sql::Column<bool>}::to_val"]
+def Bool.Insts.I5h_sqlColumn.to_val (self : Bool) : Result i5h_sql.Val := do
+  ok (i5h_sql.Val.Bool self)
+
+/-- [i5h_sql::{impl i5h_sql::Column for bool}::from_val]:
+    Source: 'crates/i5h-sql/src/lib.rs', lines 58:4-58:40
+    Name pattern: [i5h_sql::{i5h_sql::Column<bool>}::from_val]
+    Visibility: public -/
+@[rust_fun "i5h_sql::{i5h_sql::Column<bool>}::from_val"]
+def Bool.Insts.I5h_sqlColumn.from_val
+  (v : i5h_sql.Val) : Result (Option Bool) := do
+  match v with
+  | i5h_sql.Val.Int _ => ok none
+  | i5h_sql.Val.Bool b => ok (some b)
+  | i5h_sql.Val.Text _ => ok none
+  | i5h_sql.Val.Bytes _ => ok none
+  | i5h_sql.Val.Null => ok none
+
+/-- [i5h_sql::{impl i5h_sql::Column for alloc::vec::Vec<u8>}::to_val]:
+    Source: 'crates/i5h-sql/src/lib.rs', lines 67:4-67:27
+    Name pattern: [i5h_sql::{i5h_sql::Column<alloc::vec::Vec<u8>>}::to_val]
+    Visibility: public -/
+@[rust_fun "i5h_sql::{i5h_sql::Column<alloc::vec::Vec<u8>>}::to_val"]
+def alloc.vec.VecU8.Insts.I5h_sqlColumn.to_val
+  (self : alloc.vec.Vec Std.U8) : Result i5h_sql.Val := do
+  let v ← alloc.vec.CloneVec.clone core.clone.CloneU8 self
+  ok (i5h_sql.Val.Bytes v)
+
+/-- [i5h_sql::{impl i5h_sql::Column for alloc::vec::Vec<u8>}::from_val]:
+    Source: 'crates/i5h-sql/src/lib.rs', lines 70:4-70:43
+    Name pattern: [i5h_sql::{i5h_sql::Column<alloc::vec::Vec<u8>>}::from_val]
+    Visibility: public -/
+@[rust_fun "i5h_sql::{i5h_sql::Column<alloc::vec::Vec<u8>>}::from_val"]
+def alloc.vec.VecU8.Insts.I5h_sqlColumn.from_val
+  (v : i5h_sql.Val) : Result (Option (alloc.vec.Vec Std.U8)) := do
+  match v with
+  | i5h_sql.Val.Int _ => ok none
+  | i5h_sql.Val.Bool _ => ok none
+  | i5h_sql.Val.Text _ => ok none
+  | i5h_sql.Val.Bytes b =>
+    let v1 ← alloc.vec.CloneVec.clone core.clone.CloneU8 b
+    ok (some v1)
+  | i5h_sql.Val.Null => ok none
+
+/-- [i5h_sql::{impl i5h_sql::Zero for u64}::zero]:
+    Source: 'crates/i5h-sql/src/lib.rs', lines 104:4-104:20
+    Name pattern: [i5h_sql::{i5h_sql::Zero<u64>}::zero]
+    Visibility: public -/
+@[rust_fun "i5h_sql::{i5h_sql::Zero<u64>}::zero"]
+def U64.Insts.I5h_sqlZero.zero : Result Std.U64 := do
+  ok 0#u64
+
+/-- [i5h_sql::{impl i5h_sql::Zero for bool}::zero]:
+    Source: 'crates/i5h-sql/src/lib.rs', lines 116:4-116:21
+    Name pattern: [i5h_sql::{i5h_sql::Zero<bool>}::zero]
+    Visibility: public -/
+@[rust_fun "i5h_sql::{i5h_sql::Zero<bool>}::zero"]
+def Bool.Insts.I5h_sqlZero.zero : Result Bool := do
+  ok false
+
+/-- [i5h_sql::val_eq]:
+    Source: 'crates/i5h-sql/src/lib.rs', lines 134:0-134:39
+    Name pattern: [i5h_sql::val_eq]
+    Visibility: public -/
+@[rust_fun "i5h_sql::val_eq"]
+def i5h_sql.val_eq (a : i5h_sql.Val) (b : i5h_sql.Val) : Result Bool := do
+  match a with
+  | i5h_sql.Val.Int x =>
+    match b with
+    | i5h_sql.Val.Int y => ok (x = y)
+    | i5h_sql.Val.Bool _ => ok false
+    | i5h_sql.Val.Text _ => ok false
+    | i5h_sql.Val.Bytes _ => ok false
+    | i5h_sql.Val.Null => ok false
+  | i5h_sql.Val.Bool x =>
+    match b with
+    | i5h_sql.Val.Int _ => ok false
+    | i5h_sql.Val.Bool y => ok (x = y)
+    | i5h_sql.Val.Text _ => ok false
+    | i5h_sql.Val.Bytes _ => ok false
+    | i5h_sql.Val.Null => ok false
+  | i5h_sql.Val.Text x =>
+    match b with
+    | i5h_sql.Val.Int _ => ok false
+    | i5h_sql.Val.Bool _ => ok false
+    | i5h_sql.Val.Text y =>
+      alloc.vec.partial_eq.PartialEqVec.eq core.cmp.PartialEqU8 x y
+    | i5h_sql.Val.Bytes _ => ok false
+    | i5h_sql.Val.Null => ok false
+  | i5h_sql.Val.Bytes x =>
+    match b with
+    | i5h_sql.Val.Int _ => ok false
+    | i5h_sql.Val.Bool _ => ok false
+    | i5h_sql.Val.Text _ => ok false
+    | i5h_sql.Val.Bytes y =>
+      alloc.vec.partial_eq.PartialEqVec.eq core.cmp.PartialEqU8 x y
+    | i5h_sql.Val.Null => ok false
+  | i5h_sql.Val.Null =>
+    match b with
+    | i5h_sql.Val.Int _ => ok false
+    | i5h_sql.Val.Bool _ => ok false
+    | i5h_sql.Val.Text _ => ok false
+    | i5h_sql.Val.Bytes _ => ok false
+    | i5h_sql.Val.Null => ok true
+
+/-- [i5h_sql::has_col]:
+    Source: 'crates/i5h-sql/src/lib.rs', lines 160:0-160:59
+    Name pattern: [i5h_sql::has_col]
+    Visibility: public -/
+@[rust_fun "i5h_sql::has_col"]
+def i5h_sql.has_col
+  (row : alloc.vec.Vec i5h_sql.Val) (col : Std.U32) (val : i5h_sql.Val) :
+  Result Bool
+  := do
+  let i ← lift (UScalar.cast .Usize col)
+  let i1 := alloc.vec.Vec.len row
+  if i < i1
+  then
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice i5h_sql.Val)
+        row i
+    i5h_sql.val_eq v val
+  else ok false
+
+/-- [i5h_sql::Write]
+    Source: 'crates/i5h-sql/src/lib.rs', lines 171:0-171:14
+    Name pattern: [i5h_sql::Write]
+    Visibility: public -/
+@[discriminant isize, rust_type "i5h_sql::Write"]
+inductive i5h_sql.Write where
+| Put : Std.U32 → Std.U32 → alloc.vec.Vec i5h_sql.Val → i5h_sql.Write
+| Del : Std.U32 → alloc.vec.Vec i5h_sql.Val → i5h_sql.Write
+| DelWhere : Std.U32 → Std.U32 → i5h_sql.Val → i5h_sql.Write
+
 /-- [atuin_kernel::Principal]
     Source: 'examples/atuin/kernel/src/lib.rs', lines 12:0-15:1
     Visibility: public -/
@@ -27,54 +201,21 @@ inductive Principal where
 | Anonymous : Principal
 | User : Std.U64 → Principal
 
-/-- [atuin_kernel::User]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 43:12-46:13
+/-- [atuin_kernel::Counter]
+    Source: 'crates/i5h-schema/src/lib.rs', lines 111:12-114:13
     Visibility: public -/
-structure User where
-  id : Std.U64
-  username : alloc.vec.Vec Std.U8
-  password : alloc.vec.Vec Std.U8
+structure Counter where
+  next_id : Std.U64
 
-/-- [atuin_kernel::{impl core::clone::Clone for atuin_kernel::User}::clone]:
-    Source: 'examples/atuin/kernel/src/lib.rs', lines 20:13-20:18
+/-- [atuin_kernel::Settings]
+    Source: 'crates/i5h-schema/src/lib.rs', lines 111:12-114:13
     Visibility: public -/
-def User.Insts.CoreCloneClone.clone (self : User) : Result User := do
-  let i ← lift (core.clone.impls.CloneU64.clone self.id)
-  let v ← alloc.vec.CloneVec.clone core.clone.CloneU8 self.username
-  let v1 ← alloc.vec.CloneVec.clone core.clone.CloneU8 self.password
-  ok { id := i, username := v, password := v1 }
-
-/-- Trait implementation: [atuin_kernel::{impl core::clone::Clone for atuin_kernel::User}]
-    Source: 'examples/atuin/kernel/src/lib.rs', lines 20:13-20:18 -/
-@[reducible]
-def User.Insts.CoreCloneClone : core.clone.Clone User := {
-  clone := User.Insts.CoreCloneClone.clone
-}
-
-/-- [atuin_kernel::Session]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 43:12-46:13
-    Visibility: public -/
-structure Session where
-  user : Std.U64
-  token : alloc.vec.Vec Std.U8
-
-/-- [atuin_kernel::{impl core::clone::Clone for atuin_kernel::Session}::clone]:
-    Source: 'examples/atuin/kernel/src/lib.rs', lines 28:13-28:18
-    Visibility: public -/
-def Session.Insts.CoreCloneClone.clone (self : Session) : Result Session := do
-  let i ← lift (core.clone.impls.CloneU64.clone self.user)
-  let v ← alloc.vec.CloneVec.clone core.clone.CloneU8 self.token
-  ok { user := i, token := v }
-
-/-- Trait implementation: [atuin_kernel::{impl core::clone::Clone for atuin_kernel::Session}]
-    Source: 'examples/atuin/kernel/src/lib.rs', lines 28:13-28:18 -/
-@[reducible]
-def Session.Insts.CoreCloneClone : core.clone.Clone Session := {
-  clone := Session.Insts.CoreCloneClone.clone
-}
+structure Settings where
+  open_registration : Bool
+  max_record_size : Std.U64
 
 /-- [atuin_kernel::Record]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 43:12-46:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 111:12-114:13
     Visibility: public -/
 structure Record where
   user : Std.U64
@@ -83,8 +224,49 @@ structure Record where
   idx : Std.U64
   data : alloc.vec.Vec Std.U8
 
+/-- [atuin_kernel::Session]
+    Source: 'crates/i5h-schema/src/lib.rs', lines 111:12-114:13
+    Visibility: public -/
+structure Session where
+  user : Std.U64
+  token : alloc.vec.Vec Std.U8
+
+/-- [atuin_kernel::User]
+    Source: 'crates/i5h-schema/src/lib.rs', lines 111:12-114:13
+    Visibility: public -/
+structure User where
+  id : Std.U64
+  username : alloc.vec.Vec Std.U8
+  password : alloc.vec.Vec Std.U8
+
+/-- [atuin_kernel::Snapshot]
+    Source: 'crates/i5h-schema/src/lib.rs', lines 278:8-280:9
+    Visibility: public -/
+structure Snapshot where
+  counter : Counter
+  settings : Settings
+  users : alloc.vec.Vec User
+  sessions : alloc.vec.Vec Session
+  records : alloc.vec.Vec Record
+
+/-- [atuin_kernel::{impl core::clone::Clone for atuin_kernel::Counter}::clone]:
+    Source: 'examples/atuin/kernel/src/lib.rs', lines 58:13-58:18
+    Visibility: public -/
+def Counter.Insts.CoreCloneClone.clone (self : Counter) : Result Counter := do
+  let i ← lift (core.clone.impls.CloneU64.clone self.next_id)
+  ok { next_id := i }
+
+/-- [atuin_kernel::{impl core::clone::Clone for atuin_kernel::Settings}::clone]:
+    Source: 'examples/atuin/kernel/src/lib.rs', lines 50:13-50:18
+    Visibility: public -/
+def Settings.Insts.CoreCloneClone.clone
+  (self : Settings) : Result Settings := do
+  let b ← lift (core.clone.impls.CloneBool.clone self.open_registration)
+  let i ← lift (core.clone.impls.CloneU64.clone self.max_record_size)
+  ok { open_registration := b, max_record_size := i }
+
 /-- [atuin_kernel::{impl core::clone::Clone for atuin_kernel::Record}::clone]:
-    Source: 'examples/atuin/kernel/src/lib.rs', lines 35:13-35:18
+    Source: 'examples/atuin/kernel/src/lib.rs', lines 44:13-44:18
     Visibility: public -/
 def Record.Insts.CoreCloneClone.clone (self : Record) : Result Record := do
   let i ← lift (core.clone.impls.CloneU64.clone self.user)
@@ -95,53 +277,45 @@ def Record.Insts.CoreCloneClone.clone (self : Record) : Result Record := do
   ok { user := i, host := i1, tag := i2, idx := i3, data := v }
 
 /-- Trait implementation: [atuin_kernel::{impl core::clone::Clone for atuin_kernel::Record}]
-    Source: 'examples/atuin/kernel/src/lib.rs', lines 35:13-35:18 -/
+    Source: 'examples/atuin/kernel/src/lib.rs', lines 44:13-44:18 -/
 @[reducible]
 def Record.Insts.CoreCloneClone : core.clone.Clone Record := {
   clone := Record.Insts.CoreCloneClone.clone
 }
 
-/-- [atuin_kernel::Settings]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 43:12-46:13
+/-- [atuin_kernel::{impl core::clone::Clone for atuin_kernel::Session}::clone]:
+    Source: 'examples/atuin/kernel/src/lib.rs', lines 37:13-37:18
     Visibility: public -/
-structure Settings where
-  open_registration : Bool
-  max_record_size : Std.U64
+def Session.Insts.CoreCloneClone.clone (self : Session) : Result Session := do
+  let i ← lift (core.clone.impls.CloneU64.clone self.user)
+  let v ← alloc.vec.CloneVec.clone core.clone.CloneU8 self.token
+  ok { user := i, token := v }
 
-/-- [atuin_kernel::{impl core::clone::Clone for atuin_kernel::Settings}::clone]:
-    Source: 'examples/atuin/kernel/src/lib.rs', lines 41:13-41:18
-    Visibility: public -/
-def Settings.Insts.CoreCloneClone.clone
-  (self : Settings) : Result Settings := do
-  let b ← lift (core.clone.impls.CloneBool.clone self.open_registration)
-  let i ← lift (core.clone.impls.CloneU64.clone self.max_record_size)
-  ok { open_registration := b, max_record_size := i }
+/-- Trait implementation: [atuin_kernel::{impl core::clone::Clone for atuin_kernel::Session}]
+    Source: 'examples/atuin/kernel/src/lib.rs', lines 37:13-37:18 -/
+@[reducible]
+def Session.Insts.CoreCloneClone : core.clone.Clone Session := {
+  clone := Session.Insts.CoreCloneClone.clone
+}
 
-/-- [atuin_kernel::Counter]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 43:12-46:13
+/-- [atuin_kernel::{impl core::clone::Clone for atuin_kernel::User}::clone]:
+    Source: 'examples/atuin/kernel/src/lib.rs', lines 29:13-29:18
     Visibility: public -/
-structure Counter where
-  next_id : Std.U64
+def User.Insts.CoreCloneClone.clone (self : User) : Result User := do
+  let i ← lift (core.clone.impls.CloneU64.clone self.id)
+  let v ← alloc.vec.CloneVec.clone core.clone.CloneU8 self.username
+  let v1 ← alloc.vec.CloneVec.clone core.clone.CloneU8 self.password
+  ok { id := i, username := v, password := v1 }
 
-/-- [atuin_kernel::{impl core::clone::Clone for atuin_kernel::Counter}::clone]:
-    Source: 'examples/atuin/kernel/src/lib.rs', lines 49:13-49:18
-    Visibility: public -/
-def Counter.Insts.CoreCloneClone.clone (self : Counter) : Result Counter := do
-  let i ← lift (core.clone.impls.CloneU64.clone self.next_id)
-  ok { next_id := i }
-
-/-- [atuin_kernel::Snapshot]
-    Source: 'examples/atuin/kernel/src/lib.rs', lines 57:0-63:1
-    Visibility: public -/
-structure Snapshot where
-  counter : Counter
-  settings : Settings
-  users : alloc.vec.Vec User
-  sessions : alloc.vec.Vec Session
-  records : alloc.vec.Vec Record
+/-- Trait implementation: [atuin_kernel::{impl core::clone::Clone for atuin_kernel::User}]
+    Source: 'examples/atuin/kernel/src/lib.rs', lines 29:13-29:18 -/
+@[reducible]
+def User.Insts.CoreCloneClone : core.clone.Clone User := {
+  clone := User.Insts.CoreCloneClone.clone
+}
 
 /-- [atuin_kernel::{impl core::clone::Clone for atuin_kernel::Snapshot}::clone]:
-    Source: 'examples/atuin/kernel/src/lib.rs', lines 56:9-56:14
+    Source: 'examples/atuin/kernel/src/lib.rs', lines 20:13-20:18
     Visibility: public -/
 def Snapshot.Insts.CoreCloneClone.clone
   (self : Snapshot) : Result Snapshot := do
@@ -779,193 +953,81 @@ def transition_current
   := do
   step actor snap cmd false
 
-/-- [atuin_kernel::put_user]: loop body 0:
-    Source: 'examples/atuin/kernel/src/lib.rs', lines 428:4-436:1 -/
+/-- [atuin_kernel::RECORD_USER]
+    Source: 'examples/atuin/kernel/src/lib.rs', lines 427:0-427:27 -/
+@[global_simps, irreducible] def RECORD_USER : Std.U32 := 0#u32
+
+/-- [atuin_kernel::{atuin_kernel::Record}::to_row]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 135:12-140:13
+    Visibility: public -/
+def Record.to_row (self : Record) : Result (alloc.vec.Vec i5h_sql.Val) := do
+  let v ← U64.Insts.I5h_sqlColumn.to_val self.user
+  let out ← alloc.vec.Vec.push (alloc.vec.Vec.new i5h_sql.Val) v
+  let v1 ← U64.Insts.I5h_sqlColumn.to_val self.host
+  let out1 ← alloc.vec.Vec.push out v1
+  let v2 ← U64.Insts.I5h_sqlColumn.to_val self.tag
+  let out2 ← alloc.vec.Vec.push out1 v2
+  let v3 ← U64.Insts.I5h_sqlColumn.to_val self.idx
+  let out3 ← alloc.vec.Vec.push out2 v3
+  let v4 ← alloc.vec.VecU8.Insts.I5h_sqlColumn.to_val self.data
+  alloc.vec.Vec.push out3 v4
+
+/-- [atuin_kernel::{atuin_kernel::Record}::del_where]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 246:16-251:17
+    Visibility: public -/
 @[rust_loop_body]
-def put_user_loop.body
-  (v : alloc.vec.Vec User) (u : User) (i : Std.Usize) :
-  Result (ControlFlow Std.Usize (alloc.vec.Vec User))
+def Record.del_where_loop.body
+  (v : alloc.vec.Vec Record) (col : Std.U32) (val : i5h_sql.Val)
+  (out : alloc.vec.Vec Record) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Record) × Std.Usize) (alloc.vec.Vec
+    Record))
   := do
   let i1 := alloc.vec.Vec.len v
   if i < i1
   then
-    let u1 ←
-      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice User) v i
-    if u1.id = u.id
-    then
-      let (_, index_mut_back) ←
-        alloc.vec.Vec.index_mut (core.slice.index.SliceIndexUsizeSlice User) v
-          i
-      let v1 := index_mut_back u
-      ok (done v1)
-    else let i2 ← i + 1#usize
-         ok (cont i2)
-  else let v1 ← alloc.vec.Vec.push v u
-       ok (done v1)
-
-/-- [atuin_kernel::put_user]: loop 0:
-    Source: 'examples/atuin/kernel/src/lib.rs', lines 428:4-436:1 -/
-@[rust_loop]
-def put_user_loop
-  (v : alloc.vec.Vec User) (u : User) (i : Std.Usize) :
-  Result (alloc.vec.Vec User)
-  := do
-  loop
-    (fun i1 => put_user_loop.body v u i1)
-    i
-
-/-- [atuin_kernel::put_user]:
-    Source: 'examples/atuin/kernel/src/lib.rs', lines 426:0-436:1 -/
-@[reducible]
-def put_user
-  (v : alloc.vec.Vec User) (u : User) : Result (alloc.vec.Vec User) := do
-  put_user_loop v u 0#usize
-
-/-- [atuin_kernel::put_session]: loop body 0:
-    Source: 'examples/atuin/kernel/src/lib.rs', lines 440:4-448:1 -/
-@[rust_loop_body]
-def put_session_loop.body
-  (v : alloc.vec.Vec Session) (s : Session) (i : Std.Usize) :
-  Result (ControlFlow Std.Usize (alloc.vec.Vec Session))
-  := do
-  let i1 := alloc.vec.Vec.len v
-  if i < i1
-  then
-    let s1 ←
-      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Session) v i
-    if s1.user = s.user
-    then
-      let (_, index_mut_back) ←
-        alloc.vec.Vec.index_mut (core.slice.index.SliceIndexUsizeSlice Session)
-          v i
-      let v1 := index_mut_back s
-      ok (done v1)
-    else let i2 ← i + 1#usize
-         ok (cont i2)
-  else let v1 ← alloc.vec.Vec.push v s
-       ok (done v1)
-
-/-- [atuin_kernel::put_session]: loop 0:
-    Source: 'examples/atuin/kernel/src/lib.rs', lines 440:4-448:1 -/
-@[rust_loop]
-def put_session_loop
-  (v : alloc.vec.Vec Session) (s : Session) (i : Std.Usize) :
-  Result (alloc.vec.Vec Session)
-  := do
-  loop
-    (fun i1 => put_session_loop.body v s i1)
-    i
-
-/-- [atuin_kernel::put_session]:
-    Source: 'examples/atuin/kernel/src/lib.rs', lines 438:0-448:1 -/
-@[reducible]
-def put_session
-  (v : alloc.vec.Vec Session) (s : Session) :
-  Result (alloc.vec.Vec Session)
-  := do
-  put_session_loop v s 0#usize
-
-/-- [atuin_kernel::put_record]: loop body 0:
-    Source: 'examples/atuin/kernel/src/lib.rs', lines 1:0-460:1 -/
-@[rust_loop_body]
-def put_record_loop.body
-  (v : alloc.vec.Vec Record) (r : Record) (i : Std.Usize) :
-  Result (ControlFlow Std.Usize (alloc.vec.Vec Record))
-  := do
-  let i1 := alloc.vec.Vec.len v
-  if i < i1
-  then
-    let r1 ←
+    let r ←
       alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Record) v i
-    if r1.user = r.user
-    then
-      if r1.host = r.host
-      then
-        if r1.tag = r.tag
-        then
-          if r1.idx = r.idx
-          then
-            let (_, index_mut_back) ←
-              alloc.vec.Vec.index_mut (core.slice.index.SliceIndexUsizeSlice
-                Record) v i
-            let v1 := index_mut_back r
-            ok (done v1)
-          else let i2 ← i + 1#usize
-               ok (cont i2)
-        else let i2 ← i + 1#usize
-             ok (cont i2)
-      else let i2 ← i + 1#usize
-           ok (cont i2)
-    else let i2 ← i + 1#usize
-         ok (cont i2)
-  else let v1 ← alloc.vec.Vec.push v r
-       ok (done v1)
-
-/-- [atuin_kernel::put_record]: loop 0:
-    Source: 'examples/atuin/kernel/src/lib.rs', lines 1:0-460:1 -/
-@[rust_loop]
-def put_record_loop
-  (v : alloc.vec.Vec Record) (r : Record) (i : Std.Usize) :
-  Result (alloc.vec.Vec Record)
-  := do
-  loop
-    (fun i1 => put_record_loop.body v r i1)
-    i
-
-/-- [atuin_kernel::put_record]:
-    Source: 'examples/atuin/kernel/src/lib.rs', lines 450:0-460:1 -/
-@[reducible]
-def put_record
-  (v : alloc.vec.Vec Record) (r : Record) : Result (alloc.vec.Vec Record) := do
-  put_record_loop v r 0#usize
-
-/-- [atuin_kernel::del_user]: loop body 0:
-    Source: 'examples/atuin/kernel/src/lib.rs', lines 465:4-470:5 -/
-@[rust_loop_body]
-def del_user_loop.body
-  (v : alloc.vec.Vec User) (id : Std.U64) (out : alloc.vec.Vec User)
-  (i : Std.Usize) :
-  Result (ControlFlow ((alloc.vec.Vec User) × Std.Usize) (alloc.vec.Vec User))
-  := do
-  let i1 := alloc.vec.Vec.len v
-  if i < i1
-  then
-    let u ←
-      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice User) v i
+    let v1 ← Record.to_row r
+    let b ← i5h_sql.has_col v1 col val
     let out1 ←
-      if u.id != id
-      then
+      if b
+      then ok out
+      else
         do
-        let u1 ← User.Insts.CoreCloneClone.clone u
-        alloc.vec.Vec.push out u1
-      else ok out
+        let r1 ← Record.Insts.CoreCloneClone.clone r
+        alloc.vec.Vec.push out r1
     let i2 ← i + 1#usize
     ok (cont (out1, i2))
   else ok (done out)
 
-/-- [atuin_kernel::del_user]: loop 0:
-    Source: 'examples/atuin/kernel/src/lib.rs', lines 465:4-470:5 -/
+/-- [atuin_kernel::{atuin_kernel::Record}::del_where]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 246:16-251:17
+    Visibility: public -/
 @[rust_loop]
-def del_user_loop
-  (v : alloc.vec.Vec User) (id : Std.U64) (out : alloc.vec.Vec User)
-  (i : Std.Usize) :
-  Result (alloc.vec.Vec User)
+def Record.del_where_loop
+  (v : alloc.vec.Vec Record) (col : Std.U32) (val : i5h_sql.Val)
+  (out : alloc.vec.Vec Record) (i : Std.Usize) :
+  Result (alloc.vec.Vec Record)
   := do
   loop
-    (fun (out1, i1) => del_user_loop.body v id out1 i1)
+    (fun (out1, i1) => Record.del_where_loop.body v col val out1 i1)
     (out, i)
 
-/-- [atuin_kernel::del_user]:
-    Source: 'examples/atuin/kernel/src/lib.rs', lines 462:0-472:1 -/
+/-- [atuin_kernel::{atuin_kernel::Record}::del_where]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 243:12-253:13
+    Visibility: public -/
 @[reducible]
-def del_user
-  (v : alloc.vec.Vec User) (id : Std.U64) : Result (alloc.vec.Vec User) := do
-  del_user_loop v id (alloc.vec.Vec.new User) 0#usize
+def Record.del_where
+  (v : alloc.vec.Vec Record) (col : Std.U32) (val : i5h_sql.Val) :
+  Result (alloc.vec.Vec Record)
+  := do
+  Record.del_where_loop v col val (alloc.vec.Vec.new Record) 0#usize
 
-/-- [atuin_kernel::del_session]: loop body 0:
-    Source: 'examples/atuin/kernel/src/lib.rs', lines 477:4-482:5 -/
+/-- [atuin_kernel::{atuin_kernel::Session}::del]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 233:16-238:17
+    Visibility: public -/
 @[rust_loop_body]
-def del_session_loop.body
+def Session.del_loop.body
   (v : alloc.vec.Vec Session) (user : Std.U64) (out : alloc.vec.Vec Session)
   (i : Std.Usize) :
   Result (ControlFlow ((alloc.vec.Vec Session) × Std.Usize) (alloc.vec.Vec
@@ -977,43 +1039,912 @@ def del_session_loop.body
     let s ←
       alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Session) v i
     let out1 ←
-      if s.user != user
-      then
+      if s.user = user
+      then ok out
+      else
         do
         let s1 ← Session.Insts.CoreCloneClone.clone s
         alloc.vec.Vec.push out s1
-      else ok out
     let i2 ← i + 1#usize
     ok (cont (out1, i2))
   else ok (done out)
 
-/-- [atuin_kernel::del_session]: loop 0:
-    Source: 'examples/atuin/kernel/src/lib.rs', lines 477:4-482:5 -/
+/-- [atuin_kernel::{atuin_kernel::Session}::del]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 233:16-238:17
+    Visibility: public -/
 @[rust_loop]
-def del_session_loop
+def Session.del_loop
   (v : alloc.vec.Vec Session) (user : Std.U64) (out : alloc.vec.Vec Session)
   (i : Std.Usize) :
   Result (alloc.vec.Vec Session)
   := do
   loop
-    (fun (out1, i1) => del_session_loop.body v user out1 i1)
+    (fun (out1, i1) => Session.del_loop.body v user out1 i1)
     (out, i)
 
-/-- [atuin_kernel::del_session]:
-    Source: 'examples/atuin/kernel/src/lib.rs', lines 474:0-484:1 -/
+/-- [atuin_kernel::{atuin_kernel::Session}::del]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 230:12-240:13
+    Visibility: public -/
 @[reducible]
-def del_session
+def Session.del
   (v : alloc.vec.Vec Session) (user : Std.U64) :
   Result (alloc.vec.Vec Session)
   := do
-  del_session_loop v user (alloc.vec.Vec.new Session) 0#usize
+  Session.del_loop v user (alloc.vec.Vec.new Session) 0#usize
 
-/-- [atuin_kernel::del_records_of]: loop body 0:
-    Source: 'examples/atuin/kernel/src/lib.rs', lines 489:4-494:5 -/
+/-- [atuin_kernel::{atuin_kernel::User}::del]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 233:16-238:17
+    Visibility: public -/
 @[rust_loop_body]
-def del_records_of_loop.body
-  (v : alloc.vec.Vec Record) (user : Std.U64) (out : alloc.vec.Vec Record)
+def User.del_loop.body
+  (v : alloc.vec.Vec User) (id : Std.U64) (out : alloc.vec.Vec User)
   (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec User) × Std.Usize) (alloc.vec.Vec User))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let u ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice User) v i
+    let out1 ←
+      if u.id = id
+      then ok out
+      else
+        do
+        let u1 ← User.Insts.CoreCloneClone.clone u
+        alloc.vec.Vec.push out u1
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
+  else ok (done out)
+
+/-- [atuin_kernel::{atuin_kernel::User}::del]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 233:16-238:17
+    Visibility: public -/
+@[rust_loop]
+def User.del_loop
+  (v : alloc.vec.Vec User) (id : Std.U64) (out : alloc.vec.Vec User)
+  (i : Std.Usize) :
+  Result (alloc.vec.Vec User)
+  := do
+  loop
+    (fun (out1, i1) => User.del_loop.body v id out1 i1)
+    (out, i)
+
+/-- [atuin_kernel::{atuin_kernel::User}::del]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 230:12-240:13
+    Visibility: public -/
+@[reducible]
+def User.del
+  (v : alloc.vec.Vec User) (id : Std.U64) : Result (alloc.vec.Vec User) := do
+  User.del_loop v id (alloc.vec.Vec.new User) 0#usize
+
+/-- [atuin_kernel::{atuin_kernel::Record}::put]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 219:16-227:13
+    Visibility: public -/
+@[rust_loop_body]
+def Record.put_loop.body
+  (v : alloc.vec.Vec Record) (x : Record) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize (alloc.vec.Vec Record))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let r ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Record) v i
+    if r.user = x.user
+    then
+      if r.host = x.host
+      then
+        if r.tag = x.tag
+        then
+          if r.idx = x.idx
+          then
+            let (_, index_mut_back) ←
+              alloc.vec.Vec.index_mut (core.slice.index.SliceIndexUsizeSlice
+                Record) v i
+            let v1 := index_mut_back x
+            ok (done v1)
+          else let i2 ← i + 1#usize
+               ok (cont i2)
+        else let i2 ← i + 1#usize
+             ok (cont i2)
+      else let i2 ← i + 1#usize
+           ok (cont i2)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else let v1 ← alloc.vec.Vec.push v x
+       ok (done v1)
+
+/-- [atuin_kernel::{atuin_kernel::Record}::put]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 219:16-227:13
+    Visibility: public -/
+@[rust_loop]
+def Record.put_loop
+  (v : alloc.vec.Vec Record) (x : Record) (i : Std.Usize) :
+  Result (alloc.vec.Vec Record)
+  := do
+  loop
+    (fun i1 => Record.put_loop.body v x i1)
+    i
+
+/-- [atuin_kernel::{atuin_kernel::Record}::put]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 217:12-227:13
+    Visibility: public -/
+@[reducible]
+def Record.put
+  (v : alloc.vec.Vec Record) (x : Record) : Result (alloc.vec.Vec Record) := do
+  Record.put_loop v x 0#usize
+
+/-- [atuin_kernel::{atuin_kernel::Session}::put]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 219:16-227:13
+    Visibility: public -/
+@[rust_loop_body]
+def Session.put_loop.body
+  (v : alloc.vec.Vec Session) (x : Session) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize (alloc.vec.Vec Session))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let s ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Session) v i
+    if s.user = x.user
+    then
+      let (_, index_mut_back) ←
+        alloc.vec.Vec.index_mut (core.slice.index.SliceIndexUsizeSlice Session)
+          v i
+      let v1 := index_mut_back x
+      ok (done v1)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else let v1 ← alloc.vec.Vec.push v x
+       ok (done v1)
+
+/-- [atuin_kernel::{atuin_kernel::Session}::put]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 219:16-227:13
+    Visibility: public -/
+@[rust_loop]
+def Session.put_loop
+  (v : alloc.vec.Vec Session) (x : Session) (i : Std.Usize) :
+  Result (alloc.vec.Vec Session)
+  := do
+  loop
+    (fun i1 => Session.put_loop.body v x i1)
+    i
+
+/-- [atuin_kernel::{atuin_kernel::Session}::put]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 217:12-227:13
+    Visibility: public -/
+@[reducible]
+def Session.put
+  (v : alloc.vec.Vec Session) (x : Session) :
+  Result (alloc.vec.Vec Session)
+  := do
+  Session.put_loop v x 0#usize
+
+/-- [atuin_kernel::{atuin_kernel::User}::put]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 219:16-227:13
+    Visibility: public -/
+@[rust_loop_body]
+def User.put_loop.body
+  (v : alloc.vec.Vec User) (x : User) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize (alloc.vec.Vec User))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let u ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice User) v i
+    if u.id = x.id
+    then
+      let (_, index_mut_back) ←
+        alloc.vec.Vec.index_mut (core.slice.index.SliceIndexUsizeSlice User) v
+          i
+      let v1 := index_mut_back x
+      ok (done v1)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else let v1 ← alloc.vec.Vec.push v x
+       ok (done v1)
+
+/-- [atuin_kernel::{atuin_kernel::User}::put]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 219:16-227:13
+    Visibility: public -/
+@[rust_loop]
+def User.put_loop
+  (v : alloc.vec.Vec User) (x : User) (i : Std.Usize) :
+  Result (alloc.vec.Vec User)
+  := do
+  loop
+    (fun i1 => User.put_loop.body v x i1)
+    i
+
+/-- [atuin_kernel::{atuin_kernel::User}::put]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 217:12-227:13
+    Visibility: public -/
+@[reducible]
+def User.put
+  (v : alloc.vec.Vec User) (x : User) : Result (alloc.vec.Vec User) := do
+  User.put_loop v x 0#usize
+
+/-- [atuin_kernel::apply_write]:
+    Source: 'examples/atuin/kernel/src/lib.rs', lines 431:0-441:1
+    Visibility: public -/
+def apply_write (s : Snapshot) (w : Write) : Result Snapshot := do
+  match w with
+  | Write.PutUser u => let v ← User.put s.users u
+                       ok { s with users := v }
+  | Write.DelUser id => let v ← User.del s.users id
+                        ok { s with users := v }
+  | Write.PutSession x =>
+    let v ← Session.put s.sessions x
+    ok { s with sessions := v }
+  | Write.DelSession u =>
+    let v ← Session.del s.sessions u
+    ok { s with sessions := v }
+  | Write.PutRecord r =>
+    let v ← Record.put s.records r
+    ok { s with records := v }
+  | Write.DelRecordsOf u =>
+    let v ← U64.Insts.I5h_sqlColumn.to_val u
+    let v1 ← Record.del_where s.records RECORD_USER v
+    ok { s with records := v1 }
+  | Write.SetCounter c => ok { s with counter := c }
+
+/-- [atuin_kernel::{atuin_kernel::Record}::TABLE]
+    Source: 'crates/i5h-schema/src/lib.rs', lines 132:12-132:60
+    Visibility: public -/
+@[global_simps, irreducible] def Record.TABLE : Std.U32 := 2#u32
+
+/-- [atuin_kernel::{atuin_kernel::Record}::sql_del_where]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 263:12-265:13
+    Visibility: public -/
+def Record.sql_del_where
+  (col : Std.U32) (val : i5h_sql.Val) : Result i5h_sql.Write := do
+  ok (i5h_sql.Write.DelWhere Record.TABLE col val)
+
+/-- [atuin_kernel::{atuin_kernel::Session}::TABLE]
+    Source: 'crates/i5h-schema/src/lib.rs', lines 132:12-132:60
+    Visibility: public -/
+@[global_simps, irreducible] def Session.TABLE : Std.U32 := 1#u32
+
+/-- [atuin_kernel::{atuin_kernel::Session}::sql_del]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 256:12-260:13
+    Visibility: public -/
+def Session.sql_del (user : Std.U64) : Result i5h_sql.Write := do
+  let v ← U64.Insts.I5h_sqlColumn.to_val user
+  let key ← alloc.vec.Vec.push (alloc.vec.Vec.new i5h_sql.Val) v
+  ok (i5h_sql.Write.Del Session.TABLE key)
+
+/-- [atuin_kernel::{atuin_kernel::User}::TABLE]
+    Source: 'crates/i5h-schema/src/lib.rs', lines 132:12-132:60
+    Visibility: public -/
+@[global_simps, irreducible] def User.TABLE : Std.U32 := 0#u32
+
+/-- [atuin_kernel::{atuin_kernel::User}::sql_del]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 256:12-260:13
+    Visibility: public -/
+def User.sql_del (id : Std.U64) : Result i5h_sql.Write := do
+  let v ← U64.Insts.I5h_sqlColumn.to_val id
+  let key ← alloc.vec.Vec.push (alloc.vec.Vec.new i5h_sql.Val) v
+  ok (i5h_sql.Write.Del User.TABLE key)
+
+/-- [atuin_kernel::{atuin_kernel::Counter}::to_row]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 135:12-140:13
+    Visibility: public -/
+def Counter.to_row (self : Counter) : Result (alloc.vec.Vec i5h_sql.Val) := do
+  let v ← U64.Insts.I5h_sqlColumn.to_val self.next_id
+  alloc.vec.Vec.push (alloc.vec.Vec.new i5h_sql.Val) v
+
+/-- [atuin_kernel::{atuin_kernel::Counter}::KEY_LEN]
+    Source: 'crates/i5h-schema/src/lib.rs', lines 133:12-133:62
+    Visibility: public -/
+@[global_simps, irreducible] def Counter.KEY_LEN : Std.U32 := 0#u32
+
+/-- [atuin_kernel::{atuin_kernel::Counter}::TABLE]
+    Source: 'crates/i5h-schema/src/lib.rs', lines 132:12-132:60
+    Visibility: public -/
+@[global_simps, irreducible] def Counter.TABLE : Std.U32 := 4#u32
+
+/-- [atuin_kernel::{atuin_kernel::Counter}::sql_put]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 186:12-188:13
+    Visibility: public -/
+def Counter.sql_put (self : Counter) : Result i5h_sql.Write := do
+  let v ← Counter.to_row self
+  ok (i5h_sql.Write.Put Counter.TABLE Counter.KEY_LEN v)
+
+/-- [atuin_kernel::{atuin_kernel::Record}::KEY_LEN]
+    Source: 'crates/i5h-schema/src/lib.rs', lines 133:12-133:62
+    Visibility: public -/
+@[global_simps, irreducible] def Record.KEY_LEN : Std.U32 := 4#u32
+
+/-- [atuin_kernel::{atuin_kernel::Record}::sql_put]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 186:12-188:13
+    Visibility: public -/
+def Record.sql_put (self : Record) : Result i5h_sql.Write := do
+  let v ← Record.to_row self
+  ok (i5h_sql.Write.Put Record.TABLE Record.KEY_LEN v)
+
+/-- [atuin_kernel::{atuin_kernel::Session}::to_row]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 135:12-140:13
+    Visibility: public -/
+def Session.to_row (self : Session) : Result (alloc.vec.Vec i5h_sql.Val) := do
+  let v ← U64.Insts.I5h_sqlColumn.to_val self.user
+  let out ← alloc.vec.Vec.push (alloc.vec.Vec.new i5h_sql.Val) v
+  let v1 ← alloc.vec.VecU8.Insts.I5h_sqlColumn.to_val self.token
+  alloc.vec.Vec.push out v1
+
+/-- [atuin_kernel::{atuin_kernel::Session}::KEY_LEN]
+    Source: 'crates/i5h-schema/src/lib.rs', lines 133:12-133:62
+    Visibility: public -/
+@[global_simps, irreducible] def Session.KEY_LEN : Std.U32 := 1#u32
+
+/-- [atuin_kernel::{atuin_kernel::Session}::sql_put]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 186:12-188:13
+    Visibility: public -/
+def Session.sql_put (self : Session) : Result i5h_sql.Write := do
+  let v ← Session.to_row self
+  ok (i5h_sql.Write.Put Session.TABLE Session.KEY_LEN v)
+
+/-- [atuin_kernel::{atuin_kernel::User}::to_row]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 135:12-140:13
+    Visibility: public -/
+def User.to_row (self : User) : Result (alloc.vec.Vec i5h_sql.Val) := do
+  let v ← U64.Insts.I5h_sqlColumn.to_val self.id
+  let out ← alloc.vec.Vec.push (alloc.vec.Vec.new i5h_sql.Val) v
+  let v1 ← alloc.vec.VecU8.Insts.I5h_sqlColumn.to_val self.username
+  let out1 ← alloc.vec.Vec.push out v1
+  let v2 ← alloc.vec.VecU8.Insts.I5h_sqlColumn.to_val self.password
+  alloc.vec.Vec.push out1 v2
+
+/-- [atuin_kernel::{atuin_kernel::User}::KEY_LEN]
+    Source: 'crates/i5h-schema/src/lib.rs', lines 133:12-133:62
+    Visibility: public -/
+@[global_simps, irreducible] def User.KEY_LEN : Std.U32 := 1#u32
+
+/-- [atuin_kernel::{atuin_kernel::User}::sql_put]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 186:12-188:13
+    Visibility: public -/
+def User.sql_put (self : User) : Result i5h_sql.Write := do
+  let v ← User.to_row self
+  ok (i5h_sql.Write.Put User.TABLE User.KEY_LEN v)
+
+/-- [atuin_kernel::sql_write]:
+    Source: 'examples/atuin/kernel/src/lib.rs', lines 444:0-454:1 -/
+def sql_write
+  (w : Write) (out : alloc.vec.Vec i5h_sql.Write) :
+  Result (alloc.vec.Vec i5h_sql.Write)
+  := do
+  match w with
+  | Write.PutUser u => let w1 ← User.sql_put u
+                       alloc.vec.Vec.push out w1
+  | Write.DelUser id => let w1 ← User.sql_del id
+                        alloc.vec.Vec.push out w1
+  | Write.PutSession x =>
+    let w1 ← Session.sql_put x
+    alloc.vec.Vec.push out w1
+  | Write.DelSession u =>
+    let w1 ← Session.sql_del u
+    alloc.vec.Vec.push out w1
+  | Write.PutRecord r => let w1 ← Record.sql_put r
+                         alloc.vec.Vec.push out w1
+  | Write.DelRecordsOf u =>
+    let v ← U64.Insts.I5h_sqlColumn.to_val u
+    let w1 ← Record.sql_del_where RECORD_USER v
+    alloc.vec.Vec.push out w1
+  | Write.SetCounter c =>
+    let w1 ← Counter.sql_put c
+    alloc.vec.Vec.push out w1
+
+/-- [atuin_kernel::{atuin_kernel::Settings}::TABLE]
+    Source: 'crates/i5h-schema/src/lib.rs', lines 132:12-132:60
+    Visibility: public -/
+@[global_simps, irreducible] def Settings.TABLE : Std.U32 := 3#u32
+
+/-- [atuin_kernel::{atuin_kernel::Settings}::KEY_LEN]
+    Source: 'crates/i5h-schema/src/lib.rs', lines 133:12-133:62
+    Visibility: public -/
+@[global_simps, irreducible] def Settings.KEY_LEN : Std.U32 := 0#u32
+
+/-- [atuin_kernel::{atuin_kernel::Settings}::to_row]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 135:12-140:13
+    Visibility: public -/
+def Settings.to_row
+  (self : Settings) : Result (alloc.vec.Vec i5h_sql.Val) := do
+  let v ← Bool.Insts.I5h_sqlColumn.to_val self.open_registration
+  let out ← alloc.vec.Vec.push (alloc.vec.Vec.new i5h_sql.Val) v
+  let v1 ← U64.Insts.I5h_sqlColumn.to_val self.max_record_size
+  alloc.vec.Vec.push out v1
+
+/-- [atuin_kernel::{atuin_kernel::Settings}::from_row]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 143:12-164:13
+    Visibility: public -/
+def Settings.from_row
+  (row : alloc.vec.Vec i5h_sql.Val) : Result (Option Settings) := do
+  let i := alloc.vec.Vec.len row
+  let i1 ← 0#usize + 1#usize
+  let i2 ← i1 + 1#usize
+  if i != i2
+  then ok none
+  else
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice i5h_sql.Val)
+        row 0#usize
+    let o ← Bool.Insts.I5h_sqlColumn.from_val v
+    match o with
+    | none => ok none
+    | some x =>
+      let v1 ←
+        alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice i5h_sql.Val)
+          row i1
+      let o1 ← U64.Insts.I5h_sqlColumn.from_val v1
+      match o1 with
+      | none => ok none
+      | some x1 =>
+        let _ ← i1 + 1#usize
+        ok (some { open_registration := x, max_record_size := x1 })
+
+/-- [atuin_kernel::{atuin_kernel::Counter}::from_row]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 143:12-164:13
+    Visibility: public -/
+def Counter.from_row
+  (row : alloc.vec.Vec i5h_sql.Val) : Result (Option Counter) := do
+  let i := alloc.vec.Vec.len row
+  let i1 ← 0#usize + 1#usize
+  if i != i1
+  then ok none
+  else
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice i5h_sql.Val)
+        row 0#usize
+    let o ← U64.Insts.I5h_sqlColumn.from_val v
+    match o with
+    | none => ok none
+    | some x => ok (some { next_id := x })
+
+/-- [atuin_kernel::{atuin_kernel::User}::from_row]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 143:12-164:13
+    Visibility: public -/
+def User.from_row
+  (row : alloc.vec.Vec i5h_sql.Val) : Result (Option User) := do
+  let i := alloc.vec.Vec.len row
+  let i1 ← 0#usize + 1#usize
+  let i2 ← i1 + 1#usize
+  let i3 ← i2 + 1#usize
+  if i != i3
+  then ok none
+  else
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice i5h_sql.Val)
+        row 0#usize
+    let o ← U64.Insts.I5h_sqlColumn.from_val v
+    match o with
+    | none => ok none
+    | some x =>
+      let v1 ←
+        alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice i5h_sql.Val)
+          row i1
+      let o1 ← alloc.vec.VecU8.Insts.I5h_sqlColumn.from_val v1
+      match o1 with
+      | none => ok none
+      | some x1 =>
+        let i4 ← i1 + 1#usize
+        let v2 ←
+          alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+            i5h_sql.Val) row i4
+        let o2 ← alloc.vec.VecU8.Insts.I5h_sqlColumn.from_val v2
+        match o2 with
+        | none => ok none
+        | some x2 =>
+          let _ ← i4 + 1#usize
+          ok (some { id := x, username := x1, password := x2 })
+
+/-- [atuin_kernel::{atuin_kernel::Session}::from_row]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 143:12-164:13
+    Visibility: public -/
+def Session.from_row
+  (row : alloc.vec.Vec i5h_sql.Val) : Result (Option Session) := do
+  let i := alloc.vec.Vec.len row
+  let i1 ← 0#usize + 1#usize
+  let i2 ← i1 + 1#usize
+  if i != i2
+  then ok none
+  else
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice i5h_sql.Val)
+        row 0#usize
+    let o ← U64.Insts.I5h_sqlColumn.from_val v
+    match o with
+    | none => ok none
+    | some x =>
+      let v1 ←
+        alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice i5h_sql.Val)
+          row i1
+      let o1 ← alloc.vec.VecU8.Insts.I5h_sqlColumn.from_val v1
+      match o1 with
+      | none => ok none
+      | some x1 => let _ ← i1 + 1#usize
+                   ok (some { user := x, token := x1 })
+
+/-- [atuin_kernel::{atuin_kernel::Record}::from_row]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 143:12-164:13
+    Visibility: public -/
+def Record.from_row
+  (row : alloc.vec.Vec i5h_sql.Val) : Result (Option Record) := do
+  let i := alloc.vec.Vec.len row
+  let i1 ← 0#usize + 1#usize
+  let i2 ← i1 + 1#usize
+  let i3 ← i2 + 1#usize
+  let i4 ← i3 + 1#usize
+  let i5 ← i4 + 1#usize
+  if i != i5
+  then ok none
+  else
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice i5h_sql.Val)
+        row 0#usize
+    let o ← U64.Insts.I5h_sqlColumn.from_val v
+    match o with
+    | none => ok none
+    | some x =>
+      let v1 ←
+        alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice i5h_sql.Val)
+          row i1
+      let o1 ← U64.Insts.I5h_sqlColumn.from_val v1
+      match o1 with
+      | none => ok none
+      | some x1 =>
+        let i6 ← i1 + 1#usize
+        let v2 ←
+          alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+            i5h_sql.Val) row i6
+        let o2 ← U64.Insts.I5h_sqlColumn.from_val v2
+        match o2 with
+        | none => ok none
+        | some x2 =>
+          let i7 ← i6 + 1#usize
+          let v3 ←
+            alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+              i5h_sql.Val) row i7
+          let o3 ← U64.Insts.I5h_sqlColumn.from_val v3
+          match o3 with
+          | none => ok none
+          | some x3 =>
+            let i8 ← i7 + 1#usize
+            let v4 ←
+              alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+                i5h_sql.Val) row i8
+            let o4 ← alloc.vec.VecU8.Insts.I5h_sqlColumn.from_val v4
+            match o4 with
+            | none => ok none
+            | some x4 =>
+              let _ ← i8 + 1#usize
+              ok (some
+                { user := x, host := x1, tag := x2, idx := x3, data := x4 })
+
+/-- [atuin_kernel::{atuin_kernel::User}::from_rows]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Visibility: public -/
+@[rust_loop_body]
+def User.from_rows_loop.body
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)) (out : alloc.vec.Vec User)
+  (ok1 : Bool) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec User) × Bool × Std.Usize)
+    ((alloc.vec.Vec User) × Bool))
+  := do
+  let i1 := alloc.vec.Vec.len rows
+  if i < i1
+  then
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice (alloc.vec.Vec
+        i5h_sql.Val)) rows i
+    let o ← User.from_row v
+    let (out1, ok2) ←
+      match o with
+      | none => ok (out, false)
+      | some x => do
+                  let out2 ← alloc.vec.Vec.push out x
+                  ok (out2, ok1)
+    let i2 ← i + 1#usize
+    ok (cont (out1, ok2, i2))
+  else ok (done (out, ok1))
+
+/-- [atuin_kernel::{atuin_kernel::User}::from_rows]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Visibility: public -/
+@[rust_loop]
+def User.from_rows_loop
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)) (out : alloc.vec.Vec User)
+  (ok1 : Bool) (i : Std.Usize) :
+  Result ((alloc.vec.Vec User) × Bool)
+  := do
+  loop
+    (fun (out1, ok2, i1) => User.from_rows_loop.body rows out1 ok2 i1)
+    (out, ok1, i)
+
+/-- [atuin_kernel::{atuin_kernel::User}::from_rows]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 167:12-183:13
+    Visibility: public -/
+def User.from_rows
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)) :
+  Result (Option (alloc.vec.Vec User))
+  := do
+  let (out, ok1) ←
+    User.from_rows_loop rows (alloc.vec.Vec.new User) true 0#usize
+  if ok1
+  then ok (some out)
+  else ok none
+
+/-- [atuin_kernel::{atuin_kernel::Session}::from_rows]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Visibility: public -/
+@[rust_loop_body]
+def Session.from_rows_loop.body
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val))
+  (out : alloc.vec.Vec Session) (ok1 : Bool) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Session) × Bool × Std.Usize)
+    ((alloc.vec.Vec Session) × Bool))
+  := do
+  let i1 := alloc.vec.Vec.len rows
+  if i < i1
+  then
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice (alloc.vec.Vec
+        i5h_sql.Val)) rows i
+    let o ← Session.from_row v
+    let (out1, ok2) ←
+      match o with
+      | none => ok (out, false)
+      | some x => do
+                  let out2 ← alloc.vec.Vec.push out x
+                  ok (out2, ok1)
+    let i2 ← i + 1#usize
+    ok (cont (out1, ok2, i2))
+  else ok (done (out, ok1))
+
+/-- [atuin_kernel::{atuin_kernel::Session}::from_rows]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Visibility: public -/
+@[rust_loop]
+def Session.from_rows_loop
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val))
+  (out : alloc.vec.Vec Session) (ok1 : Bool) (i : Std.Usize) :
+  Result ((alloc.vec.Vec Session) × Bool)
+  := do
+  loop
+    (fun (out1, ok2, i1) => Session.from_rows_loop.body rows out1 ok2 i1)
+    (out, ok1, i)
+
+/-- [atuin_kernel::{atuin_kernel::Session}::from_rows]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 167:12-183:13
+    Visibility: public -/
+def Session.from_rows
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)) :
+  Result (Option (alloc.vec.Vec Session))
+  := do
+  let (out, ok1) ←
+    Session.from_rows_loop rows (alloc.vec.Vec.new Session) true 0#usize
+  if ok1
+  then ok (some out)
+  else ok none
+
+/-- [atuin_kernel::{atuin_kernel::Record}::from_rows]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Visibility: public -/
+@[rust_loop_body]
+def Record.from_rows_loop.body
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val))
+  (out : alloc.vec.Vec Record) (ok1 : Bool) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Record) × Bool × Std.Usize)
+    ((alloc.vec.Vec Record) × Bool))
+  := do
+  let i1 := alloc.vec.Vec.len rows
+  if i < i1
+  then
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice (alloc.vec.Vec
+        i5h_sql.Val)) rows i
+    let o ← Record.from_row v
+    let (out1, ok2) ←
+      match o with
+      | none => ok (out, false)
+      | some x => do
+                  let out2 ← alloc.vec.Vec.push out x
+                  ok (out2, ok1)
+    let i2 ← i + 1#usize
+    ok (cont (out1, ok2, i2))
+  else ok (done (out, ok1))
+
+/-- [atuin_kernel::{atuin_kernel::Record}::from_rows]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Visibility: public -/
+@[rust_loop]
+def Record.from_rows_loop
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val))
+  (out : alloc.vec.Vec Record) (ok1 : Bool) (i : Std.Usize) :
+  Result ((alloc.vec.Vec Record) × Bool)
+  := do
+  loop
+    (fun (out1, ok2, i1) => Record.from_rows_loop.body rows out1 ok2 i1)
+    (out, ok1, i)
+
+/-- [atuin_kernel::{atuin_kernel::Record}::from_rows]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 167:12-183:13
+    Visibility: public -/
+def Record.from_rows
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)) :
+  Result (Option (alloc.vec.Vec Record))
+  := do
+  let (out, ok1) ←
+    Record.from_rows_loop rows (alloc.vec.Vec.new Record) true 0#usize
+  if ok1
+  then ok (some out)
+  else ok none
+
+/-- [atuin_kernel::{atuin_kernel::Settings}::from_rows]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Visibility: public -/
+@[rust_loop_body]
+def Settings.from_rows_loop.body
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val))
+  (out : alloc.vec.Vec Settings) (ok1 : Bool) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Settings) × Bool × Std.Usize)
+    ((alloc.vec.Vec Settings) × Bool))
+  := do
+  let i1 := alloc.vec.Vec.len rows
+  if i < i1
+  then
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice (alloc.vec.Vec
+        i5h_sql.Val)) rows i
+    let o ← Settings.from_row v
+    let (out1, ok2) ←
+      match o with
+      | none => ok (out, false)
+      | some x => do
+                  let out2 ← alloc.vec.Vec.push out x
+                  ok (out2, ok1)
+    let i2 ← i + 1#usize
+    ok (cont (out1, ok2, i2))
+  else ok (done (out, ok1))
+
+/-- [atuin_kernel::{atuin_kernel::Settings}::from_rows]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Visibility: public -/
+@[rust_loop]
+def Settings.from_rows_loop
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val))
+  (out : alloc.vec.Vec Settings) (ok1 : Bool) (i : Std.Usize) :
+  Result ((alloc.vec.Vec Settings) × Bool)
+  := do
+  loop
+    (fun (out1, ok2, i1) => Settings.from_rows_loop.body rows out1 ok2 i1)
+    (out, ok1, i)
+
+/-- [atuin_kernel::{atuin_kernel::Settings}::from_rows]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 167:12-183:13
+    Visibility: public -/
+def Settings.from_rows
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)) :
+  Result (Option (alloc.vec.Vec Settings))
+  := do
+  let (out, ok1) ←
+    Settings.from_rows_loop rows (alloc.vec.Vec.new Settings) true 0#usize
+  if ok1
+  then ok (some out)
+  else ok none
+
+/-- [atuin_kernel::{atuin_kernel::Counter}::from_rows]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Visibility: public -/
+@[rust_loop_body]
+def Counter.from_rows_loop.body
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val))
+  (out : alloc.vec.Vec Counter) (ok1 : Bool) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Counter) × Bool × Std.Usize)
+    ((alloc.vec.Vec Counter) × Bool))
+  := do
+  let i1 := alloc.vec.Vec.len rows
+  if i < i1
+  then
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice (alloc.vec.Vec
+        i5h_sql.Val)) rows i
+    let o ← Counter.from_row v
+    let (out1, ok2) ←
+      match o with
+      | none => ok (out, false)
+      | some x => do
+                  let out2 ← alloc.vec.Vec.push out x
+                  ok (out2, ok1)
+    let i2 ← i + 1#usize
+    ok (cont (out1, ok2, i2))
+  else ok (done (out, ok1))
+
+/-- [atuin_kernel::{atuin_kernel::Counter}::from_rows]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Visibility: public -/
+@[rust_loop]
+def Counter.from_rows_loop
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val))
+  (out : alloc.vec.Vec Counter) (ok1 : Bool) (i : Std.Usize) :
+  Result ((alloc.vec.Vec Counter) × Bool)
+  := do
+  loop
+    (fun (out1, ok2, i1) => Counter.from_rows_loop.body rows out1 ok2 i1)
+    (out, ok1, i)
+
+/-- [atuin_kernel::{atuin_kernel::Counter}::from_rows]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 167:12-183:13
+    Visibility: public -/
+def Counter.from_rows
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)) :
+  Result (Option (alloc.vec.Vec Counter))
+  := do
+  let (out, ok1) ←
+    Counter.from_rows_loop rows (alloc.vec.Vec.new Counter) true 0#usize
+  if ok1
+  then ok (some out)
+  else ok none
+
+/-- [atuin_kernel::{atuin_kernel::Settings}::sql_put]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 186:12-188:13
+    Visibility: public -/
+def Settings.sql_put (self : Settings) : Result i5h_sql.Write := do
+  let v ← Settings.to_row self
+  ok (i5h_sql.Write.Put Settings.TABLE Settings.KEY_LEN v)
+
+/-- [atuin_kernel::{atuin_kernel::Settings}::from_one]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 203:12-211:13
+    Visibility: public -/
+def Settings.from_one
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)) :
+  Result (Option Settings)
+  := do
+  let i := alloc.vec.Vec.len rows
+  if i = 0#usize
+  then
+    let b ← Bool.Insts.I5h_sqlZero.zero
+    let i1 ← U64.Insts.I5h_sqlZero.zero
+    ok (some { open_registration := b, max_record_size := i1 })
+  else
+    let i1 := alloc.vec.Vec.len rows
+    if i1 = 1#usize
+    then
+      let v ←
+        alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+          (alloc.vec.Vec i5h_sql.Val)) rows 0#usize
+      Settings.from_row v
+    else ok none
+
+/-- [atuin_kernel::{atuin_kernel::Counter}::from_one]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 203:12-211:13
+    Visibility: public -/
+def Counter.from_one
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)) :
+  Result (Option Counter)
+  := do
+  let i := alloc.vec.Vec.len rows
+  if i = 0#usize
+  then let i1 ← U64.Insts.I5h_sqlZero.zero
+       ok (some { next_id := i1 })
+  else
+    let i1 := alloc.vec.Vec.len rows
+    if i1 = 1#usize
+    then
+      let v ←
+        alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+          (alloc.vec.Vec i5h_sql.Val)) rows 0#usize
+      Counter.from_row v
+    else ok none
+
+/-- [atuin_kernel::{atuin_kernel::Record}::del]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 233:16-238:17
+    Visibility: public -/
+@[rust_loop_body]
+def Record.del_loop.body
+  (v : alloc.vec.Vec Record) (user : Std.U64) (host : Std.U64) (tag : Std.U64)
+  (idx : Std.U64) (out : alloc.vec.Vec Record) (i : Std.Usize) :
   Result (ControlFlow ((alloc.vec.Vec Record) × Std.Usize) (alloc.vec.Vec
     Record))
   := do
@@ -1023,62 +1954,235 @@ def del_records_of_loop.body
     let r ←
       alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Record) v i
     let out1 ←
-      if r.user != user
+      if r.user = user
       then
+        if r.host = host
+        then
+          if r.tag = tag
+          then
+            if r.idx = idx
+            then ok out
+            else
+              do
+              let r1 ← Record.Insts.CoreCloneClone.clone r
+              alloc.vec.Vec.push out r1
+          else
+            do
+            let r1 ← Record.Insts.CoreCloneClone.clone r
+            alloc.vec.Vec.push out r1
+        else
+          do
+          let r1 ← Record.Insts.CoreCloneClone.clone r
+          alloc.vec.Vec.push out r1
+      else
         do
         let r1 ← Record.Insts.CoreCloneClone.clone r
         alloc.vec.Vec.push out r1
-      else ok out
     let i2 ← i + 1#usize
     ok (cont (out1, i2))
   else ok (done out)
 
-/-- [atuin_kernel::del_records_of]: loop 0:
-    Source: 'examples/atuin/kernel/src/lib.rs', lines 489:4-494:5 -/
+/-- [atuin_kernel::{atuin_kernel::Record}::del]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 233:16-238:17
+    Visibility: public -/
 @[rust_loop]
-def del_records_of_loop
-  (v : alloc.vec.Vec Record) (user : Std.U64) (out : alloc.vec.Vec Record)
-  (i : Std.Usize) :
+def Record.del_loop
+  (v : alloc.vec.Vec Record) (user : Std.U64) (host : Std.U64) (tag : Std.U64)
+  (idx : Std.U64) (out : alloc.vec.Vec Record) (i : Std.Usize) :
   Result (alloc.vec.Vec Record)
   := do
   loop
-    (fun (out1, i1) => del_records_of_loop.body v user out1 i1)
+    (fun (out1, i1) => Record.del_loop.body v user host tag idx out1 i1)
     (out, i)
 
-/-- [atuin_kernel::del_records_of]:
-    Source: 'examples/atuin/kernel/src/lib.rs', lines 486:0-496:1 -/
+/-- [atuin_kernel::{atuin_kernel::Record}::del]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 230:12-240:13
+    Visibility: public -/
 @[reducible]
-def del_records_of
-  (v : alloc.vec.Vec Record) (user : Std.U64) :
+def Record.del
+  (v : alloc.vec.Vec Record) (user : Std.U64) (host : Std.U64) (tag : Std.U64)
+  (idx : Std.U64) :
   Result (alloc.vec.Vec Record)
   := do
-  del_records_of_loop v user (alloc.vec.Vec.new Record) 0#usize
+  Record.del_loop v user host tag idx (alloc.vec.Vec.new Record) 0#usize
 
-/-- [atuin_kernel::apply_write]:
-    Source: 'examples/atuin/kernel/src/lib.rs', lines 498:0-508:1
+/-- [atuin_kernel::{atuin_kernel::User}::del_where]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 246:16-251:17
     Visibility: public -/
-def apply_write (s : Snapshot) (w : Write) : Result Snapshot := do
-  match w with
-  | Write.PutUser u => let v ← put_user s.users u
-                       ok { s with users := v }
-  | Write.DelUser id => let v ← del_user s.users id
-                        ok { s with users := v }
-  | Write.PutSession x =>
-    let v ← put_session s.sessions x
-    ok { s with sessions := v }
-  | Write.DelSession u =>
-    let v ← del_session s.sessions u
-    ok { s with sessions := v }
-  | Write.PutRecord r =>
-    let v ← put_record s.records r
-    ok { s with records := v }
-  | Write.DelRecordsOf u =>
-    let v ← del_records_of s.records u
-    ok { s with records := v }
-  | Write.SetCounter c => ok { s with counter := c }
+@[rust_loop_body]
+def User.del_where_loop.body
+  (v : alloc.vec.Vec User) (col : Std.U32) (val : i5h_sql.Val)
+  (out : alloc.vec.Vec User) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec User) × Std.Usize) (alloc.vec.Vec User))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let u ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice User) v i
+    let v1 ← User.to_row u
+    let b ← i5h_sql.has_col v1 col val
+    let out1 ←
+      if b
+      then ok out
+      else
+        do
+        let u1 ← User.Insts.CoreCloneClone.clone u
+        alloc.vec.Vec.push out u1
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
+  else ok (done out)
+
+/-- [atuin_kernel::{atuin_kernel::User}::del_where]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 246:16-251:17
+    Visibility: public -/
+@[rust_loop]
+def User.del_where_loop
+  (v : alloc.vec.Vec User) (col : Std.U32) (val : i5h_sql.Val)
+  (out : alloc.vec.Vec User) (i : Std.Usize) :
+  Result (alloc.vec.Vec User)
+  := do
+  loop
+    (fun (out1, i1) => User.del_where_loop.body v col val out1 i1)
+    (out, i)
+
+/-- [atuin_kernel::{atuin_kernel::User}::del_where]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 243:12-253:13
+    Visibility: public -/
+@[reducible]
+def User.del_where
+  (v : alloc.vec.Vec User) (col : Std.U32) (val : i5h_sql.Val) :
+  Result (alloc.vec.Vec User)
+  := do
+  User.del_where_loop v col val (alloc.vec.Vec.new User) 0#usize
+
+/-- [atuin_kernel::{atuin_kernel::Session}::del_where]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 246:16-251:17
+    Visibility: public -/
+@[rust_loop_body]
+def Session.del_where_loop.body
+  (v : alloc.vec.Vec Session) (col : Std.U32) (val : i5h_sql.Val)
+  (out : alloc.vec.Vec Session) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Session) × Std.Usize) (alloc.vec.Vec
+    Session))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let s ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Session) v i
+    let v1 ← Session.to_row s
+    let b ← i5h_sql.has_col v1 col val
+    let out1 ←
+      if b
+      then ok out
+      else
+        do
+        let s1 ← Session.Insts.CoreCloneClone.clone s
+        alloc.vec.Vec.push out s1
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
+  else ok (done out)
+
+/-- [atuin_kernel::{atuin_kernel::Session}::del_where]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 246:16-251:17
+    Visibility: public -/
+@[rust_loop]
+def Session.del_where_loop
+  (v : alloc.vec.Vec Session) (col : Std.U32) (val : i5h_sql.Val)
+  (out : alloc.vec.Vec Session) (i : Std.Usize) :
+  Result (alloc.vec.Vec Session)
+  := do
+  loop
+    (fun (out1, i1) => Session.del_where_loop.body v col val out1 i1)
+    (out, i)
+
+/-- [atuin_kernel::{atuin_kernel::Session}::del_where]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 243:12-253:13
+    Visibility: public -/
+@[reducible]
+def Session.del_where
+  (v : alloc.vec.Vec Session) (col : Std.U32) (val : i5h_sql.Val) :
+  Result (alloc.vec.Vec Session)
+  := do
+  Session.del_where_loop v col val (alloc.vec.Vec.new Session) 0#usize
+
+/-- [atuin_kernel::{atuin_kernel::Record}::sql_del]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 256:12-260:13
+    Visibility: public -/
+def Record.sql_del
+  (user : Std.U64) (host : Std.U64) (tag : Std.U64) (idx : Std.U64) :
+  Result i5h_sql.Write
+  := do
+  let v ← U64.Insts.I5h_sqlColumn.to_val user
+  let key ← alloc.vec.Vec.push (alloc.vec.Vec.new i5h_sql.Val) v
+  let v1 ← U64.Insts.I5h_sqlColumn.to_val host
+  let key1 ← alloc.vec.Vec.push key v1
+  let v2 ← U64.Insts.I5h_sqlColumn.to_val tag
+  let key2 ← alloc.vec.Vec.push key1 v2
+  let v3 ← U64.Insts.I5h_sqlColumn.to_val idx
+  let key3 ← alloc.vec.Vec.push key2 v3
+  ok (i5h_sql.Write.Del Record.TABLE key3)
+
+/-- [atuin_kernel::{atuin_kernel::User}::sql_del_where]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 263:12-265:13
+    Visibility: public -/
+def User.sql_del_where
+  (col : Std.U32) (val : i5h_sql.Val) : Result i5h_sql.Write := do
+  ok (i5h_sql.Write.DelWhere User.TABLE col val)
+
+/-- [atuin_kernel::{atuin_kernel::Session}::sql_del_where]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 263:12-265:13
+    Visibility: public -/
+def Session.sql_del_where
+  (col : Std.U32) (val : i5h_sql.Val) : Result i5h_sql.Write := do
+  ok (i5h_sql.Write.DelWhere Session.TABLE col val)
+
+/-- [atuin_kernel::Rows]
+    Source: 'crates/i5h-schema/src/lib.rs', lines 285:8-287:9
+    Visibility: public -/
+structure Rows where
+  counter : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)
+  settings : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)
+  users : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)
+  sessions : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)
+  records : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)
+
+/-- [atuin_kernel::decode]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 290:8-298:9
+    Visibility: public -/
+def decode (r : Rows) : Result (Option Snapshot) := do
+  let o ← Counter.from_one r.counter
+  match o with
+  | none => ok none
+  | some x =>
+    let o1 ← Settings.from_one r.settings
+    match o1 with
+    | none => ok none
+    | some x1 =>
+      let o2 ← User.from_rows r.users
+      match o2 with
+      | none => ok none
+      | some x2 =>
+        let o3 ← Session.from_rows r.sessions
+        match o3 with
+        | none => ok none
+        | some x3 =>
+          let o4 ← Record.from_rows r.records
+          match o4 with
+          | none => ok none
+          | some x4 =>
+            ok (some
+              {
+                counter := x,
+                settings := x1,
+                users := x2,
+                sessions := x3,
+                records := x4
+              })
 
 /-- [atuin_kernel::apply]: loop body 0:
-    Source: 'examples/atuin/kernel/src/lib.rs', lines 514:4-517:5
+    Source: 'crates/i5h-schema/src/lib.rs', lines 308:12-311:13
     Visibility: public -/
 @[rust_loop_body]
 def apply_loop.body
@@ -1097,7 +2201,7 @@ def apply_loop.body
   else ok (done s)
 
 /-- [atuin_kernel::apply]: loop 0:
-    Source: 'examples/atuin/kernel/src/lib.rs', lines 514:4-517:5
+    Source: 'crates/i5h-schema/src/lib.rs', lines 308:12-311:13
     Visibility: public -/
 @[rust_loop]
 def apply_loop
@@ -1109,10 +2213,51 @@ def apply_loop
     (s, i)
 
 /-- [atuin_kernel::apply]:
-    Source: 'examples/atuin/kernel/src/lib.rs', lines 511:0-519:1
+    Source: 'crates/i5h-schema/src/lib.rs', lines 305:8-313:9
     Visibility: public -/
 def apply (snap : Snapshot) (ws : alloc.vec.Vec Write) : Result Snapshot := do
   let s ← Snapshot.Insts.CoreCloneClone.clone snap
   apply_loop ws s 0#usize
+
+/-- [atuin_kernel::sql_writes]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 320:12-323:13
+    Visibility: public -/
+@[rust_loop_body]
+def sql_writes_loop.body
+  (ws : alloc.vec.Vec Write) (out : alloc.vec.Vec i5h_sql.Write)
+  (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec i5h_sql.Write) × Std.Usize)
+    (alloc.vec.Vec i5h_sql.Write))
+  := do
+  let i1 := alloc.vec.Vec.len ws
+  if i < i1
+  then
+    let w ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Write) ws i
+    let out1 ← sql_write w out
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
+  else ok (done out)
+
+/-- [atuin_kernel::sql_writes]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 320:12-323:13
+    Visibility: public -/
+@[rust_loop]
+def sql_writes_loop
+  (ws : alloc.vec.Vec Write) (out : alloc.vec.Vec i5h_sql.Write)
+  (i : Std.Usize) :
+  Result (alloc.vec.Vec i5h_sql.Write)
+  := do
+  loop
+    (fun (out1, i1) => sql_writes_loop.body ws out1 i1)
+    (out, i)
+
+/-- [atuin_kernel::sql_writes]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 317:8-325:9
+    Visibility: public -/
+@[reducible]
+def sql_writes
+  (ws : alloc.vec.Vec Write) : Result (alloc.vec.Vec i5h_sql.Write) := do
+  sql_writes_loop ws (alloc.vec.Vec.new i5h_sql.Write) 0#usize
 
 end atuin_kernel

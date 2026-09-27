@@ -5,7 +5,7 @@ use axum::http::StatusCode;
 use board_kernel as k;
 use i5h::{Kernel, TenantId};
 use i5h_json::Value as Out;
-use i5h_pg::{delete, key, load, upsert, DbError, ReplyCodec, Store, Tx};
+use i5h_pg::{DbError, ReplyCodec, Store, Tx};
 use serde::{Deserialize, Serialize};
 
 /// Marker type the framework's traits hang off.
@@ -50,25 +50,15 @@ impl Store<Board> for BoardStore {
         schema_tables()
     }
 
+    // Rows are decoded by the kernel's `decode`, and a write set is stored as
+    // the table writes of its `sql_writes`; `Storage.lean` proves the two
+    // hold what `apply` computes.
     async fn load(tx: &Tx<'_>, t: TenantId) -> Result<k::Snapshot, DbError> {
-        Ok(k::Snapshot {
-            counter: load::<Board, k::Counter>(tx, t).await?.pop().unwrap_or_default(),
-            posts: load::<Board, _>(tx, t).await?,
-            moderators: load::<Board, _>(tx, t).await?,
-        })
+        schema_load(tx, t).await
     }
 
     async fn write(tx: &Tx<'_>, t: TenantId, ws: &Vec<k::Write>) -> Result<(), DbError> {
-        for w in ws {
-            match w {
-                k::Write::PutPost(p) => upsert::<Board, _>(tx, t, p).await?,
-                k::Write::DelPost(id) => delete::<Board, k::Post>(tx, t, &[key::<Board, _>(id)?]).await?,
-                k::Write::PutModerator(m) => upsert::<Board, _>(tx, t, m).await?,
-                k::Write::DelModerator(u) => delete::<Board, k::Moderator>(tx, t, &[key::<Board, _>(u)?]).await?,
-                k::Write::SetCounter(c) => upsert::<Board, _>(tx, t, c).await?,
-            }
-        }
-        Ok(())
+        schema_store(tx, t, ws).await
     }
 }
 

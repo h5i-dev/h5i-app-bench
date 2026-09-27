@@ -71,7 +71,7 @@ impl ReplyCodec<DocsApp> for FaultStore {
 async fn setup() -> Option<(Arc<Engine<DocsApp, FaultStore>>, tokio_postgres::Client, Trace)> {
     let url = std::env::var("I5H_TEST_DATABASE_URL").ok()?;
     let trace = Trace::default();
-    let e = Engine::new(pool(&url, 8).unwrap(), EngineConfig { tenant_lock: true, max_attempts: 20 })
+    let e = Engine::new(pool(&url, 8).unwrap(), EngineConfig { tenant_lock: true, max_attempts: 20, monotonic: true, ..Default::default() })
         .with_trace(trace.tracer());
     e.install_schema().await.unwrap();
     let (admin, conn) = tokio_postgres::connect(&url, NoTls).await.unwrap();
@@ -214,7 +214,7 @@ async fn concurrent_writers_keep_invariants() {
         return;
     };
     let trace = Trace::default();
-    let pg = Engine::<DocsApp, DocsStore>::new(pool(&url, 32).unwrap(), EngineConfig { tenant_lock: false, max_attempts: 100 })
+    let pg = Engine::<DocsApp, DocsStore>::new(pool(&url, 32).unwrap(), EngineConfig { tenant_lock: false, max_attempts: 100, ..Default::default() }.database_time())
         .with_trace(trace.tracer());
     pg.install_schema().await.unwrap();
     let pg = Arc::new(pg);

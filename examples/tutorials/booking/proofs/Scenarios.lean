@@ -28,62 +28,44 @@ def s1 : Snapshot := ⟨⟨2#u64⟩, vecOf [⟨1#u64⟩], vecOf [⟨0#u64, 7#u64
 theorem book_first :
     transition (at_ 2#u64 0#u64) s0 (.Book 0#u64 1#u64 2#u64) ⦃ o => ∃ ws, o = .Ok (ws, .Created 1#u64) ∧
       ws.val = [.PutBooking bk1, .SetCounter ⟨2#u64⟩, .Emit ⟨7#u64, .Booked, bk1⟩] ⦄ := by
-  unfold transition book
-  step*
-  all_goals simp_all [s0, bk1, at_, vecOf, core.num.U64.MAX, U64.rMax]
-  all_goals scalar_tac
+  i5h_eval (transition book) [s0, bk1, at_, vecOf, core.num.U64.MAX, U64.rMax]
 
 /-- `[2, 3)` starts where `[1, 2)` ends, so it is accepted. -/
 theorem adjacent_accepted :
     transition (at_ 3#u64 0#u64) s1 (.Book 0#u64 2#u64 3#u64) ⦃ o => ∃ ws, o = .Ok (ws, .Created 2#u64) ∧
       ws.val = [.PutBooking bk2, .SetCounter ⟨3#u64⟩, .Emit ⟨7#u64, .Booked, bk2⟩] ⦄ := by
-  unfold transition book
-  step*
-  all_goals simp_all [s1, bk1, bk2, at_, vecOf, Apart, core.num.U64.MAX, U64.rMax]
-  all_goals scalar_tac
+  i5h_eval (transition book) [s1, bk1, bk2, at_, vecOf, Apart, core.num.U64.MAX, U64.rMax]
 
 /-- `[1, 3)` shares `[1, 2)` with the first booking. -/
 theorem overlap_refused :
     transition (at_ 3#u64 0#u64) s1 (.Book 0#u64 1#u64 3#u64) ⦃ o => o = .Err .Taken ⦄ := by
-  unfold transition book
-  step*
-  all_goals simp_all [s1, bk1, at_, vecOf, Apart]
+  i5h_eval (transition book) [s1, bk1, at_, vecOf, Apart]
 
 theorem past_refused :
     transition (at_ 3#u64 5#u64) s1 (.Book 0#u64 5#u64 6#u64) ⦃ o => o = .Err .InThePast ⦄ := by
-  unfold transition book
-  step*
-  all_goals simp_all [s1, bk1, at_, vecOf]
+  i5h_eval (transition book) [s1, bk1, at_, vecOf]
 
 /-- Another user may not cancel user 2's booking. -/
 theorem stranger_refused :
     transition (at_ 3#u64 0#u64) s1 (.Cancel 1#u64) ⦃ o => o = .Err .Forbidden ⦄ := by
-  unfold transition cancel
-  step*
-  all_goals simp_all [s1, bk1, at_, vecOf]
+  i5h_eval (transition cancel) [s1, bk1, at_, vecOf]
 
 /-- The owner may not cancel once the booking has started. -/
 theorem started_refused :
     transition (at_ 2#u64 1#u64) s1 (.Cancel 1#u64) ⦃ o => o = .Err .Started ⦄ := by
-  unfold transition cancel
-  step*
-  all_goals simp_all [s1, bk1, at_, vecOf]
+  i5h_eval (transition cancel) [s1, bk1, at_, vecOf]
 
 /-- The owner cancels before the start, and room 0's destination hears of it. -/
 theorem owner_cancels :
     transition (at_ 2#u64 0#u64) s1 (.Cancel 1#u64) ⦃ o => ∃ ws, o = .Ok (ws, .Done) ∧
       ws.val = [.DelBooking 1#u64, .Emit ⟨7#u64, .Cancelled, bk1⟩] ⦄ := by
-  unfold transition cancel
-  step*
-  all_goals simp_all [s1, bk1, at_, vecOf]
+  i5h_eval (transition cancel) [s1, bk1, at_, vecOf]
 
 /-- The admin cancels after the start. -/
 theorem admin_cancels :
     transition (at_ 1#u64 9#u64) s1 (.Cancel 1#u64) ⦃ o => ∃ ws, o = .Ok (ws, .Done) ∧
       ws.val = [.DelBooking 1#u64, .Emit ⟨7#u64, .Cancelled, bk1⟩] ⦄ := by
-  unfold transition cancel
-  step*
-  all_goals simp_all [s1, bk1, at_, vecOf]
+  i5h_eval (transition cancel) [s1, bk1, at_, vecOf]
 
 /-! ## The scenario states are reachable -/
 

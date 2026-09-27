@@ -12,8 +12,8 @@ package cratesio_proofs
 -- Generated Lean: the extracted Rust (scripts/extract-cratesio.sh). Do not edit.
 lean_lib Generated where
   srcDir := "generated"
-  roots := #[`CratesioKernel]
+  roots := #[`CratesioKernel, `Schema]
 
 -- Hand-written specification and proofs.
 @[default_target] lean_lib Proofs where
-  roots := #[`Spec, `Lemmas, `Commands, `Invariants, `Theorems, `Counterexample, `Scenarios, `Apply]
+  roots := #[`Spec, `Lemmas, `Commands, `Invariants, `Theorems, `Counterexample, `Scenarios, `Apply, `Storage]

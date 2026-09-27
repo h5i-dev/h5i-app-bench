@@ -6,6 +6,6 @@ tmp=$(mktemp -d)
 trap 'rm -rf "$tmp"' EXIT
 (cd "$root/examples/wastebin/kernel" && charon cargo --preset=aeneas \
   --start-from wastebin_kernel::transition --start-from wastebin_kernel::transition_pre190 \
-  --start-from wastebin_kernel::apply \
+  $(bash "$root/scripts/schema-items.sh" wastebin_kernel) --include i5h_sql \
   --dest-file "$tmp/wastebin_kernel.llbc")
 aeneas -backend lean "$tmp/wastebin_kernel.llbc" -dest "$root/examples/wastebin/proofs/generated"

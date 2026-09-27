@@ -7,14 +7,13 @@ use axum::response::Response;
 use axum::routing::post;
 use axum::{Json, Router};
 use cratesio_kernel as k;
-use i5h::{Kernel, TenantId};
+use i5h::{Kernel, TenantId, Timestamp};
 use i5h_http::{error_body, reply, Actor, Api, AuthError, Authenticator, HmacAuth, I5h};
 use i5h_json::Value as Out;
-use i5h_pg::{delete, key, load, delete_where, upsert, DbError, Engine, ReplyCodec, Store, Tx};
+use i5h_pg::{DbError, Engine, EngineConfig, ReplyCodec, Store, Tx};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::sync::Arc;
-use std::time::{SystemTime, UNIX_EPOCH};
 
 /// Marker type the framework's traits hang off.
 pub struct Cratesio;
@@ -38,6 +37,18 @@ impl Kernel for Cratesio {
     fn apply(snap: &k::Snapshot, ws: &Vec<k::Write>) -> k::Snapshot {
         k::apply(snap, ws)
     }
+
+    /// The engine's time, in the kernel's Unix seconds.
+    fn stamp(actor: &mut k::Principal, now: Timestamp) {
+        actor.now = now.secs();
+    }
+}
+
+/// The engine settings the server runs with: the database's clock, never
+/// going back, so a lock that has ended or an invitation that has expired
+/// stays so.
+pub fn config() -> EngineConfig {
+    EngineConfig::default().database_time()
 }
 
 // One table per row type, from the kernel's `schema!`.
@@ -54,50 +65,15 @@ impl Store<Cratesio> for CratesStore {
         schema_tables()
     }
 
+    // Rows are decoded by the kernel's `decode`, and a write set is stored as
+    // the table writes of its `sql_writes`; `Storage.lean` proves the store
+    // then holds what `apply` computes.
     async fn load(tx: &Tx<'_>, t: TenantId) -> Result<k::Snapshot, DbError> {
-        Ok(k::Snapshot {
-            counter: load::<Cratesio, k::Counter>(tx, t).await?.pop().unwrap_or_default(),
-            users: load::<Cratesio, _>(tx, t).await?,
-            sessions: load::<Cratesio, _>(tx, t).await?,
-            tokens: load::<Cratesio, _>(tx, t).await?,
-            crates: load::<Cratesio, _>(tx, t).await?,
-            versions: load::<Cratesio, _>(tx, t).await?,
-            owners: load::<Cratesio, _>(tx, t).await?,
-            invites: load::<Cratesio, _>(tx, t).await?,
-            deps: load::<Cratesio, _>(tx, t).await?,
-        })
+        schema_load(tx, t).await
     }
 
     async fn write(tx: &Tx<'_>, t: TenantId, ws: &Vec<k::Write>) -> Result<(), DbError> {
-        type C = Cratesio;
-        for w in ws {
-            match w {
-                k::Write::PutUser(x) => upsert::<C, _>(tx, t, x).await?,
-                k::Write::PutSession(x) => upsert::<C, _>(tx, t, x).await?,
-                k::Write::PutToken(x) => upsert::<C, _>(tx, t, x).await?,
-                k::Write::PutCrate(x) => upsert::<C, _>(tx, t, x).await?,
-                k::Write::PutVersion(x) => upsert::<C, _>(tx, t, x).await?,
-                k::Write::PutOwner(x) => upsert::<C, _>(tx, t, x).await?,
-                k::Write::DelOwner(o) => {
-                    let pk = [key::<C, _>(&o.krate)?, key::<C, _>(&o.owner)?, key::<C, _>(&o.team)?];
-                    delete::<C, k::Owner>(tx, t, &pk).await?
-                }
-                k::Write::PutInvite(x) => upsert::<C, _>(tx, t, x).await?,
-                k::Write::DelInvite(krate, user) => {
-                    delete::<C, k::Invite>(tx, t, &[key::<C, _>(krate)?, key::<C, _>(user)?]).await?
-                }
-                k::Write::PutDep(x) => upsert::<C, _>(tx, t, x).await?,
-                k::Write::DelCrate(krate) => {
-                    delete::<C, k::Krate>(tx, t, &[key::<C, _>(krate)?]).await?;
-                    delete_where::<C, k::Version>(tx, t, "krate", key::<C, _>(krate)?).await?;
-                    delete_where::<C, k::Owner>(tx, t, "krate", key::<C, _>(krate)?).await?;
-                    delete_where::<C, k::Invite>(tx, t, "krate", key::<C, _>(krate)?).await?;
-                    delete_where::<C, k::Dep>(tx, t, "krate", key::<C, _>(krate)?).await?;
-                }
-                k::Write::SetCounter(c) => upsert::<C, _>(tx, t, c).await?,
-            }
-        }
-        Ok(())
+        schema_store(tx, t, ws).await
     }
 }
 
@@ -358,7 +334,6 @@ impl Authenticator<Cratesio> for CratesAuth {
             principal(user, k::Via::Token(tid))
         };
         p.registry = self.registry;
-        p.now = SystemTime::now().duration_since(UNIX_EPOCH).map(|d| d.as_secs()).unwrap_or(0);
         p.teams = self.teams.get(&p.user).cloned().unwrap_or_default();
         Ok(p)
     }
@@ -444,4 +419,3 @@ pub fn router(engine: Arc<Engine<Cratesio, CratesStore>>, auth: Arc<CratesAuth>,
         .route("/rpc", post(rpc))
         .with_state(state)
 }
-

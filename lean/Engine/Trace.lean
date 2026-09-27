@@ -11,8 +11,11 @@ proven equal to `Step`, so an accepted trace is a run of the model
 
 Instantiation: the state is the commit count, actors are idempotency scopes
 (empty without a key), commands are fingerprints (or `req<id>` without a key),
-replies are hex strings. The kernel is read off the trace's `kernel` events,
-and must be a function of (version, actor, command).
+replies are hex strings, times are the engine's microseconds. The kernel is
+read off the trace's `kernel` events, and must be a function of (version,
+actor, time, command). A trace from an engine with `monotonic` (`"mono":true`
+on its `start` events) is checked against the model with `mono`, so each
+attempt must begin no earlier than the commits it sees.
 
 Event order: the engine emits events from several connections, so the recorded
 order can differ from the database order. Events are sorted into bands by the
@@ -30,9 +33,9 @@ open Lean
 abbrev St := Sys Nat String String String String
 
 inductive Ev where
-  | start (who cmd : String) (key : Option String)
-  | begin (ver : Nat)
-  | kernel (ver : Nat) (write : Bool) (reply : String)
+  | start (who cmd : String) (key : Option String) (mono : Bool)
+  | begin (ver now : Nat)
+  | kernel (ver now : Nat) (write : Bool) (reply : String)
   | replay (reply : String)
   | conflict
   | refuse
@@ -55,10 +58,13 @@ def parseLine (seq : Nat) (s : String) : Except String Rec := do
   let req ← j.getObjValAs? Nat "req"
   let str (f : String) := j.getObjValAs? String f
   let nat (f : String) := j.getObjValAs? Nat f
+  -- Traces written before the clock have no times: 0, not monotonic.
+  let now := ((nat "now").toOption).getD 0
   let ev : Ev ← match tag with
-    | "start" => pure (.start (← str "who") (← str "cmd") (str "key").toOption)
-    | "begin" => pure (.begin (← nat "ver"))
-    | "kernel" => pure (.kernel (← nat "ver") (← j.getObjValAs? Bool "write") (← str "reply"))
+    | "start" => pure (.start (← str "who") (← str "cmd") (str "key").toOption
+        (((j.getObjValAs? Bool "mono").toOption).getD false))
+    | "begin" => pure (.begin (← nat "ver") now)
+    | "kernel" => pure (.kernel (← nat "ver") now (← j.getObjValAs? Bool "write") (← str "reply"))
     | "replay" => pure (.replay (← str "reply"))
     | "conflict" => pure .conflict
     | "refuse" => pure .refuse
@@ -70,25 +76,25 @@ def parseLine (seq : Nat) (s : String) : Except String Rec := do
 
 /-! ## The kernel, as observed -/
 
-/-- `(version, actor, command) ↦ reply` for writes; absent means refused. -/
-abbrev Table := List ((Nat × String × String) × Option String)
+/-- `(version, actor, time, command) ↦ reply` for writes; absent means refused. -/
+abbrev Table := List ((Nat × String × Nat × String) × Option String)
 
-def kstep (t : Table) (s : Nat) (w c : String) : Option (Nat × String) :=
-  match t.lookup (s, w, c) with
+def kstep (t : Table) (s : Nat) (w : String) (n : Nat) (c : String) : Option (Nat × String) :=
+  match t.lookup (s, w, n, c) with
   | some (some r) => some (s + 1, r)
   | _ => none
 
-/-- Build the table; the kernel must give one verdict per (version, actor, command). -/
+/-- Build the table; the kernel must give one verdict per (version, actor, time, command). -/
 def table (cmds : List (Nat × String × String)) (recs : List Rec) : Except String Table :=
   recs.foldlM (init := []) fun t r =>
     match r.ev with
-    | .kernel v w reply =>
+    | .kernel v n w reply =>
       match cmds.lookup r.req with
       | none => throw s!"kernel event for unknown request {r.req}"
-      | some c =>
+      | some (who, c) =>
         let verdict := if w then some reply else none
-        match t.lookup (v, c) with
-        | none => pure (((v, c), verdict) :: t)
+        match t.lookup (v, who, n, c) with
+        | none => pure (((v, who, n, c), verdict) :: t)
         | some old =>
           if old == verdict then pure t
           else throw s!"kernel not deterministic at version {v} for request {r.req}"
@@ -102,7 +108,7 @@ def fits (i : Nat) (ev : Ev) (a b : St) : Bool :=
   | some ca, some cb =>
     decide (ca.phase ≠ cb.phase) &&
     match ev, ca.phase, cb.phase with
-    | .begin v, .ready, .active snap _ => snap.ver == v
+    | .begin v n, .ready, .active snap _ => snap.ver == v && cb.now == n
     | .replay r, .active _ (.replay _), .done (.ok r') => r == r' && b.db == a.db
     | .conflict, .active _ .conflict, .done .conflict => true
     | .refuse, .active _ .refuse, .done .refused => true
@@ -115,9 +121,9 @@ def fits (i : Nat) (ev : Ev) (a b : St) : Bool :=
 /-- Events that are not model steps only filter: `kernel` must see the attempt's snapshot. -/
 def keep (i : Nat) (ev : Ev) (a : St) : Bool :=
   match ev, a.clients[i]? with
-  | .kernel v _ _, some c =>
+  | .kernel v n _ _, some c =>
     match c.phase with
-    | .active snap _ => snap.ver == v
+    | .active snap _ => snap.ver == v && c.now == n
     | _ => false
   | .start .., _ => true
   | _, _ => false
@@ -126,14 +132,20 @@ def isStep : Ev → Bool
   | .start .. | .kernel .. => false
   | _ => true
 
-def advance (step : Nat → String → String → Option (Nat × String)) (i : Nat) (ev : Ev) (xs : List St) : List St :=
+/-- The time an event says an attempt began at. -/
+def times : Ev → List Nat
+  | .begin _ n => [n]
+  | _ => []
+
+def advance (step : Nat → String → Nat → String → Option (Nat × String)) (mono : Bool) (i : Nat) (ev : Ev)
+    (xs : List St) : List St :=
   if isStep ev then
-    (xs.flatMap fun a => (next step true false a).filter (fits i ev a)).eraseDups
+    (xs.flatMap fun a => (next step true false mono (times ev) a).filter (fits i ev a)).eraseDups
   else xs.filter (keep i ev)
 
-theorem advance_sound {step : Nat → String → String → Option (Nat × String)} {reqs i ev xs}
-    (h : ∀ a ∈ xs, Reachable step true false 0 reqs a) :
-    ∀ b ∈ advance step i ev xs, Reachable step true false 0 reqs b := by
+theorem advance_sound {step : Nat → String → Nat → String → Option (Nat × String)} {mono reqs i ev xs}
+    (h : ∀ a ∈ xs, Reachable step true false mono 0 reqs a) :
+    ∀ b ∈ advance step mono i ev xs, Reachable step true false mono 0 reqs b := by
   intro b hb
   unfold advance at hb
   split at hb
@@ -142,20 +154,20 @@ theorem advance_sound {step : Nat → String → String → Option (Nat × Strin
     exact .step (h a ha) (mem_next (List.mem_filter.1 hb).1)
   · exact h b (List.mem_filter.1 hb).1
 
-def replay (step : Nat → String → String → Option (Nat × String)) (idx : List (Nat × Nat)) :
+def replay (step : Nat → String → Nat → String → Option (Nat × String)) (mono : Bool) (idx : List (Nat × Nat)) :
     List Rec → List St → Except String (List St)
   | [], xs => pure xs
   | r :: rs, xs =>
     match idx.lookup r.req with
     | none => throw s!"event for unknown request {r.req}"
     | some i =>
-      let ys := advance step i r.ev xs
+      let ys := advance step mono i r.ev xs
       if ys.isEmpty then throw s!"request {r.req}: {repr r.ev} is not a model step here (seq {r.seq})"
-      else replay step idx rs ys
+      else replay step mono idx rs ys
 
-theorem replay_sound {step : Nat → String → String → Option (Nat × String)} {reqs idx recs xs ys}
-    (h : ∀ a ∈ xs, Reachable step true false 0 reqs a) (hr : replay step idx recs xs = .ok ys) :
-    ∀ b ∈ ys, Reachable step true false 0 reqs b := by
+theorem replay_sound {step : Nat → String → Nat → String → Option (Nat × String)} {mono reqs idx recs xs ys}
+    (h : ∀ a ∈ xs, Reachable step true false mono 0 reqs a) (hr : replay step mono idx recs xs = .ok ys) :
+    ∀ b ∈ ys, Reachable step true false mono 0 reqs b := by
   induction recs generalizing xs with
   | nil => simp only [replay, pure, Except.pure, Except.ok.injEq] at hr; subst hr; exact h
   | cons r rs ih =>
@@ -169,16 +181,16 @@ theorem replay_sound {step : Nat → String → String → Option (Nat × String
 /-- A model run from `a` to `c` that the events `recs` explain one by one:
 each step event is a `Step` of its client that `fits` it, and each other
 event passes `keep`. -/
-inductive Explains (step : Nat → String → String → Option (Nat × String)) (idx : List (Nat × Nat)) :
+inductive Explains (step : Nat → String → Nat → String → Option (Nat × String)) (mono : Bool) (idx : List (Nat × Nat)) :
     List Rec → St → St → Prop
-  | nil {a} : Explains step idx [] a a
-  | step {r rs i a b c} : idx.lookup r.req = some i → isStep r.ev = true → Step step true false a b →
-      fits i r.ev a b = true → Explains step idx rs b c → Explains step idx (r :: rs) a c
+  | nil {a} : Explains step mono idx [] a a
+  | step {r rs i a b c} : idx.lookup r.req = some i → isStep r.ev = true → Step step true false mono a b →
+      fits i r.ev a b = true → Explains step mono idx rs b c → Explains step mono idx (r :: rs) a c
   | skip {r rs i a c} : idx.lookup r.req = some i → isStep r.ev = false → keep i r.ev a = true →
-      Explains step idx rs a c → Explains step idx (r :: rs) a c
+      Explains step mono idx rs a c → Explains step mono idx (r :: rs) a c
 
-theorem replay_explains {step : Nat → String → String → Option (Nat × String)} {idx recs xs ys}
-    (hr : replay step idx recs xs = .ok ys) : ∀ b ∈ ys, ∃ a ∈ xs, Explains step idx recs a b := by
+theorem replay_explains {step : Nat → String → Nat → String → Option (Nat × String)} {mono idx recs xs ys}
+    (hr : replay step mono idx recs xs = .ok ys) : ∀ b ∈ ys, ∃ a ∈ xs, Explains step mono idx recs a b := by
   induction recs generalizing xs with
   | nil =>
     simp only [replay, pure, Except.pure, Except.ok.injEq] at hr; subst hr
@@ -203,8 +215,8 @@ theorem replay_explains {step : Nat → String → String → Option (Nat × Str
           obtain ⟨ha, hk⟩ := List.mem_filter.1 ha'
           exact ⟨a', ha, .skip hi (by simpa using hs) hk he⟩
 
-theorem replay_ne_nil {step : Nat → String → String → Option (Nat × String)} {idx recs xs ys}
-    (hx : xs ≠ []) (hr : replay step idx recs xs = .ok ys) : ys ≠ [] := by
+theorem replay_ne_nil {step : Nat → String → Nat → String → Option (Nat × String)} {mono idx recs xs ys}
+    (hx : xs ≠ []) (hr : replay step mono idx recs xs = .ok ys) : ys ≠ [] := by
   induction recs generalizing xs with
   | nil => simp only [replay, pure, Except.pure, Except.ok.injEq] at hr; exact hr ▸ hx
   | cons r rs ih =>
@@ -222,7 +234,7 @@ theorem replay_ne_nil {step : Nat → String → String → Option (Nat × Strin
 `commit` event producing it. -/
 def landed (recs : List Rec) (v : Nat) : Bool :=
   let seen := recs.any fun r => match r.ev with
-    | .begin w | .commit w _ | .lost w => decide (v + 1 ≤ w)
+    | .begin w _ | .commit w _ | .lost w => decide (v + 1 ≤ w)
     | _ => false
   let made := recs.any fun r => match r.ev with
     | .commit w _ => w == v + 1
@@ -236,12 +248,12 @@ def linearize (recs : List Rec) : List Rec := Id.run do
   for r in recs do
     let band := match r.ev with
       | .start .. => 0
-      | .begin v => 2 * v + 2
+      | .begin v _ => 2 * v + 2
       | .commit w _ => 2 * w + 1
       -- Landed: it made version v + 1. Otherwise a local step of its attempt.
       | .lost v => if landed recs v then 2 * v + 3 else 2 * v + 2
       | _ => 2 * (last.lookup r.req).getD 0 + 2
-    if let .begin v := r.ev then last := (r.req, v) :: last
+    if let .begin v _ := r.ev then last := (r.req, v) :: last
     keyed := keyed.push (band, r.seq, r)
   let sorted := keyed.qsort fun (b₁, s₁, _) (b₂, s₂, _) => b₁ < b₂ || (b₁ == b₂ && s₁ < s₂)
   return sorted.toList.map (·.2.2)
@@ -255,31 +267,35 @@ structure Report where
   states : Nat
 
 /-- The properties proven for all reachable states, evaluated on the final ones. -/
-def final (step : Nat → String → String → Option (Nat × String)) (sys : St) : Bool :=
+def final (step : Nat → String → Nat → String → Option (Nat × String)) (mono : Bool) (sys : St) : Bool :=
   run step 0 sys.db.log == some sys.db.state &&
-  decide (sys.db.log.filterMap (·.key)).Nodup
+  decide (sys.db.log.filterMap (·.key)).Nodup &&
+  (!mono || decide ((sys.db.log.map (·.time)).Pairwise (· ≤ ·)))
 
 def checkTenant (recs : List Rec) : Except String Report := do
   let starts := recs.filterMap fun r =>
     match r.ev with
-    | .start w c k => some (r.req, (⟨w, c, k⟩ : Req String String String))
+    | .start w c k _ => some (r.req, (⟨w, c, k⟩ : Req String String String))
     | _ => none
+  -- One engine per tenant, so every request carries the same flag.
+  let monos := recs.filterMap fun r => match r.ev with | .start _ _ _ m => some m | _ => none
+  let mono := !monos.isEmpty && monos.all id
   let reqs := starts.map (·.2)
   let idx := (starts.map (·.1)).zipIdx
   let cmds := starts.map fun (q, rq) => (q, (rq.who, rq.cmd))
   let t ← table cmds recs
   let step := kstep t
-  let ys ← replay step idx (linearize recs) [init 0 reqs]
-  unless ys.all (final step) do throw "a final state breaks serializability or at-most-once"
+  let ys ← replay step mono idx (linearize recs) [init 0 reqs]
+  unless ys.all (final step mono) do throw "a final state breaks serializability, at-most-once or monotonic time"
   let commits := recs.countP fun r => match r.ev with | .commit .. => true | _ => false
   return ⟨recs.length, reqs.length, commits, ys.length⟩
 
 /-- Accepted traces are runs of the model: the checker ends in at least one
 state, and each is reached from the initial state by a run whose steps the
 events explain in order. -/
-theorem check_sound {reqs : List (Req String String String)} {step idx recs ys}
-    (hr : replay step idx recs [init 0 reqs] = .ok ys) :
-    ys ≠ [] ∧ ∀ b ∈ ys, Reachable step true false 0 reqs b ∧ Explains step idx recs (init 0 reqs) b := by
+theorem check_sound {reqs : List (Req String String String)} {step mono idx recs ys}
+    (hr : replay step mono idx recs [init 0 reqs] = .ok ys) :
+    ys ≠ [] ∧ ∀ b ∈ ys, Reachable step true false mono 0 reqs b ∧ Explains step mono idx recs (init 0 reqs) b := by
   refine ⟨replay_ne_nil (by simp) hr, fun b hb => ⟨?_, ?_⟩⟩
   · exact replay_sound (fun a ha => by simp at ha; subst ha; exact .init) hr b hb
   · obtain ⟨a, ha, he⟩ := replay_explains hr b hb

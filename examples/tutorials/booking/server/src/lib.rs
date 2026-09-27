@@ -1,15 +1,16 @@
-//! The booking service's shell: it connects the kernel to PostgreSQL, JSON,
-//! the clock and the outbox, and makes no decisions of its own.
+//! The booking service's shell: it connects the kernel to PostgreSQL, JSON
+//! and the outbox, and makes no decisions of its own. The time comes from the
+//! engine's clock.
 
 use axum::http::StatusCode;
 use booking_kernel as k;
-use i5h::{Kernel, TenantId};
+use i5h::{Kernel, TenantId, Timestamp};
 use i5h_json::Value as Out;
 use i5h_pg::outbox::{self, Deliver, Delivery};
-use i5h_pg::{delete, key, load, upsert, DbError, ReplyCodec, Store, Tx};
+use i5h_pg::{DbError, EngineConfig, ReplyCodec, Store, Tx};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
-use std::time::{Duration, SystemTime, UNIX_EPOCH};
+use std::time::Duration;
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
 
 /// Marker type the framework's traits hang off.
@@ -34,16 +35,24 @@ impl Kernel for BookingApp {
     fn apply(snap: &k::Snapshot, ws: &Vec<k::Write>) -> k::Snapshot {
         k::apply(snap, ws)
     }
+
+    /// The engine's time, in the kernel's Unix seconds. The kernel trusts it.
+    fn stamp(actor: &mut k::Principal, now: Timestamp) {
+        actor.now = now.secs();
+    }
 }
 
-/// The server's clock, in Unix seconds. The kernel trusts it.
-pub fn now() -> u64 {
-    SystemTime::now().duration_since(UNIX_EPOCH).map(|d| d.as_secs()).unwrap_or(0)
-}
-
-/// The caller of an authenticated request, stamped with the time it arrived.
+/// The caller of an authenticated request. The engine fills in `now` on
+/// every attempt.
 pub fn principal(org: u64, user: u64) -> k::Principal {
-    k::Principal { org, user, now: now() }
+    k::Principal { org, user, now: 0 }
+}
+
+/// The engine settings the service runs with: the database's clock, never
+/// going back, so every server agrees on the time and `Clock.started_stays`
+/// applies.
+pub fn config() -> EngineConfig {
+    EngineConfig::default().database_time()
 }
 
 // The `admins`, `rooms`, `bookings` and `counters` tables, from the kernel's `schema!`.
@@ -79,26 +88,20 @@ impl Store<BookingApp> for BookingStore {
         schema_tables()
     }
 
+    // Rows are decoded by the kernel's `decode`.
     async fn load(tx: &Tx<'_>, t: TenantId) -> Result<k::Snapshot, DbError> {
-        Ok(k::Snapshot {
-            counter: load::<BookingApp, k::Counter>(tx, t).await?.pop().unwrap_or_default(),
-            admins: load::<BookingApp, _>(tx, t).await?,
-            rooms: load::<BookingApp, _>(tx, t).await?,
-            bookings: load::<BookingApp, _>(tx, t).await?,
-        })
+        schema_load(tx, t).await
     }
 
     // Notifications go into the outbox in the same transaction as the rows,
     // so they exist exactly when the booking or cancellation commits.
+    // Table writes go through the kernel's `sql_writes` (`Storage.lean`
+    // proves the store holds what `apply` computes); effects to the outbox.
     async fn write(tx: &Tx<'_>, t: TenantId, ws: &Vec<k::Write>) -> Result<(), DbError> {
+        schema_store(tx, t, ws).await?;
         for w in ws {
-            match w {
-                k::Write::PutAdmin(a) => upsert::<BookingApp, _>(tx, t, a).await?,
-                k::Write::PutRoom(r) => upsert::<BookingApp, _>(tx, t, r).await?,
-                k::Write::PutBooking(b) => upsert::<BookingApp, _>(tx, t, b).await?,
-                k::Write::DelBooking(id) => delete::<BookingApp, k::Booking>(tx, t, &[key::<BookingApp, _>(id)?]).await?,
-                k::Write::SetCounter(c) => upsert::<BookingApp, _>(tx, t, c).await?,
-                k::Write::Emit(e) => outbox::enqueue(tx, t, e.dest, &effect_payload(e)).await?,
+            if let k::Write::Emit(e) = w {
+                outbox::enqueue(tx, t, e.dest, &effect_payload(e)).await?;
             }
         }
         Ok(())
@@ -106,7 +109,7 @@ impl Store<BookingApp> for BookingStore {
 }
 
 /// The JSON a client sends, e.g. `{"cmd":"book","room":0,"start":1700000000,"end":1700003600}`.
-/// There is no field for the time: `principal` supplies it.
+/// There is no field for the time: the engine supplies it.
 #[derive(Deserialize)]
 #[serde(tag = "cmd", rename_all = "snake_case", deny_unknown_fields)]
 enum CommandJson {

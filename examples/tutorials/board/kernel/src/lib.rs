@@ -18,7 +18,15 @@ pub struct Principal {
 }
 
 i5h_schema::schema! {
-    mapping board_tables for board_kernel;
+    mapping board_tables for board_kernel, writes Write, lean "../proofs/generated/Schema.lean";
+
+    /// One organization's state.
+    #[derive(Clone, Debug, Default, PartialEq, Eq)]
+    pub struct Snapshot {
+        counter: Counter,
+        posts: Vec<Post>,
+        moderators: Vec<Moderator>,
+    }
 
     #[derive(Clone, Debug, PartialEq, Eq)]
     pub struct Post in "posts" {
@@ -37,14 +45,6 @@ i5h_schema::schema! {
         key {}
         next_id: u64,
     }
-}
-
-/// One organization's state.
-#[derive(Clone, Debug, Default, PartialEq, Eq)]
-pub struct Snapshot {
-    pub counter: Counter,
-    pub posts: Vec<Post>,
-    pub moderators: Vec<Moderator>,
 }
 
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -193,73 +193,28 @@ pub fn transition(actor: &Principal, s: &Snapshot, cmd: &Command) -> Outcome {
     }
 }
 
-fn put_post(v: &mut Vec<Post>, p: Post) {
-    let mut i = 0;
-    while i < v.len() {
-        if v[i].id == p.id {
-            v[i] = p;
-            return;
-        }
-        i += 1;
-    }
-    v.push(p);
-}
-
-fn del_post(v: &Vec<Post>, id: u64) -> Vec<Post> {
-    let mut out = Vec::new();
-    let mut i = 0;
-    while i < v.len() {
-        if v[i].id != id {
-            out.push(v[i].clone());
-        }
-        i += 1;
-    }
-    out
-}
-
-fn put_moderator(v: &mut Vec<Moderator>, m: Moderator) {
-    let mut i = 0;
-    while i < v.len() {
-        if v[i].user == m.user {
-            v[i] = m;
-            return;
-        }
-        i += 1;
-    }
-    v.push(m);
-}
-
-fn del_moderator(v: &Vec<Moderator>, user: u64) -> Vec<Moderator> {
-    let mut out = Vec::new();
-    let mut i = 0;
-    while i < v.len() {
-        if v[i].user != user {
-            out.push(v[i]);
-        }
-        i += 1;
-    }
-    out
-}
-
+/// What one write does to the state. `schema!` runs it over a write set
+/// (`apply`).
 fn apply_write(s: &mut Snapshot, w: Write) {
     match w {
-        Write::PutPost(p) => put_post(&mut s.posts, p),
-        Write::DelPost(id) => s.posts = del_post(&s.posts, id),
-        Write::PutModerator(m) => put_moderator(&mut s.moderators, m),
-        Write::DelModerator(u) => s.moderators = del_moderator(&s.moderators, u),
+        Write::PutPost(p) => Post::put(&mut s.posts, p),
+        Write::DelPost(id) => s.posts = Post::del(&s.posts, id),
+        Write::PutModerator(m) => Moderator::put(&mut s.moderators, m),
+        Write::DelModerator(u) => s.moderators = Moderator::del(&s.moderators, u),
         Write::SetCounter(c) => s.counter = c,
     }
 }
 
-/// What committing a write set means. The PostgreSQL store must agree.
-pub fn apply(snap: &Snapshot, ws: &Vec<Write>) -> Snapshot {
-    let mut s = snap.clone();
-    let mut i = 0;
-    while i < ws.len() {
-        apply_write(&mut s, ws[i].clone());
-        i += 1;
+/// The table writes one write makes. The server stores a write set's
+/// (`sql_writes`), and Lean proves they store what `apply` computes.
+fn sql_write(w: &Write, out: &mut Vec<i5h_sql::Write>) {
+    match w {
+        Write::PutPost(p) => out.push(p.sql_put()),
+        Write::DelPost(id) => out.push(Post::sql_del(*id)),
+        Write::PutModerator(m) => out.push(m.sql_put()),
+        Write::DelModerator(u) => out.push(Moderator::sql_del(*u)),
+        Write::SetCounter(c) => out.push(c.sql_put()),
     }
-    s
 }
 
 #[cfg(test)]

@@ -1,19 +1,18 @@
-//! Wastebin's shell: HTTP routes, the uid cookie, the clock, random slugs,
-//! password fingerprints and the PostgreSQL store. Every decision is the
-//! kernel's.
+//! Wastebin's shell: HTTP routes, the uid cookie, random slugs, password
+//! fingerprints and the PostgreSQL store. The time comes from the engine's
+//! clock. Every decision is the kernel's.
 
 use axum::extract::{Path, Query, State};
 use axum::http::{header, HeaderMap, HeaderValue, StatusCode};
 use axum::response::{IntoResponse, Response};
 use axum::routing::get;
 use axum::{Json, Router};
-use i5h::{Kernel, TenantId};
+use i5h::{Kernel, TenantId, Timestamp};
 use i5h_http::{error_body, reply, AuthError, Authenticator};
 use i5h_json::Value as Out;
-use i5h_pg::{delete, key, load, upsert, DbError, Engine, ReplyCodec, Store, Tx};
+use i5h_pg::{DbError, Engine, EngineConfig, ReplyCodec, Store, Tx};
 use serde::{Deserialize, Serialize};
 use std::sync::Arc;
-use std::time::{SystemTime, UNIX_EPOCH};
 use wastebin_kernel as k;
 
 /// Marker type the framework's traits hang off.
@@ -41,6 +40,17 @@ impl Kernel for Wastebin {
     fn apply(snap: &k::Snapshot, ws: &Vec<k::Write>) -> k::Snapshot {
         k::apply(snap, ws)
     }
+
+    /// The engine's time, in the kernel's Unix seconds.
+    fn stamp(actor: &mut k::Principal, now: Timestamp) {
+        actor.now = now.secs();
+    }
+}
+
+/// The engine settings the server runs with: the database's clock, never
+/// going back, so a paste never expires and then comes back.
+pub fn config() -> EngineConfig {
+    EngineConfig::default().database_time()
 }
 
 // The `wastebin_pastes` and `wastebin_counters` tables, from the kernel's `schema!`.
@@ -57,22 +67,15 @@ impl Store<Wastebin> for WastebinStore {
         schema_tables()
     }
 
+    // Rows are decoded by the kernel's `decode`, and a write set is stored as
+    // the table writes of its `sql_writes`; `Storage.lean` proves the store
+    // then holds what `apply` computes.
     async fn load(tx: &Tx<'_>, t: TenantId) -> Result<k::Snapshot, DbError> {
-        Ok(k::Snapshot {
-            counter: load::<Wastebin, k::Counter>(tx, t).await?.pop().unwrap_or_default(),
-            pastes: load::<Wastebin, _>(tx, t).await?,
-        })
+        schema_load(tx, t).await
     }
 
     async fn write(tx: &Tx<'_>, t: TenantId, ws: &Vec<k::Write>) -> Result<(), DbError> {
-        for w in ws {
-            match w {
-                k::Write::PutPaste(p) => upsert::<Wastebin, _>(tx, t, p).await?,
-                k::Write::DelPaste(id) => delete::<Wastebin, k::Paste>(tx, t, &[key::<Wastebin, _>(id)?]).await?,
-                k::Write::SetCounter(c) => upsert::<Wastebin, _>(tx, t, c).await?,
-            }
-        }
-        Ok(())
+        schema_store(tx, t, ws).await
     }
 }
 
@@ -208,10 +211,6 @@ impl Shell {
         Some(u64::from_le_bytes(t[..8].try_into().expect("8 bytes")))
     }
 
-    pub fn now() -> u64 {
-        SystemTime::now().duration_since(UNIX_EPOCH).map(|d| d.as_secs()).unwrap_or(0)
-    }
-
     pub fn random() -> u64 {
         let mut b = [0u8; 8];
         getrandom::fill(&mut b).expect("OS randomness");
@@ -220,9 +219,10 @@ impl Shell {
 }
 
 impl Shell {
-    /// Never fails: a caller without a cookie has no uids.
+    /// Never fails: a caller without a cookie has no uids. The engine fills
+    /// in `now`.
     pub fn principal(&self, headers: &HeaderMap) -> k::Principal {
-        k::Principal { uids: self.uids(headers), now: Shell::now(), fresh: Shell::random() }
+        k::Principal { uids: self.uids(headers), now: 0, fresh: Shell::random() }
     }
 }
 
@@ -409,7 +409,7 @@ async fn remove(State(app): State<App>, Path(id): Path<String>, headers: HeaderM
 
 /// Deletes every expired paste, like `wastebin-ctl purge`.
 pub async fn purge(engine: &WastebinEngine) -> Result<(), DbError> {
-    let actor = k::Principal { uids: Vec::new(), now: Shell::now(), fresh: 0 };
+    let actor = k::Principal { uids: Vec::new(), now: 0, fresh: 0 };
     let _ = engine.execute(&actor, &k::Command::Purge).await?;
     Ok(())
 }

@@ -19,8 +19,8 @@ set_option linter.unusedSectionVars false
 namespace Engine
 
 variable {S W Cmd Reply Key : Type} [DecidableEq Cmd] [DecidableEq Key] [DecidableEq Reply]
-variable {step : S → W → Cmd → Option (S × Reply)} {s₀ : S} {reqs : List (Req W Cmd Key)}
-  {check locking : Bool}
+variable {step : S → W → Nat → Cmd → Option (S × Reply)} {s₀ : S} {reqs : List (Req W Cmd Key)}
+  {check locking mono : Bool}
 
 theorem map_req_set (l : List (Client S W Cmd Reply Key)) (i : Nat) (c : Client S W Cmd Reply Key)
     (hc : l[i]? = some c) (ph : Phase S W Cmd Reply Key) :
@@ -35,16 +35,31 @@ theorem map_req_set (l : List (Client S W Cmd Reply Key)) (i : Nat) (c : Client 
     simp [hlt, he]
   · simp [hj]
 
+theorem map_req_set_now (l : List (Client S W Cmd Reply Key)) (i : Nat) (c : Client S W Cmd Reply Key)
+    (hc : l[i]? = some c) (ph : Phase S W Cmd Reply Key) (t : Nat) :
+    (l.set i { c with phase := ph, now := t }).map (·.req) = l.map (·.req) := by
+  rw [List.map_set]
+  apply List.ext_getElem?
+  intro j
+  rw [List.getElem?_set]
+  by_cases hj : i = j
+  · subst hj
+    obtain ⟨hlt, he⟩ := List.getElem?_eq_some_iff.1 hc
+    simp [hlt, he]
+  · simp [hj]
+
 /-- Requests never change. -/
-theorem reqs_const {sys : Sys S W Cmd Reply Key} (h : Reachable step check locking s₀ reqs sys) :
+theorem reqs_const {sys : Sys S W Cmd Reply Key} (h : Reachable step check locking mono s₀ reqs sys) :
     sys.clients.map (·.req) = reqs := by
   induction h with
   | init => simp [init, Function.comp_def]
   | step _ hs ih =>
-    cases hs <;> simp only [map_req_set _ _ _ ‹_› _, ih]
+    cases hs
+    case begin => simp only [map_req_set_now _ _ _ ‹_› _ _, ih]
+    all_goals simp only [map_req_set _ _ _ ‹_› _, ih]
 
 /-- Every committed entry comes from some request. -/
-theorem log_origin {sys : Sys S W Cmd Reply Key} (h : Reachable step check locking s₀ reqs sys) :
+theorem log_origin {sys : Sys S W Cmd Reply Key} (h : Reachable step check locking mono s₀ reqs sys) :
     ∀ e ∈ sys.db.log, (⟨e.who, e.cmd, e.key⟩ : Req W Cmd Key) ∈ reqs := by
   induction h with
   | init => simp [init, initDB]
@@ -73,7 +88,7 @@ def KeysScoped {Sc : Type} (scope : W → Sc) (reqs : List (Req W Cmd Key)) : Pr
 /-- A caller under a key only ever sees a reply committed, for the same
 command, by a request in its own scope. -/
 theorem replay_in_scope {Sc : Type} (scope : W → Sc) (hk : KeysScoped scope reqs)
-    {sys : Sys S W Cmd Reply Key} (h : Reachable step true locking s₀ reqs sys) :
+    {sys : Sys S W Cmd Reply Key} (h : Reachable step true locking mono s₀ reqs sys) :
     ∀ c ∈ sys.clients, ∀ k r, c.req.key = some k → c.phase = .done (.ok r) →
       ∃ e ∈ sys.db.log, e.key = some k ∧ e.cmd = c.req.cmd ∧ e.reply = r ∧ scope e.who = scope c.req.who := by
   intro c hc k r hck hph
@@ -86,7 +101,7 @@ theorem replay_in_scope {Sc : Type} (scope : W → Sc) (hk : KeysScoped scope re
 /-- When a scope names one actor, the reply came from the kernel running
 this very actor's command. -/
 theorem replay_same_actor {Sc : Type} (scope : W → Sc) (hinj : Function.Injective scope)
-    (hk : KeysScoped scope reqs) {sys : Sys S W Cmd Reply Key} (h : Reachable step true locking s₀ reqs sys) :
+    (hk : KeysScoped scope reqs) {sys : Sys S W Cmd Reply Key} (h : Reachable step true locking mono s₀ reqs sys) :
     ∀ c ∈ sys.clients, ∀ k r, c.req.key = some k → c.phase = .done (.ok r) →
       ∃ e ∈ sys.db.log, e.key = some k ∧ e.who = c.req.who ∧ e.cmd = c.req.cmd ∧ e.reply = r := by
   intro c hc k r hck hph
@@ -132,33 +147,35 @@ theorem rust_keys_scoped {reqs : List (Req W Cmd String)} (scope : W → String)
 /-! ## Without scopes: a leak -/
 
 /-- A kernel whose reply is the caller's own data (here, its id). -/
-def leakStep (s : Nat) (w : Nat) (_ : Nat) : Option (Nat × Nat) := some (s + 1, w)
+def leakStep (s : Nat) (w : Nat) (_ _ : Nat) : Option (Nat × Nat) := some (s + 1, w)
 
 /-- Users 1 and 2 send the same command under the same key. -/
 def leakReqs : List (Req Nat Nat Nat) := [⟨1, 0, some 7⟩, ⟨2, 0, some 7⟩]
 
 /-- With keys scoped by tenant only, user 2 receives user 1's reply, even
-with the tenant lock and the conflict check on. -/
-theorem tenant_keys_leak : ∃ sys : Sys Nat Nat Nat Nat Nat, Reachable leakStep true true 0 leakReqs sys ∧
+with the tenant lock, the conflict check and monotonic time on. -/
+theorem tenant_keys_leak : ∃ sys : Sys Nat Nat Nat Nat Nat, Reachable leakStep true true true 0 leakReqs sys ∧
     ∃ c ∈ sys.clients, c.req.who = 2 ∧ c.phase = .done (.ok 1) := by
   let q1 : Req Nat Nat Nat := ⟨1, 0, some 7⟩
   let q2 : Req Nat Nat Nat := ⟨2, 0, some 7⟩
-  let db1 : DB Nat Nat Nat Nat Nat := (initDB 0).commit q1 1 1
-  refine ⟨⟨db1, [⟨q1, .done (.ok 1)⟩, ⟨q2, .done (.ok 1)⟩]⟩, ?_, ⟨q2, .done (.ok 1)⟩, by simp, rfl, rfl⟩
-  have s1 : Step leakStep true true (init 0 leakReqs : Sys Nat Nat Nat Nat Nat)
-      ⟨initDB 0, [⟨q1, .active (initDB 0) (.write 1 1)⟩, ⟨q2, .ready⟩]⟩ :=
-    .begin (i := 0) (c := ⟨q1, .ready⟩) rfl rfl (fun _ => by simp [Idle, init])
-  have s2 : Step leakStep true true
-      (⟨initDB 0, [⟨q1, .active (initDB 0) (.write 1 1)⟩, ⟨q2, .ready⟩]⟩ : Sys Nat Nat Nat Nat Nat)
-      ⟨db1, [⟨q1, .done (.ok 1)⟩, ⟨q2, .ready⟩]⟩ :=
-    .commit (i := 0) (c := ⟨q1, .active (initDB 0) (.write 1 1)⟩) rfl rfl (fun _ => rfl)
-  have s3 : Step leakStep true true (⟨db1, [⟨q1, .done (.ok 1)⟩, ⟨q2, .ready⟩]⟩ : Sys Nat Nat Nat Nat Nat)
-      ⟨db1, [⟨q1, .done (.ok 1)⟩, ⟨q2, .active db1 (.replay 1)⟩]⟩ :=
-    .begin (i := 1) (c := ⟨q2, .ready⟩) rfl rfl (fun _ => by simp [Idle])
-  have s4 : Step leakStep true true
-      (⟨db1, [⟨q1, .done (.ok 1)⟩, ⟨q2, .active db1 (.replay 1)⟩]⟩ : Sys Nat Nat Nat Nat Nat)
-      ⟨db1, [⟨q1, .done (.ok 1)⟩, ⟨q2, .done (.ok 1)⟩]⟩ :=
-    .replay (i := 1) (c := ⟨q2, .active db1 (.replay 1)⟩) rfl rfl
+  let db1 : DB Nat Nat Nat Nat Nat := (initDB 0).commit q1 0 1 1
+  refine ⟨⟨db1, [⟨q1, .done (.ok 1), 0⟩, ⟨q2, .done (.ok 1), 0⟩]⟩, ?_, ⟨q2, .done (.ok 1), 0⟩, by simp, rfl, rfl⟩
+  have s1 : Step leakStep true true true (init 0 leakReqs : Sys Nat Nat Nat Nat Nat)
+      ⟨initDB 0, [⟨q1, .active (initDB 0) (.write 1 1), 0⟩, ⟨q2, .ready, 0⟩]⟩ :=
+    .begin (i := 0) (c := ⟨q1, .ready, 0⟩) (t := 0) rfl rfl (fun _ => by simp [Idle, init])
+      (fun _ => by simp [init, initDB, lastTime])
+  have s2 : Step leakStep true true true
+      (⟨initDB 0, [⟨q1, .active (initDB 0) (.write 1 1), 0⟩, ⟨q2, .ready, 0⟩]⟩ : Sys Nat Nat Nat Nat Nat)
+      ⟨db1, [⟨q1, .done (.ok 1), 0⟩, ⟨q2, .ready, 0⟩]⟩ :=
+    .commit (i := 0) (c := ⟨q1, .active (initDB 0) (.write 1 1), 0⟩) rfl rfl (fun _ => rfl)
+  have s3 : Step leakStep true true true (⟨db1, [⟨q1, .done (.ok 1), 0⟩, ⟨q2, .ready, 0⟩]⟩ : Sys Nat Nat Nat Nat Nat)
+      ⟨db1, [⟨q1, .done (.ok 1), 0⟩, ⟨q2, .active db1 (.replay 1), 0⟩]⟩ :=
+    .begin (i := 1) (c := ⟨q2, .ready, 0⟩) (t := 0) rfl rfl (fun _ => by simp [Idle])
+      (fun _ => by simp [db1, DB.commit, initDB, lastTime])
+  have s4 : Step leakStep true true true
+      (⟨db1, [⟨q1, .done (.ok 1), 0⟩, ⟨q2, .active db1 (.replay 1), 0⟩]⟩ : Sys Nat Nat Nat Nat Nat)
+      ⟨db1, [⟨q1, .done (.ok 1), 0⟩, ⟨q2, .done (.ok 1), 0⟩]⟩ :=
+    .replay (i := 1) (c := ⟨q2, .active db1 (.replay 1), 0⟩) rfl rfl
   exact .step (.step (.step (.step .init s1) s2) s3) s4
 
 end Engine

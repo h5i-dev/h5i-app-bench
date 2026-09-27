@@ -9,7 +9,7 @@ use axum::Router;
 use booking_kernel as k;
 use booking_server::{effect_payload, parse_registry, BookingApp, BookingStore, Endpoint, Notifier};
 use i5h_pg::outbox::DispatchConfig;
-use i5h_pg::{pool, Engine, EngineConfig};
+use i5h_pg::{pool, Clock, Engine, EngineConfig, Timestamp};
 use std::collections::HashMap;
 use std::sync::{Arc, Mutex};
 use tokio_postgres::NoTls;
@@ -74,7 +74,7 @@ fn fresh_org() -> u64 {
 }
 
 async fn run(pg: &Pg, org: u64, user: u64, cmd: k::Command) -> Result<k::Reply, k::Error> {
-    pg.execute(&k::Principal { org, user, now: 1000 }, &cmd).await.unwrap()
+    pg.execute(&k::Principal { org, user, now: 0 }, &cmd).await.unwrap()
 }
 
 /// A room with destination `dest`, created by admin 1.
@@ -98,7 +98,8 @@ async fn rows(url: &str, org: u64) -> Vec<(bool, bool, i32)> {
 
 async fn setup() -> Option<(String, Pg)> {
     let url = database()?;
-    let pg = Pg::new(pool(&url, 4).unwrap(), EngineConfig::default());
+    // Every request runs at time 1000.
+    let pg = Pg::new(pool(&url, 4).unwrap(), EngineConfig { clock: Clock::Fixed(Timestamp::from_secs(1000)), ..Default::default() });
     pg.install_schema().await.unwrap();
     Some((url, pg))
 }

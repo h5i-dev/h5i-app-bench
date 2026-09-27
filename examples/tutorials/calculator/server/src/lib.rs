@@ -5,7 +5,7 @@ use axum::http::StatusCode;
 use calculator_kernel as k;
 use i5h::{Kernel, TenantId};
 use i5h_json::Value as Out;
-use i5h_pg::{load, upsert, DbError, ReplyCodec, Store, Tx};
+use i5h_pg::{DbError, ReplyCodec, Store, Tx};
 use serde::Deserialize;
 
 /// Marker type the framework's traits hang off.
@@ -50,15 +50,15 @@ impl Store<Calc> for CalcStore {
         schema_tables()
     }
 
+    // The kernel decodes the rows (`decode`) and encodes the write
+    // (`sql_writes`); `Storage.lean` proves the store holds what `apply`
+    // computes.
     async fn load(tx: &Tx<'_>, t: TenantId) -> Result<k::Snapshot, DbError> {
-        Ok(k::Snapshot { memories: load::<Calc, _>(tx, t).await? })
+        schema_load(tx, t).await
     }
 
     async fn write(tx: &Tx<'_>, t: TenantId, w: &Option<k::Memory>) -> Result<(), DbError> {
-        match w {
-            Some(m) => upsert::<Calc, _>(tx, t, m).await,
-            None => Ok(()),
-        }
+        schema_write(tx, t, &k::sql_writes(w)).await
     }
 }
 

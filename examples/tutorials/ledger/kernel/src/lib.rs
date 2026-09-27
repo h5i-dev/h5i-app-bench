@@ -13,7 +13,13 @@ pub struct Principal {
 }
 
 i5h_schema::schema! {
-    mapping ledger_tables for ledger_kernel;
+    mapping ledger_tables for ledger_kernel, writes Write, lean "../proofs/generated/Schema.lean";
+
+    #[derive(Clone, Debug, Default, PartialEq, Eq)]
+    pub struct Snapshot {
+        ledger: Ledger,
+        accounts: Vec<Account>,
+    }
 
     #[derive(Clone, Copy, Debug, PartialEq, Eq)]
     pub struct Account in "accounts" {
@@ -32,12 +38,6 @@ i5h_schema::schema! {
 }
 
 /// One organization's state.
-#[derive(Clone, Debug, Default, PartialEq, Eq)]
-pub struct Snapshot {
-    pub ledger: Ledger,
-    pub accounts: Vec<Account>,
-}
-
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub enum Command {
     Open,
@@ -182,34 +182,21 @@ pub fn transition(actor: &Principal, s: &Snapshot, cmd: &Command) -> Outcome {
     }
 }
 
-fn put_account(v: &mut Vec<Account>, a: Account) {
-    let mut i = 0;
-    while i < v.len() {
-        if v[i].id == a.id {
-            v[i] = a;
-            return;
-        }
-        i += 1;
-    }
-    v.push(a);
-}
-
+/// What one write does to the state. `schema!` runs it over a write set
+/// (`apply`).
 fn apply_write(s: &mut Snapshot, w: Write) {
     match w {
-        Write::PutAccount(a) => put_account(&mut s.accounts, a),
+        Write::PutAccount(a) => Account::put(&mut s.accounts, a),
         Write::SetLedger(l) => s.ledger = l,
     }
 }
 
-/// What committing a write set means. The PostgreSQL store must agree.
-pub fn apply(snap: &Snapshot, ws: &Vec<Write>) -> Snapshot {
-    let mut s = snap.clone();
-    let mut i = 0;
-    while i < ws.len() {
-        apply_write(&mut s, ws[i]);
-        i += 1;
+/// The table writes one write makes.
+fn sql_write(w: &Write, out: &mut Vec<i5h_sql::Write>) {
+    match w {
+        Write::PutAccount(a) => out.push(a.sql_put()),
+        Write::SetLedger(l) => out.push(l.sql_put()),
     }
-    s
 }
 
 #[cfg(test)]

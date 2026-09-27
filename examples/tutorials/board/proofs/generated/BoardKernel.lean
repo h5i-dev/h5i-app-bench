@@ -19,6 +19,150 @@ set_option maxRecDepth 2048
 
 namespace board_kernel
 
+/-- [i5h_sql::Val]
+    Source: 'crates/i5h-sql/src/lib.rs', lines 8:0-8:12
+    Name pattern: [i5h_sql::Val]
+    Visibility: public -/
+@[discriminant isize, rust_type "i5h_sql::Val"]
+inductive i5h_sql.Val where
+| Int : Std.I64 → i5h_sql.Val
+| Bool : Bool → i5h_sql.Val
+| Text : alloc.vec.Vec Std.U8 → i5h_sql.Val
+| Bytes : alloc.vec.Vec Std.U8 → i5h_sql.Val
+| Null : i5h_sql.Val
+
+/-- [i5h_sql::{impl i5h_sql::Column for u64}::to_val]:
+    Source: 'crates/i5h-sql/src/lib.rs', lines 25:4-25:27
+    Name pattern: [i5h_sql::{i5h_sql::Column<u64>}::to_val]
+    Visibility: public -/
+@[rust_fun "i5h_sql::{i5h_sql::Column<u64>}::to_val"]
+def U64.Insts.I5h_sqlColumn.to_val (self : Std.U64) : Result i5h_sql.Val := do
+  let i ← lift (UScalar.hcast .I64 self)
+  ok (i5h_sql.Val.Int i)
+
+/-- [i5h_sql::{impl i5h_sql::Column for u64}::from_val]:
+    Source: 'crates/i5h-sql/src/lib.rs', lines 28:4-28:39
+    Name pattern: [i5h_sql::{i5h_sql::Column<u64>}::from_val]
+    Visibility: public -/
+@[rust_fun "i5h_sql::{i5h_sql::Column<u64>}::from_val"]
+def U64.Insts.I5h_sqlColumn.from_val
+  (v : i5h_sql.Val) : Result (Option Std.U64) := do
+  match v with
+  | i5h_sql.Val.Int i => let i1 ← lift (IScalar.hcast .U64 i)
+                         ok (some i1)
+  | i5h_sql.Val.Bool _ => ok none
+  | i5h_sql.Val.Text _ => ok none
+  | i5h_sql.Val.Bytes _ => ok none
+  | i5h_sql.Val.Null => ok none
+
+/-- [i5h_sql::{impl i5h_sql::Column for alloc::vec::Vec<u8>}::to_val]:
+    Source: 'crates/i5h-sql/src/lib.rs', lines 67:4-67:27
+    Name pattern: [i5h_sql::{i5h_sql::Column<alloc::vec::Vec<u8>>}::to_val]
+    Visibility: public -/
+@[rust_fun "i5h_sql::{i5h_sql::Column<alloc::vec::Vec<u8>>}::to_val"]
+def alloc.vec.VecU8.Insts.I5h_sqlColumn.to_val
+  (self : alloc.vec.Vec Std.U8) : Result i5h_sql.Val := do
+  let v ← alloc.vec.CloneVec.clone core.clone.CloneU8 self
+  ok (i5h_sql.Val.Bytes v)
+
+/-- [i5h_sql::{impl i5h_sql::Column for alloc::vec::Vec<u8>}::from_val]:
+    Source: 'crates/i5h-sql/src/lib.rs', lines 70:4-70:43
+    Name pattern: [i5h_sql::{i5h_sql::Column<alloc::vec::Vec<u8>>}::from_val]
+    Visibility: public -/
+@[rust_fun "i5h_sql::{i5h_sql::Column<alloc::vec::Vec<u8>>}::from_val"]
+def alloc.vec.VecU8.Insts.I5h_sqlColumn.from_val
+  (v : i5h_sql.Val) : Result (Option (alloc.vec.Vec Std.U8)) := do
+  match v with
+  | i5h_sql.Val.Int _ => ok none
+  | i5h_sql.Val.Bool _ => ok none
+  | i5h_sql.Val.Text _ => ok none
+  | i5h_sql.Val.Bytes b =>
+    let v1 ← alloc.vec.CloneVec.clone core.clone.CloneU8 b
+    ok (some v1)
+  | i5h_sql.Val.Null => ok none
+
+/-- [i5h_sql::{impl i5h_sql::Zero for u64}::zero]:
+    Source: 'crates/i5h-sql/src/lib.rs', lines 104:4-104:20
+    Name pattern: [i5h_sql::{i5h_sql::Zero<u64>}::zero]
+    Visibility: public -/
+@[rust_fun "i5h_sql::{i5h_sql::Zero<u64>}::zero"]
+def U64.Insts.I5h_sqlZero.zero : Result Std.U64 := do
+  ok 0#u64
+
+/-- [i5h_sql::val_eq]:
+    Source: 'crates/i5h-sql/src/lib.rs', lines 134:0-134:39
+    Name pattern: [i5h_sql::val_eq]
+    Visibility: public -/
+@[rust_fun "i5h_sql::val_eq"]
+def i5h_sql.val_eq (a : i5h_sql.Val) (b : i5h_sql.Val) : Result Bool := do
+  match a with
+  | i5h_sql.Val.Int x =>
+    match b with
+    | i5h_sql.Val.Int y => ok (x = y)
+    | i5h_sql.Val.Bool _ => ok false
+    | i5h_sql.Val.Text _ => ok false
+    | i5h_sql.Val.Bytes _ => ok false
+    | i5h_sql.Val.Null => ok false
+  | i5h_sql.Val.Bool x =>
+    match b with
+    | i5h_sql.Val.Int _ => ok false
+    | i5h_sql.Val.Bool y => ok (x = y)
+    | i5h_sql.Val.Text _ => ok false
+    | i5h_sql.Val.Bytes _ => ok false
+    | i5h_sql.Val.Null => ok false
+  | i5h_sql.Val.Text x =>
+    match b with
+    | i5h_sql.Val.Int _ => ok false
+    | i5h_sql.Val.Bool _ => ok false
+    | i5h_sql.Val.Text y =>
+      alloc.vec.partial_eq.PartialEqVec.eq core.cmp.PartialEqU8 x y
+    | i5h_sql.Val.Bytes _ => ok false
+    | i5h_sql.Val.Null => ok false
+  | i5h_sql.Val.Bytes x =>
+    match b with
+    | i5h_sql.Val.Int _ => ok false
+    | i5h_sql.Val.Bool _ => ok false
+    | i5h_sql.Val.Text _ => ok false
+    | i5h_sql.Val.Bytes y =>
+      alloc.vec.partial_eq.PartialEqVec.eq core.cmp.PartialEqU8 x y
+    | i5h_sql.Val.Null => ok false
+  | i5h_sql.Val.Null =>
+    match b with
+    | i5h_sql.Val.Int _ => ok false
+    | i5h_sql.Val.Bool _ => ok false
+    | i5h_sql.Val.Text _ => ok false
+    | i5h_sql.Val.Bytes _ => ok false
+    | i5h_sql.Val.Null => ok true
+
+/-- [i5h_sql::has_col]:
+    Source: 'crates/i5h-sql/src/lib.rs', lines 160:0-160:59
+    Name pattern: [i5h_sql::has_col]
+    Visibility: public -/
+@[rust_fun "i5h_sql::has_col"]
+def i5h_sql.has_col
+  (row : alloc.vec.Vec i5h_sql.Val) (col : Std.U32) (val : i5h_sql.Val) :
+  Result Bool
+  := do
+  let i ← lift (UScalar.cast .Usize col)
+  let i1 := alloc.vec.Vec.len row
+  if i < i1
+  then
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice i5h_sql.Val)
+        row i
+    i5h_sql.val_eq v val
+  else ok false
+
+/-- [i5h_sql::Write]
+    Source: 'crates/i5h-sql/src/lib.rs', lines 171:0-171:14
+    Name pattern: [i5h_sql::Write]
+    Visibility: public -/
+@[discriminant isize, rust_type "i5h_sql::Write"]
+inductive i5h_sql.Write where
+| Put : Std.U32 → Std.U32 → alloc.vec.Vec i5h_sql.Val → i5h_sql.Write
+| Del : Std.U32 → alloc.vec.Vec i5h_sql.Val → i5h_sql.Write
+| DelWhere : Std.U32 → Std.U32 → i5h_sql.Val → i5h_sql.Write
+
 /-- [board_kernel::MAX_TEXT]
     Source: 'examples/tutorials/board/kernel/src/lib.rs', lines 11:0-11:32
     Visibility: public -/
@@ -31,16 +175,56 @@ structure Principal where
   org : Std.U64
   user : Std.U64
 
+/-- [board_kernel::Counter]
+    Source: 'crates/i5h-schema/src/lib.rs', lines 111:12-114:13
+    Visibility: public -/
+structure Counter where
+  next_id : Std.U64
+
+/-- [board_kernel::Moderator]
+    Source: 'crates/i5h-schema/src/lib.rs', lines 111:12-114:13
+    Visibility: public -/
+structure Moderator where
+  user : Std.U64
+
 /-- [board_kernel::Post]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 43:12-46:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 111:12-114:13
     Visibility: public -/
 structure Post where
   id : Std.U64
   author : Std.U64
   text : alloc.vec.Vec Std.U8
 
+/-- [board_kernel::Snapshot]
+    Source: 'crates/i5h-schema/src/lib.rs', lines 278:8-280:9
+    Visibility: public -/
+structure Snapshot where
+  counter : Counter
+  posts : alloc.vec.Vec Post
+  moderators : alloc.vec.Vec Moderator
+
+/-- [board_kernel::{impl core::clone::Clone for board_kernel::Counter}::clone]:
+    Source: 'examples/tutorials/board/kernel/src/lib.rs', lines 43:13-43:18
+    Visibility: public -/
+def Counter.Insts.CoreCloneClone.clone (self : Counter) : Result Counter := do
+  ok self
+
+/-- [board_kernel::{impl core::clone::Clone for board_kernel::Moderator}::clone]:
+    Source: 'examples/tutorials/board/kernel/src/lib.rs', lines 38:13-38:18
+    Visibility: public -/
+def Moderator.Insts.CoreCloneClone.clone
+  (self : Moderator) : Result Moderator := do
+  ok self
+
+/-- Trait implementation: [board_kernel::{impl core::clone::Clone for board_kernel::Moderator}]
+    Source: 'examples/tutorials/board/kernel/src/lib.rs', lines 38:13-38:18 -/
+@[reducible]
+def Moderator.Insts.CoreCloneClone : core.clone.Clone Moderator := {
+  clone := Moderator.Insts.CoreCloneClone.clone
+}
+
 /-- [board_kernel::{impl core::clone::Clone for board_kernel::Post}::clone]:
-    Source: 'examples/tutorials/board/kernel/src/lib.rs', lines 23:13-23:18
+    Source: 'examples/tutorials/board/kernel/src/lib.rs', lines 31:13-31:18
     Visibility: public -/
 def Post.Insts.CoreCloneClone.clone (self : Post) : Result Post := do
   let i ← lift (core.clone.impls.CloneU64.clone self.id)
@@ -49,54 +233,14 @@ def Post.Insts.CoreCloneClone.clone (self : Post) : Result Post := do
   ok { id := i, author := i1, text := v }
 
 /-- Trait implementation: [board_kernel::{impl core::clone::Clone for board_kernel::Post}]
-    Source: 'examples/tutorials/board/kernel/src/lib.rs', lines 23:13-23:18 -/
+    Source: 'examples/tutorials/board/kernel/src/lib.rs', lines 31:13-31:18 -/
 @[reducible]
 def Post.Insts.CoreCloneClone : core.clone.Clone Post := {
   clone := Post.Insts.CoreCloneClone.clone
 }
 
-/-- [board_kernel::Moderator]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 43:12-46:13
-    Visibility: public -/
-structure Moderator where
-  user : Std.U64
-
-/-- [board_kernel::{impl core::clone::Clone for board_kernel::Moderator}::clone]:
-    Source: 'examples/tutorials/board/kernel/src/lib.rs', lines 30:13-30:18
-    Visibility: public -/
-def Moderator.Insts.CoreCloneClone.clone
-  (self : Moderator) : Result Moderator := do
-  ok self
-
-/-- Trait implementation: [board_kernel::{impl core::clone::Clone for board_kernel::Moderator}]
-    Source: 'examples/tutorials/board/kernel/src/lib.rs', lines 30:13-30:18 -/
-@[reducible]
-def Moderator.Insts.CoreCloneClone : core.clone.Clone Moderator := {
-  clone := Moderator.Insts.CoreCloneClone.clone
-}
-
-/-- [board_kernel::Counter]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 43:12-46:13
-    Visibility: public -/
-structure Counter where
-  next_id : Std.U64
-
-/-- [board_kernel::{impl core::clone::Clone for board_kernel::Counter}::clone]:
-    Source: 'examples/tutorials/board/kernel/src/lib.rs', lines 35:13-35:18
-    Visibility: public -/
-def Counter.Insts.CoreCloneClone.clone (self : Counter) : Result Counter := do
-  ok self
-
-/-- [board_kernel::Snapshot]
-    Source: 'examples/tutorials/board/kernel/src/lib.rs', lines 44:0-48:1
-    Visibility: public -/
-structure Snapshot where
-  counter : Counter
-  posts : alloc.vec.Vec Post
-  moderators : alloc.vec.Vec Moderator
-
 /-- [board_kernel::{impl core::clone::Clone for board_kernel::Snapshot}::clone]:
-    Source: 'examples/tutorials/board/kernel/src/lib.rs', lines 43:9-43:14
+    Source: 'examples/tutorials/board/kernel/src/lib.rs', lines 24:13-24:18
     Visibility: public -/
 def Snapshot.Insts.CoreCloneClone.clone
   (self : Snapshot) : Result Snapshot := do
@@ -390,139 +534,11 @@ def transition
   | Command.Promote user => promote actor.user s user
   | Command.Demote user => demote actor.user s user
 
-/-- [board_kernel::put_post]: loop body 0:
-    Source: 'examples/tutorials/board/kernel/src/lib.rs', lines 198:4-206:1 -/
+/-- [board_kernel::{board_kernel::Moderator}::del]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 233:16-238:17
+    Visibility: public -/
 @[rust_loop_body]
-def put_post_loop.body
-  (v : alloc.vec.Vec Post) (p : Post) (i : Std.Usize) :
-  Result (ControlFlow Std.Usize (alloc.vec.Vec Post))
-  := do
-  let i1 := alloc.vec.Vec.len v
-  if i < i1
-  then
-    let p1 ←
-      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Post) v i
-    if p1.id = p.id
-    then
-      let (_, index_mut_back) ←
-        alloc.vec.Vec.index_mut (core.slice.index.SliceIndexUsizeSlice Post) v
-          i
-      let v1 := index_mut_back p
-      ok (done v1)
-    else let i2 ← i + 1#usize
-         ok (cont i2)
-  else let v1 ← alloc.vec.Vec.push v p
-       ok (done v1)
-
-/-- [board_kernel::put_post]: loop 0:
-    Source: 'examples/tutorials/board/kernel/src/lib.rs', lines 198:4-206:1 -/
-@[rust_loop]
-def put_post_loop
-  (v : alloc.vec.Vec Post) (p : Post) (i : Std.Usize) :
-  Result (alloc.vec.Vec Post)
-  := do
-  loop
-    (fun i1 => put_post_loop.body v p i1)
-    i
-
-/-- [board_kernel::put_post]:
-    Source: 'examples/tutorials/board/kernel/src/lib.rs', lines 196:0-206:1 -/
-@[reducible]
-def put_post
-  (v : alloc.vec.Vec Post) (p : Post) : Result (alloc.vec.Vec Post) := do
-  put_post_loop v p 0#usize
-
-/-- [board_kernel::del_post]: loop body 0:
-    Source: 'examples/tutorials/board/kernel/src/lib.rs', lines 211:4-216:5 -/
-@[rust_loop_body]
-def del_post_loop.body
-  (v : alloc.vec.Vec Post) (id : Std.U64) (out : alloc.vec.Vec Post)
-  (i : Std.Usize) :
-  Result (ControlFlow ((alloc.vec.Vec Post) × Std.Usize) (alloc.vec.Vec Post))
-  := do
-  let i1 := alloc.vec.Vec.len v
-  if i < i1
-  then
-    let p ←
-      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Post) v i
-    let out1 ←
-      if p.id != id
-      then
-        do
-        let p1 ← Post.Insts.CoreCloneClone.clone p
-        alloc.vec.Vec.push out p1
-      else ok out
-    let i2 ← i + 1#usize
-    ok (cont (out1, i2))
-  else ok (done out)
-
-/-- [board_kernel::del_post]: loop 0:
-    Source: 'examples/tutorials/board/kernel/src/lib.rs', lines 211:4-216:5 -/
-@[rust_loop]
-def del_post_loop
-  (v : alloc.vec.Vec Post) (id : Std.U64) (out : alloc.vec.Vec Post)
-  (i : Std.Usize) :
-  Result (alloc.vec.Vec Post)
-  := do
-  loop
-    (fun (out1, i1) => del_post_loop.body v id out1 i1)
-    (out, i)
-
-/-- [board_kernel::del_post]:
-    Source: 'examples/tutorials/board/kernel/src/lib.rs', lines 208:0-218:1 -/
-@[reducible]
-def del_post
-  (v : alloc.vec.Vec Post) (id : Std.U64) : Result (alloc.vec.Vec Post) := do
-  del_post_loop v id (alloc.vec.Vec.new Post) 0#usize
-
-/-- [board_kernel::put_moderator]: loop body 0:
-    Source: 'examples/tutorials/board/kernel/src/lib.rs', lines 222:4-230:1 -/
-@[rust_loop_body]
-def put_moderator_loop.body
-  (v : alloc.vec.Vec Moderator) (m : Moderator) (i : Std.Usize) :
-  Result (ControlFlow Std.Usize (alloc.vec.Vec Moderator))
-  := do
-  let i1 := alloc.vec.Vec.len v
-  if i < i1
-  then
-    let m1 ←
-      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Moderator) v i
-    if m1.user = m.user
-    then
-      let (_, index_mut_back) ←
-        alloc.vec.Vec.index_mut (core.slice.index.SliceIndexUsizeSlice
-          Moderator) v i
-      let v1 := index_mut_back m
-      ok (done v1)
-    else let i2 ← i + 1#usize
-         ok (cont i2)
-  else let v1 ← alloc.vec.Vec.push v m
-       ok (done v1)
-
-/-- [board_kernel::put_moderator]: loop 0:
-    Source: 'examples/tutorials/board/kernel/src/lib.rs', lines 222:4-230:1 -/
-@[rust_loop]
-def put_moderator_loop
-  (v : alloc.vec.Vec Moderator) (m : Moderator) (i : Std.Usize) :
-  Result (alloc.vec.Vec Moderator)
-  := do
-  loop
-    (fun i1 => put_moderator_loop.body v m i1)
-    i
-
-/-- [board_kernel::put_moderator]:
-    Source: 'examples/tutorials/board/kernel/src/lib.rs', lines 220:0-230:1 -/
-@[reducible]
-def put_moderator
-  (v : alloc.vec.Vec Moderator) (m : Moderator) :
-  Result (alloc.vec.Vec Moderator)
-  := do
-  put_moderator_loop v m 0#usize
-
-/-- [board_kernel::del_moderator]: loop body 0:
-    Source: 'examples/tutorials/board/kernel/src/lib.rs', lines 235:4-240:5 -/
-@[rust_loop_body]
-def del_moderator_loop.body
+def Moderator.del_loop.body
   (v : alloc.vec.Vec Moderator) (user : Std.U64)
   (out : alloc.vec.Vec Moderator) (i : Std.Usize) :
   Result (ControlFlow ((alloc.vec.Vec Moderator) × Std.Usize) (alloc.vec.Vec
@@ -533,52 +549,703 @@ def del_moderator_loop.body
   then
     let m ←
       alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Moderator) v i
-    let out1 ← if m.user != user
-                 then alloc.vec.Vec.push out m
-                 else ok out
+    let out1 ←
+      if m.user = user
+      then ok out
+      else
+        do
+        let m1 ← Moderator.Insts.CoreCloneClone.clone m
+        alloc.vec.Vec.push out m1
     let i2 ← i + 1#usize
     ok (cont (out1, i2))
   else ok (done out)
 
-/-- [board_kernel::del_moderator]: loop 0:
-    Source: 'examples/tutorials/board/kernel/src/lib.rs', lines 235:4-240:5 -/
+/-- [board_kernel::{board_kernel::Moderator}::del]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 233:16-238:17
+    Visibility: public -/
 @[rust_loop]
-def del_moderator_loop
+def Moderator.del_loop
   (v : alloc.vec.Vec Moderator) (user : Std.U64)
   (out : alloc.vec.Vec Moderator) (i : Std.Usize) :
   Result (alloc.vec.Vec Moderator)
   := do
   loop
-    (fun (out1, i1) => del_moderator_loop.body v user out1 i1)
+    (fun (out1, i1) => Moderator.del_loop.body v user out1 i1)
     (out, i)
 
-/-- [board_kernel::del_moderator]:
-    Source: 'examples/tutorials/board/kernel/src/lib.rs', lines 232:0-242:1 -/
+/-- [board_kernel::{board_kernel::Moderator}::del]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 230:12-240:13
+    Visibility: public -/
 @[reducible]
-def del_moderator
+def Moderator.del
   (v : alloc.vec.Vec Moderator) (user : Std.U64) :
   Result (alloc.vec.Vec Moderator)
   := do
-  del_moderator_loop v user (alloc.vec.Vec.new Moderator) 0#usize
+  Moderator.del_loop v user (alloc.vec.Vec.new Moderator) 0#usize
+
+/-- [board_kernel::{board_kernel::Post}::del]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 233:16-238:17
+    Visibility: public -/
+@[rust_loop_body]
+def Post.del_loop.body
+  (v : alloc.vec.Vec Post) (id : Std.U64) (out : alloc.vec.Vec Post)
+  (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Post) × Std.Usize) (alloc.vec.Vec Post))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let p ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Post) v i
+    let out1 ←
+      if p.id = id
+      then ok out
+      else
+        do
+        let p1 ← Post.Insts.CoreCloneClone.clone p
+        alloc.vec.Vec.push out p1
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
+  else ok (done out)
+
+/-- [board_kernel::{board_kernel::Post}::del]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 233:16-238:17
+    Visibility: public -/
+@[rust_loop]
+def Post.del_loop
+  (v : alloc.vec.Vec Post) (id : Std.U64) (out : alloc.vec.Vec Post)
+  (i : Std.Usize) :
+  Result (alloc.vec.Vec Post)
+  := do
+  loop
+    (fun (out1, i1) => Post.del_loop.body v id out1 i1)
+    (out, i)
+
+/-- [board_kernel::{board_kernel::Post}::del]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 230:12-240:13
+    Visibility: public -/
+@[reducible]
+def Post.del
+  (v : alloc.vec.Vec Post) (id : Std.U64) : Result (alloc.vec.Vec Post) := do
+  Post.del_loop v id (alloc.vec.Vec.new Post) 0#usize
+
+/-- [board_kernel::{board_kernel::Moderator}::put]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 219:16-227:13
+    Visibility: public -/
+@[rust_loop_body]
+def Moderator.put_loop.body
+  (v : alloc.vec.Vec Moderator) (x : Moderator) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize (alloc.vec.Vec Moderator))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let m ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Moderator) v i
+    if m.user = x.user
+    then
+      let (_, index_mut_back) ←
+        alloc.vec.Vec.index_mut (core.slice.index.SliceIndexUsizeSlice
+          Moderator) v i
+      let v1 := index_mut_back x
+      ok (done v1)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else let v1 ← alloc.vec.Vec.push v x
+       ok (done v1)
+
+/-- [board_kernel::{board_kernel::Moderator}::put]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 219:16-227:13
+    Visibility: public -/
+@[rust_loop]
+def Moderator.put_loop
+  (v : alloc.vec.Vec Moderator) (x : Moderator) (i : Std.Usize) :
+  Result (alloc.vec.Vec Moderator)
+  := do
+  loop
+    (fun i1 => Moderator.put_loop.body v x i1)
+    i
+
+/-- [board_kernel::{board_kernel::Moderator}::put]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 217:12-227:13
+    Visibility: public -/
+@[reducible]
+def Moderator.put
+  (v : alloc.vec.Vec Moderator) (x : Moderator) :
+  Result (alloc.vec.Vec Moderator)
+  := do
+  Moderator.put_loop v x 0#usize
+
+/-- [board_kernel::{board_kernel::Post}::put]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 219:16-227:13
+    Visibility: public -/
+@[rust_loop_body]
+def Post.put_loop.body
+  (v : alloc.vec.Vec Post) (x : Post) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize (alloc.vec.Vec Post))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let p ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Post) v i
+    if p.id = x.id
+    then
+      let (_, index_mut_back) ←
+        alloc.vec.Vec.index_mut (core.slice.index.SliceIndexUsizeSlice Post) v
+          i
+      let v1 := index_mut_back x
+      ok (done v1)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else let v1 ← alloc.vec.Vec.push v x
+       ok (done v1)
+
+/-- [board_kernel::{board_kernel::Post}::put]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 219:16-227:13
+    Visibility: public -/
+@[rust_loop]
+def Post.put_loop
+  (v : alloc.vec.Vec Post) (x : Post) (i : Std.Usize) :
+  Result (alloc.vec.Vec Post)
+  := do
+  loop
+    (fun i1 => Post.put_loop.body v x i1)
+    i
+
+/-- [board_kernel::{board_kernel::Post}::put]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 217:12-227:13
+    Visibility: public -/
+@[reducible]
+def Post.put
+  (v : alloc.vec.Vec Post) (x : Post) : Result (alloc.vec.Vec Post) := do
+  Post.put_loop v x 0#usize
 
 /-- [board_kernel::apply_write]:
-    Source: 'examples/tutorials/board/kernel/src/lib.rs', lines 244:0-252:1 -/
+    Source: 'examples/tutorials/board/kernel/src/lib.rs', lines 198:0-206:1 -/
 def apply_write (s : Snapshot) (w : Write) : Result Snapshot := do
   match w with
-  | Write.PutPost p => let v ← put_post s.posts p
+  | Write.PutPost p => let v ← Post.put s.posts p
                        ok { s with posts := v }
-  | Write.DelPost id => let v ← del_post s.posts id
+  | Write.DelPost id => let v ← Post.del s.posts id
                         ok { s with posts := v }
   | Write.PutModerator m =>
-    let v ← put_moderator s.moderators m
+    let v ← Moderator.put s.moderators m
     ok { s with moderators := v }
   | Write.DelModerator u =>
-    let v ← del_moderator s.moderators u
+    let v ← Moderator.del s.moderators u
     ok { s with moderators := v }
   | Write.SetCounter c => ok { s with counter := c }
 
+/-- [board_kernel::{board_kernel::Moderator}::TABLE]
+    Source: 'crates/i5h-schema/src/lib.rs', lines 132:12-132:60
+    Visibility: public -/
+@[global_simps, irreducible] def Moderator.TABLE : Std.U32 := 1#u32
+
+/-- [board_kernel::{board_kernel::Moderator}::sql_del]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 256:12-260:13
+    Visibility: public -/
+def Moderator.sql_del (user : Std.U64) : Result i5h_sql.Write := do
+  let v ← U64.Insts.I5h_sqlColumn.to_val user
+  let key ← alloc.vec.Vec.push (alloc.vec.Vec.new i5h_sql.Val) v
+  ok (i5h_sql.Write.Del Moderator.TABLE key)
+
+/-- [board_kernel::{board_kernel::Post}::TABLE]
+    Source: 'crates/i5h-schema/src/lib.rs', lines 132:12-132:60
+    Visibility: public -/
+@[global_simps, irreducible] def Post.TABLE : Std.U32 := 0#u32
+
+/-- [board_kernel::{board_kernel::Post}::sql_del]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 256:12-260:13
+    Visibility: public -/
+def Post.sql_del (id : Std.U64) : Result i5h_sql.Write := do
+  let v ← U64.Insts.I5h_sqlColumn.to_val id
+  let key ← alloc.vec.Vec.push (alloc.vec.Vec.new i5h_sql.Val) v
+  ok (i5h_sql.Write.Del Post.TABLE key)
+
+/-- [board_kernel::{board_kernel::Counter}::to_row]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 135:12-140:13
+    Visibility: public -/
+def Counter.to_row (self : Counter) : Result (alloc.vec.Vec i5h_sql.Val) := do
+  let v ← U64.Insts.I5h_sqlColumn.to_val self.next_id
+  alloc.vec.Vec.push (alloc.vec.Vec.new i5h_sql.Val) v
+
+/-- [board_kernel::{board_kernel::Counter}::KEY_LEN]
+    Source: 'crates/i5h-schema/src/lib.rs', lines 133:12-133:62
+    Visibility: public -/
+@[global_simps, irreducible] def Counter.KEY_LEN : Std.U32 := 0#u32
+
+/-- [board_kernel::{board_kernel::Counter}::TABLE]
+    Source: 'crates/i5h-schema/src/lib.rs', lines 132:12-132:60
+    Visibility: public -/
+@[global_simps, irreducible] def Counter.TABLE : Std.U32 := 2#u32
+
+/-- [board_kernel::{board_kernel::Counter}::sql_put]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 186:12-188:13
+    Visibility: public -/
+def Counter.sql_put (self : Counter) : Result i5h_sql.Write := do
+  let v ← Counter.to_row self
+  ok (i5h_sql.Write.Put Counter.TABLE Counter.KEY_LEN v)
+
+/-- [board_kernel::{board_kernel::Moderator}::to_row]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 135:12-140:13
+    Visibility: public -/
+def Moderator.to_row
+  (self : Moderator) : Result (alloc.vec.Vec i5h_sql.Val) := do
+  let v ← U64.Insts.I5h_sqlColumn.to_val self.user
+  alloc.vec.Vec.push (alloc.vec.Vec.new i5h_sql.Val) v
+
+/-- [board_kernel::{board_kernel::Moderator}::KEY_LEN]
+    Source: 'crates/i5h-schema/src/lib.rs', lines 133:12-133:62
+    Visibility: public -/
+@[global_simps, irreducible] def Moderator.KEY_LEN : Std.U32 := 1#u32
+
+/-- [board_kernel::{board_kernel::Moderator}::sql_put]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 186:12-188:13
+    Visibility: public -/
+def Moderator.sql_put (self : Moderator) : Result i5h_sql.Write := do
+  let v ← Moderator.to_row self
+  ok (i5h_sql.Write.Put Moderator.TABLE Moderator.KEY_LEN v)
+
+/-- [board_kernel::{board_kernel::Post}::to_row]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 135:12-140:13
+    Visibility: public -/
+def Post.to_row (self : Post) : Result (alloc.vec.Vec i5h_sql.Val) := do
+  let v ← U64.Insts.I5h_sqlColumn.to_val self.id
+  let out ← alloc.vec.Vec.push (alloc.vec.Vec.new i5h_sql.Val) v
+  let v1 ← U64.Insts.I5h_sqlColumn.to_val self.author
+  let out1 ← alloc.vec.Vec.push out v1
+  let v2 ← alloc.vec.VecU8.Insts.I5h_sqlColumn.to_val self.text
+  alloc.vec.Vec.push out1 v2
+
+/-- [board_kernel::{board_kernel::Post}::KEY_LEN]
+    Source: 'crates/i5h-schema/src/lib.rs', lines 133:12-133:62
+    Visibility: public -/
+@[global_simps, irreducible] def Post.KEY_LEN : Std.U32 := 1#u32
+
+/-- [board_kernel::{board_kernel::Post}::sql_put]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 186:12-188:13
+    Visibility: public -/
+def Post.sql_put (self : Post) : Result i5h_sql.Write := do
+  let v ← Post.to_row self
+  ok (i5h_sql.Write.Put Post.TABLE Post.KEY_LEN v)
+
+/-- [board_kernel::sql_write]:
+    Source: 'examples/tutorials/board/kernel/src/lib.rs', lines 210:0-218:1 -/
+def sql_write
+  (w : Write) (out : alloc.vec.Vec i5h_sql.Write) :
+  Result (alloc.vec.Vec i5h_sql.Write)
+  := do
+  match w with
+  | Write.PutPost p => let w1 ← Post.sql_put p
+                       alloc.vec.Vec.push out w1
+  | Write.DelPost id => let w1 ← Post.sql_del id
+                        alloc.vec.Vec.push out w1
+  | Write.PutModerator m =>
+    let w1 ← Moderator.sql_put m
+    alloc.vec.Vec.push out w1
+  | Write.DelModerator u =>
+    let w1 ← Moderator.sql_del u
+    alloc.vec.Vec.push out w1
+  | Write.SetCounter c =>
+    let w1 ← Counter.sql_put c
+    alloc.vec.Vec.push out w1
+
+/-- [board_kernel::{board_kernel::Counter}::from_row]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 143:12-164:13
+    Visibility: public -/
+def Counter.from_row
+  (row : alloc.vec.Vec i5h_sql.Val) : Result (Option Counter) := do
+  let i := alloc.vec.Vec.len row
+  let i1 ← 0#usize + 1#usize
+  if i != i1
+  then ok none
+  else
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice i5h_sql.Val)
+        row 0#usize
+    let o ← U64.Insts.I5h_sqlColumn.from_val v
+    match o with
+    | none => ok none
+    | some x => ok (some { next_id := x })
+
+/-- [board_kernel::{board_kernel::Post}::from_row]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 143:12-164:13
+    Visibility: public -/
+def Post.from_row
+  (row : alloc.vec.Vec i5h_sql.Val) : Result (Option Post) := do
+  let i := alloc.vec.Vec.len row
+  let i1 ← 0#usize + 1#usize
+  let i2 ← i1 + 1#usize
+  let i3 ← i2 + 1#usize
+  if i != i3
+  then ok none
+  else
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice i5h_sql.Val)
+        row 0#usize
+    let o ← U64.Insts.I5h_sqlColumn.from_val v
+    match o with
+    | none => ok none
+    | some x =>
+      let v1 ←
+        alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice i5h_sql.Val)
+          row i1
+      let o1 ← U64.Insts.I5h_sqlColumn.from_val v1
+      match o1 with
+      | none => ok none
+      | some x1 =>
+        let i4 ← i1 + 1#usize
+        let v2 ←
+          alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+            i5h_sql.Val) row i4
+        let o2 ← alloc.vec.VecU8.Insts.I5h_sqlColumn.from_val v2
+        match o2 with
+        | none => ok none
+        | some x2 =>
+          let _ ← i4 + 1#usize
+          ok (some { id := x, author := x1, text := x2 })
+
+/-- [board_kernel::{board_kernel::Moderator}::from_row]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 143:12-164:13
+    Visibility: public -/
+def Moderator.from_row
+  (row : alloc.vec.Vec i5h_sql.Val) : Result (Option Moderator) := do
+  let i := alloc.vec.Vec.len row
+  let i1 ← 0#usize + 1#usize
+  if i != i1
+  then ok none
+  else
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice i5h_sql.Val)
+        row 0#usize
+    let o ← U64.Insts.I5h_sqlColumn.from_val v
+    match o with
+    | none => ok none
+    | some x => ok (some { user := x })
+
+/-- [board_kernel::{board_kernel::Post}::from_rows]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Visibility: public -/
+@[rust_loop_body]
+def Post.from_rows_loop.body
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)) (out : alloc.vec.Vec Post)
+  (ok1 : Bool) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Post) × Bool × Std.Usize)
+    ((alloc.vec.Vec Post) × Bool))
+  := do
+  let i1 := alloc.vec.Vec.len rows
+  if i < i1
+  then
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice (alloc.vec.Vec
+        i5h_sql.Val)) rows i
+    let o ← Post.from_row v
+    let (out1, ok2) ←
+      match o with
+      | none => ok (out, false)
+      | some x => do
+                  let out2 ← alloc.vec.Vec.push out x
+                  ok (out2, ok1)
+    let i2 ← i + 1#usize
+    ok (cont (out1, ok2, i2))
+  else ok (done (out, ok1))
+
+/-- [board_kernel::{board_kernel::Post}::from_rows]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Visibility: public -/
+@[rust_loop]
+def Post.from_rows_loop
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)) (out : alloc.vec.Vec Post)
+  (ok1 : Bool) (i : Std.Usize) :
+  Result ((alloc.vec.Vec Post) × Bool)
+  := do
+  loop
+    (fun (out1, ok2, i1) => Post.from_rows_loop.body rows out1 ok2 i1)
+    (out, ok1, i)
+
+/-- [board_kernel::{board_kernel::Post}::from_rows]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 167:12-183:13
+    Visibility: public -/
+def Post.from_rows
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)) :
+  Result (Option (alloc.vec.Vec Post))
+  := do
+  let (out, ok1) ←
+    Post.from_rows_loop rows (alloc.vec.Vec.new Post) true 0#usize
+  if ok1
+  then ok (some out)
+  else ok none
+
+/-- [board_kernel::{board_kernel::Moderator}::from_rows]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Visibility: public -/
+@[rust_loop_body]
+def Moderator.from_rows_loop.body
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val))
+  (out : alloc.vec.Vec Moderator) (ok1 : Bool) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Moderator) × Bool × Std.Usize)
+    ((alloc.vec.Vec Moderator) × Bool))
+  := do
+  let i1 := alloc.vec.Vec.len rows
+  if i < i1
+  then
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice (alloc.vec.Vec
+        i5h_sql.Val)) rows i
+    let o ← Moderator.from_row v
+    let (out1, ok2) ←
+      match o with
+      | none => ok (out, false)
+      | some x => do
+                  let out2 ← alloc.vec.Vec.push out x
+                  ok (out2, ok1)
+    let i2 ← i + 1#usize
+    ok (cont (out1, ok2, i2))
+  else ok (done (out, ok1))
+
+/-- [board_kernel::{board_kernel::Moderator}::from_rows]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Visibility: public -/
+@[rust_loop]
+def Moderator.from_rows_loop
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val))
+  (out : alloc.vec.Vec Moderator) (ok1 : Bool) (i : Std.Usize) :
+  Result ((alloc.vec.Vec Moderator) × Bool)
+  := do
+  loop
+    (fun (out1, ok2, i1) => Moderator.from_rows_loop.body rows out1 ok2 i1)
+    (out, ok1, i)
+
+/-- [board_kernel::{board_kernel::Moderator}::from_rows]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 167:12-183:13
+    Visibility: public -/
+def Moderator.from_rows
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)) :
+  Result (Option (alloc.vec.Vec Moderator))
+  := do
+  let (out, ok1) ←
+    Moderator.from_rows_loop rows (alloc.vec.Vec.new Moderator) true 0#usize
+  if ok1
+  then ok (some out)
+  else ok none
+
+/-- [board_kernel::{board_kernel::Counter}::from_rows]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Visibility: public -/
+@[rust_loop_body]
+def Counter.from_rows_loop.body
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val))
+  (out : alloc.vec.Vec Counter) (ok1 : Bool) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Counter) × Bool × Std.Usize)
+    ((alloc.vec.Vec Counter) × Bool))
+  := do
+  let i1 := alloc.vec.Vec.len rows
+  if i < i1
+  then
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice (alloc.vec.Vec
+        i5h_sql.Val)) rows i
+    let o ← Counter.from_row v
+    let (out1, ok2) ←
+      match o with
+      | none => ok (out, false)
+      | some x => do
+                  let out2 ← alloc.vec.Vec.push out x
+                  ok (out2, ok1)
+    let i2 ← i + 1#usize
+    ok (cont (out1, ok2, i2))
+  else ok (done (out, ok1))
+
+/-- [board_kernel::{board_kernel::Counter}::from_rows]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Visibility: public -/
+@[rust_loop]
+def Counter.from_rows_loop
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val))
+  (out : alloc.vec.Vec Counter) (ok1 : Bool) (i : Std.Usize) :
+  Result ((alloc.vec.Vec Counter) × Bool)
+  := do
+  loop
+    (fun (out1, ok2, i1) => Counter.from_rows_loop.body rows out1 ok2 i1)
+    (out, ok1, i)
+
+/-- [board_kernel::{board_kernel::Counter}::from_rows]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 167:12-183:13
+    Visibility: public -/
+def Counter.from_rows
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)) :
+  Result (Option (alloc.vec.Vec Counter))
+  := do
+  let (out, ok1) ←
+    Counter.from_rows_loop rows (alloc.vec.Vec.new Counter) true 0#usize
+  if ok1
+  then ok (some out)
+  else ok none
+
+/-- [board_kernel::{board_kernel::Counter}::from_one]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 203:12-211:13
+    Visibility: public -/
+def Counter.from_one
+  (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)) :
+  Result (Option Counter)
+  := do
+  let i := alloc.vec.Vec.len rows
+  if i = 0#usize
+  then let i1 ← U64.Insts.I5h_sqlZero.zero
+       ok (some { next_id := i1 })
+  else
+    let i1 := alloc.vec.Vec.len rows
+    if i1 = 1#usize
+    then
+      let v ←
+        alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+          (alloc.vec.Vec i5h_sql.Val)) rows 0#usize
+      Counter.from_row v
+    else ok none
+
+/-- [board_kernel::{board_kernel::Post}::del_where]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 246:16-251:17
+    Visibility: public -/
+@[rust_loop_body]
+def Post.del_where_loop.body
+  (v : alloc.vec.Vec Post) (col : Std.U32) (val : i5h_sql.Val)
+  (out : alloc.vec.Vec Post) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Post) × Std.Usize) (alloc.vec.Vec Post))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let p ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Post) v i
+    let v1 ← Post.to_row p
+    let b ← i5h_sql.has_col v1 col val
+    let out1 ←
+      if b
+      then ok out
+      else
+        do
+        let p1 ← Post.Insts.CoreCloneClone.clone p
+        alloc.vec.Vec.push out p1
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
+  else ok (done out)
+
+/-- [board_kernel::{board_kernel::Post}::del_where]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 246:16-251:17
+    Visibility: public -/
+@[rust_loop]
+def Post.del_where_loop
+  (v : alloc.vec.Vec Post) (col : Std.U32) (val : i5h_sql.Val)
+  (out : alloc.vec.Vec Post) (i : Std.Usize) :
+  Result (alloc.vec.Vec Post)
+  := do
+  loop
+    (fun (out1, i1) => Post.del_where_loop.body v col val out1 i1)
+    (out, i)
+
+/-- [board_kernel::{board_kernel::Post}::del_where]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 243:12-253:13
+    Visibility: public -/
+@[reducible]
+def Post.del_where
+  (v : alloc.vec.Vec Post) (col : Std.U32) (val : i5h_sql.Val) :
+  Result (alloc.vec.Vec Post)
+  := do
+  Post.del_where_loop v col val (alloc.vec.Vec.new Post) 0#usize
+
+/-- [board_kernel::{board_kernel::Moderator}::del_where]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 246:16-251:17
+    Visibility: public -/
+@[rust_loop_body]
+def Moderator.del_where_loop.body
+  (v : alloc.vec.Vec Moderator) (col : Std.U32) (val : i5h_sql.Val)
+  (out : alloc.vec.Vec Moderator) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Moderator) × Std.Usize) (alloc.vec.Vec
+    Moderator))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let m ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Moderator) v i
+    let v1 ← Moderator.to_row m
+    let b ← i5h_sql.has_col v1 col val
+    let out1 ←
+      if b
+      then ok out
+      else
+        do
+        let m1 ← Moderator.Insts.CoreCloneClone.clone m
+        alloc.vec.Vec.push out m1
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
+  else ok (done out)
+
+/-- [board_kernel::{board_kernel::Moderator}::del_where]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 246:16-251:17
+    Visibility: public -/
+@[rust_loop]
+def Moderator.del_where_loop
+  (v : alloc.vec.Vec Moderator) (col : Std.U32) (val : i5h_sql.Val)
+  (out : alloc.vec.Vec Moderator) (i : Std.Usize) :
+  Result (alloc.vec.Vec Moderator)
+  := do
+  loop
+    (fun (out1, i1) => Moderator.del_where_loop.body v col val out1 i1)
+    (out, i)
+
+/-- [board_kernel::{board_kernel::Moderator}::del_where]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 243:12-253:13
+    Visibility: public -/
+@[reducible]
+def Moderator.del_where
+  (v : alloc.vec.Vec Moderator) (col : Std.U32) (val : i5h_sql.Val) :
+  Result (alloc.vec.Vec Moderator)
+  := do
+  Moderator.del_where_loop v col val (alloc.vec.Vec.new Moderator) 0#usize
+
+/-- [board_kernel::{board_kernel::Post}::sql_del_where]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 263:12-265:13
+    Visibility: public -/
+def Post.sql_del_where
+  (col : Std.U32) (val : i5h_sql.Val) : Result i5h_sql.Write := do
+  ok (i5h_sql.Write.DelWhere Post.TABLE col val)
+
+/-- [board_kernel::{board_kernel::Moderator}::sql_del_where]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 263:12-265:13
+    Visibility: public -/
+def Moderator.sql_del_where
+  (col : Std.U32) (val : i5h_sql.Val) : Result i5h_sql.Write := do
+  ok (i5h_sql.Write.DelWhere Moderator.TABLE col val)
+
+/-- [board_kernel::Rows]
+    Source: 'crates/i5h-schema/src/lib.rs', lines 285:8-287:9
+    Visibility: public -/
+structure Rows where
+  counter : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)
+  posts : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)
+  moderators : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)
+
+/-- [board_kernel::decode]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 290:8-298:9
+    Visibility: public -/
+def decode (r : Rows) : Result (Option Snapshot) := do
+  let o ← Counter.from_one r.counter
+  match o with
+  | none => ok none
+  | some x =>
+    let o1 ← Post.from_rows r.posts
+    match o1 with
+    | none => ok none
+    | some x1 =>
+      let o2 ← Moderator.from_rows r.moderators
+      match o2 with
+      | none => ok none
+      | some x2 => ok (some { counter := x, posts := x1, moderators := x2 })
+
 /-- [board_kernel::apply]: loop body 0:
-    Source: 'examples/tutorials/board/kernel/src/lib.rs', lines 258:4-261:5
+    Source: 'crates/i5h-schema/src/lib.rs', lines 308:12-311:13
     Visibility: public -/
 @[rust_loop_body]
 def apply_loop.body
@@ -597,7 +1264,7 @@ def apply_loop.body
   else ok (done s)
 
 /-- [board_kernel::apply]: loop 0:
-    Source: 'examples/tutorials/board/kernel/src/lib.rs', lines 258:4-261:5
+    Source: 'crates/i5h-schema/src/lib.rs', lines 308:12-311:13
     Visibility: public -/
 @[rust_loop]
 def apply_loop
@@ -609,10 +1276,51 @@ def apply_loop
     (s, i)
 
 /-- [board_kernel::apply]:
-    Source: 'examples/tutorials/board/kernel/src/lib.rs', lines 255:0-263:1
+    Source: 'crates/i5h-schema/src/lib.rs', lines 305:8-313:9
     Visibility: public -/
 def apply (snap : Snapshot) (ws : alloc.vec.Vec Write) : Result Snapshot := do
   let s ← Snapshot.Insts.CoreCloneClone.clone snap
   apply_loop ws s 0#usize
+
+/-- [board_kernel::sql_writes]: loop body 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 320:12-323:13
+    Visibility: public -/
+@[rust_loop_body]
+def sql_writes_loop.body
+  (ws : alloc.vec.Vec Write) (out : alloc.vec.Vec i5h_sql.Write)
+  (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec i5h_sql.Write) × Std.Usize)
+    (alloc.vec.Vec i5h_sql.Write))
+  := do
+  let i1 := alloc.vec.Vec.len ws
+  if i < i1
+  then
+    let w ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Write) ws i
+    let out1 ← sql_write w out
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
+  else ok (done out)
+
+/-- [board_kernel::sql_writes]: loop 0:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 320:12-323:13
+    Visibility: public -/
+@[rust_loop]
+def sql_writes_loop
+  (ws : alloc.vec.Vec Write) (out : alloc.vec.Vec i5h_sql.Write)
+  (i : Std.Usize) :
+  Result (alloc.vec.Vec i5h_sql.Write)
+  := do
+  loop
+    (fun (out1, i1) => sql_writes_loop.body ws out1 i1)
+    (out, i)
+
+/-- [board_kernel::sql_writes]:
+    Source: 'crates/i5h-schema/src/lib.rs', lines 317:8-325:9
+    Visibility: public -/
+@[reducible]
+def sql_writes
+  (ws : alloc.vec.Vec Write) : Result (alloc.vec.Vec i5h_sql.Write) := do
+  sql_writes_loop ws (alloc.vec.Vec.new i5h_sql.Write) 0#usize
 
 end board_kernel

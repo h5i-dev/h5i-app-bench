@@ -28,7 +28,13 @@ pub struct Principal {
 }
 
 i5h_schema::schema! {
-    mapping wastebin_tables for wastebin_kernel;
+    mapping wastebin_tables for wastebin_kernel, writes Write, lean "../proofs/generated/Schema.lean";
+
+    #[derive(Clone, Debug, Default, PartialEq, Eq)]
+    pub struct Snapshot {
+        counter: Counter,
+        pastes: Vec<Paste>,
+    }
 
     #[derive(Debug, PartialEq, Eq)]
     pub struct Paste in "wastebin_pastes" {
@@ -66,12 +72,6 @@ impl Clone for Paste {
             lock: self.lock,
         }
     }
-}
-
-#[derive(Clone, Debug, Default, PartialEq, Eq)]
-pub struct Snapshot {
-    pub counter: Counter,
-    pub pastes: Vec<Paste>,
 }
 
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -309,47 +309,23 @@ pub fn transition_pre190(a: &Principal, s: &Snapshot, cmd: &Command) -> Outcome 
     }
 }
 
-fn put_paste(v: &mut Vec<Paste>, p: Paste) {
-    let mut i = 0;
-    while i < v.len() {
-        if v[i].id == p.id {
-            v[i] = p;
-            return;
-        }
-        i += 1;
-    }
-    v.push(p);
-}
-
-fn del_paste(v: &Vec<Paste>, id: u64) -> Vec<Paste> {
-    let mut out = Vec::new();
-    let mut i = 0;
-    while i < v.len() {
-        if v[i].id != id {
-            out.push(v[i].clone());
-        }
-        i += 1;
-    }
-    out
-}
-
+/// What one write does to the state. `schema!` runs it over a write set
+/// (`apply`).
 fn apply_write(s: &mut Snapshot, w: Write) {
     match w {
-        Write::PutPaste(p) => put_paste(&mut s.pastes, p),
-        Write::DelPaste(id) => s.pastes = del_paste(&s.pastes, id),
+        Write::PutPaste(p) => Paste::put(&mut s.pastes, p),
+        Write::DelPaste(id) => s.pastes = Paste::del(&s.pastes, id),
         Write::SetCounter(c) => s.counter = c,
     }
 }
 
-/// What committing a write set means. The PostgreSQL store must agree.
-pub fn apply(snap: &Snapshot, ws: &Vec<Write>) -> Snapshot {
-    let mut s = snap.clone();
-    let mut i = 0;
-    while i < ws.len() {
-        apply_write(&mut s, ws[i].clone());
-        i += 1;
+/// The table writes one write makes.
+fn sql_write(w: &Write, out: &mut Vec<i5h_sql::Write>) {
+    match w {
+        Write::PutPaste(p) => out.push(p.sql_put()),
+        Write::DelPaste(id) => out.push(Paste::sql_del(*id)),
+        Write::SetCounter(c) => out.push(c.sql_put()),
     }
-    s
 }
 
 #[cfg(test)]

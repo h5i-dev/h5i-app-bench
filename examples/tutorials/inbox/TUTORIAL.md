@@ -357,8 +357,10 @@ command looked up is the one being compared.
 
 ## Committing a write set
 
-`Apply.lean` proves that the kernel's `apply` computes `Spec.applyAll`, with
-the same `I5hLib` loop lemmas as the second tutorial.
+`schema!` generates the table and `apply` loops with their proofs.
+`Apply.lean` proves that dispatch over writes computes `Spec.applyAll`, and
+`Storage.lean` instantiates the shared theorem connecting it to PostgreSQL's
+stored rows and the decoded load result.
 
 ## Introducing a bug
 

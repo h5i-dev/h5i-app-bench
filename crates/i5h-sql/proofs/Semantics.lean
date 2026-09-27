@@ -17,10 +17,12 @@ namespace i5h_sql.Sem
 def Stmt.abs : Stmt → AStmt Val
   | .Upsert t k r => .up t.val k.val r.val
   | .Delete t k => .del t.val k.val
+  | .DeleteWhere t c v => .delWhere t.val c.val v
 
 def Write.abs : Write → AWrite Val
   | .Put t kl row => .put t.val kl.val row.val
   | .Del t k => .del t.val k.val
+  | .DelWhere t c v => .delWhere t.val c.val v
 
 /-! ## The extracted planner computes `planA` -/
 
@@ -85,6 +87,7 @@ theorem plan_one_spec (w : Write) : plan_one w ⦃ s => Stmt.abs s = planA (Writ
   · step*
     simp only [Stmt.abs, Write.abs, planA, v_post, v1_post, n_post, U32.cast_Usize_val_eq]
   · simp [vals_clone, Stmt.abs, Write.abs, planA]
+  · simp [val_clone, Stmt.abs, Write.abs, planA]
 
 /-- `plan` succeeds and computes `planA` on every write, in order. -/
 @[step]
