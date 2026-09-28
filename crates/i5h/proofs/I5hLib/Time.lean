@@ -2,10 +2,10 @@ import Aeneas
 /-!
 # Runs with monotonic time
 
-With `EngineConfig::monotonic`, the engine never commits a command at an
-earlier time than the tenant's previous commit (`lean/Engine/Clock.lean`
-proves this of the protocol). An app whose principal carries the time can
-then reason about runs in which time never goes back.
+With `EngineConfig::monotonic`, the trusted engine contract says that the
+engine never commits a command at an earlier time than the tenant's previous
+commit. An app whose principal carries the time can then reason about runs in
+which time never goes back.
 
 `ReachableT` pairs each reachable state with the time of its latest commit;
 a step needs the principal's time to be no earlier. `StepsT` is the same

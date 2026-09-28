@@ -1,4 +1,4 @@
-//! Kernel of the example app. Extracted to Lean by Aeneas (see `lean/`).
+//! Kernel of the example app. Extracted to Lean by Aeneas (see `../proofs`).
 //!
 //! Aeneas subset: no `?`, iterator adapters, or `String`. Loops are `while`
 //! over indices.

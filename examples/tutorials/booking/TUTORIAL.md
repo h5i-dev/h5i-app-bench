@@ -394,10 +394,10 @@ proves the converse, that every booking and every cancellation comes with its
 notification.
 
 The kernel's part ends at the destination id. The rest of the way, from the
-outbox row to the endpoint, is the dispatcher's, and `lean/Engine/Outbox.lean`
-models it: `sent_committed` proves that every send carries the payload of a
-row in the outbox and goes to the endpoint the registry gives that row's
-destination, even with crashes, expired leases and concurrent dispatchers.
+outbox row to the endpoint, is the trusted dispatcher. PostgreSQL integration
+tests cover retries, stable delivery keys, unknown destinations and concurrent
+dispatchers. Receivers must deduplicate because a crash after sending and
+before recording success can send the same row again.
 
 ## Accepted commands and scenarios
 
@@ -439,10 +439,9 @@ happens. PostgreSQL orders transactions, not clocks, so a request that
 commits later may carry an earlier time. The engine's `monotonic` option
 rules it out. The engine keeps the time of each tenant's latest commit in the
 table `i5h_clock` and uses the later of that and the clock, reading and
-advancing the row in the request's transaction. The Lean model of the engine
-proves that committed times then never decrease in commit order within a
-tenant (`times_monotone` in `lean/Engine/Clock.lean`), for any clock, and
-the trace check tests the Rust engine against it.
+advancing the row in the request's transaction. The trusted engine contract
+says that committed times then never decrease in commit order within a tenant;
+the PostgreSQL tests exercise this implementation.
 
 In the proofs, `I5hLib` provides `ReachableT`, reachability paired with the
 time of the latest commit, whose step requires the principal's time to be no

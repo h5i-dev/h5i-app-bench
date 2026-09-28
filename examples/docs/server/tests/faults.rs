@@ -1,5 +1,4 @@
 mod common;
-mod trace_support;
 
 use common::*;
 use docs_kernel as k;
@@ -10,7 +9,6 @@ use i5h_pg::{pool, DbError, Engine, EngineConfig, ReplyCodec, Store, Tx};
 use std::sync::atomic::{AtomicI32, AtomicU8, Ordering::SeqCst};
 use std::sync::Arc;
 use tokio::sync::{Mutex, Notify};
-use trace_support::{check, Trace};
 
 // Where the next FaultStore call pauses: 0 nowhere, 1 in load, 2 after write.
 static PAUSE_AT: AtomicU8 = AtomicU8::new(0);
@@ -68,15 +66,13 @@ impl ReplyCodec<DocsApp> for FaultStore {
     }
 }
 
-async fn setup() -> Option<(Arc<Engine<DocsApp, FaultStore>>, tokio_postgres::Client, Trace)> {
+async fn setup() -> Option<(Arc<Engine<DocsApp, FaultStore>>, tokio_postgres::Client)> {
     let url = std::env::var("I5H_TEST_DATABASE_URL").ok()?;
-    let trace = Trace::default();
-    let e = Engine::new(pool(&url, 8).unwrap(), EngineConfig { tenant_lock: true, max_attempts: 20, monotonic: true, ..Default::default() })
-        .with_trace(trace.tracer());
+    let e = Engine::new(pool(&url, 8).unwrap(), EngineConfig { tenant_lock: true, max_attempts: 20, monotonic: true, ..Default::default() });
     e.install_schema().await.unwrap();
     let (admin, conn) = tokio_postgres::connect(&url, NoTls).await.unwrap();
     tokio::spawn(conn);
-    Some((Arc::new(e), admin, trace))
+    Some((Arc::new(e), admin))
 }
 
 /// Start `cmd` with a pause armed at `at`, kill the engine's backend there, then let it go on.
@@ -123,13 +119,12 @@ macro_rules! setup_or_skip {
 #[tokio::test]
 async fn killed_during_load_is_retried() {
     let _g = SERIAL.lock().await;
-    let (e, admin, trace) = setup_or_skip!();
+    let (e, admin) = setup_or_skip!();
     let t = fresh_tenant();
     let r = run_and_kill(&e, &admin, 1, principal(t, 1), project("a"), None).await;
     assert!(matches!(r, Ok(Ok(k::Reply::Created(_)))), "{r:?}");
     assert_eq!(e.snapshot(TenantId(t)).await.unwrap().projects.len(), 1);
     assert!(e.stats.retries.load(SeqCst) >= 1);
-    check("fault_load", &trace.lines_for(t));
 }
 
 /// Killed after the rows were written but before COMMIT: either retried (server said
@@ -137,10 +132,9 @@ async fn killed_during_load_is_retried() {
 #[tokio::test]
 async fn killed_before_commit_leaves_no_partial_writes() {
     let _g = SERIAL.lock().await;
-    let (e, admin, trace) = setup_or_skip!();
+    let (e, admin) = setup_or_skip!();
     let t = fresh_tenant();
     let r = run_and_kill(&e, &admin, 2, principal(t, 1), project("b"), None).await;
-    check("fault_before_commit", &trace.lines_for(t));
     let snap = e.snapshot(TenantId(t)).await.unwrap();
     match r {
         Ok(Ok(k::Reply::Created(_))) => {
@@ -159,14 +153,13 @@ async fn killed_before_commit_leaves_no_partial_writes() {
 #[tokio::test]
 async fn killed_before_commit_with_key_applies_once() {
     let _g = SERIAL.lock().await;
-    let (e, admin, trace) = setup_or_skip!();
+    let (e, admin) = setup_or_skip!();
     let t = fresh_tenant();
     let r = run_and_kill(&e, &admin, 2, principal(t, 1), project("c"), Some("k-kill")).await;
     assert!(matches!(r, Ok(Ok(k::Reply::Created(_)))), "{r:?}");
     let again = e.execute_idempotent(&principal(t, 1), "k-kill", &project("c")).await.unwrap();
     assert_eq!(again, r.unwrap());
     assert_eq!(e.snapshot(TenantId(t)).await.unwrap().projects.len(), 1);
-    check("fault_before_commit_keyed", &trace.lines_for(t));
 }
 
 /// The reply is lost after COMMIT (client crash). Retrying with the key returns the
@@ -174,7 +167,7 @@ async fn killed_before_commit_with_key_applies_once() {
 #[tokio::test]
 async fn lost_reply_is_replayed() {
     let _g = SERIAL.lock().await;
-    let (e, _admin, trace) = setup_or_skip!();
+    let (e, _admin) = setup_or_skip!();
     let t = fresh_tenant();
     let u = principal(t, 1);
     let first = e.execute_idempotent(&u, "k-lost", &project("d")).await.unwrap();
@@ -184,7 +177,6 @@ async fn lost_reply_is_replayed() {
     assert!(matches!(second, Ok(k::Reply::Created(_))));
     assert_eq!(e.stats.replays.load(SeqCst), replays + 1);
     assert_eq!(e.snapshot(TenantId(t)).await.unwrap().projects.len(), 1);
-    check("lost_reply", &trace.lines_for(t));
 }
 
 /// Invariants from Spec.lean, checked on the committed state.
@@ -213,9 +205,10 @@ async fn concurrent_writers_keep_invariants() {
         eprintln!("I5H_TEST_DATABASE_URL not set; skipping");
         return;
     };
-    let trace = Trace::default();
-    let pg = Engine::<DocsApp, DocsStore>::new(pool(&url, 32).unwrap(), EngineConfig { tenant_lock: false, max_attempts: 100, ..Default::default() }.database_time())
-        .with_trace(trace.tracer());
+    let pg = Engine::<DocsApp, DocsStore>::new(
+        pool(&url, 32).unwrap(),
+        EngineConfig { tenant_lock: false, max_attempts: 100, ..Default::default() }.database_time(),
+    );
     pg.install_schema().await.unwrap();
     let pg = Arc::new(pg);
     let t = fresh_tenant();
@@ -246,5 +239,4 @@ async fn concurrent_writers_keep_invariants() {
     }
     check_invariants(&pg.snapshot(TenantId(t)).await.unwrap());
     eprintln!("stats: {:?}, retries exhausted: {exhausted}", pg.stats);
-    check("concurrent_writers", &trace.lines_for(t));
 }

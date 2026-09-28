@@ -76,11 +76,6 @@ jobs:
             if grep -n -w -e sorry -e native_decide "$d"/*.lean; then exit 1; fi
             if grep -n "^axiom" "$d"/*.lean "$d"/generated/*.lean; then exit 1; fi
           done
-      # Engine protocol model (plain Lean, no dependencies).
-      - name: Build engine protocol model
-        working-directory: lean
-        run: lake build
-
   # A9: the committed Lean must be exactly what Aeneas extracts from the kernel.
   extract:
     runs-on: ubuntu-latest

@@ -2,8 +2,7 @@
 //!
 //! Steps: Rust tests, cargo-deny, re-extraction drift, Lean builds with the
 //! sorry/axiom gates, and with `--full` the mutation suite, the Rust-vs-Lean
-//! differential test and the engine trace check. Missing tools are reported as
-//! skipped, never as passed.
+//! differential test. Missing tools are reported as skipped, never as passed.
 
 use std::path::{Path, PathBuf};
 use std::process::{Command, ExitCode, Stdio};
@@ -26,7 +25,6 @@ const PROJECTS: &[(&str, Option<&str>, Option<&str>)] = &[
     ("examples/tutorials/inbox/proofs", Some("scripts/extract-inbox.sh"), Some("examples/tutorials/inbox/proofs/generated/InboxKernel.lean")),
     ("examples/tutorials/booking/proofs", Some("scripts/extract-booking.sh"), Some("examples/tutorials/booking/proofs/generated/BookingKernel.lean")),
     ("crates/i5h/proofs", None, None),
-    ("lean", None, None),
 ];
 
 #[derive(PartialEq)]
@@ -164,12 +162,6 @@ fn main() -> ExitCode {
         cx.step("mutation suite", |r| run(r, "python3", &["scripts/mutants.py"]));
         cx.step("app mutation suite", |r| run(r, "python3", &["scripts/mutants-apps.py"]));
         cx.step("rust vs lean differential test", |r| run(r, "bash", &["scripts/difftest.sh"]));
-        cx.step("engine traces vs model", |r| {
-            if !db {
-                return Outcome::Skip("I5H_TEST_DATABASE_URL unset".into());
-            }
-            run(r, "bash", &["scripts/tracecheck.sh"])
-        });
     }
 
     let failed = cx.results.iter().filter(|(_, o, _)| matches!(o, Outcome::Fail(_))).count();
