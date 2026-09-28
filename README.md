@@ -1,6 +1,6 @@
 # i5h
 
-`i5h` (*icefish*) is a Rust web framework whose application logic is proven correct in Lean 4.
+`i5h` (*icefish*) is a Rust web framework that lets developers prove properties of their application logic in Lean 4.
 
 ## High level features
 
