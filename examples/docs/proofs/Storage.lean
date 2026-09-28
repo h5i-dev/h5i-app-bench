@@ -12,8 +12,9 @@ The server stores a write set by running `i5h_sql::plan` on the kernel's own
 - `stored`: running the planned statements on a database that holds a valid
   state leaves exactly the rows of the new state.
 
-`I5hLib.Sql` gives statements their PostgreSQL meaning (trusted), and the
-`i5h-sql` proofs show the extracted `plan` computes `planA`.
+`I5hLib.Sql` gives statements their meaning, the `i5h-sql` proofs show the
+extracted `plan` computes `planA`, and `I5hLib.Pg` with the `i5h-pgsql`
+proofs shows the SQL the server sends does what `exec` says.
 -/
 open Aeneas Aeneas.Std Result docs_kernel docs_kernel.Spec I5hLib I5hLib.Sql docs_kernel.Schema
 

@@ -2,9 +2,9 @@ mod common;
 
 use common::*;
 use docs_kernel as k;
-use docs_server::{principal, DocsApp, DocsStore};
+use docs_server::{principal, table_spec, DocsApp, DocsStore};
 use i5h::{MemoryEngine, TenantId};
-use i5h_pg::{load_rows_where, pool, sql::Val, DbError, Engine, EngineConfig, Store, Tx};
+use i5h_pg::{load_table, pool, sql::Val, DbError, Engine, EngineConfig, Store, Tx};
 use std::sync::Arc;
 
 macro_rules! engine_or_skip {
@@ -191,11 +191,12 @@ impl Store<DocsApp> for NullApproverStore {
     }
 
     async fn load_for(tx: &Tx<'_>, tenant: TenantId, _: &k::Command) -> Result<k::Snapshot, DbError> {
-        let documents = load_rows_where::<DocsApp, k::Document>(
+        let documents = load_table(
             tx,
             tenant,
-            k::docs_tables::Document::approver,
-            &Val::Null,
+            &table_spec(),
+            k::Document::TABLE,
+            Some((k::docs_tables::Document::approver, Val::Null)),
         )
         .await?;
         k::decode(&k::Rows { documents, ..Default::default() })

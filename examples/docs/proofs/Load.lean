@@ -289,8 +289,8 @@ theorem sql_writes_storedC (c : Bool) (s : St) (h : Inv s) (ws : alloc.vec.Vec W
 
 /-! ## Loading -/
 
-/-- Trusted (a tenant-filtered `SELECT`): the loader returns every stored row
-of each table exactly once, in any order. -/
+/-- The loader returns every stored row of each table exactly once, in any
+order: what the compiled `SELECT`s return (`Database.lists_of`). -/
 def Lists (db : Db Val) (R : Nat → List (List Val)) : Prop :=
   ∀ t, (R t).Nodup ∧ ∀ row, row ∈ R t ↔ db t (row.take (kl t)) = some row
 

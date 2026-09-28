@@ -1,0 +1,10 @@
+[package]
+name = "i5h-pgsql"
+description = "PostgreSQL text for i5h's planned statements; extracted to Lean and proven to mean what the planner's statements mean"
+edition.workspace = true
+license.workspace = true
+version.workspace = true
+
+# Only i5h-sql: this crate is extracted to Lean by Charon + Aeneas.
+[dependencies]
+i5h-sql.workspace = true

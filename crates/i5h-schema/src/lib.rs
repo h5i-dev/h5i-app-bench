@@ -52,10 +52,13 @@
 //! `Storage.lean` use. A generated test checks it; `I5H_BLESS=1` rewrites it.
 //!
 //! The server crate gets a macro: `board_kernel::board_tables!(Board);`
-//! expands to an `i5h_pg::table!` mapping per row type, `schema_ddl()`,
-//! `schema_tables()`, `schema_write()` (run table writes), and with a
-//! snapshot `schema_load()` (load and `decode`), and with writes
-//! `schema_store()` (store a write set's `sql_writes`).
+//! expands to an `i5h_pg::table!` mapping per row type, `schema_spec()`
+//! (the tables as `i5h_pgsql` sees them, numbered like `TABLE`),
+//! `schema_ddl()`, `schema_tables()`, `schema_write()` (run table writes),
+//! `schema_rows()` and `schema_rows_where()` (load a table, or its rows with
+//! one column's value), and with a snapshot `schema_load()` (load and
+//! `decode`), and with writes `schema_store()` (store a write set's
+//! `sql_writes`). All their SQL is built and printed by `i5h_pgsql`.
 
 #[doc(hidden)]
 pub mod lean;
@@ -488,41 +491,68 @@ macro_rules! __mapping {
             ($d app:ty) => {
                 $( ::i5h_pg::table!($d app, $krate::$name => $table { key: [$($k),*], cols: [$($c),*] }); )*
 
-                /// `CREATE TABLE` statements for every row type in the schema.
+                /// Every table, numbered as the kernel numbers them (`TABLE`),
+                /// for the SQL compiler `i5h_pgsql`.
+                #[allow(dead_code)]
+                fn schema_spec() -> ::std::vec::Vec<::i5h_pg::pgsql::Table> {
+                    ::std::vec![ $( ::i5h_pg::spec::<$d app, $krate::$name>() ),* ]
+                }
+
+                /// `CREATE TABLE` statements for every row type in the schema,
+                /// rendered by `i5h_pgsql`. Panics on a schema `i5h_pgsql::valid`
+                /// rejects; the generated `schema_is_valid` test catches that.
                 fn schema_ddl() -> ::std::vec::Vec<::std::string::String> {
-                    ::std::vec![ $( ::i5h_pg::ddl::<$d app, $krate::$name>() ),* ]
+                    ::i5h_pg::create_tables(&schema_spec()).expect("schema! tables are valid")
+                }
+
+                #[cfg(test)]
+                #[test]
+                fn schema_is_valid() {
+                    let spec = schema_spec();
+                    assert!(::i5h_pg::pgsql::valid(&spec), "i5h_pgsql rejects this schema");
+                    let mut n: u32 = 0;
+                    $(
+                        assert_eq!($krate::$name::TABLE, n);
+                        assert_eq!(spec[n as usize].key_len, $krate::$name::KEY_LEN);
+                        n += 1;
+                    )*
+                    let _ = n;
                 }
 
                 /// Store table writes encoded by the kernel (`to_row`): plan
-                /// them with `i5h_sql::plan` and run each statement on the
-                /// table its number names, in order.
+                /// them with `i5h_sql::plan`, compile each statement with
+                /// `i5h_pgsql::compile` and run it, in order.
                 #[allow(dead_code)]
                 async fn schema_write(
                     tx: &::i5h_pg::Tx<'_>,
                     tenant: ::i5h::TenantId,
                     ws: &::std::vec::Vec<::i5h_pg::sql::Write>,
                 ) -> ::std::result::Result<(), ::i5h_pg::DbError> {
-                    for stmt in ::i5h_pg::sql::plan(ws) {
-                        let table = match &stmt {
-                            ::i5h_pg::sql::Stmt::Upsert { table, .. } => *table,
-                            ::i5h_pg::sql::Stmt::Delete { table, .. } => *table,
-                            ::i5h_pg::sql::Stmt::DeleteWhere { table, .. } => *table,
-                        };
-                        let mut n: u32 = 0;
-                        let mut run = false;
-                        $(
-                            if !run && table == n {
-                                ::i5h_pg::run_planned::<$d app, $krate::$name>(tx, tenant, stmt.clone()).await?;
-                                run = true;
-                            }
-                            n += 1;
-                        )*
-                        let _ = n;
-                        if !run {
-                            return Err(::i5h_pg::DbError::Decode(::std::format!("no table number {table}")));
-                        }
-                    }
-                    Ok(())
+                    ::i5h_pg::store_writes(tx, tenant, &schema_spec(), ws).await
+                }
+
+                /// The tenant's rows of table `table` whose zero-based encoded
+                /// column `column` is not distinct from `value`. Use the column
+                /// constants of the mapping module.
+                #[allow(dead_code)]
+                async fn schema_rows_where(
+                    tx: &::i5h_pg::Tx<'_>,
+                    tenant: ::i5h::TenantId,
+                    table: u32,
+                    column: u32,
+                    value: &::i5h_pg::sql::Val,
+                ) -> ::std::result::Result<::std::vec::Vec<::std::vec::Vec<::i5h_pg::sql::Val>>, ::i5h_pg::DbError> {
+                    ::i5h_pg::load_table(tx, tenant, &schema_spec(), table, Some((column, value.clone()))).await
+                }
+
+                /// All of the tenant's rows of table `table`.
+                #[allow(dead_code)]
+                async fn schema_rows(
+                    tx: &::i5h_pg::Tx<'_>,
+                    tenant: ::i5h::TenantId,
+                    table: u32,
+                ) -> ::std::result::Result<::std::vec::Vec<::std::vec::Vec<::i5h_pg::sql::Val>>, ::i5h_pg::DbError> {
+                    ::i5h_pg::load_table(tx, tenant, &schema_spec(), table, None).await
                 }
 
                 /// Table names for every row type in the schema.
@@ -549,7 +579,8 @@ macro_rules! __mapping_snap {
             tx: &::i5h_pg::Tx<'_>,
             tenant: ::i5h::TenantId,
         ) -> ::std::result::Result<$krate::$snap, ::i5h_pg::DbError> {
-            let rows = $krate::Rows { $($f: ::i5h_pg::load_rows::<$app, $krate::$t>(tx, tenant).await?,)* };
+            let spec = schema_spec();
+            let rows = $krate::Rows { $($f: ::i5h_pg::load_table(tx, tenant, &spec, $krate::$t::TABLE, None).await?,)* };
             $krate::decode(&rows).ok_or_else(|| ::i5h_pg::DbError::Decode("stored rows do not decode".into()))
         }
 

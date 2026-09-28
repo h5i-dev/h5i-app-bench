@@ -58,4 +58,38 @@ theorem stored {db : Db Val} {s : St} (h : Served app Snapshot.toSt db s) :
       ∀ r, Lists kl db (Rows.tabs r) → decode r ⦃ o => ∃ snap, o = some snap ∧ app.Equiv (Snapshot.toSt snap) s ⦄ :=
   Schema.stored fits sql_fits h
 
+/-! ## The invariants on PostgreSQL
+
+The chain from a command to the rows a later request loads: the extracted
+`transition` accepts a write set (`Accepted`), `inv_preserved` keeps `Inv`,
+the server stores the compiled statements of `sql_writes`, and a load runs
+the compiled `SELECT`s and `decode`. `Schema.pg_loaded_inv` connects them. -/
+
+/-- Write sets the kernel returns for a command it accepts. -/
+def Accepted (snap : Snapshot) (ws : alloc.vec.Vec Write) : Prop :=
+  ∃ a c r, transition a snap c = .ok (.Ok (ws, r))
+
+/-- `Inv` survives reordering rows. The state has no counters, so no bound
+is needed. -/
+theorem inv_equiv (snap : Snapshot) (s : St) (h : app.Equiv (Snapshot.toSt snap) s) (hi : Inv s) :
+    Inv (Snapshot.toSt snap) := by
+  have h0 := h 0
+  have h1 := h 1
+  simp only [app, enc, Snapshot.toSt] at h0 h1
+  rw [List.map_perm_map_iff Message.row_inj] at h0
+  rw [List.map_perm_map_iff Block.row_inj] at h1
+  obtain ⟨hk, ht, hb⟩ := hi
+  exact ⟨(h0.map _).nodup_iff.2 hk, fun m hm => ht m (h0.subset hm), (h1.map _).nodup_iff.2 hb⟩
+
+/-- The invariants hold on the database. For the schema the server passes to
+`i5h_pgsql` and any tenant, every database the server produces, one accepted
+command at a time among other tenants' commits, holds a state satisfying
+`Inv`, and every snapshot a later load decodes satisfies `Inv`. -/
+theorem db_inv {ts : List Pg.Tab} {tv : Val} (hv : Pg.Valid ts) (htv : valKind tv = some .int)
+    (hkl : Pg.klOf ts = kl) (hlen : ts.length = 2) {db : Pg.PgDb Val} {s : St}
+    (h : PgServed app Snapshot.toSt ts tv Accepted db s) :
+    Inv s ∧ ∀ r, Loads ts tv db r → decode r ⦃ o => ∃ snap, o = some snap ∧ Inv (Snapshot.toSt snap) ⦄ :=
+  pg_loaded_inv sql_fits fits hv htv hkl hlen Inv Theorems.init_inv inv_equiv
+    (fun snap ws ⟨a, c, r, ht⟩ hi => Theorems.inv_preserved a snap c ws r hi ht) h
+
 end inbox_kernel.Storage

@@ -14,6 +14,7 @@ const PROJECTS: &[(&str, Option<&str>, Option<&str>)] = &[
     ("examples/kellnr/proofs", Some("scripts/extract-kellnr.sh"), Some("examples/kellnr/proofs/generated/KellnrKernel.lean")),
     ("examples/atuin/proofs", Some("scripts/extract-atuin.sh"), Some("examples/atuin/proofs/generated/AtuinKernel.lean")),
     ("crates/i5h-sql/proofs", Some("scripts/extract-sql.sh"), Some("crates/i5h-sql/proofs/generated/I5hSql.lean")),
+    ("crates/i5h-pgsql/proofs", Some("scripts/extract-pgsql.sh"), Some("crates/i5h-pgsql/proofs/generated/I5hPgsql.lean")),
     ("crates/i5h-token/proofs", Some("scripts/extract-token.sh"), Some("crates/i5h-token/proofs/generated/I5hToken.lean")),
     ("crates/i5h-json/proofs", Some("scripts/extract-json.sh"), Some("crates/i5h-json/proofs/generated/I5hJson.lean")),
     ("examples/tutorials/calculator/proofs", Some("scripts/extract-calculator.sh"), Some("examples/tutorials/calculator/proofs/generated/CalculatorKernel.lean")),
@@ -157,6 +158,12 @@ fn main() -> ExitCode {
             return Outcome::Skip("lake not on PATH".into());
         }
         run(r, "bash", &["scripts/ci-lean-gate.sh"])
+    });
+    cx.step("axioms of the database theorems", |r| {
+        if !lake {
+            return Outcome::Skip("lake not on PATH".into());
+        }
+        run(r, "bash", &["scripts/ci-db-axioms.sh"])
     });
     if full {
         cx.step("mutation suite", |r| run(r, "python3", &["scripts/mutants.py"]));

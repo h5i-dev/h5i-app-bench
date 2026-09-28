@@ -19,8 +19,8 @@ namespace docs_kernel.Scoped
 
 open Classical
 
-/-- Trusted (a tenant-filtered `SELECT ... WHERE`): the loader returns every
-stored row of table `t` satisfying `Q`, once. -/
+/-- The loader returns every stored row of table `t` satisfying `Q`, once:
+what a compiled filtered `SELECT` returns (`Database.sel_of`). -/
 def Sel (db : Db Val) (t : Nat) (Q : List Val → Prop) (R : List (List Val)) : Prop :=
   R.Nodup ∧ ∀ row, row ∈ R ↔ db t (row.take (kl t)) = some row ∧ Q row
 
@@ -262,9 +262,9 @@ theorem scoped_command (db : Db Val) (s : St) (hi : Inv s) (hs : Stored db s) (h
 
 /-- The tenant databases the server can produce from an empty tenant. Each
 request loads rows (all of them with `load`, or a scope's with `load_for`),
-decodes them, runs a command that succeeds and stores its writes. The loads
-are the trusted `SELECT`s (`Lists`, `Sel`); a scoped load also needs the
-tables to fit in a `Vec`. -/
+decodes them, runs a command that succeeds and stores its writes. Loads are
+described by `Lists` and `Sel`, which `Database.lean` derives from the
+compiled `SELECT`s; a scoped load also needs the tables to fit in a `Vec`. -/
 inductive Served : Db Val → Prop
   | fresh : Served (fun _ _ => none)
   | full {db : Db Val} {r : Rows} {snap : Snapshot} {a : Principal} {cmd : Command} {ws reply}

@@ -16,6 +16,14 @@ open Classical
 
 abbrev Val := i5h_sql.Val
 
+/-- How the PostgreSQL driver types a value; `none` is `NULL`. -/
+def valKind : Val → Option Pg.Kind
+  | .Int _ => some .int
+  | .Bool _ => some .bool
+  | .Text _ => some .text
+  | .Bytes _ => some .bytes
+  | .Null => none
+
 /-- An integer column: its 64 bits as a `BIGINT`. -/
 def int (n : Nat) : Val := .Int ⟨BitVec.ofNat _ n⟩
 

@@ -34,9 +34,10 @@ mod roles;
 mod table;
 
 pub use roles::{lockdown, lockdown_sql};
-pub use table::{column_of, ddl, delete, delete_where, key, load, load_rows, load_rows_where, load_where, run_planned, upsert, ColumnDef, Kind, PgField, Table, Value};
+pub use table::{column_of, create_tables, load_table, spec, store_writes, ColumnDef, Kind, PgField, Table, Value};
 pub use i5h::Timestamp;
 pub use i5h_sql as sql;
+pub use i5h_pgsql as pgsql;
 
 use deadpool_postgres::{Config, Runtime};
 use i5h::{Kernel, TenantId};
@@ -135,10 +136,11 @@ fn commit_error(e: tokio_postgres::Error) -> DbError {
     }
 }
 
-/// Maps snapshots and write sets to tables. Keep it to [`load`], [`upsert`]
-/// and [`delete`] calls so the mapping stays mechanical.
+/// Maps snapshots and write sets to tables. Keep it to [`load_table`] and
+/// [`store_writes`] calls (`schema!`'s mapping macro generates them) so the
+/// mapping stays mechanical.
 pub trait Store<K: Kernel>: Send + Sync + 'static {
-    /// Usually `vec![ddl::<A, Row>(), ...]`.
+    /// Usually `schema_ddl()`, from [`create_tables`].
     fn ddl() -> Vec<String>;
 
     /// Names of the tables created by `ddl`, for [`lockdown`].

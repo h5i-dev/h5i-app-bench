@@ -240,6 +240,16 @@ pub fn render(krate: &str, rows: &[RowDecl], snap: Option<&SnapDecl>, writes: Op
     let _ = writeln!(s, "namespace {krate}.Schema\n");
     let _ = writeln!(s, "open Classical\n");
     let _ = writeln!(s, "abbrev Val := i5h_sql.Val\n");
+    let _ = writeln!(
+        s,
+        "/-- How the PostgreSQL driver types a value; `none` is `NULL`. -/
+def valKind : Val → Option Pg.Kind
+  | .Int _ => some .int
+  | .Bool _ => some .bool
+  | .Text _ => some .text
+  | .Bytes _ => some .bytes
+  | .Null => none\n"
+    );
     if ints {
         let _ = writeln!(s, "/-- An integer column: its 64 bits as a `BIGINT`. -/\ndef int (n : Nat) : Val := .Int ⟨BitVec.ofNat _ n⟩");
         s.push_str(U64);
@@ -819,18 +829,17 @@ theorem sql_writes_spec' (f : {w} → List (AWrite Val))
 section Store
 variable {{St : Type}} (A : App St {w} Val) (toSt : {sname} → St)
 
-/-- The databases the server produces from an empty tenant, and the state
-each holds. Each request loads every table (the trusted `SELECT`s, `Lists`),
-decodes the rows with `decode`, and stores a write set by running the plan of
-`sql_writes` (a delete by column value as a `SELECT` and keyed deletes,
-`Runs`). The write set's table writes must fit in a vector. -/
+/-- The tenant databases the server produces from an empty tenant, and the
+state each holds. Each request loads every table (`Lists`), decodes the rows
+with `decode`, and runs the plan of `sql_writes`. The write set's table
+writes must fit in a vector. -/
 inductive Served : Db Val → St → Prop
   | fresh : Served (fun _ _ => none) A.init
-  | commit {{db db' : Db Val}} {{s : St}} {{r : Rows}} {{snap : {sname}}} {{ws : alloc.vec.Vec {w}}}
+  | commit {{db : Db Val}} {{s : St}} {{r : Rows}} {{snap : {sname}}} {{ws : alloc.vec.Vec {w}}}
       {{v : alloc.vec.Vec i5h_sql.Write}} :
       Served db s → Lists kl db (Rows.tabs r) → decode r = ok (some snap) →
       (ws.val.flatMap A.sql).length ≤ Usize.max → sql_writes ws = ok v →
-      Runs kl db ((v.val.map sqlW).map planA) db' → Served db' (ws.val.foldl A.step (toSt snap))
+      Served (execAll db ((v.val.map sqlW).map planA)) (ws.val.foldl A.step (toSt snap))
 
 variable {{A toSt}}
 
@@ -843,11 +852,11 @@ theorem served_app (hf : Fits A toSt) (hs : SqlFits A) {{db : Db Val}} {{s : St}
     A.Served db s := by
   induction h with
   | fresh => exact .fresh
-  | commit _ hl hd hn hv hr ih =>
+  | commit _ hl hd hn hv ih =>
     obtain ⟨snap', he, hq⟩ := post_of_ok (loaded hf ih _ hl) hd
     cases he
-    rw [post_of_ok (sql_writes_spec' A.sql hs _ hn) hv, ← hf.kl] at hr
-    exact .commit ih hq hr
+    rw [post_of_ok (sql_writes_spec' A.sql hs _ hn) hv]
+    exact .commit ih hq
 
 /-- The store holds what `apply` computes: every database the server produces
 reads back exactly the rows of the state its commits computed (`Holds`), and
@@ -857,7 +866,106 @@ theorem stored (hf : Fits A toSt) (hs : SqlFits A) {{db : Db Val}} {{s : St}} (h
       ∀ r, Lists kl db (Rows.tabs r) → decode r ⦃ o => ∃ snap, o = some snap ∧ A.Equiv (toSt snap) s ⦄ :=
   ⟨(A.served_holds (served_app hf hs h)).1, loaded hf (served_app hf hs h)⟩
 
-end Store"
+end Store
+
+/-! ## On PostgreSQL
+
+`PgServed` is one tenant's history on a database that holds every tenant's
+rows. Each commit runs the compiled `SELECT` of every table (`Pg.selectA`,
+computed by the extracted `i5h_pgsql::select`), decodes the rows, takes a
+write set that `Step` allows, and runs the compiled statements
+(`Pg.compileA`, computed by `i5h_pgsql::compile`) of its planned table
+writes. Other tenants' compiled statements may run in between. `ts` is the
+schema the server passes to `i5h_pgsql` (`schema_spec()`), and `tv` the
+tenant's id. The PostgreSQL model is `I5hLib.Pg`. -/
+
+section Pg
+variable {{St : Type}} (A : App St {w} Val) (toSt : {sname} → St) (ts : List Pg.Tab) (tv : Val)
+  (Step : {sname} → alloc.vec.Vec {w} → Prop)
+
+/-- What loading the tenant from `db` returns: the compiled `SELECT` of each
+table, rows in any order. -/
+def Loads (db : Pg.PgDb Val) (r : Rows) : Prop :=
+  ∀ t, t < {n} → ∃ q ps R0, Pg.selectA valKind ts tv t none = some (q, ps) ∧
+    Pg.selected valKind db q ps = some R0 ∧ (Rows.tabs r t).Perm R0
+
+inductive PgServed : Pg.PgDb Val → St → Prop
+  | fresh {{db : Pg.PgDb Val}} :
+      Pg.Matches valKind ts db → Pg.view ts tv db = (fun _ _ => none) → PgServed db A.init
+  | commit {{db db' : Pg.PgDb Val}} {{s : St}} {{r : Rows}} {{snap : {sname}}} {{ws : alloc.vec.Vec {w}}}
+      {{v : alloc.vec.Vec i5h_sql.Write}} {{qs : List (Pg.Sql × List Val)}} :
+      PgServed db s → Loads ts tv db r → decode r = ok (some snap) → Step snap ws →
+      (ws.val.flatMap A.sql).length ≤ Usize.max → sql_writes ws = ok v →
+      ((v.val.map sqlW).map planA).mapM (Pg.compileA valKind ts tv) = some qs →
+      Pg.runAll valKind db qs = some db' → PgServed db' (ws.val.foldl A.step (toSt snap))
+  | other {{db db' : Pg.PgDb Val}} {{s : St}} {{tv' : Val}} {{ss : List (AStmt Val)}}
+      {{qs : List (Pg.Sql × List Val)}} :
+      PgServed db s → tv' ≠ tv → valKind tv' = some .int →
+      ss.mapM (Pg.compileA valKind ts tv') = some qs → Pg.runAll valKind db qs = some db' → PgServed db' s
+
+variable {{A toSt ts tv Step}}
+
+theorem Rows.tabs_nil (r : Rows) (t : Nat) (h : {n} ≤ t) : Rows.tabs r t = [] := by
+  obtain ⟨k, rfl⟩ := Nat.exists_eq_add_of_le' h
+  simp only [Rows.tabs]
+
+/-- Every database `PgServed` reaches matches the schema, and the tenant's
+part of it is a database `Served` reaches, with the same state. -/
+theorem pg_served (hs : SqlFits A) (hf : Fits A toSt) (hv : Pg.Valid ts) (htv : valKind tv = some .int)
+    (hkl : Pg.klOf ts = kl) (hlen : ts.length = {n}) {{db : Pg.PgDb Val}} {{s : St}}
+    (h : PgServed A toSt ts tv Step db s) : Pg.Matches valKind ts db ∧ Served A toSt (Pg.view ts tv db) s := by
+  induction h with
+  | fresh hm he => exact ⟨hm, he ▸ .fresh⟩
+  | @commit db db' s r snap ws v qs _ hsel hd _ hn hvw hq hr ih =>
+    obtain ⟨hm, hS⟩ := ih
+    have hl : Lists kl (Pg.view ts tv db) (Rows.tabs r) := by
+      rw [← hkl]
+      exact Pg.lists_of_selects valKind hv htv hm _ (fun t ht => Rows.tabs_nil _ t (hlen ▸ ht))
+        (fun t ht => hsel t (hlen ▸ ht))
+    obtain ⟨db2, hr2, hm2, hv2, -, -⟩ := Pg.compileAll_sound valKind hv htv _ _ _ hm hq
+    rw [hr] at hr2
+    cases hr2
+    exact ⟨hm2, hv2 ▸ .commit hS hl hd hn hvw⟩
+  | other _ hne htv' hq hr ih =>
+    obtain ⟨hm, hS⟩ := ih
+    obtain ⟨db2, hr2, hm2, -, ho, -⟩ := Pg.compileAll_sound valKind hv htv' _ _ _ hm hq
+    rw [hr] at hr2
+    cases hr2
+    exact ⟨hm2, (ho _ (Ne.symm hne)) ▸ hS⟩
+
+/-- The invariant on PostgreSQL. If the fresh state satisfies `Inv`, a
+snapshot whose rows reorder a state satisfying `Inv` satisfies it too, and
+every write set `Step` allows from a snapshot satisfying `Inv` keeps it, then
+the state of every database `PgServed` reaches satisfies `Inv`, and so does
+every snapshot a load of it decodes to. -/
+theorem pg_loaded_inv (hs : SqlFits A) (hf : Fits A toSt) (hv : Pg.Valid ts) (htv : valKind tv = some .int)
+    (hkl : Pg.klOf ts = kl) (hlen : ts.length = {n}) (Inv : St → Prop) (hinit : Inv A.init)
+    (hequiv : ∀ snap s', A.Equiv (toSt snap) s' → Inv s' → Inv (toSt snap))
+    (hstep : ∀ snap ws, Step snap ws → Inv (toSt snap) → Inv (ws.val.foldl A.step (toSt snap)))
+    {{db : Pg.PgDb Val}} {{s : St}} (h : PgServed A toSt ts tv Step db s) :
+    Inv s ∧ ∀ r, Loads ts tv db r → decode r ⦃ o => ∃ snap, o = some snap ∧ Inv (toSt snap) ⦄ := by
+  have load : ∀ {{db : Pg.PgDb Val}} {{s : St}}, PgServed A toSt ts tv Step db s → Inv s →
+      ∀ r, Loads ts tv db r → decode r ⦃ o => ∃ snap, o = some snap ∧ Inv (toSt snap) ⦄ := by
+    intro db s h hi r hr
+    obtain ⟨hm, hS⟩ := pg_served hs hf hv htv hkl hlen h
+    have hl : Lists kl (Pg.view ts tv db) (Rows.tabs r) := by
+      rw [← hkl]
+      exact Pg.lists_of_selects valKind hv htv hm _ (fun t ht => Rows.tabs_nil _ t (hlen ▸ ht))
+        (fun t ht => hr t (hlen ▸ ht))
+    apply WP.spec_mono (loaded hf (served_app hf hs hS) r hl)
+    rintro o ⟨snap, rfl, he⟩
+    exact ⟨snap, rfl, hequiv snap _ he hi⟩
+  have hinv : Inv s := by
+    induction h with
+    | fresh => exact hinit
+    | commit h0 hsel hd hst _ _ _ _ ih =>
+      obtain ⟨snap', e, hi'⟩ := post_of_ok (load h0 ih _ hsel) hd
+      cases e
+      exact hstep _ _ hst hi'
+    | other _ _ _ _ _ ih => exact ih
+  exact ⟨hinv, load h hinv⟩
+
+end Pg"
             );
         }
     }

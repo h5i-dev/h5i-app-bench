@@ -32,7 +32,7 @@ HTTP (axum) ──► Actor<K> ──► I5h::respond ──► Engine: BEGIN, l
 | `crates/i5h-pg` | the PostgreSQL engine: tenant snapshots, retries, idempotency and role lockdown |
 | `crates/i5h-http` | axum integration: the `Actor` extractor, `I5h::respond` and `rpc_router` |
 | `crates/i5h-schema` | `schema!`, which declares kernel rows once |
-| `crates/i5h-sql`, `i5h-token`, `i5h-json` | shell components that are extracted and proven |
+| `crates/i5h-sql`, `i5h-pgsql`, `i5h-token`, `i5h-json` | shell components that are extracted and proven: the statement planner, the SQL compiler and printer, bearer tokens, JSON output |
 | `examples/tutorials` | step-by-step tutorials |
 | `examples/docs` | the document service, the largest example |
 | `examples/kellnr`, `examples/atuin` | ports of real authorization code, kernels and proofs only |
@@ -53,14 +53,17 @@ state keeps its invariants. It also checks that a user's result, including
 error codes, depends only on what that user may see, that webhooks go only to
 the destination a project registered, that a command's result depends only on
 one project's rows (so the server loads only those), and that the kernel never
-panics. Storage theorems connect kernel writes with abstract database rows and
-their later decoding. Transferring the invariant to a running PostgreSQL
-database is conditional on the trusted SQL mapping and engine contract below.
+panics. Storage theorems connect the kernel's writes with the SQL the server
+sends and with the rows a later request loads: every server application has a
+`db_inv` theorem saying that the invariant holds for every database its
+requests produce and for every snapshot loaded from it, under the PostgreSQL
+model and engine contract below.
 
-The SQL statement planner, the token parser and encoder, and the JSON writer
-are extracted and proven. The PostgreSQL engine, its retry and idempotency
-protocol, and the outbox dispatcher are trusted implementation. Their contract
-is stated in [TRUST.md](TRUST.md) and checked with integration and fault tests.
+The SQL statement planner, the SQL compiler and printer, the token parser and
+encoder, and the JSON writer are extracted and proven. The PostgreSQL engine,
+its retry and idempotency protocol, and the outbox dispatcher are trusted
+implementation. Their contract is stated in [TRUST.md](TRUST.md) and checked
+with integration and fault tests.
 
 Five ports test the approach on real code, and each one reproduces a known
 bug: the property fails, with a concrete counterexample, on the code before
@@ -88,38 +91,49 @@ The most valuable proof path in i5h is the one that starts with code that
 actually runs and stays close to application data:
 
 ```
-Rust transition/apply --Aeneas--> Lean properties
-          |
-          v
-kernel write set --> abstract table operations --> rows loaded back as state
+Rust transition --Aeneas--> Lean: Inv(s) and Accept(ws) give Inv(apply s ws)
+      |
+      v
+write set --sql_writes--> table writes --plan--> statements
+      --i5h_pgsql::compile--> SQL subset + parameters --render--> text
+      --PostgreSQL model (I5hLib.Pg)--> rows
+      --i5h_pgsql::select, decode--> next snapshot
 ```
 
-The first arrow is checked by re-extracting the Rust. `schema!`,
-`i5h_sql::plan`, `I5hLib.Store`, and each application's `Storage.lean` cover
-parts of the second line. This is the direction in which additional formal
-work has the highest value: it connects an authorized kernel decision to the
-rows that the server persists and later supplies to the kernel.
+Every arrow except the PostgreSQL model is Rust code extracted by Aeneas, and
+the Lean theorems are about the extracted functions:
 
-There are nevertheless two distinct gaps. First, `I5hLib.Store` reasons about
-an abstract database and abstract statement semantics. The SQL text in
-`i5h-pg` and PostgreSQL's treatment of values remain trusted. Table and column
-indices are now generated into both Rust and Lean from the same `schema!`
-declaration; trusting the generator is still part of the boundary, but server
-code no longer supplies a separate column-name-to-index mapping. Second, most
-application storage theorems say that an arbitrary supplied write set is stored faithfully;
-they do not by themselves say that every database update came from a
-successful `transition`, nor do they always compose row-permutation
-equivalence with the application's reachable-state invariant. The docs example
-goes further with `Scoped.served_inv`; the intended end theorem for every
-server application should have the following shape:
+- `sql_writes` and the generated table operations store what `apply`
+  computes (`Storage.lean`, `I5hLib.Store`);
+- `i5h_sql::plan` computes `planA` (`crates/i5h-sql/proofs`);
+- `i5h_pgsql::valid`, `create`, `select` and `compile` compute
+  `Pg.createA`, `Pg.selectA` and `Pg.compileA`, and `render` prints
+  `Pg.render` (`crates/i5h-pgsql/proofs`);
+- under `I5hLib.Pg`'s meaning of the SQL subset, a compiled statement does to
+  the tenant's rows what `I5hLib.Sql.exec` says and leaves other tenants'
+  rows and other tables alone (`Pg.compile_sound`), and a compiled `SELECT`
+  returns the tenant's matching rows once each (`Pg.select_sound`); a quoted
+  name reads back as itself (`Pg.lexName_quote`);
+- the generated `PgServed` relation describes one tenant's history on a
+  database that holds every tenant, and `pg_loaded_inv` turns an invariant
+  preserved by accepted write sets into an invariant of every state the
+  database holds and of every snapshot loaded from it. Each server
+  application instantiates it with its extracted `transition` as `db_inv`
+  (docs: `Database.db_inv`, which also covers the scoped loads).
 
-> If the database represents a state satisfying the application invariant,
-> then loading it, running a successful extracted transition, and storing its
-> writes leaves a database representing a state satisfying that invariant.
+The theorem each server has therefore has this shape:
 
-This theorem should be the primary meaning of “the proofs extend to the
-database.” Until it exists for an application, the kernel theorem and the
-storage theorem are useful but separate results.
+> For the schema the server passes to `i5h_pgsql` and any tenant, every
+> database produced by loading with the compiled `SELECT`s, running a
+> successful extracted `transition` and storing the compiled statements of its
+> writes, among any other tenants' compiled statements, holds a state
+> satisfying `Inv`, and every later load decodes to a snapshot satisfying
+> `Inv`.
+
+What remains trusted is listed in [TRUST.md](TRUST.md): that PostgreSQL runs
+the rendered subset as `I5hLib.Pg` says, the driver's value conversion, the
+few lines that build the schema description from the table mappings, and the
+engine contract.
 
 ### PostgreSQL as a trust boundary
 
@@ -149,16 +163,17 @@ i5h's much smaller translation and integration layer reviewable.
 A review found a concrete semantic mismatch at this boundary: the abstract
 `DelWhere` operation treats `Val.Null` as equal to `Val.Null`, while the SQL
 used ordinary equality, for which comparison with `NULL` is unknown rather
-than true. Filtered reads and deletes now use `IS NOT DISTINCT FROM` so their
-null semantics match the abstract operation. This is the kind of i5h mapping
-obligation that trusting PostgreSQL does not remove.
+than true. The PostgreSQL model gives `=` and `IS NOT DISTINCT FROM` their
+different meanings, so the proof that compiled statements do what `exec` says
+fails for the old text. The compiler uses `IS NOT DISTINCT FROM` for filters
+and `=` only for non-`NULL` key values.
 
-Filtered operations take the zero-based encoded column index rather than a
-column-name string. `schema!` emits that index as a Rust constant used by the
-production `Store` and as a Lean `col_*` definition used by `ColIs` proofs.
-`i5h-pg` resolves the index through the generated table definition before it
-renders SQL. Thus a schema reorder changes both sides together rather than
-silently leaving the server and modeled column on different mappings.
+The compiler resolves every name through the schema: filters take the
+zero-based encoded column index that `schema!` emits both as a Rust constant
+and as a Lean `col_*` definition, and statements take the table's number.
+`i5h_pgsql::valid` rejects schemas whose names PostgreSQL could read
+differently (empty, over 63 bytes, containing NUL, duplicated, a column named
+`tenant_id`, a table named `i5h_...`), and every compile checks it.
 
 ### Trusted engine contract
 
@@ -175,12 +190,11 @@ not Lean theorems.
 
 Formalization effort should be prioritized as follows:
 
-1. Complete an end-to-end storage theorem for each server application, from a
-   successful extracted transition to the invariant of the rows subsequently
-   loaded from the database.
-2. Shrink and test the trusted SQL boundary, including null semantics, column
-   mappings, numeric encodings, ordering and scoped reads, against real
-   PostgreSQL.
+1. Done: an end-to-end theorem for each server application, from a successful
+   extracted transition to the invariant of the rows subsequently loaded from
+   the database, over the SQL the server sends.
+2. Test the PostgreSQL model (`I5hLib.Pg`) against real PostgreSQL: null
+   semantics, numeric encodings, conflicts and scoped reads.
 3. Generate ordinary stores from `schema!` and bind the tenant into the
    transaction API, so application `Store` implementations cannot accidentally
    select or write another tenant.

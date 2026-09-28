@@ -763,10 +763,18 @@ dependencies = [
  "bytes",
  "deadpool-postgres",
  "i5h",
+ "i5h-pgsql",
  "i5h-sql",
  "tokio",
  "tokio-postgres",
  "tracing",
+]
+
+[[package]]
+name = "i5h-pgsql"
+version = "0.1.0"
+dependencies = [
+ "i5h-sql",
 ]
 
 [[package]]
