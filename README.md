@@ -10,6 +10,20 @@
 - Declare tables once with `schema!` and get Rust mappings and Lean proofs.
 - Prove that invariants hold for the rows loaded back from the database.
 
+```mermaid
+flowchart LR
+    H["HTTP transport: axum, hyper (trusted)"] --> K["kernel (extracted)"]
+    K --> S["storage: plan, SQL compiler (extracted)"]
+    S --> DB["engine, PostgreSQL (trusted)"]
+
+    K -. Aeneas .-> A["kernel proofs"]
+    S -. Aeneas .-> B["storage proofs"]
+    DB -. "SQL model" .-> B
+    SP["Spec (reviewed)"] --> A
+    A --> D["db_inv"]
+    B --> D
+```
+
 ## Usage example
 
 The kernel is one function that decides what a command does. This one, from
