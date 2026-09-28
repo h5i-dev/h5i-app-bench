@@ -52,28 +52,6 @@ theorem get_after (a : Principal) (s s' : Snapshot) (c : Command) (w : Option Me
     transition a s' .Get = ok (.Ok (none, .Value v))
 ```
 
-The [calculator tutorial](examples/tutorials/calculator/TUTORIAL.md) builds
-this application and its proofs step by step.
-
-## Examples
-
-The [examples](examples) folder contains five [tutorials](examples/tutorials),
-a document service with projects, members and a review workflow, and ports of
-real applications: the RealWorld backend
-[Conduit](https://github.com/launchbadge/realworld-axum-sqlx), the pastebin
-[Wastebin](https://github.com/matze/wastebin), the ownership rules of
-[crates.io](https://github.com/rust-lang/crates.io), and the authorization
-rules of [Kellnr](https://github.com/kellnr/kellnr) and
-[Atuin](https://github.com/atuinsh/atuin). Each port reproduces a real bug of
-its upstream project as a Lean counterexample and proves that a fixed kernel
-does not have it. Each example has its own README describing what its proofs
-cover.
-
-## Design
-
-[`docs/DESIGN.md`](docs/DESIGN.md) describes how i5h is structured and what is
-proven, and [`docs/TRUST.md`](docs/TRUST.md) lists what the proofs rely on.
-
 ## License
 
 This project is licensed under the [Apache-2.0 license](LICENSE).
