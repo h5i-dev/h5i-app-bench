@@ -279,7 +279,7 @@ async fn select<A, T: Table<A>>(
                 return Err(DbError::Decode(format!("{} has no column {column}", T::NAME)));
             }
             let sql = format!(
-                "SELECT {} FROM {} WHERE tenant_id = $1 AND {} = $2{}",
+                "SELECT {} FROM {} WHERE tenant_id = $1 AND {} IS NOT DISTINCT FROM $2{}",
                 names.join(", "),
                 q(T::NAME),
                 q(column),
@@ -335,7 +335,7 @@ pub async fn delete_where<A, T: Table<A>>(tx: &Tx<'_>, tenant: TenantId, column:
         return Err(DbError::Decode(format!("{} has no column {column}", T::NAME)));
     }
     let tid = tenant_param(tenant)?;
-    let sql = format!("DELETE FROM {} WHERE tenant_id = $1 AND {} = $2", q(T::NAME), q(column));
+    let sql = format!("DELETE FROM {} WHERE tenant_id = $1 AND {} IS NOT DISTINCT FROM $2", q(T::NAME), q(column));
     tx.0.execute(&sql, &[&tid, &value]).await?;
     Ok(())
 }
