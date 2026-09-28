@@ -138,7 +138,7 @@ inductive i5h_sql.Write where
 | DelWhere : Std.U32 → Std.U32 → i5h_sql.Val → i5h_sql.Write
 
 /-- [ledger_kernel::Account]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 111:12-114:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 95:12-98:13
     Visibility: public -/
 structure Account where
   id : Std.U64
@@ -146,7 +146,7 @@ structure Account where
   balance : Std.U64
 
 /-- [ledger_kernel::Ledger]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 111:12-114:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 95:12-98:13
     Visibility: public -/
 structure Ledger where
   next_id : Std.U64
@@ -154,27 +154,27 @@ structure Ledger where
   withdrawn : Std.U64
 
 /-- [ledger_kernel::{ledger_kernel::Account}::TABLE]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 132:12-132:60
+    Source: 'crates/i5h-schema/src/lib.rs', lines 135:12-135:60
     Visibility: public -/
 @[global_simps, irreducible] def Account.TABLE : Std.U32 := 0#u32
 
 /-- [ledger_kernel::{ledger_kernel::Ledger}::TABLE]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 132:12-132:60
+    Source: 'crates/i5h-schema/src/lib.rs', lines 135:12-135:60
     Visibility: public -/
 @[global_simps, irreducible] def Ledger.TABLE : Std.U32 := 1#u32
 
 /-- [ledger_kernel::{ledger_kernel::Account}::KEY_LEN]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 133:12-133:62
+    Source: 'crates/i5h-schema/src/lib.rs', lines 136:12-136:62
     Visibility: public -/
 @[global_simps, irreducible] def Account.KEY_LEN : Std.U32 := 1#u32
 
 /-- [ledger_kernel::{ledger_kernel::Ledger}::KEY_LEN]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 133:12-133:62
+    Source: 'crates/i5h-schema/src/lib.rs', lines 136:12-136:62
     Visibility: public -/
 @[global_simps, irreducible] def Ledger.KEY_LEN : Std.U32 := 0#u32
 
 /-- [ledger_kernel::{ledger_kernel::Account}::to_row]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 135:12-140:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 138:12-143:13
     Visibility: public -/
 def Account.to_row (self : Account) : Result (alloc.vec.Vec i5h_sql.Val) := do
   let v ← U64.Insts.I5h_sqlColumn.to_val self.id
@@ -185,7 +185,7 @@ def Account.to_row (self : Account) : Result (alloc.vec.Vec i5h_sql.Val) := do
   alloc.vec.Vec.push out1 v2
 
 /-- [ledger_kernel::{ledger_kernel::Ledger}::to_row]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 135:12-140:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 138:12-143:13
     Visibility: public -/
 def Ledger.to_row (self : Ledger) : Result (alloc.vec.Vec i5h_sql.Val) := do
   let v ← U64.Insts.I5h_sqlColumn.to_val self.next_id
@@ -196,7 +196,7 @@ def Ledger.to_row (self : Ledger) : Result (alloc.vec.Vec i5h_sql.Val) := do
   alloc.vec.Vec.push out1 v2
 
 /-- [ledger_kernel::{ledger_kernel::Ledger}::from_row]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 143:12-164:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 146:12-167:13
     Visibility: public -/
 def Ledger.from_row
   (row : alloc.vec.Vec i5h_sql.Val) : Result (Option Ledger) := do
@@ -233,7 +233,7 @@ def Ledger.from_row
           ok (some { next_id := x, deposited := x1, withdrawn := x2 })
 
 /-- [ledger_kernel::{ledger_kernel::Account}::from_row]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 143:12-164:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 146:12-167:13
     Visibility: public -/
 def Account.from_row
   (row : alloc.vec.Vec i5h_sql.Val) : Result (Option Account) := do
@@ -270,7 +270,7 @@ def Account.from_row
           ok (some { id := x, owner := x1, balance := x2 })
 
 /-- [ledger_kernel::{ledger_kernel::Account}::from_rows]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 174:16-180:17
     Visibility: public -/
 @[rust_loop_body]
 def Account.from_rows_loop.body
@@ -297,7 +297,7 @@ def Account.from_rows_loop.body
   else ok (done (out, ok1))
 
 /-- [ledger_kernel::{ledger_kernel::Account}::from_rows]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 174:16-180:17
     Visibility: public -/
 @[rust_loop]
 def Account.from_rows_loop
@@ -310,7 +310,7 @@ def Account.from_rows_loop
     (out, ok1, i)
 
 /-- [ledger_kernel::{ledger_kernel::Account}::from_rows]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 167:12-183:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 170:12-186:13
     Visibility: public -/
 def Account.from_rows
   (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)) :
@@ -323,7 +323,7 @@ def Account.from_rows
   else ok none
 
 /-- [ledger_kernel::{ledger_kernel::Ledger}::from_rows]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 174:16-180:17
     Visibility: public -/
 @[rust_loop_body]
 def Ledger.from_rows_loop.body
@@ -350,7 +350,7 @@ def Ledger.from_rows_loop.body
   else ok (done (out, ok1))
 
 /-- [ledger_kernel::{ledger_kernel::Ledger}::from_rows]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 174:16-180:17
     Visibility: public -/
 @[rust_loop]
 def Ledger.from_rows_loop
@@ -363,7 +363,7 @@ def Ledger.from_rows_loop
     (out, ok1, i)
 
 /-- [ledger_kernel::{ledger_kernel::Ledger}::from_rows]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 167:12-183:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 170:12-186:13
     Visibility: public -/
 def Ledger.from_rows
   (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)) :
@@ -376,21 +376,21 @@ def Ledger.from_rows
   else ok none
 
 /-- [ledger_kernel::{ledger_kernel::Account}::sql_put]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 186:12-188:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 189:12-191:13
     Visibility: public -/
 def Account.sql_put (self : Account) : Result i5h_sql.Write := do
   let v ← Account.to_row self
   ok (i5h_sql.Write.Put Account.TABLE Account.KEY_LEN v)
 
 /-- [ledger_kernel::{ledger_kernel::Ledger}::sql_put]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 186:12-188:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 189:12-191:13
     Visibility: public -/
 def Ledger.sql_put (self : Ledger) : Result i5h_sql.Write := do
   let v ← Ledger.to_row self
   ok (i5h_sql.Write.Put Ledger.TABLE Ledger.KEY_LEN v)
 
 /-- [ledger_kernel::{ledger_kernel::Ledger}::from_one]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 203:12-211:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 204:12-212:13
     Visibility: public -/
 def Ledger.from_one
   (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)) :
@@ -412,7 +412,7 @@ def Ledger.from_one
     else ok none
 
 /-- [ledger_kernel::{ledger_kernel::Account}::put]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 219:16-227:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 220:16-228:13
     Visibility: public -/
 @[rust_loop_body]
 def Account.put_loop.body
@@ -437,7 +437,7 @@ def Account.put_loop.body
        ok (done v1)
 
 /-- [ledger_kernel::{ledger_kernel::Account}::put]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 219:16-227:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 220:16-228:13
     Visibility: public -/
 @[rust_loop]
 def Account.put_loop
@@ -449,7 +449,7 @@ def Account.put_loop
     i
 
 /-- [ledger_kernel::{ledger_kernel::Account}::put]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 217:12-227:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 218:12-228:13
     Visibility: public -/
 @[reducible]
 def Account.put
@@ -465,7 +465,7 @@ def Account.Insts.CoreCloneClone.clone (self : Account) : Result Account := do
   ok self
 
 /-- [ledger_kernel::{ledger_kernel::Account}::del]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 233:16-238:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 234:16-239:17
     Visibility: public -/
 @[rust_loop_body]
 def Account.del_loop.body
@@ -491,7 +491,7 @@ def Account.del_loop.body
   else ok (done out)
 
 /-- [ledger_kernel::{ledger_kernel::Account}::del]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 233:16-238:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 234:16-239:17
     Visibility: public -/
 @[rust_loop]
 def Account.del_loop
@@ -504,7 +504,7 @@ def Account.del_loop
     (out, i)
 
 /-- [ledger_kernel::{ledger_kernel::Account}::del]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 230:12-240:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 231:12-241:13
     Visibility: public -/
 @[reducible]
 def Account.del
@@ -514,7 +514,7 @@ def Account.del
   Account.del_loop v id (alloc.vec.Vec.new Account) 0#usize
 
 /-- [ledger_kernel::{ledger_kernel::Account}::del_where]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 246:16-251:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 247:16-252:17
     Visibility: public -/
 @[rust_loop_body]
 def Account.del_where_loop.body
@@ -542,7 +542,7 @@ def Account.del_where_loop.body
   else ok (done out)
 
 /-- [ledger_kernel::{ledger_kernel::Account}::del_where]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 246:16-251:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 247:16-252:17
     Visibility: public -/
 @[rust_loop]
 def Account.del_where_loop
@@ -555,7 +555,7 @@ def Account.del_where_loop
     (out, i)
 
 /-- [ledger_kernel::{ledger_kernel::Account}::del_where]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 243:12-253:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 244:12-254:13
     Visibility: public -/
 @[reducible]
 def Account.del_where
@@ -565,7 +565,7 @@ def Account.del_where
   Account.del_where_loop v col val (alloc.vec.Vec.new Account) 0#usize
 
 /-- [ledger_kernel::{ledger_kernel::Account}::sql_del]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 256:12-260:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 257:12-261:13
     Visibility: public -/
 def Account.sql_del (id : Std.U64) : Result i5h_sql.Write := do
   let v ← U64.Insts.I5h_sqlColumn.to_val id
@@ -573,7 +573,7 @@ def Account.sql_del (id : Std.U64) : Result i5h_sql.Write := do
   ok (i5h_sql.Write.Del Account.TABLE key)
 
 /-- [ledger_kernel::{ledger_kernel::Account}::sql_del_where]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 263:12-265:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 264:12-266:13
     Visibility: public -/
 def Account.sql_del_where
   (col : Std.U32) (val : i5h_sql.Val) : Result i5h_sql.Write := do
@@ -587,14 +587,14 @@ structure Snapshot where
   accounts : alloc.vec.Vec Account
 
 /-- [ledger_kernel::Rows]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 285:8-287:9
+    Source: 'crates/i5h-schema/src/lib.rs', lines 284:8-286:9
     Visibility: public -/
 structure Rows where
   ledger : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)
   accounts : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)
 
 /-- [ledger_kernel::decode]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 290:8-298:9
+    Source: 'crates/i5h-schema/src/lib.rs', lines 289:8-297:9
     Visibility: public -/
 def decode (r : Rows) : Result (Option Snapshot) := do
   let o ← Ledger.from_one r.ledger
@@ -615,7 +615,7 @@ inductive Write where
 | SetLedger : Ledger → Write
 
 /-- [ledger_kernel::apply_write]:
-    Source: 'examples/tutorials/ledger/kernel/src/lib.rs', lines 187:0-192:1 -/
+    Source: 'examples/tutorials/ledger/kernel/src/lib.rs', lines 186:0-191:1 -/
 def apply_write (s : Snapshot) (w : Write) : Result Snapshot := do
   match w with
   | Write.PutAccount a =>
@@ -652,7 +652,7 @@ def Snapshot.Insts.CoreCloneClone.clone
   ok { ledger := l, accounts := v }
 
 /-- [ledger_kernel::apply]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 308:12-311:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 306:12-309:13
     Visibility: public -/
 @[rust_loop_body]
 def apply_loop.body
@@ -671,7 +671,7 @@ def apply_loop.body
   else ok (done s)
 
 /-- [ledger_kernel::apply]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 308:12-311:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 306:12-309:13
     Visibility: public -/
 @[rust_loop]
 def apply_loop
@@ -683,14 +683,14 @@ def apply_loop
     (s, i)
 
 /-- [ledger_kernel::apply]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 305:8-313:9
+    Source: 'crates/i5h-schema/src/lib.rs', lines 303:8-311:9
     Visibility: public -/
 def apply (snap : Snapshot) (ws : alloc.vec.Vec Write) : Result Snapshot := do
   let s ← Snapshot.Insts.CoreCloneClone.clone snap
   apply_loop ws s 0#usize
 
 /-- [ledger_kernel::sql_write]:
-    Source: 'examples/tutorials/ledger/kernel/src/lib.rs', lines 195:0-200:1 -/
+    Source: 'examples/tutorials/ledger/kernel/src/lib.rs', lines 194:0-199:1 -/
 def sql_write
   (w : Write) (out : alloc.vec.Vec i5h_sql.Write) :
   Result (alloc.vec.Vec i5h_sql.Write)
@@ -703,7 +703,7 @@ def sql_write
                          alloc.vec.Vec.push out w1
 
 /-- [ledger_kernel::sql_writes]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 320:12-323:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 317:12-320:13
     Visibility: public -/
 @[rust_loop_body]
 def sql_writes_loop.body
@@ -723,7 +723,7 @@ def sql_writes_loop.body
   else ok (done out)
 
 /-- [ledger_kernel::sql_writes]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 320:12-323:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 317:12-320:13
     Visibility: public -/
 @[rust_loop]
 def sql_writes_loop
@@ -736,7 +736,7 @@ def sql_writes_loop
     (out, i)
 
 /-- [ledger_kernel::sql_writes]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 317:8-325:9
+    Source: 'crates/i5h-schema/src/lib.rs', lines 314:8-322:9
     Visibility: public -/
 @[reducible]
 def sql_writes

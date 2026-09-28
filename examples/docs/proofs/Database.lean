@@ -2,18 +2,11 @@ import Scoped
 /-!
 # The database invariant on PostgreSQL
 
-`Scoped.Served` describes the tenant databases the server produces in terms
-of `Lists`, `Sel` and `execAll`. Here the same requests run on a PostgreSQL
-database holding every tenant's rows, in terms of the SQL the server sends:
-every load is a compiled `SELECT` (`Pg.selectA`, computed by the extracted
-`i5h_pgsql::select`), and every write set runs the compiled statements
-(`Pg.compileA`, computed by `i5h_pgsql::compile`) of its planned table
-writes. Other tenants' statements may run in between. `ts` is the schema the
-server passes to `i5h_pgsql` (`schema_spec()`), `tv` the tenant's id.
-
-`db_inv`: the tenant's rows always hold a state satisfying `Inv`, and every
-full load decodes to a snapshot satisfying `Inv`. The PostgreSQL model is
-`I5hLib.Pg`.
+`Scoped.Served` restated over the SQL the server sends: loads are compiled
+`SELECT`s (`Pg.selectA`, from `i5h_pgsql::select`), write sets run compiled
+statements (`Pg.compileA`, from `i5h_pgsql::compile`), and other tenants'
+statements may interleave. `ts` is `schema_spec()`, `tv` the tenant id.
+`db_inv` is the main theorem. PostgreSQL model: `I5hLib.Pg`.
 -/
 open Aeneas Aeneas.Std Result docs_kernel docs_kernel.Spec I5hLib I5hLib.Sql docs_kernel.Storage
   docs_kernel.Load docs_kernel.Frame docs_kernel.Schema docs_kernel.Scoped
@@ -130,11 +123,8 @@ theorem pg_served (hv : Pg.Valid ts) (htv : valKind tv = some .int) (hkl : Pg.kl
     cases hr2
     exact ⟨hm2, (ho _ (Ne.symm hne)) ▸ hS⟩
 
-/-- The invariants hold on the database. For the schema the server passes to
-`i5h_pgsql` and any tenant, every database the server produces, whichever
-load path each request took and among other tenants' commits, holds a state
-satisfying `Inv` (`DbInv`), and every full load decodes to a snapshot
-satisfying `Inv`. -/
+/-- Every database the server produces holds a state satisfying `Inv`, and
+every full load decodes to a snapshot satisfying `Inv`. -/
 theorem db_inv (hv : Pg.Valid ts) (htv : valKind tv = some .int) (hkl : Pg.klOf ts = kl)
     (hlen : ts.length = 5) {db : Pg.PgDb Val} (h : PgServed ts tv db) :
     DbInv (Pg.view ts tv db) ∧

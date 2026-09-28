@@ -161,9 +161,9 @@ theorem others_unchanged (a : Principal) (s s' : Snapshot) (c : Command) (w : Op
 
 /-! ## A concrete run
 
-`get_after` assumes the command succeeded and its write was committed. Here
-both happen: on an empty snapshot, Alice sets 5 and then reads 5 back, while
-subtracting 1 from her empty memory is refused. -/
+`get_after` assumes the command succeeded and was committed. Here both
+happen: Alice sets 5 and reads 5 back. Subtracting 1 from her empty memory is
+refused. -/
 
 def alice : Principal := ⟨0#u64, 1#u64⟩
 def empty : Snapshot := ⟨alloc.vec.Vec.new Memory⟩

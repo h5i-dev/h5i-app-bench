@@ -3,9 +3,8 @@ import I5hLib
 /-!
 # What Wastebin should do
 
-This is the file to review. It states when a write is allowed, what a write
-does to the state, which facts must always hold, and the property that issue
-#190 is about, using plain lists and natural numbers.
+The file to review: the write policy, what a write does, the invariants and
+the issue #190 property, over lists and naturals.
 -/
 open Aeneas Aeneas.Std wastebin_kernel
 

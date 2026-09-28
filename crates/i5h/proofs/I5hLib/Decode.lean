@@ -1,11 +1,6 @@
 import I5hLib.Loops
-/-!
-# Decoding rows
-
-Every `from_rows` that `schema!` generates has the same loop, which decodes
-each row with the row type's `from_row`. `rows_loop` proves it once: rows that
-encode a list decode to that list.
--/
+/-! `rows_loop`: the `from_rows` loop `schema!` generates decodes rows that
+encode a list to that list. -/
 open Aeneas Aeneas.Std Result
 
 namespace I5hLib

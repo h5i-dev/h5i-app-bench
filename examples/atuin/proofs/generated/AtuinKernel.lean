@@ -202,20 +202,20 @@ inductive Principal where
 | User : Std.U64 → Principal
 
 /-- [atuin_kernel::Counter]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 111:12-114:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 95:12-98:13
     Visibility: public -/
 structure Counter where
   next_id : Std.U64
 
 /-- [atuin_kernel::Settings]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 111:12-114:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 95:12-98:13
     Visibility: public -/
 structure Settings where
   open_registration : Bool
   max_record_size : Std.U64
 
 /-- [atuin_kernel::Record]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 111:12-114:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 95:12-98:13
     Visibility: public -/
 structure Record where
   user : Std.U64
@@ -225,14 +225,14 @@ structure Record where
   data : alloc.vec.Vec Std.U8
 
 /-- [atuin_kernel::Session]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 111:12-114:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 95:12-98:13
     Visibility: public -/
 structure Session where
   user : Std.U64
   token : alloc.vec.Vec Std.U8
 
 /-- [atuin_kernel::User]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 111:12-114:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 95:12-98:13
     Visibility: public -/
 structure User where
   id : Std.U64
@@ -958,7 +958,7 @@ def transition_current
 @[global_simps, irreducible] def RECORD_USER : Std.U32 := 0#u32
 
 /-- [atuin_kernel::{atuin_kernel::Record}::to_row]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 135:12-140:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 138:12-143:13
     Visibility: public -/
 def Record.to_row (self : Record) : Result (alloc.vec.Vec i5h_sql.Val) := do
   let v ← U64.Insts.I5h_sqlColumn.to_val self.user
@@ -973,7 +973,7 @@ def Record.to_row (self : Record) : Result (alloc.vec.Vec i5h_sql.Val) := do
   alloc.vec.Vec.push out3 v4
 
 /-- [atuin_kernel::{atuin_kernel::Record}::del_where]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 246:16-251:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 247:16-252:17
     Visibility: public -/
 @[rust_loop_body]
 def Record.del_where_loop.body
@@ -1001,7 +1001,7 @@ def Record.del_where_loop.body
   else ok (done out)
 
 /-- [atuin_kernel::{atuin_kernel::Record}::del_where]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 246:16-251:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 247:16-252:17
     Visibility: public -/
 @[rust_loop]
 def Record.del_where_loop
@@ -1014,7 +1014,7 @@ def Record.del_where_loop
     (out, i)
 
 /-- [atuin_kernel::{atuin_kernel::Record}::del_where]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 243:12-253:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 244:12-254:13
     Visibility: public -/
 @[reducible]
 def Record.del_where
@@ -1024,7 +1024,7 @@ def Record.del_where
   Record.del_where_loop v col val (alloc.vec.Vec.new Record) 0#usize
 
 /-- [atuin_kernel::{atuin_kernel::Session}::del]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 233:16-238:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 234:16-239:17
     Visibility: public -/
 @[rust_loop_body]
 def Session.del_loop.body
@@ -1050,7 +1050,7 @@ def Session.del_loop.body
   else ok (done out)
 
 /-- [atuin_kernel::{atuin_kernel::Session}::del]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 233:16-238:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 234:16-239:17
     Visibility: public -/
 @[rust_loop]
 def Session.del_loop
@@ -1063,7 +1063,7 @@ def Session.del_loop
     (out, i)
 
 /-- [atuin_kernel::{atuin_kernel::Session}::del]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 230:12-240:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 231:12-241:13
     Visibility: public -/
 @[reducible]
 def Session.del
@@ -1073,7 +1073,7 @@ def Session.del
   Session.del_loop v user (alloc.vec.Vec.new Session) 0#usize
 
 /-- [atuin_kernel::{atuin_kernel::User}::del]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 233:16-238:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 234:16-239:17
     Visibility: public -/
 @[rust_loop_body]
 def User.del_loop.body
@@ -1098,7 +1098,7 @@ def User.del_loop.body
   else ok (done out)
 
 /-- [atuin_kernel::{atuin_kernel::User}::del]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 233:16-238:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 234:16-239:17
     Visibility: public -/
 @[rust_loop]
 def User.del_loop
@@ -1111,7 +1111,7 @@ def User.del_loop
     (out, i)
 
 /-- [atuin_kernel::{atuin_kernel::User}::del]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 230:12-240:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 231:12-241:13
     Visibility: public -/
 @[reducible]
 def User.del
@@ -1119,7 +1119,7 @@ def User.del
   User.del_loop v id (alloc.vec.Vec.new User) 0#usize
 
 /-- [atuin_kernel::{atuin_kernel::Record}::put]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 219:16-227:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 220:16-228:13
     Visibility: public -/
 @[rust_loop_body]
 def Record.put_loop.body
@@ -1156,7 +1156,7 @@ def Record.put_loop.body
        ok (done v1)
 
 /-- [atuin_kernel::{atuin_kernel::Record}::put]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 219:16-227:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 220:16-228:13
     Visibility: public -/
 @[rust_loop]
 def Record.put_loop
@@ -1168,7 +1168,7 @@ def Record.put_loop
     i
 
 /-- [atuin_kernel::{atuin_kernel::Record}::put]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 217:12-227:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 218:12-228:13
     Visibility: public -/
 @[reducible]
 def Record.put
@@ -1176,7 +1176,7 @@ def Record.put
   Record.put_loop v x 0#usize
 
 /-- [atuin_kernel::{atuin_kernel::Session}::put]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 219:16-227:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 220:16-228:13
     Visibility: public -/
 @[rust_loop_body]
 def Session.put_loop.body
@@ -1201,7 +1201,7 @@ def Session.put_loop.body
        ok (done v1)
 
 /-- [atuin_kernel::{atuin_kernel::Session}::put]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 219:16-227:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 220:16-228:13
     Visibility: public -/
 @[rust_loop]
 def Session.put_loop
@@ -1213,7 +1213,7 @@ def Session.put_loop
     i
 
 /-- [atuin_kernel::{atuin_kernel::Session}::put]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 217:12-227:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 218:12-228:13
     Visibility: public -/
 @[reducible]
 def Session.put
@@ -1223,7 +1223,7 @@ def Session.put
   Session.put_loop v x 0#usize
 
 /-- [atuin_kernel::{atuin_kernel::User}::put]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 219:16-227:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 220:16-228:13
     Visibility: public -/
 @[rust_loop_body]
 def User.put_loop.body
@@ -1248,7 +1248,7 @@ def User.put_loop.body
        ok (done v1)
 
 /-- [atuin_kernel::{atuin_kernel::User}::put]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 219:16-227:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 220:16-228:13
     Visibility: public -/
 @[rust_loop]
 def User.put_loop
@@ -1260,7 +1260,7 @@ def User.put_loop
     i
 
 /-- [atuin_kernel::{atuin_kernel::User}::put]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 217:12-227:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 218:12-228:13
     Visibility: public -/
 @[reducible]
 def User.put
@@ -1268,7 +1268,7 @@ def User.put
   User.put_loop v x 0#usize
 
 /-- [atuin_kernel::apply_write]:
-    Source: 'examples/atuin/kernel/src/lib.rs', lines 431:0-441:1
+    Source: 'examples/atuin/kernel/src/lib.rs', lines 430:0-440:1
     Visibility: public -/
 def apply_write (s : Snapshot) (w : Write) : Result Snapshot := do
   match w with
@@ -1292,24 +1292,24 @@ def apply_write (s : Snapshot) (w : Write) : Result Snapshot := do
   | Write.SetCounter c => ok { s with counter := c }
 
 /-- [atuin_kernel::{atuin_kernel::Record}::TABLE]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 132:12-132:60
+    Source: 'crates/i5h-schema/src/lib.rs', lines 135:12-135:60
     Visibility: public -/
 @[global_simps, irreducible] def Record.TABLE : Std.U32 := 2#u32
 
 /-- [atuin_kernel::{atuin_kernel::Record}::sql_del_where]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 263:12-265:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 264:12-266:13
     Visibility: public -/
 def Record.sql_del_where
   (col : Std.U32) (val : i5h_sql.Val) : Result i5h_sql.Write := do
   ok (i5h_sql.Write.DelWhere Record.TABLE col val)
 
 /-- [atuin_kernel::{atuin_kernel::Session}::TABLE]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 132:12-132:60
+    Source: 'crates/i5h-schema/src/lib.rs', lines 135:12-135:60
     Visibility: public -/
 @[global_simps, irreducible] def Session.TABLE : Std.U32 := 1#u32
 
 /-- [atuin_kernel::{atuin_kernel::Session}::sql_del]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 256:12-260:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 257:12-261:13
     Visibility: public -/
 def Session.sql_del (user : Std.U64) : Result i5h_sql.Write := do
   let v ← U64.Insts.I5h_sqlColumn.to_val user
@@ -1317,12 +1317,12 @@ def Session.sql_del (user : Std.U64) : Result i5h_sql.Write := do
   ok (i5h_sql.Write.Del Session.TABLE key)
 
 /-- [atuin_kernel::{atuin_kernel::User}::TABLE]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 132:12-132:60
+    Source: 'crates/i5h-schema/src/lib.rs', lines 135:12-135:60
     Visibility: public -/
 @[global_simps, irreducible] def User.TABLE : Std.U32 := 0#u32
 
 /-- [atuin_kernel::{atuin_kernel::User}::sql_del]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 256:12-260:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 257:12-261:13
     Visibility: public -/
 def User.sql_del (id : Std.U64) : Result i5h_sql.Write := do
   let v ← U64.Insts.I5h_sqlColumn.to_val id
@@ -1330,43 +1330,43 @@ def User.sql_del (id : Std.U64) : Result i5h_sql.Write := do
   ok (i5h_sql.Write.Del User.TABLE key)
 
 /-- [atuin_kernel::{atuin_kernel::Counter}::to_row]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 135:12-140:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 138:12-143:13
     Visibility: public -/
 def Counter.to_row (self : Counter) : Result (alloc.vec.Vec i5h_sql.Val) := do
   let v ← U64.Insts.I5h_sqlColumn.to_val self.next_id
   alloc.vec.Vec.push (alloc.vec.Vec.new i5h_sql.Val) v
 
 /-- [atuin_kernel::{atuin_kernel::Counter}::KEY_LEN]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 133:12-133:62
+    Source: 'crates/i5h-schema/src/lib.rs', lines 136:12-136:62
     Visibility: public -/
 @[global_simps, irreducible] def Counter.KEY_LEN : Std.U32 := 0#u32
 
 /-- [atuin_kernel::{atuin_kernel::Counter}::TABLE]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 132:12-132:60
+    Source: 'crates/i5h-schema/src/lib.rs', lines 135:12-135:60
     Visibility: public -/
 @[global_simps, irreducible] def Counter.TABLE : Std.U32 := 4#u32
 
 /-- [atuin_kernel::{atuin_kernel::Counter}::sql_put]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 186:12-188:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 189:12-191:13
     Visibility: public -/
 def Counter.sql_put (self : Counter) : Result i5h_sql.Write := do
   let v ← Counter.to_row self
   ok (i5h_sql.Write.Put Counter.TABLE Counter.KEY_LEN v)
 
 /-- [atuin_kernel::{atuin_kernel::Record}::KEY_LEN]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 133:12-133:62
+    Source: 'crates/i5h-schema/src/lib.rs', lines 136:12-136:62
     Visibility: public -/
 @[global_simps, irreducible] def Record.KEY_LEN : Std.U32 := 4#u32
 
 /-- [atuin_kernel::{atuin_kernel::Record}::sql_put]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 186:12-188:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 189:12-191:13
     Visibility: public -/
 def Record.sql_put (self : Record) : Result i5h_sql.Write := do
   let v ← Record.to_row self
   ok (i5h_sql.Write.Put Record.TABLE Record.KEY_LEN v)
 
 /-- [atuin_kernel::{atuin_kernel::Session}::to_row]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 135:12-140:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 138:12-143:13
     Visibility: public -/
 def Session.to_row (self : Session) : Result (alloc.vec.Vec i5h_sql.Val) := do
   let v ← U64.Insts.I5h_sqlColumn.to_val self.user
@@ -1375,19 +1375,19 @@ def Session.to_row (self : Session) : Result (alloc.vec.Vec i5h_sql.Val) := do
   alloc.vec.Vec.push out v1
 
 /-- [atuin_kernel::{atuin_kernel::Session}::KEY_LEN]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 133:12-133:62
+    Source: 'crates/i5h-schema/src/lib.rs', lines 136:12-136:62
     Visibility: public -/
 @[global_simps, irreducible] def Session.KEY_LEN : Std.U32 := 1#u32
 
 /-- [atuin_kernel::{atuin_kernel::Session}::sql_put]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 186:12-188:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 189:12-191:13
     Visibility: public -/
 def Session.sql_put (self : Session) : Result i5h_sql.Write := do
   let v ← Session.to_row self
   ok (i5h_sql.Write.Put Session.TABLE Session.KEY_LEN v)
 
 /-- [atuin_kernel::{atuin_kernel::User}::to_row]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 135:12-140:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 138:12-143:13
     Visibility: public -/
 def User.to_row (self : User) : Result (alloc.vec.Vec i5h_sql.Val) := do
   let v ← U64.Insts.I5h_sqlColumn.to_val self.id
@@ -1398,19 +1398,19 @@ def User.to_row (self : User) : Result (alloc.vec.Vec i5h_sql.Val) := do
   alloc.vec.Vec.push out1 v2
 
 /-- [atuin_kernel::{atuin_kernel::User}::KEY_LEN]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 133:12-133:62
+    Source: 'crates/i5h-schema/src/lib.rs', lines 136:12-136:62
     Visibility: public -/
 @[global_simps, irreducible] def User.KEY_LEN : Std.U32 := 1#u32
 
 /-- [atuin_kernel::{atuin_kernel::User}::sql_put]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 186:12-188:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 189:12-191:13
     Visibility: public -/
 def User.sql_put (self : User) : Result i5h_sql.Write := do
   let v ← User.to_row self
   ok (i5h_sql.Write.Put User.TABLE User.KEY_LEN v)
 
 /-- [atuin_kernel::sql_write]:
-    Source: 'examples/atuin/kernel/src/lib.rs', lines 444:0-454:1 -/
+    Source: 'examples/atuin/kernel/src/lib.rs', lines 443:0-453:1 -/
 def sql_write
   (w : Write) (out : alloc.vec.Vec i5h_sql.Write) :
   Result (alloc.vec.Vec i5h_sql.Write)
@@ -1437,17 +1437,17 @@ def sql_write
     alloc.vec.Vec.push out w1
 
 /-- [atuin_kernel::{atuin_kernel::Settings}::TABLE]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 132:12-132:60
+    Source: 'crates/i5h-schema/src/lib.rs', lines 135:12-135:60
     Visibility: public -/
 @[global_simps, irreducible] def Settings.TABLE : Std.U32 := 3#u32
 
 /-- [atuin_kernel::{atuin_kernel::Settings}::KEY_LEN]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 133:12-133:62
+    Source: 'crates/i5h-schema/src/lib.rs', lines 136:12-136:62
     Visibility: public -/
 @[global_simps, irreducible] def Settings.KEY_LEN : Std.U32 := 0#u32
 
 /-- [atuin_kernel::{atuin_kernel::Settings}::to_row]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 135:12-140:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 138:12-143:13
     Visibility: public -/
 def Settings.to_row
   (self : Settings) : Result (alloc.vec.Vec i5h_sql.Val) := do
@@ -1457,7 +1457,7 @@ def Settings.to_row
   alloc.vec.Vec.push out v1
 
 /-- [atuin_kernel::{atuin_kernel::Settings}::from_row]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 143:12-164:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 146:12-167:13
     Visibility: public -/
 def Settings.from_row
   (row : alloc.vec.Vec i5h_sql.Val) : Result (Option Settings) := do
@@ -1485,7 +1485,7 @@ def Settings.from_row
         ok (some { open_registration := x, max_record_size := x1 })
 
 /-- [atuin_kernel::{atuin_kernel::Counter}::from_row]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 143:12-164:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 146:12-167:13
     Visibility: public -/
 def Counter.from_row
   (row : alloc.vec.Vec i5h_sql.Val) : Result (Option Counter) := do
@@ -1503,7 +1503,7 @@ def Counter.from_row
     | some x => ok (some { next_id := x })
 
 /-- [atuin_kernel::{atuin_kernel::User}::from_row]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 143:12-164:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 146:12-167:13
     Visibility: public -/
 def User.from_row
   (row : alloc.vec.Vec i5h_sql.Val) : Result (Option User) := do
@@ -1540,7 +1540,7 @@ def User.from_row
           ok (some { id := x, username := x1, password := x2 })
 
 /-- [atuin_kernel::{atuin_kernel::Session}::from_row]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 143:12-164:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 146:12-167:13
     Visibility: public -/
 def Session.from_row
   (row : alloc.vec.Vec i5h_sql.Val) : Result (Option Session) := do
@@ -1567,7 +1567,7 @@ def Session.from_row
                    ok (some { user := x, token := x1 })
 
 /-- [atuin_kernel::{atuin_kernel::Record}::from_row]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 143:12-164:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 146:12-167:13
     Visibility: public -/
 def Record.from_row
   (row : alloc.vec.Vec i5h_sql.Val) : Result (Option Record) := do
@@ -1623,7 +1623,7 @@ def Record.from_row
                 { user := x, host := x1, tag := x2, idx := x3, data := x4 })
 
 /-- [atuin_kernel::{atuin_kernel::User}::from_rows]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 174:16-180:17
     Visibility: public -/
 @[rust_loop_body]
 def User.from_rows_loop.body
@@ -1650,7 +1650,7 @@ def User.from_rows_loop.body
   else ok (done (out, ok1))
 
 /-- [atuin_kernel::{atuin_kernel::User}::from_rows]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 174:16-180:17
     Visibility: public -/
 @[rust_loop]
 def User.from_rows_loop
@@ -1663,7 +1663,7 @@ def User.from_rows_loop
     (out, ok1, i)
 
 /-- [atuin_kernel::{atuin_kernel::User}::from_rows]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 167:12-183:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 170:12-186:13
     Visibility: public -/
 def User.from_rows
   (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)) :
@@ -1676,7 +1676,7 @@ def User.from_rows
   else ok none
 
 /-- [atuin_kernel::{atuin_kernel::Session}::from_rows]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 174:16-180:17
     Visibility: public -/
 @[rust_loop_body]
 def Session.from_rows_loop.body
@@ -1703,7 +1703,7 @@ def Session.from_rows_loop.body
   else ok (done (out, ok1))
 
 /-- [atuin_kernel::{atuin_kernel::Session}::from_rows]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 174:16-180:17
     Visibility: public -/
 @[rust_loop]
 def Session.from_rows_loop
@@ -1716,7 +1716,7 @@ def Session.from_rows_loop
     (out, ok1, i)
 
 /-- [atuin_kernel::{atuin_kernel::Session}::from_rows]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 167:12-183:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 170:12-186:13
     Visibility: public -/
 def Session.from_rows
   (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)) :
@@ -1729,7 +1729,7 @@ def Session.from_rows
   else ok none
 
 /-- [atuin_kernel::{atuin_kernel::Record}::from_rows]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 174:16-180:17
     Visibility: public -/
 @[rust_loop_body]
 def Record.from_rows_loop.body
@@ -1756,7 +1756,7 @@ def Record.from_rows_loop.body
   else ok (done (out, ok1))
 
 /-- [atuin_kernel::{atuin_kernel::Record}::from_rows]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 174:16-180:17
     Visibility: public -/
 @[rust_loop]
 def Record.from_rows_loop
@@ -1769,7 +1769,7 @@ def Record.from_rows_loop
     (out, ok1, i)
 
 /-- [atuin_kernel::{atuin_kernel::Record}::from_rows]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 167:12-183:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 170:12-186:13
     Visibility: public -/
 def Record.from_rows
   (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)) :
@@ -1782,7 +1782,7 @@ def Record.from_rows
   else ok none
 
 /-- [atuin_kernel::{atuin_kernel::Settings}::from_rows]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 174:16-180:17
     Visibility: public -/
 @[rust_loop_body]
 def Settings.from_rows_loop.body
@@ -1809,7 +1809,7 @@ def Settings.from_rows_loop.body
   else ok (done (out, ok1))
 
 /-- [atuin_kernel::{atuin_kernel::Settings}::from_rows]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 174:16-180:17
     Visibility: public -/
 @[rust_loop]
 def Settings.from_rows_loop
@@ -1822,7 +1822,7 @@ def Settings.from_rows_loop
     (out, ok1, i)
 
 /-- [atuin_kernel::{atuin_kernel::Settings}::from_rows]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 167:12-183:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 170:12-186:13
     Visibility: public -/
 def Settings.from_rows
   (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)) :
@@ -1835,7 +1835,7 @@ def Settings.from_rows
   else ok none
 
 /-- [atuin_kernel::{atuin_kernel::Counter}::from_rows]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 174:16-180:17
     Visibility: public -/
 @[rust_loop_body]
 def Counter.from_rows_loop.body
@@ -1862,7 +1862,7 @@ def Counter.from_rows_loop.body
   else ok (done (out, ok1))
 
 /-- [atuin_kernel::{atuin_kernel::Counter}::from_rows]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 174:16-180:17
     Visibility: public -/
 @[rust_loop]
 def Counter.from_rows_loop
@@ -1875,7 +1875,7 @@ def Counter.from_rows_loop
     (out, ok1, i)
 
 /-- [atuin_kernel::{atuin_kernel::Counter}::from_rows]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 167:12-183:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 170:12-186:13
     Visibility: public -/
 def Counter.from_rows
   (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)) :
@@ -1888,14 +1888,14 @@ def Counter.from_rows
   else ok none
 
 /-- [atuin_kernel::{atuin_kernel::Settings}::sql_put]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 186:12-188:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 189:12-191:13
     Visibility: public -/
 def Settings.sql_put (self : Settings) : Result i5h_sql.Write := do
   let v ← Settings.to_row self
   ok (i5h_sql.Write.Put Settings.TABLE Settings.KEY_LEN v)
 
 /-- [atuin_kernel::{atuin_kernel::Settings}::from_one]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 203:12-211:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 204:12-212:13
     Visibility: public -/
 def Settings.from_one
   (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)) :
@@ -1918,7 +1918,7 @@ def Settings.from_one
     else ok none
 
 /-- [atuin_kernel::{atuin_kernel::Counter}::from_one]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 203:12-211:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 204:12-212:13
     Visibility: public -/
 def Counter.from_one
   (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)) :
@@ -1939,7 +1939,7 @@ def Counter.from_one
     else ok none
 
 /-- [atuin_kernel::{atuin_kernel::Record}::del]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 233:16-238:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 234:16-239:17
     Visibility: public -/
 @[rust_loop_body]
 def Record.del_loop.body
@@ -1983,7 +1983,7 @@ def Record.del_loop.body
   else ok (done out)
 
 /-- [atuin_kernel::{atuin_kernel::Record}::del]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 233:16-238:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 234:16-239:17
     Visibility: public -/
 @[rust_loop]
 def Record.del_loop
@@ -1996,7 +1996,7 @@ def Record.del_loop
     (out, i)
 
 /-- [atuin_kernel::{atuin_kernel::Record}::del]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 230:12-240:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 231:12-241:13
     Visibility: public -/
 @[reducible]
 def Record.del
@@ -2007,7 +2007,7 @@ def Record.del
   Record.del_loop v user host tag idx (alloc.vec.Vec.new Record) 0#usize
 
 /-- [atuin_kernel::{atuin_kernel::User}::del_where]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 246:16-251:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 247:16-252:17
     Visibility: public -/
 @[rust_loop_body]
 def User.del_where_loop.body
@@ -2034,7 +2034,7 @@ def User.del_where_loop.body
   else ok (done out)
 
 /-- [atuin_kernel::{atuin_kernel::User}::del_where]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 246:16-251:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 247:16-252:17
     Visibility: public -/
 @[rust_loop]
 def User.del_where_loop
@@ -2047,7 +2047,7 @@ def User.del_where_loop
     (out, i)
 
 /-- [atuin_kernel::{atuin_kernel::User}::del_where]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 243:12-253:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 244:12-254:13
     Visibility: public -/
 @[reducible]
 def User.del_where
@@ -2057,7 +2057,7 @@ def User.del_where
   User.del_where_loop v col val (alloc.vec.Vec.new User) 0#usize
 
 /-- [atuin_kernel::{atuin_kernel::Session}::del_where]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 246:16-251:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 247:16-252:17
     Visibility: public -/
 @[rust_loop_body]
 def Session.del_where_loop.body
@@ -2085,7 +2085,7 @@ def Session.del_where_loop.body
   else ok (done out)
 
 /-- [atuin_kernel::{atuin_kernel::Session}::del_where]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 246:16-251:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 247:16-252:17
     Visibility: public -/
 @[rust_loop]
 def Session.del_where_loop
@@ -2098,7 +2098,7 @@ def Session.del_where_loop
     (out, i)
 
 /-- [atuin_kernel::{atuin_kernel::Session}::del_where]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 243:12-253:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 244:12-254:13
     Visibility: public -/
 @[reducible]
 def Session.del_where
@@ -2108,7 +2108,7 @@ def Session.del_where
   Session.del_where_loop v col val (alloc.vec.Vec.new Session) 0#usize
 
 /-- [atuin_kernel::{atuin_kernel::Record}::sql_del]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 256:12-260:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 257:12-261:13
     Visibility: public -/
 def Record.sql_del
   (user : Std.U64) (host : Std.U64) (tag : Std.U64) (idx : Std.U64) :
@@ -2125,21 +2125,21 @@ def Record.sql_del
   ok (i5h_sql.Write.Del Record.TABLE key3)
 
 /-- [atuin_kernel::{atuin_kernel::User}::sql_del_where]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 263:12-265:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 264:12-266:13
     Visibility: public -/
 def User.sql_del_where
   (col : Std.U32) (val : i5h_sql.Val) : Result i5h_sql.Write := do
   ok (i5h_sql.Write.DelWhere User.TABLE col val)
 
 /-- [atuin_kernel::{atuin_kernel::Session}::sql_del_where]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 263:12-265:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 264:12-266:13
     Visibility: public -/
 def Session.sql_del_where
   (col : Std.U32) (val : i5h_sql.Val) : Result i5h_sql.Write := do
   ok (i5h_sql.Write.DelWhere Session.TABLE col val)
 
 /-- [atuin_kernel::Rows]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 285:8-287:9
+    Source: 'crates/i5h-schema/src/lib.rs', lines 284:8-286:9
     Visibility: public -/
 structure Rows where
   counter : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)
@@ -2149,7 +2149,7 @@ structure Rows where
   records : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)
 
 /-- [atuin_kernel::decode]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 290:8-298:9
+    Source: 'crates/i5h-schema/src/lib.rs', lines 289:8-297:9
     Visibility: public -/
 def decode (r : Rows) : Result (Option Snapshot) := do
   let o ← Counter.from_one r.counter
@@ -2182,7 +2182,7 @@ def decode (r : Rows) : Result (Option Snapshot) := do
               })
 
 /-- [atuin_kernel::apply]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 308:12-311:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 306:12-309:13
     Visibility: public -/
 @[rust_loop_body]
 def apply_loop.body
@@ -2201,7 +2201,7 @@ def apply_loop.body
   else ok (done s)
 
 /-- [atuin_kernel::apply]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 308:12-311:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 306:12-309:13
     Visibility: public -/
 @[rust_loop]
 def apply_loop
@@ -2213,14 +2213,14 @@ def apply_loop
     (s, i)
 
 /-- [atuin_kernel::apply]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 305:8-313:9
+    Source: 'crates/i5h-schema/src/lib.rs', lines 303:8-311:9
     Visibility: public -/
 def apply (snap : Snapshot) (ws : alloc.vec.Vec Write) : Result Snapshot := do
   let s ← Snapshot.Insts.CoreCloneClone.clone snap
   apply_loop ws s 0#usize
 
 /-- [atuin_kernel::sql_writes]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 320:12-323:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 317:12-320:13
     Visibility: public -/
 @[rust_loop_body]
 def sql_writes_loop.body
@@ -2240,7 +2240,7 @@ def sql_writes_loop.body
   else ok (done out)
 
 /-- [atuin_kernel::sql_writes]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 320:12-323:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 317:12-320:13
     Visibility: public -/
 @[rust_loop]
 def sql_writes_loop
@@ -2253,7 +2253,7 @@ def sql_writes_loop
     (out, i)
 
 /-- [atuin_kernel::sql_writes]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 317:8-325:9
+    Source: 'crates/i5h-schema/src/lib.rs', lines 314:8-322:9
     Visibility: public -/
 @[reducible]
 def sql_writes

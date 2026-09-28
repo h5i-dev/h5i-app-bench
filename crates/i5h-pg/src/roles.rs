@@ -1,8 +1,7 @@
 //! Database roles that stop code outside the engine from writing i5h tables.
 //!
-//! Run [`lockdown`] as an admin after `install_schema`. Afterwards `owner`
-//! (NOLOGIN) owns every i5h table and only `engine_role` may read or write
-//! rows. Superusers still bypass this, so the engine must not log in as one.
+//! Run [`lockdown`] as an admin after `install_schema`. Superusers bypass it,
+//! so the engine must not log in as one.
 
 use crate::{DbError, Store, FRAMEWORK_TABLES};
 use i5h::Kernel;
@@ -30,7 +29,7 @@ pub fn lockdown_sql<K: Kernel, S: Store<K>>(owner: &str, engine_role: &str) -> R
         let t = ident(t)?;
         sql.push(format!("ALTER TABLE \"{t}\" OWNER TO \"{owner}\""));
         sql.push(format!("REVOKE ALL ON \"{t}\" FROM PUBLIC"));
-        // Drop grants to any other role, e.g. left over from earlier setups.
+        // Drop grants left over for any other role.
         sql.push(format!(
             "DO $$ DECLARE r record; BEGIN \
              FOR r IN SELECT DISTINCT grantee FROM information_schema.role_table_grants \
@@ -43,9 +42,8 @@ pub fn lockdown_sql<K: Kernel, S: Store<K>>(owner: &str, engine_role: &str) -> R
     Ok(sql)
 }
 
-/// Make `owner` own the i5h tables and let only `engine_role` touch their rows.
-/// `admin_url` must log in as a role allowed to create roles and change table
-/// owners.
+/// `owner` (NOLOGIN) owns the i5h tables; only `engine_role` may touch rows.
+/// `admin_url` needs rights to create roles and change owners.
 pub async fn lockdown<K: Kernel, S: Store<K>>(admin_url: &str, owner: &str, engine_role: &str) -> Result<(), DbError> {
     let stmts = lockdown_sql::<K, S>(owner, engine_role)?;
     let (admin, conn) = tokio_postgres::connect(admin_url, tokio_postgres::NoTls).await?;

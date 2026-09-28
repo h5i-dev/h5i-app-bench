@@ -3,11 +3,9 @@ import Schema
 /-!
 # Committing a write set
 
-The theorems in `Theorems.lean` talk about `Spec.applyAll`, the list meaning of
-a write set. Here we prove that the kernel's own `apply`, which the reference
-engine runs, computes exactly that. `schema!` generated `apply` and the table
-operations `apply_write` calls, with a lemma for each (`Schema.lean`), so only
-the dispatch over `Write` is left.
+The kernel's `apply` computes `Spec.applyAll`, which `Theorems.lean` uses.
+`schema!` generated `apply` and the table operations with their lemmas
+(`Schema.lean`), so only the dispatch over `Write` is left.
 -/
 open Aeneas Aeneas.Std Result board_kernel board_kernel.Spec board_kernel.Schema I5hLib
 

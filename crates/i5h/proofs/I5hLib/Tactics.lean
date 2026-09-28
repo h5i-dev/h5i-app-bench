@@ -4,8 +4,7 @@ open Aeneas Aeneas.Std Result
 
 namespace I5hLib
 
-/-- Close the per-step goal of `loop_search` or `loop_fold` after unfolding
-the loop body. -/
+/-- Close the per-step goal of `loop_search` or `loop_fold`. -/
 macro "i5h_step" : tactic => `(tactic| (
   step* <;> (repeat' (first | step | split)) <;>
     simp only [I5hLib.SearchStep, I5hLib.FoldStep] <;> simp_all <;> try scalar_tac))
@@ -15,8 +14,7 @@ macro "i5h_step" " [" ls:Lean.Parser.Tactic.simpLemma,* "]" : tactic => `(tactic
   step* <;> (repeat' (first | step | split)) <;>
     simp only [I5hLib.SearchStep, I5hLib.FoldStep] <;> simp_all [$ls,*] <;> try scalar_tac))
 
-/-- Execute `f` symbolically, leaving one goal per path. Splits `if`s and
-`match`es and destructures returned pairs. -/
+/-- Run `f` symbolically, one goal per path. -/
 syntax "walk " ident : tactic
 macro_rules
   | `(tactic| walk $f) => `(tactic| (
@@ -26,9 +24,7 @@ macro_rules
     all_goals (try (first | dsimp only | (split; dsimp only)))
     all_goals (repeat' (first | step | split | simp only [WP.spec_ok, bind_tc_ok, bind_ok]))))
 
-/-- Evaluate a concrete extracted kernel call. `step*` uses every applicable
-`@[step]` specification, including the generated table and loop specs; the
-given definitions and lemmas reduce the remaining concrete data. -/
+/-- Evaluate a concrete extracted kernel call; the lemmas reduce the concrete data. -/
 macro "i5h_eval" " (" f:ident g:ident ")" " [" ls:Lean.Parser.Tactic.simpLemma,* "]" : tactic => `(tactic| (
   unfold $f $g
   step*

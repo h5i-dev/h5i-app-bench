@@ -1,24 +1,13 @@
 //! A PostgreSQL engine for i5h kernels.
 //!
-//! [`Engine`] runs each request in one SERIALIZABLE transaction: it loads the
-//! caller's tenant through a [`Store`], calls the kernel's `transition`, writes
-//! the result and commits. If the transaction fails to serialize or the
-//! connection drops, the engine starts again from `BEGIN`, so a decision is
-//! never applied to a snapshot it was not computed from. With an idempotency
-//! key, a command runs at most once and a repeated request gets the stored
-//! reply; without one, a connection lost during `COMMIT` is reported as
-//! [`DbError::CommitUnknown`] because the engine cannot tell whether it landed.
+//! [`Engine`] runs each request in one SERIALIZABLE transaction: load the
+//! tenant through a [`Store`], call `transition`, write, commit. Serialization
+//! failures and dropped connections restart from `BEGIN`. With an idempotency
+//! key a command runs at most once; without one, a connection lost during
+//! `COMMIT` is reported as [`DbError::CommitUnknown`].
 //!
-//! Stores only see an opaque [`Tx`], and the pool is opaque as well, so
-//! application code cannot run SQL of its own.
-//!
-//! Each attempt reads the time from the configured [`Clock`] inside its
-//! transaction and hands it to [`Kernel::stamp`](i5h::Kernel::stamp) before
-//! `transition`. A retry reads the clock again, so a decision is always made
-//! at the time of the attempt that commits it. With
-//! [`EngineConfig::monotonic`], the engine keeps the latest committed time per
-//! tenant and never uses an earlier one, so time never goes back in commit
-//! order within a tenant.
+//! Stores see only an opaque [`Tx`], so app code cannot run its own SQL. Each
+//! attempt reads the [`Clock`] inside its transaction.
 //!
 //! # Example
 //!
@@ -49,8 +38,7 @@ use std::time::Duration;
 use tokio_postgres::error::SqlState;
 use tokio_postgres::{IsolationLevel, NoTls, Transaction};
 
-/// The transaction a `Store` works in. It only offers the table operations
-/// in this crate, so a store cannot run arbitrary SQL.
+/// The transaction a `Store` works in. Offers only this crate's table operations.
 pub struct Tx<'a>(pub(crate) &'a Transaction<'a>);
 
 impl Tx<'_> {
@@ -61,8 +49,7 @@ impl Tx<'_> {
     }
 }
 
-/// Connection pool owned by an `Engine`. Opaque, so app code cannot take a
-/// raw connection from it.
+/// Opaque connection pool, so app code cannot take a raw connection.
 #[derive(Clone)]
 pub struct Pool(pub(crate) deadpool_postgres::Pool);
 
@@ -126,8 +113,7 @@ impl DbError {
     }
 }
 
-/// An error from COMMIT without a server error code means the connection was lost
-/// after COMMIT may have reached the server.
+/// No server error code on COMMIT: the connection dropped and COMMIT may have landed.
 fn commit_error(e: tokio_postgres::Error) -> DbError {
     if e.code().is_some() {
         DbError::Postgres(e)
@@ -137,8 +123,7 @@ fn commit_error(e: tokio_postgres::Error) -> DbError {
 }
 
 /// Maps snapshots and write sets to tables. Keep it to [`load_table`] and
-/// [`store_writes`] calls (`schema!`'s mapping macro generates them) so the
-/// mapping stays mechanical.
+/// [`store_writes`] calls, as `schema!` generates.
 pub trait Store<K: Kernel>: Send + Sync + 'static {
     /// Usually `schema_ddl()`, from [`create_tables`].
     fn ddl() -> Vec<String>;
@@ -148,8 +133,7 @@ pub trait Store<K: Kernel>: Send + Sync + 'static {
 
     fn load(tx: &Tx<'_>, tenant: TenantId) -> impl Future<Output = Result<K::Snapshot, DbError>> + Send;
 
-    /// The rows `cmd` reads. Defaults to the whole tenant; a store may load
-    /// less only if the kernel's result is provably the same (a frame theorem).
+    /// The rows `cmd` reads. Load less than the whole tenant only with a frame theorem.
     fn load_for(tx: &Tx<'_>, tenant: TenantId, cmd: &K::Command) -> impl Future<Output = Result<K::Snapshot, DbError>> + Send {
         let _ = cmd;
         Self::load(tx, tenant)
@@ -161,11 +145,9 @@ pub trait Store<K: Kernel>: Send + Sync + 'static {
 
 /// Needed to replay stored replies for idempotency keys.
 pub trait ReplyCodec<K: Kernel>: Send + Sync + 'static {
-    /// Rejects a key reused for a different command. Leave the time out: a
-    /// retried request arrives later and must still match.
+    /// Rejects a key reused for a different command. Leave out the time, since retries arrive later.
     fn fingerprint(cmd: &K::Command) -> Vec<u8>;
-    /// Who owns a key. Keys are stored per scope, so one user cannot replay
-    /// another user's reply. Must not contain `/`.
+    /// Owner of a key, so one user cannot replay another's reply. Must not contain `/`.
     fn scope(actor: &K::Principal) -> String;
     fn encode(reply: &K::Reply) -> Vec<u8>;
     fn decode(bytes: &[u8]) -> Result<K::Reply, String>;
@@ -188,11 +170,10 @@ CREATE TABLE IF NOT EXISTS i5h_clock (
   last BIGINT NOT NULL
 )";
 
-/// Where the engine reads the time. Every attempt reads it once, inside its
-/// transaction.
+/// Where the engine reads the time, once per attempt.
 #[derive(Clone, Debug, Default)]
 pub enum Clock {
-    /// This process's system clock. Servers on several machines use several clocks.
+    /// This process's system clock.
     #[default]
     System,
     /// PostgreSQL's `transaction_timestamp()`: one clock for every server of a database.
@@ -228,11 +209,8 @@ pub struct EngineConfig {
     pub tenant_lock: bool,
     /// Where each attempt reads the time.
     pub clock: Clock,
-    /// Never let time go back in commit order within a tenant. The engine
-    /// keeps the latest committed time in `i5h_clock` and uses the later of
-    /// it and the clock. Costs one read per attempt and one write per commit,
-    /// and makes a tenant's writes conflict with each other, which the tenant
-    /// lock already serializes.
+    /// Never let time go back in commit order within a tenant (via `i5h_clock`).
+    /// Costs a read per attempt and a write per commit.
     pub monotonic: bool,
 }
 
@@ -243,8 +221,7 @@ impl Default for EngineConfig {
 }
 
 impl EngineConfig {
-    /// The database's clock, never going back. Apps whose kernels decide on
-    /// time should use this.
+    /// The database's clock, monotonic. Use this if the kernel decides on time.
     pub fn database_time(self) -> Self {
         EngineConfig { clock: Clock::Database, monotonic: true, ..self }
     }
@@ -265,10 +242,8 @@ pub struct Engine<K: Kernel, S: Store<K>> {
     _marker: PhantomData<fn() -> (K, S)>,
 }
 
-/// `url` with the app's tables in PostgreSQL schema `schema`, so apps that
-/// share a database never share a table (or the idempotency and outbox
-/// tables). `install_schema` creates the schema; pass the same schema in
-/// `lockdown`'s admin URL.
+/// `url` with the app's tables in PostgreSQL schema `schema`, so apps sharing a
+/// database share no tables. Pass the same schema in `lockdown`'s admin URL.
 pub fn with_schema(url: &str, schema: &str) -> Result<String, DbError> {
     roles::ident(schema)?;
     let sep = if url.contains('?') { '&' } else { '?' };
@@ -299,8 +274,6 @@ impl<K: Kernel, S: Store<K>> Engine<K, S> {
         Engine { pool, config, stats: EngineStats::default(), _marker: PhantomData }
     }
 
-    /// Idempotent. Concurrent callers serialize on an advisory lock, since
-    /// `CREATE TABLE IF NOT EXISTS` itself races on a fresh database.
     /// A dispatcher for effects queued with [`outbox::enqueue`], sharing this engine's pool.
     pub fn dispatcher<E: Send + Sync, D: outbox::Deliver<E>>(
         &self,
@@ -311,6 +284,7 @@ impl<K: Kernel, S: Store<K>> Engine<K, S> {
         outbox::Dispatcher::new(self.pool.clone(), registry, deliver, config)
     }
 
+    /// Idempotent. Takes an advisory lock, since `CREATE TABLE IF NOT EXISTS` races.
     pub async fn install_schema(&self) -> Result<(), DbError> {
         let mut client = self.pool.0.get().await.map_err(|e| DbError::Pool(e.to_string()))?;
         let tx = client.transaction().await?;
@@ -332,8 +306,7 @@ impl<K: Kernel, S: Store<K>> Engine<K, S> {
         Ok(())
     }
 
-    /// Committed state of a tenant, for tests. Read-only and deferrable, so it
-    /// never fails with a serialization error.
+    /// Committed state of a tenant, for tests. Deferrable, so it never fails to serialize.
     pub async fn snapshot(&self, tenant: TenantId) -> Result<K::Snapshot, DbError> {
         let mut client = self.pool.0.get().await.map_err(|e| DbError::Pool(e.to_string()))?;
         let tx = client.build_transaction().isolation_level(IsolationLevel::Serializable).read_only(true).deferrable(true).start().await?;
@@ -356,7 +329,7 @@ impl<K: Kernel, S: Store<K>> Engine<K, S> {
         self.run(actor, cmd, None).await
     }
 
-    /// At most once per `(tenant, scope, key)`. A repeated key returns the stored reply.
+    /// At most once per `(tenant, scope, key)`; a repeat gets the stored reply.
     /// Refusals are not stored.
     pub async fn execute_idempotent(
         &self,
@@ -416,8 +389,7 @@ impl<K: Kernel, S: Store<K>> Engine<K, S> {
         Err(DbError::RetriesExhausted)
     }
 
-    /// Session lock taken before BEGIN, so the snapshot is read after the
-    /// wait. A lost connection releases it.
+    /// Taken before BEGIN so the snapshot is read after the wait.
     async fn lock(&self, client: &deadpool_postgres::Object, tenant: TenantId) -> Result<(), DbError> {
         if self.config.tenant_lock {
             client.execute("SELECT pg_advisory_lock($1)", &[&table::tenant_param(tenant)?]).await?;
@@ -498,9 +470,8 @@ impl<K: Kernel, S: Store<K>> Engine<K, S> {
 }
 
 impl<K: Kernel, S: Store<K>> Engine<K, S> {
-    /// The attempt's time. Under `monotonic`, never before the tenant's latest
-    /// commit. This transaction reads that commit's row, so a concurrent
-    /// commit makes this attempt fail to serialize and retry with a new time.
+    /// Under `monotonic`, never before the tenant's last commit. Reading that
+    /// row makes a concurrent commit force a retry.
     async fn read_clock(&self, tx: &Transaction<'_>, tid: i64) -> Result<Timestamp, DbError> {
         let clock = match &self.config.clock {
             Clock::System => Timestamp::now(),

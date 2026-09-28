@@ -1,15 +1,11 @@
 //! Integration between i5h and axum.
 //!
-//! You can mount i5h in any axum application. A handler takes an [`Actor`],
-//! which authenticates the request, builds a kernel command from the request,
-//! and calls [`I5h::respond`], which runs the command and renders the reply.
-//! If JSON commands are enough, merge [`rpc_router`] to get a ready-made
-//! `POST /rpc` route instead.
+//! A handler takes an authenticated [`Actor`], builds a kernel command, and
+//! calls [`I5h::respond`]. For plain JSON commands, merge [`rpc_router`].
 //!
-//! Decoding requests into commands is trusted rather than verified, although
-//! the kernel's theorems hold for every command, so a wrong decoding cannot do
-//! anything a client could not ask for directly. Token parsing and reply
-//! rendering use the verified `i5h-token` and `i5h-json` crates.
+//! Request decoding is trusted, but the kernel's theorems hold for every
+//! command, so a bad decoding can't do more than a client could ask for.
+//! Token parsing (`i5h-token`) and reply rendering (`i5h-json`) are verified.
 //!
 //! # Example
 //!
@@ -61,11 +57,9 @@ pub struct HmacAuth<K: Kernel> {
 }
 
 impl<K: Kernel> HmacAuth<K> {
-    /// `principal` builds the kernel's principal from a verified token. It
-    /// runs once per request, before any retry, so it is also the place for
-    /// per-request inputs such as a random slug. The time is not one of them:
-    /// the engine reads it per attempt and passes it to `Kernel::stamp`.
-    /// Token expiry is checked against this process's system clock.
+    /// `principal` runs once per request, before any retry, so it can carry
+    /// per-request inputs like a random slug (not the time: the engine reads
+    /// that per attempt for `Kernel::stamp`). Expiry uses the system clock.
     pub fn new(secret: impl Into<Vec<u8>>, principal: impl Fn(u64, u64) -> K::Principal + Send + Sync + 'static) -> Self {
         HmacAuth { secret: secret.into(), principal: Box::new(principal), scheme: "Bearer", anonymous: None }
     }
@@ -76,8 +70,7 @@ impl<K: Kernel> HmacAuth<K> {
         self
     }
 
-    /// Requests without an `Authorization` header act as `p`, which the
-    /// kernel then treats as it sees fit.
+    /// Requests without an `Authorization` header act as `p`.
     pub fn or_anonymous(mut self, p: K::Principal) -> Self {
         self.anonymous = Some(p);
         self
@@ -93,9 +86,7 @@ impl<K: Kernel> HmacAuth<K> {
         String::from_utf8(token).expect("tokens are ascii")
     }
 
-    /// The tenant and user of a valid token. Parsing is verified
-    /// (`i5h-token/proofs`): the signed payload names exactly one tenant, user
-    /// and expiry.
+    /// The tenant and user of a valid token. Parsing is verified in `i5h-token/proofs`.
     pub fn verify(&self, token: &str) -> Result<(u64, u64), AuthError> {
         let err = |m: &str| AuthError(m.to_string());
         let t = i5h_token::parse(token.as_bytes()).ok_or_else(|| err("malformed token"))?;
@@ -168,8 +159,7 @@ where
     }
 }
 
-/// Handle to the engine for axum handlers. It is the only way to reach the
-/// database, so every route goes through the kernel.
+/// Engine handle for handlers; the only path to the database, so every route goes through the kernel.
 pub struct I5h<K: Kernel, S: Store<K>> {
     engine: Arc<Engine<K, S>>,
     auth: Auth<K>,
@@ -207,10 +197,8 @@ impl<K: Kernel, S: Store<K>> I5h<K, S> {
         }
     }
 
-    /// Like [`respond`](Self::respond), but hands a successful reply back
-    /// unrendered, for replies that need more than `Api::encode_reply`, such
-    /// as issuing a token or setting a cookie. Refusals and failures come
-    /// back rendered.
+    /// Like [`respond`](Self::respond), but returns a successful reply
+    /// unrendered (e.g. to set a cookie). Errors come back rendered.
     pub async fn run(&self, actor: &Actor<K>, cmd: K::Command, headers: &HeaderMap) -> Result<K::Reply, Response>
     where
         S: ReplyCodec<K> + Api<K>,

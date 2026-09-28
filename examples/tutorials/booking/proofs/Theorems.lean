@@ -3,8 +3,7 @@ import Commands
 # Theorems about the booking service
 
 `writes_of` sums up `Commands.lean`: a successful command does one of five
-things. The permission, invariant and notification theorems are case analyses
-over those five, so none of them looks at the code again.
+things. The other theorems split on those five and never look at the code.
 -/
 open Aeneas Aeneas.Std Result booking_kernel booking_kernel.Spec booking_kernel.Commands I5hLib
 
@@ -61,9 +60,9 @@ theorem transition_total (a : Principal) (s : Snapshot) (c : Command) : ∃ r, t
 
 /-! ## Permissions and destinations -/
 
-/-- Every write of a successful command is allowed by the policy, judged
-against the state before the command and the time the shell supplied. In
-particular every notification goes to the room's registered destination. -/
+/-- The policy allows every write of a successful command, judged against the
+state before it and the shell's time. So every notification goes to the
+room's registered destination. -/
 theorem authorized (a : Principal) (s : Snapshot) (c : Command) ws r
     (h : transition a s c = .ok (.Ok (ws, r))) :
     ∀ w ∈ ws.val, allowed (Snapshot.toSt s) a.user.val a.now.val w := by
@@ -223,9 +222,8 @@ theorem no_double_booking {s : St} (h : Reachable s) :
 
 /-! ## Notifications -/
 
-/-- A notification goes to the room's registered destination and describes a
-change that the same write set commits: a booking that is new and present
-afterwards, or one that existed and is gone afterwards. -/
+/-- A notification goes to the room's destination and describes a change the
+same write set commits: a new booking, or one that is now gone. -/
 theorem effects_sound (a : Principal) (s : Snapshot) (c : Command) ws r
     (hinv : Inv (Snapshot.toSt s)) (h : transition a s c = .ok (.Ok (ws, r))) :
     let st := Snapshot.toSt s
@@ -270,7 +268,7 @@ theorem changes_announced (a : Principal) (s : Snapshot) (c : Command) ws r
 /-! ## Accepted commands
 
 The theorems above would hold for a service that refuses everything. These
-two say that it does accept what the policy allows. -/
+two show it accepts what the policy allows. -/
 
 /-- A booking that satisfies the policy is accepted. -/
 theorem book_accepted (a : Principal) (s : Snapshot) (room t0 t1 : U64)

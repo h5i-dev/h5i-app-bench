@@ -264,10 +264,7 @@ impl i5h_http::Api<DocsApp> for DocsStore {
     }
 }
 
-/// Stored idempotent replies are the JSON rendering. Replay decodes back to
-/// an opaque reply that re-renders identically.
-/// Lossless form of a reply for the idempotency table, so any reply
-/// (including documents) can be replayed.
+/// Lossless reply form for the idempotency table, so any reply can be replayed.
 #[derive(Serialize, Deserialize)]
 enum StoredReply {
     Created(u64),

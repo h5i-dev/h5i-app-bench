@@ -3,9 +3,8 @@ import I5hLib
 /-!
 # Committing a write set
 
-The kernel's `apply` computes `Spec.applyAll`. Each loop is covered by a lemma
-from `I5hLib`: `loop_search` for `set_yanked`, `loop_fold` for `del_pair` and
-for `apply` itself.
+The kernel's `apply` computes `Spec.applyAll`. Loops use `I5hLib`'s
+`loop_search` (`set_yanked`) and `loop_fold` (`del_pair`, `apply`).
 -/
 open Aeneas Aeneas.Std Result kellnr_kernel kellnr_kernel.Spec I5hLib
 

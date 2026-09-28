@@ -2,16 +2,11 @@ import Replies
 /-!
 # Issue #16, machine-checked
 
-Upstream computes `favorited` with
-`exists(select 1 from article_favorite where user_id = $1)`, which asks
-whether the caller favorited any article at all. In the state below, Bob has
-favorited article "a" only. The fixed kernel tells him that "b" is not
-favorited; upstream says it is. `Replies.get_article_reply` proves the fixed
-flag correct in every state, and `upstream_violates_reply_spec` shows that
-the same statement is false for upstream.
-
-The `?favorited=` filter of the listing has the same mistake: upstream lists
-every article as soon as the named user has favorited one of them.
+Upstream's `favorited` is `exists(select 1 from article_favorite where
+user_id = $1)`: "the caller favorited any article". Bob favorited only "a",
+yet upstream shows "b" as favorited. `upstream_violates_reply_spec` shows
+`Replies.get_article_reply` fails for upstream. The `?favorited=` filter has
+the same bug.
 -/
 open Aeneas Aeneas.Std Result conduit_kernel conduit_kernel.Spec conduit_kernel.Helpers
   conduit_kernel.Commands conduit_kernel.Replies I5hLib

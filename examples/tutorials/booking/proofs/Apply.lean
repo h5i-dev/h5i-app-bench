@@ -3,9 +3,9 @@ import Schema
 /-!
 # Committing a write set
 
-The kernel's `apply`, which the reference engine runs, computes
-`Spec.applyAll`. As in tutorial 2, `schema!` generated `apply` and the table
-operations with their lemmas, so only the dispatch over `Write` is left.
+The kernel's `apply` computes `Spec.applyAll`. As in tutorial 2, `schema!`
+generated `apply` and the table operations with their lemmas, so only the
+dispatch over `Write` is left.
 -/
 open Aeneas Aeneas.Std Result booking_kernel booking_kernel.Spec booking_kernel.Schema I5hLib
 

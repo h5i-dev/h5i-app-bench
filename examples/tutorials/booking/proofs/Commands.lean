@@ -2,10 +2,9 @@ import Spec
 /-!
 # What each command does
 
-The helpers get specifications in terms of lists, then each command gets one
-lemma saying exactly what it writes when it succeeds. `book_ok` and
-`cancel_ok` go the other way: they say when a command succeeds. The theorems
-in `Theorems.lean` only use these lemmas.
+List specs for the helpers, then one lemma per command: what it writes when
+it succeeds. `book_ok` and `cancel_ok` say when a command succeeds.
+`Theorems.lean` uses only these lemmas.
 -/
 open Aeneas Aeneas.Std Result booking_kernel booking_kernel.Spec I5hLib
 
@@ -76,8 +75,7 @@ theorem findBooking_toSt (s : Snapshot) (id : U64) :
 
 /-! ## Commands
 
-Each lemma says what a successful run writes, and which facts about the state
-made it succeed. -/
+What a successful run writes, and which facts made it succeed. -/
 
 theorem add_admin_spec (u : U64) (s : Snapshot) (target : U64) :
     add_admin u s target ⦃ r => ∀ ws rep, r = .Ok (ws, rep) →

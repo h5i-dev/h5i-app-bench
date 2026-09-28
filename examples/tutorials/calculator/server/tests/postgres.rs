@@ -1,6 +1,5 @@
-//! The PostgreSQL store agrees with the kernel's `apply`: random commands run
-//! through the real engine and through `MemoryEngine` (which just calls
-//! `apply`) give the same replies and the same final state.
+//! On random commands, the PostgreSQL engine and `MemoryEngine` (which runs
+//! `apply`) give the same replies and final state.
 //! Needs I5H_TEST_DATABASE_URL; skips otherwise.
 
 use calculator_kernel as k;

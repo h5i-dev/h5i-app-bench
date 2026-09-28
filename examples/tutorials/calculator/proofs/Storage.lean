@@ -2,11 +2,9 @@ import Proofs
 /-!
 # What the store holds
 
-The server stores a write set by running the planned statements of the
-kernel's `sql_writes`, and loads a tenant by decoding its rows with the
-kernel's `decode`. `I5hLib.Store` proves, for any schema, that the database
-then holds exactly what committing the writes computes; here the state is the
-list of memories and a write is at most one memory.
+The server stores a write set by running the plan of `sql_writes`, and loads
+rows through `decode`. `I5hLib.Store` proves, for any schema, that the database
+then holds what committing computes. Here a write is at most one memory.
 -/
 open Aeneas Aeneas.Std Result calculator_kernel calculator_kernel.Schema I5hLib I5hLib.Sql I5hLib.Store
 
@@ -49,9 +47,8 @@ theorem fits : Fits app (fun s => s.memories.val) where
 theorem sql_writes_spec (w : Option Memory) : sql_writes w ⦃ v => v.val.map sqlW = sqlA w ⦄ := by
   unfold sql_writes; cases w <;> step* <;> simp_all [sqlA]
 
-/-- The tenant databases the server produces from an empty tenant, and the
-memories each holds. Each request loads the rows (`Lists`), decodes them, and
-stores the command's write by running the plan of `sql_writes`. -/
+/-- Databases the server produces from an empty tenant, with their memories.
+Each request loads rows (`Lists`), decodes them, and runs `sql_writes`'s plan. -/
 inductive Served : Db Val → List Memory → Prop
   | fresh : Served (fun _ _ => none) []
   | commit {db : Db Val} {l : List Memory} {r : Rows} {snap : Snapshot} {w : Option Memory}
@@ -70,9 +67,8 @@ theorem served_app {db : Db Val} {l : List Memory} (h : Served db l) : app.Serve
     rw [e]
     exact .commit (ws := [w]) ih hq
 
-/-- The store holds what `apply` computes: every database the server produces
-reads back exactly the rows of the memories its commits computed, and loading
-it decodes to those memories, up to row order. -/
+/-- The store holds what `apply` computes: the rows of the memories its
+commits computed, and a load decodes to them, up to row order. -/
 theorem stored {db : Db Val} {l : List Memory} (h : Served db l) :
     app.Holds db (enc l) ∧
       ∀ r, Lists kl db (Rows.tabs r) → decode r ⦃ o => ∃ snap, o = some snap ∧ app.Equiv snap.memories.val l ⦄ :=
@@ -80,10 +76,9 @@ theorem stored {db : Db Val} {l : List Memory} (h : Served db l) :
 
 /-! ## On PostgreSQL
 
-The same requests on a PostgreSQL database holding every tenant's rows, as
-the SQL the server sends: compiled `SELECT`s (`Pg.selectA`, computed by the
-extracted `i5h_pgsql::select`) and compiled statements (`Pg.compileA`,
-computed by `i5h_pgsql::compile`). The PostgreSQL model is `I5hLib.Pg`. -/
+The same requests as the SQL the server sends to a database of all tenants:
+`Pg.selectA` (extracted `i5h_pgsql::select`) and `Pg.compileA` (extracted
+`i5h_pgsql::compile`), run on the model in `I5hLib.Pg`. -/
 
 /-- How the PostgreSQL driver types a value; `none` is `NULL`. -/
 def valKind : Val → Option Pg.Kind
@@ -146,9 +141,8 @@ theorem pg_served (hv : Pg.Valid ts) (htv : valKind tv = some .int) (hkl : Pg.kl
     cases hr2
     exact ⟨hm2, (ho _ (Ne.symm hne)) ▸ hS⟩
 
-/-- The store holds what `apply` computes, on PostgreSQL: the tenant's rows
-are exactly the memories its commits computed, and a load decodes to them,
-up to row order. -/
+/-- `stored` on PostgreSQL: the tenant's rows are the memories its commits
+computed, and a load decodes to them, up to row order. -/
 theorem pg_stored (hv : Pg.Valid ts) (htv : valKind tv = some .int) (hkl : Pg.klOf ts = kl)
     (hlen : ts.length = 1) {db : Pg.PgDb Val} {l : List Memory} (h : PgServed ts tv db l) :
     app.Holds (Pg.view ts tv db) (enc l) ∧

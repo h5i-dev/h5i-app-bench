@@ -1,8 +1,8 @@
 import Apply
 /-! # Theorems about the extracted Atuin kernel
 
-Each one quantifies over every principal and command. Most hold for both
-variants, so they are stated for `step` with either value of the re-auth flag. -/
+Each covers every principal and command. Most are stated for `step` with
+either value of the re-auth flag, so they cover both variants. -/
 open Aeneas Aeneas.Std Result atuin_kernel atuin_kernel.Spec atuin_kernel.Lemmas I5hLib
 
 namespace atuin_kernel.Theorems

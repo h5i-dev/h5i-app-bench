@@ -2,9 +2,8 @@ import Spec
 /-!
 # What each command does
 
-Each command gets two lemmas. The first says what a successful run writes and
-which facts made it succeed. The second says when it succeeds: given the
-business conditions and a bound on the numbers involved, the result is `Ok`.
+Two lemmas per command: what a successful run writes and why it succeeded,
+and when it succeeds (the business conditions plus a bound on the numbers).
 -/
 open Aeneas Aeneas.Std Result ledger_kernel ledger_kernel.Spec I5hLib
 
@@ -85,8 +84,8 @@ theorem transfer_spec (u : U64) (s : Snapshot) (src dst amt : U64) :
 
 /-! ## When a command succeeds
 
-The kernel checks every addition. These lemmas say which checks pass once the
-numbers are small enough; `Theorems.lean` shows the invariant makes them so. -/
+The kernel checks every addition. These checks pass for small enough numbers;
+`Theorems.lean` shows the invariant keeps them small. -/
 
 theorem deposit_ok (u : U64) (s : Snapshot) (id amt : U64) (q : Account)
     (hq : findAcc (Snapshot.toSt s) id.val = some q) (ho : q.owner = u)

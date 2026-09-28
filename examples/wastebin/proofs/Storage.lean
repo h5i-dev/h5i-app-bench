@@ -2,11 +2,9 @@ import Apply
 /-!
 # What the store holds
 
-The server stores a write set by running the planned statements of the
-kernel's `sql_writes`, and loads a tenant by decoding its rows with the
-kernel's `decode`. `I5hLib.Store` proves, for any schema, that the database
-then holds exactly the encoding of the state `applyAll` computes; this file
-gives Wastebin's encoding and table writes.
+Wastebin's row encoding and table writes. `I5hLib.Store` proves for any
+schema that storing `sql_writes` and loading with `decode` gives the state
+`applyAll` computes.
 -/
 open Aeneas Aeneas.Std Result wastebin_kernel wastebin_kernel.Spec wastebin_kernel.Schema I5hLib I5hLib.Sql I5hLib.Store
 
@@ -57,10 +55,8 @@ theorem stored {db : Db Val} {s : St} (h : Served app Snapshot.toSt db s) :
 
 /-! ## The invariants on PostgreSQL
 
-The chain from a command to the rows a later request loads: the extracted
-kernel accepts a write set (`Accepted`), `inv_preserved` keeps `Inv`, the
-server stores the compiled statements of `sql_writes`, and a load runs the
-compiled `SELECT`s and `decode`. `Schema.pg_loaded_inv` connects them. -/
+`Schema.pg_loaded_inv` chains `Accepted` write sets, `inv_preserved`, the
+compiled `sql_writes` and the compiled `SELECT`s plus `decode`. -/
 
 /-- Write sets kernel `T` returns for a command it accepts. -/
 def Accepted (T : Kernel) (snap : Snapshot) (ws : alloc.vec.Vec Write) : Prop :=
@@ -89,11 +85,9 @@ theorem dbInv_equiv (snap : Snapshot) (s : St) (h : app.Equiv (Snapshot.toSt sna
     by simp only [Snapshot.toSt]; scalar_tac⟩
   simp only [Snapshot.toSt, hn]; exact hf p (h0.subset hp)
 
-/-- The invariants hold on the database, for either kernel variant. For the
-schema the server passes to `i5h_pgsql` and any tenant, every database the
-server produces, one accepted command at a time among other tenants' commits,
-holds a state satisfying `Inv`, and every snapshot a later load decodes
-satisfies `Inv`. -/
+/-- For either variant, any tenant and the server's schema, every database
+the server produces (other tenants' commits interleaved) holds an `Inv` state,
+and every snapshot a later load decodes satisfies `Inv`. -/
 theorem db_inv {T : Kernel} (hT : Theorems.Variant T) {ts : List Pg.Tab} {tv : Val} (hv : Pg.Valid ts)
     (htv : valKind tv = some .int) (hkl : Pg.klOf ts = kl) (hlen : ts.length = 2) {db : Pg.PgDb Val} {s : St}
     (h : PgServed app Snapshot.toSt ts tv (Accepted T) db s) :

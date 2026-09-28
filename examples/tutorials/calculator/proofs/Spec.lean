@@ -2,8 +2,8 @@ import CalculatorKernel
 /-!
 # What the calculator should do
 
-This file is the part a reviewer reads. It says nothing about loops, `U64`
-overflow checks or vectors: only the arithmetic we mean, on natural numbers.
+The file to review: the arithmetic we mean, on natural numbers, with no
+loops, `U64` overflow checks or vectors.
 -/
 open calculator_kernel
 

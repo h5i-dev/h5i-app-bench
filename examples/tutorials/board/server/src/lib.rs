@@ -1,5 +1,5 @@
-//! The bulletin board's shell: it connects the kernel to PostgreSQL and JSON
-//! and makes no decisions of its own.
+//! The board's shell: moves data between the kernel, PostgreSQL and JSON.
+//! It decides nothing.
 
 use axum::http::StatusCode;
 use board_kernel as k;
@@ -50,9 +50,8 @@ impl Store<Board> for BoardStore {
         schema_tables()
     }
 
-    // Rows are decoded by the kernel's `decode`, and a write set is stored as
-    // the table writes of its `sql_writes`; `Storage.lean` proves the two
-    // hold what `apply` computes.
+    // Rows decode with the kernel's `decode`; writes go through `sql_writes`.
+    // `Storage.lean` proves the store holds what `apply` computes.
     async fn load(tx: &Tx<'_>, t: TenantId) -> Result<k::Snapshot, DbError> {
         schema_load(tx, t).await
     }

@@ -2,9 +2,8 @@ import Spec
 /-!
 # What each command does
 
-The helpers get specifications in terms of lists, then each command gets one
-lemma saying which writes and reply it makes when it succeeds. The theorems
-only use these lemmas.
+List specs for the helpers, then one lemma per command giving its writes and
+reply on success. The theorems use only these lemmas.
 -/
 open Aeneas Aeneas.Std Result wastebin_kernel wastebin_kernel.Spec I5hLib
 

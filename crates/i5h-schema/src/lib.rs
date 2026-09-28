@@ -25,40 +25,17 @@
 //! }
 //! ```
 //!
-//! Each row struct is defined with its key fields first, exactly as written,
-//! so the kernel stays plain Rust for Aeneas. It gets `TABLE` (its number, in
-//! declaration order), `KEY_LEN`, its SQL encoding `to_row`/`from_row` (via
-//! `i5h_sql::Column`), and `sql_put`, the table write that stores it. A row
-//! with key fields also gets the table operations a kernel's `apply_write` is
-//! made of: `put` (insert, or replace the row with the same key), `del` (by
-//! key), `del_where` (by the encoded value of one column), and their table
-//! writes `sql_del` and `sql_del_where`. A row without key fields is a
-//! singleton: the snapshot holds one, and a fresh tenant's is all zeros.
+//! Row structs stay plain Rust for Aeneas. Each gets `TABLE`, `KEY_LEN`,
+//! `to_row`/`from_row` and `sql_put`; a keyed row also gets `put`, `del`,
+//! `del_where` and their `sql_*` writes. A row without key fields is a
+//! singleton. The snapshot gets `Rows` and `decode`, and with `writes Write`,
+//! `apply` and `sql_writes` over the kernel's `apply_write` and `sql_write`.
 //!
-//! The optional snapshot struct lists one field per row type: `Vec<Row>`, or
-//! the row itself for a singleton. It gets `Rows` (a tenant's stored rows per
-//! table) and `decode`, which turns them back into a snapshot. With
-//! `writes Write`, the kernel defines `apply_write(&mut Snapshot, Write)` and
-//! `sql_write(&Write, &mut Vec<i5h_sql::Write>)`, and `schema!` defines
-//! `apply` and `sql_writes`, which run them over a write set in order.
-//! The mapping name is also a module containing the encoded column index for
-//! every field, for example `board_tables::Post::author`. Filtered PostgreSQL
-//! loads use these constants; the generated Lean schema emits the matching
-//! `Post.col_author` definition and a theorem identifying that position in
-//! `Post.row`.
-//!
-//! `lean "path"` keeps that Lean file current: the row encodings and a lemma
-//! for every generated function, which the app's `Apply.lean` and
-//! `Storage.lean` use. A generated test checks it; `I5H_BLESS=1` rewrites it.
-//!
-//! The server crate gets a macro: `board_kernel::board_tables!(Board);`
-//! expands to an `i5h_pg::table!` mapping per row type, `schema_spec()`
-//! (the tables as `i5h_pgsql` sees them, numbered like `TABLE`),
-//! `schema_ddl()`, `schema_tables()`, `schema_write()` (run table writes),
-//! `schema_rows()` and `schema_rows_where()` (load a table, or its rows with
-//! one column's value), and with a snapshot `schema_load()` (load and
-//! `decode`), and with writes `schema_store()` (store a write set's
-//! `sql_writes`). All their SQL is built and printed by `i5h_pgsql`.
+//! The mapping name is a module of column indices (`board_tables::Post::author`)
+//! and a macro for the server crate, `board_kernel::board_tables!(Board)`,
+//! which defines the `i5h_pg` tables and the `schema_*` load and store
+//! functions. `lean "path"` keeps the generated Lean schema current; a
+//! generated test checks it and `I5H_BLESS=1` rewrites it.
 
 #[doc(hidden)]
 pub mod lean;
@@ -83,8 +60,7 @@ macro_rules! schema {
     };
 }
 
-/// Reads the snapshot's fields, `name: Vec<Row>` or `name: Row`, into
-/// `[name Row]` pairs.
+/// Parses snapshot fields (`Vec<Row>` or `Row`) into `[name Row]` pairs.
 #[doc(hidden)]
 #[macro_export]
 macro_rules! __snapshot {
@@ -121,10 +97,7 @@ macro_rules! __schema {
                 $($(#[$cattr])* pub $c: $ct,)*
             }
         )*
-        /// Column indices in the exact order used by `to_row`, the generated
-        /// Lean schema, and PostgreSQL table mappings.  Keeping these in the
-        /// schema declaration avoids a separate string-to-index mapping in a
-        /// server's filtered loads.
+        /// Column indices in `to_row` order, shared with the Lean schema and PostgreSQL mappings.
         #[allow(non_snake_case, non_upper_case_globals)]
         pub mod $mapping {
             $(
@@ -141,8 +114,7 @@ macro_rules! __schema {
     };
 }
 
-/// Emit one numeric constant per column. The accumulator makes the value a
-/// literal, which keeps it usable by kernels in the Aeneas subset.
+/// One constant per column; the accumulator keeps each value a literal for Aeneas.
 #[doc(hidden)]
 #[macro_export]
 macro_rules! __column_indices {
@@ -153,8 +125,7 @@ macro_rules! __column_indices {
     };
 }
 
-/// Per row type: its table number (declaration order), key length, and
-/// encoding as SQL values (key first) with its inverse. Plain Rust, so Aeneas extracts it.
+/// Table number, key length and SQL encoding per row type. Plain Rust for Aeneas.
 #[doc(hidden)]
 #[macro_export]
 macro_rules! __rows {
@@ -223,9 +194,7 @@ macro_rules! __rows {
     };
 }
 
-/// Table operations. A row with key fields gets `put`, `del` and
-/// `del_where` and their table writes; a singleton gets `from_one`, which
-/// reads its table's one row, or all zeros for a fresh tenant.
+/// Table operations for keyed rows; `from_one` for singletons.
 #[doc(hidden)]
 #[macro_export]
 macro_rules! __keyed {
@@ -299,8 +268,7 @@ macro_rules! __keyed {
     };
 }
 
-/// The snapshot struct, its stored rows and `decode`; with writes, `apply`
-/// and `sql_writes`.
+/// The snapshot struct, `Rows`, `decode`, and with writes `apply`/`sql_writes`.
 #[doc(hidden)]
 #[macro_export]
 macro_rules! __snap_items {
@@ -311,8 +279,7 @@ macro_rules! __snap_items {
             $($(#[$fa])* pub $f: $($ty)*,)*
         }
 
-        /// A tenant's stored rows, table by table, in the order the database
-        /// returned them.
+        /// A tenant's stored rows per table, in database order.
         #[derive(Clone, Debug, Default, PartialEq, Eq)]
         pub struct Rows {
             $(pub $f: Vec<Vec<::i5h_sql::Val>>,)*
@@ -332,8 +299,7 @@ macro_rules! __snap_items {
     ([$w:ident] [[$(#[$sattr:meta])*] [$svis:vis] $snap:ident $fields:tt]) => {
         $crate::__snap_items! { [] [[$(#[$sattr])*] [$svis] $snap $fields] }
 
-        /// What committing a write set means: `apply_write` on each write, in
-        /// order. The PostgreSQL store must agree.
+        /// Commit semantics: `apply_write` on each write in order. The PostgreSQL store must agree.
         pub fn apply(snap: &$snap, ws: &Vec<$w>) -> $snap {
             let mut s = snap.clone();
             let mut i = 0;
@@ -344,8 +310,7 @@ macro_rules! __snap_items {
             s
         }
 
-        /// The table writes of a write set: `sql_write` on each write, in
-        /// order. The server runs exactly these.
+        /// `sql_write` on each write in order. The server runs exactly these.
         pub fn sql_writes(ws: &Vec<$w>) -> Vec<::i5h_sql::Write> {
             let mut out = Vec::new();
             let mut i = 0;
@@ -369,8 +334,7 @@ macro_rules! __from_table {
     };
 }
 
-/// With `lean "path"`: a function rendering the Lean side of the schema, and
-/// a test that the file at `path` (relative to the kernel crate) is current.
+/// With `lean "path"`: the Lean renderer and a test that `path` is current.
 #[doc(hidden)]
 #[macro_export]
 macro_rules! __lean {
@@ -480,8 +444,7 @@ macro_rules! __one {
     };
 }
 
-/// Defines the mapping macro. The `$` token is passed in so the generated
-/// macro can have its own `$app` parameter.
+/// Defines the mapping macro. `$` is passed in so it can have its own `$app`.
 #[doc(hidden)]
 #[macro_export]
 macro_rules! __mapping {
@@ -491,16 +454,13 @@ macro_rules! __mapping {
             ($d app:ty) => {
                 $( ::i5h_pg::table!($d app, $krate::$name => $table { key: [$($k),*], cols: [$($c),*] }); )*
 
-                /// Every table, numbered as the kernel numbers them (`TABLE`),
-                /// for the SQL compiler `i5h_pgsql`.
+                /// Every table, numbered like `TABLE`, for `i5h_pgsql`.
                 #[allow(dead_code)]
                 fn schema_spec() -> ::std::vec::Vec<::i5h_pg::pgsql::Table> {
                     ::std::vec![ $( ::i5h_pg::spec::<$d app, $krate::$name>() ),* ]
                 }
 
-                /// `CREATE TABLE` statements for every row type in the schema,
-                /// rendered by `i5h_pgsql`. Panics on a schema `i5h_pgsql::valid`
-                /// rejects; the generated `schema_is_valid` test catches that.
+                /// `CREATE TABLE` statements. Panics on an invalid schema; `schema_is_valid` catches that.
                 fn schema_ddl() -> ::std::vec::Vec<::std::string::String> {
                     ::i5h_pg::create_tables(&schema_spec()).expect("schema! tables are valid")
                 }
@@ -519,9 +479,7 @@ macro_rules! __mapping {
                     let _ = n;
                 }
 
-                /// Store table writes encoded by the kernel (`to_row`): plan
-                /// them with `i5h_sql::plan`, compile each statement with
-                /// `i5h_pgsql::compile` and run it, in order.
+                /// Plan, compile and run the kernel's table writes in order.
                 #[allow(dead_code)]
                 async fn schema_write(
                     tx: &::i5h_pg::Tx<'_>,
@@ -531,9 +489,7 @@ macro_rules! __mapping {
                     ::i5h_pg::store_writes(tx, tenant, &schema_spec(), ws).await
                 }
 
-                /// The tenant's rows of table `table` whose zero-based encoded
-                /// column `column` is not distinct from `value`. Use the column
-                /// constants of the mapping module.
+                /// The tenant's rows of `table` whose `column` is not distinct from `value`.
                 #[allow(dead_code)]
                 async fn schema_rows_where(
                     tx: &::i5h_pg::Tx<'_>,
@@ -555,7 +511,7 @@ macro_rules! __mapping {
                     ::i5h_pg::load_table(tx, tenant, &schema_spec(), table, None).await
                 }
 
-                /// Table names for every row type in the schema.
+                /// Table names, in `TABLE` order.
                 fn schema_tables() -> ::std::vec::Vec<&'static str> {
                     ::std::vec![ $( <$krate::$name as ::i5h_pg::Table<$d app>>::NAME ),* ]
                 }
@@ -572,8 +528,7 @@ macro_rules! __mapping {
 macro_rules! __mapping_snap {
     ([$app:ty] $krate:ident [$($w:ident)?] []) => {};
     ([$app:ty] $krate:ident [$($w:ident)?] [$sattr:tt $svis:tt $snap:ident [$([$fa:tt $f:ident $t:ident $ty:tt])*]]) => {
-        /// A tenant's rows, every table, in whatever order the database
-        /// returns them, decoded by the kernel's `decode`.
+        /// Load every table for the tenant and `decode` it.
         #[allow(dead_code)]
         async fn schema_load(
             tx: &::i5h_pg::Tx<'_>,
@@ -593,8 +548,7 @@ macro_rules! __mapping_snap {
 macro_rules! __mapping_store {
     ($krate:ident []) => {};
     ($krate:ident [$w:ident]) => {
-        /// Store a write set: the table writes of the kernel's `sql_writes`,
-        /// planned and run in order.
+        /// Store a write set's `sql_writes`.
         #[allow(dead_code)]
         async fn schema_store(
             tx: &::i5h_pg::Tx<'_>,

@@ -1,7 +1,6 @@
-//! The PostgreSQL store agrees with the kernel's `apply`: random commands run
-//! through the real engine and through `MemoryEngine` give the same replies
-//! and the same final state, and the outbox holds exactly the notifications
-//! of the committed commands. Both run on a test clock that moves forward.
+//! On random commands, the PostgreSQL engine and `MemoryEngine` give the same
+//! replies and final state, and the outbox holds exactly the committed
+//! notifications. Both use a test clock that moves forward.
 //! Needs I5H_TEST_DATABASE_URL; skips otherwise.
 
 use booking_kernel as k;

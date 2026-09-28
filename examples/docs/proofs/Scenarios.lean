@@ -4,11 +4,9 @@ import Frame
 /-!
 # Scenarios
 
-The main theorems restated for reachable states, so they assume nothing about
-the snapshot, and concrete runs of the extracted kernel. The runs show that
-the hypotheses can hold and that the guarded behavior occurs: a reachable
-state holds a document published under the four-eyes rule, publishing it
-emits an effect, and the view and the frame hide rows.
+The main theorems on reachable states, plus concrete runs of the extracted
+kernel showing the hypotheses are satisfiable (`published_reachable`,
+`view_hides`, `slice_drops`).
 -/
 open Aeneas Aeneas.Std Result docs_kernel docs_kernel.Spec docs_kernel.Theorems I5hLib
 

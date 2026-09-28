@@ -1,6 +1,6 @@
-//! Notifications go through the outbox to the endpoint registered for the
-//! room, over real HTTP. The dispatcher claims every tenant's rows, so these
-//! tests use a database of their own and run one at a time.
+//! Notifications reach the room's endpoint over real HTTP. The dispatcher
+//! claims every tenant's rows, so these tests use their own schema and run
+//! one at a time.
 //! Needs I5H_TEST_DATABASE_URL; skips otherwise.
 
 use axum::http::{HeaderMap, StatusCode};
@@ -18,8 +18,7 @@ static SERIAL: tokio::sync::Mutex<()> = tokio::sync::Mutex::const_new(());
 
 type Pg = Engine<BookingApp, BookingStore>;
 
-/// The test database, with this test's tables in their own schema so no
-/// other app's dispatcher sees its outbox.
+/// The test database, in its own schema so no other dispatcher sees its outbox.
 fn database() -> Option<String> {
     let url = std::env::var("I5H_TEST_DATABASE_URL").ok()?;
     Some(i5h_pg::with_schema(&url, "booking_outbox").unwrap())
@@ -28,8 +27,7 @@ fn database() -> Option<String> {
 /// Idempotency-Key and body of one POST.
 type Post = (String, Vec<u8>);
 
-/// Records the POSTs it receives for one tenant: (Idempotency-Key, body).
-/// Can fail the first one.
+/// Records one tenant's POSTs as (Idempotency-Key, body); can fail the first.
 #[derive(Clone, Default)]
 struct Receiver {
     org: u64,

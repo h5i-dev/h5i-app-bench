@@ -2,8 +2,7 @@ import Apply
 /-!
 # Scenarios
 
-Concrete runs of the extracted code. They show that the hypotheses of the
-theorems can be met and that the checks let the right commands through:
+Concrete runs of the extracted code: the theorems' hypotheses can be met,
 adjacent bookings are both accepted, an overlapping one is refused, and only
 the owner or an admin may cancel.
 

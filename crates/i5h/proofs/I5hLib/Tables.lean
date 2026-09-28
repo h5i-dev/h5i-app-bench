@@ -1,11 +1,5 @@
 import I5hLib.Loops
-/-!
-# Keyed tables as lists
-
-A kernel table is a list of rows with a key. `upsert` is what the database
-does for `INSERT ... ON CONFLICT (key) DO UPDATE`, read back as a list:
-replace the row with the same key, or append.
--/
+/-! Keyed tables as lists. `upsert` models `INSERT ... ON CONFLICT (key) DO UPDATE`. -/
 namespace I5hLib
 
 /-- Replace the first row with `x`'s key by `x`, or append `x`. -/

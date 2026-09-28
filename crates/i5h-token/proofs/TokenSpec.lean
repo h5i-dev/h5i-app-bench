@@ -332,8 +332,7 @@ theorem parse_join (t u e : Nat) (sig : List Nat)
     if_true, decVal_dec t ht, decVal_dec u hu, decVal_dec e he, hexVal_hex sig hs]
   simp [enc]
 
-/-- An accepted token is exactly the issued form of what it carries: the
-payload is `enc` of the parsed fields, and there is no other spelling. -/
+/-- An accepted token is the issued form of its fields; no other spelling parses. -/
 theorem parse_canon {l : List Nat} {p : Tok} (h : parseSpec l = some p) :
     p.payload = enc p.tenant p.user p.exp ∧ l = joinS p.payload p.sig ∧
     p.tenant ≤ u64max ∧ p.user ≤ u64max ∧ p.exp ≤ u64max ∧ ∀ b ∈ p.sig, b < 256 := by

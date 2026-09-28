@@ -2,12 +2,10 @@ import Apply
 /-!
 # What the store holds
 
-The server stores a write set by running the planned statements of the
-kernel's `sql_writes`, and loads a tenant by decoding its rows with the
-kernel's `decode`. `I5hLib.Store` proves, for any schema, that the database
-then holds exactly the encoding of the state `applyAll` computes; this file
-gives the booking service's encoding and table writes. Effects make no table
-write: they go to the outbox.
+The server stores a write set by running the plan of `sql_writes`, and loads
+rows through `decode`. `I5hLib.Store` proves, for any schema, that the database
+then holds the encoding of the state `applyAll` computes. This file gives
+the encoding and table writes; effects go to the outbox, not a table.
 -/
 open Aeneas Aeneas.Std Result booking_kernel booking_kernel.Spec booking_kernel.Schema I5hLib I5hLib.Sql I5hLib.Store
 
@@ -53,9 +51,8 @@ theorem sql_fits : SqlFits app := by
   intro w out h
   unfold sql_write; cases w <;> simp only [app, sqlA, List.length_singleton] at h ⊢ <;> step* <;> simp_all
 
-/-- The store holds what `apply` computes: every database the server produces
-from an empty tenant reads back exactly the rows of the state `applyAll` gives
-for its commits, and loading it decodes to that state, up to row order. -/
+/-- The store holds what `apply` computes: the rows of the state `applyAll`
+gives for its commits, and a load decodes to that state, up to row order. -/
 theorem stored {db : Db Val} {s : St} (h : Served app Snapshot.toSt db s) :
     app.Holds db (enc s) ∧
       ∀ r, Lists kl db (Rows.tabs r) → decode r ⦃ o => ∃ snap, o = some snap ∧ app.Equiv (Snapshot.toSt snap) s ⦄ :=
@@ -63,10 +60,10 @@ theorem stored {db : Db Val} {s : St} (h : Served app Snapshot.toSt db s) :
 
 /-! ## The invariants on PostgreSQL
 
-The chain from a command to the rows a later request loads: the extracted
-`transition` accepts a write set (`Accepted`), `inv_preserved` keeps `Inv`,
-the server stores the compiled statements of `sql_writes`, and a load runs
-the compiled `SELECT`s and `decode`. `Schema.pg_loaded_inv` connects them. -/
+From a command to a later load: `transition` accepts a write set
+(`Accepted`), `inv_preserved` keeps `Inv`, the server runs the compiled
+`sql_writes`, and a load runs the compiled `SELECT`s and `decode`.
+`Schema.pg_loaded_inv` chains them. -/
 
 /-- Write sets the kernel returns for a command it accepts, at any time. -/
 def Accepted (snap : Snapshot) (ws : alloc.vec.Vec Write) : Prop :=
@@ -105,10 +102,9 @@ theorem dbInv_equiv (snap : Snapshot) (s : St) (h : app.Equiv (Snapshot.toSt sna
     exact ⟨r, h1.symm.subset hr, e⟩
   · exact (h2.pairwise_iff fun h => Theorems.compatible_comm h).2 hc
 
-/-- The invariants hold on the database. For the schema the server passes to
-`i5h_pgsql` and any tenant, every database the server produces, one accepted
-command at a time among other tenants' commits, holds a state satisfying
-`Inv`, and every snapshot a later load decodes satisfies `Inv`. -/
+/-- The invariants hold on the database: for the server's schema and any
+tenant, accepted commands interleaved with other tenants' commits leave a
+state satisfying `Inv`, and so does every snapshot a later load decodes. -/
 theorem db_inv {ts : List Pg.Tab} {tv : Val} (hv : Pg.Valid ts) (htv : valKind tv = some .int)
     (hkl : Pg.klOf ts = kl) (hlen : ts.length = 4) {db : Pg.PgDb Val} {s : St}
     (h : PgServed app Snapshot.toSt ts tv Accepted db s) :

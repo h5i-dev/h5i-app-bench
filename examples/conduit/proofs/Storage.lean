@@ -3,12 +3,10 @@ import Invariants
 /-!
 # What the store holds
 
-The server stores a write set by running the planned statements of the
-kernel's `sql_writes`, and loads the site by decoding its rows with the
-kernel's `decode`. `I5hLib.Store` proves, for any schema, that the database
-then holds exactly the encoding of the state `applyAll` computes; this file
-gives Conduit's encoding and table writes. The cascades are deletes by
-column value, which the store runs as a `SELECT` and keyed deletes.
+The server writes with the kernel's `sql_writes` and loads with `decode`.
+`I5hLib.Store` proves for any schema that the database then holds the
+encoding of `applyAll`; this file supplies Conduit's encoding and table
+writes. Cascades run as a `SELECT` plus keyed deletes.
 -/
 open Aeneas Aeneas.Std Result conduit_kernel conduit_kernel.Spec conduit_kernel.Schema I5hLib I5hLib.Sql I5hLib.Store
 
@@ -80,10 +78,8 @@ theorem stored {db : Db Val} {s : St} (h : Served app Snapshot.toSt db s) :
 
 /-! ## The invariants on PostgreSQL
 
-The chain from a command to the rows a later request loads: the extracted
-`transition` accepts a write set (`Accepted`), `inv_preserved` keeps `Inv`,
-the server stores the compiled statements of `sql_writes`, and a load runs
-the compiled `SELECT`s and `decode`. `Schema.pg_loaded_inv` connects them. -/
+`Accepted` write sets keep `Inv` (`inv_preserved`); `Schema.pg_loaded_inv`
+carries that through the compiled statements to what a later load decodes. -/
 
 /-- Write sets the kernel returns for a command it accepts. -/
 def Accepted (snap : Snapshot) (ws : alloc.vec.Vec Write) : Prop :=

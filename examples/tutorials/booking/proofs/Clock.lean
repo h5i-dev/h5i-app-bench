@@ -2,13 +2,10 @@ import Scenarios
 /-!
 # Time that never goes back
 
-The theorems in `Theorems.lean` hold for any time the engine supplies, but
-some rules only make sense if time moves forward. "Owners cancel before the
-start" is meant to say that once a booking has started, its owner can no
-longer cancel it. The kernel checks the start against the time of the cancel
-request, so that reading needs the time of later commits to be no earlier.
-With `EngineConfig::monotonic` the engine guarantees this, and `ReachableT`
-and `StepsT` describe exactly those runs.
+"Owners cancel before the start" should mean a started booking stays. The
+kernel compares the start with the cancel request's time, so this needs a
+clock that never goes back (`EngineConfig::monotonic`, modeled by
+`ReachableT` and `StepsT`).
 
 - `started_stays`: once a commit has happened at or after a booking's start,
   no run of commands by non-admins removes it.
@@ -92,10 +89,9 @@ theorem s1_at_5 : ReachableT (Snapshot.toSt s1) 5 := by
     simp [h, applyAll, applyWrite, upsert, Snapshot.toSt, s0, s1, vecOf])
   exact reachT (a := at_ 3#u64 5#u64) h3 (Nat.zero_le _) (list_s1 _ _) (fun ws h => by simp [h, applyAll])
 
-/-- `started_stays` needs monotonic time. After the commit at time 5, booking
-1 (`[1, 2)`) has started and its owner, user 2, is not an admin. With a clock
-that reads 0, the owner still cancels it. `StepsT` excludes exactly this
-step, since 0 is before 5. -/
+/-- `started_stays` needs monotonic time: after the commit at time 5, booking
+1 (`[1, 2)`) has started, yet its owner (not an admin) cancels it at time 0.
+`StepsT` excludes this step. -/
 theorem clock_back_cancels :
     ReachableT (Snapshot.toSt s1) 5 ∧ bk1 ∈ (Snapshot.toSt s1).bookings ∧ bk1.start_at.val ≤ 5 ∧
     ¬ isAdmin (Snapshot.toSt s1) 2 ∧

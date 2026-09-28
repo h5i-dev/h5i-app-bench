@@ -3,10 +3,9 @@ import Schema
 /-!
 # Committing a write set
 
-The theorems talk about `Spec.applyAll`. Here we prove that the kernel's own
-`apply`, which the reference engine runs, computes exactly that. `schema!`
-generated `apply` and `Account::put`, with their lemmas (`Schema.lean`), so
-only the dispatch over `Write` is left.
+The kernel's `apply` computes `Spec.applyAll`. `schema!` generated `apply`
+and `Account::put` with their lemmas (`Schema.lean`), so only the dispatch
+over `Write` is left.
 -/
 open Aeneas Aeneas.Std Result ledger_kernel ledger_kernel.Spec ledger_kernel.Schema I5hLib
 

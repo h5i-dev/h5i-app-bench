@@ -1,16 +1,11 @@
-//! The SQL that i5h runs on PostgreSQL, built from planned statements.
+//! The SQL i5h runs on PostgreSQL.
 //!
-//! [`compile`] turns an `i5h_sql::Stmt` into a [`Query`]: a statement of a
-//! small SQL subset ([`Sql`]) and its parameters. [`select`] builds the loads
-//! and [`create`] the tables. [`render`] prints a statement as the text sent
-//! to the server. All of it is extracted to Lean (see `proofs/`), where
-//! `I5hLib.Pg` gives the subset a meaning and the proofs show that a compiled
-//! statement does to the tenant's rows what `I5hLib.Sql.exec` says, leaves
-//! other tenants' rows alone, and that a compiled `SELECT` returns exactly the
-//! tenant's matching rows.
+//! [`compile`] turns an `i5h_sql::Stmt` into a [`Query`] over a small SQL
+//! subset ([`Sql`]); [`render`] prints it. Extracted to Lean (`proofs/`): a
+//! compiled statement matches `I5hLib.Sql.exec` on the tenant's rows and
+//! leaves other tenants alone.
 //!
-//! Aeneas subset: no `?`, no `String`, no iterator adapters; loops are
-//! `while` over indices.
+//! Aeneas subset: no `?`, no `String`, no iterator adapters.
 
 use i5h_sql::{Stmt, Val};
 
@@ -31,8 +26,7 @@ pub struct Column {
     pub nullable: bool,
 }
 
-/// A tenant table: the `tenant_id` column, then `columns`. Its primary key
-/// is `tenant_id` and the first `key_len` columns.
+/// A tenant table: `tenant_id`, then `columns`. Key: `tenant_id` and the first `key_len` columns.
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct Table {
     pub name: Vec<u8>,
@@ -48,8 +42,7 @@ pub struct ColDef {
     pub not_null: bool,
 }
 
-/// A condition of a `WHERE` clause on a column and a parameter (`$param`,
-/// counted from 1).
+/// A `WHERE` condition; `$param` counts from 1.
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub enum Cond {
     /// `"col" = $param`
@@ -65,8 +58,7 @@ pub enum Sql {
     Create { table: Vec<u8>, cols: Vec<ColDef>, key: Vec<Vec<u8>> },
     /// `SELECT "c", ... FROM "table" [WHERE cond AND ...] [ORDER BY "o", ...]`
     Select { table: Vec<u8>, cols: Vec<Vec<u8>>, conds: Vec<Cond>, order: Vec<Vec<u8>> },
-    /// `INSERT INTO "table" ("c", ...) VALUES ($1, ...) ON CONFLICT ("k", ...)`
-    /// then `DO UPDATE SET "u" = EXCLUDED."u", ...`, or `DO NOTHING` without `update`.
+    /// `INSERT ... ON CONFLICT ("k", ...) DO UPDATE SET "u" = EXCLUDED."u", ...` (`DO NOTHING` if `update` is empty)
     Insert { table: Vec<u8>, cols: Vec<Vec<u8>>, conflict: Vec<Vec<u8>>, update: Vec<Vec<u8>> },
     /// `DELETE FROM "table" [WHERE cond AND ...]`
     Delete { table: Vec<u8>, conds: Vec<Cond> },
@@ -94,8 +86,7 @@ fn push_lit(out: &mut Vec<u8>, s: &[u8]) {
     }
 }
 
-/// A name PostgreSQL keeps as written when quoted: not empty, no NUL, and
-/// short enough (63 bytes) not to be truncated.
+/// Quoted, PostgreSQL keeps it as written: nonempty, no NUL, at most 63 bytes.
 fn name_ok(n: &Vec<u8>) -> bool {
     if n.len() == 0 || n.len() > 63 {
         return false;
@@ -161,8 +152,7 @@ fn reserved(n: &Vec<u8>) -> bool {
     n.len() >= 4 && n[0] == 105 && n[1] == 53 && n[2] == 104 && n[3] == 95
 }
 
-/// At least one column and at most PostgreSQL's 1600 (with `tenant_id`), a
-/// key no longer than the columns, and good, distinct column names.
+/// 1..1599 columns (PostgreSQL caps at 1600 with `tenant_id`), distinct good names.
 fn table_ok(t: &Table) -> bool {
     if !name_ok(&t.name) || reserved(&t.name) || t.columns.len() == 0 || t.columns.len() >= 1600 {
         return false;
@@ -171,9 +161,7 @@ fn table_ok(t: &Table) -> bool {
     (t.key_len as usize) <= t.columns.len() && all_ok(&names) && all_distinct(&names)
 }
 
-/// Every table is well formed and table names are distinct. A column name
-/// that is also `tenant_id` makes a table fail, and so does a table name
-/// starting with `i5h_`.
+/// Tables well formed with distinct names; no `tenant_id` column, no `i5h_` table.
 pub fn valid(tables: &Vec<Table>) -> bool {
     let mut names = Vec::new();
     let mut i = 0;
@@ -226,8 +214,7 @@ fn is_null(v: &Val) -> bool {
     }
 }
 
-/// Column `i` of `t` may hold `v`: right type, and `NULL` only in a
-/// nullable column outside the key.
+/// Column `i` of `t` may hold `v`; `NULL` only in a nullable non-key column.
 fn fits(t: &Table, i: usize, v: &Val) -> bool {
     let c = &t.columns[i];
     has_kind(v, c.kind) && (!is_null(v) || (c.nullable && i >= t.key_len as usize))
@@ -262,10 +249,8 @@ fn names_between(t: &Table, lo: usize, hi: usize) -> Vec<Vec<u8>> {
     out
 }
 
-/// The tenant's rows of table `table`, without `tenant_id`; with `filter`,
-/// only rows whose column `col` is not distinct from `val`. `None` if the
-/// schema is invalid, there is no such table or column, or `val` has the
-/// wrong type.
+/// The tenant's rows of `table` (no `tenant_id`), optionally filtered by
+/// `col IS NOT DISTINCT FROM val`. `None` on a bad schema, table, column, or type.
 pub fn select(tables: &Vec<Table>, tenant: i64, table: u32, filter: Option<(u32, Val)>) -> Option<Query> {
     if !valid(tables) || table as usize >= tables.len() {
         return None;
@@ -307,16 +292,9 @@ fn all_fit(t: &Table, off: usize, vs: &Vec<Val>) -> bool {
     true
 }
 
-/// The query that runs `s` for tenant `tenant`. `None` if the schema is
-/// invalid, the table does not exist, or the values do not fit its columns.
-///
-/// - `Upsert` inserts `tenant_id ++ key ++ rest`, updating the rest of the
-///   row on a key conflict.
-/// - `Delete` deletes the tenant's row whose key columns equal `key`.
-///   Like `DeleteWhere`, only on a table with key columns: a table without
-///   them holds one row, which is only ever replaced.
-/// - `DeleteWhere` deletes the tenant's rows whose column is not distinct
-///   from the value, so a `NULL` value matches `NULL`s.
+/// The query that runs `s` for `tenant`. `None` on a bad schema, a missing
+/// table, or values that do not fit. `Delete` and `DeleteWhere` need key
+/// columns: a keyless table holds one row, which is only replaced.
 pub fn compile(tables: &Vec<Table>, tenant: i64, s: &Stmt) -> Option<Query> {
     if !valid(tables) {
         return None;

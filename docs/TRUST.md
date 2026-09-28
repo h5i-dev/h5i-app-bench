@@ -1,91 +1,78 @@
 # What i5h proves, and what it assumes
 
-## Proven in Lean (about the extracted code)
+## Proven in Lean
 
-The kernel's `transition` and `apply` are translated from Rust to Lean by
-Charon and Aeneas. For the example app, the spec is
-`examples/docs/proofs/Spec.lean` and the theorems are in `Theorems.lean` next to it.
-So are the storage path (`sql_writes`, `decode`, `i5h_sql::plan`), the SQL
-compiler and printer (`i5h_pgsql`), the token parser and encoder, and the JSON
-writer. Each server's `db_inv` carries the kernel's invariant through the SQL
-to the rows later loaded (see A4 below).
+Charon and Aeneas translate the Rust to Lean; every theorem is about the
+extracted code. Covered: the kernel's `transition` and `apply` (example app:
+`examples/docs/proofs/Spec.lean`, theorems in `Theorems.lean`), the token
+parser and encoder, the JSON writer, and the storage path:
 
-## Enforced by structure (no proof needed)
+| Code | Proven | Where |
+|---|---|---|
+| `sql_writes`, generated table operations | store what `apply` computes | `Storage.lean`, `I5hLib.Store` |
+| `i5h_sql::plan` | computes `planA` | `crates/i5h-sql/proofs` |
+| `i5h_pgsql::valid`, `create`, `select`, `compile`, `render` | compute `Pg.createA`, `Pg.selectA`, `Pg.compileA` and print `Pg.render`; a quoted name reads back as itself (`Pg.lexName_quote`). Under `I5hLib.Pg`, a compiled statement does to the tenant's rows what `I5hLib.Sql.exec` says and touches no other tenant or table (`Pg.compile_sound`); a compiled `SELECT` returns the tenant's matching rows once each (`Pg.select_sound`, giving `Lists` and `Sel`) | `crates/i5h-pgsql/proofs` |
+| generated `PgServed`, `pg_loaded_inv` | an invariant kept by accepted write sets holds in every state of a multi-tenant database and every snapshot loaded from it | `generated/Schema.lean` |
+
+Each server app applies `pg_loaded_inv` to its extracted `transition`,
+`sql_writes` and `decode` as `db_inv` (docs: `Database.db_inv`, which also
+covers scoped loads). It says: for the server's schema and any tenant, every
+database reached by loading with the compiled `SELECT`s, running a successful
+`transition` and storing its compiled writes, among other tenants' compiled
+statements, holds a state satisfying `Inv`, and every later load decodes to a
+snapshot satisfying `Inv`.
+
+## Enforced by structure
 
 | Property | How |
 |---|---|
-| Handlers go through the kernel | App code gets `I5h::respond` / `Engine::execute`, never a DB handle. `cargo deny check bans` (`deny.toml`) rejects database crates in any workspace crate but `i5h-pg`. `i5h_pg::lockdown` makes a NOLOGIN role own the i5h tables and grants row access only to the engine's role (see Deployment below). |
-| Tenant isolation | Every compiled statement and `SELECT` filters on or writes the tenant it is compiled for, and `tenant_id` is part of every primary key; `Pg.compile_sound` proves a compiled statement leaves other tenants' rows as they were. Kernel rows carry no tenant id, so the kernel cannot name another tenant. The engine and each `Store` must pass `K::tenant(actor)` consistently. |
-| Every column is persisted | `table!` must list every field or it does not compile. |
+| Handlers go through the kernel | App code gets `I5h::respond` / `Engine::execute`, never a DB handle. A `Store` gets an opaque `i5h_pg::Tx` with only `load_table` and `store_writes` (SQL from `i5h_pgsql`); `i5h_pg::Pool` is opaque. `cargo deny check bans` (`deny.toml`) rejects database crates outside `i5h-pg`. At runtime, `i5h_pg::lockdown` gives the tables to a NOLOGIN owner and row access only to the engine's role. A superuser login bypasses all of this. |
+| Tenant isolation | Every compiled statement filters on or writes its tenant, and `tenant_id` is in every primary key. `Pg.compile_sound` proves other tenants' rows stay as they were. Kernel rows have no tenant id, so the kernel cannot name another tenant. The engine and each `Store` must pass `K::tenant(actor)` consistently. |
+| Every column is persisted | `table!` must list every field to compile. |
 
-## Assumed (trusted, not verified)
+## Assumed
 
 | Component | Assumption | Mitigation |
 |---|---|---|
-| `Authenticator` | Returns the principal that sent the request. | Token parsing is extracted and proven: an accepted token's signed payload is exactly `enc(tenant, user, exp)`, so a signature covers one identity. HMAC-SHA256 from libcrux 0.0.8 (HACL*-verified, pre-1.0). Still trusted: the secret key and its storage, the clock for expiry, constant-time tag comparison (`ct_eq`). |
-| JSON codec | Decodes the body into the command the client meant. | `deny_unknown_fields`; tagged enum. |
-| Shell inputs | Values the shell puts in the principal are true: random slugs (Wastebin), GitHub team membership and download counts (crates.io), password checks (Atuin, Wastebin, Conduit), and the time in Conduit's commands. | Theorems hold for every value, so a wrong input cannot break an invariant or a permission rule; it can only make the kernel decide on wrong facts. Each app's README lists its inputs. |
-| Clock | The engine's `Clock` reads the right time: the process's system clock (`Clock::System`, the default) or PostgreSQL's `transaction_timestamp()` (`Clock::Database`, used by booking, Wastebin and crates.io). Token expiry in `HmacAuth` uses the system clock. | Theorems hold for every time, so a wrong clock can only make the kernel decide on a wrong time, for example accept a booking that has already started. `Clock::Database` gives every server of a database one clock. With `monotonic`, the trusted engine contract says that the `i5h_clock` row prevents committed times from decreasing within a tenant. Proofs over `I5hLib.ReachableT` apply to database executions only under that assumption. |
-| Reply rendering | Shows the reply the kernel returned. | Bytes come from the extracted `i5h-json` writer, proven to print the token stream exactly and to escape strings so their contents cannot inject JSON. Trusted: the app's reply-to-`Value` mapping, and the `Value` to tokens flattening (tested against serde_json). |
-| PostgreSQL statement semantics (A4) | PostgreSQL runs the SQL subset that `i5h_pgsql` renders as `I5hLib.Pg` says: `CREATE TABLE IF NOT EXISTS`, `INSERT ... ON CONFLICT (key) DO UPDATE SET` / `DO NOTHING`, `DELETE ... WHERE` and `SELECT ... WHERE`, with `=` true only of equal non-`NULL` values and `IS NOT DISTINCT FROM` true of equal values including `NULL`. A statement either fails or has the modeled effect; a `SELECT` returns the modeled rows in some order. Text compares byte by byte (a deterministic collation). The driver converts `Val` losslessly and types each value as `valKind` says. Existing tables were created from the same schema (`CREATE TABLE IF NOT EXISTS` keeps an older table as it is). | Everything between the kernel and this model is extracted and proven. `i5h_sql::plan` computes `planA`; `i5h_pgsql::valid`, `create`, `select` and `compile` compute `Pg.createA`, `Pg.selectA` and `Pg.compileA`, and `render` prints `Pg.render`, in which a quoted name reads back as itself whatever its bytes (`Pg.lexName_quote`). Under the model, a compiled statement does to the tenant's rows what `I5hLib.Sql.exec` says and changes no other tenant's rows and no table outside the schema (`Pg.compile_sound`), and a compiled `SELECT` returns the tenant's matching rows once each (`Pg.select_sound`, which gives `Lists` and `Sel`). Every server application's `db_inv` composes this with its extracted `transition`, `sql_writes` and `decode`. `tests/postgres.rs` in each server runs the production path against PostgreSQL. |
-| Schema description | `schema_spec()`, generated by `schema!`'s mapping macro, lists each table's name and each column's name, kind and nullability, in `TABLE` order, from the `table!` mappings. | Every compile and load checks `i5h_pgsql::valid` on it; the generated `schema_is_valid` test checks the numbering and key lengths against the kernel's `TABLE` and `KEY_LEN`. Names come from the `schema!` declaration. |
-| PostgreSQL | SERIALIZABLE commits are equivalent to some serial order. | Documented PostgreSQL guarantee. Retries restart from the snapshot read. |
-| Engine protocol | The Rust engine satisfies the contract listed below. | The implementation is kept in `crates/i5h-pg`, application code cannot obtain its pool or raw transaction, and PostgreSQL integration tests cover concurrency, retries, idempotency, connection loss, scoped reads and outbox behavior. This component is trusted, not proven in Lean. |
-| Deployment | The engine does not log in as a superuser, and no other service gets its credentials. | Superusers bypass table grants; nothing in i5h can stop that. |
-| Charon / Aeneas / Lean | The translation is faithful and the checker is sound. | Upstream tools. |
+| `Authenticator` | Returns the principal that sent the request. | Proven: an accepted token's signed payload is exactly `enc(tenant, user, exp)`. HMAC-SHA256 from libcrux 0.0.8 (HACL*-verified, pre-1.0). Trusted: the key and its storage, the expiry clock, `ct_eq`. |
+| JSON codec | Decodes the command the client meant. | `deny_unknown_fields`; tagged enum. |
+| Shell inputs | Principal values are true: slugs (Wastebin), GitHub teams and download counts (crates.io), password checks (Atuin, Wastebin, Conduit), time in Conduit's commands. | Theorems hold for every value; a wrong one only feeds the kernel wrong facts. Each app's README lists them. |
+| Clock | `Clock::System` (default) or `Clock::Database` (`transaction_timestamp()`; booking, Wastebin, crates.io) is right. `HmacAuth` expiry uses the system clock. | A wrong time only leads to decisions on that time. `Clock::Database` gives a database's servers one clock. With `monotonic`, the engine contract keeps commit times from decreasing per tenant (`i5h_clock`); `I5hLib.ReachableT` proofs hold for database runs only under that. |
+| Reply rendering | Shows the kernel's reply. | Bytes come from the proven `i5h-json` writer (exact output, strings cannot inject JSON). Trusted: the app's reply-to-`Value` mapping and `Value`-to-tokens flattening (tested against serde_json). |
+| PostgreSQL statement semantics (A4) | PostgreSQL runs the rendered subset as `I5hLib.Pg` says: `CREATE TABLE IF NOT EXISTS`, `INSERT ... ON CONFLICT (key) DO UPDATE SET` / `DO NOTHING`, `DELETE ... WHERE`, `SELECT ... WHERE`. `=` holds only for equal non-`NULL` values; `IS NOT DISTINCT FROM` also for `NULL`. A statement fails or has the modeled effect; a `SELECT` returns the modeled rows in some order. Text compares byte by byte (deterministic collation). The driver converts `Val` losslessly, typed per `valKind`. Existing tables came from the same schema (`CREATE TABLE IF NOT EXISTS` keeps an old table as it is). | The path up to this model is proven (above). Each server's `tests/postgres.rs` runs it against PostgreSQL. |
+| Schema description | `schema_spec()`, generated from the `table!` mappings, lists table names and column names, kinds and nullability in `TABLE` order. | Every compile and load checks `i5h_pgsql::valid`; the generated `schema_is_valid` test checks numbering and key lengths against `TABLE` and `KEY_LEN`. Names come from the `schema!` declaration. |
+| PostgreSQL | SERIALIZABLE commits equal some serial order. | Documented guarantee. Retries restart from the snapshot read. |
+| Engine protocol | `crates/i5h-pg` meets the contract below. | App code cannot reach its pool or transaction. Integration tests cover concurrency, retries, idempotency, connection loss, scoped reads and the outbox. |
+| Deployment | The engine is not a superuser; no other service has its credentials. | i5h cannot stop a superuser. |
+| Charon / Aeneas / Lean | Faithful translation; sound checker. | Upstream tools. |
 | axum, hyper, tokio | Deliver requests and responses intact. | Widely used. |
 
 ## Deployment
 
-1. As an admin, create the engine's login role: `CREATE ROLE app_engine LOGIN PASSWORD '...'`. Not a superuser, not the table owner.
-2. As the admin, run `Engine::install_schema`, then `i5h_pg::lockdown::<App, Store>(admin_url, "i5h_owner", "app_engine")`. It is idempotent; rerun after adding tables. If the app has its own schema (`i5h_pg::with_schema`), use it in both URLs.
-3. Run the server with `DATABASE_URL` for `app_engine`. Other roles get `permission denied` on i5h tables (`tests/lockdown.rs`).
-
-`Store` impls get an opaque `i5h_pg::Tx` that offers only `load_table` and `store_writes`, whose SQL comes from `i5h_pgsql`, and `i5h_pg::Pool` is opaque too, so app code has no path to the driver; `cargo deny check bans` rejects the driver in any non-dev dependency. The role lockdown still backs this at runtime, and a superuser login bypasses both.
-
-## Connection loss
-
-A connection lost before COMMIT is retried from BEGIN. A connection lost during
-COMMIT may or may not have committed: under an idempotency key the engine
-retries (the key makes it safe); without one it returns `DbError::CommitUnknown`
-and the caller must not assume either outcome.
+1. As admin: `CREATE ROLE app_engine LOGIN PASSWORD '...'` (not a superuser, not the table owner).
+2. As admin: `Engine::install_schema`, then `i5h_pg::lockdown::<App, Store>(admin_url, "i5h_owner", "app_engine")`. Idempotent; rerun after adding tables. With `i5h_pg::with_schema`, use the schema in both URLs.
+3. Run the server with `DATABASE_URL` for `app_engine`. Other roles get `permission denied` (`tests/lockdown.rs`).
 
 ## Trusted engine contract
 
-The application proofs rely on the following contract of `i5h-pg`:
+- One attempt loads one tenant, calls `transition`, writes and commits in one SERIALIZABLE transaction.
+- Each retry opens a new transaction, reloads, reads a new time and reruns `transition`.
+- A refused transition rolls back and writes no app or framework rows.
+- App writes, the idempotency reply, `i5h_clock` and outbox rows commit in the same transaction.
+- Keys are stored per `(tenant, ReplyCodec::scope(actor), key)`; reuse with another fingerprint is rejected.
+- A connection lost before COMMIT aborts or retries from BEGIN. If lost during COMMIT, a keyed request retries; an unkeyed one returns `DbError::CommitUnknown`, and the caller must assume neither outcome.
+- Session advisory locks are taken before BEGIN and released before the connection returns to the pool.
+- Outbox deliveries may repeat, keep a stable key, and go only through the destination registry.
 
-- one attempt loads one tenant, calls `transition`, writes its result and commits in one SERIALIZABLE transaction;
-- every retry starts a new transaction, reloads the snapshot, reads a new attempt time and reruns `transition`;
-- a refused transition rolls back and writes neither application rows nor framework rows;
-- application writes, the idempotency reply, `i5h_clock` and outbox rows are atomic because they use the same transaction;
-- a key is stored per `(tenant, ReplyCodec::scope(actor), key)`, and reuse with a different fingerprint is rejected;
-- a lost connection before COMMIT aborts or is retried, while an uncertain unkeyed COMMIT returns `CommitUnknown`;
-- session advisory locks are acquired before BEGIN and released before a connection returns to the pool; and
-- outbox deliveries may repeat, keep a stable delivery key, and are sent only through the configured destination registry.
+Also trusted: the `ReplyCodec` fingerprint and scope, the clock source, the
+registry, pool cancellation, and the code implementing the contract.
 
-The `ReplyCodec` fingerprint and scope, clock source, destination registry,
-connection-pool cancellation behavior, and the code implementing this contract
-are part of the trusted computing base.
-
-## Consequence
-
-If the PostgreSQL, Store and engine assumptions hold, every normal committed
-application state of a tenant is represented by a serial sequence of
-successful kernel transitions, and each server's `db_inv` says what that
-gives: every database its requests produce, loading with the compiled
-`SELECT`s (docs: also the scoped ones), running a successful extracted
-`transition` and storing the compiled statements of its writes, among any
-other tenants' statements, holds a state satisfying the application's
-invariant, and every later load decodes to a snapshot satisfying it.
-Migrations need their own invariant check and do not establish kernel
-reachability. With `monotonic`, properties over `I5hLib.ReachableT`
-additionally rely on the trusted clock contract above.
+If these assumptions hold, each tenant's committed state comes from a serial
+sequence of successful transitions, so `db_inv` applies to it and to every
+later load. Migrations are outside this (see below).
 
 ## Not covered yet
 
-- Refusals are not stored under idempotency keys. A retried refused command
-  is evaluated again against the new state.
-- Migrations are checked, not proven: `Engine::migrate` commits only if every
-  tenant passes the proven-exact checker afterwards. Checking cost grows with
-  the data; very large tenants need the check batched.
-- Effects are delivered at least once, not exactly once: the receiver must drop duplicates by the delivery key. The Rust dispatcher is integration-tested but trusted. Its registry (id to endpoint) and the `Deliver` implementation are trusted; checking the endpoint's address (no private ranges, no redirects) belongs there.
+- Refusals are not stored under idempotency keys; a retried refusal runs again on the new state.
+- Migrations are checked, not proven, and do not establish reachability: `Engine::migrate` commits only if every tenant passes the proven-exact checker. Cost grows with data; large tenants need batching.
+- Effects arrive at least once; receivers dedupe by delivery key. The dispatcher (integration-tested), its registry (id to endpoint) and `Deliver` are trusted; endpoint address checks (no private ranges, no redirects) belong there.

@@ -4,8 +4,7 @@ import I5hLib.Basic
 /-!
 # The extracted types, read as `I5hLib.Pg`'s
 
-Each extracted value is read as the value of the Lean model it stands for:
-byte vectors as byte lists, tables and statements field by field.
+Byte vectors as byte lists; tables and statements field by field.
 -/
 open Aeneas Aeneas.Std Result I5hLib
 

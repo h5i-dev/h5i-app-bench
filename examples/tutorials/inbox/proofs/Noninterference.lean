@@ -2,10 +2,9 @@ import Theorems
 /-!
 # Two runs with the same view
 
-If two states look the same to user `u`, every command by `u` has the same
-outcome in both: the same writes, the same reply and the same error. So
-nothing outside `view` can reach `u` through the kernel, not even through an
-error code.
+If two states look the same to user `u`, every command by `u` gives the same
+writes, reply and error in both. Nothing outside `view` reaches `u`, not
+even through an error code.
 -/
 open Aeneas Aeneas.Std Result inbox_kernel inbox_kernel.Spec inbox_kernel.Commands I5hLib
 

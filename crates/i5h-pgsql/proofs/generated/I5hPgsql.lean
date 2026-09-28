@@ -68,7 +68,7 @@ inductive i5h_sql.Stmt where
 | DeleteWhere : Std.U32 → Std.U32 → i5h_sql.Val → i5h_sql.Stmt
 
 /-- [i5h_pgsql::Kind]
-    Source: 'crates/i5h-pgsql/src/lib.rs', lines 19:0-24:1
+    Source: 'crates/i5h-pgsql/src/lib.rs', lines 14:0-19:1
     Visibility: public -/
 @[discriminant isize]
 inductive Kind where
@@ -78,7 +78,7 @@ inductive Kind where
 | Bytes : Kind
 
 /-- [i5h_pgsql::Column]
-    Source: 'crates/i5h-pgsql/src/lib.rs', lines 28:0-32:1
+    Source: 'crates/i5h-pgsql/src/lib.rs', lines 23:0-27:1
     Visibility: public -/
 structure Column where
   «name» : alloc.vec.Vec Std.U8
@@ -86,7 +86,7 @@ structure Column where
   nullable : Bool
 
 /-- [i5h_pgsql::Table]
-    Source: 'crates/i5h-pgsql/src/lib.rs', lines 37:0-41:1
+    Source: 'crates/i5h-pgsql/src/lib.rs', lines 31:0-35:1
     Visibility: public -/
 structure Table where
   «name» : alloc.vec.Vec Std.U8
@@ -94,7 +94,7 @@ structure Table where
   key_len : Std.U32
 
 /-- [i5h_pgsql::ColDef]
-    Source: 'crates/i5h-pgsql/src/lib.rs', lines 45:0-49:1
+    Source: 'crates/i5h-pgsql/src/lib.rs', lines 39:0-43:1
     Visibility: public -/
 structure ColDef where
   «name» : alloc.vec.Vec Std.U8
@@ -102,7 +102,7 @@ structure ColDef where
   not_null : Bool
 
 /-- [i5h_pgsql::Cond]
-    Source: 'crates/i5h-pgsql/src/lib.rs', lines 54:0-59:1
+    Source: 'crates/i5h-pgsql/src/lib.rs', lines 47:0-52:1
     Visibility: public -/
 @[discriminant isize]
 inductive Cond where
@@ -110,7 +110,7 @@ inductive Cond where
 | Same : alloc.vec.Vec Std.U8 → Std.U32 → Cond
 
 /-- [i5h_pgsql::Sql]
-    Source: 'crates/i5h-pgsql/src/lib.rs', lines 63:0-73:1
+    Source: 'crates/i5h-pgsql/src/lib.rs', lines 56:0-65:1
     Visibility: public -/
 @[discriminant isize]
 inductive Sql where
@@ -134,14 +134,14 @@ inductive Sql where
 | Delete : alloc.vec.Vec Std.U8 → alloc.vec.Vec Cond → Sql
 
 /-- [i5h_pgsql::Query]
-    Source: 'crates/i5h-pgsql/src/lib.rs', lines 77:0-80:1
+    Source: 'crates/i5h-pgsql/src/lib.rs', lines 69:0-72:1
     Visibility: public -/
 structure Query where
   sql : Sql
   params : alloc.vec.Vec i5h_sql.Val
 
 /-- [i5h_pgsql::push_lit]: loop body 0:
-    Source: 'crates/i5h-pgsql/src/lib.rs', lines 91:4-94:5 -/
+    Source: 'crates/i5h-pgsql/src/lib.rs', lines 83:4-86:5 -/
 @[rust_loop_body]
 def push_lit_loop.body
   (s : Slice Std.U8) (out : alloc.vec.Vec Std.U8) (i : Std.Usize) :
@@ -158,7 +158,7 @@ def push_lit_loop.body
   else ok (done out)
 
 /-- [i5h_pgsql::push_lit]: loop 0:
-    Source: 'crates/i5h-pgsql/src/lib.rs', lines 91:4-94:5 -/
+    Source: 'crates/i5h-pgsql/src/lib.rs', lines 83:4-86:5 -/
 @[rust_loop]
 def push_lit_loop
   (out : alloc.vec.Vec Std.U8) (s : Slice Std.U8) (i : Std.Usize) :
@@ -169,7 +169,7 @@ def push_lit_loop
     (out, i)
 
 /-- [i5h_pgsql::push_lit]:
-    Source: 'crates/i5h-pgsql/src/lib.rs', lines 89:0-95:1 -/
+    Source: 'crates/i5h-pgsql/src/lib.rs', lines 81:0-87:1 -/
 @[reducible]
 def push_lit
   (out : alloc.vec.Vec Std.U8) (s : Slice Std.U8) :
@@ -178,7 +178,7 @@ def push_lit
   push_lit_loop out s 0#usize
 
 /-- [i5h_pgsql::tenant_col]:
-    Source: 'crates/i5h-pgsql/src/lib.rs', lines 83:0-87:1
+    Source: 'crates/i5h-pgsql/src/lib.rs', lines 75:0-79:1
     Visibility: public -/
 def tenant_col : Result (alloc.vec.Vec Std.U8) := do
   let s ←
@@ -189,7 +189,7 @@ def tenant_col : Result (alloc.vec.Vec Std.U8) := do
   push_lit (alloc.vec.Vec.new Std.U8) s
 
 /-- [i5h_pgsql::name_ok]: loop body 0:
-    Source: 'crates/i5h-pgsql/src/lib.rs', lines 104:4-111:1 -/
+    Source: 'crates/i5h-pgsql/src/lib.rs', lines 95:4-102:1 -/
 @[rust_loop_body]
 def name_ok_loop.body
   (n : alloc.vec.Vec Std.U8) (i : Std.Usize) :
@@ -207,7 +207,7 @@ def name_ok_loop.body
   else ok (done true)
 
 /-- [i5h_pgsql::name_ok]: loop 0:
-    Source: 'crates/i5h-pgsql/src/lib.rs', lines 104:4-111:1 -/
+    Source: 'crates/i5h-pgsql/src/lib.rs', lines 95:4-102:1 -/
 @[rust_loop]
 def name_ok_loop (n : alloc.vec.Vec Std.U8) (i : Std.Usize) : Result Bool := do
   loop
@@ -215,7 +215,7 @@ def name_ok_loop (n : alloc.vec.Vec Std.U8) (i : Std.Usize) : Result Bool := do
     i
 
 /-- [i5h_pgsql::name_ok]:
-    Source: 'crates/i5h-pgsql/src/lib.rs', lines 99:0-111:1 -/
+    Source: 'crates/i5h-pgsql/src/lib.rs', lines 90:0-102:1 -/
 def name_ok (n : alloc.vec.Vec Std.U8) : Result Bool := do
   let i := alloc.vec.Vec.len n
   if i = 0#usize
@@ -227,7 +227,7 @@ def name_ok (n : alloc.vec.Vec Std.U8) : Result Bool := do
     else name_ok_loop n 0#usize
 
 /-- [i5h_pgsql::distinct_from]: loop body 0:
-    Source: 'crates/i5h-pgsql/src/lib.rs', lines 116:4-123:1 -/
+    Source: 'crates/i5h-pgsql/src/lib.rs', lines 107:4-114:1 -/
 @[rust_loop_body]
 def distinct_from_loop.body
   (names : alloc.vec.Vec (alloc.vec.Vec Std.U8)) (i : Std.Usize)
@@ -251,7 +251,7 @@ def distinct_from_loop.body
   else ok (done true)
 
 /-- [i5h_pgsql::distinct_from]: loop 0:
-    Source: 'crates/i5h-pgsql/src/lib.rs', lines 116:4-123:1 -/
+    Source: 'crates/i5h-pgsql/src/lib.rs', lines 107:4-114:1 -/
 @[rust_loop]
 def distinct_from_loop
   (names : alloc.vec.Vec (alloc.vec.Vec Std.U8)) (i : Std.Usize)
@@ -263,7 +263,7 @@ def distinct_from_loop
     j
 
 /-- [i5h_pgsql::distinct_from]:
-    Source: 'crates/i5h-pgsql/src/lib.rs', lines 114:0-123:1 -/
+    Source: 'crates/i5h-pgsql/src/lib.rs', lines 105:0-114:1 -/
 def distinct_from
   (names : alloc.vec.Vec (alloc.vec.Vec Std.U8)) (i : Std.Usize) :
   Result Bool
@@ -272,7 +272,7 @@ def distinct_from
   distinct_from_loop names i j
 
 /-- [i5h_pgsql::all_distinct]: loop body 0:
-    Source: 'crates/i5h-pgsql/src/lib.rs', lines 127:4-134:1 -/
+    Source: 'crates/i5h-pgsql/src/lib.rs', lines 118:4-125:1 -/
 @[rust_loop_body]
 def all_distinct_loop.body
   (names : alloc.vec.Vec (alloc.vec.Vec Std.U8)) (i : Std.Usize) :
@@ -289,7 +289,7 @@ def all_distinct_loop.body
   else ok (done true)
 
 /-- [i5h_pgsql::all_distinct]: loop 0:
-    Source: 'crates/i5h-pgsql/src/lib.rs', lines 127:4-134:1 -/
+    Source: 'crates/i5h-pgsql/src/lib.rs', lines 118:4-125:1 -/
 @[rust_loop]
 def all_distinct_loop
   (names : alloc.vec.Vec (alloc.vec.Vec Std.U8)) (i : Std.Usize) :
@@ -300,14 +300,14 @@ def all_distinct_loop
     i
 
 /-- [i5h_pgsql::all_distinct]:
-    Source: 'crates/i5h-pgsql/src/lib.rs', lines 125:0-134:1 -/
+    Source: 'crates/i5h-pgsql/src/lib.rs', lines 116:0-125:1 -/
 @[reducible]
 def all_distinct
   (names : alloc.vec.Vec (alloc.vec.Vec Std.U8)) : Result Bool := do
   all_distinct_loop names 0#usize
 
 /-- [i5h_pgsql::all_ok]: loop body 0:
-    Source: 'crates/i5h-pgsql/src/lib.rs', lines 138:4-145:1 -/
+    Source: 'crates/i5h-pgsql/src/lib.rs', lines 129:4-136:1 -/
 @[rust_loop_body]
 def all_ok_loop.body
   (names : alloc.vec.Vec (alloc.vec.Vec Std.U8)) (i : Std.Usize) :
@@ -327,7 +327,7 @@ def all_ok_loop.body
   else ok (done true)
 
 /-- [i5h_pgsql::all_ok]: loop 0:
-    Source: 'crates/i5h-pgsql/src/lib.rs', lines 138:4-145:1 -/
+    Source: 'crates/i5h-pgsql/src/lib.rs', lines 129:4-136:1 -/
 @[rust_loop]
 def all_ok_loop
   (names : alloc.vec.Vec (alloc.vec.Vec Std.U8)) (i : Std.Usize) :
@@ -338,13 +338,13 @@ def all_ok_loop
     i
 
 /-- [i5h_pgsql::all_ok]:
-    Source: 'crates/i5h-pgsql/src/lib.rs', lines 136:0-145:1 -/
+    Source: 'crates/i5h-pgsql/src/lib.rs', lines 127:0-136:1 -/
 @[reducible]
 def all_ok (names : alloc.vec.Vec (alloc.vec.Vec Std.U8)) : Result Bool := do
   all_ok_loop names 0#usize
 
 /-- [i5h_pgsql::col_names]: loop body 0:
-    Source: 'crates/i5h-pgsql/src/lib.rs', lines 152:4-155:5 -/
+    Source: 'crates/i5h-pgsql/src/lib.rs', lines 143:4-146:5 -/
 @[rust_loop_body]
 def col_names_loop.body
   (t : Table) (out : alloc.vec.Vec (alloc.vec.Vec Std.U8)) (i : Std.Usize) :
@@ -364,7 +364,7 @@ def col_names_loop.body
   else ok (done out)
 
 /-- [i5h_pgsql::col_names]: loop 0:
-    Source: 'crates/i5h-pgsql/src/lib.rs', lines 152:4-155:5 -/
+    Source: 'crates/i5h-pgsql/src/lib.rs', lines 143:4-146:5 -/
 @[rust_loop]
 def col_names_loop
   (t : Table) (out : alloc.vec.Vec (alloc.vec.Vec Std.U8)) (i : Std.Usize) :
@@ -375,14 +375,14 @@ def col_names_loop
     (out, i)
 
 /-- [i5h_pgsql::col_names]:
-    Source: 'crates/i5h-pgsql/src/lib.rs', lines 148:0-157:1 -/
+    Source: 'crates/i5h-pgsql/src/lib.rs', lines 139:0-148:1 -/
 def col_names (t : Table) : Result (alloc.vec.Vec (alloc.vec.Vec Std.U8)) := do
   let v ← tenant_col
   let out ← alloc.vec.Vec.push (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) v
   col_names_loop t out 0#usize
 
 /-- [i5h_pgsql::reserved]:
-    Source: 'crates/i5h-pgsql/src/lib.rs', lines 160:0-162:1 -/
+    Source: 'crates/i5h-pgsql/src/lib.rs', lines 151:0-153:1 -/
 def reserved (n : alloc.vec.Vec Std.U8) : Result Bool := do
   let i := alloc.vec.Vec.len n
   if i >= 4#usize
@@ -412,7 +412,7 @@ def reserved (n : alloc.vec.Vec Std.U8) : Result Bool := do
   else ok false
 
 /-- [i5h_pgsql::table_ok]:
-    Source: 'crates/i5h-pgsql/src/lib.rs', lines 166:0-172:1 -/
+    Source: 'crates/i5h-pgsql/src/lib.rs', lines 156:0-162:1 -/
 def table_ok (t : Table) : Result Bool := do
   let b ← name_ok t.name
   if b
@@ -442,7 +442,7 @@ def table_ok (t : Table) : Result Bool := do
   else ok false
 
 /-- [i5h_pgsql::valid]: loop body 0:
-    Source: 'crates/i5h-pgsql/src/lib.rs', lines 180:4-188:1
+    Source: 'crates/i5h-pgsql/src/lib.rs', lines 168:4-176:1
     Visibility: public -/
 @[rust_loop_body]
 def valid_loop.body
@@ -469,7 +469,7 @@ def valid_loop.body
        ok (done b)
 
 /-- [i5h_pgsql::valid]: loop 0:
-    Source: 'crates/i5h-pgsql/src/lib.rs', lines 180:4-188:1
+    Source: 'crates/i5h-pgsql/src/lib.rs', lines 168:4-176:1
     Visibility: public -/
 @[rust_loop]
 def valid_loop
@@ -482,14 +482,14 @@ def valid_loop
     (names, i)
 
 /-- [i5h_pgsql::valid]:
-    Source: 'crates/i5h-pgsql/src/lib.rs', lines 177:0-188:1
+    Source: 'crates/i5h-pgsql/src/lib.rs', lines 165:0-176:1
     Visibility: public -/
 @[reducible]
 def valid (tables : alloc.vec.Vec Table) : Result Bool := do
   valid_loop tables (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) 0#usize
 
 /-- [i5h_pgsql::kind_eq]:
-    Source: 'crates/i5h-pgsql/src/lib.rs', lines 190:0-209:1 -/
+    Source: 'crates/i5h-pgsql/src/lib.rs', lines 178:0-197:1 -/
 def kind_eq (a : Kind) (b : Kind) : Result Bool := do
   match a with
   | Kind.Int =>
@@ -518,7 +518,7 @@ def kind_eq (a : Kind) (b : Kind) : Result Bool := do
     | Kind.Bytes => ok true
 
 /-- [i5h_pgsql::has_kind]:
-    Source: 'crates/i5h-pgsql/src/lib.rs', lines 212:0-220:1 -/
+    Source: 'crates/i5h-pgsql/src/lib.rs', lines 200:0-208:1 -/
 def has_kind (v : i5h_sql.Val) (k : Kind) : Result Bool := do
   match v with
   | i5h_sql.Val.Int _ => kind_eq k Kind.Int
@@ -528,7 +528,7 @@ def has_kind (v : i5h_sql.Val) (k : Kind) : Result Bool := do
   | i5h_sql.Val.Null => ok true
 
 /-- [i5h_pgsql::is_null]:
-    Source: 'crates/i5h-pgsql/src/lib.rs', lines 222:0-227:1 -/
+    Source: 'crates/i5h-pgsql/src/lib.rs', lines 210:0-215:1 -/
 def is_null (v : i5h_sql.Val) : Result Bool := do
   match v with
   | i5h_sql.Val.Int _ => ok false
@@ -538,7 +538,7 @@ def is_null (v : i5h_sql.Val) : Result Bool := do
   | i5h_sql.Val.Null => ok true
 
 /-- [i5h_pgsql::fits]:
-    Source: 'crates/i5h-pgsql/src/lib.rs', lines 231:0-234:1 -/
+    Source: 'crates/i5h-pgsql/src/lib.rs', lines 218:0-221:1 -/
 def fits (t : Table) (i : Std.Usize) (v : i5h_sql.Val) : Result Bool := do
   let c ←
     alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Column)
@@ -557,7 +557,7 @@ def fits (t : Table) (i : Std.Usize) (v : i5h_sql.Val) : Result Bool := do
   else ok false
 
 /-- [i5h_pgsql::create]: loop body 0:
-    Source: 'crates/i5h-pgsql/src/lib.rs', lines 244:4-250:5
+    Source: 'crates/i5h-pgsql/src/lib.rs', lines 231:4-237:5
     Visibility: public -/
 @[rust_loop_body]
 def create_loop.body
@@ -603,7 +603,7 @@ def create_loop.body
   else ok (done (cols, key))
 
 /-- [i5h_pgsql::create]: loop 0:
-    Source: 'crates/i5h-pgsql/src/lib.rs', lines 244:4-250:5
+    Source: 'crates/i5h-pgsql/src/lib.rs', lines 231:4-237:5
     Visibility: public -/
 @[rust_loop]
 def create_loop
@@ -617,7 +617,7 @@ def create_loop
     (cols, key, i)
 
 /-- [i5h_pgsql::create]:
-    Source: 'crates/i5h-pgsql/src/lib.rs', lines 237:0-252:1
+    Source: 'crates/i5h-pgsql/src/lib.rs', lines 224:0-239:1
     Visibility: public -/
 def create (t : Table) : Result Sql := do
   let v ← tenant_col
@@ -631,7 +631,7 @@ def create (t : Table) : Result Sql := do
   ok (Sql.Create v1 cols1 key1)
 
 /-- [i5h_pgsql::names_between]: loop body 0:
-    Source: 'crates/i5h-pgsql/src/lib.rs', lines 1:0-261:5 -/
+    Source: 'crates/i5h-pgsql/src/lib.rs', lines 1:0-248:5 -/
 @[rust_loop_body]
 def names_between_loop.body
   (t : Table) (hi : Std.Usize) (out : alloc.vec.Vec (alloc.vec.Vec Std.U8))
@@ -655,7 +655,7 @@ def names_between_loop.body
   else ok (done out)
 
 /-- [i5h_pgsql::names_between]: loop 0:
-    Source: 'crates/i5h-pgsql/src/lib.rs', lines 1:0-261:5 -/
+    Source: 'crates/i5h-pgsql/src/lib.rs', lines 1:0-248:5 -/
 @[rust_loop]
 def names_between_loop
   (t : Table) (hi : Std.Usize) (out : alloc.vec.Vec (alloc.vec.Vec Std.U8))
@@ -667,7 +667,7 @@ def names_between_loop
     (out, i)
 
 /-- [i5h_pgsql::names_between]:
-    Source: 'crates/i5h-pgsql/src/lib.rs', lines 255:0-263:1 -/
+    Source: 'crates/i5h-pgsql/src/lib.rs', lines 242:0-250:1 -/
 @[reducible]
 def names_between
   (t : Table) (lo : Std.Usize) (hi : Std.Usize) :
@@ -676,7 +676,7 @@ def names_between
   names_between_loop t hi (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) lo
 
 /-- [i5h_pgsql::select]:
-    Source: 'crates/i5h-pgsql/src/lib.rs', lines 269:0-296:1
+    Source: 'crates/i5h-pgsql/src/lib.rs', lines 254:0-281:1
     Visibility: public -/
 def select
   (tables : alloc.vec.Vec Table) (tenant : Std.I64) (table : Std.U32)
@@ -736,7 +736,7 @@ def select
   else ok none
 
 /-- [i5h_pgsql::all_fit]: loop body 0:
-    Source: 'crates/i5h-pgsql/src/lib.rs', lines 301:4-308:1 -/
+    Source: 'crates/i5h-pgsql/src/lib.rs', lines 286:4-293:1 -/
 @[rust_loop_body]
 def all_fit_loop.body
   (t : Table) (off : Std.Usize) (vs : alloc.vec.Vec i5h_sql.Val)
@@ -758,7 +758,7 @@ def all_fit_loop.body
   else ok (done true)
 
 /-- [i5h_pgsql::all_fit]: loop 0:
-    Source: 'crates/i5h-pgsql/src/lib.rs', lines 301:4-308:1 -/
+    Source: 'crates/i5h-pgsql/src/lib.rs', lines 286:4-293:1 -/
 @[rust_loop]
 def all_fit_loop
   (t : Table) (off : Std.Usize) (vs : alloc.vec.Vec i5h_sql.Val)
@@ -770,7 +770,7 @@ def all_fit_loop
     i
 
 /-- [i5h_pgsql::all_fit]:
-    Source: 'crates/i5h-pgsql/src/lib.rs', lines 299:0-308:1 -/
+    Source: 'crates/i5h-pgsql/src/lib.rs', lines 284:0-293:1 -/
 @[reducible]
 def all_fit
   (t : Table) (off : Std.Usize) (vs : alloc.vec.Vec i5h_sql.Val) :
@@ -779,7 +779,7 @@ def all_fit
   all_fit_loop t off vs 0#usize
 
 /-- [i5h_pgsql::compile]: loop body 0:
-    Source: 'crates/i5h-pgsql/src/lib.rs', lines 337:12-340:13
+    Source: 'crates/i5h-pgsql/src/lib.rs', lines 315:12-318:13
     Visibility: public -/
 @[rust_loop_body]
 def compile_loop0.body
@@ -801,7 +801,7 @@ def compile_loop0.body
   else ok (done params)
 
 /-- [i5h_pgsql::compile]: loop 0:
-    Source: 'crates/i5h-pgsql/src/lib.rs', lines 337:12-340:13
+    Source: 'crates/i5h-pgsql/src/lib.rs', lines 315:12-318:13
     Visibility: public -/
 @[rust_loop]
 def compile_loop0
@@ -814,7 +814,7 @@ def compile_loop0
     (params, i)
 
 /-- [i5h_pgsql::compile]: loop body 1:
-    Source: 'crates/i5h-pgsql/src/lib.rs', lines 342:12-345:13
+    Source: 'crates/i5h-pgsql/src/lib.rs', lines 320:12-323:13
     Visibility: public -/
 @[rust_loop_body]
 def compile_loop1.body
@@ -836,7 +836,7 @@ def compile_loop1.body
   else ok (done params)
 
 /-- [i5h_pgsql::compile]: loop 1:
-    Source: 'crates/i5h-pgsql/src/lib.rs', lines 342:12-345:13
+    Source: 'crates/i5h-pgsql/src/lib.rs', lines 320:12-323:13
     Visibility: public -/
 @[rust_loop]
 def compile_loop1
@@ -849,7 +849,7 @@ def compile_loop1
     (params, j)
 
 /-- [i5h_pgsql::compile]: loop body 2:
-    Source: 'crates/i5h-pgsql/src/lib.rs', lines 349:12-352:13
+    Source: 'crates/i5h-pgsql/src/lib.rs', lines 327:12-330:13
     Visibility: public -/
 @[rust_loop_body]
 def compile_loop2.body
@@ -869,7 +869,7 @@ def compile_loop2.body
   else ok (done conflict)
 
 /-- [i5h_pgsql::compile]: loop 2:
-    Source: 'crates/i5h-pgsql/src/lib.rs', lines 349:12-352:13
+    Source: 'crates/i5h-pgsql/src/lib.rs', lines 327:12-330:13
     Visibility: public -/
 @[rust_loop]
 def compile_loop2
@@ -882,7 +882,7 @@ def compile_loop2
     (conflict, k)
 
 /-- [i5h_pgsql::compile]: loop body 3:
-    Source: 'crates/i5h-pgsql/src/lib.rs', lines 374:12-378:13
+    Source: 'crates/i5h-pgsql/src/lib.rs', lines 352:12-356:13
     Visibility: public -/
 @[rust_loop_body]
 def compile_loop3.body
@@ -911,7 +911,7 @@ def compile_loop3.body
   else ok (done (conds, params))
 
 /-- [i5h_pgsql::compile]: loop 3:
-    Source: 'crates/i5h-pgsql/src/lib.rs', lines 374:12-378:13
+    Source: 'crates/i5h-pgsql/src/lib.rs', lines 352:12-356:13
     Visibility: public -/
 @[rust_loop]
 def compile_loop3
@@ -925,7 +925,7 @@ def compile_loop3
     (conds, params, i)
 
 /-- [i5h_pgsql::compile]:
-    Source: 'crates/i5h-pgsql/src/lib.rs', lines 320:0-399:1
+    Source: 'crates/i5h-pgsql/src/lib.rs', lines 298:0-377:1
     Visibility: public -/
 def compile
   (tables : alloc.vec.Vec Table) (tenant : Std.I64) (s : i5h_sql.Stmt) :
@@ -1052,7 +1052,7 @@ def compile
   else ok none
 
 /-- [i5h_pgsql::push_name]: loop body 0:
-    Source: 'crates/i5h-pgsql/src/lib.rs', lines 405:4-411:5 -/
+    Source: 'crates/i5h-pgsql/src/lib.rs', lines 383:4-389:5 -/
 @[rust_loop_body]
 def push_name_loop.body
   (n : alloc.vec.Vec Std.U8) (out : alloc.vec.Vec Std.U8) (i : Std.Usize) :
@@ -1073,7 +1073,7 @@ def push_name_loop.body
   else ok (done out)
 
 /-- [i5h_pgsql::push_name]: loop 0:
-    Source: 'crates/i5h-pgsql/src/lib.rs', lines 405:4-411:5 -/
+    Source: 'crates/i5h-pgsql/src/lib.rs', lines 383:4-389:5 -/
 @[rust_loop]
 def push_name_loop
   (out : alloc.vec.Vec Std.U8) (n : alloc.vec.Vec Std.U8) (i : Std.Usize) :
@@ -1084,7 +1084,7 @@ def push_name_loop
     (out, i)
 
 /-- [i5h_pgsql::push_name]:
-    Source: 'crates/i5h-pgsql/src/lib.rs', lines 402:0-413:1 -/
+    Source: 'crates/i5h-pgsql/src/lib.rs', lines 380:0-391:1 -/
 def push_name
   (out : alloc.vec.Vec Std.U8) (n : alloc.vec.Vec Std.U8) :
   Result (alloc.vec.Vec Std.U8)
@@ -1094,7 +1094,7 @@ def push_name
   alloc.vec.Vec.push out2 34#u8
 
 /-- [i5h_pgsql::push_names]: loop body 0:
-    Source: 'crates/i5h-pgsql/src/lib.rs', lines 418:4-424:5 -/
+    Source: 'crates/i5h-pgsql/src/lib.rs', lines 396:4-402:5 -/
 @[rust_loop_body]
 def push_names_loop.body
   (ns : alloc.vec.Vec (alloc.vec.Vec Std.U8)) (out : alloc.vec.Vec Std.U8)
@@ -1121,7 +1121,7 @@ def push_names_loop.body
   else ok (done out)
 
 /-- [i5h_pgsql::push_names]: loop 0:
-    Source: 'crates/i5h-pgsql/src/lib.rs', lines 418:4-424:5 -/
+    Source: 'crates/i5h-pgsql/src/lib.rs', lines 396:4-402:5 -/
 @[rust_loop]
 def push_names_loop
   (out : alloc.vec.Vec Std.U8) (ns : alloc.vec.Vec (alloc.vec.Vec Std.U8))
@@ -1133,7 +1133,7 @@ def push_names_loop
     (out, i)
 
 /-- [i5h_pgsql::push_names]:
-    Source: 'crates/i5h-pgsql/src/lib.rs', lines 416:0-425:1 -/
+    Source: 'crates/i5h-pgsql/src/lib.rs', lines 394:0-403:1 -/
 @[reducible]
 def push_names
   (out : alloc.vec.Vec Std.U8) (ns : alloc.vec.Vec (alloc.vec.Vec Std.U8)) :
@@ -1142,7 +1142,7 @@ def push_names
   push_names_loop out ns 0#usize
 
 /-- [i5h_pgsql::push_dec]:
-    Source: 'crates/i5h-pgsql/src/lib.rs', lines 428:0-433:1 -/
+    Source: 'crates/i5h-pgsql/src/lib.rs', lines 406:0-411:1 -/
 def push_dec
   (out : alloc.vec.Vec Std.U8) (n : Std.U32) :
   Result (alloc.vec.Vec Std.U8)
@@ -1160,7 +1160,7 @@ def push_dec
 partial_fixpoint
 
 /-- [i5h_pgsql::push_param]:
-    Source: 'crates/i5h-pgsql/src/lib.rs', lines 435:0-438:1 -/
+    Source: 'crates/i5h-pgsql/src/lib.rs', lines 413:0-416:1 -/
 def push_param
   (out : alloc.vec.Vec Std.U8) (p : Std.U32) :
   Result (alloc.vec.Vec Std.U8)
@@ -1169,7 +1169,7 @@ def push_param
   push_dec out1 p
 
 /-- [i5h_pgsql::push_cond]:
-    Source: 'crates/i5h-pgsql/src/lib.rs', lines 440:0-453:1 -/
+    Source: 'crates/i5h-pgsql/src/lib.rs', lines 418:0-431:1 -/
 def push_cond
   (out : alloc.vec.Vec Std.U8) (c : Cond) : Result (alloc.vec.Vec Std.U8) := do
   match c with
@@ -1192,7 +1192,7 @@ def push_cond
     push_param out2 param
 
 /-- [i5h_pgsql::push_where]: loop body 0:
-    Source: 'crates/i5h-pgsql/src/lib.rs', lines 457:4-465:5 -/
+    Source: 'crates/i5h-pgsql/src/lib.rs', lines 435:4-443:5 -/
 @[rust_loop_body]
 def push_where_loop.body
   (cs : alloc.vec.Vec Cond) (out : alloc.vec.Vec Std.U8) (i : Std.Usize) :
@@ -1226,7 +1226,7 @@ def push_where_loop.body
   else ok (done out)
 
 /-- [i5h_pgsql::push_where]: loop 0:
-    Source: 'crates/i5h-pgsql/src/lib.rs', lines 457:4-465:5 -/
+    Source: 'crates/i5h-pgsql/src/lib.rs', lines 435:4-443:5 -/
 @[rust_loop]
 def push_where_loop
   (out : alloc.vec.Vec Std.U8) (cs : alloc.vec.Vec Cond) (i : Std.Usize) :
@@ -1237,7 +1237,7 @@ def push_where_loop
     (out, i)
 
 /-- [i5h_pgsql::push_where]:
-    Source: 'crates/i5h-pgsql/src/lib.rs', lines 455:0-466:1 -/
+    Source: 'crates/i5h-pgsql/src/lib.rs', lines 433:0-444:1 -/
 @[reducible]
 def push_where
   (out : alloc.vec.Vec Std.U8) (cs : alloc.vec.Vec Cond) :
@@ -1246,7 +1246,7 @@ def push_where
   push_where_loop out cs 0#usize
 
 /-- [i5h_pgsql::push_kind]:
-    Source: 'crates/i5h-pgsql/src/lib.rs', lines 468:0-475:1 -/
+    Source: 'crates/i5h-pgsql/src/lib.rs', lines 446:0-453:1 -/
 def push_kind
   (out : alloc.vec.Vec Std.U8) (k : Kind) : Result (alloc.vec.Vec Std.U8) := do
   match k with
@@ -1273,7 +1273,7 @@ def push_kind
     push_lit out s
 
 /-- [i5h_pgsql::push_coldefs]: loop body 0:
-    Source: 'crates/i5h-pgsql/src/lib.rs', lines 479:4-488:5 -/
+    Source: 'crates/i5h-pgsql/src/lib.rs', lines 457:4-466:5 -/
 @[rust_loop_body]
 def push_coldefs_loop.body
   (cs : alloc.vec.Vec ColDef) (out : alloc.vec.Vec Std.U8) (i : Std.Usize) :
@@ -1306,7 +1306,7 @@ def push_coldefs_loop.body
   else ok (done out)
 
 /-- [i5h_pgsql::push_coldefs]: loop 0:
-    Source: 'crates/i5h-pgsql/src/lib.rs', lines 479:4-488:5 -/
+    Source: 'crates/i5h-pgsql/src/lib.rs', lines 457:4-466:5 -/
 @[rust_loop]
 def push_coldefs_loop
   (out : alloc.vec.Vec Std.U8) (cs : alloc.vec.Vec ColDef) (i : Std.Usize) :
@@ -1317,7 +1317,7 @@ def push_coldefs_loop
     (out, i)
 
 /-- [i5h_pgsql::push_coldefs]:
-    Source: 'crates/i5h-pgsql/src/lib.rs', lines 477:0-489:1 -/
+    Source: 'crates/i5h-pgsql/src/lib.rs', lines 455:0-467:1 -/
 @[reducible]
 def push_coldefs
   (out : alloc.vec.Vec Std.U8) (cs : alloc.vec.Vec ColDef) :
@@ -1326,7 +1326,7 @@ def push_coldefs
   push_coldefs_loop out cs 0#usize
 
 /-- [i5h_pgsql::push_placeholders]: loop body 0:
-    Source: 'crates/i5h-pgsql/src/lib.rs', lines 494:4-500:5 -/
+    Source: 'crates/i5h-pgsql/src/lib.rs', lines 472:4-478:5 -/
 @[rust_loop_body]
 def push_placeholders_loop.body
   (n : Std.Usize) (out : alloc.vec.Vec Std.U8) (i : Std.Usize) :
@@ -1350,7 +1350,7 @@ def push_placeholders_loop.body
   else ok (done out)
 
 /-- [i5h_pgsql::push_placeholders]: loop 0:
-    Source: 'crates/i5h-pgsql/src/lib.rs', lines 494:4-500:5 -/
+    Source: 'crates/i5h-pgsql/src/lib.rs', lines 472:4-478:5 -/
 @[rust_loop]
 def push_placeholders_loop
   (out : alloc.vec.Vec Std.U8) (n : Std.Usize) (i : Std.Usize) :
@@ -1361,7 +1361,7 @@ def push_placeholders_loop
     (out, i)
 
 /-- [i5h_pgsql::push_placeholders]:
-    Source: 'crates/i5h-pgsql/src/lib.rs', lines 492:0-501:1 -/
+    Source: 'crates/i5h-pgsql/src/lib.rs', lines 470:0-479:1 -/
 @[reducible]
 def push_placeholders
   (out : alloc.vec.Vec Std.U8) (n : Std.Usize) :
@@ -1370,7 +1370,7 @@ def push_placeholders
   push_placeholders_loop out n 0#usize
 
 /-- [i5h_pgsql::push_sets]: loop body 0:
-    Source: 'crates/i5h-pgsql/src/lib.rs', lines 505:4-513:5 -/
+    Source: 'crates/i5h-pgsql/src/lib.rs', lines 483:4-491:5 -/
 @[rust_loop_body]
 def push_sets_loop.body
   (ns : alloc.vec.Vec (alloc.vec.Vec Std.U8)) (out : alloc.vec.Vec Std.U8)
@@ -1405,7 +1405,7 @@ def push_sets_loop.body
   else ok (done out)
 
 /-- [i5h_pgsql::push_sets]: loop 0:
-    Source: 'crates/i5h-pgsql/src/lib.rs', lines 505:4-513:5 -/
+    Source: 'crates/i5h-pgsql/src/lib.rs', lines 483:4-491:5 -/
 @[rust_loop]
 def push_sets_loop
   (out : alloc.vec.Vec Std.U8) (ns : alloc.vec.Vec (alloc.vec.Vec Std.U8))
@@ -1417,7 +1417,7 @@ def push_sets_loop
     (out, i)
 
 /-- [i5h_pgsql::push_sets]:
-    Source: 'crates/i5h-pgsql/src/lib.rs', lines 503:0-514:1 -/
+    Source: 'crates/i5h-pgsql/src/lib.rs', lines 481:0-492:1 -/
 @[reducible]
 def push_sets
   (out : alloc.vec.Vec Std.U8) (ns : alloc.vec.Vec (alloc.vec.Vec Std.U8)) :
@@ -1426,7 +1426,7 @@ def push_sets
   push_sets_loop out ns 0#usize
 
 /-- [i5h_pgsql::render]:
-    Source: 'crates/i5h-pgsql/src/lib.rs', lines 517:0-563:1
+    Source: 'crates/i5h-pgsql/src/lib.rs', lines 495:0-541:1
     Visibility: public -/
 def render (s : Sql) : Result (alloc.vec.Vec Std.U8) := do
   match s with

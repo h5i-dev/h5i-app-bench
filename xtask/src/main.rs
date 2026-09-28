@@ -1,8 +1,5 @@
-//! `cargo i5h-verify`: run every check that CI runs, locally.
-//!
-//! Steps: Rust tests, cargo-deny, re-extraction drift, Lean builds with the
-//! sorry/axiom gates, and with `--full` the mutation suite, the Rust-vs-Lean
-//! differential test. Missing tools are reported as skipped, never as passed.
+//! `cargo i5h-verify`: run CI's checks locally (`--full` adds mutation and
+//! differential tests). Missing tools count as skipped, never passed.
 
 use std::path::{Path, PathBuf};
 use std::process::{Command, ExitCode, Stdio};

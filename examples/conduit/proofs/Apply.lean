@@ -3,12 +3,9 @@ import Schema
 /-!
 # Committing a write set
 
-The theorems talk about `Spec.applyAll`, the list meaning of a write set.
-Here we prove that the kernel's `apply`, which the reference engine runs,
-computes exactly that. `schema!` generated `apply` and the table operations
-with their lemmas (`Schema.lean`), so only the dispatch over `Write` is left.
-A cascade deletes by the encoded value of a column; `Comment.row` says which
-column that is.
+The kernel's `apply` computes `Spec.applyAll`. The table operations and
+their lemmas come from `schema!` (`Schema.lean`), so only the dispatch over
+`Write` is proved here. `Comment.row` gives the column a cascade deletes by.
 -/
 open Aeneas Aeneas.Std Result conduit_kernel conduit_kernel.Spec conduit_kernel.Schema I5hLib
 

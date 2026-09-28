@@ -2,11 +2,8 @@ import Abs
 /-!
 # The extracted compiler computes `I5hLib.Pg`'s statements
 
-`valid` decides `Pg.Valid`, and `create`, `select` and `compile` return
-exactly `Pg.createA`, `Pg.selectA` and `Pg.compileA` of the abstracted
-arguments. With `I5hLib.Pg.compile_sound` and `select_sound`, the statements
-the running server builds do what `I5hLib.Sql.exec` says and read what
-`Sel` and `Lists` say.
+`valid` decides `Pg.Valid`; `create`, `select`, `compile` return
+`Pg.createA`, `Pg.selectA`, `Pg.compileA` of the abstracted arguments.
 -/
 open Aeneas Aeneas.Std Result I5hLib
 
@@ -55,8 +52,7 @@ theorem tenant_col_spec : tenant_col ⦃ v => B v = Pg.tenantName ∧ v.length =
   subst s_post
   simp [B, v_post, Pg.tenantName, Pg.lit, Array.to_slice, Array.make]
 
-/-- A loop that stops with `false` at the first element failing `Q`, and
-returns `true` at the end, computes `all Q`. -/
+/-- A loop that returns `false` at the first failure of `Q` computes `all Q`. -/
 theorem all_loop {α : Type} (l : List α) (Q : α → Bool) (body : Usize → Result (ControlFlow Usize Bool))
     (hstep : ∀ i : Usize, i.val ≤ l.length →
       body i ⦃ SearchStep l (fun x => !Q x) id (fun _ _ => false) true i ⦄)

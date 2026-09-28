@@ -269,14 +269,14 @@ structure Principal where
   teams : alloc.vec.Vec Std.U64
 
 /-- [cratesio_kernel::Counter]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 111:12-114:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 95:12-98:13
     Visibility: public -/
 structure Counter where
   next_session : Std.U64
   next_token : Std.U64
 
 /-- [cratesio_kernel::Dep]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 111:12-114:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 95:12-98:13
     Visibility: public -/
 structure Dep where
   krate : Std.U64
@@ -284,7 +284,7 @@ structure Dep where
   on : Std.U64
 
 /-- [cratesio_kernel::Invite]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 111:12-114:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 95:12-98:13
     Visibility: public -/
 structure Invite where
   krate : Std.U64
@@ -293,7 +293,7 @@ structure Invite where
   expires : Std.U64
 
 /-- [cratesio_kernel::Owner]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 111:12-114:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 95:12-98:13
     Visibility: public -/
 structure Owner where
   krate : Std.U64
@@ -301,7 +301,7 @@ structure Owner where
   team : Bool
 
 /-- [cratesio_kernel::Version]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 111:12-114:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 95:12-98:13
     Visibility: public -/
 structure Version where
   krate : Std.U64
@@ -310,14 +310,14 @@ structure Version where
   publisher : Std.U64
 
 /-- [cratesio_kernel::Krate]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 111:12-114:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 95:12-98:13
     Visibility: public -/
 structure Krate where
   id : Std.U64
   created : Std.U64
 
 /-- [cratesio_kernel::Token]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 111:12-114:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 95:12-98:13
     Visibility: public -/
 structure Token where
   id : Std.U64
@@ -332,14 +332,14 @@ structure Token where
   revoked : Bool
 
 /-- [cratesio_kernel::Session]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 111:12-114:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 95:12-98:13
     Visibility: public -/
 structure Session where
   id : Std.U64
   user : Std.U64
 
 /-- [cratesio_kernel::User]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 111:12-114:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 95:12-98:13
     Visibility: public -/
 structure User where
   id : Std.U64
@@ -2036,7 +2036,7 @@ def transition_pre14760
 @[global_simps, irreducible] def KRATE : Std.U32 := 0#u32
 
 /-- [cratesio_kernel::{cratesio_kernel::Dep}::to_row]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 135:12-140:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 138:12-143:13
     Visibility: public -/
 def Dep.to_row (self : Dep) : Result (alloc.vec.Vec i5h_sql.Val) := do
   let v ← U64.Insts.I5h_sqlColumn.to_val self.krate
@@ -2047,7 +2047,7 @@ def Dep.to_row (self : Dep) : Result (alloc.vec.Vec i5h_sql.Val) := do
   alloc.vec.Vec.push out1 v2
 
 /-- [cratesio_kernel::{cratesio_kernel::Dep}::del_where]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 246:16-251:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 247:16-252:17
     Visibility: public -/
 @[rust_loop_body]
 def Dep.del_where_loop.body
@@ -2074,7 +2074,7 @@ def Dep.del_where_loop.body
   else ok (done out)
 
 /-- [cratesio_kernel::{cratesio_kernel::Dep}::del_where]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 246:16-251:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 247:16-252:17
     Visibility: public -/
 @[rust_loop]
 def Dep.del_where_loop
@@ -2087,7 +2087,7 @@ def Dep.del_where_loop
     (out, i)
 
 /-- [cratesio_kernel::{cratesio_kernel::Dep}::del_where]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 243:12-253:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 244:12-254:13
     Visibility: public -/
 @[reducible]
 def Dep.del_where
@@ -2097,7 +2097,7 @@ def Dep.del_where
   Dep.del_where_loop v col val (alloc.vec.Vec.new Dep) 0#usize
 
 /-- [cratesio_kernel::{cratesio_kernel::Invite}::to_row]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 135:12-140:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 138:12-143:13
     Visibility: public -/
 def Invite.to_row (self : Invite) : Result (alloc.vec.Vec i5h_sql.Val) := do
   let v ← U64.Insts.I5h_sqlColumn.to_val self.krate
@@ -2110,7 +2110,7 @@ def Invite.to_row (self : Invite) : Result (alloc.vec.Vec i5h_sql.Val) := do
   alloc.vec.Vec.push out2 v3
 
 /-- [cratesio_kernel::{cratesio_kernel::Invite}::del_where]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 246:16-251:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 247:16-252:17
     Visibility: public -/
 @[rust_loop_body]
 def Invite.del_where_loop.body
@@ -2138,7 +2138,7 @@ def Invite.del_where_loop.body
   else ok (done out)
 
 /-- [cratesio_kernel::{cratesio_kernel::Invite}::del_where]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 246:16-251:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 247:16-252:17
     Visibility: public -/
 @[rust_loop]
 def Invite.del_where_loop
@@ -2151,7 +2151,7 @@ def Invite.del_where_loop
     (out, i)
 
 /-- [cratesio_kernel::{cratesio_kernel::Invite}::del_where]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 243:12-253:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 244:12-254:13
     Visibility: public -/
 @[reducible]
 def Invite.del_where
@@ -2161,7 +2161,7 @@ def Invite.del_where
   Invite.del_where_loop v col val (alloc.vec.Vec.new Invite) 0#usize
 
 /-- [cratesio_kernel::{cratesio_kernel::Owner}::to_row]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 135:12-140:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 138:12-143:13
     Visibility: public -/
 def Owner.to_row (self : Owner) : Result (alloc.vec.Vec i5h_sql.Val) := do
   let v ← U64.Insts.I5h_sqlColumn.to_val self.krate
@@ -2172,7 +2172,7 @@ def Owner.to_row (self : Owner) : Result (alloc.vec.Vec i5h_sql.Val) := do
   alloc.vec.Vec.push out1 v2
 
 /-- [cratesio_kernel::{cratesio_kernel::Owner}::del_where]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 246:16-251:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 247:16-252:17
     Visibility: public -/
 @[rust_loop_body]
 def Owner.del_where_loop.body
@@ -2200,7 +2200,7 @@ def Owner.del_where_loop.body
   else ok (done out)
 
 /-- [cratesio_kernel::{cratesio_kernel::Owner}::del_where]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 246:16-251:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 247:16-252:17
     Visibility: public -/
 @[rust_loop]
 def Owner.del_where_loop
@@ -2213,7 +2213,7 @@ def Owner.del_where_loop
     (out, i)
 
 /-- [cratesio_kernel::{cratesio_kernel::Owner}::del_where]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 243:12-253:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 244:12-254:13
     Visibility: public -/
 @[reducible]
 def Owner.del_where
@@ -2223,7 +2223,7 @@ def Owner.del_where
   Owner.del_where_loop v col val (alloc.vec.Vec.new Owner) 0#usize
 
 /-- [cratesio_kernel::{cratesio_kernel::Version}::to_row]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 135:12-140:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 138:12-143:13
     Visibility: public -/
 def Version.to_row (self : Version) : Result (alloc.vec.Vec i5h_sql.Val) := do
   let v ← U64.Insts.I5h_sqlColumn.to_val self.krate
@@ -2236,7 +2236,7 @@ def Version.to_row (self : Version) : Result (alloc.vec.Vec i5h_sql.Val) := do
   alloc.vec.Vec.push out2 v3
 
 /-- [cratesio_kernel::{cratesio_kernel::Version}::del_where]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 246:16-251:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 247:16-252:17
     Visibility: public -/
 @[rust_loop_body]
 def Version.del_where_loop.body
@@ -2264,7 +2264,7 @@ def Version.del_where_loop.body
   else ok (done out)
 
 /-- [cratesio_kernel::{cratesio_kernel::Version}::del_where]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 246:16-251:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 247:16-252:17
     Visibility: public -/
 @[rust_loop]
 def Version.del_where_loop
@@ -2277,7 +2277,7 @@ def Version.del_where_loop
     (out, i)
 
 /-- [cratesio_kernel::{cratesio_kernel::Version}::del_where]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 243:12-253:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 244:12-254:13
     Visibility: public -/
 @[reducible]
 def Version.del_where
@@ -2287,7 +2287,7 @@ def Version.del_where
   Version.del_where_loop v col val (alloc.vec.Vec.new Version) 0#usize
 
 /-- [cratesio_kernel::{cratesio_kernel::Invite}::del]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 233:16-238:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 234:16-239:17
     Visibility: public -/
 @[rust_loop_body]
 def Invite.del_loop.body
@@ -2319,7 +2319,7 @@ def Invite.del_loop.body
   else ok (done out)
 
 /-- [cratesio_kernel::{cratesio_kernel::Invite}::del]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 233:16-238:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 234:16-239:17
     Visibility: public -/
 @[rust_loop]
 def Invite.del_loop
@@ -2332,7 +2332,7 @@ def Invite.del_loop
     (out, i)
 
 /-- [cratesio_kernel::{cratesio_kernel::Invite}::del]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 230:12-240:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 231:12-241:13
     Visibility: public -/
 @[reducible]
 def Invite.del
@@ -2342,7 +2342,7 @@ def Invite.del
   Invite.del_loop v krate user (alloc.vec.Vec.new Invite) 0#usize
 
 /-- [cratesio_kernel::{cratesio_kernel::Owner}::del]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 233:16-238:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 234:16-239:17
     Visibility: public -/
 @[rust_loop_body]
 def Owner.del_loop.body
@@ -2380,7 +2380,7 @@ def Owner.del_loop.body
   else ok (done out)
 
 /-- [cratesio_kernel::{cratesio_kernel::Owner}::del]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 233:16-238:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 234:16-239:17
     Visibility: public -/
 @[rust_loop]
 def Owner.del_loop
@@ -2393,7 +2393,7 @@ def Owner.del_loop
     (out, i)
 
 /-- [cratesio_kernel::{cratesio_kernel::Owner}::del]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 230:12-240:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 231:12-241:13
     Visibility: public -/
 @[reducible]
 def Owner.del
@@ -2403,7 +2403,7 @@ def Owner.del
   Owner.del_loop v krate owner team (alloc.vec.Vec.new Owner) 0#usize
 
 /-- [cratesio_kernel::{cratesio_kernel::Krate}::del]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 233:16-238:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 234:16-239:17
     Visibility: public -/
 @[rust_loop_body]
 def Krate.del_loop.body
@@ -2429,7 +2429,7 @@ def Krate.del_loop.body
   else ok (done out)
 
 /-- [cratesio_kernel::{cratesio_kernel::Krate}::del]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 233:16-238:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 234:16-239:17
     Visibility: public -/
 @[rust_loop]
 def Krate.del_loop
@@ -2442,7 +2442,7 @@ def Krate.del_loop
     (out, i)
 
 /-- [cratesio_kernel::{cratesio_kernel::Krate}::del]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 230:12-240:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 231:12-241:13
     Visibility: public -/
 @[reducible]
 def Krate.del
@@ -2450,7 +2450,7 @@ def Krate.del
   Krate.del_loop v id (alloc.vec.Vec.new Krate) 0#usize
 
 /-- [cratesio_kernel::{cratesio_kernel::Dep}::put]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 219:16-227:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 220:16-228:13
     Visibility: public -/
 @[rust_loop_body]
 def Dep.put_loop.body
@@ -2483,7 +2483,7 @@ def Dep.put_loop.body
        ok (done v1)
 
 /-- [cratesio_kernel::{cratesio_kernel::Dep}::put]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 219:16-227:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 220:16-228:13
     Visibility: public -/
 @[rust_loop]
 def Dep.put_loop
@@ -2495,7 +2495,7 @@ def Dep.put_loop
     i
 
 /-- [cratesio_kernel::{cratesio_kernel::Dep}::put]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 217:12-227:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 218:12-228:13
     Visibility: public -/
 @[reducible]
 def Dep.put
@@ -2503,7 +2503,7 @@ def Dep.put
   Dep.put_loop v x 0#usize
 
 /-- [cratesio_kernel::{cratesio_kernel::Invite}::put]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 219:16-227:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 220:16-228:13
     Visibility: public -/
 @[rust_loop_body]
 def Invite.put_loop.body
@@ -2532,7 +2532,7 @@ def Invite.put_loop.body
        ok (done v1)
 
 /-- [cratesio_kernel::{cratesio_kernel::Invite}::put]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 219:16-227:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 220:16-228:13
     Visibility: public -/
 @[rust_loop]
 def Invite.put_loop
@@ -2544,7 +2544,7 @@ def Invite.put_loop
     i
 
 /-- [cratesio_kernel::{cratesio_kernel::Invite}::put]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 217:12-227:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 218:12-228:13
     Visibility: public -/
 @[reducible]
 def Invite.put
@@ -2552,7 +2552,7 @@ def Invite.put
   Invite.put_loop v x 0#usize
 
 /-- [cratesio_kernel::{cratesio_kernel::Owner}::put]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 219:16-227:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 220:16-228:13
     Visibility: public -/
 @[rust_loop_body]
 def Owner.put_loop.body
@@ -2585,7 +2585,7 @@ def Owner.put_loop.body
        ok (done v1)
 
 /-- [cratesio_kernel::{cratesio_kernel::Owner}::put]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 219:16-227:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 220:16-228:13
     Visibility: public -/
 @[rust_loop]
 def Owner.put_loop
@@ -2597,7 +2597,7 @@ def Owner.put_loop
     i
 
 /-- [cratesio_kernel::{cratesio_kernel::Owner}::put]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 217:12-227:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 218:12-228:13
     Visibility: public -/
 @[reducible]
 def Owner.put
@@ -2605,7 +2605,7 @@ def Owner.put
   Owner.put_loop v x 0#usize
 
 /-- [cratesio_kernel::{cratesio_kernel::Version}::put]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 219:16-227:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 220:16-228:13
     Visibility: public -/
 @[rust_loop_body]
 def Version.put_loop.body
@@ -2634,7 +2634,7 @@ def Version.put_loop.body
        ok (done v1)
 
 /-- [cratesio_kernel::{cratesio_kernel::Version}::put]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 219:16-227:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 220:16-228:13
     Visibility: public -/
 @[rust_loop]
 def Version.put_loop
@@ -2646,7 +2646,7 @@ def Version.put_loop
     i
 
 /-- [cratesio_kernel::{cratesio_kernel::Version}::put]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 217:12-227:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 218:12-228:13
     Visibility: public -/
 @[reducible]
 def Version.put
@@ -2656,7 +2656,7 @@ def Version.put
   Version.put_loop v x 0#usize
 
 /-- [cratesio_kernel::{cratesio_kernel::Krate}::put]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 219:16-227:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 220:16-228:13
     Visibility: public -/
 @[rust_loop_body]
 def Krate.put_loop.body
@@ -2681,7 +2681,7 @@ def Krate.put_loop.body
        ok (done v1)
 
 /-- [cratesio_kernel::{cratesio_kernel::Krate}::put]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 219:16-227:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 220:16-228:13
     Visibility: public -/
 @[rust_loop]
 def Krate.put_loop
@@ -2693,7 +2693,7 @@ def Krate.put_loop
     i
 
 /-- [cratesio_kernel::{cratesio_kernel::Krate}::put]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 217:12-227:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 218:12-228:13
     Visibility: public -/
 @[reducible]
 def Krate.put
@@ -2701,7 +2701,7 @@ def Krate.put
   Krate.put_loop v x 0#usize
 
 /-- [cratesio_kernel::{cratesio_kernel::Token}::put]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 219:16-227:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 220:16-228:13
     Visibility: public -/
 @[rust_loop_body]
 def Token.put_loop.body
@@ -2726,7 +2726,7 @@ def Token.put_loop.body
        ok (done v1)
 
 /-- [cratesio_kernel::{cratesio_kernel::Token}::put]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 219:16-227:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 220:16-228:13
     Visibility: public -/
 @[rust_loop]
 def Token.put_loop
@@ -2738,7 +2738,7 @@ def Token.put_loop
     i
 
 /-- [cratesio_kernel::{cratesio_kernel::Token}::put]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 217:12-227:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 218:12-228:13
     Visibility: public -/
 @[reducible]
 def Token.put
@@ -2746,7 +2746,7 @@ def Token.put
   Token.put_loop v x 0#usize
 
 /-- [cratesio_kernel::{cratesio_kernel::Session}::put]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 219:16-227:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 220:16-228:13
     Visibility: public -/
 @[rust_loop_body]
 def Session.put_loop.body
@@ -2771,7 +2771,7 @@ def Session.put_loop.body
        ok (done v1)
 
 /-- [cratesio_kernel::{cratesio_kernel::Session}::put]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 219:16-227:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 220:16-228:13
     Visibility: public -/
 @[rust_loop]
 def Session.put_loop
@@ -2783,7 +2783,7 @@ def Session.put_loop
     i
 
 /-- [cratesio_kernel::{cratesio_kernel::Session}::put]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 217:12-227:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 218:12-228:13
     Visibility: public -/
 @[reducible]
 def Session.put
@@ -2793,7 +2793,7 @@ def Session.put
   Session.put_loop v x 0#usize
 
 /-- [cratesio_kernel::{cratesio_kernel::User}::put]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 219:16-227:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 220:16-228:13
     Visibility: public -/
 @[rust_loop_body]
 def User.put_loop.body
@@ -2818,7 +2818,7 @@ def User.put_loop.body
        ok (done v1)
 
 /-- [cratesio_kernel::{cratesio_kernel::User}::put]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 219:16-227:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 220:16-228:13
     Visibility: public -/
 @[rust_loop]
 def User.put_loop
@@ -2830,7 +2830,7 @@ def User.put_loop
     i
 
 /-- [cratesio_kernel::{cratesio_kernel::User}::put]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 217:12-227:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 218:12-228:13
     Visibility: public -/
 @[reducible]
 def User.put
@@ -2885,55 +2885,55 @@ def apply_write (s : Snapshot) (w : Write) : Result Snapshot := do
   | Write.SetCounter c => ok { s with counter := c }
 
 /-- [cratesio_kernel::{cratesio_kernel::Dep}::TABLE]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 132:12-132:60
+    Source: 'crates/i5h-schema/src/lib.rs', lines 135:12-135:60
     Visibility: public -/
 @[global_simps, irreducible] def Dep.TABLE : Std.U32 := 7#u32
 
 /-- [cratesio_kernel::{cratesio_kernel::Dep}::sql_del_where]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 263:12-265:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 264:12-266:13
     Visibility: public -/
 def Dep.sql_del_where
   (col : Std.U32) (val : i5h_sql.Val) : Result i5h_sql.Write := do
   ok (i5h_sql.Write.DelWhere Dep.TABLE col val)
 
 /-- [cratesio_kernel::{cratesio_kernel::Invite}::TABLE]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 132:12-132:60
+    Source: 'crates/i5h-schema/src/lib.rs', lines 135:12-135:60
     Visibility: public -/
 @[global_simps, irreducible] def Invite.TABLE : Std.U32 := 6#u32
 
 /-- [cratesio_kernel::{cratesio_kernel::Invite}::sql_del_where]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 263:12-265:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 264:12-266:13
     Visibility: public -/
 def Invite.sql_del_where
   (col : Std.U32) (val : i5h_sql.Val) : Result i5h_sql.Write := do
   ok (i5h_sql.Write.DelWhere Invite.TABLE col val)
 
 /-- [cratesio_kernel::{cratesio_kernel::Owner}::TABLE]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 132:12-132:60
+    Source: 'crates/i5h-schema/src/lib.rs', lines 135:12-135:60
     Visibility: public -/
 @[global_simps, irreducible] def Owner.TABLE : Std.U32 := 5#u32
 
 /-- [cratesio_kernel::{cratesio_kernel::Owner}::sql_del_where]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 263:12-265:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 264:12-266:13
     Visibility: public -/
 def Owner.sql_del_where
   (col : Std.U32) (val : i5h_sql.Val) : Result i5h_sql.Write := do
   ok (i5h_sql.Write.DelWhere Owner.TABLE col val)
 
 /-- [cratesio_kernel::{cratesio_kernel::Version}::TABLE]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 132:12-132:60
+    Source: 'crates/i5h-schema/src/lib.rs', lines 135:12-135:60
     Visibility: public -/
 @[global_simps, irreducible] def Version.TABLE : Std.U32 := 4#u32
 
 /-- [cratesio_kernel::{cratesio_kernel::Version}::sql_del_where]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 263:12-265:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 264:12-266:13
     Visibility: public -/
 def Version.sql_del_where
   (col : Std.U32) (val : i5h_sql.Val) : Result i5h_sql.Write := do
   ok (i5h_sql.Write.DelWhere Version.TABLE col val)
 
 /-- [cratesio_kernel::{cratesio_kernel::Invite}::sql_del]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 256:12-260:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 257:12-261:13
     Visibility: public -/
 def Invite.sql_del
   (krate : Std.U64) (user : Std.U64) : Result i5h_sql.Write := do
@@ -2944,7 +2944,7 @@ def Invite.sql_del
   ok (i5h_sql.Write.Del Invite.TABLE key1)
 
 /-- [cratesio_kernel::{cratesio_kernel::Owner}::sql_del]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 256:12-260:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 257:12-261:13
     Visibility: public -/
 def Owner.sql_del
   (krate : Std.U64) (owner : Std.U64) (team : Bool) :
@@ -2959,12 +2959,12 @@ def Owner.sql_del
   ok (i5h_sql.Write.Del Owner.TABLE key2)
 
 /-- [cratesio_kernel::{cratesio_kernel::Krate}::TABLE]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 132:12-132:60
+    Source: 'crates/i5h-schema/src/lib.rs', lines 135:12-135:60
     Visibility: public -/
 @[global_simps, irreducible] def Krate.TABLE : Std.U32 := 3#u32
 
 /-- [cratesio_kernel::{cratesio_kernel::Krate}::sql_del]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 256:12-260:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 257:12-261:13
     Visibility: public -/
 def Krate.sql_del (id : Std.U64) : Result i5h_sql.Write := do
   let v ← U64.Insts.I5h_sqlColumn.to_val id
@@ -2972,7 +2972,7 @@ def Krate.sql_del (id : Std.U64) : Result i5h_sql.Write := do
   ok (i5h_sql.Write.Del Krate.TABLE key)
 
 /-- [cratesio_kernel::{cratesio_kernel::Counter}::to_row]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 135:12-140:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 138:12-143:13
     Visibility: public -/
 def Counter.to_row (self : Counter) : Result (alloc.vec.Vec i5h_sql.Val) := do
   let v ← U64.Insts.I5h_sqlColumn.to_val self.next_session
@@ -2981,72 +2981,72 @@ def Counter.to_row (self : Counter) : Result (alloc.vec.Vec i5h_sql.Val) := do
   alloc.vec.Vec.push out v1
 
 /-- [cratesio_kernel::{cratesio_kernel::Counter}::KEY_LEN]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 133:12-133:62
+    Source: 'crates/i5h-schema/src/lib.rs', lines 136:12-136:62
     Visibility: public -/
 @[global_simps, irreducible] def Counter.KEY_LEN : Std.U32 := 0#u32
 
 /-- [cratesio_kernel::{cratesio_kernel::Counter}::TABLE]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 132:12-132:60
+    Source: 'crates/i5h-schema/src/lib.rs', lines 135:12-135:60
     Visibility: public -/
 @[global_simps, irreducible] def Counter.TABLE : Std.U32 := 8#u32
 
 /-- [cratesio_kernel::{cratesio_kernel::Counter}::sql_put]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 186:12-188:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 189:12-191:13
     Visibility: public -/
 def Counter.sql_put (self : Counter) : Result i5h_sql.Write := do
   let v ← Counter.to_row self
   ok (i5h_sql.Write.Put Counter.TABLE Counter.KEY_LEN v)
 
 /-- [cratesio_kernel::{cratesio_kernel::Dep}::KEY_LEN]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 133:12-133:62
+    Source: 'crates/i5h-schema/src/lib.rs', lines 136:12-136:62
     Visibility: public -/
 @[global_simps, irreducible] def Dep.KEY_LEN : Std.U32 := 3#u32
 
 /-- [cratesio_kernel::{cratesio_kernel::Dep}::sql_put]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 186:12-188:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 189:12-191:13
     Visibility: public -/
 def Dep.sql_put (self : Dep) : Result i5h_sql.Write := do
   let v ← Dep.to_row self
   ok (i5h_sql.Write.Put Dep.TABLE Dep.KEY_LEN v)
 
 /-- [cratesio_kernel::{cratesio_kernel::Invite}::KEY_LEN]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 133:12-133:62
+    Source: 'crates/i5h-schema/src/lib.rs', lines 136:12-136:62
     Visibility: public -/
 @[global_simps, irreducible] def Invite.KEY_LEN : Std.U32 := 2#u32
 
 /-- [cratesio_kernel::{cratesio_kernel::Invite}::sql_put]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 186:12-188:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 189:12-191:13
     Visibility: public -/
 def Invite.sql_put (self : Invite) : Result i5h_sql.Write := do
   let v ← Invite.to_row self
   ok (i5h_sql.Write.Put Invite.TABLE Invite.KEY_LEN v)
 
 /-- [cratesio_kernel::{cratesio_kernel::Owner}::KEY_LEN]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 133:12-133:62
+    Source: 'crates/i5h-schema/src/lib.rs', lines 136:12-136:62
     Visibility: public -/
 @[global_simps, irreducible] def Owner.KEY_LEN : Std.U32 := 3#u32
 
 /-- [cratesio_kernel::{cratesio_kernel::Owner}::sql_put]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 186:12-188:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 189:12-191:13
     Visibility: public -/
 def Owner.sql_put (self : Owner) : Result i5h_sql.Write := do
   let v ← Owner.to_row self
   ok (i5h_sql.Write.Put Owner.TABLE Owner.KEY_LEN v)
 
 /-- [cratesio_kernel::{cratesio_kernel::Version}::KEY_LEN]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 133:12-133:62
+    Source: 'crates/i5h-schema/src/lib.rs', lines 136:12-136:62
     Visibility: public -/
 @[global_simps, irreducible] def Version.KEY_LEN : Std.U32 := 2#u32
 
 /-- [cratesio_kernel::{cratesio_kernel::Version}::sql_put]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 186:12-188:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 189:12-191:13
     Visibility: public -/
 def Version.sql_put (self : Version) : Result i5h_sql.Write := do
   let v ← Version.to_row self
   ok (i5h_sql.Write.Put Version.TABLE Version.KEY_LEN v)
 
 /-- [cratesio_kernel::{cratesio_kernel::Krate}::to_row]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 135:12-140:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 138:12-143:13
     Visibility: public -/
 def Krate.to_row (self : Krate) : Result (alloc.vec.Vec i5h_sql.Val) := do
   let v ← U64.Insts.I5h_sqlColumn.to_val self.id
@@ -3055,19 +3055,19 @@ def Krate.to_row (self : Krate) : Result (alloc.vec.Vec i5h_sql.Val) := do
   alloc.vec.Vec.push out v1
 
 /-- [cratesio_kernel::{cratesio_kernel::Krate}::KEY_LEN]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 133:12-133:62
+    Source: 'crates/i5h-schema/src/lib.rs', lines 136:12-136:62
     Visibility: public -/
 @[global_simps, irreducible] def Krate.KEY_LEN : Std.U32 := 1#u32
 
 /-- [cratesio_kernel::{cratesio_kernel::Krate}::sql_put]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 186:12-188:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 189:12-191:13
     Visibility: public -/
 def Krate.sql_put (self : Krate) : Result i5h_sql.Write := do
   let v ← Krate.to_row self
   ok (i5h_sql.Write.Put Krate.TABLE Krate.KEY_LEN v)
 
 /-- [cratesio_kernel::{cratesio_kernel::Token}::to_row]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 135:12-140:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 138:12-143:13
     Visibility: public -/
 def Token.to_row (self : Token) : Result (alloc.vec.Vec i5h_sql.Val) := do
   let v ← U64.Insts.I5h_sqlColumn.to_val self.id
@@ -3094,24 +3094,24 @@ def Token.to_row (self : Token) : Result (alloc.vec.Vec i5h_sql.Val) := do
   alloc.vec.Vec.push out8 v9
 
 /-- [cratesio_kernel::{cratesio_kernel::Token}::KEY_LEN]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 133:12-133:62
+    Source: 'crates/i5h-schema/src/lib.rs', lines 136:12-136:62
     Visibility: public -/
 @[global_simps, irreducible] def Token.KEY_LEN : Std.U32 := 1#u32
 
 /-- [cratesio_kernel::{cratesio_kernel::Token}::TABLE]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 132:12-132:60
+    Source: 'crates/i5h-schema/src/lib.rs', lines 135:12-135:60
     Visibility: public -/
 @[global_simps, irreducible] def Token.TABLE : Std.U32 := 2#u32
 
 /-- [cratesio_kernel::{cratesio_kernel::Token}::sql_put]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 186:12-188:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 189:12-191:13
     Visibility: public -/
 def Token.sql_put (self : Token) : Result i5h_sql.Write := do
   let v ← Token.to_row self
   ok (i5h_sql.Write.Put Token.TABLE Token.KEY_LEN v)
 
 /-- [cratesio_kernel::{cratesio_kernel::Session}::to_row]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 135:12-140:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 138:12-143:13
     Visibility: public -/
 def Session.to_row (self : Session) : Result (alloc.vec.Vec i5h_sql.Val) := do
   let v ← U64.Insts.I5h_sqlColumn.to_val self.id
@@ -3120,24 +3120,24 @@ def Session.to_row (self : Session) : Result (alloc.vec.Vec i5h_sql.Val) := do
   alloc.vec.Vec.push out v1
 
 /-- [cratesio_kernel::{cratesio_kernel::Session}::KEY_LEN]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 133:12-133:62
+    Source: 'crates/i5h-schema/src/lib.rs', lines 136:12-136:62
     Visibility: public -/
 @[global_simps, irreducible] def Session.KEY_LEN : Std.U32 := 1#u32
 
 /-- [cratesio_kernel::{cratesio_kernel::Session}::TABLE]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 132:12-132:60
+    Source: 'crates/i5h-schema/src/lib.rs', lines 135:12-135:60
     Visibility: public -/
 @[global_simps, irreducible] def Session.TABLE : Std.U32 := 1#u32
 
 /-- [cratesio_kernel::{cratesio_kernel::Session}::sql_put]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 186:12-188:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 189:12-191:13
     Visibility: public -/
 def Session.sql_put (self : Session) : Result i5h_sql.Write := do
   let v ← Session.to_row self
   ok (i5h_sql.Write.Put Session.TABLE Session.KEY_LEN v)
 
 /-- [cratesio_kernel::{cratesio_kernel::User}::to_row]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 135:12-140:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 138:12-143:13
     Visibility: public -/
 def User.to_row (self : User) : Result (alloc.vec.Vec i5h_sql.Val) := do
   let v ← U64.Insts.I5h_sqlColumn.to_val self.id
@@ -3152,17 +3152,17 @@ def User.to_row (self : User) : Result (alloc.vec.Vec i5h_sql.Val) := do
   alloc.vec.Vec.push out3 v4
 
 /-- [cratesio_kernel::{cratesio_kernel::User}::KEY_LEN]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 133:12-133:62
+    Source: 'crates/i5h-schema/src/lib.rs', lines 136:12-136:62
     Visibility: public -/
 @[global_simps, irreducible] def User.KEY_LEN : Std.U32 := 1#u32
 
 /-- [cratesio_kernel::{cratesio_kernel::User}::TABLE]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 132:12-132:60
+    Source: 'crates/i5h-schema/src/lib.rs', lines 135:12-135:60
     Visibility: public -/
 @[global_simps, irreducible] def User.TABLE : Std.U32 := 0#u32
 
 /-- [cratesio_kernel::{cratesio_kernel::User}::sql_put]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 186:12-188:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 189:12-191:13
     Visibility: public -/
 def User.sql_put (self : User) : Result i5h_sql.Write := do
   let v ← User.to_row self
@@ -3216,7 +3216,7 @@ def sql_write
     alloc.vec.Vec.push out w1
 
 /-- [cratesio_kernel::{cratesio_kernel::Counter}::from_row]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 143:12-164:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 146:12-167:13
     Visibility: public -/
 def Counter.from_row
   (row : alloc.vec.Vec i5h_sql.Val) : Result (Option Counter) := do
@@ -3244,7 +3244,7 @@ def Counter.from_row
         ok (some { next_session := x, next_token := x1 })
 
 /-- [cratesio_kernel::{cratesio_kernel::User}::from_row]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 143:12-164:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 146:12-167:13
     Visibility: public -/
 def User.from_row
   (row : alloc.vec.Vec i5h_sql.Val) : Result (Option User) := do
@@ -3306,7 +3306,7 @@ def User.from_row
                 })
 
 /-- [cratesio_kernel::{cratesio_kernel::Session}::from_row]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 143:12-164:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 146:12-167:13
     Visibility: public -/
 def Session.from_row
   (row : alloc.vec.Vec i5h_sql.Val) : Result (Option Session) := do
@@ -3333,7 +3333,7 @@ def Session.from_row
                    ok (some { id := x, user := x1 })
 
 /-- [cratesio_kernel::{cratesio_kernel::Token}::from_row]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 143:12-164:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 146:12-167:13
     Visibility: public -/
 def Token.from_row
   (row : alloc.vec.Vec i5h_sql.Val) : Result (Option Token) := do
@@ -3449,7 +3449,7 @@ def Token.from_row
                           })
 
 /-- [cratesio_kernel::{cratesio_kernel::Krate}::from_row]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 143:12-164:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 146:12-167:13
     Visibility: public -/
 def Krate.from_row
   (row : alloc.vec.Vec i5h_sql.Val) : Result (Option Krate) := do
@@ -3476,7 +3476,7 @@ def Krate.from_row
                    ok (some { id := x, created := x1 })
 
 /-- [cratesio_kernel::{cratesio_kernel::Version}::from_row]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 143:12-164:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 146:12-167:13
     Visibility: public -/
 def Version.from_row
   (row : alloc.vec.Vec i5h_sql.Val) : Result (Option Version) := do
@@ -3522,7 +3522,7 @@ def Version.from_row
             ok (some { krate := x, num := x1, yanked := x2, publisher := x3 })
 
 /-- [cratesio_kernel::{cratesio_kernel::Owner}::from_row]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 143:12-164:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 146:12-167:13
     Visibility: public -/
 def Owner.from_row
   (row : alloc.vec.Vec i5h_sql.Val) : Result (Option Owner) := do
@@ -3559,7 +3559,7 @@ def Owner.from_row
           ok (some { krate := x, owner := x1, team := x2 })
 
 /-- [cratesio_kernel::{cratesio_kernel::Invite}::from_row]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 143:12-164:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 146:12-167:13
     Visibility: public -/
 def Invite.from_row
   (row : alloc.vec.Vec i5h_sql.Val) : Result (Option Invite) := do
@@ -3605,7 +3605,7 @@ def Invite.from_row
             ok (some { krate := x, user := x1, inviter := x2, expires := x3 })
 
 /-- [cratesio_kernel::{cratesio_kernel::Dep}::from_row]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 143:12-164:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 146:12-167:13
     Visibility: public -/
 def Dep.from_row (row : alloc.vec.Vec i5h_sql.Val) : Result (Option Dep) := do
   let i := alloc.vec.Vec.len row
@@ -3641,7 +3641,7 @@ def Dep.from_row (row : alloc.vec.Vec i5h_sql.Val) : Result (Option Dep) := do
           ok (some { krate := x, num := x1, on := x2 })
 
 /-- [cratesio_kernel::{cratesio_kernel::User}::from_rows]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 174:16-180:17
     Visibility: public -/
 @[rust_loop_body]
 def User.from_rows_loop.body
@@ -3668,7 +3668,7 @@ def User.from_rows_loop.body
   else ok (done (out, ok1))
 
 /-- [cratesio_kernel::{cratesio_kernel::User}::from_rows]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 174:16-180:17
     Visibility: public -/
 @[rust_loop]
 def User.from_rows_loop
@@ -3681,7 +3681,7 @@ def User.from_rows_loop
     (out, ok1, i)
 
 /-- [cratesio_kernel::{cratesio_kernel::User}::from_rows]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 167:12-183:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 170:12-186:13
     Visibility: public -/
 def User.from_rows
   (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)) :
@@ -3694,7 +3694,7 @@ def User.from_rows
   else ok none
 
 /-- [cratesio_kernel::{cratesio_kernel::Session}::from_rows]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 174:16-180:17
     Visibility: public -/
 @[rust_loop_body]
 def Session.from_rows_loop.body
@@ -3721,7 +3721,7 @@ def Session.from_rows_loop.body
   else ok (done (out, ok1))
 
 /-- [cratesio_kernel::{cratesio_kernel::Session}::from_rows]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 174:16-180:17
     Visibility: public -/
 @[rust_loop]
 def Session.from_rows_loop
@@ -3734,7 +3734,7 @@ def Session.from_rows_loop
     (out, ok1, i)
 
 /-- [cratesio_kernel::{cratesio_kernel::Session}::from_rows]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 167:12-183:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 170:12-186:13
     Visibility: public -/
 def Session.from_rows
   (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)) :
@@ -3747,7 +3747,7 @@ def Session.from_rows
   else ok none
 
 /-- [cratesio_kernel::{cratesio_kernel::Token}::from_rows]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 174:16-180:17
     Visibility: public -/
 @[rust_loop_body]
 def Token.from_rows_loop.body
@@ -3774,7 +3774,7 @@ def Token.from_rows_loop.body
   else ok (done (out, ok1))
 
 /-- [cratesio_kernel::{cratesio_kernel::Token}::from_rows]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 174:16-180:17
     Visibility: public -/
 @[rust_loop]
 def Token.from_rows_loop
@@ -3787,7 +3787,7 @@ def Token.from_rows_loop
     (out, ok1, i)
 
 /-- [cratesio_kernel::{cratesio_kernel::Token}::from_rows]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 167:12-183:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 170:12-186:13
     Visibility: public -/
 def Token.from_rows
   (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)) :
@@ -3800,7 +3800,7 @@ def Token.from_rows
   else ok none
 
 /-- [cratesio_kernel::{cratesio_kernel::Krate}::from_rows]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 174:16-180:17
     Visibility: public -/
 @[rust_loop_body]
 def Krate.from_rows_loop.body
@@ -3827,7 +3827,7 @@ def Krate.from_rows_loop.body
   else ok (done (out, ok1))
 
 /-- [cratesio_kernel::{cratesio_kernel::Krate}::from_rows]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 174:16-180:17
     Visibility: public -/
 @[rust_loop]
 def Krate.from_rows_loop
@@ -3840,7 +3840,7 @@ def Krate.from_rows_loop
     (out, ok1, i)
 
 /-- [cratesio_kernel::{cratesio_kernel::Krate}::from_rows]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 167:12-183:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 170:12-186:13
     Visibility: public -/
 def Krate.from_rows
   (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)) :
@@ -3853,7 +3853,7 @@ def Krate.from_rows
   else ok none
 
 /-- [cratesio_kernel::{cratesio_kernel::Version}::from_rows]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 174:16-180:17
     Visibility: public -/
 @[rust_loop_body]
 def Version.from_rows_loop.body
@@ -3880,7 +3880,7 @@ def Version.from_rows_loop.body
   else ok (done (out, ok1))
 
 /-- [cratesio_kernel::{cratesio_kernel::Version}::from_rows]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 174:16-180:17
     Visibility: public -/
 @[rust_loop]
 def Version.from_rows_loop
@@ -3893,7 +3893,7 @@ def Version.from_rows_loop
     (out, ok1, i)
 
 /-- [cratesio_kernel::{cratesio_kernel::Version}::from_rows]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 167:12-183:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 170:12-186:13
     Visibility: public -/
 def Version.from_rows
   (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)) :
@@ -3906,7 +3906,7 @@ def Version.from_rows
   else ok none
 
 /-- [cratesio_kernel::{cratesio_kernel::Owner}::from_rows]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 174:16-180:17
     Visibility: public -/
 @[rust_loop_body]
 def Owner.from_rows_loop.body
@@ -3933,7 +3933,7 @@ def Owner.from_rows_loop.body
   else ok (done (out, ok1))
 
 /-- [cratesio_kernel::{cratesio_kernel::Owner}::from_rows]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 174:16-180:17
     Visibility: public -/
 @[rust_loop]
 def Owner.from_rows_loop
@@ -3946,7 +3946,7 @@ def Owner.from_rows_loop
     (out, ok1, i)
 
 /-- [cratesio_kernel::{cratesio_kernel::Owner}::from_rows]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 167:12-183:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 170:12-186:13
     Visibility: public -/
 def Owner.from_rows
   (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)) :
@@ -3959,7 +3959,7 @@ def Owner.from_rows
   else ok none
 
 /-- [cratesio_kernel::{cratesio_kernel::Invite}::from_rows]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 174:16-180:17
     Visibility: public -/
 @[rust_loop_body]
 def Invite.from_rows_loop.body
@@ -3986,7 +3986,7 @@ def Invite.from_rows_loop.body
   else ok (done (out, ok1))
 
 /-- [cratesio_kernel::{cratesio_kernel::Invite}::from_rows]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 174:16-180:17
     Visibility: public -/
 @[rust_loop]
 def Invite.from_rows_loop
@@ -3999,7 +3999,7 @@ def Invite.from_rows_loop
     (out, ok1, i)
 
 /-- [cratesio_kernel::{cratesio_kernel::Invite}::from_rows]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 167:12-183:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 170:12-186:13
     Visibility: public -/
 def Invite.from_rows
   (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)) :
@@ -4012,7 +4012,7 @@ def Invite.from_rows
   else ok none
 
 /-- [cratesio_kernel::{cratesio_kernel::Dep}::from_rows]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 174:16-180:17
     Visibility: public -/
 @[rust_loop_body]
 def Dep.from_rows_loop.body
@@ -4039,7 +4039,7 @@ def Dep.from_rows_loop.body
   else ok (done (out, ok1))
 
 /-- [cratesio_kernel::{cratesio_kernel::Dep}::from_rows]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 174:16-180:17
     Visibility: public -/
 @[rust_loop]
 def Dep.from_rows_loop
@@ -4052,7 +4052,7 @@ def Dep.from_rows_loop
     (out, ok1, i)
 
 /-- [cratesio_kernel::{cratesio_kernel::Dep}::from_rows]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 167:12-183:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 170:12-186:13
     Visibility: public -/
 def Dep.from_rows
   (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)) :
@@ -4065,7 +4065,7 @@ def Dep.from_rows
   else ok none
 
 /-- [cratesio_kernel::{cratesio_kernel::Counter}::from_rows]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 174:16-180:17
     Visibility: public -/
 @[rust_loop_body]
 def Counter.from_rows_loop.body
@@ -4092,7 +4092,7 @@ def Counter.from_rows_loop.body
   else ok (done (out, ok1))
 
 /-- [cratesio_kernel::{cratesio_kernel::Counter}::from_rows]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 174:16-180:17
     Visibility: public -/
 @[rust_loop]
 def Counter.from_rows_loop
@@ -4105,7 +4105,7 @@ def Counter.from_rows_loop
     (out, ok1, i)
 
 /-- [cratesio_kernel::{cratesio_kernel::Counter}::from_rows]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 167:12-183:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 170:12-186:13
     Visibility: public -/
 def Counter.from_rows
   (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)) :
@@ -4118,7 +4118,7 @@ def Counter.from_rows
   else ok none
 
 /-- [cratesio_kernel::{cratesio_kernel::Counter}::from_one]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 203:12-211:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 204:12-212:13
     Visibility: public -/
 def Counter.from_one
   (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)) :
@@ -4140,7 +4140,7 @@ def Counter.from_one
     else ok none
 
 /-- [cratesio_kernel::{cratesio_kernel::User}::del]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 233:16-238:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 234:16-239:17
     Visibility: public -/
 @[rust_loop_body]
 def User.del_loop.body
@@ -4165,7 +4165,7 @@ def User.del_loop.body
   else ok (done out)
 
 /-- [cratesio_kernel::{cratesio_kernel::User}::del]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 233:16-238:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 234:16-239:17
     Visibility: public -/
 @[rust_loop]
 def User.del_loop
@@ -4178,7 +4178,7 @@ def User.del_loop
     (out, i)
 
 /-- [cratesio_kernel::{cratesio_kernel::User}::del]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 230:12-240:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 231:12-241:13
     Visibility: public -/
 @[reducible]
 def User.del
@@ -4186,7 +4186,7 @@ def User.del
   User.del_loop v id (alloc.vec.Vec.new User) 0#usize
 
 /-- [cratesio_kernel::{cratesio_kernel::Session}::del]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 233:16-238:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 234:16-239:17
     Visibility: public -/
 @[rust_loop_body]
 def Session.del_loop.body
@@ -4212,7 +4212,7 @@ def Session.del_loop.body
   else ok (done out)
 
 /-- [cratesio_kernel::{cratesio_kernel::Session}::del]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 233:16-238:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 234:16-239:17
     Visibility: public -/
 @[rust_loop]
 def Session.del_loop
@@ -4225,7 +4225,7 @@ def Session.del_loop
     (out, i)
 
 /-- [cratesio_kernel::{cratesio_kernel::Session}::del]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 230:12-240:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 231:12-241:13
     Visibility: public -/
 @[reducible]
 def Session.del
@@ -4235,7 +4235,7 @@ def Session.del
   Session.del_loop v id (alloc.vec.Vec.new Session) 0#usize
 
 /-- [cratesio_kernel::{cratesio_kernel::Token}::del]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 233:16-238:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 234:16-239:17
     Visibility: public -/
 @[rust_loop_body]
 def Token.del_loop.body
@@ -4261,7 +4261,7 @@ def Token.del_loop.body
   else ok (done out)
 
 /-- [cratesio_kernel::{cratesio_kernel::Token}::del]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 233:16-238:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 234:16-239:17
     Visibility: public -/
 @[rust_loop]
 def Token.del_loop
@@ -4274,7 +4274,7 @@ def Token.del_loop
     (out, i)
 
 /-- [cratesio_kernel::{cratesio_kernel::Token}::del]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 230:12-240:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 231:12-241:13
     Visibility: public -/
 @[reducible]
 def Token.del
@@ -4282,7 +4282,7 @@ def Token.del
   Token.del_loop v id (alloc.vec.Vec.new Token) 0#usize
 
 /-- [cratesio_kernel::{cratesio_kernel::Version}::del]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 233:16-238:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 234:16-239:17
     Visibility: public -/
 @[rust_loop_body]
 def Version.del_loop.body
@@ -4314,7 +4314,7 @@ def Version.del_loop.body
   else ok (done out)
 
 /-- [cratesio_kernel::{cratesio_kernel::Version}::del]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 233:16-238:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 234:16-239:17
     Visibility: public -/
 @[rust_loop]
 def Version.del_loop
@@ -4327,7 +4327,7 @@ def Version.del_loop
     (out, i)
 
 /-- [cratesio_kernel::{cratesio_kernel::Version}::del]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 230:12-240:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 231:12-241:13
     Visibility: public -/
 @[reducible]
 def Version.del
@@ -4337,7 +4337,7 @@ def Version.del
   Version.del_loop v krate num (alloc.vec.Vec.new Version) 0#usize
 
 /-- [cratesio_kernel::{cratesio_kernel::Dep}::del]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 233:16-238:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 234:16-239:17
     Visibility: public -/
 @[rust_loop_body]
 def Dep.del_loop.body
@@ -4374,7 +4374,7 @@ def Dep.del_loop.body
   else ok (done out)
 
 /-- [cratesio_kernel::{cratesio_kernel::Dep}::del]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 233:16-238:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 234:16-239:17
     Visibility: public -/
 @[rust_loop]
 def Dep.del_loop
@@ -4387,7 +4387,7 @@ def Dep.del_loop
     (out, i)
 
 /-- [cratesio_kernel::{cratesio_kernel::Dep}::del]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 230:12-240:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 231:12-241:13
     Visibility: public -/
 @[reducible]
 def Dep.del
@@ -4397,7 +4397,7 @@ def Dep.del
   Dep.del_loop v krate num on (alloc.vec.Vec.new Dep) 0#usize
 
 /-- [cratesio_kernel::{cratesio_kernel::User}::del_where]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 246:16-251:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 247:16-252:17
     Visibility: public -/
 @[rust_loop_body]
 def User.del_where_loop.body
@@ -4424,7 +4424,7 @@ def User.del_where_loop.body
   else ok (done out)
 
 /-- [cratesio_kernel::{cratesio_kernel::User}::del_where]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 246:16-251:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 247:16-252:17
     Visibility: public -/
 @[rust_loop]
 def User.del_where_loop
@@ -4437,7 +4437,7 @@ def User.del_where_loop
     (out, i)
 
 /-- [cratesio_kernel::{cratesio_kernel::User}::del_where]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 243:12-253:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 244:12-254:13
     Visibility: public -/
 @[reducible]
 def User.del_where
@@ -4447,7 +4447,7 @@ def User.del_where
   User.del_where_loop v col val (alloc.vec.Vec.new User) 0#usize
 
 /-- [cratesio_kernel::{cratesio_kernel::Session}::del_where]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 246:16-251:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 247:16-252:17
     Visibility: public -/
 @[rust_loop_body]
 def Session.del_where_loop.body
@@ -4475,7 +4475,7 @@ def Session.del_where_loop.body
   else ok (done out)
 
 /-- [cratesio_kernel::{cratesio_kernel::Session}::del_where]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 246:16-251:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 247:16-252:17
     Visibility: public -/
 @[rust_loop]
 def Session.del_where_loop
@@ -4488,7 +4488,7 @@ def Session.del_where_loop
     (out, i)
 
 /-- [cratesio_kernel::{cratesio_kernel::Session}::del_where]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 243:12-253:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 244:12-254:13
     Visibility: public -/
 @[reducible]
 def Session.del_where
@@ -4498,7 +4498,7 @@ def Session.del_where
   Session.del_where_loop v col val (alloc.vec.Vec.new Session) 0#usize
 
 /-- [cratesio_kernel::{cratesio_kernel::Token}::del_where]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 246:16-251:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 247:16-252:17
     Visibility: public -/
 @[rust_loop_body]
 def Token.del_where_loop.body
@@ -4526,7 +4526,7 @@ def Token.del_where_loop.body
   else ok (done out)
 
 /-- [cratesio_kernel::{cratesio_kernel::Token}::del_where]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 246:16-251:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 247:16-252:17
     Visibility: public -/
 @[rust_loop]
 def Token.del_where_loop
@@ -4539,7 +4539,7 @@ def Token.del_where_loop
     (out, i)
 
 /-- [cratesio_kernel::{cratesio_kernel::Token}::del_where]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 243:12-253:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 244:12-254:13
     Visibility: public -/
 @[reducible]
 def Token.del_where
@@ -4549,7 +4549,7 @@ def Token.del_where
   Token.del_where_loop v col val (alloc.vec.Vec.new Token) 0#usize
 
 /-- [cratesio_kernel::{cratesio_kernel::Krate}::del_where]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 246:16-251:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 247:16-252:17
     Visibility: public -/
 @[rust_loop_body]
 def Krate.del_where_loop.body
@@ -4577,7 +4577,7 @@ def Krate.del_where_loop.body
   else ok (done out)
 
 /-- [cratesio_kernel::{cratesio_kernel::Krate}::del_where]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 246:16-251:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 247:16-252:17
     Visibility: public -/
 @[rust_loop]
 def Krate.del_where_loop
@@ -4590,7 +4590,7 @@ def Krate.del_where_loop
     (out, i)
 
 /-- [cratesio_kernel::{cratesio_kernel::Krate}::del_where]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 243:12-253:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 244:12-254:13
     Visibility: public -/
 @[reducible]
 def Krate.del_where
@@ -4600,7 +4600,7 @@ def Krate.del_where
   Krate.del_where_loop v col val (alloc.vec.Vec.new Krate) 0#usize
 
 /-- [cratesio_kernel::{cratesio_kernel::User}::sql_del]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 256:12-260:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 257:12-261:13
     Visibility: public -/
 def User.sql_del (id : Std.U64) : Result i5h_sql.Write := do
   let v ← U64.Insts.I5h_sqlColumn.to_val id
@@ -4608,7 +4608,7 @@ def User.sql_del (id : Std.U64) : Result i5h_sql.Write := do
   ok (i5h_sql.Write.Del User.TABLE key)
 
 /-- [cratesio_kernel::{cratesio_kernel::Session}::sql_del]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 256:12-260:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 257:12-261:13
     Visibility: public -/
 def Session.sql_del (id : Std.U64) : Result i5h_sql.Write := do
   let v ← U64.Insts.I5h_sqlColumn.to_val id
@@ -4616,7 +4616,7 @@ def Session.sql_del (id : Std.U64) : Result i5h_sql.Write := do
   ok (i5h_sql.Write.Del Session.TABLE key)
 
 /-- [cratesio_kernel::{cratesio_kernel::Token}::sql_del]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 256:12-260:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 257:12-261:13
     Visibility: public -/
 def Token.sql_del (id : Std.U64) : Result i5h_sql.Write := do
   let v ← U64.Insts.I5h_sqlColumn.to_val id
@@ -4624,7 +4624,7 @@ def Token.sql_del (id : Std.U64) : Result i5h_sql.Write := do
   ok (i5h_sql.Write.Del Token.TABLE key)
 
 /-- [cratesio_kernel::{cratesio_kernel::Version}::sql_del]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 256:12-260:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 257:12-261:13
     Visibility: public -/
 def Version.sql_del
   (krate : Std.U64) (num : Std.U64) : Result i5h_sql.Write := do
@@ -4635,7 +4635,7 @@ def Version.sql_del
   ok (i5h_sql.Write.Del Version.TABLE key1)
 
 /-- [cratesio_kernel::{cratesio_kernel::Dep}::sql_del]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 256:12-260:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 257:12-261:13
     Visibility: public -/
 def Dep.sql_del
   (krate : Std.U64) (num : Std.U64) (on : Std.U64) : Result i5h_sql.Write := do
@@ -4648,35 +4648,35 @@ def Dep.sql_del
   ok (i5h_sql.Write.Del Dep.TABLE key2)
 
 /-- [cratesio_kernel::{cratesio_kernel::User}::sql_del_where]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 263:12-265:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 264:12-266:13
     Visibility: public -/
 def User.sql_del_where
   (col : Std.U32) (val : i5h_sql.Val) : Result i5h_sql.Write := do
   ok (i5h_sql.Write.DelWhere User.TABLE col val)
 
 /-- [cratesio_kernel::{cratesio_kernel::Session}::sql_del_where]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 263:12-265:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 264:12-266:13
     Visibility: public -/
 def Session.sql_del_where
   (col : Std.U32) (val : i5h_sql.Val) : Result i5h_sql.Write := do
   ok (i5h_sql.Write.DelWhere Session.TABLE col val)
 
 /-- [cratesio_kernel::{cratesio_kernel::Token}::sql_del_where]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 263:12-265:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 264:12-266:13
     Visibility: public -/
 def Token.sql_del_where
   (col : Std.U32) (val : i5h_sql.Val) : Result i5h_sql.Write := do
   ok (i5h_sql.Write.DelWhere Token.TABLE col val)
 
 /-- [cratesio_kernel::{cratesio_kernel::Krate}::sql_del_where]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 263:12-265:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 264:12-266:13
     Visibility: public -/
 def Krate.sql_del_where
   (col : Std.U32) (val : i5h_sql.Val) : Result i5h_sql.Write := do
   ok (i5h_sql.Write.DelWhere Krate.TABLE col val)
 
 /-- [cratesio_kernel::Rows]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 285:8-287:9
+    Source: 'crates/i5h-schema/src/lib.rs', lines 284:8-286:9
     Visibility: public -/
 structure Rows where
   counter : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)
@@ -4690,7 +4690,7 @@ structure Rows where
   deps : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)
 
 /-- [cratesio_kernel::decode]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 290:8-298:9
+    Source: 'crates/i5h-schema/src/lib.rs', lines 289:8-297:9
     Visibility: public -/
 def decode (r : Rows) : Result (Option Snapshot) := do
   let o ← Counter.from_one r.counter
@@ -4743,7 +4743,7 @@ def decode (r : Rows) : Result (Option Snapshot) := do
                       })
 
 /-- [cratesio_kernel::apply]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 308:12-311:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 306:12-309:13
     Visibility: public -/
 @[rust_loop_body]
 def apply_loop.body
@@ -4762,7 +4762,7 @@ def apply_loop.body
   else ok (done s)
 
 /-- [cratesio_kernel::apply]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 308:12-311:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 306:12-309:13
     Visibility: public -/
 @[rust_loop]
 def apply_loop
@@ -4774,14 +4774,14 @@ def apply_loop
     (s, i)
 
 /-- [cratesio_kernel::apply]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 305:8-313:9
+    Source: 'crates/i5h-schema/src/lib.rs', lines 303:8-311:9
     Visibility: public -/
 def apply (snap : Snapshot) (ws : alloc.vec.Vec Write) : Result Snapshot := do
   let s ← Snapshot.Insts.CoreCloneClone.clone snap
   apply_loop ws s 0#usize
 
 /-- [cratesio_kernel::sql_writes]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 320:12-323:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 317:12-320:13
     Visibility: public -/
 @[rust_loop_body]
 def sql_writes_loop.body
@@ -4801,7 +4801,7 @@ def sql_writes_loop.body
   else ok (done out)
 
 /-- [cratesio_kernel::sql_writes]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 320:12-323:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 317:12-320:13
     Visibility: public -/
 @[rust_loop]
 def sql_writes_loop
@@ -4814,7 +4814,7 @@ def sql_writes_loop
     (out, i)
 
 /-- [cratesio_kernel::sql_writes]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 317:8-325:9
+    Source: 'crates/i5h-schema/src/lib.rs', lines 314:8-322:9
     Visibility: public -/
 @[reducible]
 def sql_writes

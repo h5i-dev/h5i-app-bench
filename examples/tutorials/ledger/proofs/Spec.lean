@@ -3,9 +3,8 @@ import I5hLib
 /-!
 # What the ledger should do
 
-This is the file to review. It states what a write does to the state, how
-much money the accounts hold, and which facts must always hold, using plain
-lists and natural numbers.
+The file to review: what a write does, how much money the accounts hold,
+and the invariants, on plain lists and natural numbers.
 -/
 open Aeneas Aeneas.Std ledger_kernel
 

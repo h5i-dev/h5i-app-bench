@@ -2,26 +2,15 @@ import I5hLib.Store
 /-!
 # PostgreSQL statements and what they do
 
-`i5h-pgsql` compiles each planned statement (`I5hLib.Sql.AStmt`) to a
-statement of a small SQL subset and its parameters, and prints it. This file
-has that subset: its syntax (`Sql`), its text (`render`), and its meaning
-(`run`, `selected`), generic over the column value type so every extracted
-crate can use it.
+The SQL subset `i5h-pgsql` compiles to: syntax (`Sql`), text (`render`),
+meaning (`run`, `selected`), and the compiler's target (`createA`, `selectA`,
+`compileA`), which `crates/i5h-pgsql/proofs` shows the extracted Rust computes.
+Main results: `compile_sound`, `select_sound`.
 
-It also has what the compiler must produce (`createA`, `selectA`,
-`compileA`); `crates/i5h-pgsql/proofs` proves that the extracted Rust
-functions compute exactly these, and that `render` is what the extracted
-printer prints. The theorems here then say that a compiled statement does
-to the tenant's rows what `I5hLib.Sql.exec` says (`compile_sound`), leaves
-other tenants' and other tables' rows alone, and that a compiled `SELECT`
-returns exactly the rows `Sel` and `Lists` describe (`select_sound`).
-
-Trusted, and only this: PostgreSQL, sent `render s` with parameters `ps`,
-either fails or does what `run` says, and a `SELECT` returns a reordering of
-`selected`. `kind` is how the driver types a value. Text compares
-byte by byte (a deterministic collation), and the tables were created by
-`createA` of the same schema (`CREATE TABLE IF NOT EXISTS` keeps an existing
-table as it is).
+Trusted: PostgreSQL, sent `render s` with parameters `ps`, fails or does what
+`run` says, and a `SELECT` returns a reordering of `selected`. `kind` is how
+the driver types a value. Text compares byte by byte, and the tables were
+created by `createA` of the same schema.
 -/
 
 namespace I5hLib.Pg
@@ -1143,9 +1132,8 @@ theorem effect_view {ts : List Tab} (hv : Valid ts) {tv : V} {db db' : PgDb V} (
   simp only [view, h2]
   exact (step_sound (klOf ts) _ w (wellKeyed_tenant kind hv tv hm) hw).1
 
-/-- A compiled statement runs without a claimed error, keeps the schema's
-tables as created, does to the tenant's database exactly what `exec` says,
-and changes no other tenant's rows and no table outside the schema. -/
+/-- A compiled statement does to the tenant's database what `exec` says and
+touches no other tenant or table. -/
 theorem compile_sound {ts : List Tab} {tv : V} {db : PgDb V} (hv : Valid ts) (htv : kind tv = some .int)
     (hm : Matches kind ts db) {s : AStmt V} {q : Sql} {ps : List V}
     (hc : compileA kind ts tv s = some (q, ps)) :
@@ -1214,9 +1202,8 @@ def Filter : Option (Nat × V) → List V → Prop
   | none, _ => True
   | some (i, v), row => ColIs i v row
 
-/-- A compiled `SELECT` runs without a claimed error, and any reordering of
-what it returns lists the tenant's rows that pass the filter, once each:
-`Sel`, and with no filter, one table of `Lists`. -/
+/-- A compiled `SELECT` returns the tenant's rows that pass the filter, once
+each (`Sel`). -/
 theorem select_sound {ts : List Tab} {tv : V} {db : PgDb V} (hv : Valid ts) (htv : kind tv = some .int)
     (hm : Matches kind ts db) {t : Nat} {f : Option (Nat × V)} {q : Sql} {ps : List V}
     (hc : selectA kind ts tv t f = some (q, ps)) :

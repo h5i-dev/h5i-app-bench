@@ -3,14 +3,11 @@ import Frame
 /-!
 # Scoped loads (A4 with partial snapshots)
 
-`DocsStore::load_for` loads the counter plus one project's rows with
-`WHERE column IS NOT DISTINCT FROM value` queries, picks the project with the kernel's
-`scoped_project`, and decodes with `decode`. We prove the result is
-`Frame.slice snap sc` for a full snapshot `snap` that the tenant's rows hold
-and that satisfies `Inv`. With `transition_frame` and `store_sound`, running
-a command on the scoped load and storing its writes keeps `DbInv`.
-`served_inv` puts the steps together: every database the server produces
-from an empty tenant satisfies `DbInv`.
+`DocsStore::load_for` reads the counter plus one project's rows with
+`IS NOT DISTINCT FROM` filters. `scoped_sound`: the decoded result is
+`Frame.slice snap sc` for a snapshot `snap` the rows hold. `scoped_command`:
+running a command on it and storing its writes keeps `DbInv`. `served_inv`:
+every database the server produces from an empty tenant satisfies `DbInv`.
 -/
 open Aeneas Aeneas.Std Result docs_kernel docs_kernel.Spec I5hLib I5hLib.Sql docs_kernel.Storage
   docs_kernel.Load docs_kernel.Frame docs_kernel.Schema
@@ -235,10 +232,7 @@ theorem scoped_sound (db : Db Val) (s : St) (c : Bool) (hi : Inv s) (hdb : db = 
           cases this
       simp only [slice, this]
 
-/-- End to end, for the server's scoped path: load the counter, the named
-document's rows, and the rows of the project `scoped_project` picks; decode;
-run the command; store its writes. If the tenant's rows held a state
-satisfying `Inv`, they still do. -/
+/-- Scoped path end to end: load, decode, run, store. `DbInv` is kept. -/
 theorem scoped_command (db : Db Val) (s : St) (hi : Inv s) (hs : Stored db s) (hf : Fits s)
     (a : Principal) (cmd : Command) (sc : Scope) (hsc : read_scope cmd = ok sc)
     (rd : alloc.vec.Vec (alloc.vec.Vec Val))
@@ -260,11 +254,9 @@ theorem scoped_command (db : Db Val) (s : St) (hi : Inv s) (hs : Stored db s) (h
 
 /-! ## Every database the server produces -/
 
-/-- The tenant databases the server can produce from an empty tenant. Each
-request loads rows (all of them with `load`, or a scope's with `load_for`),
-decodes them, runs a command that succeeds and stores its writes. Loads are
-described by `Lists` and `Sel`, which `Database.lean` derives from the
-compiled `SELECT`s; a scoped load also needs the tables to fit in a `Vec`. -/
+/-- Tenant databases the server can produce from an empty tenant: each request
+loads (`load` or `load_for`), decodes, runs a successful command and stores
+its writes. `Database.lean` derives `Lists` and `Sel` from the compiled SQL. -/
 inductive Served : Db Val → Prop
   | fresh : Served (fun _ _ => none)
   | full {db : Db Val} {r : Rows} {snap : Snapshot} {a : Principal} {cmd : Command} {ws reply}

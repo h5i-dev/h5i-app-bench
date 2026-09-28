@@ -426,8 +426,7 @@ pub fn transition_current(
 /// The column a user's records are deleted by: `user`, first in the key.
 const RECORD_USER: u32 = 0;
 
-/// What one write does to the state. `schema!` runs it over a write set
-/// (`apply`).
+/// One write's effect; `schema!`'s `apply` runs it over a write set.
 pub fn apply_write(s: &mut Snapshot, w: Write) {
     match w {
         Write::PutUser(u) => User::put(&mut s.users, u),

@@ -1,10 +1,7 @@
 //! Kernel row structs as tenant-scoped tables.
 //!
-//! One struct is one table with primary key `(tenant_id, <key fields>)`. The
-//! SQL for these tables comes only from `i5h_pgsql`, which is extracted to
-//! Lean: `CREATE TABLE`, a tenant-filtered `SELECT`, an upsert, and deletes
-//! by key or by one column's value. This file sends that text and converts
-//! values; it builds no SQL of its own.
+//! One struct is one table keyed by `(tenant_id, <key fields>)`. All SQL text
+//! comes from `i5h_pgsql` (extracted to Lean); this file builds none.
 
 use crate::DbError;
 use bytes::BytesMut;
@@ -56,8 +53,7 @@ pub struct ColumnDef {
     pub nullable: bool,
 }
 
-/// How a field is stored. `A` is the app marker type, so apps can implement
-/// this for kernel enums without hitting the orphan rule.
+/// How a field is stored. `A` is the app marker type, to dodge the orphan rule.
 pub trait PgField<A>: Sized {
     const KIND: Kind;
     const NULLABLE: bool = false;
@@ -250,9 +246,8 @@ fn refs(vals: &[Value]) -> Vec<&(dyn ToSql + Sync)> {
     vals.iter().map(|v| v as &(dyn ToSql + Sync)).collect()
 }
 
-/// Store table writes: plan them (`i5h_sql::plan`), compile each statement for
-/// the tenant (`i5h_pgsql::compile`) and run it, in order. A statement that
-/// does not fit the schema fails the transaction.
+/// Plan (`i5h_sql::plan`), compile (`i5h_pgsql::compile`) and run each write in
+/// order. A statement that does not fit the schema fails the transaction.
 pub async fn store_writes(tx: &Tx<'_>, tenant: TenantId, schema: &Vec<Spec>, ws: &Vec<SqlWrite>) -> Result<(), DbError> {
     let tid = tenant_param(tenant)?;
     for stmt in i5h_sql::plan(ws) {
@@ -265,9 +260,9 @@ pub async fn store_writes(tx: &Tx<'_>, tenant: TenantId, schema: &Vec<Spec>, ws:
     Ok(())
 }
 
-/// The tenant's rows of table number `table`, without `tenant_id`, in key
-/// order; with `filter = Some((column, value))`, only rows whose zero-based
-/// column is not distinct from `value` (the index `I5hLib.Sql.ColIs` uses).
+/// The tenant's rows of table `table`, without `tenant_id`, in key order.
+/// `filter` keeps rows whose zero-based column IS NOT DISTINCT FROM the value,
+/// matching `I5hLib.Sql.ColIs`.
 pub async fn load_table(
     tx: &Tx<'_>,
     tenant: TenantId,

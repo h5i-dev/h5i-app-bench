@@ -1,18 +1,9 @@
-//! The paste rules of Wastebin (github.com/matze/wastebin at b27a2ab) as an
-//! i5h kernel.
+//! Wastebin's paste rules (github.com/matze/wastebin at b27a2ab) as an i5h kernel.
 //!
-//! Anyone may create a paste, with an optional expiry, burn after reading and
-//! password. Pastes are looked up by a random slug, served until they expire,
-//! and deleted by their owner. A burn-after-reading paste is deleted by the
-//! read that shows it.
-//!
-//! The kernel has no clock and no randomness: the shell puts the current time
-//! and a fresh random slug into the `Principal` (never from the request body).
-//! Passwords stay in the shell too, which passes a keyed fingerprint.
-//!
-//! `transition` matches Wastebin today, where the paste page asks for
-//! confirmation before it burns a paste (the fix for issue #190).
-//! `transition_pre190` matches the code before, where any GET burned it.
+//! The shell puts the time, a random slug and password fingerprints in
+//! `Principal`, never from the request body.
+//! `transition` asks before burning a paste (issue #190, commit 632ddf2);
+//! `transition_pre190` burns on any GET.
 
 pub type Text = Vec<u8>;
 
@@ -183,8 +174,7 @@ fn deadline(now: u64, expires_in: Option<u32>) -> Result<Option<u64>, Error> {
     }
 }
 
-/// The owner of a new paste, and the counter's `last_uid` after: the
-/// cookie's first uid, or a new one.
+/// Owner of a new paste (the cookie's first uid, or a new one) and the next `last_uid`.
 fn owner_for(uids: &Vec<u64>, last_uid: u64) -> Result<(u64, u64), Error> {
     if uids.len() > 0 {
         Ok((uids[0], last_uid))
@@ -309,8 +299,7 @@ pub fn transition_pre190(a: &Principal, s: &Snapshot, cmd: &Command) -> Outcome 
     }
 }
 
-/// What one write does to the state. `schema!` runs it over a write set
-/// (`apply`).
+/// One write's effect; `schema!`'s `apply` runs it over a write set.
 fn apply_write(s: &mut Snapshot, w: Write) {
     match w {
         Write::PutPaste(p) => Paste::put(&mut s.pastes, p),

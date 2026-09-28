@@ -3,11 +3,8 @@ import Render
 /-!
 # End to end, on the extracted compiler
 
-A statement `compile` returns prints as `Pg.render` of it (`render_spec`
-applies: every compiled statement is `Small`), and running it does to the
-tenant's rows what `I5hLib.Sql.exec` says (`write_sound`). A `SELECT` from
-`select` returns exactly the rows `Sel` describes (`select_sound'`), and
-`create` makes the tables `Pg.Matches` expects (`create_sound'`).
+Compiled statements are `Small`, print as `Pg.render`, and run as
+`I5hLib.Sql.exec` says (`write_sound`); see also `select_sound'`, `create_sound'`.
 -/
 open Aeneas Aeneas.Std Result I5hLib
 
@@ -318,9 +315,7 @@ theorem selectA_valid {V : Type} (kind : V → Option Pg.Kind) (ts : List Pg.Tab
   by_contra hv
   simp [Pg.selectA, hv] at hc
 
-/-- A statement `compile` returns prints as `Pg.render` of it, and running it
-on tables as `create` made them does to the tenant's rows what `exec` says,
-and nothing to other tenants' rows or tables outside the schema. -/
+/-- `compile` output prints as `Pg.render`, runs as `exec` on the tenant, touches nothing else. -/
 theorem write_sound (ts : alloc.vec.Vec Table) (tenant : I64) (s : i5h_sql.Stmt) (q : Query)
     (hc : compile ts tenant s = ok (some q)) (db : Pg.PgDb i5h_sql.Val) (hm : Pg.Matches valKind (tabs ts) db) :
     render q.sql ⦃ b => B b = Pg.render q.sql.abs ⦄ ∧
@@ -335,8 +330,7 @@ theorem write_sound (ts : alloc.vec.Vec Table) (tenant : I64) (s : i5h_sql.Stmt)
   refine ⟨render_spec _ (small_of _ (compileA_pb valKind _ _ _ _ _ hq')), ?_⟩
   exact Pg.compile_sound valKind hv rfl hm hq'
 
-/-- A `SELECT` from `select` prints as `Pg.render` of it, and any order of
-the rows it returns lists the tenant's rows passing the filter, once each. -/
+/-- `select` output prints as `Pg.render` and returns the tenant's matching rows once each. -/
 theorem select_sound' (ts : alloc.vec.Vec Table) (tenant : I64) (table : U32) (filter : Option (U32 × i5h_sql.Val))
     (q : Query) (hc : select ts tenant table filter = ok (some q)) (db : Pg.PgDb i5h_sql.Val)
     (hm : Pg.Matches valKind (tabs ts) db) :
@@ -350,10 +344,8 @@ theorem select_sound' (ts : alloc.vec.Vec Table) (tenant : I64) (table : U32) (f
   have hv := selectA_valid valKind _ _ _ _ _ hq'
   exact ⟨render_spec _ (small_of _ (selectA_pb valKind _ _ _ _ _ _ hq')), Pg.select_sound valKind hv rfl hm hq'⟩
 
-/-- For a schema `valid` accepts, `create` gives `Pg.createA` of each table
-and prints as `Pg.render` of it. Creating the tables in a database without
-them makes them as `Pg.Matches` expects, with every tenant's rows empty;
-where they already match, creating them changes nothing. -/
+/-- On a valid schema, `create` makes the tables `Pg.Matches` expects (empty),
+and is a no-op where they already match. -/
 theorem create_sound' (ts : alloc.vec.Vec Table) (hv : valid ts = ok true) :
     (∀ i (hi : i < ts.length), create (ts.val[i]'(by simpa using hi)) ⦃ s =>
         s.abs = Pg.createA (ts.val[i]'(by simpa using hi)).abs ∧ render s ⦃ b => B b = Pg.render s.abs ⦄ ⦄) ∧

@@ -2,10 +2,9 @@ import Apply
 /-!
 # Scenarios
 
-The session from the tutorial, checked on the extracted code: Alice and Bob
-open accounts, Alice deposits 100 and moves 30 to Bob. The final state is
-reachable, so the theorems apply to it, and each refusal the theorems rely on
-does happen.
+The tutorial's session on the extracted code: Alice and Bob open accounts,
+Alice deposits 100 and moves 30 to Bob. The final state is reachable, and
+each refusal the theorems rely on does happen.
 -/
 open Aeneas Aeneas.Std Result ledger_kernel ledger_kernel.Spec ledger_kernel.Commands
   ledger_kernel.Theorems I5hLib

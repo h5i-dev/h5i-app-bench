@@ -2,10 +2,8 @@ import Abs
 /-!
 # The extracted printer prints `Pg.render`
 
-`render_spec`: for a statement small enough to print (`Small`), the bytes
-the extracted `render` returns are exactly `I5hLib.Pg.render` of it. Every
-writer appends its piece of text to the output (`B r = B out ++ text`); the
-loops share `loop_append`.
+`render_spec`: on a `Small` statement, `render` returns `I5hLib.Pg.render` of it.
+Each writer's post is `B r = B out ++ text`; loops share `loop_append`.
 -/
 open Aeneas Aeneas.Std Result I5hLib
 
@@ -71,8 +69,7 @@ theorem loop_append (n : Nat) (g : Nat → List Nat)
       rw [ho', heq, hj', seg_succ g _ _ hij, List.append_assoc]
   · exact ⟨le_refl _, hi, by simp [seg_self]⟩
 
-/-- The text of a loop over a list, when each step's text depends on the
-prefix only through its length. -/
+/-- Loop text over a list, when each step depends on the prefix only by length. -/
 theorem seg_list {α : Type} (l : List α) (f : Nat → α → List Nat) (F : List α → List Nat)
     (h0 : F [] = []) (hs : ∀ xs x, F (xs ++ [x]) = F xs ++ f xs.length x) :
     seg (fun j => (l[j]?.map (f j)).getD []) 0 l.length = F l := by
@@ -277,8 +274,7 @@ elab "bpush" : tactic => withMainContext do
         pure [g']
     catch _ => pure ()
 
-/-- Side goals of a writer: bounds, and the final text. Rewrites every
-`B x` through the posts, then compares lengths or bytes. -/
+/-- Writer side goals: rewrite each `B x` through the posts, compare lengths or bytes. -/
 macro "emit" " [" ls:Lean.Parser.Tactic.simpLemma,* "]" : tactic => `(tactic| (
   bpush
   try simp only [alloc.vec.Vec.length] at *
@@ -564,8 +560,7 @@ theorem push_sets_spec (out : alloc.vec.Vec U8) (ns : alloc.vec.Vec (alloc.vec.V
   · simp only [WP.spec_ok, AppendStep]
     refine ⟨by rw [hl]; scalar_tac, trivial⟩
 
-/-- Small enough to print: the text fits in memory, and an `INSERT` has
-fewer columns than `u32` placeholders. -/
+/-- Text fits in memory; an `INSERT` has fewer columns than `u32` placeholders. -/
 def Small (s : Sql) : Prop :=
   (Pg.render s.abs).length ≤ Usize.max ∧
     match s with

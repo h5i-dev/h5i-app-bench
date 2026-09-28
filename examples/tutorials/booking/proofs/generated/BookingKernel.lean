@@ -138,7 +138,7 @@ inductive i5h_sql.Write where
 | DelWhere : Std.U32 → Std.U32 → i5h_sql.Val → i5h_sql.Write
 
 /-- [booking_kernel::Principal]
-    Source: 'examples/tutorials/booking/kernel/src/lib.rs', lines 15:0-19:1
+    Source: 'examples/tutorials/booking/kernel/src/lib.rs', lines 14:0-18:1
     Visibility: public -/
 structure Principal where
   org : Std.U64
@@ -146,13 +146,13 @@ structure Principal where
   now : Std.U64
 
 /-- [booking_kernel::Counter]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 111:12-114:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 95:12-98:13
     Visibility: public -/
 structure Counter where
   next_id : Std.U64
 
 /-- [booking_kernel::Booking]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 111:12-114:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 95:12-98:13
     Visibility: public -/
 structure Booking where
   id : Std.U64
@@ -162,14 +162,14 @@ structure Booking where
   end_at : Std.U64
 
 /-- [booking_kernel::Room]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 111:12-114:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 95:12-98:13
     Visibility: public -/
 structure Room where
   id : Std.U64
   dest : Std.U64
 
 /-- [booking_kernel::Admin]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 111:12-114:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 95:12-98:13
     Visibility: public -/
 structure Admin where
   user : Std.U64
@@ -184,52 +184,52 @@ structure Snapshot where
   bookings : alloc.vec.Vec Booking
 
 /-- [booking_kernel::{impl core::clone::Clone for booking_kernel::Counter}::clone]:
-    Source: 'examples/tutorials/booking/kernel/src/lib.rs', lines 54:13-54:18
+    Source: 'examples/tutorials/booking/kernel/src/lib.rs', lines 53:13-53:18
     Visibility: public -/
 def Counter.Insts.CoreCloneClone.clone (self : Counter) : Result Counter := do
   ok self
 
 /-- [booking_kernel::{impl core::clone::Clone for booking_kernel::Booking}::clone]:
-    Source: 'examples/tutorials/booking/kernel/src/lib.rs', lines 45:13-45:18
+    Source: 'examples/tutorials/booking/kernel/src/lib.rs', lines 44:13-44:18
     Visibility: public -/
 def Booking.Insts.CoreCloneClone.clone (self : Booking) : Result Booking := do
   ok self
 
 /-- Trait implementation: [booking_kernel::{impl core::clone::Clone for booking_kernel::Booking}]
-    Source: 'examples/tutorials/booking/kernel/src/lib.rs', lines 45:13-45:18 -/
+    Source: 'examples/tutorials/booking/kernel/src/lib.rs', lines 44:13-44:18 -/
 @[reducible]
 def Booking.Insts.CoreCloneClone : core.clone.Clone Booking := {
   clone := Booking.Insts.CoreCloneClone.clone
 }
 
 /-- [booking_kernel::{impl core::clone::Clone for booking_kernel::Room}::clone]:
-    Source: 'examples/tutorials/booking/kernel/src/lib.rs', lines 39:13-39:18
+    Source: 'examples/tutorials/booking/kernel/src/lib.rs', lines 38:13-38:18
     Visibility: public -/
 def Room.Insts.CoreCloneClone.clone (self : Room) : Result Room := do
   ok self
 
 /-- Trait implementation: [booking_kernel::{impl core::clone::Clone for booking_kernel::Room}]
-    Source: 'examples/tutorials/booking/kernel/src/lib.rs', lines 39:13-39:18 -/
+    Source: 'examples/tutorials/booking/kernel/src/lib.rs', lines 38:13-38:18 -/
 @[reducible]
 def Room.Insts.CoreCloneClone : core.clone.Clone Room := {
   clone := Room.Insts.CoreCloneClone.clone
 }
 
 /-- [booking_kernel::{impl core::clone::Clone for booking_kernel::Admin}::clone]:
-    Source: 'examples/tutorials/booking/kernel/src/lib.rs', lines 33:13-33:18
+    Source: 'examples/tutorials/booking/kernel/src/lib.rs', lines 32:13-32:18
     Visibility: public -/
 def Admin.Insts.CoreCloneClone.clone (self : Admin) : Result Admin := do
   ok self
 
 /-- Trait implementation: [booking_kernel::{impl core::clone::Clone for booking_kernel::Admin}]
-    Source: 'examples/tutorials/booking/kernel/src/lib.rs', lines 33:13-33:18 -/
+    Source: 'examples/tutorials/booking/kernel/src/lib.rs', lines 32:13-32:18 -/
 @[reducible]
 def Admin.Insts.CoreCloneClone : core.clone.Clone Admin := {
   clone := Admin.Insts.CoreCloneClone.clone
 }
 
 /-- [booking_kernel::{impl core::clone::Clone for booking_kernel::Snapshot}::clone]:
-    Source: 'examples/tutorials/booking/kernel/src/lib.rs', lines 25:13-25:18
+    Source: 'examples/tutorials/booking/kernel/src/lib.rs', lines 24:13-24:18
     Visibility: public -/
 def Snapshot.Insts.CoreCloneClone.clone
   (self : Snapshot) : Result Snapshot := do
@@ -241,7 +241,7 @@ def Snapshot.Insts.CoreCloneClone.clone
   ok { counter := c, admins := v, rooms := v1, bookings := v2 }
 
 /-- [booking_kernel::Event]
-    Source: 'examples/tutorials/booking/kernel/src/lib.rs', lines 62:0-65:1
+    Source: 'examples/tutorials/booking/kernel/src/lib.rs', lines 61:0-64:1
     Visibility: public -/
 @[discriminant isize]
 inductive Event where
@@ -249,7 +249,7 @@ inductive Event where
 | Cancelled : Event
 
 /-- [booking_kernel::Effect]
-    Source: 'examples/tutorials/booking/kernel/src/lib.rs', lines 69:0-73:1
+    Source: 'examples/tutorials/booking/kernel/src/lib.rs', lines 68:0-72:1
     Visibility: public -/
 structure Effect where
   dest : Std.U64
@@ -257,7 +257,7 @@ structure Effect where
   booking : Booking
 
 /-- [booking_kernel::Command]
-    Source: 'examples/tutorials/booking/kernel/src/lib.rs', lines 76:0-82:1
+    Source: 'examples/tutorials/booking/kernel/src/lib.rs', lines 75:0-81:1
     Visibility: public -/
 @[discriminant isize]
 inductive Command where
@@ -268,7 +268,7 @@ inductive Command where
 | List : Command
 
 /-- [booking_kernel::Write]
-    Source: 'examples/tutorials/booking/kernel/src/lib.rs', lines 85:0-92:1
+    Source: 'examples/tutorials/booking/kernel/src/lib.rs', lines 84:0-91:1
     Visibility: public -/
 @[discriminant isize]
 inductive Write where
@@ -280,13 +280,13 @@ inductive Write where
 | Emit : Effect → Write
 
 /-- [booking_kernel::{impl core::clone::Clone for booking_kernel::Write}::clone]:
-    Source: 'examples/tutorials/booking/kernel/src/lib.rs', lines 84:9-84:14
+    Source: 'examples/tutorials/booking/kernel/src/lib.rs', lines 83:9-83:14
     Visibility: public -/
 def Write.Insts.CoreCloneClone.clone (self : Write) : Result Write := do
   ok self
 
 /-- [booking_kernel::Reply]
-    Source: 'examples/tutorials/booking/kernel/src/lib.rs', lines 95:0-99:1
+    Source: 'examples/tutorials/booking/kernel/src/lib.rs', lines 94:0-98:1
     Visibility: public -/
 @[discriminant isize]
 inductive Reply where
@@ -295,7 +295,7 @@ inductive Reply where
 | Bookings : alloc.vec.Vec Booking → Reply
 
 /-- [booking_kernel::Error]
-    Source: 'examples/tutorials/booking/kernel/src/lib.rs', lines 102:0-110:1
+    Source: 'examples/tutorials/booking/kernel/src/lib.rs', lines 101:0-109:1
     Visibility: public -/
 @[discriminant isize]
 inductive Error where
@@ -308,12 +308,12 @@ inductive Error where
 | Overflow : Error
 
 /-- [booking_kernel::one]:
-    Source: 'examples/tutorials/booking/kernel/src/lib.rs', lines 114:0-118:1 -/
+    Source: 'examples/tutorials/booking/kernel/src/lib.rs', lines 113:0-117:1 -/
 def one (w : Write) : Result (alloc.vec.Vec Write) := do
   alloc.vec.Vec.push (alloc.vec.Vec.new Write) w
 
 /-- [booking_kernel::is_admin]: loop body 0:
-    Source: 'examples/tutorials/booking/kernel/src/lib.rs', lines 122:4-129:1
+    Source: 'examples/tutorials/booking/kernel/src/lib.rs', lines 121:4-128:1
     Visibility: public -/
 @[rust_loop_body]
 def is_admin_loop.body
@@ -332,7 +332,7 @@ def is_admin_loop.body
   else ok (done false)
 
 /-- [booking_kernel::is_admin]: loop 0:
-    Source: 'examples/tutorials/booking/kernel/src/lib.rs', lines 122:4-129:1
+    Source: 'examples/tutorials/booking/kernel/src/lib.rs', lines 121:4-128:1
     Visibility: public -/
 @[rust_loop]
 def is_admin_loop
@@ -344,14 +344,14 @@ def is_admin_loop
     i
 
 /-- [booking_kernel::is_admin]:
-    Source: 'examples/tutorials/booking/kernel/src/lib.rs', lines 120:0-129:1
+    Source: 'examples/tutorials/booking/kernel/src/lib.rs', lines 119:0-128:1
     Visibility: public -/
 @[reducible]
 def is_admin (v : alloc.vec.Vec Admin) (user : Std.U64) : Result Bool := do
   is_admin_loop v user 0#usize
 
 /-- [booking_kernel::find_room]: loop body 0:
-    Source: 'examples/tutorials/booking/kernel/src/lib.rs', lines 133:4-140:1
+    Source: 'examples/tutorials/booking/kernel/src/lib.rs', lines 132:4-139:1
     Visibility: public -/
 @[rust_loop_body]
 def find_room_loop.body
@@ -370,7 +370,7 @@ def find_room_loop.body
   else ok (done none)
 
 /-- [booking_kernel::find_room]: loop 0:
-    Source: 'examples/tutorials/booking/kernel/src/lib.rs', lines 133:4-140:1
+    Source: 'examples/tutorials/booking/kernel/src/lib.rs', lines 132:4-139:1
     Visibility: public -/
 @[rust_loop]
 def find_room_loop
@@ -382,7 +382,7 @@ def find_room_loop
     i
 
 /-- [booking_kernel::find_room]:
-    Source: 'examples/tutorials/booking/kernel/src/lib.rs', lines 131:0-140:1
+    Source: 'examples/tutorials/booking/kernel/src/lib.rs', lines 130:0-139:1
     Visibility: public -/
 @[reducible]
 def find_room
@@ -390,7 +390,7 @@ def find_room
   find_room_loop v id 0#usize
 
 /-- [booking_kernel::find_booking]: loop body 0:
-    Source: 'examples/tutorials/booking/kernel/src/lib.rs', lines 144:4-151:1
+    Source: 'examples/tutorials/booking/kernel/src/lib.rs', lines 143:4-150:1
     Visibility: public -/
 @[rust_loop_body]
 def find_booking_loop.body
@@ -409,7 +409,7 @@ def find_booking_loop.body
   else ok (done none)
 
 /-- [booking_kernel::find_booking]: loop 0:
-    Source: 'examples/tutorials/booking/kernel/src/lib.rs', lines 144:4-151:1
+    Source: 'examples/tutorials/booking/kernel/src/lib.rs', lines 143:4-150:1
     Visibility: public -/
 @[rust_loop]
 def find_booking_loop
@@ -421,7 +421,7 @@ def find_booking_loop
     i
 
 /-- [booking_kernel::find_booking]:
-    Source: 'examples/tutorials/booking/kernel/src/lib.rs', lines 142:0-151:1
+    Source: 'examples/tutorials/booking/kernel/src/lib.rs', lines 141:0-150:1
     Visibility: public -/
 @[reducible]
 def find_booking
@@ -429,7 +429,7 @@ def find_booking
   find_booking_loop v id 0#usize
 
 /-- [booking_kernel::free]: loop body 0:
-    Source: 'examples/tutorials/booking/kernel/src/lib.rs', lines 1:0-163:1
+    Source: 'examples/tutorials/booking/kernel/src/lib.rs', lines 1:0-162:1
     Visibility: public -/
 @[rust_loop_body]
 def free_loop.body
@@ -457,7 +457,7 @@ def free_loop.body
   else ok (done true)
 
 /-- [booking_kernel::free]: loop 0:
-    Source: 'examples/tutorials/booking/kernel/src/lib.rs', lines 1:0-163:1
+    Source: 'examples/tutorials/booking/kernel/src/lib.rs', lines 1:0-162:1
     Visibility: public -/
 @[rust_loop]
 def free_loop
@@ -470,7 +470,7 @@ def free_loop
     i
 
 /-- [booking_kernel::free]:
-    Source: 'examples/tutorials/booking/kernel/src/lib.rs', lines 154:0-163:1
+    Source: 'examples/tutorials/booking/kernel/src/lib.rs', lines 153:0-162:1
     Visibility: public -/
 @[reducible]
 def free
@@ -481,7 +481,7 @@ def free
   free_loop v room start_at end_at 0#usize
 
 /-- [booking_kernel::add_admin]:
-    Source: 'examples/tutorials/booking/kernel/src/lib.rs', lines 165:0-172:1 -/
+    Source: 'examples/tutorials/booking/kernel/src/lib.rs', lines 164:0-171:1 -/
 def add_admin
   (user : Std.U64) (s : Snapshot) (target : Std.U64) :
   Result (core.result.Result ((alloc.vec.Vec Write) × Reply) Error)
@@ -503,7 +503,7 @@ def add_admin
     else ok (core.result.Result.Err Error.Forbidden)
 
 /-- [booking_kernel::create_room]:
-    Source: 'examples/tutorials/booking/kernel/src/lib.rs', lines 174:0-186:1 -/
+    Source: 'examples/tutorials/booking/kernel/src/lib.rs', lines 173:0-185:1 -/
 def create_room
   (user : Std.U64) (s : Snapshot) (dest : Std.U64) :
   Result (core.result.Result ((alloc.vec.Vec Write) × Reply) Error)
@@ -523,7 +523,7 @@ def create_room
   else ok (core.result.Result.Err Error.Forbidden)
 
 /-- [booking_kernel::book]:
-    Source: 'examples/tutorials/booking/kernel/src/lib.rs', lines 188:0-212:1 -/
+    Source: 'examples/tutorials/booking/kernel/src/lib.rs', lines 187:0-211:1 -/
 def book
   (a : Principal) (s : Snapshot) (room : Std.U64) (start_at : Std.U64)
   (end_at : Std.U64) :
@@ -575,7 +575,7 @@ def book
         else ok (core.result.Result.Err Error.Taken)
 
 /-- [booking_kernel::cancel]:
-    Source: 'examples/tutorials/booking/kernel/src/lib.rs', lines 214:0-235:1 -/
+    Source: 'examples/tutorials/booking/kernel/src/lib.rs', lines 213:0-234:1 -/
 def cancel
   (a : Principal) (s : Snapshot) (id : Std.U64) :
   Result (core.result.Result ((alloc.vec.Vec Write) × Reply) Error)
@@ -617,7 +617,7 @@ def cancel
             ok (core.result.Result.Ok (ws1, Reply.Done))
 
 /-- [booking_kernel::transition]:
-    Source: 'examples/tutorials/booking/kernel/src/lib.rs', lines 239:0-247:1
+    Source: 'examples/tutorials/booking/kernel/src/lib.rs', lines 238:0-246:1
     Visibility: public -/
 def transition
   (actor : Principal) (s : Snapshot) (cmd : Command) :
@@ -633,7 +633,7 @@ def transition
     ok (core.result.Result.Ok (alloc.vec.Vec.new Write, Reply.Bookings v))
 
 /-- [booking_kernel::{booking_kernel::Booking}::del]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 233:16-238:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 234:16-239:17
     Visibility: public -/
 @[rust_loop_body]
 def Booking.del_loop.body
@@ -659,7 +659,7 @@ def Booking.del_loop.body
   else ok (done out)
 
 /-- [booking_kernel::{booking_kernel::Booking}::del]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 233:16-238:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 234:16-239:17
     Visibility: public -/
 @[rust_loop]
 def Booking.del_loop
@@ -672,7 +672,7 @@ def Booking.del_loop
     (out, i)
 
 /-- [booking_kernel::{booking_kernel::Booking}::del]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 230:12-240:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 231:12-241:13
     Visibility: public -/
 @[reducible]
 def Booking.del
@@ -682,7 +682,7 @@ def Booking.del
   Booking.del_loop v id (alloc.vec.Vec.new Booking) 0#usize
 
 /-- [booking_kernel::{booking_kernel::Booking}::put]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 219:16-227:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 220:16-228:13
     Visibility: public -/
 @[rust_loop_body]
 def Booking.put_loop.body
@@ -707,7 +707,7 @@ def Booking.put_loop.body
        ok (done v1)
 
 /-- [booking_kernel::{booking_kernel::Booking}::put]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 219:16-227:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 220:16-228:13
     Visibility: public -/
 @[rust_loop]
 def Booking.put_loop
@@ -719,7 +719,7 @@ def Booking.put_loop
     i
 
 /-- [booking_kernel::{booking_kernel::Booking}::put]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 217:12-227:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 218:12-228:13
     Visibility: public -/
 @[reducible]
 def Booking.put
@@ -729,7 +729,7 @@ def Booking.put
   Booking.put_loop v x 0#usize
 
 /-- [booking_kernel::{booking_kernel::Room}::put]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 219:16-227:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 220:16-228:13
     Visibility: public -/
 @[rust_loop_body]
 def Room.put_loop.body
@@ -754,7 +754,7 @@ def Room.put_loop.body
        ok (done v1)
 
 /-- [booking_kernel::{booking_kernel::Room}::put]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 219:16-227:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 220:16-228:13
     Visibility: public -/
 @[rust_loop]
 def Room.put_loop
@@ -766,7 +766,7 @@ def Room.put_loop
     i
 
 /-- [booking_kernel::{booking_kernel::Room}::put]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 217:12-227:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 218:12-228:13
     Visibility: public -/
 @[reducible]
 def Room.put
@@ -774,7 +774,7 @@ def Room.put
   Room.put_loop v x 0#usize
 
 /-- [booking_kernel::{booking_kernel::Admin}::put]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 219:16-227:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 220:16-228:13
     Visibility: public -/
 @[rust_loop_body]
 def Admin.put_loop.body
@@ -799,7 +799,7 @@ def Admin.put_loop.body
        ok (done v1)
 
 /-- [booking_kernel::{booking_kernel::Admin}::put]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 219:16-227:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 220:16-228:13
     Visibility: public -/
 @[rust_loop]
 def Admin.put_loop
@@ -811,7 +811,7 @@ def Admin.put_loop
     i
 
 /-- [booking_kernel::{booking_kernel::Admin}::put]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 217:12-227:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 218:12-228:13
     Visibility: public -/
 @[reducible]
 def Admin.put
@@ -819,7 +819,7 @@ def Admin.put
   Admin.put_loop v x 0#usize
 
 /-- [booking_kernel::apply_write]:
-    Source: 'examples/tutorials/booking/kernel/src/lib.rs', lines 251:0-261:1 -/
+    Source: 'examples/tutorials/booking/kernel/src/lib.rs', lines 249:0-259:1 -/
 def apply_write (s : Snapshot) (w : Write) : Result Snapshot := do
   match w with
   | Write.PutAdmin x =>
@@ -837,12 +837,12 @@ def apply_write (s : Snapshot) (w : Write) : Result Snapshot := do
   | Write.Emit _ => ok s
 
 /-- [booking_kernel::{booking_kernel::Booking}::TABLE]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 132:12-132:60
+    Source: 'crates/i5h-schema/src/lib.rs', lines 135:12-135:60
     Visibility: public -/
 @[global_simps, irreducible] def Booking.TABLE : Std.U32 := 2#u32
 
 /-- [booking_kernel::{booking_kernel::Booking}::sql_del]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 256:12-260:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 257:12-261:13
     Visibility: public -/
 def Booking.sql_del (id : Std.U64) : Result i5h_sql.Write := do
   let v ← U64.Insts.I5h_sqlColumn.to_val id
@@ -850,31 +850,31 @@ def Booking.sql_del (id : Std.U64) : Result i5h_sql.Write := do
   ok (i5h_sql.Write.Del Booking.TABLE key)
 
 /-- [booking_kernel::{booking_kernel::Counter}::to_row]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 135:12-140:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 138:12-143:13
     Visibility: public -/
 def Counter.to_row (self : Counter) : Result (alloc.vec.Vec i5h_sql.Val) := do
   let v ← U64.Insts.I5h_sqlColumn.to_val self.next_id
   alloc.vec.Vec.push (alloc.vec.Vec.new i5h_sql.Val) v
 
 /-- [booking_kernel::{booking_kernel::Counter}::KEY_LEN]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 133:12-133:62
+    Source: 'crates/i5h-schema/src/lib.rs', lines 136:12-136:62
     Visibility: public -/
 @[global_simps, irreducible] def Counter.KEY_LEN : Std.U32 := 0#u32
 
 /-- [booking_kernel::{booking_kernel::Counter}::TABLE]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 132:12-132:60
+    Source: 'crates/i5h-schema/src/lib.rs', lines 135:12-135:60
     Visibility: public -/
 @[global_simps, irreducible] def Counter.TABLE : Std.U32 := 3#u32
 
 /-- [booking_kernel::{booking_kernel::Counter}::sql_put]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 186:12-188:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 189:12-191:13
     Visibility: public -/
 def Counter.sql_put (self : Counter) : Result i5h_sql.Write := do
   let v ← Counter.to_row self
   ok (i5h_sql.Write.Put Counter.TABLE Counter.KEY_LEN v)
 
 /-- [booking_kernel::{booking_kernel::Booking}::to_row]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 135:12-140:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 138:12-143:13
     Visibility: public -/
 def Booking.to_row (self : Booking) : Result (alloc.vec.Vec i5h_sql.Val) := do
   let v ← U64.Insts.I5h_sqlColumn.to_val self.id
@@ -889,19 +889,19 @@ def Booking.to_row (self : Booking) : Result (alloc.vec.Vec i5h_sql.Val) := do
   alloc.vec.Vec.push out3 v4
 
 /-- [booking_kernel::{booking_kernel::Booking}::KEY_LEN]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 133:12-133:62
+    Source: 'crates/i5h-schema/src/lib.rs', lines 136:12-136:62
     Visibility: public -/
 @[global_simps, irreducible] def Booking.KEY_LEN : Std.U32 := 1#u32
 
 /-- [booking_kernel::{booking_kernel::Booking}::sql_put]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 186:12-188:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 189:12-191:13
     Visibility: public -/
 def Booking.sql_put (self : Booking) : Result i5h_sql.Write := do
   let v ← Booking.to_row self
   ok (i5h_sql.Write.Put Booking.TABLE Booking.KEY_LEN v)
 
 /-- [booking_kernel::{booking_kernel::Room}::to_row]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 135:12-140:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 138:12-143:13
     Visibility: public -/
 def Room.to_row (self : Room) : Result (alloc.vec.Vec i5h_sql.Val) := do
   let v ← U64.Insts.I5h_sqlColumn.to_val self.id
@@ -910,48 +910,48 @@ def Room.to_row (self : Room) : Result (alloc.vec.Vec i5h_sql.Val) := do
   alloc.vec.Vec.push out v1
 
 /-- [booking_kernel::{booking_kernel::Room}::KEY_LEN]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 133:12-133:62
+    Source: 'crates/i5h-schema/src/lib.rs', lines 136:12-136:62
     Visibility: public -/
 @[global_simps, irreducible] def Room.KEY_LEN : Std.U32 := 1#u32
 
 /-- [booking_kernel::{booking_kernel::Room}::TABLE]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 132:12-132:60
+    Source: 'crates/i5h-schema/src/lib.rs', lines 135:12-135:60
     Visibility: public -/
 @[global_simps, irreducible] def Room.TABLE : Std.U32 := 1#u32
 
 /-- [booking_kernel::{booking_kernel::Room}::sql_put]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 186:12-188:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 189:12-191:13
     Visibility: public -/
 def Room.sql_put (self : Room) : Result i5h_sql.Write := do
   let v ← Room.to_row self
   ok (i5h_sql.Write.Put Room.TABLE Room.KEY_LEN v)
 
 /-- [booking_kernel::{booking_kernel::Admin}::to_row]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 135:12-140:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 138:12-143:13
     Visibility: public -/
 def Admin.to_row (self : Admin) : Result (alloc.vec.Vec i5h_sql.Val) := do
   let v ← U64.Insts.I5h_sqlColumn.to_val self.user
   alloc.vec.Vec.push (alloc.vec.Vec.new i5h_sql.Val) v
 
 /-- [booking_kernel::{booking_kernel::Admin}::KEY_LEN]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 133:12-133:62
+    Source: 'crates/i5h-schema/src/lib.rs', lines 136:12-136:62
     Visibility: public -/
 @[global_simps, irreducible] def Admin.KEY_LEN : Std.U32 := 1#u32
 
 /-- [booking_kernel::{booking_kernel::Admin}::TABLE]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 132:12-132:60
+    Source: 'crates/i5h-schema/src/lib.rs', lines 135:12-135:60
     Visibility: public -/
 @[global_simps, irreducible] def Admin.TABLE : Std.U32 := 0#u32
 
 /-- [booking_kernel::{booking_kernel::Admin}::sql_put]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 186:12-188:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 189:12-191:13
     Visibility: public -/
 def Admin.sql_put (self : Admin) : Result i5h_sql.Write := do
   let v ← Admin.to_row self
   ok (i5h_sql.Write.Put Admin.TABLE Admin.KEY_LEN v)
 
 /-- [booking_kernel::sql_write]:
-    Source: 'examples/tutorials/booking/kernel/src/lib.rs', lines 264:0-273:1 -/
+    Source: 'examples/tutorials/booking/kernel/src/lib.rs', lines 262:0-271:1 -/
 def sql_write
   (w : Write) (out : alloc.vec.Vec i5h_sql.Write) :
   Result (alloc.vec.Vec i5h_sql.Write)
@@ -973,7 +973,7 @@ def sql_write
   | Write.Emit _ => ok out
 
 /-- [booking_kernel::{booking_kernel::Counter}::from_row]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 143:12-164:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 146:12-167:13
     Visibility: public -/
 def Counter.from_row
   (row : alloc.vec.Vec i5h_sql.Val) : Result (Option Counter) := do
@@ -991,7 +991,7 @@ def Counter.from_row
     | some x => ok (some { next_id := x })
 
 /-- [booking_kernel::{booking_kernel::Admin}::from_row]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 143:12-164:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 146:12-167:13
     Visibility: public -/
 def Admin.from_row
   (row : alloc.vec.Vec i5h_sql.Val) : Result (Option Admin) := do
@@ -1009,7 +1009,7 @@ def Admin.from_row
     | some x => ok (some { user := x })
 
 /-- [booking_kernel::{booking_kernel::Room}::from_row]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 143:12-164:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 146:12-167:13
     Visibility: public -/
 def Room.from_row
   (row : alloc.vec.Vec i5h_sql.Val) : Result (Option Room) := do
@@ -1036,7 +1036,7 @@ def Room.from_row
                    ok (some { id := x, dest := x1 })
 
 /-- [booking_kernel::{booking_kernel::Booking}::from_row]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 143:12-164:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 146:12-167:13
     Visibility: public -/
 def Booking.from_row
   (row : alloc.vec.Vec i5h_sql.Val) : Result (Option Booking) := do
@@ -1093,7 +1093,7 @@ def Booking.from_row
                 })
 
 /-- [booking_kernel::{booking_kernel::Admin}::from_rows]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 174:16-180:17
     Visibility: public -/
 @[rust_loop_body]
 def Admin.from_rows_loop.body
@@ -1120,7 +1120,7 @@ def Admin.from_rows_loop.body
   else ok (done (out, ok1))
 
 /-- [booking_kernel::{booking_kernel::Admin}::from_rows]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 174:16-180:17
     Visibility: public -/
 @[rust_loop]
 def Admin.from_rows_loop
@@ -1133,7 +1133,7 @@ def Admin.from_rows_loop
     (out, ok1, i)
 
 /-- [booking_kernel::{booking_kernel::Admin}::from_rows]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 167:12-183:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 170:12-186:13
     Visibility: public -/
 def Admin.from_rows
   (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)) :
@@ -1146,7 +1146,7 @@ def Admin.from_rows
   else ok none
 
 /-- [booking_kernel::{booking_kernel::Room}::from_rows]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 174:16-180:17
     Visibility: public -/
 @[rust_loop_body]
 def Room.from_rows_loop.body
@@ -1173,7 +1173,7 @@ def Room.from_rows_loop.body
   else ok (done (out, ok1))
 
 /-- [booking_kernel::{booking_kernel::Room}::from_rows]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 174:16-180:17
     Visibility: public -/
 @[rust_loop]
 def Room.from_rows_loop
@@ -1186,7 +1186,7 @@ def Room.from_rows_loop
     (out, ok1, i)
 
 /-- [booking_kernel::{booking_kernel::Room}::from_rows]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 167:12-183:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 170:12-186:13
     Visibility: public -/
 def Room.from_rows
   (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)) :
@@ -1199,7 +1199,7 @@ def Room.from_rows
   else ok none
 
 /-- [booking_kernel::{booking_kernel::Booking}::from_rows]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 174:16-180:17
     Visibility: public -/
 @[rust_loop_body]
 def Booking.from_rows_loop.body
@@ -1226,7 +1226,7 @@ def Booking.from_rows_loop.body
   else ok (done (out, ok1))
 
 /-- [booking_kernel::{booking_kernel::Booking}::from_rows]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 174:16-180:17
     Visibility: public -/
 @[rust_loop]
 def Booking.from_rows_loop
@@ -1239,7 +1239,7 @@ def Booking.from_rows_loop
     (out, ok1, i)
 
 /-- [booking_kernel::{booking_kernel::Booking}::from_rows]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 167:12-183:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 170:12-186:13
     Visibility: public -/
 def Booking.from_rows
   (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)) :
@@ -1252,7 +1252,7 @@ def Booking.from_rows
   else ok none
 
 /-- [booking_kernel::{booking_kernel::Counter}::from_rows]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 174:16-180:17
     Visibility: public -/
 @[rust_loop_body]
 def Counter.from_rows_loop.body
@@ -1279,7 +1279,7 @@ def Counter.from_rows_loop.body
   else ok (done (out, ok1))
 
 /-- [booking_kernel::{booking_kernel::Counter}::from_rows]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 174:16-180:17
     Visibility: public -/
 @[rust_loop]
 def Counter.from_rows_loop
@@ -1292,7 +1292,7 @@ def Counter.from_rows_loop
     (out, ok1, i)
 
 /-- [booking_kernel::{booking_kernel::Counter}::from_rows]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 167:12-183:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 170:12-186:13
     Visibility: public -/
 def Counter.from_rows
   (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)) :
@@ -1305,7 +1305,7 @@ def Counter.from_rows
   else ok none
 
 /-- [booking_kernel::{booking_kernel::Counter}::from_one]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 203:12-211:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 204:12-212:13
     Visibility: public -/
 def Counter.from_one
   (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)) :
@@ -1326,7 +1326,7 @@ def Counter.from_one
     else ok none
 
 /-- [booking_kernel::{booking_kernel::Admin}::del]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 233:16-238:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 234:16-239:17
     Visibility: public -/
 @[rust_loop_body]
 def Admin.del_loop.body
@@ -1352,7 +1352,7 @@ def Admin.del_loop.body
   else ok (done out)
 
 /-- [booking_kernel::{booking_kernel::Admin}::del]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 233:16-238:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 234:16-239:17
     Visibility: public -/
 @[rust_loop]
 def Admin.del_loop
@@ -1365,7 +1365,7 @@ def Admin.del_loop
     (out, i)
 
 /-- [booking_kernel::{booking_kernel::Admin}::del]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 230:12-240:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 231:12-241:13
     Visibility: public -/
 @[reducible]
 def Admin.del
@@ -1375,7 +1375,7 @@ def Admin.del
   Admin.del_loop v user (alloc.vec.Vec.new Admin) 0#usize
 
 /-- [booking_kernel::{booking_kernel::Room}::del]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 233:16-238:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 234:16-239:17
     Visibility: public -/
 @[rust_loop_body]
 def Room.del_loop.body
@@ -1400,7 +1400,7 @@ def Room.del_loop.body
   else ok (done out)
 
 /-- [booking_kernel::{booking_kernel::Room}::del]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 233:16-238:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 234:16-239:17
     Visibility: public -/
 @[rust_loop]
 def Room.del_loop
@@ -1413,7 +1413,7 @@ def Room.del_loop
     (out, i)
 
 /-- [booking_kernel::{booking_kernel::Room}::del]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 230:12-240:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 231:12-241:13
     Visibility: public -/
 @[reducible]
 def Room.del
@@ -1421,7 +1421,7 @@ def Room.del
   Room.del_loop v id (alloc.vec.Vec.new Room) 0#usize
 
 /-- [booking_kernel::{booking_kernel::Admin}::del_where]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 246:16-251:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 247:16-252:17
     Visibility: public -/
 @[rust_loop_body]
 def Admin.del_where_loop.body
@@ -1449,7 +1449,7 @@ def Admin.del_where_loop.body
   else ok (done out)
 
 /-- [booking_kernel::{booking_kernel::Admin}::del_where]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 246:16-251:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 247:16-252:17
     Visibility: public -/
 @[rust_loop]
 def Admin.del_where_loop
@@ -1462,7 +1462,7 @@ def Admin.del_where_loop
     (out, i)
 
 /-- [booking_kernel::{booking_kernel::Admin}::del_where]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 243:12-253:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 244:12-254:13
     Visibility: public -/
 @[reducible]
 def Admin.del_where
@@ -1472,7 +1472,7 @@ def Admin.del_where
   Admin.del_where_loop v col val (alloc.vec.Vec.new Admin) 0#usize
 
 /-- [booking_kernel::{booking_kernel::Room}::del_where]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 246:16-251:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 247:16-252:17
     Visibility: public -/
 @[rust_loop_body]
 def Room.del_where_loop.body
@@ -1499,7 +1499,7 @@ def Room.del_where_loop.body
   else ok (done out)
 
 /-- [booking_kernel::{booking_kernel::Room}::del_where]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 246:16-251:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 247:16-252:17
     Visibility: public -/
 @[rust_loop]
 def Room.del_where_loop
@@ -1512,7 +1512,7 @@ def Room.del_where_loop
     (out, i)
 
 /-- [booking_kernel::{booking_kernel::Room}::del_where]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 243:12-253:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 244:12-254:13
     Visibility: public -/
 @[reducible]
 def Room.del_where
@@ -1522,7 +1522,7 @@ def Room.del_where
   Room.del_where_loop v col val (alloc.vec.Vec.new Room) 0#usize
 
 /-- [booking_kernel::{booking_kernel::Booking}::del_where]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 246:16-251:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 247:16-252:17
     Visibility: public -/
 @[rust_loop_body]
 def Booking.del_where_loop.body
@@ -1550,7 +1550,7 @@ def Booking.del_where_loop.body
   else ok (done out)
 
 /-- [booking_kernel::{booking_kernel::Booking}::del_where]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 246:16-251:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 247:16-252:17
     Visibility: public -/
 @[rust_loop]
 def Booking.del_where_loop
@@ -1563,7 +1563,7 @@ def Booking.del_where_loop
     (out, i)
 
 /-- [booking_kernel::{booking_kernel::Booking}::del_where]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 243:12-253:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 244:12-254:13
     Visibility: public -/
 @[reducible]
 def Booking.del_where
@@ -1573,7 +1573,7 @@ def Booking.del_where
   Booking.del_where_loop v col val (alloc.vec.Vec.new Booking) 0#usize
 
 /-- [booking_kernel::{booking_kernel::Admin}::sql_del]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 256:12-260:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 257:12-261:13
     Visibility: public -/
 def Admin.sql_del (user : Std.U64) : Result i5h_sql.Write := do
   let v ← U64.Insts.I5h_sqlColumn.to_val user
@@ -1581,7 +1581,7 @@ def Admin.sql_del (user : Std.U64) : Result i5h_sql.Write := do
   ok (i5h_sql.Write.Del Admin.TABLE key)
 
 /-- [booking_kernel::{booking_kernel::Room}::sql_del]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 256:12-260:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 257:12-261:13
     Visibility: public -/
 def Room.sql_del (id : Std.U64) : Result i5h_sql.Write := do
   let v ← U64.Insts.I5h_sqlColumn.to_val id
@@ -1589,28 +1589,28 @@ def Room.sql_del (id : Std.U64) : Result i5h_sql.Write := do
   ok (i5h_sql.Write.Del Room.TABLE key)
 
 /-- [booking_kernel::{booking_kernel::Admin}::sql_del_where]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 263:12-265:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 264:12-266:13
     Visibility: public -/
 def Admin.sql_del_where
   (col : Std.U32) (val : i5h_sql.Val) : Result i5h_sql.Write := do
   ok (i5h_sql.Write.DelWhere Admin.TABLE col val)
 
 /-- [booking_kernel::{booking_kernel::Room}::sql_del_where]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 263:12-265:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 264:12-266:13
     Visibility: public -/
 def Room.sql_del_where
   (col : Std.U32) (val : i5h_sql.Val) : Result i5h_sql.Write := do
   ok (i5h_sql.Write.DelWhere Room.TABLE col val)
 
 /-- [booking_kernel::{booking_kernel::Booking}::sql_del_where]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 263:12-265:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 264:12-266:13
     Visibility: public -/
 def Booking.sql_del_where
   (col : Std.U32) (val : i5h_sql.Val) : Result i5h_sql.Write := do
   ok (i5h_sql.Write.DelWhere Booking.TABLE col val)
 
 /-- [booking_kernel::Rows]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 285:8-287:9
+    Source: 'crates/i5h-schema/src/lib.rs', lines 284:8-286:9
     Visibility: public -/
 structure Rows where
   counter : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)
@@ -1619,7 +1619,7 @@ structure Rows where
   bookings : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)
 
 /-- [booking_kernel::decode]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 290:8-298:9
+    Source: 'crates/i5h-schema/src/lib.rs', lines 289:8-297:9
     Visibility: public -/
 def decode (r : Rows) : Result (Option Snapshot) := do
   let o ← Counter.from_one r.counter
@@ -1641,7 +1641,7 @@ def decode (r : Rows) : Result (Option Snapshot) := do
           ok (some { counter := x, admins := x1, rooms := x2, bookings := x3 })
 
 /-- [booking_kernel::apply]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 308:12-311:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 306:12-309:13
     Visibility: public -/
 @[rust_loop_body]
 def apply_loop.body
@@ -1660,7 +1660,7 @@ def apply_loop.body
   else ok (done s)
 
 /-- [booking_kernel::apply]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 308:12-311:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 306:12-309:13
     Visibility: public -/
 @[rust_loop]
 def apply_loop
@@ -1672,14 +1672,14 @@ def apply_loop
     (s, i)
 
 /-- [booking_kernel::apply]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 305:8-313:9
+    Source: 'crates/i5h-schema/src/lib.rs', lines 303:8-311:9
     Visibility: public -/
 def apply (snap : Snapshot) (ws : alloc.vec.Vec Write) : Result Snapshot := do
   let s ← Snapshot.Insts.CoreCloneClone.clone snap
   apply_loop ws s 0#usize
 
 /-- [booking_kernel::sql_writes]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 320:12-323:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 317:12-320:13
     Visibility: public -/
 @[rust_loop_body]
 def sql_writes_loop.body
@@ -1699,7 +1699,7 @@ def sql_writes_loop.body
   else ok (done out)
 
 /-- [booking_kernel::sql_writes]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 320:12-323:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 317:12-320:13
     Visibility: public -/
 @[rust_loop]
 def sql_writes_loop
@@ -1712,7 +1712,7 @@ def sql_writes_loop
     (out, i)
 
 /-- [booking_kernel::sql_writes]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 317:8-325:9
+    Source: 'crates/i5h-schema/src/lib.rs', lines 314:8-322:9
     Visibility: public -/
 @[reducible]
 def sql_writes

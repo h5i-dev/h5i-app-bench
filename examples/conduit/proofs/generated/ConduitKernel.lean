@@ -171,7 +171,7 @@ structure Principal where
   user : Std.U64
 
 /-- [conduit_kernel::Counter]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 111:12-114:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 95:12-98:13
     Visibility: public -/
 structure Counter where
   last_user : Std.U64
@@ -179,7 +179,7 @@ structure Counter where
   last_comment : Std.U64
 
 /-- [conduit_kernel::Comment]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 111:12-114:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 95:12-98:13
     Visibility: public -/
 structure Comment where
   id : Std.U64
@@ -189,21 +189,21 @@ structure Comment where
   created : Std.U64
 
 /-- [conduit_kernel::Favorite]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 111:12-114:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 95:12-98:13
     Visibility: public -/
 structure Favorite where
   article : Std.U64
   user : Std.U64
 
 /-- [conduit_kernel::Tag]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 111:12-114:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 95:12-98:13
     Visibility: public -/
 structure Tag where
   article : Std.U64
   tag : alloc.vec.Vec Std.U8
 
 /-- [conduit_kernel::Article]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 111:12-114:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 95:12-98:13
     Visibility: public -/
 structure Article where
   id : Std.U64
@@ -216,14 +216,14 @@ structure Article where
   updated : Std.U64
 
 /-- [conduit_kernel::Follow]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 111:12-114:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 95:12-98:13
     Visibility: public -/
 structure Follow where
   follower : Std.U64
   followed : Std.U64
 
 /-- [conduit_kernel::User]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 111:12-114:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 95:12-98:13
     Visibility: public -/
 structure User where
   id : Std.U64
@@ -2376,7 +2376,7 @@ def transition_upstream
 @[global_simps, irreducible] def COMMENT_ARTICLE : Std.U32 := 1#u32
 
 /-- [conduit_kernel::{conduit_kernel::Comment}::to_row]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 135:12-140:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 138:12-143:13
     Visibility: public -/
 def Comment.to_row (self : Comment) : Result (alloc.vec.Vec i5h_sql.Val) := do
   let v ← U64.Insts.I5h_sqlColumn.to_val self.id
@@ -2391,7 +2391,7 @@ def Comment.to_row (self : Comment) : Result (alloc.vec.Vec i5h_sql.Val) := do
   alloc.vec.Vec.push out3 v4
 
 /-- [conduit_kernel::{conduit_kernel::Comment}::del_where]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 246:16-251:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 247:16-252:17
     Visibility: public -/
 @[rust_loop_body]
 def Comment.del_where_loop.body
@@ -2419,7 +2419,7 @@ def Comment.del_where_loop.body
   else ok (done out)
 
 /-- [conduit_kernel::{conduit_kernel::Comment}::del_where]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 246:16-251:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 247:16-252:17
     Visibility: public -/
 @[rust_loop]
 def Comment.del_where_loop
@@ -2432,7 +2432,7 @@ def Comment.del_where_loop
     (out, i)
 
 /-- [conduit_kernel::{conduit_kernel::Comment}::del_where]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 243:12-253:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 244:12-254:13
     Visibility: public -/
 @[reducible]
 def Comment.del_where
@@ -2442,7 +2442,7 @@ def Comment.del_where
   Comment.del_where_loop v col val (alloc.vec.Vec.new Comment) 0#usize
 
 /-- [conduit_kernel::{conduit_kernel::Favorite}::to_row]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 135:12-140:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 138:12-143:13
     Visibility: public -/
 def Favorite.to_row
   (self : Favorite) : Result (alloc.vec.Vec i5h_sql.Val) := do
@@ -2452,7 +2452,7 @@ def Favorite.to_row
   alloc.vec.Vec.push out v1
 
 /-- [conduit_kernel::{conduit_kernel::Favorite}::del_where]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 246:16-251:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 247:16-252:17
     Visibility: public -/
 @[rust_loop_body]
 def Favorite.del_where_loop.body
@@ -2480,7 +2480,7 @@ def Favorite.del_where_loop.body
   else ok (done out)
 
 /-- [conduit_kernel::{conduit_kernel::Favorite}::del_where]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 246:16-251:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 247:16-252:17
     Visibility: public -/
 @[rust_loop]
 def Favorite.del_where_loop
@@ -2493,7 +2493,7 @@ def Favorite.del_where_loop
     (out, i)
 
 /-- [conduit_kernel::{conduit_kernel::Favorite}::del_where]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 243:12-253:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 244:12-254:13
     Visibility: public -/
 @[reducible]
 def Favorite.del_where
@@ -2503,7 +2503,7 @@ def Favorite.del_where
   Favorite.del_where_loop v col val (alloc.vec.Vec.new Favorite) 0#usize
 
 /-- [conduit_kernel::{conduit_kernel::Tag}::to_row]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 135:12-140:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 138:12-143:13
     Visibility: public -/
 def Tag.to_row (self : Tag) : Result (alloc.vec.Vec i5h_sql.Val) := do
   let v ← U64.Insts.I5h_sqlColumn.to_val self.article
@@ -2512,7 +2512,7 @@ def Tag.to_row (self : Tag) : Result (alloc.vec.Vec i5h_sql.Val) := do
   alloc.vec.Vec.push out v1
 
 /-- [conduit_kernel::{conduit_kernel::Tag}::del_where]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 246:16-251:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 247:16-252:17
     Visibility: public -/
 @[rust_loop_body]
 def Tag.del_where_loop.body
@@ -2539,7 +2539,7 @@ def Tag.del_where_loop.body
   else ok (done out)
 
 /-- [conduit_kernel::{conduit_kernel::Tag}::del_where]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 246:16-251:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 247:16-252:17
     Visibility: public -/
 @[rust_loop]
 def Tag.del_where_loop
@@ -2552,7 +2552,7 @@ def Tag.del_where_loop
     (out, i)
 
 /-- [conduit_kernel::{conduit_kernel::Tag}::del_where]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 243:12-253:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 244:12-254:13
     Visibility: public -/
 @[reducible]
 def Tag.del_where
@@ -2562,7 +2562,7 @@ def Tag.del_where
   Tag.del_where_loop v col val (alloc.vec.Vec.new Tag) 0#usize
 
 /-- [conduit_kernel::{conduit_kernel::Comment}::del]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 233:16-238:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 234:16-239:17
     Visibility: public -/
 @[rust_loop_body]
 def Comment.del_loop.body
@@ -2588,7 +2588,7 @@ def Comment.del_loop.body
   else ok (done out)
 
 /-- [conduit_kernel::{conduit_kernel::Comment}::del]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 233:16-238:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 234:16-239:17
     Visibility: public -/
 @[rust_loop]
 def Comment.del_loop
@@ -2601,7 +2601,7 @@ def Comment.del_loop
     (out, i)
 
 /-- [conduit_kernel::{conduit_kernel::Comment}::del]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 230:12-240:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 231:12-241:13
     Visibility: public -/
 @[reducible]
 def Comment.del
@@ -2611,7 +2611,7 @@ def Comment.del
   Comment.del_loop v id (alloc.vec.Vec.new Comment) 0#usize
 
 /-- [conduit_kernel::{conduit_kernel::Favorite}::del]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 233:16-238:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 234:16-239:17
     Visibility: public -/
 @[rust_loop_body]
 def Favorite.del_loop.body
@@ -2643,7 +2643,7 @@ def Favorite.del_loop.body
   else ok (done out)
 
 /-- [conduit_kernel::{conduit_kernel::Favorite}::del]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 233:16-238:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 234:16-239:17
     Visibility: public -/
 @[rust_loop]
 def Favorite.del_loop
@@ -2656,7 +2656,7 @@ def Favorite.del_loop
     (out, i)
 
 /-- [conduit_kernel::{conduit_kernel::Favorite}::del]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 230:12-240:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 231:12-241:13
     Visibility: public -/
 @[reducible]
 def Favorite.del
@@ -2666,7 +2666,7 @@ def Favorite.del
   Favorite.del_loop v article user (alloc.vec.Vec.new Favorite) 0#usize
 
 /-- [conduit_kernel::{conduit_kernel::Article}::del]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 233:16-238:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 234:16-239:17
     Visibility: public -/
 @[rust_loop_body]
 def Article.del_loop.body
@@ -2692,7 +2692,7 @@ def Article.del_loop.body
   else ok (done out)
 
 /-- [conduit_kernel::{conduit_kernel::Article}::del]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 233:16-238:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 234:16-239:17
     Visibility: public -/
 @[rust_loop]
 def Article.del_loop
@@ -2705,7 +2705,7 @@ def Article.del_loop
     (out, i)
 
 /-- [conduit_kernel::{conduit_kernel::Article}::del]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 230:12-240:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 231:12-241:13
     Visibility: public -/
 @[reducible]
 def Article.del
@@ -2715,7 +2715,7 @@ def Article.del
   Article.del_loop v id (alloc.vec.Vec.new Article) 0#usize
 
 /-- [conduit_kernel::{conduit_kernel::Follow}::del]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 233:16-238:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 234:16-239:17
     Visibility: public -/
 @[rust_loop_body]
 def Follow.del_loop.body
@@ -2747,7 +2747,7 @@ def Follow.del_loop.body
   else ok (done out)
 
 /-- [conduit_kernel::{conduit_kernel::Follow}::del]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 233:16-238:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 234:16-239:17
     Visibility: public -/
 @[rust_loop]
 def Follow.del_loop
@@ -2760,7 +2760,7 @@ def Follow.del_loop
     (out, i)
 
 /-- [conduit_kernel::{conduit_kernel::Follow}::del]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 230:12-240:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 231:12-241:13
     Visibility: public -/
 @[reducible]
 def Follow.del
@@ -2770,7 +2770,7 @@ def Follow.del
   Follow.del_loop v follower followed (alloc.vec.Vec.new Follow) 0#usize
 
 /-- [conduit_kernel::{conduit_kernel::Comment}::put]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 219:16-227:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 220:16-228:13
     Visibility: public -/
 @[rust_loop_body]
 def Comment.put_loop.body
@@ -2795,7 +2795,7 @@ def Comment.put_loop.body
        ok (done v1)
 
 /-- [conduit_kernel::{conduit_kernel::Comment}::put]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 219:16-227:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 220:16-228:13
     Visibility: public -/
 @[rust_loop]
 def Comment.put_loop
@@ -2807,7 +2807,7 @@ def Comment.put_loop
     i
 
 /-- [conduit_kernel::{conduit_kernel::Comment}::put]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 217:12-227:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 218:12-228:13
     Visibility: public -/
 @[reducible]
 def Comment.put
@@ -2817,7 +2817,7 @@ def Comment.put
   Comment.put_loop v x 0#usize
 
 /-- [conduit_kernel::{conduit_kernel::Favorite}::put]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 219:16-227:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 220:16-228:13
     Visibility: public -/
 @[rust_loop_body]
 def Favorite.put_loop.body
@@ -2846,7 +2846,7 @@ def Favorite.put_loop.body
        ok (done v1)
 
 /-- [conduit_kernel::{conduit_kernel::Favorite}::put]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 219:16-227:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 220:16-228:13
     Visibility: public -/
 @[rust_loop]
 def Favorite.put_loop
@@ -2858,7 +2858,7 @@ def Favorite.put_loop
     i
 
 /-- [conduit_kernel::{conduit_kernel::Favorite}::put]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 217:12-227:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 218:12-228:13
     Visibility: public -/
 @[reducible]
 def Favorite.put
@@ -2868,7 +2868,7 @@ def Favorite.put
   Favorite.put_loop v x 0#usize
 
 /-- [conduit_kernel::{conduit_kernel::Tag}::put]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 219:16-227:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 220:16-228:13
     Visibility: public -/
 @[rust_loop_body]
 def Tag.put_loop.body
@@ -2899,7 +2899,7 @@ def Tag.put_loop.body
        ok (done v1)
 
 /-- [conduit_kernel::{conduit_kernel::Tag}::put]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 219:16-227:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 220:16-228:13
     Visibility: public -/
 @[rust_loop]
 def Tag.put_loop
@@ -2911,7 +2911,7 @@ def Tag.put_loop
     i
 
 /-- [conduit_kernel::{conduit_kernel::Tag}::put]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 217:12-227:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 218:12-228:13
     Visibility: public -/
 @[reducible]
 def Tag.put
@@ -2919,7 +2919,7 @@ def Tag.put
   Tag.put_loop v x 0#usize
 
 /-- [conduit_kernel::{conduit_kernel::Article}::put]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 219:16-227:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 220:16-228:13
     Visibility: public -/
 @[rust_loop_body]
 def Article.put_loop.body
@@ -2944,7 +2944,7 @@ def Article.put_loop.body
        ok (done v1)
 
 /-- [conduit_kernel::{conduit_kernel::Article}::put]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 219:16-227:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 220:16-228:13
     Visibility: public -/
 @[rust_loop]
 def Article.put_loop
@@ -2956,7 +2956,7 @@ def Article.put_loop
     i
 
 /-- [conduit_kernel::{conduit_kernel::Article}::put]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 217:12-227:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 218:12-228:13
     Visibility: public -/
 @[reducible]
 def Article.put
@@ -2966,7 +2966,7 @@ def Article.put
   Article.put_loop v x 0#usize
 
 /-- [conduit_kernel::{conduit_kernel::Follow}::put]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 219:16-227:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 220:16-228:13
     Visibility: public -/
 @[rust_loop_body]
 def Follow.put_loop.body
@@ -2995,7 +2995,7 @@ def Follow.put_loop.body
        ok (done v1)
 
 /-- [conduit_kernel::{conduit_kernel::Follow}::put]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 219:16-227:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 220:16-228:13
     Visibility: public -/
 @[rust_loop]
 def Follow.put_loop
@@ -3007,7 +3007,7 @@ def Follow.put_loop
     i
 
 /-- [conduit_kernel::{conduit_kernel::Follow}::put]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 217:12-227:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 218:12-228:13
     Visibility: public -/
 @[reducible]
 def Follow.put
@@ -3015,7 +3015,7 @@ def Follow.put
   Follow.put_loop v x 0#usize
 
 /-- [conduit_kernel::{conduit_kernel::User}::put]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 219:16-227:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 220:16-228:13
     Visibility: public -/
 @[rust_loop_body]
 def User.put_loop.body
@@ -3040,7 +3040,7 @@ def User.put_loop.body
        ok (done v1)
 
 /-- [conduit_kernel::{conduit_kernel::User}::put]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 219:16-227:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 220:16-228:13
     Visibility: public -/
 @[rust_loop]
 def User.put_loop
@@ -3052,7 +3052,7 @@ def User.put_loop
     i
 
 /-- [conduit_kernel::{conduit_kernel::User}::put]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 217:12-227:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 218:12-228:13
     Visibility: public -/
 @[reducible]
 def User.put
@@ -3106,43 +3106,43 @@ def apply_write (s : Snapshot) (w : Write) : Result Snapshot := do
   | Write.SetCounter c => ok { s with counter := c }
 
 /-- [conduit_kernel::{conduit_kernel::Comment}::TABLE]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 132:12-132:60
+    Source: 'crates/i5h-schema/src/lib.rs', lines 135:12-135:60
     Visibility: public -/
 @[global_simps, irreducible] def Comment.TABLE : Std.U32 := 5#u32
 
 /-- [conduit_kernel::{conduit_kernel::Comment}::sql_del_where]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 263:12-265:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 264:12-266:13
     Visibility: public -/
 def Comment.sql_del_where
   (col : Std.U32) (val : i5h_sql.Val) : Result i5h_sql.Write := do
   ok (i5h_sql.Write.DelWhere Comment.TABLE col val)
 
 /-- [conduit_kernel::{conduit_kernel::Favorite}::TABLE]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 132:12-132:60
+    Source: 'crates/i5h-schema/src/lib.rs', lines 135:12-135:60
     Visibility: public -/
 @[global_simps, irreducible] def Favorite.TABLE : Std.U32 := 4#u32
 
 /-- [conduit_kernel::{conduit_kernel::Favorite}::sql_del_where]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 263:12-265:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 264:12-266:13
     Visibility: public -/
 def Favorite.sql_del_where
   (col : Std.U32) (val : i5h_sql.Val) : Result i5h_sql.Write := do
   ok (i5h_sql.Write.DelWhere Favorite.TABLE col val)
 
 /-- [conduit_kernel::{conduit_kernel::Tag}::TABLE]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 132:12-132:60
+    Source: 'crates/i5h-schema/src/lib.rs', lines 135:12-135:60
     Visibility: public -/
 @[global_simps, irreducible] def Tag.TABLE : Std.U32 := 3#u32
 
 /-- [conduit_kernel::{conduit_kernel::Tag}::sql_del_where]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 263:12-265:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 264:12-266:13
     Visibility: public -/
 def Tag.sql_del_where
   (col : Std.U32) (val : i5h_sql.Val) : Result i5h_sql.Write := do
   ok (i5h_sql.Write.DelWhere Tag.TABLE col val)
 
 /-- [conduit_kernel::{conduit_kernel::Comment}::sql_del]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 256:12-260:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 257:12-261:13
     Visibility: public -/
 def Comment.sql_del (id : Std.U64) : Result i5h_sql.Write := do
   let v ← U64.Insts.I5h_sqlColumn.to_val id
@@ -3150,7 +3150,7 @@ def Comment.sql_del (id : Std.U64) : Result i5h_sql.Write := do
   ok (i5h_sql.Write.Del Comment.TABLE key)
 
 /-- [conduit_kernel::{conduit_kernel::Favorite}::sql_del]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 256:12-260:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 257:12-261:13
     Visibility: public -/
 def Favorite.sql_del
   (article : Std.U64) (user : Std.U64) : Result i5h_sql.Write := do
@@ -3161,12 +3161,12 @@ def Favorite.sql_del
   ok (i5h_sql.Write.Del Favorite.TABLE key1)
 
 /-- [conduit_kernel::{conduit_kernel::Article}::TABLE]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 132:12-132:60
+    Source: 'crates/i5h-schema/src/lib.rs', lines 135:12-135:60
     Visibility: public -/
 @[global_simps, irreducible] def Article.TABLE : Std.U32 := 2#u32
 
 /-- [conduit_kernel::{conduit_kernel::Article}::sql_del]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 256:12-260:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 257:12-261:13
     Visibility: public -/
 def Article.sql_del (id : Std.U64) : Result i5h_sql.Write := do
   let v ← U64.Insts.I5h_sqlColumn.to_val id
@@ -3174,12 +3174,12 @@ def Article.sql_del (id : Std.U64) : Result i5h_sql.Write := do
   ok (i5h_sql.Write.Del Article.TABLE key)
 
 /-- [conduit_kernel::{conduit_kernel::Follow}::TABLE]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 132:12-132:60
+    Source: 'crates/i5h-schema/src/lib.rs', lines 135:12-135:60
     Visibility: public -/
 @[global_simps, irreducible] def Follow.TABLE : Std.U32 := 1#u32
 
 /-- [conduit_kernel::{conduit_kernel::Follow}::sql_del]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 256:12-260:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 257:12-261:13
     Visibility: public -/
 def Follow.sql_del
   (follower : Std.U64) (followed : Std.U64) : Result i5h_sql.Write := do
@@ -3190,7 +3190,7 @@ def Follow.sql_del
   ok (i5h_sql.Write.Del Follow.TABLE key1)
 
 /-- [conduit_kernel::{conduit_kernel::Counter}::to_row]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 135:12-140:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 138:12-143:13
     Visibility: public -/
 def Counter.to_row (self : Counter) : Result (alloc.vec.Vec i5h_sql.Val) := do
   let v ← U64.Insts.I5h_sqlColumn.to_val self.last_user
@@ -3201,60 +3201,60 @@ def Counter.to_row (self : Counter) : Result (alloc.vec.Vec i5h_sql.Val) := do
   alloc.vec.Vec.push out1 v2
 
 /-- [conduit_kernel::{conduit_kernel::Counter}::KEY_LEN]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 133:12-133:62
+    Source: 'crates/i5h-schema/src/lib.rs', lines 136:12-136:62
     Visibility: public -/
 @[global_simps, irreducible] def Counter.KEY_LEN : Std.U32 := 0#u32
 
 /-- [conduit_kernel::{conduit_kernel::Counter}::TABLE]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 132:12-132:60
+    Source: 'crates/i5h-schema/src/lib.rs', lines 135:12-135:60
     Visibility: public -/
 @[global_simps, irreducible] def Counter.TABLE : Std.U32 := 6#u32
 
 /-- [conduit_kernel::{conduit_kernel::Counter}::sql_put]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 186:12-188:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 189:12-191:13
     Visibility: public -/
 def Counter.sql_put (self : Counter) : Result i5h_sql.Write := do
   let v ← Counter.to_row self
   ok (i5h_sql.Write.Put Counter.TABLE Counter.KEY_LEN v)
 
 /-- [conduit_kernel::{conduit_kernel::Comment}::KEY_LEN]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 133:12-133:62
+    Source: 'crates/i5h-schema/src/lib.rs', lines 136:12-136:62
     Visibility: public -/
 @[global_simps, irreducible] def Comment.KEY_LEN : Std.U32 := 1#u32
 
 /-- [conduit_kernel::{conduit_kernel::Comment}::sql_put]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 186:12-188:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 189:12-191:13
     Visibility: public -/
 def Comment.sql_put (self : Comment) : Result i5h_sql.Write := do
   let v ← Comment.to_row self
   ok (i5h_sql.Write.Put Comment.TABLE Comment.KEY_LEN v)
 
 /-- [conduit_kernel::{conduit_kernel::Favorite}::KEY_LEN]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 133:12-133:62
+    Source: 'crates/i5h-schema/src/lib.rs', lines 136:12-136:62
     Visibility: public -/
 @[global_simps, irreducible] def Favorite.KEY_LEN : Std.U32 := 2#u32
 
 /-- [conduit_kernel::{conduit_kernel::Favorite}::sql_put]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 186:12-188:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 189:12-191:13
     Visibility: public -/
 def Favorite.sql_put (self : Favorite) : Result i5h_sql.Write := do
   let v ← Favorite.to_row self
   ok (i5h_sql.Write.Put Favorite.TABLE Favorite.KEY_LEN v)
 
 /-- [conduit_kernel::{conduit_kernel::Tag}::KEY_LEN]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 133:12-133:62
+    Source: 'crates/i5h-schema/src/lib.rs', lines 136:12-136:62
     Visibility: public -/
 @[global_simps, irreducible] def Tag.KEY_LEN : Std.U32 := 2#u32
 
 /-- [conduit_kernel::{conduit_kernel::Tag}::sql_put]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 186:12-188:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 189:12-191:13
     Visibility: public -/
 def Tag.sql_put (self : Tag) : Result i5h_sql.Write := do
   let v ← Tag.to_row self
   ok (i5h_sql.Write.Put Tag.TABLE Tag.KEY_LEN v)
 
 /-- [conduit_kernel::{conduit_kernel::Article}::to_row]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 135:12-140:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 138:12-143:13
     Visibility: public -/
 def Article.to_row (self : Article) : Result (alloc.vec.Vec i5h_sql.Val) := do
   let v ← U64.Insts.I5h_sqlColumn.to_val self.id
@@ -3275,19 +3275,19 @@ def Article.to_row (self : Article) : Result (alloc.vec.Vec i5h_sql.Val) := do
   alloc.vec.Vec.push out6 v7
 
 /-- [conduit_kernel::{conduit_kernel::Article}::KEY_LEN]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 133:12-133:62
+    Source: 'crates/i5h-schema/src/lib.rs', lines 136:12-136:62
     Visibility: public -/
 @[global_simps, irreducible] def Article.KEY_LEN : Std.U32 := 1#u32
 
 /-- [conduit_kernel::{conduit_kernel::Article}::sql_put]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 186:12-188:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 189:12-191:13
     Visibility: public -/
 def Article.sql_put (self : Article) : Result i5h_sql.Write := do
   let v ← Article.to_row self
   ok (i5h_sql.Write.Put Article.TABLE Article.KEY_LEN v)
 
 /-- [conduit_kernel::{conduit_kernel::Follow}::to_row]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 135:12-140:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 138:12-143:13
     Visibility: public -/
 def Follow.to_row (self : Follow) : Result (alloc.vec.Vec i5h_sql.Val) := do
   let v ← U64.Insts.I5h_sqlColumn.to_val self.follower
@@ -3296,19 +3296,19 @@ def Follow.to_row (self : Follow) : Result (alloc.vec.Vec i5h_sql.Val) := do
   alloc.vec.Vec.push out v1
 
 /-- [conduit_kernel::{conduit_kernel::Follow}::KEY_LEN]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 133:12-133:62
+    Source: 'crates/i5h-schema/src/lib.rs', lines 136:12-136:62
     Visibility: public -/
 @[global_simps, irreducible] def Follow.KEY_LEN : Std.U32 := 2#u32
 
 /-- [conduit_kernel::{conduit_kernel::Follow}::sql_put]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 186:12-188:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 189:12-191:13
     Visibility: public -/
 def Follow.sql_put (self : Follow) : Result i5h_sql.Write := do
   let v ← Follow.to_row self
   ok (i5h_sql.Write.Put Follow.TABLE Follow.KEY_LEN v)
 
 /-- [conduit_kernel::{conduit_kernel::User}::to_row]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 135:12-140:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 138:12-143:13
     Visibility: public -/
 def User.to_row (self : User) : Result (alloc.vec.Vec i5h_sql.Val) := do
   let v ← U64.Insts.I5h_sqlColumn.to_val self.id
@@ -3325,17 +3325,17 @@ def User.to_row (self : User) : Result (alloc.vec.Vec i5h_sql.Val) := do
   alloc.vec.Vec.push out4 v5
 
 /-- [conduit_kernel::{conduit_kernel::User}::KEY_LEN]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 133:12-133:62
+    Source: 'crates/i5h-schema/src/lib.rs', lines 136:12-136:62
     Visibility: public -/
 @[global_simps, irreducible] def User.KEY_LEN : Std.U32 := 1#u32
 
 /-- [conduit_kernel::{conduit_kernel::User}::TABLE]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 132:12-132:60
+    Source: 'crates/i5h-schema/src/lib.rs', lines 135:12-135:60
     Visibility: public -/
 @[global_simps, irreducible] def User.TABLE : Std.U32 := 0#u32
 
 /-- [conduit_kernel::{conduit_kernel::User}::sql_put]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 186:12-188:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 189:12-191:13
     Visibility: public -/
 def User.sql_put (self : User) : Result i5h_sql.Write := do
   let v ← User.to_row self
@@ -3392,7 +3392,7 @@ def sql_write
     alloc.vec.Vec.push out w1
 
 /-- [conduit_kernel::{conduit_kernel::Counter}::from_row]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 143:12-164:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 146:12-167:13
     Visibility: public -/
 def Counter.from_row
   (row : alloc.vec.Vec i5h_sql.Val) : Result (Option Counter) := do
@@ -3429,7 +3429,7 @@ def Counter.from_row
           ok (some { last_user := x, last_article := x1, last_comment := x2 })
 
 /-- [conduit_kernel::{conduit_kernel::User}::from_row]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 143:12-164:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 146:12-167:13
     Visibility: public -/
 def User.from_row
   (row : alloc.vec.Vec i5h_sql.Val) : Result (Option User) := do
@@ -3501,7 +3501,7 @@ def User.from_row
                   })
 
 /-- [conduit_kernel::{conduit_kernel::Follow}::from_row]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 143:12-164:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 146:12-167:13
     Visibility: public -/
 def Follow.from_row
   (row : alloc.vec.Vec i5h_sql.Val) : Result (Option Follow) := do
@@ -3529,7 +3529,7 @@ def Follow.from_row
         ok (some { follower := x, followed := x1 })
 
 /-- [conduit_kernel::{conduit_kernel::Article}::from_row]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 143:12-164:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 146:12-167:13
     Visibility: public -/
 def Article.from_row
   (row : alloc.vec.Vec i5h_sql.Val) : Result (Option Article) := do
@@ -3621,7 +3621,7 @@ def Article.from_row
                       })
 
 /-- [conduit_kernel::{conduit_kernel::Tag}::from_row]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 143:12-164:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 146:12-167:13
     Visibility: public -/
 def Tag.from_row (row : alloc.vec.Vec i5h_sql.Val) : Result (Option Tag) := do
   let i := alloc.vec.Vec.len row
@@ -3647,7 +3647,7 @@ def Tag.from_row (row : alloc.vec.Vec i5h_sql.Val) : Result (Option Tag) := do
                    ok (some { article := x, tag := x1 })
 
 /-- [conduit_kernel::{conduit_kernel::Favorite}::from_row]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 143:12-164:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 146:12-167:13
     Visibility: public -/
 def Favorite.from_row
   (row : alloc.vec.Vec i5h_sql.Val) : Result (Option Favorite) := do
@@ -3675,7 +3675,7 @@ def Favorite.from_row
         ok (some { article := x, user := x1 })
 
 /-- [conduit_kernel::{conduit_kernel::Comment}::from_row]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 143:12-164:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 146:12-167:13
     Visibility: public -/
 def Comment.from_row
   (row : alloc.vec.Vec i5h_sql.Val) : Result (Option Comment) := do
@@ -3737,7 +3737,7 @@ def Comment.from_row
                 })
 
 /-- [conduit_kernel::{conduit_kernel::User}::from_rows]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 174:16-180:17
     Visibility: public -/
 @[rust_loop_body]
 def User.from_rows_loop.body
@@ -3764,7 +3764,7 @@ def User.from_rows_loop.body
   else ok (done (out, ok1))
 
 /-- [conduit_kernel::{conduit_kernel::User}::from_rows]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 174:16-180:17
     Visibility: public -/
 @[rust_loop]
 def User.from_rows_loop
@@ -3777,7 +3777,7 @@ def User.from_rows_loop
     (out, ok1, i)
 
 /-- [conduit_kernel::{conduit_kernel::User}::from_rows]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 167:12-183:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 170:12-186:13
     Visibility: public -/
 def User.from_rows
   (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)) :
@@ -3790,7 +3790,7 @@ def User.from_rows
   else ok none
 
 /-- [conduit_kernel::{conduit_kernel::Follow}::from_rows]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 174:16-180:17
     Visibility: public -/
 @[rust_loop_body]
 def Follow.from_rows_loop.body
@@ -3817,7 +3817,7 @@ def Follow.from_rows_loop.body
   else ok (done (out, ok1))
 
 /-- [conduit_kernel::{conduit_kernel::Follow}::from_rows]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 174:16-180:17
     Visibility: public -/
 @[rust_loop]
 def Follow.from_rows_loop
@@ -3830,7 +3830,7 @@ def Follow.from_rows_loop
     (out, ok1, i)
 
 /-- [conduit_kernel::{conduit_kernel::Follow}::from_rows]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 167:12-183:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 170:12-186:13
     Visibility: public -/
 def Follow.from_rows
   (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)) :
@@ -3843,7 +3843,7 @@ def Follow.from_rows
   else ok none
 
 /-- [conduit_kernel::{conduit_kernel::Article}::from_rows]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 174:16-180:17
     Visibility: public -/
 @[rust_loop_body]
 def Article.from_rows_loop.body
@@ -3870,7 +3870,7 @@ def Article.from_rows_loop.body
   else ok (done (out, ok1))
 
 /-- [conduit_kernel::{conduit_kernel::Article}::from_rows]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 174:16-180:17
     Visibility: public -/
 @[rust_loop]
 def Article.from_rows_loop
@@ -3883,7 +3883,7 @@ def Article.from_rows_loop
     (out, ok1, i)
 
 /-- [conduit_kernel::{conduit_kernel::Article}::from_rows]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 167:12-183:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 170:12-186:13
     Visibility: public -/
 def Article.from_rows
   (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)) :
@@ -3896,7 +3896,7 @@ def Article.from_rows
   else ok none
 
 /-- [conduit_kernel::{conduit_kernel::Tag}::from_rows]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 174:16-180:17
     Visibility: public -/
 @[rust_loop_body]
 def Tag.from_rows_loop.body
@@ -3923,7 +3923,7 @@ def Tag.from_rows_loop.body
   else ok (done (out, ok1))
 
 /-- [conduit_kernel::{conduit_kernel::Tag}::from_rows]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 174:16-180:17
     Visibility: public -/
 @[rust_loop]
 def Tag.from_rows_loop
@@ -3936,7 +3936,7 @@ def Tag.from_rows_loop
     (out, ok1, i)
 
 /-- [conduit_kernel::{conduit_kernel::Tag}::from_rows]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 167:12-183:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 170:12-186:13
     Visibility: public -/
 def Tag.from_rows
   (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)) :
@@ -3949,7 +3949,7 @@ def Tag.from_rows
   else ok none
 
 /-- [conduit_kernel::{conduit_kernel::Favorite}::from_rows]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 174:16-180:17
     Visibility: public -/
 @[rust_loop_body]
 def Favorite.from_rows_loop.body
@@ -3976,7 +3976,7 @@ def Favorite.from_rows_loop.body
   else ok (done (out, ok1))
 
 /-- [conduit_kernel::{conduit_kernel::Favorite}::from_rows]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 174:16-180:17
     Visibility: public -/
 @[rust_loop]
 def Favorite.from_rows_loop
@@ -3989,7 +3989,7 @@ def Favorite.from_rows_loop
     (out, ok1, i)
 
 /-- [conduit_kernel::{conduit_kernel::Favorite}::from_rows]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 167:12-183:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 170:12-186:13
     Visibility: public -/
 def Favorite.from_rows
   (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)) :
@@ -4002,7 +4002,7 @@ def Favorite.from_rows
   else ok none
 
 /-- [conduit_kernel::{conduit_kernel::Comment}::from_rows]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 174:16-180:17
     Visibility: public -/
 @[rust_loop_body]
 def Comment.from_rows_loop.body
@@ -4029,7 +4029,7 @@ def Comment.from_rows_loop.body
   else ok (done (out, ok1))
 
 /-- [conduit_kernel::{conduit_kernel::Comment}::from_rows]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 174:16-180:17
     Visibility: public -/
 @[rust_loop]
 def Comment.from_rows_loop
@@ -4042,7 +4042,7 @@ def Comment.from_rows_loop
     (out, ok1, i)
 
 /-- [conduit_kernel::{conduit_kernel::Comment}::from_rows]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 167:12-183:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 170:12-186:13
     Visibility: public -/
 def Comment.from_rows
   (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)) :
@@ -4055,7 +4055,7 @@ def Comment.from_rows
   else ok none
 
 /-- [conduit_kernel::{conduit_kernel::Counter}::from_rows]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 174:16-180:17
     Visibility: public -/
 @[rust_loop_body]
 def Counter.from_rows_loop.body
@@ -4082,7 +4082,7 @@ def Counter.from_rows_loop.body
   else ok (done (out, ok1))
 
 /-- [conduit_kernel::{conduit_kernel::Counter}::from_rows]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 174:16-180:17
     Visibility: public -/
 @[rust_loop]
 def Counter.from_rows_loop
@@ -4095,7 +4095,7 @@ def Counter.from_rows_loop
     (out, ok1, i)
 
 /-- [conduit_kernel::{conduit_kernel::Counter}::from_rows]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 167:12-183:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 170:12-186:13
     Visibility: public -/
 def Counter.from_rows
   (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)) :
@@ -4108,7 +4108,7 @@ def Counter.from_rows
   else ok none
 
 /-- [conduit_kernel::{conduit_kernel::Counter}::from_one]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 203:12-211:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 204:12-212:13
     Visibility: public -/
 def Counter.from_one
   (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)) :
@@ -4130,7 +4130,7 @@ def Counter.from_one
     else ok none
 
 /-- [conduit_kernel::{conduit_kernel::User}::del]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 233:16-238:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 234:16-239:17
     Visibility: public -/
 @[rust_loop_body]
 def User.del_loop.body
@@ -4155,7 +4155,7 @@ def User.del_loop.body
   else ok (done out)
 
 /-- [conduit_kernel::{conduit_kernel::User}::del]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 233:16-238:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 234:16-239:17
     Visibility: public -/
 @[rust_loop]
 def User.del_loop
@@ -4168,7 +4168,7 @@ def User.del_loop
     (out, i)
 
 /-- [conduit_kernel::{conduit_kernel::User}::del]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 230:12-240:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 231:12-241:13
     Visibility: public -/
 @[reducible]
 def User.del
@@ -4176,7 +4176,7 @@ def User.del
   User.del_loop v id (alloc.vec.Vec.new User) 0#usize
 
 /-- [conduit_kernel::{conduit_kernel::Tag}::del]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 233:16-238:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 234:16-239:17
     Visibility: public -/
 @[rust_loop_body]
 def Tag.del_loop.body
@@ -4209,7 +4209,7 @@ def Tag.del_loop.body
   else ok (done out)
 
 /-- [conduit_kernel::{conduit_kernel::Tag}::del]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 233:16-238:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 234:16-239:17
     Visibility: public -/
 @[rust_loop]
 def Tag.del_loop
@@ -4222,7 +4222,7 @@ def Tag.del_loop
     (out, i)
 
 /-- [conduit_kernel::{conduit_kernel::Tag}::del]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 230:12-240:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 231:12-241:13
     Visibility: public -/
 @[reducible]
 def Tag.del
@@ -4232,7 +4232,7 @@ def Tag.del
   Tag.del_loop v article tag (alloc.vec.Vec.new Tag) 0#usize
 
 /-- [conduit_kernel::{conduit_kernel::User}::del_where]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 246:16-251:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 247:16-252:17
     Visibility: public -/
 @[rust_loop_body]
 def User.del_where_loop.body
@@ -4259,7 +4259,7 @@ def User.del_where_loop.body
   else ok (done out)
 
 /-- [conduit_kernel::{conduit_kernel::User}::del_where]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 246:16-251:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 247:16-252:17
     Visibility: public -/
 @[rust_loop]
 def User.del_where_loop
@@ -4272,7 +4272,7 @@ def User.del_where_loop
     (out, i)
 
 /-- [conduit_kernel::{conduit_kernel::User}::del_where]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 243:12-253:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 244:12-254:13
     Visibility: public -/
 @[reducible]
 def User.del_where
@@ -4282,7 +4282,7 @@ def User.del_where
   User.del_where_loop v col val (alloc.vec.Vec.new User) 0#usize
 
 /-- [conduit_kernel::{conduit_kernel::Follow}::del_where]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 246:16-251:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 247:16-252:17
     Visibility: public -/
 @[rust_loop_body]
 def Follow.del_where_loop.body
@@ -4310,7 +4310,7 @@ def Follow.del_where_loop.body
   else ok (done out)
 
 /-- [conduit_kernel::{conduit_kernel::Follow}::del_where]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 246:16-251:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 247:16-252:17
     Visibility: public -/
 @[rust_loop]
 def Follow.del_where_loop
@@ -4323,7 +4323,7 @@ def Follow.del_where_loop
     (out, i)
 
 /-- [conduit_kernel::{conduit_kernel::Follow}::del_where]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 243:12-253:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 244:12-254:13
     Visibility: public -/
 @[reducible]
 def Follow.del_where
@@ -4333,7 +4333,7 @@ def Follow.del_where
   Follow.del_where_loop v col val (alloc.vec.Vec.new Follow) 0#usize
 
 /-- [conduit_kernel::{conduit_kernel::Article}::del_where]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 246:16-251:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 247:16-252:17
     Visibility: public -/
 @[rust_loop_body]
 def Article.del_where_loop.body
@@ -4361,7 +4361,7 @@ def Article.del_where_loop.body
   else ok (done out)
 
 /-- [conduit_kernel::{conduit_kernel::Article}::del_where]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 246:16-251:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 247:16-252:17
     Visibility: public -/
 @[rust_loop]
 def Article.del_where_loop
@@ -4374,7 +4374,7 @@ def Article.del_where_loop
     (out, i)
 
 /-- [conduit_kernel::{conduit_kernel::Article}::del_where]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 243:12-253:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 244:12-254:13
     Visibility: public -/
 @[reducible]
 def Article.del_where
@@ -4384,7 +4384,7 @@ def Article.del_where
   Article.del_where_loop v col val (alloc.vec.Vec.new Article) 0#usize
 
 /-- [conduit_kernel::{conduit_kernel::User}::sql_del]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 256:12-260:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 257:12-261:13
     Visibility: public -/
 def User.sql_del (id : Std.U64) : Result i5h_sql.Write := do
   let v ← U64.Insts.I5h_sqlColumn.to_val id
@@ -4392,7 +4392,7 @@ def User.sql_del (id : Std.U64) : Result i5h_sql.Write := do
   ok (i5h_sql.Write.Del User.TABLE key)
 
 /-- [conduit_kernel::{conduit_kernel::Tag}::sql_del]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 256:12-260:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 257:12-261:13
     Visibility: public -/
 def Tag.sql_del
   (article : Std.U64) (tag : alloc.vec.Vec Std.U8) : Result i5h_sql.Write := do
@@ -4403,28 +4403,28 @@ def Tag.sql_del
   ok (i5h_sql.Write.Del Tag.TABLE key1)
 
 /-- [conduit_kernel::{conduit_kernel::User}::sql_del_where]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 263:12-265:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 264:12-266:13
     Visibility: public -/
 def User.sql_del_where
   (col : Std.U32) (val : i5h_sql.Val) : Result i5h_sql.Write := do
   ok (i5h_sql.Write.DelWhere User.TABLE col val)
 
 /-- [conduit_kernel::{conduit_kernel::Follow}::sql_del_where]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 263:12-265:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 264:12-266:13
     Visibility: public -/
 def Follow.sql_del_where
   (col : Std.U32) (val : i5h_sql.Val) : Result i5h_sql.Write := do
   ok (i5h_sql.Write.DelWhere Follow.TABLE col val)
 
 /-- [conduit_kernel::{conduit_kernel::Article}::sql_del_where]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 263:12-265:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 264:12-266:13
     Visibility: public -/
 def Article.sql_del_where
   (col : Std.U32) (val : i5h_sql.Val) : Result i5h_sql.Write := do
   ok (i5h_sql.Write.DelWhere Article.TABLE col val)
 
 /-- [conduit_kernel::Rows]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 285:8-287:9
+    Source: 'crates/i5h-schema/src/lib.rs', lines 284:8-286:9
     Visibility: public -/
 structure Rows where
   counter : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)
@@ -4436,7 +4436,7 @@ structure Rows where
   comments : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)
 
 /-- [conduit_kernel::decode]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 290:8-298:9
+    Source: 'crates/i5h-schema/src/lib.rs', lines 289:8-297:9
     Visibility: public -/
 def decode (r : Rows) : Result (Option Snapshot) := do
   let o ← Counter.from_one r.counter
@@ -4479,7 +4479,7 @@ def decode (r : Rows) : Result (Option Snapshot) := do
                   })
 
 /-- [conduit_kernel::apply]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 308:12-311:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 306:12-309:13
     Visibility: public -/
 @[rust_loop_body]
 def apply_loop.body
@@ -4498,7 +4498,7 @@ def apply_loop.body
   else ok (done s)
 
 /-- [conduit_kernel::apply]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 308:12-311:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 306:12-309:13
     Visibility: public -/
 @[rust_loop]
 def apply_loop
@@ -4510,14 +4510,14 @@ def apply_loop
     (s, i)
 
 /-- [conduit_kernel::apply]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 305:8-313:9
+    Source: 'crates/i5h-schema/src/lib.rs', lines 303:8-311:9
     Visibility: public -/
 def apply (snap : Snapshot) (ws : alloc.vec.Vec Write) : Result Snapshot := do
   let s ← Snapshot.Insts.CoreCloneClone.clone snap
   apply_loop ws s 0#usize
 
 /-- [conduit_kernel::sql_writes]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 320:12-323:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 317:12-320:13
     Visibility: public -/
 @[rust_loop_body]
 def sql_writes_loop.body
@@ -4537,7 +4537,7 @@ def sql_writes_loop.body
   else ok (done out)
 
 /-- [conduit_kernel::sql_writes]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 320:12-323:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 317:12-320:13
     Visibility: public -/
 @[rust_loop]
 def sql_writes_loop
@@ -4550,7 +4550,7 @@ def sql_writes_loop
     (out, i)
 
 /-- [conduit_kernel::sql_writes]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 317:8-325:9
+    Source: 'crates/i5h-schema/src/lib.rs', lines 314:8-322:9
     Visibility: public -/
 @[reducible]
 def sql_writes

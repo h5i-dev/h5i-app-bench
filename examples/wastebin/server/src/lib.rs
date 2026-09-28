@@ -47,8 +47,7 @@ impl Kernel for Wastebin {
     }
 }
 
-/// The engine settings the server runs with: the database's clock, never
-/// going back, so a paste never expires and then comes back.
+/// Engine settings: the database clock, monotonic so an expired paste never comes back.
 pub fn config() -> EngineConfig {
     EngineConfig::default().database_time()
 }
@@ -67,9 +66,8 @@ impl Store<Wastebin> for WastebinStore {
         schema_tables()
     }
 
-    // Rows are decoded by the kernel's `decode`, and a write set is stored as
-    // the table writes of its `sql_writes`; `Storage.lean` proves the store
-    // then holds what `apply` computes.
+    // Load with the kernel's `decode`, store its `sql_writes`; `Storage.lean`
+    // proves the store then holds what `apply` computes.
     async fn load(tx: &Tx<'_>, t: TenantId) -> Result<k::Snapshot, DbError> {
         schema_load(tx, t).await
     }
@@ -219,8 +217,7 @@ impl Shell {
 }
 
 impl Shell {
-    /// Never fails: a caller without a cookie has no uids. The engine fills
-    /// in `now`.
+    /// Never fails: no cookie means no uids. The engine fills in `now`.
     pub fn principal(&self, headers: &HeaderMap) -> k::Principal {
         k::Principal { uids: self.uids(headers), now: 0, fresh: Shell::random() }
     }

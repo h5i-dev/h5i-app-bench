@@ -176,19 +176,19 @@ structure Principal where
   user : Std.U64
 
 /-- [board_kernel::Counter]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 111:12-114:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 95:12-98:13
     Visibility: public -/
 structure Counter where
   next_id : Std.U64
 
 /-- [board_kernel::Moderator]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 111:12-114:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 95:12-98:13
     Visibility: public -/
 structure Moderator where
   user : Std.U64
 
 /-- [board_kernel::Post]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 111:12-114:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 95:12-98:13
     Visibility: public -/
 structure Post where
   id : Std.U64
@@ -535,7 +535,7 @@ def transition
   | Command.Demote user => demote actor.user s user
 
 /-- [board_kernel::{board_kernel::Moderator}::del]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 233:16-238:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 234:16-239:17
     Visibility: public -/
 @[rust_loop_body]
 def Moderator.del_loop.body
@@ -561,7 +561,7 @@ def Moderator.del_loop.body
   else ok (done out)
 
 /-- [board_kernel::{board_kernel::Moderator}::del]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 233:16-238:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 234:16-239:17
     Visibility: public -/
 @[rust_loop]
 def Moderator.del_loop
@@ -574,7 +574,7 @@ def Moderator.del_loop
     (out, i)
 
 /-- [board_kernel::{board_kernel::Moderator}::del]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 230:12-240:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 231:12-241:13
     Visibility: public -/
 @[reducible]
 def Moderator.del
@@ -584,7 +584,7 @@ def Moderator.del
   Moderator.del_loop v user (alloc.vec.Vec.new Moderator) 0#usize
 
 /-- [board_kernel::{board_kernel::Post}::del]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 233:16-238:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 234:16-239:17
     Visibility: public -/
 @[rust_loop_body]
 def Post.del_loop.body
@@ -609,7 +609,7 @@ def Post.del_loop.body
   else ok (done out)
 
 /-- [board_kernel::{board_kernel::Post}::del]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 233:16-238:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 234:16-239:17
     Visibility: public -/
 @[rust_loop]
 def Post.del_loop
@@ -622,7 +622,7 @@ def Post.del_loop
     (out, i)
 
 /-- [board_kernel::{board_kernel::Post}::del]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 230:12-240:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 231:12-241:13
     Visibility: public -/
 @[reducible]
 def Post.del
@@ -630,7 +630,7 @@ def Post.del
   Post.del_loop v id (alloc.vec.Vec.new Post) 0#usize
 
 /-- [board_kernel::{board_kernel::Moderator}::put]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 219:16-227:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 220:16-228:13
     Visibility: public -/
 @[rust_loop_body]
 def Moderator.put_loop.body
@@ -655,7 +655,7 @@ def Moderator.put_loop.body
        ok (done v1)
 
 /-- [board_kernel::{board_kernel::Moderator}::put]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 219:16-227:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 220:16-228:13
     Visibility: public -/
 @[rust_loop]
 def Moderator.put_loop
@@ -667,7 +667,7 @@ def Moderator.put_loop
     i
 
 /-- [board_kernel::{board_kernel::Moderator}::put]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 217:12-227:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 218:12-228:13
     Visibility: public -/
 @[reducible]
 def Moderator.put
@@ -677,7 +677,7 @@ def Moderator.put
   Moderator.put_loop v x 0#usize
 
 /-- [board_kernel::{board_kernel::Post}::put]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 219:16-227:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 220:16-228:13
     Visibility: public -/
 @[rust_loop_body]
 def Post.put_loop.body
@@ -702,7 +702,7 @@ def Post.put_loop.body
        ok (done v1)
 
 /-- [board_kernel::{board_kernel::Post}::put]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 219:16-227:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 220:16-228:13
     Visibility: public -/
 @[rust_loop]
 def Post.put_loop
@@ -714,7 +714,7 @@ def Post.put_loop
     i
 
 /-- [board_kernel::{board_kernel::Post}::put]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 217:12-227:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 218:12-228:13
     Visibility: public -/
 @[reducible]
 def Post.put
@@ -722,7 +722,7 @@ def Post.put
   Post.put_loop v x 0#usize
 
 /-- [board_kernel::apply_write]:
-    Source: 'examples/tutorials/board/kernel/src/lib.rs', lines 198:0-206:1 -/
+    Source: 'examples/tutorials/board/kernel/src/lib.rs', lines 197:0-205:1 -/
 def apply_write (s : Snapshot) (w : Write) : Result Snapshot := do
   match w with
   | Write.PutPost p => let v ← Post.put s.posts p
@@ -738,12 +738,12 @@ def apply_write (s : Snapshot) (w : Write) : Result Snapshot := do
   | Write.SetCounter c => ok { s with counter := c }
 
 /-- [board_kernel::{board_kernel::Moderator}::TABLE]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 132:12-132:60
+    Source: 'crates/i5h-schema/src/lib.rs', lines 135:12-135:60
     Visibility: public -/
 @[global_simps, irreducible] def Moderator.TABLE : Std.U32 := 1#u32
 
 /-- [board_kernel::{board_kernel::Moderator}::sql_del]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 256:12-260:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 257:12-261:13
     Visibility: public -/
 def Moderator.sql_del (user : Std.U64) : Result i5h_sql.Write := do
   let v ← U64.Insts.I5h_sqlColumn.to_val user
@@ -751,12 +751,12 @@ def Moderator.sql_del (user : Std.U64) : Result i5h_sql.Write := do
   ok (i5h_sql.Write.Del Moderator.TABLE key)
 
 /-- [board_kernel::{board_kernel::Post}::TABLE]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 132:12-132:60
+    Source: 'crates/i5h-schema/src/lib.rs', lines 135:12-135:60
     Visibility: public -/
 @[global_simps, irreducible] def Post.TABLE : Std.U32 := 0#u32
 
 /-- [board_kernel::{board_kernel::Post}::sql_del]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 256:12-260:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 257:12-261:13
     Visibility: public -/
 def Post.sql_del (id : Std.U64) : Result i5h_sql.Write := do
   let v ← U64.Insts.I5h_sqlColumn.to_val id
@@ -764,31 +764,31 @@ def Post.sql_del (id : Std.U64) : Result i5h_sql.Write := do
   ok (i5h_sql.Write.Del Post.TABLE key)
 
 /-- [board_kernel::{board_kernel::Counter}::to_row]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 135:12-140:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 138:12-143:13
     Visibility: public -/
 def Counter.to_row (self : Counter) : Result (alloc.vec.Vec i5h_sql.Val) := do
   let v ← U64.Insts.I5h_sqlColumn.to_val self.next_id
   alloc.vec.Vec.push (alloc.vec.Vec.new i5h_sql.Val) v
 
 /-- [board_kernel::{board_kernel::Counter}::KEY_LEN]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 133:12-133:62
+    Source: 'crates/i5h-schema/src/lib.rs', lines 136:12-136:62
     Visibility: public -/
 @[global_simps, irreducible] def Counter.KEY_LEN : Std.U32 := 0#u32
 
 /-- [board_kernel::{board_kernel::Counter}::TABLE]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 132:12-132:60
+    Source: 'crates/i5h-schema/src/lib.rs', lines 135:12-135:60
     Visibility: public -/
 @[global_simps, irreducible] def Counter.TABLE : Std.U32 := 2#u32
 
 /-- [board_kernel::{board_kernel::Counter}::sql_put]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 186:12-188:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 189:12-191:13
     Visibility: public -/
 def Counter.sql_put (self : Counter) : Result i5h_sql.Write := do
   let v ← Counter.to_row self
   ok (i5h_sql.Write.Put Counter.TABLE Counter.KEY_LEN v)
 
 /-- [board_kernel::{board_kernel::Moderator}::to_row]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 135:12-140:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 138:12-143:13
     Visibility: public -/
 def Moderator.to_row
   (self : Moderator) : Result (alloc.vec.Vec i5h_sql.Val) := do
@@ -796,19 +796,19 @@ def Moderator.to_row
   alloc.vec.Vec.push (alloc.vec.Vec.new i5h_sql.Val) v
 
 /-- [board_kernel::{board_kernel::Moderator}::KEY_LEN]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 133:12-133:62
+    Source: 'crates/i5h-schema/src/lib.rs', lines 136:12-136:62
     Visibility: public -/
 @[global_simps, irreducible] def Moderator.KEY_LEN : Std.U32 := 1#u32
 
 /-- [board_kernel::{board_kernel::Moderator}::sql_put]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 186:12-188:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 189:12-191:13
     Visibility: public -/
 def Moderator.sql_put (self : Moderator) : Result i5h_sql.Write := do
   let v ← Moderator.to_row self
   ok (i5h_sql.Write.Put Moderator.TABLE Moderator.KEY_LEN v)
 
 /-- [board_kernel::{board_kernel::Post}::to_row]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 135:12-140:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 138:12-143:13
     Visibility: public -/
 def Post.to_row (self : Post) : Result (alloc.vec.Vec i5h_sql.Val) := do
   let v ← U64.Insts.I5h_sqlColumn.to_val self.id
@@ -819,19 +819,19 @@ def Post.to_row (self : Post) : Result (alloc.vec.Vec i5h_sql.Val) := do
   alloc.vec.Vec.push out1 v2
 
 /-- [board_kernel::{board_kernel::Post}::KEY_LEN]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 133:12-133:62
+    Source: 'crates/i5h-schema/src/lib.rs', lines 136:12-136:62
     Visibility: public -/
 @[global_simps, irreducible] def Post.KEY_LEN : Std.U32 := 1#u32
 
 /-- [board_kernel::{board_kernel::Post}::sql_put]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 186:12-188:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 189:12-191:13
     Visibility: public -/
 def Post.sql_put (self : Post) : Result i5h_sql.Write := do
   let v ← Post.to_row self
   ok (i5h_sql.Write.Put Post.TABLE Post.KEY_LEN v)
 
 /-- [board_kernel::sql_write]:
-    Source: 'examples/tutorials/board/kernel/src/lib.rs', lines 210:0-218:1 -/
+    Source: 'examples/tutorials/board/kernel/src/lib.rs', lines 209:0-217:1 -/
 def sql_write
   (w : Write) (out : alloc.vec.Vec i5h_sql.Write) :
   Result (alloc.vec.Vec i5h_sql.Write)
@@ -852,7 +852,7 @@ def sql_write
     alloc.vec.Vec.push out w1
 
 /-- [board_kernel::{board_kernel::Counter}::from_row]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 143:12-164:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 146:12-167:13
     Visibility: public -/
 def Counter.from_row
   (row : alloc.vec.Vec i5h_sql.Val) : Result (Option Counter) := do
@@ -870,7 +870,7 @@ def Counter.from_row
     | some x => ok (some { next_id := x })
 
 /-- [board_kernel::{board_kernel::Post}::from_row]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 143:12-164:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 146:12-167:13
     Visibility: public -/
 def Post.from_row
   (row : alloc.vec.Vec i5h_sql.Val) : Result (Option Post) := do
@@ -907,7 +907,7 @@ def Post.from_row
           ok (some { id := x, author := x1, text := x2 })
 
 /-- [board_kernel::{board_kernel::Moderator}::from_row]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 143:12-164:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 146:12-167:13
     Visibility: public -/
 def Moderator.from_row
   (row : alloc.vec.Vec i5h_sql.Val) : Result (Option Moderator) := do
@@ -925,7 +925,7 @@ def Moderator.from_row
     | some x => ok (some { user := x })
 
 /-- [board_kernel::{board_kernel::Post}::from_rows]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 174:16-180:17
     Visibility: public -/
 @[rust_loop_body]
 def Post.from_rows_loop.body
@@ -952,7 +952,7 @@ def Post.from_rows_loop.body
   else ok (done (out, ok1))
 
 /-- [board_kernel::{board_kernel::Post}::from_rows]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 174:16-180:17
     Visibility: public -/
 @[rust_loop]
 def Post.from_rows_loop
@@ -965,7 +965,7 @@ def Post.from_rows_loop
     (out, ok1, i)
 
 /-- [board_kernel::{board_kernel::Post}::from_rows]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 167:12-183:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 170:12-186:13
     Visibility: public -/
 def Post.from_rows
   (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)) :
@@ -978,7 +978,7 @@ def Post.from_rows
   else ok none
 
 /-- [board_kernel::{board_kernel::Moderator}::from_rows]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 174:16-180:17
     Visibility: public -/
 @[rust_loop_body]
 def Moderator.from_rows_loop.body
@@ -1005,7 +1005,7 @@ def Moderator.from_rows_loop.body
   else ok (done (out, ok1))
 
 /-- [board_kernel::{board_kernel::Moderator}::from_rows]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 174:16-180:17
     Visibility: public -/
 @[rust_loop]
 def Moderator.from_rows_loop
@@ -1018,7 +1018,7 @@ def Moderator.from_rows_loop
     (out, ok1, i)
 
 /-- [board_kernel::{board_kernel::Moderator}::from_rows]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 167:12-183:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 170:12-186:13
     Visibility: public -/
 def Moderator.from_rows
   (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)) :
@@ -1031,7 +1031,7 @@ def Moderator.from_rows
   else ok none
 
 /-- [board_kernel::{board_kernel::Counter}::from_rows]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 174:16-180:17
     Visibility: public -/
 @[rust_loop_body]
 def Counter.from_rows_loop.body
@@ -1058,7 +1058,7 @@ def Counter.from_rows_loop.body
   else ok (done (out, ok1))
 
 /-- [board_kernel::{board_kernel::Counter}::from_rows]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 174:16-180:17
     Visibility: public -/
 @[rust_loop]
 def Counter.from_rows_loop
@@ -1071,7 +1071,7 @@ def Counter.from_rows_loop
     (out, ok1, i)
 
 /-- [board_kernel::{board_kernel::Counter}::from_rows]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 167:12-183:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 170:12-186:13
     Visibility: public -/
 def Counter.from_rows
   (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)) :
@@ -1084,7 +1084,7 @@ def Counter.from_rows
   else ok none
 
 /-- [board_kernel::{board_kernel::Counter}::from_one]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 203:12-211:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 204:12-212:13
     Visibility: public -/
 def Counter.from_one
   (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)) :
@@ -1105,7 +1105,7 @@ def Counter.from_one
     else ok none
 
 /-- [board_kernel::{board_kernel::Post}::del_where]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 246:16-251:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 247:16-252:17
     Visibility: public -/
 @[rust_loop_body]
 def Post.del_where_loop.body
@@ -1132,7 +1132,7 @@ def Post.del_where_loop.body
   else ok (done out)
 
 /-- [board_kernel::{board_kernel::Post}::del_where]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 246:16-251:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 247:16-252:17
     Visibility: public -/
 @[rust_loop]
 def Post.del_where_loop
@@ -1145,7 +1145,7 @@ def Post.del_where_loop
     (out, i)
 
 /-- [board_kernel::{board_kernel::Post}::del_where]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 243:12-253:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 244:12-254:13
     Visibility: public -/
 @[reducible]
 def Post.del_where
@@ -1155,7 +1155,7 @@ def Post.del_where
   Post.del_where_loop v col val (alloc.vec.Vec.new Post) 0#usize
 
 /-- [board_kernel::{board_kernel::Moderator}::del_where]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 246:16-251:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 247:16-252:17
     Visibility: public -/
 @[rust_loop_body]
 def Moderator.del_where_loop.body
@@ -1183,7 +1183,7 @@ def Moderator.del_where_loop.body
   else ok (done out)
 
 /-- [board_kernel::{board_kernel::Moderator}::del_where]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 246:16-251:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 247:16-252:17
     Visibility: public -/
 @[rust_loop]
 def Moderator.del_where_loop
@@ -1196,7 +1196,7 @@ def Moderator.del_where_loop
     (out, i)
 
 /-- [board_kernel::{board_kernel::Moderator}::del_where]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 243:12-253:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 244:12-254:13
     Visibility: public -/
 @[reducible]
 def Moderator.del_where
@@ -1206,21 +1206,21 @@ def Moderator.del_where
   Moderator.del_where_loop v col val (alloc.vec.Vec.new Moderator) 0#usize
 
 /-- [board_kernel::{board_kernel::Post}::sql_del_where]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 263:12-265:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 264:12-266:13
     Visibility: public -/
 def Post.sql_del_where
   (col : Std.U32) (val : i5h_sql.Val) : Result i5h_sql.Write := do
   ok (i5h_sql.Write.DelWhere Post.TABLE col val)
 
 /-- [board_kernel::{board_kernel::Moderator}::sql_del_where]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 263:12-265:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 264:12-266:13
     Visibility: public -/
 def Moderator.sql_del_where
   (col : Std.U32) (val : i5h_sql.Val) : Result i5h_sql.Write := do
   ok (i5h_sql.Write.DelWhere Moderator.TABLE col val)
 
 /-- [board_kernel::Rows]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 285:8-287:9
+    Source: 'crates/i5h-schema/src/lib.rs', lines 284:8-286:9
     Visibility: public -/
 structure Rows where
   counter : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)
@@ -1228,7 +1228,7 @@ structure Rows where
   moderators : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)
 
 /-- [board_kernel::decode]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 290:8-298:9
+    Source: 'crates/i5h-schema/src/lib.rs', lines 289:8-297:9
     Visibility: public -/
 def decode (r : Rows) : Result (Option Snapshot) := do
   let o ← Counter.from_one r.counter
@@ -1245,7 +1245,7 @@ def decode (r : Rows) : Result (Option Snapshot) := do
       | some x2 => ok (some { counter := x, posts := x1, moderators := x2 })
 
 /-- [board_kernel::apply]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 308:12-311:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 306:12-309:13
     Visibility: public -/
 @[rust_loop_body]
 def apply_loop.body
@@ -1264,7 +1264,7 @@ def apply_loop.body
   else ok (done s)
 
 /-- [board_kernel::apply]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 308:12-311:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 306:12-309:13
     Visibility: public -/
 @[rust_loop]
 def apply_loop
@@ -1276,14 +1276,14 @@ def apply_loop
     (s, i)
 
 /-- [board_kernel::apply]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 305:8-313:9
+    Source: 'crates/i5h-schema/src/lib.rs', lines 303:8-311:9
     Visibility: public -/
 def apply (snap : Snapshot) (ws : alloc.vec.Vec Write) : Result Snapshot := do
   let s ← Snapshot.Insts.CoreCloneClone.clone snap
   apply_loop ws s 0#usize
 
 /-- [board_kernel::sql_writes]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 320:12-323:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 317:12-320:13
     Visibility: public -/
 @[rust_loop_body]
 def sql_writes_loop.body
@@ -1303,7 +1303,7 @@ def sql_writes_loop.body
   else ok (done out)
 
 /-- [board_kernel::sql_writes]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 320:12-323:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 317:12-320:13
     Visibility: public -/
 @[rust_loop]
 def sql_writes_loop
@@ -1316,7 +1316,7 @@ def sql_writes_loop
     (out, i)
 
 /-- [board_kernel::sql_writes]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 317:8-325:9
+    Source: 'crates/i5h-schema/src/lib.rs', lines 314:8-322:9
     Visibility: public -/
 @[reducible]
 def sql_writes

@@ -1,5 +1,5 @@
-//! The calculator's shell: how the kernel meets PostgreSQL and JSON. Nothing
-//! here decides anything; it only moves data in and out of the kernel.
+//! The calculator's shell: moves data between the kernel, PostgreSQL and
+//! JSON. It decides nothing.
 
 use axum::http::StatusCode;
 use calculator_kernel as k;
@@ -50,9 +50,8 @@ impl Store<Calc> for CalcStore {
         schema_tables()
     }
 
-    // The kernel decodes the rows (`decode`) and encodes the write
-    // (`sql_writes`); `Storage.lean` proves the store holds what `apply`
-    // computes.
+    // Rows decode with the kernel's `decode`; writes go through `sql_writes`.
+    // `Storage.lean` proves the store holds what `apply` computes.
     async fn load(tx: &Tx<'_>, t: TenantId) -> Result<k::Snapshot, DbError> {
         schema_load(tx, t).await
     }

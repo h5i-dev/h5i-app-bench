@@ -1,7 +1,6 @@
 //! Kellnr's registry authorization (crates/registry/src/kellnr_api.rs) as a
-//! pure kernel. `transition` follows the code after PR #1243 (45043ee);
-//! `transition_pre1243` follows the code before it (45043ee^). They share
-//! everything except the two places the PR changed.
+//! pure kernel. `transition` is after PR #1243 (45043ee), `transition_pre1243`
+//! before it (45043ee^); they differ only where the PR changed the code.
 //!
 //! Aeneas subset: no `?`, iterator adapters, or `String`. Names are ids.
 

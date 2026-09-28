@@ -249,7 +249,7 @@ inductive i5h_sql.Write where
 | DelWhere : Std.U32 → Std.U32 → i5h_sql.Val → i5h_sql.Write
 
 /-- [wastebin_kernel::Paste]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 111:12-114:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 95:12-98:13
     Visibility: public -/
 structure Paste where
   id : Std.U64
@@ -261,34 +261,34 @@ structure Paste where
   lock : Option Std.U64
 
 /-- [wastebin_kernel::Counter]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 111:12-114:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 95:12-98:13
     Visibility: public -/
 structure Counter where
   next_id : Std.U64
   last_uid : Std.U64
 
 /-- [wastebin_kernel::{wastebin_kernel::Paste}::TABLE]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 132:12-132:60
+    Source: 'crates/i5h-schema/src/lib.rs', lines 135:12-135:60
     Visibility: public -/
 @[global_simps, irreducible] def Paste.TABLE : Std.U32 := 0#u32
 
 /-- [wastebin_kernel::{wastebin_kernel::Counter}::TABLE]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 132:12-132:60
+    Source: 'crates/i5h-schema/src/lib.rs', lines 135:12-135:60
     Visibility: public -/
 @[global_simps, irreducible] def Counter.TABLE : Std.U32 := 1#u32
 
 /-- [wastebin_kernel::{wastebin_kernel::Paste}::KEY_LEN]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 133:12-133:62
+    Source: 'crates/i5h-schema/src/lib.rs', lines 136:12-136:62
     Visibility: public -/
 @[global_simps, irreducible] def Paste.KEY_LEN : Std.U32 := 1#u32
 
 /-- [wastebin_kernel::{wastebin_kernel::Counter}::KEY_LEN]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 133:12-133:62
+    Source: 'crates/i5h-schema/src/lib.rs', lines 136:12-136:62
     Visibility: public -/
 @[global_simps, irreducible] def Counter.KEY_LEN : Std.U32 := 0#u32
 
 /-- [wastebin_kernel::{wastebin_kernel::Paste}::to_row]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 135:12-140:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 138:12-143:13
     Visibility: public -/
 def Paste.to_row (self : Paste) : Result (alloc.vec.Vec i5h_sql.Val) := do
   let v ← U64.Insts.I5h_sqlColumn.to_val self.id
@@ -311,7 +311,7 @@ def Paste.to_row (self : Paste) : Result (alloc.vec.Vec i5h_sql.Val) := do
   alloc.vec.Vec.push out5 v6
 
 /-- [wastebin_kernel::{wastebin_kernel::Counter}::to_row]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 135:12-140:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 138:12-143:13
     Visibility: public -/
 def Counter.to_row (self : Counter) : Result (alloc.vec.Vec i5h_sql.Val) := do
   let v ← U64.Insts.I5h_sqlColumn.to_val self.next_id
@@ -320,7 +320,7 @@ def Counter.to_row (self : Counter) : Result (alloc.vec.Vec i5h_sql.Val) := do
   alloc.vec.Vec.push out v1
 
 /-- [wastebin_kernel::{wastebin_kernel::Counter}::from_row]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 143:12-164:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 146:12-167:13
     Visibility: public -/
 def Counter.from_row
   (row : alloc.vec.Vec i5h_sql.Val) : Result (Option Counter) := do
@@ -348,7 +348,7 @@ def Counter.from_row
         ok (some { next_id := x, last_uid := x1 })
 
 /-- [wastebin_kernel::{wastebin_kernel::Paste}::from_row]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 143:12-164:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 146:12-167:13
     Visibility: public -/
 def Paste.from_row
   (row : alloc.vec.Vec i5h_sql.Val) : Result (Option Paste) := do
@@ -434,7 +434,7 @@ def Paste.from_row
                     })
 
 /-- [wastebin_kernel::{wastebin_kernel::Paste}::from_rows]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 174:16-180:17
     Visibility: public -/
 @[rust_loop_body]
 def Paste.from_rows_loop.body
@@ -461,7 +461,7 @@ def Paste.from_rows_loop.body
   else ok (done (out, ok1))
 
 /-- [wastebin_kernel::{wastebin_kernel::Paste}::from_rows]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 174:16-180:17
     Visibility: public -/
 @[rust_loop]
 def Paste.from_rows_loop
@@ -474,7 +474,7 @@ def Paste.from_rows_loop
     (out, ok1, i)
 
 /-- [wastebin_kernel::{wastebin_kernel::Paste}::from_rows]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 167:12-183:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 170:12-186:13
     Visibility: public -/
 def Paste.from_rows
   (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)) :
@@ -487,7 +487,7 @@ def Paste.from_rows
   else ok none
 
 /-- [wastebin_kernel::{wastebin_kernel::Counter}::from_rows]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 174:16-180:17
     Visibility: public -/
 @[rust_loop_body]
 def Counter.from_rows_loop.body
@@ -514,7 +514,7 @@ def Counter.from_rows_loop.body
   else ok (done (out, ok1))
 
 /-- [wastebin_kernel::{wastebin_kernel::Counter}::from_rows]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 174:16-180:17
     Visibility: public -/
 @[rust_loop]
 def Counter.from_rows_loop
@@ -527,7 +527,7 @@ def Counter.from_rows_loop
     (out, ok1, i)
 
 /-- [wastebin_kernel::{wastebin_kernel::Counter}::from_rows]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 167:12-183:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 170:12-186:13
     Visibility: public -/
 def Counter.from_rows
   (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)) :
@@ -540,21 +540,21 @@ def Counter.from_rows
   else ok none
 
 /-- [wastebin_kernel::{wastebin_kernel::Paste}::sql_put]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 186:12-188:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 189:12-191:13
     Visibility: public -/
 def Paste.sql_put (self : Paste) : Result i5h_sql.Write := do
   let v ← Paste.to_row self
   ok (i5h_sql.Write.Put Paste.TABLE Paste.KEY_LEN v)
 
 /-- [wastebin_kernel::{wastebin_kernel::Counter}::sql_put]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 186:12-188:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 189:12-191:13
     Visibility: public -/
 def Counter.sql_put (self : Counter) : Result i5h_sql.Write := do
   let v ← Counter.to_row self
   ok (i5h_sql.Write.Put Counter.TABLE Counter.KEY_LEN v)
 
 /-- [wastebin_kernel::{wastebin_kernel::Counter}::from_one]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 203:12-211:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 204:12-212:13
     Visibility: public -/
 def Counter.from_one
   (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)) :
@@ -576,7 +576,7 @@ def Counter.from_one
     else ok none
 
 /-- [wastebin_kernel::{wastebin_kernel::Paste}::put]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 219:16-227:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 220:16-228:13
     Visibility: public -/
 @[rust_loop_body]
 def Paste.put_loop.body
@@ -601,7 +601,7 @@ def Paste.put_loop.body
        ok (done v1)
 
 /-- [wastebin_kernel::{wastebin_kernel::Paste}::put]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 219:16-227:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 220:16-228:13
     Visibility: public -/
 @[rust_loop]
 def Paste.put_loop
@@ -613,7 +613,7 @@ def Paste.put_loop
     i
 
 /-- [wastebin_kernel::{wastebin_kernel::Paste}::put]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 217:12-227:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 218:12-228:13
     Visibility: public -/
 @[reducible]
 def Paste.put
@@ -621,14 +621,14 @@ def Paste.put
   Paste.put_loop v x 0#usize
 
 /-- [wastebin_kernel::{impl core::clone::Clone for wastebin_kernel::Paste}::clone]:
-    Source: 'examples/wastebin/kernel/src/lib.rs', lines 64:4-74:5
+    Source: 'examples/wastebin/kernel/src/lib.rs', lines 55:4-65:5
     Visibility: public -/
 def Paste.Insts.CoreCloneClone.clone (self : Paste) : Result Paste := do
   let v ← alloc.vec.CloneVec.clone core.clone.CloneU8 self.text
   ok { self with text := v }
 
 /-- [wastebin_kernel::{wastebin_kernel::Paste}::del]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 233:16-238:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 234:16-239:17
     Visibility: public -/
 @[rust_loop_body]
 def Paste.del_loop.body
@@ -654,7 +654,7 @@ def Paste.del_loop.body
   else ok (done out)
 
 /-- [wastebin_kernel::{wastebin_kernel::Paste}::del]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 233:16-238:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 234:16-239:17
     Visibility: public -/
 @[rust_loop]
 def Paste.del_loop
@@ -667,7 +667,7 @@ def Paste.del_loop
     (out, i)
 
 /-- [wastebin_kernel::{wastebin_kernel::Paste}::del]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 230:12-240:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 231:12-241:13
     Visibility: public -/
 @[reducible]
 def Paste.del
@@ -675,7 +675,7 @@ def Paste.del
   Paste.del_loop v id (alloc.vec.Vec.new Paste) 0#usize
 
 /-- [wastebin_kernel::{wastebin_kernel::Paste}::del_where]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 246:16-251:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 247:16-252:17
     Visibility: public -/
 @[rust_loop_body]
 def Paste.del_where_loop.body
@@ -703,7 +703,7 @@ def Paste.del_where_loop.body
   else ok (done out)
 
 /-- [wastebin_kernel::{wastebin_kernel::Paste}::del_where]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 246:16-251:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 247:16-252:17
     Visibility: public -/
 @[rust_loop]
 def Paste.del_where_loop
@@ -716,7 +716,7 @@ def Paste.del_where_loop
     (out, i)
 
 /-- [wastebin_kernel::{wastebin_kernel::Paste}::del_where]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 243:12-253:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 244:12-254:13
     Visibility: public -/
 @[reducible]
 def Paste.del_where
@@ -726,7 +726,7 @@ def Paste.del_where
   Paste.del_where_loop v col val (alloc.vec.Vec.new Paste) 0#usize
 
 /-- [wastebin_kernel::{wastebin_kernel::Paste}::sql_del]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 256:12-260:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 257:12-261:13
     Visibility: public -/
 def Paste.sql_del (id : Std.U64) : Result i5h_sql.Write := do
   let v ← U64.Insts.I5h_sqlColumn.to_val id
@@ -734,7 +734,7 @@ def Paste.sql_del (id : Std.U64) : Result i5h_sql.Write := do
   ok (i5h_sql.Write.Del Paste.TABLE key)
 
 /-- [wastebin_kernel::{wastebin_kernel::Paste}::sql_del_where]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 263:12-265:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 264:12-266:13
     Visibility: public -/
 def Paste.sql_del_where
   (col : Std.U32) (val : i5h_sql.Val) : Result i5h_sql.Write := do
@@ -748,14 +748,14 @@ structure Snapshot where
   pastes : alloc.vec.Vec Paste
 
 /-- [wastebin_kernel::Rows]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 285:8-287:9
+    Source: 'crates/i5h-schema/src/lib.rs', lines 284:8-286:9
     Visibility: public -/
 structure Rows where
   counter : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)
   pastes : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)
 
 /-- [wastebin_kernel::decode]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 290:8-298:9
+    Source: 'crates/i5h-schema/src/lib.rs', lines 289:8-297:9
     Visibility: public -/
 def decode (r : Rows) : Result (Option Snapshot) := do
   let o ← Counter.from_one r.counter
@@ -768,7 +768,7 @@ def decode (r : Rows) : Result (Option Snapshot) := do
     | some x1 => ok (some { counter := x, pastes := x1 })
 
 /-- [wastebin_kernel::Write]
-    Source: 'examples/wastebin/kernel/src/lib.rs', lines 92:0-96:1
+    Source: 'examples/wastebin/kernel/src/lib.rs', lines 83:0-87:1
     Visibility: public -/
 @[discriminant isize]
 inductive Write where
@@ -777,7 +777,7 @@ inductive Write where
 | SetCounter : Counter → Write
 
 /-- [wastebin_kernel::apply_write]:
-    Source: 'examples/wastebin/kernel/src/lib.rs', lines 314:0-320:1 -/
+    Source: 'examples/wastebin/kernel/src/lib.rs', lines 303:0-309:1 -/
 def apply_write (s : Snapshot) (w : Write) : Result Snapshot := do
   match w with
   | Write.PutPaste p =>
@@ -789,13 +789,13 @@ def apply_write (s : Snapshot) (w : Write) : Result Snapshot := do
   | Write.SetCounter c => ok { s with counter := c }
 
 /-- [wastebin_kernel::{impl core::clone::Clone for wastebin_kernel::Counter}::clone]:
-    Source: 'examples/wastebin/kernel/src/lib.rs', lines 53:13-53:18
+    Source: 'examples/wastebin/kernel/src/lib.rs', lines 44:13-44:18
     Visibility: public -/
 def Counter.Insts.CoreCloneClone.clone (self : Counter) : Result Counter := do
   ok self
 
 /-- [wastebin_kernel::{impl core::clone::Clone for wastebin_kernel::Write}::clone]:
-    Source: 'examples/wastebin/kernel/src/lib.rs', lines 91:9-91:14
+    Source: 'examples/wastebin/kernel/src/lib.rs', lines 82:9-82:14
     Visibility: public -/
 def Write.Insts.CoreCloneClone.clone (self : Write) : Result Write := do
   match self with
@@ -810,14 +810,14 @@ def Write.Insts.CoreCloneClone.clone (self : Write) : Result Write := do
     ok (Write.SetCounter c)
 
 /-- Trait implementation: [wastebin_kernel::{impl core::clone::Clone for wastebin_kernel::Paste}]
-    Source: 'examples/wastebin/kernel/src/lib.rs', lines 63:0-75:1 -/
+    Source: 'examples/wastebin/kernel/src/lib.rs', lines 54:0-66:1 -/
 @[reducible]
 def Paste.Insts.CoreCloneClone : core.clone.Clone Paste := {
   clone := Paste.Insts.CoreCloneClone.clone
 }
 
 /-- [wastebin_kernel::{impl core::clone::Clone for wastebin_kernel::Snapshot}::clone]:
-    Source: 'examples/wastebin/kernel/src/lib.rs', lines 33:13-33:18
+    Source: 'examples/wastebin/kernel/src/lib.rs', lines 24:13-24:18
     Visibility: public -/
 def Snapshot.Insts.CoreCloneClone.clone
   (self : Snapshot) : Result Snapshot := do
@@ -826,7 +826,7 @@ def Snapshot.Insts.CoreCloneClone.clone
   ok { counter := c, pastes := v }
 
 /-- [wastebin_kernel::apply]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 308:12-311:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 306:12-309:13
     Visibility: public -/
 @[rust_loop_body]
 def apply_loop.body
@@ -845,7 +845,7 @@ def apply_loop.body
   else ok (done s)
 
 /-- [wastebin_kernel::apply]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 308:12-311:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 306:12-309:13
     Visibility: public -/
 @[rust_loop]
 def apply_loop
@@ -857,14 +857,14 @@ def apply_loop
     (s, i)
 
 /-- [wastebin_kernel::apply]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 305:8-313:9
+    Source: 'crates/i5h-schema/src/lib.rs', lines 303:8-311:9
     Visibility: public -/
 def apply (snap : Snapshot) (ws : alloc.vec.Vec Write) : Result Snapshot := do
   let s ← Snapshot.Insts.CoreCloneClone.clone snap
   apply_loop ws s 0#usize
 
 /-- [wastebin_kernel::sql_write]:
-    Source: 'examples/wastebin/kernel/src/lib.rs', lines 323:0-329:1 -/
+    Source: 'examples/wastebin/kernel/src/lib.rs', lines 312:0-318:1 -/
 def sql_write
   (w : Write) (out : alloc.vec.Vec i5h_sql.Write) :
   Result (alloc.vec.Vec i5h_sql.Write)
@@ -879,7 +879,7 @@ def sql_write
     alloc.vec.Vec.push out w1
 
 /-- [wastebin_kernel::sql_writes]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 320:12-323:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 317:12-320:13
     Visibility: public -/
 @[rust_loop_body]
 def sql_writes_loop.body
@@ -899,7 +899,7 @@ def sql_writes_loop.body
   else ok (done out)
 
 /-- [wastebin_kernel::sql_writes]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 320:12-323:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 317:12-320:13
     Visibility: public -/
 @[rust_loop]
 def sql_writes_loop
@@ -912,7 +912,7 @@ def sql_writes_loop
     (out, i)
 
 /-- [wastebin_kernel::sql_writes]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 317:8-325:9
+    Source: 'crates/i5h-schema/src/lib.rs', lines 314:8-322:9
     Visibility: public -/
 @[reducible]
 def sql_writes
@@ -920,7 +920,7 @@ def sql_writes
   sql_writes_loop ws (alloc.vec.Vec.new i5h_sql.Write) 0#usize
 
 /-- [wastebin_kernel::Principal]
-    Source: 'examples/wastebin/kernel/src/lib.rs', lines 21:0-28:1
+    Source: 'examples/wastebin/kernel/src/lib.rs', lines 12:0-19:1
     Visibility: public -/
 structure Principal where
   uids : alloc.vec.Vec Std.U64
@@ -928,7 +928,7 @@ structure Principal where
   fresh : Std.U64
 
 /-- [wastebin_kernel::Command]
-    Source: 'examples/wastebin/kernel/src/lib.rs', lines 78:0-89:1
+    Source: 'examples/wastebin/kernel/src/lib.rs', lines 69:0-80:1
     Visibility: public -/
 @[discriminant isize]
 inductive Command where
@@ -944,7 +944,7 @@ inductive Command where
 | Purge : Command
 
 /-- [wastebin_kernel::Shown]
-    Source: 'examples/wastebin/kernel/src/lib.rs', lines 100:0-105:1
+    Source: 'examples/wastebin/kernel/src/lib.rs', lines 91:0-96:1
     Visibility: public -/
 structure Shown where
   text : alloc.vec.Vec Std.U8
@@ -953,7 +953,7 @@ structure Shown where
   owned : Bool
 
 /-- [wastebin_kernel::Reply]
-    Source: 'examples/wastebin/kernel/src/lib.rs', lines 108:0-117:1
+    Source: 'examples/wastebin/kernel/src/lib.rs', lines 99:0-108:1
     Visibility: public -/
 @[discriminant isize]
 inductive Reply where
@@ -964,7 +964,7 @@ inductive Reply where
 | Done : Reply
 
 /-- [wastebin_kernel::Error]
-    Source: 'examples/wastebin/kernel/src/lib.rs', lines 120:0-130:1
+    Source: 'examples/wastebin/kernel/src/lib.rs', lines 111:0-121:1
     Visibility: public -/
 @[discriminant isize]
 inductive Error where
@@ -977,12 +977,12 @@ inductive Error where
 | Overflow : Error
 
 /-- [wastebin_kernel::one]:
-    Source: 'examples/wastebin/kernel/src/lib.rs', lines 134:0-138:1 -/
+    Source: 'examples/wastebin/kernel/src/lib.rs', lines 125:0-129:1 -/
 def one (w : Write) : Result (alloc.vec.Vec Write) := do
   alloc.vec.Vec.push (alloc.vec.Vec.new Write) w
 
 /-- [wastebin_kernel::expired]:
-    Source: 'examples/wastebin/kernel/src/lib.rs', lines 141:0-146:1
+    Source: 'examples/wastebin/kernel/src/lib.rs', lines 132:0-137:1
     Visibility: public -/
 def expired (p : Paste) (now : Std.U64) : Result Bool := do
   match p.expires with
@@ -990,7 +990,7 @@ def expired (p : Paste) (now : Std.U64) : Result Bool := do
   | some t => ok (t < now)
 
 /-- [wastebin_kernel::find_slug]: loop body 0:
-    Source: 'examples/wastebin/kernel/src/lib.rs', lines 150:4-157:1
+    Source: 'examples/wastebin/kernel/src/lib.rs', lines 141:4-148:1
     Visibility: public -/
 @[rust_loop_body]
 def find_slug_loop.body
@@ -1010,7 +1010,7 @@ def find_slug_loop.body
   else ok (done none)
 
 /-- [wastebin_kernel::find_slug]: loop 0:
-    Source: 'examples/wastebin/kernel/src/lib.rs', lines 150:4-157:1
+    Source: 'examples/wastebin/kernel/src/lib.rs', lines 141:4-148:1
     Visibility: public -/
 @[rust_loop]
 def find_slug_loop
@@ -1022,7 +1022,7 @@ def find_slug_loop
     i
 
 /-- [wastebin_kernel::find_slug]:
-    Source: 'examples/wastebin/kernel/src/lib.rs', lines 148:0-157:1
+    Source: 'examples/wastebin/kernel/src/lib.rs', lines 139:0-148:1
     Visibility: public -/
 @[reducible]
 def find_slug
@@ -1030,7 +1030,7 @@ def find_slug
   find_slug_loop ps slug 0#usize
 
 /-- [wastebin_kernel::has_uid]: loop body 0:
-    Source: 'examples/wastebin/kernel/src/lib.rs', lines 161:4-168:1
+    Source: 'examples/wastebin/kernel/src/lib.rs', lines 152:4-159:1
     Visibility: public -/
 @[rust_loop_body]
 def has_uid_loop.body
@@ -1050,7 +1050,7 @@ def has_uid_loop.body
   else ok (done false)
 
 /-- [wastebin_kernel::has_uid]: loop 0:
-    Source: 'examples/wastebin/kernel/src/lib.rs', lines 161:4-168:1
+    Source: 'examples/wastebin/kernel/src/lib.rs', lines 152:4-159:1
     Visibility: public -/
 @[rust_loop]
 def has_uid_loop
@@ -1062,14 +1062,14 @@ def has_uid_loop
     i
 
 /-- [wastebin_kernel::has_uid]:
-    Source: 'examples/wastebin/kernel/src/lib.rs', lines 159:0-168:1
+    Source: 'examples/wastebin/kernel/src/lib.rs', lines 150:0-159:1
     Visibility: public -/
 @[reducible]
 def has_uid (uids : alloc.vec.Vec Std.U64) (u : Std.U64) : Result Bool := do
   has_uid_loop uids u 0#usize
 
 /-- [wastebin_kernel::deadline]:
-    Source: 'examples/wastebin/kernel/src/lib.rs', lines 171:0-184:1 -/
+    Source: 'examples/wastebin/kernel/src/lib.rs', lines 162:0-175:1 -/
 def deadline
   (now : Std.U64) (expires_in : Option Std.U32) :
   Result (core.result.Result (Option Std.U64) Error)
@@ -1090,7 +1090,7 @@ def deadline
         ok (core.result.Result.Ok (some i3))
 
 /-- [wastebin_kernel::owner_for]:
-    Source: 'examples/wastebin/kernel/src/lib.rs', lines 188:0-196:1 -/
+    Source: 'examples/wastebin/kernel/src/lib.rs', lines 178:0-186:1 -/
 def owner_for
   (uids : alloc.vec.Vec Std.U64) (last_uid : Std.U64) :
   Result (core.result.Result (Std.U64 × Std.U64) Error)
@@ -1109,7 +1109,7 @@ def owner_for
          ok (core.result.Result.Ok (i1, i1))
 
 /-- [wastebin_kernel::create]:
-    Source: 'examples/wastebin/kernel/src/lib.rs', lines 198:0-218:1 -/
+    Source: 'examples/wastebin/kernel/src/lib.rs', lines 188:0-208:1 -/
 def create
   (a : Principal) (s : Snapshot) (text : alloc.vec.Vec Std.U8)
   (expires_in : Option Std.U32) (burn : Bool) (lock : Option Std.U64) :
@@ -1150,7 +1150,7 @@ def create
   | core.result.Result.Err e => ok (core.result.Result.Err e)
 
 /-- [wastebin_kernel::read]:
-    Source: 'examples/wastebin/kernel/src/lib.rs', lines 222:0-243:1 -/
+    Source: 'examples/wastebin/kernel/src/lib.rs', lines 212:0-233:1 -/
 def read
   (a : Principal) (p : Paste) (key : Option Std.U64) :
   Result (core.result.Result ((alloc.vec.Vec Write) × Reply) Error)
@@ -1192,7 +1192,7 @@ def read
               { text := v, expires := p.expires, burned := false, owned := b1 }))
 
 /-- [wastebin_kernel::fetch]:
-    Source: 'examples/wastebin/kernel/src/lib.rs', lines 245:0-250:1 -/
+    Source: 'examples/wastebin/kernel/src/lib.rs', lines 235:0-240:1 -/
 def fetch
   (a : Principal) (s : Snapshot) (slug : Std.U64) (key : Option Std.U64) :
   Result (core.result.Result ((alloc.vec.Vec Write) × Reply) Error)
@@ -1203,7 +1203,7 @@ def fetch
   | some p => read a p key
 
 /-- [wastebin_kernel::view]:
-    Source: 'examples/wastebin/kernel/src/lib.rs', lines 254:0-265:1 -/
+    Source: 'examples/wastebin/kernel/src/lib.rs', lines 244:0-255:1 -/
 def view
   (a : Principal) (s : Snapshot) (slug : Std.U64) (confirm : Bool)
   (key : Option Std.U64) :
@@ -1222,7 +1222,7 @@ def view
     else read a p key
 
 /-- [wastebin_kernel::delete]:
-    Source: 'examples/wastebin/kernel/src/lib.rs', lines 268:0-279:1 -/
+    Source: 'examples/wastebin/kernel/src/lib.rs', lines 258:0-269:1 -/
 def delete
   (a : Principal) (s : Snapshot) (slug : Std.U64) :
   Result (core.result.Result ((alloc.vec.Vec Write) × Reply) Error)
@@ -1239,7 +1239,7 @@ def delete
     else ok (core.result.Result.Err Error.Forbidden)
 
 /-- [wastebin_kernel::purge]: loop body 0:
-    Source: 'examples/wastebin/kernel/src/lib.rs', lines 284:4-289:5 -/
+    Source: 'examples/wastebin/kernel/src/lib.rs', lines 274:4-279:5 -/
 @[rust_loop_body]
 def purge_loop.body
   (now : Std.U64) (s : Snapshot) (ws : alloc.vec.Vec Write) (i : Std.Usize) :
@@ -1262,7 +1262,7 @@ def purge_loop.body
   else ok (done ws)
 
 /-- [wastebin_kernel::purge]: loop 0:
-    Source: 'examples/wastebin/kernel/src/lib.rs', lines 284:4-289:5 -/
+    Source: 'examples/wastebin/kernel/src/lib.rs', lines 274:4-279:5 -/
 @[rust_loop]
 def purge_loop
   (now : Std.U64) (s : Snapshot) (ws : alloc.vec.Vec Write) (i : Std.Usize) :
@@ -1273,7 +1273,7 @@ def purge_loop
     (ws, i)
 
 /-- [wastebin_kernel::purge]:
-    Source: 'examples/wastebin/kernel/src/lib.rs', lines 281:0-291:1 -/
+    Source: 'examples/wastebin/kernel/src/lib.rs', lines 271:0-281:1 -/
 def purge
   (now : Std.U64) (s : Snapshot) :
   Result (core.result.Result ((alloc.vec.Vec Write) × Reply) Error)
@@ -1282,7 +1282,7 @@ def purge
   ok (core.result.Result.Ok (ws, Reply.Done))
 
 /-- [wastebin_kernel::transition]:
-    Source: 'examples/wastebin/kernel/src/lib.rs', lines 294:0-302:1
+    Source: 'examples/wastebin/kernel/src/lib.rs', lines 284:0-292:1
     Visibility: public -/
 def transition
   (a : Principal) (s : Snapshot) (cmd : Command) :
@@ -1297,7 +1297,7 @@ def transition
   | Command.Purge => purge a.now s
 
 /-- [wastebin_kernel::transition_pre190]:
-    Source: 'examples/wastebin/kernel/src/lib.rs', lines 305:0-310:1
+    Source: 'examples/wastebin/kernel/src/lib.rs', lines 295:0-300:1
     Visibility: public -/
 def transition_pre190
   (a : Principal) (s : Snapshot) (cmd : Command) :
