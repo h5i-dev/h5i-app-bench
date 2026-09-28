@@ -9,3 +9,4 @@ trap 'rm -rf "$tmp"' EXIT
   $(bash "$root/scripts/schema-items.sh" conduit_kernel) --include i5h_sql \
   --dest-file "$tmp/conduit_kernel.llbc")
 aeneas -backend lean "$tmp/conduit_kernel.llbc" -dest "$root/examples/conduit/proofs/generated"
+for f in "$root/examples/conduit/proofs/generated"/*.lean; do bash "$(dirname "$0")/normalize-sources.sh" "$f" "$root"; done

@@ -111,6 +111,7 @@ with users 1 and 2 in GitHub team 7, and sign in both. `I5H_ISSUE=github:<user>`
 stands in for the OAuth exchange with GitHub:
 
 ```
+cd examples  # its own Cargo workspace; run from the repository root
 export DATABASE_URL=postgres://i5h:i5h@127.0.0.1:55432/i5h I5H_SECRET=dev-secret I5H_TEAMS='1:7;2:7'
 cargo run -p cratesio-server &
 

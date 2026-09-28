@@ -102,6 +102,7 @@ depend only on Lean's standard axioms.
 ## Running it
 
 ```
+cd examples  # its own Cargo workspace; run from the repository root
 WASTEBIN_SIGNING_KEY=... DATABASE_URL=postgres://... cargo run -p wastebin-server
 curl -c jar -d '{"text":"hi","burn_after_reading":true}' -H 'content-type: application/json' localhost:8088/
 curl localhost:8088/<id>                  # {"confirm_burn":true}

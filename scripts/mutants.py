@@ -6,7 +6,7 @@ Charon + Aeneas, and rebuilds the proofs. A mutant is caught when the proofs no
 longer build. A surviving mutant means the spec is too weak.
 
 Usage: scripts/mutants.py [-j JOBS] [NAME ...]
-Needs charon and aeneas on PATH (source /home/ht2673/tools/aeneas-env.sh) and a
+Needs charon and aeneas on PATH and a
 built examples/docs/proofs/.lake (its packages are shared, read-only).
 """
 
@@ -119,19 +119,20 @@ MUTANTS = {
 SCHEMA = os.path.join(ROOT, "crates/i5h-schema")
 SQL = os.path.join(ROOT, "crates/i5h-sql")
 
-# The kernel and its dependencies: the i5h-schema macros and i5h-sql.
+# The kernel and its dependencies, laid out as in the repository so the
+# kernel's relative paths still resolve.
 WORKSPACE_TOML = """[workspace]
-resolver = "2"
-members = ["kernel", "i5h-schema", "i5h-sql"]
+resolver = "3"
+members = ["examples/docs/kernel", "crates/i5h-schema", "crates/i5h-sql"]
 
 [workspace.package]
-edition = "2021"
+edition = "2024"
 license = "Apache-2.0"
 version = "0.1.0"
 
 [workspace.dependencies]
-i5h-schema = { path = "i5h-schema" }
-i5h-sql = { path = "i5h-sql" }
+i5h-schema = { path = "crates/i5h-schema" }
+i5h-sql = { path = "crates/i5h-sql" }
 """
 
 
@@ -154,12 +155,13 @@ def check(name, edits, keep):
     tmp = tempfile.mkdtemp(prefix=f"i5h-mutant-{name}-")
     log = os.path.join(tmp, "log.txt")
     try:
-        shutil.copytree(KERNEL, os.path.join(tmp, "kernel"), ignore=shutil.ignore_patterns("target"))
-        shutil.copytree(SCHEMA, os.path.join(tmp, "i5h-schema"), ignore=shutil.ignore_patterns("target"))
-        shutil.copytree(SQL, os.path.join(tmp, "i5h-sql"), ignore=shutil.ignore_patterns("target", "proofs"))
+        kernel = os.path.join(tmp, "examples/docs/kernel")
+        shutil.copytree(KERNEL, kernel, ignore=shutil.ignore_patterns("target"))
+        shutil.copytree(SCHEMA, os.path.join(tmp, "crates/i5h-schema"), ignore=shutil.ignore_patterns("target"))
+        shutil.copytree(SQL, os.path.join(tmp, "crates/i5h-sql"), ignore=shutil.ignore_patterns("target", "proofs"))
         with open(os.path.join(tmp, "Cargo.toml"), "w") as f:
             f.write(WORKSPACE_TOML)
-        lib = os.path.join(tmp, "kernel/src/lib.rs")
+        lib = os.path.join(kernel, "src/lib.rs")
         with open(lib) as f:
             src = mutate(f.read(), edits)
         with open(lib, "w") as f:
@@ -192,7 +194,7 @@ def check(name, edits, keep):
                   "--start-from", "docs_kernel::apply", "--start-from", "docs_kernel::read_scope",
                   "--start-from", "docs_kernel::check_inv", "--start-from", "docs_kernel::sql_writes", "--start-from", "docs_kernel::decode", "--start-from", "docs_kernel::scoped_project",
                   *schema_items, "--include", "i5h_sql",
-                  "--dest-file", llbc], os.path.join(tmp, "kernel"), log)
+                  "--dest-file", llbc], kernel, log)
         if rc != 0:
             return name, "invalid (charon)", tmp
         if run(["aeneas", "-backend", "lean", llbc, "-dest", os.path.join(proofs, "generated")], tmp, log) != 0:

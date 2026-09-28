@@ -11,3 +11,4 @@ trap 'rm -rf "$tmp"' EXIT
   $(bash "$root/scripts/schema-items.sh" docs_kernel) --include i5h_sql \
   --dest-file "$tmp/docs_kernel.llbc")
 aeneas -backend lean "$tmp/docs_kernel.llbc" -dest "$root/examples/docs/proofs/generated"
+for f in "$root/examples/docs/proofs/generated"/*.lean; do bash "$(dirname "$0")/normalize-sources.sh" "$f" "$root"; done

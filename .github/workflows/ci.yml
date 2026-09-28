@@ -35,13 +35,21 @@ jobs:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: |
+            .
+            examples
       - run: cargo build --workspace --all-targets --locked
+      - run: cargo build --workspace --all-targets --locked
+        working-directory: examples
       - run: scripts/ci-rust-tests.sh
       - uses: taiki-e/install-action@v2
         with:
           tool: cargo-deny
       # A8: only i5h-pg may depend on database drivers.
       - run: cargo deny check bans
+      - run: cargo deny check bans
+        working-directory: examples
 
   lean:
     runs-on: ubuntu-latest

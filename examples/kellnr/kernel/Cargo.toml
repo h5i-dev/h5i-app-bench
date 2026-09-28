@@ -1,9 +1,10 @@
 [package]
 name = "kellnr-kernel"
 description = "Kellnr's registry authorization as an i5h kernel, before and after PR #1243"
-edition.workspace = true
-license.workspace = true
-version.workspace = true
+edition = "2024"
+license = "Apache-2.0"
+version = "0.1.0"
+publish = false
 
 # No dependencies: this crate is extracted to Lean by Charon + Aeneas.
 [dependencies]

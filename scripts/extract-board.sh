@@ -9,3 +9,4 @@ trap 'rm -rf "$tmp"' EXIT
   --include i5h_sql \
   --dest-file "$tmp/board_kernel.llbc")
 aeneas -backend lean "$tmp/board_kernel.llbc" -dest "$root/examples/tutorials/board/proofs/generated"
+for f in "$root/examples/tutorials/board/proofs/generated"/*.lean; do bash "$(dirname "$0")/normalize-sources.sh" "$f" "$root"; done

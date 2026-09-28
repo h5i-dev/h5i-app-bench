@@ -32,6 +32,10 @@ HTTP (axum) ──► Actor<K> ──► I5h::respond ──► Engine: BEGIN, l
 | `examples/docs` | the document service, the largest example |
 | `examples/kellnr`, `examples/atuin` | ports of real authorization code, kernels and proofs only |
 | `examples/wastebin`, `examples/conduit`, `examples/cratesio` | ports of real applications, with servers |
+| `xtask` | `cargo i5h-verify`, which runs CI's checks locally |
+
+The root Cargo workspace holds `crates/*` and `xtask`. `examples/` is a second
+workspace whose crates depend on `crates/*` by path, as an application would.
 
 In each proof project (`*/proofs`), `generated/` holds extracted Rust and
 `schema!` output as a separate Lean library with its own `srcDir`;

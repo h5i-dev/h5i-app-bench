@@ -115,13 +115,16 @@ fn main() -> ExitCode {
         if !db {
             return Outcome::Skip("I5H_TEST_DATABASE_URL unset".into());
         }
-        run(r, "cargo", &["test", "--workspace", "--locked", "-q"])
+        run(r, "bash", &["scripts/ci-rust-tests.sh"])
     });
     cx.step("cargo deny (bans)", |r| {
         if !have_cargo_sub("deny") {
             return Outcome::Skip("cargo-deny not installed".into());
         }
-        run(r, "cargo", &["deny", "check", "bans"])
+        match run(r, "cargo", &["deny", "check", "bans"]) {
+            Outcome::Pass => run(&r.join("examples"), "cargo", &["deny", "check", "bans"]),
+            other => other,
+        }
     });
     if extract {
         let tools = have("charon") && have("aeneas");

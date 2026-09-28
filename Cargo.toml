@@ -1,40 +1,21 @@
 [workspace]
-resolver = "2"
+resolver = "3"
 members = [
-    "crates/i5h-schema",
-    "xtask",
     "crates/i5h",
     "crates/i5h-pg",
     "crates/i5h-http",
-    "examples/docs/kernel",
-    "examples/docs/server",
-    "examples/docs/difftest",
-    "examples/atuin/kernel",
+    "crates/i5h-schema",
     "crates/i5h-sql",
     "crates/i5h-pgsql",
     "crates/i5h-token",
-    "examples/kellnr/kernel",
     "crates/i5h-json",
-    "examples/tutorials/calculator/kernel",
-    "examples/tutorials/calculator/server",
-    "examples/tutorials/board/kernel",
-    "examples/tutorials/board/server",
-    "examples/wastebin/kernel",
-    "examples/wastebin/server",
-    "examples/conduit/kernel",
-    "examples/conduit/server",
-    "examples/cratesio/kernel",
-    "examples/cratesio/server",
-    "examples/tutorials/ledger/kernel",
-    "examples/tutorials/ledger/server",
-    "examples/tutorials/inbox/kernel",
-    "examples/tutorials/inbox/server",
-    "examples/tutorials/booking/kernel",
-    "examples/tutorials/booking/server",
+    "xtask",
 ]
+# The examples are their own workspace, depending on these crates as a user would.
+exclude = ["examples"]
 
 [workspace.package]
-edition = "2021"
+edition = "2024"
 license = "Apache-2.0"
 version = "0.1.0"
 
@@ -47,15 +28,10 @@ i5h-token = { path = "crates/i5h-token" }
 i5h-json = { path = "crates/i5h-json" }
 i5h-sql = { path = "crates/i5h-sql" }
 i5h-pgsql = { path = "crates/i5h-pgsql" }
-docs-kernel = { path = "examples/docs/kernel" }
-calculator-kernel = { path = "examples/tutorials/calculator/kernel" }
-board-kernel = { path = "examples/tutorials/board/kernel" }
 axum = "0.8"
 tokio = { version = "1", features = ["macros", "rt-multi-thread", "time", "signal"] }
 tokio-postgres = "0.7"
 deadpool-postgres = "0.14"
-serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 proptest = "1"
 tracing = "0.1"
-tracing-subscriber = { version = "0.3", features = ["env-filter"] }

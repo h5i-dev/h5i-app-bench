@@ -14,4 +14,5 @@ start with the first one.
 
 Every tutorial runs with one PostgreSQL container and `cargo run`, and its
 proofs are checked by `cargo i5h-verify` and CI in the same way as the rest of
-the repository.
+the repository. `examples/` is its own Cargo workspace, so run the `cargo`
+commands from there.

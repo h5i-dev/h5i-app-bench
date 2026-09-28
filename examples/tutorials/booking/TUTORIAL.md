@@ -35,6 +35,7 @@ and two users, and start the server. `BOOKING_DESTINATIONS` is the operator's
 list of notification destinations; here destination 7 writes to the log.
 
 ```
+cd examples  # its own Cargo workspace; run from the repository root
 export DATABASE_URL=postgres://i5h:i5h@127.0.0.1:55432/i5h I5H_SECRET=dev-secret
 ADMIN=$(I5H_ISSUE=5:1 cargo run -q -p booking-server)
 ALICE=$(I5H_ISSUE=5:2 cargo run -q -p booking-server)
