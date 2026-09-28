@@ -4,6 +4,9 @@ description = "HTTP shell for i5h kernels: authentication and input decoding (tr
 edition.workspace = true
 license.workspace = true
 version.workspace = true
+repository.workspace = true
+homepage.workspace = true
+readme.workspace = true
 
 [dependencies]
 i5h.workspace = true

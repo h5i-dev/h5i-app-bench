@@ -4,6 +4,9 @@ description = "Declare kernel row types once; get the structs and their table ma
 edition.workspace = true
 license.workspace = true
 version.workspace = true
+repository.workspace = true
+homepage.workspace = true
+readme.workspace = true
 
 # Macros, plus the Lean renderer they call from tests; extraction never reaches it.
 [dependencies]

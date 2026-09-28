@@ -4,6 +4,9 @@ description = "PostgreSQL engine for i5h: tenant-scoped snapshots, SERIALIZABLE 
 edition.workspace = true
 license.workspace = true
 version.workspace = true
+repository.workspace = true
+homepage.workspace = true
+readme.workspace = true
 
 [features]
 # Test-only hooks (Tx::backend_pid).

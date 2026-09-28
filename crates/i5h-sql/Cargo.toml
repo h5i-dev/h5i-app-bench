@@ -4,6 +4,9 @@ description = "Pure planner from i5h write sets to keyed SQL statements; extract
 edition.workspace = true
 license.workspace = true
 version.workspace = true
+repository.workspace = true
+homepage.workspace = true
+readme.workspace = true
 
 # No dependencies: this crate is extracted to Lean by Charon + Aeneas.
 [dependencies]

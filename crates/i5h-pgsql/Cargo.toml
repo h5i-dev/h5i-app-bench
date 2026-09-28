@@ -4,6 +4,9 @@ description = "PostgreSQL text for i5h's planned statements; extracted to Lean a
 edition.workspace = true
 license.workspace = true
 version.workspace = true
+repository.workspace = true
+homepage.workspace = true
+readme.workspace = true
 
 # Only i5h-sql: this crate is extracted to Lean by Charon + Aeneas.
 [dependencies]

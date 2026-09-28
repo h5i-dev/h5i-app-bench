@@ -4,5 +4,8 @@ description = "Core contract between a verified i5h kernel and its untrusted she
 edition.workspace = true
 license.workspace = true
 version.workspace = true
+repository.workspace = true
+homepage.workspace = true
+readme.workspace = true
 
 [dependencies]

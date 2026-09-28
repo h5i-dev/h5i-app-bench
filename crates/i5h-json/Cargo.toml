@@ -4,6 +4,9 @@ description = "JSON writer for i5h replies, extracted to Lean and proven"
 edition.workspace = true
 license.workspace = true
 version.workspace = true
+repository.workspace = true
+homepage.workspace = true
+readme.workspace = true
 
 # No dependencies: the writer is extracted to Lean by Charon + Aeneas.
 [dependencies]
