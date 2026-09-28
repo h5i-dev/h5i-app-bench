@@ -2,9 +2,8 @@ import Counterexample
 /-!
 # Scenarios
 
-Concrete runs of the kernel on a small site, which show that the guarded
-actions do happen for the right user and are refused for the others, so the
-permission theorems do not hold because nothing is allowed.
+Concrete runs on a small site: guarded actions succeed for the right user
+and fail for others, so the permission theorems are not vacuous.
 -/
 open Aeneas Aeneas.Std Result conduit_kernel conduit_kernel.Spec conduit_kernel.Helpers
   conduit_kernel.Commands conduit_kernel.Counterexample I5hLib

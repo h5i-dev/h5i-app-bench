@@ -44,9 +44,8 @@ impl Kernel for Cratesio {
     }
 }
 
-/// The engine settings the server runs with: the database's clock, never
-/// going back, so a lock that has ended or an invitation that has expired
-/// stays so.
+/// The database's clock, never going back, so an ended lock or expired
+/// invitation stays that way.
 pub fn config() -> EngineConfig {
     EngineConfig::default().database_time()
 }
@@ -65,9 +64,7 @@ impl Store<Cratesio> for CratesStore {
         schema_tables()
     }
 
-    // Rows are decoded by the kernel's `decode`, and a write set is stored as
-    // the table writes of its `sql_writes`; `Storage.lean` proves the store
-    // then holds what `apply` computes.
+    // `Storage.lean`: stored `sql_writes` load back as what `apply` computes.
     async fn load(tx: &Tx<'_>, t: TenantId) -> Result<k::Snapshot, DbError> {
         schema_load(tx, t).await
     }

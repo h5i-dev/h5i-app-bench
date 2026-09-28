@@ -311,23 +311,19 @@ theorem write_loop_spec (toks : alloc.vec.Vec Tok) (out : alloc.vec.Vec U8) (av 
       have := congrArg Prod.fst hs; simpa [print] using this
   · exact ⟨hi, hst⟩
 
-/-- The extracted writer prints exactly `Spec.print`, for any token stream
-whose output fits in memory. -/
+/-- `write` prints exactly `Spec.print` when the output fits in a usize. -/
 theorem write_spec (toks : alloc.vec.Vec Tok)
     (hb : (print (toks.val.map toT)).length + 21 < Usize.max) :
     write toks ⦃ r => B r.val = print (toks.val.map toT) ⦄ := by
   unfold write
   exact write_loop_spec toks _ false 0#usize (by simp) (by simp [B]) hb
 
-/-- A string token's bytes cannot end its JSON string early: lexing the output
-from the opening quote recovers exactly the string, and whatever follows. -/
+/-- A string token's bytes cannot end its JSON string early. -/
 theorem write_str_contained (s : alloc.vec.Vec U8) (rest : List Nat) :
     lexStr (esc (B s.val) ++ 34 :: rest) = some (B s.val, rest) :=
   lex_esc _ _ (fun c hc => by simp only [B, List.mem_map] at hc; obtain ⟨x, -, rfl⟩ := hc; scalar_tac)
 
-/-- Where the `j`th token is a string or key, the output holds it quoted and escaped
-right after the first `j` tokens and their separator, and lexing from its
-opening quote stops at its own closing quote. -/
+/-- The `j`th string or key token sits quoted in the output and lexes back to itself. -/
 theorem write_str_at (toks : alloc.vec.Vec Tok)
     (hb : (print (toks.val.map toT)).length + 21 < Usize.max)
     (j : Nat) (hj : j < toks.length) (s : alloc.vec.Vec U8) (hs : toks.val[j]'(by simpa using hj) = .Str s ∨ toks.val[j]'(by simpa using hj) = .Key s) :

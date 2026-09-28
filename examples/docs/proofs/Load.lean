@@ -3,10 +3,8 @@ import Invariants
 /-!
 # What the store reads back (A4, load side)
 
-The server loads a tenant's rows and decodes them with the kernel's
-`decode`. We prove the round trip for every row type, then show the store
-keeps a database invariant: the rows always stand for a state satisfying
-`Inv`, whatever order the database returns them in.
+Round trip of `decode` for every row type, then the database invariant
+`DbInv` in any row order: `load_sound` for loading, `store_sound` for storing.
 -/
 open Aeneas Aeneas.Std Result docs_kernel docs_kernel.Spec I5hLib I5hLib.Sql docs_kernel.Storage docs_kernel.Schema
 
@@ -271,10 +269,8 @@ theorem stored_step (db : Db Val) (s : St) (ws : List Write) (hi : Inv s) (hs : 
     obtain ⟨w, _, hw⟩ := List.mem_filterMap.1 ha
     exact writeOk w a hw
 
-/-- `Storage.sql_writes_stored` for every tenant, including a fresh one with no
-counter row (`c = false`; with `s = init` that is the empty database, see
-`fresh`): the planned statements leave exactly the rows of `applyAll`, with a
-counter row once some write sets it. -/
+/-- `Storage.sql_writes_stored`, also for a tenant with no counter row yet
+(`c = false`). -/
 theorem sql_writes_storedC (c : Bool) (s : St) (h : Inv s) (ws : alloc.vec.Vec Write) :
     sql_writes ws ⦃ v =>
       execAll (readBack kl (encC c s)) ((v.val.map Write.abs).map planA) =
@@ -289,8 +285,8 @@ theorem sql_writes_storedC (c : Bool) (s : St) (h : Inv s) (ws : alloc.vec.Vec W
 
 /-! ## Loading -/
 
-/-- Trusted (a tenant-filtered `SELECT`): the loader returns every stored row
-of each table exactly once, in any order. -/
+/-- The loader returns every stored row of each table exactly once, in any
+order: what the compiled `SELECT`s return (`Database.lists_of`). -/
 def Lists (db : Db Val) (R : Nat → List (List Val)) : Prop :=
   ∀ t, (R t).Nodup ∧ ∀ row, row ∈ R t ↔ db t (row.take (kl t)) = some row
 
@@ -427,9 +423,7 @@ theorem load_sound (db : Db Val) (hdb : DbInv db) (r : Rows) (hl : Lists db (row
   rintro o ⟨snap, rfl, e⟩
   exact ⟨snap, rfl, inv_equiv e hi, stored_equiv e hi ⟨c, hc, hb, hdbeq⟩⟩
 
-/-- Storing the result of any successful command on a loaded snapshot keeps
-`DbInv`. With `fresh` and `load_sound`, every tenant's rows hold a state
-satisfying `Inv`, forever (`Scoped.served_inv`). -/
+/-- Storing a successful command's writes on a loaded snapshot keeps `DbInv`. -/
 theorem store_sound (db : Db Val) (snap : Snapshot) (hi : Inv (Snapshot.toSt snap))
     (hs : Stored db (Snapshot.toSt snap)) (a : Principal) (c : Command) ws reply
     (h : transition a snap c = .ok (.Ok (ws, reply))) :

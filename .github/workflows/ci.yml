@@ -35,13 +35,21 @@ jobs:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: |
+            .
+            examples
       - run: cargo build --workspace --all-targets --locked
+      - run: cargo build --workspace --all-targets --locked
+        working-directory: examples
       - run: scripts/ci-rust-tests.sh
       - uses: taiki-e/install-action@v2
         with:
           tool: cargo-deny
       # A8: only i5h-pg may depend on database drivers.
       - run: cargo deny check bans
+      - run: cargo deny check bans
+        working-directory: examples
 
   lean:
     runs-on: ubuntu-latest
@@ -69,13 +77,17 @@ jobs:
       - name: Build the other extracted-crate proofs
         working-directory: .
         run: |
-          for d in crates/i5h-sql/proofs crates/i5h-token/proofs crates/i5h-json/proofs examples/kellnr/proofs examples/atuin/proofs examples/tutorials/calculator/proofs examples/tutorials/board/proofs examples/wastebin/proofs examples/conduit/proofs examples/cratesio/proofs examples/tutorials/ledger/proofs examples/tutorials/inbox/proofs examples/tutorials/booking/proofs; do
+          for d in crates/i5h-sql/proofs crates/i5h-pgsql/proofs crates/i5h-token/proofs crates/i5h-json/proofs examples/kellnr/proofs examples/atuin/proofs examples/tutorials/calculator/proofs examples/tutorials/board/proofs examples/wastebin/proofs examples/conduit/proofs examples/cratesio/proofs examples/tutorials/ledger/proofs examples/tutorials/inbox/proofs examples/tutorials/booking/proofs; do
             mkdir -p "$d/.lake"
             ln -sfn "$GITHUB_WORKSPACE/examples/docs/proofs/.lake/packages" "$d/.lake/packages"
             (cd "$d" && lake build)
             if grep -n -w -e sorry -e native_decide "$d"/*.lean; then exit 1; fi
             if grep -n "^axiom" "$d"/*.lean "$d"/generated/*.lean; then exit 1; fi
           done
+      # The SQL compiler and every server's database invariant: standard axioms only.
+      - name: Axioms of the database theorems
+        working-directory: .
+        run: scripts/ci-db-axioms.sh
   # A9: the committed Lean must be exactly what Aeneas extracts from the kernel.
   extract:
     runs-on: ubuntu-latest
@@ -96,6 +108,7 @@ jobs:
           echo "$RUNNER_TEMP/charon/bin" >> "$GITHUB_PATH"
       - run: scripts/extract.sh
       - run: scripts/extract-sql.sh
+      - run: scripts/extract-pgsql.sh
       - run: scripts/extract-token.sh
       - run: scripts/extract-json.sh
       - run: scripts/extract-kellnr.sh
@@ -112,6 +125,7 @@ jobs:
           git diff --exit-code -- \
             examples/docs/proofs/generated/DocsKernel.lean \
             crates/i5h-sql/proofs/generated/I5hSql.lean \
+            crates/i5h-pgsql/proofs/generated/I5hPgsql.lean \
             crates/i5h-token/proofs/generated/I5hToken.lean \
             crates/i5h-json/proofs/generated/I5hJson.lean \
             examples/kellnr/proofs/generated/KellnrKernel.lean \

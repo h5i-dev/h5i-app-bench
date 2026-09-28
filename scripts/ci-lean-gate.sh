@@ -21,38 +21,15 @@ theorems="Theorems.allows_eq Theorems.transition_total Theorems.apply_eq Theorem
   Storage.sql_writes_spec Storage.sql_writes_stored Load.fresh Load.decode_spec Load.load_sound
   Load.store_sound Load.sql_writes_storedC Scoped.scoped_sound Scoped.scoped_command Scoped.served_inv
   Theorems.emit_publishes Scenarios.authorized_reachable Scenarios.noninterference_reachable
-  Scenarios.transition_frame_reachable Scenarios.published_reachable"
-library_theorems="I5hLib.Store.App.served_holds I5hLib.Store.App.served_lists"
-mkdir -p .lake/ci
-{
-  # Modules holding the main theorems.
-  for m in Theorems Invariants Noninterference Frame Check Storage Load Scoped Scenarios; do echo "import $m"; done
-  for t in $theorems; do echo "#print axioms docs_kernel.$t"; done
-  for t in $library_theorems; do echo "#print axioms $t"; done
-} > .lake/ci/Axioms.lean
-out=$(lake env lean .lake/ci/Axioms.lean 2>&1)
-status=$?
-echo "$out"
-if [ $status -ne 0 ]; then
-  echo "error: axiom check did not compile"
-  fail=1
-fi
+  Scenarios.transition_frame_reachable Scenarios.published_reachable Database.pg_served Database.db_inv"
+library_theorems="I5hLib.Store.App.served_holds I5hLib.Store.App.served_lists I5hLib.Pg.compile_sound
+  I5hLib.Pg.compileAll_sound I5hLib.Pg.select_sound I5hLib.Pg.lists_of_selects I5hLib.Pg.create_fresh
+  I5hLib.Pg.create_kept I5hLib.Pg.lexName_quote"
 full_theorems="$library_theorems"
 for t in $theorems; do full_theorems="$full_theorems docs_kernel.$t"; done
-for t in $full_theorems; do
-  line=$(grep -F "'$t'" <<<"$out" || true)
-  if [ -z "$line" ]; then
-    echo "error: no axiom report for $t"
-    fail=1
-    continue
-  fi
-  extra=$(grep -o '\[.*\]' <<<"$line" | tr -d '[] ' | tr ',' '\n' \
-    | grep -v -x -e propext -e Classical.choice -e Quot.sound -e '' || true)
-  if [ -n "$extra" ]; then
-    echo "error: $t uses non-standard axioms: $(echo $extra)"
-    fail=1
-  fi
-done
+# Modules holding the main theorems.
+"$root/scripts/ci-axioms.sh" "$proofs" Theorems Invariants Noninterference Frame Check Storage Load Scoped \
+  Scenarios Database -- $full_theorems || fail=1
 
 [ $fail -eq 0 ] && echo "lean gate: ok"
 exit $fail

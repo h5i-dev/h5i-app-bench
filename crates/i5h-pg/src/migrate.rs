@@ -1,10 +1,8 @@
 //! Schema and data migrations, checked before they commit.
 //!
-//! Proving every migration by hand is expensive, so migrations are checked
-//! instead: pending SQL runs in one transaction, then every tenant's snapshot
-//! goes through the app's invariant checker. If any tenant fails, nothing is
-//! committed. With a checker proven exact (the docs example's `check_inv`),
-//! a committed migration leaves every tenant satisfying the invariants.
+//! Pending SQL runs in one transaction, then every tenant's snapshot goes
+//! through the app's invariant checker; any failure rolls it all back. Sound
+//! only if the checker is proven exact (e.g. the docs example's `check_inv`).
 
 use crate::{DbError, Engine, Store, Tx, SCHEMA_LOCK};
 use i5h::{Kernel, TenantId};
@@ -31,8 +29,7 @@ const MIGRATIONS_DDL: &str = "CREATE TABLE IF NOT EXISTS i5h_migrations (
 )";
 
 impl<K: Kernel, S: Store<K>> Engine<K, S> {
-    /// Apply pending migrations, then check every tenant with `check`. Rolls
-    /// back and returns `DbError::InvariantViolated` if any tenant fails.
+    /// Apply pending migrations, then check every tenant. Rolls back on failure.
     pub async fn migrate(&self, steps: &[Migration], check: fn(&K::Snapshot) -> bool) -> Result<Migrated, DbError> {
         let mut client = self.pool.0.get().await.map_err(|e| DbError::Pool(e.to_string()))?;
         let tx = client.build_transaction().isolation_level(IsolationLevel::Serializable).start().await?;

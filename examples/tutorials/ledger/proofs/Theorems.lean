@@ -3,10 +3,9 @@ import Commands
 # Theorems about the ledger
 
 `writes_of` sums up `Commands.lean`: a successful command does one of five
-things. The theorems about money are case analyses over those five, using two
-facts about sums of lists: an upsert changes the sum by the difference
-between the new row and the row it replaces, and two different rows of a list
-add up to at most its sum.
+things. The money theorems split on those five, using two facts about list
+sums: an upsert changes the sum by new row minus replaced row, and two
+different rows add up to at most the sum.
 -/
 open Aeneas Aeneas.Std Result ledger_kernel ledger_kernel.Spec ledger_kernel.Commands I5hLib
 
@@ -215,9 +214,8 @@ theorem total_fits {s : St} (h : Reachable s) : total s < 2 ^ 64 := by
 
 /-! ## The overflow checks never fire
 
-The kernel refuses with `Overflow` rather than wrap around. In a reachable
-state, withdrawals and transfers never take that path: the invariant bounds
-every balance by the total, which fits in a u64. -/
+In a reachable state, withdrawals and transfers never refuse with `Overflow`:
+the invariant bounds every balance by the total, which fits in a u64. -/
 
 /-- The owner of an account can withdraw any amount up to its balance. -/
 theorem withdraw_succeeds (a : Principal) (s : Snapshot) (id amt : U64) (q : Account)

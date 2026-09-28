@@ -3,9 +3,8 @@ import I5hLib
 /-!
 # What the bulletin board should do
 
-This is the file to review. It states the permission policy, what a write
-does to the state, and which facts must always hold, using plain lists and
-natural numbers.
+The file to review: the permission policy, what a write does, and the
+invariants, on plain lists and natural numbers.
 -/
 open Aeneas Aeneas.Std board_kernel
 

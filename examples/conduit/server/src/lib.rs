@@ -54,11 +54,8 @@ impl Store<Conduit> for ConduitStore {
         schema_tables()
     }
 
-    /// Rows come back in key order, so articles and comments are in id
-    /// order, which is the order `apply` keeps them in.
-    // Rows are decoded by the kernel's `decode`, and a write set is stored as
-    // the table writes of its `sql_writes`; `Storage.lean` proves the store
-    // then holds what `apply` computes.
+    /// Rows come back in key order, which is the id order `apply` keeps.
+    // `Storage.lean`: stored `sql_writes` load back as what `apply` computes.
     async fn load(tx: &Tx<'_>, t: TenantId) -> Result<k::Snapshot, DbError> {
         schema_load(tx, t).await
     }

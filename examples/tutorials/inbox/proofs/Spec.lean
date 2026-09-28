@@ -3,9 +3,8 @@ import I5hLib
 /-!
 # What the inbox should do
 
-This is the file to review. It says what a user may see (`view`), which rows
-a user's writes may touch, what a write does to the state, and which facts
-must always hold, using plain lists and natural numbers.
+The file to review: what a user may see (`view`), which rows their writes
+may touch, what a write does, and the invariants, on plain lists.
 -/
 open Aeneas Aeneas.Std inbox_kernel
 

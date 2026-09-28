@@ -3,8 +3,7 @@ import Commands
 # Theorems about the bulletin board
 
 `writes_of` sums up `Commands.lean`: a successful command does one of six
-things. Every other theorem is a case analysis over those six, so none of
-them looks at the code again.
+things. The other theorems split on those six and never look at the code.
 -/
 open Aeneas Aeneas.Std Result board_kernel board_kernel.Spec board_kernel.Commands I5hLib
 
@@ -75,8 +74,8 @@ theorem other_mod (l : List Moderator) (hn : (l.map (·.user)).Nodup) (hl : 2 �
       exact hn.1 (.inl (ha.trans hb.symm))
     · exact ⟨a, by simp, ha⟩
 
-/-- Every write of a successful command is allowed by the policy, judged
-against the state before the command. -/
+/-- The policy allows every write of a successful command, judged against the
+state before it. -/
 theorem authorized (a : Principal) (s : Snapshot) (c : Command) ws r
     (hinv : Inv (Snapshot.toSt s)) (h : transition a s c = .ok (.Ok (ws, r))) :
     ∀ w ∈ ws.val, allowed (Snapshot.toSt s) a.user.val w := by

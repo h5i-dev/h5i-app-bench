@@ -32,11 +32,9 @@ def planA : AWrite V → AStmt V
 /-- One tenant's database: the row stored at each (table, key), if any. -/
 def Db (V : Type) := Nat → List V → Option (List V)
 
-/-- Trusted for `up` and `del`: this is what PostgreSQL does for `INSERT ...
-ON CONFLICT (pk) DO UPDATE SET <rest>` and `DELETE ... WHERE pk = key`, where
-the primary key is `tenant_id` plus the key columns. Not trusted for
-`delWhere`: the store runs it as a `SELECT` and keyed deletes, and `runs_exec`
-proves that removes exactly these rows. -/
+/-- What a statement does to one tenant's rows. `I5hLib.Pg.compile_sound`
+proves that the SQL `i5h-pgsql` compiles a statement to does exactly this,
+under the PostgreSQL model in `I5hLib.Pg`. -/
 noncomputable def exec (db : Db V) : AStmt V → Db V
   | .up t k r => fun t' k' => if t' = t ∧ k' = k then some (k ++ r) else db t' k'
   | .del t k => fun t' k' => if t' = t ∧ k' = k then none else db t' k'
@@ -240,133 +238,19 @@ theorem plan_sound (kl : Nat → Nat) (ws : List (AWrite V)) :
 section Store
 variable (kl : Nat → Nat)
 
-/-- Trusted (a tenant-filtered `SELECT ... WHERE`): `R` lists every stored row
-of table `t` satisfying `Q`, once, in any order. -/
+/-- `R` lists every stored row of table `t` satisfying `Q`, once, in any
+order: what a compiled filtered `SELECT` returns (`I5hLib.Pg.select_sound`). -/
 def Sel (db : Db V) (t : Nat) (Q : List V → Prop) (R : List (List V)) : Prop :=
   R.Nodup ∧ ∀ row, row ∈ R ↔ db t (row.take (kl t)) = some row ∧ Q row
 
-/-- Trusted (a tenant-filtered `SELECT` per table): `R t` lists every stored row
-of table `t`, once, in any order. -/
+/-- `R t` lists every stored row of table `t`, once, in any order: what a
+compiled `SELECT` of each table returns (`I5hLib.Pg.lists_of_selects`). -/
 def Lists (db : Db V) (R : Tables V) : Prop :=
   ∀ t, (R t).Nodup ∧ ∀ row, row ∈ R t ↔ db t (row.take (kl t)) = some row
 
 /-- Column `i` holds `v`. -/
 def ColIs (i : Nat) (v : V) (row : List V) : Prop := row[i]? = some v
 
-/-- Every stored row sits at its key. -/
-def KeyedDb (db : Db V) : Prop := ∀ t k r, db t k = some r → r.take (kl t) = k
-
-/-- An upsert's key has its table's key length, as the plan of a `WriteOk`
-put does. -/
-def StmtOk : AStmt V → Prop
-  | .up t k _ => k.length = kl t
-  | _ => True
-
-/-- What the store does with planned statements: it runs keyed statements as
-they are, and a `delWhere` as a `SELECT` of the matching rows followed by a
-keyed delete of each (`i5h_pg`'s `run_stmt`). -/
-inductive Runs : Db V → List (AStmt V) → Db V → Prop
-  | nil (db : Db V) : Runs db [] db
-  | up {db db' : Db V} {t k r ss} : Runs (exec db (.up t k r)) ss db' → Runs db (.up t k r :: ss) db'
-  | del {db db' : Db V} {t k ss} : Runs (exec db (.del t k)) ss db' → Runs db (.del t k :: ss) db'
-  | delWhere {db db' : Db V} {t i v ss} (R : List (List V)) : Sel kl db t (ColIs i v) R →
-      Runs (execAll db (R.map (fun r => .del t (r.take (kl t))))) ss db' → Runs db (.delWhere t i v :: ss) db'
 end Store
-
-theorem keyed_readBack (kl : Nat → Nat) (tabs : Tables V) : KeyedDb kl (readBack kl tabs) := by
-  intro t k r h
-  simpa using List.find?_some h
-
-theorem exec_dels (db : Db V) (t : Nat) (ks : List (List V)) :
-    execAll db (ks.map (.del t)) = fun t' k' => if t' = t ∧ k' ∈ ks then none else db t' k' := by
-  induction ks generalizing db with
-  | nil => funext t' k'; simp [execAll]
-  | cons k ks ih =>
-    simp only [List.map_cons, execAll, List.foldl_cons] at ih ⊢
-    rw [ih]
-    funext t' k'
-    simp only [exec, List.mem_cons]
-    by_cases h1 : t' = t <;> by_cases h2 : k' = k <;> simp_all
-
-theorem sel_delWhere (kl : Nat → Nat) (db : Db V) (t i : Nat) (v : V) (R : List (List V))
-    (hk : KeyedDb kl db) (hs : Sel kl db t (ColIs i v) R) :
-    execAll db (R.map (fun r => .del t (r.take (kl t)))) = exec db (.delWhere t i v) := by
-  have e : R.map (fun r => AStmt.del t (r.take (kl t))) = (R.map (·.take (kl t))).map (.del t) := by
-    simp [List.map_map, Function.comp_def]
-  rw [e, exec_dels]
-  funext t' k'
-  simp only [exec, List.mem_map]
-  by_cases ht : t' = t
-  · subst ht
-    cases h : db t' k' with
-    | none =>
-      simp only [Option.filter_none, true_and]
-      split
-      · rfl
-      · rfl
-    | some r =>
-      have hkr := hk _ _ _ h
-      by_cases hv : r[i]? = some v
-      · have hr : r ∈ R := (hs.2 r).2 ⟨by rw [hkr]; exact h, hv⟩
-        simp [Option.filter, hv, show ∃ a ∈ R, a.take (kl t') = k' from ⟨r, hr, hkr⟩]
-      · have : ¬ ∃ a ∈ R, a.take (kl t') = k' := by
-          rintro ⟨a, ha, hak⟩
-          obtain ⟨ha1, ha2⟩ := (hs.2 a).1 ha
-          rw [hak, h] at ha1
-          cases ha1
-          exact hv ha2
-        simp [Option.filter, hv, this]
-  · simp only [ht, false_and, if_false, decide_false, Bool.not_false]
-    cases db t' k' <;> rfl
-
-theorem keyed_exec (kl : Nat → Nat) (db : Db V) (s : AStmt V) (hk : KeyedDb kl db) (hs : StmtOk kl s) :
-    KeyedDb kl (exec db s) := by
-  intro t k r h
-  cases s with
-  | up t0 k0 r0 =>
-    simp only [exec] at h
-    split at h
-    · rename_i hc
-      obtain ⟨rfl, rfl⟩ := hc
-      cases h
-      simp only [StmtOk] at hs
-      rw [List.take_append_of_le_length (by omega), List.take_of_length_le (by omega)]
-    · exact hk _ _ _ h
-  | del t0 k0 =>
-    simp only [exec] at h
-    split at h
-    · cases h
-    · exact hk _ _ _ h
-  | delWhere t0 i v =>
-    simp only [exec] at h
-    obtain ⟨h1, -⟩ := Option.filter_eq_some_iff.1 h
-    exact hk _ _ _ h1
-
-theorem keyed_execAll (kl : Nat → Nat) (db : Db V) (ss : List (AStmt V)) (hk : KeyedDb kl db)
-    (hs : ∀ s ∈ ss, StmtOk kl s) : KeyedDb kl (execAll db ss) := by
-  induction ss generalizing db with
-  | nil => exact hk
-  | cons s ss ih =>
-    exact ih _ (keyed_exec kl db s hk (hs s (by simp))) (fun s' h => hs s' (by simp [h]))
-
-/-- The store's run is `execAll`: a `delWhere` run as a `SELECT` and keyed
-deletes removes exactly the rows `exec` says. -/
-theorem runs_exec (kl : Nat → Nat) {db db' : Db V} {ss : List (AStmt V)} (hk : KeyedDb kl db)
-    (hs : ∀ s ∈ ss, StmtOk kl s) (h : Runs kl db ss db') : db' = execAll db ss := by
-  induction h with
-  | nil => rfl
-  | up _ ih => exact ih (keyed_exec kl _ _ hk (hs _ (by simp))) (fun s h => hs s (by simp [h]))
-  | del _ ih => exact ih (keyed_exec kl _ _ hk trivial) (fun s h => hs s (by simp [h]))
-  | delWhere R hsel _ ih =>
-    rw [sel_delWhere kl _ _ _ _ R hk hsel] at ih
-    exact ih (keyed_exec kl _ _ hk trivial) (fun s h => hs s (by simp [h]))
-
-theorem stmtOk_plan (kl : Nat → Nat) (w : AWrite V) (h : WriteOk kl w) : StmtOk kl (planA w) := by
-  cases w with
-  | put t n row =>
-    obtain ⟨rfl, hl⟩ := h
-    simp [planA, StmtOk]; omega
-  | del => trivial
-  | delWhere => trivial
 
 end I5hLib.Sql

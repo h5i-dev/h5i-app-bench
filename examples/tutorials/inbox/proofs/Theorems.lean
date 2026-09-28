@@ -3,8 +3,8 @@ import Commands
 # Theorems about one run
 
 `writes_of` sums up `Commands.lean`: a successful command does one of six
-things. The theorems here are case analyses over those six. The two-run
-theorem, noninterference, is in `Noninterference.lean`.
+things, and the theorems here split on those six. Noninterference, a two-run
+theorem, is in `Noninterference.lean`.
 -/
 open Aeneas Aeneas.Std Result inbox_kernel inbox_kernel.Spec inbox_kernel.Commands I5hLib
 

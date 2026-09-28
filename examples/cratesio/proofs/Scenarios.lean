@@ -2,9 +2,8 @@ import Counterexample
 /-!
 # Scenarios
 
-Concrete runs of the extracted kernel. They show that the guarded actions do
-happen for the right caller and are refused for the wrong one, so the
-theorems do not hold because nothing is ever allowed.
+Concrete runs of the extracted kernel: guarded actions succeed for the right
+caller and fail for the wrong one, so the theorems are not vacuous.
 -/
 open Aeneas Aeneas.Std Result cratesio_kernel cratesio_kernel.Spec cratesio_kernel.Counterexample I5hLib
 

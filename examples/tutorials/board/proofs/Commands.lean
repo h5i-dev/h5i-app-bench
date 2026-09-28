@@ -2,9 +2,8 @@ import Spec
 /-!
 # What each command does
 
-First the small helpers get specifications in terms of lists, then each
-command gets one lemma saying exactly which writes it makes when it succeeds.
-The theorems in `Theorems.lean` only use these lemmas.
+List specs for the helpers, then one lemma per command: the writes it makes
+when it succeeds. `Theorems.lean` uses only these lemmas.
 -/
 open Aeneas Aeneas.Std Result board_kernel board_kernel.Spec I5hLib
 
@@ -48,8 +47,8 @@ theorem post_clone (p : Post) : Post.Insts.CoreCloneClone.clone p = ok p := by
 
 /-! ## Commands
 
-Each lemma says what a successful run writes, and which facts about the state
-made it succeed. Refusals write nothing, so there is nothing to say about them. -/
+What a successful run writes, and which facts made it succeed. Refusals write
+nothing. -/
 
 /-- A post with a fresh id by the caller, and the counter moved past it. -/
 theorem publish_spec (u : U64) (s : Snapshot) (t : alloc.vec.Vec U8) :
@@ -58,7 +57,7 @@ theorem publish_spec (u : U64) (s : Snapshot) (t : alloc.vec.Vec U8) :
         ws.val = [.PutPost ⟨s.counter.next_id, u, t⟩, .SetCounter c] ⦄ := by
   unfold publish
   step*
-  -- `step*` proves the result; left is that `next_id + 1` cannot overflow.
+  -- Left after `step*`: `next_id + 1` does not overflow.
   simp only [core.num.U64.MAX, U64.rMax] at *; scalar_tac
 
 theorem edit_spec (u : U64) (s : Snapshot) (id : U64) (t : alloc.vec.Vec U8) :

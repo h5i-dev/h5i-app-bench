@@ -2,10 +2,9 @@ import Theorems
 /-!
 # A concrete run
 
-The theorems in `Theorems.lean` hold for every state and command. This file
-checks that their hypotheses are met by a real run: Alice appoints herself,
-posts "hi", and in the state she reaches Bob cannot delete her post and she
-cannot demote herself, the last moderator.
+A real run meets the theorems' hypotheses: Alice appoints herself and posts
+"hi". Then Bob cannot delete her post, and she cannot demote herself, the
+last moderator.
 -/
 open Aeneas Aeneas.Std Result board_kernel board_kernel.Spec board_kernel.Commands board_kernel.Theorems I5hLib
 

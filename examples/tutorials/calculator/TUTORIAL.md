@@ -26,6 +26,7 @@ You need Docker and Rust. Start PostgreSQL, create a token for two users in
 the same organization, and start the server:
 
 ```
+cd examples  # its own Cargo workspace; run from the repository root
 docker run -d -p 127.0.0.1:55432:5432 -e POSTGRES_USER=i5h -e POSTGRES_PASSWORD=i5h postgres:17
 export DATABASE_URL=postgres://i5h:i5h@127.0.0.1:55432/i5h I5H_SECRET=dev-secret
 ALICE=$(I5H_ISSUE=1:1 cargo run -q -p calculator-server)   # org 1, user 1

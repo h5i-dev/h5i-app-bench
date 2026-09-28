@@ -2,11 +2,10 @@ import Invariants
 /-!
 # What replies contain
 
-Read-only commands reply with exactly the spec function of the state and the
-caller (`view`, `listing`, `feedOf`, `commentsOf`, `profileOf`, `allTags`).
-Commands that write reply with what the same read would show in the state
-after the write, so the `favorited`, `favoritesCount` and `following` fields
-are correct for the caller.
+Reads reply with the spec function (`view`, `listing`, `feedOf`,
+`commentsOf`, `profileOf`, `allTags`). Writes reply with what that read shows
+after the write, so `favorited`, `favoritesCount` and `following` are right
+for the caller.
 -/
 open Aeneas Aeneas.Std Result conduit_kernel conduit_kernel.Spec conduit_kernel.Helpers
   conduit_kernel.Commands conduit_kernel.Theorems conduit_kernel.Invariants I5hLib

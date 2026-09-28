@@ -1,8 +1,5 @@
-//! `cargo i5h-verify`: run every check that CI runs, locally.
-//!
-//! Steps: Rust tests, cargo-deny, re-extraction drift, Lean builds with the
-//! sorry/axiom gates, and with `--full` the mutation suite, the Rust-vs-Lean
-//! differential test. Missing tools are reported as skipped, never as passed.
+//! `cargo i5h-verify`: run CI's checks locally (`--full` adds mutation and
+//! differential tests). Missing tools count as skipped, never passed.
 
 use std::path::{Path, PathBuf};
 use std::process::{Command, ExitCode, Stdio};
@@ -14,6 +11,7 @@ const PROJECTS: &[(&str, Option<&str>, Option<&str>)] = &[
     ("examples/kellnr/proofs", Some("scripts/extract-kellnr.sh"), Some("examples/kellnr/proofs/generated/KellnrKernel.lean")),
     ("examples/atuin/proofs", Some("scripts/extract-atuin.sh"), Some("examples/atuin/proofs/generated/AtuinKernel.lean")),
     ("crates/i5h-sql/proofs", Some("scripts/extract-sql.sh"), Some("crates/i5h-sql/proofs/generated/I5hSql.lean")),
+    ("crates/i5h-pgsql/proofs", Some("scripts/extract-pgsql.sh"), Some("crates/i5h-pgsql/proofs/generated/I5hPgsql.lean")),
     ("crates/i5h-token/proofs", Some("scripts/extract-token.sh"), Some("crates/i5h-token/proofs/generated/I5hToken.lean")),
     ("crates/i5h-json/proofs", Some("scripts/extract-json.sh"), Some("crates/i5h-json/proofs/generated/I5hJson.lean")),
     ("examples/tutorials/calculator/proofs", Some("scripts/extract-calculator.sh"), Some("examples/tutorials/calculator/proofs/generated/CalculatorKernel.lean")),
@@ -117,13 +115,16 @@ fn main() -> ExitCode {
         if !db {
             return Outcome::Skip("I5H_TEST_DATABASE_URL unset".into());
         }
-        run(r, "cargo", &["test", "--workspace", "--locked", "-q"])
+        run(r, "bash", &["scripts/ci-rust-tests.sh"])
     });
     cx.step("cargo deny (bans)", |r| {
         if !have_cargo_sub("deny") {
             return Outcome::Skip("cargo-deny not installed".into());
         }
-        run(r, "cargo", &["deny", "check", "bans"])
+        match run(r, "cargo", &["deny", "check", "bans"]) {
+            Outcome::Pass => run(&r.join("examples"), "cargo", &["deny", "check", "bans"]),
+            other => other,
+        }
     });
     if extract {
         let tools = have("charon") && have("aeneas");
@@ -157,6 +158,12 @@ fn main() -> ExitCode {
             return Outcome::Skip("lake not on PATH".into());
         }
         run(r, "bash", &["scripts/ci-lean-gate.sh"])
+    });
+    cx.step("axioms of the database theorems", |r| {
+        if !lake {
+            return Outcome::Skip("lake not on PATH".into());
+        }
+        run(r, "bash", &["scripts/ci-db-axioms.sh"])
     });
     if full {
         cx.step("mutation suite", |r| run(r, "python3", &["scripts/mutants.py"]));

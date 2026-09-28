@@ -2,11 +2,9 @@ import Apply
 /-!
 # What the store holds
 
-The server stores a write set by running the planned statements of the
-kernel's `sql_writes`, and loads a tenant by decoding its rows with the
-kernel's `decode`. `I5hLib.Store` proves, for any schema, that the database
-then holds exactly the encoding of the state `applyAll` computes; this file
-gives Wastebin's encoding and table writes.
+Wastebin's row encoding and table writes. `I5hLib.Store` proves for any
+schema that storing `sql_writes` and loading with `decode` gives the state
+`applyAll` computes.
 -/
 open Aeneas Aeneas.Std Result wastebin_kernel wastebin_kernel.Spec wastebin_kernel.Schema I5hLib I5hLib.Sql I5hLib.Store
 
@@ -54,5 +52,51 @@ theorem stored {db : Db Val} {s : St} (h : Served app Snapshot.toSt db s) :
     app.Holds db (enc s) ∧
       ∀ r, Lists kl db (Rows.tabs r) → decode r ⦃ o => ∃ snap, o = some snap ∧ app.Equiv (Snapshot.toSt snap) s ⦄ :=
   Schema.stored fits sql_fits h
+
+/-! ## The invariants on PostgreSQL
+
+`Schema.pg_loaded_inv` chains `Accepted` write sets, `inv_preserved`, the
+compiled `sql_writes` and the compiled `SELECT`s plus `decode`. -/
+
+/-- Write sets kernel `T` returns for a command it accepts. -/
+def Accepted (T : Kernel) (snap : Snapshot) (ws : alloc.vec.Vec Write) : Prop :=
+  ∃ a c r, T a snap c = .ok (.Ok (ws, r))
+
+/-- The invariants, and the next id fits its `BIGINT`. -/
+def DbInv (s : St) : Prop := Inv s ∧ s.next < 2 ^ 64
+
+theorem next_bound (s : St) (ws : List Write) (h : s.next < 2 ^ 64) : (applyAll s ws).next < 2 ^ 64 := by
+  induction ws generalizing s with
+  | nil => exact h
+  | cons w ws ih =>
+    apply ih
+    cases w <;> simp only [applyWrite] <;> first | exact h | scalar_tac
+
+theorem dbInv_equiv (snap : Snapshot) (s : St) (h : app.Equiv (Snapshot.toSt snap) s) (hi : DbInv s) :
+    DbInv (Snapshot.toSt snap) := by
+  have h0 := h 0
+  have h1 := h 1
+  simp only [app, enc, Snapshot.toSt] at h0 h1
+  rw [List.map_perm_map_iff Paste.row_inj] at h0
+  rw [List.perm_singleton, List.cons.injEq] at h1
+  have hn : snap.counter.next_id.val = s.next := int_inj (by scalar_tac) hi.2 (List.cons.inj h1.1).1
+  obtain ⟨⟨hid, hsl, hf⟩, hb⟩ := hi
+  refine ⟨⟨(h0.map _).nodup_iff.2 hid, (h0.map _).nodup_iff.2 hsl, fun p hp => ?_⟩,
+    by simp only [Snapshot.toSt]; scalar_tac⟩
+  simp only [Snapshot.toSt, hn]; exact hf p (h0.subset hp)
+
+/-- For either variant, any tenant and the server's schema, every database
+the server produces (other tenants' commits interleaved) holds an `Inv` state,
+and every snapshot a later load decodes satisfies `Inv`. -/
+theorem db_inv {T : Kernel} (hT : Theorems.Variant T) {ts : List Pg.Tab} {tv : Val} (hv : Pg.Valid ts)
+    (htv : valKind tv = some .int) (hkl : Pg.klOf ts = kl) (hlen : ts.length = 2) {db : Pg.PgDb Val} {s : St}
+    (h : PgServed app Snapshot.toSt ts tv (Accepted T) db s) :
+    Inv s ∧ ∀ r, Loads ts tv db r → decode r ⦃ o => ∃ snap, o = some snap ∧ Inv (Snapshot.toSt snap) ⦄ := by
+  obtain ⟨hi, hload⟩ := pg_loaded_inv sql_fits fits hv htv hkl hlen DbInv ⟨Theorems.init_inv, by simp [app, init]⟩
+    dbInv_equiv (fun snap ws ⟨a, c, r, ht⟩ hi => ⟨Theorems.inv_preserved hT a snap c ws r hi.1 ht,
+      next_bound _ _ (by simp only [Snapshot.toSt]; scalar_tac)⟩) h
+  refine ⟨hi.1, fun r hr => WP.spec_mono (hload r hr) ?_⟩
+  rintro o ⟨snap, rfl, hs⟩
+  exact ⟨snap, rfl, hs.1⟩
 
 end wastebin_kernel.Storage

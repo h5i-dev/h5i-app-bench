@@ -12,8 +12,8 @@ The server stores a write set by running `i5h_sql::plan` on the kernel's own
 - `stored`: running the planned statements on a database that holds a valid
   state leaves exactly the rows of the new state.
 
-`I5hLib.Sql` gives statements their PostgreSQL meaning (trusted), and the
-`i5h-sql` proofs show the extracted `plan` computes `planA`.
+Statement semantics: `I5hLib.Sql`; `plan` = `planA` and the SQL text are
+proven in `i5h-sql` and `i5h-pgsql`.
 -/
 open Aeneas Aeneas.Std Result docs_kernel docs_kernel.Spec I5hLib I5hLib.Sql docs_kernel.Schema
 
@@ -220,12 +220,8 @@ theorem sql_writes_spec (ws : alloc.vec.Vec Write) :
     · refine ⟨by scalar_tac, ?_⟩
       rw [← o_post]
 
-/-- End to end, on the extracted encoder: if the tenant's rows hold a valid
-state, running the plan of `sql_writes ws` leaves exactly the rows of
-`applyAll s ws`. Valid means `Inv`, which holds in every reachable state
-(`reachable_inv`). The rows of `enc s` include the counter row, so this covers
-a tenant past its first counter write; `Load.sql_writes_storedC` covers a
-fresh tenant too. -/
+/-- `stored` on the extracted encoder. Assumes a counter row exists;
+`Load.sql_writes_storedC` also covers a fresh tenant. -/
 theorem sql_writes_stored (s : St) (h : Inv s) (ws : alloc.vec.Vec Write) :
     sql_writes ws ⦃ v =>
       execAll (readBack kl (enc s)) ((v.val.map Write.abs).map planA) =

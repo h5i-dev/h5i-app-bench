@@ -18,6 +18,7 @@ from `schema!`. Everything else is written by hand.
 | `Frame.lean` | A command's result depends only on the rows its scope names. |
 | `Check.lean` | The invariant checker used by migrations is exact. |
 | `Storage.lean`, `Load.lean`, `Scoped.lean` | The rows the server writes and reads back. |
+| `Database.lean` | The same requests on PostgreSQL, as the SQL the server sends. |
 | `Scenarios.lean` | The main theorems for reachable states, and a concrete run of the kernel that publishes a document under the four-eyes rule. |
 
 ## Theorems
@@ -43,6 +44,7 @@ The following hold for every actor and command. `authorized`, `noninterference` 
 | `fresh`, `load_sound`, `store_sound` | An empty tenant holds a valid state, loading rows in any order decodes to a valid state that the rows hold, and storing the writes of any successful command keeps it that way. As a result, the invariants hold for the database itself. |
 | `scoped_sound`, `scoped_command` | The server's scoped loads decode to exactly the slice that `transition_frame` talks about, so storing the resulting writes keeps the database valid as well. This assumes that each table has at most `usize::MAX` rows. |
 | `served_inv` | Every database the server produces from an empty tenant, loading all rows or a scope's rows for each request, holds a valid state. `served_create` and `served_create_scoped` show the hypotheses hold together. |
+| `Database.db_inv` | The same on PostgreSQL: loading with the compiled `SELECT`s (full or scoped), running a successful command and storing the compiled statements of its writes, among any other tenants' statements, keeps the tenant's rows valid, and every full load decodes to a valid snapshot. The SQL comes from the extracted `i5h_pgsql`; PostgreSQL's meaning of it is the model in `I5hLib.Pg`. |
 
 Every theorem depends only on Lean's standard axioms (`propext`,
 `Classical.choice` and `Quot.sound`), which `scripts/ci-lean-gate.sh` checks.

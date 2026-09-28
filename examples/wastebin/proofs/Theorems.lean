@@ -2,10 +2,9 @@ import Commands
 /-!
 # Theorems about Wastebin
 
-`writes_of` sums up `Commands.lean`: a successful command either creates a
-paste or deletes pastes the policy lets it delete. The invariants and the
-burn-after-reading theorems are case analyses over those two shapes. Unless
-the name says otherwise, each theorem holds for both kernel variants.
+`writes_of`: a successful command creates a paste or makes policy-allowed
+deletions. The other theorems case on those two shapes and hold for both
+kernel variants unless named otherwise.
 -/
 open Aeneas Aeneas.Std Result wastebin_kernel wastebin_kernel.Spec wastebin_kernel.Commands I5hLib
 

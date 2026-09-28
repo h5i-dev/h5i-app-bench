@@ -2,14 +2,10 @@ import Theorems
 /-!
 # Issue #190: link previews burn pastes
 
-A chat app that unfurls a Wastebin link fetches the paste page with a plain
-GET. Before commit 632ddf2 that GET showed and deleted a burn-after-reading
-paste, so the recipient found it gone. The fix shows a confirmation page
-unless the request carries `confirm_burn=1`.
-
-`preview_fixed` proves `PreviewSafe` for today's kernel, and
-`preview_broken` shows it false for the old one, on a state that one
-`Create` reaches.
+Before commit 632ddf2 a link preview's plain GET showed and deleted a
+burn-after-reading paste; the fix asks for `confirm_burn=1` first.
+`preview_fixed` proves `PreviewSafe` for today's kernel; `preview_broken`
+refutes it for the old one on a state one `Create` reaches.
 -/
 open Aeneas Aeneas.Std Result wastebin_kernel wastebin_kernel.Spec wastebin_kernel.Commands
   wastebin_kernel.Theorems I5hLib

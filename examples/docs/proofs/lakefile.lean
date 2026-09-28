@@ -16,7 +16,7 @@ lean_lib Generated where
 
 -- Hand-written specs and proofs.
 @[default_target] lean_lib Proofs where
-  roots := #[`Columns, `Spec, `Lemmas, `Apply, `Transition, `Theorems, `Invariants, `Noninterference, `Frame, `Check, `Storage, `Load, `Scoped, `Scenarios]
+  roots := #[`Columns, `Spec, `Lemmas, `Apply, `Transition, `Theorems, `Invariants, `Noninterference, `Frame, `Check, `Storage, `Load, `Scoped, `Scenarios, `Database]
 
 -- Runs the extracted kernel for differential tests (scripts/difftest.sh).
 lean_exe difftest where

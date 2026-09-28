@@ -2,10 +2,9 @@ import Invariants
 /-!
 # PR #1243, machine-checked
 
-A read-only, non-admin user who owns crate 7 changes its ACLs in the kernel
-before PR #1243, and is refused after it. Theorem (a) therefore fails for the
-old code. The last section shows the fixed kernel still grants the writes and
-downloads its theorems restrict, so they do not hold by refusing everything.
+A read-only non-admin owner of crate 7 changes its ACLs before PR #1243 and
+is refused after, so theorem (a) fails for the old code. The last section
+shows the fixed kernel still grants what its theorems restrict.
 -/
 open Aeneas Aeneas.Std Result kellnr_kernel kellnr_kernel.Spec kellnr_kernel.Theorems I5hLib
 

@@ -1,6 +1,6 @@
-//! The PostgreSQL store agrees with the kernel's `apply`: random commands run
-//! through the real engine and through `MemoryEngine` give the same replies
-//! and the same final state. Needs I5H_TEST_DATABASE_URL; skips otherwise.
+//! On random commands, the PostgreSQL engine and `MemoryEngine` (which runs
+//! `apply`) give the same replies and final state.
+//! Needs I5H_TEST_DATABASE_URL; skips otherwise.
 
 use i5h::{MemoryEngine, TenantId};
 use i5h_pg::{pool, Engine, EngineConfig};

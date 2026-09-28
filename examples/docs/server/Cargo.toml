@@ -1,27 +1,28 @@
 [package]
 name = "docs-server"
 description = "Shell of the i5h example app: tables, JSON codec, HTTP server"
-edition.workspace = true
-license.workspace = true
-version.workspace = true
+edition = "2024"
+license = "Apache-2.0"
+version = "0.1.0"
+publish = false
 
 [dependencies]
-i5h.workspace = true
-i5h-pg.workspace = true
-i5h-http.workspace = true
-i5h-json.workspace = true
-docs-kernel.workspace = true
-axum.workspace = true
-tokio.workspace = true
-serde.workspace = true
-serde_json.workspace = true
-tracing.workspace = true
-tracing-subscriber.workspace = true
+i5h = { path = "../../../crates/i5h" }
+i5h-pg = { path = "../../../crates/i5h-pg" }
+i5h-http = { path = "../../../crates/i5h-http" }
+i5h-json = { path = "../../../crates/i5h-json" }
+docs-kernel = { path = "../kernel" }
+axum = "0.8"
+tokio = { version = "1", features = ["macros", "rt-multi-thread", "time", "signal"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
 
 [dev-dependencies]
 # Tests inject faults with raw SQL; app code cannot (deny.toml).
-tokio-postgres.workspace = true
-i5h-pg = { workspace = true, features = ["testing"] }
-proptest.workspace = true
+tokio-postgres = "0.7"
+i5h-pg = { path = "../../../crates/i5h-pg", features = ["testing"] }
+proptest = "1"
 tower = { version = "0.5", features = ["util"] }
 http-body-util = "0.1"

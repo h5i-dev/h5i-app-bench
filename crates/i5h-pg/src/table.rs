@@ -1,15 +1,18 @@
 //! Kernel row structs as tenant-scoped tables.
 //!
-//! One struct is one table with primary key `(tenant_id, <key fields>)`.
-//! The only SQL is a tenant-filtered SELECT, an upsert, and a delete by key.
+//! One struct is one table keyed by `(tenant_id, <key fields>)`. All SQL text
+//! comes from `i5h_pgsql` (extracted to Lean); this file builds none.
 
 use crate::DbError;
 use bytes::BytesMut;
 use i5h::TenantId;
-use i5h_sql::{Stmt, Val, Write as SqlWrite};
+use i5h_pgsql::{Query, Table as Spec};
+use i5h_sql::{Val, Write as SqlWrite};
 use tokio_postgres::types::{to_sql_checked, IsNull, ToSql, Type};
 use crate::Tx;
-use tokio_postgres::{Row, Transaction};
+use tokio_postgres::Row;
+
+pub use i5h_pgsql::Kind;
 
 /// A column value.
 #[derive(Clone, Debug, PartialEq)]
@@ -43,25 +46,6 @@ impl ToSql for Value {
     to_sql_checked!();
 }
 
-#[derive(Clone, Copy, Debug, PartialEq, Eq)]
-pub enum Kind {
-    Int,
-    Bool,
-    Text,
-    Bytes,
-}
-
-impl Kind {
-    fn sql(self) -> &'static str {
-        match self {
-            Kind::Int => "BIGINT",
-            Kind::Bool => "BOOLEAN",
-            Kind::Text => "TEXT",
-            Kind::Bytes => "BYTEA",
-        }
-    }
-}
-
 #[derive(Clone, Debug)]
 pub struct ColumnDef {
     pub name: &'static str,
@@ -69,8 +53,7 @@ pub struct ColumnDef {
     pub nullable: bool,
 }
 
-/// How a field is stored. `A` is the app marker type, so apps can implement
-/// this for kernel enums without hitting the orphan rule.
+/// How a field is stored. `A` is the app marker type, to dodge the orphan rule.
 pub trait PgField<A>: Sized {
     const KIND: Kind;
     const NULLABLE: bool = false;
@@ -224,205 +207,90 @@ macro_rules! table {
     };
 }
 
-/// `CREATE TABLE` statement for `T`.
-/// Quoted SQL identifier, so field names like `user` are safe.
-fn q(name: &str) -> String {
-    format!("\"{}\"", name.replace('"', "\"\""))
+/// The table `T` maps to, as the SQL compiler sees it.
+pub fn spec<A, T: Table<A>>() -> Spec {
+    let columns = T::columns()
+        .into_iter()
+        .map(|c| i5h_pgsql::Column { name: c.name.as_bytes().to_vec(), kind: c.kind, nullable: c.nullable })
+        .collect();
+    Spec { name: T::NAME.as_bytes().to_vec(), columns, key_len: T::KEY_LEN as u32 }
 }
 
-pub fn ddl<A, T: Table<A>>() -> String {
-    let cols = T::columns();
-    let mut defs = vec!["tenant_id BIGINT NOT NULL".to_string()];
-    for c in &cols {
-        let null = if c.nullable { "" } else { " NOT NULL" };
-        defs.push(format!("{} {}{}", q(c.name), c.kind.sql(), null));
+fn invalid(schema: &[Spec]) -> DbError {
+    let names: Vec<_> = schema.iter().map(|t| String::from_utf8_lossy(&t.name).into_owned()).collect();
+    DbError::Decode(format!(
+        "invalid table schema [{}]: names must be 1 to 63 bytes without NUL, distinct, not `tenant_id` \
+         for a column nor `i5h_...` for a table, with 1 to 1599 columns",
+        names.join(", ")
+    ))
+}
+
+/// `CREATE TABLE IF NOT EXISTS` for every table of `schema`, in order.
+pub fn create_tables(schema: &Vec<Spec>) -> Result<Vec<String>, DbError> {
+    if !i5h_pgsql::valid(schema) {
+        return Err(invalid(schema));
     }
-    let mut key = vec!["tenant_id".to_string()];
-    key.extend(cols[..T::KEY_LEN].iter().map(|c| q(c.name)));
-    defs.push(format!("PRIMARY KEY ({})", key.join(", ")));
-    format!("CREATE TABLE IF NOT EXISTS {} (\n  {}\n)", q(T::NAME), defs.join(",\n  "))
+    schema.iter().map(|t| text(&i5h_pgsql::create(t))).collect()
 }
 
-fn read_row(cols: &[ColumnDef], row: &Row) -> Result<Vec<Value>, DbError> {
-    let mut out = Vec::with_capacity(cols.len());
-    for (i, c) in cols.iter().enumerate() {
-        let v = match c.kind {
+fn text(sql: &i5h_pgsql::Sql) -> Result<String, DbError> {
+    String::from_utf8(i5h_pgsql::render(sql)).map_err(|e| DbError::Decode(e.to_string()))
+}
+
+/// `q`'s rendered text and its parameters as driver values.
+fn bind(q: &Query) -> Result<(String, Vec<Value>), DbError> {
+    Ok((text(&q.sql)?, q.params.iter().map(from_val).collect::<Result<Vec<_>, _>>()?))
+}
+
+fn refs(vals: &[Value]) -> Vec<&(dyn ToSql + Sync)> {
+    vals.iter().map(|v| v as &(dyn ToSql + Sync)).collect()
+}
+
+/// Plan (`i5h_sql::plan`), compile (`i5h_pgsql::compile`) and run each write in
+/// order. A statement that does not fit the schema fails the transaction.
+pub async fn store_writes(tx: &Tx<'_>, tenant: TenantId, schema: &Vec<Spec>, ws: &Vec<SqlWrite>) -> Result<(), DbError> {
+    let tid = tenant_param(tenant)?;
+    for stmt in i5h_sql::plan(ws) {
+        let Some(q) = i5h_pgsql::compile(schema, tid, &stmt) else {
+            return Err(DbError::Decode(format!("statement does not fit the schema: {stmt:?}")));
+        };
+        let (sql, vals) = bind(&q)?;
+        tx.0.execute(&sql, &refs(&vals)).await?;
+    }
+    Ok(())
+}
+
+/// The tenant's rows of table `table`, without `tenant_id`, in key order.
+/// `filter` keeps rows whose zero-based column IS NOT DISTINCT FROM the value,
+/// matching `I5hLib.Sql.ColIs`.
+pub async fn load_table(
+    tx: &Tx<'_>,
+    tenant: TenantId,
+    schema: &Vec<Spec>,
+    table: u32,
+    filter: Option<(u32, Val)>,
+) -> Result<Vec<Vec<Val>>, DbError> {
+    let Some(q) = i5h_pgsql::select(schema, tenant_param(tenant)?, table, filter) else {
+        return Err(DbError::Decode(format!("no table {table} or column to filter on, or an invalid schema")));
+    };
+    let (sql, vals) = bind(&q)?;
+    let kinds: Vec<Kind> = schema[table as usize].columns.iter().map(|c| c.kind).collect();
+    let rows = tx.0.query(&sql, &refs(&vals)).await?;
+    rows.iter().map(|r| read_row(&kinds, r)).collect()
+}
+
+fn read_row(kinds: &[Kind], row: &Row) -> Result<Vec<Val>, DbError> {
+    let mut out = Vec::with_capacity(kinds.len());
+    for (i, k) in kinds.iter().enumerate() {
+        let v = match k {
             Kind::Int => row.try_get::<_, Option<i64>>(i)?.map(Value::Int),
             Kind::Bool => row.try_get::<_, Option<bool>>(i)?.map(Value::Bool),
             Kind::Text => row.try_get::<_, Option<String>>(i)?.map(Value::Text),
             Kind::Bytes => row.try_get::<_, Option<Vec<u8>>>(i)?.map(Value::Bytes),
         };
-        out.push(v.unwrap_or(Value::Null));
+        out.push(to_val(&v.unwrap_or(Value::Null)));
     }
     Ok(out)
-}
-
-/// The tenant's rows of `T` as column values, in key order; with `filter`,
-/// only rows whose column equals the value.
-async fn select<A, T: Table<A>>(
-    tx: &Transaction<'_>,
-    tenant: TenantId,
-    filter: Option<(&str, Value)>,
-) -> Result<Vec<Vec<Value>>, DbError> {
-    let cols = T::columns();
-    let names: Vec<_> = cols.iter().map(|c| q(c.name)).collect();
-    let order = &names[..T::KEY_LEN];
-    let order = if order.is_empty() { String::new() } else { format!(" ORDER BY {}", order.join(", ")) };
-    let tid = tenant_param(tenant)?;
-    let rows = match filter {
-        None => {
-            let sql = format!("SELECT {} FROM {} WHERE tenant_id = $1{}", names.join(", "), q(T::NAME), order);
-            tx.query(&sql, &[&tid]).await?
-        }
-        Some((column, value)) => {
-            if !cols.iter().any(|c| c.name == column) {
-                return Err(DbError::Decode(format!("{} has no column {column}", T::NAME)));
-            }
-            let sql = format!(
-                "SELECT {} FROM {} WHERE tenant_id = $1 AND {} IS NOT DISTINCT FROM $2{}",
-                names.join(", "),
-                q(T::NAME),
-                q(column),
-                order
-            );
-            tx.query(&sql, &[&tid, &value]).await?
-        }
-    };
-    rows.iter().map(|r| read_row(&cols, r)).collect()
-}
-
-/// All of the tenant's rows of `T`, in key order.
-pub async fn load<A, T: Table<A>>(tx: &Tx<'_>, tenant: TenantId) -> Result<Vec<T>, DbError> {
-    select::<A, T>(tx.0, tenant, None).await?.iter().map(|v| T::from_values(v)).collect()
-}
-
-/// The tenant's rows of `T` whose `column` equals `value`, in key order.
-/// `column` must be one of `T`'s columns.
-pub async fn load_where<A, T: Table<A>>(tx: &Tx<'_>, tenant: TenantId, column: &str, value: Value) -> Result<Vec<T>, DbError> {
-    select::<A, T>(tx.0, tenant, Some((column, value))).await?.iter().map(|v| T::from_values(v)).collect()
-}
-
-/// All of the tenant's rows of `T`, undecoded, for a kernel that decodes its
-/// own rows (`schema!`'s `from_rows`).
-pub async fn load_rows<A, T: Table<A>>(tx: &Tx<'_>, tenant: TenantId) -> Result<Vec<Vec<Val>>, DbError> {
-    Ok(select::<A, T>(tx.0, tenant, None).await?.iter().map(|r| r.iter().map(to_val).collect()).collect())
-}
-
-/// Like [`load_rows`], only rows whose `column` equals `value`.
-pub async fn load_rows_where<A, T: Table<A>>(
-    tx: &Tx<'_>,
-    tenant: TenantId,
-    column: &str,
-    value: &Val,
-) -> Result<Vec<Vec<Val>>, DbError> {
-    let value = from_val(value)?;
-    Ok(select::<A, T>(tx.0, tenant, Some((column, value))).await?.iter().map(|r| r.iter().map(to_val).collect()).collect())
-}
-
-/// Insert or overwrite the tenant's row with `row`'s key.
-pub async fn upsert<A, T: Table<A>>(tx: &Tx<'_>, tenant: TenantId, row: &T) -> Result<(), DbError> {
-    let vals: Vec<Val> = row.to_values()?.iter().map(to_val).collect();
-    let w = SqlWrite::Put { table: 0, key_len: T::KEY_LEN as u32, row: vals };
-    run_stmt::<A, T>(tx.0, tenant, planned(w)).await
-}
-
-/// Delete the tenant's row of `T` whose key columns equal `key`.
-/// Delete the tenant's rows of `T` whose `column` equals `value`, in one
-/// statement. For cascades: the kernel's write says which rows go, and
-/// `apply` must mean the same filter.
-pub async fn delete_where<A, T: Table<A>>(tx: &Tx<'_>, tenant: TenantId, column: &str, value: Value) -> Result<(), DbError> {
-    if !T::columns().iter().any(|c| c.name == column) {
-        return Err(DbError::Decode(format!("{} has no column {column}", T::NAME)));
-    }
-    let tid = tenant_param(tenant)?;
-    let sql = format!("DELETE FROM {} WHERE tenant_id = $1 AND {} IS NOT DISTINCT FROM $2", q(T::NAME), q(column));
-    tx.0.execute(&sql, &[&tid, &value]).await?;
-    Ok(())
-}
-
-pub async fn delete<A, T: Table<A>>(tx: &Tx<'_>, tenant: TenantId, key: &[Value]) -> Result<(), DbError> {
-    let w = SqlWrite::Del { table: 0, key: key.iter().map(to_val).collect() };
-    run_stmt::<A, T>(tx.0, tenant, planned(w)).await
-}
-
-/// Run one planned statement on `T`'s table. Kernels that encode their own
-/// rows (`schema!`'s `to_row`) plan with `i5h_sql::plan` and run each
-/// statement here; the schema mapping macro does the dispatch.
-pub async fn run_planned<A, T: Table<A>>(tx: &Tx<'_>, tenant: TenantId, stmt: Stmt) -> Result<(), DbError> {
-    run_stmt::<A, T>(tx.0, tenant, stmt).await
-}
-
-/// The statement `i5h_sql::plan` (proven in Lean) gives for one write.
-fn planned(w: SqlWrite) -> Stmt {
-    let mut stmts = i5h_sql::plan(&vec![w]);
-    stmts.pop().expect("plan gives one statement per write")
-}
-
-// Trusted part of A4: the SQL text for a planned statement. An upsert stores
-// `key ++ rest` at `key`; a delete removes the row at `key`. Both are scoped
-// to the tenant, whose id is part of every primary key.
-async fn run_stmt<A, T: Table<A>>(tx: &Transaction<'_>, tenant: TenantId, stmt: Stmt) -> Result<(), DbError> {
-    let cols = T::columns();
-    let names: Vec<_> = cols.iter().map(|c| q(c.name)).collect();
-    let tid = Value::Int(tenant_param(tenant)?);
-    match stmt {
-        Stmt::Upsert { key, rest, .. } => {
-            if key.len() != T::KEY_LEN || key.len() + rest.len() != cols.len() {
-                return Err(DbError::Decode(format!("{}: row does not match its columns", T::NAME)));
-            }
-            let placeholders: Vec<_> = (2..=cols.len() + 1).map(|i| format!("${i}")).collect();
-            let mut conflict = vec!["tenant_id".to_string()];
-            conflict.extend(names[..T::KEY_LEN].iter().cloned());
-            let rest_names = &names[T::KEY_LEN..];
-            // With no non-key columns the stored row equals its key, so keeping it is replacing it.
-            let action = if rest_names.is_empty() {
-                "DO NOTHING".to_string()
-            } else {
-                let sets: Vec<_> = rest_names.iter().map(|n| format!("{n} = EXCLUDED.{n}")).collect();
-                format!("DO UPDATE SET {}", sets.join(", "))
-            };
-            let sql = format!(
-                "INSERT INTO {} (tenant_id, {}) VALUES ($1, {}) ON CONFLICT ({}) {}",
-                q(T::NAME),
-                names.join(", "),
-                placeholders.join(", "),
-                conflict.join(", "),
-                action
-            );
-            let vals = key.iter().chain(rest.iter()).map(from_val).collect::<Result<Vec<_>, _>>()?;
-            let mut params: Vec<&(dyn ToSql + Sync)> = vec![&tid];
-            params.extend(vals.iter().map(|v| v as &(dyn ToSql + Sync)));
-            tx.execute(&sql, &params).await?;
-        }
-        Stmt::DeleteWhere { col, val, .. } => {
-            // A SELECT of the matching rows (`I5hLib.Sql.Sel`, trusted), then
-            // a keyed delete of each; `Sql.runs_exec` proves this is `exec`.
-            let Some(c) = cols.get(col as usize) else {
-                return Err(DbError::Decode(format!("{} has no column {col}", T::NAME)));
-            };
-            for row in select::<A, T>(tx, tenant, Some((c.name, from_val(&val)?))).await? {
-                let row: Vec<Val> = row.iter().map(to_val).collect();
-                delete_key::<A, T>(tx, &tid, &i5h_sql::prefix(&row, T::KEY_LEN)).await?;
-            }
-        }
-        Stmt::Delete { key, .. } => delete_key::<A, T>(tx, &tid, &key).await?,
-    }
-    Ok(())
-}
-
-/// `DELETE` the tenant's row of `T` at `key`.
-async fn delete_key<A, T: Table<A>>(tx: &Transaction<'_>, tid: &Value, key: &[Val]) -> Result<(), DbError> {
-    if key.len() != T::KEY_LEN {
-        return Err(DbError::Decode(format!("{}: key has {} values, expected {}", T::NAME, key.len(), T::KEY_LEN)));
-    }
-    let cols = T::columns();
-    let conds: Vec<_> = cols[..T::KEY_LEN].iter().enumerate().map(|(i, c)| format!(" AND {} = ${}", q(c.name), i + 2)).collect();
-    let sql = format!("DELETE FROM {} WHERE tenant_id = $1{}", q(T::NAME), conds.concat());
-    let vals = key.iter().map(from_val).collect::<Result<Vec<_>, _>>()?;
-    let mut params: Vec<&(dyn ToSql + Sync)> = vec![tid];
-    params.extend(vals.iter().map(|v| v as &(dyn ToSql + Sync)));
-    tx.execute(&sql, &params).await?;
-    Ok(())
 }
 
 fn to_val(v: &Value) -> Val {
@@ -443,11 +311,6 @@ fn from_val(v: &Val) -> Result<Value, DbError> {
         Val::Bytes(b) => Value::Bytes(b.clone()),
         Val::Null => Value::Null,
     })
-}
-
-/// Convert a key field for [`delete`].
-pub fn key<A, T: PgField<A>>(v: &T) -> Result<Value, DbError> {
-    v.to_value()
 }
 
 pub(crate) fn tenant_param(t: TenantId) -> Result<i64, DbError> {

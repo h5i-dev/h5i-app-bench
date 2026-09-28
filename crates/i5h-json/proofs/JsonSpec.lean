@@ -71,9 +71,7 @@ def unhex (c : Nat) : Option Nat :=
   else if 65 ≤ c ∧ c ≤ 70 then some (c - 55)
   else none
 
-/-- JSON string lexer, starting after the opening quote. Returns the string's
-bytes and the input after the closing quote. `\uXXXX` is limited to ASCII,
-since this writer only emits `\u00XX` for control bytes. -/
+/-- JSON string lexer from after the opening quote. `\uXXXX` limited to ASCII (we only emit `\u00XX`). -/
 def lexStr : List Nat → Option (List Nat × List Nat)
   | [] => none
   | c :: r =>

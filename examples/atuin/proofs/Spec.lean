@@ -3,8 +3,7 @@ import I5hLib
 /-!
 # Specification of the Atuin port
 
-What a reviewer reads. Stated over plain lists; nothing here mentions the
-kernel's helpers.
+The file to review, over plain lists; it does not use the kernel's helpers.
 -/
 open Aeneas Aeneas.Std atuin_kernel
 

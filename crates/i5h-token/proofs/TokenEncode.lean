@@ -147,8 +147,7 @@ theorem encode_payload_spec (t u e : U64) :
 
 theorem u64_eq_of_val {x y : U64} (h : x.val = y.val) : x = y := by scalar_tac
 
-/-- Round trip on the extracted code: parsing a token built by
-`encode_payload` and `join` gives back the tenant, user, expiry and signature. -/
+/-- `parse` reads back what `encode_payload` and `join` write. -/
 theorem round_trip (t u e : U64) (sig : Slice U8) (h : 2 * sig.length + 68 < Usize.max) :
     (do
       let pl ← encode_payload t u e

@@ -1,6 +1,5 @@
-//! The booking service's shell: it connects the kernel to PostgreSQL, JSON
-//! and the outbox, and makes no decisions of its own. The time comes from the
-//! engine's clock.
+//! The booking service's shell: moves data between the kernel, PostgreSQL,
+//! JSON and the outbox. It decides nothing; the time is the engine's clock.
 
 use axum::http::StatusCode;
 use booking_kernel as k;
@@ -42,15 +41,13 @@ impl Kernel for BookingApp {
     }
 }
 
-/// The caller of an authenticated request. The engine fills in `now` on
-/// every attempt.
+/// The caller of an authenticated request; the engine sets `now` on each attempt.
 pub fn principal(org: u64, user: u64) -> k::Principal {
     k::Principal { org, user, now: 0 }
 }
 
-/// The engine settings the service runs with: the database's clock, never
-/// going back, so every server agrees on the time and `Clock.started_stays`
-/// applies.
+/// The database's clock, never going back: every server agrees on the time,
+/// and `Clock.started_stays` applies.
 pub fn config() -> EngineConfig {
     EngineConfig::default().database_time()
 }
@@ -93,10 +90,8 @@ impl Store<BookingApp> for BookingStore {
         schema_load(tx, t).await
     }
 
-    // Notifications go into the outbox in the same transaction as the rows,
-    // so they exist exactly when the booking or cancellation commits.
-    // Table writes go through the kernel's `sql_writes` (`Storage.lean`
-    // proves the store holds what `apply` computes); effects to the outbox.
+    // Table writes go through `sql_writes` (`Storage.lean`). Effects go to the
+    // outbox in the same transaction, so they exist iff the change commits.
     async fn write(tx: &Tx<'_>, t: TenantId, ws: &Vec<k::Write>) -> Result<(), DbError> {
         schema_store(tx, t, ws).await?;
         for w in ws {
@@ -178,8 +173,7 @@ enum StoredReply {
 }
 
 impl ReplyCodec<BookingApp> for BookingStore {
-    // The command alone, without the time: a retry of the same request gets
-    // the stored reply even though it arrives later.
+    // Without the time, so a later retry still gets the stored reply.
     fn fingerprint(cmd: &k::Command) -> Vec<u8> {
         format!("{cmd:?}").into_bytes()
     }

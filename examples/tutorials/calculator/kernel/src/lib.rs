@@ -1,8 +1,7 @@
 //! Tutorial 1: a calculator with one memory per user.
 //!
-//! This crate is the kernel: plain Rust in the subset Aeneas translates to
-//! Lean (no `?`, no `String`, loops as `while` over indices). The server
-//! crate wraps it in HTTP and PostgreSQL; the proofs are about this code.
+//! The kernel: Rust in the subset Aeneas translates to Lean (no `?`, no
+//! `String`, `while` loops over indices). The proofs are about this code.
 
 /// Who is calling: an organization (the tenant) and a user in it.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -11,8 +10,8 @@ pub struct Principal {
     pub user: u64,
 }
 
-// One table, `memories`, keyed by user. `schema!` defines the structs, the
-// table operations, and the server's table mapping from this one declaration.
+// One table, `memories`, keyed by user. `schema!` generates the structs,
+// table operations and the server's table mapping.
 i5h_schema::schema! {
     mapping calc_tables for calculator_kernel, lean "../proofs/generated/Schema.lean";
 
@@ -105,8 +104,8 @@ pub fn compute(op: Op, a: u64, b: u64) -> Result<u64, Error> {
     }
 }
 
-/// The whole app logic. It returns the write to commit (at most one memory)
-/// and the reply, or a refusal that commits nothing.
+/// The app logic: the write (at most one memory) and the reply, or a refusal
+/// that commits nothing.
 pub fn transition(actor: &Principal, snap: &Snapshot, cmd: &Command) -> Result<(Option<Memory>, Reply), Error> {
     match cmd {
         Command::Set { value } => Ok((Some(Memory { user: actor.user, value: *value }), Reply::Value(*value))),
@@ -121,8 +120,8 @@ pub fn transition(actor: &Principal, snap: &Snapshot, cmd: &Command) -> Result<(
     }
 }
 
-/// What committing a write set means: `Memory::put` (from `schema!`)
-/// replaces the row with `m`'s user, or appends it.
+/// Commits a write set. `Memory::put` (from `schema!`) replaces the row with
+/// `m`'s user, or appends it.
 pub fn apply(snap: &Snapshot, w: &Option<Memory>) -> Snapshot {
     let mut s = snap.clone();
     match w {

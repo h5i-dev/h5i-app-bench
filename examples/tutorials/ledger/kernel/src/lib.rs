@@ -170,8 +170,8 @@ fn transfer(user: u64, s: &Snapshot, src: u64, dst: u64, amount: u64) -> Outcome
     }
 }
 
-/// The whole application: what a command writes and replies, or why it is
-/// refused. A refusal commits nothing.
+/// The app logic: a command's writes and reply, or a refusal that commits
+/// nothing.
 pub fn transition(actor: &Principal, s: &Snapshot, cmd: &Command) -> Outcome {
     match cmd {
         Command::Open => open(actor.user, s),
@@ -182,8 +182,7 @@ pub fn transition(actor: &Principal, s: &Snapshot, cmd: &Command) -> Outcome {
     }
 }
 
-/// What one write does to the state. `schema!` runs it over a write set
-/// (`apply`).
+/// What one write does to the state; `schema!` builds `apply` from it.
 fn apply_write(s: &mut Snapshot, w: Write) {
     match w {
         Write::PutAccount(a) => Account::put(&mut s.accounts, a),

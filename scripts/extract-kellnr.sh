@@ -9,3 +9,4 @@ trap 'rm -rf "$tmp"' EXIT
   --start-from kellnr_kernel::apply \
   --dest-file "$tmp/kellnr_kernel.llbc")
 aeneas -backend lean "$tmp/kellnr_kernel.llbc" -dest "$root/examples/kellnr/proofs/generated"
+for f in "$root/examples/kellnr/proofs/generated"/*.lean; do bash "$(dirname "$0")/normalize-sources.sh" "$f" "$root"; done

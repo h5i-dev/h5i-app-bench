@@ -92,6 +92,7 @@ order, which is id order.
 ## Running the server
 
 ```
+cd examples  # its own Cargo workspace; run from the repository root
 export DATABASE_URL=postgres://i5h:i5h@127.0.0.1:55432/i5h I5H_SECRET=dev-secret
 cargo run -p conduit-server &
 

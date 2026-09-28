@@ -2,10 +2,9 @@ import Noninterference
 /-!
 # Small concrete runs
 
-The theorems would hold trivially for a kernel that refused everything, or
-for a `view` that showed everything. These runs show that neither is the
-case: messages are delivered, blocks refuse, and a third user really cannot
-tell two different states apart.
+The theorems would hold trivially for a kernel that refused everything or a
+`view` that showed everything. These runs rule both out: messages arrive,
+blocks refuse, and a third user cannot tell two different states apart.
 -/
 open Aeneas Aeneas.Std Result inbox_kernel inbox_kernel.Spec inbox_kernel.Commands
   inbox_kernel.Noninterference I5hLib

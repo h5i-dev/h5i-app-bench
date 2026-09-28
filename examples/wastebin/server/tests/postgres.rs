@@ -1,9 +1,7 @@
-//! The PostgreSQL store agrees with the kernel's `apply`: random commands run
-//! through the real engine and through `transition` and `apply` in memory
-//! (what `MemoryEngine` does, but starting from the database's state) give
-//! the same replies and the same final state, on a test clock that jumps
-//! back and forth. Then a burn-after-reading paste goes through the HTTP
-//! routes. Needs I5H_TEST_DATABASE_URL; skips otherwise.
+//! Random commands give the same replies and state on PostgreSQL as on
+//! `transition` + `apply` in memory, under a clock that jumps back and forth.
+//! Then a burn-after-reading paste goes through the HTTP routes.
+//! Needs I5H_TEST_DATABASE_URL; skips otherwise.
 
 use i5h::{Kernel, Timestamp};
 use i5h_pg::{pool, Clock, EngineConfig, ManualClock};

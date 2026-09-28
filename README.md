@@ -1,23 +1,14 @@
 # i5h
 
-`i5h` (pronounced "icefish") is a Rust web framework in which the part of an
-application that decides who may do what is proven correct in Lean 4.
+`i5h` ("icefish") is a Rust web framework whose application logic is proven correct in Lean 4.
 
 ## High level features
 
-- Write the application logic as a single pure function in ordinary Rust, and
-  prove theorems about the code that actually runs, because
-  [Aeneas](https://github.com/AeneasVerif/aeneas) translates that Rust to Lean.
-- Serve the application with [axum](https://github.com/tokio-rs/axum): an
-  extractor authenticates the caller and `I5h::respond` runs the command, so
-  handlers never hold a database connection.
-- Store state in PostgreSQL through an engine that runs each request in a
-  SERIALIZABLE transaction, retries on conflict, runs a command at most once
-  per idempotency key, and gives the kernel the time from one clock that can
-  be kept from going back.
-- Declare table rows once with `schema!`, which generates their Rust mappings,
-  kernel operations, and Lean proofs of encoding and decoding. A shared store
-  theorem connects the resulting SQL writes to the state computed by `apply`.
+- Write the logic as pure Rust functions and prove it in Lean 4 via [Aeneas](https://github.com/AeneasVerif/aeneas).
+- Serve it with [axum](https://github.com/tokio-rs/axum); handlers never touch the database.
+- Run each request in a SERIALIZABLE PostgreSQL transaction, with retries and idempotency keys.
+- Declare tables once with `schema!` and get Rust mappings and Lean proofs.
+- Prove that invariants hold for the rows loaded back from the database.
 
 ## Usage example
 

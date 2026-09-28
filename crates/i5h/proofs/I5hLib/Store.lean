@@ -2,22 +2,11 @@ import I5hLib.Sql
 /-!
 # The store holds what `apply` computes
 
-Proven once for every app. An app describes its storage as an `App`: how its
-state is encoded as tables (`enc`, from `schema!`'s row encodings), which
-table writes each kernel write makes (`sql`), and what a write does to the
-state (`step`, the spec's `applyWrite`). Its obligations are that the table
-writes of a write turn the encoding of a state into the encoding of the next
-state (`enc_step`), plus shape facts that `schema!`'s lemmas discharge.
-
-`App.served_holds`: after any sequence of commits, each loading the rows in any
-order and storing the planned statements of a write set, the database reads
-back exactly the encoding of the state `applyAll` computes for those writes.
-`App.served_lists`: the rows a `SELECT` returns are then that encoding, table by
-table, up to row order.
-
-Trusted: `exec` on keyed statements and the `SELECT`s (`Lists`, `Sel`), as
-stated in `I5hLib.Sql`. A fresh tenant has no row in a table without key
-columns (a counter) until its first write; `Holds` allows that.
+Proven once for every app. An app gives its state encoding (`enc`), the table
+writes of each kernel write (`sql`) and the state step (`step`), and proves
+`enc_step`. `App.served_holds`: after any commits, the database reads back the
+encoding of the state `applyAll` computes. `App.served_lists`: a `SELECT` of
+every table returns that encoding up to row order. `I5hLib.Pg` links both to SQL.
 -/
 
 namespace I5hLib.Store
@@ -240,17 +229,6 @@ theorem holds_step (I : Tables V) (hI : InitOk kl I) (db : Db V) (E : Tables V) 
         rw [applyAllW_other kl ws t hn, applyAllW_other kl ws t hn]
         exact ⟨e0, eI⟩
 
-/-- The store's run of the plan (a `delWhere` as a `SELECT` and keyed
-deletes) gives the same database. -/
-theorem holds_runs (I : Tables V) (hI : InitOk kl I) (db db' : Db V) (E : Tables V) (ws : List (AWrite V))
-    (h : Holds kl I db E) (hok : ∀ a ∈ ws, WriteOk kl a) (hr : Runs kl db (ws.map planA) db') :
-    Holds kl I db' (applyAllW kl E ws) := by
-  obtain ⟨tabs, rfl, hk, he⟩ := h
-  rw [runs_exec kl (keyed_readBack kl tabs) (fun s hs => by
-    obtain ⟨a, ha, rfl⟩ := List.mem_map.1 hs
-    exact stmtOk_plan kl a (hok a ha)) hr]
-  exact holds_step kl I hI _ E ws ⟨tabs, rfl, hk, he⟩ hok
-
 /-- Row order does not matter. -/
 theorem holds_perm (I : Tables V) (hI : InitOk kl I) (db : Db V) (E E' : Tables V)
     (h : Holds kl I db E) (hp : ∀ t, (E' t).Perm (E t)) : Holds kl I db E' := by
@@ -399,32 +377,28 @@ theorem shaped_perm (E E' : Tables V) (h : A.Shaped E) (hp : ∀ t, (E' t).Perm 
 theorem shaped_init : A.Shaped (A.enc A.init) :=
   ⟨A.init_rows, fun _ _ h => h⟩
 
-/-- Databases the store produces from a fresh tenant, with the state each
-holds. Each commit loads a state `s'` whose tables are the stored ones up to
-row order, and stores the planned statements of the table writes of a write
-set `ws` (running a `delWhere` as a `SELECT` and keyed deletes). -/
+/-- Databases the store produces from a fresh tenant, with the state each holds.
+A commit loads `s'` (the stored tables up to row order) and runs the plan of `ws`. -/
 inductive Served : Db V → St → Prop
   | fresh : Served (fun _ _ => none) A.init
-  | commit {db db' : Db V} {s s' : St} {ws : List W} :
-      Served db s → A.Equiv s' s → Runs A.kl db ((A.sqlAll ws).map planA) db' →
-      Served db' (ws.foldl A.step s')
+  | commit {db : Db V} {s s' : St} {ws : List W} :
+      Served db s → A.Equiv s' s → Served (execAll db ((A.sqlAll ws).map planA)) (ws.foldl A.step s')
 
 /-- After any sequence of commits, the database reads back exactly the
 encoding of the state that applying the write sets computes. -/
 theorem served_holds {db : Db V} {s : St} (h : A.Served db s) : A.Holds db (A.enc s) ∧ A.Shaped (A.enc s) := by
   induction h with
   | fresh => exact ⟨holds_fresh A.kl _, A.shaped_init⟩
-  | @commit db db' s s' ws _ he hr ih =>
+  | @commit db s s' ws _ he ih =>
     obtain ⟨hh, hs⟩ := ih
     have hh' := holds_perm A.kl _ A.init_ok db _ _ hh he
     have hs' := A.shaped_perm _ _ hs he
     rw [← A.applyAll_enc]
-    exact ⟨holds_runs A.kl _ A.init_ok db db' _ _ hh' (fun a ha => (A.sqlAll_ok ws a ha).1) hr,
+    exact ⟨holds_step A.kl _ A.init_ok db _ _ hh' (fun a ha => (A.sqlAll_ok ws a ha).1),
       A.shaped_applyAllW _ (A.sqlAll_ok ws) _ hs'⟩
 
-/-- What a `SELECT` of every table returns from a served database: each
-table's encoding up to row order, or nothing where the state still has the
-fresh tenant's rows. -/
+/-- A `SELECT` of every table returns each table's encoding up to row order, or
+nothing where the state still has the fresh rows. -/
 theorem served_lists {db : Db V} {s : St} (h : A.Served db s) (R : Tables V) (hl : Lists A.kl db R) :
     ∀ t, (R t).Perm (A.enc s t) ∨ (R t = [] ∧ A.enc s t = A.enc A.init t) :=
   holds_lists A.kl _ db _ R (A.served_holds h).1 hl

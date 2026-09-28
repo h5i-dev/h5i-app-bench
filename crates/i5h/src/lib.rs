@@ -1,18 +1,9 @@
 //! The core types of i5h: the [`Kernel`] trait and an in-memory reference engine.
 //!
-//! An i5h application implements [`Kernel`] by pointing it at a pure
-//! `transition` function, which decides what a command does, and an `apply`
-//! function, which says what committing its writes means. Both are written in
-//! the subset of Rust that Aeneas translates to Lean, so that properties of the
-//! application can be proven about the code that runs.
-//!
-//! [`MemoryEngine`] runs a kernel in memory, one command at a time. Any real
-//! engine, such as the PostgreSQL engine in `i5h-pg`, must behave like it on
-//! its committed requests, which makes it useful as a reference in tests.
-//!
-//! The kernel has no clock. An engine reads one per attempt and passes the
-//! time to [`Kernel::stamp`], which copies it into the principal. Time is a
-//! [`Timestamp`], in microseconds since the Unix epoch.
+//! A [`Kernel`] is a pure `transition` (what a command does) and `apply` (what
+//! its writes mean), written in the Rust subset Aeneas translates to Lean.
+//! [`MemoryEngine`] is the reference any real engine must match on commits.
+//! The kernel has no clock; engines pass the time through [`Kernel::stamp`].
 //!
 //! # Example
 //!
@@ -47,9 +38,7 @@ use std::time::{SystemTime, UNIX_EPOCH};
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord)]
 pub struct TenantId(pub u64);
 
-/// A point in time: microseconds since the Unix epoch. The only unit of time
-/// in i5h; a kernel that counts in seconds takes [`Timestamp::secs`], which
-/// never decreases when the timestamp does not.
+/// Microseconds since the Unix epoch.
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Hash, PartialOrd, Ord)]
 pub struct Timestamp(pub u64);
 
@@ -100,9 +89,8 @@ pub trait Kernel: Send + Sync + 'static {
     /// Meaning of a write set. After a commit, loading must return `apply(snap, ws)`.
     fn apply(snap: &Self::Snapshot, ws: &Self::WriteSet) -> Self::Snapshot;
 
-    /// Put the engine's time into the principal. Called on every attempt,
-    /// right before `transition`, with the time that attempt read. The
-    /// default ignores the time.
+    /// Put the attempt's time into the principal, right before `transition`.
+    /// The default ignores it.
     ///
     /// ```ignore
     /// fn stamp(actor: &mut Principal, now: Timestamp) {
@@ -149,9 +137,8 @@ impl<K: Kernel> MemoryEngine<K> {
         Ok(reply)
     }
 
-    /// Run `cmd` at time `now`, stamped into `actor` with [`Kernel::stamp`].
-    /// Like `i5h-pg` with `monotonic`, time never goes back: a `now` before
-    /// the tenant's latest commit is raised to it.
+    /// Run `cmd` at `now` via [`Kernel::stamp`]. Like `i5h-pg`'s `monotonic`, a
+    /// `now` before the tenant's last commit is raised to it.
     pub fn execute_at(&self, actor: &K::Principal, now: Timestamp, cmd: &K::Command) -> Result<K::Reply, K::Error> {
         let tenant = K::tenant(actor);
         let mut tenants = self.tenants.lock().unwrap();

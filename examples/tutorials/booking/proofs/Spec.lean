@@ -3,9 +3,8 @@ import I5hLib
 /-!
 # What the booking service should do
 
-This is the file to review. It states the policy, including where
-notifications may go, what a write does to the state, and which facts must
-always hold, using plain lists and natural numbers. Times are Unix seconds.
+The file to review: the policy (including where notifications go), what a
+write does, and the invariants, on plain lists. Times are Unix seconds.
 -/
 open Aeneas Aeneas.Std booking_kernel
 
@@ -86,16 +85,14 @@ structure Inv (s : St) : Prop where
 
 def init : St := ⟨0, [], [], []⟩
 
-/-- The states reachable from an empty service by successful commands, at any
-times the shell supplies. -/
+/-- States reachable from an empty service, at any times the shell supplies. -/
 inductive Reachable : St → Prop
   | init : Reachable init
   | step {a s c ws r} : Reachable (Snapshot.toSt s) → transition a s c = .ok (.Ok (ws, r)) →
       Reachable (applyAll (Snapshot.toSt s) ws.val)
 
-/-- The states reachable when the engine keeps time from going back
-(`EngineConfig::monotonic`), with the time of the latest commit: no command
-runs at an earlier time than the one before it. -/
+/-- Reachable states, with the time of the latest commit, when the engine's
+clock never goes back (`EngineConfig::monotonic`). -/
 abbrev ReachableT : St → Nat → Prop :=
   I5hLib.ReachableT transition (·.now.val) Snapshot.toSt (fun st ws => applyAll st ws.val) init
 

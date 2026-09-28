@@ -130,14 +130,14 @@ inductive i5h_sql.Write where
 | DelWhere : Std.U32 → Std.U32 → i5h_sql.Val → i5h_sql.Write
 
 /-- [calculator_kernel::Principal]
-    Source: 'examples/tutorials/calculator/kernel/src/lib.rs', lines 9:0-12:1
+    Source: 'examples/tutorials/calculator/kernel/src/lib.rs', lines 8:0-11:1
     Visibility: public -/
 structure Principal where
   org : Std.U64
   user : Std.U64
 
 /-- [calculator_kernel::Memory]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 111:12-114:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 95:12-98:13
     Visibility: public -/
 structure Memory where
   user : Std.U64
@@ -150,20 +150,20 @@ structure Snapshot where
   memories : alloc.vec.Vec Memory
 
 /-- [calculator_kernel::{impl core::clone::Clone for calculator_kernel::Memory}::clone]:
-    Source: 'examples/tutorials/calculator/kernel/src/lib.rs', lines 25:13-25:18
+    Source: 'examples/tutorials/calculator/kernel/src/lib.rs', lines 24:13-24:18
     Visibility: public -/
 def Memory.Insts.CoreCloneClone.clone (self : Memory) : Result Memory := do
   ok self
 
 /-- Trait implementation: [calculator_kernel::{impl core::clone::Clone for calculator_kernel::Memory}]
-    Source: 'examples/tutorials/calculator/kernel/src/lib.rs', lines 25:13-25:18 -/
+    Source: 'examples/tutorials/calculator/kernel/src/lib.rs', lines 24:13-24:18 -/
 @[reducible]
 def Memory.Insts.CoreCloneClone : core.clone.Clone Memory := {
   clone := Memory.Insts.CoreCloneClone.clone
 }
 
 /-- [calculator_kernel::{impl core::clone::Clone for calculator_kernel::Snapshot}::clone]:
-    Source: 'examples/tutorials/calculator/kernel/src/lib.rs', lines 20:13-20:18
+    Source: 'examples/tutorials/calculator/kernel/src/lib.rs', lines 19:13-19:18
     Visibility: public -/
 def Snapshot.Insts.CoreCloneClone.clone
   (self : Snapshot) : Result Snapshot := do
@@ -171,7 +171,7 @@ def Snapshot.Insts.CoreCloneClone.clone
   ok { memories := v }
 
 /-- [calculator_kernel::Op]
-    Source: 'examples/tutorials/calculator/kernel/src/lib.rs', lines 33:0-38:1
+    Source: 'examples/tutorials/calculator/kernel/src/lib.rs', lines 32:0-37:1
     Visibility: public -/
 @[discriminant isize]
 inductive Op where
@@ -181,7 +181,7 @@ inductive Op where
 | Div : Op
 
 /-- [calculator_kernel::Command]
-    Source: 'examples/tutorials/calculator/kernel/src/lib.rs', lines 41:0-48:1
+    Source: 'examples/tutorials/calculator/kernel/src/lib.rs', lines 40:0-47:1
     Visibility: public -/
 @[discriminant isize]
 inductive Command where
@@ -190,14 +190,14 @@ inductive Command where
 | Get : Command
 
 /-- [calculator_kernel::Reply]
-    Source: 'examples/tutorials/calculator/kernel/src/lib.rs', lines 51:0-53:1
+    Source: 'examples/tutorials/calculator/kernel/src/lib.rs', lines 50:0-52:1
     Visibility: public -/
 @[discriminant isize]
 inductive Reply where
 | Value : Std.U64 → Reply
 
 /-- [calculator_kernel::Error]
-    Source: 'examples/tutorials/calculator/kernel/src/lib.rs', lines 56:0-60:1
+    Source: 'examples/tutorials/calculator/kernel/src/lib.rs', lines 55:0-59:1
     Visibility: public -/
 @[discriminant isize]
 inductive Error where
@@ -206,7 +206,7 @@ inductive Error where
 | DivByZero : Error
 
 /-- [calculator_kernel::memory_of]: loop body 0:
-    Source: 'examples/tutorials/calculator/kernel/src/lib.rs', lines 65:4-72:1
+    Source: 'examples/tutorials/calculator/kernel/src/lib.rs', lines 64:4-71:1
     Visibility: public -/
 @[rust_loop_body]
 def memory_of_loop.body
@@ -225,7 +225,7 @@ def memory_of_loop.body
   else ok (done 0#u64)
 
 /-- [calculator_kernel::memory_of]: loop 0:
-    Source: 'examples/tutorials/calculator/kernel/src/lib.rs', lines 65:4-72:1
+    Source: 'examples/tutorials/calculator/kernel/src/lib.rs', lines 64:4-71:1
     Visibility: public -/
 @[rust_loop]
 def memory_of_loop
@@ -237,7 +237,7 @@ def memory_of_loop
     i
 
 /-- [calculator_kernel::memory_of]:
-    Source: 'examples/tutorials/calculator/kernel/src/lib.rs', lines 63:0-72:1
+    Source: 'examples/tutorials/calculator/kernel/src/lib.rs', lines 62:0-71:1
     Visibility: public -/
 @[reducible]
 def memory_of
@@ -245,7 +245,7 @@ def memory_of
   memory_of_loop ms user 0#usize
 
 /-- [calculator_kernel::compute]:
-    Source: 'examples/tutorials/calculator/kernel/src/lib.rs', lines 75:0-106:1
+    Source: 'examples/tutorials/calculator/kernel/src/lib.rs', lines 74:0-105:1
     Visibility: public -/
 def compute
   (op : Op) (a : Std.U64) (b : Std.U64) :
@@ -280,7 +280,7 @@ def compute
          ok (core.result.Result.Ok i)
 
 /-- [calculator_kernel::transition]:
-    Source: 'examples/tutorials/calculator/kernel/src/lib.rs', lines 110:0-122:1
+    Source: 'examples/tutorials/calculator/kernel/src/lib.rs', lines 109:0-121:1
     Visibility: public -/
 def transition
   (actor : Principal) (snap : Snapshot) (cmd : Command) :
@@ -303,7 +303,7 @@ def transition
     ok (core.result.Result.Ok (none, Reply.Value i))
 
 /-- [calculator_kernel::{calculator_kernel::Memory}::put]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 219:16-227:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 220:16-228:13
     Visibility: public -/
 @[rust_loop_body]
 def Memory.put_loop.body
@@ -328,7 +328,7 @@ def Memory.put_loop.body
        ok (done v1)
 
 /-- [calculator_kernel::{calculator_kernel::Memory}::put]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 219:16-227:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 220:16-228:13
     Visibility: public -/
 @[rust_loop]
 def Memory.put_loop
@@ -340,7 +340,7 @@ def Memory.put_loop
     i
 
 /-- [calculator_kernel::{calculator_kernel::Memory}::put]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 217:12-227:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 218:12-228:13
     Visibility: public -/
 @[reducible]
 def Memory.put
@@ -348,7 +348,7 @@ def Memory.put
   Memory.put_loop v x 0#usize
 
 /-- [calculator_kernel::apply]:
-    Source: 'examples/tutorials/calculator/kernel/src/lib.rs', lines 126:0-133:1
+    Source: 'examples/tutorials/calculator/kernel/src/lib.rs', lines 125:0-132:1
     Visibility: public -/
 def apply (snap : Snapshot) (w : Option Memory) : Result Snapshot := do
   let s ← Snapshot.Insts.CoreCloneClone.clone snap
@@ -358,7 +358,7 @@ def apply (snap : Snapshot) (w : Option Memory) : Result Snapshot := do
               ok { memories := v }
 
 /-- [calculator_kernel::{calculator_kernel::Memory}::to_row]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 135:12-140:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 138:12-143:13
     Visibility: public -/
 def Memory.to_row (self : Memory) : Result (alloc.vec.Vec i5h_sql.Val) := do
   let v ← U64.Insts.I5h_sqlColumn.to_val self.user
@@ -367,24 +367,24 @@ def Memory.to_row (self : Memory) : Result (alloc.vec.Vec i5h_sql.Val) := do
   alloc.vec.Vec.push out v1
 
 /-- [calculator_kernel::{calculator_kernel::Memory}::KEY_LEN]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 133:12-133:62
+    Source: 'crates/i5h-schema/src/lib.rs', lines 136:12-136:62
     Visibility: public -/
 @[global_simps, irreducible] def Memory.KEY_LEN : Std.U32 := 1#u32
 
 /-- [calculator_kernel::{calculator_kernel::Memory}::TABLE]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 132:12-132:60
+    Source: 'crates/i5h-schema/src/lib.rs', lines 135:12-135:60
     Visibility: public -/
 @[global_simps, irreducible] def Memory.TABLE : Std.U32 := 0#u32
 
 /-- [calculator_kernel::{calculator_kernel::Memory}::sql_put]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 186:12-188:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 189:12-191:13
     Visibility: public -/
 def Memory.sql_put (self : Memory) : Result i5h_sql.Write := do
   let v ← Memory.to_row self
   ok (i5h_sql.Write.Put Memory.TABLE Memory.KEY_LEN v)
 
 /-- [calculator_kernel::sql_writes]:
-    Source: 'examples/tutorials/calculator/kernel/src/lib.rs', lines 136:0-143:1
+    Source: 'examples/tutorials/calculator/kernel/src/lib.rs', lines 135:0-142:1
     Visibility: public -/
 def sql_writes (w : Option Memory) : Result (alloc.vec.Vec i5h_sql.Write) := do
   match w with
@@ -394,7 +394,7 @@ def sql_writes (w : Option Memory) : Result (alloc.vec.Vec i5h_sql.Write) := do
     alloc.vec.Vec.push (alloc.vec.Vec.new i5h_sql.Write) w1
 
 /-- [calculator_kernel::{calculator_kernel::Memory}::from_row]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 143:12-164:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 146:12-167:13
     Visibility: public -/
 def Memory.from_row
   (row : alloc.vec.Vec i5h_sql.Val) : Result (Option Memory) := do
@@ -421,7 +421,7 @@ def Memory.from_row
                    ok (some { user := x, value := x1 })
 
 /-- [calculator_kernel::{calculator_kernel::Memory}::from_rows]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 174:16-180:17
     Visibility: public -/
 @[rust_loop_body]
 def Memory.from_rows_loop.body
@@ -448,7 +448,7 @@ def Memory.from_rows_loop.body
   else ok (done (out, ok1))
 
 /-- [calculator_kernel::{calculator_kernel::Memory}::from_rows]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 174:16-180:17
     Visibility: public -/
 @[rust_loop]
 def Memory.from_rows_loop
@@ -461,7 +461,7 @@ def Memory.from_rows_loop
     (out, ok1, i)
 
 /-- [calculator_kernel::{calculator_kernel::Memory}::from_rows]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 167:12-183:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 170:12-186:13
     Visibility: public -/
 def Memory.from_rows
   (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)) :
@@ -474,7 +474,7 @@ def Memory.from_rows
   else ok none
 
 /-- [calculator_kernel::{calculator_kernel::Memory}::del]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 233:16-238:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 234:16-239:17
     Visibility: public -/
 @[rust_loop_body]
 def Memory.del_loop.body
@@ -500,7 +500,7 @@ def Memory.del_loop.body
   else ok (done out)
 
 /-- [calculator_kernel::{calculator_kernel::Memory}::del]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 233:16-238:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 234:16-239:17
     Visibility: public -/
 @[rust_loop]
 def Memory.del_loop
@@ -513,7 +513,7 @@ def Memory.del_loop
     (out, i)
 
 /-- [calculator_kernel::{calculator_kernel::Memory}::del]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 230:12-240:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 231:12-241:13
     Visibility: public -/
 @[reducible]
 def Memory.del
@@ -523,7 +523,7 @@ def Memory.del
   Memory.del_loop v user (alloc.vec.Vec.new Memory) 0#usize
 
 /-- [calculator_kernel::{calculator_kernel::Memory}::del_where]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 246:16-251:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 247:16-252:17
     Visibility: public -/
 @[rust_loop_body]
 def Memory.del_where_loop.body
@@ -551,7 +551,7 @@ def Memory.del_where_loop.body
   else ok (done out)
 
 /-- [calculator_kernel::{calculator_kernel::Memory}::del_where]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 246:16-251:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 247:16-252:17
     Visibility: public -/
 @[rust_loop]
 def Memory.del_where_loop
@@ -564,7 +564,7 @@ def Memory.del_where_loop
     (out, i)
 
 /-- [calculator_kernel::{calculator_kernel::Memory}::del_where]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 243:12-253:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 244:12-254:13
     Visibility: public -/
 @[reducible]
 def Memory.del_where
@@ -574,7 +574,7 @@ def Memory.del_where
   Memory.del_where_loop v col val (alloc.vec.Vec.new Memory) 0#usize
 
 /-- [calculator_kernel::{calculator_kernel::Memory}::sql_del]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 256:12-260:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 257:12-261:13
     Visibility: public -/
 def Memory.sql_del (user : Std.U64) : Result i5h_sql.Write := do
   let v ← U64.Insts.I5h_sqlColumn.to_val user
@@ -582,20 +582,20 @@ def Memory.sql_del (user : Std.U64) : Result i5h_sql.Write := do
   ok (i5h_sql.Write.Del Memory.TABLE key)
 
 /-- [calculator_kernel::{calculator_kernel::Memory}::sql_del_where]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 263:12-265:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 264:12-266:13
     Visibility: public -/
 def Memory.sql_del_where
   (col : Std.U32) (val : i5h_sql.Val) : Result i5h_sql.Write := do
   ok (i5h_sql.Write.DelWhere Memory.TABLE col val)
 
 /-- [calculator_kernel::Rows]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 285:8-287:9
+    Source: 'crates/i5h-schema/src/lib.rs', lines 284:8-286:9
     Visibility: public -/
 structure Rows where
   memories : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)
 
 /-- [calculator_kernel::decode]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 290:8-298:9
+    Source: 'crates/i5h-schema/src/lib.rs', lines 289:8-297:9
     Visibility: public -/
 def decode (r : Rows) : Result (Option Snapshot) := do
   let o ← Memory.from_rows r.memories

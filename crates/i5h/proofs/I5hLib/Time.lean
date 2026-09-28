@@ -2,16 +2,10 @@ import Aeneas
 /-!
 # Runs with monotonic time
 
-With `EngineConfig::monotonic`, the trusted engine contract says that the
-engine never commits a command at an earlier time than the tenant's previous
-commit. An app whose principal carries the time can then reason about runs in
-which time never goes back.
-
-`ReachableT` pairs each reachable state with the time of its latest commit;
-a step needs the principal's time to be no earlier. `StepsT` is the same
-relation from a given state, restricted to steps whose principal passes
-`ok`. An app instantiates both in its `Spec.lean` with its `transition`,
-the principal's time, `toSt`, `applyAll` and its initial state.
+Trusted: with `EngineConfig::monotonic`, the engine never commits a tenant's
+command at an earlier time than its previous commit. `ReachableT` pairs each
+reachable state with its latest commit time; `StepsT` is the same from a given
+state, over steps whose principal passes `allow`. Apps instantiate both in `Spec.lean`.
 -/
 open Aeneas Aeneas.Std Result
 
@@ -39,9 +33,7 @@ inductive StepsT (transition : P → S → C → Result (core.result.Result (WS 
 variable {transition : P → S → C → Result (core.result.Result (WS × R) E)} {time : P → Nat}
   {toSt : S → St} {applyAll : St → WS → St} {init : St} {allow : P → St → Prop}
 
-/-- Timed reachability implies any reachability that allows every step, such
-as an app's untimed `Reachable`. So every invariant proven for `Reachable`
-holds on timed runs. -/
+/-- Invariants proven for untimed `Reachable` hold on timed runs. -/
 theorem ReachableT.forget (Reach : St → Prop) (h0 : Reach init)
     (hs : ∀ a s c ws r, Reach (toSt s) → transition a s c = ok (.Ok (ws, r)) → Reach (applyAll (toSt s) ws))
     {st t} (h : ReachableT transition time toSt applyAll init st t) : Reach st := by
@@ -62,9 +54,7 @@ theorem StepsT.time_le {st t st' t'} (h : StepsT transition time toSt applyAll a
   | refl => exact Nat.le_refl _
   | step _ hle _ _ ih => exact Nat.le_trans ih hle
 
-/-- A property of (state, time) that every allowed step from a reachable
-state preserves holds at the end of every run from a reachable state where
-it holds. This is how "once ..., never again" theorems are proven. -/
+/-- Induction over a timed run; used for "once ..., never again" theorems. -/
 theorem StepsT.preserve (Q : St → Nat → Prop)
     (hstep : ∀ a s c ws r t, ReachableT transition time toSt applyAll init (toSt s) t → Q (toSt s) t →
       t ≤ time a → allow a (toSt s) → transition a s c = ok (.Ok (ws, r)) → Q (applyAll (toSt s) ws) (time a))

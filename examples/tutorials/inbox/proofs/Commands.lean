@@ -2,9 +2,8 @@ import Spec
 /-!
 # What each command does
 
-The helpers get exact specifications in terms of lists. Each command then
-gets one lemma saying what a successful run writes and replies. The theorems
-only use these lemmas.
+List specs for the helpers, then one lemma per command: what a successful
+run writes and replies. The theorems use only these lemmas.
 -/
 open Aeneas Aeneas.Std Result inbox_kernel inbox_kernel.Spec I5hLib
 
@@ -134,8 +133,7 @@ theorem lastSeq_bound (ms : List Message) (f t : U64) :
 
 /-! ## Commands
 
-Each lemma says what a successful run writes and replies, and which facts
-about the state made it succeed. -/
+What a successful run writes and replies, and which facts made it succeed. -/
 
 /-- A new message from the caller, with a `seq` above every earlier one to the same recipient. -/
 theorem send_spec (u : U64) (s : Snapshot) (d : U64) (t : alloc.vec.Vec U8) :

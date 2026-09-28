@@ -2,9 +2,8 @@ import Theorems
 /-!
 # Owner rows in reachable states
 
-`apply` adds an owner row only if the pair is absent, so owner rows stay
-unique in every reachable state. With that, removing an owner never leaves a
-crate without one while ownerless crates are not allowed.
+`apply` adds an owner row only if absent, so owner rows stay unique. Hence,
+while ownerless crates are disallowed, removing an owner never leaves none.
 -/
 open Aeneas Aeneas.Std Result kellnr_kernel kellnr_kernel.Spec kellnr_kernel.Theorems
 

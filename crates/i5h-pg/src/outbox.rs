@@ -1,14 +1,9 @@
 //! Effects that leave the database: webhooks, emails, payment calls.
 //!
-//! A store writes an effect with [`enqueue`] inside the request's transaction,
-//! so the effect exists exactly when the data change commits. A [`Dispatcher`]
-//! delivers pending effects later. Delivery is at least once: a crash after
-//! sending but before recording success sends again, with the same key, so the
-//! receiver can drop duplicates.
-//!
-//! The kernel names destinations by id. Only the dispatcher's registry turns
-//! an id into an endpoint, so user input never picks the host (no SSRF through
-//! effects). An id missing from the registry is marked dead and never sent.
+//! [`enqueue`] writes an effect in the request's transaction, so it exists iff
+//! the change commits. A [`Dispatcher`] delivers it at least once, with a
+//! stable key for dedup. Destinations are ids resolved only through the
+//! operator's registry, so user input never picks the host.
 
 use crate::{DbError, Pool, Tx};
 use i5h::TenantId;
@@ -84,8 +79,7 @@ pub struct Dispatcher<E, D: Deliver<E>> {
 }
 
 impl<E: Send + Sync, D: Deliver<E>> Dispatcher<E, D> {
-    /// `registry` is the operator's list of destinations; it is the only way
-    /// an id becomes an endpoint.
+    /// `registry` is the only way a destination id becomes an endpoint.
     pub fn new(pool: Pool, registry: HashMap<u64, E>, deliver: D, config: DispatchConfig) -> Self {
         Dispatcher { pool, registry, deliver, config }
     }

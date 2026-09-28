@@ -2,10 +2,9 @@ import Preview
 /-!
 # Scenarios
 
-Concrete runs of today's kernel. They show that the guarded cases happen:
-the owner can delete and others cannot, a confirmed read burns the paste,
-an unexpired paste is served until its expiry, and the right password opens
-a locked paste. So the theorems do not hold because nothing is allowed.
+Concrete runs of `transition` where the guarded cases succeed (owner delete,
+confirmed burn, unexpired read, right password), so the theorems are not
+vacuous.
 -/
 open Aeneas Aeneas.Std Result wastebin_kernel wastebin_kernel.Spec wastebin_kernel.Commands
   wastebin_kernel.Theorems wastebin_kernel.Preview I5hLib

@@ -178,7 +178,7 @@ inductive i5h_sql.Write where
 | DelWhere : Std.U32 → Std.U32 → i5h_sql.Val → i5h_sql.Write
 
 /-- [inbox_kernel::Message]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 111:12-114:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 95:12-98:13
     Visibility: public -/
 structure Message where
   sender : Std.U64
@@ -190,34 +190,34 @@ structure Message where
   recipient_deleted : Bool
 
 /-- [inbox_kernel::Block]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 111:12-114:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 95:12-98:13
     Visibility: public -/
 structure Block where
   owner : Std.U64
   sender : Std.U64
 
 /-- [inbox_kernel::{inbox_kernel::Message}::TABLE]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 132:12-132:60
+    Source: 'crates/i5h-schema/src/lib.rs', lines 135:12-135:60
     Visibility: public -/
 @[global_simps, irreducible] def Message.TABLE : Std.U32 := 0#u32
 
 /-- [inbox_kernel::{inbox_kernel::Block}::TABLE]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 132:12-132:60
+    Source: 'crates/i5h-schema/src/lib.rs', lines 135:12-135:60
     Visibility: public -/
 @[global_simps, irreducible] def Block.TABLE : Std.U32 := 1#u32
 
 /-- [inbox_kernel::{inbox_kernel::Message}::KEY_LEN]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 133:12-133:62
+    Source: 'crates/i5h-schema/src/lib.rs', lines 136:12-136:62
     Visibility: public -/
 @[global_simps, irreducible] def Message.KEY_LEN : Std.U32 := 3#u32
 
 /-- [inbox_kernel::{inbox_kernel::Block}::KEY_LEN]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 133:12-133:62
+    Source: 'crates/i5h-schema/src/lib.rs', lines 136:12-136:62
     Visibility: public -/
 @[global_simps, irreducible] def Block.KEY_LEN : Std.U32 := 2#u32
 
 /-- [inbox_kernel::{inbox_kernel::Message}::to_row]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 135:12-140:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 138:12-143:13
     Visibility: public -/
 def Message.to_row (self : Message) : Result (alloc.vec.Vec i5h_sql.Val) := do
   let v ← U64.Insts.I5h_sqlColumn.to_val self.sender
@@ -236,7 +236,7 @@ def Message.to_row (self : Message) : Result (alloc.vec.Vec i5h_sql.Val) := do
   alloc.vec.Vec.push out5 v6
 
 /-- [inbox_kernel::{inbox_kernel::Block}::to_row]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 135:12-140:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 138:12-143:13
     Visibility: public -/
 def Block.to_row (self : Block) : Result (alloc.vec.Vec i5h_sql.Val) := do
   let v ← U64.Insts.I5h_sqlColumn.to_val self.owner
@@ -245,7 +245,7 @@ def Block.to_row (self : Block) : Result (alloc.vec.Vec i5h_sql.Val) := do
   alloc.vec.Vec.push out v1
 
 /-- [inbox_kernel::{inbox_kernel::Message}::from_row]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 143:12-164:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 146:12-167:13
     Visibility: public -/
 def Message.from_row
   (row : alloc.vec.Vec i5h_sql.Val) : Result (Option Message) := do
@@ -327,7 +327,7 @@ def Message.from_row
                     })
 
 /-- [inbox_kernel::{inbox_kernel::Block}::from_row]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 143:12-164:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 146:12-167:13
     Visibility: public -/
 def Block.from_row
   (row : alloc.vec.Vec i5h_sql.Val) : Result (Option Block) := do
@@ -355,7 +355,7 @@ def Block.from_row
         ok (some { owner := x, sender := x1 })
 
 /-- [inbox_kernel::{inbox_kernel::Message}::from_rows]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 174:16-180:17
     Visibility: public -/
 @[rust_loop_body]
 def Message.from_rows_loop.body
@@ -382,7 +382,7 @@ def Message.from_rows_loop.body
   else ok (done (out, ok1))
 
 /-- [inbox_kernel::{inbox_kernel::Message}::from_rows]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 174:16-180:17
     Visibility: public -/
 @[rust_loop]
 def Message.from_rows_loop
@@ -395,7 +395,7 @@ def Message.from_rows_loop
     (out, ok1, i)
 
 /-- [inbox_kernel::{inbox_kernel::Message}::from_rows]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 167:12-183:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 170:12-186:13
     Visibility: public -/
 def Message.from_rows
   (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)) :
@@ -408,7 +408,7 @@ def Message.from_rows
   else ok none
 
 /-- [inbox_kernel::{inbox_kernel::Block}::from_rows]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 174:16-180:17
     Visibility: public -/
 @[rust_loop_body]
 def Block.from_rows_loop.body
@@ -435,7 +435,7 @@ def Block.from_rows_loop.body
   else ok (done (out, ok1))
 
 /-- [inbox_kernel::{inbox_kernel::Block}::from_rows]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 171:16-177:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 174:16-180:17
     Visibility: public -/
 @[rust_loop]
 def Block.from_rows_loop
@@ -448,7 +448,7 @@ def Block.from_rows_loop
     (out, ok1, i)
 
 /-- [inbox_kernel::{inbox_kernel::Block}::from_rows]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 167:12-183:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 170:12-186:13
     Visibility: public -/
 def Block.from_rows
   (rows : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)) :
@@ -461,21 +461,21 @@ def Block.from_rows
   else ok none
 
 /-- [inbox_kernel::{inbox_kernel::Message}::sql_put]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 186:12-188:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 189:12-191:13
     Visibility: public -/
 def Message.sql_put (self : Message) : Result i5h_sql.Write := do
   let v ← Message.to_row self
   ok (i5h_sql.Write.Put Message.TABLE Message.KEY_LEN v)
 
 /-- [inbox_kernel::{inbox_kernel::Block}::sql_put]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 186:12-188:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 189:12-191:13
     Visibility: public -/
 def Block.sql_put (self : Block) : Result i5h_sql.Write := do
   let v ← Block.to_row self
   ok (i5h_sql.Write.Put Block.TABLE Block.KEY_LEN v)
 
 /-- [inbox_kernel::{inbox_kernel::Message}::put]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 219:16-227:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 220:16-228:13
     Visibility: public -/
 @[rust_loop_body]
 def Message.put_loop.body
@@ -508,7 +508,7 @@ def Message.put_loop.body
        ok (done v1)
 
 /-- [inbox_kernel::{inbox_kernel::Message}::put]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 219:16-227:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 220:16-228:13
     Visibility: public -/
 @[rust_loop]
 def Message.put_loop
@@ -520,7 +520,7 @@ def Message.put_loop
     i
 
 /-- [inbox_kernel::{inbox_kernel::Message}::put]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 217:12-227:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 218:12-228:13
     Visibility: public -/
 @[reducible]
 def Message.put
@@ -530,7 +530,7 @@ def Message.put
   Message.put_loop v x 0#usize
 
 /-- [inbox_kernel::{inbox_kernel::Block}::put]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 219:16-227:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 220:16-228:13
     Visibility: public -/
 @[rust_loop_body]
 def Block.put_loop.body
@@ -559,7 +559,7 @@ def Block.put_loop.body
        ok (done v1)
 
 /-- [inbox_kernel::{inbox_kernel::Block}::put]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 219:16-227:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 220:16-228:13
     Visibility: public -/
 @[rust_loop]
 def Block.put_loop
@@ -571,7 +571,7 @@ def Block.put_loop
     i
 
 /-- [inbox_kernel::{inbox_kernel::Block}::put]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 217:12-227:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 218:12-228:13
     Visibility: public -/
 @[reducible]
 def Block.put
@@ -601,7 +601,7 @@ def Message.Insts.CoreCloneClone.clone (self : Message) : Result Message := do
     }
 
 /-- [inbox_kernel::{inbox_kernel::Message}::del]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 233:16-238:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 234:16-239:17
     Visibility: public -/
 @[rust_loop_body]
 def Message.del_loop.body
@@ -639,7 +639,7 @@ def Message.del_loop.body
   else ok (done out)
 
 /-- [inbox_kernel::{inbox_kernel::Message}::del]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 233:16-238:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 234:16-239:17
     Visibility: public -/
 @[rust_loop]
 def Message.del_loop
@@ -652,7 +652,7 @@ def Message.del_loop
     (out, i)
 
 /-- [inbox_kernel::{inbox_kernel::Message}::del]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 230:12-240:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 231:12-241:13
     Visibility: public -/
 @[reducible]
 def Message.del
@@ -669,7 +669,7 @@ def Block.Insts.CoreCloneClone.clone (self : Block) : Result Block := do
   ok self
 
 /-- [inbox_kernel::{inbox_kernel::Block}::del]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 233:16-238:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 234:16-239:17
     Visibility: public -/
 @[rust_loop_body]
 def Block.del_loop.body
@@ -701,7 +701,7 @@ def Block.del_loop.body
   else ok (done out)
 
 /-- [inbox_kernel::{inbox_kernel::Block}::del]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 233:16-238:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 234:16-239:17
     Visibility: public -/
 @[rust_loop]
 def Block.del_loop
@@ -714,7 +714,7 @@ def Block.del_loop
     (out, i)
 
 /-- [inbox_kernel::{inbox_kernel::Block}::del]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 230:12-240:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 231:12-241:13
     Visibility: public -/
 @[reducible]
 def Block.del
@@ -724,7 +724,7 @@ def Block.del
   Block.del_loop v owner sender (alloc.vec.Vec.new Block) 0#usize
 
 /-- [inbox_kernel::{inbox_kernel::Message}::del_where]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 246:16-251:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 247:16-252:17
     Visibility: public -/
 @[rust_loop_body]
 def Message.del_where_loop.body
@@ -752,7 +752,7 @@ def Message.del_where_loop.body
   else ok (done out)
 
 /-- [inbox_kernel::{inbox_kernel::Message}::del_where]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 246:16-251:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 247:16-252:17
     Visibility: public -/
 @[rust_loop]
 def Message.del_where_loop
@@ -765,7 +765,7 @@ def Message.del_where_loop
     (out, i)
 
 /-- [inbox_kernel::{inbox_kernel::Message}::del_where]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 243:12-253:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 244:12-254:13
     Visibility: public -/
 @[reducible]
 def Message.del_where
@@ -775,7 +775,7 @@ def Message.del_where
   Message.del_where_loop v col val (alloc.vec.Vec.new Message) 0#usize
 
 /-- [inbox_kernel::{inbox_kernel::Block}::del_where]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 246:16-251:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 247:16-252:17
     Visibility: public -/
 @[rust_loop_body]
 def Block.del_where_loop.body
@@ -803,7 +803,7 @@ def Block.del_where_loop.body
   else ok (done out)
 
 /-- [inbox_kernel::{inbox_kernel::Block}::del_where]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 246:16-251:17
+    Source: 'crates/i5h-schema/src/lib.rs', lines 247:16-252:17
     Visibility: public -/
 @[rust_loop]
 def Block.del_where_loop
@@ -816,7 +816,7 @@ def Block.del_where_loop
     (out, i)
 
 /-- [inbox_kernel::{inbox_kernel::Block}::del_where]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 243:12-253:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 244:12-254:13
     Visibility: public -/
 @[reducible]
 def Block.del_where
@@ -826,7 +826,7 @@ def Block.del_where
   Block.del_where_loop v col val (alloc.vec.Vec.new Block) 0#usize
 
 /-- [inbox_kernel::{inbox_kernel::Message}::sql_del]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 256:12-260:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 257:12-261:13
     Visibility: public -/
 def Message.sql_del
   (sender : Std.U64) (recipient : Std.U64) (seq : Std.U64) :
@@ -841,7 +841,7 @@ def Message.sql_del
   ok (i5h_sql.Write.Del Message.TABLE key2)
 
 /-- [inbox_kernel::{inbox_kernel::Block}::sql_del]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 256:12-260:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 257:12-261:13
     Visibility: public -/
 def Block.sql_del
   (owner : Std.U64) (sender : Std.U64) : Result i5h_sql.Write := do
@@ -852,14 +852,14 @@ def Block.sql_del
   ok (i5h_sql.Write.Del Block.TABLE key1)
 
 /-- [inbox_kernel::{inbox_kernel::Message}::sql_del_where]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 263:12-265:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 264:12-266:13
     Visibility: public -/
 def Message.sql_del_where
   (col : Std.U32) (val : i5h_sql.Val) : Result i5h_sql.Write := do
   ok (i5h_sql.Write.DelWhere Message.TABLE col val)
 
 /-- [inbox_kernel::{inbox_kernel::Block}::sql_del_where]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 263:12-265:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 264:12-266:13
     Visibility: public -/
 def Block.sql_del_where
   (col : Std.U32) (val : i5h_sql.Val) : Result i5h_sql.Write := do
@@ -873,14 +873,14 @@ structure Snapshot where
   blocks : alloc.vec.Vec Block
 
 /-- [inbox_kernel::Rows]
-    Source: 'crates/i5h-schema/src/lib.rs', lines 285:8-287:9
+    Source: 'crates/i5h-schema/src/lib.rs', lines 284:8-286:9
     Visibility: public -/
 structure Rows where
   messages : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)
   blocks : alloc.vec.Vec (alloc.vec.Vec i5h_sql.Val)
 
 /-- [inbox_kernel::decode]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 290:8-298:9
+    Source: 'crates/i5h-schema/src/lib.rs', lines 289:8-297:9
     Visibility: public -/
 def decode (r : Rows) : Result (Option Snapshot) := do
   let o ← Message.from_rows r.messages
@@ -902,7 +902,7 @@ inductive Write where
 | DelBlock : Block → Write
 
 /-- [inbox_kernel::apply_write]:
-    Source: 'examples/tutorials/inbox/kernel/src/lib.rs', lines 236:0-242:1 -/
+    Source: 'examples/tutorials/inbox/kernel/src/lib.rs', lines 235:0-241:1 -/
 def apply_write (s : Snapshot) (w : Write) : Result Snapshot := do
   match w with
   | Write.PutMessage m =>
@@ -954,7 +954,7 @@ def Snapshot.Insts.CoreCloneClone.clone
   ok { messages := v, blocks := v1 }
 
 /-- [inbox_kernel::apply]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 308:12-311:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 306:12-309:13
     Visibility: public -/
 @[rust_loop_body]
 def apply_loop.body
@@ -973,7 +973,7 @@ def apply_loop.body
   else ok (done s)
 
 /-- [inbox_kernel::apply]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 308:12-311:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 306:12-309:13
     Visibility: public -/
 @[rust_loop]
 def apply_loop
@@ -985,14 +985,14 @@ def apply_loop
     (s, i)
 
 /-- [inbox_kernel::apply]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 305:8-313:9
+    Source: 'crates/i5h-schema/src/lib.rs', lines 303:8-311:9
     Visibility: public -/
 def apply (snap : Snapshot) (ws : alloc.vec.Vec Write) : Result Snapshot := do
   let s ← Snapshot.Insts.CoreCloneClone.clone snap
   apply_loop ws s 0#usize
 
 /-- [inbox_kernel::sql_write]:
-    Source: 'examples/tutorials/inbox/kernel/src/lib.rs', lines 245:0-251:1 -/
+    Source: 'examples/tutorials/inbox/kernel/src/lib.rs', lines 244:0-250:1 -/
 def sql_write
   (w : Write) (out : alloc.vec.Vec i5h_sql.Write) :
   Result (alloc.vec.Vec i5h_sql.Write)
@@ -1008,7 +1008,7 @@ def sql_write
     alloc.vec.Vec.push out w1
 
 /-- [inbox_kernel::sql_writes]: loop body 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 320:12-323:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 317:12-320:13
     Visibility: public -/
 @[rust_loop_body]
 def sql_writes_loop.body
@@ -1028,7 +1028,7 @@ def sql_writes_loop.body
   else ok (done out)
 
 /-- [inbox_kernel::sql_writes]: loop 0:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 320:12-323:13
+    Source: 'crates/i5h-schema/src/lib.rs', lines 317:12-320:13
     Visibility: public -/
 @[rust_loop]
 def sql_writes_loop
@@ -1041,7 +1041,7 @@ def sql_writes_loop
     (out, i)
 
 /-- [inbox_kernel::sql_writes]:
-    Source: 'crates/i5h-schema/src/lib.rs', lines 317:8-325:9
+    Source: 'crates/i5h-schema/src/lib.rs', lines 314:8-322:9
     Visibility: public -/
 @[reducible]
 def sql_writes

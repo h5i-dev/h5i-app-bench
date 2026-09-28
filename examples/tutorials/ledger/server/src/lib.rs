@@ -1,5 +1,5 @@
-//! The ledger's shell: it connects the kernel to PostgreSQL and JSON and
-//! makes no decisions of its own.
+//! The ledger's shell: moves data between the kernel, PostgreSQL and JSON.
+//! It decides nothing.
 
 use axum::http::StatusCode;
 use i5h::{Kernel, TenantId};
@@ -50,9 +50,8 @@ impl Store<Ledger> for LedgerStore {
         schema_tables()
     }
 
-    // Rows are decoded by the kernel's `decode`, and a write set is stored as
-    // the table writes of its `sql_writes`; `Storage.lean` proves the store
-    // then holds what `apply` computes.
+    // Rows decode with the kernel's `decode`; writes go through `sql_writes`.
+    // `Storage.lean` proves the store holds what `apply` computes.
     async fn load(tx: &Tx<'_>, t: TenantId) -> Result<k::Snapshot, DbError> {
         schema_load(tx, t).await
     }

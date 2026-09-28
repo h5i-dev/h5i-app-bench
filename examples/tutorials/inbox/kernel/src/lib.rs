@@ -216,8 +216,8 @@ fn delete(user: u64, s: &Snapshot, from: u64, to: u64, seq: u64) -> Outcome {
     }
 }
 
-/// The whole application: what a command writes and replies, or why it is
-/// refused. A refusal commits nothing.
+/// The app logic: a command's writes and reply, or a refusal that commits
+/// nothing.
 pub fn transition(actor: &Principal, s: &Snapshot, cmd: &Command) -> Outcome {
     let user = actor.user;
     match cmd {
@@ -231,8 +231,7 @@ pub fn transition(actor: &Principal, s: &Snapshot, cmd: &Command) -> Outcome {
     }
 }
 
-/// What one write does to the state. `schema!` runs it over a write set
-/// (`apply`).
+/// What one write does to the state; `schema!` builds `apply` from it.
 fn apply_write(s: &mut Snapshot, w: Write) {
     match w {
         Write::PutMessage(m) => Message::put(&mut s.messages, m),

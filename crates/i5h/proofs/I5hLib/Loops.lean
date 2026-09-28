@@ -1,17 +1,10 @@
 import Aeneas
 /-!
-# Generic specs for Aeneas loops over a vector
+# Specs for Aeneas loops over a vector
 
-Aeneas turns `while i < v.len() { ... i += 1 }` into `loop body i`. Two shapes
-cover the kernel subset:
-
-* search: the state is the index; the loop stops at the first match
-  (`find`, `role_of`, upsert into a `Vec`);
-* fold: the state is an accumulator and the index; the loop runs to the end
-  (`count`, filter by pushing, `apply`).
-
-Each lemma turns a per-step fact about `body` into a spec for the whole loop,
-so a kernel loop needs no invariant or measure of its own.
+Aeneas turns `while i < v.len() { ... i += 1 }` into `loop body i`. `loop_search`
+covers loops that stop at the first match, `loop_fold` loops that run to the
+end. Each turns a per-step fact about `body` into a spec for the whole loop.
 -/
 open Aeneas Aeneas.Std Result
 

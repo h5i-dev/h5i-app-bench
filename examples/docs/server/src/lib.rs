@@ -3,7 +3,7 @@
 use axum::http::StatusCode;
 use docs_kernel as k;
 use i5h::{Kernel, TenantId};
-use i5h_pg::{load_rows, load_rows_where, DbError, PgField, ReplyCodec, Store, Tx, Value};
+use i5h_pg::{DbError, PgField, ReplyCodec, Store, Tx, Value};
 use serde::{Deserialize, Serialize};
 use i5h_json::Value as Out;
 use i5h_pg::sql::Column;
@@ -57,6 +57,11 @@ enum_field!(k::Status { Draft = 0, InReview = 1, Approved = 2, Published = 3 });
 // Table mappings for every row type, from the kernel's `schema!` block.
 docs_kernel::docs_tables!(DocsApp);
 
+/// The tables as the SQL compiler sees them, for tests.
+pub fn table_spec() -> Vec<i5h_pg::pgsql::Table> {
+    schema_spec()
+}
+
 /// Outbox payload for a publish notification: ids only, no document content.
 pub fn effect_payload(e: &k::Effect) -> Vec<u8> {
     Out::Obj(vec![
@@ -89,11 +94,11 @@ impl Store<DocsApp> for DocsStore {
     // Rows are decoded by the kernel (`decode`, proven in `Load.lean`).
     async fn load(tx: &Tx<'_>, t: TenantId) -> Result<k::Snapshot, DbError> {
         let rows = k::Rows {
-            counter: load_rows::<DocsApp, k::Counter>(tx, t).await?,
-            projects: load_rows::<DocsApp, k::Project>(tx, t).await?,
-            members: load_rows::<DocsApp, k::Member>(tx, t).await?,
-            documents: load_rows::<DocsApp, k::Document>(tx, t).await?,
-            webhooks: load_rows::<DocsApp, k::Webhook>(tx, t).await?,
+            counter: schema_rows(tx, t, k::Counter::TABLE).await?,
+            projects: schema_rows(tx, t, k::Project::TABLE).await?,
+            members: schema_rows(tx, t, k::Member::TABLE).await?,
+            documents: schema_rows(tx, t, k::Document::TABLE).await?,
+            webhooks: schema_rows(tx, t, k::Webhook::TABLE).await?,
         };
         decode(&rows)
     }
@@ -103,10 +108,12 @@ impl Store<DocsApp> for DocsStore {
     /// result is `Frame.slice` of a snapshot the rows hold, and
     /// `transition_frame` that the kernel's result is the same as on it.
     async fn load_for(tx: &Tx<'_>, t: TenantId, cmd: &k::Command) -> Result<k::Snapshot, DbError> {
-        let counter = load_rows::<DocsApp, k::Counter>(tx, t).await?;
+        let counter = schema_rows(tx, t, k::Counter::TABLE).await?;
         let scope = k::read_scope(cmd);
         let doc_rows = match scope {
-            k::Scope::Document(d) => load_rows_where::<DocsApp, k::Document>(tx, t, "id", &Column::to_val(&d)).await?,
+            k::Scope::Document(d) => {
+                schema_rows_where(tx, t, k::Document::TABLE, k::docs_tables::Document::id, &Column::to_val(&d)).await?
+            }
             _ => Vec::new(),
         };
         let Some(p) = k::scoped_project(&scope, &doc_rows) else {
@@ -116,10 +123,10 @@ impl Store<DocsApp> for DocsStore {
         let p = Column::to_val(&p);
         decode(&k::Rows {
             counter,
-            projects: load_rows_where::<DocsApp, k::Project>(tx, t, "id", &p).await?,
-            members: load_rows_where::<DocsApp, k::Member>(tx, t, "project", &p).await?,
-            documents: load_rows_where::<DocsApp, k::Document>(tx, t, "project", &p).await?,
-            webhooks: load_rows_where::<DocsApp, k::Webhook>(tx, t, "project", &p).await?,
+            projects: schema_rows_where(tx, t, k::Project::TABLE, k::docs_tables::Project::id, &p).await?,
+            members: schema_rows_where(tx, t, k::Member::TABLE, k::docs_tables::Member::project, &p).await?,
+            documents: schema_rows_where(tx, t, k::Document::TABLE, k::docs_tables::Document::project, &p).await?,
+            webhooks: schema_rows_where(tx, t, k::Webhook::TABLE, k::docs_tables::Webhook::project, &p).await?,
         })
     }
 
@@ -257,10 +264,7 @@ impl i5h_http::Api<DocsApp> for DocsStore {
     }
 }
 
-/// Stored idempotent replies are the JSON rendering. Replay decodes back to
-/// an opaque reply that re-renders identically.
-/// Lossless form of a reply for the idempotency table, so any reply
-/// (including documents) can be replayed.
+/// Lossless reply form for the idempotency table, so any reply can be replayed.
 #[derive(Serialize, Deserialize)]
 enum StoredReply {
     Created(u64),

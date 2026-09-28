@@ -31,11 +31,11 @@ MUTANTS = {
 }
 
 WORKSPACE = """[workspace]
-resolver = "2"
+resolver = "3"
 members = ["APP_KERNEL", "crates/i5h-schema", "crates/i5h-sql"]
 
 [workspace.package]
-edition = "2021"
+edition = "2024"
 license = "Apache-2.0"
 version = "0.1.0"
 
@@ -94,6 +94,7 @@ def check(name, keep, baseline):
         extract = f"extract-{name}.sh"
         shutil.copy2(ROOT / "scripts" / extract, scripts / extract)
         shutil.copy2(ROOT / "scripts" / "schema-items.sh", scripts / "schema-items.sh")
+        shutil.copy2(ROOT / "scripts" / "normalize-sources.sh", scripts / "normalize-sources.sh")
 
         if run(["cargo", "check", "-q"], tmp, log):
             verdict = "invalid (rust)"

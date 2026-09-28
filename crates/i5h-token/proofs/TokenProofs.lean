@@ -469,8 +469,7 @@ theorem parseIdx_eq (L : List Nat) : parseIdx L = parseSpec L := by
   simp only [List.take_zero, List.nil_append, List.append_assoc]
   split_ifs <;> first | rfl | (exfalso; omega) | (exfalso; tauto)
 
-/-- What `parse` accepts is canonical: the signed payload is exactly
-`enc tenant user exp`, and the token is exactly `payload.hex(signature)`. -/
+/-- What `parse` accepts is canonical: `enc tenant user exp` then `.hex(sig)`. -/
 theorem parse_canonical (tok : Slice U8) :
     parse tok ⦃ r => ∀ p, r = some p →
       B p.payload.val = enc p.tenant.val p.user.val p.exp.val ∧
@@ -481,8 +480,7 @@ theorem parse_canonical (tok : Slice U8) :
   obtain ⟨h1, h2, -⟩ := parse_canon hr.symm
   exact ⟨h1, h2⟩
 
-/-- A signature covers one identity: equal signed payloads name the same
-tenant, user and expiry. -/
+/-- Equal signed payloads name the same tenant, user and expiry. -/
 theorem payload_determines_identity {tok tok' : Slice U8} {p p' : Parsed}
     (h : parse tok = .ok (some p)) (h' : parse tok' = .ok (some p'))
     (hp : p.payload.val = p'.payload.val) :

@@ -6,11 +6,10 @@
 //! admins cancel any booking. Every booking and cancellation notifies the
 //! destination registered for the room, through the outbox.
 //!
-//! Times are Unix seconds. The kernel has no clock: the shell puts the current
-//! time into the `Principal` of each request.
+//! Times are Unix seconds. The kernel has no clock; the shell puts the time
+//! in each request's `Principal`.
 
-/// Who is calling, and when. `now` comes from the server's clock, never from
-/// the request body.
+/// Who is calling, and when. `now` is the server's clock, never the request's.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub struct Principal {
     pub org: u64,
@@ -234,8 +233,8 @@ fn cancel(a: &Principal, s: &Snapshot, id: u64) -> Outcome {
     Ok((ws, Reply::Done))
 }
 
-/// The whole application: what a command writes and replies, or why it is
-/// refused. A refusal commits nothing, so it sends nothing either.
+/// The app logic: a command's writes and reply, or a refusal that commits
+/// and sends nothing.
 pub fn transition(actor: &Principal, s: &Snapshot, cmd: &Command) -> Outcome {
     match cmd {
         Command::AddAdmin { user } => add_admin(actor.user, s, *user),
@@ -246,8 +245,7 @@ pub fn transition(actor: &Principal, s: &Snapshot, cmd: &Command) -> Outcome {
     }
 }
 
-/// What one write does to the state. `schema!` runs it over a write set
-/// (`apply`).
+/// What one write does to the state; `schema!` builds `apply` from it.
 fn apply_write(s: &mut Snapshot, w: Write) {
     match w {
         Write::PutAdmin(x) => Admin::put(&mut s.admins, x),

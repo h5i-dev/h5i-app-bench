@@ -6,4 +6,5 @@ import I5hLib.Tactics
 import I5hLib.Sql
 import I5hLib.Time
 import I5hLib.Store
+import I5hLib.Pg
 import I5hLib.Decode

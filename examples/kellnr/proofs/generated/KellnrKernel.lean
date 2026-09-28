@@ -20,7 +20,7 @@ set_option maxRecDepth 2048
 namespace kellnr_kernel
 
 /-- [kellnr_kernel::Login]
-    Source: 'examples/kellnr/kernel/src/lib.rs', lines 11:0-14:1
+    Source: 'examples/kellnr/kernel/src/lib.rs', lines 10:0-13:1
     Visibility: public -/
 @[discriminant isize]
 inductive Login where
@@ -28,14 +28,14 @@ inductive Login where
 | Token : Login
 
 /-- [kellnr_kernel::Principal]
-    Source: 'examples/kellnr/kernel/src/lib.rs', lines 17:0-20:1
+    Source: 'examples/kellnr/kernel/src/lib.rs', lines 16:0-19:1
     Visibility: public -/
 structure Principal where
   user : Std.U64
   login : Login
 
 /-- [kellnr_kernel::User]
-    Source: 'examples/kellnr/kernel/src/lib.rs', lines 23:0-27:1
+    Source: 'examples/kellnr/kernel/src/lib.rs', lines 22:0-26:1
     Visibility: public -/
 structure User where
   id : Std.U64
@@ -43,40 +43,40 @@ structure User where
   is_read_only : Bool
 
 /-- [kellnr_kernel::{impl core::clone::Clone for kellnr_kernel::User}::clone]:
-    Source: 'examples/kellnr/kernel/src/lib.rs', lines 22:9-22:14
+    Source: 'examples/kellnr/kernel/src/lib.rs', lines 21:9-21:14
     Visibility: public -/
 def User.Insts.CoreCloneClone.clone (self : User) : Result User := do
   ok self
 
 /-- Trait implementation: [kellnr_kernel::{impl core::clone::Clone for kellnr_kernel::User}]
-    Source: 'examples/kellnr/kernel/src/lib.rs', lines 22:9-22:14 -/
+    Source: 'examples/kellnr/kernel/src/lib.rs', lines 21:9-21:14 -/
 @[reducible]
 def User.Insts.CoreCloneClone : core.clone.Clone User := {
   clone := User.Insts.CoreCloneClone.clone
 }
 
 /-- [kellnr_kernel::Krate]
-    Source: 'examples/kellnr/kernel/src/lib.rs', lines 30:0-33:1
+    Source: 'examples/kellnr/kernel/src/lib.rs', lines 29:0-32:1
     Visibility: public -/
 structure Krate where
   id : Std.U64
   restricted : Bool
 
 /-- [kellnr_kernel::{impl core::clone::Clone for kellnr_kernel::Krate}::clone]:
-    Source: 'examples/kellnr/kernel/src/lib.rs', lines 29:9-29:14
+    Source: 'examples/kellnr/kernel/src/lib.rs', lines 28:9-28:14
     Visibility: public -/
 def Krate.Insts.CoreCloneClone.clone (self : Krate) : Result Krate := do
   ok self
 
 /-- Trait implementation: [kellnr_kernel::{impl core::clone::Clone for kellnr_kernel::Krate}]
-    Source: 'examples/kellnr/kernel/src/lib.rs', lines 29:9-29:14 -/
+    Source: 'examples/kellnr/kernel/src/lib.rs', lines 28:9-28:14 -/
 @[reducible]
 def Krate.Insts.CoreCloneClone : core.clone.Clone Krate := {
   clone := Krate.Insts.CoreCloneClone.clone
 }
 
 /-- [kellnr_kernel::Version]
-    Source: 'examples/kellnr/kernel/src/lib.rs', lines 36:0-40:1
+    Source: 'examples/kellnr/kernel/src/lib.rs', lines 35:0-39:1
     Visibility: public -/
 structure Version where
   krate : Std.U64
@@ -84,54 +84,54 @@ structure Version where
   yanked : Bool
 
 /-- [kellnr_kernel::{impl core::clone::Clone for kellnr_kernel::Version}::clone]:
-    Source: 'examples/kellnr/kernel/src/lib.rs', lines 35:9-35:14
+    Source: 'examples/kellnr/kernel/src/lib.rs', lines 34:9-34:14
     Visibility: public -/
 def Version.Insts.CoreCloneClone.clone (self : Version) : Result Version := do
   ok self
 
 /-- Trait implementation: [kellnr_kernel::{impl core::clone::Clone for kellnr_kernel::Version}]
-    Source: 'examples/kellnr/kernel/src/lib.rs', lines 35:9-35:14 -/
+    Source: 'examples/kellnr/kernel/src/lib.rs', lines 34:9-34:14 -/
 @[reducible]
 def Version.Insts.CoreCloneClone : core.clone.Clone Version := {
   clone := Version.Insts.CoreCloneClone.clone
 }
 
 /-- [kellnr_kernel::Pair]
-    Source: 'examples/kellnr/kernel/src/lib.rs', lines 45:0-48:1
+    Source: 'examples/kellnr/kernel/src/lib.rs', lines 44:0-47:1
     Visibility: public -/
 structure Pair where
   a : Std.U64
   b : Std.U64
 
 /-- [kellnr_kernel::{impl core::clone::Clone for kellnr_kernel::Pair}::clone]:
-    Source: 'examples/kellnr/kernel/src/lib.rs', lines 44:9-44:14
+    Source: 'examples/kellnr/kernel/src/lib.rs', lines 43:9-43:14
     Visibility: public -/
 def Pair.Insts.CoreCloneClone.clone (self : Pair) : Result Pair := do
   ok self
 
 /-- Trait implementation: [kellnr_kernel::{impl core::clone::Clone for kellnr_kernel::Pair}]
-    Source: 'examples/kellnr/kernel/src/lib.rs', lines 44:9-44:14 -/
+    Source: 'examples/kellnr/kernel/src/lib.rs', lines 43:9-43:14 -/
 @[reducible]
 def Pair.Insts.CoreCloneClone : core.clone.Clone Pair := {
   clone := Pair.Insts.CoreCloneClone.clone
 }
 
 /-- [kellnr_kernel::Settings]
-    Source: 'examples/kellnr/kernel/src/lib.rs', lines 51:0-54:1
+    Source: 'examples/kellnr/kernel/src/lib.rs', lines 50:0-53:1
     Visibility: public -/
 structure Settings where
   allow_ownerless_crates : Bool
   new_crates_restricted : Bool
 
 /-- [kellnr_kernel::{impl core::clone::Clone for kellnr_kernel::Settings}::clone]:
-    Source: 'examples/kellnr/kernel/src/lib.rs', lines 50:9-50:14
+    Source: 'examples/kellnr/kernel/src/lib.rs', lines 49:9-49:14
     Visibility: public -/
 def Settings.Insts.CoreCloneClone.clone
   (self : Settings) : Result Settings := do
   ok self
 
 /-- [kellnr_kernel::Snapshot]
-    Source: 'examples/kellnr/kernel/src/lib.rs', lines 57:0-66:1
+    Source: 'examples/kellnr/kernel/src/lib.rs', lines 56:0-65:1
     Visibility: public -/
 structure Snapshot where
   settings : Settings
@@ -144,7 +144,7 @@ structure Snapshot where
   group_members : alloc.vec.Vec Pair
 
 /-- [kellnr_kernel::{impl core::clone::Clone for kellnr_kernel::Snapshot}::clone]:
-    Source: 'examples/kellnr/kernel/src/lib.rs', lines 56:9-56:14
+    Source: 'examples/kellnr/kernel/src/lib.rs', lines 55:9-55:14
     Visibility: public -/
 def Snapshot.Insts.CoreCloneClone.clone
   (self : Snapshot) : Result Snapshot := do
@@ -173,7 +173,7 @@ def Snapshot.Insts.CoreCloneClone.clone
     }
 
 /-- [kellnr_kernel::Write]
-    Source: 'examples/kellnr/kernel/src/lib.rs', lines 69:0-79:1
+    Source: 'examples/kellnr/kernel/src/lib.rs', lines 68:0-78:1
     Visibility: public -/
 @[discriminant isize]
 inductive Write where
@@ -188,7 +188,7 @@ inductive Write where
 | AddVersion : Version → Write
 
 /-- [kellnr_kernel::Command]
-    Source: 'examples/kellnr/kernel/src/lib.rs', lines 82:0-93:1
+    Source: 'examples/kellnr/kernel/src/lib.rs', lines 81:0-92:1
     Visibility: public -/
 @[discriminant isize]
 inductive Command where
@@ -204,7 +204,7 @@ inductive Command where
 | Download : Std.U64 → Command
 
 /-- [kellnr_kernel::Reply]
-    Source: 'examples/kellnr/kernel/src/lib.rs', lines 96:0-99:1
+    Source: 'examples/kellnr/kernel/src/lib.rs', lines 95:0-98:1
     Visibility: public -/
 @[discriminant isize]
 inductive Reply where
@@ -212,7 +212,7 @@ inductive Reply where
 | File : Reply
 
 /-- [kellnr_kernel::Error]
-    Source: 'examples/kellnr/kernel/src/lib.rs', lines 102:0-112:1
+    Source: 'examples/kellnr/kernel/src/lib.rs', lines 101:0-111:1
     Visibility: public -/
 @[discriminant isize]
 inductive Error where
@@ -227,7 +227,7 @@ inductive Error where
 | NotCrateUser : Error
 
 /-- [kellnr_kernel::MaybeUser]
-    Source: 'examples/kellnr/kernel/src/lib.rs', lines 116:0-120:1
+    Source: 'examples/kellnr/kernel/src/lib.rs', lines 115:0-119:1
     Visibility: public -/
 structure MaybeUser where
   «name» : Std.U64
@@ -235,7 +235,7 @@ structure MaybeUser where
   is_read_only : Bool
 
 /-- [kellnr_kernel::find_user]: loop body 0:
-    Source: 'examples/kellnr/kernel/src/lib.rs', lines 124:4-131:1
+    Source: 'examples/kellnr/kernel/src/lib.rs', lines 123:4-130:1
     Visibility: public -/
 @[rust_loop_body]
 def find_user_loop.body
@@ -254,7 +254,7 @@ def find_user_loop.body
   else ok (done none)
 
 /-- [kellnr_kernel::find_user]: loop 0:
-    Source: 'examples/kellnr/kernel/src/lib.rs', lines 124:4-131:1
+    Source: 'examples/kellnr/kernel/src/lib.rs', lines 123:4-130:1
     Visibility: public -/
 @[rust_loop]
 def find_user_loop
@@ -266,7 +266,7 @@ def find_user_loop
     i
 
 /-- [kellnr_kernel::find_user]:
-    Source: 'examples/kellnr/kernel/src/lib.rs', lines 122:0-131:1
+    Source: 'examples/kellnr/kernel/src/lib.rs', lines 121:0-130:1
     Visibility: public -/
 @[reducible]
 def find_user
@@ -274,7 +274,7 @@ def find_user
   find_user_loop users id 0#usize
 
 /-- [kellnr_kernel::find_crate]: loop body 0:
-    Source: 'examples/kellnr/kernel/src/lib.rs', lines 135:4-142:1
+    Source: 'examples/kellnr/kernel/src/lib.rs', lines 134:4-141:1
     Visibility: public -/
 @[rust_loop_body]
 def find_crate_loop.body
@@ -294,7 +294,7 @@ def find_crate_loop.body
   else ok (done none)
 
 /-- [kellnr_kernel::find_crate]: loop 0:
-    Source: 'examples/kellnr/kernel/src/lib.rs', lines 135:4-142:1
+    Source: 'examples/kellnr/kernel/src/lib.rs', lines 134:4-141:1
     Visibility: public -/
 @[rust_loop]
 def find_crate_loop
@@ -306,7 +306,7 @@ def find_crate_loop
     i
 
 /-- [kellnr_kernel::find_crate]:
-    Source: 'examples/kellnr/kernel/src/lib.rs', lines 133:0-142:1
+    Source: 'examples/kellnr/kernel/src/lib.rs', lines 132:0-141:1
     Visibility: public -/
 @[reducible]
 def find_crate
@@ -314,7 +314,7 @@ def find_crate
   find_crate_loop crates id 0#usize
 
 /-- [kellnr_kernel::find_version]: loop body 0:
-    Source: 'examples/kellnr/kernel/src/lib.rs', lines 1:0-153:1
+    Source: 'examples/kellnr/kernel/src/lib.rs', lines 1:0-152:1
     Visibility: public -/
 @[rust_loop_body]
 def find_version_loop.body
@@ -339,7 +339,7 @@ def find_version_loop.body
   else ok (done none)
 
 /-- [kellnr_kernel::find_version]: loop 0:
-    Source: 'examples/kellnr/kernel/src/lib.rs', lines 1:0-153:1
+    Source: 'examples/kellnr/kernel/src/lib.rs', lines 1:0-152:1
     Visibility: public -/
 @[rust_loop]
 def find_version_loop
@@ -352,7 +352,7 @@ def find_version_loop
     i
 
 /-- [kellnr_kernel::find_version]:
-    Source: 'examples/kellnr/kernel/src/lib.rs', lines 144:0-153:1
+    Source: 'examples/kellnr/kernel/src/lib.rs', lines 143:0-152:1
     Visibility: public -/
 @[reducible]
 def find_version
@@ -362,7 +362,7 @@ def find_version
   find_version_loop versions krate vers 0#usize
 
 /-- [kellnr_kernel::has_pair]: loop body 0:
-    Source: 'examples/kellnr/kernel/src/lib.rs', lines 1:0-164:1
+    Source: 'examples/kellnr/kernel/src/lib.rs', lines 1:0-163:1
     Visibility: public -/
 @[rust_loop_body]
 def has_pair_loop.body
@@ -385,7 +385,7 @@ def has_pair_loop.body
   else ok (done false)
 
 /-- [kellnr_kernel::has_pair]: loop 0:
-    Source: 'examples/kellnr/kernel/src/lib.rs', lines 1:0-164:1
+    Source: 'examples/kellnr/kernel/src/lib.rs', lines 1:0-163:1
     Visibility: public -/
 @[rust_loop]
 def has_pair_loop
@@ -397,7 +397,7 @@ def has_pair_loop
     i
 
 /-- [kellnr_kernel::has_pair]:
-    Source: 'examples/kellnr/kernel/src/lib.rs', lines 155:0-164:1
+    Source: 'examples/kellnr/kernel/src/lib.rs', lines 154:0-163:1
     Visibility: public -/
 @[reducible]
 def has_pair
@@ -405,7 +405,7 @@ def has_pair
   has_pair_loop v a b 0#usize
 
 /-- [kellnr_kernel::count_a]: loop body 0:
-    Source: 'examples/kellnr/kernel/src/lib.rs', lines 169:4-174:5
+    Source: 'examples/kellnr/kernel/src/lib.rs', lines 168:4-173:5
     Visibility: public -/
 @[rust_loop_body]
 def count_a_loop.body
@@ -425,7 +425,7 @@ def count_a_loop.body
   else ok (done n)
 
 /-- [kellnr_kernel::count_a]: loop 0:
-    Source: 'examples/kellnr/kernel/src/lib.rs', lines 169:4-174:5
+    Source: 'examples/kellnr/kernel/src/lib.rs', lines 168:4-173:5
     Visibility: public -/
 @[rust_loop]
 def count_a_loop
@@ -437,14 +437,14 @@ def count_a_loop
     (n, i)
 
 /-- [kellnr_kernel::count_a]:
-    Source: 'examples/kellnr/kernel/src/lib.rs', lines 166:0-176:1
+    Source: 'examples/kellnr/kernel/src/lib.rs', lines 165:0-175:1
     Visibility: public -/
 @[reducible]
 def count_a (v : alloc.vec.Vec Pair) (a : Std.U64) : Result Std.U64 := do
   count_a_loop v a 0#u64 0#usize
 
 /-- [kellnr_kernel::is_crate_group_user]: loop body 0:
-    Source: 'examples/kellnr/kernel/src/lib.rs', lines 1:0-188:1
+    Source: 'examples/kellnr/kernel/src/lib.rs', lines 1:0-187:1
     Visibility: public -/
 @[rust_loop_body]
 def is_crate_group_user_loop.body
@@ -469,7 +469,7 @@ def is_crate_group_user_loop.body
   else ok (done false)
 
 /-- [kellnr_kernel::is_crate_group_user]: loop 0:
-    Source: 'examples/kellnr/kernel/src/lib.rs', lines 1:0-188:1
+    Source: 'examples/kellnr/kernel/src/lib.rs', lines 1:0-187:1
     Visibility: public -/
 @[rust_loop]
 def is_crate_group_user_loop
@@ -481,7 +481,7 @@ def is_crate_group_user_loop
     i
 
 /-- [kellnr_kernel::is_crate_group_user]:
-    Source: 'examples/kellnr/kernel/src/lib.rs', lines 179:0-188:1
+    Source: 'examples/kellnr/kernel/src/lib.rs', lines 178:0-187:1
     Visibility: public -/
 @[reducible]
 def is_crate_group_user
@@ -489,7 +489,7 @@ def is_crate_group_user
   is_crate_group_user_loop s krate user 0#usize
 
 /-- [kellnr_kernel::maybe_user]:
-    Source: 'examples/kellnr/kernel/src/lib.rs', lines 192:0-203:1 -/
+    Source: 'examples/kellnr/kernel/src/lib.rs', lines 191:0-202:1 -/
 def maybe_user
   (s : Snapshot) (p : Principal) (fixed : Bool) :
   Result (Option MaybeUser)
@@ -520,14 +520,14 @@ def maybe_user
         })
 
 /-- [kellnr_kernel::token_user]:
-    Source: 'examples/kellnr/kernel/src/lib.rs', lines 206:0-211:1 -/
+    Source: 'examples/kellnr/kernel/src/lib.rs', lines 205:0-210:1 -/
 def token_user (s : Snapshot) (p : Principal) : Result (Option MaybeUser) := do
   match p.login with
   | Login.Session => ok none
   | Login.Token => maybe_user s p true
 
 /-- [kellnr_kernel::check_ownership]:
-    Source: 'examples/kellnr/kernel/src/lib.rs', lines 214:0-216:1
+    Source: 'examples/kellnr/kernel/src/lib.rs', lines 213:0-215:1
     Visibility: public -/
 def check_ownership
   (s : Snapshot) (krate : Std.U64) (user : MaybeUser) : Result Bool := do
@@ -536,7 +536,7 @@ def check_ownership
   else has_pair s.owners krate user.name
 
 /-- [kellnr_kernel::check_can_modify]:
-    Source: 'examples/kellnr/kernel/src/lib.rs', lines 220:0-222:1
+    Source: 'examples/kellnr/kernel/src/lib.rs', lines 219:0-221:1
     Visibility: public -/
 def check_can_modify (user : MaybeUser) : Result Bool := do
   if user.is_admin
@@ -544,7 +544,7 @@ def check_can_modify (user : MaybeUser) : Result Bool := do
   else ok (¬ user.is_read_only)
 
 /-- [kellnr_kernel::check_download_auth]:
-    Source: 'examples/kellnr/kernel/src/lib.rs', lines 225:0-247:1 -/
+    Source: 'examples/kellnr/kernel/src/lib.rs', lines 224:0-246:1 -/
 def check_download_auth
   (s : Snapshot) (krate : Std.U64) (p : Principal) :
   Result (core.result.Result Unit Error)
@@ -578,12 +578,12 @@ def check_download_auth
   else ok (core.result.Result.Ok ())
 
 /-- [kellnr_kernel::one]:
-    Source: 'examples/kellnr/kernel/src/lib.rs', lines 249:0-253:1 -/
+    Source: 'examples/kellnr/kernel/src/lib.rs', lines 248:0-252:1 -/
 def one (w : Write) : Result (alloc.vec.Vec Write) := do
   alloc.vec.Vec.push (alloc.vec.Vec.new Write) w
 
 /-- [kellnr_kernel::guarded]:
-    Source: 'examples/kellnr/kernel/src/lib.rs', lines 257:0-270:1 -/
+    Source: 'examples/kellnr/kernel/src/lib.rs', lines 256:0-269:1 -/
 def guarded
   (s : Snapshot) (p : Principal) (fixed : Bool) (modify_check : Bool)
   (krate : Std.U64) :
@@ -610,7 +610,7 @@ def guarded
       else ok (core.result.Result.Err Error.NotOwner)
 
 /-- [kellnr_kernel::guarded_token]:
-    Source: 'examples/kellnr/kernel/src/lib.rs', lines 273:0-286:1 -/
+    Source: 'examples/kellnr/kernel/src/lib.rs', lines 272:0-285:1 -/
 def guarded_token
   (s : Snapshot) (p : Principal) (krate : Std.U64) :
   Result (core.result.Result MaybeUser Error)
@@ -629,7 +629,7 @@ def guarded_token
     else ok (core.result.Result.Err Error.ReadOnlyModify)
 
 /-- [kellnr_kernel::run]:
-    Source: 'examples/kellnr/kernel/src/lib.rs', lines 288:0-376:1 -/
+    Source: 'examples/kellnr/kernel/src/lib.rs', lines 287:0-375:1 -/
 def run
   (p : Principal) (s : Snapshot) (cmd : Command) (fixed : Bool) :
   Result (core.result.Result ((alloc.vec.Vec Write) × Reply) Error)
@@ -769,7 +769,7 @@ def run
     | core.result.Result.Err e => ok (core.result.Result.Err e)
 
 /-- [kellnr_kernel::transition]:
-    Source: 'examples/kellnr/kernel/src/lib.rs', lines 379:0-381:1
+    Source: 'examples/kellnr/kernel/src/lib.rs', lines 378:0-380:1
     Visibility: public -/
 def transition
   (p : Principal) (s : Snapshot) (cmd : Command) :
@@ -778,7 +778,7 @@ def transition
   run p s cmd true
 
 /-- [kellnr_kernel::transition_pre1243]:
-    Source: 'examples/kellnr/kernel/src/lib.rs', lines 384:0-386:1
+    Source: 'examples/kellnr/kernel/src/lib.rs', lines 383:0-385:1
     Visibility: public -/
 def transition_pre1243
   (p : Principal) (s : Snapshot) (cmd : Command) :
@@ -787,7 +787,7 @@ def transition_pre1243
   run p s cmd false
 
 /-- [kellnr_kernel::put_pair]:
-    Source: 'examples/kellnr/kernel/src/lib.rs', lines 388:0-392:1 -/
+    Source: 'examples/kellnr/kernel/src/lib.rs', lines 387:0-391:1 -/
 def put_pair
   (v : alloc.vec.Vec Pair) (x : Pair) : Result (alloc.vec.Vec Pair) := do
   let b ← has_pair v x.a x.b
@@ -796,7 +796,7 @@ def put_pair
   else alloc.vec.Vec.push v x
 
 /-- [kellnr_kernel::del_pair]: loop body 0:
-    Source: 'examples/kellnr/kernel/src/lib.rs', lines 397:4-402:5 -/
+    Source: 'examples/kellnr/kernel/src/lib.rs', lines 396:4-401:5 -/
 @[rust_loop_body]
 def del_pair_loop.body
   (v : alloc.vec.Vec Pair) (x : Pair) (out : alloc.vec.Vec Pair)
@@ -819,7 +819,7 @@ def del_pair_loop.body
   else ok (done out)
 
 /-- [kellnr_kernel::del_pair]: loop 0:
-    Source: 'examples/kellnr/kernel/src/lib.rs', lines 397:4-402:5 -/
+    Source: 'examples/kellnr/kernel/src/lib.rs', lines 396:4-401:5 -/
 @[rust_loop]
 def del_pair_loop
   (v : alloc.vec.Vec Pair) (x : Pair) (out : alloc.vec.Vec Pair)
@@ -831,14 +831,14 @@ def del_pair_loop
     (out, i)
 
 /-- [kellnr_kernel::del_pair]:
-    Source: 'examples/kellnr/kernel/src/lib.rs', lines 394:0-404:1 -/
+    Source: 'examples/kellnr/kernel/src/lib.rs', lines 393:0-403:1 -/
 @[reducible]
 def del_pair
   (v : alloc.vec.Vec Pair) (x : Pair) : Result (alloc.vec.Vec Pair) := do
   del_pair_loop v x (alloc.vec.Vec.new Pair) 0#usize
 
 /-- [kellnr_kernel::set_yanked]: loop body 0:
-    Source: 'examples/kellnr/kernel/src/lib.rs', lines 1:0-415:1 -/
+    Source: 'examples/kellnr/kernel/src/lib.rs', lines 1:0-414:1 -/
 @[rust_loop_body]
 def set_yanked_loop.body
   (v : alloc.vec.Vec Version) (x : Version) (i : Std.Usize) :
@@ -865,7 +865,7 @@ def set_yanked_loop.body
   else ok (done v)
 
 /-- [kellnr_kernel::set_yanked]: loop 0:
-    Source: 'examples/kellnr/kernel/src/lib.rs', lines 1:0-415:1 -/
+    Source: 'examples/kellnr/kernel/src/lib.rs', lines 1:0-414:1 -/
 @[rust_loop]
 def set_yanked_loop
   (v : alloc.vec.Vec Version) (x : Version) (i : Std.Usize) :
@@ -876,7 +876,7 @@ def set_yanked_loop
     i
 
 /-- [kellnr_kernel::set_yanked]:
-    Source: 'examples/kellnr/kernel/src/lib.rs', lines 406:0-415:1 -/
+    Source: 'examples/kellnr/kernel/src/lib.rs', lines 405:0-414:1 -/
 @[reducible]
 def set_yanked
   (v : alloc.vec.Vec Version) (x : Version) :
@@ -885,7 +885,7 @@ def set_yanked
   set_yanked_loop v x 0#usize
 
 /-- [kellnr_kernel::apply]: loop body 0:
-    Source: 'examples/kellnr/kernel/src/lib.rs', lines 422:4-435:5
+    Source: 'examples/kellnr/kernel/src/lib.rs', lines 421:4-434:5
     Visibility: public -/
 @[rust_loop_body]
 def apply_loop.body
@@ -949,7 +949,7 @@ def apply_loop.body
   else ok (done s)
 
 /-- [kellnr_kernel::apply]: loop 0:
-    Source: 'examples/kellnr/kernel/src/lib.rs', lines 422:4-435:5
+    Source: 'examples/kellnr/kernel/src/lib.rs', lines 421:4-434:5
     Visibility: public -/
 @[rust_loop]
 def apply_loop
@@ -961,7 +961,7 @@ def apply_loop
     (s, i)
 
 /-- [kellnr_kernel::apply]:
-    Source: 'examples/kellnr/kernel/src/lib.rs', lines 419:0-437:1
+    Source: 'examples/kellnr/kernel/src/lib.rs', lines 418:0-436:1
     Visibility: public -/
 def apply (snap : Snapshot) (ws : alloc.vec.Vec Write) : Result Snapshot := do
   let s ← Snapshot.Insts.CoreCloneClone.clone snap
