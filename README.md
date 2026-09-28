@@ -2,6 +2,8 @@
 
 `i5h` (*icefish*) is a Rust web framework that lets developers prove properties of their application logic in Lean 4.
 
+[![Crates.io](https://img.shields.io/crates/v/i5h)](https://crates.io/crates/i5h)
+
 ## High level features
 
 - Write the logic as pure Rust functions and prove it in Lean 4 via [Aeneas](https://github.com/AeneasVerif/aeneas).
