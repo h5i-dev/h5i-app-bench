@@ -76,6 +76,16 @@ def Memory.row (x : Memory) : List Val :=
 
 def Memory.table : Nat := 0
 def Memory.keyLen : Nat := 1
+def Memory.col_user : Nat := 0
+def Memory.col_value : Nat := 1
+
+@[simp] theorem Memory.row_col_user (x : Memory) :
+    (Memory.row x)[Memory.col_user]? = some (int x.user.val) := by
+  simp [Memory.row, Memory.col_user]
+
+@[simp] theorem Memory.row_col_value (x : Memory) :
+    (Memory.row x)[Memory.col_value]? = some (int x.value.val) := by
+  simp [Memory.row, Memory.col_value]
 
 @[simp] theorem Memory.row_length (x : Memory) : (Memory.row x).length = 2 := rfl
 

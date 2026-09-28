@@ -90,6 +90,36 @@ def User.row (x : User) : List Val :=
 
 def User.table : Nat := 0
 def User.keyLen : Nat := 1
+def User.col_id : Nat := 0
+def User.col_username : Nat := 1
+def User.col_email : Nat := 2
+def User.col_password : Nat := 3
+def User.col_bio : Nat := 4
+def User.col_image : Nat := 5
+
+@[simp] theorem User.row_col_id (x : User) :
+    (User.row x)[User.col_id]? = some (int x.id.val) := by
+  simp [User.row, User.col_id]
+
+@[simp] theorem User.row_col_username (x : User) :
+    (User.row x)[User.col_username]? = some (.Bytes x.username) := by
+  simp [User.row, User.col_username]
+
+@[simp] theorem User.row_col_email (x : User) :
+    (User.row x)[User.col_email]? = some (.Bytes x.email) := by
+  simp [User.row, User.col_email]
+
+@[simp] theorem User.row_col_password (x : User) :
+    (User.row x)[User.col_password]? = some (.Bytes x.password) := by
+  simp [User.row, User.col_password]
+
+@[simp] theorem User.row_col_bio (x : User) :
+    (User.row x)[User.col_bio]? = some (.Bytes x.bio) := by
+  simp [User.row, User.col_bio]
+
+@[simp] theorem User.row_col_image (x : User) :
+    (User.row x)[User.col_image]? = some (.Bytes x.image) := by
+  simp [User.row, User.col_image]
 
 @[simp] theorem User.row_length (x : User) : (User.row x).length = 6 := rfl
 
@@ -175,6 +205,16 @@ def Follow.row (x : Follow) : List Val :=
 
 def Follow.table : Nat := 1
 def Follow.keyLen : Nat := 2
+def Follow.col_follower : Nat := 0
+def Follow.col_followed : Nat := 1
+
+@[simp] theorem Follow.row_col_follower (x : Follow) :
+    (Follow.row x)[Follow.col_follower]? = some (int x.follower.val) := by
+  simp [Follow.row, Follow.col_follower]
+
+@[simp] theorem Follow.row_col_followed (x : Follow) :
+    (Follow.row x)[Follow.col_followed]? = some (int x.followed.val) := by
+  simp [Follow.row, Follow.col_followed]
 
 @[simp] theorem Follow.row_length (x : Follow) : (Follow.row x).length = 2 := rfl
 
@@ -260,6 +300,46 @@ def Article.row (x : Article) : List Val :=
 
 def Article.table : Nat := 2
 def Article.keyLen : Nat := 1
+def Article.col_id : Nat := 0
+def Article.col_author : Nat := 1
+def Article.col_slug : Nat := 2
+def Article.col_title : Nat := 3
+def Article.col_description : Nat := 4
+def Article.col_body : Nat := 5
+def Article.col_created : Nat := 6
+def Article.col_updated : Nat := 7
+
+@[simp] theorem Article.row_col_id (x : Article) :
+    (Article.row x)[Article.col_id]? = some (int x.id.val) := by
+  simp [Article.row, Article.col_id]
+
+@[simp] theorem Article.row_col_author (x : Article) :
+    (Article.row x)[Article.col_author]? = some (int x.author.val) := by
+  simp [Article.row, Article.col_author]
+
+@[simp] theorem Article.row_col_slug (x : Article) :
+    (Article.row x)[Article.col_slug]? = some (.Bytes x.slug) := by
+  simp [Article.row, Article.col_slug]
+
+@[simp] theorem Article.row_col_title (x : Article) :
+    (Article.row x)[Article.col_title]? = some (.Bytes x.title) := by
+  simp [Article.row, Article.col_title]
+
+@[simp] theorem Article.row_col_description (x : Article) :
+    (Article.row x)[Article.col_description]? = some (.Bytes x.description) := by
+  simp [Article.row, Article.col_description]
+
+@[simp] theorem Article.row_col_body (x : Article) :
+    (Article.row x)[Article.col_body]? = some (.Bytes x.body) := by
+  simp [Article.row, Article.col_body]
+
+@[simp] theorem Article.row_col_created (x : Article) :
+    (Article.row x)[Article.col_created]? = some (int x.created.val) := by
+  simp [Article.row, Article.col_created]
+
+@[simp] theorem Article.row_col_updated (x : Article) :
+    (Article.row x)[Article.col_updated]? = some (int x.updated.val) := by
+  simp [Article.row, Article.col_updated]
 
 @[simp] theorem Article.row_length (x : Article) : (Article.row x).length = 8 := rfl
 
@@ -345,6 +425,16 @@ def Tag.row (x : Tag) : List Val :=
 
 def Tag.table : Nat := 3
 def Tag.keyLen : Nat := 2
+def Tag.col_article : Nat := 0
+def Tag.col_tag : Nat := 1
+
+@[simp] theorem Tag.row_col_article (x : Tag) :
+    (Tag.row x)[Tag.col_article]? = some (int x.article.val) := by
+  simp [Tag.row, Tag.col_article]
+
+@[simp] theorem Tag.row_col_tag (x : Tag) :
+    (Tag.row x)[Tag.col_tag]? = some (.Bytes x.tag) := by
+  simp [Tag.row, Tag.col_tag]
 
 @[simp] theorem Tag.row_length (x : Tag) : (Tag.row x).length = 2 := rfl
 
@@ -430,6 +520,16 @@ def Favorite.row (x : Favorite) : List Val :=
 
 def Favorite.table : Nat := 4
 def Favorite.keyLen : Nat := 2
+def Favorite.col_article : Nat := 0
+def Favorite.col_user : Nat := 1
+
+@[simp] theorem Favorite.row_col_article (x : Favorite) :
+    (Favorite.row x)[Favorite.col_article]? = some (int x.article.val) := by
+  simp [Favorite.row, Favorite.col_article]
+
+@[simp] theorem Favorite.row_col_user (x : Favorite) :
+    (Favorite.row x)[Favorite.col_user]? = some (int x.user.val) := by
+  simp [Favorite.row, Favorite.col_user]
 
 @[simp] theorem Favorite.row_length (x : Favorite) : (Favorite.row x).length = 2 := rfl
 
@@ -515,6 +615,31 @@ def Comment.row (x : Comment) : List Val :=
 
 def Comment.table : Nat := 5
 def Comment.keyLen : Nat := 1
+def Comment.col_id : Nat := 0
+def Comment.col_article : Nat := 1
+def Comment.col_author : Nat := 2
+def Comment.col_body : Nat := 3
+def Comment.col_created : Nat := 4
+
+@[simp] theorem Comment.row_col_id (x : Comment) :
+    (Comment.row x)[Comment.col_id]? = some (int x.id.val) := by
+  simp [Comment.row, Comment.col_id]
+
+@[simp] theorem Comment.row_col_article (x : Comment) :
+    (Comment.row x)[Comment.col_article]? = some (int x.article.val) := by
+  simp [Comment.row, Comment.col_article]
+
+@[simp] theorem Comment.row_col_author (x : Comment) :
+    (Comment.row x)[Comment.col_author]? = some (int x.author.val) := by
+  simp [Comment.row, Comment.col_author]
+
+@[simp] theorem Comment.row_col_body (x : Comment) :
+    (Comment.row x)[Comment.col_body]? = some (.Bytes x.body) := by
+  simp [Comment.row, Comment.col_body]
+
+@[simp] theorem Comment.row_col_created (x : Comment) :
+    (Comment.row x)[Comment.col_created]? = some (int x.created.val) := by
+  simp [Comment.row, Comment.col_created]
 
 @[simp] theorem Comment.row_length (x : Comment) : (Comment.row x).length = 5 := rfl
 
@@ -600,6 +725,21 @@ def Counter.row (x : Counter) : List Val :=
 
 def Counter.table : Nat := 6
 def Counter.keyLen : Nat := 0
+def Counter.col_last_user : Nat := 0
+def Counter.col_last_article : Nat := 1
+def Counter.col_last_comment : Nat := 2
+
+@[simp] theorem Counter.row_col_last_user (x : Counter) :
+    (Counter.row x)[Counter.col_last_user]? = some (int x.last_user.val) := by
+  simp [Counter.row, Counter.col_last_user]
+
+@[simp] theorem Counter.row_col_last_article (x : Counter) :
+    (Counter.row x)[Counter.col_last_article]? = some (int x.last_article.val) := by
+  simp [Counter.row, Counter.col_last_article]
+
+@[simp] theorem Counter.row_col_last_comment (x : Counter) :
+    (Counter.row x)[Counter.col_last_comment]? = some (int x.last_comment.val) := by
+  simp [Counter.row, Counter.col_last_comment]
 
 @[simp] theorem Counter.row_length (x : Counter) : (Counter.row x).length = 3 := rfl
 

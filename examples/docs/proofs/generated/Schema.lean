@@ -119,6 +119,16 @@ def Project.row (x : Project) : List Val :=
 
 def Project.table : Nat := 0
 def Project.keyLen : Nat := 1
+def Project.col_id : Nat := 0
+def Project.col_name : Nat := 1
+
+@[simp] theorem Project.row_col_id (x : Project) :
+    (Project.row x)[Project.col_id]? = some (int x.id.val) := by
+  simp [Project.row, Project.col_id]
+
+@[simp] theorem Project.row_col_name (x : Project) :
+    (Project.row x)[Project.col_name]? = some (.Bytes x.name) := by
+  simp [Project.row, Project.col_name]
 
 @[simp] theorem Project.row_length (x : Project) : (Project.row x).length = 2 := rfl
 
@@ -204,6 +214,21 @@ def Member.row (x : Member) : List Val :=
 
 def Member.table : Nat := 1
 def Member.keyLen : Nat := 2
+def Member.col_project : Nat := 0
+def Member.col_user : Nat := 1
+def Member.col_role : Nat := 2
+
+@[simp] theorem Member.row_col_project (x : Member) :
+    (Member.row x)[Member.col_project]? = some (int x.project.val) := by
+  simp [Member.row, Member.col_project]
+
+@[simp] theorem Member.row_col_user (x : Member) :
+    (Member.row x)[Member.col_user]? = some (int x.user.val) := by
+  simp [Member.row, Member.col_user]
+
+@[simp] theorem Member.row_col_role (x : Member) :
+    (Member.row x)[Member.col_role]? = some (Role.col x.role) := by
+  simp [Member.row, Member.col_role]
 
 @[simp] theorem Member.row_length (x : Member) : (Member.row x).length = 3 := rfl
 
@@ -290,6 +315,46 @@ def Document.row (x : Document) : List Val :=
 
 def Document.table : Nat := 2
 def Document.keyLen : Nat := 1
+def Document.col_id : Nat := 0
+def Document.col_project : Nat := 1
+def Document.col_author : Nat := 2
+def Document.col_title : Nat := 3
+def Document.col_body : Nat := 4
+def Document.col_status : Nat := 5
+def Document.col_approver : Nat := 6
+def Document.col_version : Nat := 7
+
+@[simp] theorem Document.row_col_id (x : Document) :
+    (Document.row x)[Document.col_id]? = some (int x.id.val) := by
+  simp [Document.row, Document.col_id]
+
+@[simp] theorem Document.row_col_project (x : Document) :
+    (Document.row x)[Document.col_project]? = some (int x.project.val) := by
+  simp [Document.row, Document.col_project]
+
+@[simp] theorem Document.row_col_author (x : Document) :
+    (Document.row x)[Document.col_author]? = some (int x.author.val) := by
+  simp [Document.row, Document.col_author]
+
+@[simp] theorem Document.row_col_title (x : Document) :
+    (Document.row x)[Document.col_title]? = some (.Bytes x.title) := by
+  simp [Document.row, Document.col_title]
+
+@[simp] theorem Document.row_col_body (x : Document) :
+    (Document.row x)[Document.col_body]? = some (.Bytes x.body) := by
+  simp [Document.row, Document.col_body]
+
+@[simp] theorem Document.row_col_status (x : Document) :
+    (Document.row x)[Document.col_status]? = some (Status.col x.status) := by
+  simp [Document.row, Document.col_status]
+
+@[simp] theorem Document.row_col_approver (x : Document) :
+    (Document.row x)[Document.col_approver]? = some (optV x.approver) := by
+  simp [Document.row, Document.col_approver]
+
+@[simp] theorem Document.row_col_version (x : Document) :
+    (Document.row x)[Document.col_version]? = some (int x.version.val) := by
+  simp [Document.row, Document.col_version]
 
 @[simp] theorem Document.row_length (x : Document) : (Document.row x).length = 8 := rfl
 
@@ -376,6 +441,11 @@ def Counter.row (x : Counter) : List Val :=
 
 def Counter.table : Nat := 3
 def Counter.keyLen : Nat := 0
+def Counter.col_next_id : Nat := 0
+
+@[simp] theorem Counter.row_col_next_id (x : Counter) :
+    (Counter.row x)[Counter.col_next_id]? = some (int x.next_id.val) := by
+  simp [Counter.row, Counter.col_next_id]
 
 @[simp] theorem Counter.row_length (x : Counter) : (Counter.row x).length = 1 := rfl
 
@@ -408,6 +478,16 @@ def Webhook.row (x : Webhook) : List Val :=
 
 def Webhook.table : Nat := 4
 def Webhook.keyLen : Nat := 1
+def Webhook.col_project : Nat := 0
+def Webhook.col_dest : Nat := 1
+
+@[simp] theorem Webhook.row_col_project (x : Webhook) :
+    (Webhook.row x)[Webhook.col_project]? = some (int x.project.val) := by
+  simp [Webhook.row, Webhook.col_project]
+
+@[simp] theorem Webhook.row_col_dest (x : Webhook) :
+    (Webhook.row x)[Webhook.col_dest]? = some (int x.dest.val) := by
+  simp [Webhook.row, Webhook.col_dest]
 
 @[simp] theorem Webhook.row_length (x : Webhook) : (Webhook.row x).length = 2 := rfl
 

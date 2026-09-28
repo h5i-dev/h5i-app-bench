@@ -41,6 +41,11 @@
 //! `writes Write`, the kernel defines `apply_write(&mut Snapshot, Write)` and
 //! `sql_write(&Write, &mut Vec<i5h_sql::Write>)`, and `schema!` defines
 //! `apply` and `sql_writes`, which run them over a write set in order.
+//! The mapping name is also a module containing the encoded column index for
+//! every field, for example `board_tables::Post::author`. Filtered PostgreSQL
+//! loads use these constants; the generated Lean schema emits the matching
+//! `Post.col_author` definition and a theorem identifying that position in
+//! `Post.row`.
 //!
 //! `lean "path"` keeps that Lean file current: the row encodings and a lemma
 //! for every generated function, which the app's `Apply.lean` and
@@ -113,11 +118,35 @@ macro_rules! __schema {
                 $($(#[$cattr])* pub $c: $ct,)*
             }
         )*
+        /// Column indices in the exact order used by `to_row`, the generated
+        /// Lean schema, and PostgreSQL table mappings.  Keeping these in the
+        /// schema declaration avoids a separate string-to-index mapping in a
+        /// server's filtered loads.
+        #[allow(non_snake_case, non_upper_case_globals)]
+        pub mod $mapping {
+            $(
+                pub mod $name {
+                    $crate::__column_indices! { [] $($k)* $($c)* }
+                }
+            )*
+        }
         $crate::__rows! { [] $( $name [$($k)*] [$($c)*] )* }
         $( $crate::__keyed! { $name [$($k : $kt),*] [$($c)*] } )*
         $crate::__snap_items! { [$($w)?] $snap }
         $crate::__lean! { [$($lean)?] $krate [$($w)?] $snap; $( $name $table [$($k : $kt),*] [$($c : $ct),*] )* }
         $crate::__mapping! { ($) $mapping $krate [$($w)?] $snap; $( $name $table [$($k)*] [$($c)*] )* }
+    };
+}
+
+/// Emit one numeric constant per column. The accumulator makes the value a
+/// literal, which keeps it usable by kernels in the Aeneas subset.
+#[doc(hidden)]
+#[macro_export]
+macro_rules! __column_indices {
+    ([$($i:tt)*]) => {};
+    ([$($i:tt)*] $field:ident $($rest:ident)*) => {
+        pub const $field: u32 = $crate::__count!($($i)*);
+        $crate::__column_indices! { [$($i)* $field] $($rest)* }
     };
 }
 

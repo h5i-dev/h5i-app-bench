@@ -99,6 +99,21 @@ def User.row (x : User) : List Val :=
 
 def User.table : Nat := 0
 def User.keyLen : Nat := 1
+def User.col_id : Nat := 0
+def User.col_username : Nat := 1
+def User.col_password : Nat := 2
+
+@[simp] theorem User.row_col_id (x : User) :
+    (User.row x)[User.col_id]? = some (int x.id.val) := by
+  simp [User.row, User.col_id]
+
+@[simp] theorem User.row_col_username (x : User) :
+    (User.row x)[User.col_username]? = some (.Bytes x.username) := by
+  simp [User.row, User.col_username]
+
+@[simp] theorem User.row_col_password (x : User) :
+    (User.row x)[User.col_password]? = some (.Bytes x.password) := by
+  simp [User.row, User.col_password]
 
 @[simp] theorem User.row_length (x : User) : (User.row x).length = 3 := rfl
 
@@ -184,6 +199,16 @@ def Session.row (x : Session) : List Val :=
 
 def Session.table : Nat := 1
 def Session.keyLen : Nat := 1
+def Session.col_user : Nat := 0
+def Session.col_token : Nat := 1
+
+@[simp] theorem Session.row_col_user (x : Session) :
+    (Session.row x)[Session.col_user]? = some (int x.user.val) := by
+  simp [Session.row, Session.col_user]
+
+@[simp] theorem Session.row_col_token (x : Session) :
+    (Session.row x)[Session.col_token]? = some (.Bytes x.token) := by
+  simp [Session.row, Session.col_token]
 
 @[simp] theorem Session.row_length (x : Session) : (Session.row x).length = 2 := rfl
 
@@ -269,6 +294,31 @@ def Record.row (x : Record) : List Val :=
 
 def Record.table : Nat := 2
 def Record.keyLen : Nat := 4
+def Record.col_user : Nat := 0
+def Record.col_host : Nat := 1
+def Record.col_tag : Nat := 2
+def Record.col_idx : Nat := 3
+def Record.col_data : Nat := 4
+
+@[simp] theorem Record.row_col_user (x : Record) :
+    (Record.row x)[Record.col_user]? = some (int x.user.val) := by
+  simp [Record.row, Record.col_user]
+
+@[simp] theorem Record.row_col_host (x : Record) :
+    (Record.row x)[Record.col_host]? = some (int x.host.val) := by
+  simp [Record.row, Record.col_host]
+
+@[simp] theorem Record.row_col_tag (x : Record) :
+    (Record.row x)[Record.col_tag]? = some (int x.tag.val) := by
+  simp [Record.row, Record.col_tag]
+
+@[simp] theorem Record.row_col_idx (x : Record) :
+    (Record.row x)[Record.col_idx]? = some (int x.idx.val) := by
+  simp [Record.row, Record.col_idx]
+
+@[simp] theorem Record.row_col_data (x : Record) :
+    (Record.row x)[Record.col_data]? = some (.Bytes x.data) := by
+  simp [Record.row, Record.col_data]
 
 @[simp] theorem Record.row_length (x : Record) : (Record.row x).length = 5 := rfl
 
@@ -354,6 +404,16 @@ def Settings.row (x : Settings) : List Val :=
 
 def Settings.table : Nat := 3
 def Settings.keyLen : Nat := 0
+def Settings.col_open_registration : Nat := 0
+def Settings.col_max_record_size : Nat := 1
+
+@[simp] theorem Settings.row_col_open_registration (x : Settings) :
+    (Settings.row x)[Settings.col_open_registration]? = some (.Bool x.open_registration) := by
+  simp [Settings.row, Settings.col_open_registration]
+
+@[simp] theorem Settings.row_col_max_record_size (x : Settings) :
+    (Settings.row x)[Settings.col_max_record_size]? = some (int x.max_record_size.val) := by
+  simp [Settings.row, Settings.col_max_record_size]
 
 @[simp] theorem Settings.row_length (x : Settings) : (Settings.row x).length = 2 := rfl
 
@@ -386,6 +446,11 @@ def Counter.row (x : Counter) : List Val :=
 
 def Counter.table : Nat := 4
 def Counter.keyLen : Nat := 0
+def Counter.col_next_id : Nat := 0
+
+@[simp] theorem Counter.row_col_next_id (x : Counter) :
+    (Counter.row x)[Counter.col_next_id]? = some (int x.next_id.val) := by
+  simp [Counter.row, Counter.col_next_id]
 
 @[simp] theorem Counter.row_length (x : Counter) : (Counter.row x).length = 1 := rfl
 

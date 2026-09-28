@@ -118,6 +118,41 @@ def Paste.row (x : Paste) : List Val :=
 
 def Paste.table : Nat := 0
 def Paste.keyLen : Nat := 1
+def Paste.col_id : Nat := 0
+def Paste.col_slug : Nat := 1
+def Paste.col_owner : Nat := 2
+def Paste.col_text : Nat := 3
+def Paste.col_expires : Nat := 4
+def Paste.col_burn : Nat := 5
+def Paste.col_lock : Nat := 6
+
+@[simp] theorem Paste.row_col_id (x : Paste) :
+    (Paste.row x)[Paste.col_id]? = some (int x.id.val) := by
+  simp [Paste.row, Paste.col_id]
+
+@[simp] theorem Paste.row_col_slug (x : Paste) :
+    (Paste.row x)[Paste.col_slug]? = some (int x.slug.val) := by
+  simp [Paste.row, Paste.col_slug]
+
+@[simp] theorem Paste.row_col_owner (x : Paste) :
+    (Paste.row x)[Paste.col_owner]? = some (int x.owner.val) := by
+  simp [Paste.row, Paste.col_owner]
+
+@[simp] theorem Paste.row_col_text (x : Paste) :
+    (Paste.row x)[Paste.col_text]? = some (.Bytes x.text) := by
+  simp [Paste.row, Paste.col_text]
+
+@[simp] theorem Paste.row_col_expires (x : Paste) :
+    (Paste.row x)[Paste.col_expires]? = some (optV x.expires) := by
+  simp [Paste.row, Paste.col_expires]
+
+@[simp] theorem Paste.row_col_burn (x : Paste) :
+    (Paste.row x)[Paste.col_burn]? = some (.Bool x.burn) := by
+  simp [Paste.row, Paste.col_burn]
+
+@[simp] theorem Paste.row_col_lock (x : Paste) :
+    (Paste.row x)[Paste.col_lock]? = some (optV x.lock) := by
+  simp [Paste.row, Paste.col_lock]
 
 @[simp] theorem Paste.row_length (x : Paste) : (Paste.row x).length = 7 := rfl
 
@@ -203,6 +238,16 @@ def Counter.row (x : Counter) : List Val :=
 
 def Counter.table : Nat := 1
 def Counter.keyLen : Nat := 0
+def Counter.col_next_id : Nat := 0
+def Counter.col_last_uid : Nat := 1
+
+@[simp] theorem Counter.row_col_next_id (x : Counter) :
+    (Counter.row x)[Counter.col_next_id]? = some (int x.next_id.val) := by
+  simp [Counter.row, Counter.col_next_id]
+
+@[simp] theorem Counter.row_col_last_uid (x : Counter) :
+    (Counter.row x)[Counter.col_last_uid]? = some (int x.last_uid.val) := by
+  simp [Counter.row, Counter.col_last_uid]
 
 @[simp] theorem Counter.row_length (x : Counter) : (Counter.row x).length = 2 := rfl
 

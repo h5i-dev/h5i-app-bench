@@ -317,7 +317,18 @@ pub fn render(krate: &str, rows: &[RowDecl], snap: Option<&SnapDecl>, writes: Op
 
         let _ = writeln!(s, "\n/-! ## `{name}` (table `{table}`) -/\n");
         let _ = writeln!(s, "/-- Columns {}. -/\ndef {name}.row (x : {name}) : List Val :=\n  [{}]\n", names_f.join(", "), cols.join(", "));
-        let _ = writeln!(s, "def {name}.table : Nat := {i}\ndef {name}.keyLen : Nat := {key_len}\n");
+        let _ = writeln!(s, "def {name}.table : Nat := {i}\ndef {name}.keyLen : Nat := {key_len}");
+        for (j, (field, _)) in fields.iter().enumerate() {
+            let _ = writeln!(s, "def {name}.col_{field} : Nat := {j}");
+        }
+        s.push('\n');
+        for (field, ty) in fields {
+            let value = expr(&col(ty), &format!("x.{field}"));
+            let _ = writeln!(
+                s,
+                "@[simp] theorem {name}.row_col_{field} (x : {name}) :\n    ({name}.row x)[{name}.col_{field}]? = some ({value}) := by\n  simp [{name}.row, {name}.col_{field}]\n"
+            );
+        }
         let _ = writeln!(s, "@[simp] theorem {name}.row_length (x : {name}) : ({name}.row x).length = {nf} := rfl\n");
         let _ = writeln!(
             s,

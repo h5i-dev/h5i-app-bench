@@ -107,6 +107,31 @@ def User.row (x : User) : List Val :=
 
 def User.table : Nat := 0
 def User.keyLen : Nat := 1
+def User.col_id : Nat := 0
+def User.col_admin : Nat := 1
+def User.col_locked : Nat := 2
+def User.col_lock_until : Nat := 3
+def User.col_verified : Nat := 4
+
+@[simp] theorem User.row_col_id (x : User) :
+    (User.row x)[User.col_id]? = some (int x.id.val) := by
+  simp [User.row, User.col_id]
+
+@[simp] theorem User.row_col_admin (x : User) :
+    (User.row x)[User.col_admin]? = some (.Bool x.admin) := by
+  simp [User.row, User.col_admin]
+
+@[simp] theorem User.row_col_locked (x : User) :
+    (User.row x)[User.col_locked]? = some (.Bool x.locked) := by
+  simp [User.row, User.col_locked]
+
+@[simp] theorem User.row_col_lock_until (x : User) :
+    (User.row x)[User.col_lock_until]? = some (int x.lock_until.val) := by
+  simp [User.row, User.col_lock_until]
+
+@[simp] theorem User.row_col_verified (x : User) :
+    (User.row x)[User.col_verified]? = some (.Bool x.verified) := by
+  simp [User.row, User.col_verified]
 
 @[simp] theorem User.row_length (x : User) : (User.row x).length = 5 := rfl
 
@@ -192,6 +217,16 @@ def Session.row (x : Session) : List Val :=
 
 def Session.table : Nat := 1
 def Session.keyLen : Nat := 1
+def Session.col_id : Nat := 0
+def Session.col_user : Nat := 1
+
+@[simp] theorem Session.row_col_id (x : Session) :
+    (Session.row x)[Session.col_id]? = some (int x.id.val) := by
+  simp [Session.row, Session.col_id]
+
+@[simp] theorem Session.row_col_user (x : Session) :
+    (Session.row x)[Session.col_user]? = some (int x.user.val) := by
+  simp [Session.row, Session.col_user]
 
 @[simp] theorem Session.row_length (x : Session) : (Session.row x).length = 2 := rfl
 
@@ -277,6 +312,56 @@ def Token.row (x : Token) : List Val :=
 
 def Token.table : Nat := 2
 def Token.keyLen : Nat := 1
+def Token.col_id : Nat := 0
+def Token.col_user : Nat := 1
+def Token.col_legacy : Nat := 2
+def Token.col_publish_new : Nat := 3
+def Token.col_publish_update : Nat := 4
+def Token.col_yank : Nat := 5
+def Token.col_change_owners : Nat := 6
+def Token.col_krate : Nat := 7
+def Token.col_expires : Nat := 8
+def Token.col_revoked : Nat := 9
+
+@[simp] theorem Token.row_col_id (x : Token) :
+    (Token.row x)[Token.col_id]? = some (int x.id.val) := by
+  simp [Token.row, Token.col_id]
+
+@[simp] theorem Token.row_col_user (x : Token) :
+    (Token.row x)[Token.col_user]? = some (int x.user.val) := by
+  simp [Token.row, Token.col_user]
+
+@[simp] theorem Token.row_col_legacy (x : Token) :
+    (Token.row x)[Token.col_legacy]? = some (.Bool x.legacy) := by
+  simp [Token.row, Token.col_legacy]
+
+@[simp] theorem Token.row_col_publish_new (x : Token) :
+    (Token.row x)[Token.col_publish_new]? = some (.Bool x.publish_new) := by
+  simp [Token.row, Token.col_publish_new]
+
+@[simp] theorem Token.row_col_publish_update (x : Token) :
+    (Token.row x)[Token.col_publish_update]? = some (.Bool x.publish_update) := by
+  simp [Token.row, Token.col_publish_update]
+
+@[simp] theorem Token.row_col_yank (x : Token) :
+    (Token.row x)[Token.col_yank]? = some (.Bool x.yank) := by
+  simp [Token.row, Token.col_yank]
+
+@[simp] theorem Token.row_col_change_owners (x : Token) :
+    (Token.row x)[Token.col_change_owners]? = some (.Bool x.change_owners) := by
+  simp [Token.row, Token.col_change_owners]
+
+@[simp] theorem Token.row_col_krate (x : Token) :
+    (Token.row x)[Token.col_krate]? = some (optV x.krate) := by
+  simp [Token.row, Token.col_krate]
+
+@[simp] theorem Token.row_col_expires (x : Token) :
+    (Token.row x)[Token.col_expires]? = some (int x.expires.val) := by
+  simp [Token.row, Token.col_expires]
+
+@[simp] theorem Token.row_col_revoked (x : Token) :
+    (Token.row x)[Token.col_revoked]? = some (.Bool x.revoked) := by
+  simp [Token.row, Token.col_revoked]
 
 @[simp] theorem Token.row_length (x : Token) : (Token.row x).length = 10 := rfl
 
@@ -362,6 +447,16 @@ def Krate.row (x : Krate) : List Val :=
 
 def Krate.table : Nat := 3
 def Krate.keyLen : Nat := 1
+def Krate.col_id : Nat := 0
+def Krate.col_created : Nat := 1
+
+@[simp] theorem Krate.row_col_id (x : Krate) :
+    (Krate.row x)[Krate.col_id]? = some (int x.id.val) := by
+  simp [Krate.row, Krate.col_id]
+
+@[simp] theorem Krate.row_col_created (x : Krate) :
+    (Krate.row x)[Krate.col_created]? = some (int x.created.val) := by
+  simp [Krate.row, Krate.col_created]
 
 @[simp] theorem Krate.row_length (x : Krate) : (Krate.row x).length = 2 := rfl
 
@@ -447,6 +542,26 @@ def Version.row (x : Version) : List Val :=
 
 def Version.table : Nat := 4
 def Version.keyLen : Nat := 2
+def Version.col_krate : Nat := 0
+def Version.col_num : Nat := 1
+def Version.col_yanked : Nat := 2
+def Version.col_publisher : Nat := 3
+
+@[simp] theorem Version.row_col_krate (x : Version) :
+    (Version.row x)[Version.col_krate]? = some (int x.krate.val) := by
+  simp [Version.row, Version.col_krate]
+
+@[simp] theorem Version.row_col_num (x : Version) :
+    (Version.row x)[Version.col_num]? = some (int x.num.val) := by
+  simp [Version.row, Version.col_num]
+
+@[simp] theorem Version.row_col_yanked (x : Version) :
+    (Version.row x)[Version.col_yanked]? = some (.Bool x.yanked) := by
+  simp [Version.row, Version.col_yanked]
+
+@[simp] theorem Version.row_col_publisher (x : Version) :
+    (Version.row x)[Version.col_publisher]? = some (int x.publisher.val) := by
+  simp [Version.row, Version.col_publisher]
 
 @[simp] theorem Version.row_length (x : Version) : (Version.row x).length = 4 := rfl
 
@@ -532,6 +647,21 @@ def Owner.row (x : Owner) : List Val :=
 
 def Owner.table : Nat := 5
 def Owner.keyLen : Nat := 3
+def Owner.col_krate : Nat := 0
+def Owner.col_owner : Nat := 1
+def Owner.col_team : Nat := 2
+
+@[simp] theorem Owner.row_col_krate (x : Owner) :
+    (Owner.row x)[Owner.col_krate]? = some (int x.krate.val) := by
+  simp [Owner.row, Owner.col_krate]
+
+@[simp] theorem Owner.row_col_owner (x : Owner) :
+    (Owner.row x)[Owner.col_owner]? = some (int x.owner.val) := by
+  simp [Owner.row, Owner.col_owner]
+
+@[simp] theorem Owner.row_col_team (x : Owner) :
+    (Owner.row x)[Owner.col_team]? = some (.Bool x.team) := by
+  simp [Owner.row, Owner.col_team]
 
 @[simp] theorem Owner.row_length (x : Owner) : (Owner.row x).length = 3 := rfl
 
@@ -617,6 +747,26 @@ def Invite.row (x : Invite) : List Val :=
 
 def Invite.table : Nat := 6
 def Invite.keyLen : Nat := 2
+def Invite.col_krate : Nat := 0
+def Invite.col_user : Nat := 1
+def Invite.col_inviter : Nat := 2
+def Invite.col_expires : Nat := 3
+
+@[simp] theorem Invite.row_col_krate (x : Invite) :
+    (Invite.row x)[Invite.col_krate]? = some (int x.krate.val) := by
+  simp [Invite.row, Invite.col_krate]
+
+@[simp] theorem Invite.row_col_user (x : Invite) :
+    (Invite.row x)[Invite.col_user]? = some (int x.user.val) := by
+  simp [Invite.row, Invite.col_user]
+
+@[simp] theorem Invite.row_col_inviter (x : Invite) :
+    (Invite.row x)[Invite.col_inviter]? = some (int x.inviter.val) := by
+  simp [Invite.row, Invite.col_inviter]
+
+@[simp] theorem Invite.row_col_expires (x : Invite) :
+    (Invite.row x)[Invite.col_expires]? = some (int x.expires.val) := by
+  simp [Invite.row, Invite.col_expires]
 
 @[simp] theorem Invite.row_length (x : Invite) : (Invite.row x).length = 4 := rfl
 
@@ -702,6 +852,21 @@ def Dep.row (x : Dep) : List Val :=
 
 def Dep.table : Nat := 7
 def Dep.keyLen : Nat := 3
+def Dep.col_krate : Nat := 0
+def Dep.col_num : Nat := 1
+def Dep.col_on : Nat := 2
+
+@[simp] theorem Dep.row_col_krate (x : Dep) :
+    (Dep.row x)[Dep.col_krate]? = some (int x.krate.val) := by
+  simp [Dep.row, Dep.col_krate]
+
+@[simp] theorem Dep.row_col_num (x : Dep) :
+    (Dep.row x)[Dep.col_num]? = some (int x.num.val) := by
+  simp [Dep.row, Dep.col_num]
+
+@[simp] theorem Dep.row_col_on (x : Dep) :
+    (Dep.row x)[Dep.col_on]? = some (int x.on.val) := by
+  simp [Dep.row, Dep.col_on]
 
 @[simp] theorem Dep.row_length (x : Dep) : (Dep.row x).length = 3 := rfl
 
@@ -787,6 +952,16 @@ def Counter.row (x : Counter) : List Val :=
 
 def Counter.table : Nat := 8
 def Counter.keyLen : Nat := 0
+def Counter.col_next_session : Nat := 0
+def Counter.col_next_token : Nat := 1
+
+@[simp] theorem Counter.row_col_next_session (x : Counter) :
+    (Counter.row x)[Counter.col_next_session]? = some (int x.next_session.val) := by
+  simp [Counter.row, Counter.col_next_session]
+
+@[simp] theorem Counter.row_col_next_token (x : Counter) :
+    (Counter.row x)[Counter.col_next_token]? = some (int x.next_token.val) := by
+  simp [Counter.row, Counter.col_next_token]
 
 @[simp] theorem Counter.row_length (x : Counter) : (Counter.row x).length = 2 := rfl
 

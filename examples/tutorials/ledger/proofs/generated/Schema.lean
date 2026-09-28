@@ -79,6 +79,21 @@ def Account.row (x : Account) : List Val :=
 
 def Account.table : Nat := 0
 def Account.keyLen : Nat := 1
+def Account.col_id : Nat := 0
+def Account.col_owner : Nat := 1
+def Account.col_balance : Nat := 2
+
+@[simp] theorem Account.row_col_id (x : Account) :
+    (Account.row x)[Account.col_id]? = some (int x.id.val) := by
+  simp [Account.row, Account.col_id]
+
+@[simp] theorem Account.row_col_owner (x : Account) :
+    (Account.row x)[Account.col_owner]? = some (int x.owner.val) := by
+  simp [Account.row, Account.col_owner]
+
+@[simp] theorem Account.row_col_balance (x : Account) :
+    (Account.row x)[Account.col_balance]? = some (int x.balance.val) := by
+  simp [Account.row, Account.col_balance]
 
 @[simp] theorem Account.row_length (x : Account) : (Account.row x).length = 3 := rfl
 
@@ -164,6 +179,21 @@ def Ledger.row (x : Ledger) : List Val :=
 
 def Ledger.table : Nat := 1
 def Ledger.keyLen : Nat := 0
+def Ledger.col_next_id : Nat := 0
+def Ledger.col_deposited : Nat := 1
+def Ledger.col_withdrawn : Nat := 2
+
+@[simp] theorem Ledger.row_col_next_id (x : Ledger) :
+    (Ledger.row x)[Ledger.col_next_id]? = some (int x.next_id.val) := by
+  simp [Ledger.row, Ledger.col_next_id]
+
+@[simp] theorem Ledger.row_col_deposited (x : Ledger) :
+    (Ledger.row x)[Ledger.col_deposited]? = some (int x.deposited.val) := by
+  simp [Ledger.row, Ledger.col_deposited]
+
+@[simp] theorem Ledger.row_col_withdrawn (x : Ledger) :
+    (Ledger.row x)[Ledger.col_withdrawn]? = some (int x.withdrawn.val) := by
+  simp [Ledger.row, Ledger.col_withdrawn]
 
 @[simp] theorem Ledger.row_length (x : Ledger) : (Ledger.row x).length = 3 := rfl
 

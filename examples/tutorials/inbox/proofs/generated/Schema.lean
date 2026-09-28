@@ -93,6 +93,41 @@ def Message.row (x : Message) : List Val :=
 
 def Message.table : Nat := 0
 def Message.keyLen : Nat := 3
+def Message.col_sender : Nat := 0
+def Message.col_recipient : Nat := 1
+def Message.col_seq : Nat := 2
+def Message.col_text : Nat := 3
+def Message.col_read : Nat := 4
+def Message.col_sender_deleted : Nat := 5
+def Message.col_recipient_deleted : Nat := 6
+
+@[simp] theorem Message.row_col_sender (x : Message) :
+    (Message.row x)[Message.col_sender]? = some (int x.sender.val) := by
+  simp [Message.row, Message.col_sender]
+
+@[simp] theorem Message.row_col_recipient (x : Message) :
+    (Message.row x)[Message.col_recipient]? = some (int x.recipient.val) := by
+  simp [Message.row, Message.col_recipient]
+
+@[simp] theorem Message.row_col_seq (x : Message) :
+    (Message.row x)[Message.col_seq]? = some (int x.seq.val) := by
+  simp [Message.row, Message.col_seq]
+
+@[simp] theorem Message.row_col_text (x : Message) :
+    (Message.row x)[Message.col_text]? = some (.Bytes x.text) := by
+  simp [Message.row, Message.col_text]
+
+@[simp] theorem Message.row_col_read (x : Message) :
+    (Message.row x)[Message.col_read]? = some (.Bool x.read) := by
+  simp [Message.row, Message.col_read]
+
+@[simp] theorem Message.row_col_sender_deleted (x : Message) :
+    (Message.row x)[Message.col_sender_deleted]? = some (.Bool x.sender_deleted) := by
+  simp [Message.row, Message.col_sender_deleted]
+
+@[simp] theorem Message.row_col_recipient_deleted (x : Message) :
+    (Message.row x)[Message.col_recipient_deleted]? = some (.Bool x.recipient_deleted) := by
+  simp [Message.row, Message.col_recipient_deleted]
 
 @[simp] theorem Message.row_length (x : Message) : (Message.row x).length = 7 := rfl
 
@@ -178,6 +213,16 @@ def Block.row (x : Block) : List Val :=
 
 def Block.table : Nat := 1
 def Block.keyLen : Nat := 2
+def Block.col_owner : Nat := 0
+def Block.col_sender : Nat := 1
+
+@[simp] theorem Block.row_col_owner (x : Block) :
+    (Block.row x)[Block.col_owner]? = some (int x.owner.val) := by
+  simp [Block.row, Block.col_owner]
+
+@[simp] theorem Block.row_col_sender (x : Block) :
+    (Block.row x)[Block.col_sender]? = some (int x.sender.val) := by
+  simp [Block.row, Block.col_sender]
 
 @[simp] theorem Block.row_length (x : Block) : (Block.row x).length = 2 := rfl
 

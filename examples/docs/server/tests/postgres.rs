@@ -2,9 +2,9 @@ mod common;
 
 use common::*;
 use docs_kernel as k;
-use docs_server::{principal, DocsApp};
+use docs_server::{principal, DocsApp, DocsStore};
 use i5h::{MemoryEngine, TenantId};
-use i5h_pg::{DbError, EngineConfig};
+use i5h_pg::{load_rows_where, pool, sql::Val, DbError, Engine, EngineConfig, Store, Tx};
 use std::sync::Arc;
 
 macro_rules! engine_or_skip {
@@ -171,4 +171,75 @@ async fn scoped_load_is_the_proven_slice() {
             assert_eq!(got, want, "seed {seed} step {step}: {probe:?}");
         }
     }
+}
+
+/// Test-only store for the exact nullable predicate modeled by `ColIs`.
+/// Everything except the filtered load delegates to the production store.
+struct NullApproverStore;
+
+impl Store<DocsApp> for NullApproverStore {
+    fn ddl() -> Vec<String> {
+        <DocsStore as Store<DocsApp>>::ddl()
+    }
+
+    fn tables() -> Vec<&'static str> {
+        <DocsStore as Store<DocsApp>>::tables()
+    }
+
+    async fn load(tx: &Tx<'_>, tenant: TenantId) -> Result<k::Snapshot, DbError> {
+        <DocsStore as Store<DocsApp>>::load(tx, tenant).await
+    }
+
+    async fn load_for(tx: &Tx<'_>, tenant: TenantId, _: &k::Command) -> Result<k::Snapshot, DbError> {
+        let documents = load_rows_where::<DocsApp, k::Document>(
+            tx,
+            tenant,
+            k::docs_tables::Document::approver,
+            &Val::Null,
+        )
+        .await?;
+        k::decode(&k::Rows { documents, ..Default::default() })
+            .ok_or_else(|| DbError::Decode("nullable filtered rows do not decode".into()))
+    }
+
+    async fn write(tx: &Tx<'_>, tenant: TenantId, ws: &Vec<k::Write>) -> Result<(), DbError> {
+        <DocsStore as Store<DocsApp>>::write(tx, tenant, ws).await
+    }
+}
+
+/// PostgreSQL `NULL` filtering must implement the abstract equality used by
+/// `ColIs`: a null value matches another null value.
+#[tokio::test]
+async fn nullable_filter_matches_abstract_column_equality() {
+    let pg = engine_or_skip!(EngineConfig::default());
+    let url = std::env::var("I5H_TEST_DATABASE_URL").unwrap();
+    let tenant = fresh_tenant();
+    let actor = principal(tenant, 1);
+    let k::Reply::Created(project) = pg
+        .execute(&actor, &k::Command::CreateProject { name: vec![] })
+        .await
+        .unwrap()
+        .unwrap()
+    else {
+        panic!()
+    };
+    let k::Reply::Created(doc) = pg
+        .execute(
+            &actor,
+            &k::Command::CreateDocument { project, title: vec![], body: vec![] },
+        )
+        .await
+        .unwrap()
+        .unwrap()
+    else {
+        panic!()
+    };
+
+    let filtered = Engine::<DocsApp, NullApproverStore>::new(pool(&url, 2).unwrap(), EngineConfig::default())
+        .snapshot_for(TenantId(tenant), &k::Command::GetDocument { doc })
+        .await
+        .unwrap();
+    assert_eq!(filtered.documents.len(), 1);
+    assert_eq!(filtered.documents[0].id, doc);
+    assert_eq!(filtered.documents[0].approver, None);
 }

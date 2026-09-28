@@ -4,7 +4,7 @@ import Frame
 # Scoped loads (A4 with partial snapshots)
 
 `DocsStore::load_for` loads the counter plus one project's rows with
-`WHERE column = value` queries, picks the project with the kernel's
+`WHERE column IS NOT DISTINCT FROM value` queries, picks the project with the kernel's
 `scoped_project`, and decodes with `decode`. We prove the result is
 `Frame.slice snap sc` for a full snapshot `snap` that the tenant's rows hold
 and that satisfies `Inv`. With `transition_frame` and `store_sound`, running
@@ -73,15 +73,15 @@ theorem restore {α : Type} (l l' : List α) (F : α → Bool) (h : l'.Perm (l.f
 that filter applied to a full snapshot the rows hold. -/
 theorem decode_filtered (db : Db Val) (s : St) (c : Bool) (hi : Inv s) (hdb : db = readBack kl (encC c s))
     (hc : c = false → s.next = 0) (hb : s.next < 2 ^ 64) (hf : Fits s) (r : Rows)
-    (h3 : Sel db 3 (fun _ => True) (r.counter.val.map (·.val)))
+    (h3 : Sel db Counter.table (fun _ => True) (r.counter.val.map (·.val)))
     (Fp : Project → Bool) (Qp : List Val → Prop) (hQp : ∀ x, Qp (Project.row x) ↔ Fp x = true)
-    (h0 : Sel db 0 Qp (r.projects.val.map (·.val)))
+    (h0 : Sel db Project.table Qp (r.projects.val.map (·.val)))
     (Fm : Member → Bool) (Qm : List Val → Prop) (hQm : ∀ x, Qm (Member.row x) ↔ Fm x = true)
-    (h1 : Sel db 1 Qm (r.members.val.map (·.val)))
+    (h1 : Sel db Member.table Qm (r.members.val.map (·.val)))
     (Fd : Document → Bool) (Qd : List Val → Prop) (hQd : ∀ x, Qd (Document.row x) ↔ Fd x = true)
-    (h2 : Sel db 2 Qd (r.documents.val.map (·.val)))
+    (h2 : Sel db Document.table Qd (r.documents.val.map (·.val)))
     (Fw : Webhook → Bool) (Qw : List Val → Prop) (hQw : ∀ x, Qw (Webhook.row x) ↔ Fw x = true)
-    (h4 : Sel db 4 Qw (r.webhooks.val.map (·.val))) :
+    (h4 : Sel db Webhook.table Qw (r.webhooks.val.map (·.val))) :
     decode r ⦃ o => ∃ snap : Snapshot, Equiv s (Snapshot.toSt snap) ∧
       o = some (⟨snap.counter, filterV Fp snap.projects, filterV Fm snap.members,
         filterV Fd snap.documents, filterV Fw snap.webhooks⟩ : Snapshot) ⦄ := by
@@ -117,39 +117,44 @@ theorem decode_filtered (db : Db Val) (s : St) (c : Bool) (hi : Inv s) (hdb : db
   refine ⟨rfl, alloc.vec.Vec.ext _ _ ?_, alloc.vec.Vec.ext _ _ ?_, alloc.vec.Vec.ext _ _ ?_,
     alloc.vec.Vec.ext _ _ ?_⟩ <;> simp [snap, alloc.vec.Vec.from_val, *]
 
-theorem col_proj (p : U64) (x : Project) : ColIs 0 (int p.val) (Project.row x) ↔ decide (x.id.val = p.val) = true := by
-  simp [ColIs, Project.row, int_u64]
-theorem col_member (p : U64) (x : Member) : ColIs 0 (int p.val) (Member.row x) ↔ decide (x.project.val = p.val) = true := by
-  simp [ColIs, Member.row, int_u64]
-theorem col_doc (p : U64) (x : Document) : ColIs 1 (int p.val) (Document.row x) ↔ decide (x.project.val = p.val) = true := by
-  simp [ColIs, Document.row, int_u64]
-theorem col_hook (p : U64) (x : Webhook) : ColIs 0 (int p.val) (Webhook.row x) ↔ decide (x.project.val = p.val) = true := by
-  simp [ColIs, Webhook.row, int_u64]
-theorem col_doc_id (d : U64) (x : Document) : ColIs 0 (int d.val) (Document.row x) ↔ decide (x.id.val = d.val) = true := by
-  simp [ColIs, Document.row, int_u64]
+theorem col_proj (p : U64) (x : Project) :
+    ColIs Project.col_id (int p.val) (Project.row x) ↔ decide (x.id.val = p.val) = true := by
+  simp [ColIs, int_u64]
+theorem col_member (p : U64) (x : Member) :
+    ColIs Member.col_project (int p.val) (Member.row x) ↔ decide (x.project.val = p.val) = true := by
+  simp [ColIs, int_u64]
+theorem col_doc (p : U64) (x : Document) :
+    ColIs Document.col_project (int p.val) (Document.row x) ↔ decide (x.project.val = p.val) = true := by
+  simp [ColIs, int_u64]
+theorem col_hook (p : U64) (x : Webhook) :
+    ColIs Webhook.col_project (int p.val) (Webhook.row x) ↔ decide (x.project.val = p.val) = true := by
+  simp [ColIs, int_u64]
+theorem col_doc_id (d : U64) (x : Document) :
+    ColIs Document.col_id (int d.val) (Document.row x) ↔ decide (x.id.val = d.val) = true := by
+  simp [ColIs, int_u64]
 
 theorem sel_empty (db : Db Val) (t : Nat) : Sel db t (fun _ => False) [] := by simp [Sel]
 
-/-- The four `WHERE ... = p` queries of a project scope. -/
+/-- The four null-safe filtered queries of a project scope. -/
 def ProjectRows (db : Db Val) (p : U64) (r : Rows) : Prop :=
-  Sel db 0 (ColIs 0 (int p.val)) (r.projects.val.map (·.val)) ∧
-  Sel db 1 (ColIs 0 (int p.val)) (r.members.val.map (·.val)) ∧
-  Sel db 2 (ColIs 1 (int p.val)) (r.documents.val.map (·.val)) ∧
-  Sel db 4 (ColIs 0 (int p.val)) (r.webhooks.val.map (·.val))
+  Sel db Project.table (ColIs Project.col_id (int p.val)) (r.projects.val.map (·.val)) ∧
+  Sel db Member.table (ColIs Member.col_project (int p.val)) (r.members.val.map (·.val)) ∧
+  Sel db Document.table (ColIs Document.col_project (int p.val)) (r.documents.val.map (·.val)) ∧
+  Sel db Webhook.table (ColIs Webhook.col_project (int p.val)) (r.webhooks.val.map (·.val))
 
 def NoRows (r : Rows) : Prop :=
   r.projects.val = [] ∧ r.members.val = [] ∧ r.documents.val = [] ∧ r.webhooks.val = []
 
 theorem load_keep (db : Db Val) (s : St) (c : Bool) (hi : Inv s) (hdb : db = readBack kl (encC c s))
     (hc : c = false → s.next = 0) (hb : s.next < 2 ^ 64) (hf : Fits s) (r : Rows)
-    (h3 : Sel db 3 (fun _ => True) (r.counter.val.map (·.val))) (p : U64) (hp : ProjectRows db p r) :
+    (h3 : Sel db Counter.table (fun _ => True) (r.counter.val.map (·.val))) (p : U64) (hp : ProjectRows db p r) :
     decode r ⦃ o => ∃ snap : Snapshot, Equiv s (Snapshot.toSt snap) ∧ o = some (keep p.val snap) ⦄ :=
   decode_filtered db s c hi hdb hc hb hf r h3 _ _ (col_proj p) hp.1 _ _ (col_member p) hp.2.1
     _ _ (col_doc p) hp.2.2.1 _ _ (col_hook p) hp.2.2.2
 
 theorem load_counter (db : Db Val) (s : St) (c : Bool) (hi : Inv s) (hdb : db = readBack kl (encC c s))
     (hc : c = false → s.next = 0) (hb : s.next < 2 ^ 64) (hf : Fits s) (r : Rows)
-    (h3 : Sel db 3 (fun _ => True) (r.counter.val.map (·.val))) (hn : NoRows r) :
+    (h3 : Sel db Counter.table (fun _ => True) (r.counter.val.map (·.val))) (hn : NoRows r) :
     decode r ⦃ o => ∃ snap : Snapshot, Equiv s (Snapshot.toSt snap) ∧ o = some (counterOnly snap) ⦄ := by
   obtain ⟨h0, h1, h2, h4⟩ := hn
   exact decode_filtered db s c hi hdb hc hb hf r h3 (fun _ => false) (fun _ => False) (by simp)
@@ -178,8 +183,9 @@ result is `slice snap sc` for a snapshot `snap` the tenant's rows hold. -/
 theorem scoped_sound (db : Db Val) (s : St) (c : Bool) (hi : Inv s) (hdb : db = readBack kl (encC c s))
     (hc : c = false → s.next = 0) (hb : s.next < 2 ^ 64) (hf : Fits s) (sc : Scope)
     (rd : alloc.vec.Vec (alloc.vec.Vec Val))
-    (hd : ∀ d, sc = .Document d → Sel db 2 (ColIs 0 (int d.val)) (rd.val.map (·.val))) :
-    scoped_project sc rd ⦃ op => ∀ r : Rows, Sel db 3 (fun _ => True) (r.counter.val.map (·.val)) →
+    (hd : ∀ d, sc = .Document d →
+      Sel db Document.table (ColIs Document.col_id (int d.val)) (rd.val.map (·.val))) :
+    scoped_project sc rd ⦃ op => ∀ r : Rows, Sel db Counter.table (fun _ => True) (r.counter.val.map (·.val)) →
       (op = none → NoRows r) → (∀ p, op = some p → ProjectRows db p r) →
       decode r ⦃ o => ∃ snap : Snapshot, Equiv s (Snapshot.toSt snap) ∧ o = some (slice snap sc) ⦄ ⦄ := by
   cases sc with
@@ -236,9 +242,10 @@ satisfying `Inv`, they still do. -/
 theorem scoped_command (db : Db Val) (s : St) (hi : Inv s) (hs : Stored db s) (hf : Fits s)
     (a : Principal) (cmd : Command) (sc : Scope) (hsc : read_scope cmd = ok sc)
     (rd : alloc.vec.Vec (alloc.vec.Vec Val))
-    (hd : ∀ d, sc = .Document d → Sel db 2 (ColIs 0 (int d.val)) (rd.val.map (·.val)))
+    (hd : ∀ d, sc = .Document d →
+      Sel db Document.table (ColIs Document.col_id (int d.val)) (rd.val.map (·.val)))
     (op : Option U64) (hop : scoped_project sc rd = ok op)
-    (r : Rows) (h3 : Sel db 3 (fun _ => True) (r.counter.val.map (·.val)))
+    (r : Rows) (h3 : Sel db Counter.table (fun _ => True) (r.counter.val.map (·.val)))
     (hn : op = none → NoRows r) (hp : ∀ p, op = some p → ProjectRows db p r)
     (snap' : Snapshot) (hdec : decode r = ok (some snap')) ws reply
     (ht : transition a snap' cmd = .ok (.Ok (ws, reply))) :
@@ -269,8 +276,9 @@ inductive Served : Db Val → Prop
       {rd : alloc.vec.Vec (alloc.vec.Vec Val)} {op : Option U64} {r : Rows} {snap : Snapshot} {ws reply}
       {v : alloc.vec.Vec i5h_sql.Write} :
       Served db → (∀ s, Spec.Inv s → Stored db s → Fits s) → read_scope cmd = ok sc →
-      (∀ d, sc = .Document d → Sel db 2 (ColIs 0 (int d.val)) (rd.val.map (·.val))) →
-      scoped_project sc rd = ok op → Sel db 3 (fun _ => True) (r.counter.val.map (·.val)) →
+      (∀ d, sc = .Document d →
+        Sel db Document.table (ColIs Document.col_id (int d.val)) (rd.val.map (·.val))) →
+      scoped_project sc rd = ok op → Sel db Counter.table (fun _ => True) (r.counter.val.map (·.val)) →
       (op = none → NoRows r) → (∀ p, op = some p → ProjectRows db p r) →
       decode r = ok (some snap) → transition a snap cmd = .ok (.Ok (ws, reply)) →
       sql_writes ws = ok v → Served (execAll db ((v.val.map Write.abs).map planA))

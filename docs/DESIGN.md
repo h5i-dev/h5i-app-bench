@@ -102,9 +102,11 @@ rows that the server persists and later supplies to the kernel.
 
 There are nevertheless two distinct gaps. First, `I5hLib.Store` reasons about
 an abstract database and abstract statement semantics. The SQL text in
-`i5h-pg`, PostgreSQL's treatment of values, and the mapping from table and
-column names to modeled indices remain trusted. Second, most application
-storage theorems say that an arbitrary supplied write set is stored faithfully;
+`i5h-pg` and PostgreSQL's treatment of values remain trusted. Table and column
+indices are now generated into both Rust and Lean from the same `schema!`
+declaration; trusting the generator is still part of the boundary, but server
+code no longer supplies a separate column-name-to-index mapping. Second, most
+application storage theorems say that an arbitrary supplied write set is stored faithfully;
 they do not by themselves say that every database update came from a
 successful `transition`, nor do they always compose row-permutation
 equivalence with the application's reachable-state invariant. The docs example
@@ -150,6 +152,13 @@ used ordinary equality, for which comparison with `NULL` is unknown rather
 than true. Filtered reads and deletes now use `IS NOT DISTINCT FROM` so their
 null semantics match the abstract operation. This is the kind of i5h mapping
 obligation that trusting PostgreSQL does not remove.
+
+Filtered operations take the zero-based encoded column index rather than a
+column-name string. `schema!` emits that index as a Rust constant used by the
+production `Store` and as a Lean `col_*` definition used by `ColIs` proofs.
+`i5h-pg` resolves the index through the generated table definition before it
+renders SQL. Thus a schema reorder changes both sides together rather than
+silently leaving the server and modeled column on different mappings.
 
 ### Trusted engine contract
 

@@ -106,7 +106,9 @@ impl Store<DocsApp> for DocsStore {
         let counter = load_rows::<DocsApp, k::Counter>(tx, t).await?;
         let scope = k::read_scope(cmd);
         let doc_rows = match scope {
-            k::Scope::Document(d) => load_rows_where::<DocsApp, k::Document>(tx, t, "id", &Column::to_val(&d)).await?,
+            k::Scope::Document(d) => {
+                load_rows_where::<DocsApp, k::Document>(tx, t, k::docs_tables::Document::id, &Column::to_val(&d)).await?
+            }
             _ => Vec::new(),
         };
         let Some(p) = k::scoped_project(&scope, &doc_rows) else {
@@ -116,10 +118,10 @@ impl Store<DocsApp> for DocsStore {
         let p = Column::to_val(&p);
         decode(&k::Rows {
             counter,
-            projects: load_rows_where::<DocsApp, k::Project>(tx, t, "id", &p).await?,
-            members: load_rows_where::<DocsApp, k::Member>(tx, t, "project", &p).await?,
-            documents: load_rows_where::<DocsApp, k::Document>(tx, t, "project", &p).await?,
-            webhooks: load_rows_where::<DocsApp, k::Webhook>(tx, t, "project", &p).await?,
+            projects: load_rows_where::<DocsApp, k::Project>(tx, t, k::docs_tables::Project::id, &p).await?,
+            members: load_rows_where::<DocsApp, k::Member>(tx, t, k::docs_tables::Member::project, &p).await?,
+            documents: load_rows_where::<DocsApp, k::Document>(tx, t, k::docs_tables::Document::project, &p).await?,
+            webhooks: load_rows_where::<DocsApp, k::Webhook>(tx, t, k::docs_tables::Webhook::project, &p).await?,
         })
     }
 

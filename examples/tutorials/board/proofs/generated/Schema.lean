@@ -90,6 +90,21 @@ def Post.row (x : Post) : List Val :=
 
 def Post.table : Nat := 0
 def Post.keyLen : Nat := 1
+def Post.col_id : Nat := 0
+def Post.col_author : Nat := 1
+def Post.col_text : Nat := 2
+
+@[simp] theorem Post.row_col_id (x : Post) :
+    (Post.row x)[Post.col_id]? = some (int x.id.val) := by
+  simp [Post.row, Post.col_id]
+
+@[simp] theorem Post.row_col_author (x : Post) :
+    (Post.row x)[Post.col_author]? = some (int x.author.val) := by
+  simp [Post.row, Post.col_author]
+
+@[simp] theorem Post.row_col_text (x : Post) :
+    (Post.row x)[Post.col_text]? = some (.Bytes x.text) := by
+  simp [Post.row, Post.col_text]
 
 @[simp] theorem Post.row_length (x : Post) : (Post.row x).length = 3 := rfl
 
@@ -175,6 +190,11 @@ def Moderator.row (x : Moderator) : List Val :=
 
 def Moderator.table : Nat := 1
 def Moderator.keyLen : Nat := 1
+def Moderator.col_user : Nat := 0
+
+@[simp] theorem Moderator.row_col_user (x : Moderator) :
+    (Moderator.row x)[Moderator.col_user]? = some (int x.user.val) := by
+  simp [Moderator.row, Moderator.col_user]
 
 @[simp] theorem Moderator.row_length (x : Moderator) : (Moderator.row x).length = 1 := rfl
 
@@ -260,6 +280,11 @@ def Counter.row (x : Counter) : List Val :=
 
 def Counter.table : Nat := 2
 def Counter.keyLen : Nat := 0
+def Counter.col_next_id : Nat := 0
+
+@[simp] theorem Counter.row_col_next_id (x : Counter) :
+    (Counter.row x)[Counter.col_next_id]? = some (int x.next_id.val) := by
+  simp [Counter.row, Counter.col_next_id]
 
 @[simp] theorem Counter.row_length (x : Counter) : (Counter.row x).length = 1 := rfl
 

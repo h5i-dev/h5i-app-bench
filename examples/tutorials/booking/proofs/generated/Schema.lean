@@ -79,6 +79,11 @@ def Admin.row (x : Admin) : List Val :=
 
 def Admin.table : Nat := 0
 def Admin.keyLen : Nat := 1
+def Admin.col_user : Nat := 0
+
+@[simp] theorem Admin.row_col_user (x : Admin) :
+    (Admin.row x)[Admin.col_user]? = some (int x.user.val) := by
+  simp [Admin.row, Admin.col_user]
 
 @[simp] theorem Admin.row_length (x : Admin) : (Admin.row x).length = 1 := rfl
 
@@ -164,6 +169,16 @@ def Room.row (x : Room) : List Val :=
 
 def Room.table : Nat := 1
 def Room.keyLen : Nat := 1
+def Room.col_id : Nat := 0
+def Room.col_dest : Nat := 1
+
+@[simp] theorem Room.row_col_id (x : Room) :
+    (Room.row x)[Room.col_id]? = some (int x.id.val) := by
+  simp [Room.row, Room.col_id]
+
+@[simp] theorem Room.row_col_dest (x : Room) :
+    (Room.row x)[Room.col_dest]? = some (int x.dest.val) := by
+  simp [Room.row, Room.col_dest]
 
 @[simp] theorem Room.row_length (x : Room) : (Room.row x).length = 2 := rfl
 
@@ -249,6 +264,31 @@ def Booking.row (x : Booking) : List Val :=
 
 def Booking.table : Nat := 2
 def Booking.keyLen : Nat := 1
+def Booking.col_id : Nat := 0
+def Booking.col_room : Nat := 1
+def Booking.col_user : Nat := 2
+def Booking.col_start_at : Nat := 3
+def Booking.col_end_at : Nat := 4
+
+@[simp] theorem Booking.row_col_id (x : Booking) :
+    (Booking.row x)[Booking.col_id]? = some (int x.id.val) := by
+  simp [Booking.row, Booking.col_id]
+
+@[simp] theorem Booking.row_col_room (x : Booking) :
+    (Booking.row x)[Booking.col_room]? = some (int x.room.val) := by
+  simp [Booking.row, Booking.col_room]
+
+@[simp] theorem Booking.row_col_user (x : Booking) :
+    (Booking.row x)[Booking.col_user]? = some (int x.user.val) := by
+  simp [Booking.row, Booking.col_user]
+
+@[simp] theorem Booking.row_col_start_at (x : Booking) :
+    (Booking.row x)[Booking.col_start_at]? = some (int x.start_at.val) := by
+  simp [Booking.row, Booking.col_start_at]
+
+@[simp] theorem Booking.row_col_end_at (x : Booking) :
+    (Booking.row x)[Booking.col_end_at]? = some (int x.end_at.val) := by
+  simp [Booking.row, Booking.col_end_at]
 
 @[simp] theorem Booking.row_length (x : Booking) : (Booking.row x).length = 5 := rfl
 
@@ -334,6 +374,11 @@ def Counter.row (x : Counter) : List Val :=
 
 def Counter.table : Nat := 3
 def Counter.keyLen : Nat := 0
+def Counter.col_next_id : Nat := 0
+
+@[simp] theorem Counter.row_col_next_id (x : Counter) :
+    (Counter.row x)[Counter.col_next_id]? = some (int x.next_id.val) := by
+  simp [Counter.row, Counter.col_next_id]
 
 @[simp] theorem Counter.row_length (x : Counter) : (Counter.row x).length = 1 := rfl
 
