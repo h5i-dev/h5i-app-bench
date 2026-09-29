@@ -135,7 +135,7 @@ pub enum Command {
     SetMember {
         project: u64,
         user: u64,
-        role: Role,
+        role: Role, // i5h-allow: privileged-field (owner action target)
     },
     RemoveMember {
         project: u64,

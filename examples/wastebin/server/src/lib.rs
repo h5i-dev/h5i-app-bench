@@ -414,7 +414,9 @@ pub async fn purge(engine: &WastebinEngine) -> Result<(), DbError> {
 pub fn router(app: App) -> Router {
     Router::new()
         .route("/healthz", get(|| async { "ok" }))
+        // i5h-allow: no-actor (signed-cookie auth in Shell)
         .route("/", axum::routing::post(create))
+        // i5h-allow: no-actor (signed-cookie auth in Shell)
         .route("/{id}", get(view).post(view).delete(remove))
         .route("/raw/{id}", get(raw))
         .route("/dl/{id}", get(download))

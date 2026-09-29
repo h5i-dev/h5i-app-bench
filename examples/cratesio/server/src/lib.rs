@@ -372,7 +372,7 @@ async fn new_token(State(state): State<AppState>, actor: Actor<Cratesio>, header
         Ok(s) => s,
         Err(m) => return reply(StatusCode::BAD_REQUEST, error_body(&m)),
     };
-    let user = actor.0.user;
+    let user = actor.principal().user;
     match state.app.run(&actor, k::Command::CreateToken { scopes }, &headers).await {
         Ok(k::Reply::TokenCreated(id)) => {
             let secret = state.auth.api_token(id, user);

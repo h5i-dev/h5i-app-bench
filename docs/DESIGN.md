@@ -140,6 +140,32 @@ tenant's last commit (kept in `i5h_clock`). `I5hLib.ReachableT` proves
 properties under that trusted assumption, such as `started_stays` in the
 booking tutorial.
 
+## Authorization defaults
+
+The kernel proves a decision correct, but apps break at the edges it trusts:
+an unauthenticated route, an identity read from the body, a route that skips
+the kernel. Three defaults keep those edges inside the guarantee.
+
+`Actor<K>` holds its principal privately, so the only way to build one is the
+extractor, which runs the `Authenticator`; a handler cannot fake an actor.
+`assume_authenticated` is the one greppable bypass, for a server that
+authenticates its own way (Wastebin's signed cookie).
+
+Identity comes from the actor, not the command, since `transition` takes them
+separately. So `cargo i5h-verify` rejects an identity or privilege field
+(`owner`, `role`, `is_admin`) in a `Command` unless the line carries
+`i5h-allow: privileged-field`. This is readur's register `role` and
+rust-web-app's owner reassignment.
+
+`cargo i5h-verify` also checks every `post`/`put`/`delete`/`patch` handler
+takes an `Actor`, so a mutating route cannot dispatch without a resolved
+caller; opt out with `i5h-allow: no-actor`.
+
+For coverage, an app states one theorem, `I5hLib.WritesAuthorized`, quantified
+over every actor, state and command, so a forgotten check on any route fails
+the proof. `cargo i5h-verify` reports which app proofs state it; kellnr uses
+the schema.
+
 ## One schema per app
 
 The engine's tables (idempotency keys, outbox) have fixed names. Two apps in
