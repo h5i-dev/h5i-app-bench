@@ -1,11 +1,12 @@
 import Lemmas
 import I5hLib.Basic
+import I5hLib.Authz
 /-!
 # Theorems about the extracted Kellnr kernel (after PR #1243)
 
 Each theorem covers every principal, login path, state and command.
 -/
-open Aeneas Aeneas.Std Result kellnr_kernel kellnr_kernel.Spec kellnr_kernel.Lemmas
+open Aeneas Aeneas.Std Result kellnr_kernel kellnr_kernel.Spec kellnr_kernel.Lemmas I5hLib
 
 namespace kellnr_kernel.Theorems
 
@@ -352,5 +353,12 @@ theorem owner_remains_of_unique (s : St) (k u : Nat)
       (s.owners.filter fun o => decide (o.a.val = k) && decide ¬(o.a.val = k ∧ o.b.val = u)).length := by
     congr 1; apply List.filter_congr; intro x _; by_cases ha : x.a.val = k <;> simp [ha]
   omega
+
+/-- The universal authorization property in the reusable `I5hLib` shape, so
+`cargo i5h-verify` counts kellnr as covered. It is exactly `writes_authorized`. -/
+theorem authorized_schema :
+    I5hLib.WritesAuthorized transition Snapshot.toSt (·.val)
+      (fun st (p : Principal) w => writeAllowed st p.user.val w) :=
+  fun p s c ws r h => writes_authorized p s c ws r h
 
 end kellnr_kernel.Theorems

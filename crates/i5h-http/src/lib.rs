@@ -142,8 +142,21 @@ impl<K: Kernel> Clone for Auth<K> {
     }
 }
 
-/// The authenticated caller. Use as an axum extractor in your own handlers.
-pub struct Actor<K: Kernel>(pub K::Principal);
+/// The authenticated caller, an axum extractor. The principal is private, so
+/// the only way to get one is the extractor, which runs the [`Authenticator`].
+pub struct Actor<K: Kernel>(K::Principal);
+
+impl<K: Kernel> Actor<K> {
+    pub fn principal(&self) -> &K::Principal {
+        &self.0
+    }
+
+    /// Wrap a principal without the extractor. The name is greppable; use it
+    /// only when the server authenticates its own way.
+    pub fn assume_authenticated(principal: K::Principal) -> Self {
+        Actor(principal)
+    }
+}
 
 impl<K: Kernel, St: Send + Sync> FromRequestParts<St> for Actor<K>
 where
@@ -205,8 +218,8 @@ impl<K: Kernel, S: Store<K>> I5h<K, S> {
     {
         let key = headers.get("idempotency-key").and_then(|v| v.to_str().ok());
         let result = match key {
-            Some(k) => self.engine.execute_idempotent(&actor.0, k, &cmd).await,
-            None => self.engine.execute(&actor.0, &cmd).await,
+            Some(k) => self.engine.execute_idempotent(actor.principal(), k, &cmd).await,
+            None => self.engine.execute(actor.principal(), &cmd).await,
         };
         match result {
             Ok(Ok(r)) => Ok(r),

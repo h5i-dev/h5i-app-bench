@@ -161,14 +161,14 @@ pub enum Command {
     Yank { krate: u64, num: u64, yanked: bool },
     InviteOwner { krate: u64, user: u64 },
     AddTeam { krate: u64, team: u64 },
-    RemoveOwner { krate: u64, owner: u64, team: bool },
+    RemoveOwner { krate: u64, owner: u64, team: bool }, // i5h-allow: privileged-field (owner to remove)
     HandleInvite { krate: u64, accept: bool },
     /// `downloads` is the crate's download count, from the shell.
     DeleteCrate { krate: u64, downloads: u64 },
     /// Operator commands. `until == 0` locks indefinitely.
     Lock { user: u64, until: u64 },
     Unlock { user: u64 },
-    SetAdmin { user: u64, admin: bool },
+    SetAdmin { user: u64, admin: bool }, // i5h-allow: privileged-field (operator command)
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]

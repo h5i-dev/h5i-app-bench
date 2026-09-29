@@ -99,6 +99,237 @@ fn lean_scan(dir: &Path) -> Outcome {
     if bad.is_empty() { Outcome::Pass } else { Outcome::Fail(bad.join("\n")) }
 }
 
+/// Collect `.rs` files under `dir` whose path contains `needle`.
+fn rs_files_under(dir: &Path, needle: &str, out: &mut Vec<PathBuf>) {
+    let Ok(entries) = std::fs::read_dir(dir) else { return };
+    for e in entries.flatten() {
+        let p = e.path();
+        if p.is_dir() {
+            if !p.ends_with("target") && !p.file_name().is_some_and(|n| n == ".lake") {
+                rs_files_under(&p, needle, out);
+            }
+        } else if p.extension().is_some_and(|x| x == "rs") && p.to_string_lossy().contains(needle) {
+            out.push(p);
+        }
+    }
+}
+
+/// The crate a server file belongs to: the path up to and including `/server/`.
+fn server_crate_of(p: &Path) -> String {
+    let s = p.to_string_lossy();
+    match s.find("/server/") {
+        Some(i) => s[..i + "/server/".len()].to_string(),
+        None => s.to_string(),
+    }
+}
+
+/// Read `text` from `start` (just past a `(`) and return the substring up to the
+/// matching close paren.
+fn balanced_parens(text: &str, start: usize) -> &str {
+    let bytes = text.as_bytes();
+    let mut depth = 1i32;
+    let mut i = start;
+    while i < bytes.len() {
+        match bytes[i] {
+            b'(' => depth += 1,
+            b')' => {
+                depth -= 1;
+                if depth == 0 {
+                    return &text[start..i];
+                }
+            }
+            _ => {}
+        }
+        i += 1;
+    }
+    &text[start..]
+}
+
+/// Every mutating route's handler must take an `Actor<` (an authenticated
+/// caller). Opt out with `i5h-allow: no-actor` on or above the route.
+fn route_coverage(root: &Path) -> Outcome {
+    let mut files = Vec::new();
+    rs_files_under(&root.join("examples"), "/server/", &mut files);
+    // Which handler idents take an `Actor<`, per crate.
+    let mut takes_actor: std::collections::HashSet<(String, String)> = std::collections::HashSet::new();
+    let mut known: std::collections::HashSet<(String, String)> = std::collections::HashSet::new();
+    let mut sources: Vec<(String, String)> = Vec::new();
+    for f in &files {
+        let text = std::fs::read_to_string(f).unwrap_or_default();
+        let ck = server_crate_of(f);
+        let mut rest = text.as_str();
+        while let Some(rel) = rest.find("fn ") {
+            let after = &rest[rel + 3..];
+            let name: String = after.chars().take_while(|c| c.is_alphanumeric() || *c == '_').collect();
+            if let Some(paren) = after.find('(') {
+                let params = balanced_parens(after, paren + 1);
+                if !name.is_empty() {
+                    known.insert((ck.clone(), name.clone()));
+                    if params.contains("Actor<") {
+                        takes_actor.insert((ck.clone(), name.clone()));
+                    }
+                }
+            }
+            rest = &after[name.len().max(1)..];
+        }
+        sources.push((ck, text));
+    }
+    // Scan mutating route registrations.
+    let mut bad = Vec::new();
+    let re_methods = ["post(", "put(", "delete(", "patch("];
+    for f in &files {
+        let text = std::fs::read_to_string(f).unwrap_or_default();
+        let ck = server_crate_of(f);
+        let lines: Vec<&str> = text.lines().collect();
+        for (lineno, line) in lines.iter().enumerate() {
+            let prev = lineno.checked_sub(1).map(|i| lines[i]).unwrap_or("");
+            if line.contains("i5h-allow: no-actor") || prev.contains("i5h-allow: no-actor") {
+                continue;
+            }
+            for m in re_methods {
+                let mut from = 0;
+                while let Some(i) = line[from..].find(m) {
+                    let at = from + i;
+                    // Require a routing context (method-router builder), not just any foo(.
+                    let after = &line[at + m.len()..];
+                    let handler: String = after.chars().take_while(|c| c.is_alphanumeric() || *c == '_' || *c == ':').collect();
+                    let ident = handler.rsplit("::").next().unwrap_or(&handler).to_string();
+                    from = at + m.len();
+                    if ident.is_empty() {
+                        continue;
+                    }
+                    // Only judge handlers we can see in this crate; skip unknowns.
+                    if known.contains(&(ck.clone(), ident.clone())) && !takes_actor.contains(&(ck.clone(), ident.clone())) {
+                        bad.push(format!("{}:{}: {}({}) has no Actor<> parameter", f.display(), lineno + 1, m.trim_end_matches('('), ident));
+                    }
+                }
+            }
+        }
+    }
+    let _ = sources;
+    if bad.is_empty() { Outcome::Pass } else { Outcome::Fail(bad.join("\n")) }
+}
+
+/// A kernel `Command` must not carry a client-set identity or privilege field;
+/// identity comes from the `Actor`. Opt out with `i5h-allow: privileged-field`.
+fn command_hygiene(root: &Path) -> Outcome {
+    let mut files = Vec::new();
+    rs_files_under(&root.join("examples"), "/kernel/", &mut files);
+    let mut bad = Vec::new();
+    for f in &files {
+        let text = std::fs::read_to_string(f).unwrap_or_default();
+        for (line, name) in flagged_command_fields(&text) {
+            bad.push(format!("{}:{}: Command field `{}` is client-settable identity/privilege", f.display(), line, name));
+        }
+    }
+    if bad.is_empty() { Outcome::Pass } else { Outcome::Fail(bad.join("\n")) }
+}
+
+/// Denied identity/privilege fields in the `Command` type, as `(line, field)`.
+fn flagged_command_fields(text: &str) -> Vec<(usize, String)> {
+    const DENY: &[&str] = &["owner", "owner_id", "role", "is_admin", "admin", "tenant", "tenant_id", "principal"];
+    let Some(start) = text.find("enum Command").or_else(|| text.find("struct Command")) else { return Vec::new() };
+    let Some(brace) = text[start..].find('{') else { return Vec::new() };
+    let body = balanced_braces(&text[start + brace + 1..]);
+    let base_line = text[..start + brace].lines().count();
+    let mut out = Vec::new();
+    for (i, line) in body.lines().enumerate() {
+        if line.contains("i5h-allow: privileged-field") {
+            continue;
+        }
+        let code = line.split("//").next().unwrap_or("");
+        for field in code.split(',') {
+            let name = field.split(':').next().unwrap_or("").trim().trim_start_matches("pub ").trim();
+            if DENY.contains(&name) {
+                out.push((base_line + i, name.to_string()));
+            }
+        }
+    }
+    out
+}
+
+/// Report which app proofs state a universal authorization theorem. Never
+/// fails; makes gaps visible.
+fn authz_coverage(root: &Path) -> Outcome {
+    let mut dirs: Vec<PathBuf> = Vec::new();
+    for base in ["examples", "examples/tutorials"] {
+        if let Ok(entries) = std::fs::read_dir(root.join(base)) {
+            for e in entries.flatten() {
+                let p = e.path().join("proofs");
+                if p.is_dir() {
+                    dirs.push(p);
+                }
+            }
+        }
+    }
+    dirs.sort();
+    let markers = ["WritesAuthorized", "theorem authorized", "writes_authorized", "writes_confined", "writes_scoped"];
+    let schema = "WritesAuthorized";
+    let mut covered = 0;
+    let mut report = String::new();
+    for d in &dirs {
+        let mut lean = Vec::new();
+        rs_or_lean(d, &mut lean);
+        let mut hit = None;
+        let mut uses_schema = false;
+        for f in &lean {
+            let text = std::fs::read_to_string(f).unwrap_or_default();
+            if text.contains(schema) {
+                uses_schema = true;
+            }
+            if hit.is_none() {
+                if let Some(m) = markers.iter().find(|m| text.contains(**m)) {
+                    hit = Some(*m);
+                }
+            }
+        }
+        let app = d.parent().and_then(|p| p.file_name()).map(|n| n.to_string_lossy().to_string()).unwrap_or_default();
+        match hit {
+            Some(_) => {
+                covered += 1;
+                let tag = if uses_schema { "schema" } else { "theorem" };
+                report.push_str(&format!("  {app:<16} authorized ({tag})\n"));
+            }
+            None => report.push_str(&format!("  {app:<16} no universal authorization theorem\n")),
+        }
+    }
+    eprintln!("\n  authorization coverage: {covered}/{} app proof projects\n{}", dirs.len(), report.trim_end());
+    Outcome::Pass
+}
+
+/// Collect `.lean` files directly in `dir`.
+fn rs_or_lean(dir: &Path, out: &mut Vec<PathBuf>) {
+    if let Ok(entries) = std::fs::read_dir(dir) {
+        for e in entries.flatten() {
+            let p = e.path();
+            if p.extension().is_some_and(|x| x == "lean") {
+                out.push(p);
+            }
+        }
+    }
+}
+
+/// Substring from just inside a `{` up to its matching `}`.
+fn balanced_braces(text: &str) -> &str {
+    let bytes = text.as_bytes();
+    let mut depth = 1i32;
+    let mut i = 0;
+    while i < bytes.len() {
+        match bytes[i] {
+            b'{' => depth += 1,
+            b'}' => {
+                depth -= 1;
+                if depth == 0 {
+                    return &text[..i];
+                }
+            }
+            _ => {}
+        }
+        i += 1;
+    }
+    text
+}
+
 fn main() -> ExitCode {
     let args: Vec<String> = std::env::args().skip(1).collect();
     if args.first().map(String::as_str) != Some("verify") {
@@ -111,6 +342,9 @@ fn main() -> ExitCode {
     let mut cx = Ctx { root, results: Vec::new() };
     let db = std::env::var("I5H_TEST_DATABASE_URL").is_ok();
 
+    cx.step("route coverage (mutating routes take an Actor)", route_coverage);
+    cx.step("command hygiene (no client-set identity fields)", command_hygiene);
+    cx.step("authorization coverage report", authz_coverage);
     cx.step("rust tests", |r| {
         if !db {
             return Outcome::Skip("I5H_TEST_DATABASE_URL unset".into());
@@ -175,4 +409,37 @@ fn main() -> ExitCode {
     let skipped = cx.results.iter().filter(|(_, o, _)| matches!(o, Outcome::Skip(_))).count();
     eprintln!("\n{} passed, {failed} failed, {skipped} skipped", cx.results.len() - failed - skipped);
     if failed > 0 { ExitCode::FAILURE } else { ExitCode::SUCCESS }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn balanced_helpers() {
+        assert_eq!(balanced_parens("f(a, g(b), c) x", 2), "a, g(b), c");
+        assert_eq!(balanced_braces("a { b } c } d"), "a { b } c ");
+    }
+
+    #[test]
+    fn command_hygiene_flags_role_from_body() {
+        // The readur class: a command carries the new user's role.
+        let bad = "pub enum Command {\n    Register { email: u64, role: Role },\n}";
+        let hits = flagged_command_fields(bad);
+        assert_eq!(hits.len(), 1);
+        assert_eq!(hits[0].1, "role");
+    }
+
+    #[test]
+    fn command_hygiene_allows_reviewed_target() {
+        // An admin action naming its target, explicitly reviewed.
+        let ok = "pub enum Command {\n    SetRole { user: u64, role: Role }, // i5h-allow: privileged-field (admin sets target's role)\n}";
+        assert!(flagged_command_fields(ok).is_empty());
+    }
+
+    #[test]
+    fn command_hygiene_ignores_plain_fields() {
+        let ok = "pub enum Command {\n    CreateDoc { project: u64, title: u64 },\n    AddMsg { conv: u64, user: u64 },\n}";
+        assert!(flagged_command_fields(ok).is_empty(), "user/project/title are not privilege fields");
+    }
 }

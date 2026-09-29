@@ -145,8 +145,8 @@ fn refusal(e: k::Error) -> Response {
 async fn run(app: &App, actor: &Actor<Conduit>, cmd: k::Command, h: &HeaderMap) -> Result<k::Reply, Response> {
     let key = h.get("idempotency-key").and_then(|v| v.to_str().ok());
     let result = match key {
-        Some(key) => app.engine.execute_idempotent(&actor.0, key, &cmd).await,
-        None => app.engine.execute(&actor.0, &cmd).await,
+        Some(key) => app.engine.execute_idempotent(actor.principal(), key, &cmd).await,
+        None => app.engine.execute(actor.principal(), &cmd).await,
     };
     match result {
         Ok(Ok(r)) => Ok(r),
