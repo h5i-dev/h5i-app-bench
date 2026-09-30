@@ -77,11 +77,20 @@ theorem u64_cast_usize (x : U64) (h : x.val ≤ Usize.max) : (UScalar.cast .Usiz
     rw [Usize.max_def, Usize.numBits_def]; exact Nat.sub_lt (Nat.two_pow_pos _) Nat.one_pos
   omega
 
+/-- `v.len() == 0`, after `Vec.len` unfolds. -/
+theorem usize_ofNatCore_eq_zero (n : Nat) (h : n < 2 ^ UScalarTy.Usize.numBits) : Usize.ofNatCore n h = 0#usize ↔ n = 0 := by
+  constructor
+  · intro e; have := congrArg UScalar.val e; simpa using this
+  · rintro rfl; rfl
+
 /-! ## Vectors -/
 
 /-- A concrete vector, for scenarios. -/
 def vecOf {α} (l : List α) (h : l.length ≤ Usize.max := by simp only [List.length_cons, List.length_nil]; scalar_tac) :
     alloc.vec.Vec α := alloc.vec.Vec.from l h
+
+@[simp] theorem vecOf_val {α} (l : List α) (h : l.length ≤ Usize.max) : (vecOf l h).val = l := by
+  simp [vecOf]
 
 theorem vec_new_val (α : Type) : (alloc.vec.Vec.new α).val = [] := rfl
 

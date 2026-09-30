@@ -4,6 +4,52 @@ open Aeneas Aeneas.Std Result
 
 namespace I5hLib
 
+/-- `let x = if c { a } else { b };` extracts as a bind on `if c then ok a else ok b`,
+where `step*` otherwise stops. Not a global `@[step]` (it changes what `walk`
+leaves); use `attribute [local step] I5hLib.ite_ok_spec`, or `i5h_steps`. -/
+theorem ite_ok_spec {α} (c : Prop) [Decidable c] (a b : α) :
+    (if c then ok a else ok b) ⦃ x => x = if c then a else b ⦄ := by
+  split <;> simp
+
+/-- `let x = if c { f() } else { g() };` with calls in the branches: `step*` stops
+at the bind; rewriting with this puts the `if` on top, where `step*` splits it. -/
+theorem bind_tc_ite {α β} (c : Prop) [Decidable c] (m₁ m₂ : Result α) (k : α → Result β) :
+    (do let x ← (if c then m₁ else m₂ : Result α); k x) =
+      if c then (do let x ← m₁; k x) else (do let x ← m₂; k x) := by
+  split <;> rfl
+
+theorem bind_ite {α β} (c : Prop) [Decidable c] (m₁ m₂ : Result α) (k : α → Result β) :
+    Std.bind (if c then m₁ else m₂) k = if c then Std.bind m₁ k else Std.bind m₂ k := by
+  split <;> rfl
+
+/-- `step*`, also through binds on an `if` whose branches call functions. -/
+macro "i5h_steps" : tactic => `(tactic| (
+  step*
+  all_goals (repeat' (simp only [I5hLib.bind_tc_ite, I5hLib.bind_ite]; step*))))
+
+/-- `i5h_derive_eq T f`: derive `DecidableEq T` and a `@[step]` spec saying the
+extracted `==` of `T` (`f`, e.g. `T.Insts.CoreCmpPartialEqT.eq`) decides equality.
+Derived `==` compares enums by `read_discriminant`, which the WP tactics do not
+reduce. Run it for field types first. -/
+syntax "i5h_derive_eq " ident ident : command
+macro_rules
+  | `(i5h_derive_eq $t $f) => do
+    let thm := Lean.mkIdent (f.getId ++ `spec)
+    let disc := Lean.mkIdent (t.getId ++ `read_discriminant)
+    `(deriving instance DecidableEq for $t
+      @[step] theorem $thm (a b : $t) : $f a b ⦃ r => r = decide (a = b) ⦄ := by
+        unfold $f
+        first
+          | (cases a <;> cases b <;> simp [$disc:ident])
+          | (cases a <;> cases b <;> (repeat' (first | step | split)) <;> simp_all))
+
+/-- Simplify the leftovers of `step*` and `split` (`if false = true`, `id`,
+`ok` binds) without failing when nothing changes. -/
+macro "i5h_simp" : tactic => `(tactic| (
+  simp -failIfUnchanged only [Bool.false_eq_true, Bool.true_eq_false, ↓reduceIte, ↓reduceDIte,
+    ite_true, ite_false, if_true, if_false, id_eq, _root_.id, bind_ok, bind_tc_ok, WP.spec_ok,
+    decide_true, decide_false, Bool.not_true, Bool.not_false] at *))
+
 /-- Close the per-step goal of `loop_search` or `loop_fold`. -/
 macro "i5h_step" : tactic => `(tactic| (
   step* <;> (repeat' (first | step | split)) <;>
