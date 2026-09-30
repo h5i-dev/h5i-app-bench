@@ -77,7 +77,7 @@ jobs:
       - name: Build the other extracted-crate proofs
         working-directory: .
         run: |
-          for d in crates/i5h-sql/proofs crates/i5h-pgsql/proofs crates/i5h-token/proofs crates/i5h-json/proofs examples/kellnr/proofs examples/atuin/proofs examples/tutorials/calculator/proofs examples/tutorials/board/proofs examples/wastebin/proofs examples/conduit/proofs examples/cratesio/proofs examples/tutorials/ledger/proofs examples/tutorials/inbox/proofs examples/tutorials/booking/proofs; do
+          for d in crates/i5h-sql/proofs crates/i5h-pgsql/proofs crates/i5h-token/proofs crates/i5h-json/proofs examples/kellnr/proofs examples/atuin/proofs examples/tutorials/calculator/proofs examples/tutorials/board/proofs examples/wastebin/proofs examples/conduit/proofs examples/cratesio/proofs examples/tutorials/ledger/proofs examples/tutorials/inbox/proofs examples/tutorials/booking/proofs examples/filters/proofs examples/keys/proofs; do
             mkdir -p "$d/.lake"
             ln -sfn "$GITHUB_WORKSPACE/examples/docs/proofs/.lake/packages" "$d/.lake/packages"
             (cd "$d" && lake build)
@@ -121,6 +121,8 @@ jobs:
       - run: scripts/extract-ledger.sh
       - run: scripts/extract-inbox.sh
       - run: scripts/extract-booking.sh
+      - run: scripts/extract-filters.sh
+      - run: scripts/extract-keys.sh
       - run: |
           git diff --exit-code -- \
             examples/docs/proofs/generated/DocsKernel.lean \
@@ -137,4 +139,6 @@ jobs:
             examples/cratesio/proofs/generated/CratesioKernel.lean \
             examples/tutorials/ledger/proofs/generated/LedgerKernel.lean \
             examples/tutorials/inbox/proofs/generated/InboxKernel.lean \
-            examples/tutorials/booking/proofs/generated/BookingKernel.lean
+            examples/tutorials/booking/proofs/generated/BookingKernel.lean \
+            examples/filters/proofs/generated/FiltersKernel.lean \
+            examples/keys/proofs/generated/KeysKernel.lean

@@ -9,6 +9,8 @@ members = [
     "docs/difftest",
     "docs/kernel",
     "docs/server",
+    "filters/kernel",
+    "keys/kernel",
     "kellnr/kernel",
     "tutorials/board/kernel",
     "tutorials/board/server",

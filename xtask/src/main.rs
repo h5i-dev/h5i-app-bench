@@ -22,6 +22,8 @@ const PROJECTS: &[(&str, Option<&str>, Option<&str>)] = &[
     ("examples/tutorials/ledger/proofs", Some("scripts/extract-ledger.sh"), Some("examples/tutorials/ledger/proofs/generated/LedgerKernel.lean")),
     ("examples/tutorials/inbox/proofs", Some("scripts/extract-inbox.sh"), Some("examples/tutorials/inbox/proofs/generated/InboxKernel.lean")),
     ("examples/tutorials/booking/proofs", Some("scripts/extract-booking.sh"), Some("examples/tutorials/booking/proofs/generated/BookingKernel.lean")),
+    ("examples/filters/proofs", Some("scripts/extract-filters.sh"), Some("examples/filters/proofs/generated/FiltersKernel.lean")),
+    ("examples/keys/proofs", Some("scripts/extract-keys.sh"), Some("examples/keys/proofs/generated/KeysKernel.lean")),
     ("crates/i5h/proofs", None, None),
 ];
 
