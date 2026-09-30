@@ -50,7 +50,8 @@ Done:
   `loop_fold`, table writes, `walk`, `i5h_step` and `i5h_eval`, which runs
   concrete scenarios with `@[step]` loop specs. For `for` loops over slices,
   `iter_loop`, `iter_fold`, `iter_search` and their list forms, closed by
-  `i5h_iter`; `i5h_derive_eq` for derived `==`; `i5h_steps` through binds on
+  `i5h_iter`, or `i5h_for` for a whole one-loop function; `i5h_derive_eq`
+  and `i5h_derive_clone` for derived `==` and `clone`; `i5h_steps` through binds on
   `if`; `i5h_simp`.
 - LLM-written proofs; humans review the policy table and invariants.
 - Done: `cargo i5h-verify` (`xtask/`) runs tests, bans, extraction drift and
@@ -91,7 +92,8 @@ Done:
   one element.
 - Multi-request properties: `I5hLib.Run`; `examples/keys` proves revocation
   against every interleaving and refutes a check-then-use kernel.
-- Automation: `i5h_derive_eq`, `i5h_steps`, `i5h_simp`.
+- Automation: `i5h_for`, `i5h_derive_eq`, `i5h_derive_clone`, `i5h_steps`,
+  `i5h_simp`.
 
 ## Found while porting
 

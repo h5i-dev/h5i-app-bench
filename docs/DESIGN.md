@@ -197,14 +197,26 @@ Aeneas translates a subset of Rust. What falls outside it has a replacement:
 Each `for` loop spec turns a per-element fact into a statement about the
 whole list, so a property like "every returned event is visible" is
 `∀ e ∈ out, visible e` about the full `Vec`, not about one representative.
-`i5h_iter` closes the per-element goal. `examples/filters` parses text
-this way, with a round trip proven for all byte strings.
+A function whose body is one loop takes one line:
+
+```lean
+@[step] theorem find_key_spec (keys : Slice Key) (sec : alloc.vec.Vec U8) :
+    find_key keys sec ⦃ o => findKey keys.val sec = o ⦄ := by
+  i5h_for find_key using (iter_find keys (fun k => k.secret = sec) _ ?_) [findKey]
+```
+
+`i5h_for` unfolds the function and its loop, applies the spec, closes the
+per-element goal with `i5h_iter` and restates the conclusion; what it cannot
+close is left to the caller. `examples/filters` parses text this way, with a
+round trip proven for all byte strings.
 
 Tooling fixes for common failures:
 
 - Derived `==` on an enum compares `read_discriminant`, which the WP tactics
   do not reduce. `i5h_derive_eq T f` derives `DecidableEq T` and a `@[step]`
   spec saying `f` decides equality. Run it for field types first, then structs.
+- `i5h_derive_clone T f` proves a derived `clone` is the identity, for `T` and
+  for `Vec<T>`, so `step*` passes through clones.
 - `let x = if c { a } else { b };` binds on an `if`, where `step*` stops.
   `i5h_steps` rewrites the bind into the branches and continues, whether
   they are plain values or calls.
