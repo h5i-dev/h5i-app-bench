@@ -1,3 +1,4 @@
+import I5hLib.Basic
 import I5hLib.Loops
 /-! Tactics for kernel proofs. -/
 open Aeneas Aeneas.Std Result
@@ -42,6 +43,29 @@ macro_rules
         first
           | (cases a <;> cases b <;> simp [$disc:ident])
           | (cases a <;> cases b <;> (repeat' (first | step | split)) <;> simp_all))
+
+/-- `i5h_derive_clone T f`: `f x = ok x` (`@[simp]`) and `@[step]` specs for
+`f`, the extracted derived `clone` of `T` (e.g. `T.Insts.CoreCloneClone.clone`),
+and for cloning a `Vec` of `T`.
+Run it for field types first. -/
+syntax "i5h_derive_clone " ident ident : command
+open Lean Elab Command in
+elab_rules : command
+  | `(i5h_derive_clone $t $f) => do
+    let eqThm := mkIdent (f.getId ++ `ok_eq)
+    let specThm := mkIdent (f.getId ++ `spec)
+    let vecThm := mkIdent (f.getId ++ `vec_spec)
+    let inst := mkIdent f.getId.getPrefix
+    elabCommand (← `(@[simp] theorem $eqThm (x : $t) : $f x = ok x := by
+        cases x <;> simp [$f:ident, lift, I5hLib.vec_clone_ok, I5hLib.u8_clone]))
+    elabCommand (← `(@[step] theorem $specThm (x : $t) : $f x ⦃ y => y = x ⦄ := by
+        simp [$eqThm:ident]))
+    -- Only if the `Clone` instance was extracted too.
+    let full ← liftCoreM <| realizeGlobalConstNoOverloadWithInfo f
+    unless (← getEnv).contains full.getPrefix do return
+    elabCommand (← `(@[step] theorem $vecThm (v : alloc.vec.Vec $t) :
+        alloc.vec.CloneVec.clone $inst v ⦃ w => w = v ⦄ := by
+        simp [I5hLib.vec_clone_ok $inst v (fun x => $eqThm x)]))
 
 /-- Simplify the leftovers of `step*` and `split` (`if false = true`, `id`,
 `ok` binds) without failing when nothing changes. -/

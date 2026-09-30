@@ -24,7 +24,7 @@ loop is `for x in v.iter()`; there is no index arithmetic in the Rust.
 as one step function per byte (`pstep`), run by `I5hLib.iterRun`.
 `Lemmas.lean` proves that each extracted function computes its model:
 `iter_fold` for the escape and substitute loops, and `iter_loop` for the parser
-with its early returns. Each loop proof is one `i5h_iter` call.
+with its early returns. Each is one `i5h_for` call.
 
 ## Theorems
 

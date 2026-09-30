@@ -89,6 +89,14 @@ theorem usize_ofNatCore_eq_zero (n : Nat) (h : n < 2 ^ UScalarTy.Usize.numBits) 
 def vecOf {α} (l : List α) (h : l.length ≤ Usize.max := by simp only [List.length_cons, List.length_nil]; scalar_tac) :
     alloc.vec.Vec α := alloc.vec.Vec.from l h
 
+/-- Cloning a vector whose elements clone to themselves; `i5h_derive_clone`
+uses it as a conditional rewrite, so derived `Clone` specs compose. -/
+theorem vec_clone_ok {T : Type} (inst : core.clone.Clone T) (v : alloc.vec.Vec T)
+    (h : ∀ x, inst.clone x = ok x) : alloc.vec.CloneVec.clone inst v = ok v :=
+  vec_clone_eq inst v h
+
+theorem u8_clone (x : U8) : core.clone.CloneU8.clone x = ok x := rfl
+
 @[simp] theorem vecOf_val {α} (l : List α) (h : l.length ≤ Usize.max) : (vecOf l h).val = l := by
   simp [vecOf]
 

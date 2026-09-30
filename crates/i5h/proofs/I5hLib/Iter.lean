@@ -208,13 +208,48 @@ macro "i5h_iter" : tactic => `(tactic| (
   rw [I5hLib.slice_iter_next]
   split <;> step* <;> (repeat' (first | step | split)) <;>
     (try simp only [I5hLib.IterStep, I5hLib.IterFoldStep, I5hLib.IterSearchStep]) <;>
-    (try simp_all) <;> try scalar_tac))
+    (try simp_all) <;> try (first | scalar_tac | omega)))
 
 /-- `i5h_iter` with extra simp lemmas, such as the definition of the model step. -/
 macro "i5h_iter" " [" ls:Lean.Parser.Tactic.simpLemma,* "]" : tactic => `(tactic| (
   rw [I5hLib.slice_iter_next]
   split <;> step* <;> (repeat' (first | step | split)) <;>
     (try simp only [I5hLib.IterStep, I5hLib.IterFoldStep, I5hLib.IterSearchStep]) <;>
-    (try simp_all [$ls,*]) <;> try scalar_tac))
+    (try simp_all [$ls,*]) <;> try (first | scalar_tac | omega)))
+
+theorem ite_true_false (b : Bool) : (if b = true then true else false) = b := by cases b <;> rfl
+
+/-- `i5h_for f using (spec) [lemmas] [closing]`: prove a spec for `f`, whose
+body is one `for` loop `f_loop`, from `spec`, an `iter_*` lemma with `?_` for
+its per-element premise, e.g. `(iter_find _ P _ ?_)`. Unfolds `f`, closes the
+per-element goal with `i5h_iter [lemmas]` and the spec's conclusion with
+`simp_all [closing]` (default: `lemmas`). Per-element goals it cannot close are
+left to the caller. -/
+macro "i5h_for " f:ident " using " e:term:max " [" ls:Lean.Parser.Tactic.simpLemma,* "]"
+    " [" cs:Lean.Parser.Tactic.simpLemma,* "]" : tactic => do
+  let loopId := Lean.mkIdent (f.getId.appendAfter "_loop")
+  let bodyId := Lean.mkIdent (loopId.getId ++ `body)
+  `(tactic| (
+    unfold $f:ident $loopId:ident
+    step*
+    try subst_vars
+    apply WP.spec_mono $e
+    · intro y hy
+      first
+        | exact hy | exact hy.symm
+        | (subst hy; simp only [I5hLib.ite_true_false, $cs,*]; done)
+        | (subst hy; simp only [I5hLib.ite_true_false, $cs,*]; rfl)
+        | (subst hy; simp_all [$cs,*]; try rfl)
+        | (simp_all [$cs,*]; done)
+        | (simp_all [$cs,*]; try rfl)
+    try simp only [Prod.forall]
+    intros
+    unfold $bodyId:ident
+    i5h_iter [$ls,*]))
+
+macro "i5h_for " f:ident " using " e:term:max " [" ls:Lean.Parser.Tactic.simpLemma,* "]" : tactic =>
+  `(tactic| i5h_for $f using $e [$ls,*] [$ls,*])
+
+macro "i5h_for " f:ident " using " e:term:max : tactic => `(tactic| i5h_for $f using $e [] [])
 
 end I5hLib
