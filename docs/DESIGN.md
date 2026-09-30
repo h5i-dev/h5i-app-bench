@@ -219,7 +219,11 @@ Tooling fixes for common failures:
   for `Vec<T>`, so `step*` passes through clones.
 - `let x = if c { a } else { b };` binds on an `if`, where `step*` stops.
   `i5h_steps` rewrites the bind into the branches and continues, whether
-  they are plain values or calls.
+  they are plain values or calls, and splits a `match` it stops at.
+- To reason about a run that succeeded without proving every callee total,
+  invert the equation: `i5h_invert h` on `h : f x = ok y` leaves one goal per
+  successful path, with each call's equation as a hypothesis
+  (`bind_tc_eq_ok`). `loop_ok` does the same for a loop, by a measure.
 - `i5h_simp` normalizes `if false = true`, `id` and `ok` binds, and never
   fails for making no progress.
 - State postconditions as `model = extracted` (e.g. `findKey l k = o`), so

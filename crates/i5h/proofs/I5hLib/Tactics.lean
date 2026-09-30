@@ -23,10 +23,26 @@ theorem bind_ite {α β} (c : Prop) [Decidable c] (m₁ m₂ : Result α) (k : �
     Std.bind (if c then m₁ else m₂) k = if c then Std.bind m₁ k else Std.bind m₂ k := by
   split <;> rfl
 
-/-- `step*`, also through binds on an `if` whose branches call functions. -/
+/-- `step*`, also through binds on an `if` whose branches call functions, and on
+a `match` (split when `step*` stops). -/
 macro "i5h_steps" : tactic => `(tactic| (
   step*
-  all_goals (repeat' (simp only [I5hLib.bind_tc_ite, I5hLib.bind_ite]; step*))))
+  all_goals (repeat' (first
+    | (simp only [I5hLib.bind_tc_ite, I5hLib.bind_ite]; step*)
+    | (split <;> step*)))))
+
+/-- `i5h_invert h` for `h : f x = ok y` (with `f` unfolded): peel binds with
+`bind_tc_eq_ok`, name nothing, split branches, and drop the branches that
+contradict `h`. What is left are the successful paths, each with the
+equations of its calls as hypotheses. Partial correctness: no callee needs a
+total spec. -/
+macro "i5h_invert " h:ident : tactic => `(tactic| (
+  repeat' (first
+    | (simp only [I5hLib.bind_tc_eq_ok, I5hLib.bind_eq_ok, ok.injEq, core.result.Result.Ok.injEq,
+        core.result.Result.Err.injEq, Prod.mk.injEq, reduceCtorEq, false_and, and_false, exists_false,
+        exists_and_left, exists_and_right, exists_eq_left, exists_eq_right] at $h:ident)
+    | (obtain ⟨_, _, $h:ident⟩ := $h)
+    | (split at $h:ident))))
 
 /-- `i5h_derive_eq T f`: derive `DecidableEq T` and a `@[step]` spec saying the
 extracted `==` of `T` (`f`, e.g. `T.Insts.CoreCmpPartialEqT.eq`) decides equality.
@@ -77,12 +93,12 @@ macro "i5h_simp" : tactic => `(tactic| (
 /-- Close the per-step goal of `loop_search` or `loop_fold`. -/
 macro "i5h_step" : tactic => `(tactic| (
   step* <;> (repeat' (first | step | split)) <;>
-    simp only [I5hLib.SearchStep, I5hLib.FoldStep] <;> simp_all <;> try scalar_tac))
+    (try simp only [I5hLib.SearchStep, I5hLib.FoldStep]) <;> (try simp_all) <;> try scalar_tac))
 
 /-- `i5h_step` with extra simp lemmas, for a loop predicate that is a named def. -/
 macro "i5h_step" " [" ls:Lean.Parser.Tactic.simpLemma,* "]" : tactic => `(tactic| (
   step* <;> (repeat' (first | step | split)) <;>
-    simp only [I5hLib.SearchStep, I5hLib.FoldStep] <;> simp_all [$ls,*] <;> try scalar_tac))
+    (try simp only [I5hLib.SearchStep, I5hLib.FoldStep]) <;> (try simp_all [$ls,*]) <;> try scalar_tac))
 
 /-- Run `f` symbolically, one goal per path. -/
 syntax "walk " ident : tactic

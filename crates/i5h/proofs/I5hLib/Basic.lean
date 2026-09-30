@@ -44,6 +44,40 @@ theorem ok_of {α} {m : Result α} {P : α → Prop} (h : m ⦃ P ⦄) : ∃ r, 
   obtain ⟨r, hr, -⟩ := (WP.spec_equiv_exists _ _).1 h
   exact ⟨r, hr⟩
 
+/-- Invert a successful bind: reason about a run that returned `ok` from the
+equation alone, with no total spec for the callee (partial correctness). -/
+theorem bind_tc_eq_ok {α β} {x : Result α} {f : α → Result β} {y : β} :
+    (do let a ← x; f a) = ok y ↔ ∃ a, x = ok a ∧ f a = ok y := by
+  constructor
+  · intro h
+    cases x using Result.cases with
+    | ret a => exact ⟨a, rfl, by simpa using h⟩
+    | vis e k => simp at h
+    | div => simp at h
+  · rintro ⟨a, rfl, h⟩; simpa using h
+
+theorem bind_eq_ok {α β} {x : Result α} {f : α → Result β} {y : β} :
+    Std.bind x f = ok y ↔ ∃ a, x = ok a ∧ f a = ok y := bind_tc_eq_ok
+
+/-- Partial correctness of a loop: if `loop body x = ok y`, a property kept by
+every successful step (with a decreasing measure) holds of `y`. No step needs
+to be proven total. -/
+theorem loop_ok {α β} (body : α → Result (ControlFlow α β)) (Inv : α → Prop) (Q : β → Prop) (μ : α → Nat)
+    (hstep : ∀ x r, Inv x → body x = ok r → match r with
+      | .done y => Q y
+      | .cont x' => Inv x' ∧ μ x' < μ x) :
+    ∀ x y, Inv x → loop body x = ok y → Q y := by
+  intro x
+  induction h : μ x using Nat.strong_induction_on generalizing x with
+  | _ n ih =>
+    intro y hx hl
+    rw [loop] at hl
+    obtain ⟨r, hr, hk⟩ := bind_eq_ok.1 hl
+    have hs := hstep x r hx hr
+    cases r with
+    | cont x' => exact ih (μ x') (h ▸ hs.2) x' rfl y hs.1 hk
+    | done y' => simp at hk; subst hk; exact hs
+
 /-- Split an equation between two `Ok (writes, reply)` results. -/
 theorem ok_inj {α β ε} {a a' : α} {b b' : β}
     (h : (core.result.Result.Ok (a', b') : core.result.Result (α × β) ε) = .Ok (a, b)) : a' = a ∧ b' = b := by

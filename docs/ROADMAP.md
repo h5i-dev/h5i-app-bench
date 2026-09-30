@@ -93,7 +93,7 @@ Done:
 - Multi-request properties: `I5hLib.Run`; `examples/keys` proves revocation
   against every interleaving and refutes a check-then-use kernel.
 - Automation: `i5h_for`, `i5h_derive_eq`, `i5h_derive_clone`, `i5h_steps`,
-  `i5h_simp`.
+  `i5h_simp`, and partial correctness (`i5h_invert`, `loop_ok`).
 
 ## Found while porting
 
