@@ -33,19 +33,22 @@ button { color: inherit; }
 
 .ocean { position: absolute; inset: 0 0 auto; height: 930px; overflow: hidden; pointer-events: none; z-index: 0; }
 .caustics { position: absolute; inset: -20% -10%; opacity: .52; background: radial-gradient(ellipse at 18% 10%, rgba(34,179,230,.16) 0 1px, transparent 2px), radial-gradient(ellipse at 82% 18%, rgba(34,179,230,.14), transparent 35%), linear-gradient(115deg, transparent 0 34%, rgba(255,255,255,.85) 43%, transparent 52%); background-size: 18px 15px, auto, auto; mask-image: linear-gradient(#000, transparent 80%); }
-.fish { position: absolute; width: 280px; opacity: .18; filter: drop-shadow(0 10px 20px rgba(30,145,190,.1)); will-change: transform; }
-.fish-body { fill: rgba(71,196,234,.1); stroke: #35add6; stroke-width: 1.2; }
-.fish-eye { fill: #49b9df; }
-.fish-one { top: 185px; left: -300px; width: 350px; animation: swim-one 34s linear infinite; }
-.fish-two { top: 555px; right: -250px; width: 230px; animation: swim-two 41s linear 6s infinite; }
-.fish-three { top: 72px; right: 6%; width: 125px; opacity: .13; animation: drift 12s ease-in-out infinite; }
+.school-defs { position: absolute; }
+.minnow { fill: #35add6; }
+.minnow-soft { opacity: .58; }
+.school { position: absolute; opacity: .22; overflow: visible; filter: drop-shadow(0 12px 24px rgba(30,145,190,.09)); will-change: transform; }
+.school-mass, .hero-school-mass { fill: url(#minnow-pattern); }
+.school-stray { fill: #35add6; opacity: .62; }
+.school-stray-two { opacity: .38; }
+.school-leader, .hero-school-leader { fill: #007aa9; }
+.school-one { top: 120px; left: -470px; width: 430px; animation: swim-one 36s linear infinite; }
+.school-two { top: 540px; right: -340px; width: 300px; opacity: .15; animation: swim-two 44s linear 7s infinite; }
 .bubble { position: absolute; border: 1px solid rgba(51,173,217,.25); border-radius: 50%; animation: bubble-up 9s ease-in infinite; }
 .bubble-one { width: 7px; height: 7px; left: 12%; top: 630px; }
 .bubble-two { width: 11px; height: 11px; left: 14%; top: 670px; animation-delay: -3s; }
 .bubble-three { width: 5px; height: 5px; right: 8%; top: 360px; animation-delay: -6s; }
-@keyframes swim-one { 0% { transform: translateX(0) translateY(0) scaleX(-1); } 48% { transform: translateX(calc(100vw + 620px)) translateY(42px) scaleX(-1); } 49%, 100% { transform: translateX(calc(100vw + 620px)) translateY(42px) scaleX(-1); } }
-@keyframes swim-two { 0% { transform: translateX(0); } 62% { transform: translateX(calc(-100vw - 520px)) translateY(-35px); } 63%, 100% { transform: translateX(calc(-100vw - 520px)) translateY(-35px); } }
-@keyframes drift { 50% { transform: translate(-18px, 12px) rotate(-2deg); } }
+@keyframes swim-one { 0% { transform: translateX(0) translateY(0) scaleX(-1) rotate(-1deg); } 52% { transform: translateX(calc(100vw + 920px)) translateY(46px) scaleX(-1) rotate(1deg); } 53%, 100% { transform: translateX(calc(100vw + 920px)) translateY(46px) scaleX(-1) rotate(1deg); } }
+@keyframes swim-two { 0% { transform: translateX(0) translateY(0); } 64% { transform: translateX(calc(-100vw - 740px)) translateY(-38px); } 65%, 100% { transform: translateX(calc(-100vw - 740px)) translateY(-38px); } }
 @keyframes bubble-up { 0% { transform: translateY(0); opacity: 0; } 20% { opacity: .4; } 100% { transform: translateY(-240px); opacity: 0; } }
 
 .site-header { position: relative; z-index: 20; width: min(1380px, calc(100% - 64px)); height: 90px; margin: auto; display: flex; align-items: center; border-bottom: 1px solid rgba(2,55,79,.42); }
@@ -84,8 +87,8 @@ h1 em { color: #009fe3; font-style: normal; font-weight: 500; }
 .hero-note span::before { content: ""; width: 4px; height: 4px; border-radius: 50%; border: 1px solid var(--blue); }
 .hero-aside { justify-self: end; width: 340px; color: rgba(0,123,177,.34); transform: rotate(-4deg); }
 .hero-aside svg { width: 100%; overflow: visible; }
-.hero-aside path { fill: rgba(67,185,226,.025); stroke: currentColor; stroke-width: .8; }
-.hero-aside circle { fill: currentColor; }
+.hero-school-mass { opacity: .82; }
+.hero-school-leader { fill: currentColor; }
 .coordinate, .species { display: block; font: 400 7px var(--mono); letter-spacing: .18em; }
 .coordinate { text-align: right; margin: 0 27px 12px 0; }
 .species { margin: 10px 0 0 26px; }
@@ -319,6 +322,6 @@ h1 em { color: #009fe3; font-style: normal; font-weight: 500; }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
-  .fish-one { transform: translateX(18vw) scaleX(-1); }
-  .fish-two { transform: translateX(-12vw); }
+  .school-one { transform: translateX(42vw) scaleX(-1); }
+  .school-two { transform: translateX(-32vw); }
 }

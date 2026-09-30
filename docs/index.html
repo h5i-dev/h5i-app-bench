@@ -58,17 +58,24 @@
 
     <div class="ocean" aria-hidden="true">
       <div class="caustics"></div>
-      <svg class="fish fish-one" viewBox="0 0 320 130" fill="none">
-        <path class="fish-body" d="M14 65c43-43 151-47 230-10 21-17 45-23 64-19-5 14-14 24-27 30 13 7 22 17 27 31-20 4-44-3-65-20C164 111 57 107 14 65Z" />
-        <circle class="fish-eye" cx="50" cy="55" r="3" />
+      <svg class="school-defs" width="0" height="0" aria-hidden="true">
+        <defs>
+          <pattern id="minnow-pattern" width="52" height="30" patternUnits="userSpaceOnUse">
+            <path class="minnow" d="M2 8c5-5 15-6 23-1 4-3 8-4 11-3-1 2-2 3-4 4 2 1 3 2 4 4-4 1-8 0-11-3C17 14 7 13 2 8Z" />
+            <path class="minnow minnow-soft" d="M29 23c3-3 9-4 14-1 2-2 5-2 7-2-1 1-2 2-3 3 1 1 2 2 3 3-2 0-5-1-7-2-5 3-11 2-14-1Z" />
+          </pattern>
+        </defs>
       </svg>
-      <svg class="fish fish-two" viewBox="0 0 320 130" fill="none">
-        <path class="fish-body" d="M14 65c43-43 151-47 230-10 21-17 45-23 64-19-5 14-14 24-27 30 13 7 22 17 27 31-20 4-44-3-65-20C164 111 57 107 14 65Z" />
-        <circle class="fish-eye" cx="50" cy="55" r="3" />
+      <svg class="school school-one" viewBox="0 0 430 180">
+        <path class="school-mass" d="M12 91C70 28 225 15 330 71c29-25 64-35 91-27-8 20-20 35-37 46 17 11 29 26 37 46-28 7-63-4-92-29C223 163 69 151 12 91Z" />
+        <path class="school-stray" d="M80 30c5-5 15-6 23-1 4-3 8-4 11-3-1 2-2 3-4 4 2 1 3 2 4 4-4 1-8 0-11-3-8 5-18 4-23-1Z" />
+        <path class="school-stray school-stray-two" d="M298 151c4-4 12-5 19-1 3-2 6-3 9-2-1 2-2 3-4 4 2 1 3 2 4 3-3 1-6 0-9-2-7 4-15 3-19-2Z" />
+        <path class="school-leader" d="M43 83c5-5 15-6 23-1 4-3 8-4 11-3-1 2-2 3-4 4 2 1 3 2 4 4-4 1-8 0-11-3-8 5-18 4-23-1Z" />
       </svg>
-      <svg class="fish fish-three" viewBox="0 0 320 130" fill="none">
-        <path class="fish-body" d="M14 65c43-43 151-47 230-10 21-17 45-23 64-19-5 14-14 24-27 30 13 7 22 17 27 31-20 4-44-3-65-20C164 111 57 107 14 65Z" />
-        <circle class="fish-eye" cx="50" cy="55" r="3" />
+      <svg class="school school-two" viewBox="0 0 430 180">
+        <path class="school-mass" d="M12 91C70 28 225 15 330 71c29-25 64-35 91-27-8 20-20 35-37 46 17 11 29 26 37 46-28 7-63-4-92-29C223 163 69 151 12 91Z" />
+        <path class="school-stray" d="M80 30c5-5 15-6 23-1 4-3 8-4 11-3-1 2-2 3-4 4 2 1 3 2 4 4-4 1-8 0-11-3-8 5-18 4-23-1Z" />
+        <path class="school-leader" d="M43 83c5-5 15-6 23-1 4-3 8-4 11-3-1 2-2 3-4 4 2 1 3 2 4 4-4 1-8 0-11-3-8 5-18 4-23-1Z" />
       </svg>
       <span class="bubble bubble-one"></span>
       <span class="bubble bubble-two"></span>
@@ -110,9 +117,9 @@
         </div>
         <div class="hero-aside" aria-hidden="true">
           <span class="coordinate">40°42′N · 74°00′W</span>
-          <svg viewBox="0 0 280 126" fill="none">
-            <path d="M10 63c38-42 132-46 201-10 19-17 40-22 57-18-4 13-12 23-23 29 11 6 19 16 23 29-18 4-39-2-58-19C141 108 48 104 10 63Z" />
-            <circle cx="42" cy="53" r="3" />
+          <svg class="hero-school" viewBox="0 0 280 126">
+            <path class="hero-school-mass" d="M10 63c38-42 132-46 201-10 19-17 40-22 57-18-4 13-12 23-23 29 11 6 19 16 23 29-18 4-39-2-58-19C141 108 48 104 10 63Z" />
+            <path class="hero-school-leader" d="M28 57c3-3 9-4 14-1 2-2 5-2 7-2-1 1-2 2-3 3 1 1 2 2 3 3-2 0-5-1-7-2-5 3-11 2-14-1Z" />
           </svg>
           <span class="species">CHANNICHTHYIDAE / 05</span>
         </div>
