@@ -11,6 +11,7 @@
 - Run each request in a SERIALIZABLE PostgreSQL transaction, with retries and idempotency keys.
 - Declare tables once with `schema!` and get Rust mappings and Lean proofs.
 - Prove that invariants hold for the rows loaded back from the database.
+- Prove properties across requests, for every order in which clients' requests commit.
 
 ```mermaid
 flowchart LR

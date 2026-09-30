@@ -28,6 +28,8 @@ MUTANTS = {
     "wastebin": ("wastebin", "if secs == 0 {", "if false {"),
     "conduit": ("conduit", "if a.author != me.id {\n        return Err(Error::Forbidden);\n    }\n    if slug_taken", "if false {\n        return Err(Error::Forbidden);\n    }\n    if slug_taken"),
     "cratesio": ("cratesio", "if inv.expires <= p.now {", "if false {"),
+    "filters": ("filters", "if *b == BSLASH || *b == QUOTE {", "if *b == QUOTE {"),
+    "keys": ("keys", "if taken(snap, secret) {", "if false {"),
 }
 
 WORKSPACE = """[workspace]
@@ -38,6 +40,9 @@ members = ["APP_KERNEL", "crates/i5h-schema", "crates/i5h-sql"]
 edition = "2024"
 license = "Apache-2.0"
 version = "0.1.0"
+repository = "https://github.com/h5i-dev/i5h"
+homepage = "https://github.com/h5i-dev/i5h"
+readme = "README.md"
 
 [workspace.dependencies]
 i5h-schema = { path = "crates/i5h-schema" }

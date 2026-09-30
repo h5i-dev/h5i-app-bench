@@ -32,6 +32,7 @@ HTTP (axum) ──► Actor<K> ──► I5h::respond ──► Engine: BEGIN, l
 | `examples/docs` | the document service, the largest example |
 | `examples/kellnr`, `examples/atuin` | ports of real authorization code, kernels and proofs only |
 | `examples/wastebin`, `examples/conduit`, `examples/cratesio` | ports of real applications, with servers |
+| `examples/filters`, `examples/keys` | patterns, kernels and proofs only: parsing over bytes, properties across requests |
 | `xtask` | `cargo i5h-verify`, which runs CI's checks locally |
 
 The root Cargo workspace holds `crates/*` and `xtask`. `examples/` is a second
@@ -61,6 +62,13 @@ fix and holds after it.
 | `examples/wastebin` | link previews burned pastes before commit 632ddf2 (issue #190) |
 | `examples/conduit` | upstream's `favorited` flag is wrong (issue #16); every reply of realworld-axum-sqlx is proven equal to a spec |
 | `examples/cratesio` | locked accounts could still sign in before PR #14760 |
+
+Two more examples each show a bug class, before and after its fix:
+
+| Example | Bug shown |
+|---|---|
+| `examples/filters` | a template substituter and a filter parser disagree on escaping, so a user's name rewrites the filter |
+| `examples/keys` | a session checks its key once and uses it later, so it outlives the key's revocation |
 
 Porting the three servers found three more upstream problems, listed in
 [NUMBERS.md](NUMBERS.md). The [tutorials](../examples/tutorials) each teach
@@ -174,12 +182,81 @@ other's effects. `i5h_pg::with_schema(url, "app")` gives an app its
 own PostgreSQL schema, created by `install_schema`. Every example except the
 document service uses one.
 
+## Writing kernels in the Aeneas subset
+
+Aeneas translates a subset of Rust. What falls outside it has a replacement:
+
+| Instead of | Write | Prove with |
+|---|---|---|
+| `String`, `&str` | `Vec<u8>`, `&[u8]` | `==` and `!=` specs in `I5hLib.Bytes` |
+| iterator adapters, closures (`.iter().any(..)`) | `for x in v.iter()` with `return` or `push` | `iter_any`, `iter_find`, `iter_filter_map`, `iter_fold` |
+| a parser with early exits | a `for` loop over bytes with a state enum | `iter_loop`, modeled by `iterRun` |
+| index loops `while i < v.len()` | `for` loops (the index loops still work) | `loop_search`, `loop_fold` |
+| `v.is_empty()` | `v.len() == 0` | `usize_ofNatCore_eq_zero` |
+
+Each `for` loop spec turns a per-element fact into a statement about the
+whole list, so a property like "every returned event is visible" is
+`∀ e ∈ out, visible e` about the full `Vec`, not about one representative.
+A function whose body is one loop takes one line:
+
+```lean
+@[step] theorem find_key_spec (keys : Slice Key) (sec : alloc.vec.Vec U8) :
+    find_key keys sec ⦃ o => findKey keys.val sec = o ⦄ := by
+  i5h_for find_key using (iter_find keys (fun k => k.secret = sec) _ ?_) [findKey]
+```
+
+`i5h_for` unfolds the function and its loop, applies the spec, closes the
+per-element goal with `i5h_iter` and restates the conclusion; what it cannot
+close is left to the caller. `examples/filters` parses text this way, with a
+round trip proven for all byte strings.
+
+Tooling fixes for common failures:
+
+- Derived `==` on an enum compares `read_discriminant`, which the WP tactics
+  do not reduce. `i5h_derive_eq T f` derives `DecidableEq T` and a `@[step]`
+  spec saying `f` decides equality. Run it for field types first, then structs.
+- `i5h_derive_clone T f` proves a derived `clone` is the identity, for `T` and
+  for `Vec<T>`, so `step*` passes through clones.
+- `let x = if c { a } else { b };` binds on an `if`, where `step*` stops.
+  `i5h_steps` rewrites the bind into the branches and continues, whether
+  they are plain values or calls, and splits a `match` it stops at.
+- To reason about a run that succeeded without proving every callee total,
+  invert the equation: `i5h_invert h` on `h : f x = ok y` leaves one goal per
+  successful path, with each call's equation as a hypothesis
+  (`bind_tc_eq_ok`). `loop_ok` does the same for a loop, by a measure.
+- `i5h_simp` normalizes `if false = true`, `id` and `ok` binds, and never
+  fails for making no progress.
+- State postconditions as `model = extracted` (e.g. `findKey l k = o`), so
+  `simp_all` rewrites the model into the extracted value. Add
+  `-List.find?_eq_none` when a match on a `find?` result must reduce.
+- If Aeneas reports "Could not match the contexts", move the branch into a
+  helper function.
+
+## Properties across requests
+
+A kernel step is one request, but properties can span many. `I5hLib.Run` is
+every serial order of requests with their outcomes; the engine commits each
+request in one SERIALIZABLE transaction, so every interleaving of concurrent
+clients is such an order (A5). A theorem over every `Run` therefore covers
+every interleaving. `Run.inv` carries an invariant along a run. `Run.after`
+proves "once this event, then from then on", and `Run.fired` gives the state
+each event ran in. A check in one request and a use in another is an
+interleaving like any other: `examples/keys` proves a revocation holds
+against every later request, and refutes the kernel that trusts a session's
+earlier check.
+
+Within one request there is no race to prove: `transition` runs on one
+snapshot and its writes commit atomically. Liveness ("eventually") is not
+expressible, since runs are finite; scenario theorems show a behavior is
+reachable. `ReachableT` adds monotonic time.
+
 ## Proof patterns
 
 The examples prove their theorems in this order:
 
 1. Specify each table loop with lists (`find?`, `any`, `filter`, `upsert`),
-   proven with `loop_search` or `loop_fold` from `I5hLib`.
+   proven with `iter_find`, `iter_any` or `iter_fold` for `for` loops, or
+   `loop_search` or `loop_fold` for index loops, from `I5hLib`.
 2. Give each command one lemma: what a successful run writes and why it
    succeeded. Only these touch extracted code.
 3. Combine them into the few write-set shapes a successful command produces:

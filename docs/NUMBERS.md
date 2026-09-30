@@ -19,11 +19,19 @@ includes the spec and excludes generated files (extracted kernels,
 | tutorial 3, ledger | 180 | 29 | 461 | 2.6 |
 | tutorial 4, inbox | 239 | 41 | 580 | 2.4 |
 | tutorial 5, booking | 268 | 61 | 644 | 2.4 |
+| `examples/filters` | 251 | 55 | 425 | 1.7 |
+| `examples/keys` | 204 | 41 | 298 | 1.5 |
 
 Counts include scenarios and upstream-bug counterexamples. Kellnr grew
 after 2026-09-26 when its `apply` was extracted and its owner invariant
 proven. Upstream Conduit has 1,077 handler lines with inline SQL, about 1.6
 Lean lines per handler line.
+
+`examples/filters` and `examples/keys` (2026-09-30) use `for` loops and
+the `I5hLib.Iter` specs. `i5h_for` and `i5h_derive_clone` then cut their
+function-spec files from 227 to 123 lines (filters `Lemmas` 120 to 71, keys
+`Lemmas` 65 to 36, keys `Apply` 42 to 16); most loop specs are one line. The
+library grew by 332 lines for them (`Iter`, `Bytes`, `Runs`, tactics).
 
 Moving 37 repeated lemmas into `I5hLib` cut app Lean by 486 lines and grew
 the library by 258.
@@ -61,7 +69,7 @@ Shared code:
 | Check | Result |
 |---|---|
 | `scripts/mutants.py` | 22 of 22 kernel bugs break a proof |
-| `scripts/mutants-apps.py` | 10 of 10 compiling kernel bugs break a proof |
+| `scripts/mutants-apps.py` | 12 of 12 compiling kernel bugs break a proof |
 | `scripts/difftest.sh` (Rust vs Lean) | 5,000 random cases per run agree (55,000 in one longer run); every outcome kind hit |
 | Axioms | only `propext`, `Classical.choice`, `Quot.sound` |
 | Extraction drift (CI) | every kernel and extracted crate re-extracted and compared |

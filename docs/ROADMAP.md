@@ -11,7 +11,7 @@ second.
 | A2 | JSON decoder is faithful | Not needed for security: theorems cover all commands | Needed for correctness only |
 | A3 | Reply encoder adds nothing | JSON writer proven (`crates/i5h-json/proofs`): output equals the spec printer; string bytes cannot close a string early (`write_str_at`). Mapping replies to JSON is trusted, per app. | Parser round trip |
 | A4 | Postgres store matches `apply` | Proven up to PostgreSQL: planner (`crates/i5h-sql`), SQL compiler and printer (`crates/i5h-pgsql`) against the model `I5hLib.Pg` (`exec`, `Lists`/`Sel`). `schema!` generates table code, `apply`, `sql_writes`, `decode`, their specs, and `PgServed`/`pg_loaded_inv`. Each server app proves `db_inv` from its extracted `transition` to every later load. Trusted: PostgreSQL matches `I5hLib.Pg`, driver value conversion, schema description. | Test `I5hLib.Pg` against PostgreSQL with generated statements |
-| A5 | SERIALIZABLE equals a serial order | Trusted | Stays trusted (PostgreSQL guarantee) |
+| A5 | SERIALIZABLE equals a serial order | Trusted; theorems over `I5hLib.Run` (every interleaving of requests) rest on it | Stays trusted (PostgreSQL guarantee) |
 | A6 | Engine protocol (retry, idempotency, lock, clock, outbox) is correct | Trusted contract in `TRUST.md`; integration and fault tests. The Lean engine model was removed: no refinement proof from `i5h-pg`. | Keep the engine small; extend tests with the contract |
 | A7 | Charon, Aeneas, Lean are sound | Trusted. Axiom gate; Rust-vs-Lean differential test (`scripts/difftest.sh`, 55k cases, no mismatch) | Stays trusted |
 | A8 | No handler bypasses the engine | Opaque `Tx` and pool; `cargo deny check bans` keeps DB crates in `i5h-pg`; `i5h_pg::lockdown` role separation. In CI. | Superusers out of scope |
@@ -48,7 +48,11 @@ Done:
 - Proof automation. Target: no hand-written Lean for a typical command,
   under 20 lines for a business invariant. `I5hLib` has `loop_search`,
   `loop_fold`, table writes, `walk`, `i5h_step` and `i5h_eval`, which runs
-  concrete scenarios with `@[step]` loop specs.
+  concrete scenarios with `@[step]` loop specs. For `for` loops over slices,
+  `iter_loop`, `iter_fold`, `iter_search` and their list forms, closed by
+  `i5h_iter`, or `i5h_for` for a whole one-loop function; `i5h_derive_eq`
+  and `i5h_derive_clone` for derived `==` and `clone`; `i5h_steps` through binds on
+  `if`; `i5h_simp`.
 - LLM-written proofs; humans review the policy table and invariants.
 - Done: `cargo i5h-verify` (`xtask/`) runs tests, bans, extraction drift and
   all proofs with sorry/axiom gates. `--full` adds mutants and the
@@ -77,6 +81,20 @@ Done: Kellnr (PR #1243), Atuin (issue #3297), Wastebin (issue #190), Conduit
 (issue #16), crates.io (PR #14760), each under `examples/`. See `TARGETS.md`.
 Open: publish the numbers; run a pilot.
 
+## Found from user feedback
+
+Done:
+
+- Text handling: byte-string specs (`I5hLib.Bytes`) and parser loops
+  (`iter_loop`); `examples/filters` proves a substitute/parse round trip for
+  every name and refutes an escaping mismatch.
+- Collections: `for` loop specs state properties of the whole list, not of
+  one element.
+- Multi-request properties: `I5hLib.Run`; `examples/keys` proves revocation
+  against every interleaving and refutes a check-then-use kernel.
+- Automation: `i5h_for`, `i5h_derive_eq`, `i5h_derive_clone`, `i5h_steps`,
+  `i5h_simp`, and partial correctness (`i5h_invert`, `loop_ok`).
+
 ## Found while porting
 
 Done:
@@ -97,6 +115,11 @@ Done:
 
 Open:
 
+- Iterator adapters and closures (`.iter().any(..)`, `.filter().collect()`)
+  extract to opaque functions in the pinned Aeneas; kernels use `for` loops.
+  `String` has no model; kernels use `Vec<u8>`.
+- Liveness ("eventually") has no statement form; `I5hLib.Run` covers
+  safety properties over every finite run.
 - Per-actor loads. A command loads the whole tenant, O(tenant). An
   actor-aware `Store::load_for` needs a frame theorem per app.
 - Anonymous callers share one idempotency scope; `ReplyCodec::scope` should
