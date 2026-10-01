@@ -76,7 +76,6 @@ function renderTiles() {
     [kLines(s.ported_loc), "lines of upstream Rust", "ported to i5h kernels"],
     [s.properties, "properties", "one theorem each"],
     [s.proved, "properties proved", `by at least one model · ${pct(s.proved, s.properties)}%`, [s.proved, s.properties]],
-    [kLines(s.proved_loc), "upstream lines under a proof", `reached from a proved property · ${pct(s.proved_loc, s.ported_loc)}%`, [s.proved_loc, s.ported_loc]],
   ];
   $("#tiles").innerHTML = tiles.map(([v, l, sub, frac]) =>
     `<div class="tile"><span class="v">${v}</span><span class="l">${l}</span>${frac ? bar(...frac) : ""}<span class="s">${sub}</span></div>`).join("");
@@ -90,8 +89,8 @@ function renderApps() {
     const proved = ts.filter((t) => Object.values(t.results).some((r) => r.p)).length;
     return `<tr><td>${esc(app)}</td>
       <td class="repo"><a href="https://github.com/${esc(a.repo)}/tree/${esc(a.commit)}" target="_blank" rel="noreferrer">${esc(a.repo)} @ ${esc(a.commit)}</a></td>
-      <td class="num">${(a.ported_loc ?? 0).toLocaleString("en")}</td><td class="num">${ts.length}</td><td class="num">${proved}</td>
-      <td><div class="bar-row">${bar(a.proved_loc, a.ported_loc)}<span class="bar-label"><span class="pct">${pct(a.proved_loc, a.ported_loc)}%</span> <span class="of">${a.proved_loc.toLocaleString("en")} lines</span></span></div></td></tr>`;
+      <td class="num">${(a.ported_loc ?? 0).toLocaleString("en")}</td><td class="num">${ts.length}</td>
+      <td><div class="bar-row">${bar(proved, ts.length)}<span class="bar-label"><span class="pct">${pct(proved, ts.length)}%</span> <span class="of">${proved} of ${ts.length}</span></span></div></td></tr>`;
   }).join("");
 }
 
