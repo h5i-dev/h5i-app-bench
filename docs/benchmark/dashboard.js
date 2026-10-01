@@ -73,7 +73,7 @@ function renderTiles() {
   const s = INDEX.stats;
   const tiles = [
     [s.repos, "repositories", "open-source Rust web applications"],
-    [kLines(s.ported_loc), "lines of upstream Rust", "ported to i5h kernels"],
+    [kLines(s.ported_loc), "lines of upstream Rust", "ported to i5h"],
     [s.properties, "properties", "one theorem each"],
     [s.proved, "properties proved", `by at least one model · ${pct(s.proved, s.properties)}%`, [s.proved, s.properties]],
   ];
@@ -103,12 +103,12 @@ function renderModels() {
       <td>${esc(model)}</td><td class="agent">${esc(agent)}</td>
       <td><div class="bar-row"><div class="bar-track" aria-hidden="true"><div class="bar-fill" style="width:${(rate * 100).toFixed(1)}%"></div></div>
         <span class="bar-label"><span class="pct">${Math.round(rate * 100)}%</span> <span class="of">${c.solved} of ${c.runs}</span></span></div></td>
-      <td class="num">${c.minutes}</td><td class="num">${c.solved && c.cost != null ? fmtCost(c.cost / c.solved) : `<span class="of">none yet · ${fmtCost(c.cost)} spent</span>`}</td></tr>`;
+      <td class="num">${c.minutes}</td><td class="num">${c.solved_loc && c.cost != null ? `$${(c.cost / c.solved_loc).toPrecision(2)}` : `<span class="of">no proof yet</span>`}</td></tr>`;
   }).join("");
 }
 
 function renderMatrixHead() {
-  $("#matrix thead").innerHTML = `<tr><th scope="col">Task</th><th scope="col">Property</th>${COLUMNS.map((key) => {
+  $("#matrix thead").innerHTML = `<tr><th scope="col">Task</th><th scope="col">Property</th><th scope="col" class="num">Upstream lines</th>${COLUMNS.map((key) => {
     const { model, agent } = columnLabel(key);
     return `<th scope="col" class="col">${esc(model)}<span class="agent">${esc(agent)}</span></th>`;
   }).join("")}</tr>`;
@@ -143,11 +143,11 @@ function renderMatrix() {
     if (t.app !== app) {
       app = t.app;
       const a = INDEX.apps[app];
-      html += `<tr class="group"><td colspan="${COLUMNS.length + 2}">${esc(app)} · ${esc(a.repo)}</td></tr>`;
+      html += `<tr class="group"><td colspan="${COLUMNS.length + 3}">${esc(app)} · ${esc(a.repo)}</td></tr>`;
     }
-    html += `<tr class="task" tabindex="0" data-id="${esc(t.id)}"><td class="t-name">${esc(t.id)}</td><td class="t-prop">${esc(t.property)}</td>${COLUMNS.map((k) => cellHtml(t, k)).join("")}</tr>`;
+    html += `<tr class="task" tabindex="0" data-id="${esc(t.id)}"><td class="t-name">${esc(t.id)}</td><td class="t-prop">${esc(t.property)}</td><td class="num">${t.loc ? t.loc.toLocaleString("en") : "–"}</td>${COLUMNS.map((k) => cellHtml(t, k)).join("")}</tr>`;
   }
-  if (!tasks.length) html = `<tr><td class="count" colspan="${COLUMNS.length + 2}">No task matches the filters.</td></tr>`;
+  if (!tasks.length) html = `<tr><td class="count" colspan="${COLUMNS.length + 3}">No task matches the filters.</td></tr>`;
   $("#matrix tbody").innerHTML = html;
 }
 
@@ -189,23 +189,26 @@ async function loadTask(id) {
 function tabStatement(d) {
   let h = `<h3>Theorem</h3><p class="note">The agent replaces <code>sorry</code> with a proof. The statement must stay exactly as written.</p>`;
   h += codeBlock({ title: d.theorem.split(".").pop(), sub: "Solution.lean", code: d.statement, lang: "lean" });
+  h += d.target.loc
+    ? `<p class="note">The property is about ${d.target.loc.toLocaleString("en")} lines of upstream Rust: ${d.target.fns.map((f) => `<code>${esc(f)}</code>`).join(", ")} and what they call.</p>`
+    : `<p class="note">The property is about code that exists only in the port, so no upstream lines are counted.</p>`;
   h += `<h3>Spec definitions it uses</h3>`;
   h += d.spec.length
     ? `<p class="note">From the port's <code>Spec.lean</code>, which the agent is given.</p>` + d.spec.map((s) => codeBlock({ title: s.name, code: s.code, lang: "lean" })).join("")
-    : `<p class="empty">The statement refers only to kernel definitions.</p>`;
+    : `<p class="empty">The statement refers only to definitions of the ported code.</p>`;
   return h;
 }
 
 function tabRust(d) {
-  if (!d.kernel.length) return `<p class="empty">No kernel function is referenced directly by this statement.</p>`;
-  let h = `<p class="note">Each kernel function next to the upstream function of the same name at the pinned commit. Kernel-only helpers replace iterator chains and library calls that Aeneas does not support.</p>`;
+  if (!d.kernel.length) return `<p class="empty">No ported function is referenced directly by this statement.</p>`;
+  let h = `<p class="note">Each ported function next to the upstream function of the same name at the pinned commit. Helpers that exist only in the port replace iterator chains and library calls that Aeneas does not support.</p>`;
   for (const k of d.kernel) {
     const up = d.upstream.find((u) => u.fn === k.fn);
     h += `<p class="fn-title">${esc(k.fn)}</p><div class="pair">`;
     h += up
       ? codeBlock({ title: "upstream", sub: `${up.file}:${up.line}`, url: up.url, code: up.code, lang: "rust" })
       : `<div class="missing">No upstream function of this name: a helper introduced by the port.</div>`;
-    h += codeBlock({ title: "kernel", sub: `${k.file}:${k.line}`, url: k.url, code: k.code, lang: "rust" });
+    h += codeBlock({ title: "i5h port", sub: `${k.file}:${k.line}`, url: k.url, code: k.code, lang: "rust" });
     h += `</div>`;
   }
   return h;
@@ -213,7 +216,7 @@ function tabRust(d) {
 
 function tabEquivalence(d) {
   const app = INDEX.apps[d.app];
-  let h = `<p class="note">The differential test runs upstream and kernel on the same generated inputs and compares results; a mutated kernel must fail it. These are the tests that call the functions above.</p>`;
+  let h = `<p class="note">The differential test runs upstream and the i5h port on the same generated inputs and compares results; a mutated port must fail it. These are the tests that call the functions above.</p>`;
   h += d.difftest.length
     ? d.difftest.map((t) => codeBlock({ title: t.fn, sub: `${t.file}:${t.line}`, url: t.url, code: t.code, lang: "rust" })).join("")
     : `<p class="empty">No test names these functions directly; they are covered through their callers.</p>`;
@@ -224,7 +227,7 @@ function tabEquivalence(d) {
 
 function tabLean(d) {
   if (!d.lean.length) return `<p class="empty">No generated definition is referenced by this statement.</p>`;
-  return `<p class="note">Extracted from the kernel by Aeneas. The bracket in each comment names the Rust item it came from.</p>` +
+  return `<p class="note">Extracted from the i5h port by Aeneas. The bracket in each comment names the Rust item it came from.</p>` +
     d.lean.map((l) => codeBlock({ title: l.name, sub: l.rust, code: l.code, lang: "lean" })).join("");
 }
 

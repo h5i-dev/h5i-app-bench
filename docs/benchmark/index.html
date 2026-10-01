@@ -30,6 +30,7 @@
         <span>i5h</span><span class="brand-reading">/ benchmark</span>
       </a>
       <nav class="site-nav" aria-label="Benchmark sections">
+        <a href="#i5h">i5h</a>
         <a href="#method">Method</a>
         <a href="#models">Models</a>
         <a href="#tasks">Tasks</a>
@@ -42,13 +43,26 @@
         <p class="eyebrow">i5h benchmark</p>
         <h1>Can a coding agent prove what a real web app's code does?</h1>
         <p class="lede">
-          Each task is one property of an open-source Rust application whose authorization logic was ported to an
-          i5h kernel and extracted to Lean 4. The agent gets the kernel, the extracted Lean and a spec, and has to
-          prove the property. Click any task to see the upstream Rust, the port, how the two are checked against
+          Each task is one property of an open-source Rust application whose authorization logic was ported to i5h
+          and extracted to Lean 4. The agent gets the ported Rust, the extracted Lean and a spec, and has to prove the
+          property. Click any task to see the upstream Rust, the port, how the two are checked against
           each other, the Lean, and the proofs the models wrote.
         </p>
         <div class="tiles" id="tiles" aria-live="polite"></div>
         <p class="status-note" id="status-note"></p>
+      </section>
+
+      <section id="i5h" class="block">
+        <div class="block-head">
+          <h2>What is i5h</h2>
+          <p><a href="../">i5h</a> is a Rust web framework whose application logic can be proved correct in Lean 4.</p>
+        </div>
+        <ol class="about">
+          <li><span class="step-k">Rust</span><h3>Build</h3><p>Handlers and state changes are written in a subset of Rust, served with axum and PostgreSQL transactions.</p></li>
+          <li><span class="step-k">Aeneas</span><h3>Extract</h3><p>Aeneas translates that Rust into Lean 4 definitions, so the Lean is the code that runs, not a model of it.</p></li>
+          <li><span class="step-k">Lean 4</span><h3>Prove</h3><p>Authorization, tenant isolation and other invariants become theorems about those definitions.</p></li>
+        </ol>
+        <p class="about-note">This benchmark asks whether a coding agent can do the last step on real code: the logic of existing open-source applications, ported to i5h.</p>
       </section>
 
       <section id="method" class="block">
@@ -59,17 +73,17 @@
         <ol class="flow">
           <li class="step rust"><span class="step-k">Rust</span><h3>Upstream code</h3>
             <p>Authorization logic of an open-source application, at a pinned commit.</p></li>
-          <li class="step rust"><span class="step-k">Rust</span><h3>i5h kernel</h3>
+          <li class="step rust"><span class="step-k">Rust</span><h3>i5h port</h3>
             <p>Ported function by function. Strings become byte slices, iterators become loops; each change is listed in the port's deviations file.</p></li>
           <li class="step lean"><span class="step-k">Lean 4</span><h3>Extracted model</h3>
-            <p>Aeneas extracts the kernel. A hand-written spec states the property as a theorem.</p></li>
+            <p>Aeneas extracts the ported code. A hand-written spec states the property as a theorem.</p></li>
           <li class="step agent"><span class="step-k">Agent</span><h3>Proof attempt</h3>
             <p>No network; the i5h Lean library and skill; 40 minutes, resumed once if it stops early.</p></li>
           <li class="step grade"><span class="step-k">Grader</span><h3>Accepted?</h3>
             <p>The proof builds, the statement is unchanged, and only <code>propext</code>, <code>Classical.choice</code> and <code>Quot.sound</code> are used.</p></li>
         </ol>
         <div class="flow-notes">
-          <p class="bracket diff"><strong>Differential test.</strong> Upstream and kernel run on the same random inputs and must return the same result. A deliberately mutated kernel must fail.</p>
+          <p class="bracket diff"><strong>Differential test.</strong> Upstream and the i5h port run on the same random inputs and must return the same result. A deliberately mutated port must fail.</p>
           <p class="bracket hidden-ref"><strong>Not given to the agent.</strong> The benchmark's own reference proofs. Proofs the models wrote and the grader accepted are shown under each task.</p>
         </div>
       </section>
@@ -93,12 +107,12 @@
       <section id="models" class="block">
         <div class="block-head">
           <h2>Models</h2>
-          <p>Share of attempted tasks solved. Models were not all run on the same tasks; the count is next to each bar. Cost per proof is the spend at list prices on all attempts, failed ones included, divided by the proofs accepted.</p>
+          <p>Share of attempted tasks solved. Models were not all run on the same tasks; the count is next to each bar. Cost per Rust line is the spend at list prices on all attempts, failed ones included, divided by the upstream lines of the operations whose properties the model proved.</p>
         </div>
         <div class="table-wrap">
           <table class="models" id="models-table">
             <thead>
-              <tr><th scope="col">Model</th><th scope="col">Agent</th><th scope="col" class="w-bar">Solved</th><th scope="col" class="num">Avg. minutes</th><th scope="col" class="num">Cost per proof</th></tr>
+              <tr><th scope="col">Model</th><th scope="col">Harness</th><th scope="col" class="w-bar">Solved</th><th scope="col" class="num">Avg. minutes</th><th scope="col" class="num">Cost per Rust line</th></tr>
             </thead>
             <tbody></tbody>
           </table>
