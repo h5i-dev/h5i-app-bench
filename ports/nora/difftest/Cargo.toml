@@ -1,0 +1,26 @@
+[package]
+name = "nora-difftest"
+description = "Differential test: the nora kernel against nora's own code at f864a9a"
+edition = "2024"
+version = "0.1.0"
+publish = false
+
+[dependencies]
+nora-kernel = { path = "../kernel" }
+nora-upstream = { path = "upstream" }
+axum = "0.8"
+tokio = { version = "1", features = ["full"] }
+tower = { version = "0.5", features = ["util"] }
+base64 = "0.22"
+sha2 = "0.11"
+hex = "0.4"
+argon2 = { version = "0.5", features = ["std", "rand"] }
+bcrypt = "0.19"
+serde_json = "1"
+tempfile = "3"
+
+[workspace]
+exclude = ["upstream"]
+
+[profile.release]
+overflow-checks = true

@@ -1,0 +1,17 @@
+[package]
+name = "kanidmd_lib"
+description = "kanidm's access control module at f608c4f, copied verbatim by extract_upstream.py, with stubs"
+edition = "2021"
+version = "0.1.0"
+publish = false
+
+[dependencies]
+kanidm_proto = { path = "proto" }
+hashbrown = "0.17"
+serde = { version = "1", features = ["derive"] }
+smartstring = "1"
+tracing = "0.1"
+uuid = { version = "1", features = ["v4", "serde"] }
+
+[workspace]
+members = ["proto"]

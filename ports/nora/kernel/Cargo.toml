@@ -1,0 +1,11 @@
+[package]
+name = "nora-kernel"
+description = "nora's OIDC write authorization (getnora-io/nora @ f864a9a) as an h5i-app kernel"
+edition = "2024"
+version = "0.1.0"
+publish = false
+
+# No dependencies: this crate is extracted to Lean by Charon + Aeneas.
+[dependencies]
+
+[workspace]

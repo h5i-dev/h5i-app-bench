@@ -1,0 +1,1 @@
+{"id": "nora-admin-path", "repo": "getnora-io/nora", "property": "With authentication enabled, a request to an admin path reaches its handler only with the admin role.", "theorem": "nora_kernel.Properties.admin_path_needs_admin", "src": "bench:ports/nora", "rust_loc": 1613, "generated_lean_loc": 11273, "spec_loc": 85, "prebuild_s": 121.0, "ref_proof_loc": null}

@@ -1,0 +1,11 @@
+[package]
+name = "oxicloud-kernel"
+description = "OxiCloud's authorization, sharing, trash, quota and playlist logic (AtalayaLabs/OxiCloud @ 8c0dd33) as an h5i-app kernel"
+edition = "2024"
+version = "0.1.0"
+publish = false
+
+# No dependencies: this crate is extracted to Lean by Charon + Aeneas.
+[dependencies]
+
+[workspace]

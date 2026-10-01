@@ -1,0 +1,507 @@
+// Copied from Bootstrap-Academy/backend @ fbe5e60 by extract_upstream.py. Do not edit.
+#[allow(unused_imports)]
+use crate::upstream::academy_models;
+use std::net::IpAddr;
+
+use crate::upstream::academy_auth_contracts::{
+    AuthResultExt, AuthService, AuthenticateByPasswordError, AuthenticateByRefreshTokenError,
+};
+use crate::upstream::academy_core_mfa_contracts::authenticate::{
+    MfaAuthenticateError, MfaAuthenticateResult, MfaAuthenticateService,
+};
+use crate::upstream::academy_core_session_contracts::{
+    SessionCreateCommand, SessionCreateError, SessionDeleteByUserError, SessionDeleteCurrentError,
+    SessionDeleteError, SessionFeatureService, SessionGetCurrentError, SessionImpersonateError,
+    SessionListByUserError, SessionRefreshError, failed_auth_count::SessionFailedAuthCountService,
+    login_throttle::SessionLoginThrottleService, session::SessionService,
+};
+use crate::upstream::academy_di::Build;
+use crate::upstream::academy_models::{
+    RecaptchaResponse,
+    auth::{AccessToken, Login, RefreshToken},
+    session::{Session, SessionId},
+    user::{UserId, UserIdOrSelf, UserNameOrEmailAddress},
+};
+use crate::upstream::academy_persistence_contracts::{
+    Database, Transaction, session::SessionRepository, user::UserRepository,
+};
+use crate::upstream::academy_shared_contracts::captcha::{CaptchaCheckError, CaptchaService};
+use crate::upstream::academy_utils::trace_instrument;
+use anyhow::{Context, anyhow};
+
+pub mod failed_auth_count;
+pub mod login_throttle;
+pub mod session;
+
+
+#[derive(Debug, Clone)]
+pub struct SessionFeatureServiceImpl<
+    Db,
+    Auth,
+    Captcha,
+    Session,
+    SessionFailedAuthCount,
+    SessionLoginThrottle,
+    MfaAuthenticate,
+    UserRepo,
+    SessionRepo,
+> {
+    pub db: Db,
+    pub auth: Auth,
+    pub captcha: Captcha,
+    pub session: Session,
+    pub session_failed_auth_count: SessionFailedAuthCount,
+    pub session_login_throttle: SessionLoginThrottle,
+    pub mfa_authenticate: MfaAuthenticate,
+    pub user_repo: UserRepo,
+    pub session_repo: SessionRepo,
+    pub config: SessionFeatureConfig,
+}
+
+#[derive(Debug, Clone)]
+pub struct SessionFeatureConfig {
+    pub login_fails_before_captcha: u64,
+}
+
+impl<
+    Db,
+    Auth,
+    Captcha,
+    SessionS,
+    SessionFailedAuthCount,
+    SessionLoginThrottle,
+    MfaAuthenticate,
+    UserRepo,
+    SessionRepo,
+> SessionFeatureService
+    for SessionFeatureServiceImpl<
+        Db,
+        Auth,
+        Captcha,
+        SessionS,
+        SessionFailedAuthCount,
+        SessionLoginThrottle,
+        MfaAuthenticate,
+        UserRepo,
+        SessionRepo,
+    >
+where
+    Db: Database,
+    Auth: AuthService<Db::Transaction>,
+    Captcha: CaptchaService,
+    SessionS: SessionService<Db::Transaction>,
+    SessionFailedAuthCount: SessionFailedAuthCountService,
+    SessionLoginThrottle: SessionLoginThrottleService,
+    MfaAuthenticate: MfaAuthenticateService<Db::Transaction>,
+    UserRepo: UserRepository<Db::Transaction>,
+    SessionRepo: SessionRepository<Db::Transaction>,
+{
+    async fn get_current_session(
+        &self,
+        token: &AccessToken,
+    ) -> Result<Session, SessionGetCurrentError> {
+        let auth = self.auth.authenticate(token).await.map_auth_err()?;
+
+        let mut txn = self.db.begin_transaction().await?;
+
+        self.session_repo
+            .get(&mut txn, auth.session_id)
+            .await?
+            .ok_or_else(|| anyhow!("Failed to get authenticated session").into())
+    }
+
+    async fn list_by_user(
+        &self,
+        token: &AccessToken,
+        user_id: UserIdOrSelf,
+    ) -> Result<Vec<Session>, SessionListByUserError> {
+        let auth = self.auth.authenticate(token).await.map_auth_err()?;
+        let user_id = user_id.unwrap_or(auth.user_id);
+        auth.ensure_self_or_admin(user_id).map_auth_err()?;
+
+        let mut txn = self.db.begin_transaction().await?;
+
+        self.session_repo
+            .list_by_user(&mut txn, user_id)
+            .await
+            .context("Failed to get sessions from database")
+            .map_err(Into::into)
+    }
+
+    // The command carries the name or email address the login was attempted
+    // with and the user agent of the client, neither of which belongs in the
+    // logs of every login attempt.
+    async fn create_session(
+        &self,
+        client_ip: IpAddr,
+        cmd: SessionCreateCommand,
+        recaptcha_response: Option<RecaptchaResponse>,
+    ) -> Result<Login, SessionCreateError> {
+        let device_name = cmd.device_name.clone();
+        let (mut txn, user_composite, mfa_verified) = self
+            .prove_credentials(client_ip, cmd, recaptcha_response)
+            .await?;
+
+        if !user_composite.user.enabled {
+            return Err(SessionCreateError::UserDisabled);
+        }
+
+        let login = self
+            .session
+            .create(&mut txn, user_composite, device_name, true, mfa_verified)
+            .await
+            .context("Failed to create session")?;
+
+        txn.commit().await?;
+
+        Ok(login)
+    }
+
+    async fn prove_recipient(
+        &self,
+        client_ip: IpAddr,
+        cmd: SessionCreateCommand,
+        recaptcha_response: Option<RecaptchaResponse>,
+    ) -> Result<UserId, SessionCreateError> {
+        let (txn, user, _mfa_verified) = self
+            .prove_credentials(client_ip, cmd, recaptcha_response)
+            .await?;
+        txn.commit().await?;
+        Ok(user.user.id)
+    }
+
+    async fn impersonate(
+        &self,
+        token: &AccessToken,
+        user_id: UserId,
+    ) -> Result<Login, SessionImpersonateError> {
+        let auth = self.auth.authenticate(token).await.map_auth_err()?;
+        auth.ensure_admin().map_auth_err()?;
+
+        let mut txn = self.db.begin_transaction().await?;
+
+        let user_composite = self
+            .user_repo
+            .get_composite(&mut txn, user_id)
+            .await
+            .context("Failed to get user from database")?
+            .ok_or(SessionImpersonateError::NotFound)?;
+
+        if !user_composite.user.enabled {
+            return Err(SessionImpersonateError::NotFound);
+        }
+
+        // Impersonation never involves the second factor of the impersonated
+        // user, so the new session does not grant administrative privileges.
+        let login = self
+            .session
+            .create(&mut txn, user_composite, None, false, false)
+            .await
+            .context("Failed to create session")?;
+
+        txn.commit().await?;
+
+        Ok(login)
+    }
+
+    async fn refresh_session(
+        &self,
+        refresh_token: &RefreshToken,
+    ) -> Result<Login, SessionRefreshError> {
+        let mut txn = self.db.begin_transaction().await?;
+
+        let session_id = match self
+            .auth
+            .authenticate_by_refresh_token(&mut txn, refresh_token)
+            .await
+        {
+            Ok(session_id) => session_id,
+            Err(AuthenticateByRefreshTokenError::Invalid) => {
+                return Err(SessionRefreshError::InvalidRefreshToken);
+            }
+            Err(AuthenticateByRefreshTokenError::Expired(session_id)) => {
+                self.session
+                    .delete(&mut txn, session_id)
+                    .await
+                    .context("Failed to delete expired session")?;
+                return Err(SessionRefreshError::InvalidRefreshToken);
+            }
+            Err(AuthenticateByRefreshTokenError::Other(err)) => {
+                return Err(err
+                    .context("Failed to authenticate by refresh token")
+                    .into());
+            }
+        };
+
+        let login = self
+            .session
+            .refresh(&mut txn, session_id)
+            .await
+            .map_err(|err| {
+                use crate::upstream::academy_core_session_contracts::session::SessionRefreshError as E;
+                match err {
+                    E::NotFound => SessionRefreshError::InvalidRefreshToken,
+                    E::Other(err) => err.context("Failed to refresh session").into(),
+                }
+            })?;
+
+        txn.commit().await?;
+
+        Ok(login)
+    }
+
+    async fn delete_session(
+        &self,
+        token: &AccessToken,
+        user_id: UserIdOrSelf,
+        session_id: SessionId,
+    ) -> Result<(), SessionDeleteError> {
+        let auth = self.auth.authenticate(token).await.map_auth_err()?;
+        let user_id = user_id.unwrap_or(auth.user_id);
+        auth.ensure_self_or_admin(user_id).map_auth_err()?;
+
+        let mut txn = self.db.begin_transaction().await?;
+
+        let session = self
+            .session_repo
+            .get(&mut txn, session_id)
+            .await
+            .context("Failed to get session from database")?
+            .filter(|s| s.user_id == user_id)
+            .ok_or(SessionDeleteError::NotFound)?;
+
+        self.session
+            .delete(&mut txn, session.id)
+            .await
+            .context("Failed to delete session")?;
+
+        txn.commit().await?;
+
+        Ok(())
+    }
+
+    async fn delete_current_session(
+        &self,
+        token: &AccessToken,
+    ) -> Result<(), SessionDeleteCurrentError> {
+        let auth = self.auth.authenticate(token).await.map_auth_err()?;
+
+        let mut txn = self.db.begin_transaction().await?;
+
+        self.session
+            .delete(&mut txn, auth.session_id)
+            .await
+            .context("Failed to delete session")?;
+
+        txn.commit().await?;
+
+        Ok(())
+    }
+
+    async fn delete_by_user(
+        &self,
+        token: &AccessToken,
+        user_id: UserIdOrSelf,
+    ) -> Result<(), SessionDeleteByUserError> {
+        let auth = self.auth.authenticate(token).await.map_auth_err()?;
+        let user_id = user_id.unwrap_or(auth.user_id);
+        auth.ensure_self_or_admin(user_id).map_auth_err()?;
+
+        let mut txn = self.db.begin_transaction().await?;
+
+        self.session
+            .delete_by_user(&mut txn, user_id)
+            .await
+            .context("Failed to delete sessions")?;
+
+        txn.commit().await?;
+
+        Ok(())
+    }
+}
+
+impl<
+    Db,
+    Auth,
+    Captcha,
+    SessionS,
+    SessionFailedAuthCount,
+    SessionLoginThrottle,
+    MfaAuthenticate,
+    UserRepo,
+    SessionRepo,
+>
+    SessionFeatureServiceImpl<
+        Db,
+        Auth,
+        Captcha,
+        SessionS,
+        SessionFailedAuthCount,
+        SessionLoginThrottle,
+        MfaAuthenticate,
+        UserRepo,
+        SessionRepo,
+    >
+where
+    Db: Database,
+    Auth: AuthService<Db::Transaction>,
+    Captcha: CaptchaService,
+    SessionFailedAuthCount: SessionFailedAuthCountService,
+    SessionLoginThrottle: SessionLoginThrottleService,
+    MfaAuthenticate: MfaAuthenticateService<Db::Transaction>,
+    UserRepo: UserRepository<Db::Transaction>,
+{
+    async fn prove_credentials(
+        &self,
+        client_ip: IpAddr,
+        cmd: SessionCreateCommand,
+        recaptcha_response: Option<RecaptchaResponse>,
+    ) -> Result<(Db::Transaction, academy_models::user::UserComposite, bool), SessionCreateError>
+    {
+        // The brake comes first: a locked login is refused before any password
+        // is checked, whether or not a captcha is configured.
+        self.session_login_throttle
+            .check(&cmd.name_or_email, client_ip)
+            .await?;
+
+        let failed_login_attempts = self
+            .session_failed_auth_count
+            .get(&cmd.name_or_email)
+            .await
+            .context("Failed to get failed auth count")?;
+
+        if failed_login_attempts >= self.config.login_fails_before_captcha {
+            self.captcha
+                .check(recaptcha_response.as_deref().map(String::as_str))
+                .await
+                .map_err(|err| match err {
+                    CaptchaCheckError::Failed => SessionCreateError::Recaptcha,
+                    CaptchaCheckError::Other(err) => err.context("Failed to check captcha").into(),
+                })?;
+        }
+
+        let mut txn = self.db.begin_transaction().await?;
+
+        let mut user_composite = match self
+            .user_repo
+            .get_composite_by_name_or_email(&mut txn, &cmd.name_or_email)
+            .await
+            .context("Failed to get user from database")?
+        {
+            Some(user_composite) => user_composite,
+            None => {
+                self.session_failed_auth_count
+                    .increment(&cmd.name_or_email)
+                    .await
+                    .context("Failed to increment failed auth count")?;
+                self.record_failed_attempt(client_ip, [&cmd.name_or_email])
+                    .await?;
+                return Err(SessionCreateError::InvalidCredentials);
+            }
+        };
+
+        // Both spellings of the login are counted, so that switching between
+        // the user name and the email address does not dodge the lock.
+        let logins = std::iter::once(UserNameOrEmailAddress::Name(
+            user_composite.user.name.clone(),
+        ))
+        .chain(
+            user_composite
+                .user
+                .email
+                .clone()
+                .map(UserNameOrEmailAddress::Email),
+        )
+        .collect::<Vec<_>>();
+
+        let increment_failed_login_attempts = || async {
+            for login in &logins {
+                self.session_failed_auth_count
+                    .increment(login)
+                    .await
+                    .context("Failed to increment failed auth count")?;
+            }
+            self.record_failed_attempt(client_ip, &logins).await?;
+            anyhow::Ok(())
+        };
+
+        match self
+            .auth
+            .authenticate_by_password(&mut txn, user_composite.user.id, cmd.password)
+            .await
+        {
+            Ok(()) => {}
+            Err(AuthenticateByPasswordError::InvalidCredentials) => {
+                increment_failed_login_attempts().await?;
+                return Err(SessionCreateError::InvalidCredentials);
+            }
+            Err(AuthenticateByPasswordError::Other(err)) => {
+                return Err(err
+                    .context("Failed to perform password authentication")
+                    .into());
+            }
+        };
+
+        // Only a successful TOTP check marks the session as authenticated with a
+        // second factor. A recovery code disables MFA instead of proving
+        // possession of the second factor, so it does not.
+        let mut mfa_verified = false;
+        if user_composite.details.mfa_enabled {
+            match self
+                .mfa_authenticate
+                .authenticate(&mut txn, user_composite.user.id, cmd.mfa)
+                .await
+            {
+                Ok(MfaAuthenticateResult::Ok) => mfa_verified = true,
+                Ok(MfaAuthenticateResult::Disabled) => (),
+                Ok(MfaAuthenticateResult::Reset) => user_composite.details.mfa_enabled = false,
+                Err(MfaAuthenticateError::Failed) => {
+                    increment_failed_login_attempts().await?;
+                    return Err(SessionCreateError::MfaFailed);
+                }
+                Err(MfaAuthenticateError::Other(err)) => {
+                    return Err(err.context("Failed to perform MFA").into());
+                }
+            }
+        }
+
+        // A successful login clears the account counter. The counter of the
+        // client address is deliberately not cleared: one account whose
+        // password is known would otherwise buy an unlimited number of guesses
+        // against every other one.
+        for login in &logins {
+            self.session_failed_auth_count
+                .reset(login)
+                .await
+                .context("Failed to reset failed auth count")?;
+            self.session_login_throttle
+                .reset(login)
+                .await
+                .context("Failed to reset failed login attempts")?;
+        }
+
+        Ok((txn, user_composite, mfa_verified))
+    }
+
+    /// Count a failed attempt against the client address and against every
+    /// spelling of the login it was made with.
+    async fn record_failed_attempt<'a>(
+        &self,
+        client_ip: IpAddr,
+        logins: impl IntoIterator<Item = &'a UserNameOrEmailAddress>,
+    ) -> anyhow::Result<()> {
+        self.session_login_throttle
+            .record_ip_failure(client_ip)
+            .await
+            .context("Failed to count failed login attempt for client ip")?;
+
+        for login in logins {
+            self.session_login_throttle
+                .record_account_failure(login)
+                .await
+                .context("Failed to count failed login attempt")?;
+        }
+
+        Ok(())
+    }
+}

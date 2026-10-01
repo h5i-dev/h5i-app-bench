@@ -1,0 +1,1 @@
+{"id": "nora-untrusted-peer", "repo": "getnora-io/nora", "property": "Forwarding headers from a peer outside the trusted proxies are ignored.", "theorem": "nora_kernel.Properties.untrusted_peer_is_client", "src": "bench:ports/nora", "rust_loc": 1613, "generated_lean_loc": 11273, "spec_loc": 85, "prebuild_s": 120.3, "ref_proof_loc": null}

@@ -1,0 +1,114 @@
+// Copied from Bootstrap-Academy/backend @ fbe5e60 by extract_upstream.py. Do not edit.
+#[allow(unused_imports)]
+use crate::upstream::academy_models;
+use crate::upstream::academy_auth_contracts::{AuthResultExt, AuthService};
+use crate::upstream::academy_core_coin_contracts::{
+    CoinAddCoinsError, CoinFeatureService, CoinGetBalanceError, coin::CoinService,
+};
+use crate::upstream::academy_core_finance_contracts::coin::FinanceCoinService;
+use crate::upstream::academy_di::Build;
+use crate::upstream::academy_models::{
+    auth::AccessToken,
+    coin::{Balance, CoinConfig, TransactionDescription},
+    user::UserIdOrSelf,
+};
+use crate::upstream::academy_persistence_contracts::{
+    Database, Transaction, coin::CoinRepository, user::UserRepository,
+};
+use crate::upstream::academy_utils::trace_instrument;
+
+pub mod coin;
+
+
+#[derive(Debug, Clone, Default)]
+pub struct CoinFeatureServiceImpl<Db, Auth, UserRepo, CoinRepo, Coin, FinanceCoin> {
+    pub db: Db,
+    pub auth: Auth,
+    pub user_repo: UserRepo,
+    pub coin_repo: CoinRepo,
+    pub coin: Coin,
+    pub finance_coin: FinanceCoin,
+}
+
+impl<Db, Auth, UserRepo, CoinRepo, Coin, FinanceCoin> CoinFeatureService
+    for CoinFeatureServiceImpl<Db, Auth, UserRepo, CoinRepo, Coin, FinanceCoin>
+where
+    Db: Database,
+    Auth: AuthService<Db::Transaction>,
+    UserRepo: UserRepository<Db::Transaction>,
+    CoinRepo: CoinRepository<Db::Transaction>,
+    Coin: CoinService<Db::Transaction>,
+    FinanceCoin: FinanceCoinService,
+{
+    fn get_config(&self) -> CoinConfig {
+        CoinConfig {
+            coins_per_euro: self.finance_coin.coins_per_euro(),
+            vat_percent: self.finance_coin.vat_percent(),
+        }
+    }
+
+    async fn get_balance(
+        &self,
+        token: &AccessToken,
+        user_id: UserIdOrSelf,
+    ) -> Result<Balance, CoinGetBalanceError> {
+        let auth = self.auth.authenticate(token).await.map_auth_err()?;
+        let user_id = user_id.unwrap_or(auth.user_id);
+        auth.ensure_self_or_admin(user_id).map_auth_err()?;
+
+        let mut txn = self.db.begin_transaction().await?;
+
+        if !self.user_repo.exists(&mut txn, user_id).await? {
+            return Err(CoinGetBalanceError::UserNotFound);
+        }
+
+        let balance = self.coin_repo.get_balance(&mut txn, user_id).await?;
+
+        Ok(balance)
+    }
+
+    async fn add_coins(
+        &self,
+        token: &AccessToken,
+        user_id: UserIdOrSelf,
+        coins: i64,
+        description: Option<TransactionDescription>,
+        include_in_credit_note: bool,
+    ) -> Result<Balance, CoinAddCoinsError> {
+        let auth = self.auth.authenticate(token).await.map_auth_err()?;
+        let user_id = user_id.unwrap_or(auth.user_id);
+        auth.ensure_admin().map_auth_err()?;
+        if coins > 0 {
+            return Err(CoinAddCoinsError::CreditNotAuthorized);
+        }
+
+        let mut txn = self.db.begin_transaction().await?;
+
+        if !self.user_repo.exists(&mut txn, user_id).await? {
+            return Err(CoinAddCoinsError::UserNotFound);
+        }
+
+        let new_balance = self
+            .coin
+            .add_coins(
+                &mut txn,
+                user_id,
+                coins,
+                false,
+                description,
+                include_in_credit_note,
+            )
+            .await
+            .map_err(|err| {
+                use crate::upstream::academy_core_coin_contracts::coin::CoinAddCoinsError as E;
+                match err {
+                    E::NotEnoughCoins => CoinAddCoinsError::NotEnoughCoins,
+                    E::Other(err) => err.into(),
+                }
+            })?;
+
+        txn.commit().await?;
+
+        Ok(new_balance)
+    }
+}

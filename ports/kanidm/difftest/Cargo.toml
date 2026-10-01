@@ -1,0 +1,22 @@
+[package]
+name = "kanidm-difftest"
+description = "Differential test: the kanidm kernel against kanidm's access module at f608c4f"
+edition = "2024"
+version = "0.1.0"
+publish = false
+
+[dependencies]
+kanidm-kernel = { path = "../kernel" }
+kanidmd_lib = { path = "upstream" }
+kanidm_proto = { path = "upstream/proto" }
+uuid = "1"
+
+[workspace]
+exclude = ["upstream"]
+
+[profile.release]
+overflow-checks = true
+
+[profile.test]
+opt-level = 3
+overflow-checks = true

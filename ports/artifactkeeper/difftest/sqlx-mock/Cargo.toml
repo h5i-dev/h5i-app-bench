@@ -1,0 +1,9 @@
+[package]
+name = "sqlx"
+description = "A stand-in for sqlx in the difftest: statements go to a Backend the test supplies"
+edition = "2021"
+version = "0.0.0"
+publish = false
+
+[dependencies]
+uuid = "1"

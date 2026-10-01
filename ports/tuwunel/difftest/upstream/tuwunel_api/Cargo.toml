@@ -1,0 +1,16 @@
+[package]
+name = "tuwunel_api"
+description = "tuwunel_api: the copied client endpoints"
+edition.workspace = true
+version.workspace = true
+publish.workspace = true
+
+[dependencies]
+tuwunel_core = { path = "../tuwunel_core" }
+tuwunel_service = { path = "../tuwunel_service" }
+ruma = { path = "../ruma" }
+axum = { path = "../axum" }
+tracing = { path = "../tracing" }
+futures.workspace = true
+serde.workspace = true
+serde_json = { workspace = true, features = ["raw_value"] }

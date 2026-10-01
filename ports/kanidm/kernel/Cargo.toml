@@ -1,0 +1,11 @@
+[package]
+name = "kanidm-kernel"
+description = "kanidm's access control engine (kanidm/kanidm @ f608c4f) as an h5i-app kernel"
+edition = "2024"
+version = "0.1.0"
+publish = false
+
+# No dependencies: this crate is extracted to Lean by Charon + Aeneas.
+[dependencies]
+
+[workspace]

@@ -1,0 +1,165 @@
+# Ports kept out of the benchmark (too little-used upstream); the grader
+# still knows them.
+
+[[task]]
+id = "bootstrapacademy-unauthenticated-writes-nothing"
+repo = "Bootstrap-Academy/backend"
+src = "bench:ports/extra/bootstrapacademy"
+ns = "bootstrapacademy_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "bootstrapacademy_kernel.Properties.unauthenticated_writes_nothing"
+property = "A request whose access token does not authenticate writes nothing, not even to the cache, and fails."
+
+[[task]]
+id = "bootstrapacademy-self-or-admin"
+repo = "Bootstrap-Academy/backend"
+src = "bench:ports/extra/bootstrapacademy"
+ns = "bootstrapacademy_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "bootstrapacademy_kernel.Properties.self_or_admin"
+property = "A user-scoped command succeeds only for the account itself or for an administrator whose session passed the second factor."
+
+[[task]]
+id = "bootstrapacademy-admin-needs-mfa"
+repo = "Bootstrap-Academy/backend"
+src = "bench:ports/extra/bootstrapacademy"
+ns = "bootstrapacademy_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "bootstrapacademy_kernel.Properties.admin_needs_mfa"
+property = "Impersonation and debiting coins need an administrator account and a session established with a verified second factor, as stored in the database."
+
+[[task]]
+id = "bootstrapacademy-token-claims-ignored"
+repo = "Bootstrap-Academy/backend"
+src = "bench:ports/extra/bootstrapacademy"
+ns = "bootstrapacademy_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "bootstrapacademy_kernel.Properties.token_claims_ignored"
+property = "The admin, email_verified and mfa claims of an access token do not change the outcome; authority is read from the account and the session."
+
+[[task]]
+id = "bootstrapacademy-impersonation-without-mfa"
+repo = "Bootstrap-Academy/backend"
+src = "bench:ports/extra/bootstrapacademy"
+ns = "bootstrapacademy_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "bootstrapacademy_kernel.Properties.impersonation_without_mfa"
+property = "A session created by impersonation never carries the second-factor flag."
+
+[[task]]
+id = "bootstrapacademy-mfa-session-needs-totp"
+repo = "Bootstrap-Academy/backend"
+src = "bench:ports/extra/bootstrapacademy"
+ns = "bootstrapacademy_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "bootstrapacademy_kernel.Properties.mfa_session_needs_totp"
+property = "A session is marked mfa_verified only by a password login with a TOTP code that an enabled device of the account accepts."
+
+[[task]]
+id = "bootstrapacademy-writes-confined"
+repo = "Bootstrap-Academy/backend"
+src = "bench:ports/extra/bootstrapacademy"
+ns = "bootstrapacademy_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "bootstrapacademy_kernel.Properties.writes_confined"
+property = "A user-scoped command writes only rows and cache entries of the account it names."
+
+[[task]]
+id = "bootstrapacademy-coins-nonnegative"
+repo = "Bootstrap-Academy/backend"
+src = "bench:ports/extra/bootstrapacademy"
+ns = "bootstrapacademy_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "bootstrapacademy_kernel.Properties.coins_nonnegative"
+property = "Applying a request's writes to a coins table without negative balances leaves none."
+
+[[task]]
+id = "bootstrapacademy-no-minting"
+repo = "Bootstrap-Academy/backend"
+src = "bench:ports/extra/bootstrapacademy"
+ns = "bootstrapacademy_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "bootstrapacademy_kernel.Properties.no_minting"
+property = "No ported endpoint credits coins, for a refill price that fits an i64."
+
+[[task]]
+id = "bootstrapacademy-refill-is-paid"
+repo = "Bootstrap-Academy/backend"
+src = "bench:ports/extra/bootstrapacademy"
+ns = "bootstrapacademy_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "bootstrapacademy_kernel.Properties.refill_is_paid"
+property = "Hearts are refilled only after charging the caller the refill price and recording the withdrawal declaration."
+
+[[task]]
+id = "bootstrapacademy-locked-login-refused"
+repo = "Bootstrap-Academy/backend"
+src = "bench:ports/extra/bootstrapacademy"
+ns = "bootstrapacademy_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "bootstrapacademy_kernel.Properties.locked_login_refused"
+property = "While a login is locked, a login attempt is refused with the remaining lock time and nothing is written."
+
+[[task]]
+id = "bootstrapacademy-failed-login-counted"
+repo = "Bootstrap-Academy/backend"
+src = "bench:ports/extra/bootstrapacademy"
+ns = "bootstrapacademy_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "bootstrapacademy_kernel.Properties.failed_login_counted"
+property = "A login refused for bad credentials counts one more failure against the client address."
+
+[[task]]
+id = "bootstrapacademy-mfa-disable-revokes"
+repo = "Bootstrap-Academy/backend"
+src = "bench:ports/extra/bootstrapacademy"
+ns = "bootstrapacademy_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "bootstrapacademy_kernel.Properties.mfa_disable_revokes"
+property = "Disabling MFA deletes the devices, clears mfa_verified on the account's sessions and invalidates all its access tokens."
+
+[[task]]
+id = "bootstrapacademy-refresh-needs-live-session"
+repo = "Bootstrap-Academy/backend"
+src = "bench:ports/extra/bootstrapacademy"
+ns = "bootstrapacademy_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "bootstrapacademy_kernel.Properties.refresh_needs_live_session"
+property = "A refresh token yields a login only for an unexpired session of an enabled account, keeping the session's second-factor flag."
+
+[[task]]
+id = "bootstrapacademy-disabled-no-session"
+repo = "Bootstrap-Academy/backend"
+src = "bench:ports/extra/bootstrapacademy"
+ns = "bootstrapacademy_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "bootstrapacademy_kernel.Properties.disabled_accounts_get_no_session"
+property = "Disabled accounts get no new session."
+
+[[task]]
+id = "bootstrapacademy-total"
+repo = "Bootstrap-Academy/backend"
+src = "bench:ports/extra/bootstrapacademy"
+ns = "bootstrapacademy_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "bootstrapacademy_kernel.Properties.transition_total"
+property = "The kernel never panics, overflows or diverges on tables of realistic size."
+
+# artifact-keeper (ports/artifactkeeper): repository access decisions.
+

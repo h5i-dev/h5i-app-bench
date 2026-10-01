@@ -1,0 +1,23 @@
+[package]
+name = "nora-upstream"
+description = "nora's authorization code at f864a9a, with stubs for the rest of the crate"
+edition = "2021"
+version = "0.1.0"
+publish = false
+
+[dependencies]
+axum = "0.8"
+tokio = { version = "1", features = ["full"] }
+tower = { version = "0.5", features = ["util"] }
+base64 = "0.22"
+sha2 = "0.11"
+hex = "0.4"
+argon2 = { version = "0.5", features = ["std", "rand"] }
+bcrypt = "0.19"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+parking_lot = "0.12"
+thiserror = "2"
+uuid = { version = "1", features = ["v4"] }
+tracing = "0.1"
+[workspace]
