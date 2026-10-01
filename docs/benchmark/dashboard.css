@@ -107,14 +107,17 @@ code { font-family: var(--mono); font-size: .92em; }
 .site-nav a, .github-link { color: var(--ink); }
 .github-link { font-size: 13px; font-weight: 600; padding: 7px 14px; border: 1px solid var(--line-strong); border-radius: 999px; }
 
-.intro { padding: 56px 0 28px; max-width: 900px; }
+.intro { padding: 56px 0 28px; }
+.intro h1, .intro .lede { max-width: 900px; }
 .eyebrow { margin: 0 0 10px; color: var(--accent); font: 500 12px var(--mono); letter-spacing: .1em; text-transform: uppercase; }
 h1 { margin: 0; font-size: clamp(30px, 4.4vw, 50px); line-height: 1.08; letter-spacing: -.035em; }
 .lede { margin: 18px 0 0; color: var(--muted); font-size: 17px; max-width: 760px; }
-.tiles { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-top: 30px; }
+.tiles { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; margin-top: 30px; }
 .tile { padding: 16px 18px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; }
 .tile .v { display: block; font-size: 28px; font-weight: 700; letter-spacing: -.03em; }
-.tile .l { color: var(--muted); font-size: 13px; }
+.tile .l { display: block; color: var(--muted); font-size: 13px; line-height: 1.35; }
+.tile .s { display: block; margin-top: 8px; color: var(--faint); font-size: 12px; }
+.tile .bar-track { margin-top: 10px; height: 6px; }
 .status-note { margin: 14px 0 0; color: var(--faint); font-size: 13px; }
 
 .block { padding: 40px 0 8px; }
@@ -159,10 +162,29 @@ tbody tr:last-child td { border-bottom: 0; }
 .cell-icon.none { color: var(--faint); }
 .matrix .count { color: var(--faint); font-size: 13px; padding: 14px; }
 
-.method-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
-.method-grid > div { padding: 18px 20px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; }
-.method-grid h3 { margin: 0 0 6px; font-size: 15px; }
-.method-grid p { margin: 0; color: var(--muted); font-size: 14px; }
+.apps td:first-child { font-weight: 600; white-space: nowrap; }
+.apps .repo { font-family: var(--mono); font-size: 12.5px; white-space: nowrap; }
+
+.flow { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 30px; }
+.step { position: relative; padding: 16px 16px 18px; background: var(--surface); border: 1px solid var(--line); border-top: 3px solid var(--step); border-radius: 12px; }
+.step:not(:last-child)::after { content: ""; position: absolute; top: 50%; right: -24px; width: 18px; height: 2px; background: var(--line-strong); }
+.step:not(:last-child)::before { content: ""; position: absolute; top: calc(50% - 4px); right: -25px; border: 5px solid transparent; border-left: 6px solid var(--line-strong); border-right: 0; }
+.step.rust { --step: #c2410c; }
+.step.lean { --step: #7b3fb3; }
+.step.agent { --step: var(--accent); }
+.step.grade { --step: var(--good); }
+.step-k { color: var(--faint); font: 500 11px var(--mono); letter-spacing: .08em; text-transform: uppercase; }
+.step h3 { margin: 4px 0 6px; font-size: 15px; }
+.step p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.45; }
+.flow-notes { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 30px; margin-top: 10px; }
+.bracket { position: relative; margin: 0; padding: 14px 4px 0; color: var(--muted); font-size: 13px; border-top: 2px solid var(--line-strong); }
+.bracket::before, .bracket::after { content: ""; position: absolute; top: -10px; width: 2px; height: 10px; background: var(--line-strong); }
+.bracket::before { left: 0; }
+.bracket::after { right: 0; }
+.bracket strong { color: var(--ink); }
+.bracket.diff { grid-column: 1 / 3; border-top-color: #c2410c; }
+.bracket.diff::before, .bracket.diff::after { background: #c2410c; }
+.bracket.hidden-ref { grid-column: 4 / 6; }
 main { padding-bottom: 80px; }
 
 .tooltip { position: fixed; z-index: 60; max-width: 300px; padding: 9px 11px; background: var(--surface); color: var(--ink); border: 1px solid var(--line-strong); border-radius: 8px; box-shadow: var(--shadow); font-size: 12px; pointer-events: none; }
@@ -215,7 +237,11 @@ details.proof > summary, details.dev > summary { cursor: pointer; font-weight: 6
 
 @media (max-width: 860px) {
   .tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .method-grid, .pair { grid-template-columns: 1fr; }
+  .pair, .flow, .flow-notes { grid-template-columns: 1fr; }
+  .flow { gap: 22px; }
+  .step:not(:last-child)::after { top: auto; bottom: -17px; right: auto; left: 28px; width: 2px; height: 12px; }
+  .step:not(:last-child)::before { top: auto; bottom: -21px; right: auto; left: 24px; border: 5px solid transparent; border-top: 6px solid var(--line-strong); border-bottom: 0; }
+  .bracket.diff, .bracket.hidden-ref { grid-column: 1; }
   .site-nav { display: none; }
   .github-link { margin-left: auto; }
   .drawer-head, .drawer-body { padding-left: 16px; padding-right: 16px; }

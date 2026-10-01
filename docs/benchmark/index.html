@@ -30,9 +30,9 @@
         <span>i5h</span><span class="brand-reading">/ benchmark</span>
       </a>
       <nav class="site-nav" aria-label="Benchmark sections">
+        <a href="#method">Method</a>
         <a href="#models">Models</a>
         <a href="#tasks">Tasks</a>
-        <a href="#method">Method</a>
       </nav>
       <a class="github-link" href="https://github.com/h5i-dev/i5h-benchmark" target="_blank" rel="noreferrer">GitHub</a>
     </header>
@@ -51,10 +51,49 @@
         <p class="status-note" id="status-note"></p>
       </section>
 
+      <section id="method" class="block">
+        <div class="block-head">
+          <h2>Method</h2>
+          <p>How a task is made, and what counts as solving it.</p>
+        </div>
+        <ol class="flow">
+          <li class="step rust"><span class="step-k">Rust</span><h3>Upstream code</h3>
+            <p>Authorization logic of an open-source application, at a pinned commit.</p></li>
+          <li class="step rust"><span class="step-k">Rust</span><h3>i5h kernel</h3>
+            <p>Ported function by function. Strings become byte slices, iterators become loops; each change is listed in the port's deviations file.</p></li>
+          <li class="step lean"><span class="step-k">Lean 4</span><h3>Extracted model</h3>
+            <p>Aeneas extracts the kernel. A hand-written spec states the property as a theorem.</p></li>
+          <li class="step agent"><span class="step-k">Agent</span><h3>Proof attempt</h3>
+            <p>No network; the i5h Lean library and skill; 40 minutes, resumed once if it stops early.</p></li>
+          <li class="step grade"><span class="step-k">Grader</span><h3>Accepted?</h3>
+            <p>The proof builds, the statement is unchanged, and only <code>propext</code>, <code>Classical.choice</code> and <code>Quot.sound</code> are used.</p></li>
+        </ol>
+        <div class="flow-notes">
+          <p class="bracket diff"><strong>Differential test.</strong> Upstream and kernel run on the same random inputs and must return the same result. A deliberately mutated kernel must fail.</p>
+          <p class="bracket hidden-ref"><strong>Held back.</strong> The reference proofs are neither given to the agent nor published.</p>
+        </div>
+      </section>
+
+      <section id="apps" class="block">
+        <div class="block-head">
+          <h2>Applications</h2>
+          <p>Upstream lines are counted without blanks, comments and attributes.</p>
+        </div>
+        <div class="table-wrap">
+          <table class="apps" id="apps-table">
+            <thead>
+              <tr><th scope="col">Application</th><th scope="col">Upstream</th><th scope="col" class="num">Ported lines</th>
+                <th scope="col" class="num">Properties</th><th scope="col" class="num">Proved</th><th scope="col" class="w-bar">Lines under a proved property</th></tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+
       <section id="models" class="block">
         <div class="block-head">
           <h2>Models</h2>
-          <p>Share of attempted tasks solved within 40 minutes. Models were not all run on the same tasks; the count is shown next to each bar.</p>
+          <p>Share of attempted tasks solved. Models were not all run on the same tasks; the count is next to each bar.</p>
         </div>
         <div class="table-wrap">
           <table class="models" id="models-table">
@@ -90,32 +129,6 @@
         </div>
       </section>
 
-      <section id="method" class="block method">
-        <div class="block-head"><h2>Method</h2></div>
-        <div class="method-grid">
-          <div>
-            <h3>Ports</h3>
-            <p>The kernel follows upstream function by function and changes the code only where Aeneas requires it
-              (strings become byte slices, iterator adapters become loops) or where the code is not logic (metrics and
-              logs). Every such change is listed in the port's deviations file.</p>
-          </div>
-          <div>
-            <h3>Equivalence</h3>
-            <p>A differential test runs the upstream functions, taken unchanged from the pinned commit, and the kernel on
-              the same random inputs, and requires the same result. A deliberately mutated kernel must fail it.</p>
-          </div>
-          <div>
-            <h3>Grading</h3>
-            <p>A proof is accepted when it builds, its theorem has exactly the task's statement, and it depends only on
-              <code>propext</code>, <code>Classical.choice</code> and <code>Quot.sound</code>. The reference proofs are not published.</p>
-          </div>
-          <div>
-            <h3>Runs</h3>
-            <p>Agents run in a container without network access, with the i5h Lean library and the i5h skill, for at most
-              40 minutes. An agent that stops early with the proof unfinished is resumed once.</p>
-          </div>
-        </div>
-      </section>
     </main>
 
     <div class="drawer" id="drawer" hidden>

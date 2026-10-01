@@ -65,16 +65,34 @@ function columnLabel(key) {
   return { model: c.model, agent: c.agent === "claude" ? "Claude Code" : c.agent === "gemini" ? "gemini-cli" : "Codex" };
 }
 
+const kLines = (n) => (n >= 1000 ? `${(n / 1000).toFixed(1)}k` : String(n));
+const pct = (a, b) => (b ? Math.round((a / b) * 100) : 0);
+const bar = (a, b) => `<div class="bar-track" aria-hidden="true"><div class="bar-fill" style="width:${b ? ((a / b) * 100).toFixed(1) : 0}%"></div></div>`;
+
 function renderTiles() {
-  const runs = Object.values(INDEX.columns).reduce((n, c) => n + c.runs, 0);
+  const s = INDEX.stats;
   const tiles = [
-    [INDEX.tasks.length, "tasks"],
-    [Object.keys(INDEX.apps).length, "applications"],
-    [COLUMNS.length, "model × agent pairs"],
-    [runs, "graded runs"],
+    [s.repos, "repositories", "open-source Rust web applications"],
+    [kLines(s.ported_loc), "lines of upstream Rust", "ported to i5h kernels"],
+    [s.properties, "properties", "one theorem each"],
+    [s.proved, "properties proved", `by at least one model · ${pct(s.proved, s.properties)}%`, [s.proved, s.properties]],
+    [kLines(s.proved_loc), "upstream lines under a proof", `reached from a proved property · ${pct(s.proved_loc, s.ported_loc)}%`, [s.proved_loc, s.ported_loc]],
   ];
-  $("#tiles").innerHTML = tiles.map(([v, l]) => `<div class="tile"><span class="v">${v}</span><span class="l">${l}</span></div>`).join("");
-  $("#status-note").textContent = `Results as of ${INDEX.generated}. Runs are still being added; a dot in the table means the task has not been run for that model yet.`;
+  $("#tiles").innerHTML = tiles.map(([v, l, sub, frac]) =>
+    `<div class="tile"><span class="v">${v}</span><span class="l">${l}</span>${frac ? bar(...frac) : ""}<span class="s">${sub}</span></div>`).join("");
+  const runs = Object.values(INDEX.columns).reduce((n, c) => n + c.runs, 0);
+  $("#status-note").textContent = `Results as of ${INDEX.generated}: ${runs} graded runs of ${COLUMNS.length} model and agent pairs. Runs are still being added.`;
+}
+
+function renderApps() {
+  $("#apps-table tbody").innerHTML = Object.entries(INDEX.apps).map(([app, a]) => {
+    const ts = INDEX.tasks.filter((t) => t.app === app);
+    const proved = ts.filter((t) => Object.values(t.results).some((r) => r.p)).length;
+    return `<tr><td>${esc(app)}</td>
+      <td class="repo"><a href="https://github.com/${esc(a.repo)}/tree/${esc(a.commit)}" target="_blank" rel="noreferrer">${esc(a.repo)} @ ${esc(a.commit)}</a></td>
+      <td class="num">${(a.ported_loc ?? 0).toLocaleString("en")}</td><td class="num">${ts.length}</td><td class="num">${proved}</td>
+      <td><div class="bar-row">${bar(a.proved_loc, a.ported_loc)}<span class="bar-label"><span class="pct">${pct(a.proved_loc, a.ported_loc)}%</span> <span class="of">${a.proved_loc.toLocaleString("en")} lines</span></span></div></td></tr>`;
+  }).join("");
 }
 
 function renderModels() {
@@ -277,6 +295,7 @@ async function main() {
     return y.solved / y.runs - x.solved / x.runs || y.runs - x.runs;
   });
   renderTiles();
+  renderApps();
   renderModels();
   const sel = $("#f-app");
   for (const app of Object.keys(INDEX.apps)) sel.insertAdjacentHTML("beforeend", `<option value="${esc(app)}">${esc(app)}</option>`);
