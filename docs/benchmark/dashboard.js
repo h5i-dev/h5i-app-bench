@@ -80,7 +80,7 @@ function renderTiles() {
   $("#tiles").innerHTML = tiles.map(([v, l, sub, frac]) =>
     `<div class="tile"><span class="v">${v}</span><span class="l">${l}</span>${frac ? bar(...frac) : ""}<span class="s">${sub}</span></div>`).join("");
   const runs = Object.values(INDEX.columns).reduce((n, c) => n + c.runs, 0);
-  $("#status-note").textContent = `Results as of ${INDEX.generated}: ${runs} graded runs of ${COLUMNS.length} model and agent pairs. Runs are still being added.`;
+  $("#status-note").textContent = `The benchmark is still being measured. The results below are an interim snapshot from ${INDEX.generated} (${runs} graded runs): not every model has been run on every task yet, and the numbers will change.`;
 }
 
 function renderApps() {

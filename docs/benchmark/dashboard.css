@@ -118,7 +118,11 @@ h1 { margin: 0; font-size: clamp(30px, 4.4vw, 50px); line-height: 1.08; letter-s
 .tile .l { display: block; color: var(--muted); font-size: 13px; line-height: 1.35; }
 .tile .s { display: block; margin-top: 8px; color: var(--faint); font-size: 12px; }
 .tile .bar-track { margin-top: 10px; height: 6px; }
-.status-note { margin: 14px 0 0; color: var(--faint); font-size: 13px; }
+.callout { max-width: 900px; margin: 24px 0 0; padding: 12px 16px; border-left: 4px solid var(--callout); border-radius: 6px; background: var(--callout-bg); }
+.callout p { margin: 0; font-size: 14.5px; color: var(--ink); }
+.callout .callout-title { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; color: var(--callout-ink); font-weight: 700; }
+.callout .callout-title svg { width: 16px; height: 16px; fill: currentColor; }
+.callout.warning { --callout: #d4a72c; --callout-bg: #fff8c5; --callout-ink: #9a6700; }
 
 .block { padding: 40px 0 8px; }
 .block-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 20px; margin-bottom: 16px; }
@@ -256,4 +260,8 @@ details.proof > summary, details.dev > summary { cursor: pointer; font-weight: 6
   .tabs { padding: 0 8px; }
   .w-bar { width: auto; }
 }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .callout.warning { --callout: #9e6a03; --callout-bg: rgba(187, 128, 9, 0.15); --callout-ink: #d29922; }
+}
+:root[data-theme="dark"] .callout.warning { --callout: #9e6a03; --callout-bg: rgba(187, 128, 9, 0.15); --callout-ink: #d29922; }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
