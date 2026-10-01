@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>i5h Benchmark</title>
+    <meta
+      name="description"
+      content="How well coding agents prove properties of real Rust web applications ported to i5h: tasks, upstream and ported code, extracted Lean 4, and every model's results."
+    />
+    <meta name="theme-color" content="#f4fbff" />
+    <link rel="canonical" href="https://i5h.dev/benchmark/" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700&display=swap"
+    />
+    <link rel="stylesheet" href="./dashboard.css" />
+    <script src="./dashboard.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="site-header">
+      <a class="brand" href="../" aria-label="i5h home">
+        <svg class="brand-mark" viewBox="0 0 42 26" aria-hidden="true">
+          <path d="M3 13c5.7-7.7 17.4-9.4 26.7-2.2 3-3.2 6.1-4.8 9.3-5-1 3.1-2.5 5.5-4.5 7.2 2 1.7 3.5 4.1 4.5 7.2-3.2-.2-6.3-1.8-9.3-5C20.4 22.4 8.7 20.7 3 13Z" />
+          <circle cx="10.5" cy="11" r="1.3" />
+        </svg>
+        <span>i5h</span><span class="brand-reading">/ benchmark</span>
+      </a>
+      <nav class="site-nav" aria-label="Benchmark sections">
+        <a href="#models">Models</a>
+        <a href="#tasks">Tasks</a>
+        <a href="#method">Method</a>
+      </nav>
+      <a class="github-link" href="https://github.com/h5i-dev/i5h-benchmark" target="_blank" rel="noreferrer">GitHub</a>
+    </header>
+
+    <main id="main">
+      <section class="intro">
+        <p class="eyebrow">i5h benchmark</p>
+        <h1>Can a coding agent prove what a real web app's code does?</h1>
+        <p class="lede">
+          Each task is one property of an open-source Rust application whose authorization logic was ported to an
+          i5h kernel and extracted to Lean 4. The agent gets the kernel, the extracted Lean and a spec, and has to
+          prove the property. Click any task to see the upstream Rust, the port, how the two are checked against
+          each other, the Lean, and the proofs the models wrote.
+        </p>
+        <div class="tiles" id="tiles" aria-live="polite"></div>
+        <p class="status-note" id="status-note"></p>
+      </section>
+
+      <section id="models" class="block">
+        <div class="block-head">
+          <h2>Models</h2>
+          <p>Share of attempted tasks solved within 40 minutes. Models were not all run on the same tasks; the count is shown next to each bar.</p>
+        </div>
+        <div class="table-wrap">
+          <table class="models" id="models-table">
+            <thead>
+              <tr><th scope="col">Model</th><th scope="col">Agent</th><th scope="col" class="w-bar">Solved</th><th scope="col" class="num">Avg. minutes</th><th scope="col" class="num">Cost at list price</th></tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="tasks" class="block">
+        <div class="block-head">
+          <h2>Tasks</h2>
+          <p>One row per task. <span class="key"><span class="cell-icon good" aria-hidden="true">✓</span> solved</span>
+            <span class="key"><span class="cell-icon bad" aria-hidden="true">✗</span> not solved</span>
+            <span class="key"><span class="cell-icon none" aria-hidden="true">·</span> not run</span></p>
+        </div>
+        <div class="filters" role="search">
+          <label class="field"><span>Application</span><select id="f-app"><option value="">All</option></select></label>
+          <label class="field"><span>Show</span>
+            <select id="f-scope">
+              <option value="">All tasks</option>
+              <option value="all-models">Run by every model</option>
+              <option value="solved">Solved by some model</option>
+              <option value="unsolved">Solved by no model</option>
+            </select>
+          </label>
+          <label class="field grow"><span>Search</span><input id="f-q" type="search" placeholder="task, property or theorem" /></label>
+        </div>
+        <div class="table-wrap matrix-wrap">
+          <table class="matrix" id="matrix"><thead></thead><tbody></tbody></table>
+        </div>
+      </section>
+
+      <section id="method" class="block method">
+        <div class="block-head"><h2>Method</h2></div>
+        <div class="method-grid">
+          <div>
+            <h3>Ports</h3>
+            <p>The kernel follows upstream function by function and changes the code only where Aeneas requires it
+              (strings become byte slices, iterator adapters become loops) or where the code is not logic (metrics and
+              logs). Every such change is listed in the port's deviations file.</p>
+          </div>
+          <div>
+            <h3>Equivalence</h3>
+            <p>A differential test runs the upstream functions, taken unchanged from the pinned commit, and the kernel on
+              the same random inputs, and requires the same result. A deliberately mutated kernel must fail it.</p>
+          </div>
+          <div>
+            <h3>Grading</h3>
+            <p>A proof is accepted when it builds, its theorem has exactly the task's statement, and it depends only on
+              <code>propext</code>, <code>Classical.choice</code> and <code>Quot.sound</code>. The reference proofs are not published.</p>
+          </div>
+          <div>
+            <h3>Runs</h3>
+            <p>Agents run in a container without network access, with the i5h Lean library and the i5h skill, for at most
+              40 minutes. An agent that stops early with the proof unfinished is resumed once.</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <div class="drawer" id="drawer" hidden>
+      <div class="drawer-scrim" data-close></div>
+      <aside class="drawer-panel" role="dialog" aria-modal="true" aria-labelledby="d-title">
+        <header class="drawer-head">
+          <div>
+            <p class="eyebrow" id="d-app"></p>
+            <h2 id="d-title"></h2>
+            <p class="d-property" id="d-property"></p>
+          </div>
+          <button class="close" type="button" data-close aria-label="Close">×</button>
+        </header>
+        <div class="tabs" role="tablist" id="d-tabs"></div>
+        <div class="drawer-body" id="d-body"></div>
+      </aside>
+    </div>
+
+    <div class="tooltip" id="tooltip" role="tooltip" hidden></div>
+  </body>
+</html>
