@@ -103,7 +103,7 @@ function renderModels() {
       <td>${esc(model)}</td><td class="agent">${esc(agent)}</td>
       <td><div class="bar-row"><div class="bar-track" aria-hidden="true"><div class="bar-fill" style="width:${(rate * 100).toFixed(1)}%"></div></div>
         <span class="bar-label"><span class="pct">${Math.round(rate * 100)}%</span> <span class="of">${c.solved} of ${c.runs}</span></span></div></td>
-      <td class="num">${c.minutes}</td><td class="num">${c.solved_loc ? `$${(c.solved_cost / c.solved_loc).toPrecision(2)}` : `<span class="of">no proof yet</span>`}</td></tr>`;
+      <td class="num">${c.solved_minutes ?? "–"}</td><td class="num">${c.solved_loc ? `$${(c.solved_cost / c.solved_loc).toPrecision(2)}` : `<span class="of">no proof yet</span>`}</td></tr>`;
   }).join("");
 }
 
