@@ -1,0 +1,9 @@
+[package]
+name = "tuwunel_macros"
+description = "Stub of tuwunel's proc macros: `implement`, and `ctor` as a no-op"
+edition.workspace = true
+version.workspace = true
+publish.workspace = true
+
+[lib]
+proc-macro = true

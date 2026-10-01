@@ -1,0 +1,6 @@
+[package]
+name = "axum"
+description = "Stub: the `State` extractor"
+edition.workspace = true
+version.workspace = true
+publish.workspace = true

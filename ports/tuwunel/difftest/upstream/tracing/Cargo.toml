@@ -1,0 +1,9 @@
+[package]
+name = "tracing"
+description = "Stub: `instrument` keeps the item, the event macros do nothing"
+edition.workspace = true
+version.workspace = true
+publish.workspace = true
+
+[dependencies]
+tuwunel_macros = { path = "../macros" }

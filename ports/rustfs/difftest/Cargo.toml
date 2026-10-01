@@ -1,0 +1,19 @@
+[package]
+name = "rustfs-difftest"
+description = "Differential test: the rustfs kernel against rustfs-policy at e870a6d"
+edition = "2024"
+version = "0.1.0"
+publish = false
+
+[dependencies]
+rustfs-kernel = { path = "../kernel" }
+# The upstream crate itself, from the pinned checkout (scripts/link-upstream.sh).
+rustfs-policy = { path = "../upstream-src/crates/policy" }
+serde_json = "1"
+tokio = { version = "1", features = ["rt", "macros"] }
+pollster = "0.4"
+
+[workspace]
+
+[profile.release]
+overflow-checks = true

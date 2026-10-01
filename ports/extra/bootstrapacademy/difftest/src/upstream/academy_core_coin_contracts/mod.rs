@@ -1,0 +1,63 @@
+// Copied from Bootstrap-Academy/backend @ fbe5e60 by extract_upstream.py. Do not edit.
+#[allow(unused_imports)]
+use crate::upstream::academy_models;
+use std::future::Future;
+
+use crate::upstream::academy_models::{
+    auth::{AccessToken, AuthError},
+    coin::{Balance, CoinConfig, TransactionDescription},
+    user::UserIdOrSelf,
+};
+use thiserror::Error;
+
+pub mod coin;
+
+pub trait CoinFeatureService: Send + Sync + 'static {
+    /// Return the public Morphcoin pricing configuration.
+    fn get_config(&self) -> CoinConfig;
+
+    /// Return the Morphcoin balance of the given user.
+    ///
+    /// Requires admin privileges if not used on the authenticated user.
+    fn get_balance(
+        &self,
+        token: &AccessToken,
+        user_id: UserIdOrSelf,
+    ) -> impl Future<Output = Result<Balance, CoinGetBalanceError>> + Send;
+
+    /// Apply a nonpositive adjustment to the given user's Morphcoins.
+    ///
+    /// Requires admin privileges. Positive credits use their owning purchase or recovery flow.
+    fn add_coins(
+        &self,
+        token: &AccessToken,
+        user_id: UserIdOrSelf,
+        coins: i64,
+        description: Option<TransactionDescription>,
+        include_in_credit_note: bool,
+    ) -> impl Future<Output = Result<Balance, CoinAddCoinsError>> + Send;
+}
+
+#[derive(Debug, Error)]
+pub enum CoinGetBalanceError {
+    #[error(transparent)]
+    Auth(#[from] AuthError),
+    #[error("The user does not exist.")]
+    UserNotFound,
+    #[error(transparent)]
+    Other(#[from] anyhow::Error),
+}
+
+#[derive(Debug, Error)]
+pub enum CoinAddCoinsError {
+    #[error("Use the purchase or verified recovery path to credit coins.")]
+    CreditNotAuthorized,
+    #[error(transparent)]
+    Auth(#[from] AuthError),
+    #[error("The user does not exist.")]
+    UserNotFound,
+    #[error("The user does not have enough coins.")]
+    NotEnoughCoins,
+    #[error(transparent)]
+    Other(#[from] anyhow::Error),
+}

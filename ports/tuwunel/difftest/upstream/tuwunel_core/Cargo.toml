@@ -1,0 +1,16 @@
+[package]
+name = "tuwunel_core"
+description = "tuwunel_core: the copied count, id, filter and stream code, with stubs for the rest"
+edition.workspace = true
+version.workspace = true
+publish.workspace = true
+
+[dependencies]
+ruma = { path = "../ruma" }
+tuwunel_macros = { path = "../macros" }
+tracing = { path = "../tracing" }
+futures.workspace = true
+serde.workspace = true
+serde_json = { workspace = true, features = ["raw_value"] }
+arrayvec.workspace = true
+smallvec.workspace = true

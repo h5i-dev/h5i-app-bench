@@ -1,0 +1,13 @@
+[package]
+name = "kanidm_proto"
+description = "kanidm_proto's attribute names at f608c4f, copied verbatim by extract_upstream.py"
+edition = "2021"
+version = "0.1.0"
+publish = false
+
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+smartstring = { version = "1", features = ["serde"] }
+
+[features]
+test = []

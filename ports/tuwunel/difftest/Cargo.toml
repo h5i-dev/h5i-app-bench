@@ -1,0 +1,43 @@
+[package]
+name = "tuwunel-difftest"
+description = "Differential test: the tuwunel kernel against tuwunel's own code at 7801b8e"
+edition = "2024"
+version = "0.1.0"
+publish = false
+
+[dependencies]
+tuwunel-kernel = { path = "../kernel" }
+tuwunel_api = { path = "upstream/tuwunel_api" }
+tuwunel_service = { path = "upstream/tuwunel_service" }
+tuwunel_core = { path = "upstream/tuwunel_core" }
+tuwunel_database = { path = "upstream/tuwunel_database" }
+ruma = { path = "upstream/ruma" }
+futures = { version = "0.3", default-features = false, features = ["std", "executor"] }
+serde_json = "1"
+
+[profile.test]
+opt-level = 3
+debug-assertions = true
+overflow-checks = true
+
+[profile.release]
+overflow-checks = true
+
+# The copied upstream crates (extract_upstream.py) with their stubs.
+[workspace]
+resolver = "3"
+members = [".", "upstream/macros", "upstream/tracing", "upstream/axum", "upstream/ruma", "upstream/tuwunel_core",
+           "upstream/tuwunel_database", "upstream/tuwunel_service", "upstream/tuwunel_api"]
+
+[workspace.package]
+edition = "2024"
+version = "0.0.0"
+publish = false
+
+[workspace.dependencies]
+futures = { version = "0.3", default-features = false, features = ["std", "async-await", "executor"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+arrayvec = "0.7"
+smallvec = { version = "1", features = ["union", "const_generics"] }
+js_int = { version = "0.2", features = ["serde"] }

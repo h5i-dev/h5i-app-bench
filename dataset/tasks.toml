@@ -1,0 +1,1077 @@
+# Each task: one property of one ported repository.
+# src: <checkout>:<port dir>, with kernel/ and proofs/ inside.
+# module/theorem: where the reference proof lives, for validation and LOC.
+# given: hand-written Lean files the model sees (the spec); everything else
+# under proofs/ except generated/ is hidden.
+
+[[task]]
+id = "atuin-isolation"
+repo = "atuinsh/atuin"
+src = "h5i:examples/app/atuin"
+ns = "atuin_kernel"
+given = ["Spec.lean"]
+module = "Theorems"
+theorem = "atuin_kernel.Theorems.isolation"
+reference = true
+property = "Every write of a successful command touches only the caller's account, or the account being created."
+
+[[task]]
+id = "atuin-reply-confined"
+repo = "atuinsh/atuin"
+src = "h5i:examples/app/atuin"
+ns = "atuin_kernel"
+given = ["Spec.lean"]
+module = "Theorems"
+theorem = "atuin_kernel.Theorems.reply_confined"
+reference = true
+property = "Replies contain only the caller's own records."
+
+[[task]]
+id = "kellnr-read-only"
+repo = "kellnr/kellnr"
+src = "h5i:examples/app/kellnr"
+ns = "kellnr_kernel"
+given = ["Spec.lean"]
+module = "Theorems"
+theorem = "kellnr_kernel.Theorems.read_only_commits_nothing"
+reference = true
+property = "A read-only user who is not an admin commits no write, whichever way they logged in."
+
+# nora (ports/nora): OIDC write authorization.
+
+[[task]]
+id = "nora-read-only"
+repo = "getnora-io/nora"
+src = "bench:ports/nora"
+ns = "nora_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "nora_kernel.Properties.read_only_cannot_write"
+property = "A write goes through only if the first role rule matching the token's subject grants write or admin."
+
+[[task]]
+id = "nora-provider-ceiling"
+repo = "getnora-io/nora"
+src = "bench:ports/nora"
+ns = "nora_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "nora_kernel.Properties.provider_ceiling"
+property = "An enforced write to a namespace goes through only if the namespace is inside the provider scope, unless that scope contains `*`."
+
+[[task]]
+id = "nora-rule-narrows"
+repo = "getnora-io/nora"
+src = "bench:ports/nora"
+ns = "nora_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "nora_kernel.Properties.rule_narrows"
+property = "An enforced write goes through only if the namespace is also inside the matched rule's scope."
+
+[[task]]
+id = "nora-audit-never-denies"
+repo = "getnora-io/nora"
+src = "bench:ports/nora"
+ns = "nora_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "nora_kernel.Properties.audit_never_denies"
+property = "In audit mode a namespace mismatch never denies a request."
+
+[[task]]
+id = "nora-lifetime"
+repo = "getnora-io/nora"
+src = "bench:ports/nora"
+ns = "nora_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "nora_kernel.Properties.lifetime_bounded"
+property = "A token whose lifetime exceeds the provider's ceiling is refused."
+
+[[task]]
+id = "nora-glob-match"
+repo = "getnora-io/nora"
+src = "bench:ports/nora"
+ns = "nora_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "nora_kernel.Properties.glob_match_spec"
+property = "The subject glob matcher computes the reference model `globSpec`."
+
+[[task]]
+id = "nora-segment-glob"
+repo = "getnora-io/nora"
+src = "bench:ports/nora"
+ns = "nora_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "nora_kernel.Properties.segment_glob_spec"
+property = "The backtracking segment matcher agrees with the plain recursive glob `segGlobSpec`."
+
+[[task]]
+id = "nora-total"
+repo = "getnora-io/nora"
+src = "bench:ports/nora"
+ns = "nora_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "nora_kernel.Properties.transition_total"
+property = "The authorization kernel never panics, overflows or diverges."
+
+[[task]]
+id = "nora-admin-path"
+repo = "getnora-io/nora"
+src = "bench:ports/nora"
+ns = "nora_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "nora_kernel.Properties.admin_path_needs_admin"
+property = "With authentication enabled, a request to an admin path reaches its handler only with the admin role."
+
+[[task]]
+id = "nora-no-credentials"
+repo = "getnora-io/nora"
+src = "bench:ports/nora"
+ns = "nora_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "nora_kernel.Properties.no_credentials_no_write_role"
+property = "A request without credentials never reaches a handler with a role that can write."
+
+[[task]]
+id = "nora-writes-need-write-role"
+repo = "getnora-io/nora"
+src = "bench:ports/nora"
+ns = "nora_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "nora_kernel.Properties.writes_need_write_role"
+property = "A write method on a gated path, other than the npm audit endpoints, reaches its handler only with a role that can write."
+
+[[task]]
+id = "nora-lockout"
+repo = "getnora-io/nora"
+src = "bench:ports/nora"
+ns = "nora_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "nora_kernel.Properties.locked_out_only_open"
+property = "A client locked out by the failure tracker authenticates only on open paths."
+
+[[task]]
+id = "nora-catalog-token-pages"
+repo = "getnora-io/nora"
+src = "bench:ports/nora"
+ns = "nora_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "nora_kernel.Properties.catalog_and_token_pages_need_credentials"
+property = "The Docker catalog and the token pages are never served without credentials."
+
+[[task]]
+id = "nora-failure-recorded"
+repo = "getnora-io/nora"
+src = "bench:ports/nora"
+ns = "nora_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "nora_kernel.Properties.failure_recorded_only_for_bad_credentials"
+property = "A failed attempt is recorded only when the presented credentials were wrong."
+
+[[task]]
+id = "nora-failures-cleared"
+repo = "getnora-io/nora"
+src = "bench:ports/nora"
+ns = "nora_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "nora_kernel.Properties.failures_cleared_only_for_good_credentials"
+property = "The failure count is cleared only when the presented credentials were right."
+
+[[task]]
+id = "nora-token-unexpired"
+repo = "getnora-io/nora"
+src = "bench:ports/nora"
+ns = "nora_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "nora_kernel.Properties.token_accepted_only_unexpired"
+property = "An API token is accepted only with the nra_ prefix and while a cached or stored record for it has not expired."
+
+[[task]]
+id = "nora-untrusted-peer"
+repo = "getnora-io/nora"
+src = "bench:ports/nora"
+ns = "nora_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "nora_kernel.Properties.untrusted_peer_is_client"
+property = "Forwarding headers from a peer outside the trusted proxies are ignored."
+
+[[task]]
+id = "nora-cidr"
+repo = "getnora-io/nora"
+src = "bench:ports/nora"
+ns = "nora_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "nora_kernel.Properties.trusted_proxies_contains_spec"
+property = "The trusted-proxy check compares the top prefix bits of the address."
+
+[[task]]
+id = "nora-storage-key"
+repo = "getnora-io/nora"
+src = "bench:ports/nora"
+ns = "nora_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "nora_kernel.Properties.storage_key_safe"
+property = "An accepted storage key cannot leave its directory."
+
+[[task]]
+id = "nora-docker-name"
+repo = "getnora-io/nora"
+src = "bench:ports/nora"
+ns = "nora_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "nora_kernel.Properties.docker_name_shape"
+property = "An accepted Docker name has the OCI shape."
+
+[[task]]
+id = "nora-digest"
+repo = "getnora-io/nora"
+src = "bench:ports/nora"
+ns = "nora_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "nora_kernel.Properties.digest_iff"
+property = "validate_digest accepts exactly sha256 and sha512 digests."
+
+[[task]]
+id = "nora-reference"
+repo = "getnora-io/nora"
+src = "bench:ports/nora"
+ns = "nora_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "nora_kernel.Properties.reference_shape"
+property = "An accepted Docker reference is a digest or a tag."
+
+[[task]]
+id = "nora-middleware-total"
+repo = "getnora-io/nora"
+src = "bench:ports/nora"
+ns = "nora_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "nora_kernel.Properties.middleware_total"
+property = "The authentication middleware never panics or diverges while no failure counter is at u32::MAX."
+
+
+[[task]]
+id = "artifactkeeper-anonymous-never-mutates"
+repo = "artifact-keeper/artifact-keeper"
+src = "bench:ports/artifactkeeper"
+ns = "artifactkeeper_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "artifactkeeper_kernel.Properties.anonymous_never_mutates"
+property = "A PUT, PATCH or DELETE reaches a format handler only with a principal, never on a download ticket."
+
+[[task]]
+id = "artifactkeeper-anonymous-needs-rule"
+repo = "artifact-keeper/artifact-keeper"
+src = "bench:ports/artifactkeeper"
+ns = "artifactkeeper_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "artifactkeeper_kernel.Properties.anonymous_needs_rule"
+property = "An anonymous request reaches a non-public repository only through an anonymous read rule that applies to the client IP."
+
+[[task]]
+id = "artifactkeeper-private-needs-grant"
+repo = "artifact-keeper/artifact-keeper"
+src = "bench:ports/artifactkeeper"
+ns = "artifactkeeper_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "artifactkeeper_kernel.Properties.private_needs_grant"
+property = "A non-admin principal reaches a private repository only if it holds a role assignment or an applicable rule on it."
+
+[[task]]
+id = "artifactkeeper-mutation-needs-action"
+repo = "artifact-keeper/artifact-keeper"
+src = "bench:ports/artifactkeeper"
+ns = "artifactkeeper_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "artifactkeeper_kernel.Properties.mutation_needs_action"
+property = "A non-admin write outside the negotiation routes goes through only if the repository-action rule grants it."
+
+[[task]]
+id = "artifactkeeper-scoped-token"
+repo = "artifact-keeper/artifact-keeper"
+src = "bench:ports/artifactkeeper"
+ns = "artifactkeeper_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "artifactkeeper_kernel.Properties.scoped_token_confined"
+property = "A repository-restricted credential reaches a repository outside its allowlist only to read a public one."
+
+[[task]]
+id = "artifactkeeper-ticket-read-only"
+repo = "artifact-keeper/artifact-keeper"
+src = "bench:ports/artifactkeeper"
+ns = "artifactkeeper_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "artifactkeeper_kernel.Properties.ticket_read_only"
+property = "A download ticket authorizes only GET or HEAD, as a non-admin principal with no scopes."
+
+[[task]]
+id = "artifactkeeper-ticket-consumed"
+repo = "artifact-keeper/artifact-keeper"
+src = "bench:ports/artifactkeeper"
+ns = "artifactkeeper_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "artifactkeeper_kernel.Properties.ticket_consumed_on_read"
+property = "A download ticket is consumed only by a GET or HEAD, and only if it is live."
+
+[[task]]
+id = "artifactkeeper-visibility-total"
+repo = "artifact-keeper/artifact-keeper"
+src = "bench:ports/artifactkeeper"
+ns = "artifactkeeper_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "artifactkeeper_kernel.Properties.repo_visibility_total"
+property = "The repository visibility middleware never panics, overflows or diverges."
+
+[[task]]
+id = "artifactkeeper-repo-action-spec"
+repo = "artifact-keeper/artifact-keeper"
+src = "bench:ports/artifactkeeper"
+ns = "artifactkeeper_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "artifactkeeper_kernel.Properties.check_repository_action_spec"
+property = "check_repository_action computes its SQL: admin role wins, else applicable rules decide, else roles."
+
+[[task]]
+id = "artifactkeeper-rule-overrides-role"
+repo = "artifact-keeper/artifact-keeper"
+src = "bench:ports/artifactkeeper"
+ns = "artifactkeeper_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "artifactkeeper_kernel.Properties.rule_overrides_role"
+property = "An applicable rule without the action denies, whatever the principal's non-admin roles grant."
+
+[[task]]
+id = "artifactkeeper-cidr-contains"
+repo = "artifact-keeper/artifact-keeper"
+src = "bench:ports/artifactkeeper"
+ns = "artifactkeeper_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "artifactkeeper_kernel.Properties.cidr_contains_spec"
+property = "CidrRange::contains is agreement on the first prefix_len bits."
+
+[[task]]
+id = "artifactkeeper-admin-gate"
+repo = "artifact-keeper/artifact-keeper"
+src = "bench:ports/artifactkeeper"
+ns = "artifactkeeper_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "artifactkeeper_kernel.Properties.admin_gate"
+property = "admin_middleware passes only an admin whose credential carries the admin or * scope, or no scope ceiling."
+
+[[task]]
+id = "artifactkeeper-admin-audited"
+repo = "artifact-keeper/artifact-keeper"
+src = "bench:ports/artifactkeeper"
+ns = "artifactkeeper_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "artifactkeeper_kernel.Properties.admin_denial_audited"
+property = "Every non-admin turned away by admin_middleware is audited, and nothing else is written."
+
+[[task]]
+id = "artifactkeeper-guest-blocks-anonymous"
+repo = "artifact-keeper/artifact-keeper"
+src = "bench:ports/artifactkeeper"
+ns = "artifactkeeper_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "artifactkeeper_kernel.Properties.guest_blocks_anonymous"
+property = "With guest access off, a request with no credential gets through only on an allowlisted path."
+
+[[task]]
+id = "artifactkeeper-only-admin-rules"
+repo = "artifact-keeper/artifact-keeper"
+src = "bench:ports/artifactkeeper"
+ns = "artifactkeeper_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "artifactkeeper_kernel.Properties.only_admin_creates_rules"
+property = "Only an admin creates a permission rule."
+
+[[task]]
+id = "artifactkeeper-anonymous-rule-read"
+repo = "artifact-keeper/artifact-keeper"
+src = "bench:ports/artifactkeeper"
+ns = "artifactkeeper_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "artifactkeeper_kernel.Properties.anonymous_rule_read_only"
+property = "A stored anonymous rule grants only read, on a repository or project, under the nil principal id."
+
+[[task]]
+id = "artifactkeeper-scopes-grant"
+repo = "artifact-keeper/artifact-keeper"
+src = "bench:ports/artifactkeeper"
+ns = "artifactkeeper_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "artifactkeeper_kernel.Properties.scopes_grant_access_spec"
+property = "scopes_grant_access computes the reference model scopeGrants."
+
+[[task]]
+id = "nora-revoke"
+repo = "getnora-io/nora"
+src = "bench:ports/nora"
+ns = "nora_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "nora_kernel.Properties.revoked_token_rejected"
+property = "A revoked API token is refused afterwards, also when it was cached."
+
+[[task]]
+id = "nora-revoke-all"
+repo = "getnora-io/nora"
+src = "bench:ports/nora"
+ns = "nora_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "nora_kernel.Properties.revoke_all_effective"
+property = "Once revoke_all_for_user removed a token of a user, no token authenticates as that user."
+
+[[task]]
+id = "kanidm-deny-overrides-modify"
+repo = "kanidm/kanidm"
+src = "bench:ports/kanidm"
+ns = "kanidm_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "kanidm_kernel.Properties.protected_deny_overrides_modify"
+property = "When the protection rules deny a modification of an entry, no modify profile can allow it."
+
+[[task]]
+id = "kanidm-deny-overrides-create"
+repo = "kanidm/kanidm"
+src = "bench:ports/kanidm"
+ns = "kanidm_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "kanidm_kernel.Properties.protected_deny_overrides_create"
+property = "When the protection rules deny creating an entry, no create profile can allow it."
+
+[[task]]
+id = "kanidm-search-attrs-granted"
+repo = "kanidm/kanidm"
+src = "bench:ports/kanidm"
+ns = "kanidm_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "kanidm_kernel.Properties.search_attrs_granted"
+property = "Every attribute a search returns is granted on that entry by an applicable search profile, or is one of the few attributes the OAuth2, application and sync-account rules release."
+
+[[task]]
+id = "kanidm-anonymous-profile-only"
+repo = "kanidm/kanidm"
+src = "bench:ports/kanidm"
+ns = "kanidm_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "kanidm_kernel.Properties.anonymous_reads_by_profile_only"
+property = "The anonymous user reads only what search profiles grant; the OAuth2 and application rules give it nothing."
+
+[[task]]
+id = "kanidm-synchronise-sees-nothing"
+repo = "kanidm/kanidm"
+src = "bench:ports/kanidm"
+ns = "kanidm_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "kanidm_kernel.Properties.synchronise_sees_nothing"
+property = "A sync agreement, or a user session scoped to synchronisation, sees no entries."
+
+[[task]]
+id = "kanidm-readonly-cannot-modify"
+repo = "kanidm/kanidm"
+src = "bench:ports/kanidm"
+ns = "kanidm_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "kanidm_kernel.Properties.readonly_cannot_modify"
+property = "A user session that is not read-write modifies nothing."
+
+[[task]]
+id = "kanidm-delete-needs-profile"
+repo = "kanidm/kanidm"
+src = "bench:ports/kanidm"
+ns = "kanidm_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "kanidm_kernel.Properties.delete_needs_profile"
+property = "A user deletes an entry only through a delete profile whose receiver covers the user and whose target matches the entry."
+
+[[task]]
+id = "kanidm-create-needs-profile"
+repo = "kanidm/kanidm"
+src = "bench:ports/kanidm"
+ns = "kanidm_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "kanidm_kernel.Properties.create_needs_profile"
+property = "A user creates an entry only through a create profile with a group receiver covering the user, a target matching the entry, and every attribute and class of the entry allowed."
+
+[[task]]
+id = "kanidm-modify-needs-profile"
+repo = "kanidm/kanidm"
+src = "bench:ports/kanidm"
+ns = "kanidm_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "kanidm_kernel.Properties.modify_needs_profile"
+property = "A user modification sets an attribute only where an applicable modify profile allows it."
+
+[[task]]
+id = "kanidm-delete-protected"
+repo = "kanidm/kanidm"
+src = "bench:ports/kanidm"
+ns = "kanidm_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "kanidm_kernel.Properties.delete_protected"
+property = "Users and migrations never delete builtin entries or entries of a protected class."
+
+[[task]]
+id = "kanidm-create-protected"
+repo = "kanidm/kanidm"
+src = "bench:ports/kanidm"
+ns = "kanidm_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "kanidm_kernel.Properties.create_protected"
+property = "Users and migrations never create builtin entries or entries of a protected class."
+
+[[task]]
+id = "kanidm-tombstone-locked"
+repo = "kanidm/kanidm"
+src = "bench:ports/kanidm"
+ns = "kanidm_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "kanidm_kernel.Properties.tombstone_locked"
+property = "Only the internal system identity modifies a tombstone."
+
+[[task]]
+id = "kanidm-protected-class-never-added"
+repo = "kanidm/kanidm"
+src = "bench:ports/kanidm"
+ns = "kanidm_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "kanidm_kernel.Properties.protected_class_never_added"
+property = "Only the internal system identity adds a protected class to an entry."
+
+[[task]]
+id = "kanidm-sync-object-constrained"
+repo = "kanidm/kanidm"
+src = "bench:ports/kanidm"
+ns = "kanidm_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "kanidm_kernel.Properties.sync_object_constrained"
+property = "On an unprotected entry owned by a sync agreement, a user sets only the session attributes and those the agreement yields; without a single sync parent nothing changes."
+
+[[task]]
+id = "kanidm-account-request-signups"
+repo = "kanidm/kanidm"
+src = "bench:ports/kanidm"
+ns = "kanidm_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "kanidm_kernel.Properties.account_request_creates_signups"
+property = "The account-request identity creates only sign-up requests with their six attributes."
+
+[[task]]
+id = "kanidm-match-eq-spec"
+repo = "kanidm/kanidm"
+src = "bench:ports/kanidm"
+ns = "kanidm_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "kanidm_kernel.Properties.match_eq_spec"
+property = "An equality filter term matches exactly when the entry's value set for the attribute holds the value."
+
+[[task]]
+id = "kanidm-str-contains-spec"
+repo = "kanidm/kanidm"
+src = "bench:ports/kanidm"
+ns = "kanidm_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "kanidm_kernel.Properties.str_contains_spec"
+property = "The substring test used by filter terms is List.IsInfix."
+
+[[task]]
+id = "kanidm-effective-total"
+repo = "kanidm/kanidm"
+src = "bench:ports/kanidm"
+ns = "kanidm_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "kanidm_kernel.Properties.effective_permission_check_total"
+property = "The effective-permission report never panics, overflows or loops."
+
+# rustfs (ports/rustfs): IAM and bucket policy evaluation.
+
+[[task]]
+id = "rustfs-explicit-deny"
+repo = "rustfs/rustfs"
+src = "bench:ports/rustfs"
+ns = "rustfs_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "rustfs_kernel.Properties.explicit_deny_wins"
+property = "An explicit Deny that applies refuses the request, whatever the policy allows."
+
+[[task]]
+id = "rustfs-allow-needs-statement"
+repo = "rustfs/rustfs"
+src = "bench:ports/rustfs"
+ns = "rustfs_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "rustfs_kernel.Properties.allow_needs_allow_statement"
+property = "Unless the caller owns the resource or only denials are checked, an allowed request has an Allow statement that applies."
+
+[[task]]
+id = "rustfs-owner"
+repo = "rustfs/rustfs"
+src = "bench:ports/rustfs"
+ns = "rustfs_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "rustfs_kernel.Properties.owner_allowed_unless_denied"
+property = "The owner is allowed unless a Deny statement applies."
+
+[[task]]
+id = "rustfs-deny-only"
+repo = "rustfs/rustfs"
+src = "bench:ports/rustfs"
+ns = "rustfs_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "rustfs_kernel.Properties.deny_only_ignores_allows"
+property = "With deny_only, a request no Deny statement refuses is allowed."
+
+[[task]]
+id = "rustfs-force-delete"
+repo = "rustfs/rustfs"
+src = "bench:ports/rustfs"
+ns = "rustfs_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "rustfs_kernel.Properties.force_delete_needs_explicit_grant"
+property = "Force-delete is granted only by an Allow statement that names it; s3:* never grants it."
+
+[[task]]
+id = "rustfs-not-action-force-delete"
+repo = "rustfs/rustfs"
+src = "bench:ports/rustfs"
+ns = "rustfs_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "rustfs_kernel.Properties.not_action_never_grants_force_delete"
+property = "An Allow statement with only NotAction never covers a force-delete."
+
+[[task]]
+id = "rustfs-get-object-version"
+repo = "rustfs/rustfs"
+src = "bench:ports/rustfs"
+ns = "rustfs_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "rustfs_kernel.Properties.get_object_version_covers_get_object"
+property = "A statement naming s3:GetObjectVersion also covers s3:GetObject."
+
+[[task]]
+id = "rustfs-bucket-principal"
+repo = "rustfs/rustfs"
+src = "bench:ports/rustfs"
+ns = "rustfs_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "rustfs_kernel.Properties.bucket_allow_needs_principal"
+property = "A bucket policy allows a non-owner only through an Allow statement whose principal matches the account."
+
+[[task]]
+id = "rustfs-bucket-total"
+repo = "rustfs/rustfs"
+src = "bench:ports/rustfs"
+ns = "rustfs_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "rustfs_kernel.Properties.bucket_policy_total"
+property = "Bucket policy evaluation always terminates without a panic."
+
+[[task]]
+id = "rustfs-wildcard"
+repo = "rustfs/rustfs"
+src = "bench:ports/rustfs"
+ns = "rustfs_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "rustfs_kernel.Properties.wildcard_is_glob"
+property = "The wildcard matcher computes the declarative glob."
+
+[[task]]
+id = "rustfs-clean-idempotent"
+repo = "rustfs/rustfs"
+src = "bench:ports/rustfs"
+ns = "rustfs_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "rustfs_kernel.Properties.clean_idempotent"
+property = "Cleaning a path twice gives the same result as cleaning it once."
+
+[[task]]
+id = "rustfs-clean-canonical"
+repo = "rustfs/rustfs"
+src = "bench:ports/rustfs"
+ns = "rustfs_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "rustfs_kernel.Properties.clean_canonical"
+property = "A cleaned path has no empty or dot segments."
+
+[[task]]
+id = "rustfs-parse-i64"
+repo = "rustfs/rustfs"
+src = "bench:ports/rustfs"
+ns = "rustfs_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "rustfs_kernel.Properties.parse_i64_spec"
+property = "The condition parser reads integers as str::parse::<i64> does."
+
+[[task]]
+id = "rustfs-resolution-terminates"
+repo = "rustfs/rustfs"
+src = "bench:ports/rustfs"
+ns = "rustfs_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "rustfs_kernel.Properties.resolution_terminates"
+property = "Policy variable resolution terminates when no substituted value contains a variable reference."
+
+# tuwunel (ports/tuwunel): who may see what in a Matrix room.
+
+[[task]]
+id = "tuwunel-messages-visible"
+repo = "matrix-construct/tuwunel"
+src = "bench:ports/tuwunel"
+ns = "tuwunel_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "tuwunel_kernel.Properties.messages_visible"
+property = "/messages returns only events of the room that the user may see under tuwunel's history-visibility rule and has not ignored."
+
+[[task]]
+id = "tuwunel-messages-ordered"
+repo = "matrix-construct/tuwunel"
+src = "bench:ports/tuwunel"
+ns = "tuwunel_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "tuwunel_kernel.Properties.messages_ordered"
+property = "/messages pages in count order within the from and to tokens and returns at most limit (capped at 1000) events."
+
+[[task]]
+id = "tuwunel-messages-after-leaving"
+repo = "matrix-construct/tuwunel"
+src = "bench:ports/tuwunel"
+ns = "tuwunel_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "tuwunel_kernel.Properties.messages_nothing_after_leaving"
+property = "A user whose last membership event is a leave or ban gets no event sent after it from /messages unless that event is world-readable."
+
+[[task]]
+id = "tuwunel-context-visible"
+repo = "matrix-construct/tuwunel"
+src = "bench:ports/tuwunel"
+ns = "tuwunel_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "tuwunel_kernel.Properties.context_visible"
+property = "/context returns the requested base event and surrounding events, all in the room and visible to the user."
+
+[[task]]
+id = "tuwunel-context-matches-spec"
+repo = "matrix-construct/tuwunel"
+src = "bench:ports/tuwunel"
+ns = "tuwunel_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "tuwunel_kernel.Properties.context_matches_spec"
+property = "Under joined or invited history visibility, the events /context returns satisfy the Matrix spec's visibility rule."
+
+[[task]]
+id = "tuwunel-context-agrees-with-messages"
+repo = "matrix-construct/tuwunel"
+src = "bench:ports/tuwunel"
+ns = "tuwunel_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "tuwunel_kernel.Properties.context_agrees_with_messages"
+property = "The events /context returns before and after the base event are the first /messages pages backward and forward from it."
+
+[[task]]
+id = "tuwunel-context-base-served-by-event"
+repo = "matrix-construct/tuwunel"
+src = "bench:ports/tuwunel"
+ns = "tuwunel_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "tuwunel_kernel.Properties.context_base_served_by_event"
+property = "Any base event /context serves is also served by /event."
+
+[[task]]
+id = "tuwunel-relations-visible"
+repo = "matrix-construct/tuwunel"
+src = "bench:ports/tuwunel"
+ns = "tuwunel_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "tuwunel_kernel.Properties.relations_visible"
+property = "/relations needs readable room state and returns only events of the room the user may see."
+
+[[task]]
+id = "tuwunel-threads-visible"
+repo = "matrix-construct/tuwunel"
+src = "bench:ports/tuwunel"
+ns = "tuwunel_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "tuwunel_kernel.Properties.threads_visible"
+property = "/threads returns only thread roots of the room the user may see."
+
+[[task]]
+id = "tuwunel-room-event-visible"
+repo = "matrix-construct/tuwunel"
+src = "bench:ports/tuwunel"
+ns = "tuwunel_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "tuwunel_kernel.Properties.room_event_visible"
+property = "/event returns the requested event, and only if the visibility rule allows it for the room in the path."
+
+[[task]]
+id = "tuwunel-world-readable-served"
+repo = "matrix-construct/tuwunel"
+src = "bench:ports/tuwunel"
+ns = "tuwunel_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "tuwunel_kernel.Properties.world_readable_event_served"
+property = "An event that was world-readable when sent is served by /event to anyone who has not ignored its sender."
+
+[[task]]
+id = "tuwunel-state-reads-need-membership"
+repo = "matrix-construct/tuwunel"
+src = "bench:ports/tuwunel"
+ns = "tuwunel_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "tuwunel_kernel.Properties.state_reads_need_membership"
+property = "Reading room state or members needs the user to be joined, invited, once joined, or the room to be world-readable."
+
+[[task]]
+id = "tuwunel-joined-members-need-join"
+repo = "matrix-construct/tuwunel"
+src = "bench:ports/tuwunel"
+ns = "tuwunel_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "tuwunel_kernel.Properties.joined_members_need_join"
+property = "/joined_members needs the user to be joined or the room to be world-readable."
+
+[[task]]
+id = "tuwunel-initial-sync-visible"
+repo = "matrix-construct/tuwunel"
+src = "bench:ports/tuwunel"
+ns = "tuwunel_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "tuwunel_kernel.Properties.initial_sync_visible"
+property = "initialSync returns only events of the room the user may see."
+
+[[task]]
+id = "tuwunel-initial-sync-departure"
+repo = "matrix-construct/tuwunel"
+src = "bench:ports/tuwunel"
+ns = "tuwunel_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "tuwunel_kernel.Properties.initial_sync_stops_at_departure"
+property = "A user whose current membership is a leave or ban gets no event after their departure from initialSync."
+
+[[task]]
+id = "tuwunel-server-sees-joined"
+repo = "matrix-construct/tuwunel"
+src = "bench:ports/tuwunel"
+ns = "tuwunel_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "tuwunel_kernel.Properties.server_sees_joined_only"
+property = "Over federation, a joined-visibility event is shown to a server only if one of its users, joined now, was joined at the event."
+
+[[task]]
+id = "tuwunel-total"
+repo = "matrix-construct/tuwunel"
+src = "bench:ports/tuwunel"
+ns = "tuwunel_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "tuwunel_kernel.Properties.transition_total"
+property = "Every request gets a reply: the kernel neither panics nor loops."
+
+# OxiCloud (ports/oxicloud): access control engine and grant endpoints.
+
+[[task]]
+id = "oxicloud-migration-readonly"
+repo = "AtalayaLabs/OxiCloud"
+src = "bench:ports/oxicloud"
+ns = "oxicloud_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "oxicloud_kernel.Properties.migration_readonly_blocks_mutations"
+property = "In storage-migration read-only mode only reads are allowed."
+
+[[task]]
+id = "oxicloud-drive-read-only"
+repo = "AtalayaLabs/OxiCloud"
+src = "bench:ports/oxicloud"
+ns = "oxicloud_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "oxicloud_kernel.Properties.drive_read_only_blocks_mutations"
+property = "On a read-only drive nothing inside it, nor the drive, can be changed."
+
+[[task]]
+id = "oxicloud-expired-grants"
+repo = "AtalayaLabs/OxiCloud"
+src = "bench:ports/oxicloud"
+ns = "oxicloud_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "oxicloud_kernel.Properties.expired_grants_ignored"
+property = "Expired grants play no part in an access decision."
+
+[[task]]
+id = "oxicloud-fewer-grants"
+repo = "AtalayaLabs/OxiCloud"
+src = "bench:ports/oxicloud"
+ns = "oxicloud_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "oxicloud_kernel.Properties.fewer_grants_allow_no_more"
+property = "Taking grants away never allows more."
+
+[[task]]
+id = "oxicloud-token-grant"
+repo = "AtalayaLabs/OxiCloud"
+src = "bench:ports/oxicloud"
+ns = "oxicloud_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "oxicloud_kernel.Properties.token_needs_its_own_grant"
+property = "A link token is allowed only through a live grant to that token."
+
+[[task]]
+id = "oxicloud-share-needs-owner"
+repo = "AtalayaLabs/OxiCloud"
+src = "bench:ports/oxicloud"
+ns = "oxicloud_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "oxicloud_kernel.Properties.share_needs_owner"
+property = "Share permission is granted only through a live Owner grant."
+
+[[task]]
+id = "oxicloud-check-total"
+repo = "AtalayaLabs/OxiCloud"
+src = "bench:ports/oxicloud"
+ns = "oxicloud_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "oxicloud_kernel.Properties.check_total"
+property = "The permission check always answers."
+
+[[task]]
+id = "oxicloud-create-needs-share"
+repo = "AtalayaLabs/OxiCloud"
+src = "bench:ports/oxicloud"
+ns = "oxicloud_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "oxicloud_kernel.Properties.create_needs_share"
+property = "Creating a grant needs Share on the resource."
+
+[[task]]
+id = "oxicloud-sharing-policies"
+repo = "AtalayaLabs/OxiCloud"
+src = "bench:ports/oxicloud"
+ns = "oxicloud_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "oxicloud_kernel.Properties.create_respects_sharing_policies"
+property = "A grant created on a folder or file obeys its drive's sharing and public-link policies."
+
+[[task]]
+id = "oxicloud-personal-drive"
+repo = "AtalayaLabs/OxiCloud"
+src = "bench:ports/oxicloud"
+ns = "oxicloud_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "oxicloud_kernel.Properties.personal_drive_members_fixed"
+property = "A personal drive's membership cannot be changed by creating a grant or setting a role."
+
+[[task]]
+id = "oxicloud-keeps-owner"
+repo = "AtalayaLabs/OxiCloud"
+src = "bench:ports/oxicloud"
+ns = "oxicloud_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "oxicloud_kernel.Properties.drive_keeps_an_owner"
+property = "Creating a grant or setting a role never leaves a drive that had an owner without one."
+
+[[task]]
+id = "oxicloud-refused-writes-nothing"
+repo = "AtalayaLabs/OxiCloud"
+src = "bench:ports/oxicloud"
+ns = "oxicloud_kernel"
+given = ["Spec.lean"]
+module = "Properties"
+theorem = "oxicloud_kernel.Properties.refused_create_or_set_writes_nothing"
+property = "A refused grant creation or role change writes nothing."

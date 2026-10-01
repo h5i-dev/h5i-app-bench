@@ -1,0 +1,11 @@
+[package]
+name = "tuwunel-kernel"
+description = "tuwunel's room visibility checks and the client endpoints that apply them (matrix-construct/tuwunel @ 7801b8e) as an h5i-app kernel"
+edition = "2024"
+version = "0.1.0"
+publish = false
+
+# No dependencies: this crate is extracted to Lean by Charon + Aeneas.
+[dependencies]
+
+[workspace]

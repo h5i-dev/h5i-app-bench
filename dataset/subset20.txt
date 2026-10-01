@@ -1,0 +1,22 @@
+# Twenty tasks for comparing paid models: three or four per application,
+# spread over authorization, functional specs, invariants and totality.
+nora-read-only
+nora-admin-path
+nora-digest
+nora-token-unexpired
+artifactkeeper-private-needs-grant
+artifactkeeper-rule-overrides-role
+artifactkeeper-cidr-contains
+kanidm-readonly-cannot-modify
+kanidm-delete-protected
+kanidm-str-contains-spec
+tuwunel-messages-visible
+tuwunel-state-reads-need-membership
+tuwunel-messages-ordered
+rustfs-explicit-deny
+rustfs-force-delete
+rustfs-wildcard
+rustfs-resolution-terminates
+oxicloud-expired-grants
+oxicloud-share-needs-owner
+oxicloud-keeps-owner

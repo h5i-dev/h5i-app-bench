@@ -1,0 +1,13 @@
+[package]
+name = "tuwunel_database"
+description = "In-memory stand-in for tuwunel_database: ordered byte maps with the read API the copied code calls"
+edition.workspace = true
+version.workspace = true
+publish.workspace = true
+
+[dependencies]
+tuwunel_core = { path = "../tuwunel_core" }
+ruma = { path = "../ruma" }
+futures.workspace = true
+serde.workspace = true
+serde_json.workspace = true

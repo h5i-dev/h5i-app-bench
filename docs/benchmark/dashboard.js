@@ -73,7 +73,7 @@ function renderTiles() {
   const s = INDEX.stats;
   const tiles = [
     [s.repos, "repositories", "open-source Rust web applications"],
-    [kLines(s.ported_loc), "lines of upstream Rust", "ported to i5h"],
+    [kLines(s.ported_loc), "lines of upstream Rust", "ported to h5i-app"],
     [s.properties, "properties", "one theorem each"],
     [s.proved, "properties proved", `by at least one model · ${pct(s.proved, s.properties)}%`, [s.proved, s.properties]],
   ];
@@ -208,7 +208,7 @@ function tabRust(d) {
     h += up
       ? codeBlock({ title: "upstream", sub: `${up.file}:${up.line}`, url: up.url, code: up.code, lang: "rust" })
       : `<div class="missing">No upstream function of this name: a helper introduced by the port.</div>`;
-    h += codeBlock({ title: "i5h port", sub: `${k.file}:${k.line}`, url: k.url, code: k.code, lang: "rust" });
+    h += codeBlock({ title: "h5i-app port", sub: `${k.file}:${k.line}`, url: k.url, code: k.code, lang: "rust" });
     h += `</div>`;
   }
   return h;
@@ -216,7 +216,7 @@ function tabRust(d) {
 
 function tabEquivalence(d) {
   const app = INDEX.apps[d.app];
-  let h = `<p class="note">The differential test runs upstream and the i5h port on the same generated inputs and compares results; a mutated port must fail it. These are the tests that call the functions above.</p>`;
+  let h = `<p class="note">The differential test runs upstream and the h5i-app port on the same generated inputs and compares results; a mutated port must fail it. These are the tests that call the functions above.</p>`;
   h += d.difftest.length
     ? d.difftest.map((t) => codeBlock({ title: t.fn, sub: `${t.file}:${t.line}`, url: t.url, code: t.code, lang: "rust" })).join("")
     : `<p class="empty">No test names these functions directly; they are covered through their callers.</p>`;
@@ -227,7 +227,7 @@ function tabEquivalence(d) {
 
 function tabLean(d) {
   if (!d.lean.length) return `<p class="empty">No generated definition is referenced by this statement.</p>`;
-  return `<p class="note">Extracted from the i5h port by Aeneas. The bracket in each comment names the Rust item it came from.</p>` +
+  return `<p class="note">Extracted from the h5i-app port by Aeneas. The bracket in each comment names the Rust item it came from.</p>` +
     d.lean.map((l) => codeBlock({ title: l.name, sub: l.rust, code: l.code, lang: "lean" })).join("");
 }
 

@@ -1,290 +1,85 @@
 # Design
 
-See also the [roadmap](ROADMAP.md), [what is proven and trusted](TRUST.md)
-and [proof sizes and build times](NUMBERS.md).
+## Tasks
 
-## Architecture
+A task is `(application, property)`. `dataset/tasks.toml` lists them. Each
+task names the port directory, the spec files the model is given, and the
+theorem in the reference proofs whose statement the model must prove.
 
-The kernel, `transition(actor, snapshot, command) -> (writes, reply)`, holds
-every permission check and business rule, in the Rust subset Aeneas
-translates to Lean. The shell (axum routes, authentication, PostgreSQL) loads
-the caller's tenant, calls the kernel and commits the writes in one
-SERIALIZABLE transaction. App code gets no database
-connection. That alone does not prove the server refines the kernel; that
-also needs the assumptions in [TRUST.md](TRUST.md).
+`harness/bench.py build` turns an entry into `tasks/<id>/workspace`, which is
+what the model sees:
 
-```
-HTTP (axum) ──► Actor<K> ──► I5h::respond ──► Engine: BEGIN, load, transition, write, COMMIT
-                                                              │
-                                                  kernel (Rust) ══ Aeneas ══► Lean proofs
-```
+- `kernel/src/lib.rs`, the ported Rust, for reading;
+- `proofs/generated/`, the Lean that Aeneas extracted from it;
+- the given spec files;
+- `proofs/Solution.lean`, holding the statement with `sorry` in place of the
+  proof;
+- `TASK.md`, the instructions.
 
-## Repository layout
+The reference proofs, other theorems of the same port and every other port
+stay outside the container. The build also grades the reference proof with
+the same checker, so a task whose statement does not match the reference, or
+whose reference is not accepted, is not built. It records the reference proof
+size: the lines of every hand-written declaration the reference theorem
+depends on, found by walking the constants its proof uses.
 
-| Path | Contents |
-|---|---|
-| `crates/i5h` | the `Kernel` trait, an in-memory reference engine, and the Lean library `I5hLib` |
-| `crates/i5h-pg` | the PostgreSQL engine: tenant snapshots, retries, idempotency and role lockdown |
-| `crates/i5h-http` | axum integration: the `Actor` extractor, `I5h::respond` and `rpc_router` |
-| `crates/i5h-schema` | `schema!`, which declares kernel rows once |
-| `crates/i5h-sql`, `i5h-pgsql`, `i5h-token`, `i5h-json` | extracted and proven shell parts: statement planner, SQL compiler and printer, bearer tokens, JSON output |
-| `examples/tutorials` | step-by-step tutorials |
-| `examples/docs` | the document service, the largest example |
-| `examples/kellnr`, `examples/atuin` | ports of real authorization code, kernels and proofs only |
-| `examples/wastebin`, `examples/conduit`, `examples/cratesio` | ports of real applications, with servers |
-| `examples/filters`, `examples/keys` | patterns, kernels and proofs only: parsing over bytes, properties across requests |
-| `xtask` | `cargo i5h-verify`, which runs CI's checks locally |
+## Ports
 
-The root Cargo workspace holds `crates/*` and `xtask`. `examples/` is a second
-workspace whose crates depend on `crates/*` by path, as an application would.
+A port lives in `ports/<app>/`:
 
-In each proof project (`*/proofs`), `generated/` holds extracted Rust and
-`schema!` output as a separate Lean library with its own `srcDir`;
-hand-written specs and proofs sit at the top level.
+- `kernel/`, the upstream logic in the Aeneas subset of Rust;
+- `proofs/`, the extracted Lean, the spec and the reference proofs;
+- `difftest/`, which copies the upstream functions verbatim from the pinned
+  commit (`extract_upstream.py`) and runs them and the kernel on the same
+  random inputs;
+- `DEVIATIONS.md`, every place the kernel differs in form from upstream and
+  why.
 
-## What the examples prove
+The kernel follows upstream function by function. It changes the code only
+where Aeneas requires it (strings become byte slices, iterator adapters
+become loops, a loop inside a recursive function becomes recursion, a missing
+library function is written out) or where the code is not logic (metrics and
+logs). The differential test is how these changes are shown not to change
+behavior, and a mutated kernel must fail it.
 
-The document service (`examples/docs`) has projects, members and a review
-workflow. For every actor, reachable state and command, Lean checks that:
-committed writes fit the policy table (four-eyes rule included); replies show
-only documents the caller may read; invariants hold; results and error codes
-depend only on what the user may see; webhooks go only to the project's
-registered destination; a result depends only on one project's rows, so the
-server loads only those; the kernel never panics.
+Signature checks and parsing that happen before the ported logic are the
+trusted boundary: the kernel starts from their output.
 
-Each port's property fails with a counterexample on the code before a known
-fix and holds after it.
+## Grading
 
-| Port | Bug shown |
-|---|---|
-| `examples/kellnr` | read-only users could change owners (PR #1243) |
-| `examples/atuin` | a session alone can delete an account (issue #3297) |
-| `examples/wastebin` | link previews burned pastes before commit 632ddf2 (issue #190) |
-| `examples/conduit` | upstream's `favorited` flag is wrong (issue #16); every reply of realworld-axum-sqlx is proven equal to a spec |
-| `examples/cratesio` | locked accounts could still sign in before PR #14760 |
+`bench.py grade` copies the untouched workspace, puts in the model's
+`Solution.lean` and adds `Check.lean`, which
 
-Two more examples each show a bug class, before and after its fix:
+- declares the task's statement as an axiom and checks with `isDefEq` that the
+  model's theorem has that type,
+- prints the theorem's axioms.
 
-| Example | Bug shown |
-|---|---|
-| `examples/filters` | a template substituter and a filter parser disagree on escaping, so a user's name rewrites the filter |
-| `examples/keys` | a session checks its key once and uses it later, so it outlives the key's revocation |
+The solution passes if the build succeeds, the statement matches and the
+axioms are among `propext`, `Classical.choice` and `Quot.sound`. The source is
+also rejected if it uses `axiom`, `unsafe`, `extern`, `implemented_by`,
+`run_cmd`-style commands or imports outside the spec, the generated code,
+H5iAppLib, Aeneas and Mathlib. The build runs in the same container image with
+no network.
 
-Porting the three servers found three more upstream problems, listed in
-[NUMBERS.md](NUMBERS.md). The [tutorials](../examples/tutorials) each teach
-one kind of property: functional correctness, permissions and invariants,
-conservation of a sum, noninterference, and interval invariants with effects.
+## Sandbox
 
-## From transition to stored rows
+`harness/run.py` runs one agent on one task in rootless Docker with `--network
+none`. The container mounts the task workspace (writable), the Lean toolchain,
+the Lake packages and H5iAppLib (read-only), and the agent's own config directory
+with the h5i-app skill. The agent never sees the reference proofs. The agent
+reaches the model through `socat` to a unix socket served by
+`harness/proxy.py` on the host (from `harness/proxy.example.py`), which adds
+the API key, removes provider-hosted tools (web search and the like) from
+requests, and logs usage.
 
-```
-Rust transition --Aeneas--> Lean: Inv(s) and Accept(ws) give Inv(apply s ws)
-      |
-      v
-write set --sql_writes--> table writes --plan--> statements
-      --i5h_pgsql::compile--> SQL subset + parameters --render--> text
-      --PostgreSQL model (I5hLib.Pg)--> rows
-      --i5h_pgsql::select, decode--> next snapshot
-```
+OpenAI models run under Codex over the Responses API. Anthropic models run
+under Claude Code over the Messages API. Gemini models run under Codex or
+gemini-cli.
 
-Every arrow except the PostgreSQL model is Rust extracted by Aeneas. Each
-server app proves `db_inv`: the invariant holds in every database its
-requests produce and in every snapshot loaded from it. [TRUST.md](TRUST.md)
-gives the exact statement, the theorem behind each arrow and what stays
-trusted.
+## Measurements
 
-## PostgreSQL boundary
-
-i5h assumes PostgreSQL follows its documented semantics. Its own use of
-PostgreSQL it must prove or test: the SQL matches the Lean model, table, key
-and column mappings agree across Rust, Lean and PostgreSQL, and nulls,
-integers and filtered deletes mean the same on each side. Retries, atomic
-commits and connection cleanup belong to the tested engine contract in
-[TRUST.md](TRUST.md).
-
-A review found one mismatch: `DelWhere` treats `Val.Null` as equal to
-`Val.Null`, but the SQL used `=`, which is unknown for `NULL`. The model
-gives `=` and `IS NOT DISTINCT FROM` different meanings, so the soundness
-proof fails on the old SQL. Filters now use `IS NOT DISTINCT FROM`; `=` is
-used only for non-`NULL` key values.
-
-The compiler resolves names through the schema: filters by the zero-based
-column index `schema!` emits (a Rust constant and a Lean `col_*`), statements
-by table number. `i5h_pgsql::valid`
-rejects names PostgreSQL could read differently (empty, over 63 bytes,
-containing NUL, duplicated, a column named `tenant_id`, a table named
-`i5h_...`), and every compile checks it.
-
-## Next steps
-
-Proofs aim at one claim: the app later reads back the state change of the
-decision the extracted kernel made. PostgreSQL, the async runtime and the
-engine stay trusted. With `db_inv` done, next:
-
-1. Test `I5hLib.Pg` against real PostgreSQL: nulls, numeric encodings,
-   conflicts, scoped reads.
-2. Generate stores from `schema!` and bind the tenant into the transaction
-   API, so a `Store` cannot touch another tenant.
-3. Test retries, unknown commits, cancellation, advisory-lock cleanup,
-   idempotency and outbox delivery on the production path in CI, not in a
-   separate model checker. CI rejects a run that skipped them.
-
-## Inputs from the shell
-
-`transition` is pure, so outside facts (time, a random slug, another
-service's answer) come in from the shell. Put them in the principal, not the
-client-chosen command: a client that picks the time can book the past.
-Theorems hold for any value but cannot say it is true, so each app's README
-lists these inputs as trusted. The authenticator draws a slug once per
-request, so a retry sees the same one.
-
-Each attempt reads the engine's `Clock` in its transaction, and
-`Kernel::stamp` copies it into the principal before `transition`.
-`Timestamp` counts microseconds since the Unix epoch (`secs()` for seconds).
-A retry reads the clock again, so the committing attempt's time decides.
-Idempotent replay matches on the command's fingerprint, which omits the time.
-With `EngineConfig::monotonic`, the engine never uses a time earlier than the
-tenant's last commit (kept in `i5h_clock`). `I5hLib.ReachableT` proves
-properties under that trusted assumption, such as `started_stays` in the
-booking tutorial.
-
-## Authorization defaults
-
-The kernel proves a decision correct, but apps break at the edges it trusts:
-an unauthenticated route, an identity read from the body, a route that skips
-the kernel. Three defaults keep those edges inside the guarantee.
-
-`Actor<K>` holds its principal privately, so the only way to build one is the
-extractor, which runs the `Authenticator`; a handler cannot fake an actor.
-`assume_authenticated` is the one greppable bypass, for a server that
-authenticates its own way (Wastebin's signed cookie).
-
-Identity comes from the actor, not the command, since `transition` takes them
-separately. So `cargo i5h-verify` rejects an identity or privilege field
-(`owner`, `role`, `is_admin`) in a `Command` unless the line carries
-`i5h-allow: privileged-field`. This is readur's register `role` and
-rust-web-app's owner reassignment.
-
-`cargo i5h-verify` also checks every `post`/`put`/`delete`/`patch` handler
-takes an `Actor`, so a mutating route cannot dispatch without a resolved
-caller; opt out with `i5h-allow: no-actor`.
-
-For coverage, an app states one theorem, `I5hLib.WritesAuthorized`, quantified
-over every actor, state and command, so a forgotten check on any route fails
-the proof. `cargo i5h-verify` reports which app proofs state it; kellnr uses
-the schema.
-
-## One schema per app
-
-The engine's tables (idempotency keys, outbox) have fixed names. Two apps in
-one database would share them, and one app's dispatcher would claim the
-other's effects. `i5h_pg::with_schema(url, "app")` gives an app its
-own PostgreSQL schema, created by `install_schema`. Every example except the
-document service uses one.
-
-## Writing kernels in the Aeneas subset
-
-Aeneas translates a subset of Rust. What falls outside it has a replacement:
-
-| Instead of | Write | Prove with |
-|---|---|---|
-| `String`, `&str` | `Vec<u8>`, `&[u8]` | `==` and `!=` specs in `I5hLib.Bytes` |
-| iterator adapters, closures (`.iter().any(..)`) | `for x in v.iter()` with `return` or `push` | `iter_any`, `iter_find`, `iter_filter_map`, `iter_fold` |
-| a parser with early exits | a `for` loop over bytes with a state enum | `iter_loop`, modeled by `iterRun` |
-| index loops `while i < v.len()` | `for` loops (the index loops still work) | `loop_search`, `loop_fold` |
-| `v.is_empty()` | `v.len() == 0` | `usize_ofNatCore_eq_zero` |
-
-Each `for` loop spec turns a per-element fact into a statement about the
-whole list, so a property like "every returned event is visible" is
-`∀ e ∈ out, visible e` about the full `Vec`, not about one representative.
-A function whose body is one loop takes one line:
-
-```lean
-@[step] theorem find_key_spec (keys : Slice Key) (sec : alloc.vec.Vec U8) :
-    find_key keys sec ⦃ o => findKey keys.val sec = o ⦄ := by
-  i5h_for find_key using (iter_find keys (fun k => k.secret = sec) _ ?_) [findKey]
-```
-
-`i5h_for` unfolds the function and its loop, applies the spec, closes the
-per-element goal with `i5h_iter` and restates the conclusion; what it cannot
-close is left to the caller. `examples/filters` parses text this way, with a
-round trip proven for all byte strings.
-
-Tooling fixes for common failures:
-
-- Derived `==` on an enum compares `read_discriminant`, which the WP tactics
-  do not reduce. `i5h_derive_eq T f` derives `DecidableEq T` and a `@[step]`
-  spec saying `f` decides equality. Run it for field types first, then structs.
-- `i5h_derive_clone T f` proves a derived `clone` is the identity, for `T` and
-  for `Vec<T>`, so `step*` passes through clones.
-- `let x = if c { a } else { b };` binds on an `if`, where `step*` stops.
-  `i5h_steps` rewrites the bind into the branches and continues, whether
-  they are plain values or calls, and splits a `match` it stops at.
-- To reason about a run that succeeded without proving every callee total,
-  invert the equation: `i5h_invert h` on `h : f x = ok y` leaves one goal per
-  successful path, with each call's equation as a hypothesis
-  (`bind_tc_eq_ok`). `loop_ok` does the same for a loop, by a measure.
-- `i5h_simp` normalizes `if false = true`, `id` and `ok` binds, and never
-  fails for making no progress.
-- State postconditions as `model = extracted` (e.g. `findKey l k = o`), so
-  `simp_all` rewrites the model into the extracted value. Add
-  `-List.find?_eq_none` when a match on a `find?` result must reduce.
-- If Aeneas reports "Could not match the contexts", move the branch into a
-  helper function.
-
-## Properties across requests
-
-A kernel step is one request, but properties can span many. `I5hLib.Run` is
-every serial order of requests with their outcomes; the engine commits each
-request in one SERIALIZABLE transaction, so every interleaving of concurrent
-clients is such an order (A5). A theorem over every `Run` therefore covers
-every interleaving. `Run.inv` carries an invariant along a run. `Run.after`
-proves "once this event, then from then on", and `Run.fired` gives the state
-each event ran in. A check in one request and a use in another is an
-interleaving like any other: `examples/keys` proves a revocation holds
-against every later request, and refutes the kernel that trusts a session's
-earlier check.
-
-Within one request there is no race to prove: `transition` runs on one
-snapshot and its writes commit atomically. Liveness ("eventually") is not
-expressible, since runs are finite; scenario theorems show a behavior is
-reachable. `ReachableT` adds monotonic time.
-
-## Proof patterns
-
-The examples prove their theorems in this order:
-
-1. Specify each table loop with lists (`find?`, `any`, `filter`, `upsert`),
-   proven with `iter_find`, `iter_any` or `iter_fold` for `for` loops, or
-   `loop_search` or `loop_fold` for index loops, from `I5hLib`.
-2. Give each command one lemma: what a successful run writes and why it
-   succeeded. Only these touch extracted code.
-3. Combine them into the few write-set shapes a successful command produces:
-   a disjunction (board, ledger) or an inductive `Effect` relation with
-   `cases` (larger ports; scales better).
-4. Prove each theorem by cases on that: permissions against a per-write-kind
-   policy, one invariant lemma per state change, induction over `Reachable`.
-   Theorems needing the invariant assume reachability, never the invariant.
-5. `Apply.lean`: the kernel's `apply` computes the spec's `applyAll`, one
-   loop lemma per table.
-6. Scenario theorems run the extracted kernel on small states, showing the
-   guarded behavior happens (not a kernel that refuses everything) and that
-   reachable-state hypotheses can hold.
-
-A past bug is a second transition function differing in one command, refuted
-by a scenario theorem. Confidentiality is noninterference over
-a `view` of the state (`examples/tutorials/inbox`, `examples/docs`). Reply
-correctness is equality with a spec function (`examples/conduit`).
-
-## Checks
-
-`cargo i5h-verify` runs the Rust tests (and the PostgreSQL tests when
-`I5H_TEST_DATABASE_URL` is set), checks with `cargo deny` that only `i5h-pg`
-uses a database driver, re-extracts every kernel with Charon and Aeneas and
-fails on any diff, and builds every proof project, rejecting `sorry`,
-`native_decide`, `axiom` and non-standard axioms in the main theorems.
-`--full` adds the mutation suite and the Rust/Lean differential test. Missing
-tools are reported as skipped, not passed.
-
-Toolchain: stable Rust, elan with Lean v4.31.0, and Charon and Aeneas at the
-commit pinned in the proof lakefiles.
+Per run, `results/runs/<stamp>-<task>-<model>/result.json` records the grade,
+wall time, cost (list prices times the logged usage), tokens, the
+number of Lean builds (`lake build`, `lake env lean`), how many failed to
+compile, and which build was the first to pass with no `sorry`. The proof size
+is the solution's lines minus the template's.
