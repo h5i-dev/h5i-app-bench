@@ -7,13 +7,13 @@ Each task asks a model to prove, in Lean 4, one property of an application
 whose Rust logic has been ported to an h5i-app kernel. Models run as coding agents
 in a sandbox without network access. See [docs/DESIGN.md](docs/DESIGN.md) for
 how tasks are built, graded and measured. The dashboard is in
-[docs/benchmark](docs/benchmark).
+[docs](docs) and is served at <https://benchmark.h5i.dev>.
 
 This repository was the home of the framework itself, then called i5h. The
 framework now lives in the [h5i](https://github.com/h5i-dev/h5i) repository as
 `h5i-app` (`crates/h5i-app*`, examples in `examples/app`); the last state of
 the framework here is tagged `framework-final`. Model solutions recorded in
-`docs/benchmark/data` were written against the library under its old names
+`docs/data` were written against the library under its old names
 and are shown with the current ones (`H5iAppLib`, `h5i_step`, …).
 
 The ports require the h5i-app Lean library from a sibling checkout of h5i
@@ -28,6 +28,7 @@ docker build -t h5i-app-bench:0 env
 python3 harness/bench.py build          # tasks/<id>/, validated against the reference proofs
 python3 harness/run.py nora-lifetime gpt-5.5
 python3 harness/run.py nora-lifetime claude-sonnet-5-5 --agent claude
+python3 harness/dashboard.py docs/data         # publish results to the dashboard
 ```
 
 The rustfs and OxiCloud differential tests build against the upstream crates;
