@@ -1,0 +1,4033 @@
+diff --git a/Cargo.lock b/Cargo.lock
+index 3155201..9569388 100644
+--- a/Cargo.lock
++++ b/Cargo.lock
+@@ -243,6 +243,7 @@ version = "1.10.0"
+ dependencies = [
+  "aes-gcm",
+  "anyhow",
++ "artifactkeeper-kernel",
+  "async-stream",
+  "async-trait",
+  "axum 0.7.9",
+@@ -261,6 +262,7 @@ dependencies = [
+  "flate2",
+  "futures",
+  "git2",
++ "h5i-app",
+  "hex",
+  "hmac 0.12.1",
+  "http",
+@@ -355,6 +357,10 @@ dependencies = [
+  "zxcvbn",
+ ]
+ 
++[[package]]
++name = "artifactkeeper-kernel"
++version = "0.1.0"
++
+ [[package]]
+ name = "asn1-rs"
+ version = "0.7.2"
+@@ -3186,6 +3192,21 @@ dependencies = [
+  "tracing",
+ ]
+ 
++[[package]]
++name = "h5i-app"
++version = "0.1.0"
++source = "registry+https://github.com/rust-lang/crates.io-index"
++checksum = "c9061c143bacf0efd14a56f54e6806e0567475207bfdf256461d9daa27671f6d"
++dependencies = [
++ "h5i-app-core",
++]
++
++[[package]]
++name = "h5i-app-core"
++version = "0.1.0"
++source = "registry+https://github.com/rust-lang/crates.io-index"
++checksum = "6dbff4d7a839943682ae38f15b7e8ee80f857643a4983339baf6f50efb9ab5e1"
++
+ [[package]]
+ name = "halfbrown"
+ version = "0.4.0"
+diff --git a/Cargo.toml b/Cargo.toml
+index 3f05a41..e358b9a 100644
+--- a/Cargo.toml
++++ b/Cargo.toml
+@@ -1,5 +1,6 @@
+ [workspace]
+ resolver = "2"
++exclude = ["h5i"]
+ members = ["backend"]
+ 
+ [workspace.package]
+diff --git a/backend/Cargo.toml b/backend/Cargo.toml
+index 113c042..7d2be39 100644
+--- a/backend/Cargo.toml
++++ b/backend/Cargo.toml
+@@ -30,6 +30,9 @@ test-shard-services-2 = []
+ test-shard-router = []
+ 
+ [dependencies]
++# The verified kernel (h5i-app-bench ports/artifactkeeper/kernel) and the h5i-app contract.
++artifactkeeper-kernel = { path = "../h5i/artifactkeeper-kernel" }
++h5i-app = "0.1"
+ openssl = { workspace = true, optional = true }
+ # Async runtime
+ tokio.workspace = true
+diff --git a/backend/src/api/handlers/permissions.rs b/backend/src/api/handlers/permissions.rs
+index 6283b4e..f1d959a 100644
+--- a/backend/src/api/handlers/permissions.rs
++++ b/backend/src/api/handlers/permissions.rs
+@@ -310,24 +310,31 @@ pub struct CreatePermissionRequest {
+ /// evaluates it) or misleading, so reject it instead of persisting a rule
+ /// that looks like it does something it does not.
+ fn validate_anonymous_rule(payload: &CreatePermissionRequest) -> Result<()> {
+-    if payload.principal_type != crate::services::permission_service::ANONYMOUS_PRINCIPAL_TYPE {
+-        return Ok(());
+-    }
+-    if payload.target_type != "repository" && payload.target_type != "project" {
+-        return Err(AppError::Validation(format!(
+-            "anonymous rules only apply to 'repository' or 'project' targets, \
+-             got '{}'",
+-            payload.target_type
+-        )));
+-    }
+-    if payload.actions.iter().any(|action| action != "read") {
+-        return Err(AppError::Validation(
+-            "anonymous rules may only grant the 'read' action: anonymous access is a \
+-             download grant and never confers write, delete, or admin"
+-                .to_string(),
+-        ));
+-    }
+-    Ok(())
++    // Decided by `artifactkeeper_kernel::handlers::validate_anonymous_rule`.
++    let mut ids = crate::h5i::Ids::default();
++    let k = crate::h5i::k::handlers::CreatePermissionRequest {
++        principal_type: payload.principal_type.as_bytes().to_vec(),
++        principal_id: ids.id(payload.principal_id),
++        target_type: payload.target_type.as_bytes().to_vec(),
++        target_id: ids.id(payload.target_id),
++        actions: crate::h5i::strings(&payload.actions),
++        conditions: None,
++    };
++    crate::h5i::k::handlers::validate_anonymous_rule(&k).map_err(|_| {
++        if payload.target_type != "repository" && payload.target_type != "project" {
++            AppError::Validation(format!(
++                "anonymous rules only apply to 'repository' or 'project' targets, \
++                 got '{}'",
++                payload.target_type
++            ))
++        } else {
++            AppError::Validation(
++                "anonymous rules may only grant the 'read' action: anonymous access is a \
++                 download grant and never confers write, delete, or admin"
++                    .to_string(),
++            )
++        }
++    })
+ }
+ 
+ /// Create a permission
+diff --git a/backend/src/api/middleware/auth.rs b/backend/src/api/middleware/auth.rs
+index b356074..8d9aaff 100644
+--- a/backend/src/api/middleware/auth.rs
++++ b/backend/src/api/middleware/auth.rs
+@@ -22,9 +22,12 @@ use axum::{
+     middleware::Next,
+     response::{IntoResponse, Response},
+ };
++#[cfg_attr(not(test), allow(unused_imports))]
+ use base64::Engine;
+ use uuid::Uuid;
+ 
++use crate::h5i;
++
+ use crate::api::{
+     CachedRepo, RepoCache, RepoMissCache, REPO_CACHE_TTL_SECS, REPO_MISS_CACHE_MAX_ENTRIES,
+ };
+@@ -36,6 +39,7 @@ use crate::services::auth_service::{AuthService, Claims};
+ use crate::services::permission_service::PermissionService;
+ 
+ /// Custom header name for API key
++#[allow(dead_code)]
+ static X_API_KEY: HeaderName = HeaderName::from_static("x-api-key");
+ 
+ /// Header the NuGet client sends the push credential in.
+@@ -43,6 +47,7 @@ static X_API_KEY: HeaderName = HeaderName::from_static("x-api-key");
+ /// `dotnet nuget push --api-key <key>` puts the credential here rather than in
+ /// `Authorization` when the configured source carries no credentials. Only the
+ /// NuGet push route honours it (see [`extract_nuget_push_api_key`]).
++#[allow(dead_code)]
+ static X_NUGET_API_KEY: HeaderName = HeaderName::from_static("x-nuget-apikey");
+ 
+ /// Custom header the web UI attaches to every API request as the CSRF
+@@ -53,9 +58,11 @@ static X_NUGET_API_KEY: HeaderName = HeaderName::from_static("x-nuget-apikey");
+ /// request header at all, and a cross-origin `fetch()`/XHR that tries to set
+ /// one is forced into a CORS preflight that this server does not approve. So
+ /// presence alone proves the request was issued by same-origin script.
++#[allow(dead_code)]
+ static X_REQUESTED_WITH: HeaderName = HeaderName::from_static("x-requested-with");
+ 
+ /// Name of the httpOnly cookie that carries a web-UI session's access token.
++#[allow(dead_code)]
+ const SESSION_COOKIE_NAME: &str = "ak_access_token=";
+ 
+ /// Extension that holds authenticated user information
+@@ -126,14 +133,8 @@ impl AuthExtension {
+     /// `is_api_token = false` but inherits the token's `Some(scopes)` ceiling.
+     /// The download-ticket path (`Some(vec![])`) therefore still denies.
+     pub fn has_scope(&self, scope: &str) -> bool {
+-        match &self.scopes {
+-            None => true,
+-            // Delegate the wildcard-aware scope decision to the single
+-            // canonical helper (`*` / `admin` short-circuit) instead of
+-            // re-inlining a brittle string match here. Keeping the wildcard
+-            // policy in one place is what the #1316 grep gate enforces.
+-            Some(scopes) => crate::services::token_service::scopes_grant_access(scopes, scope),
+-        }
++        let mut ids = h5i::Ids::default();
++        h5i::auth_ext(self, &mut ids).has_scope(scope.as_bytes())
+     }
+ 
+     /// Repo-scope authorization decision for this principal, as an explicit
+@@ -189,19 +190,22 @@ impl AuthExtension {
+     /// [`repositories::member_read_visibility`]: crate::api::handlers::repositories::member_read_visibility
+     /// [`repositories::member_grant_visibility`]: crate::api::handlers::repositories::member_grant_visibility
+     pub fn can_access_repo(&self, repo_id: Uuid) -> bool {
+-        self.access_scope().grants(repo_id)
++        let mut ids = h5i::Ids::default();
++        let ext = h5i::auth_ext(self, &mut ids);
++        ext.can_access_repo(ids.id(repo_id))
+     }
+ 
+     /// Return an authorization error if scope check fails.
+     pub fn require_scope(&self, scope: &str) -> crate::error::Result<()> {
+-        if self.has_scope(scope) {
+-            Ok(())
+-        } else {
+-            Err(AppError::Authorization(format!(
+-                "Token does not have required scope: {}",
+-                scope
+-            )))
+-        }
++        let mut ids = h5i::Ids::default();
++        h5i::auth_ext(self, &mut ids)
++            .require_scope(scope.as_bytes())
++            .map_err(|_| {
++                AppError::Authorization(format!(
++                    "Token does not have required scope: {}",
++                    scope
++                ))
++            })
+     }
+ 
+     /// Delegation ceiling for token minting (#2996): a non-admin caller may
+@@ -217,18 +221,22 @@ impl AuthExtension {
+     /// `scopes_grant_access`, so the wildcard (`*`/`admin`) and bare-parent
+     /// coverage semantics stay in the one canonical helper (#1316).
+     pub fn enforce_mint_ceiling(&self, requested: &[String]) -> crate::error::Result<()> {
+-        if self.is_admin {
+-            return Ok(());
+-        }
+-        for s in requested {
+-            if !self.has_scope(s) {
+-                return Err(AppError::Authorization(format!(
++        let mut ids = h5i::Ids::default();
++        match h5i::auth_ext(self, &mut ids).enforce_mint_ceiling(&h5i::strings(requested)) {
++            Ok(()) => Ok(()),
++            Err(_) => {
++                // The message names the first scope the kernel refused.
++                let s = requested
++                    .iter()
++                    .find(|s| !self.has_scope(s))
++                    .map(String::as_str)
++                    .unwrap_or_default();
++                Err(AppError::Authorization(format!(
+                     "Cannot mint a token with scope '{s}': it exceeds the scopes of the \
+                      presenting credential",
+-                )));
++                )))
+             }
+         }
+-        Ok(())
+     }
+ 
+     /// Repository ceiling for token minting (#4225), the repository-scope
+@@ -253,19 +261,20 @@ impl AuthExtension {
+         &self,
+         requests_restriction: bool,
+     ) -> crate::error::Result<Option<Vec<Uuid>>> {
+-        match &self.allowed_repo_ids {
+-            AccessScope::Admin => Ok(None),
+-            AccessScope::Restricted(_) if requests_restriction => Err(AppError::Authorization(
++        let mut ids = h5i::Ids::default();
++        match h5i::auth_ext(self, &mut ids).mint_repo_ceiling(requests_restriction) {
++            Ok(None) => Ok(None),
++            Ok(Some(v)) => Ok(Some(v.into_iter().map(|i| ids.uuid(i)).collect())),
++            Err(_) if requests_restriction => Err(AppError::Authorization(
+                 "A repository-restricted credential cannot set a repository restriction on \
+                  the token it mints; the new token inherits the credential's own"
+                     .to_string(),
+             )),
+-            AccessScope::Restricted(ids) if ids.is_empty() => Err(AppError::Authorization(
++            Err(_) => Err(AppError::Authorization(
+                 "The presenting credential is restricted to repositories that match nothing, \
+                  so it cannot mint a token"
+                     .to_string(),
+             )),
+-            AccessScope::Restricted(ids) => Ok(Some(ids.clone())),
+         }
+     }
+ 
+@@ -284,18 +293,19 @@ impl AuthExtension {
+     /// and cannot be minted by a non-admin. This closes GHSA-vvc3: an
+     /// admin-owned but narrow-scoped token (e.g. `read:artifacts`) no longer
+     /// inherits unconditional admin.
++    #[cfg_attr(not(test), allow(dead_code))]
+     fn with_scope_gated_admin(mut self) -> Self {
+-        self.is_admin = self.is_admin && self.has_scope("admin");
++        let mut ids = h5i::Ids::default();
++        self.is_admin = h5i::auth_ext(&self, &mut ids).with_scope_gated_admin().is_admin;
+         self
+     }
+ 
+     /// Return a 403 Forbidden error if the caller is not an admin.
+     pub fn require_admin(&self) -> crate::error::Result<()> {
+-        if self.is_admin {
+-            Ok(())
+-        } else {
+-            Err(AppError::Authorization("Admin access required".to_string()))
+-        }
++        let mut ids = h5i::Ids::default();
++        h5i::auth_ext(self, &mut ids)
++            .require_admin()
++            .map_err(|_| AppError::Authorization("Admin access required".to_string()))
+     }
+ 
+     /// Self-or-admin gate: allow the call when the caller is acting on their
+@@ -313,55 +323,26 @@ impl AuthExtension {
+         target_user_id: Uuid,
+         deny_msg: &str,
+     ) -> crate::error::Result<()> {
+-        if self.user_id == target_user_id || self.is_admin {
+-            Ok(())
+-        } else {
+-            Err(AppError::Authorization(deny_msg.to_string()))
+-        }
++        let mut ids = h5i::Ids::default();
++        let ext = h5i::auth_ext(self, &mut ids);
++        ext.require_self_or_admin(ids.id(target_user_id))
++            .map_err(|_| AppError::Authorization(deny_msg.to_string()))
+     }
+ }
+ 
+ impl From<Claims> for AuthExtension {
+     fn from(claims: Claims) -> Self {
+-        // Single source of truth for the calling JWT's issued-at. Folded here
+-        // (from the former separate `TokenIat` extension) so every JWT
+-        // principal carries `iat_ms` uniformly (#1394). Computed before the
+-        // partial move of `claims.allowed_repo_ids` below.
+-        let iat_ms = Some(claims.effective_iat_ms());
+-        Self {
+-            user_id: claims.sub,
+-            username: claims.username,
+-            email: claims.email,
+-            is_admin: claims.is_admin,
+-            is_api_token: false,
+-            is_service_account: false,
+-            // Propagate the action-scope ceiling minted onto the JWT (#2430).
+-            // `None` for interactive/CI logins (full); `Some(list)` for JWTs
+-            // exchanged from an API token — enforced by `has_scope`.
+-            scopes: claims.scopes,
+-            allowed_repo_ids: AccessScope::from(claims.allowed_repo_ids),
+-            iat_ms,
+-        }
+-        // No-op for interactive/CI JWTs (`scopes = None`); demotes an
+-        // exchanged JWT that inherited a narrow token ceiling (GHSA-vvc3).
+-        .with_scope_gated_admin()
++        let mut ids = h5i::Ids::default();
++        let k = h5i::claims(&claims, &mut ids);
++        h5i::from_auth_ext(h5i::k::token_scope::from_claims(&k), &ids)
+     }
+ }
+ 
+ impl From<User> for AuthExtension {
+     fn from(user: User) -> Self {
+-        Self {
+-            user_id: user.id,
+-            username: user.username,
+-            email: user.email,
+-            is_admin: user.is_admin,
+-            is_api_token: false,
+-            is_service_account: user.is_service_account,
+-            scopes: None,
+-            allowed_repo_ids: AccessScope::Admin,
+-            // Basic username/password auth carries no JWT `iat`.
+-            iat_ms: None,
+-        }
++        let mut ids = h5i::Ids::default();
++        let k = h5i::user(&user, &mut ids);
++        h5i::from_auth_ext(h5i::k::token_scope::from_user(&k), &ids)
+     }
+ }
+ 
+@@ -374,13 +355,16 @@ pub fn require_auth_basic(
+     auth: Option<AuthExtension>,
+     realm: &str,
+ ) -> std::result::Result<AuthExtension, Response> {
+-    auth.ok_or_else(|| {
+-        Response::builder()
++    let mut ids = h5i::Ids::default();
++    let k = auth.as_ref().map(|e| h5i::auth_ext(e, &mut ids));
++    match h5i::k::handlers::require_auth_basic(&k) {
++        Ok(_) => Ok(auth.unwrap_or_default()),
++        Err(_) => Err(Response::builder()
+             .status(StatusCode::UNAUTHORIZED)
+             .header("WWW-Authenticate", format!("Basic realm=\"{}\"", realm))
+             .body(axum::body::Body::from("Authentication required"))
+-            .unwrap()
+-    })
++            .unwrap()),
++    }
+ }
+ 
+ /// Like [`require_auth_basic`] but additionally enforces the given API-token
+@@ -399,17 +383,19 @@ pub fn require_auth_basic_scope(
+     realm: &str,
+     scope: &str,
+ ) -> std::result::Result<AuthExtension, Response> {
+-    let ext = require_auth_basic(auth, realm)?;
+-    if !ext.has_scope(scope) {
+-        return Err(Response::builder()
++    let mut ids = h5i::Ids::default();
++    let k = auth.as_ref().map(|e| h5i::auth_ext(e, &mut ids));
++    match h5i::k::handlers::require_auth_basic_scope(&k, scope.as_bytes()) {
++        Ok(_) => Ok(auth.unwrap_or_default()),
++        Err(h5i::k::handlers::GateError::Unauthorized) => require_auth_basic(None, realm),
++        Err(h5i::k::handlers::GateError::MissingScope) => Err(Response::builder()
+             .status(StatusCode::FORBIDDEN)
+             .body(axum::body::Body::from(format!(
+                 "Token does not have required scope: {}",
+                 scope
+             )))
+-            .unwrap());
++            .unwrap()),
+     }
+-    Ok(ext)
+ }
+ 
+ /// Enforce a scope check on an already-resolved auth context, returning a
+@@ -421,18 +407,18 @@ pub fn require_scope_response(
+     auth: Option<&AuthExtension>,
+     scope: &str,
+ ) -> std::result::Result<(), Response> {
+-    if let Some(ext) = auth {
+-        if !ext.has_scope(scope) {
+-            return Err(Response::builder()
+-                .status(StatusCode::FORBIDDEN)
+-                .body(axum::body::Body::from(format!(
+-                    "Token does not have required scope: {}",
+-                    scope
+-                )))
+-                .unwrap());
+-        }
++    let mut ids = h5i::Ids::default();
++    let k = auth.map(|e| h5i::auth_ext(e, &mut ids));
++    match h5i::k::handlers::require_scope_response(&k, scope.as_bytes()) {
++        Ok(()) => Ok(()),
++        Err(_) => Err(Response::builder()
++            .status(StatusCode::FORBIDDEN)
++            .body(axum::body::Body::from(format!(
++                "Token does not have required scope: {}",
++                scope
++            )))
++            .unwrap()),
+     }
+-    Ok(())
+ }
+ 
+ /// Extract credentials from a Bearer token that contains base64-encoded user:pass.
+@@ -440,22 +426,15 @@ pub fn require_scope_response(
+ /// Some package managers (npm, cargo, goproxy) send Bearer tokens that are
+ /// base64-encoded `username:password` rather than JWTs or API keys.
+ pub fn extract_bearer_credentials(headers: &HeaderMap) -> Option<(String, String)> {
+-    headers
+-        .get(AUTHORIZATION)
+-        .and_then(|v| v.to_str().ok())
+-        .and_then(|v| v.strip_prefix("Bearer ").or(v.strip_prefix("bearer ")))
+-        .and_then(|token| {
+-            base64::engine::general_purpose::STANDARD
+-                .decode(token)
+-                .ok()
+-                .and_then(|bytes| String::from_utf8(bytes).ok())
+-                .and_then(|s| {
+-                    let mut parts = s.splitn(2, ':');
+-                    let user = parts.next()?.to_string();
+-                    let pass = parts.next()?.to_string();
+-                    Some((user, pass))
+-                })
+-        })
++    let mut oracle = h5i::empty_oracle();
++    if let Some(v) = headers.get(AUTHORIZATION).and_then(|v| v.to_str().ok()) {
++        if let Some(t) = v.strip_prefix("Bearer ").or(v.strip_prefix("bearer ")) {
++            h5i::add_base64(&mut oracle, t);
++        }
++    }
++    let (user, pass) =
++        h5i::k::resolve::extract_bearer_credentials(&oracle, &h5i::headers(headers))?;
++    Some((h5i::string(user), h5i::string(pass)))
+ }
+ 
+ /// Require authentication, with a fallback to Bearer-as-base64 credentials.
+@@ -504,6 +483,7 @@ pub async fn require_auth_with_bearer_fallback(
+ 
+ /// Token extraction result
+ #[derive(Debug, Clone, Copy)]
++#[cfg_attr(not(test), allow(dead_code))]
+ pub(crate) enum ExtractedToken<'a> {
+     /// JWT or API token from the `Bearer` scheme — or from the
+     /// `Token` scheme, which `ansible-galaxy` uses and which is treated as
+@@ -523,67 +503,58 @@ pub(crate) enum ExtractedToken<'a> {
+ /// ApiKey, and Basic schemes, plus the scheme-less cargo credential).
+ /// `Token` — the scheme `ansible-galaxy` sends — resolves to the same
+ /// [`ExtractedToken::Bearer`] variant as `Bearer` (#3137).
++#[allow(dead_code)]
+ fn extract_token_from_auth_header(auth_header: &str) -> ExtractedToken<'_> {
+-    if let Some(token) = auth_header.strip_prefix("Bearer ") {
+-        ExtractedToken::Bearer(token)
+-    } else if let Some(token) = auth_header.strip_prefix("Token ") {
+-        // `ansible-galaxy` authenticates Galaxy API calls with
+-        // `Authorization: Token <api_key>` — ansible-core
+-        // `lib/ansible/galaxy/token.py` sets `GalaxyToken.token_type = 'Token'`
+-        // and builds the header as `'%s %s' % (self.token_type, self.get())`;
+-        // only its Keycloak/Automation-Hub variant uses `Bearer`. Treat the
+-        // `Token` scheme as Bearer-equivalent so the credential flows through
+-        // the same JWT → API-token validation chain instead of being rejected
+-        // as a malformed header (#3137).
+-        ExtractedToken::Bearer(token)
+-    } else if let Some(token) = auth_header.strip_prefix("ApiKey ") {
+-        ExtractedToken::ApiKey(token)
+-    } else if let Some(creds) = auth_header
+-        .strip_prefix("Basic ")
+-        .or_else(|| auth_header.strip_prefix("basic "))
+-    {
+-        ExtractedToken::Basic(creds)
+-    } else if !auth_header.is_empty() && !auth_header.contains(' ') {
+-        // The native cargo client's `cargo:token` credential provider sends the
+-        // raw token as the Authorization header value with NO scheme prefix
+-        // (e.g. `Authorization: <token>`). A scheme-less, single-word value is
+-        // therefore treated as a Bearer token so cargo can authenticate.
+-        ExtractedToken::Bearer(auth_header)
+-    } else {
+-        ExtractedToken::Invalid
+-    }
++    borrowed(
++        &[auth_header],
++        h5i::k::http::extract_token_from_auth_header(auth_header.as_bytes()),
++    )
+ }
+ 
+-/// Extract token from request headers
+-/// Checks: Authorization (Bearer/Token/ApiKey/Basic), X-API-Key
+-pub(crate) fn extract_token(request: &Request) -> ExtractedToken<'_> {
+-    // First, check Authorization header
+-    if let Some(auth_header) = request
+-        .headers()
+-        .get(AUTHORIZATION)
+-        .and_then(|h| h.to_str().ok())
+-    {
+-        let result = extract_token_from_auth_header(auth_header);
+-        if !matches!(result, ExtractedToken::None) {
+-            return result;
+-        }
++/// The kernel's owned token as a slice of the header it came from.
++fn borrowed<'a>(sources: &[&'a str], t: h5i::k::http::ExtractedToken) -> ExtractedToken<'a> {
++    use h5i::k::http::ExtractedToken as K;
++    let find = |part: &[u8]| -> &'a str {
++        sources
++            .iter()
++            .map(|s| h5i::within(s, part))
++            .find(|s| s.as_bytes() == part)
++            .unwrap_or_default()
++    };
++    match t {
++        K::Bearer(v) => ExtractedToken::Bearer(find(&v)),
++        K::ApiKey(v) => ExtractedToken::ApiKey(find(&v)),
++        K::Basic(v) => ExtractedToken::Basic(find(&v)),
++        K::None => ExtractedToken::None,
++        K::Invalid => ExtractedToken::Invalid,
+     }
++}
+ 
+-    // Check X-API-Key header
+-    if let Some(api_key) = request
+-        .headers()
+-        .get(&X_API_KEY)
+-        .and_then(|h| h.to_str().ok())
+-    {
+-        return ExtractedToken::ApiKey(api_key);
+-    }
++/// Header values `to_str` accepts, which credentials are cut from.
++#[cfg_attr(not(test), allow(dead_code))]
++fn credential_sources<'a>(headers: &'a HeaderMap, path: &'a str) -> Vec<&'a str> {
++    let mut v: Vec<&str> = headers.values().filter_map(|h| h.to_str().ok()).collect();
++    v.push(path);
++    v
++}
+ 
+-    // Check cookie as fallback (for browser sessions with httpOnly cookies)
+-    if let Some(token) = session_cookie_token(request.headers()) {
+-        return ExtractedToken::Bearer(token);
+-    }
++fn kernel_request(request: &Request) -> h5i::k::http::Request {
++    h5i::request(
++        request.method(),
++        request.uri().path(),
++        request.uri().query(),
++        request.headers(),
++    )
++}
+ 
+-    ExtractedToken::None
++/// Extract token from request headers
++/// Checks: Authorization (Bearer/Token/ApiKey/Basic), X-API-Key
++#[cfg_attr(not(test), allow(dead_code))]
++pub(crate) fn extract_token(request: &Request) -> ExtractedToken<'_> {
++    borrowed(
++        &credential_sources(request.headers(), request.uri().path()),
++        h5i::k::http::extract_token(&kernel_request(request)),
++    )
+ }
+ 
+ /// The web-UI session access token carried in the `ak_access_token` cookie,
+@@ -592,12 +563,11 @@ pub(crate) fn extract_token(request: &Request) -> ExtractedToken<'_> {
+ /// Single source for "is there a session cookie", shared by [`extract_token`]
+ /// (which turns it into a credential) and [`credential_is_session_cookie`]
+ /// (which decides whether the CSRF contract applies).
++#[allow(dead_code)]
+ fn session_cookie_token(headers: &HeaderMap) -> Option<&str> {
+-    headers
+-        .get(COOKIE)
+-        .and_then(|h| h.to_str().ok())?
+-        .split(';')
+-        .find_map(|cookie| cookie.trim().strip_prefix(SESSION_COOKIE_NAME))
++    let t = h5i::k::http::session_cookie_token(&h5i::headers(headers))?;
++    let cookie = headers.get(COOKIE).and_then(|h| h.to_str().ok())?;
++    Some(h5i::within(cookie, &t))
+ }
+ 
+ /// Whether this request would be authenticated by the browser session cookie
+@@ -613,18 +583,16 @@ fn session_cookie_token(headers: &HeaderMap) -> Option<&str> {
+ /// Deliberately does not care whether the cookie is *valid*: an attacker
+ /// cannot make the browser omit it, so the contract has to be decided on the
+ /// request's shape, before any credential is resolved.
++#[allow(dead_code)]
+ fn credential_is_session_cookie(headers: &HeaderMap) -> bool {
+-    !has_header_credential(headers) && session_cookie_token(headers).is_some()
++    h5i::k::http::credential_is_session_cookie(&h5i::headers(headers))
+ }
+ 
+ /// Whether the request presents a credential in a HEADER (`Authorization` or
+ /// `X-API-Key`), as opposed to the session cookie.
++#[allow(dead_code)]
+ fn has_header_credential(headers: &HeaderMap) -> bool {
+-    headers
+-        .get(AUTHORIZATION)
+-        .and_then(|h| h.to_str().ok())
+-        .is_some_and(|h| !matches!(extract_token_from_auth_header(h), ExtractedToken::None))
+-        || headers.contains_key(&X_API_KEY)
++    h5i::k::http::has_header_credential(&h5i::headers(headers))
+ }
+ 
+ /// Whether this request carries ANY caller credential — `Authorization`,
+@@ -640,16 +608,14 @@ fn has_header_credential(headers: &HeaderMap) -> bool {
+ /// Like [`credential_is_session_cookie`], this is a test on the request's
+ /// SHAPE, not on whether the credential authenticates.
+ pub fn request_carries_credentials(headers: &HeaderMap) -> bool {
+-    has_header_credential(headers) || session_cookie_token(headers).is_some()
++    h5i::k::http::request_carries_credentials(&h5i::headers(headers))
+ }
+ 
+ /// Whether `method` can change server state, and therefore falls under the
+ /// CSRF contract. `GET`/`HEAD`/`OPTIONS` (and anything else safe) do not.
++#[allow(dead_code)]
+ fn is_state_changing_method(method: &Method) -> bool {
+-    matches!(
+-        *method,
+-        Method::POST | Method::PUT | Method::PATCH | Method::DELETE
+-    )
++    h5i::k::http::is_state_changing_method(h5i::method(method))
+ }
+ 
+ /// Whether this request breaks the web-UI CSRF contract and must be refused
+@@ -680,12 +646,9 @@ fn is_state_changing_method(method: &Method) -> bool {
+ /// mutations.
+ ///
+ /// Pure and header-only, so the decision is unit-testable without a request.
++#[allow(dead_code)]
+ fn violates_csrf_contract(method: &Method, headers: &HeaderMap) -> bool {
+-    is_state_changing_method(method)
+-        && credential_is_session_cookie(headers)
+-        && is_browser_request(headers)
+-        && !headers.contains_key(&X_REQUESTED_WITH)
+-        && !declares_same_origin(headers)
++    h5i::k::http::violates_csrf_contract(h5i::method(method), &h5i::headers(headers))
+ }
+ 
+ /// Whether the browser itself declares this request same-origin, via the
+@@ -713,14 +676,9 @@ fn violates_csrf_contract(method: &Method, headers: &HeaderMap) -> bool {
+ /// `multipart/form-data` through `fetch()` from the app's own origin without
+ /// attaching `X-Requested-With`, and was refused with a 403 that told the user
+ /// to use a token instead — for the one operation the UI exists to perform.
++#[allow(dead_code)]
+ fn declares_same_origin(headers: &HeaderMap) -> bool {
+-    headers
+-        .get("sec-fetch-site")
+-        .and_then(|v| v.to_str().ok())
+-        .is_some_and(|v| {
+-            let v = v.trim();
+-            v.eq_ignore_ascii_case("same-origin") || v.eq_ignore_ascii_case("none")
+-        })
++    h5i::k::http::declares_same_origin(&h5i::headers(headers))
+ }
+ 
+ /// 403 for a cookie-authenticated mutation that did not carry the custom
+@@ -744,7 +702,7 @@ fn csrf_forbidden_response() -> Response {
+ /// the head of every authentication middleware so the check cannot be skipped
+ /// by whichever one a route happens to mount.
+ fn csrf_guard(request: &Request) -> Option<Response> {
+-    violates_csrf_contract(request.method(), request.headers()).then(csrf_forbidden_response)
++    h5i::k::middleware::csrf_guard(&kernel_request(request)).map(|_| csrf_forbidden_response())
+ }
+ 
+ /// Standalone CSRF layer for the whole `/api/v1` surface (#3065).
+@@ -767,13 +725,12 @@ pub async fn csrf_middleware(request: Request, next: Next) -> Response {
+ ///
+ /// Returns `None` if the base64 is invalid, the bytes are not valid UTF-8,
+ /// or the decoded string does not contain a `:` separator.
++#[cfg_attr(not(test), allow(dead_code))]
+ fn decode_basic_credentials(encoded: &str) -> Option<(String, String)> {
+-    let bytes = base64::engine::general_purpose::STANDARD
+-        .decode(encoded)
+-        .ok()?;
+-    let decoded = String::from_utf8(bytes).ok()?;
+-    let (user, pass) = decoded.split_once(':')?;
+-    Some((user.to_owned(), pass.to_owned()))
++    let mut oracle = h5i::empty_oracle();
++    h5i::add_base64(&mut oracle, encoded);
++    let (user, pass) = h5i::k::resolve::decode_basic_credentials(&oracle, encoded.as_bytes())?;
++    Some((h5i::string(user), h5i::string(pass)))
+ }
+ 
+ /// Whether `path` is reachable by a principal flagged `must_change_password`.
+@@ -802,9 +759,9 @@ fn decode_basic_credentials(encoded: &str) -> Option<(String, String)> {
+ /// match — they sit behind `admin_middleware`, not this one, and would not be
+ /// self-recoverable. Only read-only / self-recovery endpoints are exempt;
+ /// every state-changing API surface stays gated until the flag is cleared.
++#[cfg_attr(not(test), allow(dead_code))]
+ fn path_exempt_from_password_change(path: &str) -> bool {
+-    let path = path.strip_suffix('/').unwrap_or(path);
+-    path.ends_with("/auth/me") || path.ends_with("/password") || path.ends_with("/auth/logout")
++    h5i::k::paths::path_exempt_from_password_change(path.as_bytes())
+ }
+ 
+ /// 428 Precondition Required: the principal must rotate their password before
+@@ -826,16 +783,11 @@ fn must_change_password_response() -> Response {
+ /// already authenticated, and a transient DB hiccup must not convert a normal
+ /// request into a forced-rotation lockout. Uses runtime `query_scalar` (not
+ /// the compile-time macro) so it needs no offline SQLx cache.
++#[allow(dead_code)]
+ async fn principal_must_change_password(db: &sqlx::PgPool, user_id: Uuid) -> bool {
+-    sqlx::query_scalar::<_, bool>(
+-        "SELECT must_change_password FROM users WHERE id = $1 AND is_active = true",
+-    )
+-    .bind(user_id)
+-    .fetch_optional(db)
+-    .await
+-    .ok()
+-    .flatten()
+-    .unwrap_or(false)
++    let mut ids = h5i::Ids::default();
++    let rows = kernel_db(db, &mut ids, vec![user_id], None, None).await;
++    h5i::k::resolve::principal_must_change_password(&rows, ids.id(user_id))
+ }
+ 
+ /// Authentication middleware function - requires valid token
+@@ -850,199 +802,43 @@ pub async fn auth_middleware(
+     mut request: Request,
+     next: Next,
+ ) -> Response {
+-    // CSRF contract for cookie-authenticated browser mutations (#3065). Header
+-    // -only and credential-independent, so it runs before anything is resolved.
+-    if let Some(refusal) = csrf_guard(&request) {
+-        return refusal;
+-    }
+-
+-    // Extract token from request headers
+-    let extracted = extract_token(&request);
+-
+-    // Track whether the request even attempted header-based auth, so the
+-    // 401 message stays informative when only a ?ticket= was supplied.
+-    let had_header_credentials = !matches!(extracted, ExtractedToken::None);
+-
+-    // The resolved principal. The JWT `iat` used by credential-change
+-    // invalidation (TOTP, password) to exempt the calling session's own token
+-    // now travels as `AuthExtension::iat_ms`, stamped at the single
+-    // `From<Claims>` source; it is `None` for non-JWT principals (#1394).
+-    let header_result: Result<AuthExtension, &'static str> = match extracted {
+-        // Replica-safe access-token validation. The async variant consults the
+-        // DB credential-change watermark (#1173) so a password reset, TOTP
+-        // change, or deactivation on a peer replica is honoured here on the
+-        // request path within `CREDENTIAL_DB_CACHE_TTL_SECS`. The sync variant
+-        // (which only reads the in-memory map) would silently keep accepting
+-        // pre-change tokens across replicas — that's the architectural gap
+-        // PR #1190 was supposed to close.
+-        ExtractedToken::Bearer(token) => {
+-            match auth_service.validate_access_token_async(token).await {
+-                Ok(claims) => Ok(AuthExtension::from(claims)),
+-                Err(_) => match validate_api_token_with_scopes(&auth_service, token).await {
+-                    Ok(ext) => Ok(ext),
+-                    // Same transient bcrypt-capacity shed as the Basic branch
+-                    // below: a saturated cap is "retry shortly", not "wrong
+-                    // token". See `TokenAuthError::Overloaded`.
+-                    Err(TokenAuthError::Overloaded) => return service_unavailable_response(),
+-                    Err(TokenAuthError::Invalid) => Err("Invalid or expired token"),
+-                },
+-            }
+-        }
+-        ExtractedToken::ApiKey(token) => {
+-            match validate_api_token_with_scopes(&auth_service, token).await {
+-                Ok(ext) => Ok(ext),
+-                Err(TokenAuthError::Overloaded) => return service_unavailable_response(),
+-                Err(TokenAuthError::Invalid) => Err("Invalid or expired API token"),
+-            }
+-        }
+-        ExtractedToken::Basic(encoded) => match decode_basic_credentials(encoded) {
+-            None => Err("Invalid Basic auth credentials"),
+-            Some((username, password)) => {
+-                match auth_service.authenticate(&username, &password).await {
+-                    Ok((user, _token_pair)) => Ok(AuthExtension::from(user)),
+-                    // A transient bcrypt-capacity shed must NOT be collapsed
+-                    // into a 401. `authenticate()` runs bcrypt(cost=12) under a
+-                    // process-wide concurrency cap (see
+-                    // `auth_service::acquire_auth_permit_for_bcrypt`); when that
+-                    // cap saturates under a burst of concurrent Basic-auth
+-                    // requests it returns `AppError::ServiceUnavailable`, which
+-                    // is a retryable 503, not "wrong password". Collapsing it to
+-                    // 401 "Invalid credentials" is what made `twine upload` fail
+-                    // in the release gate (a curl -u upload with byte-identical
+-                    // credentials passed because it didn't coincide with a
+-                    // saturated cap): twine does not retry on 401 but does on
+-                    // 503. Surface the shed as 503 + Retry-After so well-behaved
+-                    // clients back off and retry instead of aborting.
+-                    Err(AppError::ServiceUnavailable(msg)) => {
+-                        return (
+-                            StatusCode::SERVICE_UNAVAILABLE,
+-                            [(axum::http::header::RETRY_AFTER, "1")],
+-                            msg,
+-                        )
+-                            .into_response();
+-                    }
+-                    // A pool-acquire timeout during the credential DB lookup is
+-                    // a transient capacity problem (POOL_EXHAUSTED), not "wrong
+-                    // password": surface the same retryable 503 the #2101/#2102
+-                    // handlers return rather than flattening it to a spurious
+-                    // 401 (#2125). Clients retry on 503 but abort on 401.
+-                    Err(ref e) if e.is_pool_timeout() => {
+-                        return service_unavailable_response();
+-                    }
+-                    Err(_) => {
+-                        // Try treating the password as a short-lived JWT access
+-                        // token. This enables CI/CD keyless flows (e.g. OIDC
+-                        // token exchange) where package managers like Maven,
+-                        // pip/twine, and Helm send the AK access token as the
+-                        // Basic-auth password. `From<Claims>` stamps `iat_ms` so
+-                        // credential-change invalidation can exempt the calling
+-                        // session.
+-                        //
+-                        // An API token is deliberately NOT accepted as the Basic
+-                        // password here: this is the hard-auth middleware for the
+-                        // management API (/api/v1/auth, /profile, /signing, …).
+-                        // Per the openapi.rs contract, an API token is only ever
+-                        // valid as a `Bearer`/`X-Api-Key` credential or the Basic
+-                        // password on the FORMAT/registry endpoints (handled by
+-                        // `repo_visibility_middleware` → `try_resolve_auth_outcome`
+-                        // with `allow_basic_api_token=true`). Accepting it here
+-                        // (added by #2798) over-reached the #2786 need; #2806
+-                        // restores the /api/v1 Basic-auth boundary.
+-                        match auth_service.validate_access_token_async(&password).await {
+-                            Ok(claims) => Ok(AuthExtension::from(claims)),
+-                            Err(_) => Err("Invalid credentials"),
+-                        }
+-                    }
+-                }
+-            }
+-        },
+-        ExtractedToken::None => Err("Missing authorization header"),
+-        ExtractedToken::Invalid => Err("Invalid authorization header format"),
+-    };
+-
+-    let header_error = match header_result {
+-        Ok(ext) => {
+-            // Enforce a forced password rotation (`must_change_password`).
+-            //
+-            // The flag is advisory in the token/claims, so we read the live DB
+-            // watermark for the principal. A flagged user must be unable to do
+-            // anything except recover: change their own password or log out.
+-            // Every other route is refused with 428 Precondition Required so
+-            // clients know the account is in a "must rotate" state rather than
+-            // "unauthenticated". The DB read only happens for non-exempt paths,
+-            // so the common authenticated request pays nothing extra on the
+-            // password-change / logout recovery routes.
+-            //
+-            // Use the FULL request path via `OriginalUri` (populated by the
+-            // outer router before any nest stripped its prefix), not
+-            // `request.uri().path()` which axum has already stripped down to a
+-            // bare suffix. The exemption anchors the self-lookup to
+-            // `.../auth/me`, and the stripped suffix `/me` is identical for the
+-            // genuine `GET /api/v1/auth/me` and impostors like
+-            // `DELETE /api/v1/sbom/me`; only the original path can tell them
+-            // apart. Fall back to `request.uri().path()` when `OriginalUri` is
+-            // absent (e.g. a flat-router unit test with no nest) so the path
+-            // still carries the full route.
+-            let gate_path = request
+-                .extensions()
+-                .get::<OriginalUri>()
+-                .map(|o| o.0.path().to_string())
+-                .unwrap_or_else(|| request.uri().path().to_string());
+-            if !path_exempt_from_password_change(&gate_path)
+-                && principal_must_change_password(auth_service.db(), ext.user_id).await
+-            {
+-                return must_change_password_response();
+-            }
+-            // Insert BOTH shapes so handlers behind this middleware can
+-            // extract either `Extension<AuthExtension>` or
+-            // `Extension<Option<AuthExtension>>`. Without the Option-wrapped
+-            // copy, a handler declaring `Extension<Option<AuthExtension>>`
+-            // (e.g. the permission handlers, which gate on require_auth +
+-            // require_scope) fails Axum extraction with HTTP 500
+-            // ("Missing request extension: Extension of type
+-            // Option<AuthExtension>") before the in-handler scope check runs.
+-            // That surfaced as a 500 instead of the canonical 403 for a
+-            // read-scope service-account token on POST /api/v1/permissions.
+-            // See #1438 (B10).
+-            request.extensions_mut().insert(Some(ext.clone()));
+-            request.extensions_mut().insert(ext);
+-            return next.run(request).await;
+-        }
+-        Err(msg) => msg,
+-    };
+-
+-    // Header-based auth failed. Fall back to a `?ticket=` download ticket
+-    // if present in the query string. Tickets only authenticate read methods
+-    // and only for the path the ticket was minted against.
+-    let ticket_parts = extract_ticket_request_parts(&request);
+-    if let Some(parts) = ticket_parts.as_ref() {
+-        if let Some(ext) = try_resolve_ticket_for_parts(auth_service.db(), parts).await {
+-            // Same dual-shape insertion as the header-auth path above so
+-            // `Extension<Option<AuthExtension>>` handlers resolve under a
+-            // ticket-authenticated request too (#1438 / B10).
+-            request.extensions_mut().insert(Some(ext.clone()));
+-            request.extensions_mut().insert(ext);
+-            request.extensions_mut().insert(DownloadTicketAuth);
+-            return next.run(request).await;
++    let (path_s, method_s) = (request.uri().path().to_string(), request.method().as_str().to_string());
++    // Decided by `artifactkeeper_kernel::middleware::auth_middleware`.
++    let mut req = kernel_request(&request);
++    if let Some(refusal) = h5i::k::middleware::csrf_guard(&req) {
++        return kernel_response(refusal, None);
++    }
++    let mut ids = h5i::Ids::default();
++    let extracted = h5i::k::http::extract_token(&req);
++    let p = present(&auth_service, &extracted, false, &mut ids).await;
++    let ticket = extract_ticket_from_query(request.uri().query());
++    let mut db = kernel_db(auth_service.db(), &mut ids, p.users.clone(), ticket.as_deref(), None).await;
++    let mut outcome = run_kernel(auth_service.db(), &mut db, &ids, (&path_s, &method_s), |db| {
++        h5i::k::middleware::auth_middleware(db, &p.oracle, &req)
++    })
++    .await;
++    // The password-change gate reads `OriginalUri`; the ticket check the
++    // request's own path. A header credential never reaches the ticket.
++    let gate = gate_path(&request);
++    let header_passed = matches!(
++        outcome,
++        h5i::k::middleware::Outcome::Next { ticket: false, .. }
++            | h5i::k::middleware::Outcome::Respond(h5i::k::middleware::Response::MustChangePassword)
++    );
++    if header_passed && gate != request.uri().path() {
++        req.path = gate.into_bytes();
++        outcome = run_kernel(auth_service.db(), &mut db, &ids, (&path_s, &method_s), |db| {
++            h5i::k::middleware::auth_middleware(db, &p.oracle, &req)
++        })
++        .await;
++    }
++    match outcome {
++        h5i::k::middleware::Outcome::Next { auth, ticket } => {
++            admit(&mut request, auth, ticket, &ids, true);
++            next.run(request).await
+         }
++        h5i::k::middleware::Outcome::Respond(r) => kernel_response(r, p.unavailable),
+     }
+-
+-    // Note on the ambiguous message: "Invalid or expired download ticket"
+-    // intentionally does not distinguish between
+-    //   (a) ticket not found,
+-    //   (b) ticket expired,
+-    //   (c) bound-path mismatch,
+-    //   (d) write method on a read-only ticket.
+-    // Leaking which case it is would help an attacker who has a partial
+-    // ticket value (or who is probing path bindings) narrow down the cause.
+-    // High-entropy tickets and a 30-second TTL make ambiguity cheap. Do not
+-    // "fix" this by giving a more specific message.
+-    let message = if !had_header_credentials && ticket_parts.is_some() {
+-        "Invalid or expired download ticket"
+-    } else {
+-        header_error
+-    };
+-    (StatusCode::UNAUTHORIZED, message).into_response()
+ }
+ 
+ /// Why an API-token validation attempt did not produce an [`AuthExtension`].
+@@ -1056,6 +852,7 @@ pub async fn auth_middleware(
+ /// unit error is what made cargo/twine API-token clients receive a spurious
+ /// 401 under a concurrent burst; they retry on 503 but abort on 401.
+ #[derive(Debug, PartialEq, Eq)]
++#[cfg_attr(not(test), allow(dead_code))]
+ enum TokenAuthError {
+     /// The credential failed validation; the caller owes the client a 401.
+     Invalid,
+@@ -1071,6 +868,7 @@ enum TokenAuthError {
+ /// everything else (authentication, unauthorized, database, internal) is a
+ /// genuine validation failure and stays [`TokenAuthError::Invalid`] so the
+ /// existing 401 behaviour is preserved.
++#[cfg_attr(not(test), allow(dead_code))]
+ fn classify_token_validation_err(err: AppError) -> TokenAuthError {
+     match err {
+         AppError::ServiceUnavailable(_) => TokenAuthError::Overloaded,
+@@ -1086,31 +884,19 @@ fn classify_token_validation_err(err: AppError) -> TokenAuthError {
+ }
+ 
+ /// Validate an API token and create an AuthExtension with scopes and repo restrictions.
++#[allow(dead_code)]
+ async fn validate_api_token_with_scopes(
+     auth_service: &AuthService,
+     token: &str,
+ ) -> Result<AuthExtension, TokenAuthError> {
+-    let validation = auth_service
+-        .validate_api_token(token)
+-        .await
+-        .map_err(classify_token_validation_err)?;
+-
+-    Ok(AuthExtension {
+-        user_id: validation.user.id,
+-        username: validation.user.username,
+-        email: validation.user.email,
+-        is_admin: validation.user.is_admin,
+-        is_api_token: true,
+-        is_service_account: validation.user.is_service_account,
+-        scopes: Some(validation.scopes),
+-        allowed_repo_ids: validation.allowed_repo_ids,
+-        // API tokens are not JWTs and carry no `iat`.
+-        iat_ms: None,
+-    }
+-    // An admin-owned token only wields admin when its scope ceiling grants
+-    // the `admin` scope (or `*`); a narrow-scoped token is demoted to a
+-    // non-admin principal here (GHSA-vvc3).
+-    .with_scope_gated_admin())
++    let mut ids = h5i::Ids::default();
++    let k = h5i::k::http::ExtractedToken::ApiKey(token.as_bytes().to_vec());
++    let p = present(auth_service, &k, false, &mut ids).await;
++    match h5i::k::resolve::validate_api_token_with_scopes(&p.oracle, token.as_bytes()) {
++        Ok(e) => Ok(h5i::from_auth_ext(e, &ids)),
++        Err(h5i::k::resolve::TokenAuthError::Overloaded) => Err(TokenAuthError::Overloaded),
++        Err(h5i::k::resolve::TokenAuthError::Invalid) => Err(TokenAuthError::Invalid),
++    }
+ }
+ 
+ /// Outcome of resolving an authentication credential.
+@@ -1132,6 +918,7 @@ async fn validate_api_token_with_scopes(
+ ///
+ /// Use [`try_resolve_auth_outcome`] to obtain this tri-state result.
+ #[derive(Debug)]
++#[cfg_attr(not(test), allow(dead_code))]
+ pub(crate) enum AuthOutcome {
+     Resolved(AuthExtension),
+     NoCredential,
+@@ -1178,102 +965,32 @@ pub(crate) enum AuthOutcome {
+ /// `username:password` logins are unaffected in BOTH modes. The discrimination is
+ /// per-middleware (structural), never request-path string matching — axum's
+ /// nest-prefix stripping makes path matching unreliable here.
++#[cfg_attr(not(test), allow(dead_code))]
+ pub(crate) async fn try_resolve_auth_outcome(
+     auth_service: &AuthService,
+     extracted: ExtractedToken<'_>,
+     allow_basic_api_token: bool,
+ ) -> AuthOutcome {
+-    match extracted {
+-        ExtractedToken::Bearer(token) => {
+-            // See `auth_middleware` for why this is the async variant. Same
+-            // rationale: optional-auth routes still need to reject pre-change
+-            // tokens across replicas (#1173).
+-            if let Ok(claims) = auth_service.validate_access_token_async(token).await {
+-                return AuthOutcome::Resolved(AuthExtension::from(claims));
+-            }
+-            match validate_api_token_with_scopes(auth_service, token).await {
+-                Ok(ext) => return AuthOutcome::Resolved(ext),
+-                // A transient bcrypt-capacity shed must surface as 503, not
+-                // 401. See `AuthOutcome::Overloaded`.
+-                Err(TokenAuthError::Overloaded) => return AuthOutcome::Overloaded,
+-                Err(TokenAuthError::Invalid) => {}
+-            }
+-            // Some package managers (npm, cargo, goproxy) send Bearer tokens
+-            // that are base64-encoded `username:password` rather than JWTs or
+-            // API keys. Try decoding as credentials before giving up.
+-            if let Some((username, password)) = decode_basic_credentials(token) {
+-                match auth_service.authenticate(&username, &password).await {
+-                    Ok((user, _)) => return AuthOutcome::Resolved(AuthExtension::from(user)),
+-                    // A transient bcrypt-capacity shed must surface as 503, not
+-                    // 401. See `AuthOutcome::Overloaded`.
+-                    Err(AppError::ServiceUnavailable(_)) => return AuthOutcome::Overloaded,
+-                    Err(_) => {}
+-                }
+-            }
+-            AuthOutcome::InvalidCredential
+-        }
+-        ExtractedToken::ApiKey(token) => {
+-            match validate_api_token_with_scopes(auth_service, token).await {
+-                Ok(ext) => AuthOutcome::Resolved(ext),
+-                // See `AuthOutcome::Overloaded`: saturated bcrypt cap is a
+-                // retryable 503, never a 401.
+-                Err(TokenAuthError::Overloaded) => AuthOutcome::Overloaded,
+-                Err(TokenAuthError::Invalid) => AuthOutcome::InvalidCredential,
+-            }
+-        }
+-        ExtractedToken::Basic(encoded) => {
+-            let Some((username, password)) = decode_basic_credentials(encoded) else {
+-                return AuthOutcome::InvalidCredential;
+-            };
+-            // Try bcrypt username/password auth first
+-            match auth_service.authenticate(&username, &password).await {
+-                Ok((user, _)) => return AuthOutcome::Resolved(AuthExtension::from(user)),
+-                // A transient bcrypt-capacity shed must surface as 503, not a
+-                // 401. Without this, twine (which sends standard Basic auth)
+-                // gets a spurious 401 under parallel-suite load and aborts,
+-                // while a single curl -u upload with the same credentials
+-                // succeeds. See `AuthOutcome::Overloaded`.
+-                Err(AppError::ServiceUnavailable(_)) => return AuthOutcome::Overloaded,
+-                // A pool-acquire timeout is a retryable 503, never a 401.
+-                // Short-circuit here so a saturated pool does not pay a second
+-                // acquire-timeout on the API-token fallback below before the
+-                // classifier reaches the same conclusion (#2125). See
+-                // `AuthOutcome::Overloaded`.
+-                Err(ref e) if e.is_pool_timeout() => return AuthOutcome::Overloaded,
+-                Err(_) => {}
+-            }
+-            // Try treating the password as a short-lived JWT access token.
+-            // This enables CI/CD keyless flows (e.g. OIDC token exchange) where
+-            // package managers like Maven, pip/twine, and Helm send the AK access
+-            // token as the Basic auth password.
+-            if let Ok(claims) = auth_service.validate_access_token_async(&password).await {
+-                return AuthOutcome::Resolved(AuthExtension::from(claims));
+-            }
+-            // Fall back to treating the password as an API token — compatible with
+-            // pip netrc / Artifactory-style `token:<api_token>` credential format.
+-            //
+-            // Only the format/registry endpoints (`repo_visibility_middleware`)
+-            // opt into this via `allow_basic_api_token=true`. The /api/v1
+-            // management callers (`optional_auth_middleware`, `admin_middleware`)
+-            // pass `false`, so an API token presented as a Basic password there is
+-            // refused (falls through to `InvalidCredential`), honouring the
+-            // openapi.rs contract (#2806). Bearer/X-Api-Key token auth and
+-            // bcrypt/JWT Basic auth above are unaffected.
+-            if !allow_basic_api_token {
+-                return AuthOutcome::InvalidCredential;
+-            }
+-            match validate_api_token_with_scopes(auth_service, &password).await {
+-                Ok(ext) => AuthOutcome::Resolved(ext),
+-                // The token fallback also burns a bcrypt verify under the
+-                // same process-wide cap; preserve the shed as Overloaded so
+-                // pip-netrc-style `token:<api_token>` clients get the
+-                // retryable 503, not a spurious 401.
+-                Err(TokenAuthError::Overloaded) => AuthOutcome::Overloaded,
+-                Err(TokenAuthError::Invalid) => AuthOutcome::InvalidCredential,
+-            }
+-        }
+-        ExtractedToken::None => AuthOutcome::NoCredential,
+-        ExtractedToken::Invalid => AuthOutcome::InvalidCredential,
++    let mut ids = h5i::Ids::default();
++    let k = kernel_extracted(extracted);
++    let p = present(auth_service, &k, allow_basic_api_token, &mut ids).await;
++    match h5i::k::resolve::try_resolve_auth_outcome(&p.oracle, &k, allow_basic_api_token) {
++        h5i::k::resolve::AuthOutcome::Resolved(e) => AuthOutcome::Resolved(h5i::from_auth_ext(e, &ids)),
++        h5i::k::resolve::AuthOutcome::NoCredential => AuthOutcome::NoCredential,
++        h5i::k::resolve::AuthOutcome::InvalidCredential => AuthOutcome::InvalidCredential,
++        h5i::k::resolve::AuthOutcome::Overloaded => AuthOutcome::Overloaded,
++    }
++}
++
++#[cfg_attr(not(test), allow(dead_code))]
++fn kernel_extracted(e: ExtractedToken<'_>) -> h5i::k::http::ExtractedToken {
++    use h5i::k::http::ExtractedToken as K;
++    match e {
++        ExtractedToken::Bearer(t) => K::Bearer(t.as_bytes().to_vec()),
++        ExtractedToken::ApiKey(t) => K::ApiKey(t.as_bytes().to_vec()),
++        ExtractedToken::Basic(t) => K::Basic(t.as_bytes().to_vec()),
++        ExtractedToken::None => K::None,
++        ExtractedToken::Invalid => K::Invalid,
+     }
+ }
+ 
+@@ -1289,47 +1006,8 @@ pub(crate) async fn try_resolve_auth_outcome(
+ /// ticket itself is hex (no special characters), but query-decoding keeps
+ /// behaviour consistent with HTTP clients that always encode.
+ pub(crate) fn extract_ticket_from_query(query: Option<&str>) -> Option<String> {
+-    let q = query?;
+-    for pair in q.split('&') {
+-        let mut it = pair.splitn(2, '=');
+-        let key = it.next()?;
+-        if key != "ticket" {
+-            continue;
+-        }
+-        let raw = it.next().unwrap_or("");
+-        if raw.is_empty() {
+-            return None;
+-        }
+-        // Minimal percent-decoding sufficient for hex tickets.
+-        let mut out = String::with_capacity(raw.len());
+-        let bytes = raw.as_bytes();
+-        let mut i = 0;
+-        while i < bytes.len() {
+-            let b = bytes[i];
+-            if b == b'+' {
+-                out.push(' ');
+-                i += 1;
+-            } else if b == b'%' && i + 2 < bytes.len() {
+-                let hi = (bytes[i + 1] as char).to_digit(16);
+-                let lo = (bytes[i + 2] as char).to_digit(16);
+-                match (hi, lo) {
+-                    (Some(h), Some(l)) => {
+-                        out.push(((h * 16 + l) as u8) as char);
+-                        i += 3;
+-                    }
+-                    _ => {
+-                        out.push(b as char);
+-                        i += 1;
+-                    }
+-                }
+-            } else {
+-                out.push(b as char);
+-                i += 1;
+-            }
+-        }
+-        return Some(out);
+-    }
+-    None
++    h5i::k::paths::extract_ticket_from_query(&query.map(|q| q.as_bytes().to_vec()))
++        .map(h5i::string)
+ }
+ 
+ /// HTTP methods that download tickets are allowed to authenticate.
+@@ -1340,8 +1018,9 @@ pub(crate) fn extract_ticket_from_query(query: Option<&str>) -> Option<String> {
+ /// embeds no scope information and the calling client may be a browser
+ /// `<a href>` or `EventSource` that the user did not consent to use for
+ /// mutations.
++#[cfg_attr(not(test), allow(dead_code))]
+ fn ticket_method_allowed(method: &Method) -> bool {
+-    matches!(*method, Method::GET | Method::HEAD)
++    h5i::k::paths::ticket_method_allowed(h5i::method(method))
+ }
+ 
+ /// Decide whether a ticket bound to `bound_path` may authenticate a request
+@@ -1352,11 +1031,12 @@ fn ticket_method_allowed(method: &Method) -> bool {
+ /// authenticates only requests whose URL path equals `p`. We compare by exact
+ /// match to keep the policy auditable; callers that want a directory-prefix
+ /// must mint one ticket per resource.
++#[cfg_attr(not(test), allow(dead_code))]
+ fn ticket_path_allowed(bound_path: Option<&str>, request_path: &str) -> bool {
+-    match bound_path {
+-        None => true,
+-        Some(p) => p == request_path,
+-    }
++    h5i::k::paths::ticket_path_allowed(
++        &bound_path.map(|p| p.as_bytes().to_vec()),
++        request_path.as_bytes(),
++    )
+ }
+ 
+ /// Resolve a download ticket to an [`AuthExtension`] without consuming it.
+@@ -1366,91 +1046,37 @@ fn ticket_path_allowed(bound_path: Option<&str>, request_path: &str) -> bool {
+ /// tickets via `expires_at > NOW()`. After the ticket is consumed, the
+ /// owning user is loaded so the resulting extension carries the same identity
+ /// downstream handlers see for any other auth method.
++#[cfg_attr(not(test), allow(dead_code))]
+ async fn try_resolve_ticket_auth(
+     db: &sqlx::PgPool,
+     ticket: &str,
+     method: &Method,
+     request_path: &str,
+ ) -> Option<AuthExtension> {
+-    if !ticket_method_allowed(method) {
+-        return None;
++    let mut ids = h5i::Ids::default();
++    // The ticket is read only for the methods the kernel lets reach it.
++    let read = if ticket_method_allowed(method) { Some(ticket) } else { None };
++    let mut rows = kernel_db(db, &mut ids, Vec::new(), read, None).await;
++    loop {
++        let mut writes = Vec::new();
++        let ext = h5i::k::resolve::try_resolve_ticket_auth(
++            &rows,
++            &mut writes,
++            ticket.as_bytes(),
++            h5i::method(method),
++            request_path.as_bytes(),
++        );
++        let mut stale = false;
++        for w in &writes {
++            if !apply_write(db, w, &ids, (request_path, method.as_str()), &rows).await {
++                stale = true;
++            }
++        }
++        if !stale {
++            return ext.map(|e| h5i::from_auth_ext(e, &ids));
++        }
++        rows.tickets.clear();
+     }
+-
+-    let (user_id, _purpose, resource_path) =
+-        crate::services::auth_config_service::AuthConfigService::validate_download_ticket(
+-            db, ticket,
+-        )
+-        .await
+-        .ok()?;
+-
+-    if !ticket_path_allowed(resource_path.as_deref(), request_path) {
+-        // Ticket has been consumed by validate_download_ticket; treat the
+-        // mismatch as an authentication failure so the client cannot reuse
+-        // the same ticket against a different path.
+-        //
+-        // Trade-off: a mistyped path by a legitimate client will burn the
+-        // ticket and the client must mint a new one. We accept this cost
+-        // because single-use is the security invariant we cannot weaken
+-        // without breaking the threat model (a stolen ticket adversary
+-        // would simply replay against the right path).
+-        //
+-        // The cleaner alternative is `SELECT then DELETE WHERE ... RETURNING`
+-        // inside a transaction so wrong-path attempts do not consume. That
+-        // is a follow-up change; not in this PR because the existing
+-        // single-statement DELETE-RETURNING is the only thing that gives
+-        // us atomic single-use under concurrent retry.
+-        return None;
+-    }
+-
+-    // Load the owning user. We block deactivated users so a revoked account
+-    // cannot keep downloading via outstanding tickets, but we honour service
+-    // accounts and not-yet-rotated passwords because the ticket itself is
+-    // the proof of intent: the JWT session that minted it had whatever
+-    // rights the user had at mint time.
+-    //
+-    // Uses `sqlx::query_as::<_, User>` rather than the `query_as!` macro so
+-    // adding the ticket-consumer middleware does not require regenerating
+-    // the offline SQLx query cache.
+-    let user: User = sqlx::query_as::<_, User>(
+-        r#"
+-        SELECT
+-            id, username, email, password_hash, display_name,
+-            auth_provider, external_id, is_admin, is_active,
+-            is_service_account, must_change_password,
+-            totp_secret, totp_enabled, totp_backup_codes, totp_verified_at,
+-            last_login_at, created_at, updated_at
+-        FROM users
+-        WHERE id = $1 AND is_active = true
+-        "#,
+-    )
+-    .bind(user_id)
+-    .fetch_optional(db)
+-    .await
+-    .ok()??;
+-
+-    let mut ext = AuthExtension::from(user);
+-    // Tickets are read-only. Drop admin elevation so a ticket minted by an
+-    // admin cannot be replayed against admin-only routes that happen to
+-    // accept tickets in their middleware chain. Callers also insert the
+-    // [`DownloadTicketAuth`] marker extension so write-gating middleware
+-    // can recognise the request as ticket-authenticated.
+-    ext.is_admin = false;
+-
+-    // Scope hardening: `AuthExtension::has_scope` returns `true` only when
+-    // `scopes` is `None` (action-unrestricted). No handler today calls
+-    // `has_scope("admin")` for elevation, but a future one could, and a
+-    // ticket-authenticated request must not silently pass that check. Stamp an
+-    // empty scope allowlist so any explicit scope check defaults to deny.
+-    //
+-    // This intentionally does not modify `is_service_account` or
+-    // `must_change_password`: a ticket inherits the minter's identity for
+-    // those flags so downstream handlers see the same view they would for
+-    // any other auth method. Accepting the inherited identity is the
+-    // design — the ticket is proof that a session with those flags
+-    // intentionally minted a download URL.
+-    ext.is_api_token = true;
+-    ext.scopes = Some(vec![]);
+-    Some(ext)
+ }
+ 
+ /// Snapshot of the request fields needed to authenticate a download ticket.
+@@ -1459,12 +1085,14 @@ async fn try_resolve_ticket_auth(
+ /// runs, so the resulting future does not borrow the request. Without this,
+ /// callers would hold a borrow across `.await` and the middleware future
+ /// would not be `Send`, which `axum::middleware::from_fn_with_state` requires.
++#[cfg_attr(not(test), allow(dead_code))]
+ struct TicketRequestParts {
+     ticket: String,
+     method: Method,
+     path: String,
+ }
+ 
++#[cfg_attr(not(test), allow(dead_code))]
+ fn extract_ticket_request_parts(request: &Request) -> Option<TicketRequestParts> {
+     let ticket = extract_ticket_from_query(request.uri().query())?;
+     Some(TicketRequestParts {
+@@ -1481,6 +1109,7 @@ fn extract_ticket_request_parts(request: &Request) -> Option<TicketRequestParts>
+ /// read, and the bound path matches. Returns `None` otherwise. The ticket
+ /// is consumed (single-use) on the validation attempt regardless of whether
+ /// the request is ultimately allowed.
++#[cfg_attr(not(test), allow(dead_code))]
+ async fn try_resolve_ticket_for_parts(
+     db: &sqlx::PgPool,
+     parts: &TicketRequestParts,
+@@ -1509,63 +1138,28 @@ pub async fn optional_auth_middleware(
+     mut request: Request,
+     next: Next,
+ ) -> Response {
+-    // See `auth_middleware`: the CSRF contract applies wherever a session
+-    // cookie can authenticate a mutation (#3065).
+-    if let Some(refusal) = csrf_guard(&request) {
+-        return refusal;
+-    }
+-
+-    let extracted = extract_token(&request);
+-    // /api/v1 optional-auth route: an API token is NOT accepted as the Basic
+-    // password (`allow_basic_api_token=false`) — the /api/v1 Basic-auth boundary
+-    // (#2806). Bearer/X-Api-Key token auth and bcrypt/JWT Basic auth still work.
+-    let outcome = try_resolve_auth_outcome(&auth_service, extracted, false).await;
+-    // A transient bcrypt-capacity shed surfaces here as `Overloaded`. Return a
+-    // retryable 503 immediately rather than silently dropping to anonymous and
+-    // letting a downstream `require_auth_basic*` turn it into a misleading 401
+-    // "Authentication required" (the twine-upload gate failure). See
+-    // `AuthOutcome::Overloaded`.
+-    if matches!(outcome, AuthOutcome::Overloaded) {
+-        return service_unavailable_response();
+-    }
+-    let credential_invalid = matches!(outcome, AuthOutcome::InvalidCredential);
+-    let mut auth_ext: Option<AuthExtension> = match outcome {
+-        AuthOutcome::Resolved(ext) => Some(ext),
+-        AuthOutcome::NoCredential | AuthOutcome::InvalidCredential => None,
+-        // Handled above with an early 503 return.
+-        AuthOutcome::Overloaded => None,
+-    };
+-
+-    // If header-based auth produced no identity, fall back to a `?ticket=`
+-    // query param. Optional-auth routes are typically reads, so a ticket can
+-    // legitimately stand in for headers (e.g. browser <a href> downloads).
+-    let mut authed_via_ticket = false;
+-    if auth_ext.is_none() {
+-        if let Some(parts) = extract_ticket_request_parts(&request) {
+-            if let Some(ext) = try_resolve_ticket_for_parts(auth_service.db(), &parts).await {
+-                auth_ext = Some(ext);
+-                authed_via_ticket = true;
+-            }
++    let (path_s, method_s) = (request.uri().path().to_string(), request.method().as_str().to_string());
++    // Decided by `artifactkeeper_kernel::middleware::optional_auth_middleware`.
++    let req = kernel_request(&request);
++    if let Some(refusal) = h5i::k::middleware::csrf_guard(&req) {
++        return kernel_response(refusal, None);
++    }
++    let mut ids = h5i::Ids::default();
++    let extracted = h5i::k::http::extract_token(&req);
++    let p = present(&auth_service, &extracted, false, &mut ids).await;
++    let ticket = extract_ticket_from_query(request.uri().query());
++    let mut db = kernel_db(auth_service.db(), &mut ids, p.users.clone(), ticket.as_deref(), None).await;
++    let outcome = run_kernel(auth_service.db(), &mut db, &ids, (&path_s, &method_s), |db| {
++        h5i::k::middleware::optional_auth_middleware(db, &p.oracle, &req)
++    })
++    .await;
++    match outcome {
++        h5i::k::middleware::Outcome::Next { auth, ticket } => {
++            admit(&mut request, auth, ticket, &ids, false);
++            next.run(request).await
+         }
++        h5i::k::middleware::Outcome::Respond(r) => kernel_response(r, p.unavailable),
+     }
+-
+-    // Off-boarding: an explicitly-presented credential that failed validation
+-    // must produce 401. We allow a ticket to rescue the request because a
+-    // browser may include a stale Authorization cookie alongside a fresh
+-    // download ticket — the ticket is what authorizes the read.
+-    //
+-    // Header-aware: a browser fetch carrying a stale token must not trigger
+-    // the native Basic popup over the web UI's own login flow (#2936/#3082);
+-    // package clients keep the full challenge set.
+-    if credential_invalid && auth_ext.is_none() {
+-        return unauthorized_response_for(request.headers());
+-    }
+-
+-    request.extensions_mut().insert(auth_ext);
+-    if authed_via_ticket {
+-        request.extensions_mut().insert(DownloadTicketAuth);
+-    }
+-    next.run(request).await
+ }
+ 
+ /// Admin-only middleware - requires authenticated admin user
+@@ -1577,86 +1171,41 @@ pub async fn admin_middleware(
+     mut request: Request,
+     next: Next,
+ ) -> Response {
+-    // See `auth_middleware`: the CSRF contract applies wherever a session
+-    // cookie can authenticate a mutation (#3065).
+-    if let Some(refusal) = csrf_guard(&request) {
+-        return refusal;
+-    }
+-
+-    let extracted = extract_token(&request);
+-
+-    if matches!(extracted, ExtractedToken::Basic(encoded) if decode_basic_credentials(encoded).is_none())
+-    {
+-        return (StatusCode::UNAUTHORIZED, "Invalid Basic auth credentials").into_response();
+-    }
+-
+-    // Shared credential resolution (same forms as the other authenticated
+-    // routes, including CI/CD keyless flows where the AK access token is sent
+-    // as the Basic-auth password). Use the tri-state outcome so a transient
+-    // bcrypt-cap or pool-acquire shed surfaces as a retryable 503, never a
+-    // spurious 401 (#2101/#2125). Admin privilege is enforced below.
+-    //
+-    // /api/v1 admin route: an API token is NOT accepted as the Basic password
+-    // (`allow_basic_api_token=false`) — the /api/v1 Basic-auth boundary (#2806).
+-    let auth_ext = match try_resolve_auth_outcome(&auth_service, extracted, false).await {
+-        AuthOutcome::Resolved(ext) => ext,
+-        AuthOutcome::Overloaded => return service_unavailable_response(),
+-        AuthOutcome::NoCredential | AuthOutcome::InvalidCredential => {
+-            let msg = match extracted {
+-                ExtractedToken::Bearer(_) => "Invalid or expired token",
+-                ExtractedToken::ApiKey(_) => "Invalid or expired API token",
+-                ExtractedToken::Basic(_) => "Invalid credentials",
+-                ExtractedToken::None => "Missing authorization header",
+-                ExtractedToken::Invalid => "Invalid authorization header format",
+-            };
+-            return (StatusCode::UNAUTHORIZED, msg).into_response();
+-        }
+-    };
+-
+-    if !auth_ext.is_admin {
+-        // Best-effort RBAC-deny audit event (#2366): an authenticated non-admin
+-        // reaching an admin-only route is exactly the kind of authorization
+-        // decision an auditor wants recorded. Fire-and-forget so an audit-table
+-        // outage can never turn a clean 403 into a 500. The attempted path is
+-        // recorded (never any credential material).
+-        {
+-            use crate::services::audit_service::{
+-                audit_fire_and_forget, AuditAction, AuditEntry, ResourceType,
+-            };
+-            let entry = AuditEntry::new(AuditAction::PermissionDenied, ResourceType::User)
+-                .user(auth_ext.user_id)
+-                .resource(auth_ext.user_id)
+-                .actor_name(auth_ext.username.clone())
+-                .details_typed(
+-                    crate::services::audit_export::details::AuthDetails::permission_denied(
+-                        request.uri().path(),
+-                        request.method().as_str(),
+-                        "admin_privileges_required",
+-                    ),
+-                );
+-            audit_fire_and_forget(auth_service.db().clone(), entry).await;
++    let (path_s, method_s) = (request.uri().path().to_string(), request.method().as_str().to_string());
++    // Decided by `artifactkeeper_kernel::middleware::admin_middleware`.
++    let mut req = kernel_request(&request);
++    if let Some(refusal) = h5i::k::middleware::csrf_guard(&req) {
++        return kernel_response(refusal, None);
++    }
++    let mut ids = h5i::Ids::default();
++    let extracted = h5i::k::http::extract_token(&req);
++    let p = present(&auth_service, &extracted, false, &mut ids).await;
++    let mut db = kernel_db(auth_service.db(), &mut ids, p.users.clone(), None, None).await;
++    // The audit line and the refusal name the request's own path; the
++    // password-change gate reads `OriginalUri`.
++    let mut outcome = run_kernel(auth_service.db(), &mut db, &ids, (&path_s, &method_s), |db| {
++        h5i::k::middleware::admin_middleware(db, &p.oracle, &req)
++    })
++    .await;
++    let gate = gate_path(&request);
++    let admitted = matches!(
++        outcome,
++        h5i::k::middleware::Outcome::Next { .. }
++            | h5i::k::middleware::Outcome::Respond(h5i::k::middleware::Response::MustChangePassword)
++    );
++    if admitted && gate != request.uri().path() {
++        req.path = gate.into_bytes();
++        outcome = h5i::k::middleware::admin_middleware(&db, &p.oracle, &req).1;
++    }
++    match outcome {
++        h5i::k::middleware::Outcome::Next { auth, .. } => {
++            if let Some(a) = auth {
++                request.extensions_mut().insert(h5i::from_auth_ext(a, &ids));
++            }
++            next.run(request).await
+         }
+-        return (StatusCode::FORBIDDEN, "Admin access required").into_response();
+-    }
+-
+-    // #3723: the forced rotation applies to admin routes too. Without it a
+-    // pending admin -- the built-in admin reactivated before its password was
+-    // ever changed, say -- could use every admin route while `auth_middleware`
+-    // refused it everywhere else. Same path exemptions, same 428, same
+-    // `OriginalUri` reasoning as in `auth_middleware`.
+-    let gate_path = request
+-        .extensions()
+-        .get::<OriginalUri>()
+-        .map(|o| o.0.path().to_string())
+-        .unwrap_or_else(|| request.uri().path().to_string());
+-    if !path_exempt_from_password_change(&gate_path)
+-        && principal_must_change_password(auth_service.db(), auth_ext.user_id).await
+-    {
+-        return must_change_password_response();
++        h5i::k::middleware::Outcome::Respond(r) => kernel_response(r, p.unavailable),
+     }
+-
+-    request.extensions_mut().insert(auth_ext);
+-    next.run(request).await
+ }
+ 
+ /// State for the repo visibility middleware.
+@@ -1677,13 +1226,9 @@ pub struct RepoVisibilityState {
+ }
+ 
+ /// Decode one hex digit of a percent escape; `None` for non-hex input.
++#[allow(dead_code)]
+ fn percent_hex_val(b: u8) -> Option<u8> {
+-    match b {
+-        b'0'..=b'9' => Some(b - b'0'),
+-        b'a'..=b'f' => Some(b - b'a' + 10),
+-        b'A'..=b'F' => Some(b - b'A' + 10),
+-        _ => None,
+-    }
++    h5i::k::paths::percent_hex_val(b)
+ }
+ 
+ /// Percent-decode a single path segment with the same semantics axum's
+@@ -1697,28 +1242,14 @@ fn percent_hex_val(b: u8) -> Option<u8> {
+ /// the segment as unresolvable rather than guessing at a key. The borrowed
+ /// fast path avoids any allocation for the overwhelmingly common case of a
+ /// segment with no `%` at all.
++#[allow(dead_code)]
+ fn percent_decode_path_segment(segment: &str) -> Option<Cow<'_, str>> {
+-    if !segment.as_bytes().contains(&b'%') {
+-        return Some(Cow::Borrowed(segment));
+-    }
+-    let bytes = segment.as_bytes();
+-    let mut decoded = Vec::with_capacity(bytes.len());
+-    let mut i = 0;
+-    while i < bytes.len() {
+-        match bytes[i] {
+-            b'%' => {
+-                let hi = percent_hex_val(*bytes.get(i + 1)?)?;
+-                let lo = percent_hex_val(*bytes.get(i + 2)?)?;
+-                decoded.push((hi << 4) | lo);
+-                i += 3;
+-            }
+-            b => {
+-                decoded.push(b);
+-                i += 1;
+-            }
+-        }
++    let v = h5i::k::paths::percent_decode_path_segment(segment.as_bytes())?;
++    if v == segment.as_bytes() {
++        Some(Cow::Borrowed(segment))
++    } else {
++        Some(Cow::Owned(h5i::string(v)))
+     }
+-    String::from_utf8(decoded).ok().map(Cow::Owned)
+ }
+ 
+ /// Extract the repository key from a format handler request path.
+@@ -1737,68 +1268,12 @@ fn percent_decode_path_segment(segment: &str) -> Option<Cow<'_, str>> {
+ /// ([`percent_decode_path_segment`]) guarantees the middleware and the
+ /// handler always evaluate the SAME key.
+ pub(crate) fn extract_repo_key(path: &str) -> Cow<'_, str> {
+-    let trimmed = path.trim_start_matches('/');
+-    let mut segments = trimmed.split('/');
+-    // Format prefix (pypi, npm, maven, ...).
+-    let format = segments.next().unwrap_or("");
+-    // Conda token channels embed the credential in the URL path:
+-    //   /conda/t/<TOKEN>/<repo_key>/<subdir>/...
+-    // The generic "skip one prefix segment" rule would return "t" as the repo
+-    // key (the conda token router is mounted at /conda/t), so the visibility
+-    // middleware would resolve a nonexistent repo and 401 an otherwise valid
+-    // token-channel read. Skip the `t/<TOKEN>` pair for conda token URLs so the
+-    // actual repository key is returned.
+-    if format == "conda" && segments.clone().next() == Some("t") {
+-        // Only a real token channel carries the repository key AFTER the
+-        // credential (`/conda/t/<TOKEN>/<repo_key>/...`). A two-segment
+-        // `/conda/t/<route>` — `/conda/t/upload`, `/conda/t/channeldata.json`,
+-        // `/conda/t/notices.json` — is the PLAIN conda router serving a
+-        // repository whose key is literally `t`, and skipping the pair there
+-        // yields an empty key for a request that does name a repository.
+-        // Only skip when a segment actually follows the token.
+-        let mut after_token = segments.clone();
+-        after_token.next(); // "t"
+-        after_token.next(); // "<TOKEN>"
+-        if after_token.next().is_some() {
+-            segments.next(); // "t"
+-            segments.next(); // "<TOKEN>"
+-        }
+-    }
+-    // WASM plugin proxy routes are nested as
+-    //   /ext/<format_key>/<repo_key>/...
+-    // so the repository key is the THIRD path segment, not the second
+-    // (GHSA-9rqp-mgmw-5879). Returning the second segment (the plugin format
+-    // key) made the visibility middleware resolve a nonexistent repo and fall
+-    // into its no-repo branch: anonymous callers were 401'd, but ANY
+-    // authenticated caller passed through with no visibility/permission check
+-    // on the actual target repo — including private repos. Skip the
+-    // format-key segment so the real repository key is evaluated.
+-    if format == "ext" {
+-        segments.next(); // "<format_key>"
+-    }
+-    // Two format routers are ALSO mounted under an `/api` prefix, matching the
+-    // URL shape their clients build:
+-    //   /api/cargo/<repo_key>/...    sparse index (#3000)
+-    //   /api/helm/<repo_key>/charts  ChartMuseum cm-push (#2941)
+-    // Those paths are `/api/<format>/<repo_key>/...`, so the generic rule
+-    // returned the literal "cargo"/"helm" as the key, nothing resolved, and
+-    // the visibility middleware answered from its no-repo branch — 401 for
+-    // anonymous callers, existence-hiding 404 for a valid credential. Both
+-    // aliases were mounted but dead. Skip the `/api` prefix for exactly those
+-    // two format names so the real repository key is evaluated; every other
+-    // `/api` path, `/api/v1/...` included, keeps its second segment.
+-    if format == "api" && matches!(segments.clone().next(), Some("cargo" | "helm")) {
+-        segments.next(); // "<format>"
+-    }
+-    let raw = segments.next().unwrap_or("");
+-    match percent_decode_path_segment(raw) {
+-        Some(decoded) => decoded,
+-        // Malformed percent-encoding or non-UTF-8 bytes: keep the raw
+-        // segment. A repository key can never contain '%' (the charset is
+-        // alphanumeric plus `-`, `_`, `.`), so the lookup misses and the
+-        // request fails closed in the no-repo branch — which is also what
+-        // axum's own extraction rejection produces downstream.
+-        None => Cow::Borrowed(raw),
++    let v = h5i::k::paths::extract_repo_key(path.as_bytes());
++    let part = h5i::within(path, &v);
++    if part.as_bytes() == v.as_slice() {
++        Cow::Borrowed(part)
++    } else {
++        Cow::Owned(h5i::string(v))
+     }
+ }
+ 
+@@ -1811,28 +1286,10 @@ pub(crate) fn extract_repo_key(path: &str) -> Cow<'_, str> {
+ /// authenticated token-channel request as anonymous and rejects reads of
+ /// private channels. Returns `None` for any non-conda-token path or an empty
+ /// token segment.
++#[allow(dead_code)]
+ pub(crate) fn extract_conda_url_token(path: &str) -> Option<&str> {
+-    let trimmed = path.trim_start_matches('/');
+-    let mut segments = trimmed.split('/');
+-    if segments.next()? != "conda" {
+-        return None;
+-    }
+-    if segments.next()? != "t" {
+-        return None;
+-    }
+-    let token = match segments.next() {
+-        Some(token) if !token.is_empty() => token,
+-        _ => return None,
+-    };
+-    // A token channel carries the repository key AFTER the credential
+-    // (`/conda/t/<TOKEN>/<repo_key>/...`). With nothing after it, the path is
+-    // the plain conda route for a repository whose key is literally `t`
+-    // (`/conda/t/upload`, `/conda/t/channeldata.json`) and that route segment
+-    // is not a credential — treating it as one made an anonymous read of such
+-    // a repository fail with 401 for an *invalid credential* it never sent.
+-    // Same shape test `extract_repo_key` applies to the matching skip.
+-    segments.next()?;
+-    Some(token)
++    let v = h5i::k::paths::extract_conda_url_token(path.as_bytes())?;
++    Some(h5i::within(path, &v))
+ }
+ 
+ /// Is `path` the NuGet package-push route (`/nuget/<repo_key>/api/v2/package`)?
+@@ -1844,29 +1301,9 @@ pub(crate) fn extract_conda_url_token(path: &str) -> Option<&str> {
+ /// every other format returns `false`, which is what keeps the
+ /// `X-NuGet-ApiKey` credential fallback from widening the accepted credential
+ /// surface anywhere else.
++#[allow(dead_code)]
+ fn is_nuget_push_path(path: &str) -> bool {
+-    let trimmed = path.trim_start_matches('/');
+-    let mut segments = trimmed.split('/');
+-    if segments.next() != Some("nuget") {
+-        return false;
+-    }
+-    // Repository key.
+-    match segments.next() {
+-        Some(key) if !key.is_empty() => {}
+-        _ => return false,
+-    }
+-    if segments.next() != Some("api") || segments.next() != Some("v2") {
+-        return false;
+-    }
+-    if segments.next() != Some("package") {
+-        return false;
+-    }
+-    // Nothing may follow except the optional trailing slash.
+-    match segments.next() {
+-        None => true,
+-        Some("") => segments.next().is_none(),
+-        Some(_) => false,
+-    }
++    h5i::k::paths::is_nuget_push_path(path.as_bytes())
+ }
+ 
+ /// Extract the credential from the NuGet `X-NuGet-ApiKey` push header.
+@@ -1882,15 +1319,11 @@ fn is_nuget_push_path(path: &str) -> bool {
+ /// convention, so it must not become a general-purpose credential channel on
+ /// read routes or on other formats. Returns `None` for any other method, path,
+ /// or an empty header value.
++#[allow(dead_code)]
+ fn extract_nuget_push_api_key(request: &Request) -> Option<&str> {
+-    if request.method() != Method::PUT || !is_nuget_push_path(request.uri().path()) {
+-        return None;
+-    }
+-    request
+-        .headers()
+-        .get(&X_NUGET_API_KEY)
+-        .and_then(|v| v.to_str().ok())
+-        .filter(|v| !v.is_empty())
++    let v = h5i::k::http::extract_nuget_push_api_key(&kernel_request(request))?;
++    let key = request.headers().get(&X_NUGET_API_KEY)?.to_str().ok()?;
++    Some(h5i::within(key, &v))
+ }
+ 
+ /// Resolve the request credential for the visibility middleware, falling back
+@@ -1898,18 +1331,12 @@ fn extract_nuget_push_api_key(request: &Request) -> Option<&str> {
+ /// present: the conda token-channel URL, and the NuGet push `X-NuGet-ApiKey`
+ /// header. Header credentials always take precedence, and an unparseable or
+ /// invalid fallback credential still fails closed downstream.
++#[cfg_attr(not(test), allow(dead_code))]
+ pub(crate) fn extract_visibility_token(request: &Request) -> ExtractedToken<'_> {
+-    let extracted = extract_token(request);
+-    if !matches!(extracted, ExtractedToken::None) {
+-        return extracted;
+-    }
+-    if let Some(token) = extract_conda_url_token(request.uri().path()) {
+-        return ExtractedToken::ApiKey(token);
+-    }
+-    if let Some(token) = extract_nuget_push_api_key(request) {
+-        return ExtractedToken::ApiKey(token);
+-    }
+-    ExtractedToken::None
++    borrowed(
++        &credential_sources(request.headers(), request.uri().path()),
++        h5i::k::http::extract_visibility_token(&kernel_request(request)),
++    )
+ }
+ 
+ /// Decide whether a request to a repository should be allowed past the coarse
+@@ -1924,18 +1351,17 @@ pub(crate) fn extract_visibility_token(request: &Request) -> ExtractedToken<'_>
+ /// gate decides only whether the request reaches the finer checks below; what
+ /// separates the two is which principals satisfy the ACL baseline once there,
+ /// not whether an anonymous caller is turned away -- neither admits one.
++#[cfg_attr(not(test), allow(dead_code))]
+ pub(crate) fn should_allow_repo_access(visibility: RepositoryVisibility, has_auth: bool) -> bool {
+-    visibility.allows_anonymous_read() || has_auth
++    h5i::k::paths::should_allow_repo_access(h5i::visibility(visibility), has_auth)
+ }
+ 
+ /// Return true when the HTTP method is a write operation (POST, PUT, PATCH,
+ /// DELETE). Used by [`repo_visibility_middleware`] to require authentication
+ /// for uploads and mutations even on public repositories.
++#[cfg_attr(not(test), allow(dead_code))]
+ fn is_write_method(method: &Method) -> bool {
+-    matches!(
+-        *method,
+-        Method::POST | Method::PUT | Method::PATCH | Method::DELETE
+-    )
++    h5i::k::paths::is_write_method(h5i::method(method))
+ }
+ 
+ /// Is `path` a POST route that is *not* a repository mutation despite using a
+@@ -1979,36 +1405,9 @@ fn is_write_method(method: &Method) -> bool {
+ /// The narrower question "may an ANONYMOUS caller issue this POST against a
+ /// public repository?" is answered by [`is_anonymous_readable_format_post`],
+ /// which is deliberately a strict subset.
++#[cfg_attr(not(test), allow(dead_code))]
+ fn is_non_mutating_format_post(path: &str) -> bool {
+-    let trimmed = path.trim_start_matches('/');
+-    let mut segments = trimmed.split('/');
+-    match segments.next() {
+-        // /lfs/<repo_key>/objects/batch
+-        Some("lfs") => {
+-            matches!(segments.next(), Some(k) if !k.is_empty())
+-                && segments.next() == Some("objects")
+-                && segments.next() == Some("batch")
+-                && segments.next().is_none()
+-        }
+-        // /conan/<repo_key>/v2/users/authenticate
+-        Some("conan") => {
+-            matches!(segments.next(), Some(k) if !k.is_empty())
+-                && segments.next() == Some("v2")
+-                && segments.next() == Some("users")
+-                && segments.next() == Some("authenticate")
+-                && segments.next().is_none()
+-        }
+-        // /vscode/<repo_key>/gallery/extensionquery
+-        Some("vscode") => {
+-            matches!(segments.next(), Some(k) if !k.is_empty())
+-                && segments.next() == Some("gallery")
+-                && segments.next() == Some("extensionquery")
+-                && segments.next().is_none()
+-        }
+-        // /pypi/<repo_key>/pypi (XML-RPC, #3783)
+-        Some("pypi") => is_pypi_xmlrpc_tail(segments),
+-        _ => false,
+-    }
++    h5i::k::paths::is_non_mutating_format_post(path.as_bytes())
+ }
+ 
+ /// The strict subset of [`is_non_mutating_format_post`] that a **public**
+@@ -2038,6 +1437,7 @@ fn is_non_mutating_format_post(path: &str) -> bool {
+ /// posts to the configured `base_url` verbatim and operators write it both
+ /// ways; anything deeper (`/pypi/<repo_key>/pypi/<project>/json` is a GET
+ /// route) is not this endpoint.
++#[allow(dead_code)]
+ fn is_pypi_xmlrpc_tail<'a>(mut segments: impl Iterator<Item = &'a str>) -> bool {
+     matches!(segments.next(), Some(k) if !k.is_empty())
+         && segments.next() == Some("pypi")
+@@ -2045,21 +1445,9 @@ fn is_pypi_xmlrpc_tail<'a>(mut segments: impl Iterator<Item = &'a str>) -> bool
+         && segments.next().is_none()
+ }
+ 
++#[cfg_attr(not(test), allow(dead_code))]
+ fn is_anonymous_readable_format_post(path: &str) -> bool {
+-    let trimmed = path.strip_prefix('/').unwrap_or(path);
+-    let mut segments = trimmed.split('/');
+-    match segments.next() {
+-        // /vscode/<repo_key>/gallery/extensionquery
+-        Some("vscode") => {
+-            matches!(segments.next(), Some(k) if !k.is_empty())
+-                && segments.next() == Some("gallery")
+-                && segments.next() == Some("extensionquery")
+-                && segments.next().is_none()
+-        }
+-        // /pypi/<repo_key>/pypi (XML-RPC, #3783)
+-        Some("pypi") => is_pypi_xmlrpc_tail(segments),
+-        _ => false,
+-    }
++    h5i::k::paths::is_anonymous_readable_format_post(path.as_bytes())
+ }
+ 
+ /// True when the request plausibly originates from an interactive web browser
+@@ -2081,14 +1469,9 @@ fn is_anonymous_readable_format_post(path: &str) -> bool {
+ ///   where Fetch Metadata is not sent.
+ ///
+ /// Pure and header-only so the negotiation is unit-testable.
++#[cfg_attr(not(test), allow(dead_code))]
+ pub(crate) fn is_browser_request(headers: &HeaderMap) -> bool {
+-    if headers.contains_key("sec-fetch-mode") || headers.contains_key("sec-fetch-site") {
+-        return true;
+-    }
+-    headers
+-        .get(axum::http::header::ACCEPT)
+-        .and_then(|v| v.to_str().ok())
+-        .is_some_and(|v| v.to_ascii_lowercase().contains("text/html"))
++    h5i::k::http::is_browser_request(&h5i::headers(headers))
+ }
+ 
+ /// Build a 401 response with `WWW-Authenticate` challenges for both Basic
+@@ -2106,6 +1489,7 @@ pub(crate) fn unauthorized_response() -> Response {
+ /// challenge so the browser shows the web UI's login screen instead of a
+ /// native Basic auth popup (#2936 / #3082). Every other caller — package
+ /// managers included — receives the identical challenges as before.
++#[cfg_attr(not(test), allow(dead_code))]
+ pub(crate) fn unauthorized_response_for(headers: &HeaderMap) -> Response {
+     challenge_unauthorized_response(!is_browser_request(headers))
+ }
+@@ -2196,11 +1580,11 @@ fn not_found_response() -> Response {
+ ///
+ /// Used by [`repo_visibility_middleware`] to determine the required permission
+ /// action when fine-grained rules exist for a repository.
++#[cfg_attr(not(test), allow(dead_code))]
+ pub(crate) fn action_for_method(method: &Method) -> &'static str {
+-    match *method {
+-        Method::GET | Method::HEAD | Method::OPTIONS => "read",
+-        Method::PUT | Method::POST | Method::PATCH => "write",
+-        Method::DELETE => "delete",
++    match h5i::k::paths::action_for_method(h5i::method(method)).as_slice() {
++        b"write" => "write",
++        b"delete" => "delete",
+         _ => "read",
+     }
+ }
+@@ -2226,7 +1610,7 @@ pub(crate) fn action_for_method(method: &Method) -> &'static str {
+ /// ceiling. For the authenticated baseline, use
+ /// [`authenticated_read_satisfies_acl`] instead.
+ pub(crate) fn public_read_satisfies_acl(visibility: RepositoryVisibility, action: &str) -> bool {
+-    visibility.allows_anonymous_read() && action == "read"
++    h5i::k::paths::public_read_satisfies_acl(h5i::visibility(visibility), action.as_bytes())
+ }
+ 
+ /// Whether a fine-grained ACL check may be skipped for an ALREADY-AUTHENTICATED
+@@ -2252,7 +1636,7 @@ pub(crate) fn authenticated_read_satisfies_acl(
+     visibility: RepositoryVisibility,
+     action: &str,
+ ) -> bool {
+-    visibility.allows_authenticated_read() && action == "read"
++    h5i::k::paths::authenticated_read_satisfies_acl(h5i::visibility(visibility), action.as_bytes())
+ }
+ 
+ /// Middleware that enforces repository visibility on format handler routes.
+@@ -2278,703 +1662,588 @@ pub async fn repo_visibility_middleware(
+     mut request: Request,
+     next: Next,
+ ) -> Response {
+-    // Extract the repository key segment. The path here is the RAW request
+-    // URI; `extract_repo_key` percent-decodes the segment so `repo_key` is
+-    // the same decoded value the handler's `Path<String>` extraction will
+-    // resolve (GHSA-fv45-mwhh-q23r).
++    let (path_s, method_s) = (request.uri().path().to_string(), request.method().as_str().to_string());
++    // Decided by `artifactkeeper_kernel::middleware::repo_visibility_middleware`
++    // on the current rows; the repository cache is still filled for handlers.
+     let path = request.uri().path().to_string();
+-    let repo_key = extract_repo_key(&path);
+-
+-    if repo_key.is_empty() {
+-        // An empty `:repo_key` segment names no repository: repository keys are
+-        // non-empty by construction, so no row can ever match and no format
+-        // route can serve anything here. Every format route reaches this branch
+-        // when its key segment is empty (`/npm//pkg`, `/maven//`,
+-        // `/pypi//simple/`, `/api/cargo//ve/ri/x`).
+-        //
+-        // Answer the existence-hiding 404 directly instead of running the
+-        // handler. Two properties depend on not falling through:
+-        //
+-        // 1. No unauthenticated 500. The handler binds
+-        //    `Extension<Option<AuthExtension>>`, and axum answers a missing
+-        //    extension with a 500 that prints the extension's type path (#3443
+-        //    / #3444). Never invoking the handler closes that without having to
+-        //    inject an extension for it.
+-        //
+-        // 2. No request body is read for a caller this middleware has not
+-        //    authorized. `next.run` hands the request to the handler, whose
+-        //    extractors run in order, so a body extractor (`Bytes`, `Multipart`,
+-        //    ...) buffers the WHOLE upload before the handler's own auth check
+-        //    can reject it. Falling through therefore gave an anonymous caller a
+-        //    `MAX_UPLOAD_SIZE`-per-request (10 GiB default) heap allocation on
+-        //    every format prefix, with no credential and no repository — the
+-        //    write gate below, which would have refused it, sits after this
+-        //    branch. Returning here rejects before the body is touched.
+-        //
+-        // The empty key carries no information about which repositories exist,
+-        // so a flat 404 leaks nothing (contrast the non-empty no-repo branch
+-        // below, which mirrors the private-repo 401 to close the #1808
+-        // existence oracle).
+-        return not_found_response();
++    let repo_key = extract_repo_key(&path).into_owned();
++    let req = kernel_request(&request);
++    let mut ids = h5i::Ids::default();
++    let (p, mut db) = if repo_key.is_empty() {
++        (
++            Presented { oracle: h5i::empty_oracle(), users: Vec::new(), unavailable: None },
++            kernel_db(&vis_state.db, &mut ids, Vec::new(), None, None).await,
++        )
++    } else {
++        let repo = resolve_repo(&vis_state, &repo_key).await;
++        let extracted = h5i::k::http::extract_visibility_token(&req);
++        let p = present(&vis_state.auth_service, &extracted, true, &mut ids).await;
++        let ticket = extract_ticket_from_query(request.uri().query());
++        let db = kernel_db(&vis_state.db, &mut ids, p.users.clone(), ticket.as_deref(), Some((&repo_key, repo))).await;
++        (p, db)
++    };
++    let client_ip = crate::api::middleware::client_ip::current_client_ip().map(h5i::ip);
++    let outcome = run_kernel(&vis_state.db, &mut db, &ids, (&path_s, &method_s), |db| {
++        h5i::k::middleware::repo_visibility_middleware(db, &p.oracle, client_ip, &req)
++    })
++    .await;
++    match outcome {
++        h5i::k::middleware::Outcome::Next { auth, ticket } => {
++            admit(&mut request, auth, ticket, &ids, false);
++            let repo_id = db.repositories.first().map(|r| ids.uuid(r.id)).unwrap_or_default();
++            crate::util::bounded_archive::run_with_tenant_scope(
++                crate::util::bounded_archive::TenantKey::Repo(repo_id),
++                next.run(request),
++            )
++            .await
++        }
++        h5i::k::middleware::Outcome::Respond(r) => kernel_response(r, p.unavailable),
+     }
++}
+ 
+-    // Check the shared repo cache first to avoid a DB round-trip on every
+-    // request.  The cache is populated with full repo metadata so that
+-    // format-handler resolvers (e.g. resolve_cargo_repo) can reuse it
+-    // without issuing their own DB lookup.
++/// Read the repository row into the shared cache handlers use, as the
++/// upstream middleware did on a miss.
++/// The repository row for `repo_key` as the upstream middleware resolves it:
++/// a fresh cache entry, a fresh negative entry, or the table (filling the
++/// caches handlers share). `Err` is a failed query.
++async fn resolve_repo(
++    vis_state: &RepoVisibilityState,
++    repo_key: &str,
++) -> std::result::Result<Option<(Uuid, RepositoryVisibility)>, ()> {
++    use sqlx::Row;
+     let cached = {
+         let cache = vis_state.repo_cache.read().await;
+-        cache.get(&*repo_key).and_then(|(entry, at)| {
+-            if at.elapsed().as_secs() < REPO_CACHE_TTL_SECS {
+-                Some(entry.clone())
+-            } else {
+-                None
+-            }
++        cache.get(repo_key).and_then(|(entry, at)| {
++            (at.elapsed().as_secs() < REPO_CACHE_TTL_SECS).then(|| (entry.id, entry.visibility))
+         })
+     };
+-
+-    // #3750: a key that recently resolved to NO repository is remembered too,
+-    // for the same TTL. Without this the positive cache alone made an existing
+-    // repository the caller may not see cheaper on the second probe than a
+-    // nonexistent one (no query vs. a fresh `SELECT` each time) — a timing
+-    // oracle for repository existence on every native read surface, which the
+-    // byte-identical responses of #1808/#3709/#3717/#3728 otherwise close.
+-    // A fresh tombstone takes the no-repository path below without a query, so
+-    // both cases are answered from memory on repeat.
+-    let negatively_cached = cached.is_none() && {
++    if let Some(hit) = cached {
++        return Ok(Some(hit));
++    }
++    let negatively_cached = {
+         let miss_cache = vis_state.repo_miss_cache.read().await;
+         miss_cache
+-            .get(&*repo_key)
++            .get(repo_key)
+             .is_some_and(|at| at.elapsed().as_secs() < REPO_CACHE_TTL_SECS)
+     };
++    if negatively_cached {
++        return Ok(None);
++    }
++    let row = sqlx::query(
++        "SELECT id, format::text as format, repo_type::text as repo_type, \
++         upstream_url, storage_backend, storage_path, visibility, \
++         promotion_only, age_gate_enabled, age_gate_min_age_days, age_gate_mode, \
++         curation_enabled, curation_default_action, \
++         (SELECT value FROM repository_config \
++          WHERE repository_id = repositories.id \
++          AND key = 'index_upstream_url') AS index_upstream_url \
++         FROM repositories WHERE key = $1",
++    )
++    .bind(repo_key)
++    .fetch_optional(&vis_state.db)
++    .await;
++    let query_succeeded = row.is_ok();
++    match row {
++        Ok(Some(r)) => {
++            let entry = CachedRepo {
++                id: r.get("id"),
++                format: r.get("format"),
++                repo_type: r.get("repo_type"),
++                upstream_url: r.get("upstream_url"),
++                storage_backend: r.get("storage_backend"),
++                storage_path: r.get("storage_path"),
++                visibility: r.try_get::<RepositoryVisibility, _>("visibility").unwrap_or_else(|e| {
++                    tracing::error!(
++                        error = %e,
++                        repo_key = %repo_key,
++                        "unreadable repository visibility; failing closed to private"
++                    );
++                    RepositoryVisibility::Private
++                }),
++                index_upstream_url: r.get("index_upstream_url"),
++                promotion_only: r.get("promotion_only"),
++                age_gate_enabled: r.get("age_gate_enabled"),
++                age_gate_min_age_days: r.get("age_gate_min_age_days"),
++                age_gate_mode: r.get("age_gate_mode"),
++                curation_enabled: r.get("curation_enabled"),
++                curation_default_action: r.get("curation_default_action"),
++            };
++            let hit = (entry.id, entry.visibility);
++            let mut cache = vis_state.repo_cache.write().await;
++            cache.retain(|_, (_, at)| at.elapsed().as_secs() < REPO_CACHE_TTL_SECS);
++            cache.insert(repo_key.to_string(), (entry, Instant::now()));
++            Ok(Some(hit))
++        }
++        other => {
++            let mut miss_cache = vis_state.repo_miss_cache.write().await;
++            miss_cache.retain(|_, at| at.elapsed().as_secs() < REPO_CACHE_TTL_SECS);
++            if miss_cache.len() > REPO_MISS_CACHE_MAX_ENTRIES {
++                miss_cache.clear();
++            }
++            if query_succeeded {
++                miss_cache.insert(repo_key.to_string(), Instant::now());
++            }
++            match other {
++                Ok(_) => Ok(None),
++                Err(_) => Err(()),
++            }
++        }
++    }
++}
+ 
+-    let repo = match cached {
+-        Some(r) => Some(r),
+-        None if negatively_cached => None,
+-        None => {
+-            // Cache miss: fetch full repo metadata in one query so we can
+-            // populate the cache for both this middleware and downstream
+-            // handlers.  Uses sqlx::query() (not the macro) so no new entry
+-            // in the sqlx offline-query cache is required.
+-            use sqlx::Row;
+-            let row = sqlx::query(
+-                "SELECT id, format::text as format, repo_type::text as repo_type, \
+-                 upstream_url, storage_backend, storage_path, visibility, \
+-                 promotion_only, age_gate_enabled, age_gate_min_age_days, age_gate_mode, \
+-                 curation_enabled, curation_default_action, \
+-                 (SELECT value FROM repository_config \
+-                  WHERE repository_id = repositories.id \
+-                  AND key = 'index_upstream_url') AS index_upstream_url \
+-                 FROM repositories WHERE key = $1",
+-            )
+-            .bind(&*repo_key)
+-            .fetch_optional(&vis_state.db)
+-            .await;
+-            // A query ERROR is not evidence that the key names no repository,
+-            // so it must not be negative-cached (#3750): otherwise one
+-            // database blip would pin a real repository out of sight for a
+-            // whole TTL. `.ok().flatten()` keeps the pre-existing answer for
+-            // this request (an error falls into the no-repo branch below);
+-            // only a genuine `Ok(None)` earns a tombstone.
+-            let query_succeeded = row.is_ok();
+-            let row = row.ok().flatten();
+-
+-            if let Some(r) = row {
+-                let entry = CachedRepo {
+-                    id: r.get("id"),
+-                    format: r.get("format"),
+-                    repo_type: r.get("repo_type"),
+-                    upstream_url: r.get("upstream_url"),
+-                    storage_backend: r.get("storage_backend"),
+-                    storage_path: r.get("storage_path"),
+-                    // Fails closed: an unreadable/unknown visibility is
+-                    // treated as `private`, the narrowest audience, rather
+-                    // than defaulting a repository open.
+-                    visibility: r
+-                        .try_get::<RepositoryVisibility, _>("visibility")
+-                        .unwrap_or_else(|e| {
+-                            tracing::error!(
+-                                error = %e,
+-                                repo_key = %repo_key,
+-                                "unreadable repository visibility; failing closed to private"
+-                            );
+-                            RepositoryVisibility::Private
+-                        }),
+-                    index_upstream_url: r.get("index_upstream_url"),
+-                    promotion_only: r.get("promotion_only"),
+-                    age_gate_enabled: r.get("age_gate_enabled"),
+-                    age_gate_min_age_days: r.get("age_gate_min_age_days"),
+-                    age_gate_mode: r.get("age_gate_mode"),
+-                    curation_enabled: r.get("curation_enabled"),
+-                    curation_default_action: r.get("curation_default_action"),
+-                };
+-                // Populate the shared cache; evict stale entries on write.
+-                {
+-                    let mut cache = vis_state.repo_cache.write().await;
+-                    cache.retain(|_, (_, at)| at.elapsed().as_secs() < REPO_CACHE_TTL_SECS);
+-                    cache.insert(repo_key.to_string(), (entry.clone(), Instant::now()));
+-                }
+-                Some(entry)
+-            } else {
+-                // #3750: remember a confirmed miss for the same TTL, so the
+-                // next probe of this key is answered from memory like a
+-                // cached hit.
+-                //
+-                // Unlike the positive cache the key space here is whatever a
+-                // caller types, so the map is bounded explicitly: expired
+-                // entries are dropped on each write exactly as above, and if
+-                // the map is still over `REPO_MISS_CACHE_MAX_ENTRIES` it is
+-                // cleared outright. Clearing costs each cleared key one more
+-                // `SELECT` on its next probe — the pre-#3750 behaviour — which
+-                // is the right way for a memory bound to fail.
+-                //
+-                // The sweep runs even when the query failed, so the entry this
+-                // request just aged out cannot linger until the next confirmed
+-                // miss happens to sweep it; only the INSERT is conditional.
+-                {
+-                    let mut miss_cache = vis_state.repo_miss_cache.write().await;
+-                    miss_cache.retain(|_, at| at.elapsed().as_secs() < REPO_CACHE_TTL_SECS);
+-                    if miss_cache.len() > REPO_MISS_CACHE_MAX_ENTRIES {
+-                        miss_cache.clear();
+-                    }
+-                    if query_succeeded {
+-                        miss_cache.insert(repo_key.to_string(), Instant::now());
+-                    }
++#[allow(clippy::disallowed_methods)]
++// streaming-invariant: test module exempt — buffering response bodies in test assertions is not an artifact path (#1608)
++#[cfg(ak_test_shard = "router")]
++// ---------------------------------------------------------------------------
++// The shell around the kernel's middlewares (`artifactkeeper_kernel::
++// middleware`). For one request it makes the credential checks upstream
++// would make, in the order it makes them, records them as the kernel's
++// oracle, reads the rows the kernel's queries scan, runs the kernel and
++// carries out what it writes.
++
++/// The kernel's oracle for a presented credential, the users it names, and
++/// the message of a 503 from the password check.
++struct Presented {
++    oracle: h5i::k::trusted::Oracle,
++    users: Vec<Uuid>,
++    unavailable: Option<String>,
++}
++
++fn auth_err(e: &AppError) -> h5i::k::trusted::AuthErr {
++    match e {
++        AppError::ServiceUnavailable(_) => h5i::k::trusted::AuthErr::ServiceUnavailable,
++        e if e.is_pool_timeout() => h5i::k::trusted::AuthErr::PoolTimeout,
++        _ => h5i::k::trusted::AuthErr::Other,
++    }
++}
++
++impl Presented {
++    async fn jwt(&mut self, s: &AuthService, token: &[u8], ids: &mut h5i::Ids) -> bool {
++        let Ok(t) = std::str::from_utf8(token) else { return false };
++        match s.validate_access_token_async(t).await {
++            Ok(c) => {
++                self.users.push(c.sub);
++                self.oracle.jwt.push((token.to_vec(), h5i::claims(&c, ids)));
++                true
++            }
++            Err(_) => false,
++        }
++    }
++
++    async fn api(&mut self, s: &AuthService, token: &[u8], ids: &mut h5i::Ids) -> Option<h5i::k::trusted::AuthErr> {
++        let Ok(t) = std::str::from_utf8(token) else { return Some(h5i::k::trusted::AuthErr::Other) };
++        let r = match s.validate_api_token(t).await {
++            Ok(v) => {
++                self.users.push(v.user.id);
++                Ok(h5i::k::trusted::ApiTokenValidation {
++                    user: h5i::user(&v.user, ids),
++                    scopes: h5i::strings(&v.scopes),
++                    allowed_repo_ids: h5i::access_scope(&v.allowed_repo_ids, ids),
++                })
++            }
++            Err(e) => Err(auth_err(&e)),
++        };
++        let err = r.as_ref().err().copied();
++        self.oracle.api_tokens.push((token.to_vec(), r));
++        err
++    }
++
++    async fn password(&mut self, s: &AuthService, user: &[u8], pass: &[u8], ids: &mut h5i::Ids) -> Option<h5i::k::trusted::AuthErr> {
++        let (Ok(u), Ok(p)) = (std::str::from_utf8(user), std::str::from_utf8(pass)) else {
++            return Some(h5i::k::trusted::AuthErr::Other);
++        };
++        let r = match s.authenticate(u, p).await {
++            Ok((user_row, _)) => {
++                self.users.push(user_row.id);
++                Ok(h5i::user(&user_row, ids))
++            }
++            Err(e) => {
++                if let AppError::ServiceUnavailable(msg) = &e {
++                    self.unavailable = Some(msg.clone());
+                 }
+-                None
++                Err(auth_err(&e))
+             }
++        };
++        let err = r.as_ref().err().copied();
++        self.oracle.passwords.push((user.to_vec(), pass.to_vec(), r));
++        err
++    }
++
++    fn decode(&mut self, encoded: &[u8]) -> Option<(Vec<u8>, Vec<u8>)> {
++        if let Ok(e) = std::str::from_utf8(encoded) {
++            h5i::add_base64(&mut self.oracle, e);
+         }
+-    };
++        h5i::k::resolve::decode_basic_credentials(&self.oracle, encoded)
++    }
++}
+ 
+-    // No repository row matched this (decoded) key. Every format route is
+-    // `/{format}/{repo_key}/...`, so a non-empty key always NAMES a repo;
+-    // the only key-less paths (format roots such as `/` or `/pypi`) already
+-    // returned early above. This branch therefore decides how a request that
+-    // can never resolve a repo is answered, per credential state:
+-    //
+-    // - transient auth-capacity shed -> retryable 503;
+-    // - an explicitly-presented credential that failed validation -> 401
+-    //   (off-boarding, #1371: honour the deactivation even before we know
+-    //   whether the repo exists);
+-    // - no credential at all -> the same 401 + `WWW-Authenticate` challenge
+-    //   an existing *private* repo produces (#1808, the anonymous
+-    //   repo-existence oracle);
+-    // - a VALID credential -> the existence-hiding 404 below
+-    //   (GHSA-fv45-mwhh-q23r).
+-    let Some(repo) = repo else {
+-        let extracted = extract_visibility_token(&request);
+-        // Format/registry endpoint: preserve pip-netrc / Artifactory-style
+-        // `username:<api_token>` Basic auth (`allow_basic_api_token=true`, #2786).
+-        let outcome = try_resolve_auth_outcome(&vis_state.auth_service, extracted, true).await;
+-        // Transient bcrypt-capacity shed -> retryable 503 (see
+-        // `AuthOutcome::Overloaded`), never a 401.
+-        if matches!(outcome, AuthOutcome::Overloaded) {
+-            return service_unavailable_response();
++/// Upstream's checks for `extracted`, as `try_resolve_auth_outcome` (and
++/// `auth_middleware`'s `header_result`, a prefix of it) makes them.
++async fn present(
++    s: &AuthService,
++    extracted: &h5i::k::http::ExtractedToken,
++    allow_basic_api_token: bool,
++    ids: &mut h5i::Ids,
++) -> Presented {
++    use h5i::k::http::ExtractedToken as K;
++    use h5i::k::trusted::AuthErr;
++    let mut p = Presented { oracle: h5i::empty_oracle(), users: Vec::new(), unavailable: None };
++    match extracted {
++        K::Bearer(t) => {
++            if !p.jwt(s, t, ids).await && p.api(s, t, ids).await == Some(AuthErr::Other) {
++                if let Some((u, pw)) = p.decode(t) {
++                    p.password(s, &u, &pw, ids).await;
++                }
++            }
+         }
+-        let credential_invalid = matches!(outcome, AuthOutcome::InvalidCredential);
+-        // #1808: Close the anonymous repo-existence oracle. An existing
+-        // *private* repo returns 401 to an anonymous caller (visibility check
+-        // below), so a nonexistent repo must not return the handler's 404 to
+-        // that same caller -- the differing status would leak which repo keys
+-        // exist. Mirror the existing-private response: emit the identical
+-        // 401 + `WWW-Authenticate` challenge whenever no credential is
+-        // presented, so the status, body, and headers are byte-identical for
+-        // existing-private and nonexistent keys. This also preserves
+-        // package-manager 401-retry semantics (clients still see the
+-        // challenge and can retry with credentials).
+-        let no_credential = matches!(outcome, AuthOutcome::NoCredential);
+-        let auth_ext: Option<AuthExtension> = match outcome {
+-            AuthOutcome::Resolved(ext) => Some(ext),
+-            AuthOutcome::NoCredential | AuthOutcome::InvalidCredential => None,
+-            AuthOutcome::Overloaded => None,
+-        };
+-        if credential_invalid && auth_ext.is_none() {
+-            return unauthorized_response();
++        K::ApiKey(t) => {
++            p.api(s, t, ids).await;
+         }
+-        if no_credential {
+-            return unauthorized_response();
++        K::Basic(e) => {
++            if let Some((u, pw)) = p.decode(e) {
++                if p.password(s, &u, &pw, ids).await == Some(AuthErr::Other)
++                    && !p.jwt(s, &pw, ids).await
++                    && allow_basic_api_token
++                {
++                    p.api(s, &pw, ids).await;
++                }
++            }
+         }
+-        // GHSA-fv45-mwhh-q23r: a VALID credential whose (decoded) repo key
+-        // matches no row must NOT fall through to the handler. Before this
+-        // fix the request continued with no visibility/scope/ACL check at
+-        // all; combined with the raw-segment lookup, `/{format}/privat%65/...`
+-        // matched nothing here while the handler resolved the decoded
+-        // `private` — an authenticated cross-tenant read of any private repo.
+-        // Answer with the same existence-hiding 404 an authenticated
+-        // non-member gets for an EXISTING private repo (`not_found_response`,
+-        // mirroring REST `require_visible`), so "no such repo" and "repo you
+-        // may not see" stay indistinguishable for authenticated callers too.
+-        return not_found_response();
+-    };
++        K::None | K::Invalid => {}
++    }
++    p
++}
+ 
+-    let visibility = repo.visibility;
+-    // The VS Code gallery query is a protocol-mandated POST that is purely a
+-    // metadata search, so it must be reachable anonymously on a public repo.
+-    // Only that strict subset skips the #508 anonymous-write gate: git-lfs
+-    // batch and conan authenticate stay write-gated for anonymous callers
+-    // exactly as before, and are exempted only from the *permission* check
+-    // further down (`non_mutating_post`).
+-    let non_mutating_post = is_non_mutating_format_post(&path);
+-    let anonymous_readable_post =
+-        request.method() == Method::POST && is_anonymous_readable_format_post(&path);
+-    let is_write = is_write_method(request.method()) && !anonymous_readable_post;
+-
+-    // Perform optional auth (shared with optional_auth_middleware). Conda
+-    // token channels carry the credential in the URL path, so fall back to it
+-    // when no header/cookie credential is present.
+-    let extracted = extract_visibility_token(&request);
+-    // Format/registry endpoint: preserve pip-netrc / Artifactory-style
+-    // `username:<api_token>` Basic auth (`allow_basic_api_token=true`, #2786).
+-    let outcome = try_resolve_auth_outcome(&vis_state.auth_service, extracted, true).await;
+-    // Transient bcrypt-capacity shed -> retryable 503 (see
+-    // `AuthOutcome::Overloaded`), never a 401.
+-    if matches!(outcome, AuthOutcome::Overloaded) {
+-        return service_unavailable_response();
+-    }
+-    let credential_invalid = matches!(outcome, AuthOutcome::InvalidCredential);
+-    let mut auth_ext: Option<AuthExtension> = match outcome {
+-        AuthOutcome::Resolved(ext) => Some(ext),
+-        AuthOutcome::NoCredential | AuthOutcome::InvalidCredential => None,
+-        AuthOutcome::Overloaded => None,
++/// The rows the kernel's queries can read for this request: the named users,
++/// the download ticket, and for a repository its row, the rules on it or its
++/// project, and the callers' group memberships and role assignments.
++async fn kernel_db(
++    pool: &sqlx::PgPool,
++    ids: &mut h5i::Ids,
++    mut users: Vec<Uuid>,
++    ticket: Option<&str>,
++    repo: Option<(&str, std::result::Result<Option<(Uuid, RepositoryVisibility)>, ()>)>,
++) -> h5i::k::tables::Db {
++    use h5i::k::tables::{Db, Query};
++    use sqlx::Row;
++    let mut db = Db {
++        users: Vec::new(),
++        groups: Vec::new(),
++        members: Vec::new(),
++        repositories: Vec::new(),
++        permissions: Vec::new(),
++        roles: Vec::new(),
++        role_assignments: Vec::new(),
++        tickets: Vec::new(),
++        failing: Vec::new(),
+     };
+-    // `credential_invalid` was captured before the match consumed `outcome`.
+-
+-    // Fall back to a `?ticket=` query param when no header credentials were
+-    // supplied or accepted. Tickets are read-only and bound to a path; the
+-    // helper itself rejects non-read methods, and the `is_write` check below
+-    // also covers the case where a ticket somehow leaked into a write request.
+-    let mut authed_via_ticket = false;
+-    if auth_ext.is_none() {
+-        if let Some(parts) = extract_ticket_request_parts(&request) {
+-            if let Some(ext) = try_resolve_ticket_for_parts(&vis_state.db, &parts).await {
+-                auth_ext = Some(ext);
+-                authed_via_ticket = true;
++    if let Some(t) = ticket {
++        let row = sqlx::query(
++            "SELECT user_id, resource_path, expires_at > NOW() AS live FROM download_tickets WHERE ticket = $1",
++        )
++        .bind(t)
++        .fetch_optional(pool)
++        .await;
++        match row {
++            Ok(Some(r)) => {
++                let user_id: Uuid = r.get("user_id");
++                users.push(user_id);
++                db.tickets.push(h5i::k::tables::Ticket {
++                    ticket: t.as_bytes().to_vec(),
++                    user_id: ids.id(user_id),
++                    resource_path: r.get::<Option<String>, _>("resource_path").map(String::into_bytes),
++                    live: r.get("live"),
++                });
+             }
++            Ok(None) => {}
++            Err(_) => db.failing.push(Query::Ticket),
+         }
+     }
+-
+-    // Off-boarding (#1371): explicit credential presented but invalid (and
+-    // no rescuing ticket) means 401, not anonymous read.
+-    if credential_invalid && auth_ext.is_none() {
+-        return unauthorized_response();
++    let mut repo_project: Option<(Uuid, Option<Uuid>)> = None;
++    match repo {
++        Some((key, Ok(Some((id, visibility))))) => {
++            // The row the lookup resolved (from the cache or the table); its
++            // project is read for the rules on the project.
++            let project: Option<Uuid> =
++                sqlx::query_scalar::<_, Option<Uuid>>("SELECT project_id FROM repositories WHERE id = $1")
++                    .bind(id)
++                    .fetch_optional(pool)
++                    .await
++                    .ok()
++                    .flatten()
++                    .flatten();
++            repo_project = Some((id, project));
++            db.repositories.push(h5i::k::tables::Repository {
++                id: ids.id(id),
++                key: key.as_bytes().to_vec(),
++                visibility: Some(h5i::visibility(visibility)),
++                project_id: project.map(|p| ids.id(p)),
++            });
++        }
++        Some((_, Ok(None))) | None => {}
++        Some((_, Err(()))) => db.failing.push(Query::RepoByKey),
++    }
++    users.sort();
++    users.dedup();
++    if !users.is_empty() {
++        let rows = sqlx::query(
++            "SELECT id, username, email, is_active, is_admin, is_service_account, must_change_password \
++             FROM users WHERE id = ANY($1)",
++        )
++        .bind(&users)
++        .fetch_all(pool)
++        .await;
++        match rows {
++            Ok(rows) => {
++                for r in rows {
++                    db.users.push(h5i::k::User {
++                        id: ids.id(r.get("id")),
++                        username: r.get::<String, _>("username").into_bytes(),
++                        email: r.get::<String, _>("email").into_bytes(),
++                        is_active: r.get("is_active"),
++                        is_admin: r.get("is_admin"),
++                        is_service_account: r.get("is_service_account"),
++                        must_change_password: r.get("must_change_password"),
++                    });
++                }
++            }
++            Err(_) => db.failing.extend([Query::MustChangePassword, Query::TicketUser]),
++        }
+     }
+-
+-    // Insert auth extension for downstream handlers.
+-    request.extensions_mut().insert(auth_ext.clone());
+-    if authed_via_ticket {
+-        request.extensions_mut().insert(DownloadTicketAuth);
++    if let Some((repo_id, project)) = repo_project {
++        let rows = sqlx::query(
++            "SELECT principal_type, principal_id, target_type, target_id, actions, \
++                    allowed_cidrs::text[] AS allowed_cidrs \
++               FROM permissions \
++              WHERE (target_type = 'repository' AND target_id = $1) \
++                 OR (target_type = 'project' AND target_id = $2)",
++        )
++        .bind(repo_id)
++        .bind(project)
++        .fetch_all(pool)
++        .await;
++        match rows {
++            Ok(rows) => {
++                for r in rows {
++                    let cidrs: Option<Vec<String>> = r.try_get("allowed_cidrs").ok().flatten();
++                    db.permissions.push(h5i::k::tables::Permission {
++                        principal_type: r.get::<String, _>("principal_type").into_bytes(),
++                        principal_id: r
++                            .try_get::<Option<Uuid>, _>("principal_id")
++                            .ok()
++                            .flatten()
++                            .map(|u| ids.id(u))
++                            .unwrap_or(0),
++                        target_type: r.get::<String, _>("target_type").into_bytes(),
++                        target_id: ids.id(r.get("target_id")),
++                        actions: h5i::strings(&r.get::<Vec<String>, _>("actions")),
++                        allowed_cidrs: cidrs.map(|v| v.iter().filter_map(|c| inet_range(c)).collect()),
++                    });
++                }
++            }
++            Err(_) => db.failing.extend([
++                Query::RepositoryAction,
++                Query::AnonymousAction,
++                Query::AnyRules,
++                Query::QueryActions,
++            ]),
++        }
++        if !users.is_empty() {
++            let members = sqlx::query("SELECT user_id, group_id FROM user_group_members WHERE user_id = ANY($1)")
++                .bind(&users)
++                .fetch_all(pool)
++                .await;
++            let assignments = sqlx::query(
++                "SELECT ra.user_id, ra.role_id, ra.repository_id, r.permissions \
++                   FROM role_assignments ra JOIN roles r ON r.id = ra.role_id \
++                  WHERE ra.user_id = ANY($1)",
++            )
++            .bind(&users)
++            .fetch_all(pool)
++            .await;
++            match members {
++                Ok(rows) => {
++                    for r in rows {
++                        db.members.push((ids.id(r.get("user_id")), ids.id(r.get("group_id"))));
++                    }
++                }
++                Err(_) => db.failing.extend([Query::RepositoryAction, Query::QueryActions]),
++            }
++            match assignments {
++                Ok(rows) => {
++                    for r in rows {
++                        let role_id = ids.id(r.get("role_id"));
++                        db.role_assignments.push(h5i::k::tables::RoleAssignment {
++                            user_id: ids.id(r.get("user_id")),
++                            role_id,
++                            repository_id: r.get::<Option<Uuid>, _>("repository_id").map(|u| ids.id(u)),
++                        });
++                        if !db.roles.iter().any(|x| x.id == role_id) {
++                            db.roles.push(h5i::k::tables::Role {
++                                id: role_id,
++                                permissions: h5i::strings(&r.get::<Vec<String>, _>("permissions")),
++                            });
++                        }
++                    }
++                }
++                Err(_) => db.failing.extend([Query::RepositoryAction, Query::RoleGrant]),
++            }
++        }
+     }
++    db
++}
+ 
+-    // #508: Write operations (PUT, POST, PATCH, DELETE) always require
+-    // authentication, even on public repositories. Without this, unauthenticated
+-    // upload requests to public repos fall through to the handler which returns
+-    // 404 (misleading) instead of 401.
+-    //
+-    // Tickets must never authorize writes even if the bound path happens to
+-    // be writable: a ticket is effectively a single-use download URL, not a
+-    // capability token. Treat ticket-authenticated requests as anonymous for
+-    // the purpose of write gating.
+-    let has_write_auth = auth_ext.is_some() && !authed_via_ticket;
+-    if is_write && !has_write_auth {
+-        return unauthorized_response();
+-    }
+-
+-    // Check visibility: public repos are open for reads, private repos need auth.
+-    if !should_allow_repo_access(visibility, auth_ext.is_some()) {
+-        // #1849: an anonymous caller may still hold an anonymous read rule
+-        // (`principal_type = 'anonymous'`) on this non-public repository —
+-        // the IP-restricted CI download grant — evaluated against the
+-        // in-flight request's client IP. This arm is only reachable for a
+-        // READ: anonymous writes already left by the #508 gate above, and
+-        // `auth_ext.is_some()` callers answered `true` just now. A denial
+-        // keeps the identical 401 challenge, so a caller outside the CIDRs
+-        // cannot tell a conditioned repo from a rules-less one; a lookup
+-        // error fails closed (denied, not served).
+-        let anonymous_read_granted = auth_ext.is_none()
+-            && vis_state
+-                .permission_service
+-                .check_anonymous_repository_action(repo.id, "read")
++/// An `inet` as Postgres prints it (`10.0.0.0/8`, or a bare host address).
++fn inet_range(text: &str) -> Option<h5i::k::net::CidrRange> {
++    let (addr, prefix) = match text.split_once('/') {
++        Some((a, p)) => (a, p.parse::<u8>().ok()?),
++        None => (text, if text.contains(':') { 128 } else { 32 }),
++    };
++    let ip: std::net::IpAddr = addr.parse().ok()?;
++    Some(h5i::k::net::CidrRange { network: h5i::ip(ip), prefix_len: prefix })
++}
++
++/// Carry out a write; `false` when the ticket was already gone, so the kernel
++/// must decide again without it.
++async fn apply_write(
++    pool: &sqlx::PgPool,
++    w: &h5i::k::resolve::Write,
++    ids: &h5i::Ids,
++    (path, method): (&str, &str),
++    db: &h5i::k::tables::Db,
++) -> bool {
++    use h5i::k::resolve::Write;
++    match w {
++        Write::DeleteTicket(t) => {
++            let t = String::from_utf8_lossy(t).into_owned();
++            crate::services::auth_config_service::AuthConfigService::validate_download_ticket(pool, &t)
+                 .await
+-                .unwrap_or(false);
+-        if !anonymous_read_granted {
+-            return unauthorized_response();
++                .is_ok()
+         }
++        Write::AuditPermissionDenied { user_id, .. } => {
++            use crate::services::audit_service::{audit_fire_and_forget, AuditAction, AuditEntry, ResourceType};
++            let username = db
++                .users
++                .iter()
++                .find(|u| u.id == *user_id)
++                .map(|u| h5i::string(u.username.clone()))
++                .unwrap_or_default();
++            let user_id = ids.uuid(*user_id);
++            let entry = AuditEntry::new(AuditAction::PermissionDenied, ResourceType::User)
++                .user(user_id)
++                .resource(user_id)
++                .actor_name(username)
++                .details_typed(crate::services::audit_export::details::AuthDetails::permission_denied(
++                    path,
++                    method,
++                    "admin_privileges_required",
++                ));
++            audit_fire_and_forget(pool.clone(), entry).await;
++            true
++        }
++        Write::InsertPermission(_) => true,
+     }
++}
+ 
+-    // #504: Enforce API token repository scope. If the token carries an
+-    // allowed_repo_ids restriction, the target repository must be in that set.
+-    // Without this, a token scoped to repo A could read/write repo B.
+-    //
+-    // #3648: reads of a PUBLIC repository are exempt, via the same
+-    // `public_read_satisfies_acl` baseline the ACL arm below applies (#2329).
+-    // The visibility check above serves an anonymous caller a public repo
+-    // unconditionally, and anonymous callers never reach this branch (no
+-    // `auth_ext`) — so without the exemption, presenting a repo-scoped
+-    // credential returned 403 where presenting NO credential returned 200, i.e.
+-    // a credential granted strictly less access than none. pip surfaced that as
+-    // "No matching distribution found".
+-    //
+-    // Reads only. Writes and deletes keep enforcing the scope unchanged: a
+-    // token scoped to repo A must still not push to public repo B, which is
+-    // what REST `require_repo_write_access` (`require_repo_access` before its
+-    // `is_public` short-circuit) already does on the other side. Private
+-    // repositories never take this shortcut, so the existence-hiding answer a
+-    // scoped token gets for an out-of-scope private repo is unchanged.
+-    //
+-    // The action is derived the way the permission arm below derives its own
+-    // (`non_mutating_post`), except that the qualifying subset here is
+-    // `anonymous_readable_post`, not `non_mutating_post`. That subset
+-    // (`is_anonymous_readable_format_post`) is defined as the POSTs a PUBLIC
+-    // repository must serve to an ANONYMOUS caller — today only the VS Code
+-    // gallery query — which is exactly the baseline this bypass restores: those
+-    // requests skip the #508 write gate, carry no `auth_ext` when anonymous, and
+-    // so were served with no credential while a scoped credential got 403.
+-    // git-lfs `objects/batch` and conan `users/authenticate` are NOT in that
+-    // subset and stay scope-gated: `batch` is an upload negotiation whose upload
+-    // arm mints object hrefs, `authenticate` is a credential exchange, and both
+-    // answer 401 to an anonymous caller under #508 — so neither has an anonymous
+-    // baseline to have fallen below, and widening them is a separate decision.
+-    let scope_gate_action = if anonymous_readable_post {
+-        "read"
+-    } else {
+-        action_for_method(request.method())
+-    };
+-    if let Some(ref ext) = auth_ext {
+-        if !public_read_satisfies_acl(visibility, scope_gate_action)
+-            && !ext.can_access_repo(repo.id)
+-        {
+-            // #3717: a READ refused here is always a read of a repository
+-            // that is NOT anonymously readable -- `private`, or `internal`,
+-            // whose scope ceiling is deliberately not relaxed (an anonymous
+-            // caller gets nothing from it, so a scoped credential has no
+-            // baseline to have fallen below). The public case short-circuited
+-            // just above. Both hide their existence identically, so it
+-            // takes the same existence-hiding `not_found_response()` the
+-            // no-repo branch and both ACL read denials (#3524, #3709) answer.
+-            // Repository-scoped tokens are self-service, so a 403 here handed
+-            // any user holding a token to a repository of their own a
+-            // 200/403/404 existence oracle over every other private key.
+-            // Writes keep the 403, matching #3524's decision for the ACL arm.
+-            //
+-            // "Read" here is the set the ACL arm below calls a read: the
+-            // method-derived action plus the `non_mutating_post` routes
+-            // (git-lfs `objects/batch`, conan `users/authenticate`), which
+-            // that arm reclassifies via the same predicate and, since #3709,
+-            // denies with this same 404. They stay scope-GATED (the #3648
+-            // exemption above is not widened); only the shape of a denial
+-            // that happens either way changes -- and only on a PRIVATE
+-            // repository. A method-derived read never reaches this point for a
+-            // public repository (the short-circuit above), but the two POSTs
+-            // do, and a public repository has no existence to hide: they keep
+-            // the 403 there, as `test_3648` pins.
+-            if !visibility.allows_anonymous_read()
+-                && (scope_gate_action == "read" || non_mutating_post)
+-            {
+-                // Same fields and level as the two ACL read denials below, so
+-                // the operator can still tell this from a missing repository.
+-                tracing::info!(
+-                    repository_id = %repo.id,
+-                    user_id = %ext.user_id,
+-                    "token repository scope denied read; answering the existence-hiding 404"
+-                );
+-                return not_found_response();
++/// Run `decide`, carry out its writes, and decide again without a ticket that
++/// another request consumed first.
++async fn run_kernel(
++    pool: &sqlx::PgPool,
++    db: &mut h5i::k::tables::Db,
++    ids: &h5i::Ids,
++    request: (&str, &str),
++    decide: impl Fn(&h5i::k::tables::Db) -> (Vec<h5i::k::resolve::Write>, h5i::k::middleware::Outcome),
++) -> h5i::k::middleware::Outcome {
++    loop {
++        let (writes, outcome) = decide(db);
++        let mut stale = false;
++        for w in &writes {
++            if !apply_write(pool, w, ids, request, db).await {
++                stale = true;
+             }
+-            return forbidden_repo_response();
+         }
++        if !stale {
++            return outcome;
++        }
++        db.tickets.clear();
+     }
++}
+ 
+-    // Repository permission enforcement (#817 reads, #2603 G1 writes).
+-    //
+-    // If the authenticated user is an admin, skip permission checks entirely
+-    // to preserve backward compatibility and avoid unnecessary DB lookups.
+-    if let Some(ref ext) = auth_ext {
+-        if !ext.is_admin {
+-            // A few POST routes are negotiation / credential-exchange steps, not
+-            // repository mutations, even though the HTTP method is a write (see
+-            // `is_non_mutating_format_post`). Classify them as reads so a
+-            // read-only member or a public-repo non-member can still perform
+-            // download negotiation / token exchange. The #508 write-auth gate
+-            // above (401 for anonymous) is unaffected, and actual LFS uploads
+-            // remain write-gated by the batch handler and the object-PUT path.
+-            let action = if non_mutating_post {
+-                "read"
+-            } else {
+-                action_for_method(request.method())
++/// The response for a kernel refusal.
++fn kernel_response(r: h5i::k::middleware::Response, unavailable: Option<String>) -> Response {
++    use h5i::k::middleware::{Deny, Response as R};
++    match r {
++        R::NotFound => not_found_response(),
++        R::Unauthorized { challenge_basic } => challenge_unauthorized_response(challenge_basic),
++        R::ServiceUnavailable => service_unavailable_response(),
++        R::PermissionServiceUnavailable => Response::builder()
++            .status(StatusCode::SERVICE_UNAVAILABLE)
++            .body(axum::body::Body::from("permission service temporarily unavailable"))
++            .unwrap(),
++        R::AuthServiceUnavailable => (
++            StatusCode::SERVICE_UNAVAILABLE,
++            [(axum::http::header::RETRY_AFTER, "1")],
++            unavailable.unwrap_or_default(),
++        )
++            .into_response(),
++        R::ForbiddenRepo => forbidden_repo_response(),
++        R::ForbiddenPermission => forbidden_permission_response(),
++        R::CsrfForbidden => csrf_forbidden_response(),
++        R::MustChangePassword => must_change_password_response(),
++        R::AdminRequired => (StatusCode::FORBIDDEN, "Admin access required").into_response(),
++        R::Plain401(d) => {
++            let msg = match d {
++                Deny::InvalidOrExpiredToken => "Invalid or expired token",
++                Deny::InvalidOrExpiredApiToken => "Invalid or expired API token",
++                Deny::InvalidBasic => "Invalid Basic auth credentials",
++                Deny::InvalidCredentials => "Invalid credentials",
++                Deny::MissingHeader => "Missing authorization header",
++                Deny::InvalidHeaderFormat => "Invalid authorization header format",
++                Deny::InvalidTicket => "Invalid or expired download ticket",
+             };
++            (StatusCode::UNAUTHORIZED, msg).into_response()
++        }
++        R::GuestUnauthorized { .. } | R::OciUnauthorized => {
++            // Built by `guest_access_guard`, which has the OCI base URL.
++            unauthorized_response()
++        }
++    }
++}
+ 
+-            if is_write && !non_mutating_post {
+-                // #2603 G1: writes and deletes route through the single
+-                // canonical action choke-point, DENY-BY-DEFAULT. `is_public`
+-                // confers a read baseline only and never satisfies a write, and
+-                // a repository with NO fine-grained rules does not fall open —
+-                // the caller must hold a role assignment carrying the action
+-                // (or an allowing fine-grained rule, or `admin`), for public
+-                // and private repositories alike. This closes the rules-less
+-                // public-repo write hole (any authed caller could PUT/DELETE)
+-                // and the rules-less private-repo case (a read-only `viewer`
+-                // member could write/delete). DB error fails closed (503).
+-                match vis_state
+-                    .permission_service
+-                    .check_repository_action(ext.user_id, repo.id, action, false)
+-                    .await
+-                {
+-                    Ok(true) => {}
+-                    Ok(false) => return forbidden_permission_response(),
+-                    Err(_) => {
+-                        tracing::error!("permission check failed: database unreachable");
+-                        return service_unavailable_response();
+-                    }
+-                }
+-            } else {
+-                // Reads: preserve the public-anonymous baseline + private
+-                // membership + fine-grained ACL model (#817 / #2329). For a
+-                // non-admin user, check whether any permission rules exist for
+-                // this repository. If no rules exist, fall through to the
+-                // default access model (the visibility checks above are
+-                // sufficient for public repos; private repos still require a
+-                // role assignment). If rules do exist, the user must hold the
+-                // read action.
+-                let has_rules = match vis_state
+-                    .permission_service
+-                    .has_any_rules_for_target("repository", repo.id)
+-                    .await
+-                {
+-                    Ok(v) => v,
+-                    Err(_) => {
+-                        // DB error on permission check: fail closed.
+-                        tracing::error!("permission check failed: database unreachable");
+-                        return Response::builder()
+-                            .status(StatusCode::SERVICE_UNAVAILABLE)
+-                            .body(axum::body::Body::from(
+-                                "permission service temporarily unavailable",
+-                            ))
+-                            .unwrap();
+-                    }
+-                };
++/// The request path the password-change gate reads.
++fn gate_path(request: &Request) -> String {
++    request
++        .extensions()
++        .get::<OriginalUri>()
++        .map(|o| o.0.path().to_string())
++        .unwrap_or_else(|| request.uri().path().to_string())
++}
+ 
+-                if has_rules {
+-                    // #2329, applied to the full visibility axis: a caller
+-                    // must never end up with *less* read access than the
+-                    // baseline their repository already grants them, merely
+-                    // because ACL rules happen to exist. On `public` that
+-                    // baseline is anonymous access; on `internal` it is being a
+-                    // resolved principal at all. Skip the ACL for reads only;
+-                    // `private` never takes this shortcut. Anonymous callers
+-                    // never reach this block (no `auth_ext`), which is what
+-                    // makes it safe to grant the internal baseline here --
+-                    // the caller is authenticated by construction.
+-                    if !authenticated_read_satisfies_acl(visibility, action) {
+-                        // Check for the specific action first, then fall back to
+-                        // "admin" which implies all actions (#827 policy compat).
+-                        // Both calls resolve from the same cached action set, so
+-                        // the second call is essentially free.
+-                        //
+-                        // These two are a CACHED FAST PATH for the common
+-                        // "an applicable rule names this principal" case, not
+-                        // the decision itself: `check_permission` reads the
+-                        // `permissions` table only. The canonical decision is
+-                        // `check_repository_action` below (#3387/#3452).
+-                        let allowed = vis_state
+-                            .permission_service
+-                            .check_permission(ext.user_id, "repository", repo.id, action, false)
+-                            .await
+-                            .unwrap_or(false)
+-                            || vis_state
+-                                .permission_service
+-                                .check_permission(
+-                                    ext.user_id,
+-                                    "repository",
+-                                    repo.id,
+-                                    "admin",
+-                                    false,
+-                                )
+-                                .await
+-                                .unwrap_or(false)
+-                            // #3387/#3452: role assignments are part of the read
+-                            // decision, exactly as they already are for the
+-                            // write/delete arm ~40 lines above, for REST reads
+-                            // (`require_visible` -> `user_can_access_repo` ->
+-                            // `RepoAccess::READ`) and for virtual members
+-                            // (`try_authorize_virtual_members`). This branch was
+-                            // the ONLY read gate in the codebase resolving reads
+-                            // from `permissions` alone, so the FIRST fine-grained
+-                            // rule written against a repository — for any
+-                            // principal, including an unrelated one — silently
+-                            // revoked native-protocol READ for every principal
+-                            // whose grant is a `role_assignment` (the creator
+-                            // auto-grant, `repository-owner`, and the rows
+-                            // migration 172 wrote on upgrade), while leaving that
+-                            // same principal's WRITE on the same route intact.
+-                            // Reproduced as 403 on `GET /maven/{repo}/…` with 201
+-                            // on `PUT` to the same path and 200 on
+-                            // `GET /api/v1/repositories/{key}`.
+-                            //
+-                            // `check_repository_action` is a strict SUPERSET of
+-                            // the two calls above (an applicable rule carrying
+-                            // `action` or `admin` satisfies both), so this can
+-                            // only widen, never narrow. What it adds is the
+-                            // codebase's documented rule, in FULL:
+-                            //
+-                            //   a) a role assignment carrying `admin` wins over
+-                            //      everything, including an applicable rule —
+-                            //      the "durable owner capability" migration 172
+-                            //      established, OR-ed OUTSIDE the CASE in
+-                            //      `check_repository_action`;
+-                            //   b) otherwise an applicable direct/group/project
+-                            //      rule is authoritative for the principals it
+-                            //      names;
+-                            //   c) otherwise the principal keeps its role
+-                            //      capabilities.
+-                            //
+-                            // (a) is easy to state loosely and get wrong: the
+-                            // consequence is that `POST /api/v1/permissions`
+-                            // CANNOT narrow a repository owner's read here, and
+-                            // `repository-owner` is auto-granted to every
+-                            // repository creator. That is not introduced by this
+-                            // line — the write/delete arm below, `require_visible`
+-                            // (~23 REST read surfaces) and
+-                            // `try_authorize_virtual_members` have all resolved
+-                            // through this same function since #3331, and a
+-                            // baseline `GET /api/v1/artifacts/…/download`
+-                            // already answered 200 for exactly that principal.
+-                            // This line makes the native read arm agree with
+-                            // them instead of being the lone holdout.
+-                            // `test_3387_applicable_rule_beats_an_ordinary_role_but_not_an_admin_carrying_one`
+-                            // pins all three arms, including (a), so the
+-                            // carve-out cannot be quietly re-described.
+-                            //
+-                            // Ordering is deliberate but is NOT a claim that the
+-                            // canonical query only runs on denials: for the
+-                            // role-assignment principal this change unblocks,
+-                            // `check_permission` returns false every time, so
+-                            // the uncached 2-CTE query runs on every ALLOWED
+-                            // read too (measured ~0.5 ms cold, ~0 warm). What
+-                            // the two cached calls do buy is short-circuiting
+-                            // the population that IS named by a rule — the
+-                            // common case on a ruled repository — off the
+-                            // uncached path. `unwrap_or(false)` keeps the
+-                            // existing fail-closed direction of this branch
+-                            // rather than converting a DB blip from 403 to 503.
+-                            || vis_state
+-                                .permission_service
+-                                .check_repository_action(ext.user_id, repo.id, action, false)
+-                                .await
+-                                .unwrap_or(false);
+-
+-                        if !allowed {
+-                            tracing::info!(
+-                                repository_id = %repo.id,
+-                                user_id = %ext.user_id,
+-                                action,
+-                                "native-format read denied: no applicable permission rule and no \
+-                                 role assignment carrying the action; answering the \
+-                                 existence-hiding 404"
+-                            );
+-                            // #3524: the existence-hiding 404, not a 403. This
+-                            // branch is only ever reached for a PRIVATE
+-                            // repository — `action` is always "read" here (the
+-                            // #2603 G1 arm above owns write and delete) and
+-                            // `public_read_satisfies_acl` therefore short-circuits
+-                            // every public repository before this point — so the
+-                            // denial an authenticated non-member sees must not
+-                            // depend on whether the repository happens to carry
+-                            // any fine-grained rule, which is not something the
+-                            // caller has any business learning. A 403 here told
+-                            // that caller both that the repository exists and
+-                            // that it is governed by an ACL, while the rules-less
+-                            // branch below and a key naming no repository at all
+-                            // answered `not_found_response()`. All three are now
+-                            // byte-identical, matching REST `require_visible`,
+-                            // which returns `NotFound` for every denial. Writes
+-                            // are deliberately unchanged: a caller doing a PUT
+-                            // has generally already read the repository, and 403
+-                            // is the more useful answer there.
+-                            return not_found_response();
+-                        }
+-                    }
+-                } else if !visibility.allows_authenticated_read() {
+-                    // A repo with NO fine-grained permission rules whose
+-                    // visibility grants no authenticated baseline -- i.e.
+-                    // `private` -- must still not be readable by every
+-                    // authenticated user. Mirror the REST `require_visible`
+-                    // model: a non-admin needs a role assignment scoped to this
+-                    // repo (or a global assignment). An `internal` repository
+-                    // is exactly the case that SHOULD fall through to a read
+-                    // here, which is why the condition asks about the
+-                    // authenticated baseline rather than about `is_public`.
+-                    //
+-                    // Without this branch the native-protocol path
+-                    // default-ALLOWED rule-less private repos to any
+-                    // authenticated principal, while the REST download path
+-                    // denied the same caller (404) — a cross-tenant
+-                    // private-artifact leak (red-team round 2).
+-                    //
+-                    // Uses sqlx::query_scalar (not the macro) so no new entry in
+-                    // the sqlx offline-query cache is required, matching the rest
+-                    // of this middleware. Same predicate as
+-                    // RepositoryService::user_can_access_repo.
+-                    let granted = sqlx::query_scalar::<_, bool>(
+-                        "SELECT EXISTS ( \
+-                             SELECT 1 FROM role_assignments ra \
+-                             WHERE ra.user_id = $1 \
+-                               AND (ra.repository_id = $2 OR ra.repository_id IS NULL) \
+-                         )",
+-                    )
+-                    .bind(ext.user_id)
+-                    .bind(repo.id)
+-                    .fetch_one(&vis_state.db)
+-                    .await;
+-
+-                    match granted {
+-                        Ok(true) => {}
+-                        // Existence-hiding 404, matching REST `require_visible`.
+-                        //
+-                        // The RESPONSE stays byte-identical to the one a
+-                        // nonexistent key produces — that indistinguishability
+-                        // is the point (#1808 / GHSA-fv45-mwhh-q23r) and is not
+-                        // traded away here. The operator-facing half of #3452
+-                        // was that nothing on the server said WHICH of the two
+-                        // it was either: the only clue in the reporter's log was
+-                        // an unrelated `no permission rules found for target`
+-                        // line, so a 20-byte `Repository not found` was
+-                        // indistinguishable from a missing repository in the
+-                        // logs as well as on the wire. Say it here, where the
+-                        // decision is made.
+-                        Ok(false) => {
+-                            tracing::info!(
+-                                repository_id = %repo.id,
+-                                user_id = %ext.user_id,
+-                                "private repository read denied: caller holds no grant on this \
+-                                 repository; answering the existence-hiding 404"
+-                            );
+-                            return not_found_response();
+-                        }
+-                        Err(_) => {
+-                            // DB error on access check: fail closed.
+-                            tracing::error!("repo access check failed: database unreachable");
+-                            return service_unavailable_response();
+-                        }
+-                    }
+-                }
+-            }
++/// Insert what a passing request carries.
++fn admit(request: &mut Request, auth: Option<h5i::k::AuthExtension>, ticket: bool, ids: &h5i::Ids, required: bool) {
++    let ext = auth.map(|a| h5i::from_auth_ext(a, ids));
++    if required {
++        if let Some(e) = &ext {
++            request.extensions_mut().insert(Some(e.clone()));
++            request.extensions_mut().insert(e.clone());
+         }
++    } else {
++        request.extensions_mut().insert(ext);
++    }
++    if ticket {
++        request.extensions_mut().insert(DownloadTicketAuth);
+     }
++}
+ 
+-    // #2598: attribute every downstream ingestion/serve archive decode to this
+-    // repository so the per-tenant fairness sub-limit applies. This is the
+-    // single seam that resolves the repo id for all format routes, so scoping
+-    // here gives every extractor call site per-tenant fairness without any
+-    // per-handler plumbing.
+-    crate::util::bounded_archive::run_with_tenant_scope(
+-        crate::util::bounded_archive::TenantKey::Repo(repo.id),
+-        next.run(request),
+-    )
+-    .await
++/// `present`'s oracle, for the guest-access guard (Basic API tokens allowed).
++pub(crate) async fn present_oracle(
++    s: &AuthService,
++    extracted: &h5i::k::http::ExtractedToken,
++    ids: &mut h5i::Ids,
++) -> h5i::k::trusted::Oracle {
++    present(s, extracted, true, ids).await.oracle
+ }
+ 
+-#[allow(clippy::disallowed_methods)]
+-// streaming-invariant: test module exempt — buffering response bodies in test assertions is not an artifact path (#1608)
+-#[cfg(ak_test_shard = "router")]
+ #[cfg(test)]
+ mod tests {
+     use super::*;
+diff --git a/backend/src/api/middleware/guest_access.rs b/backend/src/api/middleware/guest_access.rs
+index 28e9f16..3fa1ece 100644
+--- a/backend/src/api/middleware/guest_access.rs
++++ b/backend/src/api/middleware/guest_access.rs
+@@ -72,11 +72,8 @@ use axum::{
+ use serde_json::json;
+ 
+ use crate::api::extractors::request_base_url_from_request;
+-use crate::api::middleware::auth::{
+-    extract_visibility_token, is_browser_request, service_unavailable_response,
+-    try_resolve_auth_outcome, AuthOutcome,
+-};
+-use crate::api::middleware::oci_errors::{is_oci_v2_path, oci_unauthorized_response};
++use crate::api::middleware::auth::{service_unavailable_response, AuthOutcome};
++use crate::api::middleware::oci_errors::oci_unauthorized_response;
+ use crate::services::auth_service::AuthService;
+ 
+ /// Shared state for the guest-access guard.
+@@ -107,20 +104,7 @@ pub struct GuestAccessState {
+ /// Matched by exact equality, never as a prefix: `/v2/tokenX` and
+ /// `/v2/token/<anything>` stay gated and fail closed.
+ fn is_allowlisted(path: &str) -> bool {
+-    // Exact-match health and readiness paths.
+-    matches!(
+-        path,
+-        "/health"
+-            | "/healthz"
+-            | "/ready"
+-            | "/readyz"
+-            | "/livez"
+-            | "/api/v1/system/config"
+-            | "/v2/token"
+-    ) || path.starts_with("/api/v1/auth/")
+-        || path == "/api/v1/auth"
+-        || path.starts_with("/api/v1/setup/")
+-        || path == "/api/v1/setup"
++    crate::h5i::k::paths::is_allowlisted(path.as_bytes())
+ }
+ 
+ /// 401 response body returned when guest access is disabled.
+@@ -185,6 +169,7 @@ fn unauthorized_response(for_browser: bool) -> Response {
+ /// registry error would misreport it — while collapsing it into the new 401
+ /// would fail valid credentials under load, the regression `AuthOutcome::
+ /// Overloaded` exists to prevent.
++#[cfg_attr(not(test), allow(dead_code))]
+ fn guard_short_circuit(
+     outcome: &AuthOutcome,
+     for_browser: bool,
+@@ -213,56 +198,26 @@ pub async fn guest_access_guard(
+     request: Request,
+     next: Next,
+ ) -> Response {
+-    if state.guest_access_enabled {
+-        return next.run(request).await;
+-    }
+-
+-    let path = request.uri().path();
+-    if is_allowlisted(path) {
+-        return next.run(request).await;
+-    }
+-
+-    // On the OCI Distribution surface the refusal must be the distribution
+-    // spec's error envelope carrying a challenge that names the token endpoint
+-    // as the realm, or a container client cannot render it and has nowhere to
+-    // authenticate (#3854). Resolve the realm's base URL through the same
+-    // function the OCI handlers use (`AK_EXTERNAL_URL`, then `X-Forwarded-*`,
+-    // then the URI authority, then `Host`) rather than a second copy that would
+-    // drift: a drifted realm points clients at the wrong host and fails in a
+-    // way nobody notices until a reverse proxy changes. Computed before the
+-    // request is moved into `next.run`.
+-    let oci_base_url = is_oci_v2_path(path)
+-        .then(|| request_base_url_from_request(request.headers(), Some(request.uri())));
+-
+-    // Resolve auth via `extract_visibility_token` (NOT the header-only
+-    // `extract_token`) so the guard recognises the SAME credential channels the
+-    // repo-visibility middleware and format handlers accept — including the
+-    // conda URL-embedded token (`/conda/t/<TOKEN>/...`) and the NuGet push
+-    // `X-NuGet-ApiKey` header. Using the narrower `extract_token` here treated a
+-    // legitimately-authenticated conda/nuget client as a guest and 401'd it when
+-    // guest access was disabled, rendering issues #2631 / #2644 inert. We then
+-    // match the full outcome so a transient `AuthOutcome::Overloaded` shed
+-    // becomes a retryable 503 rather than a spurious 401 — see module docs.
+-    // Inner middlewares re-resolve and populate request extensions for handlers
+-    // on requests that pass the guard.
+-    let extracted = extract_visibility_token(&request);
+-    // Pass `allow_basic_api_token=true`: this global guard runs BEFORE the inner
+-    // middlewares and only decides pass/block for the anonymous-disabled policy,
+-    // mirroring the format extractor above. A package client pulling a format
+-    // endpoint with `-u any:<api_token>` must clear this gate exactly as it did
+-    // before the #2806 boundary fix. It does NOT grant /api/v1 access: the inner
+-    // `optional_auth_middleware` / `admin_middleware` re-resolve with
+-    // `allow_basic_api_token=false` and still refuse an API token as the Basic
+-    // password on the management API.
+-    let outcome = try_resolve_auth_outcome(&state.auth_service, extracted, true).await;
+-    // Browser-originated requests get the popup-free 401 variant so the web
+-    // UI can show its login / OIDC screen instead of the native Basic dialog
+-    // (#2936 / #3082). Classified from request headers only (Fetch Metadata /
+-    // `Accept: text/html`), so package clients are unaffected.
+-    let for_browser = is_browser_request(request.headers());
+-    match guard_short_circuit(&outcome, for_browser, oci_base_url.as_deref()) {
+-        Some(response) => response,
+-        None => next.run(request).await,
++    // Decided by `artifactkeeper_kernel::middleware::guest_access_guard`.
++    use crate::h5i;
++    let req = h5i::request(request.method(), request.uri().path(), request.uri().query(), request.headers());
++    let checks = if state.guest_access_enabled || is_allowlisted(request.uri().path()) {
++        // The kernel lets these through before looking at credentials.
++        h5i::empty_oracle()
++    } else {
++        let mut ids = h5i::Ids::default();
++        let extracted = h5i::k::http::extract_visibility_token(&req);
++        crate::api::middleware::auth::present_oracle(&state.auth_service, &extracted, &mut ids).await
++    };
++    use h5i::k::middleware::{Outcome, Response as R};
++    match h5i::k::middleware::guest_access_guard(state.guest_access_enabled, &checks, &req) {
++        Outcome::Next { .. } => next.run(request).await,
++        Outcome::Respond(R::OciUnauthorized) => oci_unauthorized_response(&request_base_url_from_request(
++            request.headers(),
++            Some(request.uri()),
++        )),
++        Outcome::Respond(R::GuestUnauthorized { for_browser }) => unauthorized_response(for_browser),
++        Outcome::Respond(_) => service_unavailable_response(),
+     }
+ }
+ 
+diff --git a/backend/src/api/middleware/oci_errors.rs b/backend/src/api/middleware/oci_errors.rs
+index 551a916..d6ff5ba 100644
+--- a/backend/src/api/middleware/oci_errors.rs
++++ b/backend/src/api/middleware/oci_errors.rs
+@@ -39,7 +39,7 @@ pub(crate) const OCI_TOKEN_SERVICE: &str = "artifact-keeper";
+ /// True when `path` is on the OCI distribution surface (`/v2` or `/v2/...`),
+ /// where any JSON 4XX body must be the spec's error envelope.
+ pub(crate) fn is_oci_v2_path(path: &str) -> bool {
+-    path == "/v2" || path == "/v2/" || path.starts_with("/v2/")
++    crate::h5i::k::paths::is_oci_v2_path(path.as_bytes())
+ }
+ 
+ /// Escape a string so it is safe to embed in an HTTP `quoted-string` body
+diff --git a/backend/src/api/middleware/rate_limit.rs b/backend/src/api/middleware/rate_limit.rs
+index f518a34..ed1ea90 100644
+--- a/backend/src/api/middleware/rate_limit.rs
++++ b/backend/src/api/middleware/rate_limit.rs
+@@ -33,65 +33,65 @@ pub struct CidrRange {
+     prefix_len: u8,
+ }
+ 
++/// `CidrRange::parse`'s refusal message.
++fn cidr_error(s: &str) -> String {
++    let Some((addr_str, prefix_str)) = s.split_once('/') else {
++        return format!("missing '/' in CIDR: {}", s);
++    };
++    let network: IpAddr = match addr_str.parse() {
++        Ok(n) => n,
++        Err(e) => return format!("invalid IP '{}': {}", addr_str, e),
++    };
++    let prefix_len: u8 = match prefix_str.parse() {
++        Ok(p) => p,
++        Err(e) => return format!("invalid prefix length '{}': {}", prefix_str, e),
++    };
++    let max_prefix = if network.is_ipv4() { 32 } else { 128 };
++    format!(
++        "prefix length {} exceeds maximum {} for {}",
++        prefix_len, max_prefix, addr_str
++    )
++}
++
++/// Every `X-Forwarded-For` token, normalized, as the kernel's address table.
++fn xff_oracle(headers: &axum::http::HeaderMap) -> crate::h5i::k::trusted::Oracle {
++    let mut oracle = crate::h5i::empty_oracle();
++    for line in headers.get_all("x-forwarded-for") {
++        for token in line.as_bytes().split(|b| *b == b',') {
++            let t = crate::h5i::k::net::normalize_xff_token(token);
++            crate::h5i::add_ip(&mut oracle, &t);
++        }
++    }
++    oracle
++}
++
+ impl CidrRange {
+     /// Parse a CIDR string of the form `"10.0.0.0/8"` or `"fc00::/7"`.
+     pub fn parse(s: &str) -> Result<Self, String> {
+-        let (addr_str, prefix_str) = s
+-            .split_once('/')
+-            .ok_or_else(|| format!("missing '/' in CIDR: {}", s))?;
+-        let network: IpAddr = addr_str
+-            .parse()
+-            .map_err(|e| format!("invalid IP '{}': {}", addr_str, e))?;
+-        let prefix_len: u8 = prefix_str
+-            .parse()
+-            .map_err(|e| format!("invalid prefix length '{}': {}", prefix_str, e))?;
+-        let max_prefix = match network {
+-            IpAddr::V4(_) => 32,
+-            IpAddr::V6(_) => 128,
+-        };
+-        if prefix_len > max_prefix {
+-            return Err(format!(
+-                "prefix length {} exceeds maximum {} for {}",
+-                prefix_len, max_prefix, addr_str
+-            ));
++        let mut oracle = crate::h5i::empty_oracle();
++        if let Some((addr, _)) = s.split_once('/') {
++            crate::h5i::add_ip(&mut oracle, addr.as_bytes());
++        }
++        match crate::h5i::k::net::CidrRange::parse(&oracle, s.as_bytes()) {
++            Ok(r) => Ok(Self {
++                network: crate::h5i::std_ip(r.network),
++                prefix_len: r.prefix_len,
++            }),
++            // The kernel says no; the message says why, as upstream words it.
++            Err(()) => Err(cidr_error(s)),
++        }
++    }
++
++    pub(crate) fn to_kernel(&self) -> crate::h5i::k::net::CidrRange {
++        crate::h5i::k::net::CidrRange {
++            network: crate::h5i::ip(self.network),
++            prefix_len: self.prefix_len,
+         }
+-        Ok(Self {
+-            network,
+-            prefix_len,
+-        })
+     }
+ 
+     /// Whether `ip` falls within this CIDR range.
+     pub fn contains(&self, ip: IpAddr) -> bool {
+-        match (self.network, ip) {
+-            (IpAddr::V4(net), IpAddr::V4(ip)) => {
+-                let net_bits = u32::from(net);
+-                let ip_bits = u32::from(ip);
+-                let mask = if self.prefix_len == 0 {
+-                    0
+-                } else {
+-                    u32::MAX
+-                        .checked_shl(32 - self.prefix_len as u32)
+-                        .unwrap_or(0)
+-                };
+-                (net_bits & mask) == (ip_bits & mask)
+-            }
+-            (IpAddr::V6(net), IpAddr::V6(ip)) => {
+-                let net_bits = u128::from(net);
+-                let ip_bits = u128::from(ip);
+-                let mask = if self.prefix_len == 0 {
+-                    0
+-                } else {
+-                    u128::MAX
+-                        .checked_shl(128 - self.prefix_len as u32)
+-                        .unwrap_or(0)
+-                };
+-                (net_bits & mask) == (ip_bits & mask)
+-            }
+-            // Mixed family: a v4 CIDR never contains a v6 address (and
+-            // vice versa). Operators wanting to cover both must list both.
+-            _ => false,
+-        }
++        self.to_kernel().contains(crate::h5i::ip(ip))
+     }
+ }
+ 
+@@ -893,15 +893,11 @@ fn too_many_requests(retry_after: u64, max_requests: u32) -> Response {
+ /// [`resolve_client_ip_addr`]; trusted-proxy resolution never takes the
+ /// leftmost token — see [`rightmost_untrusted_xff_token`]
+ /// (GHSA-8jm4-4x6c-6787).
++#[allow(dead_code)]
+ fn first_xff_token_in(headers: &axum::http::HeaderMap) -> Option<&str> {
+-    headers
+-        .get("x-forwarded-for")?
+-        .to_str()
+-        .ok()?
+-        .split(',')
+-        .next()
+-        .map(str::trim)
+-        .filter(|s| !s.is_empty())
++    let t = crate::h5i::k::net::first_xff_token_in(&crate::h5i::headers(headers))?;
++    let line = headers.get("x-forwarded-for")?.to_str().ok()?;
++    Some(crate::h5i::within(line, &t))
+ }
+ 
+ /// Rightmost `X-Forwarded-For` token that is NOT itself a trusted proxy —
+@@ -944,56 +940,23 @@ fn first_xff_token_in(headers: &axum::http::HeaderMap) -> Option<&str> {
+ /// A bare IPv6 address contains multiple colons and must NOT be truncated at
+ /// one, so a `:port` is only stripped when the remainder still looks like an
+ /// address (bracketed form, or a single colon as in `1.2.3.4:5678`).
++#[allow(dead_code)]
+ fn normalize_xff_token(token: &str) -> &str {
+-    let t = token.trim();
+-    if let Some(rest) = t.strip_prefix('[') {
+-        // `[2001:db8::1]` or `[2001:db8::1]:443`
+-        if let Some(end) = rest.find(']') {
+-            return &rest[..end];
+-        }
+-        return t;
+-    }
+-    if t.matches(':').count() == 1 {
+-        // `1.2.3.4:5678` — an IPv4 address with a port. A bare IPv6 always
+-        // has two or more colons, so this cannot truncate one.
+-        if let Some((host, _port)) = t.rsplit_once(':') {
+-            return host;
+-        }
+-    }
+-    t
++    crate::h5i::within(token, &crate::h5i::k::net::normalize_xff_token(token.as_bytes()))
+ }
+ 
++#[allow(dead_code)]
+ fn rightmost_untrusted_xff_token(
+     headers: &axum::http::HeaderMap,
+     trusted_proxies: &[CidrRange],
+ ) -> Option<IpAddr> {
+-    // Last field line first, then tokens right-to-left within each line.
+-    let lines: Vec<&str> = headers
+-        .get_all("x-forwarded-for")
+-        .iter()
+-        .filter_map(|v| v.to_str().ok())
+-        .collect();
+-    if lines.is_empty() {
+-        return None;
+-    }
+-    for token in lines.iter().rev().flat_map(|line| line.split(',').rev()) {
+-        let token = normalize_xff_token(token);
+-        if token.is_empty() {
+-            continue;
+-        }
+-        match token.parse::<IpAddr>() {
+-            // Trusted proxy hop: keep walking left toward the client.
+-            Ok(ip) if trusted_proxies.iter().any(|cidr| cidr.contains(ip)) => continue,
+-            // First non-trusted IP from the right: the client as observed by
+-            // the outermost trusted proxy.
+-            Ok(ip) => return Some(ip),
+-            // Unparseable token: the chain is not a well-formed trusted
+-            // append; bail to the TCP peer instead of trusting text further
+-            // left.
+-            Err(_) => return None,
+-        }
+-    }
+-    None
++    let ranges: Vec<_> = trusted_proxies.iter().map(CidrRange::to_kernel).collect();
++    crate::h5i::k::net::rightmost_untrusted_xff_token(
++        &xff_oracle(headers),
++        &crate::h5i::headers(headers),
++        &ranges,
++    )
++    .map(crate::h5i::std_ip)
+ }
+ 
+ /// Extract the client IP address from the request, as the rate-limit key.
+@@ -1058,32 +1021,18 @@ pub(crate) fn resolve_client_ip_addr(
+     peer: Option<IpAddr>,
+     trusted_proxies: &[CidrRange],
+ ) -> Option<IpAddr> {
+-    if let Some(peer) = peer {
+-        // Believe XFF only when the immediate peer is a trusted proxy.
+-        if trusted_proxies.iter().any(|cidr| cidr.contains(peer)) {
+-            // GHSA-8jm4-4x6c-6787: select the rightmost non-trusted token,
+-            // NOT the leftmost. An appending trusted proxy preserves any
+-            // client-supplied XFF prefix, so the leftmost token is attacker-
+-            // controlled; the proxy's own append sits on the right. On any
+-            // parse/trust failure the walk yields None and the real TCP peer
+-            // remains the key.
+-            if let Some(ip) = rightmost_untrusted_xff_token(headers, trusted_proxies) {
+-                return Some(ip);
+-            }
+-        }
+-        // Untrusted peer (or trusted peer with no/unparseable/all-trusted
+-        // XFF): the real TCP peer is the key.
+-        return Some(peer);
+-    }
+-
+-    // No ConnectInfo (test harness / pre-ConnectInfo topology): fall back to a
+-    // parseable XFF first token so keying still distinguishes callers.
+-    if let Some(first) = first_xff_token_in(headers) {
+-        if let Ok(ip) = first.parse::<IpAddr>() {
+-            return Some(ip);
+-        }
+-    }
+-    None
++    let ranges: Vec<_> = trusted_proxies.iter().map(CidrRange::to_kernel).collect();
++    let mut oracle = xff_oracle(headers);
++    if let Some(first) = crate::h5i::k::net::first_xff_token_in(&crate::h5i::headers(headers)) {
++        crate::h5i::add_ip(&mut oracle, &first);
++    }
++    crate::h5i::k::net::resolve_client_ip_addr(
++        &oracle,
++        &crate::h5i::headers(headers),
++        peer.map(crate::h5i::ip),
++        &ranges,
++    )
++    .map(crate::h5i::std_ip)
+ }
+ 
+ #[allow(clippy::disallowed_methods)]
+diff --git a/backend/src/h5i.rs b/backend/src/h5i.rs
+new file mode 100644
+index 0000000..78ff272
+--- /dev/null
++++ b/backend/src/h5i.rs
+@@ -0,0 +1,210 @@
++//! The shell around artifact-keeper's verified kernel
++//! (`artifactkeeper-kernel`, proven in Lean in h5i-app-bench). Requests,
++//! headers and principals are converted to the kernel's types; repository and
++//! user ids become `u64`s for one decision. JWT verification, API-token and
++//! password lookups, base64 and IP parsing are the kernel's oracle inputs and
++//! stay here.
++
++use std::collections::HashMap;
++
++use axum::http::{HeaderMap, Method};
++use uuid::Uuid;
++
++pub(crate) use artifactkeeper_kernel as k;
++
++use crate::api::middleware::auth::AuthExtension;
++use crate::models::access_scope::AccessScope;
++use crate::models::repository::RepositoryVisibility;
++
++/// Uuids as the kernel's `u64` ids, for one decision. 0 is never issued.
++#[derive(Default)]
++pub(crate) struct Ids {
++    to: HashMap<Uuid, u64>,
++    from: Vec<Uuid>,
++}
++
++impl Ids {
++    pub(crate) fn id(&mut self, u: Uuid) -> u64 {
++        if let Some(&i) = self.to.get(&u) {
++            return i;
++        }
++        self.from.push(u);
++        let i = self.from.len() as u64;
++        self.to.insert(u, i);
++        i
++    }
++
++    pub(crate) fn uuid(&self, i: u64) -> Uuid {
++        self.from[(i - 1) as usize]
++    }
++}
++
++pub(crate) fn method(m: &Method) -> k::Method {
++    match *m {
++        Method::GET => k::Method::Get,
++        Method::HEAD => k::Method::Head,
++        Method::POST => k::Method::Post,
++        Method::PUT => k::Method::Put,
++        Method::DELETE => k::Method::Delete,
++        Method::PATCH => k::Method::Patch,
++        Method::OPTIONS => k::Method::Options,
++        _ => k::Method::Other,
++    }
++}
++
++/// `(lowercase name, raw value)` pairs, in the map's order.
++pub(crate) fn headers(h: &HeaderMap) -> Vec<(Vec<u8>, Vec<u8>)> {
++    h.iter()
++        .map(|(n, v)| (n.as_str().as_bytes().to_vec(), v.as_bytes().to_vec()))
++        .collect()
++}
++
++pub(crate) fn request(method_: &Method, path: &str, query: Option<&str>, h: &HeaderMap) -> k::http::Request {
++    k::http::Request {
++        method: method(method_),
++        path: path.as_bytes().to_vec(),
++        query: query.map(|q| q.as_bytes().to_vec()),
++        headers: headers(h),
++    }
++}
++
++pub(crate) fn visibility(v: RepositoryVisibility) -> k::Visibility {
++    match v {
++        RepositoryVisibility::Public => k::Visibility::Public,
++        RepositoryVisibility::Internal => k::Visibility::Internal,
++        RepositoryVisibility::Private => k::Visibility::Private,
++    }
++}
++
++/// Kernel output that is a copy of text from a `&str` input is UTF-8.
++pub(crate) fn string(b: Vec<u8>) -> String {
++    String::from_utf8(b).unwrap_or_else(|e| String::from_utf8_lossy(e.as_bytes()).into_owned())
++}
++
++pub(crate) fn strings(v: &[String]) -> Vec<Vec<u8>> {
++    v.iter().map(|s| s.as_bytes().to_vec()).collect()
++}
++
++/// The part of `hay` the kernel returned: its first occurrence, which has
++/// the same text.
++pub(crate) fn within<'a>(hay: &'a str, part: &[u8]) -> &'a str {
++    let n = part.len();
++    if n == 0 {
++        return &hay[hay.len()..];
++    }
++    let bytes = hay.as_bytes();
++    let mut i = 0;
++    while i + n <= bytes.len() {
++        if &bytes[i..i + n] == part && hay.is_char_boundary(i) && hay.is_char_boundary(i + n) {
++            return &hay[i..i + n];
++        }
++        i += 1;
++    }
++    // Unreachable for the kernel functions that return a slice of their input.
++    &hay[hay.len()..]
++}
++
++pub(crate) fn access_scope(a: &AccessScope, ids: &mut Ids) -> k::AccessScope {
++    match a {
++        AccessScope::Admin => k::AccessScope::Admin,
++        AccessScope::Restricted(v) => k::AccessScope::Restricted(v.iter().map(|u| ids.id(*u)).collect()),
++    }
++}
++
++pub(crate) fn from_access_scope(a: k::AccessScope, ids: &Ids) -> AccessScope {
++    match a {
++        k::AccessScope::Admin => AccessScope::Admin,
++        k::AccessScope::Restricted(v) => AccessScope::Restricted(v.into_iter().map(|i| ids.uuid(i)).collect()),
++    }
++}
++
++pub(crate) fn auth_ext(e: &AuthExtension, ids: &mut Ids) -> k::AuthExtension {
++    k::AuthExtension {
++        user_id: ids.id(e.user_id),
++        username: e.username.as_bytes().to_vec(),
++        email: e.email.as_bytes().to_vec(),
++        is_admin: e.is_admin,
++        is_api_token: e.is_api_token,
++        is_service_account: e.is_service_account,
++        scopes: e.scopes.as_deref().map(strings),
++        allowed_repo_ids: access_scope(&e.allowed_repo_ids, ids),
++        iat_ms: e.iat_ms,
++    }
++}
++
++pub(crate) fn from_auth_ext(e: k::AuthExtension, ids: &Ids) -> AuthExtension {
++    AuthExtension {
++        user_id: ids.uuid(e.user_id),
++        username: string(e.username),
++        email: string(e.email),
++        is_admin: e.is_admin,
++        is_api_token: e.is_api_token,
++        is_service_account: e.is_service_account,
++        scopes: e.scopes.map(|v| v.into_iter().map(string).collect()),
++        allowed_repo_ids: from_access_scope(e.allowed_repo_ids, ids),
++        iat_ms: e.iat_ms,
++    }
++}
++
++pub(crate) fn empty_oracle() -> k::trusted::Oracle {
++    k::trusted::Oracle {
++        jwt: Vec::new(),
++        api_tokens: Vec::new(),
++        passwords: Vec::new(),
++        base64: Vec::new(),
++        ip: Vec::new(),
++    }
++}
++
++/// `STANDARD.decode(input)`, as the kernel's base64 table.
++pub(crate) fn add_base64(o: &mut k::trusted::Oracle, input: &str) {
++    use base64::Engine;
++    let decoded = base64::engine::general_purpose::STANDARD.decode(input).ok();
++    o.base64.push((input.as_bytes().to_vec(), decoded));
++}
++
++pub(crate) fn ip(a: std::net::IpAddr) -> k::net::IpAddr {
++    match a {
++        std::net::IpAddr::V4(v) => k::net::IpAddr::V4(u32::from(v)),
++        std::net::IpAddr::V6(v) => k::net::IpAddr::V6(u128::from(v)),
++    }
++}
++
++pub(crate) fn std_ip(a: k::net::IpAddr) -> std::net::IpAddr {
++    match a {
++        k::net::IpAddr::V4(v) => std::net::IpAddr::V4(v.into()),
++        k::net::IpAddr::V6(v) => std::net::IpAddr::V6(v.into()),
++    }
++}
++
++/// `str::parse::<IpAddr>` for `s`, as the kernel's table.
++pub(crate) fn add_ip(o: &mut k::trusted::Oracle, s: &[u8]) {
++    if let Some(a) = std::str::from_utf8(s).ok().and_then(|t| t.parse::<std::net::IpAddr>().ok()) {
++        o.ip.push((s.to_vec(), ip(a)));
++    }
++}
++
++pub(crate) fn claims(c: &crate::services::auth_service::Claims, ids: &mut Ids) -> k::Claims {
++    k::Claims {
++        sub: ids.id(c.sub),
++        username: c.username.as_bytes().to_vec(),
++        email: c.email.as_bytes().to_vec(),
++        is_admin: c.is_admin,
++        allowed_repo_ids: c.allowed_repo_ids.as_ref().map(|v| v.iter().map(|u| ids.id(*u)).collect()),
++        iat: c.iat,
++        iat_ms: c.iat_ms,
++        scopes: c.scopes.as_deref().map(strings),
++    }
++}
++
++pub(crate) fn user(u: &crate::models::user::User, ids: &mut Ids) -> k::User {
++    k::User {
++        id: ids.id(u.id),
++        username: u.username.as_bytes().to_vec(),
++        email: u.email.as_bytes().to_vec(),
++        is_active: u.is_active,
++        is_admin: u.is_admin,
++        is_service_account: u.is_service_account,
++        must_change_password: u.must_change_password,
++    }
++}
+diff --git a/backend/src/lib.rs b/backend/src/lib.rs
+index b0766d6..064559f 100644
+--- a/backend/src/lib.rs
++++ b/backend/src/lib.rs
+@@ -34,6 +34,7 @@ pub mod cli;
+ pub mod config;
+ pub mod db;
+ pub mod error;
++pub(crate) mod h5i;
+ pub mod formats;
+ pub mod grpc;
+ pub mod migration_repair;
+diff --git a/backend/src/models/access_scope.rs b/backend/src/models/access_scope.rs
+index 8d20c7a..59af531 100644
+--- a/backend/src/models/access_scope.rs
++++ b/backend/src/models/access_scope.rs
+@@ -49,10 +49,9 @@ impl AccessScope {
+     /// [`Restricted`](AccessScope::Restricted) grants only repositories present
+     /// in its allowlist — so `Restricted(vec![])` grants nothing.
+     pub fn grants(&self, repo_id: Uuid) -> bool {
+-        match self {
+-            AccessScope::Admin => true,
+-            AccessScope::Restricted(ids) => ids.contains(&repo_id),
+-        }
++        let mut ids = crate::h5i::Ids::default();
++        let scope = crate::h5i::access_scope(self, &mut ids);
++        scope.grants(ids.id(repo_id))
+     }
+ 
+     /// Borrow this scope as the legacy `Option<&[Uuid]>` view without
+diff --git a/backend/src/models/repository.rs b/backend/src/models/repository.rs
+index 7dcd9fe..01676a3 100644
+--- a/backend/src/models/repository.rs
++++ b/backend/src/models/repository.rs
+@@ -395,7 +395,7 @@ impl RepositoryVisibility {
+     /// and the predicate the OCI anonymous gates and the anonymous listing and
+     /// search filters ask.
+     pub fn allows_anonymous_read(&self) -> bool {
+-        matches!(self, Self::Public)
++        crate::h5i::visibility(*self).allows_anonymous_read()
+     }
+ 
+     /// Whether a caller whose credentials resolved to some principal may read
+@@ -405,7 +405,7 @@ impl RepositoryVisibility {
+     /// never end up with less read access than an anonymous one would have on
+     /// the same repository.
+     pub fn allows_authenticated_read(&self) -> bool {
+-        matches!(self, Self::Public | Self::Internal)
++        crate::h5i::visibility(*self).allows_authenticated_read()
+     }
+ }
+ 
+diff --git a/backend/src/services/auth_service.rs b/backend/src/services/auth_service.rs
+index 4135d1d..4ba5edb 100644
+--- a/backend/src/services/auth_service.rs
++++ b/backend/src/services/auth_service.rs
+@@ -220,7 +220,8 @@ impl Claims {
+     /// minted at the *start* of its second, so a same-second credential change
+     /// (full-ms watermark) still rejects it.
+     pub fn effective_iat_ms(&self) -> i64 {
+-        self.iat_ms.unwrap_or_else(|| self.iat.saturating_mul(1000))
++        let mut ids = crate::h5i::Ids::default();
++        crate::h5i::claims(self, &mut ids).effective_iat_ms()
+     }
+ }
+ 
+diff --git a/backend/src/services/permission_service.rs b/backend/src/services/permission_service.rs
+index 40cceaf..6f666ce 100644
+--- a/backend/src/services/permission_service.rs
++++ b/backend/src/services/permission_service.rs
+@@ -75,18 +75,31 @@ impl PermissionConditions {
+     /// present-but-empty `allowed_cidrs` is rejected (it would make the rule
+     /// match nothing, which is almost certainly an authoring mistake).
+     pub fn validate(&self) -> Result<()> {
+-        if let Some(cidrs) = &self.allowed_cidrs {
+-            if cidrs.is_empty() {
+-                return Err(AppError::Validation(
+-                    "conditions.allowed_cidrs must name at least one CIDR range".to_string(),
+-                ));
++        // Decided by `artifactkeeper_kernel::permission::validate_conditions`.
++        let mut oracle = crate::h5i::empty_oracle();
++        let cidrs = self.allowed_cidrs.as_deref().map(crate::h5i::strings);
++        for c in self.allowed_cidrs.iter().flatten() {
++            if let Some((addr, _)) = c.split_once('/') {
++                crate::h5i::add_ip(&mut oracle, addr.as_bytes());
+             }
+-            for cidr in cidrs {
+-                crate::api::middleware::rate_limit::CidrRange::parse(cidr)
+-                    .map_err(|e| AppError::Validation(format!("conditions.allowed_cidrs: {e}")))?;
++        }
++        if crate::h5i::k::permission::validate_conditions(&oracle, &cidrs).is_ok() {
++            return Ok(());
++        }
++        // The message names the reason, as upstream words it.
++        match &self.allowed_cidrs {
++            Some(c) if c.is_empty() => Err(AppError::Validation(
++                "conditions.allowed_cidrs must name at least one CIDR range".to_string(),
++            )),
++            Some(c) => {
++                for cidr in c {
++                    crate::api::middleware::rate_limit::CidrRange::parse(cidr)
++                        .map_err(|e| AppError::Validation(format!("conditions.allowed_cidrs: {e}")))?;
++                }
++                Err(AppError::Validation("conditions.allowed_cidrs".to_string()))
+             }
++            None => Ok(()),
+         }
+-        Ok(())
+     }
+ 
+     /// Serialize for persistence in the `conditions` JSONB column.
+diff --git a/backend/src/services/token_service.rs b/backend/src/services/token_service.rs
+index dd4d604..fc64e4b 100644
+--- a/backend/src/services/token_service.rs
++++ b/backend/src/services/token_service.rs
+@@ -111,15 +111,13 @@ pub(crate) const ALLOWED_SCOPES: &[&str] = &[
+ /// Validate token scopes against the allowed scope list.
+ /// Returns Ok(()) if all scopes are valid, Err(message) otherwise.
+ pub(crate) fn validate_scopes_pure(scopes: &[String]) -> std::result::Result<(), String> {
+-    for scope in scopes {
+-        if !ALLOWED_SCOPES.contains(&scope.as_str()) {
+-            return Err(format!(
+-                "Invalid scope: '{}'. Allowed scopes: {:?}",
+-                scope, ALLOWED_SCOPES
+-            ));
+-        }
+-    }
+-    Ok(())
++    crate::h5i::k::token_scope::validate_scopes_pure(&crate::h5i::strings(scopes)).map_err(|scope| {
++        format!(
++            "Invalid scope: '{}'. Allowed scopes: {:?}",
++            crate::h5i::string(scope),
++            ALLOWED_SCOPES
++        )
++    })
+ }
+ 
+ /// Scopes that grant elevated, admin-class capabilities and may not be
+@@ -175,19 +173,18 @@ pub(crate) fn enforce_admin_only_scopes(
+     scopes: &[String],
+     caller_is_admin: bool,
+ ) -> std::result::Result<(), String> {
+-    if caller_is_admin {
+-        return Ok(());
+-    }
+-    for scope in scopes {
+-        if ADMIN_ONLY_SCOPES.contains(&scope.as_str()) {
+-            return Err(format!(
+-                "Scope '{}' is admin-only and cannot be granted by a non-admin caller. \
+-                 Admin-only scopes: {:?}",
+-                scope, ADMIN_ONLY_SCOPES,
+-            ));
+-        }
+-    }
+-    Ok(())
++    crate::h5i::k::token_scope::enforce_admin_only_scopes(
++        &crate::h5i::strings(scopes),
++        caller_is_admin,
++    )
++    .map_err(|scope| {
++        format!(
++            "Scope '{}' is admin-only and cannot be granted by a non-admin caller. \
++             Admin-only scopes: {:?}",
++            crate::h5i::string(scope),
++            ADMIN_ONLY_SCOPES,
++        )
++    })
+ }
+ 
+ /// Determine if a token is expired given an optional expiration timestamp.
+@@ -217,19 +214,10 @@ pub(crate) fn is_token_revoked(revoked_at: Option<DateTime<Utc>>) -> bool {
+ /// either of those directions would let a least-privilege resource token cross
+ /// into other resources.
+ pub(crate) fn scopes_grant_access(scopes: &[String], required_scope: &str) -> bool {
+-    // `*` / `admin` wildcard policy, in the #1316-canonical form (the
+-    // `check-no-legacy-admin-scope.sh` gate forbids `.any(...)` closures that
+-    // compare against "admin" and `== "*"` / `== "admin"` on one line).
+-    let has_admin_wildcard =
+-        scopes.iter().any(|s| s == "*") || scopes.contains(&"admin".to_string());
+-    if scopes.iter().any(|s| s == required_scope) || has_admin_wildcard {
+-        return true;
+-    }
+-    // Bare-parent satisfaction: held `write` covers required `write:artifacts`.
+-    match required_scope.split_once(':') {
+-        Some((parent, _resource)) => !parent.is_empty() && scopes.iter().any(|s| s == parent),
+-        None => false,
+-    }
++    crate::h5i::k::token_scope::scopes_grant_access(
++        &crate::h5i::strings(scopes),
++        required_scope.as_bytes(),
++    )
+ }
+ 
+ /// API Token Service for managing programmatic access tokens.

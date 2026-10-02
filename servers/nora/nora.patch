@@ -1,0 +1,2402 @@
+diff --git a/Cargo.lock b/Cargo.lock
+index ca1921c..afbf0e1 100644
+--- a/Cargo.lock
++++ b/Cargo.lock
+@@ -1561,6 +1561,21 @@ dependencies = [
+  "tracing",
+ ]
+ 
++[[package]]
++name = "h5i-app"
++version = "0.1.0"
++source = "registry+https://github.com/rust-lang/crates.io-index"
++checksum = "c9061c143bacf0efd14a56f54e6806e0567475207bfdf256461d9daa27671f6d"
++dependencies = [
++ "h5i-app-core",
++]
++
++[[package]]
++name = "h5i-app-core"
++version = "0.1.0"
++source = "registry+https://github.com/rust-lang/crates.io-index"
++checksum = "6dbff4d7a839943682ae38f15b7e8ee80f857643a4983339baf6f50efb9ab5e1"
++
+ [[package]]
+ name = "half"
+ version = "2.7.1"
+@@ -2267,6 +2282,10 @@ dependencies = [
+  "nora-registry",
+ ]
+ 
++[[package]]
++name = "nora-kernel"
++version = "0.1.0"
++
+ [[package]]
+ name = "nora-registry"
+ version = "1.3.2"
+@@ -2284,6 +2303,7 @@ dependencies = [
+  "flate2",
+  "futures",
+  "governor",
++ "h5i-app",
+  "hex",
+  "http-body-util",
+  "indicatif",
+@@ -2292,6 +2312,7 @@ dependencies = [
+  "lzma-rs",
+  "md-5 0.11.0",
+  "memchr",
++ "nora-kernel",
+  "object_store",
+  "parking_lot",
+  "percent-encoding",
+diff --git a/Cargo.toml b/Cargo.toml
+index 0704840..d265cbc 100644
+--- a/Cargo.toml
++++ b/Cargo.toml
+@@ -1,5 +1,6 @@
+ [workspace]
+ resolver = "2"
++exclude = ["h5i"]
+ members = [
+     "nora-registry",
+     "fuzz",
+diff --git a/nora-registry/Cargo.toml b/nora-registry/Cargo.toml
+index 707935b..f0ab998 100644
+--- a/nora-registry/Cargo.toml
++++ b/nora-registry/Cargo.toml
+@@ -19,6 +19,9 @@ name = "nora"
+ path = "src/main.rs"
+ 
+ [dependencies]
++# The verified kernel (i5h-bench ports/nora/kernel) and the h5i-app contract.
++nora-kernel = { path = "../h5i/nora-kernel" }
++h5i-app = "0.1"
+ tokio.workspace = true
+ axum.workspace = true
+ serde.workspace = true
+diff --git a/nora-registry/src/auth/htpasswd.rs b/nora-registry/src/auth/htpasswd.rs
+index 3df306c..085b8c9 100644
+--- a/nora-registry/src/auth/htpasswd.rs
++++ b/nora-registry/src/auth/htpasswd.rs
+@@ -42,6 +42,11 @@ impl HtpasswdAuth {
+         }
+     }
+ 
++    /// The bcrypt hash stored for `username`.
++    pub fn hash(&self, username: &str) -> Option<&str> {
++        self.users.get(username).map(|h| h.as_str())
++    }
++
+     /// Get list of usernames
+     pub fn list_users(&self) -> Vec<&str> {
+         self.users.keys().map(|s| s.as_str()).collect()
+diff --git a/nora-registry/src/auth/mod.rs b/nora-registry/src/auth/mod.rs
+index 4186102..838f65e 100644
+--- a/nora-registry/src/auth/mod.rs
++++ b/nora-registry/src/auth/mod.rs
+@@ -38,8 +38,8 @@ use axum::{
+ use base64::{engine::general_purpose::STANDARD, Engine};
+ use std::collections::HashMap;
+ use std::net::{IpAddr, SocketAddr};
+-use std::time::Instant;
+ 
++use crate::h5i::{self, k};
+ use crate::AppState;
+ 
+ /// Resolve the audit actor for a request-driven event (#985): the authenticated
+@@ -57,47 +57,65 @@ pub fn audit_actor(user: &Option<axum::Extension<AuthenticatedUser>>) -> &str {
+ ///
+ /// After `max_failures` consecutive failures, the IP is locked out with
+ /// exponential backoff: 2^(failures - max_failures) seconds, capped at 15 minutes.
++/// The decisions are `nora_kernel::lockout`.
+ pub struct AuthFailureTracker {
+-    /// IP -> (consecutive failures, last failure time)
+-    entries: parking_lot::Mutex<HashMap<IpAddr, (u32, Instant)>>,
+-    /// Number of failures before lockout kicks in (default: 5)
+-    max_failures: u32,
+-    /// Maximum lockout duration in seconds (default: 900 = 15 minutes)
+-    max_lockout_secs: u64,
++    /// IP -> (consecutive failures, last failure time in `h5i::mono_now()`)
++    entries: parking_lot::Mutex<HashMap<IpAddr, (u32, u64)>>,
++    kernel: k::lockout::AuthFailureTracker,
+ }
+ 
+ impl AuthFailureTracker {
+     pub fn new(max_failures: u32, max_lockout_secs: u64) -> Self {
+         Self {
+             entries: parking_lot::Mutex::new(HashMap::new()),
+-            max_failures,
+-            max_lockout_secs,
++            kernel: k::lockout::AuthFailureTracker {
++                max_failures,
++                max_lockout_secs,
++            },
+         }
+     }
+ 
++    /// The kernel's entries for `ip`.
++    fn entries_for(&self, ip: &IpAddr) -> Vec<k::lockout::FailureEntry> {
++        self.entries
++            .lock()
++            .get(ip)
++            .map(|(failures, last)| k::lockout::FailureEntry {
++                ip: h5i::ip(*ip),
++                failures: *failures,
++                last_failure: *last,
++            })
++            .into_iter()
++            .collect()
++    }
++
+     /// Check if IP is currently locked out. Returns remaining lockout seconds if blocked.
+     pub fn check_blocked(&self, ip: &IpAddr) -> Option<u64> {
+-        let entries = self.entries.lock();
+-        let (failures, last_failure) = entries.get(ip)?;
+-        if *failures < self.max_failures {
+-            return None;
+-        }
+-        let exponent = (*failures - self.max_failures).min(20);
+-        let lockout_secs = (1u64 << exponent).min(self.max_lockout_secs);
+-        let elapsed = last_failure.elapsed().as_secs();
+-        if elapsed < lockout_secs {
+-            Some(lockout_secs - elapsed)
+-        } else {
+-            None
+-        }
++        self.kernel
++            .check_blocked(&self.entries_for(ip), h5i::ip(*ip), h5i::mono_now())
+     }
+ 
+     /// Record a failed auth attempt for an IP.
+     pub fn record_failure(&self, ip: IpAddr) {
+         let mut entries = self.entries.lock();
+-        let entry = entries.entry(ip).or_insert_with(|| (0, Instant::now()));
+-        entry.0 += 1;
+-        entry.1 = Instant::now();
++        let current: Vec<_> = entries
++            .get(&ip)
++            .map(|(failures, last)| k::lockout::FailureEntry {
++                ip: h5i::ip(ip),
++                failures: *failures,
++                last_failure: *last,
++            })
++            .into_iter()
++            .collect();
++        let e = k::lockout::after_failure(&current, h5i::ip(ip), h5i::mono_now());
++        entries.insert(ip, (e.failures, e.last_failure));
++    }
++
++    /// Store an entry the kernel computed.
++    fn put(&self, e: k::lockout::FailureEntry) {
++        self.entries
++            .lock()
++            .insert(h5i::std_ip(e.ip), (e.failures, e.last_failure));
+     }
+ 
+     /// Clear failure count on successful auth.
+@@ -108,8 +126,12 @@ impl AuthFailureTracker {
+ 
+     /// Remove entries older than max_lockout_secs (call periodically).
+     pub fn cleanup(&self) {
++        let now = h5i::mono_now();
++        let max = self.kernel.max_lockout_secs;
+         let mut entries = self.entries.lock();
+-        entries.retain(|_, (_, last)| last.elapsed().as_secs() < self.max_lockout_secs * 2);
++        entries.retain(|_, (_, last)| {
++            now.saturating_sub(*last) / k::lockout::NANOS_PER_SEC < max * 2
++        });
+     }
+ }
+ 
+@@ -118,10 +140,7 @@ impl AuthFailureTracker {
+ /// whole deployment down behind an LB) and the token endpoints, which do
+ /// their own credential handling.
+ fn is_public_path(path: &str) -> bool {
+-    matches!(
+-        path,
+-        "/" | "/health" | "/ready" | "/api/tokens" | "/api/tokens/list" | "/api/tokens/revoke"
+-    )
++    k::middleware::is_public_path(path.as_bytes())
+ }
+ 
+ /// The browse web surface: UI pages, their JSON API, and the API docs. All
+@@ -129,10 +148,7 @@ fn is_public_path(path: &str) -> bool {
+ /// deployment it is gated unless `anonymous_read` or `public_web_ui` opens
+ /// it (token-management pages stay ALWAYS gated — they were before, too).
+ fn is_web_surface(path: &str) -> bool {
+-    if path.starts_with("/ui/tokens") || path.starts_with("/api/ui/tokens") {
+-        return false;
+-    }
+-    path.starts_with("/ui") || path.starts_with("/api/ui") || path.starts_with("/api-docs")
++    k::middleware::is_web_surface(path.as_bytes())
+ }
+ 
+ /// Check if a path belongs to the Docker/OCI registry (`/v2`, `/v2/…`).
+@@ -144,19 +160,7 @@ fn is_web_surface(path: &str) -> bool {
+ /// WWW-Authenticate header (so clients send credentials) UNLESS anonymous Docker
+ /// pull is explicitly enabled.
+ fn is_docker_path(path: &str) -> bool {
+-    path == "/v2" || path.starts_with("/v2/")
+-}
+-
+-/// Check if path is an admin-only control-plane endpoint.
+-///
+-/// Admin paths require a token whose role satisfies `can_admin()` regardless of
+-/// HTTP method, and are never served anonymously (not even under
+-/// `anonymous_read`). Basic-auth has no role concept, so it can never satisfy
+-/// an admin path — it is denied fail-closed. Scoped strictly to `/api/v1/admin/`
+-/// so it never widens the privilege bar of existing routes (e.g. `/raw/-/reindex`
+-/// stays at write-level).
+-fn is_admin_path(path: &str) -> bool {
+-    path.starts_with("/api/v1/admin/")
++    k::middleware::is_docker_path(path.as_bytes())
+ }
+ 
+ /// Extract client IP from request, honoring XFF/X-Real-IP only from trusted proxies.
+@@ -169,30 +173,29 @@ pub(crate) fn resolve_client_ip(
+     headers: &HeaderMap,
+     trusted_proxies: &crate::config::TrustedProxies,
+ ) -> IpAddr {
+-    if !trusted_proxies.contains(peer) {
+-        return peer;
+-    }
++    let (xff, x_real_ip) = forwarded(headers);
++    h5i::std_ip(k::net::resolve_client_ip(
++        h5i::ip(peer),
++        xff,
++        x_real_ip,
++        &trusted_proxies.to_kernel(),
++    ))
++}
+ 
+-    // Try X-Forwarded-For first (first IP in chain is the client)
+-    if let Some(xff) = headers.get("x-forwarded-for") {
+-        if let Ok(s) = xff.to_str() {
+-            if let Some(first) = s.split(',').next() {
+-                if let Ok(ip) = first.trim().parse::<IpAddr>() {
+-                    return ip;
+-                }
+-            }
+-        }
+-    }
+-    // Try X-Real-IP
+-    if let Some(xri) = headers.get("x-real-ip") {
+-        if let Ok(s) = xri.to_str() {
+-            if let Ok(ip) = s.trim().parse::<IpAddr>() {
+-                return ip;
+-            }
+-        }
+-    }
+-    // No forwarding headers — use peer IP
+-    peer
++/// The first `X-Forwarded-For` entry and `X-Real-IP`, each when it parses.
++fn forwarded(headers: &HeaderMap) -> (Option<k::net::IpAddr>, Option<k::net::IpAddr>) {
++    let xff = headers
++        .get("x-forwarded-for")
++        .and_then(|v| v.to_str().ok())
++        .and_then(|s| s.split(',').next())
++        .and_then(|first| first.trim().parse::<IpAddr>().ok())
++        .map(h5i::ip);
++    let x_real_ip = headers
++        .get("x-real-ip")
++        .and_then(|v| v.to_str().ok())
++        .and_then(|s| s.trim().parse::<IpAddr>().ok())
++        .map(h5i::ip);
++    (xff, x_real_ip)
+ }
+ 
+ fn extract_client_ip(
+@@ -206,190 +209,137 @@ fn extract_client_ip(
+     Some(resolve_client_ip(peer, request.headers(), trusted_proxies))
+ }
+ 
+-/// Insert the anonymous identity (read-only role, unrestricted namespace) and
+-/// run the downstream handler. Shared by the `anonymous_read` (non-Docker) and
+-/// `docker_anon_pull` (Docker `/v2`) bypass paths.
+-async fn anonymous_read_passthrough(mut request: Request<Body>, next: Next) -> Response {
+-    request
+-        .extensions_mut()
+-        .insert(NamespaceAuthority::Unrestricted);
+-    request
+-        .extensions_mut()
+-        .insert(AuthenticatedUser("anonymous".to_string()));
+-    request
+-        .extensions_mut()
+-        .insert(AuthenticatedRole(crate::tokens::Role::Read));
+-    next.run(request).await
+-}
+-
+-/// Auth middleware - supports Basic auth, Bearer tokens, and OIDC JWT
++/// Auth middleware - supports Basic auth, Bearer tokens, and OIDC JWT.
++///
++/// The decision is `nora_kernel::middleware::auth_middleware`, run through
++/// h5i-app's `Kernel` contract as [`h5i::NoraAuth`]. This function gathers
++/// what it reads, carries out what it writes, and turns its outcome into
++/// extensions or a response.
+ pub async fn auth_middleware(
+     State(state): State<AppState>,
+     mut request: Request<Body>,
+     next: Next,
+ ) -> Response {
+-    // Skip auth if disabled (neither htpasswd nor OIDC configured)
+-    if !state.config.auth.enabled {
+-        request
+-            .extensions_mut()
+-            .insert(NamespaceAuthority::Unrestricted);
+-        request
+-            .extensions_mut()
+-            .insert(AuthenticatedUser("anonymous".to_string()));
+-        return next.run(request).await;
+-    }
+-
+-    // Skip auth for public endpoints
++    let mono = h5i::mono_now();
++    let req = kernel_request(&request, mono);
++    let mut presented = h5i::Presented {
++        crypto: h5i::empty_crypto(),
++        jwt: None,
++    };
++    let mut snap = h5i::AuthState::default();
++    snap.cfg = kernel_config(&state);
++
++    // Hash checks for the credentials presented, and the token's entries.
++    let mut prepared = None;
++    if let Some(value) = request
++        .headers()
++        .get(header::AUTHORIZATION)
++        .and_then(|h| h.to_str().ok())
+     {
+-        let path = request.uri().path();
+-        // Unconditional publics (probes, token endpoints), plus the web
+-        // surface and /metrics when the config opens them. The web surface
+-        // enumerates every repository, so it follows `anonymous_read` (the
+-        // registry read APIs would expose the same names) or the explicit
+-        // `public_web_ui` escape; /metrics has its own default-open switch —
+-        // labels carry registry formats, not repository names.
+-        let config = &state.config.auth;
+-        let open = is_public_path(path)
+-            || (is_web_surface(path) && (config.anonymous_read || config.public_web_ui))
+-            || (path == "/metrics" && config.public_metrics);
+-        if open {
+-            // Opportunistic auth: if the caller provided credentials on an
+-            // open path, try to validate them so downstream handlers can
+-            // distinguish "anonymous browse" from "authenticated browse"
+-            // (e.g. to gate proxy_upstreams disclosure). If validation fails
+-            // we fall through to anonymous — the path is open regardless.
+-            if let Some(auth_val) = request
+-                .headers()
+-                .get(axum::http::header::AUTHORIZATION)
+-                .and_then(|h| h.to_str().ok())
+-            {
+-                if let Some(encoded) = auth_val.strip_prefix("Basic ") {
+-                    if let Some(username) = try_basic_auth(encoded, state.auth.as_deref()) {
+-                        request
+-                            .extensions_mut()
+-                            .insert(NamespaceAuthority::Unrestricted);
+-                        request.extensions_mut().insert(AuthenticatedUser(username));
+-                        request
+-                            .extensions_mut()
+-                            .insert(AuthenticatedRole(crate::tokens::Role::Write));
+-                        return next.run(request).await;
+-                    }
+-                } else if let Some(token) = auth_val.strip_prefix("Bearer ") {
+-                    if let Some(ref token_store) = state.tokens {
+-                        if let Ok((user, role)) = token_store.verify_token(token) {
+-                            request
+-                                .extensions_mut()
+-                                .insert(NamespaceAuthority::Unrestricted);
+-                            request.extensions_mut().insert(AuthenticatedUser(user));
+-                            request.extensions_mut().insert(AuthenticatedRole(role));
+-                            return next.run(request).await;
+-                        }
++        let token = if let Some(encoded) = value.strip_prefix("Basic ") {
++            basic_oracles(encoded, state.auth.as_deref(), &mut presented.crypto, &mut snap.cfg)
++        } else {
++            value.strip_prefix("Bearer ").map(str::to_string)
++        };
++        if let (Some(token), Some(store)) = (token, &state.tokens) {
++            let prep = store.prepare(&token, mono);
++            presented.crypto.sha256.extend(prep.crypto.sha256.iter().cloned());
++            presented
++                .crypto
++                .argon2_ok
++                .extend(prep.crypto.argon2_ok.iter().cloned());
++            snap.cfg.tokens = Some(prep.store.clone());
++            prepared = Some(prep);
++        }
++    }
++    if let Some(peer) = req.peer {
++        snap.failures = state.auth_failures.entries_for(&h5i::std_ip(peer));
++        if let Some(ip) = req.xff.into_iter().chain(req.x_real_ip).next() {
++            snap.failures
++                .extend(state.auth_failures.entries_for(&h5i::std_ip(ip)));
++        }
++    }
++
++    let (mut writes, mut outcome) = run(&presented, &snap, &req);
++
++    // The JWT is checked only when the kernel got as far as OIDC: a Bearer
++    // token it did not accept otherwise. Run again with the verdict.
++    let mut oidc_provider = None;
++    if outcome == k::middleware::Outcome::Deny(k::middleware::Deny::InvalidOrExpiredToken) {
++        if let (Some(token), Some(validator)) = (
++            req.auth_header
++                .as_deref()
++                .and_then(|h| h.strip_prefix(b"Bearer ".as_slice())),
++            state.oidc.as_ref().filter(|v| v.is_active()),
++        ) {
++            let token = String::from_utf8_lossy(token).into_owned();
++            match validator.verify_jwt(&token).await {
++                Ok((provider, claims)) => {
++                    snap.cfg.oidc = Some((h5i::provider(provider), true));
++                    presented.jwt = Some(k::middleware::Jwt {
++                        token: token.clone().into_bytes(),
++                        claims: Some(claims.clone()),
++                    });
++                    (writes, outcome) = run(&presented, &snap, &req);
++                    match oidc::identity(provider, &claims) {
++                        Ok(identity) => tracing::debug!(
++                            provider = %identity.provider,
++                            subject = %identity.subject,
++                            role = ?identity.role,
++                            "OIDC authentication successful"
++                        ),
++                        Err(reason) => oidc_rejected(&reason),
+                     }
++                    oidc_provider = Some(provider.name.clone());
+                 }
++                Err(reason) => oidc_rejected(&reason),
++            }
++        }
++    }
++
++    for w in &writes {
++        match w {
++            k::middleware::Write::Token(t) => {
++                if let (Some(store), Some(prep)) = (&state.tokens, &prepared) {
++                    store.apply_writes(prep, std::slice::from_ref(t));
++                }
++            }
++            k::middleware::Write::ClearFailures(ip) => {
++                state.auth_failures.record_success(&h5i::std_ip(*ip))
+             }
+-            // No credentials or validation failed — anonymous browse
+-            let mut request = request;
++            k::middleware::Write::PutFailures(e) => state.auth_failures.put(*e),
++        }
++    }
++
++    let realm = state.config.server.public_url.as_deref().unwrap_or("Nora");
++    use k::middleware::Deny;
++    match outcome {
++        k::middleware::Outcome::Next {
++            authority,
++            user,
++            role,
++        } => {
++            let provider = oidc_provider.unwrap_or_default();
+             request
+                 .extensions_mut()
+-                .insert(NamespaceAuthority::Unrestricted);
++                .insert(NamespaceAuthority::from_kernel(authority, &provider));
+             request
+                 .extensions_mut()
+-                .insert(AuthenticatedUser("anonymous".to_string()));
+-            return next.run(request).await;
++                .insert(AuthenticatedUser(h5i::string(user)));
++            if let Some(role) = role {
++                request
++                    .extensions_mut()
++                    .insert(AuthenticatedRole(h5i::from_role(role)));
++            }
++            next.run(request).await
+         }
+-        // A gated web-surface request without credentials gets a Basic
+-        // challenge so browsers prompt instead of rendering a bare 401.
+-        if (is_web_surface(path) || path == "/metrics")
+-            && request
+-                .headers()
+-                .get(axum::http::header::AUTHORIZATION)
+-                .is_none()
+-        {
+-            return axum::http::Response::builder()
++        k::middleware::Outcome::Deny(deny) => match deny {
++            Deny::WebChallenge => axum::http::Response::builder()
+                 .status(axum::http::StatusCode::UNAUTHORIZED)
+                 .header("WWW-Authenticate", "Basic realm=\"nora\"")
+                 .body(axum::body::Body::from("Authentication required"))
+-                .expect("valid response");
+-        }
+-    }
+-
+-    let path = request.uri().path();
+-
+-    // Docker/OCI paths (`/v2`, `/v2/…`) are governed by `docker_anon_pull`,
+-    // NOT the general `anonymous_read`: anonymous Docker pull changes the `/v2/`
+-    // auth-challenge handshake, so it is opted into explicitly and enabling
+-    // anonymous Maven/raw/npm never silently exposes container images.
+-    let is_docker = is_docker_path(path);
+-
+-    // `/v2/_catalog` enumerates every repository — never served anonymously, even
+-    // under docker_anon_pull (anonymous pull-by-name is not list-all-repos).
+-    let is_docker_catalog = path == "/v2/_catalog";
+-
+-    // Token management always requires auth, even with anonymous_read
+-    let is_token_management = path.starts_with("/ui/tokens") || path.starts_with("/api/ui/tokens");
+-
+-    // npm whoami always requires auth (otherwise it returns "anonymous" for every user)
+-    let is_whoami = path.ends_with("/-/whoami");
+-
+-    // Admin control-plane paths always require an admin token — never anonymous,
+-    // even under anonymous_read, and method-independent (covers a future GET).
+-    let is_admin = is_admin_path(path);
+-
+-    let is_read_method = matches!(
+-        *request.method(),
+-        axum::http::Method::GET | axum::http::Method::HEAD
+-    );
+-
+-    // npm audit (#597) is a read-semantics query that npm sends as a POST (npm7
+-    // `advisories/bulk`, npm6 `audits/quick`). Treat it as read-eligible under
+-    // `anonymous_read` so anonymous `npm audit` works wherever anonymous install
+-    // works. Safe: the handler (registry/npm.rs) mutates nothing (forwards to the
+-    // configured upstream, returns advisories), caps the body, strips internal
+-    // package names under a filter, and never forwards the client credential.
+-    let is_npm_audit = *request.method() == axum::http::Method::POST
+-        && (path == "/npm/-/npm/v1/security/advisories/bulk"
+-            || path == "/npm/-/npm/v1/security/audits/quick");
+-
+-    // A request that presents credentials is always validated below (honest
+-    // `docker login`, correct audit attribution) — never short-circuited to
+-    // anonymous. Anonymous Docker bypass applies only when no Authorization sent.
+-    let has_auth_header = request.headers().contains_key(header::AUTHORIZATION);
+-
+-    // Anonymous read for non-Docker registries (Maven/raw/npm/…) if configured.
+-    // Token management, whoami, admin, and all Docker `/v2` paths are excluded.
+-    if state.config.auth.anonymous_read
+-        && (is_read_method || is_npm_audit)
+-        && !is_docker
+-        && !is_token_management
+-        && !is_whoami
+-        && !is_admin
+-    {
+-        return anonymous_read_passthrough(request, next).await;
+-    }
+-
+-    // Anonymous Docker/OCI pull, when explicitly enabled. The `/v2/` ping then
+-    // returns 200 (so the client proceeds without a Basic challenge) and
+-    // manifest/blob/tag reads are served without auth; writes (POST/PUT/PATCH/
+-    // DELETE) are not read methods, so they fall through and still require auth.
+-    // With the flag off (default), `/v2/` returns 401 + WWW-Authenticate: Basic
+-    // so `docker login` works and the basic-auth-accepts-api-token contract holds.
+-    if state.config.auth.docker_anon_pull
+-        && is_read_method
+-        && is_docker
+-        && !is_docker_catalog
+-        && !has_auth_header
+-    {
+-        return anonymous_read_passthrough(request, next).await;
+-    }
+-
+-    // Compute realm from public_url for WWW-Authenticate header
+-    let realm = state.config.server.public_url.as_deref().unwrap_or("Nora");
+-
+-    // Check if client IP is blocked due to too many failed attempts
+-    let client_ip = extract_client_ip(&request, &state.config.auth.trusted_proxies);
+-    if let Some(ip) = client_ip {
+-        if let Some(retry_after) = state.auth_failures.check_blocked(&ip) {
+-            return (
++                .expect("valid response"),
++            Deny::TooManyRequests(retry_after) => (
+                 StatusCode::TOO_MANY_REQUESTS,
+                 [
+                     (header::RETRY_AFTER, retry_after.to_string()),
+@@ -400,251 +350,195 @@ pub async fn auth_middleware(
+                     retry_after
+                 ),
+             )
+-                .into_response();
+-        }
+-    }
+-
+-    // Extract Authorization header
+-    let auth_header = request
+-        .headers()
+-        .get(header::AUTHORIZATION)
+-        .and_then(|h| h.to_str().ok());
+-
+-    let auth_header = match auth_header {
+-        Some(h) => h,
+-        None => return unauthorized_response("Authentication required", realm),
+-    };
+-
+-    // Try Bearer token first (opaque nra_ tokens, then OIDC JWT)
+-    if let Some(token) = auth_header.strip_prefix("Bearer ") {
+-        // 1. Try opaque token (nra_ prefix)
+-        if let Some(ref token_store) = state.tokens {
+-            match token_store.verify_token(token) {
+-                Ok((user, role)) => {
+-                    if let Some(ip) = client_ip {
+-                        state.auth_failures.record_success(&ip);
+-                    }
+-                    let method = request.method().clone();
+-                    if (method == axum::http::Method::PUT
+-                        || method == axum::http::Method::POST
+-                        || method == axum::http::Method::DELETE
+-                        || method == axum::http::Method::PATCH)
+-                        && !role.can_write()
+-                    {
+-                        return (StatusCode::FORBIDDEN, "Read-only token").into_response();
+-                    }
+-                    if is_admin && !role.can_admin() {
+-                        return (StatusCode::FORBIDDEN, "Admin role required").into_response();
+-                    }
+-                    // Opaque (nra_) tokens are not namespace-scoped (#583 is OIDC-only).
+-                    request
+-                        .extensions_mut()
+-                        .insert(NamespaceAuthority::Unrestricted);
+-                    request.extensions_mut().insert(AuthenticatedUser(user));
+-                    request.extensions_mut().insert(AuthenticatedRole(role));
+-                    return next.run(request).await;
+-                }
+-                // A store I/O/parse failure is not a credential verdict. Only an
+-                // `nra_`-prefixed token reaches disk (anything else returns
+-                // `InvalidFormat` first), so there is no OIDC identity to fall
+-                // through to: answer 503 so the client retries, instead of a 401
+-                // that makes valid creds flap during a storage blip.
+-                Err(crate::tokens::TokenError::Storage(e)) => {
+-                    tracing::error!(error = %e, "token store read failed during Bearer auth");
+-                    return (
+-                        StatusCode::SERVICE_UNAVAILABLE,
+-                        "Token verification unavailable",
+-                    )
+-                        .into_response();
+-                }
+-                Err(_) => {
+-                    // Token verification failed — fall through to OIDC
+-                }
++                .into_response(),
++            Deny::AuthenticationRequired => {
++                unauthorized_response("Authentication required", realm)
+             }
+-        }
+-
+-        // 2. Try OIDC JWT validation
+-        if let Some(ref oidc_validator) = state.oidc {
+-            if oidc_validator.is_active() {
+-                match oidc_validator.validate_token(token).await {
+-                    Ok(identity) => {
+-                        if let Some(ip) = client_ip {
+-                            state.auth_failures.record_success(&ip);
+-                        }
+-                        tracing::debug!(
+-                            provider = %identity.provider,
+-                            subject = %identity.subject,
+-                            role = ?identity.role,
+-                            "OIDC authentication successful"
+-                        );
+-                        let method = request.method().clone();
+-                        if (method == axum::http::Method::PUT
+-                            || method == axum::http::Method::POST
+-                            || method == axum::http::Method::DELETE
+-                            || method == axum::http::Method::PATCH)
+-                            && !identity.role.can_write()
+-                        {
+-                            return (StatusCode::FORBIDDEN, "Read-only OIDC identity")
+-                                .into_response();
+-                        }
+-                        if is_admin && !identity.role.can_admin() {
+-                            return (StatusCode::FORBIDDEN, "Admin role required").into_response();
+-                        }
+-                        // Carry the namespace scopes into the request so write
+-                        // handlers can enforce them on the artifact coordinate
+-                        // (#583). Provider scope and rule scope are a conjunction:
+-                        // the provider scope is a ceiling a rule cannot widen.
+-                        let authority = NamespaceAuthority::from_oidc_scopes(
+-                            &identity.provider,
+-                            std::iter::once(identity.namespace_scope.as_slice())
+-                                .chain(identity.rule_namespace_scope.as_deref()),
+-                            identity.namespace_scope_enforcement,
+-                        );
+-                        request.extensions_mut().insert(authority);
+-                        request
+-                            .extensions_mut()
+-                            .insert(AuthenticatedUser(identity.subject.clone()));
+-                        request
+-                            .extensions_mut()
+-                            .insert(AuthenticatedRole(identity.role));
+-                        return next.run(request).await;
+-                    }
+-                    Err(reason) => {
+-                        // #994 — surface *why* OIDC rejected the token: a bounded
+-                        // metric bucket for alerting plus the full reason in a warn
+-                        // log (never the token). Without this a lifetime ceiling, a
+-                        // wrong audience and a missing role rule are indistinguishable.
+-                        crate::metrics::record_oidc_rejection(
+-                            crate::auth::oidc::classify_rejection(&reason),
+-                        );
+-                        tracing::warn!(reason = %reason, "OIDC authentication rejected");
+-                    }
+-                }
++            Deny::InvalidOrExpiredToken => unauthorized_response("Invalid or expired token", realm),
++            Deny::BasicOrBearerRequired => {
++                unauthorized_response("Basic or Bearer authentication required", realm)
+             }
+-        }
+-
+-        // Both token and OIDC failed
+-        if let Some(ip) = client_ip {
+-            state.auth_failures.record_failure(ip);
+-        }
+-        return unauthorized_response("Invalid or expired token", realm);
++            Deny::BasicNotConfigured => unauthorized_response("Basic auth not configured", realm),
++            Deny::InvalidCredentialsEncoding => {
++                unauthorized_response("Invalid credentials encoding", realm)
++            }
++            Deny::InvalidCredentialsFormat => {
++                unauthorized_response("Invalid credentials format", realm)
++            }
++            Deny::InvalidUsernameOrPassword => {
++                unauthorized_response("Invalid username or password", realm)
++            }
++            Deny::ReadOnlyToken => (StatusCode::FORBIDDEN, "Read-only token").into_response(),
++            Deny::ReadOnlyOidc => {
++                (StatusCode::FORBIDDEN, "Read-only OIDC identity").into_response()
++            }
++            Deny::AdminRequired => {
++                (StatusCode::FORBIDDEN, "Admin role required").into_response()
++            }
++            // Raised by write handlers, never by the middleware.
++            Deny::NamespaceDenied => StatusCode::FORBIDDEN.into_response(),
++            Deny::TokenStoreUnavailable => {
++                let e = prepared
++                    .as_ref()
++                    .map(|p| p.error(k::tokens::TokenError::Storage).to_string())
++                    .unwrap_or_default();
++                tracing::error!(error = %e, "token store read failed during auth");
++                (
++                    StatusCode::SERVICE_UNAVAILABLE,
++                    "Token verification unavailable",
++                )
++                    .into_response()
++            }
++        },
+     }
++}
+ 
+-    // Parse Basic auth
+-    if !auth_header.starts_with("Basic ") {
+-        return unauthorized_response("Basic or Bearer authentication required", realm);
++fn run(
++    presented: &h5i::Presented,
++    snap: &h5i::AuthState,
++    req: &k::middleware::Request,
++) -> (Vec<k::middleware::Write>, k::middleware::Outcome) {
++    use h5i_app::Kernel;
++    match h5i::NoraAuth::transition(presented, snap, req) {
++        Ok(r) => r,
++        Err(never) => match never {},
+     }
++}
+ 
+-    // htpasswd provider required for Basic auth
+-    let auth = match &state.auth {
+-        Some(auth) => auth,
+-        None => return unauthorized_response("Basic auth not configured", realm),
+-    };
+-
+-    let encoded = &auth_header[6..];
+-    let decoded = match STANDARD.decode(encoded) {
+-        Ok(d) => d,
+-        Err(_) => return unauthorized_response("Invalid credentials encoding", realm),
+-    };
+-
+-    let credentials = match String::from_utf8(decoded) {
+-        Ok(c) => c,
+-        Err(_) => return unauthorized_response("Invalid credentials encoding", realm),
+-    };
++/// #994: a bounded metric bucket for alerting plus the full reason in a warn
++/// log (never the token).
++fn oidc_rejected(reason: &str) {
++    crate::metrics::record_oidc_rejection(crate::auth::oidc::classify_rejection(reason));
++    tracing::warn!(reason = %reason, "OIDC authentication rejected");
++}
+ 
+-    let (username, password) = match credentials.split_once(':') {
+-        Some((u, p)) => (u, p),
+-        None => return unauthorized_response("Invalid credentials format", realm),
++/// The request as the kernel sees it.
++fn kernel_request(request: &Request<Body>, mono: u64) -> k::middleware::Request {
++    use axum::http::Method;
++    use k::middleware::HttpMethod;
++    let method = match *request.method() {
++        Method::GET => HttpMethod::Get,
++        Method::HEAD => HttpMethod::Head,
++        Method::POST => HttpMethod::Post,
++        Method::PUT => HttpMethod::Put,
++        Method::DELETE => HttpMethod::Delete,
++        Method::PATCH => HttpMethod::Patch,
++        // Neither a read nor a write method, like OPTIONS.
++        _ => HttpMethod::Options,
+     };
++    let (xff, x_real_ip) = forwarded(request.headers());
++    k::middleware::Request {
++        path: request.uri().path().as_bytes().to_vec(),
++        method,
++        has_auth_header: request.headers().contains_key(header::AUTHORIZATION),
++        auth_header: request
++            .headers()
++            .get(header::AUTHORIZATION)
++            .and_then(|h| h.to_str().ok())
++            .map(|s| s.as_bytes().to_vec()),
++        peer: request
++            .extensions()
++            .get::<ConnectInfo<SocketAddr>>()
++            .map(|ci| h5i::ip(ci.0.ip())),
++        xff,
++        x_real_ip,
++        now: h5i::unix_now(),
++        mono,
++    }
++}
+ 
+-    // Verify credentials. htpasswd first; if that fails, the password may be an API
+-    // token (`nra_…`). Docker, twine and Maven send the token as the Basic-auth
+-    // password and never use Bearer (the `/v2/` challenge is Basic), so the Basic
+-    // path must fall through to token verification for token auth to work at all. (#736)
+-    if !auth.authenticate(username, password) {
+-        let token_result = state.tokens.as_ref().map(|ts| ts.verify_token(password));
+-        // Same fail-closed rule as the Bearer path: a store I/O/parse failure is
+-        // not "wrong password". A 401 here makes valid token creds flap and feeds
+-        // the failure tracker toward lockout for the duration of a storage blip.
+-        if let Some(Err(crate::tokens::TokenError::Storage(ref e))) = token_result {
+-            tracing::error!(error = %e, "token store read failed during Basic auth fallback");
+-            return (
+-                StatusCode::SERVICE_UNAVAILABLE,
+-                "Token verification unavailable",
++/// The configuration as the kernel sees it. The htpasswd users, the token
++/// store and the OIDC provider are filled in per request.
++fn kernel_config(state: &AppState) -> k::middleware::Config {
++    let auth = &state.config.auth;
++    k::middleware::Config {
++        enabled: auth.enabled,
++        anonymous_read: auth.anonymous_read,
++        public_web_ui: auth.public_web_ui,
++        public_metrics: auth.public_metrics,
++        docker_anon_pull: auth.docker_anon_pull,
++        htpasswd: state.auth.as_ref().map(|_| Vec::new()),
++        tokens: state.tokens.as_ref().map(|_| k::tokens::TokenStore {
++            files: Vec::new(),
++            cache: Vec::new(),
++            cache_ttl: 0,
++        }),
++        // The provider is chosen by the token's issuer, once the JWT is checked.
++        oidc: state.oidc.as_ref().map(|v| {
++            (
++                k::OidcProvider {
++                    max_token_lifetime_secs: 0,
++                    role_rules: Vec::new(),
++                    namespace_scope: Vec::new(),
++                    namespace_scope_enforcement: k::ScopeEnforcement::Enforce,
++                },
++                v.is_active(),
+             )
+-                .into_response();
+-        }
+-        if let Some(Ok((token_user, role))) = token_result {
+-            if let Some(ip) = client_ip {
+-                state.auth_failures.record_success(&ip);
+-            }
+-            let method = request.method().clone();
+-            if (method == axum::http::Method::PUT
+-                || method == axum::http::Method::POST
+-                || method == axum::http::Method::DELETE
+-                || method == axum::http::Method::PATCH)
+-                && !role.can_write()
+-            {
+-                return (StatusCode::FORBIDDEN, "Read-only token").into_response();
+-            }
+-            // An API token sent as the Basic password is a full bearer identity
+-            // (#737), so it must clear the admin gate too — else a write token via
+-            // Basic would reach /api/v1/admin/* unchecked.
+-            if is_admin && !role.can_admin() {
+-                return (StatusCode::FORBIDDEN, "Admin role required").into_response();
++        }),
++        trusted_proxies: auth.trusted_proxies.to_kernel(),
++        tracker: state.auth_failures.kernel,
++    }
++}
++
++/// Decoding and bcrypt results for a Basic credential, and the user's
++/// htpasswd entry. Returns the password, which may also be an API token.
++fn basic_oracles(
++    encoded: &str,
++    auth: Option<&HtpasswdAuth>,
++    crypto: &mut k::oracle::Crypto,
++    cfg: &mut k::middleware::Config,
++) -> Option<String> {
++    let decoded = STANDARD.decode(encoded).ok();
++    crypto
++        .base64
++        .push((encoded.as_bytes().to_vec(), decoded.clone()));
++    let credentials = String::from_utf8(decoded?).ok()?;
++    crypto.utf8_ok.push(credentials.as_bytes().to_vec());
++    let (username, password) = credentials.split_once(':')?;
++    if let (Some(htpasswd), Some(users)) = (auth, cfg.htpasswd.as_mut()) {
++        if let Some(hash) = htpasswd.hash(username) {
++            users.push((username.as_bytes().to_vec(), hash.as_bytes().to_vec()));
++            if htpasswd.authenticate(username, password) {
++                crypto
++                    .bcrypt_ok
++                    .push((password.as_bytes().to_vec(), hash.as_bytes().to_vec()));
+             }
+-            // Opaque (nra_) tokens are not namespace-scoped (#583 is OIDC-only).
+-            request
+-                .extensions_mut()
+-                .insert(NamespaceAuthority::Unrestricted);
+-            request
+-                .extensions_mut()
+-                .insert(AuthenticatedUser(token_user));
+-            request.extensions_mut().insert(AuthenticatedRole(role));
+-            return next.run(request).await;
+-        }
+-        if let Some(ip) = client_ip {
+-            state.auth_failures.record_failure(ip);
+         }
+-        return unauthorized_response("Invalid username or password", realm);
+-    }
+-
+-    // Auth successful — clear failure counter
+-    if let Some(ip) = client_ip {
+-        state.auth_failures.record_success(&ip);
+-    }
+-    // Basic-auth carries no role, so it can never satisfy an admin path: deny
+-    // fail-closed (403 — authenticated but not authorized).
+-    if is_admin {
+-        return (StatusCode::FORBIDDEN, "Admin role required").into_response();
+-    }
+-    // Basic-auth identities are not namespace-scoped (#583 is OIDC-only).
+-    request
+-        .extensions_mut()
+-        .insert(NamespaceAuthority::Unrestricted);
+-    request
+-        .extensions_mut()
+-        .insert(AuthenticatedUser(username.to_string()));
+-    request
+-        .extensions_mut()
+-        .insert(AuthenticatedRole(crate::tokens::Role::Write));
+-    next.run(request).await
++    }
++    Some(password.to_string())
+ }
+ 
+ /// Attempt to validate a Base64-encoded Basic auth credential against the
+ /// htpasswd store. Returns the username on success, `None` on any failure.
+-/// Used by the opportunistic-auth path on open web surfaces so that
+-/// authenticated users get their real identity even on publicly browsable
+-/// pages.
++/// This is the kernel's opportunistic authentication on an open path.
++#[cfg(test)]
+ fn try_basic_auth(encoded: &str, auth: Option<&HtpasswdAuth>) -> Option<String> {
+-    use base64::{engine::general_purpose::STANDARD, Engine};
+-    let decoded = String::from_utf8(STANDARD.decode(encoded).ok()?).ok()?;
+-    let (username, password) = decoded.split_once(':')?;
+-    let htpasswd = auth?;
+-    if htpasswd.authenticate(username, password) {
+-        Some(username.to_string())
+-    } else {
+-        None
++    let mut snap = h5i::AuthState::default();
++    snap.cfg.enabled = true;
++    snap.cfg.htpasswd = auth.map(|_| Vec::new());
++    let mut presented = h5i::Presented {
++        crypto: h5i::empty_crypto(),
++        jwt: None,
++    };
++    basic_oracles(encoded, auth, &mut presented.crypto, &mut snap.cfg);
++    let req = k::middleware::Request {
++        path: b"/".to_vec(),
++        method: k::middleware::HttpMethod::Get,
++        has_auth_header: true,
++        auth_header: Some(format!("Basic {encoded}").into_bytes()),
++        peer: None,
++        xff: None,
++        x_real_ip: None,
++        now: 0,
++        mono: 0,
++    };
++    match run(&presented, &snap, &req).1 {
++        k::middleware::Outcome::Next {
++            user,
++            role: Some(_),
++            ..
++        } => Some(h5i::string(user)),
++        _ => None,
+     }
+ }
+ 
+diff --git a/nora-registry/src/auth/namespace.rs b/nora-registry/src/auth/namespace.rs
+index 81e5157..ddace17 100644
+--- a/nora-registry/src/auth/namespace.rs
++++ b/nora-registry/src/auth/namespace.rs
+@@ -13,7 +13,7 @@ use std::sync::Arc;
+ 
+ use crate::config::ScopeEnforcement;
+ use crate::metrics::NAMESPACE_SCOPE_DECISIONS;
+-use crate::validation::namespace_match;
++use crate::h5i::{self, k};
+ 
+ /// Per-request namespace authorization, derived from the authenticated identity.
+ ///
+@@ -65,11 +65,16 @@ impl NamespaceAuthority {
+         scopes: impl IntoIterator<Item = &'a [String]>,
+         mode: ScopeEnforcement,
+     ) -> Self {
+-        let scopes: Vec<Arc<[String]>> = scopes
+-            .into_iter()
+-            .filter(|scope| !scope.iter().any(|p| p == "*"))
+-            .map(Arc::from)
+-            .collect();
++        // `nora_kernel::from_oidc_scopes` takes the provider scope and an
++        // optional rule scope; a longer conjunction folds over it pairwise.
++        let mut kept: Vec<Arc<[String]>> = Vec::new();
++        for scope in scopes {
++            let auth = k::from_oidc_scopes(&h5i::bytes(scope), &None, h5i::mode(mode));
++            if let k::NamespaceAuthority::Scoped { scopes, .. } = auth {
++                kept.extend(scopes.into_iter().map(|s| Arc::from(h5i::strings(s))));
++            }
++        }
++        let scopes = kept;
+         if scopes.is_empty() {
+             return NamespaceAuthority::Unrestricted;
+         }
+@@ -79,6 +84,32 @@ impl NamespaceAuthority {
+             mode,
+         }
+     }
++
++    /// The kernel's `NamespaceAuthority`.
++    pub(crate) fn to_kernel(&self) -> k::NamespaceAuthority {
++        match self {
++            NamespaceAuthority::Unrestricted => k::NamespaceAuthority::Unrestricted,
++            NamespaceAuthority::Scoped { scopes, mode, .. } => k::NamespaceAuthority::Scoped {
++                scopes: scopes.iter().map(|s| h5i::bytes(s)).collect(),
++                mode: h5i::mode(*mode),
++            },
++        }
++    }
++
++    /// nora's `NamespaceAuthority` for a kernel one, labelled with `provider`.
++    pub(crate) fn from_kernel(auth: k::NamespaceAuthority, provider: &str) -> Self {
++        match auth {
++            k::NamespaceAuthority::Unrestricted => NamespaceAuthority::Unrestricted,
++            k::NamespaceAuthority::Scoped { scopes, mode } => NamespaceAuthority::Scoped {
++                scopes: scopes
++                    .into_iter()
++                    .map(|s| Arc::from(h5i::strings(s)))
++                    .collect(),
++                provider: Arc::from(provider),
++                mode: h5i::from_mode(mode),
++            },
++        }
++    }
+ }
+ 
+ /// A write was denied because its artifact coordinate fell outside the
+@@ -118,10 +149,20 @@ pub fn enforce_namespace_scope(
+     // explicit deref makes both elements `&str` and compiles under both toolchains.
+     let provider: &str = provider;
+ 
+-    if scopes
+-        .iter()
+-        .all(|scope| scope.iter().any(|p| namespace_match(p, namespace)))
+-    {
++    let decision = k::enforce_namespace_scope(&authority.to_kernel(), namespace.as_bytes());
++    // The kernel allows an audited mismatch too; the metric tells them apart.
++    let in_scope = match mode {
++        ScopeEnforcement::Enforce => decision.is_ok(),
++        ScopeEnforcement::Audit => k::enforce_namespace_scope(
++            &k::NamespaceAuthority::Scoped {
++                scopes: scopes.iter().map(|s| h5i::bytes(s)).collect(),
++                mode: k::ScopeEnforcement::Enforce,
++            },
++            namespace.as_bytes(),
++        )
++        .is_ok(),
++    };
++    if in_scope {
+         NAMESPACE_SCOPE_DECISIONS
+             .with_label_values(&[provider, "allow"])
+             .inc();
+diff --git a/nora-registry/src/auth/oidc.rs b/nora-registry/src/auth/oidc.rs
+index 004dae5..f21e0b3 100644
+--- a/nora-registry/src/auth/oidc.rs
++++ b/nora-registry/src/auth/oidc.rs
+@@ -124,6 +124,16 @@ impl OidcValidator {
+     /// Validate a Bearer token as an OIDC JWT.
+     /// Returns the identity on success, or an error string.
+     pub async fn validate_token(&self, token: &str) -> Result<OidcIdentity, String> {
++        let (provider, claims) = self.verify_jwt(token).await?;
++        identity(provider, &claims)
++    }
++
++    /// The JWT half of `validate_token`: header, algorithm, issuer, key,
++    /// signature and audience. Returns the provider and the claims it accepted.
++    pub async fn verify_jwt(
++        &self,
++        token: &str,
++    ) -> Result<(&OidcProvider, crate::h5i::k::Claims), String> {
+         if !self.is_active() {
+             return Err("OIDC not enabled".to_string());
+         }
+@@ -200,36 +210,14 @@ impl OidcValidator {
+             .map_err(|e| format!("JWT validation failed: {}", e))?;
+ 
+         let claims = token_data.claims;
+-
+-        // Enforce token lifetime ceiling
+-        if let (Some(iat), Some(exp)) = (claims.iat, claims.exp) {
+-            let lifetime = exp.saturating_sub(iat);
+-            if lifetime > provider.max_token_lifetime_secs {
+-                return Err(format!(
+-                    "Token lifetime {} exceeds max {} for provider {}",
+-                    lifetime, provider.max_token_lifetime_secs, provider.name
+-                ));
+-            }
+-        }
+-
+-        // Map claims to role via role_rules
+-        let subject = claims.sub.unwrap_or_default();
+-        let (role, rule_scope) = self.match_role(provider, &subject).ok_or_else(|| {
+-            format!(
+-                "No role rule matches sub='{}' for provider {}",
+-                subject, provider.name
+-            )
+-        })?;
+-
+-        Ok(OidcIdentity {
+-            provider: provider.name.clone(),
+-            subject,
+-            issuer: provider.issuer.clone(),
+-            role,
+-            namespace_scope: provider.namespace_scope.clone(),
+-            rule_namespace_scope: rule_scope,
+-            namespace_scope_enforcement: provider.namespace_scope_enforcement,
+-        })
++        Ok((
++            provider,
++            crate::h5i::k::Claims {
++                sub: claims.sub.map(String::into_bytes),
++                iat: claims.iat,
++                exp: claims.exp,
++            },
++        ))
+     }
+ 
+     /// Fetch or return cached JWKS for a provider.
+@@ -343,69 +331,57 @@ impl OidcValidator {
+ 
+     /// Match subject against provider's role_rules. First match wins.
+     /// Returns the role plus the rule's namespace-scope override, if any.
++    #[cfg(test)]
+     fn match_role(
+         &self,
+         provider: &OidcProvider,
+         subject: &str,
+     ) -> Option<(Role, Option<Vec<String>>)> {
+-        for rule in &provider.role_rules {
+-            if glob_match(&rule.pattern, subject) {
+-                let role = match rule.role.as_str() {
+-                    "admin" => Role::Admin,
+-                    "write" => Role::Write,
+-                    "read" => Role::Read,
+-                    _ => return None,
+-                };
+-                return Some((role, rule.namespace_scope.clone()));
+-            }
+-        }
+-        None
++        let (role, scope) =
++            crate::h5i::k::match_role(&crate::h5i::provider(provider), subject.as_bytes())?;
++        Some((crate::h5i::from_role(role), scope.map(crate::h5i::strings)))
++    }
++}
++
++/// The claims half of `validate_token`, decided by `nora_kernel::validate_claims`.
++pub fn identity(
++    provider: &OidcProvider,
++    claims: &crate::h5i::k::Claims,
++) -> Result<OidcIdentity, String> {
++    use crate::h5i::{self, k};
++    match k::validate_claims(&h5i::provider(provider), claims) {
++        Ok(id) => Ok(OidcIdentity {
++            provider: provider.name.clone(),
++            subject: h5i::string(id.subject),
++            issuer: provider.issuer.clone(),
++            role: h5i::from_role(id.role),
++            namespace_scope: h5i::strings(id.namespace_scope),
++            rule_namespace_scope: id.rule_namespace_scope.map(h5i::strings),
++            namespace_scope_enforcement: h5i::from_mode(id.namespace_scope_enforcement),
++        }),
++        Err(k::Error::TokenLifetime) => Err(format!(
++            "Token lifetime {} exceeds max {} for provider {}",
++            claims
++                .exp
++                .unwrap_or_default()
++                .saturating_sub(claims.iat.unwrap_or_default()),
++            provider.max_token_lifetime_secs,
++            provider.name
++        )),
++        Err(_) => Err(format!(
++            "No role rule matches sub='{}' for provider {}",
++            h5i::string(claims.sub.clone().unwrap_or_default()),
++            provider.name
++        )),
+     }
+ }
+ 
+ /// Simple glob matching: supports `*` (any chars within segment) and `**` is not needed
+ /// since sub claims use `:` as separator, not `/`.
+ /// Patterns: "repo:org/*" matches "repo:org/myrepo:ref:refs/heads/main"
++#[cfg(test)]
+ fn glob_match(pattern: &str, value: &str) -> bool {
+-    if pattern == "*" {
+-        return true;
+-    }
+-
+-    let parts: Vec<&str> = pattern.split('*').collect();
+-    if parts.len() == 1 {
+-        // No wildcard — exact match
+-        return pattern == value;
+-    }
+-
+-    // First part must be prefix, last part must be suffix
+-    let mut remaining = value;
+-
+-    for (i, part) in parts.iter().enumerate() {
+-        if part.is_empty() {
+-            continue;
+-        }
+-        if i == 0 {
+-            // Must start with this
+-            if !remaining.starts_with(part) {
+-                return false;
+-            }
+-            remaining = &remaining[part.len()..];
+-        } else if i == parts.len() - 1 {
+-            // Must end with this
+-            if !remaining.ends_with(part) {
+-                return false;
+-            }
+-            return true;
+-        } else {
+-            // Must contain this
+-            match remaining.find(part) {
+-                Some(pos) => remaining = &remaining[pos + part.len()..],
+-                None => return false,
+-            }
+-        }
+-    }
+-
+-    true
++    crate::h5i::k::glob_match(pattern.as_bytes(), value.as_bytes())
+ }
+ 
+ /// Classify a [`OidcValidator::validate_token`] rejection string into a bounded
+diff --git a/nora-registry/src/config/auth.rs b/nora-registry/src/config/auth.rs
+index 7f099ce..49f60b3 100644
+--- a/nora-registry/src/config/auth.rs
++++ b/nora-registry/src/config/auth.rs
+@@ -67,39 +67,17 @@ impl TrustedProxies {
+ 
+     /// Check if an IP address is within the trusted proxy list.
+     pub fn contains(&self, ip: std::net::IpAddr) -> bool {
+-        self.entries.iter().any(|(network, prefix)| {
+-            match (network, ip) {
+-                (std::net::IpAddr::V4(net), std::net::IpAddr::V4(addr)) => {
+-                    // /0 matches all addresses in this family (RFC 4632).
+-                    // Must check before shift: u32::MAX << 32 overflows.
+-                    if *prefix == 0 {
+-                        return true;
+-                    }
+-                    if *prefix >= 32 {
+-                        return *net == addr;
+-                    }
+-                    let net_bits = u32::from(*net);
+-                    let addr_bits = u32::from(addr);
+-                    let mask = u32::MAX << (32 - prefix);
+-                    (net_bits & mask) == (addr_bits & mask)
+-                }
+-                (std::net::IpAddr::V6(net), std::net::IpAddr::V6(addr)) => {
+-                    // /0 matches all addresses in this family (RFC 4632).
+-                    // Must check before shift: u128::MAX << 128 overflows.
+-                    if *prefix == 0 {
+-                        return true;
+-                    }
+-                    if *prefix >= 128 {
+-                        return *net == addr;
+-                    }
+-                    let net_bits = u128::from(*net);
+-                    let addr_bits = u128::from(addr);
+-                    let mask = u128::MAX << (128 - prefix);
+-                    (net_bits & mask) == (addr_bits & mask)
+-                }
+-                _ => false, // v4 vs v6 mismatch
+-            }
+-        })
++        self.to_kernel().contains(crate::h5i::ip(ip))
++    }
++
++    pub(crate) fn to_kernel(&self) -> nora_kernel::net::TrustedProxies {
++        nora_kernel::net::TrustedProxies {
++            entries: self
++                .entries
++                .iter()
++                .map(|(net, prefix)| (crate::h5i::ip(*net), *prefix))
++                .collect(),
++        }
+     }
+ 
+     /// Returns true if any entry uses prefix /0 (matches all addresses in its family).
+diff --git a/nora-registry/src/h5i.rs b/nora-registry/src/h5i.rs
+new file mode 100644
+index 0000000..742793e
+--- /dev/null
++++ b/nora-registry/src/h5i.rs
+@@ -0,0 +1,209 @@
++// SPDX-License-Identifier: MIT
++
++//! The shell around nora's verified kernel (`nora-kernel`, proven in Lean in
++//! h5i-app-bench). The functions it covers convert nora's state and request to
++//! the kernel's types, let the kernel decide, and apply what it writes.
++//! Hashing, JWT signatures, the filesystem and the clocks stay here.
++
++use std::convert::Infallible;
++use std::sync::OnceLock;
++use std::time::{Instant, SystemTime, UNIX_EPOCH};
++
++use h5i_app::{Kernel, TenantId};
++pub use nora_kernel as k;
++
++use crate::config::{OidcProvider, ScopeEnforcement};
++use crate::tokens::Role;
++
++static EPOCH: OnceLock<Instant> = OnceLock::new();
++
++/// The kernel's `Instant`: monotonic nanoseconds since the first call.
++pub fn mono_now() -> u64 {
++    EPOCH.get_or_init(Instant::now).elapsed().as_nanos() as u64
++}
++
++pub fn unix_now() -> u64 {
++    SystemTime::now()
++        .duration_since(UNIX_EPOCH)
++        .unwrap_or_default()
++        .as_secs()
++}
++
++pub fn ip(a: std::net::IpAddr) -> k::net::IpAddr {
++    match a {
++        std::net::IpAddr::V4(v) => k::net::IpAddr::V4(u32::from(v)),
++        std::net::IpAddr::V6(v) => k::net::IpAddr::V6(u128::from(v)),
++    }
++}
++
++pub fn std_ip(a: k::net::IpAddr) -> std::net::IpAddr {
++    match a {
++        k::net::IpAddr::V4(v) => std::net::IpAddr::V4(v.into()),
++        k::net::IpAddr::V6(v) => std::net::IpAddr::V6(v.into()),
++    }
++}
++
++pub fn role(r: &Role) -> k::Role {
++    match r {
++        Role::Read => k::Role::Read,
++        Role::Write => k::Role::Write,
++        Role::Admin => k::Role::Admin,
++    }
++}
++
++pub fn from_role(r: k::Role) -> Role {
++    match r {
++        k::Role::Read => Role::Read,
++        k::Role::Write => Role::Write,
++        k::Role::Admin => Role::Admin,
++    }
++}
++
++pub fn mode(m: ScopeEnforcement) -> k::ScopeEnforcement {
++    match m {
++        ScopeEnforcement::Enforce => k::ScopeEnforcement::Enforce,
++        ScopeEnforcement::Audit => k::ScopeEnforcement::Audit,
++    }
++}
++
++pub fn from_mode(m: k::ScopeEnforcement) -> ScopeEnforcement {
++    match m {
++        k::ScopeEnforcement::Enforce => ScopeEnforcement::Enforce,
++        k::ScopeEnforcement::Audit => ScopeEnforcement::Audit,
++    }
++}
++
++pub fn bytes(v: &[String]) -> Vec<Vec<u8>> {
++    v.iter().map(|s| s.as_bytes().to_vec()).collect()
++}
++
++/// The kernel only cuts UTF-8 input at ASCII bytes, so this never replaces.
++pub fn string(b: Vec<u8>) -> String {
++    String::from_utf8(b).unwrap_or_else(|e| String::from_utf8_lossy(e.as_bytes()).into_owned())
++}
++
++pub fn strings(v: Vec<Vec<u8>>) -> Vec<String> {
++    v.into_iter().map(string).collect()
++}
++
++pub fn provider(p: &OidcProvider) -> k::OidcProvider {
++    k::OidcProvider {
++        max_token_lifetime_secs: p.max_token_lifetime_secs,
++        role_rules: p
++            .role_rules
++            .iter()
++            .map(|r| k::OidcRoleRule {
++                pattern: r.pattern.as_bytes().to_vec(),
++                role: r.role.as_bytes().to_vec(),
++                namespace_scope: r.namespace_scope.as_deref().map(bytes),
++            })
++            .collect(),
++        namespace_scope: bytes(&p.namespace_scope),
++        namespace_scope_enforcement: mode(p.namespace_scope_enforcement),
++    }
++}
++
++pub fn empty_crypto() -> k::oracle::Crypto {
++    k::oracle::Crypto {
++        sha256: Vec::new(),
++        argon2_ok: Vec::new(),
++        bcrypt_ok: Vec::new(),
++        base64: Vec::new(),
++        utf8_ok: Vec::new(),
++    }
++}
++
++/// `auth_middleware` as an h5i-app kernel.
++pub struct NoraAuth;
++
++/// What the caller presented, with the shell's verdicts on it: the oracle
++/// tables for its credentials and the JWT signature check.
++#[derive(Clone)]
++pub struct Presented {
++    pub crypto: k::oracle::Crypto,
++    pub jwt: Option<k::middleware::Jwt>,
++}
++
++/// What the middleware reads: the configuration, the token store and the
++/// failure tracker, restricted to the entries this request can touch.
++#[derive(Clone)]
++pub struct AuthState {
++    pub cfg: k::middleware::Config,
++    pub failures: Vec<k::lockout::FailureEntry>,
++}
++
++impl Default for AuthState {
++    fn default() -> Self {
++        AuthState {
++            cfg: k::middleware::Config {
++                enabled: false,
++                anonymous_read: false,
++                public_web_ui: false,
++                public_metrics: false,
++                docker_anon_pull: false,
++                htpasswd: None,
++                tokens: None,
++                oidc: None,
++                trusted_proxies: k::net::TrustedProxies {
++                    entries: Vec::new(),
++                },
++                tracker: k::lockout::AuthFailureTracker {
++                    max_failures: 5,
++                    max_lockout_secs: 900,
++                },
++            },
++            failures: Vec::new(),
++        }
++    }
++}
++
++impl Kernel for NoraAuth {
++    type Principal = Presented;
++    type Snapshot = AuthState;
++    type Command = k::middleware::Request;
++    type WriteSet = Vec<k::middleware::Write>;
++    type Reply = k::middleware::Outcome;
++    type Error = Infallible;
++
++    fn tenant(_: &Presented) -> TenantId {
++        TenantId(0)
++    }
++
++    fn transition(
++        actor: &Presented,
++        snap: &AuthState,
++        req: &k::middleware::Request,
++    ) -> Result<(Self::WriteSet, Self::Reply), Infallible> {
++        Ok(k::middleware::auth_middleware(
++            &snap.cfg,
++            &snap.failures,
++            &actor.crypto,
++            &actor.jwt,
++            req,
++        ))
++    }
++
++    fn apply(snap: &AuthState, ws: &Self::WriteSet) -> AuthState {
++        use k::middleware::Write;
++        use k::tokens::TokenWrite;
++        let mut s = snap.clone();
++        for w in ws {
++            match w {
++                Write::ClearFailures(ip) => s.failures.retain(|e| e.ip != *ip),
++                Write::PutFailures(e) => {
++                    s.failures.retain(|x| x.ip != e.ip);
++                    s.failures.push(*e);
++                }
++                Write::Token(TokenWrite::CacheInsert(c)) => {
++                    if let Some(store) = &mut s.cfg.tokens {
++                        store.cache.retain(|x| x.key != c.key);
++                        store.cache.push(c.clone());
++                    }
++                }
++                // `last_used` and the rehash live outside the kernel's state.
++                Write::Token(_) => {}
++            }
++        }
++        s
++    }
++}
+diff --git a/nora-registry/src/main.rs b/nora-registry/src/main.rs
+index 7531f68..5d6af50 100644
+--- a/nora-registry/src/main.rs
++++ b/nora-registry/src/main.rs
+@@ -51,6 +51,7 @@ mod secrets;
+ mod signing;
+ mod storage;
+ mod tokens;
++mod h5i;
+ mod ui;
+ mod validation;
+ 
+diff --git a/nora-registry/src/tokens.rs b/nora-registry/src/tokens.rs
+index 9e5475e..e61e1d3 100644
+--- a/nora-registry/src/tokens.rs
++++ b/nora-registry/src/tokens.rs
+@@ -17,7 +17,9 @@ use uuid::Uuid;
+ use parking_lot::RwLock;
+ use std::collections::HashMap;
+ use std::sync::Arc;
+-use std::time::{Duration, Instant};
++use std::time::Duration;
++
++use crate::h5i::{self, k};
+ 
+ /// Default TTL for cached token verifications (avoids Argon2 per request).
+ /// Overridable per-store via [`TokenStore::with_cache_ttl`] (config
+@@ -30,7 +32,8 @@ struct CachedToken {
+     user: String,
+     role: Role,
+     expires_at: u64,
+-    cached_at: Instant,
++    /// `h5i::mono_now()` at insertion.
++    cached_at: u64,
+ }
+ 
+ const TOKEN_PREFIX: &str = "nra_";
+@@ -188,99 +191,196 @@ impl TokenStore {
+     ///
+     /// Uses an in-memory cache to avoid Argon2 verification on every request.
+     /// The `last_used` timestamp is updated in batch via `flush_last_used()`.
++    /// The decision is `nora_kernel::tokens::verify_token`.
+     pub fn verify_token(&self, token: &str) -> Result<(String, Role), TokenError> {
++        let now = h5i::unix_now();
++        let mono = h5i::mono_now();
++        let prep = self.prepare(token, mono);
++        let (writes, result) =
++            k::tokens::verify_token(&prep.store, &prep.crypto, token.as_bytes(), now, mono);
++        self.apply_writes(&prep, &writes);
++        prep.result(result)
++    }
++
++    /// The kernel's view of this store for one token: its cache entry, and its
++    /// file with the hash checks the kernel will ask for when that entry is
++    /// missing or stale.
++    pub(crate) fn prepare(&self, token: &str, mono: u64) -> Prepared {
++        let mut crypto = h5i::empty_crypto();
++        let cache_ttl = self.cache_ttl.as_nanos() as u64;
++        let mut prep = Prepared {
++            token: token.to_string(),
++            store: k::tokens::TokenStore {
++                files: Vec::new(),
++                cache: Vec::new(),
++                cache_ttl,
++            },
++            crypto: h5i::empty_crypto(),
++            info: None,
++            storage_error: None,
++        };
+         if !token.starts_with(TOKEN_PREFIX) {
+-            return Err(TokenError::InvalidFormat);
++            prep.crypto = crypto;
++            return prep;
+         }
+-
+-        let cache_key = sha256_hex(token);
+-
+-        // Fast path: check in-memory cache
+-        {
+-            let cache = self.cache.read();
+-            if let Some(cached) = cache.get(&cache_key) {
+-                if cached.cached_at.elapsed() < self.cache_ttl {
+-                    let now = SystemTime::now()
+-                        .duration_since(UNIX_EPOCH)
+-                        .unwrap_or_default()
+-                        .as_secs();
+-                    if now > cached.expires_at {
+-                        return Err(TokenError::Expired);
++        let key = sha256_hex(token);
++        crypto
++            .sha256
++            .push((token.as_bytes().to_vec(), key.as_bytes().to_vec()));
++        let fresh = match self.cache.read().get(&key) {
++            Some(c) => {
++                prep.store.cache.push(k::tokens::CachedToken {
++                    key: key.as_bytes().to_vec(),
++                    user: c.user.as_bytes().to_vec(),
++                    role: h5i::role(&c.role),
++                    expires_at: c.expires_at,
++                    cached_at: c.cached_at,
++                });
++                mono.saturating_sub(c.cached_at) < cache_ttl
++            }
++            None => false,
++        };
++        if !fresh {
++            let prefix = &key[..16];
++            let file_path = self.storage_path.join(format!("{}.json", prefix));
++            let info = match fs::read_to_string(&file_path) {
++                Ok(content) => match serde_json::from_str::<TokenInfo>(&content) {
++                    Ok(info) => Some(info),
++                    Err(e) => {
++                        prep.storage_error = Some(e.to_string());
++                        None
+                     }
+-                    // Schedule deferred last_used update
+-                    self.pending_last_used
+-                        .write()
+-                        .insert(cache_key[..16].to_string(), now);
+-                    return Ok((cached.user.clone(), cached.role.clone()));
++                },
++                Err(e) if e.kind() == std::io::ErrorKind::NotFound => {
++                    prep.crypto = crypto;
++                    return prep;
++                }
++                Err(e) => {
++                    prep.storage_error = Some(e.to_string());
++                    None
++                }
++            };
++            if let Some(info) = &info {
++                if info.token_hash.starts_with("$argon2")
++                    && verify_token_argon2(token, &info.token_hash)
++                {
++                    crypto
++                        .argon2_ok
++                        .push((token.as_bytes().to_vec(), info.token_hash.as_bytes().to_vec()));
+                 }
+             }
++            prep.store.files.push(k::tokens::TokenFile {
++                prefix: prefix.as_bytes().to_vec(),
++                info: info.as_ref().map(|i| k::tokens::TokenInfo {
++                    token_hash: i.token_hash.as_bytes().to_vec(),
++                    user: i.user.as_bytes().to_vec(),
++                    expires_at: i.expires_at,
++                    role: h5i::role(&i.role),
++                }),
++            });
++            prep.info = info;
+         }
++        prep.crypto = crypto;
++        prep
++    }
+ 
+-        // Slow path: read from disk and verify Argon2
+-        let file_path = self.storage_path.join(format!("{}.json", &cache_key[..16]));
+-
+-        let content = match fs::read_to_string(&file_path) {
+-            Ok(c) => c,
+-            Err(e) if e.kind() == std::io::ErrorKind::NotFound => {
+-                return Err(TokenError::NotFound);
+-            }
+-            Err(e) => return Err(TokenError::Storage(e.to_string())),
+-        };
+-
+-        let mut info: TokenInfo =
+-            serde_json::from_str(&content).map_err(|e| TokenError::Storage(e.to_string()))?;
+-
+-        // Verify hash: try Argon2id first, fall back to legacy SHA256
+-        let hash_valid = if info.token_hash.starts_with("$argon2") {
+-            verify_token_argon2(token, &info.token_hash)
+-        } else {
+-            // Legacy SHA256 hash (no salt) — verify and migrate
+-            let legacy_hash = sha256_hex(token);
+-            if info.token_hash == legacy_hash {
+-                // Migrate to Argon2id
+-                if let Ok(new_hash) = hash_token_argon2(token) {
+-                    info.token_hash = new_hash;
+-                    if let Ok(json) = serde_json::to_string_pretty(&info) {
+-                        let _ = write_token_file(&file_path, &json);
++    /// Carry out what the kernel's `verify_token` wrote.
++    pub(crate) fn apply_writes(&self, prep: &Prepared, writes: &[k::tokens::TokenWrite]) {
++        for w in writes {
++            match w {
++                k::tokens::TokenWrite::LastUsed(prefix, now) => {
++                    self.pending_last_used
++                        .write()
++                        .insert(h5i::string(prefix.clone()), *now);
++                }
++                k::tokens::TokenWrite::Migrate(prefix) => {
++                    // Rehash the legacy SHA-256 entry as Argon2id.
++                    if let Some(mut info) = prep.info.clone() {
++                        if let Ok(new_hash) = hash_token_argon2(&prep.token) {
++                            info.token_hash = new_hash;
++                            let file_path = self
++                                .storage_path
++                                .join(format!("{}.json", h5i::string(prefix.clone())));
++                            if let Ok(json) = serde_json::to_string_pretty(&info) {
++                                let _ = write_token_file(&file_path, &json);
++                            }
++                        }
+                     }
+                 }
+-                true
+-            } else {
+-                false
++                k::tokens::TokenWrite::CacheInsert(c) => {
++                    self.cache.write().insert(
++                        h5i::string(c.key.clone()),
++                        CachedToken {
++                            user: h5i::string(c.user.clone()),
++                            role: h5i::from_role(c.role),
++                            expires_at: c.expires_at,
++                            cached_at: c.cached_at,
++                        },
++                    );
++                }
+             }
+-        };
+-
+-        if !hash_valid {
+-            return Err(TokenError::NotFound);
+         }
++    }
+ 
+-        // Check expiration
+-        let now = SystemTime::now()
+-            .duration_since(UNIX_EPOCH)
+-            .unwrap_or_default()
+-            .as_secs();
+-
+-        if now > info.expires_at {
+-            return Err(TokenError::Expired);
++    /// Every file in the directory, as the kernel sees it, keyed by file name
++    /// stem; the cache in full.
++    fn kernel_store(&self) -> (k::tokens::TokenStore, Vec<PathBuf>) {
++        let mut files = Vec::new();
++        let mut paths = Vec::new();
++        if let Ok(entries) = fs::read_dir(&self.storage_path) {
++            for entry in entries.flatten() {
++                let path = entry.path();
++                let name = entry.file_name().to_string_lossy().into_owned();
++                let prefix = name.strip_suffix(".json").unwrap_or(&name).to_string();
++                let info = fs::read_to_string(&path)
++                    .ok()
++                    .and_then(|c| serde_json::from_str::<TokenInfo>(&c).ok());
++                files.push(k::tokens::TokenFile {
++                    prefix: if name.ends_with(".json") {
++                        prefix.into_bytes()
++                    } else {
++                        // `/` cannot be in a file name: unique, and never a valid prefix.
++                        format!("/{name}").into_bytes()
++                    },
++                    info: info.map(|i| k::tokens::TokenInfo {
++                        token_hash: i.token_hash.into_bytes(),
++                        user: i.user.into_bytes(),
++                        expires_at: i.expires_at,
++                        role: h5i::role(&i.role),
++                    }),
++                });
++                paths.push(path);
++            }
+         }
+-
+-        // Populate cache (key must match lookup at line 180: full 64-char SHA-256 hex)
+-        self.cache.write().insert(
+-            cache_key.clone(),
+-            CachedToken {
+-                user: info.user.clone(),
+-                role: info.role.clone(),
+-                expires_at: info.expires_at,
+-                cached_at: Instant::now(),
++        let cache = self
++            .cache
++            .read()
++            .iter()
++            .map(|(key, c)| k::tokens::CachedToken {
++                key: key.as_bytes().to_vec(),
++                user: c.user.as_bytes().to_vec(),
++                role: h5i::role(&c.role),
++                expires_at: c.expires_at,
++                cached_at: c.cached_at,
++            })
++            .collect();
++        (
++            k::tokens::TokenStore {
++                files,
++                cache,
++                cache_ttl: self.cache_ttl.as_nanos() as u64,
+             },
+-        );
++            paths,
++        )
++    }
+ 
+-        // Schedule deferred last_used update
+-        self.pending_last_used
++    /// Make the cache equal to the kernel's.
++    fn set_cache(&self, cache: &[k::tokens::CachedToken]) {
++        let keep: std::collections::HashSet<&[u8]> =
++            cache.iter().map(|c| c.key.as_slice()).collect();
++        self.cache
+             .write()
+-            .insert(cache_key[..16].to_string(), now);
+-
+-        Ok((info.user, info.role))
++            .retain(|key, _| keep.contains(key.as_bytes()));
+     }
+ 
+     /// List all tokens for a user (returns TokenListEntry with file_id)
+@@ -370,60 +470,83 @@ impl TokenStore {
+         tracing::debug!(count = pending.len(), "Flushed pending last_used updates");
+     }
+ 
+-    /// Remove a token from the in-memory cache (called on revoke).
+-    /// Cache keys are full 64-char SHA-256 hex; revoke only knows the 16-char prefix,
+-    /// so we must scan for matching entries.
+-    fn invalidate_cache(&self, hash_prefix: &str) {
+-        self.cache
+-            .write()
+-            .retain(|k, _| !k.starts_with(hash_prefix));
+-    }
+-
+     /// Revoke a token by its hash prefix.
+     ///
+     /// `hash_prefix` must be exactly 16 lowercase hexadecimal characters (the
+     /// first 16 chars of SHA-256(token)). Anything else is rejected to prevent
+     /// path-traversal attacks via crafted prefixes like `../../etc/passwd`.
+     pub fn revoke_token(&self, hash_prefix: &str) -> Result<(), TokenError> {
+-        // SECURITY: validate format before building filesystem path
++        // The kernel validates the prefix before any path is built from it.
+         if !is_valid_hash_prefix(hash_prefix) {
+             return Err(TokenError::NotFound);
+         }
+-        let file_path = self.storage_path.join(format!("{}.json", hash_prefix));
+-
+-        // TOCTOU fix: try remove directly
+-        match fs::remove_file(&file_path) {
++        let (store, _) = self.kernel_store();
++        let (after, result) = k::tokens::revoke_token(&store, hash_prefix.as_bytes());
++        match result {
+             Ok(()) => {
+-                self.invalidate_cache(hash_prefix);
+-                Ok(())
++                let file_path = self.storage_path.join(format!("{}.json", hash_prefix));
++                match fs::remove_file(&file_path) {
++                    Ok(()) => {
++                        self.set_cache(&after.cache);
++                        Ok(())
++                    }
++                    Err(e) if e.kind() == std::io::ErrorKind::NotFound => {
++                        Err(TokenError::NotFound)
++                    }
++                    Err(e) => Err(TokenError::Storage(e.to_string())),
++                }
+             }
+-            Err(e) if e.kind() == std::io::ErrorKind::NotFound => Err(TokenError::NotFound),
+-            Err(e) => Err(TokenError::Storage(e.to_string())),
++            Err(_) => Err(TokenError::NotFound),
+         }
+     }
+ 
+     /// Revoke all tokens for a user
+     pub fn revoke_all_for_user(&self, user: &str) -> usize {
+-        let mut count = 0;
+-
+-        if let Ok(entries) = fs::read_dir(&self.storage_path) {
+-            for entry in entries.flatten() {
+-                if let Ok(content) = fs::read_to_string(entry.path()) {
+-                    if let Ok(info) = serde_json::from_str::<TokenInfo>(&content) {
+-                        if info.user == user && fs::remove_file(entry.path()).is_ok() {
+-                            count += 1;
+-                        }
+-                    }
+-                }
++        let (store, paths) = self.kernel_store();
++        let (after, count) = k::tokens::revoke_all_for_user(&store, user.as_bytes());
++        let mut removed = count;
++        for (file, path) in store.files.iter().zip(&paths) {
++            let kept = after.files.iter().any(|f| f.prefix == file.prefix);
++            if !kept && fs::remove_file(path).is_err() {
++                removed -= 1;
+             }
+         }
+-
+         // Evict cached entries for this user so revoked tokens fail immediately
+-        if count > 0 {
+-            self.cache.write().retain(|_, v| v.user != user);
++        self.set_cache(&after.cache);
++        removed
++    }
++}
++
++/// `TokenStore::verify_token`'s inputs for one token, kept to carry out the
++/// kernel's writes and to name a storage error.
++pub(crate) struct Prepared {
++    token: String,
++    pub(crate) store: k::tokens::TokenStore,
++    pub(crate) crypto: k::oracle::Crypto,
++    info: Option<TokenInfo>,
++    storage_error: Option<String>,
++}
++
++impl Prepared {
++    pub(crate) fn result(
++        &self,
++        r: Result<(Vec<u8>, k::Role), k::tokens::TokenError>,
++    ) -> Result<(String, Role), TokenError> {
++        match r {
++            Ok((user, role)) => Ok((h5i::string(user), h5i::from_role(role))),
++            Err(e) => Err(self.error(e)),
+         }
++    }
+ 
+-        count
++    pub(crate) fn error(&self, e: k::tokens::TokenError) -> TokenError {
++        match e {
++            k::tokens::TokenError::InvalidFormat => TokenError::InvalidFormat,
++            k::tokens::TokenError::NotFound => TokenError::NotFound,
++            k::tokens::TokenError::Expired => TokenError::Expired,
++            k::tokens::TokenError::Storage => {
++                TokenError::Storage(self.storage_error.clone().unwrap_or_default())
++            }
++        }
+     }
+ }
+ 
+@@ -433,7 +556,7 @@ impl TokenStore {
+ /// `hex::encode`). We restrict to lowercase only to prevent case-mismatch
+ /// issues on case-sensitive filesystems.
+ fn is_valid_hash_prefix(s: &str) -> bool {
+-    s.len() == 16 && s.bytes().all(|b| matches!(b, b'0'..=b'9' | b'a'..=b'f'))
++    k::tokens::is_valid_hash_prefix(s.as_bytes())
+ }
+ 
+ /// Hash a token using Argon2id with random salt
+diff --git a/nora-registry/src/validation.rs b/nora-registry/src/validation.rs
+index 184f435..40dc54d 100644
+--- a/nora-registry/src/validation.rs
++++ b/nora-registry/src/validation.rs
+@@ -12,6 +12,7 @@ use axum::{
+     middleware::Next,
+     response::{IntoResponse, Response},
+ };
++use nora_kernel::validation as kv;
+ use std::fmt;
+ 
+ /// Validation errors
+@@ -55,8 +56,7 @@ impl std::error::Error for ValidationError {}
+ ///
+ /// Avoids allocating a lowercased copy of the whole string.
+ pub fn ends_with_ci(s: &str, suffix: &str) -> bool {
+-    s.len() >= suffix.len()
+-        && s.as_bytes()[s.len() - suffix.len()..].eq_ignore_ascii_case(suffix.as_bytes())
++    kv::ends_with_ci(s.as_bytes(), suffix.as_bytes())
+ }
+ 
+ /// Maximum allowed storage key length
+@@ -76,54 +76,7 @@ const MAX_REFERENCE_LENGTH: usize = 128;
+ /// - Null bytes
+ /// - Empty segments
+ pub fn validate_storage_key(key: &str) -> Result<(), ValidationError> {
+-    if key.is_empty() {
+-        return Err(ValidationError::EmptyInput);
+-    }
+-
+-    if key.len() > MAX_KEY_LENGTH {
+-        return Err(ValidationError::TooLong {
+-            max: MAX_KEY_LENGTH,
+-            actual: key.len(),
+-        });
+-    }
+-
+-    // Reject non-ASCII characters — all registry paths are ASCII-only
+-    if let Some(ch) = key.chars().find(|c| !c.is_ascii()) {
+-        return Err(ValidationError::ForbiddenCharacter(ch));
+-    }
+-
+-    // Check for null bytes
+-    if key.contains('\0') {
+-        return Err(ValidationError::ForbiddenCharacter('\0'));
+-    }
+-
+-    // Check for absolute paths
+-    if key.starts_with('/') || key.starts_with('\\') {
+-        return Err(ValidationError::PathTraversal);
+-    }
+-
+-    // Check for path traversal patterns
+-    if key.contains("..") {
+-        return Err(ValidationError::PathTraversal);
+-    }
+-
+-    // Check for backslash (Windows path separator)
+-    if key.contains('\\') {
+-        return Err(ValidationError::PathTraversal);
+-    }
+-
+-    // Check each segment
+-    for segment in key.split('/') {
+-        if segment.is_empty() && !key.is_empty() {
+-            // Allow trailing slash but not double slashes
+-            continue;
+-        }
+-        if segment == "." || segment == ".." {
+-            return Err(ValidationError::PathTraversal);
+-        }
+-    }
+-
+-    Ok(())
++    kv::validate_storage_key(key.as_bytes()).map_err(|e| error(e, key, MAX_KEY_LENGTH))
+ }
+ 
+ /// Validate Docker image name per OCI distribution spec.
+@@ -141,76 +94,7 @@ pub fn validate_storage_key(key: &str) -> Result<(), ValidationError> {
+ /// - `NGINX` ✗ (uppercase)
+ /// - `../escape` ✗ (path traversal)
+ pub fn validate_docker_name(name: &str) -> Result<(), ValidationError> {
+-    if name.is_empty() {
+-        return Err(ValidationError::EmptyInput);
+-    }
+-
+-    if name.len() > MAX_DOCKER_NAME_LENGTH {
+-        return Err(ValidationError::TooLong {
+-            max: MAX_DOCKER_NAME_LENGTH,
+-            actual: name.len(),
+-        });
+-    }
+-
+-    // Check for path traversal
+-    if name.contains("..") {
+-        return Err(ValidationError::PathTraversal);
+-    }
+-
+-    // Must contain only valid characters
+-    for c in name.chars() {
+-        if !matches!(c, 'a'..='z' | '0'..='9' | '_' | '.' | '-' | '/') {
+-            if c.is_ascii_uppercase() {
+-                return Err(ValidationError::InvalidDockerName(
+-                    "must be lowercase".to_string(),
+-                ));
+-            }
+-            return Err(ValidationError::ForbiddenCharacter(c));
+-        }
+-    }
+-
+-    // Cannot start with separator
+-    if name.starts_with('/') || name.starts_with('.') || name.starts_with('-') {
+-        return Err(ValidationError::InvalidDockerName(
+-            "cannot start with separator or special character".to_string(),
+-        ));
+-    }
+-
+-    // Cannot end with separator
+-    if name.ends_with('/') {
+-        return Err(ValidationError::InvalidDockerName(
+-            "cannot end with /".to_string(),
+-        ));
+-    }
+-
+-    // No consecutive separators (except ..)
+-    if name.contains("//") || name.contains("--") || name.contains("__") {
+-        return Err(ValidationError::InvalidDockerName(
+-            "consecutive separators not allowed".to_string(),
+-        ));
+-    }
+-
+-    // Each path segment must start with alphanumeric
+-    for segment in name.split('/') {
+-        if segment.is_empty() {
+-            return Err(ValidationError::InvalidDockerName(
+-                "empty path segment".to_string(),
+-            ));
+-        }
+-        // Safety: segment.is_empty() checked above, but use match for defense-in-depth
+-        let Some(first) = segment.chars().next() else {
+-            return Err(ValidationError::InvalidDockerName(
+-                "empty path segment".to_string(),
+-            ));
+-        };
+-        if !first.is_ascii_alphanumeric() {
+-            return Err(ValidationError::InvalidDockerName(
+-                "segment must start with alphanumeric".to_string(),
+-            ));
+-        }
+-    }
+-
+-    Ok(())
++    kv::validate_docker_name(name.as_bytes()).map_err(|e| error(e, name, MAX_DOCKER_NAME_LENGTH))
+ }
+ 
+ /// Validate content digest format.
+@@ -224,65 +108,7 @@ pub fn validate_docker_name(name: &str) -> Result<(), ValidationError> {
+ /// - `sha256:ABC` ✗ (uppercase)
+ /// - `md5:abc` ✗ (unsupported algorithm)
+ pub fn validate_digest(digest: &str) -> Result<(), ValidationError> {
+-    if digest.is_empty() {
+-        return Err(ValidationError::EmptyInput);
+-    }
+-
+-    // Check for path traversal (shouldn't be in digest but defensive check)
+-    if digest.contains("..") || digest.contains('/') {
+-        return Err(ValidationError::PathTraversal);
+-    }
+-
+-    let parts: Vec<&str> = digest.splitn(2, ':').collect();
+-    if parts.len() != 2 {
+-        return Err(ValidationError::InvalidDigest(
+-            "missing algorithm prefix (expected algo:hash)".to_string(),
+-        ));
+-    }
+-
+-    let (algo, hash) = (parts[0], parts[1]);
+-
+-    match algo {
+-        "sha256" => {
+-            if hash.len() != 64 {
+-                return Err(ValidationError::InvalidDigest(format!(
+-                    "sha256 hash must be 64 characters, got {}",
+-                    hash.len()
+-                )));
+-            }
+-        }
+-        "sha512" => {
+-            if hash.len() != 128 {
+-                return Err(ValidationError::InvalidDigest(format!(
+-                    "sha512 hash must be 128 characters, got {}",
+-                    hash.len()
+-                )));
+-            }
+-        }
+-        _ => {
+-            return Err(ValidationError::InvalidDigest(format!(
+-                "unsupported algorithm: {} (use sha256 or sha512)",
+-                algo
+-            )));
+-        }
+-    }
+-
+-    // Hash must be lowercase hex
+-    for c in hash.chars() {
+-        if !matches!(c, '0'..='9' | 'a'..='f') {
+-            if c.is_ascii_uppercase() {
+-                return Err(ValidationError::InvalidDigest(
+-                    "hash must be lowercase hex".to_string(),
+-                ));
+-            }
+-            return Err(ValidationError::InvalidDigest(format!(
+-                "invalid character in hash: {:?}",
+-                c
+-            )));
+-        }
+-    }
+-
+-    Ok(())
++    kv::validate_digest(digest.as_bytes()).map_err(|e| error(e, digest, 0))
+ }
+ 
+ /// Validate Docker tag or reference (tag or digest).
+@@ -294,45 +120,8 @@ pub fn validate_digest(digest: &str) -> Result<(), ValidationError> {
+ ///
+ /// References may also be digests (sha256:...).
+ pub fn validate_docker_reference(reference: &str) -> Result<(), ValidationError> {
+-    if reference.is_empty() {
+-        return Err(ValidationError::EmptyInput);
+-    }
+-
+-    if reference.len() > MAX_REFERENCE_LENGTH {
+-        return Err(ValidationError::TooLong {
+-            max: MAX_REFERENCE_LENGTH,
+-            actual: reference.len(),
+-        });
+-    }
+-
+-    // Check for path traversal
+-    if reference.contains("..") || reference.contains('/') {
+-        return Err(ValidationError::PathTraversal);
+-    }
+-
+-    // If it looks like a digest, validate as digest
+-    if reference.starts_with("sha256:") || reference.starts_with("sha512:") {
+-        return validate_digest(reference);
+-    }
+-
+-    // Validate as tag
+-    // Safety: empty check at function start, but use let-else for defense-in-depth
+-    let Some(first) = reference.chars().next() else {
+-        return Err(ValidationError::EmptyInput);
+-    };
+-    if !first.is_ascii_alphanumeric() {
+-        return Err(ValidationError::InvalidReference(
+-            "tag must start with alphanumeric".to_string(),
+-        ));
+-    }
+-
+-    for c in reference.chars() {
+-        if !matches!(c, 'a'..='z' | 'A'..='Z' | '0'..='9' | '.' | '_' | '-') {
+-            return Err(ValidationError::ForbiddenCharacter(c));
+-        }
+-    }
+-
+-    Ok(())
++    kv::validate_docker_reference(reference.as_bytes())
++        .map_err(|e| error(e, reference, MAX_REFERENCE_LENGTH))
+ }
+ 
+ /// Middleware that rejects requests with null bytes in the URI path.
+@@ -392,69 +181,58 @@ pub async fn reject_null_bytes_middleware(request: Request<Body>, next: Next) ->
+ /// assert!(!namespace_match("team-*-dev", "team-alpha/dev"));
+ /// ```
+ pub fn namespace_match(pattern: &str, value: &str) -> bool {
+-    // Universal no-op: the default scope, and any explicit `*`, matches everything.
+-    if pattern == "*" {
+-        return true;
+-    }
+-    let pat: Vec<&str> = pattern.split('/').collect();
+-    let val: Vec<&str> = value.split('/').collect();
+-    segments_match(&pat, &val)
+-}
+-
+-/// Recursive segment matcher backing [`namespace_match`]. Patterns are operator
+-/// config of a handful of segments, so the worst-case branching on `**` is not a
+-/// practical concern.
+-fn segments_match(pat: &[&str], val: &[&str]) -> bool {
+-    match pat.split_first() {
+-        // Pattern exhausted: match iff the value is also exhausted (anchored end).
+-        None => val.is_empty(),
+-        // `**` consumes zero or more value segments.
+-        Some((&"**", rest)) => {
+-            // Zero consumed:
+-            if segments_match(rest, val) {
+-                return true;
+-            }
+-            // One or more consumed (suffixes val[1..], val[2..], …, []):
+-            (0..val.len()).any(|i| segments_match(rest, &val[i + 1..]))
+-        }
+-        // Any other segment consumes exactly one value segment; `*` inside it
+-        // matches within that segment only (never across `/`).
+-        Some((&seg, rest)) => {
+-            !val.is_empty() && segment_glob(seg, val[0]) && segments_match(rest, &val[1..])
+-        }
+-    }
++    nora_kernel::namespace_match(pattern.as_bytes(), value.as_bytes())
+ }
+ 
+-/// Char-level glob for one path segment: `*` matches any run of characters
+-/// (the segment split has already removed every `/`). Iterative single-star
+-/// backtracking — O(len(pattern) · len(value)) worst case, no recursion, so
+-/// adversarial fuzz inputs can't blow the stack or go exponential.
+-fn segment_glob(pattern: &str, value: &str) -> bool {
+-    if !pattern.contains('*') {
+-        return pattern == value;
+-    }
+-    // Byte-wise is UTF-8-safe here: `*` is ASCII and never a continuation byte,
+-    // and non-wildcard bytes must be equal anyway.
+-    let (p, v) = (pattern.as_bytes(), value.as_bytes());
+-    let (mut pi, mut vi) = (0, 0);
+-    let mut backtrack: Option<(usize, usize)> = None;
+-    while vi < v.len() {
+-        if pi < p.len() && p[pi] == b'*' {
+-            backtrack = Some((pi, vi));
+-            pi += 1;
+-        } else if pi < p.len() && p[pi] == v[vi] {
+-            pi += 1;
+-            vi += 1;
+-        } else if let Some((star_pi, star_vi)) = backtrack {
+-            // Let the last `*` absorb one more byte and retry after it.
+-            backtrack = Some((star_pi, star_vi + 1));
+-            pi = star_pi + 1;
+-            vi = star_vi + 1;
+-        } else {
+-            return false;
++/// nora's error, with its message, for a kernel verdict on `input`. `max` is
++/// the length limit of the validator that ran.
++fn error(e: kv::ValidationError, input: &str, max: usize) -> ValidationError {
++    use kv::ValidationError as K;
++    let docker = |m: &str| ValidationError::InvalidDockerName(m.to_string());
++    let (algo, hash) = input.split_once(':').unwrap_or((input, ""));
++    match e {
++        K::PathTraversal => ValidationError::PathTraversal,
++        K::EmptyInput => ValidationError::EmptyInput,
++        K::TooLong => ValidationError::TooLong {
++            max,
++            actual: input.len(),
++        },
++        K::ForbiddenCharacter(b) => ValidationError::ForbiddenCharacter(b as char),
++        K::ForbiddenNonAscii => ValidationError::ForbiddenCharacter(
++            input.chars().find(|c| !c.is_ascii()).unwrap_or_default(),
++        ),
++        K::DockerNameUppercase => docker("must be lowercase"),
++        K::DockerNameStart => docker("cannot start with separator or special character"),
++        K::DockerNameEnd => docker("cannot end with /"),
++        K::DockerNameConsecutive => docker("consecutive separators not allowed"),
++        K::DockerNameEmptySegment => docker("empty path segment"),
++        K::DockerNameSegmentStart => docker("segment must start with alphanumeric"),
++        K::DigestNoAlgorithm => ValidationError::InvalidDigest(
++            "missing algorithm prefix (expected algo:hash)".to_string(),
++        ),
++        K::DigestLength => ValidationError::InvalidDigest(format!(
++            "{} hash must be {} characters, got {}",
++            algo,
++            if algo == "sha256" { 64 } else { 128 },
++            hash.len()
++        )),
++        K::DigestAlgorithm => ValidationError::InvalidDigest(format!(
++            "unsupported algorithm: {} (use sha256 or sha512)",
++            algo
++        )),
++        K::DigestUppercase => {
++            ValidationError::InvalidDigest("hash must be lowercase hex".to_string())
++        }
++        K::DigestCharacter => ValidationError::InvalidDigest(format!(
++            "invalid character in hash: {:?}",
++            hash.chars()
++                .find(|c| !matches!(c, '0'..='9' | 'a'..='f'))
++                .unwrap_or_default()
++        )),
++        K::ReferenceStart => {
++            ValidationError::InvalidReference("tag must start with alphanumeric".to_string())
+         }
+     }
+-    p[pi..].iter().all(|&b| b == b'*')
+ }
+ 
+ #[cfg(test)]

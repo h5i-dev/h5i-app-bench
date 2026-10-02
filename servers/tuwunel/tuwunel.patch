@@ -1,0 +1,542 @@
+diff --git a/Cargo.lock b/Cargo.lock
+index fd3a284..4bb9517 100644
+--- a/Cargo.lock
++++ b/Cargo.lock
+@@ -1703,6 +1703,21 @@ dependencies = [
+  "tracing",
+ ]
+ 
++[[package]]
++name = "h5i-app"
++version = "0.1.0"
++source = "registry+https://github.com/rust-lang/crates.io-index"
++checksum = "c9061c143bacf0efd14a56f54e6806e0567475207bfdf256461d9daa27671f6d"
++dependencies = [
++ "h5i-app-core",
++]
++
++[[package]]
++name = "h5i-app-core"
++version = "0.1.0"
++source = "registry+https://github.com/rust-lang/crates.io-index"
++checksum = "6dbff4d7a839943682ae38f15b7e8ee80f857643a4983339baf6f50efb9ab5e1"
++
+ [[package]]
+ name = "half"
+ version = "2.7.1"
+@@ -5428,6 +5443,10 @@ dependencies = [
+  "tuwunel_service",
+ ]
+ 
++[[package]]
++name = "tuwunel-kernel"
++version = "0.1.0"
++
+ [[package]]
+ name = "tuwunel_admin"
+ version = "1.9.3"
+@@ -5643,6 +5662,7 @@ dependencies = [
+  "derive_more",
+  "dtor",
+  "futures",
++ "h5i-app",
+  "hickory-resolver",
+  "http",
+  "image",
+@@ -5676,6 +5696,7 @@ dependencies = [
+  "tokio",
+  "tracing",
+  "tracing-subscriber",
++ "tuwunel-kernel",
+  "tuwunel_core",
+  "tuwunel_database",
+  "tuwunel_service",
+diff --git a/Cargo.toml b/Cargo.toml
+index e3ed16d..4e444a5 100644
+--- a/Cargo.toml
++++ b/Cargo.toml
+@@ -4,6 +4,7 @@
+ resolver = "2"
+ members = ["src/*"]
+ default-members = ["src/*"]
++exclude = ["h5i"]
+ 
+ [workspace.package]
+ authors = [
+diff --git a/src/service/Cargo.toml b/src/service/Cargo.toml
+index 4ce0b6e..3c44639 100644
+--- a/src/service/Cargo.toml
++++ b/src/service/Cargo.toml
+@@ -85,6 +85,9 @@ zstd_compression = [
+ ]
+ 
+ [dependencies]
++# The verified kernel (h5i-app-bench ports/tuwunel/kernel) and the h5i-app contract.
++tuwunel-kernel = { path = "../../h5i/tuwunel-kernel" }
++h5i-app = "0.1"
+ async-trait.workspace = true
+ aws-lc-rs.workspace = true
+ base64.workspace = true
+diff --git a/src/service/rooms/state_accessor/h5i.rs b/src/service/rooms/state_accessor/h5i.rs
+new file mode 100644
+index 0000000..97e4df6
+--- /dev/null
++++ b/src/service/rooms/state_accessor/h5i.rs
+@@ -0,0 +1,287 @@
++//! The shell around tuwunel's verified kernel (`tuwunel-kernel`, proven in
++//! Lean in h5i-app-bench). A visibility decision reads the facts upstream
++//! reads (the event's state hash, history visibility and memberships at it,
++//! the room's current state, the membership indexes) into a kernel snapshot
++//! of one room, and the kernel decides.
++//!
++//! Ids are numbers for one decision: the room is 1, events are numbered in
++//! the order they are read, and a user is `server * 1000 + n`, its server
++//! numbered by first appearance. A server with more than 999 users in one
++//! decision has no kernel form; the caller then evaluates upstream's way.
++
++use std::collections::HashMap;
++
++use ruma::{
++	EventId, OwnedEventId, OwnedServerName, OwnedUserId, RoomId, ServerName, UserId,
++	events::{
++		StateEventType,
++		room::{
++			history_visibility::{HistoryVisibility, RoomHistoryVisibilityEventContent},
++			member::{MembershipState, RoomMemberEventContent},
++		},
++	},
++};
++use tuwunel_core::{implement, matrix::Event};
++pub(super) use tuwunel_kernel as k;
++
++use crate::rooms::short::ShortStateHash;
++
++pub(super) const ROOM: u64 = 1;
++
++pub(super) struct Facts {
++	pub(super) s: k::Snapshot,
++	events: HashMap<OwnedEventId, u64>,
++	servers: HashMap<OwnedServerName, (u64, u64)>,
++	users: HashMap<OwnedUserId, u64>,
++	hashes: HashMap<ShortStateHash, u64>,
++}
++
++impl Facts {
++	pub(super) fn new() -> Self {
++		Self {
++			s: k::Snapshot {
++				rooms: vec![k::Room { id: ROOM, short: 1, state: k::StateRef::None }],
++				pdus: Vec::new(),
++				states: Vec::new(),
++				joined: Vec::new(),
++				invited: Vec::new(),
++				knocked: Vec::new(),
++				left: Vec::new(),
++				once_joined: Vec::new(),
++				relations: Vec::new(),
++				thread_activity: Vec::new(),
++				thread_latest: Vec::new(),
++				thread_participants: Vec::new(),
++				ignored: Vec::new(),
++				config: k::Config {
++					server_name: 0,
++					forbidden_remote_server_names: Vec::new(),
++					allowed_remote_server_names: Vec::new(),
++				},
++				current_count: 0,
++			},
++			events: HashMap::new(),
++			servers: HashMap::new(),
++			users: HashMap::new(),
++			hashes: HashMap::new(),
++		}
++	}
++
++	pub(super) fn server(&mut self, s: &ServerName) -> u64 {
++		let next = self.servers.len() as u64 + 1;
++		self.servers.entry(s.to_owned()).or_insert((next, 0)).0
++	}
++
++	pub(super) fn user(&mut self, u: &UserId) -> Option<u64> {
++		if let Some(&n) = self.users.get(u) {
++			return Some(n);
++		}
++		self.server(u.server_name());
++		let (server, count) = self.servers.get_mut(u.server_name())?;
++		if *count >= 999 {
++			return None;
++		}
++		*count += 1;
++		let n = *server * 1000 + *count;
++		self.users.insert(u.to_owned(), n);
++		Some(n)
++	}
++
++	pub(super) fn event(&mut self, e: &EventId) -> u64 {
++		let next = self.events.len() as u64 + 1;
++		*self.events.entry(e.to_owned()).or_insert(next)
++	}
++
++	pub(super) fn hash(&mut self, h: ShortStateHash) -> u64 {
++		let next = self.hashes.len() as u64 + 1;
++		*self.hashes.entry(h).or_insert(next)
++	}
++
++	fn has_pdu(&self, id: u64) -> bool { self.s.pdus.iter().any(|p| p.event_id == id) }
++
++	fn entry(&mut self, hash: u64, kind: k::Kind, state_key: u64, event_id: u64) {
++		let entry = k::StateEntry { kind, state_key, event_id };
++		match self.s.states.iter_mut().find(|s| s.hash == hash) {
++			| Some(set) =>
++				if !set.entries.contains(&entry) {
++					set.entries.push(entry);
++				},
++			| None => self.s.states.push(k::StateSet { hash, entries: vec![entry] }),
++		}
++	}
++
++	fn state_pdu(&mut self, id: u64, kind: k::Kind, state_key: u64) -> k::Pdu {
++		k::Pdu {
++			event_id: id,
++			room: ROOM,
++			sender: 0,
++			kind,
++			has_state_key: true,
++			state_key,
++			membership: k::MemberField::Absent,
++			history_visibility: k::HvField::Absent,
++			relates_to: k::Relates::None,
++			has_url: false,
++			outlier: true,
++			count: 0,
++			state: k::StateRef::None,
++		}
++	}
++}
++
++fn hv(v: &HistoryVisibility) -> k::HistoryVisibility {
++	match v {
++		| HistoryVisibility::WorldReadable => k::HistoryVisibility::WorldReadable,
++		| HistoryVisibility::Shared => k::HistoryVisibility::Shared,
++		| HistoryVisibility::Invited => k::HistoryVisibility::Invited,
++		| HistoryVisibility::Joined => k::HistoryVisibility::Joined,
++		| _ => k::HistoryVisibility::Custom(0),
++	}
++}
++
++fn membership(m: &MembershipState) -> k::Membership {
++	match m {
++		| MembershipState::Join => k::Membership::Join,
++		| MembershipState::Invite => k::Membership::Invite,
++		| MembershipState::Leave => k::Membership::Leave,
++		| MembershipState::Ban => k::Membership::Ban,
++		| MembershipState::Knock => k::Membership::Knock,
++		| _ => k::Membership::Custom(0),
++	}
++}
++
++/// The event's recorded state and timeline count (`pdu_shortstatehash`,
++/// `get_pdu_count`), and the history visibility at that state.
++#[implement(super::Service)]
++pub(super) async fn h5i_event(&self, f: &mut Facts, event_id: &EventId) -> Option<ShortStateHash> {
++	let hash = self
++		.services
++		.state
++		.pdu_shortstatehash(event_id)
++		.await
++		.ok()?;
++	let count = self
++		.services
++		.timeline
++		.get_pdu_count(event_id)
++		.await;
++	let id = f.event(event_id);
++	let h = f.hash(hash);
++	f.s.pdus.push(k::Pdu {
++		event_id: id,
++		room: ROOM,
++		sender: 0,
++		kind: k::Kind::Message,
++		has_state_key: false,
++		state_key: 0,
++		membership: k::MemberField::Absent,
++		history_visibility: k::HvField::Absent,
++		relates_to: k::Relates::None,
++		has_url: false,
++		outlier: count.is_err(),
++		count: count.map_or(0, |c| c.into_signed()),
++		state: k::StateRef::Hash(h),
++	});
++	self.h5i_history_visibility(f, hash).await;
++	Some(hash)
++}
++
++/// The `m.room.history_visibility` event in a state, if any.
++#[implement(super::Service)]
++pub(super) async fn h5i_history_visibility(&self, f: &mut Facts, hash: ShortStateHash) {
++	let Ok(pdu) = self
++		.state_get(hash, &StateEventType::RoomHistoryVisibility, "")
++		.await
++	else {
++		return;
++	};
++	let id = f.event(pdu.event_id());
++	let h = f.hash(hash);
++	if !f.has_pdu(id) {
++		let mut p = f.state_pdu(id, k::Kind::HistoryVisibility, 0);
++		p.history_visibility = pdu
++			.get_content::<RoomHistoryVisibilityEventContent>()
++			.map_or(k::HvField::Absent, |c| k::HvField::Is(hv(&c.history_visibility)));
++		f.s.pdus.push(p);
++	}
++	f.entry(h, k::Kind::HistoryVisibility, 0, id);
++}
++
++/// The user's `m.room.member` event in a state, if any.
++#[implement(super::Service)]
++pub(super) async fn h5i_member(
++	&self,
++	f: &mut Facts,
++	hash: ShortStateHash,
++	user_id: &UserId,
++) -> Option<()> {
++	let user = f.user(user_id)?;
++	let Ok(pdu) = self
++		.state_get(hash, &StateEventType::RoomMember, user_id.as_str())
++		.await
++	else {
++		return Some(());
++	};
++	let id = f.event(pdu.event_id());
++	let h = f.hash(hash);
++	if !f.has_pdu(id) {
++		let mut p = f.state_pdu(id, k::Kind::Member, user);
++		p.membership = pdu
++			.get_content::<RoomMemberEventContent>()
++			.map_or(k::MemberField::Absent, |c| k::MemberField::Is(membership(&c.membership)));
++		f.s.pdus.push(p);
++	}
++	f.entry(h, k::Kind::Member, user, id);
++	Some(())
++}
++
++/// The room's current state (`get_room_shortstatehash`) and its history
++/// visibility.
++#[implement(super::Service)]
++pub(super) async fn h5i_room_state(&self, f: &mut Facts, room_id: &RoomId) {
++	let Ok(hash) = self
++		.services
++		.state
++		.get_room_shortstatehash(room_id)
++		.await
++	else {
++		return;
++	};
++	let h = f.hash(hash);
++	f.s.rooms[0].state = k::StateRef::Hash(h);
++	self.h5i_history_visibility(f, hash).await;
++}
++
++/// Which membership indexes hold the user. `userroomid_leftstate` and
++/// `roomuserid_leftcount` are one table in the kernel: `left_count` reads the
++/// count (`get_left_count`), otherwise the row stands for `is_left`.
++#[implement(super::Service)]
++pub(super) async fn h5i_indexes(
++	&self,
++	f: &mut Facts,
++	user_id: &UserId,
++	room_id: &RoomId,
++	left_count: bool,
++) -> Option<()> {
++	let user = f.user(user_id)?;
++	let cache = &self.services.state_cache;
++	let row = || k::UserRoom { user, room: ROOM };
++	if cache.is_joined(user_id, room_id).await {
++		f.s.joined.push(row());
++	}
++	if cache.is_invited(user_id, room_id).await {
++		f.s.invited.push(row());
++	}
++	if cache.once_joined(user_id, room_id).await {
++		f.s.once_joined.push(row());
++	}
++	let left = if left_count {
++		cache.get_left_count(room_id, user_id).await.ok()
++	} else {
++		cache.is_left(user_id, room_id).await.then_some(0)
++	};
++	if let Some(count) = left {
++		f.s.left.push(k::LeftRow { user, room: ROOM, count });
++	}
++	Some(())
++}
+diff --git a/src/service/rooms/state_accessor/mod.rs b/src/service/rooms/state_accessor/mod.rs
+index a5b19a4..88016b7 100644
+--- a/src/service/rooms/state_accessor/mod.rs
++++ b/src/service/rooms/state_accessor/mod.rs
+@@ -4,6 +4,7 @@
+ //! centralizes visibility, redaction, erasure, invite, and tombstone decisions.
+ 
+ mod erased;
++mod h5i;
+ mod room_state;
+ mod server_can;
+ mod state;
+diff --git a/src/service/rooms/state_accessor/server_can.rs b/src/service/rooms/state_accessor/server_can.rs
+index 275e70d..3334f01 100644
+--- a/src/service/rooms/state_accessor/server_can.rs
++++ b/src/service/rooms/state_accessor/server_can.rs
+@@ -13,11 +13,14 @@
+ };
+ use tuwunel_core::{implement, utils::stream::ReadyExt};
+ 
++use super::h5i;
++
+ /// Reports whether a server may see an event over federation.
+ ///
+ /// Missing event state is allowed, and missing or invalid history visibility
+ /// defaults to `shared`. For `invited` and `joined`, a currently joined user
+ /// from the origin must also hold the required membership at the event.
++/// Decided by `tuwunel_kernel::svc_accessor::server_can_see_event`.
+ #[implement(super::Service)]
+ #[tracing::instrument(skip_all, level = "trace")]
+ pub async fn server_can_see_event(
+@@ -25,6 +28,40 @@ pub async fn server_can_see_event(
+ 	origin: &ServerName,
+ 	room_id: &RoomId,
+ 	event_id: &EventId,
++) -> bool {
++	let mut f = h5i::Facts::new();
++	let server = f.server(origin);
++	let event = f.event(event_id);
++	if let Some(hash) = self.h5i_event(&mut f, event_id).await {
++		let members: Vec<_> = self
++			.services
++			.state_cache
++			.room_members(room_id)
++			.map(ToOwned::to_owned)
++			.collect()
++			.await;
++		for member in &members {
++			let Some(user) = f.user(member) else {
++				return self
++					.server_can_see_event_upstream(origin, room_id, event_id)
++					.await;
++			};
++			f.s.joined
++				.push(h5i::k::UserRoom { user, room: h5i::ROOM });
++			if member.server_name() == origin {
++				self.h5i_member(&mut f, hash, member).await;
++			}
++		}
++	}
++	h5i::k::svc_accessor::server_can_see_event(&f.s, server, h5i::ROOM, event)
++}
++
++#[implement(super::Service)]
++async fn server_can_see_event_upstream(
++	&self,
++	origin: &ServerName,
++	room_id: &RoomId,
++	event_id: &EventId,
+ ) -> bool {
+ 	let Ok(shortstatehash) = self
+ 		.services
+diff --git a/src/service/rooms/state_accessor/user_can.rs b/src/service/rooms/state_accessor/user_can.rs
+index d7f637f..ce6d933 100644
+--- a/src/service/rooms/state_accessor/user_can.rs
++++ b/src/service/rooms/state_accessor/user_can.rs
+@@ -23,6 +23,7 @@
+ 	utils::FutureBoolExt,
+ };
+ 
++use super::h5i;
+ use crate::rooms::{short::ShortStateHash, state::RoomMutexGuard};
+ 
+ /// Reports whether a user may redact an event in a room.
+@@ -100,6 +101,7 @@ pub async fn user_can_redact(
+ /// Missing event state is allowed, and missing or invalid history visibility
+ /// defaults to `shared`. The `shared` decision also accounts for the user's
+ /// membership intervals around the event.
++/// Decided by `tuwunel_kernel::svc_accessor::user_can_see_event`.
+ #[implement(super::Service)]
+ #[tracing::instrument(skip_all, level = "trace")]
+ pub async fn user_can_see_event(
+@@ -107,6 +109,28 @@ pub async fn user_can_see_event(
+ 	user_id: &UserId,
+ 	room_id: &RoomId,
+ 	event_id: &EventId,
++) -> bool {
++	let mut f = h5i::Facts::new();
++	let Some(user) = f.user(user_id) else {
++		return self
++			.user_can_see_event_upstream(user_id, room_id, event_id)
++			.await;
++	};
++	let event = f.event(event_id);
++	if let Some(hash) = self.h5i_event(&mut f, event_id).await {
++		self.h5i_member(&mut f, hash, user_id).await;
++		self.h5i_indexes(&mut f, user_id, room_id, true)
++			.await;
++	}
++	h5i::k::svc_accessor::user_can_see_event(&f.s, user, h5i::ROOM, event)
++}
++
++#[implement(super::Service)]
++async fn user_can_see_event_upstream(
++	&self,
++	user_id: &UserId,
++	room_id: &RoomId,
++	event_id: &EventId,
+ ) -> bool {
+ 	let Ok(shortstatehash) = self
+ 		.services
+@@ -193,9 +217,24 @@ async fn user_shared_history(
+ /// history grants access; invited and shared visibility consult current
+ /// invitation or retained once-joined metadata. Missing visibility defaults
+ /// to `shared`.
++/// Decided by `tuwunel_kernel::svc_accessor::user_can_see_state_events`.
+ #[implement(super::Service)]
+ #[tracing::instrument(skip_all, level = "trace")]
+ pub async fn user_can_see_state_events(&self, user_id: &UserId, room_id: &RoomId) -> bool {
++	let mut f = h5i::Facts::new();
++	let Some(user) = f.user(user_id) else {
++		return self
++			.user_can_see_state_events_upstream(user_id, room_id)
++			.await;
++	};
++	self.h5i_room_state(&mut f, room_id).await;
++	self.h5i_indexes(&mut f, user_id, room_id, false)
++		.await;
++	h5i::k::svc_accessor::user_can_see_state_events(&f.s, user, h5i::ROOM)
++}
++
++#[implement(super::Service)]
++async fn user_can_see_state_events_upstream(&self, user_id: &UserId, room_id: &RoomId) -> bool {
+ 	if self
+ 		.services
+ 		.state_cache
+@@ -236,8 +275,23 @@ pub async fn user_can_see_state_events(&self, user_id: &UserId, room_id: &RoomId
+ /// Current join, invite, retained left membership, or world-readable history
+ /// grants access. Forgetting a room clears the retained left membership and can
+ /// therefore remove this visibility.
++/// Decided by `tuwunel_kernel::svc_accessor::user_can_see_room`.
+ #[implement(super::Service)]
+ pub async fn user_can_see_room(&self, user_id: &UserId, room_id: &RoomId) -> bool {
++	let mut f = h5i::Facts::new();
++	let Some(user) = f.user(user_id) else {
++		return self
++			.user_can_see_room_upstream(user_id, room_id)
++			.await;
++	};
++	self.h5i_room_state(&mut f, room_id).await;
++	self.h5i_indexes(&mut f, user_id, room_id, false)
++		.await;
++	h5i::k::svc_accessor::user_can_see_room(&f.s, user, h5i::ROOM)
++}
++
++#[implement(super::Service)]
++async fn user_can_see_room_upstream(&self, user_id: &UserId, room_id: &RoomId) -> bool {
+ 	let state_cache = &self.services.state_cache;
+ 	let joined = state_cache.is_joined(user_id, room_id);
+ 	let invited = state_cache.is_invited(user_id, room_id);
