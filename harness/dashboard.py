@@ -1,4 +1,4 @@
-"""Write the data behind the benchmark dashboard (docs/benchmark/).
+"""Write the data behind the benchmark dashboard (docs/, served at benchmark.h5i.dev).
 
   python3 harness/dashboard.py <out dir> [--no-proofs]
 
