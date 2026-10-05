@@ -1,0 +1,628 @@
+diff --git a/Cargo.lock b/Cargo.lock
+index ea3235a..39d6c0e 100644
+--- a/Cargo.lock
++++ b/Cargo.lock
+@@ -3055,6 +3055,21 @@ dependencies = [
+  "tracing",
+ ]
+ 
++[[package]]
++name = "h5i-app"
++version = "0.1.0"
++source = "registry+https://github.com/rust-lang/crates.io-index"
++checksum = "c9061c143bacf0efd14a56f54e6806e0567475207bfdf256461d9daa27671f6d"
++dependencies = [
++ "h5i-app-core",
++]
++
++[[package]]
++name = "h5i-app-core"
++version = "0.1.0"
++source = "registry+https://github.com/rust-lang/crates.io-index"
++checksum = "6dbff4d7a839943682ae38f15b7e8ee80f857643a4983339baf6f50efb9ab5e1"
++
+ [[package]]
+ name = "half"
+ version = "1.8.3"
+@@ -3873,6 +3888,10 @@ dependencies = [
+  "uuid",
+ ]
+ 
++[[package]]
++name = "kanidm-kernel"
++version = "0.1.0"
++
+ [[package]]
+ name = "kanidm-ldap-sync"
+ version = "1.12.0-dev"
+@@ -4168,11 +4187,13 @@ dependencies = [
+  "dyn-clone",
+  "flate2",
+  "futures",
++ "h5i-app",
+  "hashbrown 0.17.1",
+  "hex",
+  "idlset",
+  "image",
+  "itertools 0.15.0",
++ "kanidm-kernel",
+  "kanidm_build_profiles",
+  "kanidm_lib_crypto",
+  "kanidm_proto",
+diff --git a/Cargo.toml b/Cargo.toml
+index 96d94ee..ca7f00c 100644
+--- a/Cargo.toml
++++ b/Cargo.toml
+@@ -49,6 +49,7 @@ members = [
+ ]
+ 
+ exclude = [
++    "h5i",
+     "tools/device_flow",
+     "tools/oauth2-tester",
+ ]
+diff --git a/server/lib/Cargo.toml b/server/lib/Cargo.toml
+index 034285e..88b7318 100644
+--- a/server/lib/Cargo.toml
++++ b/server/lib/Cargo.toml
+@@ -25,6 +25,9 @@ dev-oauth2-device-flow = [] # still-in-development oauth2 device flow support
+ test = []                   # Enable this for cross-package test features.
+ 
+ [dependencies]
++# The verified kernel (h5i-app-bench ports/kanidm/kernel) and the h5i-app contract.
++kanidm-kernel = { path = "../../h5i/kanidm-kernel" }
++h5i-app = "0.1"
+ base64 = { workspace = true }
+ base64urlsafedata = { workspace = true }
+ bitflags = { workspace = true }
+diff --git a/server/lib/src/filter.rs b/server/lib/src/filter.rs
+index cca2e1a..f38ac3b 100644
+--- a/server/lib/src/filter.rs
++++ b/server/lib/src/filter.rs
+@@ -604,6 +604,22 @@ impl Filter<FilterValid> {
+         Ok(resolved_filt)
+     }
+ 
++    /// The filter as `kanidm_kernel::FilterComp`; `None` when it compares a
++    /// value the kernel has no form for.
++    pub(crate) fn to_h5i(&self) -> Option<kanidm_kernel::FilterComp> {
++        self.state.inner.to_h5i(false)
++    }
++
++    /// For a request filter, whose values the kernel never compares (it reads
++    /// only the attribute names): a value without a kernel form becomes an
++    /// empty string.
++    pub(crate) fn to_h5i_names(&self) -> kanidm_kernel::FilterComp {
++        self.state
++            .inner
++            .to_h5i(true)
++            .unwrap_or(kanidm_kernel::FilterComp::Invalid(Vec::new()))
++    }
++
+     pub fn get_attr_set(&self) -> BTreeSet<Attribute> {
+         // Recurse through the filter getting an attribute set.
+         let mut r_set = BTreeSet::new();
+@@ -818,6 +834,31 @@ impl FromStr for Filter<FilterInvalid> {
+ }
+ 
+ impl FilterComp {
++    fn to_h5i(&self, names_only: bool) -> Option<kanidm_kernel::FilterComp> {
++        use crate::server::access::h5i::attr;
++        use kanidm_kernel::FilterComp as K;
++        let pv = |v: &PartialValue| match crate::server::access::h5i::pv(v) {
++            Some(x) => Some(x),
++            None if names_only => Some(kanidm_kernel::PartialValue::Utf8(Vec::new())),
++            None => None,
++        };
++        let list = |v: &[FilterComp]| v.iter().map(|f| f.to_h5i(names_only)).collect::<Option<Vec<_>>>();
++        Some(match self {
++            FilterComp::Eq(a, v) => K::Eq(attr(a), pv(v)?),
++            FilterComp::Cnt(a, v) => K::Cnt(attr(a), pv(v)?),
++            FilterComp::Stw(a, v) => K::Stw(attr(a), pv(v)?),
++            FilterComp::Enw(a, v) => K::Enw(attr(a), pv(v)?),
++            FilterComp::Pres(a) => K::Pres(attr(a)),
++            FilterComp::LessThan(a, v) => K::LessThan(attr(a), pv(v)?),
++            FilterComp::Or(v) => K::Or(list(v)?),
++            FilterComp::And(v) => K::And(list(v)?),
++            FilterComp::Inclusion(v) => K::Inclusion(list(v)?),
++            FilterComp::AndNot(f) => K::AndNot(Box::new(f.to_h5i(names_only)?)),
++            FilterComp::SelfUuid => K::SelfUuid,
++            FilterComp::Invalid(a) => K::Invalid(attr(a)),
++        })
++    }
++
+     fn new(fc: FC) -> Self {
+         match fc {
+             FC::Eq(a, v) => FilterComp::Eq(a, v),
+diff --git a/server/lib/src/server/access/h5i.rs b/server/lib/src/server/access/h5i.rs
+new file mode 100644
+index 0000000..968a134
+--- /dev/null
++++ b/server/lib/src/server/access/h5i.rs
+@@ -0,0 +1,252 @@
++//! The shell around kanidm's verified access-control kernel (`kanidm-kernel`,
++//! proven in Lean in h5i-app-bench). Profiles, identities, entries, filters
++//! and modify lists are converted to the kernel's types; the kernel decides.
++//! Values of syntaxes the kernel has no form for keep their attribute (so
++//! presence and attribute names are exact) with no values; a filter or
++//! profile that compares such a value has no kernel form, and the caller
++//! falls back to the upstream evaluation.
++
++use std::collections::BTreeSet;
++use std::sync::Arc;
++
++use hashbrown::HashMap;
++use uuid::Uuid;
++
++pub(crate) use kanidm_kernel as k;
++
++use super::profiles::{
++    AccessControlCreate, AccessControlDelete, AccessControlModify, AccessControlProfile,
++    AccessControlReceiver, AccessControlSearch, AccessControlTarget,
++};
++use super::{Access, AccessClass, AccessEffectivePermission};
++use crate::prelude::*;
++use crate::server::identity::{AccessScope, IdentType, InternalRole};
++use crate::value::SyntaxType;
++
++pub(crate) fn attr(a: &Attribute) -> Vec<u8> {
++    a.as_str().as_bytes().to_vec()
++}
++
++pub(crate) fn attrs<'a>(it: impl IntoIterator<Item = &'a Attribute>) -> Vec<Vec<u8>> {
++    it.into_iter().map(attr).collect()
++}
++
++fn attr_back(b: &[u8]) -> Attribute {
++    Attribute::from(String::from_utf8_lossy(b).as_ref())
++}
++
++fn uuid(u: &Uuid) -> k::Uuid {
++    u.as_u128()
++}
++
++/// `None` for a value the kernel has no form for.
++pub(crate) fn pv(v: &PartialValue) -> Option<k::PartialValue> {
++    Some(match v {
++        PartialValue::Utf8(s) => k::PartialValue::Utf8(s.as_bytes().to_vec()),
++        PartialValue::Iutf8(s) => k::PartialValue::Iutf8(s.as_bytes().to_vec()),
++        PartialValue::Iname(s) => k::PartialValue::Iname(s.as_bytes().to_vec()),
++        PartialValue::Uuid(u) => k::PartialValue::Uuid(uuid(u)),
++        PartialValue::Refer(u) => k::PartialValue::Refer(uuid(u)),
++        PartialValue::Uint32(n) => k::PartialValue::Uint32(*n),
++        _ => return None,
++    })
++}
++
++/// A modify-list value. Only `class` values are compared by the kernel; other
++/// values of unsupported syntaxes stand in as an empty string.
++fn value(a: &Attribute, v: &Value) -> Option<k::Value> {
++    Some(match v {
++        Value::Utf8(s) => k::PartialValue::Utf8(s.as_bytes().to_vec()),
++        Value::Iutf8(s) => k::PartialValue::Iutf8(s.as_bytes().to_vec()),
++        Value::Iname(s) => k::PartialValue::Iname(s.as_bytes().to_vec()),
++        Value::Uuid(u) => k::PartialValue::Uuid(uuid(u)),
++        Value::Refer(u) => k::PartialValue::Refer(uuid(u)),
++        Value::Uint32(n) => k::PartialValue::Uint32(*n),
++        _ if *a == Attribute::Class => return None,
++        _ => k::PartialValue::Utf8(Vec::new()),
++    })
++}
++
++fn mod_pv(a: &Attribute, p: &PartialValue) -> Option<k::PartialValue> {
++    match pv(p) {
++        Some(x) => Some(x),
++        None if *a == Attribute::Class => None,
++        None => Some(k::PartialValue::Utf8(Vec::new())),
++    }
++}
++
++fn strings(it: impl Iterator<Item = impl AsRef<str>>) -> Vec<Vec<u8>> {
++    it.map(|s| s.as_ref().as_bytes().to_vec()).collect()
++}
++
++pub(crate) fn valueset(vs: &ValueSet) -> k::ValueSet {
++    let empty = || k::ValueSet::Utf8(Vec::new());
++    match vs.syntax() {
++        SyntaxType::Utf8String => vs.as_utf8_set().map(|s| k::ValueSet::Utf8(strings(s.iter()))),
++        SyntaxType::Utf8StringInsensitive => vs.as_iutf8_set().map(|s| k::ValueSet::Iutf8(strings(s.iter()))),
++        SyntaxType::Utf8StringIname => vs.as_iname_set().map(|s| k::ValueSet::Iname(strings(s.iter()))),
++        SyntaxType::Uuid => vs.as_uuid_set().map(|s| k::ValueSet::Uuid(s.iter().map(uuid).collect())),
++        SyntaxType::ReferenceUuid => vs.as_refer_set().map(|s| k::ValueSet::Refer(s.iter().map(uuid).collect())),
++        SyntaxType::Uint32 => vs.as_uint32_set().map(|s| k::ValueSet::Uint32(s.iter().copied().collect())),
++        SyntaxType::OauthScopeMap => {
++            vs.as_oauthscopemap().map(|m| k::ValueSet::OauthScopeMap(m.keys().map(uuid).collect()))
++        }
++        _ => None,
++    }
++    .unwrap_or_else(empty)
++}
++
++pub(crate) fn entry<V, S>(e: &Entry<V, S>, id: Option<Uuid>) -> k::Entry {
++    let attrs = e
++        .get_ava_names()
++        .filter_map(|name| {
++            let a = Attribute::from(name);
++            e.get_ava_set(&a).map(|vs| k::Ava { attr: attr(&a), vs: valueset(vs) })
++        })
++        .collect();
++    k::Entry { uuid: id.map(|u| uuid(&u)).unwrap_or(0), attrs }
++}
++
++pub(crate) fn sealed(e: &Arc<EntrySealedCommitted>) -> k::Entry {
++    entry(e.as_ref(), Some(e.get_uuid()))
++}
++
++pub(crate) fn identity(i: &Identity) -> k::Identity {
++    let origin = match &i.origin {
++        IdentType::User(u) => k::IdentType::User(k::IdentUser { entry: sealed(&u.entry) }),
++        IdentType::Synch(u) => k::IdentType::Synch(uuid(u)),
++        IdentType::Internal(r) => k::IdentType::Internal(match r {
++            InternalRole::System => k::InternalRole::System,
++            InternalRole::Migration => k::InternalRole::Migration,
++            InternalRole::AccountRequest => k::InternalRole::AccountRequest,
++            InternalRole::MessageQueue => k::InternalRole::MessageQueue,
++        }),
++    };
++    let scope = match i.scope {
++        AccessScope::ReadOnly => k::AccessScope::ReadOnly,
++        AccessScope::ReadWrite => k::AccessScope::ReadWrite,
++        AccessScope::Synchronise => k::AccessScope::Synchronise,
++    };
++    k::Identity { origin, scope }
++}
++
++fn profile(p: &AccessControlProfile) -> Option<k::profiles::AccessControlProfile> {
++    let receiver = match &p.receiver {
++        AccessControlReceiver::None => k::profiles::AccessControlReceiver::None,
++        AccessControlReceiver::Group(g) => k::profiles::AccessControlReceiver::Group(g.iter().map(uuid).collect()),
++        AccessControlReceiver::EntryManager => k::profiles::AccessControlReceiver::EntryManager,
++    };
++    let target = match &p.target {
++        AccessControlTarget::None => k::profiles::AccessControlTarget::None,
++        AccessControlTarget::Scope(f) => k::profiles::AccessControlTarget::Scope(f.to_h5i()?),
++    };
++    Some(k::profiles::AccessControlProfile { receiver, target })
++}
++
++/// The loaded profiles and sync agreements; `None` when a profile has no
++/// kernel form.
++pub(crate) fn inner(
++    search: &[AccessControlSearch],
++    create: &[AccessControlCreate],
++    modify: &[AccessControlModify],
++    delete: &[AccessControlDelete],
++    sync: &HashMap<Uuid, BTreeSet<Attribute>>,
++) -> Option<k::AccessControlsInner> {
++    Some(k::AccessControlsInner {
++        acps_search: search
++            .iter()
++            .map(|a| Some(k::profiles::AccessControlSearch { acp: profile(&a.acp)?, attrs: attrs(&a.attrs) }))
++            .collect::<Option<_>>()?,
++        acps_create: create
++            .iter()
++            .map(|a| {
++                Some(k::profiles::AccessControlCreate {
++                    acp: profile(&a.acp)?,
++                    classes: strings(a.classes.iter()),
++                    attrs: attrs(&a.attrs),
++                })
++            })
++            .collect::<Option<_>>()?,
++        acps_modify: modify
++            .iter()
++            .map(|a| {
++                Some(k::profiles::AccessControlModify {
++                    acp: profile(&a.acp)?,
++                    presattrs: attrs(&a.presattrs),
++                    remattrs: attrs(&a.remattrs),
++                    pres_classes: strings(a.pres_classes.iter()),
++                    rem_classes: strings(a.rem_classes.iter()),
++                })
++            })
++            .collect::<Option<_>>()?,
++        acps_delete: delete
++            .iter()
++            .map(|a| Some(k::profiles::AccessControlDelete { acp: profile(&a.acp)? }))
++            .collect::<Option<_>>()?,
++        sync_agreements: sync
++            .iter()
++            .map(|(u, a)| k::SyncAgreement { uuid: uuid(u), attrs: attrs(a) })
++            .collect(),
++    })
++}
++
++pub(crate) fn modlist(ml: &ModifyList<ModifyValid>) -> Option<Vec<k::Modify>> {
++    ml.iter()
++        .map(|m| {
++            Some(match m {
++                Modify::Present(a, v) => k::Modify::Present(attr(a), value(a, v)?),
++                Modify::Removed(a, p) => k::Modify::Removed(attr(a), mod_pv(a, p)?),
++                Modify::Purged(a) => k::Modify::Purged(attr(a)),
++                Modify::Assert(a, p) => k::Modify::Assert(attr(a), mod_pv(a, p)?),
++                Modify::Set(a, vs) => {
++                    if *a == Attribute::Class && vs.as_iutf8_set().is_none() {
++                        return None;
++                    }
++                    k::Modify::Set(attr(a), valueset(vs))
++                }
++            })
++        })
++        .collect()
++}
++
++fn access(a: k::Access) -> Access {
++    match a {
++        k::Access::Grant => Access::Grant,
++        k::Access::Deny => Access::Deny,
++        k::Access::Allow(v) => Access::Allow(v.iter().map(|x| attr_back(x)).collect()),
++    }
++}
++
++fn access_class(a: k::AccessClass) -> AccessClass {
++    match a {
++        k::AccessClass::Grant => AccessClass::Grant,
++        k::AccessClass::Deny => AccessClass::Deny,
++        k::AccessClass::Allow(v) => {
++            AccessClass::Allow(v.into_iter().map(|c| String::from_utf8_lossy(&c).into_owned().into()).collect())
++        }
++    }
++}
++
++pub(crate) fn effective(p: k::AccessEffectivePermission) -> AccessEffectivePermission {
++    AccessEffectivePermission {
++        ident: Uuid::from_u128(p.ident),
++        target: Uuid::from_u128(p.target),
++        delete: p.delete,
++        search: access(p.search),
++        modify_pres: access(p.modify_pres),
++        modify_rem: access(p.modify_rem),
++        modify_pres_class: access_class(p.modify_pres_class),
++        modify_rem_class: access_class(p.modify_rem_class),
++    }
++}
++
++/// The attribute set of a kernel-reduced entry, for upstream's projection.
++pub(crate) fn reduced_attrs(e: &k::EntryReduced) -> BTreeSet<Attribute> {
++    e.attrs.iter().map(|a| attr_back(&a.attr)).collect()
++}
++
++/// An operation the kernel could not take: a profile or modify list compares
++/// a value it has no form for.
++pub(crate) fn fallback(op: &str) {
++    debug!(op, "access decision without a kernel form, upstream evaluation");
++}
+diff --git a/server/lib/src/server/access/mod.rs b/server/lib/src/server/access/mod.rs
+index 5a29573..3b59f52 100644
+--- a/server/lib/src/server/access/mod.rs
++++ b/server/lib/src/server/access/mod.rs
+@@ -47,6 +47,7 @@ const ACP_RESOLVE_FILTER_CACHE_MAX: usize = 256;
+ const ACP_RESOLVE_FILTER_CACHE_LOCAL: usize = 0;
+ 
+ mod create;
++pub(crate) mod h5i;
+ mod delete;
+ mod migration;
+ mod modify;
+@@ -219,6 +220,158 @@ pub trait AccessControlsTransaction<'a> {
+     #[allow(clippy::mut_from_ref)]
+     fn get_acp_resolve_filter_cache(&self) -> &mut ResolveFilterCacheReadTxn<'a>;
+ 
++    /// The profiles as the kernel's `AccessControlsInner`.
++    fn h5i_inner(&self) -> Option<h5i::k::AccessControlsInner> {
++        h5i::inner(
++            self.get_search(),
++            self.get_create(),
++            self.get_modify(),
++            self.get_delete(),
++            self.get_sync_agreements(),
++        )
++    }
++
++    /// Decided by `kanidm_kernel::access::filter_entries`.
++    fn filter_entries(
++        &self,
++        ident: &Identity,
++        filter_orig: &Filter<FilterValid>,
++        entries: Vec<Arc<EntrySealedCommitted>>,
++    ) -> Result<Vec<Arc<EntrySealedCommitted>>, OperationError> {
++        if let Some(ctl) = self.h5i_inner() {
++            let f = filter_orig.to_h5i_names();
++            let ke: Vec<_> = entries.iter().map(h5i::sealed).collect();
++            let kept = h5i::k::access::filter_entries(&ctl, &h5i::identity(ident), &f, &ke)
++                .map_err(|_| OperationError::InvalidState)?;
++            let keep: std::collections::BTreeSet<u128> = kept.iter().map(|e| e.uuid).collect();
++            return Ok(entries
++                .into_iter()
++                .filter(|e| keep.contains(&e.get_uuid().as_u128()))
++                .collect());
++        }
++        h5i::fallback("filter_entries");
++        self.filter_entries_upstream(ident, filter_orig, entries)
++    }
++
++    /// Decided by `kanidm_kernel::access::search_filter_entry_attributes`;
++    /// upstream projects each entry onto the attributes the kernel kept.
++    fn search_filter_entry_attributes(
++        &self,
++        se: &SearchEvent,
++        entries: Vec<Arc<EntrySealedCommitted>>,
++    ) -> Result<Vec<EntryReducedCommitted>, OperationError> {
++        if let Some(ctl) = self.h5i_inner() {
++            let f = se.filter_orig.to_h5i_names();
++            let kse = h5i::k::SearchEvent {
++                ident: h5i::identity(&se.ident),
++                filter_orig: f,
++                attrs: se.attrs.as_ref().map(|a| h5i::attrs(a)),
++                effective_access_check: se.effective_access_check,
++            };
++            let ke: Vec<_> = entries.iter().map(h5i::sealed).collect();
++            let reduced = h5i::k::access::search_filter_entry_attributes(&ctl, &kse, &ke)
++                .map_err(|_| OperationError::InvalidState)?;
++            return Ok(reduced
++                .into_iter()
++                .filter_map(|r| {
++                    let e = entries.iter().find(|e| e.get_uuid().as_u128() == r.uuid)?;
++                    let allowed = h5i::reduced_attrs(&r);
++                    let effective = r.effective_access.map(|p| Box::new(h5i::effective(p)));
++                    Some(e.reduce_attributes(&allowed, effective))
++                })
++                .collect());
++        }
++        h5i::fallback("search_filter_entry_attributes");
++        self.search_filter_entry_attributes_upstream(se, entries)
++    }
++
++    /// Decided by `kanidm_kernel::access::modify_allow_operation`.
++    fn modify_allow_operation(
++        &self,
++        me: &ModifyEvent,
++        entries: &[Arc<EntrySealedCommitted>],
++    ) -> Result<bool, OperationError> {
++        if let (Some(ctl), Some(modlist)) = (self.h5i_inner(), h5i::modlist(&me.modlist)) {
++            let kme = h5i::k::ModifyEvent { ident: h5i::identity(&me.ident), modlist };
++            let ke: Vec<_> = entries.iter().map(h5i::sealed).collect();
++            return h5i::k::access::modify_allow_operation(&ctl, &kme, &ke)
++                .map_err(|_| OperationError::InvalidState);
++        }
++        h5i::fallback("modify_allow_operation");
++        self.modify_allow_operation_upstream(me, entries)
++    }
++
++    /// Decided by `kanidm_kernel::access::batch_modify_allow_operation`.
++    fn batch_modify_allow_operation(
++        &self,
++        me: &BatchModifyEvent,
++        entries: &[Arc<EntrySealedCommitted>],
++    ) -> Result<bool, OperationError> {
++        let modset: Option<Vec<_>> = me
++            .modset
++            .iter()
++            .map(|(u, ml)| Some(h5i::k::ModSetEntry { uuid: u.as_u128(), modlist: h5i::modlist(ml)? }))
++            .collect();
++        if let (Some(ctl), Some(modset)) = (self.h5i_inner(), modset) {
++            let kme = h5i::k::BatchModifyEvent { ident: h5i::identity(&me.ident), modset };
++            let ke: Vec<_> = entries.iter().map(h5i::sealed).collect();
++            return h5i::k::access::batch_modify_allow_operation(&ctl, &kme, &ke)
++                .map_err(|_| OperationError::InvalidState);
++        }
++        h5i::fallback("batch_modify_allow_operation");
++        self.batch_modify_allow_operation_upstream(me, entries)
++    }
++
++    /// Decided by `kanidm_kernel::access::create_allow_operation`.
++    fn create_allow_operation(
++        &self,
++        ce: &CreateEvent,
++        entries: &[Entry<EntryInit, EntryNew>],
++    ) -> Result<bool, OperationError> {
++        if let Some(ctl) = self.h5i_inner() {
++            let kce = h5i::k::CreateEvent { ident: h5i::identity(&ce.ident) };
++            let ke: Vec<_> = entries.iter().map(|e| h5i::entry(e, None)).collect();
++            return h5i::k::access::create_allow_operation(&ctl, &kce, &ke)
++                .map_err(|_| OperationError::InvalidState);
++        }
++        h5i::fallback("create_allow_operation");
++        self.create_allow_operation_upstream(ce, entries)
++    }
++
++    /// Decided by `kanidm_kernel::access::delete_allow_operation`.
++    fn delete_allow_operation(
++        &self,
++        de: &DeleteEvent,
++        entries: &[Arc<EntrySealedCommitted>],
++    ) -> Result<bool, OperationError> {
++        if let Some(ctl) = self.h5i_inner() {
++            let kde = h5i::k::DeleteEvent { ident: h5i::identity(&de.ident) };
++            let ke: Vec<_> = entries.iter().map(h5i::sealed).collect();
++            return h5i::k::access::delete_allow_operation(&ctl, &kde, &ke)
++                .map_err(|_| OperationError::InvalidState);
++        }
++        h5i::fallback("delete_allow_operation");
++        self.delete_allow_operation_upstream(de, entries)
++    }
++
++    /// Decided by `kanidm_kernel::access::effective_permission_check`.
++    fn effective_permission_check(
++        &self,
++        ident: &Identity,
++        attrs: Option<BTreeSet<Attribute>>,
++        entries: &[Arc<EntrySealedCommitted>],
++    ) -> Result<Vec<AccessEffectivePermission>, OperationError> {
++        if let Some(ctl) = self.h5i_inner() {
++            let ka = attrs.as_ref().map(|a| h5i::attrs(a));
++            let ke: Vec<_> = entries.iter().map(h5i::sealed).collect();
++            return h5i::k::access::effective_permission_check(&ctl, &h5i::identity(ident), ka.as_ref(), &ke)
++                .map(|v| v.into_iter().map(h5i::effective).collect())
++                .map_err(|_| OperationError::InvalidState);
++        }
++        h5i::fallback("effective_permission_check");
++        self.effective_permission_check_upstream(ident, attrs, entries)
++    }
++
+     #[instrument(level = "trace", name = "access::search_related_acp", skip_all)]
+     fn search_related_acp<'b>(
+         &'b self,
+@@ -307,7 +460,7 @@ pub trait AccessControlsTransaction<'a> {
+     }
+ 
+     #[instrument(level = "debug", name = "access::filter_entries", skip_all)]
+-    fn filter_entries(
++    fn filter_entries_upstream(
+         &self,
+         ident: &Identity,
+         filter_orig: &Filter<FilterValid>,
+@@ -377,7 +530,7 @@ pub trait AccessControlsTransaction<'a> {
+         name = "access::search_filter_entry_attributes",
+         skip_all
+     )]
+-    fn search_filter_entry_attributes(
++    fn search_filter_entry_attributes_upstream(
+         &self,
+         se: &SearchEvent,
+         entries: Vec<Arc<EntrySealedCommitted>>,
+@@ -524,7 +677,7 @@ pub trait AccessControlsTransaction<'a> {
+     }
+ 
+     #[instrument(level = "debug", name = "access::modify_allow_operation", skip_all)]
+-    fn modify_allow_operation(
++    fn modify_allow_operation_upstream(
+         &self,
+         me: &ModifyEvent,
+         entries: &[Arc<EntrySealedCommitted>],
+@@ -550,7 +703,7 @@ pub trait AccessControlsTransaction<'a> {
+         name = "access::batch_modify_allow_operation",
+         skip_all
+     )]
+-    fn batch_modify_allow_operation(
++    fn batch_modify_allow_operation_upstream(
+         &self,
+         me: &BatchModifyEvent,
+         entries: &[Arc<EntrySealedCommitted>],
+@@ -744,7 +897,7 @@ pub trait AccessControlsTransaction<'a> {
+     }
+ 
+     #[instrument(level = "debug", name = "access::create_allow_operation", skip_all)]
+-    fn create_allow_operation(
++    fn create_allow_operation_upstream(
+         &self,
+         ce: &CreateEvent,
+         entries: &[Entry<EntryInit, EntryNew>],
+@@ -865,7 +1018,7 @@ pub trait AccessControlsTransaction<'a> {
+     }
+ 
+     #[instrument(level = "debug", name = "access::delete_allow_operation", skip_all)]
+-    fn delete_allow_operation(
++    fn delete_allow_operation_upstream(
+         &self,
+         de: &DeleteEvent,
+         entries: &[Arc<EntrySealedCommitted>],
+@@ -889,7 +1042,7 @@ pub trait AccessControlsTransaction<'a> {
+     }
+ 
+     #[instrument(level = "debug", name = "access::effective_permission_check", skip_all)]
+-    fn effective_permission_check(
++    fn effective_permission_check_upstream(
+         &self,
+         ident: &Identity,
+         attrs: Option<BTreeSet<Attribute>>,
