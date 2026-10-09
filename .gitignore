@@ -1,5 +1,6 @@
 tasks/
 results/runs/
+results/runs-aborted/
 results/scratch/
 results/tmp*
 env/h5i-app-lib/
@@ -10,6 +11,7 @@ ports/*/proofs/Scratch.lean
 results/protocol1/
 results/campaigns/
 results/build-logs/
+scripts/vertex_gemini_gateway.py
 
 # Host-side model access: keys, routing, prices, batch runs.
 harness/proxy.py

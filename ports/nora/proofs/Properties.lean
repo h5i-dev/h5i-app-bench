@@ -1,5 +1,6 @@
 import Spec
-open Aeneas Aeneas.Std Result nora_kernel nora_kernel.Spec H5iAppLib
+open Aeneas Aeneas.Std Result nora_kernel nora_kernel.Spec
+open H5iAppLib hiding lit
 
 namespace nora_kernel.Properties
 

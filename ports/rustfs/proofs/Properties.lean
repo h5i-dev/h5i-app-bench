@@ -1,5 +1,6 @@
 import Spec
-open Aeneas Aeneas.Std Result rustfs_kernel rustfs_kernel.Spec H5iAppLib
+open Aeneas Aeneas.Std Result rustfs_kernel rustfs_kernel.Spec
+open H5iAppLib hiding lit
 
 namespace rustfs_kernel.Properties
 
@@ -36,10 +37,12 @@ theorem deny_only_ignores_allows (sts : Slice stmts.Statement) (a : stmts.Args) 
   sorry
 
 /-- Force-delete is granted only by an Allow statement that names it:
-`s3:*` and `NotAction` statements never grant it. -/
+`s3:*` and `NotAction` statements never grant it. The statements' actions are
+ones upstream can parse; the port's wider `(family, name)` would let e.g.
+`(Admin, "*")` match force-delete by wildcard. -/
 theorem force_delete_needs_explicit_grant (sts : Slice stmts.Statement) (a : stmts.Args) (e : condfuncs.Env)
     (h : policies.policy_is_allowed sts a e = ok true) (ho : a.is_owner = false) (hd : a.deny_only = false)
-    (hf : IsForceDelete a.action) :
+    (hf : IsForceDelete a.action) (hw : ∀ st ∈ sts.val, ∀ x ∈ st.actions.val, UpstreamAction x) :
     ∃ st ∈ sts.val, st.effect = .Allow ∧ ∃ x ∈ st.actions.val, x.name = a.action.name := by
   sorry
 
@@ -99,9 +102,12 @@ theorem parse_i64_spec (s : Slice U8) :
 /-! ## Policy variables -/
 
 /-- Variable resolution terminates when no value it substitutes contains a
-variable reference. -/
+variable reference: it returns, or fails, but does not diverge. It can fail:
+each `${aws:userid}` yields one result per claim value, so the results can
+outgrow `Usize.max` (in Rust, a capacity-overflow panic or out of memory). -/
 theorem resolution_terminates (ctx : awsvars.VarContext) (p : Slice U8) (hv : PlainValues ctx) :
-    ∃ r, awsvars.resolve_aws_variables ctx p = ok r := by
+    (∃ r, awsvars.resolve_aws_variables ctx p = ok r) ∨
+      ∃ err, awsvars.resolve_aws_variables ctx p = fail err := by
   sorry
 
 end rustfs_kernel.Properties

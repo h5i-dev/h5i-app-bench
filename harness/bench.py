@@ -8,9 +8,12 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 CHECKOUTS = {"h5i": Path.home() / "Dev/h5i", "bench": ROOT}
-LEAN = Path.home() / ".elan/toolchains/leanprover--lean4---v4.31.0"
-PACKAGES = CHECKOUTS["h5i"] / "examples/app/docs/proofs/.lake/packages"
-APPLIB = ROOT / "env/h5i-app-lib"
+# What the sandbox mounts. Each Lean check reads several GB of .olean files
+# from these, so on a host whose home is on NFS, point them at a copy on local
+# disk (BENCH_LEAN, BENCH_PACKAGES, BENCH_APPLIB).
+LEAN = Path(os.environ.get("BENCH_LEAN", Path.home() / ".elan/toolchains/leanprover--lean4---v4.31.0"))
+PACKAGES = Path(os.environ.get("BENCH_PACKAGES", CHECKOUTS["h5i"] / "crates/h5i-app-core/proofs/.lake/packages"))
+APPLIB = Path(os.environ.get("BENCH_APPLIB", ROOT / "env/h5i-app-lib"))
 IMAGE = "h5i-app-bench:0"
 STD_AXIOMS = {"propext", "Classical.choice", "Quot.sound"}
 AENEAS_REQ = ('require aeneas from git\n  "https://github.com/AeneasVerif/aeneas" @ '
@@ -60,7 +63,10 @@ def statement(t):
 
 
 def opens(t):
-    return f"open Aeneas Aeneas.Std Result {t['ns']} {t['ns']}.Spec H5iAppLib"
+    # H5iAppLib now exports `lit` (Text.lean, List U8), which clashes with the
+    # ports' `Spec.lit` (List ℕ); open the lib without it so the spec's wins.
+    return (f"open Aeneas Aeneas.Std Result {t['ns']} {t['ns']}.Spec\n"
+            f"open H5iAppLib hiding lit")
 
 
 def generated_modules(t):

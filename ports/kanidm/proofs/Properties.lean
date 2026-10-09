@@ -155,8 +155,11 @@ theorem match_eq_spec (e : Entry) (a : alloc.vec.Vec U8) (v : PartialValue) :
       ∃ vs, ava e (nats a.val) = some vs ∧ ValueContains vs v := by
   sorry
 
-/-- The substring test of `Cnt` terms is `List.IsInfix`. -/
-theorem str_contains_spec (hay needle : Slice U8) :
+/-- The substring test of `Cnt` terms is `List.IsInfix`, for a haystack shorter
+than `Usize.max`. Aeneas lets a slice be `Usize.max` long, and then the loop's
+checked `i + needle.len()` overflows and the function fails; Rust slices hold at
+most `isize::MAX` bytes, so the bound only excludes lengths Rust cannot have. -/
+theorem str_contains_spec (hay needle : Slice U8) (hlt : hay.length < Usize.max) :
     valueset.str_contains hay needle = ok (decide (needle.val <:+: hay.val)) := by
   sorry
 

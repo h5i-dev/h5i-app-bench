@@ -1,5 +1,6 @@
 import Spec
-open Aeneas Aeneas.Std Result oxicloud_kernel oxicloud_kernel.Spec H5iAppLib
+open Aeneas Aeneas.Std Result oxicloud_kernel oxicloud_kernel.Spec
+open H5iAppLib hiding lit
 
 namespace oxicloud_kernel.Properties
 
@@ -80,10 +81,12 @@ theorem personal_drive_members_fixed (db db' : model.Db) (env : grantapi.Env) (c
   sorry
 
 /-- Creating or setting a role never leaves a drive that had an owner
-without one. -/
+without one, in a database whose grants are unique per subject and resource
+as the table's key makes them. -/
 theorem drive_keeps_an_owner (db db' : model.Db) (env : grantapi.Env) (caller d : U64) (s : model.Subject)
     (role : model.Role) (e : Option I64) (req : grantapi.Request) (rep : grantapi.Reply)
     (hq : req = .CreateGrant (.Drive d) s role e ∨ req = .SetRole (.Drive d) s role e)
+    (hu : GrantsUnique db)
     (ho : 0 < ownerCount db d) (h : grantapi.transition db env caller req = ok (db', .Ok rep)) :
     0 < ownerCount db' d := by
   sorry

@@ -28,6 +28,7 @@ docker build -t h5i-app-bench:0 env
 python3 harness/bench.py build          # tasks/<id>/, validated against the reference proofs
 python3 harness/run.py nora-lifetime gpt-5.5
 python3 harness/run.py nora-lifetime claude-sonnet-5-5 --agent claude
+scripts/run-batch.sh claude-opus-5-5 claude 3   # dataset/subset20.txt, detached; log in results/campaigns/
 python3 harness/dashboard.py docs/data         # publish results to the dashboard
 ```
 

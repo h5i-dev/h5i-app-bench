@@ -628,7 +628,7 @@ ns = "kanidm_kernel"
 given = ["Spec.lean"]
 module = "Properties"
 theorem = "kanidm_kernel.Properties.str_contains_spec"
-property = "The substring test used by filter terms is List.IsInfix."
+property = "The substring test used by filter terms is List.IsInfix, for haystacks shorter than Usize.max."
 
 [[task]]
 id = "kanidm-effective-total"
@@ -690,7 +690,7 @@ ns = "rustfs_kernel"
 given = ["Spec.lean"]
 module = "Properties"
 theorem = "rustfs_kernel.Properties.force_delete_needs_explicit_grant"
-property = "Force-delete is granted only by an Allow statement that names it; s3:* never grants it."
+property = "Force-delete is granted only by an Allow statement that names it; s3:* never grants it (for actions upstream can parse)."
 
 [[task]]
 id = "rustfs-not-action-force-delete"
@@ -780,7 +780,7 @@ ns = "rustfs_kernel"
 given = ["Spec.lean"]
 module = "Properties"
 theorem = "rustfs_kernel.Properties.resolution_terminates"
-property = "Policy variable resolution terminates when no substituted value contains a variable reference."
+property = "Policy variable resolution terminates (returns or fails, never diverges) when no substituted value contains a variable reference."
 
 # tuwunel (ports/tuwunel): who may see what in a Matrix room.
 
@@ -1064,7 +1064,7 @@ ns = "oxicloud_kernel"
 given = ["Spec.lean"]
 module = "Properties"
 theorem = "oxicloud_kernel.Properties.drive_keeps_an_owner"
-property = "Creating a grant or setting a role never leaves a drive that had an owner without one."
+property = "Creating a grant or setting a role never leaves a drive that had an owner without one (with grants unique per subject and resource)."
 
 [[task]]
 id = "oxicloud-refused-writes-nothing"

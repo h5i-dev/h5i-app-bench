@@ -35,6 +35,23 @@ termination_by p n => p.length + n.length
 def IsForceDelete (a : acts.Action) : Prop :=
   a.family = .S3 ∧ (nats a.name.val = lit "s3:ForceDeleteBucket" ∨ nats a.name.val = lit "s3:ForceDeleteObject")
 
+/-- The prefix of a family's action names. -/
+def familyPrefix : acts.Family → List Nat
+  | .S3 => lit "s3:"
+  | .Admin => lit "admin:"
+  | .Sts => lit "sts:"
+  | .Kms => lit "kms:"
+  | .None => []
+
+/-- An action upstream's `Action::try_from` can produce. Upstream actions are an
+enum per family, so a name carries its family's prefix and has no `*` or `?`
+except in the family wildcard (`s3:*`, `admin:*`, ...; a bare `*` parses as
+`s3:*`), and `Action::None` has the empty name. The port's `(family, name)`
+pairs are wider, e.g. `(Admin, "*")`. -/
+def UpstreamAction (x : acts.Action) : Prop :=
+  (x.family = .None → x.name.val = []) ∧ familyPrefix x.family <+: nats x.name.val ∧
+  (nats x.name.val = familyPrefix x.family ++ lit "*" ∨ (42 ∉ nats x.name.val ∧ 63 ∉ nats x.name.val))
+
 /-- A cleaned path: `.`, or `/`-separated segments that are neither empty
 nor `.`, after an optional leading `/`. -/
 def CleanShape (c : List Nat) : Prop :=

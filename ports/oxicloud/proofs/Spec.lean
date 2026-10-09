@@ -37,6 +37,12 @@ def driveRow (db : model.Db) (d : U64) : Option model.Drive := db.drives.val.fin
 def SameButGrants (a b : model.Db) : Prop :=
   a.users = b.users ∧ a.memberships = b.memberships ∧ a.drives = b.drives ∧ a.folders = b.folders ∧ a.files = b.files
 
+/-- At most one grant per subject and resource: `storage.role_grants`'s
+`UNIQUE (subject_type, subject_id, resource_type, resource_id)`, which
+upstream's `set_role` (`ON CONFLICT .. DO UPDATE`) relies on. -/
+def GrantsUnique (db : model.Db) : Prop :=
+  (db.grants.val.map (fun g => (g.subject, g.resource))).Nodup
+
 /-- Owner grants on a drive, whatever their expiry. -/
 def ownerCount (db : model.Db) (d : U64) : Nat :=
   (db.grants.val.filter (fun g => decide (g.resource = .Drive d ∧ g.role = .Owner))).length

@@ -1,5 +1,6 @@
 import Spec
-open Aeneas Aeneas.Std Result tuwunel_kernel tuwunel_kernel.Spec H5iAppLib
+open Aeneas Aeneas.Std Result tuwunel_kernel tuwunel_kernel.Spec
+open H5iAppLib hiding lit
 
 namespace tuwunel_kernel.Properties
 
