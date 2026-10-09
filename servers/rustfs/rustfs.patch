@@ -1,0 +1,567 @@
+diff --git a/Cargo.lock b/Cargo.lock
+index 519567e..4774b49 100644
+--- a/Cargo.lock
++++ b/Cargo.lock
+@@ -5016,6 +5016,21 @@ dependencies = [
+  "tracing",
+ ]
+ 
++[[package]]
++name = "h5i-app"
++version = "0.1.0"
++source = "registry+https://github.com/rust-lang/crates.io-index"
++checksum = "c9061c143bacf0efd14a56f54e6806e0567475207bfdf256461d9daa27671f6d"
++dependencies = [
++ "h5i-app-core",
++]
++
++[[package]]
++name = "h5i-app-core"
++version = "0.1.0"
++source = "registry+https://github.com/rust-lang/crates.io-index"
++checksum = "6dbff4d7a839943682ae38f15b7e8ee80f857643a4983339baf6f50efb9ab5e1"
++
+ [[package]]
+ name = "half"
+ version = "2.7.1"
+@@ -10139,6 +10154,10 @@ dependencies = [
+  "webpki-roots 1.0.9",
+ ]
+ 
++[[package]]
++name = "rustfs-kernel"
++version = "0.1.0"
++
+ [[package]]
+ name = "rustfs-keystone"
+ version = "1.0.1"
+@@ -10466,6 +10485,7 @@ dependencies = [
+  "async-trait",
+  "base64-simd",
+  "futures",
++ "h5i-app",
+  "hotpath",
+  "ipnetwork",
+  "jiff",
+@@ -10478,6 +10498,7 @@ dependencies = [
+  "rustfs-config",
+  "rustfs-credentials",
+  "rustfs-crypto",
++ "rustfs-kernel",
+  "serde",
+  "serde_json",
+  "strum",
+diff --git a/Cargo.toml b/Cargo.toml
+index 5672326..0c009d6 100644
+--- a/Cargo.toml
++++ b/Cargo.toml
+@@ -13,6 +13,7 @@
+ # limitations under the License.
+ 
+ [workspace]
++exclude = ["h5i"]
+ members = [
+     "rustfs", # Core file system implementation
+     "crates/audit", # Audit target management system with multi-target fan-out
+diff --git a/crates/policy/Cargo.toml b/crates/policy/Cargo.toml
+index 21fd0f8..eb07fa7 100644
+--- a/crates/policy/Cargo.toml
++++ b/crates/policy/Cargo.toml
+@@ -52,6 +52,9 @@ hotpath-cpu = [
+ ]
+ 
+ [dependencies]
++# The verified kernel (h5i-app-bench ports/rustfs/kernel) and the h5i-app contract.
++rustfs-kernel = { path = "../../h5i/rustfs-kernel" }
++h5i-app = "0.1"
+ rustfs-credentials = { workspace = true }
+ rustfs-config = { workspace = true, features = ["opa"] }
+ tokio = { workspace = true, features = ["macros", "rt-multi-thread", "time"] }
+diff --git a/crates/policy/src/policy.rs b/crates/policy/src/policy.rs
+index 651dae0..c17ef05 100644
+--- a/crates/policy/src/policy.rs
++++ b/crates/policy/src/policy.rs
+@@ -16,6 +16,7 @@ pub mod action;
+ mod doc;
+ mod effect;
+ mod function;
++pub(crate) mod h5i;
+ mod id;
+ pub mod opa;
+ #[allow(clippy::module_inception)]
+diff --git a/crates/policy/src/policy/function.rs b/crates/policy/src/policy/function.rs
+index 55bf7e1..273f333 100644
+--- a/crates/policy/src/policy/function.rs
++++ b/crates/policy/src/policy/function.rs
+@@ -98,6 +98,17 @@ impl Functions {
+         true
+     }
+ 
++    /// The kernel's `Functions`; `None` when a condition has no kernel form
++    /// (`Date*`, `BinaryEquals`).
++    pub(crate) fn to_kernel(&self) -> Option<rustfs_kernel::condfuncs::Functions> {
++        let conv = |cs: &[Condition]| cs.iter().map(Condition::to_kernel).collect::<Option<Vec<_>>>();
++        Some(rustfs_kernel::condfuncs::Functions {
++            for_any_value: conv(&self.for_any_value)?,
++            for_all_values: conv(&self.for_all_values)?,
++            for_normal: conv(&self.for_normal)?,
++        })
++    }
++
+     pub fn is_empty(&self) -> bool {
+         self.for_all_values.is_empty() && self.for_any_value.is_empty() && self.for_normal.is_empty()
+     }
+diff --git a/crates/policy/src/policy/function/addr.rs b/crates/policy/src/policy/function/addr.rs
+index aa08948..1d63d19 100644
+--- a/crates/policy/src/policy/function/addr.rs
++++ b/crates/policy/src/policy/function/addr.rs
+@@ -45,6 +45,12 @@ impl AddrFunc {
+ #[serde(transparent)]
+ pub struct AddrFuncValue(Vec<IpNetwork>);
+ 
++impl AddrFuncValue {
++    pub(crate) fn networks(&self) -> &[IpNetwork] {
++        &self.0
++    }
++}
++
+ impl<'de> Deserialize<'de> for AddrFuncValue {
+     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+     where
+diff --git a/crates/policy/src/policy/function/bool_null.rs b/crates/policy/src/policy/function/bool_null.rs
+index cb2940d..18ca158 100644
+--- a/crates/policy/src/policy/function/bool_null.rs
++++ b/crates/policy/src/policy/function/bool_null.rs
+@@ -49,6 +49,12 @@ impl BoolFunc {
+ #[derive(Clone, PartialEq, Eq, Debug)]
+ pub struct BoolFuncValue(bool);
+ 
++impl BoolFuncValue {
++    pub(crate) fn value(&self) -> bool {
++        self.0
++    }
++}
++
+ impl Serialize for BoolFuncValue {
+     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+     where
+diff --git a/crates/policy/src/policy/function/condition.rs b/crates/policy/src/policy/function/condition.rs
+index d80cb9e..4c472bb 100644
+--- a/crates/policy/src/policy/function/condition.rs
++++ b/crates/policy/src/policy/function/condition.rs
+@@ -22,6 +22,16 @@ use time::OffsetDateTime;
+ use super::key_name::KeyName;
+ use super::{addr::AddrFunc, binary::BinaryFunc, bool_null::BoolFunc, date::DateFunc, number::NumberFunc, string::StringFunc};
+ use crate::policy::function::Quantifier;
++use rustfs_kernel::condfuncs as k;
++
++/// The kernel's `Key`: the full name (`s3:prefix`), `KeyName::name()` and the variable.
++pub(crate) fn key(key: &super::key::Key) -> k::Key {
++    k::Key {
++        key_name: <&str>::from(&key.name).as_bytes().to_vec(),
++        name: key.name.name().as_bytes().to_vec(),
++        variable: key.variable.as_ref().map(|v| v.as_bytes().to_vec()),
++    }
++}
+ 
+ #[derive(Clone, Deserialize, Debug)]
+ pub enum Condition {
+@@ -286,6 +296,76 @@ impl Condition {
+         })
+     }
+ 
++    /// The kernel's form of this condition, `None` for `Date*` and
++    /// `BinaryEquals`. Nested `IfExists` wrappers behave as one.
++    pub(crate) fn to_kernel(&self) -> Option<k::Condition> {
++        use Condition::*;
++        let str_op = |op: k::StrOp, f: &super::string::StringFunc| {
++            k::Cond::Str(
++                op,
++                f.0.iter()
++                    .map(|kv| (key(&kv.key), kv.values.0.iter().map(|v| v.as_bytes().to_vec()).collect()))
++                    .collect(),
++            )
++        };
++        let num = |op: k::NumOp, if_exists: bool, f: &super::number::NumberFunc| {
++            k::Cond::Num(op, if_exists, f.0.iter().map(|kv| (key(&kv.key), kv.values.value())).collect())
++        };
++        let bools = |f: &BoolFunc| f.0.iter().map(|kv| (key(&kv.key), kv.values.value())).collect();
++        let ip = |negate: bool, f: &AddrFunc| {
++            k::Cond::Ip(
++                negate,
++                f.0.iter()
++                    .map(|kv| {
++                        let nets = kv
++                            .values
++                            .networks()
++                            .iter()
++                            .map(|n| (crate::policy::h5i::ip(n.ip()), n.prefix()))
++                            .collect();
++                        (key(&kv.key), nets)
++                    })
++                    .collect(),
++            )
++        };
++        let cond = match self {
++            StringEquals(f) => str_op(k::StrOp::StringEquals, f),
++            StringNotEquals(f) => str_op(k::StrOp::StringNotEquals, f),
++            StringEqualsIgnoreCase(f) => str_op(k::StrOp::StringEqualsIgnoreCase, f),
++            StringNotEqualsIgnoreCase(f) => str_op(k::StrOp::StringNotEqualsIgnoreCase, f),
++            StringLike(f) => str_op(k::StrOp::StringLike, f),
++            StringNotLike(f) => str_op(k::StrOp::StringNotLike, f),
++            ArnLike(f) => str_op(k::StrOp::ArnLike, f),
++            ArnNotLike(f) => str_op(k::StrOp::ArnNotLike, f),
++            ArnEquals(f) => str_op(k::StrOp::ArnEquals, f),
++            ArnNotEquals(f) => str_op(k::StrOp::ArnNotEquals, f),
++            IpAddress(f) => ip(false, f),
++            NotIpAddress(f) => ip(true, f),
++            Null(f) => k::Cond::Null(bools(f)),
++            Bool(f) => k::Cond::Bool(bools(f)),
++            NumericEquals(f) => num(k::NumOp::Eq, false, f),
++            NumericNotEquals(f) => num(k::NumOp::Ne, false, f),
++            NumericLessThan(f) => num(k::NumOp::Lt, false, f),
++            NumericLessThanEquals(f) => num(k::NumOp::Le, false, f),
++            NumericGreaterThan(f) => num(k::NumOp::Gt, false, f),
++            NumericGreaterThanIfExists(f) => num(k::NumOp::Ge, true, f),
++            NumericGreaterThanEquals(f) => num(k::NumOp::Ge, false, f),
++            IfExists(inner) => {
++                let mut c = inner.to_kernel()?;
++                c.if_exists = true;
++                return Some(c);
++            }
++            BinaryEquals(_)
++            | DateEquals(_)
++            | DateNotEquals(_)
++            | DateLessThan(_)
++            | DateLessThanEquals(_)
++            | DateGreaterThan(_)
++            | DateGreaterThanEquals(_) => return None,
++        };
++        Some(k::Condition { if_exists: false, cond })
++    }
++
+     #[inline]
+     pub fn is_negate(&self) -> bool {
+         use Condition::*;
+diff --git a/crates/policy/src/policy/function/number.rs b/crates/policy/src/policy/function/number.rs
+index 7666e4a..5d92b8d 100644
+--- a/crates/policy/src/policy/function/number.rs
++++ b/crates/policy/src/policy/function/number.rs
+@@ -25,6 +25,12 @@ pub type NumberFunc = InnerFunc<NumberFuncValue>;
+ #[derive(Clone, PartialEq, Eq, Debug)]
+ pub struct NumberFuncValue(i64);
+ 
++impl NumberFuncValue {
++    pub(crate) fn value(&self) -> i64 {
++        self.0
++    }
++}
++
+ impl NumberFunc {
+     pub fn evaluate(&self, op: impl Fn(&i64, &i64) -> bool, if_exists: bool, values: &HashMap<String, Vec<String>>) -> bool {
+         for inner in self.0.iter() {
+diff --git a/crates/policy/src/policy/h5i.rs b/crates/policy/src/policy/h5i.rs
+new file mode 100644
+index 0000000..e31a6a1
+--- /dev/null
++++ b/crates/policy/src/policy/h5i.rs
+@@ -0,0 +1,205 @@
++//! The shell around rustfs's verified kernel (`rustfs-kernel`, proven in Lean
++//! in h5i-app-bench). Parsed policies and request arguments are converted to
++//! the kernel's types and the kernel decides. Parsing, IP addresses and the
++//! clock stay here.
++
++use std::collections::HashMap;
++use std::convert::Infallible;
++
++use h5i_app::{Kernel, TenantId};
++use rustfs_kernel as k;
++use serde_json::Value;
++use time::OffsetDateTime;
++
++use super::action::Action;
++use super::resource::Resource;
++use super::statement::BPStatement;
++use super::{Args, BucketPolicyArgs, Effect, ResourceSet, Statement};
++
++pub(crate) fn ip(a: std::net::IpAddr) -> k::condfuncs::IpAddr {
++    match a {
++        std::net::IpAddr::V4(v) => k::condfuncs::IpAddr::V4(u32::from(v)),
++        std::net::IpAddr::V6(v) => k::condfuncs::IpAddr::V6(u128::from(v)),
++    }
++}
++
++fn b(s: &str) -> Vec<u8> {
++    s.as_bytes().to_vec()
++}
++
++pub(crate) fn action(a: &Action) -> k::acts::Action {
++    let family = match a {
++        Action::S3Action(_) => k::acts::Family::S3,
++        Action::AdminAction(_) => k::acts::Family::Admin,
++        Action::StsAction(_) => k::acts::Family::Sts,
++        Action::KmsAction(_) => k::acts::Family::Kms,
++        Action::None => k::acts::Family::None,
++    };
++    k::acts::Action {
++        family,
++        name: b(<&str>::from(a)),
++    }
++}
++
++fn actions(set: &[Action]) -> Vec<k::acts::Action> {
++    set.iter().map(action).collect()
++}
++
++fn resources(set: &ResourceSet) -> Vec<k::rsrc::Resource> {
++    set.iter()
++        .map(|r| match r {
++            Resource::S3(p) => k::rsrc::Resource::S3(b(p)),
++            Resource::Kms(p) => k::rsrc::Resource::Kms(b(p)),
++        })
++        .collect()
++}
++
++fn effect(e: &Effect) -> k::stmts::Effect {
++    match e {
++        Effect::Allow => k::stmts::Effect::Allow,
++        Effect::Deny => k::stmts::Effect::Deny,
++    }
++}
++
++/// `None` when a condition has no kernel form.
++pub(crate) fn statement(s: &Statement) -> Option<k::stmts::Statement> {
++    Some(k::stmts::Statement {
++        effect: effect(&s.effect),
++        actions: actions(&s.actions),
++        not_actions: actions(&s.not_actions),
++        resources: resources(&s.resources),
++        not_resources: resources(&s.not_resources),
++        conditions: s.conditions.to_kernel()?,
++    })
++}
++
++pub(crate) fn bp_statement(s: &BPStatement) -> Option<k::stmts::BPStatement> {
++    Some(k::stmts::BPStatement {
++        effect: effect(&s.effect),
++        principal: s.principal.to_kernel(),
++        actions: actions(&s.actions),
++        not_actions: actions(&s.not_actions),
++        resources: resources(&s.resources),
++        not_resources: resources(&s.not_resources),
++        conditions: s.conditions.to_kernel()?,
++    })
++}
++
++fn conditions(m: &HashMap<String, Vec<String>>) -> k::condfuncs::CondValues {
++    m.iter().map(|(k, v)| (b(k), v.iter().map(|x| b(x)).collect())).collect()
++}
++
++/// `VariableResolver::get_claim_as_strings`.
++fn claim_strings(v: Option<&Value>) -> Option<Vec<Vec<u8>>> {
++    let scalar = |v: &Value| match v {
++        Value::String(s) => Some(b(s)),
++        Value::Number(n) => Some(b(&n.to_string())),
++        Value::Bool(x) => Some(b(&x.to_string())),
++        _ => None,
++    };
++    match v? {
++        Value::Array(arr) => Some(arr.iter().filter_map(scalar).collect()),
++        other => scalar(other).map(|s| vec![s]),
++    }
++}
++
++pub(crate) fn args(a: &Args<'_>) -> k::stmts::Args {
++    k::stmts::Args {
++        account: b(a.account),
++        action: action(&a.action),
++        bucket: b(a.bucket),
++        conditions: conditions(a.conditions),
++        is_owner: a.is_owner,
++        object: b(a.object),
++        claims: k::awsvars::ClaimStrings {
++            sub: claim_strings(a.claims.get("sub")),
++            parent: claim_strings(a.claims.get("parent")),
++            parent_str: a.claims.get("parent").and_then(|v| v.as_str()).map(b),
++            has_parent: a.claims.contains_key("parent"),
++            has_role_arn: a.claims.contains_key("roleArn"),
++            has_sa_policy: a.claims.contains_key("sa-policy"),
++        },
++        deny_only: a.deny_only,
++    }
++}
++
++pub(crate) fn bp_args(a: &BucketPolicyArgs<'_>) -> k::stmts::BucketPolicyArgs {
++    k::stmts::BucketPolicyArgs {
++        account: b(a.account),
++        action: action(&a.action),
++        bucket: b(a.bucket),
++        conditions: conditions(a.conditions),
++        is_owner: a.is_owner,
++        object: b(a.object),
++    }
++}
++
++/// Every request value parsed as an address (std's parser), and the clock.
++pub(crate) fn env(m: &HashMap<String, Vec<String>>) -> k::condfuncs::Env {
++    let now = OffsetDateTime::now_utc();
++    k::condfuncs::Env {
++        ips: m
++            .values()
++            .flatten()
++            .map(|s| (b(s), s.parse::<std::net::IpAddr>().ok().map(ip)))
++            .collect(),
++        now_rfc3339: b(&now.format(&time::format_description::well_known::Rfc3339).unwrap_or_default()),
++        now_epoch: b(&now.unix_timestamp().to_string()),
++    }
++}
++
++/// `Policy::is_allowed` as an h5i-app kernel: the snapshot is the policy's
++/// statements, the command one request. Nothing is written.
++pub(crate) struct IdentityPolicy;
++
++impl Kernel for IdentityPolicy {
++    type Principal = ();
++    type Snapshot = Vec<k::stmts::Statement>;
++    type Command = (k::stmts::Args, k::condfuncs::Env);
++    type WriteSet = ();
++    type Reply = bool;
++    type Error = Infallible;
++
++    fn tenant(_: &()) -> TenantId {
++        TenantId(0)
++    }
++
++    fn transition(_: &(), snap: &Self::Snapshot, cmd: &Self::Command) -> Result<((), bool), Infallible> {
++        Ok(((), k::policies::policy_is_allowed(snap, &cmd.0, &cmd.1)))
++    }
++
++    fn apply(snap: &Self::Snapshot, _: &()) -> Self::Snapshot {
++        snap.clone()
++    }
++}
++
++/// `BucketPolicy::is_allowed` as an h5i-app kernel.
++pub(crate) struct BucketPolicyKernel;
++
++impl Kernel for BucketPolicyKernel {
++    type Principal = ();
++    type Snapshot = Vec<k::stmts::BPStatement>;
++    type Command = (k::stmts::BucketPolicyArgs, k::condfuncs::Env);
++    type WriteSet = ();
++    type Reply = bool;
++    type Error = Infallible;
++
++    fn tenant(_: &()) -> TenantId {
++        TenantId(0)
++    }
++
++    fn transition(_: &(), snap: &Self::Snapshot, cmd: &Self::Command) -> Result<((), bool), Infallible> {
++        Ok(((), k::policies::bucket_policy_is_allowed(snap, &cmd.0, &cmd.1)))
++    }
++
++    fn apply(snap: &Self::Snapshot, _: &()) -> Self::Snapshot {
++        snap.clone()
++    }
++}
++
++pub(crate) fn decide<K: Kernel<Principal = (), Reply = bool, Error = Infallible>>(snap: &K::Snapshot, cmd: &K::Command) -> bool {
++    match K::transition(&(), snap, cmd) {
++        Ok((_, allowed)) => allowed,
++        Err(never) => match never {},
++    }
++}
+diff --git a/crates/policy/src/policy/policy.rs b/crates/policy/src/policy/policy.rs
+index 9290c5a..ac0df7d 100644
+--- a/crates/policy/src/policy/policy.rs
++++ b/crates/policy/src/policy/policy.rs
+@@ -66,7 +66,16 @@ pub struct Policy {
+ }
+ 
+ impl Policy {
++    /// Decided by `rustfs_kernel::policies::policy_is_allowed`. A policy with
++    /// a condition the kernel has no form for (`Date*`, `BinaryEquals`) is
++    /// evaluated by the code below.
+     pub async fn is_allowed(&self, args: &Args<'_>) -> bool {
++        if let Some(sts) = self.statements.iter().map(super::h5i::statement).collect::<Option<Vec<_>>>() {
++            return super::h5i::decide::<super::h5i::IdentityPolicy>(
++                &sts,
++                &(super::h5i::args(args), super::h5i::env(args.conditions)),
++            );
++        }
+         // First, check all Deny statements - if any Deny matches, deny the request
+         for statement in self.statements.iter().filter(|s| matches!(s.effect, Effect::Deny)) {
+             if !statement.is_allowed(args).await {
+@@ -205,7 +214,20 @@ pub struct BucketPolicy {
+ }
+ 
+ impl BucketPolicy {
++    /// Decided by `rustfs_kernel::policies::bucket_policy_is_allowed`, with
++    /// the same exception as [`Policy::is_allowed`].
+     pub async fn is_allowed(&self, args: &BucketPolicyArgs<'_>) -> bool {
++        if let Some(sts) = self
++            .statements
++            .iter()
++            .map(super::h5i::bp_statement)
++            .collect::<Option<Vec<_>>>()
++        {
++            return super::h5i::decide::<super::h5i::BucketPolicyKernel>(
++                &sts,
++                &(super::h5i::bp_args(args), super::h5i::env(args.conditions)),
++            );
++        }
+         for statement in self.statements.iter().filter(|s| matches!(s.effect, Effect::Deny)) {
+             if !statement.is_allowed(args).await {
+                 return false;
+diff --git a/crates/policy/src/policy/principal.rs b/crates/policy/src/policy/principal.rs
+index 639ef71..60761fc 100644
+--- a/crates/policy/src/policy/principal.rs
++++ b/crates/policy/src/policy/principal.rs
+@@ -125,6 +125,13 @@ impl<'de> serde::Deserialize<'de> for Principal {
+ }
+ 
+ impl Principal {
++    pub(crate) fn to_kernel(&self) -> rustfs_kernel::stmts::Principal {
++        rustfs_kernel::stmts::Principal {
++            aws: self.aws.iter().map(|s| s.as_bytes().to_vec()).collect(),
++            service: self.service.iter().map(|s| s.as_bytes().to_vec()).collect(),
++        }
++    }
++
+     pub fn is_match(&self, principal: &str) -> bool {
+         for pattern in self.aws.iter() {
+             if wildcard::is_simple_match(pattern, principal) {
+diff --git a/crates/policy/src/policy/statement.rs b/crates/policy/src/policy/statement.rs
+index 5b03aca..d9c5f5f 100644
+--- a/crates/policy/src/policy/statement.rs
++++ b/crates/policy/src/policy/statement.rs
+@@ -290,7 +290,12 @@ impl Statement {
+         true
+     }
+ 
++    /// Decided by `rustfs_kernel::stmts::statement_is_allowed`, unless a
++    /// condition has no kernel form.
+     pub async fn is_allowed(&self, args: &Args<'_>) -> bool {
++        if let Some(st) = super::h5i::statement(self) {
++            return rustfs_kernel::stmts::statement_is_allowed(&st, &super::h5i::args(args), &super::h5i::env(args.conditions));
++        }
+         let resolver = variable_resolver_for_policy_args(args);
+ 
+         let check = 'c: {
+@@ -447,7 +452,16 @@ impl BPStatement {
+         true
+     }
+ 
++    /// Decided by `rustfs_kernel::stmts::bp_statement_is_allowed`, unless a
++    /// condition has no kernel form.
+     pub async fn is_allowed(&self, args: &BucketPolicyArgs<'_>) -> bool {
++        if let Some(st) = super::h5i::bp_statement(self) {
++            return rustfs_kernel::stmts::bp_statement_is_allowed(
++                &st,
++                &super::h5i::bp_args(args),
++                &super::h5i::env(args.conditions),
++            );
++        }
+         let check = 'c: {
+             if !self.request_reaches_condition_eval(args).await {
+                 break 'c false;
