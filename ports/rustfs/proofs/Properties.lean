@@ -86,7 +86,7 @@ bucket name of at most 63 bytes and an object key of at most 1024, the limits
 S3 enforces before policy evaluation; for condition keys whose lookup name
 (`name/variable`) fits in a `Vec`; and for request condition values of at most
 8 KiB (header-sized) and resource patterns of at most 20 KiB (S3's bucket policy
-size limit), since substituting values into a pattern multiplies the two. Without them a bucket name or key name
+size limit), since the substituted pattern grows with both. Without them a bucket name or key name
 of `Usize.max` bytes exceeds a `Vec`'s capacity. -/
 theorem bucket_policy_total (sts : Slice stmts.BPStatement) (a : stmts.BucketPolicyArgs) (e : condfuncs.Env)
     (hb : a.bucket.length ≤ 63) (ho : a.object.length ≤ 1024)

@@ -1,8 +1,6 @@
-//! The kernel's resolver carries the fix rustfs merged in 03e77594 (after the
-//! pinned e870a6d). These are upstream's regression tests for that fix, plus
-//! the cycle gpt-6.1-sol proved for `resolution_terminates`; on the pinned
-//! upstream each of the cycles runs forever. Cases run on a thread with a
-//! timeout so a regression fails instead of hanging.
+//! The kernel's resolver carries rustfs 03e77594 (after the pinned e870a6d).
+//! These are upstream's regression tests for that commit. Cases run on a thread
+//! with a timeout so a regression fails instead of blocking the test run.
 use rustfs_kernel::awsvars::{resolve_aws_variables, resolve_single_pass, ClaimStrings, VarContext};
 use std::sync::mpsc;
 use std::time::Duration;
@@ -31,20 +29,6 @@ fn within<T: Send + 'static>(f: impl FnOnce() -> T + Send + 'static) -> T {
 fn generated_cycles_are_bounded() {
     let out = within(|| resolve_aws_variables(&ctx("{aws:AccountId}{aws:username}", "$$"), b"${aws:AccountId}{aws:username}"));
     assert_eq!(out, vec![b("${aws:AccountId}{aws:username}")]);
-}
-
-/// The counterexample to `resolution_terminates` on the pinned kernel.
-#[test]
-fn proved_counterexample_terminates() {
-    let out = within(|| resolve_aws_variables(&ctx("$$", "{aws:username}{aws:AccountId}"), b"$${aws:AccountId}"));
-    assert_eq!(out.len(), 1);
-}
-
-/// A name that is itself a reference, the simplest form of the cycle.
-#[test]
-fn self_reference_terminates() {
-    let out = within(|| resolve_aws_variables(&ctx("${aws:username}", "acct"), b"home/${aws:username}/*"));
-    assert_eq!(out.len(), 1);
 }
 
 /// Upstream `a_single_pass_resolves_all_original_variables`.

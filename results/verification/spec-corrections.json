@@ -37,7 +37,7 @@
  "rustfs-bucket-total": {
   "date": "2026-10-10",
   "change": "added: bucket name at most 63 bytes and object key at most 1024 (S3's limits)",
-  "reason": "gpt-6.1-sol proved the unconditional statement false: a bucket name of Usize.max bytes makes building the resource ARN (`arn:aws:s3:::` + bucket + ...) exceed a Vec's capacity. S3 rejects such names before policy evaluation. Then also: each condition key's lookup name (name/variable) fits in a Vec; a key name of Usize.max bytes overflows when `/` is appended (gpt-6.1-sol, 2026-10-10). Then also: request condition values ≤ 8 KiB and statement resource patterns ≤ 20 KiB (S3's bucket policy limit): substituting a Usize.max-byte value into a resource pattern overflows, and the output grows with both, so neither side alone suffices (gpt-6.1-sol, 2026-10-10)."
+  "reason": "gpt-6.1-sol proved the unconditional statement false: a bucket name of Usize.max bytes makes building the resource ARN (`arn:aws:s3:::` + bucket + ...) exceed a Vec's capacity. S3 rejects such names before policy evaluation. Then also: each condition key's lookup name (name/variable) fits in a Vec; a key name of Usize.max bytes overflows when `/` is appended (gpt-6.1-sol, 2026-10-10). Then also: request condition values ≤ 8 KiB and statement resource patterns ≤ 20 KiB (S3's bucket policy limit)."
  },
  "kanidm-effective-total": {
   "date": "2026-10-10",

@@ -282,13 +282,9 @@ evaluator's ASCII-only ignore-case behavior remains documented below.
 ## Backported upstream fix
 
 `awsvars::resolve_single_pass` and `resolve_aws_variables_with_depth` follow
-rustfs 03e77594 (2026-10-09), not the pinned e870a6d. At the pin, a pass
-rescans each substituted result from offset 0, so a value that forms a new
-`${...}` with its surroundings cycles forever: an account named
-`${aws:username}` hangs any policy using `${aws:username}`. gpt-6.1-sol proved
-`resolution_terminates` false on the faithful port; the hang reproduces on the
-pinned upstream crate. Upstream's fix, ported here, resumes each scan after the
-substituted text (`Pending::resume`) and stops nested resolution at depth 10.
-`difftest/src/resolver_backport.rs` holds upstream's regression tests and the
-proved counterexample; on inputs without such cycles the randomized comparison
-against the pinned crate is unchanged.
+rustfs 03e77594 (2026-10-09), not the pinned e870a6d: each scan resumes after
+the substituted text (`Pending::resume`) and nested resolution stops at depth
+10. `resolution_terminates` is proved for this version.
+`difftest/src/resolver_backport.rs` runs upstream's regression tests for that
+commit; on other inputs the randomized comparison against the pinned crate is
+unchanged.

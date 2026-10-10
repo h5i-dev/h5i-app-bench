@@ -3,7 +3,7 @@
   "sha256": "7bf3ed3c6839ce9bea1428132d8f2621f672f5f9c720b066c77b52705683defe",
   "grade": {
     "solution_loc": 593,
-    "check_s": 20.8,
+    "check_s": 21.2,
     "axioms": [
       "Classical.choice",
       "Quot.sound",
@@ -11,7 +11,7 @@
     ],
     "passed": true
   },
-  "checked_at": "2026-10-10T09:50:59.905480+00:00",
+  "checked_at": "2026-10-10T13:36:36.582534+00:00",
   "inputs": {
     "/home/ht2673/Dev/h5i-app-bench/harness/bench.py": "d5a195c2fa2ba80cf3d20f9af730c2e105c05787675e34f76a34cb511bd26a8e",
     "/home/ht2673/Dev/h5i-app-bench/dataset/tasks.toml": "594b8c4c6a235c20b7ef86ce8d0838c52f08663f7fe51434d13ddf8c1df36586",
@@ -19,7 +19,7 @@
     "/home/ht2673/Dev/h5i-app-bench/ports/rustfs/proofs/lake-manifest.json": "fd1ca6b7b10c2d362b42d7f6b8a632220a5cf4c71a85b13f174cca8a5ba05582",
     "/home/ht2673/Dev/h5i-app-bench/ports/rustfs/kernel/src/acts.rs": "473846b419520ea3acd17bfe1a0cfd653664186c0eda9f159ff6be8c27539ed9",
     "/home/ht2673/Dev/h5i-app-bench/ports/rustfs/kernel/src/actsets.rs": "9ece0bfab896cb82cbda31760748971a1f75c09638d1c0115fa1c3e8ae05b8ee",
-    "/home/ht2673/Dev/h5i-app-bench/ports/rustfs/kernel/src/awsvars.rs": "0f9ce4e2c686ded5562c479bf36fb601247ecb3515df322d293e1e78f4e214bc",
+    "/home/ht2673/Dev/h5i-app-bench/ports/rustfs/kernel/src/awsvars.rs": "75ae595613ddca3cf02aeb80472d73e4e2abd7c79870a436710327ee1a367946",
     "/home/ht2673/Dev/h5i-app-bench/ports/rustfs/kernel/src/bytes.rs": "c21d715fb633a5461dba6ffac586a6105437ed06da52bbc14fbadb2c01c663c8",
     "/home/ht2673/Dev/h5i-app-bench/ports/rustfs/kernel/src/claims.rs": "eb4b7efe894ff688bb6e0251ff80f137da4bb55c7c7cbee0b56a1d8b5f8249da",
     "/home/ht2673/Dev/h5i-app-bench/ports/rustfs/kernel/src/conddata.rs": "d45826ca0f9102eb4c7bf7f67a70e1b206f795fa4d61bc828a0d029d5036902d",

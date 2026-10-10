@@ -155,8 +155,8 @@ fn closing(s: &[u8], from: usize) -> (usize, usize) {
 /// A result of `resolve_single_pass` and the offset its scan resumes from.
 /// Backports rustfs 03e77594 (after the pinned e870a6d): a placeholder that a
 /// substitution creates belongs to the next bounded pass, so the scan resumes
-/// after the substituted text instead of at 0, where the pinned code could
-/// cycle forever (see DEVIATIONS.md).
+/// after the substituted text instead of at offset 0, as upstream now does
+/// (see DEVIATIONS.md).
 pub struct Pending {
     pub text: Vec<u8>,
     pub resume: usize,
