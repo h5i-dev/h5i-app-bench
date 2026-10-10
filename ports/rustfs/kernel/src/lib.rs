@@ -20,3 +20,5 @@ pub mod dates;
 
 pub mod claims;
 pub mod unicode;
+
+pub mod keytables;

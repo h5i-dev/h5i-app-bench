@@ -528,12 +528,14 @@ kernel = ["common_key", "get_value", "key_lookup_name", "keynames::*", "value_co
 [[item]]
 upstream = "crates/policy/src/policy/function/key_name.rs:116 KeyName::is_server_derived"
 lines = 6
-status = "todo"
+status = "ported"
+kernel = ["keytables::is_server_derived"]
 
 [[item]]
 upstream = "crates/policy/src/policy/function/key_name.rs:134 KeyName::server_derived_key_names"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["keytables::server_derived_key_names"]
 
 [[item]]
 upstream = "crates/policy/src/policy/function/key_name.rs:140 KeyName::var_name"
@@ -550,32 +552,38 @@ reason = "policy decoding or serialization"
 [[item]]
 upstream = "crates/policy/src/policy/function/key_name.rs:165 S3KeyName"
 lines = 28
-status = "todo"
+status = "ported"
+kernel = ["keytables::KeyFamily", "keytables::key_count", "keytables::key_name", "keytables::contains_name"]
 
 [[item]]
 upstream = "crates/policy/src/policy/function/key_name.rs:245 JwtKeyName"
 lines = 25
-status = "todo"
+status = "ported"
+kernel = ["keytables::KeyFamily", "keytables::key_count", "keytables::key_name", "keytables::contains_name"]
 
 [[item]]
 upstream = "crates/policy/src/policy/function/key_name.rs:318 SvcKeyName"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["keytables::KeyFamily", "keytables::key_count", "keytables::key_name", "keytables::contains_name"]
 
 [[item]]
 upstream = "crates/policy/src/policy/function/key_name.rs:325 LdapKeyName"
 lines = 5
-status = "todo"
+status = "ported"
+kernel = ["keytables::KeyFamily", "keytables::key_count", "keytables::key_name", "keytables::contains_name"]
 
 [[item]]
 upstream = "crates/policy/src/policy/function/key_name.rs:338 StsKeyName"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["keytables::KeyFamily", "keytables::key_count", "keytables::key_name", "keytables::contains_name"]
 
 [[item]]
 upstream = "crates/policy/src/policy/function/key_name.rs:345 AwsKeyName"
 lines = 14
-status = "todo"
+status = "ported"
+kernel = ["keytables::KeyFamily", "keytables::key_count", "keytables::key_name", "keytables::contains_name"]
 
 [[item]]
 upstream = "crates/policy/src/policy/function/number.rs:23 NumberFunc"
@@ -658,7 +666,8 @@ kernel = ["Quantifier"]
 [[item]]
 upstream = "crates/policy/src/policy/function.rs:53 is_server_derived_condition_key"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["keytables::is_server_derived_condition_key"]
 
 [[item]]
 upstream = "crates/policy/src/policy/function.rs:63 Functions"

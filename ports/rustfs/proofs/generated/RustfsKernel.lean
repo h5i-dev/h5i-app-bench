@@ -11445,6 +11445,907 @@ def defaults.default_policies
          ] : Array ((alloc.vec.Vec Std.U8) × defaults.Policy) 8#usize))
   ok (alloc.slice.Slice.into_vec y28)
 
+/-- [rustfs_kernel::keytables::KeyFamily]
+    Source: 'ports/rustfs/kernel/src/keytables.rs', lines 4:0-11:1
+    Visibility: public -/
+@[discriminant isize]
+inductive keytables.KeyFamily where
+| S3 : keytables.KeyFamily
+| Jwt : keytables.KeyFamily
+| Svc : keytables.KeyFamily
+| Ldap : keytables.KeyFamily
+| Sts : keytables.KeyFamily
+| Aws : keytables.KeyFamily
+
+/-- [rustfs_kernel::keytables::{impl core::clone::Clone for rustfs_kernel::keytables::KeyFamily}::clone]:
+    Source: 'ports/rustfs/kernel/src/keytables.rs', lines 3:9-3:14
+    Visibility: public -/
+def keytables.KeyFamily.Insts.CoreCloneClone.clone
+  (self : keytables.KeyFamily) : Result keytables.KeyFamily := do
+  ok self
+
+/-- Trait implementation: [rustfs_kernel::keytables::{impl core::clone::Clone for rustfs_kernel::keytables::KeyFamily}]
+    Source: 'ports/rustfs/kernel/src/keytables.rs', lines 3:9-3:14 -/
+@[reducible]
+def keytables.KeyFamily.Insts.CoreCloneClone : core.clone.Clone
+  keytables.KeyFamily := {
+  clone := keytables.KeyFamily.Insts.CoreCloneClone.clone
+}
+
+/-- Trait implementation: [rustfs_kernel::keytables::{impl core::marker::Copy for rustfs_kernel::keytables::KeyFamily}]
+    Source: 'ports/rustfs/kernel/src/keytables.rs', lines 3:16-3:20 -/
+@[reducible]
+def keytables.KeyFamily.Insts.CoreMarkerCopy : core.marker.Copy
+  keytables.KeyFamily := {
+  cloneInst := keytables.KeyFamily.Insts.CoreCloneClone
+}
+
+/-- [rustfs_kernel::keytables::{impl core::fmt::Debug for rustfs_kernel::keytables::KeyFamily}::fmt]:
+    Source: 'ports/rustfs/kernel/src/keytables.rs', lines 3:22-3:27
+    Visibility: public -/
+def keytables.KeyFamily.Insts.CoreFmtDebug.fmt
+  (self : keytables.KeyFamily) (f : core.fmt.Formatter) :
+  Result ((core.result.Result Unit core.fmt.Error) × core.fmt.Formatter)
+  := do
+  match self with
+  | keytables.KeyFamily.S3 => core.fmt.Formatter.write_str f (toStr "S3")
+  | keytables.KeyFamily.Jwt => core.fmt.Formatter.write_str f (toStr "Jwt")
+  | keytables.KeyFamily.Svc => core.fmt.Formatter.write_str f (toStr "Svc")
+  | keytables.KeyFamily.Ldap => core.fmt.Formatter.write_str f (toStr "Ldap")
+  | keytables.KeyFamily.Sts => core.fmt.Formatter.write_str f (toStr "Sts")
+  | keytables.KeyFamily.Aws => core.fmt.Formatter.write_str f (toStr "Aws")
+
+/-- Trait implementation: [rustfs_kernel::keytables::{impl core::fmt::Debug for rustfs_kernel::keytables::KeyFamily}]
+    Source: 'ports/rustfs/kernel/src/keytables.rs', lines 3:22-3:27 -/
+@[reducible]
+def keytables.KeyFamily.Insts.CoreFmtDebug : core.fmt.Debug keytables.KeyFamily
+  := {
+  fmt := keytables.KeyFamily.Insts.CoreFmtDebug.fmt
+}
+
+/-- Trait implementation: [rustfs_kernel::keytables::{impl core::marker::StructuralPartialEq for rustfs_kernel::keytables::KeyFamily}]
+    Source: 'ports/rustfs/kernel/src/keytables.rs', lines 3:29-3:38 -/
+@[reducible]
+def keytables.KeyFamily.Insts.CoreMarkerStructuralPartialEq :
+  core.marker.StructuralPartialEq keytables.KeyFamily := {
+}
+
+/-- [rustfs_kernel::keytables::{impl core::cmp::PartialEq<rustfs_kernel::keytables::KeyFamily> for rustfs_kernel::keytables::KeyFamily}::eq]:
+    Source: 'ports/rustfs/kernel/src/keytables.rs', lines 3:29-3:38
+    Visibility: public -/
+def keytables.KeyFamily.Insts.CoreCmpPartialEqKeyFamily.eq
+  (self : keytables.KeyFamily) (other : keytables.KeyFamily) :
+  Result Bool
+  := do
+  let self1 := read_discriminant self
+  let other1 := read_discriminant other
+  ok (self1 = other1)
+
+/-- Trait implementation: [rustfs_kernel::keytables::{impl core::cmp::PartialEq<rustfs_kernel::keytables::KeyFamily> for rustfs_kernel::keytables::KeyFamily}]
+    Source: 'ports/rustfs/kernel/src/keytables.rs', lines 3:29-3:38 -/
+@[reducible]
+impl_def keytables.KeyFamily.Insts.CoreCmpPartialEqKeyFamily :
+  core.cmp.PartialEq keytables.KeyFamily keytables.KeyFamily := {
+  eq := keytables.KeyFamily.Insts.CoreCmpPartialEqKeyFamily.eq
+  ne := core.cmp.PartialEq.ne.trait_default
+    keytables.KeyFamily.Insts.CoreCmpPartialEqKeyFamily
+}
+
+/-- Trait implementation: [rustfs_kernel::keytables::{impl core::cmp::Eq for rustfs_kernel::keytables::KeyFamily}]
+    Source: 'ports/rustfs/kernel/src/keytables.rs', lines 3:40-3:42 -/
+@[reducible]
+impl_def keytables.KeyFamily.Insts.CoreCmpEq : core.cmp.Eq keytables.KeyFamily
+  := {
+  partialEqInst := keytables.KeyFamily.Insts.CoreCmpPartialEqKeyFamily
+  assert_fields_are_eq := core.cmp.Eq.assert_fields_are_eq.default
+    keytables.KeyFamily.Insts.CoreCmpEq
+}
+
+/-- [rustfs_kernel::keytables::key_count]:
+    Source: 'ports/rustfs/kernel/src/keytables.rs', lines 13:0-22:1
+    Visibility: public -/
+def keytables.key_count (family : keytables.KeyFamily) : Result Std.Usize := do
+  match family with
+  | keytables.KeyFamily.S3 => ok 26#usize
+  | keytables.KeyFamily.Jwt => ok 23#usize
+  | keytables.KeyFamily.Svc => ok 1#usize
+  | keytables.KeyFamily.Ldap => ok 3#usize
+  | keytables.KeyFamily.Sts => ok 1#usize
+  | keytables.KeyFamily.Aws => ok 12#usize
+
+/-- [rustfs_kernel::keytables::aws_name]:
+    Source: 'ports/rustfs/kernel/src/keytables.rs', lines 138:0-154:1 -/
+def keytables.aws_name
+  (index : Std.Usize) : Result (alloc.vec.Vec Std.U8) := do
+  match index.val with
+  | 0 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 11#usize [
+          97#u8, 119#u8, 115#u8, 58#u8, 82#u8, 101#u8, 102#u8, 101#u8, 114#u8,
+          101#u8, 114#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 1 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 12#usize [
+          97#u8, 119#u8, 115#u8, 58#u8, 83#u8, 111#u8, 117#u8, 114#u8, 99#u8,
+          101#u8, 73#u8, 112#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 2 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 13#usize [
+          97#u8, 119#u8, 115#u8, 58#u8, 85#u8, 115#u8, 101#u8, 114#u8, 65#u8,
+          103#u8, 101#u8, 110#u8, 116#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 3 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 19#usize [
+          97#u8, 119#u8, 115#u8, 58#u8, 83#u8, 101#u8, 99#u8, 117#u8, 114#u8,
+          101#u8, 84#u8, 114#u8, 97#u8, 110#u8, 115#u8, 112#u8, 111#u8, 114#u8,
+          116#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 4 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 15#usize [
+          97#u8, 119#u8, 115#u8, 58#u8, 67#u8, 117#u8, 114#u8, 114#u8, 101#u8,
+          110#u8, 116#u8, 84#u8, 105#u8, 109#u8, 101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 5 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 13#usize [
+          97#u8, 119#u8, 115#u8, 58#u8, 69#u8, 112#u8, 111#u8, 99#u8, 104#u8,
+          84#u8, 105#u8, 109#u8, 101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 6 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 17#usize [
+          97#u8, 119#u8, 115#u8, 58#u8, 112#u8, 114#u8, 105#u8, 110#u8, 99#u8,
+          105#u8, 112#u8, 97#u8, 108#u8, 116#u8, 121#u8, 112#u8, 101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 7 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 10#usize [
+          97#u8, 119#u8, 115#u8, 58#u8, 117#u8, 115#u8, 101#u8, 114#u8, 105#u8,
+          100#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 8 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 12#usize [
+          97#u8, 119#u8, 115#u8, 58#u8, 117#u8, 115#u8, 101#u8, 114#u8, 110#u8,
+          97#u8, 109#u8, 101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 9 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 10#usize [
+          97#u8, 119#u8, 115#u8, 58#u8, 103#u8, 114#u8, 111#u8, 117#u8, 112#u8,
+          115#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 10 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 13#usize [
+          97#u8, 119#u8, 115#u8, 58#u8, 83#u8, 111#u8, 117#u8, 114#u8, 99#u8,
+          101#u8, 65#u8, 114#u8, 110#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 11 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 17#usize [
+          97#u8, 119#u8, 115#u8, 58#u8, 83#u8, 111#u8, 117#u8, 114#u8, 99#u8,
+          101#u8, 65#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | _ => ok (alloc.vec.Vec.new Std.U8)
+
+/-- [rustfs_kernel::keytables::sts_name]:
+    Source: 'ports/rustfs/kernel/src/keytables.rs', lines 132:0-137:1 -/
+def keytables.sts_name
+  (index : Std.Usize) : Result (alloc.vec.Vec Std.U8) := do
+  match index.val with
+  | 0 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 19#usize [
+          115#u8, 116#u8, 115#u8, 58#u8, 68#u8, 117#u8, 114#u8, 97#u8, 116#u8,
+          105#u8, 111#u8, 110#u8, 83#u8, 101#u8, 99#u8, 111#u8, 110#u8, 100#u8,
+          115#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | _ => ok (alloc.vec.Vec.new Std.U8)
+
+/-- [rustfs_kernel::keytables::ldap_name]:
+    Source: 'ports/rustfs/kernel/src/keytables.rs', lines 124:0-131:1 -/
+def keytables.ldap_name
+  (index : Std.Usize) : Result (alloc.vec.Vec Std.U8) := do
+  match index.val with
+  | 0 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 9#usize [
+          108#u8, 100#u8, 97#u8, 112#u8, 58#u8, 117#u8, 115#u8, 101#u8, 114#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 1 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 13#usize [
+          108#u8, 100#u8, 97#u8, 112#u8, 58#u8, 117#u8, 115#u8, 101#u8, 114#u8,
+          110#u8, 97#u8, 109#u8, 101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 2 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 11#usize [
+          108#u8, 100#u8, 97#u8, 112#u8, 58#u8, 103#u8, 114#u8, 111#u8, 117#u8,
+          112#u8, 115#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | _ => ok (alloc.vec.Vec.new Std.U8)
+
+/-- [rustfs_kernel::keytables::svc_name]:
+    Source: 'ports/rustfs/kernel/src/keytables.rs', lines 118:0-123:1 -/
+def keytables.svc_name
+  (index : Std.Usize) : Result (alloc.vec.Vec Std.U8) := do
+  match index.val with
+  | 0 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 19#usize [
+          115#u8, 118#u8, 99#u8, 58#u8, 68#u8, 117#u8, 114#u8, 97#u8, 116#u8,
+          105#u8, 111#u8, 110#u8, 83#u8, 101#u8, 99#u8, 111#u8, 110#u8, 100#u8,
+          115#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | _ => ok (alloc.vec.Vec.new Std.U8)
+
+/-- [rustfs_kernel::keytables::jwt_name_1]:
+    Source: 'ports/rustfs/kernel/src/keytables.rs', lines 106:0-117:1 -/
+def keytables.jwt_name_1
+  (index : Std.Usize) : Result (alloc.vec.Vec Std.U8) := do
+  match index.val with
+  | 16 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 9#usize [
+          106#u8, 119#u8, 116#u8, 58#u8, 101#u8, 109#u8, 97#u8, 105#u8, 108#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 17 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 10#usize [
+          106#u8, 119#u8, 116#u8, 58#u8, 103#u8, 101#u8, 110#u8, 100#u8,
+          101#u8, 114#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 18 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 13#usize [
+          106#u8, 119#u8, 116#u8, 58#u8, 98#u8, 105#u8, 114#u8, 116#u8, 104#u8,
+          100#u8, 97#u8, 116#u8, 101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 19 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 16#usize [
+          106#u8, 119#u8, 116#u8, 58#u8, 112#u8, 104#u8, 111#u8, 110#u8,
+          101#u8, 95#u8, 110#u8, 117#u8, 109#u8, 98#u8, 101#u8, 114#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 20 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 11#usize [
+          106#u8, 119#u8, 116#u8, 58#u8, 97#u8, 100#u8, 100#u8, 114#u8, 101#u8,
+          115#u8, 115#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 21 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 9#usize [
+          106#u8, 119#u8, 116#u8, 58#u8, 115#u8, 99#u8, 111#u8, 112#u8, 101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 22 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 13#usize [
+          106#u8, 119#u8, 116#u8, 58#u8, 99#u8, 108#u8, 105#u8, 101#u8, 110#u8,
+          116#u8, 95#u8, 105#u8, 100#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | _ => ok (alloc.vec.Vec.new Std.U8)
+
+/-- [rustfs_kernel::keytables::jwt_name_0]:
+    Source: 'ports/rustfs/kernel/src/keytables.rs', lines 85:0-105:1 -/
+def keytables.jwt_name_0
+  (index : Std.Usize) : Result (alloc.vec.Vec Std.U8) := do
+  match index.val with
+  | 0 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 7#usize [
+          106#u8, 119#u8, 116#u8, 58#u8, 115#u8, 117#u8, 98#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 1 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 7#usize [
+          106#u8, 119#u8, 116#u8, 58#u8, 105#u8, 115#u8, 115#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 2 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 7#usize [
+          106#u8, 119#u8, 116#u8, 58#u8, 97#u8, 117#u8, 100#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 3 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 7#usize [
+          106#u8, 119#u8, 116#u8, 58#u8, 106#u8, 116#u8, 105#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 4 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 8#usize [
+          106#u8, 119#u8, 116#u8, 58#u8, 110#u8, 97#u8, 109#u8, 101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 5 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 7#usize [
+          106#u8, 119#u8, 116#u8, 58#u8, 117#u8, 112#u8, 110#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 6 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 10#usize [
+          106#u8, 119#u8, 116#u8, 58#u8, 103#u8, 114#u8, 111#u8, 117#u8,
+          112#u8, 115#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 7 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 9#usize [
+          106#u8, 119#u8, 116#u8, 58#u8, 114#u8, 111#u8, 108#u8, 101#u8, 115#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 8 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 14#usize [
+          106#u8, 119#u8, 116#u8, 58#u8, 103#u8, 105#u8, 118#u8, 101#u8,
+          110#u8, 95#u8, 110#u8, 97#u8, 109#u8, 101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 9 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 15#usize [
+          106#u8, 119#u8, 116#u8, 58#u8, 102#u8, 97#u8, 109#u8, 105#u8, 108#u8,
+          121#u8, 95#u8, 110#u8, 97#u8, 109#u8, 101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 10 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 15#usize [
+          106#u8, 119#u8, 116#u8, 58#u8, 109#u8, 105#u8, 100#u8, 100#u8,
+          108#u8, 101#u8, 95#u8, 110#u8, 97#u8, 109#u8, 101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 11 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 12#usize [
+          106#u8, 119#u8, 116#u8, 58#u8, 110#u8, 105#u8, 99#u8, 107#u8, 110#u8,
+          97#u8, 109#u8, 101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 12 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 22#usize [
+          106#u8, 119#u8, 116#u8, 58#u8, 112#u8, 114#u8, 101#u8, 102#u8,
+          101#u8, 114#u8, 114#u8, 101#u8, 100#u8, 95#u8, 117#u8, 115#u8,
+          101#u8, 114#u8, 110#u8, 97#u8, 109#u8, 101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 13 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 11#usize [
+          106#u8, 119#u8, 116#u8, 58#u8, 112#u8, 114#u8, 111#u8, 102#u8,
+          105#u8, 108#u8, 101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 14 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 11#usize [
+          106#u8, 119#u8, 116#u8, 58#u8, 112#u8, 105#u8, 99#u8, 116#u8, 117#u8,
+          114#u8, 101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 15 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 11#usize [
+          106#u8, 119#u8, 116#u8, 58#u8, 119#u8, 101#u8, 98#u8, 115#u8, 105#u8,
+          116#u8, 101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | _ => ok (alloc.vec.Vec.new Std.U8)
+
+/-- [rustfs_kernel::keytables::jwt_name]:
+    Source: 'ports/rustfs/kernel/src/keytables.rs', lines 78:0-84:1 -/
+def keytables.jwt_name
+  (index : Std.Usize) : Result (alloc.vec.Vec Std.U8) := do
+  let i ← index / 16#usize
+  match i.val with
+  | 0 => keytables.jwt_name_0 index
+  | 1 => keytables.jwt_name_1 index
+  | _ => ok (alloc.vec.Vec.new Std.U8)
+
+/-- [rustfs_kernel::keytables::s3_name_1]:
+    Source: 'ports/rustfs/kernel/src/keytables.rs', lines 63:0-77:1 -/
+def keytables.s3_name_1
+  (index : Std.Usize) : Result (alloc.vec.Vec Std.U8) := do
+  match index.val with
+  | 16 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 9#usize [
+          115#u8, 51#u8, 58#u8, 112#u8, 114#u8, 101#u8, 102#u8, 105#u8, 120#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 17 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 12#usize [
+          115#u8, 51#u8, 58#u8, 100#u8, 101#u8, 108#u8, 105#u8, 109#u8, 105#u8,
+          116#u8, 101#u8, 114#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 18 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 27#usize [
+          115#u8, 51#u8, 58#u8, 120#u8, 45#u8, 97#u8, 109#u8, 122#u8, 45#u8,
+          103#u8, 114#u8, 97#u8, 110#u8, 116#u8, 45#u8, 102#u8, 117#u8, 108#u8,
+          108#u8, 45#u8, 99#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8, 108#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 19 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 19#usize [
+          115#u8, 51#u8, 58#u8, 120#u8, 45#u8, 97#u8, 109#u8, 122#u8, 45#u8,
+          103#u8, 114#u8, 97#u8, 110#u8, 116#u8, 45#u8, 114#u8, 101#u8, 97#u8,
+          100#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 20 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 20#usize [
+          115#u8, 51#u8, 58#u8, 120#u8, 45#u8, 97#u8, 109#u8, 122#u8, 45#u8,
+          103#u8, 114#u8, 97#u8, 110#u8, 116#u8, 45#u8, 119#u8, 114#u8, 105#u8,
+          116#u8, 101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 21 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 23#usize [
+          115#u8, 51#u8, 58#u8, 120#u8, 45#u8, 97#u8, 109#u8, 122#u8, 45#u8,
+          103#u8, 114#u8, 97#u8, 110#u8, 116#u8, 45#u8, 114#u8, 101#u8, 97#u8,
+          100#u8, 45#u8, 97#u8, 99#u8, 112#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 22 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 24#usize [
+          115#u8, 51#u8, 58#u8, 120#u8, 45#u8, 97#u8, 109#u8, 122#u8, 45#u8,
+          103#u8, 114#u8, 97#u8, 110#u8, 116#u8, 45#u8, 119#u8, 114#u8, 105#u8,
+          116#u8, 101#u8, 45#u8, 97#u8, 99#u8, 112#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 23 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 20#usize [
+          115#u8, 51#u8, 58#u8, 69#u8, 120#u8, 105#u8, 115#u8, 116#u8, 105#u8,
+          110#u8, 103#u8, 79#u8, 98#u8, 106#u8, 101#u8, 99#u8, 116#u8, 84#u8,
+          97#u8, 103#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 24 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 23#usize [
+          115#u8, 51#u8, 58#u8, 82#u8, 101#u8, 113#u8, 117#u8, 101#u8, 115#u8,
+          116#u8, 79#u8, 98#u8, 106#u8, 101#u8, 99#u8, 116#u8, 84#u8, 97#u8,
+          103#u8, 75#u8, 101#u8, 121#u8, 115#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 25 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 19#usize [
+          115#u8, 51#u8, 58#u8, 82#u8, 101#u8, 113#u8, 117#u8, 101#u8, 115#u8,
+          116#u8, 79#u8, 98#u8, 106#u8, 101#u8, 99#u8, 116#u8, 84#u8, 97#u8,
+          103#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | _ => ok (alloc.vec.Vec.new Std.U8)
+
+/-- [rustfs_kernel::keytables::s3_name_0]:
+    Source: 'ports/rustfs/kernel/src/keytables.rs', lines 42:0-62:1 -/
+def keytables.s3_name_0
+  (index : Std.Usize) : Result (alloc.vec.Vec Std.U8) := do
+  match index.val with
+  | 0 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 20#usize [
+          115#u8, 51#u8, 58#u8, 120#u8, 45#u8, 97#u8, 109#u8, 122#u8, 45#u8,
+          99#u8, 111#u8, 112#u8, 121#u8, 45#u8, 115#u8, 111#u8, 117#u8, 114#u8,
+          99#u8, 101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 1 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 31#usize [
+          115#u8, 51#u8, 58#u8, 120#u8, 45#u8, 97#u8, 109#u8, 122#u8, 45#u8,
+          115#u8, 101#u8, 114#u8, 118#u8, 101#u8, 114#u8, 45#u8, 115#u8,
+          105#u8, 100#u8, 101#u8, 45#u8, 101#u8, 110#u8, 99#u8, 114#u8, 121#u8,
+          112#u8, 116#u8, 105#u8, 111#u8, 110#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 2 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 50#usize [
+          115#u8, 51#u8, 58#u8, 120#u8, 45#u8, 97#u8, 109#u8, 122#u8, 45#u8,
+          115#u8, 101#u8, 114#u8, 118#u8, 101#u8, 114#u8, 45#u8, 115#u8,
+          105#u8, 100#u8, 101#u8, 45#u8, 101#u8, 110#u8, 99#u8, 114#u8, 121#u8,
+          112#u8, 116#u8, 105#u8, 111#u8, 110#u8, 45#u8, 99#u8, 117#u8, 115#u8,
+          116#u8, 111#u8, 109#u8, 101#u8, 114#u8, 45#u8, 97#u8, 108#u8, 103#u8,
+          111#u8, 114#u8, 105#u8, 116#u8, 104#u8, 109#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 3 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 19#usize [
+          115#u8, 51#u8, 58#u8, 115#u8, 105#u8, 103#u8, 110#u8, 97#u8, 116#u8,
+          117#u8, 114#u8, 101#u8, 118#u8, 101#u8, 114#u8, 115#u8, 105#u8,
+          111#u8, 110#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 4 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 11#usize [
+          115#u8, 51#u8, 58#u8, 97#u8, 117#u8, 116#u8, 104#u8, 84#u8, 121#u8,
+          112#u8, 101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 5 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 15#usize [
+          115#u8, 51#u8, 58#u8, 115#u8, 105#u8, 103#u8, 110#u8, 97#u8, 116#u8,
+          117#u8, 114#u8, 101#u8, 65#u8, 103#u8, 101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 6 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 23#usize [
+          115#u8, 51#u8, 58#u8, 120#u8, 45#u8, 97#u8, 109#u8, 122#u8, 45#u8,
+          99#u8, 111#u8, 110#u8, 116#u8, 101#u8, 110#u8, 116#u8, 45#u8, 115#u8,
+          104#u8, 97#u8, 50#u8, 53#u8, 54#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 7 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 12#usize [
+          115#u8, 51#u8, 58#u8, 120#u8, 45#u8, 97#u8, 109#u8, 122#u8, 45#u8,
+          97#u8, 99#u8, 108#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 8 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 21#usize [
+          115#u8, 51#u8, 58#u8, 76#u8, 111#u8, 99#u8, 97#u8, 116#u8, 105#u8,
+          111#u8, 110#u8, 67#u8, 111#u8, 110#u8, 115#u8, 116#u8, 114#u8, 97#u8,
+          105#u8, 110#u8, 116#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 9 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 12#usize [
+          115#u8, 51#u8, 58#u8, 118#u8, 101#u8, 114#u8, 115#u8, 105#u8, 111#u8,
+          110#u8, 105#u8, 100#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 10 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 32#usize [
+          115#u8, 51#u8, 58#u8, 111#u8, 98#u8, 106#u8, 101#u8, 99#u8, 116#u8,
+          45#u8, 108#u8, 111#u8, 99#u8, 107#u8, 45#u8, 114#u8, 101#u8, 116#u8,
+          97#u8, 105#u8, 110#u8, 45#u8, 117#u8, 110#u8, 116#u8, 105#u8, 108#u8,
+          45#u8, 100#u8, 97#u8, 116#u8, 101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 11 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 25#usize [
+          115#u8, 51#u8, 58#u8, 111#u8, 98#u8, 106#u8, 101#u8, 99#u8, 116#u8,
+          45#u8, 108#u8, 111#u8, 99#u8, 107#u8, 45#u8, 108#u8, 101#u8, 103#u8,
+          97#u8, 108#u8, 45#u8, 104#u8, 111#u8, 108#u8, 100#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 12 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 19#usize [
+          115#u8, 51#u8, 58#u8, 111#u8, 98#u8, 106#u8, 101#u8, 99#u8, 116#u8,
+          45#u8, 108#u8, 111#u8, 99#u8, 107#u8, 45#u8, 109#u8, 111#u8, 100#u8,
+          101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 13 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 11#usize [
+          115#u8, 51#u8, 58#u8, 109#u8, 97#u8, 120#u8, 45#u8, 107#u8, 101#u8,
+          121#u8, 115#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 14 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 27#usize [
+          115#u8, 51#u8, 58#u8, 120#u8, 45#u8, 97#u8, 109#u8, 122#u8, 45#u8,
+          109#u8, 101#u8, 116#u8, 97#u8, 100#u8, 97#u8, 116#u8, 97#u8, 45#u8,
+          100#u8, 105#u8, 114#u8, 101#u8, 99#u8, 116#u8, 105#u8, 118#u8, 101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 15 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 22#usize [
+          115#u8, 51#u8, 58#u8, 120#u8, 45#u8, 97#u8, 109#u8, 122#u8, 45#u8,
+          115#u8, 116#u8, 111#u8, 114#u8, 97#u8, 103#u8, 101#u8, 45#u8, 99#u8,
+          108#u8, 97#u8, 115#u8, 115#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | _ => ok (alloc.vec.Vec.new Std.U8)
+
+/-- [rustfs_kernel::keytables::s3_name]:
+    Source: 'ports/rustfs/kernel/src/keytables.rs', lines 35:0-41:1 -/
+def keytables.s3_name (index : Std.Usize) : Result (alloc.vec.Vec Std.U8) := do
+  let i ← index / 16#usize
+  match i.val with
+  | 0 => keytables.s3_name_0 index
+  | 1 => keytables.s3_name_1 index
+  | _ => ok (alloc.vec.Vec.new Std.U8)
+
+/-- [rustfs_kernel::keytables::key_name]:
+    Source: 'ports/rustfs/kernel/src/keytables.rs', lines 25:0-34:1
+    Visibility: public -/
+def keytables.key_name
+  (family : keytables.KeyFamily) (index : Std.Usize) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  match family with
+  | keytables.KeyFamily.S3 => keytables.s3_name index
+  | keytables.KeyFamily.Jwt => keytables.jwt_name index
+  | keytables.KeyFamily.Svc => keytables.svc_name index
+  | keytables.KeyFamily.Ldap => keytables.ldap_name index
+  | keytables.KeyFamily.Sts => keytables.sts_name index
+  | keytables.KeyFamily.Aws => keytables.aws_name index
+
+/-- [rustfs_kernel::keytables::contains_name]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/keytables.rs', lines 158:4-165:1
+    Visibility: public -/
+@[rust_loop_body]
+def keytables.contains_name_loop.body
+  (family : keytables.KeyFamily) («name» : Slice Std.U8) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 ← keytables.key_count family
+  if i < i1
+  then
+    let v ← keytables.key_name family i
+    let s := alloc.vec.Vec.deref v
+    let b ← bytes.eq s «name»
+    if b
+    then ok (done true)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else ok (done false)
+
+/-- [rustfs_kernel::keytables::contains_name]: loop 0:
+    Source: 'ports/rustfs/kernel/src/keytables.rs', lines 158:4-165:1
+    Visibility: public -/
+@[rust_loop]
+def keytables.contains_name_loop
+  (family : keytables.KeyFamily) («name» : Slice Std.U8) (i : Std.Usize) :
+  Result Bool
+  := do
+  loop
+    (fun i1 => keytables.contains_name_loop.body family «name» i1)
+    i
+
+/-- [rustfs_kernel::keytables::contains_name]:
+    Source: 'ports/rustfs/kernel/src/keytables.rs', lines 156:0-165:1
+    Visibility: public -/
+@[reducible]
+def keytables.contains_name
+  (family : keytables.KeyFamily) («name» : Slice Std.U8) : Result Bool := do
+  keytables.contains_name_loop family «name» 0#usize
+
+/-- [rustfs_kernel::keytables::is_server_derived]:
+    Source: 'ports/rustfs/kernel/src/keytables.rs', lines 167:0-172:1
+    Visibility: public -/
+def keytables.is_server_derived
+  (family : keytables.KeyFamily) («name» : Slice Std.U8) : Result Bool := do
+  let b ← keytables.contains_name family «name»
+  if b
+  then
+    let b1 ←
+      core.cmp.PartialEq.ne.trait_default
+        keytables.KeyFamily.Insts.CoreCmpPartialEqKeyFamily family
+        keytables.KeyFamily.S3
+    if b1
+    then ok true
+    else
+      let s ←
+        lift (Array.to_slice
+          (Array.make 9#usize [
+            115#u8, 51#u8, 58#u8, 120#u8, 45#u8, 97#u8, 109#u8, 122#u8, 45#u8
+            ]))
+      let b2 ← bytes.starts_with «name» s
+      ok (¬ b2)
+  else ok false
+
+/-- [rustfs_kernel::keytables::server_derived_key_names]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/keytables.rs', lines 177:4-183:5
+    Visibility: public -/
+@[rust_loop_body]
+def keytables.server_derived_key_names_loop.body
+  (out : alloc.vec.Vec (alloc.vec.Vec Std.U8)) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec (alloc.vec.Vec Std.U8)) × Std.Usize)
+    (alloc.vec.Vec (alloc.vec.Vec Std.U8)))
+  := do
+  if i < keynames.COMMON_KEYS_LEN
+  then
+    let («name», _) ← keynames.common_key i
+    let s := alloc.vec.Vec.deref «name»
+    let s1 ←
+      lift (Array.to_slice
+        (Array.make 6#usize [ 120#u8, 45#u8, 97#u8, 109#u8, 122#u8, 45#u8 ]))
+    let b ← bytes.starts_with s s1
+    let out1 ← if b
+                 then ok out
+                 else alloc.vec.Vec.push out «name»
+    let i1 ← i + 1#usize
+    ok (cont (out1, i1))
+  else ok (done out)
+
+/-- [rustfs_kernel::keytables::server_derived_key_names]: loop 0:
+    Source: 'ports/rustfs/kernel/src/keytables.rs', lines 177:4-183:5
+    Visibility: public -/
+@[rust_loop]
+def keytables.server_derived_key_names_loop
+  (out : alloc.vec.Vec (alloc.vec.Vec Std.U8)) (i : Std.Usize) :
+  Result (alloc.vec.Vec (alloc.vec.Vec Std.U8))
+  := do
+  loop
+    (fun (out1, i1) => keytables.server_derived_key_names_loop.body out1 i1)
+    (out, i)
+
+/-- [rustfs_kernel::keytables::server_derived_key_names]:
+    Source: 'ports/rustfs/kernel/src/keytables.rs', lines 174:0-185:1
+    Visibility: public -/
+@[reducible]
+def keytables.server_derived_key_names
+  : Result (alloc.vec.Vec (alloc.vec.Vec Std.U8)) := do
+  keytables.server_derived_key_names_loop (alloc.vec.Vec.new (alloc.vec.Vec
+    Std.U8)) 0#usize
+
+/-- [rustfs_kernel::keytables::is_server_derived_condition_key]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/keytables.rs', lines 191:4-198:1
+    Visibility: public -/
+@[rust_loop_body]
+def keytables.is_server_derived_condition_key_loop.body
+  (names : alloc.vec.Vec (alloc.vec.Vec Std.U8)) (lower : alloc.vec.Vec Std.U8)
+  (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := alloc.vec.Vec.len names
+  if i < i1
+  then
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice (alloc.vec.Vec
+        Std.U8)) names i
+    let s := alloc.vec.Vec.deref v
+    let v1 ← bytes.lower s
+    let s1 := alloc.vec.Vec.deref v1
+    let s2 := alloc.vec.Vec.deref lower
+    let b ← bytes.eq s1 s2
+    if b
+    then ok (done true)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else ok (done false)
+
+/-- [rustfs_kernel::keytables::is_server_derived_condition_key]: loop 0:
+    Source: 'ports/rustfs/kernel/src/keytables.rs', lines 191:4-198:1
+    Visibility: public -/
+@[rust_loop]
+def keytables.is_server_derived_condition_key_loop
+  (names : alloc.vec.Vec (alloc.vec.Vec Std.U8)) (lower : alloc.vec.Vec Std.U8)
+  (i : Std.Usize) :
+  Result Bool
+  := do
+  loop
+    (fun i1 => keytables.is_server_derived_condition_key_loop.body names lower
+      i1)
+    i
+
+/-- [rustfs_kernel::keytables::is_server_derived_condition_key]:
+    Source: 'ports/rustfs/kernel/src/keytables.rs', lines 187:0-198:1
+    Visibility: public -/
+def keytables.is_server_derived_condition_key
+  («name» : Slice Std.U8) : Result Bool := do
+  let names ← keytables.server_derived_key_names
+  let lower ← bytes.lower «name»
+  keytables.is_server_derived_condition_key_loop names lower 0#usize
+
 /-- [rustfs_kernel::pathclean::copy_element]: loop body 0:
     Source: 'ports/rustfs/kernel/src/pathclean.rs', lines 77:4-81:5 -/
 @[rust_loop_body]

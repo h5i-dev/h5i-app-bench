@@ -152,3 +152,24 @@ The lookup and deduplication phase helpers were individually mutated after the e
 | `claims::case_fold_lookup` | `ClaimLookup::Missing` | `claim_tests` |
 | `claims::lookup_strings` | `(Vec::new(),false)` | `claim_tests` |
 | `claims::unique_values` | `Vec::new()` | `claim_tests` |
+
+Every condition-key table function, chunk helper and server-derived predicate was individually mutated and caught, then restored.
+
+| Function | Mutation | Test |
+|---|---|---|
+| `keytables::key_count` | `0` | `keytables::key_tables_agree` |
+| `keytables::key_name` | `Vec::new()` | `keytables::key_tables_agree` |
+| `keytables::s3_name` | `Vec::new()` | `keytables::key_tables_agree` |
+| `keytables::s3_name_0` | `Vec::new()` | `keytables::key_tables_agree` |
+| `keytables::s3_name_1` | `Vec::new()` | `keytables::key_tables_agree` |
+| `keytables::jwt_name` | `Vec::new()` | `keytables::key_tables_agree` |
+| `keytables::jwt_name_0` | `Vec::new()` | `keytables::key_tables_agree` |
+| `keytables::jwt_name_1` | `Vec::new()` | `keytables::key_tables_agree` |
+| `keytables::svc_name` | `Vec::new()` | `keytables::key_tables_agree` |
+| `keytables::ldap_name` | `Vec::new()` | `keytables::key_tables_agree` |
+| `keytables::sts_name` | `Vec::new()` | `keytables::key_tables_agree` |
+| `keytables::aws_name` | `Vec::new()` | `keytables::key_tables_agree` |
+| `keytables::contains_name` | `false` | `keytables::key_tables_agree` |
+| `keytables::is_server_derived` | `false` | `keytables::key_tables_agree` |
+| `keytables::server_derived_key_names` | `Vec::new()` | `keytables::key_tables_agree` |
+| `keytables::is_server_derived_condition_key` | `false` | `keytables::key_tables_agree` |

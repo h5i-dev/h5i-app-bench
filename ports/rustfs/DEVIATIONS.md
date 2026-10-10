@@ -178,3 +178,16 @@ and 400,000 bucket cases. Kernel mutations in each module make it fail.
   `claims` namespace. Recursive JSON values omit unused Debug derives, whose
   recursive formatting instances are not supported by extraction. Differential
   tests compare decoded JSON values directly.
+
+## Condition key tables
+
+- Six key-name enums become a family and canonical name, following the existing
+  key representation. Pure table functions expose counts, names and membership;
+  invalid names are rejected and invalid indices return empty bytes. Matches
+  are chunked to keep Aeneas translation bounded. Policy decoding aliases stay
+  in the shell (for example canonical `s3:versionid`).
+- Server-derived predicates operate on canonical names. The static COMMON_KEYS
+  iterator becomes a list constructor retaining its order and duplicate names.
+  Request-key lookup remains ASCII case insensitive, exactly as upstream.
+- Tests enumerate every enum variant and generate rejected names, then compare
+  server-derived tables and request lookup against the pinned engine.
