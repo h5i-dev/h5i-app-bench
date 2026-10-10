@@ -38,5 +38,10 @@
   "date": "2026-10-10",
   "change": "added: bucket name at most 63 bytes and object key at most 1024 (S3's limits)",
   "reason": "gpt-6.1-sol proved the unconditional statement false: a bucket name of Usize.max bytes makes building the resource ARN (`arn:aws:s3:::` + bucket + ...) exceed a Vec's capacity. S3 rejects such names before policy evaluation."
+ },
+ "kanidm-effective-total": {
+  "date": "2026-10-10",
+  "change": "added: the search and modify profiles list fewer than Usize.max attributes and classes in total",
+  "reason": "gpt-6.1-sol proved the unconditional statement false: two search profiles granting Usize.max + 1 distinct attributes overflow the union of their grants. Rust cannot hold that many distinct strings."
  }
 }

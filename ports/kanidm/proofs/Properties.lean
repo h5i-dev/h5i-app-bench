@@ -166,9 +166,15 @@ theorem str_contains_spec (hay needle : Slice U8) :
 /-! ## Totality -/
 
 /-- The effective-permission report (search, modify and delete decisions for
-every entry) never panics, overflows or loops. -/
+every entry) never panics, overflows or loops, when the access profiles list
+fewer than `Usize.max` attributes and classes in total. Without the bound, two
+search profiles granting `Usize.max + 1` distinct attributes overflow the
+union of their grants; Rust cannot hold that many distinct strings. -/
 theorem effective_permission_check_total (ctl : AccessControlsInner) (ident : Identity)
-    (attrs : Option (alloc.vec.Vec (alloc.vec.Vec U8))) (es : Slice Entry) :
+    (attrs : Option (alloc.vec.Vec (alloc.vec.Vec U8))) (es : Slice Entry)
+    (hcap : (ctl.acps_search.val.map (·.attrs.length)).sum +
+      (ctl.acps_modify.val.map (fun m => m.presattrs.length + m.remattrs.length +
+        m.pres_classes.length + m.rem_classes.length)).sum < Usize.max) :
     ∃ y, access.effective_permission_check ctl ident attrs es = ok y := by
   sorry
 
