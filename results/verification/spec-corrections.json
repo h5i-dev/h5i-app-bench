@@ -42,7 +42,7 @@
  "kanidm-effective-total": {
   "date": "2026-10-10",
   "change": "added: the search and modify profiles list fewer than Usize.max attributes and classes in total",
-  "reason": "gpt-6.1-sol proved the unconditional statement false: two search profiles granting Usize.max + 1 distinct attributes overflow the union of their grants. Rust cannot hold that many distinct strings. Then sync agreements' attributes were added to the count: one agreement with Usize.max attributes overflows (gpt-6.1-sol, 2026-10-10)."
+  "reason": "gpt-6.1-sol proved the unconditional statement false: two search profiles granting Usize.max + 1 distinct attributes overflow the union of their grants. Rust cannot hold that many distinct strings. Then sync agreements' attributes were added to the count: one agreement with Usize.max attributes overflows (gpt-6.1-sol, 2026-10-10). Then the bound reserves room for the 7 fixed attribute names the search modules add: Usize.max - 1 profile attributes plus class and displayname overflow (gpt-6.1-sol, 2026-10-10)."
  },
  "oxicloud-check-total": {
   "date": "2026-10-10",
