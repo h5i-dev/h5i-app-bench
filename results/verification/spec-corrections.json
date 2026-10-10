@@ -51,7 +51,7 @@
  },
  "tuwunel-total": {
   "date": "2026-10-10",
-  "change": "added: fewer than Usize.max relation rows",
-  "reason": "gpt-6.1-sol proved the unconditional statement false: Usize.max self-relations overflow the relations walker's queue (docs/tuwunel-totality-obstruction.md)."
+  "change": "added: (relations.length + 1)^4 < Usize.max",
+  "reason": "gpt-6.1-sol proved the unconditional statement false: Usize.max self-relations overflow the relations walker's queue (docs/tuwunel-totality-obstruction.md). Then the bound became (n + 1)^4 < Usize.max: with recursion each yielded event adds a continuation and a child stream, and Usize.max - 1 self-relations still overflow the queue (gpt-6.1-sol, 2026-10-10)."
  }
 }
