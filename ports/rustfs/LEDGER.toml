@@ -1,0 +1,1519 @@
+# Port ledger for ports/rustfs (see harness/port_ledger.py).
+# status: ported (kernel = [...]), outside (reason = ...), todo.
+
+[[item]]
+upstream = "crates/policy/src/policy/action.rs:25 ActionSet"
+lines = 1
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/action.rs:31 ActionSet::serialize"
+lines = 12
+status = "outside"
+reason = "policy decoding or serialization"
+
+[[item]]
+upstream = "crates/policy/src/policy/action.rs:49 ActionSet::is_empty"
+lines = 3
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/action.rs:54 ActionSet::push_unique"
+lines = 5
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/action.rs:60 ActionSet::is_match"
+lines = 3
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/action.rs:64 ActionSet::is_match_for_effect"
+lines = 13
+status = "ported"
+kernel = ["set_is_match_for_effect"]
+
+[[item]]
+upstream = "crates/policy/src/policy/action.rs:82 ActionSet::statement_covers"
+lines = 9
+status = "ported"
+kernel = ["statement_covers"]
+
+[[item]]
+upstream = "crates/policy/src/policy/action.rs:102 ActionSet::deref"
+lines = 3
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/action.rs:109 ActionSet::is_valid"
+lines = 3
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/action.rs:115 ActionSet::eq"
+lines = 3
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/action.rs:121 ActionSet::deserialize"
+lines = 40
+status = "outside"
+reason = "policy decoding or serialization"
+
+[[item]]
+upstream = "crates/policy/src/policy/action.rs:168 Action"
+lines = 7
+status = "ported"
+kernel = ["Action"]
+
+[[item]]
+upstream = "crates/policy/src/policy/action.rs:179 Action::is_match"
+lines = 3
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/action.rs:183 Action::is_match_for_effect"
+lines = 6
+status = "ported"
+kernel = ["action_is_match_for_effect"]
+
+[[item]]
+upstream = "crates/policy/src/policy/action.rs:195 action_requires_explicit_grant"
+lines = 6
+status = "ported"
+kernel = ["action_requires_explicit_grant"]
+
+[[item]]
+upstream = "crates/policy/src/policy/action.rs:203 from"
+lines = 9
+status = "outside"
+reason = "policy decoding or serialization"
+
+[[item]]
+upstream = "crates/policy/src/policy/action.rs:223 Action::try_from"
+lines = 24
+status = "outside"
+reason = "policy decoding or serialization"
+
+[[item]]
+upstream = "crates/policy/src/policy/action.rs:250 S3Action"
+lines = 73
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/action.rs:405 AdminAction"
+lines = 93
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/action.rs:595 AdminAction::is_table_resource_scoped"
+lines = 25
+status = "ported"
+kernel = ["is_table_resource_scoped"]
+
+[[item]]
+upstream = "crates/policy/src/policy/action.rs:622 AdminAction::is_valid"
+lines = 96
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/action.rs:720 StsAction"
+lines = 4
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/action.rs:729 KmsAction"
+lines = 20
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/doc.rs:20 PolicyDoc"
+lines = 16
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/doc.rs:47 PolicyDoc::new"
+lines = 3
+status = "outside"
+reason = "calls OffsetDateTime::now_utc"
+
+[[item]]
+upstream = "crates/policy/src/policy/doc.rs:51 PolicyDoc::new_at"
+lines = 8
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/doc.rs:66 PolicyDoc::update"
+lines = 3
+status = "outside"
+reason = "calls OffsetDateTime::now_utc"
+
+[[item]]
+upstream = "crates/policy/src/policy/doc.rs:70 PolicyDoc::update_at"
+lines = 8
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/doc.rs:81 PolicyDoc::default_policy"
+lines = 8
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/doc.rs:94 PolicyDoc::try_from"
+lines = 11
+status = "outside"
+reason = "policy decoding or serialization"
+
+[[item]]
+upstream = "crates/policy/src/policy/effect.rs:21 Effect"
+lines = 4
+status = "ported"
+kernel = ["Effect"]
+
+[[item]]
+upstream = "crates/policy/src/policy/effect.rs:34 Effect::try_from"
+lines = 5
+status = "outside"
+reason = "policy decoding or serialization"
+
+[[item]]
+upstream = "crates/policy/src/policy/effect.rs:42 Effect::is_allowed"
+lines = 6
+status = "ported"
+kernel = ["effect_is_allowed"]
+
+[[item]]
+upstream = "crates/policy/src/policy/effect.rs:53 Effect::is_valid"
+lines = 3
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/function/addr.rs:20 AddrFunc"
+lines = 1
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/function/addr.rs:23 AddrFunc::evaluate"
+lines = 16
+status = "ported"
+kernel = ["addr_func", "addr_key"]
+
+[[item]]
+upstream = "crates/policy/src/policy/function/addr.rs:44 AddrFuncValue"
+lines = 1
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/function/addr.rs:49 AddrFuncValue::deserialize"
+lines = 42
+status = "outside"
+reason = "policy decoding or serialization"
+
+[[item]]
+upstream = "crates/policy/src/policy/function/binary.rs:21 BinaryFunc"
+lines = 1
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/function/binary.rs:23 BinaryFuncValueError"
+lines = 3
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/function/binary.rs:29 BinaryFuncValue"
+lines = 4
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/function/binary.rs:44 BinaryFuncValue::new"
+lines = 3
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/function/binary.rs:49 BinaryFuncValue::from_encoded_values"
+lines = 11
+status = "outside"
+reason = "policy decoding or serialization"
+
+[[item]]
+upstream = "crates/policy/src/policy/function/binary.rs:65 BinaryFuncValue::try_from"
+lines = 3
+status = "outside"
+reason = "policy decoding or serialization"
+
+[[item]]
+upstream = "crates/policy/src/policy/function/binary.rs:73 BinaryFuncValue::try_from"
+lines = 3
+status = "outside"
+reason = "policy decoding or serialization"
+
+[[item]]
+upstream = "crates/policy/src/policy/function/binary.rs:81 BinaryFuncValue::eq"
+lines = 3
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/function/binary.rs:89 BinaryFuncValue::serialize"
+lines = 7
+status = "outside"
+reason = "policy decoding or serialization"
+
+[[item]]
+upstream = "crates/policy/src/policy/function/binary.rs:99 BinaryFuncValue::deserialize"
+lines = 29
+status = "outside"
+reason = "policy decoding or serialization"
+
+[[item]]
+upstream = "crates/policy/src/policy/function/binary.rs:137 BinaryFunc::evaluate"
+lines = 25
+status = "ported"
+kernel = ["addr_func", "addr_key", "num_func"]
+
+[[item]]
+upstream = "crates/policy/src/policy/function/bool_null.rs:20 BoolFunc"
+lines = 1
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/function/bool_null.rs:22 BoolFunc::evaluate_bool"
+lines = 11
+status = "ported"
+kernel = ["bool_func"]
+
+[[item]]
+upstream = "crates/policy/src/policy/function/bool_null.rs:35 BoolFunc::evaluate_null"
+lines = 10
+status = "ported"
+kernel = ["null_func"]
+
+[[item]]
+upstream = "crates/policy/src/policy/function/bool_null.rs:49 BoolFuncValue"
+lines = 1
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/function/bool_null.rs:53 BoolFuncValue::serialize"
+lines = 6
+status = "outside"
+reason = "policy decoding or serialization"
+
+[[item]]
+upstream = "crates/policy/src/policy/function/bool_null.rs:62 BoolFuncValue::deserialize"
+lines = 37
+status = "outside"
+reason = "policy decoding or serialization"
+
+[[item]]
+upstream = "crates/policy/src/policy/function/condition.rs:26 Condition"
+lines = 31
+status = "ported"
+kernel = ["Condition"]
+
+[[item]]
+upstream = "crates/policy/src/policy/function/condition.rs:63 Condition::from_deserializer"
+lines = 38
+status = "outside"
+reason = "policy decoding or serialization"
+
+[[item]]
+upstream = "crates/policy/src/policy/function/condition.rs:102 Condition::to_key"
+lines = 33
+status = "outside"
+reason = "policy decoding or serialization"
+
+[[item]]
+upstream = "crates/policy/src/policy/function/condition.rs:136 Condition::to_key_with_suffix"
+lines = 6
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/function/condition.rs:143 Condition::has_any_key_in"
+lines = 32
+status = "ported"
+kernel = ["has_any_key_in"]
+
+[[item]]
+upstream = "crates/policy/src/policy/function/condition.rs:176 Condition::references_key_name"
+lines = 32
+status = "ported"
+kernel = ["references_key_name"]
+
+[[item]]
+upstream = "crates/policy/src/policy/function/condition.rs:209 Condition::evaluate_with_resolver"
+lines = 77
+status = "ported"
+kernel = ["condition_evaluate", "eval_cond"]
+
+[[item]]
+upstream = "crates/policy/src/policy/function/condition.rs:289 Condition::is_negate"
+lines = 4
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/function/condition.rs:297 Condition::serialize_map"
+lines = 33
+status = "outside"
+reason = "policy decoding or serialization"
+
+[[item]]
+upstream = "crates/policy/src/policy/function/condition.rs:333 Condition::eq"
+lines = 34
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/function/date.rs:20 DateFunc"
+lines = 1
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/function/date.rs:23 DateFunc::evaluate"
+lines = 15
+status = "ported"
+kernel = ["addr_func", "addr_key", "num_func"]
+
+[[item]]
+upstream = "crates/policy/src/policy/function/date.rs:43 DateFuncValue"
+lines = 1
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/function/date.rs:47 DateFuncValue::serialize"
+lines = 12
+status = "outside"
+reason = "policy decoding or serialization"
+
+[[item]]
+upstream = "crates/policy/src/policy/function/date.rs:62 DateFuncValue::deserialize"
+lines = 21
+status = "outside"
+reason = "policy decoding or serialization"
+
+[[item]]
+upstream = "crates/policy/src/policy/function/func.rs:24 InnerFunc"
+lines = 1
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/function/func.rs:27 FuncKeyValue"
+lines = 4
+status = "ported"
+kernel = ["str_eval", "str_eval_like"]
+
+[[item]]
+upstream = "crates/policy/src/policy/function/func.rs:34 FuncKeyValue::clone"
+lines = 6
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/function/func.rs:43 InnerFunc::clone"
+lines = 3
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/function/func.rs:49 InnerFunc::key_names"
+lines = 3
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/function/func.rs:53 InnerFunc::contains_key_name"
+lines = 3
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/function/func.rs:59 InnerFunc::serialize"
+lines = 12
+status = "outside"
+reason = "policy decoding or serialization"
+
+[[item]]
+upstream = "crates/policy/src/policy/function/func.rs:80 InnerFunc::deserialize"
+lines = 30
+status = "outside"
+reason = "policy decoding or serialization"
+
+[[item]]
+upstream = "crates/policy/src/policy/function/key.rs:20 Key"
+lines = 4
+status = "ported"
+kernel = ["Key"]
+
+[[item]]
+upstream = "crates/policy/src/policy/function/key.rs:33 Key::is"
+lines = 3
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/function/key.rs:37 Key::var_name"
+lines = 3
+status = "ported"
+kernel = ["common_key", "keynames::*"]
+
+[[item]]
+upstream = "crates/policy/src/policy/function/key.rs:41 Key::name"
+lines = 7
+status = "ported"
+kernel = ["key_lookup_name"]
+
+[[item]]
+upstream = "crates/policy/src/policy/function/key.rs:51 String::from"
+lines = 8
+status = "outside"
+reason = "policy decoding or serialization"
+
+[[item]]
+upstream = "crates/policy/src/policy/function/key.rs:64 Key::try_from"
+lines = 9
+status = "outside"
+reason = "policy decoding or serialization"
+
+[[item]]
+upstream = "crates/policy/src/policy/function/key_name.rs:19 KeyName"
+lines = 8
+status = "ported"
+kernel = ["keynames::*"]
+
+[[item]]
+upstream = "crates/policy/src/policy/function/key_name.rs:32 KeyName::try_from"
+lines = 17
+status = "outside"
+reason = "policy decoding or serialization"
+
+[[item]]
+upstream = "crates/policy/src/policy/function/key_name.rs:101 KeyName::prefix"
+lines = 10
+status = "ported"
+kernel = ["wrap_all"]
+
+[[item]]
+upstream = "crates/policy/src/policy/function/key_name.rs:112 KeyName::name"
+lines = 3
+status = "ported"
+kernel = ["common_key", "get_value", "key_lookup_name", "keynames::*", "value_count"]
+
+[[item]]
+upstream = "crates/policy/src/policy/function/key_name.rs:116 KeyName::is_server_derived"
+lines = 6
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/function/key_name.rs:134 KeyName::server_derived_key_names"
+lines = 3
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/function/key_name.rs:140 KeyName::var_name"
+lines = 10
+status = "ported"
+kernel = ["common_key", "keynames::*"]
+
+[[item]]
+upstream = "crates/policy/src/policy/function/key_name.rs:153 from"
+lines = 10
+status = "outside"
+reason = "policy decoding or serialization"
+
+[[item]]
+upstream = "crates/policy/src/policy/function/key_name.rs:165 S3KeyName"
+lines = 28
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/function/key_name.rs:245 JwtKeyName"
+lines = 25
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/function/key_name.rs:318 SvcKeyName"
+lines = 3
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/function/key_name.rs:325 LdapKeyName"
+lines = 5
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/function/key_name.rs:338 StsKeyName"
+lines = 3
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/function/key_name.rs:345 AwsKeyName"
+lines = 14
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/function/number.rs:23 NumberFunc"
+lines = 1
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/function/number.rs:25 NumberFuncValue"
+lines = 1
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/function/number.rs:29 NumberFunc::evaluate"
+lines = 15
+status = "ported"
+kernel = ["num_func"]
+
+[[item]]
+upstream = "crates/policy/src/policy/function/number.rs:50 NumberFuncValue::serialize"
+lines = 6
+status = "outside"
+reason = "policy decoding or serialization"
+
+[[item]]
+upstream = "crates/policy/src/policy/function/number.rs:59 NumberFuncValue::deserialize"
+lines = 31
+status = "outside"
+reason = "policy decoding or serialization"
+
+[[item]]
+upstream = "crates/policy/src/policy/function/string.rs:31 StringFunc"
+lines = 1
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/function/string.rs:34 StringFunc::evaluate_with_resolver"
+lines = 33
+status = "ported"
+kernel = ["str_func"]
+
+[[item]]
+upstream = "crates/policy/src/policy/function/string.rs:77 FuncKeyValue::eval"
+lines = 51
+status = "ported"
+kernel = ["str_eval"]
+
+[[item]]
+upstream = "crates/policy/src/policy/function/string.rs:137 FuncKeyValue::eval_like"
+lines = 56
+status = "ported"
+kernel = ["like_step", "str_eval_like"]
+
+[[item]]
+upstream = "crates/policy/src/policy/function/string.rs:204 StringFuncValue"
+lines = 1
+status = "ported"
+kernel = ["str_eval", "str_eval_like"]
+
+[[item]]
+upstream = "crates/policy/src/policy/function/string.rs:210 StringFuncValue::serialize"
+lines = 14
+status = "outside"
+reason = "policy decoding or serialization"
+
+[[item]]
+upstream = "crates/policy/src/policy/function/string.rs:227 StringFuncValue::deserialize"
+lines = 39
+status = "outside"
+reason = "policy decoding or serialization"
+
+[[item]]
+upstream = "crates/policy/src/policy/function.rs:33 Quantifier"
+lines = 5
+status = "ported"
+kernel = ["Quantifier"]
+
+[[item]]
+upstream = "crates/policy/src/policy/function.rs:53 is_server_derived_condition_key"
+lines = 3
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/function.rs:63 Functions"
+lines = 5
+status = "ported"
+kernel = ["Functions"]
+
+[[item]]
+upstream = "crates/policy/src/policy/function.rs:71 Functions::evaluate"
+lines = 3
+status = "ported"
+kernel = ["addr_func", "addr_key", "num_func"]
+
+[[item]]
+upstream = "crates/policy/src/policy/function.rs:75 Functions::evaluate_with_resolver"
+lines = 22
+status = "ported"
+kernel = ["functions_evaluate"]
+
+[[item]]
+upstream = "crates/policy/src/policy/function.rs:101 Functions::is_empty"
+lines = 3
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/function.rs:105 Functions::references_key_name"
+lines = 7
+status = "ported"
+kernel = ["references_key_name"]
+
+[[item]]
+upstream = "crates/policy/src/policy/function.rs:115 Functions::serialize"
+lines = 20
+status = "outside"
+reason = "policy decoding or serialization"
+
+[[item]]
+upstream = "crates/policy/src/policy/function.rs:142 Functions::deserialize"
+lines = 47
+status = "outside"
+reason = "policy decoding or serialization"
+
+[[item]]
+upstream = "crates/policy/src/policy/function.rs:208 Functions::eq"
+lines = 11
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/id.rs:21 ID"
+lines = 1
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/id.rs:25 ID::is_empty"
+lines = 3
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/id.rs:33 ID::is_valid"
+lines = 3
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/id.rs:40 ID::from"
+lines = 3
+status = "outside"
+reason = "policy decoding or serialization"
+
+[[item]]
+upstream = "crates/policy/src/policy/id.rs:48 ID::deref"
+lines = 3
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/opa.rs:22 Args"
+lines = 4
+status = "outside"
+reason = "OPA authorization plugin: HTTP client and environment"
+
+[[item]]
+upstream = "crates/policy/src/policy/opa.rs:28 Args::enable"
+lines = 3
+status = "outside"
+reason = "OPA authorization plugin: HTTP client and environment"
+
+[[item]]
+upstream = "crates/policy/src/policy/opa.rs:33 is_configured"
+lines = 3
+status = "outside"
+reason = "uses env, var_os"
+
+[[item]]
+upstream = "crates/policy/src/policy/opa.rs:37 AuthZPlugin"
+lines = 4
+status = "outside"
+reason = "uses reqwest"
+
+[[item]]
+upstream = "crates/policy/src/policy/opa.rs:43 OpaConfigError"
+lines = 10
+status = "outside"
+reason = "uses env, reqwest"
+
+[[item]]
+upstream = "crates/policy/src/policy/opa.rs:62 OpaConfigError::kind"
+lines = 9
+status = "outside"
+reason = "OPA authorization plugin: HTTP client and environment"
+
+[[item]]
+upstream = "crates/policy/src/policy/opa.rs:73 redact_opa_connection_error"
+lines = 3
+status = "outside"
+reason = "uses reqwest"
+
+[[item]]
+upstream = "crates/policy/src/policy/opa.rs:77 opa_request_error_kind"
+lines = 21
+status = "outside"
+reason = "uses reqwest"
+
+[[item]]
+upstream = "crates/policy/src/policy/opa.rs:99 check"
+lines = 18
+status = "outside"
+reason = "uses env"
+
+[[item]]
+upstream = "crates/policy/src/policy/opa.rs:121 validate"
+lines = 27
+status = "outside"
+reason = "OPA authorization plugin: HTTP client and environment"
+
+[[item]]
+upstream = "crates/policy/src/policy/opa.rs:151 lookup_config"
+lines = 20
+status = "outside"
+reason = "OPA authorization plugin: HTTP client and environment"
+
+[[item]]
+upstream = "crates/policy/src/policy/opa.rs:175 AuthZPlugin::new"
+lines = 21
+status = "outside"
+reason = "uses reqwest"
+
+[[item]]
+upstream = "crates/policy/src/policy/opa.rs:202 AuthZPlugin::is_allowed"
+lines = 48
+status = "outside"
+reason = "OPA authorization plugin: HTTP client and environment"
+
+[[item]]
+upstream = "crates/policy/src/policy/opa.rs:254 AuthZPlugin::build_opa_input"
+lines = 34
+status = "outside"
+reason = "OPA authorization plugin: HTTP client and environment"
+
+[[item]]
+upstream = "crates/policy/src/policy/opa.rs:294 OpaResultAllow"
+lines = 3
+status = "outside"
+reason = "OPA authorization plugin: HTTP client and environment"
+
+[[item]]
+upstream = "crates/policy/src/policy/opa.rs:299 OpaResult"
+lines = 3
+status = "outside"
+reason = "OPA authorization plugin: HTTP client and environment"
+
+[[item]]
+upstream = "crates/policy/src/policy/opa.rs:304 OpaResponse"
+lines = 3
+status = "outside"
+reason = "OPA authorization plugin: HTTP client and environment"
+
+[[item]]
+upstream = "crates/policy/src/policy/opa.rs:309 OpaResponseEnum"
+lines = 4
+status = "outside"
+reason = "OPA authorization plugin: HTTP client and environment"
+
+[[item]]
+upstream = "crates/policy/src/policy/policy.rs:23 DEFAULT_VERSION"
+lines = 1
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/policy.rs:30 Validator::is_valid"
+lines = 3
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/policy.rs:35 Args"
+lines = 11
+status = "ported"
+kernel = ["Args"]
+
+[[item]]
+upstream = "crates/policy/src/policy/policy.rs:49 Args::get_role_arn"
+lines = 3
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/policy.rs:52 Args::get_policies"
+lines = 3
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/policy.rs:57 Policy"
+lines = 5
+status = "ported"
+kernel = ["policies::*"]
+
+[[item]]
+upstream = "crates/policy/src/policy/policy.rs:69 Policy::is_allowed"
+lines = 19
+status = "ported"
+kernel = ["policy_is_allowed"]
+
+[[item]]
+upstream = "crates/policy/src/policy/policy.rs:98 Policy::match_resource"
+lines = 8
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/policy.rs:107 Policy::drop_duplicate_statements"
+lines = 23
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/policy.rs:136 Policy::merge_policies"
+lines = 13
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/policy.rs:151 Policy::is_empty"
+lines = 3
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/policy.rs:155 Policy::validate"
+lines = 3
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/policy.rs:159 Policy::parse_config"
+lines = 5
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/policy.rs:169 Policy::is_valid"
+lines = 9
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/policy.rs:182 BucketPolicyArgs"
+lines = 9
+status = "ported"
+kernel = ["BucketPolicyArgs"]
+
+[[item]]
+upstream = "crates/policy/src/policy/policy.rs:193 BucketPolicy"
+lines = 5
+status = "ported"
+kernel = ["policies::*"]
+
+[[item]]
+upstream = "crates/policy/src/policy/policy.rs:208 BucketPolicy::is_allowed"
+lines = 16
+status = "ported"
+kernel = ["bucket_policy_is_allowed"]
+
+[[item]]
+upstream = "crates/policy/src/policy/policy.rs:232 BucketPolicy::is_valid"
+lines = 9
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/policy.rs:245 get_values_from_claims"
+lines = 31
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/policy.rs:279 get_policies_from_claims"
+lines = 3
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/policy.rs:283 iam_policy_claim_name_sa"
+lines = 3
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/policy.rs:287 is_existing_object_tag_condition_key"
+lines = 5
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/policy.rs:294 value_uses_existing_object_tag_condition_key"
+lines = 9
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/policy.rs:304 functions_use_existing_object_tag"
+lines = 5
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/policy.rs:311 policy_uses_existing_object_tag_conditions"
+lines = 6
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/policy.rs:318 bucket_policy_uses_existing_object_tag_conditions"
+lines = 6
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/policy.rs:325 policy_needs_existing_object_tag_for_args"
+lines = 15
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/policy.rs:342 bucket_policy_needs_existing_object_tag_for_args"
+lines = 14
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/policy.rs:369 KMS_KEY_ADMINISTRATOR"
+lines = 1
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/policy.rs:371 KMS_KEY_USER"
+lines = 1
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/policy.rs:373 KMS_AUDITOR"
+lines = 1
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/policy.rs:376 ALL_KMS_KEYS"
+lines = 1
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/policy.rs:382 kms_allow"
+lines = 11
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/policy.rs:395 assume_role_allow"
+lines = 11
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/policy.rs:409 DEFAULT_POLICIES"
+lines = 217
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/principal.rs:20 Principal"
+lines = 4
+status = "ported"
+kernel = ["Principal"]
+
+[[item]]
+upstream = "crates/policy/src/policy/principal.rs:30 Principal::serialize"
+lines = 27
+status = "outside"
+reason = "policy decoding or serialization"
+
+[[item]]
+upstream = "crates/policy/src/policy/principal.rs:63 PrincipalFormat"
+lines = 4
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/principal.rs:70 PrincipalObject"
+lines = 4
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/principal.rs:79 PrincipalValues"
+lines = 4
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/principal.rs:87 PrincipalValues::into_set"
+lines = 6
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/principal.rs:96 Principal::deserialize"
+lines = 29
+status = "outside"
+reason = "policy decoding or serialization"
+
+[[item]]
+upstream = "crates/policy/src/policy/principal.rs:128 Principal::is_match"
+lines = 13
+status = "ported"
+kernel = ["principal_is_match"]
+
+[[item]]
+upstream = "crates/policy/src/policy/principal.rs:145 Principal::is_valid"
+lines = 6
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/resource.rs:29 ResourceSet"
+lines = 1
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/resource.rs:33 ResourceSet::serialize"
+lines = 15
+status = "outside"
+reason = "policy decoding or serialization"
+
+[[item]]
+upstream = "crates/policy/src/policy/resource.rs:52 ResourceSet::is_empty"
+lines = 3
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/resource.rs:57 ResourceSet::push_unique"
+lines = 5
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/resource.rs:63 ResourceSet::is_match"
+lines = 3
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/resource.rs:67 ResourceSet::is_match_with_resolver"
+lines = 13
+status = "ported"
+kernel = ["set_is_match"]
+
+[[item]]
+upstream = "crates/policy/src/policy/resource.rs:82 ResourceSet::match_resource"
+lines = 8
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/resource.rs:96 ResourceSet::deref"
+lines = 3
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/resource.rs:103 ResourceSet::is_valid"
+lines = 6
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/resource.rs:113 ResourceSet::eq"
+lines = 3
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/resource.rs:119 ResourceSet::deserialize"
+lines = 40
+status = "outside"
+reason = "policy decoding or serialization"
+
+[[item]]
+upstream = "crates/policy/src/policy/resource.rs:166 Resource"
+lines = 4
+status = "ported"
+kernel = ["Resource"]
+
+[[item]]
+upstream = "crates/policy/src/policy/resource.rs:185 Resource::is_kms"
+lines = 3
+status = "ported"
+kernel = ["is_kms"]
+
+[[item]]
+upstream = "crates/policy/src/policy/resource.rs:189 Resource::is_match"
+lines = 3
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/resource.rs:193 Resource::is_match_with_resolver"
+lines = 36
+status = "ported"
+kernel = ["resource_is_match"]
+
+[[item]]
+upstream = "crates/policy/src/policy/resource.rs:237 Resource::match_resource"
+lines = 3
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/resource.rs:244 Resource::try_from"
+lines = 11
+status = "outside"
+reason = "policy decoding or serialization"
+
+[[item]]
+upstream = "crates/policy/src/policy/resource.rs:260 Resource::is_valid"
+lines = 22
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/resource.rs:288 Resource::serialize"
+lines = 9
+status = "outside"
+reason = "policy decoding or serialization"
+
+[[item]]
+upstream = "crates/policy/src/policy/resource.rs:300 Resource::deserialize"
+lines = 7
+status = "outside"
+reason = "policy decoding or serialization"
+
+[[item]]
+upstream = "crates/policy/src/policy/statement.rs:25 Statement"
+lines = 9
+status = "ported"
+kernel = ["Statement", "stmts::*"]
+
+[[item]]
+upstream = "crates/policy/src/policy/statement.rs:44 variable_resolver_for_policy_args"
+lines = 13
+status = "ported"
+kernel = ["resolver_for"]
+
+[[item]]
+upstream = "crates/policy/src/policy/statement.rs:62 build_resource"
+lines = 18
+status = "ported"
+kernel = ["build_resource"]
+
+[[item]]
+upstream = "crates/policy/src/policy/statement.rs:83 ActionFamily"
+lines = 7
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/statement.rs:93 Statement::skips_resource_match_for_args"
+lines = 9
+status = "ported"
+kernel = ["skips_resource_match"]
+
+[[item]]
+upstream = "crates/policy/src/policy/statement.rs:105 Statement::is_kms"
+lines = 8
+status = "ported"
+kernel = ["is_kms"]
+
+[[item]]
+upstream = "crates/policy/src/policy/statement.rs:115 Statement::is_admin"
+lines = 8
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/statement.rs:125 Statement::is_sts"
+lines = 8
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/statement.rs:135 Statement::action_family"
+lines = 35
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/statement.rs:177 Statement::kms_key_scope_matches"
+lines = 46
+status = "ported"
+kernel = ["kms_key_scope_matches"]
+
+[[item]]
+upstream = "crates/policy/src/policy/statement.rs:247 Statement::request_reaches_condition_eval"
+lines = 37
+status = "ported"
+kernel = ["reaches_condition_eval"]
+
+[[item]]
+upstream = "crates/policy/src/policy/statement.rs:293 Statement::is_allowed"
+lines = 10
+status = "ported"
+kernel = ["statement_is_allowed"]
+
+[[item]]
+upstream = "crates/policy/src/policy/statement.rs:310 Statement::is_valid"
+lines = 43
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/statement.rs:375 Statement::eq"
+lines = 8
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/statement.rs:385 BPStatement"
+lines = 10
+status = "ported"
+kernel = ["BPStatement", "stmts::*"]
+
+[[item]]
+upstream = "crates/policy/src/policy/statement.rs:409 BPStatement::request_reaches_condition_eval"
+lines = 29
+status = "ported"
+kernel = ["bp_reaches_condition_eval"]
+
+[[item]]
+upstream = "crates/policy/src/policy/statement.rs:450 BPStatement::is_allowed"
+lines = 9
+status = "ported"
+kernel = ["bp_statement_is_allowed"]
+
+[[item]]
+upstream = "crates/policy/src/policy/statement.rs:465 BPStatement::is_valid"
+lines = 35
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/utils/path.rs:15 LazyBuf"
+lines = 5
+status = "ported"
+kernel = ["pathclean::*"]
+
+[[item]]
+upstream = "crates/policy/src/policy/utils/path.rs:22 LazyBuf::new"
+lines = 3
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/utils/path.rs:26 LazyBuf::index"
+lines = 3
+status = "ported"
+kernel = ["back_to_slash"]
+
+[[item]]
+upstream = "crates/policy/src/policy/utils/path.rs:30 LazyBuf::append"
+lines = 15
+status = "ported"
+kernel = ["copy_element"]
+
+[[item]]
+upstream = "crates/policy/src/policy/utils/path.rs:47 LazyBuf::string"
+lines = 6
+status = "ported"
+kernel = ["condfuncs::*"]
+
+[[item]]
+upstream = "crates/policy/src/policy/utils/path.rs:55 clean"
+lines = 41
+status = "ported"
+kernel = ["clean", "pathclean::*"]
+
+[[item]]
+upstream = "crates/policy/src/policy/utils/wildcard.rs:15 is_simple_match"
+lines = 7
+status = "ported"
+kernel = ["is_simple_match"]
+
+[[item]]
+upstream = "crates/policy/src/policy/utils/wildcard.rs:23 is_match"
+lines = 7
+status = "ported"
+kernel = ["is_match", "principal_is_match"]
+
+[[item]]
+upstream = "crates/policy/src/policy/utils/wildcard.rs:31 is_match_as_pattern_prefix"
+lines = 22
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/utils/wildcard.rs:59 inner_match"
+lines = 10
+status = "ported"
+kernel = ["inner_match"]
+
+[[item]]
+upstream = "crates/policy/src/policy/utils/wildcard.rs:74 deep_match"
+lines = 24
+status = "ported"
+kernel = ["deep_match", "wildmatch::*"]
+
+[[item]]
+upstream = "crates/policy/src/policy/utils.rs:22 ClaimLookup"
+lines = 5
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/utils.rs:29 case_insensitive_eq"
+lines = 5
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/utils.rs:35 get_claim_case_insensitive"
+lines = 18
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/utils.rs:57 _get_values_from_claims"
+lines = 28
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/utils.rs:91 _split_path"
+lines = 17
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/variables.rs:23 VariableContext"
+lines = 10
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/variables.rs:37 VariableContext::new"
+lines = 3
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/variables.rs:42 VariableResolverCache"
+lines = 3
+status = "outside"
+reason = "variable cache: shared mutable state"
+
+[[item]]
+upstream = "crates/policy/src/policy/variables.rs:48 VariableResolverCache::new"
+lines = 7
+status = "outside"
+reason = "variable cache: shared mutable state"
+
+[[item]]
+upstream = "crates/policy/src/policy/variables.rs:57 VariableResolverCache::get"
+lines = 3
+status = "outside"
+reason = "variable cache: shared mutable state"
+
+[[item]]
+upstream = "crates/policy/src/policy/variables.rs:61 VariableResolverCache::put"
+lines = 3
+status = "outside"
+reason = "variable cache: shared mutable state"
+
+[[item]]
+upstream = "crates/policy/src/policy/variables.rs:65 VariableResolverCache::clear"
+lines = 3
+status = "outside"
+reason = "variable cache: shared mutable state"
+
+[[item]]
+upstream = "crates/policy/src/policy/variables.rs:70 CachedAwsVariableResolver"
+lines = 4
+status = "outside"
+reason = "variable cache: shared mutable state"
+
+[[item]]
+upstream = "crates/policy/src/policy/variables.rs:77 CachedAwsVariableResolver::new"
+lines = 6
+status = "outside"
+reason = "variable cache: shared mutable state"
+
+[[item]]
+upstream = "crates/policy/src/policy/variables.rs:84 CachedAwsVariableResolver::is_dynamic"
+lines = 3
+status = "outside"
+reason = "variable cache: shared mutable state"
+
+[[item]]
+upstream = "crates/policy/src/policy/variables.rs:91 CachedAwsVariableResolver::resolve"
+lines = 11
+status = "outside"
+reason = "variable cache: shared mutable state"
+
+[[item]]
+upstream = "crates/policy/src/policy/variables.rs:105 CachedAwsVariableResolver::resolve_multiple"
+lines = 3
+status = "outside"
+reason = "variable cache: shared mutable state"
+
+[[item]]
+upstream = "crates/policy/src/policy/variables.rs:109 CachedAwsVariableResolver::is_dynamic"
+lines = 3
+status = "outside"
+reason = "variable cache: shared mutable state"
+
+[[item]]
+upstream = "crates/policy/src/policy/variables.rs:118 PolicyVariableResolver::resolve_multiple"
+lines = 3
+status = "ported"
+kernel = ["resolve_multiple"]
+
+[[item]]
+upstream = "crates/policy/src/policy/variables.rs:124 VariableResolver"
+lines = 3
+status = "ported"
+kernel = ["awsvars::*"]
+
+[[item]]
+upstream = "crates/policy/src/policy/variables.rs:130 VariableResolver::new"
+lines = 3
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/variables.rs:134 VariableResolver::get_claim_as_strings"
+lines = 22
+status = "ported"
+kernel = ["userid_strings"]
+
+[[item]]
+upstream = "crates/policy/src/policy/variables.rs:157 VariableResolver::resolve_username"
+lines = 3
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/variables.rs:161 VariableResolver::resolve_userid"
+lines = 5
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/variables.rs:167 VariableResolver::resolve_principal_type"
+lines = 11
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/variables.rs:181 VariableResolver::resolve_secure_transport"
+lines = 3
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/variables.rs:185 VariableResolver::resolve_current_time"
+lines = 5
+status = "outside"
+reason = "calls OffsetDateTime::now_utc"
+
+[[item]]
+upstream = "crates/policy/src/policy/variables.rs:191 VariableResolver::resolve_epoch_time"
+lines = 3
+status = "outside"
+reason = "calls OffsetDateTime::now_utc"
+
+[[item]]
+upstream = "crates/policy/src/policy/variables.rs:195 VariableResolver::resolve_account_id"
+lines = 3
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/variables.rs:199 VariableResolver::resolve_region"
+lines = 3
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/variables.rs:203 VariableResolver::resolve_source_ip"
+lines = 3
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/variables.rs:207 VariableResolver::resolve_custom_variable"
+lines = 4
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/variables.rs:215 VariableResolver::resolve"
+lines = 20
+status = "ported"
+kernel = ["resolve"]
+
+[[item]]
+upstream = "crates/policy/src/policy/variables.rs:237 VariableResolver::resolve_multiple"
+lines = 9
+status = "ported"
+kernel = ["resolve_multiple"]
+
+[[item]]
+upstream = "crates/policy/src/policy/variables.rs:249 VariableResolver::is_dynamic"
+lines = 3
+status = "todo"
+
+[[item]]
+upstream = "crates/policy/src/policy/variables.rs:254 resolve_aws_variables"
+lines = 26
+status = "ported"
+kernel = ["awsvars::*", "resolve_aws_variables"]
+
+[[item]]
+upstream = "crates/policy/src/policy/variables.rs:288 resolve_aws_variables_boxed"
+lines = 6
+status = "outside"
+reason = "uses Future"
+
+[[item]]
+upstream = "crates/policy/src/policy/variables.rs:295 resolve_single_pass"
+lines = 73
+status = "ported"
+kernel = ["pass_from", "resolve_single_pass", "scan"]
