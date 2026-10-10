@@ -12,7 +12,7 @@ CHECKOUTS = {"h5i": Path.home() / "Dev/h5i", "bench": ROOT}
 # from these, so on a host whose home is on NFS, point them at a copy on local
 # disk (BENCH_LEAN, BENCH_PACKAGES, BENCH_APPLIB).
 LEAN = Path(os.environ.get("BENCH_LEAN", Path.home() / ".elan/toolchains/leanprover--lean4---v4.31.0"))
-PACKAGES = Path(os.environ.get("BENCH_PACKAGES", CHECKOUTS["h5i"] / "crates/h5i-app-core/proofs/.lake/packages"))
+PACKAGES = Path(os.environ.get("BENCH_PACKAGES", ROOT / "ports/nora/proofs/.lake/packages")).resolve()
 APPLIB = Path(os.environ.get("BENCH_APPLIB", ROOT / "env/h5i-app-lib"))
 IMAGE = "h5i-app-bench:0"
 STD_AXIOMS = {"propext", "Classical.choice", "Quot.sound"}
@@ -87,7 +87,12 @@ def manifest(t):
     m["name"] = "bench_task"
     for p in m["packages"]:
         if p["name"] == "h5i_app_lib":
+            # The canonical port is git-pinned; the isolated legacy checker
+            # mounts a fingerprinted, prebuilt library instead of fetching.
+            p["type"] = "path"
             p["dir"] = "/opt/h5i-app-lib"
+            for key in ("url", "rev", "inputRev", "subDir"):
+                p.pop(key, None)
     return json.dumps(m, indent=1) + "\n"
 
 

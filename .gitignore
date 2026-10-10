@@ -2,7 +2,9 @@ tasks/
 results/runs/
 results/runs-aborted/
 results/scratch/
+results/upstream/
 results/tmp*
+results/verification/tmp*/
 env/h5i-app-lib/
 __pycache__/
 target/
@@ -23,3 +25,4 @@ scripts/local-gateway.sh
 # Upstream checkouts, linked by scripts/link-upstream.sh.
 ports/*/upstream-src
 **/.lake/
+ports/*/.h5i/

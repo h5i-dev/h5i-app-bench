@@ -1,0 +1,62 @@
+
+$ lake build
+⚠ [146/232] Replayed Aeneas.Std.WP
+warning: Aeneas/Std/WP.lean:756:4: 'simp -failIfUnchanged only' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Aeneas/Std/WP.lean:761:4: 'simp -failIfUnchanged only' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Aeneas/Std/WP.lean:896:11: 'cases i' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Aeneas/Std/WP.lean:896:23: 'simp' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Aeneas/Std/WP.lean:927:19: 'simp at hspec' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+⚠ [1264/1316] Replayed Aeneas.Std.Core.Core
+warning: Aeneas/Std/Core/Core.lean:38:4: The namespace 'core' is duplicated in the declaration 'Aeneas.Std.core.core.clone.CloneGlobal'
+
+Note: This linter can be disabled with `set_option linter.dupNamespace false`
+warning: Aeneas/Std/Core/Core.lean:59:4: The namespace 'core' is duplicated in the declaration 'Aeneas.Std.core.core.clone.CloneBox'
+
+Note: This linter can be disabled with `set_option linter.dupNamespace false`
+warning: Aeneas/Std/Core/Core.lean:68:4: The namespace 'core' is duplicated in the declaration 'Aeneas.Std.core.core.marker.CopyBool'
+
+Note: This linter can be disabled with `set_option linter.dupNamespace false`
+⚠ [1740/1741] Built Properties (8.8s)
+warning: Properties.lean:58:8: declaration uses `sorry`
+warning: Properties.lean:65:8: declaration uses `sorry`
+warning: Properties.lean:83:8: declaration uses `sorry`
+warning: Properties.lean:92:67: 'assumption' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Properties.lean:92:67: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: Properties.lean:95:8: declaration uses `sorry`
+warning: Properties.lean:100:8: declaration uses `sorry`
+warning: Properties.lean:105:8: declaration uses `sorry`
+warning: Properties.lean:115:8: declaration uses `sorry`
+Build completed successfully (1741 jobs).
+
+$ lake env lean /home/ht2673/Dev/h5i-app-bench/ports/rustfs/proofs/.lake/h5i/Gate.lean
+gate: 101 theorems in 10 modules checked against propext, Classical.choice, Quot.sound
+
+Error: ports/rustfs: proof gate failed:
+  Properties.lean:61: sorry
+  Properties.lean:70: sorry
+  Properties.lean:85: sorry
+  Properties.lean:97: sorry
+  Properties.lean:102: sorry
+  Properties.lean:107: sorry
+  Properties.lean:118: sorry
+  rustfs_kernel.Properties.bucket_policy_total depends on [sorryAx]
+  rustfs_kernel.Properties.resolution_terminates depends on [sorryAx]
+  rustfs_kernel.Properties.clean_idempotent depends on [sorryAx]
+  rustfs_kernel.Properties.clean_canonical depends on [sorryAx]
+  rustfs_kernel.Properties.not_action_never_grants_force_delete depends on [sorryAx]
+  rustfs_kernel.Properties.get_object_version_covers_get_object depends on [sorryAx]
+  rustfs_kernel.Properties.parse_i64_spec depends on [sorryAx]

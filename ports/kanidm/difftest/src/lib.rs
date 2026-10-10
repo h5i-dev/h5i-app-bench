@@ -1,7 +1,6 @@
 //! Differential and property tests for the kanidm kernel. Run with
 //! `cargo test --release --offline`.
-#[cfg(test)]
-mod generate;
+pub mod generate;
 #[cfg(test)]
 mod props;
 #[cfg(test)]

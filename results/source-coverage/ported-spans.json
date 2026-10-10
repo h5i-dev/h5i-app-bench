@@ -1,0 +1,2300 @@
+{
+  "timestamp": "2026-10-09T20:28:12.675539+00:00",
+  "apps": [
+    {
+      "app": "nora",
+      "upstream_revision": "f864a9a95e8669b00202c18b0b774ab0fc2e56cc",
+      "scope": "nora-registry/src",
+      "mapping_status": "ported_item_inventory_not_formal_verification_coverage",
+      "counting_convention": "nonblank_physical_lines_including_comments_and_attributes",
+      "deduplicated_mapped_nonblank_lines": 1332,
+      "mapped_physical_lines": 1417,
+      "spans": [
+        {
+          "path": "nora-registry/src/auth/mod.rs",
+          "first_line": 56,
+          "last_line": 67,
+          "item": "pub struct AuthFailureTracker\\b"
+        },
+        {
+          "path": "nora-registry/src/auth/mod.rs",
+          "first_line": 69,
+          "last_line": 114,
+          "item": "impl AuthFailureTracker\\b"
+        },
+        {
+          "path": "nora-registry/src/auth/mod.rs",
+          "first_line": 116,
+          "last_line": 125,
+          "item": "fn is_public_path\\b"
+        },
+        {
+          "path": "nora-registry/src/auth/mod.rs",
+          "first_line": 127,
+          "last_line": 136,
+          "item": "fn is_web_surface\\b"
+        },
+        {
+          "path": "nora-registry/src/auth/mod.rs",
+          "first_line": 138,
+          "last_line": 148,
+          "item": "fn is_docker_path\\b"
+        },
+        {
+          "path": "nora-registry/src/auth/mod.rs",
+          "first_line": 150,
+          "last_line": 160,
+          "item": "fn is_admin_path\\b"
+        },
+        {
+          "path": "nora-registry/src/auth/mod.rs",
+          "first_line": 162,
+          "last_line": 196,
+          "item": "pub\\(crate\\) fn resolve_client_ip\\b"
+        },
+        {
+          "path": "nora-registry/src/auth/mod.rs",
+          "first_line": 198,
+          "last_line": 207,
+          "item": "fn extract_client_ip\\b"
+        },
+        {
+          "path": "nora-registry/src/auth/mod.rs",
+          "first_line": 209,
+          "last_line": 223,
+          "item": "async fn anonymous_read_passthrough\\b"
+        },
+        {
+          "path": "nora-registry/src/auth/mod.rs",
+          "first_line": 225,
+          "last_line": 632,
+          "item": "pub async fn auth_middleware\\b"
+        },
+        {
+          "path": "nora-registry/src/auth/mod.rs",
+          "first_line": 634,
+          "last_line": 649,
+          "item": "fn try_basic_auth\\b"
+        },
+        {
+          "path": "nora-registry/src/auth/namespace.rs",
+          "first_line": 18,
+          "last_line": 41,
+          "item": "pub enum NamespaceAuthority\\b"
+        },
+        {
+          "path": "nora-registry/src/auth/namespace.rs",
+          "first_line": 43,
+          "last_line": 82,
+          "item": "impl NamespaceAuthority\\b"
+        },
+        {
+          "path": "nora-registry/src/auth/namespace.rs",
+          "first_line": 90,
+          "last_line": 157,
+          "item": "pub fn enforce_namespace_scope\\b"
+        },
+        {
+          "path": "nora-registry/src/auth/oidc.rs",
+          "first_line": 366,
+          "last_line": 409,
+          "item": "fn glob_match\\b"
+        },
+        {
+          "path": "nora-registry/src/auth/oidc.rs",
+          "first_line": 344,
+          "last_line": 363,
+          "item": "fn match_role\\b"
+        },
+        {
+          "path": "nora-registry/src/auth/htpasswd.rs",
+          "first_line": 36,
+          "last_line": 43,
+          "item": "pub fn authenticate\\b"
+        },
+        {
+          "path": "nora-registry/src/config/auth.rs",
+          "first_line": 9,
+          "last_line": 16,
+          "item": "pub struct TrustedProxies\\b"
+        },
+        {
+          "path": "nora-registry/src/config/auth.rs",
+          "first_line": 68,
+          "last_line": 103,
+          "item": "pub fn contains\\b"
+        },
+        {
+          "path": "nora-registry/src/tokens.rs",
+          "first_line": 38,
+          "last_line": 46,
+          "item": "pub enum Role\\b"
+        },
+        {
+          "path": "nora-registry/src/tokens.rs",
+          "first_line": 58,
+          "last_line": 66,
+          "item": "impl Role\\b"
+        },
+        {
+          "path": "nora-registry/src/tokens.rs",
+          "first_line": 187,
+          "last_line": 284,
+          "item": "pub fn verify_token\\b"
+        },
+        {
+          "path": "nora-registry/src/tokens.rs",
+          "first_line": 68,
+          "last_line": 79,
+          "item": "pub struct TokenInfo\\b"
+        },
+        {
+          "path": "nora-registry/src/tokens.rs",
+          "first_line": 373,
+          "last_line": 380,
+          "item": "fn invalidate_cache\\b"
+        },
+        {
+          "path": "nora-registry/src/tokens.rs",
+          "first_line": 382,
+          "last_line": 403,
+          "item": "pub fn revoke_token\\b"
+        },
+        {
+          "path": "nora-registry/src/tokens.rs",
+          "first_line": 405,
+          "last_line": 427,
+          "item": "pub fn revoke_all_for_user\\b"
+        },
+        {
+          "path": "nora-registry/src/tokens.rs",
+          "first_line": 430,
+          "last_line": 437,
+          "item": "fn is_valid_hash_prefix\\b"
+        },
+        {
+          "path": "nora-registry/src/validation.rs",
+          "first_line": 54,
+          "last_line": 60,
+          "item": "pub fn ends_with_ci\\b"
+        },
+        {
+          "path": "nora-registry/src/validation.rs",
+          "first_line": 71,
+          "last_line": 127,
+          "item": "pub fn validate_storage_key\\b"
+        },
+        {
+          "path": "nora-registry/src/validation.rs",
+          "first_line": 129,
+          "last_line": 214,
+          "item": "pub fn validate_docker_name\\b"
+        },
+        {
+          "path": "nora-registry/src/validation.rs",
+          "first_line": 216,
+          "last_line": 286,
+          "item": "pub fn validate_digest\\b"
+        },
+        {
+          "path": "nora-registry/src/validation.rs",
+          "first_line": 288,
+          "last_line": 336,
+          "item": "pub fn validate_docker_reference\\b"
+        },
+        {
+          "path": "nora-registry/src/validation.rs",
+          "first_line": 360,
+          "last_line": 402,
+          "item": "pub fn namespace_match\\b"
+        },
+        {
+          "path": "nora-registry/src/validation.rs",
+          "first_line": 404,
+          "last_line": 426,
+          "item": "fn segments_match\\b"
+        },
+        {
+          "path": "nora-registry/src/validation.rs",
+          "first_line": 428,
+          "last_line": 458,
+          "item": "fn segment_glob\\b"
+        },
+        {
+          "path": "nora-registry/src/auth/oidc.rs",
+          "first_line": 204,
+          "last_line": 232,
+          "item": "ported claims fragment"
+        }
+      ],
+      "inventory_inputs": {
+        "ports/nora/difftest/count_loc.py": "fa485330410f4e9112195e99434f08a285436d7334cf8ebe7a2dbef87b749a27",
+        "ports/nora/difftest/extract_upstream.py": "6dd0f9e0f57673c8096e691e5512122b6e88d224a1126540d5934f4998a23219"
+      },
+      "verified_source_coverage_percent": null,
+      "limitations": [
+        "Item spans include branches and infrastructure modeled away by the kernel.",
+        "No proof-to-upstream-item mapping has yet been certified."
+      ]
+    },
+    {
+      "app": "artifactkeeper",
+      "upstream_revision": "7c42891cd64f144df6197b8801c9cca4f0e0f5a7",
+      "scope": "backend/src",
+      "mapping_status": "ported_item_inventory_not_formal_verification_coverage",
+      "counting_convention": "nonblank_physical_lines_including_comments_and_attributes",
+      "deduplicated_mapped_nonblank_lines": 4532,
+      "mapped_physical_lines": 4745,
+      "spans": [
+        {
+          "path": "backend/src/api/middleware/auth.rs",
+          "first_line": 1,
+          "last_line": 2973,
+          "item": "whole file before tests"
+        },
+        {
+          "path": "backend/src/api/middleware/client_ip.rs",
+          "first_line": 1,
+          "last_line": 79,
+          "item": "whole file before tests"
+        },
+        {
+          "path": "backend/src/api/middleware/guest_access.rs",
+          "first_line": 1,
+          "last_line": 301,
+          "item": "whole file before tests"
+        },
+        {
+          "path": "backend/src/services/permission_service.rs",
+          "first_line": 1,
+          "last_line": 710,
+          "item": "whole file before tests"
+        },
+        {
+          "path": "backend/src/models/access_scope.rs",
+          "first_line": 1,
+          "last_line": 118,
+          "item": "whole file before tests"
+        },
+        {
+          "path": "backend/src/api/middleware/rate_limit.rs",
+          "first_line": 26,
+          "last_line": 34,
+          "item": "pub struct CidrRange\\b"
+        },
+        {
+          "path": "backend/src/api/middleware/rate_limit.rs",
+          "first_line": 36,
+          "last_line": 96,
+          "item": "impl CidrRange\\b"
+        },
+        {
+          "path": "backend/src/api/middleware/rate_limit.rs",
+          "first_line": 890,
+          "last_line": 905,
+          "item": "fn first_xff_token_in\\b"
+        },
+        {
+          "path": "backend/src/api/middleware/rate_limit.rs",
+          "first_line": 907,
+          "last_line": 964,
+          "item": "fn normalize_xff_token\\b"
+        },
+        {
+          "path": "backend/src/api/middleware/rate_limit.rs",
+          "first_line": 966,
+          "last_line": 997,
+          "item": "fn rightmost_untrusted_xff_token\\b"
+        },
+        {
+          "path": "backend/src/api/middleware/rate_limit.rs",
+          "first_line": 1045,
+          "last_line": 1087,
+          "item": "pub\\(crate\\) fn resolve_client_ip_addr\\b"
+        },
+        {
+          "path": "backend/src/api/middleware/oci_errors.rs",
+          "first_line": 39,
+          "last_line": 43,
+          "item": "pub\\(crate\\) fn is_oci_v2_path\\b"
+        },
+        {
+          "path": "backend/src/services/token_service.rs",
+          "first_line": 90,
+          "last_line": 109,
+          "item": "pub\\(crate\\) const ALLOWED_SCOPES\\b"
+        },
+        {
+          "path": "backend/src/services/token_service.rs",
+          "first_line": 111,
+          "last_line": 123,
+          "item": "pub\\(crate\\) fn validate_scopes_pure\\b"
+        },
+        {
+          "path": "backend/src/services/token_service.rs",
+          "first_line": 125,
+          "last_line": 165,
+          "item": "pub\\(crate\\) const ADMIN_ONLY_SCOPES\\b"
+        },
+        {
+          "path": "backend/src/services/token_service.rs",
+          "first_line": 167,
+          "last_line": 191,
+          "item": "pub\\(crate\\) fn enforce_admin_only_scopes\\b"
+        },
+        {
+          "path": "backend/src/services/token_service.rs",
+          "first_line": 203,
+          "last_line": 233,
+          "item": "pub\\(crate\\) fn scopes_grant_access\\b"
+        },
+        {
+          "path": "backend/src/services/auth_config_service.rs",
+          "first_line": 2105,
+          "last_line": 2123,
+          "item": "pub async fn validate_download_ticket\\b"
+        },
+        {
+          "path": "backend/src/services/auth_service.rs",
+          "first_line": 215,
+          "last_line": 225,
+          "item": "impl Claims\\b"
+        },
+        {
+          "path": "backend/src/api/handlers/permissions.rs",
+          "first_line": 19,
+          "last_line": 22,
+          "item": "fn require_auth\\b"
+        },
+        {
+          "path": "backend/src/api/handlers/permissions.rs",
+          "first_line": 294,
+          "last_line": 305,
+          "item": "pub struct CreatePermissionRequest\\b"
+        },
+        {
+          "path": "backend/src/api/handlers/permissions.rs",
+          "first_line": 307,
+          "last_line": 331,
+          "item": "fn validate_anonymous_rule\\b"
+        },
+        {
+          "path": "backend/src/api/mod.rs",
+          "first_line": 47,
+          "last_line": 50,
+          "item": "pub const REPO_CACHE_TTL_SECS\\b"
+        },
+        {
+          "path": "backend/src/api/mod.rs",
+          "first_line": 52,
+          "last_line": 86,
+          "item": "pub struct CachedRepo\\b"
+        },
+        {
+          "path": "backend/src/api/mod.rs",
+          "first_line": 88,
+          "last_line": 89,
+          "item": "pub type RepoCache\\b"
+        },
+        {
+          "path": "backend/src/api/mod.rs",
+          "first_line": 91,
+          "last_line": 103,
+          "item": "pub type RepoMissCache\\b"
+        },
+        {
+          "path": "backend/src/api/mod.rs",
+          "first_line": 105,
+          "last_line": 112,
+          "item": "pub const REPO_MISS_CACHE_MAX_ENTRIES\\b"
+        },
+        {
+          "path": "backend/src/error.rs",
+          "first_line": 34,
+          "last_line": 47,
+          "item": "pub\\(crate\\) fn is_pool_timeout\\(msg"
+        },
+        {
+          "path": "backend/src/error.rs",
+          "first_line": 211,
+          "last_line": 229,
+          "item": "pub\\(crate\\) fn is_pool_timeout\\(&self"
+        },
+        {
+          "path": "backend/src/models/repository.rs",
+          "first_line": 367,
+          "last_line": 410,
+          "item": "impl RepositoryVisibility\\b"
+        }
+      ],
+      "inventory_inputs": {
+        "ports/artifactkeeper/difftest/extract_upstream.py": "f9e8483728d769b6503a4e0c307939d503460fd66a86844f866cc296b3efade3"
+      },
+      "verified_source_coverage_percent": null,
+      "limitations": [
+        "Item spans include branches and infrastructure modeled away by the kernel.",
+        "No proof-to-upstream-item mapping has yet been certified."
+      ]
+    },
+    {
+      "app": "kanidm",
+      "upstream_revision": "f608c4fe14dfd8d5df8edeed470bf1fb92060abd",
+      "scope": "server/lib/src",
+      "mapping_status": "ported_item_inventory_not_formal_verification_coverage",
+      "counting_convention": "nonblank_physical_lines_including_comments_and_attributes",
+      "deduplicated_mapped_nonblank_lines": 3037,
+      "mapped_physical_lines": 3314,
+      "spans": [
+        {
+          "path": "server/lib/src/server/access/search.rs",
+          "first_line": 1,
+          "last_line": 362,
+          "item": "whole file before tests"
+        },
+        {
+          "path": "server/lib/src/server/access/modify.rs",
+          "first_line": 1,
+          "last_line": 521,
+          "item": "whole file before tests"
+        },
+        {
+          "path": "server/lib/src/server/access/create.rs",
+          "first_line": 1,
+          "last_line": 369,
+          "item": "whole file before tests"
+        },
+        {
+          "path": "server/lib/src/server/access/delete.rs",
+          "first_line": 1,
+          "last_line": 211,
+          "item": "whole file before tests"
+        },
+        {
+          "path": "server/lib/src/server/access/protected.rs",
+          "first_line": 1,
+          "last_line": 82,
+          "item": "whole file before tests"
+        },
+        {
+          "path": "server/lib/src/server/access/migration.rs",
+          "first_line": 1,
+          "last_line": 148,
+          "item": "whole file before tests"
+        },
+        {
+          "path": "server/lib/src/server/access/mod.rs",
+          "first_line": 57,
+          "last_line": 62,
+          "item": "pub enum Access\\b"
+        },
+        {
+          "path": "server/lib/src/server/access/mod.rs",
+          "first_line": 74,
+          "last_line": 79,
+          "item": "pub enum AccessClass\\b"
+        },
+        {
+          "path": "server/lib/src/server/access/mod.rs",
+          "first_line": 81,
+          "last_line": 93,
+          "item": "pub struct AccessEffectivePermission\\b"
+        },
+        {
+          "path": "server/lib/src/server/access/mod.rs",
+          "first_line": 95,
+          "last_line": 102,
+          "item": "pub enum AccessBasicResult\\b"
+        },
+        {
+          "path": "server/lib/src/server/access/mod.rs",
+          "first_line": 104,
+          "last_line": 120,
+          "item": "pub enum AccessSrchResult\\b"
+        },
+        {
+          "path": "server/lib/src/server/access/mod.rs",
+          "first_line": 122,
+          "last_line": 145,
+          "item": "pub enum AccessModResult\\b"
+        },
+        {
+          "path": "server/lib/src/server/access/mod.rs",
+          "first_line": 151,
+          "last_line": 160,
+          "item": "struct AccessControlsInner\\b"
+        },
+        {
+          "path": "server/lib/src/server/access/mod.rs",
+          "first_line": 168,
+          "last_line": 210,
+          "item": "fn resolve_access_conditions\\b"
+        },
+        {
+          "path": "server/lib/src/server/access/mod.rs",
+          "first_line": 212,
+          "last_line": 1006,
+          "item": "pub trait AccessControlsTransaction\\b"
+        },
+        {
+          "path": "server/lib/src/server/access/profiles.rs",
+          "first_line": 12,
+          "last_line": 17,
+          "item": "pub struct AccessControlSearchResolved\\b"
+        },
+        {
+          "path": "server/lib/src/server/access/profiles.rs",
+          "first_line": 19,
+          "last_line": 23,
+          "item": "pub struct AccessControlSearch\\b"
+        },
+        {
+          "path": "server/lib/src/server/access/profiles.rs",
+          "first_line": 106,
+          "last_line": 111,
+          "item": "pub struct AccessControlDeleteResolved\\b"
+        },
+        {
+          "path": "server/lib/src/server/access/profiles.rs",
+          "first_line": 113,
+          "last_line": 116,
+          "item": "pub struct AccessControlDelete\\b"
+        },
+        {
+          "path": "server/lib/src/server/access/profiles.rs",
+          "first_line": 169,
+          "last_line": 174,
+          "item": "pub struct AccessControlCreateResolved\\b"
+        },
+        {
+          "path": "server/lib/src/server/access/profiles.rs",
+          "first_line": 176,
+          "last_line": 181,
+          "item": "pub struct AccessControlCreate\\b"
+        },
+        {
+          "path": "server/lib/src/server/access/profiles.rs",
+          "first_line": 259,
+          "last_line": 264,
+          "item": "pub struct AccessControlModifyResolved\\b"
+        },
+        {
+          "path": "server/lib/src/server/access/profiles.rs",
+          "first_line": 266,
+          "last_line": 273,
+          "item": "pub struct AccessControlModify\\b"
+        },
+        {
+          "path": "server/lib/src/server/access/profiles.rs",
+          "first_line": 387,
+          "last_line": 392,
+          "item": "pub enum AccessControlReceiver\\b"
+        },
+        {
+          "path": "server/lib/src/server/access/profiles.rs",
+          "first_line": 394,
+          "last_line": 399,
+          "item": "pub enum AccessControlReceiverCondition\\b"
+        },
+        {
+          "path": "server/lib/src/server/access/profiles.rs",
+          "first_line": 409,
+          "last_line": 413,
+          "item": "pub enum AccessControlTarget\\b"
+        },
+        {
+          "path": "server/lib/src/server/access/profiles.rs",
+          "first_line": 415,
+          "last_line": 419,
+          "item": "pub enum AccessControlTargetCondition\\b"
+        },
+        {
+          "path": "server/lib/src/server/access/profiles.rs",
+          "first_line": 429,
+          "last_line": 438,
+          "item": "pub struct AccessControlProfile\\b"
+        },
+        {
+          "path": "server/lib/src/server/identity.rs",
+          "first_line": 19,
+          "last_line": 24,
+          "item": "pub enum AccessScope\\b"
+        },
+        {
+          "path": "server/lib/src/server/identity.rs",
+          "first_line": 55,
+          "last_line": 61,
+          "item": "pub struct IdentUser\\b"
+        },
+        {
+          "path": "server/lib/src/server/identity.rs",
+          "first_line": 63,
+          "last_line": 77,
+          "item": "pub enum InternalRole\\b"
+        },
+        {
+          "path": "server/lib/src/server/identity.rs",
+          "first_line": 90,
+          "last_line": 99,
+          "item": "impl InternalRole\\b"
+        },
+        {
+          "path": "server/lib/src/server/identity.rs",
+          "first_line": 101,
+          "last_line": 107,
+          "item": "pub enum IdentType\\b"
+        },
+        {
+          "path": "server/lib/src/filter.rs",
+          "first_line": 145,
+          "last_line": 163,
+          "item": "enum FilterComp\\b"
+        },
+        {
+          "path": "server/lib/src/filter.rs",
+          "first_line": 229,
+          "last_line": 254,
+          "item": "pub enum FilterResolved\\b"
+        },
+        {
+          "path": "server/lib/src/modify.rs",
+          "first_line": 26,
+          "last_line": 40,
+          "item": "pub enum Modify\\b"
+        },
+        {
+          "path": "server/lib/src/server/identity.rs",
+          "first_line": 281,
+          "last_line": 283,
+          "item": "impl Identity\\b :: access_scope"
+        },
+        {
+          "path": "server/lib/src/server/identity.rs",
+          "first_line": 324,
+          "last_line": 330,
+          "item": "impl Identity\\b :: get_uuid"
+        },
+        {
+          "path": "server/lib/src/server/identity.rs",
+          "first_line": 366,
+          "last_line": 371,
+          "item": "impl Identity\\b :: get_memberof"
+        },
+        {
+          "path": "server/lib/src/entry.rs",
+          "first_line": 278,
+          "last_line": 283,
+          "item": "impl<STATE>\\ Entry<EntryInit,\\ STATE> :: get_uuid"
+        },
+        {
+          "path": "server/lib/src/entry.rs",
+          "first_line": 1944,
+          "last_line": 1975,
+          "item": "impl\\ Entry<EntrySealed,\\ EntryCommitted>\\ \\{ :: reduce_attributes"
+        },
+        {
+          "path": "server/lib/src/entry.rs",
+          "first_line": 2349,
+          "last_line": 2351,
+          "item": "impl<STATE>\\ Entry<EntrySealed,\\ STATE>\\\n :: get_uuid"
+        },
+        {
+          "path": "server/lib/src/entry.rs",
+          "first_line": 2660,
+          "last_line": 2662,
+          "item": "impl<VALID,\\ STATE>\\ Entry<VALID,\\ STATE>\\ \\{ :: attr_keys"
+        },
+        {
+          "path": "server/lib/src/entry.rs",
+          "first_line": 2664,
+          "last_line": 2668,
+          "item": "impl<VALID,\\ STATE>\\ Entry<VALID,\\ STATE>\\ \\{ :: get_ava_names"
+        },
+        {
+          "path": "server/lib/src/entry.rs",
+          "first_line": 2679,
+          "last_line": 2682,
+          "item": "impl<VALID,\\ STATE>\\ Entry<VALID,\\ STATE>\\ \\{ :: get_ava_set"
+        },
+        {
+          "path": "server/lib/src/entry.rs",
+          "first_line": 2684,
+          "last_line": 2686,
+          "item": "impl<VALID,\\ STATE>\\ Entry<VALID,\\ STATE>\\ \\{ :: get_ava_refer"
+        },
+        {
+          "path": "server/lib/src/entry.rs",
+          "first_line": 2695,
+          "last_line": 2697,
+          "item": "impl<VALID,\\ STATE>\\ Entry<VALID,\\ STATE>\\ \\{ :: get_ava_as_iutf8"
+        },
+        {
+          "path": "server/lib/src/entry.rs",
+          "first_line": 2724,
+          "last_line": 2729,
+          "item": "impl<VALID,\\ STATE>\\ Entry<VALID,\\ STATE>\\ \\{ :: get_ava_as_oauthscopemaps"
+        },
+        {
+          "path": "server/lib/src/entry.rs",
+          "first_line": 2776,
+          "last_line": 2782,
+          "item": "impl<VALID,\\ STATE>\\ Entry<VALID,\\ STATE>\\ \\{ :: get_ava_iter_iutf8"
+        },
+        {
+          "path": "server/lib/src/entry.rs",
+          "first_line": 2895,
+          "last_line": 2897,
+          "item": "impl<VALID,\\ STATE>\\ Entry<VALID,\\ STATE>\\ \\{ :: get_ava_single_refer"
+        },
+        {
+          "path": "server/lib/src/entry.rs",
+          "first_line": 2968,
+          "last_line": 2971,
+          "item": "impl<VALID,\\ STATE>\\ Entry<VALID,\\ STATE>\\ \\{ :: attribute_pres"
+        },
+        {
+          "path": "server/lib/src/entry.rs",
+          "first_line": 2973,
+          "last_line": 2984,
+          "item": "impl<VALID,\\ STATE>\\ Entry<VALID,\\ STATE>\\ \\{ :: attribute_equality"
+        },
+        {
+          "path": "server/lib/src/entry.rs",
+          "first_line": 2986,
+          "last_line": 2996,
+          "item": "impl<VALID,\\ STATE>\\ Entry<VALID,\\ STATE>\\ \\{ :: attribute_substring"
+        },
+        {
+          "path": "server/lib/src/entry.rs",
+          "first_line": 2998,
+          "last_line": 3008,
+          "item": "impl<VALID,\\ STATE>\\ Entry<VALID,\\ STATE>\\ \\{ :: attribute_startswith"
+        },
+        {
+          "path": "server/lib/src/entry.rs",
+          "first_line": 3010,
+          "last_line": 3020,
+          "item": "impl<VALID,\\ STATE>\\ Entry<VALID,\\ STATE>\\ \\{ :: attribute_endswith"
+        },
+        {
+          "path": "server/lib/src/entry.rs",
+          "first_line": 3022,
+          "last_line": 3032,
+          "item": "impl<VALID,\\ STATE>\\ Entry<VALID,\\ STATE>\\ \\{ :: attribute_lessthan"
+        },
+        {
+          "path": "server/lib/src/entry.rs",
+          "first_line": 3038,
+          "last_line": 3043,
+          "item": "impl<VALID,\\ STATE>\\ Entry<VALID,\\ STATE>\\ \\{ :: entry_match_no_index"
+        },
+        {
+          "path": "server/lib/src/entry.rs",
+          "first_line": 3048,
+          "last_line": 3071,
+          "item": "impl<VALID,\\ STATE>\\ Entry<VALID,\\ STATE>\\ \\{ :: entry_match_no_index_inner"
+        },
+        {
+          "path": "server/lib/src/filter.rs",
+          "first_line": 607,
+          "last_line": 612,
+          "item": "impl\\ Filter<FilterValid>\\ \\{ :: get_attr_set"
+        },
+        {
+          "path": "server/lib/src/filter.rs",
+          "first_line": 853,
+          "last_line": 872,
+          "item": "impl\\ FilterComp\\ \\{ :: get_attr_set"
+        },
+        {
+          "path": "server/lib/src/filter.rs",
+          "first_line": 1601,
+          "last_line": 1659,
+          "item": "impl\\ FilterResolved\\ \\{ :: resolve_no_idx"
+        },
+        {
+          "path": "server/lib/src/value.rs",
+          "first_line": 952,
+          "last_line": 959,
+          "item": "impl\\ PartialValue\\ \\{ :: to_str"
+        },
+        {
+          "path": "server/lib/src/value.rs",
+          "first_line": 2004,
+          "last_line": 2011,
+          "item": "impl\\ Value\\ \\{ :: to_str"
+        },
+        {
+          "path": "server/lib/src/valueset/utf8.rs",
+          "first_line": 81,
+          "last_line": 86,
+          "item": "impl\\ ValueSetT\\ for\\ ValueSetUtf8\\ \\{ :: contains"
+        },
+        {
+          "path": "server/lib/src/valueset/utf8.rs",
+          "first_line": 88,
+          "last_line": 102,
+          "item": "impl\\ ValueSetT\\ for\\ ValueSetUtf8\\ \\{ :: substring"
+        },
+        {
+          "path": "server/lib/src/valueset/utf8.rs",
+          "first_line": 104,
+          "last_line": 118,
+          "item": "impl\\ ValueSetT\\ for\\ ValueSetUtf8\\ \\{ :: startswith"
+        },
+        {
+          "path": "server/lib/src/valueset/utf8.rs",
+          "first_line": 120,
+          "last_line": 134,
+          "item": "impl\\ ValueSetT\\ for\\ ValueSetUtf8\\ \\{ :: endswith"
+        },
+        {
+          "path": "server/lib/src/valueset/utf8.rs",
+          "first_line": 136,
+          "last_line": 138,
+          "item": "impl\\ ValueSetT\\ for\\ ValueSetUtf8\\ \\{ :: lessthan"
+        },
+        {
+          "path": "server/lib/src/valueset/iutf8.rs",
+          "first_line": 84,
+          "last_line": 89,
+          "item": "impl\\ ValueSetT\\ for\\ ValueSetIutf8\\ \\{ :: contains"
+        },
+        {
+          "path": "server/lib/src/valueset/iutf8.rs",
+          "first_line": 91,
+          "last_line": 99,
+          "item": "impl\\ ValueSetT\\ for\\ ValueSetIutf8\\ \\{ :: substring"
+        },
+        {
+          "path": "server/lib/src/valueset/iutf8.rs",
+          "first_line": 101,
+          "last_line": 109,
+          "item": "impl\\ ValueSetT\\ for\\ ValueSetIutf8\\ \\{ :: startswith"
+        },
+        {
+          "path": "server/lib/src/valueset/iutf8.rs",
+          "first_line": 111,
+          "last_line": 119,
+          "item": "impl\\ ValueSetT\\ for\\ ValueSetIutf8\\ \\{ :: endswith"
+        },
+        {
+          "path": "server/lib/src/valueset/iutf8.rs",
+          "first_line": 121,
+          "last_line": 123,
+          "item": "impl\\ ValueSetT\\ for\\ ValueSetIutf8\\ \\{ :: lessthan"
+        },
+        {
+          "path": "server/lib/src/valueset/iutf8.rs",
+          "first_line": 207,
+          "last_line": 209,
+          "item": "impl\\ ValueSetT\\ for\\ ValueSetIutf8\\ \\{ :: as_iutf8_set"
+        },
+        {
+          "path": "server/lib/src/valueset/iutf8.rs",
+          "first_line": 211,
+          "last_line": 213,
+          "item": "impl\\ ValueSetT\\ for\\ ValueSetIutf8\\ \\{ :: as_iutf8_iter"
+        },
+        {
+          "path": "server/lib/src/valueset/iname.rs",
+          "first_line": 86,
+          "last_line": 91,
+          "item": "impl\\ ValueSetT\\ for\\ ValueSetIname\\ \\{ :: contains"
+        },
+        {
+          "path": "server/lib/src/valueset/iname.rs",
+          "first_line": 93,
+          "last_line": 101,
+          "item": "impl\\ ValueSetT\\ for\\ ValueSetIname\\ \\{ :: substring"
+        },
+        {
+          "path": "server/lib/src/valueset/iname.rs",
+          "first_line": 103,
+          "last_line": 111,
+          "item": "impl\\ ValueSetT\\ for\\ ValueSetIname\\ \\{ :: startswith"
+        },
+        {
+          "path": "server/lib/src/valueset/iname.rs",
+          "first_line": 113,
+          "last_line": 121,
+          "item": "impl\\ ValueSetT\\ for\\ ValueSetIname\\ \\{ :: endswith"
+        },
+        {
+          "path": "server/lib/src/valueset/iname.rs",
+          "first_line": 123,
+          "last_line": 125,
+          "item": "impl\\ ValueSetT\\ for\\ ValueSetIname\\ \\{ :: lessthan"
+        },
+        {
+          "path": "server/lib/src/valueset/uuid.rs",
+          "first_line": 86,
+          "last_line": 91,
+          "item": "impl\\ ValueSetT\\ for\\ ValueSetUuid\\ \\{ :: contains"
+        },
+        {
+          "path": "server/lib/src/valueset/uuid.rs",
+          "first_line": 93,
+          "last_line": 95,
+          "item": "impl\\ ValueSetT\\ for\\ ValueSetUuid\\ \\{ :: substring"
+        },
+        {
+          "path": "server/lib/src/valueset/uuid.rs",
+          "first_line": 97,
+          "last_line": 99,
+          "item": "impl\\ ValueSetT\\ for\\ ValueSetUuid\\ \\{ :: startswith"
+        },
+        {
+          "path": "server/lib/src/valueset/uuid.rs",
+          "first_line": 101,
+          "last_line": 103,
+          "item": "impl\\ ValueSetT\\ for\\ ValueSetUuid\\ \\{ :: endswith"
+        },
+        {
+          "path": "server/lib/src/valueset/uuid.rs",
+          "first_line": 105,
+          "last_line": 110,
+          "item": "impl\\ ValueSetT\\ for\\ ValueSetUuid\\ \\{ :: lessthan"
+        },
+        {
+          "path": "server/lib/src/valueset/uuid.rs",
+          "first_line": 174,
+          "last_line": 180,
+          "item": "impl\\ ValueSetT\\ for\\ ValueSetUuid\\ \\{ :: to_uuid_single"
+        },
+        {
+          "path": "server/lib/src/valueset/uuid.rs",
+          "first_line": 316,
+          "last_line": 321,
+          "item": "impl\\ ValueSetT\\ for\\ ValueSetRefer\\ \\{ :: contains"
+        },
+        {
+          "path": "server/lib/src/valueset/uuid.rs",
+          "first_line": 323,
+          "last_line": 325,
+          "item": "impl\\ ValueSetT\\ for\\ ValueSetRefer\\ \\{ :: substring"
+        },
+        {
+          "path": "server/lib/src/valueset/uuid.rs",
+          "first_line": 327,
+          "last_line": 329,
+          "item": "impl\\ ValueSetT\\ for\\ ValueSetRefer\\ \\{ :: startswith"
+        },
+        {
+          "path": "server/lib/src/valueset/uuid.rs",
+          "first_line": 331,
+          "last_line": 333,
+          "item": "impl\\ ValueSetT\\ for\\ ValueSetRefer\\ \\{ :: endswith"
+        },
+        {
+          "path": "server/lib/src/valueset/uuid.rs",
+          "first_line": 335,
+          "last_line": 340,
+          "item": "impl\\ ValueSetT\\ for\\ ValueSetRefer\\ \\{ :: lessthan"
+        },
+        {
+          "path": "server/lib/src/valueset/uuid.rs",
+          "first_line": 402,
+          "last_line": 408,
+          "item": "impl\\ ValueSetT\\ for\\ ValueSetRefer\\ \\{ :: to_refer_single"
+        },
+        {
+          "path": "server/lib/src/valueset/uuid.rs",
+          "first_line": 410,
+          "last_line": 412,
+          "item": "impl\\ ValueSetT\\ for\\ ValueSetRefer\\ \\{ :: as_refer_set"
+        },
+        {
+          "path": "server/lib/src/valueset/uint32.rs",
+          "first_line": 83,
+          "last_line": 88,
+          "item": "impl\\ ValueSetT\\ for\\ ValueSetUint32\\ \\{ :: contains"
+        },
+        {
+          "path": "server/lib/src/valueset/uint32.rs",
+          "first_line": 90,
+          "last_line": 92,
+          "item": "impl\\ ValueSetT\\ for\\ ValueSetUint32\\ \\{ :: substring"
+        },
+        {
+          "path": "server/lib/src/valueset/uint32.rs",
+          "first_line": 94,
+          "last_line": 96,
+          "item": "impl\\ ValueSetT\\ for\\ ValueSetUint32\\ \\{ :: startswith"
+        },
+        {
+          "path": "server/lib/src/valueset/uint32.rs",
+          "first_line": 98,
+          "last_line": 100,
+          "item": "impl\\ ValueSetT\\ for\\ ValueSetUint32\\ \\{ :: endswith"
+        },
+        {
+          "path": "server/lib/src/valueset/uint32.rs",
+          "first_line": 102,
+          "last_line": 107,
+          "item": "impl\\ ValueSetT\\ for\\ ValueSetUint32\\ \\{ :: lessthan"
+        },
+        {
+          "path": "server/lib/src/valueset/oauth.rs",
+          "first_line": 323,
+          "last_line": 328,
+          "item": "impl\\ ValueSetT\\ for\\ ValueSetOauthScopeMap\\ \\{ :: contains"
+        },
+        {
+          "path": "server/lib/src/valueset/oauth.rs",
+          "first_line": 330,
+          "last_line": 332,
+          "item": "impl\\ ValueSetT\\ for\\ ValueSetOauthScopeMap\\ \\{ :: substring"
+        },
+        {
+          "path": "server/lib/src/valueset/oauth.rs",
+          "first_line": 334,
+          "last_line": 336,
+          "item": "impl\\ ValueSetT\\ for\\ ValueSetOauthScopeMap\\ \\{ :: startswith"
+        },
+        {
+          "path": "server/lib/src/valueset/oauth.rs",
+          "first_line": 338,
+          "last_line": 340,
+          "item": "impl\\ ValueSetT\\ for\\ ValueSetOauthScopeMap\\ \\{ :: endswith"
+        },
+        {
+          "path": "server/lib/src/valueset/oauth.rs",
+          "first_line": 342,
+          "last_line": 344,
+          "item": "impl\\ ValueSetT\\ for\\ ValueSetOauthScopeMap\\ \\{ :: lessthan"
+        },
+        {
+          "path": "server/lib/src/valueset/oauth.rs",
+          "first_line": 433,
+          "last_line": 435,
+          "item": "impl\\ ValueSetT\\ for\\ ValueSetOauthScopeMap\\ \\{ :: as_oauthscopemap"
+        }
+      ],
+      "inventory_inputs": {
+        "ports/kanidm/difftest/count_loc.py": "08f8c9b31b1e4b7edcc04b4473c51421fcafacc0cf28b587e8c559d68448ca43",
+        "ports/kanidm/difftest/extract_upstream.py": "a1b44b2daada4908001ee59708a9e1251312062af5b1c3d1e877082a43d24ba3"
+      },
+      "verified_source_coverage_percent": null,
+      "limitations": [
+        "Item spans include branches and infrastructure modeled away by the kernel.",
+        "No proof-to-upstream-item mapping has yet been certified."
+      ]
+    },
+    {
+      "app": "rustfs",
+      "upstream_revision": "e870a6d25bbf02323b7841b0c5e2230a56551970",
+      "scope": "crates/policy/src/policy",
+      "mapping_status": "ported_item_inventory_not_formal_verification_coverage",
+      "counting_convention": "nonblank_physical_lines_including_comments_and_attributes",
+      "deduplicated_mapped_nonblank_lines": 1199,
+      "mapped_physical_lines": 1331,
+      "spans": [
+        {
+          "path": "crates/policy/src/policy/utils/wildcard.rs",
+          "first_line": 15,
+          "last_line": 21,
+          "item": "pub fn is_simple_match\\b"
+        },
+        {
+          "path": "crates/policy/src/policy/utils/wildcard.rs",
+          "first_line": 23,
+          "last_line": 29,
+          "item": "pub fn is_match<"
+        },
+        {
+          "path": "crates/policy/src/policy/utils/wildcard.rs",
+          "first_line": 60,
+          "last_line": 72,
+          "item": "fn inner_match\\b"
+        },
+        {
+          "path": "crates/policy/src/policy/utils/wildcard.rs",
+          "first_line": 74,
+          "last_line": 101,
+          "item": "fn deep_match\\b"
+        },
+        {
+          "path": "crates/policy/src/policy/utils/path.rs",
+          "first_line": 15,
+          "last_line": 19,
+          "item": "struct LazyBuf\\b"
+        },
+        {
+          "path": "crates/policy/src/policy/utils/path.rs",
+          "first_line": 21,
+          "last_line": 53,
+          "item": "impl<'a> LazyBuf<'a>"
+        },
+        {
+          "path": "crates/policy/src/policy/utils/path.rs",
+          "first_line": 65,
+          "last_line": 112,
+          "item": "pub fn clean\\b"
+        },
+        {
+          "path": "crates/policy/src/policy/variables.rs",
+          "first_line": 129,
+          "last_line": 211,
+          "item": "impl VariableResolver \\{"
+        },
+        {
+          "path": "crates/policy/src/policy/variables.rs",
+          "first_line": 214,
+          "last_line": 252,
+          "item": "impl PolicyVariableResolver for VariableResolver\\b"
+        },
+        {
+          "path": "crates/policy/src/policy/variables.rs",
+          "first_line": 254,
+          "last_line": 285,
+          "item": "pub async fn resolve_aws_variables\\b"
+        },
+        {
+          "path": "crates/policy/src/policy/variables.rs",
+          "first_line": 296,
+          "last_line": 395,
+          "item": "async fn resolve_single_pass\\b"
+        },
+        {
+          "path": "crates/policy/src/policy/action.rs",
+          "first_line": 66,
+          "last_line": 80,
+          "item": "pub fn is_match_for_effect\\(&self, action: &Action, deny: bool\\) -> bool \\{\\n        for"
+        },
+        {
+          "path": "crates/policy/src/policy/action.rs",
+          "first_line": 88,
+          "last_line": 96,
+          "item": "pub fn statement_covers\\b"
+        },
+        {
+          "path": "crates/policy/src/policy/action.rs",
+          "first_line": 178,
+          "last_line": 193,
+          "item": "impl Action \\{\\n    pub fn is_match\\b"
+        },
+        {
+          "path": "crates/policy/src/policy/action.rs",
+          "first_line": 195,
+          "last_line": 200,
+          "item": "fn action_requires_explicit_grant\\b"
+        },
+        {
+          "path": "crates/policy/src/policy/action.rs",
+          "first_line": 595,
+          "last_line": 619,
+          "item": "pub\\(crate\\) fn is_table_resource_scoped\\b"
+        },
+        {
+          "path": "crates/policy/src/policy/resource.rs",
+          "first_line": 67,
+          "last_line": 80,
+          "item": "pub async fn is_match_with_resolver\\(\\n        &self,\\n        resource: &str,\\n        conditions: &HashMap<String, Vec<String>>,\\n        resolver: Option<&dyn PolicyVariableResolver>,\\n    \\) -> bool \\{\\n        for"
+        },
+        {
+          "path": "crates/policy/src/policy/resource.rs",
+          "first_line": 193,
+          "last_line": 235,
+          "item": "pub async fn is_match_with_resolver\\(\\n        &self,\\n        resource: &str,\\n        conditions: &HashMap<String, Vec<String>>,\\n        resolver: Option<&dyn PolicyVariableResolver>,\\n    \\) -> bool \\{\\n        let pattern"
+        },
+        {
+          "path": "crates/policy/src/policy/resource.rs",
+          "first_line": 185,
+          "last_line": 187,
+          "item": "pub fn is_kms\\b"
+        },
+        {
+          "path": "crates/policy/src/policy/function.rs",
+          "first_line": 75,
+          "last_line": 99,
+          "item": "pub async fn evaluate_with_resolver\\b"
+        },
+        {
+          "path": "crates/policy/src/policy/function.rs",
+          "first_line": 105,
+          "last_line": 111,
+          "item": "pub fn references_key_name\\b"
+        },
+        {
+          "path": "crates/policy/src/policy/function/condition.rs",
+          "first_line": 143,
+          "last_line": 174,
+          "item": "pub fn has_any_key_in\\b"
+        },
+        {
+          "path": "crates/policy/src/policy/function/condition.rs",
+          "first_line": 176,
+          "last_line": 207,
+          "item": "pub fn references_key_name\\b"
+        },
+        {
+          "path": "crates/policy/src/policy/function/condition.rs",
+          "first_line": 209,
+          "last_line": 287,
+          "item": "pub fn evaluate_with_resolver\\b"
+        },
+        {
+          "path": "crates/policy/src/policy/function/condition.rs",
+          "first_line": 290,
+          "last_line": 295,
+          "item": "pub fn is_negate\\b"
+        },
+        {
+          "path": "crates/policy/src/policy/function/string.rs",
+          "first_line": 33,
+          "last_line": 74,
+          "item": "impl StringFunc \\{"
+        },
+        {
+          "path": "crates/policy/src/policy/function/string.rs",
+          "first_line": 76,
+          "last_line": 202,
+          "item": "impl FuncKeyValue<StringFuncValue> \\{"
+        },
+        {
+          "path": "crates/policy/src/policy/function/bool_null.rs",
+          "first_line": 21,
+          "last_line": 47,
+          "item": "impl BoolFunc \\{"
+        },
+        {
+          "path": "crates/policy/src/policy/function/number.rs",
+          "first_line": 28,
+          "last_line": 47,
+          "item": "impl NumberFunc \\{"
+        },
+        {
+          "path": "crates/policy/src/policy/function/addr.rs",
+          "first_line": 22,
+          "last_line": 42,
+          "item": "impl AddrFunc \\{"
+        },
+        {
+          "path": "crates/policy/src/policy/function/key.rs",
+          "first_line": 41,
+          "last_line": 47,
+          "item": "pub fn name\\(&self\\) -> String\\b"
+        },
+        {
+          "path": "crates/policy/src/policy/function/key_name.rs",
+          "first_line": 52,
+          "last_line": 99,
+          "item": "pub const COMMON_KEYS\\b"
+        },
+        {
+          "path": "crates/policy/src/policy/function/key_name.rs",
+          "first_line": 101,
+          "last_line": 110,
+          "item": "pub const fn prefix\\b"
+        },
+        {
+          "path": "crates/policy/src/policy/function/key_name.rs",
+          "first_line": 112,
+          "last_line": 114,
+          "item": "pub fn name\\(&self\\) -> &str\\b"
+        },
+        {
+          "path": "crates/policy/src/policy/function/key_name.rs",
+          "first_line": 140,
+          "last_line": 149,
+          "item": "pub fn var_name\\b"
+        },
+        {
+          "path": "crates/policy/src/policy/statement.rs",
+          "first_line": 45,
+          "last_line": 60,
+          "item": "pub\\(crate\\) fn variable_resolver_for_policy_args\\b"
+        },
+        {
+          "path": "crates/policy/src/policy/statement.rs",
+          "first_line": 62,
+          "last_line": 81,
+          "item": "fn build_resource\\b"
+        },
+        {
+          "path": "crates/policy/src/policy/statement.rs",
+          "first_line": 93,
+          "last_line": 103,
+          "item": "fn skips_resource_match_for_args\\b"
+        },
+        {
+          "path": "crates/policy/src/policy/statement.rs",
+          "first_line": 105,
+          "last_line": 113,
+          "item": "fn is_kms\\(&self\\)"
+        },
+        {
+          "path": "crates/policy/src/policy/statement.rs",
+          "first_line": 115,
+          "last_line": 123,
+          "item": "fn is_admin\\(&self\\)"
+        },
+        {
+          "path": "crates/policy/src/policy/statement.rs",
+          "first_line": 125,
+          "last_line": 133,
+          "item": "fn is_sts\\(&self\\)"
+        },
+        {
+          "path": "crates/policy/src/policy/statement.rs",
+          "first_line": 184,
+          "last_line": 245,
+          "item": "async fn kms_key_scope_matches\\b"
+        },
+        {
+          "path": "crates/policy/src/policy/statement.rs",
+          "first_line": 249,
+          "last_line": 291,
+          "item": "pub\\(crate\\) async fn request_reaches_condition_eval\\(&self, args: &Args"
+        },
+        {
+          "path": "crates/policy/src/policy/statement.rs",
+          "first_line": 293,
+          "last_line": 305,
+          "item": "pub async fn is_allowed\\(&self, args: &Args"
+        },
+        {
+          "path": "crates/policy/src/policy/statement.rs",
+          "first_line": 410,
+          "last_line": 448,
+          "item": "pub\\(crate\\) async fn request_reaches_condition_eval\\(&self, args: &BucketPolicyArgs"
+        },
+        {
+          "path": "crates/policy/src/policy/statement.rs",
+          "first_line": 450,
+          "last_line": 460,
+          "item": "pub async fn is_allowed\\(&self, args: &BucketPolicyArgs"
+        },
+        {
+          "path": "crates/policy/src/policy/principal.rs",
+          "first_line": 128,
+          "last_line": 140,
+          "item": "pub fn is_match\\b"
+        },
+        {
+          "path": "crates/policy/src/policy/effect.rs",
+          "first_line": 42,
+          "last_line": 48,
+          "item": "pub fn is_allowed\\b"
+        },
+        {
+          "path": "crates/policy/src/policy/policy.rs",
+          "first_line": 69,
+          "last_line": 96,
+          "item": "pub async fn is_allowed\\(&self, args: &Args"
+        },
+        {
+          "path": "crates/policy/src/policy/policy.rs",
+          "first_line": 208,
+          "last_line": 226,
+          "item": "pub async fn is_allowed\\(&self, args: &BucketPolicyArgs"
+        }
+      ],
+      "inventory_inputs": {
+        "ports/rustfs/difftest/count_loc.py": "f6a0d5a1c690c0cc2a09252375d8f075d000d79de5b1d44507fac47b9e1be9ea"
+      },
+      "verified_source_coverage_percent": null,
+      "limitations": [
+        "Item spans include branches and infrastructure modeled away by the kernel.",
+        "No proof-to-upstream-item mapping has yet been certified."
+      ]
+    },
+    {
+      "app": "tuwunel",
+      "upstream_revision": "7801b8ec6f7773d90b1bbfeeb352012d6e004e96",
+      "scope": "src",
+      "mapping_status": "ported_item_inventory_not_formal_verification_coverage",
+      "counting_convention": "nonblank_physical_lines_including_comments_and_attributes",
+      "deduplicated_mapped_nonblank_lines": 3331,
+      "mapped_physical_lines": 3662,
+      "spans": [
+        {
+          "path": "src/service/rooms/state_accessor/user_can.rs",
+          "first_line": 98,
+          "last_line": 145,
+          "item": "(?:pub(?:\\((?:crate|super)\\))? )?(?:const )?(?:async )?fn user_can_see_event\\b"
+        },
+        {
+          "path": "src/service/rooms/state_accessor/user_can.rs",
+          "first_line": 147,
+          "last_line": 188,
+          "item": "(?:pub(?:\\((?:crate|super)\\))? )?(?:const )?(?:async )?fn user_shared_history\\b"
+        },
+        {
+          "path": "src/service/rooms/state_accessor/user_can.rs",
+          "first_line": 190,
+          "last_line": 232,
+          "item": "(?:pub(?:\\((?:crate|super)\\))? )?(?:const )?(?:async )?fn user_can_see_state_events\\b"
+        },
+        {
+          "path": "src/service/rooms/state_accessor/user_can.rs",
+          "first_line": 234,
+          "last_line": 253,
+          "item": "(?:pub(?:\\((?:crate|super)\\))? )?(?:const )?(?:async )?fn user_can_see_room\\b"
+        },
+        {
+          "path": "src/service/rooms/state_accessor/state.rs",
+          "first_line": 34,
+          "last_line": 43,
+          "item": "(?:pub(?:\\((?:crate|super)\\))? )?(?:const )?(?:async )?fn user_was_joined\\b"
+        },
+        {
+          "path": "src/service/rooms/state_accessor/state.rs",
+          "first_line": 45,
+          "last_line": 56,
+          "item": "(?:pub(?:\\((?:crate|super)\\))? )?(?:const )?(?:async )?fn user_was_invited\\b"
+        },
+        {
+          "path": "src/service/rooms/state_accessor/state.rs",
+          "first_line": 58,
+          "last_line": 71,
+          "item": "(?:pub(?:\\((?:crate|super)\\))? )?(?:const )?(?:async )?fn user_membership\\b"
+        },
+        {
+          "path": "src/service/rooms/state_accessor/state.rs",
+          "first_line": 73,
+          "last_line": 98,
+          "item": "(?:pub(?:\\((?:crate|super)\\))? )?(?:const )?(?:async )?fn user_membership_at_pdu\\b"
+        },
+        {
+          "path": "src/service/rooms/state_accessor/state.rs",
+          "first_line": 100,
+          "last_line": 117,
+          "item": "(?:pub(?:\\((?:crate|super)\\))? )?(?:const )?(?:async )?fn state_get_content\\b"
+        },
+        {
+          "path": "src/service/rooms/state_accessor/state.rs",
+          "first_line": 179,
+          "last_line": 195,
+          "item": "(?:pub(?:\\((?:crate|super)\\))? )?(?:const )?(?:async )?fn state_get\\b"
+        },
+        {
+          "path": "src/service/rooms/state_accessor/state.rs",
+          "first_line": 197,
+          "last_line": 215,
+          "item": "(?:pub(?:\\((?:crate|super)\\))? )?(?:const )?(?:async )?fn state_get_id\\b"
+        },
+        {
+          "path": "src/service/rooms/state_accessor/state.rs",
+          "first_line": 217,
+          "last_line": 247,
+          "item": "(?:pub(?:\\((?:crate|super)\\))? )?(?:const )?(?:async )?fn state_get_shortid\\b"
+        },
+        {
+          "path": "src/service/rooms/state_accessor/state.rs",
+          "first_line": 376,
+          "last_line": 389,
+          "item": "(?:pub(?:\\((?:crate|super)\\))? )?(?:const )?(?:async )?fn state_full\\b"
+        },
+        {
+          "path": "src/service/rooms/state_accessor/state.rs",
+          "first_line": 391,
+          "last_line": 416,
+          "item": "(?:pub(?:\\((?:crate|super)\\))? )?(?:const )?(?:async )?fn state_full_pdus\\b"
+        },
+        {
+          "path": "src/service/rooms/state_accessor/state.rs",
+          "first_line": 418,
+          "last_line": 429,
+          "item": "(?:pub(?:\\((?:crate|super)\\))? )?(?:const )?(?:async )?fn state_full_pdus_strict\\b"
+        },
+        {
+          "path": "src/service/rooms/state_accessor/state.rs",
+          "first_line": 431,
+          "last_line": 451,
+          "item": "(?:pub(?:\\((?:crate|super)\\))? )?(?:const )?(?:async )?fn state_full_ids\\b"
+        },
+        {
+          "path": "src/service/rooms/state_accessor/state.rs",
+          "first_line": 453,
+          "last_line": 478,
+          "item": "(?:pub(?:\\((?:crate|super)\\))? )?(?:const )?(?:async )?fn state_full_ids_strict\\b"
+        },
+        {
+          "path": "src/service/rooms/state_accessor/state.rs",
+          "first_line": 480,
+          "last_line": 501,
+          "item": "(?:pub(?:\\((?:crate|super)\\))? )?(?:const )?(?:async )?fn state_full_shortids\\b"
+        },
+        {
+          "path": "src/service/rooms/state_accessor/state.rs",
+          "first_line": 503,
+          "last_line": 517,
+          "item": "(?:pub(?:\\((?:crate|super)\\))? )?(?:const )?(?:async )?fn load_full_state\\b"
+        },
+        {
+          "path": "src/service/rooms/state_accessor/room_state.rs",
+          "first_line": 15,
+          "last_line": 32,
+          "item": "(?:pub(?:\\((?:crate|super)\\))? )?(?:const )?(?:async )?fn room_state_get_content\\b"
+        },
+        {
+          "path": "src/service/rooms/state_accessor/room_state.rs",
+          "first_line": 57,
+          "last_line": 73,
+          "item": "(?:pub(?:\\((?:crate|super)\\))? )?(?:const )?(?:async )?fn room_state_full\\b"
+        },
+        {
+          "path": "src/service/rooms/state_accessor/room_state.rs",
+          "first_line": 75,
+          "last_line": 91,
+          "item": "(?:pub(?:\\((?:crate|super)\\))? )?(?:const )?(?:async )?fn room_state_full_pdus\\b"
+        },
+        {
+          "path": "src/service/rooms/state_accessor/room_state.rs",
+          "first_line": 156,
+          "last_line": 173,
+          "item": "(?:pub(?:\\((?:crate|super)\\))? )?(?:const )?(?:async )?fn room_state_get\\b"
+        },
+        {
+          "path": "src/service/rooms/state_accessor/server_can.rs",
+          "first_line": 16,
+          "last_line": 66,
+          "item": "(?:pub(?:\\((?:crate|super)\\))? )?(?:const )?(?:async )?fn server_can_see_event\\b"
+        },
+        {
+          "path": "src/service/rooms/state_accessor/mod.rs",
+          "first_line": 129,
+          "last_line": 140,
+          "item": "(?:pub(?:\\((?:crate|super)\\))? )?(?:const )?(?:async )?fn is_world_readable\\b"
+        },
+        {
+          "path": "src/service/rooms/state_accessor/mod.rs",
+          "first_line": 215,
+          "last_line": 223,
+          "item": "(?:pub(?:\\((?:crate|super)\\))? )?(?:const )?(?:async )?fn is_encrypted_room\\b"
+        },
+        {
+          "path": "src/service/rooms/state_cache/mod.rs",
+          "first_line": 881,
+          "last_line": 911,
+          "item": "(?:pub(?:\\((?:crate|super)\\))? )?(?:const )?(?:async )?fn user_membership\\b"
+        },
+        {
+          "path": "src/service/rooms/state_cache/mod.rs",
+          "first_line": 913,
+          "last_line": 922,
+          "item": "(?:pub(?:\\((?:crate|super)\\))? )?(?:const )?(?:async )?fn once_joined\\b"
+        },
+        {
+          "path": "src/service/rooms/state_cache/mod.rs",
+          "first_line": 943,
+          "last_line": 955,
+          "item": "(?:pub(?:\\((?:crate|super)\\))? )?(?:const )?(?:async )?fn is_joined\\b"
+        },
+        {
+          "path": "src/service/rooms/state_cache/mod.rs",
+          "first_line": 957,
+          "last_line": 969,
+          "item": "(?:pub(?:\\((?:crate|super)\\))? )?(?:const )?(?:async )?fn is_knocked\\b"
+        },
+        {
+          "path": "src/service/rooms/state_cache/mod.rs",
+          "first_line": 971,
+          "last_line": 983,
+          "item": "(?:pub(?:\\((?:crate|super)\\))? )?(?:const )?(?:async )?fn is_invited\\b"
+        },
+        {
+          "path": "src/service/rooms/state_cache/mod.rs",
+          "first_line": 985,
+          "last_line": 994,
+          "item": "(?:pub(?:\\((?:crate|super)\\))? )?(?:const )?(?:async )?fn is_left\\b"
+        },
+        {
+          "path": "src/service/rooms/state_cache/mod.rs",
+          "first_line": 533,
+          "last_line": 546,
+          "item": "(?:pub(?:\\((?:crate|super)\\))? )?(?:const )?(?:async )?fn get_left_count\\b"
+        },
+        {
+          "path": "src/service/rooms/state_cache/mod.rs",
+          "first_line": 326,
+          "last_line": 337,
+          "item": "(?:pub(?:\\((?:crate|super)\\))? )?(?:const )?(?:async )?fn room_members\\b"
+        },
+        {
+          "path": "src/service/rooms/state_cache/mod.rs",
+          "first_line": 339,
+          "last_line": 356,
+          "item": "(?:pub(?:\\((?:crate|super)\\))? )?(?:const )?(?:async )?fn room_members_checked\\b"
+        },
+        {
+          "path": "src/service/rooms/timeline/pdus.rs",
+          "first_line": 23,
+          "last_line": 27,
+          "item": "pub type PdusIterItem\\b"
+        },
+        {
+          "path": "src/service/rooms/timeline/pdus.rs",
+          "first_line": 164,
+          "last_line": 188,
+          "item": "(?:pub(?:\\((?:crate|super)\\))? )?(?:const )?(?:async )?fn pdus\\b"
+        },
+        {
+          "path": "src/service/rooms/timeline/pdus.rs",
+          "first_line": 190,
+          "last_line": 214,
+          "item": "(?:pub(?:\\((?:crate|super)\\))? )?(?:const )?(?:async )?fn pdus_rev\\b"
+        },
+        {
+          "path": "src/service/rooms/timeline/pdus.rs",
+          "first_line": 237,
+          "last_line": 243,
+          "item": "(?:pub(?:\\((?:crate|super)\\))? )?(?:const )?(?:async )?fn each_slice\\b"
+        },
+        {
+          "path": "src/service/rooms/timeline/pdus.rs",
+          "first_line": 245,
+          "last_line": 254,
+          "item": "(?:pub(?:\\((?:crate|super)\\))? )?(?:const )?(?:async )?fn each_pdu\\b"
+        },
+        {
+          "path": "src/service/rooms/timeline/mod.rs",
+          "first_line": 300,
+          "last_line": 341,
+          "item": "(?:pub(?:\\((?:crate|super)\\))? )?(?:const )?(?:async )?fn shortstatehash_after\\b"
+        },
+        {
+          "path": "src/service/rooms/timeline/mod.rs",
+          "first_line": 267,
+          "last_line": 298,
+          "item": "(?:pub(?:\\((?:crate|super)\\))? )?(?:const )?(?:async )?fn next_shortstatehash\\b"
+        },
+        {
+          "path": "src/service/rooms/timeline/mod.rs",
+          "first_line": 395,
+          "last_line": 417,
+          "item": "(?:pub(?:\\((?:crate|super)\\))? )?(?:const )?(?:async )?fn next_timeline_count\\b"
+        },
+        {
+          "path": "src/service/rooms/timeline/mod.rs",
+          "first_line": 419,
+          "last_line": 445,
+          "item": "(?:pub(?:\\((?:crate|super)\\))? )?(?:const )?(?:async )?fn last_timeline_count\\b"
+        },
+        {
+          "path": "src/service/rooms/timeline/mod.rs",
+          "first_line": 517,
+          "last_line": 532,
+          "item": "(?:pub(?:\\((?:crate|super)\\))? )?(?:const )?(?:async )?fn count_to_id\\b"
+        },
+        {
+          "path": "src/service/rooms/timeline/mod.rs",
+          "first_line": 534,
+          "last_line": 546,
+          "item": "(?:pub(?:\\((?:crate|super)\\))? )?(?:const )?(?:async )?fn pdu_count_to_id\\b"
+        },
+        {
+          "path": "src/service/rooms/timeline/mod.rs",
+          "first_line": 563,
+          "last_line": 568,
+          "item": "(?:pub(?:\\((?:crate|super)\\))? )?(?:const )?(?:async )?fn get_pdu\\b"
+        },
+        {
+          "path": "src/service/rooms/timeline/mod.rs",
+          "first_line": 588,
+          "last_line": 595,
+          "item": "(?:pub(?:\\((?:crate|super)\\))? )?(?:const )?(?:async )?fn get_pdu_from_id\\b"
+        },
+        {
+          "path": "src/service/rooms/timeline/mod.rs",
+          "first_line": 633,
+          "last_line": 650,
+          "item": "(?:pub(?:\\((?:crate|super)\\))? )?(?:const )?(?:async )?fn get\\b"
+        },
+        {
+          "path": "src/service/rooms/timeline/mod.rs",
+          "first_line": 679,
+          "last_line": 694,
+          "item": "(?:pub(?:\\((?:crate|super)\\))? )?(?:const )?(?:async )?fn get_outlier\\b"
+        },
+        {
+          "path": "src/service/rooms/timeline/mod.rs",
+          "first_line": 696,
+          "last_line": 709,
+          "item": "(?:pub(?:\\((?:crate|super)\\))? )?(?:const )?(?:async )?fn get_non_outlier\\b"
+        },
+        {
+          "path": "src/service/rooms/timeline/mod.rs",
+          "first_line": 711,
+          "last_line": 722,
+          "item": "(?:pub(?:\\((?:crate|super)\\))? )?(?:const )?(?:async )?fn get_from_id\\b"
+        },
+        {
+          "path": "src/service/rooms/timeline/mod.rs",
+          "first_line": 774,
+          "last_line": 782,
+          "item": "(?:pub(?:\\((?:crate|super)\\))? )?(?:const )?(?:async )?fn get_pdu_count\\b"
+        },
+        {
+          "path": "src/service/rooms/timeline/mod.rs",
+          "first_line": 784,
+          "last_line": 796,
+          "item": "(?:pub(?:\\((?:crate|super)\\))? )?(?:const )?(?:async )?fn get_shorteventid_from_pdu_id\\b"
+        },
+        {
+          "path": "src/service/rooms/timeline/mod.rs",
+          "first_line": 798,
+          "last_line": 808,
+          "item": "(?:pub(?:\\((?:crate|super)\\))? )?(?:const )?(?:async )?fn get_event_id_from_pdu_id\\b"
+        },
+        {
+          "path": "src/service/rooms/timeline/mod.rs",
+          "first_line": 825,
+          "last_line": 836,
+          "item": "(?:pub(?:\\((?:crate|super)\\))? )?(?:const )?(?:async )?fn get_pdu_id\\b"
+        },
+        {
+          "path": "src/service/rooms/pdu_metadata/relations.rs",
+          "first_line": 21,
+          "last_line": 21,
+          "item": "type StartKey"
+        },
+        {
+          "path": "src/service/rooms/pdu_metadata/relations.rs",
+          "first_line": 118,
+          "last_line": 175,
+          "item": "(?:pub(?:\\((?:crate|super)\\))? )?(?:const )?(?:async )?fn get_relations\\b"
+        },
+        {
+          "path": "src/service/rooms/pdu_metadata/relations.rs",
+          "first_line": 93,
+          "last_line": 116,
+          "item": "(?:pub(?:\\((?:crate|super)\\))? )?(?:const )?(?:async )?fn has_incoming_relation\\b"
+        },
+        {
+          "path": "src/service/rooms/threads/mod.rs",
+          "first_line": 270,
+          "last_line": 306,
+          "item": "(?:pub(?:\\((?:crate|super)\\))? )?(?:const )?(?:async )?fn threads_until\\b"
+        },
+        {
+          "path": "src/service/rooms/threads/mod.rs",
+          "first_line": 308,
+          "last_line": 355,
+          "item": "(?:pub(?:\\((?:crate|super)\\))? )?(?:const )?(?:async )?fn live_thread\\b"
+        },
+        {
+          "path": "src/service/rooms/threads/mod.rs",
+          "first_line": 357,
+          "last_line": 367,
+          "item": "(?:pub(?:\\((?:crate|super)\\))? )?(?:const )?(?:async )?fn is_participant\\b"
+        },
+        {
+          "path": "src/service/rooms/metadata/mod.rs",
+          "first_line": 51,
+          "last_line": 70,
+          "item": "(?:pub(?:\\((?:crate|super)\\))? )?(?:const )?(?:async )?fn exists\\b"
+        },
+        {
+          "path": "src/service/rooms/state/mod.rs",
+          "first_line": 685,
+          "last_line": 701,
+          "item": "(?:pub(?:\\((?:crate|super)\\))? )?(?:const )?(?:async )?fn get_room_shortstatehash\\b"
+        },
+        {
+          "path": "src/service/rooms/state/mod.rs",
+          "first_line": 703,
+          "last_line": 714,
+          "item": "(?:pub(?:\\((?:crate|super)\\))? )?(?:const )?(?:async )?fn pdu_shortstatehash\\b"
+        },
+        {
+          "path": "src/service/rooms/state/mod.rs",
+          "first_line": 716,
+          "last_line": 733,
+          "item": "(?:pub(?:\\((?:crate|super)\\))? )?(?:const )?(?:async )?fn get_shortstatehash\\b"
+        },
+        {
+          "path": "src/service/users/mod.rs",
+          "first_line": 133,
+          "last_line": 144,
+          "item": "(?:pub(?:\\((?:crate|super)\\))? )?(?:const )?(?:async )?fn user_is_ignored\\b"
+        },
+        {
+          "path": "src/core/matrix/pdu/count.rs",
+          "first_line": 1,
+          "last_line": 279,
+          "item": "whole file before tests"
+        },
+        {
+          "path": "src/core/matrix/pdu/id.rs",
+          "first_line": 1,
+          "last_line": 29,
+          "item": "whole file before tests"
+        },
+        {
+          "path": "src/core/matrix/pdu/raw_id.rs",
+          "first_line": 1,
+          "last_line": 197,
+          "item": "whole file before tests"
+        },
+        {
+          "path": "src/core/matrix/event/filter.rs",
+          "first_line": 17,
+          "last_line": 29,
+          "item": "pub trait Matches<T>"
+        },
+        {
+          "path": "src/core/matrix/event/filter.rs",
+          "first_line": 31,
+          "last_line": 52,
+          "item": "impl<E: Event> Matches<&E> for RoomEventFilter"
+        },
+        {
+          "path": "src/core/matrix/event/filter.rs",
+          "first_line": 54,
+          "last_line": 57,
+          "item": "impl Matches<&RoomId> for RoomFilter"
+        },
+        {
+          "path": "src/core/matrix/event/filter.rs",
+          "first_line": 59,
+          "last_line": 62,
+          "item": "impl Matches<&UserId> for Filter"
+        },
+        {
+          "path": "src/core/matrix/event/filter.rs",
+          "first_line": 64,
+          "last_line": 80,
+          "item": "(?:pub(?:\\((?:crate|super)\\))? )?(?:const )?(?:async )?fn matches_user_id\\b"
+        },
+        {
+          "path": "src/core/matrix/event/filter.rs",
+          "first_line": 82,
+          "last_line": 94,
+          "item": "(?:pub(?:\\((?:crate|super)\\))? )?(?:const )?(?:async )?fn matches_room_id\\b"
+        },
+        {
+          "path": "src/core/matrix/event/filter.rs",
+          "first_line": 96,
+          "last_line": 112,
+          "item": "(?:pub(?:\\((?:crate|super)\\))? )?(?:const )?(?:async )?fn matches_room\\b"
+        },
+        {
+          "path": "src/core/matrix/event/filter.rs",
+          "first_line": 114,
+          "last_line": 130,
+          "item": "(?:pub(?:\\((?:crate|super)\\))? )?(?:const )?(?:async )?fn matches_sender\\b"
+        },
+        {
+          "path": "src/core/matrix/event/filter.rs",
+          "first_line": 132,
+          "last_line": 146,
+          "item": "(?:pub(?:\\((?:crate|super)\\))? )?(?:const )?(?:async )?fn matches_type\\b"
+        },
+        {
+          "path": "src/core/matrix/event/filter.rs",
+          "first_line": 148,
+          "last_line": 163,
+          "item": "(?:pub(?:\\((?:crate|super)\\))? )?(?:const )?(?:async )?fn matches_url\\b"
+        },
+        {
+          "path": "src/core/matrix/event/relation.rs",
+          "first_line": 1,
+          "last_line": 36,
+          "item": "whole file before tests"
+        },
+        {
+          "path": "src/core/config/net.rs",
+          "first_line": 95,
+          "last_line": 133,
+          "item": "(?:pub(?:\\((?:crate|super)\\))? )?(?:const )?(?:async )?fn is_forbidden_remote_server_name\\b"
+        },
+        {
+          "path": "src/core/utils/math.rs",
+          "first_line": 157,
+          "last_line": 165,
+          "item": "(?:pub(?:\\((?:crate|super)\\))? )?(?:const )?(?:async )?fn usize_from_ruma_bounded\\b"
+        },
+        {
+          "path": "src/api/client/message.rs",
+          "first_line": 42,
+          "last_line": 57,
+          "item": "pub\\(crate\\) struct MessagesArgs"
+        },
+        {
+          "path": "src/api/client/message.rs",
+          "first_line": 59,
+          "last_line": 79,
+          "item": "const IGNORED_MESSAGE_TYPES"
+        },
+        {
+          "path": "src/api/client/message.rs",
+          "first_line": 81,
+          "last_line": 82,
+          "item": "type RelTypes"
+        },
+        {
+          "path": "src/api/client/message.rs",
+          "first_line": 84,
+          "last_line": 84,
+          "item": "const LIMIT_MAX"
+        },
+        {
+          "path": "src/api/client/message.rs",
+          "first_line": 85,
+          "last_line": 85,
+          "item": "const LIMIT_DEFAULT"
+        },
+        {
+          "path": "src/api/client/message.rs",
+          "first_line": 87,
+          "last_line": 109,
+          "item": "(?:pub(?:\\((?:crate|super)\\))? )?(?:const )?(?:async )?fn get_message_events_route\\b"
+        },
+        {
+          "path": "src/api/client/message.rs",
+          "first_line": 111,
+          "last_line": 258,
+          "item": "(?:pub(?:\\((?:crate|super)\\))? )?(?:const )?(?:async )?fn get_messages\\b"
+        },
+        {
+          "path": "src/api/client/message.rs",
+          "first_line": 321,
+          "last_line": 335,
+          "item": "(?:pub(?:\\((?:crate|super)\\))? )?(?:const )?(?:async )?fn event_filters\\b"
+        },
+        {
+          "path": "src/api/client/message.rs",
+          "first_line": 337,
+          "last_line": 365,
+          "item": "(?:pub(?:\\((?:crate|super)\\))? )?(?:const )?(?:async )?fn related_by_filter\\b"
+        },
+        {
+          "path": "src/api/client/message.rs",
+          "first_line": 367,
+          "last_line": 379,
+          "item": "(?:pub(?:\\((?:crate|super)\\))? )?(?:const )?(?:async )?fn ignored_filter\\b"
+        },
+        {
+          "path": "src/api/client/message.rs",
+          "first_line": 381,
+          "last_line": 412,
+          "item": "(?:pub(?:\\((?:crate|super)\\))? )?(?:const )?(?:async )?fn is_ignored_pdu\\b"
+        },
+        {
+          "path": "src/api/client/message.rs",
+          "first_line": 414,
+          "last_line": 427,
+          "item": "(?:pub(?:\\((?:crate|super)\\))? )?(?:const )?(?:async )?fn visibility_filter\\b"
+        },
+        {
+          "path": "src/api/client/message.rs",
+          "first_line": 429,
+          "last_line": 433,
+          "item": "(?:pub(?:\\((?:crate|super)\\))? )?(?:const )?(?:async )?fn event_filter\\b"
+        },
+        {
+          "path": "src/api/client/context.rs",
+          "first_line": 1,
+          "last_line": 416,
+          "item": "whole file before tests"
+        },
+        {
+          "path": "src/api/client/relations.rs",
+          "first_line": 1,
+          "last_line": 261,
+          "item": "whole file before tests"
+        },
+        {
+          "path": "src/api/client/threads.rs",
+          "first_line": 27,
+          "last_line": 123,
+          "item": "(?:pub(?:\\((?:crate|super)\\))? )?(?:const )?(?:async )?fn get_threads_route\\b"
+        },
+        {
+          "path": "src/api/client/state.rs",
+          "first_line": 77,
+          "last_line": 114,
+          "item": "(?:pub(?:\\((?:crate|super)\\))? )?(?:const )?(?:async )?fn get_state_events_route\\b"
+        },
+        {
+          "path": "src/api/client/state.rs",
+          "first_line": 116,
+          "last_line": 170,
+          "item": "(?:pub(?:\\((?:crate|super)\\))? )?(?:const )?(?:async )?fn get_state_events_for_key_route\\b"
+        },
+        {
+          "path": "src/api/client/membership/members.rs",
+          "first_line": 1,
+          "last_line": 144,
+          "item": "whole file before tests"
+        },
+        {
+          "path": "src/api/client/room/initial_sync.rs",
+          "first_line": 1,
+          "last_line": 181,
+          "item": "whole file before tests"
+        },
+        {
+          "path": "src/api/client/room/event.rs",
+          "first_line": 1,
+          "last_line": 109,
+          "item": "whole file before tests"
+        }
+      ],
+      "inventory_inputs": {
+        "ports/tuwunel/difftest/extract_upstream.py": "54ab01566aa6896610ecef05701f8d462b2e0578968c4d74909640fe45da1d14"
+      },
+      "verified_source_coverage_percent": null,
+      "limitations": [
+        "Item spans include branches and infrastructure modeled away by the kernel.",
+        "No proof-to-upstream-item mapping has yet been certified."
+      ]
+    },
+    {
+      "app": "oxicloud",
+      "upstream_revision": "8c0dd334cf065ad11f60f9be24e2aafd5dda7550",
+      "scope": "src",
+      "mapping_status": "ported_item_inventory_not_formal_verification_coverage",
+      "counting_convention": "nonblank_physical_lines_including_comments_and_attributes",
+      "deduplicated_mapped_nonblank_lines": 1866,
+      "mapped_physical_lines": 1928,
+      "spans": [
+        {
+          "path": "src/domain/services/authorization.rs",
+          "first_line": 320,
+          "last_line": 341,
+          "item": "pub fn expand\\(self\\)"
+        },
+        {
+          "path": "src/domain/services/authorization.rs",
+          "first_line": 391,
+          "last_line": 408,
+          "item": "pub fn roles_implying\\b"
+        },
+        {
+          "path": "src/application/ports/authorization_ports.rs",
+          "first_line": 242,
+          "last_line": 329,
+          "item": "async fn require\\(\\n"
+        },
+        {
+          "path": "src/infrastructure/services/pg_acl_engine.rs",
+          "first_line": 610,
+          "last_line": 671,
+          "item": "async fn expand_user\\b"
+        },
+        {
+          "path": "src/infrastructure/services/pg_acl_engine.rs",
+          "first_line": 684,
+          "last_line": 696,
+          "item": "async fn subject_match_set\\b"
+        },
+        {
+          "path": "src/infrastructure/services/pg_acl_engine.rs",
+          "first_line": 752,
+          "last_line": 764,
+          "item": "async fn drive_of\\b"
+        },
+        {
+          "path": "src/infrastructure/services/pg_acl_engine.rs",
+          "first_line": 775,
+          "last_line": 780,
+          "item": "fn roles_implying_strings\\b"
+        },
+        {
+          "path": "src/infrastructure/services/pg_acl_engine.rs",
+          "first_line": 805,
+          "last_line": 839,
+          "item": "async fn direct_grant_exists\\b"
+        },
+        {
+          "path": "src/infrastructure/services/pg_acl_engine.rs",
+          "first_line": 841,
+          "last_line": 874,
+          "item": "async fn folder_cascade_grant_exists\\b"
+        },
+        {
+          "path": "src/infrastructure/services/pg_acl_engine.rs",
+          "first_line": 880,
+          "last_line": 911,
+          "item": "async fn file_direct_grant_exists\\b"
+        },
+        {
+          "path": "src/infrastructure/services/pg_acl_engine.rs",
+          "first_line": 1085,
+          "last_line": 1093,
+          "item": "async fn query_parent_point\\b"
+        },
+        {
+          "path": "src/infrastructure/services/pg_acl_engine.rs",
+          "first_line": 1178,
+          "last_line": 1213,
+          "item": "async fn direct_grant_cached\\b"
+        },
+        {
+          "path": "src/infrastructure/services/pg_acl_engine.rs",
+          "first_line": 1215,
+          "last_line": 1295,
+          "item": "async fn cascade_grant_cached\\b"
+        },
+        {
+          "path": "src/infrastructure/services/pg_acl_engine.rs",
+          "first_line": 1305,
+          "last_line": 1342,
+          "item": "async fn caller_role_on_drive_cached\\b"
+        },
+        {
+          "path": "src/infrastructure/services/pg_acl_engine.rs",
+          "first_line": 1349,
+          "last_line": 1384,
+          "item": "async fn drive_policies_cached\\b"
+        },
+        {
+          "path": "src/infrastructure/services/pg_acl_engine.rs",
+          "first_line": 1405,
+          "last_line": 1407,
+          "item": "fn read_only_gate_applies\\b"
+        },
+        {
+          "path": "src/infrastructure/services/pg_acl_engine.rs",
+          "first_line": 1412,
+          "last_line": 1433,
+          "item": "pub async fn find_grant_full_by_id\\b"
+        },
+        {
+          "path": "src/infrastructure/services/pg_acl_engine.rs",
+          "first_line": 1499,
+          "last_line": 1666,
+          "item": "async fn check_inner\\b"
+        },
+        {
+          "path": "src/infrastructure/services/pg_acl_engine.rs",
+          "first_line": 2925,
+          "last_line": 2932,
+          "item": "async fn revoke\\(&self"
+        },
+        {
+          "path": "src/infrastructure/services/pg_acl_engine.rs",
+          "first_line": 2962,
+          "last_line": 3029,
+          "item": "async fn set_role\\(\\n"
+        },
+        {
+          "path": "src/infrastructure/services/pg_acl_engine.rs",
+          "first_line": 3031,
+          "last_line": 3066,
+          "item": "async fn clear_role\\b"
+        },
+        {
+          "path": "src/infrastructure/repositories/pg/subject_group_pg_repository.rs",
+          "first_line": 524,
+          "last_line": 548,
+          "item": "async fn groups_for_user\\b"
+        },
+        {
+          "path": "src/infrastructure/repositories/pg/folder_db_repository.rs",
+          "first_line": 1466,
+          "last_line": 1473,
+          "item": "pub async fn get_folder_drive_id\\b"
+        },
+        {
+          "path": "src/infrastructure/repositories/pg/file_blob_read_repository.rs",
+          "first_line": 366,
+          "last_line": 375,
+          "item": "pub async fn get_file_drive_id\\b"
+        },
+        {
+          "path": "src/infrastructure/repositories/pg/drive_pg_repository.rs",
+          "first_line": 729,
+          "last_line": 749,
+          "item": "async fn get_policies_for_file\\b"
+        },
+        {
+          "path": "src/infrastructure/repositories/pg/drive_pg_repository.rs",
+          "first_line": 751,
+          "last_line": 767,
+          "item": "async fn get_policies_for_folder\\b"
+        },
+        {
+          "path": "src/domain/entities/drive.rs",
+          "first_line": 491,
+          "last_line": 530,
+          "item": "pub fn refuse_public_links\\b"
+        },
+        {
+          "path": "src/domain/entities/drive.rs",
+          "first_line": 548,
+          "last_line": 565,
+          "item": "pub fn refuse_sharing\\b"
+        },
+        {
+          "path": "src/domain/entities/drive.rs",
+          "first_line": 582,
+          "last_line": 607,
+          "item": "pub fn refuse_owner_role_change\\b"
+        },
+        {
+          "path": "src/domain/entities/drive.rs",
+          "first_line": 662,
+          "last_line": 693,
+          "item": "pub fn refuse_external_sharing\\b"
+        },
+        {
+          "path": "src/application/services/drive_management_service.rs",
+          "first_line": 195,
+          "last_line": 293,
+          "item": "pub async fn set_member_role\\b"
+        },
+        {
+          "path": "src/application/services/drive_management_service.rs",
+          "first_line": 302,
+          "last_line": 367,
+          "item": "pub async fn remove_member\\b"
+        },
+        {
+          "path": "src/application/services/drive_management_service.rs",
+          "first_line": 700,
+          "last_line": 719,
+          "item": "async fn refuse_if_personal\\b"
+        },
+        {
+          "path": "src/application/services/drive_management_service.rs",
+          "first_line": 662,
+          "last_line": 694,
+          "item": "async fn refuse_if_forbid_external_sharing\\b"
+        },
+        {
+          "path": "src/application/services/drive_management_service.rs",
+          "first_line": 735,
+          "last_line": 786,
+          "item": "async fn refuse_if_forbid_owner_role_change\\b"
+        },
+        {
+          "path": "src/application/services/drive_management_service.rs",
+          "first_line": 792,
+          "last_line": 830,
+          "item": "async fn refuse_if_last_owner_change\\b"
+        },
+        {
+          "path": "src/interfaces/api/handlers/grant_handler.rs",
+          "first_line": 83,
+          "last_line": 492,
+          "item": "pub async fn create_grant\\b"
+        },
+        {
+          "path": "src/interfaces/api/handlers/grant_handler.rs",
+          "first_line": 509,
+          "last_line": 632,
+          "item": "pub async fn revoke_grant\\b"
+        },
+        {
+          "path": "src/interfaces/api/handlers/grant_handler.rs",
+          "first_line": 839,
+          "last_line": 898,
+          "item": "pub async fn set_role\\b"
+        }
+      ],
+      "inventory_inputs": {
+        "ports/oxicloud/difftest/count_loc.py": "0108342e4ffe1d2225e267f3a168cfa08cd38163c40c2fa34ce4d08eb9e2a6cd"
+      },
+      "verified_source_coverage_percent": null,
+      "limitations": [
+        "Item spans include branches and infrastructure modeled away by the kernel.",
+        "No proof-to-upstream-item mapping has yet been certified.",
+        "OxiCloud spans include unported email-invitation and message-bus branches and tracing calls; these must be excluded before computing a verified numerator."
+      ]
+    }
+  ]
+}

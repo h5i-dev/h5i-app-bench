@@ -1,0 +1,50 @@
+    Finished `release` profile [optimized] target(s) in 0.29s
+     Running unittests src/lib.rs (ports/kanidm/difftest/target/release/deps/kanidm_difftest-f2ac7f3a94c8d866)
+
+running 19 tests
+test props::account_request_creates_signups ... seed 15: 1216 hits
+ok
+test props::anonymous_reads_by_profile_only ... seed 4: 116833 hits
+ok
+test props::create_needs_profile ... seed 8: 474 hits
+ok
+test props::create_protected ... seed 11: 411 hits
+ok
+test props::delete_needs_profile ... seed 7: 2378 hits
+ok
+test props::delete_protected ... seed 10: 3116 hits
+ok
+test props::effective_permission_check_total ... seed 18: 150000 hits
+ok
+test props::match_eq_spec ... seed 16: 12236 hits
+ok
+test props::modify_needs_profile ... seed 9: 580 hits
+ok
+test props::protected_class_never_added ... seed 13: 572 hits
+ok
+test props::protected_deny_overrides_create ... seed 2: 94330 hits
+ok
+test props::protected_deny_overrides_modify ... seed 1: 50837 hits
+ok
+test props::readonly_cannot_modify ... seed 6: 31171 hits
+ok
+test props::search_attrs_granted ... seed 3: 60804 hits
+ok
+test props::str_contains_spec ... ok
+test props::sync_object_constrained ... seed 14: 3088 hits
+ok
+test props::synchronise_sees_nothing ... seed 5: 22524 hits
+ok
+test props::tombstone_locked ... seed 12: 18037 hits
+ok
+test tests::kernel_agrees_with_upstream ... non-trivial outcomes: [14301, 6835, 4023, 2051, 5994, 7083, 17763]
+ok
+
+test result: ok. 19 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 67.20s
+
+   Doc-tests kanidm_difftest
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

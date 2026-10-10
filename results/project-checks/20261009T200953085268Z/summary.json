@@ -1,0 +1,110 @@
+[
+  {
+    "app": "kanidm",
+    "command": [
+      "h5i",
+      "app",
+      "check",
+      "ports/kanidm"
+    ],
+    "started_at": "2026-10-09T20:09:53.117804+00:00",
+    "source_sha256": {
+      "ports/kanidm/h5i-app.toml": "48d48f0d2246a068d2c2b5948e077087fda9498c6216d454789f099dd88489f0",
+      "ports/kanidm/kernel/src/access.rs": "ddf05297998fc36d5b051257d502b99ca14ca811735cc062f26169029fa7ce22",
+      "ports/kanidm/kernel/src/bset.rs": "3b44940512691774a9676fea691cd90d04287f219dccccd09e5a11787d07eb73",
+      "ports/kanidm/kernel/src/create_acc.rs": "08df8bc144c61eadfbde5ae7b00084827ca44848e330bed33f274b1980326420",
+      "ports/kanidm/kernel/src/delete_acc.rs": "5956117aa7871a46aef4c068e1e3576e769e3390647bd1778cbbe6a63ddc3d1e",
+      "ports/kanidm/kernel/src/entry_impl.rs": "3ff67828b40062877774d40e9aa74cafd118a6f579ddfd42abe00ee8dd4a0927",
+      "ports/kanidm/kernel/src/filter_impl.rs": "f4685f500daf15bfeb25ae6d9bc17a1b2356c2cedc11c168eb6f6057109ad55f",
+      "ports/kanidm/kernel/src/identity_impl.rs": "bef3adc1eba11af6a79d5295f9b9d176294d6ae63b9b221888e534935cb761b3",
+      "ports/kanidm/kernel/src/lib.rs": "45564aa6d1d5e60d275fab68e5d59c7cbce1454c59bd20fe075710e6e7aac6c5",
+      "ports/kanidm/kernel/src/migration.rs": "f1ebd0c480b91d9177609e7da18f89d17259eb8ea05197a7f4b3e88a57c968c4",
+      "ports/kanidm/kernel/src/modify_acc.rs": "fd47c14bb2d0dcf78f768df081a0086d02b495ab89f4c41627136ddf4d538823",
+      "ports/kanidm/kernel/src/profiles.rs": "2939976d523173c42b691e98899e95000a7be2c7c47b18105e6fb9052d421a00",
+      "ports/kanidm/kernel/src/protected.rs": "8f5385658255ef75417284eab519242ab55d857b599f3e3837a1a3b970343443",
+      "ports/kanidm/kernel/src/search_acc.rs": "6d03020d3137c7573905d8b5392bd6f19cf6ea60f7176d27525aac6754b834c2",
+      "ports/kanidm/kernel/src/valueset.rs": "0231b98cfa94923f403ee6e317306a749806f420fd160cfec9f941b82424f581",
+      "ports/kanidm/proofs/Properties.lean": "d199709998cef4d09b473b94e79c5994da993d6554446cd3a0daa9d4675d0644",
+      "ports/kanidm/proofs/Spec.lean": "4213d05afc8c13e3b261909b1132975718b5e2cf6549c4b215d74908d4c74137",
+      "ports/kanidm/proofs/generated/KanidmKernel.lean": "01707a94b1eb6ca3888219af7836db9d4aa35802a7ae7294d76e01efa99e0b54",
+      "ports/kanidm/proofs/lake-manifest.json": "f7a62ee60ddc0b764f6c38f9509e0a16776f63c82199949bbcc45c8c308f70c9",
+      "ports/kanidm/proofs/lakefile.lean": "74b73e9004de6f584db1e19a20de4c040a6d28faf91f4af603ce0b94f838ca8a",
+      "ports/kanidm/proofs/lean-toolchain": "efac0b94923b2d8b6840cd35be9177ad0fc5ab2332f4f4311c98712cee92fdee"
+    },
+    "exit_code": 1,
+    "passed": false,
+    "finished_at": "2026-10-09T20:11:57.592172+00:00",
+    "log": "results/project-checks/20261009T200953085268Z/kanidm.log"
+  },
+  {
+    "app": "rustfs",
+    "command": [
+      "h5i",
+      "app",
+      "check",
+      "ports/rustfs"
+    ],
+    "started_at": "2026-10-09T20:11:57.597888+00:00",
+    "source_sha256": {
+      "ports/rustfs/h5i-app.toml": "7c326f4a712d27633b6bd4a195e08bb02b8af183f5f3ef2124a0593f8f429eb0",
+      "ports/rustfs/kernel/src/acts.rs": "473846b419520ea3acd17bfe1a0cfd653664186c0eda9f159ff6be8c27539ed9",
+      "ports/rustfs/kernel/src/awsvars.rs": "904f636c2115c9a03a702a6f593d5278f31cae2e8667137cd8fd4bc2f8095a66",
+      "ports/rustfs/kernel/src/bytes.rs": "c21d715fb633a5461dba6ffac586a6105437ed06da52bbc14fbadb2c01c663c8",
+      "ports/rustfs/kernel/src/condfuncs.rs": "92455cb2988a68e127d89ecabf29cfb3d8ca6b4b122576fa72c23a95b1bc59a6",
+      "ports/rustfs/kernel/src/keynames.rs": "dd3034bb66e153a8ad2f3fabfec45962cd19db646f123f802e3aba88f4d44406",
+      "ports/rustfs/kernel/src/lib.rs": "8259cfdfa385b60720642cb5131d4599c576e7e3c24f1b56fb4d5efe94e2e5df",
+      "ports/rustfs/kernel/src/pathclean.rs": "78bccb602fcc4d9fc75d1f85ca8bf3ff366ad31b4c762f5486a87ad8bb68f9b2",
+      "ports/rustfs/kernel/src/policies.rs": "272b9c0e252574a9b657c432d5e85c737b25fe33bc712f620abc0993badc2eb7",
+      "ports/rustfs/kernel/src/rsrc.rs": "8194b4a1cdf600cc9d6a5c94f9caad9dd42e394747d8efd2c05032ef72ed6b81",
+      "ports/rustfs/kernel/src/stmts.rs": "20a68e2c7c3e18c020d9b693ac3417e3edef27dd4d7866c5ae0ed095adf6db48",
+      "ports/rustfs/kernel/src/wildmatch.rs": "8cdb607e03e059c497d64918c635b45b4dfb9d864eb0b3ec9ce3cfccd7ee11e7",
+      "ports/rustfs/proofs/Properties.lean": "35480e12d2299e36f40cd67542afe10a35e968ae7630a6071db09c0e8a5e28da",
+      "ports/rustfs/proofs/Spec.lean": "6e826ac60e5d9e326721d8615a39f9b5afe3a10197e37f21c9a4df20d72c053d",
+      "ports/rustfs/proofs/generated/RustfsKernel.lean": "b7e8d2116ff20fd01af484e936733279d7ca4b1e271afd862d65109d5a9dedb4",
+      "ports/rustfs/proofs/lake-manifest.json": "fd1ca6b7b10c2d362b42d7f6b8a632220a5cf4c71a85b13f174cca8a5ba05582",
+      "ports/rustfs/proofs/lakefile.lean": "e9605f2434c86e1504a78d6ec8e5fd7bd09017612ff082a0fc88a1d28c2b7539",
+      "ports/rustfs/proofs/lean-toolchain": "efac0b94923b2d8b6840cd35be9177ad0fc5ab2332f4f4311c98712cee92fdee"
+    },
+    "exit_code": 1,
+    "passed": false,
+    "finished_at": "2026-10-09T20:13:44.466471+00:00",
+    "log": "results/project-checks/20261009T200953085268Z/rustfs.log"
+  },
+  {
+    "app": "tuwunel",
+    "command": [
+      "h5i",
+      "app",
+      "check",
+      "ports/tuwunel"
+    ],
+    "started_at": "2026-10-09T20:13:44.472031+00:00",
+    "source_sha256": {
+      "ports/tuwunel/h5i-app.toml": "e980f8d0325c217cd4bd2d068d1646001c00093b783e5460a9c39861584704c0",
+      "ports/tuwunel/kernel/src/api_context.rs": "d5e5f2111cdafaccf73425e97ce82e5272f6bd5d7a92b91982645377cb520781",
+      "ports/tuwunel/kernel/src/api_members.rs": "5a261dffbd6b3cf5e92802af86011a61f1d6eb66d120e6e7d5f5ee64547ab55f",
+      "ports/tuwunel/kernel/src/api_message.rs": "329f1bfbd4367dbeedd362ec463b131c5de5c7faff36d7441aa5cd0880bfeabc",
+      "ports/tuwunel/kernel/src/api_relations.rs": "2227abee773e36d863af8bc0126af24d5cd064f53fc49cbb2f85b531b89c6b18",
+      "ports/tuwunel/kernel/src/api_room.rs": "a793e47a93a72764a6e3d2276c8865615e38485bd5ddd9ebd46de50b3e96adb2",
+      "ports/tuwunel/kernel/src/api_state.rs": "306abe6dbcc10abead75e376ab13ed380a98d0d76810cb645d3af259a9982585",
+      "ports/tuwunel/kernel/src/api_threads.rs": "32d21b52ad4270db09db05195bb31a773608bc48f7c0015eb193555bb504d38b",
+      "ports/tuwunel/kernel/src/filters.rs": "8a8f1b1cc0c5c14722e1a59eac980bc530490eaf4bbaed65fb0a03bb30e60e36",
+      "ports/tuwunel/kernel/src/lib.rs": "e66809fbe8d69bd097df9d010df54d0020304060f6f1bab2628f7b5cba20dded",
+      "ports/tuwunel/kernel/src/svc_accessor.rs": "b02576a0a17fb6faec068e72801d45183f8328a90d66ed3efa6dba6a1a171071",
+      "ports/tuwunel/kernel/src/svc_cache.rs": "b27f135a3706d51088718e4961e23bc6e2fc24b89e5637ce65846a33a08d611c",
+      "ports/tuwunel/kernel/src/svc_relations.rs": "16058d0a374593103cc2bf65e52520e47683730a86839ab95921b2533bf2e372",
+      "ports/tuwunel/kernel/src/svc_threads.rs": "03c8d2e4e03a32c8e9b6cc8e0f4f38c758dd08fd2bb173112711dca3bf61306e",
+      "ports/tuwunel/kernel/src/svc_timeline.rs": "3361b92f3abc3a423786e4475e46f01d2aa54c69cb40eab87c6522e5744cf0b2",
+      "ports/tuwunel/proofs/Properties.lean": "8da38298f4e4a95cf4b062782ef3f91f74474decd96521dfb00b55de4b0c74df",
+      "ports/tuwunel/proofs/Spec.lean": "19ca26dde8d6f0e7923b3c88ba43ff0aa1bab5bc81a525f8218d3bb9c4e5e822",
+      "ports/tuwunel/proofs/generated/TuwunelKernel.lean": "6a168e8450c8af7cd8012850ca800b7703bd758ebbed00b99e7fb4edc7b64355",
+      "ports/tuwunel/proofs/lake-manifest.json": "0b2c123e0c3ac2b8a7b12de882fd86f7ae2b047381a873a76b3b04f928c49934",
+      "ports/tuwunel/proofs/lakefile.lean": "b4b88287b8c72f4028f7a106cc39b7264350620649901726c3555ae20cd20925",
+      "ports/tuwunel/proofs/lean-toolchain": "efac0b94923b2d8b6840cd35be9177ad0fc5ab2332f4f4311c98712cee92fdee"
+    },
+    "exit_code": 1,
+    "passed": false,
+    "finished_at": "2026-10-09T20:15:36.889561+00:00",
+    "log": "results/project-checks/20261009T200953085268Z/tuwunel.log"
+  }
+]

@@ -193,7 +193,10 @@ def main():
         start = f"codex exec --json --skip-git-repo-check -C /work/task {shlex.quote(PROMPT)}"
         again = f"cd /work/task && codex exec resume --last --json --skip-git-repo-check {shlex.quote(NUDGE)}"
         env = {"CODEX_HOME": "/work/agent", "BENCH_KEY": "unused"}
-        mounts = ["-v", f"{CODEX}:/opt/codex/codex:ro"]
+        # Recent codex runs tools through a helper next to its binary.
+        host = CODEX.with_name("codex-code-mode-host")
+        mounts = ["-v", f"{CODEX}:/opt/codex/codex:ro",
+                  *(["-v", f"{host}:/opt/codex/codex-code-mode-host:ro"] if host.exists() else [])]
     elif a.agent == "gemini":
         # A Node install and an npm prefix holding @google/gemini-cli.
         node, cli = os.environ.get("BENCH_NODE"), os.environ.get("BENCH_GEMINI_CLI")

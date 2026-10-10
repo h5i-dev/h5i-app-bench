@@ -53,8 +53,12 @@ theorem lifetime_bounded (p : OidcProvider) (c : Claims) (r : Request) (x : Repl
     exp.val - iat.val ≤ p.max_token_lifetime_secs.val := by
   apply nora_kernel.Verified.NoraLifetime.lifetime_bounded <;> assumption
 
-/-- The subject matcher computes `globSpec`. -/
-theorem glob_match_spec (pattern v : Slice U8) :
+/-- The subject matcher computes `globSpec`, for a pattern shorter than
+`Usize.max`. Aeneas lets a slice be `Usize.max` long; a pattern of that many `*`
+bytes then splits into `Usize.max + 1` parts, more than a modeled `Vec` holds,
+and the function fails. Rust slices hold at most `isize::MAX` bytes, so the bound
+only excludes lengths Rust cannot have. -/
+theorem glob_match_spec (pattern v : Slice U8) (hlt : pattern.length < Usize.max) :
     glob_match pattern v = ok (globSpec (nats pattern.val) (nats v.val)) := by
   sorry
 
@@ -63,8 +67,11 @@ theorem segment_glob_spec (pattern v : Slice U8) :
     segment_glob pattern v = ok (segGlobSpec (nats pattern.val) (nats v.val)) := by
   sorry
 
-/-- The kernel never panics, overflows or loops. -/
-theorem transition_total (p : OidcProvider) (c : Claims) (r : Request) :
+/-- The kernel never panics, overflows or loops, for role-rule patterns shorter
+than `Usize.max` (see `glob_match_spec`: a longer one splits into more parts than
+a modeled `Vec` holds; Rust cannot allocate such a pattern). -/
+theorem transition_total (p : OidcProvider) (c : Claims) (r : Request)
+    (hpat : ∀ rule ∈ p.role_rules.val, rule.pattern.length < Usize.max) :
     ∃ y, transition p c r = ok y := by
   sorry
 

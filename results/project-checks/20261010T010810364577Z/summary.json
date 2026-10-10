@@ -1,0 +1,48 @@
+[
+  {
+    "app": "nora",
+    "command": [
+      "h5i",
+      "app",
+      "check",
+      "ports/nora"
+    ],
+    "started_at": "2026-10-10T01:08:10.380163+00:00",
+    "source_sha256": {
+      "ports/nora/h5i-app.toml": "cb02f2248702a5931ee2d0ae6eb41ca1771d924d73143b31e9054b0348a92783",
+      "ports/nora/kernel/src/lib.rs": "31d957207d0707581e97150e3b02b30d0ec728ed602e7a98d8b28e7a8bf11e25",
+      "ports/nora/kernel/src/lockout.rs": "74aeadd3cf964c6ff4ec7649ece17ff469406889e665cad8cc6ca38347038f9f",
+      "ports/nora/kernel/src/middleware.rs": "08054af2d2d1f74e8045b5b8b4ceb5c19f6e9269a1deda7fe8ebe3f37c749ec7",
+      "ports/nora/kernel/src/net.rs": "6828b598059ddc40f1f661c53457f7966a7abfc126bb59c25f6a7f1757056403",
+      "ports/nora/kernel/src/oracle.rs": "88618877c75ea5a5e0761d9d9ee6a7e9216936ba05fc43befb3c8d6b8dde2429",
+      "ports/nora/kernel/src/tokens.rs": "3fe77c5a1b5603d5d462a3281a8fae2c8a000dd27ddc66c82035d00752be4a8a",
+      "ports/nora/kernel/src/validation.rs": "ff460fba5168e368cc0697faae568ec6d767106e7c2fb0e61bcb981bf219637f",
+      "ports/nora/proofs/Properties.lean": "ec76609ef0020f1e93cdbfea1587598c1c7d56b027753f76e559b73428003984",
+      "ports/nora/proofs/Spec.lean": "9ff570506f7821b60753f29a1d462dfcc14d768564059bc89d039149bf199a0a",
+      "ports/nora/proofs/Verified/Derived.lean": "56ba4ab84f3b923e014f1a77a326277d6538b8c5bc0be7a5e6c4a462b70f0c69",
+      "ports/nora/proofs/Verified/NoraAdminPath.lean": "684ea72cdea141b9bba38f4d4be3f58f710b0ed925562100f900244fbe04c3d0",
+      "ports/nora/proofs/Verified/NoraAuditNeverDenies.lean": "60dbdd417acdc151149d8fe0683396fcdb66fee96f3bd1da0cf6e7e0256f572b",
+      "ports/nora/proofs/Verified/NoraCidr.lean": "f31389d7a683306255b36356afd7dd4940a5b06a3aeb3119c8067480079ebc28",
+      "ports/nora/proofs/Verified/NoraDigest.lean": "d6289d48194fd98fd416ed3ecb8d883cbe72e43d8afa8810360d33b429e181a3",
+      "ports/nora/proofs/Verified/NoraLifetime.lean": "1d4eaa52ae4c7b54c77e0fadb1de2409400dbb8ddfea63807ba0e22470d9ed96",
+      "ports/nora/proofs/Verified/NoraReadOnly.lean": "2c227bf3534754b06ff62ffd5dd9ff13e3f2613e1f6c30c362ea212be8c3621a",
+      "ports/nora/proofs/Verified/NoraReference.lean": "74510d4c3d4802fe8ac59047fc465c9f90c5fc0953fb23414e42f9eb1cf8c24b",
+      "ports/nora/proofs/Verified/NoraRevokeAll.lean": "d907ae884f35619ff7eed14f409712b147756b9c2fe86c91a7394769a4c17456",
+      "ports/nora/proofs/Verified/NoraTokenUnexpired.lean": "5a6fb3346542859f8f32850079e756b6660f406b94e338332e90be8741e4647a",
+      "ports/nora/proofs/Verified/NoraUntrustedPeer.lean": "700283c0d4530241c4414cecaf362d0abf75bfc8c3802f05ecf5f565824823a9",
+      "ports/nora/proofs/generated/NoraKernel.lean": "a01d293f559d27b7eff5eba4987b835d908b8fd9ed908491ddb4245ff19ba0f5",
+      "ports/nora/proofs/lake-manifest.json": "31f82cb2fe92be0cd490cf27e391d6cb31dfd23c2480b0542da4099eec383513",
+      "ports/nora/proofs/lakefile.lean": "cb3a9fd7f4ca419cd143bd42a38bbb312f473df24e64bd7182b3f278c9b10c34",
+      "ports/nora/proofs/lean-toolchain": "efac0b94923b2d8b6840cd35be9177ad0fc5ab2332f4f4311c98712cee92fdee",
+      "ports/nora/proofs/solutions/nora-digest/Solution.lean": "5a1429c70390d4c8893656ab549144d5cb6ba3fc1b0d2851ca7430d79ccdaa9f",
+      "ports/nora/proofs/solutions/nora-lifetime/Solution.lean": "9a190c21fc6d75aca027fee43870371d53bd0fcb40ec4d92932fb63f49c2487a",
+      "ports/nora/proofs/solutions/nora-no-credentials/Solution.lean": "a07f8b3a5c85ca295b8d053128949e88c20b4f9df992ef1bf5e5708529c624d4",
+      "ports/nora/proofs/solutions/nora-reference/Solution.lean": "473b3ee6b43a1e00881c4af3f05411b33ec4664d29a6f893bc635b7665dc5522",
+      "ports/nora/proofs/solutions/nora-revoke-all/Solution.lean": "4442ec223650f35302113211bfd451a7e3d976750a93a6eabbe41ef9073d38ce"
+    },
+    "exit_code": 1,
+    "passed": false,
+    "finished_at": "2026-10-10T01:10:04.230382+00:00",
+    "log": "results/project-checks/20261010T010810364577Z/nora.log"
+  }
+]

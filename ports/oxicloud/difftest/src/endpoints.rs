@@ -167,7 +167,7 @@ fn request(db: &Db, r: &mut Rng) -> Request {
 
 #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
 async fn endpoints_agree() {
-    let pool = Arc::new(PgPool::connect(DB).await.unwrap());
+    let pool = Arc::new(disposable_database().await);
     let mut r = Rng(0xE4D9_0123_4567_89AB);
     let cases: usize = std::env::var("CASES").ok().and_then(|s| s.parse().ok()).unwrap_or(600);
     let mut seen = std::collections::BTreeMap::new();

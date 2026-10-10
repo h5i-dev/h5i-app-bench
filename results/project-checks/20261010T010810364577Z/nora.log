@@ -1,0 +1,128 @@
+
+$ lake build
+⚠ [147/264] Replayed Aeneas.Std.WP
+warning: Aeneas/Std/WP.lean:756:4: 'simp -failIfUnchanged only' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Aeneas/Std/WP.lean:761:4: 'simp -failIfUnchanged only' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Aeneas/Std/WP.lean:896:11: 'cases i' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Aeneas/Std/WP.lean:896:23: 'simp' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Aeneas/Std/WP.lean:927:19: 'simp at hspec' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+⚠ [1264/1305] Replayed Aeneas.Std.Core.Core
+warning: Aeneas/Std/Core/Core.lean:38:4: The namespace 'core' is duplicated in the declaration 'Aeneas.Std.core.core.clone.CloneGlobal'
+
+Note: This linter can be disabled with `set_option linter.dupNamespace false`
+warning: Aeneas/Std/Core/Core.lean:59:4: The namespace 'core' is duplicated in the declaration 'Aeneas.Std.core.core.clone.CloneBox'
+
+Note: This linter can be disabled with `set_option linter.dupNamespace false`
+warning: Aeneas/Std/Core/Core.lean:68:4: The namespace 'core' is duplicated in the declaration 'Aeneas.Std.core.core.marker.CopyBool'
+
+Note: This linter can be disabled with `set_option linter.dupNamespace false`
+ℹ [1732/1744] Replayed Verified.Derived
+info: Verified/Derived.lean:6:0: h5i_derive_all: no eq spec for nora_kernel.net.IpAddr; derive it by hand
+info: Verified/Derived.lean:6:0: h5i_derive_all: no eq spec for nora_kernel.validation.ValidationError; derive it by hand
+info: Verified/Derived.lean:6:0: h5i_derive_all: no clone spec for nora_kernel.tokens.TokenFile; derive it by hand
+info: Verified/Derived.lean:6:0: h5i_derive_all: no clone spec for nora_kernel.tokens.TokenStore; derive it by hand
+⚠ [1733/1744] Replayed Verified.NoraReference
+warning: Verified/NoraReference.lean:219:2: 'all_goals try simp_all [WP.spec_ok, UScalar.le_equiv, UScalar.lt_equiv]' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/NoraReference.lean:228:2: 'all_goals simp_all' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/NoraReference.lean:228:12: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: Verified/NoraReference.lean:277:45: This simp argument is unused:
+  hx
+
+Hint: Omit it from the simp argument list.
+  simp [nats,̵ ̵h̵x̵]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+⚠ [1743/1744] Built Properties (9.7s)
+warning: Properties.lean:28:8: declaration uses `sorry`
+warning: Properties.lean:36:8: declaration uses `sorry`
+warning: Properties.lean:48:69: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: Properties.lean:57:8: declaration uses `sorry`
+warning: Properties.lean:62:8: declaration uses `sorry`
+warning: Properties.lean:67:8: declaration uses `sorry`
+warning: Properties.lean:83:8: declaration uses `sorry`
+warning: Properties.lean:93:8: declaration uses `sorry`
+warning: Properties.lean:103:8: declaration uses `sorry`
+warning: Properties.lean:116:8: declaration uses `sorry`
+warning: Properties.lean:126:8: declaration uses `sorry`
+warning: Properties.lean:135:8: declaration uses `sorry`
+warning: Properties.lean:158:72: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: Properties.lean:163:72: 'assumption' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Properties.lean:163:72: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: Properties.lean:166:8: declaration uses `sorry`
+warning: Properties.lean:187:8: declaration uses `sorry`
+warning: Properties.lean:192:8: declaration uses `sorry`
+warning: Properties.lean:199:55: 'assumption' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Properties.lean:199:55: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: Properties.lean:204:59: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: Properties.lean:208:8: declaration uses `sorry`
+Build completed successfully (1744 jobs).
+
+note: solutions.nora-digest.Solution is not built by `lake build`, so its theorems are not gated
+note: solutions.nora-lifetime.Solution is not built by `lake build`, so its theorems are not gated
+note: solutions.nora-no-credentials.Solution is not built by `lake build`, so its theorems are not gated
+note: solutions.nora-reference.Solution is not built by `lake build`, so its theorems are not gated
+note: solutions.nora-revoke-all.Solution is not built by `lake build`, so its theorems are not gated
+$ lake env lean /home/ht2673/Dev/h5i-app-bench/ports/nora/proofs/.lake/h5i/Gate.lean
+gate: 241 theorems in 13 modules checked against propext, Classical.choice, Quot.sound
+
+Error: ports/nora: proof gate failed:
+  Properties.lean:32: sorry
+  Properties.lean:42: sorry
+  Properties.lean:59: sorry
+  Properties.lean:64: sorry
+  Properties.lean:69: sorry
+  Properties.lean:89: sorry
+  Properties.lean:100: sorry
+  Properties.lean:113: sorry
+  Properties.lean:123: sorry
+  Properties.lean:132: sorry
+  Properties.lean:141: sorry
+  Properties.lean:173: sorry
+  Properties.lean:189: sorry
+  Properties.lean:194: sorry
+  Properties.lean:212: sorry
+  nora_kernel.Properties.no_credentials_no_write_role depends on [sorryAx]
+  nora_kernel.Properties.failures_cleared_only_for_good_credentials depends on [sorryAx]
+  nora_kernel.Properties.failure_recorded_only_for_bad_credentials depends on [sorryAx]
+  nora_kernel.Properties.provider_ceiling depends on [sorryAx]
+  nora_kernel.Properties.writes_need_write_role depends on [sorryAx]
+  nora_kernel.Properties.rule_narrows depends on [sorryAx]
+  nora_kernel.Properties.storage_key_safe depends on [sorryAx]
+  nora_kernel.Properties.revoked_token_rejected depends on [sorryAx]
+  nora_kernel.Properties.glob_match_spec depends on [sorryAx]
+  nora_kernel.Properties.middleware_total depends on [sorryAx]
+  nora_kernel.Properties.catalog_and_token_pages_need_credentials depends on [sorryAx]
+  nora_kernel.Properties.locked_out_only_open depends on [sorryAx]
+  nora_kernel.Properties.docker_name_shape depends on [sorryAx]
+  nora_kernel.Properties.transition_total depends on [sorryAx]
+  nora_kernel.Properties.segment_glob_spec depends on [sorryAx]

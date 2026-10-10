@@ -1,12 +1,16 @@
 # h5i-app-bench
 
-A benchmark of how well language models prove properties of real web
-applications with [h5i-app](https://github.com/h5i-dev/h5i).
+A study of how much real-world Rust can be formally verified with
+[h5i-app](https://github.com/h5i-dev/h5i), and the runtime cost of replacing
+upstream implementations with verified, Aeneas-compatible Rust kernels.
 
-Each task asks a model to prove, in Lean 4, one property of an application
-whose Rust logic has been ported to an h5i-app kernel. Models run as coding agents
-in a sandbox without network access. See [docs/DESIGN.md](docs/DESIGN.md) for
-how tasks are built, graded and measured. The dashboard is in
+The first milestone is to prove all selected specifications and measure the
+performance of the ports against pinned upstream code. Coding agents help
+produce proofs; model rankings are historical data. See
+[docs/VERIFICATION.md](docs/VERIFICATION.md) for coverage and performance
+measurement, [docs/WORKPLAN.md](docs/WORKPLAN.md) for the active work queue,
+and [docs/DESIGN.md](docs/DESIGN.md) for the existing task checker.
+The historical model dashboard is in
 [docs](docs) and is served at <https://benchmark.h5i.dev>.
 
 This repository was the home of the framework itself, then called i5h. The
@@ -16,11 +20,30 @@ the framework here is tagged `framework-final`. Model solutions recorded in
 `docs/data` were written against the library under its old names
 and are shown with the current ones (`H5iAppLib`, `h5i_step`, …).
 
-The ports require the h5i-app Lean library from a sibling checkout of h5i
-(`../h5i/crates/h5i-app-core/proofs`), and the harness reads the tasks taken
-from h5i's own examples from `~/Dev/h5i` (`CHECKOUTS` in `harness/bench.py`).
+Each port is a standard h5i-app project: `kernel/`, `proofs/`, and
+`h5i-app.toml`. The six local ports contain 103 selected specifications.
+The three legacy tasks referring to external h5i examples are retained as
+historical agent-benchmark data, outside this study's port corpus.
 
 ## Usage
+
+```sh
+h5i app doctor ports/nora
+h5i app extract --check ports/nora
+h5i app check --all ports                  # strict gate; unfinished proofs fail
+python3 harness/coverage.py                  # inventory recoverable proof candidates
+python3 harness/coverage.py --check-all      # recertify them with the existing Lean grader
+python3 harness/performance.py              # paired Nora timings + host/source metadata
+cargo test --release --locked --manifest-path ports/nora/difftest/Cargo.toml validation_agrees
+```
+
+The ledger and accepted proofs are written under `results/verification/`.
+The performance command saves JSON under `results/performance/`; a ratio above 1 means the kernel is
+slower. Each measurement declares its timing boundary: pure-function timings
+exclude input conversion, while wrapper-inclusive timings include test adapter
+and service setup costs. Neither is a whole-application benchmark.
+
+The existing agent harness remains available:
 
 ```sh
 scripts/snapshot-h5i-app-lib.sh              # the h5i-app library the sandbox mounts

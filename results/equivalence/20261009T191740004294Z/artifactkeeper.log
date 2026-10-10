@@ -1,0 +1,205 @@
+   Compiling proc-macro2 v1.0.107
+   Compiling unicode-ident v1.0.26
+   Compiling quote v1.0.47
+   Compiling serde_core v1.0.229
+   Compiling itoa v1.0.18
+   Compiling pin-project-lite v0.2.17
+   Compiling libc v0.2.189
+   Compiling bytes v1.12.1
+   Compiling futures-core v0.3.34
+   Compiling zmij v1.0.23
+   Compiling tower-service v0.3.3
+   Compiling serde_json v1.0.151
+   Compiling slab v0.4.12
+   Compiling futures-task v0.3.34
+   Compiling serde v1.0.229
+   Compiling rustversion v1.0.23
+   Compiling httpdate v1.0.3
+   Compiling sync_wrapper v1.0.2
+   Compiling tower-layer v0.3.3
+   Compiling memchr v2.8.3
+   Compiling smallvec v1.16.2
+   Compiling once_cell v1.21.4
+   Compiling equivalent v1.0.2
+   Compiling mime v0.3.17
+   Compiling hashbrown v0.17.1
+   Compiling percent-encoding v2.3.2
+   Compiling matchit v0.7.3
+   Compiling artifactkeeper-kernel v0.1.0 (/home/ht2673/Dev/h5i-app-bench/ports/artifactkeeper/kernel)
+   Compiling base64 v0.22.1
+   Compiling futures-util v0.3.34
+   Compiling tracing-core v0.1.36
+   Compiling http v1.5.0
+   Compiling http-body v1.1.0
+   Compiling syn v3.0.6
+   Compiling syn v2.0.119
+   Compiling mio v1.2.3
+   Compiling socket2 v0.6.5
+   Compiling http-body-util v0.1.5
+   Compiling uuid v1.26.1
+   Compiling indexmap v2.14.2
+   Compiling serde_path_to_error v0.1.20
+   Compiling sqlx v0.0.0 (/home/ht2673/Dev/h5i-app-bench/ports/artifactkeeper/difftest/sqlx-mock)
+   Compiling tokio-macros v2.7.2
+   Compiling serde_derive v1.0.229
+   Compiling async-trait v0.1.92
+   Compiling tracing-attributes v0.1.31
+   Compiling utoipa-gen v5.5.0
+   Compiling tokio v1.53.1
+   Compiling axum-core v0.4.5
+   Compiling tracing v0.1.44
+   Compiling hyper v1.11.1
+   Compiling tower v0.5.3
+   Compiling hyper-util v0.1.21
+   Compiling utoipa v5.5.0
+   Compiling axum v0.7.9
+   Compiling artifactkeeper-difftest v0.1.0 (/home/ht2673/Dev/h5i-app-bench/ports/artifactkeeper/difftest)
+    Finished `release` profile [optimized] target(s) in 17.35s
+     Running unittests src/lib.rs (ports/artifactkeeper/difftest/target/release/deps/artifactkeeper_difftest-5b28ac649810237f)
+
+running 35 tests
+test props::admin_denial_audited ... seed 113: premises held 125926 times
+ok
+test props::admin_gate ... seed 112: premises held 27745 times
+ok
+test props::anonymous_needs_rule ... seed 102: premises held 2493 times
+ok
+test props::anonymous_never_mutates ... seed 101: premises held 5415 times
+ok
+test props::anonymous_rule_read_only ... ok
+test props::check_repository_action_spec ... ok
+test props::cidr_contains_spec ... ok
+test props::guest_blocks_anonymous ... seed 114: premises held 30216 times
+ok
+test props::mutation_needs_action ... seed 104: premises held 1505 times
+ok
+test props::only_admin_creates_rules ... ok
+test props::private_needs_grant ... seed 103: premises held 2629 times
+ok
+test props::repo_visibility_total ... seed 108: premises held 100000 times
+ok
+test props::rule_overrides_role ... ok
+test props::scoped_token_confined ... seed 105: premises held 2255 times
+ok
+test props::scopes_grant_access_spec ... ok
+test props::ticket_consumed_on_read ... seed 107: premises held 18203 times
+ok
+test props::ticket_read_only ... seed 106: premises held 3874 times
+ok
+test tests::admin_middleware_agrees ... Admin: {
+    "AdminRequired": 8318,
+    "CsrfForbidden": 523,
+    "MustChangePassword": 265,
+    "Next(auth=true, ticket=false)": 1862,
+    "Plain401(InvalidBasic)": 6385,
+    "Plain401(InvalidCredentials)": 1305,
+    "Plain401(InvalidHeaderFormat)": 17650,
+    "Plain401(InvalidOrExpiredApiToken)": 10145,
+    "Plain401(InvalidOrExpiredToken)": 10020,
+    "Plain401(MissingHeader)": 41926,
+    "ServiceUnavailable": 1601,
+}
+skipped 0, with writes 8318
+ok
+test tests::auth_extension_agrees ... ok
+test tests::auth_middleware_agrees ... Auth: {
+    "AuthServiceUnavailable": 217,
+    "CsrfForbidden": 502,
+    "MustChangePassword": 1047,
+    "Next(auth=true, ticket=false)": 7666,
+    "Next(auth=true, ticket=true)": 971,
+    "Plain401(InvalidBasic)": 6247,
+    "Plain401(InvalidCredentials)": 1315,
+    "Plain401(InvalidHeaderFormat)": 17463,
+    "Plain401(InvalidOrExpiredApiToken)": 10212,
+    "Plain401(InvalidOrExpiredToken)": 12162,
+    "Plain401(InvalidTicket)": 12572,
+    "Plain401(MissingHeader)": 28740,
+    "ServiceUnavailable": 886,
+}
+skipped 0, with writes 2944
+ok
+test tests::cidr_agrees ... ok
+test tests::client_ip_agrees ... ok
+test tests::create_permission_agrees ... {
+    "Err(Authentication)": 20010,
+    "Err(Authorization)": 136508,
+    "Err(Conflict)": 21,
+    "Err(Database)": 1180,
+    "Err(Validation)": 38920,
+    "Ok(())": 3361,
+}
+ok
+test tests::from_claims_agrees ... ok
+test tests::guest_access_guard_agrees ... Guest(false): {
+    "GuestUnauthorized { for_browser: false }": 29296,
+    "GuestUnauthorized { for_browser: true }": 14511,
+    "Next(auth=false, ticket=false)": 10065,
+    "OciUnauthorized": 5208,
+    "ServiceUnavailable": 920,
+}
+skipped 0, with writes 0
+Guest(true): {
+    "Next(auth=false, ticket=false)": 60000,
+}
+skipped 0, with writes 0
+ok
+test tests::header_predicates_agree ... ok
+test tests::optional_auth_middleware_agrees ... OptionalAuth: {
+    "CsrfForbidden": 606,
+    "Next(auth=false, ticket=false)": 40984,
+    "Next(auth=true, ticket=false)": 10392,
+    "Next(auth=true, ticket=true)": 931,
+    "ServiceUnavailable": 1606,
+    "Unauthorized { challenge_basic: false }": 16808,
+    "Unauthorized { challenge_basic: true }": 28673,
+}
+skipped 0, with writes 2867
+ok
+test tests::path_classifiers_agree ... [1612680, 134900, 28209, 109624, 37191, 56106]
+ok
+test tests::percent_decode_agrees ... ok
+test tests::permission_service_agrees ... {
+    "anonymous Err(Database)": 7953,
+    "anonymous Ok(false)": 187708,
+    "anonymous Ok(true)": 4339,
+    "any_rules Err(Database)": 8130,
+    "any_rules Ok(false)": 168907,
+    "any_rules Ok(true)": 22963,
+    "permission Err(Database)": 7167,
+    "permission Ok(false)": 172171,
+    "permission Ok(true)": 20662,
+    "principal Err(Database)": 4860,
+    "principal Err(Validation)": 163202,
+    "principal Ok(())": 31938,
+    "repo_action Err(Database)": 7187,
+    "repo_action Ok(false)": 161150,
+    "repo_action Ok(true)": 31663,
+}
+ok
+test tests::repo_visibility_middleware_agrees ... RepoVisibility: {
+    "ForbiddenPermission": 2744,
+    "ForbiddenRepo": 1313,
+    "Next(auth=false, ticket=false)": 5111,
+    "Next(auth=true, ticket=false)": 3865,
+    "Next(auth=true, ticket=true)": 538,
+    "NotFound": 37645,
+    "PermissionServiceUnavailable": 131,
+    "ServiceUnavailable": 2993,
+    "Unauthorized { challenge_basic: true }": 145660,
+}
+skipped 0, with writes 2433
+ok
+test tests::scopes_agree ... ok
+test tests::ticket_query_agrees ... ok
+test tests::utf8_agrees ... ok
+test tests::visibility_token_agrees ... ok
+
+test result: ok. 35 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 158.47s
+
+   Doc-tests artifactkeeper_difftest
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
