@@ -3820,6 +3820,1705 @@ def bytes.parse_i64 (s : Slice Std.U8) : Result (Option Std.I64) := do
     then ok none
     else bytes.parse_digits s start 0#i64 (i1 = 45#u8)
 
+/-- [rustfs_kernel::claims::Value]
+    Source: 'ports/rustfs/kernel/src/claims.rs', lines 3:0-10:1
+    Visibility: public -/
+@[discriminant isize]
+inductive claims.Value where
+| Null : claims.Value
+| Bool : Bool → claims.Value
+| Number : alloc.vec.Vec Std.U8 → claims.Value
+| String : alloc.vec.Vec Std.U8 → claims.Value
+| Array : alloc.vec.Vec claims.Value → claims.Value
+| Object :
+  alloc.vec.Vec ((alloc.vec.Vec Std.U8) × claims.Value) →
+  claims.Value
+
+/-- [rustfs_kernel::claims::ClaimLookup]
+    Source: 'ports/rustfs/kernel/src/claims.rs', lines 14:0-18:1
+    Visibility: public -/
+@[discriminant isize]
+inductive claims.ClaimLookup where
+| Missing : claims.ClaimLookup
+| Found : Std.Usize → claims.ClaimLookup
+| Ambiguous : claims.ClaimLookup
+
+/-- [rustfs_kernel::claims::{impl core::clone::Clone for rustfs_kernel::claims::ClaimLookup}::clone]:
+    Source: 'ports/rustfs/kernel/src/claims.rs', lines 13:9-13:14
+    Visibility: public -/
+def claims.ClaimLookup.Insts.CoreCloneClone.clone
+  (self : claims.ClaimLookup) : Result claims.ClaimLookup := do
+  ok self
+
+/-- Trait implementation: [rustfs_kernel::claims::{impl core::clone::Clone for rustfs_kernel::claims::ClaimLookup}]
+    Source: 'ports/rustfs/kernel/src/claims.rs', lines 13:9-13:14 -/
+@[reducible]
+def claims.ClaimLookup.Insts.CoreCloneClone : core.clone.Clone
+  claims.ClaimLookup := {
+  clone := claims.ClaimLookup.Insts.CoreCloneClone.clone
+}
+
+/-- Trait implementation: [rustfs_kernel::claims::{impl core::marker::Copy for rustfs_kernel::claims::ClaimLookup}]
+    Source: 'ports/rustfs/kernel/src/claims.rs', lines 13:16-13:20 -/
+@[reducible]
+def claims.ClaimLookup.Insts.CoreMarkerCopy : core.marker.Copy
+  claims.ClaimLookup := {
+  cloneInst := claims.ClaimLookup.Insts.CoreCloneClone
+}
+
+/-- [rustfs_kernel::claims::{impl core::fmt::Debug for rustfs_kernel::claims::ClaimLookup}::fmt]:
+    Source: 'ports/rustfs/kernel/src/claims.rs', lines 13:22-13:27
+    Visibility: public -/
+def claims.ClaimLookup.Insts.CoreFmtDebug.fmt
+  (self : claims.ClaimLookup) (f : core.fmt.Formatter) :
+  Result ((core.result.Result Unit core.fmt.Error) × core.fmt.Formatter)
+  := do
+  match self with
+  | claims.ClaimLookup.Missing =>
+    core.fmt.Formatter.write_str f (toStr "Missing")
+  | claims.ClaimLookup.Found __self_0 =>
+    let __self_01 :=
+      Dyn.mk _ (core.fmt.DebugShared core.fmt.DebugUsize) __self_0
+    core.fmt.Formatter.debug_tuple_field1_finish f (toStr "Found") __self_01
+  | claims.ClaimLookup.Ambiguous =>
+    core.fmt.Formatter.write_str f (toStr "Ambiguous")
+
+/-- Trait implementation: [rustfs_kernel::claims::{impl core::fmt::Debug for rustfs_kernel::claims::ClaimLookup}]
+    Source: 'ports/rustfs/kernel/src/claims.rs', lines 13:22-13:27 -/
+@[reducible]
+def claims.ClaimLookup.Insts.CoreFmtDebug : core.fmt.Debug claims.ClaimLookup
+  := {
+  fmt := claims.ClaimLookup.Insts.CoreFmtDebug.fmt
+}
+
+/-- Trait implementation: [rustfs_kernel::claims::{impl core::marker::StructuralPartialEq for rustfs_kernel::claims::ClaimLookup}]
+    Source: 'ports/rustfs/kernel/src/claims.rs', lines 13:29-13:38 -/
+@[reducible]
+def claims.ClaimLookup.Insts.CoreMarkerStructuralPartialEq :
+  core.marker.StructuralPartialEq claims.ClaimLookup := {
+}
+
+/-- [rustfs_kernel::claims::{impl core::cmp::PartialEq<rustfs_kernel::claims::ClaimLookup> for rustfs_kernel::claims::ClaimLookup}::eq]:
+    Source: 'ports/rustfs/kernel/src/claims.rs', lines 13:29-13:38
+    Visibility: public -/
+def claims.ClaimLookup.Insts.CoreCmpPartialEqClaimLookup.eq
+  (self : claims.ClaimLookup) (other : claims.ClaimLookup) : Result Bool := do
+  let self1 := read_discriminant self
+  let other1 := read_discriminant other
+  if self1 = other1
+  then
+    match self with
+    | claims.ClaimLookup.Missing => ok true
+    | claims.ClaimLookup.Found __self_0 =>
+      match other with
+      | claims.ClaimLookup.Missing => ok true
+      | claims.ClaimLookup.Found __arg1_0 =>
+        lift (core.cmp.impls.PartialEqUsize.eq __self_0 __arg1_0)
+      | claims.ClaimLookup.Ambiguous => ok true
+    | claims.ClaimLookup.Ambiguous => ok true
+  else ok false
+
+/-- Trait implementation: [rustfs_kernel::claims::{impl core::cmp::PartialEq<rustfs_kernel::claims::ClaimLookup> for rustfs_kernel::claims::ClaimLookup}]
+    Source: 'ports/rustfs/kernel/src/claims.rs', lines 13:29-13:38 -/
+@[reducible]
+impl_def claims.ClaimLookup.Insts.CoreCmpPartialEqClaimLookup :
+  core.cmp.PartialEq claims.ClaimLookup claims.ClaimLookup := {
+  eq := claims.ClaimLookup.Insts.CoreCmpPartialEqClaimLookup.eq
+  ne := core.cmp.PartialEq.ne.trait_default
+    claims.ClaimLookup.Insts.CoreCmpPartialEqClaimLookup
+}
+
+/-- [rustfs_kernel::claims::{impl core::cmp::Eq for rustfs_kernel::claims::ClaimLookup}::assert_fields_are_eq]:
+    Source: 'ports/rustfs/kernel/src/claims.rs', lines 13:40-13:42
+    Visibility: public -/
+def claims.ClaimLookup.Insts.CoreCmpEq.assert_fields_are_eq
+  (self : claims.ClaimLookup) : Result Unit := do
+  ok ()
+
+/-- Trait implementation: [rustfs_kernel::claims::{impl core::cmp::Eq for rustfs_kernel::claims::ClaimLookup}]
+    Source: 'ports/rustfs/kernel/src/claims.rs', lines 13:40-13:42 -/
+@[reducible]
+def claims.ClaimLookup.Insts.CoreCmpEq : core.cmp.Eq claims.ClaimLookup := {
+  partialEqInst := claims.ClaimLookup.Insts.CoreCmpPartialEqClaimLookup
+  assert_fields_are_eq :=
+    claims.ClaimLookup.Insts.CoreCmpEq.assert_fields_are_eq
+}
+
+/-- [rustfs_kernel::unicode::append_scalar]:
+    Source: 'ports/rustfs/kernel/src/unicode.rs', lines 456:0-472:1
+    Visibility: public -/
+def unicode.append_scalar
+  (out : alloc.vec.Vec Std.U8) (cp : Std.U32) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  if cp < 128#u32
+  then let i ← lift (UScalar.cast .U8 cp)
+       alloc.vec.Vec.push out i
+  else
+    if cp < 2048#u32
+    then
+      let i ← cp >>> 6#i32
+      let i1 ← lift (192#u32 ||| i)
+      let i2 ← lift (UScalar.cast .U8 i1)
+      let out1 ← alloc.vec.Vec.push out i2
+      let i3 ← lift (cp &&& 63#u32)
+      let i4 ← lift (128#u32 ||| i3)
+      let i5 ← lift (UScalar.cast .U8 i4)
+      alloc.vec.Vec.push out1 i5
+    else
+      if cp < 65536#u32
+      then
+        let i ← cp >>> 12#i32
+        let i1 ← lift (224#u32 ||| i)
+        let i2 ← lift (UScalar.cast .U8 i1)
+        let out1 ← alloc.vec.Vec.push out i2
+        let i3 ← cp >>> 6#i32
+        let i4 ← lift (i3 &&& 63#u32)
+        let i5 ← lift (128#u32 ||| i4)
+        let i6 ← lift (UScalar.cast .U8 i5)
+        let out2 ← alloc.vec.Vec.push out1 i6
+        let i7 ← lift (cp &&& 63#u32)
+        let i8 ← lift (128#u32 ||| i7)
+        let i9 ← lift (UScalar.cast .U8 i8)
+        alloc.vec.Vec.push out2 i9
+      else
+        let i ← cp >>> 18#i32
+        let i1 ← lift (240#u32 ||| i)
+        let i2 ← lift (UScalar.cast .U8 i1)
+        let out1 ← alloc.vec.Vec.push out i2
+        let i3 ← cp >>> 12#i32
+        let i4 ← lift (i3 &&& 63#u32)
+        let i5 ← lift (128#u32 ||| i4)
+        let i6 ← lift (UScalar.cast .U8 i5)
+        let out2 ← alloc.vec.Vec.push out1 i6
+        let i7 ← cp >>> 6#i32
+        let i8 ← lift (i7 &&& 63#u32)
+        let i9 ← lift (128#u32 ||| i8)
+        let i10 ← lift (UScalar.cast .U8 i9)
+        let out3 ← alloc.vec.Vec.push out2 i10
+        let i11 ← lift (cp &&& 63#u32)
+        let i12 ← lift (128#u32 ||| i11)
+        let i13 ← lift (UScalar.cast .U8 i12)
+        alloc.vec.Vec.push out3 i13
+
+/-- [rustfs_kernel::unicode::scalar_at]:
+    Source: 'ports/rustfs/kernel/src/unicode.rs', lines 433:0-454:1
+    Visibility: public -/
+def unicode.scalar_at
+  (s : Slice Std.U8) (i : Std.Usize) : Result (Std.U32 × Std.Usize) := do
+  let i1 ← Slice.index_usize s i
+  let first ← lift (UScalar.cast .U32 i1)
+  if first < 128#u32
+  then let i2 ← i + 1#usize
+       ok (first, i2)
+  else
+    if first < 224#u32
+    then
+      let i2 ← lift (first &&& 31#u32)
+      let i3 ← i2 <<< 6#i32
+      let i4 ← i + 1#usize
+      let i5 ← Slice.index_usize s i4
+      let i6 ← lift (UScalar.cast .U32 i5)
+      let i7 ← lift (i6 &&& 63#u32)
+      let i8 ← lift (i3 ||| i7)
+      let i9 ← i + 2#usize
+      ok (i8, i9)
+    else
+      if first < 240#u32
+      then
+        let i2 ← lift (first &&& 15#u32)
+        let i3 ← i2 <<< 12#i32
+        let i4 ← i + 1#usize
+        let i5 ← Slice.index_usize s i4
+        let i6 ← lift (UScalar.cast .U32 i5)
+        let i7 ← lift (i6 &&& 63#u32)
+        let i8 ← i7 <<< 6#i32
+        let i9 ← lift (i3 ||| i8)
+        let i10 ← i + 2#usize
+        let i11 ← Slice.index_usize s i10
+        let i12 ← lift (UScalar.cast .U32 i11)
+        let i13 ← lift (i12 &&& 63#u32)
+        let i14 ← lift (i9 ||| i13)
+        let i15 ← i + 3#usize
+        ok (i14, i15)
+      else
+        let i2 ← lift (first &&& 7#u32)
+        let i3 ← i2 <<< 18#i32
+        let i4 ← i + 1#usize
+        let i5 ← Slice.index_usize s i4
+        let i6 ← lift (UScalar.cast .U32 i5)
+        let i7 ← lift (i6 &&& 63#u32)
+        let i8 ← i7 <<< 12#i32
+        let i9 ← lift (i3 ||| i8)
+        let i10 ← i + 2#usize
+        let i11 ← Slice.index_usize s i10
+        let i12 ← lift (UScalar.cast .U32 i11)
+        let i13 ← lift (i12 &&& 63#u32)
+        let i14 ← i13 <<< 6#i32
+        let i15 ← lift (i9 ||| i14)
+        let i16 ← i + 3#usize
+        let i17 ← Slice.index_usize s i16
+        let i18 ← lift (UScalar.cast .U32 i17)
+        let i19 ← lift (i18 &&& 63#u32)
+        let i20 ← lift (i15 ||| i19)
+        let i21 ← i + 4#usize
+        ok (i20, i21)
+
+/-- [rustfs_kernel::unicode::singleton]:
+    Source: 'ports/rustfs/kernel/src/unicode.rs', lines 331:0-431:1 -/
+def unicode.singleton
+  (cp : Std.U32) : Result (Std.U32 × Std.U32 × Std.Usize) := do
+  match cp with
+  | 304#uscalar => ok (105#u32, 775#u32, 2#usize)
+  | 376#uscalar => ok (255#u32, 0#u32, 1#usize)
+  | 385#uscalar => ok (595#u32, 0#u32, 1#usize)
+  | 390#uscalar => ok (596#u32, 0#u32, 1#usize)
+  | 391#uscalar => ok (392#u32, 0#u32, 1#usize)
+  | 395#uscalar => ok (396#u32, 0#u32, 1#usize)
+  | 398#uscalar => ok (477#u32, 0#u32, 1#usize)
+  | 399#uscalar => ok (601#u32, 0#u32, 1#usize)
+  | 400#uscalar => ok (603#u32, 0#u32, 1#usize)
+  | 401#uscalar => ok (402#u32, 0#u32, 1#usize)
+  | 403#uscalar => ok (608#u32, 0#u32, 1#usize)
+  | 404#uscalar => ok (611#u32, 0#u32, 1#usize)
+  | 406#uscalar => ok (617#u32, 0#u32, 1#usize)
+  | 407#uscalar => ok (616#u32, 0#u32, 1#usize)
+  | 408#uscalar => ok (409#u32, 0#u32, 1#usize)
+  | 412#uscalar => ok (623#u32, 0#u32, 1#usize)
+  | 413#uscalar => ok (626#u32, 0#u32, 1#usize)
+  | 415#uscalar => ok (629#u32, 0#u32, 1#usize)
+  | 422#uscalar => ok (640#u32, 0#u32, 1#usize)
+  | 423#uscalar => ok (424#u32, 0#u32, 1#usize)
+  | 425#uscalar => ok (643#u32, 0#u32, 1#usize)
+  | 428#uscalar => ok (429#u32, 0#u32, 1#usize)
+  | 430#uscalar => ok (648#u32, 0#u32, 1#usize)
+  | 431#uscalar => ok (432#u32, 0#u32, 1#usize)
+  | 439#uscalar => ok (658#u32, 0#u32, 1#usize)
+  | 440#uscalar => ok (441#u32, 0#u32, 1#usize)
+  | 444#uscalar => ok (445#u32, 0#u32, 1#usize)
+  | 452#uscalar => ok (454#u32, 0#u32, 1#usize)
+  | 453#uscalar => ok (454#u32, 0#u32, 1#usize)
+  | 455#uscalar => ok (457#u32, 0#u32, 1#usize)
+  | 456#uscalar => ok (457#u32, 0#u32, 1#usize)
+  | 458#uscalar => ok (460#u32, 0#u32, 1#usize)
+  | 497#uscalar => ok (499#u32, 0#u32, 1#usize)
+  | 502#uscalar => ok (405#u32, 0#u32, 1#usize)
+  | 503#uscalar => ok (447#u32, 0#u32, 1#usize)
+  | 544#uscalar => ok (414#u32, 0#u32, 1#usize)
+  | 570#uscalar => ok (11365#u32, 0#u32, 1#usize)
+  | 571#uscalar => ok (572#u32, 0#u32, 1#usize)
+  | 573#uscalar => ok (410#u32, 0#u32, 1#usize)
+  | 574#uscalar => ok (11366#u32, 0#u32, 1#usize)
+  | 577#uscalar => ok (578#u32, 0#u32, 1#usize)
+  | 579#uscalar => ok (384#u32, 0#u32, 1#usize)
+  | 580#uscalar => ok (649#u32, 0#u32, 1#usize)
+  | 581#uscalar => ok (652#u32, 0#u32, 1#usize)
+  | 886#uscalar => ok (887#u32, 0#u32, 1#usize)
+  | 895#uscalar => ok (1011#u32, 0#u32, 1#usize)
+  | 902#uscalar => ok (940#u32, 0#u32, 1#usize)
+  | 908#uscalar => ok (972#u32, 0#u32, 1#usize)
+  | 975#uscalar => ok (983#u32, 0#u32, 1#usize)
+  | 1012#uscalar => ok (952#u32, 0#u32, 1#usize)
+  | 1015#uscalar => ok (1016#u32, 0#u32, 1#usize)
+  | 1017#uscalar => ok (1010#u32, 0#u32, 1#usize)
+  | 1018#uscalar => ok (1019#u32, 0#u32, 1#usize)
+  | 1216#uscalar => ok (1231#u32, 0#u32, 1#usize)
+  | 4295#uscalar => ok (11559#u32, 0#u32, 1#usize)
+  | 4301#uscalar => ok (11565#u32, 0#u32, 1#usize)
+  | 7305#uscalar => ok (7306#u32, 0#u32, 1#usize)
+  | 7838#uscalar => ok (223#u32, 0#u32, 1#usize)
+  | 8124#uscalar => ok (8115#u32, 0#u32, 1#usize)
+  | 8140#uscalar => ok (8131#u32, 0#u32, 1#usize)
+  | 8172#uscalar => ok (8165#u32, 0#u32, 1#usize)
+  | 8188#uscalar => ok (8179#u32, 0#u32, 1#usize)
+  | 8486#uscalar => ok (969#u32, 0#u32, 1#usize)
+  | 8490#uscalar => ok (107#u32, 0#u32, 1#usize)
+  | 8491#uscalar => ok (229#u32, 0#u32, 1#usize)
+  | 8498#uscalar => ok (8526#u32, 0#u32, 1#usize)
+  | 8579#uscalar => ok (8580#u32, 0#u32, 1#usize)
+  | 11360#uscalar => ok (11361#u32, 0#u32, 1#usize)
+  | 11362#uscalar => ok (619#u32, 0#u32, 1#usize)
+  | 11363#uscalar => ok (7549#u32, 0#u32, 1#usize)
+  | 11364#uscalar => ok (637#u32, 0#u32, 1#usize)
+  | 11373#uscalar => ok (593#u32, 0#u32, 1#usize)
+  | 11374#uscalar => ok (625#u32, 0#u32, 1#usize)
+  | 11375#uscalar => ok (592#u32, 0#u32, 1#usize)
+  | 11376#uscalar => ok (594#u32, 0#u32, 1#usize)
+  | 11378#uscalar => ok (11379#u32, 0#u32, 1#usize)
+  | 11381#uscalar => ok (11382#u32, 0#u32, 1#usize)
+  | 11506#uscalar => ok (11507#u32, 0#u32, 1#usize)
+  | 42877#uscalar => ok (7545#u32, 0#u32, 1#usize)
+  | 42891#uscalar => ok (42892#u32, 0#u32, 1#usize)
+  | 42893#uscalar => ok (613#u32, 0#u32, 1#usize)
+  | 42922#uscalar => ok (614#u32, 0#u32, 1#usize)
+  | 42923#uscalar => ok (604#u32, 0#u32, 1#usize)
+  | 42924#uscalar => ok (609#u32, 0#u32, 1#usize)
+  | 42925#uscalar => ok (620#u32, 0#u32, 1#usize)
+  | 42926#uscalar => ok (618#u32, 0#u32, 1#usize)
+  | 42928#uscalar => ok (670#u32, 0#u32, 1#usize)
+  | 42929#uscalar => ok (647#u32, 0#u32, 1#usize)
+  | 42930#uscalar => ok (669#u32, 0#u32, 1#usize)
+  | 42931#uscalar => ok (43859#u32, 0#u32, 1#usize)
+  | 42948#uscalar => ok (42900#u32, 0#u32, 1#usize)
+  | 42949#uscalar => ok (642#u32, 0#u32, 1#usize)
+  | 42950#uscalar => ok (7566#u32, 0#u32, 1#usize)
+  | 42955#uscalar => ok (612#u32, 0#u32, 1#usize)
+  | 42972#uscalar => ok (411#u32, 0#u32, 1#usize)
+  | 42997#uscalar => ok (42998#u32, 0#u32, 1#usize)
+  | _ => ok (cp, 0#u32, 1#usize)
+
+/-- [rustfs_kernel::unicode::within]:
+    Source: 'ports/rustfs/kernel/src/unicode.rs', lines 14:0-19:1 -/
+def unicode.within
+  (cp : Std.U32) (start : Std.U32) («end» : Std.U32) (parity : Std.U32) :
+  Result Bool
+  := do
+  if cp < start
+  then ok false
+  else
+    if cp > «end»
+    then ok false
+    else
+      if parity = 0#u32
+      then ok true
+      else let i ← cp % 2#u32
+           let i1 ← parity - 1#u32
+           ok (i = i1)
+
+/-- [rustfs_kernel::unicode::range_8]:
+    Source: 'ports/rustfs/kernel/src/unicode.rs', lines 298:0-330:1 -/
+def unicode.range_8
+  (cp : Std.U32) : Result (Option (Std.U32 × Std.U32 × Std.Usize)) := do
+  let b ← unicode.within cp 66928#u32 66938#u32 0#u32
+  if b
+  then let i ← cp + 39#u32
+       ok (some (i, 0#u32, 1#usize))
+  else
+    let b1 ← unicode.within cp 66940#u32 66954#u32 0#u32
+    if b1
+    then let i ← cp + 39#u32
+         ok (some (i, 0#u32, 1#usize))
+    else
+      let b2 ← unicode.within cp 66956#u32 66962#u32 0#u32
+      if b2
+      then let i ← cp + 39#u32
+           ok (some (i, 0#u32, 1#usize))
+      else
+        let b3 ← unicode.within cp 66964#u32 66965#u32 0#u32
+        if b3
+        then let i ← cp + 39#u32
+             ok (some (i, 0#u32, 1#usize))
+        else
+          let b4 ← unicode.within cp 68736#u32 68786#u32 0#u32
+          if b4
+          then let i ← cp + 64#u32
+               ok (some (i, 0#u32, 1#usize))
+          else
+            let b5 ← unicode.within cp 68944#u32 68965#u32 0#u32
+            if b5
+            then let i ← cp + 32#u32
+                 ok (some (i, 0#u32, 1#usize))
+            else
+              let b6 ← unicode.within cp 71840#u32 71871#u32 0#u32
+              if b6
+              then let i ← cp + 32#u32
+                   ok (some (i, 0#u32, 1#usize))
+              else
+                let b7 ← unicode.within cp 93760#u32 93791#u32 0#u32
+                if b7
+                then let i ← cp + 32#u32
+                     ok (some (i, 0#u32, 1#usize))
+                else
+                  let b8 ← unicode.within cp 93856#u32 93880#u32 0#u32
+                  if b8
+                  then let i ← cp + 27#u32
+                       ok (some (i, 0#u32, 1#usize))
+                  else
+                    let b9 ← unicode.within cp 125184#u32 125217#u32 0#u32
+                    if b9
+                    then let i ← cp + 34#u32
+                         ok (some (i, 0#u32, 1#usize))
+                    else ok none
+
+/-- [rustfs_kernel::unicode::range_7]:
+    Source: 'ports/rustfs/kernel/src/unicode.rs', lines 265:0-297:1 -/
+def unicode.range_7
+  (cp : Std.U32) : Result (Option (Std.U32 × Std.U32 × Std.Usize)) := do
+  let b ← unicode.within cp 42873#u32 42875#u32 2#u32
+  if b
+  then let i ← cp + 1#u32
+       ok (some (i, 0#u32, 1#usize))
+  else
+    let b1 ← unicode.within cp 42878#u32 42886#u32 1#u32
+    if b1
+    then let i ← cp + 1#u32
+         ok (some (i, 0#u32, 1#usize))
+    else
+      let b2 ← unicode.within cp 42896#u32 42898#u32 1#u32
+      if b2
+      then let i ← cp + 1#u32
+           ok (some (i, 0#u32, 1#usize))
+      else
+        let b3 ← unicode.within cp 42902#u32 42920#u32 1#u32
+        if b3
+        then let i ← cp + 1#u32
+             ok (some (i, 0#u32, 1#usize))
+        else
+          let b4 ← unicode.within cp 42932#u32 42946#u32 1#u32
+          if b4
+          then let i ← cp + 1#u32
+               ok (some (i, 0#u32, 1#usize))
+          else
+            let b5 ← unicode.within cp 42951#u32 42953#u32 2#u32
+            if b5
+            then let i ← cp + 1#u32
+                 ok (some (i, 0#u32, 1#usize))
+            else
+              let b6 ← unicode.within cp 42956#u32 42970#u32 1#u32
+              if b6
+              then let i ← cp + 1#u32
+                   ok (some (i, 0#u32, 1#usize))
+              else
+                let b7 ← unicode.within cp 65313#u32 65338#u32 0#u32
+                if b7
+                then let i ← cp + 32#u32
+                     ok (some (i, 0#u32, 1#usize))
+                else
+                  let b8 ← unicode.within cp 66560#u32 66599#u32 0#u32
+                  if b8
+                  then let i ← cp + 40#u32
+                       ok (some (i, 0#u32, 1#usize))
+                  else
+                    let b9 ← unicode.within cp 66736#u32 66771#u32 0#u32
+                    if b9
+                    then let i ← cp + 40#u32
+                         ok (some (i, 0#u32, 1#usize))
+                    else ok none
+
+/-- [rustfs_kernel::unicode::range_6]:
+    Source: 'ports/rustfs/kernel/src/unicode.rs', lines 232:0-264:1 -/
+def unicode.range_6
+  (cp : Std.U32) : Result (Option (Std.U32 × Std.U32 × Std.Usize)) := do
+  let b ← unicode.within cp 9398#u32 9423#u32 0#u32
+  if b
+  then let i ← cp + 26#u32
+       ok (some (i, 0#u32, 1#usize))
+  else
+    let b1 ← unicode.within cp 11264#u32 11311#u32 0#u32
+    if b1
+    then let i ← cp + 48#u32
+         ok (some (i, 0#u32, 1#usize))
+    else
+      let b2 ← unicode.within cp 11367#u32 11371#u32 2#u32
+      if b2
+      then let i ← cp + 1#u32
+           ok (some (i, 0#u32, 1#usize))
+      else
+        let b3 ← unicode.within cp 11390#u32 11391#u32 0#u32
+        if b3
+        then let i ← cp - 10815#u32
+             ok (some (i, 0#u32, 1#usize))
+        else
+          let b4 ← unicode.within cp 11392#u32 11490#u32 1#u32
+          if b4
+          then let i ← cp + 1#u32
+               ok (some (i, 0#u32, 1#usize))
+          else
+            let b5 ← unicode.within cp 11499#u32 11501#u32 2#u32
+            if b5
+            then let i ← cp + 1#u32
+                 ok (some (i, 0#u32, 1#usize))
+            else
+              let b6 ← unicode.within cp 42560#u32 42604#u32 1#u32
+              if b6
+              then let i ← cp + 1#u32
+                   ok (some (i, 0#u32, 1#usize))
+              else
+                let b7 ← unicode.within cp 42624#u32 42650#u32 1#u32
+                if b7
+                then let i ← cp + 1#u32
+                     ok (some (i, 0#u32, 1#usize))
+                else
+                  let b8 ← unicode.within cp 42786#u32 42798#u32 1#u32
+                  if b8
+                  then let i ← cp + 1#u32
+                       ok (some (i, 0#u32, 1#usize))
+                  else
+                    let b9 ← unicode.within cp 42802#u32 42862#u32 1#u32
+                    if b9
+                    then let i ← cp + 1#u32
+                         ok (some (i, 0#u32, 1#usize))
+                    else ok none
+
+/-- [rustfs_kernel::unicode::range_5]:
+    Source: 'ports/rustfs/kernel/src/unicode.rs', lines 199:0-231:1 -/
+def unicode.range_5
+  (cp : Std.U32) : Result (Option (Std.U32 × Std.U32 × Std.Usize)) := do
+  let b ← unicode.within cp 8120#u32 8121#u32 0#u32
+  if b
+  then let i ← cp - 8#u32
+       ok (some (i, 0#u32, 1#usize))
+  else
+    let b1 ← unicode.within cp 8122#u32 8123#u32 0#u32
+    if b1
+    then let i ← cp - 74#u32
+         ok (some (i, 0#u32, 1#usize))
+    else
+      let b2 ← unicode.within cp 8136#u32 8139#u32 0#u32
+      if b2
+      then let i ← cp - 86#u32
+           ok (some (i, 0#u32, 1#usize))
+      else
+        let b3 ← unicode.within cp 8152#u32 8153#u32 0#u32
+        if b3
+        then let i ← cp - 8#u32
+             ok (some (i, 0#u32, 1#usize))
+        else
+          let b4 ← unicode.within cp 8154#u32 8155#u32 0#u32
+          if b4
+          then let i ← cp - 100#u32
+               ok (some (i, 0#u32, 1#usize))
+          else
+            let b5 ← unicode.within cp 8168#u32 8169#u32 0#u32
+            if b5
+            then let i ← cp - 8#u32
+                 ok (some (i, 0#u32, 1#usize))
+            else
+              let b6 ← unicode.within cp 8170#u32 8171#u32 0#u32
+              if b6
+              then let i ← cp - 112#u32
+                   ok (some (i, 0#u32, 1#usize))
+              else
+                let b7 ← unicode.within cp 8184#u32 8185#u32 0#u32
+                if b7
+                then let i ← cp - 128#u32
+                     ok (some (i, 0#u32, 1#usize))
+                else
+                  let b8 ← unicode.within cp 8186#u32 8187#u32 0#u32
+                  if b8
+                  then let i ← cp - 126#u32
+                       ok (some (i, 0#u32, 1#usize))
+                  else
+                    let b9 ← unicode.within cp 8544#u32 8559#u32 0#u32
+                    if b9
+                    then let i ← cp + 16#u32
+                         ok (some (i, 0#u32, 1#usize))
+                    else ok none
+
+/-- [rustfs_kernel::unicode::range_4]:
+    Source: 'ports/rustfs/kernel/src/unicode.rs', lines 166:0-198:1 -/
+def unicode.range_4
+  (cp : Std.U32) : Result (Option (Std.U32 × Std.U32 × Std.Usize)) := do
+  let b ← unicode.within cp 7944#u32 7951#u32 0#u32
+  if b
+  then let i ← cp - 8#u32
+       ok (some (i, 0#u32, 1#usize))
+  else
+    let b1 ← unicode.within cp 7960#u32 7965#u32 0#u32
+    if b1
+    then let i ← cp - 8#u32
+         ok (some (i, 0#u32, 1#usize))
+    else
+      let b2 ← unicode.within cp 7976#u32 7983#u32 0#u32
+      if b2
+      then let i ← cp - 8#u32
+           ok (some (i, 0#u32, 1#usize))
+      else
+        let b3 ← unicode.within cp 7992#u32 7999#u32 0#u32
+        if b3
+        then let i ← cp - 8#u32
+             ok (some (i, 0#u32, 1#usize))
+        else
+          let b4 ← unicode.within cp 8008#u32 8013#u32 0#u32
+          if b4
+          then let i ← cp - 8#u32
+               ok (some (i, 0#u32, 1#usize))
+          else
+            let b5 ← unicode.within cp 8025#u32 8031#u32 2#u32
+            if b5
+            then let i ← cp - 8#u32
+                 ok (some (i, 0#u32, 1#usize))
+            else
+              let b6 ← unicode.within cp 8040#u32 8047#u32 0#u32
+              if b6
+              then let i ← cp - 8#u32
+                   ok (some (i, 0#u32, 1#usize))
+              else
+                let b7 ← unicode.within cp 8072#u32 8079#u32 0#u32
+                if b7
+                then let i ← cp - 8#u32
+                     ok (some (i, 0#u32, 1#usize))
+                else
+                  let b8 ← unicode.within cp 8088#u32 8095#u32 0#u32
+                  if b8
+                  then let i ← cp - 8#u32
+                       ok (some (i, 0#u32, 1#usize))
+                  else
+                    let b9 ← unicode.within cp 8104#u32 8111#u32 0#u32
+                    if b9
+                    then let i ← cp - 8#u32
+                         ok (some (i, 0#u32, 1#usize))
+                    else ok none
+
+/-- [rustfs_kernel::unicode::range_3]:
+    Source: 'ports/rustfs/kernel/src/unicode.rs', lines 133:0-165:1 -/
+def unicode.range_3
+  (cp : Std.U32) : Result (Option (Std.U32 × Std.U32 × Std.Usize)) := do
+  let b ← unicode.within cp 1217#u32 1229#u32 2#u32
+  if b
+  then let i ← cp + 1#u32
+       ok (some (i, 0#u32, 1#usize))
+  else
+    let b1 ← unicode.within cp 1232#u32 1326#u32 1#u32
+    if b1
+    then let i ← cp + 1#u32
+         ok (some (i, 0#u32, 1#usize))
+    else
+      let b2 ← unicode.within cp 1329#u32 1366#u32 0#u32
+      if b2
+      then let i ← cp + 48#u32
+           ok (some (i, 0#u32, 1#usize))
+      else
+        let b3 ← unicode.within cp 4256#u32 4293#u32 0#u32
+        if b3
+        then let i ← cp + 7264#u32
+             ok (some (i, 0#u32, 1#usize))
+        else
+          let b4 ← unicode.within cp 5024#u32 5103#u32 0#u32
+          if b4
+          then let i ← cp + 38864#u32
+               ok (some (i, 0#u32, 1#usize))
+          else
+            let b5 ← unicode.within cp 5104#u32 5109#u32 0#u32
+            if b5
+            then let i ← cp + 8#u32
+                 ok (some (i, 0#u32, 1#usize))
+            else
+              let b6 ← unicode.within cp 7312#u32 7354#u32 0#u32
+              if b6
+              then let i ← cp - 3008#u32
+                   ok (some (i, 0#u32, 1#usize))
+              else
+                let b7 ← unicode.within cp 7357#u32 7359#u32 0#u32
+                if b7
+                then let i ← cp - 3008#u32
+                     ok (some (i, 0#u32, 1#usize))
+                else
+                  let b8 ← unicode.within cp 7680#u32 7828#u32 1#u32
+                  if b8
+                  then let i ← cp + 1#u32
+                       ok (some (i, 0#u32, 1#usize))
+                  else
+                    let b9 ← unicode.within cp 7840#u32 7934#u32 1#u32
+                    if b9
+                    then let i ← cp + 1#u32
+                         ok (some (i, 0#u32, 1#usize))
+                    else ok none
+
+/-- [rustfs_kernel::unicode::range_2]:
+    Source: 'ports/rustfs/kernel/src/unicode.rs', lines 100:0-132:1 -/
+def unicode.range_2
+  (cp : Std.U32) : Result (Option (Std.U32 × Std.U32 × Std.Usize)) := do
+  let b ← unicode.within cp 904#u32 906#u32 0#u32
+  if b
+  then let i ← cp + 37#u32
+       ok (some (i, 0#u32, 1#usize))
+  else
+    let b1 ← unicode.within cp 910#u32 911#u32 0#u32
+    if b1
+    then let i ← cp + 63#u32
+         ok (some (i, 0#u32, 1#usize))
+    else
+      let b2 ← unicode.within cp 913#u32 929#u32 0#u32
+      if b2
+      then let i ← cp + 32#u32
+           ok (some (i, 0#u32, 1#usize))
+      else
+        let b3 ← unicode.within cp 931#u32 939#u32 0#u32
+        if b3
+        then let i ← cp + 32#u32
+             ok (some (i, 0#u32, 1#usize))
+        else
+          let b4 ← unicode.within cp 984#u32 1006#u32 1#u32
+          if b4
+          then let i ← cp + 1#u32
+               ok (some (i, 0#u32, 1#usize))
+          else
+            let b5 ← unicode.within cp 1021#u32 1023#u32 0#u32
+            if b5
+            then let i ← cp - 130#u32
+                 ok (some (i, 0#u32, 1#usize))
+            else
+              let b6 ← unicode.within cp 1024#u32 1039#u32 0#u32
+              if b6
+              then let i ← cp + 80#u32
+                   ok (some (i, 0#u32, 1#usize))
+              else
+                let b7 ← unicode.within cp 1040#u32 1071#u32 0#u32
+                if b7
+                then let i ← cp + 32#u32
+                     ok (some (i, 0#u32, 1#usize))
+                else
+                  let b8 ← unicode.within cp 1120#u32 1152#u32 1#u32
+                  if b8
+                  then let i ← cp + 1#u32
+                       ok (some (i, 0#u32, 1#usize))
+                  else
+                    let b9 ← unicode.within cp 1162#u32 1214#u32 1#u32
+                    if b9
+                    then let i ← cp + 1#u32
+                         ok (some (i, 0#u32, 1#usize))
+                    else ok none
+
+/-- [rustfs_kernel::unicode::range_1]:
+    Source: 'ports/rustfs/kernel/src/unicode.rs', lines 67:0-99:1 -/
+def unicode.range_1
+  (cp : Std.U32) : Result (Option (Std.U32 × Std.U32 × Std.Usize)) := do
+  let b ← unicode.within cp 416#u32 420#u32 1#u32
+  if b
+  then let i ← cp + 1#u32
+       ok (some (i, 0#u32, 1#usize))
+  else
+    let b1 ← unicode.within cp 433#u32 434#u32 0#u32
+    if b1
+    then let i ← cp + 217#u32
+         ok (some (i, 0#u32, 1#usize))
+    else
+      let b2 ← unicode.within cp 435#u32 437#u32 2#u32
+      if b2
+      then let i ← cp + 1#u32
+           ok (some (i, 0#u32, 1#usize))
+      else
+        let b3 ← unicode.within cp 459#u32 475#u32 2#u32
+        if b3
+        then let i ← cp + 1#u32
+             ok (some (i, 0#u32, 1#usize))
+        else
+          let b4 ← unicode.within cp 478#u32 494#u32 1#u32
+          if b4
+          then let i ← cp + 1#u32
+               ok (some (i, 0#u32, 1#usize))
+          else
+            let b5 ← unicode.within cp 498#u32 500#u32 1#u32
+            if b5
+            then let i ← cp + 1#u32
+                 ok (some (i, 0#u32, 1#usize))
+            else
+              let b6 ← unicode.within cp 504#u32 542#u32 1#u32
+              if b6
+              then let i ← cp + 1#u32
+                   ok (some (i, 0#u32, 1#usize))
+              else
+                let b7 ← unicode.within cp 546#u32 562#u32 1#u32
+                if b7
+                then let i ← cp + 1#u32
+                     ok (some (i, 0#u32, 1#usize))
+                else
+                  let b8 ← unicode.within cp 582#u32 590#u32 1#u32
+                  if b8
+                  then let i ← cp + 1#u32
+                       ok (some (i, 0#u32, 1#usize))
+                  else
+                    let b9 ← unicode.within cp 880#u32 882#u32 1#u32
+                    if b9
+                    then let i ← cp + 1#u32
+                         ok (some (i, 0#u32, 1#usize))
+                    else ok none
+
+/-- [rustfs_kernel::unicode::range_0]:
+    Source: 'ports/rustfs/kernel/src/unicode.rs', lines 34:0-66:1 -/
+def unicode.range_0
+  (cp : Std.U32) : Result (Option (Std.U32 × Std.U32 × Std.Usize)) := do
+  let b ← unicode.within cp 65#u32 90#u32 0#u32
+  if b
+  then let i ← cp + 32#u32
+       ok (some (i, 0#u32, 1#usize))
+  else
+    let b1 ← unicode.within cp 192#u32 214#u32 0#u32
+    if b1
+    then let i ← cp + 32#u32
+         ok (some (i, 0#u32, 1#usize))
+    else
+      let b2 ← unicode.within cp 216#u32 222#u32 0#u32
+      if b2
+      then let i ← cp + 32#u32
+           ok (some (i, 0#u32, 1#usize))
+      else
+        let b3 ← unicode.within cp 256#u32 302#u32 1#u32
+        if b3
+        then let i ← cp + 1#u32
+             ok (some (i, 0#u32, 1#usize))
+        else
+          let b4 ← unicode.within cp 306#u32 310#u32 1#u32
+          if b4
+          then let i ← cp + 1#u32
+               ok (some (i, 0#u32, 1#usize))
+          else
+            let b5 ← unicode.within cp 313#u32 327#u32 2#u32
+            if b5
+            then let i ← cp + 1#u32
+                 ok (some (i, 0#u32, 1#usize))
+            else
+              let b6 ← unicode.within cp 330#u32 374#u32 1#u32
+              if b6
+              then let i ← cp + 1#u32
+                   ok (some (i, 0#u32, 1#usize))
+              else
+                let b7 ← unicode.within cp 377#u32 381#u32 2#u32
+                if b7
+                then let i ← cp + 1#u32
+                     ok (some (i, 0#u32, 1#usize))
+                else
+                  let b8 ← unicode.within cp 386#u32 388#u32 1#u32
+                  if b8
+                  then let i ← cp + 1#u32
+                       ok (some (i, 0#u32, 1#usize))
+                  else
+                    let b9 ← unicode.within cp 393#u32 394#u32 0#u32
+                    if b9
+                    then let i ← cp + 205#u32
+                         ok (some (i, 0#u32, 1#usize))
+                    else ok none
+
+/-- [rustfs_kernel::unicode::range_chunk]:
+    Source: 'ports/rustfs/kernel/src/unicode.rs', lines 20:0-33:1 -/
+def unicode.range_chunk
+  (cp : Std.U32) (index : Std.Usize) :
+  Result (Option (Std.U32 × Std.U32 × Std.Usize))
+  := do
+  match index.val with
+  | 0 => unicode.range_0 cp
+  | 1 => unicode.range_1 cp
+  | 2 => unicode.range_2 cp
+  | 3 => unicode.range_3 cp
+  | 4 => unicode.range_4 cp
+  | 5 => unicode.range_5 cp
+  | 6 => unicode.range_6 cp
+  | 7 => unicode.range_7 cp
+  | 8 => unicode.range_8 cp
+  | _ => ok none
+
+/-- [rustfs_kernel::unicode::lowercase_scalar]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/unicode.rs', lines 6:4-13:1
+    Visibility: public -/
+@[rust_loop_body]
+def unicode.lowercase_scalar_loop.body
+  (cp : Std.U32) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize (Std.U32 × Std.U32 × Std.Usize))
+  := do
+  if i < 9#usize
+  then
+    let o ← unicode.range_chunk cp i
+    match o with
+    | none => let i1 ← i + 1#usize
+              ok (cont i1)
+    | some v => let (i1, i2, i3) := v
+                ok (done (i1, i2, i3))
+  else
+    let v ← unicode.singleton cp
+    let (i1, i2, i3) := v
+    ok (done (i1, i2, i3))
+
+/-- [rustfs_kernel::unicode::lowercase_scalar]: loop 0:
+    Source: 'ports/rustfs/kernel/src/unicode.rs', lines 6:4-13:1
+    Visibility: public -/
+@[rust_loop]
+def unicode.lowercase_scalar_loop
+  (cp : Std.U32) (i : Std.Usize) :
+  Result (Std.U32 × Std.U32 × Std.Usize)
+  := do
+  loop
+    (fun i1 => unicode.lowercase_scalar_loop.body cp i1)
+    i
+
+/-- [rustfs_kernel::unicode::lowercase_scalar]:
+    Source: 'ports/rustfs/kernel/src/unicode.rs', lines 4:0-13:1
+    Visibility: public -/
+@[reducible]
+def unicode.lowercase_scalar
+  (cp : Std.U32) : Result (Std.U32 × Std.U32 × Std.Usize) := do
+  unicode.lowercase_scalar_loop cp 0#usize
+
+/-- [rustfs_kernel::unicode::lower]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/unicode.rs', lines 477:4-485:5
+    Visibility: public -/
+@[rust_loop_body]
+def unicode.lower_loop.body
+  (s : Slice Std.U8) (out : alloc.vec.Vec Std.U8) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Std.U8) × Std.Usize) (alloc.vec.Vec
+    Std.U8))
+  := do
+  let i1 := Slice.len s
+  if i < i1
+  then
+    let (cp, next) ← unicode.scalar_at s i
+    let (a, b, count) ← unicode.lowercase_scalar cp
+    let out1 ← unicode.append_scalar out a
+    if count = 2#usize
+    then let out2 ← unicode.append_scalar out1 b
+         ok (cont (out2, next))
+    else ok (cont (out1, next))
+  else ok (done out)
+
+/-- [rustfs_kernel::unicode::lower]: loop 0:
+    Source: 'ports/rustfs/kernel/src/unicode.rs', lines 477:4-485:5
+    Visibility: public -/
+@[rust_loop]
+def unicode.lower_loop
+  (s : Slice Std.U8) (out : alloc.vec.Vec Std.U8) (i : Std.Usize) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  loop
+    (fun (out1, i1) => unicode.lower_loop.body s out1 i1)
+    (out, i)
+
+/-- [rustfs_kernel::unicode::lower]:
+    Source: 'ports/rustfs/kernel/src/unicode.rs', lines 474:0-487:1
+    Visibility: public -/
+@[reducible]
+def unicode.lower (s : Slice Std.U8) : Result (alloc.vec.Vec Std.U8) := do
+  unicode.lower_loop s (alloc.vec.Vec.new Std.U8) 0#usize
+
+/-- [rustfs_kernel::claims::case_insensitive_eq]:
+    Source: 'ports/rustfs/kernel/src/claims.rs', lines 20:0-22:1
+    Visibility: public -/
+def claims.case_insensitive_eq
+  (left : Slice Std.U8) (right : Slice Std.U8) : Result Bool := do
+  let v ← unicode.lower left
+  let s := alloc.vec.Vec.deref v
+  let v1 ← unicode.lower right
+  let s1 := alloc.vec.Vec.deref v1
+  bytes.eq s s1
+
+/-- [rustfs_kernel::claims::find]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/claims.rs', lines 47:4-54:1
+    Visibility: public -/
+@[rust_loop_body]
+def claims.find_loop.body
+  (table : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × claims.Value))
+  («name» : Slice Std.U8) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize (Option Std.Usize))
+  := do
+  let i1 := alloc.vec.Vec.len table
+  if i < i1
+  then
+    let (v, _) ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+        ((alloc.vec.Vec Std.U8) × claims.Value)) table i
+    let s := alloc.vec.Vec.deref v
+    let b ← bytes.eq s «name»
+    if b
+    then ok (done (some i))
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else ok (done none)
+
+/-- [rustfs_kernel::claims::find]: loop 0:
+    Source: 'ports/rustfs/kernel/src/claims.rs', lines 47:4-54:1
+    Visibility: public -/
+@[rust_loop]
+def claims.find_loop
+  (table : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × claims.Value))
+  («name» : Slice Std.U8) (i : Std.Usize) :
+  Result (Option Std.Usize)
+  := do
+  loop
+    (fun i1 => claims.find_loop.body table «name» i1)
+    i
+
+/-- [rustfs_kernel::claims::find]:
+    Source: 'ports/rustfs/kernel/src/claims.rs', lines 45:0-54:1
+    Visibility: public -/
+@[reducible]
+def claims.find
+  (table : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × claims.Value))
+  («name» : Slice Std.U8) :
+  Result (Option Std.Usize)
+  := do
+  claims.find_loop table «name» 0#usize
+
+/-- [rustfs_kernel::claims::case_fold_lookup]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/claims.rs', lines 33:4-43:1 -/
+@[rust_loop_body]
+def claims.case_fold_lookup_loop.body
+  (table : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × claims.Value))
+  («name» : Slice Std.U8) (matched : claims.ClaimLookup) (j : Std.Usize) :
+  Result (ControlFlow (claims.ClaimLookup × Std.Usize) claims.ClaimLookup)
+  := do
+  let i := alloc.vec.Vec.len table
+  if j < i
+  then
+    let (v, _) ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+        ((alloc.vec.Vec Std.U8) × claims.Value)) table j
+    let s := alloc.vec.Vec.deref v
+    let b ← claims.case_insensitive_eq s «name»
+    if b
+    then
+      match matched with
+      | claims.ClaimLookup.Missing =>
+        let j1 ← j + 1#usize
+        ok (cont (claims.ClaimLookup.Found j, j1))
+      | claims.ClaimLookup.Found _ => ok (done claims.ClaimLookup.Ambiguous)
+      | claims.ClaimLookup.Ambiguous =>
+        let j1 ← j + 1#usize
+        ok (cont (claims.ClaimLookup.Found j, j1))
+    else let j1 ← j + 1#usize
+         ok (cont (matched, j1))
+  else ok (done matched)
+
+/-- [rustfs_kernel::claims::case_fold_lookup]: loop 0:
+    Source: 'ports/rustfs/kernel/src/claims.rs', lines 33:4-43:1 -/
+@[rust_loop]
+def claims.case_fold_lookup_loop
+  (table : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × claims.Value))
+  («name» : Slice Std.U8) (matched : claims.ClaimLookup) (j : Std.Usize) :
+  Result claims.ClaimLookup
+  := do
+  loop
+    (fun (matched1, j1) => claims.case_fold_lookup_loop.body table «name»
+      matched1 j1)
+    (matched, j)
+
+/-- [rustfs_kernel::claims::case_fold_lookup]:
+    Source: 'ports/rustfs/kernel/src/claims.rs', lines 30:0-43:1 -/
+@[reducible]
+def claims.case_fold_lookup
+  (table : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × claims.Value))
+  («name» : Slice Std.U8) :
+  Result claims.ClaimLookup
+  := do
+  claims.case_fold_lookup_loop table «name» claims.ClaimLookup.Missing
+    0#usize
+
+/-- [rustfs_kernel::claims::get_claim_case_insensitive]:
+    Source: 'ports/rustfs/kernel/src/claims.rs', lines 24:0-29:1
+    Visibility: public -/
+def claims.get_claim_case_insensitive
+  (table : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × claims.Value))
+  («name» : Slice Std.U8) :
+  Result claims.ClaimLookup
+  := do
+  let o ← claims.find table «name»
+  match o with
+  | none => claims.case_fold_lookup table «name»
+  | some i => ok (claims.ClaimLookup.Found i)
+
+/-- [rustfs_kernel::unicode::whitespace]:
+    Source: 'ports/rustfs/kernel/src/unicode.rs', lines 489:0-501:1
+    Visibility: public -/
+def unicode.whitespace (cp : Std.U32) : Result Bool := do
+  if cp >= 9#u32
+  then
+    if cp <= 13#u32
+    then ok true
+    else
+      if cp = 32#u32
+      then ok true
+      else
+        if cp = 133#u32
+        then ok true
+        else
+          if cp = 160#u32
+          then ok true
+          else
+            if cp = 5760#u32
+            then ok true
+            else
+              if cp >= 8192#u32
+              then
+                if cp <= 8202#u32
+                then ok true
+                else
+                  if cp = 8232#u32
+                  then ok true
+                  else
+                    if cp = 8233#u32
+                    then ok true
+                    else
+                      if cp = 8239#u32
+                      then ok true
+                      else
+                        if cp = 8287#u32
+                        then ok true
+                        else ok (cp = 12288#u32)
+              else
+                if cp = 8232#u32
+                then ok true
+                else
+                  if cp = 8233#u32
+                  then ok true
+                  else
+                    if cp = 8239#u32
+                    then ok true
+                    else if cp = 8287#u32
+                         then ok true
+                         else ok (cp = 12288#u32)
+  else
+    if cp = 32#u32
+    then ok true
+    else
+      if cp = 133#u32
+      then ok true
+      else
+        if cp = 160#u32
+        then ok true
+        else
+          if cp = 5760#u32
+          then ok true
+          else
+            if cp >= 8192#u32
+            then
+              if cp <= 8202#u32
+              then ok true
+              else
+                if cp = 8232#u32
+                then ok true
+                else
+                  if cp = 8233#u32
+                  then ok true
+                  else
+                    if cp = 8239#u32
+                    then ok true
+                    else if cp = 8287#u32
+                         then ok true
+                         else ok (cp = 12288#u32)
+            else
+              if cp = 8232#u32
+              then ok true
+              else
+                if cp = 8233#u32
+                then ok true
+                else
+                  if cp = 8239#u32
+                  then ok true
+                  else if cp = 8287#u32
+                       then ok true
+                       else ok (cp = 12288#u32)
+
+/-- [rustfs_kernel::unicode::trim]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/unicode.rs', lines 507:4-516:5
+    Visibility: public -/
+@[rust_loop_body]
+def unicode.trim_loop.body
+  (s : Slice Std.U8) (first : Std.Usize) (last : Std.Usize) (i : Std.Usize) :
+  Result (ControlFlow (Std.Usize × Std.Usize × Std.Usize) (Std.Usize ×
+    Std.Usize))
+  := do
+  let i1 := Slice.len s
+  if i < i1
+  then
+    let (cp, next) ← unicode.scalar_at s i
+    let b ← unicode.whitespace cp
+    if b
+    then ok (cont (first, last, next))
+    else
+      let i2 := Slice.len s
+      if first = i2
+      then ok (cont (i, next, next))
+      else ok (cont (first, next, next))
+  else ok (done (first, last))
+
+/-- [rustfs_kernel::unicode::trim]: loop 0:
+    Source: 'ports/rustfs/kernel/src/unicode.rs', lines 507:4-516:5
+    Visibility: public -/
+@[rust_loop]
+def unicode.trim_loop
+  (s : Slice Std.U8) (first : Std.Usize) (last : Std.Usize) (i : Std.Usize) :
+  Result (Std.Usize × Std.Usize)
+  := do
+  loop
+    (fun (first1, last1, i1) => unicode.trim_loop.body s first1 last1 i1)
+    (first, last, i)
+
+/-- [rustfs_kernel::unicode::trim]:
+    Source: 'ports/rustfs/kernel/src/unicode.rs', lines 503:0-522:1
+    Visibility: public -/
+def unicode.trim (s : Slice Std.U8) : Result (alloc.vec.Vec Std.U8) := do
+  let first := Slice.len s
+  let (first1, last) ← unicode.trim_loop s first 0#usize 0#usize
+  let i := Slice.len s
+  if first1 = i
+  then ok (alloc.vec.Vec.new Std.U8)
+  else bytes.slice s first1 last
+
+/-- [rustfs_kernel::claims::split_values]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/claims.rs', lines 60:4-69:5
+    Visibility: public -/
+@[rust_loop_body]
+def claims.split_values_loop.body
+  (s : Slice Std.U8) (out : alloc.vec.Vec (alloc.vec.Vec Std.U8))
+  (start : Std.Usize) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec (alloc.vec.Vec Std.U8)) × Std.Usize ×
+    Std.Usize) (alloc.vec.Vec (alloc.vec.Vec Std.U8)))
+  := do
+  let i1 := Slice.len s
+  if i <= i1
+  then
+    let i2 := Slice.len s
+    let (out1, start1) ←
+      if i = i2
+      then
+        do
+        let v ← bytes.slice s start i
+        let s1 := alloc.vec.Vec.deref v
+        let part ← unicode.trim s1
+        let i3 := alloc.vec.Vec.len part
+        let out2 ←
+          if i3 != 0#usize
+          then alloc.vec.Vec.push out part
+          else ok out
+        let start2 ← i + 1#usize
+        ok (out2, start2)
+      else
+        do
+        let i3 ← Slice.index_usize s i
+        if i3 = 44#u8
+        then
+          let v ← bytes.slice s start i
+          let s1 := alloc.vec.Vec.deref v
+          let part ← unicode.trim s1
+          let i4 := alloc.vec.Vec.len part
+          let out2 ←
+            if i4 != 0#usize
+            then alloc.vec.Vec.push out part
+            else ok out
+          let start2 ← i + 1#usize
+          ok (out2, start2)
+        else ok (out, start)
+    let i3 ← i + 1#usize
+    ok (cont (out1, start1, i3))
+  else ok (done out)
+
+/-- [rustfs_kernel::claims::split_values]: loop 0:
+    Source: 'ports/rustfs/kernel/src/claims.rs', lines 60:4-69:5
+    Visibility: public -/
+@[rust_loop]
+def claims.split_values_loop
+  (s : Slice Std.U8) (out : alloc.vec.Vec (alloc.vec.Vec Std.U8))
+  (start : Std.Usize) (i : Std.Usize) :
+  Result (alloc.vec.Vec (alloc.vec.Vec Std.U8))
+  := do
+  loop
+    (fun (out1, start1, i1) => claims.split_values_loop.body s out1 start1 i1)
+    (out, start, i)
+
+/-- [rustfs_kernel::claims::split_values]:
+    Source: 'ports/rustfs/kernel/src/claims.rs', lines 56:0-71:1
+    Visibility: public -/
+@[reducible]
+def claims.split_values
+  (s : Slice Std.U8) : Result (alloc.vec.Vec (alloc.vec.Vec Std.U8)) := do
+  claims.split_values_loop s (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) 0#usize
+    0#usize
+
+/-- [rustfs_kernel::claims::append_string_values]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/claims.rs', lines 76:8-79:9 -/
+@[rust_loop_body]
+def claims.append_string_values_loop.body
+  (parts : alloc.vec.Vec (alloc.vec.Vec Std.U8))
+  (out : alloc.vec.Vec (alloc.vec.Vec Std.U8)) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec (alloc.vec.Vec Std.U8)) × Std.Usize)
+    (alloc.vec.Vec (alloc.vec.Vec Std.U8)))
+  := do
+  let i1 := alloc.vec.Vec.len parts
+  if i < i1
+  then
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice (alloc.vec.Vec
+        Std.U8)) parts i
+    let v1 ← alloc.vec.CloneVec.clone core.clone.CloneU8 v
+    let out1 ← alloc.vec.Vec.push out v1
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
+  else ok (done out)
+
+/-- [rustfs_kernel::claims::append_string_values]: loop 0:
+    Source: 'ports/rustfs/kernel/src/claims.rs', lines 76:8-79:9 -/
+@[rust_loop]
+def claims.append_string_values_loop
+  (out : alloc.vec.Vec (alloc.vec.Vec Std.U8))
+  (parts : alloc.vec.Vec (alloc.vec.Vec Std.U8)) (i : Std.Usize) :
+  Result (alloc.vec.Vec (alloc.vec.Vec Std.U8))
+  := do
+  loop
+    (fun (out1, i1) => claims.append_string_values_loop.body parts out1 i1)
+    (out, i)
+
+/-- [rustfs_kernel::claims::append_string_values]:
+    Source: 'ports/rustfs/kernel/src/claims.rs', lines 72:0-81:1 -/
+def claims.append_string_values
+  (out : alloc.vec.Vec (alloc.vec.Vec Std.U8)) (value : claims.Value) :
+  Result (alloc.vec.Vec (alloc.vec.Vec Std.U8))
+  := do
+  match value with
+  | claims.Value.Null => ok out
+  | claims.Value.Bool _ => ok out
+  | claims.Value.Number _ => ok out
+  | claims.Value.String s =>
+    let s1 := alloc.vec.Vec.deref s
+    let parts ← claims.split_values s1
+    claims.append_string_values_loop out parts 0#usize
+  | claims.Value.Array _ => ok out
+  | claims.Value.Object _ => ok out
+
+/-- [rustfs_kernel::claims::value_strings]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/claims.rs', lines 87:12-90:13 -/
+@[rust_loop_body]
+def claims.value_strings_loop.body
+  (array : alloc.vec.Vec claims.Value)
+  (out : alloc.vec.Vec (alloc.vec.Vec Std.U8)) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec (alloc.vec.Vec Std.U8)) × Std.Usize)
+    (alloc.vec.Vec (alloc.vec.Vec Std.U8)))
+  := do
+  let i1 := alloc.vec.Vec.len array
+  if i < i1
+  then
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice claims.Value)
+        array i
+    let out1 ← claims.append_string_values out v
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
+  else ok (done out)
+
+/-- [rustfs_kernel::claims::value_strings]: loop 0:
+    Source: 'ports/rustfs/kernel/src/claims.rs', lines 87:12-90:13 -/
+@[rust_loop]
+def claims.value_strings_loop
+  (array : alloc.vec.Vec claims.Value)
+  (out : alloc.vec.Vec (alloc.vec.Vec Std.U8)) (i : Std.Usize) :
+  Result (alloc.vec.Vec (alloc.vec.Vec Std.U8))
+  := do
+  loop
+    (fun (out1, i1) => claims.value_strings_loop.body array out1 i1)
+    (out, i)
+
+/-- [rustfs_kernel::claims::value_strings]:
+    Source: 'ports/rustfs/kernel/src/claims.rs', lines 82:0-99:1 -/
+def claims.value_strings
+  (value : claims.Value) :
+  Result ((alloc.vec.Vec (alloc.vec.Vec Std.U8)) × Bool)
+  := do
+  match value with
+  | claims.Value.Null => ok (alloc.vec.Vec.new (alloc.vec.Vec Std.U8), false)
+  | claims.Value.Bool _ => ok (alloc.vec.Vec.new (alloc.vec.Vec Std.U8), false)
+  | claims.Value.Number _ =>
+    ok (alloc.vec.Vec.new (alloc.vec.Vec Std.U8), false)
+  | claims.Value.String _ =>
+    let out ←
+      claims.append_string_values (alloc.vec.Vec.new (alloc.vec.Vec Std.U8))
+        value
+    ok (out, true)
+  | claims.Value.Array array =>
+    let out ←
+      claims.value_strings_loop array (alloc.vec.Vec.new (alloc.vec.Vec
+        Std.U8)) 0#usize
+    ok (out, true)
+  | claims.Value.Object _ =>
+    ok (alloc.vec.Vec.new (alloc.vec.Vec Std.U8), false)
+
+/-- [rustfs_kernel::claims::values_from_claims]:
+    Source: 'ports/rustfs/kernel/src/claims.rs', lines 101:0-106:1
+    Visibility: public -/
+def claims.values_from_claims
+  (table : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × claims.Value))
+  («name» : Slice Std.U8) :
+  Result ((alloc.vec.Vec (alloc.vec.Vec Std.U8)) × Bool)
+  := do
+  let o ← claims.find table «name»
+  match o with
+  | none => ok (alloc.vec.Vec.new (alloc.vec.Vec Std.U8), false)
+  | some i =>
+    let (_, v) ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+        ((alloc.vec.Vec Std.U8) × claims.Value)) table i
+    claims.value_strings v
+
+/-- [rustfs_kernel::claims::lookup_strings]:
+    Source: 'ports/rustfs/kernel/src/claims.rs', lines 108:0-113:1 -/
+def claims.lookup_strings
+  (table : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × claims.Value))
+  («name» : Slice Std.U8) :
+  Result ((alloc.vec.Vec (alloc.vec.Vec Std.U8)) × Bool)
+  := do
+  let cl ← claims.get_claim_case_insensitive table «name»
+  match cl with
+  | claims.ClaimLookup.Missing =>
+    ok (alloc.vec.Vec.new (alloc.vec.Vec Std.U8), false)
+  | claims.ClaimLookup.Found i =>
+    let (_, v) ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+        ((alloc.vec.Vec Std.U8) × claims.Value)) table i
+    claims.value_strings v
+  | claims.ClaimLookup.Ambiguous =>
+    ok (alloc.vec.Vec.new (alloc.vec.Vec Std.U8), false)
+
+/-- [rustfs_kernel::claims::unique_values]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/claims.rs', lines 117:4-122:5 -/
+@[rust_loop_body]
+def claims.unique_values_loop.body
+  (values : Slice (alloc.vec.Vec Std.U8))
+  (out : alloc.vec.Vec (alloc.vec.Vec Std.U8)) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec (alloc.vec.Vec Std.U8)) × Std.Usize)
+    (alloc.vec.Vec (alloc.vec.Vec Std.U8)))
+  := do
+  let i1 := Slice.len values
+  if i < i1
+  then
+    let s := alloc.vec.Vec.deref out
+    let v ← Slice.index_usize values i
+    let s1 := alloc.vec.Vec.deref v
+    let b ← bytes.member s s1
+    let out1 ←
+      if b
+      then ok out
+      else
+        do
+        let v1 ← alloc.vec.CloneVec.clone core.clone.CloneU8 v
+        alloc.vec.Vec.push out v1
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
+  else ok (done out)
+
+/-- [rustfs_kernel::claims::unique_values]: loop 0:
+    Source: 'ports/rustfs/kernel/src/claims.rs', lines 117:4-122:5 -/
+@[rust_loop]
+def claims.unique_values_loop
+  (values : Slice (alloc.vec.Vec Std.U8))
+  (out : alloc.vec.Vec (alloc.vec.Vec Std.U8)) (i : Std.Usize) :
+  Result (alloc.vec.Vec (alloc.vec.Vec Std.U8))
+  := do
+  loop
+    (fun (out1, i1) => claims.unique_values_loop.body values out1 i1)
+    (out, i)
+
+/-- [rustfs_kernel::claims::unique_values]:
+    Source: 'ports/rustfs/kernel/src/claims.rs', lines 114:0-124:1 -/
+@[reducible]
+def claims.unique_values
+  (values : Slice (alloc.vec.Vec Std.U8)) :
+  Result (alloc.vec.Vec (alloc.vec.Vec Std.U8))
+  := do
+  claims.unique_values_loop values (alloc.vec.Vec.new (alloc.vec.Vec Std.U8))
+    0#usize
+
+/-- [rustfs_kernel::claims::get_values_from_claims]:
+    Source: 'ports/rustfs/kernel/src/claims.rs', lines 125:0-128:1
+    Visibility: public -/
+def claims.get_values_from_claims
+  (table : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × claims.Value))
+  («name» : Slice Std.U8) :
+  Result ((alloc.vec.Vec (alloc.vec.Vec Std.U8)) × Bool)
+  := do
+  let (values, present) ← claims.lookup_strings table «name»
+  let s := alloc.vec.Vec.deref values
+  let v ← claims.unique_values s
+  ok (v, present)
+
+/-- [rustfs_kernel::claims::get_policies_from_claims]:
+    Source: 'ports/rustfs/kernel/src/claims.rs', lines 130:0-132:1
+    Visibility: public -/
+def claims.get_policies_from_claims
+  (table : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × claims.Value))
+  («name» : Slice Std.U8) :
+  Result ((alloc.vec.Vec (alloc.vec.Vec Std.U8)) × Bool)
+  := do
+  claims.get_values_from_claims table «name»
+
+/-- [rustfs_kernel::claims::args_get_policies]:
+    Source: 'ports/rustfs/kernel/src/claims.rs', lines 134:0-136:1
+    Visibility: public -/
+def claims.args_get_policies
+  (table : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × claims.Value))
+  («name» : Slice Std.U8) :
+  Result ((alloc.vec.Vec (alloc.vec.Vec Std.U8)) × Bool)
+  := do
+  claims.get_policies_from_claims table «name»
+
+/-- [rustfs_kernel::claims::get_role_arn]:
+    Source: 'ports/rustfs/kernel/src/claims.rs', lines 138:0-146:1
+    Visibility: public -/
+def claims.get_role_arn
+  (table : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × claims.Value)) :
+  Result (Option (alloc.vec.Vec Std.U8))
+  := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 7#usize [
+        114#u8, 111#u8, 108#u8, 101#u8, 65#u8, 114#u8, 110#u8
+        ]))
+  let o ← claims.find table s
+  match o with
+  | none => ok none
+  | some i =>
+    let (_, v) ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+        ((alloc.vec.Vec Std.U8) × claims.Value)) table i
+    match v with
+    | claims.Value.Null => ok none
+    | claims.Value.Bool _ => ok none
+    | claims.Value.Number _ => ok none
+    | claims.Value.String s1 =>
+      let v1 ← alloc.vec.CloneVec.clone core.clone.CloneU8 s1
+      ok (some v1)
+    | claims.Value.Array _ => ok none
+    | claims.Value.Object _ => ok none
+
+/-- [rustfs_kernel::claims::iam_policy_claim_name_sa]:
+    Source: 'ports/rustfs/kernel/src/claims.rs', lines 148:0-150:1
+    Visibility: public -/
+def claims.iam_policy_claim_name_sa : Result (alloc.vec.Vec Std.U8) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 9#usize [
+        115#u8, 97#u8, 45#u8, 112#u8, 111#u8, 108#u8, 105#u8, 99#u8, 121#u8
+        ]))
+  alloc.slice.Slice.to_vec core.clone.CloneU8 s
+
+/-- [rustfs_kernel::claims::split_path]:
+    Source: 'ports/rustfs/kernel/src/claims.rs', lines 152:0-169:1
+    Visibility: public -/
+def claims.split_path
+  (path : Slice Std.U8) (second : Bool) :
+  Result ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec Std.U8))
+  := do
+  let s ← lift (Array.to_slice (Array.make 1#usize [ 47#u8 ]))
+  let o ← bytes.find_from path 0#usize s
+  match o with
+  | none =>
+    let v ← alloc.slice.Slice.to_vec core.clone.CloneU8 path
+    ok (v, alloc.vec.Vec.new Std.U8)
+  | some i =>
+    if second
+    then
+      let i1 ← i + 1#usize
+      let s1 ← lift (Array.to_slice (Array.make 1#usize [ 47#u8 ]))
+      let o1 ← bytes.find_from path i1 s1
+      match o1 with
+      | none =>
+        let v ← alloc.slice.Slice.to_vec core.clone.CloneU8 path
+        ok (v, alloc.vec.Vec.new Std.U8)
+      | some i2 =>
+        let i3 ← i2 + 1#usize
+        let v ← bytes.slice path 0#usize i3
+        let i4 := Slice.len path
+        let v1 ← bytes.slice path i3 i4
+        ok (v, v1)
+    else
+      let i1 ← i + 1#usize
+      let v ← bytes.slice path 0#usize i1
+      let i2 := Slice.len path
+      let v1 ← bytes.slice path i1 i2
+      ok (v, v1)
+
+/-- [rustfs_kernel::claims::is_existing_object_tag_condition_key]:
+    Source: 'ports/rustfs/kernel/src/claims.rs', lines 171:0-176:1
+    Visibility: public -/
+def claims.is_existing_object_tag_condition_key
+  (key : Slice Std.U8) : Result Bool := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 17#usize [
+        69#u8, 120#u8, 105#u8, 115#u8, 116#u8, 105#u8, 110#u8, 103#u8, 79#u8,
+        98#u8, 106#u8, 101#u8, 99#u8, 116#u8, 84#u8, 97#u8, 103#u8
+        ]))
+  let b ← bytes.eq key s
+  if b
+  then ok true
+  else
+    let s1 ←
+      lift (Array.to_slice
+        (Array.make 20#usize [
+          115#u8, 51#u8, 58#u8, 69#u8, 120#u8, 105#u8, 115#u8, 116#u8, 105#u8,
+          110#u8, 103#u8, 79#u8, 98#u8, 106#u8, 101#u8, 99#u8, 116#u8, 84#u8,
+          97#u8, 103#u8
+          ]))
+    let b1 ← bytes.eq key s1
+    if b1
+    then ok true
+    else
+      let s2 ←
+        lift (Array.to_slice
+          (Array.make 18#usize [
+            69#u8, 120#u8, 105#u8, 115#u8, 116#u8, 105#u8, 110#u8, 103#u8,
+            79#u8, 98#u8, 106#u8, 101#u8, 99#u8, 116#u8, 84#u8, 97#u8, 103#u8,
+            47#u8
+            ]))
+      let b2 ← bytes.starts_with key s2
+      if b2
+      then ok true
+      else
+        let s3 ←
+          lift (Array.to_slice
+            (Array.make 21#usize [
+              115#u8, 51#u8, 58#u8, 69#u8, 120#u8, 105#u8, 115#u8, 116#u8,
+              105#u8, 110#u8, 103#u8, 79#u8, 98#u8, 106#u8, 101#u8, 99#u8,
+              116#u8, 84#u8, 97#u8, 103#u8, 47#u8
+              ]))
+        bytes.starts_with key s3
+
+mutual
+
+/-- [rustfs_kernel::claims::value_uses_existing_object_tag]:
+    Source: 'ports/rustfs/kernel/src/claims.rs', lines 178:0-184:1
+    Visibility: public -/
+def claims.value_uses_existing_object_tag
+  (value : claims.Value) : Result Bool := do
+  match value with
+  | claims.Value.Null => ok false
+  | claims.Value.Bool _ => ok false
+  | claims.Value.Number _ => ok false
+  | claims.Value.String _ => ok false
+  | claims.Value.Array entries =>
+    let s := alloc.vec.Vec.deref entries
+    claims.array_uses_tag s 0#usize
+  | claims.Value.Object entries =>
+    let s := alloc.vec.Vec.deref entries
+    claims.object_uses_tag s 0#usize
+partial_fixpoint
+
+/-- [rustfs_kernel::claims::object_uses_tag]:
+    Source: 'ports/rustfs/kernel/src/claims.rs', lines 185:0-192:1 -/
+def claims.object_uses_tag
+  (entries : Slice ((alloc.vec.Vec Std.U8) × claims.Value)) (i : Std.Usize) :
+  Result Bool
+  := do
+  let i1 := Slice.len entries
+  if i >= i1
+  then ok false
+  else
+    let (v, v1) ← Slice.index_usize entries i
+    let s := alloc.vec.Vec.deref v
+    let b ← claims.is_existing_object_tag_condition_key s
+    if b
+    then ok true
+    else
+      let b1 ← claims.value_uses_existing_object_tag v1
+      if b1
+      then ok true
+      else let i2 ← i + 1#usize
+           claims.object_uses_tag entries i2
+partial_fixpoint
+
+/-- [rustfs_kernel::claims::array_uses_tag]:
+    Source: 'ports/rustfs/kernel/src/claims.rs', lines 193:0-198:1 -/
+def claims.array_uses_tag
+  (entries : Slice claims.Value) (i : Std.Usize) : Result Bool := do
+  let i1 := Slice.len entries
+  if i >= i1
+  then ok false
+  else
+    let v ← Slice.index_usize entries i
+    let b ← claims.value_uses_existing_object_tag v
+    if b
+    then ok true
+    else let i2 ← i + 1#usize
+         claims.array_uses_tag entries i2
+partial_fixpoint
+
+end
+
 /-- [rustfs_kernel::condfuncs::Key]
     Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 52:0-56:1
     Visibility: public -/

@@ -146,3 +146,35 @@ and 400,000 bucket cases. Kernel mutations in each module make it fail.
 - RFC3339 parsing isolates calendar, time, fractional seconds, offset and leap
   validation into phase helpers. This bounds Aeneas continuation duplication
   and avoids invalid Lean indentation in the generated code.
+
+## Claims and Unicode utilities
+
+- JSON input is decoded in the shell into recursive list/object values; numbers
+  retain serde_json's canonical display bytes. Claim lookup returns an index
+  instead of a borrowed reference. Exact key preference and ambiguous Unicode
+  case matches are preserved. Map keys remain unique, as in upstream HashMap.
+- Missing char/string primitives are written out: UTF-8 scalar decoding and
+  encoding, Unicode White_Space trimming, and char::to_lowercase's table from
+  the pinned Rust toolchain. Claim comparison uses scalar lowercase expansion,
+  including dotted I, without String's contextual Greek sigma conversion.
+  Inputs are valid UTF-8, matching upstream str's precondition. The unchanged
+  prior condition evaluator retains its documented ASCII behavior.
+- Comma splitting and iterator adapters become index loops; the policy helper
+  removes duplicates while the utility helper retains them. JSON tag scans
+  use recursive index helpers to avoid loops inside recursive functions.
+- Tests draw every JSON form, case ambiguity, Unicode whitespace and invalid
+  claim value types, and exhaustively compare every valid Unicode scalar
+  against Rust's standard primitives.
+
+- Unicode ranges are split into ten-entry helpers with an explicit range
+  predicate and a dispatcher loop, bounding Aeneas continuation duplication.
+
+- Exact lookup and case-fold scanning use separate loop helpers because
+  Charon reconstructs successive early-return loops as unsupported outer
+  breaks. Lookup and set construction are separate phases to avoid an Aeneas
+  tuple-branch simplification error.
+
+- Local claim tables are named `table` so they do not shadow the generated
+  `claims` namespace. Recursive JSON values omit unused Debug derives, whose
+  recursive formatting instances are not supported by extraction. Differential
+  tests compare decoded JSON values directly.

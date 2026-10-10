@@ -99,3 +99,56 @@ After splitting the date parser for Lean extraction, `calendar_fields`,
 `time_fields`, `fraction` and `offset` were individually changed to return None,
 `leap_valid` to false, and `nanos` to zero. `condition_data::dates_agree`
 compiled and failed for all six; the originals were restored.
+
+All claim and Unicode functions were individually mutated; each compiled and failed its differential test, then was restored.
+
+| Function | Mutation | Test |
+|---|---|---|
+| `claims::case_insensitive_eq` | `false` | `claim_tests` |
+| `claims::is_existing_object_tag_condition_key` | `false` | `claim_tests` |
+| `claims::value_uses_existing_object_tag` | `false` | `claim_tests` |
+| `claims::object_uses_tag` | `false` | `claim_tests` |
+| `claims::array_uses_tag` | `false` | `claim_tests` |
+| `claims::get_claim_case_insensitive` | `ClaimLookup::Missing` | `claim_tests` |
+| `claims::find` | `None` | `claim_tests` |
+| `claims::split_values` | `Vec::new()` | `claim_tests` |
+| `claims::append_string_values` | `{}` | `claim_tests` |
+| `claims::value_strings` | `(Vec::new(),false)` | `claim_tests` |
+| `claims::values_from_claims` | `(Vec::new(),false)` | `claim_tests` |
+| `claims::get_values_from_claims` | `(Vec::new(),false)` | `claim_tests` |
+| `claims::get_policies_from_claims` | `(Vec::new(),false)` | `claim_tests` |
+| `claims::args_get_policies` | `(Vec::new(),false)` | `claim_tests` |
+| `claims::get_role_arn` | `None` | `claim_tests` |
+| `claims::iam_policy_claim_name_sa` | `Vec::new()` | `claim_tests` |
+| `claims::split_path` | `(Vec::new(),Vec::new())` | `claim_tests` |
+| `unicode::lowercase_scalar` | `(cp,0,1)` | `claim_tests::unicode_agrees` |
+| `unicode::scalar_at` | `(0,i+1)` | `claim_tests::unicode_agrees` |
+| `unicode::append_scalar` | `{}` | `claim_tests::unicode_agrees` |
+| `unicode::lower` | `Vec::new()` | `claim_tests::unicode_agrees` |
+| `unicode::whitespace` | `false` | `claim_tests::unicode_agrees` |
+| `unicode::trim` | `Vec::new()` | `claim_tests::unicode_agrees` |
+
+The chunked Unicode range predicates, dispatcher and singleton helper were also individually mutated and caught by exhaustive scalar comparison.
+
+| Function | Mutation | Test |
+|---|---|---|
+| `unicode::within` | `false` | `claim_tests::unicode_agrees` |
+| `unicode::range_chunk` | `None` | `claim_tests::unicode_agrees` |
+| `unicode::singleton` | `(cp,0,1)` | `claim_tests::unicode_agrees` |
+| `unicode::range_0` | `None` | `claim_tests::unicode_agrees` |
+| `unicode::range_1` | `None` | `claim_tests::unicode_agrees` |
+| `unicode::range_2` | `None` | `claim_tests::unicode_agrees` |
+| `unicode::range_3` | `None` | `claim_tests::unicode_agrees` |
+| `unicode::range_4` | `None` | `claim_tests::unicode_agrees` |
+| `unicode::range_5` | `None` | `claim_tests::unicode_agrees` |
+| `unicode::range_6` | `None` | `claim_tests::unicode_agrees` |
+| `unicode::range_7` | `None` | `claim_tests::unicode_agrees` |
+| `unicode::range_8` | `None` | `claim_tests::unicode_agrees` |
+
+The lookup and deduplication phase helpers were individually mutated after the extraction rewrite, and all three were caught.
+
+| Function | Mutation | Test |
+|---|---|---|
+| `claims::case_fold_lookup` | `ClaimLookup::Missing` | `claim_tests` |
+| `claims::lookup_strings` | `(Vec::new(),false)` | `claim_tests` |
+| `claims::unique_values` | `Vec::new()` | `claim_tests` |

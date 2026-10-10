@@ -867,12 +867,14 @@ kernel = ["Args"]
 [[item]]
 upstream = "crates/policy/src/policy/policy.rs:49 Args::get_role_arn"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["claims::get_role_arn"]
 
 [[item]]
 upstream = "crates/policy/src/policy/policy.rs:52 Args::get_policies"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["claims::args_get_policies"]
 
 [[item]]
 upstream = "crates/policy/src/policy/policy.rs:57 Policy"
@@ -947,27 +949,32 @@ status = "todo"
 [[item]]
 upstream = "crates/policy/src/policy/policy.rs:245 get_values_from_claims"
 lines = 31
-status = "todo"
+status = "ported"
+kernel = ["claims::get_values_from_claims"]
 
 [[item]]
 upstream = "crates/policy/src/policy/policy.rs:279 get_policies_from_claims"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["claims::get_policies_from_claims"]
 
 [[item]]
 upstream = "crates/policy/src/policy/policy.rs:283 iam_policy_claim_name_sa"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["claims::iam_policy_claim_name_sa"]
 
 [[item]]
 upstream = "crates/policy/src/policy/policy.rs:287 is_existing_object_tag_condition_key"
 lines = 5
-status = "todo"
+status = "ported"
+kernel = ["claims::is_existing_object_tag_condition_key"]
 
 [[item]]
 upstream = "crates/policy/src/policy/policy.rs:294 value_uses_existing_object_tag_condition_key"
 lines = 9
-status = "todo"
+status = "ported"
+kernel = ["claims::value_uses_existing_object_tag"]
 
 [[item]]
 upstream = "crates/policy/src/policy/policy.rs:304 functions_use_existing_object_tag"
@@ -1380,27 +1387,32 @@ kernel = ["deep_match", "wildmatch::*"]
 [[item]]
 upstream = "crates/policy/src/policy/utils.rs:22 ClaimLookup"
 lines = 5
-status = "todo"
+status = "ported"
+kernel = ["claims::ClaimLookup"]
 
 [[item]]
 upstream = "crates/policy/src/policy/utils.rs:29 case_insensitive_eq"
 lines = 5
-status = "todo"
+status = "ported"
+kernel = ["claims::case_insensitive_eq"]
 
 [[item]]
 upstream = "crates/policy/src/policy/utils.rs:35 get_claim_case_insensitive"
 lines = 18
-status = "todo"
+status = "ported"
+kernel = ["claims::get_claim_case_insensitive"]
 
 [[item]]
 upstream = "crates/policy/src/policy/utils.rs:57 _get_values_from_claims"
 lines = 28
-status = "todo"
+status = "ported"
+kernel = ["claims::values_from_claims"]
 
 [[item]]
 upstream = "crates/policy/src/policy/utils.rs:91 _split_path"
 lines = 17
-status = "todo"
+status = "ported"
+kernel = ["claims::split_path"]
 
 [[item]]
 upstream = "crates/policy/src/policy/variables.rs:23 VariableContext"

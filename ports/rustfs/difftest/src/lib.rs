@@ -13,3 +13,5 @@ mod validation;
 
 #[cfg(test)]
 mod condition_data;
+
+#[cfg(test)] mod claim_tests;

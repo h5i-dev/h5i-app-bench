@@ -1,7 +1,7 @@
 # Standard h5i-app project. Keep every selected theorem in the final gate.
 [extract]
 crate = "kernel"
-start-from = ["policies","pathclean::clean", "defaults", "actsets", "valids", "resets", "conddata", "dates"]
+start-from = ["policies","pathclean::clean", "defaults", "actsets", "valids", "resets", "conddata", "dates", "claims", "unicode"]
 
 [check]
 theorems = [
