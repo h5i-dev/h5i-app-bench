@@ -1,7 +1,9 @@
 # rustfs: what the kernel covers and where it differs
 
 Upstream: rustfs/rustfs @ e870a6d, `crates/policy/src/policy/`. The kernel
-covers 1,141 lines of it (`difftest/count_loc.py`).
+covers all 2,533 kernel-target lines recorded in `LEDGER.toml`
+(`python3 harness/port_ledger.py report rustfs`); 1,072 shell lines remain
+outside the target.
 
 ## Covered
 
@@ -16,27 +18,51 @@ covers 1,141 lines of it (`difftest/count_loc.py`).
 | `awsvars::*` | `variables.rs`: `VariableResolver`, `resolve_aws_variables`, `resolve_single_pass` |
 | `wildmatch::*`, `pathclean::clean` | `utils/wildcard.rs`, `utils/path.rs` |
 | `bytes::parse_i64` | `str::parse::<i64>`, which `NumberFunc` calls |
+| `defaults::*` | `policy.rs::default`: all eight built-in policies and their constructors |
+| `actsets::*`, `keytables::*` | Complete action/key name tables, validation and membership |
+| `valids::*`, `resets::*` | Statement validators, resource validation, resource-set equality and helpers |
+| `conddata::*`, `dates::*` | Full condition metadata, equality, binary/date values and evaluation |
+| `claims::*`, `unicode::*` | Decoded claims, exact/Unicode case lookup, tag scans and string primitives |
+| `manage::*` | Full policy metadata, statement equality, deduplication, merge, validation, tag queries and complete condition evaluation |
+| `extras::*` | Decoded principal types, principal sets, LazyBuf constructor and wildcard prefix matcher |
+| `docdata::*` | Policy documents, explicit-time creation/update and default constructors |
+| `varctx::*` | General decoded variable context, claim coercion, single/multiple resolution and dynamic-name predicates |
 
 ## How it is checked
 
-`difftest` depends on upstream's own `rustfs-policy` crate from the pinned
-checkout; nothing is copied. `tests.rs` draws identity and bucket policies
-(actions, `NotAction`, S3 and KMS resources with variables, `NotResource`,
-string/IP/null/bool/numeric conditions with qualifiers and `IfExists`,
-principals) and requests (actions, buckets, objects with `..` and `.`
-segments, condition values, JWT claims), builds the same policy as JSON for
-upstream and as kernel values, and compares `is_allowed` on 400,000 identity
-and 400,000 bucket cases. Kernel mutations in each module make it fail.
+`difftest` uses the pinned `rustfs-policy` crate and a private oracle built
+from its unchanged source bodies. The oracle exposes modules and appends
+wrappers for private helpers; it does not edit the upstream checkout.
+`tests.rs` draws identity and bucket policies (actions, `NotAction`, S3 and
+KMS resources with variables, `NotResource`, conditions and principals) and
+requests, then compares `is_allowed` on 400,000 identity and 400,000 bucket
+cases. Additional suites compare complete condition forms, full policy
+metadata and management, tables, decoded claims, document revisions and
+general variable contexts, including rejected names, invalid values and
+validation failures. Unicode primitives are also checked exhaustively.
 
-## Not covered (trusted input)
+Every new handwritten kernel function was individually mutated, and its
+differential test failed with a compiled assertion failure. The mutations
+and tests are recorded in `difftest/MUTATIONS.md`.
 
-- Parsing policies from JSON, and `Validator::is_valid`. The kernel takes
-  parsed statements; the difftest builds both sides from the same draws.
-- `Date*` and `BinaryEquals` conditions.
-- Parsing IP addresses (`str::parse::<IpAddr>`) and CIDR values, and JSON
-  claims into strings (`get_claim_as_strings`).
-- The clock behind `aws:CurrentTime` and `aws:EpochTime`, an input in `Env`.
-- `CachedAwsVariableResolver`, OPA, and how the server builds `Args`.
+## Shell boundary (trusted input)
+
+- Policy/document/principal JSON decoding and serialization. The kernel takes
+  decoded values and performs policy and statement validation.
+- JSON number decoding: `claims::Value::Number` contains serde_json's canonical
+  display bytes. Strings and names are valid UTF-8, matching upstream `str`.
+  Map inputs have unique keys; list forms of sets use membership semantics.
+- IP-address and CIDR parsing. The shell supplies the corresponding parsed
+  address values; policy matching and condition evaluation are in the kernel.
+- Clock reads behind `aws:CurrentTime` and `aws:EpochTime`, supplied through
+  `Env`, and clock-reading document convenience wrappers. Explicit-time
+  document operations are in the kernel.
+- Variable caching, the OPA HTTP client, and server construction of requests.
+
+Existing narrow evaluation APIs remain unchanged for their Lean proofs. New
+full-metadata entry points in `manage` include Date/Binary evaluation, and
+`varctx` retains all decoded claims and custom variables. The prior condition
+evaluator's ASCII-only ignore-case behavior remains documented below.
 
 ## Differences in form
 
@@ -51,3 +77,204 @@ and 400,000 bucket cases. Kernel mutations in each module make it fail.
 | `IfExists` | `IfExists(Box<Condition>)`, nestable | a flag | nested wrappers behave as one |
 | `Option::clone`, `?` on `Option`, `&'static [u8]` tables | | hand-written `Clone`, `match`, `Vec<u8>` | not in Aeneas' library |
 | module names | | `acts`, `rsrc` | a module may not share a name with a local variable in the generated Lean |
+
+## Built-in policies (`policy.rs::default`)
+
+- `LazyLock<[(&str, Policy); 8]>` becomes `defaults::default_policies()`, a
+  pure constructor returning the same ordered names and policy values.
+  Constants become byte-vector functions because Aeneas does not support
+  static string tables. Each action retains its existing family/name form.
+- `defaults::Policy` adds ID and version metadata alongside the unchanged
+  evaluation `Statement`. Canned SIDs are empty and have no evaluation
+  meaning. `kms_allow` and `assume_role_allow` construct the same statements;
+  the literal statements share a constructor for their empty fields.
+- Differential tests compare every field of all eight built-ins, generated
+  requests, and constructor inputs including empty and mixed action lists.
+
+## Action names and sets (`action.rs`)
+
+- `actsets::action_count`, `action_name`, and `contains_name` represent the
+  four enum tables over the existing `(family, name)` representation. An
+  out-of-range index returns empty bytes; membership rejects invalid names.
+  `AdminAction::is_valid` lists every variant upstream, so its name version
+  checks membership in that table.
+- Action sets remain lists. Their equality uses mutual membership and
+  ignores order and duplicate counts, exactly as upstream. `push_unique`
+  uses an index loop. Dereferencing becomes an explicit slice accessor.
+  Validation still accepts every constructed set, including `Action::None`.
+- Differential tests enumerate every upstream enum variant independently,
+  draw invalid names, and compare generated sets including duplicates,
+  reversed order, empty lists and `None`.
+
+- Action-name tables are split by family to keep Aeneas translation of match
+  expressions tractable. Set membership is a helper because Aeneas rejects
+  early returns from nested loops (breaks to an outer loop).
+
+- Family tables are divided into chunks of at most sixteen entries to bound
+  translation memory. Mutual membership uses one-loop helpers because
+  Charon also reconstructs two early-return loops as unsupported outer breaks.
+
+- New policy metadata has no derived `Clone`/`PartialEq`: deriving these
+  would cause Aeneas to extract the existing condition enum's derived
+  implementations, where its `Bool` variant shadows Lean's `Bool`. The
+  canned constructor needs neither trait; existing types remain unchanged.
+
+## Validation and resource sets
+
+- Decoded IDs remain bytes; effect and default validators remain infallible.
+  Statement family classification preserves `None` and all-None lists.
+- Validators return structured error kinds with resource/version payloads;
+  the shell formats upstream messages. Validation order and rejection of
+  conflicting fields, mixed families and invalid resources are preserved.
+- Resource sets use list membership, mutual membership for equality, and
+  explicit slice access. Async wrappers become pure functions because they
+  perform no I/O. Empty condition maps become empty lists.
+- The test-only private oracle compiles pinned sources into Cargo's output
+  directory, exposing module declarations and adding a wrapper around private
+  family classifiers. Original engine bodies and upstream checkout are untouched.
+
+- Resource validation separates the boolean predicate from error payload
+  construction, avoiding duplicated allocation branches during Aeneas translation.
+
+- Validator metadata omits unused derived traits. Family tests use pattern
+  matching; this avoids extracting derived enum equality and its duplicated joins.
+
+- Statement validation isolates action-family matches in phase helpers.
+  Aeneas otherwise duplicates the remaining checks across every family branch.
+  The family is still computed once, and the checks retain upstream order.
+
+## Full condition metadata, binary values and dates
+
+- New `conddata` types keep ordered inner entries, ordered IP/binary lists,
+  string sets represented by lists, and exact `IfExists` wrapper depth.
+  Equality uses upstream's set semantics for strings and one-way membership
+  with equal lengths for each Functions qualifier. Existing evaluation types
+  and their interfaces remain unchanged. `Boolean` avoids Lean's `Bool` name.
+- Generic clone and key iterator helpers become explicit loops returning lists.
+  Operator-name tables are divided into small matches for translation.
+- Binary values retain encoded and decoded lists. STANDARD base64 decoding
+  is written out, including padding and unused-bit checks. Evaluation rejects
+  any invalid request value, even following a matching value.
+- Date values carry UTC nanoseconds and their original offset. Equality and
+  comparisons use instants; the shell retains the offset for serialization.
+  The missing RFC3339 primitive follows pinned `time` semantics, including
+  lowercase z, its single-byte separator, fractional truncation, and valid
+  month-end leap-second stand-ins. Only the first request value is parsed.
+- `matching_view` keeps every condition key for existing resource matching.
+  Date/binary conditions use key-presence placeholders only in that view;
+  `conddata::condition_evaluate` evaluates their actual values. Common
+  conditions delegate to the unchanged evaluator (including its documented
+  ASCII ignore-case form). Qualifiers and wrapper missing-key behavior agree
+  with upstream. Private-oracle wrappers expose lists without changing bodies.
+- Previous ledger mappings for Date/Binary evaluation pointed at unrelated
+  numeric/address helpers; they now name their actual implementations.
+
+- RFC3339 parsing isolates calendar, time, fractional seconds, offset and leap
+  validation into phase helpers. This bounds Aeneas continuation duplication
+  and avoids invalid Lean indentation in the generated code.
+
+## Claims and Unicode utilities
+
+- JSON input is decoded in the shell into recursive list/object values; numbers
+  retain serde_json's canonical display bytes. Claim lookup returns an index
+  instead of a borrowed reference. Exact key preference and ambiguous Unicode
+  case matches are preserved. Map keys remain unique, as in upstream HashMap.
+- Missing char/string primitives are written out: UTF-8 scalar decoding and
+  encoding, Unicode White_Space trimming, and char::to_lowercase's table from
+  the pinned Rust toolchain. Claim comparison uses scalar lowercase expansion,
+  including dotted I, without String's contextual Greek sigma conversion.
+  Inputs are valid UTF-8, matching upstream str's precondition. The unchanged
+  prior condition evaluator retains its documented ASCII behavior.
+- Comma splitting and iterator adapters become index loops; the policy helper
+  removes duplicates while the utility helper retains them. JSON tag scans
+  use recursive index helpers to avoid loops inside recursive functions.
+- Tests draw every JSON form, case ambiguity, Unicode whitespace and invalid
+  claim value types, and exhaustively compare every valid Unicode scalar
+  against Rust's standard primitives.
+
+- Unicode ranges are split into ten-entry helpers with an explicit range
+  predicate and a dispatcher loop, bounding Aeneas continuation duplication.
+
+- Exact lookup and case-fold scanning use separate loop helpers because
+  Charon reconstructs successive early-return loops as unsupported outer
+  breaks. Lookup and set construction are separate phases to avoid an Aeneas
+  tuple-branch simplification error.
+
+- Local claim tables are named `table` so they do not shadow the generated
+  `claims` namespace. Recursive JSON values omit unused Debug derives, whose
+  recursive formatting instances are not supported by extraction. Differential
+  tests compare decoded JSON values directly.
+
+## Condition key tables
+
+- Six key-name enums become a family and canonical name, following the existing
+  key representation. Pure table functions expose counts, names and membership;
+  invalid names are rejected and invalid indices return empty bytes. Matches
+  are chunked to keep Aeneas translation bounded. Policy decoding aliases stay
+  in the shell (for example canonical `s3:versionid`).
+- Server-derived predicates operate on canonical names. The static COMMON_KEYS
+  iterator becomes a list constructor retaining its order and duplicate names.
+  Request-key lookup remains ASCII case insensitive, exactly as upstream.
+- Tests enumerate every enum variant and generate rejected names, then compare
+  server-derived tables and request lookup against the pinned engine.
+
+## Full policy metadata and management
+
+- New metadata keeps policy ID/version and statement SID alongside full
+  conditions, without changing existing evaluation types. Statement equality
+  ignores SID. Deduplication keeps upstream's comparison direction, marks
+  duplicate indices in a list, and builds the retained list instead of in-place
+  compaction/truncation. A helper separates the inner loop for extraction.
+- Merge retains the first nonempty version, empties the ID and clones then
+  deduplicates statements. Validators compose the unchanged statement rules;
+  version errors carry bytes for the shell's upstream message formatting.
+- Tag checks scan condition keys directly instead of allocating serialized
+  JSON. They scan only the last condition with each serialized operator name
+  per qualifier, preserving serde_json map overwrite behavior and suffix
+  collisions. Matching views keep every key, including s3:prefix.
+- Pure async helpers become synchronous. New full policy evaluation entry
+  points compose the unchanged request matching with full Date/Binary condition
+  evaluation. Clock values remain explicit environment inputs.
+- parse_config remains in the decoding shell; its validation is in the kernel.
+  Tests cover full condition forms, duplicate statements with different SIDs,
+  invalid versions/statements, tag operator collisions and request reachability.
+
+## Principal data, wildcard prefix and buffer construction
+
+- Decoded principal formats retain their upstream sum/optional fields; sets
+  become duplicate-free lists. String and set input cases keep their distinct
+  enum variants. JSON decoding remains in the shell.
+- LazyBuf construction returns a borrowed byte slice, no allocated buffer and
+  zero written bytes, matching upstream's initial state. The prefix matcher
+  writes out iterator zip as a paired byte index loop, retaining empty-text
+  and wildcard short-circuit behavior. Tests include empty and Unicode strings,
+  duplicate principals, malformed JSON forms rejected by upstream decoding.
+
+## Policy documents
+
+- Explicit-time new/update/default constructors keep the revision, full policy,
+  optional create/update instants and source offsets. Missing create dates are
+  filled on update; existing ones are preserved. Serialization stays in the
+  shell. The clock-reading convenience wrappers remain outside.
+- Timestamps are nanoseconds plus offset seconds because Aeneas has no time
+  crate. Tests compare all fields over generated instants/offsets, revisions,
+  missing dates, complete generated policies, and updates whose explicit time
+  precedes the previous time.
+
+## General variable context
+
+- New VariableContext retains all decoded claims and custom variables alongside
+  the unchanged narrow evaluation context. Lookup/coercion writes out the JSON
+  scalar/array filter and display primitives; Number contains the shell's
+  canonical serde_json display bytes. Custom map keys remain unique.
+- User ID resolution retains last-value selection and exact sub/parent fallback,
+  including an empty sub array suppressing fallback. Principal type depends on
+  key presence even for null or invalid value types. Pure dispatch and multiple
+  resolution use explicit clock bytes from Env; caching stays outside.
+- Differential tests compare public upstream dispatch and a test wrapper around
+  private claim coercion across all decoded value forms, empty/missing values,
+  custom-name rejection and case-sensitive variable names.
+
+- Claim-array coercion uses a separate loop helper. Splitting the surrounding
+  enum match from its filtering loop avoids an unsupported Aeneas branch
+  translation and preserves the same scalar filtering and order.

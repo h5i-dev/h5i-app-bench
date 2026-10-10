@@ -3,3 +3,25 @@
 pub mod tests;
 #[cfg(test)]
 mod props;
+#[cfg(test)]
+mod defaults;
+#[cfg(test)]
+mod actions;
+
+#[cfg(test)]
+mod validation;
+
+#[cfg(test)]
+mod condition_data;
+
+#[cfg(test)] mod claim_tests;
+
+#[cfg(test)] mod keytables;
+
+#[cfg(test)] mod management;
+
+#[cfg(test)] mod extras;
+
+#[cfg(test)] mod documents;
+
+#[cfg(test)] mod variable_context;

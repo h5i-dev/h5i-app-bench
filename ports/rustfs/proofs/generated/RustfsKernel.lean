@@ -17,7 +17,104 @@ set_option maxHeartbeats 1000000
 /- You can set the `maxRecDepth` value with the `-max-recdepth` CLI option -/
 set_option maxRecDepth 2048
 
+/- You can remove the following line by using the CLI option `-all-computable`: -/
+noncomputable section
+
 namespace rustfs_kernel
+
+/-- [core::cmp::impls::{impl core::cmp::PartialEq<bool> for bool}::ne]:
+    Source: '/rustc/library/core/src/cmp.rs', lines 2188:16-2188:50
+    Name pattern: [core::cmp::impls::{core::cmp::PartialEq<bool, bool>}::ne]
+    Visibility: public -/
+@[rust_fun "core::cmp::impls::{core::cmp::PartialEq<bool, bool>}::ne"]
+axiom Bool.Insts.CoreCmpPartialEqBool.ne : Bool → Bool → Result Bool
+
+/-- [core::fmt::{impl core::fmt::Debug for (U, T)}::fmt]:
+    Source: '/rustc/library/core/src/fmt/mod.rs', lines 3094:16-3094:62
+    Name pattern: [core::fmt::{core::fmt::Debug<(@U, @T)>}::fmt]
+    Visibility: public -/
+@[rust_fun "core::fmt::{core::fmt::Debug<(@U, @T)>}::fmt"]
+axiom Pair.Insts.CoreFmtDebug.fmt
+  {U : Type} {T : Type} (DebugInst : core.fmt.Debug U) (DebugInst1 :
+  core.fmt.Debug T) :
+  (U × T) → core.fmt.Formatter → Result ((core.result.Result Unit
+    core.fmt.Error) × core.fmt.Formatter)
+
+/-- Trait implementation: [core::fmt::{impl core::fmt::Debug for (U, T)}]
+    Source: '/rustc/library/core/src/fmt/mod.rs', lines 3092:12-3092:57
+    Name pattern: [core::fmt::Debug<(@U, @T)>] -/
+@[reducible, rust_trait_impl "core::fmt::Debug<(@U, @T)>"]
+def Pair.Insts.CoreFmtDebug {U : Type} {T : Type} (DebugInst : core.fmt.Debug
+  U) (DebugInst1 : core.fmt.Debug T) : core.fmt.Debug (U × T) := {
+  fmt := Pair.Insts.CoreFmtDebug.fmt DebugInst DebugInst1
+}
+
+/-- [core::mem::maybe_uninit::MaybeUninit]
+    Source: '/rustc/library/core/src/mem/maybe_uninit.rs', lines 355:0-355:24
+    Name pattern: [core::mem::maybe_uninit::MaybeUninit]
+    Visibility: public -/
+@[rust_type "core::mem::maybe_uninit::MaybeUninit"]
+axiom core.mem.maybe_uninit.MaybeUninit (T : Type) : Type
+
+/-- [core::option::{impl core::fmt::Debug for core::option::Option<T>}::fmt]:
+    Source: '/rustc/library/core/src/option.rs', lines 592:15-592:20
+    Name pattern: [core::option::{core::fmt::Debug<core::option::Option<@T>>}::fmt]
+    Visibility: public -/
+@[rust_fun "core::option::{core::fmt::Debug<core::option::Option<@T>>}::fmt"]
+axiom core.option.Option.Insts.CoreFmtDebug.fmt
+  {T : Type} (fmtDebugInst : core.fmt.Debug T) :
+  Option T → core.fmt.Formatter → Result ((core.result.Result Unit
+    core.fmt.Error) × core.fmt.Formatter)
+
+/-- Trait implementation: [core::option::{impl core::fmt::Debug for core::option::Option<T>}]
+    Source: '/rustc/library/core/src/option.rs', lines 592:15-592:20
+    Name pattern: [core::fmt::Debug<core::option::Option<@T>>] -/
+@[reducible, rust_trait_impl "core::fmt::Debug<core::option::Option<@T>>"]
+def core.option.Option.Insts.CoreFmtDebug {T : Type} (fmtDebugInst :
+  core.fmt.Debug T) : core.fmt.Debug (Option T) := {
+  fmt := core.option.Option.Insts.CoreFmtDebug.fmt fmtDebugInst
+}
+
+/-- [core::option::{impl core::cmp::PartialEq<core::option::Option<T>> for core::option::Option<T>}::eq]:
+    Source: '/rustc/library/core/src/option.rs', lines 2441:4-2441:38
+    Name pattern: [core::option::{core::cmp::PartialEq<core::option::Option<@T>, core::option::Option<@T>>}::eq]
+    Visibility: public -/
+@[rust_fun
+  "core::option::{core::cmp::PartialEq<core::option::Option<@T>, core::option::Option<@T>>}::eq"]
+axiom core.option.Option.Insts.CoreCmpPartialEqOption.eq
+  {T : Type} (cmpPartialEqInst : core.cmp.PartialEq T T) :
+  Option T → Option T → Result Bool
+
+/-- [core::tuple::{impl core::cmp::PartialEq<(U, T)> for (U, T)}::ne]:
+    Source: '/rustc/library/core/src/tuple.rs', lines 34:16-34:55
+    Name pattern: [core::tuple::{core::cmp::PartialEq<(@U, @T), (@U, @T)>}::ne]
+    Visibility: public -/
+@[rust_fun "core::tuple::{core::cmp::PartialEq<(@U, @T), (@U, @T)>}::ne"]
+axiom Pair.Insts.CoreCmpPartialEqPair.ne
+  {U : Type} {T : Type} (cmpPartialEqInst : core.cmp.PartialEq U U)
+  (cmpPartialEqInst1 : core.cmp.PartialEq T T) :
+  (U × T) → (U × T) → Result Bool
+
+/-- [core::tuple::{impl core::cmp::PartialEq<(U, T)> for (U, T)}::eq]:
+    Source: '/rustc/library/core/src/tuple.rs', lines 30:16-30:55
+    Name pattern: [core::tuple::{core::cmp::PartialEq<(@U, @T), (@U, @T)>}::eq]
+    Visibility: public -/
+@[rust_fun "core::tuple::{core::cmp::PartialEq<(@U, @T), (@U, @T)>}::eq"]
+axiom Pair.Insts.CoreCmpPartialEqPair.eq
+  {U : Type} {T : Type} (cmpPartialEqInst : core.cmp.PartialEq U U)
+  (cmpPartialEqInst1 : core.cmp.PartialEq T T) :
+  (U × T) → (U × T) → Result Bool
+
+/-- Trait implementation: [core::tuple::{impl core::cmp::PartialEq<(U, T)> for (U, T)}]
+    Source: '/rustc/library/core/src/tuple.rs', lines 28:12-28:74
+    Name pattern: [core::cmp::PartialEq<(@U, @T), (@U, @T)>] -/
+@[reducible, rust_trait_impl "core::cmp::PartialEq<(@U, @T), (@U, @T)>"]
+def Pair.Insts.CoreCmpPartialEqPair {U : Type} {T : Type} (cmpPartialEqInst :
+  core.cmp.PartialEq U U) (cmpPartialEqInst1 : core.cmp.PartialEq T T) :
+  core.cmp.PartialEq (U × T) (U × T) := {
+  eq := Pair.Insts.CoreCmpPartialEqPair.eq cmpPartialEqInst cmpPartialEqInst1
+  ne := Pair.Insts.CoreCmpPartialEqPair.ne cmpPartialEqInst cmpPartialEqInst1
+}
 
 /-- [rustfs_kernel::acts::Family]
     Source: 'ports/rustfs/kernel/src/acts.rs', lines 5:0-11:1
@@ -29,6 +126,34 @@ inductive acts.Family where
 | Sts : acts.Family
 | Kms : acts.Family
 | None : acts.Family
+
+/-- [rustfs_kernel::acts::{impl core::clone::Clone for rustfs_kernel::acts::Family}::clone]:
+    Source: 'ports/rustfs/kernel/src/acts.rs', lines 4:9-4:14
+    Visibility: public -/
+def acts.Family.Insts.CoreCloneClone.clone
+  (self : acts.Family) : Result acts.Family := do
+  ok self
+
+/-- [rustfs_kernel::acts::{impl core::fmt::Debug for rustfs_kernel::acts::Family}::fmt]:
+    Source: 'ports/rustfs/kernel/src/acts.rs', lines 4:22-4:27
+    Visibility: public -/
+def acts.Family.Insts.CoreFmtDebug.fmt
+  (self : acts.Family) (f : core.fmt.Formatter) :
+  Result ((core.result.Result Unit core.fmt.Error) × core.fmt.Formatter)
+  := do
+  match self with
+  | acts.Family.S3 => core.fmt.Formatter.write_str f (toStr "S3")
+  | acts.Family.Admin => core.fmt.Formatter.write_str f (toStr "Admin")
+  | acts.Family.Sts => core.fmt.Formatter.write_str f (toStr "Sts")
+  | acts.Family.Kms => core.fmt.Formatter.write_str f (toStr "Kms")
+  | acts.Family.None => core.fmt.Formatter.write_str f (toStr "None")
+
+/-- Trait implementation: [rustfs_kernel::acts::{impl core::fmt::Debug for rustfs_kernel::acts::Family}]
+    Source: 'ports/rustfs/kernel/src/acts.rs', lines 4:22-4:27 -/
+@[reducible]
+def acts.Family.Insts.CoreFmtDebug : core.fmt.Debug acts.Family := {
+  fmt := acts.Family.Insts.CoreFmtDebug.fmt
+}
 
 /-- [rustfs_kernel::acts::{impl core::cmp::PartialEq<rustfs_kernel::acts::Family> for rustfs_kernel::acts::Family}::eq]:
     Source: 'ports/rustfs/kernel/src/acts.rs', lines 4:29-4:38
@@ -55,6 +180,56 @@ impl_def acts.Family.Insts.CoreCmpPartialEqFamily : core.cmp.PartialEq
 structure acts.Action where
   family : acts.Family
   «name» : alloc.vec.Vec Std.U8
+
+/-- [rustfs_kernel::acts::{impl core::clone::Clone for rustfs_kernel::acts::Action}::clone]:
+    Source: 'ports/rustfs/kernel/src/acts.rs', lines 14:9-14:14
+    Visibility: public -/
+def acts.Action.Insts.CoreCloneClone.clone
+  (self : acts.Action) : Result acts.Action := do
+  let f ← acts.Family.Insts.CoreCloneClone.clone self.family
+  let v ← alloc.vec.CloneVec.clone core.clone.CloneU8 self.name
+  ok { family := f, «name» := v }
+
+/-- Trait implementation: [rustfs_kernel::acts::{impl core::clone::Clone for rustfs_kernel::acts::Action}]
+    Source: 'ports/rustfs/kernel/src/acts.rs', lines 14:9-14:14 -/
+@[reducible]
+def acts.Action.Insts.CoreCloneClone : core.clone.Clone acts.Action := {
+  clone := acts.Action.Insts.CoreCloneClone.clone
+}
+
+/-- [rustfs_kernel::acts::{impl core::fmt::Debug for rustfs_kernel::acts::Action}::fmt]:
+    Source: 'ports/rustfs/kernel/src/acts.rs', lines 14:16-14:21
+    Visibility: public -/
+def acts.Action.Insts.CoreFmtDebug.fmt
+  (self : acts.Action) (f : core.fmt.Formatter) :
+  Result ((core.result.Result Unit core.fmt.Error) × core.fmt.Formatter)
+  := do
+  let dyn := Dyn.mk _ acts.Family.Insts.CoreFmtDebug self.family
+  let dyn1 :=
+    Dyn.mk _ (core.fmt.DebugShared (core.fmt.DebugVec core.fmt.DebugU8))
+      self.name
+  core.fmt.Formatter.debug_struct_field2_finish f (toStr "Action") (toStr
+    "family") dyn (toStr "name") dyn1
+
+/-- Trait implementation: [rustfs_kernel::acts::{impl core::fmt::Debug for rustfs_kernel::acts::Action}]
+    Source: 'ports/rustfs/kernel/src/acts.rs', lines 14:16-14:21 -/
+@[reducible]
+def acts.Action.Insts.CoreFmtDebug : core.fmt.Debug acts.Action := {
+  fmt := acts.Action.Insts.CoreFmtDebug.fmt
+}
+
+/-- [rustfs_kernel::acts::{impl core::cmp::PartialEq<rustfs_kernel::acts::Action> for rustfs_kernel::acts::Action}::eq]:
+    Source: 'ports/rustfs/kernel/src/acts.rs', lines 14:23-14:32
+    Visibility: public -/
+def acts.Action.Insts.CoreCmpPartialEqAction.eq
+  (self : acts.Action) (other : acts.Action) : Result Bool := do
+  let b ←
+    acts.Family.Insts.CoreCmpPartialEqFamily.eq self.family other.family
+  if b
+  then
+    alloc.vec.partial_eq.PartialEqVec.eq core.cmp.PartialEqU8 self.name
+      other.name
+  else ok false
 
 /-- [rustfs_kernel::bytes::eq]: loop body 0:
     Source: 'ports/rustfs/kernel/src/bytes.rs', lines 8:4-15:1
@@ -590,6 +765,1941 @@ def acts.is_table_resource_scoped (a : acts.Action) : Result Bool := do
                                                 116#u8, 97#u8
                                                 ]))
                                           bytes.eq s38 s39
+
+/-- [rustfs_kernel::actsets::action_count]:
+    Source: 'ports/rustfs/kernel/src/actsets.rs', lines 8:0-16:1
+    Visibility: public -/
+def actsets.action_count (family : acts.Family) : Result Std.Usize := do
+  match family with
+  | acts.Family.S3 => ok 71#usize
+  | acts.Family.Admin => ok 91#usize
+  | acts.Family.Sts => ok 2#usize
+  | acts.Family.Kms => ok 18#usize
+  | acts.Family.None => ok 0#usize
+
+/-- [rustfs_kernel::actsets::kms_name_1]:
+    Source: 'ports/rustfs/kernel/src/actsets.rs', lines 322:0-328:1 -/
+def actsets.kms_name_1
+  (index : Std.Usize) : Result (alloc.vec.Vec Std.U8) := do
+  match index.val with
+  | 16 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 11#usize [
+          107#u8, 109#u8, 115#u8, 58#u8, 82#u8, 101#u8, 115#u8, 116#u8, 111#u8,
+          114#u8, 101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 17 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 9#usize [
+          107#u8, 109#u8, 115#u8, 58#u8, 82#u8, 101#u8, 107#u8, 101#u8, 121#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | _ => ok (alloc.vec.Vec.new Std.U8)
+
+/-- [rustfs_kernel::actsets::kms_name_0]:
+    Source: 'ports/rustfs/kernel/src/actsets.rs', lines 300:0-320:1 -/
+def actsets.kms_name_0
+  (index : Std.Usize) : Result (alloc.vec.Vec Std.U8) := do
+  match index.val with
+  | 0 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 5#usize [ 107#u8, 109#u8, 115#u8, 58#u8, 42#u8 ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 1 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 13#usize [
+          107#u8, 109#u8, 115#u8, 58#u8, 67#u8, 111#u8, 110#u8, 102#u8, 105#u8,
+          103#u8, 117#u8, 114#u8, 101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 2 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 18#usize [
+          107#u8, 109#u8, 115#u8, 58#u8, 83#u8, 101#u8, 114#u8, 118#u8, 105#u8,
+          99#u8, 101#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8, 108#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 3 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 14#usize [
+          107#u8, 109#u8, 115#u8, 58#u8, 67#u8, 108#u8, 101#u8, 97#u8, 114#u8,
+          67#u8, 97#u8, 99#u8, 104#u8, 101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 4 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 19#usize [
+          107#u8, 109#u8, 115#u8, 58#u8, 71#u8, 101#u8, 110#u8, 101#u8, 114#u8,
+          97#u8, 116#u8, 101#u8, 68#u8, 97#u8, 116#u8, 97#u8, 75#u8, 101#u8,
+          121#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 5 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 13#usize [
+          107#u8, 109#u8, 115#u8, 58#u8, 68#u8, 101#u8, 108#u8, 101#u8, 116#u8,
+          101#u8, 75#u8, 101#u8, 121#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 6 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 13#usize [
+          107#u8, 109#u8, 115#u8, 58#u8, 69#u8, 110#u8, 97#u8, 98#u8, 108#u8,
+          101#u8, 75#u8, 101#u8, 121#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 7 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 14#usize [
+          107#u8, 109#u8, 115#u8, 58#u8, 68#u8, 105#u8, 115#u8, 97#u8, 98#u8,
+          108#u8, 101#u8, 75#u8, 101#u8, 121#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 8 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 13#usize [
+          107#u8, 109#u8, 115#u8, 58#u8, 82#u8, 111#u8, 116#u8, 97#u8, 116#u8,
+          101#u8, 75#u8, 101#u8, 121#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 9 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 24#usize [
+          107#u8, 109#u8, 115#u8, 58#u8, 85#u8, 112#u8, 100#u8, 97#u8, 116#u8,
+          101#u8, 75#u8, 101#u8, 121#u8, 68#u8, 101#u8, 115#u8, 99#u8, 114#u8,
+          105#u8, 112#u8, 116#u8, 105#u8, 111#u8, 110#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 10 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 15#usize [
+          107#u8, 109#u8, 115#u8, 58#u8, 84#u8, 97#u8, 103#u8, 82#u8, 101#u8,
+          115#u8, 111#u8, 117#u8, 114#u8, 99#u8, 101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 11 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 17#usize [
+          107#u8, 109#u8, 115#u8, 58#u8, 85#u8, 110#u8, 116#u8, 97#u8, 103#u8,
+          82#u8, 101#u8, 115#u8, 111#u8, 117#u8, 114#u8, 99#u8, 101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 12 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 12#usize [
+          107#u8, 109#u8, 115#u8, 58#u8, 76#u8, 105#u8, 115#u8, 116#u8, 75#u8,
+          101#u8, 121#u8, 115#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 13 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 15#usize [
+          107#u8, 109#u8, 115#u8, 58#u8, 68#u8, 101#u8, 115#u8, 99#u8, 114#u8,
+          105#u8, 98#u8, 101#u8, 75#u8, 101#u8, 121#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 14 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 11#usize [
+          107#u8, 109#u8, 115#u8, 58#u8, 68#u8, 101#u8, 99#u8, 114#u8, 121#u8,
+          112#u8, 116#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 15 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 10#usize [
+          107#u8, 109#u8, 115#u8, 58#u8, 66#u8, 97#u8, 99#u8, 107#u8, 117#u8,
+          112#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | _ => ok (alloc.vec.Vec.new Std.U8)
+
+/-- [rustfs_kernel::actsets::kms_name]:
+    Source: 'ports/rustfs/kernel/src/actsets.rs', lines 292:0-298:1
+    Visibility: public -/
+def actsets.kms_name (index : Std.Usize) : Result (alloc.vec.Vec Std.U8) := do
+  let i ← index / 16#usize
+  match i.val with
+  | 0 => actsets.kms_name_0 index
+  | 1 => actsets.kms_name_1 index
+  | _ => ok (alloc.vec.Vec.new Std.U8)
+
+/-- [rustfs_kernel::actsets::sts_name]:
+    Source: 'ports/rustfs/kernel/src/actsets.rs', lines 283:0-289:1
+    Visibility: public -/
+def actsets.sts_name (index : Std.Usize) : Result (alloc.vec.Vec Std.U8) := do
+  match index.val with
+  | 0 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 5#usize [ 115#u8, 116#u8, 115#u8, 58#u8, 42#u8 ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 1 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 14#usize [
+          115#u8, 116#u8, 115#u8, 58#u8, 65#u8, 115#u8, 115#u8, 117#u8, 109#u8,
+          101#u8, 82#u8, 111#u8, 108#u8, 101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | _ => ok (alloc.vec.Vec.new Std.U8)
+
+/-- [rustfs_kernel::actsets::admin_name_5]:
+    Source: 'ports/rustfs/kernel/src/actsets.rs', lines 265:0-280:1 -/
+def actsets.admin_name_5
+  (index : Std.Usize) : Result (alloc.vec.Vec Std.U8) := do
+  match index.val with
+  | 80 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 22#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 71#u8, 101#u8, 116#u8,
+          84#u8, 97#u8, 98#u8, 108#u8, 101#u8, 77#u8, 101#u8, 116#u8, 97#u8,
+          100#u8, 97#u8, 116#u8, 97#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 81 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 22#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 83#u8, 101#u8, 116#u8,
+          84#u8, 97#u8, 98#u8, 108#u8, 101#u8, 77#u8, 101#u8, 116#u8, 97#u8,
+          100#u8, 97#u8, 116#u8, 97#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 82 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 13#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 83#u8, 101#u8, 116#u8,
+          84#u8, 105#u8, 101#u8, 114#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 83 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 14#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 76#u8, 105#u8, 115#u8,
+          116#u8, 84#u8, 105#u8, 101#u8, 114#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 84 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 15#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 69#u8, 120#u8, 112#u8,
+          111#u8, 114#u8, 116#u8, 73#u8, 65#u8, 77#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 85 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 15#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 73#u8, 109#u8, 112#u8,
+          111#u8, 114#u8, 116#u8, 73#u8, 65#u8, 77#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 86 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 19#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 76#u8, 105#u8, 115#u8,
+          116#u8, 66#u8, 97#u8, 116#u8, 99#u8, 104#u8, 74#u8, 111#u8, 98#u8,
+          115#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 87 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 22#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 68#u8, 101#u8, 115#u8,
+          99#u8, 114#u8, 105#u8, 98#u8, 101#u8, 66#u8, 97#u8, 116#u8, 99#u8,
+          104#u8, 74#u8, 111#u8, 98#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 88 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 19#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 83#u8, 116#u8, 97#u8,
+          114#u8, 116#u8, 66#u8, 97#u8, 116#u8, 99#u8, 104#u8, 74#u8, 111#u8,
+          98#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 89 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 20#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 67#u8, 97#u8, 110#u8,
+          99#u8, 101#u8, 108#u8, 66#u8, 97#u8, 116#u8, 99#u8, 104#u8, 74#u8,
+          111#u8, 98#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 90 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 7#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 42#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | _ => ok (alloc.vec.Vec.new Std.U8)
+
+/-- [rustfs_kernel::actsets::admin_name_4]:
+    Source: 'ports/rustfs/kernel/src/actsets.rs', lines 243:0-263:1 -/
+def actsets.admin_name_4
+  (index : Std.Usize) : Result (alloc.vec.Vec Std.U8) := do
+  match index.val with
+  | 64 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 23#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 71#u8, 101#u8, 116#u8,
+          84#u8, 97#u8, 98#u8, 108#u8, 101#u8, 78#u8, 97#u8, 109#u8, 101#u8,
+          115#u8, 112#u8, 97#u8, 99#u8, 101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 65 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 23#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 83#u8, 101#u8, 116#u8,
+          84#u8, 97#u8, 98#u8, 108#u8, 101#u8, 78#u8, 97#u8, 109#u8, 101#u8,
+          115#u8, 112#u8, 97#u8, 99#u8, 101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 66 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 36#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 85#u8, 112#u8, 100#u8,
+          97#u8, 116#u8, 101#u8, 84#u8, 97#u8, 98#u8, 108#u8, 101#u8, 78#u8,
+          97#u8, 109#u8, 101#u8, 115#u8, 112#u8, 97#u8, 99#u8, 101#u8, 80#u8,
+          114#u8, 111#u8, 112#u8, 101#u8, 114#u8, 116#u8, 105#u8, 101#u8,
+          115#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 67 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 26#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 68#u8, 101#u8, 108#u8,
+          101#u8, 116#u8, 101#u8, 84#u8, 97#u8, 98#u8, 108#u8, 101#u8, 78#u8,
+          97#u8, 109#u8, 101#u8, 115#u8, 112#u8, 97#u8, 99#u8, 101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 68 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 14#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 71#u8, 101#u8, 116#u8,
+          84#u8, 97#u8, 98#u8, 108#u8, 101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 69 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 14#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 83#u8, 101#u8, 116#u8,
+          84#u8, 97#u8, 98#u8, 108#u8, 101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 70 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 17#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 67#u8, 114#u8, 101#u8,
+          97#u8, 116#u8, 101#u8, 84#u8, 97#u8, 98#u8, 108#u8, 101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 71 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 19#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 82#u8, 101#u8, 103#u8,
+          105#u8, 115#u8, 116#u8, 101#u8, 114#u8, 84#u8, 97#u8, 98#u8, 108#u8,
+          101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 72 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 17#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 67#u8, 111#u8, 109#u8,
+          109#u8, 105#u8, 116#u8, 84#u8, 97#u8, 98#u8, 108#u8, 101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 73 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 17#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 68#u8, 101#u8, 108#u8,
+          101#u8, 116#u8, 101#u8, 84#u8, 97#u8, 98#u8, 108#u8, 101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 74 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 23#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 71#u8, 101#u8, 116#u8,
+          84#u8, 97#u8, 98#u8, 108#u8, 101#u8, 76#u8, 105#u8, 102#u8, 101#u8,
+          99#u8, 121#u8, 99#u8, 108#u8, 101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 75 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 23#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 83#u8, 101#u8, 116#u8,
+          84#u8, 97#u8, 98#u8, 108#u8, 101#u8, 76#u8, 105#u8, 102#u8, 101#u8,
+          99#u8, 121#u8, 99#u8, 108#u8, 101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 76 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 25#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 71#u8, 101#u8, 116#u8,
+          84#u8, 97#u8, 98#u8, 108#u8, 101#u8, 67#u8, 114#u8, 101#u8, 100#u8,
+          101#u8, 110#u8, 116#u8, 105#u8, 97#u8, 108#u8, 115#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 77 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 25#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 82#u8, 117#u8, 110#u8,
+          84#u8, 97#u8, 98#u8, 108#u8, 101#u8, 77#u8, 97#u8, 105#u8, 110#u8,
+          116#u8, 101#u8, 110#u8, 97#u8, 110#u8, 99#u8, 101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 78 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 30#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 71#u8, 101#u8, 116#u8,
+          84#u8, 97#u8, 98#u8, 108#u8, 101#u8, 77#u8, 101#u8, 116#u8, 97#u8,
+          100#u8, 97#u8, 116#u8, 97#u8, 76#u8, 111#u8, 99#u8, 97#u8, 116#u8,
+          105#u8, 111#u8, 110#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 79 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 30#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 83#u8, 101#u8, 116#u8,
+          84#u8, 97#u8, 98#u8, 108#u8, 101#u8, 77#u8, 101#u8, 116#u8, 97#u8,
+          100#u8, 97#u8, 116#u8, 97#u8, 76#u8, 111#u8, 99#u8, 97#u8, 116#u8,
+          105#u8, 111#u8, 110#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | _ => ok (alloc.vec.Vec.new Std.U8)
+
+/-- [rustfs_kernel::actsets::admin_name_3]:
+    Source: 'ports/rustfs/kernel/src/actsets.rs', lines 221:0-241:1 -/
+def actsets.admin_name_3
+  (index : Std.Usize) : Result (alloc.vec.Vec Std.U8) := do
+  match index.val with
+  | 48 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 29#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 85#u8, 112#u8, 100#u8,
+          97#u8, 116#u8, 101#u8, 80#u8, 111#u8, 108#u8, 105#u8, 99#u8, 121#u8,
+          65#u8, 115#u8, 115#u8, 111#u8, 99#u8, 105#u8, 97#u8, 116#u8, 105#u8,
+          111#u8, 110#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 49 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 22#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 76#u8, 105#u8, 115#u8,
+          116#u8, 85#u8, 115#u8, 101#u8, 114#u8, 80#u8, 111#u8, 108#u8, 105#u8,
+          99#u8, 105#u8, 101#u8, 115#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 50 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 20#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 83#u8, 101#u8, 116#u8,
+          66#u8, 117#u8, 99#u8, 107#u8, 101#u8, 116#u8, 81#u8, 117#u8, 111#u8,
+          116#u8, 97#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 51 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 21#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 83#u8, 101#u8, 116#u8,
+          66#u8, 117#u8, 99#u8, 107#u8, 101#u8, 116#u8, 84#u8, 97#u8, 114#u8,
+          103#u8, 101#u8, 116#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 52 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 21#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 71#u8, 101#u8, 116#u8,
+          66#u8, 117#u8, 99#u8, 107#u8, 101#u8, 116#u8, 84#u8, 97#u8, 114#u8,
+          103#u8, 101#u8, 116#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 53 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 32#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 83#u8, 101#u8, 116#u8,
+          66#u8, 117#u8, 99#u8, 107#u8, 101#u8, 116#u8, 79#u8, 110#u8, 68#u8,
+          101#u8, 109#u8, 97#u8, 110#u8, 100#u8, 77#u8, 105#u8, 103#u8, 114#u8,
+          97#u8, 116#u8, 105#u8, 111#u8, 110#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 54 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 32#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 71#u8, 101#u8, 116#u8,
+          66#u8, 117#u8, 99#u8, 107#u8, 101#u8, 116#u8, 79#u8, 110#u8, 68#u8,
+          101#u8, 109#u8, 97#u8, 110#u8, 100#u8, 77#u8, 105#u8, 103#u8, 114#u8,
+          97#u8, 116#u8, 105#u8, 111#u8, 110#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 55 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 16#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 71#u8, 101#u8, 116#u8,
+          77#u8, 101#u8, 116#u8, 114#u8, 105#u8, 99#u8, 115#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 56 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 21#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 82#u8, 101#u8, 112#u8,
+          108#u8, 105#u8, 99#u8, 97#u8, 116#u8, 105#u8, 111#u8, 110#u8, 68#u8,
+          105#u8, 102#u8, 102#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 57 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 27#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 71#u8, 101#u8, 116#u8,
+          82#u8, 101#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8, 105#u8,
+          111#u8, 110#u8, 77#u8, 101#u8, 116#u8, 114#u8, 105#u8, 99#u8, 115#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 58 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 26#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 73#u8, 109#u8, 112#u8,
+          111#u8, 114#u8, 116#u8, 66#u8, 117#u8, 99#u8, 107#u8, 101#u8, 116#u8,
+          77#u8, 101#u8, 116#u8, 97#u8, 100#u8, 97#u8, 116#u8, 97#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 59 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 26#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 69#u8, 120#u8, 112#u8,
+          111#u8, 114#u8, 116#u8, 66#u8, 117#u8, 99#u8, 107#u8, 101#u8, 116#u8,
+          77#u8, 101#u8, 116#u8, 97#u8, 100#u8, 97#u8, 116#u8, 97#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 60 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 21#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 71#u8, 101#u8, 116#u8,
+          84#u8, 97#u8, 98#u8, 108#u8, 101#u8, 67#u8, 97#u8, 116#u8, 97#u8,
+          108#u8, 111#u8, 103#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 61 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 25#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 77#u8, 105#u8, 103#u8,
+          114#u8, 97#u8, 116#u8, 101#u8, 84#u8, 97#u8, 98#u8, 108#u8, 101#u8,
+          67#u8, 97#u8, 116#u8, 97#u8, 108#u8, 111#u8, 103#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 62 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 20#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 71#u8, 101#u8, 116#u8,
+          84#u8, 97#u8, 98#u8, 108#u8, 101#u8, 66#u8, 117#u8, 99#u8, 107#u8,
+          101#u8, 116#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 63 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 20#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 83#u8, 101#u8, 116#u8,
+          84#u8, 97#u8, 98#u8, 108#u8, 101#u8, 66#u8, 117#u8, 99#u8, 107#u8,
+          101#u8, 116#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | _ => ok (alloc.vec.Vec.new Std.U8)
+
+/-- [rustfs_kernel::actsets::admin_name_2]:
+    Source: 'ports/rustfs/kernel/src/actsets.rs', lines 199:0-219:1 -/
+def actsets.admin_name_2
+  (index : Std.Usize) : Result (alloc.vec.Vec Std.U8) := do
+  match index.val with
+  | 32 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 30#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 83#u8, 105#u8, 116#u8,
+          101#u8, 82#u8, 101#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8,
+          105#u8, 111#u8, 110#u8, 79#u8, 112#u8, 101#u8, 114#u8, 97#u8, 116#u8,
+          105#u8, 111#u8, 110#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 33 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 26#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 67#u8, 114#u8, 101#u8,
+          97#u8, 116#u8, 101#u8, 83#u8, 101#u8, 114#u8, 118#u8, 105#u8, 99#u8,
+          101#u8, 65#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 34 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 26#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 85#u8, 112#u8, 100#u8,
+          97#u8, 116#u8, 101#u8, 83#u8, 101#u8, 114#u8, 118#u8, 105#u8, 99#u8,
+          101#u8, 65#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 35 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 26#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 82#u8, 101#u8, 109#u8,
+          111#u8, 118#u8, 101#u8, 83#u8, 101#u8, 114#u8, 118#u8, 105#u8, 99#u8,
+          101#u8, 65#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 36 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 25#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 76#u8, 105#u8, 115#u8,
+          116#u8, 83#u8, 101#u8, 114#u8, 118#u8, 105#u8, 99#u8, 101#u8, 65#u8,
+          99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8, 115#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 37 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 27#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 76#u8, 105#u8, 115#u8,
+          116#u8, 84#u8, 101#u8, 109#u8, 112#u8, 111#u8, 114#u8, 97#u8, 114#u8,
+          121#u8, 65#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8, 115#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 38 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 20#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 65#u8, 100#u8, 100#u8,
+          85#u8, 115#u8, 101#u8, 114#u8, 84#u8, 111#u8, 71#u8, 114#u8, 111#u8,
+          117#u8, 112#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 39 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 25#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 82#u8, 101#u8, 109#u8,
+          111#u8, 118#u8, 101#u8, 85#u8, 115#u8, 101#u8, 114#u8, 70#u8, 114#u8,
+          111#u8, 109#u8, 71#u8, 114#u8, 111#u8, 117#u8, 112#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 40 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 14#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 71#u8, 101#u8, 116#u8,
+          71#u8, 114#u8, 111#u8, 117#u8, 112#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 41 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 16#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 76#u8, 105#u8, 115#u8,
+          116#u8, 71#u8, 114#u8, 111#u8, 117#u8, 112#u8, 115#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 42 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 17#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 69#u8, 110#u8, 97#u8,
+          98#u8, 108#u8, 101#u8, 71#u8, 114#u8, 111#u8, 117#u8, 112#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 43 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 18#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 68#u8, 105#u8, 115#u8,
+          97#u8, 98#u8, 108#u8, 101#u8, 71#u8, 114#u8, 111#u8, 117#u8, 112#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 44 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 18#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 67#u8, 114#u8, 101#u8,
+          97#u8, 116#u8, 101#u8, 80#u8, 111#u8, 108#u8, 105#u8, 99#u8, 121#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 45 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 18#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 68#u8, 101#u8, 108#u8,
+          101#u8, 116#u8, 101#u8, 80#u8, 111#u8, 108#u8, 105#u8, 99#u8, 121#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 46 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 15#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 71#u8, 101#u8, 116#u8,
+          80#u8, 111#u8, 108#u8, 105#u8, 99#u8, 121#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 47 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 29#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 65#u8, 116#u8, 116#u8,
+          97#u8, 99#u8, 104#u8, 85#u8, 115#u8, 101#u8, 114#u8, 79#u8, 114#u8,
+          71#u8, 114#u8, 111#u8, 117#u8, 112#u8, 80#u8, 111#u8, 108#u8, 105#u8,
+          99#u8, 121#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | _ => ok (alloc.vec.Vec.new Std.U8)
+
+/-- [rustfs_kernel::actsets::admin_name_1]:
+    Source: 'ports/rustfs/kernel/src/actsets.rs', lines 177:0-197:1 -/
+def actsets.admin_name_1
+  (index : Std.Usize) : Result (alloc.vec.Vec Std.U8) := do
+  match index.val with
+  | 16 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 18#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 83#u8, 101#u8, 114#u8,
+          118#u8, 101#u8, 114#u8, 85#u8, 112#u8, 100#u8, 97#u8, 116#u8, 101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 17 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 20#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 83#u8, 101#u8, 114#u8,
+          118#u8, 105#u8, 99#u8, 101#u8, 82#u8, 101#u8, 115#u8, 116#u8, 97#u8,
+          114#u8, 116#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 18 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 17#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 83#u8, 101#u8, 114#u8,
+          118#u8, 105#u8, 99#u8, 101#u8, 83#u8, 116#u8, 111#u8, 112#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 19 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 19#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 83#u8, 101#u8, 114#u8,
+          118#u8, 105#u8, 99#u8, 101#u8, 70#u8, 114#u8, 101#u8, 101#u8, 122#u8,
+          101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 20 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 18#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 67#u8, 111#u8, 110#u8,
+          102#u8, 105#u8, 103#u8, 85#u8, 112#u8, 100#u8, 97#u8, 116#u8, 101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 21 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 16#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 67#u8, 114#u8, 101#u8,
+          97#u8, 116#u8, 101#u8, 85#u8, 115#u8, 101#u8, 114#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 22 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 16#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 68#u8, 101#u8, 108#u8,
+          101#u8, 116#u8, 101#u8, 85#u8, 115#u8, 101#u8, 114#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 23 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 15#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 76#u8, 105#u8, 115#u8,
+          116#u8, 85#u8, 115#u8, 101#u8, 114#u8, 115#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 24 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 16#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 69#u8, 110#u8, 97#u8,
+          98#u8, 108#u8, 101#u8, 85#u8, 115#u8, 101#u8, 114#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 25 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 17#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 68#u8, 105#u8, 115#u8,
+          97#u8, 98#u8, 108#u8, 101#u8, 85#u8, 115#u8, 101#u8, 114#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 26 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 13#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 71#u8, 101#u8, 116#u8,
+          85#u8, 115#u8, 101#u8, 114#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 27 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 24#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 83#u8, 105#u8, 116#u8,
+          101#u8, 82#u8, 101#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8,
+          105#u8, 111#u8, 110#u8, 65#u8, 100#u8, 100#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 28 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 28#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 83#u8, 105#u8, 116#u8,
+          101#u8, 82#u8, 101#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8,
+          105#u8, 111#u8, 110#u8, 68#u8, 105#u8, 115#u8, 97#u8, 98#u8, 108#u8,
+          101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 29 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 27#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 83#u8, 105#u8, 116#u8,
+          101#u8, 82#u8, 101#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8,
+          105#u8, 111#u8, 110#u8, 82#u8, 101#u8, 109#u8, 111#u8, 118#u8, 101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 30 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 27#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 83#u8, 105#u8, 116#u8,
+          101#u8, 82#u8, 101#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8,
+          105#u8, 111#u8, 110#u8, 82#u8, 101#u8, 115#u8, 121#u8, 110#u8, 99#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 31 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 25#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 83#u8, 105#u8, 116#u8,
+          101#u8, 82#u8, 101#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8,
+          105#u8, 111#u8, 110#u8, 73#u8, 110#u8, 102#u8, 111#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | _ => ok (alloc.vec.Vec.new Std.U8)
+
+/-- [rustfs_kernel::actsets::admin_name_0]:
+    Source: 'ports/rustfs/kernel/src/actsets.rs', lines 155:0-175:1 -/
+def actsets.admin_name_0
+  (index : Std.Usize) : Result (alloc.vec.Vec Std.U8) := do
+  match index.val with
+  | 0 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 10#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 72#u8, 101#u8, 97#u8,
+          108#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 1 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 18#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 68#u8, 101#u8, 99#u8,
+          111#u8, 109#u8, 109#u8, 105#u8, 115#u8, 115#u8, 105#u8, 111#u8,
+          110#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 2 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 15#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 82#u8, 101#u8, 98#u8,
+          97#u8, 108#u8, 97#u8, 110#u8, 99#u8, 101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 3 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 17#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 83#u8, 116#u8, 111#u8,
+          114#u8, 97#u8, 103#u8, 101#u8, 73#u8, 110#u8, 102#u8, 111#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 4 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 16#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 80#u8, 114#u8, 111#u8,
+          109#u8, 101#u8, 116#u8, 104#u8, 101#u8, 117#u8, 115#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 5 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 19#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 68#u8, 97#u8, 116#u8,
+          97#u8, 85#u8, 115#u8, 97#u8, 103#u8, 101#u8, 73#u8, 110#u8, 102#u8,
+          111#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 6 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 17#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 70#u8, 111#u8, 114#u8,
+          99#u8, 101#u8, 85#u8, 110#u8, 108#u8, 111#u8, 99#u8, 107#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 7 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 18#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 84#u8, 111#u8, 112#u8,
+          76#u8, 111#u8, 99#u8, 107#u8, 115#u8, 73#u8, 110#u8, 102#u8, 111#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 8 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 15#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 80#u8, 114#u8, 111#u8,
+          102#u8, 105#u8, 108#u8, 105#u8, 110#u8, 103#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 9 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 17#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 83#u8, 101#u8, 114#u8,
+          118#u8, 101#u8, 114#u8, 84#u8, 114#u8, 97#u8, 99#u8, 101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 10 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 16#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 67#u8, 111#u8, 110#u8,
+          115#u8, 111#u8, 108#u8, 101#u8, 76#u8, 111#u8, 103#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 11 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 16#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 83#u8, 101#u8, 114#u8,
+          118#u8, 101#u8, 114#u8, 73#u8, 110#u8, 102#u8, 111#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 12 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 13#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 79#u8, 66#u8, 68#u8,
+          73#u8, 110#u8, 102#u8, 111#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 13 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 17#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 76#u8, 105#u8, 99#u8,
+          101#u8, 110#u8, 115#u8, 101#u8, 73#u8, 110#u8, 102#u8, 111#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 14 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 22#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 66#u8, 97#u8, 110#u8,
+          100#u8, 119#u8, 105#u8, 100#u8, 116#u8, 104#u8, 77#u8, 111#u8,
+          110#u8, 105#u8, 116#u8, 111#u8, 114#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 15 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 17#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 73#u8, 110#u8, 115#u8,
+          112#u8, 101#u8, 99#u8, 116#u8, 68#u8, 97#u8, 116#u8, 97#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | _ => ok (alloc.vec.Vec.new Std.U8)
+
+/-- [rustfs_kernel::actsets::admin_name]:
+    Source: 'ports/rustfs/kernel/src/actsets.rs', lines 143:0-153:1
+    Visibility: public -/
+def actsets.admin_name
+  (index : Std.Usize) : Result (alloc.vec.Vec Std.U8) := do
+  let i ← index / 16#usize
+  match i.val with
+  | 0 => actsets.admin_name_0 index
+  | 1 => actsets.admin_name_1 index
+  | 2 => actsets.admin_name_2 index
+  | 3 => actsets.admin_name_3 index
+  | 4 => actsets.admin_name_4 index
+  | 5 => actsets.admin_name_5 index
+  | _ => ok (alloc.vec.Vec.new Std.U8)
+
+/-- [rustfs_kernel::actsets::s3_name_4]:
+    Source: 'ports/rustfs/kernel/src/actsets.rs', lines 129:0-140:1 -/
+def actsets.s3_name_4 (index : Std.Usize) : Result (alloc.vec.Vec Std.U8) := do
+  match index.val with
+  | 64 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 18#usize [
+          115#u8, 51#u8, 58#u8, 82#u8, 101#u8, 112#u8, 108#u8, 105#u8, 99#u8,
+          97#u8, 116#u8, 101#u8, 68#u8, 101#u8, 108#u8, 101#u8, 116#u8, 101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 65 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 16#usize [
+          115#u8, 51#u8, 58#u8, 82#u8, 101#u8, 112#u8, 108#u8, 105#u8, 99#u8,
+          97#u8, 116#u8, 101#u8, 84#u8, 97#u8, 103#u8, 115#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 66 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 33#usize [
+          115#u8, 51#u8, 58#u8, 71#u8, 101#u8, 116#u8, 79#u8, 98#u8, 106#u8,
+          101#u8, 99#u8, 116#u8, 86#u8, 101#u8, 114#u8, 115#u8, 105#u8, 111#u8,
+          110#u8, 70#u8, 111#u8, 114#u8, 82#u8, 101#u8, 112#u8, 108#u8, 105#u8,
+          99#u8, 97#u8, 116#u8, 105#u8, 111#u8, 110#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 67 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 16#usize [
+          115#u8, 51#u8, 58#u8, 82#u8, 101#u8, 115#u8, 116#u8, 111#u8, 114#u8,
+          101#u8, 79#u8, 98#u8, 106#u8, 101#u8, 99#u8, 116#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 68 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 30#usize [
+          115#u8, 51#u8, 58#u8, 82#u8, 101#u8, 115#u8, 101#u8, 116#u8, 66#u8,
+          117#u8, 99#u8, 107#u8, 101#u8, 116#u8, 82#u8, 101#u8, 112#u8, 108#u8,
+          105#u8, 99#u8, 97#u8, 116#u8, 105#u8, 111#u8, 110#u8, 83#u8, 116#u8,
+          97#u8, 116#u8, 101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 69 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 18#usize [
+          115#u8, 51#u8, 58#u8, 80#u8, 117#u8, 116#u8, 79#u8, 98#u8, 106#u8,
+          101#u8, 99#u8, 116#u8, 70#u8, 97#u8, 110#u8, 79#u8, 117#u8, 116#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 70 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 17#usize [
+          115#u8, 51#u8, 58#u8, 71#u8, 101#u8, 116#u8, 66#u8, 117#u8, 99#u8,
+          107#u8, 101#u8, 116#u8, 81#u8, 117#u8, 111#u8, 116#u8, 97#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | _ => ok (alloc.vec.Vec.new Std.U8)
+
+/-- [rustfs_kernel::actsets::s3_name_3]:
+    Source: 'ports/rustfs/kernel/src/actsets.rs', lines 107:0-127:1 -/
+def actsets.s3_name_3 (index : Std.Usize) : Result (alloc.vec.Vec Std.U8) := do
+  match index.val with
+  | 48 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 21#usize [
+          115#u8, 51#u8, 58#u8, 71#u8, 101#u8, 116#u8, 79#u8, 98#u8, 106#u8,
+          101#u8, 99#u8, 116#u8, 76#u8, 101#u8, 103#u8, 97#u8, 108#u8, 72#u8,
+          111#u8, 108#u8, 100#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 49 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 21#usize [
+          115#u8, 51#u8, 58#u8, 80#u8, 117#u8, 116#u8, 79#u8, 98#u8, 106#u8,
+          101#u8, 99#u8, 116#u8, 76#u8, 101#u8, 103#u8, 97#u8, 108#u8, 72#u8,
+          111#u8, 108#u8, 100#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 50 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 35#usize [
+          115#u8, 51#u8, 58#u8, 71#u8, 101#u8, 116#u8, 66#u8, 117#u8, 99#u8,
+          107#u8, 101#u8, 116#u8, 79#u8, 98#u8, 106#u8, 101#u8, 99#u8, 116#u8,
+          76#u8, 111#u8, 99#u8, 107#u8, 67#u8, 111#u8, 110#u8, 102#u8, 105#u8,
+          103#u8, 117#u8, 114#u8, 97#u8, 116#u8, 105#u8, 111#u8, 110#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 51 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 35#usize [
+          115#u8, 51#u8, 58#u8, 80#u8, 117#u8, 116#u8, 66#u8, 117#u8, 99#u8,
+          107#u8, 101#u8, 116#u8, 79#u8, 98#u8, 106#u8, 101#u8, 99#u8, 116#u8,
+          76#u8, 111#u8, 99#u8, 107#u8, 67#u8, 111#u8, 110#u8, 102#u8, 105#u8,
+          103#u8, 117#u8, 114#u8, 97#u8, 116#u8, 105#u8, 111#u8, 110#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 52 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 19#usize [
+          115#u8, 51#u8, 58#u8, 71#u8, 101#u8, 116#u8, 66#u8, 117#u8, 99#u8,
+          107#u8, 101#u8, 116#u8, 84#u8, 97#u8, 103#u8, 103#u8, 105#u8, 110#u8,
+          103#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 53 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 19#usize [
+          115#u8, 51#u8, 58#u8, 80#u8, 117#u8, 116#u8, 66#u8, 117#u8, 99#u8,
+          107#u8, 101#u8, 116#u8, 84#u8, 97#u8, 103#u8, 103#u8, 105#u8, 110#u8,
+          103#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 54 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 19#usize [
+          115#u8, 51#u8, 58#u8, 71#u8, 101#u8, 116#u8, 79#u8, 98#u8, 106#u8,
+          101#u8, 99#u8, 116#u8, 84#u8, 97#u8, 103#u8, 103#u8, 105#u8, 110#u8,
+          103#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 55 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 19#usize [
+          115#u8, 51#u8, 58#u8, 80#u8, 117#u8, 116#u8, 79#u8, 98#u8, 106#u8,
+          101#u8, 99#u8, 116#u8, 84#u8, 97#u8, 103#u8, 103#u8, 105#u8, 110#u8,
+          103#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 56 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 22#usize [
+          115#u8, 51#u8, 58#u8, 68#u8, 101#u8, 108#u8, 101#u8, 116#u8, 101#u8,
+          79#u8, 98#u8, 106#u8, 101#u8, 99#u8, 116#u8, 84#u8, 97#u8, 103#u8,
+          103#u8, 105#u8, 110#u8, 103#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 57 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 22#usize [
+          115#u8, 51#u8, 58#u8, 80#u8, 117#u8, 116#u8, 66#u8, 117#u8, 99#u8,
+          107#u8, 101#u8, 116#u8, 69#u8, 110#u8, 99#u8, 114#u8, 121#u8, 112#u8,
+          116#u8, 105#u8, 111#u8, 110#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 58 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 22#usize [
+          115#u8, 51#u8, 58#u8, 71#u8, 101#u8, 116#u8, 66#u8, 117#u8, 99#u8,
+          107#u8, 101#u8, 116#u8, 69#u8, 110#u8, 99#u8, 114#u8, 121#u8, 112#u8,
+          116#u8, 105#u8, 111#u8, 110#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 59 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 22#usize [
+          115#u8, 51#u8, 58#u8, 80#u8, 117#u8, 116#u8, 66#u8, 117#u8, 99#u8,
+          107#u8, 101#u8, 116#u8, 86#u8, 101#u8, 114#u8, 115#u8, 105#u8,
+          111#u8, 110#u8, 105#u8, 110#u8, 103#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 60 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 22#usize [
+          115#u8, 51#u8, 58#u8, 71#u8, 101#u8, 116#u8, 66#u8, 117#u8, 99#u8,
+          107#u8, 101#u8, 116#u8, 86#u8, 101#u8, 114#u8, 115#u8, 105#u8,
+          111#u8, 110#u8, 105#u8, 110#u8, 103#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 61 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 30#usize [
+          115#u8, 51#u8, 58#u8, 71#u8, 101#u8, 116#u8, 82#u8, 101#u8, 112#u8,
+          108#u8, 105#u8, 99#u8, 97#u8, 116#u8, 105#u8, 111#u8, 110#u8, 67#u8,
+          111#u8, 110#u8, 102#u8, 105#u8, 103#u8, 117#u8, 114#u8, 97#u8,
+          116#u8, 105#u8, 111#u8, 110#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 62 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 30#usize [
+          115#u8, 51#u8, 58#u8, 80#u8, 117#u8, 116#u8, 82#u8, 101#u8, 112#u8,
+          108#u8, 105#u8, 99#u8, 97#u8, 116#u8, 105#u8, 111#u8, 110#u8, 67#u8,
+          111#u8, 110#u8, 102#u8, 105#u8, 103#u8, 117#u8, 114#u8, 97#u8,
+          116#u8, 105#u8, 111#u8, 110#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 63 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 18#usize [
+          115#u8, 51#u8, 58#u8, 82#u8, 101#u8, 112#u8, 108#u8, 105#u8, 99#u8,
+          97#u8, 116#u8, 101#u8, 79#u8, 98#u8, 106#u8, 101#u8, 99#u8, 116#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | _ => ok (alloc.vec.Vec.new Std.U8)
+
+/-- [rustfs_kernel::actsets::s3_name_2]:
+    Source: 'ports/rustfs/kernel/src/actsets.rs', lines 85:0-105:1 -/
+def actsets.s3_name_2 (index : Std.Usize) : Result (alloc.vec.Vec Std.U8) := do
+  match index.val with
+  | 32 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 19#usize [
+          115#u8, 51#u8, 58#u8, 71#u8, 101#u8, 116#u8, 66#u8, 117#u8, 99#u8,
+          107#u8, 101#u8, 116#u8, 76#u8, 111#u8, 103#u8, 103#u8, 105#u8,
+          110#u8, 103#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 33 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 24#usize [
+          115#u8, 51#u8, 58#u8, 80#u8, 117#u8, 116#u8, 66#u8, 117#u8, 99#u8,
+          107#u8, 101#u8, 116#u8, 78#u8, 111#u8, 116#u8, 105#u8, 102#u8,
+          105#u8, 99#u8, 97#u8, 116#u8, 105#u8, 111#u8, 110#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 34 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 18#usize [
+          115#u8, 51#u8, 58#u8, 80#u8, 117#u8, 116#u8, 66#u8, 117#u8, 99#u8,
+          107#u8, 101#u8, 116#u8, 80#u8, 111#u8, 108#u8, 105#u8, 99#u8, 121#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 35 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 29#usize [
+          115#u8, 51#u8, 58#u8, 80#u8, 117#u8, 116#u8, 66#u8, 117#u8, 99#u8,
+          107#u8, 101#u8, 116#u8, 80#u8, 117#u8, 98#u8, 108#u8, 105#u8, 99#u8,
+          65#u8, 99#u8, 99#u8, 101#u8, 115#u8, 115#u8, 66#u8, 108#u8, 111#u8,
+          99#u8, 107#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 36 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 16#usize [
+          115#u8, 51#u8, 58#u8, 80#u8, 117#u8, 116#u8, 66#u8, 117#u8, 99#u8,
+          107#u8, 101#u8, 116#u8, 67#u8, 111#u8, 114#u8, 115#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 37 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 12#usize [
+          115#u8, 51#u8, 58#u8, 80#u8, 117#u8, 116#u8, 79#u8, 98#u8, 106#u8,
+          101#u8, 99#u8, 116#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 38 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 15#usize [
+          115#u8, 51#u8, 58#u8, 80#u8, 117#u8, 116#u8, 79#u8, 98#u8, 106#u8,
+          101#u8, 99#u8, 116#u8, 65#u8, 99#u8, 108#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 39 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 22#usize [
+          115#u8, 51#u8, 58#u8, 68#u8, 101#u8, 108#u8, 101#u8, 116#u8, 101#u8,
+          79#u8, 98#u8, 106#u8, 101#u8, 99#u8, 116#u8, 86#u8, 101#u8, 114#u8,
+          115#u8, 105#u8, 111#u8, 110#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 40 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 29#usize [
+          115#u8, 51#u8, 58#u8, 68#u8, 101#u8, 108#u8, 101#u8, 116#u8, 101#u8,
+          79#u8, 98#u8, 106#u8, 101#u8, 99#u8, 116#u8, 86#u8, 101#u8, 114#u8,
+          115#u8, 105#u8, 111#u8, 110#u8, 84#u8, 97#u8, 103#u8, 103#u8, 105#u8,
+          110#u8, 103#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 41 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 19#usize [
+          115#u8, 51#u8, 58#u8, 71#u8, 101#u8, 116#u8, 79#u8, 98#u8, 106#u8,
+          101#u8, 99#u8, 116#u8, 86#u8, 101#u8, 114#u8, 115#u8, 105#u8, 111#u8,
+          110#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 42 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 29#usize [
+          115#u8, 51#u8, 58#u8, 71#u8, 101#u8, 116#u8, 79#u8, 98#u8, 106#u8,
+          101#u8, 99#u8, 116#u8, 86#u8, 101#u8, 114#u8, 115#u8, 105#u8, 111#u8,
+          110#u8, 65#u8, 116#u8, 116#u8, 114#u8, 105#u8, 98#u8, 117#u8, 116#u8,
+          101#u8, 115#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 43 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 26#usize [
+          115#u8, 51#u8, 58#u8, 71#u8, 101#u8, 116#u8, 79#u8, 98#u8, 106#u8,
+          101#u8, 99#u8, 116#u8, 86#u8, 101#u8, 114#u8, 115#u8, 105#u8, 111#u8,
+          110#u8, 84#u8, 97#u8, 103#u8, 103#u8, 105#u8, 110#u8, 103#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 44 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 26#usize [
+          115#u8, 51#u8, 58#u8, 80#u8, 117#u8, 116#u8, 79#u8, 98#u8, 106#u8,
+          101#u8, 99#u8, 116#u8, 86#u8, 101#u8, 114#u8, 115#u8, 105#u8, 111#u8,
+          110#u8, 84#u8, 97#u8, 103#u8, 103#u8, 105#u8, 110#u8, 103#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 45 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 28#usize [
+          115#u8, 51#u8, 58#u8, 66#u8, 121#u8, 112#u8, 97#u8, 115#u8, 115#u8,
+          71#u8, 111#u8, 118#u8, 101#u8, 114#u8, 110#u8, 97#u8, 110#u8, 99#u8,
+          101#u8, 82#u8, 101#u8, 116#u8, 101#u8, 110#u8, 116#u8, 105#u8,
+          111#u8, 110#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 46 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 21#usize [
+          115#u8, 51#u8, 58#u8, 80#u8, 117#u8, 116#u8, 79#u8, 98#u8, 106#u8,
+          101#u8, 99#u8, 116#u8, 82#u8, 101#u8, 116#u8, 101#u8, 110#u8, 116#u8,
+          105#u8, 111#u8, 110#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 47 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 21#usize [
+          115#u8, 51#u8, 58#u8, 71#u8, 101#u8, 116#u8, 79#u8, 98#u8, 106#u8,
+          101#u8, 99#u8, 116#u8, 82#u8, 101#u8, 116#u8, 101#u8, 110#u8, 116#u8,
+          105#u8, 111#u8, 110#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | _ => ok (alloc.vec.Vec.new Std.U8)
+
+/-- [rustfs_kernel::actsets::s3_name_1]:
+    Source: 'ports/rustfs/kernel/src/actsets.rs', lines 63:0-83:1 -/
+def actsets.s3_name_1 (index : Std.Usize) : Result (alloc.vec.Vec Std.U8) := do
+  match index.val with
+  | 16 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 15#usize [
+          115#u8, 51#u8, 58#u8, 80#u8, 117#u8, 116#u8, 66#u8, 117#u8, 99#u8,
+          107#u8, 101#u8, 116#u8, 65#u8, 99#u8, 108#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 17 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 12#usize [
+          115#u8, 51#u8, 58#u8, 71#u8, 101#u8, 116#u8, 79#u8, 98#u8, 106#u8,
+          101#u8, 99#u8, 116#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 18 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 15#usize [
+          115#u8, 51#u8, 58#u8, 71#u8, 101#u8, 116#u8, 79#u8, 98#u8, 106#u8,
+          101#u8, 99#u8, 116#u8, 65#u8, 99#u8, 108#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 19 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 22#usize [
+          115#u8, 51#u8, 58#u8, 71#u8, 101#u8, 116#u8, 79#u8, 98#u8, 106#u8,
+          101#u8, 99#u8, 116#u8, 65#u8, 116#u8, 116#u8, 114#u8, 105#u8, 98#u8,
+          117#u8, 116#u8, 101#u8, 115#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 20 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 13#usize [
+          115#u8, 51#u8, 58#u8, 72#u8, 101#u8, 97#u8, 100#u8, 66#u8, 117#u8,
+          99#u8, 107#u8, 101#u8, 116#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 21 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 19#usize [
+          115#u8, 51#u8, 58#u8, 76#u8, 105#u8, 115#u8, 116#u8, 65#u8, 108#u8,
+          108#u8, 77#u8, 121#u8, 66#u8, 117#u8, 99#u8, 107#u8, 101#u8, 116#u8,
+          115#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 22 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 13#usize [
+          115#u8, 51#u8, 58#u8, 76#u8, 105#u8, 115#u8, 116#u8, 66#u8, 117#u8,
+          99#u8, 107#u8, 101#u8, 116#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 23 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 24#usize [
+          115#u8, 51#u8, 58#u8, 71#u8, 101#u8, 116#u8, 66#u8, 117#u8, 99#u8,
+          107#u8, 101#u8, 116#u8, 80#u8, 111#u8, 108#u8, 105#u8, 99#u8, 121#u8,
+          83#u8, 116#u8, 97#u8, 116#u8, 117#u8, 115#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 24 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 21#usize [
+          115#u8, 51#u8, 58#u8, 76#u8, 105#u8, 115#u8, 116#u8, 66#u8, 117#u8,
+          99#u8, 107#u8, 101#u8, 116#u8, 86#u8, 101#u8, 114#u8, 115#u8, 105#u8,
+          111#u8, 110#u8, 115#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 25 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 29#usize [
+          115#u8, 51#u8, 58#u8, 76#u8, 105#u8, 115#u8, 116#u8, 66#u8, 117#u8,
+          99#u8, 107#u8, 101#u8, 116#u8, 77#u8, 117#u8, 108#u8, 116#u8, 105#u8,
+          112#u8, 97#u8, 114#u8, 116#u8, 85#u8, 112#u8, 108#u8, 111#u8, 97#u8,
+          100#u8, 115#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 26 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 21#usize [
+          115#u8, 51#u8, 58#u8, 76#u8, 105#u8, 115#u8, 116#u8, 101#u8, 110#u8,
+          78#u8, 111#u8, 116#u8, 105#u8, 102#u8, 105#u8, 99#u8, 97#u8, 116#u8,
+          105#u8, 111#u8, 110#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 27 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 27#usize [
+          115#u8, 51#u8, 58#u8, 76#u8, 105#u8, 115#u8, 116#u8, 101#u8, 110#u8,
+          66#u8, 117#u8, 99#u8, 107#u8, 101#u8, 116#u8, 78#u8, 111#u8, 116#u8,
+          105#u8, 102#u8, 105#u8, 99#u8, 97#u8, 116#u8, 105#u8, 111#u8, 110#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 28 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 27#usize [
+          115#u8, 51#u8, 58#u8, 76#u8, 105#u8, 115#u8, 116#u8, 77#u8, 117#u8,
+          108#u8, 116#u8, 105#u8, 112#u8, 97#u8, 114#u8, 116#u8, 85#u8, 112#u8,
+          108#u8, 111#u8, 97#u8, 100#u8, 80#u8, 97#u8, 114#u8, 116#u8, 115#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 29 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 21#usize [
+          115#u8, 51#u8, 58#u8, 80#u8, 117#u8, 116#u8, 66#u8, 117#u8, 99#u8,
+          107#u8, 101#u8, 116#u8, 76#u8, 105#u8, 102#u8, 101#u8, 99#u8, 121#u8,
+          99#u8, 108#u8, 101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 30 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 21#usize [
+          115#u8, 51#u8, 58#u8, 71#u8, 101#u8, 116#u8, 66#u8, 117#u8, 99#u8,
+          107#u8, 101#u8, 116#u8, 76#u8, 105#u8, 102#u8, 101#u8, 99#u8, 121#u8,
+          99#u8, 108#u8, 101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 31 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 19#usize [
+          115#u8, 51#u8, 58#u8, 80#u8, 117#u8, 116#u8, 66#u8, 117#u8, 99#u8,
+          107#u8, 101#u8, 116#u8, 76#u8, 111#u8, 103#u8, 103#u8, 105#u8,
+          110#u8, 103#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | _ => ok (alloc.vec.Vec.new Std.U8)
+
+/-- [rustfs_kernel::actsets::s3_name_0]:
+    Source: 'ports/rustfs/kernel/src/actsets.rs', lines 41:0-61:1 -/
+def actsets.s3_name_0 (index : Std.Usize) : Result (alloc.vec.Vec Std.U8) := do
+  match index.val with
+  | 0 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 4#usize [ 115#u8, 51#u8, 58#u8, 42#u8 ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 1 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 23#usize [
+          115#u8, 51#u8, 58#u8, 65#u8, 98#u8, 111#u8, 114#u8, 116#u8, 77#u8,
+          117#u8, 108#u8, 116#u8, 105#u8, 112#u8, 97#u8, 114#u8, 116#u8, 85#u8,
+          112#u8, 108#u8, 111#u8, 97#u8, 100#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 2 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 15#usize [
+          115#u8, 51#u8, 58#u8, 67#u8, 114#u8, 101#u8, 97#u8, 116#u8, 101#u8,
+          66#u8, 117#u8, 99#u8, 107#u8, 101#u8, 116#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 3 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 15#usize [
+          115#u8, 51#u8, 58#u8, 68#u8, 101#u8, 108#u8, 101#u8, 116#u8, 101#u8,
+          66#u8, 117#u8, 99#u8, 107#u8, 101#u8, 116#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 4 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 20#usize [
+          115#u8, 51#u8, 58#u8, 70#u8, 111#u8, 114#u8, 99#u8, 101#u8, 68#u8,
+          101#u8, 108#u8, 101#u8, 116#u8, 101#u8, 66#u8, 117#u8, 99#u8, 107#u8,
+          101#u8, 116#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 5 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 20#usize [
+          115#u8, 51#u8, 58#u8, 70#u8, 111#u8, 114#u8, 99#u8, 101#u8, 68#u8,
+          101#u8, 108#u8, 101#u8, 116#u8, 101#u8, 79#u8, 98#u8, 106#u8, 101#u8,
+          99#u8, 116#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 6 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 21#usize [
+          115#u8, 51#u8, 58#u8, 68#u8, 101#u8, 108#u8, 101#u8, 116#u8, 101#u8,
+          66#u8, 117#u8, 99#u8, 107#u8, 101#u8, 116#u8, 80#u8, 111#u8, 108#u8,
+          105#u8, 99#u8, 121#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 7 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 32#usize [
+          115#u8, 51#u8, 58#u8, 68#u8, 101#u8, 108#u8, 101#u8, 116#u8, 101#u8,
+          66#u8, 117#u8, 99#u8, 107#u8, 101#u8, 116#u8, 80#u8, 117#u8, 98#u8,
+          108#u8, 105#u8, 99#u8, 65#u8, 99#u8, 99#u8, 101#u8, 115#u8, 115#u8,
+          66#u8, 108#u8, 111#u8, 99#u8, 107#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 8 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 19#usize [
+          115#u8, 51#u8, 58#u8, 68#u8, 101#u8, 108#u8, 101#u8, 116#u8, 101#u8,
+          66#u8, 117#u8, 99#u8, 107#u8, 101#u8, 116#u8, 67#u8, 111#u8, 114#u8,
+          115#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 9 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 15#usize [
+          115#u8, 51#u8, 58#u8, 68#u8, 101#u8, 108#u8, 101#u8, 116#u8, 101#u8,
+          79#u8, 98#u8, 106#u8, 101#u8, 99#u8, 116#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 10 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 20#usize [
+          115#u8, 51#u8, 58#u8, 71#u8, 101#u8, 116#u8, 66#u8, 117#u8, 99#u8,
+          107#u8, 101#u8, 116#u8, 76#u8, 111#u8, 99#u8, 97#u8, 116#u8, 105#u8,
+          111#u8, 110#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 11 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 24#usize [
+          115#u8, 51#u8, 58#u8, 71#u8, 101#u8, 116#u8, 66#u8, 117#u8, 99#u8,
+          107#u8, 101#u8, 116#u8, 78#u8, 111#u8, 116#u8, 105#u8, 102#u8,
+          105#u8, 99#u8, 97#u8, 116#u8, 105#u8, 111#u8, 110#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 12 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 18#usize [
+          115#u8, 51#u8, 58#u8, 71#u8, 101#u8, 116#u8, 66#u8, 117#u8, 99#u8,
+          107#u8, 101#u8, 116#u8, 80#u8, 111#u8, 108#u8, 105#u8, 99#u8, 121#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 13 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 29#usize [
+          115#u8, 51#u8, 58#u8, 71#u8, 101#u8, 116#u8, 66#u8, 117#u8, 99#u8,
+          107#u8, 101#u8, 116#u8, 80#u8, 117#u8, 98#u8, 108#u8, 105#u8, 99#u8,
+          65#u8, 99#u8, 99#u8, 101#u8, 115#u8, 115#u8, 66#u8, 108#u8, 111#u8,
+          99#u8, 107#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 14 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 16#usize [
+          115#u8, 51#u8, 58#u8, 71#u8, 101#u8, 116#u8, 66#u8, 117#u8, 99#u8,
+          107#u8, 101#u8, 116#u8, 67#u8, 111#u8, 114#u8, 115#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 15 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 15#usize [
+          115#u8, 51#u8, 58#u8, 71#u8, 101#u8, 116#u8, 66#u8, 117#u8, 99#u8,
+          107#u8, 101#u8, 116#u8, 65#u8, 99#u8, 108#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | _ => ok (alloc.vec.Vec.new Std.U8)
+
+/-- [rustfs_kernel::actsets::s3_name]:
+    Source: 'ports/rustfs/kernel/src/actsets.rs', lines 30:0-39:1
+    Visibility: public -/
+def actsets.s3_name (index : Std.Usize) : Result (alloc.vec.Vec Std.U8) := do
+  let i ← index / 16#usize
+  match i.val with
+  | 0 => actsets.s3_name_0 index
+  | 1 => actsets.s3_name_1 index
+  | 2 => actsets.s3_name_2 index
+  | 3 => actsets.s3_name_3 index
+  | 4 => actsets.s3_name_4 index
+  | _ => ok (alloc.vec.Vec.new Std.U8)
+
+/-- [rustfs_kernel::actsets::action_name]:
+    Source: 'ports/rustfs/kernel/src/actsets.rs', lines 19:0-27:1
+    Visibility: public -/
+def actsets.action_name
+  (family : acts.Family) (index : Std.Usize) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  match family with
+  | acts.Family.S3 => actsets.s3_name index
+  | acts.Family.Admin => actsets.admin_name index
+  | acts.Family.Sts => actsets.sts_name index
+  | acts.Family.Kms => actsets.kms_name index
+  | acts.Family.None => ok (alloc.vec.Vec.new Std.U8)
+
+/-- [rustfs_kernel::actsets::contains_name]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/actsets.rs', lines 333:4-340:1
+    Visibility: public -/
+@[rust_loop_body]
+def actsets.contains_name_loop.body
+  (family : acts.Family) («name» : Slice Std.U8) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 ← actsets.action_count family
+  if i < i1
+  then
+    let v ← actsets.action_name family i
+    let s := alloc.vec.Vec.deref v
+    let b ← bytes.eq s «name»
+    if b
+    then ok (done true)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else ok (done false)
+
+/-- [rustfs_kernel::actsets::contains_name]: loop 0:
+    Source: 'ports/rustfs/kernel/src/actsets.rs', lines 333:4-340:1
+    Visibility: public -/
+@[rust_loop]
+def actsets.contains_name_loop
+  (family : acts.Family) («name» : Slice Std.U8) (i : Std.Usize) :
+  Result Bool
+  := do
+  loop
+    (fun i1 => actsets.contains_name_loop.body family «name» i1)
+    i
+
+/-- [rustfs_kernel::actsets::contains_name]:
+    Source: 'ports/rustfs/kernel/src/actsets.rs', lines 331:0-340:1
+    Visibility: public -/
+@[reducible]
+def actsets.contains_name
+  (family : acts.Family) («name» : Slice Std.U8) : Result Bool := do
+  actsets.contains_name_loop family «name» 0#usize
+
+/-- [rustfs_kernel::actsets::admin_is_valid]:
+    Source: 'ports/rustfs/kernel/src/actsets.rs', lines 343:0-345:1
+    Visibility: public -/
+def actsets.admin_is_valid («name» : Slice Std.U8) : Result Bool := do
+  actsets.contains_name acts.Family.Admin «name»
+
+/-- [rustfs_kernel::actsets::is_empty]:
+    Source: 'ports/rustfs/kernel/src/actsets.rs', lines 347:0-349:1
+    Visibility: public -/
+def actsets.is_empty (set : Slice acts.Action) : Result Bool := do
+  let i := Slice.len set
+  ok (i = 0#usize)
+
+/-- [rustfs_kernel::actsets::as_slice]:
+    Source: 'ports/rustfs/kernel/src/actsets.rs', lines 351:0-353:1
+    Visibility: public -/
+def actsets.as_slice
+  (set : Slice acts.Action) : Result (Slice acts.Action) := do
+  ok set
+
+/-- [rustfs_kernel::actsets::push_unique]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/actsets.rs', lines 357:4-364:1
+    Visibility: public -/
+@[rust_loop_body]
+def actsets.push_unique_loop.body
+  (set : alloc.vec.Vec acts.Action) (a : acts.Action) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize (alloc.vec.Vec acts.Action))
+  := do
+  let i1 := alloc.vec.Vec.len set
+  if i < i1
+  then
+    let a1 ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice acts.Action)
+        set i
+    let b ← acts.Action.Insts.CoreCmpPartialEqAction.eq a1 a
+    if b
+    then ok (done set)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else let set1 ← alloc.vec.Vec.push set a
+       ok (done set1)
+
+/-- [rustfs_kernel::actsets::push_unique]: loop 0:
+    Source: 'ports/rustfs/kernel/src/actsets.rs', lines 357:4-364:1
+    Visibility: public -/
+@[rust_loop]
+def actsets.push_unique_loop
+  (set : alloc.vec.Vec acts.Action) (a : acts.Action) (i : Std.Usize) :
+  Result (alloc.vec.Vec acts.Action)
+  := do
+  loop
+    (fun i1 => actsets.push_unique_loop.body set a i1)
+    i
+
+/-- [rustfs_kernel::actsets::push_unique]:
+    Source: 'ports/rustfs/kernel/src/actsets.rs', lines 355:0-364:1
+    Visibility: public -/
+@[reducible]
+def actsets.push_unique
+  (set : alloc.vec.Vec acts.Action) (a : acts.Action) :
+  Result (alloc.vec.Vec acts.Action)
+  := do
+  actsets.push_unique_loop set a 0#usize
+
+/-- [rustfs_kernel::actsets::set_is_match]:
+    Source: 'ports/rustfs/kernel/src/actsets.rs', lines 366:0-368:1
+    Visibility: public -/
+def actsets.set_is_match
+  (set : Slice acts.Action) (a : acts.Action) : Result Bool := do
+  acts.set_is_match_for_effect set a false
+
+/-- [rustfs_kernel::actsets::action_is_match]:
+    Source: 'ports/rustfs/kernel/src/actsets.rs', lines 370:0-372:1
+    Visibility: public -/
+def actsets.action_is_match
+  (this : acts.Action) (a : acts.Action) : Result Bool := do
+  acts.action_is_match_for_effect this a false
+
+/-- [rustfs_kernel::actsets::is_valid]:
+    Source: 'ports/rustfs/kernel/src/actsets.rs', lines 374:0-376:1
+    Visibility: public -/
+def actsets.is_valid (_set : Slice acts.Action) : Result Bool := do
+  ok true
+
+/-- [rustfs_kernel::actsets::member]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/actsets.rs', lines 380:4-387:1
+    Visibility: public -/
+@[rust_loop_body]
+def actsets.member_loop.body
+  (set : Slice acts.Action) (a : acts.Action) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := Slice.len set
+  if i < i1
+  then
+    let a1 ← Slice.index_usize set i
+    let b ← acts.Action.Insts.CoreCmpPartialEqAction.eq a1 a
+    if b
+    then ok (done true)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else ok (done false)
+
+/-- [rustfs_kernel::actsets::member]: loop 0:
+    Source: 'ports/rustfs/kernel/src/actsets.rs', lines 380:4-387:1
+    Visibility: public -/
+@[rust_loop]
+def actsets.member_loop
+  (set : Slice acts.Action) (a : acts.Action) (i : Std.Usize) :
+  Result Bool
+  := do
+  loop
+    (fun i1 => actsets.member_loop.body set a i1)
+    i
+
+/-- [rustfs_kernel::actsets::member]:
+    Source: 'ports/rustfs/kernel/src/actsets.rs', lines 378:0-387:1
+    Visibility: public -/
+@[reducible]
+def actsets.member
+  (set : Slice acts.Action) (a : acts.Action) : Result Bool := do
+  actsets.member_loop set a 0#usize
+
+/-- [rustfs_kernel::actsets::covers]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/actsets.rs', lines 390:4-397:1 -/
+@[rust_loop_body]
+def actsets.covers_loop.body
+  (left : Slice acts.Action) (right : Slice acts.Action) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := Slice.len left
+  if i < i1
+  then
+    let a ← Slice.index_usize left i
+    let b ← actsets.member right a
+    if b
+    then let i2 ← i + 1#usize
+         ok (cont i2)
+    else ok (done false)
+  else ok (done true)
+
+/-- [rustfs_kernel::actsets::covers]: loop 0:
+    Source: 'ports/rustfs/kernel/src/actsets.rs', lines 390:4-397:1 -/
+@[rust_loop]
+def actsets.covers_loop
+  (left : Slice acts.Action) (right : Slice acts.Action) (i : Std.Usize) :
+  Result Bool
+  := do
+  loop
+    (fun i1 => actsets.covers_loop.body left right i1)
+    i
+
+/-- [rustfs_kernel::actsets::covers]:
+    Source: 'ports/rustfs/kernel/src/actsets.rs', lines 388:0-397:1 -/
+@[reducible]
+def actsets.covers
+  (left : Slice acts.Action) (right : Slice acts.Action) : Result Bool := do
+  actsets.covers_loop left right 0#usize
+
+/-- [rustfs_kernel::actsets::eq]:
+    Source: 'ports/rustfs/kernel/src/actsets.rs', lines 399:0-401:1
+    Visibility: public -/
+def actsets.eq
+  (left : Slice acts.Action) (right : Slice acts.Action) : Result Bool := do
+  let b ← actsets.covers left right
+  if b
+  then actsets.covers right left
+  else ok false
 
 /-- [rustfs_kernel::awsvars::ClaimStrings]
     Source: 'ports/rustfs/kernel/src/awsvars.rs', lines 9:0-17:1
@@ -1583,6 +3693,12 @@ partial_fixpoint
 
 end
 
+/-- [rustfs_kernel::bytes::starts_with]:
+    Source: 'ports/rustfs/kernel/src/bytes.rs', lines 32:0-34:1
+    Visibility: public -/
+def bytes.starts_with (s : Slice Std.U8) (p : Slice Std.U8) : Result Bool := do
+  bytes.starts_with_at s 0#usize p
+
 /-- [rustfs_kernel::bytes::replace]: loop body 1:
     Source: 'ports/rustfs/kernel/src/bytes.rs', lines 85:12-88:13
     Visibility: public -/
@@ -1769,6 +3885,3886 @@ def bytes.parse_i64 (s : Slice Std.U8) : Result (Option Std.I64) := do
     then ok none
     else bytes.parse_digits s start 0#i64 (i1 = 45#u8)
 
+/-- [rustfs_kernel::claims::Value]
+    Source: 'ports/rustfs/kernel/src/claims.rs', lines 3:0-10:1
+    Visibility: public -/
+@[discriminant isize]
+inductive claims.Value where
+| Null : claims.Value
+| Bool : Bool → claims.Value
+| Number : alloc.vec.Vec Std.U8 → claims.Value
+| String : alloc.vec.Vec Std.U8 → claims.Value
+| Array : alloc.vec.Vec claims.Value → claims.Value
+| Object :
+  alloc.vec.Vec ((alloc.vec.Vec Std.U8) × claims.Value) →
+  claims.Value
+
+/-- [rustfs_kernel::claims::ClaimLookup]
+    Source: 'ports/rustfs/kernel/src/claims.rs', lines 14:0-18:1
+    Visibility: public -/
+@[discriminant isize]
+inductive claims.ClaimLookup where
+| Missing : claims.ClaimLookup
+| Found : Std.Usize → claims.ClaimLookup
+| Ambiguous : claims.ClaimLookup
+
+/-- [rustfs_kernel::claims::{impl core::clone::Clone for rustfs_kernel::claims::ClaimLookup}::clone]:
+    Source: 'ports/rustfs/kernel/src/claims.rs', lines 13:9-13:14
+    Visibility: public -/
+def claims.ClaimLookup.Insts.CoreCloneClone.clone
+  (self : claims.ClaimLookup) : Result claims.ClaimLookup := do
+  ok self
+
+/-- Trait implementation: [rustfs_kernel::claims::{impl core::clone::Clone for rustfs_kernel::claims::ClaimLookup}]
+    Source: 'ports/rustfs/kernel/src/claims.rs', lines 13:9-13:14 -/
+@[reducible]
+def claims.ClaimLookup.Insts.CoreCloneClone : core.clone.Clone
+  claims.ClaimLookup := {
+  clone := claims.ClaimLookup.Insts.CoreCloneClone.clone
+}
+
+/-- Trait implementation: [rustfs_kernel::claims::{impl core::marker::Copy for rustfs_kernel::claims::ClaimLookup}]
+    Source: 'ports/rustfs/kernel/src/claims.rs', lines 13:16-13:20 -/
+@[reducible]
+def claims.ClaimLookup.Insts.CoreMarkerCopy : core.marker.Copy
+  claims.ClaimLookup := {
+  cloneInst := claims.ClaimLookup.Insts.CoreCloneClone
+}
+
+/-- [rustfs_kernel::claims::{impl core::fmt::Debug for rustfs_kernel::claims::ClaimLookup}::fmt]:
+    Source: 'ports/rustfs/kernel/src/claims.rs', lines 13:22-13:27
+    Visibility: public -/
+def claims.ClaimLookup.Insts.CoreFmtDebug.fmt
+  (self : claims.ClaimLookup) (f : core.fmt.Formatter) :
+  Result ((core.result.Result Unit core.fmt.Error) × core.fmt.Formatter)
+  := do
+  match self with
+  | claims.ClaimLookup.Missing =>
+    core.fmt.Formatter.write_str f (toStr "Missing")
+  | claims.ClaimLookup.Found __self_0 =>
+    let __self_01 :=
+      Dyn.mk _ (core.fmt.DebugShared core.fmt.DebugUsize) __self_0
+    core.fmt.Formatter.debug_tuple_field1_finish f (toStr "Found") __self_01
+  | claims.ClaimLookup.Ambiguous =>
+    core.fmt.Formatter.write_str f (toStr "Ambiguous")
+
+/-- Trait implementation: [rustfs_kernel::claims::{impl core::fmt::Debug for rustfs_kernel::claims::ClaimLookup}]
+    Source: 'ports/rustfs/kernel/src/claims.rs', lines 13:22-13:27 -/
+@[reducible]
+def claims.ClaimLookup.Insts.CoreFmtDebug : core.fmt.Debug claims.ClaimLookup
+  := {
+  fmt := claims.ClaimLookup.Insts.CoreFmtDebug.fmt
+}
+
+/-- Trait implementation: [rustfs_kernel::claims::{impl core::marker::StructuralPartialEq for rustfs_kernel::claims::ClaimLookup}]
+    Source: 'ports/rustfs/kernel/src/claims.rs', lines 13:29-13:38 -/
+@[reducible]
+def claims.ClaimLookup.Insts.CoreMarkerStructuralPartialEq :
+  core.marker.StructuralPartialEq claims.ClaimLookup := {
+}
+
+/-- [rustfs_kernel::claims::{impl core::cmp::PartialEq<rustfs_kernel::claims::ClaimLookup> for rustfs_kernel::claims::ClaimLookup}::eq]:
+    Source: 'ports/rustfs/kernel/src/claims.rs', lines 13:29-13:38
+    Visibility: public -/
+def claims.ClaimLookup.Insts.CoreCmpPartialEqClaimLookup.eq
+  (self : claims.ClaimLookup) (other : claims.ClaimLookup) : Result Bool := do
+  let self1 := read_discriminant self
+  let other1 := read_discriminant other
+  if self1 = other1
+  then
+    match self with
+    | claims.ClaimLookup.Missing => ok true
+    | claims.ClaimLookup.Found __self_0 =>
+      match other with
+      | claims.ClaimLookup.Missing => ok true
+      | claims.ClaimLookup.Found __arg1_0 =>
+        lift (core.cmp.impls.PartialEqUsize.eq __self_0 __arg1_0)
+      | claims.ClaimLookup.Ambiguous => ok true
+    | claims.ClaimLookup.Ambiguous => ok true
+  else ok false
+
+/-- Trait implementation: [rustfs_kernel::claims::{impl core::cmp::PartialEq<rustfs_kernel::claims::ClaimLookup> for rustfs_kernel::claims::ClaimLookup}]
+    Source: 'ports/rustfs/kernel/src/claims.rs', lines 13:29-13:38 -/
+@[reducible]
+impl_def claims.ClaimLookup.Insts.CoreCmpPartialEqClaimLookup :
+  core.cmp.PartialEq claims.ClaimLookup claims.ClaimLookup := {
+  eq := claims.ClaimLookup.Insts.CoreCmpPartialEqClaimLookup.eq
+  ne := core.cmp.PartialEq.ne.trait_default
+    claims.ClaimLookup.Insts.CoreCmpPartialEqClaimLookup
+}
+
+/-- [rustfs_kernel::claims::{impl core::cmp::Eq for rustfs_kernel::claims::ClaimLookup}::assert_fields_are_eq]:
+    Source: 'ports/rustfs/kernel/src/claims.rs', lines 13:40-13:42
+    Visibility: public -/
+def claims.ClaimLookup.Insts.CoreCmpEq.assert_fields_are_eq
+  (self : claims.ClaimLookup) : Result Unit := do
+  ok ()
+
+/-- Trait implementation: [rustfs_kernel::claims::{impl core::cmp::Eq for rustfs_kernel::claims::ClaimLookup}]
+    Source: 'ports/rustfs/kernel/src/claims.rs', lines 13:40-13:42 -/
+@[reducible]
+def claims.ClaimLookup.Insts.CoreCmpEq : core.cmp.Eq claims.ClaimLookup := {
+  partialEqInst := claims.ClaimLookup.Insts.CoreCmpPartialEqClaimLookup
+  assert_fields_are_eq :=
+    claims.ClaimLookup.Insts.CoreCmpEq.assert_fields_are_eq
+}
+
+/-- [rustfs_kernel::unicode::append_scalar]:
+    Source: 'ports/rustfs/kernel/src/unicode.rs', lines 456:0-472:1
+    Visibility: public -/
+def unicode.append_scalar
+  (out : alloc.vec.Vec Std.U8) (cp : Std.U32) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  if cp < 128#u32
+  then let i ← lift (UScalar.cast .U8 cp)
+       alloc.vec.Vec.push out i
+  else
+    if cp < 2048#u32
+    then
+      let i ← cp >>> 6#i32
+      let i1 ← lift (192#u32 ||| i)
+      let i2 ← lift (UScalar.cast .U8 i1)
+      let out1 ← alloc.vec.Vec.push out i2
+      let i3 ← lift (cp &&& 63#u32)
+      let i4 ← lift (128#u32 ||| i3)
+      let i5 ← lift (UScalar.cast .U8 i4)
+      alloc.vec.Vec.push out1 i5
+    else
+      if cp < 65536#u32
+      then
+        let i ← cp >>> 12#i32
+        let i1 ← lift (224#u32 ||| i)
+        let i2 ← lift (UScalar.cast .U8 i1)
+        let out1 ← alloc.vec.Vec.push out i2
+        let i3 ← cp >>> 6#i32
+        let i4 ← lift (i3 &&& 63#u32)
+        let i5 ← lift (128#u32 ||| i4)
+        let i6 ← lift (UScalar.cast .U8 i5)
+        let out2 ← alloc.vec.Vec.push out1 i6
+        let i7 ← lift (cp &&& 63#u32)
+        let i8 ← lift (128#u32 ||| i7)
+        let i9 ← lift (UScalar.cast .U8 i8)
+        alloc.vec.Vec.push out2 i9
+      else
+        let i ← cp >>> 18#i32
+        let i1 ← lift (240#u32 ||| i)
+        let i2 ← lift (UScalar.cast .U8 i1)
+        let out1 ← alloc.vec.Vec.push out i2
+        let i3 ← cp >>> 12#i32
+        let i4 ← lift (i3 &&& 63#u32)
+        let i5 ← lift (128#u32 ||| i4)
+        let i6 ← lift (UScalar.cast .U8 i5)
+        let out2 ← alloc.vec.Vec.push out1 i6
+        let i7 ← cp >>> 6#i32
+        let i8 ← lift (i7 &&& 63#u32)
+        let i9 ← lift (128#u32 ||| i8)
+        let i10 ← lift (UScalar.cast .U8 i9)
+        let out3 ← alloc.vec.Vec.push out2 i10
+        let i11 ← lift (cp &&& 63#u32)
+        let i12 ← lift (128#u32 ||| i11)
+        let i13 ← lift (UScalar.cast .U8 i12)
+        alloc.vec.Vec.push out3 i13
+
+/-- [rustfs_kernel::unicode::scalar_at]:
+    Source: 'ports/rustfs/kernel/src/unicode.rs', lines 433:0-454:1
+    Visibility: public -/
+def unicode.scalar_at
+  (s : Slice Std.U8) (i : Std.Usize) : Result (Std.U32 × Std.Usize) := do
+  let i1 ← Slice.index_usize s i
+  let first ← lift (UScalar.cast .U32 i1)
+  if first < 128#u32
+  then let i2 ← i + 1#usize
+       ok (first, i2)
+  else
+    if first < 224#u32
+    then
+      let i2 ← lift (first &&& 31#u32)
+      let i3 ← i2 <<< 6#i32
+      let i4 ← i + 1#usize
+      let i5 ← Slice.index_usize s i4
+      let i6 ← lift (UScalar.cast .U32 i5)
+      let i7 ← lift (i6 &&& 63#u32)
+      let i8 ← lift (i3 ||| i7)
+      let i9 ← i + 2#usize
+      ok (i8, i9)
+    else
+      if first < 240#u32
+      then
+        let i2 ← lift (first &&& 15#u32)
+        let i3 ← i2 <<< 12#i32
+        let i4 ← i + 1#usize
+        let i5 ← Slice.index_usize s i4
+        let i6 ← lift (UScalar.cast .U32 i5)
+        let i7 ← lift (i6 &&& 63#u32)
+        let i8 ← i7 <<< 6#i32
+        let i9 ← lift (i3 ||| i8)
+        let i10 ← i + 2#usize
+        let i11 ← Slice.index_usize s i10
+        let i12 ← lift (UScalar.cast .U32 i11)
+        let i13 ← lift (i12 &&& 63#u32)
+        let i14 ← lift (i9 ||| i13)
+        let i15 ← i + 3#usize
+        ok (i14, i15)
+      else
+        let i2 ← lift (first &&& 7#u32)
+        let i3 ← i2 <<< 18#i32
+        let i4 ← i + 1#usize
+        let i5 ← Slice.index_usize s i4
+        let i6 ← lift (UScalar.cast .U32 i5)
+        let i7 ← lift (i6 &&& 63#u32)
+        let i8 ← i7 <<< 12#i32
+        let i9 ← lift (i3 ||| i8)
+        let i10 ← i + 2#usize
+        let i11 ← Slice.index_usize s i10
+        let i12 ← lift (UScalar.cast .U32 i11)
+        let i13 ← lift (i12 &&& 63#u32)
+        let i14 ← i13 <<< 6#i32
+        let i15 ← lift (i9 ||| i14)
+        let i16 ← i + 3#usize
+        let i17 ← Slice.index_usize s i16
+        let i18 ← lift (UScalar.cast .U32 i17)
+        let i19 ← lift (i18 &&& 63#u32)
+        let i20 ← lift (i15 ||| i19)
+        let i21 ← i + 4#usize
+        ok (i20, i21)
+
+/-- [rustfs_kernel::unicode::singleton]:
+    Source: 'ports/rustfs/kernel/src/unicode.rs', lines 331:0-431:1 -/
+def unicode.singleton
+  (cp : Std.U32) : Result (Std.U32 × Std.U32 × Std.Usize) := do
+  match cp with
+  | 304#uscalar => ok (105#u32, 775#u32, 2#usize)
+  | 376#uscalar => ok (255#u32, 0#u32, 1#usize)
+  | 385#uscalar => ok (595#u32, 0#u32, 1#usize)
+  | 390#uscalar => ok (596#u32, 0#u32, 1#usize)
+  | 391#uscalar => ok (392#u32, 0#u32, 1#usize)
+  | 395#uscalar => ok (396#u32, 0#u32, 1#usize)
+  | 398#uscalar => ok (477#u32, 0#u32, 1#usize)
+  | 399#uscalar => ok (601#u32, 0#u32, 1#usize)
+  | 400#uscalar => ok (603#u32, 0#u32, 1#usize)
+  | 401#uscalar => ok (402#u32, 0#u32, 1#usize)
+  | 403#uscalar => ok (608#u32, 0#u32, 1#usize)
+  | 404#uscalar => ok (611#u32, 0#u32, 1#usize)
+  | 406#uscalar => ok (617#u32, 0#u32, 1#usize)
+  | 407#uscalar => ok (616#u32, 0#u32, 1#usize)
+  | 408#uscalar => ok (409#u32, 0#u32, 1#usize)
+  | 412#uscalar => ok (623#u32, 0#u32, 1#usize)
+  | 413#uscalar => ok (626#u32, 0#u32, 1#usize)
+  | 415#uscalar => ok (629#u32, 0#u32, 1#usize)
+  | 422#uscalar => ok (640#u32, 0#u32, 1#usize)
+  | 423#uscalar => ok (424#u32, 0#u32, 1#usize)
+  | 425#uscalar => ok (643#u32, 0#u32, 1#usize)
+  | 428#uscalar => ok (429#u32, 0#u32, 1#usize)
+  | 430#uscalar => ok (648#u32, 0#u32, 1#usize)
+  | 431#uscalar => ok (432#u32, 0#u32, 1#usize)
+  | 439#uscalar => ok (658#u32, 0#u32, 1#usize)
+  | 440#uscalar => ok (441#u32, 0#u32, 1#usize)
+  | 444#uscalar => ok (445#u32, 0#u32, 1#usize)
+  | 452#uscalar => ok (454#u32, 0#u32, 1#usize)
+  | 453#uscalar => ok (454#u32, 0#u32, 1#usize)
+  | 455#uscalar => ok (457#u32, 0#u32, 1#usize)
+  | 456#uscalar => ok (457#u32, 0#u32, 1#usize)
+  | 458#uscalar => ok (460#u32, 0#u32, 1#usize)
+  | 497#uscalar => ok (499#u32, 0#u32, 1#usize)
+  | 502#uscalar => ok (405#u32, 0#u32, 1#usize)
+  | 503#uscalar => ok (447#u32, 0#u32, 1#usize)
+  | 544#uscalar => ok (414#u32, 0#u32, 1#usize)
+  | 570#uscalar => ok (11365#u32, 0#u32, 1#usize)
+  | 571#uscalar => ok (572#u32, 0#u32, 1#usize)
+  | 573#uscalar => ok (410#u32, 0#u32, 1#usize)
+  | 574#uscalar => ok (11366#u32, 0#u32, 1#usize)
+  | 577#uscalar => ok (578#u32, 0#u32, 1#usize)
+  | 579#uscalar => ok (384#u32, 0#u32, 1#usize)
+  | 580#uscalar => ok (649#u32, 0#u32, 1#usize)
+  | 581#uscalar => ok (652#u32, 0#u32, 1#usize)
+  | 886#uscalar => ok (887#u32, 0#u32, 1#usize)
+  | 895#uscalar => ok (1011#u32, 0#u32, 1#usize)
+  | 902#uscalar => ok (940#u32, 0#u32, 1#usize)
+  | 908#uscalar => ok (972#u32, 0#u32, 1#usize)
+  | 975#uscalar => ok (983#u32, 0#u32, 1#usize)
+  | 1012#uscalar => ok (952#u32, 0#u32, 1#usize)
+  | 1015#uscalar => ok (1016#u32, 0#u32, 1#usize)
+  | 1017#uscalar => ok (1010#u32, 0#u32, 1#usize)
+  | 1018#uscalar => ok (1019#u32, 0#u32, 1#usize)
+  | 1216#uscalar => ok (1231#u32, 0#u32, 1#usize)
+  | 4295#uscalar => ok (11559#u32, 0#u32, 1#usize)
+  | 4301#uscalar => ok (11565#u32, 0#u32, 1#usize)
+  | 7305#uscalar => ok (7306#u32, 0#u32, 1#usize)
+  | 7838#uscalar => ok (223#u32, 0#u32, 1#usize)
+  | 8124#uscalar => ok (8115#u32, 0#u32, 1#usize)
+  | 8140#uscalar => ok (8131#u32, 0#u32, 1#usize)
+  | 8172#uscalar => ok (8165#u32, 0#u32, 1#usize)
+  | 8188#uscalar => ok (8179#u32, 0#u32, 1#usize)
+  | 8486#uscalar => ok (969#u32, 0#u32, 1#usize)
+  | 8490#uscalar => ok (107#u32, 0#u32, 1#usize)
+  | 8491#uscalar => ok (229#u32, 0#u32, 1#usize)
+  | 8498#uscalar => ok (8526#u32, 0#u32, 1#usize)
+  | 8579#uscalar => ok (8580#u32, 0#u32, 1#usize)
+  | 11360#uscalar => ok (11361#u32, 0#u32, 1#usize)
+  | 11362#uscalar => ok (619#u32, 0#u32, 1#usize)
+  | 11363#uscalar => ok (7549#u32, 0#u32, 1#usize)
+  | 11364#uscalar => ok (637#u32, 0#u32, 1#usize)
+  | 11373#uscalar => ok (593#u32, 0#u32, 1#usize)
+  | 11374#uscalar => ok (625#u32, 0#u32, 1#usize)
+  | 11375#uscalar => ok (592#u32, 0#u32, 1#usize)
+  | 11376#uscalar => ok (594#u32, 0#u32, 1#usize)
+  | 11378#uscalar => ok (11379#u32, 0#u32, 1#usize)
+  | 11381#uscalar => ok (11382#u32, 0#u32, 1#usize)
+  | 11506#uscalar => ok (11507#u32, 0#u32, 1#usize)
+  | 42877#uscalar => ok (7545#u32, 0#u32, 1#usize)
+  | 42891#uscalar => ok (42892#u32, 0#u32, 1#usize)
+  | 42893#uscalar => ok (613#u32, 0#u32, 1#usize)
+  | 42922#uscalar => ok (614#u32, 0#u32, 1#usize)
+  | 42923#uscalar => ok (604#u32, 0#u32, 1#usize)
+  | 42924#uscalar => ok (609#u32, 0#u32, 1#usize)
+  | 42925#uscalar => ok (620#u32, 0#u32, 1#usize)
+  | 42926#uscalar => ok (618#u32, 0#u32, 1#usize)
+  | 42928#uscalar => ok (670#u32, 0#u32, 1#usize)
+  | 42929#uscalar => ok (647#u32, 0#u32, 1#usize)
+  | 42930#uscalar => ok (669#u32, 0#u32, 1#usize)
+  | 42931#uscalar => ok (43859#u32, 0#u32, 1#usize)
+  | 42948#uscalar => ok (42900#u32, 0#u32, 1#usize)
+  | 42949#uscalar => ok (642#u32, 0#u32, 1#usize)
+  | 42950#uscalar => ok (7566#u32, 0#u32, 1#usize)
+  | 42955#uscalar => ok (612#u32, 0#u32, 1#usize)
+  | 42972#uscalar => ok (411#u32, 0#u32, 1#usize)
+  | 42997#uscalar => ok (42998#u32, 0#u32, 1#usize)
+  | _ => ok (cp, 0#u32, 1#usize)
+
+/-- [rustfs_kernel::unicode::within]:
+    Source: 'ports/rustfs/kernel/src/unicode.rs', lines 14:0-19:1 -/
+def unicode.within
+  (cp : Std.U32) (start : Std.U32) («end» : Std.U32) (parity : Std.U32) :
+  Result Bool
+  := do
+  if cp < start
+  then ok false
+  else
+    if cp > «end»
+    then ok false
+    else
+      if parity = 0#u32
+      then ok true
+      else let i ← cp % 2#u32
+           let i1 ← parity - 1#u32
+           ok (i = i1)
+
+/-- [rustfs_kernel::unicode::range_8]:
+    Source: 'ports/rustfs/kernel/src/unicode.rs', lines 298:0-330:1 -/
+def unicode.range_8
+  (cp : Std.U32) : Result (Option (Std.U32 × Std.U32 × Std.Usize)) := do
+  let b ← unicode.within cp 66928#u32 66938#u32 0#u32
+  if b
+  then let i ← cp + 39#u32
+       ok (some (i, 0#u32, 1#usize))
+  else
+    let b1 ← unicode.within cp 66940#u32 66954#u32 0#u32
+    if b1
+    then let i ← cp + 39#u32
+         ok (some (i, 0#u32, 1#usize))
+    else
+      let b2 ← unicode.within cp 66956#u32 66962#u32 0#u32
+      if b2
+      then let i ← cp + 39#u32
+           ok (some (i, 0#u32, 1#usize))
+      else
+        let b3 ← unicode.within cp 66964#u32 66965#u32 0#u32
+        if b3
+        then let i ← cp + 39#u32
+             ok (some (i, 0#u32, 1#usize))
+        else
+          let b4 ← unicode.within cp 68736#u32 68786#u32 0#u32
+          if b4
+          then let i ← cp + 64#u32
+               ok (some (i, 0#u32, 1#usize))
+          else
+            let b5 ← unicode.within cp 68944#u32 68965#u32 0#u32
+            if b5
+            then let i ← cp + 32#u32
+                 ok (some (i, 0#u32, 1#usize))
+            else
+              let b6 ← unicode.within cp 71840#u32 71871#u32 0#u32
+              if b6
+              then let i ← cp + 32#u32
+                   ok (some (i, 0#u32, 1#usize))
+              else
+                let b7 ← unicode.within cp 93760#u32 93791#u32 0#u32
+                if b7
+                then let i ← cp + 32#u32
+                     ok (some (i, 0#u32, 1#usize))
+                else
+                  let b8 ← unicode.within cp 93856#u32 93880#u32 0#u32
+                  if b8
+                  then let i ← cp + 27#u32
+                       ok (some (i, 0#u32, 1#usize))
+                  else
+                    let b9 ← unicode.within cp 125184#u32 125217#u32 0#u32
+                    if b9
+                    then let i ← cp + 34#u32
+                         ok (some (i, 0#u32, 1#usize))
+                    else ok none
+
+/-- [rustfs_kernel::unicode::range_7]:
+    Source: 'ports/rustfs/kernel/src/unicode.rs', lines 265:0-297:1 -/
+def unicode.range_7
+  (cp : Std.U32) : Result (Option (Std.U32 × Std.U32 × Std.Usize)) := do
+  let b ← unicode.within cp 42873#u32 42875#u32 2#u32
+  if b
+  then let i ← cp + 1#u32
+       ok (some (i, 0#u32, 1#usize))
+  else
+    let b1 ← unicode.within cp 42878#u32 42886#u32 1#u32
+    if b1
+    then let i ← cp + 1#u32
+         ok (some (i, 0#u32, 1#usize))
+    else
+      let b2 ← unicode.within cp 42896#u32 42898#u32 1#u32
+      if b2
+      then let i ← cp + 1#u32
+           ok (some (i, 0#u32, 1#usize))
+      else
+        let b3 ← unicode.within cp 42902#u32 42920#u32 1#u32
+        if b3
+        then let i ← cp + 1#u32
+             ok (some (i, 0#u32, 1#usize))
+        else
+          let b4 ← unicode.within cp 42932#u32 42946#u32 1#u32
+          if b4
+          then let i ← cp + 1#u32
+               ok (some (i, 0#u32, 1#usize))
+          else
+            let b5 ← unicode.within cp 42951#u32 42953#u32 2#u32
+            if b5
+            then let i ← cp + 1#u32
+                 ok (some (i, 0#u32, 1#usize))
+            else
+              let b6 ← unicode.within cp 42956#u32 42970#u32 1#u32
+              if b6
+              then let i ← cp + 1#u32
+                   ok (some (i, 0#u32, 1#usize))
+              else
+                let b7 ← unicode.within cp 65313#u32 65338#u32 0#u32
+                if b7
+                then let i ← cp + 32#u32
+                     ok (some (i, 0#u32, 1#usize))
+                else
+                  let b8 ← unicode.within cp 66560#u32 66599#u32 0#u32
+                  if b8
+                  then let i ← cp + 40#u32
+                       ok (some (i, 0#u32, 1#usize))
+                  else
+                    let b9 ← unicode.within cp 66736#u32 66771#u32 0#u32
+                    if b9
+                    then let i ← cp + 40#u32
+                         ok (some (i, 0#u32, 1#usize))
+                    else ok none
+
+/-- [rustfs_kernel::unicode::range_6]:
+    Source: 'ports/rustfs/kernel/src/unicode.rs', lines 232:0-264:1 -/
+def unicode.range_6
+  (cp : Std.U32) : Result (Option (Std.U32 × Std.U32 × Std.Usize)) := do
+  let b ← unicode.within cp 9398#u32 9423#u32 0#u32
+  if b
+  then let i ← cp + 26#u32
+       ok (some (i, 0#u32, 1#usize))
+  else
+    let b1 ← unicode.within cp 11264#u32 11311#u32 0#u32
+    if b1
+    then let i ← cp + 48#u32
+         ok (some (i, 0#u32, 1#usize))
+    else
+      let b2 ← unicode.within cp 11367#u32 11371#u32 2#u32
+      if b2
+      then let i ← cp + 1#u32
+           ok (some (i, 0#u32, 1#usize))
+      else
+        let b3 ← unicode.within cp 11390#u32 11391#u32 0#u32
+        if b3
+        then let i ← cp - 10815#u32
+             ok (some (i, 0#u32, 1#usize))
+        else
+          let b4 ← unicode.within cp 11392#u32 11490#u32 1#u32
+          if b4
+          then let i ← cp + 1#u32
+               ok (some (i, 0#u32, 1#usize))
+          else
+            let b5 ← unicode.within cp 11499#u32 11501#u32 2#u32
+            if b5
+            then let i ← cp + 1#u32
+                 ok (some (i, 0#u32, 1#usize))
+            else
+              let b6 ← unicode.within cp 42560#u32 42604#u32 1#u32
+              if b6
+              then let i ← cp + 1#u32
+                   ok (some (i, 0#u32, 1#usize))
+              else
+                let b7 ← unicode.within cp 42624#u32 42650#u32 1#u32
+                if b7
+                then let i ← cp + 1#u32
+                     ok (some (i, 0#u32, 1#usize))
+                else
+                  let b8 ← unicode.within cp 42786#u32 42798#u32 1#u32
+                  if b8
+                  then let i ← cp + 1#u32
+                       ok (some (i, 0#u32, 1#usize))
+                  else
+                    let b9 ← unicode.within cp 42802#u32 42862#u32 1#u32
+                    if b9
+                    then let i ← cp + 1#u32
+                         ok (some (i, 0#u32, 1#usize))
+                    else ok none
+
+/-- [rustfs_kernel::unicode::range_5]:
+    Source: 'ports/rustfs/kernel/src/unicode.rs', lines 199:0-231:1 -/
+def unicode.range_5
+  (cp : Std.U32) : Result (Option (Std.U32 × Std.U32 × Std.Usize)) := do
+  let b ← unicode.within cp 8120#u32 8121#u32 0#u32
+  if b
+  then let i ← cp - 8#u32
+       ok (some (i, 0#u32, 1#usize))
+  else
+    let b1 ← unicode.within cp 8122#u32 8123#u32 0#u32
+    if b1
+    then let i ← cp - 74#u32
+         ok (some (i, 0#u32, 1#usize))
+    else
+      let b2 ← unicode.within cp 8136#u32 8139#u32 0#u32
+      if b2
+      then let i ← cp - 86#u32
+           ok (some (i, 0#u32, 1#usize))
+      else
+        let b3 ← unicode.within cp 8152#u32 8153#u32 0#u32
+        if b3
+        then let i ← cp - 8#u32
+             ok (some (i, 0#u32, 1#usize))
+        else
+          let b4 ← unicode.within cp 8154#u32 8155#u32 0#u32
+          if b4
+          then let i ← cp - 100#u32
+               ok (some (i, 0#u32, 1#usize))
+          else
+            let b5 ← unicode.within cp 8168#u32 8169#u32 0#u32
+            if b5
+            then let i ← cp - 8#u32
+                 ok (some (i, 0#u32, 1#usize))
+            else
+              let b6 ← unicode.within cp 8170#u32 8171#u32 0#u32
+              if b6
+              then let i ← cp - 112#u32
+                   ok (some (i, 0#u32, 1#usize))
+              else
+                let b7 ← unicode.within cp 8184#u32 8185#u32 0#u32
+                if b7
+                then let i ← cp - 128#u32
+                     ok (some (i, 0#u32, 1#usize))
+                else
+                  let b8 ← unicode.within cp 8186#u32 8187#u32 0#u32
+                  if b8
+                  then let i ← cp - 126#u32
+                       ok (some (i, 0#u32, 1#usize))
+                  else
+                    let b9 ← unicode.within cp 8544#u32 8559#u32 0#u32
+                    if b9
+                    then let i ← cp + 16#u32
+                         ok (some (i, 0#u32, 1#usize))
+                    else ok none
+
+/-- [rustfs_kernel::unicode::range_4]:
+    Source: 'ports/rustfs/kernel/src/unicode.rs', lines 166:0-198:1 -/
+def unicode.range_4
+  (cp : Std.U32) : Result (Option (Std.U32 × Std.U32 × Std.Usize)) := do
+  let b ← unicode.within cp 7944#u32 7951#u32 0#u32
+  if b
+  then let i ← cp - 8#u32
+       ok (some (i, 0#u32, 1#usize))
+  else
+    let b1 ← unicode.within cp 7960#u32 7965#u32 0#u32
+    if b1
+    then let i ← cp - 8#u32
+         ok (some (i, 0#u32, 1#usize))
+    else
+      let b2 ← unicode.within cp 7976#u32 7983#u32 0#u32
+      if b2
+      then let i ← cp - 8#u32
+           ok (some (i, 0#u32, 1#usize))
+      else
+        let b3 ← unicode.within cp 7992#u32 7999#u32 0#u32
+        if b3
+        then let i ← cp - 8#u32
+             ok (some (i, 0#u32, 1#usize))
+        else
+          let b4 ← unicode.within cp 8008#u32 8013#u32 0#u32
+          if b4
+          then let i ← cp - 8#u32
+               ok (some (i, 0#u32, 1#usize))
+          else
+            let b5 ← unicode.within cp 8025#u32 8031#u32 2#u32
+            if b5
+            then let i ← cp - 8#u32
+                 ok (some (i, 0#u32, 1#usize))
+            else
+              let b6 ← unicode.within cp 8040#u32 8047#u32 0#u32
+              if b6
+              then let i ← cp - 8#u32
+                   ok (some (i, 0#u32, 1#usize))
+              else
+                let b7 ← unicode.within cp 8072#u32 8079#u32 0#u32
+                if b7
+                then let i ← cp - 8#u32
+                     ok (some (i, 0#u32, 1#usize))
+                else
+                  let b8 ← unicode.within cp 8088#u32 8095#u32 0#u32
+                  if b8
+                  then let i ← cp - 8#u32
+                       ok (some (i, 0#u32, 1#usize))
+                  else
+                    let b9 ← unicode.within cp 8104#u32 8111#u32 0#u32
+                    if b9
+                    then let i ← cp - 8#u32
+                         ok (some (i, 0#u32, 1#usize))
+                    else ok none
+
+/-- [rustfs_kernel::unicode::range_3]:
+    Source: 'ports/rustfs/kernel/src/unicode.rs', lines 133:0-165:1 -/
+def unicode.range_3
+  (cp : Std.U32) : Result (Option (Std.U32 × Std.U32 × Std.Usize)) := do
+  let b ← unicode.within cp 1217#u32 1229#u32 2#u32
+  if b
+  then let i ← cp + 1#u32
+       ok (some (i, 0#u32, 1#usize))
+  else
+    let b1 ← unicode.within cp 1232#u32 1326#u32 1#u32
+    if b1
+    then let i ← cp + 1#u32
+         ok (some (i, 0#u32, 1#usize))
+    else
+      let b2 ← unicode.within cp 1329#u32 1366#u32 0#u32
+      if b2
+      then let i ← cp + 48#u32
+           ok (some (i, 0#u32, 1#usize))
+      else
+        let b3 ← unicode.within cp 4256#u32 4293#u32 0#u32
+        if b3
+        then let i ← cp + 7264#u32
+             ok (some (i, 0#u32, 1#usize))
+        else
+          let b4 ← unicode.within cp 5024#u32 5103#u32 0#u32
+          if b4
+          then let i ← cp + 38864#u32
+               ok (some (i, 0#u32, 1#usize))
+          else
+            let b5 ← unicode.within cp 5104#u32 5109#u32 0#u32
+            if b5
+            then let i ← cp + 8#u32
+                 ok (some (i, 0#u32, 1#usize))
+            else
+              let b6 ← unicode.within cp 7312#u32 7354#u32 0#u32
+              if b6
+              then let i ← cp - 3008#u32
+                   ok (some (i, 0#u32, 1#usize))
+              else
+                let b7 ← unicode.within cp 7357#u32 7359#u32 0#u32
+                if b7
+                then let i ← cp - 3008#u32
+                     ok (some (i, 0#u32, 1#usize))
+                else
+                  let b8 ← unicode.within cp 7680#u32 7828#u32 1#u32
+                  if b8
+                  then let i ← cp + 1#u32
+                       ok (some (i, 0#u32, 1#usize))
+                  else
+                    let b9 ← unicode.within cp 7840#u32 7934#u32 1#u32
+                    if b9
+                    then let i ← cp + 1#u32
+                         ok (some (i, 0#u32, 1#usize))
+                    else ok none
+
+/-- [rustfs_kernel::unicode::range_2]:
+    Source: 'ports/rustfs/kernel/src/unicode.rs', lines 100:0-132:1 -/
+def unicode.range_2
+  (cp : Std.U32) : Result (Option (Std.U32 × Std.U32 × Std.Usize)) := do
+  let b ← unicode.within cp 904#u32 906#u32 0#u32
+  if b
+  then let i ← cp + 37#u32
+       ok (some (i, 0#u32, 1#usize))
+  else
+    let b1 ← unicode.within cp 910#u32 911#u32 0#u32
+    if b1
+    then let i ← cp + 63#u32
+         ok (some (i, 0#u32, 1#usize))
+    else
+      let b2 ← unicode.within cp 913#u32 929#u32 0#u32
+      if b2
+      then let i ← cp + 32#u32
+           ok (some (i, 0#u32, 1#usize))
+      else
+        let b3 ← unicode.within cp 931#u32 939#u32 0#u32
+        if b3
+        then let i ← cp + 32#u32
+             ok (some (i, 0#u32, 1#usize))
+        else
+          let b4 ← unicode.within cp 984#u32 1006#u32 1#u32
+          if b4
+          then let i ← cp + 1#u32
+               ok (some (i, 0#u32, 1#usize))
+          else
+            let b5 ← unicode.within cp 1021#u32 1023#u32 0#u32
+            if b5
+            then let i ← cp - 130#u32
+                 ok (some (i, 0#u32, 1#usize))
+            else
+              let b6 ← unicode.within cp 1024#u32 1039#u32 0#u32
+              if b6
+              then let i ← cp + 80#u32
+                   ok (some (i, 0#u32, 1#usize))
+              else
+                let b7 ← unicode.within cp 1040#u32 1071#u32 0#u32
+                if b7
+                then let i ← cp + 32#u32
+                     ok (some (i, 0#u32, 1#usize))
+                else
+                  let b8 ← unicode.within cp 1120#u32 1152#u32 1#u32
+                  if b8
+                  then let i ← cp + 1#u32
+                       ok (some (i, 0#u32, 1#usize))
+                  else
+                    let b9 ← unicode.within cp 1162#u32 1214#u32 1#u32
+                    if b9
+                    then let i ← cp + 1#u32
+                         ok (some (i, 0#u32, 1#usize))
+                    else ok none
+
+/-- [rustfs_kernel::unicode::range_1]:
+    Source: 'ports/rustfs/kernel/src/unicode.rs', lines 67:0-99:1 -/
+def unicode.range_1
+  (cp : Std.U32) : Result (Option (Std.U32 × Std.U32 × Std.Usize)) := do
+  let b ← unicode.within cp 416#u32 420#u32 1#u32
+  if b
+  then let i ← cp + 1#u32
+       ok (some (i, 0#u32, 1#usize))
+  else
+    let b1 ← unicode.within cp 433#u32 434#u32 0#u32
+    if b1
+    then let i ← cp + 217#u32
+         ok (some (i, 0#u32, 1#usize))
+    else
+      let b2 ← unicode.within cp 435#u32 437#u32 2#u32
+      if b2
+      then let i ← cp + 1#u32
+           ok (some (i, 0#u32, 1#usize))
+      else
+        let b3 ← unicode.within cp 459#u32 475#u32 2#u32
+        if b3
+        then let i ← cp + 1#u32
+             ok (some (i, 0#u32, 1#usize))
+        else
+          let b4 ← unicode.within cp 478#u32 494#u32 1#u32
+          if b4
+          then let i ← cp + 1#u32
+               ok (some (i, 0#u32, 1#usize))
+          else
+            let b5 ← unicode.within cp 498#u32 500#u32 1#u32
+            if b5
+            then let i ← cp + 1#u32
+                 ok (some (i, 0#u32, 1#usize))
+            else
+              let b6 ← unicode.within cp 504#u32 542#u32 1#u32
+              if b6
+              then let i ← cp + 1#u32
+                   ok (some (i, 0#u32, 1#usize))
+              else
+                let b7 ← unicode.within cp 546#u32 562#u32 1#u32
+                if b7
+                then let i ← cp + 1#u32
+                     ok (some (i, 0#u32, 1#usize))
+                else
+                  let b8 ← unicode.within cp 582#u32 590#u32 1#u32
+                  if b8
+                  then let i ← cp + 1#u32
+                       ok (some (i, 0#u32, 1#usize))
+                  else
+                    let b9 ← unicode.within cp 880#u32 882#u32 1#u32
+                    if b9
+                    then let i ← cp + 1#u32
+                         ok (some (i, 0#u32, 1#usize))
+                    else ok none
+
+/-- [rustfs_kernel::unicode::range_0]:
+    Source: 'ports/rustfs/kernel/src/unicode.rs', lines 34:0-66:1 -/
+def unicode.range_0
+  (cp : Std.U32) : Result (Option (Std.U32 × Std.U32 × Std.Usize)) := do
+  let b ← unicode.within cp 65#u32 90#u32 0#u32
+  if b
+  then let i ← cp + 32#u32
+       ok (some (i, 0#u32, 1#usize))
+  else
+    let b1 ← unicode.within cp 192#u32 214#u32 0#u32
+    if b1
+    then let i ← cp + 32#u32
+         ok (some (i, 0#u32, 1#usize))
+    else
+      let b2 ← unicode.within cp 216#u32 222#u32 0#u32
+      if b2
+      then let i ← cp + 32#u32
+           ok (some (i, 0#u32, 1#usize))
+      else
+        let b3 ← unicode.within cp 256#u32 302#u32 1#u32
+        if b3
+        then let i ← cp + 1#u32
+             ok (some (i, 0#u32, 1#usize))
+        else
+          let b4 ← unicode.within cp 306#u32 310#u32 1#u32
+          if b4
+          then let i ← cp + 1#u32
+               ok (some (i, 0#u32, 1#usize))
+          else
+            let b5 ← unicode.within cp 313#u32 327#u32 2#u32
+            if b5
+            then let i ← cp + 1#u32
+                 ok (some (i, 0#u32, 1#usize))
+            else
+              let b6 ← unicode.within cp 330#u32 374#u32 1#u32
+              if b6
+              then let i ← cp + 1#u32
+                   ok (some (i, 0#u32, 1#usize))
+              else
+                let b7 ← unicode.within cp 377#u32 381#u32 2#u32
+                if b7
+                then let i ← cp + 1#u32
+                     ok (some (i, 0#u32, 1#usize))
+                else
+                  let b8 ← unicode.within cp 386#u32 388#u32 1#u32
+                  if b8
+                  then let i ← cp + 1#u32
+                       ok (some (i, 0#u32, 1#usize))
+                  else
+                    let b9 ← unicode.within cp 393#u32 394#u32 0#u32
+                    if b9
+                    then let i ← cp + 205#u32
+                         ok (some (i, 0#u32, 1#usize))
+                    else ok none
+
+/-- [rustfs_kernel::unicode::range_chunk]:
+    Source: 'ports/rustfs/kernel/src/unicode.rs', lines 20:0-33:1 -/
+def unicode.range_chunk
+  (cp : Std.U32) (index : Std.Usize) :
+  Result (Option (Std.U32 × Std.U32 × Std.Usize))
+  := do
+  match index.val with
+  | 0 => unicode.range_0 cp
+  | 1 => unicode.range_1 cp
+  | 2 => unicode.range_2 cp
+  | 3 => unicode.range_3 cp
+  | 4 => unicode.range_4 cp
+  | 5 => unicode.range_5 cp
+  | 6 => unicode.range_6 cp
+  | 7 => unicode.range_7 cp
+  | 8 => unicode.range_8 cp
+  | _ => ok none
+
+/-- [rustfs_kernel::unicode::lowercase_scalar]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/unicode.rs', lines 6:4-13:1
+    Visibility: public -/
+@[rust_loop_body]
+def unicode.lowercase_scalar_loop.body
+  (cp : Std.U32) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize (Std.U32 × Std.U32 × Std.Usize))
+  := do
+  if i < 9#usize
+  then
+    let o ← unicode.range_chunk cp i
+    match o with
+    | none => let i1 ← i + 1#usize
+              ok (cont i1)
+    | some v => let (i1, i2, i3) := v
+                ok (done (i1, i2, i3))
+  else
+    let v ← unicode.singleton cp
+    let (i1, i2, i3) := v
+    ok (done (i1, i2, i3))
+
+/-- [rustfs_kernel::unicode::lowercase_scalar]: loop 0:
+    Source: 'ports/rustfs/kernel/src/unicode.rs', lines 6:4-13:1
+    Visibility: public -/
+@[rust_loop]
+def unicode.lowercase_scalar_loop
+  (cp : Std.U32) (i : Std.Usize) :
+  Result (Std.U32 × Std.U32 × Std.Usize)
+  := do
+  loop
+    (fun i1 => unicode.lowercase_scalar_loop.body cp i1)
+    i
+
+/-- [rustfs_kernel::unicode::lowercase_scalar]:
+    Source: 'ports/rustfs/kernel/src/unicode.rs', lines 4:0-13:1
+    Visibility: public -/
+@[reducible]
+def unicode.lowercase_scalar
+  (cp : Std.U32) : Result (Std.U32 × Std.U32 × Std.Usize) := do
+  unicode.lowercase_scalar_loop cp 0#usize
+
+/-- [rustfs_kernel::unicode::lower]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/unicode.rs', lines 477:4-485:5
+    Visibility: public -/
+@[rust_loop_body]
+def unicode.lower_loop.body
+  (s : Slice Std.U8) (out : alloc.vec.Vec Std.U8) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Std.U8) × Std.Usize) (alloc.vec.Vec
+    Std.U8))
+  := do
+  let i1 := Slice.len s
+  if i < i1
+  then
+    let (cp, next) ← unicode.scalar_at s i
+    let (a, b, count) ← unicode.lowercase_scalar cp
+    let out1 ← unicode.append_scalar out a
+    if count = 2#usize
+    then let out2 ← unicode.append_scalar out1 b
+         ok (cont (out2, next))
+    else ok (cont (out1, next))
+  else ok (done out)
+
+/-- [rustfs_kernel::unicode::lower]: loop 0:
+    Source: 'ports/rustfs/kernel/src/unicode.rs', lines 477:4-485:5
+    Visibility: public -/
+@[rust_loop]
+def unicode.lower_loop
+  (s : Slice Std.U8) (out : alloc.vec.Vec Std.U8) (i : Std.Usize) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  loop
+    (fun (out1, i1) => unicode.lower_loop.body s out1 i1)
+    (out, i)
+
+/-- [rustfs_kernel::unicode::lower]:
+    Source: 'ports/rustfs/kernel/src/unicode.rs', lines 474:0-487:1
+    Visibility: public -/
+@[reducible]
+def unicode.lower (s : Slice Std.U8) : Result (alloc.vec.Vec Std.U8) := do
+  unicode.lower_loop s (alloc.vec.Vec.new Std.U8) 0#usize
+
+/-- [rustfs_kernel::claims::case_insensitive_eq]:
+    Source: 'ports/rustfs/kernel/src/claims.rs', lines 20:0-22:1
+    Visibility: public -/
+def claims.case_insensitive_eq
+  (left : Slice Std.U8) (right : Slice Std.U8) : Result Bool := do
+  let v ← unicode.lower left
+  let s := alloc.vec.Vec.deref v
+  let v1 ← unicode.lower right
+  let s1 := alloc.vec.Vec.deref v1
+  bytes.eq s s1
+
+/-- [rustfs_kernel::claims::find]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/claims.rs', lines 47:4-54:1
+    Visibility: public -/
+@[rust_loop_body]
+def claims.find_loop.body
+  (table : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × claims.Value))
+  («name» : Slice Std.U8) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize (Option Std.Usize))
+  := do
+  let i1 := alloc.vec.Vec.len table
+  if i < i1
+  then
+    let (v, _) ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+        ((alloc.vec.Vec Std.U8) × claims.Value)) table i
+    let s := alloc.vec.Vec.deref v
+    let b ← bytes.eq s «name»
+    if b
+    then ok (done (some i))
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else ok (done none)
+
+/-- [rustfs_kernel::claims::find]: loop 0:
+    Source: 'ports/rustfs/kernel/src/claims.rs', lines 47:4-54:1
+    Visibility: public -/
+@[rust_loop]
+def claims.find_loop
+  (table : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × claims.Value))
+  («name» : Slice Std.U8) (i : Std.Usize) :
+  Result (Option Std.Usize)
+  := do
+  loop
+    (fun i1 => claims.find_loop.body table «name» i1)
+    i
+
+/-- [rustfs_kernel::claims::find]:
+    Source: 'ports/rustfs/kernel/src/claims.rs', lines 45:0-54:1
+    Visibility: public -/
+@[reducible]
+def claims.find
+  (table : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × claims.Value))
+  («name» : Slice Std.U8) :
+  Result (Option Std.Usize)
+  := do
+  claims.find_loop table «name» 0#usize
+
+/-- [rustfs_kernel::claims::case_fold_lookup]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/claims.rs', lines 33:4-43:1 -/
+@[rust_loop_body]
+def claims.case_fold_lookup_loop.body
+  (table : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × claims.Value))
+  («name» : Slice Std.U8) (matched : claims.ClaimLookup) (j : Std.Usize) :
+  Result (ControlFlow (claims.ClaimLookup × Std.Usize) claims.ClaimLookup)
+  := do
+  let i := alloc.vec.Vec.len table
+  if j < i
+  then
+    let (v, _) ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+        ((alloc.vec.Vec Std.U8) × claims.Value)) table j
+    let s := alloc.vec.Vec.deref v
+    let b ← claims.case_insensitive_eq s «name»
+    if b
+    then
+      match matched with
+      | claims.ClaimLookup.Missing =>
+        let j1 ← j + 1#usize
+        ok (cont (claims.ClaimLookup.Found j, j1))
+      | claims.ClaimLookup.Found _ => ok (done claims.ClaimLookup.Ambiguous)
+      | claims.ClaimLookup.Ambiguous =>
+        let j1 ← j + 1#usize
+        ok (cont (claims.ClaimLookup.Found j, j1))
+    else let j1 ← j + 1#usize
+         ok (cont (matched, j1))
+  else ok (done matched)
+
+/-- [rustfs_kernel::claims::case_fold_lookup]: loop 0:
+    Source: 'ports/rustfs/kernel/src/claims.rs', lines 33:4-43:1 -/
+@[rust_loop]
+def claims.case_fold_lookup_loop
+  (table : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × claims.Value))
+  («name» : Slice Std.U8) (matched : claims.ClaimLookup) (j : Std.Usize) :
+  Result claims.ClaimLookup
+  := do
+  loop
+    (fun (matched1, j1) => claims.case_fold_lookup_loop.body table «name»
+      matched1 j1)
+    (matched, j)
+
+/-- [rustfs_kernel::claims::case_fold_lookup]:
+    Source: 'ports/rustfs/kernel/src/claims.rs', lines 30:0-43:1 -/
+@[reducible]
+def claims.case_fold_lookup
+  (table : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × claims.Value))
+  («name» : Slice Std.U8) :
+  Result claims.ClaimLookup
+  := do
+  claims.case_fold_lookup_loop table «name» claims.ClaimLookup.Missing
+    0#usize
+
+/-- [rustfs_kernel::claims::get_claim_case_insensitive]:
+    Source: 'ports/rustfs/kernel/src/claims.rs', lines 24:0-29:1
+    Visibility: public -/
+def claims.get_claim_case_insensitive
+  (table : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × claims.Value))
+  («name» : Slice Std.U8) :
+  Result claims.ClaimLookup
+  := do
+  let o ← claims.find table «name»
+  match o with
+  | none => claims.case_fold_lookup table «name»
+  | some i => ok (claims.ClaimLookup.Found i)
+
+/-- [rustfs_kernel::unicode::whitespace]:
+    Source: 'ports/rustfs/kernel/src/unicode.rs', lines 489:0-501:1
+    Visibility: public -/
+def unicode.whitespace (cp : Std.U32) : Result Bool := do
+  if cp >= 9#u32
+  then
+    if cp <= 13#u32
+    then ok true
+    else
+      if cp = 32#u32
+      then ok true
+      else
+        if cp = 133#u32
+        then ok true
+        else
+          if cp = 160#u32
+          then ok true
+          else
+            if cp = 5760#u32
+            then ok true
+            else
+              if cp >= 8192#u32
+              then
+                if cp <= 8202#u32
+                then ok true
+                else
+                  if cp = 8232#u32
+                  then ok true
+                  else
+                    if cp = 8233#u32
+                    then ok true
+                    else
+                      if cp = 8239#u32
+                      then ok true
+                      else
+                        if cp = 8287#u32
+                        then ok true
+                        else ok (cp = 12288#u32)
+              else
+                if cp = 8232#u32
+                then ok true
+                else
+                  if cp = 8233#u32
+                  then ok true
+                  else
+                    if cp = 8239#u32
+                    then ok true
+                    else if cp = 8287#u32
+                         then ok true
+                         else ok (cp = 12288#u32)
+  else
+    if cp = 32#u32
+    then ok true
+    else
+      if cp = 133#u32
+      then ok true
+      else
+        if cp = 160#u32
+        then ok true
+        else
+          if cp = 5760#u32
+          then ok true
+          else
+            if cp >= 8192#u32
+            then
+              if cp <= 8202#u32
+              then ok true
+              else
+                if cp = 8232#u32
+                then ok true
+                else
+                  if cp = 8233#u32
+                  then ok true
+                  else
+                    if cp = 8239#u32
+                    then ok true
+                    else if cp = 8287#u32
+                         then ok true
+                         else ok (cp = 12288#u32)
+            else
+              if cp = 8232#u32
+              then ok true
+              else
+                if cp = 8233#u32
+                then ok true
+                else
+                  if cp = 8239#u32
+                  then ok true
+                  else if cp = 8287#u32
+                       then ok true
+                       else ok (cp = 12288#u32)
+
+/-- [rustfs_kernel::unicode::trim]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/unicode.rs', lines 507:4-516:5
+    Visibility: public -/
+@[rust_loop_body]
+def unicode.trim_loop.body
+  (s : Slice Std.U8) (first : Std.Usize) (last : Std.Usize) (i : Std.Usize) :
+  Result (ControlFlow (Std.Usize × Std.Usize × Std.Usize) (Std.Usize ×
+    Std.Usize))
+  := do
+  let i1 := Slice.len s
+  if i < i1
+  then
+    let (cp, next) ← unicode.scalar_at s i
+    let b ← unicode.whitespace cp
+    if b
+    then ok (cont (first, last, next))
+    else
+      let i2 := Slice.len s
+      if first = i2
+      then ok (cont (i, next, next))
+      else ok (cont (first, next, next))
+  else ok (done (first, last))
+
+/-- [rustfs_kernel::unicode::trim]: loop 0:
+    Source: 'ports/rustfs/kernel/src/unicode.rs', lines 507:4-516:5
+    Visibility: public -/
+@[rust_loop]
+def unicode.trim_loop
+  (s : Slice Std.U8) (first : Std.Usize) (last : Std.Usize) (i : Std.Usize) :
+  Result (Std.Usize × Std.Usize)
+  := do
+  loop
+    (fun (first1, last1, i1) => unicode.trim_loop.body s first1 last1 i1)
+    (first, last, i)
+
+/-- [rustfs_kernel::unicode::trim]:
+    Source: 'ports/rustfs/kernel/src/unicode.rs', lines 503:0-522:1
+    Visibility: public -/
+def unicode.trim (s : Slice Std.U8) : Result (alloc.vec.Vec Std.U8) := do
+  let first := Slice.len s
+  let (first1, last) ← unicode.trim_loop s first 0#usize 0#usize
+  let i := Slice.len s
+  if first1 = i
+  then ok (alloc.vec.Vec.new Std.U8)
+  else bytes.slice s first1 last
+
+/-- [rustfs_kernel::claims::split_values]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/claims.rs', lines 60:4-69:5
+    Visibility: public -/
+@[rust_loop_body]
+def claims.split_values_loop.body
+  (s : Slice Std.U8) (out : alloc.vec.Vec (alloc.vec.Vec Std.U8))
+  (start : Std.Usize) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec (alloc.vec.Vec Std.U8)) × Std.Usize ×
+    Std.Usize) (alloc.vec.Vec (alloc.vec.Vec Std.U8)))
+  := do
+  let i1 := Slice.len s
+  if i <= i1
+  then
+    let i2 := Slice.len s
+    let (out1, start1) ←
+      if i = i2
+      then
+        do
+        let v ← bytes.slice s start i
+        let s1 := alloc.vec.Vec.deref v
+        let part ← unicode.trim s1
+        let i3 := alloc.vec.Vec.len part
+        let out2 ←
+          if i3 != 0#usize
+          then alloc.vec.Vec.push out part
+          else ok out
+        let start2 ← i + 1#usize
+        ok (out2, start2)
+      else
+        do
+        let i3 ← Slice.index_usize s i
+        if i3 = 44#u8
+        then
+          let v ← bytes.slice s start i
+          let s1 := alloc.vec.Vec.deref v
+          let part ← unicode.trim s1
+          let i4 := alloc.vec.Vec.len part
+          let out2 ←
+            if i4 != 0#usize
+            then alloc.vec.Vec.push out part
+            else ok out
+          let start2 ← i + 1#usize
+          ok (out2, start2)
+        else ok (out, start)
+    let i3 ← i + 1#usize
+    ok (cont (out1, start1, i3))
+  else ok (done out)
+
+/-- [rustfs_kernel::claims::split_values]: loop 0:
+    Source: 'ports/rustfs/kernel/src/claims.rs', lines 60:4-69:5
+    Visibility: public -/
+@[rust_loop]
+def claims.split_values_loop
+  (s : Slice Std.U8) (out : alloc.vec.Vec (alloc.vec.Vec Std.U8))
+  (start : Std.Usize) (i : Std.Usize) :
+  Result (alloc.vec.Vec (alloc.vec.Vec Std.U8))
+  := do
+  loop
+    (fun (out1, start1, i1) => claims.split_values_loop.body s out1 start1 i1)
+    (out, start, i)
+
+/-- [rustfs_kernel::claims::split_values]:
+    Source: 'ports/rustfs/kernel/src/claims.rs', lines 56:0-71:1
+    Visibility: public -/
+@[reducible]
+def claims.split_values
+  (s : Slice Std.U8) : Result (alloc.vec.Vec (alloc.vec.Vec Std.U8)) := do
+  claims.split_values_loop s (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) 0#usize
+    0#usize
+
+/-- [rustfs_kernel::claims::append_string_values]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/claims.rs', lines 76:8-79:9 -/
+@[rust_loop_body]
+def claims.append_string_values_loop.body
+  (parts : alloc.vec.Vec (alloc.vec.Vec Std.U8))
+  (out : alloc.vec.Vec (alloc.vec.Vec Std.U8)) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec (alloc.vec.Vec Std.U8)) × Std.Usize)
+    (alloc.vec.Vec (alloc.vec.Vec Std.U8)))
+  := do
+  let i1 := alloc.vec.Vec.len parts
+  if i < i1
+  then
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice (alloc.vec.Vec
+        Std.U8)) parts i
+    let v1 ← alloc.vec.CloneVec.clone core.clone.CloneU8 v
+    let out1 ← alloc.vec.Vec.push out v1
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
+  else ok (done out)
+
+/-- [rustfs_kernel::claims::append_string_values]: loop 0:
+    Source: 'ports/rustfs/kernel/src/claims.rs', lines 76:8-79:9 -/
+@[rust_loop]
+def claims.append_string_values_loop
+  (out : alloc.vec.Vec (alloc.vec.Vec Std.U8))
+  (parts : alloc.vec.Vec (alloc.vec.Vec Std.U8)) (i : Std.Usize) :
+  Result (alloc.vec.Vec (alloc.vec.Vec Std.U8))
+  := do
+  loop
+    (fun (out1, i1) => claims.append_string_values_loop.body parts out1 i1)
+    (out, i)
+
+/-- [rustfs_kernel::claims::append_string_values]:
+    Source: 'ports/rustfs/kernel/src/claims.rs', lines 72:0-81:1 -/
+def claims.append_string_values
+  (out : alloc.vec.Vec (alloc.vec.Vec Std.U8)) (value : claims.Value) :
+  Result (alloc.vec.Vec (alloc.vec.Vec Std.U8))
+  := do
+  match value with
+  | claims.Value.Null => ok out
+  | claims.Value.Bool _ => ok out
+  | claims.Value.Number _ => ok out
+  | claims.Value.String s =>
+    let s1 := alloc.vec.Vec.deref s
+    let parts ← claims.split_values s1
+    claims.append_string_values_loop out parts 0#usize
+  | claims.Value.Array _ => ok out
+  | claims.Value.Object _ => ok out
+
+/-- [rustfs_kernel::claims::value_strings]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/claims.rs', lines 87:12-90:13 -/
+@[rust_loop_body]
+def claims.value_strings_loop.body
+  (array : alloc.vec.Vec claims.Value)
+  (out : alloc.vec.Vec (alloc.vec.Vec Std.U8)) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec (alloc.vec.Vec Std.U8)) × Std.Usize)
+    (alloc.vec.Vec (alloc.vec.Vec Std.U8)))
+  := do
+  let i1 := alloc.vec.Vec.len array
+  if i < i1
+  then
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice claims.Value)
+        array i
+    let out1 ← claims.append_string_values out v
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
+  else ok (done out)
+
+/-- [rustfs_kernel::claims::value_strings]: loop 0:
+    Source: 'ports/rustfs/kernel/src/claims.rs', lines 87:12-90:13 -/
+@[rust_loop]
+def claims.value_strings_loop
+  (array : alloc.vec.Vec claims.Value)
+  (out : alloc.vec.Vec (alloc.vec.Vec Std.U8)) (i : Std.Usize) :
+  Result (alloc.vec.Vec (alloc.vec.Vec Std.U8))
+  := do
+  loop
+    (fun (out1, i1) => claims.value_strings_loop.body array out1 i1)
+    (out, i)
+
+/-- [rustfs_kernel::claims::value_strings]:
+    Source: 'ports/rustfs/kernel/src/claims.rs', lines 82:0-99:1 -/
+def claims.value_strings
+  (value : claims.Value) :
+  Result ((alloc.vec.Vec (alloc.vec.Vec Std.U8)) × Bool)
+  := do
+  match value with
+  | claims.Value.Null => ok (alloc.vec.Vec.new (alloc.vec.Vec Std.U8), false)
+  | claims.Value.Bool _ => ok (alloc.vec.Vec.new (alloc.vec.Vec Std.U8), false)
+  | claims.Value.Number _ =>
+    ok (alloc.vec.Vec.new (alloc.vec.Vec Std.U8), false)
+  | claims.Value.String _ =>
+    let out ←
+      claims.append_string_values (alloc.vec.Vec.new (alloc.vec.Vec Std.U8))
+        value
+    ok (out, true)
+  | claims.Value.Array array =>
+    let out ←
+      claims.value_strings_loop array (alloc.vec.Vec.new (alloc.vec.Vec
+        Std.U8)) 0#usize
+    ok (out, true)
+  | claims.Value.Object _ =>
+    ok (alloc.vec.Vec.new (alloc.vec.Vec Std.U8), false)
+
+/-- [rustfs_kernel::claims::values_from_claims]:
+    Source: 'ports/rustfs/kernel/src/claims.rs', lines 101:0-106:1
+    Visibility: public -/
+def claims.values_from_claims
+  (table : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × claims.Value))
+  («name» : Slice Std.U8) :
+  Result ((alloc.vec.Vec (alloc.vec.Vec Std.U8)) × Bool)
+  := do
+  let o ← claims.find table «name»
+  match o with
+  | none => ok (alloc.vec.Vec.new (alloc.vec.Vec Std.U8), false)
+  | some i =>
+    let (_, v) ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+        ((alloc.vec.Vec Std.U8) × claims.Value)) table i
+    claims.value_strings v
+
+/-- [rustfs_kernel::claims::lookup_strings]:
+    Source: 'ports/rustfs/kernel/src/claims.rs', lines 108:0-113:1 -/
+def claims.lookup_strings
+  (table : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × claims.Value))
+  («name» : Slice Std.U8) :
+  Result ((alloc.vec.Vec (alloc.vec.Vec Std.U8)) × Bool)
+  := do
+  let cl ← claims.get_claim_case_insensitive table «name»
+  match cl with
+  | claims.ClaimLookup.Missing =>
+    ok (alloc.vec.Vec.new (alloc.vec.Vec Std.U8), false)
+  | claims.ClaimLookup.Found i =>
+    let (_, v) ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+        ((alloc.vec.Vec Std.U8) × claims.Value)) table i
+    claims.value_strings v
+  | claims.ClaimLookup.Ambiguous =>
+    ok (alloc.vec.Vec.new (alloc.vec.Vec Std.U8), false)
+
+/-- [rustfs_kernel::claims::unique_values]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/claims.rs', lines 117:4-122:5 -/
+@[rust_loop_body]
+def claims.unique_values_loop.body
+  (values : Slice (alloc.vec.Vec Std.U8))
+  (out : alloc.vec.Vec (alloc.vec.Vec Std.U8)) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec (alloc.vec.Vec Std.U8)) × Std.Usize)
+    (alloc.vec.Vec (alloc.vec.Vec Std.U8)))
+  := do
+  let i1 := Slice.len values
+  if i < i1
+  then
+    let s := alloc.vec.Vec.deref out
+    let v ← Slice.index_usize values i
+    let s1 := alloc.vec.Vec.deref v
+    let b ← bytes.member s s1
+    let out1 ←
+      if b
+      then ok out
+      else
+        do
+        let v1 ← alloc.vec.CloneVec.clone core.clone.CloneU8 v
+        alloc.vec.Vec.push out v1
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
+  else ok (done out)
+
+/-- [rustfs_kernel::claims::unique_values]: loop 0:
+    Source: 'ports/rustfs/kernel/src/claims.rs', lines 117:4-122:5 -/
+@[rust_loop]
+def claims.unique_values_loop
+  (values : Slice (alloc.vec.Vec Std.U8))
+  (out : alloc.vec.Vec (alloc.vec.Vec Std.U8)) (i : Std.Usize) :
+  Result (alloc.vec.Vec (alloc.vec.Vec Std.U8))
+  := do
+  loop
+    (fun (out1, i1) => claims.unique_values_loop.body values out1 i1)
+    (out, i)
+
+/-- [rustfs_kernel::claims::unique_values]:
+    Source: 'ports/rustfs/kernel/src/claims.rs', lines 114:0-124:1 -/
+@[reducible]
+def claims.unique_values
+  (values : Slice (alloc.vec.Vec Std.U8)) :
+  Result (alloc.vec.Vec (alloc.vec.Vec Std.U8))
+  := do
+  claims.unique_values_loop values (alloc.vec.Vec.new (alloc.vec.Vec Std.U8))
+    0#usize
+
+/-- [rustfs_kernel::claims::get_values_from_claims]:
+    Source: 'ports/rustfs/kernel/src/claims.rs', lines 125:0-128:1
+    Visibility: public -/
+def claims.get_values_from_claims
+  (table : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × claims.Value))
+  («name» : Slice Std.U8) :
+  Result ((alloc.vec.Vec (alloc.vec.Vec Std.U8)) × Bool)
+  := do
+  let (values, present) ← claims.lookup_strings table «name»
+  let s := alloc.vec.Vec.deref values
+  let v ← claims.unique_values s
+  ok (v, present)
+
+/-- [rustfs_kernel::claims::get_policies_from_claims]:
+    Source: 'ports/rustfs/kernel/src/claims.rs', lines 130:0-132:1
+    Visibility: public -/
+def claims.get_policies_from_claims
+  (table : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × claims.Value))
+  («name» : Slice Std.U8) :
+  Result ((alloc.vec.Vec (alloc.vec.Vec Std.U8)) × Bool)
+  := do
+  claims.get_values_from_claims table «name»
+
+/-- [rustfs_kernel::claims::args_get_policies]:
+    Source: 'ports/rustfs/kernel/src/claims.rs', lines 134:0-136:1
+    Visibility: public -/
+def claims.args_get_policies
+  (table : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × claims.Value))
+  («name» : Slice Std.U8) :
+  Result ((alloc.vec.Vec (alloc.vec.Vec Std.U8)) × Bool)
+  := do
+  claims.get_policies_from_claims table «name»
+
+/-- [rustfs_kernel::claims::get_role_arn]:
+    Source: 'ports/rustfs/kernel/src/claims.rs', lines 138:0-146:1
+    Visibility: public -/
+def claims.get_role_arn
+  (table : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × claims.Value)) :
+  Result (Option (alloc.vec.Vec Std.U8))
+  := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 7#usize [
+        114#u8, 111#u8, 108#u8, 101#u8, 65#u8, 114#u8, 110#u8
+        ]))
+  let o ← claims.find table s
+  match o with
+  | none => ok none
+  | some i =>
+    let (_, v) ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+        ((alloc.vec.Vec Std.U8) × claims.Value)) table i
+    match v with
+    | claims.Value.Null => ok none
+    | claims.Value.Bool _ => ok none
+    | claims.Value.Number _ => ok none
+    | claims.Value.String s1 =>
+      let v1 ← alloc.vec.CloneVec.clone core.clone.CloneU8 s1
+      ok (some v1)
+    | claims.Value.Array _ => ok none
+    | claims.Value.Object _ => ok none
+
+/-- [rustfs_kernel::claims::iam_policy_claim_name_sa]:
+    Source: 'ports/rustfs/kernel/src/claims.rs', lines 148:0-150:1
+    Visibility: public -/
+def claims.iam_policy_claim_name_sa : Result (alloc.vec.Vec Std.U8) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 9#usize [
+        115#u8, 97#u8, 45#u8, 112#u8, 111#u8, 108#u8, 105#u8, 99#u8, 121#u8
+        ]))
+  alloc.slice.Slice.to_vec core.clone.CloneU8 s
+
+/-- [rustfs_kernel::claims::split_path]:
+    Source: 'ports/rustfs/kernel/src/claims.rs', lines 152:0-169:1
+    Visibility: public -/
+def claims.split_path
+  (path : Slice Std.U8) (second : Bool) :
+  Result ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec Std.U8))
+  := do
+  let s ← lift (Array.to_slice (Array.make 1#usize [ 47#u8 ]))
+  let o ← bytes.find_from path 0#usize s
+  match o with
+  | none =>
+    let v ← alloc.slice.Slice.to_vec core.clone.CloneU8 path
+    ok (v, alloc.vec.Vec.new Std.U8)
+  | some i =>
+    if second
+    then
+      let i1 ← i + 1#usize
+      let s1 ← lift (Array.to_slice (Array.make 1#usize [ 47#u8 ]))
+      let o1 ← bytes.find_from path i1 s1
+      match o1 with
+      | none =>
+        let v ← alloc.slice.Slice.to_vec core.clone.CloneU8 path
+        ok (v, alloc.vec.Vec.new Std.U8)
+      | some i2 =>
+        let i3 ← i2 + 1#usize
+        let v ← bytes.slice path 0#usize i3
+        let i4 := Slice.len path
+        let v1 ← bytes.slice path i3 i4
+        ok (v, v1)
+    else
+      let i1 ← i + 1#usize
+      let v ← bytes.slice path 0#usize i1
+      let i2 := Slice.len path
+      let v1 ← bytes.slice path i1 i2
+      ok (v, v1)
+
+/-- [rustfs_kernel::claims::is_existing_object_tag_condition_key]:
+    Source: 'ports/rustfs/kernel/src/claims.rs', lines 171:0-176:1
+    Visibility: public -/
+def claims.is_existing_object_tag_condition_key
+  (key : Slice Std.U8) : Result Bool := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 17#usize [
+        69#u8, 120#u8, 105#u8, 115#u8, 116#u8, 105#u8, 110#u8, 103#u8, 79#u8,
+        98#u8, 106#u8, 101#u8, 99#u8, 116#u8, 84#u8, 97#u8, 103#u8
+        ]))
+  let b ← bytes.eq key s
+  if b
+  then ok true
+  else
+    let s1 ←
+      lift (Array.to_slice
+        (Array.make 20#usize [
+          115#u8, 51#u8, 58#u8, 69#u8, 120#u8, 105#u8, 115#u8, 116#u8, 105#u8,
+          110#u8, 103#u8, 79#u8, 98#u8, 106#u8, 101#u8, 99#u8, 116#u8, 84#u8,
+          97#u8, 103#u8
+          ]))
+    let b1 ← bytes.eq key s1
+    if b1
+    then ok true
+    else
+      let s2 ←
+        lift (Array.to_slice
+          (Array.make 18#usize [
+            69#u8, 120#u8, 105#u8, 115#u8, 116#u8, 105#u8, 110#u8, 103#u8,
+            79#u8, 98#u8, 106#u8, 101#u8, 99#u8, 116#u8, 84#u8, 97#u8, 103#u8,
+            47#u8
+            ]))
+      let b2 ← bytes.starts_with key s2
+      if b2
+      then ok true
+      else
+        let s3 ←
+          lift (Array.to_slice
+            (Array.make 21#usize [
+              115#u8, 51#u8, 58#u8, 69#u8, 120#u8, 105#u8, 115#u8, 116#u8,
+              105#u8, 110#u8, 103#u8, 79#u8, 98#u8, 106#u8, 101#u8, 99#u8,
+              116#u8, 84#u8, 97#u8, 103#u8, 47#u8
+              ]))
+        bytes.starts_with key s3
+
+mutual
+
+/-- [rustfs_kernel::claims::value_uses_existing_object_tag]:
+    Source: 'ports/rustfs/kernel/src/claims.rs', lines 178:0-184:1
+    Visibility: public -/
+def claims.value_uses_existing_object_tag
+  (value : claims.Value) : Result Bool := do
+  match value with
+  | claims.Value.Null => ok false
+  | claims.Value.Bool _ => ok false
+  | claims.Value.Number _ => ok false
+  | claims.Value.String _ => ok false
+  | claims.Value.Array entries =>
+    let s := alloc.vec.Vec.deref entries
+    claims.array_uses_tag s 0#usize
+  | claims.Value.Object entries =>
+    let s := alloc.vec.Vec.deref entries
+    claims.object_uses_tag s 0#usize
+partial_fixpoint
+
+/-- [rustfs_kernel::claims::object_uses_tag]:
+    Source: 'ports/rustfs/kernel/src/claims.rs', lines 185:0-192:1 -/
+def claims.object_uses_tag
+  (entries : Slice ((alloc.vec.Vec Std.U8) × claims.Value)) (i : Std.Usize) :
+  Result Bool
+  := do
+  let i1 := Slice.len entries
+  if i >= i1
+  then ok false
+  else
+    let (v, v1) ← Slice.index_usize entries i
+    let s := alloc.vec.Vec.deref v
+    let b ← claims.is_existing_object_tag_condition_key s
+    if b
+    then ok true
+    else
+      let b1 ← claims.value_uses_existing_object_tag v1
+      if b1
+      then ok true
+      else let i2 ← i + 1#usize
+           claims.object_uses_tag entries i2
+partial_fixpoint
+
+/-- [rustfs_kernel::claims::array_uses_tag]:
+    Source: 'ports/rustfs/kernel/src/claims.rs', lines 193:0-198:1 -/
+def claims.array_uses_tag
+  (entries : Slice claims.Value) (i : Std.Usize) : Result Bool := do
+  let i1 := Slice.len entries
+  if i >= i1
+  then ok false
+  else
+    let v ← Slice.index_usize entries i
+    let b ← claims.value_uses_existing_object_tag v
+    if b
+    then ok true
+    else let i2 ← i + 1#usize
+         claims.array_uses_tag entries i2
+partial_fixpoint
+
+end
+
+/-- [rustfs_kernel::condfuncs::Key]
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 52:0-56:1
+    Visibility: public -/
+structure condfuncs.Key where
+  key_name : alloc.vec.Vec Std.U8
+  «name» : alloc.vec.Vec Std.U8
+  «variable» : Option (alloc.vec.Vec Std.U8)
+
+/-- [rustfs_kernel::conddata::FuncKeyValue]
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 9:0-12:1
+    Visibility: public -/
+structure conddata.FuncKeyValue (T : Type) where
+  key : condfuncs.Key
+  values : T
+
+/-- [rustfs_kernel::condfuncs::{impl core::clone::Clone for rustfs_kernel::condfuncs::Key}::clone]:
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 60:4-69:5
+    Visibility: public -/
+def condfuncs.Key.Insts.CoreCloneClone.clone
+  (self : condfuncs.Key) : Result condfuncs.Key := do
+  let v ← alloc.vec.CloneVec.clone core.clone.CloneU8 self.key_name
+  let v1 ← alloc.vec.CloneVec.clone core.clone.CloneU8 self.name
+  match self.variable with
+  | none => ok { key_name := v, «name» := v1, «variable» := none }
+  | some v2 =>
+    let v3 ← alloc.vec.CloneVec.clone core.clone.CloneU8 v2
+    ok { key_name := v, «name» := v1, «variable» := (some v3) }
+
+/-- [rustfs_kernel::conddata::{impl core::clone::Clone for rustfs_kernel::conddata::FuncKeyValue<T>}::clone]:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 8:9-8:14
+    Visibility: public -/
+def conddata.FuncKeyValue.Insts.CoreCloneClone.clone
+  {T : Type} (corecloneCloneInst : core.clone.Clone T)
+  (self : conddata.FuncKeyValue T) :
+  Result (conddata.FuncKeyValue T)
+  := do
+  let k ← condfuncs.Key.Insts.CoreCloneClone.clone self.key
+  let t ← corecloneCloneInst.clone self.values
+  ok { key := k, values := t }
+
+/-- Trait implementation: [rustfs_kernel::conddata::{impl core::clone::Clone for rustfs_kernel::conddata::FuncKeyValue<T>}]
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 8:9-8:14 -/
+@[reducible]
+def conddata.FuncKeyValue.Insts.CoreCloneClone {T : Type} (corecloneCloneInst :
+  core.clone.Clone T) : core.clone.Clone (conddata.FuncKeyValue T) := {
+  clone := conddata.FuncKeyValue.Insts.CoreCloneClone.clone corecloneCloneInst
+}
+
+/-- [rustfs_kernel::condfuncs::{impl core::fmt::Debug for rustfs_kernel::condfuncs::Key}::fmt]:
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 51:9-51:14
+    Visibility: public -/
+def condfuncs.Key.Insts.CoreFmtDebug.fmt
+  (self : condfuncs.Key) (f : core.fmt.Formatter) :
+  Result ((core.result.Result Unit core.fmt.Error) × core.fmt.Formatter)
+  := do
+  let dyn := Dyn.mk _ (core.fmt.DebugVec core.fmt.DebugU8) self.key_name
+  let dyn1 := Dyn.mk _ (core.fmt.DebugVec core.fmt.DebugU8) self.name
+  let dyn2 :=
+    Dyn.mk _ (core.fmt.DebugShared (core.option.Option.Insts.CoreFmtDebug
+      (core.fmt.DebugVec core.fmt.DebugU8))) self.variable
+  core.fmt.Formatter.debug_struct_field3_finish f (toStr "Key") (toStr
+    "key_name") dyn (toStr "name") dyn1 (toStr "variable") dyn2
+
+/-- Trait implementation: [rustfs_kernel::condfuncs::{impl core::fmt::Debug for rustfs_kernel::condfuncs::Key}]
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 51:9-51:14 -/
+@[reducible]
+def condfuncs.Key.Insts.CoreFmtDebug : core.fmt.Debug condfuncs.Key := {
+  fmt := condfuncs.Key.Insts.CoreFmtDebug.fmt
+}
+
+/-- [rustfs_kernel::conddata::{impl core::fmt::Debug for rustfs_kernel::conddata::FuncKeyValue<T>}::fmt]:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 8:16-8:21
+    Visibility: public -/
+def conddata.FuncKeyValue.Insts.CoreFmtDebug.fmt
+  {T : Type} (corefmtDebugInst : core.fmt.Debug T)
+  (self : conddata.FuncKeyValue T) (f : core.fmt.Formatter) :
+  Result ((core.result.Result Unit core.fmt.Error) × core.fmt.Formatter)
+  := do
+  let dyn := Dyn.mk _ condfuncs.Key.Insts.CoreFmtDebug self.key
+  let dyn1 := Dyn.mk _ (core.fmt.DebugShared corefmtDebugInst) self.values
+  core.fmt.Formatter.debug_struct_field2_finish f (toStr "FuncKeyValue") (toStr
+    "key") dyn (toStr "values") dyn1
+
+/-- Trait implementation: [rustfs_kernel::conddata::{impl core::fmt::Debug for rustfs_kernel::conddata::FuncKeyValue<T>}]
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 8:16-8:21 -/
+@[reducible]
+def conddata.FuncKeyValue.Insts.CoreFmtDebug {T : Type} (corefmtDebugInst :
+  core.fmt.Debug T) : core.fmt.Debug (conddata.FuncKeyValue T) := {
+  fmt := conddata.FuncKeyValue.Insts.CoreFmtDebug.fmt corefmtDebugInst
+}
+
+/-- Trait implementation: [rustfs_kernel::conddata::{impl core::marker::StructuralPartialEq for rustfs_kernel::conddata::FuncKeyValue<T>}]
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 8:23-8:32 -/
+@[reducible]
+def conddata.FuncKeyValue.Insts.CoreMarkerStructuralPartialEq {T : Type}
+  (corecmpPartialEqInst : core.cmp.PartialEq T T) :
+  core.marker.StructuralPartialEq (conddata.FuncKeyValue T) := {
+}
+
+/-- [rustfs_kernel::condfuncs::{impl core::cmp::PartialEq<rustfs_kernel::condfuncs::Key> for rustfs_kernel::condfuncs::Key}::eq]:
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 51:16-51:25
+    Visibility: public -/
+def condfuncs.Key.Insts.CoreCmpPartialEqKey.eq
+  (self : condfuncs.Key) (other : condfuncs.Key) : Result Bool := do
+  let b ←
+    alloc.vec.partial_eq.PartialEqVec.eq core.cmp.PartialEqU8 self.key_name
+      other.key_name
+  if b
+  then
+    let b1 ←
+      alloc.vec.partial_eq.PartialEqVec.eq core.cmp.PartialEqU8 self.name
+        other.name
+    if b1
+    then
+      core.option.Option.Insts.CoreCmpPartialEqOption.eq (core.cmp.PartialEqVec
+        core.cmp.PartialEqU8) self.variable other.variable
+    else ok false
+  else ok false
+
+/-- [rustfs_kernel::conddata::{impl core::cmp::PartialEq<rustfs_kernel::conddata::FuncKeyValue<T>> for rustfs_kernel::conddata::FuncKeyValue<T>}::eq]:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 8:23-8:32
+    Visibility: public -/
+def conddata.FuncKeyValue.Insts.CoreCmpPartialEqFuncKeyValue.eq
+  {T : Type} (corecmpPartialEqInst : core.cmp.PartialEq T T)
+  (self : conddata.FuncKeyValue T) (other : conddata.FuncKeyValue T) :
+  Result Bool
+  := do
+  let b ← condfuncs.Key.Insts.CoreCmpPartialEqKey.eq self.key other.key
+  if b
+  then corecmpPartialEqInst.eq self.values other.values
+  else ok false
+
+/-- Trait implementation: [rustfs_kernel::conddata::{impl core::cmp::PartialEq<rustfs_kernel::conddata::FuncKeyValue<T>> for rustfs_kernel::conddata::FuncKeyValue<T>}]
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 8:23-8:32 -/
+@[reducible]
+impl_def conddata.FuncKeyValue.Insts.CoreCmpPartialEqFuncKeyValue {T : Type}
+  (corecmpPartialEqInst : core.cmp.PartialEq T T) : core.cmp.PartialEq
+  (conddata.FuncKeyValue T) (conddata.FuncKeyValue T) := {
+  eq := conddata.FuncKeyValue.Insts.CoreCmpPartialEqFuncKeyValue.eq
+    corecmpPartialEqInst
+  ne := core.cmp.PartialEq.ne.trait_default
+    (conddata.FuncKeyValue.Insts.CoreCmpPartialEqFuncKeyValue
+    corecmpPartialEqInst)
+}
+
+/-- [rustfs_kernel::conddata::{impl core::cmp::Eq for rustfs_kernel::conddata::FuncKeyValue<T>}::assert_fields_are_eq]:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 8:34-8:36
+    Visibility: public -/
+def conddata.FuncKeyValue.Insts.CoreCmpEq.assert_fields_are_eq
+  {T : Type} (corecmpEqInst : core.cmp.Eq T) (self : conddata.FuncKeyValue T) :
+  Result Unit
+  := do
+  ok ()
+
+/-- Trait implementation: [rustfs_kernel::conddata::{impl core::cmp::Eq for rustfs_kernel::conddata::FuncKeyValue<T>}]
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 8:34-8:36 -/
+@[reducible]
+def conddata.FuncKeyValue.Insts.CoreCmpEq {T : Type} (corecmpEqInst :
+  core.cmp.Eq T) : core.cmp.Eq (conddata.FuncKeyValue T) := {
+  partialEqInst := conddata.FuncKeyValue.Insts.CoreCmpPartialEqFuncKeyValue
+    corecmpEqInst.partialEqInst
+  assert_fields_are_eq :=
+    conddata.FuncKeyValue.Insts.CoreCmpEq.assert_fields_are_eq corecmpEqInst
+}
+
+/-- [rustfs_kernel::conddata::InnerFunc]
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 14:0-16:1
+    Visibility: public -/
+structure conddata.InnerFunc (T : Type) where
+  entries : alloc.vec.Vec (conddata.FuncKeyValue T)
+
+/-- [rustfs_kernel::conddata::{impl core::clone::Clone for rustfs_kernel::conddata::InnerFunc<T>}::clone]:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 13:9-13:14
+    Visibility: public -/
+def conddata.InnerFunc.Insts.CoreCloneClone.clone
+  {T : Type} (corecloneCloneInst : core.clone.Clone T)
+  (self : conddata.InnerFunc T) :
+  Result (conddata.InnerFunc T)
+  := do
+  let v ←
+    alloc.vec.CloneVec.clone (conddata.FuncKeyValue.Insts.CoreCloneClone
+      corecloneCloneInst) self.entries
+  ok { entries := v }
+
+/-- Trait implementation: [rustfs_kernel::conddata::{impl core::clone::Clone for rustfs_kernel::conddata::InnerFunc<T>}]
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 13:9-13:14 -/
+@[reducible]
+def conddata.InnerFunc.Insts.CoreCloneClone {T : Type} (corecloneCloneInst :
+  core.clone.Clone T) : core.clone.Clone (conddata.InnerFunc T) := {
+  clone := conddata.InnerFunc.Insts.CoreCloneClone.clone corecloneCloneInst
+}
+
+/-- [rustfs_kernel::conddata::{impl core::fmt::Debug for rustfs_kernel::conddata::InnerFunc<T>}::fmt]:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 13:16-13:21
+    Visibility: public -/
+def conddata.InnerFunc.Insts.CoreFmtDebug.fmt
+  {T : Type} (corefmtDebugInst : core.fmt.Debug T)
+  (self : conddata.InnerFunc T) (f : core.fmt.Formatter) :
+  Result ((core.result.Result Unit core.fmt.Error) × core.fmt.Formatter)
+  := do
+  let dyn :=
+    Dyn.mk _ (core.fmt.DebugShared (core.fmt.DebugVec
+      (conddata.FuncKeyValue.Insts.CoreFmtDebug corefmtDebugInst)))
+      self.entries
+  core.fmt.Formatter.debug_struct_field1_finish f (toStr "InnerFunc") (toStr
+    "entries") dyn
+
+/-- Trait implementation: [rustfs_kernel::conddata::{impl core::fmt::Debug for rustfs_kernel::conddata::InnerFunc<T>}]
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 13:16-13:21 -/
+@[reducible]
+def conddata.InnerFunc.Insts.CoreFmtDebug {T : Type} (corefmtDebugInst :
+  core.fmt.Debug T) : core.fmt.Debug (conddata.InnerFunc T) := {
+  fmt := conddata.InnerFunc.Insts.CoreFmtDebug.fmt corefmtDebugInst
+}
+
+/-- Trait implementation: [rustfs_kernel::conddata::{impl core::marker::StructuralPartialEq for rustfs_kernel::conddata::InnerFunc<T>}]
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 13:23-13:32 -/
+@[reducible]
+def conddata.InnerFunc.Insts.CoreMarkerStructuralPartialEq {T : Type}
+  (corecmpPartialEqInst : core.cmp.PartialEq T T) :
+  core.marker.StructuralPartialEq (conddata.InnerFunc T) := {
+}
+
+/-- [rustfs_kernel::conddata::{impl core::cmp::PartialEq<rustfs_kernel::conddata::InnerFunc<T>> for rustfs_kernel::conddata::InnerFunc<T>}::eq]:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 13:23-13:32
+    Visibility: public -/
+def conddata.InnerFunc.Insts.CoreCmpPartialEqInnerFunc.eq
+  {T : Type} (corecmpPartialEqInst : core.cmp.PartialEq T T)
+  (self : conddata.InnerFunc T) (other : conddata.InnerFunc T) :
+  Result Bool
+  := do
+  alloc.vec.partial_eq.PartialEqVec.eq
+    (conddata.FuncKeyValue.Insts.CoreCmpPartialEqFuncKeyValue
+    corecmpPartialEqInst) self.entries other.entries
+
+/-- Trait implementation: [rustfs_kernel::conddata::{impl core::cmp::PartialEq<rustfs_kernel::conddata::InnerFunc<T>> for rustfs_kernel::conddata::InnerFunc<T>}]
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 13:23-13:32 -/
+@[reducible]
+impl_def conddata.InnerFunc.Insts.CoreCmpPartialEqInnerFunc {T : Type}
+  (corecmpPartialEqInst : core.cmp.PartialEq T T) : core.cmp.PartialEq
+  (conddata.InnerFunc T) (conddata.InnerFunc T) := {
+  eq := conddata.InnerFunc.Insts.CoreCmpPartialEqInnerFunc.eq
+    corecmpPartialEqInst
+  ne := core.cmp.PartialEq.ne.trait_default
+    (conddata.InnerFunc.Insts.CoreCmpPartialEqInnerFunc corecmpPartialEqInst)
+}
+
+/-- [rustfs_kernel::conddata::{impl core::cmp::Eq for rustfs_kernel::conddata::InnerFunc<T>}::assert_fields_are_eq]:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 13:34-13:36
+    Visibility: public -/
+def conddata.InnerFunc.Insts.CoreCmpEq.assert_fields_are_eq
+  {T : Type} (corecmpEqInst : core.cmp.Eq T) (self : conddata.InnerFunc T) :
+  Result Unit
+  := do
+  ok ()
+
+/-- Trait implementation: [rustfs_kernel::conddata::{impl core::cmp::Eq for rustfs_kernel::conddata::InnerFunc<T>}]
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 13:34-13:36 -/
+@[reducible]
+def conddata.InnerFunc.Insts.CoreCmpEq {T : Type} (corecmpEqInst : core.cmp.Eq
+  T) : core.cmp.Eq (conddata.InnerFunc T) := {
+  partialEqInst := conddata.InnerFunc.Insts.CoreCmpPartialEqInnerFunc
+    corecmpEqInst.partialEqInst
+  assert_fields_are_eq :=
+    conddata.InnerFunc.Insts.CoreCmpEq.assert_fields_are_eq corecmpEqInst
+}
+
+/-- [rustfs_kernel::conddata::clone_key_value]:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 18:0-23:1
+    Visibility: public -/
+def conddata.clone_key_value
+  {T : Type} (corecloneCloneInst : core.clone.Clone T)
+  (entry : conddata.FuncKeyValue T) :
+  Result (conddata.FuncKeyValue T)
+  := do
+  let k ← condfuncs.Key.Insts.CoreCloneClone.clone entry.key
+  let t ← corecloneCloneInst.clone entry.values
+  ok { key := k, values := t }
+
+/-- [rustfs_kernel::conddata::clone_inner]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 28:4-31:5
+    Visibility: public -/
+@[rust_loop_body]
+def conddata.clone_inner_loop.body
+  {T : Type} (corecloneCloneInst : core.clone.Clone T)
+  (inner : conddata.InnerFunc T)
+  (entries : alloc.vec.Vec (conddata.FuncKeyValue T)) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec (conddata.FuncKeyValue T)) × Std.Usize)
+    (alloc.vec.Vec (conddata.FuncKeyValue T)))
+  := do
+  let i1 := alloc.vec.Vec.len inner.entries
+  if i < i1
+  then
+    let fkv ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+        (conddata.FuncKeyValue T)) inner.entries i
+    let fkv1 ← conddata.clone_key_value corecloneCloneInst fkv
+    let entries1 ← alloc.vec.Vec.push entries fkv1
+    let i2 ← i + 1#usize
+    ok (cont (entries1, i2))
+  else ok (done entries)
+
+/-- [rustfs_kernel::conddata::clone_inner]: loop 0:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 28:4-31:5
+    Visibility: public -/
+@[rust_loop]
+def conddata.clone_inner_loop
+  {T : Type} (corecloneCloneInst : core.clone.Clone T)
+  (inner : conddata.InnerFunc T)
+  (entries : alloc.vec.Vec (conddata.FuncKeyValue T)) (i : Std.Usize) :
+  Result (alloc.vec.Vec (conddata.FuncKeyValue T))
+  := do
+  loop
+    (fun (entries1, i1) => conddata.clone_inner_loop.body corecloneCloneInst
+      inner entries1 i1)
+    (entries, i)
+
+/-- [rustfs_kernel::conddata::clone_inner]:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 25:0-33:1
+    Visibility: public -/
+def conddata.clone_inner
+  {T : Type} (corecloneCloneInst : core.clone.Clone T)
+  (inner : conddata.InnerFunc T) :
+  Result (conddata.InnerFunc T)
+  := do
+  let entries ←
+    conddata.clone_inner_loop corecloneCloneInst inner (alloc.vec.Vec.new
+      (conddata.FuncKeyValue T)) 0#usize
+  ok { entries }
+
+/-- [rustfs_kernel::conddata::key_is]:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 35:0-37:1
+    Visibility: public -/
+def conddata.key_is
+  (key : condfuncs.Key) («name» : Slice Std.U8) : Result Bool := do
+  let s := alloc.vec.Vec.deref key.key_name
+  bytes.eq s «name»
+
+/-- [rustfs_kernel::condfuncs::key_lookup_name]:
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 73:0-78:1
+    Visibility: public -/
+def condfuncs.key_lookup_name
+  (k : condfuncs.Key) : Result (alloc.vec.Vec Std.U8) := do
+  match k.variable with
+  | none => alloc.vec.CloneVec.clone core.clone.CloneU8 k.name
+  | some v =>
+    let s := alloc.vec.Vec.deref k.name
+    let s1 ← lift (Array.to_slice (Array.make 1#usize [ 47#u8 ]))
+    let v1 ← bytes.concat s s1
+    let s2 := alloc.vec.Vec.deref v1
+    let s3 := alloc.vec.Vec.deref v
+    bytes.concat s2 s3
+
+/-- [rustfs_kernel::conddata::key_names]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 42:4-45:5
+    Visibility: public -/
+@[rust_loop_body]
+def conddata.key_names_loop.body
+  {T : Type} (inner : conddata.InnerFunc T)
+  (names : alloc.vec.Vec (alloc.vec.Vec Std.U8)) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec (alloc.vec.Vec Std.U8)) × Std.Usize)
+    (alloc.vec.Vec (alloc.vec.Vec Std.U8)))
+  := do
+  let i1 := alloc.vec.Vec.len inner.entries
+  if i < i1
+  then
+    let fkv ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+        (conddata.FuncKeyValue T)) inner.entries i
+    let v ← condfuncs.key_lookup_name fkv.key
+    let names1 ← alloc.vec.Vec.push names v
+    let i2 ← i + 1#usize
+    ok (cont (names1, i2))
+  else ok (done names)
+
+/-- [rustfs_kernel::conddata::key_names]: loop 0:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 42:4-45:5
+    Visibility: public -/
+@[rust_loop]
+def conddata.key_names_loop
+  {T : Type} (inner : conddata.InnerFunc T)
+  (names : alloc.vec.Vec (alloc.vec.Vec Std.U8)) (i : Std.Usize) :
+  Result (alloc.vec.Vec (alloc.vec.Vec Std.U8))
+  := do
+  loop
+    (fun (names1, i1) => conddata.key_names_loop.body inner names1 i1)
+    (names, i)
+
+/-- [rustfs_kernel::conddata::key_names]:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 39:0-47:1
+    Visibility: public -/
+@[reducible]
+def conddata.key_names
+  {T : Type} (inner : conddata.InnerFunc T) :
+  Result (alloc.vec.Vec (alloc.vec.Vec Std.U8))
+  := do
+  conddata.key_names_loop inner (alloc.vec.Vec.new (alloc.vec.Vec Std.U8))
+    0#usize
+
+/-- [rustfs_kernel::conddata::contains_key_name]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 51:4-58:1
+    Visibility: public -/
+@[rust_loop_body]
+def conddata.contains_key_name_loop.body
+  {T : Type} (inner : conddata.InnerFunc T) («name» : Slice Std.U8)
+  (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := alloc.vec.Vec.len inner.entries
+  if i < i1
+  then
+    let fkv ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+        (conddata.FuncKeyValue T)) inner.entries i
+    let b ← conddata.key_is fkv.key «name»
+    if b
+    then ok (done true)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else ok (done false)
+
+/-- [rustfs_kernel::conddata::contains_key_name]: loop 0:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 51:4-58:1
+    Visibility: public -/
+@[rust_loop]
+def conddata.contains_key_name_loop
+  {T : Type} (inner : conddata.InnerFunc T) («name» : Slice Std.U8)
+  (i : Std.Usize) :
+  Result Bool
+  := do
+  loop
+    (fun i1 => conddata.contains_key_name_loop.body inner «name» i1)
+    i
+
+/-- [rustfs_kernel::conddata::contains_key_name]:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 49:0-58:1
+    Visibility: public -/
+@[reducible]
+def conddata.contains_key_name
+  {T : Type} (inner : conddata.InnerFunc T) («name» : Slice Std.U8) :
+  Result Bool
+  := do
+  conddata.contains_key_name_loop inner «name» 0#usize
+
+/-- [rustfs_kernel::condfuncs::IpAddr]
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 24:0-27:1
+    Visibility: public -/
+@[discriminant isize]
+inductive condfuncs.IpAddr where
+| V4 : Std.U32 → condfuncs.IpAddr
+| V6 : Std.U128 → condfuncs.IpAddr
+
+/-- [rustfs_kernel::conddata::DateFuncValue]
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 66:0-69:1
+    Visibility: public -/
+structure conddata.DateFuncValue where
+  unix_nanos : Std.I128
+  offset_seconds : Std.I32
+
+/-- [rustfs_kernel::conddata::{impl core::clone::Clone for rustfs_kernel::conddata::DateFuncValue}::clone]:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 65:9-65:14
+    Visibility: public -/
+def conddata.DateFuncValue.Insts.CoreCloneClone.clone
+  (self : conddata.DateFuncValue) : Result conddata.DateFuncValue := do
+  let i ← lift (core.clone.impls.CloneI128.clone self.unix_nanos)
+  let i1 ← lift (core.clone.impls.CloneI32.clone self.offset_seconds)
+  ok { unix_nanos := i, offset_seconds := i1 }
+
+/-- Trait implementation: [rustfs_kernel::conddata::{impl core::clone::Clone for rustfs_kernel::conddata::DateFuncValue}]
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 65:9-65:14 -/
+@[reducible]
+def conddata.DateFuncValue.Insts.CoreCloneClone : core.clone.Clone
+  conddata.DateFuncValue := {
+  clone := conddata.DateFuncValue.Insts.CoreCloneClone.clone
+}
+
+/-- [rustfs_kernel::conddata::{impl core::fmt::Debug for rustfs_kernel::conddata::DateFuncValue}::fmt]:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 65:16-65:21
+    Visibility: public -/
+def conddata.DateFuncValue.Insts.CoreFmtDebug.fmt
+  (self : conddata.DateFuncValue) (f : core.fmt.Formatter) :
+  Result ((core.result.Result Unit core.fmt.Error) × core.fmt.Formatter)
+  := do
+  let dyn := Dyn.mk _ core.fmt.DebugI128 self.unix_nanos
+  let dyn1 :=
+    Dyn.mk _ (core.fmt.DebugShared core.fmt.DebugI32) self.offset_seconds
+  core.fmt.Formatter.debug_struct_field2_finish f (toStr "DateFuncValue")
+    (toStr "unix_nanos") dyn (toStr "offset_seconds") dyn1
+
+/-- Trait implementation: [rustfs_kernel::conddata::{impl core::fmt::Debug for rustfs_kernel::conddata::DateFuncValue}]
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 65:16-65:21 -/
+@[reducible]
+def conddata.DateFuncValue.Insts.CoreFmtDebug : core.fmt.Debug
+  conddata.DateFuncValue := {
+  fmt := conddata.DateFuncValue.Insts.CoreFmtDebug.fmt
+}
+
+/-- [rustfs_kernel::conddata::BinaryFuncValueError]
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 73:0-75:1
+    Visibility: public -/
+@[discriminant isize]
+inductive conddata.BinaryFuncValueError where
+| InvalidBase64 : conddata.BinaryFuncValueError
+
+/-- [rustfs_kernel::conddata::{impl core::clone::Clone for rustfs_kernel::conddata::BinaryFuncValueError}::clone]:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 72:9-72:14
+    Visibility: public -/
+def conddata.BinaryFuncValueError.Insts.CoreCloneClone.clone
+  (self : conddata.BinaryFuncValueError) :
+  Result conddata.BinaryFuncValueError
+  := do
+  ok conddata.BinaryFuncValueError.InvalidBase64
+
+/-- Trait implementation: [rustfs_kernel::conddata::{impl core::clone::Clone for rustfs_kernel::conddata::BinaryFuncValueError}]
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 72:9-72:14 -/
+@[reducible]
+def conddata.BinaryFuncValueError.Insts.CoreCloneClone : core.clone.Clone
+  conddata.BinaryFuncValueError := {
+  clone := conddata.BinaryFuncValueError.Insts.CoreCloneClone.clone
+}
+
+/-- [rustfs_kernel::conddata::{impl core::fmt::Debug for rustfs_kernel::conddata::BinaryFuncValueError}::fmt]:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 72:16-72:21
+    Visibility: public -/
+def conddata.BinaryFuncValueError.Insts.CoreFmtDebug.fmt
+  (self : conddata.BinaryFuncValueError) (f : core.fmt.Formatter) :
+  Result ((core.result.Result Unit core.fmt.Error) × core.fmt.Formatter)
+  := do
+  core.fmt.Formatter.write_str f (toStr "InvalidBase64")
+
+/-- Trait implementation: [rustfs_kernel::conddata::{impl core::fmt::Debug for rustfs_kernel::conddata::BinaryFuncValueError}]
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 72:16-72:21 -/
+@[reducible]
+def conddata.BinaryFuncValueError.Insts.CoreFmtDebug : core.fmt.Debug
+  conddata.BinaryFuncValueError := {
+  fmt := conddata.BinaryFuncValueError.Insts.CoreFmtDebug.fmt
+}
+
+/-- Trait implementation: [rustfs_kernel::conddata::{impl core::marker::StructuralPartialEq for rustfs_kernel::conddata::BinaryFuncValueError}]
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 72:23-72:32 -/
+@[reducible]
+def conddata.BinaryFuncValueError.Insts.CoreMarkerStructuralPartialEq :
+  core.marker.StructuralPartialEq conddata.BinaryFuncValueError := {
+}
+
+/-- [rustfs_kernel::conddata::{impl core::cmp::PartialEq<rustfs_kernel::conddata::BinaryFuncValueError> for rustfs_kernel::conddata::BinaryFuncValueError}::eq]:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 72:23-72:32
+    Visibility: public -/
+def conddata.BinaryFuncValueError.Insts.CoreCmpPartialEqBinaryFuncValueError.eq
+  (self : conddata.BinaryFuncValueError)
+  (other : conddata.BinaryFuncValueError) :
+  Result Bool
+  := do
+  ok true
+
+/-- Trait implementation: [rustfs_kernel::conddata::{impl core::cmp::PartialEq<rustfs_kernel::conddata::BinaryFuncValueError> for rustfs_kernel::conddata::BinaryFuncValueError}]
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 72:23-72:32 -/
+@[reducible]
+impl_def
+  conddata.BinaryFuncValueError.Insts.CoreCmpPartialEqBinaryFuncValueError :
+  core.cmp.PartialEq conddata.BinaryFuncValueError
+  conddata.BinaryFuncValueError := {
+  eq :=
+    conddata.BinaryFuncValueError.Insts.CoreCmpPartialEqBinaryFuncValueError.eq
+  ne := core.cmp.PartialEq.ne.trait_default
+    conddata.BinaryFuncValueError.Insts.CoreCmpPartialEqBinaryFuncValueError
+}
+
+/-- Trait implementation: [rustfs_kernel::conddata::{impl core::cmp::Eq for rustfs_kernel::conddata::BinaryFuncValueError}]
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 72:34-72:36 -/
+@[reducible]
+impl_def conddata.BinaryFuncValueError.Insts.CoreCmpEq : core.cmp.Eq
+  conddata.BinaryFuncValueError := {
+  partialEqInst :=
+    conddata.BinaryFuncValueError.Insts.CoreCmpPartialEqBinaryFuncValueError
+  assert_fields_are_eq := core.cmp.Eq.assert_fields_are_eq.default
+    conddata.BinaryFuncValueError.Insts.CoreCmpEq
+}
+
+/-- [rustfs_kernel::conddata::BinaryFuncValue]
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 77:0-80:1
+    Visibility: public -/
+structure conddata.BinaryFuncValue where
+  encoded : alloc.vec.Vec (alloc.vec.Vec Std.U8)
+  decoded : alloc.vec.Vec (alloc.vec.Vec Std.U8)
+
+/-- [rustfs_kernel::conddata::{impl core::clone::Clone for rustfs_kernel::conddata::BinaryFuncValue}::clone]:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 76:9-76:14
+    Visibility: public -/
+def conddata.BinaryFuncValue.Insts.CoreCloneClone.clone
+  (self : conddata.BinaryFuncValue) : Result conddata.BinaryFuncValue := do
+  let v ←
+    alloc.vec.CloneVec.clone (core.clone.CloneallocvecVec core.clone.CloneU8)
+      self.encoded
+  let v1 ←
+    alloc.vec.CloneVec.clone (core.clone.CloneallocvecVec core.clone.CloneU8)
+      self.decoded
+  ok { encoded := v, decoded := v1 }
+
+/-- Trait implementation: [rustfs_kernel::conddata::{impl core::clone::Clone for rustfs_kernel::conddata::BinaryFuncValue}]
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 76:9-76:14 -/
+@[reducible]
+def conddata.BinaryFuncValue.Insts.CoreCloneClone : core.clone.Clone
+  conddata.BinaryFuncValue := {
+  clone := conddata.BinaryFuncValue.Insts.CoreCloneClone.clone
+}
+
+/-- [rustfs_kernel::conddata::{impl core::fmt::Debug for rustfs_kernel::conddata::BinaryFuncValue}::fmt]:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 76:16-76:21
+    Visibility: public -/
+def conddata.BinaryFuncValue.Insts.CoreFmtDebug.fmt
+  (self : conddata.BinaryFuncValue) (f : core.fmt.Formatter) :
+  Result ((core.result.Result Unit core.fmt.Error) × core.fmt.Formatter)
+  := do
+  let dyn :=
+    Dyn.mk _ (core.fmt.DebugVec (core.fmt.DebugVec core.fmt.DebugU8))
+      self.encoded
+  let dyn1 :=
+    Dyn.mk _ (core.fmt.DebugShared (core.fmt.DebugVec (core.fmt.DebugVec
+      core.fmt.DebugU8))) self.decoded
+  core.fmt.Formatter.debug_struct_field2_finish f (toStr "BinaryFuncValue")
+    (toStr "encoded") dyn (toStr "decoded") dyn1
+
+/-- Trait implementation: [rustfs_kernel::conddata::{impl core::fmt::Debug for rustfs_kernel::conddata::BinaryFuncValue}]
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 76:16-76:21 -/
+@[reducible]
+def conddata.BinaryFuncValue.Insts.CoreFmtDebug : core.fmt.Debug
+  conddata.BinaryFuncValue := {
+  fmt := conddata.BinaryFuncValue.Insts.CoreFmtDebug.fmt
+}
+
+/-- [rustfs_kernel::conddata::binary_eq]:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 83:0-85:1
+    Visibility: public -/
+def conddata.binary_eq
+  (left : conddata.BinaryFuncValue) (right : conddata.BinaryFuncValue) :
+  Result Bool
+  := do
+  alloc.vec.partial_eq.PartialEqVec.eq (core.cmp.PartialEqVec
+    core.cmp.PartialEqU8) left.decoded right.decoded
+
+/-- [rustfs_kernel::conddata::Op]
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 88:0-117:1
+    Visibility: public -/
+@[discriminant isize]
+inductive conddata.Op where
+| StringEquals : conddata.Op
+| StringNotEquals : conddata.Op
+| StringEqualsIgnoreCase : conddata.Op
+| StringNotEqualsIgnoreCase : conddata.Op
+| StringLike : conddata.Op
+| StringNotLike : conddata.Op
+| ArnLike : conddata.Op
+| ArnNotLike : conddata.Op
+| ArnEquals : conddata.Op
+| ArnNotEquals : conddata.Op
+| BinaryEquals : conddata.Op
+| IpAddress : conddata.Op
+| NotIpAddress : conddata.Op
+| Null : conddata.Op
+| Boolean : conddata.Op
+| NumericEquals : conddata.Op
+| NumericNotEquals : conddata.Op
+| NumericLessThan : conddata.Op
+| NumericLessThanEquals : conddata.Op
+| NumericGreaterThan : conddata.Op
+| NumericGreaterThanIfExists : conddata.Op
+| NumericGreaterThanEquals : conddata.Op
+| DateEquals : conddata.Op
+| DateNotEquals : conddata.Op
+| DateLessThan : conddata.Op
+| DateLessThanEquals : conddata.Op
+| DateGreaterThan : conddata.Op
+| DateGreaterThanEquals : conddata.Op
+
+/-- [rustfs_kernel::conddata::{impl core::clone::Clone for rustfs_kernel::conddata::Op}::clone]:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 87:9-87:14
+    Visibility: public -/
+def conddata.Op.Insts.CoreCloneClone.clone
+  (self : conddata.Op) : Result conddata.Op := do
+  ok self
+
+/-- Trait implementation: [rustfs_kernel::conddata::{impl core::clone::Clone for rustfs_kernel::conddata::Op}]
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 87:9-87:14 -/
+@[reducible]
+def conddata.Op.Insts.CoreCloneClone : core.clone.Clone conddata.Op := {
+  clone := conddata.Op.Insts.CoreCloneClone.clone
+}
+
+/-- Trait implementation: [rustfs_kernel::conddata::{impl core::marker::Copy for rustfs_kernel::conddata::Op}]
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 87:16-87:20 -/
+@[reducible]
+def conddata.Op.Insts.CoreMarkerCopy : core.marker.Copy conddata.Op := {
+  cloneInst := conddata.Op.Insts.CoreCloneClone
+}
+
+/-- [rustfs_kernel::conddata::{impl core::fmt::Debug for rustfs_kernel::conddata::Op}::fmt]:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 87:22-87:27
+    Visibility: public -/
+def conddata.Op.Insts.CoreFmtDebug.fmt
+  (self : conddata.Op) (f : core.fmt.Formatter) :
+  Result ((core.result.Result Unit core.fmt.Error) × core.fmt.Formatter)
+  := do
+  match self with
+  | conddata.Op.StringEquals =>
+    core.fmt.Formatter.write_str f (toStr "StringEquals")
+  | conddata.Op.StringNotEquals =>
+    core.fmt.Formatter.write_str f (toStr "StringNotEquals")
+  | conddata.Op.StringEqualsIgnoreCase =>
+    core.fmt.Formatter.write_str f (toStr "StringEqualsIgnoreCase")
+  | conddata.Op.StringNotEqualsIgnoreCase =>
+    core.fmt.Formatter.write_str f (toStr "StringNotEqualsIgnoreCase")
+  | conddata.Op.StringLike =>
+    core.fmt.Formatter.write_str f (toStr "StringLike")
+  | conddata.Op.StringNotLike =>
+    core.fmt.Formatter.write_str f (toStr "StringNotLike")
+  | conddata.Op.ArnLike => core.fmt.Formatter.write_str f (toStr "ArnLike")
+  | conddata.Op.ArnNotLike =>
+    core.fmt.Formatter.write_str f (toStr "ArnNotLike")
+  | conddata.Op.ArnEquals => core.fmt.Formatter.write_str f (toStr "ArnEquals")
+  | conddata.Op.ArnNotEquals =>
+    core.fmt.Formatter.write_str f (toStr "ArnNotEquals")
+  | conddata.Op.BinaryEquals =>
+    core.fmt.Formatter.write_str f (toStr "BinaryEquals")
+  | conddata.Op.IpAddress => core.fmt.Formatter.write_str f (toStr "IpAddress")
+  | conddata.Op.NotIpAddress =>
+    core.fmt.Formatter.write_str f (toStr "NotIpAddress")
+  | conddata.Op.Null => core.fmt.Formatter.write_str f (toStr "Null")
+  | conddata.Op.Boolean => core.fmt.Formatter.write_str f (toStr "Boolean")
+  | conddata.Op.NumericEquals =>
+    core.fmt.Formatter.write_str f (toStr "NumericEquals")
+  | conddata.Op.NumericNotEquals =>
+    core.fmt.Formatter.write_str f (toStr "NumericNotEquals")
+  | conddata.Op.NumericLessThan =>
+    core.fmt.Formatter.write_str f (toStr "NumericLessThan")
+  | conddata.Op.NumericLessThanEquals =>
+    core.fmt.Formatter.write_str f (toStr "NumericLessThanEquals")
+  | conddata.Op.NumericGreaterThan =>
+    core.fmt.Formatter.write_str f (toStr "NumericGreaterThan")
+  | conddata.Op.NumericGreaterThanIfExists =>
+    core.fmt.Formatter.write_str f (toStr "NumericGreaterThanIfExists")
+  | conddata.Op.NumericGreaterThanEquals =>
+    core.fmt.Formatter.write_str f (toStr "NumericGreaterThanEquals")
+  | conddata.Op.DateEquals =>
+    core.fmt.Formatter.write_str f (toStr "DateEquals")
+  | conddata.Op.DateNotEquals =>
+    core.fmt.Formatter.write_str f (toStr "DateNotEquals")
+  | conddata.Op.DateLessThan =>
+    core.fmt.Formatter.write_str f (toStr "DateLessThan")
+  | conddata.Op.DateLessThanEquals =>
+    core.fmt.Formatter.write_str f (toStr "DateLessThanEquals")
+  | conddata.Op.DateGreaterThan =>
+    core.fmt.Formatter.write_str f (toStr "DateGreaterThan")
+  | conddata.Op.DateGreaterThanEquals =>
+    core.fmt.Formatter.write_str f (toStr "DateGreaterThanEquals")
+
+/-- Trait implementation: [rustfs_kernel::conddata::{impl core::fmt::Debug for rustfs_kernel::conddata::Op}]
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 87:22-87:27 -/
+@[reducible]
+def conddata.Op.Insts.CoreFmtDebug : core.fmt.Debug conddata.Op := {
+  fmt := conddata.Op.Insts.CoreFmtDebug.fmt
+}
+
+/-- Trait implementation: [rustfs_kernel::conddata::{impl core::marker::StructuralPartialEq for rustfs_kernel::conddata::Op}]
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 87:29-87:38 -/
+@[reducible]
+def conddata.Op.Insts.CoreMarkerStructuralPartialEq :
+  core.marker.StructuralPartialEq conddata.Op := {
+}
+
+/-- [rustfs_kernel::conddata::{impl core::cmp::PartialEq<rustfs_kernel::conddata::Op> for rustfs_kernel::conddata::Op}::eq]:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 87:29-87:38
+    Visibility: public -/
+def conddata.Op.Insts.CoreCmpPartialEqOp.eq
+  (self : conddata.Op) (other : conddata.Op) : Result Bool := do
+  let self1 := read_discriminant self
+  let other1 := read_discriminant other
+  ok (self1 = other1)
+
+/-- Trait implementation: [rustfs_kernel::conddata::{impl core::cmp::PartialEq<rustfs_kernel::conddata::Op> for rustfs_kernel::conddata::Op}]
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 87:29-87:38 -/
+@[reducible]
+impl_def conddata.Op.Insts.CoreCmpPartialEqOp : core.cmp.PartialEq conddata.Op
+  conddata.Op := {
+  eq := conddata.Op.Insts.CoreCmpPartialEqOp.eq
+  ne := core.cmp.PartialEq.ne.trait_default
+    conddata.Op.Insts.CoreCmpPartialEqOp
+}
+
+/-- Trait implementation: [rustfs_kernel::conddata::{impl core::cmp::Eq for rustfs_kernel::conddata::Op}]
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 87:40-87:42 -/
+@[reducible]
+impl_def conddata.Op.Insts.CoreCmpEq : core.cmp.Eq conddata.Op := {
+  partialEqInst := conddata.Op.Insts.CoreCmpPartialEqOp
+  assert_fields_are_eq := core.cmp.Eq.assert_fields_are_eq.default
+    conddata.Op.Insts.CoreCmpEq
+}
+
+/-- [rustfs_kernel::conddata::Data]
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 119:0-126:1
+    Visibility: public -/
+@[discriminant isize]
+inductive conddata.Data where
+| Str :
+  conddata.InnerFunc (alloc.vec.Vec (alloc.vec.Vec Std.U8)) →
+  conddata.Data
+| Addr :
+  conddata.InnerFunc (alloc.vec.Vec (condfuncs.IpAddr × Std.U8)) →
+  conddata.Data
+| Boolean : conddata.InnerFunc Bool → conddata.Data
+| Num : conddata.InnerFunc Std.I64 → conddata.Data
+| Date : conddata.InnerFunc conddata.DateFuncValue → conddata.Data
+| Binary : conddata.InnerFunc conddata.BinaryFuncValue → conddata.Data
+
+/-- [rustfs_kernel::conddata::{impl core::clone::Clone for rustfs_kernel::conddata::Data}::clone]:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 118:9-118:14
+    Visibility: public -/
+def conddata.Data.Insts.CoreCloneClone.clone
+  (self : conddata.Data) : Result conddata.Data := do
+  match self with
+  | conddata.Data.Str __self_0 =>
+    let «if» ←
+      conddata.InnerFunc.Insts.CoreCloneClone.clone
+        (core.clone.CloneallocvecVec (core.clone.CloneallocvecVec
+        core.clone.CloneU8)) __self_0
+    ok (conddata.Data.Str «if»)
+  | conddata.Data.Addr __self_0 =>
+    let «if» ←
+      conddata.InnerFunc.Insts.CoreCloneClone.clone
+        (core.clone.CloneallocvecVec (BuiltinClone (condfuncs.IpAddr ×
+        Std.U8))) __self_0
+    ok (conddata.Data.Addr «if»)
+  | conddata.Data.Boolean __self_0 =>
+    let «if» ←
+      conddata.InnerFunc.Insts.CoreCloneClone.clone core.clone.CloneBool
+        __self_0
+    ok (conddata.Data.Boolean «if»)
+  | conddata.Data.Num __self_0 =>
+    let «if» ←
+      conddata.InnerFunc.Insts.CoreCloneClone.clone core.clone.CloneI64
+        __self_0
+    ok (conddata.Data.Num «if»)
+  | conddata.Data.Date __self_0 =>
+    let «if» ←
+      conddata.InnerFunc.Insts.CoreCloneClone.clone
+        conddata.DateFuncValue.Insts.CoreCloneClone __self_0
+    ok (conddata.Data.Date «if»)
+  | conddata.Data.Binary __self_0 =>
+    let «if» ←
+      conddata.InnerFunc.Insts.CoreCloneClone.clone
+        conddata.BinaryFuncValue.Insts.CoreCloneClone __self_0
+    ok (conddata.Data.Binary «if»)
+
+/-- Trait implementation: [rustfs_kernel::conddata::{impl core::clone::Clone for rustfs_kernel::conddata::Data}]
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 118:9-118:14 -/
+@[reducible]
+def conddata.Data.Insts.CoreCloneClone : core.clone.Clone conddata.Data := {
+  clone := conddata.Data.Insts.CoreCloneClone.clone
+}
+
+/-- [rustfs_kernel::condfuncs::{impl core::fmt::Debug for rustfs_kernel::condfuncs::IpAddr}::fmt]:
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 23:22-23:27
+    Visibility: public -/
+def condfuncs.IpAddr.Insts.CoreFmtDebug.fmt
+  (self : condfuncs.IpAddr) (f : core.fmt.Formatter) :
+  Result ((core.result.Result Unit core.fmt.Error) × core.fmt.Formatter)
+  := do
+  match self with
+  | condfuncs.IpAddr.V4 __self_0 =>
+    let __self_01 := Dyn.mk _ (core.fmt.DebugShared core.fmt.DebugU32) __self_0
+    core.fmt.Formatter.debug_tuple_field1_finish f (toStr "V4") __self_01
+  | condfuncs.IpAddr.V6 __self_0 =>
+    let __self_01 :=
+      Dyn.mk _ (core.fmt.DebugShared core.fmt.DebugU128) __self_0
+    core.fmt.Formatter.debug_tuple_field1_finish f (toStr "V6") __self_01
+
+/-- Trait implementation: [rustfs_kernel::condfuncs::{impl core::fmt::Debug for rustfs_kernel::condfuncs::IpAddr}]
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 23:22-23:27 -/
+@[reducible]
+def condfuncs.IpAddr.Insts.CoreFmtDebug : core.fmt.Debug condfuncs.IpAddr := {
+  fmt := condfuncs.IpAddr.Insts.CoreFmtDebug.fmt
+}
+
+/-- [rustfs_kernel::conddata::{impl core::fmt::Debug for rustfs_kernel::conddata::Data}::fmt]:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 118:16-118:21
+    Visibility: public -/
+def conddata.Data.Insts.CoreFmtDebug.fmt
+  (self : conddata.Data) (f : core.fmt.Formatter) :
+  Result ((core.result.Result Unit core.fmt.Error) × core.fmt.Formatter)
+  := do
+  match self with
+  | conddata.Data.Str __self_0 =>
+    let __self_01 :=
+      Dyn.mk _ (core.fmt.DebugShared (conddata.InnerFunc.Insts.CoreFmtDebug
+        (core.fmt.DebugVec (core.fmt.DebugVec core.fmt.DebugU8)))) __self_0
+    core.fmt.Formatter.debug_tuple_field1_finish f (toStr "Str") __self_01
+  | conddata.Data.Addr __self_0 =>
+    let __self_01 :=
+      Dyn.mk _ (core.fmt.DebugShared (conddata.InnerFunc.Insts.CoreFmtDebug
+        (core.fmt.DebugVec (Pair.Insts.CoreFmtDebug
+        condfuncs.IpAddr.Insts.CoreFmtDebug core.fmt.DebugU8)))) __self_0
+    core.fmt.Formatter.debug_tuple_field1_finish f (toStr "Addr") __self_01
+  | conddata.Data.Boolean __self_0 =>
+    let __self_01 :=
+      Dyn.mk _ (core.fmt.DebugShared (conddata.InnerFunc.Insts.CoreFmtDebug
+        core.fmt.DebugBool)) __self_0
+    core.fmt.Formatter.debug_tuple_field1_finish f (toStr "Boolean") __self_01
+  | conddata.Data.Num __self_0 =>
+    let __self_01 :=
+      Dyn.mk _ (core.fmt.DebugShared (conddata.InnerFunc.Insts.CoreFmtDebug
+        core.fmt.DebugI64)) __self_0
+    core.fmt.Formatter.debug_tuple_field1_finish f (toStr "Num") __self_01
+  | conddata.Data.Date __self_0 =>
+    let __self_01 :=
+      Dyn.mk _ (core.fmt.DebugShared (conddata.InnerFunc.Insts.CoreFmtDebug
+        conddata.DateFuncValue.Insts.CoreFmtDebug)) __self_0
+    core.fmt.Formatter.debug_tuple_field1_finish f (toStr "Date") __self_01
+  | conddata.Data.Binary __self_0 =>
+    let __self_01 :=
+      Dyn.mk _ (core.fmt.DebugShared (conddata.InnerFunc.Insts.CoreFmtDebug
+        conddata.BinaryFuncValue.Insts.CoreFmtDebug)) __self_0
+    core.fmt.Formatter.debug_tuple_field1_finish f (toStr "Binary") __self_01
+
+/-- Trait implementation: [rustfs_kernel::conddata::{impl core::fmt::Debug for rustfs_kernel::conddata::Data}]
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 118:16-118:21 -/
+@[reducible]
+def conddata.Data.Insts.CoreFmtDebug : core.fmt.Debug conddata.Data := {
+  fmt := conddata.Data.Insts.CoreFmtDebug.fmt
+}
+
+/-- [rustfs_kernel::conddata::Condition]
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 128:0-132:1
+    Visibility: public -/
+structure conddata.Condition where
+  op : conddata.Op
+  wrappers : Std.Usize
+  data : conddata.Data
+
+/-- [rustfs_kernel::conddata::{impl core::clone::Clone for rustfs_kernel::conddata::Condition}::clone]:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 127:9-127:14
+    Visibility: public -/
+def conddata.Condition.Insts.CoreCloneClone.clone
+  (self : conddata.Condition) : Result conddata.Condition := do
+  let o ← conddata.Op.Insts.CoreCloneClone.clone self.op
+  let i ← lift (core.clone.impls.CloneUsize.clone self.wrappers)
+  let d ← conddata.Data.Insts.CoreCloneClone.clone self.data
+  ok { op := o, wrappers := i, data := d }
+
+/-- Trait implementation: [rustfs_kernel::conddata::{impl core::clone::Clone for rustfs_kernel::conddata::Condition}]
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 127:9-127:14 -/
+@[reducible]
+def conddata.Condition.Insts.CoreCloneClone : core.clone.Clone
+  conddata.Condition := {
+  clone := conddata.Condition.Insts.CoreCloneClone.clone
+}
+
+/-- [rustfs_kernel::conddata::{impl core::fmt::Debug for rustfs_kernel::conddata::Condition}::fmt]:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 127:16-127:21
+    Visibility: public -/
+def conddata.Condition.Insts.CoreFmtDebug.fmt
+  (self : conddata.Condition) (f : core.fmt.Formatter) :
+  Result ((core.result.Result Unit core.fmt.Error) × core.fmt.Formatter)
+  := do
+  let dyn := Dyn.mk _ conddata.Op.Insts.CoreFmtDebug self.op
+  let dyn1 := Dyn.mk _ core.fmt.DebugUsize self.wrappers
+  let dyn2 :=
+    Dyn.mk _ (core.fmt.DebugShared conddata.Data.Insts.CoreFmtDebug) self.data
+  core.fmt.Formatter.debug_struct_field3_finish f (toStr "Condition") (toStr
+    "op") dyn (toStr "wrappers") dyn1 (toStr "data") dyn2
+
+/-- Trait implementation: [rustfs_kernel::conddata::{impl core::fmt::Debug for rustfs_kernel::conddata::Condition}]
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 127:16-127:21 -/
+@[reducible]
+def conddata.Condition.Insts.CoreFmtDebug : core.fmt.Debug conddata.Condition
+  := {
+  fmt := conddata.Condition.Insts.CoreFmtDebug.fmt
+}
+
+/-- [rustfs_kernel::conddata::Functions]
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 134:0-138:1
+    Visibility: public -/
+structure conddata.Functions where
+  for_any_value : alloc.vec.Vec conddata.Condition
+  for_all_values : alloc.vec.Vec conddata.Condition
+  for_normal : alloc.vec.Vec conddata.Condition
+
+/-- [rustfs_kernel::conddata::{impl core::clone::Clone for rustfs_kernel::conddata::Functions}::clone]:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 133:9-133:14
+    Visibility: public -/
+def conddata.Functions.Insts.CoreCloneClone.clone
+  (self : conddata.Functions) : Result conddata.Functions := do
+  let v ←
+    alloc.vec.CloneVec.clone conddata.Condition.Insts.CoreCloneClone
+      self.for_any_value
+  let v1 ←
+    alloc.vec.CloneVec.clone conddata.Condition.Insts.CoreCloneClone
+      self.for_all_values
+  let v2 ←
+    alloc.vec.CloneVec.clone conddata.Condition.Insts.CoreCloneClone
+      self.for_normal
+  ok { for_any_value := v, for_all_values := v1, for_normal := v2 }
+
+/-- Trait implementation: [rustfs_kernel::conddata::{impl core::clone::Clone for rustfs_kernel::conddata::Functions}]
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 133:9-133:14 -/
+@[reducible]
+def conddata.Functions.Insts.CoreCloneClone : core.clone.Clone
+  conddata.Functions := {
+  clone := conddata.Functions.Insts.CoreCloneClone.clone
+}
+
+/-- [rustfs_kernel::conddata::{impl core::fmt::Debug for rustfs_kernel::conddata::Functions}::fmt]:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 133:16-133:21
+    Visibility: public -/
+def conddata.Functions.Insts.CoreFmtDebug.fmt
+  (self : conddata.Functions) (f : core.fmt.Formatter) :
+  Result ((core.result.Result Unit core.fmt.Error) × core.fmt.Formatter)
+  := do
+  let dyn :=
+    Dyn.mk _ (core.fmt.DebugVec conddata.Condition.Insts.CoreFmtDebug)
+      self.for_any_value
+  let dyn1 :=
+    Dyn.mk _ (core.fmt.DebugVec conddata.Condition.Insts.CoreFmtDebug)
+      self.for_all_values
+  let dyn2 :=
+    Dyn.mk _ (core.fmt.DebugShared (core.fmt.DebugVec
+      conddata.Condition.Insts.CoreFmtDebug)) self.for_normal
+  core.fmt.Formatter.debug_struct_field3_finish f (toStr "Functions") (toStr
+    "for_any_value") dyn (toStr "for_all_values") dyn1 (toStr "for_normal")
+    dyn2
+
+/-- Trait implementation: [rustfs_kernel::conddata::{impl core::fmt::Debug for rustfs_kernel::conddata::Functions}]
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 133:16-133:21 -/
+@[reducible]
+def conddata.Functions.Insts.CoreFmtDebug : core.fmt.Debug conddata.Functions
+  := {
+  fmt := conddata.Functions.Insts.CoreFmtDebug.fmt
+}
+
+/-- [rustfs_kernel::conddata::op_name_late]:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 159:0-177:1 -/
+def conddata.op_name_late
+  (op : conddata.Op) : Result (alloc.vec.Vec Std.U8) := do
+  match op with
+  | conddata.Op.StringEquals => ok (alloc.vec.Vec.new Std.U8)
+  | conddata.Op.StringNotEquals => ok (alloc.vec.Vec.new Std.U8)
+  | conddata.Op.StringEqualsIgnoreCase => ok (alloc.vec.Vec.new Std.U8)
+  | conddata.Op.StringNotEqualsIgnoreCase => ok (alloc.vec.Vec.new Std.U8)
+  | conddata.Op.StringLike => ok (alloc.vec.Vec.new Std.U8)
+  | conddata.Op.StringNotLike => ok (alloc.vec.Vec.new Std.U8)
+  | conddata.Op.ArnLike => ok (alloc.vec.Vec.new Std.U8)
+  | conddata.Op.ArnNotLike => ok (alloc.vec.Vec.new Std.U8)
+  | conddata.Op.ArnEquals => ok (alloc.vec.Vec.new Std.U8)
+  | conddata.Op.ArnNotEquals => ok (alloc.vec.Vec.new Std.U8)
+  | conddata.Op.BinaryEquals => ok (alloc.vec.Vec.new Std.U8)
+  | conddata.Op.IpAddress => ok (alloc.vec.Vec.new Std.U8)
+  | conddata.Op.NotIpAddress => ok (alloc.vec.Vec.new Std.U8)
+  | conddata.Op.Null => ok (alloc.vec.Vec.new Std.U8)
+  | conddata.Op.Boolean =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 4#usize [ 66#u8, 111#u8, 111#u8, 108#u8 ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | conddata.Op.NumericEquals =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 13#usize [
+          78#u8, 117#u8, 109#u8, 101#u8, 114#u8, 105#u8, 99#u8, 69#u8, 113#u8,
+          117#u8, 97#u8, 108#u8, 115#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | conddata.Op.NumericNotEquals =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 16#usize [
+          78#u8, 117#u8, 109#u8, 101#u8, 114#u8, 105#u8, 99#u8, 78#u8, 111#u8,
+          116#u8, 69#u8, 113#u8, 117#u8, 97#u8, 108#u8, 115#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | conddata.Op.NumericLessThan =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 15#usize [
+          78#u8, 117#u8, 109#u8, 101#u8, 114#u8, 105#u8, 99#u8, 76#u8, 101#u8,
+          115#u8, 115#u8, 84#u8, 104#u8, 97#u8, 110#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | conddata.Op.NumericLessThanEquals =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 21#usize [
+          78#u8, 117#u8, 109#u8, 101#u8, 114#u8, 105#u8, 99#u8, 76#u8, 101#u8,
+          115#u8, 115#u8, 84#u8, 104#u8, 97#u8, 110#u8, 69#u8, 113#u8, 117#u8,
+          97#u8, 108#u8, 115#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | conddata.Op.NumericGreaterThan =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 18#usize [
+          78#u8, 117#u8, 109#u8, 101#u8, 114#u8, 105#u8, 99#u8, 71#u8, 114#u8,
+          101#u8, 97#u8, 116#u8, 101#u8, 114#u8, 84#u8, 104#u8, 97#u8, 110#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | conddata.Op.NumericGreaterThanIfExists =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 26#usize [
+          78#u8, 117#u8, 109#u8, 101#u8, 114#u8, 105#u8, 99#u8, 71#u8, 114#u8,
+          101#u8, 97#u8, 116#u8, 101#u8, 114#u8, 84#u8, 104#u8, 97#u8, 110#u8,
+          73#u8, 102#u8, 69#u8, 120#u8, 105#u8, 115#u8, 116#u8, 115#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | conddata.Op.NumericGreaterThanEquals =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 24#usize [
+          78#u8, 117#u8, 109#u8, 101#u8, 114#u8, 105#u8, 99#u8, 71#u8, 114#u8,
+          101#u8, 97#u8, 116#u8, 101#u8, 114#u8, 84#u8, 104#u8, 97#u8, 110#u8,
+          69#u8, 113#u8, 117#u8, 97#u8, 108#u8, 115#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | conddata.Op.DateEquals =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 10#usize [
+          68#u8, 97#u8, 116#u8, 101#u8, 69#u8, 113#u8, 117#u8, 97#u8, 108#u8,
+          115#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | conddata.Op.DateNotEquals =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 13#usize [
+          68#u8, 97#u8, 116#u8, 101#u8, 78#u8, 111#u8, 116#u8, 69#u8, 113#u8,
+          117#u8, 97#u8, 108#u8, 115#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | conddata.Op.DateLessThan =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 12#usize [
+          68#u8, 97#u8, 116#u8, 101#u8, 76#u8, 101#u8, 115#u8, 115#u8, 84#u8,
+          104#u8, 97#u8, 110#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | conddata.Op.DateLessThanEquals =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 18#usize [
+          68#u8, 97#u8, 116#u8, 101#u8, 76#u8, 101#u8, 115#u8, 115#u8, 84#u8,
+          104#u8, 97#u8, 110#u8, 69#u8, 113#u8, 117#u8, 97#u8, 108#u8, 115#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | conddata.Op.DateGreaterThan =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 15#usize [
+          68#u8, 97#u8, 116#u8, 101#u8, 71#u8, 114#u8, 101#u8, 97#u8, 116#u8,
+          101#u8, 114#u8, 84#u8, 104#u8, 97#u8, 110#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | conddata.Op.DateGreaterThanEquals =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 21#usize [
+          68#u8, 97#u8, 116#u8, 101#u8, 71#u8, 114#u8, 101#u8, 97#u8, 116#u8,
+          101#u8, 114#u8, 84#u8, 104#u8, 97#u8, 110#u8, 69#u8, 113#u8, 117#u8,
+          97#u8, 108#u8, 115#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+
+/-- [rustfs_kernel::conddata::op_name]:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 140:0-158:1
+    Visibility: public -/
+def conddata.op_name (op : conddata.Op) : Result (alloc.vec.Vec Std.U8) := do
+  match op with
+  | conddata.Op.StringEquals =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 12#usize [
+          83#u8, 116#u8, 114#u8, 105#u8, 110#u8, 103#u8, 69#u8, 113#u8, 117#u8,
+          97#u8, 108#u8, 115#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | conddata.Op.StringNotEquals =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 15#usize [
+          83#u8, 116#u8, 114#u8, 105#u8, 110#u8, 103#u8, 78#u8, 111#u8, 116#u8,
+          69#u8, 113#u8, 117#u8, 97#u8, 108#u8, 115#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | conddata.Op.StringEqualsIgnoreCase =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 22#usize [
+          83#u8, 116#u8, 114#u8, 105#u8, 110#u8, 103#u8, 69#u8, 113#u8, 117#u8,
+          97#u8, 108#u8, 115#u8, 73#u8, 103#u8, 110#u8, 111#u8, 114#u8, 101#u8,
+          67#u8, 97#u8, 115#u8, 101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | conddata.Op.StringNotEqualsIgnoreCase =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 25#usize [
+          83#u8, 116#u8, 114#u8, 105#u8, 110#u8, 103#u8, 78#u8, 111#u8, 116#u8,
+          69#u8, 113#u8, 117#u8, 97#u8, 108#u8, 115#u8, 73#u8, 103#u8, 110#u8,
+          111#u8, 114#u8, 101#u8, 67#u8, 97#u8, 115#u8, 101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | conddata.Op.StringLike =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 10#usize [
+          83#u8, 116#u8, 114#u8, 105#u8, 110#u8, 103#u8, 76#u8, 105#u8, 107#u8,
+          101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | conddata.Op.StringNotLike =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 13#usize [
+          83#u8, 116#u8, 114#u8, 105#u8, 110#u8, 103#u8, 78#u8, 111#u8, 116#u8,
+          76#u8, 105#u8, 107#u8, 101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | conddata.Op.ArnLike =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 7#usize [
+          65#u8, 114#u8, 110#u8, 76#u8, 105#u8, 107#u8, 101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | conddata.Op.ArnNotLike =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 10#usize [
+          65#u8, 114#u8, 110#u8, 78#u8, 111#u8, 116#u8, 76#u8, 105#u8, 107#u8,
+          101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | conddata.Op.ArnEquals =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 9#usize [
+          65#u8, 114#u8, 110#u8, 69#u8, 113#u8, 117#u8, 97#u8, 108#u8, 115#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | conddata.Op.ArnNotEquals =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 12#usize [
+          65#u8, 114#u8, 110#u8, 78#u8, 111#u8, 116#u8, 69#u8, 113#u8, 117#u8,
+          97#u8, 108#u8, 115#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | conddata.Op.BinaryEquals =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 12#usize [
+          66#u8, 105#u8, 110#u8, 97#u8, 114#u8, 121#u8, 69#u8, 113#u8, 117#u8,
+          97#u8, 108#u8, 115#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | conddata.Op.IpAddress =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 9#usize [
+          73#u8, 112#u8, 65#u8, 100#u8, 100#u8, 114#u8, 101#u8, 115#u8, 115#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | conddata.Op.NotIpAddress =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 12#usize [
+          78#u8, 111#u8, 116#u8, 73#u8, 112#u8, 65#u8, 100#u8, 100#u8, 114#u8,
+          101#u8, 115#u8, 115#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | conddata.Op.Null =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 4#usize [ 78#u8, 117#u8, 108#u8, 108#u8 ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | conddata.Op.Boolean => conddata.op_name_late conddata.Op.Boolean
+  | conddata.Op.NumericEquals =>
+    conddata.op_name_late conddata.Op.NumericEquals
+  | conddata.Op.NumericNotEquals =>
+    conddata.op_name_late conddata.Op.NumericNotEquals
+  | conddata.Op.NumericLessThan =>
+    conddata.op_name_late conddata.Op.NumericLessThan
+  | conddata.Op.NumericLessThanEquals =>
+    conddata.op_name_late conddata.Op.NumericLessThanEquals
+  | conddata.Op.NumericGreaterThan =>
+    conddata.op_name_late conddata.Op.NumericGreaterThan
+  | conddata.Op.NumericGreaterThanIfExists =>
+    conddata.op_name_late conddata.Op.NumericGreaterThanIfExists
+  | conddata.Op.NumericGreaterThanEquals =>
+    conddata.op_name_late conddata.Op.NumericGreaterThanEquals
+  | conddata.Op.DateEquals => conddata.op_name_late conddata.Op.DateEquals
+  | conddata.Op.DateNotEquals =>
+    conddata.op_name_late conddata.Op.DateNotEquals
+  | conddata.Op.DateLessThan => conddata.op_name_late conddata.Op.DateLessThan
+  | conddata.Op.DateLessThanEquals =>
+    conddata.op_name_late conddata.Op.DateLessThanEquals
+  | conddata.Op.DateGreaterThan =>
+    conddata.op_name_late conddata.Op.DateGreaterThan
+  | conddata.Op.DateGreaterThanEquals =>
+    conddata.op_name_late conddata.Op.DateGreaterThanEquals
+
+/-- [rustfs_kernel::conddata::to_key_with_suffix]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 182:4-185:5
+    Visibility: public -/
+@[rust_loop_body]
+def conddata.to_key_with_suffix_loop.body
+  (i : Std.Usize) («name» : alloc.vec.Vec Std.U8) (i1 : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Std.U8) × Std.Usize) (alloc.vec.Vec
+    Std.U8))
+  := do
+  if i1 < i
+  then
+    let s := alloc.vec.Vec.deref «name»
+    let s1 ←
+      lift (Array.to_slice
+        (Array.make 8#usize [
+          73#u8, 102#u8, 69#u8, 120#u8, 105#u8, 115#u8, 116#u8, 115#u8
+          ]))
+    let name1 ← bytes.concat s s1
+    let i2 ← i1 + 1#usize
+    ok (cont (name1, i2))
+  else ok (done «name»)
+
+/-- [rustfs_kernel::conddata::to_key_with_suffix]: loop 0:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 182:4-185:5
+    Visibility: public -/
+@[rust_loop]
+def conddata.to_key_with_suffix_loop
+  (i : Std.Usize) («name» : alloc.vec.Vec Std.U8) (i1 : Std.Usize) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  loop
+    (fun (name1, i2) => conddata.to_key_with_suffix_loop.body i name1 i2)
+    («name», i1)
+
+/-- [rustfs_kernel::conddata::to_key_with_suffix]:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 179:0-187:1
+    Visibility: public -/
+def conddata.to_key_with_suffix
+  (condition : conddata.Condition) : Result (alloc.vec.Vec Std.U8) := do
+  let «name» ← conddata.op_name condition.op
+  conddata.to_key_with_suffix_loop condition.wrappers «name» 0#usize
+
+/-- [rustfs_kernel::conddata::is_negate]:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 189:0-191:1
+    Visibility: public -/
+def conddata.is_negate (condition : conddata.Condition) : Result Bool := do
+  if condition.wrappers = 0#usize
+  then
+    conddata.Op.Insts.CoreCmpPartialEqOp.eq condition.op
+      conddata.Op.NotIpAddress
+  else ok false
+
+/-- [rustfs_kernel::conddata::string_covers]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 194:4-201:1 -/
+@[rust_loop_body]
+def conddata.string_covers_loop.body
+  (left : Slice (alloc.vec.Vec Std.U8)) (right : Slice (alloc.vec.Vec Std.U8))
+  (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := Slice.len left
+  if i < i1
+  then
+    let v ← Slice.index_usize left i
+    let s := alloc.vec.Vec.deref v
+    let b ← bytes.member right s
+    if b
+    then let i2 ← i + 1#usize
+         ok (cont i2)
+    else ok (done false)
+  else ok (done true)
+
+/-- [rustfs_kernel::conddata::string_covers]: loop 0:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 194:4-201:1 -/
+@[rust_loop]
+def conddata.string_covers_loop
+  (left : Slice (alloc.vec.Vec Std.U8)) (right : Slice (alloc.vec.Vec Std.U8))
+  (i : Std.Usize) :
+  Result Bool
+  := do
+  loop
+    (fun i1 => conddata.string_covers_loop.body left right i1)
+    i
+
+/-- [rustfs_kernel::conddata::string_covers]:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 192:0-201:1 -/
+@[reducible]
+def conddata.string_covers
+  (left : Slice (alloc.vec.Vec Std.U8)) (right : Slice (alloc.vec.Vec Std.U8))
+  :
+  Result Bool
+  := do
+  conddata.string_covers_loop left right 0#usize
+
+/-- [rustfs_kernel::conddata::string_set_eq]:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 202:0-204:1 -/
+def conddata.string_set_eq
+  (left : Slice (alloc.vec.Vec Std.U8)) (right : Slice (alloc.vec.Vec Std.U8))
+  :
+  Result Bool
+  := do
+  let b ← conddata.string_covers left right
+  if b
+  then conddata.string_covers right left
+  else ok false
+
+/-- Trait implementation: [rustfs_kernel::condfuncs::{impl core::cmp::PartialEq<rustfs_kernel::condfuncs::Key> for rustfs_kernel::condfuncs::Key}]
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 51:16-51:25 -/
+@[reducible]
+impl_def condfuncs.Key.Insts.CoreCmpPartialEqKey : core.cmp.PartialEq
+  condfuncs.Key condfuncs.Key := {
+  eq := condfuncs.Key.Insts.CoreCmpPartialEqKey.eq
+  ne := core.cmp.PartialEq.ne.trait_default
+    condfuncs.Key.Insts.CoreCmpPartialEqKey
+}
+
+/-- [rustfs_kernel::conddata::string_inner_eq]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 210:4-219:1 -/
+@[rust_loop_body]
+def conddata.string_inner_eq_loop.body
+  (v : alloc.vec.Vec (conddata.FuncKeyValue (alloc.vec.Vec (alloc.vec.Vec
+  Std.U8))))
+  (v1 : alloc.vec.Vec (conddata.FuncKeyValue (alloc.vec.Vec (alloc.vec.Vec
+  Std.U8)))) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let fkv ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+        (conddata.FuncKeyValue (alloc.vec.Vec (alloc.vec.Vec Std.U8)))) v i
+    let fkv1 ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+        (conddata.FuncKeyValue (alloc.vec.Vec (alloc.vec.Vec Std.U8)))) v1 i
+    let b ←
+      core.cmp.PartialEq.ne.trait_default
+        condfuncs.Key.Insts.CoreCmpPartialEqKey fkv.key fkv1.key
+    if b
+    then ok (done false)
+    else
+      let s := alloc.vec.Vec.deref fkv.values
+      let s1 := alloc.vec.Vec.deref fkv1.values
+      let b1 ← conddata.string_set_eq s s1
+      if b1
+      then let i2 ← i + 1#usize
+           ok (cont i2)
+      else ok (done false)
+  else ok (done true)
+
+/-- [rustfs_kernel::conddata::string_inner_eq]: loop 0:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 210:4-219:1 -/
+@[rust_loop]
+def conddata.string_inner_eq_loop
+  (v : alloc.vec.Vec (conddata.FuncKeyValue (alloc.vec.Vec (alloc.vec.Vec
+  Std.U8))))
+  (v1 : alloc.vec.Vec (conddata.FuncKeyValue (alloc.vec.Vec (alloc.vec.Vec
+  Std.U8)))) (i : Std.Usize) :
+  Result Bool
+  := do
+  loop
+    (fun i1 => conddata.string_inner_eq_loop.body v v1 i1)
+    i
+
+/-- [rustfs_kernel::conddata::string_inner_eq]:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 205:0-219:1 -/
+def conddata.string_inner_eq
+  (left : conddata.InnerFunc (alloc.vec.Vec (alloc.vec.Vec Std.U8)))
+  (right : conddata.InnerFunc (alloc.vec.Vec (alloc.vec.Vec Std.U8))) :
+  Result Bool
+  := do
+  let i := alloc.vec.Vec.len left.entries
+  let i1 := alloc.vec.Vec.len right.entries
+  if i != i1
+  then ok false
+  else conddata.string_inner_eq_loop left.entries right.entries 0#usize
+
+/-- [rustfs_kernel::conddata::binary_inner_eq]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 225:4-234:1 -/
+@[rust_loop_body]
+def conddata.binary_inner_eq_loop.body
+  (v : alloc.vec.Vec (conddata.FuncKeyValue conddata.BinaryFuncValue))
+  (v1 : alloc.vec.Vec (conddata.FuncKeyValue conddata.BinaryFuncValue))
+  (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let fkv ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+        (conddata.FuncKeyValue conddata.BinaryFuncValue)) v i
+    let fkv1 ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+        (conddata.FuncKeyValue conddata.BinaryFuncValue)) v1 i
+    let b ←
+      core.cmp.PartialEq.ne.trait_default
+        condfuncs.Key.Insts.CoreCmpPartialEqKey fkv.key fkv1.key
+    if b
+    then ok (done false)
+    else
+      let b1 ← conddata.binary_eq fkv.values fkv1.values
+      if b1
+      then let i2 ← i + 1#usize
+           ok (cont i2)
+      else ok (done false)
+  else ok (done true)
+
+/-- [rustfs_kernel::conddata::binary_inner_eq]: loop 0:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 225:4-234:1 -/
+@[rust_loop]
+def conddata.binary_inner_eq_loop
+  (v : alloc.vec.Vec (conddata.FuncKeyValue conddata.BinaryFuncValue))
+  (v1 : alloc.vec.Vec (conddata.FuncKeyValue conddata.BinaryFuncValue))
+  (i : Std.Usize) :
+  Result Bool
+  := do
+  loop
+    (fun i1 => conddata.binary_inner_eq_loop.body v v1 i1)
+    i
+
+/-- [rustfs_kernel::conddata::binary_inner_eq]:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 220:0-234:1 -/
+def conddata.binary_inner_eq
+  (left : conddata.InnerFunc conddata.BinaryFuncValue)
+  (right : conddata.InnerFunc conddata.BinaryFuncValue) :
+  Result Bool
+  := do
+  let i := alloc.vec.Vec.len left.entries
+  let i1 := alloc.vec.Vec.len right.entries
+  if i != i1
+  then ok false
+  else conddata.binary_inner_eq_loop left.entries right.entries 0#usize
+
+/-- [rustfs_kernel::condfuncs::{impl core::cmp::PartialEq<rustfs_kernel::condfuncs::IpAddr> for rustfs_kernel::condfuncs::IpAddr}::eq]:
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 23:29-23:38
+    Visibility: public -/
+def condfuncs.IpAddr.Insts.CoreCmpPartialEqIpAddr.eq
+  (self : condfuncs.IpAddr) (other : condfuncs.IpAddr) : Result Bool := do
+  let self1 := read_discriminant self
+  let other1 := read_discriminant other
+  if self1 = other1
+  then
+    match self with
+    | condfuncs.IpAddr.V4 __self_0 =>
+      match other with
+      | condfuncs.IpAddr.V4 __arg1_0 =>
+        lift (core.cmp.impls.PartialEqU32.eq __self_0 __arg1_0)
+      | condfuncs.IpAddr.V6 _ => fail panic
+    | condfuncs.IpAddr.V6 __self_0 =>
+      match other with
+      | condfuncs.IpAddr.V4 _ => fail panic
+      | condfuncs.IpAddr.V6 __arg1_0 =>
+        lift (core.cmp.impls.PartialEqU128.eq __self_0 __arg1_0)
+  else ok false
+
+/-- Trait implementation: [rustfs_kernel::condfuncs::{impl core::cmp::PartialEq<rustfs_kernel::condfuncs::IpAddr> for rustfs_kernel::condfuncs::IpAddr}]
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 23:29-23:38 -/
+@[reducible]
+impl_def condfuncs.IpAddr.Insts.CoreCmpPartialEqIpAddr : core.cmp.PartialEq
+  condfuncs.IpAddr condfuncs.IpAddr := {
+  eq := condfuncs.IpAddr.Insts.CoreCmpPartialEqIpAddr.eq
+  ne := core.cmp.PartialEq.ne.trait_default
+    condfuncs.IpAddr.Insts.CoreCmpPartialEqIpAddr
+}
+
+/-- [rustfs_kernel::conddata::date_inner_eq]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 581:4-590:1 -/
+@[rust_loop_body]
+def conddata.date_inner_eq_loop.body
+  (v : alloc.vec.Vec (conddata.FuncKeyValue conddata.DateFuncValue))
+  (v1 : alloc.vec.Vec (conddata.FuncKeyValue conddata.DateFuncValue))
+  (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let fkv ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+        (conddata.FuncKeyValue conddata.DateFuncValue)) v i
+    let fkv1 ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+        (conddata.FuncKeyValue conddata.DateFuncValue)) v1 i
+    let b ←
+      core.cmp.PartialEq.ne.trait_default
+        condfuncs.Key.Insts.CoreCmpPartialEqKey fkv.key fkv1.key
+    if b
+    then ok (done false)
+    else
+      if fkv.values.unix_nanos != fkv1.values.unix_nanos
+      then ok (done false)
+      else let i2 ← i + 1#usize
+           ok (cont i2)
+  else ok (done true)
+
+/-- [rustfs_kernel::conddata::date_inner_eq]: loop 0:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 581:4-590:1 -/
+@[rust_loop]
+def conddata.date_inner_eq_loop
+  (v : alloc.vec.Vec (conddata.FuncKeyValue conddata.DateFuncValue))
+  (v1 : alloc.vec.Vec (conddata.FuncKeyValue conddata.DateFuncValue))
+  (i : Std.Usize) :
+  Result Bool
+  := do
+  loop
+    (fun i1 => conddata.date_inner_eq_loop.body v v1 i1)
+    i
+
+/-- [rustfs_kernel::conddata::date_inner_eq]:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 576:0-590:1 -/
+def conddata.date_inner_eq
+  (left : conddata.InnerFunc conddata.DateFuncValue)
+  (right : conddata.InnerFunc conddata.DateFuncValue) :
+  Result Bool
+  := do
+  let i := alloc.vec.Vec.len left.entries
+  let i1 := alloc.vec.Vec.len right.entries
+  if i != i1
+  then ok false
+  else conddata.date_inner_eq_loop left.entries right.entries 0#usize
+
+/-- [rustfs_kernel::conddata::condition_eq]:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 236:0-249:1
+    Visibility: public -/
+def conddata.condition_eq
+  (left : conddata.Condition) (right : conddata.Condition) : Result Bool := do
+  let b ←
+    core.cmp.PartialEq.ne.trait_default conddata.Op.Insts.CoreCmpPartialEqOp
+      left.op right.op
+  if b
+  then ok false
+  else
+    if left.wrappers != right.wrappers
+    then ok false
+    else
+      match left.data with
+      | conddata.Data.Str l =>
+        match right.data with
+        | conddata.Data.Str r => conddata.string_inner_eq l r
+        | conddata.Data.Addr _ => ok false
+        | conddata.Data.Boolean _ => ok false
+        | conddata.Data.Num _ => ok false
+        | conddata.Data.Date _ => ok false
+        | conddata.Data.Binary _ => ok false
+      | conddata.Data.Addr l =>
+        match right.data with
+        | conddata.Data.Str _ => ok false
+        | conddata.Data.Addr r =>
+          conddata.InnerFunc.Insts.CoreCmpPartialEqInnerFunc.eq
+            (core.cmp.PartialEqVec (Pair.Insts.CoreCmpPartialEqPair
+            condfuncs.IpAddr.Insts.CoreCmpPartialEqIpAddr
+            core.cmp.PartialEqU8)) l r
+        | conddata.Data.Boolean _ => ok false
+        | conddata.Data.Num _ => ok false
+        | conddata.Data.Date _ => ok false
+        | conddata.Data.Binary _ => ok false
+      | conddata.Data.Boolean l =>
+        match right.data with
+        | conddata.Data.Str _ => ok false
+        | conddata.Data.Addr _ => ok false
+        | conddata.Data.Boolean r =>
+          conddata.InnerFunc.Insts.CoreCmpPartialEqInnerFunc.eq
+            core.cmp.PartialEqBool l r
+        | conddata.Data.Num _ => ok false
+        | conddata.Data.Date _ => ok false
+        | conddata.Data.Binary _ => ok false
+      | conddata.Data.Num l =>
+        match right.data with
+        | conddata.Data.Str _ => ok false
+        | conddata.Data.Addr _ => ok false
+        | conddata.Data.Boolean _ => ok false
+        | conddata.Data.Num r =>
+          conddata.InnerFunc.Insts.CoreCmpPartialEqInnerFunc.eq
+            core.cmp.PartialEqI64 l r
+        | conddata.Data.Date _ => ok false
+        | conddata.Data.Binary _ => ok false
+      | conddata.Data.Date l =>
+        match right.data with
+        | conddata.Data.Str _ => ok false
+        | conddata.Data.Addr _ => ok false
+        | conddata.Data.Boolean _ => ok false
+        | conddata.Data.Num _ => ok false
+        | conddata.Data.Date r => conddata.date_inner_eq l r
+        | conddata.Data.Binary _ => ok false
+      | conddata.Data.Binary l =>
+        match right.data with
+        | conddata.Data.Str _ => ok false
+        | conddata.Data.Addr _ => ok false
+        | conddata.Data.Boolean _ => ok false
+        | conddata.Data.Num _ => ok false
+        | conddata.Data.Date _ => ok false
+        | conddata.Data.Binary r => conddata.binary_inner_eq l r
+
+/-- [rustfs_kernel::conddata::contains_condition]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 252:4-259:1 -/
+@[rust_loop_body]
+def conddata.contains_condition_loop.body
+  (set : Slice conddata.Condition) (c : conddata.Condition) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := Slice.len set
+  if i < i1
+  then
+    let c1 ← Slice.index_usize set i
+    let b ← conddata.condition_eq c1 c
+    if b
+    then ok (done true)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else ok (done false)
+
+/-- [rustfs_kernel::conddata::contains_condition]: loop 0:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 252:4-259:1 -/
+@[rust_loop]
+def conddata.contains_condition_loop
+  (set : Slice conddata.Condition) (c : conddata.Condition) (i : Std.Usize) :
+  Result Bool
+  := do
+  loop
+    (fun i1 => conddata.contains_condition_loop.body set c i1)
+    i
+
+/-- [rustfs_kernel::conddata::contains_condition]:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 250:0-259:1 -/
+@[reducible]
+def conddata.contains_condition
+  (set : Slice conddata.Condition) (c : conddata.Condition) : Result Bool := do
+  conddata.contains_condition_loop set c 0#usize
+
+/-- [rustfs_kernel::conddata::list_covers]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 262:4-269:1 -/
+@[rust_loop_body]
+def conddata.list_covers_loop.body
+  (left : Slice conddata.Condition) (right : Slice conddata.Condition)
+  (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := Slice.len left
+  if i < i1
+  then
+    let c ← Slice.index_usize left i
+    let b ← conddata.contains_condition right c
+    if b
+    then let i2 ← i + 1#usize
+         ok (cont i2)
+    else ok (done false)
+  else ok (done true)
+
+/-- [rustfs_kernel::conddata::list_covers]: loop 0:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 262:4-269:1 -/
+@[rust_loop]
+def conddata.list_covers_loop
+  (left : Slice conddata.Condition) (right : Slice conddata.Condition)
+  (i : Std.Usize) :
+  Result Bool
+  := do
+  loop
+    (fun i1 => conddata.list_covers_loop.body left right i1)
+    i
+
+/-- [rustfs_kernel::conddata::list_covers]:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 260:0-269:1 -/
+@[reducible]
+def conddata.list_covers
+  (left : Slice conddata.Condition) (right : Slice conddata.Condition) :
+  Result Bool
+  := do
+  conddata.list_covers_loop left right 0#usize
+
+/-- [rustfs_kernel::conddata::functions_eq]:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 271:0-281:1
+    Visibility: public -/
+def conddata.functions_eq
+  (left : conddata.Functions) (right : conddata.Functions) : Result Bool := do
+  let i := alloc.vec.Vec.len left.for_any_value
+  let i1 := alloc.vec.Vec.len right.for_any_value
+  if i != i1
+  then ok false
+  else
+    let i2 := alloc.vec.Vec.len left.for_all_values
+    let i3 := alloc.vec.Vec.len right.for_all_values
+    if i2 != i3
+    then ok false
+    else
+      let i4 := alloc.vec.Vec.len left.for_normal
+      let i5 := alloc.vec.Vec.len right.for_normal
+      if i4 != i5
+      then ok false
+      else
+        let s := alloc.vec.Vec.deref left.for_any_value
+        let s1 := alloc.vec.Vec.deref right.for_any_value
+        let b ← conddata.list_covers s s1
+        if b
+        then
+          let s2 := alloc.vec.Vec.deref left.for_all_values
+          let s3 := alloc.vec.Vec.deref right.for_all_values
+          let b1 ← conddata.list_covers s2 s3
+          if b1
+          then
+            let s4 := alloc.vec.Vec.deref left.for_normal
+            let s5 := alloc.vec.Vec.deref right.for_normal
+            conddata.list_covers s4 s5
+          else ok false
+        else ok false
+
+/-- [rustfs_kernel::conddata::is_empty]:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 283:0-287:1
+    Visibility: public -/
+def conddata.is_empty (functions : conddata.Functions) : Result Bool := do
+  let i := alloc.vec.Vec.len functions.for_any_value
+  if i = 0#usize
+  then
+    let i1 := alloc.vec.Vec.len functions.for_all_values
+    if i1 = 0#usize
+    then let i2 := alloc.vec.Vec.len functions.for_normal
+         ok (i2 = 0#usize)
+    else ok false
+  else ok false
+
+/-- [rustfs_kernel::conddata::base64_digit]:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 289:0-306:1
+    Visibility: public -/
+def conddata.base64_digit (c : Std.U8) : Result (Option Std.U8) := do
+  if c >= 65#u8
+  then
+    if c <= 90#u8
+    then let i ← c - 65#u8
+         ok (some i)
+    else
+      if c >= 97#u8
+      then
+        if c <= 122#u8
+        then let i ← c - 97#u8
+             let i1 ← i + 26#u8
+             ok (some i1)
+        else
+          if c >= 48#u8
+          then
+            if c <= 57#u8
+            then let i ← c - 48#u8
+                 let i1 ← i + 52#u8
+                 ok (some i1)
+            else
+              if c = 43#u8
+              then ok (some 62#u8)
+              else if c = 47#u8
+                   then ok (some 63#u8)
+                   else ok none
+          else
+            if c = 43#u8
+            then ok (some 62#u8)
+            else if c = 47#u8
+                 then ok (some 63#u8)
+                 else ok none
+      else
+        if c >= 48#u8
+        then
+          if c <= 57#u8
+          then let i ← c - 48#u8
+               let i1 ← i + 52#u8
+               ok (some i1)
+          else
+            if c = 43#u8
+            then ok (some 62#u8)
+            else if c = 47#u8
+                 then ok (some 63#u8)
+                 else ok none
+        else
+          if c = 43#u8
+          then ok (some 62#u8)
+          else if c = 47#u8
+               then ok (some 63#u8)
+               else ok none
+  else
+    if c >= 97#u8
+    then
+      if c <= 122#u8
+      then let i ← c - 97#u8
+           let i1 ← i + 26#u8
+           ok (some i1)
+      else
+        if c >= 48#u8
+        then
+          if c <= 57#u8
+          then let i ← c - 48#u8
+               let i1 ← i + 52#u8
+               ok (some i1)
+          else
+            if c = 43#u8
+            then ok (some 62#u8)
+            else if c = 47#u8
+                 then ok (some 63#u8)
+                 else ok none
+        else
+          if c = 43#u8
+          then ok (some 62#u8)
+          else if c = 47#u8
+               then ok (some 63#u8)
+               else ok none
+    else
+      if c >= 48#u8
+      then
+        if c <= 57#u8
+        then let i ← c - 48#u8
+             let i1 ← i + 52#u8
+             ok (some i1)
+        else
+          if c = 43#u8
+          then ok (some 62#u8)
+          else if c = 47#u8
+               then ok (some 63#u8)
+               else ok none
+      else
+        if c = 43#u8
+        then ok (some 62#u8)
+        else if c = 47#u8
+             then ok (some 63#u8)
+             else ok none
+
+/-- [rustfs_kernel::conddata::decode_base64]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 314:4-349:1
+    Visibility: public -/
+@[rust_loop_body]
+def conddata.decode_base64_loop.body
+  (encoded : Slice Std.U8) (out : alloc.vec.Vec Std.U8) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Std.U8) × Std.Usize) (core.result.Result
+    (alloc.vec.Vec Std.U8) conddata.BinaryFuncValueError))
+  := do
+  let i1 := Slice.len encoded
+  if i < i1
+  then
+    let i2 ← Slice.index_usize encoded i
+    let o ← conddata.base64_digit i2
+    match o with
+    | none =>
+      ok (done (core.result.Result.Err
+        conddata.BinaryFuncValueError.InvalidBase64))
+    | some a =>
+      let i3 ← i + 1#usize
+      let i4 ← Slice.index_usize encoded i3
+      let o1 ← conddata.base64_digit i4
+      match o1 with
+      | none =>
+        ok (done (core.result.Result.Err
+          conddata.BinaryFuncValueError.InvalidBase64))
+      | some b =>
+        let i5 ← a <<< 2#i32
+        let i6 ← b >>> 4#i32
+        let i7 ← lift (i5 ||| i6)
+        let out1 ← alloc.vec.Vec.push out i7
+        let i8 ← i + 2#usize
+        let i9 ← Slice.index_usize encoded i8
+        if i9 = 61#u8
+        then
+          let i10 ← i + 4#usize
+          let i11 := Slice.len encoded
+          if i10 != i11
+          then
+            ok (done (core.result.Result.Err
+              conddata.BinaryFuncValueError.InvalidBase64))
+          else
+            let i12 ← i + 3#usize
+            let i13 ← Slice.index_usize encoded i12
+            if i13 != 61#u8
+            then
+              ok (done (core.result.Result.Err
+                conddata.BinaryFuncValueError.InvalidBase64))
+            else
+              let i14 ← lift (b &&& 15#u8)
+              if i14 != 0#u8
+              then
+                ok (done (core.result.Result.Err
+                  conddata.BinaryFuncValueError.InvalidBase64))
+              else ok (done (core.result.Result.Ok out1))
+        else
+          let i10 ← Slice.index_usize encoded i8
+          let o2 ← conddata.base64_digit i10
+          match o2 with
+          | none =>
+            ok (done (core.result.Result.Err
+              conddata.BinaryFuncValueError.InvalidBase64))
+          | some c =>
+            let i11 ← b <<< 4#i32
+            let i12 ← c >>> 2#i32
+            let i13 ← lift (i11 ||| i12)
+            let out2 ← alloc.vec.Vec.push out1 i13
+            let i14 ← i + 3#usize
+            let i15 ← Slice.index_usize encoded i14
+            if i15 = 61#u8
+            then
+              let i16 ← i + 4#usize
+              let i17 := Slice.len encoded
+              if i16 != i17
+              then
+                ok (done (core.result.Result.Err
+                  conddata.BinaryFuncValueError.InvalidBase64))
+              else
+                let i18 ← lift (c &&& 3#u8)
+                if i18 != 0#u8
+                then
+                  ok (done (core.result.Result.Err
+                    conddata.BinaryFuncValueError.InvalidBase64))
+                else ok (done (core.result.Result.Ok out2))
+            else
+              let i16 ← Slice.index_usize encoded i14
+              let o3 ← conddata.base64_digit i16
+              match o3 with
+              | none =>
+                ok (done (core.result.Result.Err
+                  conddata.BinaryFuncValueError.InvalidBase64))
+              | some d =>
+                let i17 ← c <<< 6#i32
+                let i18 ← lift (i17 ||| d)
+                let out3 ← alloc.vec.Vec.push out2 i18
+                let i19 ← i + 4#usize
+                ok (cont (out3, i19))
+  else ok (done (core.result.Result.Ok out))
+
+/-- [rustfs_kernel::conddata::decode_base64]: loop 0:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 314:4-349:1
+    Visibility: public -/
+@[rust_loop]
+def conddata.decode_base64_loop
+  (encoded : Slice Std.U8) (out : alloc.vec.Vec Std.U8) (i : Std.Usize) :
+  Result (core.result.Result (alloc.vec.Vec Std.U8)
+    conddata.BinaryFuncValueError)
+  := do
+  loop
+    (fun (out1, i1) => conddata.decode_base64_loop.body encoded out1 i1)
+    (out, i)
+
+/-- [rustfs_kernel::conddata::decode_base64]:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 308:0-349:1
+    Visibility: public -/
+def conddata.decode_base64
+  (encoded : Slice Std.U8) :
+  Result (core.result.Result (alloc.vec.Vec Std.U8)
+    conddata.BinaryFuncValueError)
+  := do
+  let i := Slice.len encoded
+  let i1 ← i % 4#usize
+  if i1 != 0#usize
+  then ok (core.result.Result.Err conddata.BinaryFuncValueError.InvalidBase64)
+  else conddata.decode_base64_loop encoded (alloc.vec.Vec.new Std.U8) 0#usize
+
+/-- [rustfs_kernel::conddata::binary_from_encoded_values]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 360:4-365:1
+    Visibility: public -/
+@[rust_loop_body]
+def conddata.binary_from_encoded_values_loop.body
+  (encoded : alloc.vec.Vec (alloc.vec.Vec Std.U8))
+  (decoded : alloc.vec.Vec (alloc.vec.Vec Std.U8)) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec (alloc.vec.Vec Std.U8)) × Std.Usize)
+    (core.result.Result conddata.BinaryFuncValue
+    conddata.BinaryFuncValueError))
+  := do
+  let i1 := alloc.vec.Vec.len encoded
+  if i < i1
+  then
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice (alloc.vec.Vec
+        Std.U8)) encoded i
+    let s := alloc.vec.Vec.deref v
+    let r ← conddata.decode_base64 s
+    let cf ← core.result.Result.Insts.CoreOpsTry.branch r
+    match cf with
+    | core.ops.control_flow.ControlFlow.Continue val =>
+      let decoded1 ← alloc.vec.Vec.push decoded val
+      let i2 ← i + 1#usize
+      ok (cont (decoded1, i2))
+    | core.ops.control_flow.ControlFlow.Break residual =>
+      let r1 ←
+        core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual
+          conddata.BinaryFuncValue (core.convert.FromSame
+          conddata.BinaryFuncValueError) residual
+      ok (done r1)
+  else ok (done (core.result.Result.Ok { encoded, decoded }))
+
+/-- [rustfs_kernel::conddata::binary_from_encoded_values]: loop 0:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 360:4-365:1
+    Visibility: public -/
+@[rust_loop]
+def conddata.binary_from_encoded_values_loop
+  (encoded : alloc.vec.Vec (alloc.vec.Vec Std.U8))
+  (decoded : alloc.vec.Vec (alloc.vec.Vec Std.U8)) (i : Std.Usize) :
+  Result (core.result.Result conddata.BinaryFuncValue
+    conddata.BinaryFuncValueError)
+  := do
+  loop
+    (fun (decoded1, i1) => conddata.binary_from_encoded_values_loop.body
+      encoded decoded1 i1)
+    (decoded, i)
+
+/-- [rustfs_kernel::conddata::binary_from_encoded_values]:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 355:0-365:1
+    Visibility: public -/
+@[reducible]
+def conddata.binary_from_encoded_values
+  (encoded : alloc.vec.Vec (alloc.vec.Vec Std.U8)) :
+  Result (core.result.Result conddata.BinaryFuncValue
+    conddata.BinaryFuncValueError)
+  := do
+  conddata.binary_from_encoded_values_loop encoded (alloc.vec.Vec.new
+    (alloc.vec.Vec Std.U8)) 0#usize
+
+/-- [rustfs_kernel::conddata::binary_new]:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 351:0-353:1
+    Visibility: public -/
+def conddata.binary_new
+  (encoded : Slice Std.U8) :
+  Result (core.result.Result conddata.BinaryFuncValue
+    conddata.BinaryFuncValueError)
+  := do
+  let v ← alloc.slice.Slice.to_vec core.clone.CloneU8 encoded
+  let y ←
+    lift (Std.Array.to_slice (Array.make 1#usize [ v ] : Array (alloc.vec.Vec
+      Std.U8) 1#usize))
+  let ret := alloc.slice.Slice.into_vec y
+  conddata.binary_from_encoded_values ret
+
+/-- [rustfs_kernel::conddata::binary_key_matches]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 370:4-381:1 -/
+@[rust_loop_body]
+def conddata.binary_key_matches_loop.body
+  (expected : conddata.BinaryFuncValue)
+  (requests : Slice (alloc.vec.Vec Std.U8)) (matched : Bool) (i : Std.Usize) :
+  Result (ControlFlow (Bool × Std.Usize) Bool)
+  := do
+  let i1 := Slice.len requests
+  if i < i1
+  then
+    let v ← Slice.index_usize requests i
+    let s := alloc.vec.Vec.deref v
+    let r ← conddata.decode_base64 s
+    match r with
+    | core.result.Result.Ok d =>
+      let s1 := alloc.vec.Vec.deref expected.decoded
+      let s2 := alloc.vec.Vec.deref d
+      let b ← bytes.member s1 s2
+      let matched1 ← if b
+                       then ok true
+                       else ok matched
+      let i2 ← i + 1#usize
+      ok (cont (matched1, i2))
+    | core.result.Result.Err _ => ok (done false)
+  else ok (done matched)
+
+/-- [rustfs_kernel::conddata::binary_key_matches]: loop 0:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 370:4-381:1 -/
+@[rust_loop]
+def conddata.binary_key_matches_loop
+  (expected : conddata.BinaryFuncValue)
+  (requests : Slice (alloc.vec.Vec Std.U8)) (matched : Bool) (i : Std.Usize) :
+  Result Bool
+  := do
+  loop
+    (fun (matched1, i1) => conddata.binary_key_matches_loop.body expected
+      requests matched1 i1)
+    (matched, i)
+
+/-- [rustfs_kernel::conddata::binary_key_matches]:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 367:0-381:1 -/
+@[reducible]
+def conddata.binary_key_matches
+  (expected : conddata.BinaryFuncValue)
+  (requests : Slice (alloc.vec.Vec Std.U8)) :
+  Result Bool
+  := do
+  conddata.binary_key_matches_loop expected requests false 0#usize
+
 /-- [rustfs_kernel::condfuncs::get_value]: loop body 0:
     Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 14:4-21:1
     Visibility: public -/
@@ -1822,13 +7818,1307 @@ def condfuncs.get_value
   := do
   condfuncs.get_value_loop values «name» 0#usize
 
-/-- [rustfs_kernel::condfuncs::IpAddr]
-    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 24:0-27:1
+/-- [rustfs_kernel::conddata::binary_evaluate]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 385:4-400:1
+    Visibility: public -/
+@[rust_loop_body]
+def conddata.binary_evaluate_loop.body
+  (inner : conddata.InnerFunc conddata.BinaryFuncValue)
+  (values : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec
+  (alloc.vec.Vec Std.U8)))) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := alloc.vec.Vec.len inner.entries
+  if i < i1
+  then
+    let entry ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+        (conddata.FuncKeyValue conddata.BinaryFuncValue)) inner.entries i
+    let v ← condfuncs.key_lookup_name entry.key
+    let s := alloc.vec.Vec.deref v
+    let o ← condfuncs.get_value values s
+    match o with
+    | none => ok (done false)
+    | some v1 =>
+      let s1 := alloc.vec.Vec.deref v1
+      let b ← conddata.binary_key_matches entry.values s1
+      if b
+      then let i2 ← i + 1#usize
+           ok (cont i2)
+      else ok (done false)
+  else ok (done true)
+
+/-- [rustfs_kernel::conddata::binary_evaluate]: loop 0:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 385:4-400:1
+    Visibility: public -/
+@[rust_loop]
+def conddata.binary_evaluate_loop
+  (inner : conddata.InnerFunc conddata.BinaryFuncValue)
+  (values : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec
+  (alloc.vec.Vec Std.U8)))) (i : Std.Usize) :
+  Result Bool
+  := do
+  loop
+    (fun i1 => conddata.binary_evaluate_loop.body inner values i1)
+    i
+
+/-- [rustfs_kernel::conddata::binary_evaluate]:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 383:0-400:1
+    Visibility: public -/
+@[reducible]
+def conddata.binary_evaluate
+  (inner : conddata.InnerFunc conddata.BinaryFuncValue)
+  (values : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec
+  (alloc.vec.Vec Std.U8)))) :
+  Result Bool
+  := do
+  conddata.binary_evaluate_loop inner values 0#usize
+
+/-- [rustfs_kernel::conddata::legacy_pairs]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 405:4-411:5
+    Visibility: public -/
+@[rust_loop_body]
+def conddata.legacy_pairs_loop.body
+  {T : Type} (corecloneCloneInst : core.clone.Clone T)
+  (inner : conddata.InnerFunc T) (out : alloc.vec.Vec (condfuncs.Key × T))
+  (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec (condfuncs.Key × T)) × Std.Usize)
+    (alloc.vec.Vec (condfuncs.Key × T)))
+  := do
+  let i1 := alloc.vec.Vec.len inner.entries
+  if i < i1
+  then
+    let fkv ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+        (conddata.FuncKeyValue T)) inner.entries i
+    let k ← condfuncs.Key.Insts.CoreCloneClone.clone fkv.key
+    let t ← corecloneCloneInst.clone fkv.values
+    let out1 ← alloc.vec.Vec.push out (k, t)
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
+  else ok (done out)
+
+/-- [rustfs_kernel::conddata::legacy_pairs]: loop 0:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 405:4-411:5
+    Visibility: public -/
+@[rust_loop]
+def conddata.legacy_pairs_loop
+  {T : Type} (corecloneCloneInst : core.clone.Clone T)
+  (inner : conddata.InnerFunc T) (out : alloc.vec.Vec (condfuncs.Key × T))
+  (i : Std.Usize) :
+  Result (alloc.vec.Vec (condfuncs.Key × T))
+  := do
+  loop
+    (fun (out1, i1) => conddata.legacy_pairs_loop.body corecloneCloneInst inner
+      out1 i1)
+    (out, i)
+
+/-- [rustfs_kernel::conddata::legacy_pairs]:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 402:0-413:1
+    Visibility: public -/
+@[reducible]
+def conddata.legacy_pairs
+  {T : Type} (corecloneCloneInst : core.clone.Clone T)
+  (inner : conddata.InnerFunc T) :
+  Result (alloc.vec.Vec (condfuncs.Key × T))
+  := do
+  conddata.legacy_pairs_loop corecloneCloneInst inner (alloc.vec.Vec.new
+    (condfuncs.Key × T)) 0#usize
+
+/-- [rustfs_kernel::condfuncs::StrOp]
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 88:0-99:1
     Visibility: public -/
 @[discriminant isize]
-inductive condfuncs.IpAddr where
-| V4 : Std.U32 → condfuncs.IpAddr
-| V6 : Std.U128 → condfuncs.IpAddr
+inductive condfuncs.StrOp where
+| StringEquals : condfuncs.StrOp
+| StringNotEquals : condfuncs.StrOp
+| StringEqualsIgnoreCase : condfuncs.StrOp
+| StringNotEqualsIgnoreCase : condfuncs.StrOp
+| StringLike : condfuncs.StrOp
+| StringNotLike : condfuncs.StrOp
+| ArnLike : condfuncs.StrOp
+| ArnNotLike : condfuncs.StrOp
+| ArnEquals : condfuncs.StrOp
+| ArnNotEquals : condfuncs.StrOp
+
+/-- [rustfs_kernel::conddata::str_op]:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 414:0-428:1
+    Visibility: public -/
+def conddata.str_op (op : conddata.Op) : Result condfuncs.StrOp := do
+  match op with
+  | conddata.Op.StringEquals => ok condfuncs.StrOp.StringEquals
+  | conddata.Op.StringNotEquals => ok condfuncs.StrOp.StringNotEquals
+  | conddata.Op.StringEqualsIgnoreCase =>
+    ok condfuncs.StrOp.StringEqualsIgnoreCase
+  | conddata.Op.StringNotEqualsIgnoreCase =>
+    ok condfuncs.StrOp.StringNotEqualsIgnoreCase
+  | conddata.Op.StringLike => ok condfuncs.StrOp.StringLike
+  | conddata.Op.StringNotLike => ok condfuncs.StrOp.StringNotLike
+  | conddata.Op.ArnLike => ok condfuncs.StrOp.ArnLike
+  | conddata.Op.ArnNotLike => ok condfuncs.StrOp.ArnNotLike
+  | conddata.Op.ArnEquals => ok condfuncs.StrOp.ArnEquals
+  | conddata.Op.ArnNotEquals => ok condfuncs.StrOp.ArnNotEquals
+  | conddata.Op.BinaryEquals => ok condfuncs.StrOp.StringEquals
+  | conddata.Op.IpAddress => ok condfuncs.StrOp.StringEquals
+  | conddata.Op.NotIpAddress => ok condfuncs.StrOp.StringEquals
+  | conddata.Op.Null => ok condfuncs.StrOp.StringEquals
+  | conddata.Op.Boolean => ok condfuncs.StrOp.StringEquals
+  | conddata.Op.NumericEquals => ok condfuncs.StrOp.StringEquals
+  | conddata.Op.NumericNotEquals => ok condfuncs.StrOp.StringEquals
+  | conddata.Op.NumericLessThan => ok condfuncs.StrOp.StringEquals
+  | conddata.Op.NumericLessThanEquals => ok condfuncs.StrOp.StringEquals
+  | conddata.Op.NumericGreaterThan => ok condfuncs.StrOp.StringEquals
+  | conddata.Op.NumericGreaterThanIfExists => ok condfuncs.StrOp.StringEquals
+  | conddata.Op.NumericGreaterThanEquals => ok condfuncs.StrOp.StringEquals
+  | conddata.Op.DateEquals => ok condfuncs.StrOp.StringEquals
+  | conddata.Op.DateNotEquals => ok condfuncs.StrOp.StringEquals
+  | conddata.Op.DateLessThan => ok condfuncs.StrOp.StringEquals
+  | conddata.Op.DateLessThanEquals => ok condfuncs.StrOp.StringEquals
+  | conddata.Op.DateGreaterThan => ok condfuncs.StrOp.StringEquals
+  | conddata.Op.DateGreaterThanEquals => ok condfuncs.StrOp.StringEquals
+
+/-- [rustfs_kernel::condfuncs::NumOp]
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 102:0-109:1
+    Visibility: public -/
+@[discriminant isize]
+inductive condfuncs.NumOp where
+| Eq : condfuncs.NumOp
+| Ne : condfuncs.NumOp
+| Lt : condfuncs.NumOp
+| Le : condfuncs.NumOp
+| Gt : condfuncs.NumOp
+| Ge : condfuncs.NumOp
+
+/-- [rustfs_kernel::conddata::num_op]:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 429:0-439:1
+    Visibility: public -/
+def conddata.num_op (op : conddata.Op) : Result condfuncs.NumOp := do
+  match op with
+  | conddata.Op.StringEquals => ok condfuncs.NumOp.Eq
+  | conddata.Op.StringNotEquals => ok condfuncs.NumOp.Eq
+  | conddata.Op.StringEqualsIgnoreCase => ok condfuncs.NumOp.Eq
+  | conddata.Op.StringNotEqualsIgnoreCase => ok condfuncs.NumOp.Eq
+  | conddata.Op.StringLike => ok condfuncs.NumOp.Eq
+  | conddata.Op.StringNotLike => ok condfuncs.NumOp.Eq
+  | conddata.Op.ArnLike => ok condfuncs.NumOp.Eq
+  | conddata.Op.ArnNotLike => ok condfuncs.NumOp.Eq
+  | conddata.Op.ArnEquals => ok condfuncs.NumOp.Eq
+  | conddata.Op.ArnNotEquals => ok condfuncs.NumOp.Eq
+  | conddata.Op.BinaryEquals => ok condfuncs.NumOp.Eq
+  | conddata.Op.IpAddress => ok condfuncs.NumOp.Eq
+  | conddata.Op.NotIpAddress => ok condfuncs.NumOp.Eq
+  | conddata.Op.Null => ok condfuncs.NumOp.Eq
+  | conddata.Op.Boolean => ok condfuncs.NumOp.Eq
+  | conddata.Op.NumericEquals => ok condfuncs.NumOp.Eq
+  | conddata.Op.NumericNotEquals => ok condfuncs.NumOp.Ne
+  | conddata.Op.NumericLessThan => ok condfuncs.NumOp.Lt
+  | conddata.Op.NumericLessThanEquals => ok condfuncs.NumOp.Le
+  | conddata.Op.NumericGreaterThan => ok condfuncs.NumOp.Gt
+  | conddata.Op.NumericGreaterThanIfExists => ok condfuncs.NumOp.Ge
+  | conddata.Op.NumericGreaterThanEquals => ok condfuncs.NumOp.Ge
+  | conddata.Op.DateEquals => ok condfuncs.NumOp.Eq
+  | conddata.Op.DateNotEquals => ok condfuncs.NumOp.Eq
+  | conddata.Op.DateLessThan => ok condfuncs.NumOp.Eq
+  | conddata.Op.DateLessThanEquals => ok condfuncs.NumOp.Eq
+  | conddata.Op.DateGreaterThan => ok condfuncs.NumOp.Eq
+  | conddata.Op.DateGreaterThanEquals => ok condfuncs.NumOp.Eq
+
+/-- [rustfs_kernel::condfuncs::Cond]
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 112:0-121:1
+    Visibility: public -/
+@[discriminant isize]
+inductive condfuncs.Cond where
+| Str :
+  condfuncs.StrOp →
+  alloc.vec.Vec (condfuncs.Key × (alloc.vec.Vec (alloc.vec.Vec Std.U8))) →
+  condfuncs.Cond
+| Ip :
+  Bool →
+  alloc.vec.Vec (condfuncs.Key × (alloc.vec.Vec (condfuncs.IpAddr × Std.U8)))
+    →
+  condfuncs.Cond
+| Null : alloc.vec.Vec (condfuncs.Key × Bool) → condfuncs.Cond
+| Bool : alloc.vec.Vec (condfuncs.Key × Bool) → condfuncs.Cond
+| Num :
+  condfuncs.NumOp →
+  Bool →
+  alloc.vec.Vec (condfuncs.Key × Std.I64) →
+  condfuncs.Cond
+
+/-- [rustfs_kernel::condfuncs::Condition]
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 126:0-129:1
+    Visibility: public -/
+structure condfuncs.Condition where
+  if_exists : Bool
+  cond : condfuncs.Cond
+
+/-- [rustfs_kernel::conddata::key_presence]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 469:4-472:5 -/
+@[rust_loop_body]
+def conddata.key_presence_loop.body
+  {T : Type} (f : conddata.InnerFunc T)
+  (out : alloc.vec.Vec (condfuncs.Key × Bool)) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec (condfuncs.Key × Bool)) × Std.Usize)
+    (alloc.vec.Vec (condfuncs.Key × Bool)))
+  := do
+  let i1 := alloc.vec.Vec.len f.entries
+  if i < i1
+  then
+    let fkv ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+        (conddata.FuncKeyValue T)) f.entries i
+    let k ← condfuncs.Key.Insts.CoreCloneClone.clone fkv.key
+    let out1 ← alloc.vec.Vec.push out (k, false)
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
+  else ok (done out)
+
+/-- [rustfs_kernel::conddata::key_presence]: loop 0:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 469:4-472:5 -/
+@[rust_loop]
+def conddata.key_presence_loop
+  {T : Type} (f : conddata.InnerFunc T)
+  (out : alloc.vec.Vec (condfuncs.Key × Bool)) (i : Std.Usize) :
+  Result (alloc.vec.Vec (condfuncs.Key × Bool))
+  := do
+  loop
+    (fun (out1, i1) => conddata.key_presence_loop.body f out1 i1)
+    (out, i)
+
+/-- [rustfs_kernel::conddata::key_presence]:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 466:0-474:1 -/
+@[reducible]
+def conddata.key_presence
+  {T : Type} (f : conddata.InnerFunc T) :
+  Result (alloc.vec.Vec (condfuncs.Key × Bool))
+  := do
+  conddata.key_presence_loop f (alloc.vec.Vec.new (condfuncs.Key × Bool))
+    0#usize
+
+/-- [rustfs_kernel::conddata::condition_view]:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 441:0-465:1
+    Visibility: public -/
+def conddata.condition_view
+  (c : conddata.Condition) : Result condfuncs.Condition := do
+  let cond ←
+    match c.data with
+    | conddata.Data.Str f =>
+      do
+      let so ← conddata.str_op c.op
+      let v ←
+        conddata.legacy_pairs (core.clone.CloneallocvecVec
+          (core.clone.CloneallocvecVec core.clone.CloneU8)) f
+      ok (condfuncs.Cond.Str so v)
+    | conddata.Data.Addr f =>
+      do
+      let b ←
+        conddata.Op.Insts.CoreCmpPartialEqOp.eq c.op conddata.Op.NotIpAddress
+      let v ←
+        conddata.legacy_pairs (core.clone.CloneallocvecVec (BuiltinClone
+          (condfuncs.IpAddr × Std.U8))) f
+      ok (condfuncs.Cond.Ip b v)
+    | conddata.Data.Boolean f =>
+      do
+      let b ← conddata.Op.Insts.CoreCmpPartialEqOp.eq c.op conddata.Op.Null
+      if b
+      then
+        let v ← conddata.legacy_pairs core.clone.CloneBool f
+        ok (condfuncs.Cond.Null v)
+      else
+        let v ← conddata.legacy_pairs core.clone.CloneBool f
+        ok (condfuncs.Cond.Bool v)
+    | conddata.Data.Num f =>
+      do
+      let no ← conddata.num_op c.op
+      let b ←
+        conddata.Op.Insts.CoreCmpPartialEqOp.eq c.op
+          conddata.Op.NumericGreaterThanIfExists
+      let v ← conddata.legacy_pairs core.clone.CloneI64 f
+      ok (condfuncs.Cond.Num no b v)
+    | conddata.Data.Date f =>
+      do
+      let v ← conddata.key_presence f
+      ok (condfuncs.Cond.Null v)
+    | conddata.Data.Binary f =>
+      do
+      let v ← conddata.key_presence f
+      ok (condfuncs.Cond.Null v)
+  ok { if_exists := (c.wrappers > 0#usize), cond }
+
+/-- [rustfs_kernel::conddata::views]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 478:4-481:5 -/
+@[rust_loop_body]
+def conddata.views_loop.body
+  (cs : Slice conddata.Condition) (out : alloc.vec.Vec condfuncs.Condition)
+  (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec condfuncs.Condition) × Std.Usize)
+    (alloc.vec.Vec condfuncs.Condition))
+  := do
+  let i1 := Slice.len cs
+  if i < i1
+  then
+    let c ← Slice.index_usize cs i
+    let c1 ← conddata.condition_view c
+    let out1 ← alloc.vec.Vec.push out c1
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
+  else ok (done out)
+
+/-- [rustfs_kernel::conddata::views]: loop 0:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 478:4-481:5 -/
+@[rust_loop]
+def conddata.views_loop
+  (cs : Slice conddata.Condition) (out : alloc.vec.Vec condfuncs.Condition)
+  (i : Std.Usize) :
+  Result (alloc.vec.Vec condfuncs.Condition)
+  := do
+  loop
+    (fun (out1, i1) => conddata.views_loop.body cs out1 i1)
+    (out, i)
+
+/-- [rustfs_kernel::conddata::views]:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 475:0-483:1 -/
+@[reducible]
+def conddata.views
+  (cs : Slice conddata.Condition) :
+  Result (alloc.vec.Vec condfuncs.Condition)
+  := do
+  conddata.views_loop cs (alloc.vec.Vec.new condfuncs.Condition) 0#usize
+
+/-- [rustfs_kernel::condfuncs::Functions]
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 132:0-136:1
+    Visibility: public -/
+structure condfuncs.Functions where
+  for_any_value : alloc.vec.Vec condfuncs.Condition
+  for_all_values : alloc.vec.Vec condfuncs.Condition
+  for_normal : alloc.vec.Vec condfuncs.Condition
+
+/-- [rustfs_kernel::conddata::matching_view]:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 484:0-490:1
+    Visibility: public -/
+def conddata.matching_view
+  (f : conddata.Functions) : Result condfuncs.Functions := do
+  let s := alloc.vec.Vec.deref f.for_any_value
+  let v ← conddata.views s
+  let s1 := alloc.vec.Vec.deref f.for_all_values
+  let v1 ← conddata.views s1
+  let s2 := alloc.vec.Vec.deref f.for_normal
+  let v2 ← conddata.views s2
+  ok { for_any_value := v, for_all_values := v1, for_normal := v2 }
+
+/-- [rustfs_kernel::conddata::inner_has_value]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 493:4-505:1 -/
+@[rust_loop_body]
+def conddata.inner_has_value_loop.body
+  {T : Type} (f : conddata.InnerFunc T)
+  (values : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec
+  (alloc.vec.Vec Std.U8)))) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := alloc.vec.Vec.len f.entries
+  if i < i1
+  then
+    let fkv ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+        (conddata.FuncKeyValue T)) f.entries i
+    let v ← condfuncs.key_lookup_name fkv.key
+    let s := alloc.vec.Vec.deref v
+    let o ← condfuncs.get_value values s
+    let b := core.option.Option.is_some o
+    if b
+    then ok (done true)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else ok (done false)
+
+/-- [rustfs_kernel::conddata::inner_has_value]: loop 0:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 493:4-505:1 -/
+@[rust_loop]
+def conddata.inner_has_value_loop
+  {T : Type} (f : conddata.InnerFunc T)
+  (values : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec
+  (alloc.vec.Vec Std.U8)))) (i : Std.Usize) :
+  Result Bool
+  := do
+  loop
+    (fun i1 => conddata.inner_has_value_loop.body f values i1)
+    i
+
+/-- [rustfs_kernel::conddata::inner_has_value]:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 491:0-505:1 -/
+@[reducible]
+def conddata.inner_has_value
+  {T : Type} (f : conddata.InnerFunc T)
+  (values : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec
+  (alloc.vec.Vec Std.U8)))) :
+  Result Bool
+  := do
+  conddata.inner_has_value_loop f values 0#usize
+
+/-- [rustfs_kernel::conddata::has_any_key_in]:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 506:0-515:1
+    Visibility: public -/
+def conddata.has_any_key_in
+  (c : conddata.Condition)
+  (values : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec
+  (alloc.vec.Vec Std.U8)))) :
+  Result Bool
+  := do
+  match c.data with
+  | conddata.Data.Str f => conddata.inner_has_value f values
+  | conddata.Data.Addr f => conddata.inner_has_value f values
+  | conddata.Data.Boolean f => conddata.inner_has_value f values
+  | conddata.Data.Num f => conddata.inner_has_value f values
+  | conddata.Data.Date f => conddata.inner_has_value f values
+  | conddata.Data.Binary f => conddata.inner_has_value f values
+
+/-- [rustfs_kernel::dates::compare]:
+    Source: 'ports/rustfs/kernel/src/dates.rs', lines 114:0-124:1
+    Visibility: public -/
+def dates.compare
+  (op : conddata.Op) (request : Std.I128) (expected : Std.I128) :
+  Result Bool
+  := do
+  match op with
+  | conddata.Op.StringEquals => ok false
+  | conddata.Op.StringNotEquals => ok false
+  | conddata.Op.StringEqualsIgnoreCase => ok false
+  | conddata.Op.StringNotEqualsIgnoreCase => ok false
+  | conddata.Op.StringLike => ok false
+  | conddata.Op.StringNotLike => ok false
+  | conddata.Op.ArnLike => ok false
+  | conddata.Op.ArnNotLike => ok false
+  | conddata.Op.ArnEquals => ok false
+  | conddata.Op.ArnNotEquals => ok false
+  | conddata.Op.BinaryEquals => ok false
+  | conddata.Op.IpAddress => ok false
+  | conddata.Op.NotIpAddress => ok false
+  | conddata.Op.Null => ok false
+  | conddata.Op.Boolean => ok false
+  | conddata.Op.NumericEquals => ok false
+  | conddata.Op.NumericNotEquals => ok false
+  | conddata.Op.NumericLessThan => ok false
+  | conddata.Op.NumericLessThanEquals => ok false
+  | conddata.Op.NumericGreaterThan => ok false
+  | conddata.Op.NumericGreaterThanIfExists => ok false
+  | conddata.Op.NumericGreaterThanEquals => ok false
+  | conddata.Op.DateEquals => ok (request = expected)
+  | conddata.Op.DateNotEquals => ok (request != expected)
+  | conddata.Op.DateLessThan => ok (request < expected)
+  | conddata.Op.DateLessThanEquals => ok (request <= expected)
+  | conddata.Op.DateGreaterThan => ok (request > expected)
+  | conddata.Op.DateGreaterThanEquals => ok (request >= expected)
+
+/-- [rustfs_kernel::dates::nanos]:
+    Source: 'ports/rustfs/kernel/src/dates.rs', lines 96:0-96:81 -/
+def dates.nanos (utc : Std.I64) (nano : Std.I64) : Result Std.I128 := do
+  let i ← lift (IScalar.cast .I128 utc)
+  let i1 ← i * 1000000000#i128
+  let i2 ← lift (IScalar.cast .I128 nano)
+  i1 + i2
+
+/-- [rustfs_kernel::dates::month_days]:
+    Source: 'ports/rustfs/kernel/src/dates.rs', lines 30:0-42:1 -/
+def dates.month_days (year : Std.I64) (month : Std.I64) : Result Std.I64 := do
+  if month = 2#i64
+  then
+    let i ← year % 4#i64
+    if i = 0#i64
+    then
+      let i1 ← year % 100#i64
+      if i1 != 0#i64
+      then ok 29#i64
+      else
+        let i2 ← year % 400#i64
+        if i2 = 0#i64
+        then ok 29#i64
+        else ok 28#i64
+    else ok 28#i64
+  else
+    if month = 4#i64
+    then ok 30#i64
+    else
+      if month = 6#i64
+      then ok 30#i64
+      else
+        if month = 9#i64
+        then ok 30#i64
+        else if month = 11#i64
+             then ok 30#i64
+             else ok 31#i64
+
+/-- [rustfs_kernel::dates::leap_valid]:
+    Source: 'ports/rustfs/kernel/src/dates.rs', lines 88:0-95:1 -/
+def dates.leap_valid
+  (utc : Std.I64) (local_day : Std.I64) (year : Std.I64) (month : Std.I64)
+  (day : Std.I64) :
+  Result Bool
+  := do
+  let i ← utc % 86400#i64
+  let i1 ← i + 86400#i64
+  let rem ← i1 % 86400#i64
+  let i2 ← utc - rem
+  let utc_day ← i2 / 86400#i64
+  let last ← dates.month_days year month
+  if rem = 86399#i64
+  then
+    if utc_day = local_day
+    then
+      if day = last
+      then ok true
+      else
+        let i3 ← local_day - 1#i64
+        if utc_day = i3
+        then
+          if day = 1#i64
+          then ok true
+          else
+            let i4 ← local_day + 1#i64
+            if utc_day = i4
+            then let i5 ← last - 1#i64
+                 ok (day = i5)
+            else ok false
+        else
+          let i4 ← local_day + 1#i64
+          if utc_day = i4
+          then let i5 ← last - 1#i64
+               ok (day = i5)
+          else ok false
+    else
+      let i3 ← local_day - 1#i64
+      if utc_day = i3
+      then
+        if day = 1#i64
+        then ok true
+        else
+          let i4 ← local_day + 1#i64
+          if utc_day = i4
+          then let i5 ← last - 1#i64
+               ok (day = i5)
+          else ok false
+      else
+        let i4 ← local_day + 1#i64
+        if utc_day = i4
+        then let i5 ← last - 1#i64
+             ok (day = i5)
+        else ok false
+  else ok false
+
+/-- [rustfs_kernel::dates::digits]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/dates.rs', lines 20:4-29:1 -/
+@[rust_loop_body]
+def dates.digits_loop.body
+  (s : Slice Std.U8) («from» : Std.Usize) (count : Std.Usize) (n : Std.I64)
+  (i : Std.Usize) :
+  Result (ControlFlow (Std.I64 × Std.Usize) (Option Std.I64))
+  := do
+  if i < count
+  then
+    let i1 ← «from» + i
+    let b ← Slice.index_usize s i1
+    if b < 48#u8
+    then ok (done none)
+    else
+      if b > 57#u8
+      then ok (done none)
+      else
+        let i2 ← n * 10#i64
+        let i3 ← b - 48#u8
+        let i4 ← lift (UScalar.hcast .I64 i3)
+        let n1 ← i2 + i4
+        let i5 ← i + 1#usize
+        ok (cont (n1, i5))
+  else ok (done (some n))
+
+/-- [rustfs_kernel::dates::digits]: loop 0:
+    Source: 'ports/rustfs/kernel/src/dates.rs', lines 20:4-29:1 -/
+@[rust_loop]
+def dates.digits_loop
+  (s : Slice Std.U8) («from» : Std.Usize) (count : Std.Usize) (n : Std.I64)
+  (i : Std.Usize) :
+  Result (Option Std.I64)
+  := do
+  loop
+    (fun (n1, i1) => dates.digits_loop.body s «from» count n1 i1)
+    (n, i)
+
+/-- [rustfs_kernel::dates::digits]:
+    Source: 'ports/rustfs/kernel/src/dates.rs', lines 14:0-29:1 -/
+def dates.digits
+  (s : Slice Std.U8) («from» : Std.Usize) (count : Std.Usize) :
+  Result (Option Std.I64)
+  := do
+  let i := Slice.len s
+  if «from» > i
+  then ok none
+  else
+    let i1 := Slice.len s
+    let i2 ← i1 - «from»
+    if count > i2
+    then ok none
+    else dates.digits_loop s «from» count 0#i64 0#usize
+
+/-- [rustfs_kernel::dates::offset]:
+    Source: 'ports/rustfs/kernel/src/dates.rs', lines 78:0-87:1 -/
+def dates.offset
+  (s : Slice Std.U8) (i : Std.Usize) : Result (Option Std.I64) := do
+  let i1 := Slice.len s
+  if i >= i1
+  then ok none
+  else
+    let i2 ← Slice.index_usize s i
+    if i2 = 90#u8
+    then
+      let i3 ← i + 1#usize
+      let i4 := Slice.len s
+      if i3 = i4
+      then ok (some 0#i64)
+      else ok none
+    else
+      if i2 = 122#u8
+      then
+        let i3 ← i + 1#usize
+        let i4 := Slice.len s
+        if i3 = i4
+        then ok (some 0#i64)
+        else ok none
+      else
+        let i3 ← i + 6#usize
+        let i4 := Slice.len s
+        if i3 != i4
+        then ok none
+        else
+          if i2 != 43#u8
+          then
+            if i2 != 45#u8
+            then ok none
+            else
+              let i5 ← i + 3#usize
+              let i6 ← Slice.index_usize s i5
+              if i6 != 58#u8
+              then ok none
+              else
+                let i7 ← i + 1#usize
+                let o ← dates.digits s i7 2#usize
+                match o with
+                | none => ok none
+                | some v =>
+                  let i8 ← i + 4#usize
+                  let o1 ← dates.digits s i8 2#usize
+                  match o1 with
+                  | none => ok none
+                  | some v1 =>
+                    if v > 23#i64
+                    then ok none
+                    else
+                      if v1 > 59#i64
+                      then ok none
+                      else
+                        let i9 ← v * 3600#i64
+                        let i10 ← v1 * 60#i64
+                        let v2 ← i9 + i10
+                        if i2 = 45#u8
+                        then let v3 ← -. v2
+                             ok (some v3)
+                        else ok (some v2)
+          else
+            let i5 ← i + 3#usize
+            let i6 ← Slice.index_usize s i5
+            if i6 != 58#u8
+            then ok none
+            else
+              let i7 ← i + 1#usize
+              let o ← dates.digits s i7 2#usize
+              match o with
+              | none => ok none
+              | some v =>
+                let i8 ← i + 4#usize
+                let o1 ← dates.digits s i8 2#usize
+                match o1 with
+                | none => ok none
+                | some v1 =>
+                  if v > 23#i64
+                  then ok none
+                  else
+                    if v1 > 59#i64
+                    then ok none
+                    else
+                      let i9 ← v * 3600#i64
+                      let i10 ← v1 * 60#i64
+                      let v2 ← i9 + i10
+                      if i2 = 45#u8
+                      then let v3 ← -. v2
+                           ok (some v3)
+                      else ok (some v2)
+
+/-- [rustfs_kernel::dates::fraction]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/dates.rs', lines 70:8-73:9 -/
+@[rust_loop_body]
+def dates.fraction_loop.body
+  (s : Slice Std.U8) (i : Std.Usize) (nano : Std.I64) (multiplier : Std.I64) :
+  Result (ControlFlow (Std.Usize × Std.I64 × Std.I64) (Std.Usize × Std.I64))
+  := do
+  let i1 := Slice.len s
+  if i < i1
+  then
+    let i2 ← Slice.index_usize s i
+    if i2 >= 48#u8
+    then
+      if i2 <= 57#u8
+      then
+        let i3 ← i2 - 48#u8
+        let i4 ← lift (UScalar.hcast .I64 i3)
+        let i5 ← i4 * multiplier
+        let nano1 ← nano + i5
+        let multiplier1 ← multiplier / 10#i64
+        let i6 ← i + 1#usize
+        ok (cont (i6, nano1, multiplier1))
+      else ok (done (i, nano))
+    else ok (done (i, nano))
+  else ok (done (i, nano))
+
+/-- [rustfs_kernel::dates::fraction]: loop 0:
+    Source: 'ports/rustfs/kernel/src/dates.rs', lines 70:8-73:9 -/
+@[rust_loop]
+def dates.fraction_loop
+  (s : Slice Std.U8) (i : Std.Usize) (nano : Std.I64) (multiplier : Std.I64) :
+  Result (Std.Usize × Std.I64)
+  := do
+  loop
+    (fun (i1, nano1, multiplier1) => dates.fraction_loop.body s i1 nano1
+      multiplier1)
+    (i, nano, multiplier)
+
+/-- [rustfs_kernel::dates::fraction]:
+    Source: 'ports/rustfs/kernel/src/dates.rs', lines 66:0-77:1 -/
+def dates.fraction
+  (s : Slice Std.U8) : Result (Option (Std.I64 × Std.Usize)) := do
+  let i ← Slice.index_usize s 19#usize
+  if i = 46#u8
+  then
+    let i1 ← 19#usize + 1#usize
+    let (i2, nano) ← dates.fraction_loop s i1 0#i64 100000000#i64
+    if i2 = i1
+    then ok none
+    else ok (some (nano, i2))
+  else ok (some (0#i64, 19#usize))
+
+/-- [rustfs_kernel::dates::time_fields]:
+    Source: 'ports/rustfs/kernel/src/dates.rs', lines 59:0-65:1 -/
+def dates.time_fields
+  (s : Slice Std.U8) : Result (Option (Std.I64 × Std.I64 × Std.I64)) := do
+  let o ← dates.digits s 11#usize 2#usize
+  match o with
+  | none => ok none
+  | some v =>
+    let o1 ← dates.digits s 14#usize 2#usize
+    match o1 with
+    | none => ok none
+    | some v1 =>
+      let o2 ← dates.digits s 17#usize 2#usize
+      match o2 with
+      | none => ok none
+      | some v2 =>
+        if v > 23#i64
+        then ok none
+        else
+          if v1 > 59#i64
+          then ok none
+          else if v2 > 60#i64
+               then ok none
+               else ok (some (v, v1, v2))
+
+/-- [rustfs_kernel::dates::calendar_fields]:
+    Source: 'ports/rustfs/kernel/src/dates.rs', lines 52:0-58:1 -/
+def dates.calendar_fields
+  (s : Slice Std.U8) : Result (Option (Std.I64 × Std.I64 × Std.I64)) := do
+  let o ← dates.digits s 0#usize 4#usize
+  match o with
+  | none => ok none
+  | some v =>
+    let o1 ← dates.digits s 5#usize 2#usize
+    match o1 with
+    | none => ok none
+    | some v1 =>
+      let o2 ← dates.digits s 8#usize 2#usize
+      match o2 with
+      | none => ok none
+      | some v2 =>
+        if v1 < 1#i64
+        then ok none
+        else
+          if v1 > 12#i64
+          then ok none
+          else
+            if v2 < 1#i64
+            then ok none
+            else
+              let i ← dates.month_days v v1
+              if v2 > i
+              then ok none
+              else ok (some (v, v1, v2))
+
+/-- [rustfs_kernel::dates::civil_days]:
+    Source: 'ports/rustfs/kernel/src/dates.rs', lines 44:0-51:1 -/
+def dates.civil_days
+  (year : Std.I64) (month : Std.I64) (day : Std.I64) : Result Std.I64 := do
+  let y ← if month <= 2#i64
+            then year - 1#i64
+            else ok year
+  let era ←
+    if y >= 0#i64
+    then y / 400#i64
+    else do
+         let i ← y - 399#i64
+         i / 400#i64
+  let i ← era * 400#i64
+  let yoe ← y - i
+  let m ← if month > 2#i64
+            then month - 3#i64
+            else month + 9#i64
+  let i1 ← 153#i64 * m
+  let i2 ← i1 + 2#i64
+  let i3 ← i2 / 5#i64
+  let i4 ← i3 + day
+  let doy ← i4 - 1#i64
+  let i5 ← era * 146097#i64
+  let i6 ← yoe * 365#i64
+  let i7 ← i5 + i6
+  let i8 ← yoe / 4#i64
+  let i9 ← i7 + i8
+  let i10 ← yoe / 100#i64
+  let i11 ← i9 - i10
+  let i12 ← i11 + doy
+  i12 - 719468#i64
+
+/-- [rustfs_kernel::dates::parse_rfc3339]:
+    Source: 'ports/rustfs/kernel/src/dates.rs', lines 98:0-112:1
+    Visibility: public -/
+def dates.parse_rfc3339 (s : Slice Std.U8) : Result (Option Std.I128) := do
+  let i := Slice.len s
+  if i < 20#usize
+  then ok none
+  else
+    let i1 ← Slice.index_usize s 4#usize
+    if i1 != 45#u8
+    then ok none
+    else
+      let i2 ← Slice.index_usize s 7#usize
+      if i2 != 45#u8
+      then ok none
+      else
+        let i3 ← Slice.index_usize s 13#usize
+        if i3 != 58#u8
+        then ok none
+        else
+          let i4 ← Slice.index_usize s 16#usize
+          if i4 != 58#u8
+          then ok none
+          else
+            let o ← dates.calendar_fields s
+            match o with
+            | none => ok none
+            | some v =>
+              let (year, month, day) := v
+              let o1 ← dates.time_fields s
+              match o1 with
+              | none => ok none
+              | some v1 =>
+                let (hour, minute, second) := v1
+                let o2 ← dates.fraction s
+                match o2 with
+                | none => ok none
+                | some v2 =>
+                  let (nano, i5) := v2
+                  let o3 ← dates.offset s i5
+                  match o3 with
+                  | none => ok none
+                  | some v3 =>
+                    let local_day ← dates.civil_days year month day
+                    let sec ←
+                      if second = 60#i64
+                      then ok 59#i64
+                      else ok second
+                    let i6 ← local_day * 86400#i64
+                    let i7 ← hour * 3600#i64
+                    let i8 ← i6 + i7
+                    let i9 ← minute * 60#i64
+                    let i10 ← i8 + i9
+                    let i11 ← i10 + sec
+                    let utc ← i11 - v3
+                    if second = 60#i64
+                    then
+                      let b ← dates.leap_valid utc local_day year month day
+                      if b
+                      then
+                        let i12 ← dates.nanos utc 999999999#i64
+                        ok (some i12)
+                      else ok none
+                    else let i12 ← dates.nanos utc nano
+                         ok (some i12)
+
+/-- [rustfs_kernel::dates::evaluate]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/dates.rs', lines 128:4-147:1
+    Visibility: public -/
+@[rust_loop_body]
+def dates.evaluate_loop.body
+  (inner : conddata.InnerFunc conddata.DateFuncValue) (op : conddata.Op)
+  (values : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec
+  (alloc.vec.Vec Std.U8)))) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := alloc.vec.Vec.len inner.entries
+  if i < i1
+  then
+    let entry ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+        (conddata.FuncKeyValue conddata.DateFuncValue)) inner.entries i
+    let v ← condfuncs.key_lookup_name entry.key
+    let s := alloc.vec.Vec.deref v
+    let o ← condfuncs.get_value values s
+    match o with
+    | none => ok (done false)
+    | some v1 =>
+      let i2 := alloc.vec.Vec.len v1
+      if i2 = 0#usize
+      then ok (done false)
+      else
+        let v2 ←
+          alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+            (alloc.vec.Vec Std.U8)) v1 0#usize
+        let s1 := alloc.vec.Vec.deref v2
+        let o1 ← dates.parse_rfc3339 s1
+        match o1 with
+        | none => ok (done false)
+        | some t =>
+          let b ← dates.compare op t entry.values.unix_nanos
+          if b
+          then let i3 ← i + 1#usize
+               ok (cont i3)
+          else ok (done false)
+  else ok (done true)
+
+/-- [rustfs_kernel::dates::evaluate]: loop 0:
+    Source: 'ports/rustfs/kernel/src/dates.rs', lines 128:4-147:1
+    Visibility: public -/
+@[rust_loop]
+def dates.evaluate_loop
+  (inner : conddata.InnerFunc conddata.DateFuncValue) (op : conddata.Op)
+  (values : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec
+  (alloc.vec.Vec Std.U8)))) (i : Std.Usize) :
+  Result Bool
+  := do
+  loop
+    (fun i1 => dates.evaluate_loop.body inner op values i1)
+    i
+
+/-- [rustfs_kernel::dates::evaluate]:
+    Source: 'ports/rustfs/kernel/src/dates.rs', lines 126:0-147:1
+    Visibility: public -/
+@[reducible]
+def dates.evaluate
+  (inner : conddata.InnerFunc conddata.DateFuncValue) (op : conddata.Op)
+  (values : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec
+  (alloc.vec.Vec Std.U8)))) :
+  Result Bool
+  := do
+  dates.evaluate_loop inner op values 0#usize
+
+/-- [rustfs_kernel::condfuncs::num_op]:
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 415:0-424:1 -/
+def condfuncs.num_op
+  (op : condfuncs.NumOp) (a : Std.I64) (b : Std.I64) : Result Bool := do
+  match op with
+  | condfuncs.NumOp.Eq => ok (a = b)
+  | condfuncs.NumOp.Ne => ok (a != b)
+  | condfuncs.NumOp.Lt => ok (a < b)
+  | condfuncs.NumOp.Le => ok (a <= b)
+  | condfuncs.NumOp.Gt => ok (a > b)
+  | condfuncs.NumOp.Ge => ok (a >= b)
+
+/-- [rustfs_kernel::condfuncs::first_value]:
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 363:0-370:1 -/
+def condfuncs.first_value
+  (values : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec
+  (alloc.vec.Vec Std.U8)))) (key : condfuncs.Key) :
+  Result (Option (alloc.vec.Vec Std.U8))
+  := do
+  let v ← condfuncs.key_lookup_name key
+  let s := alloc.vec.Vec.deref v
+  let o ← condfuncs.get_value values s
+  match o with
+  | none => ok none
+  | some v1 =>
+    let i := alloc.vec.Vec.len v1
+    if i > 0#usize
+    then
+      let v2 ←
+        alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+          (alloc.vec.Vec Std.U8)) v1 0#usize
+      let v3 ← alloc.vec.CloneVec.clone core.clone.CloneU8 v2
+      ok (some v3)
+    else ok none
+
+/-- [rustfs_kernel::condfuncs::num_func]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 429:4-444:1 -/
+@[rust_loop_body]
+def condfuncs.num_func_loop.body
+  (op : condfuncs.NumOp) (if_exists : Bool)
+  (funcs : Slice (condfuncs.Key × Std.I64))
+  (values : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec
+  (alloc.vec.Vec Std.U8)))) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := Slice.len funcs
+  if i < i1
+  then
+    let (k, i2) ← Slice.index_usize funcs i
+    let o ← condfuncs.first_value values k
+    match o with
+    | none => ok (done if_exists)
+    | some v =>
+      let s := alloc.vec.Vec.deref v
+      let o1 ← bytes.parse_i64 s
+      match o1 with
+      | none => ok (done false)
+      | some n =>
+        let b ← condfuncs.num_op op n i2
+        if b
+        then let i3 ← i + 1#usize
+             ok (cont i3)
+        else ok (done false)
+  else ok (done true)
+
+/-- [rustfs_kernel::condfuncs::num_func]: loop 0:
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 429:4-444:1 -/
+@[rust_loop]
+def condfuncs.num_func_loop
+  (op : condfuncs.NumOp) (if_exists : Bool)
+  (funcs : Slice (condfuncs.Key × Std.I64))
+  (values : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec
+  (alloc.vec.Vec Std.U8)))) (i : Std.Usize) :
+  Result Bool
+  := do
+  loop
+    (fun i1 => condfuncs.num_func_loop.body op if_exists funcs values i1)
+    i
+
+/-- [rustfs_kernel::condfuncs::num_func]:
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 427:0-444:1 -/
+@[reducible]
+def condfuncs.num_func
+  (op : condfuncs.NumOp) (if_exists : Bool)
+  (funcs : Slice (condfuncs.Key × Std.I64))
+  (values : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec
+  (alloc.vec.Vec Std.U8)))) :
+  Result Bool
+  := do
+  condfuncs.num_func_loop op if_exists funcs values 0#usize
+
+/-- [rustfs_kernel::condfuncs::null_ok]:
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 399:0-401:1 -/
+def condfuncs.null_ok (want_null : Bool) (len : Std.Usize) : Result Bool := do
+  if want_null
+  then ok (len = 0#usize)
+  else ok (len != 0#usize)
+
+/-- [rustfs_kernel::condfuncs::value_count]:
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 391:0-396:1 -/
+def condfuncs.value_count
+  (values : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec
+  (alloc.vec.Vec Std.U8)))) (key : condfuncs.Key) :
+  Result Std.Usize
+  := do
+  let v ← condfuncs.key_lookup_name key
+  let s := alloc.vec.Vec.deref v
+  let o ← condfuncs.get_value values s
+  match o with
+  | none => ok 0#usize
+  | some v1 => ok (alloc.vec.Vec.len v1)
+
+/-- [rustfs_kernel::condfuncs::null_func]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 406:4-413:1 -/
+@[rust_loop_body]
+def condfuncs.null_func_loop.body
+  (funcs : Slice (condfuncs.Key × Bool))
+  (values : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec
+  (alloc.vec.Vec Std.U8)))) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := Slice.len funcs
+  if i < i1
+  then
+    let (k, b) ← Slice.index_usize funcs i
+    let i2 ← condfuncs.value_count values k
+    let b1 ← condfuncs.null_ok b i2
+    if b1
+    then let i3 ← i + 1#usize
+         ok (cont i3)
+    else ok (done false)
+  else ok (done true)
+
+/-- [rustfs_kernel::condfuncs::null_func]: loop 0:
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 406:4-413:1 -/
+@[rust_loop]
+def condfuncs.null_func_loop
+  (funcs : Slice (condfuncs.Key × Bool))
+  (values : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec
+  (alloc.vec.Vec Std.U8)))) (i : Std.Usize) :
+  Result Bool
+  := do
+  loop
+    (fun i1 => condfuncs.null_func_loop.body funcs values i1)
+    i
+
+/-- [rustfs_kernel::condfuncs::null_func]:
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 404:0-413:1 -/
+@[reducible]
+def condfuncs.null_func
+  (funcs : Slice (condfuncs.Key × Bool))
+  (values : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec
+  (alloc.vec.Vec Std.U8)))) :
+  Result Bool
+  := do
+  condfuncs.null_func_loop funcs values 0#usize
+
+/-- [rustfs_kernel::condfuncs::bool_func]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 375:4-388:1 -/
+@[rust_loop_body]
+def condfuncs.bool_func_loop.body
+  (funcs : Slice (condfuncs.Key × Bool))
+  (values : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec
+  (alloc.vec.Vec Std.U8)))) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := Slice.len funcs
+  if i < i1
+  then
+    let (k, b) ← Slice.index_usize funcs i
+    let o ← condfuncs.first_value values k
+    let ok1 ←
+      match o with
+      | none => ok false
+      | some x =>
+        if b
+        then
+          do
+          let s := alloc.vec.Vec.deref x
+          let s1 ←
+            lift (Array.to_slice
+              (Array.make 4#usize [ 116#u8, 114#u8, 117#u8, 101#u8 ]))
+          bytes.eq s s1
+        else
+          do
+          let s := alloc.vec.Vec.deref x
+          let s1 ←
+            lift (Array.to_slice
+              (Array.make 5#usize [ 102#u8, 97#u8, 108#u8, 115#u8, 101#u8 ]))
+          bytes.eq s s1
+    if ok1
+    then let i2 ← i + 1#usize
+         ok (cont i2)
+    else ok (done false)
+  else ok (done true)
+
+/-- [rustfs_kernel::condfuncs::bool_func]: loop 0:
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 375:4-388:1 -/
+@[rust_loop]
+def condfuncs.bool_func_loop
+  (funcs : Slice (condfuncs.Key × Bool))
+  (values : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec
+  (alloc.vec.Vec Std.U8)))) (i : Std.Usize) :
+  Result Bool
+  := do
+  loop
+    (fun i1 => condfuncs.bool_func_loop.body funcs values i1)
+    i
+
+/-- [rustfs_kernel::condfuncs::bool_func]:
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 373:0-388:1 -/
+@[reducible]
+def condfuncs.bool_func
+  (funcs : Slice (condfuncs.Key × Bool))
+  (values : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec
+  (alloc.vec.Vec Std.U8)))) :
+  Result Bool
+  := do
+  condfuncs.bool_func_loop funcs values 0#usize
+
+/-- [rustfs_kernel::condfuncs::net_contains]:
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 294:0-316:1 -/
+def condfuncs.net_contains
+  (net : condfuncs.IpAddr) («prefix» : Std.U8) (ip : condfuncs.IpAddr) :
+  Result Bool
+  := do
+  match net with
+  | condfuncs.IpAddr.V4 n =>
+    match ip with
+    | condfuncs.IpAddr.V4 a =>
+      if «prefix» = 0#u8
+      then ok true
+      else
+        if «prefix» >= 32#u8
+        then ok (n = a)
+        else
+          let i ← 32#u8 - «prefix»
+          let i1 ← n >>> i
+          let i2 ← a >>> i
+          ok (i1 = i2)
+    | condfuncs.IpAddr.V6 _ => ok false
+  | condfuncs.IpAddr.V6 n =>
+    match ip with
+    | condfuncs.IpAddr.V4 _ => ok false
+    | condfuncs.IpAddr.V6 a =>
+      if «prefix» = 0#u8
+      then ok true
+      else
+        if «prefix» >= 128#u8
+        then ok (n = a)
+        else
+          let i ← 128#u8 - «prefix»
+          let i1 ← n >>> i
+          let i2 ← a >>> i
+          ok (i1 = i2)
+
+/-- [rustfs_kernel::condfuncs::any_net]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 320:4-327:1 -/
+@[rust_loop_body]
+def condfuncs.any_net_loop.body
+  (nets : Slice (condfuncs.IpAddr × Std.U8)) (ip : condfuncs.IpAddr)
+  (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := Slice.len nets
+  if i < i1
+  then
+    let (ia, i2) ← Slice.index_usize nets i
+    let b ← condfuncs.net_contains ia i2 ip
+    if b
+    then ok (done true)
+    else let i3 ← i + 1#usize
+         ok (cont i3)
+  else ok (done false)
+
+/-- [rustfs_kernel::condfuncs::any_net]: loop 0:
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 320:4-327:1 -/
+@[rust_loop]
+def condfuncs.any_net_loop
+  (nets : Slice (condfuncs.IpAddr × Std.U8)) (ip : condfuncs.IpAddr)
+  (i : Std.Usize) :
+  Result Bool
+  := do
+  loop
+    (fun i1 => condfuncs.any_net_loop.body nets ip i1)
+    i
+
+/-- [rustfs_kernel::condfuncs::any_net]:
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 318:0-327:1 -/
+@[reducible]
+def condfuncs.any_net
+  (nets : Slice (condfuncs.IpAddr × Std.U8)) (ip : condfuncs.IpAddr) :
+  Result Bool
+  := do
+  condfuncs.any_net_loop nets ip 0#usize
 
 /-- [rustfs_kernel::condfuncs::Env]
     Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 32:0-36:1
@@ -1879,28 +9169,146 @@ def condfuncs.parse_ip
   := do
   condfuncs.parse_ip_loop env s 0#usize
 
-/-- [rustfs_kernel::condfuncs::Key]
-    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 52:0-56:1
-    Visibility: public -/
-structure condfuncs.Key where
-  key_name : alloc.vec.Vec Std.U8
-  «name» : alloc.vec.Vec Std.U8
-  «variable» : Option (alloc.vec.Vec Std.U8)
+/-- [rustfs_kernel::condfuncs::addr_key]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 332:4-343:1 -/
+@[rust_loop_body]
+def condfuncs.addr_key_loop.body
+  (rvalues : Slice (alloc.vec.Vec Std.U8))
+  (nets : Slice (condfuncs.IpAddr × Std.U8)) (env : condfuncs.Env)
+  (i : Std.Usize) :
+  Result (ControlFlow Std.Usize (Option Bool))
+  := do
+  let i1 := Slice.len rvalues
+  if i < i1
+  then
+    let v ← Slice.index_usize rvalues i
+    let s := alloc.vec.Vec.deref v
+    let o ← condfuncs.parse_ip env s
+    match o with
+    | none => ok (done (some false))
+    | some ip =>
+      let b ← condfuncs.any_net nets ip
+      if b
+      then ok (done (some true))
+      else let i2 ← i + 1#usize
+           ok (cont i2)
+  else ok (done none)
 
-/-- [rustfs_kernel::condfuncs::key_lookup_name]:
-    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 73:0-78:1
-    Visibility: public -/
-def condfuncs.key_lookup_name
-  (k : condfuncs.Key) : Result (alloc.vec.Vec Std.U8) := do
-  match k.variable with
-  | none => alloc.vec.CloneVec.clone core.clone.CloneU8 k.name
-  | some v =>
-    let s := alloc.vec.Vec.deref k.name
-    let s1 ← lift (Array.to_slice (Array.make 1#usize [ 47#u8 ]))
-    let v1 ← bytes.concat s s1
-    let s2 := alloc.vec.Vec.deref v1
-    let s3 := alloc.vec.Vec.deref v
-    bytes.concat s2 s3
+/-- [rustfs_kernel::condfuncs::addr_key]: loop 0:
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 332:4-343:1 -/
+@[rust_loop]
+def condfuncs.addr_key_loop
+  (rvalues : Slice (alloc.vec.Vec Std.U8))
+  (nets : Slice (condfuncs.IpAddr × Std.U8)) (env : condfuncs.Env)
+  (i : Std.Usize) :
+  Result (Option Bool)
+  := do
+  loop
+    (fun i1 => condfuncs.addr_key_loop.body rvalues nets env i1)
+    i
+
+/-- [rustfs_kernel::condfuncs::addr_key]:
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 330:0-343:1 -/
+@[reducible]
+def condfuncs.addr_key
+  (rvalues : Slice (alloc.vec.Vec Std.U8))
+  (nets : Slice (condfuncs.IpAddr × Std.U8)) (env : condfuncs.Env) :
+  Result (Option Bool)
+  := do
+  condfuncs.addr_key_loop rvalues nets env 0#usize
+
+/-- [rustfs_kernel::condfuncs::addr_func]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 349:4-361:1 -/
+@[rust_loop_body]
+def condfuncs.addr_func_loop.body
+  (funcs : Slice (condfuncs.Key × (alloc.vec.Vec (condfuncs.IpAddr ×
+  Std.U8))))
+  (values : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec
+  (alloc.vec.Vec Std.U8)))) (env : condfuncs.Env) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := Slice.len funcs
+  if i < i1
+  then
+    let (k, v) ← Slice.index_usize funcs i
+    let v1 ← condfuncs.key_lookup_name k
+    let s := alloc.vec.Vec.deref v1
+    let o ← condfuncs.get_value values s
+    let rvalues ←
+      match o with
+      | none => ok (alloc.vec.Vec.new (alloc.vec.Vec Std.U8))
+      | some v2 => ok v2
+    let s1 := alloc.vec.Vec.deref rvalues
+    let s2 := alloc.vec.Vec.deref v
+    let o1 ← condfuncs.addr_key s1 s2 env
+    match o1 with
+    | none => let i2 ← i + 1#usize
+              ok (cont i2)
+    | some b => ok (done b)
+  else ok (done false)
+
+/-- [rustfs_kernel::condfuncs::addr_func]: loop 0:
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 349:4-361:1 -/
+@[rust_loop]
+def condfuncs.addr_func_loop
+  (funcs : Slice (condfuncs.Key × (alloc.vec.Vec (condfuncs.IpAddr ×
+  Std.U8))))
+  (values : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec
+  (alloc.vec.Vec Std.U8)))) (env : condfuncs.Env) (i : Std.Usize) :
+  Result Bool
+  := do
+  loop
+    (fun i1 => condfuncs.addr_func_loop.body funcs values env i1)
+    i
+
+/-- [rustfs_kernel::condfuncs::addr_func]:
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 347:0-361:1 -/
+@[reducible]
+def condfuncs.addr_func
+  (funcs : Slice (condfuncs.Key × (alloc.vec.Vec (condfuncs.IpAddr ×
+  Std.U8))))
+  (values : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec
+  (alloc.vec.Vec Std.U8)))) (env : condfuncs.Env) :
+  Result Bool
+  := do
+  condfuncs.addr_func_loop funcs values env 0#usize
+
+/-- [rustfs_kernel::condfuncs::any_like]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 218:4-225:1 -/
+@[rust_loop_body]
+def condfuncs.any_like_loop.body
+  (cands : Slice (alloc.vec.Vec Std.U8)) (v : Slice Std.U8) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := Slice.len cands
+  if i < i1
+  then
+    let v1 ← Slice.index_usize cands i
+    let s := alloc.vec.Vec.deref v1
+    let b ← wildmatch.is_match s v
+    if b
+    then ok (done true)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else ok (done false)
+
+/-- [rustfs_kernel::condfuncs::any_like]: loop 0:
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 218:4-225:1 -/
+@[rust_loop]
+def condfuncs.any_like_loop
+  (cands : Slice (alloc.vec.Vec Std.U8)) (v : Slice Std.U8) (i : Std.Usize) :
+  Result Bool
+  := do
+  loop
+    (fun i1 => condfuncs.any_like_loop.body cands v i1)
+    i
+
+/-- [rustfs_kernel::condfuncs::any_like]:
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 216:0-225:1 -/
+@[reducible]
+def condfuncs.any_like
+  (cands : Slice (alloc.vec.Vec Std.U8)) (v : Slice Std.U8) : Result Bool := do
+  condfuncs.any_like_loop cands v 0#usize
 
 /-- [rustfs_kernel::condfuncs::Quantifier]
     Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 81:0-85:1
@@ -1911,81 +9319,31 @@ inductive condfuncs.Quantifier where
 | ForAnyValue : condfuncs.Quantifier
 | ForAllValues : condfuncs.Quantifier
 
-/-- [rustfs_kernel::condfuncs::{impl core::cmp::PartialEq<rustfs_kernel::condfuncs::Quantifier> for rustfs_kernel::condfuncs::Quantifier}::eq]:
-    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 80:29-80:38
-    Visibility: public -/
-def condfuncs.Quantifier.Insts.CoreCmpPartialEqQuantifier.eq
-  (self : condfuncs.Quantifier) (other : condfuncs.Quantifier) :
-  Result Bool
+/-- [rustfs_kernel::condfuncs::like_step]:
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 228:0-242:1 -/
+def condfuncs.like_step
+  (cands : Slice (alloc.vec.Vec Std.U8)) (v : Slice Std.U8)
+  (q : condfuncs.Quantifier) (negate : Bool) :
+  Result (Option Bool)
   := do
-  let self1 := read_discriminant self
-  let other1 := read_discriminant other
-  ok (self1 = other1)
-
-/-- [rustfs_kernel::condfuncs::StrOp]
-    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 88:0-99:1
-    Visibility: public -/
-@[discriminant isize]
-inductive condfuncs.StrOp where
-| StringEquals : condfuncs.StrOp
-| StringNotEquals : condfuncs.StrOp
-| StringEqualsIgnoreCase : condfuncs.StrOp
-| StringNotEqualsIgnoreCase : condfuncs.StrOp
-| StringLike : condfuncs.StrOp
-| StringNotLike : condfuncs.StrOp
-| ArnLike : condfuncs.StrOp
-| ArnNotLike : condfuncs.StrOp
-| ArnEquals : condfuncs.StrOp
-| ArnNotEquals : condfuncs.StrOp
-
-/-- [rustfs_kernel::condfuncs::NumOp]
-    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 102:0-109:1
-    Visibility: public -/
-@[discriminant isize]
-inductive condfuncs.NumOp where
-| Eq : condfuncs.NumOp
-| Ne : condfuncs.NumOp
-| Lt : condfuncs.NumOp
-| Le : condfuncs.NumOp
-| Gt : condfuncs.NumOp
-| Ge : condfuncs.NumOp
-
-/-- [rustfs_kernel::condfuncs::Cond]
-    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 112:0-121:1
-    Visibility: public -/
-@[discriminant isize]
-inductive condfuncs.Cond where
-| Str :
-  condfuncs.StrOp →
-  alloc.vec.Vec (condfuncs.Key × (alloc.vec.Vec (alloc.vec.Vec Std.U8))) →
-  condfuncs.Cond
-| Ip :
-  Bool →
-  alloc.vec.Vec (condfuncs.Key × (alloc.vec.Vec (condfuncs.IpAddr × Std.U8)))
-    →
-  condfuncs.Cond
-| Null : alloc.vec.Vec (condfuncs.Key × Bool) → condfuncs.Cond
-| Bool : alloc.vec.Vec (condfuncs.Key × Bool) → condfuncs.Cond
-| Num :
-  condfuncs.NumOp →
-  Bool →
-  alloc.vec.Vec (condfuncs.Key × Std.I64) →
-  condfuncs.Cond
-
-/-- [rustfs_kernel::condfuncs::Condition]
-    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 126:0-129:1
-    Visibility: public -/
-structure condfuncs.Condition where
-  if_exists : Bool
-  cond : condfuncs.Cond
-
-/-- [rustfs_kernel::condfuncs::Functions]
-    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 132:0-136:1
-    Visibility: public -/
-structure condfuncs.Functions where
-  for_any_value : alloc.vec.Vec condfuncs.Condition
-  for_all_values : alloc.vec.Vec condfuncs.Condition
-  for_normal : alloc.vec.Vec condfuncs.Condition
+  let matched ← condfuncs.any_like cands v
+  let holds ←
+    match q with
+    | condfuncs.Quantifier.None => ok matched
+    | condfuncs.Quantifier.ForAnyValue => ok (matched ^^ negate)
+    | condfuncs.Quantifier.ForAllValues => ok (matched ^^ negate)
+  match q with
+  | condfuncs.Quantifier.None => if holds
+                                 then ok (some true)
+                                 else ok none
+  | condfuncs.Quantifier.ForAnyValue =>
+    if holds
+    then ok (some true)
+    else ok none
+  | condfuncs.Quantifier.ForAllValues =>
+    if holds
+    then ok none
+    else ok (some false)
 
 /-- [rustfs_kernel::keynames::common_key]:
     Source: 'ports/rustfs/kernel/src/keynames.rs', lines 8:0-54:1
@@ -2809,6 +10167,78 @@ def condfuncs.policy_values
   condfuncs.policy_values_loop0 policy values ctx ignore_case
     (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) 0#usize
 
+/-- [rustfs_kernel::condfuncs::{impl core::cmp::PartialEq<rustfs_kernel::condfuncs::Quantifier> for rustfs_kernel::condfuncs::Quantifier}::eq]:
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 80:29-80:38
+    Visibility: public -/
+def condfuncs.Quantifier.Insts.CoreCmpPartialEqQuantifier.eq
+  (self : condfuncs.Quantifier) (other : condfuncs.Quantifier) :
+  Result Bool
+  := do
+  let self1 := read_discriminant self
+  let other1 := read_discriminant other
+  ok (self1 = other1)
+
+/-- [rustfs_kernel::condfuncs::str_eval_like]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 253:4-261:1 -/
+@[rust_loop_body]
+def condfuncs.str_eval_like_loop.body
+  (q : condfuncs.Quantifier) (negate : Bool)
+  (rvalues : alloc.vec.Vec (alloc.vec.Vec Std.U8))
+  (cands : alloc.vec.Vec (alloc.vec.Vec Std.U8)) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := alloc.vec.Vec.len rvalues
+  if i < i1
+  then
+    let s := alloc.vec.Vec.deref cands
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice (alloc.vec.Vec
+        Std.U8)) rvalues i
+    let s1 := alloc.vec.Vec.deref v
+    let o ← condfuncs.like_step s s1 q negate
+    match o with
+    | none => let i2 ← i + 1#usize
+              ok (cont i2)
+    | some b => ok (done b)
+  else
+    let b ←
+      condfuncs.Quantifier.Insts.CoreCmpPartialEqQuantifier.eq q
+        condfuncs.Quantifier.ForAllValues
+    ok (done b)
+
+/-- [rustfs_kernel::condfuncs::str_eval_like]: loop 0:
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 253:4-261:1 -/
+@[rust_loop]
+def condfuncs.str_eval_like_loop
+  (q : condfuncs.Quantifier) (negate : Bool)
+  (rvalues : alloc.vec.Vec (alloc.vec.Vec Std.U8))
+  (cands : alloc.vec.Vec (alloc.vec.Vec Std.U8)) (i : Std.Usize) :
+  Result Bool
+  := do
+  loop
+    (fun i1 => condfuncs.str_eval_like_loop.body q negate rvalues cands i1)
+    i
+
+/-- [rustfs_kernel::condfuncs::str_eval_like]:
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 245:0-261:1 -/
+def condfuncs.str_eval_like
+  (key : condfuncs.Key) (policy : Slice (alloc.vec.Vec Std.U8))
+  (q : condfuncs.Quantifier) (negate : Bool)
+  (values : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec
+  (alloc.vec.Vec Std.U8)))) (ctx : Option awsvars.VarContext) :
+  Result Bool
+  := do
+  let v ← condfuncs.key_lookup_name key
+  let s := alloc.vec.Vec.deref v
+  let o ← condfuncs.get_value values s
+  match o with
+  | none =>
+    condfuncs.Quantifier.Insts.CoreCmpPartialEqQuantifier.eq q
+      condfuncs.Quantifier.ForAllValues
+  | some v1 =>
+    let cands ← condfuncs.policy_values policy values ctx false
+    condfuncs.str_eval_like_loop q negate v1 cands 0#usize
+
 /-- [rustfs_kernel::condfuncs::str_eval]: loop body 0:
     Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 191:4-212:5 -/
 @[rust_loop_body]
@@ -2896,130 +10326,6 @@ def condfuncs.str_eval
     | some v1 => ok v1
   let fvalues ← condfuncs.policy_values policy values ctx ignore_case
   condfuncs.str_eval_loop q ignore_case negate rvalues fvalues 0#usize
-
-/-- [rustfs_kernel::condfuncs::any_like]: loop body 0:
-    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 218:4-225:1 -/
-@[rust_loop_body]
-def condfuncs.any_like_loop.body
-  (cands : Slice (alloc.vec.Vec Std.U8)) (v : Slice Std.U8) (i : Std.Usize) :
-  Result (ControlFlow Std.Usize Bool)
-  := do
-  let i1 := Slice.len cands
-  if i < i1
-  then
-    let v1 ← Slice.index_usize cands i
-    let s := alloc.vec.Vec.deref v1
-    let b ← wildmatch.is_match s v
-    if b
-    then ok (done true)
-    else let i2 ← i + 1#usize
-         ok (cont i2)
-  else ok (done false)
-
-/-- [rustfs_kernel::condfuncs::any_like]: loop 0:
-    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 218:4-225:1 -/
-@[rust_loop]
-def condfuncs.any_like_loop
-  (cands : Slice (alloc.vec.Vec Std.U8)) (v : Slice Std.U8) (i : Std.Usize) :
-  Result Bool
-  := do
-  loop
-    (fun i1 => condfuncs.any_like_loop.body cands v i1)
-    i
-
-/-- [rustfs_kernel::condfuncs::any_like]:
-    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 216:0-225:1 -/
-@[reducible]
-def condfuncs.any_like
-  (cands : Slice (alloc.vec.Vec Std.U8)) (v : Slice Std.U8) : Result Bool := do
-  condfuncs.any_like_loop cands v 0#usize
-
-/-- [rustfs_kernel::condfuncs::like_step]:
-    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 228:0-242:1 -/
-def condfuncs.like_step
-  (cands : Slice (alloc.vec.Vec Std.U8)) (v : Slice Std.U8)
-  (q : condfuncs.Quantifier) (negate : Bool) :
-  Result (Option Bool)
-  := do
-  let matched ← condfuncs.any_like cands v
-  let holds ←
-    match q with
-    | condfuncs.Quantifier.None => ok matched
-    | condfuncs.Quantifier.ForAnyValue => ok (matched ^^ negate)
-    | condfuncs.Quantifier.ForAllValues => ok (matched ^^ negate)
-  match q with
-  | condfuncs.Quantifier.None => if holds
-                                 then ok (some true)
-                                 else ok none
-  | condfuncs.Quantifier.ForAnyValue =>
-    if holds
-    then ok (some true)
-    else ok none
-  | condfuncs.Quantifier.ForAllValues =>
-    if holds
-    then ok none
-    else ok (some false)
-
-/-- [rustfs_kernel::condfuncs::str_eval_like]: loop body 0:
-    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 253:4-261:1 -/
-@[rust_loop_body]
-def condfuncs.str_eval_like_loop.body
-  (q : condfuncs.Quantifier) (negate : Bool)
-  (rvalues : alloc.vec.Vec (alloc.vec.Vec Std.U8))
-  (cands : alloc.vec.Vec (alloc.vec.Vec Std.U8)) (i : Std.Usize) :
-  Result (ControlFlow Std.Usize Bool)
-  := do
-  let i1 := alloc.vec.Vec.len rvalues
-  if i < i1
-  then
-    let s := alloc.vec.Vec.deref cands
-    let v ←
-      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice (alloc.vec.Vec
-        Std.U8)) rvalues i
-    let s1 := alloc.vec.Vec.deref v
-    let o ← condfuncs.like_step s s1 q negate
-    match o with
-    | none => let i2 ← i + 1#usize
-              ok (cont i2)
-    | some b => ok (done b)
-  else
-    let b ←
-      condfuncs.Quantifier.Insts.CoreCmpPartialEqQuantifier.eq q
-        condfuncs.Quantifier.ForAllValues
-    ok (done b)
-
-/-- [rustfs_kernel::condfuncs::str_eval_like]: loop 0:
-    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 253:4-261:1 -/
-@[rust_loop]
-def condfuncs.str_eval_like_loop
-  (q : condfuncs.Quantifier) (negate : Bool)
-  (rvalues : alloc.vec.Vec (alloc.vec.Vec Std.U8))
-  (cands : alloc.vec.Vec (alloc.vec.Vec Std.U8)) (i : Std.Usize) :
-  Result Bool
-  := do
-  loop
-    (fun i1 => condfuncs.str_eval_like_loop.body q negate rvalues cands i1)
-    i
-
-/-- [rustfs_kernel::condfuncs::str_eval_like]:
-    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 245:0-261:1 -/
-def condfuncs.str_eval_like
-  (key : condfuncs.Key) (policy : Slice (alloc.vec.Vec Std.U8))
-  (q : condfuncs.Quantifier) (negate : Bool)
-  (values : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec
-  (alloc.vec.Vec Std.U8)))) (ctx : Option awsvars.VarContext) :
-  Result Bool
-  := do
-  let v ← condfuncs.key_lookup_name key
-  let s := alloc.vec.Vec.deref v
-  let o ← condfuncs.get_value values s
-  match o with
-  | none =>
-    condfuncs.Quantifier.Insts.CoreCmpPartialEqQuantifier.eq q
-      condfuncs.Quantifier.ForAllValues
-  | some v1 =>
-    let cands ← condfuncs.policy_values policy values ctx false
-    condfuncs.str_eval_like_loop q negate v1 cands 0#usize
 
 /-- [rustfs_kernel::condfuncs::str_func]: loop body 0:
     Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 267:4-292:1 -/
@@ -3110,405 +10416,46 @@ def condfuncs.str_func
   := do
   condfuncs.str_func_loop funcs q ignore_case like negate values ctx 0#usize
 
-/-- [rustfs_kernel::condfuncs::net_contains]:
-    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 294:0-316:1 -/
-def condfuncs.net_contains
-  (net : condfuncs.IpAddr) («prefix» : Std.U8) (ip : condfuncs.IpAddr) :
+/-- [rustfs_kernel::condfuncs::eval_cond]:
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 470:0-495:1 -/
+def condfuncs.eval_cond
+  (c : condfuncs.Cond) (q : condfuncs.Quantifier)
+  (values : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec
+  (alloc.vec.Vec Std.U8)))) (ctx : Option awsvars.VarContext)
+  (env : condfuncs.Env) :
   Result Bool
   := do
-  match net with
-  | condfuncs.IpAddr.V4 n =>
-    match ip with
-    | condfuncs.IpAddr.V4 a =>
-      if «prefix» = 0#u8
-      then ok true
-      else
-        if «prefix» >= 32#u8
-        then ok (n = a)
-        else
-          let i ← 32#u8 - «prefix»
-          let i1 ← n >>> i
-          let i2 ← a >>> i
-          ok (i1 = i2)
-    | condfuncs.IpAddr.V6 _ => ok false
-  | condfuncs.IpAddr.V6 n =>
-    match ip with
-    | condfuncs.IpAddr.V4 _ => ok false
-    | condfuncs.IpAddr.V6 a =>
-      if «prefix» = 0#u8
-      then ok true
-      else
-        if «prefix» >= 128#u8
-        then ok (n = a)
-        else
-          let i ← 128#u8 - «prefix»
-          let i1 ← n >>> i
-          let i2 ← a >>> i
-          ok (i1 = i2)
-
-/-- [rustfs_kernel::condfuncs::any_net]: loop body 0:
-    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 320:4-327:1 -/
-@[rust_loop_body]
-def condfuncs.any_net_loop.body
-  (nets : Slice (condfuncs.IpAddr × Std.U8)) (ip : condfuncs.IpAddr)
-  (i : Std.Usize) :
-  Result (ControlFlow Std.Usize Bool)
-  := do
-  let i1 := Slice.len nets
-  if i < i1
-  then
-    let (ia, i2) ← Slice.index_usize nets i
-    let b ← condfuncs.net_contains ia i2 ip
-    if b
-    then ok (done true)
-    else let i3 ← i + 1#usize
-         ok (cont i3)
-  else ok (done false)
-
-/-- [rustfs_kernel::condfuncs::any_net]: loop 0:
-    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 320:4-327:1 -/
-@[rust_loop]
-def condfuncs.any_net_loop
-  (nets : Slice (condfuncs.IpAddr × Std.U8)) (ip : condfuncs.IpAddr)
-  (i : Std.Usize) :
-  Result Bool
-  := do
-  loop
-    (fun i1 => condfuncs.any_net_loop.body nets ip i1)
-    i
-
-/-- [rustfs_kernel::condfuncs::any_net]:
-    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 318:0-327:1 -/
-@[reducible]
-def condfuncs.any_net
-  (nets : Slice (condfuncs.IpAddr × Std.U8)) (ip : condfuncs.IpAddr) :
-  Result Bool
-  := do
-  condfuncs.any_net_loop nets ip 0#usize
-
-/-- [rustfs_kernel::condfuncs::addr_key]: loop body 0:
-    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 332:4-343:1 -/
-@[rust_loop_body]
-def condfuncs.addr_key_loop.body
-  (rvalues : Slice (alloc.vec.Vec Std.U8))
-  (nets : Slice (condfuncs.IpAddr × Std.U8)) (env : condfuncs.Env)
-  (i : Std.Usize) :
-  Result (ControlFlow Std.Usize (Option Bool))
-  := do
-  let i1 := Slice.len rvalues
-  if i < i1
-  then
-    let v ← Slice.index_usize rvalues i
-    let s := alloc.vec.Vec.deref v
-    let o ← condfuncs.parse_ip env s
-    match o with
-    | none => ok (done (some false))
-    | some ip =>
-      let b ← condfuncs.any_net nets ip
-      if b
-      then ok (done (some true))
-      else let i2 ← i + 1#usize
-           ok (cont i2)
-  else ok (done none)
-
-/-- [rustfs_kernel::condfuncs::addr_key]: loop 0:
-    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 332:4-343:1 -/
-@[rust_loop]
-def condfuncs.addr_key_loop
-  (rvalues : Slice (alloc.vec.Vec Std.U8))
-  (nets : Slice (condfuncs.IpAddr × Std.U8)) (env : condfuncs.Env)
-  (i : Std.Usize) :
-  Result (Option Bool)
-  := do
-  loop
-    (fun i1 => condfuncs.addr_key_loop.body rvalues nets env i1)
-    i
-
-/-- [rustfs_kernel::condfuncs::addr_key]:
-    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 330:0-343:1 -/
-@[reducible]
-def condfuncs.addr_key
-  (rvalues : Slice (alloc.vec.Vec Std.U8))
-  (nets : Slice (condfuncs.IpAddr × Std.U8)) (env : condfuncs.Env) :
-  Result (Option Bool)
-  := do
-  condfuncs.addr_key_loop rvalues nets env 0#usize
-
-/-- [rustfs_kernel::condfuncs::addr_func]: loop body 0:
-    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 349:4-361:1 -/
-@[rust_loop_body]
-def condfuncs.addr_func_loop.body
-  (funcs : Slice (condfuncs.Key × (alloc.vec.Vec (condfuncs.IpAddr ×
-  Std.U8))))
-  (values : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec
-  (alloc.vec.Vec Std.U8)))) (env : condfuncs.Env) (i : Std.Usize) :
-  Result (ControlFlow Std.Usize Bool)
-  := do
-  let i1 := Slice.len funcs
-  if i < i1
-  then
-    let (k, v) ← Slice.index_usize funcs i
-    let v1 ← condfuncs.key_lookup_name k
-    let s := alloc.vec.Vec.deref v1
-    let o ← condfuncs.get_value values s
-    let rvalues ←
-      match o with
-      | none => ok (alloc.vec.Vec.new (alloc.vec.Vec Std.U8))
-      | some v2 => ok v2
-    let s1 := alloc.vec.Vec.deref rvalues
-    let s2 := alloc.vec.Vec.deref v
-    let o1 ← condfuncs.addr_key s1 s2 env
-    match o1 with
-    | none => let i2 ← i + 1#usize
-              ok (cont i2)
-    | some b => ok (done b)
-  else ok (done false)
-
-/-- [rustfs_kernel::condfuncs::addr_func]: loop 0:
-    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 349:4-361:1 -/
-@[rust_loop]
-def condfuncs.addr_func_loop
-  (funcs : Slice (condfuncs.Key × (alloc.vec.Vec (condfuncs.IpAddr ×
-  Std.U8))))
-  (values : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec
-  (alloc.vec.Vec Std.U8)))) (env : condfuncs.Env) (i : Std.Usize) :
-  Result Bool
-  := do
-  loop
-    (fun i1 => condfuncs.addr_func_loop.body funcs values env i1)
-    i
-
-/-- [rustfs_kernel::condfuncs::addr_func]:
-    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 347:0-361:1 -/
-@[reducible]
-def condfuncs.addr_func
-  (funcs : Slice (condfuncs.Key × (alloc.vec.Vec (condfuncs.IpAddr ×
-  Std.U8))))
-  (values : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec
-  (alloc.vec.Vec Std.U8)))) (env : condfuncs.Env) :
-  Result Bool
-  := do
-  condfuncs.addr_func_loop funcs values env 0#usize
-
-/-- [rustfs_kernel::condfuncs::first_value]:
-    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 363:0-370:1 -/
-def condfuncs.first_value
-  (values : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec
-  (alloc.vec.Vec Std.U8)))) (key : condfuncs.Key) :
-  Result (Option (alloc.vec.Vec Std.U8))
-  := do
-  let v ← condfuncs.key_lookup_name key
-  let s := alloc.vec.Vec.deref v
-  let o ← condfuncs.get_value values s
-  match o with
-  | none => ok none
-  | some v1 =>
-    let i := alloc.vec.Vec.len v1
-    if i > 0#usize
-    then
-      let v2 ←
-        alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
-          (alloc.vec.Vec Std.U8)) v1 0#usize
-      let v3 ← alloc.vec.CloneVec.clone core.clone.CloneU8 v2
-      ok (some v3)
-    else ok none
-
-/-- [rustfs_kernel::condfuncs::bool_func]: loop body 0:
-    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 375:4-388:1 -/
-@[rust_loop_body]
-def condfuncs.bool_func_loop.body
-  (funcs : Slice (condfuncs.Key × Bool))
-  (values : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec
-  (alloc.vec.Vec Std.U8)))) (i : Std.Usize) :
-  Result (ControlFlow Std.Usize Bool)
-  := do
-  let i1 := Slice.len funcs
-  if i < i1
-  then
-    let (k, b) ← Slice.index_usize funcs i
-    let o ← condfuncs.first_value values k
-    let ok1 ←
-      match o with
-      | none => ok false
-      | some x =>
-        if b
-        then
-          do
-          let s := alloc.vec.Vec.deref x
-          let s1 ←
-            lift (Array.to_slice
-              (Array.make 4#usize [ 116#u8, 114#u8, 117#u8, 101#u8 ]))
-          bytes.eq s s1
-        else
-          do
-          let s := alloc.vec.Vec.deref x
-          let s1 ←
-            lift (Array.to_slice
-              (Array.make 5#usize [ 102#u8, 97#u8, 108#u8, 115#u8, 101#u8 ]))
-          bytes.eq s s1
-    if ok1
-    then let i2 ← i + 1#usize
-         ok (cont i2)
-    else ok (done false)
-  else ok (done true)
-
-/-- [rustfs_kernel::condfuncs::bool_func]: loop 0:
-    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 375:4-388:1 -/
-@[rust_loop]
-def condfuncs.bool_func_loop
-  (funcs : Slice (condfuncs.Key × Bool))
-  (values : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec
-  (alloc.vec.Vec Std.U8)))) (i : Std.Usize) :
-  Result Bool
-  := do
-  loop
-    (fun i1 => condfuncs.bool_func_loop.body funcs values i1)
-    i
-
-/-- [rustfs_kernel::condfuncs::bool_func]:
-    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 373:0-388:1 -/
-@[reducible]
-def condfuncs.bool_func
-  (funcs : Slice (condfuncs.Key × Bool))
-  (values : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec
-  (alloc.vec.Vec Std.U8)))) :
-  Result Bool
-  := do
-  condfuncs.bool_func_loop funcs values 0#usize
-
-/-- [rustfs_kernel::condfuncs::value_count]:
-    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 391:0-396:1 -/
-def condfuncs.value_count
-  (values : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec
-  (alloc.vec.Vec Std.U8)))) (key : condfuncs.Key) :
-  Result Std.Usize
-  := do
-  let v ← condfuncs.key_lookup_name key
-  let s := alloc.vec.Vec.deref v
-  let o ← condfuncs.get_value values s
-  match o with
-  | none => ok 0#usize
-  | some v1 => ok (alloc.vec.Vec.len v1)
-
-/-- [rustfs_kernel::condfuncs::null_ok]:
-    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 399:0-401:1 -/
-def condfuncs.null_ok (want_null : Bool) (len : Std.Usize) : Result Bool := do
-  if want_null
-  then ok (len = 0#usize)
-  else ok (len != 0#usize)
-
-/-- [rustfs_kernel::condfuncs::null_func]: loop body 0:
-    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 406:4-413:1 -/
-@[rust_loop_body]
-def condfuncs.null_func_loop.body
-  (funcs : Slice (condfuncs.Key × Bool))
-  (values : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec
-  (alloc.vec.Vec Std.U8)))) (i : Std.Usize) :
-  Result (ControlFlow Std.Usize Bool)
-  := do
-  let i1 := Slice.len funcs
-  if i < i1
-  then
-    let (k, b) ← Slice.index_usize funcs i
-    let i2 ← condfuncs.value_count values k
-    let b1 ← condfuncs.null_ok b i2
-    if b1
-    then let i3 ← i + 1#usize
-         ok (cont i3)
-    else ok (done false)
-  else ok (done true)
-
-/-- [rustfs_kernel::condfuncs::null_func]: loop 0:
-    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 406:4-413:1 -/
-@[rust_loop]
-def condfuncs.null_func_loop
-  (funcs : Slice (condfuncs.Key × Bool))
-  (values : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec
-  (alloc.vec.Vec Std.U8)))) (i : Std.Usize) :
-  Result Bool
-  := do
-  loop
-    (fun i1 => condfuncs.null_func_loop.body funcs values i1)
-    i
-
-/-- [rustfs_kernel::condfuncs::null_func]:
-    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 404:0-413:1 -/
-@[reducible]
-def condfuncs.null_func
-  (funcs : Slice (condfuncs.Key × Bool))
-  (values : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec
-  (alloc.vec.Vec Std.U8)))) :
-  Result Bool
-  := do
-  condfuncs.null_func_loop funcs values 0#usize
-
-/-- [rustfs_kernel::condfuncs::num_op]:
-    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 415:0-424:1 -/
-def condfuncs.num_op
-  (op : condfuncs.NumOp) (a : Std.I64) (b : Std.I64) : Result Bool := do
-  match op with
-  | condfuncs.NumOp.Eq => ok (a = b)
-  | condfuncs.NumOp.Ne => ok (a != b)
-  | condfuncs.NumOp.Lt => ok (a < b)
-  | condfuncs.NumOp.Le => ok (a <= b)
-  | condfuncs.NumOp.Gt => ok (a > b)
-  | condfuncs.NumOp.Ge => ok (a >= b)
-
-/-- [rustfs_kernel::condfuncs::num_func]: loop body 0:
-    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 429:4-444:1 -/
-@[rust_loop_body]
-def condfuncs.num_func_loop.body
-  (op : condfuncs.NumOp) (if_exists : Bool)
-  (funcs : Slice (condfuncs.Key × Std.I64))
-  (values : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec
-  (alloc.vec.Vec Std.U8)))) (i : Std.Usize) :
-  Result (ControlFlow Std.Usize Bool)
-  := do
-  let i1 := Slice.len funcs
-  if i < i1
-  then
-    let (k, i2) ← Slice.index_usize funcs i
-    let o ← condfuncs.first_value values k
-    match o with
-    | none => ok (done if_exists)
-    | some v =>
-      let s := alloc.vec.Vec.deref v
-      let o1 ← bytes.parse_i64 s
-      match o1 with
-      | none => ok (done false)
-      | some n =>
-        let b ← condfuncs.num_op op n i2
-        if b
-        then let i3 ← i + 1#usize
-             ok (cont i3)
-        else ok (done false)
-  else ok (done true)
-
-/-- [rustfs_kernel::condfuncs::num_func]: loop 0:
-    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 429:4-444:1 -/
-@[rust_loop]
-def condfuncs.num_func_loop
-  (op : condfuncs.NumOp) (if_exists : Bool)
-  (funcs : Slice (condfuncs.Key × Std.I64))
-  (values : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec
-  (alloc.vec.Vec Std.U8)))) (i : Std.Usize) :
-  Result Bool
-  := do
-  loop
-    (fun i1 => condfuncs.num_func_loop.body op if_exists funcs values i1)
-    i
-
-/-- [rustfs_kernel::condfuncs::num_func]:
-    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 427:0-444:1 -/
-@[reducible]
-def condfuncs.num_func
-  (op : condfuncs.NumOp) (if_exists : Bool)
-  (funcs : Slice (condfuncs.Key × Std.I64))
-  (values : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec
-  (alloc.vec.Vec Std.U8)))) :
-  Result Bool
-  := do
-  condfuncs.num_func_loop op if_exists funcs values 0#usize
+  match c with
+  | condfuncs.Cond.Str op f =>
+    let (ignore_case, like, negate) ←
+      match op with
+      | condfuncs.StrOp.StringEquals => ok (false, false, false)
+      | condfuncs.StrOp.StringNotEquals => ok (false, false, true)
+      | condfuncs.StrOp.StringEqualsIgnoreCase => ok (true, false, false)
+      | condfuncs.StrOp.StringNotEqualsIgnoreCase => ok (true, false, true)
+      | condfuncs.StrOp.StringLike => ok (false, true, false)
+      | condfuncs.StrOp.StringNotLike => ok (false, true, true)
+      | condfuncs.StrOp.ArnLike => ok (false, true, false)
+      | condfuncs.StrOp.ArnNotLike => ok (false, true, true)
+      | condfuncs.StrOp.ArnEquals => ok (false, false, false)
+      | condfuncs.StrOp.ArnNotEquals => ok (false, false, true)
+    let s := alloc.vec.Vec.deref f
+    condfuncs.str_func s q ignore_case like negate values ctx
+  | condfuncs.Cond.Ip negate f =>
+    let s := alloc.vec.Vec.deref f
+    let r ← condfuncs.addr_func s values env
+    if negate
+    then ok (¬ r)
+    else ok r
+  | condfuncs.Cond.Null f =>
+    let s := alloc.vec.Vec.deref f
+    condfuncs.null_func s values
+  | condfuncs.Cond.Bool f =>
+    let s := alloc.vec.Vec.deref f
+    condfuncs.bool_func s values
+  | condfuncs.Cond.Num op if_exists f =>
+    let s := alloc.vec.Vec.deref f
+    condfuncs.num_func op if_exists s values
 
 /-- [rustfs_kernel::condfuncs::keys_present]: loop body 0:
     Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 448:4-456:1 -/
@@ -3581,47 +10528,6 @@ def condfuncs.has_any_key_in
     let s := alloc.vec.Vec.deref f
     condfuncs.keys_present s values
 
-/-- [rustfs_kernel::condfuncs::eval_cond]:
-    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 470:0-495:1 -/
-def condfuncs.eval_cond
-  (c : condfuncs.Cond) (q : condfuncs.Quantifier)
-  (values : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec
-  (alloc.vec.Vec Std.U8)))) (ctx : Option awsvars.VarContext)
-  (env : condfuncs.Env) :
-  Result Bool
-  := do
-  match c with
-  | condfuncs.Cond.Str op f =>
-    let (ignore_case, like, negate) ←
-      match op with
-      | condfuncs.StrOp.StringEquals => ok (false, false, false)
-      | condfuncs.StrOp.StringNotEquals => ok (false, false, true)
-      | condfuncs.StrOp.StringEqualsIgnoreCase => ok (true, false, false)
-      | condfuncs.StrOp.StringNotEqualsIgnoreCase => ok (true, false, true)
-      | condfuncs.StrOp.StringLike => ok (false, true, false)
-      | condfuncs.StrOp.StringNotLike => ok (false, true, true)
-      | condfuncs.StrOp.ArnLike => ok (false, true, false)
-      | condfuncs.StrOp.ArnNotLike => ok (false, true, true)
-      | condfuncs.StrOp.ArnEquals => ok (false, false, false)
-      | condfuncs.StrOp.ArnNotEquals => ok (false, false, true)
-    let s := alloc.vec.Vec.deref f
-    condfuncs.str_func s q ignore_case like negate values ctx
-  | condfuncs.Cond.Ip negate f =>
-    let s := alloc.vec.Vec.deref f
-    let r ← condfuncs.addr_func s values env
-    if negate
-    then ok (¬ r)
-    else ok r
-  | condfuncs.Cond.Null f =>
-    let s := alloc.vec.Vec.deref f
-    condfuncs.null_func s values
-  | condfuncs.Cond.Bool f =>
-    let s := alloc.vec.Vec.deref f
-    condfuncs.bool_func s values
-  | condfuncs.Cond.Num op if_exists f =>
-    let s := alloc.vec.Vec.deref f
-    condfuncs.num_func op if_exists s values
-
 /-- [rustfs_kernel::condfuncs::condition_evaluate]:
     Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 498:0-503:1
     Visibility: public -/
@@ -3639,6 +10545,140 @@ def condfuncs.condition_evaluate
     then condfuncs.eval_cond c.cond q values ctx env
     else ok true
   else condfuncs.eval_cond c.cond q values ctx env
+
+/-- [rustfs_kernel::conddata::condition_evaluate]:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 517:0-532:1
+    Visibility: public -/
+def conddata.condition_evaluate
+  (c : conddata.Condition) (q : condfuncs.Quantifier)
+  (values : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec
+  (alloc.vec.Vec Std.U8)))) (ctx : Option awsvars.VarContext)
+  (env : condfuncs.Env) :
+  Result Bool
+  := do
+  if c.wrappers > 0#usize
+  then
+    let b ← conddata.has_any_key_in c values
+    if b
+    then
+      match c.data with
+      | conddata.Data.Str _ =>
+        let c1 ← conddata.condition_view c
+        condfuncs.condition_evaluate c1 q values ctx env
+      | conddata.Data.Addr _ =>
+        let c1 ← conddata.condition_view c
+        condfuncs.condition_evaluate c1 q values ctx env
+      | conddata.Data.Boolean _ =>
+        let c1 ← conddata.condition_view c
+        condfuncs.condition_evaluate c1 q values ctx env
+      | conddata.Data.Num _ =>
+        let c1 ← conddata.condition_view c
+        condfuncs.condition_evaluate c1 q values ctx env
+      | conddata.Data.Date f => dates.evaluate f c.op values
+      | conddata.Data.Binary f => conddata.binary_evaluate f values
+    else ok true
+  else
+    match c.data with
+    | conddata.Data.Str _ =>
+      let c1 ← conddata.condition_view c
+      condfuncs.condition_evaluate c1 q values ctx env
+    | conddata.Data.Addr _ =>
+      let c1 ← conddata.condition_view c
+      condfuncs.condition_evaluate c1 q values ctx env
+    | conddata.Data.Boolean _ =>
+      let c1 ← conddata.condition_view c
+      condfuncs.condition_evaluate c1 q values ctx env
+    | conddata.Data.Num _ =>
+      let c1 ← conddata.condition_view c
+      condfuncs.condition_evaluate c1 q values ctx env
+    | conddata.Data.Date f => dates.evaluate f c.op values
+    | conddata.Data.Binary f => conddata.binary_evaluate f values
+
+/-- [rustfs_kernel::conddata::all_hold]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 541:4-548:1 -/
+@[rust_loop_body]
+def conddata.all_hold_loop.body
+  (cs : Slice conddata.Condition) (q : condfuncs.Quantifier)
+  (values : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec
+  (alloc.vec.Vec Std.U8)))) (ctx : Option awsvars.VarContext)
+  (env : condfuncs.Env) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := Slice.len cs
+  if i < i1
+  then
+    let c ← Slice.index_usize cs i
+    let b ← conddata.condition_evaluate c q values ctx env
+    if b
+    then let i2 ← i + 1#usize
+         ok (cont i2)
+    else ok (done false)
+  else ok (done true)
+
+/-- [rustfs_kernel::conddata::all_hold]: loop 0:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 541:4-548:1 -/
+@[rust_loop]
+def conddata.all_hold_loop
+  (cs : Slice conddata.Condition) (q : condfuncs.Quantifier)
+  (values : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec
+  (alloc.vec.Vec Std.U8)))) (ctx : Option awsvars.VarContext)
+  (env : condfuncs.Env) (i : Std.Usize) :
+  Result Bool
+  := do
+  loop
+    (fun i1 => conddata.all_hold_loop.body cs q values ctx env i1)
+    i
+
+/-- [rustfs_kernel::conddata::all_hold]:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 533:0-548:1 -/
+@[reducible]
+def conddata.all_hold
+  (cs : Slice conddata.Condition) (q : condfuncs.Quantifier)
+  (values : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec
+  (alloc.vec.Vec Std.U8)))) (ctx : Option awsvars.VarContext)
+  (env : condfuncs.Env) :
+  Result Bool
+  := do
+  conddata.all_hold_loop cs q values ctx env 0#usize
+
+/-- [rustfs_kernel::conddata::functions_evaluate]:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 549:0-574:1
+    Visibility: public -/
+def conddata.functions_evaluate
+  (f : conddata.Functions)
+  (values : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec
+  (alloc.vec.Vec Std.U8)))) (ctx : Option awsvars.VarContext)
+  (env : condfuncs.Env) :
+  Result Bool
+  := do
+  let s := alloc.vec.Vec.deref f.for_any_value
+  let b ← conddata.all_hold s condfuncs.Quantifier.ForAnyValue values ctx env
+  if b
+  then
+    let s1 := alloc.vec.Vec.deref f.for_all_values
+    let b1 ←
+      conddata.all_hold s1 condfuncs.Quantifier.ForAllValues values ctx env
+    if b1
+    then
+      let s2 := alloc.vec.Vec.deref f.for_normal
+      conddata.all_hold s2 condfuncs.Quantifier.None values ctx env
+    else ok false
+  else ok false
+
+/-- [rustfs_kernel::conddata::to_key]:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 593:0-599:1
+    Visibility: public -/
+def conddata.to_key
+  (c : conddata.Condition) : Result (alloc.vec.Vec Std.U8) := do
+  if c.wrappers > 0#usize
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 8#usize [
+          73#u8, 102#u8, 69#u8, 120#u8, 105#u8, 115#u8, 116#u8, 115#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else conddata.op_name c.op
 
 /-- [rustfs_kernel::condfuncs::all_hold]: loop body 0:
     Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 507:4-514:1 -/
@@ -3829,6 +10869,2770 @@ def condfuncs.references_key_name
     else
       let s2 := alloc.vec.Vec.deref f.for_normal
       condfuncs.any_references s2 key_name
+
+/-- [rustfs_kernel::dates::parse_value]:
+    Source: 'ports/rustfs/kernel/src/dates.rs', lines 150:0-174:1
+    Visibility: public -/
+def dates.parse_value
+  (s : Slice Std.U8) : Result (Option conddata.DateFuncValue) := do
+  let o ← dates.parse_rfc3339 s
+  match o with
+  | none => ok none
+  | some v =>
+    let i := Slice.len s
+    let i1 ← i - 1#usize
+    let i2 ← Slice.index_usize s i1
+    if i2 = 90#u8
+    then ok (some { unix_nanos := v, offset_seconds := 0#i32 })
+    else
+      let i3 := Slice.len s
+      let i4 ← i3 - 1#usize
+      let i5 ← Slice.index_usize s i4
+      if i5 = 122#u8
+      then ok (some { unix_nanos := v, offset_seconds := 0#i32 })
+      else
+        let i6 := Slice.len s
+        let i7 ← i6 - 6#usize
+        let i8 ← i7 + 1#usize
+        let o1 ← dates.digits s i8 2#usize
+        match o1 with
+        | none => ok none
+        | some v1 =>
+          let i9 ← i7 + 4#usize
+          let o2 ← dates.digits s i9 2#usize
+          match o2 with
+          | none => ok none
+          | some v2 =>
+            let i10 ← v1 * 3600#i64
+            let i11 ← v2 * 60#i64
+            let i12 ← i10 + i11
+            let offset ← lift (IScalar.cast .I32 i12)
+            let i13 ← Slice.index_usize s i7
+            if i13 = 45#u8
+            then
+              let offset_seconds ← -. offset
+              ok (some { unix_nanos := v, offset_seconds })
+            else ok (some { unix_nanos := v, offset_seconds := offset })
+
+/-- [rustfs_kernel::stmts::Effect]
+    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 10:0-13:1
+    Visibility: public -/
+@[discriminant isize]
+inductive stmts.Effect where
+| Allow : stmts.Effect
+| Deny : stmts.Effect
+
+/-- [rustfs_kernel::rsrc::Resource]
+    Source: 'ports/rustfs/kernel/src/rsrc.rs', lines 8:0-11:1
+    Visibility: public -/
+@[discriminant isize]
+inductive rsrc.Resource where
+| S3 : alloc.vec.Vec Std.U8 → rsrc.Resource
+| Kms : alloc.vec.Vec Std.U8 → rsrc.Resource
+
+/-- [rustfs_kernel::stmts::Statement]
+    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 24:0-31:1
+    Visibility: public -/
+structure stmts.Statement where
+  effect : stmts.Effect
+  actions : alloc.vec.Vec acts.Action
+  not_actions : alloc.vec.Vec acts.Action
+  resources : alloc.vec.Vec rsrc.Resource
+  not_resources : alloc.vec.Vec rsrc.Resource
+  conditions : condfuncs.Functions
+
+/-- [rustfs_kernel::defaults::Policy]
+    Source: 'ports/rustfs/kernel/src/defaults.rs', lines 7:0-11:1
+    Visibility: public -/
+structure defaults.Policy where
+  id : alloc.vec.Vec Std.U8
+  version : alloc.vec.Vec Std.U8
+  statements : alloc.vec.Vec stmts.Statement
+
+/-- [rustfs_kernel::defaults::default_version]:
+    Source: 'ports/rustfs/kernel/src/defaults.rs', lines 14:0-16:1
+    Visibility: public -/
+def defaults.default_version : Result (alloc.vec.Vec Std.U8) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        50#u8, 48#u8, 49#u8, 50#u8, 45#u8, 49#u8, 48#u8, 45#u8, 49#u8, 55#u8
+        ]))
+  alloc.slice.Slice.to_vec core.clone.CloneU8 s
+
+/-- [rustfs_kernel::defaults::kms_key_administrator]:
+    Source: 'ports/rustfs/kernel/src/defaults.rs', lines 18:0-20:1
+    Visibility: public -/
+def defaults.kms_key_administrator : Result (alloc.vec.Vec Std.U8) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 19#usize [
+        75#u8, 77#u8, 83#u8, 75#u8, 101#u8, 121#u8, 65#u8, 100#u8, 109#u8,
+        105#u8, 110#u8, 105#u8, 115#u8, 116#u8, 114#u8, 97#u8, 116#u8, 111#u8,
+        114#u8
+        ]))
+  alloc.slice.Slice.to_vec core.clone.CloneU8 s
+
+/-- [rustfs_kernel::defaults::kms_key_user]:
+    Source: 'ports/rustfs/kernel/src/defaults.rs', lines 22:0-24:1
+    Visibility: public -/
+def defaults.kms_key_user : Result (alloc.vec.Vec Std.U8) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        75#u8, 77#u8, 83#u8, 75#u8, 101#u8, 121#u8, 85#u8, 115#u8, 101#u8,
+        114#u8
+        ]))
+  alloc.slice.Slice.to_vec core.clone.CloneU8 s
+
+/-- [rustfs_kernel::defaults::kms_auditor]:
+    Source: 'ports/rustfs/kernel/src/defaults.rs', lines 26:0-28:1
+    Visibility: public -/
+def defaults.kms_auditor : Result (alloc.vec.Vec Std.U8) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        75#u8, 77#u8, 83#u8, 65#u8, 117#u8, 100#u8, 105#u8, 116#u8, 111#u8,
+        114#u8
+        ]))
+  alloc.slice.Slice.to_vec core.clone.CloneU8 s
+
+/-- [rustfs_kernel::defaults::all_kms_keys]:
+    Source: 'ports/rustfs/kernel/src/defaults.rs', lines 30:0-32:1
+    Visibility: public -/
+def defaults.all_kms_keys : Result (alloc.vec.Vec Std.U8) := do
+  let s ← lift (Array.to_slice (Array.make 1#usize [ 42#u8 ]))
+  alloc.slice.Slice.to_vec core.clone.CloneU8 s
+
+/-- [rustfs_kernel::defaults::allow]:
+    Source: 'ports/rustfs/kernel/src/defaults.rs', lines 34:0-47:1 -/
+def defaults.allow
+  (actions : alloc.vec.Vec acts.Action)
+  (resources : alloc.vec.Vec rsrc.Resource) :
+  Result stmts.Statement
+  := do
+  ok
+    {
+      effect := stmts.Effect.Allow,
+      actions,
+      not_actions := (alloc.vec.Vec.new acts.Action),
+      resources,
+      not_resources := (alloc.vec.Vec.new rsrc.Resource),
+      conditions :=
+        {
+          for_any_value := (alloc.vec.Vec.new condfuncs.Condition),
+          for_all_values := (alloc.vec.Vec.new condfuncs.Condition),
+          for_normal := (alloc.vec.Vec.new condfuncs.Condition)
+        }
+    }
+
+/-- [rustfs_kernel::defaults::kms_allow]:
+    Source: 'ports/rustfs/kernel/src/defaults.rs', lines 50:0-52:1
+    Visibility: public -/
+def defaults.kms_allow
+  (actions : alloc.vec.Vec acts.Action) : Result stmts.Statement := do
+  let v ← defaults.all_kms_keys
+  let y ←
+    lift (Std.Array.to_slice (Array.make 1#usize [ rsrc.Resource.Kms v ] :
+      Array rsrc.Resource 1#usize))
+  let ret := alloc.slice.Slice.into_vec y
+  defaults.allow actions ret
+
+/-- [rustfs_kernel::defaults::assume_role_allow]:
+    Source: 'ports/rustfs/kernel/src/defaults.rs', lines 55:0-63:1
+    Visibility: public -/
+def defaults.assume_role_allow : Result stmts.Statement := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 14#usize [
+        115#u8, 116#u8, 115#u8, 58#u8, 65#u8, 115#u8, 115#u8, 117#u8, 109#u8,
+        101#u8, 82#u8, 111#u8, 108#u8, 101#u8
+        ]))
+  let v ← alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  let y ←
+    lift (Std.Array.to_slice
+      (Array.make 1#usize [ { family := acts.Family.Sts, «name» := v } ] :
+      Array acts.Action 1#usize))
+  let ret := alloc.slice.Slice.into_vec y
+  defaults.allow ret (alloc.vec.Vec.new rsrc.Resource)
+
+/-- [rustfs_kernel::defaults::default_policies]:
+    Source: 'ports/rustfs/kernel/src/defaults.rs', lines 66:0-318:1
+    Visibility: public -/
+def defaults.default_policies
+  : Result (alloc.vec.Vec ((alloc.vec.Vec Std.U8) × defaults.Policy)) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 9#usize [
+        114#u8, 101#u8, 97#u8, 100#u8, 119#u8, 114#u8, 105#u8, 116#u8, 101#u8
+        ]))
+  let v ← alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  let v1 ← defaults.default_version
+  let s1 ←
+    lift (Array.to_slice (Array.make 4#usize [ 115#u8, 51#u8, 58#u8, 42#u8 ]))
+  let v2 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s1
+  let y ←
+    lift (Std.Array.to_slice
+      (Array.make 1#usize [ { family := acts.Family.S3, «name» := v2 } ] :
+      Array acts.Action 1#usize))
+  let ret := alloc.slice.Slice.into_vec y
+  let s2 ← lift (Array.to_slice (Array.make 1#usize [ 42#u8 ]))
+  let v3 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s2
+  let y1 ←
+    lift (Std.Array.to_slice (Array.make 1#usize [ rsrc.Resource.S3 v3 ] :
+      Array rsrc.Resource 1#usize))
+  let ret1 := alloc.slice.Slice.into_vec y1
+  let s3 ← defaults.allow ret ret1
+  let s4 ←
+    lift (Array.to_slice
+      (Array.make 14#usize [
+        115#u8, 116#u8, 115#u8, 58#u8, 65#u8, 115#u8, 115#u8, 117#u8, 109#u8,
+        101#u8, 82#u8, 111#u8, 108#u8, 101#u8
+        ]))
+  let v4 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s4
+  let y2 ←
+    lift (Std.Array.to_slice
+      (Array.make 1#usize [ { family := acts.Family.Sts, «name» := v4 } ] :
+      Array acts.Action 1#usize))
+  let ret2 := alloc.slice.Slice.into_vec y2
+  let s5 ← defaults.allow ret2 (alloc.vec.Vec.new rsrc.Resource)
+  let y3 ←
+    lift (Std.Array.to_slice (Array.make 2#usize [ s3, s5 ] : Array
+      stmts.Statement 2#usize))
+  let ret3 := alloc.slice.Slice.into_vec y3
+  let s6 ←
+    lift (Array.to_slice
+      (Array.make 8#usize [
+        114#u8, 101#u8, 97#u8, 100#u8, 111#u8, 110#u8, 108#u8, 121#u8
+        ]))
+  let v5 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s6
+  let s7 ←
+    lift (Array.to_slice
+      (Array.make 20#usize [
+        115#u8, 51#u8, 58#u8, 71#u8, 101#u8, 116#u8, 66#u8, 117#u8, 99#u8,
+        107#u8, 101#u8, 116#u8, 76#u8, 111#u8, 99#u8, 97#u8, 116#u8, 105#u8,
+        111#u8, 110#u8
+        ]))
+  let v6 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s7
+  let s8 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        115#u8, 51#u8, 58#u8, 71#u8, 101#u8, 116#u8, 79#u8, 98#u8, 106#u8,
+        101#u8, 99#u8, 116#u8
+        ]))
+  let v7 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s8
+  let s9 ←
+    lift (Array.to_slice
+      (Array.make 17#usize [
+        115#u8, 51#u8, 58#u8, 71#u8, 101#u8, 116#u8, 66#u8, 117#u8, 99#u8,
+        107#u8, 101#u8, 116#u8, 81#u8, 117#u8, 111#u8, 116#u8, 97#u8
+        ]))
+  let v8 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s9
+  let y4 ←
+    lift (Std.Array.to_slice
+      (Array.make 3#usize [
+         { family := acts.Family.S3, «name» := v6 },
+         { family := acts.Family.S3, «name» := v7 },
+         { family := acts.Family.S3, «name» := v8 }
+         ] : Array acts.Action 3#usize))
+  let ret4 := alloc.slice.Slice.into_vec y4
+  let s10 ← lift (Array.to_slice (Array.make 1#usize [ 42#u8 ]))
+  let v9 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s10
+  let y5 ←
+    lift (Std.Array.to_slice (Array.make 1#usize [ rsrc.Resource.S3 v9 ] :
+      Array rsrc.Resource 1#usize))
+  let ret5 := alloc.slice.Slice.into_vec y5
+  let s11 ← defaults.allow ret4 ret5
+  let s12 ←
+    lift (Array.to_slice
+      (Array.make 14#usize [
+        115#u8, 116#u8, 115#u8, 58#u8, 65#u8, 115#u8, 115#u8, 117#u8, 109#u8,
+        101#u8, 82#u8, 111#u8, 108#u8, 101#u8
+        ]))
+  let v10 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s12
+  let y6 ←
+    lift (Std.Array.to_slice
+      (Array.make 1#usize [ { family := acts.Family.Sts, «name» := v10 } ] :
+      Array acts.Action 1#usize))
+  let ret6 := alloc.slice.Slice.into_vec y6
+  let s13 ← defaults.allow ret6 (alloc.vec.Vec.new rsrc.Resource)
+  let y7 ←
+    lift (Std.Array.to_slice (Array.make 2#usize [ s11, s13 ] : Array
+      stmts.Statement 2#usize))
+  let ret7 := alloc.slice.Slice.into_vec y7
+  let s14 ←
+    lift (Array.to_slice
+      (Array.make 9#usize [
+        119#u8, 114#u8, 105#u8, 116#u8, 101#u8, 111#u8, 110#u8, 108#u8, 121#u8
+        ]))
+  let v11 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s14
+  let s15 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        115#u8, 51#u8, 58#u8, 80#u8, 117#u8, 116#u8, 79#u8, 98#u8, 106#u8,
+        101#u8, 99#u8, 116#u8
+        ]))
+  let v12 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s15
+  let y8 ←
+    lift (Std.Array.to_slice
+      (Array.make 1#usize [ { family := acts.Family.S3, «name» := v12 } ] :
+      Array acts.Action 1#usize))
+  let ret8 := alloc.slice.Slice.into_vec y8
+  let s16 ← lift (Array.to_slice (Array.make 1#usize [ 42#u8 ]))
+  let v13 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s16
+  let y9 ←
+    lift (Std.Array.to_slice (Array.make 1#usize [ rsrc.Resource.S3 v13 ] :
+      Array rsrc.Resource 1#usize))
+  let ret9 := alloc.slice.Slice.into_vec y9
+  let s17 ← defaults.allow ret8 ret9
+  let s18 ←
+    lift (Array.to_slice
+      (Array.make 14#usize [
+        115#u8, 116#u8, 115#u8, 58#u8, 65#u8, 115#u8, 115#u8, 117#u8, 109#u8,
+        101#u8, 82#u8, 111#u8, 108#u8, 101#u8
+        ]))
+  let v14 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s18
+  let y10 ←
+    lift (Std.Array.to_slice
+      (Array.make 1#usize [ { family := acts.Family.Sts, «name» := v14 } ] :
+      Array acts.Action 1#usize))
+  let ret10 := alloc.slice.Slice.into_vec y10
+  let s19 ← defaults.allow ret10 (alloc.vec.Vec.new rsrc.Resource)
+  let y11 ←
+    lift (Std.Array.to_slice (Array.make 2#usize [ s17, s19 ] : Array
+      stmts.Statement 2#usize))
+  let ret11 := alloc.slice.Slice.into_vec y11
+  let s20 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        100#u8, 105#u8, 97#u8, 103#u8, 110#u8, 111#u8, 115#u8, 116#u8, 105#u8,
+        99#u8, 115#u8
+        ]))
+  let v15 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s20
+  let s21 ←
+    lift (Array.to_slice
+      (Array.make 15#usize [
+        97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 80#u8, 114#u8, 111#u8,
+        102#u8, 105#u8, 108#u8, 105#u8, 110#u8, 103#u8
+        ]))
+  let v16 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s21
+  let s22 ←
+    lift (Array.to_slice
+      (Array.make 17#usize [
+        97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 83#u8, 101#u8, 114#u8,
+        118#u8, 101#u8, 114#u8, 84#u8, 114#u8, 97#u8, 99#u8, 101#u8
+        ]))
+  let v17 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s22
+  let s23 ←
+    lift (Array.to_slice
+      (Array.make 16#usize [
+        97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 67#u8, 111#u8, 110#u8,
+        115#u8, 111#u8, 108#u8, 101#u8, 76#u8, 111#u8, 103#u8
+        ]))
+  let v18 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s23
+  let s24 ←
+    lift (Array.to_slice
+      (Array.make 16#usize [
+        97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 83#u8, 101#u8, 114#u8,
+        118#u8, 101#u8, 114#u8, 73#u8, 110#u8, 102#u8, 111#u8
+        ]))
+  let v19 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s24
+  let s25 ←
+    lift (Array.to_slice
+      (Array.make 18#usize [
+        97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 84#u8, 111#u8, 112#u8,
+        76#u8, 111#u8, 99#u8, 107#u8, 115#u8, 73#u8, 110#u8, 102#u8, 111#u8
+        ]))
+  let v20 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s25
+  let s26 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 79#u8, 66#u8, 68#u8,
+        73#u8, 110#u8, 102#u8, 111#u8
+        ]))
+  let v21 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s26
+  let s27 ←
+    lift (Array.to_slice
+      (Array.make 16#usize [
+        97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 80#u8, 114#u8, 111#u8,
+        109#u8, 101#u8, 116#u8, 104#u8, 101#u8, 117#u8, 115#u8
+        ]))
+  let v22 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s27
+  let s28 ←
+    lift (Array.to_slice
+      (Array.make 22#usize [
+        97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 66#u8, 97#u8, 110#u8,
+        100#u8, 119#u8, 105#u8, 100#u8, 116#u8, 104#u8, 77#u8, 111#u8, 110#u8,
+        105#u8, 116#u8, 111#u8, 114#u8
+        ]))
+  let v23 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s28
+  let y12 ←
+    lift (Std.Array.to_slice
+      (Array.make 8#usize [
+         { family := acts.Family.Admin, «name» := v16 },
+         { family := acts.Family.Admin, «name» := v17 },
+         { family := acts.Family.Admin, «name» := v18 },
+         { family := acts.Family.Admin, «name» := v19 },
+         { family := acts.Family.Admin, «name» := v20 },
+         { family := acts.Family.Admin, «name» := v21 },
+         { family := acts.Family.Admin, «name» := v22 },
+         { family := acts.Family.Admin, «name» := v23 }
+         ] : Array acts.Action 8#usize))
+  let ret12 := alloc.slice.Slice.into_vec y12
+  let s29 ← lift (Array.to_slice (Array.make 1#usize [ 42#u8 ]))
+  let v24 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s29
+  let y13 ←
+    lift (Std.Array.to_slice (Array.make 1#usize [ rsrc.Resource.S3 v24 ] :
+      Array rsrc.Resource 1#usize))
+  let ret13 := alloc.slice.Slice.into_vec y13
+  let s30 ← defaults.allow ret12 ret13
+  let s31 ←
+    lift (Array.to_slice
+      (Array.make 14#usize [
+        115#u8, 116#u8, 115#u8, 58#u8, 65#u8, 115#u8, 115#u8, 117#u8, 109#u8,
+        101#u8, 82#u8, 111#u8, 108#u8, 101#u8
+        ]))
+  let v25 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s31
+  let y14 ←
+    lift (Std.Array.to_slice
+      (Array.make 1#usize [ { family := acts.Family.Sts, «name» := v25 } ] :
+      Array acts.Action 1#usize))
+  let ret14 := alloc.slice.Slice.into_vec y14
+  let s32 ← defaults.allow ret14 (alloc.vec.Vec.new rsrc.Resource)
+  let y15 ←
+    lift (Std.Array.to_slice (Array.make 2#usize [ s30, s32 ] : Array
+      stmts.Statement 2#usize))
+  let ret15 := alloc.slice.Slice.into_vec y15
+  let s33 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        99#u8, 111#u8, 110#u8, 115#u8, 111#u8, 108#u8, 101#u8, 65#u8, 100#u8,
+        109#u8, 105#u8, 110#u8
+        ]))
+  let v26 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s33
+  let s34 ←
+    lift (Array.to_slice
+      (Array.make 7#usize [
+        97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 42#u8
+        ]))
+  let v27 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s34
+  let y16 ←
+    lift (Std.Array.to_slice
+      (Array.make 1#usize [ { family := acts.Family.Admin, «name» := v27 } ]
+      : Array acts.Action 1#usize))
+  let ret16 := alloc.slice.Slice.into_vec y16
+  let s35 ← defaults.allow ret16 (alloc.vec.Vec.new rsrc.Resource)
+  let s36 ←
+    lift (Array.to_slice
+      (Array.make 5#usize [ 107#u8, 109#u8, 115#u8, 58#u8, 42#u8 ]))
+  let v28 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s36
+  let y17 ←
+    lift (Std.Array.to_slice
+      (Array.make 1#usize [ { family := acts.Family.Kms, «name» := v28 } ] :
+      Array acts.Action 1#usize))
+  let ret17 := alloc.slice.Slice.into_vec y17
+  let s37 ← defaults.allow ret17 (alloc.vec.Vec.new rsrc.Resource)
+  let s38 ←
+    lift (Array.to_slice (Array.make 4#usize [ 115#u8, 51#u8, 58#u8, 42#u8 ]))
+  let v29 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s38
+  let y18 ←
+    lift (Std.Array.to_slice
+      (Array.make 1#usize [ { family := acts.Family.S3, «name» := v29 } ] :
+      Array acts.Action 1#usize))
+  let ret18 := alloc.slice.Slice.into_vec y18
+  let s39 ← lift (Array.to_slice (Array.make 1#usize [ 42#u8 ]))
+  let v30 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s39
+  let y19 ←
+    lift (Std.Array.to_slice (Array.make 1#usize [ rsrc.Resource.S3 v30 ] :
+      Array rsrc.Resource 1#usize))
+  let ret19 := alloc.slice.Slice.into_vec y19
+  let s40 ← defaults.allow ret18 ret19
+  let s41 ←
+    lift (Array.to_slice
+      (Array.make 14#usize [
+        115#u8, 116#u8, 115#u8, 58#u8, 65#u8, 115#u8, 115#u8, 117#u8, 109#u8,
+        101#u8, 82#u8, 111#u8, 108#u8, 101#u8
+        ]))
+  let v31 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s41
+  let y20 ←
+    lift (Std.Array.to_slice
+      (Array.make 1#usize [ { family := acts.Family.Sts, «name» := v31 } ] :
+      Array acts.Action 1#usize))
+  let ret20 := alloc.slice.Slice.into_vec y20
+  let s42 ← defaults.allow ret20 (alloc.vec.Vec.new rsrc.Resource)
+  let y21 ←
+    lift (Std.Array.to_slice (Array.make 4#usize [ s35, s37, s40, s42 ] : Array
+      stmts.Statement 4#usize))
+  let ret21 := alloc.slice.Slice.into_vec y21
+  let v32 ← defaults.kms_key_administrator
+  let s43 ←
+    lift (Array.to_slice
+      (Array.make 15#usize [
+        107#u8, 109#u8, 115#u8, 58#u8, 68#u8, 101#u8, 115#u8, 99#u8, 114#u8,
+        105#u8, 98#u8, 101#u8, 75#u8, 101#u8, 121#u8
+        ]))
+  let v33 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s43
+  let s44 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        107#u8, 109#u8, 115#u8, 58#u8, 76#u8, 105#u8, 115#u8, 116#u8, 75#u8,
+        101#u8, 121#u8, 115#u8
+        ]))
+  let v34 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s44
+  let s45 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        107#u8, 109#u8, 115#u8, 58#u8, 69#u8, 110#u8, 97#u8, 98#u8, 108#u8,
+        101#u8, 75#u8, 101#u8, 121#u8
+        ]))
+  let v35 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s45
+  let s46 ←
+    lift (Array.to_slice
+      (Array.make 14#usize [
+        107#u8, 109#u8, 115#u8, 58#u8, 68#u8, 105#u8, 115#u8, 97#u8, 98#u8,
+        108#u8, 101#u8, 75#u8, 101#u8, 121#u8
+        ]))
+  let v36 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s46
+  let s47 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        107#u8, 109#u8, 115#u8, 58#u8, 82#u8, 111#u8, 116#u8, 97#u8, 116#u8,
+        101#u8, 75#u8, 101#u8, 121#u8
+        ]))
+  let v37 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s47
+  let s48 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        107#u8, 109#u8, 115#u8, 58#u8, 68#u8, 101#u8, 108#u8, 101#u8, 116#u8,
+        101#u8, 75#u8, 101#u8, 121#u8
+        ]))
+  let v38 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s48
+  let y22 ←
+    lift (Std.Array.to_slice
+      (Array.make 6#usize [
+         { family := acts.Family.Kms, «name» := v33 },
+         { family := acts.Family.Kms, «name» := v34 },
+         { family := acts.Family.Kms, «name» := v35 },
+         { family := acts.Family.Kms, «name» := v36 },
+         { family := acts.Family.Kms, «name» := v37 },
+         { family := acts.Family.Kms, «name» := v38 }
+         ] : Array acts.Action 6#usize))
+  let ret22 := alloc.slice.Slice.into_vec y22
+  let s49 ← defaults.kms_allow ret22
+  let s50 ← defaults.assume_role_allow
+  let y23 ←
+    lift (Std.Array.to_slice (Array.make 2#usize [ s49, s50 ] : Array
+      stmts.Statement 2#usize))
+  let ret23 := alloc.slice.Slice.into_vec y23
+  let v39 ← defaults.kms_key_user
+  let s51 ←
+    lift (Array.to_slice
+      (Array.make 19#usize [
+        107#u8, 109#u8, 115#u8, 58#u8, 71#u8, 101#u8, 110#u8, 101#u8, 114#u8,
+        97#u8, 116#u8, 101#u8, 68#u8, 97#u8, 116#u8, 97#u8, 75#u8, 101#u8,
+        121#u8
+        ]))
+  let v40 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s51
+  let s52 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        107#u8, 109#u8, 115#u8, 58#u8, 68#u8, 101#u8, 99#u8, 114#u8, 121#u8,
+        112#u8, 116#u8
+        ]))
+  let v41 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s52
+  let s53 ←
+    lift (Array.to_slice
+      (Array.make 15#usize [
+        107#u8, 109#u8, 115#u8, 58#u8, 68#u8, 101#u8, 115#u8, 99#u8, 114#u8,
+        105#u8, 98#u8, 101#u8, 75#u8, 101#u8, 121#u8
+        ]))
+  let v42 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s53
+  let y24 ←
+    lift (Std.Array.to_slice
+      (Array.make 3#usize [
+         { family := acts.Family.Kms, «name» := v40 },
+         { family := acts.Family.Kms, «name» := v41 },
+         { family := acts.Family.Kms, «name» := v42 }
+         ] : Array acts.Action 3#usize))
+  let ret24 := alloc.slice.Slice.into_vec y24
+  let s54 ← defaults.kms_allow ret24
+  let y25 ←
+    lift (Std.Array.to_slice (Array.make 2#usize [ s54, s50 ] : Array
+      stmts.Statement 2#usize))
+  let ret25 := alloc.slice.Slice.into_vec y25
+  let v43 ← defaults.kms_auditor
+  let s55 ←
+    lift (Array.to_slice
+      (Array.make 15#usize [
+        107#u8, 109#u8, 115#u8, 58#u8, 68#u8, 101#u8, 115#u8, 99#u8, 114#u8,
+        105#u8, 98#u8, 101#u8, 75#u8, 101#u8, 121#u8
+        ]))
+  let v44 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s55
+  let s56 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        107#u8, 109#u8, 115#u8, 58#u8, 76#u8, 105#u8, 115#u8, 116#u8, 75#u8,
+        101#u8, 121#u8, 115#u8
+        ]))
+  let v45 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s56
+  let y26 ←
+    lift (Std.Array.to_slice
+      (Array.make 2#usize [
+         { family := acts.Family.Kms, «name» := v44 },
+         { family := acts.Family.Kms, «name» := v45 }
+         ] : Array acts.Action 2#usize))
+  let ret26 := alloc.slice.Slice.into_vec y26
+  let s57 ← defaults.kms_allow ret26
+  let y27 ←
+    lift (Std.Array.to_slice (Array.make 2#usize [ s57, s50 ] : Array
+      stmts.Statement 2#usize))
+  let ret27 := alloc.slice.Slice.into_vec y27
+  let y28 ←
+    lift (Std.Array.to_slice
+      (Array.make 8#usize [
+         (v,
+         { id := (alloc.vec.Vec.new Std.U8), version := v1, statements := ret3
+         }), (v5,
+         { id := (alloc.vec.Vec.new Std.U8), version := v1, statements := ret7
+         }), (v11,
+         { id := (alloc.vec.Vec.new Std.U8), version := v1, statements := ret11
+         }), (v15,
+         { id := (alloc.vec.Vec.new Std.U8), version := v1, statements := ret15
+         }), (v26,
+         { id := (alloc.vec.Vec.new Std.U8), version := v1, statements := ret21
+         }), (v32,
+         { id := (alloc.vec.Vec.new Std.U8), version := v1, statements := ret23
+         }), (v39,
+         { id := (alloc.vec.Vec.new Std.U8), version := v1, statements := ret25
+         }), (v43,
+         { id := (alloc.vec.Vec.new Std.U8), version := v1, statements := ret27
+         })
+         ] : Array ((alloc.vec.Vec Std.U8) × defaults.Policy) 8#usize))
+  ok (alloc.slice.Slice.into_vec y28)
+
+/-- [rustfs_kernel::docdata::Timestamp]
+    Source: 'ports/rustfs/kernel/src/docdata.rs', lines 5:0-8:1
+    Visibility: public -/
+structure docdata.Timestamp where
+  unix_nanos : Std.I128
+  offset_seconds : Std.I32
+
+/-- [rustfs_kernel::docdata::{impl core::clone::Clone for rustfs_kernel::docdata::Timestamp}::clone]:
+    Source: 'ports/rustfs/kernel/src/docdata.rs', lines 4:9-4:14
+    Visibility: public -/
+def docdata.Timestamp.Insts.CoreCloneClone.clone
+  (self : docdata.Timestamp) : Result docdata.Timestamp := do
+  ok self
+
+/-- Trait implementation: [rustfs_kernel::docdata::{impl core::clone::Clone for rustfs_kernel::docdata::Timestamp}]
+    Source: 'ports/rustfs/kernel/src/docdata.rs', lines 4:9-4:14 -/
+@[reducible]
+def docdata.Timestamp.Insts.CoreCloneClone : core.clone.Clone docdata.Timestamp
+  := {
+  clone := docdata.Timestamp.Insts.CoreCloneClone.clone
+}
+
+/-- Trait implementation: [rustfs_kernel::docdata::{impl core::marker::Copy for rustfs_kernel::docdata::Timestamp}]
+    Source: 'ports/rustfs/kernel/src/docdata.rs', lines 4:16-4:20 -/
+@[reducible]
+def docdata.Timestamp.Insts.CoreMarkerCopy : core.marker.Copy docdata.Timestamp
+  := {
+  cloneInst := docdata.Timestamp.Insts.CoreCloneClone
+}
+
+/-- [rustfs_kernel::docdata::{impl core::fmt::Debug for rustfs_kernel::docdata::Timestamp}::fmt]:
+    Source: 'ports/rustfs/kernel/src/docdata.rs', lines 4:22-4:27
+    Visibility: public -/
+def docdata.Timestamp.Insts.CoreFmtDebug.fmt
+  (self : docdata.Timestamp) (f : core.fmt.Formatter) :
+  Result ((core.result.Result Unit core.fmt.Error) × core.fmt.Formatter)
+  := do
+  let dyn := Dyn.mk _ core.fmt.DebugI128 self.unix_nanos
+  let dyn1 :=
+    Dyn.mk _ (core.fmt.DebugShared core.fmt.DebugI32) self.offset_seconds
+  core.fmt.Formatter.debug_struct_field2_finish f (toStr "Timestamp") (toStr
+    "unix_nanos") dyn (toStr "offset_seconds") dyn1
+
+/-- Trait implementation: [rustfs_kernel::docdata::{impl core::fmt::Debug for rustfs_kernel::docdata::Timestamp}]
+    Source: 'ports/rustfs/kernel/src/docdata.rs', lines 4:22-4:27 -/
+@[reducible]
+def docdata.Timestamp.Insts.CoreFmtDebug : core.fmt.Debug docdata.Timestamp
+  := {
+  fmt := docdata.Timestamp.Insts.CoreFmtDebug.fmt
+}
+
+/-- Trait implementation: [rustfs_kernel::docdata::{impl core::marker::StructuralPartialEq for rustfs_kernel::docdata::Timestamp}]
+    Source: 'ports/rustfs/kernel/src/docdata.rs', lines 4:29-4:38 -/
+@[reducible]
+def docdata.Timestamp.Insts.CoreMarkerStructuralPartialEq :
+  core.marker.StructuralPartialEq docdata.Timestamp := {
+}
+
+/-- [rustfs_kernel::docdata::{impl core::cmp::PartialEq<rustfs_kernel::docdata::Timestamp> for rustfs_kernel::docdata::Timestamp}::eq]:
+    Source: 'ports/rustfs/kernel/src/docdata.rs', lines 4:29-4:38
+    Visibility: public -/
+def docdata.Timestamp.Insts.CoreCmpPartialEqTimestamp.eq
+  (self : docdata.Timestamp) (other : docdata.Timestamp) : Result Bool := do
+  if self.unix_nanos = other.unix_nanos
+  then ok (self.offset_seconds = other.offset_seconds)
+  else ok false
+
+/-- Trait implementation: [rustfs_kernel::docdata::{impl core::cmp::PartialEq<rustfs_kernel::docdata::Timestamp> for rustfs_kernel::docdata::Timestamp}]
+    Source: 'ports/rustfs/kernel/src/docdata.rs', lines 4:29-4:38 -/
+@[reducible]
+impl_def docdata.Timestamp.Insts.CoreCmpPartialEqTimestamp : core.cmp.PartialEq
+  docdata.Timestamp docdata.Timestamp := {
+  eq := docdata.Timestamp.Insts.CoreCmpPartialEqTimestamp.eq
+  ne := core.cmp.PartialEq.ne.trait_default
+    docdata.Timestamp.Insts.CoreCmpPartialEqTimestamp
+}
+
+/-- [rustfs_kernel::docdata::{impl core::cmp::Eq for rustfs_kernel::docdata::Timestamp}::assert_fields_are_eq]:
+    Source: 'ports/rustfs/kernel/src/docdata.rs', lines 4:40-4:42
+    Visibility: public -/
+def docdata.Timestamp.Insts.CoreCmpEq.assert_fields_are_eq
+  (self : docdata.Timestamp) : Result Unit := do
+  ok ()
+
+/-- Trait implementation: [rustfs_kernel::docdata::{impl core::cmp::Eq for rustfs_kernel::docdata::Timestamp}]
+    Source: 'ports/rustfs/kernel/src/docdata.rs', lines 4:40-4:42 -/
+@[reducible]
+def docdata.Timestamp.Insts.CoreCmpEq : core.cmp.Eq docdata.Timestamp := {
+  partialEqInst := docdata.Timestamp.Insts.CoreCmpPartialEqTimestamp
+  assert_fields_are_eq :=
+    docdata.Timestamp.Insts.CoreCmpEq.assert_fields_are_eq
+}
+
+/-- [rustfs_kernel::manage::Statement]
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 11:0-19:1
+    Visibility: public -/
+structure manage.Statement where
+  sid : alloc.vec.Vec Std.U8
+  effect : stmts.Effect
+  actions : alloc.vec.Vec acts.Action
+  not_actions : alloc.vec.Vec acts.Action
+  resources : alloc.vec.Vec rsrc.Resource
+  not_resources : alloc.vec.Vec rsrc.Resource
+  conditions : conddata.Functions
+
+/-- [rustfs_kernel::manage::Policy]
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 32:0-36:1
+    Visibility: public -/
+structure manage.Policy where
+  id : alloc.vec.Vec Std.U8
+  version : alloc.vec.Vec Std.U8
+  statements : alloc.vec.Vec manage.Statement
+
+/-- [rustfs_kernel::docdata::PolicyDoc]
+    Source: 'ports/rustfs/kernel/src/docdata.rs', lines 9:0-14:1
+    Visibility: public -/
+structure docdata.PolicyDoc where
+  version : Std.I64
+  policy : manage.Policy
+  create_date : Option docdata.Timestamp
+  update_date : Option docdata.Timestamp
+
+/-- [rustfs_kernel::docdata::new_at]:
+    Source: 'ports/rustfs/kernel/src/docdata.rs', lines 15:0-22:1
+    Visibility: public -/
+def docdata.new_at
+  (policy : manage.Policy) («at» : docdata.Timestamp) :
+  Result docdata.PolicyDoc
+  := do
+  ok
+    {
+      version := 1#i64,
+      policy,
+      create_date := (some «at»),
+      update_date := (some «at»)
+    }
+
+/-- [rustfs_kernel::docdata::update_at]:
+    Source: 'ports/rustfs/kernel/src/docdata.rs', lines 23:0-30:1
+    Visibility: public -/
+def docdata.update_at
+  (doc : docdata.PolicyDoc) (policy : manage.Policy)
+  («at» : docdata.Timestamp) :
+  Result docdata.PolicyDoc
+  := do
+  let i ← doc.version + 1#i64
+  let b := core.option.Option.is_none doc.create_date
+  if b
+  then
+    ok
+      {
+        version := i,
+        policy,
+        create_date := (some «at»),
+        update_date := (some «at»)
+      }
+  else ok { doc with version := i, policy, update_date := (some «at») }
+
+/-- [rustfs_kernel::docdata::default_policy]:
+    Source: 'ports/rustfs/kernel/src/docdata.rs', lines 31:0-38:1
+    Visibility: public -/
+def docdata.default_policy
+  (policy : manage.Policy) : Result docdata.PolicyDoc := do
+  ok { version := 1#i64, policy, create_date := none, update_date := none }
+
+/-- [rustfs_kernel::docdata::default_doc]:
+    Source: 'ports/rustfs/kernel/src/docdata.rs', lines 40:0-51:1
+    Visibility: public -/
+def docdata.default_doc : Result docdata.PolicyDoc := do
+  ok
+    {
+      version := 0#i64,
+      policy :=
+        {
+          id := (alloc.vec.Vec.new Std.U8),
+          version := (alloc.vec.Vec.new Std.U8),
+          statements := (alloc.vec.Vec.new manage.Statement)
+        },
+      create_date := none,
+      update_date := none
+    }
+
+/-- [rustfs_kernel::extras::PrincipalValues]
+    Source: 'ports/rustfs/kernel/src/extras.rs', lines 11:0-14:1
+    Visibility: public -/
+@[discriminant isize]
+inductive extras.PrincipalValues where
+| Single : alloc.vec.Vec Std.U8 → extras.PrincipalValues
+| Multiple : alloc.vec.Vec (alloc.vec.Vec Std.U8) → extras.PrincipalValues
+
+/-- [rustfs_kernel::extras::PrincipalObject]
+    Source: 'ports/rustfs/kernel/src/extras.rs', lines 7:0-10:1
+    Visibility: public -/
+structure extras.PrincipalObject where
+  aws : Option extras.PrincipalValues
+  service : Option extras.PrincipalValues
+
+/-- [rustfs_kernel::extras::PrincipalFormat]
+    Source: 'ports/rustfs/kernel/src/extras.rs', lines 3:0-6:1
+    Visibility: public -/
+@[discriminant isize]
+inductive extras.PrincipalFormat where
+| Wildcard : alloc.vec.Vec Std.U8 → extras.PrincipalFormat
+| Object : extras.PrincipalObject → extras.PrincipalFormat
+
+/-- [rustfs_kernel::extras::unique_values]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/extras.rs', lines 25:4-30:5 -/
+@[rust_loop_body]
+def extras.unique_values_loop.body
+  (values : Slice (alloc.vec.Vec Std.U8))
+  (out : alloc.vec.Vec (alloc.vec.Vec Std.U8)) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec (alloc.vec.Vec Std.U8)) × Std.Usize)
+    (alloc.vec.Vec (alloc.vec.Vec Std.U8)))
+  := do
+  let i1 := Slice.len values
+  if i < i1
+  then
+    let s := alloc.vec.Vec.deref out
+    let v ← Slice.index_usize values i
+    let s1 := alloc.vec.Vec.deref v
+    let b ← bytes.member s s1
+    let out1 ←
+      if b
+      then ok out
+      else
+        do
+        let v1 ← alloc.vec.CloneVec.clone core.clone.CloneU8 v
+        alloc.vec.Vec.push out v1
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
+  else ok (done out)
+
+/-- [rustfs_kernel::extras::unique_values]: loop 0:
+    Source: 'ports/rustfs/kernel/src/extras.rs', lines 25:4-30:5 -/
+@[rust_loop]
+def extras.unique_values_loop
+  (values : Slice (alloc.vec.Vec Std.U8))
+  (out : alloc.vec.Vec (alloc.vec.Vec Std.U8)) (i : Std.Usize) :
+  Result (alloc.vec.Vec (alloc.vec.Vec Std.U8))
+  := do
+  loop
+    (fun (out1, i1) => extras.unique_values_loop.body values out1 i1)
+    (out, i)
+
+/-- [rustfs_kernel::extras::unique_values]:
+    Source: 'ports/rustfs/kernel/src/extras.rs', lines 22:0-32:1 -/
+@[reducible]
+def extras.unique_values
+  (values : Slice (alloc.vec.Vec Std.U8)) :
+  Result (alloc.vec.Vec (alloc.vec.Vec Std.U8))
+  := do
+  extras.unique_values_loop values (alloc.vec.Vec.new (alloc.vec.Vec Std.U8))
+    0#usize
+
+/-- [rustfs_kernel::extras::principal_values_into_set]:
+    Source: 'ports/rustfs/kernel/src/extras.rs', lines 16:0-21:1
+    Visibility: public -/
+def extras.principal_values_into_set
+  (values : extras.PrincipalValues) :
+  Result (alloc.vec.Vec (alloc.vec.Vec Std.U8))
+  := do
+  match values with
+  | extras.PrincipalValues.Single s =>
+    let y ←
+      lift (Std.Array.to_slice (Array.make 1#usize [ s ] : Array (alloc.vec.Vec
+        Std.U8) 1#usize))
+    ok (alloc.slice.Slice.into_vec y)
+  | extras.PrincipalValues.Multiple v =>
+    let s := alloc.vec.Vec.deref v
+    extras.unique_values s
+
+/-- [rustfs_kernel::extras::LazyBuf]
+    Source: 'ports/rustfs/kernel/src/extras.rs', lines 33:0-37:1
+    Visibility: public -/
+structure extras.LazyBuf where
+  source : Slice Std.U8
+  buffer : Option (alloc.vec.Vec Std.U8)
+  written : Std.Usize
+
+/-- [rustfs_kernel::extras::lazybuf_new]:
+    Source: 'ports/rustfs/kernel/src/extras.rs', lines 38:0-44:1
+    Visibility: public -/
+def extras.lazybuf_new (source : Slice Std.U8) : Result extras.LazyBuf := do
+  ok { source, buffer := none, written := 0#usize }
+
+/-- [rustfs_kernel::extras::is_match_as_pattern_prefix]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/extras.rs', lines 48:4-60:1
+    Visibility: public -/
+@[rust_loop_body]
+def extras.is_match_as_pattern_prefix_loop.body
+  (pattern : Slice Std.U8) (text : Slice Std.U8) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := Slice.len pattern
+  if i < i1
+  then
+    let i2 := Slice.len text
+    if i < i2
+    then
+      let x ← Slice.index_usize pattern i
+      let y ← Slice.index_usize text i
+      if x = 42#u8
+      then ok (done true)
+      else
+        if x != 63#u8
+        then
+          if x != y
+          then ok (done false)
+          else let i3 ← i + 1#usize
+               ok (cont i3)
+        else let i3 ← i + 1#usize
+             ok (cont i3)
+    else
+      let i3 := Slice.len text
+      let i4 := Slice.len pattern
+      ok (done (i3 <= i4))
+  else
+    let i2 := Slice.len text
+    let i3 := Slice.len pattern
+    ok (done (i2 <= i3))
+
+/-- [rustfs_kernel::extras::is_match_as_pattern_prefix]: loop 0:
+    Source: 'ports/rustfs/kernel/src/extras.rs', lines 48:4-60:1
+    Visibility: public -/
+@[rust_loop]
+def extras.is_match_as_pattern_prefix_loop
+  (pattern : Slice Std.U8) (text : Slice Std.U8) (i : Std.Usize) :
+  Result Bool
+  := do
+  loop
+    (fun i1 => extras.is_match_as_pattern_prefix_loop.body pattern text i1)
+    i
+
+/-- [rustfs_kernel::extras::is_match_as_pattern_prefix]:
+    Source: 'ports/rustfs/kernel/src/extras.rs', lines 46:0-60:1
+    Visibility: public -/
+@[reducible]
+def extras.is_match_as_pattern_prefix
+  (pattern : Slice Std.U8) (text : Slice Std.U8) : Result Bool := do
+  extras.is_match_as_pattern_prefix_loop pattern text 0#usize
+
+/-- [rustfs_kernel::keytables::KeyFamily]
+    Source: 'ports/rustfs/kernel/src/keytables.rs', lines 4:0-11:1
+    Visibility: public -/
+@[discriminant isize]
+inductive keytables.KeyFamily where
+| S3 : keytables.KeyFamily
+| Jwt : keytables.KeyFamily
+| Svc : keytables.KeyFamily
+| Ldap : keytables.KeyFamily
+| Sts : keytables.KeyFamily
+| Aws : keytables.KeyFamily
+
+/-- [rustfs_kernel::keytables::{impl core::clone::Clone for rustfs_kernel::keytables::KeyFamily}::clone]:
+    Source: 'ports/rustfs/kernel/src/keytables.rs', lines 3:9-3:14
+    Visibility: public -/
+def keytables.KeyFamily.Insts.CoreCloneClone.clone
+  (self : keytables.KeyFamily) : Result keytables.KeyFamily := do
+  ok self
+
+/-- Trait implementation: [rustfs_kernel::keytables::{impl core::clone::Clone for rustfs_kernel::keytables::KeyFamily}]
+    Source: 'ports/rustfs/kernel/src/keytables.rs', lines 3:9-3:14 -/
+@[reducible]
+def keytables.KeyFamily.Insts.CoreCloneClone : core.clone.Clone
+  keytables.KeyFamily := {
+  clone := keytables.KeyFamily.Insts.CoreCloneClone.clone
+}
+
+/-- Trait implementation: [rustfs_kernel::keytables::{impl core::marker::Copy for rustfs_kernel::keytables::KeyFamily}]
+    Source: 'ports/rustfs/kernel/src/keytables.rs', lines 3:16-3:20 -/
+@[reducible]
+def keytables.KeyFamily.Insts.CoreMarkerCopy : core.marker.Copy
+  keytables.KeyFamily := {
+  cloneInst := keytables.KeyFamily.Insts.CoreCloneClone
+}
+
+/-- [rustfs_kernel::keytables::{impl core::fmt::Debug for rustfs_kernel::keytables::KeyFamily}::fmt]:
+    Source: 'ports/rustfs/kernel/src/keytables.rs', lines 3:22-3:27
+    Visibility: public -/
+def keytables.KeyFamily.Insts.CoreFmtDebug.fmt
+  (self : keytables.KeyFamily) (f : core.fmt.Formatter) :
+  Result ((core.result.Result Unit core.fmt.Error) × core.fmt.Formatter)
+  := do
+  match self with
+  | keytables.KeyFamily.S3 => core.fmt.Formatter.write_str f (toStr "S3")
+  | keytables.KeyFamily.Jwt => core.fmt.Formatter.write_str f (toStr "Jwt")
+  | keytables.KeyFamily.Svc => core.fmt.Formatter.write_str f (toStr "Svc")
+  | keytables.KeyFamily.Ldap => core.fmt.Formatter.write_str f (toStr "Ldap")
+  | keytables.KeyFamily.Sts => core.fmt.Formatter.write_str f (toStr "Sts")
+  | keytables.KeyFamily.Aws => core.fmt.Formatter.write_str f (toStr "Aws")
+
+/-- Trait implementation: [rustfs_kernel::keytables::{impl core::fmt::Debug for rustfs_kernel::keytables::KeyFamily}]
+    Source: 'ports/rustfs/kernel/src/keytables.rs', lines 3:22-3:27 -/
+@[reducible]
+def keytables.KeyFamily.Insts.CoreFmtDebug : core.fmt.Debug keytables.KeyFamily
+  := {
+  fmt := keytables.KeyFamily.Insts.CoreFmtDebug.fmt
+}
+
+/-- Trait implementation: [rustfs_kernel::keytables::{impl core::marker::StructuralPartialEq for rustfs_kernel::keytables::KeyFamily}]
+    Source: 'ports/rustfs/kernel/src/keytables.rs', lines 3:29-3:38 -/
+@[reducible]
+def keytables.KeyFamily.Insts.CoreMarkerStructuralPartialEq :
+  core.marker.StructuralPartialEq keytables.KeyFamily := {
+}
+
+/-- [rustfs_kernel::keytables::{impl core::cmp::PartialEq<rustfs_kernel::keytables::KeyFamily> for rustfs_kernel::keytables::KeyFamily}::eq]:
+    Source: 'ports/rustfs/kernel/src/keytables.rs', lines 3:29-3:38
+    Visibility: public -/
+def keytables.KeyFamily.Insts.CoreCmpPartialEqKeyFamily.eq
+  (self : keytables.KeyFamily) (other : keytables.KeyFamily) :
+  Result Bool
+  := do
+  let self1 := read_discriminant self
+  let other1 := read_discriminant other
+  ok (self1 = other1)
+
+/-- Trait implementation: [rustfs_kernel::keytables::{impl core::cmp::PartialEq<rustfs_kernel::keytables::KeyFamily> for rustfs_kernel::keytables::KeyFamily}]
+    Source: 'ports/rustfs/kernel/src/keytables.rs', lines 3:29-3:38 -/
+@[reducible]
+impl_def keytables.KeyFamily.Insts.CoreCmpPartialEqKeyFamily :
+  core.cmp.PartialEq keytables.KeyFamily keytables.KeyFamily := {
+  eq := keytables.KeyFamily.Insts.CoreCmpPartialEqKeyFamily.eq
+  ne := core.cmp.PartialEq.ne.trait_default
+    keytables.KeyFamily.Insts.CoreCmpPartialEqKeyFamily
+}
+
+/-- Trait implementation: [rustfs_kernel::keytables::{impl core::cmp::Eq for rustfs_kernel::keytables::KeyFamily}]
+    Source: 'ports/rustfs/kernel/src/keytables.rs', lines 3:40-3:42 -/
+@[reducible]
+impl_def keytables.KeyFamily.Insts.CoreCmpEq : core.cmp.Eq keytables.KeyFamily
+  := {
+  partialEqInst := keytables.KeyFamily.Insts.CoreCmpPartialEqKeyFamily
+  assert_fields_are_eq := core.cmp.Eq.assert_fields_are_eq.default
+    keytables.KeyFamily.Insts.CoreCmpEq
+}
+
+/-- [rustfs_kernel::keytables::key_count]:
+    Source: 'ports/rustfs/kernel/src/keytables.rs', lines 13:0-22:1
+    Visibility: public -/
+def keytables.key_count (family : keytables.KeyFamily) : Result Std.Usize := do
+  match family with
+  | keytables.KeyFamily.S3 => ok 26#usize
+  | keytables.KeyFamily.Jwt => ok 23#usize
+  | keytables.KeyFamily.Svc => ok 1#usize
+  | keytables.KeyFamily.Ldap => ok 3#usize
+  | keytables.KeyFamily.Sts => ok 1#usize
+  | keytables.KeyFamily.Aws => ok 12#usize
+
+/-- [rustfs_kernel::keytables::aws_name]:
+    Source: 'ports/rustfs/kernel/src/keytables.rs', lines 138:0-154:1 -/
+def keytables.aws_name
+  (index : Std.Usize) : Result (alloc.vec.Vec Std.U8) := do
+  match index.val with
+  | 0 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 11#usize [
+          97#u8, 119#u8, 115#u8, 58#u8, 82#u8, 101#u8, 102#u8, 101#u8, 114#u8,
+          101#u8, 114#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 1 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 12#usize [
+          97#u8, 119#u8, 115#u8, 58#u8, 83#u8, 111#u8, 117#u8, 114#u8, 99#u8,
+          101#u8, 73#u8, 112#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 2 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 13#usize [
+          97#u8, 119#u8, 115#u8, 58#u8, 85#u8, 115#u8, 101#u8, 114#u8, 65#u8,
+          103#u8, 101#u8, 110#u8, 116#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 3 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 19#usize [
+          97#u8, 119#u8, 115#u8, 58#u8, 83#u8, 101#u8, 99#u8, 117#u8, 114#u8,
+          101#u8, 84#u8, 114#u8, 97#u8, 110#u8, 115#u8, 112#u8, 111#u8, 114#u8,
+          116#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 4 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 15#usize [
+          97#u8, 119#u8, 115#u8, 58#u8, 67#u8, 117#u8, 114#u8, 114#u8, 101#u8,
+          110#u8, 116#u8, 84#u8, 105#u8, 109#u8, 101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 5 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 13#usize [
+          97#u8, 119#u8, 115#u8, 58#u8, 69#u8, 112#u8, 111#u8, 99#u8, 104#u8,
+          84#u8, 105#u8, 109#u8, 101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 6 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 17#usize [
+          97#u8, 119#u8, 115#u8, 58#u8, 112#u8, 114#u8, 105#u8, 110#u8, 99#u8,
+          105#u8, 112#u8, 97#u8, 108#u8, 116#u8, 121#u8, 112#u8, 101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 7 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 10#usize [
+          97#u8, 119#u8, 115#u8, 58#u8, 117#u8, 115#u8, 101#u8, 114#u8, 105#u8,
+          100#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 8 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 12#usize [
+          97#u8, 119#u8, 115#u8, 58#u8, 117#u8, 115#u8, 101#u8, 114#u8, 110#u8,
+          97#u8, 109#u8, 101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 9 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 10#usize [
+          97#u8, 119#u8, 115#u8, 58#u8, 103#u8, 114#u8, 111#u8, 117#u8, 112#u8,
+          115#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 10 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 13#usize [
+          97#u8, 119#u8, 115#u8, 58#u8, 83#u8, 111#u8, 117#u8, 114#u8, 99#u8,
+          101#u8, 65#u8, 114#u8, 110#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 11 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 17#usize [
+          97#u8, 119#u8, 115#u8, 58#u8, 83#u8, 111#u8, 117#u8, 114#u8, 99#u8,
+          101#u8, 65#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | _ => ok (alloc.vec.Vec.new Std.U8)
+
+/-- [rustfs_kernel::keytables::sts_name]:
+    Source: 'ports/rustfs/kernel/src/keytables.rs', lines 132:0-137:1 -/
+def keytables.sts_name
+  (index : Std.Usize) : Result (alloc.vec.Vec Std.U8) := do
+  match index.val with
+  | 0 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 19#usize [
+          115#u8, 116#u8, 115#u8, 58#u8, 68#u8, 117#u8, 114#u8, 97#u8, 116#u8,
+          105#u8, 111#u8, 110#u8, 83#u8, 101#u8, 99#u8, 111#u8, 110#u8, 100#u8,
+          115#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | _ => ok (alloc.vec.Vec.new Std.U8)
+
+/-- [rustfs_kernel::keytables::ldap_name]:
+    Source: 'ports/rustfs/kernel/src/keytables.rs', lines 124:0-131:1 -/
+def keytables.ldap_name
+  (index : Std.Usize) : Result (alloc.vec.Vec Std.U8) := do
+  match index.val with
+  | 0 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 9#usize [
+          108#u8, 100#u8, 97#u8, 112#u8, 58#u8, 117#u8, 115#u8, 101#u8, 114#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 1 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 13#usize [
+          108#u8, 100#u8, 97#u8, 112#u8, 58#u8, 117#u8, 115#u8, 101#u8, 114#u8,
+          110#u8, 97#u8, 109#u8, 101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 2 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 11#usize [
+          108#u8, 100#u8, 97#u8, 112#u8, 58#u8, 103#u8, 114#u8, 111#u8, 117#u8,
+          112#u8, 115#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | _ => ok (alloc.vec.Vec.new Std.U8)
+
+/-- [rustfs_kernel::keytables::svc_name]:
+    Source: 'ports/rustfs/kernel/src/keytables.rs', lines 118:0-123:1 -/
+def keytables.svc_name
+  (index : Std.Usize) : Result (alloc.vec.Vec Std.U8) := do
+  match index.val with
+  | 0 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 19#usize [
+          115#u8, 118#u8, 99#u8, 58#u8, 68#u8, 117#u8, 114#u8, 97#u8, 116#u8,
+          105#u8, 111#u8, 110#u8, 83#u8, 101#u8, 99#u8, 111#u8, 110#u8, 100#u8,
+          115#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | _ => ok (alloc.vec.Vec.new Std.U8)
+
+/-- [rustfs_kernel::keytables::jwt_name_1]:
+    Source: 'ports/rustfs/kernel/src/keytables.rs', lines 106:0-117:1 -/
+def keytables.jwt_name_1
+  (index : Std.Usize) : Result (alloc.vec.Vec Std.U8) := do
+  match index.val with
+  | 16 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 9#usize [
+          106#u8, 119#u8, 116#u8, 58#u8, 101#u8, 109#u8, 97#u8, 105#u8, 108#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 17 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 10#usize [
+          106#u8, 119#u8, 116#u8, 58#u8, 103#u8, 101#u8, 110#u8, 100#u8,
+          101#u8, 114#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 18 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 13#usize [
+          106#u8, 119#u8, 116#u8, 58#u8, 98#u8, 105#u8, 114#u8, 116#u8, 104#u8,
+          100#u8, 97#u8, 116#u8, 101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 19 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 16#usize [
+          106#u8, 119#u8, 116#u8, 58#u8, 112#u8, 104#u8, 111#u8, 110#u8,
+          101#u8, 95#u8, 110#u8, 117#u8, 109#u8, 98#u8, 101#u8, 114#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 20 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 11#usize [
+          106#u8, 119#u8, 116#u8, 58#u8, 97#u8, 100#u8, 100#u8, 114#u8, 101#u8,
+          115#u8, 115#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 21 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 9#usize [
+          106#u8, 119#u8, 116#u8, 58#u8, 115#u8, 99#u8, 111#u8, 112#u8, 101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 22 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 13#usize [
+          106#u8, 119#u8, 116#u8, 58#u8, 99#u8, 108#u8, 105#u8, 101#u8, 110#u8,
+          116#u8, 95#u8, 105#u8, 100#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | _ => ok (alloc.vec.Vec.new Std.U8)
+
+/-- [rustfs_kernel::keytables::jwt_name_0]:
+    Source: 'ports/rustfs/kernel/src/keytables.rs', lines 85:0-105:1 -/
+def keytables.jwt_name_0
+  (index : Std.Usize) : Result (alloc.vec.Vec Std.U8) := do
+  match index.val with
+  | 0 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 7#usize [
+          106#u8, 119#u8, 116#u8, 58#u8, 115#u8, 117#u8, 98#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 1 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 7#usize [
+          106#u8, 119#u8, 116#u8, 58#u8, 105#u8, 115#u8, 115#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 2 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 7#usize [
+          106#u8, 119#u8, 116#u8, 58#u8, 97#u8, 117#u8, 100#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 3 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 7#usize [
+          106#u8, 119#u8, 116#u8, 58#u8, 106#u8, 116#u8, 105#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 4 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 8#usize [
+          106#u8, 119#u8, 116#u8, 58#u8, 110#u8, 97#u8, 109#u8, 101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 5 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 7#usize [
+          106#u8, 119#u8, 116#u8, 58#u8, 117#u8, 112#u8, 110#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 6 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 10#usize [
+          106#u8, 119#u8, 116#u8, 58#u8, 103#u8, 114#u8, 111#u8, 117#u8,
+          112#u8, 115#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 7 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 9#usize [
+          106#u8, 119#u8, 116#u8, 58#u8, 114#u8, 111#u8, 108#u8, 101#u8, 115#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 8 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 14#usize [
+          106#u8, 119#u8, 116#u8, 58#u8, 103#u8, 105#u8, 118#u8, 101#u8,
+          110#u8, 95#u8, 110#u8, 97#u8, 109#u8, 101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 9 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 15#usize [
+          106#u8, 119#u8, 116#u8, 58#u8, 102#u8, 97#u8, 109#u8, 105#u8, 108#u8,
+          121#u8, 95#u8, 110#u8, 97#u8, 109#u8, 101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 10 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 15#usize [
+          106#u8, 119#u8, 116#u8, 58#u8, 109#u8, 105#u8, 100#u8, 100#u8,
+          108#u8, 101#u8, 95#u8, 110#u8, 97#u8, 109#u8, 101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 11 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 12#usize [
+          106#u8, 119#u8, 116#u8, 58#u8, 110#u8, 105#u8, 99#u8, 107#u8, 110#u8,
+          97#u8, 109#u8, 101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 12 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 22#usize [
+          106#u8, 119#u8, 116#u8, 58#u8, 112#u8, 114#u8, 101#u8, 102#u8,
+          101#u8, 114#u8, 114#u8, 101#u8, 100#u8, 95#u8, 117#u8, 115#u8,
+          101#u8, 114#u8, 110#u8, 97#u8, 109#u8, 101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 13 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 11#usize [
+          106#u8, 119#u8, 116#u8, 58#u8, 112#u8, 114#u8, 111#u8, 102#u8,
+          105#u8, 108#u8, 101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 14 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 11#usize [
+          106#u8, 119#u8, 116#u8, 58#u8, 112#u8, 105#u8, 99#u8, 116#u8, 117#u8,
+          114#u8, 101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 15 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 11#usize [
+          106#u8, 119#u8, 116#u8, 58#u8, 119#u8, 101#u8, 98#u8, 115#u8, 105#u8,
+          116#u8, 101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | _ => ok (alloc.vec.Vec.new Std.U8)
+
+/-- [rustfs_kernel::keytables::jwt_name]:
+    Source: 'ports/rustfs/kernel/src/keytables.rs', lines 78:0-84:1 -/
+def keytables.jwt_name
+  (index : Std.Usize) : Result (alloc.vec.Vec Std.U8) := do
+  let i ← index / 16#usize
+  match i.val with
+  | 0 => keytables.jwt_name_0 index
+  | 1 => keytables.jwt_name_1 index
+  | _ => ok (alloc.vec.Vec.new Std.U8)
+
+/-- [rustfs_kernel::keytables::s3_name_1]:
+    Source: 'ports/rustfs/kernel/src/keytables.rs', lines 63:0-77:1 -/
+def keytables.s3_name_1
+  (index : Std.Usize) : Result (alloc.vec.Vec Std.U8) := do
+  match index.val with
+  | 16 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 9#usize [
+          115#u8, 51#u8, 58#u8, 112#u8, 114#u8, 101#u8, 102#u8, 105#u8, 120#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 17 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 12#usize [
+          115#u8, 51#u8, 58#u8, 100#u8, 101#u8, 108#u8, 105#u8, 109#u8, 105#u8,
+          116#u8, 101#u8, 114#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 18 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 27#usize [
+          115#u8, 51#u8, 58#u8, 120#u8, 45#u8, 97#u8, 109#u8, 122#u8, 45#u8,
+          103#u8, 114#u8, 97#u8, 110#u8, 116#u8, 45#u8, 102#u8, 117#u8, 108#u8,
+          108#u8, 45#u8, 99#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8, 108#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 19 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 19#usize [
+          115#u8, 51#u8, 58#u8, 120#u8, 45#u8, 97#u8, 109#u8, 122#u8, 45#u8,
+          103#u8, 114#u8, 97#u8, 110#u8, 116#u8, 45#u8, 114#u8, 101#u8, 97#u8,
+          100#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 20 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 20#usize [
+          115#u8, 51#u8, 58#u8, 120#u8, 45#u8, 97#u8, 109#u8, 122#u8, 45#u8,
+          103#u8, 114#u8, 97#u8, 110#u8, 116#u8, 45#u8, 119#u8, 114#u8, 105#u8,
+          116#u8, 101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 21 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 23#usize [
+          115#u8, 51#u8, 58#u8, 120#u8, 45#u8, 97#u8, 109#u8, 122#u8, 45#u8,
+          103#u8, 114#u8, 97#u8, 110#u8, 116#u8, 45#u8, 114#u8, 101#u8, 97#u8,
+          100#u8, 45#u8, 97#u8, 99#u8, 112#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 22 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 24#usize [
+          115#u8, 51#u8, 58#u8, 120#u8, 45#u8, 97#u8, 109#u8, 122#u8, 45#u8,
+          103#u8, 114#u8, 97#u8, 110#u8, 116#u8, 45#u8, 119#u8, 114#u8, 105#u8,
+          116#u8, 101#u8, 45#u8, 97#u8, 99#u8, 112#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 23 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 20#usize [
+          115#u8, 51#u8, 58#u8, 69#u8, 120#u8, 105#u8, 115#u8, 116#u8, 105#u8,
+          110#u8, 103#u8, 79#u8, 98#u8, 106#u8, 101#u8, 99#u8, 116#u8, 84#u8,
+          97#u8, 103#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 24 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 23#usize [
+          115#u8, 51#u8, 58#u8, 82#u8, 101#u8, 113#u8, 117#u8, 101#u8, 115#u8,
+          116#u8, 79#u8, 98#u8, 106#u8, 101#u8, 99#u8, 116#u8, 84#u8, 97#u8,
+          103#u8, 75#u8, 101#u8, 121#u8, 115#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 25 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 19#usize [
+          115#u8, 51#u8, 58#u8, 82#u8, 101#u8, 113#u8, 117#u8, 101#u8, 115#u8,
+          116#u8, 79#u8, 98#u8, 106#u8, 101#u8, 99#u8, 116#u8, 84#u8, 97#u8,
+          103#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | _ => ok (alloc.vec.Vec.new Std.U8)
+
+/-- [rustfs_kernel::keytables::s3_name_0]:
+    Source: 'ports/rustfs/kernel/src/keytables.rs', lines 42:0-62:1 -/
+def keytables.s3_name_0
+  (index : Std.Usize) : Result (alloc.vec.Vec Std.U8) := do
+  match index.val with
+  | 0 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 20#usize [
+          115#u8, 51#u8, 58#u8, 120#u8, 45#u8, 97#u8, 109#u8, 122#u8, 45#u8,
+          99#u8, 111#u8, 112#u8, 121#u8, 45#u8, 115#u8, 111#u8, 117#u8, 114#u8,
+          99#u8, 101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 1 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 31#usize [
+          115#u8, 51#u8, 58#u8, 120#u8, 45#u8, 97#u8, 109#u8, 122#u8, 45#u8,
+          115#u8, 101#u8, 114#u8, 118#u8, 101#u8, 114#u8, 45#u8, 115#u8,
+          105#u8, 100#u8, 101#u8, 45#u8, 101#u8, 110#u8, 99#u8, 114#u8, 121#u8,
+          112#u8, 116#u8, 105#u8, 111#u8, 110#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 2 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 50#usize [
+          115#u8, 51#u8, 58#u8, 120#u8, 45#u8, 97#u8, 109#u8, 122#u8, 45#u8,
+          115#u8, 101#u8, 114#u8, 118#u8, 101#u8, 114#u8, 45#u8, 115#u8,
+          105#u8, 100#u8, 101#u8, 45#u8, 101#u8, 110#u8, 99#u8, 114#u8, 121#u8,
+          112#u8, 116#u8, 105#u8, 111#u8, 110#u8, 45#u8, 99#u8, 117#u8, 115#u8,
+          116#u8, 111#u8, 109#u8, 101#u8, 114#u8, 45#u8, 97#u8, 108#u8, 103#u8,
+          111#u8, 114#u8, 105#u8, 116#u8, 104#u8, 109#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 3 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 19#usize [
+          115#u8, 51#u8, 58#u8, 115#u8, 105#u8, 103#u8, 110#u8, 97#u8, 116#u8,
+          117#u8, 114#u8, 101#u8, 118#u8, 101#u8, 114#u8, 115#u8, 105#u8,
+          111#u8, 110#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 4 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 11#usize [
+          115#u8, 51#u8, 58#u8, 97#u8, 117#u8, 116#u8, 104#u8, 84#u8, 121#u8,
+          112#u8, 101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 5 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 15#usize [
+          115#u8, 51#u8, 58#u8, 115#u8, 105#u8, 103#u8, 110#u8, 97#u8, 116#u8,
+          117#u8, 114#u8, 101#u8, 65#u8, 103#u8, 101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 6 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 23#usize [
+          115#u8, 51#u8, 58#u8, 120#u8, 45#u8, 97#u8, 109#u8, 122#u8, 45#u8,
+          99#u8, 111#u8, 110#u8, 116#u8, 101#u8, 110#u8, 116#u8, 45#u8, 115#u8,
+          104#u8, 97#u8, 50#u8, 53#u8, 54#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 7 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 12#usize [
+          115#u8, 51#u8, 58#u8, 120#u8, 45#u8, 97#u8, 109#u8, 122#u8, 45#u8,
+          97#u8, 99#u8, 108#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 8 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 21#usize [
+          115#u8, 51#u8, 58#u8, 76#u8, 111#u8, 99#u8, 97#u8, 116#u8, 105#u8,
+          111#u8, 110#u8, 67#u8, 111#u8, 110#u8, 115#u8, 116#u8, 114#u8, 97#u8,
+          105#u8, 110#u8, 116#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 9 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 12#usize [
+          115#u8, 51#u8, 58#u8, 118#u8, 101#u8, 114#u8, 115#u8, 105#u8, 111#u8,
+          110#u8, 105#u8, 100#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 10 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 32#usize [
+          115#u8, 51#u8, 58#u8, 111#u8, 98#u8, 106#u8, 101#u8, 99#u8, 116#u8,
+          45#u8, 108#u8, 111#u8, 99#u8, 107#u8, 45#u8, 114#u8, 101#u8, 116#u8,
+          97#u8, 105#u8, 110#u8, 45#u8, 117#u8, 110#u8, 116#u8, 105#u8, 108#u8,
+          45#u8, 100#u8, 97#u8, 116#u8, 101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 11 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 25#usize [
+          115#u8, 51#u8, 58#u8, 111#u8, 98#u8, 106#u8, 101#u8, 99#u8, 116#u8,
+          45#u8, 108#u8, 111#u8, 99#u8, 107#u8, 45#u8, 108#u8, 101#u8, 103#u8,
+          97#u8, 108#u8, 45#u8, 104#u8, 111#u8, 108#u8, 100#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 12 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 19#usize [
+          115#u8, 51#u8, 58#u8, 111#u8, 98#u8, 106#u8, 101#u8, 99#u8, 116#u8,
+          45#u8, 108#u8, 111#u8, 99#u8, 107#u8, 45#u8, 109#u8, 111#u8, 100#u8,
+          101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 13 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 11#usize [
+          115#u8, 51#u8, 58#u8, 109#u8, 97#u8, 120#u8, 45#u8, 107#u8, 101#u8,
+          121#u8, 115#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 14 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 27#usize [
+          115#u8, 51#u8, 58#u8, 120#u8, 45#u8, 97#u8, 109#u8, 122#u8, 45#u8,
+          109#u8, 101#u8, 116#u8, 97#u8, 100#u8, 97#u8, 116#u8, 97#u8, 45#u8,
+          100#u8, 105#u8, 114#u8, 101#u8, 99#u8, 116#u8, 105#u8, 118#u8, 101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 15 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 22#usize [
+          115#u8, 51#u8, 58#u8, 120#u8, 45#u8, 97#u8, 109#u8, 122#u8, 45#u8,
+          115#u8, 116#u8, 111#u8, 114#u8, 97#u8, 103#u8, 101#u8, 45#u8, 99#u8,
+          108#u8, 97#u8, 115#u8, 115#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | _ => ok (alloc.vec.Vec.new Std.U8)
+
+/-- [rustfs_kernel::keytables::s3_name]:
+    Source: 'ports/rustfs/kernel/src/keytables.rs', lines 35:0-41:1 -/
+def keytables.s3_name (index : Std.Usize) : Result (alloc.vec.Vec Std.U8) := do
+  let i ← index / 16#usize
+  match i.val with
+  | 0 => keytables.s3_name_0 index
+  | 1 => keytables.s3_name_1 index
+  | _ => ok (alloc.vec.Vec.new Std.U8)
+
+/-- [rustfs_kernel::keytables::key_name]:
+    Source: 'ports/rustfs/kernel/src/keytables.rs', lines 25:0-34:1
+    Visibility: public -/
+def keytables.key_name
+  (family : keytables.KeyFamily) (index : Std.Usize) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  match family with
+  | keytables.KeyFamily.S3 => keytables.s3_name index
+  | keytables.KeyFamily.Jwt => keytables.jwt_name index
+  | keytables.KeyFamily.Svc => keytables.svc_name index
+  | keytables.KeyFamily.Ldap => keytables.ldap_name index
+  | keytables.KeyFamily.Sts => keytables.sts_name index
+  | keytables.KeyFamily.Aws => keytables.aws_name index
+
+/-- [rustfs_kernel::keytables::contains_name]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/keytables.rs', lines 158:4-165:1
+    Visibility: public -/
+@[rust_loop_body]
+def keytables.contains_name_loop.body
+  (family : keytables.KeyFamily) («name» : Slice Std.U8) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 ← keytables.key_count family
+  if i < i1
+  then
+    let v ← keytables.key_name family i
+    let s := alloc.vec.Vec.deref v
+    let b ← bytes.eq s «name»
+    if b
+    then ok (done true)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else ok (done false)
+
+/-- [rustfs_kernel::keytables::contains_name]: loop 0:
+    Source: 'ports/rustfs/kernel/src/keytables.rs', lines 158:4-165:1
+    Visibility: public -/
+@[rust_loop]
+def keytables.contains_name_loop
+  (family : keytables.KeyFamily) («name» : Slice Std.U8) (i : Std.Usize) :
+  Result Bool
+  := do
+  loop
+    (fun i1 => keytables.contains_name_loop.body family «name» i1)
+    i
+
+/-- [rustfs_kernel::keytables::contains_name]:
+    Source: 'ports/rustfs/kernel/src/keytables.rs', lines 156:0-165:1
+    Visibility: public -/
+@[reducible]
+def keytables.contains_name
+  (family : keytables.KeyFamily) («name» : Slice Std.U8) : Result Bool := do
+  keytables.contains_name_loop family «name» 0#usize
+
+/-- [rustfs_kernel::keytables::is_server_derived]:
+    Source: 'ports/rustfs/kernel/src/keytables.rs', lines 167:0-172:1
+    Visibility: public -/
+def keytables.is_server_derived
+  (family : keytables.KeyFamily) («name» : Slice Std.U8) : Result Bool := do
+  let b ← keytables.contains_name family «name»
+  if b
+  then
+    let b1 ←
+      core.cmp.PartialEq.ne.trait_default
+        keytables.KeyFamily.Insts.CoreCmpPartialEqKeyFamily family
+        keytables.KeyFamily.S3
+    if b1
+    then ok true
+    else
+      let s ←
+        lift (Array.to_slice
+          (Array.make 9#usize [
+            115#u8, 51#u8, 58#u8, 120#u8, 45#u8, 97#u8, 109#u8, 122#u8, 45#u8
+            ]))
+      let b2 ← bytes.starts_with «name» s
+      ok (¬ b2)
+  else ok false
+
+/-- [rustfs_kernel::keytables::server_derived_key_names]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/keytables.rs', lines 177:4-183:5
+    Visibility: public -/
+@[rust_loop_body]
+def keytables.server_derived_key_names_loop.body
+  (out : alloc.vec.Vec (alloc.vec.Vec Std.U8)) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec (alloc.vec.Vec Std.U8)) × Std.Usize)
+    (alloc.vec.Vec (alloc.vec.Vec Std.U8)))
+  := do
+  if i < keynames.COMMON_KEYS_LEN
+  then
+    let («name», _) ← keynames.common_key i
+    let s := alloc.vec.Vec.deref «name»
+    let s1 ←
+      lift (Array.to_slice
+        (Array.make 6#usize [ 120#u8, 45#u8, 97#u8, 109#u8, 122#u8, 45#u8 ]))
+    let b ← bytes.starts_with s s1
+    let out1 ← if b
+                 then ok out
+                 else alloc.vec.Vec.push out «name»
+    let i1 ← i + 1#usize
+    ok (cont (out1, i1))
+  else ok (done out)
+
+/-- [rustfs_kernel::keytables::server_derived_key_names]: loop 0:
+    Source: 'ports/rustfs/kernel/src/keytables.rs', lines 177:4-183:5
+    Visibility: public -/
+@[rust_loop]
+def keytables.server_derived_key_names_loop
+  (out : alloc.vec.Vec (alloc.vec.Vec Std.U8)) (i : Std.Usize) :
+  Result (alloc.vec.Vec (alloc.vec.Vec Std.U8))
+  := do
+  loop
+    (fun (out1, i1) => keytables.server_derived_key_names_loop.body out1 i1)
+    (out, i)
+
+/-- [rustfs_kernel::keytables::server_derived_key_names]:
+    Source: 'ports/rustfs/kernel/src/keytables.rs', lines 174:0-185:1
+    Visibility: public -/
+@[reducible]
+def keytables.server_derived_key_names
+  : Result (alloc.vec.Vec (alloc.vec.Vec Std.U8)) := do
+  keytables.server_derived_key_names_loop (alloc.vec.Vec.new (alloc.vec.Vec
+    Std.U8)) 0#usize
+
+/-- [rustfs_kernel::keytables::is_server_derived_condition_key]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/keytables.rs', lines 191:4-198:1
+    Visibility: public -/
+@[rust_loop_body]
+def keytables.is_server_derived_condition_key_loop.body
+  (names : alloc.vec.Vec (alloc.vec.Vec Std.U8)) (lower : alloc.vec.Vec Std.U8)
+  (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := alloc.vec.Vec.len names
+  if i < i1
+  then
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice (alloc.vec.Vec
+        Std.U8)) names i
+    let s := alloc.vec.Vec.deref v
+    let v1 ← bytes.lower s
+    let s1 := alloc.vec.Vec.deref v1
+    let s2 := alloc.vec.Vec.deref lower
+    let b ← bytes.eq s1 s2
+    if b
+    then ok (done true)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else ok (done false)
+
+/-- [rustfs_kernel::keytables::is_server_derived_condition_key]: loop 0:
+    Source: 'ports/rustfs/kernel/src/keytables.rs', lines 191:4-198:1
+    Visibility: public -/
+@[rust_loop]
+def keytables.is_server_derived_condition_key_loop
+  (names : alloc.vec.Vec (alloc.vec.Vec Std.U8)) (lower : alloc.vec.Vec Std.U8)
+  (i : Std.Usize) :
+  Result Bool
+  := do
+  loop
+    (fun i1 => keytables.is_server_derived_condition_key_loop.body names lower
+      i1)
+    i
+
+/-- [rustfs_kernel::keytables::is_server_derived_condition_key]:
+    Source: 'ports/rustfs/kernel/src/keytables.rs', lines 187:0-198:1
+    Visibility: public -/
+def keytables.is_server_derived_condition_key
+  («name» : Slice Std.U8) : Result Bool := do
+  let names ← keytables.server_derived_key_names
+  let lower ← bytes.lower «name»
+  keytables.is_server_derived_condition_key_loop names lower 0#usize
+
+/-- [rustfs_kernel::stmts::{impl core::clone::Clone for rustfs_kernel::stmts::Effect}::clone]:
+    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 9:9-9:14
+    Visibility: public -/
+def stmts.Effect.Insts.CoreCloneClone.clone
+  (self : stmts.Effect) : Result stmts.Effect := do
+  ok self
+
+/-- [rustfs_kernel::rsrc::{impl core::clone::Clone for rustfs_kernel::rsrc::Resource}::clone]:
+    Source: 'ports/rustfs/kernel/src/rsrc.rs', lines 7:9-7:14
+    Visibility: public -/
+def rsrc.Resource.Insts.CoreCloneClone.clone
+  (self : rsrc.Resource) : Result rsrc.Resource := do
+  match self with
+  | rsrc.Resource.S3 __self_0 =>
+    let v ← alloc.vec.CloneVec.clone core.clone.CloneU8 __self_0
+    ok (rsrc.Resource.S3 v)
+  | rsrc.Resource.Kms __self_0 =>
+    let v ← alloc.vec.CloneVec.clone core.clone.CloneU8 __self_0
+    ok (rsrc.Resource.Kms v)
+
+/-- Trait implementation: [rustfs_kernel::rsrc::{impl core::clone::Clone for rustfs_kernel::rsrc::Resource}]
+    Source: 'ports/rustfs/kernel/src/rsrc.rs', lines 7:9-7:14 -/
+@[reducible]
+def rsrc.Resource.Insts.CoreCloneClone : core.clone.Clone rsrc.Resource := {
+  clone := rsrc.Resource.Insts.CoreCloneClone.clone
+}
+
+/-- [rustfs_kernel::manage::{impl core::clone::Clone for rustfs_kernel::manage::Statement}::clone]:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 10:9-10:14
+    Visibility: public -/
+def manage.Statement.Insts.CoreCloneClone.clone
+  (self : manage.Statement) : Result manage.Statement := do
+  let v ← alloc.vec.CloneVec.clone core.clone.CloneU8 self.sid
+  let e ← stmts.Effect.Insts.CoreCloneClone.clone self.effect
+  let v1 ←
+    alloc.vec.CloneVec.clone acts.Action.Insts.CoreCloneClone self.actions
+  let v2 ←
+    alloc.vec.CloneVec.clone acts.Action.Insts.CoreCloneClone self.not_actions
+  let v3 ←
+    alloc.vec.CloneVec.clone rsrc.Resource.Insts.CoreCloneClone self.resources
+  let v4 ←
+    alloc.vec.CloneVec.clone rsrc.Resource.Insts.CoreCloneClone
+      self.not_resources
+  let f ← conddata.Functions.Insts.CoreCloneClone.clone self.conditions
+  ok
+    {
+      sid := v,
+      effect := e,
+      actions := v1,
+      not_actions := v2,
+      resources := v3,
+      not_resources := v4,
+      conditions := f
+    }
+
+/-- Trait implementation: [rustfs_kernel::manage::{impl core::clone::Clone for rustfs_kernel::manage::Statement}]
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 10:9-10:14 -/
+@[reducible]
+def manage.Statement.Insts.CoreCloneClone : core.clone.Clone manage.Statement
+  := {
+  clone := manage.Statement.Insts.CoreCloneClone.clone
+}
+
+/-- [rustfs_kernel::stmts::{impl core::fmt::Debug for rustfs_kernel::stmts::Effect}::fmt]:
+    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 9:22-9:27
+    Visibility: public -/
+def stmts.Effect.Insts.CoreFmtDebug.fmt
+  (self : stmts.Effect) (f : core.fmt.Formatter) :
+  Result ((core.result.Result Unit core.fmt.Error) × core.fmt.Formatter)
+  := do
+  match self with
+  | stmts.Effect.Allow => core.fmt.Formatter.write_str f (toStr "Allow")
+  | stmts.Effect.Deny => core.fmt.Formatter.write_str f (toStr "Deny")
+
+/-- Trait implementation: [rustfs_kernel::stmts::{impl core::fmt::Debug for rustfs_kernel::stmts::Effect}]
+    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 9:22-9:27 -/
+@[reducible]
+def stmts.Effect.Insts.CoreFmtDebug : core.fmt.Debug stmts.Effect := {
+  fmt := stmts.Effect.Insts.CoreFmtDebug.fmt
+}
+
+/-- [rustfs_kernel::rsrc::{impl core::fmt::Debug for rustfs_kernel::rsrc::Resource}::fmt]:
+    Source: 'ports/rustfs/kernel/src/rsrc.rs', lines 7:16-7:21
+    Visibility: public -/
+def rsrc.Resource.Insts.CoreFmtDebug.fmt
+  (self : rsrc.Resource) (f : core.fmt.Formatter) :
+  Result ((core.result.Result Unit core.fmt.Error) × core.fmt.Formatter)
+  := do
+  match self with
+  | rsrc.Resource.S3 __self_0 =>
+    let __self_01 :=
+      Dyn.mk _ (core.fmt.DebugShared (core.fmt.DebugVec core.fmt.DebugU8))
+        __self_0
+    core.fmt.Formatter.debug_tuple_field1_finish f (toStr "S3") __self_01
+  | rsrc.Resource.Kms __self_0 =>
+    let __self_01 :=
+      Dyn.mk _ (core.fmt.DebugShared (core.fmt.DebugVec core.fmt.DebugU8))
+        __self_0
+    core.fmt.Formatter.debug_tuple_field1_finish f (toStr "Kms") __self_01
+
+/-- Trait implementation: [rustfs_kernel::rsrc::{impl core::fmt::Debug for rustfs_kernel::rsrc::Resource}]
+    Source: 'ports/rustfs/kernel/src/rsrc.rs', lines 7:16-7:21 -/
+@[reducible]
+def rsrc.Resource.Insts.CoreFmtDebug : core.fmt.Debug rsrc.Resource := {
+  fmt := rsrc.Resource.Insts.CoreFmtDebug.fmt
+}
+
+/-- [rustfs_kernel::manage::{impl core::fmt::Debug for rustfs_kernel::manage::Statement}::fmt]:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 10:16-10:21
+    Visibility: public -/
+def manage.Statement.Insts.CoreFmtDebug.fmt
+  (self : manage.Statement) (f : core.fmt.Formatter) :
+  Result ((core.result.Result Unit core.fmt.Error) × core.fmt.Formatter)
+  := do
+  let dyn := Dyn.mk _ (core.fmt.DebugVec core.fmt.DebugU8) self.sid
+  let dyn1 := Dyn.mk _ stmts.Effect.Insts.CoreFmtDebug self.effect
+  let dyn2 :=
+    Dyn.mk _ (core.fmt.DebugVec acts.Action.Insts.CoreFmtDebug) self.actions
+  let dyn3 :=
+    Dyn.mk _ (core.fmt.DebugVec acts.Action.Insts.CoreFmtDebug)
+      self.not_actions
+  let dyn4 :=
+    Dyn.mk _ (core.fmt.DebugVec rsrc.Resource.Insts.CoreFmtDebug)
+      self.resources
+  let dyn5 :=
+    Dyn.mk _ (core.fmt.DebugVec rsrc.Resource.Insts.CoreFmtDebug)
+      self.not_resources
+  let dyn6 :=
+    Dyn.mk _ (core.fmt.DebugShared conddata.Functions.Insts.CoreFmtDebug)
+      self.conditions
+  let values :=
+    Array.to_slice
+      (Array.make 7#usize [ dyn, dyn1, dyn2, dyn3, dyn4, dyn5, dyn6 ])
+  let s ←
+    lift (Array.to_slice
+      (Array.make 7#usize [
+        toStr "sid", toStr "effect", toStr "actions", toStr "not_actions",
+        toStr "resources", toStr "not_resources", toStr "conditions"
+        ]))
+  core.fmt.Formatter.debug_struct_fields_finish f (toStr "Statement") s values
+
+/-- Trait implementation: [rustfs_kernel::manage::{impl core::fmt::Debug for rustfs_kernel::manage::Statement}]
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 10:16-10:21 -/
+@[reducible]
+def manage.Statement.Insts.CoreFmtDebug : core.fmt.Debug manage.Statement := {
+  fmt := manage.Statement.Insts.CoreFmtDebug.fmt
+}
+
+/-- [rustfs_kernel::stmts::Principal]
+    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 35:0-38:1
+    Visibility: public -/
+structure stmts.Principal where
+  aws : alloc.vec.Vec (alloc.vec.Vec Std.U8)
+  service : alloc.vec.Vec (alloc.vec.Vec Std.U8)
+
+/-- [rustfs_kernel::manage::BPStatement]
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 21:0-30:1
+    Visibility: public -/
+structure manage.BPStatement where
+  sid : alloc.vec.Vec Std.U8
+  effect : stmts.Effect
+  principal : stmts.Principal
+  actions : alloc.vec.Vec acts.Action
+  not_actions : alloc.vec.Vec acts.Action
+  resources : alloc.vec.Vec rsrc.Resource
+  not_resources : alloc.vec.Vec rsrc.Resource
+  conditions : conddata.Functions
+
+/-- [rustfs_kernel::stmts::{impl core::clone::Clone for rustfs_kernel::stmts::Principal}::clone]:
+    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 34:9-34:14
+    Visibility: public -/
+def stmts.Principal.Insts.CoreCloneClone.clone
+  (self : stmts.Principal) : Result stmts.Principal := do
+  let v ←
+    alloc.vec.CloneVec.clone (core.clone.CloneallocvecVec core.clone.CloneU8)
+      self.aws
+  let v1 ←
+    alloc.vec.CloneVec.clone (core.clone.CloneallocvecVec core.clone.CloneU8)
+      self.service
+  ok { aws := v, service := v1 }
+
+/-- [rustfs_kernel::manage::{impl core::clone::Clone for rustfs_kernel::manage::BPStatement}::clone]:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 20:9-20:14
+    Visibility: public -/
+def manage.BPStatement.Insts.CoreCloneClone.clone
+  (self : manage.BPStatement) : Result manage.BPStatement := do
+  let v ← alloc.vec.CloneVec.clone core.clone.CloneU8 self.sid
+  let e ← stmts.Effect.Insts.CoreCloneClone.clone self.effect
+  let p ← stmts.Principal.Insts.CoreCloneClone.clone self.principal
+  let v1 ←
+    alloc.vec.CloneVec.clone acts.Action.Insts.CoreCloneClone self.actions
+  let v2 ←
+    alloc.vec.CloneVec.clone acts.Action.Insts.CoreCloneClone self.not_actions
+  let v3 ←
+    alloc.vec.CloneVec.clone rsrc.Resource.Insts.CoreCloneClone self.resources
+  let v4 ←
+    alloc.vec.CloneVec.clone rsrc.Resource.Insts.CoreCloneClone
+      self.not_resources
+  let f ← conddata.Functions.Insts.CoreCloneClone.clone self.conditions
+  ok
+    {
+      sid := v,
+      effect := e,
+      principal := p,
+      actions := v1,
+      not_actions := v2,
+      resources := v3,
+      not_resources := v4,
+      conditions := f
+    }
+
+/-- Trait implementation: [rustfs_kernel::manage::{impl core::clone::Clone for rustfs_kernel::manage::BPStatement}]
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 20:9-20:14 -/
+@[reducible]
+def manage.BPStatement.Insts.CoreCloneClone : core.clone.Clone
+  manage.BPStatement := {
+  clone := manage.BPStatement.Insts.CoreCloneClone.clone
+}
+
+/-- [rustfs_kernel::stmts::{impl core::fmt::Debug for rustfs_kernel::stmts::Principal}::fmt]:
+    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 34:16-34:21
+    Visibility: public -/
+def stmts.Principal.Insts.CoreFmtDebug.fmt
+  (self : stmts.Principal) (f : core.fmt.Formatter) :
+  Result ((core.result.Result Unit core.fmt.Error) × core.fmt.Formatter)
+  := do
+  let dyn :=
+    Dyn.mk _ (core.fmt.DebugVec (core.fmt.DebugVec core.fmt.DebugU8)) self.aws
+  let dyn1 :=
+    Dyn.mk _ (core.fmt.DebugShared (core.fmt.DebugVec (core.fmt.DebugVec
+      core.fmt.DebugU8))) self.service
+  core.fmt.Formatter.debug_struct_field2_finish f (toStr "Principal") (toStr
+    "aws") dyn (toStr "service") dyn1
+
+/-- Trait implementation: [rustfs_kernel::stmts::{impl core::fmt::Debug for rustfs_kernel::stmts::Principal}]
+    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 34:16-34:21 -/
+@[reducible]
+def stmts.Principal.Insts.CoreFmtDebug : core.fmt.Debug stmts.Principal := {
+  fmt := stmts.Principal.Insts.CoreFmtDebug.fmt
+}
+
+/-- [rustfs_kernel::manage::{impl core::fmt::Debug for rustfs_kernel::manage::BPStatement}::fmt]:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 20:16-20:21
+    Visibility: public -/
+def manage.BPStatement.Insts.CoreFmtDebug.fmt
+  (self : manage.BPStatement) (f : core.fmt.Formatter) :
+  Result ((core.result.Result Unit core.fmt.Error) × core.fmt.Formatter)
+  := do
+  let dyn := Dyn.mk _ (core.fmt.DebugVec core.fmt.DebugU8) self.sid
+  let dyn1 := Dyn.mk _ stmts.Effect.Insts.CoreFmtDebug self.effect
+  let dyn2 := Dyn.mk _ stmts.Principal.Insts.CoreFmtDebug self.principal
+  let dyn3 :=
+    Dyn.mk _ (core.fmt.DebugVec acts.Action.Insts.CoreFmtDebug) self.actions
+  let dyn4 :=
+    Dyn.mk _ (core.fmt.DebugVec acts.Action.Insts.CoreFmtDebug)
+      self.not_actions
+  let dyn5 :=
+    Dyn.mk _ (core.fmt.DebugVec rsrc.Resource.Insts.CoreFmtDebug)
+      self.resources
+  let dyn6 :=
+    Dyn.mk _ (core.fmt.DebugVec rsrc.Resource.Insts.CoreFmtDebug)
+      self.not_resources
+  let dyn7 :=
+    Dyn.mk _ (core.fmt.DebugShared conddata.Functions.Insts.CoreFmtDebug)
+      self.conditions
+  let values :=
+    Array.to_slice
+      (Array.make 8#usize [ dyn, dyn1, dyn2, dyn3, dyn4, dyn5, dyn6, dyn7 ])
+  let s ←
+    lift (Array.to_slice
+      (Array.make 8#usize [
+        toStr "sid", toStr "effect", toStr "principal", toStr "actions", toStr
+        "not_actions", toStr "resources", toStr "not_resources", toStr
+        "conditions"
+        ]))
+  core.fmt.Formatter.debug_struct_fields_finish f (toStr "BPStatement") s
+    values
+
+/-- Trait implementation: [rustfs_kernel::manage::{impl core::fmt::Debug for rustfs_kernel::manage::BPStatement}]
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 20:16-20:21 -/
+@[reducible]
+def manage.BPStatement.Insts.CoreFmtDebug : core.fmt.Debug manage.BPStatement
+  := {
+  fmt := manage.BPStatement.Insts.CoreFmtDebug.fmt
+}
+
+/-- [rustfs_kernel::manage::{impl core::clone::Clone for rustfs_kernel::manage::Policy}::clone]:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 31:9-31:14
+    Visibility: public -/
+def manage.Policy.Insts.CoreCloneClone.clone
+  (self : manage.Policy) : Result manage.Policy := do
+  let v ← alloc.vec.CloneVec.clone core.clone.CloneU8 self.id
+  let v1 ← alloc.vec.CloneVec.clone core.clone.CloneU8 self.version
+  let v2 ←
+    alloc.vec.CloneVec.clone manage.Statement.Insts.CoreCloneClone
+      self.statements
+  ok { id := v, version := v1, statements := v2 }
+
+/-- Trait implementation: [rustfs_kernel::manage::{impl core::clone::Clone for rustfs_kernel::manage::Policy}]
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 31:9-31:14 -/
+@[reducible]
+def manage.Policy.Insts.CoreCloneClone : core.clone.Clone manage.Policy := {
+  clone := manage.Policy.Insts.CoreCloneClone.clone
+}
+
+/-- [rustfs_kernel::manage::{impl core::fmt::Debug for rustfs_kernel::manage::Policy}::fmt]:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 31:16-31:21
+    Visibility: public -/
+def manage.Policy.Insts.CoreFmtDebug.fmt
+  (self : manage.Policy) (f : core.fmt.Formatter) :
+  Result ((core.result.Result Unit core.fmt.Error) × core.fmt.Formatter)
+  := do
+  let dyn := Dyn.mk _ (core.fmt.DebugVec core.fmt.DebugU8) self.id
+  let dyn1 := Dyn.mk _ (core.fmt.DebugVec core.fmt.DebugU8) self.version
+  let dyn2 :=
+    Dyn.mk _ (core.fmt.DebugShared (core.fmt.DebugVec
+      manage.Statement.Insts.CoreFmtDebug)) self.statements
+  core.fmt.Formatter.debug_struct_field3_finish f (toStr "Policy") (toStr "id")
+    dyn (toStr "version") dyn1 (toStr "statements") dyn2
+
+/-- Trait implementation: [rustfs_kernel::manage::{impl core::fmt::Debug for rustfs_kernel::manage::Policy}]
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 31:16-31:21 -/
+@[reducible]
+def manage.Policy.Insts.CoreFmtDebug : core.fmt.Debug manage.Policy := {
+  fmt := manage.Policy.Insts.CoreFmtDebug.fmt
+}
+
+/-- [rustfs_kernel::manage::BucketPolicy]
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 38:0-42:1
+    Visibility: public -/
+structure manage.BucketPolicy where
+  id : alloc.vec.Vec Std.U8
+  version : alloc.vec.Vec Std.U8
+  statements : alloc.vec.Vec manage.BPStatement
+
+/-- [rustfs_kernel::manage::{impl core::clone::Clone for rustfs_kernel::manage::BucketPolicy}::clone]:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 37:9-37:14
+    Visibility: public -/
+def manage.BucketPolicy.Insts.CoreCloneClone.clone
+  (self : manage.BucketPolicy) : Result manage.BucketPolicy := do
+  let v ← alloc.vec.CloneVec.clone core.clone.CloneU8 self.id
+  let v1 ← alloc.vec.CloneVec.clone core.clone.CloneU8 self.version
+  let v2 ←
+    alloc.vec.CloneVec.clone manage.BPStatement.Insts.CoreCloneClone
+      self.statements
+  ok { id := v, version := v1, statements := v2 }
+
+/-- Trait implementation: [rustfs_kernel::manage::{impl core::clone::Clone for rustfs_kernel::manage::BucketPolicy}]
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 37:9-37:14 -/
+@[reducible]
+def manage.BucketPolicy.Insts.CoreCloneClone : core.clone.Clone
+  manage.BucketPolicy := {
+  clone := manage.BucketPolicy.Insts.CoreCloneClone.clone
+}
+
+/-- [rustfs_kernel::manage::{impl core::fmt::Debug for rustfs_kernel::manage::BucketPolicy}::fmt]:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 37:16-37:21
+    Visibility: public -/
+def manage.BucketPolicy.Insts.CoreFmtDebug.fmt
+  (self : manage.BucketPolicy) (f : core.fmt.Formatter) :
+  Result ((core.result.Result Unit core.fmt.Error) × core.fmt.Formatter)
+  := do
+  let dyn := Dyn.mk _ (core.fmt.DebugVec core.fmt.DebugU8) self.id
+  let dyn1 := Dyn.mk _ (core.fmt.DebugVec core.fmt.DebugU8) self.version
+  let dyn2 :=
+    Dyn.mk _ (core.fmt.DebugShared (core.fmt.DebugVec
+      manage.BPStatement.Insts.CoreFmtDebug)) self.statements
+  core.fmt.Formatter.debug_struct_field3_finish f (toStr "BucketPolicy") (toStr
+    "id") dyn (toStr "version") dyn1 (toStr "statements") dyn2
+
+/-- Trait implementation: [rustfs_kernel::manage::{impl core::fmt::Debug for rustfs_kernel::manage::BucketPolicy}]
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 37:16-37:21 -/
+@[reducible]
+def manage.BucketPolicy.Insts.CoreFmtDebug : core.fmt.Debug manage.BucketPolicy
+  := {
+  fmt := manage.BucketPolicy.Insts.CoreFmtDebug.fmt
+}
+
+/-- [rustfs_kernel::stmts::{impl core::cmp::PartialEq<rustfs_kernel::stmts::Effect> for rustfs_kernel::stmts::Effect}::eq]:
+    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 9:29-9:38
+    Visibility: public -/
+def stmts.Effect.Insts.CoreCmpPartialEqEffect.eq
+  (self : stmts.Effect) (other : stmts.Effect) : Result Bool := do
+  let self1 := read_discriminant self
+  let other1 := read_discriminant other
+  ok (self1 = other1)
+
+/-- [rustfs_kernel::rsrc::{impl core::cmp::PartialEq<rustfs_kernel::rsrc::Resource> for rustfs_kernel::rsrc::Resource}::eq]:
+    Source: 'ports/rustfs/kernel/src/rsrc.rs', lines 7:23-7:32
+    Visibility: public -/
+def rsrc.Resource.Insts.CoreCmpPartialEqResource.eq
+  (self : rsrc.Resource) (other : rsrc.Resource) : Result Bool := do
+  let self1 := read_discriminant self
+  let other1 := read_discriminant other
+  if self1 = other1
+  then
+    match self with
+    | rsrc.Resource.S3 __self_0 =>
+      match other with
+      | rsrc.Resource.S3 __arg1_0 =>
+        alloc.vec.partial_eq.PartialEqVec.eq core.cmp.PartialEqU8 __self_0
+          __arg1_0
+      | rsrc.Resource.Kms _ => fail panic
+    | rsrc.Resource.Kms __self_0 =>
+      match other with
+      | rsrc.Resource.S3 _ => fail panic
+      | rsrc.Resource.Kms __arg1_0 =>
+        alloc.vec.partial_eq.PartialEqVec.eq core.cmp.PartialEqU8 __self_0
+          __arg1_0
+  else ok false
+
+/-- [rustfs_kernel::resets::member]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/resets.rs', lines 12:4-14:1
+    Visibility: public -/
+@[rust_loop_body]
+def resets.member_loop.body
+  (set : Slice rsrc.Resource) (resource : rsrc.Resource) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := Slice.len set
+  if i < i1
+  then
+    let r ← Slice.index_usize set i
+    let b ← rsrc.Resource.Insts.CoreCmpPartialEqResource.eq r resource
+    if b
+    then ok (done true)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else ok (done false)
+
+/-- [rustfs_kernel::resets::member]: loop 0:
+    Source: 'ports/rustfs/kernel/src/resets.rs', lines 12:4-14:1
+    Visibility: public -/
+@[rust_loop]
+def resets.member_loop
+  (set : Slice rsrc.Resource) (resource : rsrc.Resource) (i : Std.Usize) :
+  Result Bool
+  := do
+  loop
+    (fun i1 => resets.member_loop.body set resource i1)
+    i
+
+/-- [rustfs_kernel::resets::member]:
+    Source: 'ports/rustfs/kernel/src/resets.rs', lines 10:0-14:1
+    Visibility: public -/
+@[reducible]
+def resets.member
+  (set : Slice rsrc.Resource) (resource : rsrc.Resource) : Result Bool := do
+  resets.member_loop set resource 0#usize
+
+/-- [rustfs_kernel::resets::covers]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/resets.rs', lines 21:4-23:1 -/
+@[rust_loop_body]
+def resets.covers_loop.body
+  (left : Slice rsrc.Resource) (right : Slice rsrc.Resource) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := Slice.len left
+  if i < i1
+  then
+    let r ← Slice.index_usize left i
+    let b ← resets.member right r
+    if b
+    then let i2 ← i + 1#usize
+         ok (cont i2)
+    else ok (done false)
+  else ok (done true)
+
+/-- [rustfs_kernel::resets::covers]: loop 0:
+    Source: 'ports/rustfs/kernel/src/resets.rs', lines 21:4-23:1 -/
+@[rust_loop]
+def resets.covers_loop
+  (left : Slice rsrc.Resource) (right : Slice rsrc.Resource) (i : Std.Usize) :
+  Result Bool
+  := do
+  loop
+    (fun i1 => resets.covers_loop.body left right i1)
+    i
+
+/-- [rustfs_kernel::resets::covers]:
+    Source: 'ports/rustfs/kernel/src/resets.rs', lines 19:0-23:1 -/
+@[reducible]
+def resets.covers
+  (left : Slice rsrc.Resource) (right : Slice rsrc.Resource) :
+  Result Bool
+  := do
+  resets.covers_loop left right 0#usize
+
+/-- [rustfs_kernel::resets::eq]:
+    Source: 'ports/rustfs/kernel/src/resets.rs', lines 25:0-25:103
+    Visibility: public -/
+def resets.eq
+  (left : Slice rsrc.Resource) (right : Slice rsrc.Resource) :
+  Result Bool
+  := do
+  let b ← resets.covers left right
+  if b
+  then resets.covers right left
+  else ok false
+
+/-- [rustfs_kernel::manage::statement_eq]:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 44:0-51:1
+    Visibility: public -/
+def manage.statement_eq
+  (left : manage.Statement) (right : manage.Statement) : Result Bool := do
+  let b ←
+    stmts.Effect.Insts.CoreCmpPartialEqEffect.eq left.effect right.effect
+  if b
+  then
+    let s := alloc.vec.Vec.deref left.actions
+    let s1 := alloc.vec.Vec.deref right.actions
+    let b1 ← actsets.eq s s1
+    if b1
+    then
+      let s2 := alloc.vec.Vec.deref left.not_actions
+      let s3 := alloc.vec.Vec.deref right.not_actions
+      let b2 ← actsets.eq s2 s3
+      if b2
+      then
+        let s4 := alloc.vec.Vec.deref left.resources
+        let s5 := alloc.vec.Vec.deref right.resources
+        let b3 ← resets.eq s4 s5
+        if b3
+        then
+          let s6 := alloc.vec.Vec.deref left.not_resources
+          let s7 := alloc.vec.Vec.deref right.not_resources
+          let b4 ← resets.eq s6 s7
+          if b4
+          then conddata.functions_eq left.conditions right.conditions
+          else ok false
+        else ok false
+      else ok false
+    else ok false
+  else ok false
+
+/-- [rustfs_kernel::manage::index_member]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 54:4-61:1 -/
+@[rust_loop_body]
+def manage.index_member_loop.body
+  (indices : Slice Std.Usize) (index : Std.Usize) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := Slice.len indices
+  if i < i1
+  then
+    let i2 ← Slice.index_usize indices i
+    if i2 = index
+    then ok (done true)
+    else let i3 ← i + 1#usize
+         ok (cont i3)
+  else ok (done false)
+
+/-- [rustfs_kernel::manage::index_member]: loop 0:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 54:4-61:1 -/
+@[rust_loop]
+def manage.index_member_loop
+  (indices : Slice Std.Usize) (index : Std.Usize) (i : Std.Usize) :
+  Result Bool
+  := do
+  loop
+    (fun i1 => manage.index_member_loop.body indices index i1)
+    i
+
+/-- [rustfs_kernel::manage::index_member]:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 52:0-61:1 -/
+@[reducible]
+def manage.index_member
+  (indices : Slice Std.Usize) (index : Std.Usize) : Result Bool := do
+  manage.index_member_loop indices index 0#usize
+
+/-- [rustfs_kernel::manage::mark_duplicates]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 64:4-71:5 -/
+@[rust_loop_body]
+def manage.mark_duplicates_loop.body
+  (statements : Slice manage.Statement) (i : Std.Usize)
+  (dups : alloc.vec.Vec Std.Usize) (j : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Std.Usize) × Std.Usize) (alloc.vec.Vec
+    Std.Usize))
+  := do
+  let i1 := Slice.len statements
+  if j < i1
+  then
+    let s ← Slice.index_usize statements i
+    let s1 ← Slice.index_usize statements j
+    let b ← manage.statement_eq s s1
+    let dups1 ←
+      if b
+      then
+        do
+        let s2 := alloc.vec.Vec.deref dups
+        let b1 ← manage.index_member s2 j
+        if b1
+        then ok dups
+        else alloc.vec.Vec.push dups j
+      else ok dups
+    let j1 ← j + 1#usize
+    ok (cont (dups1, j1))
+  else ok (done dups)
+
+/-- [rustfs_kernel::manage::mark_duplicates]: loop 0:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 64:4-71:5 -/
+@[rust_loop]
+def manage.mark_duplicates_loop
+  (statements : Slice manage.Statement) (i : Std.Usize)
+  (dups : alloc.vec.Vec Std.Usize) (j : Std.Usize) :
+  Result (alloc.vec.Vec Std.Usize)
+  := do
+  loop
+    (fun (dups1, j1) => manage.mark_duplicates_loop.body statements i dups1 j1)
+    (dups, j)
+
+/-- [rustfs_kernel::manage::mark_duplicates]:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 62:0-72:1 -/
+def manage.mark_duplicates
+  (statements : Slice manage.Statement) (i : Std.Usize)
+  (dups : alloc.vec.Vec Std.Usize) :
+  Result (alloc.vec.Vec Std.Usize)
+  := do
+  let j ← i + 1#usize
+  manage.mark_duplicates_loop statements i dups j
+
+/-- [rustfs_kernel::manage::retained_statements]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 88:4-93:5 -/
+@[rust_loop_body]
+def manage.retained_statements_loop.body
+  (statements : Slice manage.Statement) (dups : Slice Std.Usize)
+  (out : alloc.vec.Vec manage.Statement) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec manage.Statement) × Std.Usize)
+    (alloc.vec.Vec manage.Statement))
+  := do
+  let i1 := Slice.len statements
+  if i < i1
+  then
+    let b ← manage.index_member dups i
+    let out1 ←
+      if b
+      then ok out
+      else
+        do
+        let s ← Slice.index_usize statements i
+        let s1 ← manage.Statement.Insts.CoreCloneClone.clone s
+        alloc.vec.Vec.push out s1
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
+  else ok (done out)
+
+/-- [rustfs_kernel::manage::retained_statements]: loop 0:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 88:4-93:5 -/
+@[rust_loop]
+def manage.retained_statements_loop
+  (statements : Slice manage.Statement) (dups : Slice Std.Usize)
+  (out : alloc.vec.Vec manage.Statement) (i : Std.Usize) :
+  Result (alloc.vec.Vec manage.Statement)
+  := do
+  loop
+    (fun (out1, i1) => manage.retained_statements_loop.body statements dups
+      out1 i1)
+    (out, i)
+
+/-- [rustfs_kernel::manage::retained_statements]:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 85:0-95:1 -/
+@[reducible]
+def manage.retained_statements
+  (statements : Slice manage.Statement) (dups : Slice Std.Usize) :
+  Result (alloc.vec.Vec manage.Statement)
+  := do
+  manage.retained_statements_loop statements dups (alloc.vec.Vec.new
+    manage.Statement) 0#usize
+
+/-- [rustfs_kernel::manage::drop_duplicate_statements]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 77:4-82:5
+    Visibility: public -/
+@[rust_loop_body]
+def manage.drop_duplicate_statements_loop.body
+  (policy : manage.Policy) (dups : alloc.vec.Vec Std.Usize) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Std.Usize) × Std.Usize) ((alloc.vec.Vec
+    Std.U8) × (alloc.vec.Vec Std.U8) × (alloc.vec.Vec manage.Statement) ×
+    (alloc.vec.Vec Std.Usize)))
+  := do
+  let i1 := alloc.vec.Vec.len policy.statements
+  if i < i1
+  then
+    let s := alloc.vec.Vec.deref dups
+    let b ← manage.index_member s i
+    let dups1 ←
+      if b
+      then ok dups
+      else
+        let s1 := alloc.vec.Vec.deref policy.statements
+        manage.mark_duplicates s1 i dups
+    let i2 ← i + 1#usize
+    ok (cont (dups1, i2))
+  else ok (done (policy.id, policy.version, policy.statements, dups))
+
+/-- [rustfs_kernel::manage::drop_duplicate_statements]: loop 0:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 77:4-82:5
+    Visibility: public -/
+@[rust_loop]
+def manage.drop_duplicate_statements_loop
+  (policy : manage.Policy) (dups : alloc.vec.Vec Std.Usize) (i : Std.Usize) :
+  Result ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec Std.U8) × (alloc.vec.Vec
+    manage.Statement) × (alloc.vec.Vec Std.Usize))
+  := do
+  loop
+    (fun (dups1, i1) => manage.drop_duplicate_statements_loop.body policy dups1
+      i1)
+    (dups, i)
+
+/-- [rustfs_kernel::manage::drop_duplicate_statements]:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 74:0-84:1
+    Visibility: public -/
+def manage.drop_duplicate_statements
+  (policy : manage.Policy) : Result manage.Policy := do
+  let (v, v1, v2, dups) ←
+    manage.drop_duplicate_statements_loop policy (alloc.vec.Vec.new Std.Usize)
+      0#usize
+  let s := alloc.vec.Vec.deref v2
+  let s1 := alloc.vec.Vec.deref dups
+  let v3 ← manage.retained_statements s s1
+  ok { id := v, version := v1, statements := v3 }
+
+/-- [rustfs_kernel::manage::append_statements]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 116:4-119:5 -/
+@[rust_loop_body]
+def manage.append_statements_loop.body
+  (entries : Slice manage.Statement) (out : alloc.vec.Vec manage.Statement)
+  (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec manage.Statement) × Std.Usize)
+    (alloc.vec.Vec manage.Statement))
+  := do
+  let i1 := Slice.len entries
+  if i < i1
+  then
+    let s ← Slice.index_usize entries i
+    let s1 ← manage.Statement.Insts.CoreCloneClone.clone s
+    let out1 ← alloc.vec.Vec.push out s1
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
+  else ok (done out)
+
+/-- [rustfs_kernel::manage::append_statements]: loop 0:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 116:4-119:5 -/
+@[rust_loop]
+def manage.append_statements_loop
+  (out : alloc.vec.Vec manage.Statement) (entries : Slice manage.Statement)
+  (i : Std.Usize) :
+  Result (alloc.vec.Vec manage.Statement)
+  := do
+  loop
+    (fun (out1, i1) => manage.append_statements_loop.body entries out1 i1)
+    (out, i)
+
+/-- [rustfs_kernel::manage::append_statements]:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 114:0-120:1 -/
+@[reducible]
+def manage.append_statements
+  (out : alloc.vec.Vec manage.Statement) (entries : Slice manage.Statement) :
+  Result (alloc.vec.Vec manage.Statement)
+  := do
+  manage.append_statements_loop out entries 0#usize
+
+/-- [rustfs_kernel::manage::merge_policies]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 104:4-110:5
+    Visibility: public -/
+@[rust_loop_body]
+def manage.merge_policies_loop.body
+  (inputs : Slice manage.Policy) (v : alloc.vec.Vec Std.U8)
+  (v1 : alloc.vec.Vec manage.Statement) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec
+    manage.Statement) × Std.Usize) ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec
+    manage.Statement)))
+  := do
+  let i1 := Slice.len inputs
+  if i < i1
+  then
+    let i2 := alloc.vec.Vec.len v
+    let v2 ←
+      if i2 = 0#usize
+      then
+        do
+        let p ← Slice.index_usize inputs i
+        alloc.vec.CloneVec.clone core.clone.CloneU8 p.version
+      else ok v
+    let p ← Slice.index_usize inputs i
+    let s := alloc.vec.Vec.deref p.statements
+    let v3 ← manage.append_statements v1 s
+    let i3 ← i + 1#usize
+    ok (cont (v2, v3, i3))
+  else ok (done (v, v1))
+
+/-- [rustfs_kernel::manage::merge_policies]: loop 0:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 104:4-110:5
+    Visibility: public -/
+@[rust_loop]
+def manage.merge_policies_loop
+  (inputs : Slice manage.Policy) (v : alloc.vec.Vec Std.U8)
+  (v1 : alloc.vec.Vec manage.Statement) (i : Std.Usize) :
+  Result ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec manage.Statement))
+  := do
+  loop
+    (fun (v2, v3, i1) => manage.merge_policies_loop.body inputs v2 v3 i1)
+    (v, v1, i)
+
+/-- [rustfs_kernel::manage::merge_policies]:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 97:0-113:1
+    Visibility: public -/
+def manage.merge_policies
+  (inputs : Slice manage.Policy) : Result manage.Policy := do
+  let (v, v1) ←
+    manage.merge_policies_loop inputs (alloc.vec.Vec.new Std.U8)
+      (alloc.vec.Vec.new manage.Statement) 0#usize
+  manage.drop_duplicate_statements
+    { id := (alloc.vec.Vec.new Std.U8), version := v, statements := v1 }
+
+/-- [rustfs_kernel::manage::is_empty]:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 121:0-123:1
+    Visibility: public -/
+def manage.is_empty (policy : manage.Policy) : Result Bool := do
+  let i := alloc.vec.Vec.len policy.statements
+  ok (i = 0#usize)
+
+/-- [rustfs_kernel::rsrc::substitute_common]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/rsrc.rs', lines 25:4-36:5 -/
+@[rust_loop_body]
+def rsrc.substitute_common_loop.body
+  (conditions : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec
+  (alloc.vec.Vec Std.U8)))) (out : alloc.vec.Vec Std.U8) (k : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Std.U8) × Std.Usize) (alloc.vec.Vec
+    Std.U8))
+  := do
+  if k < keynames.COMMON_KEYS_LEN
+  then
+    let («name», var_name) ← keynames.common_key k
+    let s := alloc.vec.Vec.deref «name»
+    let o ← condfuncs.get_value conditions s
+    let out1 ←
+      match o with
+      | none => ok out
+      | some vs =>
+        let i := alloc.vec.Vec.len vs
+        if i > 0#usize
+        then
+          do
+          let v ←
+            alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+              (alloc.vec.Vec Std.U8)) vs 0#usize
+          let i1 := alloc.vec.Vec.len v
+          if i1 > 0#usize
+          then
+            let s1 := alloc.vec.Vec.deref out
+            let s2 := alloc.vec.Vec.deref var_name
+            let s3 := alloc.vec.Vec.deref v
+            bytes.replace s1 s2 s3
+          else ok out
+        else ok out
+    let k1 ← k + 1#usize
+    ok (cont (out1, k1))
+  else ok (done out)
+
+/-- [rustfs_kernel::rsrc::substitute_common]: loop 0:
+    Source: 'ports/rustfs/kernel/src/rsrc.rs', lines 25:4-36:5 -/
+@[rust_loop]
+def rsrc.substitute_common_loop
+  (conditions : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec
+  (alloc.vec.Vec Std.U8)))) (out : alloc.vec.Vec Std.U8) (k : Std.Usize) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  loop
+    (fun (out1, k1) => rsrc.substitute_common_loop.body conditions out1 k1)
+    (out, k)
+
+/-- [rustfs_kernel::rsrc::substitute_common]:
+    Source: 'ports/rustfs/kernel/src/rsrc.rs', lines 22:0-38:1 -/
+def rsrc.substitute_common
+  (pattern : Slice Std.U8)
+  (conditions : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec
+  (alloc.vec.Vec Std.U8)))) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  let out ← alloc.slice.Slice.to_vec core.clone.CloneU8 pattern
+  rsrc.substitute_common_loop conditions out 0#usize
 
 /-- [rustfs_kernel::pathclean::copy_element]: loop body 0:
     Source: 'ports/rustfs/kernel/src/pathclean.rs', lines 77:4-81:5 -/
@@ -4346,179 +14150,6 @@ def pathclean.clean (path : Slice Std.U8) : Result (alloc.vec.Vec Std.U8) := do
       alloc.slice.Slice.to_vec core.clone.CloneU8 s
     else pathclean.clean_loop1 buf2 w1 (alloc.vec.Vec.new Std.U8) 0#usize
 
-/-- [rustfs_kernel::rsrc::Resource]
-    Source: 'ports/rustfs/kernel/src/rsrc.rs', lines 8:0-11:1
-    Visibility: public -/
-@[discriminant isize]
-inductive rsrc.Resource where
-| S3 : alloc.vec.Vec Std.U8 → rsrc.Resource
-| Kms : alloc.vec.Vec Std.U8 → rsrc.Resource
-
-/-- [rustfs_kernel::rsrc::is_kms]:
-    Source: 'ports/rustfs/kernel/src/rsrc.rs', lines 13:0-18:1
-    Visibility: public -/
-def rsrc.is_kms (r : rsrc.Resource) : Result Bool := do
-  match r with
-  | rsrc.Resource.S3 _ => ok false
-  | rsrc.Resource.Kms _ => ok true
-
-/-- [rustfs_kernel::rsrc::{impl core::clone::Clone for rustfs_kernel::rsrc::Resource}::clone]:
-    Source: 'ports/rustfs/kernel/src/rsrc.rs', lines 7:9-7:14
-    Visibility: public -/
-def rsrc.Resource.Insts.CoreCloneClone.clone
-  (self : rsrc.Resource) : Result rsrc.Resource := do
-  match self with
-  | rsrc.Resource.S3 __self_0 =>
-    let v ← alloc.vec.CloneVec.clone core.clone.CloneU8 __self_0
-    ok (rsrc.Resource.S3 v)
-  | rsrc.Resource.Kms __self_0 =>
-    let v ← alloc.vec.CloneVec.clone core.clone.CloneU8 __self_0
-    ok (rsrc.Resource.Kms v)
-
-/-- [rustfs_kernel::stmts::kms_only]: loop body 0:
-    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 135:4-141:5 -/
-@[rust_loop_body]
-def stmts.kms_only_loop.body
-  (rs : Slice rsrc.Resource) (out : alloc.vec.Vec rsrc.Resource)
-  (i : Std.Usize) :
-  Result (ControlFlow ((alloc.vec.Vec rsrc.Resource) × Std.Usize)
-    (alloc.vec.Vec rsrc.Resource))
-  := do
-  let i1 := Slice.len rs
-  if i < i1
-  then
-    let r ← Slice.index_usize rs i
-    let r1 ← rsrc.Resource.Insts.CoreCloneClone.clone r
-    let b ← rsrc.is_kms r1
-    let out1 ← if b
-                 then alloc.vec.Vec.push out r1
-                 else ok out
-    let i2 ← i + 1#usize
-    ok (cont (out1, i2))
-  else ok (done out)
-
-/-- [rustfs_kernel::stmts::kms_only]: loop 0:
-    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 135:4-141:5 -/
-@[rust_loop]
-def stmts.kms_only_loop
-  (rs : Slice rsrc.Resource) (out : alloc.vec.Vec rsrc.Resource)
-  (i : Std.Usize) :
-  Result (alloc.vec.Vec rsrc.Resource)
-  := do
-  loop
-    (fun (out1, i1) => stmts.kms_only_loop.body rs out1 i1)
-    (out, i)
-
-/-- [rustfs_kernel::stmts::kms_only]:
-    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 132:0-143:1 -/
-@[reducible]
-def stmts.kms_only
-  (rs : Slice rsrc.Resource) : Result (alloc.vec.Vec rsrc.Resource) := do
-  stmts.kms_only_loop rs (alloc.vec.Vec.new rsrc.Resource) 0#usize
-
-/-- [rustfs_kernel::stmts::Args]
-    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 53:0-62:1
-    Visibility: public -/
-structure stmts.Args where
-  account : alloc.vec.Vec Std.U8
-  action : acts.Action
-  bucket : alloc.vec.Vec Std.U8
-  conditions : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec
-    (alloc.vec.Vec Std.U8)))
-  is_owner : Bool
-  object : alloc.vec.Vec Std.U8
-  claims : awsvars.ClaimStrings
-  deny_only : Bool
-
-/-- [rustfs_kernel::stmts::Effect]
-    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 10:0-13:1
-    Visibility: public -/
-@[discriminant isize]
-inductive stmts.Effect where
-| Allow : stmts.Effect
-| Deny : stmts.Effect
-
-/-- [rustfs_kernel::stmts::Statement]
-    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 24:0-31:1
-    Visibility: public -/
-structure stmts.Statement where
-  effect : stmts.Effect
-  actions : alloc.vec.Vec acts.Action
-  not_actions : alloc.vec.Vec acts.Action
-  resources : alloc.vec.Vec rsrc.Resource
-  not_resources : alloc.vec.Vec rsrc.Resource
-  conditions : condfuncs.Functions
-
-/-- [rustfs_kernel::stmts::{impl core::cmp::PartialEq<rustfs_kernel::stmts::Effect> for rustfs_kernel::stmts::Effect}::eq]:
-    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 9:29-9:38
-    Visibility: public -/
-def stmts.Effect.Insts.CoreCmpPartialEqEffect.eq
-  (self : stmts.Effect) (other : stmts.Effect) : Result Bool := do
-  let self1 := read_discriminant self
-  let other1 := read_discriminant other
-  ok (self1 = other1)
-
-/-- [rustfs_kernel::rsrc::substitute_common]: loop body 0:
-    Source: 'ports/rustfs/kernel/src/rsrc.rs', lines 25:4-36:5 -/
-@[rust_loop_body]
-def rsrc.substitute_common_loop.body
-  (conditions : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec
-  (alloc.vec.Vec Std.U8)))) (out : alloc.vec.Vec Std.U8) (k : Std.Usize) :
-  Result (ControlFlow ((alloc.vec.Vec Std.U8) × Std.Usize) (alloc.vec.Vec
-    Std.U8))
-  := do
-  if k < keynames.COMMON_KEYS_LEN
-  then
-    let («name», var_name) ← keynames.common_key k
-    let s := alloc.vec.Vec.deref «name»
-    let o ← condfuncs.get_value conditions s
-    let out1 ←
-      match o with
-      | none => ok out
-      | some vs =>
-        let i := alloc.vec.Vec.len vs
-        if i > 0#usize
-        then
-          do
-          let v ←
-            alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
-              (alloc.vec.Vec Std.U8)) vs 0#usize
-          let i1 := alloc.vec.Vec.len v
-          if i1 > 0#usize
-          then
-            let s1 := alloc.vec.Vec.deref out
-            let s2 := alloc.vec.Vec.deref var_name
-            let s3 := alloc.vec.Vec.deref v
-            bytes.replace s1 s2 s3
-          else ok out
-        else ok out
-    let k1 ← k + 1#usize
-    ok (cont (out1, k1))
-  else ok (done out)
-
-/-- [rustfs_kernel::rsrc::substitute_common]: loop 0:
-    Source: 'ports/rustfs/kernel/src/rsrc.rs', lines 25:4-36:5 -/
-@[rust_loop]
-def rsrc.substitute_common_loop
-  (conditions : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec
-  (alloc.vec.Vec Std.U8)))) (out : alloc.vec.Vec Std.U8) (k : Std.Usize) :
-  Result (alloc.vec.Vec Std.U8)
-  := do
-  loop
-    (fun (out1, k1) => rsrc.substitute_common_loop.body conditions out1 k1)
-    (out, k)
-
-/-- [rustfs_kernel::rsrc::substitute_common]:
-    Source: 'ports/rustfs/kernel/src/rsrc.rs', lines 22:0-38:1 -/
-def rsrc.substitute_common
-  (pattern : Slice Std.U8)
-  (conditions : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec
-  (alloc.vec.Vec Std.U8)))) :
-  Result (alloc.vec.Vec Std.U8)
-  := do
-  let out ← alloc.slice.Slice.to_vec core.clone.CloneU8 pattern
-  rsrc.substitute_common_loop conditions out 0#usize
-
 /-- [rustfs_kernel::rsrc::pattern_matches]:
     Source: 'ports/rustfs/kernel/src/rsrc.rs', lines 41:0-49:1 -/
 def rsrc.pattern_matches
@@ -4611,6 +14242,2041 @@ def rsrc.resource_is_match
       let s := alloc.vec.Vec.deref pattern
       awsvars.resolve_aws_variables c s
   rsrc.resource_is_match_loop resource conditions patterns 0#usize
+
+/-- [rustfs_kernel::resets::is_match]:
+    Source: 'ports/rustfs/kernel/src/resets.rs', lines 27:0-29:1
+    Visibility: public -/
+def resets.is_match
+  (resource : rsrc.Resource) («name» : Slice Std.U8)
+  (values : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec
+  (alloc.vec.Vec Std.U8)))) :
+  Result Bool
+  := do
+  rsrc.resource_is_match resource «name» values none
+
+/-- [rustfs_kernel::resets::match_resource]:
+    Source: 'ports/rustfs/kernel/src/resets.rs', lines 35:0-35:105
+    Visibility: public -/
+def resets.match_resource
+  (resource : rsrc.Resource) («name» : Slice Std.U8) : Result Bool := do
+  resets.is_match resource «name» (alloc.vec.Vec.new ((alloc.vec.Vec Std.U8)
+    × (alloc.vec.Vec (alloc.vec.Vec Std.U8))))
+
+/-- [rustfs_kernel::resets::set_match_resource]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/resets.rs', lines 39:4-41:1
+    Visibility: public -/
+@[rust_loop_body]
+def resets.set_match_resource_loop.body
+  (set : Slice rsrc.Resource) («name» : Slice Std.U8) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := Slice.len set
+  if i < i1
+  then
+    let r ← Slice.index_usize set i
+    let b ← resets.match_resource r «name»
+    if b
+    then ok (done true)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else ok (done false)
+
+/-- [rustfs_kernel::resets::set_match_resource]: loop 0:
+    Source: 'ports/rustfs/kernel/src/resets.rs', lines 39:4-41:1
+    Visibility: public -/
+@[rust_loop]
+def resets.set_match_resource_loop
+  (set : Slice rsrc.Resource) («name» : Slice Std.U8) (i : Std.Usize) :
+  Result Bool
+  := do
+  loop
+    (fun i1 => resets.set_match_resource_loop.body set «name» i1)
+    i
+
+/-- [rustfs_kernel::resets::set_match_resource]:
+    Source: 'ports/rustfs/kernel/src/resets.rs', lines 37:0-41:1
+    Visibility: public -/
+@[reducible]
+def resets.set_match_resource
+  (set : Slice rsrc.Resource) («name» : Slice Std.U8) : Result Bool := do
+  resets.set_match_resource_loop set «name» 0#usize
+
+/-- [rustfs_kernel::manage::match_resource]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 126:4-133:1
+    Visibility: public -/
+@[rust_loop_body]
+def manage.match_resource_loop.body
+  (policy : manage.Policy) (resource : Slice Std.U8) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := alloc.vec.Vec.len policy.statements
+  if i < i1
+  then
+    let s ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+        manage.Statement) policy.statements i
+    let s1 := alloc.vec.Vec.deref s.resources
+    let b ← resets.set_match_resource s1 resource
+    if b
+    then ok (done true)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else ok (done false)
+
+/-- [rustfs_kernel::manage::match_resource]: loop 0:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 126:4-133:1
+    Visibility: public -/
+@[rust_loop]
+def manage.match_resource_loop
+  (policy : manage.Policy) (resource : Slice Std.U8) (i : Std.Usize) :
+  Result Bool
+  := do
+  loop
+    (fun i1 => manage.match_resource_loop.body policy resource i1)
+    i
+
+/-- [rustfs_kernel::manage::match_resource]:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 124:0-133:1
+    Visibility: public -/
+@[reducible]
+def manage.match_resource
+  (policy : manage.Policy) (resource : Slice Std.U8) : Result Bool := do
+  manage.match_resource_loop policy resource 0#usize
+
+/-- [rustfs_kernel::valids::ErrorKind]
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 5:0-9:1
+    Visibility: public -/
+@[discriminant isize]
+inductive valids.ErrorKind where
+| InvalidVersion : valids.ErrorKind
+| NonAction : valids.ErrorKind
+| BothActionAndNotAction : valids.ErrorKind
+| MixedActionFamilies : valids.ErrorKind
+| NonResource : valids.ErrorKind
+| BothResourceAndNotResource : valids.ErrorKind
+| KmsResourceWithNonKmsAction : valids.ErrorKind
+| KmsUnsupportedInBucketPolicy : valids.ErrorKind
+| InvalidResource : valids.ErrorKind
+| EmptyPrincipal : valids.ErrorKind
+
+/-- [rustfs_kernel::valids::ValidationError]
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 10:0-10:91
+    Visibility: public -/
+structure valids.ValidationError where
+  kind : valids.ErrorKind
+  family : alloc.vec.Vec Std.U8
+  value : alloc.vec.Vec Std.U8
+
+/-- [rustfs_kernel::manage::version_is_valid]:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 134:0-143:1 -/
+def manage.version_is_valid
+  (version : Slice Std.U8) :
+  Result (core.result.Result Unit valids.ValidationError)
+  := do
+  let i := Slice.len version
+  if i != 0#usize
+  then
+    let v ← defaults.default_version
+    let s := alloc.vec.Vec.deref v
+    let b ← bytes.eq version s
+    if b
+    then ok (core.result.Result.Ok ())
+    else
+      let v1 ← alloc.slice.Slice.to_vec core.clone.CloneU8 version
+      ok (core.result.Result.Err
+        {
+          kind := valids.ErrorKind.InvalidVersion,
+          family := (alloc.vec.Vec.new Std.U8),
+          value := v1
+        })
+  else ok (core.result.Result.Ok ())
+
+/-- [rustfs_kernel::manage::statement_view]:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 145:0-154:1
+    Visibility: public -/
+def manage.statement_view
+  (st : manage.Statement) : Result stmts.Statement := do
+  let v ←
+    alloc.vec.CloneVec.clone acts.Action.Insts.CoreCloneClone st.actions
+  let v1 ←
+    alloc.vec.CloneVec.clone acts.Action.Insts.CoreCloneClone st.not_actions
+  let v2 ←
+    alloc.vec.CloneVec.clone rsrc.Resource.Insts.CoreCloneClone st.resources
+  let v3 ←
+    alloc.vec.CloneVec.clone rsrc.Resource.Insts.CoreCloneClone
+      st.not_resources
+  let f ← conddata.matching_view st.conditions
+  ok
+    {
+      effect := st.effect,
+      actions := v,
+      not_actions := v1,
+      resources := v2,
+      not_resources := v3,
+      conditions := f
+    }
+
+/-- [rustfs_kernel::stmts::BPStatement]
+    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 41:0-49:1
+    Visibility: public -/
+structure stmts.BPStatement where
+  effect : stmts.Effect
+  principal : stmts.Principal
+  actions : alloc.vec.Vec acts.Action
+  not_actions : alloc.vec.Vec acts.Action
+  resources : alloc.vec.Vec rsrc.Resource
+  not_resources : alloc.vec.Vec rsrc.Resource
+  conditions : condfuncs.Functions
+
+/-- [rustfs_kernel::manage::bp_statement_view]:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 155:0-165:1
+    Visibility: public -/
+def manage.bp_statement_view
+  (st : manage.BPStatement) : Result stmts.BPStatement := do
+  let p ← stmts.Principal.Insts.CoreCloneClone.clone st.principal
+  let v ←
+    alloc.vec.CloneVec.clone acts.Action.Insts.CoreCloneClone st.actions
+  let v1 ←
+    alloc.vec.CloneVec.clone acts.Action.Insts.CoreCloneClone st.not_actions
+  let v2 ←
+    alloc.vec.CloneVec.clone rsrc.Resource.Insts.CoreCloneClone st.resources
+  let v3 ←
+    alloc.vec.CloneVec.clone rsrc.Resource.Insts.CoreCloneClone
+      st.not_resources
+  let f ← conddata.matching_view st.conditions
+  ok
+    {
+      effect := st.effect,
+      principal := p,
+      actions := v,
+      not_actions := v1,
+      resources := v2,
+      not_resources := v3,
+      conditions := f
+    }
+
+/-- [rustfs_kernel::valids::ActionFamily]
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 4:0-4:52
+    Visibility: public -/
+@[discriminant isize]
+inductive valids.ActionFamily where
+| S3 : valids.ActionFamily
+| Admin : valids.ActionFamily
+| Sts : valids.ActionFamily
+| Kms : valids.ActionFamily
+| Mixed : valids.ActionFamily
+
+/-- [rustfs_kernel::valids::family_allows_empty_resource]:
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 85:0-85:160 -/
+def valids.family_allows_empty_resource
+  (family : Option valids.ActionFamily) : Result Bool := do
+  match family with
+  | none => ok false
+  | some af =>
+    match af with
+    | valids.ActionFamily.S3 => ok false
+    | valids.ActionFamily.Admin => ok true
+    | valids.ActionFamily.Sts => ok true
+    | valids.ActionFamily.Kms => ok true
+    | valids.ActionFamily.Mixed => ok false
+
+/-- [rustfs_kernel::valids::family_is_kms]:
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 84:0-84:95 -/
+def valids.family_is_kms
+  (family : Option valids.ActionFamily) : Result Bool := do
+  match family with
+  | none => ok false
+  | some af =>
+    match af with
+    | valids.ActionFamily.S3 => ok false
+    | valids.ActionFamily.Admin => ok false
+    | valids.ActionFamily.Sts => ok false
+    | valids.ActionFamily.Kms => ok true
+    | valids.ActionFamily.Mixed => ok false
+
+/-- [rustfs_kernel::rsrc::is_kms]:
+    Source: 'ports/rustfs/kernel/src/rsrc.rs', lines 13:0-18:1
+    Visibility: public -/
+def rsrc.is_kms (r : rsrc.Resource) : Result Bool := do
+  match r with
+  | rsrc.Resource.S3 _ => ok false
+  | rsrc.Resource.Kms _ => ok true
+
+/-- [rustfs_kernel::valids::has_kms_resource]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 71:4-73:1 -/
+@[rust_loop_body]
+def valids.has_kms_resource_loop.body
+  (rs : Slice rsrc.Resource) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := Slice.len rs
+  if i < i1
+  then
+    let r ← Slice.index_usize rs i
+    let b ← rsrc.is_kms r
+    if b
+    then ok (done true)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else ok (done false)
+
+/-- [rustfs_kernel::valids::has_kms_resource]: loop 0:
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 71:4-73:1 -/
+@[rust_loop]
+def valids.has_kms_resource_loop
+  (rs : Slice rsrc.Resource) (i : Std.Usize) : Result Bool := do
+  loop
+    (fun i1 => valids.has_kms_resource_loop.body rs i1)
+    i
+
+/-- [rustfs_kernel::valids::has_kms_resource]:
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 69:0-73:1 -/
+@[reducible]
+def valids.has_kms_resource (rs : Slice rsrc.Resource) : Result Bool := do
+  valids.has_kms_resource_loop rs 0#usize
+
+/-- [rustfs_kernel::valids::error]:
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 11:0-11:112 -/
+def valids.error
+  (kind : valids.ErrorKind) : Result valids.ValidationError := do
+  ok
+    {
+      kind,
+      family := (alloc.vec.Vec.new Std.U8),
+      value := (alloc.vec.Vec.new Std.U8)
+    }
+
+/-- [rustfs_kernel::valids::statement_resource_rules]:
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 89:0-93:1 -/
+def valids.statement_resource_rules
+  (st : stmts.Statement) (family : Option valids.ActionFamily) :
+  Result (core.result.Result Unit valids.ValidationError)
+  := do
+  let i := alloc.vec.Vec.len st.resources
+  if i = 0#usize
+  then
+    let i1 := alloc.vec.Vec.len st.not_resources
+    if i1 = 0#usize
+    then
+      let b ← valids.family_allows_empty_resource family
+      if b
+      then
+        let i2 := alloc.vec.Vec.len st.resources
+        if i2 != 0#usize
+        then
+          let i3 := alloc.vec.Vec.len st.not_resources
+          if i3 != 0#usize
+          then
+            let ve ← valids.error valids.ErrorKind.BothResourceAndNotResource
+            ok (core.result.Result.Err ve)
+          else
+            let s := alloc.vec.Vec.deref st.resources
+            let b1 ← valids.has_kms_resource s
+            if b1
+            then
+              let b2 ← valids.family_is_kms family
+              if b2
+              then ok (core.result.Result.Ok ())
+              else
+                let ve ←
+                  valids.error valids.ErrorKind.KmsResourceWithNonKmsAction
+                ok (core.result.Result.Err ve)
+            else
+              let s1 := alloc.vec.Vec.deref st.not_resources
+              let b2 ← valids.has_kms_resource s1
+              if b2
+              then
+                let b3 ← valids.family_is_kms family
+                if b3
+                then ok (core.result.Result.Ok ())
+                else
+                  let ve ←
+                    valids.error valids.ErrorKind.KmsResourceWithNonKmsAction
+                  ok (core.result.Result.Err ve)
+              else ok (core.result.Result.Ok ())
+        else
+          let s := alloc.vec.Vec.deref st.resources
+          let b1 ← valids.has_kms_resource s
+          if b1
+          then
+            let b2 ← valids.family_is_kms family
+            if b2
+            then ok (core.result.Result.Ok ())
+            else
+              let ve ←
+                valids.error valids.ErrorKind.KmsResourceWithNonKmsAction
+              ok (core.result.Result.Err ve)
+          else
+            let s1 := alloc.vec.Vec.deref st.not_resources
+            let b2 ← valids.has_kms_resource s1
+            if b2
+            then
+              let b3 ← valids.family_is_kms family
+              if b3
+              then ok (core.result.Result.Ok ())
+              else
+                let ve ←
+                  valids.error valids.ErrorKind.KmsResourceWithNonKmsAction
+                ok (core.result.Result.Err ve)
+            else ok (core.result.Result.Ok ())
+      else
+        let ve ← valids.error valids.ErrorKind.NonResource
+        ok (core.result.Result.Err ve)
+    else
+      let i2 := alloc.vec.Vec.len st.resources
+      if i2 != 0#usize
+      then
+        let i3 := alloc.vec.Vec.len st.not_resources
+        if i3 != 0#usize
+        then
+          let ve ← valids.error valids.ErrorKind.BothResourceAndNotResource
+          ok (core.result.Result.Err ve)
+        else
+          let s := alloc.vec.Vec.deref st.resources
+          let b ← valids.has_kms_resource s
+          if b
+          then
+            let b1 ← valids.family_is_kms family
+            if b1
+            then ok (core.result.Result.Ok ())
+            else
+              let ve ←
+                valids.error valids.ErrorKind.KmsResourceWithNonKmsAction
+              ok (core.result.Result.Err ve)
+          else
+            let s1 := alloc.vec.Vec.deref st.not_resources
+            let b1 ← valids.has_kms_resource s1
+            if b1
+            then
+              let b2 ← valids.family_is_kms family
+              if b2
+              then ok (core.result.Result.Ok ())
+              else
+                let ve ←
+                  valids.error valids.ErrorKind.KmsResourceWithNonKmsAction
+                ok (core.result.Result.Err ve)
+            else ok (core.result.Result.Ok ())
+      else
+        let s := alloc.vec.Vec.deref st.resources
+        let b ← valids.has_kms_resource s
+        if b
+        then
+          let b1 ← valids.family_is_kms family
+          if b1
+          then ok (core.result.Result.Ok ())
+          else
+            let ve ←
+              valids.error valids.ErrorKind.KmsResourceWithNonKmsAction
+            ok (core.result.Result.Err ve)
+        else
+          let s1 := alloc.vec.Vec.deref st.not_resources
+          let b1 ← valids.has_kms_resource s1
+          if b1
+          then
+            let b2 ← valids.family_is_kms family
+            if b2
+            then ok (core.result.Result.Ok ())
+            else
+              let ve ←
+                valids.error valids.ErrorKind.KmsResourceWithNonKmsAction
+              ok (core.result.Result.Err ve)
+          else ok (core.result.Result.Ok ())
+  else
+    let i1 := alloc.vec.Vec.len st.resources
+    if i1 != 0#usize
+    then
+      let i2 := alloc.vec.Vec.len st.not_resources
+      if i2 != 0#usize
+      then
+        let ve ← valids.error valids.ErrorKind.BothResourceAndNotResource
+        ok (core.result.Result.Err ve)
+      else
+        let s := alloc.vec.Vec.deref st.resources
+        let b ← valids.has_kms_resource s
+        if b
+        then
+          let b1 ← valids.family_is_kms family
+          if b1
+          then ok (core.result.Result.Ok ())
+          else
+            let ve ←
+              valids.error valids.ErrorKind.KmsResourceWithNonKmsAction
+            ok (core.result.Result.Err ve)
+        else
+          let s1 := alloc.vec.Vec.deref st.not_resources
+          let b1 ← valids.has_kms_resource s1
+          if b1
+          then
+            let b2 ← valids.family_is_kms family
+            if b2
+            then ok (core.result.Result.Ok ())
+            else
+              let ve ←
+                valids.error valids.ErrorKind.KmsResourceWithNonKmsAction
+              ok (core.result.Result.Err ve)
+          else ok (core.result.Result.Ok ())
+    else
+      let s := alloc.vec.Vec.deref st.resources
+      let b ← valids.has_kms_resource s
+      if b
+      then
+        let b1 ← valids.family_is_kms family
+        if b1
+        then ok (core.result.Result.Ok ())
+        else
+          let ve ← valids.error valids.ErrorKind.KmsResourceWithNonKmsAction
+          ok (core.result.Result.Err ve)
+      else
+        let s1 := alloc.vec.Vec.deref st.not_resources
+        let b1 ← valids.has_kms_resource s1
+        if b1
+        then
+          let b2 ← valids.family_is_kms family
+          if b2
+          then ok (core.result.Result.Ok ())
+          else
+            let ve ←
+              valids.error valids.ErrorKind.KmsResourceWithNonKmsAction
+            ok (core.result.Result.Err ve)
+        else ok (core.result.Result.Ok ())
+
+/-- [rustfs_kernel::valids::family_is_mixed]:
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 83:0-83:99 -/
+def valids.family_is_mixed
+  (family : Option valids.ActionFamily) : Result Bool := do
+  match family with
+  | none => ok false
+  | some af =>
+    match af with
+    | valids.ActionFamily.S3 => ok false
+    | valids.ActionFamily.Admin => ok false
+    | valids.ActionFamily.Sts => ok false
+    | valids.ActionFamily.Kms => ok false
+    | valids.ActionFamily.Mixed => ok true
+
+/-- [rustfs_kernel::valids::action_family]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 45:4-49:5
+    Visibility: public -/
+@[rust_loop_body]
+def valids.action_family_loop.body
+  (v : alloc.vec.Vec acts.Action) (saw_s3 : Bool) (saw_admin : Bool)
+  (saw_sts : Bool) (saw_kms : Bool) (i : Std.Usize) :
+  Result (ControlFlow (Bool × Bool × Bool × Bool × Std.Usize) (Bool × Bool
+    × Bool × Bool))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let a ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice acts.Action) v
+        i
+    let (saw_s31, saw_admin1, saw_sts1, saw_kms1) ←
+      match a.family with
+      | acts.Family.S3 => ok (true, saw_admin, saw_sts, saw_kms)
+      | acts.Family.Admin => ok (saw_s3, true, saw_sts, saw_kms)
+      | acts.Family.Sts => ok (saw_s3, saw_admin, true, saw_kms)
+      | acts.Family.Kms => ok (saw_s3, saw_admin, saw_sts, true)
+      | acts.Family.None => ok (saw_s3, saw_admin, saw_sts, saw_kms)
+    let i2 ← i + 1#usize
+    ok (cont (saw_s31, saw_admin1, saw_sts1, saw_kms1, i2))
+  else ok (done (saw_s3, saw_admin, saw_sts, saw_kms))
+
+/-- [rustfs_kernel::valids::action_family]: loop 0:
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 45:4-49:5
+    Visibility: public -/
+@[rust_loop]
+def valids.action_family_loop
+  (v : alloc.vec.Vec acts.Action) (saw_s3 : Bool) (saw_admin : Bool)
+  (saw_sts : Bool) (saw_kms : Bool) (i : Std.Usize) :
+  Result (Bool × Bool × Bool × Bool)
+  := do
+  loop
+    (fun (saw_s31, saw_admin1, saw_sts1, saw_kms1, i1) =>
+      valids.action_family_loop.body v saw_s31 saw_admin1 saw_sts1 saw_kms1 i1)
+    (saw_s3, saw_admin, saw_sts, saw_kms, i)
+
+/-- [rustfs_kernel::valids::action_family]:
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 41:0-57:1
+    Visibility: public -/
+def valids.action_family
+  (st : stmts.Statement) : Result (Option valids.ActionFamily) := do
+  let i := alloc.vec.Vec.len st.actions
+  if i = 0#usize
+  then ok none
+  else
+    let (saw_s3, saw_admin, saw_sts, saw_kms) ←
+      valids.action_family_loop st.actions false false false false 0#usize
+    let i1 ← lift (UScalar.cast_fromBool .U8 saw_s3)
+    let i2 ← lift (UScalar.cast_fromBool .U8 saw_admin)
+    let i3 ← i1 + i2
+    let i4 ← lift (UScalar.cast_fromBool .U8 saw_sts)
+    let i5 ← i3 + i4
+    let i6 ← lift (UScalar.cast_fromBool .U8 saw_kms)
+    let count ← i5 + i6
+    if count != 1#u8
+    then ok (some valids.ActionFamily.Mixed)
+    else
+      if saw_s3
+      then ok (some valids.ActionFamily.S3)
+      else
+        if saw_admin
+        then ok (some valids.ActionFamily.Admin)
+        else
+          if saw_sts
+          then ok (some valids.ActionFamily.Sts)
+          else
+            if saw_kms
+            then ok (some valids.ActionFamily.Kms)
+            else ok (some valids.ActionFamily.Mixed)
+
+/-- [rustfs_kernel::valids::checked_action_family]:
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 86:0-88:1 -/
+def valids.checked_action_family
+  (st : stmts.Statement) :
+  Result (core.result.Result (Option valids.ActionFamily)
+    valids.ValidationError)
+  := do
+  let i := alloc.vec.Vec.len st.not_actions
+  if i != 0#usize
+  then ok (core.result.Result.Ok none)
+  else
+    let family ← valids.action_family st
+    let b ← valids.family_is_mixed family
+    if b
+    then
+      let ve ← valids.error valids.ErrorKind.MixedActionFamilies
+      ok (core.result.Result.Err ve)
+    else ok (core.result.Result.Ok family)
+
+/-- [rustfs_kernel::valids::action_selection_valid]:
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 79:0-82:1 -/
+def valids.action_selection_valid
+  (actions : Slice acts.Action) (not_actions : Slice acts.Action) :
+  Result (core.result.Result Unit valids.ValidationError)
+  := do
+  let i := Slice.len actions
+  if i = 0#usize
+  then
+    let i1 := Slice.len not_actions
+    if i1 = 0#usize
+    then
+      let ve ← valids.error valids.ErrorKind.NonAction
+      ok (core.result.Result.Err ve)
+    else
+      let i2 := Slice.len actions
+      if i2 != 0#usize
+      then
+        let i3 := Slice.len not_actions
+        if i3 != 0#usize
+        then
+          let ve ← valids.error valids.ErrorKind.BothActionAndNotAction
+          ok (core.result.Result.Err ve)
+        else ok (core.result.Result.Ok ())
+      else ok (core.result.Result.Ok ())
+  else
+    let i1 := Slice.len actions
+    if i1 != 0#usize
+    then
+      let i2 := Slice.len not_actions
+      if i2 != 0#usize
+      then
+        let ve ← valids.error valids.ErrorKind.BothActionAndNotAction
+        ok (core.result.Result.Err ve)
+      else ok (core.result.Result.Ok ())
+    else ok (core.result.Result.Ok ())
+
+/-- [rustfs_kernel::valids::kms_alias_valid]:
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 59:0-59:109 -/
+def valids.kms_alias_valid (p : Slice Std.U8) : Result Bool := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 6#usize [ 97#u8, 108#u8, 105#u8, 97#u8, 115#u8, 47#u8 ]))
+  let b ← bytes.starts_with p s
+  if b
+  then
+    let i := Slice.len p
+    if i > 6#usize
+    then
+      let s1 ← lift (Array.to_slice (Array.make 1#usize [ 92#u8 ]))
+      let b1 ← bytes.contains p s1
+      ok (¬ b1)
+    else ok false
+  else ok false
+
+/-- [rustfs_kernel::valids::kms_key_valid]:
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 58:0-58:158 -/
+def valids.kms_key_valid (p : Slice Std.U8) : Result Bool := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 4#usize [ 107#u8, 101#u8, 121#u8, 47#u8 ]))
+  let b ← bytes.starts_with p s
+  if b
+  then
+    let i := Slice.len p
+    if i > 4#usize
+    then
+      let i1 := Slice.len p
+      let v ← bytes.slice p 4#usize i1
+      let s1 := alloc.vec.Vec.deref v
+      let s2 ← lift (Array.to_slice (Array.make 1#usize [ 47#u8 ]))
+      let b1 ← bytes.contains s1 s2
+      if b1
+      then ok false
+      else
+        let s3 ← lift (Array.to_slice (Array.make 1#usize [ 92#u8 ]))
+        let b2 ← bytes.contains p s3
+        ok (¬ b2)
+    else ok false
+  else ok false
+
+/-- [rustfs_kernel::valids::resource_pattern_valid]:
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 60:0-60:175 -/
+def valids.resource_pattern_valid (r : rsrc.Resource) : Result Bool := do
+  match r with
+  | rsrc.Resource.S3 p =>
+    let i := alloc.vec.Vec.len p
+    if i > 0#usize
+    then
+      let i1 ←
+        alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Std.U8) p
+          0#usize
+      ok (i1 != 47#u8)
+    else ok false
+  | rsrc.Resource.Kms p =>
+    let s := alloc.vec.Vec.deref p
+    let s1 ← lift (Array.to_slice (Array.make 1#usize [ 42#u8 ]))
+    let b ← bytes.eq s s1
+    if b
+    then ok true
+    else
+      let s2 := alloc.vec.Vec.deref p
+      let b1 ← valids.kms_key_valid s2
+      if b1
+      then ok true
+      else let s3 := alloc.vec.Vec.deref p
+           valids.kms_alias_valid s3
+
+/-- [rustfs_kernel::valids::resource_is_valid]:
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 62:0-62:296
+    Visibility: public -/
+def valids.resource_is_valid
+  (r : rsrc.Resource) :
+  Result (core.result.Result Unit valids.ValidationError)
+  := do
+  let b ← valids.resource_pattern_valid r
+  if b
+  then ok (core.result.Result.Ok ())
+  else
+    match r with
+    | rsrc.Resource.S3 p =>
+      let s ← lift (Array.to_slice (Array.make 2#usize [ 115#u8, 51#u8 ]))
+      let family ← alloc.slice.Slice.to_vec core.clone.CloneU8 s
+      let value ← alloc.vec.CloneVec.clone core.clone.CloneU8 p
+      ok (core.result.Result.Err
+        { kind := valids.ErrorKind.InvalidResource, family, value })
+    | rsrc.Resource.Kms p =>
+      let s ←
+        lift (Array.to_slice (Array.make 3#usize [ 107#u8, 109#u8, 115#u8 ]))
+      let family ← alloc.slice.Slice.to_vec core.clone.CloneU8 s
+      let value ← alloc.vec.CloneVec.clone core.clone.CloneU8 p
+      ok (core.result.Result.Err
+        { kind := valids.ErrorKind.InvalidResource, family, value })
+
+/-- [rustfs_kernel::valids::resources_is_valid]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 66:4-68:1
+    Visibility: public -/
+@[rust_loop_body]
+def valids.resources_is_valid_loop.body
+  (set : Slice rsrc.Resource) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize (core.result.Result Unit
+    valids.ValidationError))
+  := do
+  let i1 := Slice.len set
+  if i < i1
+  then
+    let r ← Slice.index_usize set i
+    let r1 ← valids.resource_is_valid r
+    let cf ← core.result.Result.Insts.CoreOpsTry.branch r1
+    match cf with
+    | core.ops.control_flow.ControlFlow.Continue _ =>
+      let i2 ← i + 1#usize
+      ok (cont i2)
+    | core.ops.control_flow.ControlFlow.Break residual =>
+      let r2 ←
+        core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual
+          Unit (core.convert.FromSame valids.ValidationError) residual
+      ok (done r2)
+  else ok (done (core.result.Result.Ok ()))
+
+/-- [rustfs_kernel::valids::resources_is_valid]: loop 0:
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 66:4-68:1
+    Visibility: public -/
+@[rust_loop]
+def valids.resources_is_valid_loop
+  (set : Slice rsrc.Resource) (i : Std.Usize) :
+  Result (core.result.Result Unit valids.ValidationError)
+  := do
+  loop
+    (fun i1 => valids.resources_is_valid_loop.body set i1)
+    i
+
+/-- [rustfs_kernel::valids::resources_is_valid]:
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 64:0-68:1
+    Visibility: public -/
+@[reducible]
+def valids.resources_is_valid
+  (set : Slice rsrc.Resource) :
+  Result (core.result.Result Unit valids.ValidationError)
+  := do
+  valids.resources_is_valid_loop set 0#usize
+
+/-- [rustfs_kernel::valids::effect_is_valid]:
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 22:0-22:56
+    Visibility: public -/
+def valids.effect_is_valid (_effect : stmts.Effect) : Result Bool := do
+  ok true
+
+/-- [rustfs_kernel::valids::id_is_valid]:
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 20:0-20:47
+    Visibility: public -/
+def valids.id_is_valid (_id : Slice Std.U8) : Result Bool := do
+  ok true
+
+/-- [rustfs_kernel::valids::statement_is_valid]:
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 95:0-100:1
+    Visibility: public -/
+def valids.statement_is_valid
+  (st : stmts.Statement) (sid : Slice Std.U8) :
+  Result (core.result.Result Unit valids.ValidationError)
+  := do
+  let _ ← valids.effect_is_valid st.effect
+  let _ ← valids.id_is_valid sid
+  let s := alloc.vec.Vec.deref st.actions
+  let s1 := alloc.vec.Vec.deref st.not_actions
+  let r ← valids.action_selection_valid s s1
+  let cf ← core.result.Result.Insts.CoreOpsTry.branch r
+  match cf with
+  | core.ops.control_flow.ControlFlow.Continue _ =>
+    let r1 ← valids.checked_action_family st
+    let cf1 ← core.result.Result.Insts.CoreOpsTry.branch r1
+    match cf1 with
+    | core.ops.control_flow.ControlFlow.Continue val =>
+      let r2 ← valids.statement_resource_rules st val
+      let cf2 ← core.result.Result.Insts.CoreOpsTry.branch r2
+      match cf2 with
+      | core.ops.control_flow.ControlFlow.Continue _ =>
+        let s2 := alloc.vec.Vec.deref st.actions
+        let _ ← actsets.is_valid s2
+        let s3 := alloc.vec.Vec.deref st.not_actions
+        let _ ← actsets.is_valid s3
+        let s4 := alloc.vec.Vec.deref st.resources
+        let r3 ← valids.resources_is_valid s4
+        let cf3 ← core.result.Result.Insts.CoreOpsTry.branch r3
+        match cf3 with
+        | core.ops.control_flow.ControlFlow.Continue _ =>
+          let s5 := alloc.vec.Vec.deref st.not_resources
+          let r4 ← valids.resources_is_valid s5
+          let cf4 ← core.result.Result.Insts.CoreOpsTry.branch r4
+          match cf4 with
+          | core.ops.control_flow.ControlFlow.Continue _ =>
+            ok (core.result.Result.Ok ())
+          | core.ops.control_flow.ControlFlow.Break residual =>
+            core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual
+              Unit (core.convert.FromSame valids.ValidationError) residual
+        | core.ops.control_flow.ControlFlow.Break residual =>
+          core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual
+            Unit (core.convert.FromSame valids.ValidationError) residual
+      | core.ops.control_flow.ControlFlow.Break residual =>
+        core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual
+          Unit (core.convert.FromSame valids.ValidationError) residual
+    | core.ops.control_flow.ControlFlow.Break residual =>
+      core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual
+        Unit (core.convert.FromSame valids.ValidationError) residual
+  | core.ops.control_flow.ControlFlow.Break residual =>
+    core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual
+      Unit (core.convert.FromSame valids.ValidationError) residual
+
+/-- [rustfs_kernel::manage::is_valid]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 169:4-175:1
+    Visibility: public -/
+@[rust_loop_body]
+def manage.is_valid_loop.body
+  (v : alloc.vec.Vec manage.Statement) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize (core.result.Result Unit
+    valids.ValidationError))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let st ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+        manage.Statement) v i
+    let s ← manage.statement_view st
+    let s1 := alloc.vec.Vec.deref st.sid
+    let r ← valids.statement_is_valid s s1
+    let cf ← core.result.Result.Insts.CoreOpsTry.branch r
+    match cf with
+    | core.ops.control_flow.ControlFlow.Continue _ =>
+      let i2 ← i + 1#usize
+      ok (cont i2)
+    | core.ops.control_flow.ControlFlow.Break residual =>
+      let r1 ←
+        core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual
+          Unit (core.convert.FromSame valids.ValidationError) residual
+      ok (done r1)
+  else ok (done (core.result.Result.Ok ()))
+
+/-- [rustfs_kernel::manage::is_valid]: loop 0:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 169:4-175:1
+    Visibility: public -/
+@[rust_loop]
+def manage.is_valid_loop
+  (v : alloc.vec.Vec manage.Statement) (i : Std.Usize) :
+  Result (core.result.Result Unit valids.ValidationError)
+  := do
+  loop
+    (fun i1 => manage.is_valid_loop.body v i1)
+    i
+
+/-- [rustfs_kernel::manage::is_valid]:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 166:0-175:1
+    Visibility: public -/
+def manage.is_valid
+  (policy : manage.Policy) :
+  Result (core.result.Result Unit valids.ValidationError)
+  := do
+  let s := alloc.vec.Vec.deref policy.version
+  let r ← manage.version_is_valid s
+  let cf ← core.result.Result.Insts.CoreOpsTry.branch r
+  match cf with
+  | core.ops.control_flow.ControlFlow.Continue _ =>
+    manage.is_valid_loop policy.statements 0#usize
+  | core.ops.control_flow.ControlFlow.Break residual =>
+    core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual
+      Unit (core.convert.FromSame valids.ValidationError) residual
+
+/-- [rustfs_kernel::manage::validate]:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 176:0-178:1
+    Visibility: public -/
+def manage.validate
+  (policy : manage.Policy) :
+  Result (core.result.Result Unit valids.ValidationError)
+  := do
+  manage.is_valid policy
+
+/-- [rustfs_kernel::valids::has_kms_action]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 76:4-78:1 -/
+@[rust_loop_body]
+def valids.has_kms_action_loop.body
+  (actions : Slice acts.Action) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := Slice.len actions
+  if i < i1
+  then
+    let a ← Slice.index_usize actions i
+    let b ←
+      acts.Family.Insts.CoreCmpPartialEqFamily.eq a.family acts.Family.Kms
+    if b
+    then ok (done true)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else ok (done false)
+
+/-- [rustfs_kernel::valids::has_kms_action]: loop 0:
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 76:4-78:1 -/
+@[rust_loop]
+def valids.has_kms_action_loop
+  (actions : Slice acts.Action) (i : Std.Usize) : Result Bool := do
+  loop
+    (fun i1 => valids.has_kms_action_loop.body actions i1)
+    i
+
+/-- [rustfs_kernel::valids::has_kms_action]:
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 74:0-78:1 -/
+@[reducible]
+def valids.has_kms_action (actions : Slice acts.Action) : Result Bool := do
+  valids.has_kms_action_loop actions 0#usize
+
+/-- [rustfs_kernel::valids::principal_is_valid]:
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 24:0-27:1
+    Visibility: public -/
+def valids.principal_is_valid
+  (p : stmts.Principal) :
+  Result (core.result.Result Unit valids.ValidationError)
+  := do
+  let i := alloc.vec.Vec.len p.aws
+  if i = 0#usize
+  then
+    let i1 := alloc.vec.Vec.len p.service
+    if i1 = 0#usize
+    then
+      let ve ← valids.error valids.ErrorKind.EmptyPrincipal
+      ok (core.result.Result.Err ve)
+    else ok (core.result.Result.Ok ())
+  else ok (core.result.Result.Ok ())
+
+/-- [rustfs_kernel::valids::bp_statement_is_valid]:
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 102:0-116:1
+    Visibility: public -/
+def valids.bp_statement_is_valid
+  (st : stmts.BPStatement) (sid : Slice Std.U8) :
+  Result (core.result.Result Unit valids.ValidationError)
+  := do
+  let _ ← valids.effect_is_valid st.effect
+  let _ ← valids.id_is_valid sid
+  let r ← valids.principal_is_valid st.principal
+  let cf ← core.result.Result.Insts.CoreOpsTry.branch r
+  match cf with
+  | core.ops.control_flow.ControlFlow.Continue _ =>
+    let i := alloc.vec.Vec.len st.actions
+    if i = 0#usize
+    then
+      let i1 := alloc.vec.Vec.len st.not_actions
+      if i1 = 0#usize
+      then
+        let ve ← valids.error valids.ErrorKind.NonAction
+        ok (core.result.Result.Err ve)
+      else
+        let i2 := alloc.vec.Vec.len st.actions
+        if i2 != 0#usize
+        then
+          let i3 := alloc.vec.Vec.len st.not_actions
+          if i3 != 0#usize
+          then
+            let ve ← valids.error valids.ErrorKind.BothActionAndNotAction
+            ok (core.result.Result.Err ve)
+          else
+            let s := alloc.vec.Vec.deref st.actions
+            let b ← valids.has_kms_action s
+            if b
+            then
+              let ve ←
+                valids.error valids.ErrorKind.KmsUnsupportedInBucketPolicy
+              ok (core.result.Result.Err ve)
+            else
+              let s1 := alloc.vec.Vec.deref st.not_actions
+              let b1 ← valids.has_kms_action s1
+              if b1
+              then
+                let ve ←
+                  valids.error valids.ErrorKind.KmsUnsupportedInBucketPolicy
+                ok (core.result.Result.Err ve)
+              else
+                let s2 := alloc.vec.Vec.deref st.resources
+                let b2 ← valids.has_kms_resource s2
+                if b2
+                then
+                  let ve ←
+                    valids.error valids.ErrorKind.KmsUnsupportedInBucketPolicy
+                  ok (core.result.Result.Err ve)
+                else
+                  let s3 := alloc.vec.Vec.deref st.not_resources
+                  let b3 ← valids.has_kms_resource s3
+                  if b3
+                  then
+                    let ve ←
+                      valids.error
+                        valids.ErrorKind.KmsUnsupportedInBucketPolicy
+                    ok (core.result.Result.Err ve)
+                  else
+                    let i4 := alloc.vec.Vec.len st.resources
+                    if i4 = 0#usize
+                    then
+                      let i5 := alloc.vec.Vec.len st.not_resources
+                      if i5 = 0#usize
+                      then
+                        let ve ← valids.error valids.ErrorKind.NonResource
+                        ok (core.result.Result.Err ve)
+                      else
+                        let i6 := alloc.vec.Vec.len st.resources
+                        if i6 != 0#usize
+                        then
+                          let i7 := alloc.vec.Vec.len st.not_resources
+                          if i7 != 0#usize
+                          then
+                            let ve ←
+                              valids.error
+                                valids.ErrorKind.BothResourceAndNotResource
+                            ok (core.result.Result.Err ve)
+                          else
+                            let s4 := alloc.vec.Vec.deref st.actions
+                            let _ ← actsets.is_valid s4
+                            let s5 := alloc.vec.Vec.deref st.not_actions
+                            let _ ← actsets.is_valid s5
+                            let s6 := alloc.vec.Vec.deref st.resources
+                            let r1 ← valids.resources_is_valid s6
+                            let cf1 ←
+                              core.result.Result.Insts.CoreOpsTry.branch r1
+                            match cf1 with
+                            | core.ops.control_flow.ControlFlow.Continue _ =>
+                              let s7 := alloc.vec.Vec.deref st.not_resources
+                              let r2 ← valids.resources_is_valid s7
+                              let cf2 ←
+                                core.result.Result.Insts.CoreOpsTry.branch r2
+                              match cf2 with
+                              | core.ops.control_flow.ControlFlow.Continue _ =>
+                                ok (core.result.Result.Ok ())
+                              | core.ops.control_flow.ControlFlow.Break
+                                residual =>
+                                core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual
+                                  Unit (core.convert.FromSame
+                                  valids.ValidationError) residual
+                            | core.ops.control_flow.ControlFlow.Break residual
+                              =>
+                              core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual
+                                Unit (core.convert.FromSame
+                                valids.ValidationError) residual
+                        else
+                          let s4 := alloc.vec.Vec.deref st.actions
+                          let _ ← actsets.is_valid s4
+                          let s5 := alloc.vec.Vec.deref st.not_actions
+                          let _ ← actsets.is_valid s5
+                          let s6 := alloc.vec.Vec.deref st.resources
+                          let r1 ← valids.resources_is_valid s6
+                          let cf1 ←
+                            core.result.Result.Insts.CoreOpsTry.branch r1
+                          match cf1 with
+                          | core.ops.control_flow.ControlFlow.Continue _ =>
+                            let s7 := alloc.vec.Vec.deref st.not_resources
+                            let r2 ← valids.resources_is_valid s7
+                            let cf2 ←
+                              core.result.Result.Insts.CoreOpsTry.branch r2
+                            match cf2 with
+                            | core.ops.control_flow.ControlFlow.Continue _ =>
+                              ok (core.result.Result.Ok ())
+                            | core.ops.control_flow.ControlFlow.Break residual
+                              =>
+                              core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual
+                                Unit (core.convert.FromSame
+                                valids.ValidationError) residual
+                          | core.ops.control_flow.ControlFlow.Break residual =>
+                            core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual
+                              Unit (core.convert.FromSame
+                              valids.ValidationError) residual
+                    else
+                      let i5 := alloc.vec.Vec.len st.resources
+                      if i5 != 0#usize
+                      then
+                        let i6 := alloc.vec.Vec.len st.not_resources
+                        if i6 != 0#usize
+                        then
+                          let ve ←
+                            valids.error
+                              valids.ErrorKind.BothResourceAndNotResource
+                          ok (core.result.Result.Err ve)
+                        else
+                          let s4 := alloc.vec.Vec.deref st.actions
+                          let _ ← actsets.is_valid s4
+                          let s5 := alloc.vec.Vec.deref st.not_actions
+                          let _ ← actsets.is_valid s5
+                          let s6 := alloc.vec.Vec.deref st.resources
+                          let r1 ← valids.resources_is_valid s6
+                          let cf1 ←
+                            core.result.Result.Insts.CoreOpsTry.branch r1
+                          match cf1 with
+                          | core.ops.control_flow.ControlFlow.Continue _ =>
+                            let s7 := alloc.vec.Vec.deref st.not_resources
+                            let r2 ← valids.resources_is_valid s7
+                            let cf2 ←
+                              core.result.Result.Insts.CoreOpsTry.branch r2
+                            match cf2 with
+                            | core.ops.control_flow.ControlFlow.Continue _ =>
+                              ok (core.result.Result.Ok ())
+                            | core.ops.control_flow.ControlFlow.Break residual
+                              =>
+                              core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual
+                                Unit (core.convert.FromSame
+                                valids.ValidationError) residual
+                          | core.ops.control_flow.ControlFlow.Break residual =>
+                            core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual
+                              Unit (core.convert.FromSame
+                              valids.ValidationError) residual
+                      else
+                        let s4 := alloc.vec.Vec.deref st.actions
+                        let _ ← actsets.is_valid s4
+                        let s5 := alloc.vec.Vec.deref st.not_actions
+                        let _ ← actsets.is_valid s5
+                        let s6 := alloc.vec.Vec.deref st.resources
+                        let r1 ← valids.resources_is_valid s6
+                        let cf1 ←
+                          core.result.Result.Insts.CoreOpsTry.branch r1
+                        match cf1 with
+                        | core.ops.control_flow.ControlFlow.Continue _ =>
+                          let s7 := alloc.vec.Vec.deref st.not_resources
+                          let r2 ← valids.resources_is_valid s7
+                          let cf2 ←
+                            core.result.Result.Insts.CoreOpsTry.branch r2
+                          match cf2 with
+                          | core.ops.control_flow.ControlFlow.Continue _ =>
+                            ok (core.result.Result.Ok ())
+                          | core.ops.control_flow.ControlFlow.Break residual =>
+                            core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual
+                              Unit (core.convert.FromSame
+                              valids.ValidationError) residual
+                        | core.ops.control_flow.ControlFlow.Break residual =>
+                          core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual
+                            Unit (core.convert.FromSame valids.ValidationError)
+                            residual
+        else
+          let s := alloc.vec.Vec.deref st.actions
+          let b ← valids.has_kms_action s
+          if b
+          then
+            let ve ←
+              valids.error valids.ErrorKind.KmsUnsupportedInBucketPolicy
+            ok (core.result.Result.Err ve)
+          else
+            let s1 := alloc.vec.Vec.deref st.not_actions
+            let b1 ← valids.has_kms_action s1
+            if b1
+            then
+              let ve ←
+                valids.error valids.ErrorKind.KmsUnsupportedInBucketPolicy
+              ok (core.result.Result.Err ve)
+            else
+              let s2 := alloc.vec.Vec.deref st.resources
+              let b2 ← valids.has_kms_resource s2
+              if b2
+              then
+                let ve ←
+                  valids.error valids.ErrorKind.KmsUnsupportedInBucketPolicy
+                ok (core.result.Result.Err ve)
+              else
+                let s3 := alloc.vec.Vec.deref st.not_resources
+                let b3 ← valids.has_kms_resource s3
+                if b3
+                then
+                  let ve ←
+                    valids.error valids.ErrorKind.KmsUnsupportedInBucketPolicy
+                  ok (core.result.Result.Err ve)
+                else
+                  let i3 := alloc.vec.Vec.len st.resources
+                  if i3 = 0#usize
+                  then
+                    let i4 := alloc.vec.Vec.len st.not_resources
+                    if i4 = 0#usize
+                    then
+                      let ve ← valids.error valids.ErrorKind.NonResource
+                      ok (core.result.Result.Err ve)
+                    else
+                      let i5 := alloc.vec.Vec.len st.resources
+                      if i5 != 0#usize
+                      then
+                        let i6 := alloc.vec.Vec.len st.not_resources
+                        if i6 != 0#usize
+                        then
+                          let ve ←
+                            valids.error
+                              valids.ErrorKind.BothResourceAndNotResource
+                          ok (core.result.Result.Err ve)
+                        else
+                          let s4 := alloc.vec.Vec.deref st.actions
+                          let _ ← actsets.is_valid s4
+                          let s5 := alloc.vec.Vec.deref st.not_actions
+                          let _ ← actsets.is_valid s5
+                          let s6 := alloc.vec.Vec.deref st.resources
+                          let r1 ← valids.resources_is_valid s6
+                          let cf1 ←
+                            core.result.Result.Insts.CoreOpsTry.branch r1
+                          match cf1 with
+                          | core.ops.control_flow.ControlFlow.Continue _ =>
+                            let s7 := alloc.vec.Vec.deref st.not_resources
+                            let r2 ← valids.resources_is_valid s7
+                            let cf2 ←
+                              core.result.Result.Insts.CoreOpsTry.branch r2
+                            match cf2 with
+                            | core.ops.control_flow.ControlFlow.Continue _ =>
+                              ok (core.result.Result.Ok ())
+                            | core.ops.control_flow.ControlFlow.Break residual
+                              =>
+                              core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual
+                                Unit (core.convert.FromSame
+                                valids.ValidationError) residual
+                          | core.ops.control_flow.ControlFlow.Break residual =>
+                            core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual
+                              Unit (core.convert.FromSame
+                              valids.ValidationError) residual
+                      else
+                        let s4 := alloc.vec.Vec.deref st.actions
+                        let _ ← actsets.is_valid s4
+                        let s5 := alloc.vec.Vec.deref st.not_actions
+                        let _ ← actsets.is_valid s5
+                        let s6 := alloc.vec.Vec.deref st.resources
+                        let r1 ← valids.resources_is_valid s6
+                        let cf1 ←
+                          core.result.Result.Insts.CoreOpsTry.branch r1
+                        match cf1 with
+                        | core.ops.control_flow.ControlFlow.Continue _ =>
+                          let s7 := alloc.vec.Vec.deref st.not_resources
+                          let r2 ← valids.resources_is_valid s7
+                          let cf2 ←
+                            core.result.Result.Insts.CoreOpsTry.branch r2
+                          match cf2 with
+                          | core.ops.control_flow.ControlFlow.Continue _ =>
+                            ok (core.result.Result.Ok ())
+                          | core.ops.control_flow.ControlFlow.Break residual =>
+                            core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual
+                              Unit (core.convert.FromSame
+                              valids.ValidationError) residual
+                        | core.ops.control_flow.ControlFlow.Break residual =>
+                          core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual
+                            Unit (core.convert.FromSame valids.ValidationError)
+                            residual
+                  else
+                    let i4 := alloc.vec.Vec.len st.resources
+                    if i4 != 0#usize
+                    then
+                      let i5 := alloc.vec.Vec.len st.not_resources
+                      if i5 != 0#usize
+                      then
+                        let ve ←
+                          valids.error
+                            valids.ErrorKind.BothResourceAndNotResource
+                        ok (core.result.Result.Err ve)
+                      else
+                        let s4 := alloc.vec.Vec.deref st.actions
+                        let _ ← actsets.is_valid s4
+                        let s5 := alloc.vec.Vec.deref st.not_actions
+                        let _ ← actsets.is_valid s5
+                        let s6 := alloc.vec.Vec.deref st.resources
+                        let r1 ← valids.resources_is_valid s6
+                        let cf1 ←
+                          core.result.Result.Insts.CoreOpsTry.branch r1
+                        match cf1 with
+                        | core.ops.control_flow.ControlFlow.Continue _ =>
+                          let s7 := alloc.vec.Vec.deref st.not_resources
+                          let r2 ← valids.resources_is_valid s7
+                          let cf2 ←
+                            core.result.Result.Insts.CoreOpsTry.branch r2
+                          match cf2 with
+                          | core.ops.control_flow.ControlFlow.Continue _ =>
+                            ok (core.result.Result.Ok ())
+                          | core.ops.control_flow.ControlFlow.Break residual =>
+                            core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual
+                              Unit (core.convert.FromSame
+                              valids.ValidationError) residual
+                        | core.ops.control_flow.ControlFlow.Break residual =>
+                          core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual
+                            Unit (core.convert.FromSame valids.ValidationError)
+                            residual
+                    else
+                      let s4 := alloc.vec.Vec.deref st.actions
+                      let _ ← actsets.is_valid s4
+                      let s5 := alloc.vec.Vec.deref st.not_actions
+                      let _ ← actsets.is_valid s5
+                      let s6 := alloc.vec.Vec.deref st.resources
+                      let r1 ← valids.resources_is_valid s6
+                      let cf1 ← core.result.Result.Insts.CoreOpsTry.branch r1
+                      match cf1 with
+                      | core.ops.control_flow.ControlFlow.Continue _ =>
+                        let s7 := alloc.vec.Vec.deref st.not_resources
+                        let r2 ← valids.resources_is_valid s7
+                        let cf2 ←
+                          core.result.Result.Insts.CoreOpsTry.branch r2
+                        match cf2 with
+                        | core.ops.control_flow.ControlFlow.Continue _ =>
+                          ok (core.result.Result.Ok ())
+                        | core.ops.control_flow.ControlFlow.Break residual =>
+                          core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual
+                            Unit (core.convert.FromSame valids.ValidationError)
+                            residual
+                      | core.ops.control_flow.ControlFlow.Break residual =>
+                        core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual
+                          Unit (core.convert.FromSame valids.ValidationError)
+                          residual
+    else
+      let i1 := alloc.vec.Vec.len st.actions
+      if i1 != 0#usize
+      then
+        let i2 := alloc.vec.Vec.len st.not_actions
+        if i2 != 0#usize
+        then
+          let ve ← valids.error valids.ErrorKind.BothActionAndNotAction
+          ok (core.result.Result.Err ve)
+        else
+          let s := alloc.vec.Vec.deref st.actions
+          let b ← valids.has_kms_action s
+          if b
+          then
+            let ve ←
+              valids.error valids.ErrorKind.KmsUnsupportedInBucketPolicy
+            ok (core.result.Result.Err ve)
+          else
+            let s1 := alloc.vec.Vec.deref st.not_actions
+            let b1 ← valids.has_kms_action s1
+            if b1
+            then
+              let ve ←
+                valids.error valids.ErrorKind.KmsUnsupportedInBucketPolicy
+              ok (core.result.Result.Err ve)
+            else
+              let s2 := alloc.vec.Vec.deref st.resources
+              let b2 ← valids.has_kms_resource s2
+              if b2
+              then
+                let ve ←
+                  valids.error valids.ErrorKind.KmsUnsupportedInBucketPolicy
+                ok (core.result.Result.Err ve)
+              else
+                let s3 := alloc.vec.Vec.deref st.not_resources
+                let b3 ← valids.has_kms_resource s3
+                if b3
+                then
+                  let ve ←
+                    valids.error valids.ErrorKind.KmsUnsupportedInBucketPolicy
+                  ok (core.result.Result.Err ve)
+                else
+                  let i3 := alloc.vec.Vec.len st.resources
+                  if i3 = 0#usize
+                  then
+                    let i4 := alloc.vec.Vec.len st.not_resources
+                    if i4 = 0#usize
+                    then
+                      let ve ← valids.error valids.ErrorKind.NonResource
+                      ok (core.result.Result.Err ve)
+                    else
+                      let i5 := alloc.vec.Vec.len st.resources
+                      if i5 != 0#usize
+                      then
+                        let i6 := alloc.vec.Vec.len st.not_resources
+                        if i6 != 0#usize
+                        then
+                          let ve ←
+                            valids.error
+                              valids.ErrorKind.BothResourceAndNotResource
+                          ok (core.result.Result.Err ve)
+                        else
+                          let s4 := alloc.vec.Vec.deref st.actions
+                          let _ ← actsets.is_valid s4
+                          let s5 := alloc.vec.Vec.deref st.not_actions
+                          let _ ← actsets.is_valid s5
+                          let s6 := alloc.vec.Vec.deref st.resources
+                          let r1 ← valids.resources_is_valid s6
+                          let cf1 ←
+                            core.result.Result.Insts.CoreOpsTry.branch r1
+                          match cf1 with
+                          | core.ops.control_flow.ControlFlow.Continue _ =>
+                            let s7 := alloc.vec.Vec.deref st.not_resources
+                            let r2 ← valids.resources_is_valid s7
+                            let cf2 ←
+                              core.result.Result.Insts.CoreOpsTry.branch r2
+                            match cf2 with
+                            | core.ops.control_flow.ControlFlow.Continue _ =>
+                              ok (core.result.Result.Ok ())
+                            | core.ops.control_flow.ControlFlow.Break residual
+                              =>
+                              core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual
+                                Unit (core.convert.FromSame
+                                valids.ValidationError) residual
+                          | core.ops.control_flow.ControlFlow.Break residual =>
+                            core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual
+                              Unit (core.convert.FromSame
+                              valids.ValidationError) residual
+                      else
+                        let s4 := alloc.vec.Vec.deref st.actions
+                        let _ ← actsets.is_valid s4
+                        let s5 := alloc.vec.Vec.deref st.not_actions
+                        let _ ← actsets.is_valid s5
+                        let s6 := alloc.vec.Vec.deref st.resources
+                        let r1 ← valids.resources_is_valid s6
+                        let cf1 ←
+                          core.result.Result.Insts.CoreOpsTry.branch r1
+                        match cf1 with
+                        | core.ops.control_flow.ControlFlow.Continue _ =>
+                          let s7 := alloc.vec.Vec.deref st.not_resources
+                          let r2 ← valids.resources_is_valid s7
+                          let cf2 ←
+                            core.result.Result.Insts.CoreOpsTry.branch r2
+                          match cf2 with
+                          | core.ops.control_flow.ControlFlow.Continue _ =>
+                            ok (core.result.Result.Ok ())
+                          | core.ops.control_flow.ControlFlow.Break residual =>
+                            core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual
+                              Unit (core.convert.FromSame
+                              valids.ValidationError) residual
+                        | core.ops.control_flow.ControlFlow.Break residual =>
+                          core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual
+                            Unit (core.convert.FromSame valids.ValidationError)
+                            residual
+                  else
+                    let i4 := alloc.vec.Vec.len st.resources
+                    if i4 != 0#usize
+                    then
+                      let i5 := alloc.vec.Vec.len st.not_resources
+                      if i5 != 0#usize
+                      then
+                        let ve ←
+                          valids.error
+                            valids.ErrorKind.BothResourceAndNotResource
+                        ok (core.result.Result.Err ve)
+                      else
+                        let s4 := alloc.vec.Vec.deref st.actions
+                        let _ ← actsets.is_valid s4
+                        let s5 := alloc.vec.Vec.deref st.not_actions
+                        let _ ← actsets.is_valid s5
+                        let s6 := alloc.vec.Vec.deref st.resources
+                        let r1 ← valids.resources_is_valid s6
+                        let cf1 ←
+                          core.result.Result.Insts.CoreOpsTry.branch r1
+                        match cf1 with
+                        | core.ops.control_flow.ControlFlow.Continue _ =>
+                          let s7 := alloc.vec.Vec.deref st.not_resources
+                          let r2 ← valids.resources_is_valid s7
+                          let cf2 ←
+                            core.result.Result.Insts.CoreOpsTry.branch r2
+                          match cf2 with
+                          | core.ops.control_flow.ControlFlow.Continue _ =>
+                            ok (core.result.Result.Ok ())
+                          | core.ops.control_flow.ControlFlow.Break residual =>
+                            core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual
+                              Unit (core.convert.FromSame
+                              valids.ValidationError) residual
+                        | core.ops.control_flow.ControlFlow.Break residual =>
+                          core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual
+                            Unit (core.convert.FromSame valids.ValidationError)
+                            residual
+                    else
+                      let s4 := alloc.vec.Vec.deref st.actions
+                      let _ ← actsets.is_valid s4
+                      let s5 := alloc.vec.Vec.deref st.not_actions
+                      let _ ← actsets.is_valid s5
+                      let s6 := alloc.vec.Vec.deref st.resources
+                      let r1 ← valids.resources_is_valid s6
+                      let cf1 ← core.result.Result.Insts.CoreOpsTry.branch r1
+                      match cf1 with
+                      | core.ops.control_flow.ControlFlow.Continue _ =>
+                        let s7 := alloc.vec.Vec.deref st.not_resources
+                        let r2 ← valids.resources_is_valid s7
+                        let cf2 ←
+                          core.result.Result.Insts.CoreOpsTry.branch r2
+                        match cf2 with
+                        | core.ops.control_flow.ControlFlow.Continue _ =>
+                          ok (core.result.Result.Ok ())
+                        | core.ops.control_flow.ControlFlow.Break residual =>
+                          core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual
+                            Unit (core.convert.FromSame valids.ValidationError)
+                            residual
+                      | core.ops.control_flow.ControlFlow.Break residual =>
+                        core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual
+                          Unit (core.convert.FromSame valids.ValidationError)
+                          residual
+      else
+        let s := alloc.vec.Vec.deref st.actions
+        let b ← valids.has_kms_action s
+        if b
+        then
+          let ve ← valids.error valids.ErrorKind.KmsUnsupportedInBucketPolicy
+          ok (core.result.Result.Err ve)
+        else
+          let s1 := alloc.vec.Vec.deref st.not_actions
+          let b1 ← valids.has_kms_action s1
+          if b1
+          then
+            let ve ←
+              valids.error valids.ErrorKind.KmsUnsupportedInBucketPolicy
+            ok (core.result.Result.Err ve)
+          else
+            let s2 := alloc.vec.Vec.deref st.resources
+            let b2 ← valids.has_kms_resource s2
+            if b2
+            then
+              let ve ←
+                valids.error valids.ErrorKind.KmsUnsupportedInBucketPolicy
+              ok (core.result.Result.Err ve)
+            else
+              let s3 := alloc.vec.Vec.deref st.not_resources
+              let b3 ← valids.has_kms_resource s3
+              if b3
+              then
+                let ve ←
+                  valids.error valids.ErrorKind.KmsUnsupportedInBucketPolicy
+                ok (core.result.Result.Err ve)
+              else
+                let i2 := alloc.vec.Vec.len st.resources
+                if i2 = 0#usize
+                then
+                  let i3 := alloc.vec.Vec.len st.not_resources
+                  if i3 = 0#usize
+                  then
+                    let ve ← valids.error valids.ErrorKind.NonResource
+                    ok (core.result.Result.Err ve)
+                  else
+                    let i4 := alloc.vec.Vec.len st.resources
+                    if i4 != 0#usize
+                    then
+                      let i5 := alloc.vec.Vec.len st.not_resources
+                      if i5 != 0#usize
+                      then
+                        let ve ←
+                          valids.error
+                            valids.ErrorKind.BothResourceAndNotResource
+                        ok (core.result.Result.Err ve)
+                      else
+                        let s4 := alloc.vec.Vec.deref st.actions
+                        let _ ← actsets.is_valid s4
+                        let s5 := alloc.vec.Vec.deref st.not_actions
+                        let _ ← actsets.is_valid s5
+                        let s6 := alloc.vec.Vec.deref st.resources
+                        let r1 ← valids.resources_is_valid s6
+                        let cf1 ←
+                          core.result.Result.Insts.CoreOpsTry.branch r1
+                        match cf1 with
+                        | core.ops.control_flow.ControlFlow.Continue _ =>
+                          let s7 := alloc.vec.Vec.deref st.not_resources
+                          let r2 ← valids.resources_is_valid s7
+                          let cf2 ←
+                            core.result.Result.Insts.CoreOpsTry.branch r2
+                          match cf2 with
+                          | core.ops.control_flow.ControlFlow.Continue _ =>
+                            ok (core.result.Result.Ok ())
+                          | core.ops.control_flow.ControlFlow.Break residual =>
+                            core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual
+                              Unit (core.convert.FromSame
+                              valids.ValidationError) residual
+                        | core.ops.control_flow.ControlFlow.Break residual =>
+                          core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual
+                            Unit (core.convert.FromSame valids.ValidationError)
+                            residual
+                    else
+                      let s4 := alloc.vec.Vec.deref st.actions
+                      let _ ← actsets.is_valid s4
+                      let s5 := alloc.vec.Vec.deref st.not_actions
+                      let _ ← actsets.is_valid s5
+                      let s6 := alloc.vec.Vec.deref st.resources
+                      let r1 ← valids.resources_is_valid s6
+                      let cf1 ← core.result.Result.Insts.CoreOpsTry.branch r1
+                      match cf1 with
+                      | core.ops.control_flow.ControlFlow.Continue _ =>
+                        let s7 := alloc.vec.Vec.deref st.not_resources
+                        let r2 ← valids.resources_is_valid s7
+                        let cf2 ←
+                          core.result.Result.Insts.CoreOpsTry.branch r2
+                        match cf2 with
+                        | core.ops.control_flow.ControlFlow.Continue _ =>
+                          ok (core.result.Result.Ok ())
+                        | core.ops.control_flow.ControlFlow.Break residual =>
+                          core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual
+                            Unit (core.convert.FromSame valids.ValidationError)
+                            residual
+                      | core.ops.control_flow.ControlFlow.Break residual =>
+                        core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual
+                          Unit (core.convert.FromSame valids.ValidationError)
+                          residual
+                else
+                  let i3 := alloc.vec.Vec.len st.resources
+                  if i3 != 0#usize
+                  then
+                    let i4 := alloc.vec.Vec.len st.not_resources
+                    if i4 != 0#usize
+                    then
+                      let ve ←
+                        valids.error
+                          valids.ErrorKind.BothResourceAndNotResource
+                      ok (core.result.Result.Err ve)
+                    else
+                      let s4 := alloc.vec.Vec.deref st.actions
+                      let _ ← actsets.is_valid s4
+                      let s5 := alloc.vec.Vec.deref st.not_actions
+                      let _ ← actsets.is_valid s5
+                      let s6 := alloc.vec.Vec.deref st.resources
+                      let r1 ← valids.resources_is_valid s6
+                      let cf1 ← core.result.Result.Insts.CoreOpsTry.branch r1
+                      match cf1 with
+                      | core.ops.control_flow.ControlFlow.Continue _ =>
+                        let s7 := alloc.vec.Vec.deref st.not_resources
+                        let r2 ← valids.resources_is_valid s7
+                        let cf2 ←
+                          core.result.Result.Insts.CoreOpsTry.branch r2
+                        match cf2 with
+                        | core.ops.control_flow.ControlFlow.Continue _ =>
+                          ok (core.result.Result.Ok ())
+                        | core.ops.control_flow.ControlFlow.Break residual =>
+                          core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual
+                            Unit (core.convert.FromSame valids.ValidationError)
+                            residual
+                      | core.ops.control_flow.ControlFlow.Break residual =>
+                        core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual
+                          Unit (core.convert.FromSame valids.ValidationError)
+                          residual
+                  else
+                    let s4 := alloc.vec.Vec.deref st.actions
+                    let _ ← actsets.is_valid s4
+                    let s5 := alloc.vec.Vec.deref st.not_actions
+                    let _ ← actsets.is_valid s5
+                    let s6 := alloc.vec.Vec.deref st.resources
+                    let r1 ← valids.resources_is_valid s6
+                    let cf1 ← core.result.Result.Insts.CoreOpsTry.branch r1
+                    match cf1 with
+                    | core.ops.control_flow.ControlFlow.Continue _ =>
+                      let s7 := alloc.vec.Vec.deref st.not_resources
+                      let r2 ← valids.resources_is_valid s7
+                      let cf2 ← core.result.Result.Insts.CoreOpsTry.branch r2
+                      match cf2 with
+                      | core.ops.control_flow.ControlFlow.Continue _ =>
+                        ok (core.result.Result.Ok ())
+                      | core.ops.control_flow.ControlFlow.Break residual =>
+                        core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual
+                          Unit (core.convert.FromSame valids.ValidationError)
+                          residual
+                    | core.ops.control_flow.ControlFlow.Break residual =>
+                      core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual
+                        Unit (core.convert.FromSame valids.ValidationError)
+                        residual
+  | core.ops.control_flow.ControlFlow.Break residual =>
+    core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual
+      Unit (core.convert.FromSame valids.ValidationError) residual
+
+/-- [rustfs_kernel::manage::bucket_is_valid]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 182:4-188:1
+    Visibility: public -/
+@[rust_loop_body]
+def manage.bucket_is_valid_loop.body
+  (v : alloc.vec.Vec manage.BPStatement) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize (core.result.Result Unit
+    valids.ValidationError))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let st ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+        manage.BPStatement) v i
+    let b ← manage.bp_statement_view st
+    let s := alloc.vec.Vec.deref st.sid
+    let r ← valids.bp_statement_is_valid b s
+    let cf ← core.result.Result.Insts.CoreOpsTry.branch r
+    match cf with
+    | core.ops.control_flow.ControlFlow.Continue _ =>
+      let i2 ← i + 1#usize
+      ok (cont i2)
+    | core.ops.control_flow.ControlFlow.Break residual =>
+      let r1 ←
+        core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual
+          Unit (core.convert.FromSame valids.ValidationError) residual
+      ok (done r1)
+  else ok (done (core.result.Result.Ok ()))
+
+/-- [rustfs_kernel::manage::bucket_is_valid]: loop 0:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 182:4-188:1
+    Visibility: public -/
+@[rust_loop]
+def manage.bucket_is_valid_loop
+  (v : alloc.vec.Vec manage.BPStatement) (i : Std.Usize) :
+  Result (core.result.Result Unit valids.ValidationError)
+  := do
+  loop
+    (fun i1 => manage.bucket_is_valid_loop.body v i1)
+    i
+
+/-- [rustfs_kernel::manage::bucket_is_valid]:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 179:0-188:1
+    Visibility: public -/
+def manage.bucket_is_valid
+  (policy : manage.BucketPolicy) :
+  Result (core.result.Result Unit valids.ValidationError)
+  := do
+  let s := alloc.vec.Vec.deref policy.version
+  let r ← manage.version_is_valid s
+  let cf ← core.result.Result.Insts.CoreOpsTry.branch r
+  match cf with
+  | core.ops.control_flow.ControlFlow.Continue _ =>
+    manage.bucket_is_valid_loop policy.statements 0#usize
+  | core.ops.control_flow.ControlFlow.Break residual =>
+    core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual
+      Unit (core.convert.FromSame valids.ValidationError) residual
+
+/-- [rustfs_kernel::manage::overwritten]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 193:4-200:1 -/
+@[rust_loop_body]
+def manage.overwritten_loop.body
+  (cs : Slice conddata.Condition) («name» : alloc.vec.Vec Std.U8)
+  (j : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i := Slice.len cs
+  if j < i
+  then
+    let s := alloc.vec.Vec.deref «name»
+    let c ← Slice.index_usize cs j
+    let v ← conddata.to_key_with_suffix c
+    let s1 := alloc.vec.Vec.deref v
+    let b ← bytes.eq s s1
+    if b
+    then ok (done true)
+    else let j1 ← j + 1#usize
+         ok (cont j1)
+  else ok (done false)
+
+/-- [rustfs_kernel::manage::overwritten]: loop 0:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 193:4-200:1 -/
+@[rust_loop]
+def manage.overwritten_loop
+  (cs : Slice conddata.Condition) («name» : alloc.vec.Vec Std.U8)
+  (j : Std.Usize) :
+  Result Bool
+  := do
+  loop
+    (fun j1 => manage.overwritten_loop.body cs «name» j1)
+    j
+
+/-- [rustfs_kernel::manage::overwritten]:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 190:0-200:1 -/
+def manage.overwritten
+  (cs : Slice conddata.Condition) (i : Std.Usize) : Result Bool := do
+  let c ← Slice.index_usize cs i
+  let «name» ← conddata.to_key_with_suffix c
+  let j ← i + 1#usize
+  manage.overwritten_loop cs «name» j
+
+/-- [rustfs_kernel::manage::condition_uses_tag]:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 201:0-222:1 -/
+def manage.condition_uses_tag (c : conddata.Condition) : Result Bool := do
+  match c.data with
+  | conddata.Data.Str f =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 20#usize [
+          115#u8, 51#u8, 58#u8, 69#u8, 120#u8, 105#u8, 115#u8, 116#u8, 105#u8,
+          110#u8, 103#u8, 79#u8, 98#u8, 106#u8, 101#u8, 99#u8, 116#u8, 84#u8,
+          97#u8, 103#u8
+          ]))
+    conddata.contains_key_name f s
+  | conddata.Data.Addr f =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 20#usize [
+          115#u8, 51#u8, 58#u8, 69#u8, 120#u8, 105#u8, 115#u8, 116#u8, 105#u8,
+          110#u8, 103#u8, 79#u8, 98#u8, 106#u8, 101#u8, 99#u8, 116#u8, 84#u8,
+          97#u8, 103#u8
+          ]))
+    conddata.contains_key_name f s
+  | conddata.Data.Boolean f =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 20#usize [
+          115#u8, 51#u8, 58#u8, 69#u8, 120#u8, 105#u8, 115#u8, 116#u8, 105#u8,
+          110#u8, 103#u8, 79#u8, 98#u8, 106#u8, 101#u8, 99#u8, 116#u8, 84#u8,
+          97#u8, 103#u8
+          ]))
+    conddata.contains_key_name f s
+  | conddata.Data.Num f =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 20#usize [
+          115#u8, 51#u8, 58#u8, 69#u8, 120#u8, 105#u8, 115#u8, 116#u8, 105#u8,
+          110#u8, 103#u8, 79#u8, 98#u8, 106#u8, 101#u8, 99#u8, 116#u8, 84#u8,
+          97#u8, 103#u8
+          ]))
+    conddata.contains_key_name f s
+  | conddata.Data.Date f =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 20#usize [
+          115#u8, 51#u8, 58#u8, 69#u8, 120#u8, 105#u8, 115#u8, 116#u8, 105#u8,
+          110#u8, 103#u8, 79#u8, 98#u8, 106#u8, 101#u8, 99#u8, 116#u8, 84#u8,
+          97#u8, 103#u8
+          ]))
+    conddata.contains_key_name f s
+  | conddata.Data.Binary f =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 20#usize [
+          115#u8, 51#u8, 58#u8, 69#u8, 120#u8, 105#u8, 115#u8, 116#u8, 105#u8,
+          110#u8, 103#u8, 79#u8, 98#u8, 106#u8, 101#u8, 99#u8, 116#u8, 84#u8,
+          97#u8, 103#u8
+          ]))
+    conddata.contains_key_name f s
+
+/-- [rustfs_kernel::manage::list_uses_tag]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 225:4-232:1 -/
+@[rust_loop_body]
+def manage.list_uses_tag_loop.body
+  (cs : Slice conddata.Condition) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := Slice.len cs
+  if i < i1
+  then
+    let b ← manage.overwritten cs i
+    if b
+    then let i2 ← i + 1#usize
+         ok (cont i2)
+    else
+      let c ← Slice.index_usize cs i
+      let b1 ← manage.condition_uses_tag c
+      if b1
+      then ok (done true)
+      else let i2 ← i + 1#usize
+           ok (cont i2)
+  else ok (done false)
+
+/-- [rustfs_kernel::manage::list_uses_tag]: loop 0:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 225:4-232:1 -/
+@[rust_loop]
+def manage.list_uses_tag_loop
+  (cs : Slice conddata.Condition) (i : Std.Usize) : Result Bool := do
+  loop
+    (fun i1 => manage.list_uses_tag_loop.body cs i1)
+    i
+
+/-- [rustfs_kernel::manage::list_uses_tag]:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 223:0-232:1 -/
+@[reducible]
+def manage.list_uses_tag (cs : Slice conddata.Condition) : Result Bool := do
+  manage.list_uses_tag_loop cs 0#usize
+
+/-- [rustfs_kernel::manage::functions_use_existing_object_tag]:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 233:0-237:1
+    Visibility: public -/
+def manage.functions_use_existing_object_tag
+  (f : conddata.Functions) : Result Bool := do
+  let s := alloc.vec.Vec.deref f.for_all_values
+  let b ← manage.list_uses_tag s
+  if b
+  then ok true
+  else
+    let s1 := alloc.vec.Vec.deref f.for_any_value
+    let b1 ← manage.list_uses_tag s1
+    if b1
+    then ok true
+    else let s2 := alloc.vec.Vec.deref f.for_normal
+         manage.list_uses_tag s2
+
+/-- [rustfs_kernel::manage::policy_uses_existing_object_tag_conditions]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 240:4-247:1
+    Visibility: public -/
+@[rust_loop_body]
+def manage.policy_uses_existing_object_tag_conditions_loop.body
+  (p : manage.Policy) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := alloc.vec.Vec.len p.statements
+  if i < i1
+  then
+    let s ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+        manage.Statement) p.statements i
+    let b ← manage.functions_use_existing_object_tag s.conditions
+    if b
+    then ok (done true)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else ok (done false)
+
+/-- [rustfs_kernel::manage::policy_uses_existing_object_tag_conditions]: loop 0:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 240:4-247:1
+    Visibility: public -/
+@[rust_loop]
+def manage.policy_uses_existing_object_tag_conditions_loop
+  (p : manage.Policy) (i : Std.Usize) : Result Bool := do
+  loop
+    (fun i1 => manage.policy_uses_existing_object_tag_conditions_loop.body p
+      i1)
+    i
+
+/-- [rustfs_kernel::manage::policy_uses_existing_object_tag_conditions]:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 238:0-247:1
+    Visibility: public -/
+@[reducible]
+def manage.policy_uses_existing_object_tag_conditions
+  (p : manage.Policy) : Result Bool := do
+  manage.policy_uses_existing_object_tag_conditions_loop p 0#usize
+
+/-- [rustfs_kernel::manage::bucket_policy_uses_existing_object_tag_conditions]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 250:4-257:1
+    Visibility: public -/
+@[rust_loop_body]
+def manage.bucket_policy_uses_existing_object_tag_conditions_loop.body
+  (p : manage.BucketPolicy) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := alloc.vec.Vec.len p.statements
+  if i < i1
+  then
+    let b ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+        manage.BPStatement) p.statements i
+    let b1 ← manage.functions_use_existing_object_tag b.conditions
+    if b1
+    then ok (done true)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else ok (done false)
+
+/-- [rustfs_kernel::manage::bucket_policy_uses_existing_object_tag_conditions]: loop 0:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 250:4-257:1
+    Visibility: public -/
+@[rust_loop]
+def manage.bucket_policy_uses_existing_object_tag_conditions_loop
+  (p : manage.BucketPolicy) (i : Std.Usize) : Result Bool := do
+  loop
+    (fun i1 =>
+      manage.bucket_policy_uses_existing_object_tag_conditions_loop.body p i1)
+    i
+
+/-- [rustfs_kernel::manage::bucket_policy_uses_existing_object_tag_conditions]:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 248:0-257:1
+    Visibility: public -/
+@[reducible]
+def manage.bucket_policy_uses_existing_object_tag_conditions
+  (p : manage.BucketPolicy) : Result Bool := do
+  manage.bucket_policy_uses_existing_object_tag_conditions_loop p 0#usize
+
+/-- [rustfs_kernel::stmts::kms_only]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 135:4-141:5 -/
+@[rust_loop_body]
+def stmts.kms_only_loop.body
+  (rs : Slice rsrc.Resource) (out : alloc.vec.Vec rsrc.Resource)
+  (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec rsrc.Resource) × Std.Usize)
+    (alloc.vec.Vec rsrc.Resource))
+  := do
+  let i1 := Slice.len rs
+  if i < i1
+  then
+    let r ← Slice.index_usize rs i
+    let r1 ← rsrc.Resource.Insts.CoreCloneClone.clone r
+    let b ← rsrc.is_kms r1
+    let out1 ← if b
+                 then alloc.vec.Vec.push out r1
+                 else ok out
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
+  else ok (done out)
+
+/-- [rustfs_kernel::stmts::kms_only]: loop 0:
+    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 135:4-141:5 -/
+@[rust_loop]
+def stmts.kms_only_loop
+  (rs : Slice rsrc.Resource) (out : alloc.vec.Vec rsrc.Resource)
+  (i : Std.Usize) :
+  Result (alloc.vec.Vec rsrc.Resource)
+  := do
+  loop
+    (fun (out1, i1) => stmts.kms_only_loop.body rs out1 i1)
+    (out, i)
+
+/-- [rustfs_kernel::stmts::kms_only]:
+    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 132:0-143:1 -/
+@[reducible]
+def stmts.kms_only
+  (rs : Slice rsrc.Resource) : Result (alloc.vec.Vec rsrc.Resource) := do
+  stmts.kms_only_loop rs (alloc.vec.Vec.new rsrc.Resource) 0#usize
+
+/-- [rustfs_kernel::stmts::Args]
+    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 53:0-62:1
+    Visibility: public -/
+structure stmts.Args where
+  account : alloc.vec.Vec Std.U8
+  action : acts.Action
+  bucket : alloc.vec.Vec Std.U8
+  conditions : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec
+    (alloc.vec.Vec Std.U8)))
+  is_owner : Bool
+  object : alloc.vec.Vec Std.U8
+  claims : awsvars.ClaimStrings
+  deny_only : Bool
 
 /-- [rustfs_kernel::rsrc::set_is_match]: loop body 0:
     Source: 'ports/rustfs/kernel/src/rsrc.rs', lines 78:4-85:1
@@ -5251,6 +16917,345 @@ def stmts.resolver_for
     { username, account := v, claims := cs, now_rfc3339 := v1, now_epoch := v2
     }
 
+/-- [rustfs_kernel::manage::policy_needs_existing_object_tag_for_args]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 268:4-278:1
+    Visibility: public -/
+@[rust_loop_body]
+def manage.policy_needs_existing_object_tag_for_args_loop.body
+  (p : manage.Policy) (args : stmts.Args) (vc : awsvars.VarContext)
+  (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := alloc.vec.Vec.len p.statements
+  if i < i1
+  then
+    let st ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+        manage.Statement) p.statements i
+    let b ← manage.functions_use_existing_object_tag st.conditions
+    if b
+    then
+      let s ← manage.statement_view st
+      let b1 ← stmts.reaches_condition_eval s args (some vc)
+      if b1
+      then ok (done true)
+      else let i2 ← i + 1#usize
+           ok (cont i2)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else ok (done false)
+
+/-- [rustfs_kernel::manage::policy_needs_existing_object_tag_for_args]: loop 0:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 268:4-278:1
+    Visibility: public -/
+@[rust_loop]
+def manage.policy_needs_existing_object_tag_for_args_loop
+  (p : manage.Policy) (args : stmts.Args) (vc : awsvars.VarContext)
+  (i : Std.Usize) :
+  Result Bool
+  := do
+  loop
+    (fun i1 => manage.policy_needs_existing_object_tag_for_args_loop.body p
+      args vc i1)
+    i
+
+/-- [rustfs_kernel::manage::policy_needs_existing_object_tag_for_args]:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 258:0-278:1
+    Visibility: public -/
+def manage.policy_needs_existing_object_tag_for_args
+  (p : manage.Policy) (args : stmts.Args) (env : condfuncs.Env) :
+  Result Bool
+  := do
+  let b ← manage.policy_uses_existing_object_tag_conditions p
+  if b
+  then
+    let vc ← stmts.resolver_for args env
+    manage.policy_needs_existing_object_tag_for_args_loop p args vc 0#usize
+  else ok false
+
+/-- [rustfs_kernel::stmts::all_kms]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 219:4-226:1 -/
+@[rust_loop_body]
+def stmts.all_kms_loop.body
+  (actions : Slice acts.Action) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := Slice.len actions
+  if i < i1
+  then
+    let a ← Slice.index_usize actions i
+    let b ←
+      core.cmp.PartialEq.ne.trait_default
+        acts.Family.Insts.CoreCmpPartialEqFamily a.family acts.Family.Kms
+    if b
+    then ok (done false)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else ok (done true)
+
+/-- [rustfs_kernel::stmts::all_kms]: loop 0:
+    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 219:4-226:1 -/
+@[rust_loop]
+def stmts.all_kms_loop
+  (actions : Slice acts.Action) (i : Std.Usize) : Result Bool := do
+  loop
+    (fun i1 => stmts.all_kms_loop.body actions i1)
+    i
+
+/-- [rustfs_kernel::stmts::all_kms]:
+    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 217:0-226:1 -/
+@[reducible]
+def stmts.all_kms (actions : Slice acts.Action) : Result Bool := do
+  stmts.all_kms_loop actions 0#usize
+
+/-- [rustfs_kernel::wildmatch::is_simple_match]:
+    Source: 'ports/rustfs/kernel/src/wildmatch.rs', lines 38:0-40:1
+    Visibility: public -/
+def wildmatch.is_simple_match
+  (pattern : Slice Std.U8) («name» : Slice Std.U8) : Result Bool := do
+  wildmatch.inner_match pattern «name» true
+
+/-- [rustfs_kernel::stmts::any_simple_match]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 203:4-210:1 -/
+@[rust_loop_body]
+def stmts.any_simple_match_loop.body
+  (patterns : Slice (alloc.vec.Vec Std.U8)) («name» : Slice Std.U8)
+  (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := Slice.len patterns
+  if i < i1
+  then
+    let v ← Slice.index_usize patterns i
+    let s := alloc.vec.Vec.deref v
+    let b ← wildmatch.is_simple_match s «name»
+    if b
+    then ok (done true)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else ok (done false)
+
+/-- [rustfs_kernel::stmts::any_simple_match]: loop 0:
+    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 203:4-210:1 -/
+@[rust_loop]
+def stmts.any_simple_match_loop
+  (patterns : Slice (alloc.vec.Vec Std.U8)) («name» : Slice Std.U8)
+  (i : Std.Usize) :
+  Result Bool
+  := do
+  loop
+    (fun i1 => stmts.any_simple_match_loop.body patterns «name» i1)
+    i
+
+/-- [rustfs_kernel::stmts::any_simple_match]:
+    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 201:0-210:1 -/
+@[reducible]
+def stmts.any_simple_match
+  (patterns : Slice (alloc.vec.Vec Std.U8)) («name» : Slice Std.U8) :
+  Result Bool
+  := do
+  stmts.any_simple_match_loop patterns «name» 0#usize
+
+/-- [rustfs_kernel::stmts::principal_is_match]:
+    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 213:0-215:1
+    Visibility: public -/
+def stmts.principal_is_match
+  (p : stmts.Principal) (account : Slice Std.U8) : Result Bool := do
+  let s := alloc.vec.Vec.deref p.aws
+  let b ← stmts.any_simple_match s account
+  if b
+  then ok true
+  else
+    let s1 := alloc.vec.Vec.deref p.service
+    stmts.any_simple_match s1 account
+
+/-- [rustfs_kernel::stmts::BucketPolicyArgs]
+    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 66:0-73:1
+    Visibility: public -/
+structure stmts.BucketPolicyArgs where
+  account : alloc.vec.Vec Std.U8
+  action : acts.Action
+  bucket : alloc.vec.Vec Std.U8
+  conditions : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec
+    (alloc.vec.Vec Std.U8)))
+  is_owner : Bool
+  object : alloc.vec.Vec Std.U8
+
+/-- [rustfs_kernel::stmts::bp_reaches_condition_eval]:
+    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 229:0-250:1
+    Visibility: public -/
+def stmts.bp_reaches_condition_eval
+  (st : stmts.BPStatement) (args : stmts.BucketPolicyArgs) : Result Bool := do
+  let i := alloc.vec.Vec.len st.actions
+  if i > 0#usize
+  then
+    let s := alloc.vec.Vec.deref st.actions
+    let b ← stmts.all_kms s
+    if b
+    then ok false
+    else
+      let s1 := alloc.vec.Vec.deref args.account
+      let b1 ← stmts.principal_is_match st.principal s1
+      if b1
+      then
+        let deny ←
+          stmts.Effect.Insts.CoreCmpPartialEqEffect.eq st.effect
+            stmts.Effect.Deny
+        let s2 := alloc.vec.Vec.deref st.actions
+        let s3 := alloc.vec.Vec.deref st.not_actions
+        let b2 ← acts.statement_covers s2 s3 args.action deny
+        if b2
+        then
+          let s4 := alloc.vec.Vec.deref args.bucket
+          let s5 := alloc.vec.Vec.deref args.object
+          let s6 ←
+            lift (Array.to_slice
+              (Array.make 9#usize [
+                115#u8, 51#u8, 58#u8, 112#u8, 114#u8, 101#u8, 102#u8, 105#u8,
+                120#u8
+                ]))
+          let b3 ← condfuncs.references_key_name st.conditions s6
+          let resource ← stmts.build_resource args.action s4 s5 b3
+          let i1 := alloc.vec.Vec.len st.resources
+          if i1 > 0#usize
+          then
+            let s7 := alloc.vec.Vec.deref st.resources
+            let s8 := alloc.vec.Vec.deref resource
+            let b4 ← rsrc.set_is_match s7 s8 args.conditions none
+            if b4
+            then
+              let i2 := alloc.vec.Vec.len st.not_resources
+              if i2 > 0#usize
+              then
+                let s9 := alloc.vec.Vec.deref st.not_resources
+                let s10 := alloc.vec.Vec.deref resource
+                let b5 ← rsrc.set_is_match s9 s10 args.conditions none
+                if b5
+                then ok false
+                else ok true
+              else ok true
+            else ok false
+          else
+            let i2 := alloc.vec.Vec.len st.not_resources
+            if i2 > 0#usize
+            then
+              let s7 := alloc.vec.Vec.deref st.not_resources
+              let s8 := alloc.vec.Vec.deref resource
+              let b4 ← rsrc.set_is_match s7 s8 args.conditions none
+              if b4
+              then ok false
+              else ok true
+            else ok true
+        else ok false
+      else ok false
+  else
+    let s := alloc.vec.Vec.deref args.account
+    let b ← stmts.principal_is_match st.principal s
+    if b
+    then
+      let deny ←
+        stmts.Effect.Insts.CoreCmpPartialEqEffect.eq st.effect
+          stmts.Effect.Deny
+      let s1 := alloc.vec.Vec.deref st.actions
+      let s2 := alloc.vec.Vec.deref st.not_actions
+      let b1 ← acts.statement_covers s1 s2 args.action deny
+      if b1
+      then
+        let s3 := alloc.vec.Vec.deref args.bucket
+        let s4 := alloc.vec.Vec.deref args.object
+        let s5 ←
+          lift (Array.to_slice
+            (Array.make 9#usize [
+              115#u8, 51#u8, 58#u8, 112#u8, 114#u8, 101#u8, 102#u8, 105#u8,
+              120#u8
+              ]))
+        let b2 ← condfuncs.references_key_name st.conditions s5
+        let resource ← stmts.build_resource args.action s3 s4 b2
+        let i1 := alloc.vec.Vec.len st.resources
+        if i1 > 0#usize
+        then
+          let s6 := alloc.vec.Vec.deref st.resources
+          let s7 := alloc.vec.Vec.deref resource
+          let b3 ← rsrc.set_is_match s6 s7 args.conditions none
+          if b3
+          then
+            let i2 := alloc.vec.Vec.len st.not_resources
+            if i2 > 0#usize
+            then
+              let s8 := alloc.vec.Vec.deref st.not_resources
+              let s9 := alloc.vec.Vec.deref resource
+              let b4 ← rsrc.set_is_match s8 s9 args.conditions none
+              if b4
+              then ok false
+              else ok true
+            else ok true
+          else ok false
+        else
+          let i2 := alloc.vec.Vec.len st.not_resources
+          if i2 > 0#usize
+          then
+            let s6 := alloc.vec.Vec.deref st.not_resources
+            let s7 := alloc.vec.Vec.deref resource
+            let b3 ← rsrc.set_is_match s6 s7 args.conditions none
+            if b3
+            then ok false
+            else ok true
+          else ok true
+      else ok false
+    else ok false
+
+/-- [rustfs_kernel::manage::bucket_policy_needs_existing_object_tag_for_args]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 287:4-297:1
+    Visibility: public -/
+@[rust_loop_body]
+def manage.bucket_policy_needs_existing_object_tag_for_args_loop.body
+  (p : manage.BucketPolicy) (args : stmts.BucketPolicyArgs) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := alloc.vec.Vec.len p.statements
+  if i < i1
+  then
+    let st ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+        manage.BPStatement) p.statements i
+    let b ← manage.functions_use_existing_object_tag st.conditions
+    if b
+    then
+      let b1 ← manage.bp_statement_view st
+      let b2 ← stmts.bp_reaches_condition_eval b1 args
+      if b2
+      then ok (done true)
+      else let i2 ← i + 1#usize
+           ok (cont i2)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else ok (done false)
+
+/-- [rustfs_kernel::manage::bucket_policy_needs_existing_object_tag_for_args]: loop 0:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 287:4-297:1
+    Visibility: public -/
+@[rust_loop]
+def manage.bucket_policy_needs_existing_object_tag_for_args_loop
+  (p : manage.BucketPolicy) (args : stmts.BucketPolicyArgs) (i : Std.Usize) :
+  Result Bool
+  := do
+  loop
+    (fun i1 =>
+      manage.bucket_policy_needs_existing_object_tag_for_args_loop.body p args
+      i1)
+    i
+
+/-- [rustfs_kernel::manage::bucket_policy_needs_existing_object_tag_for_args]:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 279:0-297:1
+    Visibility: public -/
+def manage.bucket_policy_needs_existing_object_tag_for_args
+  (p : manage.BucketPolicy) (args : stmts.BucketPolicyArgs) : Result Bool := do
+  let b ← manage.bucket_policy_uses_existing_object_tag_conditions p
+  if b
+  then
+    manage.bucket_policy_needs_existing_object_tag_for_args_loop p args 0#usize
+  else ok false
+
 /-- [rustfs_kernel::stmts::effect_is_allowed]:
     Source: 'ports/rustfs/kernel/src/stmts.rs', lines 16:0-21:1
     Visibility: public -/
@@ -5259,6 +17264,265 @@ def stmts.effect_is_allowed
   match e with
   | stmts.Effect.Allow => ok allowed
   | stmts.Effect.Deny => ok (¬ allowed)
+
+/-- [rustfs_kernel::manage::statement_is_allowed]:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 299:0-310:1
+    Visibility: public -/
+def manage.statement_is_allowed
+  (st : manage.Statement) (args : stmts.Args) (env : condfuncs.Env) :
+  Result Bool
+  := do
+  let vc ← stmts.resolver_for args env
+  let s ← manage.statement_view st
+  let b ← stmts.reaches_condition_eval s args (some vc)
+  let b1 ←
+    if b
+    then
+      conddata.functions_evaluate st.conditions args.conditions (some vc) env
+    else ok false
+  stmts.effect_is_allowed st.effect b1
+
+/-- [rustfs_kernel::manage::bp_statement_is_allowed]:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 311:0-321:1
+    Visibility: public -/
+def manage.bp_statement_is_allowed
+  (st : manage.BPStatement) (args : stmts.BucketPolicyArgs)
+  (env : condfuncs.Env) :
+  Result Bool
+  := do
+  let b ← manage.bp_statement_view st
+  let b1 ← stmts.bp_reaches_condition_eval b args
+  let b2 ←
+    if b1
+    then conddata.functions_evaluate st.conditions args.conditions none env
+    else ok false
+  stmts.effect_is_allowed st.effect b2
+
+/-- [rustfs_kernel::manage::allows_match]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 348:10-349:33 -/
+@[rust_loop_body]
+def manage.allows_match_loop.body
+  (p : manage.Policy) (args : stmts.Args) (env : condfuncs.Env) (i : Std.Usize)
+  :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := alloc.vec.Vec.len p.statements
+  if i < i1
+  then
+    let st ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+        manage.Statement) p.statements i
+    let b ←
+      stmts.Effect.Insts.CoreCmpPartialEqEffect.eq st.effect stmts.Effect.Allow
+    if b
+    then
+      let b1 ← manage.statement_is_allowed st args env
+      if b1
+      then ok (done true)
+      else let i2 ← i + 1#usize
+           ok (cont i2)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else ok (done false)
+
+/-- [rustfs_kernel::manage::allows_match]: loop 0:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 348:10-349:33 -/
+@[rust_loop]
+def manage.allows_match_loop
+  (p : manage.Policy) (args : stmts.Args) (env : condfuncs.Env) (i : Std.Usize)
+  :
+  Result Bool
+  := do
+  loop
+    (fun i1 => manage.allows_match_loop.body p args env i1)
+    i
+
+/-- [rustfs_kernel::manage::allows_match]:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 346:0-356:1 -/
+@[reducible]
+def manage.allows_match
+  (p : manage.Policy) (args : stmts.Args) (env : condfuncs.Env) :
+  Result Bool
+  := do
+  manage.allows_match_loop p args env 0#usize
+
+/-- [rustfs_kernel::manage::denies_clear]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 337:10-338:33 -/
+@[rust_loop_body]
+def manage.denies_clear_loop.body
+  (p : manage.Policy) (args : stmts.Args) (env : condfuncs.Env) (i : Std.Usize)
+  :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := alloc.vec.Vec.len p.statements
+  if i < i1
+  then
+    let st ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+        manage.Statement) p.statements i
+    let b ←
+      stmts.Effect.Insts.CoreCmpPartialEqEffect.eq st.effect stmts.Effect.Deny
+    if b
+    then
+      let b1 ← manage.statement_is_allowed st args env
+      if b1
+      then let i2 ← i + 1#usize
+           ok (cont i2)
+      else ok (done false)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else ok (done true)
+
+/-- [rustfs_kernel::manage::denies_clear]: loop 0:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 337:10-338:33 -/
+@[rust_loop]
+def manage.denies_clear_loop
+  (p : manage.Policy) (args : stmts.Args) (env : condfuncs.Env) (i : Std.Usize)
+  :
+  Result Bool
+  := do
+  loop
+    (fun i1 => manage.denies_clear_loop.body p args env i1)
+    i
+
+/-- [rustfs_kernel::manage::denies_clear]:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 335:0-345:1 -/
+@[reducible]
+def manage.denies_clear
+  (p : manage.Policy) (args : stmts.Args) (env : condfuncs.Env) :
+  Result Bool
+  := do
+  manage.denies_clear_loop p args env 0#usize
+
+/-- [rustfs_kernel::manage::policy_is_allowed]:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 322:0-334:1
+    Visibility: public -/
+def manage.policy_is_allowed
+  (p : manage.Policy) (args : stmts.Args) (env : condfuncs.Env) :
+  Result Bool
+  := do
+  let b ← manage.denies_clear p args env
+  if b
+  then
+    if args.deny_only
+    then ok true
+    else if args.is_owner
+         then ok true
+         else manage.allows_match p args env
+  else ok false
+
+/-- [rustfs_kernel::manage::bucket_allows_match]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 391:10-392:33 -/
+@[rust_loop_body]
+def manage.bucket_allows_match_loop.body
+  (p : manage.BucketPolicy) (args : stmts.BucketPolicyArgs)
+  (env : condfuncs.Env) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := alloc.vec.Vec.len p.statements
+  if i < i1
+  then
+    let st ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+        manage.BPStatement) p.statements i
+    let b ←
+      stmts.Effect.Insts.CoreCmpPartialEqEffect.eq st.effect stmts.Effect.Allow
+    if b
+    then
+      let b1 ← manage.bp_statement_is_allowed st args env
+      if b1
+      then ok (done true)
+      else let i2 ← i + 1#usize
+           ok (cont i2)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else ok (done false)
+
+/-- [rustfs_kernel::manage::bucket_allows_match]: loop 0:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 391:10-392:33 -/
+@[rust_loop]
+def manage.bucket_allows_match_loop
+  (p : manage.BucketPolicy) (args : stmts.BucketPolicyArgs)
+  (env : condfuncs.Env) (i : Std.Usize) :
+  Result Bool
+  := do
+  loop
+    (fun i1 => manage.bucket_allows_match_loop.body p args env i1)
+    i
+
+/-- [rustfs_kernel::manage::bucket_allows_match]:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 385:0-399:1 -/
+@[reducible]
+def manage.bucket_allows_match
+  (p : manage.BucketPolicy) (args : stmts.BucketPolicyArgs)
+  (env : condfuncs.Env) :
+  Result Bool
+  := do
+  manage.bucket_allows_match_loop p args env 0#usize
+
+/-- [rustfs_kernel::manage::bucket_denies_clear]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 376:10-377:33 -/
+@[rust_loop_body]
+def manage.bucket_denies_clear_loop.body
+  (p : manage.BucketPolicy) (args : stmts.BucketPolicyArgs)
+  (env : condfuncs.Env) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := alloc.vec.Vec.len p.statements
+  if i < i1
+  then
+    let st ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+        manage.BPStatement) p.statements i
+    let b ←
+      stmts.Effect.Insts.CoreCmpPartialEqEffect.eq st.effect stmts.Effect.Deny
+    if b
+    then
+      let b1 ← manage.bp_statement_is_allowed st args env
+      if b1
+      then let i2 ← i + 1#usize
+           ok (cont i2)
+      else ok (done false)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else ok (done true)
+
+/-- [rustfs_kernel::manage::bucket_denies_clear]: loop 0:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 376:10-377:33 -/
+@[rust_loop]
+def manage.bucket_denies_clear_loop
+  (p : manage.BucketPolicy) (args : stmts.BucketPolicyArgs)
+  (env : condfuncs.Env) (i : Std.Usize) :
+  Result Bool
+  := do
+  loop
+    (fun i1 => manage.bucket_denies_clear_loop.body p args env i1)
+    i
+
+/-- [rustfs_kernel::manage::bucket_denies_clear]:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 370:0-384:1 -/
+@[reducible]
+def manage.bucket_denies_clear
+  (p : manage.BucketPolicy) (args : stmts.BucketPolicyArgs)
+  (env : condfuncs.Env) :
+  Result Bool
+  := do
+  manage.bucket_denies_clear_loop p args env 0#usize
+
+/-- [rustfs_kernel::manage::bucket_policy_is_allowed]:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 357:0-369:1
+    Visibility: public -/
+def manage.bucket_policy_is_allowed
+  (p : manage.BucketPolicy) (args : stmts.BucketPolicyArgs)
+  (env : condfuncs.Env) :
+  Result Bool
+  := do
+  let b ← manage.bucket_denies_clear p args env
+  if b
+  then if args.is_owner
+       then ok true
+       else manage.bucket_allows_match p args env
+  else ok false
 
 /-- [rustfs_kernel::stmts::statement_is_allowed]:
     Source: 'ports/rustfs/kernel/src/stmts.rs', lines 195:0-199:1
@@ -5391,256 +17655,6 @@ def policies.policy_is_allowed
       else policies.some_allow statements args env
   else ok false
 
-/-- [rustfs_kernel::stmts::all_kms]: loop body 0:
-    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 219:4-226:1 -/
-@[rust_loop_body]
-def stmts.all_kms_loop.body
-  (actions : Slice acts.Action) (i : Std.Usize) :
-  Result (ControlFlow Std.Usize Bool)
-  := do
-  let i1 := Slice.len actions
-  if i < i1
-  then
-    let a ← Slice.index_usize actions i
-    let b ←
-      core.cmp.PartialEq.ne.trait_default
-        acts.Family.Insts.CoreCmpPartialEqFamily a.family acts.Family.Kms
-    if b
-    then ok (done false)
-    else let i2 ← i + 1#usize
-         ok (cont i2)
-  else ok (done true)
-
-/-- [rustfs_kernel::stmts::all_kms]: loop 0:
-    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 219:4-226:1 -/
-@[rust_loop]
-def stmts.all_kms_loop
-  (actions : Slice acts.Action) (i : Std.Usize) : Result Bool := do
-  loop
-    (fun i1 => stmts.all_kms_loop.body actions i1)
-    i
-
-/-- [rustfs_kernel::stmts::all_kms]:
-    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 217:0-226:1 -/
-@[reducible]
-def stmts.all_kms (actions : Slice acts.Action) : Result Bool := do
-  stmts.all_kms_loop actions 0#usize
-
-/-- [rustfs_kernel::wildmatch::is_simple_match]:
-    Source: 'ports/rustfs/kernel/src/wildmatch.rs', lines 38:0-40:1
-    Visibility: public -/
-def wildmatch.is_simple_match
-  (pattern : Slice Std.U8) («name» : Slice Std.U8) : Result Bool := do
-  wildmatch.inner_match pattern «name» true
-
-/-- [rustfs_kernel::stmts::any_simple_match]: loop body 0:
-    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 203:4-210:1 -/
-@[rust_loop_body]
-def stmts.any_simple_match_loop.body
-  (patterns : Slice (alloc.vec.Vec Std.U8)) («name» : Slice Std.U8)
-  (i : Std.Usize) :
-  Result (ControlFlow Std.Usize Bool)
-  := do
-  let i1 := Slice.len patterns
-  if i < i1
-  then
-    let v ← Slice.index_usize patterns i
-    let s := alloc.vec.Vec.deref v
-    let b ← wildmatch.is_simple_match s «name»
-    if b
-    then ok (done true)
-    else let i2 ← i + 1#usize
-         ok (cont i2)
-  else ok (done false)
-
-/-- [rustfs_kernel::stmts::any_simple_match]: loop 0:
-    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 203:4-210:1 -/
-@[rust_loop]
-def stmts.any_simple_match_loop
-  (patterns : Slice (alloc.vec.Vec Std.U8)) («name» : Slice Std.U8)
-  (i : Std.Usize) :
-  Result Bool
-  := do
-  loop
-    (fun i1 => stmts.any_simple_match_loop.body patterns «name» i1)
-    i
-
-/-- [rustfs_kernel::stmts::any_simple_match]:
-    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 201:0-210:1 -/
-@[reducible]
-def stmts.any_simple_match
-  (patterns : Slice (alloc.vec.Vec Std.U8)) («name» : Slice Std.U8) :
-  Result Bool
-  := do
-  stmts.any_simple_match_loop patterns «name» 0#usize
-
-/-- [rustfs_kernel::stmts::Principal]
-    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 35:0-38:1
-    Visibility: public -/
-structure stmts.Principal where
-  aws : alloc.vec.Vec (alloc.vec.Vec Std.U8)
-  service : alloc.vec.Vec (alloc.vec.Vec Std.U8)
-
-/-- [rustfs_kernel::stmts::principal_is_match]:
-    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 213:0-215:1
-    Visibility: public -/
-def stmts.principal_is_match
-  (p : stmts.Principal) (account : Slice Std.U8) : Result Bool := do
-  let s := alloc.vec.Vec.deref p.aws
-  let b ← stmts.any_simple_match s account
-  if b
-  then ok true
-  else
-    let s1 := alloc.vec.Vec.deref p.service
-    stmts.any_simple_match s1 account
-
-/-- [rustfs_kernel::stmts::BucketPolicyArgs]
-    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 66:0-73:1
-    Visibility: public -/
-structure stmts.BucketPolicyArgs where
-  account : alloc.vec.Vec Std.U8
-  action : acts.Action
-  bucket : alloc.vec.Vec Std.U8
-  conditions : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec
-    (alloc.vec.Vec Std.U8)))
-  is_owner : Bool
-  object : alloc.vec.Vec Std.U8
-
-/-- [rustfs_kernel::stmts::BPStatement]
-    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 41:0-49:1
-    Visibility: public -/
-structure stmts.BPStatement where
-  effect : stmts.Effect
-  principal : stmts.Principal
-  actions : alloc.vec.Vec acts.Action
-  not_actions : alloc.vec.Vec acts.Action
-  resources : alloc.vec.Vec rsrc.Resource
-  not_resources : alloc.vec.Vec rsrc.Resource
-  conditions : condfuncs.Functions
-
-/-- [rustfs_kernel::stmts::bp_reaches_condition_eval]:
-    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 229:0-250:1
-    Visibility: public -/
-def stmts.bp_reaches_condition_eval
-  (st : stmts.BPStatement) (args : stmts.BucketPolicyArgs) : Result Bool := do
-  let i := alloc.vec.Vec.len st.actions
-  if i > 0#usize
-  then
-    let s := alloc.vec.Vec.deref st.actions
-    let b ← stmts.all_kms s
-    if b
-    then ok false
-    else
-      let s1 := alloc.vec.Vec.deref args.account
-      let b1 ← stmts.principal_is_match st.principal s1
-      if b1
-      then
-        let deny ←
-          stmts.Effect.Insts.CoreCmpPartialEqEffect.eq st.effect
-            stmts.Effect.Deny
-        let s2 := alloc.vec.Vec.deref st.actions
-        let s3 := alloc.vec.Vec.deref st.not_actions
-        let b2 ← acts.statement_covers s2 s3 args.action deny
-        if b2
-        then
-          let s4 := alloc.vec.Vec.deref args.bucket
-          let s5 := alloc.vec.Vec.deref args.object
-          let s6 ←
-            lift (Array.to_slice
-              (Array.make 9#usize [
-                115#u8, 51#u8, 58#u8, 112#u8, 114#u8, 101#u8, 102#u8, 105#u8,
-                120#u8
-                ]))
-          let b3 ← condfuncs.references_key_name st.conditions s6
-          let resource ← stmts.build_resource args.action s4 s5 b3
-          let i1 := alloc.vec.Vec.len st.resources
-          if i1 > 0#usize
-          then
-            let s7 := alloc.vec.Vec.deref st.resources
-            let s8 := alloc.vec.Vec.deref resource
-            let b4 ← rsrc.set_is_match s7 s8 args.conditions none
-            if b4
-            then
-              let i2 := alloc.vec.Vec.len st.not_resources
-              if i2 > 0#usize
-              then
-                let s9 := alloc.vec.Vec.deref st.not_resources
-                let s10 := alloc.vec.Vec.deref resource
-                let b5 ← rsrc.set_is_match s9 s10 args.conditions none
-                if b5
-                then ok false
-                else ok true
-              else ok true
-            else ok false
-          else
-            let i2 := alloc.vec.Vec.len st.not_resources
-            if i2 > 0#usize
-            then
-              let s7 := alloc.vec.Vec.deref st.not_resources
-              let s8 := alloc.vec.Vec.deref resource
-              let b4 ← rsrc.set_is_match s7 s8 args.conditions none
-              if b4
-              then ok false
-              else ok true
-            else ok true
-        else ok false
-      else ok false
-  else
-    let s := alloc.vec.Vec.deref args.account
-    let b ← stmts.principal_is_match st.principal s
-    if b
-    then
-      let deny ←
-        stmts.Effect.Insts.CoreCmpPartialEqEffect.eq st.effect
-          stmts.Effect.Deny
-      let s1 := alloc.vec.Vec.deref st.actions
-      let s2 := alloc.vec.Vec.deref st.not_actions
-      let b1 ← acts.statement_covers s1 s2 args.action deny
-      if b1
-      then
-        let s3 := alloc.vec.Vec.deref args.bucket
-        let s4 := alloc.vec.Vec.deref args.object
-        let s5 ←
-          lift (Array.to_slice
-            (Array.make 9#usize [
-              115#u8, 51#u8, 58#u8, 112#u8, 114#u8, 101#u8, 102#u8, 105#u8,
-              120#u8
-              ]))
-        let b2 ← condfuncs.references_key_name st.conditions s5
-        let resource ← stmts.build_resource args.action s3 s4 b2
-        let i1 := alloc.vec.Vec.len st.resources
-        if i1 > 0#usize
-        then
-          let s6 := alloc.vec.Vec.deref st.resources
-          let s7 := alloc.vec.Vec.deref resource
-          let b3 ← rsrc.set_is_match s6 s7 args.conditions none
-          if b3
-          then
-            let i2 := alloc.vec.Vec.len st.not_resources
-            if i2 > 0#usize
-            then
-              let s8 := alloc.vec.Vec.deref st.not_resources
-              let s9 := alloc.vec.Vec.deref resource
-              let b4 ← rsrc.set_is_match s8 s9 args.conditions none
-              if b4
-              then ok false
-              else ok true
-            else ok true
-          else ok false
-        else
-          let i2 := alloc.vec.Vec.len st.not_resources
-          if i2 > 0#usize
-          then
-            let s6 := alloc.vec.Vec.deref st.not_resources
-            let s7 := alloc.vec.Vec.deref resource
-            let b3 ← rsrc.set_is_match s6 s7 args.conditions none
-            if b3
-            then ok false
-            else ok true
-          else ok true
-      else ok false
-    else ok false
-
 /-- [rustfs_kernel::stmts::bp_statement_is_allowed]:
     Source: 'ports/rustfs/kernel/src/stmts.rs', lines 253:0-257:1
     Visibility: public -/
@@ -5769,5 +17783,754 @@ def policies.bucket_policy_is_allowed
     then ok true
     else policies.bp_some_allow statements args env
   else ok false
+
+/-- [rustfs_kernel::resets::is_empty]:
+    Source: 'ports/rustfs/kernel/src/resets.rs', lines 6:0-6:60
+    Visibility: public -/
+def resets.is_empty (set : Slice rsrc.Resource) : Result Bool := do
+  let i := Slice.len set
+  ok (i = 0#usize)
+
+/-- [rustfs_kernel::resets::as_slice]:
+    Source: 'ports/rustfs/kernel/src/resets.rs', lines 8:0-8:56
+    Visibility: public -/
+def resets.as_slice
+  (set : Slice rsrc.Resource) : Result (Slice rsrc.Resource) := do
+  ok set
+
+/-- [rustfs_kernel::resets::push_unique]:
+    Source: 'ports/rustfs/kernel/src/resets.rs', lines 16:0-18:1
+    Visibility: public -/
+def resets.push_unique
+  (set : alloc.vec.Vec rsrc.Resource) (resource : rsrc.Resource) :
+  Result (alloc.vec.Vec rsrc.Resource)
+  := do
+  let s := alloc.vec.Vec.deref set
+  let b ← resets.member s resource
+  if b
+  then ok set
+  else alloc.vec.Vec.push set resource
+
+/-- [rustfs_kernel::resets::set_matches]:
+    Source: 'ports/rustfs/kernel/src/resets.rs', lines 31:0-33:1
+    Visibility: public -/
+def resets.set_matches
+  (set : Slice rsrc.Resource) («name» : Slice Std.U8)
+  (values : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec
+  (alloc.vec.Vec Std.U8)))) :
+  Result Bool
+  := do
+  rsrc.set_is_match set «name» values none
+
+/-- [rustfs_kernel::valids::default_is_valid]:
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 14:0-14:42
+    Visibility: public -/
+def valids.default_is_valid : Result Bool := do
+  ok true
+
+/-- [rustfs_kernel::valids::id_is_empty]:
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 16:0-16:55
+    Visibility: public -/
+def valids.id_is_empty (id : Slice Std.U8) : Result Bool := do
+  let i := Slice.len id
+  ok (i = 0#usize)
+
+/-- [rustfs_kernel::valids::id_as_slice]:
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 18:0-18:45
+    Visibility: public -/
+def valids.id_as_slice (id : Slice Std.U8) : Result (Slice Std.U8) := do
+  ok id
+
+/-- [rustfs_kernel::valids::is_admin]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 31:10-31:90
+    Visibility: public -/
+@[rust_loop_body]
+def valids.is_admin_loop.body
+  (st : stmts.Statement) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := alloc.vec.Vec.len st.actions
+  if i < i1
+  then
+    let a ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice acts.Action)
+        st.actions i
+    let b ←
+      acts.Family.Insts.CoreCmpPartialEqFamily.eq a.family acts.Family.Admin
+    if b
+    then ok (done true)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else ok (done false)
+
+/-- [rustfs_kernel::valids::is_admin]: loop 0:
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 31:10-31:90
+    Visibility: public -/
+@[rust_loop]
+def valids.is_admin_loop
+  (st : stmts.Statement) (i : Std.Usize) : Result Bool := do
+  loop
+    (fun i1 => valids.is_admin_loop.body st i1)
+    i
+
+/-- [rustfs_kernel::valids::is_admin]:
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 29:0-33:1
+    Visibility: public -/
+@[reducible]
+def valids.is_admin (st : stmts.Statement) : Result Bool := do
+  valids.is_admin_loop st 0#usize
+
+/-- [rustfs_kernel::valids::is_sts]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 37:10-37:88
+    Visibility: public -/
+@[rust_loop_body]
+def valids.is_sts_loop.body
+  (st : stmts.Statement) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := alloc.vec.Vec.len st.actions
+  if i < i1
+  then
+    let a ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice acts.Action)
+        st.actions i
+    let b ←
+      acts.Family.Insts.CoreCmpPartialEqFamily.eq a.family acts.Family.Sts
+    if b
+    then ok (done true)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else ok (done false)
+
+/-- [rustfs_kernel::valids::is_sts]: loop 0:
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 37:10-37:88
+    Visibility: public -/
+@[rust_loop]
+def valids.is_sts_loop
+  (st : stmts.Statement) (i : Std.Usize) : Result Bool := do
+  loop
+    (fun i1 => valids.is_sts_loop.body st i1)
+    i
+
+/-- [rustfs_kernel::valids::is_sts]:
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 35:0-39:1
+    Visibility: public -/
+@[reducible]
+def valids.is_sts (st : stmts.Statement) : Result Bool := do
+  valids.is_sts_loop st 0#usize
+
+/-- [rustfs_kernel::varctx::VariableContext]
+    Source: 'ports/rustfs/kernel/src/varctx.rs', lines 7:0-16:1
+    Visibility: public -/
+structure varctx.VariableContext where
+  is_https : Bool
+  source_ip : Option (alloc.vec.Vec Std.U8)
+  account_id : Option (alloc.vec.Vec Std.U8)
+  region : Option (alloc.vec.Vec Std.U8)
+  username : Option (alloc.vec.Vec Std.U8)
+  claims : Option (alloc.vec.Vec ((alloc.vec.Vec Std.U8) × claims.Value))
+  conditions : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec
+    (alloc.vec.Vec Std.U8)))
+  custom_variables : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec
+    Std.U8))
+
+/-- [rustfs_kernel::varctx::VariableResolver]
+    Source: 'ports/rustfs/kernel/src/varctx.rs', lines 17:0-19:1
+    Visibility: public -/
+structure varctx.VariableResolver where
+  context : varctx.VariableContext
+
+/-- [rustfs_kernel::varctx::context_new]:
+    Source: 'ports/rustfs/kernel/src/varctx.rs', lines 21:0-32:1
+    Visibility: public -/
+def varctx.context_new : Result varctx.VariableContext := do
+  ok
+    {
+      is_https := false,
+      source_ip := none,
+      account_id := none,
+      region := none,
+      username := none,
+      claims := none,
+      conditions :=
+        (alloc.vec.Vec.new
+          ((alloc.vec.Vec
+          Std.U8)
+          ×
+          (alloc.vec.Vec
+          (alloc.vec.Vec
+          Std.U8)))),
+      custom_variables :=
+        (alloc.vec.Vec.new ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec Std.U8)))
+    }
+
+/-- [rustfs_kernel::varctx::resolver_new]:
+    Source: 'ports/rustfs/kernel/src/varctx.rs', lines 34:0-36:1
+    Visibility: public -/
+def varctx.resolver_new
+  (context : varctx.VariableContext) : Result varctx.VariableResolver := do
+  ok { context }
+
+/-- [rustfs_kernel::varctx::clone_option]:
+    Source: 'ports/rustfs/kernel/src/varctx.rs', lines 37:0-42:1 -/
+def varctx.clone_option
+  (value : Option (alloc.vec.Vec Std.U8)) :
+  Result (Option (alloc.vec.Vec Std.U8))
+  := do
+  match value with
+  | none => ok none
+  | some v =>
+    let v1 ← alloc.vec.CloneVec.clone core.clone.CloneU8 v
+    ok (some v1)
+
+/-- [rustfs_kernel::varctx::scalar_string]:
+    Source: 'ports/rustfs/kernel/src/varctx.rs', lines 43:0-50:1 -/
+def varctx.scalar_string
+  (value : claims.Value) : Result (Option (alloc.vec.Vec Std.U8)) := do
+  match value with
+  | claims.Value.Null => ok none
+  | claims.Value.Bool b =>
+    if b
+    then
+      let s ←
+        lift (Array.to_slice
+          (Array.make 4#usize [ 116#u8, 114#u8, 117#u8, 101#u8 ]))
+      let v ← alloc.slice.Slice.to_vec core.clone.CloneU8 s
+      ok (some v)
+    else
+      let s ←
+        lift (Array.to_slice
+          (Array.make 5#usize [ 102#u8, 97#u8, 108#u8, 115#u8, 101#u8 ]))
+      let v ← alloc.slice.Slice.to_vec core.clone.CloneU8 s
+      ok (some v)
+  | claims.Value.Number s =>
+    let v ← alloc.vec.CloneVec.clone core.clone.CloneU8 s
+    ok (some v)
+  | claims.Value.String s =>
+    let v ← alloc.vec.CloneVec.clone core.clone.CloneU8 s
+    ok (some v)
+  | claims.Value.Array _ => ok none
+  | claims.Value.Object _ => ok none
+
+/-- [rustfs_kernel::varctx::array_strings]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/varctx.rs', lines 54:4-59:5 -/
+@[rust_loop_body]
+def varctx.array_strings_loop.body
+  (array : Slice claims.Value) (strings : alloc.vec.Vec (alloc.vec.Vec Std.U8))
+  (j : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec (alloc.vec.Vec Std.U8)) × Std.Usize)
+    (alloc.vec.Vec (alloc.vec.Vec Std.U8)))
+  := do
+  let i := Slice.len array
+  if j < i
+  then
+    let v ← Slice.index_usize array j
+    let o ← varctx.scalar_string v
+    let strings1 ←
+      match o with
+      | none => ok strings
+      | some s => alloc.vec.Vec.push strings s
+    let j1 ← j + 1#usize
+    ok (cont (strings1, j1))
+  else ok (done strings)
+
+/-- [rustfs_kernel::varctx::array_strings]: loop 0:
+    Source: 'ports/rustfs/kernel/src/varctx.rs', lines 54:4-59:5 -/
+@[rust_loop]
+def varctx.array_strings_loop
+  (array : Slice claims.Value) (strings : alloc.vec.Vec (alloc.vec.Vec Std.U8))
+  (j : Std.Usize) :
+  Result (alloc.vec.Vec (alloc.vec.Vec Std.U8))
+  := do
+  loop
+    (fun (strings1, j1) => varctx.array_strings_loop.body array strings1 j1)
+    (strings, j)
+
+/-- [rustfs_kernel::varctx::array_strings]:
+    Source: 'ports/rustfs/kernel/src/varctx.rs', lines 51:0-61:1 -/
+@[reducible]
+def varctx.array_strings
+  (array : Slice claims.Value) :
+  Result (alloc.vec.Vec (alloc.vec.Vec Std.U8))
+  := do
+  varctx.array_strings_loop array (alloc.vec.Vec.new (alloc.vec.Vec Std.U8))
+    0#usize
+
+/-- [rustfs_kernel::varctx::get_claim_as_strings]:
+    Source: 'ports/rustfs/kernel/src/varctx.rs', lines 63:0-79:1
+    Visibility: public -/
+def varctx.get_claim_as_strings
+  (resolver : varctx.VariableResolver) («name» : Slice Std.U8) :
+  Result (Option (alloc.vec.Vec (alloc.vec.Vec Std.U8)))
+  := do
+  match resolver.context.claims with
+  | none => ok none
+  | some c =>
+    let o ← claims.find c «name»
+    match o with
+    | none => ok none
+    | some i =>
+      let (_, v) ←
+        alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+          ((alloc.vec.Vec Std.U8) × claims.Value)) c i
+      match v with
+      | claims.Value.Null =>
+        let o1 ← varctx.scalar_string claims.Value.Null
+        match o1 with
+        | none => ok none
+        | some s =>
+          let y ←
+            lift (Std.Array.to_slice (Array.make 1#usize [ s ] : Array
+              (alloc.vec.Vec Std.U8) 1#usize))
+          let ret := alloc.slice.Slice.into_vec y
+          ok (some ret)
+      | claims.Value.Bool _ =>
+        let o1 ← varctx.scalar_string v
+        match o1 with
+        | none => ok none
+        | some s =>
+          let y ←
+            lift (Std.Array.to_slice (Array.make 1#usize [ s ] : Array
+              (alloc.vec.Vec Std.U8) 1#usize))
+          let ret := alloc.slice.Slice.into_vec y
+          ok (some ret)
+      | claims.Value.Number _ =>
+        let o1 ← varctx.scalar_string v
+        match o1 with
+        | none => ok none
+        | some s =>
+          let y ←
+            lift (Std.Array.to_slice (Array.make 1#usize [ s ] : Array
+              (alloc.vec.Vec Std.U8) 1#usize))
+          let ret := alloc.slice.Slice.into_vec y
+          ok (some ret)
+      | claims.Value.String _ =>
+        let o1 ← varctx.scalar_string v
+        match o1 with
+        | none => ok none
+        | some s =>
+          let y ←
+            lift (Std.Array.to_slice (Array.make 1#usize [ s ] : Array
+              (alloc.vec.Vec Std.U8) 1#usize))
+          let ret := alloc.slice.Slice.into_vec y
+          ok (some ret)
+      | claims.Value.Array array =>
+        let s := alloc.vec.Vec.deref array
+        let v1 ← varctx.array_strings s
+        ok (some v1)
+      | claims.Value.Object _ =>
+        let o1 ← varctx.scalar_string v
+        match o1 with
+        | none => ok none
+        | some s =>
+          let y ←
+            lift (Std.Array.to_slice (Array.make 1#usize [ s ] : Array
+              (alloc.vec.Vec Std.U8) 1#usize))
+          let ret := alloc.slice.Slice.into_vec y
+          ok (some ret)
+
+/-- [rustfs_kernel::varctx::resolve_username]:
+    Source: 'ports/rustfs/kernel/src/varctx.rs', lines 81:0-83:1
+    Visibility: public -/
+def varctx.resolve_username
+  (resolver : varctx.VariableResolver) :
+  Result (Option (alloc.vec.Vec Std.U8))
+  := do
+  varctx.clone_option resolver.context.username
+
+/-- [rustfs_kernel::varctx::resolve_userid]:
+    Source: 'ports/rustfs/kernel/src/varctx.rs', lines 85:0-100:1
+    Visibility: public -/
+def varctx.resolve_userid
+  (resolver : varctx.VariableResolver) :
+  Result (Option (alloc.vec.Vec Std.U8))
+  := do
+  let s ←
+    lift (Array.to_slice (Array.make 3#usize [ 115#u8, 117#u8, 98#u8 ]))
+  let o ← varctx.get_claim_as_strings resolver s
+  let values ←
+    match o with
+    | none =>
+      do
+      let s1 ←
+        lift (Array.to_slice
+          (Array.make 6#usize [
+            112#u8, 97#u8, 114#u8, 101#u8, 110#u8, 116#u8
+            ]))
+      varctx.get_claim_as_strings resolver s1
+    | some _ => ok o
+  match values with
+  | none => ok none
+  | some v =>
+    let i := alloc.vec.Vec.len v
+    if i = 0#usize
+    then ok none
+    else
+      let i1 := alloc.vec.Vec.len v
+      let i2 ← i1 - 1#usize
+      let v1 ←
+        alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+          (alloc.vec.Vec Std.U8)) v i2
+      let v2 ← alloc.vec.CloneVec.clone core.clone.CloneU8 v1
+      ok (some v2)
+
+/-- [rustfs_kernel::varctx::resolve_principal_type]:
+    Source: 'ports/rustfs/kernel/src/varctx.rs', lines 102:0-112:1
+    Visibility: public -/
+def varctx.resolve_principal_type
+  (resolver : varctx.VariableResolver) : Result (alloc.vec.Vec Std.U8) := do
+  match resolver.context.claims with
+  | none =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 4#usize [ 85#u8, 115#u8, 101#u8, 114#u8 ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | some table =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 7#usize [
+          114#u8, 111#u8, 108#u8, 101#u8, 65#u8, 114#u8, 110#u8
+          ]))
+    let o ← claims.find table s
+    let b := core.option.Option.is_some o
+    if b
+    then
+      let s1 ←
+        lift (Array.to_slice
+          (Array.make 11#usize [
+            65#u8, 115#u8, 115#u8, 117#u8, 109#u8, 101#u8, 100#u8, 82#u8,
+            111#u8, 108#u8, 101#u8
+            ]))
+      alloc.slice.Slice.to_vec core.clone.CloneU8 s1
+    else
+      let s1 ←
+        lift (Array.to_slice
+          (Array.make 6#usize [
+            112#u8, 97#u8, 114#u8, 101#u8, 110#u8, 116#u8
+            ]))
+      let o1 ← claims.find table s1
+      let b1 := core.option.Option.is_some o1
+      if b1
+      then
+        let s2 ←
+          lift (Array.to_slice
+            (Array.make 9#usize [
+              115#u8, 97#u8, 45#u8, 112#u8, 111#u8, 108#u8, 105#u8, 99#u8,
+              121#u8
+              ]))
+        let o2 ← claims.find table s2
+        let b2 := core.option.Option.is_some o2
+        if b2
+        then
+          let s3 ←
+            lift (Array.to_slice
+              (Array.make 14#usize [
+                83#u8, 101#u8, 114#u8, 118#u8, 105#u8, 99#u8, 101#u8, 65#u8,
+                99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8
+                ]))
+          alloc.slice.Slice.to_vec core.clone.CloneU8 s3
+        else
+          let s3 ←
+            lift (Array.to_slice
+              (Array.make 4#usize [ 85#u8, 115#u8, 101#u8, 114#u8 ]))
+          alloc.slice.Slice.to_vec core.clone.CloneU8 s3
+      else
+        let s2 ←
+          lift (Array.to_slice
+            (Array.make 4#usize [ 85#u8, 115#u8, 101#u8, 114#u8 ]))
+        alloc.slice.Slice.to_vec core.clone.CloneU8 s2
+
+/-- [rustfs_kernel::varctx::resolve_secure_transport]:
+    Source: 'ports/rustfs/kernel/src/varctx.rs', lines 114:0-120:1
+    Visibility: public -/
+def varctx.resolve_secure_transport
+  (resolver : varctx.VariableResolver) : Result (alloc.vec.Vec Std.U8) := do
+  if resolver.context.is_https
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 4#usize [ 116#u8, 114#u8, 117#u8, 101#u8 ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else
+    let s ←
+      lift (Array.to_slice
+        (Array.make 5#usize [ 102#u8, 97#u8, 108#u8, 115#u8, 101#u8 ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+
+/-- [rustfs_kernel::varctx::resolve_account_id]:
+    Source: 'ports/rustfs/kernel/src/varctx.rs', lines 122:0-124:1
+    Visibility: public -/
+def varctx.resolve_account_id
+  (resolver : varctx.VariableResolver) :
+  Result (Option (alloc.vec.Vec Std.U8))
+  := do
+  varctx.clone_option resolver.context.account_id
+
+/-- [rustfs_kernel::varctx::resolve_region]:
+    Source: 'ports/rustfs/kernel/src/varctx.rs', lines 126:0-128:1
+    Visibility: public -/
+def varctx.resolve_region
+  (resolver : varctx.VariableResolver) :
+  Result (Option (alloc.vec.Vec Std.U8))
+  := do
+  varctx.clone_option resolver.context.region
+
+/-- [rustfs_kernel::varctx::resolve_source_ip]:
+    Source: 'ports/rustfs/kernel/src/varctx.rs', lines 130:0-132:1
+    Visibility: public -/
+def varctx.resolve_source_ip
+  (resolver : varctx.VariableResolver) :
+  Result (Option (alloc.vec.Vec Std.U8))
+  := do
+  varctx.clone_option resolver.context.source_ip
+
+/-- [rustfs_kernel::varctx::resolve_custom_variable]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/varctx.rs', lines 140:4-148:1
+    Visibility: public -/
+@[rust_loop_body]
+def varctx.resolve_custom_variable_loop.body
+  (resolver : varctx.VariableResolver) (key : alloc.vec.Vec Std.U8)
+  (i : Std.Usize) :
+  Result (ControlFlow Std.Usize (Option (alloc.vec.Vec Std.U8)))
+  := do
+  let i1 := alloc.vec.Vec.len resolver.context.custom_variables
+  if i < i1
+  then
+    let (candidate, value) ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+        ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec Std.U8)))
+        resolver.context.custom_variables i
+    let s := alloc.vec.Vec.deref candidate
+    let s1 := alloc.vec.Vec.deref key
+    let b ← bytes.eq s s1
+    if b
+    then
+      let v ← alloc.vec.CloneVec.clone core.clone.CloneU8 value
+      ok (done (some v))
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else ok (done none)
+
+/-- [rustfs_kernel::varctx::resolve_custom_variable]: loop 0:
+    Source: 'ports/rustfs/kernel/src/varctx.rs', lines 140:4-148:1
+    Visibility: public -/
+@[rust_loop]
+def varctx.resolve_custom_variable_loop
+  (resolver : varctx.VariableResolver) (key : alloc.vec.Vec Std.U8)
+  (i : Std.Usize) :
+  Result (Option (alloc.vec.Vec Std.U8))
+  := do
+  loop
+    (fun i1 => varctx.resolve_custom_variable_loop.body resolver key i1)
+    i
+
+/-- [rustfs_kernel::varctx::resolve_custom_variable]:
+    Source: 'ports/rustfs/kernel/src/varctx.rs', lines 134:0-148:1
+    Visibility: public -/
+def varctx.resolve_custom_variable
+  (resolver : varctx.VariableResolver) («name» : Slice Std.U8) :
+  Result (Option (alloc.vec.Vec Std.U8))
+  := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 7#usize [
+        99#u8, 117#u8, 115#u8, 116#u8, 111#u8, 109#u8, 58#u8
+        ]))
+  let b ← bytes.starts_with «name» s
+  if b
+  then
+    let i := Slice.len «name»
+    let key ← bytes.slice «name» 7#usize i
+    varctx.resolve_custom_variable_loop resolver key 0#usize
+  else ok none
+
+/-- [rustfs_kernel::varctx::is_dynamic]:
+    Source: 'ports/rustfs/kernel/src/varctx.rs', lines 150:0-152:1
+    Visibility: public -/
+def varctx.is_dynamic («name» : Slice Std.U8) : Result Bool := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 15#usize [
+        97#u8, 119#u8, 115#u8, 58#u8, 67#u8, 117#u8, 114#u8, 114#u8, 101#u8,
+        110#u8, 116#u8, 84#u8, 105#u8, 109#u8, 101#u8
+        ]))
+  let b ← bytes.eq «name» s
+  if b
+  then ok true
+  else
+    let s1 ←
+      lift (Array.to_slice
+        (Array.make 13#usize [
+          97#u8, 119#u8, 115#u8, 58#u8, 69#u8, 112#u8, 111#u8, 99#u8, 104#u8,
+          84#u8, 105#u8, 109#u8, 101#u8
+          ]))
+    bytes.eq «name» s1
+
+/-- [rustfs_kernel::varctx::resolve]:
+    Source: 'ports/rustfs/kernel/src/varctx.rs', lines 154:0-187:1
+    Visibility: public -/
+def varctx.resolve
+  (resolver : varctx.VariableResolver) («name» : Slice Std.U8)
+  (env : condfuncs.Env) :
+  Result (Option (alloc.vec.Vec Std.U8))
+  := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        97#u8, 119#u8, 115#u8, 58#u8, 117#u8, 115#u8, 101#u8, 114#u8, 110#u8,
+        97#u8, 109#u8, 101#u8
+        ]))
+  let b ← bytes.eq «name» s
+  if b
+  then varctx.resolve_username resolver
+  else
+    let s1 ←
+      lift (Array.to_slice
+        (Array.make 10#usize [
+          97#u8, 119#u8, 115#u8, 58#u8, 117#u8, 115#u8, 101#u8, 114#u8, 105#u8,
+          100#u8
+          ]))
+    let b1 ← bytes.eq «name» s1
+    if b1
+    then varctx.resolve_userid resolver
+    else
+      let s2 ←
+        lift (Array.to_slice
+          (Array.make 17#usize [
+            97#u8, 119#u8, 115#u8, 58#u8, 80#u8, 114#u8, 105#u8, 110#u8, 99#u8,
+            105#u8, 112#u8, 97#u8, 108#u8, 84#u8, 121#u8, 112#u8, 101#u8
+            ]))
+      let b2 ← bytes.eq «name» s2
+      if b2
+      then let v ← varctx.resolve_principal_type resolver
+           ok (some v)
+      else
+        let s3 ←
+          lift (Array.to_slice
+            (Array.make 19#usize [
+              97#u8, 119#u8, 115#u8, 58#u8, 83#u8, 101#u8, 99#u8, 117#u8,
+              114#u8, 101#u8, 84#u8, 114#u8, 97#u8, 110#u8, 115#u8, 112#u8,
+              111#u8, 114#u8, 116#u8
+              ]))
+        let b3 ← bytes.eq «name» s3
+        if b3
+        then let v ← varctx.resolve_secure_transport resolver
+             ok (some v)
+        else
+          let s4 ←
+            lift (Array.to_slice
+              (Array.make 15#usize [
+                97#u8, 119#u8, 115#u8, 58#u8, 67#u8, 117#u8, 114#u8, 114#u8,
+                101#u8, 110#u8, 116#u8, 84#u8, 105#u8, 109#u8, 101#u8
+                ]))
+          let b4 ← bytes.eq «name» s4
+          if b4
+          then
+            let v ←
+              alloc.vec.CloneVec.clone core.clone.CloneU8 env.now_rfc3339
+            ok (some v)
+          else
+            let s5 ←
+              lift (Array.to_slice
+                (Array.make 13#usize [
+                  97#u8, 119#u8, 115#u8, 58#u8, 69#u8, 112#u8, 111#u8, 99#u8,
+                  104#u8, 84#u8, 105#u8, 109#u8, 101#u8
+                  ]))
+            let b5 ← bytes.eq «name» s5
+            if b5
+            then
+              let v ←
+                alloc.vec.CloneVec.clone core.clone.CloneU8 env.now_epoch
+              ok (some v)
+            else
+              let s6 ←
+                lift (Array.to_slice
+                  (Array.make 13#usize [
+                    97#u8, 119#u8, 115#u8, 58#u8, 65#u8, 99#u8, 99#u8, 111#u8,
+                    117#u8, 110#u8, 116#u8, 73#u8, 100#u8
+                    ]))
+              let b6 ← bytes.eq «name» s6
+              if b6
+              then varctx.resolve_account_id resolver
+              else
+                let s7 ←
+                  lift (Array.to_slice
+                    (Array.make 10#usize [
+                      97#u8, 119#u8, 115#u8, 58#u8, 82#u8, 101#u8, 103#u8,
+                      105#u8, 111#u8, 110#u8
+                      ]))
+                let b7 ← bytes.eq «name» s7
+                if b7
+                then varctx.resolve_region resolver
+                else
+                  let s8 ←
+                    lift (Array.to_slice
+                      (Array.make 12#usize [
+                        97#u8, 119#u8, 115#u8, 58#u8, 83#u8, 111#u8, 117#u8,
+                        114#u8, 99#u8, 101#u8, 73#u8, 112#u8
+                        ]))
+                  let b8 ← bytes.eq «name» s8
+                  if b8
+                  then varctx.resolve_source_ip resolver
+                  else varctx.resolve_custom_variable resolver «name»
+
+/-- [rustfs_kernel::varctx::resolve_multiple]:
+    Source: 'ports/rustfs/kernel/src/varctx.rs', lines 188:0-209:1
+    Visibility: public -/
+def varctx.resolve_multiple
+  (resolver : varctx.VariableResolver) («name» : Slice Std.U8)
+  (env : condfuncs.Env) :
+  Result (Option (alloc.vec.Vec (alloc.vec.Vec Std.U8)))
+  := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        97#u8, 119#u8, 115#u8, 58#u8, 117#u8, 115#u8, 101#u8, 114#u8, 110#u8,
+        97#u8, 109#u8, 101#u8
+        ]))
+  let b ← bytes.eq «name» s
+  if b
+  then
+    let o ← varctx.resolve_username resolver
+    match o with
+    | none => ok none
+    | some v =>
+      let y ←
+        lift (Std.Array.to_slice (Array.make 1#usize [ v ] : Array
+          (alloc.vec.Vec Std.U8) 1#usize))
+      let ret := alloc.slice.Slice.into_vec y
+      ok (some ret)
+  else
+    let s1 ←
+      lift (Array.to_slice
+        (Array.make 10#usize [
+          97#u8, 119#u8, 115#u8, 58#u8, 117#u8, 115#u8, 101#u8, 114#u8, 105#u8,
+          100#u8
+          ]))
+    let b1 ← bytes.eq «name» s1
+    if b1
+    then
+      let s2 ←
+        lift (Array.to_slice (Array.make 3#usize [ 115#u8, 117#u8, 98#u8 ]))
+      let o ← varctx.get_claim_as_strings resolver s2
+      match o with
+      | none =>
+        let s3 ←
+          lift (Array.to_slice
+            (Array.make 6#usize [
+              112#u8, 97#u8, 114#u8, 101#u8, 110#u8, 116#u8
+              ]))
+        varctx.get_claim_as_strings resolver s3
+      | some _ => ok o
+    else
+      let o ← varctx.resolve resolver «name» env
+      match o with
+      | none => ok none
+      | some v =>
+        let y ←
+          lift (Std.Array.to_slice (Array.make 1#usize [ v ] : Array
+            (alloc.vec.Vec Std.U8) 1#usize))
+        let ret := alloc.slice.Slice.into_vec y
+        ok (some ret)
 
 end rustfs_kernel

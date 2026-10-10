@@ -4,7 +4,8 @@
 [[item]]
 upstream = "crates/policy/src/policy/action.rs:25 ActionSet"
 lines = 1
-status = "todo"
+status = "ported"
+kernel = ["actsets::as_slice", "actsets::push_unique"]
 
 [[item]]
 upstream = "crates/policy/src/policy/action.rs:31 ActionSet::serialize"
@@ -15,17 +16,20 @@ reason = "policy decoding or serialization"
 [[item]]
 upstream = "crates/policy/src/policy/action.rs:49 ActionSet::is_empty"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["actsets::is_empty"]
 
 [[item]]
 upstream = "crates/policy/src/policy/action.rs:54 ActionSet::push_unique"
 lines = 5
-status = "todo"
+status = "ported"
+kernel = ["actsets::push_unique"]
 
 [[item]]
 upstream = "crates/policy/src/policy/action.rs:60 ActionSet::is_match"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["actsets::set_is_match"]
 
 [[item]]
 upstream = "crates/policy/src/policy/action.rs:64 ActionSet::is_match_for_effect"
@@ -42,17 +46,20 @@ kernel = ["statement_covers"]
 [[item]]
 upstream = "crates/policy/src/policy/action.rs:102 ActionSet::deref"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["actsets::as_slice"]
 
 [[item]]
 upstream = "crates/policy/src/policy/action.rs:109 ActionSet::is_valid"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["actsets::is_valid"]
 
 [[item]]
 upstream = "crates/policy/src/policy/action.rs:115 ActionSet::eq"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["actsets::eq"]
 
 [[item]]
 upstream = "crates/policy/src/policy/action.rs:121 ActionSet::deserialize"
@@ -69,7 +76,8 @@ kernel = ["Action"]
 [[item]]
 upstream = "crates/policy/src/policy/action.rs:179 Action::is_match"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["actsets::action_is_match"]
 
 [[item]]
 upstream = "crates/policy/src/policy/action.rs:183 Action::is_match_for_effect"
@@ -98,12 +106,14 @@ reason = "policy decoding or serialization"
 [[item]]
 upstream = "crates/policy/src/policy/action.rs:250 S3Action"
 lines = 73
-status = "todo"
+status = "ported"
+kernel = ["actsets::action_name", "actsets::action_count", "actsets::contains_name"]
 
 [[item]]
 upstream = "crates/policy/src/policy/action.rs:405 AdminAction"
 lines = 93
-status = "todo"
+status = "ported"
+kernel = ["actsets::action_name", "actsets::action_count", "actsets::contains_name"]
 
 [[item]]
 upstream = "crates/policy/src/policy/action.rs:595 AdminAction::is_table_resource_scoped"
@@ -114,22 +124,26 @@ kernel = ["is_table_resource_scoped"]
 [[item]]
 upstream = "crates/policy/src/policy/action.rs:622 AdminAction::is_valid"
 lines = 96
-status = "todo"
+status = "ported"
+kernel = ["actsets::admin_is_valid"]
 
 [[item]]
 upstream = "crates/policy/src/policy/action.rs:720 StsAction"
 lines = 4
-status = "todo"
+status = "ported"
+kernel = ["actsets::action_name", "actsets::action_count", "actsets::contains_name"]
 
 [[item]]
 upstream = "crates/policy/src/policy/action.rs:729 KmsAction"
 lines = 20
-status = "todo"
+status = "ported"
+kernel = ["actsets::action_name", "actsets::action_count", "actsets::contains_name"]
 
 [[item]]
 upstream = "crates/policy/src/policy/doc.rs:20 PolicyDoc"
 lines = 16
-status = "todo"
+status = "ported"
+kernel = ["docdata::PolicyDoc", "docdata::default_doc"]
 
 [[item]]
 upstream = "crates/policy/src/policy/doc.rs:47 PolicyDoc::new"
@@ -140,7 +154,8 @@ reason = "calls OffsetDateTime::now_utc"
 [[item]]
 upstream = "crates/policy/src/policy/doc.rs:51 PolicyDoc::new_at"
 lines = 8
-status = "todo"
+status = "ported"
+kernel = ["docdata::new_at"]
 
 [[item]]
 upstream = "crates/policy/src/policy/doc.rs:66 PolicyDoc::update"
@@ -151,12 +166,14 @@ reason = "calls OffsetDateTime::now_utc"
 [[item]]
 upstream = "crates/policy/src/policy/doc.rs:70 PolicyDoc::update_at"
 lines = 8
-status = "todo"
+status = "ported"
+kernel = ["docdata::update_at"]
 
 [[item]]
 upstream = "crates/policy/src/policy/doc.rs:81 PolicyDoc::default_policy"
 lines = 8
-status = "todo"
+status = "ported"
+kernel = ["docdata::default_policy"]
 
 [[item]]
 upstream = "crates/policy/src/policy/doc.rs:94 PolicyDoc::try_from"
@@ -185,12 +202,14 @@ kernel = ["effect_is_allowed"]
 [[item]]
 upstream = "crates/policy/src/policy/effect.rs:53 Effect::is_valid"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["valids::effect_is_valid"]
 
 [[item]]
 upstream = "crates/policy/src/policy/function/addr.rs:20 AddrFunc"
 lines = 1
-status = "todo"
+status = "ported"
+kernel = ["conddata::AddrFunc"]
 
 [[item]]
 upstream = "crates/policy/src/policy/function/addr.rs:23 AddrFunc::evaluate"
@@ -201,7 +220,8 @@ kernel = ["addr_func", "addr_key"]
 [[item]]
 upstream = "crates/policy/src/policy/function/addr.rs:44 AddrFuncValue"
 lines = 1
-status = "todo"
+status = "ported"
+kernel = ["conddata::AddrFuncValue"]
 
 [[item]]
 upstream = "crates/policy/src/policy/function/addr.rs:49 AddrFuncValue::deserialize"
@@ -212,22 +232,26 @@ reason = "policy decoding or serialization"
 [[item]]
 upstream = "crates/policy/src/policy/function/binary.rs:21 BinaryFunc"
 lines = 1
-status = "todo"
+status = "ported"
+kernel = ["conddata::BinaryFunc"]
 
 [[item]]
 upstream = "crates/policy/src/policy/function/binary.rs:23 BinaryFuncValueError"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["conddata::BinaryFuncValueError"]
 
 [[item]]
 upstream = "crates/policy/src/policy/function/binary.rs:29 BinaryFuncValue"
 lines = 4
-status = "todo"
+status = "ported"
+kernel = ["conddata::BinaryFuncValue"]
 
 [[item]]
 upstream = "crates/policy/src/policy/function/binary.rs:44 BinaryFuncValue::new"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["conddata::binary_new"]
 
 [[item]]
 upstream = "crates/policy/src/policy/function/binary.rs:49 BinaryFuncValue::from_encoded_values"
@@ -250,7 +274,8 @@ reason = "policy decoding or serialization"
 [[item]]
 upstream = "crates/policy/src/policy/function/binary.rs:81 BinaryFuncValue::eq"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["conddata::binary_eq"]
 
 [[item]]
 upstream = "crates/policy/src/policy/function/binary.rs:89 BinaryFuncValue::serialize"
@@ -268,12 +293,13 @@ reason = "policy decoding or serialization"
 upstream = "crates/policy/src/policy/function/binary.rs:137 BinaryFunc::evaluate"
 lines = 25
 status = "ported"
-kernel = ["addr_func", "addr_key", "num_func"]
+kernel = ["conddata::binary_evaluate"]
 
 [[item]]
 upstream = "crates/policy/src/policy/function/bool_null.rs:20 BoolFunc"
 lines = 1
-status = "todo"
+status = "ported"
+kernel = ["conddata::BoolFunc"]
 
 [[item]]
 upstream = "crates/policy/src/policy/function/bool_null.rs:22 BoolFunc::evaluate_bool"
@@ -290,7 +316,8 @@ kernel = ["null_func"]
 [[item]]
 upstream = "crates/policy/src/policy/function/bool_null.rs:49 BoolFuncValue"
 lines = 1
-status = "todo"
+status = "ported"
+kernel = ["conddata::BoolFuncValue"]
 
 [[item]]
 upstream = "crates/policy/src/policy/function/bool_null.rs:53 BoolFuncValue::serialize"
@@ -325,7 +352,8 @@ reason = "policy decoding or serialization"
 [[item]]
 upstream = "crates/policy/src/policy/function/condition.rs:136 Condition::to_key_with_suffix"
 lines = 6
-status = "todo"
+status = "ported"
+kernel = ["conddata::to_key_with_suffix"]
 
 [[item]]
 upstream = "crates/policy/src/policy/function/condition.rs:143 Condition::has_any_key_in"
@@ -343,12 +371,13 @@ kernel = ["references_key_name"]
 upstream = "crates/policy/src/policy/function/condition.rs:209 Condition::evaluate_with_resolver"
 lines = 77
 status = "ported"
-kernel = ["condition_evaluate", "eval_cond"]
+kernel = ["conddata::condition_evaluate", "condfuncs::condition_evaluate"]
 
 [[item]]
 upstream = "crates/policy/src/policy/function/condition.rs:289 Condition::is_negate"
 lines = 4
-status = "todo"
+status = "ported"
+kernel = ["conddata::is_negate"]
 
 [[item]]
 upstream = "crates/policy/src/policy/function/condition.rs:297 Condition::serialize_map"
@@ -359,23 +388,26 @@ reason = "policy decoding or serialization"
 [[item]]
 upstream = "crates/policy/src/policy/function/condition.rs:333 Condition::eq"
 lines = 34
-status = "todo"
+status = "ported"
+kernel = ["conddata::condition_eq"]
 
 [[item]]
 upstream = "crates/policy/src/policy/function/date.rs:20 DateFunc"
 lines = 1
-status = "todo"
+status = "ported"
+kernel = ["conddata::DateFunc"]
 
 [[item]]
 upstream = "crates/policy/src/policy/function/date.rs:23 DateFunc::evaluate"
 lines = 15
 status = "ported"
-kernel = ["addr_func", "addr_key", "num_func"]
+kernel = ["dates::evaluate"]
 
 [[item]]
 upstream = "crates/policy/src/policy/function/date.rs:43 DateFuncValue"
 lines = 1
-status = "todo"
+status = "ported"
+kernel = ["conddata::DateFuncValue"]
 
 [[item]]
 upstream = "crates/policy/src/policy/function/date.rs:47 DateFuncValue::serialize"
@@ -392,33 +424,38 @@ reason = "policy decoding or serialization"
 [[item]]
 upstream = "crates/policy/src/policy/function/func.rs:24 InnerFunc"
 lines = 1
-status = "todo"
+status = "ported"
+kernel = ["conddata::InnerFunc"]
 
 [[item]]
 upstream = "crates/policy/src/policy/function/func.rs:27 FuncKeyValue"
 lines = 4
 status = "ported"
-kernel = ["str_eval", "str_eval_like"]
+kernel = ["conddata::FuncKeyValue"]
 
 [[item]]
 upstream = "crates/policy/src/policy/function/func.rs:34 FuncKeyValue::clone"
 lines = 6
-status = "todo"
+status = "ported"
+kernel = ["conddata::clone_key_value"]
 
 [[item]]
 upstream = "crates/policy/src/policy/function/func.rs:43 InnerFunc::clone"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["conddata::clone_inner"]
 
 [[item]]
 upstream = "crates/policy/src/policy/function/func.rs:49 InnerFunc::key_names"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["conddata::key_names"]
 
 [[item]]
 upstream = "crates/policy/src/policy/function/func.rs:53 InnerFunc::contains_key_name"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["conddata::contains_key_name"]
 
 [[item]]
 upstream = "crates/policy/src/policy/function/func.rs:59 InnerFunc::serialize"
@@ -441,7 +478,8 @@ kernel = ["Key"]
 [[item]]
 upstream = "crates/policy/src/policy/function/key.rs:33 Key::is"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["conddata::key_is"]
 
 [[item]]
 upstream = "crates/policy/src/policy/function/key.rs:37 Key::var_name"
@@ -494,12 +532,14 @@ kernel = ["common_key", "get_value", "key_lookup_name", "keynames::*", "value_co
 [[item]]
 upstream = "crates/policy/src/policy/function/key_name.rs:116 KeyName::is_server_derived"
 lines = 6
-status = "todo"
+status = "ported"
+kernel = ["keytables::is_server_derived"]
 
 [[item]]
 upstream = "crates/policy/src/policy/function/key_name.rs:134 KeyName::server_derived_key_names"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["keytables::server_derived_key_names"]
 
 [[item]]
 upstream = "crates/policy/src/policy/function/key_name.rs:140 KeyName::var_name"
@@ -516,42 +556,50 @@ reason = "policy decoding or serialization"
 [[item]]
 upstream = "crates/policy/src/policy/function/key_name.rs:165 S3KeyName"
 lines = 28
-status = "todo"
+status = "ported"
+kernel = ["keytables::KeyFamily", "keytables::key_count", "keytables::key_name", "keytables::contains_name"]
 
 [[item]]
 upstream = "crates/policy/src/policy/function/key_name.rs:245 JwtKeyName"
 lines = 25
-status = "todo"
+status = "ported"
+kernel = ["keytables::KeyFamily", "keytables::key_count", "keytables::key_name", "keytables::contains_name"]
 
 [[item]]
 upstream = "crates/policy/src/policy/function/key_name.rs:318 SvcKeyName"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["keytables::KeyFamily", "keytables::key_count", "keytables::key_name", "keytables::contains_name"]
 
 [[item]]
 upstream = "crates/policy/src/policy/function/key_name.rs:325 LdapKeyName"
 lines = 5
-status = "todo"
+status = "ported"
+kernel = ["keytables::KeyFamily", "keytables::key_count", "keytables::key_name", "keytables::contains_name"]
 
 [[item]]
 upstream = "crates/policy/src/policy/function/key_name.rs:338 StsKeyName"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["keytables::KeyFamily", "keytables::key_count", "keytables::key_name", "keytables::contains_name"]
 
 [[item]]
 upstream = "crates/policy/src/policy/function/key_name.rs:345 AwsKeyName"
 lines = 14
-status = "todo"
+status = "ported"
+kernel = ["keytables::KeyFamily", "keytables::key_count", "keytables::key_name", "keytables::contains_name"]
 
 [[item]]
 upstream = "crates/policy/src/policy/function/number.rs:23 NumberFunc"
 lines = 1
-status = "todo"
+status = "ported"
+kernel = ["conddata::NumberFunc"]
 
 [[item]]
 upstream = "crates/policy/src/policy/function/number.rs:25 NumberFuncValue"
 lines = 1
-status = "todo"
+status = "ported"
+kernel = ["conddata::NumberFuncValue"]
 
 [[item]]
 upstream = "crates/policy/src/policy/function/number.rs:29 NumberFunc::evaluate"
@@ -574,7 +622,8 @@ reason = "policy decoding or serialization"
 [[item]]
 upstream = "crates/policy/src/policy/function/string.rs:31 StringFunc"
 lines = 1
-status = "todo"
+status = "ported"
+kernel = ["conddata::StringFunc"]
 
 [[item]]
 upstream = "crates/policy/src/policy/function/string.rs:34 StringFunc::evaluate_with_resolver"
@@ -621,7 +670,8 @@ kernel = ["Quantifier"]
 [[item]]
 upstream = "crates/policy/src/policy/function.rs:53 is_server_derived_condition_key"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["keytables::is_server_derived_condition_key"]
 
 [[item]]
 upstream = "crates/policy/src/policy/function.rs:63 Functions"
@@ -639,12 +689,13 @@ kernel = ["addr_func", "addr_key", "num_func"]
 upstream = "crates/policy/src/policy/function.rs:75 Functions::evaluate_with_resolver"
 lines = 22
 status = "ported"
-kernel = ["functions_evaluate"]
+kernel = ["conddata::functions_evaluate", "condfuncs::functions_evaluate"]
 
 [[item]]
 upstream = "crates/policy/src/policy/function.rs:101 Functions::is_empty"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["conddata::is_empty"]
 
 [[item]]
 upstream = "crates/policy/src/policy/function.rs:105 Functions::references_key_name"
@@ -667,22 +718,26 @@ reason = "policy decoding or serialization"
 [[item]]
 upstream = "crates/policy/src/policy/function.rs:208 Functions::eq"
 lines = 11
-status = "todo"
+status = "ported"
+kernel = ["conddata::functions_eq"]
 
 [[item]]
 upstream = "crates/policy/src/policy/id.rs:21 ID"
 lines = 1
-status = "todo"
+status = "ported"
+kernel = ["valids::id_as_slice"]
 
 [[item]]
 upstream = "crates/policy/src/policy/id.rs:25 ID::is_empty"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["valids::id_is_empty"]
 
 [[item]]
 upstream = "crates/policy/src/policy/id.rs:33 ID::is_valid"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["valids::id_is_valid"]
 
 [[item]]
 upstream = "crates/policy/src/policy/id.rs:40 ID::from"
@@ -693,7 +748,8 @@ reason = "policy decoding or serialization"
 [[item]]
 upstream = "crates/policy/src/policy/id.rs:48 ID::deref"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["valids::id_as_slice"]
 
 [[item]]
 upstream = "crates/policy/src/policy/opa.rs:22 Args"
@@ -806,12 +862,14 @@ reason = "OPA authorization plugin: HTTP client and environment"
 [[item]]
 upstream = "crates/policy/src/policy/policy.rs:23 DEFAULT_VERSION"
 lines = 1
-status = "todo"
+status = "ported"
+kernel = ["defaults::default_version"]
 
 [[item]]
 upstream = "crates/policy/src/policy/policy.rs:30 Validator::is_valid"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["valids::default_is_valid"]
 
 [[item]]
 upstream = "crates/policy/src/policy/policy.rs:35 Args"
@@ -822,12 +880,14 @@ kernel = ["Args"]
 [[item]]
 upstream = "crates/policy/src/policy/policy.rs:49 Args::get_role_arn"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["claims::get_role_arn"]
 
 [[item]]
 upstream = "crates/policy/src/policy/policy.rs:52 Args::get_policies"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["claims::args_get_policies"]
 
 [[item]]
 upstream = "crates/policy/src/policy/policy.rs:57 Policy"
@@ -839,42 +899,49 @@ kernel = ["policies::*"]
 upstream = "crates/policy/src/policy/policy.rs:69 Policy::is_allowed"
 lines = 19
 status = "ported"
-kernel = ["policy_is_allowed"]
+kernel = ["policy_is_allowed", "manage::policy_is_allowed"]
 
 [[item]]
 upstream = "crates/policy/src/policy/policy.rs:98 Policy::match_resource"
 lines = 8
-status = "todo"
+status = "ported"
+kernel = ["manage::match_resource"]
 
 [[item]]
 upstream = "crates/policy/src/policy/policy.rs:107 Policy::drop_duplicate_statements"
 lines = 23
-status = "todo"
+status = "ported"
+kernel = ["manage::drop_duplicate_statements"]
 
 [[item]]
 upstream = "crates/policy/src/policy/policy.rs:136 Policy::merge_policies"
 lines = 13
-status = "todo"
+status = "ported"
+kernel = ["manage::merge_policies"]
 
 [[item]]
 upstream = "crates/policy/src/policy/policy.rs:151 Policy::is_empty"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["manage::is_empty"]
 
 [[item]]
 upstream = "crates/policy/src/policy/policy.rs:155 Policy::validate"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["manage::validate"]
 
 [[item]]
 upstream = "crates/policy/src/policy/policy.rs:159 Policy::parse_config"
 lines = 5
-status = "todo"
+status = "outside"
+reason = "policy decoding; decoded-policy validation is ported in manage::validate"
 
 [[item]]
 upstream = "crates/policy/src/policy/policy.rs:169 Policy::is_valid"
 lines = 9
-status = "todo"
+status = "ported"
+kernel = ["manage::is_valid"]
 
 [[item]]
 upstream = "crates/policy/src/policy/policy.rs:182 BucketPolicyArgs"
@@ -892,97 +959,115 @@ kernel = ["policies::*"]
 upstream = "crates/policy/src/policy/policy.rs:208 BucketPolicy::is_allowed"
 lines = 16
 status = "ported"
-kernel = ["bucket_policy_is_allowed"]
+kernel = ["bucket_policy_is_allowed", "manage::bucket_policy_is_allowed"]
 
 [[item]]
 upstream = "crates/policy/src/policy/policy.rs:232 BucketPolicy::is_valid"
 lines = 9
-status = "todo"
+status = "ported"
+kernel = ["manage::bucket_is_valid"]
 
 [[item]]
 upstream = "crates/policy/src/policy/policy.rs:245 get_values_from_claims"
 lines = 31
-status = "todo"
+status = "ported"
+kernel = ["claims::get_values_from_claims"]
 
 [[item]]
 upstream = "crates/policy/src/policy/policy.rs:279 get_policies_from_claims"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["claims::get_policies_from_claims"]
 
 [[item]]
 upstream = "crates/policy/src/policy/policy.rs:283 iam_policy_claim_name_sa"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["claims::iam_policy_claim_name_sa"]
 
 [[item]]
 upstream = "crates/policy/src/policy/policy.rs:287 is_existing_object_tag_condition_key"
 lines = 5
-status = "todo"
+status = "ported"
+kernel = ["claims::is_existing_object_tag_condition_key"]
 
 [[item]]
 upstream = "crates/policy/src/policy/policy.rs:294 value_uses_existing_object_tag_condition_key"
 lines = 9
-status = "todo"
+status = "ported"
+kernel = ["claims::value_uses_existing_object_tag"]
 
 [[item]]
 upstream = "crates/policy/src/policy/policy.rs:304 functions_use_existing_object_tag"
 lines = 5
-status = "todo"
+status = "ported"
+kernel = ["manage::functions_use_existing_object_tag"]
 
 [[item]]
 upstream = "crates/policy/src/policy/policy.rs:311 policy_uses_existing_object_tag_conditions"
 lines = 6
-status = "todo"
+status = "ported"
+kernel = ["manage::policy_uses_existing_object_tag_conditions"]
 
 [[item]]
 upstream = "crates/policy/src/policy/policy.rs:318 bucket_policy_uses_existing_object_tag_conditions"
 lines = 6
-status = "todo"
+status = "ported"
+kernel = ["manage::bucket_policy_uses_existing_object_tag_conditions"]
 
 [[item]]
 upstream = "crates/policy/src/policy/policy.rs:325 policy_needs_existing_object_tag_for_args"
 lines = 15
-status = "todo"
+status = "ported"
+kernel = ["manage::policy_needs_existing_object_tag_for_args"]
 
 [[item]]
 upstream = "crates/policy/src/policy/policy.rs:342 bucket_policy_needs_existing_object_tag_for_args"
 lines = 14
-status = "todo"
+status = "ported"
+kernel = ["manage::bucket_policy_needs_existing_object_tag_for_args"]
 
 [[item]]
 upstream = "crates/policy/src/policy/policy.rs:369 KMS_KEY_ADMINISTRATOR"
 lines = 1
-status = "todo"
+status = "ported"
+kernel = ["defaults::kms_key_administrator"]
 
 [[item]]
 upstream = "crates/policy/src/policy/policy.rs:371 KMS_KEY_USER"
 lines = 1
-status = "todo"
+status = "ported"
+kernel = ["defaults::kms_key_user"]
 
 [[item]]
 upstream = "crates/policy/src/policy/policy.rs:373 KMS_AUDITOR"
 lines = 1
-status = "todo"
+status = "ported"
+kernel = ["defaults::kms_auditor"]
 
 [[item]]
 upstream = "crates/policy/src/policy/policy.rs:376 ALL_KMS_KEYS"
 lines = 1
-status = "todo"
+status = "ported"
+kernel = ["defaults::all_kms_keys"]
 
 [[item]]
 upstream = "crates/policy/src/policy/policy.rs:382 kms_allow"
 lines = 11
-status = "todo"
+status = "ported"
+kernel = ["defaults::kms_allow"]
 
 [[item]]
 upstream = "crates/policy/src/policy/policy.rs:395 assume_role_allow"
 lines = 11
-status = "todo"
+status = "ported"
+kernel = ["defaults::assume_role_allow"]
 
 [[item]]
 upstream = "crates/policy/src/policy/policy.rs:409 DEFAULT_POLICIES"
 lines = 217
-status = "todo"
+status = "ported"
+kernel = ["defaults::default_policies"]
 
 [[item]]
 upstream = "crates/policy/src/policy/principal.rs:20 Principal"
@@ -999,22 +1084,26 @@ reason = "policy decoding or serialization"
 [[item]]
 upstream = "crates/policy/src/policy/principal.rs:63 PrincipalFormat"
 lines = 4
-status = "todo"
+status = "ported"
+kernel = ["extras::PrincipalFormat"]
 
 [[item]]
 upstream = "crates/policy/src/policy/principal.rs:70 PrincipalObject"
 lines = 4
-status = "todo"
+status = "ported"
+kernel = ["extras::PrincipalObject"]
 
 [[item]]
 upstream = "crates/policy/src/policy/principal.rs:79 PrincipalValues"
 lines = 4
-status = "todo"
+status = "ported"
+kernel = ["extras::PrincipalValues"]
 
 [[item]]
 upstream = "crates/policy/src/policy/principal.rs:87 PrincipalValues::into_set"
 lines = 6
-status = "todo"
+status = "ported"
+kernel = ["extras::principal_values_into_set"]
 
 [[item]]
 upstream = "crates/policy/src/policy/principal.rs:96 Principal::deserialize"
@@ -1031,12 +1120,14 @@ kernel = ["principal_is_match"]
 [[item]]
 upstream = "crates/policy/src/policy/principal.rs:145 Principal::is_valid"
 lines = 6
-status = "todo"
+status = "ported"
+kernel = ["valids::principal_is_valid"]
 
 [[item]]
 upstream = "crates/policy/src/policy/resource.rs:29 ResourceSet"
 lines = 1
-status = "todo"
+status = "ported"
+kernel = ["resets::ResourceSet"]
 
 [[item]]
 upstream = "crates/policy/src/policy/resource.rs:33 ResourceSet::serialize"
@@ -1047,17 +1138,20 @@ reason = "policy decoding or serialization"
 [[item]]
 upstream = "crates/policy/src/policy/resource.rs:52 ResourceSet::is_empty"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["resets::is_empty"]
 
 [[item]]
 upstream = "crates/policy/src/policy/resource.rs:57 ResourceSet::push_unique"
 lines = 5
-status = "todo"
+status = "ported"
+kernel = ["resets::push_unique"]
 
 [[item]]
 upstream = "crates/policy/src/policy/resource.rs:63 ResourceSet::is_match"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["resets::set_matches"]
 
 [[item]]
 upstream = "crates/policy/src/policy/resource.rs:67 ResourceSet::is_match_with_resolver"
@@ -1068,22 +1162,26 @@ kernel = ["set_is_match"]
 [[item]]
 upstream = "crates/policy/src/policy/resource.rs:82 ResourceSet::match_resource"
 lines = 8
-status = "todo"
+status = "ported"
+kernel = ["resets::set_match_resource"]
 
 [[item]]
 upstream = "crates/policy/src/policy/resource.rs:96 ResourceSet::deref"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["resets::as_slice"]
 
 [[item]]
 upstream = "crates/policy/src/policy/resource.rs:103 ResourceSet::is_valid"
 lines = 6
-status = "todo"
+status = "ported"
+kernel = ["valids::resources_is_valid"]
 
 [[item]]
 upstream = "crates/policy/src/policy/resource.rs:113 ResourceSet::eq"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["resets::eq"]
 
 [[item]]
 upstream = "crates/policy/src/policy/resource.rs:119 ResourceSet::deserialize"
@@ -1106,7 +1204,8 @@ kernel = ["is_kms"]
 [[item]]
 upstream = "crates/policy/src/policy/resource.rs:189 Resource::is_match"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["resets::is_match"]
 
 [[item]]
 upstream = "crates/policy/src/policy/resource.rs:193 Resource::is_match_with_resolver"
@@ -1117,7 +1216,8 @@ kernel = ["resource_is_match"]
 [[item]]
 upstream = "crates/policy/src/policy/resource.rs:237 Resource::match_resource"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["resets::match_resource"]
 
 [[item]]
 upstream = "crates/policy/src/policy/resource.rs:244 Resource::try_from"
@@ -1128,7 +1228,8 @@ reason = "policy decoding or serialization"
 [[item]]
 upstream = "crates/policy/src/policy/resource.rs:260 Resource::is_valid"
 lines = 22
-status = "todo"
+status = "ported"
+kernel = ["valids::resource_is_valid"]
 
 [[item]]
 upstream = "crates/policy/src/policy/resource.rs:288 Resource::serialize"
@@ -1163,7 +1264,8 @@ kernel = ["build_resource"]
 [[item]]
 upstream = "crates/policy/src/policy/statement.rs:83 ActionFamily"
 lines = 7
-status = "todo"
+status = "ported"
+kernel = ["valids::ActionFamily"]
 
 [[item]]
 upstream = "crates/policy/src/policy/statement.rs:93 Statement::skips_resource_match_for_args"
@@ -1180,17 +1282,20 @@ kernel = ["is_kms"]
 [[item]]
 upstream = "crates/policy/src/policy/statement.rs:115 Statement::is_admin"
 lines = 8
-status = "todo"
+status = "ported"
+kernel = ["valids::is_admin"]
 
 [[item]]
 upstream = "crates/policy/src/policy/statement.rs:125 Statement::is_sts"
 lines = 8
-status = "todo"
+status = "ported"
+kernel = ["valids::is_sts"]
 
 [[item]]
 upstream = "crates/policy/src/policy/statement.rs:135 Statement::action_family"
 lines = 35
-status = "todo"
+status = "ported"
+kernel = ["valids::action_family"]
 
 [[item]]
 upstream = "crates/policy/src/policy/statement.rs:177 Statement::kms_key_scope_matches"
@@ -1208,17 +1313,19 @@ kernel = ["reaches_condition_eval"]
 upstream = "crates/policy/src/policy/statement.rs:293 Statement::is_allowed"
 lines = 10
 status = "ported"
-kernel = ["statement_is_allowed"]
+kernel = ["statement_is_allowed", "manage::statement_is_allowed"]
 
 [[item]]
 upstream = "crates/policy/src/policy/statement.rs:310 Statement::is_valid"
 lines = 43
-status = "todo"
+status = "ported"
+kernel = ["valids::statement_is_valid"]
 
 [[item]]
 upstream = "crates/policy/src/policy/statement.rs:375 Statement::eq"
 lines = 8
-status = "todo"
+status = "ported"
+kernel = ["manage::statement_eq"]
 
 [[item]]
 upstream = "crates/policy/src/policy/statement.rs:385 BPStatement"
@@ -1236,12 +1343,13 @@ kernel = ["bp_reaches_condition_eval"]
 upstream = "crates/policy/src/policy/statement.rs:450 BPStatement::is_allowed"
 lines = 9
 status = "ported"
-kernel = ["bp_statement_is_allowed"]
+kernel = ["bp_statement_is_allowed", "manage::bp_statement_is_allowed"]
 
 [[item]]
 upstream = "crates/policy/src/policy/statement.rs:465 BPStatement::is_valid"
 lines = 35
-status = "todo"
+status = "ported"
+kernel = ["valids::bp_statement_is_valid"]
 
 [[item]]
 upstream = "crates/policy/src/policy/utils/path.rs:15 LazyBuf"
@@ -1252,7 +1360,8 @@ kernel = ["pathclean::*"]
 [[item]]
 upstream = "crates/policy/src/policy/utils/path.rs:22 LazyBuf::new"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["extras::lazybuf_new"]
 
 [[item]]
 upstream = "crates/policy/src/policy/utils/path.rs:26 LazyBuf::index"
@@ -1293,7 +1402,8 @@ kernel = ["is_match", "principal_is_match"]
 [[item]]
 upstream = "crates/policy/src/policy/utils/wildcard.rs:31 is_match_as_pattern_prefix"
 lines = 22
-status = "todo"
+status = "ported"
+kernel = ["extras::is_match_as_pattern_prefix"]
 
 [[item]]
 upstream = "crates/policy/src/policy/utils/wildcard.rs:59 inner_match"
@@ -1310,37 +1420,44 @@ kernel = ["deep_match", "wildmatch::*"]
 [[item]]
 upstream = "crates/policy/src/policy/utils.rs:22 ClaimLookup"
 lines = 5
-status = "todo"
+status = "ported"
+kernel = ["claims::ClaimLookup"]
 
 [[item]]
 upstream = "crates/policy/src/policy/utils.rs:29 case_insensitive_eq"
 lines = 5
-status = "todo"
+status = "ported"
+kernel = ["claims::case_insensitive_eq"]
 
 [[item]]
 upstream = "crates/policy/src/policy/utils.rs:35 get_claim_case_insensitive"
 lines = 18
-status = "todo"
+status = "ported"
+kernel = ["claims::get_claim_case_insensitive"]
 
 [[item]]
 upstream = "crates/policy/src/policy/utils.rs:57 _get_values_from_claims"
 lines = 28
-status = "todo"
+status = "ported"
+kernel = ["claims::values_from_claims"]
 
 [[item]]
 upstream = "crates/policy/src/policy/utils.rs:91 _split_path"
 lines = 17
-status = "todo"
+status = "ported"
+kernel = ["claims::split_path"]
 
 [[item]]
 upstream = "crates/policy/src/policy/variables.rs:23 VariableContext"
 lines = 10
-status = "todo"
+status = "ported"
+kernel = ["varctx::VariableContext"]
 
 [[item]]
 upstream = "crates/policy/src/policy/variables.rs:37 VariableContext::new"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["varctx::context_new"]
 
 [[item]]
 upstream = "crates/policy/src/policy/variables.rs:42 VariableResolverCache"
@@ -1423,33 +1540,38 @@ kernel = ["awsvars::*"]
 [[item]]
 upstream = "crates/policy/src/policy/variables.rs:130 VariableResolver::new"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["varctx::resolver_new"]
 
 [[item]]
 upstream = "crates/policy/src/policy/variables.rs:134 VariableResolver::get_claim_as_strings"
 lines = 22
 status = "ported"
-kernel = ["userid_strings"]
+kernel = ["varctx::get_claim_as_strings"]
 
 [[item]]
 upstream = "crates/policy/src/policy/variables.rs:157 VariableResolver::resolve_username"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["varctx::resolve_username"]
 
 [[item]]
 upstream = "crates/policy/src/policy/variables.rs:161 VariableResolver::resolve_userid"
 lines = 5
-status = "todo"
+status = "ported"
+kernel = ["varctx::resolve_userid"]
 
 [[item]]
 upstream = "crates/policy/src/policy/variables.rs:167 VariableResolver::resolve_principal_type"
 lines = 11
-status = "todo"
+status = "ported"
+kernel = ["varctx::resolve_principal_type"]
 
 [[item]]
 upstream = "crates/policy/src/policy/variables.rs:181 VariableResolver::resolve_secure_transport"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["varctx::resolve_secure_transport"]
 
 [[item]]
 upstream = "crates/policy/src/policy/variables.rs:185 VariableResolver::resolve_current_time"
@@ -1466,39 +1588,44 @@ reason = "calls OffsetDateTime::now_utc"
 [[item]]
 upstream = "crates/policy/src/policy/variables.rs:195 VariableResolver::resolve_account_id"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["varctx::resolve_account_id"]
 
 [[item]]
 upstream = "crates/policy/src/policy/variables.rs:199 VariableResolver::resolve_region"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["varctx::resolve_region"]
 
 [[item]]
 upstream = "crates/policy/src/policy/variables.rs:203 VariableResolver::resolve_source_ip"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["varctx::resolve_source_ip"]
 
 [[item]]
 upstream = "crates/policy/src/policy/variables.rs:207 VariableResolver::resolve_custom_variable"
 lines = 4
-status = "todo"
+status = "ported"
+kernel = ["varctx::resolve_custom_variable"]
 
 [[item]]
 upstream = "crates/policy/src/policy/variables.rs:215 VariableResolver::resolve"
 lines = 20
 status = "ported"
-kernel = ["resolve"]
+kernel = ["varctx::resolve"]
 
 [[item]]
 upstream = "crates/policy/src/policy/variables.rs:237 VariableResolver::resolve_multiple"
 lines = 9
 status = "ported"
-kernel = ["resolve_multiple"]
+kernel = ["varctx::resolve_multiple"]
 
 [[item]]
 upstream = "crates/policy/src/policy/variables.rs:249 VariableResolver::is_dynamic"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["varctx::is_dynamic"]
 
 [[item]]
 upstream = "crates/policy/src/policy/variables.rs:254 resolve_aws_variables"

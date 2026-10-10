@@ -1752,6 +1752,7 @@ dependencies = [
  "pollster 0.4.0",
  "rustfs-kernel",
  "rustfs-policy",
+ "rustfs-private-oracle",
  "serde_json",
  "tokio",
 ]
@@ -1768,6 +1769,32 @@ dependencies = [
  "base64-simd",
  "futures",
  "hotpath",
+ "ipnetwork",
+ "jiff",
+ "jsonwebtoken",
+ "moka",
+ "pollster 1.0.1",
+ "regex",
+ "reqwest",
+ "rustfs-config",
+ "rustfs-credentials",
+ "rustfs-crypto",
+ "serde",
+ "serde_json",
+ "strum",
+ "thiserror",
+ "time",
+ "tokio",
+ "tracing",
+]
+
+[[package]]
+name = "rustfs-private-oracle"
+version = "0.1.0"
+dependencies = [
+ "async-trait",
+ "base64-simd",
+ "futures",
  "ipnetwork",
  "jiff",
  "jsonwebtoken",
