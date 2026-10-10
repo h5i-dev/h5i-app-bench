@@ -1,3 +1,7 @@
+import Verified.KanidmSynchroniseSeesNothing
+import Verified.KanidmReadonlyCannotModify
+import Verified.KanidmDeleteProtected
+import Verified.KanidmStrContainsSpec
 import Spec
 open Aeneas Aeneas.Std Result kanidm_kernel kanidm_kernel.Spec
 
@@ -49,7 +53,7 @@ theorem synchronise_sees_nothing (ctl : AccessControlsInner) (ident : Identity) 
     (hs : (IsUser ident ∧ ident.scope = .Synchronise) ∨ ∃ s, ident.origin = .Synch s)
     (h : access.filter_entries ctl ident f es = ok (.Ok out)) :
     out.val = [] := by
-  sorry
+  apply kanidm_kernel.Verified.KanidmSynchroniseSeesNothing.synchronise_sees_nothing <;> assumption
 
 /-! ## Write operations need a profile -/
 
@@ -58,7 +62,7 @@ theorem readonly_cannot_modify (ctl : AccessControlsInner) (me : ModifyEvent) (e
     (hu : IsUser me.ident) (hs : me.ident.scope ≠ .ReadWrite) (hne : es.val ≠ [])
     (h : access.modify_allow_operation ctl me es = ok (.Ok b)) :
     b = false := by
-  sorry
+  apply kanidm_kernel.Verified.KanidmReadonlyCannotModify.readonly_cannot_modify <;> assumption
 
 /-- A user deletes an entry only through a delete profile that applies to it. -/
 theorem delete_needs_profile (ctl : AccessControlsInner) (de : DeleteEvent) (es : Slice Entry) (e : Entry)
@@ -93,7 +97,7 @@ theorem delete_protected (ctl : AccessControlsInner) (de : DeleteEvent) (es : Sl
     (hk : IsUser de.ident ∨ de.ident.origin = .Internal .Migration)
     (h : access.delete_allow_operation ctl de es = ok (.Ok true)) (he : e ∈ es.val) :
     UUID_ANONYMOUS < e.uuid ∧ ∀ c ∈ classes e, c ∉ protectedEntryClasses := by
-  sorry
+  apply kanidm_kernel.Verified.KanidmDeleteProtected.delete_protected <;> assumption
 
 /-- Users and migrations never create builtin entries or entries of a
 protected class. -/
@@ -161,7 +165,7 @@ checked `i + needle.len()` overflows and the function fails; Rust slices hold at
 most `isize::MAX` bytes, so the bound only excludes lengths Rust cannot have. -/
 theorem str_contains_spec (hay needle : Slice U8) (hlt : hay.length < Usize.max) :
     valueset.str_contains hay needle = ok (decide (needle.val <:+: hay.val)) := by
-  sorry
+  apply kanidm_kernel.Verified.KanidmStrContainsSpec.str_contains_spec <;> assumption
 
 /-! ## Totality -/
 

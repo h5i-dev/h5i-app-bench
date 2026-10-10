@@ -1,3 +1,13 @@
+import Verified.NoraReference
+import Verified.NoraRevokeAll
+import Verified.NoraReadOnly
+import Verified.NoraAuditNeverDenies
+import Verified.NoraLifetime
+import Verified.NoraAdminPath
+import Verified.NoraTokenUnexpired
+import Verified.NoraUntrustedPeer
+import Verified.NoraCidr
+import Verified.NoraDigest
 import Spec
 open Aeneas Aeneas.Std Result nora_kernel nora_kernel.Spec
 open H5iAppLib hiding lit
@@ -11,7 +21,7 @@ theorem read_only_cannot_write (p : OidcProvider) (c : Claims) (r : Request) (x 
     ∃ i, ∃ hi : i < p.role_rules.val.length, FirstMatch p (subject c) i ∧
       (nats (p.role_rules.val[i]).role.val = lit "write" ∨
        nats (p.role_rules.val[i]).role.val = lit "admin") := by
-  sorry
+  apply nora_kernel.Verified.NoraReadOnly.read_only_cannot_write <;> assumption
 
 /-- The provider scope is a ceiling: an enforced, namespaced request that
 goes through is inside it, unless it contains `*`. -/
@@ -35,13 +45,13 @@ theorem rule_narrows (p : OidcProvider) (c : Claims) (r : Request) (x : Reply) (
 theorem audit_never_denies (p : OidcProvider) (c : Claims) (r : Request)
     (ha : p.namespace_scope_enforcement = .Audit) :
     transition p c r ≠ ok (.Err .NamespaceDenied) := by
-  sorry
+  apply nora_kernel.Verified.NoraAuditNeverDenies.audit_never_denies <;> assumption
 
 /-- A token whose lifetime exceeds the provider's ceiling is refused. -/
 theorem lifetime_bounded (p : OidcProvider) (c : Claims) (r : Request) (x : Reply) (iat exp : U64)
     (h : transition p c r = ok (.Ok x)) (hi : c.iat = some iat) (he : c.exp = some exp) :
     exp.val - iat.val ≤ p.max_token_lifetime_secs.val := by
-  sorry
+  apply nora_kernel.Verified.NoraLifetime.lifetime_bounded <;> assumption
 
 /-- The subject matcher computes `globSpec`. -/
 theorem glob_match_spec (pattern v : Slice U8) :
@@ -67,7 +77,7 @@ theorem admin_path_needs_admin (cfg : middleware.Config) (fs : Slice lockout.Fai
     (he : cfg.enabled = true) (hp : isAdminPath (nats req.path.val))
     (h : middleware.auth_middleware cfg fs cr jw req = ok (ws, .Next a u r)) :
     r = some .Admin := by
-  sorry
+  apply nora_kernel.Verified.NoraAdminPath.admin_path_needs_admin <;> assumption
 
 /-- Without credentials a request never gets a role that can write. -/
 theorem no_credentials_no_write_role (cfg : middleware.Config) (fs : Slice lockout.FailureEntry)
@@ -139,18 +149,18 @@ theorem token_accepted_only_unexpired (store : tokens.TokenStore) (cr : oracle.C
       ((∃ c ∈ store.cache.val, c.user = u ∧ c.role = r ∧ now.val ≤ c.expires_at.val) ∨
        (∃ f ∈ store.files.val, ∃ i, f.info = some i ∧ i.user = u ∧ i.role = r ∧
          now.val ≤ i.expires_at.val)) := by
-  sorry
+  apply nora_kernel.Verified.NoraTokenUnexpired.token_accepted_only_unexpired <;> assumption
 
 /-- Forwarding headers from an untrusted peer are ignored. -/
 theorem untrusted_peer_is_client (tp : net.TrustedProxies) (peer : net.IpAddr)
     (xff xri : Option net.IpAddr) (hc : cidrContains tp.entries.val peer = false) :
     net.resolve_client_ip peer xff xri tp = ok peer := by
-  sorry
+  apply nora_kernel.Verified.NoraUntrustedPeer.untrusted_peer_is_client <;> assumption
 
 /-- `TrustedProxies::contains` compares the top `prefix` bits. -/
 theorem trusted_proxies_contains_spec (tp : net.TrustedProxies) (ip : net.IpAddr) :
     net.TrustedProxies.contains tp ip = ok (cidrContains tp.entries.val ip) := by
-  sorry
+  apply nora_kernel.Verified.NoraCidr.trusted_proxies_contains_spec <;> assumption
 
 /-- A revoked token is refused afterwards, also when it was cached. -/
 theorem revoked_token_rejected (store store' : tokens.TokenStore) (cr : oracle.Crypto) (p t : Slice U8)
@@ -169,7 +179,7 @@ theorem revoke_all_effective (store store' : tokens.TokenStore) (cr : oracle.Cry
     (hr : tokens.revoke_all_for_user store user = ok (store', n)) (hn : 0 < n.val)
     (h : tokens.verify_token store' cr t now mono = ok (ws, .Ok (u, r))) :
     u.val ≠ user.val := by
-  sorry
+  apply nora_kernel.Verified.NoraRevokeAll.revoke_all_effective <;> assumption
 
 /-! ## Validators -/
 
@@ -186,12 +196,12 @@ theorem docker_name_shape (n : Slice U8) (h : validation.validate_docker_name n 
 /-- `validate_digest` accepts exactly the `sha256`/`sha512` digests. -/
 theorem digest_iff (d : Slice U8) :
     validation.validate_digest d = ok (.Ok ()) ↔ DigestShape (nats d.val) := by
-  sorry
+  apply nora_kernel.Verified.NoraDigest.digest_iff <;> assumption
 
 /-- An accepted reference is a digest or a tag. -/
 theorem reference_shape (x : Slice U8) (h : validation.validate_docker_reference x = ok (.Ok ())) :
     DigestShape (nats x.val) ∨ TagShape (nats x.val) := by
-  sorry
+  apply nora_kernel.Verified.NoraReference.reference_shape <;> assumption
 
 /-- The middleware never panics or loops, as long as no failure counter is at
 `u32::MAX`. -/

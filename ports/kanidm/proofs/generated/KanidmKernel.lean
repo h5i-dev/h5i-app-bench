@@ -20,7 +20,7 @@ set_option maxRecDepth 2048
 namespace kanidm_kernel
 
 /-- [kanidm_kernel::PartialValue]
-    Source: 'src/lib.rs', lines 43:0-50:1
+    Source: 'ports/kanidm/kernel/src/lib.rs', lines 43:0-50:1
     Visibility: public -/
 @[discriminant isize]
 inductive PartialValue where
@@ -32,7 +32,7 @@ inductive PartialValue where
 | Uint32 : Std.U32 → PartialValue
 
 /-- [kanidm_kernel::FilterResolved]
-    Source: 'src/lib.rs', lines 143:0-155:1
+    Source: 'ports/kanidm/kernel/src/lib.rs', lines 143:0-155:1
     Visibility: public -/
 @[discriminant isize]
 inductive FilterResolved where
@@ -49,14 +49,14 @@ inductive FilterResolved where
 | AndNot : FilterResolved → FilterResolved
 
 /-- [kanidm_kernel::profiles::AccessControlTargetCondition]
-    Source: 'src/profiles.rs', lines 27:0-29:1
+    Source: 'ports/kanidm/kernel/src/profiles.rs', lines 27:0-29:1
     Visibility: public -/
 @[discriminant isize]
 inductive profiles.AccessControlTargetCondition where
 | Scope : FilterResolved → profiles.AccessControlTargetCondition
 
 /-- [kanidm_kernel::FilterComp]
-    Source: 'src/lib.rs', lines 125:0-138:1
+    Source: 'ports/kanidm/kernel/src/lib.rs', lines 125:0-138:1
     Visibility: public -/
 @[discriminant isize]
 inductive FilterComp where
@@ -74,7 +74,7 @@ inductive FilterComp where
 | Invalid : alloc.vec.Vec Std.U8 → FilterComp
 
 /-- [kanidm_kernel::profiles::AccessControlTarget]
-    Source: 'src/profiles.rs', lines 21:0-24:1
+    Source: 'ports/kanidm/kernel/src/profiles.rs', lines 21:0-24:1
     Visibility: public -/
 @[discriminant isize]
 inductive profiles.AccessControlTarget where
@@ -82,7 +82,7 @@ inductive profiles.AccessControlTarget where
 | Scope : FilterComp → profiles.AccessControlTarget
 
 /-- [kanidm_kernel::profiles::AccessControlReceiverCondition]
-    Source: 'src/profiles.rs', lines 15:0-18:1
+    Source: 'ports/kanidm/kernel/src/profiles.rs', lines 15:0-18:1
     Visibility: public -/
 @[discriminant isize]
 inductive profiles.AccessControlReceiverCondition where
@@ -90,7 +90,7 @@ inductive profiles.AccessControlReceiverCondition where
 | EntryManager : profiles.AccessControlReceiverCondition
 
 /-- [kanidm_kernel::profiles::AccessControlReceiver]
-    Source: 'src/profiles.rs', lines 7:0-11:1
+    Source: 'ports/kanidm/kernel/src/profiles.rs', lines 7:0-11:1
     Visibility: public -/
 @[discriminant isize]
 inductive profiles.AccessControlReceiver where
@@ -99,7 +99,7 @@ inductive profiles.AccessControlReceiver where
 | EntryManager : profiles.AccessControlReceiver
 
 /-- [kanidm_kernel::AccessScope]
-    Source: 'src/lib.rs', lines 109:0-113:1
+    Source: 'ports/kanidm/kernel/src/lib.rs', lines 109:0-113:1
     Visibility: public -/
 @[discriminant isize]
 inductive AccessScope where
@@ -108,7 +108,7 @@ inductive AccessScope where
 | Synchronise : AccessScope
 
 /-- [kanidm_kernel::ValueSet]
-    Source: 'src/lib.rs', lines 58:0-66:1
+    Source: 'ports/kanidm/kernel/src/lib.rs', lines 58:0-66:1
     Visibility: public -/
 @[discriminant isize]
 inductive ValueSet where
@@ -121,27 +121,27 @@ inductive ValueSet where
 | OauthScopeMap : alloc.vec.Vec Std.U128 → ValueSet
 
 /-- [kanidm_kernel::Ava]
-    Source: 'src/lib.rs', lines 70:0-73:1
+    Source: 'ports/kanidm/kernel/src/lib.rs', lines 70:0-73:1
     Visibility: public -/
 structure Ava where
   attr : alloc.vec.Vec Std.U8
   vs : ValueSet
 
 /-- [kanidm_kernel::Entry]
-    Source: 'src/lib.rs', lines 79:0-82:1
+    Source: 'ports/kanidm/kernel/src/lib.rs', lines 79:0-82:1
     Visibility: public -/
 structure Entry where
   uuid : Std.U128
   attrs : alloc.vec.Vec Ava
 
 /-- [kanidm_kernel::IdentUser]
-    Source: 'src/lib.rs', lines 95:0-97:1
+    Source: 'ports/kanidm/kernel/src/lib.rs', lines 95:0-97:1
     Visibility: public -/
 structure IdentUser where
   entry : Entry
 
 /-- [kanidm_kernel::InternalRole]
-    Source: 'src/lib.rs', lines 86:0-91:1
+    Source: 'ports/kanidm/kernel/src/lib.rs', lines 86:0-91:1
     Visibility: public -/
 @[discriminant isize]
 inductive InternalRole where
@@ -151,7 +151,7 @@ inductive InternalRole where
 | MessageQueue : InternalRole
 
 /-- [kanidm_kernel::IdentType]
-    Source: 'src/lib.rs', lines 101:0-105:1
+    Source: 'ports/kanidm/kernel/src/lib.rs', lines 101:0-105:1
     Visibility: public -/
 @[discriminant isize]
 inductive IdentType where
@@ -160,14 +160,14 @@ inductive IdentType where
 | Internal : InternalRole → IdentType
 
 /-- [kanidm_kernel::Identity]
-    Source: 'src/lib.rs', lines 118:0-121:1
+    Source: 'ports/kanidm/kernel/src/lib.rs', lines 118:0-121:1
     Visibility: public -/
 structure Identity where
   origin : IdentType
   scope : AccessScope
 
 /-- [kanidm_kernel::{impl core::clone::Clone for kanidm_kernel::PartialValue}::clone]:
-    Source: 'src/lib.rs', lines 42:9-42:14
+    Source: 'ports/kanidm/kernel/src/lib.rs', lines 42:9-42:14
     Visibility: public -/
 def PartialValue.Insts.CoreCloneClone.clone
   (self : PartialValue) : Result PartialValue := do
@@ -192,30 +192,30 @@ def PartialValue.Insts.CoreCloneClone.clone
     ok (PartialValue.Uint32 i)
 
 /-- [kanidm_kernel::UUID_INTERNAL_MESSAGE_QUEUE]
-    Source: 'src/lib.rs', lines 36:0-36:61
+    Source: 'ports/kanidm/kernel/src/lib.rs', lines 36:0-36:61
     Visibility: public -/
 @[global_simps, irreducible]
 def UUID_INTERNAL_MESSAGE_QUEUE : Std.U128 := 281474959933573#u128
 
 /-- [kanidm_kernel::UUID_INTERNAL_ACCOUNT_REQUEST]
-    Source: 'src/lib.rs', lines 34:0-34:63
+    Source: 'ports/kanidm/kernel/src/lib.rs', lines 34:0-34:63
     Visibility: public -/
 @[global_simps, irreducible]
 def UUID_INTERNAL_ACCOUNT_REQUEST : Std.U128 := 281474959933572#u128
 
 /-- [kanidm_kernel::UUID_INTERNAL_MIGRATION]
-    Source: 'src/lib.rs', lines 32:0-32:57
+    Source: 'ports/kanidm/kernel/src/lib.rs', lines 32:0-32:57
     Visibility: public -/
 @[global_simps, irreducible]
 def UUID_INTERNAL_MIGRATION : Std.U128 := 281474959933570#u128
 
 /-- [kanidm_kernel::UUID_SYSTEM]
-    Source: 'src/lib.rs', lines 30:0-30:45
+    Source: 'ports/kanidm/kernel/src/lib.rs', lines 30:0-30:45
     Visibility: public -/
 @[global_simps, irreducible] def UUID_SYSTEM : Std.U128 := 281474959933440#u128
 
 /-- [kanidm_kernel::identity_impl::role_get_uuid]:
-    Source: 'src/identity_impl.rs', lines 9:0-16:1
+    Source: 'ports/kanidm/kernel/src/identity_impl.rs', lines 9:0-16:1
     Visibility: public -/
 def identity_impl.role_get_uuid (role : InternalRole) : Result Std.U128 := do
   match role with
@@ -225,7 +225,7 @@ def identity_impl.role_get_uuid (role : InternalRole) : Result Std.U128 := do
   | InternalRole.MessageQueue => ok UUID_INTERNAL_MESSAGE_QUEUE
 
 /-- [kanidm_kernel::identity_impl::get_uuid]:
-    Source: 'src/identity_impl.rs', lines 24:0-30:1
+    Source: 'ports/kanidm/kernel/src/identity_impl.rs', lines 24:0-30:1
     Visibility: public -/
 def identity_impl.get_uuid (ident : Identity) : Result Std.U128 := do
   match ident.origin with
@@ -236,7 +236,7 @@ def identity_impl.get_uuid (ident : Identity) : Result Std.U128 := do
 mutual
 
 /-- [kanidm_kernel::filter_impl::resolve_no_idx]:
-    Source: 'src/filter_impl.rs', lines 14:0-44:1
+    Source: 'ports/kanidm/kernel/src/filter_impl.rs', lines 14:0-44:1
     Visibility: public -/
 def filter_impl.resolve_no_idx
   (fc : FilterComp) (ev : Identity) : Result (Option FilterResolved) := do
@@ -303,7 +303,7 @@ def filter_impl.resolve_no_idx
 partial_fixpoint
 
 /-- [kanidm_kernel::filter_impl::resolve_no_idx_list]:
-    Source: 'src/filter_impl.rs', lines 48:0-65:1
+    Source: 'ports/kanidm/kernel/src/filter_impl.rs', lines 48:0-65:1
     Visibility: public -/
 def filter_impl.resolve_no_idx_list
   (vs : alloc.vec.Vec FilterComp) (ev : Identity) (i : Std.Usize)
@@ -329,14 +329,14 @@ partial_fixpoint
 end
 
 /-- [kanidm_kernel::filter_impl::resolve]:
-    Source: 'src/filter_impl.rs', lines 9:0-11:1
+    Source: 'ports/kanidm/kernel/src/filter_impl.rs', lines 9:0-11:1
     Visibility: public -/
 def filter_impl.resolve
   (filter : FilterComp) (ev : Identity) : Result (Option FilterResolved) := do
   filter_impl.resolve_no_idx filter ev
 
 /-- [kanidm_kernel::bset::contains_uuid]: loop body 0:
-    Source: 'src/bset.rs', lines 102:4-109:1
+    Source: 'ports/kanidm/kernel/src/bset.rs', lines 102:4-109:1
     Visibility: public -/
 @[rust_loop_body]
 def bset.contains_uuid_loop.body
@@ -354,7 +354,7 @@ def bset.contains_uuid_loop.body
   else ok (done false)
 
 /-- [kanidm_kernel::bset::contains_uuid]: loop 0:
-    Source: 'src/bset.rs', lines 102:4-109:1
+    Source: 'ports/kanidm/kernel/src/bset.rs', lines 102:4-109:1
     Visibility: public -/
 @[rust_loop]
 def bset.contains_uuid_loop
@@ -364,7 +364,7 @@ def bset.contains_uuid_loop
     i
 
 /-- [kanidm_kernel::bset::contains_uuid]:
-    Source: 'src/bset.rs', lines 100:0-109:1
+    Source: 'ports/kanidm/kernel/src/bset.rs', lines 100:0-109:1
     Visibility: public -/
 @[reducible]
 def bset.contains_uuid
@@ -372,7 +372,7 @@ def bset.contains_uuid
   bset.contains_uuid_loop set u 0#usize
 
 /-- [kanidm_kernel::bset::intersects_uuid]: loop body 0:
-    Source: 'src/bset.rs', lines 114:4-121:1
+    Source: 'ports/kanidm/kernel/src/bset.rs', lines 114:4-121:1
     Visibility: public -/
 @[rust_loop_body]
 def bset.intersects_uuid_loop.body
@@ -391,7 +391,7 @@ def bset.intersects_uuid_loop.body
   else ok (done false)
 
 /-- [kanidm_kernel::bset::intersects_uuid]: loop 0:
-    Source: 'src/bset.rs', lines 114:4-121:1
+    Source: 'ports/kanidm/kernel/src/bset.rs', lines 114:4-121:1
     Visibility: public -/
 @[rust_loop]
 def bset.intersects_uuid_loop
@@ -401,7 +401,7 @@ def bset.intersects_uuid_loop
     i
 
 /-- [kanidm_kernel::bset::intersects_uuid]:
-    Source: 'src/bset.rs', lines 112:0-121:1
+    Source: 'ports/kanidm/kernel/src/bset.rs', lines 112:0-121:1
     Visibility: public -/
 @[reducible]
 def bset.intersects_uuid
@@ -409,7 +409,7 @@ def bset.intersects_uuid
   bset.intersects_uuid_loop a b 0#usize
 
 /-- [kanidm_kernel::access::resolve_access_conditions]:
-    Source: 'src/access.rs', lines 25:0-58:1
+    Source: 'ports/kanidm/kernel/src/access.rs', lines 25:0-58:1
     Visibility: public -/
 def access.resolve_access_conditions
   (ident : Identity) (ident_memberof : Option (alloc.vec.Vec Std.U128))
@@ -452,7 +452,7 @@ def access.resolve_access_conditions
           profiles.AccessControlTargetCondition.Scope f))
 
 /-- [kanidm_kernel::profiles::AccessControlSearchResolved]
-    Source: 'src/profiles.rs', lines 45:0-49:1
+    Source: 'ports/kanidm/kernel/src/profiles.rs', lines 45:0-49:1
     Visibility: public -/
 structure profiles.AccessControlSearchResolved where
   attrs : alloc.vec.Vec (alloc.vec.Vec Std.U8)
@@ -460,21 +460,21 @@ structure profiles.AccessControlSearchResolved where
   target_condition : profiles.AccessControlTargetCondition
 
 /-- [kanidm_kernel::profiles::AccessControlProfile]
-    Source: 'src/profiles.rs', lines 32:0-35:1
+    Source: 'ports/kanidm/kernel/src/profiles.rs', lines 32:0-35:1
     Visibility: public -/
 structure profiles.AccessControlProfile where
   receiver : profiles.AccessControlReceiver
   target : profiles.AccessControlTarget
 
 /-- [kanidm_kernel::profiles::AccessControlSearch]
-    Source: 'src/profiles.rs', lines 38:0-41:1
+    Source: 'ports/kanidm/kernel/src/profiles.rs', lines 38:0-41:1
     Visibility: public -/
 structure profiles.AccessControlSearch where
   acp : profiles.AccessControlProfile
   attrs : alloc.vec.Vec (alloc.vec.Vec Std.U8)
 
 /-- [kanidm_kernel::profiles::AccessControlModify]
-    Source: 'src/profiles.rs', lines 78:0-84:1
+    Source: 'ports/kanidm/kernel/src/profiles.rs', lines 78:0-84:1
     Visibility: public -/
 structure profiles.AccessControlModify where
   acp : profiles.AccessControlProfile
@@ -484,7 +484,7 @@ structure profiles.AccessControlModify where
   rem_classes : alloc.vec.Vec (alloc.vec.Vec Std.U8)
 
 /-- [kanidm_kernel::profiles::AccessControlCreate]
-    Source: 'src/profiles.rs', lines 63:0-67:1
+    Source: 'ports/kanidm/kernel/src/profiles.rs', lines 63:0-67:1
     Visibility: public -/
 structure profiles.AccessControlCreate where
   acp : profiles.AccessControlProfile
@@ -492,20 +492,20 @@ structure profiles.AccessControlCreate where
   attrs : alloc.vec.Vec (alloc.vec.Vec Std.U8)
 
 /-- [kanidm_kernel::profiles::AccessControlDelete]
-    Source: 'src/profiles.rs', lines 52:0-54:1
+    Source: 'ports/kanidm/kernel/src/profiles.rs', lines 52:0-54:1
     Visibility: public -/
 structure profiles.AccessControlDelete where
   acp : profiles.AccessControlProfile
 
 /-- [kanidm_kernel::SyncAgreement]
-    Source: 'src/lib.rs', lines 246:0-249:1
+    Source: 'ports/kanidm/kernel/src/lib.rs', lines 246:0-249:1
     Visibility: public -/
 structure SyncAgreement where
   uuid : Std.U128
   attrs : alloc.vec.Vec (alloc.vec.Vec Std.U8)
 
 /-- [kanidm_kernel::AccessControlsInner]
-    Source: 'src/lib.rs', lines 252:0-258:1
+    Source: 'ports/kanidm/kernel/src/lib.rs', lines 252:0-258:1
     Visibility: public -/
 structure AccessControlsInner where
   acps_search : alloc.vec.Vec profiles.AccessControlSearch
@@ -515,7 +515,7 @@ structure AccessControlsInner where
   sync_agreements : alloc.vec.Vec SyncAgreement
 
 /-- [kanidm_kernel::valueset::as_refer_set]:
-    Source: 'src/valueset.rs', lines 292:0-297:1
+    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 292:0-297:1
     Visibility: public -/
 def valueset.as_refer_set
   (vs : ValueSet) : Result (Option (alloc.vec.Vec Std.U128)) := do
@@ -529,7 +529,7 @@ def valueset.as_refer_set
   | ValueSet.OauthScopeMap _ => ok none
 
 /-- [kanidm_kernel::bset::bytes_eq]: loop body 0:
-    Source: 'src/bset.rs', lines 10:4-17:1
+    Source: 'ports/kanidm/kernel/src/bset.rs', lines 10:4-17:1
     Visibility: public -/
 @[rust_loop_body]
 def bset.bytes_eq_loop.body
@@ -548,7 +548,7 @@ def bset.bytes_eq_loop.body
   else ok (done true)
 
 /-- [kanidm_kernel::bset::bytes_eq]: loop 0:
-    Source: 'src/bset.rs', lines 10:4-17:1
+    Source: 'ports/kanidm/kernel/src/bset.rs', lines 10:4-17:1
     Visibility: public -/
 @[rust_loop]
 def bset.bytes_eq_loop
@@ -558,7 +558,7 @@ def bset.bytes_eq_loop
     i
 
 /-- [kanidm_kernel::bset::bytes_eq]:
-    Source: 'src/bset.rs', lines 5:0-17:1
+    Source: 'ports/kanidm/kernel/src/bset.rs', lines 5:0-17:1
     Visibility: public -/
 def bset.bytes_eq (a : Slice Std.U8) (b : Slice Std.U8) : Result Bool := do
   let i := Slice.len a
@@ -568,7 +568,7 @@ def bset.bytes_eq (a : Slice Std.U8) (b : Slice Std.U8) : Result Bool := do
   else bset.bytes_eq_loop a b 0#usize
 
 /-- [kanidm_kernel::entry_impl::get_ava_set]: loop body 0:
-    Source: 'src/entry_impl.rs', lines 13:4-20:1
+    Source: 'ports/kanidm/kernel/src/entry_impl.rs', lines 13:4-20:1
     Visibility: public -/
 @[rust_loop_body]
 def entry_impl.get_ava_set_loop.body
@@ -589,7 +589,7 @@ def entry_impl.get_ava_set_loop.body
   else ok (done none)
 
 /-- [kanidm_kernel::entry_impl::get_ava_set]: loop 0:
-    Source: 'src/entry_impl.rs', lines 13:4-20:1
+    Source: 'ports/kanidm/kernel/src/entry_impl.rs', lines 13:4-20:1
     Visibility: public -/
 @[rust_loop]
 def entry_impl.get_ava_set_loop
@@ -601,7 +601,7 @@ def entry_impl.get_ava_set_loop
     i
 
 /-- [kanidm_kernel::entry_impl::get_ava_set]:
-    Source: 'src/entry_impl.rs', lines 11:0-20:1
+    Source: 'ports/kanidm/kernel/src/entry_impl.rs', lines 11:0-20:1
     Visibility: public -/
 @[reducible]
 def entry_impl.get_ava_set
@@ -609,7 +609,7 @@ def entry_impl.get_ava_set
   entry_impl.get_ava_set_loop e attr 0#usize
 
 /-- [kanidm_kernel::entry_impl::get_ava_refer]:
-    Source: 'src/entry_impl.rs', lines 23:0-28:1
+    Source: 'ports/kanidm/kernel/src/entry_impl.rs', lines 23:0-28:1
     Visibility: public -/
 def entry_impl.get_ava_refer
   (e : Entry) (attr : Slice Std.U8) :
@@ -621,7 +621,7 @@ def entry_impl.get_ava_refer
   | some vs => valueset.as_refer_set vs
 
 /-- [kanidm_kernel::identity_impl::get_memberof]:
-    Source: 'src/identity_impl.rs', lines 33:0-38:1
+    Source: 'ports/kanidm/kernel/src/identity_impl.rs', lines 33:0-38:1
     Visibility: public -/
 def identity_impl.get_memberof
   (ident : Identity) : Result (Option (alloc.vec.Vec Std.U128)) := do
@@ -637,7 +637,7 @@ def identity_impl.get_memberof
   | IdentType.Internal _ => ok none
 
 /-- [kanidm_kernel::bset::contains]: loop body 0:
-    Source: 'src/bset.rs', lines 22:4-29:1
+    Source: 'ports/kanidm/kernel/src/bset.rs', lines 22:4-29:1
     Visibility: public -/
 @[rust_loop_body]
 def bset.contains_loop.body
@@ -657,7 +657,7 @@ def bset.contains_loop.body
   else ok (done false)
 
 /-- [kanidm_kernel::bset::contains]: loop 0:
-    Source: 'src/bset.rs', lines 22:4-29:1
+    Source: 'ports/kanidm/kernel/src/bset.rs', lines 22:4-29:1
     Visibility: public -/
 @[rust_loop]
 def bset.contains_loop
@@ -669,7 +669,7 @@ def bset.contains_loop
     i
 
 /-- [kanidm_kernel::bset::contains]:
-    Source: 'src/bset.rs', lines 20:0-29:1
+    Source: 'ports/kanidm/kernel/src/bset.rs', lines 20:0-29:1
     Visibility: public -/
 @[reducible]
 def bset.contains
@@ -677,7 +677,7 @@ def bset.contains
   bset.contains_loop set x 0#usize
 
 /-- [kanidm_kernel::bset::is_disjoint]: loop body 0:
-    Source: 'src/bset.rs', lines 62:4-69:1
+    Source: 'ports/kanidm/kernel/src/bset.rs', lines 62:4-69:1
     Visibility: public -/
 @[rust_loop_body]
 def bset.is_disjoint_loop.body
@@ -698,7 +698,7 @@ def bset.is_disjoint_loop.body
   else ok (done true)
 
 /-- [kanidm_kernel::bset::is_disjoint]: loop 0:
-    Source: 'src/bset.rs', lines 62:4-69:1
+    Source: 'ports/kanidm/kernel/src/bset.rs', lines 62:4-69:1
     Visibility: public -/
 @[rust_loop]
 def bset.is_disjoint_loop
@@ -711,7 +711,7 @@ def bset.is_disjoint_loop
     i
 
 /-- [kanidm_kernel::bset::is_disjoint]:
-    Source: 'src/bset.rs', lines 60:0-69:1
+    Source: 'ports/kanidm/kernel/src/bset.rs', lines 60:0-69:1
     Visibility: public -/
 @[reducible]
 def bset.is_disjoint
@@ -721,7 +721,7 @@ def bset.is_disjoint
   bset.is_disjoint_loop a b 0#usize
 
 /-- [kanidm_kernel::access::search_related_acp]: loop body 0:
-    Source: 'src/access.rs', lines 72:4-93:5
+    Source: 'ports/kanidm/kernel/src/access.rs', lines 72:4-93:5
     Visibility: public -/
 @[rust_loop_body]
 def access.search_related_acp_loop.body
@@ -776,7 +776,7 @@ def access.search_related_acp_loop.body
   else ok (done related_acp)
 
 /-- [kanidm_kernel::access::search_related_acp]: loop 0:
-    Source: 'src/access.rs', lines 72:4-93:5
+    Source: 'ports/kanidm/kernel/src/access.rs', lines 72:4-93:5
     Visibility: public -/
 @[rust_loop]
 def access.search_related_acp_loop
@@ -793,7 +793,7 @@ def access.search_related_acp_loop
     (attrs, related_acp, i)
 
 /-- [kanidm_kernel::access::search_related_acp]:
-    Source: 'src/access.rs', lines 62:0-95:1
+    Source: 'ports/kanidm/kernel/src/access.rs', lines 62:0-95:1
     Visibility: public -/
 def access.search_related_acp
   (ctl : AccessControlsInner) (ident : Identity)
@@ -805,14 +805,14 @@ def access.search_related_acp
     (alloc.vec.Vec.new profiles.AccessControlSearchResolved) 0#usize
 
 /-- [kanidm_kernel::OperationError]
-    Source: 'src/lib.rs', lines 169:0-171:1
+    Source: 'ports/kanidm/kernel/src/lib.rs', lines 169:0-171:1
     Visibility: public -/
 @[discriminant isize]
 inductive OperationError where
 | InvalidState : OperationError
 
 /-- [kanidm_kernel::bset::insert]:
-    Source: 'src/bset.rs', lines 32:0-36:1
+    Source: 'ports/kanidm/kernel/src/bset.rs', lines 32:0-36:1
     Visibility: public -/
 def bset.insert
   (set : alloc.vec.Vec (alloc.vec.Vec Std.U8)) (x : Slice Std.U8) :
@@ -829,7 +829,7 @@ def bset.insert
 mutual
 
 /-- [kanidm_kernel::filter_impl::fc_get_attr_set]:
-    Source: 'src/filter_impl.rs', lines 75:0-94:1
+    Source: 'ports/kanidm/kernel/src/filter_impl.rs', lines 75:0-94:1
     Visibility: public -/
 def filter_impl.fc_get_attr_set
   (fc : FilterComp) (r_set : alloc.vec.Vec (alloc.vec.Vec Std.U8)) :
@@ -870,7 +870,7 @@ def filter_impl.fc_get_attr_set
 partial_fixpoint
 
 /-- [kanidm_kernel::filter_impl::fc_get_attr_set_list]:
-    Source: 'src/filter_impl.rs', lines 97:0-102:1
+    Source: 'ports/kanidm/kernel/src/filter_impl.rs', lines 97:0-102:1
     Visibility: public -/
 def filter_impl.fc_get_attr_set_list
   (vs : alloc.vec.Vec FilterComp)
@@ -892,14 +892,14 @@ partial_fixpoint
 end
 
 /-- [kanidm_kernel::filter_impl::get_attr_set]:
-    Source: 'src/filter_impl.rs', lines 68:0-72:1
+    Source: 'ports/kanidm/kernel/src/filter_impl.rs', lines 68:0-72:1
     Visibility: public -/
 def filter_impl.get_attr_set
   (filter : FilterComp) : Result (alloc.vec.Vec (alloc.vec.Vec Std.U8)) := do
   filter_impl.fc_get_attr_set filter (alloc.vec.Vec.new (alloc.vec.Vec Std.U8))
 
 /-- [kanidm_kernel::valueset::as_iutf8_set]:
-    Source: 'src/valueset.rs', lines 284:0-289:1
+    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 284:0-289:1
     Visibility: public -/
 def valueset.as_iutf8_set
   (vs : ValueSet) :
@@ -915,7 +915,7 @@ def valueset.as_iutf8_set
   | ValueSet.OauthScopeMap _ => ok none
 
 /-- [kanidm_kernel::entry_impl::get_ava_as_iutf8]:
-    Source: 'src/entry_impl.rs', lines 31:0-36:1
+    Source: 'ports/kanidm/kernel/src/entry_impl.rs', lines 31:0-36:1
     Visibility: public -/
 def entry_impl.get_ava_as_iutf8
   (e : Entry) (attr : Slice Std.U8) :
@@ -927,7 +927,7 @@ def entry_impl.get_ava_as_iutf8
   | some vs => valueset.as_iutf8_set vs
 
 /-- [kanidm_kernel::entry_impl::class_contains]:
-    Source: 'src/entry_impl.rs', lines 74:0-79:1
+    Source: 'ports/kanidm/kernel/src/entry_impl.rs', lines 74:0-79:1
     Visibility: public -/
 def entry_impl.class_contains
   (e : Entry) («class» : Slice Std.U8) : Result Bool := do
@@ -941,7 +941,7 @@ def entry_impl.class_contains
                 bset.contains s1 «class»
 
 /-- [kanidm_kernel::search_acc::is_sync_account_user]:
-    Source: 'src/search_acc.rs', lines 281:0-286:1
+    Source: 'ports/kanidm/kernel/src/search_acc.rs', lines 281:0-286:1
     Visibility: public -/
 def search_acc.is_sync_account_user (e : Entry) : Result Bool := do
   let s ←
@@ -962,7 +962,7 @@ def search_acc.is_sync_account_user (e : Entry) : Result Bool := do
   else ok false
 
 /-- [kanidm_kernel::AccessSrchResult]
-    Source: 'src/lib.rs', lines 218:0-223:1
+    Source: 'ports/kanidm/kernel/src/lib.rs', lines 218:0-223:1
     Visibility: public -/
 @[discriminant isize]
 inductive AccessSrchResult where
@@ -972,7 +972,7 @@ inductive AccessSrchResult where
 | Allow : alloc.vec.Vec (alloc.vec.Vec Std.U8) → AccessSrchResult
 
 /-- [kanidm_kernel::valueset::to_refer_single]:
-    Source: 'src/valueset.rs', lines 300:0-311:1
+    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 300:0-311:1
     Visibility: public -/
 def valueset.to_refer_single (vs : ValueSet) : Result (Option Std.U128) := do
   match vs with
@@ -993,7 +993,7 @@ def valueset.to_refer_single (vs : ValueSet) : Result (Option Std.U128) := do
   | ValueSet.OauthScopeMap _ => ok none
 
 /-- [kanidm_kernel::entry_impl::get_ava_single_refer]:
-    Source: 'src/entry_impl.rs', lines 39:0-44:1
+    Source: 'ports/kanidm/kernel/src/entry_impl.rs', lines 39:0-44:1
     Visibility: public -/
 def entry_impl.get_ava_single_refer
   (e : Entry) (attr : Slice Std.U8) : Result (Option Std.U128) := do
@@ -1003,7 +1003,7 @@ def entry_impl.get_ava_single_refer
   | some vs => valueset.to_refer_single vs
 
 /-- [kanidm_kernel::search_acc::search_sync_account_filter_entry]:
-    Source: 'src/search_acc.rs', lines 289:0-320:1
+    Source: 'ports/kanidm/kernel/src/search_acc.rs', lines 289:0-320:1
     Visibility: public -/
 def search_acc.search_sync_account_filter_entry
   (ident : Identity) (entry : Entry) : Result AccessSrchResult := do
@@ -1059,7 +1059,7 @@ def search_acc.search_sync_account_filter_entry
   | IdentType.Internal _ => ok AccessSrchResult.Ignore
 
 /-- [kanidm_kernel::search_acc::linked_group_member]:
-    Source: 'src/search_acc.rs', lines 205:0-213:1
+    Source: 'ports/kanidm/kernel/src/search_acc.rs', lines 205:0-213:1
     Visibility: public -/
 def search_acc.linked_group_member
   (group : Option Std.U128) (mo : Option (alloc.vec.Vec Std.U128)) :
@@ -1074,13 +1074,13 @@ def search_acc.linked_group_member
                 bset.contains_uuid s group_uuid
 
 /-- [kanidm_kernel::UUID_ANONYMOUS]
-    Source: 'src/lib.rs', lines 38:0-38:48
+    Source: 'ports/kanidm/kernel/src/lib.rs', lines 38:0-38:48
     Visibility: public -/
 @[global_simps, irreducible]
 def UUID_ANONYMOUS : Std.U128 := 281474976710655#u128
 
 /-- [kanidm_kernel::search_acc::search_applications_filter_entry]:
-    Source: 'src/search_acc.rs', lines 252:0-277:1
+    Source: 'ports/kanidm/kernel/src/search_acc.rs', lines 252:0-277:1
     Visibility: public -/
 def search_acc.search_applications_filter_entry
   (ident : Identity) (entry : Entry) : Result AccessSrchResult := do
@@ -1144,7 +1144,7 @@ def search_acc.search_applications_filter_entry
   | IdentType.Internal _ => ok AccessSrchResult.Ignore
 
 /-- [kanidm_kernel::search_acc::scope_member]:
-    Source: 'src/search_acc.rs', lines 194:0-202:1
+    Source: 'ports/kanidm/kernel/src/search_acc.rs', lines 194:0-202:1
     Visibility: public -/
 def search_acc.scope_member
   (maps : Option (alloc.vec.Vec Std.U128))
@@ -1162,7 +1162,7 @@ def search_acc.scope_member
       bset.intersects_uuid s s1
 
 /-- [kanidm_kernel::valueset::as_oauthscopemap]:
-    Source: 'src/valueset.rs', lines 328:0-333:1
+    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 328:0-333:1
     Visibility: public -/
 def valueset.as_oauthscopemap
   (vs : ValueSet) : Result (Option (alloc.vec.Vec Std.U128)) := do
@@ -1176,7 +1176,7 @@ def valueset.as_oauthscopemap
   | ValueSet.OauthScopeMap keys => ok (some keys)
 
 /-- [kanidm_kernel::entry_impl::get_ava_as_oauthscopemaps]:
-    Source: 'src/entry_impl.rs', lines 47:0-52:1
+    Source: 'ports/kanidm/kernel/src/entry_impl.rs', lines 47:0-52:1
     Visibility: public -/
 def entry_impl.get_ava_as_oauthscopemaps
   (e : Entry) (attr : Slice Std.U8) :
@@ -1188,7 +1188,7 @@ def entry_impl.get_ava_as_oauthscopemaps
   | some vs => valueset.as_oauthscopemap vs
 
 /-- [kanidm_kernel::search_acc::search_oauth2_filter_entry]:
-    Source: 'src/search_acc.rs', lines 223:0-249:1
+    Source: 'ports/kanidm/kernel/src/search_acc.rs', lines 223:0-249:1
     Visibility: public -/
 def search_acc.search_oauth2_filter_entry
   (ident : Identity) (entry : Entry) : Result AccessSrchResult := do
@@ -1258,7 +1258,7 @@ def search_acc.search_oauth2_filter_entry
   | IdentType.Internal _ => ok AccessSrchResult.Ignore
 
 /-- [kanidm_kernel::migration::migration_entry_classes]:
-    Source: 'src/migration.rs', lines 6:0-21:1
+    Source: 'ports/kanidm/kernel/src/migration.rs', lines 6:0-21:1
     Visibility: public -/
 def migration.migration_entry_classes (c : Slice Std.U8) : Result Bool := do
   let s ←
@@ -1400,7 +1400,7 @@ def migration.migration_entry_classes (c : Slice Std.U8) : Result Bool := do
                             bset.bytes_eq c s13
 
 /-- [kanidm_kernel::migration::subset_migration_entry]: loop body 0:
-    Source: 'src/migration.rs', lines 51:4-58:1
+    Source: 'ports/kanidm/kernel/src/migration.rs', lines 51:4-58:1
     Visibility: public -/
 @[rust_loop_body]
 def migration.subset_migration_entry_loop.body
@@ -1420,7 +1420,7 @@ def migration.subset_migration_entry_loop.body
   else ok (done true)
 
 /-- [kanidm_kernel::migration::subset_migration_entry]: loop 0:
-    Source: 'src/migration.rs', lines 51:4-58:1
+    Source: 'ports/kanidm/kernel/src/migration.rs', lines 51:4-58:1
     Visibility: public -/
 @[rust_loop]
 def migration.subset_migration_entry_loop
@@ -1430,7 +1430,7 @@ def migration.subset_migration_entry_loop
     i
 
 /-- [kanidm_kernel::migration::subset_migration_entry]:
-    Source: 'src/migration.rs', lines 49:0-58:1
+    Source: 'ports/kanidm/kernel/src/migration.rs', lines 49:0-58:1
     Visibility: public -/
 @[reducible]
 def migration.subset_migration_entry
@@ -1438,7 +1438,7 @@ def migration.subset_migration_entry
   migration.subset_migration_entry_loop classes 0#usize
 
 /-- [kanidm_kernel::migration::migration_ignore_classes]:
-    Source: 'src/migration.rs', lines 24:0-32:1
+    Source: 'ports/kanidm/kernel/src/migration.rs', lines 24:0-32:1
     Visibility: public -/
 def migration.migration_ignore_classes (c : Slice Std.U8) : Result Bool := do
   let s ←
@@ -1516,7 +1516,7 @@ def migration.migration_ignore_classes (c : Slice Std.U8) : Result Bool := do
               bset.bytes_eq c s6
 
 /-- [kanidm_kernel::migration::sub_migration_ignore]: loop body 0:
-    Source: 'src/migration.rs', lines 38:4-44:5
+    Source: 'ports/kanidm/kernel/src/migration.rs', lines 38:4-44:5
     Visibility: public -/
 @[rust_loop_body]
 def migration.sub_migration_ignore_loop.body
@@ -1542,7 +1542,7 @@ def migration.sub_migration_ignore_loop.body
   else ok (done out)
 
 /-- [kanidm_kernel::migration::sub_migration_ignore]: loop 0:
-    Source: 'src/migration.rs', lines 38:4-44:5
+    Source: 'ports/kanidm/kernel/src/migration.rs', lines 38:4-44:5
     Visibility: public -/
 @[rust_loop]
 def migration.sub_migration_ignore_loop
@@ -1556,7 +1556,7 @@ def migration.sub_migration_ignore_loop
     (out, i)
 
 /-- [kanidm_kernel::migration::sub_migration_ignore]:
-    Source: 'src/migration.rs', lines 35:0-46:1
+    Source: 'ports/kanidm/kernel/src/migration.rs', lines 35:0-46:1
     Visibility: public -/
 @[reducible]
 def migration.sub_migration_ignore
@@ -1567,7 +1567,7 @@ def migration.sub_migration_ignore
     Std.U8)) 0#usize
 
 /-- [kanidm_kernel::search_acc::valid_migration_class]:
-    Source: 'src/search_acc.rs', lines 186:0-191:1
+    Source: 'ports/kanidm/kernel/src/search_acc.rs', lines 186:0-191:1
     Visibility: public -/
 def search_acc.valid_migration_class (entry : Entry) : Result Bool := do
   let s ←
@@ -1583,7 +1583,7 @@ def search_acc.valid_migration_class (entry : Entry) : Result Bool := do
     migration.subset_migration_entry s2
 
 /-- [kanidm_kernel::bset::extend]: loop body 0:
-    Source: 'src/bset.rs', lines 41:4-44:5
+    Source: 'ports/kanidm/kernel/src/bset.rs', lines 41:4-44:5
     Visibility: public -/
 @[rust_loop_body]
 def bset.extend_loop.body
@@ -1603,7 +1603,7 @@ def bset.extend_loop.body
   else ok (done set)
 
 /-- [kanidm_kernel::bset::extend]: loop 0:
-    Source: 'src/bset.rs', lines 41:4-44:5
+    Source: 'ports/kanidm/kernel/src/bset.rs', lines 41:4-44:5
     Visibility: public -/
 @[rust_loop]
 def bset.extend_loop
@@ -1616,7 +1616,7 @@ def bset.extend_loop
     (set, i)
 
 /-- [kanidm_kernel::bset::extend]:
-    Source: 'src/bset.rs', lines 39:0-45:1
+    Source: 'ports/kanidm/kernel/src/bset.rs', lines 39:0-45:1
     Visibility: public -/
 @[reducible]
 def bset.extend
@@ -1627,7 +1627,7 @@ def bset.extend
   bset.extend_loop set xs 0#usize
 
 /-- [kanidm_kernel::search_acc::extend_if]:
-    Source: 'src/search_acc.rs', lines 216:0-220:1
+    Source: 'ports/kanidm/kernel/src/search_acc.rs', lines 216:0-220:1
     Visibility: public -/
 def search_acc.extend_if
   (set : alloc.vec.Vec (alloc.vec.Vec Std.U8)) (ok1 : Bool)
@@ -1639,7 +1639,7 @@ def search_acc.extend_if
   else ok set
 
 /-- [kanidm_kernel::valueset::any_less_u32]: loop body 0:
-    Source: 'src/valueset.rs', lines 143:4-150:1 -/
+    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 143:4-150:1 -/
 @[rust_loop_body]
 def valueset.any_less_u32_loop.body
   (set : Slice Std.U32) (u : Std.U32) (i : Std.Usize) :
@@ -1656,7 +1656,7 @@ def valueset.any_less_u32_loop.body
   else ok (done false)
 
 /-- [kanidm_kernel::valueset::any_less_u32]: loop 0:
-    Source: 'src/valueset.rs', lines 143:4-150:1 -/
+    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 143:4-150:1 -/
 @[rust_loop]
 def valueset.any_less_u32_loop
   (set : Slice Std.U32) (u : Std.U32) (i : Std.Usize) : Result Bool := do
@@ -1665,14 +1665,14 @@ def valueset.any_less_u32_loop
     i
 
 /-- [kanidm_kernel::valueset::any_less_u32]:
-    Source: 'src/valueset.rs', lines 141:0-150:1 -/
+    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 141:0-150:1 -/
 @[reducible]
 def valueset.any_less_u32
   (set : Slice Std.U32) (u : Std.U32) : Result Bool := do
   valueset.any_less_u32_loop set u 0#usize
 
 /-- [kanidm_kernel::valueset::any_less_uuid]: loop body 0:
-    Source: 'src/valueset.rs', lines 132:4-139:1 -/
+    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 132:4-139:1 -/
 @[rust_loop_body]
 def valueset.any_less_uuid_loop.body
   (set : Slice Std.U128) (u : Std.U128) (i : Std.Usize) :
@@ -1689,7 +1689,7 @@ def valueset.any_less_uuid_loop.body
   else ok (done false)
 
 /-- [kanidm_kernel::valueset::any_less_uuid]: loop 0:
-    Source: 'src/valueset.rs', lines 132:4-139:1 -/
+    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 132:4-139:1 -/
 @[rust_loop]
 def valueset.any_less_uuid_loop
   (set : Slice Std.U128) (u : Std.U128) (i : Std.Usize) : Result Bool := do
@@ -1698,14 +1698,14 @@ def valueset.any_less_uuid_loop
     i
 
 /-- [kanidm_kernel::valueset::any_less_uuid]:
-    Source: 'src/valueset.rs', lines 130:0-139:1 -/
+    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 130:0-139:1 -/
 @[reducible]
 def valueset.any_less_uuid
   (set : Slice Std.U128) (u : Std.U128) : Result Bool := do
   valueset.any_less_uuid_loop set u 0#usize
 
 /-- [kanidm_kernel::valueset::vs_lessthan]:
-    Source: 'src/valueset.rs', lines 265:0-281:1
+    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 265:0-281:1
     Visibility: public -/
 def valueset.vs_lessthan
   (vs : ValueSet) (pv : PartialValue) : Result Bool := do
@@ -1746,7 +1746,7 @@ def valueset.vs_lessthan
   | ValueSet.OauthScopeMap _ => ok false
 
 /-- [kanidm_kernel::entry_impl::attribute_lessthan]:
-    Source: 'src/entry_impl.rs', lines 122:0-127:1
+    Source: 'ports/kanidm/kernel/src/entry_impl.rs', lines 122:0-127:1
     Visibility: public -/
 def entry_impl.attribute_lessthan
   (e : Entry) (attr : Slice Std.U8) (subvalue : PartialValue) :
@@ -1758,7 +1758,7 @@ def entry_impl.attribute_lessthan
   | some vset => valueset.vs_lessthan vset subvalue
 
 /-- [kanidm_kernel::valueset::to_lowercase]: loop body 0:
-    Source: 'src/valueset.rs', lines 52:4-60:5
+    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 52:4-60:5
     Visibility: public -/
 @[rust_loop_body]
 def valueset.to_lowercase_loop.body
@@ -1784,7 +1784,7 @@ def valueset.to_lowercase_loop.body
   else ok (done out)
 
 /-- [kanidm_kernel::valueset::to_lowercase]: loop 0:
-    Source: 'src/valueset.rs', lines 52:4-60:5
+    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 52:4-60:5
     Visibility: public -/
 @[rust_loop]
 def valueset.to_lowercase_loop
@@ -1796,7 +1796,7 @@ def valueset.to_lowercase_loop
     (out, i)
 
 /-- [kanidm_kernel::valueset::to_lowercase]:
-    Source: 'src/valueset.rs', lines 49:0-62:1
+    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 49:0-62:1
     Visibility: public -/
 @[reducible]
 def valueset.to_lowercase
@@ -1804,7 +1804,7 @@ def valueset.to_lowercase
   valueset.to_lowercase_loop s (alloc.vec.Vec.new Std.U8) 0#usize
 
 /-- [kanidm_kernel::valueset::starts_at]: loop body 0:
-    Source: 'src/valueset.rs', lines 23:4-30:1 -/
+    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 23:4-30:1 -/
 @[rust_loop_body]
 def valueset.starts_at_loop.body
   (hay : Slice Std.U8) («at» : Std.Usize) (needle : Slice Std.U8)
@@ -1824,7 +1824,7 @@ def valueset.starts_at_loop.body
   else ok (done true)
 
 /-- [kanidm_kernel::valueset::starts_at]: loop 0:
-    Source: 'src/valueset.rs', lines 23:4-30:1 -/
+    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 23:4-30:1 -/
 @[rust_loop]
 def valueset.starts_at_loop
   (hay : Slice Std.U8) («at» : Std.Usize) (needle : Slice Std.U8)
@@ -1836,7 +1836,7 @@ def valueset.starts_at_loop
     j
 
 /-- [kanidm_kernel::valueset::starts_at]:
-    Source: 'src/valueset.rs', lines 21:0-30:1 -/
+    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 21:0-30:1 -/
 @[reducible]
 def valueset.starts_at
   (hay : Slice Std.U8) («at» : Std.Usize) (needle : Slice Std.U8) :
@@ -1845,7 +1845,7 @@ def valueset.starts_at
   valueset.starts_at_loop hay «at» needle 0#usize
 
 /-- [kanidm_kernel::valueset::str_ends_with]:
-    Source: 'src/valueset.rs', lines 41:0-46:1
+    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 41:0-46:1
     Visibility: public -/
 def valueset.str_ends_with
   (hay : Slice Std.U8) (needle : Slice Std.U8) : Result Bool := do
@@ -1860,7 +1860,7 @@ def valueset.str_ends_with
     valueset.starts_at hay i4 needle
 
 /-- [kanidm_kernel::valueset::any_ends_with_lower]: loop body 0:
-    Source: 'src/valueset.rs', lines 121:4-128:1 -/
+    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 121:4-128:1 -/
 @[rust_loop_body]
 def valueset.any_ends_with_lower_loop.body
   (set : Slice (alloc.vec.Vec Std.U8)) (s2_lower : Slice Std.U8)
@@ -1882,7 +1882,7 @@ def valueset.any_ends_with_lower_loop.body
   else ok (done false)
 
 /-- [kanidm_kernel::valueset::any_ends_with_lower]: loop 0:
-    Source: 'src/valueset.rs', lines 121:4-128:1 -/
+    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 121:4-128:1 -/
 @[rust_loop]
 def valueset.any_ends_with_lower_loop
   (set : Slice (alloc.vec.Vec Std.U8)) (s2_lower : Slice Std.U8)
@@ -1894,7 +1894,7 @@ def valueset.any_ends_with_lower_loop
     i
 
 /-- [kanidm_kernel::valueset::any_ends_with_lower]:
-    Source: 'src/valueset.rs', lines 119:0-128:1 -/
+    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 119:0-128:1 -/
 @[reducible]
 def valueset.any_ends_with_lower
   (set : Slice (alloc.vec.Vec Std.U8)) (s2_lower : Slice Std.U8) :
@@ -1903,7 +1903,7 @@ def valueset.any_ends_with_lower
   valueset.any_ends_with_lower_loop set s2_lower 0#usize
 
 /-- [kanidm_kernel::valueset::any_ends_with]: loop body 0:
-    Source: 'src/valueset.rs', lines 88:4-95:1 -/
+    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 88:4-95:1 -/
 @[rust_loop_body]
 def valueset.any_ends_with_loop.body
   (set : Slice (alloc.vec.Vec Std.U8)) (s2 : Slice Std.U8) (i : Std.Usize) :
@@ -1922,7 +1922,7 @@ def valueset.any_ends_with_loop.body
   else ok (done false)
 
 /-- [kanidm_kernel::valueset::any_ends_with]: loop 0:
-    Source: 'src/valueset.rs', lines 88:4-95:1 -/
+    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 88:4-95:1 -/
 @[rust_loop]
 def valueset.any_ends_with_loop
   (set : Slice (alloc.vec.Vec Std.U8)) (s2 : Slice Std.U8) (i : Std.Usize) :
@@ -1933,14 +1933,14 @@ def valueset.any_ends_with_loop
     i
 
 /-- [kanidm_kernel::valueset::any_ends_with]:
-    Source: 'src/valueset.rs', lines 86:0-95:1 -/
+    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 86:0-95:1 -/
 @[reducible]
 def valueset.any_ends_with
   (set : Slice (alloc.vec.Vec Std.U8)) (s2 : Slice Std.U8) : Result Bool := do
   valueset.any_ends_with_loop set s2 0#usize
 
 /-- [kanidm_kernel::valueset::vs_endswith]:
-    Source: 'src/valueset.rs', lines 243:0-262:1
+    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 243:0-262:1
     Visibility: public -/
 def valueset.vs_endswith
   (vs : ValueSet) (pv : PartialValue) : Result Bool := do
@@ -1986,7 +1986,7 @@ def valueset.vs_endswith
   | ValueSet.OauthScopeMap _ => ok false
 
 /-- [kanidm_kernel::entry_impl::attribute_endswith]:
-    Source: 'src/entry_impl.rs', lines 114:0-119:1
+    Source: 'ports/kanidm/kernel/src/entry_impl.rs', lines 114:0-119:1
     Visibility: public -/
 def entry_impl.attribute_endswith
   (e : Entry) (attr : Slice Std.U8) (subvalue : PartialValue) :
@@ -1998,7 +1998,7 @@ def entry_impl.attribute_endswith
   | some vset => valueset.vs_endswith vset subvalue
 
 /-- [kanidm_kernel::valueset::str_starts_with]:
-    Source: 'src/valueset.rs', lines 33:0-38:1
+    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 33:0-38:1
     Visibility: public -/
 def valueset.str_starts_with
   (hay : Slice Std.U8) (needle : Slice Std.U8) : Result Bool := do
@@ -2009,7 +2009,7 @@ def valueset.str_starts_with
   else valueset.starts_at hay 0#usize needle
 
 /-- [kanidm_kernel::valueset::any_starts_with_lower]: loop body 0:
-    Source: 'src/valueset.rs', lines 110:4-117:1 -/
+    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 110:4-117:1 -/
 @[rust_loop_body]
 def valueset.any_starts_with_lower_loop.body
   (set : Slice (alloc.vec.Vec Std.U8)) (s2_lower : Slice Std.U8)
@@ -2031,7 +2031,7 @@ def valueset.any_starts_with_lower_loop.body
   else ok (done false)
 
 /-- [kanidm_kernel::valueset::any_starts_with_lower]: loop 0:
-    Source: 'src/valueset.rs', lines 110:4-117:1 -/
+    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 110:4-117:1 -/
 @[rust_loop]
 def valueset.any_starts_with_lower_loop
   (set : Slice (alloc.vec.Vec Std.U8)) (s2_lower : Slice Std.U8)
@@ -2043,7 +2043,7 @@ def valueset.any_starts_with_lower_loop
     i
 
 /-- [kanidm_kernel::valueset::any_starts_with_lower]:
-    Source: 'src/valueset.rs', lines 108:0-117:1 -/
+    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 108:0-117:1 -/
 @[reducible]
 def valueset.any_starts_with_lower
   (set : Slice (alloc.vec.Vec Std.U8)) (s2_lower : Slice Std.U8) :
@@ -2052,7 +2052,7 @@ def valueset.any_starts_with_lower
   valueset.any_starts_with_lower_loop set s2_lower 0#usize
 
 /-- [kanidm_kernel::valueset::any_starts_with]: loop body 0:
-    Source: 'src/valueset.rs', lines 77:4-84:1 -/
+    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 77:4-84:1 -/
 @[rust_loop_body]
 def valueset.any_starts_with_loop.body
   (set : Slice (alloc.vec.Vec Std.U8)) (s2 : Slice Std.U8) (i : Std.Usize) :
@@ -2071,7 +2071,7 @@ def valueset.any_starts_with_loop.body
   else ok (done false)
 
 /-- [kanidm_kernel::valueset::any_starts_with]: loop 0:
-    Source: 'src/valueset.rs', lines 77:4-84:1 -/
+    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 77:4-84:1 -/
 @[rust_loop]
 def valueset.any_starts_with_loop
   (set : Slice (alloc.vec.Vec Std.U8)) (s2 : Slice Std.U8) (i : Std.Usize) :
@@ -2082,14 +2082,14 @@ def valueset.any_starts_with_loop
     i
 
 /-- [kanidm_kernel::valueset::any_starts_with]:
-    Source: 'src/valueset.rs', lines 75:0-84:1 -/
+    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 75:0-84:1 -/
 @[reducible]
 def valueset.any_starts_with
   (set : Slice (alloc.vec.Vec Std.U8)) (s2 : Slice Std.U8) : Result Bool := do
   valueset.any_starts_with_loop set s2 0#usize
 
 /-- [kanidm_kernel::valueset::vs_startswith]:
-    Source: 'src/valueset.rs', lines 221:0-240:1
+    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 221:0-240:1
     Visibility: public -/
 def valueset.vs_startswith
   (vs : ValueSet) (pv : PartialValue) : Result Bool := do
@@ -2135,7 +2135,7 @@ def valueset.vs_startswith
   | ValueSet.OauthScopeMap _ => ok false
 
 /-- [kanidm_kernel::entry_impl::attribute_startswith]:
-    Source: 'src/entry_impl.rs', lines 106:0-111:1
+    Source: 'ports/kanidm/kernel/src/entry_impl.rs', lines 106:0-111:1
     Visibility: public -/
 def entry_impl.attribute_startswith
   (e : Entry) (attr : Slice Std.U8) (subvalue : PartialValue) :
@@ -2147,7 +2147,7 @@ def entry_impl.attribute_startswith
   | some vset => valueset.vs_startswith vset subvalue
 
 /-- [kanidm_kernel::valueset::str_contains]: loop body 0:
-    Source: 'src/valueset.rs', lines 12:4-19:1
+    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 12:4-19:1
     Visibility: public -/
 @[rust_loop_body]
 def valueset.str_contains_loop.body
@@ -2167,7 +2167,7 @@ def valueset.str_contains_loop.body
   else ok (done false)
 
 /-- [kanidm_kernel::valueset::str_contains]: loop 0:
-    Source: 'src/valueset.rs', lines 12:4-19:1
+    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 12:4-19:1
     Visibility: public -/
 @[rust_loop]
 def valueset.str_contains_loop
@@ -2179,7 +2179,7 @@ def valueset.str_contains_loop
     i
 
 /-- [kanidm_kernel::valueset::str_contains]:
-    Source: 'src/valueset.rs', lines 7:0-19:1
+    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 7:0-19:1
     Visibility: public -/
 def valueset.str_contains
   (hay : Slice Std.U8) (needle : Slice Std.U8) : Result Bool := do
@@ -2190,7 +2190,7 @@ def valueset.str_contains
   else valueset.str_contains_loop hay needle 0#usize
 
 /-- [kanidm_kernel::valueset::any_contains_lower]: loop body 0:
-    Source: 'src/valueset.rs', lines 99:4-106:1 -/
+    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 99:4-106:1 -/
 @[rust_loop_body]
 def valueset.any_contains_lower_loop.body
   (set : Slice (alloc.vec.Vec Std.U8)) (s2_lower : Slice Std.U8)
@@ -2212,7 +2212,7 @@ def valueset.any_contains_lower_loop.body
   else ok (done false)
 
 /-- [kanidm_kernel::valueset::any_contains_lower]: loop 0:
-    Source: 'src/valueset.rs', lines 99:4-106:1 -/
+    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 99:4-106:1 -/
 @[rust_loop]
 def valueset.any_contains_lower_loop
   (set : Slice (alloc.vec.Vec Std.U8)) (s2_lower : Slice Std.U8)
@@ -2224,7 +2224,7 @@ def valueset.any_contains_lower_loop
     i
 
 /-- [kanidm_kernel::valueset::any_contains_lower]:
-    Source: 'src/valueset.rs', lines 97:0-106:1 -/
+    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 97:0-106:1 -/
 @[reducible]
 def valueset.any_contains_lower
   (set : Slice (alloc.vec.Vec Std.U8)) (s2_lower : Slice Std.U8) :
@@ -2233,7 +2233,7 @@ def valueset.any_contains_lower
   valueset.any_contains_lower_loop set s2_lower 0#usize
 
 /-- [kanidm_kernel::valueset::any_contains]: loop body 0:
-    Source: 'src/valueset.rs', lines 66:4-73:1 -/
+    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 66:4-73:1 -/
 @[rust_loop_body]
 def valueset.any_contains_loop.body
   (set : Slice (alloc.vec.Vec Std.U8)) (s2 : Slice Std.U8) (i : Std.Usize) :
@@ -2252,7 +2252,7 @@ def valueset.any_contains_loop.body
   else ok (done false)
 
 /-- [kanidm_kernel::valueset::any_contains]: loop 0:
-    Source: 'src/valueset.rs', lines 66:4-73:1 -/
+    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 66:4-73:1 -/
 @[rust_loop]
 def valueset.any_contains_loop
   (set : Slice (alloc.vec.Vec Std.U8)) (s2 : Slice Std.U8) (i : Std.Usize) :
@@ -2263,14 +2263,14 @@ def valueset.any_contains_loop
     i
 
 /-- [kanidm_kernel::valueset::any_contains]:
-    Source: 'src/valueset.rs', lines 64:0-73:1 -/
+    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 64:0-73:1 -/
 @[reducible]
 def valueset.any_contains
   (set : Slice (alloc.vec.Vec Std.U8)) (s2 : Slice Std.U8) : Result Bool := do
   valueset.any_contains_loop set s2 0#usize
 
 /-- [kanidm_kernel::valueset::vs_substring]:
-    Source: 'src/valueset.rs', lines 199:0-218:1
+    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 199:0-218:1
     Visibility: public -/
 def valueset.vs_substring
   (vs : ValueSet) (pv : PartialValue) : Result Bool := do
@@ -2316,7 +2316,7 @@ def valueset.vs_substring
   | ValueSet.OauthScopeMap _ => ok false
 
 /-- [kanidm_kernel::entry_impl::attribute_substring]:
-    Source: 'src/entry_impl.rs', lines 98:0-103:1
+    Source: 'ports/kanidm/kernel/src/entry_impl.rs', lines 98:0-103:1
     Visibility: public -/
 def entry_impl.attribute_substring
   (e : Entry) (attr : Slice Std.U8) (subvalue : PartialValue) :
@@ -2328,7 +2328,7 @@ def entry_impl.attribute_substring
   | some vset => valueset.vs_substring vset subvalue
 
 /-- [kanidm_kernel::valueset::contains_u32]: loop body 0:
-    Source: 'src/valueset.rs', lines 154:4-161:1 -/
+    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 154:4-161:1 -/
 @[rust_loop_body]
 def valueset.contains_u32_loop.body
   (set : Slice Std.U32) (u : Std.U32) (i : Std.Usize) :
@@ -2345,7 +2345,7 @@ def valueset.contains_u32_loop.body
   else ok (done false)
 
 /-- [kanidm_kernel::valueset::contains_u32]: loop 0:
-    Source: 'src/valueset.rs', lines 154:4-161:1 -/
+    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 154:4-161:1 -/
 @[rust_loop]
 def valueset.contains_u32_loop
   (set : Slice Std.U32) (u : Std.U32) (i : Std.Usize) : Result Bool := do
@@ -2354,14 +2354,14 @@ def valueset.contains_u32_loop
     i
 
 /-- [kanidm_kernel::valueset::contains_u32]:
-    Source: 'src/valueset.rs', lines 152:0-161:1 -/
+    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 152:0-161:1 -/
 @[reducible]
 def valueset.contains_u32
   (set : Slice Std.U32) (u : Std.U32) : Result Bool := do
   valueset.contains_u32_loop set u 0#usize
 
 /-- [kanidm_kernel::valueset::vs_contains]:
-    Source: 'src/valueset.rs', lines 164:0-196:1
+    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 164:0-196:1
     Visibility: public -/
 def valueset.vs_contains
   (vs : ValueSet) (pv : PartialValue) : Result Bool := do
@@ -2441,7 +2441,7 @@ def valueset.vs_contains
     | PartialValue.Uint32 _ => ok false
 
 /-- [kanidm_kernel::entry_impl::attribute_equality]:
-    Source: 'src/entry_impl.rs', lines 90:0-95:1
+    Source: 'ports/kanidm/kernel/src/entry_impl.rs', lines 90:0-95:1
     Visibility: public -/
 def entry_impl.attribute_equality
   (e : Entry) (attr : Slice Std.U8) (value : PartialValue) : Result Bool := do
@@ -2451,7 +2451,7 @@ def entry_impl.attribute_equality
   | some v_list => valueset.vs_contains v_list value
 
 /-- [kanidm_kernel::entry_impl::attribute_pres]:
-    Source: 'src/entry_impl.rs', lines 82:0-87:1
+    Source: 'ports/kanidm/kernel/src/entry_impl.rs', lines 82:0-87:1
     Visibility: public -/
 def entry_impl.attribute_pres
   (e : Entry) (attr : Slice Std.U8) : Result Bool := do
@@ -2463,7 +2463,7 @@ def entry_impl.attribute_pres
 mutual
 
 /-- [kanidm_kernel::entry_impl::entry_match_no_index_inner]:
-    Source: 'src/entry_impl.rs', lines 135:0-151:1
+    Source: 'ports/kanidm/kernel/src/entry_impl.rs', lines 135:0-151:1
     Visibility: public -/
 def entry_impl.entry_match_no_index_inner
   (e : Entry) (filter : FilterResolved) : Result Bool := do
@@ -2496,7 +2496,7 @@ def entry_impl.entry_match_no_index_inner
 partial_fixpoint
 
 /-- [kanidm_kernel::entry_impl::match_any]:
-    Source: 'src/entry_impl.rs', lines 154:0-162:1
+    Source: 'ports/kanidm/kernel/src/entry_impl.rs', lines 154:0-162:1
     Visibility: public -/
 def entry_impl.match_any
   (e : Entry) (l : alloc.vec.Vec FilterResolved) (i : Std.Usize) :
@@ -2517,7 +2517,7 @@ def entry_impl.match_any
 partial_fixpoint
 
 /-- [kanidm_kernel::entry_impl::match_all]:
-    Source: 'src/entry_impl.rs', lines 165:0-173:1
+    Source: 'ports/kanidm/kernel/src/entry_impl.rs', lines 165:0-173:1
     Visibility: public -/
 def entry_impl.match_all
   (e : Entry) (l : alloc.vec.Vec FilterResolved) (i : Std.Usize) :
@@ -2540,14 +2540,14 @@ partial_fixpoint
 end
 
 /-- [kanidm_kernel::entry_impl::entry_match_no_index]:
-    Source: 'src/entry_impl.rs', lines 130:0-132:1
+    Source: 'ports/kanidm/kernel/src/entry_impl.rs', lines 130:0-132:1
     Visibility: public -/
 def entry_impl.entry_match_no_index
   (e : Entry) (filter : FilterResolved) : Result Bool := do
   entry_impl.entry_match_no_index_inner e filter
 
 /-- [kanidm_kernel::search_acc::target_applies]:
-    Source: 'src/search_acc.rs', lines 111:0-115:1
+    Source: 'ports/kanidm/kernel/src/search_acc.rs', lines 111:0-115:1
     Visibility: public -/
 def search_acc.target_applies
   (target_condition : profiles.AccessControlTargetCondition) (entry : Entry) :
@@ -2557,7 +2557,7 @@ def search_acc.target_applies
   entry_impl.entry_match_no_index entry f_res
 
 /-- [kanidm_kernel::search_acc::receiver_applies]:
-    Source: 'src/search_acc.rs', lines 73:0-94:1
+    Source: 'ports/kanidm/kernel/src/search_acc.rs', lines 73:0-94:1
     Visibility: public -/
 def search_acc.receiver_applies
   (receiver_condition : profiles.AccessControlReceiverCondition)
@@ -2592,7 +2592,7 @@ def search_acc.receiver_applies
       else ok user_check
 
 /-- [kanidm_kernel::search_acc::acp_applies]:
-    Source: 'src/search_acc.rs', lines 97:0-108:1
+    Source: 'ports/kanidm/kernel/src/search_acc.rs', lines 97:0-108:1
     Visibility: public -/
 def search_acc.acp_applies
   (receiver_condition : profiles.AccessControlReceiverCondition)
@@ -2609,7 +2609,7 @@ def search_acc.acp_applies
   else ok false
 
 /-- [kanidm_kernel::search_acc::search_allowed_attrs]: loop body 0:
-    Source: 'src/search_acc.rs', lines 174:4-180:5
+    Source: 'ports/kanidm/kernel/src/search_acc.rs', lines 174:4-180:5
     Visibility: public -/
 @[rust_loop_body]
 def search_acc.search_allowed_attrs_loop.body
@@ -2634,7 +2634,7 @@ def search_acc.search_allowed_attrs_loop.body
   else ok (done allowed_attrs)
 
 /-- [kanidm_kernel::search_acc::search_allowed_attrs]: loop 0:
-    Source: 'src/search_acc.rs', lines 174:4-180:5
+    Source: 'ports/kanidm/kernel/src/search_acc.rs', lines 174:4-180:5
     Visibility: public -/
 @[rust_loop]
 def search_acc.search_allowed_attrs_loop
@@ -2650,7 +2650,7 @@ def search_acc.search_allowed_attrs_loop
     (allowed_attrs, i)
 
 /-- [kanidm_kernel::search_acc::search_allowed_attrs]:
-    Source: 'src/search_acc.rs', lines 166:0-182:1
+    Source: 'ports/kanidm/kernel/src/search_acc.rs', lines 166:0-182:1
     Visibility: public -/
 @[reducible]
 def search_acc.search_allowed_attrs
@@ -2663,13 +2663,13 @@ def search_acc.search_allowed_attrs
     entry (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) 0#usize
 
 /-- [kanidm_kernel::identity_impl::access_scope]:
-    Source: 'src/identity_impl.rs', lines 19:0-21:1
+    Source: 'ports/kanidm/kernel/src/identity_impl.rs', lines 19:0-21:1
     Visibility: public -/
 def identity_impl.access_scope (ident : Identity) : Result AccessScope := do
   ok ident.scope
 
 /-- [kanidm_kernel::search_acc::search_filter_entry]:
-    Source: 'src/search_acc.rs', lines 118:0-163:1
+    Source: 'ports/kanidm/kernel/src/search_acc.rs', lines 118:0-163:1
     Visibility: public -/
 def search_acc.search_filter_entry
   (ident : Identity) (related_acp : Slice profiles.AccessControlSearchResolved)
@@ -2717,7 +2717,7 @@ def search_acc.search_filter_entry
     | InternalRole.MessageQueue => ok AccessSrchResult.Deny
 
 /-- [kanidm_kernel::search_acc::SearchResult]
-    Source: 'src/search_acc.rs', lines 14:0-18:1
+    Source: 'ports/kanidm/kernel/src/search_acc.rs', lines 14:0-18:1
     Visibility: public -/
 @[discriminant isize]
 inductive search_acc.SearchResult where
@@ -2726,7 +2726,7 @@ inductive search_acc.SearchResult where
 | Allow : alloc.vec.Vec (alloc.vec.Vec Std.U8) → search_acc.SearchResult
 
 /-- [kanidm_kernel::bset::intersection]: loop body 0:
-    Source: 'src/bset.rs', lines 75:4-81:5
+    Source: 'ports/kanidm/kernel/src/bset.rs', lines 75:4-81:5
     Visibility: public -/
 @[rust_loop_body]
 def bset.intersection_loop.body
@@ -2752,7 +2752,7 @@ def bset.intersection_loop.body
   else ok (done out)
 
 /-- [kanidm_kernel::bset::intersection]: loop 0:
-    Source: 'src/bset.rs', lines 75:4-81:5
+    Source: 'ports/kanidm/kernel/src/bset.rs', lines 75:4-81:5
     Visibility: public -/
 @[rust_loop]
 def bset.intersection_loop
@@ -2765,7 +2765,7 @@ def bset.intersection_loop
     (out, i)
 
 /-- [kanidm_kernel::bset::intersection]:
-    Source: 'src/bset.rs', lines 72:0-83:1
+    Source: 'ports/kanidm/kernel/src/bset.rs', lines 72:0-83:1
     Visibility: public -/
 @[reducible]
 def bset.intersection
@@ -2775,7 +2775,7 @@ def bset.intersection
   bset.intersection_loop a b (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) 0#usize
 
 /-- [kanidm_kernel::search_acc::apply_search_access]:
-    Source: 'src/search_acc.rs', lines 21:0-68:1
+    Source: 'ports/kanidm/kernel/src/search_acc.rs', lines 21:0-68:1
     Visibility: public -/
 def search_acc.apply_search_access
   (ident : Identity) (related_acp : Slice profiles.AccessControlSearchResolved)
@@ -2845,7 +2845,7 @@ def search_acc.apply_search_access
       else ok (search_acc.SearchResult.Allow allow3)
 
 /-- [kanidm_kernel::{impl core::clone::Clone for kanidm_kernel::ValueSet}::clone]:
-    Source: 'src/lib.rs', lines 57:9-57:14
+    Source: 'ports/kanidm/kernel/src/lib.rs', lines 57:9-57:14
     Visibility: public -/
 def ValueSet.Insts.CoreCloneClone.clone
   (self : ValueSet) : Result ValueSet := do
@@ -2879,7 +2879,7 @@ def ValueSet.Insts.CoreCloneClone.clone
     ok (ValueSet.OauthScopeMap v)
 
 /-- [kanidm_kernel::{impl core::clone::Clone for kanidm_kernel::Ava}::clone]:
-    Source: 'src/lib.rs', lines 69:9-69:14
+    Source: 'ports/kanidm/kernel/src/lib.rs', lines 69:9-69:14
     Visibility: public -/
 def Ava.Insts.CoreCloneClone.clone (self : Ava) : Result Ava := do
   let v ← alloc.vec.CloneVec.clone core.clone.CloneU8 self.attr
@@ -2887,14 +2887,14 @@ def Ava.Insts.CoreCloneClone.clone (self : Ava) : Result Ava := do
   ok { attr := v, vs }
 
 /-- Trait implementation: [kanidm_kernel::{impl core::clone::Clone for kanidm_kernel::Ava}]
-    Source: 'src/lib.rs', lines 69:9-69:14 -/
+    Source: 'ports/kanidm/kernel/src/lib.rs', lines 69:9-69:14 -/
 @[reducible]
 def Ava.Insts.CoreCloneClone : core.clone.Clone Ava := {
   clone := Ava.Insts.CoreCloneClone.clone
 }
 
 /-- [kanidm_kernel::{impl core::clone::Clone for kanidm_kernel::Entry}::clone]:
-    Source: 'src/lib.rs', lines 78:9-78:14
+    Source: 'ports/kanidm/kernel/src/lib.rs', lines 78:9-78:14
     Visibility: public -/
 def Entry.Insts.CoreCloneClone.clone (self : Entry) : Result Entry := do
   let i ← lift (core.clone.impls.CloneU128.clone self.uuid)
@@ -2902,7 +2902,7 @@ def Entry.Insts.CoreCloneClone.clone (self : Entry) : Result Entry := do
   ok { uuid := i, attrs := v }
 
 /-- [kanidm_kernel::bset::is_subset]: loop body 0:
-    Source: 'src/bset.rs', lines 50:4-57:1
+    Source: 'ports/kanidm/kernel/src/bset.rs', lines 50:4-57:1
     Visibility: public -/
 @[rust_loop_body]
 def bset.is_subset_loop.body
@@ -2923,7 +2923,7 @@ def bset.is_subset_loop.body
   else ok (done true)
 
 /-- [kanidm_kernel::bset::is_subset]: loop 0:
-    Source: 'src/bset.rs', lines 50:4-57:1
+    Source: 'ports/kanidm/kernel/src/bset.rs', lines 50:4-57:1
     Visibility: public -/
 @[rust_loop]
 def bset.is_subset_loop
@@ -2936,7 +2936,7 @@ def bset.is_subset_loop
     i
 
 /-- [kanidm_kernel::bset::is_subset]:
-    Source: 'src/bset.rs', lines 48:0-57:1
+    Source: 'ports/kanidm/kernel/src/bset.rs', lines 48:0-57:1
     Visibility: public -/
 @[reducible]
 def bset.is_subset
@@ -2946,7 +2946,7 @@ def bset.is_subset
   bset.is_subset_loop a b 0#usize
 
 /-- [kanidm_kernel::access::filter_entries_loop]: loop body 0:
-    Source: 'src/access.rs', lines 128:4-140:5
+    Source: 'ports/kanidm/kernel/src/access.rs', lines 128:4-140:5
     Visibility: public -/
 @[rust_loop_body]
 def access.filter_entries_loop_loop.body
@@ -2978,7 +2978,7 @@ def access.filter_entries_loop_loop.body
   else ok (done allowed_entries)
 
 /-- [kanidm_kernel::access::filter_entries_loop]: loop 0:
-    Source: 'src/access.rs', lines 128:4-140:5
+    Source: 'ports/kanidm/kernel/src/access.rs', lines 128:4-140:5
     Visibility: public -/
 @[rust_loop]
 def access.filter_entries_loop_loop
@@ -2993,7 +2993,7 @@ def access.filter_entries_loop_loop
     (allowed_entries, i)
 
 /-- [kanidm_kernel::access::filter_entries_loop]:
-    Source: 'src/access.rs', lines 120:0-142:1
+    Source: 'ports/kanidm/kernel/src/access.rs', lines 120:0-142:1
     Visibility: public -/
 @[reducible]
 def access.filter_entries_loop
@@ -3005,7 +3005,7 @@ def access.filter_entries_loop
     (alloc.vec.Vec.new Entry) 0#usize
 
 /-- [kanidm_kernel::access::filter_entries]:
-    Source: 'src/access.rs', lines 98:0-117:1
+    Source: 'ports/kanidm/kernel/src/access.rs', lines 98:0-117:1
     Visibility: public -/
 def access.filter_entries
   (ctl : AccessControlsInner) (ident : Identity) (filter_orig : FilterComp)
@@ -3024,7 +3024,7 @@ def access.filter_entries
     ok (core.result.Result.Ok v)
 
 /-- [kanidm_kernel::SearchEvent]
-    Source: 'src/lib.rs', lines 261:0-266:1
+    Source: 'ports/kanidm/kernel/src/lib.rs', lines 261:0-266:1
     Visibility: public -/
 structure SearchEvent where
   ident : Identity
@@ -3033,7 +3033,7 @@ structure SearchEvent where
   effective_access_check : Bool
 
 /-- [kanidm_kernel::access::search_filter_entries]:
-    Source: 'src/access.rs', lines 145:0-151:1
+    Source: 'ports/kanidm/kernel/src/access.rs', lines 145:0-151:1
     Visibility: public -/
 def access.search_filter_entries
   (ctl : AccessControlsInner) (se : SearchEvent) (entries : Slice Entry) :
@@ -3042,7 +3042,7 @@ def access.search_filter_entries
   access.filter_entries ctl se.ident se.filter_orig entries
 
 /-- [kanidm_kernel::profiles::ModifyGrants]
-    Source: 'src/profiles.rs', lines 89:0-94:1
+    Source: 'ports/kanidm/kernel/src/profiles.rs', lines 89:0-94:1
     Visibility: public -/
 structure profiles.ModifyGrants where
   presattrs : alloc.vec.Vec (alloc.vec.Vec Std.U8)
@@ -3051,7 +3051,7 @@ structure profiles.ModifyGrants where
   rem_classes : alloc.vec.Vec (alloc.vec.Vec Std.U8)
 
 /-- [kanidm_kernel::profiles::AccessControlModifyResolved]
-    Source: 'src/profiles.rs', lines 97:0-101:1
+    Source: 'ports/kanidm/kernel/src/profiles.rs', lines 97:0-101:1
     Visibility: public -/
 structure profiles.AccessControlModifyResolved where
   acp : profiles.ModifyGrants
@@ -3059,14 +3059,14 @@ structure profiles.AccessControlModifyResolved where
   target_condition : profiles.AccessControlTargetCondition
 
 /-- [kanidm_kernel::profiles::AccessControlDeleteResolved]
-    Source: 'src/profiles.rs', lines 57:0-60:1
+    Source: 'ports/kanidm/kernel/src/profiles.rs', lines 57:0-60:1
     Visibility: public -/
 structure profiles.AccessControlDeleteResolved where
   receiver_condition : profiles.AccessControlReceiverCondition
   target_condition : profiles.AccessControlTargetCondition
 
 /-- [kanidm_kernel::AccessClass]
-    Source: 'src/lib.rs', lines 183:0-187:1
+    Source: 'ports/kanidm/kernel/src/lib.rs', lines 183:0-187:1
     Visibility: public -/
 @[discriminant isize]
 inductive AccessClass where
@@ -3075,7 +3075,7 @@ inductive AccessClass where
 | Allow : alloc.vec.Vec (alloc.vec.Vec Std.U8) → AccessClass
 
 /-- [kanidm_kernel::Access]
-    Source: 'src/lib.rs', lines 175:0-179:1
+    Source: 'ports/kanidm/kernel/src/lib.rs', lines 175:0-179:1
     Visibility: public -/
 @[discriminant isize]
 inductive Access where
@@ -3084,7 +3084,7 @@ inductive Access where
 | Allow : alloc.vec.Vec (alloc.vec.Vec Std.U8) → Access
 
 /-- [kanidm_kernel::AccessEffectivePermission]
-    Source: 'src/lib.rs', lines 191:0-200:1
+    Source: 'ports/kanidm/kernel/src/lib.rs', lines 191:0-200:1
     Visibility: public -/
 structure AccessEffectivePermission where
   ident : Std.U128
@@ -3097,7 +3097,7 @@ structure AccessEffectivePermission where
   modify_rem_class : AccessClass
 
 /-- [kanidm_kernel::EntryReduced]
-    Source: 'src/lib.rs', lines 204:0-208:1
+    Source: 'ports/kanidm/kernel/src/lib.rs', lines 204:0-208:1
     Visibility: public -/
 structure EntryReduced where
   uuid : Std.U128
@@ -3105,7 +3105,7 @@ structure EntryReduced where
   effective_access : Option AccessEffectivePermission
 
 /-- [kanidm_kernel::access::delete_related_acp]: loop body 0:
-    Source: 'src/access.rs', lines 614:4-623:5
+    Source: 'ports/kanidm/kernel/src/access.rs', lines 614:4-623:5
     Visibility: public -/
 @[rust_loop_body]
 def access.delete_related_acp_loop.body
@@ -3139,7 +3139,7 @@ def access.delete_related_acp_loop.body
   else ok (done related_acp)
 
 /-- [kanidm_kernel::access::delete_related_acp]: loop 0:
-    Source: 'src/access.rs', lines 614:4-623:5
+    Source: 'ports/kanidm/kernel/src/access.rs', lines 614:4-623:5
     Visibility: public -/
 @[rust_loop]
 def access.delete_related_acp_loop
@@ -3156,7 +3156,7 @@ def access.delete_related_acp_loop
     (related_acp, i)
 
 /-- [kanidm_kernel::access::delete_related_acp]:
-    Source: 'src/access.rs', lines 608:0-625:1
+    Source: 'ports/kanidm/kernel/src/access.rs', lines 608:0-625:1
     Visibility: public -/
 def access.delete_related_acp
   (ctl : AccessControlsInner) (ident : Identity) :
@@ -3167,7 +3167,7 @@ def access.delete_related_acp
     (alloc.vec.Vec.new profiles.AccessControlDeleteResolved) 0#usize
 
 /-- [kanidm_kernel::access::modify_related_acp]: loop body 0:
-    Source: 'src/access.rs', lines 255:4-273:5
+    Source: 'ports/kanidm/kernel/src/access.rs', lines 255:4-273:5
     Visibility: public -/
 @[rust_loop_body]
 def access.modify_related_acp_loop.body
@@ -3223,7 +3223,7 @@ def access.modify_related_acp_loop.body
   else ok (done related_acp)
 
 /-- [kanidm_kernel::access::modify_related_acp]: loop 0:
-    Source: 'src/access.rs', lines 255:4-273:5
+    Source: 'ports/kanidm/kernel/src/access.rs', lines 255:4-273:5
     Visibility: public -/
 @[rust_loop]
 def access.modify_related_acp_loop
@@ -3240,7 +3240,7 @@ def access.modify_related_acp_loop
     (related_acp, i)
 
 /-- [kanidm_kernel::access::modify_related_acp]:
-    Source: 'src/access.rs', lines 249:0-275:1
+    Source: 'ports/kanidm/kernel/src/access.rs', lines 249:0-275:1
     Visibility: public -/
 def access.modify_related_acp
   (ctl : AccessControlsInner) (ident : Identity) :
@@ -3251,7 +3251,7 @@ def access.modify_related_acp
     (alloc.vec.Vec.new profiles.AccessControlModifyResolved) 0#usize
 
 /-- [kanidm_kernel::entry_impl::reduce_attributes]: loop body 0:
-    Source: 'src/entry_impl.rs', lines 183:4-189:5
+    Source: 'ports/kanidm/kernel/src/entry_impl.rs', lines 183:4-189:5
     Visibility: public -/
 @[rust_loop_body]
 def entry_impl.reduce_attributes_loop.body
@@ -3276,7 +3276,7 @@ def entry_impl.reduce_attributes_loop.body
   else ok (done (e.uuid, f_attrs))
 
 /-- [kanidm_kernel::entry_impl::reduce_attributes]: loop 0:
-    Source: 'src/entry_impl.rs', lines 183:4-189:5
+    Source: 'ports/kanidm/kernel/src/entry_impl.rs', lines 183:4-189:5
     Visibility: public -/
 @[rust_loop]
 def entry_impl.reduce_attributes_loop
@@ -3290,7 +3290,7 @@ def entry_impl.reduce_attributes_loop
     (f_attrs, i)
 
 /-- [kanidm_kernel::entry_impl::reduce_attributes]:
-    Source: 'src/entry_impl.rs', lines 176:0-191:1
+    Source: 'ports/kanidm/kernel/src/entry_impl.rs', lines 176:0-191:1
     Visibility: public -/
 def entry_impl.reduce_attributes
   (e : Entry) (allowed_attrs : Slice (alloc.vec.Vec Std.U8))
@@ -3303,7 +3303,7 @@ def entry_impl.reduce_attributes
   ok { uuid := i, attrs := f_attrs, effective_access }
 
 /-- [kanidm_kernel::protected::protected_mod_rem_entry_classes]:
-    Source: 'src/protected.rs', lines 41:0-49:1
+    Source: 'ports/kanidm/kernel/src/protected.rs', lines 41:0-49:1
     Visibility: public -/
 def protected.protected_mod_rem_entry_classes
   (c : Slice Std.U8) : Result Bool := do
@@ -3372,7 +3372,7 @@ def protected.protected_mod_rem_entry_classes
               bset.bytes_eq c s6
 
 /-- [kanidm_kernel::protected::remove_protected_mod_rem]: loop body 0:
-    Source: 'src/protected.rs', lines 110:4-116:5
+    Source: 'ports/kanidm/kernel/src/protected.rs', lines 110:4-116:5
     Visibility: public -/
 @[rust_loop_body]
 def protected.remove_protected_mod_rem_loop.body
@@ -3396,7 +3396,7 @@ def protected.remove_protected_mod_rem_loop.body
   else ok (done out)
 
 /-- [kanidm_kernel::protected::remove_protected_mod_rem]: loop 0:
-    Source: 'src/protected.rs', lines 110:4-116:5
+    Source: 'ports/kanidm/kernel/src/protected.rs', lines 110:4-116:5
     Visibility: public -/
 @[rust_loop]
 def protected.remove_protected_mod_rem_loop
@@ -3410,7 +3410,7 @@ def protected.remove_protected_mod_rem_loop
     (out, i)
 
 /-- [kanidm_kernel::protected::remove_protected_mod_rem]:
-    Source: 'src/protected.rs', lines 107:0-118:1
+    Source: 'ports/kanidm/kernel/src/protected.rs', lines 107:0-118:1
     Visibility: public -/
 @[reducible]
 def protected.remove_protected_mod_rem
@@ -3421,7 +3421,7 @@ def protected.remove_protected_mod_rem
     Std.U8)) 0#usize
 
 /-- [kanidm_kernel::protected::protected_mod_pres_entry_classes]:
-    Source: 'src/protected.rs', lines 29:0-38:1
+    Source: 'ports/kanidm/kernel/src/protected.rs', lines 29:0-38:1
     Visibility: public -/
 def protected.protected_mod_pres_entry_classes
   (c : Slice Std.U8) : Result Bool := do
@@ -3500,7 +3500,7 @@ def protected.protected_mod_pres_entry_classes
                 bset.bytes_eq c s7
 
 /-- [kanidm_kernel::protected::remove_protected_mod_pres]: loop body 0:
-    Source: 'src/protected.rs', lines 96:4-102:5
+    Source: 'ports/kanidm/kernel/src/protected.rs', lines 96:4-102:5
     Visibility: public -/
 @[rust_loop_body]
 def protected.remove_protected_mod_pres_loop.body
@@ -3524,7 +3524,7 @@ def protected.remove_protected_mod_pres_loop.body
   else ok (done out)
 
 /-- [kanidm_kernel::protected::remove_protected_mod_pres]: loop 0:
-    Source: 'src/protected.rs', lines 96:4-102:5
+    Source: 'ports/kanidm/kernel/src/protected.rs', lines 96:4-102:5
     Visibility: public -/
 @[rust_loop]
 def protected.remove_protected_mod_pres_loop
@@ -3538,7 +3538,7 @@ def protected.remove_protected_mod_pres_loop
     (out, i)
 
 /-- [kanidm_kernel::protected::remove_protected_mod_pres]:
-    Source: 'src/protected.rs', lines 93:0-104:1
+    Source: 'ports/kanidm/kernel/src/protected.rs', lines 93:0-104:1
     Visibility: public -/
 @[reducible]
 def protected.remove_protected_mod_pres
@@ -3549,7 +3549,7 @@ def protected.remove_protected_mod_pres
     (alloc.vec.Vec Std.U8)) 0#usize
 
 /-- [kanidm_kernel::migration::ins]:
-    Source: 'src/migration.rs', lines 60:0-62:1 -/
+    Source: 'ports/kanidm/kernel/src/migration.rs', lines 60:0-62:1 -/
 def migration.ins
   (set : alloc.vec.Vec (alloc.vec.Vec Std.U8)) (a : Slice Std.U8) :
   Result (alloc.vec.Vec (alloc.vec.Vec Std.U8))
@@ -3557,7 +3557,7 @@ def migration.ins
   bset.insert set a
 
 /-- [kanidm_kernel::migration::migration_entry_attrs]:
-    Source: 'src/migration.rs', lines 65:0-151:1
+    Source: 'ports/kanidm/kernel/src/migration.rs', lines 65:0-151:1
     Visibility: public -/
 def migration.migration_entry_attrs
   (classes : Slice (alloc.vec.Vec Std.U8)) :
@@ -4037,7 +4037,7 @@ def migration.migration_entry_attrs
   else ok (allow_attrs6, allow_cls2)
 
 /-- [kanidm_kernel::AccessModResult]
-    Source: 'src/lib.rs', lines 226:0-241:1
+    Source: 'ports/kanidm/kernel/src/lib.rs', lines 226:0-241:1
     Visibility: public -/
 @[discriminant isize]
 inductive AccessModResult where
@@ -4057,7 +4057,7 @@ inductive AccessModResult where
   AccessModResult
 
 /-- [kanidm_kernel::modify_acc::modify_migration_attrs]:
-    Source: 'src/modify_acc.rs', lines 415:0-446:1
+    Source: 'ports/kanidm/kernel/src/modify_acc.rs', lines 415:0-446:1
     Visibility: public -/
 def modify_acc.modify_migration_attrs
   (ident : Identity) (entry : Entry) : Result AccessModResult := do
@@ -4103,7 +4103,7 @@ def modify_acc.modify_migration_attrs
     | InternalRole.MessageQueue => ok AccessModResult.Ignore
 
 /-- [kanidm_kernel::protected::protected_mod_entry_classes]:
-    Source: 'src/protected.rs', lines 18:0-26:1
+    Source: 'ports/kanidm/kernel/src/protected.rs', lines 18:0-26:1
     Visibility: public -/
 def protected.protected_mod_entry_classes
   (c : Slice Std.U8) : Result Bool := do
@@ -4172,7 +4172,7 @@ def protected.protected_mod_entry_classes
               bset.bytes_eq c s6
 
 /-- [kanidm_kernel::protected::disjoint_protected_mod_entry_classes]: loop body 0:
-    Source: 'src/protected.rs', lines 71:4-78:1
+    Source: 'ports/kanidm/kernel/src/protected.rs', lines 71:4-78:1
     Visibility: public -/
 @[rust_loop_body]
 def protected.disjoint_protected_mod_entry_classes_loop.body
@@ -4192,7 +4192,7 @@ def protected.disjoint_protected_mod_entry_classes_loop.body
   else ok (done true)
 
 /-- [kanidm_kernel::protected::disjoint_protected_mod_entry_classes]: loop 0:
-    Source: 'src/protected.rs', lines 71:4-78:1
+    Source: 'ports/kanidm/kernel/src/protected.rs', lines 71:4-78:1
     Visibility: public -/
 @[rust_loop]
 def protected.disjoint_protected_mod_entry_classes_loop
@@ -4203,7 +4203,7 @@ def protected.disjoint_protected_mod_entry_classes_loop
     i
 
 /-- [kanidm_kernel::protected::disjoint_protected_mod_entry_classes]:
-    Source: 'src/protected.rs', lines 69:0-78:1
+    Source: 'ports/kanidm/kernel/src/protected.rs', lines 69:0-78:1
     Visibility: public -/
 @[reducible]
 def protected.disjoint_protected_mod_entry_classes
@@ -4211,7 +4211,7 @@ def protected.disjoint_protected_mod_entry_classes
   protected.disjoint_protected_mod_entry_classes_loop classes 0#usize
 
 /-- [kanidm_kernel::protected::locked_entry_classes]:
-    Source: 'src/protected.rs', lines 52:0-54:1
+    Source: 'ports/kanidm/kernel/src/protected.rs', lines 52:0-54:1
     Visibility: public -/
 def protected.locked_entry_classes (c : Slice Std.U8) : Result Bool := do
   let s ←
@@ -4222,7 +4222,7 @@ def protected.locked_entry_classes (c : Slice Std.U8) : Result Bool := do
   bset.bytes_eq c s
 
 /-- [kanidm_kernel::protected::disjoint_locked_entry_classes]: loop body 0:
-    Source: 'src/protected.rs', lines 83:4-90:1
+    Source: 'ports/kanidm/kernel/src/protected.rs', lines 83:4-90:1
     Visibility: public -/
 @[rust_loop_body]
 def protected.disjoint_locked_entry_classes_loop.body
@@ -4242,7 +4242,7 @@ def protected.disjoint_locked_entry_classes_loop.body
   else ok (done true)
 
 /-- [kanidm_kernel::protected::disjoint_locked_entry_classes]: loop 0:
-    Source: 'src/protected.rs', lines 83:4-90:1
+    Source: 'ports/kanidm/kernel/src/protected.rs', lines 83:4-90:1
     Visibility: public -/
 @[rust_loop]
 def protected.disjoint_locked_entry_classes_loop
@@ -4252,7 +4252,7 @@ def protected.disjoint_locked_entry_classes_loop
     i
 
 /-- [kanidm_kernel::protected::disjoint_locked_entry_classes]:
-    Source: 'src/protected.rs', lines 81:0-90:1
+    Source: 'ports/kanidm/kernel/src/protected.rs', lines 81:0-90:1
     Visibility: public -/
 @[reducible]
 def protected.disjoint_locked_entry_classes
@@ -4260,7 +4260,7 @@ def protected.disjoint_locked_entry_classes
   protected.disjoint_locked_entry_classes_loop classes 0#usize
 
 /-- [kanidm_kernel::modify_acc::modify_protected_entry_attrs]:
-    Source: 'src/modify_acc.rs', lines 325:0-412:1
+    Source: 'ports/kanidm/kernel/src/modify_acc.rs', lines 325:0-412:1
     Visibility: public -/
 def modify_acc.modify_protected_entry_attrs
   (classes : Slice (alloc.vec.Vec Std.U8)) : Result AccessModResult := do
@@ -4639,7 +4639,7 @@ def modify_acc.modify_protected_entry_attrs
   else ok AccessModResult.Deny
 
 /-- [kanidm_kernel::modify_acc::modify_protected_attrs]:
-    Source: 'src/modify_acc.rs', lines 298:0-322:1
+    Source: 'ports/kanidm/kernel/src/modify_acc.rs', lines 298:0-322:1
     Visibility: public -/
 def modify_acc.modify_protected_attrs
   (ident : Identity) (entry : Entry) : Result AccessModResult := do
@@ -4730,7 +4730,7 @@ def modify_acc.modify_protected_attrs
           modify_acc.modify_protected_entry_attrs s1
 
 /-- [kanidm_kernel::modify_acc::sync_agreement_get]: loop body 0:
-    Source: 'src/modify_acc.rs', lines 239:4-246:1
+    Source: 'ports/kanidm/kernel/src/modify_acc.rs', lines 239:4-246:1
     Visibility: public -/
 @[rust_loop_body]
 def modify_acc.sync_agreement_get_loop.body
@@ -4750,7 +4750,7 @@ def modify_acc.sync_agreement_get_loop.body
   else ok (done none)
 
 /-- [kanidm_kernel::modify_acc::sync_agreement_get]: loop 0:
-    Source: 'src/modify_acc.rs', lines 239:4-246:1
+    Source: 'ports/kanidm/kernel/src/modify_acc.rs', lines 239:4-246:1
     Visibility: public -/
 @[rust_loop]
 def modify_acc.sync_agreement_get_loop
@@ -4764,7 +4764,7 @@ def modify_acc.sync_agreement_get_loop
     i
 
 /-- [kanidm_kernel::modify_acc::sync_agreement_get]:
-    Source: 'src/modify_acc.rs', lines 237:0-246:1
+    Source: 'ports/kanidm/kernel/src/modify_acc.rs', lines 237:0-246:1
     Visibility: public -/
 @[reducible]
 def modify_acc.sync_agreement_get
@@ -4774,7 +4774,7 @@ def modify_acc.sync_agreement_get
   modify_acc.sync_agreement_get_loop sync_agreements sync_uuid 0#usize
 
 /-- [kanidm_kernel::modify_acc::extend_sync_yield_authority]:
-    Source: 'src/modify_acc.rs', lines 257:0-262:1
+    Source: 'ports/kanidm/kernel/src/modify_acc.rs', lines 257:0-262:1
     Visibility: public -/
 def modify_acc.extend_sync_yield_authority
   (set : alloc.vec.Vec (alloc.vec.Vec Std.U8))
@@ -4789,7 +4789,7 @@ def modify_acc.extend_sync_yield_authority
     bset.extend set s
 
 /-- [kanidm_kernel::modify_acc::class_set_contains]:
-    Source: 'src/modify_acc.rs', lines 249:0-254:1
+    Source: 'ports/kanidm/kernel/src/modify_acc.rs', lines 249:0-254:1
     Visibility: public -/
 def modify_acc.class_set_contains
   (entry : Entry) (pv : PartialValue) : Result Bool := do
@@ -4802,7 +4802,7 @@ def modify_acc.class_set_contains
   | some classes => valueset.vs_contains classes pv
 
 /-- [kanidm_kernel::modify_acc::modify_sync_constrain]:
-    Source: 'src/modify_acc.rs', lines 265:0-295:1
+    Source: 'ports/kanidm/kernel/src/modify_acc.rs', lines 265:0-295:1
     Visibility: public -/
 def modify_acc.modify_sync_constrain
   (ident : Identity) (entry : Entry) (sync_agreements : Slice SyncAgreement) :
@@ -4873,7 +4873,7 @@ def modify_acc.modify_sync_constrain
   | IdentType.Internal _ => ok AccessModResult.Ignore
 
 /-- [kanidm_kernel::modify_acc::modify_pres_test]: loop body 0:
-    Source: 'src/modify_acc.rs', lines 225:4-231:5
+    Source: 'ports/kanidm/kernel/src/modify_acc.rs', lines 225:4-231:5
     Visibility: public -/
 @[rust_loop_body]
 def modify_acc.modify_pres_test_loop.body
@@ -4906,7 +4906,7 @@ def modify_acc.modify_pres_test_loop.body
   else ok (done (pres_attr, rem_attr, pres_class, rem_class))
 
 /-- [kanidm_kernel::modify_acc::modify_pres_test]: loop 0:
-    Source: 'src/modify_acc.rs', lines 225:4-231:5
+    Source: 'ports/kanidm/kernel/src/modify_acc.rs', lines 225:4-231:5
     Visibility: public -/
 @[rust_loop]
 def modify_acc.modify_pres_test_loop
@@ -4926,7 +4926,7 @@ def modify_acc.modify_pres_test_loop
     (pres_attr, rem_attr, pres_class, rem_class, i)
 
 /-- [kanidm_kernel::modify_acc::modify_pres_test]:
-    Source: 'src/modify_acc.rs', lines 219:0-234:1
+    Source: 'ports/kanidm/kernel/src/modify_acc.rs', lines 219:0-234:1
     Visibility: public -/
 def modify_acc.modify_pres_test
   (scoped_acp : Slice profiles.ModifyGrants) : Result AccessModResult := do
@@ -4938,7 +4938,7 @@ def modify_acc.modify_pres_test
   ok (AccessModResult.Allow pres_attr rem_attr pres_class rem_class)
 
 /-- [kanidm_kernel::AccessBasicResult]
-    Source: 'src/lib.rs', lines 211:0-215:1
+    Source: 'ports/kanidm/kernel/src/lib.rs', lines 211:0-215:1
     Visibility: public -/
 @[discriminant isize]
 inductive AccessBasicResult where
@@ -4947,7 +4947,7 @@ inductive AccessBasicResult where
 | Ignore : AccessBasicResult
 
 /-- [kanidm_kernel::modify_acc::modify_ident_test]:
-    Source: 'src/modify_acc.rs', lines 191:0-216:1
+    Source: 'ports/kanidm/kernel/src/modify_acc.rs', lines 191:0-216:1
     Visibility: public -/
 def modify_acc.modify_ident_test
   (ident : Identity) : Result AccessBasicResult := do
@@ -4967,7 +4967,7 @@ def modify_acc.modify_ident_test
     | InternalRole.MessageQueue => ok AccessBasicResult.Deny
 
 /-- [kanidm_kernel::profiles::{impl core::clone::Clone for kanidm_kernel::profiles::ModifyGrants}::clone]:
-    Source: 'src/profiles.rs', lines 88:9-88:14
+    Source: 'ports/kanidm/kernel/src/profiles.rs', lines 88:9-88:14
     Visibility: public -/
 def profiles.ModifyGrants.Insts.CoreCloneClone.clone
   (self : profiles.ModifyGrants) : Result profiles.ModifyGrants := do
@@ -4986,7 +4986,7 @@ def profiles.ModifyGrants.Insts.CoreCloneClone.clone
   ok { presattrs := v, remattrs := v1, pres_classes := v2, rem_classes := v3 }
 
 /-- [kanidm_kernel::modify_acc::push_if]:
-    Source: 'src/modify_acc.rs', lines 184:0-188:1
+    Source: 'ports/kanidm/kernel/src/modify_acc.rs', lines 184:0-188:1
     Visibility: public -/
 def modify_acc.push_if
   (scoped_acp : alloc.vec.Vec profiles.ModifyGrants) (ok1 : Bool)
@@ -5000,7 +5000,7 @@ def modify_acc.push_if
   else ok scoped_acp
 
 /-- [kanidm_kernel::modify_acc::modify_scoped_acp]: loop body 0:
-    Source: 'src/modify_acc.rs', lines 174:4-179:5
+    Source: 'ports/kanidm/kernel/src/modify_acc.rs', lines 174:4-179:5
     Visibility: public -/
 @[rust_loop_body]
 def modify_acc.modify_scoped_acp_loop.body
@@ -5024,7 +5024,7 @@ def modify_acc.modify_scoped_acp_loop.body
   else ok (done scoped_acp)
 
 /-- [kanidm_kernel::modify_acc::modify_scoped_acp]: loop 0:
-    Source: 'src/modify_acc.rs', lines 174:4-179:5
+    Source: 'ports/kanidm/kernel/src/modify_acc.rs', lines 174:4-179:5
     Visibility: public -/
 @[rust_loop]
 def modify_acc.modify_scoped_acp_loop
@@ -5040,7 +5040,7 @@ def modify_acc.modify_scoped_acp_loop
     (scoped_acp, i)
 
 /-- [kanidm_kernel::modify_acc::modify_scoped_acp]:
-    Source: 'src/modify_acc.rs', lines 166:0-181:1
+    Source: 'ports/kanidm/kernel/src/modify_acc.rs', lines 166:0-181:1
     Visibility: public -/
 @[reducible]
 def modify_acc.modify_scoped_acp
@@ -5053,7 +5053,7 @@ def modify_acc.modify_scoped_acp
     (alloc.vec.Vec.new profiles.ModifyGrants) 0#usize
 
 /-- [kanidm_kernel::modify_acc::ModifyResult]
-    Source: 'src/modify_acc.rs', lines 20:0-29:1
+    Source: 'ports/kanidm/kernel/src/modify_acc.rs', lines 20:0-29:1
     Visibility: public -/
 @[discriminant isize]
 inductive modify_acc.ModifyResult where
@@ -5067,7 +5067,7 @@ inductive modify_acc.ModifyResult where
   modify_acc.ModifyResult
 
 /-- [kanidm_kernel::modify_acc::apply_modify_access]:
-    Source: 'src/modify_acc.rs', lines 32:0-162:1
+    Source: 'ports/kanidm/kernel/src/modify_acc.rs', lines 32:0-162:1
     Visibility: public -/
 def modify_acc.apply_modify_access
   (ident : Identity) (related_acp : Slice profiles.AccessControlModifyResolved)
@@ -5249,7 +5249,7 @@ def modify_acc.apply_modify_access
         allowed_pres_cls1 allowed_rem_cls1)
 
 /-- [kanidm_kernel::protected::protected_entry_classes]:
-    Source: 'src/protected.rs', lines 5:0-14:1
+    Source: 'ports/kanidm/kernel/src/protected.rs', lines 5:0-14:1
     Visibility: public -/
 def protected.protected_entry_classes (c : Slice Std.U8) : Result Bool := do
   let s ←
@@ -5327,7 +5327,7 @@ def protected.protected_entry_classes (c : Slice Std.U8) : Result Bool := do
                 bset.bytes_eq c s7
 
 /-- [kanidm_kernel::protected::disjoint_protected_entry_classes]: loop body 0:
-    Source: 'src/protected.rs', lines 59:4-66:1
+    Source: 'ports/kanidm/kernel/src/protected.rs', lines 59:4-66:1
     Visibility: public -/
 @[rust_loop_body]
 def protected.disjoint_protected_entry_classes_loop.body
@@ -5347,7 +5347,7 @@ def protected.disjoint_protected_entry_classes_loop.body
   else ok (done true)
 
 /-- [kanidm_kernel::protected::disjoint_protected_entry_classes]: loop 0:
-    Source: 'src/protected.rs', lines 59:4-66:1
+    Source: 'ports/kanidm/kernel/src/protected.rs', lines 59:4-66:1
     Visibility: public -/
 @[rust_loop]
 def protected.disjoint_protected_entry_classes_loop
@@ -5357,7 +5357,7 @@ def protected.disjoint_protected_entry_classes_loop
     i
 
 /-- [kanidm_kernel::protected::disjoint_protected_entry_classes]:
-    Source: 'src/protected.rs', lines 57:0-66:1
+    Source: 'ports/kanidm/kernel/src/protected.rs', lines 57:0-66:1
     Visibility: public -/
 @[reducible]
 def protected.disjoint_protected_entry_classes
@@ -5365,7 +5365,7 @@ def protected.disjoint_protected_entry_classes
   protected.disjoint_protected_entry_classes_loop classes 0#usize
 
 /-- [kanidm_kernel::delete_acc::IResult]
-    Source: 'src/delete_acc.rs', lines 17:0-21:1
+    Source: 'ports/kanidm/kernel/src/delete_acc.rs', lines 17:0-21:1
     Visibility: public -/
 @[discriminant isize]
 inductive delete_acc.IResult where
@@ -5374,7 +5374,7 @@ inductive delete_acc.IResult where
 | Ignore : delete_acc.IResult
 
 /-- [kanidm_kernel::delete_acc::protected_filter_entry]:
-    Source: 'src/delete_acc.rs', lines 110:0-136:1
+    Source: 'ports/kanidm/kernel/src/delete_acc.rs', lines 110:0-136:1
     Visibility: public -/
 def delete_acc.protected_filter_entry
   (ident : Identity) (entry : Entry) : Result delete_acc.IResult := do
@@ -5419,7 +5419,7 @@ def delete_acc.protected_filter_entry
     | InternalRole.MessageQueue => ok delete_acc.IResult.Deny
 
 /-- [kanidm_kernel::delete_acc::delete_any_acp]: loop body 0:
-    Source: 'src/delete_acc.rs', lines 99:4-107:1
+    Source: 'ports/kanidm/kernel/src/delete_acc.rs', lines 99:4-107:1
     Visibility: public -/
 @[rust_loop_body]
 def delete_acc.delete_any_acp_loop.body
@@ -5442,7 +5442,7 @@ def delete_acc.delete_any_acp_loop.body
   else ok (done false)
 
 /-- [kanidm_kernel::delete_acc::delete_any_acp]: loop 0:
-    Source: 'src/delete_acc.rs', lines 99:4-107:1
+    Source: 'ports/kanidm/kernel/src/delete_acc.rs', lines 99:4-107:1
     Visibility: public -/
 @[rust_loop]
 def delete_acc.delete_any_acp_loop
@@ -5457,7 +5457,7 @@ def delete_acc.delete_any_acp_loop
     i
 
 /-- [kanidm_kernel::delete_acc::delete_any_acp]:
-    Source: 'src/delete_acc.rs', lines 92:0-107:1
+    Source: 'ports/kanidm/kernel/src/delete_acc.rs', lines 92:0-107:1
     Visibility: public -/
 @[reducible]
 def delete_acc.delete_any_acp
@@ -5470,7 +5470,7 @@ def delete_acc.delete_any_acp
     0#usize
 
 /-- [kanidm_kernel::delete_acc::delete_filter_entry]:
-    Source: 'src/delete_acc.rs', lines 52:0-89:1
+    Source: 'ports/kanidm/kernel/src/delete_acc.rs', lines 52:0-89:1
     Visibility: public -/
 def delete_acc.delete_filter_entry
   (ident : Identity) (related_acp : Slice profiles.AccessControlDeleteResolved)
@@ -5504,7 +5504,7 @@ def delete_acc.delete_filter_entry
     | InternalRole.MessageQueue => ok delete_acc.IResult.Deny
 
 /-- [kanidm_kernel::delete_acc::DeleteResult]
-    Source: 'src/delete_acc.rs', lines 11:0-14:1
+    Source: 'ports/kanidm/kernel/src/delete_acc.rs', lines 11:0-14:1
     Visibility: public -/
 @[discriminant isize]
 inductive delete_acc.DeleteResult where
@@ -5512,7 +5512,7 @@ inductive delete_acc.DeleteResult where
 | Grant : delete_acc.DeleteResult
 
 /-- [kanidm_kernel::delete_acc::apply_delete_access]:
-    Source: 'src/delete_acc.rs', lines 24:0-49:1
+    Source: 'ports/kanidm/kernel/src/delete_acc.rs', lines 24:0-49:1
     Visibility: public -/
 def delete_acc.apply_delete_access
   (ident : Identity) (related_acp : Slice profiles.AccessControlDeleteResolved)
@@ -5539,7 +5539,7 @@ def delete_acc.apply_delete_access
     else ok delete_acc.DeleteResult.Deny
 
 /-- [kanidm_kernel::access::entry_effective_permission_check]:
-    Source: 'src/access.rs', lines 686:0-732:1
+    Source: 'ports/kanidm/kernel/src/access.rs', lines 686:0-732:1
     Visibility: public -/
 def access.entry_effective_permission_check
   (ident : Identity) (entry : Entry)
@@ -5587,7 +5587,7 @@ def access.entry_effective_permission_check
     }
 
 /-- [kanidm_kernel::access::reduce_entries_loop]: loop body 0:
-    Source: 'src/access.rs', lines 212:4-244:5
+    Source: 'ports/kanidm/kernel/src/access.rs', lines 212:4-244:5
     Visibility: public -/
 @[rust_loop_body]
 def access.reduce_entries_loop_loop.body
@@ -5641,7 +5641,7 @@ def access.reduce_entries_loop_loop.body
   else ok (done allowed_entries)
 
 /-- [kanidm_kernel::access::reduce_entries_loop]: loop 0:
-    Source: 'src/access.rs', lines 212:4-244:5
+    Source: 'ports/kanidm/kernel/src/access.rs', lines 212:4-244:5
     Visibility: public -/
 @[rust_loop]
 def access.reduce_entries_loop_loop
@@ -5661,7 +5661,7 @@ def access.reduce_entries_loop_loop
     (ctl, se, allowed_entries, i)
 
 /-- [kanidm_kernel::access::reduce_entries_loop]:
-    Source: 'src/access.rs', lines 202:0-246:1
+    Source: 'ports/kanidm/kernel/src/access.rs', lines 202:0-246:1
     Visibility: public -/
 @[reducible]
 def access.reduce_entries_loop
@@ -5676,7 +5676,7 @@ def access.reduce_entries_loop
     delete_related_acp entries (alloc.vec.Vec.new EntryReduced) 0#usize
 
 /-- [kanidm_kernel::access::search_filter_entry_attributes]:
-    Source: 'src/access.rs', lines 155:0-198:1
+    Source: 'ports/kanidm/kernel/src/access.rs', lines 155:0-198:1
     Visibility: public -/
 def access.search_filter_entry_attributes
   (ctl : AccessControlsInner) (se : SearchEvent) (entries : Slice Entry) :
@@ -5713,7 +5713,7 @@ def access.search_filter_entry_attributes
     ok (core.result.Result.Err OperationError.InvalidState)
 
 /-- [kanidm_kernel::Modify]
-    Source: 'src/lib.rs', lines 159:0-165:1
+    Source: 'ports/kanidm/kernel/src/lib.rs', lines 159:0-165:1
     Visibility: public -/
 @[discriminant isize]
 inductive Modify where
@@ -5724,14 +5724,14 @@ inductive Modify where
 | Set : alloc.vec.Vec Std.U8 → ValueSet → Modify
 
 /-- [kanidm_kernel::ModifyEvent]
-    Source: 'src/lib.rs', lines 269:0-272:1
+    Source: 'ports/kanidm/kernel/src/lib.rs', lines 269:0-272:1
     Visibility: public -/
 structure ModifyEvent where
   ident : Identity
   modlist : alloc.vec.Vec Modify
 
 /-- [kanidm_kernel::valueset::to_str]:
-    Source: 'src/valueset.rs', lines 336:0-343:1
+    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 336:0-343:1
     Visibility: public -/
 def valueset.to_str
   (v : PartialValue) : Result (Option (alloc.vec.Vec Std.U8)) := do
@@ -5744,7 +5744,7 @@ def valueset.to_str
   | PartialValue.Uint32 _ => ok none
 
 /-- [kanidm_kernel::bset::difference]: loop body 0:
-    Source: 'src/bset.rs', lines 89:4-95:5
+    Source: 'ports/kanidm/kernel/src/bset.rs', lines 89:4-95:5
     Visibility: public -/
 @[rust_loop_body]
 def bset.difference_loop.body
@@ -5770,7 +5770,7 @@ def bset.difference_loop.body
   else ok (done out)
 
 /-- [kanidm_kernel::bset::difference]: loop 0:
-    Source: 'src/bset.rs', lines 89:4-95:5
+    Source: 'ports/kanidm/kernel/src/bset.rs', lines 89:4-95:5
     Visibility: public -/
 @[rust_loop]
 def bset.difference_loop
@@ -5783,7 +5783,7 @@ def bset.difference_loop
     (out, i)
 
 /-- [kanidm_kernel::bset::difference]:
-    Source: 'src/bset.rs', lines 86:0-97:1
+    Source: 'ports/kanidm/kernel/src/bset.rs', lines 86:0-97:1
     Visibility: public -/
 @[reducible]
 def bset.difference
@@ -5793,7 +5793,7 @@ def bset.difference
   bset.difference_loop a b (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) 0#usize
 
 /-- [kanidm_kernel::access::modify_class_change]:
-    Source: 'src/access.rs', lines 406:0-448:1
+    Source: 'ports/kanidm/kernel/src/access.rs', lines 406:0-448:1
     Visibility: public -/
 def access.modify_class_change
   (entry : Entry) (m : Modify) :
@@ -5874,7 +5874,7 @@ def access.modify_class_change
         (alloc.vec.Vec Std.U8)))
 
 /-- [kanidm_kernel::access::requested_classes]: loop body 0:
-    Source: 'src/access.rs', lines 456:4-467:1
+    Source: 'ports/kanidm/kernel/src/access.rs', lines 456:4-467:1
     Visibility: public -/
 @[rust_loop_body]
 def access.requested_classes_loop.body
@@ -5904,7 +5904,7 @@ def access.requested_classes_loop.body
   else ok (done (some (requested_pres_classes, requested_rem_classes)))
 
 /-- [kanidm_kernel::access::requested_classes]: loop 0:
-    Source: 'src/access.rs', lines 456:4-467:1
+    Source: 'ports/kanidm/kernel/src/access.rs', lines 456:4-467:1
     Visibility: public -/
 @[rust_loop]
 def access.requested_classes_loop
@@ -5922,7 +5922,7 @@ def access.requested_classes_loop
     (requested_pres_classes, requested_rem_classes, i)
 
 /-- [kanidm_kernel::access::requested_classes]:
-    Source: 'src/access.rs', lines 452:0-467:1
+    Source: 'ports/kanidm/kernel/src/access.rs', lines 452:0-467:1
     Visibility: public -/
 @[reducible]
 def access.requested_classes
@@ -5934,7 +5934,7 @@ def access.requested_classes
     Std.U8)) (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) 0#usize
 
 /-- [kanidm_kernel::access::requested_rem]: loop body 0:
-    Source: 'src/access.rs', lines 393:4-399:5
+    Source: 'ports/kanidm/kernel/src/access.rs', lines 393:4-399:5
     Visibility: public -/
 @[rust_loop_body]
 def access.requested_rem_loop.body
@@ -5962,7 +5962,7 @@ def access.requested_rem_loop.body
   else ok (done out)
 
 /-- [kanidm_kernel::access::requested_rem]: loop 0:
-    Source: 'src/access.rs', lines 393:4-399:5
+    Source: 'ports/kanidm/kernel/src/access.rs', lines 393:4-399:5
     Visibility: public -/
 @[rust_loop]
 def access.requested_rem_loop
@@ -5975,7 +5975,7 @@ def access.requested_rem_loop
     (out, i)
 
 /-- [kanidm_kernel::access::requested_rem]:
-    Source: 'src/access.rs', lines 390:0-401:1
+    Source: 'ports/kanidm/kernel/src/access.rs', lines 390:0-401:1
     Visibility: public -/
 @[reducible]
 def access.requested_rem
@@ -5986,7 +5986,7 @@ def access.requested_rem
     0#usize
 
 /-- [kanidm_kernel::access::requested_pres]: loop body 0:
-    Source: 'src/access.rs', lines 379:4-385:5
+    Source: 'ports/kanidm/kernel/src/access.rs', lines 379:4-385:5
     Visibility: public -/
 @[rust_loop_body]
 def access.requested_pres_loop.body
@@ -6014,7 +6014,7 @@ def access.requested_pres_loop.body
   else ok (done out)
 
 /-- [kanidm_kernel::access::requested_pres]: loop 0:
-    Source: 'src/access.rs', lines 379:4-385:5
+    Source: 'ports/kanidm/kernel/src/access.rs', lines 379:4-385:5
     Visibility: public -/
 @[rust_loop]
 def access.requested_pres_loop
@@ -6027,7 +6027,7 @@ def access.requested_pres_loop
     (out, i)
 
 /-- [kanidm_kernel::access::requested_pres]:
-    Source: 'src/access.rs', lines 376:0-387:1
+    Source: 'ports/kanidm/kernel/src/access.rs', lines 376:0-387:1
     Visibility: public -/
 @[reducible]
 def access.requested_pres
@@ -6038,7 +6038,7 @@ def access.requested_pres
     0#usize
 
 /-- [kanidm_kernel::access::is_purge_class]:
-    Source: 'src/access.rs', lines 356:0-361:1
+    Source: 'ports/kanidm/kernel/src/access.rs', lines 356:0-361:1
     Visibility: public -/
 def access.is_purge_class (m : Modify) : Result Bool := do
   match m with
@@ -6054,7 +6054,7 @@ def access.is_purge_class (m : Modify) : Result Bool := do
   | Modify.Set _ _ => ok false
 
 /-- [kanidm_kernel::access::modlist_purges_class]: loop body 0:
-    Source: 'src/access.rs', lines 366:4-373:1
+    Source: 'ports/kanidm/kernel/src/access.rs', lines 366:4-373:1
     Visibility: public -/
 @[rust_loop_body]
 def access.modlist_purges_class_loop.body
@@ -6073,7 +6073,7 @@ def access.modlist_purges_class_loop.body
   else ok (done false)
 
 /-- [kanidm_kernel::access::modlist_purges_class]: loop 0:
-    Source: 'src/access.rs', lines 366:4-373:1
+    Source: 'ports/kanidm/kernel/src/access.rs', lines 366:4-373:1
     Visibility: public -/
 @[rust_loop]
 def access.modlist_purges_class_loop
@@ -6083,14 +6083,14 @@ def access.modlist_purges_class_loop
     i
 
 /-- [kanidm_kernel::access::modlist_purges_class]:
-    Source: 'src/access.rs', lines 364:0-373:1
+    Source: 'ports/kanidm/kernel/src/access.rs', lines 364:0-373:1
     Visibility: public -/
 @[reducible]
 def access.modlist_purges_class (modlist : Slice Modify) : Result Bool := do
   access.modlist_purges_class_loop modlist 0#usize
 
 /-- [kanidm_kernel::access::modify_allow_operation_per_entry]:
-    Source: 'src/access.rs', lines 470:0-526:1
+    Source: 'ports/kanidm/kernel/src/access.rs', lines 470:0-526:1
     Visibility: public -/
 def access.modify_allow_operation_per_entry
   (ctl : AccessControlsInner) (ident : Identity)
@@ -6179,7 +6179,7 @@ def access.modify_allow_operation_per_entry
           else ok false
 
 /-- [kanidm_kernel::access::modify_all_entries]: loop body 0:
-    Source: 'src/access.rs', lines 299:4-306:1
+    Source: 'ports/kanidm/kernel/src/access.rs', lines 299:4-306:1
     Visibility: public -/
 @[rust_loop_body]
 def access.modify_all_entries_loop.body
@@ -6201,7 +6201,7 @@ def access.modify_all_entries_loop.body
   else ok (done true)
 
 /-- [kanidm_kernel::access::modify_all_entries]: loop 0:
-    Source: 'src/access.rs', lines 299:4-306:1
+    Source: 'ports/kanidm/kernel/src/access.rs', lines 299:4-306:1
     Visibility: public -/
 @[rust_loop]
 def access.modify_all_entries_loop
@@ -6216,7 +6216,7 @@ def access.modify_all_entries_loop
     i
 
 /-- [kanidm_kernel::access::modify_all_entries]:
-    Source: 'src/access.rs', lines 291:0-306:1
+    Source: 'ports/kanidm/kernel/src/access.rs', lines 291:0-306:1
     Visibility: public -/
 @[reducible]
 def access.modify_all_entries
@@ -6228,7 +6228,7 @@ def access.modify_all_entries
   access.modify_all_entries_loop ctl ident related_acp entries modlist 0#usize
 
 /-- [kanidm_kernel::access::modify_allow_operation]:
-    Source: 'src/access.rs', lines 278:0-288:1
+    Source: 'ports/kanidm/kernel/src/access.rs', lines 278:0-288:1
     Visibility: public -/
 def access.modify_allow_operation
   (ctl : AccessControlsInner) (me : ModifyEvent) (entries : Slice Entry) :
@@ -6241,21 +6241,21 @@ def access.modify_allow_operation
   ok (core.result.Result.Ok b)
 
 /-- [kanidm_kernel::ModSetEntry]
-    Source: 'src/lib.rs', lines 275:0-278:1
+    Source: 'ports/kanidm/kernel/src/lib.rs', lines 275:0-278:1
     Visibility: public -/
 structure ModSetEntry where
   uuid : Std.U128
   modlist : alloc.vec.Vec Modify
 
 /-- [kanidm_kernel::BatchModifyEvent]
-    Source: 'src/lib.rs', lines 281:0-284:1
+    Source: 'ports/kanidm/kernel/src/lib.rs', lines 281:0-284:1
     Visibility: public -/
 structure BatchModifyEvent where
   ident : Identity
   modset : alloc.vec.Vec ModSetEntry
 
 /-- [kanidm_kernel::access::modset_get]: loop body 0:
-    Source: 'src/access.rs', lines 311:4-318:1
+    Source: 'ports/kanidm/kernel/src/access.rs', lines 311:4-318:1
     Visibility: public -/
 @[rust_loop_body]
 def access.modset_get_loop.body
@@ -6275,7 +6275,7 @@ def access.modset_get_loop.body
   else ok (done none)
 
 /-- [kanidm_kernel::access::modset_get]: loop 0:
-    Source: 'src/access.rs', lines 311:4-318:1
+    Source: 'ports/kanidm/kernel/src/access.rs', lines 311:4-318:1
     Visibility: public -/
 @[rust_loop]
 def access.modset_get_loop
@@ -6287,7 +6287,7 @@ def access.modset_get_loop
     i
 
 /-- [kanidm_kernel::access::modset_get]:
-    Source: 'src/access.rs', lines 309:0-318:1
+    Source: 'ports/kanidm/kernel/src/access.rs', lines 309:0-318:1
     Visibility: public -/
 @[reducible]
 def access.modset_get
@@ -6297,7 +6297,7 @@ def access.modset_get
   access.modset_get_loop me uuid 0#usize
 
 /-- [kanidm_kernel::access::batch_modify_all_entries]: loop body 0:
-    Source: 'src/access.rs', lines 339:4-353:1
+    Source: 'ports/kanidm/kernel/src/access.rs', lines 339:4-353:1
     Visibility: public -/
 @[rust_loop_body]
 def access.batch_modify_all_entries_loop.body
@@ -6327,7 +6327,7 @@ def access.batch_modify_all_entries_loop.body
   else ok (done true)
 
 /-- [kanidm_kernel::access::batch_modify_all_entries]: loop 0:
-    Source: 'src/access.rs', lines 339:4-353:1
+    Source: 'ports/kanidm/kernel/src/access.rs', lines 339:4-353:1
     Visibility: public -/
 @[rust_loop]
 def access.batch_modify_all_entries_loop
@@ -6342,7 +6342,7 @@ def access.batch_modify_all_entries_loop
     (me, i)
 
 /-- [kanidm_kernel::access::batch_modify_all_entries]:
-    Source: 'src/access.rs', lines 332:0-353:1
+    Source: 'ports/kanidm/kernel/src/access.rs', lines 332:0-353:1
     Visibility: public -/
 @[reducible]
 def access.batch_modify_all_entries
@@ -6354,7 +6354,7 @@ def access.batch_modify_all_entries
   access.batch_modify_all_entries_loop ctl me related_acp entries 0#usize
 
 /-- [kanidm_kernel::access::batch_modify_allow_operation]:
-    Source: 'src/access.rs', lines 321:0-329:1
+    Source: 'ports/kanidm/kernel/src/access.rs', lines 321:0-329:1
     Visibility: public -/
 def access.batch_modify_allow_operation
   (ctl : AccessControlsInner) (me : BatchModifyEvent) (entries : Slice Entry) :
@@ -6366,7 +6366,7 @@ def access.batch_modify_allow_operation
   ok (core.result.Result.Ok b)
 
 /-- [kanidm_kernel::profiles::AccessControlCreateResolved]
-    Source: 'src/profiles.rs', lines 70:0-75:1
+    Source: 'ports/kanidm/kernel/src/profiles.rs', lines 70:0-75:1
     Visibility: public -/
 structure profiles.AccessControlCreateResolved where
   classes : alloc.vec.Vec (alloc.vec.Vec Std.U8)
@@ -6375,7 +6375,7 @@ structure profiles.AccessControlCreateResolved where
   target_condition : profiles.AccessControlTargetCondition
 
 /-- [kanidm_kernel::access::create_related_acp]: loop body 0:
-    Source: 'src/access.rs', lines 536:4-550:5
+    Source: 'ports/kanidm/kernel/src/access.rs', lines 536:4-550:5
     Visibility: public -/
 @[rust_loop_body]
 def access.create_related_acp_loop.body
@@ -6416,7 +6416,7 @@ def access.create_related_acp_loop.body
   else ok (done related_acp)
 
 /-- [kanidm_kernel::access::create_related_acp]: loop 0:
-    Source: 'src/access.rs', lines 536:4-550:5
+    Source: 'ports/kanidm/kernel/src/access.rs', lines 536:4-550:5
     Visibility: public -/
 @[rust_loop]
 def access.create_related_acp_loop
@@ -6433,7 +6433,7 @@ def access.create_related_acp_loop
     (related_acp, i)
 
 /-- [kanidm_kernel::access::create_related_acp]:
-    Source: 'src/access.rs', lines 530:0-552:1
+    Source: 'ports/kanidm/kernel/src/access.rs', lines 530:0-552:1
     Visibility: public -/
 def access.create_related_acp
   (ctl : AccessControlsInner) (ident : Identity) :
@@ -6444,13 +6444,13 @@ def access.create_related_acp
     (alloc.vec.Vec.new profiles.AccessControlCreateResolved) 0#usize
 
 /-- [kanidm_kernel::CreateEvent]
-    Source: 'src/lib.rs', lines 287:0-289:1
+    Source: 'ports/kanidm/kernel/src/lib.rs', lines 287:0-289:1
     Visibility: public -/
 structure CreateEvent where
   ident : Identity
 
 /-- [kanidm_kernel::entry_impl::get_ava_names]: loop body 0:
-    Source: 'src/entry_impl.rs', lines 58:4-61:5
+    Source: 'ports/kanidm/kernel/src/entry_impl.rs', lines 58:4-61:5
     Visibility: public -/
 @[rust_loop_body]
 def entry_impl.get_ava_names_loop.body
@@ -6470,7 +6470,7 @@ def entry_impl.get_ava_names_loop.body
   else ok (done out)
 
 /-- [kanidm_kernel::entry_impl::get_ava_names]: loop 0:
-    Source: 'src/entry_impl.rs', lines 58:4-61:5
+    Source: 'ports/kanidm/kernel/src/entry_impl.rs', lines 58:4-61:5
     Visibility: public -/
 @[rust_loop]
 def entry_impl.get_ava_names_loop
@@ -6482,7 +6482,7 @@ def entry_impl.get_ava_names_loop
     (out, i)
 
 /-- [kanidm_kernel::entry_impl::get_ava_names]:
-    Source: 'src/entry_impl.rs', lines 55:0-63:1
+    Source: 'ports/kanidm/kernel/src/entry_impl.rs', lines 55:0-63:1
     Visibility: public -/
 @[reducible]
 def entry_impl.get_ava_names
@@ -6491,7 +6491,7 @@ def entry_impl.get_ava_names
     0#usize
 
 /-- [kanidm_kernel::create_acc::IResult]
-    Source: 'src/create_acc.rs', lines 20:0-25:1
+    Source: 'ports/kanidm/kernel/src/create_acc.rs', lines 20:0-25:1
     Visibility: public -/
 @[discriminant isize]
 inductive create_acc.IResult where
@@ -6504,7 +6504,7 @@ inductive create_acc.IResult where
   create_acc.IResult
 
 /-- [kanidm_kernel::create_acc::message_queue]:
-    Source: 'src/create_acc.rs', lines 270:0-296:1
+    Source: 'ports/kanidm/kernel/src/create_acc.rs', lines 270:0-296:1
     Visibility: public -/
 def create_acc.message_queue
   (ident : Identity) (entry : Entry) : Result create_acc.IResult := do
@@ -6585,7 +6585,7 @@ def create_acc.message_queue
         else ok create_acc.IResult.Deny
 
 /-- [kanidm_kernel::create_acc::migration_filter_entry]:
-    Source: 'src/create_acc.rs', lines 244:0-267:1
+    Source: 'ports/kanidm/kernel/src/create_acc.rs', lines 244:0-267:1
     Visibility: public -/
 def create_acc.migration_filter_entry
   (ident : Identity) (entry : Entry) : Result create_acc.IResult := do
@@ -6620,7 +6620,7 @@ def create_acc.migration_filter_entry
     | InternalRole.MessageQueue => ok create_acc.IResult.Ignore
 
 /-- [kanidm_kernel::valueset::to_uuid_single]:
-    Source: 'src/valueset.rs', lines 314:0-325:1
+    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 314:0-325:1
     Visibility: public -/
 def valueset.to_uuid_single (vs : ValueSet) : Result (Option Std.U128) := do
   match vs with
@@ -6641,7 +6641,7 @@ def valueset.to_uuid_single (vs : ValueSet) : Result (Option Std.U128) := do
   | ValueSet.OauthScopeMap _ => ok none
 
 /-- [kanidm_kernel::entry_impl::get_uuid_init]:
-    Source: 'src/entry_impl.rs', lines 66:0-71:1
+    Source: 'ports/kanidm/kernel/src/entry_impl.rs', lines 66:0-71:1
     Visibility: public -/
 def entry_impl.get_uuid_init (e : Entry) : Result (Option Std.U128) := do
   let s ←
@@ -6653,7 +6653,7 @@ def entry_impl.get_uuid_init (e : Entry) : Result (Option Std.U128) := do
   | some vs => valueset.to_uuid_single vs
 
 /-- [kanidm_kernel::create_acc::protected_filter_entry]:
-    Source: 'src/create_acc.rs', lines 208:0-241:1
+    Source: 'ports/kanidm/kernel/src/create_acc.rs', lines 208:0-241:1
     Visibility: public -/
 def create_acc.protected_filter_entry
   (ident : Identity) (entry : Entry) : Result create_acc.IResult := do
@@ -6730,7 +6730,7 @@ def create_acc.protected_filter_entry
     | InternalRole.MessageQueue => ok create_acc.IResult.Ignore
 
 /-- [kanidm_kernel::create_acc::create_acp_allows]:
-    Source: 'src/create_acc.rs', lines 175:0-205:1
+    Source: 'ports/kanidm/kernel/src/create_acc.rs', lines 175:0-205:1
     Visibility: public -/
 def create_acc.create_acp_allows
   (accr : profiles.AccessControlCreateResolved) (entry : Entry)
@@ -6757,7 +6757,7 @@ def create_acc.create_acp_allows
   | profiles.AccessControlReceiverCondition.EntryManager => ok false
 
 /-- [kanidm_kernel::create_acc::create_any_acp]: loop body 0:
-    Source: 'src/create_acc.rs', lines 165:4-172:1
+    Source: 'ports/kanidm/kernel/src/create_acc.rs', lines 165:4-172:1
     Visibility: public -/
 @[rust_loop_body]
 def create_acc.create_any_acp_loop.body
@@ -6779,7 +6779,7 @@ def create_acc.create_any_acp_loop.body
   else ok (done false)
 
 /-- [kanidm_kernel::create_acc::create_any_acp]: loop 0:
-    Source: 'src/create_acc.rs', lines 165:4-172:1
+    Source: 'ports/kanidm/kernel/src/create_acc.rs', lines 165:4-172:1
     Visibility: public -/
 @[rust_loop]
 def create_acc.create_any_acp_loop
@@ -6794,7 +6794,7 @@ def create_acc.create_any_acp_loop
     i
 
 /-- [kanidm_kernel::create_acc::create_any_acp]:
-    Source: 'src/create_acc.rs', lines 158:0-172:1
+    Source: 'ports/kanidm/kernel/src/create_acc.rs', lines 158:0-172:1
     Visibility: public -/
 @[reducible]
 def create_acc.create_any_acp
@@ -6807,7 +6807,7 @@ def create_acc.create_any_acp
     0#usize
 
 /-- [kanidm_kernel::create_acc::create_filter_entry]:
-    Source: 'src/create_acc.rs', lines 100:0-155:1
+    Source: 'ports/kanidm/kernel/src/create_acc.rs', lines 100:0-155:1
     Visibility: public -/
 def create_acc.create_filter_entry
   (ident : Identity) (related_acp : Slice profiles.AccessControlCreateResolved)
@@ -6888,7 +6888,7 @@ def create_acc.create_filter_entry
     | InternalRole.MessageQueue => ok create_acc.IResult.Ignore
 
 /-- [kanidm_kernel::create_acc::CreateResult]
-    Source: 'src/create_acc.rs', lines 13:0-17:1
+    Source: 'ports/kanidm/kernel/src/create_acc.rs', lines 13:0-17:1
     Visibility: public -/
 @[discriminant isize]
 inductive create_acc.CreateResult where
@@ -6900,7 +6900,7 @@ inductive create_acc.CreateResult where
   create_acc.CreateResult
 
 /-- [kanidm_kernel::create_acc::apply_create_access]:
-    Source: 'src/create_acc.rs', lines 28:0-97:1
+    Source: 'ports/kanidm/kernel/src/create_acc.rs', lines 28:0-97:1
     Visibility: public -/
 def create_acc.apply_create_access
   (ident : Identity) (related_acp : Slice profiles.AccessControlCreateResolved)
@@ -6995,7 +6995,7 @@ def create_acc.apply_create_access
       ok (create_acc.CreateResult.Allow allowed_pres allowed_pres_cls1)
 
 /-- [kanidm_kernel::access::create_allow_entry]:
-    Source: 'src/access.rs', lines 579:0-605:1
+    Source: 'ports/kanidm/kernel/src/access.rs', lines 579:0-605:1
     Visibility: public -/
 def access.create_allow_entry
   (ident : Identity) (related_acp : Slice profiles.AccessControlCreateResolved)
@@ -7029,7 +7029,7 @@ def access.create_allow_entry
       else ok false
 
 /-- [kanidm_kernel::access::create_all_entries]: loop body 0:
-    Source: 'src/access.rs', lines 569:4-576:1
+    Source: 'ports/kanidm/kernel/src/access.rs', lines 569:4-576:1
     Visibility: public -/
 @[rust_loop_body]
 def access.create_all_entries_loop.body
@@ -7049,7 +7049,7 @@ def access.create_all_entries_loop.body
   else ok (done true)
 
 /-- [kanidm_kernel::access::create_all_entries]: loop 0:
-    Source: 'src/access.rs', lines 569:4-576:1
+    Source: 'ports/kanidm/kernel/src/access.rs', lines 569:4-576:1
     Visibility: public -/
 @[rust_loop]
 def access.create_all_entries_loop
@@ -7063,7 +7063,7 @@ def access.create_all_entries_loop
     i
 
 /-- [kanidm_kernel::access::create_all_entries]:
-    Source: 'src/access.rs', lines 567:0-576:1
+    Source: 'ports/kanidm/kernel/src/access.rs', lines 567:0-576:1
     Visibility: public -/
 @[reducible]
 def access.create_all_entries
@@ -7074,7 +7074,7 @@ def access.create_all_entries
   access.create_all_entries_loop ident related_acp entries 0#usize
 
 /-- [kanidm_kernel::access::create_allow_operation]:
-    Source: 'src/access.rs', lines 555:0-564:1
+    Source: 'ports/kanidm/kernel/src/access.rs', lines 555:0-564:1
     Visibility: public -/
 def access.create_allow_operation
   (ctl : AccessControlsInner) (ce : CreateEvent) (entries : Slice Entry) :
@@ -7086,13 +7086,13 @@ def access.create_allow_operation
   ok (core.result.Result.Ok b)
 
 /-- [kanidm_kernel::DeleteEvent]
-    Source: 'src/lib.rs', lines 292:0-294:1
+    Source: 'ports/kanidm/kernel/src/lib.rs', lines 292:0-294:1
     Visibility: public -/
 structure DeleteEvent where
   ident : Identity
 
 /-- [kanidm_kernel::access::delete_all_entries]: loop body 0:
-    Source: 'src/access.rs', lines 642:4-650:1
+    Source: 'ports/kanidm/kernel/src/access.rs', lines 642:4-650:1
     Visibility: public -/
 @[rust_loop_body]
 def access.delete_all_entries_loop.body
@@ -7112,7 +7112,7 @@ def access.delete_all_entries_loop.body
   else ok (done true)
 
 /-- [kanidm_kernel::access::delete_all_entries]: loop 0:
-    Source: 'src/access.rs', lines 642:4-650:1
+    Source: 'ports/kanidm/kernel/src/access.rs', lines 642:4-650:1
     Visibility: public -/
 @[rust_loop]
 def access.delete_all_entries_loop
@@ -7126,7 +7126,7 @@ def access.delete_all_entries_loop
     i
 
 /-- [kanidm_kernel::access::delete_all_entries]:
-    Source: 'src/access.rs', lines 640:0-650:1
+    Source: 'ports/kanidm/kernel/src/access.rs', lines 640:0-650:1
     Visibility: public -/
 @[reducible]
 def access.delete_all_entries
@@ -7137,7 +7137,7 @@ def access.delete_all_entries
   access.delete_all_entries_loop ident related_acp entries 0#usize
 
 /-- [kanidm_kernel::access::delete_allow_operation]:
-    Source: 'src/access.rs', lines 628:0-637:1
+    Source: 'ports/kanidm/kernel/src/access.rs', lines 628:0-637:1
     Visibility: public -/
 def access.delete_allow_operation
   (ctl : AccessControlsInner) (de : DeleteEvent) (entries : Slice Entry) :
@@ -7149,7 +7149,7 @@ def access.delete_allow_operation
   ok (core.result.Result.Ok b)
 
 /-- [kanidm_kernel::access::effective_permission_check]: loop body 0:
-    Source: 'src/access.rs', lines 670:4-680:5
+    Source: 'ports/kanidm/kernel/src/access.rs', lines 670:4-680:5
     Visibility: public -/
 @[rust_loop_body]
 def access.effective_permission_check_loop.body
@@ -7178,7 +7178,7 @@ def access.effective_permission_check_loop.body
   else ok (done effective_permissions)
 
 /-- [kanidm_kernel::access::effective_permission_check]: loop 0:
-    Source: 'src/access.rs', lines 670:4-680:5
+    Source: 'ports/kanidm/kernel/src/access.rs', lines 670:4-680:5
     Visibility: public -/
 @[rust_loop]
 def access.effective_permission_check_loop
@@ -7199,7 +7199,7 @@ def access.effective_permission_check_loop
     (effective_permissions, i)
 
 /-- [kanidm_kernel::access::effective_permission_check]:
-    Source: 'src/access.rs', lines 653:0-683:1
+    Source: 'ports/kanidm/kernel/src/access.rs', lines 653:0-683:1
     Visibility: public -/
 def access.effective_permission_check
   (ctl : AccessControlsInner) (ident : Identity)

@@ -1,0 +1,22 @@
+# Standard h5i-app project. Keep every selected theorem in the final gate.
+[extract]
+crate = "kernel"
+start-from = ["policies","pathclean::clean"]
+
+[check]
+theorems = [
+  "rustfs_kernel.Properties.explicit_deny_wins",
+  "rustfs_kernel.Properties.allow_needs_allow_statement",
+  "rustfs_kernel.Properties.owner_allowed_unless_denied",
+  "rustfs_kernel.Properties.deny_only_ignores_allows",
+  "rustfs_kernel.Properties.force_delete_needs_explicit_grant",
+  "rustfs_kernel.Properties.not_action_never_grants_force_delete",
+  "rustfs_kernel.Properties.get_object_version_covers_get_object",
+  "rustfs_kernel.Properties.bucket_allow_needs_principal",
+  "rustfs_kernel.Properties.bucket_policy_total",
+  "rustfs_kernel.Properties.wildcard_is_glob",
+  "rustfs_kernel.Properties.clean_idempotent",
+  "rustfs_kernel.Properties.clean_canonical",
+  "rustfs_kernel.Properties.parse_i64_spec",
+  "rustfs_kernel.Properties.resolution_terminates",
+]

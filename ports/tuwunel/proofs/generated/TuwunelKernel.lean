@@ -20,17 +20,17 @@ set_option maxRecDepth 2048
 namespace tuwunel_kernel
 
 /-- [tuwunel_kernel::api_context::LIMIT_MAX]
-    Source: 'src/api_context.rs', lines 5:0-5:31
+    Source: 'ports/tuwunel/kernel/src/api_context.rs', lines 5:0-5:31
     Visibility: public -/
 @[global_simps, irreducible] def api_context.LIMIT_MAX : Std.U64 := 100#u64
 
 /-- [tuwunel_kernel::api_context::LIMIT_DEFAULT]
-    Source: 'src/api_context.rs', lines 6:0-6:34
+    Source: 'ports/tuwunel/kernel/src/api_context.rs', lines 6:0-6:34
     Visibility: public -/
 @[global_simps, irreducible] def api_context.LIMIT_DEFAULT : Std.U64 := 10#u64
 
 /-- [tuwunel_kernel::Error]
-    Source: 'src/lib.rs', lines 418:0-425:1
+    Source: 'ports/tuwunel/kernel/src/lib.rs', lines 418:0-425:1
     Visibility: public -/
 @[discriminant isize]
 inductive Error where
@@ -42,7 +42,7 @@ inductive Error where
 | Parse : Error
 
 /-- [tuwunel_kernel::Membership]
-    Source: 'src/lib.rs', lines 83:0-90:1
+    Source: 'ports/tuwunel/kernel/src/lib.rs', lines 83:0-90:1
     Visibility: public -/
 @[discriminant isize]
 inductive Membership where
@@ -54,7 +54,7 @@ inductive Membership where
 | Custom : Std.U64 → Membership
 
 /-- [tuwunel_kernel::Reply]
-    Source: 'src/lib.rs', lines 392:0-412:1
+    Source: 'ports/tuwunel/kernel/src/lib.rs', lines 392:0-412:1
     Visibility: public -/
 @[discriminant isize]
 inductive Reply where
@@ -89,7 +89,7 @@ inductive Reply where
 | CanSee : Bool → Reply
 
 /-- [tuwunel_kernel::UrlFilter]
-    Source: 'src/lib.rs', lines 329:0-333:1
+    Source: 'ports/tuwunel/kernel/src/lib.rs', lines 329:0-333:1
     Visibility: public -/
 @[discriminant isize]
 inductive UrlFilter where
@@ -98,7 +98,7 @@ inductive UrlFilter where
 | WithoutUrl : UrlFilter
 
 /-- [tuwunel_kernel::RelType]
-    Source: 'src/lib.rs', lines 134:0-140:1
+    Source: 'ports/tuwunel/kernel/src/lib.rs', lines 134:0-140:1
     Visibility: public -/
 @[discriminant isize]
 inductive RelType where
@@ -109,7 +109,7 @@ inductive RelType where
 | Custom : Std.U64 → RelType
 
 /-- [tuwunel_kernel::Kind]
-    Source: 'src/lib.rs', lines 41:0-57:1
+    Source: 'ports/tuwunel/kernel/src/lib.rs', lines 41:0-57:1
     Visibility: public -/
 @[discriminant isize]
 inductive Kind where
@@ -129,7 +129,7 @@ inductive Kind where
 | Custom : Std.U64 → Kind
 
 /-- [tuwunel_kernel::Filter]
-    Source: 'src/lib.rs', lines 337:0-347:1
+    Source: 'ports/tuwunel/kernel/src/lib.rs', lines 337:0-347:1
     Visibility: public -/
 structure Filter where
   senders : Option (alloc.vec.Vec Std.U64)
@@ -143,7 +143,7 @@ structure Filter where
   related_by_rel_types : alloc.vec.Vec RelType
 
 /-- [tuwunel_kernel::Config]
-    Source: 'src/lib.rs', lines 279:0-283:1
+    Source: 'ports/tuwunel/kernel/src/lib.rs', lines 279:0-283:1
     Visibility: public -/
 structure Config where
   server_name : Std.U64
@@ -151,14 +151,14 @@ structure Config where
   allowed_remote_server_names : alloc.vec.Vec Std.U64
 
 /-- [tuwunel_kernel::Ignore]
-    Source: 'src/lib.rs', lines 271:0-274:1
+    Source: 'ports/tuwunel/kernel/src/lib.rs', lines 271:0-274:1
     Visibility: public -/
 structure Ignore where
   user : Std.U64
   ignored : Std.U64
 
 /-- [tuwunel_kernel::ThreadParticipants]
-    Source: 'src/lib.rs', lines 263:0-267:1
+    Source: 'ports/tuwunel/kernel/src/lib.rs', lines 263:0-267:1
     Visibility: public -/
 structure ThreadParticipants where
   room_short : Std.U64
@@ -166,7 +166,7 @@ structure ThreadParticipants where
   users : alloc.vec.Vec Std.U64
 
 /-- [tuwunel_kernel::ThreadLatest]
-    Source: 'src/lib.rs', lines 255:0-259:1
+    Source: 'ports/tuwunel/kernel/src/lib.rs', lines 255:0-259:1
     Visibility: public -/
 structure ThreadLatest where
   room_short : Std.U64
@@ -174,7 +174,7 @@ structure ThreadLatest where
   latest : Std.U64
 
 /-- [tuwunel_kernel::ThreadActivity]
-    Source: 'src/lib.rs', lines 247:0-251:1
+    Source: 'ports/tuwunel/kernel/src/lib.rs', lines 247:0-251:1
     Visibility: public -/
 structure ThreadActivity where
   room_short : Std.U64
@@ -182,14 +182,14 @@ structure ThreadActivity where
   root : Std.U64
 
 /-- [tuwunel_kernel::Relation]
-    Source: 'src/lib.rs', lines 239:0-242:1
+    Source: 'ports/tuwunel/kernel/src/lib.rs', lines 239:0-242:1
     Visibility: public -/
 structure Relation where
   «to» : Std.U64
   «from» : Std.U64
 
 /-- [tuwunel_kernel::LeftRow]
-    Source: 'src/lib.rs', lines 231:0-235:1
+    Source: 'ports/tuwunel/kernel/src/lib.rs', lines 231:0-235:1
     Visibility: public -/
 structure LeftRow where
   user : Std.U64
@@ -197,14 +197,14 @@ structure LeftRow where
   count : Std.U64
 
 /-- [tuwunel_kernel::UserRoom]
-    Source: 'src/lib.rs', lines 224:0-227:1
+    Source: 'ports/tuwunel/kernel/src/lib.rs', lines 224:0-227:1
     Visibility: public -/
 structure UserRoom where
   user : Std.U64
   room : Std.U64
 
 /-- [tuwunel_kernel::StateEntry]
-    Source: 'src/lib.rs', lines 208:0-212:1
+    Source: 'ports/tuwunel/kernel/src/lib.rs', lines 208:0-212:1
     Visibility: public -/
 structure StateEntry where
   kind : Kind
@@ -212,14 +212,14 @@ structure StateEntry where
   event_id : Std.U64
 
 /-- [tuwunel_kernel::StateSet]
-    Source: 'src/lib.rs', lines 217:0-220:1
+    Source: 'ports/tuwunel/kernel/src/lib.rs', lines 217:0-220:1
     Visibility: public -/
 structure StateSet where
   hash : Std.U64
   entries : alloc.vec.Vec StateEntry
 
 /-- [tuwunel_kernel::StateRef]
-    Source: 'src/lib.rs', lines 164:0-167:1
+    Source: 'ports/tuwunel/kernel/src/lib.rs', lines 164:0-167:1
     Visibility: public -/
 @[discriminant isize]
 inductive StateRef where
@@ -227,7 +227,7 @@ inductive StateRef where
 | Hash : Std.U64 → StateRef
 
 /-- [tuwunel_kernel::Room]
-    Source: 'src/lib.rs', lines 200:0-204:1
+    Source: 'ports/tuwunel/kernel/src/lib.rs', lines 200:0-204:1
     Visibility: public -/
 structure Room where
   id : Std.U64
@@ -235,7 +235,7 @@ structure Room where
   state : StateRef
 
 /-- [tuwunel_kernel::Relates]
-    Source: 'src/lib.rs', lines 157:0-160:1
+    Source: 'ports/tuwunel/kernel/src/lib.rs', lines 157:0-160:1
     Visibility: public -/
 @[discriminant isize]
 inductive Relates where
@@ -243,7 +243,7 @@ inductive Relates where
 | To : RelType → Std.U64 → Relates
 
 /-- [tuwunel_kernel::HistoryVisibility]
-    Source: 'src/lib.rs', lines 116:0-122:1
+    Source: 'ports/tuwunel/kernel/src/lib.rs', lines 116:0-122:1
     Visibility: public -/
 @[discriminant isize]
 inductive HistoryVisibility where
@@ -254,7 +254,7 @@ inductive HistoryVisibility where
 | Custom : Std.U64 → HistoryVisibility
 
 /-- [tuwunel_kernel::HvField]
-    Source: 'src/lib.rs', lines 127:0-130:1
+    Source: 'ports/tuwunel/kernel/src/lib.rs', lines 127:0-130:1
     Visibility: public -/
 @[discriminant isize]
 inductive HvField where
@@ -262,7 +262,7 @@ inductive HvField where
 | Is : HistoryVisibility → HvField
 
 /-- [tuwunel_kernel::MemberField]
-    Source: 'src/lib.rs', lines 109:0-112:1
+    Source: 'ports/tuwunel/kernel/src/lib.rs', lines 109:0-112:1
     Visibility: public -/
 @[discriminant isize]
 inductive MemberField where
@@ -270,7 +270,7 @@ inductive MemberField where
 | Is : Membership → MemberField
 
 /-- [tuwunel_kernel::Pdu]
-    Source: 'src/lib.rs', lines 173:0-191:1
+    Source: 'ports/tuwunel/kernel/src/lib.rs', lines 173:0-191:1
     Visibility: public -/
 structure Pdu where
   event_id : Std.U64
@@ -288,7 +288,7 @@ structure Pdu where
   state : StateRef
 
 /-- [tuwunel_kernel::Snapshot]
-    Source: 'src/lib.rs', lines 289:0-310:1
+    Source: 'ports/tuwunel/kernel/src/lib.rs', lines 289:0-310:1
     Visibility: public -/
 structure Snapshot where
   rooms : alloc.vec.Vec Room
@@ -308,7 +308,7 @@ structure Snapshot where
   current_count : Std.I64
 
 /-- [tuwunel_kernel::svc_timeline::in_timeline]:
-    Source: 'src/svc_timeline.rs', lines 45:0-47:1
+    Source: 'ports/tuwunel/kernel/src/svc_timeline.rs', lines 45:0-47:1
     Visibility: public -/
 def svc_timeline.in_timeline (p : Pdu) (room : Std.U64) : Result Bool := do
   if p.outlier
@@ -316,7 +316,7 @@ def svc_timeline.in_timeline (p : Pdu) (room : Std.U64) : Result Bool := do
   else ok (p.room = room)
 
 /-- [tuwunel_kernel::svc_timeline::get_shortroomid]: loop body 0:
-    Source: 'src/svc_timeline.rs', lines 8:4-15:1
+    Source: 'ports/tuwunel/kernel/src/svc_timeline.rs', lines 8:4-15:1
     Visibility: public -/
 @[rust_loop_body]
 def svc_timeline.get_shortroomid_loop.body
@@ -336,7 +336,7 @@ def svc_timeline.get_shortroomid_loop.body
   else ok (done (core.result.Result.Err Error.NotFound))
 
 /-- [tuwunel_kernel::svc_timeline::get_shortroomid]: loop 0:
-    Source: 'src/svc_timeline.rs', lines 8:4-15:1
+    Source: 'ports/tuwunel/kernel/src/svc_timeline.rs', lines 8:4-15:1
     Visibility: public -/
 @[rust_loop]
 def svc_timeline.get_shortroomid_loop
@@ -348,7 +348,7 @@ def svc_timeline.get_shortroomid_loop
     i
 
 /-- [tuwunel_kernel::svc_timeline::get_shortroomid]:
-    Source: 'src/svc_timeline.rs', lines 6:0-15:1
+    Source: 'ports/tuwunel/kernel/src/svc_timeline.rs', lines 6:0-15:1
     Visibility: public -/
 @[reducible]
 def svc_timeline.get_shortroomid
@@ -358,7 +358,7 @@ def svc_timeline.get_shortroomid
   svc_timeline.get_shortroomid_loop s room 0#usize
 
 /-- [tuwunel_kernel::svc_timeline::pdus_rev]: loop body 0:
-    Source: 'src/svc_timeline.rs', lines 166:12-171:13
+    Source: 'ports/tuwunel/kernel/src/svc_timeline.rs', lines 166:12-171:13
     Visibility: public -/
 @[rust_loop_body]
 def svc_timeline.pdus_rev_loop.body
@@ -383,7 +383,7 @@ def svc_timeline.pdus_rev_loop.body
   else ok (done out)
 
 /-- [tuwunel_kernel::svc_timeline::pdus_rev]: loop 0:
-    Source: 'src/svc_timeline.rs', lines 166:12-171:13
+    Source: 'ports/tuwunel/kernel/src/svc_timeline.rs', lines 166:12-171:13
     Visibility: public -/
 @[rust_loop]
 def svc_timeline.pdus_rev_loop
@@ -397,7 +397,7 @@ def svc_timeline.pdus_rev_loop
     (out, i)
 
 /-- [tuwunel_kernel::svc_timeline::pdus_rev]:
-    Source: 'src/svc_timeline.rs', lines 160:0-175:1
+    Source: 'ports/tuwunel/kernel/src/svc_timeline.rs', lines 160:0-175:1
     Visibility: public -/
 def svc_timeline.pdus_rev
   (s : Snapshot) (room : Std.U64) («until» : Std.I64) :
@@ -414,7 +414,7 @@ def svc_timeline.pdus_rev
   | core.result.Result.Err e => ok (core.result.Result.Err e)
 
 /-- [tuwunel_kernel::svc_timeline::pdus]: loop body 0:
-    Source: 'src/svc_timeline.rs', lines 147:12-152:13
+    Source: 'ports/tuwunel/kernel/src/svc_timeline.rs', lines 147:12-152:13
     Visibility: public -/
 @[rust_loop_body]
 def svc_timeline.pdus_loop.body
@@ -440,7 +440,7 @@ def svc_timeline.pdus_loop.body
   else ok (done out)
 
 /-- [tuwunel_kernel::svc_timeline::pdus]: loop 0:
-    Source: 'src/svc_timeline.rs', lines 147:12-152:13
+    Source: 'ports/tuwunel/kernel/src/svc_timeline.rs', lines 147:12-152:13
     Visibility: public -/
 @[rust_loop]
 def svc_timeline.pdus_loop
@@ -453,7 +453,7 @@ def svc_timeline.pdus_loop
     (out, i)
 
 /-- [tuwunel_kernel::svc_timeline::pdus]:
-    Source: 'src/svc_timeline.rs', lines 141:0-156:1
+    Source: 'ports/tuwunel/kernel/src/svc_timeline.rs', lines 141:0-156:1
     Visibility: public -/
 def svc_timeline.pdus
   (s : Snapshot) (room : Std.U64) («from» : Std.I64) :
@@ -469,7 +469,7 @@ def svc_timeline.pdus
   | core.result.Result.Err e => ok (core.result.Result.Err e)
 
 /-- [tuwunel_kernel::svc_timeline::has_timeline_row]: loop body 0:
-    Source: 'src/svc_timeline.rs', lines 59:4-66:1 -/
+    Source: 'ports/tuwunel/kernel/src/svc_timeline.rs', lines 59:4-66:1 -/
 @[rust_loop_body]
 def svc_timeline.has_timeline_row_loop.body
   (s : Snapshot) (room : Std.U64) (i : Std.Usize) :
@@ -488,7 +488,7 @@ def svc_timeline.has_timeline_row_loop.body
   else ok (done false)
 
 /-- [tuwunel_kernel::svc_timeline::has_timeline_row]: loop 0:
-    Source: 'src/svc_timeline.rs', lines 59:4-66:1 -/
+    Source: 'ports/tuwunel/kernel/src/svc_timeline.rs', lines 59:4-66:1 -/
 @[rust_loop]
 def svc_timeline.has_timeline_row_loop
   (s : Snapshot) (room : Std.U64) (i : Std.Usize) : Result Bool := do
@@ -497,14 +497,14 @@ def svc_timeline.has_timeline_row_loop
     i
 
 /-- [tuwunel_kernel::svc_timeline::has_timeline_row]:
-    Source: 'src/svc_timeline.rs', lines 57:0-66:1 -/
+    Source: 'ports/tuwunel/kernel/src/svc_timeline.rs', lines 57:0-66:1 -/
 @[reducible]
 def svc_timeline.has_timeline_row
   (s : Snapshot) (room : Std.U64) : Result Bool := do
   svc_timeline.has_timeline_row_loop s room 0#usize
 
 /-- [tuwunel_kernel::svc_timeline::exists]:
-    Source: 'src/svc_timeline.rs', lines 50:0-55:1
+    Source: 'ports/tuwunel/kernel/src/svc_timeline.rs', lines 50:0-55:1
     Visibility: public -/
 def svc_timeline.exists (s : Snapshot) (room : Std.U64) : Result Bool := do
   let r ← svc_timeline.get_shortroomid s room
@@ -513,7 +513,7 @@ def svc_timeline.exists (s : Snapshot) (room : Std.U64) : Result Bool := do
   | core.result.Result.Err _ => ok false
 
 /-- [tuwunel_kernel::api_message::event_ids]: loop body 0:
-    Source: 'src/api_message.rs', lines 146:4-149:5
+    Source: 'ports/tuwunel/kernel/src/api_message.rs', lines 146:4-149:5
     Visibility: public -/
 @[rust_loop_body]
 def api_message.event_ids_loop.body
@@ -534,7 +534,7 @@ def api_message.event_ids_loop.body
   else ok (done out)
 
 /-- [tuwunel_kernel::api_message::event_ids]: loop 0:
-    Source: 'src/api_message.rs', lines 146:4-149:5
+    Source: 'ports/tuwunel/kernel/src/api_message.rs', lines 146:4-149:5
     Visibility: public -/
 @[rust_loop]
 def api_message.event_ids_loop
@@ -547,7 +547,7 @@ def api_message.event_ids_loop
     (out, i)
 
 /-- [tuwunel_kernel::api_message::event_ids]:
-    Source: 'src/api_message.rs', lines 143:0-151:1
+    Source: 'ports/tuwunel/kernel/src/api_message.rs', lines 143:0-151:1
     Visibility: public -/
 @[reducible]
 def api_message.event_ids
@@ -557,7 +557,7 @@ def api_message.event_ids
   api_message.event_ids_loop s events (alloc.vec.Vec.new Std.U64) 0#usize
 
 /-- [tuwunel_kernel::api_message::bounded]:
-    Source: 'src/api_message.rs', lines 23:0-30:1
+    Source: 'ports/tuwunel/kernel/src/api_message.rs', lines 23:0-30:1
     Visibility: public -/
 def api_message.bounded
   (limit : Option Std.U64) (default : Std.U64) (max : Std.U64) :
@@ -570,7 +570,7 @@ def api_message.bounded
               else ok max
 
 /-- [tuwunel_kernel::svc_timeline::get_outlier]: loop body 0:
-    Source: 'src/svc_timeline.rs', lines 83:4-90:1
+    Source: 'ports/tuwunel/kernel/src/svc_timeline.rs', lines 83:4-90:1
     Visibility: public -/
 @[rust_loop_body]
 def svc_timeline.get_outlier_loop.body
@@ -593,7 +593,7 @@ def svc_timeline.get_outlier_loop.body
   else ok (done (core.result.Result.Err Error.NotFound))
 
 /-- [tuwunel_kernel::svc_timeline::get_outlier]: loop 0:
-    Source: 'src/svc_timeline.rs', lines 83:4-90:1
+    Source: 'ports/tuwunel/kernel/src/svc_timeline.rs', lines 83:4-90:1
     Visibility: public -/
 @[rust_loop]
 def svc_timeline.get_outlier_loop
@@ -605,7 +605,7 @@ def svc_timeline.get_outlier_loop
     i
 
 /-- [tuwunel_kernel::svc_timeline::get_outlier]:
-    Source: 'src/svc_timeline.rs', lines 81:0-90:1
+    Source: 'ports/tuwunel/kernel/src/svc_timeline.rs', lines 81:0-90:1
     Visibility: public -/
 @[reducible]
 def svc_timeline.get_outlier
@@ -615,7 +615,7 @@ def svc_timeline.get_outlier
   svc_timeline.get_outlier_loop s event_id 0#usize
 
 /-- [tuwunel_kernel::svc_timeline::get_non_outlier]: loop body 0:
-    Source: 'src/svc_timeline.rs', lines 71:4-78:1
+    Source: 'ports/tuwunel/kernel/src/svc_timeline.rs', lines 71:4-78:1
     Visibility: public -/
 @[rust_loop_body]
 def svc_timeline.get_non_outlier_loop.body
@@ -638,7 +638,7 @@ def svc_timeline.get_non_outlier_loop.body
   else ok (done (core.result.Result.Err Error.NotFound))
 
 /-- [tuwunel_kernel::svc_timeline::get_non_outlier]: loop 0:
-    Source: 'src/svc_timeline.rs', lines 71:4-78:1
+    Source: 'ports/tuwunel/kernel/src/svc_timeline.rs', lines 71:4-78:1
     Visibility: public -/
 @[rust_loop]
 def svc_timeline.get_non_outlier_loop
@@ -650,7 +650,7 @@ def svc_timeline.get_non_outlier_loop
     i
 
 /-- [tuwunel_kernel::svc_timeline::get_non_outlier]:
-    Source: 'src/svc_timeline.rs', lines 69:0-78:1
+    Source: 'ports/tuwunel/kernel/src/svc_timeline.rs', lines 69:0-78:1
     Visibility: public -/
 @[reducible]
 def svc_timeline.get_non_outlier
@@ -660,7 +660,7 @@ def svc_timeline.get_non_outlier
   svc_timeline.get_non_outlier_loop s event_id 0#usize
 
 /-- [tuwunel_kernel::svc_timeline::get_pdu]:
-    Source: 'src/svc_timeline.rs', lines 93:0-98:1
+    Source: 'ports/tuwunel/kernel/src/svc_timeline.rs', lines 93:0-98:1
     Visibility: public -/
 def svc_timeline.get_pdu
   (s : Snapshot) (event_id : Std.U64) :
@@ -672,7 +672,7 @@ def svc_timeline.get_pdu
   | core.result.Result.Err _ => svc_timeline.get_outlier s event_id
 
 /-- [tuwunel_kernel::api_context::build_state_response]: loop body 0:
-    Source: 'src/api_context.rs', lines 136:4-142:5
+    Source: 'ports/tuwunel/kernel/src/api_context.rs', lines 136:4-142:5
     Visibility: public -/
 @[rust_loop_body]
 def api_context.build_state_response_loop.body
@@ -701,7 +701,7 @@ def api_context.build_state_response_loop.body
   else ok (done out)
 
 /-- [tuwunel_kernel::api_context::build_state_response]: loop 0:
-    Source: 'src/api_context.rs', lines 136:4-142:5
+    Source: 'ports/tuwunel/kernel/src/api_context.rs', lines 136:4-142:5
     Visibility: public -/
 @[rust_loop]
 def api_context.build_state_response_loop
@@ -715,7 +715,7 @@ def api_context.build_state_response_loop
     (s, out, i)
 
 /-- [tuwunel_kernel::api_context::build_state_response]:
-    Source: 'src/api_context.rs', lines 133:0-144:1
+    Source: 'ports/tuwunel/kernel/src/api_context.rs', lines 133:0-144:1
     Visibility: public -/
 @[reducible]
 def api_context.build_state_response
@@ -726,7 +726,7 @@ def api_context.build_state_response
     0#usize
 
 /-- [tuwunel_kernel::svc_timeline::state_of]:
-    Source: 'src/svc_timeline.rs', lines 178:0-183:1
+    Source: 'ports/tuwunel/kernel/src/svc_timeline.rs', lines 178:0-183:1
     Visibility: public -/
 def svc_timeline.state_of
   (p : Pdu) : Result (core.result.Result Std.U64 Error) := do
@@ -735,7 +735,7 @@ def svc_timeline.state_of
   | StateRef.Hash h => ok (core.result.Result.Ok h)
 
 /-- [tuwunel_kernel::svc_timeline::pdu_shortstatehash]:
-    Source: 'src/svc_timeline.rs', lines 187:0-192:1
+    Source: 'ports/tuwunel/kernel/src/svc_timeline.rs', lines 187:0-192:1
     Visibility: public -/
 def svc_timeline.pdu_shortstatehash
   (s : Snapshot) (event_id : Std.U64) :
@@ -750,7 +750,7 @@ def svc_timeline.pdu_shortstatehash
   | core.result.Result.Err e => ok (core.result.Result.Err e)
 
 /-- [tuwunel_kernel::svc_timeline::get_room_shortstatehash]: loop body 0:
-    Source: 'src/svc_timeline.rs', lines 32:4-42:1
+    Source: 'ports/tuwunel/kernel/src/svc_timeline.rs', lines 32:4-42:1
     Visibility: public -/
 @[rust_loop_body]
 def svc_timeline.get_room_shortstatehash_loop.body
@@ -773,7 +773,7 @@ def svc_timeline.get_room_shortstatehash_loop.body
   else ok (done (core.result.Result.Err Error.NotFound))
 
 /-- [tuwunel_kernel::svc_timeline::get_room_shortstatehash]: loop 0:
-    Source: 'src/svc_timeline.rs', lines 32:4-42:1
+    Source: 'ports/tuwunel/kernel/src/svc_timeline.rs', lines 32:4-42:1
     Visibility: public -/
 @[rust_loop]
 def svc_timeline.get_room_shortstatehash_loop
@@ -785,7 +785,7 @@ def svc_timeline.get_room_shortstatehash_loop
     i
 
 /-- [tuwunel_kernel::svc_timeline::get_room_shortstatehash]:
-    Source: 'src/svc_timeline.rs', lines 30:0-42:1
+    Source: 'ports/tuwunel/kernel/src/svc_timeline.rs', lines 30:0-42:1
     Visibility: public -/
 @[reducible]
 def svc_timeline.get_room_shortstatehash
@@ -795,7 +795,7 @@ def svc_timeline.get_room_shortstatehash
   svc_timeline.get_room_shortstatehash_loop s room 0#usize
 
 /-- [tuwunel_kernel::svc_accessor::load_full_state]: loop body 0:
-    Source: 'src/svc_accessor.rs', lines 10:4-17:1
+    Source: 'ports/tuwunel/kernel/src/svc_accessor.rs', lines 10:4-17:1
     Visibility: public -/
 @[rust_loop_body]
 def svc_accessor.load_full_state_loop.body
@@ -815,7 +815,7 @@ def svc_accessor.load_full_state_loop.body
   else ok (done (core.result.Result.Err Error.Database))
 
 /-- [tuwunel_kernel::svc_accessor::load_full_state]: loop 0:
-    Source: 'src/svc_accessor.rs', lines 10:4-17:1
+    Source: 'ports/tuwunel/kernel/src/svc_accessor.rs', lines 10:4-17:1
     Visibility: public -/
 @[rust_loop]
 def svc_accessor.load_full_state_loop
@@ -827,7 +827,7 @@ def svc_accessor.load_full_state_loop
     i
 
 /-- [tuwunel_kernel::svc_accessor::load_full_state]:
-    Source: 'src/svc_accessor.rs', lines 8:0-17:1
+    Source: 'ports/tuwunel/kernel/src/svc_accessor.rs', lines 8:0-17:1
     Visibility: public -/
 @[reducible]
 def svc_accessor.load_full_state
@@ -837,7 +837,7 @@ def svc_accessor.load_full_state
   svc_accessor.load_full_state_loop s hash 0#usize
 
 /-- [tuwunel_kernel::svc_accessor::state_full_ids]: loop body 0:
-    Source: 'src/svc_accessor.rs', lines 89:12-92:13
+    Source: 'ports/tuwunel/kernel/src/svc_accessor.rs', lines 89:12-92:13
     Visibility: public -/
 @[rust_loop_body]
 def svc_accessor.state_full_ids_loop.body
@@ -858,7 +858,7 @@ def svc_accessor.state_full_ids_loop.body
   else ok (done out)
 
 /-- [tuwunel_kernel::svc_accessor::state_full_ids]: loop 0:
-    Source: 'src/svc_accessor.rs', lines 89:12-92:13
+    Source: 'ports/tuwunel/kernel/src/svc_accessor.rs', lines 89:12-92:13
     Visibility: public -/
 @[rust_loop]
 def svc_accessor.state_full_ids_loop
@@ -871,7 +871,7 @@ def svc_accessor.state_full_ids_loop
     (out, i)
 
 /-- [tuwunel_kernel::svc_accessor::state_full_ids]:
-    Source: 'src/svc_accessor.rs', lines 82:0-96:1
+    Source: 'ports/tuwunel/kernel/src/svc_accessor.rs', lines 82:0-96:1
     Visibility: public -/
 def svc_accessor.state_full_ids
   (s : Snapshot) (hash : Std.U64) : Result (alloc.vec.Vec Std.U64) := do
@@ -886,7 +886,7 @@ def svc_accessor.state_full_ids
   | core.result.Result.Err _ => ok (alloc.vec.Vec.new Std.U64)
 
 /-- [tuwunel_kernel::api_context::load_state_ids]:
-    Source: 'src/api_context.rs', lines 120:0-129:1
+    Source: 'ports/tuwunel/kernel/src/api_context.rs', lines 120:0-129:1
     Visibility: public -/
 def api_context.load_state_ids
   (s : Snapshot) (room : Std.U64) (state_at : Std.U64) :
@@ -906,7 +906,7 @@ def api_context.load_state_ids
     | core.result.Result.Err _ => ok (core.result.Result.Err Error.Database)
 
 /-- [tuwunel_kernel::filters::matches_url]:
-    Source: 'src/filters.rs', lines 63:0-69:1
+    Source: 'ports/tuwunel/kernel/src/filters.rs', lines 63:0-69:1
     Visibility: public -/
 def filters.matches_url (p : Pdu) (filter : Filter) : Result Bool := do
   match filter.url_filter with
@@ -915,7 +915,7 @@ def filters.matches_url (p : Pdu) (filter : Filter) : Result Bool := do
   | UrlFilter.WithoutUrl => ok (¬ p.has_url)
 
 /-- [tuwunel_kernel::kind_eq]:
-    Source: 'src/lib.rs', lines 59:0-79:1
+    Source: 'ports/tuwunel/kernel/src/lib.rs', lines 59:0-79:1
     Visibility: public -/
 def kind_eq (a : Kind) (b : Kind) : Result Bool := do
   match a with
@@ -1145,7 +1145,7 @@ def kind_eq (a : Kind) (b : Kind) : Result Bool := do
     | Kind.Custom y => ok (x = y)
 
 /-- [tuwunel_kernel::filters::any_kind]: loop body 0:
-    Source: 'src/filters.rs', lines 7:4-14:1 -/
+    Source: 'ports/tuwunel/kernel/src/filters.rs', lines 7:4-14:1 -/
 @[rust_loop_body]
 def filters.any_kind_loop.body
   (v : Slice Kind) (k : Kind) (i : Std.Usize) :
@@ -1163,7 +1163,7 @@ def filters.any_kind_loop.body
   else ok (done false)
 
 /-- [tuwunel_kernel::filters::any_kind]: loop 0:
-    Source: 'src/filters.rs', lines 7:4-14:1 -/
+    Source: 'ports/tuwunel/kernel/src/filters.rs', lines 7:4-14:1 -/
 @[rust_loop]
 def filters.any_kind_loop
   (v : Slice Kind) (k : Kind) (i : Std.Usize) : Result Bool := do
@@ -1172,13 +1172,13 @@ def filters.any_kind_loop
     i
 
 /-- [tuwunel_kernel::filters::any_kind]:
-    Source: 'src/filters.rs', lines 5:0-14:1 -/
+    Source: 'ports/tuwunel/kernel/src/filters.rs', lines 5:0-14:1 -/
 @[reducible]
 def filters.any_kind (v : Slice Kind) (k : Kind) : Result Bool := do
   filters.any_kind_loop v k 0#usize
 
 /-- [tuwunel_kernel::filters::matches_type]:
-    Source: 'src/filters.rs', lines 53:0-61:1
+    Source: 'ports/tuwunel/kernel/src/filters.rs', lines 53:0-61:1
     Visibility: public -/
 def filters.matches_type (p : Pdu) (filter : Filter) : Result Bool := do
   let s := alloc.vec.Vec.deref filter.not_types
@@ -1193,7 +1193,7 @@ def filters.matches_type (p : Pdu) (filter : Filter) : Result Bool := do
       filters.any_kind s1 p.kind
 
 /-- [tuwunel_kernel::contains_u64]: loop body 0:
-    Source: 'src/lib.rs', lines 463:4-470:1
+    Source: 'ports/tuwunel/kernel/src/lib.rs', lines 463:4-470:1
     Visibility: public -/
 @[rust_loop_body]
 def contains_u64_loop.body
@@ -1211,7 +1211,7 @@ def contains_u64_loop.body
   else ok (done false)
 
 /-- [tuwunel_kernel::contains_u64]: loop 0:
-    Source: 'src/lib.rs', lines 463:4-470:1
+    Source: 'ports/tuwunel/kernel/src/lib.rs', lines 463:4-470:1
     Visibility: public -/
 @[rust_loop]
 def contains_u64_loop
@@ -1221,14 +1221,14 @@ def contains_u64_loop
     i
 
 /-- [tuwunel_kernel::contains_u64]:
-    Source: 'src/lib.rs', lines 461:0-470:1
+    Source: 'ports/tuwunel/kernel/src/lib.rs', lines 461:0-470:1
     Visibility: public -/
 @[reducible]
 def contains_u64 (v : Slice Std.U64) (x : Std.U64) : Result Bool := do
   contains_u64_loop v x 0#usize
 
 /-- [tuwunel_kernel::filters::matches_sender]:
-    Source: 'src/filters.rs', lines 43:0-51:1
+    Source: 'ports/tuwunel/kernel/src/filters.rs', lines 43:0-51:1
     Visibility: public -/
 def filters.matches_sender (p : Pdu) (filter : Filter) : Result Bool := do
   let s := alloc.vec.Vec.deref filter.not_senders
@@ -1243,7 +1243,7 @@ def filters.matches_sender (p : Pdu) (filter : Filter) : Result Bool := do
       contains_u64 s1 p.sender
 
 /-- [tuwunel_kernel::filters::matches_room]:
-    Source: 'src/filters.rs', lines 33:0-41:1
+    Source: 'ports/tuwunel/kernel/src/filters.rs', lines 33:0-41:1
     Visibility: public -/
 def filters.matches_room (p : Pdu) (filter : Filter) : Result Bool := do
   let s := alloc.vec.Vec.deref filter.not_rooms
@@ -1257,7 +1257,7 @@ def filters.matches_room (p : Pdu) (filter : Filter) : Result Bool := do
                     contains_u64 s1 p.room
 
 /-- [tuwunel_kernel::filters::matches]:
-    Source: 'src/filters.rs', lines 17:0-31:1
+    Source: 'ports/tuwunel/kernel/src/filters.rs', lines 17:0-31:1
     Visibility: public -/
 def filters.matches (filter : Filter) (p : Pdu) : Result Bool := do
   let b ← filters.matches_sender p filter
@@ -1278,7 +1278,7 @@ def filters.matches (filter : Filter) (p : Pdu) : Result Bool := do
   else ok false
 
 /-- [tuwunel_kernel::api_message::event_filter]:
-    Source: 'src/api_message.rs', lines 211:0-213:1
+    Source: 'ports/tuwunel/kernel/src/api_message.rs', lines 211:0-213:1
     Visibility: public -/
 def api_message.event_filter
   (s : Snapshot) (p : Std.Usize) (filter : Filter) : Result Bool := do
@@ -1287,7 +1287,7 @@ def api_message.event_filter
   filters.matches filter p1
 
 /-- [tuwunel_kernel::rel_type_eq]:
-    Source: 'src/lib.rs', lines 142:0-153:1
+    Source: 'ports/tuwunel/kernel/src/lib.rs', lines 142:0-153:1
     Visibility: public -/
 def rel_type_eq (a : RelType) (b : RelType) : Result Bool := do
   match a with
@@ -1328,7 +1328,7 @@ def rel_type_eq (a : RelType) (b : RelType) : Result Bool := do
     | RelType.Custom y => ok (x = y)
 
 /-- [tuwunel_kernel::svc_relations::relation_type_equal]:
-    Source: 'src/svc_relations.rs', lines 70:0-75:1
+    Source: 'ports/tuwunel/kernel/src/svc_relations.rs', lines 70:0-75:1
     Visibility: public -/
 def svc_relations.relation_type_equal
   (rel_type : RelType) (p : Pdu) : Result Bool := do
@@ -1337,7 +1337,7 @@ def svc_relations.relation_type_equal
   | Relates.To r _ => rel_type_eq r rel_type
 
 /-- [tuwunel_kernel::svc_relations::any_rel_type]: loop body 0:
-    Source: 'src/svc_relations.rs', lines 79:4-86:1 -/
+    Source: 'ports/tuwunel/kernel/src/svc_relations.rs', lines 79:4-86:1 -/
 @[rust_loop_body]
 def svc_relations.any_rel_type_loop.body
   (rel_types : Slice RelType) (p : Pdu) (i : Std.Usize) :
@@ -1355,7 +1355,7 @@ def svc_relations.any_rel_type_loop.body
   else ok (done false)
 
 /-- [tuwunel_kernel::svc_relations::any_rel_type]: loop 0:
-    Source: 'src/svc_relations.rs', lines 79:4-86:1 -/
+    Source: 'ports/tuwunel/kernel/src/svc_relations.rs', lines 79:4-86:1 -/
 @[rust_loop]
 def svc_relations.any_rel_type_loop
   (rel_types : Slice RelType) (p : Pdu) (i : Std.Usize) : Result Bool := do
@@ -1364,14 +1364,14 @@ def svc_relations.any_rel_type_loop
     i
 
 /-- [tuwunel_kernel::svc_relations::any_rel_type]:
-    Source: 'src/svc_relations.rs', lines 77:0-86:1 -/
+    Source: 'ports/tuwunel/kernel/src/svc_relations.rs', lines 77:0-86:1 -/
 @[reducible]
 def svc_relations.any_rel_type
   (rel_types : Slice RelType) (p : Pdu) : Result Bool := do
   svc_relations.any_rel_type_loop rel_types p 0#usize
 
 /-- [tuwunel_kernel::svc_timeline::find_row]: loop body 0:
-    Source: 'src/svc_timeline.rs', lines 129:4-136:1 -/
+    Source: 'ports/tuwunel/kernel/src/svc_timeline.rs', lines 129:4-136:1 -/
 @[rust_loop_body]
 def svc_timeline.find_row_loop.body
   (s : Snapshot) (room : Std.U64) (count : Std.I64) (i : Std.Usize) :
@@ -1394,7 +1394,7 @@ def svc_timeline.find_row_loop.body
   else ok (done (core.result.Result.Err Error.NotFound))
 
 /-- [tuwunel_kernel::svc_timeline::find_row]: loop 0:
-    Source: 'src/svc_timeline.rs', lines 129:4-136:1 -/
+    Source: 'ports/tuwunel/kernel/src/svc_timeline.rs', lines 129:4-136:1 -/
 @[rust_loop]
 def svc_timeline.find_row_loop
   (s : Snapshot) (room : Std.U64) (count : Std.I64) (i : Std.Usize) :
@@ -1405,7 +1405,7 @@ def svc_timeline.find_row_loop
     i
 
 /-- [tuwunel_kernel::svc_timeline::find_row]:
-    Source: 'src/svc_timeline.rs', lines 127:0-136:1 -/
+    Source: 'ports/tuwunel/kernel/src/svc_timeline.rs', lines 127:0-136:1 -/
 @[reducible]
 def svc_timeline.find_row
   (s : Snapshot) (room : Std.U64) (count : Std.I64) :
@@ -1414,7 +1414,7 @@ def svc_timeline.find_row
   svc_timeline.find_row_loop s room count 0#usize
 
 /-- [tuwunel_kernel::svc_timeline::room_of_short]: loop body 0:
-    Source: 'src/svc_timeline.rs', lines 20:4-27:1
+    Source: 'ports/tuwunel/kernel/src/svc_timeline.rs', lines 20:4-27:1
     Visibility: public -/
 @[rust_loop_body]
 def svc_timeline.room_of_short_loop.body
@@ -1434,7 +1434,7 @@ def svc_timeline.room_of_short_loop.body
   else ok (done none)
 
 /-- [tuwunel_kernel::svc_timeline::room_of_short]: loop 0:
-    Source: 'src/svc_timeline.rs', lines 20:4-27:1
+    Source: 'ports/tuwunel/kernel/src/svc_timeline.rs', lines 20:4-27:1
     Visibility: public -/
 @[rust_loop]
 def svc_timeline.room_of_short_loop
@@ -1446,7 +1446,7 @@ def svc_timeline.room_of_short_loop
     i
 
 /-- [tuwunel_kernel::svc_timeline::room_of_short]:
-    Source: 'src/svc_timeline.rs', lines 18:0-27:1
+    Source: 'ports/tuwunel/kernel/src/svc_timeline.rs', lines 18:0-27:1
     Visibility: public -/
 @[reducible]
 def svc_timeline.room_of_short
@@ -1454,7 +1454,7 @@ def svc_timeline.room_of_short
   svc_timeline.room_of_short_loop s short 0#usize
 
 /-- [tuwunel_kernel::svc_timeline::get_pdu_from_id]:
-    Source: 'src/svc_timeline.rs', lines 120:0-125:1
+    Source: 'ports/tuwunel/kernel/src/svc_timeline.rs', lines 120:0-125:1
     Visibility: public -/
 def svc_timeline.get_pdu_from_id
   (s : Snapshot) (short : Std.U64) (count : Std.I64) :
@@ -1466,7 +1466,7 @@ def svc_timeline.get_pdu_from_id
   | some room => svc_timeline.find_row s room count
 
 /-- [tuwunel_kernel::svc_relations::push_relation]:
-    Source: 'src/svc_relations.rs', lines 60:0-66:1 -/
+    Source: 'ports/tuwunel/kernel/src/svc_relations.rs', lines 60:0-66:1 -/
 def svc_relations.push_relation
   (s : Snapshot) (shortroomid : Std.U64) («from» : Std.U64)
   (out : alloc.vec.Vec (Std.I64 × Std.Usize)) :
@@ -1479,7 +1479,7 @@ def svc_relations.push_relation
   | core.result.Result.Err _ => ok out
 
 /-- [tuwunel_kernel::Dir]
-    Source: 'src/lib.rs', lines 322:0-325:1
+    Source: 'ports/tuwunel/kernel/src/lib.rs', lines 322:0-325:1
     Visibility: public -/
 @[discriminant isize]
 inductive Dir where
@@ -1487,7 +1487,7 @@ inductive Dir where
 | Backward : Dir
 
 /-- [tuwunel_kernel::svc_relations::inc_bits]:
-    Source: 'src/svc_relations.rs', lines 7:0-19:1
+    Source: 'ports/tuwunel/kernel/src/svc_relations.rs', lines 7:0-19:1
     Visibility: public -/
 def svc_relations.inc_bits (c : Std.I64) (dir : Dir) : Result Std.U64 := do
   if c > 0#i64
@@ -1507,12 +1507,12 @@ def svc_relations.inc_bits (c : Std.I64) (dir : Dir) : Result Std.U64 := do
       ok (IScalar.hcast .U64 i)
 
 /-- [tuwunel_kernel::COUNT_MAX]
-    Source: 'src/lib.rs', lines 35:0-35:36
+    Source: 'ports/tuwunel/kernel/src/lib.rs', lines 35:0-35:36
     Visibility: public -/
 @[global_simps, irreducible] def COUNT_MAX : Std.I64 := core.num.I64.MAX
 
 /-- [tuwunel_kernel::svc_relations::get_relations]: loop body 0:
-    Source: 'src/svc_relations.rs', lines 38:12-44:13
+    Source: 'ports/tuwunel/kernel/src/svc_relations.rs', lines 38:12-44:13
     Visibility: public -/
 @[rust_loop_body]
 def svc_relations.get_relations_loop0.body
@@ -1540,7 +1540,7 @@ def svc_relations.get_relations_loop0.body
   else ok (done out)
 
 /-- [tuwunel_kernel::svc_relations::get_relations]: loop 0:
-    Source: 'src/svc_relations.rs', lines 38:12-44:13
+    Source: 'ports/tuwunel/kernel/src/svc_relations.rs', lines 38:12-44:13
     Visibility: public -/
 @[rust_loop]
 def svc_relations.get_relations_loop0
@@ -1555,7 +1555,7 @@ def svc_relations.get_relations_loop0
     (out, i)
 
 /-- [tuwunel_kernel::svc_relations::get_relations]: loop body 1:
-    Source: 'src/svc_relations.rs', lines 48:12-54:13
+    Source: 'ports/tuwunel/kernel/src/svc_relations.rs', lines 48:12-54:13
     Visibility: public -/
 @[rust_loop_body]
 def svc_relations.get_relations_loop1.body
@@ -1606,7 +1606,7 @@ def svc_relations.get_relations_loop1.body
   else ok (done out)
 
 /-- [tuwunel_kernel::svc_relations::get_relations]: loop 1:
-    Source: 'src/svc_relations.rs', lines 48:12-54:13
+    Source: 'ports/tuwunel/kernel/src/svc_relations.rs', lines 48:12-54:13
     Visibility: public -/
 @[rust_loop]
 def svc_relations.get_relations_loop1
@@ -1627,7 +1627,7 @@ def svc_relations.get_relations_loop1
     (out, i1)
 
 /-- [tuwunel_kernel::svc_relations::get_relations]:
-    Source: 'src/svc_relations.rs', lines 25:0-58:1
+    Source: 'ports/tuwunel/kernel/src/svc_relations.rs', lines 25:0-58:1
     Visibility: public -/
 def svc_relations.get_relations
   (s : Snapshot) (shortroomid : Std.U64) (target : Std.I64)
@@ -1660,7 +1660,7 @@ def svc_relations.get_relations
       i
 
 /-- [tuwunel_kernel::svc_relations::has_incoming_relation]: loop body 0:
-    Source: 'src/svc_relations.rs', lines 94:4-104:1
+    Source: 'ports/tuwunel/kernel/src/svc_relations.rs', lines 94:4-104:1
     Visibility: public -/
 @[rust_loop_body]
 def svc_relations.has_incoming_relation_loop.body
@@ -1700,7 +1700,7 @@ def svc_relations.has_incoming_relation_loop.body
   else ok (done false)
 
 /-- [tuwunel_kernel::svc_relations::has_incoming_relation]: loop 0:
-    Source: 'src/svc_relations.rs', lines 94:4-104:1
+    Source: 'ports/tuwunel/kernel/src/svc_relations.rs', lines 94:4-104:1
     Visibility: public -/
 @[rust_loop]
 def svc_relations.has_incoming_relation_loop
@@ -1714,7 +1714,7 @@ def svc_relations.has_incoming_relation_loop
     i
 
 /-- [tuwunel_kernel::svc_relations::has_incoming_relation]:
-    Source: 'src/svc_relations.rs', lines 91:0-104:1
+    Source: 'ports/tuwunel/kernel/src/svc_relations.rs', lines 91:0-104:1
     Visibility: public -/
 def svc_relations.has_incoming_relation
   (s : Snapshot) (shortroomid : Std.U64) (count : Std.I64)
@@ -1725,7 +1725,7 @@ def svc_relations.has_incoming_relation
   svc_relations.has_incoming_relation_loop s senders rel_types rels 0#usize
 
 /-- [tuwunel_kernel::api_message::related_by_filter]:
-    Source: 'src/api_message.rs', lines 163:0-168:1
+    Source: 'ports/tuwunel/kernel/src/api_message.rs', lines 163:0-168:1
     Visibility: public -/
 def api_message.related_by_filter
   (s : Snapshot) (shortroomid : Std.U64) (filter : Filter) (count : Std.I64) :
@@ -1747,7 +1747,7 @@ def api_message.related_by_filter
     svc_relations.has_incoming_relation s shortroomid count s1 s2
 
 /-- [tuwunel_kernel::svc_timeline::get_pdu_id]:
-    Source: 'src/svc_timeline.rs', lines 101:0-109:1
+    Source: 'ports/tuwunel/kernel/src/svc_timeline.rs', lines 101:0-109:1
     Visibility: public -/
 def svc_timeline.get_pdu_id
   (s : Snapshot) (event_id : Std.U64) :
@@ -1766,7 +1766,7 @@ def svc_timeline.get_pdu_id
   | core.result.Result.Err e => ok (core.result.Result.Err e)
 
 /-- [tuwunel_kernel::svc_timeline::get_pdu_count]:
-    Source: 'src/svc_timeline.rs', lines 112:0-117:1
+    Source: 'ports/tuwunel/kernel/src/svc_timeline.rs', lines 112:0-117:1
     Visibility: public -/
 def svc_timeline.get_pdu_count
   (s : Snapshot) (event_id : Std.U64) :
@@ -1779,7 +1779,7 @@ def svc_timeline.get_pdu_count
   | core.result.Result.Err e => ok (core.result.Result.Err e)
 
 /-- [tuwunel_kernel::svc_cache::get_left_count]: loop body 0:
-    Source: 'src/svc_cache.rs', lines 73:4-80:1
+    Source: 'ports/tuwunel/kernel/src/svc_cache.rs', lines 73:4-80:1
     Visibility: public -/
 @[rust_loop_body]
 def svc_cache.get_left_count_loop.body
@@ -1803,7 +1803,7 @@ def svc_cache.get_left_count_loop.body
   else ok (done (core.result.Result.Err Error.NotFound))
 
 /-- [tuwunel_kernel::svc_cache::get_left_count]: loop 0:
-    Source: 'src/svc_cache.rs', lines 73:4-80:1
+    Source: 'ports/tuwunel/kernel/src/svc_cache.rs', lines 73:4-80:1
     Visibility: public -/
 @[rust_loop]
 def svc_cache.get_left_count_loop
@@ -1815,7 +1815,7 @@ def svc_cache.get_left_count_loop
     i
 
 /-- [tuwunel_kernel::svc_cache::get_left_count]:
-    Source: 'src/svc_cache.rs', lines 71:0-80:1
+    Source: 'ports/tuwunel/kernel/src/svc_cache.rs', lines 71:0-80:1
     Visibility: public -/
 @[reducible]
 def svc_cache.get_left_count
@@ -1825,7 +1825,7 @@ def svc_cache.get_left_count
   svc_cache.get_left_count_loop s room user 0#usize
 
 /-- [tuwunel_kernel::svc_cache::has_row]: loop body 0:
-    Source: 'src/svc_cache.rs', lines 6:4-13:1 -/
+    Source: 'ports/tuwunel/kernel/src/svc_cache.rs', lines 6:4-13:1 -/
 @[rust_loop_body]
 def svc_cache.has_row_loop.body
   (rows : Slice UserRoom) (user : Std.U64) (room : Std.U64) (i : Std.Usize) :
@@ -1846,7 +1846,7 @@ def svc_cache.has_row_loop.body
   else ok (done false)
 
 /-- [tuwunel_kernel::svc_cache::has_row]: loop 0:
-    Source: 'src/svc_cache.rs', lines 6:4-13:1 -/
+    Source: 'ports/tuwunel/kernel/src/svc_cache.rs', lines 6:4-13:1 -/
 @[rust_loop]
 def svc_cache.has_row_loop
   (rows : Slice UserRoom) (user : Std.U64) (room : Std.U64) (i : Std.Usize) :
@@ -1857,14 +1857,14 @@ def svc_cache.has_row_loop
     i
 
 /-- [tuwunel_kernel::svc_cache::has_row]:
-    Source: 'src/svc_cache.rs', lines 4:0-13:1 -/
+    Source: 'ports/tuwunel/kernel/src/svc_cache.rs', lines 4:0-13:1 -/
 @[reducible]
 def svc_cache.has_row
   (rows : Slice UserRoom) (user : Std.U64) (room : Std.U64) : Result Bool := do
   svc_cache.has_row_loop rows user room 0#usize
 
 /-- [tuwunel_kernel::svc_cache::is_joined]:
-    Source: 'src/svc_cache.rs', lines 44:0-46:1
+    Source: 'ports/tuwunel/kernel/src/svc_cache.rs', lines 44:0-46:1
     Visibility: public -/
 def svc_cache.is_joined
   (s : Snapshot) (user : Std.U64) (room : Std.U64) : Result Bool := do
@@ -1872,7 +1872,7 @@ def svc_cache.is_joined
   svc_cache.has_row s1 user room
 
 /-- [tuwunel_kernel::svc_cache::once_joined]:
-    Source: 'src/svc_cache.rs', lines 39:0-41:1
+    Source: 'ports/tuwunel/kernel/src/svc_cache.rs', lines 39:0-41:1
     Visibility: public -/
 def svc_cache.once_joined
   (s : Snapshot) (user : Std.U64) (room : Std.U64) : Result Bool := do
@@ -1880,7 +1880,7 @@ def svc_cache.once_joined
   svc_cache.has_row s1 user room
 
 /-- [tuwunel_kernel::svc_accessor::find_entry]: loop body 0:
-    Source: 'src/svc_accessor.rs', lines 30:4-37:1 -/
+    Source: 'ports/tuwunel/kernel/src/svc_accessor.rs', lines 30:4-37:1 -/
 @[rust_loop_body]
 def svc_accessor.find_entry_loop.body
   (entries : Slice StateEntry) (kind : Kind) (state_key : Std.U64)
@@ -1903,7 +1903,7 @@ def svc_accessor.find_entry_loop.body
   else ok (done (core.result.Result.Err Error.NotFound))
 
 /-- [tuwunel_kernel::svc_accessor::find_entry]: loop 0:
-    Source: 'src/svc_accessor.rs', lines 30:4-37:1 -/
+    Source: 'ports/tuwunel/kernel/src/svc_accessor.rs', lines 30:4-37:1 -/
 @[rust_loop]
 def svc_accessor.find_entry_loop
   (entries : Slice StateEntry) (kind : Kind) (state_key : Std.U64)
@@ -1915,7 +1915,7 @@ def svc_accessor.find_entry_loop
     i
 
 /-- [tuwunel_kernel::svc_accessor::find_entry]:
-    Source: 'src/svc_accessor.rs', lines 28:0-37:1 -/
+    Source: 'ports/tuwunel/kernel/src/svc_accessor.rs', lines 28:0-37:1 -/
 @[reducible]
 def svc_accessor.find_entry
   (entries : Slice StateEntry) (kind : Kind) (state_key : Std.U64) :
@@ -1924,7 +1924,7 @@ def svc_accessor.find_entry
   svc_accessor.find_entry_loop entries kind state_key 0#usize
 
 /-- [tuwunel_kernel::svc_accessor::state_get_id]:
-    Source: 'src/svc_accessor.rs', lines 21:0-26:1
+    Source: 'ports/tuwunel/kernel/src/svc_accessor.rs', lines 21:0-26:1
     Visibility: public -/
 def svc_accessor.state_get_id
   (s : Snapshot) (hash : Std.U64) (kind : Kind) (state_key : Std.U64) :
@@ -1941,7 +1941,7 @@ def svc_accessor.state_get_id
   | core.result.Result.Err e => ok (core.result.Result.Err e)
 
 /-- [tuwunel_kernel::svc_accessor::state_get]:
-    Source: 'src/svc_accessor.rs', lines 40:0-45:1
+    Source: 'ports/tuwunel/kernel/src/svc_accessor.rs', lines 40:0-45:1
     Visibility: public -/
 def svc_accessor.state_get
   (s : Snapshot) (hash : Std.U64) (kind : Kind) (state_key : Std.U64) :
@@ -1953,7 +1953,7 @@ def svc_accessor.state_get
   | core.result.Result.Err e => ok (core.result.Result.Err e)
 
 /-- [tuwunel_kernel::svc_accessor::user_membership]:
-    Source: 'src/svc_accessor.rs', lines 71:0-79:1
+    Source: 'ports/tuwunel/kernel/src/svc_accessor.rs', lines 71:0-79:1
     Visibility: public -/
 def svc_accessor.user_membership
   (s : Snapshot) (hash : Std.U64) (user : Std.U64) : Result Membership := do
@@ -1968,7 +1968,7 @@ def svc_accessor.user_membership
   | core.result.Result.Err _ => ok Membership.Leave
 
 /-- [tuwunel_kernel::svc_accessor::user_was_joined]:
-    Source: 'src/svc_accessor.rs', lines 60:0-62:1
+    Source: 'ports/tuwunel/kernel/src/svc_accessor.rs', lines 60:0-62:1
     Visibility: public -/
 def svc_accessor.user_was_joined
   (s : Snapshot) (hash : Std.U64) (user : Std.U64) : Result Bool := do
@@ -1982,7 +1982,7 @@ def svc_accessor.user_was_joined
   | Membership.Custom _ => ok false
 
 /-- [tuwunel_kernel::svc_accessor::user_shared_history]:
-    Source: 'src/svc_accessor.rs', lines 216:0-230:1
+    Source: 'ports/tuwunel/kernel/src/svc_accessor.rs', lines 216:0-230:1
     Visibility: public -/
 def svc_accessor.user_shared_history
   (s : Snapshot) (hash : Std.U64) (room : Std.U64) (event_id : Std.U64)
@@ -2013,7 +2013,7 @@ def svc_accessor.user_shared_history
       else ok false
 
 /-- [tuwunel_kernel::svc_accessor::user_was_invited]:
-    Source: 'src/svc_accessor.rs', lines 65:0-68:1
+    Source: 'ports/tuwunel/kernel/src/svc_accessor.rs', lines 65:0-68:1
     Visibility: public -/
 def svc_accessor.user_was_invited
   (s : Snapshot) (hash : Std.U64) (user : Std.U64) : Result Bool := do
@@ -2038,7 +2038,7 @@ def svc_accessor.user_was_invited
     | Membership.Custom _ => ok false
 
 /-- [tuwunel_kernel::svc_accessor::history_visibility_at]:
-    Source: 'src/svc_accessor.rs', lines 49:0-57:1
+    Source: 'ports/tuwunel/kernel/src/svc_accessor.rs', lines 49:0-57:1
     Visibility: public -/
 def svc_accessor.history_visibility_at
   (s : Snapshot) (hash : Std.U64) : Result HistoryVisibility := do
@@ -2053,7 +2053,7 @@ def svc_accessor.history_visibility_at
   | core.result.Result.Err _ => ok HistoryVisibility.Shared
 
 /-- [tuwunel_kernel::svc_accessor::user_can_see_event]:
-    Source: 'src/svc_accessor.rs', lines 202:0-212:1
+    Source: 'ports/tuwunel/kernel/src/svc_accessor.rs', lines 202:0-212:1
     Visibility: public -/
 def svc_accessor.user_can_see_event
   (s : Snapshot) (user : Std.U64) (room : Std.U64) (event_id : Std.U64) :
@@ -2074,7 +2074,7 @@ def svc_accessor.user_can_see_event
   | core.result.Result.Err _ => ok true
 
 /-- [tuwunel_kernel::api_message::visibility_filter]:
-    Source: 'src/api_message.rs', lines 206:0-208:1
+    Source: 'ports/tuwunel/kernel/src/api_message.rs', lines 206:0-208:1
     Visibility: public -/
 def api_message.visibility_filter
   (s : Snapshot) (p : Std.Usize) (user : Std.U64) : Result Bool := do
@@ -2083,13 +2083,13 @@ def api_message.visibility_filter
   svc_accessor.user_can_see_event s user p1.room p1.event_id
 
 /-- [tuwunel_kernel::server_name]:
-    Source: 'src/lib.rs', lines 194:0-196:1
+    Source: 'ports/tuwunel/kernel/src/lib.rs', lines 194:0-196:1
     Visibility: public -/
 def server_name (user : Std.U64) : Result Std.U64 := do
   user / 1000#u64
 
 /-- [tuwunel_kernel::filters::is_forbidden_remote_server_name]:
-    Source: 'src/filters.rs', lines 73:0-86:1
+    Source: 'ports/tuwunel/kernel/src/filters.rs', lines 73:0-86:1
     Visibility: public -/
 def filters.is_forbidden_remote_server_name
   (c : Config) (server : Std.U64) : Result Bool := do
@@ -2124,7 +2124,7 @@ def filters.is_forbidden_remote_server_name
       else ok false
 
 /-- [tuwunel_kernel::api_message::user_is_ignored]: loop body 0:
-    Source: 'src/api_message.rs', lines 183:4-190:1
+    Source: 'ports/tuwunel/kernel/src/api_message.rs', lines 183:4-190:1
     Visibility: public -/
 @[rust_loop_body]
 def api_message.user_is_ignored_loop.body
@@ -2148,7 +2148,7 @@ def api_message.user_is_ignored_loop.body
   else ok (done false)
 
 /-- [tuwunel_kernel::api_message::user_is_ignored]: loop 0:
-    Source: 'src/api_message.rs', lines 183:4-190:1
+    Source: 'ports/tuwunel/kernel/src/api_message.rs', lines 183:4-190:1
     Visibility: public -/
 @[rust_loop]
 def api_message.user_is_ignored_loop
@@ -2160,7 +2160,7 @@ def api_message.user_is_ignored_loop
     i
 
 /-- [tuwunel_kernel::api_message::user_is_ignored]:
-    Source: 'src/api_message.rs', lines 181:0-190:1
+    Source: 'ports/tuwunel/kernel/src/api_message.rs', lines 181:0-190:1
     Visibility: public -/
 @[reducible]
 def api_message.user_is_ignored
@@ -2168,7 +2168,7 @@ def api_message.user_is_ignored
   api_message.user_is_ignored_loop s sender user 0#usize
 
 /-- [tuwunel_kernel::api_message::is_ignored_message_type]:
-    Source: 'src/api_message.rs', lines 176:0-178:1
+    Source: 'ports/tuwunel/kernel/src/api_message.rs', lines 176:0-178:1
     Visibility: public -/
 def api_message.is_ignored_message_type (k : Kind) : Result Bool := do
   match k with
@@ -2188,7 +2188,7 @@ def api_message.is_ignored_message_type (k : Kind) : Result Bool := do
   | Kind.Custom _ => ok false
 
 /-- [tuwunel_kernel::api_message::is_ignored_pdu]:
-    Source: 'src/api_message.rs', lines 194:0-203:1
+    Source: 'ports/tuwunel/kernel/src/api_message.rs', lines 194:0-203:1
     Visibility: public -/
 def api_message.is_ignored_pdu
   (s : Snapshot) (p : Pdu) (user : Std.U64) : Result Bool := do
@@ -2222,7 +2222,7 @@ def api_message.is_ignored_pdu
     else ok false
 
 /-- [tuwunel_kernel::api_message::ignored_filter]:
-    Source: 'src/api_message.rs', lines 171:0-173:1
+    Source: 'ports/tuwunel/kernel/src/api_message.rs', lines 171:0-173:1
     Visibility: public -/
 def api_message.ignored_filter
   (s : Snapshot) (p : Std.Usize) (user : Std.U64) : Result Bool := do
@@ -2232,7 +2232,7 @@ def api_message.ignored_filter
   ok (¬ b)
 
 /-- [tuwunel_kernel::api_message::event_filters]:
-    Source: 'src/api_message.rs', lines 154:0-159:1
+    Source: 'ports/tuwunel/kernel/src/api_message.rs', lines 154:0-159:1
     Visibility: public -/
 def api_message.event_filters
   (s : Snapshot) (user : Std.U64) (p : Std.Usize) (bypass_visibility : Bool) :
@@ -2247,7 +2247,7 @@ def api_message.event_filters
     else ok false
 
 /-- [tuwunel_kernel::api_message::passes]:
-    Source: 'src/api_message.rs', lines 133:0-137:1
+    Source: 'ports/tuwunel/kernel/src/api_message.rs', lines 133:0-137:1
     Visibility: public -/
 def api_message.passes
   (s : Snapshot) (user : Std.U64) (filter : Filter) (shortroomid : Std.U64)
@@ -2264,7 +2264,7 @@ def api_message.passes
   else ok false
 
 /-- [tuwunel_kernel::api_context::collect_timeline_half]: loop body 0:
-    Source: 'src/api_context.rs', lines 107:4-114:5
+    Source: 'ports/tuwunel/kernel/src/api_context.rs', lines 107:4-114:5
     Visibility: public -/
 @[rust_loop_body]
 def api_context.collect_timeline_half_loop.body
@@ -2297,7 +2297,7 @@ def api_context.collect_timeline_half_loop.body
   else ok (done out)
 
 /-- [tuwunel_kernel::api_context::collect_timeline_half]: loop 0:
-    Source: 'src/api_context.rs', lines 107:4-114:5
+    Source: 'ports/tuwunel/kernel/src/api_context.rs', lines 107:4-114:5
     Visibility: public -/
 @[rust_loop]
 def api_context.collect_timeline_half_loop
@@ -2312,7 +2312,7 @@ def api_context.collect_timeline_half_loop
     (out, i)
 
 /-- [tuwunel_kernel::api_context::collect_timeline_half]:
-    Source: 'src/api_context.rs', lines 96:0-116:1
+    Source: 'ports/tuwunel/kernel/src/api_context.rs', lines 96:0-116:1
     Visibility: public -/
 @[reducible]
 def api_context.collect_timeline_half
@@ -2325,7 +2325,7 @@ def api_context.collect_timeline_half
     0#usize
 
 /-- [tuwunel_kernel::api_context::resolve_base_event]:
-    Source: 'src/api_context.rs', lines 73:0-93:1
+    Source: 'ports/tuwunel/kernel/src/api_context.rs', lines 73:0-93:1
     Visibility: public -/
 def api_context.resolve_base_event
   (s : Snapshot) (room : Std.U64) (event_id : Std.U64) (user : Std.U64)
@@ -2364,7 +2364,7 @@ def api_context.resolve_base_event
   | core.result.Result.Err _ => ok (core.result.Result.Err Error.NotFound)
 
 /-- [tuwunel_kernel::api_context::event_context]:
-    Source: 'src/api_context.rs', lines 14:0-69:1
+    Source: 'ports/tuwunel/kernel/src/api_context.rs', lines 14:0-69:1
     Visibility: public -/
 def api_context.event_context
   (s : Snapshot) (user : Std.U64) (room : Std.U64) (event_id : Std.U64)
@@ -2464,7 +2464,7 @@ def api_context.event_context
   else ok (core.result.Result.Err Error.Forbidden)
 
 /-- [tuwunel_kernel::api_context::get_context_route]:
-    Source: 'src/api_context.rs', lines 9:0-11:1
+    Source: 'ports/tuwunel/kernel/src/api_context.rs', lines 9:0-11:1
     Visibility: public -/
 def api_context.get_context_route
   (s : Snapshot) (user : Std.U64) (room : Std.U64) (event : Std.U64)
@@ -2474,7 +2474,7 @@ def api_context.get_context_route
   api_context.event_context s user room event (some limit) filter false
 
 /-- [tuwunel_kernel::membership_eq]:
-    Source: 'src/lib.rs', lines 92:0-104:1
+    Source: 'ports/tuwunel/kernel/src/lib.rs', lines 92:0-104:1
     Visibility: public -/
 def membership_eq (a : Membership) (b : Membership) : Result Bool := do
   match a with
@@ -2528,7 +2528,7 @@ def membership_eq (a : Membership) (b : Membership) : Result Bool := do
     | Membership.Custom y => ok (x = y)
 
 /-- [tuwunel_kernel::api_members::membership_filter]:
-    Source: 'src/api_members.rs', lines 4:0-14:1 -/
+    Source: 'ports/tuwunel/kernel/src/api_members.rs', lines 4:0-14:1 -/
 def api_members.membership_filter
   (m : Membership) (membership : Option Membership)
   (not_membership : Option Membership) :
@@ -2549,7 +2549,7 @@ def api_members.membership_filter
   else ok false
 
 /-- [tuwunel_kernel::svc_timeline::shortstatehash_at]:
-    Source: 'src/svc_timeline.rs', lines 207:0-212:1 -/
+    Source: 'ports/tuwunel/kernel/src/svc_timeline.rs', lines 207:0-212:1 -/
 def svc_timeline.shortstatehash_at
   (s : Snapshot) (short : Std.U64) (count : Std.I64) :
   Result (core.result.Result Std.U64 Error)
@@ -2563,7 +2563,7 @@ def svc_timeline.shortstatehash_at
   | core.result.Result.Err e => ok (core.result.Result.Err e)
 
 /-- [tuwunel_kernel::svc_timeline::next_timeline_count]: loop body 0:
-    Source: 'src/svc_timeline.rs', lines 197:4-204:1
+    Source: 'ports/tuwunel/kernel/src/svc_timeline.rs', lines 197:4-204:1
     Visibility: public -/
 @[rust_loop_body]
 def svc_timeline.next_timeline_count_loop.body
@@ -2587,7 +2587,7 @@ def svc_timeline.next_timeline_count_loop.body
   else ok (done (core.result.Result.Err Error.NotFound))
 
 /-- [tuwunel_kernel::svc_timeline::next_timeline_count]: loop 0:
-    Source: 'src/svc_timeline.rs', lines 197:4-204:1
+    Source: 'ports/tuwunel/kernel/src/svc_timeline.rs', lines 197:4-204:1
     Visibility: public -/
 @[rust_loop]
 def svc_timeline.next_timeline_count_loop
@@ -2599,7 +2599,7 @@ def svc_timeline.next_timeline_count_loop
     i
 
 /-- [tuwunel_kernel::svc_timeline::next_timeline_count]:
-    Source: 'src/svc_timeline.rs', lines 195:0-204:1
+    Source: 'ports/tuwunel/kernel/src/svc_timeline.rs', lines 195:0-204:1
     Visibility: public -/
 @[reducible]
 def svc_timeline.next_timeline_count
@@ -2609,7 +2609,7 @@ def svc_timeline.next_timeline_count
   svc_timeline.next_timeline_count_loop s room after 0#usize
 
 /-- [tuwunel_kernel::svc_timeline::shortstatehash_after]:
-    Source: 'src/svc_timeline.rs', lines 228:0-236:1
+    Source: 'ports/tuwunel/kernel/src/svc_timeline.rs', lines 228:0-236:1
     Visibility: public -/
 def svc_timeline.shortstatehash_after
   (s : Snapshot) (room : Std.U64) (count : Std.I64) :
@@ -2625,7 +2625,7 @@ def svc_timeline.shortstatehash_after
   | core.result.Result.Err _ => ok (core.result.Result.Err Error.NotFound)
 
 /-- [tuwunel_kernel::svc_cache::is_invited]:
-    Source: 'src/svc_cache.rs', lines 54:0-56:1
+    Source: 'ports/tuwunel/kernel/src/svc_cache.rs', lines 54:0-56:1
     Visibility: public -/
 def svc_cache.is_invited
   (s : Snapshot) (user : Std.U64) (room : Std.U64) : Result Bool := do
@@ -2633,7 +2633,7 @@ def svc_cache.is_invited
   svc_cache.has_row s1 user room
 
 /-- [tuwunel_kernel::svc_accessor::room_state_get]:
-    Source: 'src/svc_accessor.rs', lines 152:0-157:1
+    Source: 'ports/tuwunel/kernel/src/svc_accessor.rs', lines 152:0-157:1
     Visibility: public -/
 def svc_accessor.room_state_get
   (s : Snapshot) (room : Std.U64) (kind : Kind) (state_key : Std.U64) :
@@ -2645,7 +2645,7 @@ def svc_accessor.room_state_get
   | core.result.Result.Err e => ok (core.result.Result.Err e)
 
 /-- [tuwunel_kernel::svc_accessor::room_history_visibility]:
-    Source: 'src/svc_accessor.rs', lines 178:0-186:1
+    Source: 'ports/tuwunel/kernel/src/svc_accessor.rs', lines 178:0-186:1
     Visibility: public -/
 def svc_accessor.room_history_visibility
   (s : Snapshot) (room : Std.U64) : Result (Option HistoryVisibility) := do
@@ -2660,7 +2660,7 @@ def svc_accessor.room_history_visibility
   | core.result.Result.Err _ => ok none
 
 /-- [tuwunel_kernel::svc_accessor::user_can_see_state_events]:
-    Source: 'src/svc_accessor.rs', lines 233:0-247:1
+    Source: 'ports/tuwunel/kernel/src/svc_accessor.rs', lines 233:0-247:1
     Visibility: public -/
 def svc_accessor.user_can_see_state_events
   (s : Snapshot) (user : Std.U64) (room : Std.U64) : Result Bool := do
@@ -2681,7 +2681,7 @@ def svc_accessor.user_can_see_state_events
     | HistoryVisibility.Custom _ => ok false
 
 /-- [tuwunel_kernel::svc_accessor::state_full_pdus]: loop body 0:
-    Source: 'src/svc_accessor.rs', lines 103:4-109:5
+    Source: 'ports/tuwunel/kernel/src/svc_accessor.rs', lines 103:4-109:5
     Visibility: public -/
 @[rust_loop_body]
 def svc_accessor.state_full_pdus_loop.body
@@ -2705,7 +2705,7 @@ def svc_accessor.state_full_pdus_loop.body
   else ok (done out)
 
 /-- [tuwunel_kernel::svc_accessor::state_full_pdus]: loop 0:
-    Source: 'src/svc_accessor.rs', lines 103:4-109:5
+    Source: 'ports/tuwunel/kernel/src/svc_accessor.rs', lines 103:4-109:5
     Visibility: public -/
 @[rust_loop]
 def svc_accessor.state_full_pdus_loop
@@ -2718,7 +2718,7 @@ def svc_accessor.state_full_pdus_loop
     (out, i)
 
 /-- [tuwunel_kernel::svc_accessor::state_full_pdus]:
-    Source: 'src/svc_accessor.rs', lines 99:0-111:1
+    Source: 'ports/tuwunel/kernel/src/svc_accessor.rs', lines 99:0-111:1
     Visibility: public -/
 def svc_accessor.state_full_pdus
   (s : Snapshot) (hash : Std.U64) : Result (alloc.vec.Vec Std.Usize) := do
@@ -2726,7 +2726,7 @@ def svc_accessor.state_full_pdus
   svc_accessor.state_full_pdus_loop s ids (alloc.vec.Vec.new Std.Usize) 0#usize
 
 /-- [tuwunel_kernel::svc_accessor::state_full]: loop body 0:
-    Source: 'src/svc_accessor.rs', lines 118:4-124:5
+    Source: 'ports/tuwunel/kernel/src/svc_accessor.rs', lines 118:4-124:5
     Visibility: public -/
 @[rust_loop_body]
 def svc_accessor.state_full_loop.body
@@ -2751,7 +2751,7 @@ def svc_accessor.state_full_loop.body
   else ok (done out)
 
 /-- [tuwunel_kernel::svc_accessor::state_full]: loop 0:
-    Source: 'src/svc_accessor.rs', lines 118:4-124:5
+    Source: 'ports/tuwunel/kernel/src/svc_accessor.rs', lines 118:4-124:5
     Visibility: public -/
 @[rust_loop]
 def svc_accessor.state_full_loop
@@ -2764,7 +2764,7 @@ def svc_accessor.state_full_loop
     (out, i)
 
 /-- [tuwunel_kernel::svc_accessor::state_full]:
-    Source: 'src/svc_accessor.rs', lines 114:0-126:1
+    Source: 'ports/tuwunel/kernel/src/svc_accessor.rs', lines 114:0-126:1
     Visibility: public -/
 def svc_accessor.state_full
   (s : Snapshot) (hash : Std.U64) : Result (alloc.vec.Vec Std.Usize) := do
@@ -2772,7 +2772,7 @@ def svc_accessor.state_full
   svc_accessor.state_full_loop s all (alloc.vec.Vec.new Std.Usize) 0#usize
 
 /-- [tuwunel_kernel::Token]
-    Source: 'src/lib.rs', lines 315:0-319:1
+    Source: 'ports/tuwunel/kernel/src/lib.rs', lines 315:0-319:1
     Visibility: public -/
 @[discriminant isize]
 inductive Token where
@@ -2781,7 +2781,7 @@ inductive Token where
 | Invalid : Token
 
 /-- [tuwunel_kernel::api_members::get_member_events_route]: loop body 0:
-    Source: 'src/api_members.rs', lines 47:10-58:9
+    Source: 'ports/tuwunel/kernel/src/api_members.rs', lines 47:10-58:9
     Visibility: public -/
 @[rust_loop_body]
 def api_members.get_member_events_route_loop0.body
@@ -2831,7 +2831,7 @@ def api_members.get_member_events_route_loop0.body
   else ok (done chunk)
 
 /-- [tuwunel_kernel::api_members::get_member_events_route]: loop 0:
-    Source: 'src/api_members.rs', lines 47:10-58:9
+    Source: 'ports/tuwunel/kernel/src/api_members.rs', lines 47:10-58:9
     Visibility: public -/
 @[rust_loop]
 def api_members.get_member_events_route_loop0
@@ -2846,7 +2846,7 @@ def api_members.get_member_events_route_loop0
     (chunk, i)
 
 /-- [tuwunel_kernel::api_members::get_member_events_route]: loop body 1:
-    Source: 'src/api_members.rs', lines 47:10-58:9
+    Source: 'ports/tuwunel/kernel/src/api_members.rs', lines 47:10-58:9
     Visibility: public -/
 @[rust_loop_body]
 def api_members.get_member_events_route_loop1.body
@@ -2896,7 +2896,7 @@ def api_members.get_member_events_route_loop1.body
   else ok (done chunk)
 
 /-- [tuwunel_kernel::api_members::get_member_events_route]: loop 1:
-    Source: 'src/api_members.rs', lines 47:10-58:9
+    Source: 'ports/tuwunel/kernel/src/api_members.rs', lines 47:10-58:9
     Visibility: public -/
 @[rust_loop]
 def api_members.get_member_events_route_loop1
@@ -2911,7 +2911,7 @@ def api_members.get_member_events_route_loop1
     (chunk, i)
 
 /-- [tuwunel_kernel::api_members::get_member_events_route]:
-    Source: 'src/api_members.rs', lines 18:0-62:1
+    Source: 'ports/tuwunel/kernel/src/api_members.rs', lines 18:0-62:1
     Visibility: public -/
 def api_members.get_member_events_route
   (s : Snapshot) (user : Std.U64) (room : Std.U64) («at» : Token)
@@ -2946,7 +2946,7 @@ def api_members.get_member_events_route
   else ok (core.result.Result.Err Error.Forbidden)
 
 /-- [tuwunel_kernel::svc_accessor::room_state_full]:
-    Source: 'src/svc_accessor.rs', lines 169:0-174:1
+    Source: 'ports/tuwunel/kernel/src/svc_accessor.rs', lines 169:0-174:1
     Visibility: public -/
 def svc_accessor.room_state_full
   (s : Snapshot) (room : Std.U64) :
@@ -2960,7 +2960,7 @@ def svc_accessor.room_state_full
   | core.result.Result.Err _ => ok (core.result.Result.Err Error.Database)
 
 /-- [tuwunel_kernel::api_members::joined_members_route]: loop body 0:
-    Source: 'src/api_members.rs', lines 80:10-84:9
+    Source: 'ports/tuwunel/kernel/src/api_members.rs', lines 80:10-84:9
     Visibility: public -/
 @[rust_loop_body]
 def api_members.joined_members_route_loop0.body
@@ -3016,7 +3016,7 @@ def api_members.joined_members_route_loop0.body
   else ok (done joined)
 
 /-- [tuwunel_kernel::api_members::joined_members_route]: loop 0:
-    Source: 'src/api_members.rs', lines 80:10-84:9
+    Source: 'ports/tuwunel/kernel/src/api_members.rs', lines 80:10-84:9
     Visibility: public -/
 @[rust_loop]
 def api_members.joined_members_route_loop0
@@ -3030,7 +3030,7 @@ def api_members.joined_members_route_loop0
     (joined, i)
 
 /-- [tuwunel_kernel::api_members::joined_members_route]: loop body 1:
-    Source: 'src/api_members.rs', lines 80:10-84:9
+    Source: 'ports/tuwunel/kernel/src/api_members.rs', lines 80:10-84:9
     Visibility: public -/
 @[rust_loop_body]
 def api_members.joined_members_route_loop1.body
@@ -3086,7 +3086,7 @@ def api_members.joined_members_route_loop1.body
   else ok (done joined)
 
 /-- [tuwunel_kernel::api_members::joined_members_route]: loop 1:
-    Source: 'src/api_members.rs', lines 80:10-84:9
+    Source: 'ports/tuwunel/kernel/src/api_members.rs', lines 80:10-84:9
     Visibility: public -/
 @[rust_loop]
 def api_members.joined_members_route_loop1
@@ -3100,7 +3100,7 @@ def api_members.joined_members_route_loop1
     (joined, i)
 
 /-- [tuwunel_kernel::api_members::joined_members_route]:
-    Source: 'src/api_members.rs', lines 65:0-88:1
+    Source: 'ports/tuwunel/kernel/src/api_members.rs', lines 65:0-88:1
     Visibility: public -/
 def api_members.joined_members_route
   (s : Snapshot) (user : Std.U64) (room : Std.U64) :
@@ -3144,17 +3144,17 @@ def api_members.joined_members_route
     else ok (core.result.Result.Err Error.Forbidden)
 
 /-- [tuwunel_kernel::api_message::LIMIT_MAX]
-    Source: 'src/api_message.rs', lines 5:0-5:32
+    Source: 'ports/tuwunel/kernel/src/api_message.rs', lines 5:0-5:32
     Visibility: public -/
 @[global_simps, irreducible] def api_message.LIMIT_MAX : Std.U64 := 1000#u64
 
 /-- [tuwunel_kernel::api_message::LIMIT_DEFAULT]
-    Source: 'src/api_message.rs', lines 6:0-6:34
+    Source: 'ports/tuwunel/kernel/src/api_message.rs', lines 6:0-6:34
     Visibility: public -/
 @[global_simps, irreducible] def api_message.LIMIT_DEFAULT : Std.U64 := 10#u64
 
 /-- [tuwunel_kernel::svc_cache::is_left]: loop body 0:
-    Source: 'src/svc_cache.rs', lines 61:4-68:1
+    Source: 'ports/tuwunel/kernel/src/svc_cache.rs', lines 61:4-68:1
     Visibility: public -/
 @[rust_loop_body]
 def svc_cache.is_left_loop.body
@@ -3178,7 +3178,7 @@ def svc_cache.is_left_loop.body
   else ok (done false)
 
 /-- [tuwunel_kernel::svc_cache::is_left]: loop 0:
-    Source: 'src/svc_cache.rs', lines 61:4-68:1
+    Source: 'ports/tuwunel/kernel/src/svc_cache.rs', lines 61:4-68:1
     Visibility: public -/
 @[rust_loop]
 def svc_cache.is_left_loop
@@ -3190,7 +3190,7 @@ def svc_cache.is_left_loop
     i
 
 /-- [tuwunel_kernel::svc_cache::is_left]:
-    Source: 'src/svc_cache.rs', lines 59:0-68:1
+    Source: 'ports/tuwunel/kernel/src/svc_cache.rs', lines 59:0-68:1
     Visibility: public -/
 @[reducible]
 def svc_cache.is_left
@@ -3198,7 +3198,7 @@ def svc_cache.is_left
   svc_cache.is_left_loop s user room 0#usize
 
 /-- [tuwunel_kernel::svc_accessor::is_world_readable]:
-    Source: 'src/svc_accessor.rs', lines 191:0-196:1
+    Source: 'ports/tuwunel/kernel/src/svc_accessor.rs', lines 191:0-196:1
     Visibility: public -/
 def svc_accessor.is_world_readable
   (s : Snapshot) (room : Std.U64) : Result Bool := do
@@ -3214,7 +3214,7 @@ def svc_accessor.is_world_readable
     | HistoryVisibility.Custom _ => ok false
 
 /-- [tuwunel_kernel::svc_accessor::user_can_see_room]:
-    Source: 'src/svc_accessor.rs', lines 251:0-256:1
+    Source: 'ports/tuwunel/kernel/src/svc_accessor.rs', lines 251:0-256:1
     Visibility: public -/
 def svc_accessor.user_can_see_room
   (s : Snapshot) (user : Std.U64) (room : Std.U64) : Result Bool := do
@@ -3232,12 +3232,12 @@ def svc_accessor.user_can_see_room
       else svc_accessor.is_world_readable s room
 
 /-- [tuwunel_kernel::COUNT_MIN]
-    Source: 'src/lib.rs', lines 37:0-37:36
+    Source: 'ports/tuwunel/kernel/src/lib.rs', lines 37:0-37:36
     Visibility: public -/
 @[global_simps, irreducible] def COUNT_MIN : Std.I64 := core.num.I64.MIN
 
 /-- [tuwunel_kernel::api_message::last_count]:
-    Source: 'src/api_message.rs', lines 139:0-141:1
+    Source: 'ports/tuwunel/kernel/src/api_message.rs', lines 139:0-141:1
     Visibility: public -/
 def api_message.last_count
   (events : Slice (Std.I64 × Std.Usize)) : Result (Option Std.I64) := do
@@ -3251,7 +3251,7 @@ def api_message.last_count
     ok (some i3)
 
 /-- [tuwunel_kernel::api_message::reached_to]:
-    Source: 'src/api_message.rs', lines 33:0-41:1
+    Source: 'ports/tuwunel/kernel/src/api_message.rs', lines 33:0-41:1
     Visibility: public -/
 def api_message.reached_to
   («to» : Option Std.I64) (dir : Dir) (count : Std.I64) : Result Bool := do
@@ -3263,7 +3263,7 @@ def api_message.reached_to
     | Dir.Backward => ok (count <= t)
 
 /-- [tuwunel_kernel::api_message::scan]: loop body 0:
-    Source: 'src/api_message.rs', lines 115:4-127:5 -/
+    Source: 'ports/tuwunel/kernel/src/api_message.rs', lines 115:4-127:5 -/
 @[rust_loop_body]
 def api_message.scan_loop.body
   (s : Snapshot) (user : Std.U64) (it : Slice Std.Usize)
@@ -3306,7 +3306,7 @@ def api_message.scan_loop.body
     else ok (done (events, scanned))
 
 /-- [tuwunel_kernel::api_message::scan]: loop 0:
-    Source: 'src/api_message.rs', lines 115:4-127:5 -/
+    Source: 'ports/tuwunel/kernel/src/api_message.rs', lines 115:4-127:5 -/
 @[rust_loop]
 def api_message.scan_loop
   (s : Snapshot) (user : Std.U64) (it : Slice Std.Usize)
@@ -3323,7 +3323,7 @@ def api_message.scan_loop
     (events, scanned, done1, i)
 
 /-- [tuwunel_kernel::api_message::scan]:
-    Source: 'src/api_message.rs', lines 100:0-129:1 -/
+    Source: 'ports/tuwunel/kernel/src/api_message.rs', lines 100:0-129:1 -/
 @[reducible]
 def api_message.scan
   (s : Snapshot) (user : Std.U64) (it : Slice Std.Usize)
@@ -3336,7 +3336,7 @@ def api_message.scan
     0#usize
 
 /-- [tuwunel_kernel::api_message::get_messages]:
-    Source: 'src/api_message.rs', lines 44:0-95:1
+    Source: 'ports/tuwunel/kernel/src/api_message.rs', lines 44:0-95:1
     Visibility: public -/
 def api_message.get_messages
   (s : Snapshot) (user : Std.U64) (room : Std.U64) («from» : Token)
@@ -3749,7 +3749,7 @@ def api_message.get_messages
   else ok (core.result.Result.Err Error.Forbidden)
 
 /-- [tuwunel_kernel::api_message::get_message_events_route]:
-    Source: 'src/api_message.rs', lines 9:0-20:1
+    Source: 'ports/tuwunel/kernel/src/api_message.rs', lines 9:0-20:1
     Visibility: public -/
 def api_message.get_message_events_route
   (s : Snapshot) (user : Std.U64) (room : Std.U64) («from» : Token)
@@ -3760,7 +3760,7 @@ def api_message.get_message_events_route
     false
 
 /-- [tuwunel_kernel::api_relations::Fetch]
-    Source: 'src/api_relations.rs', lines 7:0-11:1
+    Source: 'ports/tuwunel/kernel/src/api_relations.rs', lines 7:0-11:1
     Visibility: public -/
 structure api_relations.Fetch where
   depth : Std.U64
@@ -3768,7 +3768,7 @@ structure api_relations.Fetch where
   pos : Std.Usize
 
 /-- [tuwunel_kernel::api_relations::keep]:
-    Source: 'src/api_relations.rs', lines 164:0-174:1 -/
+    Source: 'ports/tuwunel/kernel/src/api_relations.rs', lines 164:0-174:1 -/
 def api_relations.keep
   (s : Snapshot) (user : Std.U64) (p : Pdu) (filter_event_type : Option Kind)
   (filter_rel_type : Option RelType) :
@@ -3792,7 +3792,7 @@ def api_relations.keep
   else ok false
 
 /-- [tuwunel_kernel::api_relations::fetch]: loop body 0:
-    Source: 'src/api_relations.rs', lines 102:4-107:5
+    Source: 'ports/tuwunel/kernel/src/api_relations.rs', lines 102:4-107:5
     Visibility: public -/
 @[rust_loop_body]
 def api_relations.fetch_loop.body
@@ -3817,7 +3817,7 @@ def api_relations.fetch_loop.body
   else ok (done out)
 
 /-- [tuwunel_kernel::api_relations::fetch]: loop 0:
-    Source: 'src/api_relations.rs', lines 102:4-107:5
+    Source: 'ports/tuwunel/kernel/src/api_relations.rs', lines 102:4-107:5
     Visibility: public -/
 @[rust_loop]
 def api_relations.fetch_loop
@@ -3830,7 +3830,7 @@ def api_relations.fetch_loop
     (out, i)
 
 /-- [tuwunel_kernel::api_relations::fetch]:
-    Source: 'src/api_relations.rs', lines 98:0-109:1
+    Source: 'ports/tuwunel/kernel/src/api_relations.rs', lines 98:0-109:1
     Visibility: public -/
 def api_relations.fetch
   (s : Snapshot) (shortroomid : Std.U64) (count : Std.I64)
@@ -3842,7 +3842,7 @@ def api_relations.fetch
     0#usize
 
 /-- [tuwunel_kernel::api_relations::walk]: loop body 0:
-    Source: 'src/api_relations.rs', lines 136:4-159:5
+    Source: 'ports/tuwunel/kernel/src/api_relations.rs', lines 136:4-159:5
     Visibility: public -/
 @[rust_loop_body]
 def api_relations.walk_loop.body
@@ -3923,7 +3923,7 @@ def api_relations.walk_loop.body
     else ok (done out)
 
 /-- [tuwunel_kernel::api_relations::walk]: loop 0:
-    Source: 'src/api_relations.rs', lines 136:4-159:5
+    Source: 'ports/tuwunel/kernel/src/api_relations.rs', lines 136:4-159:5
     Visibility: public -/
 @[rust_loop]
 def api_relations.walk_loop
@@ -3944,7 +3944,7 @@ def api_relations.walk_loop
     (lists, queue, out, done1, qi)
 
 /-- [tuwunel_kernel::api_relations::walk]:
-    Source: 'src/api_relations.rs', lines 116:0-161:1
+    Source: 'ports/tuwunel/kernel/src/api_relations.rs', lines 116:0-161:1
     Visibility: public -/
 def api_relations.walk
   (s : Snapshot) (user : Std.U64) (shortroomid : Std.U64)
@@ -3967,7 +3967,7 @@ def api_relations.walk
     (Std.U64 × Std.I64 × Std.Usize)) false 0#usize
 
 /-- [tuwunel_kernel::api_relations::max_depth_of]: loop body 0:
-    Source: 'src/api_relations.rs', lines 88:4-93:5 -/
+    Source: 'ports/tuwunel/kernel/src/api_relations.rs', lines 88:4-93:5 -/
 @[rust_loop_body]
 def api_relations.max_depth_of_loop.body
   (events : Slice (Std.U64 × Std.I64 × Std.Usize)) (m : Std.U64)
@@ -3986,7 +3986,7 @@ def api_relations.max_depth_of_loop.body
   else ok (done m)
 
 /-- [tuwunel_kernel::api_relations::max_depth_of]: loop 0:
-    Source: 'src/api_relations.rs', lines 88:4-93:5 -/
+    Source: 'ports/tuwunel/kernel/src/api_relations.rs', lines 88:4-93:5 -/
 @[rust_loop]
 def api_relations.max_depth_of_loop
   (events : Slice (Std.U64 × Std.I64 × Std.Usize)) (m : Std.U64)
@@ -3998,7 +3998,7 @@ def api_relations.max_depth_of_loop
     (m, i)
 
 /-- [tuwunel_kernel::api_relations::max_depth_of]:
-    Source: 'src/api_relations.rs', lines 82:0-95:1 -/
+    Source: 'ports/tuwunel/kernel/src/api_relations.rs', lines 82:0-95:1 -/
 def api_relations.max_depth_of
   (events : Slice (Std.U64 × Std.I64 × Std.Usize)) :
   Result (Option Std.U64)
@@ -4011,12 +4011,12 @@ def api_relations.max_depth_of
     ok (some m)
 
 /-- [tuwunel_kernel::api_relations::empty]:
-    Source: 'src/api_relations.rs', lines 78:0-80:1 -/
+    Source: 'ports/tuwunel/kernel/src/api_relations.rs', lines 78:0-80:1 -/
 def api_relations.empty : Result Reply := do
   ok (Reply.Relations (alloc.vec.Vec.new Std.U64) none none none)
 
 /-- [tuwunel_kernel::api_relations::paginate_relations_with_filter]: loop body 0:
-    Source: 'src/api_relations.rs', lines 71:4-74:5
+    Source: 'ports/tuwunel/kernel/src/api_relations.rs', lines 71:4-74:5
     Visibility: public -/
 @[rust_loop_body]
 def api_relations.paginate_relations_with_filter_loop0.body
@@ -4040,7 +4040,7 @@ def api_relations.paginate_relations_with_filter_loop0.body
   else ok (done chunk)
 
 /-- [tuwunel_kernel::api_relations::paginate_relations_with_filter]: loop 0:
-    Source: 'src/api_relations.rs', lines 71:4-74:5
+    Source: 'ports/tuwunel/kernel/src/api_relations.rs', lines 71:4-74:5
     Visibility: public -/
 @[rust_loop]
 def api_relations.paginate_relations_with_filter_loop0
@@ -4056,7 +4056,7 @@ def api_relations.paginate_relations_with_filter_loop0
     (chunk, i)
 
 /-- [tuwunel_kernel::api_relations::paginate_relations_with_filter]: loop body 1:
-    Source: 'src/api_relations.rs', lines 71:4-74:5
+    Source: 'ports/tuwunel/kernel/src/api_relations.rs', lines 71:4-74:5
     Visibility: public -/
 @[rust_loop_body]
 def api_relations.paginate_relations_with_filter_loop1.body
@@ -4079,7 +4079,7 @@ def api_relations.paginate_relations_with_filter_loop1.body
   else ok (done chunk)
 
 /-- [tuwunel_kernel::api_relations::paginate_relations_with_filter]: loop 1:
-    Source: 'src/api_relations.rs', lines 71:4-74:5
+    Source: 'ports/tuwunel/kernel/src/api_relations.rs', lines 71:4-74:5
     Visibility: public -/
 @[rust_loop]
 def api_relations.paginate_relations_with_filter_loop1
@@ -4094,7 +4094,7 @@ def api_relations.paginate_relations_with_filter_loop1
     (chunk, i)
 
 /-- [tuwunel_kernel::api_relations::paginate_relations_with_filter]: loop body 2:
-    Source: 'src/api_relations.rs', lines 71:4-74:5
+    Source: 'ports/tuwunel/kernel/src/api_relations.rs', lines 71:4-74:5
     Visibility: public -/
 @[rust_loop_body]
 def api_relations.paginate_relations_with_filter_loop2.body
@@ -4118,7 +4118,7 @@ def api_relations.paginate_relations_with_filter_loop2.body
   else ok (done chunk)
 
 /-- [tuwunel_kernel::api_relations::paginate_relations_with_filter]: loop 2:
-    Source: 'src/api_relations.rs', lines 71:4-74:5
+    Source: 'ports/tuwunel/kernel/src/api_relations.rs', lines 71:4-74:5
     Visibility: public -/
 @[rust_loop]
 def api_relations.paginate_relations_with_filter_loop2
@@ -4134,7 +4134,7 @@ def api_relations.paginate_relations_with_filter_loop2
     (chunk, i)
 
 /-- [tuwunel_kernel::api_relations::paginate_relations_with_filter]: loop body 3:
-    Source: 'src/api_relations.rs', lines 71:4-74:5
+    Source: 'ports/tuwunel/kernel/src/api_relations.rs', lines 71:4-74:5
     Visibility: public -/
 @[rust_loop_body]
 def api_relations.paginate_relations_with_filter_loop3.body
@@ -4157,7 +4157,7 @@ def api_relations.paginate_relations_with_filter_loop3.body
   else ok (done chunk)
 
 /-- [tuwunel_kernel::api_relations::paginate_relations_with_filter]: loop 3:
-    Source: 'src/api_relations.rs', lines 71:4-74:5
+    Source: 'ports/tuwunel/kernel/src/api_relations.rs', lines 71:4-74:5
     Visibility: public -/
 @[rust_loop]
 def api_relations.paginate_relations_with_filter_loop3
@@ -4172,7 +4172,7 @@ def api_relations.paginate_relations_with_filter_loop3
     (chunk, i)
 
 /-- [tuwunel_kernel::api_relations::paginate_relations_with_filter]:
-    Source: 'src/api_relations.rs', lines 14:0-76:1
+    Source: 'ports/tuwunel/kernel/src/api_relations.rs', lines 14:0-76:1
     Visibility: public -/
 def api_relations.paginate_relations_with_filter
   (s : Snapshot) (user : Std.U64) (room : Std.U64) (target : Std.U64)
@@ -4419,12 +4419,12 @@ def api_relations.paginate_relations_with_filter
   | Token.Invalid => ok (core.result.Result.Err Error.Parse)
 
 /-- [tuwunel_kernel::api_room::LIMIT_MAX]
-    Source: 'src/api_room.rs', lines 4:0-4:30
+    Source: 'ports/tuwunel/kernel/src/api_room.rs', lines 4:0-4:30
     Visibility: public -/
 @[global_simps, irreducible] def api_room.LIMIT_MAX : Std.U64 := 50#u64
 
 /-- [tuwunel_kernel::svc_cache::is_knocked]:
-    Source: 'src/svc_cache.rs', lines 49:0-51:1
+    Source: 'ports/tuwunel/kernel/src/svc_cache.rs', lines 49:0-51:1
     Visibility: public -/
 def svc_cache.is_knocked
   (s : Snapshot) (user : Std.U64) (room : Std.U64) : Result Bool := do
@@ -4432,7 +4432,7 @@ def svc_cache.is_knocked
   svc_cache.has_row s1 user room
 
 /-- [tuwunel_kernel::svc_cache::user_membership]:
-    Source: 'src/svc_cache.rs', lines 17:0-36:1
+    Source: 'ports/tuwunel/kernel/src/svc_cache.rs', lines 17:0-36:1
     Visibility: public -/
 def svc_cache.user_membership
   (s : Snapshot) (user : Std.U64) (room : Std.U64) :
@@ -4459,7 +4459,7 @@ def svc_cache.user_membership
              else ok none
 
 /-- [tuwunel_kernel::svc_accessor::resolve_all]: loop body 0:
-    Source: 'src/svc_accessor.rs', lines 139:4-147:1 -/
+    Source: 'ports/tuwunel/kernel/src/svc_accessor.rs', lines 139:4-147:1 -/
 @[rust_loop_body]
 def svc_accessor.resolve_all_loop.body
   (s : Snapshot) (entries : Slice StateEntry) (out : alloc.vec.Vec Std.Usize)
@@ -4481,7 +4481,7 @@ def svc_accessor.resolve_all_loop.body
   else ok (done (core.result.Result.Ok out))
 
 /-- [tuwunel_kernel::svc_accessor::resolve_all]: loop 0:
-    Source: 'src/svc_accessor.rs', lines 139:4-147:1 -/
+    Source: 'ports/tuwunel/kernel/src/svc_accessor.rs', lines 139:4-147:1 -/
 @[rust_loop]
 def svc_accessor.resolve_all_loop
   (s : Snapshot) (entries : Slice StateEntry) (out : alloc.vec.Vec Std.Usize)
@@ -4493,7 +4493,7 @@ def svc_accessor.resolve_all_loop
     (out, i)
 
 /-- [tuwunel_kernel::svc_accessor::resolve_all]:
-    Source: 'src/svc_accessor.rs', lines 136:0-147:1 -/
+    Source: 'ports/tuwunel/kernel/src/svc_accessor.rs', lines 136:0-147:1 -/
 @[reducible]
 def svc_accessor.resolve_all
   (s : Snapshot) (entries : Slice StateEntry) :
@@ -4502,7 +4502,7 @@ def svc_accessor.resolve_all
   svc_accessor.resolve_all_loop s entries (alloc.vec.Vec.new Std.Usize) 0#usize
 
 /-- [tuwunel_kernel::svc_accessor::state_full_pdus_strict]:
-    Source: 'src/svc_accessor.rs', lines 129:0-134:1
+    Source: 'ports/tuwunel/kernel/src/svc_accessor.rs', lines 129:0-134:1
     Visibility: public -/
 def svc_accessor.state_full_pdus_strict
   (s : Snapshot) (hash : Std.U64) :
@@ -4519,7 +4519,7 @@ def svc_accessor.state_full_pdus_strict
   | core.result.Result.Err e => ok (core.result.Result.Err e)
 
 /-- [tuwunel_kernel::svc_timeline::last_timeline_count]:
-    Source: 'src/svc_timeline.rs', lines 240:0-252:1
+    Source: 'ports/tuwunel/kernel/src/svc_timeline.rs', lines 240:0-252:1
     Visibility: public -/
 def svc_timeline.last_timeline_count
   (s : Snapshot) (room : Std.U64) :
@@ -4544,7 +4544,7 @@ def svc_timeline.last_timeline_count
   | core.result.Result.Err e => ok (core.result.Result.Err e)
 
 /-- [tuwunel_kernel::svc_timeline::next_shortstatehash]:
-    Source: 'src/svc_timeline.rs', lines 216:0-224:1
+    Source: 'ports/tuwunel/kernel/src/svc_timeline.rs', lines 216:0-224:1
     Visibility: public -/
 def svc_timeline.next_shortstatehash
   (s : Snapshot) (room : Std.U64) (after : Std.I64) :
@@ -4560,7 +4560,7 @@ def svc_timeline.next_shortstatehash
   | core.result.Result.Err _ => ok (core.result.Result.Err Error.NotFound)
 
 /-- [tuwunel_kernel::api_room::departure_snapshot]:
-    Source: 'src/api_room.rs', lines 100:0-117:1
+    Source: 'ports/tuwunel/kernel/src/api_room.rs', lines 100:0-117:1
     Visibility: public -/
 def api_room.departure_snapshot
   (s : Snapshot) (room : Std.U64) (pdu : Pdu)
@@ -4584,7 +4584,7 @@ def api_room.departure_snapshot
   | core.result.Result.Err e => ok (core.result.Result.Err e)
 
 /-- [tuwunel_kernel::api_room::reversed]: loop body 0:
-    Source: 'src/api_room.rs', lines 91:4-94:5 -/
+    Source: 'ports/tuwunel/kernel/src/api_room.rs', lines 91:4-94:5 -/
 @[rust_loop_body]
 def api_room.reversed_loop.body
   (v : Slice (Std.I64 × Std.Usize))
@@ -4601,7 +4601,7 @@ def api_room.reversed_loop.body
   else ok (done out)
 
 /-- [tuwunel_kernel::api_room::reversed]: loop 0:
-    Source: 'src/api_room.rs', lines 91:4-94:5 -/
+    Source: 'ports/tuwunel/kernel/src/api_room.rs', lines 91:4-94:5 -/
 @[rust_loop]
 def api_room.reversed_loop
   (v : Slice (Std.I64 × Std.Usize))
@@ -4613,7 +4613,7 @@ def api_room.reversed_loop
     (out, i)
 
 /-- [tuwunel_kernel::api_room::reversed]:
-    Source: 'src/api_room.rs', lines 88:0-96:1 -/
+    Source: 'ports/tuwunel/kernel/src/api_room.rs', lines 88:0-96:1 -/
 def api_room.reversed
   (v : Slice (Std.I64 × Std.Usize)) :
   Result (alloc.vec.Vec (Std.I64 × Std.Usize))
@@ -4622,7 +4622,7 @@ def api_room.reversed
   api_room.reversed_loop v (alloc.vec.Vec.new (Std.I64 × Std.Usize)) i
 
 /-- [tuwunel_kernel::api_room::room_initial_sync_route]: loop body 0:
-    Source: 'src/api_room.rs', lines 66:4-72:5
+    Source: 'ports/tuwunel/kernel/src/api_room.rs', lines 66:4-72:5
     Visibility: public -/
 @[rust_loop_body]
 def api_room.room_initial_sync_route_loop0.body
@@ -4682,7 +4682,7 @@ def api_room.room_initial_sync_route_loop0.body
   else ok (done events)
 
 /-- [tuwunel_kernel::api_room::room_initial_sync_route]: loop 0:
-    Source: 'src/api_room.rs', lines 66:4-72:5
+    Source: 'ports/tuwunel/kernel/src/api_room.rs', lines 66:4-72:5
     Visibility: public -/
 @[rust_loop]
 def api_room.room_initial_sync_route_loop0
@@ -4703,7 +4703,7 @@ def api_room.room_initial_sync_route_loop0
     (events, i)
 
 /-- [tuwunel_kernel::api_room::room_initial_sync_route]: loop body 1:
-    Source: 'src/api_room.rs', lines 81:4-84:5
+    Source: 'ports/tuwunel/kernel/src/api_room.rs', lines 81:4-84:5
     Visibility: public -/
 @[rust_loop_body]
 def api_room.room_initial_sync_route_loop1.body
@@ -4726,7 +4726,7 @@ def api_room.room_initial_sync_route_loop1.body
   else ok (done state_ids)
 
 /-- [tuwunel_kernel::api_room::room_initial_sync_route]: loop 1:
-    Source: 'src/api_room.rs', lines 81:4-84:5
+    Source: 'ports/tuwunel/kernel/src/api_room.rs', lines 81:4-84:5
     Visibility: public -/
 @[rust_loop]
 def api_room.room_initial_sync_route_loop1
@@ -4740,7 +4740,7 @@ def api_room.room_initial_sync_route_loop1
     (state_ids, j)
 
 /-- [tuwunel_kernel::api_room::room_initial_sync_route]: loop body 2:
-    Source: 'src/api_room.rs', lines 66:4-72:5
+    Source: 'ports/tuwunel/kernel/src/api_room.rs', lines 66:4-72:5
     Visibility: public -/
 @[rust_loop_body]
 def api_room.room_initial_sync_route_loop2.body
@@ -4800,7 +4800,7 @@ def api_room.room_initial_sync_route_loop2.body
   else ok (done events)
 
 /-- [tuwunel_kernel::api_room::room_initial_sync_route]: loop 2:
-    Source: 'src/api_room.rs', lines 66:4-72:5
+    Source: 'ports/tuwunel/kernel/src/api_room.rs', lines 66:4-72:5
     Visibility: public -/
 @[rust_loop]
 def api_room.room_initial_sync_route_loop2
@@ -4821,7 +4821,7 @@ def api_room.room_initial_sync_route_loop2
     (events, i)
 
 /-- [tuwunel_kernel::api_room::room_initial_sync_route]: loop body 3:
-    Source: 'src/api_room.rs', lines 81:4-84:5
+    Source: 'ports/tuwunel/kernel/src/api_room.rs', lines 81:4-84:5
     Visibility: public -/
 @[rust_loop_body]
 def api_room.room_initial_sync_route_loop3.body
@@ -4844,7 +4844,7 @@ def api_room.room_initial_sync_route_loop3.body
   else ok (done state_ids)
 
 /-- [tuwunel_kernel::api_room::room_initial_sync_route]: loop 3:
-    Source: 'src/api_room.rs', lines 81:4-84:5
+    Source: 'ports/tuwunel/kernel/src/api_room.rs', lines 81:4-84:5
     Visibility: public -/
 @[rust_loop]
 def api_room.room_initial_sync_route_loop3
@@ -4858,7 +4858,7 @@ def api_room.room_initial_sync_route_loop3
     (state_ids, j)
 
 /-- [tuwunel_kernel::api_room::room_initial_sync_route]: loop body 4:
-    Source: 'src/api_room.rs', lines 66:4-72:5
+    Source: 'ports/tuwunel/kernel/src/api_room.rs', lines 66:4-72:5
     Visibility: public -/
 @[rust_loop_body]
 def api_room.room_initial_sync_route_loop4.body
@@ -4918,7 +4918,7 @@ def api_room.room_initial_sync_route_loop4.body
   else ok (done events)
 
 /-- [tuwunel_kernel::api_room::room_initial_sync_route]: loop 4:
-    Source: 'src/api_room.rs', lines 66:4-72:5
+    Source: 'ports/tuwunel/kernel/src/api_room.rs', lines 66:4-72:5
     Visibility: public -/
 @[rust_loop]
 def api_room.room_initial_sync_route_loop4
@@ -4939,7 +4939,7 @@ def api_room.room_initial_sync_route_loop4
     (events, i)
 
 /-- [tuwunel_kernel::api_room::room_initial_sync_route]: loop body 5:
-    Source: 'src/api_room.rs', lines 81:4-84:5
+    Source: 'ports/tuwunel/kernel/src/api_room.rs', lines 81:4-84:5
     Visibility: public -/
 @[rust_loop_body]
 def api_room.room_initial_sync_route_loop5.body
@@ -4962,7 +4962,7 @@ def api_room.room_initial_sync_route_loop5.body
   else ok (done state_ids)
 
 /-- [tuwunel_kernel::api_room::room_initial_sync_route]: loop 5:
-    Source: 'src/api_room.rs', lines 81:4-84:5
+    Source: 'ports/tuwunel/kernel/src/api_room.rs', lines 81:4-84:5
     Visibility: public -/
 @[rust_loop]
 def api_room.room_initial_sync_route_loop5
@@ -4976,7 +4976,7 @@ def api_room.room_initial_sync_route_loop5
     (state_ids, j)
 
 /-- [tuwunel_kernel::api_room::room_initial_sync_route]: loop body 6:
-    Source: 'src/api_room.rs', lines 66:4-72:5
+    Source: 'ports/tuwunel/kernel/src/api_room.rs', lines 66:4-72:5
     Visibility: public -/
 @[rust_loop_body]
 def api_room.room_initial_sync_route_loop6.body
@@ -5036,7 +5036,7 @@ def api_room.room_initial_sync_route_loop6.body
   else ok (done events)
 
 /-- [tuwunel_kernel::api_room::room_initial_sync_route]: loop 6:
-    Source: 'src/api_room.rs', lines 66:4-72:5
+    Source: 'ports/tuwunel/kernel/src/api_room.rs', lines 66:4-72:5
     Visibility: public -/
 @[rust_loop]
 def api_room.room_initial_sync_route_loop6
@@ -5057,7 +5057,7 @@ def api_room.room_initial_sync_route_loop6
     (events, i)
 
 /-- [tuwunel_kernel::api_room::room_initial_sync_route]: loop body 7:
-    Source: 'src/api_room.rs', lines 81:4-84:5
+    Source: 'ports/tuwunel/kernel/src/api_room.rs', lines 81:4-84:5
     Visibility: public -/
 @[rust_loop_body]
 def api_room.room_initial_sync_route_loop7.body
@@ -5080,7 +5080,7 @@ def api_room.room_initial_sync_route_loop7.body
   else ok (done state_ids)
 
 /-- [tuwunel_kernel::api_room::room_initial_sync_route]: loop 7:
-    Source: 'src/api_room.rs', lines 81:4-84:5
+    Source: 'ports/tuwunel/kernel/src/api_room.rs', lines 81:4-84:5
     Visibility: public -/
 @[rust_loop]
 def api_room.room_initial_sync_route_loop7
@@ -5094,7 +5094,7 @@ def api_room.room_initial_sync_route_loop7
     (state_ids, j)
 
 /-- [tuwunel_kernel::api_room::room_initial_sync_route]: loop body 8:
-    Source: 'src/api_room.rs', lines 66:4-72:5
+    Source: 'ports/tuwunel/kernel/src/api_room.rs', lines 66:4-72:5
     Visibility: public -/
 @[rust_loop_body]
 def api_room.room_initial_sync_route_loop8.body
@@ -5154,7 +5154,7 @@ def api_room.room_initial_sync_route_loop8.body
   else ok (done events)
 
 /-- [tuwunel_kernel::api_room::room_initial_sync_route]: loop 8:
-    Source: 'src/api_room.rs', lines 66:4-72:5
+    Source: 'ports/tuwunel/kernel/src/api_room.rs', lines 66:4-72:5
     Visibility: public -/
 @[rust_loop]
 def api_room.room_initial_sync_route_loop8
@@ -5175,7 +5175,7 @@ def api_room.room_initial_sync_route_loop8
     (events, i)
 
 /-- [tuwunel_kernel::api_room::room_initial_sync_route]: loop body 9:
-    Source: 'src/api_room.rs', lines 81:4-84:5
+    Source: 'ports/tuwunel/kernel/src/api_room.rs', lines 81:4-84:5
     Visibility: public -/
 @[rust_loop_body]
 def api_room.room_initial_sync_route_loop9.body
@@ -5198,7 +5198,7 @@ def api_room.room_initial_sync_route_loop9.body
   else ok (done state_ids)
 
 /-- [tuwunel_kernel::api_room::room_initial_sync_route]: loop 9:
-    Source: 'src/api_room.rs', lines 81:4-84:5
+    Source: 'ports/tuwunel/kernel/src/api_room.rs', lines 81:4-84:5
     Visibility: public -/
 @[rust_loop]
 def api_room.room_initial_sync_route_loop9
@@ -5212,7 +5212,7 @@ def api_room.room_initial_sync_route_loop9
     (state_ids, j)
 
 /-- [tuwunel_kernel::api_room::room_initial_sync_route]: loop body 10:
-    Source: 'src/api_room.rs', lines 66:4-72:5
+    Source: 'ports/tuwunel/kernel/src/api_room.rs', lines 66:4-72:5
     Visibility: public -/
 @[rust_loop_body]
 def api_room.room_initial_sync_route_loop10.body
@@ -5272,7 +5272,7 @@ def api_room.room_initial_sync_route_loop10.body
   else ok (done events)
 
 /-- [tuwunel_kernel::api_room::room_initial_sync_route]: loop 10:
-    Source: 'src/api_room.rs', lines 66:4-72:5
+    Source: 'ports/tuwunel/kernel/src/api_room.rs', lines 66:4-72:5
     Visibility: public -/
 @[rust_loop]
 def api_room.room_initial_sync_route_loop10
@@ -5293,7 +5293,7 @@ def api_room.room_initial_sync_route_loop10
     (events, i)
 
 /-- [tuwunel_kernel::api_room::room_initial_sync_route]: loop body 11:
-    Source: 'src/api_room.rs', lines 81:4-84:5
+    Source: 'ports/tuwunel/kernel/src/api_room.rs', lines 81:4-84:5
     Visibility: public -/
 @[rust_loop_body]
 def api_room.room_initial_sync_route_loop11.body
@@ -5316,7 +5316,7 @@ def api_room.room_initial_sync_route_loop11.body
   else ok (done state_ids)
 
 /-- [tuwunel_kernel::api_room::room_initial_sync_route]: loop 11:
-    Source: 'src/api_room.rs', lines 81:4-84:5
+    Source: 'ports/tuwunel/kernel/src/api_room.rs', lines 81:4-84:5
     Visibility: public -/
 @[rust_loop]
 def api_room.room_initial_sync_route_loop11
@@ -5330,7 +5330,7 @@ def api_room.room_initial_sync_route_loop11
     (state_ids, j)
 
 /-- [tuwunel_kernel::api_room::room_initial_sync_route]: loop body 12:
-    Source: 'src/api_room.rs', lines 66:4-72:5
+    Source: 'ports/tuwunel/kernel/src/api_room.rs', lines 66:4-72:5
     Visibility: public -/
 @[rust_loop_body]
 def api_room.room_initial_sync_route_loop12.body
@@ -5390,7 +5390,7 @@ def api_room.room_initial_sync_route_loop12.body
   else ok (done events)
 
 /-- [tuwunel_kernel::api_room::room_initial_sync_route]: loop 12:
-    Source: 'src/api_room.rs', lines 66:4-72:5
+    Source: 'ports/tuwunel/kernel/src/api_room.rs', lines 66:4-72:5
     Visibility: public -/
 @[rust_loop]
 def api_room.room_initial_sync_route_loop12
@@ -5411,7 +5411,7 @@ def api_room.room_initial_sync_route_loop12
     (events, i)
 
 /-- [tuwunel_kernel::api_room::room_initial_sync_route]: loop body 13:
-    Source: 'src/api_room.rs', lines 81:4-84:5
+    Source: 'ports/tuwunel/kernel/src/api_room.rs', lines 81:4-84:5
     Visibility: public -/
 @[rust_loop_body]
 def api_room.room_initial_sync_route_loop13.body
@@ -5434,7 +5434,7 @@ def api_room.room_initial_sync_route_loop13.body
   else ok (done state_ids)
 
 /-- [tuwunel_kernel::api_room::room_initial_sync_route]: loop 13:
-    Source: 'src/api_room.rs', lines 81:4-84:5
+    Source: 'ports/tuwunel/kernel/src/api_room.rs', lines 81:4-84:5
     Visibility: public -/
 @[rust_loop]
 def api_room.room_initial_sync_route_loop13
@@ -5448,7 +5448,7 @@ def api_room.room_initial_sync_route_loop13
     (state_ids, j)
 
 /-- [tuwunel_kernel::api_room::room_initial_sync_route]: loop body 14:
-    Source: 'src/api_room.rs', lines 66:4-72:5
+    Source: 'ports/tuwunel/kernel/src/api_room.rs', lines 66:4-72:5
     Visibility: public -/
 @[rust_loop_body]
 def api_room.room_initial_sync_route_loop14.body
@@ -5508,7 +5508,7 @@ def api_room.room_initial_sync_route_loop14.body
   else ok (done events)
 
 /-- [tuwunel_kernel::api_room::room_initial_sync_route]: loop 14:
-    Source: 'src/api_room.rs', lines 66:4-72:5
+    Source: 'ports/tuwunel/kernel/src/api_room.rs', lines 66:4-72:5
     Visibility: public -/
 @[rust_loop]
 def api_room.room_initial_sync_route_loop14
@@ -5529,7 +5529,7 @@ def api_room.room_initial_sync_route_loop14
     (events, i)
 
 /-- [tuwunel_kernel::api_room::room_initial_sync_route]: loop body 15:
-    Source: 'src/api_room.rs', lines 81:4-84:5
+    Source: 'ports/tuwunel/kernel/src/api_room.rs', lines 81:4-84:5
     Visibility: public -/
 @[rust_loop_body]
 def api_room.room_initial_sync_route_loop15.body
@@ -5552,7 +5552,7 @@ def api_room.room_initial_sync_route_loop15.body
   else ok (done state_ids)
 
 /-- [tuwunel_kernel::api_room::room_initial_sync_route]: loop 15:
-    Source: 'src/api_room.rs', lines 81:4-84:5
+    Source: 'ports/tuwunel/kernel/src/api_room.rs', lines 81:4-84:5
     Visibility: public -/
 @[rust_loop]
 def api_room.room_initial_sync_route_loop15
@@ -5566,7 +5566,7 @@ def api_room.room_initial_sync_route_loop15
     (state_ids, j)
 
 /-- [tuwunel_kernel::api_room::room_initial_sync_route]: loop body 16:
-    Source: 'src/api_room.rs', lines 66:4-72:5
+    Source: 'ports/tuwunel/kernel/src/api_room.rs', lines 66:4-72:5
     Visibility: public -/
 @[rust_loop_body]
 def api_room.room_initial_sync_route_loop16.body
@@ -5626,7 +5626,7 @@ def api_room.room_initial_sync_route_loop16.body
   else ok (done events)
 
 /-- [tuwunel_kernel::api_room::room_initial_sync_route]: loop 16:
-    Source: 'src/api_room.rs', lines 66:4-72:5
+    Source: 'ports/tuwunel/kernel/src/api_room.rs', lines 66:4-72:5
     Visibility: public -/
 @[rust_loop]
 def api_room.room_initial_sync_route_loop16
@@ -5647,7 +5647,7 @@ def api_room.room_initial_sync_route_loop16
     (events, i)
 
 /-- [tuwunel_kernel::api_room::room_initial_sync_route]: loop body 17:
-    Source: 'src/api_room.rs', lines 81:4-84:5
+    Source: 'ports/tuwunel/kernel/src/api_room.rs', lines 81:4-84:5
     Visibility: public -/
 @[rust_loop_body]
 def api_room.room_initial_sync_route_loop17.body
@@ -5670,7 +5670,7 @@ def api_room.room_initial_sync_route_loop17.body
   else ok (done state_ids)
 
 /-- [tuwunel_kernel::api_room::room_initial_sync_route]: loop 17:
-    Source: 'src/api_room.rs', lines 81:4-84:5
+    Source: 'ports/tuwunel/kernel/src/api_room.rs', lines 81:4-84:5
     Visibility: public -/
 @[rust_loop]
 def api_room.room_initial_sync_route_loop17
@@ -5684,7 +5684,7 @@ def api_room.room_initial_sync_route_loop17
     (state_ids, j)
 
 /-- [tuwunel_kernel::api_room::room_initial_sync_route]: loop body 18:
-    Source: 'src/api_room.rs', lines 66:4-72:5
+    Source: 'ports/tuwunel/kernel/src/api_room.rs', lines 66:4-72:5
     Visibility: public -/
 @[rust_loop_body]
 def api_room.room_initial_sync_route_loop18.body
@@ -5744,7 +5744,7 @@ def api_room.room_initial_sync_route_loop18.body
   else ok (done events)
 
 /-- [tuwunel_kernel::api_room::room_initial_sync_route]: loop 18:
-    Source: 'src/api_room.rs', lines 66:4-72:5
+    Source: 'ports/tuwunel/kernel/src/api_room.rs', lines 66:4-72:5
     Visibility: public -/
 @[rust_loop]
 def api_room.room_initial_sync_route_loop18
@@ -5765,7 +5765,7 @@ def api_room.room_initial_sync_route_loop18
     (events, i)
 
 /-- [tuwunel_kernel::api_room::room_initial_sync_route]: loop body 19:
-    Source: 'src/api_room.rs', lines 81:4-84:5
+    Source: 'ports/tuwunel/kernel/src/api_room.rs', lines 81:4-84:5
     Visibility: public -/
 @[rust_loop_body]
 def api_room.room_initial_sync_route_loop19.body
@@ -5788,7 +5788,7 @@ def api_room.room_initial_sync_route_loop19.body
   else ok (done state_ids)
 
 /-- [tuwunel_kernel::api_room::room_initial_sync_route]: loop 19:
-    Source: 'src/api_room.rs', lines 81:4-84:5
+    Source: 'ports/tuwunel/kernel/src/api_room.rs', lines 81:4-84:5
     Visibility: public -/
 @[rust_loop]
 def api_room.room_initial_sync_route_loop19
@@ -5802,7 +5802,7 @@ def api_room.room_initial_sync_route_loop19
     (state_ids, j)
 
 /-- [tuwunel_kernel::api_room::room_initial_sync_route]: loop body 20:
-    Source: 'src/api_room.rs', lines 66:4-72:5
+    Source: 'ports/tuwunel/kernel/src/api_room.rs', lines 66:4-72:5
     Visibility: public -/
 @[rust_loop_body]
 def api_room.room_initial_sync_route_loop20.body
@@ -5862,7 +5862,7 @@ def api_room.room_initial_sync_route_loop20.body
   else ok (done events)
 
 /-- [tuwunel_kernel::api_room::room_initial_sync_route]: loop 20:
-    Source: 'src/api_room.rs', lines 66:4-72:5
+    Source: 'ports/tuwunel/kernel/src/api_room.rs', lines 66:4-72:5
     Visibility: public -/
 @[rust_loop]
 def api_room.room_initial_sync_route_loop20
@@ -5883,7 +5883,7 @@ def api_room.room_initial_sync_route_loop20
     (events, i)
 
 /-- [tuwunel_kernel::api_room::room_initial_sync_route]: loop body 21:
-    Source: 'src/api_room.rs', lines 81:4-84:5
+    Source: 'ports/tuwunel/kernel/src/api_room.rs', lines 81:4-84:5
     Visibility: public -/
 @[rust_loop_body]
 def api_room.room_initial_sync_route_loop21.body
@@ -5906,7 +5906,7 @@ def api_room.room_initial_sync_route_loop21.body
   else ok (done state_ids)
 
 /-- [tuwunel_kernel::api_room::room_initial_sync_route]: loop 21:
-    Source: 'src/api_room.rs', lines 81:4-84:5
+    Source: 'ports/tuwunel/kernel/src/api_room.rs', lines 81:4-84:5
     Visibility: public -/
 @[rust_loop]
 def api_room.room_initial_sync_route_loop21
@@ -5920,7 +5920,7 @@ def api_room.room_initial_sync_route_loop21
     (state_ids, j)
 
 /-- [tuwunel_kernel::api_room::room_initial_sync_route]: loop body 22:
-    Source: 'src/api_room.rs', lines 66:4-72:5
+    Source: 'ports/tuwunel/kernel/src/api_room.rs', lines 66:4-72:5
     Visibility: public -/
 @[rust_loop_body]
 def api_room.room_initial_sync_route_loop22.body
@@ -5980,7 +5980,7 @@ def api_room.room_initial_sync_route_loop22.body
   else ok (done events)
 
 /-- [tuwunel_kernel::api_room::room_initial_sync_route]: loop 22:
-    Source: 'src/api_room.rs', lines 66:4-72:5
+    Source: 'ports/tuwunel/kernel/src/api_room.rs', lines 66:4-72:5
     Visibility: public -/
 @[rust_loop]
 def api_room.room_initial_sync_route_loop22
@@ -6001,7 +6001,7 @@ def api_room.room_initial_sync_route_loop22
     (events, i)
 
 /-- [tuwunel_kernel::api_room::room_initial_sync_route]: loop body 23:
-    Source: 'src/api_room.rs', lines 81:4-84:5
+    Source: 'ports/tuwunel/kernel/src/api_room.rs', lines 81:4-84:5
     Visibility: public -/
 @[rust_loop_body]
 def api_room.room_initial_sync_route_loop23.body
@@ -6024,7 +6024,7 @@ def api_room.room_initial_sync_route_loop23.body
   else ok (done state_ids)
 
 /-- [tuwunel_kernel::api_room::room_initial_sync_route]: loop 23:
-    Source: 'src/api_room.rs', lines 81:4-84:5
+    Source: 'ports/tuwunel/kernel/src/api_room.rs', lines 81:4-84:5
     Visibility: public -/
 @[rust_loop]
 def api_room.room_initial_sync_route_loop23
@@ -6038,7 +6038,7 @@ def api_room.room_initial_sync_route_loop23
     (state_ids, j)
 
 /-- [tuwunel_kernel::api_room::room_initial_sync_route]: loop body 24:
-    Source: 'src/api_room.rs', lines 66:4-72:5
+    Source: 'ports/tuwunel/kernel/src/api_room.rs', lines 66:4-72:5
     Visibility: public -/
 @[rust_loop_body]
 def api_room.room_initial_sync_route_loop24.body
@@ -6098,7 +6098,7 @@ def api_room.room_initial_sync_route_loop24.body
   else ok (done events)
 
 /-- [tuwunel_kernel::api_room::room_initial_sync_route]: loop 24:
-    Source: 'src/api_room.rs', lines 66:4-72:5
+    Source: 'ports/tuwunel/kernel/src/api_room.rs', lines 66:4-72:5
     Visibility: public -/
 @[rust_loop]
 def api_room.room_initial_sync_route_loop24
@@ -6119,7 +6119,7 @@ def api_room.room_initial_sync_route_loop24
     (events, i)
 
 /-- [tuwunel_kernel::api_room::room_initial_sync_route]: loop body 25:
-    Source: 'src/api_room.rs', lines 81:4-84:5
+    Source: 'ports/tuwunel/kernel/src/api_room.rs', lines 81:4-84:5
     Visibility: public -/
 @[rust_loop_body]
 def api_room.room_initial_sync_route_loop25.body
@@ -6142,7 +6142,7 @@ def api_room.room_initial_sync_route_loop25.body
   else ok (done state_ids)
 
 /-- [tuwunel_kernel::api_room::room_initial_sync_route]: loop 25:
-    Source: 'src/api_room.rs', lines 81:4-84:5
+    Source: 'ports/tuwunel/kernel/src/api_room.rs', lines 81:4-84:5
     Visibility: public -/
 @[rust_loop]
 def api_room.room_initial_sync_route_loop25
@@ -6156,7 +6156,7 @@ def api_room.room_initial_sync_route_loop25
     (state_ids, j)
 
 /-- [tuwunel_kernel::api_room::room_initial_sync_route]: loop body 26:
-    Source: 'src/api_room.rs', lines 66:4-72:5
+    Source: 'ports/tuwunel/kernel/src/api_room.rs', lines 66:4-72:5
     Visibility: public -/
 @[rust_loop_body]
 def api_room.room_initial_sync_route_loop26.body
@@ -6216,7 +6216,7 @@ def api_room.room_initial_sync_route_loop26.body
   else ok (done events)
 
 /-- [tuwunel_kernel::api_room::room_initial_sync_route]: loop 26:
-    Source: 'src/api_room.rs', lines 66:4-72:5
+    Source: 'ports/tuwunel/kernel/src/api_room.rs', lines 66:4-72:5
     Visibility: public -/
 @[rust_loop]
 def api_room.room_initial_sync_route_loop26
@@ -6237,7 +6237,7 @@ def api_room.room_initial_sync_route_loop26
     (events, i)
 
 /-- [tuwunel_kernel::api_room::room_initial_sync_route]: loop body 27:
-    Source: 'src/api_room.rs', lines 81:4-84:5
+    Source: 'ports/tuwunel/kernel/src/api_room.rs', lines 81:4-84:5
     Visibility: public -/
 @[rust_loop_body]
 def api_room.room_initial_sync_route_loop27.body
@@ -6260,7 +6260,7 @@ def api_room.room_initial_sync_route_loop27.body
   else ok (done state_ids)
 
 /-- [tuwunel_kernel::api_room::room_initial_sync_route]: loop 27:
-    Source: 'src/api_room.rs', lines 81:4-84:5
+    Source: 'ports/tuwunel/kernel/src/api_room.rs', lines 81:4-84:5
     Visibility: public -/
 @[rust_loop]
 def api_room.room_initial_sync_route_loop27
@@ -6274,7 +6274,7 @@ def api_room.room_initial_sync_route_loop27
     (state_ids, j)
 
 /-- [tuwunel_kernel::api_room::room_initial_sync_route]: loop body 28:
-    Source: 'src/api_room.rs', lines 66:4-72:5
+    Source: 'ports/tuwunel/kernel/src/api_room.rs', lines 66:4-72:5
     Visibility: public -/
 @[rust_loop_body]
 def api_room.room_initial_sync_route_loop28.body
@@ -6334,7 +6334,7 @@ def api_room.room_initial_sync_route_loop28.body
   else ok (done events)
 
 /-- [tuwunel_kernel::api_room::room_initial_sync_route]: loop 28:
-    Source: 'src/api_room.rs', lines 66:4-72:5
+    Source: 'ports/tuwunel/kernel/src/api_room.rs', lines 66:4-72:5
     Visibility: public -/
 @[rust_loop]
 def api_room.room_initial_sync_route_loop28
@@ -6355,7 +6355,7 @@ def api_room.room_initial_sync_route_loop28
     (events, i)
 
 /-- [tuwunel_kernel::api_room::room_initial_sync_route]: loop body 29:
-    Source: 'src/api_room.rs', lines 81:4-84:5
+    Source: 'ports/tuwunel/kernel/src/api_room.rs', lines 81:4-84:5
     Visibility: public -/
 @[rust_loop_body]
 def api_room.room_initial_sync_route_loop29.body
@@ -6378,7 +6378,7 @@ def api_room.room_initial_sync_route_loop29.body
   else ok (done state_ids)
 
 /-- [tuwunel_kernel::api_room::room_initial_sync_route]: loop 29:
-    Source: 'src/api_room.rs', lines 81:4-84:5
+    Source: 'ports/tuwunel/kernel/src/api_room.rs', lines 81:4-84:5
     Visibility: public -/
 @[rust_loop]
 def api_room.room_initial_sync_route_loop29
@@ -6392,7 +6392,7 @@ def api_room.room_initial_sync_route_loop29
     (state_ids, j)
 
 /-- [tuwunel_kernel::api_room::room_initial_sync_route]: loop body 30:
-    Source: 'src/api_room.rs', lines 66:4-72:5
+    Source: 'ports/tuwunel/kernel/src/api_room.rs', lines 66:4-72:5
     Visibility: public -/
 @[rust_loop_body]
 def api_room.room_initial_sync_route_loop30.body
@@ -6452,7 +6452,7 @@ def api_room.room_initial_sync_route_loop30.body
   else ok (done events)
 
 /-- [tuwunel_kernel::api_room::room_initial_sync_route]: loop 30:
-    Source: 'src/api_room.rs', lines 66:4-72:5
+    Source: 'ports/tuwunel/kernel/src/api_room.rs', lines 66:4-72:5
     Visibility: public -/
 @[rust_loop]
 def api_room.room_initial_sync_route_loop30
@@ -6473,7 +6473,7 @@ def api_room.room_initial_sync_route_loop30
     (events, i)
 
 /-- [tuwunel_kernel::api_room::room_initial_sync_route]: loop body 31:
-    Source: 'src/api_room.rs', lines 81:4-84:5
+    Source: 'ports/tuwunel/kernel/src/api_room.rs', lines 81:4-84:5
     Visibility: public -/
 @[rust_loop_body]
 def api_room.room_initial_sync_route_loop31.body
@@ -6496,7 +6496,7 @@ def api_room.room_initial_sync_route_loop31.body
   else ok (done state_ids)
 
 /-- [tuwunel_kernel::api_room::room_initial_sync_route]: loop 31:
-    Source: 'src/api_room.rs', lines 81:4-84:5
+    Source: 'ports/tuwunel/kernel/src/api_room.rs', lines 81:4-84:5
     Visibility: public -/
 @[rust_loop]
 def api_room.room_initial_sync_route_loop31
@@ -6510,7 +6510,7 @@ def api_room.room_initial_sync_route_loop31
     (state_ids, j)
 
 /-- [tuwunel_kernel::api_room::room_initial_sync_route]: loop body 32:
-    Source: 'src/api_room.rs', lines 66:4-72:5
+    Source: 'ports/tuwunel/kernel/src/api_room.rs', lines 66:4-72:5
     Visibility: public -/
 @[rust_loop_body]
 def api_room.room_initial_sync_route_loop32.body
@@ -6570,7 +6570,7 @@ def api_room.room_initial_sync_route_loop32.body
   else ok (done events)
 
 /-- [tuwunel_kernel::api_room::room_initial_sync_route]: loop 32:
-    Source: 'src/api_room.rs', lines 66:4-72:5
+    Source: 'ports/tuwunel/kernel/src/api_room.rs', lines 66:4-72:5
     Visibility: public -/
 @[rust_loop]
 def api_room.room_initial_sync_route_loop32
@@ -6591,7 +6591,7 @@ def api_room.room_initial_sync_route_loop32
     (events, i)
 
 /-- [tuwunel_kernel::api_room::room_initial_sync_route]: loop body 33:
-    Source: 'src/api_room.rs', lines 81:4-84:5
+    Source: 'ports/tuwunel/kernel/src/api_room.rs', lines 81:4-84:5
     Visibility: public -/
 @[rust_loop_body]
 def api_room.room_initial_sync_route_loop33.body
@@ -6614,7 +6614,7 @@ def api_room.room_initial_sync_route_loop33.body
   else ok (done state_ids)
 
 /-- [tuwunel_kernel::api_room::room_initial_sync_route]: loop 33:
-    Source: 'src/api_room.rs', lines 81:4-84:5
+    Source: 'ports/tuwunel/kernel/src/api_room.rs', lines 81:4-84:5
     Visibility: public -/
 @[rust_loop]
 def api_room.room_initial_sync_route_loop33
@@ -6628,7 +6628,7 @@ def api_room.room_initial_sync_route_loop33
     (state_ids, j)
 
 /-- [tuwunel_kernel::api_room::room_initial_sync_route]: loop body 34:
-    Source: 'src/api_room.rs', lines 66:4-72:5
+    Source: 'ports/tuwunel/kernel/src/api_room.rs', lines 66:4-72:5
     Visibility: public -/
 @[rust_loop_body]
 def api_room.room_initial_sync_route_loop34.body
@@ -6688,7 +6688,7 @@ def api_room.room_initial_sync_route_loop34.body
   else ok (done events)
 
 /-- [tuwunel_kernel::api_room::room_initial_sync_route]: loop 34:
-    Source: 'src/api_room.rs', lines 66:4-72:5
+    Source: 'ports/tuwunel/kernel/src/api_room.rs', lines 66:4-72:5
     Visibility: public -/
 @[rust_loop]
 def api_room.room_initial_sync_route_loop34
@@ -6709,7 +6709,7 @@ def api_room.room_initial_sync_route_loop34
     (events, i)
 
 /-- [tuwunel_kernel::api_room::room_initial_sync_route]: loop body 35:
-    Source: 'src/api_room.rs', lines 81:4-84:5
+    Source: 'ports/tuwunel/kernel/src/api_room.rs', lines 81:4-84:5
     Visibility: public -/
 @[rust_loop_body]
 def api_room.room_initial_sync_route_loop35.body
@@ -6732,7 +6732,7 @@ def api_room.room_initial_sync_route_loop35.body
   else ok (done state_ids)
 
 /-- [tuwunel_kernel::api_room::room_initial_sync_route]: loop 35:
-    Source: 'src/api_room.rs', lines 81:4-84:5
+    Source: 'ports/tuwunel/kernel/src/api_room.rs', lines 81:4-84:5
     Visibility: public -/
 @[rust_loop]
 def api_room.room_initial_sync_route_loop35
@@ -6746,7 +6746,7 @@ def api_room.room_initial_sync_route_loop35
     (state_ids, j)
 
 /-- [tuwunel_kernel::api_room::room_initial_sync_route]:
-    Source: 'src/api_room.rs', lines 8:0-86:1
+    Source: 'ports/tuwunel/kernel/src/api_room.rs', lines 8:0-86:1
     Visibility: public -/
 def api_room.room_initial_sync_route
   (s : Snapshot) (user : Std.U64) (room : Std.U64) (limit : Option Std.U64) :
@@ -7928,7 +7928,7 @@ def api_room.room_initial_sync_route
       else ok (core.result.Result.Err Error.Forbidden)
 
 /-- [tuwunel_kernel::api_room::get_room_event_route]:
-    Source: 'src/api_room.rs', lines 121:0-135:1
+    Source: 'ports/tuwunel/kernel/src/api_room.rs', lines 121:0-135:1
     Visibility: public -/
 def api_room.get_room_event_route
   (s : Snapshot) (user : Std.U64) (room : Std.U64) (event_id : Std.U64) :
@@ -7951,7 +7951,7 @@ def api_room.get_room_event_route
   | core.result.Result.Err _ => ok (core.result.Result.Err Error.NotFound)
 
 /-- [tuwunel_kernel::svc_accessor::room_state_full_pdus]:
-    Source: 'src/svc_accessor.rs', lines 161:0-166:1
+    Source: 'ports/tuwunel/kernel/src/svc_accessor.rs', lines 161:0-166:1
     Visibility: public -/
 def svc_accessor.room_state_full_pdus
   (s : Snapshot) (room : Std.U64) :
@@ -7965,7 +7965,7 @@ def svc_accessor.room_state_full_pdus
   | core.result.Result.Err _ => ok (core.result.Result.Err Error.Database)
 
 /-- [tuwunel_kernel::api_state::get_state_events_route]: loop body 0:
-    Source: 'src/api_state.rs', lines 14:12-17:13
+    Source: 'ports/tuwunel/kernel/src/api_state.rs', lines 14:12-17:13
     Visibility: public -/
 @[rust_loop_body]
 def api_state.get_state_events_route_loop.body
@@ -7987,7 +7987,7 @@ def api_state.get_state_events_route_loop.body
   else ok (done events)
 
 /-- [tuwunel_kernel::api_state::get_state_events_route]: loop 0:
-    Source: 'src/api_state.rs', lines 14:12-17:13
+    Source: 'ports/tuwunel/kernel/src/api_state.rs', lines 14:12-17:13
     Visibility: public -/
 @[rust_loop]
 def api_state.get_state_events_route_loop
@@ -8001,7 +8001,7 @@ def api_state.get_state_events_route_loop
     (events, i)
 
 /-- [tuwunel_kernel::api_state::get_state_events_route]:
-    Source: 'src/api_state.rs', lines 5:0-21:1
+    Source: 'ports/tuwunel/kernel/src/api_state.rs', lines 5:0-21:1
     Visibility: public -/
 def api_state.get_state_events_route
   (s : Snapshot) (user : Std.U64) (room : Std.U64) :
@@ -8021,7 +8021,7 @@ def api_state.get_state_events_route
   else ok (core.result.Result.Err Error.Forbidden)
 
 /-- [tuwunel_kernel::api_state::get_state_events_for_key_route]:
-    Source: 'src/api_state.rs', lines 24:0-32:1
+    Source: 'ports/tuwunel/kernel/src/api_state.rs', lines 24:0-32:1
     Visibility: public -/
 def api_state.get_state_events_for_key_route
   (s : Snapshot) (user : Std.U64) (room : Std.U64) (kind : Kind)
@@ -8042,7 +8042,7 @@ def api_state.get_state_events_for_key_route
   else ok (core.result.Result.Err Error.NotFound)
 
 /-- [tuwunel_kernel::svc_threads::is_participant]: loop body 0:
-    Source: 'src/svc_threads.rs', lines 63:4-71:1
+    Source: 'ports/tuwunel/kernel/src/svc_threads.rs', lines 63:4-71:1
     Visibility: public -/
 @[rust_loop_body]
 def svc_threads.is_participant_loop.body
@@ -8070,7 +8070,7 @@ def svc_threads.is_participant_loop.body
   else ok (done false)
 
 /-- [tuwunel_kernel::svc_threads::is_participant]: loop 0:
-    Source: 'src/svc_threads.rs', lines 63:4-71:1
+    Source: 'ports/tuwunel/kernel/src/svc_threads.rs', lines 63:4-71:1
     Visibility: public -/
 @[rust_loop]
 def svc_threads.is_participant_loop
@@ -8083,7 +8083,7 @@ def svc_threads.is_participant_loop
     i
 
 /-- [tuwunel_kernel::svc_threads::is_participant]:
-    Source: 'src/svc_threads.rs', lines 61:0-71:1
+    Source: 'ports/tuwunel/kernel/src/svc_threads.rs', lines 61:0-71:1
     Visibility: public -/
 @[reducible]
 def svc_threads.is_participant
@@ -8093,7 +8093,7 @@ def svc_threads.is_participant
   svc_threads.is_participant_loop s short root user 0#usize
 
 /-- [tuwunel_kernel::svc_threads::latest_count]: loop body 0:
-    Source: 'src/svc_threads.rs', lines 51:4-58:1 -/
+    Source: 'ports/tuwunel/kernel/src/svc_threads.rs', lines 51:4-58:1 -/
 @[rust_loop_body]
 def svc_threads.latest_count_loop.body
   (s : Snapshot) (short : Std.U64) (root : Std.U64) (i : Std.Usize) :
@@ -8116,7 +8116,7 @@ def svc_threads.latest_count_loop.body
   else ok (done none)
 
 /-- [tuwunel_kernel::svc_threads::latest_count]: loop 0:
-    Source: 'src/svc_threads.rs', lines 51:4-58:1 -/
+    Source: 'ports/tuwunel/kernel/src/svc_threads.rs', lines 51:4-58:1 -/
 @[rust_loop]
 def svc_threads.latest_count_loop
   (s : Snapshot) (short : Std.U64) (root : Std.U64) (i : Std.Usize) :
@@ -8127,7 +8127,7 @@ def svc_threads.latest_count_loop
     i
 
 /-- [tuwunel_kernel::svc_threads::latest_count]:
-    Source: 'src/svc_threads.rs', lines 49:0-58:1 -/
+    Source: 'ports/tuwunel/kernel/src/svc_threads.rs', lines 49:0-58:1 -/
 @[reducible]
 def svc_threads.latest_count
   (s : Snapshot) (short : Std.U64) (root : Std.U64) :
@@ -8136,7 +8136,7 @@ def svc_threads.latest_count
   svc_threads.latest_count_loop s short root 0#usize
 
 /-- [tuwunel_kernel::svc_threads::live_thread]:
-    Source: 'src/svc_threads.rs', lines 29:0-46:1
+    Source: 'ports/tuwunel/kernel/src/svc_threads.rs', lines 29:0-46:1
     Visibility: public -/
 def svc_threads.live_thread
   (s : Snapshot) (user : Std.U64) (participated : Bool) (short : Std.U64)
@@ -8171,7 +8171,7 @@ def svc_threads.live_thread
         | core.result.Result.Err _ => ok none
 
 /-- [tuwunel_kernel::svc_threads::threads_until]: loop body 0:
-    Source: 'src/svc_threads.rs', lines 12:12-21:13
+    Source: 'ports/tuwunel/kernel/src/svc_threads.rs', lines 12:12-21:13
     Visibility: public -/
 @[rust_loop_body]
 def svc_threads.threads_until_loop.body
@@ -8226,7 +8226,7 @@ def svc_threads.threads_until_loop.body
   else ok (done out)
 
 /-- [tuwunel_kernel::svc_threads::threads_until]: loop 0:
-    Source: 'src/svc_threads.rs', lines 12:12-21:13
+    Source: 'ports/tuwunel/kernel/src/svc_threads.rs', lines 12:12-21:13
     Visibility: public -/
 @[rust_loop]
 def svc_threads.threads_until_loop
@@ -8247,7 +8247,7 @@ def svc_threads.threads_until_loop
     (out, i1)
 
 /-- [tuwunel_kernel::svc_threads::threads_until]:
-    Source: 'src/svc_threads.rs', lines 6:0-25:1
+    Source: 'ports/tuwunel/kernel/src/svc_threads.rs', lines 6:0-25:1
     Visibility: public -/
 def svc_threads.threads_until
   (s : Snapshot) (user : Std.U64) (room : Std.U64) (count : Std.I64)
@@ -8268,7 +8268,7 @@ def svc_threads.threads_until
   | core.result.Result.Err e => ok (core.result.Result.Err e)
 
 /-- [tuwunel_kernel::api_threads::truncate]: loop body 0:
-    Source: 'src/api_threads.rs', lines 47:4-50:5 -/
+    Source: 'ports/tuwunel/kernel/src/api_threads.rs', lines 47:4-50:5 -/
 @[rust_loop_body]
 def api_threads.truncate_loop.body
   (v : Slice (Std.I64 × Std.Usize)) (n : Std.U64)
@@ -8290,7 +8290,7 @@ def api_threads.truncate_loop.body
   else ok (done out)
 
 /-- [tuwunel_kernel::api_threads::truncate]: loop 0:
-    Source: 'src/api_threads.rs', lines 47:4-50:5 -/
+    Source: 'ports/tuwunel/kernel/src/api_threads.rs', lines 47:4-50:5 -/
 @[rust_loop]
 def api_threads.truncate_loop
   (v : Slice (Std.I64 × Std.Usize)) (n : Std.U64)
@@ -8302,7 +8302,7 @@ def api_threads.truncate_loop
     (out, i)
 
 /-- [tuwunel_kernel::api_threads::truncate]:
-    Source: 'src/api_threads.rs', lines 44:0-52:1 -/
+    Source: 'ports/tuwunel/kernel/src/api_threads.rs', lines 44:0-52:1 -/
 @[reducible]
 def api_threads.truncate
   (v : Slice (Std.I64 × Std.Usize)) (n : Std.U64) :
@@ -8312,7 +8312,7 @@ def api_threads.truncate
     0#usize
 
 /-- [tuwunel_kernel::api_threads::get_threads_route]: loop body 0:
-    Source: 'src/api_threads.rs', lines 30:4-36:5
+    Source: 'ports/tuwunel/kernel/src/api_threads.rs', lines 30:4-36:5
     Visibility: public -/
 @[rust_loop_body]
 def api_threads.get_threads_route_loop0.body
@@ -8347,7 +8347,7 @@ def api_threads.get_threads_route_loop0.body
   else ok (done (s, threads))
 
 /-- [tuwunel_kernel::api_threads::get_threads_route]: loop 0:
-    Source: 'src/api_threads.rs', lines 30:4-36:5
+    Source: 'ports/tuwunel/kernel/src/api_threads.rs', lines 30:4-36:5
     Visibility: public -/
 @[rust_loop]
 def api_threads.get_threads_route_loop0
@@ -8362,7 +8362,7 @@ def api_threads.get_threads_route_loop0
     (threads, i)
 
 /-- [tuwunel_kernel::api_threads::get_threads_route]: loop body 1:
-    Source: 'src/api_threads.rs', lines 30:4-36:5
+    Source: 'ports/tuwunel/kernel/src/api_threads.rs', lines 30:4-36:5
     Visibility: public -/
 @[rust_loop_body]
 def api_threads.get_threads_route_loop1.body
@@ -8397,7 +8397,7 @@ def api_threads.get_threads_route_loop1.body
   else ok (done (s, threads))
 
 /-- [tuwunel_kernel::api_threads::get_threads_route]: loop 1:
-    Source: 'src/api_threads.rs', lines 30:4-36:5
+    Source: 'ports/tuwunel/kernel/src/api_threads.rs', lines 30:4-36:5
     Visibility: public -/
 @[rust_loop]
 def api_threads.get_threads_route_loop1
@@ -8412,7 +8412,7 @@ def api_threads.get_threads_route_loop1
     (threads, i)
 
 /-- [tuwunel_kernel::api_threads::get_threads_route]:
-    Source: 'src/api_threads.rs', lines 6:0-41:1
+    Source: 'ports/tuwunel/kernel/src/api_threads.rs', lines 6:0-41:1
     Visibility: public -/
 def api_threads.get_threads_route
   (s : Snapshot) (user : Std.U64) (room : Std.U64) («from» : Token)
@@ -8479,7 +8479,7 @@ def api_threads.get_threads_route
   else ok (core.result.Result.Err Error.Forbidden)
 
 /-- [tuwunel_kernel::Op]
-    Source: 'src/lib.rs', lines 350:0-383:1
+    Source: 'ports/tuwunel/kernel/src/lib.rs', lines 350:0-383:1
     Visibility: public -/
 @[discriminant isize]
 inductive Op where
@@ -8511,14 +8511,14 @@ inductive Op where
 | ServerCanSee : Std.U64 → Std.U64 → Std.U64 → Op
 
 /-- [tuwunel_kernel::Request]
-    Source: 'src/lib.rs', lines 386:0-389:1
+    Source: 'ports/tuwunel/kernel/src/lib.rs', lines 386:0-389:1
     Visibility: public -/
 structure Request where
   user : Std.U64
   op : Op
 
 /-- [tuwunel_kernel::svc_cache::room_members]: loop body 0:
-    Source: 'src/svc_cache.rs', lines 86:4-91:5
+    Source: 'ports/tuwunel/kernel/src/svc_cache.rs', lines 86:4-91:5
     Visibility: public -/
 @[rust_loop_body]
 def svc_cache.room_members_loop.body
@@ -8542,7 +8542,7 @@ def svc_cache.room_members_loop.body
   else ok (done out)
 
 /-- [tuwunel_kernel::svc_cache::room_members]: loop 0:
-    Source: 'src/svc_cache.rs', lines 86:4-91:5
+    Source: 'ports/tuwunel/kernel/src/svc_cache.rs', lines 86:4-91:5
     Visibility: public -/
 @[rust_loop]
 def svc_cache.room_members_loop
@@ -8555,7 +8555,7 @@ def svc_cache.room_members_loop
     (out, i)
 
 /-- [tuwunel_kernel::svc_cache::room_members]:
-    Source: 'src/svc_cache.rs', lines 83:0-93:1
+    Source: 'ports/tuwunel/kernel/src/svc_cache.rs', lines 83:0-93:1
     Visibility: public -/
 @[reducible]
 def svc_cache.room_members
@@ -8563,7 +8563,7 @@ def svc_cache.room_members
   svc_cache.room_members_loop s room (alloc.vec.Vec.new Std.U64) 0#usize
 
 /-- [tuwunel_kernel::svc_accessor::any_member_was]: loop body 0:
-    Source: 'src/svc_accessor.rs', lines 279:4-290:1 -/
+    Source: 'ports/tuwunel/kernel/src/svc_accessor.rs', lines 279:4-290:1 -/
 @[rust_loop_body]
 def svc_accessor.any_member_was_loop.body
   (s : Snapshot) (hash : Std.U64) (origin : Std.U64) (members : Slice Std.U64)
@@ -8590,7 +8590,7 @@ def svc_accessor.any_member_was_loop.body
   else ok (done false)
 
 /-- [tuwunel_kernel::svc_accessor::any_member_was]: loop 0:
-    Source: 'src/svc_accessor.rs', lines 279:4-290:1 -/
+    Source: 'ports/tuwunel/kernel/src/svc_accessor.rs', lines 279:4-290:1 -/
 @[rust_loop]
 def svc_accessor.any_member_was_loop
   (s : Snapshot) (hash : Std.U64) (origin : Std.U64) (members : Slice Std.U64)
@@ -8603,7 +8603,7 @@ def svc_accessor.any_member_was_loop
     i
 
 /-- [tuwunel_kernel::svc_accessor::any_member_was]:
-    Source: 'src/svc_accessor.rs', lines 277:0-290:1 -/
+    Source: 'ports/tuwunel/kernel/src/svc_accessor.rs', lines 277:0-290:1 -/
 @[reducible]
 def svc_accessor.any_member_was
   (s : Snapshot) (hash : Std.U64) (origin : Std.U64) (members : Slice Std.U64)
@@ -8613,7 +8613,7 @@ def svc_accessor.any_member_was
   svc_accessor.any_member_was_loop s hash origin members joined 0#usize
 
 /-- [tuwunel_kernel::svc_accessor::server_can_see_event]:
-    Source: 'src/svc_accessor.rs', lines 262:0-275:1
+    Source: 'ports/tuwunel/kernel/src/svc_accessor.rs', lines 262:0-275:1
     Visibility: public -/
 def svc_accessor.server_can_see_event
   (s : Snapshot) (origin : Std.U64) (room : Std.U64) (event_id : Std.U64) :
@@ -8637,7 +8637,7 @@ def svc_accessor.server_can_see_event
   | core.result.Result.Err _ => ok true
 
 /-- [tuwunel_kernel::transition]:
-    Source: 'src/lib.rs', lines 428:0-459:1
+    Source: 'ports/tuwunel/kernel/src/lib.rs', lines 428:0-459:1
     Visibility: public -/
 def transition
   (s : Snapshot) (req : Request) :

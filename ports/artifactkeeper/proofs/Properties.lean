@@ -1,3 +1,9 @@
+import Verified.ArtifactkeeperAdminAudited
+import Verified.ArtifactkeeperOnlyAdminRules
+import Verified.ArtifactkeeperPrivateNeedsGrant
+import Verified.ArtifactkeeperRuleOverridesRole
+import Verified.ArtifactkeeperCidrContains
+import Verified.ArtifactkeeperAdminGate
 import Spec
 open Aeneas Aeneas.Std Result artifactkeeper_kernel artifactkeeper_kernel.Spec
 open H5iAppLib hiding lit
@@ -33,7 +39,7 @@ theorem private_needs_grant (db : tables.Db) (o : trusted.Oracle) (ip : Option n
     (ha : e.is_admin = false) (hr : RepoOf db req r)
     (hv : r.visibility ≠ some .Public ∧ r.visibility ≠ some .Internal) :
     HasGrant db ip e.user_id r.id := by
-  sorry
+  apply artifactkeeper_kernel.Verified.ArtifactkeeperPrivateNeedsGrant.private_needs_grant <;> assumption
 
 /-- Writes are deny-by-default (#2603): a non-admin PUT, PATCH or DELETE
 outside the negotiation routes goes through only if `check_repository_action`'s
@@ -99,12 +105,12 @@ theorem rule_overrides_role (db : tables.Db) (ip : Option net.IpAddr) (user repo
       ¬ Carries p.actions.val (nats a.val) ∧ ¬ Carries p.actions.val (lit "admin"))
     (hr : ¬ RoleGrants db user repo (lit "admin")) :
     permission.check_repository_action db ip user repo a false ≠ ok (.Ok true) := by
-  sorry
+  apply artifactkeeper_kernel.Verified.ArtifactkeeperRuleOverridesRole.rule_overrides_role <;> assumption
 
 /-- `CidrRange::contains` is prefix agreement. -/
 theorem cidr_contains_spec (c : net.CidrRange) (a : net.IpAddr) :
     c.contains a = ok (inCidr c a) := by
-  sorry
+  apply artifactkeeper_kernel.Verified.ArtifactkeeperCidrContains.cidr_contains_spec <;> assumption
 
 /-! ## Admin and guest gates -/
 
@@ -114,7 +120,7 @@ theorem admin_gate (db : tables.Db) (o : trusted.Oracle) (req : http.Request)
     (ws : alloc.vec.Vec resolve.Write) (auth : Option AuthExtension) (t : Bool)
     (h : middleware.admin_middleware db o req = ok (ws, .Next auth t)) :
     ∃ e, auth = some e ∧ e.is_admin = true ∧ AdminScoped e.scopes := by
-  sorry
+  apply artifactkeeper_kernel.Verified.ArtifactkeeperAdminGate.admin_gate <;> assumption
 
 /-- Every non-admin turned away by `admin_middleware` is audited, and
 nothing else is written. -/
@@ -122,7 +128,7 @@ theorem admin_denial_audited (db : tables.Db) (o : trusted.Oracle) (req : http.R
     (ws : alloc.vec.Vec resolve.Write)
     (h : middleware.admin_middleware db o req = ok (ws, .Respond .AdminRequired)) :
     ∃ u, ws.val = [resolve.Write.AuditPermissionDenied u req.path req.method] := by
-  sorry
+  apply artifactkeeper_kernel.Verified.ArtifactkeeperAdminAudited.admin_denial_audited <;> assumption
 
 /-- With guest access off, a request presenting no credential gets through
 only on an allowlisted path (#850). -/
@@ -139,7 +145,7 @@ theorem only_admin_creates_rules (db : tables.Db) (o : trusted.Oracle) (auth : O
     (p : handlers.CreatePermissionRequest) (ws : alloc.vec.Vec resolve.Write) (r : core.result.Result Unit AppError)
     (h : handlers.create_permission db o auth p = ok (ws, r)) (hw : ws.val ≠ []) :
     ∃ e, auth = some e ∧ e.is_admin = true := by
-  sorry
+  apply artifactkeeper_kernel.Verified.ArtifactkeeperOnlyAdminRules.only_admin_creates_rules <;> assumption
 
 /-- A stored anonymous rule grants only `read`, on a repository or project,
 under the nil principal id. -/

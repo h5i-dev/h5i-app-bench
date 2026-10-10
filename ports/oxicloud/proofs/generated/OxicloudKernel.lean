@@ -20,12 +20,12 @@ set_option maxRecDepth 2048
 namespace oxicloud_kernel
 
 /-- [oxicloud_kernel::acl::INTERNAL_GROUP_ID]
-    Source: 'src/acl.rs', lines 8:0-8:37
+    Source: 'ports/oxicloud/kernel/src/acl.rs', lines 8:0-8:37
     Visibility: public -/
 @[global_simps, irreducible] def acl.INTERNAL_GROUP_ID : Std.U64 := 1#u64
 
 /-- [oxicloud_kernel::model::Role]
-    Source: 'src/model.rs', lines 35:0-41:1
+    Source: 'ports/oxicloud/kernel/src/model.rs', lines 35:0-41:1
     Visibility: public -/
 @[discriminant isize]
 inductive model.Role where
@@ -36,7 +36,7 @@ inductive model.Role where
 | Viewer : model.Role
 
 /-- [oxicloud_kernel::model::Permission]
-    Source: 'src/model.rs', lines 22:0-30:1
+    Source: 'ports/oxicloud/kernel/src/model.rs', lines 22:0-30:1
     Visibility: public -/
 @[discriminant isize]
 inductive model.Permission where
@@ -49,7 +49,7 @@ inductive model.Permission where
 | Manage : model.Permission
 
 /-- [oxicloud_kernel::model::{impl core::cmp::PartialEq<oxicloud_kernel::model::Permission> for oxicloud_kernel::model::Permission}::eq]:
-    Source: 'src/model.rs', lines 21:29-21:38
+    Source: 'ports/oxicloud/kernel/src/model.rs', lines 21:29-21:38
     Visibility: public -/
 def model.Permission.Insts.CoreCmpPartialEqPermission.eq
   (self : model.Permission) (other : model.Permission) : Result Bool := do
@@ -58,7 +58,7 @@ def model.Permission.Insts.CoreCmpPartialEqPermission.eq
   ok (self1 = other1)
 
 /-- [oxicloud_kernel::acl::role_grants]:
-    Source: 'src/acl.rs', lines 11:0-20:1
+    Source: 'ports/oxicloud/kernel/src/acl.rs', lines 11:0-20:1
     Visibility: public -/
 def acl.role_grants
   (role : model.Role) (p : model.Permission) : Result Bool := do
@@ -108,7 +108,7 @@ def acl.role_grants
       model.Permission.Read
 
 /-- [oxicloud_kernel::model::{impl core::cmp::PartialEq<oxicloud_kernel::model::Role> for oxicloud_kernel::model::Role}::eq]:
-    Source: 'src/model.rs', lines 34:29-34:38
+    Source: 'ports/oxicloud/kernel/src/model.rs', lines 34:29-34:38
     Visibility: public -/
 def model.Role.Insts.CoreCmpPartialEqRole.eq
   (self : model.Role) (other : model.Role) : Result Bool := do
@@ -117,7 +117,7 @@ def model.Role.Insts.CoreCmpPartialEqRole.eq
   ok (self1 = other1)
 
 /-- [oxicloud_kernel::acl::role_implies]:
-    Source: 'src/acl.rs', lines 23:0-31:1
+    Source: 'ports/oxicloud/kernel/src/acl.rs', lines 23:0-31:1
     Visibility: public -/
 def acl.role_implies
   (role : model.Role) (p : model.Permission) : Result Bool := do
@@ -158,7 +158,7 @@ def acl.role_implies
     model.Role.Insts.CoreCmpPartialEqRole.eq role model.Role.Owner
 
 /-- Trait implementation: [oxicloud_kernel::model::{impl core::cmp::PartialEq<oxicloud_kernel::model::Permission> for oxicloud_kernel::model::Permission}]
-    Source: 'src/model.rs', lines 21:29-21:38 -/
+    Source: 'ports/oxicloud/kernel/src/model.rs', lines 21:29-21:38 -/
 @[reducible]
 impl_def model.Permission.Insts.CoreCmpPartialEqPermission : core.cmp.PartialEq
   model.Permission model.Permission := {
@@ -168,14 +168,14 @@ impl_def model.Permission.Insts.CoreCmpPartialEqPermission : core.cmp.PartialEq
 }
 
 /-- [oxicloud_kernel::acl::read_only_gate_applies]:
-    Source: 'src/acl.rs', lines 34:0-36:1
+    Source: 'ports/oxicloud/kernel/src/acl.rs', lines 34:0-36:1
     Visibility: public -/
 def acl.read_only_gate_applies (p : model.Permission) : Result Bool := do
   core.cmp.PartialEq.ne.trait_default
     model.Permission.Insts.CoreCmpPartialEqPermission p model.Permission.Read
 
 /-- [oxicloud_kernel::acl::contains]: loop body 0:
-    Source: 'src/acl.rs', lines 40:4-47:1 -/
+    Source: 'ports/oxicloud/kernel/src/acl.rs', lines 40:4-47:1 -/
 @[rust_loop_body]
 def acl.contains_loop.body
   (ids : Slice Std.U64) (x : Std.U64) (i : Std.Usize) :
@@ -192,7 +192,7 @@ def acl.contains_loop.body
   else ok (done false)
 
 /-- [oxicloud_kernel::acl::contains]: loop 0:
-    Source: 'src/acl.rs', lines 40:4-47:1 -/
+    Source: 'ports/oxicloud/kernel/src/acl.rs', lines 40:4-47:1 -/
 @[rust_loop]
 def acl.contains_loop
   (ids : Slice Std.U64) (x : Std.U64) (i : Std.Usize) : Result Bool := do
@@ -201,13 +201,13 @@ def acl.contains_loop
     i
 
 /-- [oxicloud_kernel::acl::contains]:
-    Source: 'src/acl.rs', lines 38:0-47:1 -/
+    Source: 'ports/oxicloud/kernel/src/acl.rs', lines 38:0-47:1 -/
 @[reducible]
 def acl.contains (ids : Slice Std.U64) (x : Std.U64) : Result Bool := do
   acl.contains_loop ids x 0#usize
 
 /-- [oxicloud_kernel::model::File]
-    Source: 'src/model.rs', lines 109:0-113:1
+    Source: 'ports/oxicloud/kernel/src/model.rs', lines 109:0-113:1
     Visibility: public -/
 structure model.File where
   id : Std.U64
@@ -215,7 +215,7 @@ structure model.File where
   folder_id : Option Std.U64
 
 /-- [oxicloud_kernel::model::Folder]
-    Source: 'src/model.rs', lines 101:0-105:1
+    Source: 'ports/oxicloud/kernel/src/model.rs', lines 101:0-105:1
     Visibility: public -/
 structure model.Folder where
   id : Std.U64
@@ -223,7 +223,7 @@ structure model.Folder where
   lpath : alloc.vec.Vec Std.U64
 
 /-- [oxicloud_kernel::model::DriveKind]
-    Source: 'src/model.rs', lines 86:0-89:1
+    Source: 'ports/oxicloud/kernel/src/model.rs', lines 86:0-89:1
     Visibility: public -/
 @[discriminant isize]
 inductive model.DriveKind where
@@ -231,7 +231,7 @@ inductive model.DriveKind where
 | Shared : model.DriveKind
 
 /-- [oxicloud_kernel::model::DrivePolicies]
-    Source: 'src/model.rs', lines 77:0-83:1
+    Source: 'ports/oxicloud/kernel/src/model.rs', lines 77:0-83:1
     Visibility: public -/
 structure model.DrivePolicies where
   read_only : Bool
@@ -241,7 +241,7 @@ structure model.DrivePolicies where
   forbid_owner_role_change : Bool
 
 /-- [oxicloud_kernel::model::Drive]
-    Source: 'src/model.rs', lines 93:0-97:1
+    Source: 'ports/oxicloud/kernel/src/model.rs', lines 93:0-97:1
     Visibility: public -/
 structure model.Drive where
   id : Std.U64
@@ -249,7 +249,7 @@ structure model.Drive where
   policies : model.DrivePolicies
 
 /-- [oxicloud_kernel::model::Member]
-    Source: 'src/model.rs', lines 62:0-65:1
+    Source: 'ports/oxicloud/kernel/src/model.rs', lines 62:0-65:1
     Visibility: public -/
 @[discriminant isize]
 inductive model.Member where
@@ -257,21 +257,21 @@ inductive model.Member where
 | Group : Std.U64 → model.Member
 
 /-- [oxicloud_kernel::model::Membership]
-    Source: 'src/model.rs', lines 69:0-72:1
+    Source: 'ports/oxicloud/kernel/src/model.rs', lines 69:0-72:1
     Visibility: public -/
 structure model.Membership where
   group_id : Std.U64
   member : model.Member
 
 /-- [oxicloud_kernel::model::User]
-    Source: 'src/model.rs', lines 56:0-59:1
+    Source: 'ports/oxicloud/kernel/src/model.rs', lines 56:0-59:1
     Visibility: public -/
 structure model.User where
   id : Std.U64
   is_external : Bool
 
 /-- [oxicloud_kernel::model::Resource]
-    Source: 'src/model.rs', lines 12:0-19:1
+    Source: 'ports/oxicloud/kernel/src/model.rs', lines 12:0-19:1
     Visibility: public -/
 @[discriminant isize]
 inductive model.Resource where
@@ -283,7 +283,7 @@ inductive model.Resource where
 | Playlist : Std.U64 → model.Resource
 
 /-- [oxicloud_kernel::model::Subject]
-    Source: 'src/model.rs', lines 5:0-9:1
+    Source: 'ports/oxicloud/kernel/src/model.rs', lines 5:0-9:1
     Visibility: public -/
 @[discriminant isize]
 inductive model.Subject where
@@ -292,7 +292,7 @@ inductive model.Subject where
 | Token : Std.U64 → model.Subject
 
 /-- [oxicloud_kernel::model::Grant]
-    Source: 'src/model.rs', lines 45:0-52:1
+    Source: 'ports/oxicloud/kernel/src/model.rs', lines 45:0-52:1
     Visibility: public -/
 structure model.Grant where
   id : Std.U64
@@ -303,7 +303,7 @@ structure model.Grant where
   expires_at : Option Std.I64
 
 /-- [oxicloud_kernel::model::Db]
-    Source: 'src/model.rs', lines 116:0-123:1
+    Source: 'ports/oxicloud/kernel/src/model.rs', lines 116:0-123:1
     Visibility: public -/
 structure model.Db where
   users : alloc.vec.Vec model.User
@@ -314,7 +314,7 @@ structure model.Db where
   files : alloc.vec.Vec model.File
 
 /-- [oxicloud_kernel::acl::is_external]: loop body 0:
-    Source: 'src/acl.rs', lines 52:4-59:1 -/
+    Source: 'ports/oxicloud/kernel/src/acl.rs', lines 52:4-59:1 -/
 @[rust_loop_body]
 def acl.is_external_loop.body
   (db : model.Db) (uid : Std.U64) (i : Std.Usize) :
@@ -333,7 +333,7 @@ def acl.is_external_loop.body
   else ok (done true)
 
 /-- [oxicloud_kernel::acl::is_external]: loop 0:
-    Source: 'src/acl.rs', lines 52:4-59:1 -/
+    Source: 'ports/oxicloud/kernel/src/acl.rs', lines 52:4-59:1 -/
 @[rust_loop]
 def acl.is_external_loop
   (db : model.Db) (uid : Std.U64) (i : Std.Usize) : Result Bool := do
@@ -342,13 +342,13 @@ def acl.is_external_loop
     i
 
 /-- [oxicloud_kernel::acl::is_external]:
-    Source: 'src/acl.rs', lines 50:0-59:1 -/
+    Source: 'ports/oxicloud/kernel/src/acl.rs', lines 50:0-59:1 -/
 @[reducible]
 def acl.is_external (db : model.Db) (uid : Std.U64) : Result Bool := do
   acl.is_external_loop db uid 0#usize
 
 /-- [oxicloud_kernel::acl::member_reaches]:
-    Source: 'src/acl.rs', lines 62:0-67:1 -/
+    Source: 'ports/oxicloud/kernel/src/acl.rs', lines 62:0-67:1 -/
 def acl.member_reaches
   (m : model.Member) (uid : Std.U64) (found : Slice Std.U64) :
   Result Bool
@@ -358,7 +358,7 @@ def acl.member_reaches
   | model.Member.Group g => acl.contains found g
 
 /-- [oxicloud_kernel::acl::add_parents]: loop body 0:
-    Source: 'src/acl.rs', lines 75:4-82:5 -/
+    Source: 'ports/oxicloud/kernel/src/acl.rs', lines 75:4-82:5 -/
 @[rust_loop_body]
 def acl.add_parents_loop.body
   (db : model.Db) (uid : Std.U64) (out : alloc.vec.Vec Std.U64) (grew : Bool)
@@ -390,7 +390,7 @@ def acl.add_parents_loop.body
   else ok (done (out, grew))
 
 /-- [oxicloud_kernel::acl::add_parents]: loop 0:
-    Source: 'src/acl.rs', lines 75:4-82:5 -/
+    Source: 'ports/oxicloud/kernel/src/acl.rs', lines 75:4-82:5 -/
 @[rust_loop]
 def acl.add_parents_loop
   (db : model.Db) (uid : Std.U64) (out : alloc.vec.Vec Std.U64) (grew : Bool)
@@ -402,7 +402,7 @@ def acl.add_parents_loop
     (out, grew, i)
 
 /-- [oxicloud_kernel::acl::add_parents]:
-    Source: 'src/acl.rs', lines 71:0-84:1 -/
+    Source: 'ports/oxicloud/kernel/src/acl.rs', lines 71:0-84:1 -/
 @[reducible]
 def acl.add_parents
   (db : model.Db) (uid : Std.U64) (found : alloc.vec.Vec Std.U64) :
@@ -411,7 +411,7 @@ def acl.add_parents
   acl.add_parents_loop db uid found false 0#usize
 
 /-- [oxicloud_kernel::acl::groups_for_user]: loop body 0:
-    Source: 'src/acl.rs', lines 93:4-98:5
+    Source: 'ports/oxicloud/kernel/src/acl.rs', lines 93:4-98:5
     Visibility: public -/
 @[rust_loop_body]
 def acl.groups_for_user_loop.body
@@ -432,7 +432,7 @@ def acl.groups_for_user_loop.body
   else ok (done found)
 
 /-- [oxicloud_kernel::acl::groups_for_user]: loop 0:
-    Source: 'src/acl.rs', lines 93:4-98:5
+    Source: 'ports/oxicloud/kernel/src/acl.rs', lines 93:4-98:5
     Visibility: public -/
 @[rust_loop]
 def acl.groups_for_user_loop
@@ -446,7 +446,7 @@ def acl.groups_for_user_loop
     (found, round, grew)
 
 /-- [oxicloud_kernel::acl::groups_for_user]:
-    Source: 'src/acl.rs', lines 89:0-100:1
+    Source: 'ports/oxicloud/kernel/src/acl.rs', lines 89:0-100:1
     Visibility: public -/
 @[reducible]
 def acl.groups_for_user
@@ -454,7 +454,7 @@ def acl.groups_for_user
   acl.groups_for_user_loop db uid (alloc.vec.Vec.new Std.U64) 0#usize true
 
 /-- [oxicloud_kernel::acl::push_new]:
-    Source: 'src/acl.rs', lines 102:0-107:1 -/
+    Source: 'ports/oxicloud/kernel/src/acl.rs', lines 102:0-107:1 -/
 def acl.push_new
   (v : alloc.vec.Vec Std.U64) (x : Std.U64) :
   Result (alloc.vec.Vec Std.U64)
@@ -466,7 +466,7 @@ def acl.push_new
   else alloc.vec.Vec.push v x
 
 /-- [oxicloud_kernel::acl::expand_user]: loop body 0:
-    Source: 'src/acl.rs', lines 119:4-122:5
+    Source: 'ports/oxicloud/kernel/src/acl.rs', lines 119:4-122:5
     Visibility: public -/
 @[rust_loop_body]
 def acl.expand_user_loop.body
@@ -487,7 +487,7 @@ def acl.expand_user_loop.body
   else ok (done set)
 
 /-- [oxicloud_kernel::acl::expand_user]: loop 0:
-    Source: 'src/acl.rs', lines 119:4-122:5
+    Source: 'ports/oxicloud/kernel/src/acl.rs', lines 119:4-122:5
     Visibility: public -/
 @[rust_loop]
 def acl.expand_user_loop
@@ -500,7 +500,7 @@ def acl.expand_user_loop
     (set, i)
 
 /-- [oxicloud_kernel::acl::expand_user]:
-    Source: 'src/acl.rs', lines 111:0-124:1
+    Source: 'ports/oxicloud/kernel/src/acl.rs', lines 111:0-124:1
     Visibility: public -/
 def acl.expand_user
   (db : model.Db) (uid : Std.U64) : Result (alloc.vec.Vec Std.U64) := do
@@ -513,7 +513,7 @@ def acl.expand_user
   acl.expand_user_loop set1 direct 0#usize
 
 /-- [oxicloud_kernel::acl::subject_match_set]:
-    Source: 'src/acl.rs', lines 128:0-151:1
+    Source: 'ports/oxicloud/kernel/src/acl.rs', lines 128:0-151:1
     Visibility: public -/
 def acl.subject_match_set
   (db : model.Db) (s : model.Subject) :
@@ -535,7 +535,7 @@ def acl.subject_match_set
     ok (types, ids)
 
 /-- [oxicloud_kernel::acl::subject_type]:
-    Source: 'src/acl.rs', lines 153:0-159:1 -/
+    Source: 'ports/oxicloud/kernel/src/acl.rs', lines 153:0-159:1 -/
 def acl.subject_type (s : model.Subject) : Result Std.U8 := do
   match s with
   | model.Subject.User _ => ok 0#u8
@@ -543,7 +543,7 @@ def acl.subject_type (s : model.Subject) : Result Std.U8 := do
   | model.Subject.Token _ => ok 2#u8
 
 /-- [oxicloud_kernel::acl::subject_id]:
-    Source: 'src/acl.rs', lines 161:0-165:1 -/
+    Source: 'ports/oxicloud/kernel/src/acl.rs', lines 161:0-165:1 -/
 def acl.subject_id (s : model.Subject) : Result Std.U64 := do
   match s with
   | model.Subject.User x => ok x
@@ -551,7 +551,7 @@ def acl.subject_id (s : model.Subject) : Result Std.U64 := do
   | model.Subject.Token x => ok x
 
 /-- [oxicloud_kernel::acl::contains_u8]: loop body 0:
-    Source: 'src/acl.rs', lines 169:4-176:1 -/
+    Source: 'ports/oxicloud/kernel/src/acl.rs', lines 169:4-176:1 -/
 @[rust_loop_body]
 def acl.contains_u8_loop.body
   (xs : Slice Std.U8) (x : Std.U8) (i : Std.Usize) :
@@ -568,7 +568,7 @@ def acl.contains_u8_loop.body
   else ok (done false)
 
 /-- [oxicloud_kernel::acl::contains_u8]: loop 0:
-    Source: 'src/acl.rs', lines 169:4-176:1 -/
+    Source: 'ports/oxicloud/kernel/src/acl.rs', lines 169:4-176:1 -/
 @[rust_loop]
 def acl.contains_u8_loop
   (xs : Slice Std.U8) (x : Std.U8) (i : Std.Usize) : Result Bool := do
@@ -577,13 +577,13 @@ def acl.contains_u8_loop
     i
 
 /-- [oxicloud_kernel::acl::contains_u8]:
-    Source: 'src/acl.rs', lines 167:0-176:1 -/
+    Source: 'ports/oxicloud/kernel/src/acl.rs', lines 167:0-176:1 -/
 @[reducible]
 def acl.contains_u8 (xs : Slice Std.U8) (x : Std.U8) : Result Bool := do
   acl.contains_u8_loop xs x 0#usize
 
 /-- [oxicloud_kernel::acl::subject_matches]:
-    Source: 'src/acl.rs', lines 180:0-182:1 -/
+    Source: 'ports/oxicloud/kernel/src/acl.rs', lines 180:0-182:1 -/
 def acl.subject_matches
   (g : model.Grant) (types : Slice Std.U8) (ids : Slice Std.U64) :
   Result Bool
@@ -596,14 +596,14 @@ def acl.subject_matches
   else ok false
 
 /-- [oxicloud_kernel::acl::live]:
-    Source: 'src/acl.rs', lines 185:0-190:1 -/
+    Source: 'ports/oxicloud/kernel/src/acl.rs', lines 185:0-190:1 -/
 def acl.live (g : model.Grant) (now : Std.I64) : Result Bool := do
   match g.expires_at with
   | none => ok true
   | some t => ok (t > now)
 
 /-- [oxicloud_kernel::model::{impl core::cmp::PartialEq<oxicloud_kernel::model::Resource> for oxicloud_kernel::model::Resource}::eq]:
-    Source: 'src/model.rs', lines 11:29-11:38
+    Source: 'ports/oxicloud/kernel/src/model.rs', lines 11:29-11:38
     Visibility: public -/
 def model.Resource.Insts.CoreCmpPartialEqResource.eq
   (self : model.Resource) (other : model.Resource) : Result Bool := do
@@ -669,7 +669,7 @@ def model.Resource.Insts.CoreCmpPartialEqResource.eq
   else ok false
 
 /-- [oxicloud_kernel::acl::direct_grant_exists]: loop body 0:
-    Source: 'src/acl.rs', lines 195:4-203:1
+    Source: 'ports/oxicloud/kernel/src/acl.rs', lines 195:4-203:1
     Visibility: public -/
 @[rust_loop_body]
 def acl.direct_grant_exists_loop.body
@@ -707,7 +707,7 @@ def acl.direct_grant_exists_loop.body
   else ok (done false)
 
 /-- [oxicloud_kernel::acl::direct_grant_exists]: loop 0:
-    Source: 'src/acl.rs', lines 195:4-203:1
+    Source: 'ports/oxicloud/kernel/src/acl.rs', lines 195:4-203:1
     Visibility: public -/
 @[rust_loop]
 def acl.direct_grant_exists_loop
@@ -720,7 +720,7 @@ def acl.direct_grant_exists_loop
     i
 
 /-- [oxicloud_kernel::acl::direct_grant_exists]:
-    Source: 'src/acl.rs', lines 193:0-203:1
+    Source: 'ports/oxicloud/kernel/src/acl.rs', lines 193:0-203:1
     Visibility: public -/
 @[reducible]
 def acl.direct_grant_exists
@@ -731,7 +731,7 @@ def acl.direct_grant_exists
   acl.direct_grant_exists_loop db types ids p r now 0#usize
 
 /-- [oxicloud_kernel::model::{impl core::clone::Clone for oxicloud_kernel::model::Folder}::clone]:
-    Source: 'src/model.rs', lines 100:9-100:14
+    Source: 'ports/oxicloud/kernel/src/model.rs', lines 100:9-100:14
     Visibility: public -/
 def model.Folder.Insts.CoreCloneClone.clone
   (self : model.Folder) : Result model.Folder := do
@@ -741,7 +741,7 @@ def model.Folder.Insts.CoreCloneClone.clone
   ok { id := i, drive_id := i1, lpath := v }
 
 /-- [oxicloud_kernel::acl::find_folder]: loop body 0:
-    Source: 'src/acl.rs', lines 207:4-215:1 -/
+    Source: 'ports/oxicloud/kernel/src/acl.rs', lines 207:4-215:1 -/
 @[rust_loop_body]
 def acl.find_folder_loop.body
   (db : model.Db) (id : Std.U64) (i : Std.Usize) :
@@ -761,7 +761,7 @@ def acl.find_folder_loop.body
   else ok (done none)
 
 /-- [oxicloud_kernel::acl::find_folder]: loop 0:
-    Source: 'src/acl.rs', lines 207:4-215:1 -/
+    Source: 'ports/oxicloud/kernel/src/acl.rs', lines 207:4-215:1 -/
 @[rust_loop]
 def acl.find_folder_loop
   (db : model.Db) (id : Std.U64) (i : Std.Usize) :
@@ -772,14 +772,14 @@ def acl.find_folder_loop
     i
 
 /-- [oxicloud_kernel::acl::find_folder]:
-    Source: 'src/acl.rs', lines 205:0-215:1 -/
+    Source: 'ports/oxicloud/kernel/src/acl.rs', lines 205:0-215:1 -/
 @[reducible]
 def acl.find_folder
   (db : model.Db) (id : Std.U64) : Result (Option model.Folder) := do
   acl.find_folder_loop db id 0#usize
 
 /-- [oxicloud_kernel::acl::lpath_contains]: loop body 0:
-    Source: 'src/acl.rs', lines 223:4-230:1
+    Source: 'ports/oxicloud/kernel/src/acl.rs', lines 223:4-230:1
     Visibility: public -/
 @[rust_loop_body]
 def acl.lpath_contains_loop.body
@@ -798,7 +798,7 @@ def acl.lpath_contains_loop.body
   else ok (done true)
 
 /-- [oxicloud_kernel::acl::lpath_contains]: loop 0:
-    Source: 'src/acl.rs', lines 223:4-230:1
+    Source: 'ports/oxicloud/kernel/src/acl.rs', lines 223:4-230:1
     Visibility: public -/
 @[rust_loop]
 def acl.lpath_contains_loop
@@ -808,7 +808,7 @@ def acl.lpath_contains_loop
     i
 
 /-- [oxicloud_kernel::acl::lpath_contains]:
-    Source: 'src/acl.rs', lines 218:0-230:1
+    Source: 'ports/oxicloud/kernel/src/acl.rs', lines 218:0-230:1
     Visibility: public -/
 def acl.lpath_contains
   (a : Slice Std.U64) (b : Slice Std.U64) : Result Bool := do
@@ -819,7 +819,7 @@ def acl.lpath_contains
   else acl.lpath_contains_loop a b 0#usize
 
 /-- [oxicloud_kernel::acl::grant_folder_covers]:
-    Source: 'src/acl.rs', lines 233:0-241:1 -/
+    Source: 'ports/oxicloud/kernel/src/acl.rs', lines 233:0-241:1 -/
 def acl.grant_folder_covers
   (db : model.Db) (g : model.Grant) (target : Slice Std.U64) :
   Result Bool
@@ -839,7 +839,7 @@ def acl.grant_folder_covers
   | model.Resource.Playlist _ => ok false
 
 /-- [oxicloud_kernel::acl::folder_cascade_grant_exists]: loop body 0:
-    Source: 'src/acl.rs', lines 250:4-259:1
+    Source: 'ports/oxicloud/kernel/src/acl.rs', lines 250:4-259:1
     Visibility: public -/
 @[rust_loop_body]
 def acl.folder_cascade_grant_exists_loop.body
@@ -878,7 +878,7 @@ def acl.folder_cascade_grant_exists_loop.body
   else ok (done false)
 
 /-- [oxicloud_kernel::acl::folder_cascade_grant_exists]: loop 0:
-    Source: 'src/acl.rs', lines 250:4-259:1
+    Source: 'ports/oxicloud/kernel/src/acl.rs', lines 250:4-259:1
     Visibility: public -/
 @[rust_loop]
 def acl.folder_cascade_grant_exists_loop
@@ -893,7 +893,7 @@ def acl.folder_cascade_grant_exists_loop
     i
 
 /-- [oxicloud_kernel::acl::folder_cascade_grant_exists]:
-    Source: 'src/acl.rs', lines 244:0-259:1
+    Source: 'ports/oxicloud/kernel/src/acl.rs', lines 244:0-259:1
     Visibility: public -/
 def acl.folder_cascade_grant_exists
   (db : model.Db) (types : Slice Std.U8) (ids : Slice Std.U64)
@@ -907,7 +907,7 @@ def acl.folder_cascade_grant_exists
     acl.folder_cascade_grant_exists_loop db types ids p now f.lpath 0#usize
 
 /-- [oxicloud_kernel::acl::find_file]: loop body 0:
-    Source: 'src/acl.rs', lines 263:4-270:1 -/
+    Source: 'ports/oxicloud/kernel/src/acl.rs', lines 263:4-270:1 -/
 @[rust_loop_body]
 def acl.find_file_loop.body
   (db : model.Db) (id : Std.U64) (i : Std.Usize) :
@@ -926,7 +926,7 @@ def acl.find_file_loop.body
   else ok (done none)
 
 /-- [oxicloud_kernel::acl::find_file]: loop 0:
-    Source: 'src/acl.rs', lines 263:4-270:1 -/
+    Source: 'ports/oxicloud/kernel/src/acl.rs', lines 263:4-270:1 -/
 @[rust_loop]
 def acl.find_file_loop
   (db : model.Db) (id : Std.U64) (i : Std.Usize) :
@@ -937,14 +937,14 @@ def acl.find_file_loop
     i
 
 /-- [oxicloud_kernel::acl::find_file]:
-    Source: 'src/acl.rs', lines 261:0-270:1 -/
+    Source: 'ports/oxicloud/kernel/src/acl.rs', lines 261:0-270:1 -/
 @[reducible]
 def acl.find_file
   (db : model.Db) (id : Std.U64) : Result (Option model.File) := do
   acl.find_file_loop db id 0#usize
 
 /-- [oxicloud_kernel::acl::file_parent_folder]:
-    Source: 'src/acl.rs', lines 273:0-278:1 -/
+    Source: 'ports/oxicloud/kernel/src/acl.rs', lines 273:0-278:1 -/
 def acl.file_parent_folder
   (db : model.Db) (file_id : Std.U64) : Result (Option Std.U64) := do
   let o ← acl.find_file db file_id
@@ -953,7 +953,7 @@ def acl.file_parent_folder
   | some f => ok f.folder_id
 
 /-- [oxicloud_kernel::acl::cascade_grant]:
-    Source: 'src/acl.rs', lines 281:0-303:1
+    Source: 'ports/oxicloud/kernel/src/acl.rs', lines 281:0-303:1
     Visibility: public -/
 def acl.cascade_grant
   (db : model.Db) (s : model.Subject) (r : model.Resource)
@@ -990,7 +990,7 @@ def acl.cascade_grant
   | model.Resource.Playlist _ => ok false
 
 /-- [oxicloud_kernel::acl::drive_of]:
-    Source: 'src/acl.rs', lines 306:0-318:1
+    Source: 'ports/oxicloud/kernel/src/acl.rs', lines 306:0-318:1
     Visibility: public -/
 def acl.drive_of
   (db : model.Db) (r : model.Resource) : Result (Option Std.U64) := do
@@ -1011,7 +1011,7 @@ def acl.drive_of
   | model.Resource.Playlist _ => ok none
 
 /-- [oxicloud_kernel::acl::role_rank]:
-    Source: 'src/acl.rs', lines 330:0-338:1
+    Source: 'ports/oxicloud/kernel/src/acl.rs', lines 330:0-338:1
     Visibility: public -/
 def acl.role_rank (r : model.Role) : Result Std.U8 := do
   match r with
@@ -1022,7 +1022,7 @@ def acl.role_rank (r : model.Role) : Result Std.U8 := do
   | model.Role.Viewer => ok 4#u8
 
 /-- [oxicloud_kernel::acl::stronger]:
-    Source: 'src/acl.rs', lines 320:0-327:1 -/
+    Source: 'ports/oxicloud/kernel/src/acl.rs', lines 320:0-327:1 -/
 def acl.stronger
   (a : Option model.Role) (b : model.Role) : Result (Option model.Role) := do
   match a with
@@ -1035,7 +1035,7 @@ def acl.stronger
     else ok a
 
 /-- [oxicloud_kernel::acl::caller_role_on_drive]: loop body 0:
-    Source: 'src/acl.rs', lines 346:4-352:5
+    Source: 'ports/oxicloud/kernel/src/acl.rs', lines 346:4-352:5
     Visibility: public -/
 @[rust_loop_body]
 def acl.caller_role_on_drive_loop.body
@@ -1073,7 +1073,7 @@ def acl.caller_role_on_drive_loop.body
   else ok (done best)
 
 /-- [oxicloud_kernel::acl::caller_role_on_drive]: loop 0:
-    Source: 'src/acl.rs', lines 346:4-352:5
+    Source: 'ports/oxicloud/kernel/src/acl.rs', lines 346:4-352:5
     Visibility: public -/
 @[rust_loop]
 def acl.caller_role_on_drive_loop
@@ -1088,7 +1088,7 @@ def acl.caller_role_on_drive_loop
     (best, i)
 
 /-- [oxicloud_kernel::acl::caller_role_on_drive]:
-    Source: 'src/acl.rs', lines 342:0-354:1
+    Source: 'ports/oxicloud/kernel/src/acl.rs', lines 342:0-354:1
     Visibility: public -/
 def acl.caller_role_on_drive
   (db : model.Db) (s : model.Subject) (drive_id : Std.U64) (now : Std.I64) :
@@ -1098,7 +1098,7 @@ def acl.caller_role_on_drive
   acl.caller_role_on_drive_loop db drive_id now types ids none 0#usize
 
 /-- [oxicloud_kernel::acl::drive_policies]: loop body 0:
-    Source: 'src/acl.rs', lines 360:4-373:1
+    Source: 'ports/oxicloud/kernel/src/acl.rs', lines 360:4-373:1
     Visibility: public -/
 @[rust_loop_body]
 def acl.drive_policies_loop.body
@@ -1126,7 +1126,7 @@ def acl.drive_policies_loop.body
       })
 
 /-- [oxicloud_kernel::acl::drive_policies]: loop 0:
-    Source: 'src/acl.rs', lines 360:4-373:1
+    Source: 'ports/oxicloud/kernel/src/acl.rs', lines 360:4-373:1
     Visibility: public -/
 @[rust_loop]
 def acl.drive_policies_loop
@@ -1138,7 +1138,7 @@ def acl.drive_policies_loop
     i
 
 /-- [oxicloud_kernel::acl::drive_policies]:
-    Source: 'src/acl.rs', lines 358:0-373:1
+    Source: 'ports/oxicloud/kernel/src/acl.rs', lines 358:0-373:1
     Visibility: public -/
 @[reducible]
 def acl.drive_policies
@@ -1146,7 +1146,7 @@ def acl.drive_policies
   acl.drive_policies_loop db drive_id 0#usize
 
 /-- [oxicloud_kernel::acl::role_has]:
-    Source: 'src/acl.rs', lines 375:0-380:1 -/
+    Source: 'ports/oxicloud/kernel/src/acl.rs', lines 375:0-380:1 -/
 def acl.role_has
   (r : Option model.Role) (p : model.Permission) : Result Bool := do
   match r with
@@ -1154,7 +1154,7 @@ def acl.role_has
   | some role => acl.role_grants role p
 
 /-- [oxicloud_kernel::acl::check]:
-    Source: 'src/acl.rs', lines 383:0-416:1
+    Source: 'ports/oxicloud/kernel/src/acl.rs', lines 383:0-416:1
     Visibility: public -/
 def acl.check
   (db : model.Db) (migration_readonly : Bool) (now : Std.I64)
@@ -1411,7 +1411,7 @@ def acl.check
         acl.direct_grant_exists db s1 s2 p r now
 
 /-- [oxicloud_kernel::model::{impl core::cmp::PartialEq<oxicloud_kernel::model::Subject> for oxicloud_kernel::model::Subject}::eq]:
-    Source: 'src/model.rs', lines 4:29-4:38
+    Source: 'ports/oxicloud/kernel/src/model.rs', lines 4:29-4:38
     Visibility: public -/
 def model.Subject.Insts.CoreCmpPartialEqSubject.eq
   (self : model.Subject) (other : model.Subject) : Result Bool := do
@@ -1441,7 +1441,7 @@ def model.Subject.Insts.CoreCmpPartialEqSubject.eq
   else ok false
 
 /-- [oxicloud_kernel::acl::same_key]:
-    Source: 'src/acl.rs', lines 418:0-420:1 -/
+    Source: 'ports/oxicloud/kernel/src/acl.rs', lines 418:0-420:1 -/
 def acl.same_key
   (g : model.Grant) (s : model.Subject) (r : model.Resource) :
   Result Bool
@@ -1452,7 +1452,7 @@ def acl.same_key
   else ok false
 
 /-- [oxicloud_kernel::acl::set_role]: loop body 0:
-    Source: 'src/acl.rs', lines 430:4-441:5
+    Source: 'ports/oxicloud/kernel/src/acl.rs', lines 430:4-441:5
     Visibility: public -/
 @[rust_loop_body]
 def acl.set_role_loop.body
@@ -1485,7 +1485,7 @@ def acl.set_role_loop.body
   else ok (done (out, fresh, found))
 
 /-- [oxicloud_kernel::acl::set_role]: loop 0:
-    Source: 'src/acl.rs', lines 430:4-441:5
+    Source: 'ports/oxicloud/kernel/src/acl.rs', lines 430:4-441:5
     Visibility: public -/
 @[rust_loop]
 def acl.set_role_loop
@@ -1501,7 +1501,7 @@ def acl.set_role_loop
     (out, fresh, found, i)
 
 /-- [oxicloud_kernel::acl::set_role]:
-    Source: 'src/acl.rs', lines 424:0-446:1
+    Source: 'ports/oxicloud/kernel/src/acl.rs', lines 424:0-446:1
     Visibility: public -/
 def acl.set_role
   (grants : Slice model.Grant) (granted_by : Std.U64) (s : model.Subject)
@@ -1525,7 +1525,7 @@ def acl.set_role
       { id := i, subject := s, resource := r, role, granted_by, expires_at })
 
 /-- [oxicloud_kernel::acl::clear_role]: loop body 0:
-    Source: 'src/acl.rs', lines 452:4-458:5
+    Source: 'ports/oxicloud/kernel/src/acl.rs', lines 452:4-458:5
     Visibility: public -/
 @[rust_loop_body]
 def acl.clear_role_loop.body
@@ -1547,7 +1547,7 @@ def acl.clear_role_loop.body
   else ok (done out)
 
 /-- [oxicloud_kernel::acl::clear_role]: loop 0:
-    Source: 'src/acl.rs', lines 452:4-458:5
+    Source: 'ports/oxicloud/kernel/src/acl.rs', lines 452:4-458:5
     Visibility: public -/
 @[rust_loop]
 def acl.clear_role_loop
@@ -1560,7 +1560,7 @@ def acl.clear_role_loop
     (out, i)
 
 /-- [oxicloud_kernel::acl::clear_role]:
-    Source: 'src/acl.rs', lines 449:0-460:1
+    Source: 'ports/oxicloud/kernel/src/acl.rs', lines 449:0-460:1
     Visibility: public -/
 @[reducible]
 def acl.clear_role
@@ -1570,7 +1570,7 @@ def acl.clear_role
   acl.clear_role_loop grants s r (alloc.vec.Vec.new model.Grant) 0#usize
 
 /-- [oxicloud_kernel::grantapi::Env]
-    Source: 'src/grantapi.rs', lines 11:0-16:1
+    Source: 'ports/oxicloud/kernel/src/grantapi.rs', lines 11:0-16:1
     Visibility: public -/
 structure grantapi.Env where
   migration_readonly : Bool
@@ -1578,7 +1578,7 @@ structure grantapi.Env where
   fresh : Std.U64
 
 /-- [oxicloud_kernel::grantapi::Request]
-    Source: 'src/grantapi.rs', lines 19:0-26:1
+    Source: 'ports/oxicloud/kernel/src/grantapi.rs', lines 19:0-26:1
     Visibility: public -/
 @[discriminant isize]
 inductive grantapi.Request where
@@ -1597,7 +1597,7 @@ inductive grantapi.Request where
 | RevokeGrant : Std.U64 → grantapi.Request
 
 /-- [oxicloud_kernel::grantapi::Reply]
-    Source: 'src/grantapi.rs', lines 29:0-32:1
+    Source: 'ports/oxicloud/kernel/src/grantapi.rs', lines 29:0-32:1
     Visibility: public -/
 @[discriminant isize]
 inductive grantapi.Reply where
@@ -1605,7 +1605,7 @@ inductive grantapi.Reply where
 | NoContent : grantapi.Reply
 
 /-- [oxicloud_kernel::model::ErrorKind]
-    Source: 'src/model.rs', lines 127:0-133:1
+    Source: 'ports/oxicloud/kernel/src/model.rs', lines 127:0-133:1
     Visibility: public -/
 @[discriminant isize]
 inductive model.ErrorKind where
@@ -1616,7 +1616,7 @@ inductive model.ErrorKind where
 | Internal : model.ErrorKind
 
 /-- [oxicloud_kernel::grantapi::require]:
-    Source: 'src/grantapi.rs', lines 36:0-42:1
+    Source: 'ports/oxicloud/kernel/src/grantapi.rs', lines 36:0-42:1
     Visibility: public -/
 def grantapi.require
   (db : model.Db) (env : grantapi.Env) (s : model.Subject)
@@ -1641,7 +1641,7 @@ def grantapi.require
     else ok (core.result.Result.Err model.ErrorKind.NotFound)
 
 /-- [oxicloud_kernel::grantapi::find_drive]: loop body 0:
-    Source: 'src/grantapi.rs', lines 46:4-53:1 -/
+    Source: 'ports/oxicloud/kernel/src/grantapi.rs', lines 46:4-53:1 -/
 @[rust_loop_body]
 def grantapi.find_drive_loop.body
   (db : model.Db) (id : Std.U64) (i : Std.Usize) :
@@ -1660,7 +1660,7 @@ def grantapi.find_drive_loop.body
   else ok (done none)
 
 /-- [oxicloud_kernel::grantapi::find_drive]: loop 0:
-    Source: 'src/grantapi.rs', lines 46:4-53:1 -/
+    Source: 'ports/oxicloud/kernel/src/grantapi.rs', lines 46:4-53:1 -/
 @[rust_loop]
 def grantapi.find_drive_loop
   (db : model.Db) (id : Std.U64) (i : Std.Usize) :
@@ -1671,14 +1671,14 @@ def grantapi.find_drive_loop
     i
 
 /-- [oxicloud_kernel::grantapi::find_drive]:
-    Source: 'src/grantapi.rs', lines 44:0-53:1 -/
+    Source: 'ports/oxicloud/kernel/src/grantapi.rs', lines 44:0-53:1 -/
 @[reducible]
 def grantapi.find_drive
   (db : model.Db) (id : Std.U64) : Result (Option model.Drive) := do
   grantapi.find_drive_loop db id 0#usize
 
 /-- [oxicloud_kernel::grantapi::policies_for]:
-    Source: 'src/grantapi.rs', lines 56:0-68:1 -/
+    Source: 'ports/oxicloud/kernel/src/grantapi.rs', lines 56:0-68:1 -/
 def grantapi.policies_for
   (db : model.Db) (r : model.Resource) :
   Result (core.result.Result model.DrivePolicies model.ErrorKind)
@@ -1714,7 +1714,7 @@ def grantapi.policies_for
     ok (core.result.Result.Ok dp)
 
 /-- [oxicloud_kernel::grantapi::user_is_external]: loop body 0:
-    Source: 'src/grantapi.rs', lines 73:4-80:1 -/
+    Source: 'ports/oxicloud/kernel/src/grantapi.rs', lines 73:4-80:1 -/
 @[rust_loop_body]
 def grantapi.user_is_external_loop.body
   (db : model.Db) (uid : Std.U64) (i : Std.Usize) :
@@ -1733,7 +1733,7 @@ def grantapi.user_is_external_loop.body
   else ok (done (core.result.Result.Err model.ErrorKind.Internal))
 
 /-- [oxicloud_kernel::grantapi::user_is_external]: loop 0:
-    Source: 'src/grantapi.rs', lines 73:4-80:1 -/
+    Source: 'ports/oxicloud/kernel/src/grantapi.rs', lines 73:4-80:1 -/
 @[rust_loop]
 def grantapi.user_is_external_loop
   (db : model.Db) (uid : Std.U64) (i : Std.Usize) :
@@ -1744,7 +1744,7 @@ def grantapi.user_is_external_loop
     i
 
 /-- [oxicloud_kernel::grantapi::user_is_external]:
-    Source: 'src/grantapi.rs', lines 71:0-80:1 -/
+    Source: 'ports/oxicloud/kernel/src/grantapi.rs', lines 71:0-80:1 -/
 @[reducible]
 def grantapi.user_is_external
   (db : model.Db) (uid : Std.U64) :
@@ -1753,7 +1753,7 @@ def grantapi.user_is_external
   grantapi.user_is_external_loop db uid 0#usize
 
 /-- [oxicloud_kernel::grantapi::refuse_external_sharing]:
-    Source: 'src/grantapi.rs', lines 83:0-93:1
+    Source: 'ports/oxicloud/kernel/src/grantapi.rs', lines 83:0-93:1
     Visibility: public -/
 def grantapi.refuse_external_sharing
   (p : model.DrivePolicies) (s : model.Subject) (is_external : Bool) :
@@ -1771,7 +1771,7 @@ def grantapi.refuse_external_sharing
   else ok (core.result.Result.Ok ())
 
 /-- [oxicloud_kernel::model::{impl core::cmp::PartialEq<oxicloud_kernel::model::DriveKind> for oxicloud_kernel::model::DriveKind}::eq]:
-    Source: 'src/model.rs', lines 85:29-85:38
+    Source: 'ports/oxicloud/kernel/src/model.rs', lines 85:29-85:38
     Visibility: public -/
 def model.DriveKind.Insts.CoreCmpPartialEqDriveKind.eq
   (self : model.DriveKind) (other : model.DriveKind) : Result Bool := do
@@ -1780,7 +1780,7 @@ def model.DriveKind.Insts.CoreCmpPartialEqDriveKind.eq
   ok (self1 = other1)
 
 /-- [oxicloud_kernel::grantapi::refuse_if_personal]:
-    Source: 'src/grantapi.rs', lines 96:0-103:1 -/
+    Source: 'ports/oxicloud/kernel/src/grantapi.rs', lines 96:0-103:1 -/
 def grantapi.refuse_if_personal
   (db : model.Db) (drive_id : Std.U64) :
   Result (core.result.Result Unit model.ErrorKind)
@@ -1797,7 +1797,7 @@ def grantapi.refuse_if_personal
     else ok (core.result.Result.Ok ())
 
 /-- [oxicloud_kernel::grantapi::refuse_if_forbid_external_sharing]:
-    Source: 'src/grantapi.rs', lines 106:0-120:1 -/
+    Source: 'ports/oxicloud/kernel/src/grantapi.rs', lines 106:0-120:1 -/
 def grantapi.refuse_if_forbid_external_sharing
   (db : model.Db) (drive_id : Std.U64) (s : model.Subject) :
   Result (core.result.Result Unit model.ErrorKind)
@@ -1823,7 +1823,7 @@ def grantapi.refuse_if_forbid_external_sharing
   | model.Subject.Token _ => ok (core.result.Result.Ok ())
 
 /-- [oxicloud_kernel::grantapi::subject_is_owner]: loop body 0:
-    Source: 'src/grantapi.rs', lines 126:4-132:5 -/
+    Source: 'ports/oxicloud/kernel/src/grantapi.rs', lines 126:4-132:5 -/
 @[rust_loop_body]
 def grantapi.subject_is_owner_loop.body
   (db : model.Db) (drive_id : Std.U64) (s : model.Subject) (i : Std.Usize) :
@@ -1856,7 +1856,7 @@ def grantapi.subject_is_owner_loop.body
   else ok (done false)
 
 /-- [oxicloud_kernel::grantapi::subject_is_owner]: loop 0:
-    Source: 'src/grantapi.rs', lines 126:4-132:5 -/
+    Source: 'ports/oxicloud/kernel/src/grantapi.rs', lines 126:4-132:5 -/
 @[rust_loop]
 def grantapi.subject_is_owner_loop
   (db : model.Db) (drive_id : Std.U64) (s : model.Subject) (i : Std.Usize) :
@@ -1867,14 +1867,14 @@ def grantapi.subject_is_owner_loop
     i
 
 /-- [oxicloud_kernel::grantapi::subject_is_owner]:
-    Source: 'src/grantapi.rs', lines 124:0-134:1 -/
+    Source: 'ports/oxicloud/kernel/src/grantapi.rs', lines 124:0-134:1 -/
 @[reducible]
 def grantapi.subject_is_owner
   (db : model.Db) (drive_id : Std.U64) (s : model.Subject) : Result Bool := do
   grantapi.subject_is_owner_loop db drive_id s 0#usize
 
 /-- [oxicloud_kernel::grantapi::owner_count]: loop body 0:
-    Source: 'src/grantapi.rs', lines 139:4-145:5 -/
+    Source: 'ports/oxicloud/kernel/src/grantapi.rs', lines 139:4-145:5 -/
 @[rust_loop_body]
 def grantapi.owner_count_loop.body
   (db : model.Db) (drive_id : Std.U64) (n : Std.Usize) (i : Std.Usize) :
@@ -1904,7 +1904,7 @@ def grantapi.owner_count_loop.body
   else ok (done n)
 
 /-- [oxicloud_kernel::grantapi::owner_count]: loop 0:
-    Source: 'src/grantapi.rs', lines 139:4-145:5 -/
+    Source: 'ports/oxicloud/kernel/src/grantapi.rs', lines 139:4-145:5 -/
 @[rust_loop]
 def grantapi.owner_count_loop
   (db : model.Db) (drive_id : Std.U64) (n : Std.Usize) (i : Std.Usize) :
@@ -1915,14 +1915,14 @@ def grantapi.owner_count_loop
     (n, i)
 
 /-- [oxicloud_kernel::grantapi::owner_count]:
-    Source: 'src/grantapi.rs', lines 136:0-147:1 -/
+    Source: 'ports/oxicloud/kernel/src/grantapi.rs', lines 136:0-147:1 -/
 @[reducible]
 def grantapi.owner_count
   (db : model.Db) (drive_id : Std.U64) : Result Std.Usize := do
   grantapi.owner_count_loop db drive_id 0#usize 0#usize
 
 /-- [oxicloud_kernel::grantapi::refuse_if_forbid_owner_role_change]:
-    Source: 'src/grantapi.rs', lines 150:0-166:1 -/
+    Source: 'ports/oxicloud/kernel/src/grantapi.rs', lines 150:0-166:1 -/
 def grantapi.refuse_if_forbid_owner_role_change
   (db : model.Db) (drive_id : Std.U64) (s : model.Subject)
   (new_role : Option model.Role) :
@@ -1950,7 +1950,7 @@ def grantapi.refuse_if_forbid_owner_role_change
     else ok (core.result.Result.Ok ())
 
 /-- [oxicloud_kernel::grantapi::refuse_if_last_owner_change]:
-    Source: 'src/grantapi.rs', lines 169:0-177:1 -/
+    Source: 'ports/oxicloud/kernel/src/grantapi.rs', lines 169:0-177:1 -/
 def grantapi.refuse_if_last_owner_change
   (db : model.Db) (drive_id : Std.U64) (s : model.Subject) :
   Result (core.result.Result Unit model.ErrorKind)
@@ -1965,49 +1965,49 @@ def grantapi.refuse_if_last_owner_change
   else ok (core.result.Result.Ok ())
 
 /-- [oxicloud_kernel::model::{impl core::clone::Clone for oxicloud_kernel::model::File}::clone]:
-    Source: 'src/model.rs', lines 108:9-108:14
+    Source: 'ports/oxicloud/kernel/src/model.rs', lines 108:9-108:14
     Visibility: public -/
 def model.File.Insts.CoreCloneClone.clone
   (self : model.File) : Result model.File := do
   ok self
 
 /-- Trait implementation: [oxicloud_kernel::model::{impl core::clone::Clone for oxicloud_kernel::model::File}]
-    Source: 'src/model.rs', lines 108:9-108:14 -/
+    Source: 'ports/oxicloud/kernel/src/model.rs', lines 108:9-108:14 -/
 @[reducible]
 def model.File.Insts.CoreCloneClone : core.clone.Clone model.File := {
   clone := model.File.Insts.CoreCloneClone.clone
 }
 
 /-- Trait implementation: [oxicloud_kernel::model::{impl core::clone::Clone for oxicloud_kernel::model::Folder}]
-    Source: 'src/model.rs', lines 100:9-100:14 -/
+    Source: 'ports/oxicloud/kernel/src/model.rs', lines 100:9-100:14 -/
 @[reducible]
 def model.Folder.Insts.CoreCloneClone : core.clone.Clone model.Folder := {
   clone := model.Folder.Insts.CoreCloneClone.clone
 }
 
 /-- [oxicloud_kernel::model::{impl core::clone::Clone for oxicloud_kernel::model::Drive}::clone]:
-    Source: 'src/model.rs', lines 92:9-92:14
+    Source: 'ports/oxicloud/kernel/src/model.rs', lines 92:9-92:14
     Visibility: public -/
 def model.Drive.Insts.CoreCloneClone.clone
   (self : model.Drive) : Result model.Drive := do
   ok self
 
 /-- Trait implementation: [oxicloud_kernel::model::{impl core::clone::Clone for oxicloud_kernel::model::Drive}]
-    Source: 'src/model.rs', lines 92:9-92:14 -/
+    Source: 'ports/oxicloud/kernel/src/model.rs', lines 92:9-92:14 -/
 @[reducible]
 def model.Drive.Insts.CoreCloneClone : core.clone.Clone model.Drive := {
   clone := model.Drive.Insts.CoreCloneClone.clone
 }
 
 /-- [oxicloud_kernel::model::{impl core::clone::Clone for oxicloud_kernel::model::Membership}::clone]:
-    Source: 'src/model.rs', lines 68:9-68:14
+    Source: 'ports/oxicloud/kernel/src/model.rs', lines 68:9-68:14
     Visibility: public -/
 def model.Membership.Insts.CoreCloneClone.clone
   (self : model.Membership) : Result model.Membership := do
   ok self
 
 /-- Trait implementation: [oxicloud_kernel::model::{impl core::clone::Clone for oxicloud_kernel::model::Membership}]
-    Source: 'src/model.rs', lines 68:9-68:14 -/
+    Source: 'ports/oxicloud/kernel/src/model.rs', lines 68:9-68:14 -/
 @[reducible]
 def model.Membership.Insts.CoreCloneClone : core.clone.Clone model.Membership
   := {
@@ -2015,21 +2015,21 @@ def model.Membership.Insts.CoreCloneClone : core.clone.Clone model.Membership
 }
 
 /-- [oxicloud_kernel::model::{impl core::clone::Clone for oxicloud_kernel::model::User}::clone]:
-    Source: 'src/model.rs', lines 55:9-55:14
+    Source: 'ports/oxicloud/kernel/src/model.rs', lines 55:9-55:14
     Visibility: public -/
 def model.User.Insts.CoreCloneClone.clone
   (self : model.User) : Result model.User := do
   ok self
 
 /-- Trait implementation: [oxicloud_kernel::model::{impl core::clone::Clone for oxicloud_kernel::model::User}]
-    Source: 'src/model.rs', lines 55:9-55:14 -/
+    Source: 'ports/oxicloud/kernel/src/model.rs', lines 55:9-55:14 -/
 @[reducible]
 def model.User.Insts.CoreCloneClone : core.clone.Clone model.User := {
   clone := model.User.Insts.CoreCloneClone.clone
 }
 
 /-- [oxicloud_kernel::grantapi::with_grants]:
-    Source: 'src/grantapi.rs', lines 179:0-188:1 -/
+    Source: 'ports/oxicloud/kernel/src/grantapi.rs', lines 179:0-188:1 -/
 def grantapi.with_grants
   (db : model.Db) (grants : alloc.vec.Vec model.Grant) : Result model.Db := do
   let v ← alloc.vec.CloneVec.clone model.User.Insts.CoreCloneClone db.users
@@ -2052,21 +2052,21 @@ def grantapi.with_grants
     }
 
 /-- [oxicloud_kernel::model::{impl core::clone::Clone for oxicloud_kernel::model::Grant}::clone]:
-    Source: 'src/model.rs', lines 44:9-44:14
+    Source: 'ports/oxicloud/kernel/src/model.rs', lines 44:9-44:14
     Visibility: public -/
 def model.Grant.Insts.CoreCloneClone.clone
   (self : model.Grant) : Result model.Grant := do
   ok self
 
 /-- Trait implementation: [oxicloud_kernel::model::{impl core::clone::Clone for oxicloud_kernel::model::Grant}]
-    Source: 'src/model.rs', lines 44:9-44:14 -/
+    Source: 'ports/oxicloud/kernel/src/model.rs', lines 44:9-44:14 -/
 @[reducible]
 def model.Grant.Insts.CoreCloneClone : core.clone.Clone model.Grant := {
   clone := model.Grant.Insts.CoreCloneClone.clone
 }
 
 /-- [oxicloud_kernel::model::{impl core::clone::Clone for oxicloud_kernel::model::Db}::clone]:
-    Source: 'src/model.rs', lines 115:9-115:14
+    Source: 'ports/oxicloud/kernel/src/model.rs', lines 115:9-115:14
     Visibility: public -/
 def model.Db.Insts.CoreCloneClone.clone
   (self : model.Db) : Result model.Db := do
@@ -2093,7 +2093,7 @@ def model.Db.Insts.CoreCloneClone.clone
     }
 
 /-- Trait implementation: [oxicloud_kernel::model::{impl core::cmp::PartialEq<oxicloud_kernel::model::Role> for oxicloud_kernel::model::Role}]
-    Source: 'src/model.rs', lines 34:29-34:38 -/
+    Source: 'ports/oxicloud/kernel/src/model.rs', lines 34:29-34:38 -/
 @[reducible]
 impl_def model.Role.Insts.CoreCmpPartialEqRole : core.cmp.PartialEq model.Role
   model.Role := {
@@ -2103,7 +2103,7 @@ impl_def model.Role.Insts.CoreCmpPartialEqRole : core.cmp.PartialEq model.Role
 }
 
 /-- [oxicloud_kernel::grantapi::set_member_role]:
-    Source: 'src/grantapi.rs', lines 191:0-216:1
+    Source: 'ports/oxicloud/kernel/src/grantapi.rs', lines 191:0-216:1
     Visibility: public -/
 def grantapi.set_member_role
   (db : model.Db) (env : grantapi.Env) (caller : Std.U64) (drive_id : Std.U64)
@@ -2151,7 +2151,7 @@ def grantapi.set_member_role
     ok (d, core.result.Result.Err e)
 
 /-- [oxicloud_kernel::grantapi::remove_member]:
-    Source: 'src/grantapi.rs', lines 219:0-235:1
+    Source: 'ports/oxicloud/kernel/src/grantapi.rs', lines 219:0-235:1
     Visibility: public -/
 def grantapi.remove_member
   (db : model.Db) (env : grantapi.Env) (caller : Std.U64) (drive_id : Std.U64)
@@ -2187,7 +2187,7 @@ def grantapi.remove_member
     ok (d, core.result.Result.Err e)
 
 /-- [oxicloud_kernel::grantapi::is_drive]:
-    Source: 'src/grantapi.rs', lines 237:0-242:1 -/
+    Source: 'ports/oxicloud/kernel/src/grantapi.rs', lines 237:0-242:1 -/
 def grantapi.is_drive (r : model.Resource) : Result Bool := do
   match r with
   | model.Resource.Folder _ => ok false
@@ -2198,7 +2198,7 @@ def grantapi.is_drive (r : model.Resource) : Result Bool := do
   | model.Resource.Playlist _ => ok false
 
 /-- [oxicloud_kernel::grantapi::create_gates]:
-    Source: 'src/grantapi.rs', lines 245:0-267:1 -/
+    Source: 'ports/oxicloud/kernel/src/grantapi.rs', lines 245:0-267:1 -/
 def grantapi.create_gates
   (db : model.Db) (r : model.Resource) (s : model.Subject) :
   Result (core.result.Result Unit model.ErrorKind)
@@ -2318,7 +2318,7 @@ def grantapi.create_gates
       Unit (core.convert.FromSame model.ErrorKind) residual
 
 /-- [oxicloud_kernel::grantapi::create_grant]:
-    Source: 'src/grantapi.rs', lines 270:0-287:1
+    Source: 'ports/oxicloud/kernel/src/grantapi.rs', lines 270:0-287:1
     Visibility: public -/
 def grantapi.create_grant
   (db : model.Db) (env : grantapi.Env) (caller : Std.U64) (r : model.Resource)
@@ -2374,7 +2374,7 @@ def grantapi.create_grant
     ok (d, core.result.Result.Err e)
 
 /-- [oxicloud_kernel::grantapi::set_role_handler]:
-    Source: 'src/grantapi.rs', lines 291:0-304:1
+    Source: 'ports/oxicloud/kernel/src/grantapi.rs', lines 290:0-303:1
     Visibility: public -/
 def grantapi.set_role_handler
   (db : model.Db) (env : grantapi.Env) (caller : Std.U64) (r : model.Resource)
@@ -2419,7 +2419,7 @@ def grantapi.set_role_handler
     ok (d, core.result.Result.Err e)
 
 /-- [oxicloud_kernel::grantapi::find_grant]: loop body 0:
-    Source: 'src/grantapi.rs', lines 308:4-315:1 -/
+    Source: 'ports/oxicloud/kernel/src/grantapi.rs', lines 307:4-314:1 -/
 @[rust_loop_body]
 def grantapi.find_grant_loop.body
   (db : model.Db) (id : Std.U64) (i : Std.Usize) :
@@ -2438,7 +2438,7 @@ def grantapi.find_grant_loop.body
   else ok (done none)
 
 /-- [oxicloud_kernel::grantapi::find_grant]: loop 0:
-    Source: 'src/grantapi.rs', lines 308:4-315:1 -/
+    Source: 'ports/oxicloud/kernel/src/grantapi.rs', lines 307:4-314:1 -/
 @[rust_loop]
 def grantapi.find_grant_loop
   (db : model.Db) (id : Std.U64) (i : Std.Usize) :
@@ -2449,14 +2449,14 @@ def grantapi.find_grant_loop
     i
 
 /-- [oxicloud_kernel::grantapi::find_grant]:
-    Source: 'src/grantapi.rs', lines 306:0-315:1 -/
+    Source: 'ports/oxicloud/kernel/src/grantapi.rs', lines 305:0-314:1 -/
 @[reducible]
 def grantapi.find_grant
   (db : model.Db) (id : Std.U64) : Result (Option model.Grant) := do
   grantapi.find_grant_loop db id 0#usize
 
 /-- [oxicloud_kernel::grantapi::revoke]: loop body 0:
-    Source: 'src/grantapi.rs', lines 321:4-327:5
+    Source: 'ports/oxicloud/kernel/src/grantapi.rs', lines 320:4-326:5
     Visibility: public -/
 @[rust_loop_body]
 def grantapi.revoke_loop.body
@@ -2477,7 +2477,7 @@ def grantapi.revoke_loop.body
   else ok (done out)
 
 /-- [oxicloud_kernel::grantapi::revoke]: loop 0:
-    Source: 'src/grantapi.rs', lines 321:4-327:5
+    Source: 'ports/oxicloud/kernel/src/grantapi.rs', lines 320:4-326:5
     Visibility: public -/
 @[rust_loop]
 def grantapi.revoke_loop
@@ -2490,7 +2490,7 @@ def grantapi.revoke_loop
     (out, i)
 
 /-- [oxicloud_kernel::grantapi::revoke]:
-    Source: 'src/grantapi.rs', lines 318:0-329:1
+    Source: 'ports/oxicloud/kernel/src/grantapi.rs', lines 317:0-328:1
     Visibility: public -/
 @[reducible]
 def grantapi.revoke
@@ -2500,7 +2500,7 @@ def grantapi.revoke
   grantapi.revoke_loop grants id (alloc.vec.Vec.new model.Grant) 0#usize
 
 /-- [oxicloud_kernel::grantapi::revoke_grant]:
-    Source: 'src/grantapi.rs', lines 333:0-359:1
+    Source: 'ports/oxicloud/kernel/src/grantapi.rs', lines 331:0-357:1
     Visibility: public -/
 def grantapi.revoke_grant
   (db : model.Db) (env : grantapi.Env) (caller : Std.U64) (grant_id : Std.U64)
@@ -2645,7 +2645,7 @@ def grantapi.revoke_grant
         ok (d, core.result.Result.Ok grantapi.Reply.NoContent)
 
 /-- [oxicloud_kernel::grantapi::transition]:
-    Source: 'src/grantapi.rs', lines 362:0-370:1
+    Source: 'ports/oxicloud/kernel/src/grantapi.rs', lines 360:0-368:1
     Visibility: public -/
 def grantapi.transition
   (db : model.Db) (env : grantapi.Env) (caller : Std.U64)

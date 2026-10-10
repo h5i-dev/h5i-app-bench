@@ -20,7 +20,7 @@ set_option maxRecDepth 2048
 namespace nora_kernel
 
 /-- [nora_kernel::Role]
-    Source: 'src/lib.rs', lines 15:0-19:1
+    Source: 'ports/nora/kernel/src/lib.rs', lines 15:0-19:1
     Visibility: public -/
 @[discriminant isize]
 inductive Role where
@@ -29,13 +29,13 @@ inductive Role where
 | Admin : Role
 
 /-- [nora_kernel::{impl core::clone::Clone for nora_kernel::Role}::clone]:
-    Source: 'src/lib.rs', lines 14:9-14:14
+    Source: 'ports/nora/kernel/src/lib.rs', lines 14:9-14:14
     Visibility: public -/
 def Role.Insts.CoreCloneClone.clone (self : Role) : Result Role := do
   ok self
 
 /-- [nora_kernel::{nora_kernel::Role}::can_write]:
-    Source: 'src/lib.rs', lines 22:4-24:5
+    Source: 'ports/nora/kernel/src/lib.rs', lines 22:4-24:5
     Visibility: public -/
 def Role.can_write (self : Role) : Result Bool := do
   match self with
@@ -44,7 +44,7 @@ def Role.can_write (self : Role) : Result Bool := do
   | Role.Admin => ok true
 
 /-- [nora_kernel::{nora_kernel::Role}::can_admin]:
-    Source: 'src/lib.rs', lines 26:4-28:5
+    Source: 'ports/nora/kernel/src/lib.rs', lines 26:4-28:5
     Visibility: public -/
 def Role.can_admin (self : Role) : Result Bool := do
   match self with
@@ -53,7 +53,7 @@ def Role.can_admin (self : Role) : Result Bool := do
   | Role.Admin => ok true
 
 /-- [nora_kernel::ScopeEnforcement]
-    Source: 'src/lib.rs', lines 33:0-36:1
+    Source: 'ports/nora/kernel/src/lib.rs', lines 33:0-36:1
     Visibility: public -/
 @[discriminant isize]
 inductive ScopeEnforcement where
@@ -61,7 +61,7 @@ inductive ScopeEnforcement where
 | Audit : ScopeEnforcement
 
 /-- [nora_kernel::OidcRoleRule]
-    Source: 'src/lib.rs', lines 40:0-44:1
+    Source: 'ports/nora/kernel/src/lib.rs', lines 40:0-44:1
     Visibility: public -/
 structure OidcRoleRule where
   pattern : alloc.vec.Vec Std.U8
@@ -69,7 +69,7 @@ structure OidcRoleRule where
   namespace_scope : Option (alloc.vec.Vec (alloc.vec.Vec Std.U8))
 
 /-- [nora_kernel::OidcProvider]
-    Source: 'src/lib.rs', lines 48:0-53:1
+    Source: 'ports/nora/kernel/src/lib.rs', lines 48:0-53:1
     Visibility: public -/
 structure OidcProvider where
   max_token_lifetime_secs : Std.U64
@@ -78,7 +78,7 @@ structure OidcProvider where
   namespace_scope_enforcement : ScopeEnforcement
 
 /-- [nora_kernel::Claims]
-    Source: 'src/lib.rs', lines 57:0-61:1
+    Source: 'ports/nora/kernel/src/lib.rs', lines 57:0-61:1
     Visibility: public -/
 structure Claims where
   sub : Option (alloc.vec.Vec Std.U8)
@@ -86,7 +86,7 @@ structure Claims where
   exp : Option Std.U64
 
 /-- [nora_kernel::OidcIdentity]
-    Source: 'src/lib.rs', lines 65:0-71:1
+    Source: 'ports/nora/kernel/src/lib.rs', lines 65:0-71:1
     Visibility: public -/
 structure OidcIdentity where
   subject : alloc.vec.Vec Std.U8
@@ -96,7 +96,7 @@ structure OidcIdentity where
   namespace_scope_enforcement : ScopeEnforcement
 
 /-- [nora_kernel::NamespaceAuthority]
-    Source: 'src/lib.rs', lines 75:0-78:1
+    Source: 'ports/nora/kernel/src/lib.rs', lines 75:0-78:1
     Visibility: public -/
 @[discriminant isize]
 inductive NamespaceAuthority where
@@ -107,7 +107,7 @@ inductive NamespaceAuthority where
   NamespaceAuthority
 
 /-- [nora_kernel::Method]
-    Source: 'src/lib.rs', lines 81:0-88:1
+    Source: 'ports/nora/kernel/src/lib.rs', lines 81:0-88:1
     Visibility: public -/
 @[discriminant isize]
 inductive Method where
@@ -119,7 +119,7 @@ inductive Method where
 | Patch : Method
 
 /-- [nora_kernel::Request]
-    Source: 'src/lib.rs', lines 92:0-97:1
+    Source: 'ports/nora/kernel/src/lib.rs', lines 92:0-97:1
     Visibility: public -/
 structure Request where
   method : Method
@@ -127,14 +127,14 @@ structure Request where
   «namespace» : Option (alloc.vec.Vec Std.U8)
 
 /-- [nora_kernel::Reply]
-    Source: 'src/lib.rs', lines 100:0-103:1
+    Source: 'ports/nora/kernel/src/lib.rs', lines 100:0-103:1
     Visibility: public -/
 @[discriminant isize]
 inductive Reply where
 | Allowed : Reply
 
 /-- [nora_kernel::Error]
-    Source: 'src/lib.rs', lines 106:0-117:1
+    Source: 'ports/nora/kernel/src/lib.rs', lines 106:0-117:1
     Visibility: public -/
 @[discriminant isize]
 inductive Error where
@@ -145,7 +145,7 @@ inductive Error where
 | NamespaceDenied : Error
 
 /-- [nora_kernel::is_star]:
-    Source: 'src/lib.rs', lines 119:0-121:1 -/
+    Source: 'ports/nora/kernel/src/lib.rs', lines 119:0-121:1 -/
 def is_star (p : Slice Std.U8) : Result Bool := do
   let i := Slice.len p
   if i = 1#usize
@@ -154,7 +154,7 @@ def is_star (p : Slice Std.U8) : Result Bool := do
   else ok false
 
 /-- [nora_kernel::bytes_eq]: loop body 0:
-    Source: 'src/lib.rs', lines 128:4-135:1 -/
+    Source: 'ports/nora/kernel/src/lib.rs', lines 128:4-135:1 -/
 @[rust_loop_body]
 def bytes_eq_loop.body
   (a : Slice Std.U8) (b : Slice Std.U8) (i : Std.Usize) :
@@ -172,7 +172,7 @@ def bytes_eq_loop.body
   else ok (done true)
 
 /-- [nora_kernel::bytes_eq]: loop 0:
-    Source: 'src/lib.rs', lines 128:4-135:1 -/
+    Source: 'ports/nora/kernel/src/lib.rs', lines 128:4-135:1 -/
 @[rust_loop]
 def bytes_eq_loop
   (a : Slice Std.U8) (b : Slice Std.U8) (i : Std.Usize) : Result Bool := do
@@ -181,7 +181,7 @@ def bytes_eq_loop
     i
 
 /-- [nora_kernel::bytes_eq]:
-    Source: 'src/lib.rs', lines 123:0-135:1 -/
+    Source: 'ports/nora/kernel/src/lib.rs', lines 123:0-135:1 -/
 def bytes_eq (a : Slice Std.U8) (b : Slice Std.U8) : Result Bool := do
   let i := Slice.len a
   let i1 := Slice.len b
@@ -190,7 +190,7 @@ def bytes_eq (a : Slice Std.U8) (b : Slice Std.U8) : Result Bool := do
   else bytes_eq_loop a b 0#usize
 
 /-- [nora_kernel::split]: loop body 0:
-    Source: 'src/lib.rs', lines 142:4-150:5 -/
+    Source: 'ports/nora/kernel/src/lib.rs', lines 142:4-150:5 -/
 @[rust_loop_body]
 def split_loop.body
   (s : Slice Std.U8) (sep : Std.U8)
@@ -218,7 +218,7 @@ def split_loop.body
   else ok (done (out, cur))
 
 /-- [nora_kernel::split]: loop 0:
-    Source: 'src/lib.rs', lines 142:4-150:5 -/
+    Source: 'ports/nora/kernel/src/lib.rs', lines 142:4-150:5 -/
 @[rust_loop]
 def split_loop
   (s : Slice Std.U8) (sep : Std.U8)
@@ -231,7 +231,7 @@ def split_loop
     (out, cur, i)
 
 /-- [nora_kernel::split]:
-    Source: 'src/lib.rs', lines 138:0-153:1 -/
+    Source: 'ports/nora/kernel/src/lib.rs', lines 138:0-153:1 -/
 def split
   (s : Slice Std.U8) (sep : Std.U8) :
   Result (alloc.vec.Vec (alloc.vec.Vec Std.U8))
@@ -242,7 +242,7 @@ def split
   alloc.vec.Vec.push out cur
 
 /-- [nora_kernel::starts_with_at]: loop body 0:
-    Source: 'src/lib.rs', lines 161:4-168:1 -/
+    Source: 'ports/nora/kernel/src/lib.rs', lines 161:4-168:1 -/
 @[rust_loop_body]
 def starts_with_at_loop.body
   (s : Slice Std.U8) («from» : Std.Usize) (p : Slice Std.U8) (i : Std.Usize)
@@ -262,7 +262,7 @@ def starts_with_at_loop.body
   else ok (done true)
 
 /-- [nora_kernel::starts_with_at]: loop 0:
-    Source: 'src/lib.rs', lines 161:4-168:1 -/
+    Source: 'ports/nora/kernel/src/lib.rs', lines 161:4-168:1 -/
 @[rust_loop]
 def starts_with_at_loop
   (s : Slice Std.U8) («from» : Std.Usize) (p : Slice Std.U8) (i : Std.Usize)
@@ -274,7 +274,7 @@ def starts_with_at_loop
     i
 
 /-- [nora_kernel::starts_with_at]:
-    Source: 'src/lib.rs', lines 156:0-168:1 -/
+    Source: 'ports/nora/kernel/src/lib.rs', lines 156:0-168:1 -/
 def starts_with_at
   (s : Slice Std.U8) («from» : Std.Usize) (p : Slice Std.U8) :
   Result Bool
@@ -287,7 +287,7 @@ def starts_with_at
   else starts_with_at_loop s «from» p 0#usize
 
 /-- [nora_kernel::find_from]: loop body 0:
-    Source: 'src/lib.rs', lines 1:0-180:1 -/
+    Source: 'ports/nora/kernel/src/lib.rs', lines 1:0-180:1 -/
 @[rust_loop_body]
 def find_from_loop.body
   (s : Slice Std.U8) (p : Slice Std.U8) (i : Std.Usize) :
@@ -310,7 +310,7 @@ def find_from_loop.body
   else ok (done none)
 
 /-- [nora_kernel::find_from]: loop 0:
-    Source: 'src/lib.rs', lines 1:0-180:1 -/
+    Source: 'ports/nora/kernel/src/lib.rs', lines 1:0-180:1 -/
 @[rust_loop]
 def find_from_loop
   (s : Slice Std.U8) (p : Slice Std.U8) (i : Std.Usize) :
@@ -321,7 +321,7 @@ def find_from_loop
     i
 
 /-- [nora_kernel::find_from]:
-    Source: 'src/lib.rs', lines 171:0-180:1 -/
+    Source: 'ports/nora/kernel/src/lib.rs', lines 171:0-180:1 -/
 @[reducible]
 def find_from
   (s : Slice Std.U8) («from» : Std.Usize) (p : Slice Std.U8) :
@@ -330,7 +330,7 @@ def find_from
   find_from_loop s p «from»
 
 /-- [nora_kernel::glob_parts]: loop body 0:
-    Source: 'src/lib.rs', lines 1:0-212:1 -/
+    Source: 'ports/nora/kernel/src/lib.rs', lines 1:0-212:1 -/
 @[rust_loop_body]
 def glob_parts_loop.body
   (parts : Slice (alloc.vec.Vec Std.U8)) (value : Slice Std.U8)
@@ -387,7 +387,7 @@ def glob_parts_loop.body
   else ok (done true)
 
 /-- [nora_kernel::glob_parts]: loop 0:
-    Source: 'src/lib.rs', lines 1:0-212:1 -/
+    Source: 'ports/nora/kernel/src/lib.rs', lines 1:0-212:1 -/
 @[rust_loop]
 def glob_parts_loop
   (parts : Slice (alloc.vec.Vec Std.U8)) (value : Slice Std.U8)
@@ -399,7 +399,7 @@ def glob_parts_loop
     (rem, i)
 
 /-- [nora_kernel::glob_parts]:
-    Source: 'src/lib.rs', lines 185:0-212:1 -/
+    Source: 'ports/nora/kernel/src/lib.rs', lines 185:0-212:1 -/
 @[reducible]
 def glob_parts
   (parts : Slice (alloc.vec.Vec Std.U8)) (value : Slice Std.U8) :
@@ -408,7 +408,7 @@ def glob_parts
   glob_parts_loop parts value 0#usize 0#usize
 
 /-- [nora_kernel::glob_match]:
-    Source: 'src/lib.rs', lines 215:0-224:1
+    Source: 'ports/nora/kernel/src/lib.rs', lines 215:0-224:1
     Visibility: public -/
 def glob_match
   (pattern : Slice Std.U8) (value : Slice Std.U8) : Result Bool := do
@@ -424,7 +424,7 @@ def glob_match
          glob_parts s value
 
 /-- [nora_kernel::match_role]: loop body 0:
-    Source: 'src/lib.rs', lines 229:4-251:1
+    Source: 'ports/nora/kernel/src/lib.rs', lines 229:4-251:1
     Visibility: public -/
 @[rust_loop_body]
 def match_role_loop.body
@@ -492,7 +492,7 @@ def match_role_loop.body
   else ok (done none)
 
 /-- [nora_kernel::match_role]: loop 0:
-    Source: 'src/lib.rs', lines 229:4-251:1
+    Source: 'ports/nora/kernel/src/lib.rs', lines 229:4-251:1
     Visibility: public -/
 @[rust_loop]
 def match_role_loop
@@ -504,7 +504,7 @@ def match_role_loop
     i
 
 /-- [nora_kernel::match_role]:
-    Source: 'src/lib.rs', lines 227:0-251:1
+    Source: 'ports/nora/kernel/src/lib.rs', lines 227:0-251:1
     Visibility: public -/
 @[reducible]
 def match_role
@@ -514,7 +514,7 @@ def match_role
   match_role_loop provider subject 0#usize
 
 /-- [nora_kernel::validate_claims]:
-    Source: 'src/lib.rs', lines 255:0-277:1
+    Source: 'ports/nora/kernel/src/lib.rs', lines 255:0-277:1
     Visibility: public -/
 def validate_claims
   (provider : OidcProvider) (claims : Claims) :
@@ -596,7 +596,7 @@ def validate_claims
             })
 
 /-- [nora_kernel::has_star]: loop body 0:
-    Source: 'src/lib.rs', lines 281:4-288:1 -/
+    Source: 'ports/nora/kernel/src/lib.rs', lines 281:4-288:1 -/
 @[rust_loop_body]
 def has_star_loop.body
   (scope : Slice (alloc.vec.Vec Std.U8)) (i : Std.Usize) :
@@ -615,7 +615,7 @@ def has_star_loop.body
   else ok (done false)
 
 /-- [nora_kernel::has_star]: loop 0:
-    Source: 'src/lib.rs', lines 281:4-288:1 -/
+    Source: 'ports/nora/kernel/src/lib.rs', lines 281:4-288:1 -/
 @[rust_loop]
 def has_star_loop
   (scope : Slice (alloc.vec.Vec Std.U8)) (i : Std.Usize) : Result Bool := do
@@ -624,13 +624,13 @@ def has_star_loop
     i
 
 /-- [nora_kernel::has_star]:
-    Source: 'src/lib.rs', lines 279:0-288:1 -/
+    Source: 'ports/nora/kernel/src/lib.rs', lines 279:0-288:1 -/
 @[reducible]
 def has_star (scope : Slice (alloc.vec.Vec Std.U8)) : Result Bool := do
   has_star_loop scope 0#usize
 
 /-- [nora_kernel::from_oidc_scopes]:
-    Source: 'src/lib.rs', lines 292:0-310:1
+    Source: 'ports/nora/kernel/src/lib.rs', lines 292:0-310:1
     Visibility: public -/
 def from_oidc_scopes
   (provider_scope : Slice (alloc.vec.Vec Std.U8))
@@ -669,7 +669,7 @@ def from_oidc_scopes
   else ok (NamespaceAuthority.Scoped scopes1 mode)
 
 /-- [nora_kernel::contains_star]: loop body 0:
-    Source: 'src/lib.rs', lines 314:4-321:1 -/
+    Source: 'ports/nora/kernel/src/lib.rs', lines 314:4-321:1 -/
 @[rust_loop_body]
 def contains_star_loop.body
   (p : Slice Std.U8) (i : Std.Usize) :
@@ -686,7 +686,7 @@ def contains_star_loop.body
   else ok (done false)
 
 /-- [nora_kernel::contains_star]: loop 0:
-    Source: 'src/lib.rs', lines 314:4-321:1 -/
+    Source: 'ports/nora/kernel/src/lib.rs', lines 314:4-321:1 -/
 @[rust_loop]
 def contains_star_loop (p : Slice Std.U8) (i : Std.Usize) : Result Bool := do
   loop
@@ -694,13 +694,13 @@ def contains_star_loop (p : Slice Std.U8) (i : Std.Usize) : Result Bool := do
     i
 
 /-- [nora_kernel::contains_star]:
-    Source: 'src/lib.rs', lines 312:0-321:1 -/
+    Source: 'ports/nora/kernel/src/lib.rs', lines 312:0-321:1 -/
 @[reducible]
 def contains_star (p : Slice Std.U8) : Result Bool := do
   contains_star_loop p 0#usize
 
 /-- [nora_kernel::all_stars_from]: loop body 0:
-    Source: 'src/lib.rs', lines 326:4-333:1 -/
+    Source: 'ports/nora/kernel/src/lib.rs', lines 326:4-333:1 -/
 @[rust_loop_body]
 def all_stars_from_loop.body
   (p : Slice Std.U8) (i : Std.Usize) :
@@ -717,7 +717,7 @@ def all_stars_from_loop.body
   else ok (done true)
 
 /-- [nora_kernel::all_stars_from]: loop 0:
-    Source: 'src/lib.rs', lines 326:4-333:1 -/
+    Source: 'ports/nora/kernel/src/lib.rs', lines 326:4-333:1 -/
 @[rust_loop]
 def all_stars_from_loop (p : Slice Std.U8) (i : Std.Usize) : Result Bool := do
   loop
@@ -725,13 +725,13 @@ def all_stars_from_loop (p : Slice Std.U8) (i : Std.Usize) : Result Bool := do
     i
 
 /-- [nora_kernel::all_stars_from]:
-    Source: 'src/lib.rs', lines 324:0-333:1 -/
+    Source: 'ports/nora/kernel/src/lib.rs', lines 324:0-333:1 -/
 @[reducible]
 def all_stars_from (p : Slice Std.U8) (pi : Std.Usize) : Result Bool := do
   all_stars_from_loop p pi
 
 /-- [nora_kernel::glob_scan]: loop body 0:
-    Source: 'src/lib.rs', lines 1:0-358:1 -/
+    Source: 'ports/nora/kernel/src/lib.rs', lines 1:0-358:1 -/
 @[rust_loop_body]
 def glob_scan_loop.body
   (p : Slice Std.U8) (v : Slice Std.U8) (pi : Std.Usize) (vi : Std.Usize)
@@ -805,7 +805,7 @@ def glob_scan_loop.body
   else ok (done (some pi))
 
 /-- [nora_kernel::glob_scan]: loop 0:
-    Source: 'src/lib.rs', lines 1:0-358:1 -/
+    Source: 'ports/nora/kernel/src/lib.rs', lines 1:0-358:1 -/
 @[rust_loop]
 def glob_scan_loop
   (p : Slice Std.U8) (v : Slice Std.U8) (pi : Std.Usize) (vi : Std.Usize)
@@ -817,14 +817,14 @@ def glob_scan_loop
     (pi, vi, backtrack)
 
 /-- [nora_kernel::glob_scan]:
-    Source: 'src/lib.rs', lines 337:0-358:1 -/
+    Source: 'ports/nora/kernel/src/lib.rs', lines 337:0-358:1 -/
 @[reducible]
 def glob_scan
   (p : Slice Std.U8) (v : Slice Std.U8) : Result (Option Std.Usize) := do
   glob_scan_loop p v 0#usize 0#usize none
 
 /-- [nora_kernel::segment_glob]:
-    Source: 'src/lib.rs', lines 361:0-369:1
+    Source: 'ports/nora/kernel/src/lib.rs', lines 361:0-369:1
     Visibility: public -/
 def segment_glob
   (pattern : Slice Std.U8) (value : Slice Std.U8) : Result Bool := do
@@ -840,7 +840,7 @@ def segment_glob
 mutual
 
 /-- [nora_kernel::segments_match_any]:
-    Source: 'src/lib.rs', lines 374:0-382:1 -/
+    Source: 'ports/nora/kernel/src/lib.rs', lines 374:0-382:1 -/
 def segments_match_any
   (pat : Slice (alloc.vec.Vec Std.U8)) (pi : Std.Usize)
   (val : Slice (alloc.vec.Vec Std.U8)) (i : Std.Usize) :
@@ -858,7 +858,7 @@ def segments_match_any
 partial_fixpoint
 
 /-- [nora_kernel::segments_match]:
-    Source: 'src/lib.rs', lines 385:0-398:1
+    Source: 'ports/nora/kernel/src/lib.rs', lines 385:0-398:1
     Visibility: public -/
 def segments_match
   (pat : Slice (alloc.vec.Vec Std.U8)) (pi : Std.Usize)
@@ -939,7 +939,7 @@ partial_fixpoint
 end
 
 /-- [nora_kernel::namespace_match]:
-    Source: 'src/lib.rs', lines 401:0-408:1
+    Source: 'ports/nora/kernel/src/lib.rs', lines 401:0-408:1
     Visibility: public -/
 def namespace_match
   (pattern : Slice Std.U8) (value : Slice Std.U8) : Result Bool := do
@@ -954,7 +954,7 @@ def namespace_match
     segments_match s 0#usize s1 0#usize
 
 /-- [nora_kernel::scope_matches]: loop body 0:
-    Source: 'src/lib.rs', lines 412:4-419:1 -/
+    Source: 'ports/nora/kernel/src/lib.rs', lines 412:4-419:1 -/
 @[rust_loop_body]
 def scope_matches_loop.body
   (scope : Slice (alloc.vec.Vec Std.U8)) («namespace» : Slice Std.U8)
@@ -974,7 +974,7 @@ def scope_matches_loop.body
   else ok (done false)
 
 /-- [nora_kernel::scope_matches]: loop 0:
-    Source: 'src/lib.rs', lines 412:4-419:1 -/
+    Source: 'ports/nora/kernel/src/lib.rs', lines 412:4-419:1 -/
 @[rust_loop]
 def scope_matches_loop
   (scope : Slice (alloc.vec.Vec Std.U8)) («namespace» : Slice Std.U8)
@@ -986,7 +986,7 @@ def scope_matches_loop
     i
 
 /-- [nora_kernel::scope_matches]:
-    Source: 'src/lib.rs', lines 410:0-419:1 -/
+    Source: 'ports/nora/kernel/src/lib.rs', lines 410:0-419:1 -/
 @[reducible]
 def scope_matches
   (scope : Slice (alloc.vec.Vec Std.U8)) («namespace» : Slice Std.U8) :
@@ -995,7 +995,7 @@ def scope_matches
   scope_matches_loop scope «namespace» 0#usize
 
 /-- [nora_kernel::enforce_namespace_scope]: loop body 0:
-    Source: 'src/lib.rs', lines 429:4-434:5
+    Source: 'ports/nora/kernel/src/lib.rs', lines 429:4-434:5
     Visibility: public -/
 @[rust_loop_body]
 def enforce_namespace_scope_loop.body
@@ -1019,7 +1019,7 @@ def enforce_namespace_scope_loop.body
   else ok (done all)
 
 /-- [nora_kernel::enforce_namespace_scope]: loop 0:
-    Source: 'src/lib.rs', lines 429:4-434:5
+    Source: 'ports/nora/kernel/src/lib.rs', lines 429:4-434:5
     Visibility: public -/
 @[rust_loop]
 def enforce_namespace_scope_loop
@@ -1033,7 +1033,7 @@ def enforce_namespace_scope_loop
     (all, i)
 
 /-- [nora_kernel::enforce_namespace_scope]:
-    Source: 'src/lib.rs', lines 422:0-442:1
+    Source: 'ports/nora/kernel/src/lib.rs', lines 422:0-442:1
     Visibility: public -/
 def enforce_namespace_scope
   (authority : NamespaceAuthority) («namespace» : Slice Std.U8) :
@@ -1052,7 +1052,7 @@ def enforce_namespace_scope
       | ScopeEnforcement.Audit => ok (core.result.Result.Ok ())
 
 /-- [nora_kernel::transition]:
-    Source: 'src/lib.rs', lines 446:0-467:1
+    Source: 'ports/nora/kernel/src/lib.rs', lines 446:0-467:1
     Visibility: public -/
 def transition
   (provider : OidcProvider) (claims : Claims) (req : Request) :
@@ -1160,7 +1160,7 @@ def transition
       Reply (core.convert.FromSame Error) residual
 
 /-- [nora_kernel::net::IpAddr]
-    Source: 'src/net.rs', lines 6:0-9:1
+    Source: 'ports/nora/kernel/src/net.rs', lines 6:0-9:1
     Visibility: public -/
 @[discriminant isize]
 inductive net.IpAddr where
@@ -1168,7 +1168,7 @@ inductive net.IpAddr where
 | V6 : Std.U128 → net.IpAddr
 
 /-- [nora_kernel::lockout::FailureEntry]
-    Source: 'src/lockout.rs', lines 6:0-10:1
+    Source: 'ports/nora/kernel/src/lockout.rs', lines 6:0-10:1
     Visibility: public -/
 structure lockout.FailureEntry where
   ip : net.IpAddr
@@ -1176,20 +1176,20 @@ structure lockout.FailureEntry where
   last_failure : Std.U64
 
 /-- [nora_kernel::lockout::AuthFailureTracker]
-    Source: 'src/lockout.rs', lines 13:0-16:1
+    Source: 'ports/nora/kernel/src/lockout.rs', lines 13:0-16:1
     Visibility: public -/
 structure lockout.AuthFailureTracker where
   max_failures : Std.U32
   max_lockout_secs : Std.U64
 
 /-- [nora_kernel::lockout::NANOS_PER_SEC]
-    Source: 'src/lockout.rs', lines 18:0-18:45
+    Source: 'ports/nora/kernel/src/lockout.rs', lines 18:0-18:45
     Visibility: public -/
 @[global_simps, irreducible]
 def lockout.NANOS_PER_SEC : Std.U64 := 1000000000#u64
 
 /-- [nora_kernel::net::{impl core::cmp::PartialEq<nora_kernel::net::IpAddr> for nora_kernel::net::IpAddr}::eq]:
-    Source: 'src/net.rs', lines 5:29-5:38
+    Source: 'ports/nora/kernel/src/net.rs', lines 5:29-5:38
     Visibility: public -/
 def net.IpAddr.Insts.CoreCmpPartialEqIpAddr.eq
   (self : net.IpAddr) (other : net.IpAddr) : Result Bool := do
@@ -1211,7 +1211,7 @@ def net.IpAddr.Insts.CoreCmpPartialEqIpAddr.eq
   else ok false
 
 /-- [nora_kernel::lockout::find]: loop body 0:
-    Source: 'src/lockout.rs', lines 22:4-29:1 -/
+    Source: 'ports/nora/kernel/src/lockout.rs', lines 22:4-29:1 -/
 @[rust_loop_body]
 def lockout.find_loop.body
   (entries : Slice lockout.FailureEntry) (ip : net.IpAddr) (i : Std.Usize) :
@@ -1229,7 +1229,7 @@ def lockout.find_loop.body
   else ok (done none)
 
 /-- [nora_kernel::lockout::find]: loop 0:
-    Source: 'src/lockout.rs', lines 22:4-29:1 -/
+    Source: 'ports/nora/kernel/src/lockout.rs', lines 22:4-29:1 -/
 @[rust_loop]
 def lockout.find_loop
   (entries : Slice lockout.FailureEntry) (ip : net.IpAddr) (i : Std.Usize) :
@@ -1240,7 +1240,7 @@ def lockout.find_loop
     i
 
 /-- [nora_kernel::lockout::find]:
-    Source: 'src/lockout.rs', lines 20:0-29:1 -/
+    Source: 'ports/nora/kernel/src/lockout.rs', lines 20:0-29:1 -/
 @[reducible]
 def lockout.find
   (entries : Slice lockout.FailureEntry) (ip : net.IpAddr) :
@@ -1249,7 +1249,7 @@ def lockout.find
   lockout.find_loop entries ip 0#usize
 
 /-- [nora_kernel::lockout::{nora_kernel::lockout::AuthFailureTracker}::check_blocked]:
-    Source: 'src/lockout.rs', lines 33:4-52:5
+    Source: 'ports/nora/kernel/src/lockout.rs', lines 33:4-52:5
     Visibility: public -/
 def lockout.AuthFailureTracker.check_blocked
   (self : lockout.AuthFailureTracker) (entries : Slice lockout.FailureEntry)
@@ -1280,7 +1280,7 @@ def lockout.AuthFailureTracker.check_blocked
       else ok none
 
 /-- [nora_kernel::lockout::after_failure]:
-    Source: 'src/lockout.rs', lines 56:0-62:1
+    Source: 'ports/nora/kernel/src/lockout.rs', lines 56:0-62:1
     Visibility: public -/
 def lockout.after_failure
   (entries : Slice lockout.FailureEntry) (ip : net.IpAddr) (now : Std.U64) :
@@ -1294,7 +1294,7 @@ def lockout.after_failure
   ok { ip, failures := i, last_failure := now }
 
 /-- [nora_kernel::middleware::HttpMethod]
-    Source: 'src/middleware.rs', lines 10:0-18:1
+    Source: 'ports/nora/kernel/src/middleware.rs', lines 10:0-18:1
     Visibility: public -/
 @[discriminant isize]
 inductive middleware.HttpMethod where
@@ -1307,7 +1307,7 @@ inductive middleware.HttpMethod where
 | Options : middleware.HttpMethod
 
 /-- [nora_kernel::middleware::{impl core::cmp::PartialEq<nora_kernel::middleware::HttpMethod> for nora_kernel::middleware::HttpMethod}::eq]:
-    Source: 'src/middleware.rs', lines 9:29-9:38
+    Source: 'ports/nora/kernel/src/middleware.rs', lines 9:29-9:38
     Visibility: public -/
 def middleware.HttpMethod.Insts.CoreCmpPartialEqHttpMethod.eq
   (self : middleware.HttpMethod) (other : middleware.HttpMethod) :
@@ -1318,7 +1318,7 @@ def middleware.HttpMethod.Insts.CoreCmpPartialEqHttpMethod.eq
   ok (self1 = other1)
 
 /-- [nora_kernel::tokens::CachedToken]
-    Source: 'src/tokens.rs', lines 34:0-40:1
+    Source: 'ports/nora/kernel/src/tokens.rs', lines 34:0-40:1
     Visibility: public -/
 structure tokens.CachedToken where
   key : alloc.vec.Vec Std.U8
@@ -1328,7 +1328,7 @@ structure tokens.CachedToken where
   cached_at : Std.U64
 
 /-- [nora_kernel::tokens::TokenInfo]
-    Source: 'src/tokens.rs', lines 8:0-13:1
+    Source: 'ports/nora/kernel/src/tokens.rs', lines 8:0-13:1
     Visibility: public -/
 structure tokens.TokenInfo where
   token_hash : alloc.vec.Vec Std.U8
@@ -1337,14 +1337,14 @@ structure tokens.TokenInfo where
   role : Role
 
 /-- [nora_kernel::tokens::TokenFile]
-    Source: 'src/tokens.rs', lines 17:0-20:1
+    Source: 'ports/nora/kernel/src/tokens.rs', lines 17:0-20:1
     Visibility: public -/
 structure tokens.TokenFile where
   «prefix» : alloc.vec.Vec Std.U8
   info : Option tokens.TokenInfo
 
 /-- [nora_kernel::tokens::TokenStore]
-    Source: 'src/tokens.rs', lines 43:0-47:1
+    Source: 'ports/nora/kernel/src/tokens.rs', lines 43:0-47:1
     Visibility: public -/
 structure tokens.TokenStore where
   files : alloc.vec.Vec tokens.TokenFile
@@ -1352,13 +1352,13 @@ structure tokens.TokenStore where
   cache_ttl : Std.U64
 
 /-- [nora_kernel::net::TrustedProxies]
-    Source: 'src/net.rs', lines 13:0-15:1
+    Source: 'ports/nora/kernel/src/net.rs', lines 13:0-15:1
     Visibility: public -/
 structure net.TrustedProxies where
   entries : alloc.vec.Vec (net.IpAddr × Std.U8)
 
 /-- [nora_kernel::middleware::Config]
-    Source: 'src/middleware.rs', lines 22:0-35:1
+    Source: 'ports/nora/kernel/src/middleware.rs', lines 22:0-35:1
     Visibility: public -/
 structure middleware.Config where
   enabled : Bool
@@ -1374,7 +1374,7 @@ structure middleware.Config where
   tracker : lockout.AuthFailureTracker
 
 /-- [nora_kernel::middleware::Request]
-    Source: 'src/middleware.rs', lines 38:0-52:1
+    Source: 'ports/nora/kernel/src/middleware.rs', lines 38:0-52:1
     Visibility: public -/
 structure middleware.Request where
   path : alloc.vec.Vec Std.U8
@@ -1388,14 +1388,14 @@ structure middleware.Request where
   mono : Std.U64
 
 /-- [nora_kernel::middleware::Jwt]
-    Source: 'src/middleware.rs', lines 57:0-60:1
+    Source: 'ports/nora/kernel/src/middleware.rs', lines 57:0-60:1
     Visibility: public -/
 structure middleware.Jwt where
   token : alloc.vec.Vec Std.U8
   claims : Option Claims
 
 /-- [nora_kernel::middleware::Deny]
-    Source: 'src/middleware.rs', lines 63:0-83:1
+    Source: 'ports/nora/kernel/src/middleware.rs', lines 63:0-83:1
     Visibility: public -/
 @[discriminant isize]
 inductive middleware.Deny where
@@ -1415,7 +1415,7 @@ inductive middleware.Deny where
 | TokenStoreUnavailable : middleware.Deny
 
 /-- [nora_kernel::middleware::Outcome]
-    Source: 'src/middleware.rs', lines 86:0-91:1
+    Source: 'ports/nora/kernel/src/middleware.rs', lines 86:0-91:1
     Visibility: public -/
 @[discriminant isize]
 inductive middleware.Outcome where
@@ -1427,7 +1427,7 @@ inductive middleware.Outcome where
 | Deny : middleware.Deny → middleware.Outcome
 
 /-- [nora_kernel::tokens::TokenWrite]
-    Source: 'src/tokens.rs', lines 59:0-65:1
+    Source: 'ports/nora/kernel/src/tokens.rs', lines 59:0-65:1
     Visibility: public -/
 @[discriminant isize]
 inductive tokens.TokenWrite where
@@ -1436,7 +1436,7 @@ inductive tokens.TokenWrite where
 | CacheInsert : tokens.CachedToken → tokens.TokenWrite
 
 /-- [nora_kernel::middleware::Write]
-    Source: 'src/middleware.rs', lines 94:0-100:1
+    Source: 'ports/nora/kernel/src/middleware.rs', lines 94:0-100:1
     Visibility: public -/
 @[discriminant isize]
 inductive middleware.Write where
@@ -1445,7 +1445,7 @@ inductive middleware.Write where
 | PutFailures : lockout.FailureEntry → middleware.Write
 
 /-- [nora_kernel::middleware::starts_with]: loop body 0:
-    Source: 'src/middleware.rs', lines 107:4-114:1 -/
+    Source: 'ports/nora/kernel/src/middleware.rs', lines 107:4-114:1 -/
 @[rust_loop_body]
 def middleware.starts_with_loop.body
   (s : Slice Std.U8) (p : Slice Std.U8) (i : Std.Usize) :
@@ -1463,7 +1463,7 @@ def middleware.starts_with_loop.body
   else ok (done true)
 
 /-- [nora_kernel::middleware::starts_with]: loop 0:
-    Source: 'src/middleware.rs', lines 107:4-114:1 -/
+    Source: 'ports/nora/kernel/src/middleware.rs', lines 107:4-114:1 -/
 @[rust_loop]
 def middleware.starts_with_loop
   (s : Slice Std.U8) (p : Slice Std.U8) (i : Std.Usize) : Result Bool := do
@@ -1472,7 +1472,7 @@ def middleware.starts_with_loop
     i
 
 /-- [nora_kernel::middleware::starts_with]:
-    Source: 'src/middleware.rs', lines 102:0-114:1 -/
+    Source: 'ports/nora/kernel/src/middleware.rs', lines 102:0-114:1 -/
 def middleware.starts_with
   (s : Slice Std.U8) (p : Slice Std.U8) : Result Bool := do
   let i := Slice.len s
@@ -1482,7 +1482,7 @@ def middleware.starts_with
   else middleware.starts_with_loop s p 0#usize
 
 /-- [nora_kernel::middleware::ends_with]: loop body 0:
-    Source: 'src/middleware.rs', lines 122:4-129:1 -/
+    Source: 'ports/nora/kernel/src/middleware.rs', lines 122:4-129:1 -/
 @[rust_loop_body]
 def middleware.ends_with_loop.body
   (s : Slice Std.U8) (p : Slice Std.U8) (off : Std.Usize) (i : Std.Usize) :
@@ -1501,7 +1501,7 @@ def middleware.ends_with_loop.body
   else ok (done true)
 
 /-- [nora_kernel::middleware::ends_with]: loop 0:
-    Source: 'src/middleware.rs', lines 122:4-129:1 -/
+    Source: 'ports/nora/kernel/src/middleware.rs', lines 122:4-129:1 -/
 @[rust_loop]
 def middleware.ends_with_loop
   (s : Slice Std.U8) (p : Slice Std.U8) (off : Std.Usize) (i : Std.Usize) :
@@ -1512,7 +1512,7 @@ def middleware.ends_with_loop
     i
 
 /-- [nora_kernel::middleware::ends_with]:
-    Source: 'src/middleware.rs', lines 116:0-129:1 -/
+    Source: 'ports/nora/kernel/src/middleware.rs', lines 116:0-129:1 -/
 def middleware.ends_with
   (s : Slice Std.U8) (p : Slice Std.U8) : Result Bool := do
   let i := Slice.len s
@@ -1526,7 +1526,7 @@ def middleware.ends_with
     middleware.ends_with_loop s p off 0#usize
 
 /-- [nora_kernel::middleware::strip_prefix]: loop body 0:
-    Source: 'src/middleware.rs', lines 138:4-141:5 -/
+    Source: 'ports/nora/kernel/src/middleware.rs', lines 138:4-141:5 -/
 @[rust_loop_body]
 def middleware.strip_prefix_loop.body
   (s : Slice Std.U8) (out : alloc.vec.Vec Std.U8) (i : Std.Usize) :
@@ -1543,7 +1543,7 @@ def middleware.strip_prefix_loop.body
   else ok (done out)
 
 /-- [nora_kernel::middleware::strip_prefix]: loop 0:
-    Source: 'src/middleware.rs', lines 138:4-141:5 -/
+    Source: 'ports/nora/kernel/src/middleware.rs', lines 138:4-141:5 -/
 @[rust_loop]
 def middleware.strip_prefix_loop
   (s : Slice Std.U8) (out : alloc.vec.Vec Std.U8) (i : Std.Usize) :
@@ -1554,7 +1554,7 @@ def middleware.strip_prefix_loop
     (out, i)
 
 /-- [nora_kernel::middleware::strip_prefix]:
-    Source: 'src/middleware.rs', lines 132:0-143:1 -/
+    Source: 'ports/nora/kernel/src/middleware.rs', lines 132:0-143:1 -/
 def middleware.strip_prefix
   (s : Slice Std.U8) (p : Slice Std.U8) :
   Result (Option (alloc.vec.Vec Std.U8))
@@ -1568,7 +1568,7 @@ def middleware.strip_prefix
   else ok none
 
 /-- [nora_kernel::middleware::split_once_colon]: loop body 1:
-    Source: 'src/middleware.rs', lines 152:12-155:13 -/
+    Source: 'ports/nora/kernel/src/middleware.rs', lines 152:12-155:13 -/
 @[rust_loop_body]
 def middleware.split_once_colon_loop0_loop0.body
   (s : Slice Std.U8) (i : Std.Usize) (a : alloc.vec.Vec Std.U8) (j : Std.Usize)
@@ -1585,7 +1585,7 @@ def middleware.split_once_colon_loop0_loop0.body
   else ok (done a)
 
 /-- [nora_kernel::middleware::split_once_colon]: loop 1:
-    Source: 'src/middleware.rs', lines 152:12-155:13 -/
+    Source: 'ports/nora/kernel/src/middleware.rs', lines 152:12-155:13 -/
 @[rust_loop]
 def middleware.split_once_colon_loop0_loop0
   (s : Slice Std.U8) (i : Std.Usize) (a : alloc.vec.Vec Std.U8) (j : Std.Usize)
@@ -1597,7 +1597,7 @@ def middleware.split_once_colon_loop0_loop0
     (a, j)
 
 /-- [nora_kernel::middleware::split_once_colon]: loop body 2:
-    Source: 'src/middleware.rs', lines 158:12-161:13 -/
+    Source: 'ports/nora/kernel/src/middleware.rs', lines 158:12-161:13 -/
 @[rust_loop_body]
 def middleware.split_once_colon_loop0_loop1.body
   (s : Slice Std.U8) (b : alloc.vec.Vec Std.U8) (k : Std.Usize) :
@@ -1614,7 +1614,7 @@ def middleware.split_once_colon_loop0_loop1.body
   else ok (done b)
 
 /-- [nora_kernel::middleware::split_once_colon]: loop 2:
-    Source: 'src/middleware.rs', lines 158:12-161:13 -/
+    Source: 'ports/nora/kernel/src/middleware.rs', lines 158:12-161:13 -/
 @[rust_loop]
 def middleware.split_once_colon_loop0_loop1
   (s : Slice Std.U8) (b : alloc.vec.Vec Std.U8) (k : Std.Usize) :
@@ -1625,7 +1625,7 @@ def middleware.split_once_colon_loop0_loop1
     (b, k)
 
 /-- [nora_kernel::middleware::split_once_colon]: loop body 0:
-    Source: 'src/middleware.rs', lines 148:4-167:1 -/
+    Source: 'ports/nora/kernel/src/middleware.rs', lines 148:4-167:1 -/
 @[rust_loop_body]
 def middleware.split_once_colon_loop0.body
   (s : Slice Std.U8) (i : Std.Usize) :
@@ -1650,7 +1650,7 @@ def middleware.split_once_colon_loop0.body
   else ok (done none)
 
 /-- [nora_kernel::middleware::split_once_colon]: loop 0:
-    Source: 'src/middleware.rs', lines 148:4-167:1 -/
+    Source: 'ports/nora/kernel/src/middleware.rs', lines 148:4-167:1 -/
 @[rust_loop]
 def middleware.split_once_colon_loop0
   (s : Slice Std.U8) (i : Std.Usize) :
@@ -1661,7 +1661,7 @@ def middleware.split_once_colon_loop0
     i
 
 /-- [nora_kernel::middleware::split_once_colon]:
-    Source: 'src/middleware.rs', lines 146:0-167:1 -/
+    Source: 'ports/nora/kernel/src/middleware.rs', lines 146:0-167:1 -/
 @[reducible]
 def middleware.split_once_colon
   (s : Slice Std.U8) :
@@ -1670,7 +1670,7 @@ def middleware.split_once_colon
   middleware.split_once_colon_loop0 s 0#usize
 
 /-- [nora_kernel::oracle::bytes_eq]: loop body 0:
-    Source: 'src/oracle.rs', lines 24:4-31:1
+    Source: 'ports/nora/kernel/src/oracle.rs', lines 24:4-31:1
     Visibility: public -/
 @[rust_loop_body]
 def oracle.bytes_eq_loop.body
@@ -1689,7 +1689,7 @@ def oracle.bytes_eq_loop.body
   else ok (done true)
 
 /-- [nora_kernel::oracle::bytes_eq]: loop 0:
-    Source: 'src/oracle.rs', lines 24:4-31:1
+    Source: 'ports/nora/kernel/src/oracle.rs', lines 24:4-31:1
     Visibility: public -/
 @[rust_loop]
 def oracle.bytes_eq_loop
@@ -1699,7 +1699,7 @@ def oracle.bytes_eq_loop
     i
 
 /-- [nora_kernel::oracle::bytes_eq]:
-    Source: 'src/oracle.rs', lines 19:0-31:1
+    Source: 'ports/nora/kernel/src/oracle.rs', lines 19:0-31:1
     Visibility: public -/
 def oracle.bytes_eq (a : Slice Std.U8) (b : Slice Std.U8) : Result Bool := do
   let i := Slice.len a
@@ -1709,7 +1709,7 @@ def oracle.bytes_eq (a : Slice Std.U8) (b : Slice Std.U8) : Result Bool := do
   else oracle.bytes_eq_loop a b 0#usize
 
 /-- [nora_kernel::middleware::is_public_path]:
-    Source: 'src/middleware.rs', lines 169:0-173:1
+    Source: 'ports/nora/kernel/src/middleware.rs', lines 169:0-173:1
     Visibility: public -/
 def middleware.is_public_path (path : Slice Std.U8) : Result Bool := do
   let s ← lift (Array.to_slice (Array.make 1#usize [ 47#u8 ]))
@@ -1763,7 +1763,7 @@ def middleware.is_public_path (path : Slice Std.U8) : Result Bool := do
             oracle.bytes_eq path s5
 
 /-- [nora_kernel::middleware::is_web_surface]:
-    Source: 'src/middleware.rs', lines 175:0-180:1
+    Source: 'ports/nora/kernel/src/middleware.rs', lines 175:0-180:1
     Visibility: public -/
 def middleware.is_web_surface (path : Slice Std.U8) : Result Bool := do
   let s ←
@@ -1810,7 +1810,7 @@ def middleware.is_web_surface (path : Slice Std.U8) : Result Bool := do
           middleware.starts_with path s4
 
 /-- [nora_kernel::middleware::is_docker_path]:
-    Source: 'src/middleware.rs', lines 182:0-184:1
+    Source: 'ports/nora/kernel/src/middleware.rs', lines 182:0-184:1
     Visibility: public -/
 def middleware.is_docker_path (path : Slice Std.U8) : Result Bool := do
   let s ← lift (Array.to_slice (Array.make 3#usize [ 47#u8, 118#u8, 50#u8 ]))
@@ -1824,7 +1824,7 @@ def middleware.is_docker_path (path : Slice Std.U8) : Result Bool := do
     middleware.starts_with path s1
 
 /-- [nora_kernel::middleware::is_admin_path]:
-    Source: 'src/middleware.rs', lines 186:0-188:1
+    Source: 'ports/nora/kernel/src/middleware.rs', lines 186:0-188:1
     Visibility: public -/
 def middleware.is_admin_path (path : Slice Std.U8) : Result Bool := do
   let s ←
@@ -1836,7 +1836,7 @@ def middleware.is_admin_path (path : Slice Std.U8) : Result Bool := do
   middleware.starts_with path s
 
 /-- [nora_kernel::middleware::is_write_method]:
-    Source: 'src/middleware.rs', lines 190:0-195:1 -/
+    Source: 'ports/nora/kernel/src/middleware.rs', lines 190:0-195:1 -/
 def middleware.is_write_method (m : middleware.HttpMethod) : Result Bool := do
   match m with
   | middleware.HttpMethod.Get => ok false
@@ -1848,7 +1848,7 @@ def middleware.is_write_method (m : middleware.HttpMethod) : Result Bool := do
   | middleware.HttpMethod.Options => ok false
 
 /-- [nora_kernel::oracle::has_pair]: loop body 0:
-    Source: 'src/oracle.rs', lines 35:4-42:1 -/
+    Source: 'ports/nora/kernel/src/oracle.rs', lines 35:4-42:1 -/
 @[rust_loop_body]
 def oracle.has_pair_loop.body
   (t : Slice ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec Std.U8)))
@@ -1874,7 +1874,7 @@ def oracle.has_pair_loop.body
   else ok (done false)
 
 /-- [nora_kernel::oracle::has_pair]: loop 0:
-    Source: 'src/oracle.rs', lines 35:4-42:1 -/
+    Source: 'ports/nora/kernel/src/oracle.rs', lines 35:4-42:1 -/
 @[rust_loop]
 def oracle.has_pair_loop
   (t : Slice ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec Std.U8)))
@@ -1886,7 +1886,7 @@ def oracle.has_pair_loop
     i
 
 /-- [nora_kernel::oracle::has_pair]:
-    Source: 'src/oracle.rs', lines 33:0-42:1 -/
+    Source: 'ports/nora/kernel/src/oracle.rs', lines 33:0-42:1 -/
 @[reducible]
 def oracle.has_pair
   (t : Slice ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec Std.U8)))
@@ -1896,7 +1896,7 @@ def oracle.has_pair
   oracle.has_pair_loop t a b 0#usize
 
 /-- [nora_kernel::oracle::Crypto]
-    Source: 'src/oracle.rs', lines 6:0-17:1
+    Source: 'ports/nora/kernel/src/oracle.rs', lines 6:0-17:1
     Visibility: public -/
 structure oracle.Crypto where
   sha256 : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec Std.U8))
@@ -1907,7 +1907,7 @@ structure oracle.Crypto where
   utf8_ok : alloc.vec.Vec (alloc.vec.Vec Std.U8)
 
 /-- [nora_kernel::oracle::{nora_kernel::oracle::Crypto}::bcrypt_verify]:
-    Source: 'src/oracle.rs', lines 60:4-62:5
+    Source: 'ports/nora/kernel/src/oracle.rs', lines 60:4-62:5
     Visibility: public -/
 def oracle.Crypto.bcrypt_verify
   (self : oracle.Crypto) (password : Slice Std.U8) (hash : Slice Std.U8) :
@@ -1917,7 +1917,7 @@ def oracle.Crypto.bcrypt_verify
   oracle.has_pair s password hash
 
 /-- [nora_kernel::middleware::authenticate]: loop body 0:
-    Source: 'src/middleware.rs', lines 200:4-207:1 -/
+    Source: 'ports/nora/kernel/src/middleware.rs', lines 200:4-207:1 -/
 @[rust_loop_body]
 def middleware.authenticate_loop.body
   (users : Slice ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec Std.U8)))
@@ -1941,7 +1941,7 @@ def middleware.authenticate_loop.body
   else ok (done false)
 
 /-- [nora_kernel::middleware::authenticate]: loop 0:
-    Source: 'src/middleware.rs', lines 200:4-207:1 -/
+    Source: 'ports/nora/kernel/src/middleware.rs', lines 200:4-207:1 -/
 @[rust_loop]
 def middleware.authenticate_loop
   (users : Slice ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec Std.U8)))
@@ -1955,7 +1955,7 @@ def middleware.authenticate_loop
     i
 
 /-- [nora_kernel::middleware::authenticate]:
-    Source: 'src/middleware.rs', lines 198:0-207:1 -/
+    Source: 'ports/nora/kernel/src/middleware.rs', lines 198:0-207:1 -/
 @[reducible]
 def middleware.authenticate
   (users : Slice ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec Std.U8)))
@@ -1966,7 +1966,7 @@ def middleware.authenticate
   middleware.authenticate_loop users crypto username password 0#usize
 
 /-- [nora_kernel::oracle::{nora_kernel::oracle::Crypto}::is_utf8]: loop body 0:
-    Source: 'src/oracle.rs', lines 80:8-87:5
+    Source: 'ports/nora/kernel/src/oracle.rs', lines 80:8-87:5
     Visibility: public -/
 @[rust_loop_body]
 def oracle.Crypto.is_utf8_loop.body
@@ -1988,7 +1988,7 @@ def oracle.Crypto.is_utf8_loop.body
   else ok (done false)
 
 /-- [nora_kernel::oracle::{nora_kernel::oracle::Crypto}::is_utf8]: loop 0:
-    Source: 'src/oracle.rs', lines 80:8-87:5
+    Source: 'ports/nora/kernel/src/oracle.rs', lines 80:8-87:5
     Visibility: public -/
 @[rust_loop]
 def oracle.Crypto.is_utf8_loop
@@ -2000,7 +2000,7 @@ def oracle.Crypto.is_utf8_loop
     i
 
 /-- [nora_kernel::oracle::{nora_kernel::oracle::Crypto}::is_utf8]:
-    Source: 'src/oracle.rs', lines 78:4-87:5
+    Source: 'ports/nora/kernel/src/oracle.rs', lines 78:4-87:5
     Visibility: public -/
 @[reducible]
 def oracle.Crypto.is_utf8
@@ -2008,7 +2008,7 @@ def oracle.Crypto.is_utf8
   oracle.Crypto.is_utf8_loop self bytes 0#usize
 
 /-- [nora_kernel::oracle::{nora_kernel::oracle::Crypto}::base64_decode]: loop body 0:
-    Source: 'src/oracle.rs', lines 66:8-76:5
+    Source: 'ports/nora/kernel/src/oracle.rs', lines 66:8-76:5
     Visibility: public -/
 @[rust_loop_body]
 def oracle.Crypto.base64_decode_loop.body
@@ -2036,7 +2036,7 @@ def oracle.Crypto.base64_decode_loop.body
   else ok (done none)
 
 /-- [nora_kernel::oracle::{nora_kernel::oracle::Crypto}::base64_decode]: loop 0:
-    Source: 'src/oracle.rs', lines 66:8-76:5
+    Source: 'ports/nora/kernel/src/oracle.rs', lines 66:8-76:5
     Visibility: public -/
 @[rust_loop]
 def oracle.Crypto.base64_decode_loop
@@ -2048,7 +2048,7 @@ def oracle.Crypto.base64_decode_loop
     i
 
 /-- [nora_kernel::oracle::{nora_kernel::oracle::Crypto}::base64_decode]:
-    Source: 'src/oracle.rs', lines 64:4-76:5
+    Source: 'ports/nora/kernel/src/oracle.rs', lines 64:4-76:5
     Visibility: public -/
 @[reducible]
 def oracle.Crypto.base64_decode
@@ -2058,7 +2058,7 @@ def oracle.Crypto.base64_decode
   oracle.Crypto.base64_decode_loop self input 0#usize
 
 /-- [nora_kernel::middleware::try_basic_auth]:
-    Source: 'src/middleware.rs', lines 210:0-227:1 -/
+    Source: 'ports/nora/kernel/src/middleware.rs', lines 210:0-227:1 -/
 def middleware.try_basic_auth
   (encoded : Slice Std.U8)
   (auth : Option (alloc.vec.Vec ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec
@@ -2092,7 +2092,7 @@ def middleware.try_basic_auth
     else ok none
 
 /-- [nora_kernel::middleware::anonymous]:
-    Source: 'src/middleware.rs', lines 229:0-231:1 -/
+    Source: 'ports/nora/kernel/src/middleware.rs', lines 229:0-231:1 -/
 def middleware.anonymous : Result (alloc.vec.Vec Std.U8) := do
   let s ←
     lift (Array.to_slice
@@ -2102,7 +2102,7 @@ def middleware.anonymous : Result (alloc.vec.Vec Std.U8) := do
   alloc.slice.Slice.to_vec core.clone.CloneU8 s
 
 /-- [nora_kernel::tokens::{impl core::clone::Clone for nora_kernel::tokens::CachedToken}::clone]:
-    Source: 'src/tokens.rs', lines 33:9-33:14
+    Source: 'ports/nora/kernel/src/tokens.rs', lines 33:9-33:14
     Visibility: public -/
 def tokens.CachedToken.Insts.CoreCloneClone.clone
   (self : tokens.CachedToken) : Result tokens.CachedToken := do
@@ -2114,7 +2114,7 @@ def tokens.CachedToken.Insts.CoreCloneClone.clone
   ok { key := v, user := v1, role := r, expires_at := i, cached_at := i1 }
 
 /-- [nora_kernel::tokens::{impl core::clone::Clone for nora_kernel::tokens::TokenWrite}::clone]:
-    Source: 'src/tokens.rs', lines 58:9-58:14
+    Source: 'ports/nora/kernel/src/tokens.rs', lines 58:9-58:14
     Visibility: public -/
 def tokens.TokenWrite.Insts.CoreCloneClone.clone
   (self : tokens.TokenWrite) : Result tokens.TokenWrite := do
@@ -2131,7 +2131,7 @@ def tokens.TokenWrite.Insts.CoreCloneClone.clone
     ok (tokens.TokenWrite.CacheInsert ct)
 
 /-- [nora_kernel::middleware::token_writes]: loop body 0:
-    Source: 'src/middleware.rs', lines 236:4-239:5 -/
+    Source: 'ports/nora/kernel/src/middleware.rs', lines 236:4-239:5 -/
 @[rust_loop_body]
 def middleware.token_writes_loop.body
   (ws : alloc.vec.Vec tokens.TokenWrite) (out : alloc.vec.Vec middleware.Write)
@@ -2152,7 +2152,7 @@ def middleware.token_writes_loop.body
   else ok (done out)
 
 /-- [nora_kernel::middleware::token_writes]: loop 0:
-    Source: 'src/middleware.rs', lines 236:4-239:5 -/
+    Source: 'ports/nora/kernel/src/middleware.rs', lines 236:4-239:5 -/
 @[rust_loop]
 def middleware.token_writes_loop
   (ws : alloc.vec.Vec tokens.TokenWrite) (out : alloc.vec.Vec middleware.Write)
@@ -2164,7 +2164,7 @@ def middleware.token_writes_loop
     (out, i)
 
 /-- [nora_kernel::middleware::token_writes]:
-    Source: 'src/middleware.rs', lines 233:0-241:1 -/
+    Source: 'ports/nora/kernel/src/middleware.rs', lines 233:0-241:1 -/
 @[reducible]
 def middleware.token_writes
   (ws : alloc.vec.Vec tokens.TokenWrite) :
@@ -2173,7 +2173,7 @@ def middleware.token_writes
   middleware.token_writes_loop ws (alloc.vec.Vec.new middleware.Write) 0#usize
 
 /-- [nora_kernel::middleware::record_success]:
-    Source: 'src/middleware.rs', lines 243:0-247:1 -/
+    Source: 'ports/nora/kernel/src/middleware.rs', lines 243:0-247:1 -/
 def middleware.record_success
   (writes : alloc.vec.Vec middleware.Write) (client_ip : Option net.IpAddr) :
   Result (alloc.vec.Vec middleware.Write)
@@ -2183,7 +2183,7 @@ def middleware.record_success
   | some ip => alloc.vec.Vec.push writes (middleware.Write.ClearFailures ip)
 
 /-- [nora_kernel::tokens::find_file]: loop body 0:
-    Source: 'src/tokens.rs', lines 107:4-114:1 -/
+    Source: 'ports/nora/kernel/src/tokens.rs', lines 107:4-114:1 -/
 @[rust_loop_body]
 def tokens.find_file_loop.body
   (files : Slice tokens.TokenFile) («prefix» : Slice Std.U8) (i : Std.Usize)
@@ -2203,7 +2203,7 @@ def tokens.find_file_loop.body
   else ok (done none)
 
 /-- [nora_kernel::tokens::find_file]: loop 0:
-    Source: 'src/tokens.rs', lines 107:4-114:1 -/
+    Source: 'ports/nora/kernel/src/tokens.rs', lines 107:4-114:1 -/
 @[rust_loop]
 def tokens.find_file_loop
   (files : Slice tokens.TokenFile) («prefix» : Slice Std.U8) (i : Std.Usize)
@@ -2215,7 +2215,7 @@ def tokens.find_file_loop
     i
 
 /-- [nora_kernel::tokens::find_file]:
-    Source: 'src/tokens.rs', lines 105:0-114:1 -/
+    Source: 'ports/nora/kernel/src/tokens.rs', lines 105:0-114:1 -/
 @[reducible]
 def tokens.find_file
   (files : Slice tokens.TokenFile) («prefix» : Slice Std.U8) :
@@ -2224,7 +2224,7 @@ def tokens.find_file
   tokens.find_file_loop files «prefix» 0#usize
 
 /-- [nora_kernel::tokens::find_cached]: loop body 0:
-    Source: 'src/tokens.rs', lines 96:4-103:1 -/
+    Source: 'ports/nora/kernel/src/tokens.rs', lines 96:4-103:1 -/
 @[rust_loop_body]
 def tokens.find_cached_loop.body
   (cache : Slice tokens.CachedToken) (key : Slice Std.U8) (i : Std.Usize) :
@@ -2245,7 +2245,7 @@ def tokens.find_cached_loop.body
   else ok (done none)
 
 /-- [nora_kernel::tokens::find_cached]: loop 0:
-    Source: 'src/tokens.rs', lines 96:4-103:1 -/
+    Source: 'ports/nora/kernel/src/tokens.rs', lines 96:4-103:1 -/
 @[rust_loop]
 def tokens.find_cached_loop
   (cache : Slice tokens.CachedToken) (key : Slice Std.U8) (i : Std.Usize) :
@@ -2256,7 +2256,7 @@ def tokens.find_cached_loop
     i
 
 /-- [nora_kernel::tokens::find_cached]:
-    Source: 'src/tokens.rs', lines 94:0-103:1 -/
+    Source: 'ports/nora/kernel/src/tokens.rs', lines 94:0-103:1 -/
 @[reducible]
 def tokens.find_cached
   (cache : Slice tokens.CachedToken) (key : Slice Std.U8) :
@@ -2265,7 +2265,7 @@ def tokens.find_cached
   tokens.find_cached_loop cache key 0#usize
 
 /-- [nora_kernel::tokens::prefix16]: loop body 0:
-    Source: 'src/tokens.rs', lines 87:4-90:5 -/
+    Source: 'ports/nora/kernel/src/tokens.rs', lines 87:4-90:5 -/
 @[rust_loop_body]
 def tokens.prefix16_loop.body
   (key : Slice Std.U8) (out : alloc.vec.Vec Std.U8) (i : Std.Usize) :
@@ -2285,7 +2285,7 @@ def tokens.prefix16_loop.body
   else ok (done out)
 
 /-- [nora_kernel::tokens::prefix16]: loop 0:
-    Source: 'src/tokens.rs', lines 87:4-90:5 -/
+    Source: 'ports/nora/kernel/src/tokens.rs', lines 87:4-90:5 -/
 @[rust_loop]
 def tokens.prefix16_loop
   (key : Slice Std.U8) (out : alloc.vec.Vec Std.U8) (i : Std.Usize) :
@@ -2296,13 +2296,13 @@ def tokens.prefix16_loop
     (out, i)
 
 /-- [nora_kernel::tokens::prefix16]:
-    Source: 'src/tokens.rs', lines 84:0-92:1 -/
+    Source: 'ports/nora/kernel/src/tokens.rs', lines 84:0-92:1 -/
 @[reducible]
 def tokens.prefix16 (key : Slice Std.U8) : Result (alloc.vec.Vec Std.U8) := do
   tokens.prefix16_loop key (alloc.vec.Vec.new Std.U8) 0#usize
 
 /-- [nora_kernel::tokens::starts_with]: loop body 0:
-    Source: 'src/tokens.rs', lines 74:4-81:1 -/
+    Source: 'ports/nora/kernel/src/tokens.rs', lines 74:4-81:1 -/
 @[rust_loop_body]
 def tokens.starts_with_loop.body
   (s : Slice Std.U8) (p : Slice Std.U8) (i : Std.Usize) :
@@ -2320,7 +2320,7 @@ def tokens.starts_with_loop.body
   else ok (done true)
 
 /-- [nora_kernel::tokens::starts_with]: loop 0:
-    Source: 'src/tokens.rs', lines 74:4-81:1 -/
+    Source: 'ports/nora/kernel/src/tokens.rs', lines 74:4-81:1 -/
 @[rust_loop]
 def tokens.starts_with_loop
   (s : Slice Std.U8) (p : Slice Std.U8) (i : Std.Usize) : Result Bool := do
@@ -2329,7 +2329,7 @@ def tokens.starts_with_loop
     i
 
 /-- [nora_kernel::tokens::starts_with]:
-    Source: 'src/tokens.rs', lines 69:0-81:1 -/
+    Source: 'ports/nora/kernel/src/tokens.rs', lines 69:0-81:1 -/
 def tokens.starts_with
   (s : Slice Std.U8) (p : Slice Std.U8) : Result Bool := do
   let i := Slice.len s
@@ -2339,14 +2339,14 @@ def tokens.starts_with
   else tokens.starts_with_loop s p 0#usize
 
 /-- [nora_kernel::tokens::TOKEN_PREFIX]
-    Source: 'src/tokens.rs', lines 67:0-67:40
+    Source: 'ports/nora/kernel/src/tokens.rs', lines 67:0-67:40
     Visibility: public -/
 @[global_simps, irreducible]
 def tokens.TOKEN_PREFIX : Slice Std.U8 :=
   Array.to_slice (Array.make 4#usize [ 110#u8, 114#u8, 97#u8, 95#u8 ])
 
 /-- [nora_kernel::tokens::TokenError]
-    Source: 'src/tokens.rs', lines 50:0-55:1
+    Source: 'ports/nora/kernel/src/tokens.rs', lines 50:0-55:1
     Visibility: public -/
 @[discriminant isize]
 inductive tokens.TokenError where
@@ -2356,7 +2356,7 @@ inductive tokens.TokenError where
 | Storage : tokens.TokenError
 
 /-- [nora_kernel::tokens::{impl core::clone::Clone for nora_kernel::tokens::TokenInfo}::clone]:
-    Source: 'src/tokens.rs', lines 7:9-7:14
+    Source: 'ports/nora/kernel/src/tokens.rs', lines 7:9-7:14
     Visibility: public -/
 def tokens.TokenInfo.Insts.CoreCloneClone.clone
   (self : tokens.TokenInfo) : Result tokens.TokenInfo := do
@@ -2367,7 +2367,7 @@ def tokens.TokenInfo.Insts.CoreCloneClone.clone
   ok { token_hash := v, user := v1, expires_at := i, role := r }
 
 /-- [nora_kernel::oracle::{nora_kernel::oracle::Crypto}::argon2_verify]:
-    Source: 'src/oracle.rs', lines 56:4-58:5
+    Source: 'ports/nora/kernel/src/oracle.rs', lines 56:4-58:5
     Visibility: public -/
 def oracle.Crypto.argon2_verify
   (self : oracle.Crypto) (token : Slice Std.U8) (hash : Slice Std.U8) :
@@ -2377,7 +2377,7 @@ def oracle.Crypto.argon2_verify
   oracle.has_pair s token hash
 
 /-- [nora_kernel::oracle::{nora_kernel::oracle::Crypto}::sha256_hex]: loop body 0:
-    Source: 'src/oracle.rs', lines 47:8-54:5
+    Source: 'ports/nora/kernel/src/oracle.rs', lines 47:8-54:5
     Visibility: public -/
 @[rust_loop_body]
 def oracle.Crypto.sha256_hex_loop.body
@@ -2400,7 +2400,7 @@ def oracle.Crypto.sha256_hex_loop.body
   else ok (done (alloc.vec.Vec.new Std.U8))
 
 /-- [nora_kernel::oracle::{nora_kernel::oracle::Crypto}::sha256_hex]: loop 0:
-    Source: 'src/oracle.rs', lines 47:8-54:5
+    Source: 'ports/nora/kernel/src/oracle.rs', lines 47:8-54:5
     Visibility: public -/
 @[rust_loop]
 def oracle.Crypto.sha256_hex_loop
@@ -2412,7 +2412,7 @@ def oracle.Crypto.sha256_hex_loop
     i
 
 /-- [nora_kernel::oracle::{nora_kernel::oracle::Crypto}::sha256_hex]:
-    Source: 'src/oracle.rs', lines 45:4-54:5
+    Source: 'ports/nora/kernel/src/oracle.rs', lines 45:4-54:5
     Visibility: public -/
 @[reducible]
 def oracle.Crypto.sha256_hex
@@ -2422,7 +2422,7 @@ def oracle.Crypto.sha256_hex
   oracle.Crypto.sha256_hex_loop self input 0#usize
 
 /-- [nora_kernel::tokens::verify_token]:
-    Source: 'src/tokens.rs', lines 117:0-167:1
+    Source: 'ports/nora/kernel/src/tokens.rs', lines 117:0-167:1
     Visibility: public -/
 def tokens.verify_token
   (store : tokens.TokenStore) (crypto : oracle.Crypto) (token : Slice Std.U8)
@@ -2604,7 +2604,7 @@ def tokens.verify_token
       tokens.TokenError.InvalidFormat)
 
 /-- [nora_kernel::middleware::open_path]:
-    Source: 'src/middleware.rs', lines 250:0-270:1 -/
+    Source: 'ports/nora/kernel/src/middleware.rs', lines 250:0-270:1 -/
 def middleware.open_path
   (cfg : middleware.Config) (crypto : oracle.Crypto) (req : middleware.Request)
   :
@@ -2667,7 +2667,7 @@ def middleware.open_path
           NamespaceAuthority.Unrestricted username (some Role.Write))
 
 /-- [nora_kernel::middleware::token_identity]:
-    Source: 'src/middleware.rs', lines 273:0-283:1 -/
+    Source: 'ports/nora/kernel/src/middleware.rs', lines 273:0-283:1 -/
 def middleware.token_identity
   (writes : alloc.vec.Vec middleware.Write) (client_ip : Option net.IpAddr)
   (method : middleware.HttpMethod) (is_admin : Bool)
@@ -2708,7 +2708,7 @@ def middleware.token_identity
         (some role))
 
 /-- [nora_kernel::middleware::oidc_claims]:
-    Source: 'src/middleware.rs', lines 286:0-300:1 -/
+    Source: 'ports/nora/kernel/src/middleware.rs', lines 286:0-300:1 -/
 def middleware.oidc_claims
   (jwt : Option middleware.Jwt) (token : Slice Std.U8) :
   Result (Option Claims)
@@ -2725,7 +2725,7 @@ def middleware.oidc_claims
     else ok none
 
 /-- [nora_kernel::middleware::bearer]:
-    Source: 'src/middleware.rs', lines 303:0-342:1 -/
+    Source: 'ports/nora/kernel/src/middleware.rs', lines 303:0-342:1 -/
 def middleware.bearer
   (cfg : middleware.Config) (crypto : oracle.Crypto)
   (failures : Slice lockout.FailureEntry) (jwt : Option middleware.Jwt)
@@ -3190,7 +3190,7 @@ def middleware.bearer
           middleware.Deny.TokenStoreUnavailable)
 
 /-- [nora_kernel::middleware::basic]:
-    Source: 'src/middleware.rs', lines 345:0-391:1 -/
+    Source: 'ports/nora/kernel/src/middleware.rs', lines 345:0-391:1 -/
 def middleware.basic
   (cfg : middleware.Config) (crypto : oracle.Crypto)
   (failures : Slice lockout.FailureEntry) (req : middleware.Request)
@@ -3327,7 +3327,7 @@ def middleware.basic
       middleware.Deny.BasicOrBearerRequired)
 
 /-- [nora_kernel::net::entry_contains]:
-    Source: 'src/net.rs', lines 17:0-41:1 -/
+    Source: 'ports/nora/kernel/src/net.rs', lines 17:0-41:1 -/
 def net.entry_contains
   (network : net.IpAddr) («prefix» : Std.U8) (ip : net.IpAddr) :
   Result Bool
@@ -3365,7 +3365,7 @@ def net.entry_contains
           ok (i1 = i2)
 
 /-- [nora_kernel::net::{nora_kernel::net::TrustedProxies}::contains]: loop body 0:
-    Source: 'src/net.rs', lines 47:8-55:5
+    Source: 'ports/nora/kernel/src/net.rs', lines 47:8-55:5
     Visibility: public -/
 @[rust_loop_body]
 def net.TrustedProxies.contains_loop.body
@@ -3386,7 +3386,7 @@ def net.TrustedProxies.contains_loop.body
   else ok (done false)
 
 /-- [nora_kernel::net::{nora_kernel::net::TrustedProxies}::contains]: loop 0:
-    Source: 'src/net.rs', lines 47:8-55:5
+    Source: 'ports/nora/kernel/src/net.rs', lines 47:8-55:5
     Visibility: public -/
 @[rust_loop]
 def net.TrustedProxies.contains_loop
@@ -3398,7 +3398,7 @@ def net.TrustedProxies.contains_loop
     i
 
 /-- [nora_kernel::net::{nora_kernel::net::TrustedProxies}::contains]:
-    Source: 'src/net.rs', lines 45:4-55:5
+    Source: 'ports/nora/kernel/src/net.rs', lines 45:4-55:5
     Visibility: public -/
 @[reducible]
 def net.TrustedProxies.contains
@@ -3406,7 +3406,7 @@ def net.TrustedProxies.contains
   net.TrustedProxies.contains_loop self ip 0#usize
 
 /-- [nora_kernel::net::resolve_client_ip]:
-    Source: 'src/net.rs', lines 60:0-72:1
+    Source: 'ports/nora/kernel/src/net.rs', lines 60:0-72:1
     Visibility: public -/
 def net.resolve_client_ip
   (peer : net.IpAddr) (xff : Option net.IpAddr) (x_real_ip : Option net.IpAddr)
@@ -3424,7 +3424,7 @@ def net.resolve_client_ip
   else ok peer
 
 /-- [nora_kernel::middleware::auth_middleware]:
-    Source: 'src/middleware.rs', lines 394:0-452:1
+    Source: 'ports/nora/kernel/src/middleware.rs', lines 394:0-452:1
     Visibility: public -/
 def middleware.auth_middleware
   (cfg : middleware.Config) (failures : Slice lockout.FailureEntry)
@@ -10599,7 +10599,7 @@ def middleware.auth_middleware
       NamespaceAuthority.Unrestricted v none)
 
 /-- [nora_kernel::tokens::{impl core::clone::Clone for nora_kernel::tokens::TokenFile}::clone]:
-    Source: 'src/tokens.rs', lines 24:4-30:5
+    Source: 'ports/nora/kernel/src/tokens.rs', lines 24:4-30:5
     Visibility: public -/
 def tokens.TokenFile.Insts.CoreCloneClone.clone
   (self : tokens.TokenFile) : Result tokens.TokenFile := do
@@ -10614,7 +10614,7 @@ def tokens.TokenFile.Insts.CoreCloneClone.clone
   ok { «prefix» := v, info }
 
 /-- Trait implementation: [nora_kernel::tokens::{impl core::clone::Clone for nora_kernel::tokens::TokenFile}]
-    Source: 'src/tokens.rs', lines 23:0-31:1 -/
+    Source: 'ports/nora/kernel/src/tokens.rs', lines 23:0-31:1 -/
 @[reducible]
 def tokens.TokenFile.Insts.CoreCloneClone : core.clone.Clone tokens.TokenFile
   := {
@@ -10622,7 +10622,7 @@ def tokens.TokenFile.Insts.CoreCloneClone : core.clone.Clone tokens.TokenFile
 }
 
 /-- Trait implementation: [nora_kernel::tokens::{impl core::clone::Clone for nora_kernel::tokens::CachedToken}]
-    Source: 'src/tokens.rs', lines 33:9-33:14 -/
+    Source: 'ports/nora/kernel/src/tokens.rs', lines 33:9-33:14 -/
 @[reducible]
 def tokens.CachedToken.Insts.CoreCloneClone : core.clone.Clone
   tokens.CachedToken := {
@@ -10630,7 +10630,7 @@ def tokens.CachedToken.Insts.CoreCloneClone : core.clone.Clone
 }
 
 /-- [nora_kernel::tokens::{impl core::clone::Clone for nora_kernel::tokens::TokenStore}::clone]:
-    Source: 'src/tokens.rs', lines 42:9-42:14
+    Source: 'ports/nora/kernel/src/tokens.rs', lines 42:9-42:14
     Visibility: public -/
 def tokens.TokenStore.Insts.CoreCloneClone.clone
   (self : tokens.TokenStore) : Result tokens.TokenStore := do
@@ -10642,7 +10642,7 @@ def tokens.TokenStore.Insts.CoreCloneClone.clone
   ok { files := v, cache := v1, cache_ttl := i }
 
 /-- [nora_kernel::tokens::is_valid_hash_prefix]: loop body 0:
-    Source: 'src/tokens.rs', lines 175:4-183:1
+    Source: 'ports/nora/kernel/src/tokens.rs', lines 175:4-183:1
     Visibility: public -/
 @[rust_loop_body]
 def tokens.is_valid_hash_prefix_loop.body
@@ -10677,7 +10677,7 @@ def tokens.is_valid_hash_prefix_loop.body
   else ok (done true)
 
 /-- [nora_kernel::tokens::is_valid_hash_prefix]: loop 0:
-    Source: 'src/tokens.rs', lines 175:4-183:1
+    Source: 'ports/nora/kernel/src/tokens.rs', lines 175:4-183:1
     Visibility: public -/
 @[rust_loop]
 def tokens.is_valid_hash_prefix_loop
@@ -10687,7 +10687,7 @@ def tokens.is_valid_hash_prefix_loop
     i
 
 /-- [nora_kernel::tokens::is_valid_hash_prefix]:
-    Source: 'src/tokens.rs', lines 170:0-183:1
+    Source: 'ports/nora/kernel/src/tokens.rs', lines 170:0-183:1
     Visibility: public -/
 def tokens.is_valid_hash_prefix (s : Slice Std.U8) : Result Bool := do
   let i := Slice.len s
@@ -10696,7 +10696,7 @@ def tokens.is_valid_hash_prefix (s : Slice Std.U8) : Result Bool := do
   else tokens.is_valid_hash_prefix_loop s 0#usize
 
 /-- [nora_kernel::tokens::remove_file]: loop body 0:
-    Source: 'src/tokens.rs', lines 189:4-196:5 -/
+    Source: 'ports/nora/kernel/src/tokens.rs', lines 189:4-196:5 -/
 @[rust_loop_body]
 def tokens.remove_file_loop.body
   (files : Slice tokens.TokenFile) («prefix» : Slice Std.U8)
@@ -10719,7 +10719,7 @@ def tokens.remove_file_loop.body
   else ok (done out)
 
 /-- [nora_kernel::tokens::remove_file]: loop 0:
-    Source: 'src/tokens.rs', lines 189:4-196:5 -/
+    Source: 'ports/nora/kernel/src/tokens.rs', lines 189:4-196:5 -/
 @[rust_loop]
 def tokens.remove_file_loop
   (files : Slice tokens.TokenFile) («prefix» : Slice Std.U8)
@@ -10731,7 +10731,7 @@ def tokens.remove_file_loop
     (out, i)
 
 /-- [nora_kernel::tokens::remove_file]:
-    Source: 'src/tokens.rs', lines 186:0-198:1 -/
+    Source: 'ports/nora/kernel/src/tokens.rs', lines 186:0-198:1 -/
 @[reducible]
 def tokens.remove_file
   (files : Slice tokens.TokenFile) («prefix» : Slice Std.U8) :
@@ -10741,7 +10741,7 @@ def tokens.remove_file
     0#usize
 
 /-- [nora_kernel::tokens::invalidate_cache]: loop body 0:
-    Source: 'src/tokens.rs', lines 204:4-210:5 -/
+    Source: 'ports/nora/kernel/src/tokens.rs', lines 204:4-210:5 -/
 @[rust_loop_body]
 def tokens.invalidate_cache_loop.body
   (cache : Slice tokens.CachedToken) («prefix» : Slice Std.U8)
@@ -10764,7 +10764,7 @@ def tokens.invalidate_cache_loop.body
   else ok (done out)
 
 /-- [nora_kernel::tokens::invalidate_cache]: loop 0:
-    Source: 'src/tokens.rs', lines 204:4-210:5 -/
+    Source: 'ports/nora/kernel/src/tokens.rs', lines 204:4-210:5 -/
 @[rust_loop]
 def tokens.invalidate_cache_loop
   (cache : Slice tokens.CachedToken) («prefix» : Slice Std.U8)
@@ -10777,7 +10777,7 @@ def tokens.invalidate_cache_loop
     (out, i)
 
 /-- [nora_kernel::tokens::invalidate_cache]:
-    Source: 'src/tokens.rs', lines 201:0-212:1 -/
+    Source: 'ports/nora/kernel/src/tokens.rs', lines 201:0-212:1 -/
 @[reducible]
 def tokens.invalidate_cache
   (cache : Slice tokens.CachedToken) («prefix» : Slice Std.U8) :
@@ -10787,7 +10787,7 @@ def tokens.invalidate_cache
     tokens.CachedToken) 0#usize
 
 /-- [nora_kernel::tokens::has_file]: loop body 0:
-    Source: 'src/tokens.rs', lines 216:4-223:1 -/
+    Source: 'ports/nora/kernel/src/tokens.rs', lines 216:4-223:1 -/
 @[rust_loop_body]
 def tokens.has_file_loop.body
   (files : Slice tokens.TokenFile) («prefix» : Slice Std.U8) (i : Std.Usize)
@@ -10807,7 +10807,7 @@ def tokens.has_file_loop.body
   else ok (done false)
 
 /-- [nora_kernel::tokens::has_file]: loop 0:
-    Source: 'src/tokens.rs', lines 216:4-223:1 -/
+    Source: 'ports/nora/kernel/src/tokens.rs', lines 216:4-223:1 -/
 @[rust_loop]
 def tokens.has_file_loop
   (files : Slice tokens.TokenFile) («prefix» : Slice Std.U8) (i : Std.Usize)
@@ -10819,7 +10819,7 @@ def tokens.has_file_loop
     i
 
 /-- [nora_kernel::tokens::has_file]:
-    Source: 'src/tokens.rs', lines 214:0-223:1 -/
+    Source: 'ports/nora/kernel/src/tokens.rs', lines 214:0-223:1 -/
 @[reducible]
 def tokens.has_file
   (files : Slice tokens.TokenFile) («prefix» : Slice Std.U8) :
@@ -10828,7 +10828,7 @@ def tokens.has_file
   tokens.has_file_loop files «prefix» 0#usize
 
 /-- [nora_kernel::tokens::revoke_token]:
-    Source: 'src/tokens.rs', lines 226:0-236:1
+    Source: 'ports/nora/kernel/src/tokens.rs', lines 226:0-236:1
     Visibility: public -/
 def tokens.revoke_token
   (store : tokens.TokenStore) (hash_prefix : Slice Std.U8) :
@@ -10854,7 +10854,7 @@ def tokens.revoke_token
     ok (ts, core.result.Result.Err tokens.TokenError.NotFound)
 
 /-- [nora_kernel::tokens::remove_user_files]: loop body 0:
-    Source: 'src/tokens.rs', lines 244:4-256:5 -/
+    Source: 'ports/nora/kernel/src/tokens.rs', lines 244:4-256:5 -/
 @[rust_loop_body]
 def tokens.remove_user_files_loop.body
   (files : Slice tokens.TokenFile) (user : Slice Std.U8)
@@ -10886,7 +10886,7 @@ def tokens.remove_user_files_loop.body
   else ok (done (kept, count))
 
 /-- [nora_kernel::tokens::remove_user_files]: loop 0:
-    Source: 'src/tokens.rs', lines 244:4-256:5 -/
+    Source: 'ports/nora/kernel/src/tokens.rs', lines 244:4-256:5 -/
 @[rust_loop]
 def tokens.remove_user_files_loop
   (files : Slice tokens.TokenFile) (user : Slice Std.U8)
@@ -10899,7 +10899,7 @@ def tokens.remove_user_files_loop
     (kept, count, i)
 
 /-- [nora_kernel::tokens::remove_user_files]:
-    Source: 'src/tokens.rs', lines 240:0-258:1 -/
+    Source: 'ports/nora/kernel/src/tokens.rs', lines 240:0-258:1 -/
 @[reducible]
 def tokens.remove_user_files
   (files : Slice tokens.TokenFile) (user : Slice Std.U8) :
@@ -10909,7 +10909,7 @@ def tokens.remove_user_files
     0#usize 0#usize
 
 /-- [nora_kernel::tokens::evict_user]: loop body 0:
-    Source: 'src/tokens.rs', lines 264:4-270:5 -/
+    Source: 'ports/nora/kernel/src/tokens.rs', lines 264:4-270:5 -/
 @[rust_loop_body]
 def tokens.evict_user_loop.body
   (cache : Slice tokens.CachedToken) (user : Slice Std.U8)
@@ -10932,7 +10932,7 @@ def tokens.evict_user_loop.body
   else ok (done out)
 
 /-- [nora_kernel::tokens::evict_user]: loop 0:
-    Source: 'src/tokens.rs', lines 264:4-270:5 -/
+    Source: 'ports/nora/kernel/src/tokens.rs', lines 264:4-270:5 -/
 @[rust_loop]
 def tokens.evict_user_loop
   (cache : Slice tokens.CachedToken) (user : Slice Std.U8)
@@ -10944,7 +10944,7 @@ def tokens.evict_user_loop
     (out, i)
 
 /-- [nora_kernel::tokens::evict_user]:
-    Source: 'src/tokens.rs', lines 261:0-272:1 -/
+    Source: 'ports/nora/kernel/src/tokens.rs', lines 261:0-272:1 -/
 @[reducible]
 def tokens.evict_user
   (cache : Slice tokens.CachedToken) (user : Slice Std.U8) :
@@ -10954,7 +10954,7 @@ def tokens.evict_user
     0#usize
 
 /-- [nora_kernel::tokens::revoke_all_for_user]:
-    Source: 'src/tokens.rs', lines 275:0-279:1
+    Source: 'ports/nora/kernel/src/tokens.rs', lines 275:0-279:1
     Visibility: public -/
 def tokens.revoke_all_for_user
   (store : tokens.TokenStore) (user : Slice Std.U8) :
@@ -10974,7 +10974,7 @@ def tokens.revoke_all_for_user
     ok ({ store with files, cache }, count)
 
 /-- [nora_kernel::validation::ValidationError]
-    Source: 'src/validation.rs', lines 5:0-25:1
+    Source: 'ports/nora/kernel/src/validation.rs', lines 5:0-25:1
     Visibility: public -/
 @[discriminant isize]
 inductive validation.ValidationError where
@@ -10997,14 +10997,14 @@ inductive validation.ValidationError where
 | ReferenceStart : validation.ValidationError
 
 /-- [nora_kernel::validation::{impl core::clone::Clone for nora_kernel::validation::ValidationError}::clone]:
-    Source: 'src/validation.rs', lines 4:9-4:14
+    Source: 'ports/nora/kernel/src/validation.rs', lines 4:9-4:14
     Visibility: public -/
 def validation.ValidationError.Insts.CoreCloneClone.clone
   (self : validation.ValidationError) : Result validation.ValidationError := do
   ok self
 
 /-- Trait implementation: [nora_kernel::validation::{impl core::clone::Clone for nora_kernel::validation::ValidationError}]
-    Source: 'src/validation.rs', lines 4:9-4:14 -/
+    Source: 'ports/nora/kernel/src/validation.rs', lines 4:9-4:14 -/
 @[reducible]
 def validation.ValidationError.Insts.CoreCloneClone : core.clone.Clone
   validation.ValidationError := {
@@ -11012,7 +11012,7 @@ def validation.ValidationError.Insts.CoreCloneClone : core.clone.Clone
 }
 
 /-- Trait implementation: [nora_kernel::validation::{impl core::marker::Copy for nora_kernel::validation::ValidationError}]
-    Source: 'src/validation.rs', lines 4:16-4:20 -/
+    Source: 'ports/nora/kernel/src/validation.rs', lines 4:16-4:20 -/
 @[reducible]
 def validation.ValidationError.Insts.CoreMarkerCopy : core.marker.Copy
   validation.ValidationError := {
@@ -11020,7 +11020,7 @@ def validation.ValidationError.Insts.CoreMarkerCopy : core.marker.Copy
 }
 
 /-- [nora_kernel::validation::{impl core::fmt::Debug for nora_kernel::validation::ValidationError}::fmt]:
-    Source: 'src/validation.rs', lines 4:22-4:27
+    Source: 'ports/nora/kernel/src/validation.rs', lines 4:22-4:27
     Visibility: public -/
 def validation.ValidationError.Insts.CoreFmtDebug.fmt
   (self : validation.ValidationError) (f : core.fmt.Formatter) :
@@ -11065,7 +11065,7 @@ def validation.ValidationError.Insts.CoreFmtDebug.fmt
     core.fmt.Formatter.write_str f (toStr "ReferenceStart")
 
 /-- Trait implementation: [nora_kernel::validation::{impl core::fmt::Debug for nora_kernel::validation::ValidationError}]
-    Source: 'src/validation.rs', lines 4:22-4:27 -/
+    Source: 'ports/nora/kernel/src/validation.rs', lines 4:22-4:27 -/
 @[reducible]
 def validation.ValidationError.Insts.CoreFmtDebug : core.fmt.Debug
   validation.ValidationError := {
@@ -11073,14 +11073,14 @@ def validation.ValidationError.Insts.CoreFmtDebug : core.fmt.Debug
 }
 
 /-- Trait implementation: [nora_kernel::validation::{impl core::marker::StructuralPartialEq for nora_kernel::validation::ValidationError}]
-    Source: 'src/validation.rs', lines 4:29-4:38 -/
+    Source: 'ports/nora/kernel/src/validation.rs', lines 4:29-4:38 -/
 @[reducible]
 def validation.ValidationError.Insts.CoreMarkerStructuralPartialEq :
   core.marker.StructuralPartialEq validation.ValidationError := {
 }
 
 /-- [nora_kernel::validation::{impl core::cmp::PartialEq<nora_kernel::validation::ValidationError> for nora_kernel::validation::ValidationError}::eq]:
-    Source: 'src/validation.rs', lines 4:29-4:38
+    Source: 'ports/nora/kernel/src/validation.rs', lines 4:29-4:38
     Visibility: public -/
 def validation.ValidationError.Insts.CoreCmpPartialEqValidationError.eq
   (self : validation.ValidationError) (other : validation.ValidationError) :
@@ -11130,7 +11130,7 @@ def validation.ValidationError.Insts.CoreCmpPartialEqValidationError.eq
   else ok false
 
 /-- Trait implementation: [nora_kernel::validation::{impl core::cmp::PartialEq<nora_kernel::validation::ValidationError> for nora_kernel::validation::ValidationError}]
-    Source: 'src/validation.rs', lines 4:29-4:38 -/
+    Source: 'ports/nora/kernel/src/validation.rs', lines 4:29-4:38 -/
 @[reducible]
 def validation.ValidationError.Insts.CoreCmpPartialEqValidationError :
   core.cmp.PartialEq validation.ValidationError validation.ValidationError := {
@@ -11138,14 +11138,14 @@ def validation.ValidationError.Insts.CoreCmpPartialEqValidationError :
 }
 
 /-- [nora_kernel::validation::{impl core::cmp::Eq for nora_kernel::validation::ValidationError}::assert_fields_are_eq]:
-    Source: 'src/validation.rs', lines 4:40-4:42
+    Source: 'ports/nora/kernel/src/validation.rs', lines 4:40-4:42
     Visibility: public -/
 def validation.ValidationError.Insts.CoreCmpEq.assert_fields_are_eq
   (self : validation.ValidationError) : Result Unit := do
   ok ()
 
 /-- Trait implementation: [nora_kernel::validation::{impl core::cmp::Eq for nora_kernel::validation::ValidationError}]
-    Source: 'src/validation.rs', lines 4:40-4:42 -/
+    Source: 'ports/nora/kernel/src/validation.rs', lines 4:40-4:42 -/
 @[reducible]
 def validation.ValidationError.Insts.CoreCmpEq : core.cmp.Eq
   validation.ValidationError := {
@@ -11156,22 +11156,22 @@ def validation.ValidationError.Insts.CoreCmpEq : core.cmp.Eq
 }
 
 /-- [nora_kernel::validation::MAX_KEY_LENGTH]
-    Source: 'src/validation.rs', lines 27:0-27:35 -/
+    Source: 'ports/nora/kernel/src/validation.rs', lines 27:0-27:35 -/
 @[global_simps, irreducible]
 def validation.MAX_KEY_LENGTH : Std.Usize := 1024#usize
 
 /-- [nora_kernel::validation::MAX_DOCKER_NAME_LENGTH]
-    Source: 'src/validation.rs', lines 28:0-28:42 -/
+    Source: 'ports/nora/kernel/src/validation.rs', lines 28:0-28:42 -/
 @[global_simps, irreducible]
 def validation.MAX_DOCKER_NAME_LENGTH : Std.Usize := 256#usize
 
 /-- [nora_kernel::validation::MAX_REFERENCE_LENGTH]
-    Source: 'src/validation.rs', lines 29:0-29:40 -/
+    Source: 'ports/nora/kernel/src/validation.rs', lines 29:0-29:40 -/
 @[global_simps, irreducible]
 def validation.MAX_REFERENCE_LENGTH : Std.Usize := 128#usize
 
 /-- [nora_kernel::validation::contains_byte]: loop body 0:
-    Source: 'src/validation.rs', lines 34:4-41:1
+    Source: 'ports/nora/kernel/src/validation.rs', lines 34:4-41:1
     Visibility: public -/
 @[rust_loop_body]
 def validation.contains_byte_loop.body
@@ -11189,7 +11189,7 @@ def validation.contains_byte_loop.body
   else ok (done false)
 
 /-- [nora_kernel::validation::contains_byte]: loop 0:
-    Source: 'src/validation.rs', lines 34:4-41:1
+    Source: 'ports/nora/kernel/src/validation.rs', lines 34:4-41:1
     Visibility: public -/
 @[rust_loop]
 def validation.contains_byte_loop
@@ -11199,7 +11199,7 @@ def validation.contains_byte_loop
     i
 
 /-- [nora_kernel::validation::contains_byte]:
-    Source: 'src/validation.rs', lines 32:0-41:1
+    Source: 'ports/nora/kernel/src/validation.rs', lines 32:0-41:1
     Visibility: public -/
 @[reducible]
 def validation.contains_byte
@@ -11207,7 +11207,7 @@ def validation.contains_byte
   validation.contains_byte_loop s c 0#usize
 
 /-- [nora_kernel::validation::contains_pair]: loop body 0:
-    Source: 'src/validation.rs', lines 46:4-53:1
+    Source: 'ports/nora/kernel/src/validation.rs', lines 46:4-53:1
     Visibility: public -/
 @[rust_loop_body]
 def validation.contains_pair_loop.body
@@ -11229,7 +11229,7 @@ def validation.contains_pair_loop.body
   else ok (done false)
 
 /-- [nora_kernel::validation::contains_pair]: loop 0:
-    Source: 'src/validation.rs', lines 46:4-53:1
+    Source: 'ports/nora/kernel/src/validation.rs', lines 46:4-53:1
     Visibility: public -/
 @[rust_loop]
 def validation.contains_pair_loop
@@ -11241,7 +11241,7 @@ def validation.contains_pair_loop
     i
 
 /-- [nora_kernel::validation::contains_pair]:
-    Source: 'src/validation.rs', lines 44:0-53:1
+    Source: 'ports/nora/kernel/src/validation.rs', lines 44:0-53:1
     Visibility: public -/
 @[reducible]
 def validation.contains_pair
@@ -11249,7 +11249,7 @@ def validation.contains_pair
   validation.contains_pair_loop s a b 0#usize
 
 /-- [nora_kernel::validation::to_ascii_lower]:
-    Source: 'src/validation.rs', lines 55:0-57:1 -/
+    Source: 'ports/nora/kernel/src/validation.rs', lines 55:0-57:1 -/
 def validation.to_ascii_lower (c : Std.U8) : Result Std.U8 := do
   if c >= 65#u8
   then if c <= 90#u8
@@ -11258,7 +11258,7 @@ def validation.to_ascii_lower (c : Std.U8) : Result Std.U8 := do
   else ok c
 
 /-- [nora_kernel::validation::ends_with_ci]: loop body 0:
-    Source: 'src/validation.rs', lines 66:4-73:1
+    Source: 'ports/nora/kernel/src/validation.rs', lines 66:4-73:1
     Visibility: public -/
 @[rust_loop_body]
 def validation.ends_with_ci_loop.body
@@ -11281,7 +11281,7 @@ def validation.ends_with_ci_loop.body
   else ok (done true)
 
 /-- [nora_kernel::validation::ends_with_ci]: loop 0:
-    Source: 'src/validation.rs', lines 66:4-73:1
+    Source: 'ports/nora/kernel/src/validation.rs', lines 66:4-73:1
     Visibility: public -/
 @[rust_loop]
 def validation.ends_with_ci_loop
@@ -11294,7 +11294,7 @@ def validation.ends_with_ci_loop
     i
 
 /-- [nora_kernel::validation::ends_with_ci]:
-    Source: 'src/validation.rs', lines 60:0-73:1
+    Source: 'ports/nora/kernel/src/validation.rs', lines 60:0-73:1
     Visibility: public -/
 def validation.ends_with_ci
   (s : Slice Std.U8) (suffix : Slice Std.U8) : Result Bool := do
@@ -11309,7 +11309,7 @@ def validation.ends_with_ci
     validation.ends_with_ci_loop s suffix off 0#usize
 
 /-- [nora_kernel::validation::first_non_ascii]: loop body 0:
-    Source: 'src/validation.rs', lines 78:4-85:1 -/
+    Source: 'ports/nora/kernel/src/validation.rs', lines 78:4-85:1 -/
 @[rust_loop_body]
 def validation.first_non_ascii_loop.body
   (key : Slice Std.U8) (i : Std.Usize) :
@@ -11326,7 +11326,7 @@ def validation.first_non_ascii_loop.body
   else ok (done false)
 
 /-- [nora_kernel::validation::first_non_ascii]: loop 0:
-    Source: 'src/validation.rs', lines 78:4-85:1 -/
+    Source: 'ports/nora/kernel/src/validation.rs', lines 78:4-85:1 -/
 @[rust_loop]
 def validation.first_non_ascii_loop
   (key : Slice Std.U8) (i : Std.Usize) : Result Bool := do
@@ -11335,13 +11335,13 @@ def validation.first_non_ascii_loop
     i
 
 /-- [nora_kernel::validation::first_non_ascii]:
-    Source: 'src/validation.rs', lines 76:0-85:1 -/
+    Source: 'ports/nora/kernel/src/validation.rs', lines 76:0-85:1 -/
 @[reducible]
 def validation.first_non_ascii (key : Slice Std.U8) : Result Bool := do
   validation.first_non_ascii_loop key 0#usize
 
 /-- [nora_kernel::validation::has_dot_segment]: loop body 0:
-    Source: 'src/validation.rs', lines 91:4-102:1 -/
+    Source: 'ports/nora/kernel/src/validation.rs', lines 91:4-102:1 -/
 @[rust_loop_body]
 def validation.has_dot_segment_loop.body
   (key : Slice Std.U8) (start : Std.Usize) (i : Std.Usize) :
@@ -11436,7 +11436,7 @@ def validation.has_dot_segment_loop.body
   else ok (done false)
 
 /-- [nora_kernel::validation::has_dot_segment]: loop 0:
-    Source: 'src/validation.rs', lines 91:4-102:1 -/
+    Source: 'ports/nora/kernel/src/validation.rs', lines 91:4-102:1 -/
 @[rust_loop]
 def validation.has_dot_segment_loop
   (key : Slice Std.U8) (start : Std.Usize) (i : Std.Usize) : Result Bool := do
@@ -11445,13 +11445,13 @@ def validation.has_dot_segment_loop
     (start, i)
 
 /-- [nora_kernel::validation::has_dot_segment]:
-    Source: 'src/validation.rs', lines 88:0-102:1 -/
+    Source: 'ports/nora/kernel/src/validation.rs', lines 88:0-102:1 -/
 @[reducible]
 def validation.has_dot_segment (key : Slice Std.U8) : Result Bool := do
   validation.has_dot_segment_loop key 0#usize 0#usize
 
 /-- [nora_kernel::validation::validate_storage_key]:
-    Source: 'src/validation.rs', lines 105:0-131:1
+    Source: 'ports/nora/kernel/src/validation.rs', lines 105:0-131:1
     Visibility: public -/
 def validation.validate_storage_key
   (key : Slice Std.U8) :
@@ -11508,7 +11508,7 @@ def validation.validate_storage_key
                   else ok (core.result.Result.Ok ())
 
 /-- [nora_kernel::validation::is_docker_char]:
-    Source: 'src/validation.rs', lines 133:0-135:1 -/
+    Source: 'ports/nora/kernel/src/validation.rs', lines 133:0-135:1 -/
 def validation.is_docker_char (c : Std.U8) : Result Bool := do
   if c >= 97#u8
   then
@@ -11562,7 +11562,7 @@ def validation.is_docker_char (c : Std.U8) : Result Bool := do
              else ok (c = 47#u8)
 
 /-- [nora_kernel::validation::is_ascii_alphanumeric]:
-    Source: 'src/validation.rs', lines 137:0-139:1 -/
+    Source: 'ports/nora/kernel/src/validation.rs', lines 137:0-139:1 -/
 def validation.is_ascii_alphanumeric (c : Std.U8) : Result Bool := do
   if c >= 97#u8
   then
@@ -11592,7 +11592,7 @@ def validation.is_ascii_alphanumeric (c : Std.U8) : Result Bool := do
          else ok false
 
 /-- [nora_kernel::validation::docker_name_chars]: loop body 0:
-    Source: 'src/validation.rs', lines 144:4-158:1 -/
+    Source: 'ports/nora/kernel/src/validation.rs', lines 144:4-158:1 -/
 @[rust_loop_body]
 def validation.docker_name_chars_loop.body
   («name» : Slice Std.U8) (i : Std.Usize) :
@@ -11633,7 +11633,7 @@ def validation.docker_name_chars_loop.body
   else ok (done (core.result.Result.Ok ()))
 
 /-- [nora_kernel::validation::docker_name_chars]: loop 0:
-    Source: 'src/validation.rs', lines 144:4-158:1 -/
+    Source: 'ports/nora/kernel/src/validation.rs', lines 144:4-158:1 -/
 @[rust_loop]
 def validation.docker_name_chars_loop
   («name» : Slice Std.U8) (i : Std.Usize) :
@@ -11644,7 +11644,7 @@ def validation.docker_name_chars_loop
     i
 
 /-- [nora_kernel::validation::docker_name_chars]:
-    Source: 'src/validation.rs', lines 142:0-158:1 -/
+    Source: 'ports/nora/kernel/src/validation.rs', lines 142:0-158:1 -/
 @[reducible]
 def validation.docker_name_chars
   («name» : Slice Std.U8) :
@@ -11653,7 +11653,7 @@ def validation.docker_name_chars
   validation.docker_name_chars_loop «name» 0#usize
 
 /-- [nora_kernel::validation::docker_name_segments]: loop body 0:
-    Source: 'src/validation.rs', lines 164:4-177:1 -/
+    Source: 'ports/nora/kernel/src/validation.rs', lines 164:4-177:1 -/
 @[rust_loop_body]
 def validation.docker_name_segments_loop.body
   («name» : Slice Std.U8) (start : Std.Usize) (i : Std.Usize) :
@@ -11701,7 +11701,7 @@ def validation.docker_name_segments_loop.body
   else ok (done (core.result.Result.Ok ()))
 
 /-- [nora_kernel::validation::docker_name_segments]: loop 0:
-    Source: 'src/validation.rs', lines 164:4-177:1 -/
+    Source: 'ports/nora/kernel/src/validation.rs', lines 164:4-177:1 -/
 @[rust_loop]
 def validation.docker_name_segments_loop
   («name» : Slice Std.U8) (start : Std.Usize) (i : Std.Usize) :
@@ -11713,7 +11713,7 @@ def validation.docker_name_segments_loop
     (start, i)
 
 /-- [nora_kernel::validation::docker_name_segments]:
-    Source: 'src/validation.rs', lines 161:0-177:1 -/
+    Source: 'ports/nora/kernel/src/validation.rs', lines 161:0-177:1 -/
 @[reducible]
 def validation.docker_name_segments
   («name» : Slice Std.U8) :
@@ -11722,7 +11722,7 @@ def validation.docker_name_segments
   validation.docker_name_segments_loop «name» 0#usize 0#usize
 
 /-- [nora_kernel::validation::validate_docker_name]:
-    Source: 'src/validation.rs', lines 180:0-201:1
+    Source: 'ports/nora/kernel/src/validation.rs', lines 180:0-201:1
     Visibility: public -/
 def validation.validate_docker_name
   («name» : Slice Std.U8) :
@@ -11791,7 +11791,7 @@ def validation.validate_docker_name
             Unit (core.convert.FromSame validation.ValidationError) residual
 
 /-- [nora_kernel::validation::is_lower_hex]:
-    Source: 'src/validation.rs', lines 203:0-205:1 -/
+    Source: 'ports/nora/kernel/src/validation.rs', lines 203:0-205:1 -/
 def validation.is_lower_hex (c : Std.U8) : Result Bool := do
   if c >= 48#u8
   then
@@ -11805,7 +11805,7 @@ def validation.is_lower_hex (c : Std.U8) : Result Bool := do
        else ok false
 
 /-- [nora_kernel::validation::digest_hash_chars]: loop body 0:
-    Source: 'src/validation.rs', lines 210:4-221:1 -/
+    Source: 'ports/nora/kernel/src/validation.rs', lines 210:4-221:1 -/
 @[rust_loop_body]
 def validation.digest_hash_chars_loop.body
   (d : Slice Std.U8) (i : Std.Usize) :
@@ -11836,7 +11836,7 @@ def validation.digest_hash_chars_loop.body
   else ok (done (core.result.Result.Ok ()))
 
 /-- [nora_kernel::validation::digest_hash_chars]: loop 0:
-    Source: 'src/validation.rs', lines 210:4-221:1 -/
+    Source: 'ports/nora/kernel/src/validation.rs', lines 210:4-221:1 -/
 @[rust_loop]
 def validation.digest_hash_chars_loop
   (d : Slice Std.U8) (i : Std.Usize) :
@@ -11847,7 +11847,7 @@ def validation.digest_hash_chars_loop
     i
 
 /-- [nora_kernel::validation::digest_hash_chars]:
-    Source: 'src/validation.rs', lines 208:0-221:1 -/
+    Source: 'ports/nora/kernel/src/validation.rs', lines 208:0-221:1 -/
 @[reducible]
 def validation.digest_hash_chars
   (d : Slice Std.U8) («from» : Std.Usize) :
@@ -11856,7 +11856,7 @@ def validation.digest_hash_chars
   validation.digest_hash_chars_loop d «from»
 
 /-- [nora_kernel::validation::find_colon]: loop body 0:
-    Source: 'src/validation.rs', lines 226:4-233:1 -/
+    Source: 'ports/nora/kernel/src/validation.rs', lines 226:4-233:1 -/
 @[rust_loop_body]
 def validation.find_colon_loop.body
   (d : Slice Std.U8) (i : Std.Usize) :
@@ -11873,7 +11873,7 @@ def validation.find_colon_loop.body
   else ok (done none)
 
 /-- [nora_kernel::validation::find_colon]: loop 0:
-    Source: 'src/validation.rs', lines 226:4-233:1 -/
+    Source: 'ports/nora/kernel/src/validation.rs', lines 226:4-233:1 -/
 @[rust_loop]
 def validation.find_colon_loop
   (d : Slice Std.U8) (i : Std.Usize) : Result (Option Std.Usize) := do
@@ -11882,13 +11882,13 @@ def validation.find_colon_loop
     i
 
 /-- [nora_kernel::validation::find_colon]:
-    Source: 'src/validation.rs', lines 224:0-233:1 -/
+    Source: 'ports/nora/kernel/src/validation.rs', lines 224:0-233:1 -/
 @[reducible]
 def validation.find_colon (d : Slice Std.U8) : Result (Option Std.Usize) := do
   validation.find_colon_loop d 0#usize
 
 /-- [nora_kernel::validation::prefix_is]: loop body 0:
-    Source: 'src/validation.rs', lines 240:4-247:1 -/
+    Source: 'ports/nora/kernel/src/validation.rs', lines 240:4-247:1 -/
 @[rust_loop_body]
 def validation.prefix_is_loop.body
   (d : Slice Std.U8) (len : Std.Usize) (lit : Slice Std.U8) (i : Std.Usize) :
@@ -11905,7 +11905,7 @@ def validation.prefix_is_loop.body
   else ok (done true)
 
 /-- [nora_kernel::validation::prefix_is]: loop 0:
-    Source: 'src/validation.rs', lines 240:4-247:1 -/
+    Source: 'ports/nora/kernel/src/validation.rs', lines 240:4-247:1 -/
 @[rust_loop]
 def validation.prefix_is_loop
   (d : Slice Std.U8) (len : Std.Usize) (lit : Slice Std.U8) (i : Std.Usize) :
@@ -11916,7 +11916,7 @@ def validation.prefix_is_loop
     i
 
 /-- [nora_kernel::validation::prefix_is]:
-    Source: 'src/validation.rs', lines 235:0-247:1 -/
+    Source: 'ports/nora/kernel/src/validation.rs', lines 235:0-247:1 -/
 def validation.prefix_is
   (d : Slice Std.U8) (len : Std.Usize) (lit : Slice Std.U8) : Result Bool := do
   let i := Slice.len lit
@@ -11925,7 +11925,7 @@ def validation.prefix_is
   else validation.prefix_is_loop d len lit 0#usize
 
 /-- [nora_kernel::validation::validate_digest]:
-    Source: 'src/validation.rs', lines 250:0-274:1
+    Source: 'ports/nora/kernel/src/validation.rs', lines 250:0-274:1
     Visibility: public -/
 def validation.validate_digest
   (digest : Slice Std.U8) :
@@ -11987,7 +11987,7 @@ def validation.validate_digest
                 validation.ValidationError.DigestAlgorithm)
 
 /-- [nora_kernel::validation::starts_with]:
-    Source: 'src/validation.rs', lines 276:0-281:1 -/
+    Source: 'ports/nora/kernel/src/validation.rs', lines 276:0-281:1 -/
 def validation.starts_with
   (s : Slice Std.U8) (p : Slice Std.U8) : Result Bool := do
   let i := Slice.len s
@@ -11998,7 +11998,7 @@ def validation.starts_with
        validation.prefix_is s i2 p
 
 /-- [nora_kernel::validation::is_tag_char]:
-    Source: 'src/validation.rs', lines 283:0-285:1 -/
+    Source: 'ports/nora/kernel/src/validation.rs', lines 283:0-285:1 -/
 def validation.is_tag_char (c : Std.U8) : Result Bool := do
   let b ← validation.is_ascii_alphanumeric c
   if b
@@ -12011,7 +12011,7 @@ def validation.is_tag_char (c : Std.U8) : Result Bool := do
          else ok (c = 45#u8)
 
 /-- [nora_kernel::validation::reference_chars]: loop body 0:
-    Source: 'src/validation.rs', lines 290:4-301:1 -/
+    Source: 'ports/nora/kernel/src/validation.rs', lines 290:4-301:1 -/
 @[rust_loop_body]
 def validation.reference_chars_loop.body
   (r : Slice Std.U8) (i : Std.Usize) :
@@ -12037,7 +12037,7 @@ def validation.reference_chars_loop.body
   else ok (done (core.result.Result.Ok ()))
 
 /-- [nora_kernel::validation::reference_chars]: loop 0:
-    Source: 'src/validation.rs', lines 290:4-301:1 -/
+    Source: 'ports/nora/kernel/src/validation.rs', lines 290:4-301:1 -/
 @[rust_loop]
 def validation.reference_chars_loop
   (r : Slice Std.U8) (i : Std.Usize) :
@@ -12048,7 +12048,7 @@ def validation.reference_chars_loop
     i
 
 /-- [nora_kernel::validation::reference_chars]:
-    Source: 'src/validation.rs', lines 288:0-301:1 -/
+    Source: 'ports/nora/kernel/src/validation.rs', lines 288:0-301:1 -/
 @[reducible]
 def validation.reference_chars
   (r : Slice Std.U8) :
@@ -12057,7 +12057,7 @@ def validation.reference_chars
   validation.reference_chars_loop r 0#usize
 
 /-- [nora_kernel::validation::validate_docker_reference]:
-    Source: 'src/validation.rs', lines 304:0-321:1
+    Source: 'ports/nora/kernel/src/validation.rs', lines 304:0-321:1
     Visibility: public -/
 def validation.validate_docker_reference
   (reference : Slice Std.U8) :

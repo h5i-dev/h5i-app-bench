@@ -20,7 +20,7 @@ set_option maxRecDepth 2048
 namespace rustfs_kernel
 
 /-- [rustfs_kernel::acts::Family]
-    Source: 'src/acts.rs', lines 5:0-11:1
+    Source: 'ports/rustfs/kernel/src/acts.rs', lines 5:0-11:1
     Visibility: public -/
 @[discriminant isize]
 inductive acts.Family where
@@ -31,7 +31,7 @@ inductive acts.Family where
 | None : acts.Family
 
 /-- [rustfs_kernel::acts::{impl core::cmp::PartialEq<rustfs_kernel::acts::Family> for rustfs_kernel::acts::Family}::eq]:
-    Source: 'src/acts.rs', lines 4:29-4:38
+    Source: 'ports/rustfs/kernel/src/acts.rs', lines 4:29-4:38
     Visibility: public -/
 def acts.Family.Insts.CoreCmpPartialEqFamily.eq
   (self : acts.Family) (other : acts.Family) : Result Bool := do
@@ -40,7 +40,7 @@ def acts.Family.Insts.CoreCmpPartialEqFamily.eq
   ok (self1 = other1)
 
 /-- Trait implementation: [rustfs_kernel::acts::{impl core::cmp::PartialEq<rustfs_kernel::acts::Family> for rustfs_kernel::acts::Family}]
-    Source: 'src/acts.rs', lines 4:29-4:38 -/
+    Source: 'ports/rustfs/kernel/src/acts.rs', lines 4:29-4:38 -/
 @[reducible]
 impl_def acts.Family.Insts.CoreCmpPartialEqFamily : core.cmp.PartialEq
   acts.Family acts.Family := {
@@ -50,14 +50,14 @@ impl_def acts.Family.Insts.CoreCmpPartialEqFamily : core.cmp.PartialEq
 }
 
 /-- [rustfs_kernel::acts::Action]
-    Source: 'src/acts.rs', lines 15:0-18:1
+    Source: 'ports/rustfs/kernel/src/acts.rs', lines 15:0-18:1
     Visibility: public -/
 structure acts.Action where
   family : acts.Family
   «name» : alloc.vec.Vec Std.U8
 
 /-- [rustfs_kernel::bytes::eq]: loop body 0:
-    Source: 'src/bytes.rs', lines 8:4-15:1
+    Source: 'ports/rustfs/kernel/src/bytes.rs', lines 8:4-15:1
     Visibility: public -/
 @[rust_loop_body]
 def bytes.eq_loop.body
@@ -76,7 +76,7 @@ def bytes.eq_loop.body
   else ok (done true)
 
 /-- [rustfs_kernel::bytes::eq]: loop 0:
-    Source: 'src/bytes.rs', lines 8:4-15:1
+    Source: 'ports/rustfs/kernel/src/bytes.rs', lines 8:4-15:1
     Visibility: public -/
 @[rust_loop]
 def bytes.eq_loop
@@ -86,7 +86,7 @@ def bytes.eq_loop
     i
 
 /-- [rustfs_kernel::bytes::eq]:
-    Source: 'src/bytes.rs', lines 3:0-15:1
+    Source: 'ports/rustfs/kernel/src/bytes.rs', lines 3:0-15:1
     Visibility: public -/
 def bytes.eq (a : Slice Std.U8) (b : Slice Std.U8) : Result Bool := do
   let i := Slice.len a
@@ -96,7 +96,7 @@ def bytes.eq (a : Slice Std.U8) (b : Slice Std.U8) : Result Bool := do
   else bytes.eq_loop a b 0#usize
 
 /-- [rustfs_kernel::acts::is_s3]:
-    Source: 'src/acts.rs', lines 20:0-22:1 -/
+    Source: 'ports/rustfs/kernel/src/acts.rs', lines 20:0-22:1 -/
 def acts.is_s3 (a : acts.Action) («name» : Slice Std.U8) : Result Bool := do
   let b ← acts.Family.Insts.CoreCmpPartialEqFamily.eq a.family acts.Family.S3
   if b
@@ -105,7 +105,7 @@ def acts.is_s3 (a : acts.Action) («name» : Slice Std.U8) : Result Bool := do
   else ok false
 
 /-- [rustfs_kernel::acts::action_requires_explicit_grant]:
-    Source: 'src/acts.rs', lines 25:0-27:1
+    Source: 'ports/rustfs/kernel/src/acts.rs', lines 25:0-27:1
     Visibility: public -/
 def acts.action_requires_explicit_grant (a : acts.Action) : Result Bool := do
   let s ←
@@ -129,7 +129,7 @@ def acts.action_requires_explicit_grant (a : acts.Action) : Result Bool := do
     acts.is_s3 a s1
 
 /-- [rustfs_kernel::wildmatch::deep_match]:
-    Source: 'src/wildmatch.rs', lines 5:0-25:1 -/
+    Source: 'ports/rustfs/kernel/src/wildmatch.rs', lines 5:0-25:1 -/
 def wildmatch.deep_match
   (p : Slice Std.U8) (pi : Std.Usize) (n : Slice Std.U8) (ni : Std.Usize)
   (simple : Bool) :
@@ -183,7 +183,7 @@ def wildmatch.deep_match
 partial_fixpoint
 
 /-- [rustfs_kernel::wildmatch::inner_match]:
-    Source: 'src/wildmatch.rs', lines 27:0-35:1 -/
+    Source: 'ports/rustfs/kernel/src/wildmatch.rs', lines 27:0-35:1 -/
 def wildmatch.inner_match
   (pattern : Slice Std.U8) («name» : Slice Std.U8) (simple : Bool) :
   Result Bool
@@ -203,14 +203,14 @@ def wildmatch.inner_match
     else wildmatch.deep_match pattern 0#usize «name» 0#usize simple
 
 /-- [rustfs_kernel::wildmatch::is_match]:
-    Source: 'src/wildmatch.rs', lines 43:0-45:1
+    Source: 'ports/rustfs/kernel/src/wildmatch.rs', lines 43:0-45:1
     Visibility: public -/
 def wildmatch.is_match
   (pattern : Slice Std.U8) («name» : Slice Std.U8) : Result Bool := do
   wildmatch.inner_match pattern «name» false
 
 /-- [rustfs_kernel::acts::action_is_match_for_effect]:
-    Source: 'src/acts.rs', lines 30:0-35:1
+    Source: 'ports/rustfs/kernel/src/acts.rs', lines 30:0-35:1
     Visibility: public -/
 def acts.action_is_match_for_effect
   (this : acts.Action) (a : acts.Action) (deny : Bool) : Result Bool := do
@@ -239,7 +239,7 @@ def acts.action_is_match_for_effect
       wildmatch.is_match s1 s2
 
 /-- [rustfs_kernel::acts::set_is_match_for_effect]: loop body 0:
-    Source: 'src/acts.rs', lines 40:4-50:1
+    Source: 'ports/rustfs/kernel/src/acts.rs', lines 40:4-50:1
     Visibility: public -/
 @[rust_loop_body]
 def acts.set_is_match_for_effect_loop.body
@@ -280,7 +280,7 @@ def acts.set_is_match_for_effect_loop.body
   else ok (done false)
 
 /-- [rustfs_kernel::acts::set_is_match_for_effect]: loop 0:
-    Source: 'src/acts.rs', lines 40:4-50:1
+    Source: 'ports/rustfs/kernel/src/acts.rs', lines 40:4-50:1
     Visibility: public -/
 @[rust_loop]
 def acts.set_is_match_for_effect_loop
@@ -292,7 +292,7 @@ def acts.set_is_match_for_effect_loop
     i
 
 /-- [rustfs_kernel::acts::set_is_match_for_effect]:
-    Source: 'src/acts.rs', lines 38:0-50:1
+    Source: 'ports/rustfs/kernel/src/acts.rs', lines 38:0-50:1
     Visibility: public -/
 @[reducible]
 def acts.set_is_match_for_effect
@@ -300,7 +300,7 @@ def acts.set_is_match_for_effect
   acts.set_is_match_for_effect_loop set a deny 0#usize
 
 /-- [rustfs_kernel::acts::statement_covers]:
-    Source: 'src/acts.rs', lines 53:0-61:1
+    Source: 'ports/rustfs/kernel/src/acts.rs', lines 53:0-61:1
     Visibility: public -/
 def acts.statement_covers
   (actions : Slice acts.Action) (not_actions : Slice acts.Action)
@@ -321,7 +321,7 @@ def acts.statement_covers
     else acts.set_is_match_for_effect actions a deny
 
 /-- [rustfs_kernel::acts::is_table_resource_scoped]:
-    Source: 'src/acts.rs', lines 64:0-79:1
+    Source: 'ports/rustfs/kernel/src/acts.rs', lines 64:0-79:1
     Visibility: public -/
 def acts.is_table_resource_scoped (a : acts.Action) : Result Bool := do
   let b ←
@@ -592,7 +592,7 @@ def acts.is_table_resource_scoped (a : acts.Action) : Result Bool := do
                                           bytes.eq s38 s39
 
 /-- [rustfs_kernel::awsvars::ClaimStrings]
-    Source: 'src/awsvars.rs', lines 9:0-17:1
+    Source: 'ports/rustfs/kernel/src/awsvars.rs', lines 9:0-17:1
     Visibility: public -/
 structure awsvars.ClaimStrings where
   sub : Option (alloc.vec.Vec (alloc.vec.Vec Std.U8))
@@ -603,7 +603,7 @@ structure awsvars.ClaimStrings where
   has_sa_policy : Bool
 
 /-- [rustfs_kernel::awsvars::clone_list]: loop body 0:
-    Source: 'src/awsvars.rs', lines 57:4-60:5 -/
+    Source: 'ports/rustfs/kernel/src/awsvars.rs', lines 57:4-60:5 -/
 @[rust_loop_body]
 def awsvars.clone_list_loop.body
   (v : Slice (alloc.vec.Vec Std.U8))
@@ -622,7 +622,7 @@ def awsvars.clone_list_loop.body
   else ok (done out)
 
 /-- [rustfs_kernel::awsvars::clone_list]: loop 0:
-    Source: 'src/awsvars.rs', lines 57:4-60:5 -/
+    Source: 'ports/rustfs/kernel/src/awsvars.rs', lines 57:4-60:5 -/
 @[rust_loop]
 def awsvars.clone_list_loop
   (v : Slice (alloc.vec.Vec Std.U8))
@@ -634,7 +634,7 @@ def awsvars.clone_list_loop
     (out, i)
 
 /-- [rustfs_kernel::awsvars::clone_list]:
-    Source: 'src/awsvars.rs', lines 54:0-62:1 -/
+    Source: 'ports/rustfs/kernel/src/awsvars.rs', lines 54:0-62:1 -/
 @[reducible]
 def awsvars.clone_list
   (v : Slice (alloc.vec.Vec Std.U8)) :
@@ -643,7 +643,7 @@ def awsvars.clone_list
   awsvars.clone_list_loop v (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) 0#usize
 
 /-- [rustfs_kernel::awsvars::clone_opt_list]:
-    Source: 'src/awsvars.rs', lines 19:0-24:1 -/
+    Source: 'ports/rustfs/kernel/src/awsvars.rs', lines 19:0-24:1 -/
 def awsvars.clone_opt_list
   (v : Option (alloc.vec.Vec (alloc.vec.Vec Std.U8))) :
   Result (Option (alloc.vec.Vec (alloc.vec.Vec Std.U8)))
@@ -656,7 +656,7 @@ def awsvars.clone_opt_list
     ok (some v1)
 
 /-- [rustfs_kernel::awsvars::{impl core::clone::Clone for rustfs_kernel::awsvars::ClaimStrings}::clone]:
-    Source: 'src/awsvars.rs', lines 28:4-40:5
+    Source: 'ports/rustfs/kernel/src/awsvars.rs', lines 28:4-40:5
     Visibility: public -/
 def awsvars.ClaimStrings.Insts.CoreCloneClone.clone
   (self : awsvars.ClaimStrings) : Result awsvars.ClaimStrings := do
@@ -669,7 +669,7 @@ def awsvars.ClaimStrings.Insts.CoreCloneClone.clone
     ok { self with sub := o, parent := o1, parent_str := (some v) }
 
 /-- [rustfs_kernel::awsvars::VarContext]
-    Source: 'src/awsvars.rs', lines 45:0-52:1
+    Source: 'ports/rustfs/kernel/src/awsvars.rs', lines 45:0-52:1
     Visibility: public -/
 structure awsvars.VarContext where
   username : alloc.vec.Vec Std.U8
@@ -679,7 +679,7 @@ structure awsvars.VarContext where
   now_epoch : alloc.vec.Vec Std.U8
 
 /-- [rustfs_kernel::awsvars::userid_strings]:
-    Source: 'src/awsvars.rs', lines 65:0-73:1 -/
+    Source: 'ports/rustfs/kernel/src/awsvars.rs', lines 65:0-73:1 -/
 def awsvars.userid_strings
   (c : awsvars.ClaimStrings) :
   Result (Option (alloc.vec.Vec (alloc.vec.Vec Std.U8)))
@@ -698,7 +698,7 @@ def awsvars.userid_strings
     ok (some v1)
 
 /-- [rustfs_kernel::awsvars::resolve]:
-    Source: 'src/awsvars.rs', lines 76:0-115:1
+    Source: 'ports/rustfs/kernel/src/awsvars.rs', lines 76:0-115:1
     Visibility: public -/
 def awsvars.resolve
   (ctx : awsvars.VarContext) («name» : Slice Std.U8) :
@@ -843,7 +843,7 @@ def awsvars.resolve
               else ok none
 
 /-- [rustfs_kernel::awsvars::resolve_multiple]:
-    Source: 'src/awsvars.rs', lines 118:0-135:1
+    Source: 'ports/rustfs/kernel/src/awsvars.rs', lines 118:0-135:1
     Visibility: public -/
 def awsvars.resolve_multiple
   (ctx : awsvars.VarContext) («name» : Slice Std.U8) :
@@ -881,7 +881,7 @@ def awsvars.resolve_multiple
         ok (some v)
 
 /-- [rustfs_kernel::awsvars::closing]: loop body 0:
-    Source: 'src/awsvars.rs', lines 142:4-151:5 -/
+    Source: 'ports/rustfs/kernel/src/awsvars.rs', lines 142:4-151:5 -/
 @[rust_loop_body]
 def awsvars.closing_loop.body
   (s : Slice Std.U8) (brace : Std.Usize) («end» : Std.Usize) :
@@ -907,7 +907,7 @@ def awsvars.closing_loop.body
   else ok (done («end», brace))
 
 /-- [rustfs_kernel::awsvars::closing]: loop 0:
-    Source: 'src/awsvars.rs', lines 142:4-151:5 -/
+    Source: 'ports/rustfs/kernel/src/awsvars.rs', lines 142:4-151:5 -/
 @[rust_loop]
 def awsvars.closing_loop
   (s : Slice Std.U8) (brace : Std.Usize) («end» : Std.Usize) :
@@ -918,7 +918,7 @@ def awsvars.closing_loop
     (brace, «end»)
 
 /-- [rustfs_kernel::awsvars::closing]:
-    Source: 'src/awsvars.rs', lines 139:0-153:1 -/
+    Source: 'ports/rustfs/kernel/src/awsvars.rs', lines 139:0-153:1 -/
 @[reducible]
 def awsvars.closing
   (s : Slice Std.U8) («from» : Std.Usize) :
@@ -927,7 +927,7 @@ def awsvars.closing
   awsvars.closing_loop s 1#usize «from»
 
 /-- [rustfs_kernel::bytes::slice]: loop body 0:
-    Source: 'src/bytes.rs', lines 59:4-62:5
+    Source: 'ports/rustfs/kernel/src/bytes.rs', lines 59:4-62:5
     Visibility: public -/
 @[rust_loop_body]
 def bytes.slice_loop.body
@@ -945,7 +945,7 @@ def bytes.slice_loop.body
   else ok (done out)
 
 /-- [rustfs_kernel::bytes::slice]: loop 0:
-    Source: 'src/bytes.rs', lines 59:4-62:5
+    Source: 'ports/rustfs/kernel/src/bytes.rs', lines 59:4-62:5
     Visibility: public -/
 @[rust_loop]
 def bytes.slice_loop
@@ -958,7 +958,7 @@ def bytes.slice_loop
     (out, i)
 
 /-- [rustfs_kernel::bytes::slice]:
-    Source: 'src/bytes.rs', lines 56:0-64:1
+    Source: 'ports/rustfs/kernel/src/bytes.rs', lines 56:0-64:1
     Visibility: public -/
 @[reducible]
 def bytes.slice
@@ -968,7 +968,7 @@ def bytes.slice
   bytes.slice_loop s b (alloc.vec.Vec.new Std.U8) a
 
 /-- [rustfs_kernel::bytes::concat]: loop body 0:
-    Source: 'src/bytes.rs', lines 70:4-73:5
+    Source: 'ports/rustfs/kernel/src/bytes.rs', lines 70:4-73:5
     Visibility: public -/
 @[rust_loop_body]
 def bytes.concat_loop.body
@@ -986,7 +986,7 @@ def bytes.concat_loop.body
   else ok (done out)
 
 /-- [rustfs_kernel::bytes::concat]: loop 0:
-    Source: 'src/bytes.rs', lines 70:4-73:5
+    Source: 'ports/rustfs/kernel/src/bytes.rs', lines 70:4-73:5
     Visibility: public -/
 @[rust_loop]
 def bytes.concat_loop
@@ -998,7 +998,7 @@ def bytes.concat_loop
     (out, i)
 
 /-- [rustfs_kernel::bytes::concat]:
-    Source: 'src/bytes.rs', lines 67:0-75:1
+    Source: 'ports/rustfs/kernel/src/bytes.rs', lines 67:0-75:1
     Visibility: public -/
 def bytes.concat
   (a : Slice Std.U8) (b : Slice Std.U8) : Result (alloc.vec.Vec Std.U8) := do
@@ -1007,7 +1007,7 @@ def bytes.concat
   bytes.concat_loop b out 0#usize
 
 /-- [rustfs_kernel::awsvars::wrap_all]: loop body 0:
-    Source: 'src/awsvars.rs', lines 159:4-162:5 -/
+    Source: 'ports/rustfs/kernel/src/awsvars.rs', lines 159:4-162:5 -/
 @[rust_loop_body]
 def awsvars.wrap_all_loop.body
   («prefix» : Slice Std.U8) (values : Slice (alloc.vec.Vec Std.U8))
@@ -1030,7 +1030,7 @@ def awsvars.wrap_all_loop.body
   else ok (done out)
 
 /-- [rustfs_kernel::awsvars::wrap_all]: loop 0:
-    Source: 'src/awsvars.rs', lines 159:4-162:5 -/
+    Source: 'ports/rustfs/kernel/src/awsvars.rs', lines 159:4-162:5 -/
 @[rust_loop]
 def awsvars.wrap_all_loop
   («prefix» : Slice Std.U8) (values : Slice (alloc.vec.Vec Std.U8))
@@ -1044,7 +1044,7 @@ def awsvars.wrap_all_loop
     (out, i)
 
 /-- [rustfs_kernel::awsvars::wrap_all]:
-    Source: 'src/awsvars.rs', lines 156:0-164:1 -/
+    Source: 'ports/rustfs/kernel/src/awsvars.rs', lines 156:0-164:1 -/
 @[reducible]
 def awsvars.wrap_all
   («prefix» : Slice Std.U8) (values : Slice (alloc.vec.Vec Std.U8))
@@ -1055,7 +1055,7 @@ def awsvars.wrap_all
     (alloc.vec.Vec Std.U8)) 0#usize
 
 /-- [rustfs_kernel::awsvars::splice]: loop body 0:
-    Source: 'src/awsvars.rs', lines 170:4-173:5 -/
+    Source: 'ports/rustfs/kernel/src/awsvars.rs', lines 170:4-173:5 -/
 @[rust_loop_body]
 def awsvars.splice_loop0.body
   (results : Slice (alloc.vec.Vec Std.U8)) (i : Std.Usize)
@@ -1073,7 +1073,7 @@ def awsvars.splice_loop0.body
   else ok (done out)
 
 /-- [rustfs_kernel::awsvars::splice]: loop 0:
-    Source: 'src/awsvars.rs', lines 170:4-173:5 -/
+    Source: 'ports/rustfs/kernel/src/awsvars.rs', lines 170:4-173:5 -/
 @[rust_loop]
 def awsvars.splice_loop0
   (results : Slice (alloc.vec.Vec Std.U8)) (i : Std.Usize)
@@ -1085,7 +1085,7 @@ def awsvars.splice_loop0
     (out, k)
 
 /-- [rustfs_kernel::awsvars::splice]: loop body 1:
-    Source: 'src/awsvars.rs', lines 175:4-178:5 -/
+    Source: 'ports/rustfs/kernel/src/awsvars.rs', lines 175:4-178:5 -/
 @[rust_loop_body]
 def awsvars.splice_loop1.body
   (new : Slice (alloc.vec.Vec Std.U8))
@@ -1104,7 +1104,7 @@ def awsvars.splice_loop1.body
   else ok (done out)
 
 /-- [rustfs_kernel::awsvars::splice]: loop 1:
-    Source: 'src/awsvars.rs', lines 175:4-178:5 -/
+    Source: 'ports/rustfs/kernel/src/awsvars.rs', lines 175:4-178:5 -/
 @[rust_loop]
 def awsvars.splice_loop1
   (new : Slice (alloc.vec.Vec Std.U8))
@@ -1116,7 +1116,7 @@ def awsvars.splice_loop1
     (out, j)
 
 /-- [rustfs_kernel::awsvars::splice]: loop body 2:
-    Source: 'src/awsvars.rs', lines 180:4-183:5 -/
+    Source: 'ports/rustfs/kernel/src/awsvars.rs', lines 180:4-183:5 -/
 @[rust_loop_body]
 def awsvars.splice_loop2.body
   (results : Slice (alloc.vec.Vec Std.U8))
@@ -1135,7 +1135,7 @@ def awsvars.splice_loop2.body
   else ok (done out)
 
 /-- [rustfs_kernel::awsvars::splice]: loop 2:
-    Source: 'src/awsvars.rs', lines 180:4-183:5 -/
+    Source: 'ports/rustfs/kernel/src/awsvars.rs', lines 180:4-183:5 -/
 @[rust_loop]
 def awsvars.splice_loop2
   (results : Slice (alloc.vec.Vec Std.U8))
@@ -1147,7 +1147,7 @@ def awsvars.splice_loop2
     (out, k2)
 
 /-- [rustfs_kernel::awsvars::splice]:
-    Source: 'src/awsvars.rs', lines 167:0-185:1 -/
+    Source: 'ports/rustfs/kernel/src/awsvars.rs', lines 167:0-185:1 -/
 def awsvars.splice
   (results : Slice (alloc.vec.Vec Std.U8)) (i : Std.Usize)
   (new : Slice (alloc.vec.Vec Std.U8)) :
@@ -1161,7 +1161,7 @@ def awsvars.splice
   awsvars.splice_loop2 results out1 k2
 
 /-- [rustfs_kernel::bytes::starts_with_at]: loop body 0:
-    Source: 'src/bytes.rs', lines 23:4-30:1
+    Source: 'ports/rustfs/kernel/src/bytes.rs', lines 23:4-30:1
     Visibility: public -/
 @[rust_loop_body]
 def bytes.starts_with_at_loop.body
@@ -1182,7 +1182,7 @@ def bytes.starts_with_at_loop.body
   else ok (done true)
 
 /-- [rustfs_kernel::bytes::starts_with_at]: loop 0:
-    Source: 'src/bytes.rs', lines 23:4-30:1
+    Source: 'ports/rustfs/kernel/src/bytes.rs', lines 23:4-30:1
     Visibility: public -/
 @[rust_loop]
 def bytes.starts_with_at_loop
@@ -1195,7 +1195,7 @@ def bytes.starts_with_at_loop
     i
 
 /-- [rustfs_kernel::bytes::starts_with_at]:
-    Source: 'src/bytes.rs', lines 18:0-30:1
+    Source: 'ports/rustfs/kernel/src/bytes.rs', lines 18:0-30:1
     Visibility: public -/
 def bytes.starts_with_at
   (s : Slice Std.U8) («from» : Std.Usize) (p : Slice Std.U8) :
@@ -1213,7 +1213,7 @@ def bytes.starts_with_at
     else bytes.starts_with_at_loop s «from» p 0#usize
 
 /-- [rustfs_kernel::bytes::find_from]: loop body 0:
-    Source: 'src/bytes.rs', lines 39:4-46:1
+    Source: 'ports/rustfs/kernel/src/bytes.rs', lines 39:4-46:1
     Visibility: public -/
 @[rust_loop_body]
 def bytes.find_from_loop.body
@@ -1237,7 +1237,7 @@ def bytes.find_from_loop.body
   else ok (done none)
 
 /-- [rustfs_kernel::bytes::find_from]: loop 0:
-    Source: 'src/bytes.rs', lines 39:4-46:1
+    Source: 'ports/rustfs/kernel/src/bytes.rs', lines 39:4-46:1
     Visibility: public -/
 @[rust_loop]
 def bytes.find_from_loop
@@ -1249,7 +1249,7 @@ def bytes.find_from_loop
     i
 
 /-- [rustfs_kernel::bytes::find_from]:
-    Source: 'src/bytes.rs', lines 37:0-46:1
+    Source: 'ports/rustfs/kernel/src/bytes.rs', lines 37:0-46:1
     Visibility: public -/
 @[reducible]
 def bytes.find_from
@@ -1259,7 +1259,7 @@ def bytes.find_from
   bytes.find_from_loop s p «from»
 
 /-- [rustfs_kernel::bytes::contains]:
-    Source: 'src/bytes.rs', lines 48:0-53:1
+    Source: 'ports/rustfs/kernel/src/bytes.rs', lines 48:0-53:1
     Visibility: public -/
 def bytes.contains (s : Slice Std.U8) (p : Slice Std.U8) : Result Bool := do
   let o ← bytes.find_from s 0#usize p
@@ -1268,7 +1268,7 @@ def bytes.contains (s : Slice Std.U8) (p : Slice Std.U8) : Result Bool := do
   | some _ => ok true
 
 /-- [rustfs_kernel::bytes::member]: loop body 0:
-    Source: 'src/bytes.rs', lines 117:4-124:1
+    Source: 'ports/rustfs/kernel/src/bytes.rs', lines 117:4-124:1
     Visibility: public -/
 @[rust_loop_body]
 def bytes.member_loop.body
@@ -1288,7 +1288,7 @@ def bytes.member_loop.body
   else ok (done false)
 
 /-- [rustfs_kernel::bytes::member]: loop 0:
-    Source: 'src/bytes.rs', lines 117:4-124:1
+    Source: 'ports/rustfs/kernel/src/bytes.rs', lines 117:4-124:1
     Visibility: public -/
 @[rust_loop]
 def bytes.member_loop
@@ -1300,7 +1300,7 @@ def bytes.member_loop
     i
 
 /-- [rustfs_kernel::bytes::member]:
-    Source: 'src/bytes.rs', lines 115:0-124:1
+    Source: 'ports/rustfs/kernel/src/bytes.rs', lines 115:0-124:1
     Visibility: public -/
 @[reducible]
 def bytes.member
@@ -1308,7 +1308,7 @@ def bytes.member
   bytes.member_loop xs x 0#usize
 
 /-- [rustfs_kernel::awsvars::dedup]: loop body 0:
-    Source: 'src/awsvars.rs', lines 267:4-273:5 -/
+    Source: 'ports/rustfs/kernel/src/awsvars.rs', lines 267:4-273:5 -/
 @[rust_loop_body]
 def awsvars.dedup_loop.body
   (v : Slice (alloc.vec.Vec Std.U8))
@@ -1332,7 +1332,7 @@ def awsvars.dedup_loop.body
   else ok (done out)
 
 /-- [rustfs_kernel::awsvars::dedup]: loop 0:
-    Source: 'src/awsvars.rs', lines 267:4-273:5 -/
+    Source: 'ports/rustfs/kernel/src/awsvars.rs', lines 267:4-273:5 -/
 @[rust_loop]
 def awsvars.dedup_loop
   (v : Slice (alloc.vec.Vec Std.U8))
@@ -1344,7 +1344,7 @@ def awsvars.dedup_loop
     (out, i)
 
 /-- [rustfs_kernel::awsvars::dedup]:
-    Source: 'src/awsvars.rs', lines 264:0-275:1 -/
+    Source: 'ports/rustfs/kernel/src/awsvars.rs', lines 264:0-275:1 -/
 @[reducible]
 def awsvars.dedup
   (v : Slice (alloc.vec.Vec Std.U8)) :
@@ -1353,7 +1353,7 @@ def awsvars.dedup
   awsvars.dedup_loop v (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) 0#usize
 
 /-- [rustfs_kernel::awsvars::extend]: loop body 0:
-    Source: 'src/awsvars.rs', lines 256:4-259:5 -/
+    Source: 'ports/rustfs/kernel/src/awsvars.rs', lines 256:4-259:5 -/
 @[rust_loop_body]
 def awsvars.extend_loop.body
   (more : Slice (alloc.vec.Vec Std.U8))
@@ -1372,7 +1372,7 @@ def awsvars.extend_loop.body
   else ok (done acc)
 
 /-- [rustfs_kernel::awsvars::extend]: loop 0:
-    Source: 'src/awsvars.rs', lines 256:4-259:5 -/
+    Source: 'ports/rustfs/kernel/src/awsvars.rs', lines 256:4-259:5 -/
 @[rust_loop]
 def awsvars.extend_loop
   (acc : alloc.vec.Vec (alloc.vec.Vec Std.U8))
@@ -1384,7 +1384,7 @@ def awsvars.extend_loop
     (acc, j)
 
 /-- [rustfs_kernel::awsvars::extend]:
-    Source: 'src/awsvars.rs', lines 254:0-261:1 -/
+    Source: 'ports/rustfs/kernel/src/awsvars.rs', lines 254:0-261:1 -/
 @[reducible]
 def awsvars.extend
   (acc : alloc.vec.Vec (alloc.vec.Vec Std.U8))
@@ -1396,7 +1396,7 @@ def awsvars.extend
 mutual
 
 /-- [rustfs_kernel::awsvars::scan]:
-    Source: 'src/awsvars.rs', lines 189:0-223:1 -/
+    Source: 'ports/rustfs/kernel/src/awsvars.rs', lines 189:0-223:1 -/
 def awsvars.scan
   (ctx : awsvars.VarContext) (results : alloc.vec.Vec (alloc.vec.Vec Std.U8))
   (i : Std.Usize) (start : Std.Usize) :
@@ -1475,7 +1475,7 @@ def awsvars.scan
 partial_fixpoint
 
 /-- [rustfs_kernel::awsvars::pass_from]:
-    Source: 'src/awsvars.rs', lines 226:0-232:1 -/
+    Source: 'ports/rustfs/kernel/src/awsvars.rs', lines 226:0-232:1 -/
 def awsvars.pass_from
   (ctx : awsvars.VarContext) (results : alloc.vec.Vec (alloc.vec.Vec Std.U8))
   (i : Std.Usize) :
@@ -1493,7 +1493,7 @@ def awsvars.pass_from
 partial_fixpoint
 
 /-- [rustfs_kernel::awsvars::resolve_single_pass]:
-    Source: 'src/awsvars.rs', lines 235:0-239:1
+    Source: 'ports/rustfs/kernel/src/awsvars.rs', lines 235:0-239:1
     Visibility: public -/
 def awsvars.resolve_single_pass
   (ctx : awsvars.VarContext) (pattern : Slice Std.U8) :
@@ -1506,7 +1506,7 @@ def awsvars.resolve_single_pass
 partial_fixpoint
 
 /-- [rustfs_kernel::awsvars::pass_all]:
-    Source: 'src/awsvars.rs', lines 243:0-252:1 -/
+    Source: 'ports/rustfs/kernel/src/awsvars.rs', lines 243:0-252:1 -/
 def awsvars.pass_all
   (ctx : awsvars.VarContext) (results : Slice (alloc.vec.Vec Std.U8))
   (k : Std.Usize) (acc : alloc.vec.Vec (alloc.vec.Vec Std.U8)) (changed : Bool)
@@ -1547,7 +1547,7 @@ def awsvars.pass_all
 partial_fixpoint
 
 /-- [rustfs_kernel::awsvars::fixpoint]:
-    Source: 'src/awsvars.rs', lines 278:0-285:1 -/
+    Source: 'ports/rustfs/kernel/src/awsvars.rs', lines 278:0-285:1 -/
 def awsvars.fixpoint
   (ctx : awsvars.VarContext) (results : alloc.vec.Vec (alloc.vec.Vec Std.U8))
   (iteration : Std.Usize) :
@@ -1569,7 +1569,7 @@ def awsvars.fixpoint
 partial_fixpoint
 
 /-- [rustfs_kernel::awsvars::resolve_aws_variables]:
-    Source: 'src/awsvars.rs', lines 288:0-292:1
+    Source: 'ports/rustfs/kernel/src/awsvars.rs', lines 288:0-292:1
     Visibility: public -/
 def awsvars.resolve_aws_variables
   (ctx : awsvars.VarContext) (pattern : Slice Std.U8) :
@@ -1584,7 +1584,7 @@ partial_fixpoint
 end
 
 /-- [rustfs_kernel::bytes::replace]: loop body 1:
-    Source: 'src/bytes.rs', lines 85:12-88:13
+    Source: 'ports/rustfs/kernel/src/bytes.rs', lines 85:12-88:13
     Visibility: public -/
 @[rust_loop_body]
 def bytes.replace_loop0_loop0.body
@@ -1602,7 +1602,7 @@ def bytes.replace_loop0_loop0.body
   else ok (done out)
 
 /-- [rustfs_kernel::bytes::replace]: loop 1:
-    Source: 'src/bytes.rs', lines 85:12-88:13
+    Source: 'ports/rustfs/kernel/src/bytes.rs', lines 85:12-88:13
     Visibility: public -/
 @[rust_loop]
 def bytes.replace_loop0_loop0
@@ -1614,7 +1614,7 @@ def bytes.replace_loop0_loop0
     (out, j)
 
 /-- [rustfs_kernel::bytes::replace]: loop body 0:
-    Source: 'src/bytes.rs', lines 82:4-94:5
+    Source: 'ports/rustfs/kernel/src/bytes.rs', lines 82:4-94:5
     Visibility: public -/
 @[rust_loop_body]
 def bytes.replace_loop0.body
@@ -1649,7 +1649,7 @@ def bytes.replace_loop0.body
   else ok (done out)
 
 /-- [rustfs_kernel::bytes::replace]: loop 0:
-    Source: 'src/bytes.rs', lines 82:4-94:5
+    Source: 'ports/rustfs/kernel/src/bytes.rs', lines 82:4-94:5
     Visibility: public -/
 @[rust_loop]
 def bytes.replace_loop0
@@ -1662,7 +1662,7 @@ def bytes.replace_loop0
     (out, i)
 
 /-- [rustfs_kernel::bytes::replace]:
-    Source: 'src/bytes.rs', lines 79:0-96:1
+    Source: 'ports/rustfs/kernel/src/bytes.rs', lines 79:0-96:1
     Visibility: public -/
 @[reducible]
 def bytes.replace
@@ -1672,7 +1672,7 @@ def bytes.replace
   bytes.replace_loop0 s «from» «to» (alloc.vec.Vec.new Std.U8) 0#usize
 
 /-- [rustfs_kernel::bytes::lower]: loop body 0:
-    Source: 'src/bytes.rs', lines 102:4-110:5
+    Source: 'ports/rustfs/kernel/src/bytes.rs', lines 102:4-110:5
     Visibility: public -/
 @[rust_loop_body]
 def bytes.lower_loop.body
@@ -1698,7 +1698,7 @@ def bytes.lower_loop.body
   else ok (done out)
 
 /-- [rustfs_kernel::bytes::lower]: loop 0:
-    Source: 'src/bytes.rs', lines 102:4-110:5
+    Source: 'ports/rustfs/kernel/src/bytes.rs', lines 102:4-110:5
     Visibility: public -/
 @[rust_loop]
 def bytes.lower_loop
@@ -1710,14 +1710,14 @@ def bytes.lower_loop
     (out, i)
 
 /-- [rustfs_kernel::bytes::lower]:
-    Source: 'src/bytes.rs', lines 99:0-112:1
+    Source: 'ports/rustfs/kernel/src/bytes.rs', lines 99:0-112:1
     Visibility: public -/
 @[reducible]
 def bytes.lower (s : Slice Std.U8) : Result (alloc.vec.Vec Std.U8) := do
   bytes.lower_loop s (alloc.vec.Vec.new Std.U8) 0#usize
 
 /-- [rustfs_kernel::bytes::parse_digits]:
-    Source: 'src/bytes.rs', lines 128:0-146:1 -/
+    Source: 'ports/rustfs/kernel/src/bytes.rs', lines 128:0-146:1 -/
 def bytes.parse_digits
   (s : Slice Std.U8) (i : Std.Usize) (acc : Std.I64) (neg : Bool) :
   Result (Option Std.I64)
@@ -1750,7 +1750,7 @@ def bytes.parse_digits
 partial_fixpoint
 
 /-- [rustfs_kernel::bytes::parse_i64]:
-    Source: 'src/bytes.rs', lines 149:0-159:1
+    Source: 'ports/rustfs/kernel/src/bytes.rs', lines 149:0-159:1
     Visibility: public -/
 def bytes.parse_i64 (s : Slice Std.U8) : Result (Option Std.I64) := do
   let i := Slice.len s
@@ -1770,7 +1770,7 @@ def bytes.parse_i64 (s : Slice Std.U8) : Result (Option Std.I64) := do
     else bytes.parse_digits s start 0#i64 (i1 = 45#u8)
 
 /-- [rustfs_kernel::condfuncs::get_value]: loop body 0:
-    Source: 'src/condfuncs.rs', lines 14:4-21:1
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 14:4-21:1
     Visibility: public -/
 @[rust_loop_body]
 def condfuncs.get_value_loop.body
@@ -1799,7 +1799,7 @@ def condfuncs.get_value_loop.body
   else ok (done none)
 
 /-- [rustfs_kernel::condfuncs::get_value]: loop 0:
-    Source: 'src/condfuncs.rs', lines 14:4-21:1
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 14:4-21:1
     Visibility: public -/
 @[rust_loop]
 def condfuncs.get_value_loop
@@ -1812,7 +1812,7 @@ def condfuncs.get_value_loop
     i
 
 /-- [rustfs_kernel::condfuncs::get_value]:
-    Source: 'src/condfuncs.rs', lines 12:0-21:1
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 12:0-21:1
     Visibility: public -/
 @[reducible]
 def condfuncs.get_value
@@ -1823,7 +1823,7 @@ def condfuncs.get_value
   condfuncs.get_value_loop values «name» 0#usize
 
 /-- [rustfs_kernel::condfuncs::IpAddr]
-    Source: 'src/condfuncs.rs', lines 24:0-27:1
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 24:0-27:1
     Visibility: public -/
 @[discriminant isize]
 inductive condfuncs.IpAddr where
@@ -1831,7 +1831,7 @@ inductive condfuncs.IpAddr where
 | V6 : Std.U128 → condfuncs.IpAddr
 
 /-- [rustfs_kernel::condfuncs::Env]
-    Source: 'src/condfuncs.rs', lines 32:0-36:1
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 32:0-36:1
     Visibility: public -/
 structure condfuncs.Env where
   ips : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × (Option condfuncs.IpAddr))
@@ -1839,7 +1839,7 @@ structure condfuncs.Env where
   now_epoch : alloc.vec.Vec Std.U8
 
 /-- [rustfs_kernel::condfuncs::parse_ip]: loop body 0:
-    Source: 'src/condfuncs.rs', lines 40:4-47:1 -/
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 40:4-47:1 -/
 @[rust_loop_body]
 def condfuncs.parse_ip_loop.body
   (env : condfuncs.Env) (s : Slice Std.U8) (i : Std.Usize) :
@@ -1860,7 +1860,7 @@ def condfuncs.parse_ip_loop.body
   else ok (done none)
 
 /-- [rustfs_kernel::condfuncs::parse_ip]: loop 0:
-    Source: 'src/condfuncs.rs', lines 40:4-47:1 -/
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 40:4-47:1 -/
 @[rust_loop]
 def condfuncs.parse_ip_loop
   (env : condfuncs.Env) (s : Slice Std.U8) (i : Std.Usize) :
@@ -1871,7 +1871,7 @@ def condfuncs.parse_ip_loop
     i
 
 /-- [rustfs_kernel::condfuncs::parse_ip]:
-    Source: 'src/condfuncs.rs', lines 38:0-47:1 -/
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 38:0-47:1 -/
 @[reducible]
 def condfuncs.parse_ip
   (env : condfuncs.Env) (s : Slice Std.U8) :
@@ -1880,7 +1880,7 @@ def condfuncs.parse_ip
   condfuncs.parse_ip_loop env s 0#usize
 
 /-- [rustfs_kernel::condfuncs::Key]
-    Source: 'src/condfuncs.rs', lines 52:0-56:1
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 52:0-56:1
     Visibility: public -/
 structure condfuncs.Key where
   key_name : alloc.vec.Vec Std.U8
@@ -1888,7 +1888,7 @@ structure condfuncs.Key where
   «variable» : Option (alloc.vec.Vec Std.U8)
 
 /-- [rustfs_kernel::condfuncs::key_lookup_name]:
-    Source: 'src/condfuncs.rs', lines 73:0-78:1
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 73:0-78:1
     Visibility: public -/
 def condfuncs.key_lookup_name
   (k : condfuncs.Key) : Result (alloc.vec.Vec Std.U8) := do
@@ -1903,7 +1903,7 @@ def condfuncs.key_lookup_name
     bytes.concat s2 s3
 
 /-- [rustfs_kernel::condfuncs::Quantifier]
-    Source: 'src/condfuncs.rs', lines 81:0-85:1
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 81:0-85:1
     Visibility: public -/
 @[discriminant isize]
 inductive condfuncs.Quantifier where
@@ -1912,7 +1912,7 @@ inductive condfuncs.Quantifier where
 | ForAllValues : condfuncs.Quantifier
 
 /-- [rustfs_kernel::condfuncs::{impl core::cmp::PartialEq<rustfs_kernel::condfuncs::Quantifier> for rustfs_kernel::condfuncs::Quantifier}::eq]:
-    Source: 'src/condfuncs.rs', lines 80:29-80:38
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 80:29-80:38
     Visibility: public -/
 def condfuncs.Quantifier.Insts.CoreCmpPartialEqQuantifier.eq
   (self : condfuncs.Quantifier) (other : condfuncs.Quantifier) :
@@ -1923,7 +1923,7 @@ def condfuncs.Quantifier.Insts.CoreCmpPartialEqQuantifier.eq
   ok (self1 = other1)
 
 /-- [rustfs_kernel::condfuncs::StrOp]
-    Source: 'src/condfuncs.rs', lines 88:0-99:1
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 88:0-99:1
     Visibility: public -/
 @[discriminant isize]
 inductive condfuncs.StrOp where
@@ -1939,7 +1939,7 @@ inductive condfuncs.StrOp where
 | ArnNotEquals : condfuncs.StrOp
 
 /-- [rustfs_kernel::condfuncs::NumOp]
-    Source: 'src/condfuncs.rs', lines 102:0-109:1
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 102:0-109:1
     Visibility: public -/
 @[discriminant isize]
 inductive condfuncs.NumOp where
@@ -1951,7 +1951,7 @@ inductive condfuncs.NumOp where
 | Ge : condfuncs.NumOp
 
 /-- [rustfs_kernel::condfuncs::Cond]
-    Source: 'src/condfuncs.rs', lines 112:0-121:1
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 112:0-121:1
     Visibility: public -/
 @[discriminant isize]
 inductive condfuncs.Cond where
@@ -1973,14 +1973,14 @@ inductive condfuncs.Cond where
   condfuncs.Cond
 
 /-- [rustfs_kernel::condfuncs::Condition]
-    Source: 'src/condfuncs.rs', lines 126:0-129:1
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 126:0-129:1
     Visibility: public -/
 structure condfuncs.Condition where
   if_exists : Bool
   cond : condfuncs.Cond
 
 /-- [rustfs_kernel::condfuncs::Functions]
-    Source: 'src/condfuncs.rs', lines 132:0-136:1
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 132:0-136:1
     Visibility: public -/
 structure condfuncs.Functions where
   for_any_value : alloc.vec.Vec condfuncs.Condition
@@ -1988,7 +1988,7 @@ structure condfuncs.Functions where
   for_normal : alloc.vec.Vec condfuncs.Condition
 
 /-- [rustfs_kernel::keynames::common_key]:
-    Source: 'src/keynames.rs', lines 8:0-54:1
+    Source: 'ports/rustfs/kernel/src/keynames.rs', lines 8:0-54:1
     Visibility: public -/
 def keynames.common_key
   (i : Std.Usize) :
@@ -2632,13 +2632,13 @@ def keynames.common_key
   | _ => ok (alloc.vec.Vec.new Std.U8, alloc.vec.Vec.new Std.U8)
 
 /-- [rustfs_kernel::keynames::COMMON_KEYS_LEN]
-    Source: 'src/keynames.rs', lines 5:0-5:38
+    Source: 'ports/rustfs/kernel/src/keynames.rs', lines 5:0-5:38
     Visibility: public -/
 @[global_simps, irreducible]
 def keynames.COMMON_KEYS_LEN : Std.Usize := 42#usize
 
 /-- [rustfs_kernel::condfuncs::replace_first_common]: loop body 0:
-    Source: 'src/condfuncs.rs', lines 142:4-155:1 -/
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 142:4-155:1 -/
 @[rust_loop_body]
 def condfuncs.replace_first_common_loop.body
   (c : Slice Std.U8)
@@ -2676,7 +2676,7 @@ def condfuncs.replace_first_common_loop.body
        ok (done v)
 
 /-- [rustfs_kernel::condfuncs::replace_first_common]: loop 0:
-    Source: 'src/condfuncs.rs', lines 142:4-155:1 -/
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 142:4-155:1 -/
 @[rust_loop]
 def condfuncs.replace_first_common_loop
   (c : Slice Std.U8)
@@ -2689,7 +2689,7 @@ def condfuncs.replace_first_common_loop
     k
 
 /-- [rustfs_kernel::condfuncs::replace_first_common]:
-    Source: 'src/condfuncs.rs', lines 140:0-155:1 -/
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 140:0-155:1 -/
 @[reducible]
 def condfuncs.replace_first_common
   (c : Slice Std.U8)
@@ -2700,7 +2700,7 @@ def condfuncs.replace_first_common
   condfuncs.replace_first_common_loop c values 0#usize
 
 /-- [rustfs_kernel::condfuncs::policy_values]: loop body 1:
-    Source: 'src/condfuncs.rs', lines 172:8-176:9 -/
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 172:8-176:9 -/
 @[rust_loop_body]
 def condfuncs.policy_values_loop0_loop0.body
   (values : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec
@@ -2732,7 +2732,7 @@ def condfuncs.policy_values_loop0_loop0.body
   else ok (done (ignore_case, out))
 
 /-- [rustfs_kernel::condfuncs::policy_values]: loop 1:
-    Source: 'src/condfuncs.rs', lines 172:8-176:9 -/
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 172:8-176:9 -/
 @[rust_loop]
 def condfuncs.policy_values_loop0_loop0
   (values : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec
@@ -2747,7 +2747,7 @@ def condfuncs.policy_values_loop0_loop0
     (ignore_case, out, j)
 
 /-- [rustfs_kernel::condfuncs::policy_values]: loop body 0:
-    Source: 'src/condfuncs.rs', lines 162:4-178:5 -/
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 162:4-178:5 -/
 @[rust_loop_body]
 def condfuncs.policy_values_loop0.body
   (policy : Slice (alloc.vec.Vec Std.U8))
@@ -2781,7 +2781,7 @@ def condfuncs.policy_values_loop0.body
   else ok (done out)
 
 /-- [rustfs_kernel::condfuncs::policy_values]: loop 0:
-    Source: 'src/condfuncs.rs', lines 162:4-178:5 -/
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 162:4-178:5 -/
 @[rust_loop]
 def condfuncs.policy_values_loop0
   (policy : Slice (alloc.vec.Vec Std.U8))
@@ -2797,7 +2797,7 @@ def condfuncs.policy_values_loop0
     (ignore_case, out, i)
 
 /-- [rustfs_kernel::condfuncs::policy_values]:
-    Source: 'src/condfuncs.rs', lines 159:0-180:1 -/
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 159:0-180:1 -/
 @[reducible]
 def condfuncs.policy_values
   (policy : Slice (alloc.vec.Vec Std.U8))
@@ -2810,7 +2810,7 @@ def condfuncs.policy_values
     (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) 0#usize
 
 /-- [rustfs_kernel::condfuncs::str_eval]: loop body 0:
-    Source: 'src/condfuncs.rs', lines 191:4-212:5 -/
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 191:4-212:5 -/
 @[rust_loop_body]
 def condfuncs.str_eval_loop.body
   (ignore_case : Bool) (negate : Bool)
@@ -2865,7 +2865,7 @@ def condfuncs.str_eval_loop.body
     ok (done b)
 
 /-- [rustfs_kernel::condfuncs::str_eval]: loop 0:
-    Source: 'src/condfuncs.rs', lines 191:4-212:5 -/
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 191:4-212:5 -/
 @[rust_loop]
 def condfuncs.str_eval_loop
   (q : condfuncs.Quantifier) (ignore_case : Bool) (negate : Bool)
@@ -2879,7 +2879,7 @@ def condfuncs.str_eval_loop
     (q, i)
 
 /-- [rustfs_kernel::condfuncs::str_eval]:
-    Source: 'src/condfuncs.rs', lines 183:0-214:1 -/
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 183:0-214:1 -/
 def condfuncs.str_eval
   (key : condfuncs.Key) (policy : Slice (alloc.vec.Vec Std.U8))
   (q : condfuncs.Quantifier) (ignore_case : Bool) (negate : Bool)
@@ -2898,7 +2898,7 @@ def condfuncs.str_eval
   condfuncs.str_eval_loop q ignore_case negate rvalues fvalues 0#usize
 
 /-- [rustfs_kernel::condfuncs::any_like]: loop body 0:
-    Source: 'src/condfuncs.rs', lines 218:4-225:1 -/
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 218:4-225:1 -/
 @[rust_loop_body]
 def condfuncs.any_like_loop.body
   (cands : Slice (alloc.vec.Vec Std.U8)) (v : Slice Std.U8) (i : Std.Usize) :
@@ -2917,7 +2917,7 @@ def condfuncs.any_like_loop.body
   else ok (done false)
 
 /-- [rustfs_kernel::condfuncs::any_like]: loop 0:
-    Source: 'src/condfuncs.rs', lines 218:4-225:1 -/
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 218:4-225:1 -/
 @[rust_loop]
 def condfuncs.any_like_loop
   (cands : Slice (alloc.vec.Vec Std.U8)) (v : Slice Std.U8) (i : Std.Usize) :
@@ -2928,14 +2928,14 @@ def condfuncs.any_like_loop
     i
 
 /-- [rustfs_kernel::condfuncs::any_like]:
-    Source: 'src/condfuncs.rs', lines 216:0-225:1 -/
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 216:0-225:1 -/
 @[reducible]
 def condfuncs.any_like
   (cands : Slice (alloc.vec.Vec Std.U8)) (v : Slice Std.U8) : Result Bool := do
   condfuncs.any_like_loop cands v 0#usize
 
 /-- [rustfs_kernel::condfuncs::like_step]:
-    Source: 'src/condfuncs.rs', lines 228:0-242:1 -/
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 228:0-242:1 -/
 def condfuncs.like_step
   (cands : Slice (alloc.vec.Vec Std.U8)) (v : Slice Std.U8)
   (q : condfuncs.Quantifier) (negate : Bool) :
@@ -2961,7 +2961,7 @@ def condfuncs.like_step
     else ok (some false)
 
 /-- [rustfs_kernel::condfuncs::str_eval_like]: loop body 0:
-    Source: 'src/condfuncs.rs', lines 253:4-261:1 -/
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 253:4-261:1 -/
 @[rust_loop_body]
 def condfuncs.str_eval_like_loop.body
   (q : condfuncs.Quantifier) (negate : Bool)
@@ -2989,7 +2989,7 @@ def condfuncs.str_eval_like_loop.body
     ok (done b)
 
 /-- [rustfs_kernel::condfuncs::str_eval_like]: loop 0:
-    Source: 'src/condfuncs.rs', lines 253:4-261:1 -/
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 253:4-261:1 -/
 @[rust_loop]
 def condfuncs.str_eval_like_loop
   (q : condfuncs.Quantifier) (negate : Bool)
@@ -3002,7 +3002,7 @@ def condfuncs.str_eval_like_loop
     i
 
 /-- [rustfs_kernel::condfuncs::str_eval_like]:
-    Source: 'src/condfuncs.rs', lines 245:0-261:1 -/
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 245:0-261:1 -/
 def condfuncs.str_eval_like
   (key : condfuncs.Key) (policy : Slice (alloc.vec.Vec Std.U8))
   (q : condfuncs.Quantifier) (negate : Bool)
@@ -3022,7 +3022,7 @@ def condfuncs.str_eval_like
     condfuncs.str_eval_like_loop q negate v1 cands 0#usize
 
 /-- [rustfs_kernel::condfuncs::str_func]: loop body 0:
-    Source: 'src/condfuncs.rs', lines 267:4-292:1 -/
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 267:4-292:1 -/
 @[rust_loop_body]
 def condfuncs.str_func_loop.body
   (funcs : Slice (condfuncs.Key × (alloc.vec.Vec (alloc.vec.Vec Std.U8))))
@@ -3084,7 +3084,7 @@ def condfuncs.str_func_loop.body
   else ok (done true)
 
 /-- [rustfs_kernel::condfuncs::str_func]: loop 0:
-    Source: 'src/condfuncs.rs', lines 267:4-292:1 -/
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 267:4-292:1 -/
 @[rust_loop]
 def condfuncs.str_func_loop
   (funcs : Slice (condfuncs.Key × (alloc.vec.Vec (alloc.vec.Vec Std.U8))))
@@ -3099,7 +3099,7 @@ def condfuncs.str_func_loop
     (like, i)
 
 /-- [rustfs_kernel::condfuncs::str_func]:
-    Source: 'src/condfuncs.rs', lines 264:0-292:1 -/
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 264:0-292:1 -/
 @[reducible]
 def condfuncs.str_func
   (funcs : Slice (condfuncs.Key × (alloc.vec.Vec (alloc.vec.Vec Std.U8))))
@@ -3111,7 +3111,7 @@ def condfuncs.str_func
   condfuncs.str_func_loop funcs q ignore_case like negate values ctx 0#usize
 
 /-- [rustfs_kernel::condfuncs::net_contains]:
-    Source: 'src/condfuncs.rs', lines 294:0-316:1 -/
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 294:0-316:1 -/
 def condfuncs.net_contains
   (net : condfuncs.IpAddr) («prefix» : Std.U8) (ip : condfuncs.IpAddr) :
   Result Bool
@@ -3147,7 +3147,7 @@ def condfuncs.net_contains
           ok (i1 = i2)
 
 /-- [rustfs_kernel::condfuncs::any_net]: loop body 0:
-    Source: 'src/condfuncs.rs', lines 320:4-327:1 -/
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 320:4-327:1 -/
 @[rust_loop_body]
 def condfuncs.any_net_loop.body
   (nets : Slice (condfuncs.IpAddr × Std.U8)) (ip : condfuncs.IpAddr)
@@ -3166,7 +3166,7 @@ def condfuncs.any_net_loop.body
   else ok (done false)
 
 /-- [rustfs_kernel::condfuncs::any_net]: loop 0:
-    Source: 'src/condfuncs.rs', lines 320:4-327:1 -/
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 320:4-327:1 -/
 @[rust_loop]
 def condfuncs.any_net_loop
   (nets : Slice (condfuncs.IpAddr × Std.U8)) (ip : condfuncs.IpAddr)
@@ -3178,7 +3178,7 @@ def condfuncs.any_net_loop
     i
 
 /-- [rustfs_kernel::condfuncs::any_net]:
-    Source: 'src/condfuncs.rs', lines 318:0-327:1 -/
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 318:0-327:1 -/
 @[reducible]
 def condfuncs.any_net
   (nets : Slice (condfuncs.IpAddr × Std.U8)) (ip : condfuncs.IpAddr) :
@@ -3187,7 +3187,7 @@ def condfuncs.any_net
   condfuncs.any_net_loop nets ip 0#usize
 
 /-- [rustfs_kernel::condfuncs::addr_key]: loop body 0:
-    Source: 'src/condfuncs.rs', lines 332:4-343:1 -/
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 332:4-343:1 -/
 @[rust_loop_body]
 def condfuncs.addr_key_loop.body
   (rvalues : Slice (alloc.vec.Vec Std.U8))
@@ -3212,7 +3212,7 @@ def condfuncs.addr_key_loop.body
   else ok (done none)
 
 /-- [rustfs_kernel::condfuncs::addr_key]: loop 0:
-    Source: 'src/condfuncs.rs', lines 332:4-343:1 -/
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 332:4-343:1 -/
 @[rust_loop]
 def condfuncs.addr_key_loop
   (rvalues : Slice (alloc.vec.Vec Std.U8))
@@ -3225,7 +3225,7 @@ def condfuncs.addr_key_loop
     i
 
 /-- [rustfs_kernel::condfuncs::addr_key]:
-    Source: 'src/condfuncs.rs', lines 330:0-343:1 -/
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 330:0-343:1 -/
 @[reducible]
 def condfuncs.addr_key
   (rvalues : Slice (alloc.vec.Vec Std.U8))
@@ -3235,7 +3235,7 @@ def condfuncs.addr_key
   condfuncs.addr_key_loop rvalues nets env 0#usize
 
 /-- [rustfs_kernel::condfuncs::addr_func]: loop body 0:
-    Source: 'src/condfuncs.rs', lines 349:4-361:1 -/
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 349:4-361:1 -/
 @[rust_loop_body]
 def condfuncs.addr_func_loop.body
   (funcs : Slice (condfuncs.Key × (alloc.vec.Vec (condfuncs.IpAddr ×
@@ -3265,7 +3265,7 @@ def condfuncs.addr_func_loop.body
   else ok (done false)
 
 /-- [rustfs_kernel::condfuncs::addr_func]: loop 0:
-    Source: 'src/condfuncs.rs', lines 349:4-361:1 -/
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 349:4-361:1 -/
 @[rust_loop]
 def condfuncs.addr_func_loop
   (funcs : Slice (condfuncs.Key × (alloc.vec.Vec (condfuncs.IpAddr ×
@@ -3279,7 +3279,7 @@ def condfuncs.addr_func_loop
     i
 
 /-- [rustfs_kernel::condfuncs::addr_func]:
-    Source: 'src/condfuncs.rs', lines 347:0-361:1 -/
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 347:0-361:1 -/
 @[reducible]
 def condfuncs.addr_func
   (funcs : Slice (condfuncs.Key × (alloc.vec.Vec (condfuncs.IpAddr ×
@@ -3291,7 +3291,7 @@ def condfuncs.addr_func
   condfuncs.addr_func_loop funcs values env 0#usize
 
 /-- [rustfs_kernel::condfuncs::first_value]:
-    Source: 'src/condfuncs.rs', lines 363:0-370:1 -/
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 363:0-370:1 -/
 def condfuncs.first_value
   (values : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec
   (alloc.vec.Vec Std.U8)))) (key : condfuncs.Key) :
@@ -3314,7 +3314,7 @@ def condfuncs.first_value
     else ok none
 
 /-- [rustfs_kernel::condfuncs::bool_func]: loop body 0:
-    Source: 'src/condfuncs.rs', lines 375:4-388:1 -/
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 375:4-388:1 -/
 @[rust_loop_body]
 def condfuncs.bool_func_loop.body
   (funcs : Slice (condfuncs.Key × Bool))
@@ -3353,7 +3353,7 @@ def condfuncs.bool_func_loop.body
   else ok (done true)
 
 /-- [rustfs_kernel::condfuncs::bool_func]: loop 0:
-    Source: 'src/condfuncs.rs', lines 375:4-388:1 -/
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 375:4-388:1 -/
 @[rust_loop]
 def condfuncs.bool_func_loop
   (funcs : Slice (condfuncs.Key × Bool))
@@ -3366,7 +3366,7 @@ def condfuncs.bool_func_loop
     i
 
 /-- [rustfs_kernel::condfuncs::bool_func]:
-    Source: 'src/condfuncs.rs', lines 373:0-388:1 -/
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 373:0-388:1 -/
 @[reducible]
 def condfuncs.bool_func
   (funcs : Slice (condfuncs.Key × Bool))
@@ -3377,7 +3377,7 @@ def condfuncs.bool_func
   condfuncs.bool_func_loop funcs values 0#usize
 
 /-- [rustfs_kernel::condfuncs::value_count]:
-    Source: 'src/condfuncs.rs', lines 391:0-396:1 -/
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 391:0-396:1 -/
 def condfuncs.value_count
   (values : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec
   (alloc.vec.Vec Std.U8)))) (key : condfuncs.Key) :
@@ -3391,14 +3391,14 @@ def condfuncs.value_count
   | some v1 => ok (alloc.vec.Vec.len v1)
 
 /-- [rustfs_kernel::condfuncs::null_ok]:
-    Source: 'src/condfuncs.rs', lines 399:0-401:1 -/
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 399:0-401:1 -/
 def condfuncs.null_ok (want_null : Bool) (len : Std.Usize) : Result Bool := do
   if want_null
   then ok (len = 0#usize)
   else ok (len != 0#usize)
 
 /-- [rustfs_kernel::condfuncs::null_func]: loop body 0:
-    Source: 'src/condfuncs.rs', lines 406:4-413:1 -/
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 406:4-413:1 -/
 @[rust_loop_body]
 def condfuncs.null_func_loop.body
   (funcs : Slice (condfuncs.Key × Bool))
@@ -3419,7 +3419,7 @@ def condfuncs.null_func_loop.body
   else ok (done true)
 
 /-- [rustfs_kernel::condfuncs::null_func]: loop 0:
-    Source: 'src/condfuncs.rs', lines 406:4-413:1 -/
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 406:4-413:1 -/
 @[rust_loop]
 def condfuncs.null_func_loop
   (funcs : Slice (condfuncs.Key × Bool))
@@ -3432,7 +3432,7 @@ def condfuncs.null_func_loop
     i
 
 /-- [rustfs_kernel::condfuncs::null_func]:
-    Source: 'src/condfuncs.rs', lines 404:0-413:1 -/
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 404:0-413:1 -/
 @[reducible]
 def condfuncs.null_func
   (funcs : Slice (condfuncs.Key × Bool))
@@ -3443,7 +3443,7 @@ def condfuncs.null_func
   condfuncs.null_func_loop funcs values 0#usize
 
 /-- [rustfs_kernel::condfuncs::num_op]:
-    Source: 'src/condfuncs.rs', lines 415:0-424:1 -/
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 415:0-424:1 -/
 def condfuncs.num_op
   (op : condfuncs.NumOp) (a : Std.I64) (b : Std.I64) : Result Bool := do
   match op with
@@ -3455,7 +3455,7 @@ def condfuncs.num_op
   | condfuncs.NumOp.Ge => ok (a >= b)
 
 /-- [rustfs_kernel::condfuncs::num_func]: loop body 0:
-    Source: 'src/condfuncs.rs', lines 429:4-444:1 -/
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 429:4-444:1 -/
 @[rust_loop_body]
 def condfuncs.num_func_loop.body
   (op : condfuncs.NumOp) (if_exists : Bool)
@@ -3485,7 +3485,7 @@ def condfuncs.num_func_loop.body
   else ok (done true)
 
 /-- [rustfs_kernel::condfuncs::num_func]: loop 0:
-    Source: 'src/condfuncs.rs', lines 429:4-444:1 -/
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 429:4-444:1 -/
 @[rust_loop]
 def condfuncs.num_func_loop
   (op : condfuncs.NumOp) (if_exists : Bool)
@@ -3499,7 +3499,7 @@ def condfuncs.num_func_loop
     i
 
 /-- [rustfs_kernel::condfuncs::num_func]:
-    Source: 'src/condfuncs.rs', lines 427:0-444:1 -/
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 427:0-444:1 -/
 @[reducible]
 def condfuncs.num_func
   (op : condfuncs.NumOp) (if_exists : Bool)
@@ -3511,7 +3511,7 @@ def condfuncs.num_func
   condfuncs.num_func_loop op if_exists funcs values 0#usize
 
 /-- [rustfs_kernel::condfuncs::keys_present]: loop body 0:
-    Source: 'src/condfuncs.rs', lines 448:4-456:1 -/
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 448:4-456:1 -/
 @[rust_loop_body]
 def condfuncs.keys_present_loop.body
   {T : Type} (funcs : Slice (condfuncs.Key × T))
@@ -3533,7 +3533,7 @@ def condfuncs.keys_present_loop.body
   else ok (done false)
 
 /-- [rustfs_kernel::condfuncs::keys_present]: loop 0:
-    Source: 'src/condfuncs.rs', lines 448:4-456:1 -/
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 448:4-456:1 -/
 @[rust_loop]
 def condfuncs.keys_present_loop
   {T : Type} (funcs : Slice (condfuncs.Key × T))
@@ -3546,7 +3546,7 @@ def condfuncs.keys_present_loop
     i
 
 /-- [rustfs_kernel::condfuncs::keys_present]:
-    Source: 'src/condfuncs.rs', lines 446:0-456:1 -/
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 446:0-456:1 -/
 @[reducible]
 def condfuncs.keys_present
   {T : Type} (funcs : Slice (condfuncs.Key × T))
@@ -3557,7 +3557,7 @@ def condfuncs.keys_present
   condfuncs.keys_present_loop funcs values 0#usize
 
 /-- [rustfs_kernel::condfuncs::has_any_key_in]:
-    Source: 'src/condfuncs.rs', lines 459:0-467:1 -/
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 459:0-467:1 -/
 def condfuncs.has_any_key_in
   (c : condfuncs.Cond)
   (values : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec
@@ -3582,7 +3582,7 @@ def condfuncs.has_any_key_in
     condfuncs.keys_present s values
 
 /-- [rustfs_kernel::condfuncs::eval_cond]:
-    Source: 'src/condfuncs.rs', lines 470:0-495:1 -/
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 470:0-495:1 -/
 def condfuncs.eval_cond
   (c : condfuncs.Cond) (q : condfuncs.Quantifier)
   (values : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec
@@ -3623,7 +3623,7 @@ def condfuncs.eval_cond
     condfuncs.num_func op if_exists s values
 
 /-- [rustfs_kernel::condfuncs::condition_evaluate]:
-    Source: 'src/condfuncs.rs', lines 498:0-503:1
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 498:0-503:1
     Visibility: public -/
 def condfuncs.condition_evaluate
   (c : condfuncs.Condition) (q : condfuncs.Quantifier)
@@ -3641,7 +3641,7 @@ def condfuncs.condition_evaluate
   else condfuncs.eval_cond c.cond q values ctx env
 
 /-- [rustfs_kernel::condfuncs::all_hold]: loop body 0:
-    Source: 'src/condfuncs.rs', lines 507:4-514:1 -/
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 507:4-514:1 -/
 @[rust_loop_body]
 def condfuncs.all_hold_loop.body
   (cs : Slice condfuncs.Condition) (q : condfuncs.Quantifier)
@@ -3662,7 +3662,7 @@ def condfuncs.all_hold_loop.body
   else ok (done true)
 
 /-- [rustfs_kernel::condfuncs::all_hold]: loop 0:
-    Source: 'src/condfuncs.rs', lines 507:4-514:1 -/
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 507:4-514:1 -/
 @[rust_loop]
 def condfuncs.all_hold_loop
   (cs : Slice condfuncs.Condition) (q : condfuncs.Quantifier)
@@ -3676,7 +3676,7 @@ def condfuncs.all_hold_loop
     i
 
 /-- [rustfs_kernel::condfuncs::all_hold]:
-    Source: 'src/condfuncs.rs', lines 505:0-514:1 -/
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 505:0-514:1 -/
 @[reducible]
 def condfuncs.all_hold
   (cs : Slice condfuncs.Condition) (q : condfuncs.Quantifier)
@@ -3688,7 +3688,7 @@ def condfuncs.all_hold
   condfuncs.all_hold_loop cs q values ctx env 0#usize
 
 /-- [rustfs_kernel::condfuncs::functions_evaluate]:
-    Source: 'src/condfuncs.rs', lines 517:0-521:1
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 517:0-521:1
     Visibility: public -/
 def condfuncs.functions_evaluate
   (f : condfuncs.Functions)
@@ -3713,7 +3713,7 @@ def condfuncs.functions_evaluate
   else ok false
 
 /-- [rustfs_kernel::condfuncs::keys_named]: loop body 0:
-    Source: 'src/condfuncs.rs', lines 525:4-532:1 -/
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 525:4-532:1 -/
 @[rust_loop_body]
 def condfuncs.keys_named_loop.body
   {T : Type} (funcs : Slice (condfuncs.Key × T)) (key_name : Slice Std.U8)
@@ -3733,7 +3733,7 @@ def condfuncs.keys_named_loop.body
   else ok (done false)
 
 /-- [rustfs_kernel::condfuncs::keys_named]: loop 0:
-    Source: 'src/condfuncs.rs', lines 525:4-532:1 -/
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 525:4-532:1 -/
 @[rust_loop]
 def condfuncs.keys_named_loop
   {T : Type} (funcs : Slice (condfuncs.Key × T)) (key_name : Slice Std.U8)
@@ -3745,7 +3745,7 @@ def condfuncs.keys_named_loop
     i
 
 /-- [rustfs_kernel::condfuncs::keys_named]:
-    Source: 'src/condfuncs.rs', lines 523:0-532:1 -/
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 523:0-532:1 -/
 @[reducible]
 def condfuncs.keys_named
   {T : Type} (funcs : Slice (condfuncs.Key × T)) (key_name : Slice Std.U8) :
@@ -3754,7 +3754,7 @@ def condfuncs.keys_named
   condfuncs.keys_named_loop funcs key_name 0#usize
 
 /-- [rustfs_kernel::condfuncs::cond_references]:
-    Source: 'src/condfuncs.rs', lines 534:0-542:1 -/
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 534:0-542:1 -/
 def condfuncs.cond_references
   (c : condfuncs.Cond) (key_name : Slice Std.U8) : Result Bool := do
   match c with
@@ -3775,7 +3775,7 @@ def condfuncs.cond_references
     condfuncs.keys_named s key_name
 
 /-- [rustfs_kernel::condfuncs::any_references]: loop body 0:
-    Source: 'src/condfuncs.rs', lines 546:4-553:1 -/
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 546:4-553:1 -/
 @[rust_loop_body]
 def condfuncs.any_references_loop.body
   (cs : Slice condfuncs.Condition) (key_name : Slice Std.U8) (i : Std.Usize) :
@@ -3793,7 +3793,7 @@ def condfuncs.any_references_loop.body
   else ok (done false)
 
 /-- [rustfs_kernel::condfuncs::any_references]: loop 0:
-    Source: 'src/condfuncs.rs', lines 546:4-553:1 -/
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 546:4-553:1 -/
 @[rust_loop]
 def condfuncs.any_references_loop
   (cs : Slice condfuncs.Condition) (key_name : Slice Std.U8) (i : Std.Usize) :
@@ -3804,7 +3804,7 @@ def condfuncs.any_references_loop
     i
 
 /-- [rustfs_kernel::condfuncs::any_references]:
-    Source: 'src/condfuncs.rs', lines 544:0-553:1 -/
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 544:0-553:1 -/
 @[reducible]
 def condfuncs.any_references
   (cs : Slice condfuncs.Condition) (key_name : Slice Std.U8) :
@@ -3813,7 +3813,7 @@ def condfuncs.any_references
   condfuncs.any_references_loop cs key_name 0#usize
 
 /-- [rustfs_kernel::condfuncs::references_key_name]:
-    Source: 'src/condfuncs.rs', lines 556:0-559:1
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 556:0-559:1
     Visibility: public -/
 def condfuncs.references_key_name
   (f : condfuncs.Functions) (key_name : Slice Std.U8) : Result Bool := do
@@ -3831,7 +3831,7 @@ def condfuncs.references_key_name
       condfuncs.any_references s2 key_name
 
 /-- [rustfs_kernel::pathclean::copy_element]: loop body 0:
-    Source: 'src/pathclean.rs', lines 77:4-81:5 -/
+    Source: 'ports/rustfs/kernel/src/pathclean.rs', lines 77:4-81:5 -/
 @[rust_loop_body]
 def pathclean.copy_element_loop.body
   (p : Slice Std.U8) (buf : alloc.vec.Vec Std.U8) (w : Std.Usize)
@@ -3856,7 +3856,7 @@ def pathclean.copy_element_loop.body
   else ok (done (buf, w, r))
 
 /-- [rustfs_kernel::pathclean::copy_element]: loop 0:
-    Source: 'src/pathclean.rs', lines 77:4-81:5 -/
+    Source: 'ports/rustfs/kernel/src/pathclean.rs', lines 77:4-81:5 -/
 @[rust_loop]
 def pathclean.copy_element_loop
   (buf : alloc.vec.Vec Std.U8) (p : Slice Std.U8) (w : Std.Usize)
@@ -3868,7 +3868,7 @@ def pathclean.copy_element_loop
     (buf, w, r)
 
 /-- [rustfs_kernel::pathclean::copy_element]:
-    Source: 'src/pathclean.rs', lines 74:0-83:1 -/
+    Source: 'ports/rustfs/kernel/src/pathclean.rs', lines 74:0-83:1 -/
 @[reducible]
 def pathclean.copy_element
   (buf : alloc.vec.Vec Std.U8) (w : Std.Usize) (p : Slice Std.U8)
@@ -3878,7 +3878,7 @@ def pathclean.copy_element
   pathclean.copy_element_loop buf p w r
 
 /-- [rustfs_kernel::pathclean::back_to_slash]: loop body 0:
-    Source: 'src/pathclean.rs', lines 67:4-69:5 -/
+    Source: 'ports/rustfs/kernel/src/pathclean.rs', lines 67:4-69:5 -/
 @[rust_loop_body]
 def pathclean.back_to_slash_loop.body
   (buf : Slice Std.U8) (dotdot : Std.Usize) (w : Std.Usize) :
@@ -3894,7 +3894,7 @@ def pathclean.back_to_slash_loop.body
   else ok (done w)
 
 /-- [rustfs_kernel::pathclean::back_to_slash]: loop 0:
-    Source: 'src/pathclean.rs', lines 67:4-69:5 -/
+    Source: 'ports/rustfs/kernel/src/pathclean.rs', lines 67:4-69:5 -/
 @[rust_loop]
 def pathclean.back_to_slash_loop
   (buf : Slice Std.U8) (dotdot : Std.Usize) (w : Std.Usize) :
@@ -3905,7 +3905,7 @@ def pathclean.back_to_slash_loop
     w
 
 /-- [rustfs_kernel::pathclean::back_to_slash]:
-    Source: 'src/pathclean.rs', lines 65:0-71:1 -/
+    Source: 'ports/rustfs/kernel/src/pathclean.rs', lines 65:0-71:1 -/
 @[reducible]
 def pathclean.back_to_slash
   (buf : Slice Std.U8) (w : Std.Usize) (dotdot : Std.Usize) :
@@ -3914,7 +3914,7 @@ def pathclean.back_to_slash
   pathclean.back_to_slash_loop buf dotdot w
 
 /-- [rustfs_kernel::pathclean::clean]: loop body 0:
-    Source: 'src/pathclean.rs', lines 22:4-51:5
+    Source: 'ports/rustfs/kernel/src/pathclean.rs', lines 22:4-51:5
     Visibility: public -/
 @[rust_loop_body]
 def pathclean.clean_loop0.body
@@ -4269,7 +4269,7 @@ def pathclean.clean_loop0.body
   else ok (done (buf, w))
 
 /-- [rustfs_kernel::pathclean::clean]: loop 0:
-    Source: 'src/pathclean.rs', lines 22:4-51:5
+    Source: 'ports/rustfs/kernel/src/pathclean.rs', lines 22:4-51:5
     Visibility: public -/
 @[rust_loop]
 def pathclean.clean_loop0
@@ -4284,7 +4284,7 @@ def pathclean.clean_loop0
     (rooted, buf, w, r, dotdot)
 
 /-- [rustfs_kernel::pathclean::clean]: loop body 1:
-    Source: 'src/pathclean.rs', lines 57:4-60:5
+    Source: 'ports/rustfs/kernel/src/pathclean.rs', lines 57:4-60:5
     Visibility: public -/
 @[rust_loop_body]
 def pathclean.clean_loop1.body
@@ -4303,7 +4303,7 @@ def pathclean.clean_loop1.body
   else ok (done out)
 
 /-- [rustfs_kernel::pathclean::clean]: loop 1:
-    Source: 'src/pathclean.rs', lines 57:4-60:5
+    Source: 'ports/rustfs/kernel/src/pathclean.rs', lines 57:4-60:5
     Visibility: public -/
 @[rust_loop]
 def pathclean.clean_loop1
@@ -4316,7 +4316,7 @@ def pathclean.clean_loop1
     (out, i)
 
 /-- [rustfs_kernel::pathclean::clean]:
-    Source: 'src/pathclean.rs', lines 5:0-62:1
+    Source: 'ports/rustfs/kernel/src/pathclean.rs', lines 5:0-62:1
     Visibility: public -/
 def pathclean.clean (path : Slice Std.U8) : Result (alloc.vec.Vec Std.U8) := do
   let i := Slice.len path
@@ -4347,7 +4347,7 @@ def pathclean.clean (path : Slice Std.U8) : Result (alloc.vec.Vec Std.U8) := do
     else pathclean.clean_loop1 buf2 w1 (alloc.vec.Vec.new Std.U8) 0#usize
 
 /-- [rustfs_kernel::rsrc::Resource]
-    Source: 'src/rsrc.rs', lines 8:0-11:1
+    Source: 'ports/rustfs/kernel/src/rsrc.rs', lines 8:0-11:1
     Visibility: public -/
 @[discriminant isize]
 inductive rsrc.Resource where
@@ -4355,7 +4355,7 @@ inductive rsrc.Resource where
 | Kms : alloc.vec.Vec Std.U8 → rsrc.Resource
 
 /-- [rustfs_kernel::rsrc::is_kms]:
-    Source: 'src/rsrc.rs', lines 13:0-18:1
+    Source: 'ports/rustfs/kernel/src/rsrc.rs', lines 13:0-18:1
     Visibility: public -/
 def rsrc.is_kms (r : rsrc.Resource) : Result Bool := do
   match r with
@@ -4363,7 +4363,7 @@ def rsrc.is_kms (r : rsrc.Resource) : Result Bool := do
   | rsrc.Resource.Kms _ => ok true
 
 /-- [rustfs_kernel::rsrc::{impl core::clone::Clone for rustfs_kernel::rsrc::Resource}::clone]:
-    Source: 'src/rsrc.rs', lines 7:9-7:14
+    Source: 'ports/rustfs/kernel/src/rsrc.rs', lines 7:9-7:14
     Visibility: public -/
 def rsrc.Resource.Insts.CoreCloneClone.clone
   (self : rsrc.Resource) : Result rsrc.Resource := do
@@ -4376,7 +4376,7 @@ def rsrc.Resource.Insts.CoreCloneClone.clone
     ok (rsrc.Resource.Kms v)
 
 /-- [rustfs_kernel::stmts::kms_only]: loop body 0:
-    Source: 'src/stmts.rs', lines 135:4-141:5 -/
+    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 135:4-141:5 -/
 @[rust_loop_body]
 def stmts.kms_only_loop.body
   (rs : Slice rsrc.Resource) (out : alloc.vec.Vec rsrc.Resource)
@@ -4398,7 +4398,7 @@ def stmts.kms_only_loop.body
   else ok (done out)
 
 /-- [rustfs_kernel::stmts::kms_only]: loop 0:
-    Source: 'src/stmts.rs', lines 135:4-141:5 -/
+    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 135:4-141:5 -/
 @[rust_loop]
 def stmts.kms_only_loop
   (rs : Slice rsrc.Resource) (out : alloc.vec.Vec rsrc.Resource)
@@ -4410,14 +4410,14 @@ def stmts.kms_only_loop
     (out, i)
 
 /-- [rustfs_kernel::stmts::kms_only]:
-    Source: 'src/stmts.rs', lines 132:0-143:1 -/
+    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 132:0-143:1 -/
 @[reducible]
 def stmts.kms_only
   (rs : Slice rsrc.Resource) : Result (alloc.vec.Vec rsrc.Resource) := do
   stmts.kms_only_loop rs (alloc.vec.Vec.new rsrc.Resource) 0#usize
 
 /-- [rustfs_kernel::stmts::Args]
-    Source: 'src/stmts.rs', lines 53:0-62:1
+    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 53:0-62:1
     Visibility: public -/
 structure stmts.Args where
   account : alloc.vec.Vec Std.U8
@@ -4431,7 +4431,7 @@ structure stmts.Args where
   deny_only : Bool
 
 /-- [rustfs_kernel::stmts::Effect]
-    Source: 'src/stmts.rs', lines 10:0-13:1
+    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 10:0-13:1
     Visibility: public -/
 @[discriminant isize]
 inductive stmts.Effect where
@@ -4439,7 +4439,7 @@ inductive stmts.Effect where
 | Deny : stmts.Effect
 
 /-- [rustfs_kernel::stmts::Statement]
-    Source: 'src/stmts.rs', lines 24:0-31:1
+    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 24:0-31:1
     Visibility: public -/
 structure stmts.Statement where
   effect : stmts.Effect
@@ -4450,7 +4450,7 @@ structure stmts.Statement where
   conditions : condfuncs.Functions
 
 /-- [rustfs_kernel::stmts::{impl core::cmp::PartialEq<rustfs_kernel::stmts::Effect> for rustfs_kernel::stmts::Effect}::eq]:
-    Source: 'src/stmts.rs', lines 9:29-9:38
+    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 9:29-9:38
     Visibility: public -/
 def stmts.Effect.Insts.CoreCmpPartialEqEffect.eq
   (self : stmts.Effect) (other : stmts.Effect) : Result Bool := do
@@ -4459,7 +4459,7 @@ def stmts.Effect.Insts.CoreCmpPartialEqEffect.eq
   ok (self1 = other1)
 
 /-- [rustfs_kernel::rsrc::substitute_common]: loop body 0:
-    Source: 'src/rsrc.rs', lines 25:4-36:5 -/
+    Source: 'ports/rustfs/kernel/src/rsrc.rs', lines 25:4-36:5 -/
 @[rust_loop_body]
 def rsrc.substitute_common_loop.body
   (conditions : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec
@@ -4497,7 +4497,7 @@ def rsrc.substitute_common_loop.body
   else ok (done out)
 
 /-- [rustfs_kernel::rsrc::substitute_common]: loop 0:
-    Source: 'src/rsrc.rs', lines 25:4-36:5 -/
+    Source: 'ports/rustfs/kernel/src/rsrc.rs', lines 25:4-36:5 -/
 @[rust_loop]
 def rsrc.substitute_common_loop
   (conditions : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec
@@ -4509,7 +4509,7 @@ def rsrc.substitute_common_loop
     (out, k)
 
 /-- [rustfs_kernel::rsrc::substitute_common]:
-    Source: 'src/rsrc.rs', lines 22:0-38:1 -/
+    Source: 'ports/rustfs/kernel/src/rsrc.rs', lines 22:0-38:1 -/
 def rsrc.substitute_common
   (pattern : Slice Std.U8)
   (conditions : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec
@@ -4520,7 +4520,7 @@ def rsrc.substitute_common
   rsrc.substitute_common_loop conditions out 0#usize
 
 /-- [rustfs_kernel::rsrc::pattern_matches]:
-    Source: 'src/rsrc.rs', lines 41:0-49:1 -/
+    Source: 'ports/rustfs/kernel/src/rsrc.rs', lines 41:0-49:1 -/
 def rsrc.pattern_matches
   (pattern : Slice Std.U8) (resource : Slice Std.U8)
   (conditions : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec
@@ -4550,7 +4550,7 @@ def rsrc.pattern_matches
       wildmatch.is_match s4 s5
 
 /-- [rustfs_kernel::rsrc::resource_is_match]: loop body 0:
-    Source: 'src/rsrc.rs', lines 66:4-73:1
+    Source: 'ports/rustfs/kernel/src/rsrc.rs', lines 66:4-73:1
     Visibility: public -/
 @[rust_loop_body]
 def rsrc.resource_is_match_loop.body
@@ -4575,7 +4575,7 @@ def rsrc.resource_is_match_loop.body
   else ok (done false)
 
 /-- [rustfs_kernel::rsrc::resource_is_match]: loop 0:
-    Source: 'src/rsrc.rs', lines 66:4-73:1
+    Source: 'ports/rustfs/kernel/src/rsrc.rs', lines 66:4-73:1
     Visibility: public -/
 @[rust_loop]
 def rsrc.resource_is_match_loop
@@ -4591,7 +4591,7 @@ def rsrc.resource_is_match_loop
     i
 
 /-- [rustfs_kernel::rsrc::resource_is_match]:
-    Source: 'src/rsrc.rs', lines 52:0-73:1
+    Source: 'ports/rustfs/kernel/src/rsrc.rs', lines 52:0-73:1
     Visibility: public -/
 def rsrc.resource_is_match
   (r : rsrc.Resource) (resource : Slice Std.U8)
@@ -4613,7 +4613,7 @@ def rsrc.resource_is_match
   rsrc.resource_is_match_loop resource conditions patterns 0#usize
 
 /-- [rustfs_kernel::rsrc::set_is_match]: loop body 0:
-    Source: 'src/rsrc.rs', lines 78:4-85:1
+    Source: 'ports/rustfs/kernel/src/rsrc.rs', lines 78:4-85:1
     Visibility: public -/
 @[rust_loop_body]
 def rsrc.set_is_match_loop.body
@@ -4634,7 +4634,7 @@ def rsrc.set_is_match_loop.body
   else ok (done false)
 
 /-- [rustfs_kernel::rsrc::set_is_match]: loop 0:
-    Source: 'src/rsrc.rs', lines 78:4-85:1
+    Source: 'ports/rustfs/kernel/src/rsrc.rs', lines 78:4-85:1
     Visibility: public -/
 @[rust_loop]
 def rsrc.set_is_match_loop
@@ -4648,7 +4648,7 @@ def rsrc.set_is_match_loop
     i
 
 /-- [rustfs_kernel::rsrc::set_is_match]:
-    Source: 'src/rsrc.rs', lines 76:0-85:1
+    Source: 'ports/rustfs/kernel/src/rsrc.rs', lines 76:0-85:1
     Visibility: public -/
 @[reducible]
 def rsrc.set_is_match
@@ -4660,7 +4660,7 @@ def rsrc.set_is_match
   rsrc.set_is_match_loop set resource conditions ctx 0#usize
 
 /-- [rustfs_kernel::stmts::kms_key_scope_matches]:
-    Source: 'src/stmts.rs', lines 146:0-165:1 -/
+    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 146:0-165:1 -/
 def stmts.kms_key_scope_matches
   (st : stmts.Statement) (args : stmts.Args) (ctx : Option awsvars.VarContext)
   :
@@ -4841,7 +4841,7 @@ def stmts.kms_key_scope_matches
           ok (¬ b1)
 
 /-- [rustfs_kernel::stmts::has_family]: loop body 0:
-    Source: 'src/stmts.rs', lines 112:4-119:1 -/
+    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 112:4-119:1 -/
 @[rust_loop_body]
 def stmts.has_family_loop.body
   (actions : Slice acts.Action) (f : acts.Family) (i : Std.Usize) :
@@ -4859,7 +4859,7 @@ def stmts.has_family_loop.body
   else ok (done false)
 
 /-- [rustfs_kernel::stmts::has_family]: loop 0:
-    Source: 'src/stmts.rs', lines 112:4-119:1 -/
+    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 112:4-119:1 -/
 @[rust_loop]
 def stmts.has_family_loop
   (actions : Slice acts.Action) (f : acts.Family) (i : Std.Usize) :
@@ -4870,14 +4870,14 @@ def stmts.has_family_loop
     i
 
 /-- [rustfs_kernel::stmts::has_family]:
-    Source: 'src/stmts.rs', lines 110:0-119:1 -/
+    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 110:0-119:1 -/
 @[reducible]
 def stmts.has_family
   (actions : Slice acts.Action) (f : acts.Family) : Result Bool := do
   stmts.has_family_loop actions f 0#usize
 
 /-- [rustfs_kernel::stmts::skips_resource_match]:
-    Source: 'src/stmts.rs', lines 122:0-130:1 -/
+    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 122:0-130:1 -/
 def stmts.skips_resource_match
   (st : stmts.Statement) (args : stmts.Args) : Result Bool := do
   let s := alloc.vec.Vec.deref st.actions
@@ -4900,7 +4900,7 @@ def stmts.skips_resource_match
     else ok false
 
 /-- [rustfs_kernel::stmts::is_list_bucket]:
-    Source: 'src/stmts.rs', lines 90:0-94:1 -/
+    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 90:0-94:1 -/
 def stmts.is_list_bucket (a : acts.Action) : Result Bool := do
   let b ← acts.Family.Insts.CoreCmpPartialEqFamily.eq a.family acts.Family.S3
   if b
@@ -4941,7 +4941,7 @@ def stmts.is_list_bucket (a : acts.Action) : Result Bool := do
   else ok false
 
 /-- [rustfs_kernel::stmts::build_resource]:
-    Source: 'src/stmts.rs', lines 97:0-108:1
+    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 97:0-108:1
     Visibility: public -/
 def stmts.build_resource
   (a : acts.Action) (bucket : Slice Std.U8) (object : Slice Std.U8)
@@ -4969,7 +4969,7 @@ def stmts.build_resource
       bytes.concat s object
 
 /-- [rustfs_kernel::stmts::reaches_condition_eval]:
-    Source: 'src/stmts.rs', lines 168:0-192:1
+    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 168:0-192:1
     Visibility: public -/
 def stmts.reaches_condition_eval
   (st : stmts.Statement) (args : stmts.Args) (ctx : Option awsvars.VarContext)
@@ -5235,7 +5235,7 @@ def stmts.reaches_condition_eval
   else ok false
 
 /-- [rustfs_kernel::stmts::resolver_for]:
-    Source: 'src/stmts.rs', lines 76:0-88:1
+    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 76:0-88:1
     Visibility: public -/
 def stmts.resolver_for
   (args : stmts.Args) (env : condfuncs.Env) : Result awsvars.VarContext := do
@@ -5252,7 +5252,7 @@ def stmts.resolver_for
     }
 
 /-- [rustfs_kernel::stmts::effect_is_allowed]:
-    Source: 'src/stmts.rs', lines 16:0-21:1
+    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 16:0-21:1
     Visibility: public -/
 def stmts.effect_is_allowed
   (e : stmts.Effect) (allowed : Bool) : Result Bool := do
@@ -5261,7 +5261,7 @@ def stmts.effect_is_allowed
   | stmts.Effect.Deny => ok (¬ allowed)
 
 /-- [rustfs_kernel::stmts::statement_is_allowed]:
-    Source: 'src/stmts.rs', lines 195:0-199:1
+    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 195:0-199:1
     Visibility: public -/
 def stmts.statement_is_allowed
   (st : stmts.Statement) (args : stmts.Args) (env : condfuncs.Env) :
@@ -5281,7 +5281,7 @@ def stmts.statement_is_allowed
   stmts.effect_is_allowed st1.effect check
 
 /-- [rustfs_kernel::policies::denies_pass]: loop body 0:
-    Source: 'src/policies.rs', lines 7:4-14:1 -/
+    Source: 'ports/rustfs/kernel/src/policies.rs', lines 7:4-14:1 -/
 @[rust_loop_body]
 def policies.denies_pass_loop.body
   (sts : Slice stmts.Statement) (args : stmts.Args) (env : condfuncs.Env)
@@ -5306,7 +5306,7 @@ def policies.denies_pass_loop.body
   else ok (done true)
 
 /-- [rustfs_kernel::policies::denies_pass]: loop 0:
-    Source: 'src/policies.rs', lines 7:4-14:1 -/
+    Source: 'ports/rustfs/kernel/src/policies.rs', lines 7:4-14:1 -/
 @[rust_loop]
 def policies.denies_pass_loop
   (sts : Slice stmts.Statement) (args : stmts.Args) (env : condfuncs.Env)
@@ -5318,7 +5318,7 @@ def policies.denies_pass_loop
     i
 
 /-- [rustfs_kernel::policies::denies_pass]:
-    Source: 'src/policies.rs', lines 5:0-14:1 -/
+    Source: 'ports/rustfs/kernel/src/policies.rs', lines 5:0-14:1 -/
 @[reducible]
 def policies.denies_pass
   (sts : Slice stmts.Statement) (args : stmts.Args) (env : condfuncs.Env) :
@@ -5327,7 +5327,7 @@ def policies.denies_pass
   policies.denies_pass_loop sts args env 0#usize
 
 /-- [rustfs_kernel::policies::some_allow]: loop body 0:
-    Source: 'src/policies.rs', lines 18:4-25:1 -/
+    Source: 'ports/rustfs/kernel/src/policies.rs', lines 18:4-25:1 -/
 @[rust_loop_body]
 def policies.some_allow_loop.body
   (sts : Slice stmts.Statement) (args : stmts.Args) (env : condfuncs.Env)
@@ -5352,7 +5352,7 @@ def policies.some_allow_loop.body
   else ok (done false)
 
 /-- [rustfs_kernel::policies::some_allow]: loop 0:
-    Source: 'src/policies.rs', lines 18:4-25:1 -/
+    Source: 'ports/rustfs/kernel/src/policies.rs', lines 18:4-25:1 -/
 @[rust_loop]
 def policies.some_allow_loop
   (sts : Slice stmts.Statement) (args : stmts.Args) (env : condfuncs.Env)
@@ -5364,7 +5364,7 @@ def policies.some_allow_loop
     i
 
 /-- [rustfs_kernel::policies::some_allow]:
-    Source: 'src/policies.rs', lines 16:0-25:1 -/
+    Source: 'ports/rustfs/kernel/src/policies.rs', lines 16:0-25:1 -/
 @[reducible]
 def policies.some_allow
   (sts : Slice stmts.Statement) (args : stmts.Args) (env : condfuncs.Env) :
@@ -5373,7 +5373,7 @@ def policies.some_allow
   policies.some_allow_loop sts args env 0#usize
 
 /-- [rustfs_kernel::policies::policy_is_allowed]:
-    Source: 'src/policies.rs', lines 29:0-40:1
+    Source: 'ports/rustfs/kernel/src/policies.rs', lines 29:0-40:1
     Visibility: public -/
 def policies.policy_is_allowed
   (statements : Slice stmts.Statement) (args : stmts.Args)
@@ -5392,7 +5392,7 @@ def policies.policy_is_allowed
   else ok false
 
 /-- [rustfs_kernel::stmts::all_kms]: loop body 0:
-    Source: 'src/stmts.rs', lines 219:4-226:1 -/
+    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 219:4-226:1 -/
 @[rust_loop_body]
 def stmts.all_kms_loop.body
   (actions : Slice acts.Action) (i : Std.Usize) :
@@ -5412,7 +5412,7 @@ def stmts.all_kms_loop.body
   else ok (done true)
 
 /-- [rustfs_kernel::stmts::all_kms]: loop 0:
-    Source: 'src/stmts.rs', lines 219:4-226:1 -/
+    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 219:4-226:1 -/
 @[rust_loop]
 def stmts.all_kms_loop
   (actions : Slice acts.Action) (i : Std.Usize) : Result Bool := do
@@ -5421,20 +5421,20 @@ def stmts.all_kms_loop
     i
 
 /-- [rustfs_kernel::stmts::all_kms]:
-    Source: 'src/stmts.rs', lines 217:0-226:1 -/
+    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 217:0-226:1 -/
 @[reducible]
 def stmts.all_kms (actions : Slice acts.Action) : Result Bool := do
   stmts.all_kms_loop actions 0#usize
 
 /-- [rustfs_kernel::wildmatch::is_simple_match]:
-    Source: 'src/wildmatch.rs', lines 38:0-40:1
+    Source: 'ports/rustfs/kernel/src/wildmatch.rs', lines 38:0-40:1
     Visibility: public -/
 def wildmatch.is_simple_match
   (pattern : Slice Std.U8) («name» : Slice Std.U8) : Result Bool := do
   wildmatch.inner_match pattern «name» true
 
 /-- [rustfs_kernel::stmts::any_simple_match]: loop body 0:
-    Source: 'src/stmts.rs', lines 203:4-210:1 -/
+    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 203:4-210:1 -/
 @[rust_loop_body]
 def stmts.any_simple_match_loop.body
   (patterns : Slice (alloc.vec.Vec Std.U8)) («name» : Slice Std.U8)
@@ -5454,7 +5454,7 @@ def stmts.any_simple_match_loop.body
   else ok (done false)
 
 /-- [rustfs_kernel::stmts::any_simple_match]: loop 0:
-    Source: 'src/stmts.rs', lines 203:4-210:1 -/
+    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 203:4-210:1 -/
 @[rust_loop]
 def stmts.any_simple_match_loop
   (patterns : Slice (alloc.vec.Vec Std.U8)) («name» : Slice Std.U8)
@@ -5466,7 +5466,7 @@ def stmts.any_simple_match_loop
     i
 
 /-- [rustfs_kernel::stmts::any_simple_match]:
-    Source: 'src/stmts.rs', lines 201:0-210:1 -/
+    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 201:0-210:1 -/
 @[reducible]
 def stmts.any_simple_match
   (patterns : Slice (alloc.vec.Vec Std.U8)) («name» : Slice Std.U8) :
@@ -5475,14 +5475,14 @@ def stmts.any_simple_match
   stmts.any_simple_match_loop patterns «name» 0#usize
 
 /-- [rustfs_kernel::stmts::Principal]
-    Source: 'src/stmts.rs', lines 35:0-38:1
+    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 35:0-38:1
     Visibility: public -/
 structure stmts.Principal where
   aws : alloc.vec.Vec (alloc.vec.Vec Std.U8)
   service : alloc.vec.Vec (alloc.vec.Vec Std.U8)
 
 /-- [rustfs_kernel::stmts::principal_is_match]:
-    Source: 'src/stmts.rs', lines 213:0-215:1
+    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 213:0-215:1
     Visibility: public -/
 def stmts.principal_is_match
   (p : stmts.Principal) (account : Slice Std.U8) : Result Bool := do
@@ -5495,7 +5495,7 @@ def stmts.principal_is_match
     stmts.any_simple_match s1 account
 
 /-- [rustfs_kernel::stmts::BucketPolicyArgs]
-    Source: 'src/stmts.rs', lines 66:0-73:1
+    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 66:0-73:1
     Visibility: public -/
 structure stmts.BucketPolicyArgs where
   account : alloc.vec.Vec Std.U8
@@ -5507,7 +5507,7 @@ structure stmts.BucketPolicyArgs where
   object : alloc.vec.Vec Std.U8
 
 /-- [rustfs_kernel::stmts::BPStatement]
-    Source: 'src/stmts.rs', lines 41:0-49:1
+    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 41:0-49:1
     Visibility: public -/
 structure stmts.BPStatement where
   effect : stmts.Effect
@@ -5519,7 +5519,7 @@ structure stmts.BPStatement where
   conditions : condfuncs.Functions
 
 /-- [rustfs_kernel::stmts::bp_reaches_condition_eval]:
-    Source: 'src/stmts.rs', lines 229:0-250:1
+    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 229:0-250:1
     Visibility: public -/
 def stmts.bp_reaches_condition_eval
   (st : stmts.BPStatement) (args : stmts.BucketPolicyArgs) : Result Bool := do
@@ -5642,7 +5642,7 @@ def stmts.bp_reaches_condition_eval
     else ok false
 
 /-- [rustfs_kernel::stmts::bp_statement_is_allowed]:
-    Source: 'src/stmts.rs', lines 253:0-257:1
+    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 253:0-257:1
     Visibility: public -/
 def stmts.bp_statement_is_allowed
   (st : stmts.BPStatement) (args : stmts.BucketPolicyArgs)
@@ -5661,7 +5661,7 @@ def stmts.bp_statement_is_allowed
   stmts.effect_is_allowed st1.effect check
 
 /-- [rustfs_kernel::policies::bp_denies_pass]: loop body 0:
-    Source: 'src/policies.rs', lines 44:4-51:1 -/
+    Source: 'ports/rustfs/kernel/src/policies.rs', lines 44:4-51:1 -/
 @[rust_loop_body]
 def policies.bp_denies_pass_loop.body
   (sts : Slice stmts.BPStatement) (args : stmts.BucketPolicyArgs)
@@ -5686,7 +5686,7 @@ def policies.bp_denies_pass_loop.body
   else ok (done true)
 
 /-- [rustfs_kernel::policies::bp_denies_pass]: loop 0:
-    Source: 'src/policies.rs', lines 44:4-51:1 -/
+    Source: 'ports/rustfs/kernel/src/policies.rs', lines 44:4-51:1 -/
 @[rust_loop]
 def policies.bp_denies_pass_loop
   (sts : Slice stmts.BPStatement) (args : stmts.BucketPolicyArgs)
@@ -5698,7 +5698,7 @@ def policies.bp_denies_pass_loop
     i
 
 /-- [rustfs_kernel::policies::bp_denies_pass]:
-    Source: 'src/policies.rs', lines 42:0-51:1 -/
+    Source: 'ports/rustfs/kernel/src/policies.rs', lines 42:0-51:1 -/
 @[reducible]
 def policies.bp_denies_pass
   (sts : Slice stmts.BPStatement) (args : stmts.BucketPolicyArgs)
@@ -5708,7 +5708,7 @@ def policies.bp_denies_pass
   policies.bp_denies_pass_loop sts args env 0#usize
 
 /-- [rustfs_kernel::policies::bp_some_allow]: loop body 0:
-    Source: 'src/policies.rs', lines 55:4-62:1 -/
+    Source: 'ports/rustfs/kernel/src/policies.rs', lines 55:4-62:1 -/
 @[rust_loop_body]
 def policies.bp_some_allow_loop.body
   (sts : Slice stmts.BPStatement) (args : stmts.BucketPolicyArgs)
@@ -5733,7 +5733,7 @@ def policies.bp_some_allow_loop.body
   else ok (done false)
 
 /-- [rustfs_kernel::policies::bp_some_allow]: loop 0:
-    Source: 'src/policies.rs', lines 55:4-62:1 -/
+    Source: 'ports/rustfs/kernel/src/policies.rs', lines 55:4-62:1 -/
 @[rust_loop]
 def policies.bp_some_allow_loop
   (sts : Slice stmts.BPStatement) (args : stmts.BucketPolicyArgs)
@@ -5745,7 +5745,7 @@ def policies.bp_some_allow_loop
     i
 
 /-- [rustfs_kernel::policies::bp_some_allow]:
-    Source: 'src/policies.rs', lines 53:0-62:1 -/
+    Source: 'ports/rustfs/kernel/src/policies.rs', lines 53:0-62:1 -/
 @[reducible]
 def policies.bp_some_allow
   (sts : Slice stmts.BPStatement) (args : stmts.BucketPolicyArgs)
@@ -5755,7 +5755,7 @@ def policies.bp_some_allow
   policies.bp_some_allow_loop sts args env 0#usize
 
 /-- [rustfs_kernel::policies::bucket_policy_is_allowed]:
-    Source: 'src/policies.rs', lines 65:0-73:1
+    Source: 'ports/rustfs/kernel/src/policies.rs', lines 65:0-73:1
     Visibility: public -/
 def policies.bucket_policy_is_allowed
   (statements : Slice stmts.BPStatement) (args : stmts.BucketPolicyArgs)

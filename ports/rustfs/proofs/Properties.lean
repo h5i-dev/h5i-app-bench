@@ -1,3 +1,12 @@
+import Verified.RustfsGetObjectVersion
+import Verified.RustfsNotActionForceDelete
+import Verified.RustfsExplicitDeny
+import Verified.RustfsAllowNeedsStatement
+import Verified.RustfsOwner
+import Verified.RustfsDenyOnly
+import Verified.RustfsForceDelete
+import Verified.RustfsBucketPrincipal
+import Verified.RustfsWildcard
 import Spec
 open Aeneas Aeneas.Std Result rustfs_kernel rustfs_kernel.Spec
 open H5iAppLib hiding lit
@@ -12,21 +21,21 @@ theorem explicit_deny_wins (sts : Slice stmts.Statement) (a : stmts.Args) (e : c
     (st : stmts.Statement) (hm : st ∈ sts.val) (hd : st.effect = .Deny)
     (hs : stmts.statement_is_allowed st a e = ok false) :
     policies.policy_is_allowed sts a e ≠ ok true := by
-  sorry
+  apply rustfs_kernel.Verified.RustfsExplicitDeny.explicit_deny_wins <;> assumption
 
 /-- Unless the caller owns the resource or only denials are checked, an
 allowed request has an Allow statement that applies. -/
 theorem allow_needs_allow_statement (sts : Slice stmts.Statement) (a : stmts.Args) (e : condfuncs.Env)
     (h : policies.policy_is_allowed sts a e = ok true) (ho : a.is_owner = false) (hd : a.deny_only = false) :
     ∃ st ∈ sts.val, st.effect = .Allow ∧ stmts.statement_is_allowed st a e = ok true := by
-  sorry
+  apply rustfs_kernel.Verified.RustfsAllowNeedsStatement.allow_needs_allow_statement <;> assumption
 
 /-- An owner is allowed unless a Deny applies. -/
 theorem owner_allowed_unless_denied (sts : Slice stmts.Statement) (a : stmts.Args) (e : condfuncs.Env)
     (ho : a.is_owner = true)
     (hd : ∀ st ∈ sts.val, st.effect = .Deny → stmts.statement_is_allowed st a e = ok true) :
     policies.policy_is_allowed sts a e = ok true := by
-  sorry
+  apply rustfs_kernel.Verified.RustfsOwner.owner_allowed_unless_denied <;> assumption
 
 /-- With `deny_only`, Allow statements play no part: a request no Deny
 refuses is allowed. -/
@@ -34,7 +43,7 @@ theorem deny_only_ignores_allows (sts : Slice stmts.Statement) (a : stmts.Args) 
     (ho : a.deny_only = true)
     (hd : ∀ st ∈ sts.val, st.effect = .Deny → stmts.statement_is_allowed st a e = ok true) :
     policies.policy_is_allowed sts a e = ok true := by
-  sorry
+  apply rustfs_kernel.Verified.RustfsDenyOnly.deny_only_ignores_allows <;> assumption
 
 /-- Force-delete is granted only by an Allow statement that names it:
 `s3:*` and `NotAction` statements never grant it. The statements' actions are
@@ -44,14 +53,14 @@ theorem force_delete_needs_explicit_grant (sts : Slice stmts.Statement) (a : stm
     (h : policies.policy_is_allowed sts a e = ok true) (ho : a.is_owner = false) (hd : a.deny_only = false)
     (hf : IsForceDelete a.action) (hw : ∀ st ∈ sts.val, ∀ x ∈ st.actions.val, UpstreamAction x) :
     ∃ st ∈ sts.val, st.effect = .Allow ∧ ∃ x ∈ st.actions.val, x.name = a.action.name := by
-  sorry
+  apply rustfs_kernel.Verified.RustfsForceDelete.force_delete_needs_explicit_grant <;> assumption
 
 /-- An Allow whose action list is empty (a `NotAction` statement) never
 covers a force-delete. -/
 theorem not_action_never_grants_force_delete (none not : Slice acts.Action) (x : acts.Action)
     (hn : none.val = []) (hf : IsForceDelete x) :
     acts.statement_covers none not x false = ok false := by
-  sorry
+  apply rustfs_kernel.Verified.RustfsNotActionForceDelete.not_action_never_grants_force_delete <;> assumption
 
 /-- A statement naming `s3:GetObjectVersion` also covers `s3:GetObject`, for
 Allow and Deny alike. -/
@@ -60,7 +69,7 @@ theorem get_object_version_covers_get_object (s n : Slice acts.Action) (g o : ac
     (hg : g.family = .S3 ∧ nats g.name.val = lit "s3:GetObjectVersion")
     (hgo : o.family = .S3 ∧ nats o.name.val = lit "s3:GetObject") :
     acts.statement_covers s n o deny = ok true := by
-  sorry
+  apply rustfs_kernel.Verified.RustfsGetObjectVersion.get_object_version_covers_get_object <;> assumption
 
 /-! ## Bucket policies (`BucketPolicy::is_allowed`) -/
 
@@ -70,7 +79,7 @@ theorem bucket_allow_needs_principal (sts : Slice stmts.BPStatement) (a : stmts.
     (e : condfuncs.Env) (h : policies.bucket_policy_is_allowed sts a e = ok true) (ho : a.is_owner = false) :
     ∃ st ∈ sts.val, st.effect = .Allow ∧ stmts.principal_is_match st.principal a.account.deref = ok true ∧
       stmts.bp_statement_is_allowed st a e = ok true := by
-  sorry
+  apply rustfs_kernel.Verified.RustfsBucketPrincipal.bucket_allow_needs_principal <;> assumption
 
 /-- Bucket policy evaluation always terminates without a panic. -/
 theorem bucket_policy_total (sts : Slice stmts.BPStatement) (a : stmts.BucketPolicyArgs) (e : condfuncs.Env) :
@@ -82,7 +91,7 @@ theorem bucket_policy_total (sts : Slice stmts.BPStatement) (a : stmts.BucketPol
 /-- `wildcard::is_match` is the glob `globSpec`. -/
 theorem wildcard_is_glob (p n : Slice U8) :
     wildmatch.is_match p n = ok (globSpec (nats p.val) (nats n.val)) := by
-  sorry
+  apply rustfs_kernel.Verified.RustfsWildcard.wildcard_is_glob <;> assumption
 
 /-- `path::clean` is idempotent. -/
 theorem clean_idempotent (p : Slice U8) (c : alloc.vec.Vec U8) (h : pathclean.clean p = ok c) :
