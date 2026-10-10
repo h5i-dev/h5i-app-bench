@@ -895,42 +895,49 @@ kernel = ["policies::*"]
 upstream = "crates/policy/src/policy/policy.rs:69 Policy::is_allowed"
 lines = 19
 status = "ported"
-kernel = ["policy_is_allowed"]
+kernel = ["policy_is_allowed", "manage::policy_is_allowed"]
 
 [[item]]
 upstream = "crates/policy/src/policy/policy.rs:98 Policy::match_resource"
 lines = 8
-status = "todo"
+status = "ported"
+kernel = ["manage::match_resource"]
 
 [[item]]
 upstream = "crates/policy/src/policy/policy.rs:107 Policy::drop_duplicate_statements"
 lines = 23
-status = "todo"
+status = "ported"
+kernel = ["manage::drop_duplicate_statements"]
 
 [[item]]
 upstream = "crates/policy/src/policy/policy.rs:136 Policy::merge_policies"
 lines = 13
-status = "todo"
+status = "ported"
+kernel = ["manage::merge_policies"]
 
 [[item]]
 upstream = "crates/policy/src/policy/policy.rs:151 Policy::is_empty"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["manage::is_empty"]
 
 [[item]]
 upstream = "crates/policy/src/policy/policy.rs:155 Policy::validate"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["manage::validate"]
 
 [[item]]
 upstream = "crates/policy/src/policy/policy.rs:159 Policy::parse_config"
 lines = 5
-status = "todo"
+status = "outside"
+reason = "policy decoding; decoded-policy validation is ported in manage::validate"
 
 [[item]]
 upstream = "crates/policy/src/policy/policy.rs:169 Policy::is_valid"
 lines = 9
-status = "todo"
+status = "ported"
+kernel = ["manage::is_valid"]
 
 [[item]]
 upstream = "crates/policy/src/policy/policy.rs:182 BucketPolicyArgs"
@@ -948,12 +955,13 @@ kernel = ["policies::*"]
 upstream = "crates/policy/src/policy/policy.rs:208 BucketPolicy::is_allowed"
 lines = 16
 status = "ported"
-kernel = ["bucket_policy_is_allowed"]
+kernel = ["bucket_policy_is_allowed", "manage::bucket_policy_is_allowed"]
 
 [[item]]
 upstream = "crates/policy/src/policy/policy.rs:232 BucketPolicy::is_valid"
 lines = 9
-status = "todo"
+status = "ported"
+kernel = ["manage::bucket_is_valid"]
 
 [[item]]
 upstream = "crates/policy/src/policy/policy.rs:245 get_values_from_claims"
@@ -988,27 +996,32 @@ kernel = ["claims::value_uses_existing_object_tag"]
 [[item]]
 upstream = "crates/policy/src/policy/policy.rs:304 functions_use_existing_object_tag"
 lines = 5
-status = "todo"
+status = "ported"
+kernel = ["manage::functions_use_existing_object_tag"]
 
 [[item]]
 upstream = "crates/policy/src/policy/policy.rs:311 policy_uses_existing_object_tag_conditions"
 lines = 6
-status = "todo"
+status = "ported"
+kernel = ["manage::policy_uses_existing_object_tag_conditions"]
 
 [[item]]
 upstream = "crates/policy/src/policy/policy.rs:318 bucket_policy_uses_existing_object_tag_conditions"
 lines = 6
-status = "todo"
+status = "ported"
+kernel = ["manage::bucket_policy_uses_existing_object_tag_conditions"]
 
 [[item]]
 upstream = "crates/policy/src/policy/policy.rs:325 policy_needs_existing_object_tag_for_args"
 lines = 15
-status = "todo"
+status = "ported"
+kernel = ["manage::policy_needs_existing_object_tag_for_args"]
 
 [[item]]
 upstream = "crates/policy/src/policy/policy.rs:342 bucket_policy_needs_existing_object_tag_for_args"
 lines = 14
-status = "todo"
+status = "ported"
+kernel = ["manage::bucket_policy_needs_existing_object_tag_for_args"]
 
 [[item]]
 upstream = "crates/policy/src/policy/policy.rs:369 KMS_KEY_ADMINISTRATOR"
@@ -1292,7 +1305,7 @@ kernel = ["reaches_condition_eval"]
 upstream = "crates/policy/src/policy/statement.rs:293 Statement::is_allowed"
 lines = 10
 status = "ported"
-kernel = ["statement_is_allowed"]
+kernel = ["statement_is_allowed", "manage::statement_is_allowed"]
 
 [[item]]
 upstream = "crates/policy/src/policy/statement.rs:310 Statement::is_valid"
@@ -1303,7 +1316,8 @@ kernel = ["valids::statement_is_valid"]
 [[item]]
 upstream = "crates/policy/src/policy/statement.rs:375 Statement::eq"
 lines = 8
-status = "todo"
+status = "ported"
+kernel = ["manage::statement_eq"]
 
 [[item]]
 upstream = "crates/policy/src/policy/statement.rs:385 BPStatement"
@@ -1321,7 +1335,7 @@ kernel = ["bp_reaches_condition_eval"]
 upstream = "crates/policy/src/policy/statement.rs:450 BPStatement::is_allowed"
 lines = 9
 status = "ported"
-kernel = ["bp_statement_is_allowed"]
+kernel = ["bp_statement_is_allowed", "manage::bp_statement_is_allowed"]
 
 [[item]]
 upstream = "crates/policy/src/policy/statement.rs:465 BPStatement::is_valid"

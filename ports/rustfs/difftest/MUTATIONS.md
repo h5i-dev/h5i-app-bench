@@ -173,3 +173,39 @@ Every condition-key table function, chunk helper and server-derived predicate wa
 | `keytables::is_server_derived` | `false` | `keytables::key_tables_agree` |
 | `keytables::server_derived_key_names` | `Vec::new()` | `keytables::key_tables_agree` |
 | `keytables::is_server_derived_condition_key` | `false` | `keytables::key_tables_agree` |
+
+Every policy metadata, management, tag and full-evaluation function was individually mutated and caught. The is_empty mutation initially survived; adding generated empty policies caught it, and all remaining mutations passed after that correction.
+
+| Function | Mutation | Test |
+|---|---|---|
+| `manage::statement_eq` | `false` | `management::management_agrees` |
+| `manage::index_member` | `false` | `management::management_agrees` |
+| `manage::mark_duplicates` | `{}` | `management::management_agrees` |
+| `manage::drop_duplicate_statements` | `{}` | `management::management_agrees` |
+| `manage::retained_statements` | `Vec::new()` | `management::management_agrees` |
+| `manage::merge_policies` | `Policy{id:Vec::new(),version:Vec::new(),statements:Vec::new()}` | `management::management_agrees` |
+| `manage::append_statements` | `{}` | `management::management_agrees` |
+| `manage::is_empty` | `false` | `management::management_agrees` |
+| `manage::match_resource` | `false` | `management::management_agrees` |
+| `manage::version_is_valid` | `Ok(())` | `management::management_agrees` |
+| `manage::statement_view` | `crate::stmts::Statement{effect:st.effect,actions:Vec::new(),not_actions:Vec::new(),resources:Vec::new(),not_resources:Vec::new(),conditions:crate::conddata::matching_view(&st.conditions)}` | `management::tag_and_full_evaluation_agree` |
+| `manage::bp_statement_view` | `crate::stmts::BPStatement{effect:st.effect,principal:st.principal.clone(),actions:Vec::new(),not_actions:Vec::new(),resources:Vec::new(),not_resources:Vec::new(),conditions:crate::conddata::matching_view(&st.conditions)}` | `management::tag_and_full_evaluation_agree` |
+| `manage::is_valid` | `Ok(())` | `management::management_agrees` |
+| `manage::validate` | `Ok(())` | `management::management_agrees` |
+| `manage::bucket_is_valid` | `Ok(())` | `management::tag_and_full_evaluation_agree` |
+| `manage::overwritten` | `false` | `management::tag_and_full_evaluation_agree` |
+| `manage::condition_uses_tag` | `false` | `management::tag_and_full_evaluation_agree` |
+| `manage::list_uses_tag` | `false` | `management::tag_and_full_evaluation_agree` |
+| `manage::functions_use_existing_object_tag` | `false` | `management::tag_and_full_evaluation_agree` |
+| `manage::policy_uses_existing_object_tag_conditions` | `false` | `management::tag_and_full_evaluation_agree` |
+| `manage::bucket_policy_uses_existing_object_tag_conditions` | `false` | `management::tag_and_full_evaluation_agree` |
+| `manage::policy_needs_existing_object_tag_for_args` | `false` | `management::tag_and_full_evaluation_agree` |
+| `manage::bucket_policy_needs_existing_object_tag_for_args` | `false` | `management::tag_and_full_evaluation_agree` |
+| `manage::statement_is_allowed` | `false` | `management::tag_and_full_evaluation_agree` |
+| `manage::bp_statement_is_allowed` | `false` | `management::tag_and_full_evaluation_agree` |
+| `manage::policy_is_allowed` | `false` | `management::tag_and_full_evaluation_agree` |
+| `manage::denies_clear` | `false` | `management::tag_and_full_evaluation_agree` |
+| `manage::allows_match` | `false` | `management::tag_and_full_evaluation_agree` |
+| `manage::bucket_policy_is_allowed` | `false` | `management::tag_and_full_evaluation_agree` |
+| `manage::bucket_denies_clear` | `false` | `management::tag_and_full_evaluation_agree` |
+| `manage::bucket_allows_match` | `false` | `management::tag_and_full_evaluation_agree` |

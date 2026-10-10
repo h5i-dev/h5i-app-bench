@@ -127,6 +127,34 @@ inductive acts.Family where
 | Kms : acts.Family
 | None : acts.Family
 
+/-- [rustfs_kernel::acts::{impl core::clone::Clone for rustfs_kernel::acts::Family}::clone]:
+    Source: 'ports/rustfs/kernel/src/acts.rs', lines 4:9-4:14
+    Visibility: public -/
+def acts.Family.Insts.CoreCloneClone.clone
+  (self : acts.Family) : Result acts.Family := do
+  ok self
+
+/-- [rustfs_kernel::acts::{impl core::fmt::Debug for rustfs_kernel::acts::Family}::fmt]:
+    Source: 'ports/rustfs/kernel/src/acts.rs', lines 4:22-4:27
+    Visibility: public -/
+def acts.Family.Insts.CoreFmtDebug.fmt
+  (self : acts.Family) (f : core.fmt.Formatter) :
+  Result ((core.result.Result Unit core.fmt.Error) × core.fmt.Formatter)
+  := do
+  match self with
+  | acts.Family.S3 => core.fmt.Formatter.write_str f (toStr "S3")
+  | acts.Family.Admin => core.fmt.Formatter.write_str f (toStr "Admin")
+  | acts.Family.Sts => core.fmt.Formatter.write_str f (toStr "Sts")
+  | acts.Family.Kms => core.fmt.Formatter.write_str f (toStr "Kms")
+  | acts.Family.None => core.fmt.Formatter.write_str f (toStr "None")
+
+/-- Trait implementation: [rustfs_kernel::acts::{impl core::fmt::Debug for rustfs_kernel::acts::Family}]
+    Source: 'ports/rustfs/kernel/src/acts.rs', lines 4:22-4:27 -/
+@[reducible]
+def acts.Family.Insts.CoreFmtDebug : core.fmt.Debug acts.Family := {
+  fmt := acts.Family.Insts.CoreFmtDebug.fmt
+}
+
 /-- [rustfs_kernel::acts::{impl core::cmp::PartialEq<rustfs_kernel::acts::Family> for rustfs_kernel::acts::Family}::eq]:
     Source: 'ports/rustfs/kernel/src/acts.rs', lines 4:29-4:38
     Visibility: public -/
@@ -152,6 +180,43 @@ impl_def acts.Family.Insts.CoreCmpPartialEqFamily : core.cmp.PartialEq
 structure acts.Action where
   family : acts.Family
   «name» : alloc.vec.Vec Std.U8
+
+/-- [rustfs_kernel::acts::{impl core::clone::Clone for rustfs_kernel::acts::Action}::clone]:
+    Source: 'ports/rustfs/kernel/src/acts.rs', lines 14:9-14:14
+    Visibility: public -/
+def acts.Action.Insts.CoreCloneClone.clone
+  (self : acts.Action) : Result acts.Action := do
+  let f ← acts.Family.Insts.CoreCloneClone.clone self.family
+  let v ← alloc.vec.CloneVec.clone core.clone.CloneU8 self.name
+  ok { family := f, «name» := v }
+
+/-- Trait implementation: [rustfs_kernel::acts::{impl core::clone::Clone for rustfs_kernel::acts::Action}]
+    Source: 'ports/rustfs/kernel/src/acts.rs', lines 14:9-14:14 -/
+@[reducible]
+def acts.Action.Insts.CoreCloneClone : core.clone.Clone acts.Action := {
+  clone := acts.Action.Insts.CoreCloneClone.clone
+}
+
+/-- [rustfs_kernel::acts::{impl core::fmt::Debug for rustfs_kernel::acts::Action}::fmt]:
+    Source: 'ports/rustfs/kernel/src/acts.rs', lines 14:16-14:21
+    Visibility: public -/
+def acts.Action.Insts.CoreFmtDebug.fmt
+  (self : acts.Action) (f : core.fmt.Formatter) :
+  Result ((core.result.Result Unit core.fmt.Error) × core.fmt.Formatter)
+  := do
+  let dyn := Dyn.mk _ acts.Family.Insts.CoreFmtDebug self.family
+  let dyn1 :=
+    Dyn.mk _ (core.fmt.DebugShared (core.fmt.DebugVec core.fmt.DebugU8))
+      self.name
+  core.fmt.Formatter.debug_struct_field2_finish f (toStr "Action") (toStr
+    "family") dyn (toStr "name") dyn1
+
+/-- Trait implementation: [rustfs_kernel::acts::{impl core::fmt::Debug for rustfs_kernel::acts::Action}]
+    Source: 'ports/rustfs/kernel/src/acts.rs', lines 14:16-14:21 -/
+@[reducible]
+def acts.Action.Insts.CoreFmtDebug : core.fmt.Debug acts.Action := {
+  fmt := acts.Action.Insts.CoreFmtDebug.fmt
+}
 
 /-- [rustfs_kernel::acts::{impl core::cmp::PartialEq<rustfs_kernel::acts::Action> for rustfs_kernel::acts::Action}::eq]:
     Source: 'ports/rustfs/kernel/src/acts.rs', lines 14:23-14:32
@@ -12346,6 +12411,908 @@ def keytables.is_server_derived_condition_key
   let lower ← bytes.lower «name»
   keytables.is_server_derived_condition_key_loop names lower 0#usize
 
+/-- [rustfs_kernel::manage::Statement]
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 11:0-19:1
+    Visibility: public -/
+structure manage.Statement where
+  sid : alloc.vec.Vec Std.U8
+  effect : stmts.Effect
+  actions : alloc.vec.Vec acts.Action
+  not_actions : alloc.vec.Vec acts.Action
+  resources : alloc.vec.Vec rsrc.Resource
+  not_resources : alloc.vec.Vec rsrc.Resource
+  conditions : conddata.Functions
+
+/-- [rustfs_kernel::stmts::{impl core::clone::Clone for rustfs_kernel::stmts::Effect}::clone]:
+    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 9:9-9:14
+    Visibility: public -/
+def stmts.Effect.Insts.CoreCloneClone.clone
+  (self : stmts.Effect) : Result stmts.Effect := do
+  ok self
+
+/-- [rustfs_kernel::rsrc::{impl core::clone::Clone for rustfs_kernel::rsrc::Resource}::clone]:
+    Source: 'ports/rustfs/kernel/src/rsrc.rs', lines 7:9-7:14
+    Visibility: public -/
+def rsrc.Resource.Insts.CoreCloneClone.clone
+  (self : rsrc.Resource) : Result rsrc.Resource := do
+  match self with
+  | rsrc.Resource.S3 __self_0 =>
+    let v ← alloc.vec.CloneVec.clone core.clone.CloneU8 __self_0
+    ok (rsrc.Resource.S3 v)
+  | rsrc.Resource.Kms __self_0 =>
+    let v ← alloc.vec.CloneVec.clone core.clone.CloneU8 __self_0
+    ok (rsrc.Resource.Kms v)
+
+/-- Trait implementation: [rustfs_kernel::rsrc::{impl core::clone::Clone for rustfs_kernel::rsrc::Resource}]
+    Source: 'ports/rustfs/kernel/src/rsrc.rs', lines 7:9-7:14 -/
+@[reducible]
+def rsrc.Resource.Insts.CoreCloneClone : core.clone.Clone rsrc.Resource := {
+  clone := rsrc.Resource.Insts.CoreCloneClone.clone
+}
+
+/-- [rustfs_kernel::manage::{impl core::clone::Clone for rustfs_kernel::manage::Statement}::clone]:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 10:9-10:14
+    Visibility: public -/
+def manage.Statement.Insts.CoreCloneClone.clone
+  (self : manage.Statement) : Result manage.Statement := do
+  let v ← alloc.vec.CloneVec.clone core.clone.CloneU8 self.sid
+  let e ← stmts.Effect.Insts.CoreCloneClone.clone self.effect
+  let v1 ←
+    alloc.vec.CloneVec.clone acts.Action.Insts.CoreCloneClone self.actions
+  let v2 ←
+    alloc.vec.CloneVec.clone acts.Action.Insts.CoreCloneClone self.not_actions
+  let v3 ←
+    alloc.vec.CloneVec.clone rsrc.Resource.Insts.CoreCloneClone self.resources
+  let v4 ←
+    alloc.vec.CloneVec.clone rsrc.Resource.Insts.CoreCloneClone
+      self.not_resources
+  let f ← conddata.Functions.Insts.CoreCloneClone.clone self.conditions
+  ok
+    {
+      sid := v,
+      effect := e,
+      actions := v1,
+      not_actions := v2,
+      resources := v3,
+      not_resources := v4,
+      conditions := f
+    }
+
+/-- Trait implementation: [rustfs_kernel::manage::{impl core::clone::Clone for rustfs_kernel::manage::Statement}]
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 10:9-10:14 -/
+@[reducible]
+def manage.Statement.Insts.CoreCloneClone : core.clone.Clone manage.Statement
+  := {
+  clone := manage.Statement.Insts.CoreCloneClone.clone
+}
+
+/-- [rustfs_kernel::stmts::{impl core::fmt::Debug for rustfs_kernel::stmts::Effect}::fmt]:
+    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 9:22-9:27
+    Visibility: public -/
+def stmts.Effect.Insts.CoreFmtDebug.fmt
+  (self : stmts.Effect) (f : core.fmt.Formatter) :
+  Result ((core.result.Result Unit core.fmt.Error) × core.fmt.Formatter)
+  := do
+  match self with
+  | stmts.Effect.Allow => core.fmt.Formatter.write_str f (toStr "Allow")
+  | stmts.Effect.Deny => core.fmt.Formatter.write_str f (toStr "Deny")
+
+/-- Trait implementation: [rustfs_kernel::stmts::{impl core::fmt::Debug for rustfs_kernel::stmts::Effect}]
+    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 9:22-9:27 -/
+@[reducible]
+def stmts.Effect.Insts.CoreFmtDebug : core.fmt.Debug stmts.Effect := {
+  fmt := stmts.Effect.Insts.CoreFmtDebug.fmt
+}
+
+/-- [rustfs_kernel::rsrc::{impl core::fmt::Debug for rustfs_kernel::rsrc::Resource}::fmt]:
+    Source: 'ports/rustfs/kernel/src/rsrc.rs', lines 7:16-7:21
+    Visibility: public -/
+def rsrc.Resource.Insts.CoreFmtDebug.fmt
+  (self : rsrc.Resource) (f : core.fmt.Formatter) :
+  Result ((core.result.Result Unit core.fmt.Error) × core.fmt.Formatter)
+  := do
+  match self with
+  | rsrc.Resource.S3 __self_0 =>
+    let __self_01 :=
+      Dyn.mk _ (core.fmt.DebugShared (core.fmt.DebugVec core.fmt.DebugU8))
+        __self_0
+    core.fmt.Formatter.debug_tuple_field1_finish f (toStr "S3") __self_01
+  | rsrc.Resource.Kms __self_0 =>
+    let __self_01 :=
+      Dyn.mk _ (core.fmt.DebugShared (core.fmt.DebugVec core.fmt.DebugU8))
+        __self_0
+    core.fmt.Formatter.debug_tuple_field1_finish f (toStr "Kms") __self_01
+
+/-- Trait implementation: [rustfs_kernel::rsrc::{impl core::fmt::Debug for rustfs_kernel::rsrc::Resource}]
+    Source: 'ports/rustfs/kernel/src/rsrc.rs', lines 7:16-7:21 -/
+@[reducible]
+def rsrc.Resource.Insts.CoreFmtDebug : core.fmt.Debug rsrc.Resource := {
+  fmt := rsrc.Resource.Insts.CoreFmtDebug.fmt
+}
+
+/-- [rustfs_kernel::manage::{impl core::fmt::Debug for rustfs_kernel::manage::Statement}::fmt]:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 10:16-10:21
+    Visibility: public -/
+def manage.Statement.Insts.CoreFmtDebug.fmt
+  (self : manage.Statement) (f : core.fmt.Formatter) :
+  Result ((core.result.Result Unit core.fmt.Error) × core.fmt.Formatter)
+  := do
+  let dyn := Dyn.mk _ (core.fmt.DebugVec core.fmt.DebugU8) self.sid
+  let dyn1 := Dyn.mk _ stmts.Effect.Insts.CoreFmtDebug self.effect
+  let dyn2 :=
+    Dyn.mk _ (core.fmt.DebugVec acts.Action.Insts.CoreFmtDebug) self.actions
+  let dyn3 :=
+    Dyn.mk _ (core.fmt.DebugVec acts.Action.Insts.CoreFmtDebug)
+      self.not_actions
+  let dyn4 :=
+    Dyn.mk _ (core.fmt.DebugVec rsrc.Resource.Insts.CoreFmtDebug)
+      self.resources
+  let dyn5 :=
+    Dyn.mk _ (core.fmt.DebugVec rsrc.Resource.Insts.CoreFmtDebug)
+      self.not_resources
+  let dyn6 :=
+    Dyn.mk _ (core.fmt.DebugShared conddata.Functions.Insts.CoreFmtDebug)
+      self.conditions
+  let values :=
+    Array.to_slice
+      (Array.make 7#usize [ dyn, dyn1, dyn2, dyn3, dyn4, dyn5, dyn6 ])
+  let s ←
+    lift (Array.to_slice
+      (Array.make 7#usize [
+        toStr "sid", toStr "effect", toStr "actions", toStr "not_actions",
+        toStr "resources", toStr "not_resources", toStr "conditions"
+        ]))
+  core.fmt.Formatter.debug_struct_fields_finish f (toStr "Statement") s values
+
+/-- Trait implementation: [rustfs_kernel::manage::{impl core::fmt::Debug for rustfs_kernel::manage::Statement}]
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 10:16-10:21 -/
+@[reducible]
+def manage.Statement.Insts.CoreFmtDebug : core.fmt.Debug manage.Statement := {
+  fmt := manage.Statement.Insts.CoreFmtDebug.fmt
+}
+
+/-- [rustfs_kernel::stmts::Principal]
+    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 35:0-38:1
+    Visibility: public -/
+structure stmts.Principal where
+  aws : alloc.vec.Vec (alloc.vec.Vec Std.U8)
+  service : alloc.vec.Vec (alloc.vec.Vec Std.U8)
+
+/-- [rustfs_kernel::manage::BPStatement]
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 21:0-30:1
+    Visibility: public -/
+structure manage.BPStatement where
+  sid : alloc.vec.Vec Std.U8
+  effect : stmts.Effect
+  principal : stmts.Principal
+  actions : alloc.vec.Vec acts.Action
+  not_actions : alloc.vec.Vec acts.Action
+  resources : alloc.vec.Vec rsrc.Resource
+  not_resources : alloc.vec.Vec rsrc.Resource
+  conditions : conddata.Functions
+
+/-- [rustfs_kernel::stmts::{impl core::clone::Clone for rustfs_kernel::stmts::Principal}::clone]:
+    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 34:9-34:14
+    Visibility: public -/
+def stmts.Principal.Insts.CoreCloneClone.clone
+  (self : stmts.Principal) : Result stmts.Principal := do
+  let v ←
+    alloc.vec.CloneVec.clone (core.clone.CloneallocvecVec core.clone.CloneU8)
+      self.aws
+  let v1 ←
+    alloc.vec.CloneVec.clone (core.clone.CloneallocvecVec core.clone.CloneU8)
+      self.service
+  ok { aws := v, service := v1 }
+
+/-- [rustfs_kernel::manage::{impl core::clone::Clone for rustfs_kernel::manage::BPStatement}::clone]:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 20:9-20:14
+    Visibility: public -/
+def manage.BPStatement.Insts.CoreCloneClone.clone
+  (self : manage.BPStatement) : Result manage.BPStatement := do
+  let v ← alloc.vec.CloneVec.clone core.clone.CloneU8 self.sid
+  let e ← stmts.Effect.Insts.CoreCloneClone.clone self.effect
+  let p ← stmts.Principal.Insts.CoreCloneClone.clone self.principal
+  let v1 ←
+    alloc.vec.CloneVec.clone acts.Action.Insts.CoreCloneClone self.actions
+  let v2 ←
+    alloc.vec.CloneVec.clone acts.Action.Insts.CoreCloneClone self.not_actions
+  let v3 ←
+    alloc.vec.CloneVec.clone rsrc.Resource.Insts.CoreCloneClone self.resources
+  let v4 ←
+    alloc.vec.CloneVec.clone rsrc.Resource.Insts.CoreCloneClone
+      self.not_resources
+  let f ← conddata.Functions.Insts.CoreCloneClone.clone self.conditions
+  ok
+    {
+      sid := v,
+      effect := e,
+      principal := p,
+      actions := v1,
+      not_actions := v2,
+      resources := v3,
+      not_resources := v4,
+      conditions := f
+    }
+
+/-- Trait implementation: [rustfs_kernel::manage::{impl core::clone::Clone for rustfs_kernel::manage::BPStatement}]
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 20:9-20:14 -/
+@[reducible]
+def manage.BPStatement.Insts.CoreCloneClone : core.clone.Clone
+  manage.BPStatement := {
+  clone := manage.BPStatement.Insts.CoreCloneClone.clone
+}
+
+/-- [rustfs_kernel::stmts::{impl core::fmt::Debug for rustfs_kernel::stmts::Principal}::fmt]:
+    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 34:16-34:21
+    Visibility: public -/
+def stmts.Principal.Insts.CoreFmtDebug.fmt
+  (self : stmts.Principal) (f : core.fmt.Formatter) :
+  Result ((core.result.Result Unit core.fmt.Error) × core.fmt.Formatter)
+  := do
+  let dyn :=
+    Dyn.mk _ (core.fmt.DebugVec (core.fmt.DebugVec core.fmt.DebugU8)) self.aws
+  let dyn1 :=
+    Dyn.mk _ (core.fmt.DebugShared (core.fmt.DebugVec (core.fmt.DebugVec
+      core.fmt.DebugU8))) self.service
+  core.fmt.Formatter.debug_struct_field2_finish f (toStr "Principal") (toStr
+    "aws") dyn (toStr "service") dyn1
+
+/-- Trait implementation: [rustfs_kernel::stmts::{impl core::fmt::Debug for rustfs_kernel::stmts::Principal}]
+    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 34:16-34:21 -/
+@[reducible]
+def stmts.Principal.Insts.CoreFmtDebug : core.fmt.Debug stmts.Principal := {
+  fmt := stmts.Principal.Insts.CoreFmtDebug.fmt
+}
+
+/-- [rustfs_kernel::manage::{impl core::fmt::Debug for rustfs_kernel::manage::BPStatement}::fmt]:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 20:16-20:21
+    Visibility: public -/
+def manage.BPStatement.Insts.CoreFmtDebug.fmt
+  (self : manage.BPStatement) (f : core.fmt.Formatter) :
+  Result ((core.result.Result Unit core.fmt.Error) × core.fmt.Formatter)
+  := do
+  let dyn := Dyn.mk _ (core.fmt.DebugVec core.fmt.DebugU8) self.sid
+  let dyn1 := Dyn.mk _ stmts.Effect.Insts.CoreFmtDebug self.effect
+  let dyn2 := Dyn.mk _ stmts.Principal.Insts.CoreFmtDebug self.principal
+  let dyn3 :=
+    Dyn.mk _ (core.fmt.DebugVec acts.Action.Insts.CoreFmtDebug) self.actions
+  let dyn4 :=
+    Dyn.mk _ (core.fmt.DebugVec acts.Action.Insts.CoreFmtDebug)
+      self.not_actions
+  let dyn5 :=
+    Dyn.mk _ (core.fmt.DebugVec rsrc.Resource.Insts.CoreFmtDebug)
+      self.resources
+  let dyn6 :=
+    Dyn.mk _ (core.fmt.DebugVec rsrc.Resource.Insts.CoreFmtDebug)
+      self.not_resources
+  let dyn7 :=
+    Dyn.mk _ (core.fmt.DebugShared conddata.Functions.Insts.CoreFmtDebug)
+      self.conditions
+  let values :=
+    Array.to_slice
+      (Array.make 8#usize [ dyn, dyn1, dyn2, dyn3, dyn4, dyn5, dyn6, dyn7 ])
+  let s ←
+    lift (Array.to_slice
+      (Array.make 8#usize [
+        toStr "sid", toStr "effect", toStr "principal", toStr "actions", toStr
+        "not_actions", toStr "resources", toStr "not_resources", toStr
+        "conditions"
+        ]))
+  core.fmt.Formatter.debug_struct_fields_finish f (toStr "BPStatement") s
+    values
+
+/-- Trait implementation: [rustfs_kernel::manage::{impl core::fmt::Debug for rustfs_kernel::manage::BPStatement}]
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 20:16-20:21 -/
+@[reducible]
+def manage.BPStatement.Insts.CoreFmtDebug : core.fmt.Debug manage.BPStatement
+  := {
+  fmt := manage.BPStatement.Insts.CoreFmtDebug.fmt
+}
+
+/-- [rustfs_kernel::manage::Policy]
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 32:0-36:1
+    Visibility: public -/
+structure manage.Policy where
+  id : alloc.vec.Vec Std.U8
+  version : alloc.vec.Vec Std.U8
+  statements : alloc.vec.Vec manage.Statement
+
+/-- [rustfs_kernel::manage::{impl core::clone::Clone for rustfs_kernel::manage::Policy}::clone]:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 31:9-31:14
+    Visibility: public -/
+def manage.Policy.Insts.CoreCloneClone.clone
+  (self : manage.Policy) : Result manage.Policy := do
+  let v ← alloc.vec.CloneVec.clone core.clone.CloneU8 self.id
+  let v1 ← alloc.vec.CloneVec.clone core.clone.CloneU8 self.version
+  let v2 ←
+    alloc.vec.CloneVec.clone manage.Statement.Insts.CoreCloneClone
+      self.statements
+  ok { id := v, version := v1, statements := v2 }
+
+/-- Trait implementation: [rustfs_kernel::manage::{impl core::clone::Clone for rustfs_kernel::manage::Policy}]
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 31:9-31:14 -/
+@[reducible]
+def manage.Policy.Insts.CoreCloneClone : core.clone.Clone manage.Policy := {
+  clone := manage.Policy.Insts.CoreCloneClone.clone
+}
+
+/-- [rustfs_kernel::manage::{impl core::fmt::Debug for rustfs_kernel::manage::Policy}::fmt]:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 31:16-31:21
+    Visibility: public -/
+def manage.Policy.Insts.CoreFmtDebug.fmt
+  (self : manage.Policy) (f : core.fmt.Formatter) :
+  Result ((core.result.Result Unit core.fmt.Error) × core.fmt.Formatter)
+  := do
+  let dyn := Dyn.mk _ (core.fmt.DebugVec core.fmt.DebugU8) self.id
+  let dyn1 := Dyn.mk _ (core.fmt.DebugVec core.fmt.DebugU8) self.version
+  let dyn2 :=
+    Dyn.mk _ (core.fmt.DebugShared (core.fmt.DebugVec
+      manage.Statement.Insts.CoreFmtDebug)) self.statements
+  core.fmt.Formatter.debug_struct_field3_finish f (toStr "Policy") (toStr "id")
+    dyn (toStr "version") dyn1 (toStr "statements") dyn2
+
+/-- Trait implementation: [rustfs_kernel::manage::{impl core::fmt::Debug for rustfs_kernel::manage::Policy}]
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 31:16-31:21 -/
+@[reducible]
+def manage.Policy.Insts.CoreFmtDebug : core.fmt.Debug manage.Policy := {
+  fmt := manage.Policy.Insts.CoreFmtDebug.fmt
+}
+
+/-- [rustfs_kernel::manage::BucketPolicy]
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 38:0-42:1
+    Visibility: public -/
+structure manage.BucketPolicy where
+  id : alloc.vec.Vec Std.U8
+  version : alloc.vec.Vec Std.U8
+  statements : alloc.vec.Vec manage.BPStatement
+
+/-- [rustfs_kernel::manage::{impl core::clone::Clone for rustfs_kernel::manage::BucketPolicy}::clone]:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 37:9-37:14
+    Visibility: public -/
+def manage.BucketPolicy.Insts.CoreCloneClone.clone
+  (self : manage.BucketPolicy) : Result manage.BucketPolicy := do
+  let v ← alloc.vec.CloneVec.clone core.clone.CloneU8 self.id
+  let v1 ← alloc.vec.CloneVec.clone core.clone.CloneU8 self.version
+  let v2 ←
+    alloc.vec.CloneVec.clone manage.BPStatement.Insts.CoreCloneClone
+      self.statements
+  ok { id := v, version := v1, statements := v2 }
+
+/-- Trait implementation: [rustfs_kernel::manage::{impl core::clone::Clone for rustfs_kernel::manage::BucketPolicy}]
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 37:9-37:14 -/
+@[reducible]
+def manage.BucketPolicy.Insts.CoreCloneClone : core.clone.Clone
+  manage.BucketPolicy := {
+  clone := manage.BucketPolicy.Insts.CoreCloneClone.clone
+}
+
+/-- [rustfs_kernel::manage::{impl core::fmt::Debug for rustfs_kernel::manage::BucketPolicy}::fmt]:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 37:16-37:21
+    Visibility: public -/
+def manage.BucketPolicy.Insts.CoreFmtDebug.fmt
+  (self : manage.BucketPolicy) (f : core.fmt.Formatter) :
+  Result ((core.result.Result Unit core.fmt.Error) × core.fmt.Formatter)
+  := do
+  let dyn := Dyn.mk _ (core.fmt.DebugVec core.fmt.DebugU8) self.id
+  let dyn1 := Dyn.mk _ (core.fmt.DebugVec core.fmt.DebugU8) self.version
+  let dyn2 :=
+    Dyn.mk _ (core.fmt.DebugShared (core.fmt.DebugVec
+      manage.BPStatement.Insts.CoreFmtDebug)) self.statements
+  core.fmt.Formatter.debug_struct_field3_finish f (toStr "BucketPolicy") (toStr
+    "id") dyn (toStr "version") dyn1 (toStr "statements") dyn2
+
+/-- Trait implementation: [rustfs_kernel::manage::{impl core::fmt::Debug for rustfs_kernel::manage::BucketPolicy}]
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 37:16-37:21 -/
+@[reducible]
+def manage.BucketPolicy.Insts.CoreFmtDebug : core.fmt.Debug manage.BucketPolicy
+  := {
+  fmt := manage.BucketPolicy.Insts.CoreFmtDebug.fmt
+}
+
+/-- [rustfs_kernel::stmts::{impl core::cmp::PartialEq<rustfs_kernel::stmts::Effect> for rustfs_kernel::stmts::Effect}::eq]:
+    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 9:29-9:38
+    Visibility: public -/
+def stmts.Effect.Insts.CoreCmpPartialEqEffect.eq
+  (self : stmts.Effect) (other : stmts.Effect) : Result Bool := do
+  let self1 := read_discriminant self
+  let other1 := read_discriminant other
+  ok (self1 = other1)
+
+/-- [rustfs_kernel::rsrc::{impl core::cmp::PartialEq<rustfs_kernel::rsrc::Resource> for rustfs_kernel::rsrc::Resource}::eq]:
+    Source: 'ports/rustfs/kernel/src/rsrc.rs', lines 7:23-7:32
+    Visibility: public -/
+def rsrc.Resource.Insts.CoreCmpPartialEqResource.eq
+  (self : rsrc.Resource) (other : rsrc.Resource) : Result Bool := do
+  let self1 := read_discriminant self
+  let other1 := read_discriminant other
+  if self1 = other1
+  then
+    match self with
+    | rsrc.Resource.S3 __self_0 =>
+      match other with
+      | rsrc.Resource.S3 __arg1_0 =>
+        alloc.vec.partial_eq.PartialEqVec.eq core.cmp.PartialEqU8 __self_0
+          __arg1_0
+      | rsrc.Resource.Kms _ => fail panic
+    | rsrc.Resource.Kms __self_0 =>
+      match other with
+      | rsrc.Resource.S3 _ => fail panic
+      | rsrc.Resource.Kms __arg1_0 =>
+        alloc.vec.partial_eq.PartialEqVec.eq core.cmp.PartialEqU8 __self_0
+          __arg1_0
+  else ok false
+
+/-- [rustfs_kernel::resets::member]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/resets.rs', lines 12:4-14:1
+    Visibility: public -/
+@[rust_loop_body]
+def resets.member_loop.body
+  (set : Slice rsrc.Resource) (resource : rsrc.Resource) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := Slice.len set
+  if i < i1
+  then
+    let r ← Slice.index_usize set i
+    let b ← rsrc.Resource.Insts.CoreCmpPartialEqResource.eq r resource
+    if b
+    then ok (done true)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else ok (done false)
+
+/-- [rustfs_kernel::resets::member]: loop 0:
+    Source: 'ports/rustfs/kernel/src/resets.rs', lines 12:4-14:1
+    Visibility: public -/
+@[rust_loop]
+def resets.member_loop
+  (set : Slice rsrc.Resource) (resource : rsrc.Resource) (i : Std.Usize) :
+  Result Bool
+  := do
+  loop
+    (fun i1 => resets.member_loop.body set resource i1)
+    i
+
+/-- [rustfs_kernel::resets::member]:
+    Source: 'ports/rustfs/kernel/src/resets.rs', lines 10:0-14:1
+    Visibility: public -/
+@[reducible]
+def resets.member
+  (set : Slice rsrc.Resource) (resource : rsrc.Resource) : Result Bool := do
+  resets.member_loop set resource 0#usize
+
+/-- [rustfs_kernel::resets::covers]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/resets.rs', lines 21:4-23:1 -/
+@[rust_loop_body]
+def resets.covers_loop.body
+  (left : Slice rsrc.Resource) (right : Slice rsrc.Resource) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := Slice.len left
+  if i < i1
+  then
+    let r ← Slice.index_usize left i
+    let b ← resets.member right r
+    if b
+    then let i2 ← i + 1#usize
+         ok (cont i2)
+    else ok (done false)
+  else ok (done true)
+
+/-- [rustfs_kernel::resets::covers]: loop 0:
+    Source: 'ports/rustfs/kernel/src/resets.rs', lines 21:4-23:1 -/
+@[rust_loop]
+def resets.covers_loop
+  (left : Slice rsrc.Resource) (right : Slice rsrc.Resource) (i : Std.Usize) :
+  Result Bool
+  := do
+  loop
+    (fun i1 => resets.covers_loop.body left right i1)
+    i
+
+/-- [rustfs_kernel::resets::covers]:
+    Source: 'ports/rustfs/kernel/src/resets.rs', lines 19:0-23:1 -/
+@[reducible]
+def resets.covers
+  (left : Slice rsrc.Resource) (right : Slice rsrc.Resource) :
+  Result Bool
+  := do
+  resets.covers_loop left right 0#usize
+
+/-- [rustfs_kernel::resets::eq]:
+    Source: 'ports/rustfs/kernel/src/resets.rs', lines 25:0-25:103
+    Visibility: public -/
+def resets.eq
+  (left : Slice rsrc.Resource) (right : Slice rsrc.Resource) :
+  Result Bool
+  := do
+  let b ← resets.covers left right
+  if b
+  then resets.covers right left
+  else ok false
+
+/-- [rustfs_kernel::manage::statement_eq]:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 44:0-51:1
+    Visibility: public -/
+def manage.statement_eq
+  (left : manage.Statement) (right : manage.Statement) : Result Bool := do
+  let b ←
+    stmts.Effect.Insts.CoreCmpPartialEqEffect.eq left.effect right.effect
+  if b
+  then
+    let s := alloc.vec.Vec.deref left.actions
+    let s1 := alloc.vec.Vec.deref right.actions
+    let b1 ← actsets.eq s s1
+    if b1
+    then
+      let s2 := alloc.vec.Vec.deref left.not_actions
+      let s3 := alloc.vec.Vec.deref right.not_actions
+      let b2 ← actsets.eq s2 s3
+      if b2
+      then
+        let s4 := alloc.vec.Vec.deref left.resources
+        let s5 := alloc.vec.Vec.deref right.resources
+        let b3 ← resets.eq s4 s5
+        if b3
+        then
+          let s6 := alloc.vec.Vec.deref left.not_resources
+          let s7 := alloc.vec.Vec.deref right.not_resources
+          let b4 ← resets.eq s6 s7
+          if b4
+          then conddata.functions_eq left.conditions right.conditions
+          else ok false
+        else ok false
+      else ok false
+    else ok false
+  else ok false
+
+/-- [rustfs_kernel::manage::index_member]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 54:4-61:1 -/
+@[rust_loop_body]
+def manage.index_member_loop.body
+  (indices : Slice Std.Usize) (index : Std.Usize) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := Slice.len indices
+  if i < i1
+  then
+    let i2 ← Slice.index_usize indices i
+    if i2 = index
+    then ok (done true)
+    else let i3 ← i + 1#usize
+         ok (cont i3)
+  else ok (done false)
+
+/-- [rustfs_kernel::manage::index_member]: loop 0:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 54:4-61:1 -/
+@[rust_loop]
+def manage.index_member_loop
+  (indices : Slice Std.Usize) (index : Std.Usize) (i : Std.Usize) :
+  Result Bool
+  := do
+  loop
+    (fun i1 => manage.index_member_loop.body indices index i1)
+    i
+
+/-- [rustfs_kernel::manage::index_member]:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 52:0-61:1 -/
+@[reducible]
+def manage.index_member
+  (indices : Slice Std.Usize) (index : Std.Usize) : Result Bool := do
+  manage.index_member_loop indices index 0#usize
+
+/-- [rustfs_kernel::manage::mark_duplicates]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 64:4-71:5 -/
+@[rust_loop_body]
+def manage.mark_duplicates_loop.body
+  (statements : Slice manage.Statement) (i : Std.Usize)
+  (dups : alloc.vec.Vec Std.Usize) (j : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Std.Usize) × Std.Usize) (alloc.vec.Vec
+    Std.Usize))
+  := do
+  let i1 := Slice.len statements
+  if j < i1
+  then
+    let s ← Slice.index_usize statements i
+    let s1 ← Slice.index_usize statements j
+    let b ← manage.statement_eq s s1
+    let dups1 ←
+      if b
+      then
+        do
+        let s2 := alloc.vec.Vec.deref dups
+        let b1 ← manage.index_member s2 j
+        if b1
+        then ok dups
+        else alloc.vec.Vec.push dups j
+      else ok dups
+    let j1 ← j + 1#usize
+    ok (cont (dups1, j1))
+  else ok (done dups)
+
+/-- [rustfs_kernel::manage::mark_duplicates]: loop 0:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 64:4-71:5 -/
+@[rust_loop]
+def manage.mark_duplicates_loop
+  (statements : Slice manage.Statement) (i : Std.Usize)
+  (dups : alloc.vec.Vec Std.Usize) (j : Std.Usize) :
+  Result (alloc.vec.Vec Std.Usize)
+  := do
+  loop
+    (fun (dups1, j1) => manage.mark_duplicates_loop.body statements i dups1 j1)
+    (dups, j)
+
+/-- [rustfs_kernel::manage::mark_duplicates]:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 62:0-72:1 -/
+def manage.mark_duplicates
+  (statements : Slice manage.Statement) (i : Std.Usize)
+  (dups : alloc.vec.Vec Std.Usize) :
+  Result (alloc.vec.Vec Std.Usize)
+  := do
+  let j ← i + 1#usize
+  manage.mark_duplicates_loop statements i dups j
+
+/-- [rustfs_kernel::manage::retained_statements]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 88:4-93:5 -/
+@[rust_loop_body]
+def manage.retained_statements_loop.body
+  (statements : Slice manage.Statement) (dups : Slice Std.Usize)
+  (out : alloc.vec.Vec manage.Statement) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec manage.Statement) × Std.Usize)
+    (alloc.vec.Vec manage.Statement))
+  := do
+  let i1 := Slice.len statements
+  if i < i1
+  then
+    let b ← manage.index_member dups i
+    let out1 ←
+      if b
+      then ok out
+      else
+        do
+        let s ← Slice.index_usize statements i
+        let s1 ← manage.Statement.Insts.CoreCloneClone.clone s
+        alloc.vec.Vec.push out s1
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
+  else ok (done out)
+
+/-- [rustfs_kernel::manage::retained_statements]: loop 0:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 88:4-93:5 -/
+@[rust_loop]
+def manage.retained_statements_loop
+  (statements : Slice manage.Statement) (dups : Slice Std.Usize)
+  (out : alloc.vec.Vec manage.Statement) (i : Std.Usize) :
+  Result (alloc.vec.Vec manage.Statement)
+  := do
+  loop
+    (fun (out1, i1) => manage.retained_statements_loop.body statements dups
+      out1 i1)
+    (out, i)
+
+/-- [rustfs_kernel::manage::retained_statements]:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 85:0-95:1 -/
+@[reducible]
+def manage.retained_statements
+  (statements : Slice manage.Statement) (dups : Slice Std.Usize) :
+  Result (alloc.vec.Vec manage.Statement)
+  := do
+  manage.retained_statements_loop statements dups (alloc.vec.Vec.new
+    manage.Statement) 0#usize
+
+/-- [rustfs_kernel::manage::drop_duplicate_statements]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 77:4-82:5
+    Visibility: public -/
+@[rust_loop_body]
+def manage.drop_duplicate_statements_loop.body
+  (policy : manage.Policy) (dups : alloc.vec.Vec Std.Usize) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Std.Usize) × Std.Usize) ((alloc.vec.Vec
+    Std.U8) × (alloc.vec.Vec Std.U8) × (alloc.vec.Vec manage.Statement) ×
+    (alloc.vec.Vec Std.Usize)))
+  := do
+  let i1 := alloc.vec.Vec.len policy.statements
+  if i < i1
+  then
+    let s := alloc.vec.Vec.deref dups
+    let b ← manage.index_member s i
+    let dups1 ←
+      if b
+      then ok dups
+      else
+        let s1 := alloc.vec.Vec.deref policy.statements
+        manage.mark_duplicates s1 i dups
+    let i2 ← i + 1#usize
+    ok (cont (dups1, i2))
+  else ok (done (policy.id, policy.version, policy.statements, dups))
+
+/-- [rustfs_kernel::manage::drop_duplicate_statements]: loop 0:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 77:4-82:5
+    Visibility: public -/
+@[rust_loop]
+def manage.drop_duplicate_statements_loop
+  (policy : manage.Policy) (dups : alloc.vec.Vec Std.Usize) (i : Std.Usize) :
+  Result ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec Std.U8) × (alloc.vec.Vec
+    manage.Statement) × (alloc.vec.Vec Std.Usize))
+  := do
+  loop
+    (fun (dups1, i1) => manage.drop_duplicate_statements_loop.body policy dups1
+      i1)
+    (dups, i)
+
+/-- [rustfs_kernel::manage::drop_duplicate_statements]:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 74:0-84:1
+    Visibility: public -/
+def manage.drop_duplicate_statements
+  (policy : manage.Policy) : Result manage.Policy := do
+  let (v, v1, v2, dups) ←
+    manage.drop_duplicate_statements_loop policy (alloc.vec.Vec.new Std.Usize)
+      0#usize
+  let s := alloc.vec.Vec.deref v2
+  let s1 := alloc.vec.Vec.deref dups
+  let v3 ← manage.retained_statements s s1
+  ok { id := v, version := v1, statements := v3 }
+
+/-- [rustfs_kernel::manage::append_statements]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 116:4-119:5 -/
+@[rust_loop_body]
+def manage.append_statements_loop.body
+  (entries : Slice manage.Statement) (out : alloc.vec.Vec manage.Statement)
+  (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec manage.Statement) × Std.Usize)
+    (alloc.vec.Vec manage.Statement))
+  := do
+  let i1 := Slice.len entries
+  if i < i1
+  then
+    let s ← Slice.index_usize entries i
+    let s1 ← manage.Statement.Insts.CoreCloneClone.clone s
+    let out1 ← alloc.vec.Vec.push out s1
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
+  else ok (done out)
+
+/-- [rustfs_kernel::manage::append_statements]: loop 0:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 116:4-119:5 -/
+@[rust_loop]
+def manage.append_statements_loop
+  (out : alloc.vec.Vec manage.Statement) (entries : Slice manage.Statement)
+  (i : Std.Usize) :
+  Result (alloc.vec.Vec manage.Statement)
+  := do
+  loop
+    (fun (out1, i1) => manage.append_statements_loop.body entries out1 i1)
+    (out, i)
+
+/-- [rustfs_kernel::manage::append_statements]:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 114:0-120:1 -/
+@[reducible]
+def manage.append_statements
+  (out : alloc.vec.Vec manage.Statement) (entries : Slice manage.Statement) :
+  Result (alloc.vec.Vec manage.Statement)
+  := do
+  manage.append_statements_loop out entries 0#usize
+
+/-- [rustfs_kernel::manage::merge_policies]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 104:4-110:5
+    Visibility: public -/
+@[rust_loop_body]
+def manage.merge_policies_loop.body
+  (inputs : Slice manage.Policy) (v : alloc.vec.Vec Std.U8)
+  (v1 : alloc.vec.Vec manage.Statement) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec
+    manage.Statement) × Std.Usize) ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec
+    manage.Statement)))
+  := do
+  let i1 := Slice.len inputs
+  if i < i1
+  then
+    let i2 := alloc.vec.Vec.len v
+    let v2 ←
+      if i2 = 0#usize
+      then
+        do
+        let p ← Slice.index_usize inputs i
+        alloc.vec.CloneVec.clone core.clone.CloneU8 p.version
+      else ok v
+    let p ← Slice.index_usize inputs i
+    let s := alloc.vec.Vec.deref p.statements
+    let v3 ← manage.append_statements v1 s
+    let i3 ← i + 1#usize
+    ok (cont (v2, v3, i3))
+  else ok (done (v, v1))
+
+/-- [rustfs_kernel::manage::merge_policies]: loop 0:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 104:4-110:5
+    Visibility: public -/
+@[rust_loop]
+def manage.merge_policies_loop
+  (inputs : Slice manage.Policy) (v : alloc.vec.Vec Std.U8)
+  (v1 : alloc.vec.Vec manage.Statement) (i : Std.Usize) :
+  Result ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec manage.Statement))
+  := do
+  loop
+    (fun (v2, v3, i1) => manage.merge_policies_loop.body inputs v2 v3 i1)
+    (v, v1, i)
+
+/-- [rustfs_kernel::manage::merge_policies]:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 97:0-113:1
+    Visibility: public -/
+def manage.merge_policies
+  (inputs : Slice manage.Policy) : Result manage.Policy := do
+  let (v, v1) ←
+    manage.merge_policies_loop inputs (alloc.vec.Vec.new Std.U8)
+      (alloc.vec.Vec.new manage.Statement) 0#usize
+  manage.drop_duplicate_statements
+    { id := (alloc.vec.Vec.new Std.U8), version := v, statements := v1 }
+
+/-- [rustfs_kernel::manage::is_empty]:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 121:0-123:1
+    Visibility: public -/
+def manage.is_empty (policy : manage.Policy) : Result Bool := do
+  let i := alloc.vec.Vec.len policy.statements
+  ok (i = 0#usize)
+
+/-- [rustfs_kernel::rsrc::substitute_common]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/rsrc.rs', lines 25:4-36:5 -/
+@[rust_loop_body]
+def rsrc.substitute_common_loop.body
+  (conditions : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec
+  (alloc.vec.Vec Std.U8)))) (out : alloc.vec.Vec Std.U8) (k : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Std.U8) × Std.Usize) (alloc.vec.Vec
+    Std.U8))
+  := do
+  if k < keynames.COMMON_KEYS_LEN
+  then
+    let («name», var_name) ← keynames.common_key k
+    let s := alloc.vec.Vec.deref «name»
+    let o ← condfuncs.get_value conditions s
+    let out1 ←
+      match o with
+      | none => ok out
+      | some vs =>
+        let i := alloc.vec.Vec.len vs
+        if i > 0#usize
+        then
+          do
+          let v ←
+            alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+              (alloc.vec.Vec Std.U8)) vs 0#usize
+          let i1 := alloc.vec.Vec.len v
+          if i1 > 0#usize
+          then
+            let s1 := alloc.vec.Vec.deref out
+            let s2 := alloc.vec.Vec.deref var_name
+            let s3 := alloc.vec.Vec.deref v
+            bytes.replace s1 s2 s3
+          else ok out
+        else ok out
+    let k1 ← k + 1#usize
+    ok (cont (out1, k1))
+  else ok (done out)
+
+/-- [rustfs_kernel::rsrc::substitute_common]: loop 0:
+    Source: 'ports/rustfs/kernel/src/rsrc.rs', lines 25:4-36:5 -/
+@[rust_loop]
+def rsrc.substitute_common_loop
+  (conditions : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec
+  (alloc.vec.Vec Std.U8)))) (out : alloc.vec.Vec Std.U8) (k : Std.Usize) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  loop
+    (fun (out1, k1) => rsrc.substitute_common_loop.body conditions out1 k1)
+    (out, k)
+
+/-- [rustfs_kernel::rsrc::substitute_common]:
+    Source: 'ports/rustfs/kernel/src/rsrc.rs', lines 22:0-38:1 -/
+def rsrc.substitute_common
+  (pattern : Slice Std.U8)
+  (conditions : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec
+  (alloc.vec.Vec Std.U8)))) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  let out ← alloc.slice.Slice.to_vec core.clone.CloneU8 pattern
+  rsrc.substitute_common_loop conditions out 0#usize
+
 /-- [rustfs_kernel::pathclean::copy_element]: loop body 0:
     Source: 'ports/rustfs/kernel/src/pathclean.rs', lines 77:4-81:5 -/
 @[rust_loop_body]
@@ -12862,152 +13829,6 @@ def pathclean.clean (path : Slice Std.U8) : Result (alloc.vec.Vec Std.U8) := do
       alloc.slice.Slice.to_vec core.clone.CloneU8 s
     else pathclean.clean_loop1 buf2 w1 (alloc.vec.Vec.new Std.U8) 0#usize
 
-/-- [rustfs_kernel::rsrc::is_kms]:
-    Source: 'ports/rustfs/kernel/src/rsrc.rs', lines 13:0-18:1
-    Visibility: public -/
-def rsrc.is_kms (r : rsrc.Resource) : Result Bool := do
-  match r with
-  | rsrc.Resource.S3 _ => ok false
-  | rsrc.Resource.Kms _ => ok true
-
-/-- [rustfs_kernel::rsrc::{impl core::clone::Clone for rustfs_kernel::rsrc::Resource}::clone]:
-    Source: 'ports/rustfs/kernel/src/rsrc.rs', lines 7:9-7:14
-    Visibility: public -/
-def rsrc.Resource.Insts.CoreCloneClone.clone
-  (self : rsrc.Resource) : Result rsrc.Resource := do
-  match self with
-  | rsrc.Resource.S3 __self_0 =>
-    let v ← alloc.vec.CloneVec.clone core.clone.CloneU8 __self_0
-    ok (rsrc.Resource.S3 v)
-  | rsrc.Resource.Kms __self_0 =>
-    let v ← alloc.vec.CloneVec.clone core.clone.CloneU8 __self_0
-    ok (rsrc.Resource.Kms v)
-
-/-- [rustfs_kernel::stmts::kms_only]: loop body 0:
-    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 135:4-141:5 -/
-@[rust_loop_body]
-def stmts.kms_only_loop.body
-  (rs : Slice rsrc.Resource) (out : alloc.vec.Vec rsrc.Resource)
-  (i : Std.Usize) :
-  Result (ControlFlow ((alloc.vec.Vec rsrc.Resource) × Std.Usize)
-    (alloc.vec.Vec rsrc.Resource))
-  := do
-  let i1 := Slice.len rs
-  if i < i1
-  then
-    let r ← Slice.index_usize rs i
-    let r1 ← rsrc.Resource.Insts.CoreCloneClone.clone r
-    let b ← rsrc.is_kms r1
-    let out1 ← if b
-                 then alloc.vec.Vec.push out r1
-                 else ok out
-    let i2 ← i + 1#usize
-    ok (cont (out1, i2))
-  else ok (done out)
-
-/-- [rustfs_kernel::stmts::kms_only]: loop 0:
-    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 135:4-141:5 -/
-@[rust_loop]
-def stmts.kms_only_loop
-  (rs : Slice rsrc.Resource) (out : alloc.vec.Vec rsrc.Resource)
-  (i : Std.Usize) :
-  Result (alloc.vec.Vec rsrc.Resource)
-  := do
-  loop
-    (fun (out1, i1) => stmts.kms_only_loop.body rs out1 i1)
-    (out, i)
-
-/-- [rustfs_kernel::stmts::kms_only]:
-    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 132:0-143:1 -/
-@[reducible]
-def stmts.kms_only
-  (rs : Slice rsrc.Resource) : Result (alloc.vec.Vec rsrc.Resource) := do
-  stmts.kms_only_loop rs (alloc.vec.Vec.new rsrc.Resource) 0#usize
-
-/-- [rustfs_kernel::stmts::Args]
-    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 53:0-62:1
-    Visibility: public -/
-structure stmts.Args where
-  account : alloc.vec.Vec Std.U8
-  action : acts.Action
-  bucket : alloc.vec.Vec Std.U8
-  conditions : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec
-    (alloc.vec.Vec Std.U8)))
-  is_owner : Bool
-  object : alloc.vec.Vec Std.U8
-  claims : awsvars.ClaimStrings
-  deny_only : Bool
-
-/-- [rustfs_kernel::stmts::{impl core::cmp::PartialEq<rustfs_kernel::stmts::Effect> for rustfs_kernel::stmts::Effect}::eq]:
-    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 9:29-9:38
-    Visibility: public -/
-def stmts.Effect.Insts.CoreCmpPartialEqEffect.eq
-  (self : stmts.Effect) (other : stmts.Effect) : Result Bool := do
-  let self1 := read_discriminant self
-  let other1 := read_discriminant other
-  ok (self1 = other1)
-
-/-- [rustfs_kernel::rsrc::substitute_common]: loop body 0:
-    Source: 'ports/rustfs/kernel/src/rsrc.rs', lines 25:4-36:5 -/
-@[rust_loop_body]
-def rsrc.substitute_common_loop.body
-  (conditions : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec
-  (alloc.vec.Vec Std.U8)))) (out : alloc.vec.Vec Std.U8) (k : Std.Usize) :
-  Result (ControlFlow ((alloc.vec.Vec Std.U8) × Std.Usize) (alloc.vec.Vec
-    Std.U8))
-  := do
-  if k < keynames.COMMON_KEYS_LEN
-  then
-    let («name», var_name) ← keynames.common_key k
-    let s := alloc.vec.Vec.deref «name»
-    let o ← condfuncs.get_value conditions s
-    let out1 ←
-      match o with
-      | none => ok out
-      | some vs =>
-        let i := alloc.vec.Vec.len vs
-        if i > 0#usize
-        then
-          do
-          let v ←
-            alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
-              (alloc.vec.Vec Std.U8)) vs 0#usize
-          let i1 := alloc.vec.Vec.len v
-          if i1 > 0#usize
-          then
-            let s1 := alloc.vec.Vec.deref out
-            let s2 := alloc.vec.Vec.deref var_name
-            let s3 := alloc.vec.Vec.deref v
-            bytes.replace s1 s2 s3
-          else ok out
-        else ok out
-    let k1 ← k + 1#usize
-    ok (cont (out1, k1))
-  else ok (done out)
-
-/-- [rustfs_kernel::rsrc::substitute_common]: loop 0:
-    Source: 'ports/rustfs/kernel/src/rsrc.rs', lines 25:4-36:5 -/
-@[rust_loop]
-def rsrc.substitute_common_loop
-  (conditions : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec
-  (alloc.vec.Vec Std.U8)))) (out : alloc.vec.Vec Std.U8) (k : Std.Usize) :
-  Result (alloc.vec.Vec Std.U8)
-  := do
-  loop
-    (fun (out1, k1) => rsrc.substitute_common_loop.body conditions out1 k1)
-    (out, k)
-
-/-- [rustfs_kernel::rsrc::substitute_common]:
-    Source: 'ports/rustfs/kernel/src/rsrc.rs', lines 22:0-38:1 -/
-def rsrc.substitute_common
-  (pattern : Slice Std.U8)
-  (conditions : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec
-  (alloc.vec.Vec Std.U8)))) :
-  Result (alloc.vec.Vec Std.U8)
-  := do
-  let out ← alloc.slice.Slice.to_vec core.clone.CloneU8 pattern
-  rsrc.substitute_common_loop conditions out 0#usize
-
 /-- [rustfs_kernel::rsrc::pattern_matches]:
     Source: 'ports/rustfs/kernel/src/rsrc.rs', lines 41:0-49:1 -/
 def rsrc.pattern_matches
@@ -13101,1304 +13922,6 @@ def rsrc.resource_is_match
       awsvars.resolve_aws_variables c s
   rsrc.resource_is_match_loop resource conditions patterns 0#usize
 
-/-- [rustfs_kernel::rsrc::set_is_match]: loop body 0:
-    Source: 'ports/rustfs/kernel/src/rsrc.rs', lines 78:4-85:1
-    Visibility: public -/
-@[rust_loop_body]
-def rsrc.set_is_match_loop.body
-  (set : Slice rsrc.Resource) (resource : Slice Std.U8)
-  (conditions : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec
-  (alloc.vec.Vec Std.U8)))) (ctx : Option awsvars.VarContext) (i : Std.Usize) :
-  Result (ControlFlow Std.Usize Bool)
-  := do
-  let i1 := Slice.len set
-  if i < i1
-  then
-    let r ← Slice.index_usize set i
-    let b ← rsrc.resource_is_match r resource conditions ctx
-    if b
-    then ok (done true)
-    else let i2 ← i + 1#usize
-         ok (cont i2)
-  else ok (done false)
-
-/-- [rustfs_kernel::rsrc::set_is_match]: loop 0:
-    Source: 'ports/rustfs/kernel/src/rsrc.rs', lines 78:4-85:1
-    Visibility: public -/
-@[rust_loop]
-def rsrc.set_is_match_loop
-  (set : Slice rsrc.Resource) (resource : Slice Std.U8)
-  (conditions : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec
-  (alloc.vec.Vec Std.U8)))) (ctx : Option awsvars.VarContext) (i : Std.Usize) :
-  Result Bool
-  := do
-  loop
-    (fun i1 => rsrc.set_is_match_loop.body set resource conditions ctx i1)
-    i
-
-/-- [rustfs_kernel::rsrc::set_is_match]:
-    Source: 'ports/rustfs/kernel/src/rsrc.rs', lines 76:0-85:1
-    Visibility: public -/
-@[reducible]
-def rsrc.set_is_match
-  (set : Slice rsrc.Resource) (resource : Slice Std.U8)
-  (conditions : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec
-  (alloc.vec.Vec Std.U8)))) (ctx : Option awsvars.VarContext) :
-  Result Bool
-  := do
-  rsrc.set_is_match_loop set resource conditions ctx 0#usize
-
-/-- [rustfs_kernel::stmts::kms_key_scope_matches]:
-    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 146:0-165:1 -/
-def stmts.kms_key_scope_matches
-  (st : stmts.Statement) (args : stmts.Args) (ctx : Option awsvars.VarContext)
-  :
-  Result Bool
-  := do
-  let b ←
-    acts.Family.Insts.CoreCmpPartialEqFamily.eq args.action.family
-      acts.Family.Kms
-  let backup_restore ←
-    if b
-    then
-      do
-      let s := alloc.vec.Vec.deref args.action.name
-      let s1 ←
-        lift (Array.to_slice
-          (Array.make 10#usize [
-            107#u8, 109#u8, 115#u8, 58#u8, 66#u8, 97#u8, 99#u8, 107#u8, 117#u8,
-            112#u8
-            ]))
-      let b1 ← bytes.eq s s1
-      if b1
-      then ok true
-      else
-        let s2 := alloc.vec.Vec.deref args.action.name
-        let s3 ←
-          lift (Array.to_slice
-            (Array.make 11#usize [
-              107#u8, 109#u8, 115#u8, 58#u8, 82#u8, 101#u8, 115#u8, 116#u8,
-              111#u8, 114#u8, 101#u8
-              ]))
-        bytes.eq s2 s3
-    else ok false
-  if backup_restore
-  then
-    let i := alloc.vec.Vec.len st.resources
-    if i > 0#usize
-    then
-      stmts.Effect.Insts.CoreCmpPartialEqEffect.eq st.effect stmts.Effect.Deny
-    else
-      let i1 := alloc.vec.Vec.len st.not_resources
-      if i1 > 0#usize
-      then
-        stmts.Effect.Insts.CoreCmpPartialEqEffect.eq st.effect
-          stmts.Effect.Deny
-      else
-        let s := alloc.vec.Vec.deref st.resources
-        let kms_resources ← stmts.kms_only s
-        let s1 := alloc.vec.Vec.deref st.not_resources
-        let kms_not_resources ← stmts.kms_only s1
-        let i2 := alloc.vec.Vec.len kms_resources
-        if i2 = 0#usize
-        then
-          let i3 := alloc.vec.Vec.len kms_not_resources
-          if i3 = 0#usize
-          then ok true
-          else
-            let i4 := alloc.vec.Vec.len args.object
-            if i4 = 0#usize
-            then ok true
-            else
-              let s2 ←
-                lift (Array.to_slice
-                  (Array.make 4#usize [ 107#u8, 101#u8, 121#u8, 47#u8 ]))
-              let s3 := alloc.vec.Vec.deref args.object
-              let requested ← bytes.concat s2 s3
-              let i5 := alloc.vec.Vec.len kms_resources
-              if i5 > 0#usize
-              then
-                let s4 := alloc.vec.Vec.deref kms_resources
-                let s5 := alloc.vec.Vec.deref requested
-                let b1 ← rsrc.set_is_match s4 s5 args.conditions ctx
-                if b1
-                then
-                  let s6 := alloc.vec.Vec.deref kms_not_resources
-                  let s7 := alloc.vec.Vec.deref requested
-                  let b2 ← rsrc.set_is_match s6 s7 args.conditions ctx
-                  ok (¬ b2)
-                else ok false
-              else
-                let s4 := alloc.vec.Vec.deref kms_not_resources
-                let s5 := alloc.vec.Vec.deref requested
-                let b1 ← rsrc.set_is_match s4 s5 args.conditions ctx
-                ok (¬ b1)
-        else
-          let i3 := alloc.vec.Vec.len args.object
-          if i3 = 0#usize
-          then ok true
-          else
-            let s2 ←
-              lift (Array.to_slice
-                (Array.make 4#usize [ 107#u8, 101#u8, 121#u8, 47#u8 ]))
-            let s3 := alloc.vec.Vec.deref args.object
-            let requested ← bytes.concat s2 s3
-            let i4 := alloc.vec.Vec.len kms_resources
-            if i4 > 0#usize
-            then
-              let s4 := alloc.vec.Vec.deref kms_resources
-              let s5 := alloc.vec.Vec.deref requested
-              let b1 ← rsrc.set_is_match s4 s5 args.conditions ctx
-              if b1
-              then
-                let s6 := alloc.vec.Vec.deref kms_not_resources
-                let s7 := alloc.vec.Vec.deref requested
-                let b2 ← rsrc.set_is_match s6 s7 args.conditions ctx
-                ok (¬ b2)
-              else ok false
-            else
-              let s4 := alloc.vec.Vec.deref kms_not_resources
-              let s5 := alloc.vec.Vec.deref requested
-              let b1 ← rsrc.set_is_match s4 s5 args.conditions ctx
-              ok (¬ b1)
-  else
-    let s := alloc.vec.Vec.deref st.resources
-    let kms_resources ← stmts.kms_only s
-    let s1 := alloc.vec.Vec.deref st.not_resources
-    let kms_not_resources ← stmts.kms_only s1
-    let i := alloc.vec.Vec.len kms_resources
-    if i = 0#usize
-    then
-      let i1 := alloc.vec.Vec.len kms_not_resources
-      if i1 = 0#usize
-      then ok true
-      else
-        let i2 := alloc.vec.Vec.len args.object
-        if i2 = 0#usize
-        then ok true
-        else
-          let s2 ←
-            lift (Array.to_slice
-              (Array.make 4#usize [ 107#u8, 101#u8, 121#u8, 47#u8 ]))
-          let s3 := alloc.vec.Vec.deref args.object
-          let requested ← bytes.concat s2 s3
-          let i3 := alloc.vec.Vec.len kms_resources
-          if i3 > 0#usize
-          then
-            let s4 := alloc.vec.Vec.deref kms_resources
-            let s5 := alloc.vec.Vec.deref requested
-            let b1 ← rsrc.set_is_match s4 s5 args.conditions ctx
-            if b1
-            then
-              let s6 := alloc.vec.Vec.deref kms_not_resources
-              let s7 := alloc.vec.Vec.deref requested
-              let b2 ← rsrc.set_is_match s6 s7 args.conditions ctx
-              ok (¬ b2)
-            else ok false
-          else
-            let s4 := alloc.vec.Vec.deref kms_not_resources
-            let s5 := alloc.vec.Vec.deref requested
-            let b1 ← rsrc.set_is_match s4 s5 args.conditions ctx
-            ok (¬ b1)
-    else
-      let i1 := alloc.vec.Vec.len args.object
-      if i1 = 0#usize
-      then ok true
-      else
-        let s2 ←
-          lift (Array.to_slice
-            (Array.make 4#usize [ 107#u8, 101#u8, 121#u8, 47#u8 ]))
-        let s3 := alloc.vec.Vec.deref args.object
-        let requested ← bytes.concat s2 s3
-        let i2 := alloc.vec.Vec.len kms_resources
-        if i2 > 0#usize
-        then
-          let s4 := alloc.vec.Vec.deref kms_resources
-          let s5 := alloc.vec.Vec.deref requested
-          let b1 ← rsrc.set_is_match s4 s5 args.conditions ctx
-          if b1
-          then
-            let s6 := alloc.vec.Vec.deref kms_not_resources
-            let s7 := alloc.vec.Vec.deref requested
-            let b2 ← rsrc.set_is_match s6 s7 args.conditions ctx
-            ok (¬ b2)
-          else ok false
-        else
-          let s4 := alloc.vec.Vec.deref kms_not_resources
-          let s5 := alloc.vec.Vec.deref requested
-          let b1 ← rsrc.set_is_match s4 s5 args.conditions ctx
-          ok (¬ b1)
-
-/-- [rustfs_kernel::stmts::has_family]: loop body 0:
-    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 112:4-119:1 -/
-@[rust_loop_body]
-def stmts.has_family_loop.body
-  (actions : Slice acts.Action) (f : acts.Family) (i : Std.Usize) :
-  Result (ControlFlow Std.Usize Bool)
-  := do
-  let i1 := Slice.len actions
-  if i < i1
-  then
-    let a ← Slice.index_usize actions i
-    let b ← acts.Family.Insts.CoreCmpPartialEqFamily.eq a.family f
-    if b
-    then ok (done true)
-    else let i2 ← i + 1#usize
-         ok (cont i2)
-  else ok (done false)
-
-/-- [rustfs_kernel::stmts::has_family]: loop 0:
-    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 112:4-119:1 -/
-@[rust_loop]
-def stmts.has_family_loop
-  (actions : Slice acts.Action) (f : acts.Family) (i : Std.Usize) :
-  Result Bool
-  := do
-  loop
-    (fun i1 => stmts.has_family_loop.body actions f i1)
-    i
-
-/-- [rustfs_kernel::stmts::has_family]:
-    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 110:0-119:1 -/
-@[reducible]
-def stmts.has_family
-  (actions : Slice acts.Action) (f : acts.Family) : Result Bool := do
-  stmts.has_family_loop actions f 0#usize
-
-/-- [rustfs_kernel::stmts::skips_resource_match]:
-    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 122:0-130:1 -/
-def stmts.skips_resource_match
-  (st : stmts.Statement) (args : stmts.Args) : Result Bool := do
-  let s := alloc.vec.Vec.deref st.actions
-  let b ← stmts.has_family s acts.Family.Sts
-  if b
-  then ok true
-  else
-    let s1 := alloc.vec.Vec.deref st.actions
-    let b1 ← stmts.has_family s1 acts.Family.Admin
-    if b1
-    then
-      let b2 ←
-        acts.Family.Insts.CoreCmpPartialEqFamily.eq args.action.family
-          acts.Family.Admin
-      let b3 ←
-        if b2
-        then acts.is_table_resource_scoped args.action
-        else ok false
-      ok (¬ b3)
-    else ok false
-
-/-- [rustfs_kernel::stmts::is_list_bucket]:
-    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 90:0-94:1 -/
-def stmts.is_list_bucket (a : acts.Action) : Result Bool := do
-  let b ← acts.Family.Insts.CoreCmpPartialEqFamily.eq a.family acts.Family.S3
-  if b
-  then
-    let s := alloc.vec.Vec.deref a.name
-    let s1 ←
-      lift (Array.to_slice
-        (Array.make 13#usize [
-          115#u8, 51#u8, 58#u8, 76#u8, 105#u8, 115#u8, 116#u8, 66#u8, 117#u8,
-          99#u8, 107#u8, 101#u8, 116#u8
-          ]))
-    let b1 ← bytes.eq s s1
-    if b1
-    then ok true
-    else
-      let s2 := alloc.vec.Vec.deref a.name
-      let s3 ←
-        lift (Array.to_slice
-          (Array.make 21#usize [
-            115#u8, 51#u8, 58#u8, 76#u8, 105#u8, 115#u8, 116#u8, 66#u8, 117#u8,
-            99#u8, 107#u8, 101#u8, 116#u8, 86#u8, 101#u8, 114#u8, 115#u8,
-            105#u8, 111#u8, 110#u8, 115#u8
-            ]))
-      let b2 ← bytes.eq s2 s3
-      if b2
-      then ok true
-      else
-        let s4 := alloc.vec.Vec.deref a.name
-        let s5 ←
-          lift (Array.to_slice
-            (Array.make 29#usize [
-              115#u8, 51#u8, 58#u8, 76#u8, 105#u8, 115#u8, 116#u8, 66#u8,
-              117#u8, 99#u8, 107#u8, 101#u8, 116#u8, 77#u8, 117#u8, 108#u8,
-              116#u8, 105#u8, 112#u8, 97#u8, 114#u8, 116#u8, 85#u8, 112#u8,
-              108#u8, 111#u8, 97#u8, 100#u8, 115#u8
-              ]))
-        bytes.eq s4 s5
-  else ok false
-
-/-- [rustfs_kernel::stmts::build_resource]:
-    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 97:0-108:1
-    Visibility: public -/
-def stmts.build_resource
-  (a : acts.Action) (bucket : Slice Std.U8) (object : Slice Std.U8)
-  (bucket_resource_only : Bool) :
-  Result (alloc.vec.Vec Std.U8)
-  := do
-  let b ← stmts.is_list_bucket a
-  let bucket_only ← if b
-                      then ok bucket_resource_only
-                      else ok false
-  let resource ← alloc.slice.Slice.to_vec core.clone.CloneU8 bucket
-  if bucket_only
-  then alloc.vec.Vec.push resource 47#u8
-  else
-    let i := Slice.len object
-    if i = 0#usize
-    then alloc.vec.Vec.push resource 47#u8
-    else
-      let i1 ← Slice.index_usize object 0#usize
-      let resource1 ←
-        if i1 = 47#u8
-        then ok resource
-        else alloc.vec.Vec.push resource 47#u8
-      let s := alloc.vec.Vec.deref resource1
-      bytes.concat s object
-
-/-- [rustfs_kernel::stmts::reaches_condition_eval]:
-    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 168:0-192:1
-    Visibility: public -/
-def stmts.reaches_condition_eval
-  (st : stmts.Statement) (args : stmts.Args) (ctx : Option awsvars.VarContext)
-  :
-  Result Bool
-  := do
-  let deny ←
-    stmts.Effect.Insts.CoreCmpPartialEqEffect.eq st.effect stmts.Effect.Deny
-  let s := alloc.vec.Vec.deref st.actions
-  let s1 := alloc.vec.Vec.deref st.not_actions
-  let b ← acts.statement_covers s s1 args.action deny
-  if b
-  then
-    let s2 := alloc.vec.Vec.deref st.actions
-    let b1 ← stmts.has_family s2 acts.Family.Kms
-    if b1
-    then stmts.kms_key_scope_matches st args ctx
-    else
-      let s3 := alloc.vec.Vec.deref args.bucket
-      let s4 := alloc.vec.Vec.deref args.object
-      let s5 ←
-        lift (Array.to_slice
-          (Array.make 9#usize [
-            115#u8, 51#u8, 58#u8, 112#u8, 114#u8, 101#u8, 102#u8, 105#u8,
-            120#u8
-            ]))
-      let b2 ← condfuncs.references_key_name st.conditions s5
-      let resource ← stmts.build_resource args.action s3 s4 b2
-      let s6 := alloc.vec.Vec.deref st.actions
-      let is_admin ← stmts.has_family s6 acts.Family.Admin
-      let s7 := alloc.vec.Vec.deref st.actions
-      let is_sts ← stmts.has_family s7 acts.Family.Sts
-      let i := alloc.vec.Vec.len st.resources
-      if i = 0#usize
-      then
-        let i1 := alloc.vec.Vec.len st.not_resources
-        if i1 = 0#usize
-        then
-          if is_admin
-          then
-            let i2 := alloc.vec.Vec.len st.resources
-            if i2 > 0#usize
-            then
-              let s8 := alloc.vec.Vec.deref st.resources
-              let s9 := alloc.vec.Vec.deref resource
-              let b3 ← rsrc.set_is_match s8 s9 args.conditions ctx
-              if b3
-              then
-                let i3 := alloc.vec.Vec.len st.not_resources
-                if i3 > 0#usize
-                then
-                  let s10 := alloc.vec.Vec.deref st.not_resources
-                  let s11 := alloc.vec.Vec.deref resource
-                  let b4 ← rsrc.set_is_match s10 s11 args.conditions ctx
-                  if b4
-                  then
-                    let b5 ← stmts.skips_resource_match st args
-                    if b5
-                    then ok true
-                    else ok false
-                  else ok true
-                else ok true
-              else
-                let b4 ← stmts.skips_resource_match st args
-                if b4
-                then
-                  let i3 := alloc.vec.Vec.len st.not_resources
-                  if i3 > 0#usize
-                  then
-                    let s10 := alloc.vec.Vec.deref st.not_resources
-                    let s11 := alloc.vec.Vec.deref resource
-                    let b5 ← rsrc.set_is_match s10 s11 args.conditions ctx
-                    if b5
-                    then if b4
-                         then ok true
-                         else ok false
-                    else ok true
-                  else ok true
-                else ok false
-            else
-              let i3 := alloc.vec.Vec.len st.not_resources
-              if i3 > 0#usize
-              then
-                let s8 := alloc.vec.Vec.deref st.not_resources
-                let s9 := alloc.vec.Vec.deref resource
-                let b3 ← rsrc.set_is_match s8 s9 args.conditions ctx
-                if b3
-                then
-                  let b4 ← stmts.skips_resource_match st args
-                  if b4
-                  then ok true
-                  else ok false
-                else ok true
-              else ok true
-          else
-            if is_sts
-            then
-              let i2 := alloc.vec.Vec.len st.resources
-              if i2 > 0#usize
-              then
-                let s8 := alloc.vec.Vec.deref st.resources
-                let s9 := alloc.vec.Vec.deref resource
-                let b3 ← rsrc.set_is_match s8 s9 args.conditions ctx
-                if b3
-                then
-                  let i3 := alloc.vec.Vec.len st.not_resources
-                  if i3 > 0#usize
-                  then
-                    let s10 := alloc.vec.Vec.deref st.not_resources
-                    let s11 := alloc.vec.Vec.deref resource
-                    let b4 ← rsrc.set_is_match s10 s11 args.conditions ctx
-                    if b4
-                    then
-                      let b5 ← stmts.skips_resource_match st args
-                      if b5
-                      then ok true
-                      else ok false
-                    else ok true
-                  else ok true
-                else
-                  let b4 ← stmts.skips_resource_match st args
-                  if b4
-                  then
-                    let i3 := alloc.vec.Vec.len st.not_resources
-                    if i3 > 0#usize
-                    then
-                      let s10 := alloc.vec.Vec.deref st.not_resources
-                      let s11 := alloc.vec.Vec.deref resource
-                      let b5 ← rsrc.set_is_match s10 s11 args.conditions ctx
-                      if b5
-                      then if b4
-                           then ok true
-                           else ok false
-                      else ok true
-                    else ok true
-                  else ok false
-              else
-                let i3 := alloc.vec.Vec.len st.not_resources
-                if i3 > 0#usize
-                then
-                  let s8 := alloc.vec.Vec.deref st.not_resources
-                  let s9 := alloc.vec.Vec.deref resource
-                  let b3 ← rsrc.set_is_match s8 s9 args.conditions ctx
-                  if b3
-                  then
-                    let b4 ← stmts.skips_resource_match st args
-                    if b4
-                    then ok true
-                    else ok false
-                  else ok true
-                else ok true
-            else ok false
-        else
-          let i2 := alloc.vec.Vec.len st.resources
-          if i2 > 0#usize
-          then
-            let s8 := alloc.vec.Vec.deref st.resources
-            let s9 := alloc.vec.Vec.deref resource
-            let b3 ← rsrc.set_is_match s8 s9 args.conditions ctx
-            if b3
-            then
-              let i3 := alloc.vec.Vec.len st.not_resources
-              if i3 > 0#usize
-              then
-                let s10 := alloc.vec.Vec.deref st.not_resources
-                let s11 := alloc.vec.Vec.deref resource
-                let b4 ← rsrc.set_is_match s10 s11 args.conditions ctx
-                if b4
-                then
-                  let b5 ← stmts.skips_resource_match st args
-                  if b5
-                  then ok true
-                  else ok false
-                else ok true
-              else ok true
-            else
-              let b4 ← stmts.skips_resource_match st args
-              if b4
-              then
-                let i3 := alloc.vec.Vec.len st.not_resources
-                if i3 > 0#usize
-                then
-                  let s10 := alloc.vec.Vec.deref st.not_resources
-                  let s11 := alloc.vec.Vec.deref resource
-                  let b5 ← rsrc.set_is_match s10 s11 args.conditions ctx
-                  if b5
-                  then if b4
-                       then ok true
-                       else ok false
-                  else ok true
-                else ok true
-              else ok false
-          else
-            let i3 := alloc.vec.Vec.len st.not_resources
-            if i3 > 0#usize
-            then
-              let s8 := alloc.vec.Vec.deref st.not_resources
-              let s9 := alloc.vec.Vec.deref resource
-              let b3 ← rsrc.set_is_match s8 s9 args.conditions ctx
-              if b3
-              then
-                let b4 ← stmts.skips_resource_match st args
-                if b4
-                then ok true
-                else ok false
-              else ok true
-            else ok true
-      else
-        let i1 := alloc.vec.Vec.len st.resources
-        if i1 > 0#usize
-        then
-          let s8 := alloc.vec.Vec.deref st.resources
-          let s9 := alloc.vec.Vec.deref resource
-          let b3 ← rsrc.set_is_match s8 s9 args.conditions ctx
-          if b3
-          then
-            let i2 := alloc.vec.Vec.len st.not_resources
-            if i2 > 0#usize
-            then
-              let s10 := alloc.vec.Vec.deref st.not_resources
-              let s11 := alloc.vec.Vec.deref resource
-              let b4 ← rsrc.set_is_match s10 s11 args.conditions ctx
-              if b4
-              then
-                let b5 ← stmts.skips_resource_match st args
-                if b5
-                then ok true
-                else ok false
-              else ok true
-            else ok true
-          else
-            let b4 ← stmts.skips_resource_match st args
-            if b4
-            then
-              let i2 := alloc.vec.Vec.len st.not_resources
-              if i2 > 0#usize
-              then
-                let s10 := alloc.vec.Vec.deref st.not_resources
-                let s11 := alloc.vec.Vec.deref resource
-                let b5 ← rsrc.set_is_match s10 s11 args.conditions ctx
-                if b5
-                then if b4
-                     then ok true
-                     else ok false
-                else ok true
-              else ok true
-            else ok false
-        else
-          let i2 := alloc.vec.Vec.len st.not_resources
-          if i2 > 0#usize
-          then
-            let s8 := alloc.vec.Vec.deref st.not_resources
-            let s9 := alloc.vec.Vec.deref resource
-            let b3 ← rsrc.set_is_match s8 s9 args.conditions ctx
-            if b3
-            then
-              let b4 ← stmts.skips_resource_match st args
-              if b4
-              then ok true
-              else ok false
-            else ok true
-          else ok true
-  else ok false
-
-/-- [rustfs_kernel::stmts::resolver_for]:
-    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 76:0-88:1
-    Visibility: public -/
-def stmts.resolver_for
-  (args : stmts.Args) (env : condfuncs.Env) : Result awsvars.VarContext := do
-  let username ←
-    match args.claims.parent_str with
-    | none => alloc.vec.CloneVec.clone core.clone.CloneU8 args.account
-    | some p => alloc.vec.CloneVec.clone core.clone.CloneU8 p
-  let v ← alloc.vec.CloneVec.clone core.clone.CloneU8 args.account
-  let cs ← awsvars.ClaimStrings.Insts.CoreCloneClone.clone args.claims
-  let v1 ← alloc.vec.CloneVec.clone core.clone.CloneU8 env.now_rfc3339
-  let v2 ← alloc.vec.CloneVec.clone core.clone.CloneU8 env.now_epoch
-  ok
-    { username, account := v, claims := cs, now_rfc3339 := v1, now_epoch := v2
-    }
-
-/-- [rustfs_kernel::stmts::effect_is_allowed]:
-    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 16:0-21:1
-    Visibility: public -/
-def stmts.effect_is_allowed
-  (e : stmts.Effect) (allowed : Bool) : Result Bool := do
-  match e with
-  | stmts.Effect.Allow => ok allowed
-  | stmts.Effect.Deny => ok (¬ allowed)
-
-/-- [rustfs_kernel::stmts::statement_is_allowed]:
-    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 195:0-199:1
-    Visibility: public -/
-def stmts.statement_is_allowed
-  (st : stmts.Statement) (args : stmts.Args) (env : condfuncs.Env) :
-  Result Bool
-  := do
-  let vc ← stmts.resolver_for args env
-  let b ← stmts.reaches_condition_eval st args (some vc)
-  let (st1, check) ←
-    if b
-    then
-      do
-      let check1 ←
-        condfuncs.functions_evaluate st.conditions args.conditions (some vc)
-          env
-      ok (st, check1)
-    else ok (st, false)
-  stmts.effect_is_allowed st1.effect check
-
-/-- [rustfs_kernel::policies::denies_pass]: loop body 0:
-    Source: 'ports/rustfs/kernel/src/policies.rs', lines 7:4-14:1 -/
-@[rust_loop_body]
-def policies.denies_pass_loop.body
-  (sts : Slice stmts.Statement) (args : stmts.Args) (env : condfuncs.Env)
-  (i : Std.Usize) :
-  Result (ControlFlow Std.Usize Bool)
-  := do
-  let i1 := Slice.len sts
-  if i < i1
-  then
-    let s ← Slice.index_usize sts i
-    let b ←
-      stmts.Effect.Insts.CoreCmpPartialEqEffect.eq s.effect stmts.Effect.Deny
-    if b
-    then
-      let b1 ← stmts.statement_is_allowed s args env
-      if b1
-      then let i2 ← i + 1#usize
-           ok (cont i2)
-      else ok (done false)
-    else let i2 ← i + 1#usize
-         ok (cont i2)
-  else ok (done true)
-
-/-- [rustfs_kernel::policies::denies_pass]: loop 0:
-    Source: 'ports/rustfs/kernel/src/policies.rs', lines 7:4-14:1 -/
-@[rust_loop]
-def policies.denies_pass_loop
-  (sts : Slice stmts.Statement) (args : stmts.Args) (env : condfuncs.Env)
-  (i : Std.Usize) :
-  Result Bool
-  := do
-  loop
-    (fun i1 => policies.denies_pass_loop.body sts args env i1)
-    i
-
-/-- [rustfs_kernel::policies::denies_pass]:
-    Source: 'ports/rustfs/kernel/src/policies.rs', lines 5:0-14:1 -/
-@[reducible]
-def policies.denies_pass
-  (sts : Slice stmts.Statement) (args : stmts.Args) (env : condfuncs.Env) :
-  Result Bool
-  := do
-  policies.denies_pass_loop sts args env 0#usize
-
-/-- [rustfs_kernel::policies::some_allow]: loop body 0:
-    Source: 'ports/rustfs/kernel/src/policies.rs', lines 18:4-25:1 -/
-@[rust_loop_body]
-def policies.some_allow_loop.body
-  (sts : Slice stmts.Statement) (args : stmts.Args) (env : condfuncs.Env)
-  (i : Std.Usize) :
-  Result (ControlFlow Std.Usize Bool)
-  := do
-  let i1 := Slice.len sts
-  if i < i1
-  then
-    let s ← Slice.index_usize sts i
-    let b ←
-      stmts.Effect.Insts.CoreCmpPartialEqEffect.eq s.effect stmts.Effect.Allow
-    if b
-    then
-      let b1 ← stmts.statement_is_allowed s args env
-      if b1
-      then ok (done true)
-      else let i2 ← i + 1#usize
-           ok (cont i2)
-    else let i2 ← i + 1#usize
-         ok (cont i2)
-  else ok (done false)
-
-/-- [rustfs_kernel::policies::some_allow]: loop 0:
-    Source: 'ports/rustfs/kernel/src/policies.rs', lines 18:4-25:1 -/
-@[rust_loop]
-def policies.some_allow_loop
-  (sts : Slice stmts.Statement) (args : stmts.Args) (env : condfuncs.Env)
-  (i : Std.Usize) :
-  Result Bool
-  := do
-  loop
-    (fun i1 => policies.some_allow_loop.body sts args env i1)
-    i
-
-/-- [rustfs_kernel::policies::some_allow]:
-    Source: 'ports/rustfs/kernel/src/policies.rs', lines 16:0-25:1 -/
-@[reducible]
-def policies.some_allow
-  (sts : Slice stmts.Statement) (args : stmts.Args) (env : condfuncs.Env) :
-  Result Bool
-  := do
-  policies.some_allow_loop sts args env 0#usize
-
-/-- [rustfs_kernel::policies::policy_is_allowed]:
-    Source: 'ports/rustfs/kernel/src/policies.rs', lines 29:0-40:1
-    Visibility: public -/
-def policies.policy_is_allowed
-  (statements : Slice stmts.Statement) (args : stmts.Args)
-  (env : condfuncs.Env) :
-  Result Bool
-  := do
-  let b ← policies.denies_pass statements args env
-  if b
-  then
-    if args.deny_only
-    then ok true
-    else
-      if args.is_owner
-      then ok true
-      else policies.some_allow statements args env
-  else ok false
-
-/-- [rustfs_kernel::stmts::all_kms]: loop body 0:
-    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 219:4-226:1 -/
-@[rust_loop_body]
-def stmts.all_kms_loop.body
-  (actions : Slice acts.Action) (i : Std.Usize) :
-  Result (ControlFlow Std.Usize Bool)
-  := do
-  let i1 := Slice.len actions
-  if i < i1
-  then
-    let a ← Slice.index_usize actions i
-    let b ←
-      core.cmp.PartialEq.ne.trait_default
-        acts.Family.Insts.CoreCmpPartialEqFamily a.family acts.Family.Kms
-    if b
-    then ok (done false)
-    else let i2 ← i + 1#usize
-         ok (cont i2)
-  else ok (done true)
-
-/-- [rustfs_kernel::stmts::all_kms]: loop 0:
-    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 219:4-226:1 -/
-@[rust_loop]
-def stmts.all_kms_loop
-  (actions : Slice acts.Action) (i : Std.Usize) : Result Bool := do
-  loop
-    (fun i1 => stmts.all_kms_loop.body actions i1)
-    i
-
-/-- [rustfs_kernel::stmts::all_kms]:
-    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 217:0-226:1 -/
-@[reducible]
-def stmts.all_kms (actions : Slice acts.Action) : Result Bool := do
-  stmts.all_kms_loop actions 0#usize
-
-/-- [rustfs_kernel::wildmatch::is_simple_match]:
-    Source: 'ports/rustfs/kernel/src/wildmatch.rs', lines 38:0-40:1
-    Visibility: public -/
-def wildmatch.is_simple_match
-  (pattern : Slice Std.U8) («name» : Slice Std.U8) : Result Bool := do
-  wildmatch.inner_match pattern «name» true
-
-/-- [rustfs_kernel::stmts::any_simple_match]: loop body 0:
-    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 203:4-210:1 -/
-@[rust_loop_body]
-def stmts.any_simple_match_loop.body
-  (patterns : Slice (alloc.vec.Vec Std.U8)) («name» : Slice Std.U8)
-  (i : Std.Usize) :
-  Result (ControlFlow Std.Usize Bool)
-  := do
-  let i1 := Slice.len patterns
-  if i < i1
-  then
-    let v ← Slice.index_usize patterns i
-    let s := alloc.vec.Vec.deref v
-    let b ← wildmatch.is_simple_match s «name»
-    if b
-    then ok (done true)
-    else let i2 ← i + 1#usize
-         ok (cont i2)
-  else ok (done false)
-
-/-- [rustfs_kernel::stmts::any_simple_match]: loop 0:
-    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 203:4-210:1 -/
-@[rust_loop]
-def stmts.any_simple_match_loop
-  (patterns : Slice (alloc.vec.Vec Std.U8)) («name» : Slice Std.U8)
-  (i : Std.Usize) :
-  Result Bool
-  := do
-  loop
-    (fun i1 => stmts.any_simple_match_loop.body patterns «name» i1)
-    i
-
-/-- [rustfs_kernel::stmts::any_simple_match]:
-    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 201:0-210:1 -/
-@[reducible]
-def stmts.any_simple_match
-  (patterns : Slice (alloc.vec.Vec Std.U8)) («name» : Slice Std.U8) :
-  Result Bool
-  := do
-  stmts.any_simple_match_loop patterns «name» 0#usize
-
-/-- [rustfs_kernel::stmts::Principal]
-    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 35:0-38:1
-    Visibility: public -/
-structure stmts.Principal where
-  aws : alloc.vec.Vec (alloc.vec.Vec Std.U8)
-  service : alloc.vec.Vec (alloc.vec.Vec Std.U8)
-
-/-- [rustfs_kernel::stmts::principal_is_match]:
-    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 213:0-215:1
-    Visibility: public -/
-def stmts.principal_is_match
-  (p : stmts.Principal) (account : Slice Std.U8) : Result Bool := do
-  let s := alloc.vec.Vec.deref p.aws
-  let b ← stmts.any_simple_match s account
-  if b
-  then ok true
-  else
-    let s1 := alloc.vec.Vec.deref p.service
-    stmts.any_simple_match s1 account
-
-/-- [rustfs_kernel::stmts::BucketPolicyArgs]
-    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 66:0-73:1
-    Visibility: public -/
-structure stmts.BucketPolicyArgs where
-  account : alloc.vec.Vec Std.U8
-  action : acts.Action
-  bucket : alloc.vec.Vec Std.U8
-  conditions : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec
-    (alloc.vec.Vec Std.U8)))
-  is_owner : Bool
-  object : alloc.vec.Vec Std.U8
-
-/-- [rustfs_kernel::stmts::BPStatement]
-    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 41:0-49:1
-    Visibility: public -/
-structure stmts.BPStatement where
-  effect : stmts.Effect
-  principal : stmts.Principal
-  actions : alloc.vec.Vec acts.Action
-  not_actions : alloc.vec.Vec acts.Action
-  resources : alloc.vec.Vec rsrc.Resource
-  not_resources : alloc.vec.Vec rsrc.Resource
-  conditions : condfuncs.Functions
-
-/-- [rustfs_kernel::stmts::bp_reaches_condition_eval]:
-    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 229:0-250:1
-    Visibility: public -/
-def stmts.bp_reaches_condition_eval
-  (st : stmts.BPStatement) (args : stmts.BucketPolicyArgs) : Result Bool := do
-  let i := alloc.vec.Vec.len st.actions
-  if i > 0#usize
-  then
-    let s := alloc.vec.Vec.deref st.actions
-    let b ← stmts.all_kms s
-    if b
-    then ok false
-    else
-      let s1 := alloc.vec.Vec.deref args.account
-      let b1 ← stmts.principal_is_match st.principal s1
-      if b1
-      then
-        let deny ←
-          stmts.Effect.Insts.CoreCmpPartialEqEffect.eq st.effect
-            stmts.Effect.Deny
-        let s2 := alloc.vec.Vec.deref st.actions
-        let s3 := alloc.vec.Vec.deref st.not_actions
-        let b2 ← acts.statement_covers s2 s3 args.action deny
-        if b2
-        then
-          let s4 := alloc.vec.Vec.deref args.bucket
-          let s5 := alloc.vec.Vec.deref args.object
-          let s6 ←
-            lift (Array.to_slice
-              (Array.make 9#usize [
-                115#u8, 51#u8, 58#u8, 112#u8, 114#u8, 101#u8, 102#u8, 105#u8,
-                120#u8
-                ]))
-          let b3 ← condfuncs.references_key_name st.conditions s6
-          let resource ← stmts.build_resource args.action s4 s5 b3
-          let i1 := alloc.vec.Vec.len st.resources
-          if i1 > 0#usize
-          then
-            let s7 := alloc.vec.Vec.deref st.resources
-            let s8 := alloc.vec.Vec.deref resource
-            let b4 ← rsrc.set_is_match s7 s8 args.conditions none
-            if b4
-            then
-              let i2 := alloc.vec.Vec.len st.not_resources
-              if i2 > 0#usize
-              then
-                let s9 := alloc.vec.Vec.deref st.not_resources
-                let s10 := alloc.vec.Vec.deref resource
-                let b5 ← rsrc.set_is_match s9 s10 args.conditions none
-                if b5
-                then ok false
-                else ok true
-              else ok true
-            else ok false
-          else
-            let i2 := alloc.vec.Vec.len st.not_resources
-            if i2 > 0#usize
-            then
-              let s7 := alloc.vec.Vec.deref st.not_resources
-              let s8 := alloc.vec.Vec.deref resource
-              let b4 ← rsrc.set_is_match s7 s8 args.conditions none
-              if b4
-              then ok false
-              else ok true
-            else ok true
-        else ok false
-      else ok false
-  else
-    let s := alloc.vec.Vec.deref args.account
-    let b ← stmts.principal_is_match st.principal s
-    if b
-    then
-      let deny ←
-        stmts.Effect.Insts.CoreCmpPartialEqEffect.eq st.effect
-          stmts.Effect.Deny
-      let s1 := alloc.vec.Vec.deref st.actions
-      let s2 := alloc.vec.Vec.deref st.not_actions
-      let b1 ← acts.statement_covers s1 s2 args.action deny
-      if b1
-      then
-        let s3 := alloc.vec.Vec.deref args.bucket
-        let s4 := alloc.vec.Vec.deref args.object
-        let s5 ←
-          lift (Array.to_slice
-            (Array.make 9#usize [
-              115#u8, 51#u8, 58#u8, 112#u8, 114#u8, 101#u8, 102#u8, 105#u8,
-              120#u8
-              ]))
-        let b2 ← condfuncs.references_key_name st.conditions s5
-        let resource ← stmts.build_resource args.action s3 s4 b2
-        let i1 := alloc.vec.Vec.len st.resources
-        if i1 > 0#usize
-        then
-          let s6 := alloc.vec.Vec.deref st.resources
-          let s7 := alloc.vec.Vec.deref resource
-          let b3 ← rsrc.set_is_match s6 s7 args.conditions none
-          if b3
-          then
-            let i2 := alloc.vec.Vec.len st.not_resources
-            if i2 > 0#usize
-            then
-              let s8 := alloc.vec.Vec.deref st.not_resources
-              let s9 := alloc.vec.Vec.deref resource
-              let b4 ← rsrc.set_is_match s8 s9 args.conditions none
-              if b4
-              then ok false
-              else ok true
-            else ok true
-          else ok false
-        else
-          let i2 := alloc.vec.Vec.len st.not_resources
-          if i2 > 0#usize
-          then
-            let s6 := alloc.vec.Vec.deref st.not_resources
-            let s7 := alloc.vec.Vec.deref resource
-            let b3 ← rsrc.set_is_match s6 s7 args.conditions none
-            if b3
-            then ok false
-            else ok true
-          else ok true
-      else ok false
-    else ok false
-
-/-- [rustfs_kernel::stmts::bp_statement_is_allowed]:
-    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 253:0-257:1
-    Visibility: public -/
-def stmts.bp_statement_is_allowed
-  (st : stmts.BPStatement) (args : stmts.BucketPolicyArgs)
-  (env : condfuncs.Env) :
-  Result Bool
-  := do
-  let b ← stmts.bp_reaches_condition_eval st args
-  let (st1, check) ←
-    if b
-    then
-      do
-      let check1 ←
-        condfuncs.functions_evaluate st.conditions args.conditions none env
-      ok (st, check1)
-    else ok (st, false)
-  stmts.effect_is_allowed st1.effect check
-
-/-- [rustfs_kernel::policies::bp_denies_pass]: loop body 0:
-    Source: 'ports/rustfs/kernel/src/policies.rs', lines 44:4-51:1 -/
-@[rust_loop_body]
-def policies.bp_denies_pass_loop.body
-  (sts : Slice stmts.BPStatement) (args : stmts.BucketPolicyArgs)
-  (env : condfuncs.Env) (i : Std.Usize) :
-  Result (ControlFlow Std.Usize Bool)
-  := do
-  let i1 := Slice.len sts
-  if i < i1
-  then
-    let b ← Slice.index_usize sts i
-    let b1 ←
-      stmts.Effect.Insts.CoreCmpPartialEqEffect.eq b.effect stmts.Effect.Deny
-    if b1
-    then
-      let b2 ← stmts.bp_statement_is_allowed b args env
-      if b2
-      then let i2 ← i + 1#usize
-           ok (cont i2)
-      else ok (done false)
-    else let i2 ← i + 1#usize
-         ok (cont i2)
-  else ok (done true)
-
-/-- [rustfs_kernel::policies::bp_denies_pass]: loop 0:
-    Source: 'ports/rustfs/kernel/src/policies.rs', lines 44:4-51:1 -/
-@[rust_loop]
-def policies.bp_denies_pass_loop
-  (sts : Slice stmts.BPStatement) (args : stmts.BucketPolicyArgs)
-  (env : condfuncs.Env) (i : Std.Usize) :
-  Result Bool
-  := do
-  loop
-    (fun i1 => policies.bp_denies_pass_loop.body sts args env i1)
-    i
-
-/-- [rustfs_kernel::policies::bp_denies_pass]:
-    Source: 'ports/rustfs/kernel/src/policies.rs', lines 42:0-51:1 -/
-@[reducible]
-def policies.bp_denies_pass
-  (sts : Slice stmts.BPStatement) (args : stmts.BucketPolicyArgs)
-  (env : condfuncs.Env) :
-  Result Bool
-  := do
-  policies.bp_denies_pass_loop sts args env 0#usize
-
-/-- [rustfs_kernel::policies::bp_some_allow]: loop body 0:
-    Source: 'ports/rustfs/kernel/src/policies.rs', lines 55:4-62:1 -/
-@[rust_loop_body]
-def policies.bp_some_allow_loop.body
-  (sts : Slice stmts.BPStatement) (args : stmts.BucketPolicyArgs)
-  (env : condfuncs.Env) (i : Std.Usize) :
-  Result (ControlFlow Std.Usize Bool)
-  := do
-  let i1 := Slice.len sts
-  if i < i1
-  then
-    let b ← Slice.index_usize sts i
-    let b1 ←
-      stmts.Effect.Insts.CoreCmpPartialEqEffect.eq b.effect stmts.Effect.Allow
-    if b1
-    then
-      let b2 ← stmts.bp_statement_is_allowed b args env
-      if b2
-      then ok (done true)
-      else let i2 ← i + 1#usize
-           ok (cont i2)
-    else let i2 ← i + 1#usize
-         ok (cont i2)
-  else ok (done false)
-
-/-- [rustfs_kernel::policies::bp_some_allow]: loop 0:
-    Source: 'ports/rustfs/kernel/src/policies.rs', lines 55:4-62:1 -/
-@[rust_loop]
-def policies.bp_some_allow_loop
-  (sts : Slice stmts.BPStatement) (args : stmts.BucketPolicyArgs)
-  (env : condfuncs.Env) (i : Std.Usize) :
-  Result Bool
-  := do
-  loop
-    (fun i1 => policies.bp_some_allow_loop.body sts args env i1)
-    i
-
-/-- [rustfs_kernel::policies::bp_some_allow]:
-    Source: 'ports/rustfs/kernel/src/policies.rs', lines 53:0-62:1 -/
-@[reducible]
-def policies.bp_some_allow
-  (sts : Slice stmts.BPStatement) (args : stmts.BucketPolicyArgs)
-  (env : condfuncs.Env) :
-  Result Bool
-  := do
-  policies.bp_some_allow_loop sts args env 0#usize
-
-/-- [rustfs_kernel::policies::bucket_policy_is_allowed]:
-    Source: 'ports/rustfs/kernel/src/policies.rs', lines 65:0-73:1
-    Visibility: public -/
-def policies.bucket_policy_is_allowed
-  (statements : Slice stmts.BPStatement) (args : stmts.BucketPolicyArgs)
-  (env : condfuncs.Env) :
-  Result Bool
-  := do
-  let b ← policies.bp_denies_pass statements args env
-  if b
-  then
-    if args.is_owner
-    then ok true
-    else policies.bp_some_allow statements args env
-  else ok false
-
-/-- [rustfs_kernel::resets::is_empty]:
-    Source: 'ports/rustfs/kernel/src/resets.rs', lines 6:0-6:60
-    Visibility: public -/
-def resets.is_empty (set : Slice rsrc.Resource) : Result Bool := do
-  let i := Slice.len set
-  ok (i = 0#usize)
-
-/-- [rustfs_kernel::resets::as_slice]:
-    Source: 'ports/rustfs/kernel/src/resets.rs', lines 8:0-8:56
-    Visibility: public -/
-def resets.as_slice
-  (set : Slice rsrc.Resource) : Result (Slice rsrc.Resource) := do
-  ok set
-
-/-- [rustfs_kernel::rsrc::{impl core::cmp::PartialEq<rustfs_kernel::rsrc::Resource> for rustfs_kernel::rsrc::Resource}::eq]:
-    Source: 'ports/rustfs/kernel/src/rsrc.rs', lines 7:23-7:32
-    Visibility: public -/
-def rsrc.Resource.Insts.CoreCmpPartialEqResource.eq
-  (self : rsrc.Resource) (other : rsrc.Resource) : Result Bool := do
-  let self1 := read_discriminant self
-  let other1 := read_discriminant other
-  if self1 = other1
-  then
-    match self with
-    | rsrc.Resource.S3 __self_0 =>
-      match other with
-      | rsrc.Resource.S3 __arg1_0 =>
-        alloc.vec.partial_eq.PartialEqVec.eq core.cmp.PartialEqU8 __self_0
-          __arg1_0
-      | rsrc.Resource.Kms _ => fail panic
-    | rsrc.Resource.Kms __self_0 =>
-      match other with
-      | rsrc.Resource.S3 _ => fail panic
-      | rsrc.Resource.Kms __arg1_0 =>
-        alloc.vec.partial_eq.PartialEqVec.eq core.cmp.PartialEqU8 __self_0
-          __arg1_0
-  else ok false
-
-/-- [rustfs_kernel::resets::member]: loop body 0:
-    Source: 'ports/rustfs/kernel/src/resets.rs', lines 12:4-14:1
-    Visibility: public -/
-@[rust_loop_body]
-def resets.member_loop.body
-  (set : Slice rsrc.Resource) (resource : rsrc.Resource) (i : Std.Usize) :
-  Result (ControlFlow Std.Usize Bool)
-  := do
-  let i1 := Slice.len set
-  if i < i1
-  then
-    let r ← Slice.index_usize set i
-    let b ← rsrc.Resource.Insts.CoreCmpPartialEqResource.eq r resource
-    if b
-    then ok (done true)
-    else let i2 ← i + 1#usize
-         ok (cont i2)
-  else ok (done false)
-
-/-- [rustfs_kernel::resets::member]: loop 0:
-    Source: 'ports/rustfs/kernel/src/resets.rs', lines 12:4-14:1
-    Visibility: public -/
-@[rust_loop]
-def resets.member_loop
-  (set : Slice rsrc.Resource) (resource : rsrc.Resource) (i : Std.Usize) :
-  Result Bool
-  := do
-  loop
-    (fun i1 => resets.member_loop.body set resource i1)
-    i
-
-/-- [rustfs_kernel::resets::member]:
-    Source: 'ports/rustfs/kernel/src/resets.rs', lines 10:0-14:1
-    Visibility: public -/
-@[reducible]
-def resets.member
-  (set : Slice rsrc.Resource) (resource : rsrc.Resource) : Result Bool := do
-  resets.member_loop set resource 0#usize
-
-/-- [rustfs_kernel::resets::push_unique]:
-    Source: 'ports/rustfs/kernel/src/resets.rs', lines 16:0-18:1
-    Visibility: public -/
-def resets.push_unique
-  (set : alloc.vec.Vec rsrc.Resource) (resource : rsrc.Resource) :
-  Result (alloc.vec.Vec rsrc.Resource)
-  := do
-  let s := alloc.vec.Vec.deref set
-  let b ← resets.member s resource
-  if b
-  then ok set
-  else alloc.vec.Vec.push set resource
-
-/-- [rustfs_kernel::resets::covers]: loop body 0:
-    Source: 'ports/rustfs/kernel/src/resets.rs', lines 21:4-23:1 -/
-@[rust_loop_body]
-def resets.covers_loop.body
-  (left : Slice rsrc.Resource) (right : Slice rsrc.Resource) (i : Std.Usize) :
-  Result (ControlFlow Std.Usize Bool)
-  := do
-  let i1 := Slice.len left
-  if i < i1
-  then
-    let r ← Slice.index_usize left i
-    let b ← resets.member right r
-    if b
-    then let i2 ← i + 1#usize
-         ok (cont i2)
-    else ok (done false)
-  else ok (done true)
-
-/-- [rustfs_kernel::resets::covers]: loop 0:
-    Source: 'ports/rustfs/kernel/src/resets.rs', lines 21:4-23:1 -/
-@[rust_loop]
-def resets.covers_loop
-  (left : Slice rsrc.Resource) (right : Slice rsrc.Resource) (i : Std.Usize) :
-  Result Bool
-  := do
-  loop
-    (fun i1 => resets.covers_loop.body left right i1)
-    i
-
-/-- [rustfs_kernel::resets::covers]:
-    Source: 'ports/rustfs/kernel/src/resets.rs', lines 19:0-23:1 -/
-@[reducible]
-def resets.covers
-  (left : Slice rsrc.Resource) (right : Slice rsrc.Resource) :
-  Result Bool
-  := do
-  resets.covers_loop left right 0#usize
-
-/-- [rustfs_kernel::resets::eq]:
-    Source: 'ports/rustfs/kernel/src/resets.rs', lines 25:0-25:103
-    Visibility: public -/
-def resets.eq
-  (left : Slice rsrc.Resource) (right : Slice rsrc.Resource) :
-  Result Bool
-  := do
-  let b ← resets.covers left right
-  if b
-  then resets.covers right left
-  else ok false
-
 /-- [rustfs_kernel::resets::is_match]:
     Source: 'ports/rustfs/kernel/src/resets.rs', lines 27:0-29:1
     Visibility: public -/
@@ -14409,17 +13932,6 @@ def resets.is_match
   Result Bool
   := do
   rsrc.resource_is_match resource «name» values none
-
-/-- [rustfs_kernel::resets::set_matches]:
-    Source: 'ports/rustfs/kernel/src/resets.rs', lines 31:0-33:1
-    Visibility: public -/
-def resets.set_matches
-  (set : Slice rsrc.Resource) («name» : Slice Std.U8)
-  (values : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec
-  (alloc.vec.Vec Std.U8)))) :
-  Result Bool
-  := do
-  rsrc.set_is_match set «name» values none
 
 /-- [rustfs_kernel::resets::match_resource]:
     Source: 'ports/rustfs/kernel/src/resets.rs', lines 35:0-35:105
@@ -14468,16 +13980,47 @@ def resets.set_match_resource
   (set : Slice rsrc.Resource) («name» : Slice Std.U8) : Result Bool := do
   resets.set_match_resource_loop set «name» 0#usize
 
-/-- [rustfs_kernel::valids::ActionFamily]
-    Source: 'ports/rustfs/kernel/src/valids.rs', lines 4:0-4:52
+/-- [rustfs_kernel::manage::match_resource]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 126:4-133:1
     Visibility: public -/
-@[discriminant isize]
-inductive valids.ActionFamily where
-| S3 : valids.ActionFamily
-| Admin : valids.ActionFamily
-| Sts : valids.ActionFamily
-| Kms : valids.ActionFamily
-| Mixed : valids.ActionFamily
+@[rust_loop_body]
+def manage.match_resource_loop.body
+  (policy : manage.Policy) (resource : Slice Std.U8) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := alloc.vec.Vec.len policy.statements
+  if i < i1
+  then
+    let s ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+        manage.Statement) policy.statements i
+    let s1 := alloc.vec.Vec.deref s.resources
+    let b ← resets.set_match_resource s1 resource
+    if b
+    then ok (done true)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else ok (done false)
+
+/-- [rustfs_kernel::manage::match_resource]: loop 0:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 126:4-133:1
+    Visibility: public -/
+@[rust_loop]
+def manage.match_resource_loop
+  (policy : manage.Policy) (resource : Slice Std.U8) (i : Std.Usize) :
+  Result Bool
+  := do
+  loop
+    (fun i1 => manage.match_resource_loop.body policy resource i1)
+    i
+
+/-- [rustfs_kernel::manage::match_resource]:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 124:0-133:1
+    Visibility: public -/
+@[reducible]
+def manage.match_resource
+  (policy : manage.Policy) (resource : Slice Std.U8) : Result Bool := do
+  manage.match_resource_loop policy resource 0#usize
 
 /-- [rustfs_kernel::valids::ErrorKind]
     Source: 'ports/rustfs/kernel/src/valids.rs', lines 5:0-9:1
@@ -14503,363 +14046,140 @@ structure valids.ValidationError where
   family : alloc.vec.Vec Std.U8
   value : alloc.vec.Vec Std.U8
 
-/-- [rustfs_kernel::valids::error]:
-    Source: 'ports/rustfs/kernel/src/valids.rs', lines 11:0-11:112 -/
-def valids.error
-  (kind : valids.ErrorKind) : Result valids.ValidationError := do
-  ok
-    {
-      kind,
-      family := (alloc.vec.Vec.new Std.U8),
-      value := (alloc.vec.Vec.new Std.U8)
-    }
-
-/-- [rustfs_kernel::valids::default_is_valid]:
-    Source: 'ports/rustfs/kernel/src/valids.rs', lines 14:0-14:42
-    Visibility: public -/
-def valids.default_is_valid : Result Bool := do
-  ok true
-
-/-- [rustfs_kernel::valids::id_is_empty]:
-    Source: 'ports/rustfs/kernel/src/valids.rs', lines 16:0-16:55
-    Visibility: public -/
-def valids.id_is_empty (id : Slice Std.U8) : Result Bool := do
-  let i := Slice.len id
-  ok (i = 0#usize)
-
-/-- [rustfs_kernel::valids::id_as_slice]:
-    Source: 'ports/rustfs/kernel/src/valids.rs', lines 18:0-18:45
-    Visibility: public -/
-def valids.id_as_slice (id : Slice Std.U8) : Result (Slice Std.U8) := do
-  ok id
-
-/-- [rustfs_kernel::valids::id_is_valid]:
-    Source: 'ports/rustfs/kernel/src/valids.rs', lines 20:0-20:47
-    Visibility: public -/
-def valids.id_is_valid (_id : Slice Std.U8) : Result Bool := do
-  ok true
-
-/-- [rustfs_kernel::valids::effect_is_valid]:
-    Source: 'ports/rustfs/kernel/src/valids.rs', lines 22:0-22:56
-    Visibility: public -/
-def valids.effect_is_valid (_effect : stmts.Effect) : Result Bool := do
-  ok true
-
-/-- [rustfs_kernel::valids::principal_is_valid]:
-    Source: 'ports/rustfs/kernel/src/valids.rs', lines 24:0-27:1
-    Visibility: public -/
-def valids.principal_is_valid
-  (p : stmts.Principal) :
+/-- [rustfs_kernel::manage::version_is_valid]:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 134:0-143:1 -/
+def manage.version_is_valid
+  (version : Slice Std.U8) :
   Result (core.result.Result Unit valids.ValidationError)
   := do
-  let i := alloc.vec.Vec.len p.aws
-  if i = 0#usize
+  let i := Slice.len version
+  if i != 0#usize
   then
-    let i1 := alloc.vec.Vec.len p.service
-    if i1 = 0#usize
-    then
-      let ve ← valids.error valids.ErrorKind.EmptyPrincipal
-      ok (core.result.Result.Err ve)
-    else ok (core.result.Result.Ok ())
+    let v ← defaults.default_version
+    let s := alloc.vec.Vec.deref v
+    let b ← bytes.eq version s
+    if b
+    then ok (core.result.Result.Ok ())
+    else
+      let v1 ← alloc.slice.Slice.to_vec core.clone.CloneU8 version
+      ok (core.result.Result.Err
+        {
+          kind := valids.ErrorKind.InvalidVersion,
+          family := (alloc.vec.Vec.new Std.U8),
+          value := v1
+        })
   else ok (core.result.Result.Ok ())
 
-/-- [rustfs_kernel::valids::is_admin]: loop body 0:
-    Source: 'ports/rustfs/kernel/src/valids.rs', lines 31:10-31:90
+/-- [rustfs_kernel::manage::statement_view]:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 145:0-154:1
     Visibility: public -/
-@[rust_loop_body]
-def valids.is_admin_loop.body
-  (st : stmts.Statement) (i : Std.Usize) :
-  Result (ControlFlow Std.Usize Bool)
-  := do
-  let i1 := alloc.vec.Vec.len st.actions
-  if i < i1
-  then
-    let a ←
-      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice acts.Action)
-        st.actions i
-    let b ←
-      acts.Family.Insts.CoreCmpPartialEqFamily.eq a.family acts.Family.Admin
-    if b
-    then ok (done true)
-    else let i2 ← i + 1#usize
-         ok (cont i2)
-  else ok (done false)
+def manage.statement_view
+  (st : manage.Statement) : Result stmts.Statement := do
+  let v ←
+    alloc.vec.CloneVec.clone acts.Action.Insts.CoreCloneClone st.actions
+  let v1 ←
+    alloc.vec.CloneVec.clone acts.Action.Insts.CoreCloneClone st.not_actions
+  let v2 ←
+    alloc.vec.CloneVec.clone rsrc.Resource.Insts.CoreCloneClone st.resources
+  let v3 ←
+    alloc.vec.CloneVec.clone rsrc.Resource.Insts.CoreCloneClone
+      st.not_resources
+  let f ← conddata.matching_view st.conditions
+  ok
+    {
+      effect := st.effect,
+      actions := v,
+      not_actions := v1,
+      resources := v2,
+      not_resources := v3,
+      conditions := f
+    }
 
-/-- [rustfs_kernel::valids::is_admin]: loop 0:
-    Source: 'ports/rustfs/kernel/src/valids.rs', lines 31:10-31:90
+/-- [rustfs_kernel::stmts::BPStatement]
+    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 41:0-49:1
     Visibility: public -/
-@[rust_loop]
-def valids.is_admin_loop
-  (st : stmts.Statement) (i : Std.Usize) : Result Bool := do
-  loop
-    (fun i1 => valids.is_admin_loop.body st i1)
-    i
+structure stmts.BPStatement where
+  effect : stmts.Effect
+  principal : stmts.Principal
+  actions : alloc.vec.Vec acts.Action
+  not_actions : alloc.vec.Vec acts.Action
+  resources : alloc.vec.Vec rsrc.Resource
+  not_resources : alloc.vec.Vec rsrc.Resource
+  conditions : condfuncs.Functions
 
-/-- [rustfs_kernel::valids::is_admin]:
-    Source: 'ports/rustfs/kernel/src/valids.rs', lines 29:0-33:1
+/-- [rustfs_kernel::manage::bp_statement_view]:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 155:0-165:1
     Visibility: public -/
-@[reducible]
-def valids.is_admin (st : stmts.Statement) : Result Bool := do
-  valids.is_admin_loop st 0#usize
+def manage.bp_statement_view
+  (st : manage.BPStatement) : Result stmts.BPStatement := do
+  let p ← stmts.Principal.Insts.CoreCloneClone.clone st.principal
+  let v ←
+    alloc.vec.CloneVec.clone acts.Action.Insts.CoreCloneClone st.actions
+  let v1 ←
+    alloc.vec.CloneVec.clone acts.Action.Insts.CoreCloneClone st.not_actions
+  let v2 ←
+    alloc.vec.CloneVec.clone rsrc.Resource.Insts.CoreCloneClone st.resources
+  let v3 ←
+    alloc.vec.CloneVec.clone rsrc.Resource.Insts.CoreCloneClone
+      st.not_resources
+  let f ← conddata.matching_view st.conditions
+  ok
+    {
+      effect := st.effect,
+      principal := p,
+      actions := v,
+      not_actions := v1,
+      resources := v2,
+      not_resources := v3,
+      conditions := f
+    }
 
-/-- [rustfs_kernel::valids::is_sts]: loop body 0:
-    Source: 'ports/rustfs/kernel/src/valids.rs', lines 37:10-37:88
+/-- [rustfs_kernel::valids::ActionFamily]
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 4:0-4:52
     Visibility: public -/
-@[rust_loop_body]
-def valids.is_sts_loop.body
-  (st : stmts.Statement) (i : Std.Usize) :
-  Result (ControlFlow Std.Usize Bool)
-  := do
-  let i1 := alloc.vec.Vec.len st.actions
-  if i < i1
-  then
-    let a ←
-      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice acts.Action)
-        st.actions i
-    let b ←
-      acts.Family.Insts.CoreCmpPartialEqFamily.eq a.family acts.Family.Sts
-    if b
-    then ok (done true)
-    else let i2 ← i + 1#usize
-         ok (cont i2)
-  else ok (done false)
+@[discriminant isize]
+inductive valids.ActionFamily where
+| S3 : valids.ActionFamily
+| Admin : valids.ActionFamily
+| Sts : valids.ActionFamily
+| Kms : valids.ActionFamily
+| Mixed : valids.ActionFamily
 
-/-- [rustfs_kernel::valids::is_sts]: loop 0:
-    Source: 'ports/rustfs/kernel/src/valids.rs', lines 37:10-37:88
+/-- [rustfs_kernel::valids::family_allows_empty_resource]:
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 85:0-85:160 -/
+def valids.family_allows_empty_resource
+  (family : Option valids.ActionFamily) : Result Bool := do
+  match family with
+  | none => ok false
+  | some af =>
+    match af with
+    | valids.ActionFamily.S3 => ok false
+    | valids.ActionFamily.Admin => ok true
+    | valids.ActionFamily.Sts => ok true
+    | valids.ActionFamily.Kms => ok true
+    | valids.ActionFamily.Mixed => ok false
+
+/-- [rustfs_kernel::valids::family_is_kms]:
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 84:0-84:95 -/
+def valids.family_is_kms
+  (family : Option valids.ActionFamily) : Result Bool := do
+  match family with
+  | none => ok false
+  | some af =>
+    match af with
+    | valids.ActionFamily.S3 => ok false
+    | valids.ActionFamily.Admin => ok false
+    | valids.ActionFamily.Sts => ok false
+    | valids.ActionFamily.Kms => ok true
+    | valids.ActionFamily.Mixed => ok false
+
+/-- [rustfs_kernel::rsrc::is_kms]:
+    Source: 'ports/rustfs/kernel/src/rsrc.rs', lines 13:0-18:1
     Visibility: public -/
-@[rust_loop]
-def valids.is_sts_loop
-  (st : stmts.Statement) (i : Std.Usize) : Result Bool := do
-  loop
-    (fun i1 => valids.is_sts_loop.body st i1)
-    i
-
-/-- [rustfs_kernel::valids::is_sts]:
-    Source: 'ports/rustfs/kernel/src/valids.rs', lines 35:0-39:1
-    Visibility: public -/
-@[reducible]
-def valids.is_sts (st : stmts.Statement) : Result Bool := do
-  valids.is_sts_loop st 0#usize
-
-/-- [rustfs_kernel::valids::action_family]: loop body 0:
-    Source: 'ports/rustfs/kernel/src/valids.rs', lines 45:4-49:5
-    Visibility: public -/
-@[rust_loop_body]
-def valids.action_family_loop.body
-  (v : alloc.vec.Vec acts.Action) (saw_s3 : Bool) (saw_admin : Bool)
-  (saw_sts : Bool) (saw_kms : Bool) (i : Std.Usize) :
-  Result (ControlFlow (Bool × Bool × Bool × Bool × Std.Usize) (Bool × Bool
-    × Bool × Bool))
-  := do
-  let i1 := alloc.vec.Vec.len v
-  if i < i1
-  then
-    let a ←
-      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice acts.Action) v
-        i
-    let (saw_s31, saw_admin1, saw_sts1, saw_kms1) ←
-      match a.family with
-      | acts.Family.S3 => ok (true, saw_admin, saw_sts, saw_kms)
-      | acts.Family.Admin => ok (saw_s3, true, saw_sts, saw_kms)
-      | acts.Family.Sts => ok (saw_s3, saw_admin, true, saw_kms)
-      | acts.Family.Kms => ok (saw_s3, saw_admin, saw_sts, true)
-      | acts.Family.None => ok (saw_s3, saw_admin, saw_sts, saw_kms)
-    let i2 ← i + 1#usize
-    ok (cont (saw_s31, saw_admin1, saw_sts1, saw_kms1, i2))
-  else ok (done (saw_s3, saw_admin, saw_sts, saw_kms))
-
-/-- [rustfs_kernel::valids::action_family]: loop 0:
-    Source: 'ports/rustfs/kernel/src/valids.rs', lines 45:4-49:5
-    Visibility: public -/
-@[rust_loop]
-def valids.action_family_loop
-  (v : alloc.vec.Vec acts.Action) (saw_s3 : Bool) (saw_admin : Bool)
-  (saw_sts : Bool) (saw_kms : Bool) (i : Std.Usize) :
-  Result (Bool × Bool × Bool × Bool)
-  := do
-  loop
-    (fun (saw_s31, saw_admin1, saw_sts1, saw_kms1, i1) =>
-      valids.action_family_loop.body v saw_s31 saw_admin1 saw_sts1 saw_kms1 i1)
-    (saw_s3, saw_admin, saw_sts, saw_kms, i)
-
-/-- [rustfs_kernel::valids::action_family]:
-    Source: 'ports/rustfs/kernel/src/valids.rs', lines 41:0-57:1
-    Visibility: public -/
-def valids.action_family
-  (st : stmts.Statement) : Result (Option valids.ActionFamily) := do
-  let i := alloc.vec.Vec.len st.actions
-  if i = 0#usize
-  then ok none
-  else
-    let (saw_s3, saw_admin, saw_sts, saw_kms) ←
-      valids.action_family_loop st.actions false false false false 0#usize
-    let i1 ← lift (UScalar.cast_fromBool .U8 saw_s3)
-    let i2 ← lift (UScalar.cast_fromBool .U8 saw_admin)
-    let i3 ← i1 + i2
-    let i4 ← lift (UScalar.cast_fromBool .U8 saw_sts)
-    let i5 ← i3 + i4
-    let i6 ← lift (UScalar.cast_fromBool .U8 saw_kms)
-    let count ← i5 + i6
-    if count != 1#u8
-    then ok (some valids.ActionFamily.Mixed)
-    else
-      if saw_s3
-      then ok (some valids.ActionFamily.S3)
-      else
-        if saw_admin
-        then ok (some valids.ActionFamily.Admin)
-        else
-          if saw_sts
-          then ok (some valids.ActionFamily.Sts)
-          else
-            if saw_kms
-            then ok (some valids.ActionFamily.Kms)
-            else ok (some valids.ActionFamily.Mixed)
-
-/-- [rustfs_kernel::valids::kms_key_valid]:
-    Source: 'ports/rustfs/kernel/src/valids.rs', lines 58:0-58:158 -/
-def valids.kms_key_valid (p : Slice Std.U8) : Result Bool := do
-  let s ←
-    lift (Array.to_slice
-      (Array.make 4#usize [ 107#u8, 101#u8, 121#u8, 47#u8 ]))
-  let b ← bytes.starts_with p s
-  if b
-  then
-    let i := Slice.len p
-    if i > 4#usize
-    then
-      let i1 := Slice.len p
-      let v ← bytes.slice p 4#usize i1
-      let s1 := alloc.vec.Vec.deref v
-      let s2 ← lift (Array.to_slice (Array.make 1#usize [ 47#u8 ]))
-      let b1 ← bytes.contains s1 s2
-      if b1
-      then ok false
-      else
-        let s3 ← lift (Array.to_slice (Array.make 1#usize [ 92#u8 ]))
-        let b2 ← bytes.contains p s3
-        ok (¬ b2)
-    else ok false
-  else ok false
-
-/-- [rustfs_kernel::valids::kms_alias_valid]:
-    Source: 'ports/rustfs/kernel/src/valids.rs', lines 59:0-59:109 -/
-def valids.kms_alias_valid (p : Slice Std.U8) : Result Bool := do
-  let s ←
-    lift (Array.to_slice
-      (Array.make 6#usize [ 97#u8, 108#u8, 105#u8, 97#u8, 115#u8, 47#u8 ]))
-  let b ← bytes.starts_with p s
-  if b
-  then
-    let i := Slice.len p
-    if i > 6#usize
-    then
-      let s1 ← lift (Array.to_slice (Array.make 1#usize [ 92#u8 ]))
-      let b1 ← bytes.contains p s1
-      ok (¬ b1)
-    else ok false
-  else ok false
-
-/-- [rustfs_kernel::valids::resource_pattern_valid]:
-    Source: 'ports/rustfs/kernel/src/valids.rs', lines 60:0-60:175 -/
-def valids.resource_pattern_valid (r : rsrc.Resource) : Result Bool := do
+def rsrc.is_kms (r : rsrc.Resource) : Result Bool := do
   match r with
-  | rsrc.Resource.S3 p =>
-    let i := alloc.vec.Vec.len p
-    if i > 0#usize
-    then
-      let i1 ←
-        alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Std.U8) p
-          0#usize
-      ok (i1 != 47#u8)
-    else ok false
-  | rsrc.Resource.Kms p =>
-    let s := alloc.vec.Vec.deref p
-    let s1 ← lift (Array.to_slice (Array.make 1#usize [ 42#u8 ]))
-    let b ← bytes.eq s s1
-    if b
-    then ok true
-    else
-      let s2 := alloc.vec.Vec.deref p
-      let b1 ← valids.kms_key_valid s2
-      if b1
-      then ok true
-      else let s3 := alloc.vec.Vec.deref p
-           valids.kms_alias_valid s3
-
-/-- [rustfs_kernel::valids::resource_is_valid]:
-    Source: 'ports/rustfs/kernel/src/valids.rs', lines 62:0-62:296
-    Visibility: public -/
-def valids.resource_is_valid
-  (r : rsrc.Resource) :
-  Result (core.result.Result Unit valids.ValidationError)
-  := do
-  let b ← valids.resource_pattern_valid r
-  if b
-  then ok (core.result.Result.Ok ())
-  else
-    match r with
-    | rsrc.Resource.S3 p =>
-      let s ← lift (Array.to_slice (Array.make 2#usize [ 115#u8, 51#u8 ]))
-      let family ← alloc.slice.Slice.to_vec core.clone.CloneU8 s
-      let value ← alloc.vec.CloneVec.clone core.clone.CloneU8 p
-      ok (core.result.Result.Err
-        { kind := valids.ErrorKind.InvalidResource, family, value })
-    | rsrc.Resource.Kms p =>
-      let s ←
-        lift (Array.to_slice (Array.make 3#usize [ 107#u8, 109#u8, 115#u8 ]))
-      let family ← alloc.slice.Slice.to_vec core.clone.CloneU8 s
-      let value ← alloc.vec.CloneVec.clone core.clone.CloneU8 p
-      ok (core.result.Result.Err
-        { kind := valids.ErrorKind.InvalidResource, family, value })
-
-/-- [rustfs_kernel::valids::resources_is_valid]: loop body 0:
-    Source: 'ports/rustfs/kernel/src/valids.rs', lines 66:4-68:1
-    Visibility: public -/
-@[rust_loop_body]
-def valids.resources_is_valid_loop.body
-  (set : Slice rsrc.Resource) (i : Std.Usize) :
-  Result (ControlFlow Std.Usize (core.result.Result Unit
-    valids.ValidationError))
-  := do
-  let i1 := Slice.len set
-  if i < i1
-  then
-    let r ← Slice.index_usize set i
-    let r1 ← valids.resource_is_valid r
-    let cf ← core.result.Result.Insts.CoreOpsTry.branch r1
-    match cf with
-    | core.ops.control_flow.ControlFlow.Continue _ =>
-      let i2 ← i + 1#usize
-      ok (cont i2)
-    | core.ops.control_flow.ControlFlow.Break residual =>
-      let r2 ←
-        core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual
-          Unit (core.convert.FromSame valids.ValidationError) residual
-      ok (done r2)
-  else ok (done (core.result.Result.Ok ()))
-
-/-- [rustfs_kernel::valids::resources_is_valid]: loop 0:
-    Source: 'ports/rustfs/kernel/src/valids.rs', lines 66:4-68:1
-    Visibility: public -/
-@[rust_loop]
-def valids.resources_is_valid_loop
-  (set : Slice rsrc.Resource) (i : Std.Usize) :
-  Result (core.result.Result Unit valids.ValidationError)
-  := do
-  loop
-    (fun i1 => valids.resources_is_valid_loop.body set i1)
-    i
-
-/-- [rustfs_kernel::valids::resources_is_valid]:
-    Source: 'ports/rustfs/kernel/src/valids.rs', lines 64:0-68:1
-    Visibility: public -/
-@[reducible]
-def valids.resources_is_valid
-  (set : Slice rsrc.Resource) :
-  Result (core.result.Result Unit valids.ValidationError)
-  := do
-  valids.resources_is_valid_loop set 0#usize
+  | rsrc.Resource.S3 _ => ok false
+  | rsrc.Resource.Kms _ => ok true
 
 /-- [rustfs_kernel::valids::has_kms_resource]: loop body 0:
     Source: 'ports/rustfs/kernel/src/valids.rs', lines 71:4-73:1 -/
@@ -14894,137 +14214,16 @@ def valids.has_kms_resource_loop
 def valids.has_kms_resource (rs : Slice rsrc.Resource) : Result Bool := do
   valids.has_kms_resource_loop rs 0#usize
 
-/-- [rustfs_kernel::valids::has_kms_action]: loop body 0:
-    Source: 'ports/rustfs/kernel/src/valids.rs', lines 76:4-78:1 -/
-@[rust_loop_body]
-def valids.has_kms_action_loop.body
-  (actions : Slice acts.Action) (i : Std.Usize) :
-  Result (ControlFlow Std.Usize Bool)
-  := do
-  let i1 := Slice.len actions
-  if i < i1
-  then
-    let a ← Slice.index_usize actions i
-    let b ←
-      acts.Family.Insts.CoreCmpPartialEqFamily.eq a.family acts.Family.Kms
-    if b
-    then ok (done true)
-    else let i2 ← i + 1#usize
-         ok (cont i2)
-  else ok (done false)
-
-/-- [rustfs_kernel::valids::has_kms_action]: loop 0:
-    Source: 'ports/rustfs/kernel/src/valids.rs', lines 76:4-78:1 -/
-@[rust_loop]
-def valids.has_kms_action_loop
-  (actions : Slice acts.Action) (i : Std.Usize) : Result Bool := do
-  loop
-    (fun i1 => valids.has_kms_action_loop.body actions i1)
-    i
-
-/-- [rustfs_kernel::valids::has_kms_action]:
-    Source: 'ports/rustfs/kernel/src/valids.rs', lines 74:0-78:1 -/
-@[reducible]
-def valids.has_kms_action (actions : Slice acts.Action) : Result Bool := do
-  valids.has_kms_action_loop actions 0#usize
-
-/-- [rustfs_kernel::valids::action_selection_valid]:
-    Source: 'ports/rustfs/kernel/src/valids.rs', lines 79:0-82:1 -/
-def valids.action_selection_valid
-  (actions : Slice acts.Action) (not_actions : Slice acts.Action) :
-  Result (core.result.Result Unit valids.ValidationError)
-  := do
-  let i := Slice.len actions
-  if i = 0#usize
-  then
-    let i1 := Slice.len not_actions
-    if i1 = 0#usize
-    then
-      let ve ← valids.error valids.ErrorKind.NonAction
-      ok (core.result.Result.Err ve)
-    else
-      let i2 := Slice.len actions
-      if i2 != 0#usize
-      then
-        let i3 := Slice.len not_actions
-        if i3 != 0#usize
-        then
-          let ve ← valids.error valids.ErrorKind.BothActionAndNotAction
-          ok (core.result.Result.Err ve)
-        else ok (core.result.Result.Ok ())
-      else ok (core.result.Result.Ok ())
-  else
-    let i1 := Slice.len actions
-    if i1 != 0#usize
-    then
-      let i2 := Slice.len not_actions
-      if i2 != 0#usize
-      then
-        let ve ← valids.error valids.ErrorKind.BothActionAndNotAction
-        ok (core.result.Result.Err ve)
-      else ok (core.result.Result.Ok ())
-    else ok (core.result.Result.Ok ())
-
-/-- [rustfs_kernel::valids::family_is_mixed]:
-    Source: 'ports/rustfs/kernel/src/valids.rs', lines 83:0-83:99 -/
-def valids.family_is_mixed
-  (family : Option valids.ActionFamily) : Result Bool := do
-  match family with
-  | none => ok false
-  | some af =>
-    match af with
-    | valids.ActionFamily.S3 => ok false
-    | valids.ActionFamily.Admin => ok false
-    | valids.ActionFamily.Sts => ok false
-    | valids.ActionFamily.Kms => ok false
-    | valids.ActionFamily.Mixed => ok true
-
-/-- [rustfs_kernel::valids::family_is_kms]:
-    Source: 'ports/rustfs/kernel/src/valids.rs', lines 84:0-84:95 -/
-def valids.family_is_kms
-  (family : Option valids.ActionFamily) : Result Bool := do
-  match family with
-  | none => ok false
-  | some af =>
-    match af with
-    | valids.ActionFamily.S3 => ok false
-    | valids.ActionFamily.Admin => ok false
-    | valids.ActionFamily.Sts => ok false
-    | valids.ActionFamily.Kms => ok true
-    | valids.ActionFamily.Mixed => ok false
-
-/-- [rustfs_kernel::valids::family_allows_empty_resource]:
-    Source: 'ports/rustfs/kernel/src/valids.rs', lines 85:0-85:160 -/
-def valids.family_allows_empty_resource
-  (family : Option valids.ActionFamily) : Result Bool := do
-  match family with
-  | none => ok false
-  | some af =>
-    match af with
-    | valids.ActionFamily.S3 => ok false
-    | valids.ActionFamily.Admin => ok true
-    | valids.ActionFamily.Sts => ok true
-    | valids.ActionFamily.Kms => ok true
-    | valids.ActionFamily.Mixed => ok false
-
-/-- [rustfs_kernel::valids::checked_action_family]:
-    Source: 'ports/rustfs/kernel/src/valids.rs', lines 86:0-88:1 -/
-def valids.checked_action_family
-  (st : stmts.Statement) :
-  Result (core.result.Result (Option valids.ActionFamily)
-    valids.ValidationError)
-  := do
-  let i := alloc.vec.Vec.len st.not_actions
-  if i != 0#usize
-  then ok (core.result.Result.Ok none)
-  else
-    let family ← valids.action_family st
-    let b ← valids.family_is_mixed family
-    if b
-    then
-      let ve ← valids.error valids.ErrorKind.MixedActionFamilies
-      ok (core.result.Result.Err ve)
-    else ok (core.result.Result.Ok family)
+/-- [rustfs_kernel::valids::error]:
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 11:0-11:112 -/
+def valids.error
+  (kind : valids.ErrorKind) : Result valids.ValidationError := do
+  ok
+    {
+      kind,
+      family := (alloc.vec.Vec.new Std.U8),
+      value := (alloc.vec.Vec.new Std.U8)
+    }
 
 /-- [rustfs_kernel::valids::statement_resource_rules]:
     Source: 'ports/rustfs/kernel/src/valids.rs', lines 89:0-93:1 -/
@@ -15220,6 +14419,308 @@ def valids.statement_resource_rules
             ok (core.result.Result.Err ve)
         else ok (core.result.Result.Ok ())
 
+/-- [rustfs_kernel::valids::family_is_mixed]:
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 83:0-83:99 -/
+def valids.family_is_mixed
+  (family : Option valids.ActionFamily) : Result Bool := do
+  match family with
+  | none => ok false
+  | some af =>
+    match af with
+    | valids.ActionFamily.S3 => ok false
+    | valids.ActionFamily.Admin => ok false
+    | valids.ActionFamily.Sts => ok false
+    | valids.ActionFamily.Kms => ok false
+    | valids.ActionFamily.Mixed => ok true
+
+/-- [rustfs_kernel::valids::action_family]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 45:4-49:5
+    Visibility: public -/
+@[rust_loop_body]
+def valids.action_family_loop.body
+  (v : alloc.vec.Vec acts.Action) (saw_s3 : Bool) (saw_admin : Bool)
+  (saw_sts : Bool) (saw_kms : Bool) (i : Std.Usize) :
+  Result (ControlFlow (Bool × Bool × Bool × Bool × Std.Usize) (Bool × Bool
+    × Bool × Bool))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let a ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice acts.Action) v
+        i
+    let (saw_s31, saw_admin1, saw_sts1, saw_kms1) ←
+      match a.family with
+      | acts.Family.S3 => ok (true, saw_admin, saw_sts, saw_kms)
+      | acts.Family.Admin => ok (saw_s3, true, saw_sts, saw_kms)
+      | acts.Family.Sts => ok (saw_s3, saw_admin, true, saw_kms)
+      | acts.Family.Kms => ok (saw_s3, saw_admin, saw_sts, true)
+      | acts.Family.None => ok (saw_s3, saw_admin, saw_sts, saw_kms)
+    let i2 ← i + 1#usize
+    ok (cont (saw_s31, saw_admin1, saw_sts1, saw_kms1, i2))
+  else ok (done (saw_s3, saw_admin, saw_sts, saw_kms))
+
+/-- [rustfs_kernel::valids::action_family]: loop 0:
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 45:4-49:5
+    Visibility: public -/
+@[rust_loop]
+def valids.action_family_loop
+  (v : alloc.vec.Vec acts.Action) (saw_s3 : Bool) (saw_admin : Bool)
+  (saw_sts : Bool) (saw_kms : Bool) (i : Std.Usize) :
+  Result (Bool × Bool × Bool × Bool)
+  := do
+  loop
+    (fun (saw_s31, saw_admin1, saw_sts1, saw_kms1, i1) =>
+      valids.action_family_loop.body v saw_s31 saw_admin1 saw_sts1 saw_kms1 i1)
+    (saw_s3, saw_admin, saw_sts, saw_kms, i)
+
+/-- [rustfs_kernel::valids::action_family]:
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 41:0-57:1
+    Visibility: public -/
+def valids.action_family
+  (st : stmts.Statement) : Result (Option valids.ActionFamily) := do
+  let i := alloc.vec.Vec.len st.actions
+  if i = 0#usize
+  then ok none
+  else
+    let (saw_s3, saw_admin, saw_sts, saw_kms) ←
+      valids.action_family_loop st.actions false false false false 0#usize
+    let i1 ← lift (UScalar.cast_fromBool .U8 saw_s3)
+    let i2 ← lift (UScalar.cast_fromBool .U8 saw_admin)
+    let i3 ← i1 + i2
+    let i4 ← lift (UScalar.cast_fromBool .U8 saw_sts)
+    let i5 ← i3 + i4
+    let i6 ← lift (UScalar.cast_fromBool .U8 saw_kms)
+    let count ← i5 + i6
+    if count != 1#u8
+    then ok (some valids.ActionFamily.Mixed)
+    else
+      if saw_s3
+      then ok (some valids.ActionFamily.S3)
+      else
+        if saw_admin
+        then ok (some valids.ActionFamily.Admin)
+        else
+          if saw_sts
+          then ok (some valids.ActionFamily.Sts)
+          else
+            if saw_kms
+            then ok (some valids.ActionFamily.Kms)
+            else ok (some valids.ActionFamily.Mixed)
+
+/-- [rustfs_kernel::valids::checked_action_family]:
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 86:0-88:1 -/
+def valids.checked_action_family
+  (st : stmts.Statement) :
+  Result (core.result.Result (Option valids.ActionFamily)
+    valids.ValidationError)
+  := do
+  let i := alloc.vec.Vec.len st.not_actions
+  if i != 0#usize
+  then ok (core.result.Result.Ok none)
+  else
+    let family ← valids.action_family st
+    let b ← valids.family_is_mixed family
+    if b
+    then
+      let ve ← valids.error valids.ErrorKind.MixedActionFamilies
+      ok (core.result.Result.Err ve)
+    else ok (core.result.Result.Ok family)
+
+/-- [rustfs_kernel::valids::action_selection_valid]:
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 79:0-82:1 -/
+def valids.action_selection_valid
+  (actions : Slice acts.Action) (not_actions : Slice acts.Action) :
+  Result (core.result.Result Unit valids.ValidationError)
+  := do
+  let i := Slice.len actions
+  if i = 0#usize
+  then
+    let i1 := Slice.len not_actions
+    if i1 = 0#usize
+    then
+      let ve ← valids.error valids.ErrorKind.NonAction
+      ok (core.result.Result.Err ve)
+    else
+      let i2 := Slice.len actions
+      if i2 != 0#usize
+      then
+        let i3 := Slice.len not_actions
+        if i3 != 0#usize
+        then
+          let ve ← valids.error valids.ErrorKind.BothActionAndNotAction
+          ok (core.result.Result.Err ve)
+        else ok (core.result.Result.Ok ())
+      else ok (core.result.Result.Ok ())
+  else
+    let i1 := Slice.len actions
+    if i1 != 0#usize
+    then
+      let i2 := Slice.len not_actions
+      if i2 != 0#usize
+      then
+        let ve ← valids.error valids.ErrorKind.BothActionAndNotAction
+        ok (core.result.Result.Err ve)
+      else ok (core.result.Result.Ok ())
+    else ok (core.result.Result.Ok ())
+
+/-- [rustfs_kernel::valids::kms_alias_valid]:
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 59:0-59:109 -/
+def valids.kms_alias_valid (p : Slice Std.U8) : Result Bool := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 6#usize [ 97#u8, 108#u8, 105#u8, 97#u8, 115#u8, 47#u8 ]))
+  let b ← bytes.starts_with p s
+  if b
+  then
+    let i := Slice.len p
+    if i > 6#usize
+    then
+      let s1 ← lift (Array.to_slice (Array.make 1#usize [ 92#u8 ]))
+      let b1 ← bytes.contains p s1
+      ok (¬ b1)
+    else ok false
+  else ok false
+
+/-- [rustfs_kernel::valids::kms_key_valid]:
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 58:0-58:158 -/
+def valids.kms_key_valid (p : Slice Std.U8) : Result Bool := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 4#usize [ 107#u8, 101#u8, 121#u8, 47#u8 ]))
+  let b ← bytes.starts_with p s
+  if b
+  then
+    let i := Slice.len p
+    if i > 4#usize
+    then
+      let i1 := Slice.len p
+      let v ← bytes.slice p 4#usize i1
+      let s1 := alloc.vec.Vec.deref v
+      let s2 ← lift (Array.to_slice (Array.make 1#usize [ 47#u8 ]))
+      let b1 ← bytes.contains s1 s2
+      if b1
+      then ok false
+      else
+        let s3 ← lift (Array.to_slice (Array.make 1#usize [ 92#u8 ]))
+        let b2 ← bytes.contains p s3
+        ok (¬ b2)
+    else ok false
+  else ok false
+
+/-- [rustfs_kernel::valids::resource_pattern_valid]:
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 60:0-60:175 -/
+def valids.resource_pattern_valid (r : rsrc.Resource) : Result Bool := do
+  match r with
+  | rsrc.Resource.S3 p =>
+    let i := alloc.vec.Vec.len p
+    if i > 0#usize
+    then
+      let i1 ←
+        alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Std.U8) p
+          0#usize
+      ok (i1 != 47#u8)
+    else ok false
+  | rsrc.Resource.Kms p =>
+    let s := alloc.vec.Vec.deref p
+    let s1 ← lift (Array.to_slice (Array.make 1#usize [ 42#u8 ]))
+    let b ← bytes.eq s s1
+    if b
+    then ok true
+    else
+      let s2 := alloc.vec.Vec.deref p
+      let b1 ← valids.kms_key_valid s2
+      if b1
+      then ok true
+      else let s3 := alloc.vec.Vec.deref p
+           valids.kms_alias_valid s3
+
+/-- [rustfs_kernel::valids::resource_is_valid]:
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 62:0-62:296
+    Visibility: public -/
+def valids.resource_is_valid
+  (r : rsrc.Resource) :
+  Result (core.result.Result Unit valids.ValidationError)
+  := do
+  let b ← valids.resource_pattern_valid r
+  if b
+  then ok (core.result.Result.Ok ())
+  else
+    match r with
+    | rsrc.Resource.S3 p =>
+      let s ← lift (Array.to_slice (Array.make 2#usize [ 115#u8, 51#u8 ]))
+      let family ← alloc.slice.Slice.to_vec core.clone.CloneU8 s
+      let value ← alloc.vec.CloneVec.clone core.clone.CloneU8 p
+      ok (core.result.Result.Err
+        { kind := valids.ErrorKind.InvalidResource, family, value })
+    | rsrc.Resource.Kms p =>
+      let s ←
+        lift (Array.to_slice (Array.make 3#usize [ 107#u8, 109#u8, 115#u8 ]))
+      let family ← alloc.slice.Slice.to_vec core.clone.CloneU8 s
+      let value ← alloc.vec.CloneVec.clone core.clone.CloneU8 p
+      ok (core.result.Result.Err
+        { kind := valids.ErrorKind.InvalidResource, family, value })
+
+/-- [rustfs_kernel::valids::resources_is_valid]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 66:4-68:1
+    Visibility: public -/
+@[rust_loop_body]
+def valids.resources_is_valid_loop.body
+  (set : Slice rsrc.Resource) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize (core.result.Result Unit
+    valids.ValidationError))
+  := do
+  let i1 := Slice.len set
+  if i < i1
+  then
+    let r ← Slice.index_usize set i
+    let r1 ← valids.resource_is_valid r
+    let cf ← core.result.Result.Insts.CoreOpsTry.branch r1
+    match cf with
+    | core.ops.control_flow.ControlFlow.Continue _ =>
+      let i2 ← i + 1#usize
+      ok (cont i2)
+    | core.ops.control_flow.ControlFlow.Break residual =>
+      let r2 ←
+        core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual
+          Unit (core.convert.FromSame valids.ValidationError) residual
+      ok (done r2)
+  else ok (done (core.result.Result.Ok ()))
+
+/-- [rustfs_kernel::valids::resources_is_valid]: loop 0:
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 66:4-68:1
+    Visibility: public -/
+@[rust_loop]
+def valids.resources_is_valid_loop
+  (set : Slice rsrc.Resource) (i : Std.Usize) :
+  Result (core.result.Result Unit valids.ValidationError)
+  := do
+  loop
+    (fun i1 => valids.resources_is_valid_loop.body set i1)
+    i
+
+/-- [rustfs_kernel::valids::resources_is_valid]:
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 64:0-68:1
+    Visibility: public -/
+@[reducible]
+def valids.resources_is_valid
+  (set : Slice rsrc.Resource) :
+  Result (core.result.Result Unit valids.ValidationError)
+  := do
+  valids.resources_is_valid_loop set 0#usize
+
+/-- [rustfs_kernel::valids::effect_is_valid]:
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 22:0-22:56
+    Visibility: public -/
+def valids.effect_is_valid (_effect : stmts.Effect) : Result Bool := do
+  ok true
+
+/-- [rustfs_kernel::valids::id_is_valid]:
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 20:0-20:47
+    Visibility: public -/
+def valids.id_is_valid (_id : Slice Std.U8) : Result Bool := do
+  ok true
+
 /-- [rustfs_kernel::valids::statement_is_valid]:
     Source: 'ports/rustfs/kernel/src/valids.rs', lines 95:0-100:1
     Visibility: public -/
@@ -15273,6 +14774,126 @@ def valids.statement_is_valid
   | core.ops.control_flow.ControlFlow.Break residual =>
     core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual
       Unit (core.convert.FromSame valids.ValidationError) residual
+
+/-- [rustfs_kernel::manage::is_valid]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 169:4-175:1
+    Visibility: public -/
+@[rust_loop_body]
+def manage.is_valid_loop.body
+  (v : alloc.vec.Vec manage.Statement) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize (core.result.Result Unit
+    valids.ValidationError))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let st ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+        manage.Statement) v i
+    let s ← manage.statement_view st
+    let s1 := alloc.vec.Vec.deref st.sid
+    let r ← valids.statement_is_valid s s1
+    let cf ← core.result.Result.Insts.CoreOpsTry.branch r
+    match cf with
+    | core.ops.control_flow.ControlFlow.Continue _ =>
+      let i2 ← i + 1#usize
+      ok (cont i2)
+    | core.ops.control_flow.ControlFlow.Break residual =>
+      let r1 ←
+        core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual
+          Unit (core.convert.FromSame valids.ValidationError) residual
+      ok (done r1)
+  else ok (done (core.result.Result.Ok ()))
+
+/-- [rustfs_kernel::manage::is_valid]: loop 0:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 169:4-175:1
+    Visibility: public -/
+@[rust_loop]
+def manage.is_valid_loop
+  (v : alloc.vec.Vec manage.Statement) (i : Std.Usize) :
+  Result (core.result.Result Unit valids.ValidationError)
+  := do
+  loop
+    (fun i1 => manage.is_valid_loop.body v i1)
+    i
+
+/-- [rustfs_kernel::manage::is_valid]:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 166:0-175:1
+    Visibility: public -/
+def manage.is_valid
+  (policy : manage.Policy) :
+  Result (core.result.Result Unit valids.ValidationError)
+  := do
+  let s := alloc.vec.Vec.deref policy.version
+  let r ← manage.version_is_valid s
+  let cf ← core.result.Result.Insts.CoreOpsTry.branch r
+  match cf with
+  | core.ops.control_flow.ControlFlow.Continue _ =>
+    manage.is_valid_loop policy.statements 0#usize
+  | core.ops.control_flow.ControlFlow.Break residual =>
+    core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual
+      Unit (core.convert.FromSame valids.ValidationError) residual
+
+/-- [rustfs_kernel::manage::validate]:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 176:0-178:1
+    Visibility: public -/
+def manage.validate
+  (policy : manage.Policy) :
+  Result (core.result.Result Unit valids.ValidationError)
+  := do
+  manage.is_valid policy
+
+/-- [rustfs_kernel::valids::has_kms_action]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 76:4-78:1 -/
+@[rust_loop_body]
+def valids.has_kms_action_loop.body
+  (actions : Slice acts.Action) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := Slice.len actions
+  if i < i1
+  then
+    let a ← Slice.index_usize actions i
+    let b ←
+      acts.Family.Insts.CoreCmpPartialEqFamily.eq a.family acts.Family.Kms
+    if b
+    then ok (done true)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else ok (done false)
+
+/-- [rustfs_kernel::valids::has_kms_action]: loop 0:
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 76:4-78:1 -/
+@[rust_loop]
+def valids.has_kms_action_loop
+  (actions : Slice acts.Action) (i : Std.Usize) : Result Bool := do
+  loop
+    (fun i1 => valids.has_kms_action_loop.body actions i1)
+    i
+
+/-- [rustfs_kernel::valids::has_kms_action]:
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 74:0-78:1 -/
+@[reducible]
+def valids.has_kms_action (actions : Slice acts.Action) : Result Bool := do
+  valids.has_kms_action_loop actions 0#usize
+
+/-- [rustfs_kernel::valids::principal_is_valid]:
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 24:0-27:1
+    Visibility: public -/
+def valids.principal_is_valid
+  (p : stmts.Principal) :
+  Result (core.result.Result Unit valids.ValidationError)
+  := do
+  let i := alloc.vec.Vec.len p.aws
+  if i = 0#usize
+  then
+    let i1 := alloc.vec.Vec.len p.service
+    if i1 = 0#usize
+    then
+      let ve ← valids.error valids.ErrorKind.EmptyPrincipal
+      ok (core.result.Result.Err ve)
+    else ok (core.result.Result.Ok ())
+  else ok (core.result.Result.Ok ())
 
 /-- [rustfs_kernel::valids::bp_statement_is_valid]:
     Source: 'ports/rustfs/kernel/src/valids.rs', lines 102:0-116:1
@@ -15984,5 +15605,1997 @@ def valids.bp_statement_is_valid
   | core.ops.control_flow.ControlFlow.Break residual =>
     core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual
       Unit (core.convert.FromSame valids.ValidationError) residual
+
+/-- [rustfs_kernel::manage::bucket_is_valid]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 182:4-188:1
+    Visibility: public -/
+@[rust_loop_body]
+def manage.bucket_is_valid_loop.body
+  (v : alloc.vec.Vec manage.BPStatement) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize (core.result.Result Unit
+    valids.ValidationError))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let st ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+        manage.BPStatement) v i
+    let b ← manage.bp_statement_view st
+    let s := alloc.vec.Vec.deref st.sid
+    let r ← valids.bp_statement_is_valid b s
+    let cf ← core.result.Result.Insts.CoreOpsTry.branch r
+    match cf with
+    | core.ops.control_flow.ControlFlow.Continue _ =>
+      let i2 ← i + 1#usize
+      ok (cont i2)
+    | core.ops.control_flow.ControlFlow.Break residual =>
+      let r1 ←
+        core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual
+          Unit (core.convert.FromSame valids.ValidationError) residual
+      ok (done r1)
+  else ok (done (core.result.Result.Ok ()))
+
+/-- [rustfs_kernel::manage::bucket_is_valid]: loop 0:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 182:4-188:1
+    Visibility: public -/
+@[rust_loop]
+def manage.bucket_is_valid_loop
+  (v : alloc.vec.Vec manage.BPStatement) (i : Std.Usize) :
+  Result (core.result.Result Unit valids.ValidationError)
+  := do
+  loop
+    (fun i1 => manage.bucket_is_valid_loop.body v i1)
+    i
+
+/-- [rustfs_kernel::manage::bucket_is_valid]:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 179:0-188:1
+    Visibility: public -/
+def manage.bucket_is_valid
+  (policy : manage.BucketPolicy) :
+  Result (core.result.Result Unit valids.ValidationError)
+  := do
+  let s := alloc.vec.Vec.deref policy.version
+  let r ← manage.version_is_valid s
+  let cf ← core.result.Result.Insts.CoreOpsTry.branch r
+  match cf with
+  | core.ops.control_flow.ControlFlow.Continue _ =>
+    manage.bucket_is_valid_loop policy.statements 0#usize
+  | core.ops.control_flow.ControlFlow.Break residual =>
+    core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual
+      Unit (core.convert.FromSame valids.ValidationError) residual
+
+/-- [rustfs_kernel::manage::overwritten]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 193:4-200:1 -/
+@[rust_loop_body]
+def manage.overwritten_loop.body
+  (cs : Slice conddata.Condition) («name» : alloc.vec.Vec Std.U8)
+  (j : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i := Slice.len cs
+  if j < i
+  then
+    let s := alloc.vec.Vec.deref «name»
+    let c ← Slice.index_usize cs j
+    let v ← conddata.to_key_with_suffix c
+    let s1 := alloc.vec.Vec.deref v
+    let b ← bytes.eq s s1
+    if b
+    then ok (done true)
+    else let j1 ← j + 1#usize
+         ok (cont j1)
+  else ok (done false)
+
+/-- [rustfs_kernel::manage::overwritten]: loop 0:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 193:4-200:1 -/
+@[rust_loop]
+def manage.overwritten_loop
+  (cs : Slice conddata.Condition) («name» : alloc.vec.Vec Std.U8)
+  (j : Std.Usize) :
+  Result Bool
+  := do
+  loop
+    (fun j1 => manage.overwritten_loop.body cs «name» j1)
+    j
+
+/-- [rustfs_kernel::manage::overwritten]:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 190:0-200:1 -/
+def manage.overwritten
+  (cs : Slice conddata.Condition) (i : Std.Usize) : Result Bool := do
+  let c ← Slice.index_usize cs i
+  let «name» ← conddata.to_key_with_suffix c
+  let j ← i + 1#usize
+  manage.overwritten_loop cs «name» j
+
+/-- [rustfs_kernel::manage::condition_uses_tag]:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 201:0-222:1 -/
+def manage.condition_uses_tag (c : conddata.Condition) : Result Bool := do
+  match c.data with
+  | conddata.Data.Str f =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 20#usize [
+          115#u8, 51#u8, 58#u8, 69#u8, 120#u8, 105#u8, 115#u8, 116#u8, 105#u8,
+          110#u8, 103#u8, 79#u8, 98#u8, 106#u8, 101#u8, 99#u8, 116#u8, 84#u8,
+          97#u8, 103#u8
+          ]))
+    conddata.contains_key_name f s
+  | conddata.Data.Addr f =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 20#usize [
+          115#u8, 51#u8, 58#u8, 69#u8, 120#u8, 105#u8, 115#u8, 116#u8, 105#u8,
+          110#u8, 103#u8, 79#u8, 98#u8, 106#u8, 101#u8, 99#u8, 116#u8, 84#u8,
+          97#u8, 103#u8
+          ]))
+    conddata.contains_key_name f s
+  | conddata.Data.Boolean f =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 20#usize [
+          115#u8, 51#u8, 58#u8, 69#u8, 120#u8, 105#u8, 115#u8, 116#u8, 105#u8,
+          110#u8, 103#u8, 79#u8, 98#u8, 106#u8, 101#u8, 99#u8, 116#u8, 84#u8,
+          97#u8, 103#u8
+          ]))
+    conddata.contains_key_name f s
+  | conddata.Data.Num f =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 20#usize [
+          115#u8, 51#u8, 58#u8, 69#u8, 120#u8, 105#u8, 115#u8, 116#u8, 105#u8,
+          110#u8, 103#u8, 79#u8, 98#u8, 106#u8, 101#u8, 99#u8, 116#u8, 84#u8,
+          97#u8, 103#u8
+          ]))
+    conddata.contains_key_name f s
+  | conddata.Data.Date f =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 20#usize [
+          115#u8, 51#u8, 58#u8, 69#u8, 120#u8, 105#u8, 115#u8, 116#u8, 105#u8,
+          110#u8, 103#u8, 79#u8, 98#u8, 106#u8, 101#u8, 99#u8, 116#u8, 84#u8,
+          97#u8, 103#u8
+          ]))
+    conddata.contains_key_name f s
+  | conddata.Data.Binary f =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 20#usize [
+          115#u8, 51#u8, 58#u8, 69#u8, 120#u8, 105#u8, 115#u8, 116#u8, 105#u8,
+          110#u8, 103#u8, 79#u8, 98#u8, 106#u8, 101#u8, 99#u8, 116#u8, 84#u8,
+          97#u8, 103#u8
+          ]))
+    conddata.contains_key_name f s
+
+/-- [rustfs_kernel::manage::list_uses_tag]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 225:4-232:1 -/
+@[rust_loop_body]
+def manage.list_uses_tag_loop.body
+  (cs : Slice conddata.Condition) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := Slice.len cs
+  if i < i1
+  then
+    let b ← manage.overwritten cs i
+    if b
+    then let i2 ← i + 1#usize
+         ok (cont i2)
+    else
+      let c ← Slice.index_usize cs i
+      let b1 ← manage.condition_uses_tag c
+      if b1
+      then ok (done true)
+      else let i2 ← i + 1#usize
+           ok (cont i2)
+  else ok (done false)
+
+/-- [rustfs_kernel::manage::list_uses_tag]: loop 0:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 225:4-232:1 -/
+@[rust_loop]
+def manage.list_uses_tag_loop
+  (cs : Slice conddata.Condition) (i : Std.Usize) : Result Bool := do
+  loop
+    (fun i1 => manage.list_uses_tag_loop.body cs i1)
+    i
+
+/-- [rustfs_kernel::manage::list_uses_tag]:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 223:0-232:1 -/
+@[reducible]
+def manage.list_uses_tag (cs : Slice conddata.Condition) : Result Bool := do
+  manage.list_uses_tag_loop cs 0#usize
+
+/-- [rustfs_kernel::manage::functions_use_existing_object_tag]:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 233:0-237:1
+    Visibility: public -/
+def manage.functions_use_existing_object_tag
+  (f : conddata.Functions) : Result Bool := do
+  let s := alloc.vec.Vec.deref f.for_all_values
+  let b ← manage.list_uses_tag s
+  if b
+  then ok true
+  else
+    let s1 := alloc.vec.Vec.deref f.for_any_value
+    let b1 ← manage.list_uses_tag s1
+    if b1
+    then ok true
+    else let s2 := alloc.vec.Vec.deref f.for_normal
+         manage.list_uses_tag s2
+
+/-- [rustfs_kernel::manage::policy_uses_existing_object_tag_conditions]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 240:4-247:1
+    Visibility: public -/
+@[rust_loop_body]
+def manage.policy_uses_existing_object_tag_conditions_loop.body
+  (p : manage.Policy) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := alloc.vec.Vec.len p.statements
+  if i < i1
+  then
+    let s ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+        manage.Statement) p.statements i
+    let b ← manage.functions_use_existing_object_tag s.conditions
+    if b
+    then ok (done true)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else ok (done false)
+
+/-- [rustfs_kernel::manage::policy_uses_existing_object_tag_conditions]: loop 0:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 240:4-247:1
+    Visibility: public -/
+@[rust_loop]
+def manage.policy_uses_existing_object_tag_conditions_loop
+  (p : manage.Policy) (i : Std.Usize) : Result Bool := do
+  loop
+    (fun i1 => manage.policy_uses_existing_object_tag_conditions_loop.body p
+      i1)
+    i
+
+/-- [rustfs_kernel::manage::policy_uses_existing_object_tag_conditions]:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 238:0-247:1
+    Visibility: public -/
+@[reducible]
+def manage.policy_uses_existing_object_tag_conditions
+  (p : manage.Policy) : Result Bool := do
+  manage.policy_uses_existing_object_tag_conditions_loop p 0#usize
+
+/-- [rustfs_kernel::manage::bucket_policy_uses_existing_object_tag_conditions]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 250:4-257:1
+    Visibility: public -/
+@[rust_loop_body]
+def manage.bucket_policy_uses_existing_object_tag_conditions_loop.body
+  (p : manage.BucketPolicy) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := alloc.vec.Vec.len p.statements
+  if i < i1
+  then
+    let b ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+        manage.BPStatement) p.statements i
+    let b1 ← manage.functions_use_existing_object_tag b.conditions
+    if b1
+    then ok (done true)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else ok (done false)
+
+/-- [rustfs_kernel::manage::bucket_policy_uses_existing_object_tag_conditions]: loop 0:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 250:4-257:1
+    Visibility: public -/
+@[rust_loop]
+def manage.bucket_policy_uses_existing_object_tag_conditions_loop
+  (p : manage.BucketPolicy) (i : Std.Usize) : Result Bool := do
+  loop
+    (fun i1 =>
+      manage.bucket_policy_uses_existing_object_tag_conditions_loop.body p i1)
+    i
+
+/-- [rustfs_kernel::manage::bucket_policy_uses_existing_object_tag_conditions]:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 248:0-257:1
+    Visibility: public -/
+@[reducible]
+def manage.bucket_policy_uses_existing_object_tag_conditions
+  (p : manage.BucketPolicy) : Result Bool := do
+  manage.bucket_policy_uses_existing_object_tag_conditions_loop p 0#usize
+
+/-- [rustfs_kernel::stmts::kms_only]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 135:4-141:5 -/
+@[rust_loop_body]
+def stmts.kms_only_loop.body
+  (rs : Slice rsrc.Resource) (out : alloc.vec.Vec rsrc.Resource)
+  (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec rsrc.Resource) × Std.Usize)
+    (alloc.vec.Vec rsrc.Resource))
+  := do
+  let i1 := Slice.len rs
+  if i < i1
+  then
+    let r ← Slice.index_usize rs i
+    let r1 ← rsrc.Resource.Insts.CoreCloneClone.clone r
+    let b ← rsrc.is_kms r1
+    let out1 ← if b
+                 then alloc.vec.Vec.push out r1
+                 else ok out
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
+  else ok (done out)
+
+/-- [rustfs_kernel::stmts::kms_only]: loop 0:
+    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 135:4-141:5 -/
+@[rust_loop]
+def stmts.kms_only_loop
+  (rs : Slice rsrc.Resource) (out : alloc.vec.Vec rsrc.Resource)
+  (i : Std.Usize) :
+  Result (alloc.vec.Vec rsrc.Resource)
+  := do
+  loop
+    (fun (out1, i1) => stmts.kms_only_loop.body rs out1 i1)
+    (out, i)
+
+/-- [rustfs_kernel::stmts::kms_only]:
+    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 132:0-143:1 -/
+@[reducible]
+def stmts.kms_only
+  (rs : Slice rsrc.Resource) : Result (alloc.vec.Vec rsrc.Resource) := do
+  stmts.kms_only_loop rs (alloc.vec.Vec.new rsrc.Resource) 0#usize
+
+/-- [rustfs_kernel::stmts::Args]
+    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 53:0-62:1
+    Visibility: public -/
+structure stmts.Args where
+  account : alloc.vec.Vec Std.U8
+  action : acts.Action
+  bucket : alloc.vec.Vec Std.U8
+  conditions : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec
+    (alloc.vec.Vec Std.U8)))
+  is_owner : Bool
+  object : alloc.vec.Vec Std.U8
+  claims : awsvars.ClaimStrings
+  deny_only : Bool
+
+/-- [rustfs_kernel::rsrc::set_is_match]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/rsrc.rs', lines 78:4-85:1
+    Visibility: public -/
+@[rust_loop_body]
+def rsrc.set_is_match_loop.body
+  (set : Slice rsrc.Resource) (resource : Slice Std.U8)
+  (conditions : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec
+  (alloc.vec.Vec Std.U8)))) (ctx : Option awsvars.VarContext) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := Slice.len set
+  if i < i1
+  then
+    let r ← Slice.index_usize set i
+    let b ← rsrc.resource_is_match r resource conditions ctx
+    if b
+    then ok (done true)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else ok (done false)
+
+/-- [rustfs_kernel::rsrc::set_is_match]: loop 0:
+    Source: 'ports/rustfs/kernel/src/rsrc.rs', lines 78:4-85:1
+    Visibility: public -/
+@[rust_loop]
+def rsrc.set_is_match_loop
+  (set : Slice rsrc.Resource) (resource : Slice Std.U8)
+  (conditions : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec
+  (alloc.vec.Vec Std.U8)))) (ctx : Option awsvars.VarContext) (i : Std.Usize) :
+  Result Bool
+  := do
+  loop
+    (fun i1 => rsrc.set_is_match_loop.body set resource conditions ctx i1)
+    i
+
+/-- [rustfs_kernel::rsrc::set_is_match]:
+    Source: 'ports/rustfs/kernel/src/rsrc.rs', lines 76:0-85:1
+    Visibility: public -/
+@[reducible]
+def rsrc.set_is_match
+  (set : Slice rsrc.Resource) (resource : Slice Std.U8)
+  (conditions : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec
+  (alloc.vec.Vec Std.U8)))) (ctx : Option awsvars.VarContext) :
+  Result Bool
+  := do
+  rsrc.set_is_match_loop set resource conditions ctx 0#usize
+
+/-- [rustfs_kernel::stmts::kms_key_scope_matches]:
+    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 146:0-165:1 -/
+def stmts.kms_key_scope_matches
+  (st : stmts.Statement) (args : stmts.Args) (ctx : Option awsvars.VarContext)
+  :
+  Result Bool
+  := do
+  let b ←
+    acts.Family.Insts.CoreCmpPartialEqFamily.eq args.action.family
+      acts.Family.Kms
+  let backup_restore ←
+    if b
+    then
+      do
+      let s := alloc.vec.Vec.deref args.action.name
+      let s1 ←
+        lift (Array.to_slice
+          (Array.make 10#usize [
+            107#u8, 109#u8, 115#u8, 58#u8, 66#u8, 97#u8, 99#u8, 107#u8, 117#u8,
+            112#u8
+            ]))
+      let b1 ← bytes.eq s s1
+      if b1
+      then ok true
+      else
+        let s2 := alloc.vec.Vec.deref args.action.name
+        let s3 ←
+          lift (Array.to_slice
+            (Array.make 11#usize [
+              107#u8, 109#u8, 115#u8, 58#u8, 82#u8, 101#u8, 115#u8, 116#u8,
+              111#u8, 114#u8, 101#u8
+              ]))
+        bytes.eq s2 s3
+    else ok false
+  if backup_restore
+  then
+    let i := alloc.vec.Vec.len st.resources
+    if i > 0#usize
+    then
+      stmts.Effect.Insts.CoreCmpPartialEqEffect.eq st.effect stmts.Effect.Deny
+    else
+      let i1 := alloc.vec.Vec.len st.not_resources
+      if i1 > 0#usize
+      then
+        stmts.Effect.Insts.CoreCmpPartialEqEffect.eq st.effect
+          stmts.Effect.Deny
+      else
+        let s := alloc.vec.Vec.deref st.resources
+        let kms_resources ← stmts.kms_only s
+        let s1 := alloc.vec.Vec.deref st.not_resources
+        let kms_not_resources ← stmts.kms_only s1
+        let i2 := alloc.vec.Vec.len kms_resources
+        if i2 = 0#usize
+        then
+          let i3 := alloc.vec.Vec.len kms_not_resources
+          if i3 = 0#usize
+          then ok true
+          else
+            let i4 := alloc.vec.Vec.len args.object
+            if i4 = 0#usize
+            then ok true
+            else
+              let s2 ←
+                lift (Array.to_slice
+                  (Array.make 4#usize [ 107#u8, 101#u8, 121#u8, 47#u8 ]))
+              let s3 := alloc.vec.Vec.deref args.object
+              let requested ← bytes.concat s2 s3
+              let i5 := alloc.vec.Vec.len kms_resources
+              if i5 > 0#usize
+              then
+                let s4 := alloc.vec.Vec.deref kms_resources
+                let s5 := alloc.vec.Vec.deref requested
+                let b1 ← rsrc.set_is_match s4 s5 args.conditions ctx
+                if b1
+                then
+                  let s6 := alloc.vec.Vec.deref kms_not_resources
+                  let s7 := alloc.vec.Vec.deref requested
+                  let b2 ← rsrc.set_is_match s6 s7 args.conditions ctx
+                  ok (¬ b2)
+                else ok false
+              else
+                let s4 := alloc.vec.Vec.deref kms_not_resources
+                let s5 := alloc.vec.Vec.deref requested
+                let b1 ← rsrc.set_is_match s4 s5 args.conditions ctx
+                ok (¬ b1)
+        else
+          let i3 := alloc.vec.Vec.len args.object
+          if i3 = 0#usize
+          then ok true
+          else
+            let s2 ←
+              lift (Array.to_slice
+                (Array.make 4#usize [ 107#u8, 101#u8, 121#u8, 47#u8 ]))
+            let s3 := alloc.vec.Vec.deref args.object
+            let requested ← bytes.concat s2 s3
+            let i4 := alloc.vec.Vec.len kms_resources
+            if i4 > 0#usize
+            then
+              let s4 := alloc.vec.Vec.deref kms_resources
+              let s5 := alloc.vec.Vec.deref requested
+              let b1 ← rsrc.set_is_match s4 s5 args.conditions ctx
+              if b1
+              then
+                let s6 := alloc.vec.Vec.deref kms_not_resources
+                let s7 := alloc.vec.Vec.deref requested
+                let b2 ← rsrc.set_is_match s6 s7 args.conditions ctx
+                ok (¬ b2)
+              else ok false
+            else
+              let s4 := alloc.vec.Vec.deref kms_not_resources
+              let s5 := alloc.vec.Vec.deref requested
+              let b1 ← rsrc.set_is_match s4 s5 args.conditions ctx
+              ok (¬ b1)
+  else
+    let s := alloc.vec.Vec.deref st.resources
+    let kms_resources ← stmts.kms_only s
+    let s1 := alloc.vec.Vec.deref st.not_resources
+    let kms_not_resources ← stmts.kms_only s1
+    let i := alloc.vec.Vec.len kms_resources
+    if i = 0#usize
+    then
+      let i1 := alloc.vec.Vec.len kms_not_resources
+      if i1 = 0#usize
+      then ok true
+      else
+        let i2 := alloc.vec.Vec.len args.object
+        if i2 = 0#usize
+        then ok true
+        else
+          let s2 ←
+            lift (Array.to_slice
+              (Array.make 4#usize [ 107#u8, 101#u8, 121#u8, 47#u8 ]))
+          let s3 := alloc.vec.Vec.deref args.object
+          let requested ← bytes.concat s2 s3
+          let i3 := alloc.vec.Vec.len kms_resources
+          if i3 > 0#usize
+          then
+            let s4 := alloc.vec.Vec.deref kms_resources
+            let s5 := alloc.vec.Vec.deref requested
+            let b1 ← rsrc.set_is_match s4 s5 args.conditions ctx
+            if b1
+            then
+              let s6 := alloc.vec.Vec.deref kms_not_resources
+              let s7 := alloc.vec.Vec.deref requested
+              let b2 ← rsrc.set_is_match s6 s7 args.conditions ctx
+              ok (¬ b2)
+            else ok false
+          else
+            let s4 := alloc.vec.Vec.deref kms_not_resources
+            let s5 := alloc.vec.Vec.deref requested
+            let b1 ← rsrc.set_is_match s4 s5 args.conditions ctx
+            ok (¬ b1)
+    else
+      let i1 := alloc.vec.Vec.len args.object
+      if i1 = 0#usize
+      then ok true
+      else
+        let s2 ←
+          lift (Array.to_slice
+            (Array.make 4#usize [ 107#u8, 101#u8, 121#u8, 47#u8 ]))
+        let s3 := alloc.vec.Vec.deref args.object
+        let requested ← bytes.concat s2 s3
+        let i2 := alloc.vec.Vec.len kms_resources
+        if i2 > 0#usize
+        then
+          let s4 := alloc.vec.Vec.deref kms_resources
+          let s5 := alloc.vec.Vec.deref requested
+          let b1 ← rsrc.set_is_match s4 s5 args.conditions ctx
+          if b1
+          then
+            let s6 := alloc.vec.Vec.deref kms_not_resources
+            let s7 := alloc.vec.Vec.deref requested
+            let b2 ← rsrc.set_is_match s6 s7 args.conditions ctx
+            ok (¬ b2)
+          else ok false
+        else
+          let s4 := alloc.vec.Vec.deref kms_not_resources
+          let s5 := alloc.vec.Vec.deref requested
+          let b1 ← rsrc.set_is_match s4 s5 args.conditions ctx
+          ok (¬ b1)
+
+/-- [rustfs_kernel::stmts::has_family]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 112:4-119:1 -/
+@[rust_loop_body]
+def stmts.has_family_loop.body
+  (actions : Slice acts.Action) (f : acts.Family) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := Slice.len actions
+  if i < i1
+  then
+    let a ← Slice.index_usize actions i
+    let b ← acts.Family.Insts.CoreCmpPartialEqFamily.eq a.family f
+    if b
+    then ok (done true)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else ok (done false)
+
+/-- [rustfs_kernel::stmts::has_family]: loop 0:
+    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 112:4-119:1 -/
+@[rust_loop]
+def stmts.has_family_loop
+  (actions : Slice acts.Action) (f : acts.Family) (i : Std.Usize) :
+  Result Bool
+  := do
+  loop
+    (fun i1 => stmts.has_family_loop.body actions f i1)
+    i
+
+/-- [rustfs_kernel::stmts::has_family]:
+    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 110:0-119:1 -/
+@[reducible]
+def stmts.has_family
+  (actions : Slice acts.Action) (f : acts.Family) : Result Bool := do
+  stmts.has_family_loop actions f 0#usize
+
+/-- [rustfs_kernel::stmts::skips_resource_match]:
+    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 122:0-130:1 -/
+def stmts.skips_resource_match
+  (st : stmts.Statement) (args : stmts.Args) : Result Bool := do
+  let s := alloc.vec.Vec.deref st.actions
+  let b ← stmts.has_family s acts.Family.Sts
+  if b
+  then ok true
+  else
+    let s1 := alloc.vec.Vec.deref st.actions
+    let b1 ← stmts.has_family s1 acts.Family.Admin
+    if b1
+    then
+      let b2 ←
+        acts.Family.Insts.CoreCmpPartialEqFamily.eq args.action.family
+          acts.Family.Admin
+      let b3 ←
+        if b2
+        then acts.is_table_resource_scoped args.action
+        else ok false
+      ok (¬ b3)
+    else ok false
+
+/-- [rustfs_kernel::stmts::is_list_bucket]:
+    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 90:0-94:1 -/
+def stmts.is_list_bucket (a : acts.Action) : Result Bool := do
+  let b ← acts.Family.Insts.CoreCmpPartialEqFamily.eq a.family acts.Family.S3
+  if b
+  then
+    let s := alloc.vec.Vec.deref a.name
+    let s1 ←
+      lift (Array.to_slice
+        (Array.make 13#usize [
+          115#u8, 51#u8, 58#u8, 76#u8, 105#u8, 115#u8, 116#u8, 66#u8, 117#u8,
+          99#u8, 107#u8, 101#u8, 116#u8
+          ]))
+    let b1 ← bytes.eq s s1
+    if b1
+    then ok true
+    else
+      let s2 := alloc.vec.Vec.deref a.name
+      let s3 ←
+        lift (Array.to_slice
+          (Array.make 21#usize [
+            115#u8, 51#u8, 58#u8, 76#u8, 105#u8, 115#u8, 116#u8, 66#u8, 117#u8,
+            99#u8, 107#u8, 101#u8, 116#u8, 86#u8, 101#u8, 114#u8, 115#u8,
+            105#u8, 111#u8, 110#u8, 115#u8
+            ]))
+      let b2 ← bytes.eq s2 s3
+      if b2
+      then ok true
+      else
+        let s4 := alloc.vec.Vec.deref a.name
+        let s5 ←
+          lift (Array.to_slice
+            (Array.make 29#usize [
+              115#u8, 51#u8, 58#u8, 76#u8, 105#u8, 115#u8, 116#u8, 66#u8,
+              117#u8, 99#u8, 107#u8, 101#u8, 116#u8, 77#u8, 117#u8, 108#u8,
+              116#u8, 105#u8, 112#u8, 97#u8, 114#u8, 116#u8, 85#u8, 112#u8,
+              108#u8, 111#u8, 97#u8, 100#u8, 115#u8
+              ]))
+        bytes.eq s4 s5
+  else ok false
+
+/-- [rustfs_kernel::stmts::build_resource]:
+    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 97:0-108:1
+    Visibility: public -/
+def stmts.build_resource
+  (a : acts.Action) (bucket : Slice Std.U8) (object : Slice Std.U8)
+  (bucket_resource_only : Bool) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  let b ← stmts.is_list_bucket a
+  let bucket_only ← if b
+                      then ok bucket_resource_only
+                      else ok false
+  let resource ← alloc.slice.Slice.to_vec core.clone.CloneU8 bucket
+  if bucket_only
+  then alloc.vec.Vec.push resource 47#u8
+  else
+    let i := Slice.len object
+    if i = 0#usize
+    then alloc.vec.Vec.push resource 47#u8
+    else
+      let i1 ← Slice.index_usize object 0#usize
+      let resource1 ←
+        if i1 = 47#u8
+        then ok resource
+        else alloc.vec.Vec.push resource 47#u8
+      let s := alloc.vec.Vec.deref resource1
+      bytes.concat s object
+
+/-- [rustfs_kernel::stmts::reaches_condition_eval]:
+    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 168:0-192:1
+    Visibility: public -/
+def stmts.reaches_condition_eval
+  (st : stmts.Statement) (args : stmts.Args) (ctx : Option awsvars.VarContext)
+  :
+  Result Bool
+  := do
+  let deny ←
+    stmts.Effect.Insts.CoreCmpPartialEqEffect.eq st.effect stmts.Effect.Deny
+  let s := alloc.vec.Vec.deref st.actions
+  let s1 := alloc.vec.Vec.deref st.not_actions
+  let b ← acts.statement_covers s s1 args.action deny
+  if b
+  then
+    let s2 := alloc.vec.Vec.deref st.actions
+    let b1 ← stmts.has_family s2 acts.Family.Kms
+    if b1
+    then stmts.kms_key_scope_matches st args ctx
+    else
+      let s3 := alloc.vec.Vec.deref args.bucket
+      let s4 := alloc.vec.Vec.deref args.object
+      let s5 ←
+        lift (Array.to_slice
+          (Array.make 9#usize [
+            115#u8, 51#u8, 58#u8, 112#u8, 114#u8, 101#u8, 102#u8, 105#u8,
+            120#u8
+            ]))
+      let b2 ← condfuncs.references_key_name st.conditions s5
+      let resource ← stmts.build_resource args.action s3 s4 b2
+      let s6 := alloc.vec.Vec.deref st.actions
+      let is_admin ← stmts.has_family s6 acts.Family.Admin
+      let s7 := alloc.vec.Vec.deref st.actions
+      let is_sts ← stmts.has_family s7 acts.Family.Sts
+      let i := alloc.vec.Vec.len st.resources
+      if i = 0#usize
+      then
+        let i1 := alloc.vec.Vec.len st.not_resources
+        if i1 = 0#usize
+        then
+          if is_admin
+          then
+            let i2 := alloc.vec.Vec.len st.resources
+            if i2 > 0#usize
+            then
+              let s8 := alloc.vec.Vec.deref st.resources
+              let s9 := alloc.vec.Vec.deref resource
+              let b3 ← rsrc.set_is_match s8 s9 args.conditions ctx
+              if b3
+              then
+                let i3 := alloc.vec.Vec.len st.not_resources
+                if i3 > 0#usize
+                then
+                  let s10 := alloc.vec.Vec.deref st.not_resources
+                  let s11 := alloc.vec.Vec.deref resource
+                  let b4 ← rsrc.set_is_match s10 s11 args.conditions ctx
+                  if b4
+                  then
+                    let b5 ← stmts.skips_resource_match st args
+                    if b5
+                    then ok true
+                    else ok false
+                  else ok true
+                else ok true
+              else
+                let b4 ← stmts.skips_resource_match st args
+                if b4
+                then
+                  let i3 := alloc.vec.Vec.len st.not_resources
+                  if i3 > 0#usize
+                  then
+                    let s10 := alloc.vec.Vec.deref st.not_resources
+                    let s11 := alloc.vec.Vec.deref resource
+                    let b5 ← rsrc.set_is_match s10 s11 args.conditions ctx
+                    if b5
+                    then if b4
+                         then ok true
+                         else ok false
+                    else ok true
+                  else ok true
+                else ok false
+            else
+              let i3 := alloc.vec.Vec.len st.not_resources
+              if i3 > 0#usize
+              then
+                let s8 := alloc.vec.Vec.deref st.not_resources
+                let s9 := alloc.vec.Vec.deref resource
+                let b3 ← rsrc.set_is_match s8 s9 args.conditions ctx
+                if b3
+                then
+                  let b4 ← stmts.skips_resource_match st args
+                  if b4
+                  then ok true
+                  else ok false
+                else ok true
+              else ok true
+          else
+            if is_sts
+            then
+              let i2 := alloc.vec.Vec.len st.resources
+              if i2 > 0#usize
+              then
+                let s8 := alloc.vec.Vec.deref st.resources
+                let s9 := alloc.vec.Vec.deref resource
+                let b3 ← rsrc.set_is_match s8 s9 args.conditions ctx
+                if b3
+                then
+                  let i3 := alloc.vec.Vec.len st.not_resources
+                  if i3 > 0#usize
+                  then
+                    let s10 := alloc.vec.Vec.deref st.not_resources
+                    let s11 := alloc.vec.Vec.deref resource
+                    let b4 ← rsrc.set_is_match s10 s11 args.conditions ctx
+                    if b4
+                    then
+                      let b5 ← stmts.skips_resource_match st args
+                      if b5
+                      then ok true
+                      else ok false
+                    else ok true
+                  else ok true
+                else
+                  let b4 ← stmts.skips_resource_match st args
+                  if b4
+                  then
+                    let i3 := alloc.vec.Vec.len st.not_resources
+                    if i3 > 0#usize
+                    then
+                      let s10 := alloc.vec.Vec.deref st.not_resources
+                      let s11 := alloc.vec.Vec.deref resource
+                      let b5 ← rsrc.set_is_match s10 s11 args.conditions ctx
+                      if b5
+                      then if b4
+                           then ok true
+                           else ok false
+                      else ok true
+                    else ok true
+                  else ok false
+              else
+                let i3 := alloc.vec.Vec.len st.not_resources
+                if i3 > 0#usize
+                then
+                  let s8 := alloc.vec.Vec.deref st.not_resources
+                  let s9 := alloc.vec.Vec.deref resource
+                  let b3 ← rsrc.set_is_match s8 s9 args.conditions ctx
+                  if b3
+                  then
+                    let b4 ← stmts.skips_resource_match st args
+                    if b4
+                    then ok true
+                    else ok false
+                  else ok true
+                else ok true
+            else ok false
+        else
+          let i2 := alloc.vec.Vec.len st.resources
+          if i2 > 0#usize
+          then
+            let s8 := alloc.vec.Vec.deref st.resources
+            let s9 := alloc.vec.Vec.deref resource
+            let b3 ← rsrc.set_is_match s8 s9 args.conditions ctx
+            if b3
+            then
+              let i3 := alloc.vec.Vec.len st.not_resources
+              if i3 > 0#usize
+              then
+                let s10 := alloc.vec.Vec.deref st.not_resources
+                let s11 := alloc.vec.Vec.deref resource
+                let b4 ← rsrc.set_is_match s10 s11 args.conditions ctx
+                if b4
+                then
+                  let b5 ← stmts.skips_resource_match st args
+                  if b5
+                  then ok true
+                  else ok false
+                else ok true
+              else ok true
+            else
+              let b4 ← stmts.skips_resource_match st args
+              if b4
+              then
+                let i3 := alloc.vec.Vec.len st.not_resources
+                if i3 > 0#usize
+                then
+                  let s10 := alloc.vec.Vec.deref st.not_resources
+                  let s11 := alloc.vec.Vec.deref resource
+                  let b5 ← rsrc.set_is_match s10 s11 args.conditions ctx
+                  if b5
+                  then if b4
+                       then ok true
+                       else ok false
+                  else ok true
+                else ok true
+              else ok false
+          else
+            let i3 := alloc.vec.Vec.len st.not_resources
+            if i3 > 0#usize
+            then
+              let s8 := alloc.vec.Vec.deref st.not_resources
+              let s9 := alloc.vec.Vec.deref resource
+              let b3 ← rsrc.set_is_match s8 s9 args.conditions ctx
+              if b3
+              then
+                let b4 ← stmts.skips_resource_match st args
+                if b4
+                then ok true
+                else ok false
+              else ok true
+            else ok true
+      else
+        let i1 := alloc.vec.Vec.len st.resources
+        if i1 > 0#usize
+        then
+          let s8 := alloc.vec.Vec.deref st.resources
+          let s9 := alloc.vec.Vec.deref resource
+          let b3 ← rsrc.set_is_match s8 s9 args.conditions ctx
+          if b3
+          then
+            let i2 := alloc.vec.Vec.len st.not_resources
+            if i2 > 0#usize
+            then
+              let s10 := alloc.vec.Vec.deref st.not_resources
+              let s11 := alloc.vec.Vec.deref resource
+              let b4 ← rsrc.set_is_match s10 s11 args.conditions ctx
+              if b4
+              then
+                let b5 ← stmts.skips_resource_match st args
+                if b5
+                then ok true
+                else ok false
+              else ok true
+            else ok true
+          else
+            let b4 ← stmts.skips_resource_match st args
+            if b4
+            then
+              let i2 := alloc.vec.Vec.len st.not_resources
+              if i2 > 0#usize
+              then
+                let s10 := alloc.vec.Vec.deref st.not_resources
+                let s11 := alloc.vec.Vec.deref resource
+                let b5 ← rsrc.set_is_match s10 s11 args.conditions ctx
+                if b5
+                then if b4
+                     then ok true
+                     else ok false
+                else ok true
+              else ok true
+            else ok false
+        else
+          let i2 := alloc.vec.Vec.len st.not_resources
+          if i2 > 0#usize
+          then
+            let s8 := alloc.vec.Vec.deref st.not_resources
+            let s9 := alloc.vec.Vec.deref resource
+            let b3 ← rsrc.set_is_match s8 s9 args.conditions ctx
+            if b3
+            then
+              let b4 ← stmts.skips_resource_match st args
+              if b4
+              then ok true
+              else ok false
+            else ok true
+          else ok true
+  else ok false
+
+/-- [rustfs_kernel::stmts::resolver_for]:
+    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 76:0-88:1
+    Visibility: public -/
+def stmts.resolver_for
+  (args : stmts.Args) (env : condfuncs.Env) : Result awsvars.VarContext := do
+  let username ←
+    match args.claims.parent_str with
+    | none => alloc.vec.CloneVec.clone core.clone.CloneU8 args.account
+    | some p => alloc.vec.CloneVec.clone core.clone.CloneU8 p
+  let v ← alloc.vec.CloneVec.clone core.clone.CloneU8 args.account
+  let cs ← awsvars.ClaimStrings.Insts.CoreCloneClone.clone args.claims
+  let v1 ← alloc.vec.CloneVec.clone core.clone.CloneU8 env.now_rfc3339
+  let v2 ← alloc.vec.CloneVec.clone core.clone.CloneU8 env.now_epoch
+  ok
+    { username, account := v, claims := cs, now_rfc3339 := v1, now_epoch := v2
+    }
+
+/-- [rustfs_kernel::manage::policy_needs_existing_object_tag_for_args]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 268:4-278:1
+    Visibility: public -/
+@[rust_loop_body]
+def manage.policy_needs_existing_object_tag_for_args_loop.body
+  (p : manage.Policy) (args : stmts.Args) (vc : awsvars.VarContext)
+  (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := alloc.vec.Vec.len p.statements
+  if i < i1
+  then
+    let st ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+        manage.Statement) p.statements i
+    let b ← manage.functions_use_existing_object_tag st.conditions
+    if b
+    then
+      let s ← manage.statement_view st
+      let b1 ← stmts.reaches_condition_eval s args (some vc)
+      if b1
+      then ok (done true)
+      else let i2 ← i + 1#usize
+           ok (cont i2)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else ok (done false)
+
+/-- [rustfs_kernel::manage::policy_needs_existing_object_tag_for_args]: loop 0:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 268:4-278:1
+    Visibility: public -/
+@[rust_loop]
+def manage.policy_needs_existing_object_tag_for_args_loop
+  (p : manage.Policy) (args : stmts.Args) (vc : awsvars.VarContext)
+  (i : Std.Usize) :
+  Result Bool
+  := do
+  loop
+    (fun i1 => manage.policy_needs_existing_object_tag_for_args_loop.body p
+      args vc i1)
+    i
+
+/-- [rustfs_kernel::manage::policy_needs_existing_object_tag_for_args]:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 258:0-278:1
+    Visibility: public -/
+def manage.policy_needs_existing_object_tag_for_args
+  (p : manage.Policy) (args : stmts.Args) (env : condfuncs.Env) :
+  Result Bool
+  := do
+  let b ← manage.policy_uses_existing_object_tag_conditions p
+  if b
+  then
+    let vc ← stmts.resolver_for args env
+    manage.policy_needs_existing_object_tag_for_args_loop p args vc 0#usize
+  else ok false
+
+/-- [rustfs_kernel::stmts::all_kms]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 219:4-226:1 -/
+@[rust_loop_body]
+def stmts.all_kms_loop.body
+  (actions : Slice acts.Action) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := Slice.len actions
+  if i < i1
+  then
+    let a ← Slice.index_usize actions i
+    let b ←
+      core.cmp.PartialEq.ne.trait_default
+        acts.Family.Insts.CoreCmpPartialEqFamily a.family acts.Family.Kms
+    if b
+    then ok (done false)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else ok (done true)
+
+/-- [rustfs_kernel::stmts::all_kms]: loop 0:
+    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 219:4-226:1 -/
+@[rust_loop]
+def stmts.all_kms_loop
+  (actions : Slice acts.Action) (i : Std.Usize) : Result Bool := do
+  loop
+    (fun i1 => stmts.all_kms_loop.body actions i1)
+    i
+
+/-- [rustfs_kernel::stmts::all_kms]:
+    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 217:0-226:1 -/
+@[reducible]
+def stmts.all_kms (actions : Slice acts.Action) : Result Bool := do
+  stmts.all_kms_loop actions 0#usize
+
+/-- [rustfs_kernel::wildmatch::is_simple_match]:
+    Source: 'ports/rustfs/kernel/src/wildmatch.rs', lines 38:0-40:1
+    Visibility: public -/
+def wildmatch.is_simple_match
+  (pattern : Slice Std.U8) («name» : Slice Std.U8) : Result Bool := do
+  wildmatch.inner_match pattern «name» true
+
+/-- [rustfs_kernel::stmts::any_simple_match]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 203:4-210:1 -/
+@[rust_loop_body]
+def stmts.any_simple_match_loop.body
+  (patterns : Slice (alloc.vec.Vec Std.U8)) («name» : Slice Std.U8)
+  (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := Slice.len patterns
+  if i < i1
+  then
+    let v ← Slice.index_usize patterns i
+    let s := alloc.vec.Vec.deref v
+    let b ← wildmatch.is_simple_match s «name»
+    if b
+    then ok (done true)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else ok (done false)
+
+/-- [rustfs_kernel::stmts::any_simple_match]: loop 0:
+    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 203:4-210:1 -/
+@[rust_loop]
+def stmts.any_simple_match_loop
+  (patterns : Slice (alloc.vec.Vec Std.U8)) («name» : Slice Std.U8)
+  (i : Std.Usize) :
+  Result Bool
+  := do
+  loop
+    (fun i1 => stmts.any_simple_match_loop.body patterns «name» i1)
+    i
+
+/-- [rustfs_kernel::stmts::any_simple_match]:
+    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 201:0-210:1 -/
+@[reducible]
+def stmts.any_simple_match
+  (patterns : Slice (alloc.vec.Vec Std.U8)) («name» : Slice Std.U8) :
+  Result Bool
+  := do
+  stmts.any_simple_match_loop patterns «name» 0#usize
+
+/-- [rustfs_kernel::stmts::principal_is_match]:
+    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 213:0-215:1
+    Visibility: public -/
+def stmts.principal_is_match
+  (p : stmts.Principal) (account : Slice Std.U8) : Result Bool := do
+  let s := alloc.vec.Vec.deref p.aws
+  let b ← stmts.any_simple_match s account
+  if b
+  then ok true
+  else
+    let s1 := alloc.vec.Vec.deref p.service
+    stmts.any_simple_match s1 account
+
+/-- [rustfs_kernel::stmts::BucketPolicyArgs]
+    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 66:0-73:1
+    Visibility: public -/
+structure stmts.BucketPolicyArgs where
+  account : alloc.vec.Vec Std.U8
+  action : acts.Action
+  bucket : alloc.vec.Vec Std.U8
+  conditions : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec
+    (alloc.vec.Vec Std.U8)))
+  is_owner : Bool
+  object : alloc.vec.Vec Std.U8
+
+/-- [rustfs_kernel::stmts::bp_reaches_condition_eval]:
+    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 229:0-250:1
+    Visibility: public -/
+def stmts.bp_reaches_condition_eval
+  (st : stmts.BPStatement) (args : stmts.BucketPolicyArgs) : Result Bool := do
+  let i := alloc.vec.Vec.len st.actions
+  if i > 0#usize
+  then
+    let s := alloc.vec.Vec.deref st.actions
+    let b ← stmts.all_kms s
+    if b
+    then ok false
+    else
+      let s1 := alloc.vec.Vec.deref args.account
+      let b1 ← stmts.principal_is_match st.principal s1
+      if b1
+      then
+        let deny ←
+          stmts.Effect.Insts.CoreCmpPartialEqEffect.eq st.effect
+            stmts.Effect.Deny
+        let s2 := alloc.vec.Vec.deref st.actions
+        let s3 := alloc.vec.Vec.deref st.not_actions
+        let b2 ← acts.statement_covers s2 s3 args.action deny
+        if b2
+        then
+          let s4 := alloc.vec.Vec.deref args.bucket
+          let s5 := alloc.vec.Vec.deref args.object
+          let s6 ←
+            lift (Array.to_slice
+              (Array.make 9#usize [
+                115#u8, 51#u8, 58#u8, 112#u8, 114#u8, 101#u8, 102#u8, 105#u8,
+                120#u8
+                ]))
+          let b3 ← condfuncs.references_key_name st.conditions s6
+          let resource ← stmts.build_resource args.action s4 s5 b3
+          let i1 := alloc.vec.Vec.len st.resources
+          if i1 > 0#usize
+          then
+            let s7 := alloc.vec.Vec.deref st.resources
+            let s8 := alloc.vec.Vec.deref resource
+            let b4 ← rsrc.set_is_match s7 s8 args.conditions none
+            if b4
+            then
+              let i2 := alloc.vec.Vec.len st.not_resources
+              if i2 > 0#usize
+              then
+                let s9 := alloc.vec.Vec.deref st.not_resources
+                let s10 := alloc.vec.Vec.deref resource
+                let b5 ← rsrc.set_is_match s9 s10 args.conditions none
+                if b5
+                then ok false
+                else ok true
+              else ok true
+            else ok false
+          else
+            let i2 := alloc.vec.Vec.len st.not_resources
+            if i2 > 0#usize
+            then
+              let s7 := alloc.vec.Vec.deref st.not_resources
+              let s8 := alloc.vec.Vec.deref resource
+              let b4 ← rsrc.set_is_match s7 s8 args.conditions none
+              if b4
+              then ok false
+              else ok true
+            else ok true
+        else ok false
+      else ok false
+  else
+    let s := alloc.vec.Vec.deref args.account
+    let b ← stmts.principal_is_match st.principal s
+    if b
+    then
+      let deny ←
+        stmts.Effect.Insts.CoreCmpPartialEqEffect.eq st.effect
+          stmts.Effect.Deny
+      let s1 := alloc.vec.Vec.deref st.actions
+      let s2 := alloc.vec.Vec.deref st.not_actions
+      let b1 ← acts.statement_covers s1 s2 args.action deny
+      if b1
+      then
+        let s3 := alloc.vec.Vec.deref args.bucket
+        let s4 := alloc.vec.Vec.deref args.object
+        let s5 ←
+          lift (Array.to_slice
+            (Array.make 9#usize [
+              115#u8, 51#u8, 58#u8, 112#u8, 114#u8, 101#u8, 102#u8, 105#u8,
+              120#u8
+              ]))
+        let b2 ← condfuncs.references_key_name st.conditions s5
+        let resource ← stmts.build_resource args.action s3 s4 b2
+        let i1 := alloc.vec.Vec.len st.resources
+        if i1 > 0#usize
+        then
+          let s6 := alloc.vec.Vec.deref st.resources
+          let s7 := alloc.vec.Vec.deref resource
+          let b3 ← rsrc.set_is_match s6 s7 args.conditions none
+          if b3
+          then
+            let i2 := alloc.vec.Vec.len st.not_resources
+            if i2 > 0#usize
+            then
+              let s8 := alloc.vec.Vec.deref st.not_resources
+              let s9 := alloc.vec.Vec.deref resource
+              let b4 ← rsrc.set_is_match s8 s9 args.conditions none
+              if b4
+              then ok false
+              else ok true
+            else ok true
+          else ok false
+        else
+          let i2 := alloc.vec.Vec.len st.not_resources
+          if i2 > 0#usize
+          then
+            let s6 := alloc.vec.Vec.deref st.not_resources
+            let s7 := alloc.vec.Vec.deref resource
+            let b3 ← rsrc.set_is_match s6 s7 args.conditions none
+            if b3
+            then ok false
+            else ok true
+          else ok true
+      else ok false
+    else ok false
+
+/-- [rustfs_kernel::manage::bucket_policy_needs_existing_object_tag_for_args]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 287:4-297:1
+    Visibility: public -/
+@[rust_loop_body]
+def manage.bucket_policy_needs_existing_object_tag_for_args_loop.body
+  (p : manage.BucketPolicy) (args : stmts.BucketPolicyArgs) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := alloc.vec.Vec.len p.statements
+  if i < i1
+  then
+    let st ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+        manage.BPStatement) p.statements i
+    let b ← manage.functions_use_existing_object_tag st.conditions
+    if b
+    then
+      let b1 ← manage.bp_statement_view st
+      let b2 ← stmts.bp_reaches_condition_eval b1 args
+      if b2
+      then ok (done true)
+      else let i2 ← i + 1#usize
+           ok (cont i2)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else ok (done false)
+
+/-- [rustfs_kernel::manage::bucket_policy_needs_existing_object_tag_for_args]: loop 0:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 287:4-297:1
+    Visibility: public -/
+@[rust_loop]
+def manage.bucket_policy_needs_existing_object_tag_for_args_loop
+  (p : manage.BucketPolicy) (args : stmts.BucketPolicyArgs) (i : Std.Usize) :
+  Result Bool
+  := do
+  loop
+    (fun i1 =>
+      manage.bucket_policy_needs_existing_object_tag_for_args_loop.body p args
+      i1)
+    i
+
+/-- [rustfs_kernel::manage::bucket_policy_needs_existing_object_tag_for_args]:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 279:0-297:1
+    Visibility: public -/
+def manage.bucket_policy_needs_existing_object_tag_for_args
+  (p : manage.BucketPolicy) (args : stmts.BucketPolicyArgs) : Result Bool := do
+  let b ← manage.bucket_policy_uses_existing_object_tag_conditions p
+  if b
+  then
+    manage.bucket_policy_needs_existing_object_tag_for_args_loop p args 0#usize
+  else ok false
+
+/-- [rustfs_kernel::stmts::effect_is_allowed]:
+    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 16:0-21:1
+    Visibility: public -/
+def stmts.effect_is_allowed
+  (e : stmts.Effect) (allowed : Bool) : Result Bool := do
+  match e with
+  | stmts.Effect.Allow => ok allowed
+  | stmts.Effect.Deny => ok (¬ allowed)
+
+/-- [rustfs_kernel::manage::statement_is_allowed]:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 299:0-310:1
+    Visibility: public -/
+def manage.statement_is_allowed
+  (st : manage.Statement) (args : stmts.Args) (env : condfuncs.Env) :
+  Result Bool
+  := do
+  let vc ← stmts.resolver_for args env
+  let s ← manage.statement_view st
+  let b ← stmts.reaches_condition_eval s args (some vc)
+  let b1 ←
+    if b
+    then
+      conddata.functions_evaluate st.conditions args.conditions (some vc) env
+    else ok false
+  stmts.effect_is_allowed st.effect b1
+
+/-- [rustfs_kernel::manage::bp_statement_is_allowed]:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 311:0-321:1
+    Visibility: public -/
+def manage.bp_statement_is_allowed
+  (st : manage.BPStatement) (args : stmts.BucketPolicyArgs)
+  (env : condfuncs.Env) :
+  Result Bool
+  := do
+  let b ← manage.bp_statement_view st
+  let b1 ← stmts.bp_reaches_condition_eval b args
+  let b2 ←
+    if b1
+    then conddata.functions_evaluate st.conditions args.conditions none env
+    else ok false
+  stmts.effect_is_allowed st.effect b2
+
+/-- [rustfs_kernel::manage::allows_match]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 348:10-349:33 -/
+@[rust_loop_body]
+def manage.allows_match_loop.body
+  (p : manage.Policy) (args : stmts.Args) (env : condfuncs.Env) (i : Std.Usize)
+  :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := alloc.vec.Vec.len p.statements
+  if i < i1
+  then
+    let st ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+        manage.Statement) p.statements i
+    let b ←
+      stmts.Effect.Insts.CoreCmpPartialEqEffect.eq st.effect stmts.Effect.Allow
+    if b
+    then
+      let b1 ← manage.statement_is_allowed st args env
+      if b1
+      then ok (done true)
+      else let i2 ← i + 1#usize
+           ok (cont i2)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else ok (done false)
+
+/-- [rustfs_kernel::manage::allows_match]: loop 0:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 348:10-349:33 -/
+@[rust_loop]
+def manage.allows_match_loop
+  (p : manage.Policy) (args : stmts.Args) (env : condfuncs.Env) (i : Std.Usize)
+  :
+  Result Bool
+  := do
+  loop
+    (fun i1 => manage.allows_match_loop.body p args env i1)
+    i
+
+/-- [rustfs_kernel::manage::allows_match]:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 346:0-356:1 -/
+@[reducible]
+def manage.allows_match
+  (p : manage.Policy) (args : stmts.Args) (env : condfuncs.Env) :
+  Result Bool
+  := do
+  manage.allows_match_loop p args env 0#usize
+
+/-- [rustfs_kernel::manage::denies_clear]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 337:10-338:33 -/
+@[rust_loop_body]
+def manage.denies_clear_loop.body
+  (p : manage.Policy) (args : stmts.Args) (env : condfuncs.Env) (i : Std.Usize)
+  :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := alloc.vec.Vec.len p.statements
+  if i < i1
+  then
+    let st ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+        manage.Statement) p.statements i
+    let b ←
+      stmts.Effect.Insts.CoreCmpPartialEqEffect.eq st.effect stmts.Effect.Deny
+    if b
+    then
+      let b1 ← manage.statement_is_allowed st args env
+      if b1
+      then let i2 ← i + 1#usize
+           ok (cont i2)
+      else ok (done false)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else ok (done true)
+
+/-- [rustfs_kernel::manage::denies_clear]: loop 0:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 337:10-338:33 -/
+@[rust_loop]
+def manage.denies_clear_loop
+  (p : manage.Policy) (args : stmts.Args) (env : condfuncs.Env) (i : Std.Usize)
+  :
+  Result Bool
+  := do
+  loop
+    (fun i1 => manage.denies_clear_loop.body p args env i1)
+    i
+
+/-- [rustfs_kernel::manage::denies_clear]:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 335:0-345:1 -/
+@[reducible]
+def manage.denies_clear
+  (p : manage.Policy) (args : stmts.Args) (env : condfuncs.Env) :
+  Result Bool
+  := do
+  manage.denies_clear_loop p args env 0#usize
+
+/-- [rustfs_kernel::manage::policy_is_allowed]:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 322:0-334:1
+    Visibility: public -/
+def manage.policy_is_allowed
+  (p : manage.Policy) (args : stmts.Args) (env : condfuncs.Env) :
+  Result Bool
+  := do
+  let b ← manage.denies_clear p args env
+  if b
+  then
+    if args.deny_only
+    then ok true
+    else if args.is_owner
+         then ok true
+         else manage.allows_match p args env
+  else ok false
+
+/-- [rustfs_kernel::manage::bucket_allows_match]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 391:10-392:33 -/
+@[rust_loop_body]
+def manage.bucket_allows_match_loop.body
+  (p : manage.BucketPolicy) (args : stmts.BucketPolicyArgs)
+  (env : condfuncs.Env) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := alloc.vec.Vec.len p.statements
+  if i < i1
+  then
+    let st ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+        manage.BPStatement) p.statements i
+    let b ←
+      stmts.Effect.Insts.CoreCmpPartialEqEffect.eq st.effect stmts.Effect.Allow
+    if b
+    then
+      let b1 ← manage.bp_statement_is_allowed st args env
+      if b1
+      then ok (done true)
+      else let i2 ← i + 1#usize
+           ok (cont i2)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else ok (done false)
+
+/-- [rustfs_kernel::manage::bucket_allows_match]: loop 0:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 391:10-392:33 -/
+@[rust_loop]
+def manage.bucket_allows_match_loop
+  (p : manage.BucketPolicy) (args : stmts.BucketPolicyArgs)
+  (env : condfuncs.Env) (i : Std.Usize) :
+  Result Bool
+  := do
+  loop
+    (fun i1 => manage.bucket_allows_match_loop.body p args env i1)
+    i
+
+/-- [rustfs_kernel::manage::bucket_allows_match]:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 385:0-399:1 -/
+@[reducible]
+def manage.bucket_allows_match
+  (p : manage.BucketPolicy) (args : stmts.BucketPolicyArgs)
+  (env : condfuncs.Env) :
+  Result Bool
+  := do
+  manage.bucket_allows_match_loop p args env 0#usize
+
+/-- [rustfs_kernel::manage::bucket_denies_clear]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 376:10-377:33 -/
+@[rust_loop_body]
+def manage.bucket_denies_clear_loop.body
+  (p : manage.BucketPolicy) (args : stmts.BucketPolicyArgs)
+  (env : condfuncs.Env) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := alloc.vec.Vec.len p.statements
+  if i < i1
+  then
+    let st ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+        manage.BPStatement) p.statements i
+    let b ←
+      stmts.Effect.Insts.CoreCmpPartialEqEffect.eq st.effect stmts.Effect.Deny
+    if b
+    then
+      let b1 ← manage.bp_statement_is_allowed st args env
+      if b1
+      then let i2 ← i + 1#usize
+           ok (cont i2)
+      else ok (done false)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else ok (done true)
+
+/-- [rustfs_kernel::manage::bucket_denies_clear]: loop 0:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 376:10-377:33 -/
+@[rust_loop]
+def manage.bucket_denies_clear_loop
+  (p : manage.BucketPolicy) (args : stmts.BucketPolicyArgs)
+  (env : condfuncs.Env) (i : Std.Usize) :
+  Result Bool
+  := do
+  loop
+    (fun i1 => manage.bucket_denies_clear_loop.body p args env i1)
+    i
+
+/-- [rustfs_kernel::manage::bucket_denies_clear]:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 370:0-384:1 -/
+@[reducible]
+def manage.bucket_denies_clear
+  (p : manage.BucketPolicy) (args : stmts.BucketPolicyArgs)
+  (env : condfuncs.Env) :
+  Result Bool
+  := do
+  manage.bucket_denies_clear_loop p args env 0#usize
+
+/-- [rustfs_kernel::manage::bucket_policy_is_allowed]:
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 357:0-369:1
+    Visibility: public -/
+def manage.bucket_policy_is_allowed
+  (p : manage.BucketPolicy) (args : stmts.BucketPolicyArgs)
+  (env : condfuncs.Env) :
+  Result Bool
+  := do
+  let b ← manage.bucket_denies_clear p args env
+  if b
+  then if args.is_owner
+       then ok true
+       else manage.bucket_allows_match p args env
+  else ok false
+
+/-- [rustfs_kernel::stmts::statement_is_allowed]:
+    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 195:0-199:1
+    Visibility: public -/
+def stmts.statement_is_allowed
+  (st : stmts.Statement) (args : stmts.Args) (env : condfuncs.Env) :
+  Result Bool
+  := do
+  let vc ← stmts.resolver_for args env
+  let b ← stmts.reaches_condition_eval st args (some vc)
+  let (st1, check) ←
+    if b
+    then
+      do
+      let check1 ←
+        condfuncs.functions_evaluate st.conditions args.conditions (some vc)
+          env
+      ok (st, check1)
+    else ok (st, false)
+  stmts.effect_is_allowed st1.effect check
+
+/-- [rustfs_kernel::policies::denies_pass]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/policies.rs', lines 7:4-14:1 -/
+@[rust_loop_body]
+def policies.denies_pass_loop.body
+  (sts : Slice stmts.Statement) (args : stmts.Args) (env : condfuncs.Env)
+  (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := Slice.len sts
+  if i < i1
+  then
+    let s ← Slice.index_usize sts i
+    let b ←
+      stmts.Effect.Insts.CoreCmpPartialEqEffect.eq s.effect stmts.Effect.Deny
+    if b
+    then
+      let b1 ← stmts.statement_is_allowed s args env
+      if b1
+      then let i2 ← i + 1#usize
+           ok (cont i2)
+      else ok (done false)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else ok (done true)
+
+/-- [rustfs_kernel::policies::denies_pass]: loop 0:
+    Source: 'ports/rustfs/kernel/src/policies.rs', lines 7:4-14:1 -/
+@[rust_loop]
+def policies.denies_pass_loop
+  (sts : Slice stmts.Statement) (args : stmts.Args) (env : condfuncs.Env)
+  (i : Std.Usize) :
+  Result Bool
+  := do
+  loop
+    (fun i1 => policies.denies_pass_loop.body sts args env i1)
+    i
+
+/-- [rustfs_kernel::policies::denies_pass]:
+    Source: 'ports/rustfs/kernel/src/policies.rs', lines 5:0-14:1 -/
+@[reducible]
+def policies.denies_pass
+  (sts : Slice stmts.Statement) (args : stmts.Args) (env : condfuncs.Env) :
+  Result Bool
+  := do
+  policies.denies_pass_loop sts args env 0#usize
+
+/-- [rustfs_kernel::policies::some_allow]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/policies.rs', lines 18:4-25:1 -/
+@[rust_loop_body]
+def policies.some_allow_loop.body
+  (sts : Slice stmts.Statement) (args : stmts.Args) (env : condfuncs.Env)
+  (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := Slice.len sts
+  if i < i1
+  then
+    let s ← Slice.index_usize sts i
+    let b ←
+      stmts.Effect.Insts.CoreCmpPartialEqEffect.eq s.effect stmts.Effect.Allow
+    if b
+    then
+      let b1 ← stmts.statement_is_allowed s args env
+      if b1
+      then ok (done true)
+      else let i2 ← i + 1#usize
+           ok (cont i2)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else ok (done false)
+
+/-- [rustfs_kernel::policies::some_allow]: loop 0:
+    Source: 'ports/rustfs/kernel/src/policies.rs', lines 18:4-25:1 -/
+@[rust_loop]
+def policies.some_allow_loop
+  (sts : Slice stmts.Statement) (args : stmts.Args) (env : condfuncs.Env)
+  (i : Std.Usize) :
+  Result Bool
+  := do
+  loop
+    (fun i1 => policies.some_allow_loop.body sts args env i1)
+    i
+
+/-- [rustfs_kernel::policies::some_allow]:
+    Source: 'ports/rustfs/kernel/src/policies.rs', lines 16:0-25:1 -/
+@[reducible]
+def policies.some_allow
+  (sts : Slice stmts.Statement) (args : stmts.Args) (env : condfuncs.Env) :
+  Result Bool
+  := do
+  policies.some_allow_loop sts args env 0#usize
+
+/-- [rustfs_kernel::policies::policy_is_allowed]:
+    Source: 'ports/rustfs/kernel/src/policies.rs', lines 29:0-40:1
+    Visibility: public -/
+def policies.policy_is_allowed
+  (statements : Slice stmts.Statement) (args : stmts.Args)
+  (env : condfuncs.Env) :
+  Result Bool
+  := do
+  let b ← policies.denies_pass statements args env
+  if b
+  then
+    if args.deny_only
+    then ok true
+    else
+      if args.is_owner
+      then ok true
+      else policies.some_allow statements args env
+  else ok false
+
+/-- [rustfs_kernel::stmts::bp_statement_is_allowed]:
+    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 253:0-257:1
+    Visibility: public -/
+def stmts.bp_statement_is_allowed
+  (st : stmts.BPStatement) (args : stmts.BucketPolicyArgs)
+  (env : condfuncs.Env) :
+  Result Bool
+  := do
+  let b ← stmts.bp_reaches_condition_eval st args
+  let (st1, check) ←
+    if b
+    then
+      do
+      let check1 ←
+        condfuncs.functions_evaluate st.conditions args.conditions none env
+      ok (st, check1)
+    else ok (st, false)
+  stmts.effect_is_allowed st1.effect check
+
+/-- [rustfs_kernel::policies::bp_denies_pass]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/policies.rs', lines 44:4-51:1 -/
+@[rust_loop_body]
+def policies.bp_denies_pass_loop.body
+  (sts : Slice stmts.BPStatement) (args : stmts.BucketPolicyArgs)
+  (env : condfuncs.Env) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := Slice.len sts
+  if i < i1
+  then
+    let b ← Slice.index_usize sts i
+    let b1 ←
+      stmts.Effect.Insts.CoreCmpPartialEqEffect.eq b.effect stmts.Effect.Deny
+    if b1
+    then
+      let b2 ← stmts.bp_statement_is_allowed b args env
+      if b2
+      then let i2 ← i + 1#usize
+           ok (cont i2)
+      else ok (done false)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else ok (done true)
+
+/-- [rustfs_kernel::policies::bp_denies_pass]: loop 0:
+    Source: 'ports/rustfs/kernel/src/policies.rs', lines 44:4-51:1 -/
+@[rust_loop]
+def policies.bp_denies_pass_loop
+  (sts : Slice stmts.BPStatement) (args : stmts.BucketPolicyArgs)
+  (env : condfuncs.Env) (i : Std.Usize) :
+  Result Bool
+  := do
+  loop
+    (fun i1 => policies.bp_denies_pass_loop.body sts args env i1)
+    i
+
+/-- [rustfs_kernel::policies::bp_denies_pass]:
+    Source: 'ports/rustfs/kernel/src/policies.rs', lines 42:0-51:1 -/
+@[reducible]
+def policies.bp_denies_pass
+  (sts : Slice stmts.BPStatement) (args : stmts.BucketPolicyArgs)
+  (env : condfuncs.Env) :
+  Result Bool
+  := do
+  policies.bp_denies_pass_loop sts args env 0#usize
+
+/-- [rustfs_kernel::policies::bp_some_allow]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/policies.rs', lines 55:4-62:1 -/
+@[rust_loop_body]
+def policies.bp_some_allow_loop.body
+  (sts : Slice stmts.BPStatement) (args : stmts.BucketPolicyArgs)
+  (env : condfuncs.Env) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := Slice.len sts
+  if i < i1
+  then
+    let b ← Slice.index_usize sts i
+    let b1 ←
+      stmts.Effect.Insts.CoreCmpPartialEqEffect.eq b.effect stmts.Effect.Allow
+    if b1
+    then
+      let b2 ← stmts.bp_statement_is_allowed b args env
+      if b2
+      then ok (done true)
+      else let i2 ← i + 1#usize
+           ok (cont i2)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else ok (done false)
+
+/-- [rustfs_kernel::policies::bp_some_allow]: loop 0:
+    Source: 'ports/rustfs/kernel/src/policies.rs', lines 55:4-62:1 -/
+@[rust_loop]
+def policies.bp_some_allow_loop
+  (sts : Slice stmts.BPStatement) (args : stmts.BucketPolicyArgs)
+  (env : condfuncs.Env) (i : Std.Usize) :
+  Result Bool
+  := do
+  loop
+    (fun i1 => policies.bp_some_allow_loop.body sts args env i1)
+    i
+
+/-- [rustfs_kernel::policies::bp_some_allow]:
+    Source: 'ports/rustfs/kernel/src/policies.rs', lines 53:0-62:1 -/
+@[reducible]
+def policies.bp_some_allow
+  (sts : Slice stmts.BPStatement) (args : stmts.BucketPolicyArgs)
+  (env : condfuncs.Env) :
+  Result Bool
+  := do
+  policies.bp_some_allow_loop sts args env 0#usize
+
+/-- [rustfs_kernel::policies::bucket_policy_is_allowed]:
+    Source: 'ports/rustfs/kernel/src/policies.rs', lines 65:0-73:1
+    Visibility: public -/
+def policies.bucket_policy_is_allowed
+  (statements : Slice stmts.BPStatement) (args : stmts.BucketPolicyArgs)
+  (env : condfuncs.Env) :
+  Result Bool
+  := do
+  let b ← policies.bp_denies_pass statements args env
+  if b
+  then
+    if args.is_owner
+    then ok true
+    else policies.bp_some_allow statements args env
+  else ok false
+
+/-- [rustfs_kernel::resets::is_empty]:
+    Source: 'ports/rustfs/kernel/src/resets.rs', lines 6:0-6:60
+    Visibility: public -/
+def resets.is_empty (set : Slice rsrc.Resource) : Result Bool := do
+  let i := Slice.len set
+  ok (i = 0#usize)
+
+/-- [rustfs_kernel::resets::as_slice]:
+    Source: 'ports/rustfs/kernel/src/resets.rs', lines 8:0-8:56
+    Visibility: public -/
+def resets.as_slice
+  (set : Slice rsrc.Resource) : Result (Slice rsrc.Resource) := do
+  ok set
+
+/-- [rustfs_kernel::resets::push_unique]:
+    Source: 'ports/rustfs/kernel/src/resets.rs', lines 16:0-18:1
+    Visibility: public -/
+def resets.push_unique
+  (set : alloc.vec.Vec rsrc.Resource) (resource : rsrc.Resource) :
+  Result (alloc.vec.Vec rsrc.Resource)
+  := do
+  let s := alloc.vec.Vec.deref set
+  let b ← resets.member s resource
+  if b
+  then ok set
+  else alloc.vec.Vec.push set resource
+
+/-- [rustfs_kernel::resets::set_matches]:
+    Source: 'ports/rustfs/kernel/src/resets.rs', lines 31:0-33:1
+    Visibility: public -/
+def resets.set_matches
+  (set : Slice rsrc.Resource) («name» : Slice Std.U8)
+  (values : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec
+  (alloc.vec.Vec Std.U8)))) :
+  Result Bool
+  := do
+  rsrc.set_is_match set «name» values none
+
+/-- [rustfs_kernel::valids::default_is_valid]:
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 14:0-14:42
+    Visibility: public -/
+def valids.default_is_valid : Result Bool := do
+  ok true
+
+/-- [rustfs_kernel::valids::id_is_empty]:
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 16:0-16:55
+    Visibility: public -/
+def valids.id_is_empty (id : Slice Std.U8) : Result Bool := do
+  let i := Slice.len id
+  ok (i = 0#usize)
+
+/-- [rustfs_kernel::valids::id_as_slice]:
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 18:0-18:45
+    Visibility: public -/
+def valids.id_as_slice (id : Slice Std.U8) : Result (Slice Std.U8) := do
+  ok id
+
+/-- [rustfs_kernel::valids::is_admin]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 31:10-31:90
+    Visibility: public -/
+@[rust_loop_body]
+def valids.is_admin_loop.body
+  (st : stmts.Statement) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := alloc.vec.Vec.len st.actions
+  if i < i1
+  then
+    let a ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice acts.Action)
+        st.actions i
+    let b ←
+      acts.Family.Insts.CoreCmpPartialEqFamily.eq a.family acts.Family.Admin
+    if b
+    then ok (done true)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else ok (done false)
+
+/-- [rustfs_kernel::valids::is_admin]: loop 0:
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 31:10-31:90
+    Visibility: public -/
+@[rust_loop]
+def valids.is_admin_loop
+  (st : stmts.Statement) (i : Std.Usize) : Result Bool := do
+  loop
+    (fun i1 => valids.is_admin_loop.body st i1)
+    i
+
+/-- [rustfs_kernel::valids::is_admin]:
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 29:0-33:1
+    Visibility: public -/
+@[reducible]
+def valids.is_admin (st : stmts.Statement) : Result Bool := do
+  valids.is_admin_loop st 0#usize
+
+/-- [rustfs_kernel::valids::is_sts]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 37:10-37:88
+    Visibility: public -/
+@[rust_loop_body]
+def valids.is_sts_loop.body
+  (st : stmts.Statement) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := alloc.vec.Vec.len st.actions
+  if i < i1
+  then
+    let a ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice acts.Action)
+        st.actions i
+    let b ←
+      acts.Family.Insts.CoreCmpPartialEqFamily.eq a.family acts.Family.Sts
+    if b
+    then ok (done true)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else ok (done false)
+
+/-- [rustfs_kernel::valids::is_sts]: loop 0:
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 37:10-37:88
+    Visibility: public -/
+@[rust_loop]
+def valids.is_sts_loop
+  (st : stmts.Statement) (i : Std.Usize) : Result Bool := do
+  loop
+    (fun i1 => valids.is_sts_loop.body st i1)
+    i
+
+/-- [rustfs_kernel::valids::is_sts]:
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 35:0-39:1
+    Visibility: public -/
+@[reducible]
+def valids.is_sts (st : stmts.Statement) : Result Bool := do
+  valids.is_sts_loop st 0#usize
 
 end rustfs_kernel

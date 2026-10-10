@@ -191,3 +191,24 @@ and 400,000 bucket cases. Kernel mutations in each module make it fail.
   Request-key lookup remains ASCII case insensitive, exactly as upstream.
 - Tests enumerate every enum variant and generate rejected names, then compare
   server-derived tables and request lookup against the pinned engine.
+
+## Full policy metadata and management
+
+- New metadata keeps policy ID/version and statement SID alongside full
+  conditions, without changing existing evaluation types. Statement equality
+  ignores SID. Deduplication keeps upstream's comparison direction, marks
+  duplicate indices in a list, and builds the retained list instead of in-place
+  compaction/truncation. A helper separates the inner loop for extraction.
+- Merge retains the first nonempty version, empties the ID and clones then
+  deduplicates statements. Validators compose the unchanged statement rules;
+  version errors carry bytes for the shell's upstream message formatting.
+- Tag checks scan condition keys directly instead of allocating serialized
+  JSON. They scan only the last condition with each serialized operator name
+  per qualifier, preserving serde_json map overwrite behavior and suffix
+  collisions. Matching views keep every key, including s3:prefix.
+- Pure async helpers become synchronous. New full policy evaluation entry
+  points compose the unchanged request matching with full Date/Binary condition
+  evaluation. Clock values remain explicit environment inputs.
+- parse_config remains in the decoding shell; its validation is in the kernel.
+  Tests cover full condition forms, duplicate statements with different SIDs,
+  invalid versions/statements, tag operator collisions and request reachability.

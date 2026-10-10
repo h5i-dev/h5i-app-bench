@@ -22,3 +22,5 @@ pub mod claims;
 pub mod unicode;
 
 pub mod keytables;
+
+pub mod manage;

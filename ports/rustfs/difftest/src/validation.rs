@@ -5,7 +5,7 @@ use rustfs_private_oracle::policy::Validator as _;
 use rustfs_policy::policy::resource::Resource as UR;
 use rustfs_private_oracle::policy::statement as private;
 
-fn err(result: Result<(), k::ValidationError>) -> Result<(), String> {
+pub(crate) fn err(result: Result<(), k::ValidationError>) -> Result<(), String> {
     use k::ErrorKind::*;
     result.map_err(|e| match e.kind {
         InvalidVersion => format!("invalid Version '{}'", String::from_utf8(e.value).unwrap()),

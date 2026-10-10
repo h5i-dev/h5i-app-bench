@@ -17,3 +17,5 @@ mod condition_data;
 #[cfg(test)] mod claim_tests;
 
 #[cfg(test)] mod keytables;
+
+#[cfg(test)] mod management;

@@ -37,6 +37,23 @@ pub fn with_conditions(conditions: Vec<Condition>, qualifier: u8) -> Functions {
 pub fn from_encoded_test(values: Vec<String>) -> Result<BinaryFuncValue, BinaryFuncValueError> { BinaryFuncValue::from_encoded_values(values) }
 "#);
     }
+    if source.ends_with("policy/policy.rs") {
+        code.push_str(r#"
+impl Policy { pub fn dedup_for_test(&mut self) { self.drop_duplicate_statements(); } }
+"#);
+    }
+    if source.ends_with("policy/function.rs") {
+        code.push_str(r#"
+pub fn with_all_conditions(normal:Vec<Condition>,any:Vec<Condition>,all:Vec<Condition>)->Functions {
+    Functions { for_normal:normal,for_any_value:any,for_all_values:all }
+}
+"#);
+    }
+    if source.ends_with("policy/function/func.rs") {
+        code.push_str(r#"
+pub fn rename_keys_for_test<T>(f:&mut InnerFunc<T>,key:&Key){for e in &mut f.0{e.key=key.clone();}}
+"#);
+    }
     fs::write(&target, code).unwrap();
     println!("cargo:rerun-if-changed={}", source.display());
     target
