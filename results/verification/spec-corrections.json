@@ -46,8 +46,8 @@
  },
  "oxicloud-check-total": {
   "date": "2026-10-10",
-  "change": "added: fewer than Usize.max membership rows",
-  "reason": "gpt-6.1-sol proved the unconditional statement false: Usize.max groups containing one user expand to Usize.max + 1 IDs, more than a Vec holds."
+  "change": "added: memberships.length + 2 ≤ Usize.max",
+  "reason": "gpt-6.1-sol proved the unconditional statement false: Usize.max groups containing one user expand to Usize.max + 1 IDs, more than a Vec holds. Then the bound leaves room for the user and the internal group: Usize.max - 1 membership rows still overflow (gpt-6.1-sol, 2026-10-10)."
  },
  "tuwunel-total": {
   "date": "2026-10-10",
