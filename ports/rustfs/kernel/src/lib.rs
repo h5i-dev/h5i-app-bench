@@ -26,3 +26,5 @@ pub mod keytables;
 pub mod manage;
 
 pub mod extras;
+
+pub mod docdata;

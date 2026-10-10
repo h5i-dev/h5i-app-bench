@@ -223,3 +223,14 @@ and 400,000 bucket cases. Kernel mutations in each module make it fail.
   writes out iterator zip as a paired byte index loop, retaining empty-text
   and wildcard short-circuit behavior. Tests include empty and Unicode strings,
   duplicate principals, malformed JSON forms rejected by upstream decoding.
+
+## Policy documents
+
+- Explicit-time new/update/default constructors keep the revision, full policy,
+  optional create/update instants and source offsets. Missing create dates are
+  filled on update; existing ones are preserved. Serialization stays in the
+  shell. The clock-reading convenience wrappers remain outside.
+- Timestamps are nanoseconds plus offset seconds because Aeneas has no time
+  crate. Tests compare all fields over generated instants/offsets, revisions,
+  missing dates, complete generated policies, and updates whose explicit time
+  precedes the previous time.

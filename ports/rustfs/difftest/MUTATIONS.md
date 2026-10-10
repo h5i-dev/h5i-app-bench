@@ -218,3 +218,12 @@ All four principal, buffer and wildcard functions were individually mutated and 
 | `extras::unique_values` | `Vec::new()` | `extras::extras_agree` |
 | `extras::lazybuf_new` | `LazyBuf{source,buffer:None,written:1}` | `extras::extras_agree` |
 | `extras::is_match_as_pattern_prefix` | `false` | `extras::extras_agree` |
+
+All four explicit-time and default document functions were individually mutated and caught.
+
+| Function | Mutation | Test |
+|---|---|---|
+| `docdata::new_at` | `PolicyDoc{version:0,policy,create_date:Some(at),update_date:Some(at)}` | `documents::documents_agree` |
+| `docdata::update_at` | `{}` | `documents::documents_agree` |
+| `docdata::default_policy` | `PolicyDoc{version:0,policy,create_date:None,update_date:None}` | `documents::documents_agree` |
+| `docdata::default_doc` | `PolicyDoc{version:1,policy:Policy{id:Vec::new(),version:Vec::new(),statements:Vec::new()},create_date:None,update_date:None}` | `documents::documents_agree` |

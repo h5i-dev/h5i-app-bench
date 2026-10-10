@@ -11510,6 +11510,188 @@ def defaults.default_policies
          ] : Array ((alloc.vec.Vec Std.U8) × defaults.Policy) 8#usize))
   ok (alloc.slice.Slice.into_vec y28)
 
+/-- [rustfs_kernel::docdata::Timestamp]
+    Source: 'ports/rustfs/kernel/src/docdata.rs', lines 5:0-8:1
+    Visibility: public -/
+structure docdata.Timestamp where
+  unix_nanos : Std.I128
+  offset_seconds : Std.I32
+
+/-- [rustfs_kernel::docdata::{impl core::clone::Clone for rustfs_kernel::docdata::Timestamp}::clone]:
+    Source: 'ports/rustfs/kernel/src/docdata.rs', lines 4:9-4:14
+    Visibility: public -/
+def docdata.Timestamp.Insts.CoreCloneClone.clone
+  (self : docdata.Timestamp) : Result docdata.Timestamp := do
+  ok self
+
+/-- Trait implementation: [rustfs_kernel::docdata::{impl core::clone::Clone for rustfs_kernel::docdata::Timestamp}]
+    Source: 'ports/rustfs/kernel/src/docdata.rs', lines 4:9-4:14 -/
+@[reducible]
+def docdata.Timestamp.Insts.CoreCloneClone : core.clone.Clone docdata.Timestamp
+  := {
+  clone := docdata.Timestamp.Insts.CoreCloneClone.clone
+}
+
+/-- Trait implementation: [rustfs_kernel::docdata::{impl core::marker::Copy for rustfs_kernel::docdata::Timestamp}]
+    Source: 'ports/rustfs/kernel/src/docdata.rs', lines 4:16-4:20 -/
+@[reducible]
+def docdata.Timestamp.Insts.CoreMarkerCopy : core.marker.Copy docdata.Timestamp
+  := {
+  cloneInst := docdata.Timestamp.Insts.CoreCloneClone
+}
+
+/-- [rustfs_kernel::docdata::{impl core::fmt::Debug for rustfs_kernel::docdata::Timestamp}::fmt]:
+    Source: 'ports/rustfs/kernel/src/docdata.rs', lines 4:22-4:27
+    Visibility: public -/
+def docdata.Timestamp.Insts.CoreFmtDebug.fmt
+  (self : docdata.Timestamp) (f : core.fmt.Formatter) :
+  Result ((core.result.Result Unit core.fmt.Error) × core.fmt.Formatter)
+  := do
+  let dyn := Dyn.mk _ core.fmt.DebugI128 self.unix_nanos
+  let dyn1 :=
+    Dyn.mk _ (core.fmt.DebugShared core.fmt.DebugI32) self.offset_seconds
+  core.fmt.Formatter.debug_struct_field2_finish f (toStr "Timestamp") (toStr
+    "unix_nanos") dyn (toStr "offset_seconds") dyn1
+
+/-- Trait implementation: [rustfs_kernel::docdata::{impl core::fmt::Debug for rustfs_kernel::docdata::Timestamp}]
+    Source: 'ports/rustfs/kernel/src/docdata.rs', lines 4:22-4:27 -/
+@[reducible]
+def docdata.Timestamp.Insts.CoreFmtDebug : core.fmt.Debug docdata.Timestamp
+  := {
+  fmt := docdata.Timestamp.Insts.CoreFmtDebug.fmt
+}
+
+/-- Trait implementation: [rustfs_kernel::docdata::{impl core::marker::StructuralPartialEq for rustfs_kernel::docdata::Timestamp}]
+    Source: 'ports/rustfs/kernel/src/docdata.rs', lines 4:29-4:38 -/
+@[reducible]
+def docdata.Timestamp.Insts.CoreMarkerStructuralPartialEq :
+  core.marker.StructuralPartialEq docdata.Timestamp := {
+}
+
+/-- [rustfs_kernel::docdata::{impl core::cmp::PartialEq<rustfs_kernel::docdata::Timestamp> for rustfs_kernel::docdata::Timestamp}::eq]:
+    Source: 'ports/rustfs/kernel/src/docdata.rs', lines 4:29-4:38
+    Visibility: public -/
+def docdata.Timestamp.Insts.CoreCmpPartialEqTimestamp.eq
+  (self : docdata.Timestamp) (other : docdata.Timestamp) : Result Bool := do
+  if self.unix_nanos = other.unix_nanos
+  then ok (self.offset_seconds = other.offset_seconds)
+  else ok false
+
+/-- Trait implementation: [rustfs_kernel::docdata::{impl core::cmp::PartialEq<rustfs_kernel::docdata::Timestamp> for rustfs_kernel::docdata::Timestamp}]
+    Source: 'ports/rustfs/kernel/src/docdata.rs', lines 4:29-4:38 -/
+@[reducible]
+impl_def docdata.Timestamp.Insts.CoreCmpPartialEqTimestamp : core.cmp.PartialEq
+  docdata.Timestamp docdata.Timestamp := {
+  eq := docdata.Timestamp.Insts.CoreCmpPartialEqTimestamp.eq
+  ne := core.cmp.PartialEq.ne.trait_default
+    docdata.Timestamp.Insts.CoreCmpPartialEqTimestamp
+}
+
+/-- [rustfs_kernel::docdata::{impl core::cmp::Eq for rustfs_kernel::docdata::Timestamp}::assert_fields_are_eq]:
+    Source: 'ports/rustfs/kernel/src/docdata.rs', lines 4:40-4:42
+    Visibility: public -/
+def docdata.Timestamp.Insts.CoreCmpEq.assert_fields_are_eq
+  (self : docdata.Timestamp) : Result Unit := do
+  ok ()
+
+/-- Trait implementation: [rustfs_kernel::docdata::{impl core::cmp::Eq for rustfs_kernel::docdata::Timestamp}]
+    Source: 'ports/rustfs/kernel/src/docdata.rs', lines 4:40-4:42 -/
+@[reducible]
+def docdata.Timestamp.Insts.CoreCmpEq : core.cmp.Eq docdata.Timestamp := {
+  partialEqInst := docdata.Timestamp.Insts.CoreCmpPartialEqTimestamp
+  assert_fields_are_eq :=
+    docdata.Timestamp.Insts.CoreCmpEq.assert_fields_are_eq
+}
+
+/-- [rustfs_kernel::manage::Statement]
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 11:0-19:1
+    Visibility: public -/
+structure manage.Statement where
+  sid : alloc.vec.Vec Std.U8
+  effect : stmts.Effect
+  actions : alloc.vec.Vec acts.Action
+  not_actions : alloc.vec.Vec acts.Action
+  resources : alloc.vec.Vec rsrc.Resource
+  not_resources : alloc.vec.Vec rsrc.Resource
+  conditions : conddata.Functions
+
+/-- [rustfs_kernel::manage::Policy]
+    Source: 'ports/rustfs/kernel/src/manage.rs', lines 32:0-36:1
+    Visibility: public -/
+structure manage.Policy where
+  id : alloc.vec.Vec Std.U8
+  version : alloc.vec.Vec Std.U8
+  statements : alloc.vec.Vec manage.Statement
+
+/-- [rustfs_kernel::docdata::PolicyDoc]
+    Source: 'ports/rustfs/kernel/src/docdata.rs', lines 9:0-14:1
+    Visibility: public -/
+structure docdata.PolicyDoc where
+  version : Std.I64
+  policy : manage.Policy
+  create_date : Option docdata.Timestamp
+  update_date : Option docdata.Timestamp
+
+/-- [rustfs_kernel::docdata::new_at]:
+    Source: 'ports/rustfs/kernel/src/docdata.rs', lines 15:0-22:1
+    Visibility: public -/
+def docdata.new_at
+  (policy : manage.Policy) («at» : docdata.Timestamp) :
+  Result docdata.PolicyDoc
+  := do
+  ok
+    {
+      version := 1#i64,
+      policy,
+      create_date := (some «at»),
+      update_date := (some «at»)
+    }
+
+/-- [rustfs_kernel::docdata::update_at]:
+    Source: 'ports/rustfs/kernel/src/docdata.rs', lines 23:0-30:1
+    Visibility: public -/
+def docdata.update_at
+  (doc : docdata.PolicyDoc) (policy : manage.Policy)
+  («at» : docdata.Timestamp) :
+  Result docdata.PolicyDoc
+  := do
+  let i ← doc.version + 1#i64
+  let b := core.option.Option.is_none doc.create_date
+  if b
+  then
+    ok
+      {
+        version := i,
+        policy,
+        create_date := (some «at»),
+        update_date := (some «at»)
+      }
+  else ok { doc with version := i, policy, update_date := (some «at») }
+
+/-- [rustfs_kernel::docdata::default_policy]:
+    Source: 'ports/rustfs/kernel/src/docdata.rs', lines 31:0-38:1
+    Visibility: public -/
+def docdata.default_policy
+  (policy : manage.Policy) : Result docdata.PolicyDoc := do
+  ok { version := 1#i64, policy, create_date := none, update_date := none }
+
+/-- [rustfs_kernel::docdata::default_doc]:
+    Source: 'ports/rustfs/kernel/src/docdata.rs', lines 40:0-51:1
+    Visibility: public -/
+def docdata.default_doc : Result docdata.PolicyDoc := do
+  ok
+    {
+      version := 0#i64,
+      policy :=
+        {
+          id := (alloc.vec.Vec.new Std.U8),
+          version := (alloc.vec.Vec.new Std.U8),
+          statements := (alloc.vec.Vec.new manage.Statement)
+        },
+      create_date := none,
+      update_date := none
+    }
+
 /-- [rustfs_kernel::extras::PrincipalValues]
     Source: 'ports/rustfs/kernel/src/extras.rs', lines 11:0-14:1
     Visibility: public -/
@@ -12570,18 +12752,6 @@ def keytables.is_server_derived_condition_key
   let lower ← bytes.lower «name»
   keytables.is_server_derived_condition_key_loop names lower 0#usize
 
-/-- [rustfs_kernel::manage::Statement]
-    Source: 'ports/rustfs/kernel/src/manage.rs', lines 11:0-19:1
-    Visibility: public -/
-structure manage.Statement where
-  sid : alloc.vec.Vec Std.U8
-  effect : stmts.Effect
-  actions : alloc.vec.Vec acts.Action
-  not_actions : alloc.vec.Vec acts.Action
-  resources : alloc.vec.Vec rsrc.Resource
-  not_resources : alloc.vec.Vec rsrc.Resource
-  conditions : conddata.Functions
-
 /-- [rustfs_kernel::stmts::{impl core::clone::Clone for rustfs_kernel::stmts::Effect}::clone]:
     Source: 'ports/rustfs/kernel/src/stmts.rs', lines 9:9-9:14
     Visibility: public -/
@@ -12867,14 +13037,6 @@ def manage.BPStatement.Insts.CoreFmtDebug : core.fmt.Debug manage.BPStatement
   := {
   fmt := manage.BPStatement.Insts.CoreFmtDebug.fmt
 }
-
-/-- [rustfs_kernel::manage::Policy]
-    Source: 'ports/rustfs/kernel/src/manage.rs', lines 32:0-36:1
-    Visibility: public -/
-structure manage.Policy where
-  id : alloc.vec.Vec Std.U8
-  version : alloc.vec.Vec Std.U8
-  statements : alloc.vec.Vec manage.Statement
 
 /-- [rustfs_kernel::manage::{impl core::clone::Clone for rustfs_kernel::manage::Policy}::clone]:
     Source: 'ports/rustfs/kernel/src/manage.rs', lines 31:9-31:14

@@ -93,7 +93,7 @@ fn rename(up: &mut UC, port: &mut c::Condition, name: &str) {
         c::Data::Binary(f) => replace_keys(f, &kk),
     }
 }
-fn policy(rng: &mut Rng) -> (u::Policy, k::Policy) {
+pub(crate) fn policy(rng: &mut Rng) -> (u::Policy, k::Policy) {
     let (old, kold) = tests::identity_policy(rng);
     let mut up: u::Policy = serde_json::from_str(&serde_json::to_string(&old).unwrap()).unwrap();
     up.id = (*rng.pick(&["", "id", "é"])).into();
@@ -126,7 +126,7 @@ fn policy(rng: &mut Rng) -> (u::Policy, k::Policy) {
         },
     )
 }
-fn assert_policy(up: &u::Policy, port: &k::Policy, sources: &[(u::Statement, k::Statement)]) {
+pub(crate) fn assert_policy(up: &u::Policy, port: &k::Policy, sources: &[(u::Statement, k::Statement)]) {
     assert_eq!(port.id, b(&up.id));
     assert_eq!(port.version, b(&up.version));
     assert_eq!(port.statements.len(), up.statements.len());

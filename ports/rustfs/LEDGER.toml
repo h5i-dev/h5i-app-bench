@@ -142,7 +142,8 @@ kernel = ["actsets::action_name", "actsets::action_count", "actsets::contains_na
 [[item]]
 upstream = "crates/policy/src/policy/doc.rs:20 PolicyDoc"
 lines = 16
-status = "todo"
+status = "ported"
+kernel = ["docdata::PolicyDoc", "docdata::default_doc"]
 
 [[item]]
 upstream = "crates/policy/src/policy/doc.rs:47 PolicyDoc::new"
@@ -153,7 +154,8 @@ reason = "calls OffsetDateTime::now_utc"
 [[item]]
 upstream = "crates/policy/src/policy/doc.rs:51 PolicyDoc::new_at"
 lines = 8
-status = "todo"
+status = "ported"
+kernel = ["docdata::new_at"]
 
 [[item]]
 upstream = "crates/policy/src/policy/doc.rs:66 PolicyDoc::update"
@@ -164,12 +166,14 @@ reason = "calls OffsetDateTime::now_utc"
 [[item]]
 upstream = "crates/policy/src/policy/doc.rs:70 PolicyDoc::update_at"
 lines = 8
-status = "todo"
+status = "ported"
+kernel = ["docdata::update_at"]
 
 [[item]]
 upstream = "crates/policy/src/policy/doc.rs:81 PolicyDoc::default_policy"
 lines = 8
-status = "todo"
+status = "ported"
+kernel = ["docdata::default_policy"]
 
 [[item]]
 upstream = "crates/policy/src/policy/doc.rs:94 PolicyDoc::try_from"

@@ -21,3 +21,5 @@ mod condition_data;
 #[cfg(test)] mod management;
 
 #[cfg(test)] mod extras;
+
+#[cfg(test)] mod documents;
