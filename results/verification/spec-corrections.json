@@ -1,9 +1,4 @@
 {
- "kanidm-str-contains-spec": {
-  "date": "2026-10-06",
-  "change": "added `hay.length < Usize.max`",
-  "reason": "A model proved the unconditional statement false: Aeneas allows a slice of length Usize.max, where the loop's checked `i + needle.len()` overflows. Rust slices cannot be that long."
- },
  "oxicloud-keeps-owner": {
   "date": "2026-10-06",
   "change": "added `GrantsUnique db`",
@@ -33,5 +28,20 @@
   "date": "2026-10-09",
   "change": "added: every OIDC role-rule pattern in the config is shorter than Usize.max",
   "reason": "Same capacity boundary as nora-glob-match, reached through the middleware's OIDC path; gpt-6.1-sol proved the unconditional statement false."
+ },
+ "artifactkeeper-visibility-total": {
+  "date": "2026-10-10",
+  "change": "added: the request's path, query and header names and values are shorter than Usize.max",
+  "reason": "gpt-6.1-sol proved the unconditional statement false: a Cookie header of Usize.max `;` splits into Usize.max + 1 parts, more than a modeled Vec holds. Rust cannot allocate such a request."
+ },
+ "rustfs-bucket-total": {
+  "date": "2026-10-10",
+  "change": "added: bucket name at most 63 bytes and object key at most 1024 (S3's limits)",
+  "reason": "gpt-6.1-sol proved the unconditional statement false: a bucket name of Usize.max bytes makes building the resource ARN (`arn:aws:s3:::` + bucket + ...) exceed a Vec's capacity. S3 rejects such names before policy evaluation."
+ },
+ "kanidm-effective-total": {
+  "date": "2026-10-10",
+  "change": "added: the search and modify profiles list fewer than Usize.max attributes and classes in total",
+  "reason": "gpt-6.1-sol proved the unconditional statement false: two search profiles granting Usize.max + 1 distinct attributes overflow the union of their grants. Rust cannot hold that many distinct strings."
  }
 }

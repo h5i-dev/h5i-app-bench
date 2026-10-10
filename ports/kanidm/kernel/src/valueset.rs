@@ -3,13 +3,16 @@
 use crate::bset::{contains, contains_uuid};
 use crate::{PartialValue, Uuid, ValueSet};
 
-/// `str::contains`.
+/// `str::contains`. The bound is `hay.len() - needle.len()`, not
+/// `i + needle.len() <= hay.len()`: the sum cannot overflow in Rust, but it
+/// does in the extracted model for a slice of `Usize.max` bytes.
 pub fn str_contains(hay: &[u8], needle: &[u8]) -> bool {
     if needle.len() > hay.len() {
         return false;
     }
+    let last = hay.len() - needle.len();
     let mut i = 0;
-    while i + needle.len() <= hay.len() {
+    while i <= last {
         if starts_at(hay, i, needle) {
             return true;
         }

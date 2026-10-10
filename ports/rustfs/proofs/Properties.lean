@@ -81,8 +81,12 @@ theorem bucket_allow_needs_principal (sts : Slice stmts.BPStatement) (a : stmts.
       stmts.bp_statement_is_allowed st a e = ok true := by
   apply rustfs_kernel.Verified.RustfsBucketPrincipal.bucket_allow_needs_principal <;> assumption
 
-/-- Bucket policy evaluation always terminates without a panic. -/
-theorem bucket_policy_total (sts : Slice stmts.BPStatement) (a : stmts.BucketPolicyArgs) (e : condfuncs.Env) :
+/-- Bucket policy evaluation always terminates without a panic, for an S3
+bucket name of at most 63 bytes and an object key of at most 1024, the limits
+S3 enforces before policy evaluation. Without them a bucket name of
+`Usize.max` bytes makes building the resource ARN exceed a `Vec`'s capacity. -/
+theorem bucket_policy_total (sts : Slice stmts.BPStatement) (a : stmts.BucketPolicyArgs) (e : condfuncs.Env)
+    (hb : a.bucket.length ≤ 63) (ho : a.object.length ≤ 1024) :
     ∃ r, policies.bucket_policy_is_allowed sts a e = ok r := by
   sorry
 
