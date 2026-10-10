@@ -1,18 +1,36 @@
 {
  "rustfs-resolution-terminates": {
-  "date": "2026-10-10", "found_by": "gpt-6.1-sol",
+  "date": "2026-10-10",
+  "found_by": "gpt-6.1-sol",
   "kind": "upstream bug: non-termination (denial of service)",
   "summary": "At the pinned e870a6d, policy variable resolution rescans each substituted result from offset 0, so a value that forms a new ${...} with its surroundings cycles forever; an account named ${aws:username} hangs evaluation of any policy that uses ${aws:username}. Reproduced on the pinned upstream crate.",
   "upstream_status": "fixed in rustfs 03e77594 (merged 2026-10-09 through a GitHub security advisory), after the pin",
   "benchmark_action": "theorem unchanged; the fix is backported into the kernel (DEVIATIONS.md) and the theorem is to be proved for it",
-  "evidence": ["results/verification/rustfs-resolution-terminates/Counterexample-pinned-e870a6d.lean", "ports/rustfs/difftest/src/resolver_backport.rs"]
+  "evidence": [
+   "results/verification/rustfs-resolution-terminates/Counterexample-pinned-e870a6d.lean",
+   "ports/rustfs/difftest/src/resolver_backport.rs"
+  ]
  },
  "oxicloud-fewer-grants": {
-  "date": "2026-10-10", "found_by": "gpt-6.1-sol",
+  "date": "2026-10-10",
+  "found_by": "gpt-6.1-sol",
   "kind": "upstream behavior: non-monotonic role combination",
   "summary": "Effective role is MIN(role) over grants with owner < editor < contributor < commenter < viewer, but contributor (Read, Create) lacks commenter's Comment. A subject holding both grants is denied Comment; revoking the contributor grant allows it.",
   "upstream_status": "present at the pin 8c0dd33; not reported",
   "benchmark_action": "open: the statement (fewer grants never allow more) is false for upstream's semantics",
-  "evidence": ["results/verification/oxicloud-fewer-grants/Counterexample.lean"]
+  "evidence": [
+   "results/verification/oxicloud-fewer-grants/Counterexample.lean"
+  ]
+ },
+ "rustfs-bucket-total": {
+  "date": "2026-10-10",
+  "found_by": "gpt-6.1-sol (counterexample), confirmed on the pinned upstream crate",
+  "kind": "upstream bugs: placeholder name and compounding substitution",
+  "summary": "KeyName::var_name formats the strum name, which already carries the prefix, so placeholders become ${aws:aws:Referer} and a policy's ${aws:Referer} is never substituted. When the doubled form is used, Resource::is_match substitutes the common keys in order with request condition values, and a value may contain a later key's placeholder, so the pattern compounds: a resource ${aws:aws:Referer} with Referer and UserAgent values repeating the next placeholder 600 times (9.6 KB) took 0.35 s and 422 MB for one match on the pinned crate, growing about cubically.",
+  "upstream_status": "present at the pin e870a6d and on main 072b57b3; not reported",
+  "benchmark_action": "open: bucket_policy_total is false at realistic sizes; the counterexamples are the result",
+  "evidence": [
+   "results/verification/rustfs-bucket-total/"
+  ]
  }
 }
