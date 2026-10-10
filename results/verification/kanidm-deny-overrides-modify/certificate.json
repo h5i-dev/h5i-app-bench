@@ -3,7 +3,7 @@
   "sha256": "7cf5da0a258190751b880eca1882c8ef39ceb408a4c77330c3c972fd2b7d7b92",
   "grade": {
     "solution_loc": 126,
-    "check_s": 36.1,
+    "check_s": 34.1,
     "axioms": [
       "Classical.choice",
       "Quot.sound",
@@ -11,7 +11,7 @@
     ],
     "passed": true
   },
-  "checked_at": "2026-10-10T04:25:17.609918+00:00",
+  "checked_at": "2026-10-10T04:37:26.741416+00:00",
   "inputs": {
     "/home/ht2673/Dev/h5i-app-bench/harness/bench.py": "d5a195c2fa2ba80cf3d20f9af730c2e105c05787675e34f76a34cb511bd26a8e",
     "/home/ht2673/Dev/h5i-app-bench/dataset/tasks.toml": "594b8c4c6a235c20b7ef86ce8d0838c52f08663f7fe51434d13ddf8c1df36586",
@@ -30,8 +30,8 @@
     "/home/ht2673/Dev/h5i-app-bench/ports/kanidm/kernel/src/profiles.rs": "2939976d523173c42b691e98899e95000a7be2c7c47b18105e6fb9052d421a00",
     "/home/ht2673/Dev/h5i-app-bench/ports/kanidm/kernel/src/protected.rs": "8f5385658255ef75417284eab519242ab55d857b599f3e3837a1a3b970343443",
     "/home/ht2673/Dev/h5i-app-bench/ports/kanidm/kernel/src/search_acc.rs": "6d03020d3137c7573905d8b5392bd6f19cf6ea60f7176d27525aac6754b834c2",
-    "/home/ht2673/Dev/h5i-app-bench/ports/kanidm/kernel/src/valueset.rs": "0231b98cfa94923f403ee6e317306a749806f420fd160cfec9f941b82424f581",
-    "/home/ht2673/Dev/h5i-app-bench/ports/kanidm/proofs/generated/KanidmKernel.lean": "01707a94b1eb6ca3888219af7836db9d4aa35802a7ae7294d76e01efa99e0b54",
+    "/home/ht2673/Dev/h5i-app-bench/ports/kanidm/kernel/src/valueset.rs": "53aff175d47b72708913f8cdc2d610680b2ef42d549192d3d389b0d6449596be",
+    "/home/ht2673/Dev/h5i-app-bench/ports/kanidm/proofs/generated/KanidmKernel.lean": "0c8b0869a38ef3c66f485659a81c21fc8822c28e9393330da34e9f62aae8bac3",
     "/home/ht2673/Dev/h5i-app-bench/ports/kanidm/proofs/Spec.lean": "4213d05afc8c13e3b261909b1132975718b5e2cf6549c4b215d74908d4c74137",
     "/var/tmp/h5iab/h5i-app-lib/H5iAppLib/Authz.lean": "34c5b03f9b01ef447764e91c26f41d61b44cef554376b3bbce9ec3785a95ecbe",
     "/var/tmp/h5iab/h5i-app-lib/H5iAppLib/Basic.lean": "8cda829c3ff33363d461e302dda6ec0dd10ab144115431af54ebdbaf69552656",

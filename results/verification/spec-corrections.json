@@ -33,5 +33,10 @@
   "date": "2026-10-10",
   "change": "added: the request's path, query and header names and values are shorter than Usize.max",
   "reason": "gpt-6.1-sol proved the unconditional statement false: a Cookie header of Usize.max `;` splits into Usize.max + 1 parts, more than a modeled Vec holds. Rust cannot allocate such a request."
+ },
+ "rustfs-bucket-total": {
+  "date": "2026-10-10",
+  "change": "added: bucket name at most 63 bytes and object key at most 1024 (S3's limits)",
+  "reason": "gpt-6.1-sol proved the unconditional statement false: a bucket name of Usize.max bytes makes building the resource ARN (`arn:aws:s3:::` + bucket + ...) exceed a Vec's capacity. S3 rejects such names before policy evaluation."
  }
 }

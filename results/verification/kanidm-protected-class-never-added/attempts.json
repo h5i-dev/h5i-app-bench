@@ -1,10 +1,10 @@
 [
   {
-    "source": "results/runs/20261006-054344-kanidm-delete-protected-claude-opus-5-5/workspace/proofs/Solution.lean",
-    "sha256": "f96f9950b1548e82fcf668ec1f459d9e4d839af7850b8f680e0b728a0fdc49c9",
+    "source": "results/runs/20261010-005121-kanidm-protected-class-never-added-gpt-6.1-sol/workspace/proofs/Solution.lean",
+    "sha256": "42dd20f1db0aa97f6ab8bc0a662862bdf16e21d9067b8dc5040c0c1afe9459c3",
     "grade": {
-      "solution_loc": 163,
-      "check_s": 15.2,
+      "solution_loc": 342,
+      "check_s": 16.9,
       "axioms": [
         "Classical.choice",
         "Quot.sound",
@@ -12,7 +12,7 @@
       ],
       "passed": true
     },
-    "checked_at": "2026-10-10T04:36:52.062727+00:00",
+    "checked_at": "2026-10-10T05:03:43.008952+00:00",
     "inputs": {
       "/home/ht2673/Dev/h5i-app-bench/harness/bench.py": "d5a195c2fa2ba80cf3d20f9af730c2e105c05787675e34f76a34cb511bd26a8e",
       "/home/ht2673/Dev/h5i-app-bench/dataset/tasks.toml": "594b8c4c6a235c20b7ef86ce8d0838c52f08663f7fe51434d13ddf8c1df36586",
@@ -61,7 +61,7 @@
       "/var/tmp/h5iab/h5i-app-lib/H5iAppLibTests/Spec.lean": "d26222567733812215cdcac7f868e656e6a3d2a98c061c27ab061b1f752ad41c",
       "/var/tmp/h5iab/h5i-app-lib/H5iAppLibTests.lean": "51a9c668b98f638966b181c298872812f5f60593fbb2cbc85ff5663db3118c8a",
       "/var/tmp/h5iab/h5i-app-lib/lakefile.lean": "a0f64c1541280d1222c556c456db2e858461b2d448700449e3da51bd57df2b31",
-      "target_statement_sha256": "5a1fdd354af47c2bd848fb6f2980abce5f5da1a85bd8e0e1257fbe1132951502",
+      "target_statement_sha256": "b0e08c215fe0795d02c330c171102975f0bba31412e55814d71d47cd7530721e",
       "certificate_boundary_version": "2"
     }
   }

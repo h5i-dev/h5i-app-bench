@@ -61,6 +61,11 @@ def candidates(tid):
         solution = result.parent / "workspace/proofs/Solution.lean"
         if r.get("task") == tid and r.get("grade", {}).get("passed") and solution.exists():
             yield str(solution.relative_to(ROOT)), solution.read_text()
+    # The proof a previous certificate accepted, so a changed input can be
+    # rechecked even after its original source (a run, the archive) is gone.
+    accepted = ROOT / "results/verification" / tid / "Solution.lean"
+    if accepted.exists():
+        yield str(accepted.relative_to(ROOT)), accepted.read_text()
     archive = ROOT / "docs/data/tasks" / f"{tid}.json"
     if archive.exists():
         for p in json.loads(archive.read_text()).get("proofs", []):
