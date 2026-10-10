@@ -1450,12 +1450,14 @@ kernel = ["claims::split_path"]
 [[item]]
 upstream = "crates/policy/src/policy/variables.rs:23 VariableContext"
 lines = 10
-status = "todo"
+status = "ported"
+kernel = ["varctx::VariableContext"]
 
 [[item]]
 upstream = "crates/policy/src/policy/variables.rs:37 VariableContext::new"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["varctx::context_new"]
 
 [[item]]
 upstream = "crates/policy/src/policy/variables.rs:42 VariableResolverCache"
@@ -1538,33 +1540,38 @@ kernel = ["awsvars::*"]
 [[item]]
 upstream = "crates/policy/src/policy/variables.rs:130 VariableResolver::new"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["varctx::resolver_new"]
 
 [[item]]
 upstream = "crates/policy/src/policy/variables.rs:134 VariableResolver::get_claim_as_strings"
 lines = 22
 status = "ported"
-kernel = ["userid_strings"]
+kernel = ["varctx::get_claim_as_strings"]
 
 [[item]]
 upstream = "crates/policy/src/policy/variables.rs:157 VariableResolver::resolve_username"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["varctx::resolve_username"]
 
 [[item]]
 upstream = "crates/policy/src/policy/variables.rs:161 VariableResolver::resolve_userid"
 lines = 5
-status = "todo"
+status = "ported"
+kernel = ["varctx::resolve_userid"]
 
 [[item]]
 upstream = "crates/policy/src/policy/variables.rs:167 VariableResolver::resolve_principal_type"
 lines = 11
-status = "todo"
+status = "ported"
+kernel = ["varctx::resolve_principal_type"]
 
 [[item]]
 upstream = "crates/policy/src/policy/variables.rs:181 VariableResolver::resolve_secure_transport"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["varctx::resolve_secure_transport"]
 
 [[item]]
 upstream = "crates/policy/src/policy/variables.rs:185 VariableResolver::resolve_current_time"
@@ -1581,39 +1588,44 @@ reason = "calls OffsetDateTime::now_utc"
 [[item]]
 upstream = "crates/policy/src/policy/variables.rs:195 VariableResolver::resolve_account_id"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["varctx::resolve_account_id"]
 
 [[item]]
 upstream = "crates/policy/src/policy/variables.rs:199 VariableResolver::resolve_region"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["varctx::resolve_region"]
 
 [[item]]
 upstream = "crates/policy/src/policy/variables.rs:203 VariableResolver::resolve_source_ip"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["varctx::resolve_source_ip"]
 
 [[item]]
 upstream = "crates/policy/src/policy/variables.rs:207 VariableResolver::resolve_custom_variable"
 lines = 4
-status = "todo"
+status = "ported"
+kernel = ["varctx::resolve_custom_variable"]
 
 [[item]]
 upstream = "crates/policy/src/policy/variables.rs:215 VariableResolver::resolve"
 lines = 20
 status = "ported"
-kernel = ["resolve"]
+kernel = ["varctx::resolve"]
 
 [[item]]
 upstream = "crates/policy/src/policy/variables.rs:237 VariableResolver::resolve_multiple"
 lines = 9
 status = "ported"
-kernel = ["resolve_multiple"]
+kernel = ["varctx::resolve_multiple"]
 
 [[item]]
 upstream = "crates/policy/src/policy/variables.rs:249 VariableResolver::is_dynamic"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["varctx::is_dynamic"]
 
 [[item]]
 upstream = "crates/policy/src/policy/variables.rs:254 resolve_aws_variables"

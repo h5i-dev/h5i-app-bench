@@ -66,6 +66,11 @@ pub fn principal_values_set(v:serde_json::Value)->Result<HashSet<String>,serde_j
 pub fn lazybuf_state(s:&str)->(String,bool,usize){let b=LazyBuf::new(s);(b.s.to_string(),b.buf.is_some(),b.w)}
 "#);
     }
+    if source.ends_with("policy/variables.rs") {
+        code.push_str(r#"
+impl VariableResolver { pub fn claim_strings_for_test(&self,name:&str)->Option<Vec<String>>{self.get_claim_as_strings(name)} }
+"#);
+    }
     fs::write(&target, code).unwrap();
     println!("cargo:rerun-if-changed={}", source.display());
     target

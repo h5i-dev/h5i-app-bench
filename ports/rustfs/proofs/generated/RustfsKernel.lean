@@ -17919,4 +17919,618 @@ def valids.is_sts_loop
 def valids.is_sts (st : stmts.Statement) : Result Bool := do
   valids.is_sts_loop st 0#usize
 
+/-- [rustfs_kernel::varctx::VariableContext]
+    Source: 'ports/rustfs/kernel/src/varctx.rs', lines 7:0-16:1
+    Visibility: public -/
+structure varctx.VariableContext where
+  is_https : Bool
+  source_ip : Option (alloc.vec.Vec Std.U8)
+  account_id : Option (alloc.vec.Vec Std.U8)
+  region : Option (alloc.vec.Vec Std.U8)
+  username : Option (alloc.vec.Vec Std.U8)
+  claims : Option (alloc.vec.Vec ((alloc.vec.Vec Std.U8) × claims.Value))
+  conditions : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec
+    (alloc.vec.Vec Std.U8)))
+  custom_variables : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec
+    Std.U8))
+
+/-- [rustfs_kernel::varctx::VariableResolver]
+    Source: 'ports/rustfs/kernel/src/varctx.rs', lines 17:0-19:1
+    Visibility: public -/
+structure varctx.VariableResolver where
+  context : varctx.VariableContext
+
+/-- [rustfs_kernel::varctx::context_new]:
+    Source: 'ports/rustfs/kernel/src/varctx.rs', lines 21:0-32:1
+    Visibility: public -/
+def varctx.context_new : Result varctx.VariableContext := do
+  ok
+    {
+      is_https := false,
+      source_ip := none,
+      account_id := none,
+      region := none,
+      username := none,
+      claims := none,
+      conditions :=
+        (alloc.vec.Vec.new
+          ((alloc.vec.Vec
+          Std.U8)
+          ×
+          (alloc.vec.Vec
+          (alloc.vec.Vec
+          Std.U8)))),
+      custom_variables :=
+        (alloc.vec.Vec.new ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec Std.U8)))
+    }
+
+/-- [rustfs_kernel::varctx::resolver_new]:
+    Source: 'ports/rustfs/kernel/src/varctx.rs', lines 34:0-36:1
+    Visibility: public -/
+def varctx.resolver_new
+  (context : varctx.VariableContext) : Result varctx.VariableResolver := do
+  ok { context }
+
+/-- [rustfs_kernel::varctx::clone_option]:
+    Source: 'ports/rustfs/kernel/src/varctx.rs', lines 37:0-42:1 -/
+def varctx.clone_option
+  (value : Option (alloc.vec.Vec Std.U8)) :
+  Result (Option (alloc.vec.Vec Std.U8))
+  := do
+  match value with
+  | none => ok none
+  | some v =>
+    let v1 ← alloc.vec.CloneVec.clone core.clone.CloneU8 v
+    ok (some v1)
+
+/-- [rustfs_kernel::varctx::scalar_string]:
+    Source: 'ports/rustfs/kernel/src/varctx.rs', lines 43:0-50:1 -/
+def varctx.scalar_string
+  (value : claims.Value) : Result (Option (alloc.vec.Vec Std.U8)) := do
+  match value with
+  | claims.Value.Null => ok none
+  | claims.Value.Bool b =>
+    if b
+    then
+      let s ←
+        lift (Array.to_slice
+          (Array.make 4#usize [ 116#u8, 114#u8, 117#u8, 101#u8 ]))
+      let v ← alloc.slice.Slice.to_vec core.clone.CloneU8 s
+      ok (some v)
+    else
+      let s ←
+        lift (Array.to_slice
+          (Array.make 5#usize [ 102#u8, 97#u8, 108#u8, 115#u8, 101#u8 ]))
+      let v ← alloc.slice.Slice.to_vec core.clone.CloneU8 s
+      ok (some v)
+  | claims.Value.Number s =>
+    let v ← alloc.vec.CloneVec.clone core.clone.CloneU8 s
+    ok (some v)
+  | claims.Value.String s =>
+    let v ← alloc.vec.CloneVec.clone core.clone.CloneU8 s
+    ok (some v)
+  | claims.Value.Array _ => ok none
+  | claims.Value.Object _ => ok none
+
+/-- [rustfs_kernel::varctx::array_strings]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/varctx.rs', lines 54:4-59:5 -/
+@[rust_loop_body]
+def varctx.array_strings_loop.body
+  (array : Slice claims.Value) (strings : alloc.vec.Vec (alloc.vec.Vec Std.U8))
+  (j : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec (alloc.vec.Vec Std.U8)) × Std.Usize)
+    (alloc.vec.Vec (alloc.vec.Vec Std.U8)))
+  := do
+  let i := Slice.len array
+  if j < i
+  then
+    let v ← Slice.index_usize array j
+    let o ← varctx.scalar_string v
+    let strings1 ←
+      match o with
+      | none => ok strings
+      | some s => alloc.vec.Vec.push strings s
+    let j1 ← j + 1#usize
+    ok (cont (strings1, j1))
+  else ok (done strings)
+
+/-- [rustfs_kernel::varctx::array_strings]: loop 0:
+    Source: 'ports/rustfs/kernel/src/varctx.rs', lines 54:4-59:5 -/
+@[rust_loop]
+def varctx.array_strings_loop
+  (array : Slice claims.Value) (strings : alloc.vec.Vec (alloc.vec.Vec Std.U8))
+  (j : Std.Usize) :
+  Result (alloc.vec.Vec (alloc.vec.Vec Std.U8))
+  := do
+  loop
+    (fun (strings1, j1) => varctx.array_strings_loop.body array strings1 j1)
+    (strings, j)
+
+/-- [rustfs_kernel::varctx::array_strings]:
+    Source: 'ports/rustfs/kernel/src/varctx.rs', lines 51:0-61:1 -/
+@[reducible]
+def varctx.array_strings
+  (array : Slice claims.Value) :
+  Result (alloc.vec.Vec (alloc.vec.Vec Std.U8))
+  := do
+  varctx.array_strings_loop array (alloc.vec.Vec.new (alloc.vec.Vec Std.U8))
+    0#usize
+
+/-- [rustfs_kernel::varctx::get_claim_as_strings]:
+    Source: 'ports/rustfs/kernel/src/varctx.rs', lines 63:0-79:1
+    Visibility: public -/
+def varctx.get_claim_as_strings
+  (resolver : varctx.VariableResolver) («name» : Slice Std.U8) :
+  Result (Option (alloc.vec.Vec (alloc.vec.Vec Std.U8)))
+  := do
+  match resolver.context.claims with
+  | none => ok none
+  | some c =>
+    let o ← claims.find c «name»
+    match o with
+    | none => ok none
+    | some i =>
+      let (_, v) ←
+        alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+          ((alloc.vec.Vec Std.U8) × claims.Value)) c i
+      match v with
+      | claims.Value.Null =>
+        let o1 ← varctx.scalar_string claims.Value.Null
+        match o1 with
+        | none => ok none
+        | some s =>
+          let y ←
+            lift (Std.Array.to_slice (Array.make 1#usize [ s ] : Array
+              (alloc.vec.Vec Std.U8) 1#usize))
+          let ret := alloc.slice.Slice.into_vec y
+          ok (some ret)
+      | claims.Value.Bool _ =>
+        let o1 ← varctx.scalar_string v
+        match o1 with
+        | none => ok none
+        | some s =>
+          let y ←
+            lift (Std.Array.to_slice (Array.make 1#usize [ s ] : Array
+              (alloc.vec.Vec Std.U8) 1#usize))
+          let ret := alloc.slice.Slice.into_vec y
+          ok (some ret)
+      | claims.Value.Number _ =>
+        let o1 ← varctx.scalar_string v
+        match o1 with
+        | none => ok none
+        | some s =>
+          let y ←
+            lift (Std.Array.to_slice (Array.make 1#usize [ s ] : Array
+              (alloc.vec.Vec Std.U8) 1#usize))
+          let ret := alloc.slice.Slice.into_vec y
+          ok (some ret)
+      | claims.Value.String _ =>
+        let o1 ← varctx.scalar_string v
+        match o1 with
+        | none => ok none
+        | some s =>
+          let y ←
+            lift (Std.Array.to_slice (Array.make 1#usize [ s ] : Array
+              (alloc.vec.Vec Std.U8) 1#usize))
+          let ret := alloc.slice.Slice.into_vec y
+          ok (some ret)
+      | claims.Value.Array array =>
+        let s := alloc.vec.Vec.deref array
+        let v1 ← varctx.array_strings s
+        ok (some v1)
+      | claims.Value.Object _ =>
+        let o1 ← varctx.scalar_string v
+        match o1 with
+        | none => ok none
+        | some s =>
+          let y ←
+            lift (Std.Array.to_slice (Array.make 1#usize [ s ] : Array
+              (alloc.vec.Vec Std.U8) 1#usize))
+          let ret := alloc.slice.Slice.into_vec y
+          ok (some ret)
+
+/-- [rustfs_kernel::varctx::resolve_username]:
+    Source: 'ports/rustfs/kernel/src/varctx.rs', lines 81:0-83:1
+    Visibility: public -/
+def varctx.resolve_username
+  (resolver : varctx.VariableResolver) :
+  Result (Option (alloc.vec.Vec Std.U8))
+  := do
+  varctx.clone_option resolver.context.username
+
+/-- [rustfs_kernel::varctx::resolve_userid]:
+    Source: 'ports/rustfs/kernel/src/varctx.rs', lines 85:0-100:1
+    Visibility: public -/
+def varctx.resolve_userid
+  (resolver : varctx.VariableResolver) :
+  Result (Option (alloc.vec.Vec Std.U8))
+  := do
+  let s ←
+    lift (Array.to_slice (Array.make 3#usize [ 115#u8, 117#u8, 98#u8 ]))
+  let o ← varctx.get_claim_as_strings resolver s
+  let values ←
+    match o with
+    | none =>
+      do
+      let s1 ←
+        lift (Array.to_slice
+          (Array.make 6#usize [
+            112#u8, 97#u8, 114#u8, 101#u8, 110#u8, 116#u8
+            ]))
+      varctx.get_claim_as_strings resolver s1
+    | some _ => ok o
+  match values with
+  | none => ok none
+  | some v =>
+    let i := alloc.vec.Vec.len v
+    if i = 0#usize
+    then ok none
+    else
+      let i1 := alloc.vec.Vec.len v
+      let i2 ← i1 - 1#usize
+      let v1 ←
+        alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+          (alloc.vec.Vec Std.U8)) v i2
+      let v2 ← alloc.vec.CloneVec.clone core.clone.CloneU8 v1
+      ok (some v2)
+
+/-- [rustfs_kernel::varctx::resolve_principal_type]:
+    Source: 'ports/rustfs/kernel/src/varctx.rs', lines 102:0-112:1
+    Visibility: public -/
+def varctx.resolve_principal_type
+  (resolver : varctx.VariableResolver) : Result (alloc.vec.Vec Std.U8) := do
+  match resolver.context.claims with
+  | none =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 4#usize [ 85#u8, 115#u8, 101#u8, 114#u8 ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | some table =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 7#usize [
+          114#u8, 111#u8, 108#u8, 101#u8, 65#u8, 114#u8, 110#u8
+          ]))
+    let o ← claims.find table s
+    let b := core.option.Option.is_some o
+    if b
+    then
+      let s1 ←
+        lift (Array.to_slice
+          (Array.make 11#usize [
+            65#u8, 115#u8, 115#u8, 117#u8, 109#u8, 101#u8, 100#u8, 82#u8,
+            111#u8, 108#u8, 101#u8
+            ]))
+      alloc.slice.Slice.to_vec core.clone.CloneU8 s1
+    else
+      let s1 ←
+        lift (Array.to_slice
+          (Array.make 6#usize [
+            112#u8, 97#u8, 114#u8, 101#u8, 110#u8, 116#u8
+            ]))
+      let o1 ← claims.find table s1
+      let b1 := core.option.Option.is_some o1
+      if b1
+      then
+        let s2 ←
+          lift (Array.to_slice
+            (Array.make 9#usize [
+              115#u8, 97#u8, 45#u8, 112#u8, 111#u8, 108#u8, 105#u8, 99#u8,
+              121#u8
+              ]))
+        let o2 ← claims.find table s2
+        let b2 := core.option.Option.is_some o2
+        if b2
+        then
+          let s3 ←
+            lift (Array.to_slice
+              (Array.make 14#usize [
+                83#u8, 101#u8, 114#u8, 118#u8, 105#u8, 99#u8, 101#u8, 65#u8,
+                99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8
+                ]))
+          alloc.slice.Slice.to_vec core.clone.CloneU8 s3
+        else
+          let s3 ←
+            lift (Array.to_slice
+              (Array.make 4#usize [ 85#u8, 115#u8, 101#u8, 114#u8 ]))
+          alloc.slice.Slice.to_vec core.clone.CloneU8 s3
+      else
+        let s2 ←
+          lift (Array.to_slice
+            (Array.make 4#usize [ 85#u8, 115#u8, 101#u8, 114#u8 ]))
+        alloc.slice.Slice.to_vec core.clone.CloneU8 s2
+
+/-- [rustfs_kernel::varctx::resolve_secure_transport]:
+    Source: 'ports/rustfs/kernel/src/varctx.rs', lines 114:0-120:1
+    Visibility: public -/
+def varctx.resolve_secure_transport
+  (resolver : varctx.VariableResolver) : Result (alloc.vec.Vec Std.U8) := do
+  if resolver.context.is_https
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 4#usize [ 116#u8, 114#u8, 117#u8, 101#u8 ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else
+    let s ←
+      lift (Array.to_slice
+        (Array.make 5#usize [ 102#u8, 97#u8, 108#u8, 115#u8, 101#u8 ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+
+/-- [rustfs_kernel::varctx::resolve_account_id]:
+    Source: 'ports/rustfs/kernel/src/varctx.rs', lines 122:0-124:1
+    Visibility: public -/
+def varctx.resolve_account_id
+  (resolver : varctx.VariableResolver) :
+  Result (Option (alloc.vec.Vec Std.U8))
+  := do
+  varctx.clone_option resolver.context.account_id
+
+/-- [rustfs_kernel::varctx::resolve_region]:
+    Source: 'ports/rustfs/kernel/src/varctx.rs', lines 126:0-128:1
+    Visibility: public -/
+def varctx.resolve_region
+  (resolver : varctx.VariableResolver) :
+  Result (Option (alloc.vec.Vec Std.U8))
+  := do
+  varctx.clone_option resolver.context.region
+
+/-- [rustfs_kernel::varctx::resolve_source_ip]:
+    Source: 'ports/rustfs/kernel/src/varctx.rs', lines 130:0-132:1
+    Visibility: public -/
+def varctx.resolve_source_ip
+  (resolver : varctx.VariableResolver) :
+  Result (Option (alloc.vec.Vec Std.U8))
+  := do
+  varctx.clone_option resolver.context.source_ip
+
+/-- [rustfs_kernel::varctx::resolve_custom_variable]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/varctx.rs', lines 140:4-148:1
+    Visibility: public -/
+@[rust_loop_body]
+def varctx.resolve_custom_variable_loop.body
+  (resolver : varctx.VariableResolver) (key : alloc.vec.Vec Std.U8)
+  (i : Std.Usize) :
+  Result (ControlFlow Std.Usize (Option (alloc.vec.Vec Std.U8)))
+  := do
+  let i1 := alloc.vec.Vec.len resolver.context.custom_variables
+  if i < i1
+  then
+    let (candidate, value) ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+        ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec Std.U8)))
+        resolver.context.custom_variables i
+    let s := alloc.vec.Vec.deref candidate
+    let s1 := alloc.vec.Vec.deref key
+    let b ← bytes.eq s s1
+    if b
+    then
+      let v ← alloc.vec.CloneVec.clone core.clone.CloneU8 value
+      ok (done (some v))
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else ok (done none)
+
+/-- [rustfs_kernel::varctx::resolve_custom_variable]: loop 0:
+    Source: 'ports/rustfs/kernel/src/varctx.rs', lines 140:4-148:1
+    Visibility: public -/
+@[rust_loop]
+def varctx.resolve_custom_variable_loop
+  (resolver : varctx.VariableResolver) (key : alloc.vec.Vec Std.U8)
+  (i : Std.Usize) :
+  Result (Option (alloc.vec.Vec Std.U8))
+  := do
+  loop
+    (fun i1 => varctx.resolve_custom_variable_loop.body resolver key i1)
+    i
+
+/-- [rustfs_kernel::varctx::resolve_custom_variable]:
+    Source: 'ports/rustfs/kernel/src/varctx.rs', lines 134:0-148:1
+    Visibility: public -/
+def varctx.resolve_custom_variable
+  (resolver : varctx.VariableResolver) («name» : Slice Std.U8) :
+  Result (Option (alloc.vec.Vec Std.U8))
+  := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 7#usize [
+        99#u8, 117#u8, 115#u8, 116#u8, 111#u8, 109#u8, 58#u8
+        ]))
+  let b ← bytes.starts_with «name» s
+  if b
+  then
+    let i := Slice.len «name»
+    let key ← bytes.slice «name» 7#usize i
+    varctx.resolve_custom_variable_loop resolver key 0#usize
+  else ok none
+
+/-- [rustfs_kernel::varctx::is_dynamic]:
+    Source: 'ports/rustfs/kernel/src/varctx.rs', lines 150:0-152:1
+    Visibility: public -/
+def varctx.is_dynamic («name» : Slice Std.U8) : Result Bool := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 15#usize [
+        97#u8, 119#u8, 115#u8, 58#u8, 67#u8, 117#u8, 114#u8, 114#u8, 101#u8,
+        110#u8, 116#u8, 84#u8, 105#u8, 109#u8, 101#u8
+        ]))
+  let b ← bytes.eq «name» s
+  if b
+  then ok true
+  else
+    let s1 ←
+      lift (Array.to_slice
+        (Array.make 13#usize [
+          97#u8, 119#u8, 115#u8, 58#u8, 69#u8, 112#u8, 111#u8, 99#u8, 104#u8,
+          84#u8, 105#u8, 109#u8, 101#u8
+          ]))
+    bytes.eq «name» s1
+
+/-- [rustfs_kernel::varctx::resolve]:
+    Source: 'ports/rustfs/kernel/src/varctx.rs', lines 154:0-187:1
+    Visibility: public -/
+def varctx.resolve
+  (resolver : varctx.VariableResolver) («name» : Slice Std.U8)
+  (env : condfuncs.Env) :
+  Result (Option (alloc.vec.Vec Std.U8))
+  := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        97#u8, 119#u8, 115#u8, 58#u8, 117#u8, 115#u8, 101#u8, 114#u8, 110#u8,
+        97#u8, 109#u8, 101#u8
+        ]))
+  let b ← bytes.eq «name» s
+  if b
+  then varctx.resolve_username resolver
+  else
+    let s1 ←
+      lift (Array.to_slice
+        (Array.make 10#usize [
+          97#u8, 119#u8, 115#u8, 58#u8, 117#u8, 115#u8, 101#u8, 114#u8, 105#u8,
+          100#u8
+          ]))
+    let b1 ← bytes.eq «name» s1
+    if b1
+    then varctx.resolve_userid resolver
+    else
+      let s2 ←
+        lift (Array.to_slice
+          (Array.make 17#usize [
+            97#u8, 119#u8, 115#u8, 58#u8, 80#u8, 114#u8, 105#u8, 110#u8, 99#u8,
+            105#u8, 112#u8, 97#u8, 108#u8, 84#u8, 121#u8, 112#u8, 101#u8
+            ]))
+      let b2 ← bytes.eq «name» s2
+      if b2
+      then let v ← varctx.resolve_principal_type resolver
+           ok (some v)
+      else
+        let s3 ←
+          lift (Array.to_slice
+            (Array.make 19#usize [
+              97#u8, 119#u8, 115#u8, 58#u8, 83#u8, 101#u8, 99#u8, 117#u8,
+              114#u8, 101#u8, 84#u8, 114#u8, 97#u8, 110#u8, 115#u8, 112#u8,
+              111#u8, 114#u8, 116#u8
+              ]))
+        let b3 ← bytes.eq «name» s3
+        if b3
+        then let v ← varctx.resolve_secure_transport resolver
+             ok (some v)
+        else
+          let s4 ←
+            lift (Array.to_slice
+              (Array.make 15#usize [
+                97#u8, 119#u8, 115#u8, 58#u8, 67#u8, 117#u8, 114#u8, 114#u8,
+                101#u8, 110#u8, 116#u8, 84#u8, 105#u8, 109#u8, 101#u8
+                ]))
+          let b4 ← bytes.eq «name» s4
+          if b4
+          then
+            let v ←
+              alloc.vec.CloneVec.clone core.clone.CloneU8 env.now_rfc3339
+            ok (some v)
+          else
+            let s5 ←
+              lift (Array.to_slice
+                (Array.make 13#usize [
+                  97#u8, 119#u8, 115#u8, 58#u8, 69#u8, 112#u8, 111#u8, 99#u8,
+                  104#u8, 84#u8, 105#u8, 109#u8, 101#u8
+                  ]))
+            let b5 ← bytes.eq «name» s5
+            if b5
+            then
+              let v ←
+                alloc.vec.CloneVec.clone core.clone.CloneU8 env.now_epoch
+              ok (some v)
+            else
+              let s6 ←
+                lift (Array.to_slice
+                  (Array.make 13#usize [
+                    97#u8, 119#u8, 115#u8, 58#u8, 65#u8, 99#u8, 99#u8, 111#u8,
+                    117#u8, 110#u8, 116#u8, 73#u8, 100#u8
+                    ]))
+              let b6 ← bytes.eq «name» s6
+              if b6
+              then varctx.resolve_account_id resolver
+              else
+                let s7 ←
+                  lift (Array.to_slice
+                    (Array.make 10#usize [
+                      97#u8, 119#u8, 115#u8, 58#u8, 82#u8, 101#u8, 103#u8,
+                      105#u8, 111#u8, 110#u8
+                      ]))
+                let b7 ← bytes.eq «name» s7
+                if b7
+                then varctx.resolve_region resolver
+                else
+                  let s8 ←
+                    lift (Array.to_slice
+                      (Array.make 12#usize [
+                        97#u8, 119#u8, 115#u8, 58#u8, 83#u8, 111#u8, 117#u8,
+                        114#u8, 99#u8, 101#u8, 73#u8, 112#u8
+                        ]))
+                  let b8 ← bytes.eq «name» s8
+                  if b8
+                  then varctx.resolve_source_ip resolver
+                  else varctx.resolve_custom_variable resolver «name»
+
+/-- [rustfs_kernel::varctx::resolve_multiple]:
+    Source: 'ports/rustfs/kernel/src/varctx.rs', lines 188:0-209:1
+    Visibility: public -/
+def varctx.resolve_multiple
+  (resolver : varctx.VariableResolver) («name» : Slice Std.U8)
+  (env : condfuncs.Env) :
+  Result (Option (alloc.vec.Vec (alloc.vec.Vec Std.U8)))
+  := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        97#u8, 119#u8, 115#u8, 58#u8, 117#u8, 115#u8, 101#u8, 114#u8, 110#u8,
+        97#u8, 109#u8, 101#u8
+        ]))
+  let b ← bytes.eq «name» s
+  if b
+  then
+    let o ← varctx.resolve_username resolver
+    match o with
+    | none => ok none
+    | some v =>
+      let y ←
+        lift (Std.Array.to_slice (Array.make 1#usize [ v ] : Array
+          (alloc.vec.Vec Std.U8) 1#usize))
+      let ret := alloc.slice.Slice.into_vec y
+      ok (some ret)
+  else
+    let s1 ←
+      lift (Array.to_slice
+        (Array.make 10#usize [
+          97#u8, 119#u8, 115#u8, 58#u8, 117#u8, 115#u8, 101#u8, 114#u8, 105#u8,
+          100#u8
+          ]))
+    let b1 ← bytes.eq «name» s1
+    if b1
+    then
+      let s2 ←
+        lift (Array.to_slice (Array.make 3#usize [ 115#u8, 117#u8, 98#u8 ]))
+      let o ← varctx.get_claim_as_strings resolver s2
+      match o with
+      | none =>
+        let s3 ←
+          lift (Array.to_slice
+            (Array.make 6#usize [
+              112#u8, 97#u8, 114#u8, 101#u8, 110#u8, 116#u8
+              ]))
+        varctx.get_claim_as_strings resolver s3
+      | some _ => ok o
+    else
+      let o ← varctx.resolve resolver «name» env
+      match o with
+      | none => ok none
+      | some v =>
+        let y ←
+          lift (Std.Array.to_slice (Array.make 1#usize [ v ] : Array
+            (alloc.vec.Vec Std.U8) 1#usize))
+        let ret := alloc.slice.Slice.into_vec y
+        ok (some ret)
+
 end rustfs_kernel

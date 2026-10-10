@@ -227,3 +227,35 @@ All four explicit-time and default document functions were individually mutated 
 | `docdata::update_at` | `{}` | `documents::documents_agree` |
 | `docdata::default_policy` | `PolicyDoc{version:0,policy,create_date:None,update_date:None}` | `documents::documents_agree` |
 | `docdata::default_doc` | `PolicyDoc{version:1,policy:Policy{id:Vec::new(),version:Vec::new(),statements:Vec::new()},create_date:None,update_date:None}` | `documents::documents_agree` |
+
+All sixteen general variable-context functions were individually mutated and caught.
+
+| Function | Mutation | Test |
+|---|---|---|
+| `varctx::clone_option` | `None` | `variable_context::context_agrees` |
+| `varctx::scalar_string` | `None` | `variable_context::context_agrees` |
+| `varctx::get_claim_as_strings` | `None` | `variable_context::context_agrees` |
+| `varctx::resolve_username` | `None` | `variable_context::context_agrees` |
+| `varctx::resolve_userid` | `None` | `variable_context::context_agrees` |
+| `varctx::resolve_account_id` | `None` | `variable_context::context_agrees` |
+| `varctx::resolve_region` | `None` | `variable_context::context_agrees` |
+| `varctx::resolve_source_ip` | `None` | `variable_context::context_agrees` |
+| `varctx::resolve_custom_variable` | `None` | `variable_context::context_agrees` |
+| `varctx::resolve` | `None` | `variable_context::context_agrees` |
+| `varctx::resolve_multiple` | `None` | `variable_context::context_agrees` |
+| `varctx::resolve_principal_type` | `Vec::new()` | `variable_context::context_agrees` |
+| `varctx::resolve_secure_transport` | `Vec::new()` | `variable_context::context_agrees` |
+| `varctx::is_dynamic` | `false` | `variable_context::context_agrees` |
+| `varctx::context_new` | `VariableContext{is_https:true,source_ip:None,account_id:None,region:None,username:None,claims:None,conditions:Vec::new(),custom_variables:Vec::new()}` | `variable_context::context_agrees` |
+| `varctx::resolver_new` | `let mut c=context;c.username=None;VariableResolver{context:c}` | `variable_context::context_agrees` |
+
+After the extraction rewrite, claim coercion and its new array helper were individually mutated and caught again.
+
+| Function | Mutation | Test |
+|---|---|---|
+| `varctx::get_claim_as_strings` | `None` | `variable_context::context_agrees` |
+| `varctx::array_strings` | `Vec::new()` | `variable_context::context_agrees` |
+
+Final audit: all 236 new handwritten kernel functions have an individual mutation
+that compiled and failed a differential test. No function was missing from the
+mutation failure logs.

@@ -1,7 +1,9 @@
 # rustfs: what the kernel covers and where it differs
 
 Upstream: rustfs/rustfs @ e870a6d, `crates/policy/src/policy/`. The kernel
-covers 1,141 lines of it (`difftest/count_loc.py`).
+covers all 2,533 kernel-target lines recorded in `LEDGER.toml`
+(`python3 harness/port_ledger.py report rustfs`); 1,072 shell lines remain
+outside the target.
 
 ## Covered
 
@@ -16,27 +18,51 @@ covers 1,141 lines of it (`difftest/count_loc.py`).
 | `awsvars::*` | `variables.rs`: `VariableResolver`, `resolve_aws_variables`, `resolve_single_pass` |
 | `wildmatch::*`, `pathclean::clean` | `utils/wildcard.rs`, `utils/path.rs` |
 | `bytes::parse_i64` | `str::parse::<i64>`, which `NumberFunc` calls |
+| `defaults::*` | `policy.rs::default`: all eight built-in policies and their constructors |
+| `actsets::*`, `keytables::*` | Complete action/key name tables, validation and membership |
+| `valids::*`, `resets::*` | Statement validators, resource validation, resource-set equality and helpers |
+| `conddata::*`, `dates::*` | Full condition metadata, equality, binary/date values and evaluation |
+| `claims::*`, `unicode::*` | Decoded claims, exact/Unicode case lookup, tag scans and string primitives |
+| `manage::*` | Full policy metadata, statement equality, deduplication, merge, validation, tag queries and complete condition evaluation |
+| `extras::*` | Decoded principal types, principal sets, LazyBuf constructor and wildcard prefix matcher |
+| `docdata::*` | Policy documents, explicit-time creation/update and default constructors |
+| `varctx::*` | General decoded variable context, claim coercion, single/multiple resolution and dynamic-name predicates |
 
 ## How it is checked
 
-`difftest` depends on upstream's own `rustfs-policy` crate from the pinned
-checkout; nothing is copied. `tests.rs` draws identity and bucket policies
-(actions, `NotAction`, S3 and KMS resources with variables, `NotResource`,
-string/IP/null/bool/numeric conditions with qualifiers and `IfExists`,
-principals) and requests (actions, buckets, objects with `..` and `.`
-segments, condition values, JWT claims), builds the same policy as JSON for
-upstream and as kernel values, and compares `is_allowed` on 400,000 identity
-and 400,000 bucket cases. Kernel mutations in each module make it fail.
+`difftest` uses the pinned `rustfs-policy` crate and a private oracle built
+from its unchanged source bodies. The oracle exposes modules and appends
+wrappers for private helpers; it does not edit the upstream checkout.
+`tests.rs` draws identity and bucket policies (actions, `NotAction`, S3 and
+KMS resources with variables, `NotResource`, conditions and principals) and
+requests, then compares `is_allowed` on 400,000 identity and 400,000 bucket
+cases. Additional suites compare complete condition forms, full policy
+metadata and management, tables, decoded claims, document revisions and
+general variable contexts, including rejected names, invalid values and
+validation failures. Unicode primitives are also checked exhaustively.
 
-## Not covered (trusted input)
+Every new handwritten kernel function was individually mutated, and its
+differential test failed with a compiled assertion failure. The mutations
+and tests are recorded in `difftest/MUTATIONS.md`.
 
-- Parsing policies from JSON, and `Validator::is_valid`. The kernel takes
-  parsed statements; the difftest builds both sides from the same draws.
-- `Date*` and `BinaryEquals` conditions.
-- Parsing IP addresses (`str::parse::<IpAddr>`) and CIDR values, and JSON
-  claims into strings (`get_claim_as_strings`).
-- The clock behind `aws:CurrentTime` and `aws:EpochTime`, an input in `Env`.
-- `CachedAwsVariableResolver`, OPA, and how the server builds `Args`.
+## Shell boundary (trusted input)
+
+- Policy/document/principal JSON decoding and serialization. The kernel takes
+  decoded values and performs policy and statement validation.
+- JSON number decoding: `claims::Value::Number` contains serde_json's canonical
+  display bytes. Strings and names are valid UTF-8, matching upstream `str`.
+  Map inputs have unique keys; list forms of sets use membership semantics.
+- IP-address and CIDR parsing. The shell supplies the corresponding parsed
+  address values; policy matching and condition evaluation are in the kernel.
+- Clock reads behind `aws:CurrentTime` and `aws:EpochTime`, supplied through
+  `Env`, and clock-reading document convenience wrappers. Explicit-time
+  document operations are in the kernel.
+- Variable caching, the OPA HTTP client, and server construction of requests.
+
+Existing narrow evaluation APIs remain unchanged for their Lean proofs. New
+full-metadata entry points in `manage` include Date/Binary evaluation, and
+`varctx` retains all decoded claims and custom variables. The prior condition
+evaluator's ASCII-only ignore-case behavior remains documented below.
 
 ## Differences in form
 
@@ -234,3 +260,21 @@ and 400,000 bucket cases. Kernel mutations in each module make it fail.
   crate. Tests compare all fields over generated instants/offsets, revisions,
   missing dates, complete generated policies, and updates whose explicit time
   precedes the previous time.
+
+## General variable context
+
+- New VariableContext retains all decoded claims and custom variables alongside
+  the unchanged narrow evaluation context. Lookup/coercion writes out the JSON
+  scalar/array filter and display primitives; Number contains the shell's
+  canonical serde_json display bytes. Custom map keys remain unique.
+- User ID resolution retains last-value selection and exact sub/parent fallback,
+  including an empty sub array suppressing fallback. Principal type depends on
+  key presence even for null or invalid value types. Pure dispatch and multiple
+  resolution use explicit clock bytes from Env; caching stays outside.
+- Differential tests compare public upstream dispatch and a test wrapper around
+  private claim coercion across all decoded value forms, empty/missing values,
+  custom-name rejection and case-sensitive variable names.
+
+- Claim-array coercion uses a separate loop helper. Splitting the surrounding
+  enum match from its filtering loop avoids an unsupported Aeneas branch
+  translation and preserves the same scalar filtering and order.
