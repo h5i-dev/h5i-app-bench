@@ -169,8 +169,10 @@ theorem server_sees_joined_only (s : Snapshot) (origin room ev : U64) (p : Pdu) 
     ∃ m, Joined s m room.val ∧ m / 1000 = origin.val ∧ membershipAt s hp.val m = .Join := by
   sorry
 
-/-- Every request gets a reply: the kernel neither panics nor loops. -/
-theorem transition_total (s : Snapshot) (req : Request) :
+/-- Every request gets a reply: the kernel neither panics nor loops, for fewer
+than `Usize.max` relation rows. The relations walker queues one entry per
+relation it visits after its first, so `Usize.max` rows overflow its queue. -/
+theorem transition_total (s : Snapshot) (req : Request) (hr : s.relations.length < Usize.max) :
     ∃ r, transition s req = ok r := by
   sorry
 

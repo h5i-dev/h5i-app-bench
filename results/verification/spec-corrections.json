@@ -22,7 +22,7 @@
  "nora-total": {
   "date": "2026-10-09",
   "change": "added: every role-rule pattern is shorter than Usize.max",
-  "reason": "Same capacity boundary as nora-glob-match, reached through `transition`; gpt-6.1-sol proved the unconditional statement false."
+  "reason": "Same capacity boundary as nora-glob-match, reached through `transition`; gpt-6.1-sol proved the unconditional statement false. Then also: namespace scopes (provider and rule) shorter than Usize.max; a scope of Usize.max `/` overflows its split (gpt-6.1-sol, 2026-10-10)."
  },
  "nora-middleware-total": {
   "date": "2026-10-09",
@@ -32,16 +32,26 @@
  "artifactkeeper-visibility-total": {
   "date": "2026-10-10",
   "change": "added: the request's path, query and header names and values are shorter than Usize.max",
-  "reason": "gpt-6.1-sol proved the unconditional statement false: a Cookie header of Usize.max `;` splits into Usize.max + 1 parts, more than a modeled Vec holds. Rust cannot allocate such a request."
+  "reason": "gpt-6.1-sol proved the unconditional statement false: a Cookie header of Usize.max `;` splits into Usize.max + 1 parts, more than a modeled Vec holds. Rust cannot allocate such a request. Then the query bound became 2 * length < Usize.max: decoding a ticket of Usize.max/2+1 bytes of 0x80 doubles it (gpt-6.1-sol, 2026-10-10)."
  },
  "rustfs-bucket-total": {
   "date": "2026-10-10",
   "change": "added: bucket name at most 63 bytes and object key at most 1024 (S3's limits)",
-  "reason": "gpt-6.1-sol proved the unconditional statement false: a bucket name of Usize.max bytes makes building the resource ARN (`arn:aws:s3:::` + bucket + ...) exceed a Vec's capacity. S3 rejects such names before policy evaluation."
+  "reason": "gpt-6.1-sol proved the unconditional statement false: a bucket name of Usize.max bytes makes building the resource ARN (`arn:aws:s3:::` + bucket + ...) exceed a Vec's capacity. S3 rejects such names before policy evaluation. Then also: each condition key's lookup name (name/variable) fits in a Vec; a key name of Usize.max bytes overflows when `/` is appended (gpt-6.1-sol, 2026-10-10)."
  },
  "kanidm-effective-total": {
   "date": "2026-10-10",
   "change": "added: the search and modify profiles list fewer than Usize.max attributes and classes in total",
-  "reason": "gpt-6.1-sol proved the unconditional statement false: two search profiles granting Usize.max + 1 distinct attributes overflow the union of their grants. Rust cannot hold that many distinct strings."
+  "reason": "gpt-6.1-sol proved the unconditional statement false: two search profiles granting Usize.max + 1 distinct attributes overflow the union of their grants. Rust cannot hold that many distinct strings. Then sync agreements' attributes were added to the count: one agreement with Usize.max attributes overflows (gpt-6.1-sol, 2026-10-10)."
+ },
+ "oxicloud-check-total": {
+  "date": "2026-10-10",
+  "change": "added: fewer than Usize.max membership rows",
+  "reason": "gpt-6.1-sol proved the unconditional statement false: Usize.max groups containing one user expand to Usize.max + 1 IDs, more than a Vec holds."
+ },
+ "tuwunel-total": {
+  "date": "2026-10-10",
+  "change": "added: fewer than Usize.max relation rows",
+  "reason": "gpt-6.1-sol proved the unconditional statement false: Usize.max self-relations overflow the relations walker's queue (docs/tuwunel-totality-obstruction.md)."
  }
 }

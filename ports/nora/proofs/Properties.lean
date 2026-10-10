@@ -67,11 +67,14 @@ theorem segment_glob_spec (pattern v : Slice U8) :
     segment_glob pattern v = ok (segGlobSpec (nats pattern.val) (nats v.val)) := by
   sorry
 
-/-- The kernel never panics, overflows or loops, for role-rule patterns shorter
-than `Usize.max` (see `glob_match_spec`: a longer one splits into more parts than
-a modeled `Vec` holds; Rust cannot allocate such a pattern). -/
+/-- The kernel never panics, overflows or loops, for role-rule patterns and
+namespace scopes shorter than `Usize.max` (see `glob_match_spec`: a longer one
+splits into more parts than a modeled `Vec` holds; Rust cannot allocate such a
+pattern). -/
 theorem transition_total (p : OidcProvider) (c : Claims) (r : Request)
-    (hpat : ∀ rule ∈ p.role_rules.val, rule.pattern.length < Usize.max) :
+    (hpat : ∀ rule ∈ p.role_rules.val, rule.pattern.length < Usize.max)
+    (hns : (∀ s ∈ p.namespace_scope.val, s.length < Usize.max) ∧
+      ∀ rule ∈ p.role_rules.val, ∀ sc, rule.namespace_scope = some sc → ∀ s ∈ sc.val, s.length < Usize.max) :
     ∃ y, transition p c r = ok y := by
   sorry
 

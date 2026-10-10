@@ -83,10 +83,17 @@ theorem bucket_allow_needs_principal (sts : Slice stmts.BPStatement) (a : stmts.
 
 /-- Bucket policy evaluation always terminates without a panic, for an S3
 bucket name of at most 63 bytes and an object key of at most 1024, the limits
-S3 enforces before policy evaluation. Without them a bucket name of
-`Usize.max` bytes makes building the resource ARN exceed a `Vec`'s capacity. -/
+S3 enforces before policy evaluation, and for condition keys whose lookup
+name (`name/variable`) fits in a `Vec`. Without them a bucket name or key name
+of `Usize.max` bytes exceeds a `Vec`'s capacity. -/
 theorem bucket_policy_total (sts : Slice stmts.BPStatement) (a : stmts.BucketPolicyArgs) (e : condfuncs.Env)
-    (hb : a.bucket.length ≤ 63) (ho : a.object.length ≤ 1024) :
+    (hb : a.bucket.length ≤ 63) (ho : a.object.length ≤ 1024)
+    (hk : ∀ st ∈ sts.val, ∀ c ∈ st.conditions.for_any_value.val ++ st.conditions.for_all_values.val ++
+        st.conditions.for_normal.val,
+      ∀ k ∈ (match c.cond with
+        | .Str _ l => l.val.map Prod.fst | .Ip _ l => l.val.map Prod.fst | .Null l => l.val.map Prod.fst
+        | .Bool l => l.val.map Prod.fst | .Num _ _ l => l.val.map Prod.fst),
+      ∀ v, k.variable = some v → k.name.length + v.length < Usize.max) :
     ∃ r, policies.bucket_policy_is_allowed sts a e = ok r := by
   sorry
 

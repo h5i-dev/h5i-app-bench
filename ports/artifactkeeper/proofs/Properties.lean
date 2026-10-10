@@ -84,11 +84,12 @@ theorem ticket_consumed_on_read (db : tables.Db) (o : trusted.Oracle) (ip : Opti
 /-- The middleware never panics, overflows or loops, for request byte strings
 shorter than `Usize.max`. Aeneas lets a slice be `Usize.max` long; a Cookie
 header of that many `;` splits into more parts than a modeled `Vec` holds.
-Rust cannot allocate such a request, so the bound only excludes lengths Rust
-cannot have. -/
+A query is bounded by half that, since decoding a ticket can double its
+bytes. Rust cannot allocate such a request, so the bounds only exclude lengths
+Rust cannot have. -/
 theorem repo_visibility_total (db : tables.Db) (o : trusted.Oracle) (ip : Option net.IpAddr)
     (req : http.Request)
-    (hreq : req.path.length < Usize.max ∧ (∀ q, req.query = some q → q.length < Usize.max) ∧
+    (hreq : req.path.length < Usize.max ∧ (∀ q, req.query = some q → 2 * q.length < Usize.max) ∧
       ∀ h ∈ req.headers.val, h.1.length < Usize.max ∧ h.2.length < Usize.max) :
     ∃ y, middleware.repo_visibility_middleware db o ip req = ok y := by
   sorry

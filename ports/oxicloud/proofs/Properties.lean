@@ -55,9 +55,12 @@ theorem share_needs_owner (db : model.Db) (ro : Bool) (now : I64) (s : model.Sub
     ∃ g ∈ db.grants.val, g.role = .Owner ∧ Live g now := by
   apply oxicloud_kernel.Verified.OxicloudShareNeedsOwner.share_needs_owner <;> assumption
 
-/-- The check always answers: group expansion and folder lookups terminate. -/
+/-- The check always answers: group expansion and folder lookups terminate,
+for fewer than `Usize.max` membership rows. The expansion holds the user and
+every group it reaches; with `Usize.max` groups that is one more ID than a
+`Vec` holds, a table no database can store. -/
 theorem check_total (db : model.Db) (ro : Bool) (now : I64) (s : model.Subject) (p : model.Permission)
-    (r : model.Resource) : ∃ b, acl.check db ro now s p r = ok b := by
+    (r : model.Resource) (hm : db.memberships.length < Usize.max) : ∃ b, acl.check db ro now s p r = ok b := by
   sorry
 
 /-! ## The grant endpoints -/
