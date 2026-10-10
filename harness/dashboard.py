@@ -59,8 +59,11 @@ def generated_decls(path):
             continue
         src = re.search(r"Source: '([^']+)', lines (\d+):\d+-(\d+):\d+", block)
         rust = re.match(r"/-- \[([^\]]+)\]", block).group(1)
+        # Paths are relative to the kernel crate, or to the repository in
+        # projects extracted by `h5i app extract`.
+        file = src and re.sub(r"^ports/[\w-]+/kernel/", "", src.group(1))
         decls[name.group(1)] = {"lean": block, "rust_path": rust,
-                                "file": src and src.group(1), "lines": src and (int(src.group(2)), int(src.group(3))),
+                                "file": file, "lines": src and (int(src.group(2)), int(src.group(3))),
                                 "kind": re.search(rf"^{DECL_KW}", block, re.M).group(0).split()[-1]}
     return decls
 
@@ -188,7 +191,7 @@ class Upstream:
         self.copies = [f for root in (d / "upstream", d / "src/upstream") if root.is_dir()
                        for f in sorted(root.rglob("*.rs"))
                        if not {"stubs", "seams", "target"} & set(f.relative_to(root).parts)]
-        self.checkout, self.found = None, {}
+        self.checkout, self.tree, self.found = None, None, {}
         for m in re.finditer(r'path\s*=\s*"([^"]+)"', (d / "Cargo.toml").read_text()):
             dep = (d / m.group(1)).resolve()
             if dep.is_dir() and not dep.is_relative_to(port.resolve()):
@@ -196,6 +199,9 @@ class Upstream:
                                      capture_output=True, text=True).stdout.strip()
                 if top:
                     self.checkout = (Path(top), str(dep.relative_to(top)))
+            elif dep.is_dir() and (port / "upstream-src") in [dep, *dep.parents]:
+                # A plain copy of the pinned tree, not a git checkout: read it from disk.
+                self.tree = (port.resolve() / "upstream-src", dep)
 
     def find(self, fn):
         if fn not in self.found:
@@ -208,6 +214,15 @@ class Upstream:
                 rel = f.relative_to(self.port)
                 return {"fn": fn, "file": str(rel.relative_to("difftest")), "line": line,
                         "url": f"{REPO}/ports/{self.port.name}/{rel}#L{line}", "code": code}
+        if self.tree:
+            root, sub = self.tree
+            for f in sorted(sub.rglob("*.rs")):
+                if "target" in f.relative_to(root).parts:
+                    continue
+                for line, code in rust_fn(f, fn)[:1]:
+                    path = f.relative_to(root)
+                    return {"fn": fn, "file": str(path), "line": line,
+                            "url": f"https://github.com/{self.repo}/blob/{self.commit}/{path}#L{line}", "code": code}
         if self.checkout:
             top, sub = self.checkout
             hits = subprocess.run(["git", "-C", top, "grep", "-n", "-E", rf"\bfn\s+{fn}\b\s*[<(]", self.commit, "--", sub],
@@ -307,7 +322,7 @@ def target_loc(statement, gen, up, memo, kernel_dir):
         if u := upstream(n):
             items[(u["file"], u["line"])] = code_lines(u["code"])
         stack += [m for m in body_refs(n) if m not in done]
-    return list(dict.fromkeys(fn_name(gen[n]) for n in targets)), sum(items.values())
+    return list(dict.fromkeys(fn_name(gen[n]) for n in targets)), items
 
 
 # ---- Markdown (the subset DEVIATIONS.md uses) ----------------------------
@@ -404,6 +419,142 @@ def column(run):
     return f"{run['model']} · {run['agent']}"
 
 
+
+# ---- Verification ledger ---------------------------------------------------
+
+def prover(source):
+    """Who wrote an accepted proof, from where the certified candidate lives."""
+    if m := re.match(r"results/runs/\d{8}-\d{6}-(.+)/workspace/", source):
+        rest = m.group(1)
+        for model in ("gpt-6.1-sol", "claude-opus-5-5", "claude-fable-5", "gemini-3.1-pro-preview", "gemini-3.8-flash"):
+            if model in rest:
+                return model
+        return rest.split("-")[-1]
+    if source.startswith("docs/data/tasks"):
+        return "earlier benchmark run"
+    return "proof session"
+
+
+def verification(ts):
+    """task id -> independent certificate status, proof size and corrections."""
+    import coverage
+    corrections = json.loads((ROOT / "results/verification/spec-corrections.json").read_text())
+    selected = bench_tasks()
+    out = {}
+    for t in ts:
+        tid = t["id"]
+        cert = ROOT / "results/verification" / tid / "certificate.json"
+        row = {"status": "open", "proof_loc": None, "prover": None, "correction": corrections.get(tid)}
+        if cert.exists() and (c := json.loads(cert.read_text())).get("grade", {}).get("passed"):
+            # The library may be hashed from a local copy (BENCH_APPLIB): compare contents, not paths.
+            stale = sorted((c.get("inputs") or {}).values()) != sorted(coverage.environment(selected[tid]).values())
+            template = (ROOT / "tasks" / tid / "workspace/proofs/Solution.lean").read_text()
+            code = (ROOT / "results/verification" / tid / "Solution.lean").read_text()
+            row |= {"status": "stale" if stale else "accepted",
+                    "proof_loc": c["grade"]["solution_loc"] - code_lines(template) + 1,
+                    "solution_loc": c["grade"]["solution_loc"], "prover": prover(c["source"]),
+                    "checked_at": c["checked_at"][:16].replace("T", " "), "check_s": c["grade"].get("check_s"),
+                    "axioms": c["grade"].get("axioms"), "code": current_names(code)}
+        out[tid] = row
+    return out
+
+
+def bench_tasks():
+    sys.path.insert(0, str(ROOT / "harness"))
+    import bench
+    return bench.tasks(extra=False)
+
+
+def lean_lines(path):
+    """Lean lines without blanks and comments."""
+    n, block = 0, 0
+    for line in path.read_text().splitlines():
+        t = line.strip()
+        if block or t.startswith("/-"):
+            block = 0 if "-/" in t else 1
+            continue
+        if t and not t.startswith("--"):
+            n += 1
+    return n
+
+
+def latest_json(pattern):
+    files = sorted(ROOT.glob(pattern))
+    return json.loads(files[-1].read_text()) if files else None
+
+
+def app_metrics(app, ts, ledger, items):
+    """Spec completion, upstream code reached and proof effort for one app."""
+    port = ROOT / "ports" / app
+    ids = [t["id"] for t in ts if t["app"] == app]
+    acc = [i for i in ids if ledger[i]["status"] == "accepted"]
+    union = lambda keys: {k: v for i in keys for k, v in items.get(i, {}).items()}
+    inv = {a["app"]: a for a in (latest_json("results/source-coverage/inventory.json") or {"apps": []})["apps"]}
+    spans = {a["app"]: a for a in (latest_json("results/source-coverage/ported-spans.json") or {"apps": []})["apps"]}
+    rust_loc = sum(code_lines(f.read_text()) for f in (port / "kernel/src").glob("*.rs"))
+    return {"specs": len(ids), "accepted": len(acc),
+            "stale": sum(ledger[i]["status"] == "stale" for i in ids),
+            "corrected": sum(bool(ledger[i]["correction"]) for i in ids),
+            "upstream_selected": sum(union(ids).values()), "upstream_reached": sum(union(acc).values()),
+            "scope_lines": inv.get(app, {}).get("nonblank_physical_lines"),
+            "scope": inv.get(app, {}).get("scope"),
+            "ported_span_lines": spans.get(app, {}).get("deduplicated_mapped_nonblank_lines"),
+            "rust_loc": rust_loc,
+            "lean_loc": sum(lean_lines(f) for f in (port / "proofs/generated").glob("*.lean")),
+            "spec_loc": lean_lines(port / "proofs/Spec.lean"),
+            "proof_loc": sum(ledger[i]["proof_loc"] or 0 for i in acc)}
+
+
+def performance():
+    """Latest paired kernel/upstream timing per (app, benchmark, boundary)."""
+    rows = {}
+    for f in sorted((ROOT / "results/performance").glob("*.json")):
+        d = json.loads(f.read_text())
+        if d.get("exit_code") or d.get("sources_stable") is False:
+            continue
+        app = d.get("app") or f.stem.rsplit("-", 1)[-1]
+        for m in d.get("measurements", []):
+            scope = m.get("scope", "")
+            matched = scope.startswith(("matched", "function-only", "validator-only"))
+            up = m.get("upstream_ns_per_call", m.get("upstream_ns"))
+            k = m.get("kernel_ns_per_call", m.get("kernel_ns"))
+            if m.get("kernel_over_upstream") is None:
+                continue
+            rows[(app, m["benchmark"], matched)] = {
+                "app": app, "benchmark": m["benchmark"], "matched": matched, "scope": scope,
+                "ratio": m["kernel_over_upstream"], "upstream_ns": up, "kernel_ns": k,
+                "samples": m.get("samples"), "rounds": m.get("rounds"),
+                "parity": m.get("reply_parity", m.get("acceptance_parity")),
+                "status": d.get("measurement_status", "pilot"), "measured": d["timestamp"][:10],
+                "file": str(f.relative_to(ROOT))}
+    return sorted(rows.values(), key=lambda r: (r["app"], not r["matched"], r["benchmark"]))
+
+
+def equivalence():
+    """Latest differential-test outcome per app."""
+    out = {}
+    for f in sorted((ROOT / "results/equivalence").glob("*/summary.json")):
+        d = json.loads(f.read_text())
+        for r in d.get("runs", []):
+            out[r["app"]] = {"passed": r.get("exit_code") == 0, "seconds": round(r.get("elapsed_seconds") or 0),
+                             "when": d["timestamp"][:10], "evidence": r.get("evidence"), "log": r.get("log")}
+    return out
+
+
+def gates():
+    """Latest `h5i app check` (sorry-free project gate) and `extract --check`
+    (reproducible extraction) outcome per app."""
+    out = {}
+    for f in sorted((ROOT / "results/project-checks").glob("*/summary.json")):
+        for r in json.loads(f.read_text()):
+            cmd = r.get("command", [])
+            kind = "extract" if "extract" in cmd else "check" if "check" in cmd or "prove" in cmd else None
+            if kind:
+                out.setdefault(r["app"], {})[kind] = {"passed": bool(r.get("passed")),
+                                                      "when": r.get("finished_at", "")[:10], "log": r.get("log")}
+    return out
+
+
 # ---- Main ---------------------------------------------------------------
 
 def app_info(port):
@@ -425,7 +576,8 @@ def main():
 
     ts = tasks()
     runs = {k: [r for r in v if r["agent"] not in a.skip_agent] for k, v in results({t["id"] for t in ts}).items()}
-    apps, cache, ups, memo = {}, {}, {}, {}
+    apps, cache, ups, memo, app_items = {}, {}, {}, {}, {}
+    ledger = verification(ts)
     index_tasks, columns = [], {}
     for t in ts:
         port, app = t["port"], t["app"]
@@ -469,7 +621,9 @@ def main():
                                              "url": f"{REPO}/ports/{app}/difftest/{rel}#L{line}", "code": code})
 
         task_runs = runs.get(t["id"], [])
-        target_fns, target = target_loc(statement, gen, ups[app], memo.setdefault(app, {}), port / "kernel")
+        target_fns, target_items = target_loc(statement, gen, ups[app], memo.setdefault(app, {}), port / "kernel")
+        target = sum(target_items.values())
+        app_items.setdefault(app, {})[t["id"]] = target_items
         proofs = []
         for r in task_runs:
             columns.setdefault(column(r), {"model": r["model"], "agent": r["agent"]})
@@ -481,11 +635,13 @@ def main():
                   "spec": [{"name": n, "code": spec[n]} for n in spec_names],
                   "lean": [{"name": n, "rust": gen[n]["rust_path"], "code": gen[n]["lean"]} for n in lean],
                   "kernel": kernel, "upstream": upstream, "difftest": difftest, "proofs": proofs,
-                  "runs": [{k: v for k, v in r.items() if k != "dir"} for r in task_runs]}
+                  "runs": [{k: v for k, v in r.items() if k != "dir"} for r in task_runs],
+                  "verification": ledger[t["id"]]}
         (out / "tasks" / f"{t['id']}.json").write_text(json.dumps(detail, ensure_ascii=False))
         index_tasks.append({"id": t["id"], "app": app, "property": t["property"],
                             "theorem": t["theorem"].rsplit(".", 1)[-1],
                             "rust_loc": t.get("rust_loc"), "lean_loc": t.get("generated_lean_loc"), "loc": target,
+                            **{k: ledger[t["id"]][k] for k in ("status", "proof_loc", "prover", "correction")},
                             "results": {column(r): {"p": r["passed"], "m": r["minutes"], "c": r["cost"]}
                                         for r in task_runs}})
 
@@ -505,8 +661,16 @@ def main():
     stats = {"repos": len(apps), "ported_loc": sum(ported.get(a, 0) for a in apps),
              "properties": len(index_tasks),
              "proved": sum(any(r["p"] for r in t["results"].values()) for t in index_tasks)}
-    index = {"generated": time.strftime("%Y-%m-%d"), "stats": stats, "apps": apps, "columns": columns,
-             "tasks": index_tasks, "proofs": not a.no_proofs, "time_limit_min": 40}
+    for app, info in apps.items():
+        info.update(app_metrics(app, ts, ledger, app_items[app]))
+    stats |= {"accepted": sum(v["status"] == "accepted" for v in ledger.values()),
+              "upstream_reached": sum(i["upstream_reached"] for i in apps.values()),
+              "upstream_selected": sum(i["upstream_selected"] for i in apps.values()),
+              "rust_loc": sum(i["rust_loc"] for i in apps.values()),
+              "proof_loc": sum(i["proof_loc"] for i in apps.values())}
+    index = {"generated": time.strftime("%Y-%m-%d %H:%M"), "stats": stats, "apps": apps, "columns": columns,
+             "tasks": index_tasks, "proofs": not a.no_proofs, "time_limit_min": 30,
+             "performance": performance(), "equivalence": equivalence(), "gates": gates()}
     (out / "index.json").write_text(json.dumps(index, ensure_ascii=False))
     print(f"{len(index_tasks)} tasks, {sum(len(v) for v in runs.values())} runs, {len(columns)} columns -> {out}",
           file=sys.stderr)

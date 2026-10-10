@@ -6,7 +6,7 @@
     <title>h5i-app Benchmark</title>
     <meta
       name="description"
-      content="How well coding agents prove properties of real Rust web applications ported to h5i-app: tasks, upstream and ported code, extracted Lean 4, and every model's results."
+      content="How much real-world Rust h5i-app can formally verify in Lean 4, and what the verifiable port costs at runtime: specs proved, upstream code covered, proof effort and paired performance for six open-source Rust servers."
     />
     <meta name="theme-color" content="#08080b" />
     <link rel="canonical" href="https://benchmark.h5i.dev/" />
@@ -16,6 +16,9 @@
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800;900&family=Space+Grotesk:wght@300;400;500;700&family=Space+Mono:wght@400;700&display=swap"
     />
+    <script>
+      try { const t = localStorage.getItem("theme"); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
+    </script>
     <link rel="stylesheet" href="./dashboard.css" />
     <script src="./dashboard.js" defer></script>
   </head>
@@ -24,133 +27,175 @@
     <header class="site-header">
       <a class="brand" href="./" aria-label="h5i-app benchmark home">
         <img src="./logo.png" alt="" />
-        <span>h5i-app</span><span class="brand-reading">/ benchmark</span>
+        <span>h5i-app</span><span class="brand-reading">/ bench</span>
       </a>
       <nav class="site-nav" aria-label="Benchmark sections">
-        <a href="#h5i-app">h5i-app</a>
-        <a href="#method">Method</a>
-        <a href="#models">Models</a>
-        <a href="#tasks">Tasks</a>
+        <a href="#verified">[&gt; verified]</a>
+        <a href="#performance">[&gt; performance]</a>
+        <a href="#effort">[&gt; effort]</a>
+        <a href="#specs">[&gt; specs]</a>
+        <a href="#method">[&gt; method]</a>
       </nav>
+      <div class="theme" role="group" aria-label="Color theme">
+        <button type="button" data-theme-set="light">light</button><button type="button" data-theme-set="dark">dark</button>
+      </div>
       <a class="github-link" href="https://github.com/h5i-dev/h5i-app-bench" target="_blank" rel="noreferrer">GitHub</a>
     </header>
 
     <main id="main">
       <section class="intro">
-        <p class="eyebrow">h5i-app benchmark</p>
-        <h1>Can a coding agent formally verify what real-world Rust code does, in Lean 4?</h1>
+        <p class="prompt"><span class="ps">$</span> h5i app prove <span class="arg">ports/*</span><span class="caret" aria-hidden="true"></span></p>
+        <h1>How much real-world Rust can h5i-app verify, and what does it cost at runtime?</h1>
         <p class="lede">
-          Each task is one property of an open-source Rust application whose security-relevant logic (access control,
-          input validation, parsing) was ported to h5i-app and extracted to Lean 4. The agent gets the ported Rust, the extracted Lean and a spec, and has to prove the
-          property. Click any task to see the upstream Rust, the port, how the two are checked against
-          each other, the Lean, and the proofs the models wrote.
+          Six open-source Rust servers had their security-relevant logic (access control, input validation,
+          parsing) ported to <a href="https://github.com/h5i-dev/h5i/tree/main/crates/h5i-app" target="_blank" rel="noreferrer">h5i-app</a>,
+          extracted to Lean 4 with Aeneas, and specified as 103 theorems. We track how many of those theorems are
+          proved and independently re-checked, how much upstream code they reach, how much Lean it takes, and how fast the
+          verifiable port runs next to the original.
         </p>
-        <div class="callout warning" role="note">
-          <p class="callout-title">
-            <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M6.457 1.047c.659-1.234 2.427-1.234 3.086 0l6.082 11.378A1.75 1.75 0 0 1 14.082 15H1.918a1.75 1.75 0 0 1-1.543-2.575Zm1.763.707a.25.25 0 0 0-.44 0L1.698 13.132a.25.25 0 0 0 .22.368h12.164a.25.25 0 0 0 .22-.368Zm.53 3.996v2.5a.75.75 0 0 1-1.5 0v-2.5a.75.75 0 0 1 1.5 0ZM9 11a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z"/></svg>
-            Work in progress
-          </p>
-          <p id="status-note">The benchmark is still being measured. The results below are an interim snapshot: not every model has been run on every task yet, and the numbers will change.</p>
-        </div>
+        <p class="status-line" id="status-line" aria-live="polite"></p>
       </section>
       <div class="tiles" id="tiles" aria-live="polite"></div>
 
-      <section id="h5i-app" class="block">
+      <section id="verified" class="block">
         <div class="block-head">
-          <p class="section-tag">About</p>
-          <h2>What is h5i-app</h2>
-          <p><a href="https://github.com/h5i-dev/h5i/tree/main/crates/h5i-app" target="_blank" rel="noreferrer">h5i-app</a>, the application framework of <a href="https://github.com/h5i-dev/h5i" target="_blank" rel="noreferrer">h5i</a>, is a Rust web framework whose application logic can be proved correct in Lean 4.</p>
+          <h2 class="term">verified</h2>
+          <p>Per application: selected specs whose proof passed an independent re-check, the upstream code those theorems are
+            about, and the project-level checks. A theorem about a function proves one property of it, not its whole
+            behavior, so <em>reached</em> is not <em>fully verified</em>.</p>
         </div>
-        <ol class="about">
-          <li><span class="step-k">Rust</span><h3>Build</h3><p>Handlers and state changes are written in a subset of Rust, served with axum and PostgreSQL transactions.</p></li>
-          <li><span class="step-k">Aeneas</span><h3>Extract</h3><p>Aeneas translates that Rust into Lean 4 definitions, so the Lean is the code that runs, not a model of it.</p></li>
-          <li><span class="step-k">Lean 4</span><h3>Prove</h3><p>Authorization, tenant isolation and other invariants become theorems about those definitions.</p></li>
-        </ol>
-        <p class="about-note">This benchmark asks whether a coding agent can do the last step on real code: the logic of existing open-source applications, ported to h5i-app.</p>
+        <div class="table-wrap">
+          <table class="apps sortable" id="apps-table">
+            <thead>
+              <tr>
+                <th scope="col" data-sort="app">Application</th>
+                <th scope="col" class="w-bar" data-sort="specs">Specs accepted</th>
+                <th scope="col" class="w-bar" data-sort="reach">Upstream lines reached</th>
+                <th scope="col" class="num" data-sort="ported">Ported / module</th>
+                <th scope="col" class="c" title="h5i app extract --check">Extract</th>
+                <th scope="col" class="c" title="Differential tests against the pinned upstream">Diff test</th>
+                <th scope="col" class="c" title="h5i app check: every selected theorem, sorry-free">Gate</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <dl class="defs">
+          <div><dt>Specs accepted</dt><dd>Theorems whose proof built against the pinned statement, generated Lean, spec and library, with only <code>propext</code>, <code>Classical.choice</code> and <code>Quot.sound</code>. Certificates are re-checked in an isolated workspace, not taken from an agent's report.</dd></div>
+          <div><dt>Upstream lines reached</dt><dd>Lines of the pinned upstream functions that accepted theorems are about (statement targets and their callees, deduplicated), out of those that all selected theorems are about. Blank lines, comments and attributes are not counted.</dd></div>
+          <div><dt>Ported / module</dt><dd>Upstream lines with a ported counterpart, out of the selected upstream module scope; both count nonblank physical lines. It shows how small the verified core is compared with the surrounding application.</dd></div>
+          <div><dt>Gate</dt><dd><code>h5i app check</code> on the canonical project: it passes only once every selected theorem is proved and integrated. Until then it fails on the remaining <code>sorry</code>s.</dd></div>
+        </dl>
+      </section>
+
+      <section id="performance" class="block">
+        <div class="block-head">
+          <h2 class="term">performance</h2>
+          <p>Kernel time divided by upstream time for the same inputs, compiled Rust against compiled Rust (release build, same
+            compiler and host). Below 1× the verifiable port is faster. Filled marks compare matched boundaries; hollow marks
+            include unequal work on one side (database round trips, request construction) and do not measure the kernel alone.</p>
+        </div>
+        <div class="filters" role="group" aria-label="Performance filter">
+          <label class="field"><span>Boundary</span>
+            <select id="p-scope"><option value="matched">Matched only</option><option value="">All measurements</option></select>
+          </label>
+        </div>
+        <figure class="chart" id="perf-chart" aria-describedby="perf-caption"></figure>
+        <p class="caption" id="perf-caption"></p>
+        <details class="data-table"><summary>Show the measurements as a table</summary>
+          <div class="table-wrap"><table id="perf-table"><thead><tr><th>Application</th><th>Benchmark</th><th class="num">Upstream ns</th><th class="num">Kernel ns</th><th class="num">Ratio</th><th>Boundary</th></tr></thead><tbody></tbody></table></div>
+        </details>
+      </section>
+
+      <section id="effort" class="block">
+        <div class="block-head">
+          <h2 class="term">effort</h2>
+          <p>What verification costs in code. Extracted Lean is generated from the ported Rust; spec and proof lines are
+            written by hand. Proof lines count only accepted proofs, without the theorem statement.</p>
+        </div>
+        <div class="table-wrap">
+          <table class="effort sortable" id="effort-table">
+            <thead>
+              <tr>
+                <th scope="col" data-sort="app">Application</th>
+                <th scope="col" class="num" data-sort="rust">Ported Rust</th>
+                <th scope="col" class="num" data-sort="lean">Extracted Lean</th>
+                <th scope="col" class="num" data-sort="ratio">Lean / Rust</th>
+                <th scope="col" class="num" data-sort="spec">Spec</th>
+                <th scope="col" class="num" data-sort="proof">Proof lines</th>
+                <th scope="col" class="num" data-sort="per">Median per spec</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <figure class="chart" id="effort-chart" aria-describedby="effort-caption"></figure>
+        <p class="caption" id="effort-caption">Each mark is one accepted spec: the upstream lines it is about against the proof lines it took. Log scales.</p>
+      </section>
+
+      <section id="specs" class="block">
+        <div class="block-head">
+          <h2 class="term">specs</h2>
+          <p>Every selected theorem. Open one to see the statement, the upstream and ported Rust side by side, the
+            differential tests, the extracted Lean and the accepted proof.</p>
+        </div>
+        <div class="filters" role="search">
+          <label class="field"><span>Application</span><select id="f-app"><option value="">All</option></select></label>
+          <label class="field"><span>Status</span>
+            <select id="f-status">
+              <option value="">All</option>
+              <option value="accepted">Accepted</option>
+              <option value="open">Open</option>
+              <option value="corrected">Statement corrected</option>
+            </select>
+          </label>
+          <label class="field grow"><span>Search</span><input id="f-q" type="search" placeholder="spec, property or theorem" /></label>
+        </div>
+        <div class="table-wrap">
+          <table class="matrix sortable" id="matrix">
+            <thead>
+              <tr>
+                <th scope="col" data-sort="id">Spec</th>
+                <th scope="col">Property</th>
+                <th scope="col" data-sort="status">Status</th>
+                <th scope="col" class="num" data-sort="loc">Upstream lines</th>
+                <th scope="col" class="num" data-sort="proof">Proof lines</th>
+                <th scope="col" data-sort="prover">Prover</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <p class="count" id="matrix-count"></p>
       </section>
 
       <section id="method" class="block">
         <div class="block-head">
-          <p class="section-tag">Method</p>
-          <h2>Method</h2>
-          <p>How a task is made, and what counts as solving it.</p>
+          <h2 class="term">method</h2>
+          <p>How a spec is made, what counts as verified, and where trust ends.</p>
         </div>
         <ol class="flow">
           <li class="step rust"><span class="step-k">Rust</span><h3>Upstream code</h3>
-            <p>Access control, input validation and parsing code of an open-source application, at a pinned commit.</p></li>
+            <p>Access control, validation and parsing code of an open-source server, at a pinned commit.</p></li>
           <li class="step rust"><span class="step-k">Rust</span><h3>h5i-app port</h3>
-            <p>Ported function by function. Strings become byte slices, iterators become loops; each change is listed in the port's deviations file.</p></li>
+            <p>Ported function by function. Strings become byte slices, iterators become loops; every change is listed in the port's deviations file.</p></li>
           <li class="step lean"><span class="step-k">Lean 4</span><h3>Extracted model</h3>
-            <p>Aeneas extracts the ported code. A hand-written spec states the property as a theorem.</p></li>
-          <li class="step agent"><span class="step-k">Agent</span><h3>Proof attempt</h3>
-            <p>No network; the h5i-app Lean library and skill; 40 minutes, resumed once if it stops early.</p></li>
-          <li class="step grade"><span class="step-k">Grader</span><h3>Accepted?</h3>
-            <p>The proof builds, the statement is unchanged, and only <code>propext</code>, <code>Classical.choice</code> and <code>Quot.sound</code> are used.</p></li>
+            <p>Aeneas extracts the port, so the Lean is the code that runs. A hand-written spec states each property as a theorem.</p></li>
+          <li class="step agent"><span class="step-k">Prover</span><h3>Proof</h3>
+            <p>Any proof source: coding agents in a network-less sandbox (30 minutes per attempt) or interactive sessions.</p></li>
+          <li class="step grade"><span class="step-k">Checker</span><h3>Accepted?</h3>
+            <p>Re-checked in isolation: builds, statement unchanged, standard axioms only. Then integrated and gated by <code>h5i app check</code>.</p></li>
         </ol>
         <div class="flow-notes">
-          <p class="bracket diff"><strong>Differential test.</strong> Upstream and the h5i-app port run on the same random inputs and must return the same result. A deliberately mutated port must fail.</p>
-          <p class="bracket hidden-ref"><strong>Not given to the agent.</strong> The benchmark's own reference proofs. Proofs the models wrote and the grader accepted are shown under each task.</p>
+          <p class="bracket diff"><strong>Differential tests.</strong> Upstream and port run on the same random inputs and must agree; a mutated port must fail. Evidence, not an equivalence proof.</p>
+          <p class="bracket hidden-ref"><strong>Statement corrections.</strong> A spec proved false is never silently weakened: each added precondition is recorded with its counterexample.</p>
         </div>
+        <ul class="limits">
+          <li>A theorem certifies the extracted kernel under its stated preconditions. The shell around it (request parsing, database access, I/O) is the trusted boundary.</li>
+          <li>Coverage counts upstream code that accepted theorems are about. It does not claim that code's full behavior is proved.</li>
+          <li>Timings are pilot measurements on one host. Ratios from unequal boundaries are shown but are not kernel speedups.</li>
+        </ul>
       </section>
-
-      <section id="apps" class="block">
-        <div class="block-head">
-          <p class="section-tag">Applications</p>
-          <h2>Applications</h2>
-          <p>Upstream lines are counted without blanks, comments and attributes.</p>
-        </div>
-        <div class="table-wrap">
-          <table class="apps" id="apps-table">
-            <thead>
-              <tr><th scope="col">Application</th><th scope="col">Upstream</th><th scope="col" class="num">Ported lines</th>
-                <th scope="col" class="num">Properties</th><th scope="col" class="w-bar">Properties proved by at least one model</th></tr>
-            </thead>
-            <tbody></tbody>
-          </table>
-        </div>
-      </section>
-
-      <section id="models" class="block">
-        <div class="block-head">
-          <p class="section-tag">Results</p>
-          <h2>Models</h2>
-          <p>Share of attempted tasks solved. Models were not all run on the same tasks; the count is next to each bar. Minutes and cost count only the tasks a model solved. Cost per property-line is the spend at list prices on those tasks, divided by the upstream lines of the operation each solved property is about, summed over the properties. A line counts once for every property about it, and a property proves one aspect of that code, so this compares models; it is not the cost of verifying a codebase.</p>
-        </div>
-        <div class="table-wrap">
-          <table class="models" id="models-table">
-            <thead>
-              <tr><th scope="col">Model</th><th scope="col">Harness</th><th scope="col" class="w-bar">Solved</th><th scope="col" class="num">Minutes per solve</th><th scope="col" class="num">Cost per property-line</th></tr>
-            </thead>
-            <tbody></tbody>
-          </table>
-        </div>
-      </section>
-
-      <section id="tasks" class="block">
-        <div class="block-head">
-          <p class="section-tag">Tasks</p>
-          <h2>Tasks</h2>
-          <p>One row per task. <span class="key"><span class="cell-icon good" aria-hidden="true">✓</span> solved</span>
-            <span class="key"><span class="cell-icon bad" aria-hidden="true">✗</span> not solved</span>
-            <span class="key"><span class="cell-icon none" aria-hidden="true">·</span> not run</span></p>
-        </div>
-        <div class="filters" role="search">
-          <label class="field"><span>Application</span><select id="f-app"><option value="">All</option></select></label>
-          <label class="field"><span>Show</span>
-            <select id="f-scope">
-              <option value="">All tasks</option>
-              <option value="all-models">Run by every model</option>
-              <option value="solved">Solved by some model</option>
-              <option value="unsolved">Solved by no model</option>
-            </select>
-          </label>
-          <label class="field grow"><span>Search</span><input id="f-q" type="search" placeholder="task, property or theorem" /></label>
-        </div>
-        <div class="table-wrap matrix-wrap">
-          <table class="matrix" id="matrix"><thead></thead><tbody></tbody></table>
-        </div>
-      </section>
-
     </main>
 
     <footer class="site-footer">
@@ -160,7 +205,7 @@
         <a href="https://github.com/h5i-dev/h5i">h5i on GitHub</a>
         <a href="https://github.com/h5i-dev/h5i-app-bench">Benchmark source</a>
       </nav>
-      <span class="legal">Apache 2.0</span>
+      <span class="legal" id="footer-snapshot">Apache 2.0</span>
     </footer>
 
     <div class="drawer" id="drawer" hidden>
