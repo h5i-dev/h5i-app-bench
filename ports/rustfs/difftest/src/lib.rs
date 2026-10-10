@@ -3,3 +3,7 @@
 pub mod tests;
 #[cfg(test)]
 mod props;
+#[cfg(test)]
+mod defaults;
+#[cfg(test)]
+mod actions;

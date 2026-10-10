@@ -17,7 +17,17 @@ set_option maxHeartbeats 1000000
 /- You can set the `maxRecDepth` value with the `-max-recdepth` CLI option -/
 set_option maxRecDepth 2048
 
+/- You can remove the following line by using the CLI option `-all-computable`: -/
+noncomputable section
+
 namespace rustfs_kernel
+
+/-- [core::mem::maybe_uninit::MaybeUninit]
+    Source: '/rustc/library/core/src/mem/maybe_uninit.rs', lines 355:0-355:24
+    Name pattern: [core::mem::maybe_uninit::MaybeUninit]
+    Visibility: public -/
+@[rust_type "core::mem::maybe_uninit::MaybeUninit"]
+axiom core.mem.maybe_uninit.MaybeUninit (T : Type) : Type
 
 /-- [rustfs_kernel::acts::Family]
     Source: 'ports/rustfs/kernel/src/acts.rs', lines 5:0-11:1
@@ -55,6 +65,19 @@ impl_def acts.Family.Insts.CoreCmpPartialEqFamily : core.cmp.PartialEq
 structure acts.Action where
   family : acts.Family
   «name» : alloc.vec.Vec Std.U8
+
+/-- [rustfs_kernel::acts::{impl core::cmp::PartialEq<rustfs_kernel::acts::Action> for rustfs_kernel::acts::Action}::eq]:
+    Source: 'ports/rustfs/kernel/src/acts.rs', lines 14:23-14:32
+    Visibility: public -/
+def acts.Action.Insts.CoreCmpPartialEqAction.eq
+  (self : acts.Action) (other : acts.Action) : Result Bool := do
+  let b ←
+    acts.Family.Insts.CoreCmpPartialEqFamily.eq self.family other.family
+  if b
+  then
+    alloc.vec.partial_eq.PartialEqVec.eq core.cmp.PartialEqU8 self.name
+      other.name
+  else ok false
 
 /-- [rustfs_kernel::bytes::eq]: loop body 0:
     Source: 'ports/rustfs/kernel/src/bytes.rs', lines 8:4-15:1
@@ -590,6 +613,1941 @@ def acts.is_table_resource_scoped (a : acts.Action) : Result Bool := do
                                                 116#u8, 97#u8
                                                 ]))
                                           bytes.eq s38 s39
+
+/-- [rustfs_kernel::actsets::action_count]:
+    Source: 'ports/rustfs/kernel/src/actsets.rs', lines 8:0-16:1
+    Visibility: public -/
+def actsets.action_count (family : acts.Family) : Result Std.Usize := do
+  match family with
+  | acts.Family.S3 => ok 71#usize
+  | acts.Family.Admin => ok 91#usize
+  | acts.Family.Sts => ok 2#usize
+  | acts.Family.Kms => ok 18#usize
+  | acts.Family.None => ok 0#usize
+
+/-- [rustfs_kernel::actsets::kms_name_1]:
+    Source: 'ports/rustfs/kernel/src/actsets.rs', lines 322:0-328:1 -/
+def actsets.kms_name_1
+  (index : Std.Usize) : Result (alloc.vec.Vec Std.U8) := do
+  match index.val with
+  | 16 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 11#usize [
+          107#u8, 109#u8, 115#u8, 58#u8, 82#u8, 101#u8, 115#u8, 116#u8, 111#u8,
+          114#u8, 101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 17 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 9#usize [
+          107#u8, 109#u8, 115#u8, 58#u8, 82#u8, 101#u8, 107#u8, 101#u8, 121#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | _ => ok (alloc.vec.Vec.new Std.U8)
+
+/-- [rustfs_kernel::actsets::kms_name_0]:
+    Source: 'ports/rustfs/kernel/src/actsets.rs', lines 300:0-320:1 -/
+def actsets.kms_name_0
+  (index : Std.Usize) : Result (alloc.vec.Vec Std.U8) := do
+  match index.val with
+  | 0 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 5#usize [ 107#u8, 109#u8, 115#u8, 58#u8, 42#u8 ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 1 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 13#usize [
+          107#u8, 109#u8, 115#u8, 58#u8, 67#u8, 111#u8, 110#u8, 102#u8, 105#u8,
+          103#u8, 117#u8, 114#u8, 101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 2 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 18#usize [
+          107#u8, 109#u8, 115#u8, 58#u8, 83#u8, 101#u8, 114#u8, 118#u8, 105#u8,
+          99#u8, 101#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8, 108#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 3 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 14#usize [
+          107#u8, 109#u8, 115#u8, 58#u8, 67#u8, 108#u8, 101#u8, 97#u8, 114#u8,
+          67#u8, 97#u8, 99#u8, 104#u8, 101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 4 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 19#usize [
+          107#u8, 109#u8, 115#u8, 58#u8, 71#u8, 101#u8, 110#u8, 101#u8, 114#u8,
+          97#u8, 116#u8, 101#u8, 68#u8, 97#u8, 116#u8, 97#u8, 75#u8, 101#u8,
+          121#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 5 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 13#usize [
+          107#u8, 109#u8, 115#u8, 58#u8, 68#u8, 101#u8, 108#u8, 101#u8, 116#u8,
+          101#u8, 75#u8, 101#u8, 121#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 6 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 13#usize [
+          107#u8, 109#u8, 115#u8, 58#u8, 69#u8, 110#u8, 97#u8, 98#u8, 108#u8,
+          101#u8, 75#u8, 101#u8, 121#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 7 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 14#usize [
+          107#u8, 109#u8, 115#u8, 58#u8, 68#u8, 105#u8, 115#u8, 97#u8, 98#u8,
+          108#u8, 101#u8, 75#u8, 101#u8, 121#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 8 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 13#usize [
+          107#u8, 109#u8, 115#u8, 58#u8, 82#u8, 111#u8, 116#u8, 97#u8, 116#u8,
+          101#u8, 75#u8, 101#u8, 121#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 9 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 24#usize [
+          107#u8, 109#u8, 115#u8, 58#u8, 85#u8, 112#u8, 100#u8, 97#u8, 116#u8,
+          101#u8, 75#u8, 101#u8, 121#u8, 68#u8, 101#u8, 115#u8, 99#u8, 114#u8,
+          105#u8, 112#u8, 116#u8, 105#u8, 111#u8, 110#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 10 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 15#usize [
+          107#u8, 109#u8, 115#u8, 58#u8, 84#u8, 97#u8, 103#u8, 82#u8, 101#u8,
+          115#u8, 111#u8, 117#u8, 114#u8, 99#u8, 101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 11 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 17#usize [
+          107#u8, 109#u8, 115#u8, 58#u8, 85#u8, 110#u8, 116#u8, 97#u8, 103#u8,
+          82#u8, 101#u8, 115#u8, 111#u8, 117#u8, 114#u8, 99#u8, 101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 12 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 12#usize [
+          107#u8, 109#u8, 115#u8, 58#u8, 76#u8, 105#u8, 115#u8, 116#u8, 75#u8,
+          101#u8, 121#u8, 115#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 13 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 15#usize [
+          107#u8, 109#u8, 115#u8, 58#u8, 68#u8, 101#u8, 115#u8, 99#u8, 114#u8,
+          105#u8, 98#u8, 101#u8, 75#u8, 101#u8, 121#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 14 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 11#usize [
+          107#u8, 109#u8, 115#u8, 58#u8, 68#u8, 101#u8, 99#u8, 114#u8, 121#u8,
+          112#u8, 116#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 15 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 10#usize [
+          107#u8, 109#u8, 115#u8, 58#u8, 66#u8, 97#u8, 99#u8, 107#u8, 117#u8,
+          112#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | _ => ok (alloc.vec.Vec.new Std.U8)
+
+/-- [rustfs_kernel::actsets::kms_name]:
+    Source: 'ports/rustfs/kernel/src/actsets.rs', lines 292:0-298:1
+    Visibility: public -/
+def actsets.kms_name (index : Std.Usize) : Result (alloc.vec.Vec Std.U8) := do
+  let i ← index / 16#usize
+  match i.val with
+  | 0 => actsets.kms_name_0 index
+  | 1 => actsets.kms_name_1 index
+  | _ => ok (alloc.vec.Vec.new Std.U8)
+
+/-- [rustfs_kernel::actsets::sts_name]:
+    Source: 'ports/rustfs/kernel/src/actsets.rs', lines 283:0-289:1
+    Visibility: public -/
+def actsets.sts_name (index : Std.Usize) : Result (alloc.vec.Vec Std.U8) := do
+  match index.val with
+  | 0 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 5#usize [ 115#u8, 116#u8, 115#u8, 58#u8, 42#u8 ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 1 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 14#usize [
+          115#u8, 116#u8, 115#u8, 58#u8, 65#u8, 115#u8, 115#u8, 117#u8, 109#u8,
+          101#u8, 82#u8, 111#u8, 108#u8, 101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | _ => ok (alloc.vec.Vec.new Std.U8)
+
+/-- [rustfs_kernel::actsets::admin_name_5]:
+    Source: 'ports/rustfs/kernel/src/actsets.rs', lines 265:0-280:1 -/
+def actsets.admin_name_5
+  (index : Std.Usize) : Result (alloc.vec.Vec Std.U8) := do
+  match index.val with
+  | 80 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 22#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 71#u8, 101#u8, 116#u8,
+          84#u8, 97#u8, 98#u8, 108#u8, 101#u8, 77#u8, 101#u8, 116#u8, 97#u8,
+          100#u8, 97#u8, 116#u8, 97#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 81 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 22#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 83#u8, 101#u8, 116#u8,
+          84#u8, 97#u8, 98#u8, 108#u8, 101#u8, 77#u8, 101#u8, 116#u8, 97#u8,
+          100#u8, 97#u8, 116#u8, 97#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 82 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 13#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 83#u8, 101#u8, 116#u8,
+          84#u8, 105#u8, 101#u8, 114#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 83 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 14#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 76#u8, 105#u8, 115#u8,
+          116#u8, 84#u8, 105#u8, 101#u8, 114#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 84 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 15#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 69#u8, 120#u8, 112#u8,
+          111#u8, 114#u8, 116#u8, 73#u8, 65#u8, 77#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 85 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 15#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 73#u8, 109#u8, 112#u8,
+          111#u8, 114#u8, 116#u8, 73#u8, 65#u8, 77#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 86 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 19#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 76#u8, 105#u8, 115#u8,
+          116#u8, 66#u8, 97#u8, 116#u8, 99#u8, 104#u8, 74#u8, 111#u8, 98#u8,
+          115#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 87 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 22#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 68#u8, 101#u8, 115#u8,
+          99#u8, 114#u8, 105#u8, 98#u8, 101#u8, 66#u8, 97#u8, 116#u8, 99#u8,
+          104#u8, 74#u8, 111#u8, 98#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 88 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 19#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 83#u8, 116#u8, 97#u8,
+          114#u8, 116#u8, 66#u8, 97#u8, 116#u8, 99#u8, 104#u8, 74#u8, 111#u8,
+          98#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 89 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 20#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 67#u8, 97#u8, 110#u8,
+          99#u8, 101#u8, 108#u8, 66#u8, 97#u8, 116#u8, 99#u8, 104#u8, 74#u8,
+          111#u8, 98#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 90 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 7#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 42#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | _ => ok (alloc.vec.Vec.new Std.U8)
+
+/-- [rustfs_kernel::actsets::admin_name_4]:
+    Source: 'ports/rustfs/kernel/src/actsets.rs', lines 243:0-263:1 -/
+def actsets.admin_name_4
+  (index : Std.Usize) : Result (alloc.vec.Vec Std.U8) := do
+  match index.val with
+  | 64 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 23#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 71#u8, 101#u8, 116#u8,
+          84#u8, 97#u8, 98#u8, 108#u8, 101#u8, 78#u8, 97#u8, 109#u8, 101#u8,
+          115#u8, 112#u8, 97#u8, 99#u8, 101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 65 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 23#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 83#u8, 101#u8, 116#u8,
+          84#u8, 97#u8, 98#u8, 108#u8, 101#u8, 78#u8, 97#u8, 109#u8, 101#u8,
+          115#u8, 112#u8, 97#u8, 99#u8, 101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 66 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 36#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 85#u8, 112#u8, 100#u8,
+          97#u8, 116#u8, 101#u8, 84#u8, 97#u8, 98#u8, 108#u8, 101#u8, 78#u8,
+          97#u8, 109#u8, 101#u8, 115#u8, 112#u8, 97#u8, 99#u8, 101#u8, 80#u8,
+          114#u8, 111#u8, 112#u8, 101#u8, 114#u8, 116#u8, 105#u8, 101#u8,
+          115#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 67 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 26#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 68#u8, 101#u8, 108#u8,
+          101#u8, 116#u8, 101#u8, 84#u8, 97#u8, 98#u8, 108#u8, 101#u8, 78#u8,
+          97#u8, 109#u8, 101#u8, 115#u8, 112#u8, 97#u8, 99#u8, 101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 68 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 14#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 71#u8, 101#u8, 116#u8,
+          84#u8, 97#u8, 98#u8, 108#u8, 101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 69 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 14#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 83#u8, 101#u8, 116#u8,
+          84#u8, 97#u8, 98#u8, 108#u8, 101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 70 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 17#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 67#u8, 114#u8, 101#u8,
+          97#u8, 116#u8, 101#u8, 84#u8, 97#u8, 98#u8, 108#u8, 101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 71 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 19#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 82#u8, 101#u8, 103#u8,
+          105#u8, 115#u8, 116#u8, 101#u8, 114#u8, 84#u8, 97#u8, 98#u8, 108#u8,
+          101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 72 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 17#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 67#u8, 111#u8, 109#u8,
+          109#u8, 105#u8, 116#u8, 84#u8, 97#u8, 98#u8, 108#u8, 101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 73 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 17#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 68#u8, 101#u8, 108#u8,
+          101#u8, 116#u8, 101#u8, 84#u8, 97#u8, 98#u8, 108#u8, 101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 74 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 23#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 71#u8, 101#u8, 116#u8,
+          84#u8, 97#u8, 98#u8, 108#u8, 101#u8, 76#u8, 105#u8, 102#u8, 101#u8,
+          99#u8, 121#u8, 99#u8, 108#u8, 101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 75 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 23#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 83#u8, 101#u8, 116#u8,
+          84#u8, 97#u8, 98#u8, 108#u8, 101#u8, 76#u8, 105#u8, 102#u8, 101#u8,
+          99#u8, 121#u8, 99#u8, 108#u8, 101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 76 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 25#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 71#u8, 101#u8, 116#u8,
+          84#u8, 97#u8, 98#u8, 108#u8, 101#u8, 67#u8, 114#u8, 101#u8, 100#u8,
+          101#u8, 110#u8, 116#u8, 105#u8, 97#u8, 108#u8, 115#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 77 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 25#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 82#u8, 117#u8, 110#u8,
+          84#u8, 97#u8, 98#u8, 108#u8, 101#u8, 77#u8, 97#u8, 105#u8, 110#u8,
+          116#u8, 101#u8, 110#u8, 97#u8, 110#u8, 99#u8, 101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 78 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 30#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 71#u8, 101#u8, 116#u8,
+          84#u8, 97#u8, 98#u8, 108#u8, 101#u8, 77#u8, 101#u8, 116#u8, 97#u8,
+          100#u8, 97#u8, 116#u8, 97#u8, 76#u8, 111#u8, 99#u8, 97#u8, 116#u8,
+          105#u8, 111#u8, 110#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 79 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 30#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 83#u8, 101#u8, 116#u8,
+          84#u8, 97#u8, 98#u8, 108#u8, 101#u8, 77#u8, 101#u8, 116#u8, 97#u8,
+          100#u8, 97#u8, 116#u8, 97#u8, 76#u8, 111#u8, 99#u8, 97#u8, 116#u8,
+          105#u8, 111#u8, 110#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | _ => ok (alloc.vec.Vec.new Std.U8)
+
+/-- [rustfs_kernel::actsets::admin_name_3]:
+    Source: 'ports/rustfs/kernel/src/actsets.rs', lines 221:0-241:1 -/
+def actsets.admin_name_3
+  (index : Std.Usize) : Result (alloc.vec.Vec Std.U8) := do
+  match index.val with
+  | 48 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 29#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 85#u8, 112#u8, 100#u8,
+          97#u8, 116#u8, 101#u8, 80#u8, 111#u8, 108#u8, 105#u8, 99#u8, 121#u8,
+          65#u8, 115#u8, 115#u8, 111#u8, 99#u8, 105#u8, 97#u8, 116#u8, 105#u8,
+          111#u8, 110#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 49 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 22#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 76#u8, 105#u8, 115#u8,
+          116#u8, 85#u8, 115#u8, 101#u8, 114#u8, 80#u8, 111#u8, 108#u8, 105#u8,
+          99#u8, 105#u8, 101#u8, 115#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 50 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 20#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 83#u8, 101#u8, 116#u8,
+          66#u8, 117#u8, 99#u8, 107#u8, 101#u8, 116#u8, 81#u8, 117#u8, 111#u8,
+          116#u8, 97#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 51 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 21#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 83#u8, 101#u8, 116#u8,
+          66#u8, 117#u8, 99#u8, 107#u8, 101#u8, 116#u8, 84#u8, 97#u8, 114#u8,
+          103#u8, 101#u8, 116#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 52 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 21#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 71#u8, 101#u8, 116#u8,
+          66#u8, 117#u8, 99#u8, 107#u8, 101#u8, 116#u8, 84#u8, 97#u8, 114#u8,
+          103#u8, 101#u8, 116#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 53 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 32#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 83#u8, 101#u8, 116#u8,
+          66#u8, 117#u8, 99#u8, 107#u8, 101#u8, 116#u8, 79#u8, 110#u8, 68#u8,
+          101#u8, 109#u8, 97#u8, 110#u8, 100#u8, 77#u8, 105#u8, 103#u8, 114#u8,
+          97#u8, 116#u8, 105#u8, 111#u8, 110#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 54 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 32#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 71#u8, 101#u8, 116#u8,
+          66#u8, 117#u8, 99#u8, 107#u8, 101#u8, 116#u8, 79#u8, 110#u8, 68#u8,
+          101#u8, 109#u8, 97#u8, 110#u8, 100#u8, 77#u8, 105#u8, 103#u8, 114#u8,
+          97#u8, 116#u8, 105#u8, 111#u8, 110#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 55 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 16#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 71#u8, 101#u8, 116#u8,
+          77#u8, 101#u8, 116#u8, 114#u8, 105#u8, 99#u8, 115#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 56 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 21#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 82#u8, 101#u8, 112#u8,
+          108#u8, 105#u8, 99#u8, 97#u8, 116#u8, 105#u8, 111#u8, 110#u8, 68#u8,
+          105#u8, 102#u8, 102#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 57 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 27#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 71#u8, 101#u8, 116#u8,
+          82#u8, 101#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8, 105#u8,
+          111#u8, 110#u8, 77#u8, 101#u8, 116#u8, 114#u8, 105#u8, 99#u8, 115#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 58 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 26#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 73#u8, 109#u8, 112#u8,
+          111#u8, 114#u8, 116#u8, 66#u8, 117#u8, 99#u8, 107#u8, 101#u8, 116#u8,
+          77#u8, 101#u8, 116#u8, 97#u8, 100#u8, 97#u8, 116#u8, 97#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 59 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 26#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 69#u8, 120#u8, 112#u8,
+          111#u8, 114#u8, 116#u8, 66#u8, 117#u8, 99#u8, 107#u8, 101#u8, 116#u8,
+          77#u8, 101#u8, 116#u8, 97#u8, 100#u8, 97#u8, 116#u8, 97#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 60 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 21#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 71#u8, 101#u8, 116#u8,
+          84#u8, 97#u8, 98#u8, 108#u8, 101#u8, 67#u8, 97#u8, 116#u8, 97#u8,
+          108#u8, 111#u8, 103#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 61 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 25#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 77#u8, 105#u8, 103#u8,
+          114#u8, 97#u8, 116#u8, 101#u8, 84#u8, 97#u8, 98#u8, 108#u8, 101#u8,
+          67#u8, 97#u8, 116#u8, 97#u8, 108#u8, 111#u8, 103#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 62 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 20#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 71#u8, 101#u8, 116#u8,
+          84#u8, 97#u8, 98#u8, 108#u8, 101#u8, 66#u8, 117#u8, 99#u8, 107#u8,
+          101#u8, 116#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 63 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 20#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 83#u8, 101#u8, 116#u8,
+          84#u8, 97#u8, 98#u8, 108#u8, 101#u8, 66#u8, 117#u8, 99#u8, 107#u8,
+          101#u8, 116#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | _ => ok (alloc.vec.Vec.new Std.U8)
+
+/-- [rustfs_kernel::actsets::admin_name_2]:
+    Source: 'ports/rustfs/kernel/src/actsets.rs', lines 199:0-219:1 -/
+def actsets.admin_name_2
+  (index : Std.Usize) : Result (alloc.vec.Vec Std.U8) := do
+  match index.val with
+  | 32 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 30#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 83#u8, 105#u8, 116#u8,
+          101#u8, 82#u8, 101#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8,
+          105#u8, 111#u8, 110#u8, 79#u8, 112#u8, 101#u8, 114#u8, 97#u8, 116#u8,
+          105#u8, 111#u8, 110#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 33 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 26#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 67#u8, 114#u8, 101#u8,
+          97#u8, 116#u8, 101#u8, 83#u8, 101#u8, 114#u8, 118#u8, 105#u8, 99#u8,
+          101#u8, 65#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 34 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 26#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 85#u8, 112#u8, 100#u8,
+          97#u8, 116#u8, 101#u8, 83#u8, 101#u8, 114#u8, 118#u8, 105#u8, 99#u8,
+          101#u8, 65#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 35 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 26#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 82#u8, 101#u8, 109#u8,
+          111#u8, 118#u8, 101#u8, 83#u8, 101#u8, 114#u8, 118#u8, 105#u8, 99#u8,
+          101#u8, 65#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 36 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 25#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 76#u8, 105#u8, 115#u8,
+          116#u8, 83#u8, 101#u8, 114#u8, 118#u8, 105#u8, 99#u8, 101#u8, 65#u8,
+          99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8, 115#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 37 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 27#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 76#u8, 105#u8, 115#u8,
+          116#u8, 84#u8, 101#u8, 109#u8, 112#u8, 111#u8, 114#u8, 97#u8, 114#u8,
+          121#u8, 65#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8, 115#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 38 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 20#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 65#u8, 100#u8, 100#u8,
+          85#u8, 115#u8, 101#u8, 114#u8, 84#u8, 111#u8, 71#u8, 114#u8, 111#u8,
+          117#u8, 112#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 39 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 25#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 82#u8, 101#u8, 109#u8,
+          111#u8, 118#u8, 101#u8, 85#u8, 115#u8, 101#u8, 114#u8, 70#u8, 114#u8,
+          111#u8, 109#u8, 71#u8, 114#u8, 111#u8, 117#u8, 112#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 40 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 14#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 71#u8, 101#u8, 116#u8,
+          71#u8, 114#u8, 111#u8, 117#u8, 112#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 41 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 16#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 76#u8, 105#u8, 115#u8,
+          116#u8, 71#u8, 114#u8, 111#u8, 117#u8, 112#u8, 115#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 42 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 17#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 69#u8, 110#u8, 97#u8,
+          98#u8, 108#u8, 101#u8, 71#u8, 114#u8, 111#u8, 117#u8, 112#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 43 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 18#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 68#u8, 105#u8, 115#u8,
+          97#u8, 98#u8, 108#u8, 101#u8, 71#u8, 114#u8, 111#u8, 117#u8, 112#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 44 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 18#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 67#u8, 114#u8, 101#u8,
+          97#u8, 116#u8, 101#u8, 80#u8, 111#u8, 108#u8, 105#u8, 99#u8, 121#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 45 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 18#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 68#u8, 101#u8, 108#u8,
+          101#u8, 116#u8, 101#u8, 80#u8, 111#u8, 108#u8, 105#u8, 99#u8, 121#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 46 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 15#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 71#u8, 101#u8, 116#u8,
+          80#u8, 111#u8, 108#u8, 105#u8, 99#u8, 121#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 47 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 29#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 65#u8, 116#u8, 116#u8,
+          97#u8, 99#u8, 104#u8, 85#u8, 115#u8, 101#u8, 114#u8, 79#u8, 114#u8,
+          71#u8, 114#u8, 111#u8, 117#u8, 112#u8, 80#u8, 111#u8, 108#u8, 105#u8,
+          99#u8, 121#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | _ => ok (alloc.vec.Vec.new Std.U8)
+
+/-- [rustfs_kernel::actsets::admin_name_1]:
+    Source: 'ports/rustfs/kernel/src/actsets.rs', lines 177:0-197:1 -/
+def actsets.admin_name_1
+  (index : Std.Usize) : Result (alloc.vec.Vec Std.U8) := do
+  match index.val with
+  | 16 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 18#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 83#u8, 101#u8, 114#u8,
+          118#u8, 101#u8, 114#u8, 85#u8, 112#u8, 100#u8, 97#u8, 116#u8, 101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 17 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 20#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 83#u8, 101#u8, 114#u8,
+          118#u8, 105#u8, 99#u8, 101#u8, 82#u8, 101#u8, 115#u8, 116#u8, 97#u8,
+          114#u8, 116#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 18 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 17#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 83#u8, 101#u8, 114#u8,
+          118#u8, 105#u8, 99#u8, 101#u8, 83#u8, 116#u8, 111#u8, 112#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 19 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 19#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 83#u8, 101#u8, 114#u8,
+          118#u8, 105#u8, 99#u8, 101#u8, 70#u8, 114#u8, 101#u8, 101#u8, 122#u8,
+          101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 20 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 18#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 67#u8, 111#u8, 110#u8,
+          102#u8, 105#u8, 103#u8, 85#u8, 112#u8, 100#u8, 97#u8, 116#u8, 101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 21 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 16#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 67#u8, 114#u8, 101#u8,
+          97#u8, 116#u8, 101#u8, 85#u8, 115#u8, 101#u8, 114#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 22 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 16#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 68#u8, 101#u8, 108#u8,
+          101#u8, 116#u8, 101#u8, 85#u8, 115#u8, 101#u8, 114#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 23 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 15#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 76#u8, 105#u8, 115#u8,
+          116#u8, 85#u8, 115#u8, 101#u8, 114#u8, 115#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 24 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 16#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 69#u8, 110#u8, 97#u8,
+          98#u8, 108#u8, 101#u8, 85#u8, 115#u8, 101#u8, 114#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 25 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 17#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 68#u8, 105#u8, 115#u8,
+          97#u8, 98#u8, 108#u8, 101#u8, 85#u8, 115#u8, 101#u8, 114#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 26 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 13#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 71#u8, 101#u8, 116#u8,
+          85#u8, 115#u8, 101#u8, 114#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 27 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 24#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 83#u8, 105#u8, 116#u8,
+          101#u8, 82#u8, 101#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8,
+          105#u8, 111#u8, 110#u8, 65#u8, 100#u8, 100#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 28 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 28#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 83#u8, 105#u8, 116#u8,
+          101#u8, 82#u8, 101#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8,
+          105#u8, 111#u8, 110#u8, 68#u8, 105#u8, 115#u8, 97#u8, 98#u8, 108#u8,
+          101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 29 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 27#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 83#u8, 105#u8, 116#u8,
+          101#u8, 82#u8, 101#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8,
+          105#u8, 111#u8, 110#u8, 82#u8, 101#u8, 109#u8, 111#u8, 118#u8, 101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 30 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 27#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 83#u8, 105#u8, 116#u8,
+          101#u8, 82#u8, 101#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8,
+          105#u8, 111#u8, 110#u8, 82#u8, 101#u8, 115#u8, 121#u8, 110#u8, 99#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 31 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 25#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 83#u8, 105#u8, 116#u8,
+          101#u8, 82#u8, 101#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8,
+          105#u8, 111#u8, 110#u8, 73#u8, 110#u8, 102#u8, 111#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | _ => ok (alloc.vec.Vec.new Std.U8)
+
+/-- [rustfs_kernel::actsets::admin_name_0]:
+    Source: 'ports/rustfs/kernel/src/actsets.rs', lines 155:0-175:1 -/
+def actsets.admin_name_0
+  (index : Std.Usize) : Result (alloc.vec.Vec Std.U8) := do
+  match index.val with
+  | 0 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 10#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 72#u8, 101#u8, 97#u8,
+          108#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 1 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 18#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 68#u8, 101#u8, 99#u8,
+          111#u8, 109#u8, 109#u8, 105#u8, 115#u8, 115#u8, 105#u8, 111#u8,
+          110#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 2 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 15#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 82#u8, 101#u8, 98#u8,
+          97#u8, 108#u8, 97#u8, 110#u8, 99#u8, 101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 3 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 17#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 83#u8, 116#u8, 111#u8,
+          114#u8, 97#u8, 103#u8, 101#u8, 73#u8, 110#u8, 102#u8, 111#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 4 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 16#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 80#u8, 114#u8, 111#u8,
+          109#u8, 101#u8, 116#u8, 104#u8, 101#u8, 117#u8, 115#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 5 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 19#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 68#u8, 97#u8, 116#u8,
+          97#u8, 85#u8, 115#u8, 97#u8, 103#u8, 101#u8, 73#u8, 110#u8, 102#u8,
+          111#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 6 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 17#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 70#u8, 111#u8, 114#u8,
+          99#u8, 101#u8, 85#u8, 110#u8, 108#u8, 111#u8, 99#u8, 107#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 7 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 18#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 84#u8, 111#u8, 112#u8,
+          76#u8, 111#u8, 99#u8, 107#u8, 115#u8, 73#u8, 110#u8, 102#u8, 111#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 8 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 15#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 80#u8, 114#u8, 111#u8,
+          102#u8, 105#u8, 108#u8, 105#u8, 110#u8, 103#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 9 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 17#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 83#u8, 101#u8, 114#u8,
+          118#u8, 101#u8, 114#u8, 84#u8, 114#u8, 97#u8, 99#u8, 101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 10 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 16#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 67#u8, 111#u8, 110#u8,
+          115#u8, 111#u8, 108#u8, 101#u8, 76#u8, 111#u8, 103#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 11 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 16#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 83#u8, 101#u8, 114#u8,
+          118#u8, 101#u8, 114#u8, 73#u8, 110#u8, 102#u8, 111#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 12 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 13#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 79#u8, 66#u8, 68#u8,
+          73#u8, 110#u8, 102#u8, 111#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 13 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 17#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 76#u8, 105#u8, 99#u8,
+          101#u8, 110#u8, 115#u8, 101#u8, 73#u8, 110#u8, 102#u8, 111#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 14 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 22#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 66#u8, 97#u8, 110#u8,
+          100#u8, 119#u8, 105#u8, 100#u8, 116#u8, 104#u8, 77#u8, 111#u8,
+          110#u8, 105#u8, 116#u8, 111#u8, 114#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 15 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 17#usize [
+          97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 73#u8, 110#u8, 115#u8,
+          112#u8, 101#u8, 99#u8, 116#u8, 68#u8, 97#u8, 116#u8, 97#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | _ => ok (alloc.vec.Vec.new Std.U8)
+
+/-- [rustfs_kernel::actsets::admin_name]:
+    Source: 'ports/rustfs/kernel/src/actsets.rs', lines 143:0-153:1
+    Visibility: public -/
+def actsets.admin_name
+  (index : Std.Usize) : Result (alloc.vec.Vec Std.U8) := do
+  let i ← index / 16#usize
+  match i.val with
+  | 0 => actsets.admin_name_0 index
+  | 1 => actsets.admin_name_1 index
+  | 2 => actsets.admin_name_2 index
+  | 3 => actsets.admin_name_3 index
+  | 4 => actsets.admin_name_4 index
+  | 5 => actsets.admin_name_5 index
+  | _ => ok (alloc.vec.Vec.new Std.U8)
+
+/-- [rustfs_kernel::actsets::s3_name_4]:
+    Source: 'ports/rustfs/kernel/src/actsets.rs', lines 129:0-140:1 -/
+def actsets.s3_name_4 (index : Std.Usize) : Result (alloc.vec.Vec Std.U8) := do
+  match index.val with
+  | 64 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 18#usize [
+          115#u8, 51#u8, 58#u8, 82#u8, 101#u8, 112#u8, 108#u8, 105#u8, 99#u8,
+          97#u8, 116#u8, 101#u8, 68#u8, 101#u8, 108#u8, 101#u8, 116#u8, 101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 65 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 16#usize [
+          115#u8, 51#u8, 58#u8, 82#u8, 101#u8, 112#u8, 108#u8, 105#u8, 99#u8,
+          97#u8, 116#u8, 101#u8, 84#u8, 97#u8, 103#u8, 115#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 66 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 33#usize [
+          115#u8, 51#u8, 58#u8, 71#u8, 101#u8, 116#u8, 79#u8, 98#u8, 106#u8,
+          101#u8, 99#u8, 116#u8, 86#u8, 101#u8, 114#u8, 115#u8, 105#u8, 111#u8,
+          110#u8, 70#u8, 111#u8, 114#u8, 82#u8, 101#u8, 112#u8, 108#u8, 105#u8,
+          99#u8, 97#u8, 116#u8, 105#u8, 111#u8, 110#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 67 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 16#usize [
+          115#u8, 51#u8, 58#u8, 82#u8, 101#u8, 115#u8, 116#u8, 111#u8, 114#u8,
+          101#u8, 79#u8, 98#u8, 106#u8, 101#u8, 99#u8, 116#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 68 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 30#usize [
+          115#u8, 51#u8, 58#u8, 82#u8, 101#u8, 115#u8, 101#u8, 116#u8, 66#u8,
+          117#u8, 99#u8, 107#u8, 101#u8, 116#u8, 82#u8, 101#u8, 112#u8, 108#u8,
+          105#u8, 99#u8, 97#u8, 116#u8, 105#u8, 111#u8, 110#u8, 83#u8, 116#u8,
+          97#u8, 116#u8, 101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 69 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 18#usize [
+          115#u8, 51#u8, 58#u8, 80#u8, 117#u8, 116#u8, 79#u8, 98#u8, 106#u8,
+          101#u8, 99#u8, 116#u8, 70#u8, 97#u8, 110#u8, 79#u8, 117#u8, 116#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 70 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 17#usize [
+          115#u8, 51#u8, 58#u8, 71#u8, 101#u8, 116#u8, 66#u8, 117#u8, 99#u8,
+          107#u8, 101#u8, 116#u8, 81#u8, 117#u8, 111#u8, 116#u8, 97#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | _ => ok (alloc.vec.Vec.new Std.U8)
+
+/-- [rustfs_kernel::actsets::s3_name_3]:
+    Source: 'ports/rustfs/kernel/src/actsets.rs', lines 107:0-127:1 -/
+def actsets.s3_name_3 (index : Std.Usize) : Result (alloc.vec.Vec Std.U8) := do
+  match index.val with
+  | 48 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 21#usize [
+          115#u8, 51#u8, 58#u8, 71#u8, 101#u8, 116#u8, 79#u8, 98#u8, 106#u8,
+          101#u8, 99#u8, 116#u8, 76#u8, 101#u8, 103#u8, 97#u8, 108#u8, 72#u8,
+          111#u8, 108#u8, 100#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 49 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 21#usize [
+          115#u8, 51#u8, 58#u8, 80#u8, 117#u8, 116#u8, 79#u8, 98#u8, 106#u8,
+          101#u8, 99#u8, 116#u8, 76#u8, 101#u8, 103#u8, 97#u8, 108#u8, 72#u8,
+          111#u8, 108#u8, 100#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 50 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 35#usize [
+          115#u8, 51#u8, 58#u8, 71#u8, 101#u8, 116#u8, 66#u8, 117#u8, 99#u8,
+          107#u8, 101#u8, 116#u8, 79#u8, 98#u8, 106#u8, 101#u8, 99#u8, 116#u8,
+          76#u8, 111#u8, 99#u8, 107#u8, 67#u8, 111#u8, 110#u8, 102#u8, 105#u8,
+          103#u8, 117#u8, 114#u8, 97#u8, 116#u8, 105#u8, 111#u8, 110#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 51 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 35#usize [
+          115#u8, 51#u8, 58#u8, 80#u8, 117#u8, 116#u8, 66#u8, 117#u8, 99#u8,
+          107#u8, 101#u8, 116#u8, 79#u8, 98#u8, 106#u8, 101#u8, 99#u8, 116#u8,
+          76#u8, 111#u8, 99#u8, 107#u8, 67#u8, 111#u8, 110#u8, 102#u8, 105#u8,
+          103#u8, 117#u8, 114#u8, 97#u8, 116#u8, 105#u8, 111#u8, 110#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 52 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 19#usize [
+          115#u8, 51#u8, 58#u8, 71#u8, 101#u8, 116#u8, 66#u8, 117#u8, 99#u8,
+          107#u8, 101#u8, 116#u8, 84#u8, 97#u8, 103#u8, 103#u8, 105#u8, 110#u8,
+          103#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 53 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 19#usize [
+          115#u8, 51#u8, 58#u8, 80#u8, 117#u8, 116#u8, 66#u8, 117#u8, 99#u8,
+          107#u8, 101#u8, 116#u8, 84#u8, 97#u8, 103#u8, 103#u8, 105#u8, 110#u8,
+          103#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 54 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 19#usize [
+          115#u8, 51#u8, 58#u8, 71#u8, 101#u8, 116#u8, 79#u8, 98#u8, 106#u8,
+          101#u8, 99#u8, 116#u8, 84#u8, 97#u8, 103#u8, 103#u8, 105#u8, 110#u8,
+          103#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 55 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 19#usize [
+          115#u8, 51#u8, 58#u8, 80#u8, 117#u8, 116#u8, 79#u8, 98#u8, 106#u8,
+          101#u8, 99#u8, 116#u8, 84#u8, 97#u8, 103#u8, 103#u8, 105#u8, 110#u8,
+          103#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 56 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 22#usize [
+          115#u8, 51#u8, 58#u8, 68#u8, 101#u8, 108#u8, 101#u8, 116#u8, 101#u8,
+          79#u8, 98#u8, 106#u8, 101#u8, 99#u8, 116#u8, 84#u8, 97#u8, 103#u8,
+          103#u8, 105#u8, 110#u8, 103#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 57 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 22#usize [
+          115#u8, 51#u8, 58#u8, 80#u8, 117#u8, 116#u8, 66#u8, 117#u8, 99#u8,
+          107#u8, 101#u8, 116#u8, 69#u8, 110#u8, 99#u8, 114#u8, 121#u8, 112#u8,
+          116#u8, 105#u8, 111#u8, 110#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 58 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 22#usize [
+          115#u8, 51#u8, 58#u8, 71#u8, 101#u8, 116#u8, 66#u8, 117#u8, 99#u8,
+          107#u8, 101#u8, 116#u8, 69#u8, 110#u8, 99#u8, 114#u8, 121#u8, 112#u8,
+          116#u8, 105#u8, 111#u8, 110#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 59 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 22#usize [
+          115#u8, 51#u8, 58#u8, 80#u8, 117#u8, 116#u8, 66#u8, 117#u8, 99#u8,
+          107#u8, 101#u8, 116#u8, 86#u8, 101#u8, 114#u8, 115#u8, 105#u8,
+          111#u8, 110#u8, 105#u8, 110#u8, 103#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 60 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 22#usize [
+          115#u8, 51#u8, 58#u8, 71#u8, 101#u8, 116#u8, 66#u8, 117#u8, 99#u8,
+          107#u8, 101#u8, 116#u8, 86#u8, 101#u8, 114#u8, 115#u8, 105#u8,
+          111#u8, 110#u8, 105#u8, 110#u8, 103#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 61 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 30#usize [
+          115#u8, 51#u8, 58#u8, 71#u8, 101#u8, 116#u8, 82#u8, 101#u8, 112#u8,
+          108#u8, 105#u8, 99#u8, 97#u8, 116#u8, 105#u8, 111#u8, 110#u8, 67#u8,
+          111#u8, 110#u8, 102#u8, 105#u8, 103#u8, 117#u8, 114#u8, 97#u8,
+          116#u8, 105#u8, 111#u8, 110#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 62 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 30#usize [
+          115#u8, 51#u8, 58#u8, 80#u8, 117#u8, 116#u8, 82#u8, 101#u8, 112#u8,
+          108#u8, 105#u8, 99#u8, 97#u8, 116#u8, 105#u8, 111#u8, 110#u8, 67#u8,
+          111#u8, 110#u8, 102#u8, 105#u8, 103#u8, 117#u8, 114#u8, 97#u8,
+          116#u8, 105#u8, 111#u8, 110#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 63 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 18#usize [
+          115#u8, 51#u8, 58#u8, 82#u8, 101#u8, 112#u8, 108#u8, 105#u8, 99#u8,
+          97#u8, 116#u8, 101#u8, 79#u8, 98#u8, 106#u8, 101#u8, 99#u8, 116#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | _ => ok (alloc.vec.Vec.new Std.U8)
+
+/-- [rustfs_kernel::actsets::s3_name_2]:
+    Source: 'ports/rustfs/kernel/src/actsets.rs', lines 85:0-105:1 -/
+def actsets.s3_name_2 (index : Std.Usize) : Result (alloc.vec.Vec Std.U8) := do
+  match index.val with
+  | 32 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 19#usize [
+          115#u8, 51#u8, 58#u8, 71#u8, 101#u8, 116#u8, 66#u8, 117#u8, 99#u8,
+          107#u8, 101#u8, 116#u8, 76#u8, 111#u8, 103#u8, 103#u8, 105#u8,
+          110#u8, 103#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 33 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 24#usize [
+          115#u8, 51#u8, 58#u8, 80#u8, 117#u8, 116#u8, 66#u8, 117#u8, 99#u8,
+          107#u8, 101#u8, 116#u8, 78#u8, 111#u8, 116#u8, 105#u8, 102#u8,
+          105#u8, 99#u8, 97#u8, 116#u8, 105#u8, 111#u8, 110#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 34 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 18#usize [
+          115#u8, 51#u8, 58#u8, 80#u8, 117#u8, 116#u8, 66#u8, 117#u8, 99#u8,
+          107#u8, 101#u8, 116#u8, 80#u8, 111#u8, 108#u8, 105#u8, 99#u8, 121#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 35 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 29#usize [
+          115#u8, 51#u8, 58#u8, 80#u8, 117#u8, 116#u8, 66#u8, 117#u8, 99#u8,
+          107#u8, 101#u8, 116#u8, 80#u8, 117#u8, 98#u8, 108#u8, 105#u8, 99#u8,
+          65#u8, 99#u8, 99#u8, 101#u8, 115#u8, 115#u8, 66#u8, 108#u8, 111#u8,
+          99#u8, 107#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 36 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 16#usize [
+          115#u8, 51#u8, 58#u8, 80#u8, 117#u8, 116#u8, 66#u8, 117#u8, 99#u8,
+          107#u8, 101#u8, 116#u8, 67#u8, 111#u8, 114#u8, 115#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 37 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 12#usize [
+          115#u8, 51#u8, 58#u8, 80#u8, 117#u8, 116#u8, 79#u8, 98#u8, 106#u8,
+          101#u8, 99#u8, 116#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 38 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 15#usize [
+          115#u8, 51#u8, 58#u8, 80#u8, 117#u8, 116#u8, 79#u8, 98#u8, 106#u8,
+          101#u8, 99#u8, 116#u8, 65#u8, 99#u8, 108#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 39 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 22#usize [
+          115#u8, 51#u8, 58#u8, 68#u8, 101#u8, 108#u8, 101#u8, 116#u8, 101#u8,
+          79#u8, 98#u8, 106#u8, 101#u8, 99#u8, 116#u8, 86#u8, 101#u8, 114#u8,
+          115#u8, 105#u8, 111#u8, 110#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 40 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 29#usize [
+          115#u8, 51#u8, 58#u8, 68#u8, 101#u8, 108#u8, 101#u8, 116#u8, 101#u8,
+          79#u8, 98#u8, 106#u8, 101#u8, 99#u8, 116#u8, 86#u8, 101#u8, 114#u8,
+          115#u8, 105#u8, 111#u8, 110#u8, 84#u8, 97#u8, 103#u8, 103#u8, 105#u8,
+          110#u8, 103#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 41 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 19#usize [
+          115#u8, 51#u8, 58#u8, 71#u8, 101#u8, 116#u8, 79#u8, 98#u8, 106#u8,
+          101#u8, 99#u8, 116#u8, 86#u8, 101#u8, 114#u8, 115#u8, 105#u8, 111#u8,
+          110#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 42 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 29#usize [
+          115#u8, 51#u8, 58#u8, 71#u8, 101#u8, 116#u8, 79#u8, 98#u8, 106#u8,
+          101#u8, 99#u8, 116#u8, 86#u8, 101#u8, 114#u8, 115#u8, 105#u8, 111#u8,
+          110#u8, 65#u8, 116#u8, 116#u8, 114#u8, 105#u8, 98#u8, 117#u8, 116#u8,
+          101#u8, 115#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 43 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 26#usize [
+          115#u8, 51#u8, 58#u8, 71#u8, 101#u8, 116#u8, 79#u8, 98#u8, 106#u8,
+          101#u8, 99#u8, 116#u8, 86#u8, 101#u8, 114#u8, 115#u8, 105#u8, 111#u8,
+          110#u8, 84#u8, 97#u8, 103#u8, 103#u8, 105#u8, 110#u8, 103#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 44 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 26#usize [
+          115#u8, 51#u8, 58#u8, 80#u8, 117#u8, 116#u8, 79#u8, 98#u8, 106#u8,
+          101#u8, 99#u8, 116#u8, 86#u8, 101#u8, 114#u8, 115#u8, 105#u8, 111#u8,
+          110#u8, 84#u8, 97#u8, 103#u8, 103#u8, 105#u8, 110#u8, 103#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 45 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 28#usize [
+          115#u8, 51#u8, 58#u8, 66#u8, 121#u8, 112#u8, 97#u8, 115#u8, 115#u8,
+          71#u8, 111#u8, 118#u8, 101#u8, 114#u8, 110#u8, 97#u8, 110#u8, 99#u8,
+          101#u8, 82#u8, 101#u8, 116#u8, 101#u8, 110#u8, 116#u8, 105#u8,
+          111#u8, 110#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 46 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 21#usize [
+          115#u8, 51#u8, 58#u8, 80#u8, 117#u8, 116#u8, 79#u8, 98#u8, 106#u8,
+          101#u8, 99#u8, 116#u8, 82#u8, 101#u8, 116#u8, 101#u8, 110#u8, 116#u8,
+          105#u8, 111#u8, 110#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 47 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 21#usize [
+          115#u8, 51#u8, 58#u8, 71#u8, 101#u8, 116#u8, 79#u8, 98#u8, 106#u8,
+          101#u8, 99#u8, 116#u8, 82#u8, 101#u8, 116#u8, 101#u8, 110#u8, 116#u8,
+          105#u8, 111#u8, 110#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | _ => ok (alloc.vec.Vec.new Std.U8)
+
+/-- [rustfs_kernel::actsets::s3_name_1]:
+    Source: 'ports/rustfs/kernel/src/actsets.rs', lines 63:0-83:1 -/
+def actsets.s3_name_1 (index : Std.Usize) : Result (alloc.vec.Vec Std.U8) := do
+  match index.val with
+  | 16 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 15#usize [
+          115#u8, 51#u8, 58#u8, 80#u8, 117#u8, 116#u8, 66#u8, 117#u8, 99#u8,
+          107#u8, 101#u8, 116#u8, 65#u8, 99#u8, 108#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 17 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 12#usize [
+          115#u8, 51#u8, 58#u8, 71#u8, 101#u8, 116#u8, 79#u8, 98#u8, 106#u8,
+          101#u8, 99#u8, 116#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 18 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 15#usize [
+          115#u8, 51#u8, 58#u8, 71#u8, 101#u8, 116#u8, 79#u8, 98#u8, 106#u8,
+          101#u8, 99#u8, 116#u8, 65#u8, 99#u8, 108#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 19 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 22#usize [
+          115#u8, 51#u8, 58#u8, 71#u8, 101#u8, 116#u8, 79#u8, 98#u8, 106#u8,
+          101#u8, 99#u8, 116#u8, 65#u8, 116#u8, 116#u8, 114#u8, 105#u8, 98#u8,
+          117#u8, 116#u8, 101#u8, 115#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 20 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 13#usize [
+          115#u8, 51#u8, 58#u8, 72#u8, 101#u8, 97#u8, 100#u8, 66#u8, 117#u8,
+          99#u8, 107#u8, 101#u8, 116#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 21 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 19#usize [
+          115#u8, 51#u8, 58#u8, 76#u8, 105#u8, 115#u8, 116#u8, 65#u8, 108#u8,
+          108#u8, 77#u8, 121#u8, 66#u8, 117#u8, 99#u8, 107#u8, 101#u8, 116#u8,
+          115#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 22 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 13#usize [
+          115#u8, 51#u8, 58#u8, 76#u8, 105#u8, 115#u8, 116#u8, 66#u8, 117#u8,
+          99#u8, 107#u8, 101#u8, 116#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 23 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 24#usize [
+          115#u8, 51#u8, 58#u8, 71#u8, 101#u8, 116#u8, 66#u8, 117#u8, 99#u8,
+          107#u8, 101#u8, 116#u8, 80#u8, 111#u8, 108#u8, 105#u8, 99#u8, 121#u8,
+          83#u8, 116#u8, 97#u8, 116#u8, 117#u8, 115#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 24 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 21#usize [
+          115#u8, 51#u8, 58#u8, 76#u8, 105#u8, 115#u8, 116#u8, 66#u8, 117#u8,
+          99#u8, 107#u8, 101#u8, 116#u8, 86#u8, 101#u8, 114#u8, 115#u8, 105#u8,
+          111#u8, 110#u8, 115#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 25 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 29#usize [
+          115#u8, 51#u8, 58#u8, 76#u8, 105#u8, 115#u8, 116#u8, 66#u8, 117#u8,
+          99#u8, 107#u8, 101#u8, 116#u8, 77#u8, 117#u8, 108#u8, 116#u8, 105#u8,
+          112#u8, 97#u8, 114#u8, 116#u8, 85#u8, 112#u8, 108#u8, 111#u8, 97#u8,
+          100#u8, 115#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 26 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 21#usize [
+          115#u8, 51#u8, 58#u8, 76#u8, 105#u8, 115#u8, 116#u8, 101#u8, 110#u8,
+          78#u8, 111#u8, 116#u8, 105#u8, 102#u8, 105#u8, 99#u8, 97#u8, 116#u8,
+          105#u8, 111#u8, 110#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 27 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 27#usize [
+          115#u8, 51#u8, 58#u8, 76#u8, 105#u8, 115#u8, 116#u8, 101#u8, 110#u8,
+          66#u8, 117#u8, 99#u8, 107#u8, 101#u8, 116#u8, 78#u8, 111#u8, 116#u8,
+          105#u8, 102#u8, 105#u8, 99#u8, 97#u8, 116#u8, 105#u8, 111#u8, 110#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 28 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 27#usize [
+          115#u8, 51#u8, 58#u8, 76#u8, 105#u8, 115#u8, 116#u8, 77#u8, 117#u8,
+          108#u8, 116#u8, 105#u8, 112#u8, 97#u8, 114#u8, 116#u8, 85#u8, 112#u8,
+          108#u8, 111#u8, 97#u8, 100#u8, 80#u8, 97#u8, 114#u8, 116#u8, 115#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 29 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 21#usize [
+          115#u8, 51#u8, 58#u8, 80#u8, 117#u8, 116#u8, 66#u8, 117#u8, 99#u8,
+          107#u8, 101#u8, 116#u8, 76#u8, 105#u8, 102#u8, 101#u8, 99#u8, 121#u8,
+          99#u8, 108#u8, 101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 30 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 21#usize [
+          115#u8, 51#u8, 58#u8, 71#u8, 101#u8, 116#u8, 66#u8, 117#u8, 99#u8,
+          107#u8, 101#u8, 116#u8, 76#u8, 105#u8, 102#u8, 101#u8, 99#u8, 121#u8,
+          99#u8, 108#u8, 101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 31 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 19#usize [
+          115#u8, 51#u8, 58#u8, 80#u8, 117#u8, 116#u8, 66#u8, 117#u8, 99#u8,
+          107#u8, 101#u8, 116#u8, 76#u8, 111#u8, 103#u8, 103#u8, 105#u8,
+          110#u8, 103#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | _ => ok (alloc.vec.Vec.new Std.U8)
+
+/-- [rustfs_kernel::actsets::s3_name_0]:
+    Source: 'ports/rustfs/kernel/src/actsets.rs', lines 41:0-61:1 -/
+def actsets.s3_name_0 (index : Std.Usize) : Result (alloc.vec.Vec Std.U8) := do
+  match index.val with
+  | 0 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 4#usize [ 115#u8, 51#u8, 58#u8, 42#u8 ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 1 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 23#usize [
+          115#u8, 51#u8, 58#u8, 65#u8, 98#u8, 111#u8, 114#u8, 116#u8, 77#u8,
+          117#u8, 108#u8, 116#u8, 105#u8, 112#u8, 97#u8, 114#u8, 116#u8, 85#u8,
+          112#u8, 108#u8, 111#u8, 97#u8, 100#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 2 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 15#usize [
+          115#u8, 51#u8, 58#u8, 67#u8, 114#u8, 101#u8, 97#u8, 116#u8, 101#u8,
+          66#u8, 117#u8, 99#u8, 107#u8, 101#u8, 116#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 3 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 15#usize [
+          115#u8, 51#u8, 58#u8, 68#u8, 101#u8, 108#u8, 101#u8, 116#u8, 101#u8,
+          66#u8, 117#u8, 99#u8, 107#u8, 101#u8, 116#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 4 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 20#usize [
+          115#u8, 51#u8, 58#u8, 70#u8, 111#u8, 114#u8, 99#u8, 101#u8, 68#u8,
+          101#u8, 108#u8, 101#u8, 116#u8, 101#u8, 66#u8, 117#u8, 99#u8, 107#u8,
+          101#u8, 116#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 5 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 20#usize [
+          115#u8, 51#u8, 58#u8, 70#u8, 111#u8, 114#u8, 99#u8, 101#u8, 68#u8,
+          101#u8, 108#u8, 101#u8, 116#u8, 101#u8, 79#u8, 98#u8, 106#u8, 101#u8,
+          99#u8, 116#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 6 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 21#usize [
+          115#u8, 51#u8, 58#u8, 68#u8, 101#u8, 108#u8, 101#u8, 116#u8, 101#u8,
+          66#u8, 117#u8, 99#u8, 107#u8, 101#u8, 116#u8, 80#u8, 111#u8, 108#u8,
+          105#u8, 99#u8, 121#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 7 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 32#usize [
+          115#u8, 51#u8, 58#u8, 68#u8, 101#u8, 108#u8, 101#u8, 116#u8, 101#u8,
+          66#u8, 117#u8, 99#u8, 107#u8, 101#u8, 116#u8, 80#u8, 117#u8, 98#u8,
+          108#u8, 105#u8, 99#u8, 65#u8, 99#u8, 99#u8, 101#u8, 115#u8, 115#u8,
+          66#u8, 108#u8, 111#u8, 99#u8, 107#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 8 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 19#usize [
+          115#u8, 51#u8, 58#u8, 68#u8, 101#u8, 108#u8, 101#u8, 116#u8, 101#u8,
+          66#u8, 117#u8, 99#u8, 107#u8, 101#u8, 116#u8, 67#u8, 111#u8, 114#u8,
+          115#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 9 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 15#usize [
+          115#u8, 51#u8, 58#u8, 68#u8, 101#u8, 108#u8, 101#u8, 116#u8, 101#u8,
+          79#u8, 98#u8, 106#u8, 101#u8, 99#u8, 116#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 10 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 20#usize [
+          115#u8, 51#u8, 58#u8, 71#u8, 101#u8, 116#u8, 66#u8, 117#u8, 99#u8,
+          107#u8, 101#u8, 116#u8, 76#u8, 111#u8, 99#u8, 97#u8, 116#u8, 105#u8,
+          111#u8, 110#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 11 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 24#usize [
+          115#u8, 51#u8, 58#u8, 71#u8, 101#u8, 116#u8, 66#u8, 117#u8, 99#u8,
+          107#u8, 101#u8, 116#u8, 78#u8, 111#u8, 116#u8, 105#u8, 102#u8,
+          105#u8, 99#u8, 97#u8, 116#u8, 105#u8, 111#u8, 110#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 12 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 18#usize [
+          115#u8, 51#u8, 58#u8, 71#u8, 101#u8, 116#u8, 66#u8, 117#u8, 99#u8,
+          107#u8, 101#u8, 116#u8, 80#u8, 111#u8, 108#u8, 105#u8, 99#u8, 121#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 13 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 29#usize [
+          115#u8, 51#u8, 58#u8, 71#u8, 101#u8, 116#u8, 66#u8, 117#u8, 99#u8,
+          107#u8, 101#u8, 116#u8, 80#u8, 117#u8, 98#u8, 108#u8, 105#u8, 99#u8,
+          65#u8, 99#u8, 99#u8, 101#u8, 115#u8, 115#u8, 66#u8, 108#u8, 111#u8,
+          99#u8, 107#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 14 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 16#usize [
+          115#u8, 51#u8, 58#u8, 71#u8, 101#u8, 116#u8, 66#u8, 117#u8, 99#u8,
+          107#u8, 101#u8, 116#u8, 67#u8, 111#u8, 114#u8, 115#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 15 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 15#usize [
+          115#u8, 51#u8, 58#u8, 71#u8, 101#u8, 116#u8, 66#u8, 117#u8, 99#u8,
+          107#u8, 101#u8, 116#u8, 65#u8, 99#u8, 108#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | _ => ok (alloc.vec.Vec.new Std.U8)
+
+/-- [rustfs_kernel::actsets::s3_name]:
+    Source: 'ports/rustfs/kernel/src/actsets.rs', lines 30:0-39:1
+    Visibility: public -/
+def actsets.s3_name (index : Std.Usize) : Result (alloc.vec.Vec Std.U8) := do
+  let i ← index / 16#usize
+  match i.val with
+  | 0 => actsets.s3_name_0 index
+  | 1 => actsets.s3_name_1 index
+  | 2 => actsets.s3_name_2 index
+  | 3 => actsets.s3_name_3 index
+  | 4 => actsets.s3_name_4 index
+  | _ => ok (alloc.vec.Vec.new Std.U8)
+
+/-- [rustfs_kernel::actsets::action_name]:
+    Source: 'ports/rustfs/kernel/src/actsets.rs', lines 19:0-27:1
+    Visibility: public -/
+def actsets.action_name
+  (family : acts.Family) (index : Std.Usize) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  match family with
+  | acts.Family.S3 => actsets.s3_name index
+  | acts.Family.Admin => actsets.admin_name index
+  | acts.Family.Sts => actsets.sts_name index
+  | acts.Family.Kms => actsets.kms_name index
+  | acts.Family.None => ok (alloc.vec.Vec.new Std.U8)
+
+/-- [rustfs_kernel::actsets::contains_name]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/actsets.rs', lines 333:4-340:1
+    Visibility: public -/
+@[rust_loop_body]
+def actsets.contains_name_loop.body
+  (family : acts.Family) («name» : Slice Std.U8) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 ← actsets.action_count family
+  if i < i1
+  then
+    let v ← actsets.action_name family i
+    let s := alloc.vec.Vec.deref v
+    let b ← bytes.eq s «name»
+    if b
+    then ok (done true)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else ok (done false)
+
+/-- [rustfs_kernel::actsets::contains_name]: loop 0:
+    Source: 'ports/rustfs/kernel/src/actsets.rs', lines 333:4-340:1
+    Visibility: public -/
+@[rust_loop]
+def actsets.contains_name_loop
+  (family : acts.Family) («name» : Slice Std.U8) (i : Std.Usize) :
+  Result Bool
+  := do
+  loop
+    (fun i1 => actsets.contains_name_loop.body family «name» i1)
+    i
+
+/-- [rustfs_kernel::actsets::contains_name]:
+    Source: 'ports/rustfs/kernel/src/actsets.rs', lines 331:0-340:1
+    Visibility: public -/
+@[reducible]
+def actsets.contains_name
+  (family : acts.Family) («name» : Slice Std.U8) : Result Bool := do
+  actsets.contains_name_loop family «name» 0#usize
+
+/-- [rustfs_kernel::actsets::admin_is_valid]:
+    Source: 'ports/rustfs/kernel/src/actsets.rs', lines 343:0-345:1
+    Visibility: public -/
+def actsets.admin_is_valid («name» : Slice Std.U8) : Result Bool := do
+  actsets.contains_name acts.Family.Admin «name»
+
+/-- [rustfs_kernel::actsets::is_empty]:
+    Source: 'ports/rustfs/kernel/src/actsets.rs', lines 347:0-349:1
+    Visibility: public -/
+def actsets.is_empty (set : Slice acts.Action) : Result Bool := do
+  let i := Slice.len set
+  ok (i = 0#usize)
+
+/-- [rustfs_kernel::actsets::as_slice]:
+    Source: 'ports/rustfs/kernel/src/actsets.rs', lines 351:0-353:1
+    Visibility: public -/
+def actsets.as_slice
+  (set : Slice acts.Action) : Result (Slice acts.Action) := do
+  ok set
+
+/-- [rustfs_kernel::actsets::push_unique]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/actsets.rs', lines 357:4-364:1
+    Visibility: public -/
+@[rust_loop_body]
+def actsets.push_unique_loop.body
+  (set : alloc.vec.Vec acts.Action) (a : acts.Action) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize (alloc.vec.Vec acts.Action))
+  := do
+  let i1 := alloc.vec.Vec.len set
+  if i < i1
+  then
+    let a1 ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice acts.Action)
+        set i
+    let b ← acts.Action.Insts.CoreCmpPartialEqAction.eq a1 a
+    if b
+    then ok (done set)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else let set1 ← alloc.vec.Vec.push set a
+       ok (done set1)
+
+/-- [rustfs_kernel::actsets::push_unique]: loop 0:
+    Source: 'ports/rustfs/kernel/src/actsets.rs', lines 357:4-364:1
+    Visibility: public -/
+@[rust_loop]
+def actsets.push_unique_loop
+  (set : alloc.vec.Vec acts.Action) (a : acts.Action) (i : Std.Usize) :
+  Result (alloc.vec.Vec acts.Action)
+  := do
+  loop
+    (fun i1 => actsets.push_unique_loop.body set a i1)
+    i
+
+/-- [rustfs_kernel::actsets::push_unique]:
+    Source: 'ports/rustfs/kernel/src/actsets.rs', lines 355:0-364:1
+    Visibility: public -/
+@[reducible]
+def actsets.push_unique
+  (set : alloc.vec.Vec acts.Action) (a : acts.Action) :
+  Result (alloc.vec.Vec acts.Action)
+  := do
+  actsets.push_unique_loop set a 0#usize
+
+/-- [rustfs_kernel::actsets::set_is_match]:
+    Source: 'ports/rustfs/kernel/src/actsets.rs', lines 366:0-368:1
+    Visibility: public -/
+def actsets.set_is_match
+  (set : Slice acts.Action) (a : acts.Action) : Result Bool := do
+  acts.set_is_match_for_effect set a false
+
+/-- [rustfs_kernel::actsets::action_is_match]:
+    Source: 'ports/rustfs/kernel/src/actsets.rs', lines 370:0-372:1
+    Visibility: public -/
+def actsets.action_is_match
+  (this : acts.Action) (a : acts.Action) : Result Bool := do
+  acts.action_is_match_for_effect this a false
+
+/-- [rustfs_kernel::actsets::is_valid]:
+    Source: 'ports/rustfs/kernel/src/actsets.rs', lines 374:0-376:1
+    Visibility: public -/
+def actsets.is_valid (_set : Slice acts.Action) : Result Bool := do
+  ok true
+
+/-- [rustfs_kernel::actsets::member]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/actsets.rs', lines 380:4-387:1
+    Visibility: public -/
+@[rust_loop_body]
+def actsets.member_loop.body
+  (set : Slice acts.Action) (a : acts.Action) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := Slice.len set
+  if i < i1
+  then
+    let a1 ← Slice.index_usize set i
+    let b ← acts.Action.Insts.CoreCmpPartialEqAction.eq a1 a
+    if b
+    then ok (done true)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else ok (done false)
+
+/-- [rustfs_kernel::actsets::member]: loop 0:
+    Source: 'ports/rustfs/kernel/src/actsets.rs', lines 380:4-387:1
+    Visibility: public -/
+@[rust_loop]
+def actsets.member_loop
+  (set : Slice acts.Action) (a : acts.Action) (i : Std.Usize) :
+  Result Bool
+  := do
+  loop
+    (fun i1 => actsets.member_loop.body set a i1)
+    i
+
+/-- [rustfs_kernel::actsets::member]:
+    Source: 'ports/rustfs/kernel/src/actsets.rs', lines 378:0-387:1
+    Visibility: public -/
+@[reducible]
+def actsets.member
+  (set : Slice acts.Action) (a : acts.Action) : Result Bool := do
+  actsets.member_loop set a 0#usize
+
+/-- [rustfs_kernel::actsets::covers]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/actsets.rs', lines 390:4-397:1 -/
+@[rust_loop_body]
+def actsets.covers_loop.body
+  (left : Slice acts.Action) (right : Slice acts.Action) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := Slice.len left
+  if i < i1
+  then
+    let a ← Slice.index_usize left i
+    let b ← actsets.member right a
+    if b
+    then let i2 ← i + 1#usize
+         ok (cont i2)
+    else ok (done false)
+  else ok (done true)
+
+/-- [rustfs_kernel::actsets::covers]: loop 0:
+    Source: 'ports/rustfs/kernel/src/actsets.rs', lines 390:4-397:1 -/
+@[rust_loop]
+def actsets.covers_loop
+  (left : Slice acts.Action) (right : Slice acts.Action) (i : Std.Usize) :
+  Result Bool
+  := do
+  loop
+    (fun i1 => actsets.covers_loop.body left right i1)
+    i
+
+/-- [rustfs_kernel::actsets::covers]:
+    Source: 'ports/rustfs/kernel/src/actsets.rs', lines 388:0-397:1 -/
+@[reducible]
+def actsets.covers
+  (left : Slice acts.Action) (right : Slice acts.Action) : Result Bool := do
+  actsets.covers_loop left right 0#usize
+
+/-- [rustfs_kernel::actsets::eq]:
+    Source: 'ports/rustfs/kernel/src/actsets.rs', lines 399:0-401:1
+    Visibility: public -/
+def actsets.eq
+  (left : Slice acts.Action) (right : Slice acts.Action) : Result Bool := do
+  let b ← actsets.covers left right
+  if b
+  then actsets.covers right left
+  else ok false
 
 /-- [rustfs_kernel::awsvars::ClaimStrings]
     Source: 'ports/rustfs/kernel/src/awsvars.rs', lines 9:0-17:1
@@ -3830,6 +5788,602 @@ def condfuncs.references_key_name
       let s2 := alloc.vec.Vec.deref f.for_normal
       condfuncs.any_references s2 key_name
 
+/-- [rustfs_kernel::stmts::Effect]
+    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 10:0-13:1
+    Visibility: public -/
+@[discriminant isize]
+inductive stmts.Effect where
+| Allow : stmts.Effect
+| Deny : stmts.Effect
+
+/-- [rustfs_kernel::rsrc::Resource]
+    Source: 'ports/rustfs/kernel/src/rsrc.rs', lines 8:0-11:1
+    Visibility: public -/
+@[discriminant isize]
+inductive rsrc.Resource where
+| S3 : alloc.vec.Vec Std.U8 → rsrc.Resource
+| Kms : alloc.vec.Vec Std.U8 → rsrc.Resource
+
+/-- [rustfs_kernel::stmts::Statement]
+    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 24:0-31:1
+    Visibility: public -/
+structure stmts.Statement where
+  effect : stmts.Effect
+  actions : alloc.vec.Vec acts.Action
+  not_actions : alloc.vec.Vec acts.Action
+  resources : alloc.vec.Vec rsrc.Resource
+  not_resources : alloc.vec.Vec rsrc.Resource
+  conditions : condfuncs.Functions
+
+/-- [rustfs_kernel::defaults::Policy]
+    Source: 'ports/rustfs/kernel/src/defaults.rs', lines 7:0-11:1
+    Visibility: public -/
+structure defaults.Policy where
+  id : alloc.vec.Vec Std.U8
+  version : alloc.vec.Vec Std.U8
+  statements : alloc.vec.Vec stmts.Statement
+
+/-- [rustfs_kernel::defaults::default_version]:
+    Source: 'ports/rustfs/kernel/src/defaults.rs', lines 14:0-16:1
+    Visibility: public -/
+def defaults.default_version : Result (alloc.vec.Vec Std.U8) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        50#u8, 48#u8, 49#u8, 50#u8, 45#u8, 49#u8, 48#u8, 45#u8, 49#u8, 55#u8
+        ]))
+  alloc.slice.Slice.to_vec core.clone.CloneU8 s
+
+/-- [rustfs_kernel::defaults::kms_key_administrator]:
+    Source: 'ports/rustfs/kernel/src/defaults.rs', lines 18:0-20:1
+    Visibility: public -/
+def defaults.kms_key_administrator : Result (alloc.vec.Vec Std.U8) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 19#usize [
+        75#u8, 77#u8, 83#u8, 75#u8, 101#u8, 121#u8, 65#u8, 100#u8, 109#u8,
+        105#u8, 110#u8, 105#u8, 115#u8, 116#u8, 114#u8, 97#u8, 116#u8, 111#u8,
+        114#u8
+        ]))
+  alloc.slice.Slice.to_vec core.clone.CloneU8 s
+
+/-- [rustfs_kernel::defaults::kms_key_user]:
+    Source: 'ports/rustfs/kernel/src/defaults.rs', lines 22:0-24:1
+    Visibility: public -/
+def defaults.kms_key_user : Result (alloc.vec.Vec Std.U8) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        75#u8, 77#u8, 83#u8, 75#u8, 101#u8, 121#u8, 85#u8, 115#u8, 101#u8,
+        114#u8
+        ]))
+  alloc.slice.Slice.to_vec core.clone.CloneU8 s
+
+/-- [rustfs_kernel::defaults::kms_auditor]:
+    Source: 'ports/rustfs/kernel/src/defaults.rs', lines 26:0-28:1
+    Visibility: public -/
+def defaults.kms_auditor : Result (alloc.vec.Vec Std.U8) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        75#u8, 77#u8, 83#u8, 65#u8, 117#u8, 100#u8, 105#u8, 116#u8, 111#u8,
+        114#u8
+        ]))
+  alloc.slice.Slice.to_vec core.clone.CloneU8 s
+
+/-- [rustfs_kernel::defaults::all_kms_keys]:
+    Source: 'ports/rustfs/kernel/src/defaults.rs', lines 30:0-32:1
+    Visibility: public -/
+def defaults.all_kms_keys : Result (alloc.vec.Vec Std.U8) := do
+  let s ← lift (Array.to_slice (Array.make 1#usize [ 42#u8 ]))
+  alloc.slice.Slice.to_vec core.clone.CloneU8 s
+
+/-- [rustfs_kernel::defaults::allow]:
+    Source: 'ports/rustfs/kernel/src/defaults.rs', lines 34:0-47:1 -/
+def defaults.allow
+  (actions : alloc.vec.Vec acts.Action)
+  (resources : alloc.vec.Vec rsrc.Resource) :
+  Result stmts.Statement
+  := do
+  ok
+    {
+      effect := stmts.Effect.Allow,
+      actions,
+      not_actions := (alloc.vec.Vec.new acts.Action),
+      resources,
+      not_resources := (alloc.vec.Vec.new rsrc.Resource),
+      conditions :=
+        {
+          for_any_value := (alloc.vec.Vec.new condfuncs.Condition),
+          for_all_values := (alloc.vec.Vec.new condfuncs.Condition),
+          for_normal := (alloc.vec.Vec.new condfuncs.Condition)
+        }
+    }
+
+/-- [rustfs_kernel::defaults::kms_allow]:
+    Source: 'ports/rustfs/kernel/src/defaults.rs', lines 50:0-52:1
+    Visibility: public -/
+def defaults.kms_allow
+  (actions : alloc.vec.Vec acts.Action) : Result stmts.Statement := do
+  let v ← defaults.all_kms_keys
+  let y ←
+    lift (Std.Array.to_slice (Array.make 1#usize [ rsrc.Resource.Kms v ] :
+      Array rsrc.Resource 1#usize))
+  let ret := alloc.slice.Slice.into_vec y
+  defaults.allow actions ret
+
+/-- [rustfs_kernel::defaults::assume_role_allow]:
+    Source: 'ports/rustfs/kernel/src/defaults.rs', lines 55:0-63:1
+    Visibility: public -/
+def defaults.assume_role_allow : Result stmts.Statement := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 14#usize [
+        115#u8, 116#u8, 115#u8, 58#u8, 65#u8, 115#u8, 115#u8, 117#u8, 109#u8,
+        101#u8, 82#u8, 111#u8, 108#u8, 101#u8
+        ]))
+  let v ← alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  let y ←
+    lift (Std.Array.to_slice
+      (Array.make 1#usize [ { family := acts.Family.Sts, «name» := v } ] :
+      Array acts.Action 1#usize))
+  let ret := alloc.slice.Slice.into_vec y
+  defaults.allow ret (alloc.vec.Vec.new rsrc.Resource)
+
+/-- [rustfs_kernel::defaults::default_policies]:
+    Source: 'ports/rustfs/kernel/src/defaults.rs', lines 66:0-318:1
+    Visibility: public -/
+def defaults.default_policies
+  : Result (alloc.vec.Vec ((alloc.vec.Vec Std.U8) × defaults.Policy)) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 9#usize [
+        114#u8, 101#u8, 97#u8, 100#u8, 119#u8, 114#u8, 105#u8, 116#u8, 101#u8
+        ]))
+  let v ← alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  let v1 ← defaults.default_version
+  let s1 ←
+    lift (Array.to_slice (Array.make 4#usize [ 115#u8, 51#u8, 58#u8, 42#u8 ]))
+  let v2 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s1
+  let y ←
+    lift (Std.Array.to_slice
+      (Array.make 1#usize [ { family := acts.Family.S3, «name» := v2 } ] :
+      Array acts.Action 1#usize))
+  let ret := alloc.slice.Slice.into_vec y
+  let s2 ← lift (Array.to_slice (Array.make 1#usize [ 42#u8 ]))
+  let v3 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s2
+  let y1 ←
+    lift (Std.Array.to_slice (Array.make 1#usize [ rsrc.Resource.S3 v3 ] :
+      Array rsrc.Resource 1#usize))
+  let ret1 := alloc.slice.Slice.into_vec y1
+  let s3 ← defaults.allow ret ret1
+  let s4 ←
+    lift (Array.to_slice
+      (Array.make 14#usize [
+        115#u8, 116#u8, 115#u8, 58#u8, 65#u8, 115#u8, 115#u8, 117#u8, 109#u8,
+        101#u8, 82#u8, 111#u8, 108#u8, 101#u8
+        ]))
+  let v4 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s4
+  let y2 ←
+    lift (Std.Array.to_slice
+      (Array.make 1#usize [ { family := acts.Family.Sts, «name» := v4 } ] :
+      Array acts.Action 1#usize))
+  let ret2 := alloc.slice.Slice.into_vec y2
+  let s5 ← defaults.allow ret2 (alloc.vec.Vec.new rsrc.Resource)
+  let y3 ←
+    lift (Std.Array.to_slice (Array.make 2#usize [ s3, s5 ] : Array
+      stmts.Statement 2#usize))
+  let ret3 := alloc.slice.Slice.into_vec y3
+  let s6 ←
+    lift (Array.to_slice
+      (Array.make 8#usize [
+        114#u8, 101#u8, 97#u8, 100#u8, 111#u8, 110#u8, 108#u8, 121#u8
+        ]))
+  let v5 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s6
+  let s7 ←
+    lift (Array.to_slice
+      (Array.make 20#usize [
+        115#u8, 51#u8, 58#u8, 71#u8, 101#u8, 116#u8, 66#u8, 117#u8, 99#u8,
+        107#u8, 101#u8, 116#u8, 76#u8, 111#u8, 99#u8, 97#u8, 116#u8, 105#u8,
+        111#u8, 110#u8
+        ]))
+  let v6 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s7
+  let s8 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        115#u8, 51#u8, 58#u8, 71#u8, 101#u8, 116#u8, 79#u8, 98#u8, 106#u8,
+        101#u8, 99#u8, 116#u8
+        ]))
+  let v7 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s8
+  let s9 ←
+    lift (Array.to_slice
+      (Array.make 17#usize [
+        115#u8, 51#u8, 58#u8, 71#u8, 101#u8, 116#u8, 66#u8, 117#u8, 99#u8,
+        107#u8, 101#u8, 116#u8, 81#u8, 117#u8, 111#u8, 116#u8, 97#u8
+        ]))
+  let v8 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s9
+  let y4 ←
+    lift (Std.Array.to_slice
+      (Array.make 3#usize [
+         { family := acts.Family.S3, «name» := v6 },
+         { family := acts.Family.S3, «name» := v7 },
+         { family := acts.Family.S3, «name» := v8 }
+         ] : Array acts.Action 3#usize))
+  let ret4 := alloc.slice.Slice.into_vec y4
+  let s10 ← lift (Array.to_slice (Array.make 1#usize [ 42#u8 ]))
+  let v9 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s10
+  let y5 ←
+    lift (Std.Array.to_slice (Array.make 1#usize [ rsrc.Resource.S3 v9 ] :
+      Array rsrc.Resource 1#usize))
+  let ret5 := alloc.slice.Slice.into_vec y5
+  let s11 ← defaults.allow ret4 ret5
+  let s12 ←
+    lift (Array.to_slice
+      (Array.make 14#usize [
+        115#u8, 116#u8, 115#u8, 58#u8, 65#u8, 115#u8, 115#u8, 117#u8, 109#u8,
+        101#u8, 82#u8, 111#u8, 108#u8, 101#u8
+        ]))
+  let v10 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s12
+  let y6 ←
+    lift (Std.Array.to_slice
+      (Array.make 1#usize [ { family := acts.Family.Sts, «name» := v10 } ] :
+      Array acts.Action 1#usize))
+  let ret6 := alloc.slice.Slice.into_vec y6
+  let s13 ← defaults.allow ret6 (alloc.vec.Vec.new rsrc.Resource)
+  let y7 ←
+    lift (Std.Array.to_slice (Array.make 2#usize [ s11, s13 ] : Array
+      stmts.Statement 2#usize))
+  let ret7 := alloc.slice.Slice.into_vec y7
+  let s14 ←
+    lift (Array.to_slice
+      (Array.make 9#usize [
+        119#u8, 114#u8, 105#u8, 116#u8, 101#u8, 111#u8, 110#u8, 108#u8, 121#u8
+        ]))
+  let v11 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s14
+  let s15 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        115#u8, 51#u8, 58#u8, 80#u8, 117#u8, 116#u8, 79#u8, 98#u8, 106#u8,
+        101#u8, 99#u8, 116#u8
+        ]))
+  let v12 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s15
+  let y8 ←
+    lift (Std.Array.to_slice
+      (Array.make 1#usize [ { family := acts.Family.S3, «name» := v12 } ] :
+      Array acts.Action 1#usize))
+  let ret8 := alloc.slice.Slice.into_vec y8
+  let s16 ← lift (Array.to_slice (Array.make 1#usize [ 42#u8 ]))
+  let v13 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s16
+  let y9 ←
+    lift (Std.Array.to_slice (Array.make 1#usize [ rsrc.Resource.S3 v13 ] :
+      Array rsrc.Resource 1#usize))
+  let ret9 := alloc.slice.Slice.into_vec y9
+  let s17 ← defaults.allow ret8 ret9
+  let s18 ←
+    lift (Array.to_slice
+      (Array.make 14#usize [
+        115#u8, 116#u8, 115#u8, 58#u8, 65#u8, 115#u8, 115#u8, 117#u8, 109#u8,
+        101#u8, 82#u8, 111#u8, 108#u8, 101#u8
+        ]))
+  let v14 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s18
+  let y10 ←
+    lift (Std.Array.to_slice
+      (Array.make 1#usize [ { family := acts.Family.Sts, «name» := v14 } ] :
+      Array acts.Action 1#usize))
+  let ret10 := alloc.slice.Slice.into_vec y10
+  let s19 ← defaults.allow ret10 (alloc.vec.Vec.new rsrc.Resource)
+  let y11 ←
+    lift (Std.Array.to_slice (Array.make 2#usize [ s17, s19 ] : Array
+      stmts.Statement 2#usize))
+  let ret11 := alloc.slice.Slice.into_vec y11
+  let s20 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        100#u8, 105#u8, 97#u8, 103#u8, 110#u8, 111#u8, 115#u8, 116#u8, 105#u8,
+        99#u8, 115#u8
+        ]))
+  let v15 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s20
+  let s21 ←
+    lift (Array.to_slice
+      (Array.make 15#usize [
+        97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 80#u8, 114#u8, 111#u8,
+        102#u8, 105#u8, 108#u8, 105#u8, 110#u8, 103#u8
+        ]))
+  let v16 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s21
+  let s22 ←
+    lift (Array.to_slice
+      (Array.make 17#usize [
+        97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 83#u8, 101#u8, 114#u8,
+        118#u8, 101#u8, 114#u8, 84#u8, 114#u8, 97#u8, 99#u8, 101#u8
+        ]))
+  let v17 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s22
+  let s23 ←
+    lift (Array.to_slice
+      (Array.make 16#usize [
+        97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 67#u8, 111#u8, 110#u8,
+        115#u8, 111#u8, 108#u8, 101#u8, 76#u8, 111#u8, 103#u8
+        ]))
+  let v18 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s23
+  let s24 ←
+    lift (Array.to_slice
+      (Array.make 16#usize [
+        97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 83#u8, 101#u8, 114#u8,
+        118#u8, 101#u8, 114#u8, 73#u8, 110#u8, 102#u8, 111#u8
+        ]))
+  let v19 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s24
+  let s25 ←
+    lift (Array.to_slice
+      (Array.make 18#usize [
+        97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 84#u8, 111#u8, 112#u8,
+        76#u8, 111#u8, 99#u8, 107#u8, 115#u8, 73#u8, 110#u8, 102#u8, 111#u8
+        ]))
+  let v20 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s25
+  let s26 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 79#u8, 66#u8, 68#u8,
+        73#u8, 110#u8, 102#u8, 111#u8
+        ]))
+  let v21 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s26
+  let s27 ←
+    lift (Array.to_slice
+      (Array.make 16#usize [
+        97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 80#u8, 114#u8, 111#u8,
+        109#u8, 101#u8, 116#u8, 104#u8, 101#u8, 117#u8, 115#u8
+        ]))
+  let v22 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s27
+  let s28 ←
+    lift (Array.to_slice
+      (Array.make 22#usize [
+        97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 66#u8, 97#u8, 110#u8,
+        100#u8, 119#u8, 105#u8, 100#u8, 116#u8, 104#u8, 77#u8, 111#u8, 110#u8,
+        105#u8, 116#u8, 111#u8, 114#u8
+        ]))
+  let v23 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s28
+  let y12 ←
+    lift (Std.Array.to_slice
+      (Array.make 8#usize [
+         { family := acts.Family.Admin, «name» := v16 },
+         { family := acts.Family.Admin, «name» := v17 },
+         { family := acts.Family.Admin, «name» := v18 },
+         { family := acts.Family.Admin, «name» := v19 },
+         { family := acts.Family.Admin, «name» := v20 },
+         { family := acts.Family.Admin, «name» := v21 },
+         { family := acts.Family.Admin, «name» := v22 },
+         { family := acts.Family.Admin, «name» := v23 }
+         ] : Array acts.Action 8#usize))
+  let ret12 := alloc.slice.Slice.into_vec y12
+  let s29 ← lift (Array.to_slice (Array.make 1#usize [ 42#u8 ]))
+  let v24 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s29
+  let y13 ←
+    lift (Std.Array.to_slice (Array.make 1#usize [ rsrc.Resource.S3 v24 ] :
+      Array rsrc.Resource 1#usize))
+  let ret13 := alloc.slice.Slice.into_vec y13
+  let s30 ← defaults.allow ret12 ret13
+  let s31 ←
+    lift (Array.to_slice
+      (Array.make 14#usize [
+        115#u8, 116#u8, 115#u8, 58#u8, 65#u8, 115#u8, 115#u8, 117#u8, 109#u8,
+        101#u8, 82#u8, 111#u8, 108#u8, 101#u8
+        ]))
+  let v25 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s31
+  let y14 ←
+    lift (Std.Array.to_slice
+      (Array.make 1#usize [ { family := acts.Family.Sts, «name» := v25 } ] :
+      Array acts.Action 1#usize))
+  let ret14 := alloc.slice.Slice.into_vec y14
+  let s32 ← defaults.allow ret14 (alloc.vec.Vec.new rsrc.Resource)
+  let y15 ←
+    lift (Std.Array.to_slice (Array.make 2#usize [ s30, s32 ] : Array
+      stmts.Statement 2#usize))
+  let ret15 := alloc.slice.Slice.into_vec y15
+  let s33 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        99#u8, 111#u8, 110#u8, 115#u8, 111#u8, 108#u8, 101#u8, 65#u8, 100#u8,
+        109#u8, 105#u8, 110#u8
+        ]))
+  let v26 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s33
+  let s34 ←
+    lift (Array.to_slice
+      (Array.make 7#usize [
+        97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 42#u8
+        ]))
+  let v27 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s34
+  let y16 ←
+    lift (Std.Array.to_slice
+      (Array.make 1#usize [ { family := acts.Family.Admin, «name» := v27 } ]
+      : Array acts.Action 1#usize))
+  let ret16 := alloc.slice.Slice.into_vec y16
+  let s35 ← defaults.allow ret16 (alloc.vec.Vec.new rsrc.Resource)
+  let s36 ←
+    lift (Array.to_slice
+      (Array.make 5#usize [ 107#u8, 109#u8, 115#u8, 58#u8, 42#u8 ]))
+  let v28 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s36
+  let y17 ←
+    lift (Std.Array.to_slice
+      (Array.make 1#usize [ { family := acts.Family.Kms, «name» := v28 } ] :
+      Array acts.Action 1#usize))
+  let ret17 := alloc.slice.Slice.into_vec y17
+  let s37 ← defaults.allow ret17 (alloc.vec.Vec.new rsrc.Resource)
+  let s38 ←
+    lift (Array.to_slice (Array.make 4#usize [ 115#u8, 51#u8, 58#u8, 42#u8 ]))
+  let v29 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s38
+  let y18 ←
+    lift (Std.Array.to_slice
+      (Array.make 1#usize [ { family := acts.Family.S3, «name» := v29 } ] :
+      Array acts.Action 1#usize))
+  let ret18 := alloc.slice.Slice.into_vec y18
+  let s39 ← lift (Array.to_slice (Array.make 1#usize [ 42#u8 ]))
+  let v30 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s39
+  let y19 ←
+    lift (Std.Array.to_slice (Array.make 1#usize [ rsrc.Resource.S3 v30 ] :
+      Array rsrc.Resource 1#usize))
+  let ret19 := alloc.slice.Slice.into_vec y19
+  let s40 ← defaults.allow ret18 ret19
+  let s41 ←
+    lift (Array.to_slice
+      (Array.make 14#usize [
+        115#u8, 116#u8, 115#u8, 58#u8, 65#u8, 115#u8, 115#u8, 117#u8, 109#u8,
+        101#u8, 82#u8, 111#u8, 108#u8, 101#u8
+        ]))
+  let v31 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s41
+  let y20 ←
+    lift (Std.Array.to_slice
+      (Array.make 1#usize [ { family := acts.Family.Sts, «name» := v31 } ] :
+      Array acts.Action 1#usize))
+  let ret20 := alloc.slice.Slice.into_vec y20
+  let s42 ← defaults.allow ret20 (alloc.vec.Vec.new rsrc.Resource)
+  let y21 ←
+    lift (Std.Array.to_slice (Array.make 4#usize [ s35, s37, s40, s42 ] : Array
+      stmts.Statement 4#usize))
+  let ret21 := alloc.slice.Slice.into_vec y21
+  let v32 ← defaults.kms_key_administrator
+  let s43 ←
+    lift (Array.to_slice
+      (Array.make 15#usize [
+        107#u8, 109#u8, 115#u8, 58#u8, 68#u8, 101#u8, 115#u8, 99#u8, 114#u8,
+        105#u8, 98#u8, 101#u8, 75#u8, 101#u8, 121#u8
+        ]))
+  let v33 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s43
+  let s44 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        107#u8, 109#u8, 115#u8, 58#u8, 76#u8, 105#u8, 115#u8, 116#u8, 75#u8,
+        101#u8, 121#u8, 115#u8
+        ]))
+  let v34 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s44
+  let s45 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        107#u8, 109#u8, 115#u8, 58#u8, 69#u8, 110#u8, 97#u8, 98#u8, 108#u8,
+        101#u8, 75#u8, 101#u8, 121#u8
+        ]))
+  let v35 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s45
+  let s46 ←
+    lift (Array.to_slice
+      (Array.make 14#usize [
+        107#u8, 109#u8, 115#u8, 58#u8, 68#u8, 105#u8, 115#u8, 97#u8, 98#u8,
+        108#u8, 101#u8, 75#u8, 101#u8, 121#u8
+        ]))
+  let v36 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s46
+  let s47 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        107#u8, 109#u8, 115#u8, 58#u8, 82#u8, 111#u8, 116#u8, 97#u8, 116#u8,
+        101#u8, 75#u8, 101#u8, 121#u8
+        ]))
+  let v37 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s47
+  let s48 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        107#u8, 109#u8, 115#u8, 58#u8, 68#u8, 101#u8, 108#u8, 101#u8, 116#u8,
+        101#u8, 75#u8, 101#u8, 121#u8
+        ]))
+  let v38 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s48
+  let y22 ←
+    lift (Std.Array.to_slice
+      (Array.make 6#usize [
+         { family := acts.Family.Kms, «name» := v33 },
+         { family := acts.Family.Kms, «name» := v34 },
+         { family := acts.Family.Kms, «name» := v35 },
+         { family := acts.Family.Kms, «name» := v36 },
+         { family := acts.Family.Kms, «name» := v37 },
+         { family := acts.Family.Kms, «name» := v38 }
+         ] : Array acts.Action 6#usize))
+  let ret22 := alloc.slice.Slice.into_vec y22
+  let s49 ← defaults.kms_allow ret22
+  let s50 ← defaults.assume_role_allow
+  let y23 ←
+    lift (Std.Array.to_slice (Array.make 2#usize [ s49, s50 ] : Array
+      stmts.Statement 2#usize))
+  let ret23 := alloc.slice.Slice.into_vec y23
+  let v39 ← defaults.kms_key_user
+  let s51 ←
+    lift (Array.to_slice
+      (Array.make 19#usize [
+        107#u8, 109#u8, 115#u8, 58#u8, 71#u8, 101#u8, 110#u8, 101#u8, 114#u8,
+        97#u8, 116#u8, 101#u8, 68#u8, 97#u8, 116#u8, 97#u8, 75#u8, 101#u8,
+        121#u8
+        ]))
+  let v40 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s51
+  let s52 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        107#u8, 109#u8, 115#u8, 58#u8, 68#u8, 101#u8, 99#u8, 114#u8, 121#u8,
+        112#u8, 116#u8
+        ]))
+  let v41 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s52
+  let s53 ←
+    lift (Array.to_slice
+      (Array.make 15#usize [
+        107#u8, 109#u8, 115#u8, 58#u8, 68#u8, 101#u8, 115#u8, 99#u8, 114#u8,
+        105#u8, 98#u8, 101#u8, 75#u8, 101#u8, 121#u8
+        ]))
+  let v42 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s53
+  let y24 ←
+    lift (Std.Array.to_slice
+      (Array.make 3#usize [
+         { family := acts.Family.Kms, «name» := v40 },
+         { family := acts.Family.Kms, «name» := v41 },
+         { family := acts.Family.Kms, «name» := v42 }
+         ] : Array acts.Action 3#usize))
+  let ret24 := alloc.slice.Slice.into_vec y24
+  let s54 ← defaults.kms_allow ret24
+  let y25 ←
+    lift (Std.Array.to_slice (Array.make 2#usize [ s54, s50 ] : Array
+      stmts.Statement 2#usize))
+  let ret25 := alloc.slice.Slice.into_vec y25
+  let v43 ← defaults.kms_auditor
+  let s55 ←
+    lift (Array.to_slice
+      (Array.make 15#usize [
+        107#u8, 109#u8, 115#u8, 58#u8, 68#u8, 101#u8, 115#u8, 99#u8, 114#u8,
+        105#u8, 98#u8, 101#u8, 75#u8, 101#u8, 121#u8
+        ]))
+  let v44 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s55
+  let s56 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        107#u8, 109#u8, 115#u8, 58#u8, 76#u8, 105#u8, 115#u8, 116#u8, 75#u8,
+        101#u8, 121#u8, 115#u8
+        ]))
+  let v45 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s56
+  let y26 ←
+    lift (Std.Array.to_slice
+      (Array.make 2#usize [
+         { family := acts.Family.Kms, «name» := v44 },
+         { family := acts.Family.Kms, «name» := v45 }
+         ] : Array acts.Action 2#usize))
+  let ret26 := alloc.slice.Slice.into_vec y26
+  let s57 ← defaults.kms_allow ret26
+  let y27 ←
+    lift (Std.Array.to_slice (Array.make 2#usize [ s57, s50 ] : Array
+      stmts.Statement 2#usize))
+  let ret27 := alloc.slice.Slice.into_vec y27
+  let y28 ←
+    lift (Std.Array.to_slice
+      (Array.make 8#usize [
+         (v,
+         { id := (alloc.vec.Vec.new Std.U8), version := v1, statements := ret3
+         }), (v5,
+         { id := (alloc.vec.Vec.new Std.U8), version := v1, statements := ret7
+         }), (v11,
+         { id := (alloc.vec.Vec.new Std.U8), version := v1, statements := ret11
+         }), (v15,
+         { id := (alloc.vec.Vec.new Std.U8), version := v1, statements := ret15
+         }), (v26,
+         { id := (alloc.vec.Vec.new Std.U8), version := v1, statements := ret21
+         }), (v32,
+         { id := (alloc.vec.Vec.new Std.U8), version := v1, statements := ret23
+         }), (v39,
+         { id := (alloc.vec.Vec.new Std.U8), version := v1, statements := ret25
+         }), (v43,
+         { id := (alloc.vec.Vec.new Std.U8), version := v1, statements := ret27
+         })
+         ] : Array ((alloc.vec.Vec Std.U8) × defaults.Policy) 8#usize))
+  ok (alloc.slice.Slice.into_vec y28)
+
 /-- [rustfs_kernel::pathclean::copy_element]: loop body 0:
     Source: 'ports/rustfs/kernel/src/pathclean.rs', lines 77:4-81:5 -/
 @[rust_loop_body]
@@ -4346,14 +6900,6 @@ def pathclean.clean (path : Slice Std.U8) : Result (alloc.vec.Vec Std.U8) := do
       alloc.slice.Slice.to_vec core.clone.CloneU8 s
     else pathclean.clean_loop1 buf2 w1 (alloc.vec.Vec.new Std.U8) 0#usize
 
-/-- [rustfs_kernel::rsrc::Resource]
-    Source: 'ports/rustfs/kernel/src/rsrc.rs', lines 8:0-11:1
-    Visibility: public -/
-@[discriminant isize]
-inductive rsrc.Resource where
-| S3 : alloc.vec.Vec Std.U8 → rsrc.Resource
-| Kms : alloc.vec.Vec Std.U8 → rsrc.Resource
-
 /-- [rustfs_kernel::rsrc::is_kms]:
     Source: 'ports/rustfs/kernel/src/rsrc.rs', lines 13:0-18:1
     Visibility: public -/
@@ -4429,25 +6975,6 @@ structure stmts.Args where
   object : alloc.vec.Vec Std.U8
   claims : awsvars.ClaimStrings
   deny_only : Bool
-
-/-- [rustfs_kernel::stmts::Effect]
-    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 10:0-13:1
-    Visibility: public -/
-@[discriminant isize]
-inductive stmts.Effect where
-| Allow : stmts.Effect
-| Deny : stmts.Effect
-
-/-- [rustfs_kernel::stmts::Statement]
-    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 24:0-31:1
-    Visibility: public -/
-structure stmts.Statement where
-  effect : stmts.Effect
-  actions : alloc.vec.Vec acts.Action
-  not_actions : alloc.vec.Vec acts.Action
-  resources : alloc.vec.Vec rsrc.Resource
-  not_resources : alloc.vec.Vec rsrc.Resource
-  conditions : condfuncs.Functions
 
 /-- [rustfs_kernel::stmts::{impl core::cmp::PartialEq<rustfs_kernel::stmts::Effect> for rustfs_kernel::stmts::Effect}::eq]:
     Source: 'ports/rustfs/kernel/src/stmts.rs', lines 9:29-9:38

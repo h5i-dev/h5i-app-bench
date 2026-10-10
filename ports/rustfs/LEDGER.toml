@@ -4,7 +4,8 @@
 [[item]]
 upstream = "crates/policy/src/policy/action.rs:25 ActionSet"
 lines = 1
-status = "todo"
+status = "ported"
+kernel = ["actsets::as_slice", "actsets::push_unique"]
 
 [[item]]
 upstream = "crates/policy/src/policy/action.rs:31 ActionSet::serialize"
@@ -15,17 +16,20 @@ reason = "policy decoding or serialization"
 [[item]]
 upstream = "crates/policy/src/policy/action.rs:49 ActionSet::is_empty"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["actsets::is_empty"]
 
 [[item]]
 upstream = "crates/policy/src/policy/action.rs:54 ActionSet::push_unique"
 lines = 5
-status = "todo"
+status = "ported"
+kernel = ["actsets::push_unique"]
 
 [[item]]
 upstream = "crates/policy/src/policy/action.rs:60 ActionSet::is_match"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["actsets::set_is_match"]
 
 [[item]]
 upstream = "crates/policy/src/policy/action.rs:64 ActionSet::is_match_for_effect"
@@ -42,17 +46,20 @@ kernel = ["statement_covers"]
 [[item]]
 upstream = "crates/policy/src/policy/action.rs:102 ActionSet::deref"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["actsets::as_slice"]
 
 [[item]]
 upstream = "crates/policy/src/policy/action.rs:109 ActionSet::is_valid"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["actsets::is_valid"]
 
 [[item]]
 upstream = "crates/policy/src/policy/action.rs:115 ActionSet::eq"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["actsets::eq"]
 
 [[item]]
 upstream = "crates/policy/src/policy/action.rs:121 ActionSet::deserialize"
@@ -69,7 +76,8 @@ kernel = ["Action"]
 [[item]]
 upstream = "crates/policy/src/policy/action.rs:179 Action::is_match"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["actsets::action_is_match"]
 
 [[item]]
 upstream = "crates/policy/src/policy/action.rs:183 Action::is_match_for_effect"
@@ -98,12 +106,14 @@ reason = "policy decoding or serialization"
 [[item]]
 upstream = "crates/policy/src/policy/action.rs:250 S3Action"
 lines = 73
-status = "todo"
+status = "ported"
+kernel = ["actsets::action_name", "actsets::action_count", "actsets::contains_name"]
 
 [[item]]
 upstream = "crates/policy/src/policy/action.rs:405 AdminAction"
 lines = 93
-status = "todo"
+status = "ported"
+kernel = ["actsets::action_name", "actsets::action_count", "actsets::contains_name"]
 
 [[item]]
 upstream = "crates/policy/src/policy/action.rs:595 AdminAction::is_table_resource_scoped"
@@ -114,17 +124,20 @@ kernel = ["is_table_resource_scoped"]
 [[item]]
 upstream = "crates/policy/src/policy/action.rs:622 AdminAction::is_valid"
 lines = 96
-status = "todo"
+status = "ported"
+kernel = ["actsets::admin_is_valid"]
 
 [[item]]
 upstream = "crates/policy/src/policy/action.rs:720 StsAction"
 lines = 4
-status = "todo"
+status = "ported"
+kernel = ["actsets::action_name", "actsets::action_count", "actsets::contains_name"]
 
 [[item]]
 upstream = "crates/policy/src/policy/action.rs:729 KmsAction"
 lines = 20
-status = "todo"
+status = "ported"
+kernel = ["actsets::action_name", "actsets::action_count", "actsets::contains_name"]
 
 [[item]]
 upstream = "crates/policy/src/policy/doc.rs:20 PolicyDoc"
@@ -806,7 +819,8 @@ reason = "OPA authorization plugin: HTTP client and environment"
 [[item]]
 upstream = "crates/policy/src/policy/policy.rs:23 DEFAULT_VERSION"
 lines = 1
-status = "todo"
+status = "ported"
+kernel = ["defaults::default_version"]
 
 [[item]]
 upstream = "crates/policy/src/policy/policy.rs:30 Validator::is_valid"
@@ -952,37 +966,44 @@ status = "todo"
 [[item]]
 upstream = "crates/policy/src/policy/policy.rs:369 KMS_KEY_ADMINISTRATOR"
 lines = 1
-status = "todo"
+status = "ported"
+kernel = ["defaults::kms_key_administrator"]
 
 [[item]]
 upstream = "crates/policy/src/policy/policy.rs:371 KMS_KEY_USER"
 lines = 1
-status = "todo"
+status = "ported"
+kernel = ["defaults::kms_key_user"]
 
 [[item]]
 upstream = "crates/policy/src/policy/policy.rs:373 KMS_AUDITOR"
 lines = 1
-status = "todo"
+status = "ported"
+kernel = ["defaults::kms_auditor"]
 
 [[item]]
 upstream = "crates/policy/src/policy/policy.rs:376 ALL_KMS_KEYS"
 lines = 1
-status = "todo"
+status = "ported"
+kernel = ["defaults::all_kms_keys"]
 
 [[item]]
 upstream = "crates/policy/src/policy/policy.rs:382 kms_allow"
 lines = 11
-status = "todo"
+status = "ported"
+kernel = ["defaults::kms_allow"]
 
 [[item]]
 upstream = "crates/policy/src/policy/policy.rs:395 assume_role_allow"
 lines = 11
-status = "todo"
+status = "ported"
+kernel = ["defaults::assume_role_allow"]
 
 [[item]]
 upstream = "crates/policy/src/policy/policy.rs:409 DEFAULT_POLICIES"
 lines = 217
-status = "todo"
+status = "ported"
+kernel = ["defaults::default_policies"]
 
 [[item]]
 upstream = "crates/policy/src/policy/principal.rs:20 Principal"
