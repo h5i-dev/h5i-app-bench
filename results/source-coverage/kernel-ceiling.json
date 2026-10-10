@@ -1,6 +1,6 @@
 {
- "timestamp": "2026-10-10T03:42:19.052683+00:00",
- "method": "Estimate how much of each upstream scope could be an h5i-app kernel.\n\n  python3 harness/kernel_ceiling.py [--app nora ...]\n\nA kernel is pure, synchronous and deterministic: no I/O, async, database,\nnetwork, filesystem, clock, randomness, environment, threads, locks or\nglobal mutable state, and no unsafe or FFI. Representation changes are\nallowed, since ports rewrite strings to bytes and iterators to loops.\n\nEach non-test function and data item of the pinned scope (the same scope as\nsource_inventory.py) is classified:\n\n- shell: its body or type uses a shell marker below, or it calls a crate\n  function that is shell (to a fixpoint). Calls resolve by name: `Ty::f` to\n  methods of `Ty`, `f(..)` to free functions, `.f(..)` to every crate method\n  named `f` unless `f` is a common std name.\n- kernel-eligible: everything else.\n\nThe ceiling is the eligible lines; lines are counted as dashboard.py counts\nthem (no blanks, comments or attributes). Name-based resolution and the\nmarker lists make this an estimate: it errs toward shell when a common\nmethod name hides an effectful callee, and toward kernel when an effect is\nhidden behind a trait object or an unlisted crate.\nWrites results/source-coverage/kernel-ceiling.json, and every item's\nclassification to kernel-ceiling-items.jsonl.gz for auditing.",
+ "timestamp": "2026-10-10T03:52:11.896442+00:00",
+ "method": "Estimate how much of each upstream scope could be an h5i-app kernel.\n\n  python3 harness/kernel_ceiling.py [--app nora ...]\n\nA kernel is pure, synchronous and deterministic: no I/O, async, database,\nnetwork, filesystem, clock, randomness, environment, threads, locks or\nglobal mutable state, and no unsafe or FFI. Representation changes are\nallowed, since ports rewrite strings to bytes and iterators to loops.\n\nEach non-test function and data item of the pinned scope (the same scope as\nsource_inventory.py) is classified:\n\n- shell: its body or type uses a shell marker below, or it calls a crate\n  function that is shell (to a fixpoint). Calls resolve by name: `Ty::f` to\n  methods of `Ty`, `f(..)` to free functions, `.f(..)` to every crate method\n  named `f` unless `f` is a common std name.\n- kernel-eligible: everything else.\n\nKernel-eligible items whose module path or name contains a security word\n(authentication, authorization, permissions, tokens, credentials,\nsignatures, sessions, input validation, path safety, lockout, membership,\nvisibility; SECURITY_WORDS below) form the security kernel.\n\nThe ceiling is the eligible lines; lines are counted as dashboard.py counts\nthem (no blanks, comments or attributes). Name-based resolution and the\nmarker lists make this an estimate: it errs toward shell when a common\nmethod name hides an effectful callee, and toward kernel when an effect is\nhidden behind a trait object or an unlisted crate.\nWrites results/source-coverage/kernel-ceiling.json, and every item's\nclassification to kernel-ceiling-items.jsonl.gz for auditing.",
  "apps": [
   {
    "app": "nora",
@@ -14,6 +14,9 @@
    "kernel_fn_lines": 9322,
    "kernel_data_lines": 2467,
    "kernel_ceiling_lines": 11789,
+   "security_lines": 6653,
+   "security_kernel_lines": 2358,
+   "security_kernel_functions": 192,
    "functions": 1382,
    "kernel_functions": 658,
    "shell_lines_by_reason": {
@@ -46,6 +49,9 @@
    "kernel_fn_lines": 50336,
    "kernel_data_lines": 17689,
    "kernel_ceiling_lines": 68025,
+   "security_lines": 59953,
+   "security_kernel_lines": 17876,
+   "security_kernel_functions": 1049,
    "functions": 8201,
    "kernel_functions": 3798,
    "shell_lines_by_reason": {
@@ -78,6 +84,9 @@
    "kernel_fn_lines": 32158,
    "kernel_data_lines": 26302,
    "kernel_ceiling_lines": 58460,
+   "security_lines": 43530,
+   "security_kernel_lines": 34215,
+   "security_kernel_functions": 1073,
    "functions": 3318,
    "kernel_functions": 2690,
    "shell_lines_by_reason": {
@@ -110,6 +119,9 @@
    "kernel_fn_lines": 2026,
    "kernel_data_lines": 719,
    "kernel_ceiling_lines": 2745,
+   "security_lines": 3605,
+   "security_kernel_lines": 2745,
+   "security_kernel_functions": 162,
    "functions": 207,
    "kernel_functions": 162,
    "shell_lines_by_reason": {
@@ -134,6 +146,9 @@
    "kernel_fn_lines": 19024,
    "kernel_data_lines": 6844,
    "kernel_ceiling_lines": 25868,
+   "security_lines": 33814,
+   "security_kernel_lines": 8267,
+   "security_kernel_functions": 518,
    "functions": 5505,
    "kernel_functions": 2300,
    "shell_lines_by_reason": {
@@ -166,6 +181,9 @@
    "kernel_fn_lines": 19486,
    "kernel_data_lines": 6968,
    "kernel_ceiling_lines": 26454,
+   "security_lines": 30461,
+   "security_kernel_lines": 4995,
+   "security_kernel_functions": 397,
    "functions": 4769,
    "kernel_functions": 1889,
    "shell_lines_by_reason": {

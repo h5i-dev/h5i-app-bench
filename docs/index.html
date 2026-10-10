@@ -62,7 +62,7 @@
               <tr>
                 <th scope="col" data-sort="app">Application</th>
                 <th scope="col" class="w-bar-s" data-sort="specs">Specs accepted</th>
-                <th scope="col" class="w-bar-s" data-sort="reach">Upstream lines reached</th>
+                <th scope="col" class="w-bar-s" data-sort="security">Of security kernel</th>
                 <th scope="col" class="w-bar-s" data-sort="ceiling">Of kernel ceiling</th>
                 <th scope="col" class="c" title="h5i app extract --check">Extract</th>
                 <th scope="col" class="c" title="Differential tests against the pinned upstream">Diff test</th>
@@ -74,8 +74,8 @@
         </div>
         <dl class="defs">
           <div><dt>Specs accepted</dt><dd>Proof re-checked in a clean workspace: statement unchanged, only <code>propext</code>, <code>Classical.choice</code> and <code>Quot.sound</code>.</dd></div>
-          <div><dt>Upstream lines reached</dt><dd>Lines of the upstream functions accepted theorems are about, over those all selected theorems are about. No blanks or comments.</dd></div>
-          <div><dt>Of kernel ceiling</dt><dd>Reached lines over the module's kernel ceiling: the lines that could be a kernel at all (pure, synchronous, no I/O, clock, randomness or locks, transitively). A static estimate; see <code>harness/kernel_ceiling.py</code>.</dd></div>
+          <div><dt>Of security kernel</dt><dd>Reached lines over the kernel-eligible lines whose module or name is about authentication, authorization, tokens, credentials, sessions, validation or visibility. Keyword-based; every selected spec is a security property.</dd></div>
+          <div><dt>Of kernel ceiling</dt><dd>Upstream lines in functions that accepted theorems are about, over the module's kernel ceiling: the lines that could be a kernel at all (pure, synchronous, no I/O, clock, randomness or locks, transitively). A static estimate; see <code>harness/kernel_ceiling.py</code>.</dd></div>
           <div><dt>Gate</dt><dd><code>h5i app check</code>. Passes once every spec is proved.</dd></div>
         </dl>
       </section>

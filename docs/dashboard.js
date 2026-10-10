@@ -147,7 +147,7 @@ function renderTiles() {
   const proofs = INDEX.tasks.filter((t) => t.status === "accepted" && t.proof_loc != null).map((t) => t.proof_loc);
   const tiles = [
     [`${s.accepted}<small>/${s.properties}</small>`, "specs verified", `re-checked · ${pctText(s.accepted, s.properties)}`, [s.accepted, s.properties]],
-    [kLines(s.upstream_reached), "upstream lines reached", `${pctText(s.upstream_reached, s.ceiling_lines, 1)} of the ${kLines(s.ceiling_lines)}-line kernel ceiling · ${pctText(s.upstream_reached, s.upstream_selected)} of selected code`, [s.upstream_reached, s.upstream_selected]],
+    [kLines(s.upstream_reached), "upstream lines reached", `${pctText(s.upstream_reached, s.security_kernel_lines, 1)} of ${kLines(s.security_kernel_lines)} security-kernel lines · ${pctText(s.upstream_reached, s.ceiling_lines, 1)} of the ${kLines(s.ceiling_lines)} kernel ceiling`, [s.upstream_reached, s.upstream_selected]],
     [med == null ? "–" : ratioText(med), "median runtime ratio", `kernel ÷ upstream · ${m.length} workloads${m.length ? ` · ${ratioText(Math.min(...m))}–${ratioText(Math.max(...m))}` : ""}`],
     [kLines(s.proof_loc), "lines of Lean proof", `median ${fmt(median(proofs))} per spec · ${kLines(s.rust_loc)} lines of ported Rust`],
   ];
@@ -163,7 +163,7 @@ function renderApps() {
   const rows = applySort("apps-table", appRows(), {
     app: (r) => r.app,
     specs: (r) => r.accepted / r.specs,
-    reach: (r) => (r.upstream_selected ? r.upstream_reached / r.upstream_selected : 0),
+    security: (r) => (r.security_kernel_lines ? r.upstream_reached / r.security_kernel_lines : null),
     ceiling: (r) => (r.ceiling_lines ? r.upstream_reached / r.ceiling_lines : null),
   });
   $("#apps-table tbody").innerHTML = rows.map((a) => {
@@ -172,7 +172,7 @@ function renderApps() {
 
     return `<tr><td>${esc(a.app)}<span class="sub"><a href="https://github.com/${esc(a.repo)}/tree/${esc(a.commit)}" target="_blank" rel="noreferrer">${esc(a.repo)} @ ${esc(a.commit)}</a></span></td>
       <td>${barRow(a.accepted, a.specs)}</td>
-      <td>${barRow(a.upstream_reached, a.upstream_selected, "alt")}</td>
+      <td>${a.security_kernel_lines ? barRowPct(a.upstream_reached, a.security_kernel_lines, 1) : "–"}</td>
       <td>${a.ceiling_lines ? barRowPct(a.upstream_reached, a.ceiling_lines, 1) : "–"}</td>
       <td class="c">${passMark(gate.extract, "extract --check")}</td>
       <td class="c">${passMark(eq, "differential tests")}</td>

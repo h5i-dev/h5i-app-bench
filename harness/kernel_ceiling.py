@@ -16,6 +16,11 @@ source_inventory.py) is classified:
   named `f` unless `f` is a common std name.
 - kernel-eligible: everything else.
 
+Kernel-eligible items whose module path or name contains a security word
+(authentication, authorization, permissions, tokens, credentials,
+signatures, sessions, input validation, path safety, lockout, membership,
+visibility; SECURITY_WORDS below) form the security kernel.
+
 The ceiling is the eligible lines; lines are counted as dashboard.py counts
 them (no blanks, comments or attributes). Name-based resolution and the
 marker lists make this an estimate: it errs toward shell when a common
@@ -73,6 +78,26 @@ or and xor is_some_and is_none_or is_ok_and take replace map_or map_or_else filt
 rev skip chain cloned copied as_deref split_once rsplit_once to_lowercase to_uppercase contains_key
 get_or_insert_with or_insert or_default ok_or ok_or_else then then_some position windows chunks peekable
 enumerate take_while skip_while last_mut split_at strip_prefix strip_suffix trim_start trim_end""".split())
+
+
+# Word prefixes, matched against the words of the file path and item name.
+SECURITY_WORDS = """auth authn authz authori authenti access acl permission perm privilege polic role scope
+grant token jwt jws jwk oidc oauth saml session cookie csrf credential cred password passwd htpasswd secret
+sign verif hmac crypt cipher mfa totp webauthn passkey lockout softlock ratelimit throttle sanitiz escape
+valid traversal visib private owner admin deny allow trust proxy cidr cors cert ban member guest anonymous
+share sharing tenant isolat claim principal identity account login logout revoke expir quarantine
+protect forbid unauthori""".split()
+
+
+def words(text):
+    import re
+    text = re.sub(r"([a-z0-9])([A-Z])", r"\1_\2", text)
+    return [w for w in re.split(r"[^A-Za-z0-9]+", text.lower()) if w]
+
+
+def security_relevant(item):
+    ws = words(item["file"]) + words(item.get("self_ty", "")) + words(item["name"])
+    return any(w.startswith(p) for w in ws for p in SECURITY_WORDS)
 
 
 def code_lines(lines):
@@ -166,6 +191,9 @@ def analyze(app, pin, scope):
     fn = [r for r in items if r["kind"] in ("fn", "method")]
     dat = [r for r in items if r["kind"] not in ("fn", "method")]
     kern = lambda rs: sum(r["loc"] for r in rs if not r["reasons"])
+    for r in items:
+        r["security"] = security_relevant(r)
+    sec = [r for r in items if r["security"]]
     reasons = defaultdict(int)
     for r in items:
         if r["reasons"]:
@@ -177,9 +205,11 @@ def analyze(app, pin, scope):
            "code_lines": total, "fn_lines": sum(r["loc"] for r in fn), "data_lines": sum(r["loc"] for r in dat),
            "kernel_fn_lines": kern(fn), "kernel_data_lines": kern(dat),
            "kernel_ceiling_lines": kern(items),
+           "security_lines": sum(r["loc"] for r in sec),
+           "security_kernel_lines": kern(sec), "security_kernel_functions": sum(not r["reasons"] for r in sec if r["kind"] in ("fn", "method")),
            "functions": len(fn), "kernel_functions": sum(not r["reasons"] for r in fn),
            "shell_lines_by_reason": dict(sorted(reasons.items(), key=lambda kv: -kv[1])[:15])}
-    row["items"] = [{k: r[k] for k in ("file", "kind", "name", "self_ty", "start", "end", "loc", "reasons")} for r in items]
+    row["items"] = [{k: r[k] for k in ("file", "kind", "name", "self_ty", "start", "end", "loc", "reasons", "security")} for r in items]
     return row
 
 
@@ -195,7 +225,7 @@ def main():
         rows.append(row)
         print(f"{app}: ceiling {row['kernel_ceiling_lines']:,} of {row['code_lines']:,} code lines "
               f"({row['kernel_ceiling_lines'] / max(1, row['code_lines']):.0%}); "
-              f"{row['kernel_functions']}/{row['functions']} functions", flush=True)
+              f"{row['kernel_functions']}/{row['functions']} functions; security kernel {row['security_kernel_lines']:,}", flush=True)
     out = ROOT / "results/source-coverage"
     with gzip.open(out / "kernel-ceiling-items.jsonl.gz", "wt") as f:
         for row in rows:

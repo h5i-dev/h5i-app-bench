@@ -502,6 +502,7 @@ def app_metrics(app, ts, ledger, items):
             "ported_span_lines": spans.get(app, {}).get("deduplicated_mapped_nonblank_lines"),
             "ceiling_lines": ceiling.get(app, {}).get("kernel_ceiling_lines"),
             "ceiling_code_lines": ceiling.get(app, {}).get("code_lines"),
+            "security_kernel_lines": ceiling.get(app, {}).get("security_kernel_lines"),
             "rust_loc": rust_loc,
             "lean_loc": sum(lean_lines(f) for f in (port / "proofs/generated").glob("*.lean")),
             "spec_loc": lean_lines(port / "proofs/Spec.lean"),
@@ -671,6 +672,7 @@ def main():
               "upstream_selected": sum(i["upstream_selected"] for i in apps.values()),
               "ceiling_lines": sum(i["ceiling_lines"] or 0 for i in apps.values()),
               "ceiling_code_lines": sum(i["ceiling_code_lines"] or 0 for i in apps.values()),
+              "security_kernel_lines": sum(i["security_kernel_lines"] or 0 for i in apps.values()),
               "rust_loc": sum(i["rust_loc"] for i in apps.values()),
               "proof_loc": sum(i["proof_loc"] for i in apps.values())}
     index = {"generated": time.strftime("%Y-%m-%d %H:%M"), "stats": stats, "apps": apps, "columns": columns,
