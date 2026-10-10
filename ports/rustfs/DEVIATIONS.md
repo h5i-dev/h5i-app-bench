@@ -46,7 +46,7 @@ and 400,000 bucket cases. Kernel mutations in each module make it fail.
 | actions | an enum per family, matched by name | `(family, name)` with the `IntoStaticStr` name | matching is on names |
 | `deep_match` | a loop that recurses on `*` | recursion on indices | no loop inside a recursive function |
 | `resolve_aws_variables`, `resolve_single_pass` | loops calling each other | recursion (`fixpoint`, `pass_all`, `pass_from`, `scan`) | same reason |
-| `path::clean` | a lazily copied buffer | a copy of the input written in place | same bytes |
+| `path::clean` | a lazily copied buffer (an `Option` check and a byte compare per append), then `String::from_utf8_lossy(..).to_string()` | a copy of the input written in place, returning bytes; the shell converts them back to a `String` | same bytes; with that conversion timed on the kernel side it still runs at about 0.86× upstream's time |
 | `to_lowercase` (`*IgnoreCase`) | Unicode | ASCII | strings with non-ASCII capitals differ |
 | `IfExists` | `IfExists(Box<Condition>)`, nestable | a flag | nested wrappers behave as one |
 | `Option::clone`, `?` on `Option`, `&'static [u8]` tables | | hand-written `Clone`, `match`, `Vec<u8>` | not in Aeneas' library |

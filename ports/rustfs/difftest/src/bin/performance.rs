@@ -15,6 +15,7 @@ fn median(xs: &[f64]) -> f64 {
 
 fn compare<T, U>(
     name: &str,
+    scope: &str,
     up: impl Fn(&str) -> T,
     port: impl Fn(&str) -> U,
     inputs: &[String],
@@ -54,7 +55,7 @@ fn compare<T, U>(
         "rounds": rounds, "samples": 11, "upstream_ns_per_call": median(&us),
         "kernel_ns_per_call": median(&ks), "kernel_over_upstream": median(&ratios),
         "upstream_samples_ns": us, "kernel_samples_ns": ks, "reply_parity": true,
-        "scope": "function-only; pinned upstream crate; prebuilt str/bytes; includes output allocations; no shell conversion"})
+        "scope": scope})
     );
 }
 
@@ -79,16 +80,18 @@ fn main() {
     .map(str::to_owned)
     .chain(["a/".repeat(128), format!("{}/../x", "a".repeat(1024))])
     .collect();
+    // Upstream returns a String; the kernel returns bytes, which the shell must
+    // turn back into the String upstream's callers use. Time that conversion
+    // on the kernel side, as `String::from_utf8_lossy` like upstream's own.
+    let kernel_clean = |s: &str| String::from_utf8_lossy(&rustfs_kernel::pathclean::clean(s.as_bytes())).into_owned();
     for s in &inputs {
-        assert_eq!(
-            path::clean(s).as_bytes(),
-            rustfs_kernel::pathclean::clean(s.as_bytes())
-        );
+        assert_eq!(path::clean(s), kernel_clean(s));
     }
     compare(
         "path_clean",
+        "matched function-only; pinned upstream crate; prebuilt str; both sides return String (kernel bytes converted back by the shell); includes output allocations",
         |s| path::clean(s),
-        |s| rustfs_kernel::pathclean::clean(s.as_bytes()),
+        kernel_clean,
         &inputs,
         rounds,
     );
@@ -101,6 +104,7 @@ fn main() {
         }
         compare(
             &format!("wildcard:{pattern}"),
+            "matched function-only; pinned upstream crate; prebuilt str/bytes; bool result; no shell conversion",
             |s| wildcard::is_match(pattern, s),
             |s| rustfs_kernel::wildmatch::is_match(pattern.as_bytes(), s.as_bytes()),
             &inputs,

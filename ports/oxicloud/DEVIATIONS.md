@@ -61,6 +61,7 @@ make the tests fail. `props.rs` checks every statement in
 | time | `NOW()`, `chrono` | `now` in seconds, an input | |
 | errors | `DomainError` | its `ErrorKind` | messages are not compared |
 | new grant ids | `gen_random_uuid()` | `Env::fresh` | the difftest compares grants without ids |
+| `role_grants`, `role_implies` | `Role::expand(..).contains(..)`, `roles_implying(..).contains(..)`: linear search of static slices | the same tables written out as a `match` of comparisons | equal on all 35 role/permission pairs (`difftest/src/bin/performance.rs`); compiles to a few comparisons instead of a slice scan, so it runs faster |
 | module names | | `grantapi` | a module may not share a name with a local variable in the generated Lean |
 
 ## Scope of the statements

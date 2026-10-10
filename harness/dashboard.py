@@ -422,17 +422,25 @@ def column(run):
 
 # ---- Verification ledger ---------------------------------------------------
 
+# Candidates under ports/*/proofs/solutions/ were written in interactive Codex
+# sessions on gpt-6.1-sol (2026-10-09; ~/.codex/sessions rollouts).
+SOLUTIONS_PROVER = "gpt-6.1-sol"
+
+
 def prover(source):
-    """Who wrote an accepted proof, from where the certified candidate lives."""
+    """The model that wrote an accepted proof, from where its candidate lives."""
     if m := re.match(r"results/runs/\d{8}-\d{6}-(.+)/workspace/", source):
         rest = m.group(1)
         for model in ("gpt-6.1-sol", "claude-opus-5-5", "claude-fable-5", "gemini-3.1-pro-preview", "gemini-3.8-flash"):
             if model in rest:
                 return model
         return rest.split("-")[-1]
-    if source.startswith("docs/data/tasks"):
-        return "earlier benchmark run"
-    return "proof session"
+    if source.startswith("docs/data/tasks") and ":" in source:
+        # docs/data/tasks/<id>.json:<model> · <agent>[:variant]
+        return source.split(":", 1)[1].split(" · ")[0]
+    if "/proofs/solutions/" in source:
+        return SOLUTIONS_PROVER
+    return "unknown"
 
 
 def verification(ts):
