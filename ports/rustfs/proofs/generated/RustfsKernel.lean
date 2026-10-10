@@ -3541,6 +3541,12 @@ partial_fixpoint
 
 end
 
+/-- [rustfs_kernel::bytes::starts_with]:
+    Source: 'ports/rustfs/kernel/src/bytes.rs', lines 32:0-34:1
+    Visibility: public -/
+def bytes.starts_with (s : Slice Std.U8) (p : Slice Std.U8) : Result Bool := do
+  bytes.starts_with_at s 0#usize p
+
 /-- [rustfs_kernel::bytes::replace]: loop body 1:
     Source: 'ports/rustfs/kernel/src/bytes.rs', lines 85:12-88:13
     Visibility: public -/
@@ -8296,5 +8302,1731 @@ def policies.bucket_policy_is_allowed
     then ok true
     else policies.bp_some_allow statements args env
   else ok false
+
+/-- [rustfs_kernel::resets::is_empty]:
+    Source: 'ports/rustfs/kernel/src/resets.rs', lines 6:0-6:60
+    Visibility: public -/
+def resets.is_empty (set : Slice rsrc.Resource) : Result Bool := do
+  let i := Slice.len set
+  ok (i = 0#usize)
+
+/-- [rustfs_kernel::resets::as_slice]:
+    Source: 'ports/rustfs/kernel/src/resets.rs', lines 8:0-8:56
+    Visibility: public -/
+def resets.as_slice
+  (set : Slice rsrc.Resource) : Result (Slice rsrc.Resource) := do
+  ok set
+
+/-- [rustfs_kernel::rsrc::{impl core::cmp::PartialEq<rustfs_kernel::rsrc::Resource> for rustfs_kernel::rsrc::Resource}::eq]:
+    Source: 'ports/rustfs/kernel/src/rsrc.rs', lines 7:23-7:32
+    Visibility: public -/
+def rsrc.Resource.Insts.CoreCmpPartialEqResource.eq
+  (self : rsrc.Resource) (other : rsrc.Resource) : Result Bool := do
+  let self1 := read_discriminant self
+  let other1 := read_discriminant other
+  if self1 = other1
+  then
+    match self with
+    | rsrc.Resource.S3 __self_0 =>
+      match other with
+      | rsrc.Resource.S3 __arg1_0 =>
+        alloc.vec.partial_eq.PartialEqVec.eq core.cmp.PartialEqU8 __self_0
+          __arg1_0
+      | rsrc.Resource.Kms _ => fail panic
+    | rsrc.Resource.Kms __self_0 =>
+      match other with
+      | rsrc.Resource.S3 _ => fail panic
+      | rsrc.Resource.Kms __arg1_0 =>
+        alloc.vec.partial_eq.PartialEqVec.eq core.cmp.PartialEqU8 __self_0
+          __arg1_0
+  else ok false
+
+/-- [rustfs_kernel::resets::member]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/resets.rs', lines 12:4-14:1
+    Visibility: public -/
+@[rust_loop_body]
+def resets.member_loop.body
+  (set : Slice rsrc.Resource) (resource : rsrc.Resource) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := Slice.len set
+  if i < i1
+  then
+    let r ← Slice.index_usize set i
+    let b ← rsrc.Resource.Insts.CoreCmpPartialEqResource.eq r resource
+    if b
+    then ok (done true)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else ok (done false)
+
+/-- [rustfs_kernel::resets::member]: loop 0:
+    Source: 'ports/rustfs/kernel/src/resets.rs', lines 12:4-14:1
+    Visibility: public -/
+@[rust_loop]
+def resets.member_loop
+  (set : Slice rsrc.Resource) (resource : rsrc.Resource) (i : Std.Usize) :
+  Result Bool
+  := do
+  loop
+    (fun i1 => resets.member_loop.body set resource i1)
+    i
+
+/-- [rustfs_kernel::resets::member]:
+    Source: 'ports/rustfs/kernel/src/resets.rs', lines 10:0-14:1
+    Visibility: public -/
+@[reducible]
+def resets.member
+  (set : Slice rsrc.Resource) (resource : rsrc.Resource) : Result Bool := do
+  resets.member_loop set resource 0#usize
+
+/-- [rustfs_kernel::resets::push_unique]:
+    Source: 'ports/rustfs/kernel/src/resets.rs', lines 16:0-18:1
+    Visibility: public -/
+def resets.push_unique
+  (set : alloc.vec.Vec rsrc.Resource) (resource : rsrc.Resource) :
+  Result (alloc.vec.Vec rsrc.Resource)
+  := do
+  let s := alloc.vec.Vec.deref set
+  let b ← resets.member s resource
+  if b
+  then ok set
+  else alloc.vec.Vec.push set resource
+
+/-- [rustfs_kernel::resets::covers]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/resets.rs', lines 21:4-23:1 -/
+@[rust_loop_body]
+def resets.covers_loop.body
+  (left : Slice rsrc.Resource) (right : Slice rsrc.Resource) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := Slice.len left
+  if i < i1
+  then
+    let r ← Slice.index_usize left i
+    let b ← resets.member right r
+    if b
+    then let i2 ← i + 1#usize
+         ok (cont i2)
+    else ok (done false)
+  else ok (done true)
+
+/-- [rustfs_kernel::resets::covers]: loop 0:
+    Source: 'ports/rustfs/kernel/src/resets.rs', lines 21:4-23:1 -/
+@[rust_loop]
+def resets.covers_loop
+  (left : Slice rsrc.Resource) (right : Slice rsrc.Resource) (i : Std.Usize) :
+  Result Bool
+  := do
+  loop
+    (fun i1 => resets.covers_loop.body left right i1)
+    i
+
+/-- [rustfs_kernel::resets::covers]:
+    Source: 'ports/rustfs/kernel/src/resets.rs', lines 19:0-23:1 -/
+@[reducible]
+def resets.covers
+  (left : Slice rsrc.Resource) (right : Slice rsrc.Resource) :
+  Result Bool
+  := do
+  resets.covers_loop left right 0#usize
+
+/-- [rustfs_kernel::resets::eq]:
+    Source: 'ports/rustfs/kernel/src/resets.rs', lines 25:0-25:103
+    Visibility: public -/
+def resets.eq
+  (left : Slice rsrc.Resource) (right : Slice rsrc.Resource) :
+  Result Bool
+  := do
+  let b ← resets.covers left right
+  if b
+  then resets.covers right left
+  else ok false
+
+/-- [rustfs_kernel::resets::is_match]:
+    Source: 'ports/rustfs/kernel/src/resets.rs', lines 27:0-29:1
+    Visibility: public -/
+def resets.is_match
+  (resource : rsrc.Resource) («name» : Slice Std.U8)
+  (values : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec
+  (alloc.vec.Vec Std.U8)))) :
+  Result Bool
+  := do
+  rsrc.resource_is_match resource «name» values none
+
+/-- [rustfs_kernel::resets::set_matches]:
+    Source: 'ports/rustfs/kernel/src/resets.rs', lines 31:0-33:1
+    Visibility: public -/
+def resets.set_matches
+  (set : Slice rsrc.Resource) («name» : Slice Std.U8)
+  (values : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec
+  (alloc.vec.Vec Std.U8)))) :
+  Result Bool
+  := do
+  rsrc.set_is_match set «name» values none
+
+/-- [rustfs_kernel::resets::match_resource]:
+    Source: 'ports/rustfs/kernel/src/resets.rs', lines 35:0-35:105
+    Visibility: public -/
+def resets.match_resource
+  (resource : rsrc.Resource) («name» : Slice Std.U8) : Result Bool := do
+  resets.is_match resource «name» (alloc.vec.Vec.new ((alloc.vec.Vec Std.U8)
+    × (alloc.vec.Vec (alloc.vec.Vec Std.U8))))
+
+/-- [rustfs_kernel::resets::set_match_resource]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/resets.rs', lines 39:4-41:1
+    Visibility: public -/
+@[rust_loop_body]
+def resets.set_match_resource_loop.body
+  (set : Slice rsrc.Resource) («name» : Slice Std.U8) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := Slice.len set
+  if i < i1
+  then
+    let r ← Slice.index_usize set i
+    let b ← resets.match_resource r «name»
+    if b
+    then ok (done true)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else ok (done false)
+
+/-- [rustfs_kernel::resets::set_match_resource]: loop 0:
+    Source: 'ports/rustfs/kernel/src/resets.rs', lines 39:4-41:1
+    Visibility: public -/
+@[rust_loop]
+def resets.set_match_resource_loop
+  (set : Slice rsrc.Resource) («name» : Slice Std.U8) (i : Std.Usize) :
+  Result Bool
+  := do
+  loop
+    (fun i1 => resets.set_match_resource_loop.body set «name» i1)
+    i
+
+/-- [rustfs_kernel::resets::set_match_resource]:
+    Source: 'ports/rustfs/kernel/src/resets.rs', lines 37:0-41:1
+    Visibility: public -/
+@[reducible]
+def resets.set_match_resource
+  (set : Slice rsrc.Resource) («name» : Slice Std.U8) : Result Bool := do
+  resets.set_match_resource_loop set «name» 0#usize
+
+/-- [rustfs_kernel::valids::ActionFamily]
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 4:0-4:52
+    Visibility: public -/
+@[discriminant isize]
+inductive valids.ActionFamily where
+| S3 : valids.ActionFamily
+| Admin : valids.ActionFamily
+| Sts : valids.ActionFamily
+| Kms : valids.ActionFamily
+| Mixed : valids.ActionFamily
+
+/-- [rustfs_kernel::valids::ErrorKind]
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 5:0-9:1
+    Visibility: public -/
+@[discriminant isize]
+inductive valids.ErrorKind where
+| InvalidVersion : valids.ErrorKind
+| NonAction : valids.ErrorKind
+| BothActionAndNotAction : valids.ErrorKind
+| MixedActionFamilies : valids.ErrorKind
+| NonResource : valids.ErrorKind
+| BothResourceAndNotResource : valids.ErrorKind
+| KmsResourceWithNonKmsAction : valids.ErrorKind
+| KmsUnsupportedInBucketPolicy : valids.ErrorKind
+| InvalidResource : valids.ErrorKind
+| EmptyPrincipal : valids.ErrorKind
+
+/-- [rustfs_kernel::valids::ValidationError]
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 10:0-10:91
+    Visibility: public -/
+structure valids.ValidationError where
+  kind : valids.ErrorKind
+  family : alloc.vec.Vec Std.U8
+  value : alloc.vec.Vec Std.U8
+
+/-- [rustfs_kernel::valids::error]:
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 11:0-11:112 -/
+def valids.error
+  (kind : valids.ErrorKind) : Result valids.ValidationError := do
+  ok
+    {
+      kind,
+      family := (alloc.vec.Vec.new Std.U8),
+      value := (alloc.vec.Vec.new Std.U8)
+    }
+
+/-- [rustfs_kernel::valids::default_is_valid]:
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 14:0-14:42
+    Visibility: public -/
+def valids.default_is_valid : Result Bool := do
+  ok true
+
+/-- [rustfs_kernel::valids::id_is_empty]:
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 16:0-16:55
+    Visibility: public -/
+def valids.id_is_empty (id : Slice Std.U8) : Result Bool := do
+  let i := Slice.len id
+  ok (i = 0#usize)
+
+/-- [rustfs_kernel::valids::id_as_slice]:
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 18:0-18:45
+    Visibility: public -/
+def valids.id_as_slice (id : Slice Std.U8) : Result (Slice Std.U8) := do
+  ok id
+
+/-- [rustfs_kernel::valids::id_is_valid]:
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 20:0-20:47
+    Visibility: public -/
+def valids.id_is_valid (_id : Slice Std.U8) : Result Bool := do
+  ok true
+
+/-- [rustfs_kernel::valids::effect_is_valid]:
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 22:0-22:56
+    Visibility: public -/
+def valids.effect_is_valid (_effect : stmts.Effect) : Result Bool := do
+  ok true
+
+/-- [rustfs_kernel::valids::principal_is_valid]:
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 24:0-27:1
+    Visibility: public -/
+def valids.principal_is_valid
+  (p : stmts.Principal) :
+  Result (core.result.Result Unit valids.ValidationError)
+  := do
+  let i := alloc.vec.Vec.len p.aws
+  if i = 0#usize
+  then
+    let i1 := alloc.vec.Vec.len p.service
+    if i1 = 0#usize
+    then
+      let ve ← valids.error valids.ErrorKind.EmptyPrincipal
+      ok (core.result.Result.Err ve)
+    else ok (core.result.Result.Ok ())
+  else ok (core.result.Result.Ok ())
+
+/-- [rustfs_kernel::valids::is_admin]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 31:10-31:90
+    Visibility: public -/
+@[rust_loop_body]
+def valids.is_admin_loop.body
+  (st : stmts.Statement) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := alloc.vec.Vec.len st.actions
+  if i < i1
+  then
+    let a ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice acts.Action)
+        st.actions i
+    let b ←
+      acts.Family.Insts.CoreCmpPartialEqFamily.eq a.family acts.Family.Admin
+    if b
+    then ok (done true)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else ok (done false)
+
+/-- [rustfs_kernel::valids::is_admin]: loop 0:
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 31:10-31:90
+    Visibility: public -/
+@[rust_loop]
+def valids.is_admin_loop
+  (st : stmts.Statement) (i : Std.Usize) : Result Bool := do
+  loop
+    (fun i1 => valids.is_admin_loop.body st i1)
+    i
+
+/-- [rustfs_kernel::valids::is_admin]:
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 29:0-33:1
+    Visibility: public -/
+@[reducible]
+def valids.is_admin (st : stmts.Statement) : Result Bool := do
+  valids.is_admin_loop st 0#usize
+
+/-- [rustfs_kernel::valids::is_sts]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 37:10-37:88
+    Visibility: public -/
+@[rust_loop_body]
+def valids.is_sts_loop.body
+  (st : stmts.Statement) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := alloc.vec.Vec.len st.actions
+  if i < i1
+  then
+    let a ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice acts.Action)
+        st.actions i
+    let b ←
+      acts.Family.Insts.CoreCmpPartialEqFamily.eq a.family acts.Family.Sts
+    if b
+    then ok (done true)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else ok (done false)
+
+/-- [rustfs_kernel::valids::is_sts]: loop 0:
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 37:10-37:88
+    Visibility: public -/
+@[rust_loop]
+def valids.is_sts_loop
+  (st : stmts.Statement) (i : Std.Usize) : Result Bool := do
+  loop
+    (fun i1 => valids.is_sts_loop.body st i1)
+    i
+
+/-- [rustfs_kernel::valids::is_sts]:
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 35:0-39:1
+    Visibility: public -/
+@[reducible]
+def valids.is_sts (st : stmts.Statement) : Result Bool := do
+  valids.is_sts_loop st 0#usize
+
+/-- [rustfs_kernel::valids::action_family]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 45:4-49:5
+    Visibility: public -/
+@[rust_loop_body]
+def valids.action_family_loop.body
+  (v : alloc.vec.Vec acts.Action) (saw_s3 : Bool) (saw_admin : Bool)
+  (saw_sts : Bool) (saw_kms : Bool) (i : Std.Usize) :
+  Result (ControlFlow (Bool × Bool × Bool × Bool × Std.Usize) (Bool × Bool
+    × Bool × Bool))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let a ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice acts.Action) v
+        i
+    let (saw_s31, saw_admin1, saw_sts1, saw_kms1) ←
+      match a.family with
+      | acts.Family.S3 => ok (true, saw_admin, saw_sts, saw_kms)
+      | acts.Family.Admin => ok (saw_s3, true, saw_sts, saw_kms)
+      | acts.Family.Sts => ok (saw_s3, saw_admin, true, saw_kms)
+      | acts.Family.Kms => ok (saw_s3, saw_admin, saw_sts, true)
+      | acts.Family.None => ok (saw_s3, saw_admin, saw_sts, saw_kms)
+    let i2 ← i + 1#usize
+    ok (cont (saw_s31, saw_admin1, saw_sts1, saw_kms1, i2))
+  else ok (done (saw_s3, saw_admin, saw_sts, saw_kms))
+
+/-- [rustfs_kernel::valids::action_family]: loop 0:
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 45:4-49:5
+    Visibility: public -/
+@[rust_loop]
+def valids.action_family_loop
+  (v : alloc.vec.Vec acts.Action) (saw_s3 : Bool) (saw_admin : Bool)
+  (saw_sts : Bool) (saw_kms : Bool) (i : Std.Usize) :
+  Result (Bool × Bool × Bool × Bool)
+  := do
+  loop
+    (fun (saw_s31, saw_admin1, saw_sts1, saw_kms1, i1) =>
+      valids.action_family_loop.body v saw_s31 saw_admin1 saw_sts1 saw_kms1 i1)
+    (saw_s3, saw_admin, saw_sts, saw_kms, i)
+
+/-- [rustfs_kernel::valids::action_family]:
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 41:0-57:1
+    Visibility: public -/
+def valids.action_family
+  (st : stmts.Statement) : Result (Option valids.ActionFamily) := do
+  let i := alloc.vec.Vec.len st.actions
+  if i = 0#usize
+  then ok none
+  else
+    let (saw_s3, saw_admin, saw_sts, saw_kms) ←
+      valids.action_family_loop st.actions false false false false 0#usize
+    let i1 ← lift (UScalar.cast_fromBool .U8 saw_s3)
+    let i2 ← lift (UScalar.cast_fromBool .U8 saw_admin)
+    let i3 ← i1 + i2
+    let i4 ← lift (UScalar.cast_fromBool .U8 saw_sts)
+    let i5 ← i3 + i4
+    let i6 ← lift (UScalar.cast_fromBool .U8 saw_kms)
+    let count ← i5 + i6
+    if count != 1#u8
+    then ok (some valids.ActionFamily.Mixed)
+    else
+      if saw_s3
+      then ok (some valids.ActionFamily.S3)
+      else
+        if saw_admin
+        then ok (some valids.ActionFamily.Admin)
+        else
+          if saw_sts
+          then ok (some valids.ActionFamily.Sts)
+          else
+            if saw_kms
+            then ok (some valids.ActionFamily.Kms)
+            else ok (some valids.ActionFamily.Mixed)
+
+/-- [rustfs_kernel::valids::kms_key_valid]:
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 58:0-58:158 -/
+def valids.kms_key_valid (p : Slice Std.U8) : Result Bool := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 4#usize [ 107#u8, 101#u8, 121#u8, 47#u8 ]))
+  let b ← bytes.starts_with p s
+  if b
+  then
+    let i := Slice.len p
+    if i > 4#usize
+    then
+      let i1 := Slice.len p
+      let v ← bytes.slice p 4#usize i1
+      let s1 := alloc.vec.Vec.deref v
+      let s2 ← lift (Array.to_slice (Array.make 1#usize [ 47#u8 ]))
+      let b1 ← bytes.contains s1 s2
+      if b1
+      then ok false
+      else
+        let s3 ← lift (Array.to_slice (Array.make 1#usize [ 92#u8 ]))
+        let b2 ← bytes.contains p s3
+        ok (¬ b2)
+    else ok false
+  else ok false
+
+/-- [rustfs_kernel::valids::kms_alias_valid]:
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 59:0-59:109 -/
+def valids.kms_alias_valid (p : Slice Std.U8) : Result Bool := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 6#usize [ 97#u8, 108#u8, 105#u8, 97#u8, 115#u8, 47#u8 ]))
+  let b ← bytes.starts_with p s
+  if b
+  then
+    let i := Slice.len p
+    if i > 6#usize
+    then
+      let s1 ← lift (Array.to_slice (Array.make 1#usize [ 92#u8 ]))
+      let b1 ← bytes.contains p s1
+      ok (¬ b1)
+    else ok false
+  else ok false
+
+/-- [rustfs_kernel::valids::resource_pattern_valid]:
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 60:0-60:175 -/
+def valids.resource_pattern_valid (r : rsrc.Resource) : Result Bool := do
+  match r with
+  | rsrc.Resource.S3 p =>
+    let i := alloc.vec.Vec.len p
+    if i > 0#usize
+    then
+      let i1 ←
+        alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Std.U8) p
+          0#usize
+      ok (i1 != 47#u8)
+    else ok false
+  | rsrc.Resource.Kms p =>
+    let s := alloc.vec.Vec.deref p
+    let s1 ← lift (Array.to_slice (Array.make 1#usize [ 42#u8 ]))
+    let b ← bytes.eq s s1
+    if b
+    then ok true
+    else
+      let s2 := alloc.vec.Vec.deref p
+      let b1 ← valids.kms_key_valid s2
+      if b1
+      then ok true
+      else let s3 := alloc.vec.Vec.deref p
+           valids.kms_alias_valid s3
+
+/-- [rustfs_kernel::valids::resource_is_valid]:
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 62:0-62:296
+    Visibility: public -/
+def valids.resource_is_valid
+  (r : rsrc.Resource) :
+  Result (core.result.Result Unit valids.ValidationError)
+  := do
+  let b ← valids.resource_pattern_valid r
+  if b
+  then ok (core.result.Result.Ok ())
+  else
+    match r with
+    | rsrc.Resource.S3 p =>
+      let s ← lift (Array.to_slice (Array.make 2#usize [ 115#u8, 51#u8 ]))
+      let family ← alloc.slice.Slice.to_vec core.clone.CloneU8 s
+      let value ← alloc.vec.CloneVec.clone core.clone.CloneU8 p
+      ok (core.result.Result.Err
+        { kind := valids.ErrorKind.InvalidResource, family, value })
+    | rsrc.Resource.Kms p =>
+      let s ←
+        lift (Array.to_slice (Array.make 3#usize [ 107#u8, 109#u8, 115#u8 ]))
+      let family ← alloc.slice.Slice.to_vec core.clone.CloneU8 s
+      let value ← alloc.vec.CloneVec.clone core.clone.CloneU8 p
+      ok (core.result.Result.Err
+        { kind := valids.ErrorKind.InvalidResource, family, value })
+
+/-- [rustfs_kernel::valids::resources_is_valid]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 66:4-68:1
+    Visibility: public -/
+@[rust_loop_body]
+def valids.resources_is_valid_loop.body
+  (set : Slice rsrc.Resource) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize (core.result.Result Unit
+    valids.ValidationError))
+  := do
+  let i1 := Slice.len set
+  if i < i1
+  then
+    let r ← Slice.index_usize set i
+    let r1 ← valids.resource_is_valid r
+    let cf ← core.result.Result.Insts.CoreOpsTry.branch r1
+    match cf with
+    | core.ops.control_flow.ControlFlow.Continue _ =>
+      let i2 ← i + 1#usize
+      ok (cont i2)
+    | core.ops.control_flow.ControlFlow.Break residual =>
+      let r2 ←
+        core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual
+          Unit (core.convert.FromSame valids.ValidationError) residual
+      ok (done r2)
+  else ok (done (core.result.Result.Ok ()))
+
+/-- [rustfs_kernel::valids::resources_is_valid]: loop 0:
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 66:4-68:1
+    Visibility: public -/
+@[rust_loop]
+def valids.resources_is_valid_loop
+  (set : Slice rsrc.Resource) (i : Std.Usize) :
+  Result (core.result.Result Unit valids.ValidationError)
+  := do
+  loop
+    (fun i1 => valids.resources_is_valid_loop.body set i1)
+    i
+
+/-- [rustfs_kernel::valids::resources_is_valid]:
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 64:0-68:1
+    Visibility: public -/
+@[reducible]
+def valids.resources_is_valid
+  (set : Slice rsrc.Resource) :
+  Result (core.result.Result Unit valids.ValidationError)
+  := do
+  valids.resources_is_valid_loop set 0#usize
+
+/-- [rustfs_kernel::valids::has_kms_resource]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 71:4-73:1 -/
+@[rust_loop_body]
+def valids.has_kms_resource_loop.body
+  (rs : Slice rsrc.Resource) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := Slice.len rs
+  if i < i1
+  then
+    let r ← Slice.index_usize rs i
+    let b ← rsrc.is_kms r
+    if b
+    then ok (done true)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else ok (done false)
+
+/-- [rustfs_kernel::valids::has_kms_resource]: loop 0:
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 71:4-73:1 -/
+@[rust_loop]
+def valids.has_kms_resource_loop
+  (rs : Slice rsrc.Resource) (i : Std.Usize) : Result Bool := do
+  loop
+    (fun i1 => valids.has_kms_resource_loop.body rs i1)
+    i
+
+/-- [rustfs_kernel::valids::has_kms_resource]:
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 69:0-73:1 -/
+@[reducible]
+def valids.has_kms_resource (rs : Slice rsrc.Resource) : Result Bool := do
+  valids.has_kms_resource_loop rs 0#usize
+
+/-- [rustfs_kernel::valids::has_kms_action]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 76:4-78:1 -/
+@[rust_loop_body]
+def valids.has_kms_action_loop.body
+  (actions : Slice acts.Action) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := Slice.len actions
+  if i < i1
+  then
+    let a ← Slice.index_usize actions i
+    let b ←
+      acts.Family.Insts.CoreCmpPartialEqFamily.eq a.family acts.Family.Kms
+    if b
+    then ok (done true)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else ok (done false)
+
+/-- [rustfs_kernel::valids::has_kms_action]: loop 0:
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 76:4-78:1 -/
+@[rust_loop]
+def valids.has_kms_action_loop
+  (actions : Slice acts.Action) (i : Std.Usize) : Result Bool := do
+  loop
+    (fun i1 => valids.has_kms_action_loop.body actions i1)
+    i
+
+/-- [rustfs_kernel::valids::has_kms_action]:
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 74:0-78:1 -/
+@[reducible]
+def valids.has_kms_action (actions : Slice acts.Action) : Result Bool := do
+  valids.has_kms_action_loop actions 0#usize
+
+/-- [rustfs_kernel::valids::action_selection_valid]:
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 79:0-82:1 -/
+def valids.action_selection_valid
+  (actions : Slice acts.Action) (not_actions : Slice acts.Action) :
+  Result (core.result.Result Unit valids.ValidationError)
+  := do
+  let i := Slice.len actions
+  if i = 0#usize
+  then
+    let i1 := Slice.len not_actions
+    if i1 = 0#usize
+    then
+      let ve ← valids.error valids.ErrorKind.NonAction
+      ok (core.result.Result.Err ve)
+    else
+      let i2 := Slice.len actions
+      if i2 != 0#usize
+      then
+        let i3 := Slice.len not_actions
+        if i3 != 0#usize
+        then
+          let ve ← valids.error valids.ErrorKind.BothActionAndNotAction
+          ok (core.result.Result.Err ve)
+        else ok (core.result.Result.Ok ())
+      else ok (core.result.Result.Ok ())
+  else
+    let i1 := Slice.len actions
+    if i1 != 0#usize
+    then
+      let i2 := Slice.len not_actions
+      if i2 != 0#usize
+      then
+        let ve ← valids.error valids.ErrorKind.BothActionAndNotAction
+        ok (core.result.Result.Err ve)
+      else ok (core.result.Result.Ok ())
+    else ok (core.result.Result.Ok ())
+
+/-- [rustfs_kernel::valids::family_is_mixed]:
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 83:0-83:99 -/
+def valids.family_is_mixed
+  (family : Option valids.ActionFamily) : Result Bool := do
+  match family with
+  | none => ok false
+  | some af =>
+    match af with
+    | valids.ActionFamily.S3 => ok false
+    | valids.ActionFamily.Admin => ok false
+    | valids.ActionFamily.Sts => ok false
+    | valids.ActionFamily.Kms => ok false
+    | valids.ActionFamily.Mixed => ok true
+
+/-- [rustfs_kernel::valids::family_is_kms]:
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 84:0-84:95 -/
+def valids.family_is_kms
+  (family : Option valids.ActionFamily) : Result Bool := do
+  match family with
+  | none => ok false
+  | some af =>
+    match af with
+    | valids.ActionFamily.S3 => ok false
+    | valids.ActionFamily.Admin => ok false
+    | valids.ActionFamily.Sts => ok false
+    | valids.ActionFamily.Kms => ok true
+    | valids.ActionFamily.Mixed => ok false
+
+/-- [rustfs_kernel::valids::family_allows_empty_resource]:
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 85:0-85:160 -/
+def valids.family_allows_empty_resource
+  (family : Option valids.ActionFamily) : Result Bool := do
+  match family with
+  | none => ok false
+  | some af =>
+    match af with
+    | valids.ActionFamily.S3 => ok false
+    | valids.ActionFamily.Admin => ok true
+    | valids.ActionFamily.Sts => ok true
+    | valids.ActionFamily.Kms => ok true
+    | valids.ActionFamily.Mixed => ok false
+
+/-- [rustfs_kernel::valids::checked_action_family]:
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 86:0-88:1 -/
+def valids.checked_action_family
+  (st : stmts.Statement) :
+  Result (core.result.Result (Option valids.ActionFamily)
+    valids.ValidationError)
+  := do
+  let i := alloc.vec.Vec.len st.not_actions
+  if i != 0#usize
+  then ok (core.result.Result.Ok none)
+  else
+    let family ← valids.action_family st
+    let b ← valids.family_is_mixed family
+    if b
+    then
+      let ve ← valids.error valids.ErrorKind.MixedActionFamilies
+      ok (core.result.Result.Err ve)
+    else ok (core.result.Result.Ok family)
+
+/-- [rustfs_kernel::valids::statement_resource_rules]:
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 89:0-93:1 -/
+def valids.statement_resource_rules
+  (st : stmts.Statement) (family : Option valids.ActionFamily) :
+  Result (core.result.Result Unit valids.ValidationError)
+  := do
+  let i := alloc.vec.Vec.len st.resources
+  if i = 0#usize
+  then
+    let i1 := alloc.vec.Vec.len st.not_resources
+    if i1 = 0#usize
+    then
+      let b ← valids.family_allows_empty_resource family
+      if b
+      then
+        let i2 := alloc.vec.Vec.len st.resources
+        if i2 != 0#usize
+        then
+          let i3 := alloc.vec.Vec.len st.not_resources
+          if i3 != 0#usize
+          then
+            let ve ← valids.error valids.ErrorKind.BothResourceAndNotResource
+            ok (core.result.Result.Err ve)
+          else
+            let s := alloc.vec.Vec.deref st.resources
+            let b1 ← valids.has_kms_resource s
+            if b1
+            then
+              let b2 ← valids.family_is_kms family
+              if b2
+              then ok (core.result.Result.Ok ())
+              else
+                let ve ←
+                  valids.error valids.ErrorKind.KmsResourceWithNonKmsAction
+                ok (core.result.Result.Err ve)
+            else
+              let s1 := alloc.vec.Vec.deref st.not_resources
+              let b2 ← valids.has_kms_resource s1
+              if b2
+              then
+                let b3 ← valids.family_is_kms family
+                if b3
+                then ok (core.result.Result.Ok ())
+                else
+                  let ve ←
+                    valids.error valids.ErrorKind.KmsResourceWithNonKmsAction
+                  ok (core.result.Result.Err ve)
+              else ok (core.result.Result.Ok ())
+        else
+          let s := alloc.vec.Vec.deref st.resources
+          let b1 ← valids.has_kms_resource s
+          if b1
+          then
+            let b2 ← valids.family_is_kms family
+            if b2
+            then ok (core.result.Result.Ok ())
+            else
+              let ve ←
+                valids.error valids.ErrorKind.KmsResourceWithNonKmsAction
+              ok (core.result.Result.Err ve)
+          else
+            let s1 := alloc.vec.Vec.deref st.not_resources
+            let b2 ← valids.has_kms_resource s1
+            if b2
+            then
+              let b3 ← valids.family_is_kms family
+              if b3
+              then ok (core.result.Result.Ok ())
+              else
+                let ve ←
+                  valids.error valids.ErrorKind.KmsResourceWithNonKmsAction
+                ok (core.result.Result.Err ve)
+            else ok (core.result.Result.Ok ())
+      else
+        let ve ← valids.error valids.ErrorKind.NonResource
+        ok (core.result.Result.Err ve)
+    else
+      let i2 := alloc.vec.Vec.len st.resources
+      if i2 != 0#usize
+      then
+        let i3 := alloc.vec.Vec.len st.not_resources
+        if i3 != 0#usize
+        then
+          let ve ← valids.error valids.ErrorKind.BothResourceAndNotResource
+          ok (core.result.Result.Err ve)
+        else
+          let s := alloc.vec.Vec.deref st.resources
+          let b ← valids.has_kms_resource s
+          if b
+          then
+            let b1 ← valids.family_is_kms family
+            if b1
+            then ok (core.result.Result.Ok ())
+            else
+              let ve ←
+                valids.error valids.ErrorKind.KmsResourceWithNonKmsAction
+              ok (core.result.Result.Err ve)
+          else
+            let s1 := alloc.vec.Vec.deref st.not_resources
+            let b1 ← valids.has_kms_resource s1
+            if b1
+            then
+              let b2 ← valids.family_is_kms family
+              if b2
+              then ok (core.result.Result.Ok ())
+              else
+                let ve ←
+                  valids.error valids.ErrorKind.KmsResourceWithNonKmsAction
+                ok (core.result.Result.Err ve)
+            else ok (core.result.Result.Ok ())
+      else
+        let s := alloc.vec.Vec.deref st.resources
+        let b ← valids.has_kms_resource s
+        if b
+        then
+          let b1 ← valids.family_is_kms family
+          if b1
+          then ok (core.result.Result.Ok ())
+          else
+            let ve ←
+              valids.error valids.ErrorKind.KmsResourceWithNonKmsAction
+            ok (core.result.Result.Err ve)
+        else
+          let s1 := alloc.vec.Vec.deref st.not_resources
+          let b1 ← valids.has_kms_resource s1
+          if b1
+          then
+            let b2 ← valids.family_is_kms family
+            if b2
+            then ok (core.result.Result.Ok ())
+            else
+              let ve ←
+                valids.error valids.ErrorKind.KmsResourceWithNonKmsAction
+              ok (core.result.Result.Err ve)
+          else ok (core.result.Result.Ok ())
+  else
+    let i1 := alloc.vec.Vec.len st.resources
+    if i1 != 0#usize
+    then
+      let i2 := alloc.vec.Vec.len st.not_resources
+      if i2 != 0#usize
+      then
+        let ve ← valids.error valids.ErrorKind.BothResourceAndNotResource
+        ok (core.result.Result.Err ve)
+      else
+        let s := alloc.vec.Vec.deref st.resources
+        let b ← valids.has_kms_resource s
+        if b
+        then
+          let b1 ← valids.family_is_kms family
+          if b1
+          then ok (core.result.Result.Ok ())
+          else
+            let ve ←
+              valids.error valids.ErrorKind.KmsResourceWithNonKmsAction
+            ok (core.result.Result.Err ve)
+        else
+          let s1 := alloc.vec.Vec.deref st.not_resources
+          let b1 ← valids.has_kms_resource s1
+          if b1
+          then
+            let b2 ← valids.family_is_kms family
+            if b2
+            then ok (core.result.Result.Ok ())
+            else
+              let ve ←
+                valids.error valids.ErrorKind.KmsResourceWithNonKmsAction
+              ok (core.result.Result.Err ve)
+          else ok (core.result.Result.Ok ())
+    else
+      let s := alloc.vec.Vec.deref st.resources
+      let b ← valids.has_kms_resource s
+      if b
+      then
+        let b1 ← valids.family_is_kms family
+        if b1
+        then ok (core.result.Result.Ok ())
+        else
+          let ve ← valids.error valids.ErrorKind.KmsResourceWithNonKmsAction
+          ok (core.result.Result.Err ve)
+      else
+        let s1 := alloc.vec.Vec.deref st.not_resources
+        let b1 ← valids.has_kms_resource s1
+        if b1
+        then
+          let b2 ← valids.family_is_kms family
+          if b2
+          then ok (core.result.Result.Ok ())
+          else
+            let ve ←
+              valids.error valids.ErrorKind.KmsResourceWithNonKmsAction
+            ok (core.result.Result.Err ve)
+        else ok (core.result.Result.Ok ())
+
+/-- [rustfs_kernel::valids::statement_is_valid]:
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 95:0-100:1
+    Visibility: public -/
+def valids.statement_is_valid
+  (st : stmts.Statement) (sid : Slice Std.U8) :
+  Result (core.result.Result Unit valids.ValidationError)
+  := do
+  let _ ← valids.effect_is_valid st.effect
+  let _ ← valids.id_is_valid sid
+  let s := alloc.vec.Vec.deref st.actions
+  let s1 := alloc.vec.Vec.deref st.not_actions
+  let r ← valids.action_selection_valid s s1
+  let cf ← core.result.Result.Insts.CoreOpsTry.branch r
+  match cf with
+  | core.ops.control_flow.ControlFlow.Continue _ =>
+    let r1 ← valids.checked_action_family st
+    let cf1 ← core.result.Result.Insts.CoreOpsTry.branch r1
+    match cf1 with
+    | core.ops.control_flow.ControlFlow.Continue val =>
+      let r2 ← valids.statement_resource_rules st val
+      let cf2 ← core.result.Result.Insts.CoreOpsTry.branch r2
+      match cf2 with
+      | core.ops.control_flow.ControlFlow.Continue _ =>
+        let s2 := alloc.vec.Vec.deref st.actions
+        let _ ← actsets.is_valid s2
+        let s3 := alloc.vec.Vec.deref st.not_actions
+        let _ ← actsets.is_valid s3
+        let s4 := alloc.vec.Vec.deref st.resources
+        let r3 ← valids.resources_is_valid s4
+        let cf3 ← core.result.Result.Insts.CoreOpsTry.branch r3
+        match cf3 with
+        | core.ops.control_flow.ControlFlow.Continue _ =>
+          let s5 := alloc.vec.Vec.deref st.not_resources
+          let r4 ← valids.resources_is_valid s5
+          let cf4 ← core.result.Result.Insts.CoreOpsTry.branch r4
+          match cf4 with
+          | core.ops.control_flow.ControlFlow.Continue _ =>
+            ok (core.result.Result.Ok ())
+          | core.ops.control_flow.ControlFlow.Break residual =>
+            core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual
+              Unit (core.convert.FromSame valids.ValidationError) residual
+        | core.ops.control_flow.ControlFlow.Break residual =>
+          core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual
+            Unit (core.convert.FromSame valids.ValidationError) residual
+      | core.ops.control_flow.ControlFlow.Break residual =>
+        core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual
+          Unit (core.convert.FromSame valids.ValidationError) residual
+    | core.ops.control_flow.ControlFlow.Break residual =>
+      core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual
+        Unit (core.convert.FromSame valids.ValidationError) residual
+  | core.ops.control_flow.ControlFlow.Break residual =>
+    core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual
+      Unit (core.convert.FromSame valids.ValidationError) residual
+
+/-- [rustfs_kernel::valids::bp_statement_is_valid]:
+    Source: 'ports/rustfs/kernel/src/valids.rs', lines 102:0-116:1
+    Visibility: public -/
+def valids.bp_statement_is_valid
+  (st : stmts.BPStatement) (sid : Slice Std.U8) :
+  Result (core.result.Result Unit valids.ValidationError)
+  := do
+  let _ ← valids.effect_is_valid st.effect
+  let _ ← valids.id_is_valid sid
+  let r ← valids.principal_is_valid st.principal
+  let cf ← core.result.Result.Insts.CoreOpsTry.branch r
+  match cf with
+  | core.ops.control_flow.ControlFlow.Continue _ =>
+    let i := alloc.vec.Vec.len st.actions
+    if i = 0#usize
+    then
+      let i1 := alloc.vec.Vec.len st.not_actions
+      if i1 = 0#usize
+      then
+        let ve ← valids.error valids.ErrorKind.NonAction
+        ok (core.result.Result.Err ve)
+      else
+        let i2 := alloc.vec.Vec.len st.actions
+        if i2 != 0#usize
+        then
+          let i3 := alloc.vec.Vec.len st.not_actions
+          if i3 != 0#usize
+          then
+            let ve ← valids.error valids.ErrorKind.BothActionAndNotAction
+            ok (core.result.Result.Err ve)
+          else
+            let s := alloc.vec.Vec.deref st.actions
+            let b ← valids.has_kms_action s
+            if b
+            then
+              let ve ←
+                valids.error valids.ErrorKind.KmsUnsupportedInBucketPolicy
+              ok (core.result.Result.Err ve)
+            else
+              let s1 := alloc.vec.Vec.deref st.not_actions
+              let b1 ← valids.has_kms_action s1
+              if b1
+              then
+                let ve ←
+                  valids.error valids.ErrorKind.KmsUnsupportedInBucketPolicy
+                ok (core.result.Result.Err ve)
+              else
+                let s2 := alloc.vec.Vec.deref st.resources
+                let b2 ← valids.has_kms_resource s2
+                if b2
+                then
+                  let ve ←
+                    valids.error valids.ErrorKind.KmsUnsupportedInBucketPolicy
+                  ok (core.result.Result.Err ve)
+                else
+                  let s3 := alloc.vec.Vec.deref st.not_resources
+                  let b3 ← valids.has_kms_resource s3
+                  if b3
+                  then
+                    let ve ←
+                      valids.error
+                        valids.ErrorKind.KmsUnsupportedInBucketPolicy
+                    ok (core.result.Result.Err ve)
+                  else
+                    let i4 := alloc.vec.Vec.len st.resources
+                    if i4 = 0#usize
+                    then
+                      let i5 := alloc.vec.Vec.len st.not_resources
+                      if i5 = 0#usize
+                      then
+                        let ve ← valids.error valids.ErrorKind.NonResource
+                        ok (core.result.Result.Err ve)
+                      else
+                        let i6 := alloc.vec.Vec.len st.resources
+                        if i6 != 0#usize
+                        then
+                          let i7 := alloc.vec.Vec.len st.not_resources
+                          if i7 != 0#usize
+                          then
+                            let ve ←
+                              valids.error
+                                valids.ErrorKind.BothResourceAndNotResource
+                            ok (core.result.Result.Err ve)
+                          else
+                            let s4 := alloc.vec.Vec.deref st.actions
+                            let _ ← actsets.is_valid s4
+                            let s5 := alloc.vec.Vec.deref st.not_actions
+                            let _ ← actsets.is_valid s5
+                            let s6 := alloc.vec.Vec.deref st.resources
+                            let r1 ← valids.resources_is_valid s6
+                            let cf1 ←
+                              core.result.Result.Insts.CoreOpsTry.branch r1
+                            match cf1 with
+                            | core.ops.control_flow.ControlFlow.Continue _ =>
+                              let s7 := alloc.vec.Vec.deref st.not_resources
+                              let r2 ← valids.resources_is_valid s7
+                              let cf2 ←
+                                core.result.Result.Insts.CoreOpsTry.branch r2
+                              match cf2 with
+                              | core.ops.control_flow.ControlFlow.Continue _ =>
+                                ok (core.result.Result.Ok ())
+                              | core.ops.control_flow.ControlFlow.Break
+                                residual =>
+                                core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual
+                                  Unit (core.convert.FromSame
+                                  valids.ValidationError) residual
+                            | core.ops.control_flow.ControlFlow.Break residual
+                              =>
+                              core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual
+                                Unit (core.convert.FromSame
+                                valids.ValidationError) residual
+                        else
+                          let s4 := alloc.vec.Vec.deref st.actions
+                          let _ ← actsets.is_valid s4
+                          let s5 := alloc.vec.Vec.deref st.not_actions
+                          let _ ← actsets.is_valid s5
+                          let s6 := alloc.vec.Vec.deref st.resources
+                          let r1 ← valids.resources_is_valid s6
+                          let cf1 ←
+                            core.result.Result.Insts.CoreOpsTry.branch r1
+                          match cf1 with
+                          | core.ops.control_flow.ControlFlow.Continue _ =>
+                            let s7 := alloc.vec.Vec.deref st.not_resources
+                            let r2 ← valids.resources_is_valid s7
+                            let cf2 ←
+                              core.result.Result.Insts.CoreOpsTry.branch r2
+                            match cf2 with
+                            | core.ops.control_flow.ControlFlow.Continue _ =>
+                              ok (core.result.Result.Ok ())
+                            | core.ops.control_flow.ControlFlow.Break residual
+                              =>
+                              core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual
+                                Unit (core.convert.FromSame
+                                valids.ValidationError) residual
+                          | core.ops.control_flow.ControlFlow.Break residual =>
+                            core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual
+                              Unit (core.convert.FromSame
+                              valids.ValidationError) residual
+                    else
+                      let i5 := alloc.vec.Vec.len st.resources
+                      if i5 != 0#usize
+                      then
+                        let i6 := alloc.vec.Vec.len st.not_resources
+                        if i6 != 0#usize
+                        then
+                          let ve ←
+                            valids.error
+                              valids.ErrorKind.BothResourceAndNotResource
+                          ok (core.result.Result.Err ve)
+                        else
+                          let s4 := alloc.vec.Vec.deref st.actions
+                          let _ ← actsets.is_valid s4
+                          let s5 := alloc.vec.Vec.deref st.not_actions
+                          let _ ← actsets.is_valid s5
+                          let s6 := alloc.vec.Vec.deref st.resources
+                          let r1 ← valids.resources_is_valid s6
+                          let cf1 ←
+                            core.result.Result.Insts.CoreOpsTry.branch r1
+                          match cf1 with
+                          | core.ops.control_flow.ControlFlow.Continue _ =>
+                            let s7 := alloc.vec.Vec.deref st.not_resources
+                            let r2 ← valids.resources_is_valid s7
+                            let cf2 ←
+                              core.result.Result.Insts.CoreOpsTry.branch r2
+                            match cf2 with
+                            | core.ops.control_flow.ControlFlow.Continue _ =>
+                              ok (core.result.Result.Ok ())
+                            | core.ops.control_flow.ControlFlow.Break residual
+                              =>
+                              core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual
+                                Unit (core.convert.FromSame
+                                valids.ValidationError) residual
+                          | core.ops.control_flow.ControlFlow.Break residual =>
+                            core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual
+                              Unit (core.convert.FromSame
+                              valids.ValidationError) residual
+                      else
+                        let s4 := alloc.vec.Vec.deref st.actions
+                        let _ ← actsets.is_valid s4
+                        let s5 := alloc.vec.Vec.deref st.not_actions
+                        let _ ← actsets.is_valid s5
+                        let s6 := alloc.vec.Vec.deref st.resources
+                        let r1 ← valids.resources_is_valid s6
+                        let cf1 ←
+                          core.result.Result.Insts.CoreOpsTry.branch r1
+                        match cf1 with
+                        | core.ops.control_flow.ControlFlow.Continue _ =>
+                          let s7 := alloc.vec.Vec.deref st.not_resources
+                          let r2 ← valids.resources_is_valid s7
+                          let cf2 ←
+                            core.result.Result.Insts.CoreOpsTry.branch r2
+                          match cf2 with
+                          | core.ops.control_flow.ControlFlow.Continue _ =>
+                            ok (core.result.Result.Ok ())
+                          | core.ops.control_flow.ControlFlow.Break residual =>
+                            core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual
+                              Unit (core.convert.FromSame
+                              valids.ValidationError) residual
+                        | core.ops.control_flow.ControlFlow.Break residual =>
+                          core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual
+                            Unit (core.convert.FromSame valids.ValidationError)
+                            residual
+        else
+          let s := alloc.vec.Vec.deref st.actions
+          let b ← valids.has_kms_action s
+          if b
+          then
+            let ve ←
+              valids.error valids.ErrorKind.KmsUnsupportedInBucketPolicy
+            ok (core.result.Result.Err ve)
+          else
+            let s1 := alloc.vec.Vec.deref st.not_actions
+            let b1 ← valids.has_kms_action s1
+            if b1
+            then
+              let ve ←
+                valids.error valids.ErrorKind.KmsUnsupportedInBucketPolicy
+              ok (core.result.Result.Err ve)
+            else
+              let s2 := alloc.vec.Vec.deref st.resources
+              let b2 ← valids.has_kms_resource s2
+              if b2
+              then
+                let ve ←
+                  valids.error valids.ErrorKind.KmsUnsupportedInBucketPolicy
+                ok (core.result.Result.Err ve)
+              else
+                let s3 := alloc.vec.Vec.deref st.not_resources
+                let b3 ← valids.has_kms_resource s3
+                if b3
+                then
+                  let ve ←
+                    valids.error valids.ErrorKind.KmsUnsupportedInBucketPolicy
+                  ok (core.result.Result.Err ve)
+                else
+                  let i3 := alloc.vec.Vec.len st.resources
+                  if i3 = 0#usize
+                  then
+                    let i4 := alloc.vec.Vec.len st.not_resources
+                    if i4 = 0#usize
+                    then
+                      let ve ← valids.error valids.ErrorKind.NonResource
+                      ok (core.result.Result.Err ve)
+                    else
+                      let i5 := alloc.vec.Vec.len st.resources
+                      if i5 != 0#usize
+                      then
+                        let i6 := alloc.vec.Vec.len st.not_resources
+                        if i6 != 0#usize
+                        then
+                          let ve ←
+                            valids.error
+                              valids.ErrorKind.BothResourceAndNotResource
+                          ok (core.result.Result.Err ve)
+                        else
+                          let s4 := alloc.vec.Vec.deref st.actions
+                          let _ ← actsets.is_valid s4
+                          let s5 := alloc.vec.Vec.deref st.not_actions
+                          let _ ← actsets.is_valid s5
+                          let s6 := alloc.vec.Vec.deref st.resources
+                          let r1 ← valids.resources_is_valid s6
+                          let cf1 ←
+                            core.result.Result.Insts.CoreOpsTry.branch r1
+                          match cf1 with
+                          | core.ops.control_flow.ControlFlow.Continue _ =>
+                            let s7 := alloc.vec.Vec.deref st.not_resources
+                            let r2 ← valids.resources_is_valid s7
+                            let cf2 ←
+                              core.result.Result.Insts.CoreOpsTry.branch r2
+                            match cf2 with
+                            | core.ops.control_flow.ControlFlow.Continue _ =>
+                              ok (core.result.Result.Ok ())
+                            | core.ops.control_flow.ControlFlow.Break residual
+                              =>
+                              core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual
+                                Unit (core.convert.FromSame
+                                valids.ValidationError) residual
+                          | core.ops.control_flow.ControlFlow.Break residual =>
+                            core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual
+                              Unit (core.convert.FromSame
+                              valids.ValidationError) residual
+                      else
+                        let s4 := alloc.vec.Vec.deref st.actions
+                        let _ ← actsets.is_valid s4
+                        let s5 := alloc.vec.Vec.deref st.not_actions
+                        let _ ← actsets.is_valid s5
+                        let s6 := alloc.vec.Vec.deref st.resources
+                        let r1 ← valids.resources_is_valid s6
+                        let cf1 ←
+                          core.result.Result.Insts.CoreOpsTry.branch r1
+                        match cf1 with
+                        | core.ops.control_flow.ControlFlow.Continue _ =>
+                          let s7 := alloc.vec.Vec.deref st.not_resources
+                          let r2 ← valids.resources_is_valid s7
+                          let cf2 ←
+                            core.result.Result.Insts.CoreOpsTry.branch r2
+                          match cf2 with
+                          | core.ops.control_flow.ControlFlow.Continue _ =>
+                            ok (core.result.Result.Ok ())
+                          | core.ops.control_flow.ControlFlow.Break residual =>
+                            core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual
+                              Unit (core.convert.FromSame
+                              valids.ValidationError) residual
+                        | core.ops.control_flow.ControlFlow.Break residual =>
+                          core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual
+                            Unit (core.convert.FromSame valids.ValidationError)
+                            residual
+                  else
+                    let i4 := alloc.vec.Vec.len st.resources
+                    if i4 != 0#usize
+                    then
+                      let i5 := alloc.vec.Vec.len st.not_resources
+                      if i5 != 0#usize
+                      then
+                        let ve ←
+                          valids.error
+                            valids.ErrorKind.BothResourceAndNotResource
+                        ok (core.result.Result.Err ve)
+                      else
+                        let s4 := alloc.vec.Vec.deref st.actions
+                        let _ ← actsets.is_valid s4
+                        let s5 := alloc.vec.Vec.deref st.not_actions
+                        let _ ← actsets.is_valid s5
+                        let s6 := alloc.vec.Vec.deref st.resources
+                        let r1 ← valids.resources_is_valid s6
+                        let cf1 ←
+                          core.result.Result.Insts.CoreOpsTry.branch r1
+                        match cf1 with
+                        | core.ops.control_flow.ControlFlow.Continue _ =>
+                          let s7 := alloc.vec.Vec.deref st.not_resources
+                          let r2 ← valids.resources_is_valid s7
+                          let cf2 ←
+                            core.result.Result.Insts.CoreOpsTry.branch r2
+                          match cf2 with
+                          | core.ops.control_flow.ControlFlow.Continue _ =>
+                            ok (core.result.Result.Ok ())
+                          | core.ops.control_flow.ControlFlow.Break residual =>
+                            core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual
+                              Unit (core.convert.FromSame
+                              valids.ValidationError) residual
+                        | core.ops.control_flow.ControlFlow.Break residual =>
+                          core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual
+                            Unit (core.convert.FromSame valids.ValidationError)
+                            residual
+                    else
+                      let s4 := alloc.vec.Vec.deref st.actions
+                      let _ ← actsets.is_valid s4
+                      let s5 := alloc.vec.Vec.deref st.not_actions
+                      let _ ← actsets.is_valid s5
+                      let s6 := alloc.vec.Vec.deref st.resources
+                      let r1 ← valids.resources_is_valid s6
+                      let cf1 ← core.result.Result.Insts.CoreOpsTry.branch r1
+                      match cf1 with
+                      | core.ops.control_flow.ControlFlow.Continue _ =>
+                        let s7 := alloc.vec.Vec.deref st.not_resources
+                        let r2 ← valids.resources_is_valid s7
+                        let cf2 ←
+                          core.result.Result.Insts.CoreOpsTry.branch r2
+                        match cf2 with
+                        | core.ops.control_flow.ControlFlow.Continue _ =>
+                          ok (core.result.Result.Ok ())
+                        | core.ops.control_flow.ControlFlow.Break residual =>
+                          core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual
+                            Unit (core.convert.FromSame valids.ValidationError)
+                            residual
+                      | core.ops.control_flow.ControlFlow.Break residual =>
+                        core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual
+                          Unit (core.convert.FromSame valids.ValidationError)
+                          residual
+    else
+      let i1 := alloc.vec.Vec.len st.actions
+      if i1 != 0#usize
+      then
+        let i2 := alloc.vec.Vec.len st.not_actions
+        if i2 != 0#usize
+        then
+          let ve ← valids.error valids.ErrorKind.BothActionAndNotAction
+          ok (core.result.Result.Err ve)
+        else
+          let s := alloc.vec.Vec.deref st.actions
+          let b ← valids.has_kms_action s
+          if b
+          then
+            let ve ←
+              valids.error valids.ErrorKind.KmsUnsupportedInBucketPolicy
+            ok (core.result.Result.Err ve)
+          else
+            let s1 := alloc.vec.Vec.deref st.not_actions
+            let b1 ← valids.has_kms_action s1
+            if b1
+            then
+              let ve ←
+                valids.error valids.ErrorKind.KmsUnsupportedInBucketPolicy
+              ok (core.result.Result.Err ve)
+            else
+              let s2 := alloc.vec.Vec.deref st.resources
+              let b2 ← valids.has_kms_resource s2
+              if b2
+              then
+                let ve ←
+                  valids.error valids.ErrorKind.KmsUnsupportedInBucketPolicy
+                ok (core.result.Result.Err ve)
+              else
+                let s3 := alloc.vec.Vec.deref st.not_resources
+                let b3 ← valids.has_kms_resource s3
+                if b3
+                then
+                  let ve ←
+                    valids.error valids.ErrorKind.KmsUnsupportedInBucketPolicy
+                  ok (core.result.Result.Err ve)
+                else
+                  let i3 := alloc.vec.Vec.len st.resources
+                  if i3 = 0#usize
+                  then
+                    let i4 := alloc.vec.Vec.len st.not_resources
+                    if i4 = 0#usize
+                    then
+                      let ve ← valids.error valids.ErrorKind.NonResource
+                      ok (core.result.Result.Err ve)
+                    else
+                      let i5 := alloc.vec.Vec.len st.resources
+                      if i5 != 0#usize
+                      then
+                        let i6 := alloc.vec.Vec.len st.not_resources
+                        if i6 != 0#usize
+                        then
+                          let ve ←
+                            valids.error
+                              valids.ErrorKind.BothResourceAndNotResource
+                          ok (core.result.Result.Err ve)
+                        else
+                          let s4 := alloc.vec.Vec.deref st.actions
+                          let _ ← actsets.is_valid s4
+                          let s5 := alloc.vec.Vec.deref st.not_actions
+                          let _ ← actsets.is_valid s5
+                          let s6 := alloc.vec.Vec.deref st.resources
+                          let r1 ← valids.resources_is_valid s6
+                          let cf1 ←
+                            core.result.Result.Insts.CoreOpsTry.branch r1
+                          match cf1 with
+                          | core.ops.control_flow.ControlFlow.Continue _ =>
+                            let s7 := alloc.vec.Vec.deref st.not_resources
+                            let r2 ← valids.resources_is_valid s7
+                            let cf2 ←
+                              core.result.Result.Insts.CoreOpsTry.branch r2
+                            match cf2 with
+                            | core.ops.control_flow.ControlFlow.Continue _ =>
+                              ok (core.result.Result.Ok ())
+                            | core.ops.control_flow.ControlFlow.Break residual
+                              =>
+                              core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual
+                                Unit (core.convert.FromSame
+                                valids.ValidationError) residual
+                          | core.ops.control_flow.ControlFlow.Break residual =>
+                            core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual
+                              Unit (core.convert.FromSame
+                              valids.ValidationError) residual
+                      else
+                        let s4 := alloc.vec.Vec.deref st.actions
+                        let _ ← actsets.is_valid s4
+                        let s5 := alloc.vec.Vec.deref st.not_actions
+                        let _ ← actsets.is_valid s5
+                        let s6 := alloc.vec.Vec.deref st.resources
+                        let r1 ← valids.resources_is_valid s6
+                        let cf1 ←
+                          core.result.Result.Insts.CoreOpsTry.branch r1
+                        match cf1 with
+                        | core.ops.control_flow.ControlFlow.Continue _ =>
+                          let s7 := alloc.vec.Vec.deref st.not_resources
+                          let r2 ← valids.resources_is_valid s7
+                          let cf2 ←
+                            core.result.Result.Insts.CoreOpsTry.branch r2
+                          match cf2 with
+                          | core.ops.control_flow.ControlFlow.Continue _ =>
+                            ok (core.result.Result.Ok ())
+                          | core.ops.control_flow.ControlFlow.Break residual =>
+                            core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual
+                              Unit (core.convert.FromSame
+                              valids.ValidationError) residual
+                        | core.ops.control_flow.ControlFlow.Break residual =>
+                          core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual
+                            Unit (core.convert.FromSame valids.ValidationError)
+                            residual
+                  else
+                    let i4 := alloc.vec.Vec.len st.resources
+                    if i4 != 0#usize
+                    then
+                      let i5 := alloc.vec.Vec.len st.not_resources
+                      if i5 != 0#usize
+                      then
+                        let ve ←
+                          valids.error
+                            valids.ErrorKind.BothResourceAndNotResource
+                        ok (core.result.Result.Err ve)
+                      else
+                        let s4 := alloc.vec.Vec.deref st.actions
+                        let _ ← actsets.is_valid s4
+                        let s5 := alloc.vec.Vec.deref st.not_actions
+                        let _ ← actsets.is_valid s5
+                        let s6 := alloc.vec.Vec.deref st.resources
+                        let r1 ← valids.resources_is_valid s6
+                        let cf1 ←
+                          core.result.Result.Insts.CoreOpsTry.branch r1
+                        match cf1 with
+                        | core.ops.control_flow.ControlFlow.Continue _ =>
+                          let s7 := alloc.vec.Vec.deref st.not_resources
+                          let r2 ← valids.resources_is_valid s7
+                          let cf2 ←
+                            core.result.Result.Insts.CoreOpsTry.branch r2
+                          match cf2 with
+                          | core.ops.control_flow.ControlFlow.Continue _ =>
+                            ok (core.result.Result.Ok ())
+                          | core.ops.control_flow.ControlFlow.Break residual =>
+                            core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual
+                              Unit (core.convert.FromSame
+                              valids.ValidationError) residual
+                        | core.ops.control_flow.ControlFlow.Break residual =>
+                          core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual
+                            Unit (core.convert.FromSame valids.ValidationError)
+                            residual
+                    else
+                      let s4 := alloc.vec.Vec.deref st.actions
+                      let _ ← actsets.is_valid s4
+                      let s5 := alloc.vec.Vec.deref st.not_actions
+                      let _ ← actsets.is_valid s5
+                      let s6 := alloc.vec.Vec.deref st.resources
+                      let r1 ← valids.resources_is_valid s6
+                      let cf1 ← core.result.Result.Insts.CoreOpsTry.branch r1
+                      match cf1 with
+                      | core.ops.control_flow.ControlFlow.Continue _ =>
+                        let s7 := alloc.vec.Vec.deref st.not_resources
+                        let r2 ← valids.resources_is_valid s7
+                        let cf2 ←
+                          core.result.Result.Insts.CoreOpsTry.branch r2
+                        match cf2 with
+                        | core.ops.control_flow.ControlFlow.Continue _ =>
+                          ok (core.result.Result.Ok ())
+                        | core.ops.control_flow.ControlFlow.Break residual =>
+                          core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual
+                            Unit (core.convert.FromSame valids.ValidationError)
+                            residual
+                      | core.ops.control_flow.ControlFlow.Break residual =>
+                        core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual
+                          Unit (core.convert.FromSame valids.ValidationError)
+                          residual
+      else
+        let s := alloc.vec.Vec.deref st.actions
+        let b ← valids.has_kms_action s
+        if b
+        then
+          let ve ← valids.error valids.ErrorKind.KmsUnsupportedInBucketPolicy
+          ok (core.result.Result.Err ve)
+        else
+          let s1 := alloc.vec.Vec.deref st.not_actions
+          let b1 ← valids.has_kms_action s1
+          if b1
+          then
+            let ve ←
+              valids.error valids.ErrorKind.KmsUnsupportedInBucketPolicy
+            ok (core.result.Result.Err ve)
+          else
+            let s2 := alloc.vec.Vec.deref st.resources
+            let b2 ← valids.has_kms_resource s2
+            if b2
+            then
+              let ve ←
+                valids.error valids.ErrorKind.KmsUnsupportedInBucketPolicy
+              ok (core.result.Result.Err ve)
+            else
+              let s3 := alloc.vec.Vec.deref st.not_resources
+              let b3 ← valids.has_kms_resource s3
+              if b3
+              then
+                let ve ←
+                  valids.error valids.ErrorKind.KmsUnsupportedInBucketPolicy
+                ok (core.result.Result.Err ve)
+              else
+                let i2 := alloc.vec.Vec.len st.resources
+                if i2 = 0#usize
+                then
+                  let i3 := alloc.vec.Vec.len st.not_resources
+                  if i3 = 0#usize
+                  then
+                    let ve ← valids.error valids.ErrorKind.NonResource
+                    ok (core.result.Result.Err ve)
+                  else
+                    let i4 := alloc.vec.Vec.len st.resources
+                    if i4 != 0#usize
+                    then
+                      let i5 := alloc.vec.Vec.len st.not_resources
+                      if i5 != 0#usize
+                      then
+                        let ve ←
+                          valids.error
+                            valids.ErrorKind.BothResourceAndNotResource
+                        ok (core.result.Result.Err ve)
+                      else
+                        let s4 := alloc.vec.Vec.deref st.actions
+                        let _ ← actsets.is_valid s4
+                        let s5 := alloc.vec.Vec.deref st.not_actions
+                        let _ ← actsets.is_valid s5
+                        let s6 := alloc.vec.Vec.deref st.resources
+                        let r1 ← valids.resources_is_valid s6
+                        let cf1 ←
+                          core.result.Result.Insts.CoreOpsTry.branch r1
+                        match cf1 with
+                        | core.ops.control_flow.ControlFlow.Continue _ =>
+                          let s7 := alloc.vec.Vec.deref st.not_resources
+                          let r2 ← valids.resources_is_valid s7
+                          let cf2 ←
+                            core.result.Result.Insts.CoreOpsTry.branch r2
+                          match cf2 with
+                          | core.ops.control_flow.ControlFlow.Continue _ =>
+                            ok (core.result.Result.Ok ())
+                          | core.ops.control_flow.ControlFlow.Break residual =>
+                            core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual
+                              Unit (core.convert.FromSame
+                              valids.ValidationError) residual
+                        | core.ops.control_flow.ControlFlow.Break residual =>
+                          core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual
+                            Unit (core.convert.FromSame valids.ValidationError)
+                            residual
+                    else
+                      let s4 := alloc.vec.Vec.deref st.actions
+                      let _ ← actsets.is_valid s4
+                      let s5 := alloc.vec.Vec.deref st.not_actions
+                      let _ ← actsets.is_valid s5
+                      let s6 := alloc.vec.Vec.deref st.resources
+                      let r1 ← valids.resources_is_valid s6
+                      let cf1 ← core.result.Result.Insts.CoreOpsTry.branch r1
+                      match cf1 with
+                      | core.ops.control_flow.ControlFlow.Continue _ =>
+                        let s7 := alloc.vec.Vec.deref st.not_resources
+                        let r2 ← valids.resources_is_valid s7
+                        let cf2 ←
+                          core.result.Result.Insts.CoreOpsTry.branch r2
+                        match cf2 with
+                        | core.ops.control_flow.ControlFlow.Continue _ =>
+                          ok (core.result.Result.Ok ())
+                        | core.ops.control_flow.ControlFlow.Break residual =>
+                          core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual
+                            Unit (core.convert.FromSame valids.ValidationError)
+                            residual
+                      | core.ops.control_flow.ControlFlow.Break residual =>
+                        core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual
+                          Unit (core.convert.FromSame valids.ValidationError)
+                          residual
+                else
+                  let i3 := alloc.vec.Vec.len st.resources
+                  if i3 != 0#usize
+                  then
+                    let i4 := alloc.vec.Vec.len st.not_resources
+                    if i4 != 0#usize
+                    then
+                      let ve ←
+                        valids.error
+                          valids.ErrorKind.BothResourceAndNotResource
+                      ok (core.result.Result.Err ve)
+                    else
+                      let s4 := alloc.vec.Vec.deref st.actions
+                      let _ ← actsets.is_valid s4
+                      let s5 := alloc.vec.Vec.deref st.not_actions
+                      let _ ← actsets.is_valid s5
+                      let s6 := alloc.vec.Vec.deref st.resources
+                      let r1 ← valids.resources_is_valid s6
+                      let cf1 ← core.result.Result.Insts.CoreOpsTry.branch r1
+                      match cf1 with
+                      | core.ops.control_flow.ControlFlow.Continue _ =>
+                        let s7 := alloc.vec.Vec.deref st.not_resources
+                        let r2 ← valids.resources_is_valid s7
+                        let cf2 ←
+                          core.result.Result.Insts.CoreOpsTry.branch r2
+                        match cf2 with
+                        | core.ops.control_flow.ControlFlow.Continue _ =>
+                          ok (core.result.Result.Ok ())
+                        | core.ops.control_flow.ControlFlow.Break residual =>
+                          core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual
+                            Unit (core.convert.FromSame valids.ValidationError)
+                            residual
+                      | core.ops.control_flow.ControlFlow.Break residual =>
+                        core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual
+                          Unit (core.convert.FromSame valids.ValidationError)
+                          residual
+                  else
+                    let s4 := alloc.vec.Vec.deref st.actions
+                    let _ ← actsets.is_valid s4
+                    let s5 := alloc.vec.Vec.deref st.not_actions
+                    let _ ← actsets.is_valid s5
+                    let s6 := alloc.vec.Vec.deref st.resources
+                    let r1 ← valids.resources_is_valid s6
+                    let cf1 ← core.result.Result.Insts.CoreOpsTry.branch r1
+                    match cf1 with
+                    | core.ops.control_flow.ControlFlow.Continue _ =>
+                      let s7 := alloc.vec.Vec.deref st.not_resources
+                      let r2 ← valids.resources_is_valid s7
+                      let cf2 ← core.result.Result.Insts.CoreOpsTry.branch r2
+                      match cf2 with
+                      | core.ops.control_flow.ControlFlow.Continue _ =>
+                        ok (core.result.Result.Ok ())
+                      | core.ops.control_flow.ControlFlow.Break residual =>
+                        core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual
+                          Unit (core.convert.FromSame valids.ValidationError)
+                          residual
+                    | core.ops.control_flow.ControlFlow.Break residual =>
+                      core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual
+                        Unit (core.convert.FromSame valids.ValidationError)
+                        residual
+  | core.ops.control_flow.ControlFlow.Break residual =>
+    core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual
+      Unit (core.convert.FromSame valids.ValidationError) residual
 
 end rustfs_kernel

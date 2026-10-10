@@ -92,3 +92,27 @@ and 400,000 bucket cases. Kernel mutations in each module make it fail.
   would cause Aeneas to extract the existing condition enum's derived
   implementations, where its `Bool` variant shadows Lean's `Bool`. The
   canned constructor needs neither trait; existing types remain unchanged.
+
+## Validation and resource sets
+
+- Decoded IDs remain bytes; effect and default validators remain infallible.
+  Statement family classification preserves `None` and all-None lists.
+- Validators return structured error kinds with resource/version payloads;
+  the shell formats upstream messages. Validation order and rejection of
+  conflicting fields, mixed families and invalid resources are preserved.
+- Resource sets use list membership, mutual membership for equality, and
+  explicit slice access. Async wrappers become pure functions because they
+  perform no I/O. Empty condition maps become empty lists.
+- The test-only private oracle compiles pinned sources into Cargo's output
+  directory, exposing module declarations and adding a wrapper around private
+  family classifiers. Original engine bodies and upstream checkout are untouched.
+
+- Resource validation separates the boolean predicate from error payload
+  construction, avoiding duplicated allocation branches during Aeneas translation.
+
+- Validator metadata omits unused derived traits. Family tests use pattern
+  matching; this avoids extracting derived enum equality and its duplicated joins.
+
+- Statement validation isolates action-family matches in phase helpers.
+  Aeneas otherwise duplicates the remaining checks across every family branch.
+  The family is still computed once, and the checks retain upstream order.

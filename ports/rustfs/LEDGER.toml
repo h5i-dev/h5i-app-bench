@@ -198,7 +198,8 @@ kernel = ["effect_is_allowed"]
 [[item]]
 upstream = "crates/policy/src/policy/effect.rs:53 Effect::is_valid"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["valids::effect_is_valid"]
 
 [[item]]
 upstream = "crates/policy/src/policy/function/addr.rs:20 AddrFunc"
@@ -685,17 +686,20 @@ status = "todo"
 [[item]]
 upstream = "crates/policy/src/policy/id.rs:21 ID"
 lines = 1
-status = "todo"
+status = "ported"
+kernel = ["valids::id_as_slice"]
 
 [[item]]
 upstream = "crates/policy/src/policy/id.rs:25 ID::is_empty"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["valids::id_is_empty"]
 
 [[item]]
 upstream = "crates/policy/src/policy/id.rs:33 ID::is_valid"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["valids::id_is_valid"]
 
 [[item]]
 upstream = "crates/policy/src/policy/id.rs:40 ID::from"
@@ -706,7 +710,8 @@ reason = "policy decoding or serialization"
 [[item]]
 upstream = "crates/policy/src/policy/id.rs:48 ID::deref"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["valids::id_as_slice"]
 
 [[item]]
 upstream = "crates/policy/src/policy/opa.rs:22 Args"
@@ -825,7 +830,8 @@ kernel = ["defaults::default_version"]
 [[item]]
 upstream = "crates/policy/src/policy/policy.rs:30 Validator::is_valid"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["valids::default_is_valid"]
 
 [[item]]
 upstream = "crates/policy/src/policy/policy.rs:35 Args"
@@ -1052,12 +1058,14 @@ kernel = ["principal_is_match"]
 [[item]]
 upstream = "crates/policy/src/policy/principal.rs:145 Principal::is_valid"
 lines = 6
-status = "todo"
+status = "ported"
+kernel = ["valids::principal_is_valid"]
 
 [[item]]
 upstream = "crates/policy/src/policy/resource.rs:29 ResourceSet"
 lines = 1
-status = "todo"
+status = "ported"
+kernel = ["resets::ResourceSet"]
 
 [[item]]
 upstream = "crates/policy/src/policy/resource.rs:33 ResourceSet::serialize"
@@ -1068,17 +1076,20 @@ reason = "policy decoding or serialization"
 [[item]]
 upstream = "crates/policy/src/policy/resource.rs:52 ResourceSet::is_empty"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["resets::is_empty"]
 
 [[item]]
 upstream = "crates/policy/src/policy/resource.rs:57 ResourceSet::push_unique"
 lines = 5
-status = "todo"
+status = "ported"
+kernel = ["resets::push_unique"]
 
 [[item]]
 upstream = "crates/policy/src/policy/resource.rs:63 ResourceSet::is_match"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["resets::set_matches"]
 
 [[item]]
 upstream = "crates/policy/src/policy/resource.rs:67 ResourceSet::is_match_with_resolver"
@@ -1089,22 +1100,26 @@ kernel = ["set_is_match"]
 [[item]]
 upstream = "crates/policy/src/policy/resource.rs:82 ResourceSet::match_resource"
 lines = 8
-status = "todo"
+status = "ported"
+kernel = ["resets::set_match_resource"]
 
 [[item]]
 upstream = "crates/policy/src/policy/resource.rs:96 ResourceSet::deref"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["resets::as_slice"]
 
 [[item]]
 upstream = "crates/policy/src/policy/resource.rs:103 ResourceSet::is_valid"
 lines = 6
-status = "todo"
+status = "ported"
+kernel = ["valids::resources_is_valid"]
 
 [[item]]
 upstream = "crates/policy/src/policy/resource.rs:113 ResourceSet::eq"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["resets::eq"]
 
 [[item]]
 upstream = "crates/policy/src/policy/resource.rs:119 ResourceSet::deserialize"
@@ -1127,7 +1142,8 @@ kernel = ["is_kms"]
 [[item]]
 upstream = "crates/policy/src/policy/resource.rs:189 Resource::is_match"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["resets::is_match"]
 
 [[item]]
 upstream = "crates/policy/src/policy/resource.rs:193 Resource::is_match_with_resolver"
@@ -1138,7 +1154,8 @@ kernel = ["resource_is_match"]
 [[item]]
 upstream = "crates/policy/src/policy/resource.rs:237 Resource::match_resource"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["resets::match_resource"]
 
 [[item]]
 upstream = "crates/policy/src/policy/resource.rs:244 Resource::try_from"
@@ -1149,7 +1166,8 @@ reason = "policy decoding or serialization"
 [[item]]
 upstream = "crates/policy/src/policy/resource.rs:260 Resource::is_valid"
 lines = 22
-status = "todo"
+status = "ported"
+kernel = ["valids::resource_is_valid"]
 
 [[item]]
 upstream = "crates/policy/src/policy/resource.rs:288 Resource::serialize"
@@ -1184,7 +1202,8 @@ kernel = ["build_resource"]
 [[item]]
 upstream = "crates/policy/src/policy/statement.rs:83 ActionFamily"
 lines = 7
-status = "todo"
+status = "ported"
+kernel = ["valids::ActionFamily"]
 
 [[item]]
 upstream = "crates/policy/src/policy/statement.rs:93 Statement::skips_resource_match_for_args"
@@ -1201,17 +1220,20 @@ kernel = ["is_kms"]
 [[item]]
 upstream = "crates/policy/src/policy/statement.rs:115 Statement::is_admin"
 lines = 8
-status = "todo"
+status = "ported"
+kernel = ["valids::is_admin"]
 
 [[item]]
 upstream = "crates/policy/src/policy/statement.rs:125 Statement::is_sts"
 lines = 8
-status = "todo"
+status = "ported"
+kernel = ["valids::is_sts"]
 
 [[item]]
 upstream = "crates/policy/src/policy/statement.rs:135 Statement::action_family"
 lines = 35
-status = "todo"
+status = "ported"
+kernel = ["valids::action_family"]
 
 [[item]]
 upstream = "crates/policy/src/policy/statement.rs:177 Statement::kms_key_scope_matches"
@@ -1234,7 +1256,8 @@ kernel = ["statement_is_allowed"]
 [[item]]
 upstream = "crates/policy/src/policy/statement.rs:310 Statement::is_valid"
 lines = 43
-status = "todo"
+status = "ported"
+kernel = ["valids::statement_is_valid"]
 
 [[item]]
 upstream = "crates/policy/src/policy/statement.rs:375 Statement::eq"
@@ -1262,7 +1285,8 @@ kernel = ["bp_statement_is_allowed"]
 [[item]]
 upstream = "crates/policy/src/policy/statement.rs:465 BPStatement::is_valid"
 lines = 35
-status = "todo"
+status = "ported"
+kernel = ["valids::bp_statement_is_valid"]
 
 [[item]]
 upstream = "crates/policy/src/policy/utils/path.rs:15 LazyBuf"

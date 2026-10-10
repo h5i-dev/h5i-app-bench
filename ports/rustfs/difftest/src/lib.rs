@@ -7,3 +7,6 @@ mod props;
 mod defaults;
 #[cfg(test)]
 mod actions;
+
+#[cfg(test)]
+mod validation;
