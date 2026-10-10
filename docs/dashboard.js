@@ -15,6 +15,8 @@ const median = (xs) => {
 };
 const ratioText = (r) => (r >= 10 ? `${r.toFixed(0)}×` : r >= 0.1 ? `${r.toFixed(2)}×` : `${r.toPrecision(2)}×`);
 const bar = (a, b, cls = "") => `<div class="bar-track" aria-hidden="true"><div class="bar-fill ${cls}" style="width:${pct(a, b).toFixed(1)}%"></div></div>`;
+const barRowPct = (a, b, digits) =>
+  `<div class="bar-row">${bar(a, b, "alt")}<span class="bar-label"><span class="pct">${pctText(a, b, digits)}</span> <span class="of">${kLines(a)} / ${kLines(b)}</span></span></div>`;
 const barRow = (a, b, cls = "") =>
   `<div class="bar-row">${bar(a, b, cls)}<span class="bar-label"><span class="pct">${pctText(a, b)}</span> <span class="of">${fmt(a)} / ${fmt(b)}</span></span></div>`;
 
@@ -140,13 +142,12 @@ function renderHeader() {
 function renderTiles() {
   const s = INDEX.stats;
   const apps = Object.values(INDEX.apps);
-  const scope = apps.reduce((n, a) => n + (a.scope_lines || 0), 0);
   const m = matchedPerf().map((p) => p.ratio);
   const med = median(m);
   const proofs = INDEX.tasks.filter((t) => t.status === "accepted" && t.proof_loc != null).map((t) => t.proof_loc);
   const tiles = [
     [`${s.accepted}<small>/${s.properties}</small>`, "specs verified", `re-checked · ${pctText(s.accepted, s.properties)}`, [s.accepted, s.properties]],
-    [kLines(s.upstream_reached), "upstream lines reached", `${pctText(s.upstream_reached, s.upstream_selected)} of selected code · ${pctText(s.upstream_reached, scope, 2)} of modules`, [s.upstream_reached, s.upstream_selected]],
+    [kLines(s.upstream_reached), "upstream lines reached", `${pctText(s.upstream_reached, s.ceiling_lines, 1)} of the ${kLines(s.ceiling_lines)}-line kernel ceiling · ${pctText(s.upstream_reached, s.upstream_selected)} of selected code`, [s.upstream_reached, s.upstream_selected]],
     [med == null ? "–" : ratioText(med), "median runtime ratio", `kernel ÷ upstream · ${m.length} workloads${m.length ? ` · ${ratioText(Math.min(...m))}–${ratioText(Math.max(...m))}` : ""}`],
     [kLines(s.proof_loc), "lines of Lean proof", `median ${fmt(median(proofs))} per spec · ${kLines(s.rust_loc)} lines of ported Rust`],
   ];
@@ -163,18 +164,16 @@ function renderApps() {
     app: (r) => r.app,
     specs: (r) => r.accepted / r.specs,
     reach: (r) => (r.upstream_selected ? r.upstream_reached / r.upstream_selected : 0),
-    ported: (r) => (r.scope_lines ? r.ported_span_lines / r.scope_lines : null),
+    ceiling: (r) => (r.ceiling_lines ? r.upstream_reached / r.ceiling_lines : null),
   });
   $("#apps-table tbody").innerHTML = rows.map((a) => {
     const gate = INDEX.gates[a.app] || {};
     const eq = INDEX.equivalence[a.app];
-    const ported = a.scope_lines
-      ? `${pctText(a.ported_span_lines, a.scope_lines, 1)}<span class="sub">${kLines(a.ported_span_lines)} / ${kLines(a.scope_lines)}</span>`
-      : "–";
+
     return `<tr><td>${esc(a.app)}<span class="sub"><a href="https://github.com/${esc(a.repo)}/tree/${esc(a.commit)}" target="_blank" rel="noreferrer">${esc(a.repo)} @ ${esc(a.commit)}</a></span></td>
       <td>${barRow(a.accepted, a.specs)}</td>
       <td>${barRow(a.upstream_reached, a.upstream_selected, "alt")}</td>
-      <td class="num">${ported}</td>
+      <td>${a.ceiling_lines ? barRowPct(a.upstream_reached, a.ceiling_lines, 1) : "–"}</td>
       <td class="c">${passMark(gate.extract, "extract --check")}</td>
       <td class="c">${passMark(eq, "differential tests")}</td>
       <td class="c">${passMark(gate.check, "h5i app check")}</td></tr>`;

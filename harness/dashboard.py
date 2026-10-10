@@ -491,6 +491,7 @@ def app_metrics(app, ts, ledger, items):
     union = lambda keys: {k: v for i in keys for k, v in items.get(i, {}).items()}
     inv = {a["app"]: a for a in (latest_json("results/source-coverage/inventory.json") or {"apps": []})["apps"]}
     spans = {a["app"]: a for a in (latest_json("results/source-coverage/ported-spans.json") or {"apps": []})["apps"]}
+    ceiling = {a["app"]: a for a in (latest_json("results/source-coverage/kernel-ceiling.json") or {"apps": []})["apps"]}
     rust_loc = sum(code_lines(f.read_text()) for f in (port / "kernel/src").glob("*.rs"))
     return {"specs": len(ids), "accepted": len(acc),
             "stale": sum(ledger[i]["status"] == "stale" for i in ids),
@@ -499,6 +500,8 @@ def app_metrics(app, ts, ledger, items):
             "scope_lines": inv.get(app, {}).get("nonblank_physical_lines"),
             "scope": inv.get(app, {}).get("scope"),
             "ported_span_lines": spans.get(app, {}).get("deduplicated_mapped_nonblank_lines"),
+            "ceiling_lines": ceiling.get(app, {}).get("kernel_ceiling_lines"),
+            "ceiling_code_lines": ceiling.get(app, {}).get("code_lines"),
             "rust_loc": rust_loc,
             "lean_loc": sum(lean_lines(f) for f in (port / "proofs/generated").glob("*.lean")),
             "spec_loc": lean_lines(port / "proofs/Spec.lean"),
@@ -666,6 +669,8 @@ def main():
     stats |= {"accepted": sum(v["status"] == "accepted" for v in ledger.values()),
               "upstream_reached": sum(i["upstream_reached"] for i in apps.values()),
               "upstream_selected": sum(i["upstream_selected"] for i in apps.values()),
+              "ceiling_lines": sum(i["ceiling_lines"] or 0 for i in apps.values()),
+              "ceiling_code_lines": sum(i["ceiling_code_lines"] or 0 for i in apps.values()),
               "rust_loc": sum(i["rust_loc"] for i in apps.values()),
               "proof_loc": sum(i["proof_loc"] for i in apps.values())}
     index = {"generated": time.strftime("%Y-%m-%d %H:%M"), "stats": stats, "apps": apps, "columns": columns,

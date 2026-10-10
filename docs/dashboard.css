@@ -485,3 +485,5 @@ details.data-table td.scope { color: var(--faint); font-size: 12px; max-width: 6
 @media (prefers-reduced-motion: reduce) { .caret { animation: none; } }
 .tile .v small { font-size: .5em; color: var(--faint); letter-spacing: -.02em; }
 .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+.w-bar-s { width: 22%; }
+.w-bar-s .bar-track, td .bar-track { min-width: 60px; }
