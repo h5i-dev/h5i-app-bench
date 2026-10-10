@@ -83,17 +83,16 @@
       <section id="performance" class="block">
         <div class="block-head">
           <h2 class="term">performance</h2>
-          <p>Kernel time ÷ upstream time on the same inputs, release builds on one host. Below 1× the port is faster. Hollow marks: one side does extra work, such as database calls.</p>
-        </div>
-        <div class="filters" role="group" aria-label="Performance filter">
-          <label class="field"><span>Boundary</span>
-            <select id="p-scope"><option value="matched">Matched only</option><option value="">All measurements</option></select>
-          </label>
+          <p>Kernel time ÷ upstream time on the same inputs, release builds on one host. Below 1× the port is faster. Only measurements where both sides do the same work are plotted.</p>
         </div>
         <figure class="chart" id="perf-chart" aria-describedby="perf-caption"></figure>
         <p class="caption" id="perf-caption"></p>
         <details class="data-table"><summary>Show the measurements as a table</summary>
           <div class="table-wrap"><table id="perf-table"><thead><tr><th>Application</th><th>Benchmark</th><th class="num">Upstream ns</th><th class="num">Kernel ns</th><th class="num">Ratio</th><th>Boundary</th></tr></thead><tbody></tbody></table></div>
+        </details>
+        <details class="data-table"><summary id="excluded-summary">Excluded measurements</summary>
+          <p class="caption">One side does work the other does not (HTTP request construction, database round trips, input cloning), so the ratio does not compare the kernels. Kept as a record until matched runs replace them.</p>
+          <div class="table-wrap"><table id="excluded-table"><thead><tr><th>Application</th><th>Benchmark</th><th class="num">Ratio</th><th>Why not comparable</th></tr></thead><tbody></tbody></table></div>
         </details>
       </section>
 

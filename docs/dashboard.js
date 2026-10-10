@@ -186,8 +186,8 @@ const SVGNS = "http://www.w3.org/2000/svg";
 const TICKS = [0.001, 0.01, 0.1, 0.25, 0.5, 1, 2, 4, 10, 100];
 
 function renderPerf() {
-  const onlyMatched = $("#p-scope").value === "matched";
-  const rows = INDEX.performance.filter((p) => !onlyMatched || p.matched);
+  const rows = INDEX.performance.filter((p) => p.matched);
+  const excluded = INDEX.performance.filter((p) => !p.matched);
   const fig = $("#perf-chart");
   if (!rows.length) {
     fig.innerHTML = `<p class="empty">No measurement yet.</p>`;
@@ -214,7 +214,7 @@ function renderPerf() {
     body += `<line class="stem" x1="${Math.min(cx, x1)}" x2="${Math.max(cx, x1)}" y1="${y}" y2="${y}"/>`;
     body += `<text class="bench-lbl" x="18" y="${y + 4}">${esc(r.benchmark.length > 28 ? r.benchmark.slice(0, 27) + "…" : r.benchmark)}</text>`;
     body += `<circle class="hit" data-i="${i}" cx="${cx}" cy="${y}" r="12"/>`;
-    body += `<circle class="dot${r.matched ? "" : " hollow"}" cx="${cx}" cy="${y}" r="5"/>`;
+    body += `<circle class="dot" cx="${cx}" cy="${y}" r="5"/>`;
     body += `<text class="lbl" x="${cx + (r.ratio >= 1 ? 10 : -10)}" y="${y + 4}" text-anchor="${r.ratio >= 1 ? "start" : "end"}">${ratioText(r.ratio)}</text>`;
     y += rowH;
   });
@@ -232,16 +232,16 @@ function renderPerf() {
     if (!hit) return hideTip();
     const r = rows[+hit.dataset.i];
     showTip(e, `<b>${esc(r.app)} · ${esc(r.benchmark)}</b>${ratioText(r.ratio)} kernel ÷ upstream<br>
-      <span class="r">${r.upstream_ns != null ? `${r.upstream_ns.toFixed(1)} → ${r.kernel_ns.toFixed(1)} ns` : ""} · ${r.matched ? "matched boundary" : "unequal boundary"}</span><br><span class="r">${esc(r.scope)}</span>`);
+      <span class="r">${r.upstream_ns != null ? `${r.upstream_ns.toFixed(1)} → ${r.kernel_ns.toFixed(1)} ns` : ""}</span><br><span class="r">${esc(r.scope)}</span>`);
   });
   svg.addEventListener("mouseleave", hideTip);
-  const unequal = INDEX.performance.filter((p) => !p.matched).length;
-  $("#perf-caption").textContent = onlyMatched
-    ? `${rows.length} workloads in ${new Set(rows.map((r) => r.app)).size} apps. ${unequal} unequal measurements hidden.`
-    : `Hollow marks are not kernel-only. Hover for the boundary.`;
+  $("#perf-caption").textContent = `${rows.length} workloads in ${new Set(rows.map((r) => r.app)).size} apps. Pilot runs on one host.`;
+  $("#excluded-summary").textContent = `Excluded measurements (${excluded.length})`;
+  $("#excluded-table tbody").innerHTML = excluded.map((r) => `<tr><td>${esc(r.app)}</td><td>${esc(r.benchmark)}</td>
+    <td class="num">${ratioText(r.ratio)}</td><td class="scope">${esc(r.scope)}</td></tr>`).join("");
   $("#perf-table tbody").innerHTML = rows.map((r) => `<tr><td>${esc(r.app)}</td><td>${esc(r.benchmark)}</td>
     <td class="num">${r.upstream_ns != null ? r.upstream_ns.toFixed(1) : "–"}</td><td class="num">${r.kernel_ns != null ? r.kernel_ns.toFixed(1) : "–"}</td>
-    <td class="num">${ratioText(r.ratio)}</td><td class="scope">${r.matched ? "matched" : "unequal"}: ${esc(r.scope)}</td></tr>`).join("");
+    <td class="num">${ratioText(r.ratio)}</td><td class="scope">${esc(r.scope)}</td></tr>`).join("");
 }
 
 // ---- Effort -----------------------------------------------------------------
@@ -486,7 +486,6 @@ async function main() {
   renderTiles();
   sortable("apps-table", renderApps);
   renderApps();
-  $("#p-scope").addEventListener("input", renderPerf);
   renderPerf();
   sortable("effort-table", renderEffort);
   renderEffort();
