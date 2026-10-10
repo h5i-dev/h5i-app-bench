@@ -10,3 +10,6 @@ mod actions;
 
 #[cfg(test)]
 mod validation;
+
+#[cfg(test)]
+mod condition_data;

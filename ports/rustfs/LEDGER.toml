@@ -204,7 +204,8 @@ kernel = ["valids::effect_is_valid"]
 [[item]]
 upstream = "crates/policy/src/policy/function/addr.rs:20 AddrFunc"
 lines = 1
-status = "todo"
+status = "ported"
+kernel = ["conddata::AddrFunc"]
 
 [[item]]
 upstream = "crates/policy/src/policy/function/addr.rs:23 AddrFunc::evaluate"
@@ -215,7 +216,8 @@ kernel = ["addr_func", "addr_key"]
 [[item]]
 upstream = "crates/policy/src/policy/function/addr.rs:44 AddrFuncValue"
 lines = 1
-status = "todo"
+status = "ported"
+kernel = ["conddata::AddrFuncValue"]
 
 [[item]]
 upstream = "crates/policy/src/policy/function/addr.rs:49 AddrFuncValue::deserialize"
@@ -226,22 +228,26 @@ reason = "policy decoding or serialization"
 [[item]]
 upstream = "crates/policy/src/policy/function/binary.rs:21 BinaryFunc"
 lines = 1
-status = "todo"
+status = "ported"
+kernel = ["conddata::BinaryFunc"]
 
 [[item]]
 upstream = "crates/policy/src/policy/function/binary.rs:23 BinaryFuncValueError"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["conddata::BinaryFuncValueError"]
 
 [[item]]
 upstream = "crates/policy/src/policy/function/binary.rs:29 BinaryFuncValue"
 lines = 4
-status = "todo"
+status = "ported"
+kernel = ["conddata::BinaryFuncValue"]
 
 [[item]]
 upstream = "crates/policy/src/policy/function/binary.rs:44 BinaryFuncValue::new"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["conddata::binary_new"]
 
 [[item]]
 upstream = "crates/policy/src/policy/function/binary.rs:49 BinaryFuncValue::from_encoded_values"
@@ -264,7 +270,8 @@ reason = "policy decoding or serialization"
 [[item]]
 upstream = "crates/policy/src/policy/function/binary.rs:81 BinaryFuncValue::eq"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["conddata::binary_eq"]
 
 [[item]]
 upstream = "crates/policy/src/policy/function/binary.rs:89 BinaryFuncValue::serialize"
@@ -282,12 +289,13 @@ reason = "policy decoding or serialization"
 upstream = "crates/policy/src/policy/function/binary.rs:137 BinaryFunc::evaluate"
 lines = 25
 status = "ported"
-kernel = ["addr_func", "addr_key", "num_func"]
+kernel = ["conddata::binary_evaluate"]
 
 [[item]]
 upstream = "crates/policy/src/policy/function/bool_null.rs:20 BoolFunc"
 lines = 1
-status = "todo"
+status = "ported"
+kernel = ["conddata::BoolFunc"]
 
 [[item]]
 upstream = "crates/policy/src/policy/function/bool_null.rs:22 BoolFunc::evaluate_bool"
@@ -304,7 +312,8 @@ kernel = ["null_func"]
 [[item]]
 upstream = "crates/policy/src/policy/function/bool_null.rs:49 BoolFuncValue"
 lines = 1
-status = "todo"
+status = "ported"
+kernel = ["conddata::BoolFuncValue"]
 
 [[item]]
 upstream = "crates/policy/src/policy/function/bool_null.rs:53 BoolFuncValue::serialize"
@@ -339,7 +348,8 @@ reason = "policy decoding or serialization"
 [[item]]
 upstream = "crates/policy/src/policy/function/condition.rs:136 Condition::to_key_with_suffix"
 lines = 6
-status = "todo"
+status = "ported"
+kernel = ["conddata::to_key_with_suffix"]
 
 [[item]]
 upstream = "crates/policy/src/policy/function/condition.rs:143 Condition::has_any_key_in"
@@ -357,12 +367,13 @@ kernel = ["references_key_name"]
 upstream = "crates/policy/src/policy/function/condition.rs:209 Condition::evaluate_with_resolver"
 lines = 77
 status = "ported"
-kernel = ["condition_evaluate", "eval_cond"]
+kernel = ["conddata::condition_evaluate", "condfuncs::condition_evaluate"]
 
 [[item]]
 upstream = "crates/policy/src/policy/function/condition.rs:289 Condition::is_negate"
 lines = 4
-status = "todo"
+status = "ported"
+kernel = ["conddata::is_negate"]
 
 [[item]]
 upstream = "crates/policy/src/policy/function/condition.rs:297 Condition::serialize_map"
@@ -373,23 +384,26 @@ reason = "policy decoding or serialization"
 [[item]]
 upstream = "crates/policy/src/policy/function/condition.rs:333 Condition::eq"
 lines = 34
-status = "todo"
+status = "ported"
+kernel = ["conddata::condition_eq"]
 
 [[item]]
 upstream = "crates/policy/src/policy/function/date.rs:20 DateFunc"
 lines = 1
-status = "todo"
+status = "ported"
+kernel = ["conddata::DateFunc"]
 
 [[item]]
 upstream = "crates/policy/src/policy/function/date.rs:23 DateFunc::evaluate"
 lines = 15
 status = "ported"
-kernel = ["addr_func", "addr_key", "num_func"]
+kernel = ["dates::evaluate"]
 
 [[item]]
 upstream = "crates/policy/src/policy/function/date.rs:43 DateFuncValue"
 lines = 1
-status = "todo"
+status = "ported"
+kernel = ["conddata::DateFuncValue"]
 
 [[item]]
 upstream = "crates/policy/src/policy/function/date.rs:47 DateFuncValue::serialize"
@@ -406,33 +420,38 @@ reason = "policy decoding or serialization"
 [[item]]
 upstream = "crates/policy/src/policy/function/func.rs:24 InnerFunc"
 lines = 1
-status = "todo"
+status = "ported"
+kernel = ["conddata::InnerFunc"]
 
 [[item]]
 upstream = "crates/policy/src/policy/function/func.rs:27 FuncKeyValue"
 lines = 4
 status = "ported"
-kernel = ["str_eval", "str_eval_like"]
+kernel = ["conddata::FuncKeyValue"]
 
 [[item]]
 upstream = "crates/policy/src/policy/function/func.rs:34 FuncKeyValue::clone"
 lines = 6
-status = "todo"
+status = "ported"
+kernel = ["conddata::clone_key_value"]
 
 [[item]]
 upstream = "crates/policy/src/policy/function/func.rs:43 InnerFunc::clone"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["conddata::clone_inner"]
 
 [[item]]
 upstream = "crates/policy/src/policy/function/func.rs:49 InnerFunc::key_names"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["conddata::key_names"]
 
 [[item]]
 upstream = "crates/policy/src/policy/function/func.rs:53 InnerFunc::contains_key_name"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["conddata::contains_key_name"]
 
 [[item]]
 upstream = "crates/policy/src/policy/function/func.rs:59 InnerFunc::serialize"
@@ -455,7 +474,8 @@ kernel = ["Key"]
 [[item]]
 upstream = "crates/policy/src/policy/function/key.rs:33 Key::is"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["conddata::key_is"]
 
 [[item]]
 upstream = "crates/policy/src/policy/function/key.rs:37 Key::var_name"
@@ -560,12 +580,14 @@ status = "todo"
 [[item]]
 upstream = "crates/policy/src/policy/function/number.rs:23 NumberFunc"
 lines = 1
-status = "todo"
+status = "ported"
+kernel = ["conddata::NumberFunc"]
 
 [[item]]
 upstream = "crates/policy/src/policy/function/number.rs:25 NumberFuncValue"
 lines = 1
-status = "todo"
+status = "ported"
+kernel = ["conddata::NumberFuncValue"]
 
 [[item]]
 upstream = "crates/policy/src/policy/function/number.rs:29 NumberFunc::evaluate"
@@ -588,7 +610,8 @@ reason = "policy decoding or serialization"
 [[item]]
 upstream = "crates/policy/src/policy/function/string.rs:31 StringFunc"
 lines = 1
-status = "todo"
+status = "ported"
+kernel = ["conddata::StringFunc"]
 
 [[item]]
 upstream = "crates/policy/src/policy/function/string.rs:34 StringFunc::evaluate_with_resolver"
@@ -653,12 +676,13 @@ kernel = ["addr_func", "addr_key", "num_func"]
 upstream = "crates/policy/src/policy/function.rs:75 Functions::evaluate_with_resolver"
 lines = 22
 status = "ported"
-kernel = ["functions_evaluate"]
+kernel = ["conddata::functions_evaluate", "condfuncs::functions_evaluate"]
 
 [[item]]
 upstream = "crates/policy/src/policy/function.rs:101 Functions::is_empty"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["conddata::is_empty"]
 
 [[item]]
 upstream = "crates/policy/src/policy/function.rs:105 Functions::references_key_name"
@@ -681,7 +705,8 @@ reason = "policy decoding or serialization"
 [[item]]
 upstream = "crates/policy/src/policy/function.rs:208 Functions::eq"
 lines = 11
-status = "todo"
+status = "ported"
+kernel = ["conddata::functions_eq"]
 
 [[item]]
 upstream = "crates/policy/src/policy/id.rs:21 ID"

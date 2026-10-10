@@ -22,6 +22,21 @@ pub fn classify_actions(names: Vec<Option<String>>) -> (bool, bool, Option<u8>) 
 }
 "#);
     }
+    if source.ends_with("policy/function.rs") {
+        code.push_str(r#"
+pub fn normal_conditions(f: Functions) -> Vec<Condition> { f.for_normal }
+pub fn with_conditions(conditions: Vec<Condition>, qualifier: u8) -> Functions {
+    let mut f = Functions::default();
+    match qualifier { 0 => f.for_normal = conditions, 1 => f.for_any_value = conditions, _ => f.for_all_values = conditions }
+    f
+}
+"#);
+    }
+    if source.ends_with("policy/function/binary.rs") {
+        code.push_str(r#"
+pub fn from_encoded_test(values: Vec<String>) -> Result<BinaryFuncValue, BinaryFuncValueError> { BinaryFuncValue::from_encoded_values(values) }
+"#);
+    }
     fs::write(&target, code).unwrap();
     println!("cargo:rerun-if-changed={}", source.display());
     target

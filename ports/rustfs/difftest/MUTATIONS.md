@@ -42,3 +42,60 @@ The phase helpers `valids::{action_selection_valid,statement_resource_rules}`
 were each mutated to accept every statement; `checked_action_family` returned
 None, and `family_is_mixed`, `family_is_kms`, `family_allows_empty_resource`
 returned false. Each mutation failed `statement_validation_agrees`.
+
+Full-condition helpers were checked individually as follows (including all
+46 handwritten functions and their helpers):
+
+| Function | Mutation | Test |
+|---|---|---|
+| `conddata::key_is` | `false` | `condition_data::condition_metadata_agrees` |
+| `conddata::contains_key_name` | `false` | `condition_data::condition_metadata_agrees` |
+| `conddata::is_negate` | `false` | `condition_data::condition_metadata_agrees` |
+| `conddata::string_covers` | `false` | `condition_data::condition_metadata_agrees` |
+| `conddata::string_set_eq` | `false` | `condition_data::condition_metadata_agrees` |
+| `conddata::string_inner_eq` | `false` | `condition_data::condition_metadata_agrees` |
+| `conddata::binary_inner_eq` | `false` | `condition_data::condition_metadata_agrees` |
+| `conddata::date_inner_eq` | `false` | `condition_data::condition_metadata_agrees` |
+| `conddata::condition_eq` | `false` | `condition_data::condition_metadata_agrees` |
+| `conddata::contains_condition` | `false` | `condition_data::condition_metadata_agrees` |
+| `conddata::list_covers` | `false` | `condition_data::condition_metadata_agrees` |
+| `conddata::functions_eq` | `false` | `condition_data::condition_metadata_agrees` |
+| `conddata::is_empty` | `false` | `condition_data::condition_metadata_agrees` |
+| `conddata::inner_has_value` | `false` | `condition_data::condition_metadata_agrees` |
+| `conddata::has_any_key_in` | `false` | `condition_data::condition_metadata_agrees` |
+| `conddata::condition_evaluate` | `false` | `condition_data::condition_metadata_agrees` |
+| `conddata::all_hold` | `false` | `condition_data::condition_metadata_agrees` |
+| `conddata::functions_evaluate` | `false` | `condition_data::condition_metadata_agrees` |
+| `conddata::key_names` | `Vec::new()` | `condition_data::condition_metadata_agrees` |
+| `conddata::op_name` | `Vec::new()` | `condition_data::condition_metadata_agrees` |
+| `conddata::op_name_late` | `Vec::new()` | `condition_data::condition_metadata_agrees` |
+| `conddata::to_key_with_suffix` | `Vec::new()` | `condition_data::condition_metadata_agrees` |
+| `conddata::legacy_pairs` | `Vec::new()` | `condition_data::condition_metadata_agrees` |
+| `conddata::key_presence` | `Vec::new()` | `condition_data::condition_metadata_agrees` |
+| `conddata::views` | `Vec::new()` | `condition_data::condition_metadata_agrees` |
+| `conddata::to_key` | `Vec::new()` | `condition_data::condition_metadata_agrees` |
+| `conddata::clone_key_value` | `let mut out = FuncKeyValue {key:entry.key.clone(),values:entry.values.clone()}; out.key.name=Vec::new(); out` | `condition_data::condition_metadata_agrees` |
+| `conddata::clone_inner` | `InnerFunc {entries:Vec::new()}` | `condition_data::condition_metadata_agrees` |
+| `conddata::str_op` | `crate::condfuncs::StrOp::StringEquals` | `condition_data::condition_metadata_agrees` |
+| `conddata::num_op` | `crate::condfuncs::NumOp::Eq` | `condition_data::condition_metadata_agrees` |
+| `conddata::condition_view` | `crate::condfuncs::Condition {if_exists:false,cond:crate::condfuncs::Cond::Null(Vec::new())}` | `condition_data::condition_metadata_agrees` |
+| `conddata::matching_view` | `crate::condfuncs::Functions {for_any_value:Vec::new(),for_all_values:Vec::new(),for_normal:Vec::new()}` | `condition_data::condition_metadata_agrees` |
+| `conddata::binary_eq` | `false` | `condition_data::binary_agrees` |
+| `conddata::binary_key_matches` | `false` | `condition_data::binary_agrees` |
+| `conddata::binary_evaluate` | `false` | `condition_data::binary_agrees` |
+| `conddata::base64_digit` | `None` | `condition_data::binary_agrees` |
+| `conddata::decode_base64` | `Err(BinaryFuncValueError::InvalidBase64)` | `condition_data::binary_agrees` |
+| `conddata::binary_new` | `Err(BinaryFuncValueError::InvalidBase64)` | `condition_data::binary_agrees` |
+| `conddata::binary_from_encoded_values` | `Err(BinaryFuncValueError::InvalidBase64)` | `condition_data::binary_agrees` |
+| `dates::digits` | `None` | `condition_data::dates_agree` |
+| `dates::parse_rfc3339` | `None` | `condition_data::dates_agree` |
+| `dates::parse_value` | `None` | `condition_data::dates_agree` |
+| `dates::month_days` | `31` | `condition_data::dates_agree` |
+| `dates::civil_days` | `0` | `condition_data::dates_agree` |
+| `dates::compare` | `false` | `condition_data::dates_agree` |
+| `dates::evaluate` | `false` | `condition_data::dates_agree` |
+
+After splitting the date parser for Lean extraction, `calendar_fields`,
+`time_fields`, `fraction` and `offset` were individually changed to return None,
+`leap_valid` to false, and `nanos` to zero. `condition_data::dates_agree`
+compiled and failed for all six; the originals were restored.

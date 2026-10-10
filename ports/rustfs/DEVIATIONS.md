@@ -116,3 +116,33 @@ and 400,000 bucket cases. Kernel mutations in each module make it fail.
 - Statement validation isolates action-family matches in phase helpers.
   Aeneas otherwise duplicates the remaining checks across every family branch.
   The family is still computed once, and the checks retain upstream order.
+
+## Full condition metadata, binary values and dates
+
+- New `conddata` types keep ordered inner entries, ordered IP/binary lists,
+  string sets represented by lists, and exact `IfExists` wrapper depth.
+  Equality uses upstream's set semantics for strings and one-way membership
+  with equal lengths for each Functions qualifier. Existing evaluation types
+  and their interfaces remain unchanged. `Boolean` avoids Lean's `Bool` name.
+- Generic clone and key iterator helpers become explicit loops returning lists.
+  Operator-name tables are divided into small matches for translation.
+- Binary values retain encoded and decoded lists. STANDARD base64 decoding
+  is written out, including padding and unused-bit checks. Evaluation rejects
+  any invalid request value, even following a matching value.
+- Date values carry UTC nanoseconds and their original offset. Equality and
+  comparisons use instants; the shell retains the offset for serialization.
+  The missing RFC3339 primitive follows pinned `time` semantics, including
+  lowercase z, its single-byte separator, fractional truncation, and valid
+  month-end leap-second stand-ins. Only the first request value is parsed.
+- `matching_view` keeps every condition key for existing resource matching.
+  Date/binary conditions use key-presence placeholders only in that view;
+  `conddata::condition_evaluate` evaluates their actual values. Common
+  conditions delegate to the unchanged evaluator (including its documented
+  ASCII ignore-case form). Qualifiers and wrapper missing-key behavior agree
+  with upstream. Private-oracle wrappers expose lists without changing bodies.
+- Previous ledger mappings for Date/Binary evaluation pointed at unrelated
+  numeric/address helpers; they now name their actual implementations.
+
+- RFC3339 parsing isolates calendar, time, fractional seconds, offset and leap
+  validation into phase helpers. This bounds Aeneas continuation duplication
+  and avoids invalid Lean indentation in the generated code.
