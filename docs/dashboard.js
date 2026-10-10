@@ -131,7 +131,7 @@ function renderHeader() {
     `[ snapshot <b>${esc(INDEX.generated)}</b> ]`,
     `[ <b>${s.accepted}/${s.properties}</b> specs accepted ]`,
     `[ <b>${Object.keys(INDEX.apps).length}</b> servers ]`,
-    `<span class="live">[ interim: proofs and measurements still running ]</span>`,
+    `<span class="live">[ interim ]</span>`,
   ];
   $("#status-line").innerHTML = parts.map((p) => `<span>${p}</span>`).join("");
   $("#footer-snapshot").textContent = `Snapshot ${INDEX.generated} · Apache 2.0`;
@@ -145,10 +145,10 @@ function renderTiles() {
   const med = median(m);
   const proofs = INDEX.tasks.filter((t) => t.status === "accepted" && t.proof_loc != null).map((t) => t.proof_loc);
   const tiles = [
-    [`${s.accepted}<small>/${s.properties}</small>`, "specs verified", `independently re-checked · ${pctText(s.accepted, s.properties)}`, [s.accepted, s.properties]],
-    [kLines(s.upstream_reached), "upstream lines reached", `${pctText(s.upstream_reached, s.upstream_selected)} of the code selected specs are about; ${pctText(s.upstream_reached, scope, 2)} of the ${kLines(scope)}-line module scope`, [s.upstream_reached, s.upstream_selected]],
-    [med == null ? "–" : ratioText(med), "median runtime ratio", `kernel ÷ upstream over ${m.length} matched workloads${m.length ? `, ${ratioText(Math.min(...m))}–${ratioText(Math.max(...m))}` : ""}`],
-    [kLines(s.proof_loc), "lines of Lean proof", `for ${fmt(s.accepted)} specs · median ${fmt(median(proofs))} per spec · ${fmt(s.rust_loc)} lines of ported Rust`],
+    [`${s.accepted}<small>/${s.properties}</small>`, "specs verified", `re-checked · ${pctText(s.accepted, s.properties)}`, [s.accepted, s.properties]],
+    [kLines(s.upstream_reached), "upstream lines reached", `${pctText(s.upstream_reached, s.upstream_selected)} of selected code · ${pctText(s.upstream_reached, scope, 2)} of modules`, [s.upstream_reached, s.upstream_selected]],
+    [med == null ? "–" : ratioText(med), "median runtime ratio", `kernel ÷ upstream · ${m.length} workloads${m.length ? ` · ${ratioText(Math.min(...m))}–${ratioText(Math.max(...m))}` : ""}`],
+    [kLines(s.proof_loc), "lines of Lean proof", `median ${fmt(median(proofs))} per spec · ${kLines(s.rust_loc)} lines of ported Rust`],
   ];
   $("#tiles").innerHTML = tiles.map(([v, l, sub, frac]) =>
     `<div class="tile"><span class="v">${v}</span><span class="l">${l}</span>${frac ? bar(...frac) : ""}<span class="s">${sub}</span></div>`).join("");
@@ -238,8 +238,8 @@ function renderPerf() {
   svg.addEventListener("mouseleave", hideTip);
   const unequal = INDEX.performance.filter((p) => !p.matched).length;
   $("#perf-caption").textContent = onlyMatched
-    ? `${rows.length} matched workloads in ${new Set(rows.map((r) => r.app)).size} applications. ${unequal} more measurements include unequal work on one side; choose "All measurements" to see them. Pilot runs on one host (${INDEX.performance[0]?.measured ?? ""}).`
-    : `Hollow marks are not kernel-only comparisons: read their boundary in the tooltip or the table.`;
+    ? `${rows.length} workloads in ${new Set(rows.map((r) => r.app)).size} apps. ${unequal} unequal measurements hidden.`
+    : `Hollow marks are not kernel-only. Hover for the boundary.`;
   $("#perf-table tbody").innerHTML = rows.map((r) => `<tr><td>${esc(r.app)}</td><td>${esc(r.benchmark)}</td>
     <td class="num">${r.upstream_ns != null ? r.upstream_ns.toFixed(1) : "–"}</td><td class="num">${r.kernel_ns != null ? r.kernel_ns.toFixed(1) : "–"}</td>
     <td class="num">${ratioText(r.ratio)}</td><td class="scope">${r.matched ? "matched" : "unequal"}: ${esc(r.scope)}</td></tr>`).join("");
@@ -374,24 +374,24 @@ function tabStatement(d) {
   h += `<h3>Theorem</h3>`;
   h += codeBlock({ title: d.theorem.split(".").pop(), sub: "Properties.lean", code: d.statement, lang: "lean" });
   h += d.target.loc
-    ? `<p class="note">The property is about ${fmt(d.target.loc)} lines of upstream Rust: ${d.target.fns.map((f) => `<code>${esc(f)}</code>`).join(", ")} and what they call.</p>`
-    : `<p class="note">The property is about code that exists only in the port, so no upstream lines are counted.</p>`;
+    ? `<p class="note">About ${fmt(d.target.loc)} upstream lines: ${d.target.fns.map((f) => `<code>${esc(f)}</code>`).join(", ")} and callees.</p>`
+    : `<p class="note">About port-only code; no upstream lines.</p>`;
   h += `<h3>Spec definitions it uses</h3>`;
   h += d.spec.length
     ? d.spec.map((s) => codeBlock({ title: s.name, code: s.code, lang: "lean" })).join("")
-    : `<p class="empty">The statement refers only to definitions of the ported code.</p>`;
+    : `<p class="empty">None; the statement uses only ported definitions.</p>`;
   return h;
 }
 
 function tabRust(d) {
-  if (!d.kernel.length) return `<p class="empty">No ported function is referenced directly by this statement.</p>`;
-  let h = `<p class="note">Each ported function next to the upstream function of the same name at the pinned commit. Helpers that exist only in the port replace iterator chains and library calls that Aeneas does not support.</p>`;
+  if (!d.kernel.length) return `<p class="empty">No ported function referenced.</p>`;
+  let h = `<p class="note">Each ported function beside its upstream original. Port-only helpers replace iterators and library calls Aeneas lacks.</p>`;
   for (const k of d.kernel) {
     const up = d.upstream.find((u) => u.fn === k.fn);
     h += `<p class="fn-title">${esc(k.fn)}</p><div class="pair">`;
     h += up
       ? codeBlock({ title: "upstream", sub: `${up.file}:${up.line}`, url: up.url, code: up.code, lang: "rust" })
-      : `<div class="missing">No upstream function of this name: a helper introduced by the port.</div>`;
+      : `<div class="missing">Port-only helper.</div>`;
     h += codeBlock({ title: "h5i-app port", sub: `${k.file}:${k.line}`, url: k.url, code: k.code, lang: "rust" });
     h += `</div>`;
   }
@@ -402,20 +402,20 @@ function tabEquivalence(d) {
   const app = INDEX.apps[d.app];
   const eq = INDEX.equivalence[d.app];
   let h = eq
-    ? `<p class="note">Latest differential run for ${esc(d.app)}: ${eq.passed ? "<span class=\"mark good\">✓</span> passed" : "<span class=\"mark bad\">✗</span> failed"} on ${esc(eq.when)} in ${eq.seconds} s. ${esc(eq.evidence || "")}</p>`
+    ? `<p class="note">Differential tests for ${esc(d.app)}: ${eq.passed ? "<span class=\"mark good\">✓</span> passed" : "<span class=\"mark bad\">✗</span> failed"} on ${esc(eq.when)}.</p>`
     : "";
-  h += `<p class="note">The differential test runs upstream and the h5i-app port on the same generated inputs and compares results; a mutated port must fail it. These are the tests that call the functions above.</p>`;
+  h += `<p class="note">Tests that run upstream and port on the same inputs. A mutated port must fail them.</p>`;
   h += d.difftest.length
     ? d.difftest.map((t) => codeBlock({ title: t.fn, sub: `${t.file}:${t.line}`, url: t.url, code: t.code, lang: "rust" })).join("")
-    : `<p class="empty">No test names these functions directly; they are covered through their callers.</p>`;
+    : `<p class="empty">Covered through callers.</p>`;
   h += `<h3>Deviations from upstream</h3><p class="note">Upstream: <a href="https://github.com/${esc(app.repo)}/tree/${esc(app.commit)}" target="_blank" rel="noreferrer">${esc(app.repo)} @ ${esc(app.commit)}</a> · <a href="${esc(app.port)}" target="_blank" rel="noreferrer">port</a></p>`;
   h += `<details class="dev"><summary>Show the port's deviations file</summary><div class="dev-body">${app.deviations}</div></details>`;
   return h;
 }
 
 function tabLean(d) {
-  if (!d.lean.length) return `<p class="empty">No generated definition is referenced by this statement.</p>`;
-  return `<p class="note">Extracted from the h5i-app port by Aeneas. The bracket in each comment names the Rust item it came from.</p>` +
+  if (!d.lean.length) return `<p class="empty">No generated definition referenced.</p>`;
+  return `<p class="note">Generated by Aeneas. Brackets name the Rust source item.</p>` +
     d.lean.map((l) => codeBlock({ title: l.name, sub: l.rust, code: l.code, lang: "lean" })).join("");
 }
 

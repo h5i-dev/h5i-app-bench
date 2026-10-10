@@ -46,13 +46,7 @@
       <section class="intro">
         <p class="prompt"><span class="ps">$</span> h5i app prove <span class="arg">ports/*</span><span class="caret" aria-hidden="true"></span></p>
         <h1>How much real-world Rust can h5i-app verify?</h1>
-        <p class="lede">
-          Six open-source Rust servers had their security-relevant logic (access control, input validation,
-          parsing) ported to <a href="https://github.com/h5i-dev/h5i/tree/main/crates/h5i-app" target="_blank" rel="noreferrer">h5i-app</a>,
-          extracted to Lean 4 with Aeneas, and specified as 103 theorems. We track how many of those theorems are
-          proved and independently re-checked, how much upstream code they reach, how much Lean it takes, and how fast the
-          verifiable port runs next to the original.
-        </p>
+        <p class="lede">Security logic from six open-source Rust servers, ported to h5i-app and stated as 103 Lean 4 theorems. We measure how many are proved, how much upstream code they cover, and how fast the port runs.</p>
         <p class="status-line" id="status-line" aria-live="polite"></p>
       </section>
       <div class="tiles" id="tiles" aria-live="polite"></div>
@@ -60,9 +54,7 @@
       <section id="verified" class="block">
         <div class="block-head">
           <h2 class="term">verified</h2>
-          <p>Per application: selected specs whose proof passed an independent re-check, the upstream code those theorems are
-            about, and the project-level checks. A theorem about a function proves one property of it, not its whole
-            behavior, so <em>reached</em> is not <em>fully verified</em>.</p>
+          <p>Proved specs, the upstream code they cover, and project checks. A theorem proves one property of a function, not all of its behavior.</p>
         </div>
         <div class="table-wrap">
           <table class="apps sortable" id="apps-table">
@@ -81,19 +73,17 @@
           </table>
         </div>
         <dl class="defs">
-          <div><dt>Specs accepted</dt><dd>Theorems whose proof built against the pinned statement, generated Lean, spec and library, with only <code>propext</code>, <code>Classical.choice</code> and <code>Quot.sound</code>. Certificates are re-checked in an isolated workspace, not taken from an agent's report.</dd></div>
-          <div><dt>Upstream lines reached</dt><dd>Lines of the pinned upstream functions that accepted theorems are about (statement targets and their callees, deduplicated), out of those that all selected theorems are about. Blank lines, comments and attributes are not counted.</dd></div>
-          <div><dt>Ported / module</dt><dd>Upstream lines with a ported counterpart, out of the selected upstream module scope; both count nonblank physical lines. It shows how small the verified core is compared with the surrounding application.</dd></div>
-          <div><dt>Gate</dt><dd><code>h5i app check</code> on the canonical project: it passes only once every selected theorem is proved and integrated. Until then it fails on the remaining <code>sorry</code>s.</dd></div>
+          <div><dt>Specs accepted</dt><dd>Proof re-checked in a clean workspace: statement unchanged, only <code>propext</code>, <code>Classical.choice</code> and <code>Quot.sound</code>.</dd></div>
+          <div><dt>Upstream lines reached</dt><dd>Lines of the upstream functions accepted theorems are about, over those all selected theorems are about. No blanks or comments.</dd></div>
+          <div><dt>Ported / module</dt><dd>Ported upstream lines over the selected module's lines.</dd></div>
+          <div><dt>Gate</dt><dd><code>h5i app check</code>. Passes once every spec is proved.</dd></div>
         </dl>
       </section>
 
       <section id="performance" class="block">
         <div class="block-head">
           <h2 class="term">performance</h2>
-          <p>Kernel time divided by upstream time for the same inputs, compiled Rust against compiled Rust (release build, same
-            compiler and host). Below 1× the verifiable port is faster. Filled marks compare matched boundaries; hollow marks
-            include unequal work on one side (database round trips, request construction) and do not measure the kernel alone.</p>
+          <p>Kernel time ÷ upstream time on the same inputs, release builds on one host. Below 1× the port is faster. Hollow marks: one side does extra work, such as database calls.</p>
         </div>
         <div class="filters" role="group" aria-label="Performance filter">
           <label class="field"><span>Boundary</span>
@@ -110,8 +100,7 @@
       <section id="effort" class="block">
         <div class="block-head">
           <h2 class="term">effort</h2>
-          <p>What verification costs in code. Extracted Lean is generated from the ported Rust; spec and proof lines are
-            written by hand. Proof lines count only accepted proofs, without the theorem statement.</p>
+          <p>Extracted Lean is generated. Spec and proof lines are written by hand; proof lines exclude the statement.</p>
         </div>
         <div class="table-wrap">
           <table class="effort sortable" id="effort-table">
@@ -130,14 +119,13 @@
           </table>
         </div>
         <figure class="chart" id="effort-chart" aria-describedby="effort-caption"></figure>
-        <p class="caption" id="effort-caption">Each mark is one accepted spec: the upstream lines it is about against the proof lines it took. Log scales.</p>
+        <p class="caption" id="effort-caption">One mark per accepted spec. Log scales.</p>
       </section>
 
       <section id="specs" class="block">
         <div class="block-head">
           <h2 class="term">specs</h2>
-          <p>Every selected theorem. Open one to see the statement, the upstream and ported Rust side by side, the
-            differential tests, the extracted Lean and the accepted proof.</p>
+          <p>All 103 theorems. Open one for its statement, code, Lean and proof.</p>
         </div>
         <div class="filters" role="search">
           <label class="field"><span>Application</span><select id="f-app"><option value="">All</option></select></label>
@@ -172,28 +160,28 @@
       <section id="method" class="block">
         <div class="block-head">
           <h2 class="term">method</h2>
-          <p>How a spec is made, what counts as verified, and where trust ends.</p>
+          <p>How specs are built and checked.</p>
         </div>
         <ol class="flow">
           <li class="step rust"><span class="step-k">Rust</span><h3>Upstream code</h3>
-            <p>Access control, validation and parsing code of an open-source server, at a pinned commit.</p></li>
+            <p>Security code of an open-source server, at a pinned commit.</p></li>
           <li class="step rust"><span class="step-k">Rust</span><h3>h5i-app port</h3>
-            <p>Ported function by function. Strings become byte slices, iterators become loops; every change is listed in the port's deviations file.</p></li>
+            <p>Ported function by function. Each change is listed in DEVIATIONS.md.</p></li>
           <li class="step lean"><span class="step-k">Lean 4</span><h3>Extracted model</h3>
-            <p>Aeneas extracts the port, so the Lean is the code that runs. A hand-written spec states each property as a theorem.</p></li>
+            <p>Aeneas turns the port into Lean. A spec states each property.</p></li>
           <li class="step agent"><span class="step-k">Prover</span><h3>Proof</h3>
-            <p>Any proof source: coding agents in a network-less sandbox (30 minutes per attempt) or interactive sessions.</p></li>
+            <p>Agents in an offline sandbox, 30 minutes per try, or by hand.</p></li>
           <li class="step grade"><span class="step-k">Checker</span><h3>Accepted?</h3>
-            <p>Re-checked in isolation: builds, statement unchanged, standard axioms only. Then integrated and gated by <code>h5i app check</code>.</p></li>
+            <p>Re-checked in isolation, then gated by <code>h5i app check</code>.</p></li>
         </ol>
         <div class="flow-notes">
-          <p class="bracket diff"><strong>Differential tests.</strong> Upstream and port run on the same random inputs and must agree; a mutated port must fail. Evidence, not an equivalence proof.</p>
-          <p class="bracket hidden-ref"><strong>Statement corrections.</strong> A spec proved false is never silently weakened: each added precondition is recorded with its counterexample.</p>
+          <p class="bracket diff"><strong>Differential tests.</strong> Upstream and port must agree on random inputs. Testing, not proof.</p>
+          <p class="bracket hidden-ref"><strong>Corrections.</strong> A false spec gets a recorded precondition, never a silent change.</p>
         </div>
         <ul class="limits">
-          <li>A theorem certifies the extracted kernel under its stated preconditions. The shell around it (request parsing, database access, I/O) is the trusted boundary.</li>
-          <li>Coverage counts upstream code that accepted theorems are about. It does not claim that code's full behavior is proved.</li>
-          <li>Timings are pilot measurements on one host. Ratios from unequal boundaries are shown but are not kernel speedups.</li>
+          <li>Proofs cover the kernel. Parsing, database and I/O around it are trusted.</li>
+          <li>Coverage counts code a theorem is about, not code whose every behavior is proved.</li>
+          <li>Timings are pilots on one host.</li>
         </ul>
       </section>
     </main>
