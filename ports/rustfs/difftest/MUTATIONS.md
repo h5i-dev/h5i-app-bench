@@ -209,3 +209,12 @@ Every policy metadata, management, tag and full-evaluation function was individu
 | `manage::bucket_policy_is_allowed` | `false` | `management::tag_and_full_evaluation_agree` |
 | `manage::bucket_denies_clear` | `false` | `management::tag_and_full_evaluation_agree` |
 | `manage::bucket_allows_match` | `false` | `management::tag_and_full_evaluation_agree` |
+
+All four principal, buffer and wildcard functions were individually mutated and caught.
+
+| Function | Mutation | Test |
+|---|---|---|
+| `extras::principal_values_into_set` | `Vec::new()` | `extras::extras_agree` |
+| `extras::unique_values` | `Vec::new()` | `extras::extras_agree` |
+| `extras::lazybuf_new` | `LazyBuf{source,buffer:None,written:1}` | `extras::extras_agree` |
+| `extras::is_match_as_pattern_prefix` | `false` | `extras::extras_agree` |

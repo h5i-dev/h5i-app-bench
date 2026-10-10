@@ -54,6 +54,18 @@ pub fn with_all_conditions(normal:Vec<Condition>,any:Vec<Condition>,all:Vec<Cond
 pub fn rename_keys_for_test<T>(f:&mut InnerFunc<T>,key:&Key){for e in &mut f.0{e.key=key.clone();}}
 "#);
     }
+    if source.ends_with("policy/principal.rs") {
+        code.push_str(r#"
+pub fn principal_values_set(v:serde_json::Value)->Result<HashSet<String>,serde_json::Error>{
+    serde_json::from_value::<PrincipalValues>(v).map(PrincipalValues::into_set)
+}
+"#);
+    }
+    if source.ends_with("policy/utils/path.rs") {
+        code.push_str(r#"
+pub fn lazybuf_state(s:&str)->(String,bool,usize){let b=LazyBuf::new(s);(b.s.to_string(),b.buf.is_some(),b.w)}
+"#);
+    }
     fs::write(&target, code).unwrap();
     println!("cargo:rerun-if-changed={}", source.display());
     target

@@ -19,3 +19,5 @@ mod condition_data;
 #[cfg(test)] mod keytables;
 
 #[cfg(test)] mod management;
+
+#[cfg(test)] mod extras;

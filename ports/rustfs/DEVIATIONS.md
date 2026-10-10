@@ -212,3 +212,14 @@ and 400,000 bucket cases. Kernel mutations in each module make it fail.
 - parse_config remains in the decoding shell; its validation is in the kernel.
   Tests cover full condition forms, duplicate statements with different SIDs,
   invalid versions/statements, tag operator collisions and request reachability.
+
+## Principal data, wildcard prefix and buffer construction
+
+- Decoded principal formats retain their upstream sum/optional fields; sets
+  become duplicate-free lists. String and set input cases keep their distinct
+  enum variants. JSON decoding remains in the shell.
+- LazyBuf construction returns a borrowed byte slice, no allocated buffer and
+  zero written bytes, matching upstream's initial state. The prefix matcher
+  writes out iterator zip as a paired byte index loop, retaining empty-text
+  and wildcard short-circuit behavior. Tests include empty and Unicode strings,
+  duplicate principals, malformed JSON forms rejected by upstream decoding.

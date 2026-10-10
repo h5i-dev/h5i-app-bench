@@ -1080,22 +1080,26 @@ reason = "policy decoding or serialization"
 [[item]]
 upstream = "crates/policy/src/policy/principal.rs:63 PrincipalFormat"
 lines = 4
-status = "todo"
+status = "ported"
+kernel = ["extras::PrincipalFormat"]
 
 [[item]]
 upstream = "crates/policy/src/policy/principal.rs:70 PrincipalObject"
 lines = 4
-status = "todo"
+status = "ported"
+kernel = ["extras::PrincipalObject"]
 
 [[item]]
 upstream = "crates/policy/src/policy/principal.rs:79 PrincipalValues"
 lines = 4
-status = "todo"
+status = "ported"
+kernel = ["extras::PrincipalValues"]
 
 [[item]]
 upstream = "crates/policy/src/policy/principal.rs:87 PrincipalValues::into_set"
 lines = 6
-status = "todo"
+status = "ported"
+kernel = ["extras::principal_values_into_set"]
 
 [[item]]
 upstream = "crates/policy/src/policy/principal.rs:96 Principal::deserialize"
@@ -1352,7 +1356,8 @@ kernel = ["pathclean::*"]
 [[item]]
 upstream = "crates/policy/src/policy/utils/path.rs:22 LazyBuf::new"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["extras::lazybuf_new"]
 
 [[item]]
 upstream = "crates/policy/src/policy/utils/path.rs:26 LazyBuf::index"
@@ -1393,7 +1398,8 @@ kernel = ["is_match", "principal_is_match"]
 [[item]]
 upstream = "crates/policy/src/policy/utils/wildcard.rs:31 is_match_as_pattern_prefix"
 lines = 22
-status = "todo"
+status = "ported"
+kernel = ["extras::is_match_as_pattern_prefix"]
 
 [[item]]
 upstream = "crates/policy/src/policy/utils/wildcard.rs:59 inner_match"

@@ -11510,6 +11510,165 @@ def defaults.default_policies
          ] : Array ((alloc.vec.Vec Std.U8) × defaults.Policy) 8#usize))
   ok (alloc.slice.Slice.into_vec y28)
 
+/-- [rustfs_kernel::extras::PrincipalValues]
+    Source: 'ports/rustfs/kernel/src/extras.rs', lines 11:0-14:1
+    Visibility: public -/
+@[discriminant isize]
+inductive extras.PrincipalValues where
+| Single : alloc.vec.Vec Std.U8 → extras.PrincipalValues
+| Multiple : alloc.vec.Vec (alloc.vec.Vec Std.U8) → extras.PrincipalValues
+
+/-- [rustfs_kernel::extras::PrincipalObject]
+    Source: 'ports/rustfs/kernel/src/extras.rs', lines 7:0-10:1
+    Visibility: public -/
+structure extras.PrincipalObject where
+  aws : Option extras.PrincipalValues
+  service : Option extras.PrincipalValues
+
+/-- [rustfs_kernel::extras::PrincipalFormat]
+    Source: 'ports/rustfs/kernel/src/extras.rs', lines 3:0-6:1
+    Visibility: public -/
+@[discriminant isize]
+inductive extras.PrincipalFormat where
+| Wildcard : alloc.vec.Vec Std.U8 → extras.PrincipalFormat
+| Object : extras.PrincipalObject → extras.PrincipalFormat
+
+/-- [rustfs_kernel::extras::unique_values]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/extras.rs', lines 25:4-30:5 -/
+@[rust_loop_body]
+def extras.unique_values_loop.body
+  (values : Slice (alloc.vec.Vec Std.U8))
+  (out : alloc.vec.Vec (alloc.vec.Vec Std.U8)) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec (alloc.vec.Vec Std.U8)) × Std.Usize)
+    (alloc.vec.Vec (alloc.vec.Vec Std.U8)))
+  := do
+  let i1 := Slice.len values
+  if i < i1
+  then
+    let s := alloc.vec.Vec.deref out
+    let v ← Slice.index_usize values i
+    let s1 := alloc.vec.Vec.deref v
+    let b ← bytes.member s s1
+    let out1 ←
+      if b
+      then ok out
+      else
+        do
+        let v1 ← alloc.vec.CloneVec.clone core.clone.CloneU8 v
+        alloc.vec.Vec.push out v1
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
+  else ok (done out)
+
+/-- [rustfs_kernel::extras::unique_values]: loop 0:
+    Source: 'ports/rustfs/kernel/src/extras.rs', lines 25:4-30:5 -/
+@[rust_loop]
+def extras.unique_values_loop
+  (values : Slice (alloc.vec.Vec Std.U8))
+  (out : alloc.vec.Vec (alloc.vec.Vec Std.U8)) (i : Std.Usize) :
+  Result (alloc.vec.Vec (alloc.vec.Vec Std.U8))
+  := do
+  loop
+    (fun (out1, i1) => extras.unique_values_loop.body values out1 i1)
+    (out, i)
+
+/-- [rustfs_kernel::extras::unique_values]:
+    Source: 'ports/rustfs/kernel/src/extras.rs', lines 22:0-32:1 -/
+@[reducible]
+def extras.unique_values
+  (values : Slice (alloc.vec.Vec Std.U8)) :
+  Result (alloc.vec.Vec (alloc.vec.Vec Std.U8))
+  := do
+  extras.unique_values_loop values (alloc.vec.Vec.new (alloc.vec.Vec Std.U8))
+    0#usize
+
+/-- [rustfs_kernel::extras::principal_values_into_set]:
+    Source: 'ports/rustfs/kernel/src/extras.rs', lines 16:0-21:1
+    Visibility: public -/
+def extras.principal_values_into_set
+  (values : extras.PrincipalValues) :
+  Result (alloc.vec.Vec (alloc.vec.Vec Std.U8))
+  := do
+  match values with
+  | extras.PrincipalValues.Single s =>
+    let y ←
+      lift (Std.Array.to_slice (Array.make 1#usize [ s ] : Array (alloc.vec.Vec
+        Std.U8) 1#usize))
+    ok (alloc.slice.Slice.into_vec y)
+  | extras.PrincipalValues.Multiple v =>
+    let s := alloc.vec.Vec.deref v
+    extras.unique_values s
+
+/-- [rustfs_kernel::extras::LazyBuf]
+    Source: 'ports/rustfs/kernel/src/extras.rs', lines 33:0-37:1
+    Visibility: public -/
+structure extras.LazyBuf where
+  source : Slice Std.U8
+  buffer : Option (alloc.vec.Vec Std.U8)
+  written : Std.Usize
+
+/-- [rustfs_kernel::extras::lazybuf_new]:
+    Source: 'ports/rustfs/kernel/src/extras.rs', lines 38:0-44:1
+    Visibility: public -/
+def extras.lazybuf_new (source : Slice Std.U8) : Result extras.LazyBuf := do
+  ok { source, buffer := none, written := 0#usize }
+
+/-- [rustfs_kernel::extras::is_match_as_pattern_prefix]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/extras.rs', lines 48:4-60:1
+    Visibility: public -/
+@[rust_loop_body]
+def extras.is_match_as_pattern_prefix_loop.body
+  (pattern : Slice Std.U8) (text : Slice Std.U8) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := Slice.len pattern
+  if i < i1
+  then
+    let i2 := Slice.len text
+    if i < i2
+    then
+      let x ← Slice.index_usize pattern i
+      let y ← Slice.index_usize text i
+      if x = 42#u8
+      then ok (done true)
+      else
+        if x != 63#u8
+        then
+          if x != y
+          then ok (done false)
+          else let i3 ← i + 1#usize
+               ok (cont i3)
+        else let i3 ← i + 1#usize
+             ok (cont i3)
+    else
+      let i3 := Slice.len text
+      let i4 := Slice.len pattern
+      ok (done (i3 <= i4))
+  else
+    let i2 := Slice.len text
+    let i3 := Slice.len pattern
+    ok (done (i2 <= i3))
+
+/-- [rustfs_kernel::extras::is_match_as_pattern_prefix]: loop 0:
+    Source: 'ports/rustfs/kernel/src/extras.rs', lines 48:4-60:1
+    Visibility: public -/
+@[rust_loop]
+def extras.is_match_as_pattern_prefix_loop
+  (pattern : Slice Std.U8) (text : Slice Std.U8) (i : Std.Usize) :
+  Result Bool
+  := do
+  loop
+    (fun i1 => extras.is_match_as_pattern_prefix_loop.body pattern text i1)
+    i
+
+/-- [rustfs_kernel::extras::is_match_as_pattern_prefix]:
+    Source: 'ports/rustfs/kernel/src/extras.rs', lines 46:0-60:1
+    Visibility: public -/
+@[reducible]
+def extras.is_match_as_pattern_prefix
+  (pattern : Slice Std.U8) (text : Slice Std.U8) : Result Bool := do
+  extras.is_match_as_pattern_prefix_loop pattern text 0#usize
+
 /-- [rustfs_kernel::keytables::KeyFamily]
     Source: 'ports/rustfs/kernel/src/keytables.rs', lines 4:0-11:1
     Visibility: public -/
