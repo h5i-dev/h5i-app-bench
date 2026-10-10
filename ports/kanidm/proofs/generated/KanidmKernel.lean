@@ -515,7 +515,7 @@ structure AccessControlsInner where
   sync_agreements : alloc.vec.Vec SyncAgreement
 
 /-- [kanidm_kernel::valueset::as_refer_set]:
-    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 292:0-297:1
+    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 295:0-300:1
     Visibility: public -/
 def valueset.as_refer_set
   (vs : ValueSet) : Result (Option (alloc.vec.Vec Std.U128)) := do
@@ -899,7 +899,7 @@ def filter_impl.get_attr_set
   filter_impl.fc_get_attr_set filter (alloc.vec.Vec.new (alloc.vec.Vec Std.U8))
 
 /-- [kanidm_kernel::valueset::as_iutf8_set]:
-    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 284:0-289:1
+    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 287:0-292:1
     Visibility: public -/
 def valueset.as_iutf8_set
   (vs : ValueSet) :
@@ -972,7 +972,7 @@ inductive AccessSrchResult where
 | Allow : alloc.vec.Vec (alloc.vec.Vec Std.U8) → AccessSrchResult
 
 /-- [kanidm_kernel::valueset::to_refer_single]:
-    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 300:0-311:1
+    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 303:0-314:1
     Visibility: public -/
 def valueset.to_refer_single (vs : ValueSet) : Result (Option Std.U128) := do
   match vs with
@@ -1162,7 +1162,7 @@ def search_acc.scope_member
       bset.intersects_uuid s s1
 
 /-- [kanidm_kernel::valueset::as_oauthscopemap]:
-    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 328:0-333:1
+    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 331:0-336:1
     Visibility: public -/
 def valueset.as_oauthscopemap
   (vs : ValueSet) : Result (Option (alloc.vec.Vec Std.U128)) := do
@@ -1639,7 +1639,7 @@ def search_acc.extend_if
   else ok set
 
 /-- [kanidm_kernel::valueset::any_less_u32]: loop body 0:
-    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 143:4-150:1 -/
+    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 146:4-153:1 -/
 @[rust_loop_body]
 def valueset.any_less_u32_loop.body
   (set : Slice Std.U32) (u : Std.U32) (i : Std.Usize) :
@@ -1656,7 +1656,7 @@ def valueset.any_less_u32_loop.body
   else ok (done false)
 
 /-- [kanidm_kernel::valueset::any_less_u32]: loop 0:
-    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 143:4-150:1 -/
+    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 146:4-153:1 -/
 @[rust_loop]
 def valueset.any_less_u32_loop
   (set : Slice Std.U32) (u : Std.U32) (i : Std.Usize) : Result Bool := do
@@ -1665,14 +1665,14 @@ def valueset.any_less_u32_loop
     i
 
 /-- [kanidm_kernel::valueset::any_less_u32]:
-    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 141:0-150:1 -/
+    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 144:0-153:1 -/
 @[reducible]
 def valueset.any_less_u32
   (set : Slice Std.U32) (u : Std.U32) : Result Bool := do
   valueset.any_less_u32_loop set u 0#usize
 
 /-- [kanidm_kernel::valueset::any_less_uuid]: loop body 0:
-    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 132:4-139:1 -/
+    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 135:4-142:1 -/
 @[rust_loop_body]
 def valueset.any_less_uuid_loop.body
   (set : Slice Std.U128) (u : Std.U128) (i : Std.Usize) :
@@ -1689,7 +1689,7 @@ def valueset.any_less_uuid_loop.body
   else ok (done false)
 
 /-- [kanidm_kernel::valueset::any_less_uuid]: loop 0:
-    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 132:4-139:1 -/
+    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 135:4-142:1 -/
 @[rust_loop]
 def valueset.any_less_uuid_loop
   (set : Slice Std.U128) (u : Std.U128) (i : Std.Usize) : Result Bool := do
@@ -1698,14 +1698,14 @@ def valueset.any_less_uuid_loop
     i
 
 /-- [kanidm_kernel::valueset::any_less_uuid]:
-    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 130:0-139:1 -/
+    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 133:0-142:1 -/
 @[reducible]
 def valueset.any_less_uuid
   (set : Slice Std.U128) (u : Std.U128) : Result Bool := do
   valueset.any_less_uuid_loop set u 0#usize
 
 /-- [kanidm_kernel::valueset::vs_lessthan]:
-    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 265:0-281:1
+    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 268:0-284:1
     Visibility: public -/
 def valueset.vs_lessthan
   (vs : ValueSet) (pv : PartialValue) : Result Bool := do
@@ -1758,7 +1758,7 @@ def entry_impl.attribute_lessthan
   | some vset => valueset.vs_lessthan vset subvalue
 
 /-- [kanidm_kernel::valueset::to_lowercase]: loop body 0:
-    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 52:4-60:5
+    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 55:4-63:5
     Visibility: public -/
 @[rust_loop_body]
 def valueset.to_lowercase_loop.body
@@ -1784,7 +1784,7 @@ def valueset.to_lowercase_loop.body
   else ok (done out)
 
 /-- [kanidm_kernel::valueset::to_lowercase]: loop 0:
-    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 52:4-60:5
+    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 55:4-63:5
     Visibility: public -/
 @[rust_loop]
 def valueset.to_lowercase_loop
@@ -1796,7 +1796,7 @@ def valueset.to_lowercase_loop
     (out, i)
 
 /-- [kanidm_kernel::valueset::to_lowercase]:
-    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 49:0-62:1
+    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 52:0-65:1
     Visibility: public -/
 @[reducible]
 def valueset.to_lowercase
@@ -1804,7 +1804,7 @@ def valueset.to_lowercase
   valueset.to_lowercase_loop s (alloc.vec.Vec.new Std.U8) 0#usize
 
 /-- [kanidm_kernel::valueset::starts_at]: loop body 0:
-    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 23:4-30:1 -/
+    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 26:4-33:1 -/
 @[rust_loop_body]
 def valueset.starts_at_loop.body
   (hay : Slice Std.U8) («at» : Std.Usize) (needle : Slice Std.U8)
@@ -1824,7 +1824,7 @@ def valueset.starts_at_loop.body
   else ok (done true)
 
 /-- [kanidm_kernel::valueset::starts_at]: loop 0:
-    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 23:4-30:1 -/
+    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 26:4-33:1 -/
 @[rust_loop]
 def valueset.starts_at_loop
   (hay : Slice Std.U8) («at» : Std.Usize) (needle : Slice Std.U8)
@@ -1836,7 +1836,7 @@ def valueset.starts_at_loop
     j
 
 /-- [kanidm_kernel::valueset::starts_at]:
-    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 21:0-30:1 -/
+    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 24:0-33:1 -/
 @[reducible]
 def valueset.starts_at
   (hay : Slice Std.U8) («at» : Std.Usize) (needle : Slice Std.U8) :
@@ -1845,7 +1845,7 @@ def valueset.starts_at
   valueset.starts_at_loop hay «at» needle 0#usize
 
 /-- [kanidm_kernel::valueset::str_ends_with]:
-    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 41:0-46:1
+    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 44:0-49:1
     Visibility: public -/
 def valueset.str_ends_with
   (hay : Slice Std.U8) (needle : Slice Std.U8) : Result Bool := do
@@ -1860,7 +1860,7 @@ def valueset.str_ends_with
     valueset.starts_at hay i4 needle
 
 /-- [kanidm_kernel::valueset::any_ends_with_lower]: loop body 0:
-    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 121:4-128:1 -/
+    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 124:4-131:1 -/
 @[rust_loop_body]
 def valueset.any_ends_with_lower_loop.body
   (set : Slice (alloc.vec.Vec Std.U8)) (s2_lower : Slice Std.U8)
@@ -1882,7 +1882,7 @@ def valueset.any_ends_with_lower_loop.body
   else ok (done false)
 
 /-- [kanidm_kernel::valueset::any_ends_with_lower]: loop 0:
-    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 121:4-128:1 -/
+    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 124:4-131:1 -/
 @[rust_loop]
 def valueset.any_ends_with_lower_loop
   (set : Slice (alloc.vec.Vec Std.U8)) (s2_lower : Slice Std.U8)
@@ -1894,7 +1894,7 @@ def valueset.any_ends_with_lower_loop
     i
 
 /-- [kanidm_kernel::valueset::any_ends_with_lower]:
-    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 119:0-128:1 -/
+    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 122:0-131:1 -/
 @[reducible]
 def valueset.any_ends_with_lower
   (set : Slice (alloc.vec.Vec Std.U8)) (s2_lower : Slice Std.U8) :
@@ -1903,7 +1903,7 @@ def valueset.any_ends_with_lower
   valueset.any_ends_with_lower_loop set s2_lower 0#usize
 
 /-- [kanidm_kernel::valueset::any_ends_with]: loop body 0:
-    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 88:4-95:1 -/
+    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 91:4-98:1 -/
 @[rust_loop_body]
 def valueset.any_ends_with_loop.body
   (set : Slice (alloc.vec.Vec Std.U8)) (s2 : Slice Std.U8) (i : Std.Usize) :
@@ -1922,7 +1922,7 @@ def valueset.any_ends_with_loop.body
   else ok (done false)
 
 /-- [kanidm_kernel::valueset::any_ends_with]: loop 0:
-    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 88:4-95:1 -/
+    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 91:4-98:1 -/
 @[rust_loop]
 def valueset.any_ends_with_loop
   (set : Slice (alloc.vec.Vec Std.U8)) (s2 : Slice Std.U8) (i : Std.Usize) :
@@ -1933,14 +1933,14 @@ def valueset.any_ends_with_loop
     i
 
 /-- [kanidm_kernel::valueset::any_ends_with]:
-    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 86:0-95:1 -/
+    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 89:0-98:1 -/
 @[reducible]
 def valueset.any_ends_with
   (set : Slice (alloc.vec.Vec Std.U8)) (s2 : Slice Std.U8) : Result Bool := do
   valueset.any_ends_with_loop set s2 0#usize
 
 /-- [kanidm_kernel::valueset::vs_endswith]:
-    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 243:0-262:1
+    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 246:0-265:1
     Visibility: public -/
 def valueset.vs_endswith
   (vs : ValueSet) (pv : PartialValue) : Result Bool := do
@@ -1998,7 +1998,7 @@ def entry_impl.attribute_endswith
   | some vset => valueset.vs_endswith vset subvalue
 
 /-- [kanidm_kernel::valueset::str_starts_with]:
-    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 33:0-38:1
+    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 36:0-41:1
     Visibility: public -/
 def valueset.str_starts_with
   (hay : Slice Std.U8) (needle : Slice Std.U8) : Result Bool := do
@@ -2009,7 +2009,7 @@ def valueset.str_starts_with
   else valueset.starts_at hay 0#usize needle
 
 /-- [kanidm_kernel::valueset::any_starts_with_lower]: loop body 0:
-    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 110:4-117:1 -/
+    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 113:4-120:1 -/
 @[rust_loop_body]
 def valueset.any_starts_with_lower_loop.body
   (set : Slice (alloc.vec.Vec Std.U8)) (s2_lower : Slice Std.U8)
@@ -2031,7 +2031,7 @@ def valueset.any_starts_with_lower_loop.body
   else ok (done false)
 
 /-- [kanidm_kernel::valueset::any_starts_with_lower]: loop 0:
-    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 110:4-117:1 -/
+    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 113:4-120:1 -/
 @[rust_loop]
 def valueset.any_starts_with_lower_loop
   (set : Slice (alloc.vec.Vec Std.U8)) (s2_lower : Slice Std.U8)
@@ -2043,7 +2043,7 @@ def valueset.any_starts_with_lower_loop
     i
 
 /-- [kanidm_kernel::valueset::any_starts_with_lower]:
-    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 108:0-117:1 -/
+    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 111:0-120:1 -/
 @[reducible]
 def valueset.any_starts_with_lower
   (set : Slice (alloc.vec.Vec Std.U8)) (s2_lower : Slice Std.U8) :
@@ -2052,7 +2052,7 @@ def valueset.any_starts_with_lower
   valueset.any_starts_with_lower_loop set s2_lower 0#usize
 
 /-- [kanidm_kernel::valueset::any_starts_with]: loop body 0:
-    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 77:4-84:1 -/
+    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 80:4-87:1 -/
 @[rust_loop_body]
 def valueset.any_starts_with_loop.body
   (set : Slice (alloc.vec.Vec Std.U8)) (s2 : Slice Std.U8) (i : Std.Usize) :
@@ -2071,7 +2071,7 @@ def valueset.any_starts_with_loop.body
   else ok (done false)
 
 /-- [kanidm_kernel::valueset::any_starts_with]: loop 0:
-    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 77:4-84:1 -/
+    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 80:4-87:1 -/
 @[rust_loop]
 def valueset.any_starts_with_loop
   (set : Slice (alloc.vec.Vec Std.U8)) (s2 : Slice Std.U8) (i : Std.Usize) :
@@ -2082,14 +2082,14 @@ def valueset.any_starts_with_loop
     i
 
 /-- [kanidm_kernel::valueset::any_starts_with]:
-    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 75:0-84:1 -/
+    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 78:0-87:1 -/
 @[reducible]
 def valueset.any_starts_with
   (set : Slice (alloc.vec.Vec Std.U8)) (s2 : Slice Std.U8) : Result Bool := do
   valueset.any_starts_with_loop set s2 0#usize
 
 /-- [kanidm_kernel::valueset::vs_startswith]:
-    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 221:0-240:1
+    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 224:0-243:1
     Visibility: public -/
 def valueset.vs_startswith
   (vs : ValueSet) (pv : PartialValue) : Result Bool := do
@@ -2147,39 +2147,38 @@ def entry_impl.attribute_startswith
   | some vset => valueset.vs_startswith vset subvalue
 
 /-- [kanidm_kernel::valueset::str_contains]: loop body 0:
-    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 12:4-19:1
+    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 15:4-22:1
     Visibility: public -/
 @[rust_loop_body]
 def valueset.str_contains_loop.body
-  (hay : Slice Std.U8) (needle : Slice Std.U8) (i : Std.Usize) :
+  (hay : Slice Std.U8) (needle : Slice Std.U8) (last : Std.Usize)
+  (i : Std.Usize) :
   Result (ControlFlow Std.Usize Bool)
   := do
-  let i1 := Slice.len needle
-  let i2 ← i + i1
-  let i3 := Slice.len hay
-  if i2 <= i3
+  if i <= last
   then
     let b ← valueset.starts_at hay i needle
     if b
     then ok (done true)
-    else let i4 ← i + 1#usize
-         ok (cont i4)
+    else let i1 ← i + 1#usize
+         ok (cont i1)
   else ok (done false)
 
 /-- [kanidm_kernel::valueset::str_contains]: loop 0:
-    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 12:4-19:1
+    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 15:4-22:1
     Visibility: public -/
 @[rust_loop]
 def valueset.str_contains_loop
-  (hay : Slice Std.U8) (needle : Slice Std.U8) (i : Std.Usize) :
+  (hay : Slice Std.U8) (needle : Slice Std.U8) (last : Std.Usize)
+  (i : Std.Usize) :
   Result Bool
   := do
   loop
-    (fun i1 => valueset.str_contains_loop.body hay needle i1)
+    (fun i1 => valueset.str_contains_loop.body hay needle last i1)
     i
 
 /-- [kanidm_kernel::valueset::str_contains]:
-    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 7:0-19:1
+    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 9:0-22:1
     Visibility: public -/
 def valueset.str_contains
   (hay : Slice Std.U8) (needle : Slice Std.U8) : Result Bool := do
@@ -2187,10 +2186,14 @@ def valueset.str_contains
   let i1 := Slice.len hay
   if i > i1
   then ok false
-  else valueset.str_contains_loop hay needle 0#usize
+  else
+    let i2 := Slice.len hay
+    let i3 := Slice.len needle
+    let last ← i2 - i3
+    valueset.str_contains_loop hay needle last 0#usize
 
 /-- [kanidm_kernel::valueset::any_contains_lower]: loop body 0:
-    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 99:4-106:1 -/
+    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 102:4-109:1 -/
 @[rust_loop_body]
 def valueset.any_contains_lower_loop.body
   (set : Slice (alloc.vec.Vec Std.U8)) (s2_lower : Slice Std.U8)
@@ -2212,7 +2215,7 @@ def valueset.any_contains_lower_loop.body
   else ok (done false)
 
 /-- [kanidm_kernel::valueset::any_contains_lower]: loop 0:
-    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 99:4-106:1 -/
+    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 102:4-109:1 -/
 @[rust_loop]
 def valueset.any_contains_lower_loop
   (set : Slice (alloc.vec.Vec Std.U8)) (s2_lower : Slice Std.U8)
@@ -2224,7 +2227,7 @@ def valueset.any_contains_lower_loop
     i
 
 /-- [kanidm_kernel::valueset::any_contains_lower]:
-    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 97:0-106:1 -/
+    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 100:0-109:1 -/
 @[reducible]
 def valueset.any_contains_lower
   (set : Slice (alloc.vec.Vec Std.U8)) (s2_lower : Slice Std.U8) :
@@ -2233,7 +2236,7 @@ def valueset.any_contains_lower
   valueset.any_contains_lower_loop set s2_lower 0#usize
 
 /-- [kanidm_kernel::valueset::any_contains]: loop body 0:
-    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 66:4-73:1 -/
+    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 69:4-76:1 -/
 @[rust_loop_body]
 def valueset.any_contains_loop.body
   (set : Slice (alloc.vec.Vec Std.U8)) (s2 : Slice Std.U8) (i : Std.Usize) :
@@ -2252,7 +2255,7 @@ def valueset.any_contains_loop.body
   else ok (done false)
 
 /-- [kanidm_kernel::valueset::any_contains]: loop 0:
-    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 66:4-73:1 -/
+    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 69:4-76:1 -/
 @[rust_loop]
 def valueset.any_contains_loop
   (set : Slice (alloc.vec.Vec Std.U8)) (s2 : Slice Std.U8) (i : Std.Usize) :
@@ -2263,14 +2266,14 @@ def valueset.any_contains_loop
     i
 
 /-- [kanidm_kernel::valueset::any_contains]:
-    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 64:0-73:1 -/
+    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 67:0-76:1 -/
 @[reducible]
 def valueset.any_contains
   (set : Slice (alloc.vec.Vec Std.U8)) (s2 : Slice Std.U8) : Result Bool := do
   valueset.any_contains_loop set s2 0#usize
 
 /-- [kanidm_kernel::valueset::vs_substring]:
-    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 199:0-218:1
+    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 202:0-221:1
     Visibility: public -/
 def valueset.vs_substring
   (vs : ValueSet) (pv : PartialValue) : Result Bool := do
@@ -2328,7 +2331,7 @@ def entry_impl.attribute_substring
   | some vset => valueset.vs_substring vset subvalue
 
 /-- [kanidm_kernel::valueset::contains_u32]: loop body 0:
-    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 154:4-161:1 -/
+    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 157:4-164:1 -/
 @[rust_loop_body]
 def valueset.contains_u32_loop.body
   (set : Slice Std.U32) (u : Std.U32) (i : Std.Usize) :
@@ -2345,7 +2348,7 @@ def valueset.contains_u32_loop.body
   else ok (done false)
 
 /-- [kanidm_kernel::valueset::contains_u32]: loop 0:
-    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 154:4-161:1 -/
+    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 157:4-164:1 -/
 @[rust_loop]
 def valueset.contains_u32_loop
   (set : Slice Std.U32) (u : Std.U32) (i : Std.Usize) : Result Bool := do
@@ -2354,14 +2357,14 @@ def valueset.contains_u32_loop
     i
 
 /-- [kanidm_kernel::valueset::contains_u32]:
-    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 152:0-161:1 -/
+    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 155:0-164:1 -/
 @[reducible]
 def valueset.contains_u32
   (set : Slice Std.U32) (u : Std.U32) : Result Bool := do
   valueset.contains_u32_loop set u 0#usize
 
 /-- [kanidm_kernel::valueset::vs_contains]:
-    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 164:0-196:1
+    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 167:0-199:1
     Visibility: public -/
 def valueset.vs_contains
   (vs : ValueSet) (pv : PartialValue) : Result Bool := do
@@ -5731,7 +5734,7 @@ structure ModifyEvent where
   modlist : alloc.vec.Vec Modify
 
 /-- [kanidm_kernel::valueset::to_str]:
-    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 336:0-343:1
+    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 339:0-346:1
     Visibility: public -/
 def valueset.to_str
   (v : PartialValue) : Result (Option (alloc.vec.Vec Std.U8)) := do
@@ -6620,7 +6623,7 @@ def create_acc.migration_filter_entry
     | InternalRole.MessageQueue => ok create_acc.IResult.Ignore
 
 /-- [kanidm_kernel::valueset::to_uuid_single]:
-    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 314:0-325:1
+    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 317:0-328:1
     Visibility: public -/
 def valueset.to_uuid_single (vs : ValueSet) : Result (Option Std.U128) := do
   match vs with

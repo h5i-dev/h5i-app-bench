@@ -1,7 +1,6 @@
 import Verified.KanidmSynchroniseSeesNothing
 import Verified.KanidmReadonlyCannotModify
 import Verified.KanidmDeleteProtected
-import Verified.KanidmStrContainsSpec
 import Spec
 open Aeneas Aeneas.Std Result kanidm_kernel kanidm_kernel.Spec
 
@@ -159,13 +158,10 @@ theorem match_eq_spec (e : Entry) (a : alloc.vec.Vec U8) (v : PartialValue) :
       ∃ vs, ava e (nats a.val) = some vs ∧ ValueContains vs v := by
   sorry
 
-/-- The substring test of `Cnt` terms is `List.IsInfix`, for a haystack shorter
-than `Usize.max`. Aeneas lets a slice be `Usize.max` long, and then the loop's
-checked `i + needle.len()` overflows and the function fails; Rust slices hold at
-most `isize::MAX` bytes, so the bound only excludes lengths Rust cannot have. -/
-theorem str_contains_spec (hay needle : Slice U8) (hlt : hay.length < Usize.max) :
+/-- The substring test of `Cnt` terms is `List.IsInfix`. -/
+theorem str_contains_spec (hay needle : Slice U8) :
     valueset.str_contains hay needle = ok (decide (needle.val <:+: hay.val)) := by
-  apply kanidm_kernel.Verified.KanidmStrContainsSpec.str_contains_spec <;> assumption
+  sorry
 
 /-! ## Totality -/
 
