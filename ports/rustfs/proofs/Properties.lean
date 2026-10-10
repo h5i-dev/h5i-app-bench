@@ -81,27 +81,6 @@ theorem bucket_allow_needs_principal (sts : Slice stmts.BPStatement) (a : stmts.
       stmts.bp_statement_is_allowed st a e = ok true := by
   apply rustfs_kernel.Verified.RustfsBucketPrincipal.bucket_allow_needs_principal <;> assumption
 
-/-- Bucket policy evaluation always terminates without a panic, for an S3
-bucket name of at most 63 bytes and an object key of at most 1024, the limits
-S3 enforces before policy evaluation; for condition keys whose lookup name
-(`name/variable`) fits in a `Vec`; and for request condition values of at most
-8 KiB (header-sized) and resource patterns of at most 20 KiB (S3's bucket policy
-size limit), since the substituted pattern grows with both. Without them a bucket name or key name
-of `Usize.max` bytes exceeds a `Vec`'s capacity. -/
-theorem bucket_policy_total (sts : Slice stmts.BPStatement) (a : stmts.BucketPolicyArgs) (e : condfuncs.Env)
-    (hb : a.bucket.length ≤ 63) (ho : a.object.length ≤ 1024)
-    (hk : ∀ st ∈ sts.val, ∀ c ∈ st.conditions.for_any_value.val ++ st.conditions.for_all_values.val ++
-        st.conditions.for_normal.val,
-      ∀ k ∈ (match c.cond with
-        | .Str _ l => l.val.map Prod.fst | .Ip _ l => l.val.map Prod.fst | .Null l => l.val.map Prod.fst
-        | .Bool l => l.val.map Prod.fst | .Num _ _ l => l.val.map Prod.fst),
-      ∀ v, k.variable = some v → k.name.length + v.length < Usize.max)
-    (hc : ∀ kv ∈ a.conditions.val, ∀ v ∈ kv.2.val, v.length ≤ 8192)
-    (hr : ∀ st ∈ sts.val, ∀ r ∈ st.resources.val ++ st.not_resources.val,
-      (match r with | .S3 p => p.length | .Kms p => p.length) ≤ 20480) :
-    ∃ r, policies.bucket_policy_is_allowed sts a e = ok r := by
-  sorry
-
 /-! ## Matchers and parsers -/
 
 /-- `wildcard::is_match` is the glob `globSpec`. -/

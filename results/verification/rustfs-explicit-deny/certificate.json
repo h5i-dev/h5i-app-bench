@@ -3,7 +3,7 @@
   "sha256": "8afaf2f94aa433f34578811109353bee64eddf4dad43f8daf0533932935ba2b3",
   "grade": {
     "solution_loc": 43,
-    "check_s": 10.2,
+    "check_s": 10.3,
     "axioms": [
       "Classical.choice",
       "Quot.sound",
@@ -11,10 +11,9 @@
     ],
     "passed": true
   },
-  "checked_at": "2026-10-10T13:37:20.655591+00:00",
+  "checked_at": "2026-10-10T19:21:20.146908+00:00",
   "inputs": {
     "/home/ht2673/Dev/h5i-app-bench/harness/bench.py": "d5a195c2fa2ba80cf3d20f9af730c2e105c05787675e34f76a34cb511bd26a8e",
-    "/home/ht2673/Dev/h5i-app-bench/dataset/tasks.toml": "594b8c4c6a235c20b7ef86ce8d0838c52f08663f7fe51434d13ddf8c1df36586",
     "/home/ht2673/Dev/h5i-app-bench/ports/rustfs/proofs/lean-toolchain": "efac0b94923b2d8b6840cd35be9177ad0fc5ab2332f4f4311c98712cee92fdee",
     "/home/ht2673/Dev/h5i-app-bench/ports/rustfs/proofs/lake-manifest.json": "fd1ca6b7b10c2d362b42d7f6b8a632220a5cf4c71a85b13f174cca8a5ba05582",
     "/home/ht2673/Dev/h5i-app-bench/ports/rustfs/kernel/src/acts.rs": "473846b419520ea3acd17bfe1a0cfd653664186c0eda9f159ff6be8c27539ed9",
@@ -28,7 +27,7 @@
     "/home/ht2673/Dev/h5i-app-bench/ports/rustfs/kernel/src/defaults.rs": "a5712d93f6adc70df204b9a6dbcc860d4f6d42dbb2470790d41bfb4bb1077f19",
     "/home/ht2673/Dev/h5i-app-bench/ports/rustfs/kernel/src/docdata.rs": "3618130cec9c758b3c97391305421f129d863416cd63916c41f3abf58aa595eb",
     "/home/ht2673/Dev/h5i-app-bench/ports/rustfs/kernel/src/extras.rs": "a99d790b0f9e9150c66684e2483ac81ef4e8d09e037741f50c234504a56897de",
-    "/home/ht2673/Dev/h5i-app-bench/ports/rustfs/kernel/src/keynames.rs": "dd3034bb66e153a8ad2f3fabfec45962cd19db646f123f802e3aba88f4d44406",
+    "/home/ht2673/Dev/h5i-app-bench/ports/rustfs/kernel/src/keynames.rs": "f52bc02c4f107617e6fa74ba884b19c92a48c8e5cf216b4a98e77c86726d3570",
     "/home/ht2673/Dev/h5i-app-bench/ports/rustfs/kernel/src/keytables.rs": "8c1ea0b0dae4ab962e7778e3ccdfd06502eff9b4927157867663170417e291a7",
     "/home/ht2673/Dev/h5i-app-bench/ports/rustfs/kernel/src/lib.rs": "1199bef1067d587d266b6cbdaec74a39f39789359215866fd20213c18c8462f3",
     "/home/ht2673/Dev/h5i-app-bench/ports/rustfs/kernel/src/manage.rs": "10605687c9feba2cf63e41ed6d5673466f4e383f7d4f71db89b53608c3ef504b",
@@ -71,6 +70,7 @@
     "/var/tmp/h5iab/h5i-app-lib/H5iAppLibTests.lean": "51a9c668b98f638966b181c298872812f5f60593fbb2cbc85ff5663db3118c8a",
     "/var/tmp/h5iab/h5i-app-lib/lakefile.lean": "a0f64c1541280d1222c556c456db2e858461b2d448700449e3da51bd57df2b31",
     "target_statement_sha256": "5319184513ff63c1d882856a7b49465c9b3c4d7836936080860b569cc8eabf28",
-    "certificate_boundary_version": "2"
+    "task_entry_sha256": "549fa756b425bcf3a091b2dbde3d2d61bbdd25ac15ffcd13e4c00e8da9b9c6e8",
+    "certificate_boundary_version": "3"
   }
 }

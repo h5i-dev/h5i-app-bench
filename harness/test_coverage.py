@@ -11,7 +11,7 @@ class WorkspaceFreshnessTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             src = root / "ports/example"
-            files = [root / "harness/bench.py", root / "dataset/tasks.toml",
+            files = [root / "harness/bench.py",
                      src / "proofs/lean-toolchain", src / "proofs/lake-manifest.json",
                      src / "proofs/Spec.lean", src / "proofs/Properties.lean"]
             for path in files:
@@ -31,6 +31,27 @@ class WorkspaceFreshnessTests(unittest.TestCase):
                 statement.return_value = "(n : Nat) : n = n"
                 (src / "proofs/Spec.lean").write_text("changed policy")
                 self.assertNotEqual(initial, coverage.environment(task))
+
+    def test_certificate_tracks_only_its_own_dataset_entry(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            src = root / "ports/example"
+            for path in [root / "harness/bench.py", src / "proofs/lean-toolchain",
+                         src / "proofs/lake-manifest.json", src / "proofs/Spec.lean"]:
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_text("original")
+            (root / "dataset").mkdir()
+            (root / "dataset/tasks.toml").write_text("[[task]]\nid = 'other'\n")
+            task = {"id": "example", "module": "Properties", "given": ["Spec.lean"]}
+            with patch.object(coverage, "ROOT", root), patch.object(
+                coverage.bench, "src_dir", return_value=src
+            ), patch.object(coverage.bench, "APPLIB", root / "library"), patch.object(
+                coverage.bench, "statement", return_value="(n : Nat) : n = n"
+            ):
+                initial = coverage.environment(task)
+                (root / "dataset/tasks.toml").write_text("")
+                self.assertEqual(initial, coverage.environment(task))
+                self.assertNotEqual(initial, coverage.environment(task | {"given": []}))
 
     def test_manifest_change_invalidates_workspace(self):
         with tempfile.TemporaryDirectory() as directory:

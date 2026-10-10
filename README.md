@@ -21,7 +21,7 @@ the framework here is tagged `framework-final`. Model solutions recorded in
 and are shown with the current ones (`H5iAppLib`, `h5i_step`, …).
 
 Each port is a standard h5i-app project: `kernel/`, `proofs/`, and
-`h5i-app.toml`. The six local ports contain 103 selected specifications.
+`h5i-app.toml`. The six local ports contain 101 selected specifications.
 The three legacy tasks referring to external h5i examples are retained as
 historical agent-benchmark data, outside this study's port corpus.
 
@@ -73,9 +73,9 @@ prices in `billing.py`.
 | [nora](ports/nora) | getnora-io/nora @ f864a9a | 977 | 25 | authentication middleware, API tokens and their cache, OIDC claims, role rules and namespace scopes, brute-force lockout, trusted proxies; validators for digests, Docker names and references, and storage keys; glob matching |
 | [artifact-keeper](ports/artifactkeeper) | Artifact-Keeper @ 7c42891 | ~2,150 | 17 | repository permission service, auth, admin and visibility middleware, guest access, token scopes, download tickets, anonymous-rule validation, CIDR matching |
 | [kanidm](ports/kanidm) | kanidm/kanidm @ f608c4f | 2,553 | 18 | access control profiles: search, create, modify and delete checks, protected entries, sync agreements, the effective-permission report; filter matching |
-| [rustfs](ports/rustfs) | rustfs/rustfs @ e870a6d | 1,141 | 14 | IAM and bucket policy evaluation: actions, resources, conditions; policy-variable resolution, wildcard matching, path cleaning, condition value parsing |
+| [rustfs](ports/rustfs) | rustfs/rustfs @ e870a6d | 1,141 | 13 | IAM and bucket policy evaluation: actions, resources, conditions; policy-variable resolution, wildcard matching, path cleaning, condition value parsing |
 | [tuwunel](ports/tuwunel) | matrix-construct/tuwunel @ 7801b8e | 2,492 | 17 | Matrix event and state visibility and pagination: `/messages`, `/context`, `/relations`, `/threads`, `/event`, `/state`, `/members`, `initialSync`; visibility over federation |
-| [OxiCloud](ports/oxicloud) | AtalayaLabs/OxiCloud @ 8c0dd33 | 1,257 | 12 | access control engine (grants, nested groups, folder inheritance, drive roles and policies, link tokens, read-only modes) and the grant endpoints |
+| [OxiCloud](ports/oxicloud) | AtalayaLabs/OxiCloud @ 8c0dd33 | 1,257 | 11 | access control engine (grants, nested groups, folder inheritance, drive roles and policies, link tokens, read-only modes) and the grant endpoints |
 
 ## License
 

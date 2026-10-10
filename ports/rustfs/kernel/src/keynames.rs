@@ -1,6 +1,6 @@
 //! `function/key_name.rs` `KeyName::COMMON_KEYS`: each key's `name()` and
-//! `var_name()`. `var_name` repeats the family prefix (`${aws:aws:username}`)
-//! because the inner name already carries it; this is upstream's behavior.
+//! `var_name()`, as the exact strings upstream's functions return; the
+//! difftest compares them entry by entry.
 
 pub const COMMON_KEYS_LEN: usize = 42;
 

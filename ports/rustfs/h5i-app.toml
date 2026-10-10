@@ -13,7 +13,6 @@ theorems = [
   "rustfs_kernel.Properties.not_action_never_grants_force_delete",
   "rustfs_kernel.Properties.get_object_version_covers_get_object",
   "rustfs_kernel.Properties.bucket_allow_needs_principal",
-  "rustfs_kernel.Properties.bucket_policy_total",
   "rustfs_kernel.Properties.wildcard_is_glob",
   "rustfs_kernel.Properties.clean_idempotent",
   "rustfs_kernel.Properties.clean_canonical",

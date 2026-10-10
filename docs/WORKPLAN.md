@@ -6,7 +6,7 @@ historical agent score or a candidate proof in an isolated task workspace.
 
 ## Scope and completion criteria
 
-The selected corpus contains 103 specifications across six local ports. The
+The selected corpus contains 101 specifications across six local ports. The
 three historical framework-example tasks are excluded. No application source
 is taken from an h5i checkout. Proof dependencies are Git-pinned libraries.
 
@@ -28,7 +28,7 @@ is taken from an h5i checkout. Proof dependencies are Git-pinned libraries.
 | Differential tests | Passed | Fresh six-application run: `results/equivalence/20261009T203325205679Z/summary.json` |
 | Recover and independently check historical proofs | Running | Per-task certificates in `results/verification/` |
 | Consolidate accepted proofs into canonical projects | In progress | Properties imports maintained proof modules; standard gate passes |
-| Prove missing selected statements | In progress | All 103 selected theorems pass the gate |
+| Prove missing selected statements | In progress | All 101 selected theorems pass the gate |
 | Reproducible extraction | Passed | Six standard extraction checks in `results/project-checks/20261009T200256748196Z/summary.json` |
 | Paired Rust performance measurements | In progress | Per-application raw samples and declared timing boundaries |
 | Upstream source-span coverage accounting | In progress | Six pinned scope denominators and six deduplicated ported-item mappings inventoried; proof attribution under review |

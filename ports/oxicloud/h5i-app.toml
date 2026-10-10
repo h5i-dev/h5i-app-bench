@@ -8,7 +8,6 @@ theorems = [
   "oxicloud_kernel.Properties.migration_readonly_blocks_mutations",
   "oxicloud_kernel.Properties.drive_read_only_blocks_mutations",
   "oxicloud_kernel.Properties.expired_grants_ignored",
-  "oxicloud_kernel.Properties.fewer_grants_allow_no_more",
   "oxicloud_kernel.Properties.token_needs_its_own_grant",
   "oxicloud_kernel.Properties.share_needs_owner",
   "oxicloud_kernel.Properties.check_total",

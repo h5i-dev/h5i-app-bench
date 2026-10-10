@@ -4,7 +4,7 @@
     "sha256": "98e2a1a4a754a2fa22f48f3e633d127c943c422a3ae8195f50878195a7aa6baf",
     "grade": {
       "solution_loc": 106,
-      "check_s": 69.0,
+      "check_s": 71.0,
       "axioms": [
         "Classical.choice",
         "Quot.sound",
@@ -12,10 +12,9 @@
       ],
       "passed": true
     },
-    "checked_at": "2026-10-10T04:07:40.010202+00:00",
+    "checked_at": "2026-10-10T19:19:00.323198+00:00",
     "inputs": {
       "/home/ht2673/Dev/h5i-app-bench/harness/bench.py": "d5a195c2fa2ba80cf3d20f9af730c2e105c05787675e34f76a34cb511bd26a8e",
-      "/home/ht2673/Dev/h5i-app-bench/dataset/tasks.toml": "594b8c4c6a235c20b7ef86ce8d0838c52f08663f7fe51434d13ddf8c1df36586",
       "/home/ht2673/Dev/h5i-app-bench/ports/artifactkeeper/proofs/lean-toolchain": "efac0b94923b2d8b6840cd35be9177ad0fc5ab2332f4f4311c98712cee92fdee",
       "/home/ht2673/Dev/h5i-app-bench/ports/artifactkeeper/proofs/lake-manifest.json": "32a60496da427c7cdb78c84695b4cfbca45e14c5e0029f663db39853580315db",
       "/home/ht2673/Dev/h5i-app-bench/ports/artifactkeeper/kernel/src/handlers.rs": "8eed7cd29146ec0b4a94eb69ff7689840aa4317535b096a317a7cc223aec7d7d",
@@ -60,7 +59,8 @@
       "/var/tmp/h5iab/h5i-app-lib/H5iAppLibTests.lean": "51a9c668b98f638966b181c298872812f5f60593fbb2cbc85ff5663db3118c8a",
       "/var/tmp/h5iab/h5i-app-lib/lakefile.lean": "a0f64c1541280d1222c556c456db2e858461b2d448700449e3da51bd57df2b31",
       "target_statement_sha256": "4a1295b8ec80dc4cb761574263cdfcb497bd657a381a25cfa56863494f4d815f",
-      "certificate_boundary_version": "2"
+      "task_entry_sha256": "2c29f62b273ae8a91d27d26486d2258d11b7dfb8a95a1c638ab285640f750d5f",
+      "certificate_boundary_version": "3"
     }
   }
 ]

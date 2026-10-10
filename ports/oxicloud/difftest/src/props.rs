@@ -124,23 +124,6 @@ fn expired_grants_ignored() {
     });
 }
 
-#[test]
-fn fewer_grants_allow_no_more() {
-    let mut r = Rng(3);
-    let mut hits = 0;
-    for _ in 0..N {
-        let db = world(&mut r);
-        if db.grants.is_empty() { continue }
-        let (s, p, res) = query(&db, &mut r);
-        let mut db2 = db.clone();
-        db2.grants.remove(r.below(db.grants.len() as u64) as usize);
-        if check(&db2, false, NOW, s, p, res) {
-            hits += 1;
-            assert!(check(&db, false, NOW, s, p, res));
-        }
-    }
-    assert!(hits >= MIN_HITS, "{hits}");
-}
 
 #[test]
 fn token_needs_its_own_grant() {

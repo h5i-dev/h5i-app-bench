@@ -34,11 +34,6 @@
   "change": "added: the request's path, query and header names and values are shorter than Usize.max",
   "reason": "gpt-6.1-sol proved the unconditional statement false: a Cookie header of Usize.max `;` splits into Usize.max + 1 parts, more than a modeled Vec holds. Rust cannot allocate such a request. Then the query bound became 2 * length < Usize.max: decoding a ticket of Usize.max/2+1 bytes of 0x80 doubles it (gpt-6.1-sol, 2026-10-10). Then also: permission rows list fewer than Usize.max actions in total; two rows with Usize.max + 1 distinct actions overflow their union (gpt-6.1-sol, 2026-10-10)."
  },
- "rustfs-bucket-total": {
-  "date": "2026-10-10",
-  "change": "added: bucket name at most 63 bytes and object key at most 1024 (S3's limits)",
-  "reason": "gpt-6.1-sol proved the unconditional statement false: a bucket name of Usize.max bytes makes building the resource ARN (`arn:aws:s3:::` + bucket + ...) exceed a Vec's capacity. S3 rejects such names before policy evaluation. Then also: each condition key's lookup name (name/variable) fits in a Vec; a key name of Usize.max bytes overflows when `/` is appended (gpt-6.1-sol, 2026-10-10). Then also: request condition values ≤ 8 KiB and statement resource patterns ≤ 20 KiB (S3's bucket policy limit)."
- },
  "kanidm-effective-total": {
   "date": "2026-10-10",
   "change": "added: the search and modify profiles list fewer than Usize.max attributes and classes in total",

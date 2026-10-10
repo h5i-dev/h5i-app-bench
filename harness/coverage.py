@@ -33,7 +33,7 @@ def workspace_current(tid, t):
 
 def environment(t):
     src = bench.src_dir(t)
-    files = [ROOT / "harness/bench.py", ROOT / "dataset/tasks.toml",
+    files = [ROOT / "harness/bench.py",
              src / "proofs/lean-toolchain",
              src / "proofs/lake-manifest.json",
              *sorted((src / "kernel/src").glob("*.rs")),
@@ -46,7 +46,10 @@ def environment(t):
     # Only the selected statement is read from Properties. Changing another
     # proof body therefore cannot change this certification boundary.
     inputs["target_statement_sha256"] = hashlib.sha256(bench.statement(t).encode()).hexdigest()
-    inputs["certificate_boundary_version"] = "2"
+    # This task's own dataset entry, not the whole dataset: adding or removing
+    # another task cannot change this certificate.
+    inputs["task_entry_sha256"] = hashlib.sha256(json.dumps(t, sort_keys=True).encode()).hexdigest()
+    inputs["certificate_boundary_version"] = "3"
     return inputs
 
 

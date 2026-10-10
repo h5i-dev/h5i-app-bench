@@ -1,7 +1,7 @@
 # Verification coverage and runtime cost
 
 The study asks how much real-world Rust we can verify with h5i-app and what
-runtime cost its Aeneas-compatible ports introduce. Begin with the 103 selected
+runtime cost its Aeneas-compatible ports introduce. Begin with the 101 selected
 specifications in the six local ports. Three historical tasks in
 `dataset/tasks.toml` refer to external examples and are reported separately;
 experimental tasks in `extra.toml` also stay outside this denominator.

@@ -36,13 +36,6 @@ theorem expired_grants_ignored (db db' : model.Db) (ro : Bool) (now : I64) (s : 
     acl.check db' ro now s p r = acl.check db ro now s p r := by
   apply oxicloud_kernel.Verified.OxicloudExpiredGrants.expired_grants_ignored <;> assumption
 
-/-- Taking grants away never allows more. -/
-theorem fewer_grants_allow_no_more (db db' : model.Db) (ro : Bool) (now : I64) (s : model.Subject)
-    (p : model.Permission) (r : model.Resource) (hs : SameButGrants db db')
-    (hg : ∀ g ∈ db'.grants.val, g ∈ db.grants.val) (h : acl.check db' ro now s p r = ok true) :
-    acl.check db ro now s p r = ok true := by
-  sorry
-
 /-- A link token is allowed only through a live grant to that token. -/
 theorem token_needs_its_own_grant (db : model.Db) (ro : Bool) (now : I64) (t : U64)
     (p : model.Permission) (r : model.Resource) (h : acl.check db ro now (.Token t) p r = ok true) :

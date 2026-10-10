@@ -4,16 +4,15 @@
     "sha256": "947173c385ae5ccc665f5faef30681e9e9b030744356e33bba72ec0e5c67171c",
     "grade": {
       "solution_loc": 87,
-      "check_s": 7.7,
+      "check_s": 7.8,
       "axioms": null,
       "passed": false,
       "reason": "build failed",
       "log_tail": "/opt/lean/bin/lean /work/task/proofs/Solution.lean -o /work/task/proofs/.lake/build/lib/lean/Solution.olean -i /work/task/proofs/.lake/build/lib/lean/Solution.ilean -c /work/task/proofs/.lake/build/ir/Solution.c --setup /work/task/proofs/.lake/build/ir/Solution.setup.json --json\nerror: Solution.lean:63:4: Tactic `apply` failed: could not unify the conclusion of `loop_idx_spec ?m.107 (fun i => i)\n  ((\u2191hay).length - (\u2191needle).length + 1) fun i => \u2200 k < \u2191i, List.take (\u2191needle).length (List.drop k \u2191hay) \u2260 \u2191needle`\n  loop ?m.107 ?x \u2983 ?post \u2984\nwith the goal\n  (do\n      let last \u2190 hay.len - needle.len\n      loop (fun i1 => valueset.str_contains_loop.body hay needle last i1) 0#usize) \u2983\n    x => x = decide (\u2191needle <:+: \u2191hay) \u2984\n\nNote: The full type of `loop_idx_spec ?m.107 (fun i => i) ((\u2191hay).length - (\u2191needle).length + 1) fun i =>\n  \u2200 k < \u2191i, List.take (\u2191needle).length (List.drop k \u2191hay) \u2260 \u2191needle` is\n  \u2200 (post : ?m.106 \u2192 Prop),\n    (\u2200 (x : Usize),\n        (\u2200 k < \u2191x, List.take (\u2191needle).length (List.drop k \u2191hay) \u2260 \u2191needle) \u2192\n          \u2191x \u2264 (\u2191hay).length - (\u2191needle).length + 1 \u2192\n            ?m.107 x \u2983 r =>\n              match r with\n              | ControlFlow.done y => post y\n              | ControlFlow.cont x' =>\n                (\u2200 k < \u2191x', List.take (\u2191needle).length (List.drop k \u2191hay) \u2260 \u2191needle) \u2227\n                  \u2191x < \u2191x' \u2227 \u2191x' \u2264 (\u2191hay).length - (\u2191needle).length + 1 \u2984) \u2192\n      \u2200 (x : Usize),\n        (\u2200 k < \u2191x, List.take (\u2191needle).length (List.drop k \u2191hay) \u2260 \u2191needle) \u2192\n          \u2191x \u2264 (\u2191hay).length - (\u2191needle).length + 1 \u2192 loop ?m.107 x \u2983 post \u2984\n\ncase isFalse\nhay needle : Slice U8\nhlt : hay.length < Usize.max\nhl : needle.length = (\u2191needle).length\nhh : hay.length = (\u2191hay).length\nh\u271d : \u00acneedle.len > hay.len\n\u22a2 (do\n      let last \u2190 hay.len - needle.len\n      loop (fun i1 => valueset.str_contains_loop.body hay needle last i1) 0#usize) \u2983\n    x => x = decide (\u2191needle <:+: \u2191hay) \u2984\nerror: Lean exited with code 1\nSome required targets logged failures:\n- Solution\nerror: build failed\n"
     },
-    "checked_at": "2026-10-10T06:03:59.789711+00:00",
+    "checked_at": "2026-10-10T19:19:01.952231+00:00",
     "inputs": {
       "/home/ht2673/Dev/h5i-app-bench/harness/bench.py": "d5a195c2fa2ba80cf3d20f9af730c2e105c05787675e34f76a34cb511bd26a8e",
-      "/home/ht2673/Dev/h5i-app-bench/dataset/tasks.toml": "594b8c4c6a235c20b7ef86ce8d0838c52f08663f7fe51434d13ddf8c1df36586",
       "/home/ht2673/Dev/h5i-app-bench/ports/kanidm/proofs/lean-toolchain": "efac0b94923b2d8b6840cd35be9177ad0fc5ab2332f4f4311c98712cee92fdee",
       "/home/ht2673/Dev/h5i-app-bench/ports/kanidm/proofs/lake-manifest.json": "f7a62ee60ddc0b764f6c38f9509e0a16776f63c82199949bbcc45c8c308f70c9",
       "/home/ht2673/Dev/h5i-app-bench/ports/kanidm/kernel/src/access.rs": "ddf05297998fc36d5b051257d502b99ca14ca811735cc062f26169029fa7ce22",
@@ -60,7 +59,8 @@
       "/var/tmp/h5iab/h5i-app-lib/H5iAppLibTests.lean": "51a9c668b98f638966b181c298872812f5f60593fbb2cbc85ff5663db3118c8a",
       "/var/tmp/h5iab/h5i-app-lib/lakefile.lean": "a0f64c1541280d1222c556c456db2e858461b2d448700449e3da51bd57df2b31",
       "target_statement_sha256": "216c2f8c7902d47c05767e1b5af63e266f6b388071f4d7dbe24a732c2f1881ca",
-      "certificate_boundary_version": "2"
+      "task_entry_sha256": "2eaf4d2e254274cde5cb826da1e2e688c97fbdf1cbcb69632f8385c9fee1617a",
+      "certificate_boundary_version": "3"
     }
   },
   {
@@ -68,7 +68,7 @@
     "sha256": "bfb1768877a71034a0760d8df11bc3a40a75e27d82ddbc1c7a3011ea6a2743ec",
     "grade": {
       "solution_loc": 128,
-      "check_s": 11.5,
+      "check_s": 11.6,
       "axioms": [
         "Classical.choice",
         "Quot.sound",
@@ -76,10 +76,9 @@
       ],
       "passed": true
     },
-    "checked_at": "2026-10-10T06:04:11.775171+00:00",
+    "checked_at": "2026-10-10T19:19:13.949749+00:00",
     "inputs": {
       "/home/ht2673/Dev/h5i-app-bench/harness/bench.py": "d5a195c2fa2ba80cf3d20f9af730c2e105c05787675e34f76a34cb511bd26a8e",
-      "/home/ht2673/Dev/h5i-app-bench/dataset/tasks.toml": "594b8c4c6a235c20b7ef86ce8d0838c52f08663f7fe51434d13ddf8c1df36586",
       "/home/ht2673/Dev/h5i-app-bench/ports/kanidm/proofs/lean-toolchain": "efac0b94923b2d8b6840cd35be9177ad0fc5ab2332f4f4311c98712cee92fdee",
       "/home/ht2673/Dev/h5i-app-bench/ports/kanidm/proofs/lake-manifest.json": "f7a62ee60ddc0b764f6c38f9509e0a16776f63c82199949bbcc45c8c308f70c9",
       "/home/ht2673/Dev/h5i-app-bench/ports/kanidm/kernel/src/access.rs": "ddf05297998fc36d5b051257d502b99ca14ca811735cc062f26169029fa7ce22",
@@ -126,7 +125,8 @@
       "/var/tmp/h5iab/h5i-app-lib/H5iAppLibTests.lean": "51a9c668b98f638966b181c298872812f5f60593fbb2cbc85ff5663db3118c8a",
       "/var/tmp/h5iab/h5i-app-lib/lakefile.lean": "a0f64c1541280d1222c556c456db2e858461b2d448700449e3da51bd57df2b31",
       "target_statement_sha256": "216c2f8c7902d47c05767e1b5af63e266f6b388071f4d7dbe24a732c2f1881ca",
-      "certificate_boundary_version": "2"
+      "task_entry_sha256": "2eaf4d2e254274cde5cb826da1e2e688c97fbdf1cbcb69632f8385c9fee1617a",
+      "certificate_boundary_version": "3"
     }
   }
 ]
