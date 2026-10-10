@@ -259,3 +259,4 @@ After the extraction rewrite, claim coercion and its new array helper were indiv
 Final audit: all 236 new handwritten kernel functions have an individual mutation
 that compiled and failed a differential test. No function was missing from the
 mutation failure logs.
+- awsvars::pass_from scanning from 0 instead of `Pending::resume`: resolver_backport cycle tests do not terminate.

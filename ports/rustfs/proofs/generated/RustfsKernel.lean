@@ -3036,6 +3036,19 @@ def awsvars.closing
   := do
   awsvars.closing_loop s 1#usize «from»
 
+/-- [rustfs_kernel::awsvars::Pending]
+    Source: 'ports/rustfs/kernel/src/awsvars.rs', lines 160:0-163:1
+    Visibility: public -/
+structure awsvars.Pending where
+  text : alloc.vec.Vec Std.U8
+  resume : Std.Usize
+
+/-- [rustfs_kernel::awsvars::pending_clone]:
+    Source: 'ports/rustfs/kernel/src/awsvars.rs', lines 165:0-167:1 -/
+def awsvars.pending_clone (p : awsvars.Pending) : Result awsvars.Pending := do
+  let v ← alloc.vec.CloneVec.clone core.clone.CloneU8 p.text
+  ok { p with text := v }
+
 /-- [rustfs_kernel::bytes::slice]: loop body 0:
     Source: 'ports/rustfs/kernel/src/bytes.rs', lines 59:4-62:5
     Visibility: public -/
@@ -3117,14 +3130,14 @@ def bytes.concat
   bytes.concat_loop b out 0#usize
 
 /-- [rustfs_kernel::awsvars::wrap_all]: loop body 0:
-    Source: 'ports/rustfs/kernel/src/awsvars.rs', lines 159:4-162:5 -/
+    Source: 'ports/rustfs/kernel/src/awsvars.rs', lines 173:4-176:5 -/
 @[rust_loop_body]
 def awsvars.wrap_all_loop.body
   («prefix» : Slice Std.U8) (values : Slice (alloc.vec.Vec Std.U8))
-  (suffix : Slice Std.U8) (out : alloc.vec.Vec (alloc.vec.Vec Std.U8))
-  (i : Std.Usize) :
-  Result (ControlFlow ((alloc.vec.Vec (alloc.vec.Vec Std.U8)) × Std.Usize)
-    (alloc.vec.Vec (alloc.vec.Vec Std.U8)))
+  (suffix : Slice Std.U8) («at» : Std.Usize)
+  (out : alloc.vec.Vec awsvars.Pending) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec awsvars.Pending) × Std.Usize)
+    (alloc.vec.Vec awsvars.Pending))
   := do
   let i1 := Slice.len values
   if i < i1
@@ -3134,138 +3147,140 @@ def awsvars.wrap_all_loop.body
     let v1 ← bytes.concat «prefix» s
     let s1 := alloc.vec.Vec.deref v1
     let v2 ← bytes.concat s1 suffix
-    let out1 ← alloc.vec.Vec.push out v2
-    let i2 ← i + 1#usize
-    ok (cont (out1, i2))
+    let i2 := alloc.vec.Vec.len v
+    let i3 ← «at» + i2
+    let out1 ←
+      alloc.vec.Vec.push out ({ text := v2, resume := i3 } : awsvars.Pending)
+    let i4 ← i + 1#usize
+    ok (cont (out1, i4))
   else ok (done out)
 
 /-- [rustfs_kernel::awsvars::wrap_all]: loop 0:
-    Source: 'ports/rustfs/kernel/src/awsvars.rs', lines 159:4-162:5 -/
+    Source: 'ports/rustfs/kernel/src/awsvars.rs', lines 173:4-176:5 -/
 @[rust_loop]
 def awsvars.wrap_all_loop
   («prefix» : Slice Std.U8) (values : Slice (alloc.vec.Vec Std.U8))
-  (suffix : Slice Std.U8) (out : alloc.vec.Vec (alloc.vec.Vec Std.U8))
-  (i : Std.Usize) :
-  Result (alloc.vec.Vec (alloc.vec.Vec Std.U8))
+  (suffix : Slice Std.U8) («at» : Std.Usize)
+  (out : alloc.vec.Vec awsvars.Pending) (i : Std.Usize) :
+  Result (alloc.vec.Vec awsvars.Pending)
   := do
   loop
-    (fun (out1, i1) => awsvars.wrap_all_loop.body «prefix» values suffix out1
-      i1)
+    (fun (out1, i1) => awsvars.wrap_all_loop.body «prefix» values suffix
+      «at» out1 i1)
     (out, i)
 
 /-- [rustfs_kernel::awsvars::wrap_all]:
-    Source: 'ports/rustfs/kernel/src/awsvars.rs', lines 156:0-164:1 -/
+    Source: 'ports/rustfs/kernel/src/awsvars.rs', lines 170:0-178:1 -/
 @[reducible]
 def awsvars.wrap_all
   («prefix» : Slice Std.U8) (values : Slice (alloc.vec.Vec Std.U8))
-  (suffix : Slice Std.U8) :
-  Result (alloc.vec.Vec (alloc.vec.Vec Std.U8))
+  (suffix : Slice Std.U8) («at» : Std.Usize) :
+  Result (alloc.vec.Vec awsvars.Pending)
   := do
-  awsvars.wrap_all_loop «prefix» values suffix (alloc.vec.Vec.new
-    (alloc.vec.Vec Std.U8)) 0#usize
+  awsvars.wrap_all_loop «prefix» values suffix «at» (alloc.vec.Vec.new
+    awsvars.Pending) 0#usize
 
 /-- [rustfs_kernel::awsvars::splice]: loop body 0:
-    Source: 'ports/rustfs/kernel/src/awsvars.rs', lines 170:4-173:5 -/
+    Source: 'ports/rustfs/kernel/src/awsvars.rs', lines 184:4-187:5 -/
 @[rust_loop_body]
 def awsvars.splice_loop0.body
-  (results : Slice (alloc.vec.Vec Std.U8)) (i : Std.Usize)
-  (out : alloc.vec.Vec (alloc.vec.Vec Std.U8)) (k : Std.Usize) :
-  Result (ControlFlow ((alloc.vec.Vec (alloc.vec.Vec Std.U8)) × Std.Usize)
-    (alloc.vec.Vec (alloc.vec.Vec Std.U8)))
+  (results : Slice awsvars.Pending) (i : Std.Usize)
+  (out : alloc.vec.Vec awsvars.Pending) (k : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec awsvars.Pending) × Std.Usize)
+    (alloc.vec.Vec awsvars.Pending))
   := do
   if k < i
   then
-    let v ← Slice.index_usize results k
-    let v1 ← alloc.vec.CloneVec.clone core.clone.CloneU8 v
-    let out1 ← alloc.vec.Vec.push out v1
+    let p ← Slice.index_usize results k
+    let p1 ← awsvars.pending_clone p
+    let out1 ← alloc.vec.Vec.push out p1
     let k1 ← k + 1#usize
     ok (cont (out1, k1))
   else ok (done out)
 
 /-- [rustfs_kernel::awsvars::splice]: loop 0:
-    Source: 'ports/rustfs/kernel/src/awsvars.rs', lines 170:4-173:5 -/
+    Source: 'ports/rustfs/kernel/src/awsvars.rs', lines 184:4-187:5 -/
 @[rust_loop]
 def awsvars.splice_loop0
-  (results : Slice (alloc.vec.Vec Std.U8)) (i : Std.Usize)
-  (out : alloc.vec.Vec (alloc.vec.Vec Std.U8)) (k : Std.Usize) :
-  Result (alloc.vec.Vec (alloc.vec.Vec Std.U8))
+  (results : Slice awsvars.Pending) (i : Std.Usize)
+  (out : alloc.vec.Vec awsvars.Pending) (k : Std.Usize) :
+  Result (alloc.vec.Vec awsvars.Pending)
   := do
   loop
     (fun (out1, k1) => awsvars.splice_loop0.body results i out1 k1)
     (out, k)
 
 /-- [rustfs_kernel::awsvars::splice]: loop body 1:
-    Source: 'ports/rustfs/kernel/src/awsvars.rs', lines 175:4-178:5 -/
+    Source: 'ports/rustfs/kernel/src/awsvars.rs', lines 189:4-192:5 -/
 @[rust_loop_body]
 def awsvars.splice_loop1.body
-  (new : Slice (alloc.vec.Vec Std.U8))
-  (out : alloc.vec.Vec (alloc.vec.Vec Std.U8)) (j : Std.Usize) :
-  Result (ControlFlow ((alloc.vec.Vec (alloc.vec.Vec Std.U8)) × Std.Usize)
-    (alloc.vec.Vec (alloc.vec.Vec Std.U8)))
+  (new : Slice awsvars.Pending) (out : alloc.vec.Vec awsvars.Pending)
+  (j : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec awsvars.Pending) × Std.Usize)
+    (alloc.vec.Vec awsvars.Pending))
   := do
   let i := Slice.len new
   if j < i
   then
-    let v ← Slice.index_usize new j
-    let v1 ← alloc.vec.CloneVec.clone core.clone.CloneU8 v
-    let out1 ← alloc.vec.Vec.push out v1
+    let p ← Slice.index_usize new j
+    let p1 ← awsvars.pending_clone p
+    let out1 ← alloc.vec.Vec.push out p1
     let j1 ← j + 1#usize
     ok (cont (out1, j1))
   else ok (done out)
 
 /-- [rustfs_kernel::awsvars::splice]: loop 1:
-    Source: 'ports/rustfs/kernel/src/awsvars.rs', lines 175:4-178:5 -/
+    Source: 'ports/rustfs/kernel/src/awsvars.rs', lines 189:4-192:5 -/
 @[rust_loop]
 def awsvars.splice_loop1
-  (new : Slice (alloc.vec.Vec Std.U8))
-  (out : alloc.vec.Vec (alloc.vec.Vec Std.U8)) (j : Std.Usize) :
-  Result (alloc.vec.Vec (alloc.vec.Vec Std.U8))
+  (new : Slice awsvars.Pending) (out : alloc.vec.Vec awsvars.Pending)
+  (j : Std.Usize) :
+  Result (alloc.vec.Vec awsvars.Pending)
   := do
   loop
     (fun (out1, j1) => awsvars.splice_loop1.body new out1 j1)
     (out, j)
 
 /-- [rustfs_kernel::awsvars::splice]: loop body 2:
-    Source: 'ports/rustfs/kernel/src/awsvars.rs', lines 180:4-183:5 -/
+    Source: 'ports/rustfs/kernel/src/awsvars.rs', lines 194:4-197:5 -/
 @[rust_loop_body]
 def awsvars.splice_loop2.body
-  (results : Slice (alloc.vec.Vec Std.U8))
-  (out : alloc.vec.Vec (alloc.vec.Vec Std.U8)) (k2 : Std.Usize) :
-  Result (ControlFlow ((alloc.vec.Vec (alloc.vec.Vec Std.U8)) × Std.Usize)
-    (alloc.vec.Vec (alloc.vec.Vec Std.U8)))
+  (results : Slice awsvars.Pending) (out : alloc.vec.Vec awsvars.Pending)
+  (k2 : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec awsvars.Pending) × Std.Usize)
+    (alloc.vec.Vec awsvars.Pending))
   := do
   let i := Slice.len results
   if k2 < i
   then
-    let v ← Slice.index_usize results k2
-    let v1 ← alloc.vec.CloneVec.clone core.clone.CloneU8 v
-    let out1 ← alloc.vec.Vec.push out v1
+    let p ← Slice.index_usize results k2
+    let p1 ← awsvars.pending_clone p
+    let out1 ← alloc.vec.Vec.push out p1
     let k21 ← k2 + 1#usize
     ok (cont (out1, k21))
   else ok (done out)
 
 /-- [rustfs_kernel::awsvars::splice]: loop 2:
-    Source: 'ports/rustfs/kernel/src/awsvars.rs', lines 180:4-183:5 -/
+    Source: 'ports/rustfs/kernel/src/awsvars.rs', lines 194:4-197:5 -/
 @[rust_loop]
 def awsvars.splice_loop2
-  (results : Slice (alloc.vec.Vec Std.U8))
-  (out : alloc.vec.Vec (alloc.vec.Vec Std.U8)) (k2 : Std.Usize) :
-  Result (alloc.vec.Vec (alloc.vec.Vec Std.U8))
+  (results : Slice awsvars.Pending) (out : alloc.vec.Vec awsvars.Pending)
+  (k2 : Std.Usize) :
+  Result (alloc.vec.Vec awsvars.Pending)
   := do
   loop
     (fun (out1, k21) => awsvars.splice_loop2.body results out1 k21)
     (out, k2)
 
 /-- [rustfs_kernel::awsvars::splice]:
-    Source: 'ports/rustfs/kernel/src/awsvars.rs', lines 167:0-185:1 -/
+    Source: 'ports/rustfs/kernel/src/awsvars.rs', lines 181:0-199:1 -/
 def awsvars.splice
-  (results : Slice (alloc.vec.Vec Std.U8)) (i : Std.Usize)
-  (new : Slice (alloc.vec.Vec Std.U8)) :
-  Result (alloc.vec.Vec (alloc.vec.Vec Std.U8))
+  (results : Slice awsvars.Pending) (i : Std.Usize)
+  (new : Slice awsvars.Pending) :
+  Result (alloc.vec.Vec awsvars.Pending)
   := do
   let out ←
-    awsvars.splice_loop0 results i (alloc.vec.Vec.new (alloc.vec.Vec Std.U8))
-      0#usize
+    awsvars.splice_loop0 results i (alloc.vec.Vec.new awsvars.Pending) 0#usize
   let out1 ← awsvars.splice_loop1 new out 0#usize
   let k2 ← i + 1#usize
   awsvars.splice_loop2 results out1 k2
@@ -3418,7 +3433,7 @@ def bytes.member
   bytes.member_loop xs x 0#usize
 
 /-- [rustfs_kernel::awsvars::dedup]: loop body 0:
-    Source: 'ports/rustfs/kernel/src/awsvars.rs', lines 267:4-273:5 -/
+    Source: 'ports/rustfs/kernel/src/awsvars.rs', lines 296:4-302:5 -/
 @[rust_loop_body]
 def awsvars.dedup_loop.body
   (v : Slice (alloc.vec.Vec Std.U8))
@@ -3442,7 +3457,7 @@ def awsvars.dedup_loop.body
   else ok (done out)
 
 /-- [rustfs_kernel::awsvars::dedup]: loop 0:
-    Source: 'ports/rustfs/kernel/src/awsvars.rs', lines 267:4-273:5 -/
+    Source: 'ports/rustfs/kernel/src/awsvars.rs', lines 296:4-302:5 -/
 @[rust_loop]
 def awsvars.dedup_loop
   (v : Slice (alloc.vec.Vec Std.U8))
@@ -3454,7 +3469,7 @@ def awsvars.dedup_loop
     (out, i)
 
 /-- [rustfs_kernel::awsvars::dedup]:
-    Source: 'ports/rustfs/kernel/src/awsvars.rs', lines 264:0-275:1 -/
+    Source: 'ports/rustfs/kernel/src/awsvars.rs', lines 293:0-304:1 -/
 @[reducible]
 def awsvars.dedup
   (v : Slice (alloc.vec.Vec Std.U8)) :
@@ -3463,7 +3478,7 @@ def awsvars.dedup
   awsvars.dedup_loop v (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) 0#usize
 
 /-- [rustfs_kernel::awsvars::extend]: loop body 0:
-    Source: 'ports/rustfs/kernel/src/awsvars.rs', lines 256:4-259:5 -/
+    Source: 'ports/rustfs/kernel/src/awsvars.rs', lines 285:4-288:5 -/
 @[rust_loop_body]
 def awsvars.extend_loop.body
   (more : Slice (alloc.vec.Vec Std.U8))
@@ -3482,7 +3497,7 @@ def awsvars.extend_loop.body
   else ok (done acc)
 
 /-- [rustfs_kernel::awsvars::extend]: loop 0:
-    Source: 'ports/rustfs/kernel/src/awsvars.rs', lines 256:4-259:5 -/
+    Source: 'ports/rustfs/kernel/src/awsvars.rs', lines 285:4-288:5 -/
 @[rust_loop]
 def awsvars.extend_loop
   (acc : alloc.vec.Vec (alloc.vec.Vec Std.U8))
@@ -3494,7 +3509,7 @@ def awsvars.extend_loop
     (acc, j)
 
 /-- [rustfs_kernel::awsvars::extend]:
-    Source: 'ports/rustfs/kernel/src/awsvars.rs', lines 254:0-261:1 -/
+    Source: 'ports/rustfs/kernel/src/awsvars.rs', lines 283:0-290:1 -/
 @[reducible]
 def awsvars.extend
   (acc : alloc.vec.Vec (alloc.vec.Vec Std.U8))
@@ -3503,27 +3518,67 @@ def awsvars.extend
   := do
   awsvars.extend_loop acc more 0#usize
 
+/-- [rustfs_kernel::awsvars::texts]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/awsvars.rs', lines 256:4-259:5 -/
+@[rust_loop_body]
+def awsvars.texts_loop.body
+  (results : Slice awsvars.Pending)
+  (out : alloc.vec.Vec (alloc.vec.Vec Std.U8)) (k : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec (alloc.vec.Vec Std.U8)) × Std.Usize)
+    (alloc.vec.Vec (alloc.vec.Vec Std.U8)))
+  := do
+  let i := Slice.len results
+  if k < i
+  then
+    let p ← Slice.index_usize results k
+    let v ← alloc.vec.CloneVec.clone core.clone.CloneU8 p.text
+    let out1 ← alloc.vec.Vec.push out v
+    let k1 ← k + 1#usize
+    ok (cont (out1, k1))
+  else ok (done out)
+
+/-- [rustfs_kernel::awsvars::texts]: loop 0:
+    Source: 'ports/rustfs/kernel/src/awsvars.rs', lines 256:4-259:5 -/
+@[rust_loop]
+def awsvars.texts_loop
+  (results : Slice awsvars.Pending)
+  (out : alloc.vec.Vec (alloc.vec.Vec Std.U8)) (k : Std.Usize) :
+  Result (alloc.vec.Vec (alloc.vec.Vec Std.U8))
+  := do
+  loop
+    (fun (out1, k1) => awsvars.texts_loop.body results out1 k1)
+    (out, k)
+
+/-- [rustfs_kernel::awsvars::texts]:
+    Source: 'ports/rustfs/kernel/src/awsvars.rs', lines 253:0-261:1 -/
+@[reducible]
+def awsvars.texts
+  (results : Slice awsvars.Pending) :
+  Result (alloc.vec.Vec (alloc.vec.Vec Std.U8))
+  := do
+  awsvars.texts_loop results (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) 0#usize
+
 mutual
 
 /-- [rustfs_kernel::awsvars::scan]:
-    Source: 'ports/rustfs/kernel/src/awsvars.rs', lines 189:0-223:1 -/
+    Source: 'ports/rustfs/kernel/src/awsvars.rs', lines 203:0-240:1 -/
 def awsvars.scan
-  (ctx : awsvars.VarContext) (results : alloc.vec.Vec (alloc.vec.Vec Std.U8))
-  (i : Std.Usize) (start : Std.Usize) :
-  Result ((alloc.vec.Vec (alloc.vec.Vec Std.U8)) × Bool)
+  (ctx : awsvars.VarContext) (results : alloc.vec.Vec awsvars.Pending)
+  (i : Std.Usize) (start : Std.Usize) (depth : Std.Usize) :
+  Result ((alloc.vec.Vec awsvars.Pending) × Bool)
   := do
-  let v ←
-    alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice (alloc.vec.Vec
-      Std.U8)) results i
-  let s ← alloc.vec.CloneVec.clone core.clone.CloneU8 v
+  let p ←
+    alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice awsvars.Pending)
+      results i
+  let s ← alloc.vec.CloneVec.clone core.clone.CloneU8 p.text
   let s1 := alloc.vec.Vec.deref s
   let s2 ← lift (Array.to_slice (Array.make 2#usize [ 36#u8, 123#u8 ]))
   let o ← bytes.find_from s1 start s2
   match o with
   | none => ok (results, false)
-  | some p =>
+  | some p1 =>
     let s3 := alloc.vec.Vec.deref s
-    let i1 ← p + 2#usize
+    let i1 ← p1 + 2#usize
     let («end», brace) ← awsvars.closing s3 i1
     if brace != 0#usize
     then ok (results, false)
@@ -3531,7 +3586,7 @@ def awsvars.scan
       let s4 := alloc.vec.Vec.deref s
       let var ← bytes.slice s4 i1 «end»
       let s5 := alloc.vec.Vec.deref s
-      let «prefix» ← bytes.slice s5 0#usize p
+      let «prefix» ← bytes.slice s5 0#usize p1
       let s6 := alloc.vec.Vec.deref s
       let i2 ← «end» + 1#usize
       let i3 := alloc.vec.Vec.len s
@@ -3542,24 +3597,50 @@ def awsvars.scan
       if b
       then
         let s9 := alloc.vec.Vec.deref var
-        let inner ← awsvars.resolve_aws_variables ctx s9
-        let s10 := alloc.vec.Vec.deref «prefix»
-        let s11 := alloc.vec.Vec.deref inner
-        let s12 := alloc.vec.Vec.deref suffix
-        let new ← awsvars.wrap_all s10 s11 s12
-        let i4 := alloc.vec.Vec.len new
-        if i4 > 0#usize
+        let i4 ← depth + 1#usize
+        let inner ← awsvars.resolve_aws_variables_with_depth ctx s9 i4
+        let i5 := alloc.vec.Vec.len inner
+        if i5 = 1#usize
         then
-          let s13 := alloc.vec.Vec.deref results
-          let s14 := alloc.vec.Vec.deref new
-          let v1 ← awsvars.splice s13 i s14
-          ok (v1, true)
-        else awsvars.scan ctx results i i2
+          let v ←
+            alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+              (alloc.vec.Vec Std.U8)) inner 0#usize
+          let s10 := alloc.vec.Vec.deref v
+          let s11 := alloc.vec.Vec.deref var
+          let b1 ← bytes.eq s10 s11
+          if b1
+          then awsvars.scan ctx results i i2 depth
+          else
+            let s12 := alloc.vec.Vec.deref «prefix»
+            let s13 := alloc.vec.Vec.deref inner
+            let s14 := alloc.vec.Vec.deref suffix
+            let new ← awsvars.wrap_all s12 s13 s14 p1
+            let i6 := alloc.vec.Vec.len new
+            if i6 > 0#usize
+            then
+              let s15 := alloc.vec.Vec.deref results
+              let s16 := alloc.vec.Vec.deref new
+              let v1 ← awsvars.splice s15 i s16
+              ok (v1, true)
+            else awsvars.scan ctx results i i2 depth
+        else
+          let s10 := alloc.vec.Vec.deref «prefix»
+          let s11 := alloc.vec.Vec.deref inner
+          let s12 := alloc.vec.Vec.deref suffix
+          let new ← awsvars.wrap_all s10 s11 s12 p1
+          let i6 := alloc.vec.Vec.len new
+          if i6 > 0#usize
+          then
+            let s13 := alloc.vec.Vec.deref results
+            let s14 := alloc.vec.Vec.deref new
+            let v ← awsvars.splice s13 i s14
+            ok (v, true)
+          else awsvars.scan ctx results i i2 depth
       else
         let s9 := alloc.vec.Vec.deref var
         let o1 ← awsvars.resolve_multiple ctx s9
         match o1 with
-        | none => awsvars.scan ctx results i i2
+        | none => awsvars.scan ctx results i i2 depth
         | some values =>
           let i4 := alloc.vec.Vec.len values
           if i4 > 0#usize
@@ -3567,60 +3648,67 @@ def awsvars.scan
             let s10 := alloc.vec.Vec.deref «prefix»
             let s11 := alloc.vec.Vec.deref values
             let s12 := alloc.vec.Vec.deref suffix
-            let new ← awsvars.wrap_all s10 s11 s12
+            let new ← awsvars.wrap_all s10 s11 s12 p1
             let s13 := alloc.vec.Vec.deref results
             let s14 := alloc.vec.Vec.deref new
-            let v1 ← awsvars.splice s13 i s14
-            ok (v1, true)
+            let v ← awsvars.splice s13 i s14
+            ok (v, true)
           else
             let s10 := alloc.vec.Vec.deref «prefix»
             let s11 := alloc.vec.Vec.deref suffix
-            let v1 ← bytes.concat s10 s11
+            let v ← bytes.concat s10 s11
             let new ←
-              alloc.vec.Vec.push (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) v1
+              alloc.vec.Vec.push (alloc.vec.Vec.new awsvars.Pending)
+                ({ text := v, resume := p1 } : awsvars.Pending)
             let s12 := alloc.vec.Vec.deref results
             let s13 := alloc.vec.Vec.deref new
-            let v2 ← awsvars.splice s12 i s13
-            ok (v2, true)
+            let v1 ← awsvars.splice s12 i s13
+            ok (v1, true)
 partial_fixpoint
 
 /-- [rustfs_kernel::awsvars::pass_from]:
-    Source: 'ports/rustfs/kernel/src/awsvars.rs', lines 226:0-232:1 -/
+    Source: 'ports/rustfs/kernel/src/awsvars.rs', lines 244:0-251:1 -/
 def awsvars.pass_from
-  (ctx : awsvars.VarContext) (results : alloc.vec.Vec (alloc.vec.Vec Std.U8))
-  (i : Std.Usize) :
-  Result (alloc.vec.Vec (alloc.vec.Vec Std.U8))
+  (ctx : awsvars.VarContext) (results : alloc.vec.Vec awsvars.Pending)
+  (i : Std.Usize) (depth : Std.Usize) :
+  Result (alloc.vec.Vec awsvars.Pending)
   := do
   let i1 := alloc.vec.Vec.len results
   if i >= i1
   then ok results
   else
-    let (results1, modified) ← awsvars.scan ctx results i 0#usize
+    let p ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+        awsvars.Pending) results i
+    let (results1, modified) ← awsvars.scan ctx results i p.resume depth
     if modified
-    then awsvars.pass_from ctx results1 i
+    then awsvars.pass_from ctx results1 i depth
     else let i2 ← i + 1#usize
-         awsvars.pass_from ctx results1 i2
+         awsvars.pass_from ctx results1 i2 depth
 partial_fixpoint
 
 /-- [rustfs_kernel::awsvars::resolve_single_pass]:
-    Source: 'ports/rustfs/kernel/src/awsvars.rs', lines 235:0-239:1
+    Source: 'ports/rustfs/kernel/src/awsvars.rs', lines 264:0-268:1
     Visibility: public -/
 def awsvars.resolve_single_pass
-  (ctx : awsvars.VarContext) (pattern : Slice Std.U8) :
+  (ctx : awsvars.VarContext) (pattern : Slice Std.U8) (depth : Std.Usize) :
   Result (alloc.vec.Vec (alloc.vec.Vec Std.U8))
   := do
   let v ← alloc.slice.Slice.to_vec core.clone.CloneU8 pattern
   let results ←
-    alloc.vec.Vec.push (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) v
-  awsvars.pass_from ctx results 0#usize
+    alloc.vec.Vec.push (alloc.vec.Vec.new awsvars.Pending)
+      ({ text := v, resume := 0#usize } : awsvars.Pending)
+  let v1 ← awsvars.pass_from ctx results 0#usize depth
+  let s := alloc.vec.Vec.deref v1
+  awsvars.texts s
 partial_fixpoint
 
 /-- [rustfs_kernel::awsvars::pass_all]:
-    Source: 'ports/rustfs/kernel/src/awsvars.rs', lines 243:0-252:1 -/
+    Source: 'ports/rustfs/kernel/src/awsvars.rs', lines 272:0-281:1 -/
 def awsvars.pass_all
   (ctx : awsvars.VarContext) (results : Slice (alloc.vec.Vec Std.U8))
   (k : Std.Usize) (acc : alloc.vec.Vec (alloc.vec.Vec Std.U8)) (changed : Bool)
-  :
+  (depth : Std.Usize) :
   Result ((alloc.vec.Vec (alloc.vec.Vec Std.U8)) × Bool)
   := do
   let i := Slice.len results
@@ -3629,7 +3717,7 @@ def awsvars.pass_all
   else
     let v ← Slice.index_usize results k
     let s := alloc.vec.Vec.deref v
-    let resolved ← awsvars.resolve_single_pass ctx s
+    let resolved ← awsvars.resolve_single_pass ctx s depth
     let i1 := alloc.vec.Vec.len resolved
     let differs ←
       if i1 > 1#usize
@@ -3653,14 +3741,14 @@ def awsvars.pass_all
     let differs1 ← if changed
                      then ok true
                      else ok differs
-    awsvars.pass_all ctx results i2 acc1 differs1
+    awsvars.pass_all ctx results i2 acc1 differs1 depth
 partial_fixpoint
 
 /-- [rustfs_kernel::awsvars::fixpoint]:
-    Source: 'ports/rustfs/kernel/src/awsvars.rs', lines 278:0-285:1 -/
+    Source: 'ports/rustfs/kernel/src/awsvars.rs', lines 307:0-314:1 -/
 def awsvars.fixpoint
   (ctx : awsvars.VarContext) (results : alloc.vec.Vec (alloc.vec.Vec Std.U8))
-  (iteration : Std.Usize) :
+  (iteration : Std.Usize) (depth : Std.Usize) :
   Result (alloc.vec.Vec (alloc.vec.Vec Std.U8))
   := do
   if iteration >= 10#usize
@@ -3669,29 +3757,43 @@ def awsvars.fixpoint
     let s := alloc.vec.Vec.deref results
     let (new, changed) ←
       awsvars.pass_all ctx s 0#usize (alloc.vec.Vec.new (alloc.vec.Vec Std.U8))
-        false
+        false depth
     let s1 := alloc.vec.Vec.deref new
     let results1 ← awsvars.dedup s1
     if changed
     then let i ← iteration + 1#usize
-         awsvars.fixpoint ctx results1 i
+         awsvars.fixpoint ctx results1 i depth
     else ok results1
 partial_fixpoint
 
+/-- [rustfs_kernel::awsvars::resolve_aws_variables_with_depth]:
+    Source: 'ports/rustfs/kernel/src/awsvars.rs', lines 317:0-326:1
+    Visibility: public -/
+def awsvars.resolve_aws_variables_with_depth
+  (ctx : awsvars.VarContext) (pattern : Slice Std.U8) (depth : Std.Usize) :
+  Result (alloc.vec.Vec (alloc.vec.Vec Std.U8))
+  := do
+  if depth >= 10#usize
+  then
+    let v ← alloc.slice.Slice.to_vec core.clone.CloneU8 pattern
+    alloc.vec.Vec.push (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) v
+  else
+    let v ← alloc.slice.Slice.to_vec core.clone.CloneU8 pattern
+    let results ←
+      alloc.vec.Vec.push (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) v
+    awsvars.fixpoint ctx results 0#usize depth
+partial_fixpoint
+
+end
+
 /-- [rustfs_kernel::awsvars::resolve_aws_variables]:
-    Source: 'ports/rustfs/kernel/src/awsvars.rs', lines 288:0-292:1
+    Source: 'ports/rustfs/kernel/src/awsvars.rs', lines 329:0-331:1
     Visibility: public -/
 def awsvars.resolve_aws_variables
   (ctx : awsvars.VarContext) (pattern : Slice Std.U8) :
   Result (alloc.vec.Vec (alloc.vec.Vec Std.U8))
   := do
-  let v ← alloc.slice.Slice.to_vec core.clone.CloneU8 pattern
-  let results ←
-    alloc.vec.Vec.push (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) v
-  awsvars.fixpoint ctx results 0#usize
-partial_fixpoint
-
-end
+  awsvars.resolve_aws_variables_with_depth ctx pattern 0#usize
 
 /-- [rustfs_kernel::bytes::starts_with]:
     Source: 'ports/rustfs/kernel/src/bytes.rs', lines 32:0-34:1

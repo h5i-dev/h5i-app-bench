@@ -25,3 +25,5 @@ mod condition_data;
 #[cfg(test)] mod documents;
 
 #[cfg(test)] mod variable_context;
+
+#[cfg(test)] mod resolver_backport;

@@ -278,3 +278,17 @@ evaluator's ASCII-only ignore-case behavior remains documented below.
 - Claim-array coercion uses a separate loop helper. Splitting the surrounding
   enum match from its filtering loop avoids an unsupported Aeneas branch
   translation and preserves the same scalar filtering and order.
+
+## Backported upstream fix
+
+`awsvars::resolve_single_pass` and `resolve_aws_variables_with_depth` follow
+rustfs 03e77594 (2026-10-09), not the pinned e870a6d. At the pin, a pass
+rescans each substituted result from offset 0, so a value that forms a new
+`${...}` with its surroundings cycles forever: an account named
+`${aws:username}` hangs any policy using `${aws:username}`. gpt-6.1-sol proved
+`resolution_terminates` false on the faithful port; the hang reproduces on the
+pinned upstream crate. Upstream's fix, ported here, resumes each scan after the
+substituted text (`Pending::resume`) and stops nested resolution at depth 10.
+`difftest/src/resolver_backport.rs` holds upstream's regression tests and the
+proved counterexample; on inputs without such cycles the randomized comparison
+against the pinned crate is unchanged.

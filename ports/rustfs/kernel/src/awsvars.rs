@@ -152,42 +152,56 @@ fn closing(s: &[u8], from: usize) -> (usize, usize) {
     (end, brace)
 }
 
-/// `format!("{prefix}{value}{suffix}")` for each value.
-fn wrap_all(prefix: &[u8], values: &[Vec<u8>], suffix: &[u8]) -> Vec<Vec<u8>> {
+/// A result of `resolve_single_pass` and the offset its scan resumes from.
+/// Backports rustfs 03e77594 (after the pinned e870a6d): a placeholder that a
+/// substitution creates belongs to the next bounded pass, so the scan resumes
+/// after the substituted text instead of at 0, where the pinned code could
+/// cycle forever (see DEVIATIONS.md).
+pub struct Pending {
+    pub text: Vec<u8>,
+    pub resume: usize,
+}
+
+fn pending_clone(p: &Pending) -> Pending {
+    Pending { text: p.text.clone(), resume: p.resume }
+}
+
+/// `(format!("{prefix}{value}{suffix}"), at + value.len())` for each value.
+fn wrap_all(prefix: &[u8], values: &[Vec<u8>], suffix: &[u8], at: usize) -> Vec<Pending> {
     let mut out = Vec::new();
     let mut i = 0;
     while i < values.len() {
-        out.push(bytes::concat(&bytes::concat(prefix, &values[i]), suffix));
+        out.push(Pending { text: bytes::concat(&bytes::concat(prefix, &values[i]), suffix), resume: at + values[i].len() });
         i += 1;
     }
     out
 }
 
 /// `results.splice(i..i + 1, new)`.
-fn splice(results: &[Vec<u8>], i: usize, new: &[Vec<u8>]) -> Vec<Vec<u8>> {
+fn splice(results: &[Pending], i: usize, new: &[Pending]) -> Vec<Pending> {
     let mut out = Vec::new();
     let mut k = 0;
     while k < i {
-        out.push(results[k].clone());
+        out.push(pending_clone(&results[k]));
         k += 1;
     }
     let mut j = 0;
     while j < new.len() {
-        out.push(new[j].clone());
+        out.push(pending_clone(&new[j]));
         j += 1;
     }
     let mut k2 = i + 1;
     while k2 < results.len() {
-        out.push(results[k2].clone());
+        out.push(pending_clone(&results[k2]));
         k2 += 1;
     }
     out
 }
 
-/// One step of the inner `while let Some(pos) = results[i][start..].find("${")`
+/// One step of the inner `while let Some(pos) = results[i].0[start..].find("${")`
 /// loop of `resolve_single_pass`: the new results and whether they changed.
-fn scan(ctx: &VarContext, results: Vec<Vec<u8>>, i: usize, start: usize) -> (Vec<Vec<u8>>, bool) {
-    let s = results[i].clone();
+fn scan(ctx: &VarContext, results: Vec<Pending>, i: usize, start: usize, depth: usize) -> (Vec<Pending>, bool) {
+    let s = results[i].text.clone();
     let actual = match bytes::find_from(&s, start, b"${") {
         Some(p) => p,
         None => return (results, false),
@@ -200,55 +214,70 @@ fn scan(ctx: &VarContext, results: Vec<Vec<u8>>, i: usize, start: usize) -> (Vec
     let prefix = bytes::slice(&s, 0, actual);
     let suffix = bytes::slice(&s, end + 1, s.len());
     if bytes::contains(&var, b"${") {
-        let inner = resolve_aws_variables(ctx, &var);
-        let new = wrap_all(&prefix, &inner, &suffix);
+        let inner = resolve_aws_variables_with_depth(ctx, &var, depth + 1);
+        if inner.len() == 1 && bytes::eq(&inner[0], &var) {
+            return scan(ctx, results, i, end + 1, depth);
+        }
+        let new = wrap_all(&prefix, &inner, &suffix, actual);
         if new.len() > 0 {
             return (splice(&results, i, &new), true);
         }
-        return scan(ctx, results, i, end + 1);
+        return scan(ctx, results, i, end + 1, depth);
     }
     match resolve_multiple(ctx, &var) {
         Some(values) => {
             if values.len() > 0 {
-                let new = wrap_all(&prefix, &values, &suffix);
+                let new = wrap_all(&prefix, &values, &suffix, actual);
                 (splice(&results, i, &new), true)
             } else {
                 let mut new = Vec::new();
-                new.push(bytes::concat(&prefix, &suffix));
+                new.push(Pending { text: bytes::concat(&prefix, &suffix), resume: actual });
                 (splice(&results, i, &new), true)
             }
         }
-        None => scan(ctx, results, i, end + 1),
+        None => scan(ctx, results, i, end + 1, depth),
     }
 }
 
-/// The outer `while i < results.len()` loop of `resolve_single_pass`.
-fn pass_from(ctx: &VarContext, results: Vec<Vec<u8>>, i: usize) -> Vec<Vec<u8>> {
+/// The outer `while i < results.len()` loop of `resolve_single_pass`; each
+/// round of the inner loop starts at the result's resume offset.
+fn pass_from(ctx: &VarContext, results: Vec<Pending>, i: usize, depth: usize) -> Vec<Pending> {
     if i >= results.len() {
         return results;
     }
-    let (results, modified) = scan(ctx, results, i, 0);
-    if modified { pass_from(ctx, results, i) } else { pass_from(ctx, results, i + 1) }
+    let start = results[i].resume;
+    let (results, modified) = scan(ctx, results, i, start, depth);
+    if modified { pass_from(ctx, results, i, depth) } else { pass_from(ctx, results, i + 1, depth) }
+}
+
+fn texts(results: &[Pending]) -> Vec<Vec<u8>> {
+    let mut out = Vec::new();
+    let mut k = 0;
+    while k < results.len() {
+        out.push(results[k].text.clone());
+        k += 1;
+    }
+    out
 }
 
 /// `resolve_single_pass`.
-pub fn resolve_single_pass(ctx: &VarContext, pattern: &[u8]) -> Vec<Vec<u8>> {
+pub fn resolve_single_pass(ctx: &VarContext, pattern: &[u8], depth: usize) -> Vec<Vec<u8>> {
     let mut results = Vec::new();
-    results.push(pattern.to_vec());
-    pass_from(ctx, results, 0)
+    results.push(Pending { text: pattern.to_vec(), resume: 0 });
+    texts(&pass_from(ctx, results, 0, depth))
 }
 
 /// The `for result in &results` loop of one iteration: the new results and
 /// whether any changed.
-fn pass_all(ctx: &VarContext, results: &[Vec<u8>], k: usize, acc: Vec<Vec<u8>>, changed: bool)
+fn pass_all(ctx: &VarContext, results: &[Vec<u8>], k: usize, acc: Vec<Vec<u8>>, changed: bool, depth: usize)
     -> (Vec<Vec<u8>>, bool) {
     if k >= results.len() {
         return (acc, changed);
     }
-    let resolved = resolve_single_pass(ctx, &results[k]);
+    let resolved = resolve_single_pass(ctx, &results[k], depth);
     let differs = resolved.len() > 1 || (resolved.len() == 1 && !bytes::eq(&resolved[0], &results[k]));
     let acc = extend(acc, &resolved);
-    pass_all(ctx, results, k + 1, acc, changed || differs)
+    pass_all(ctx, results, k + 1, acc, changed || differs, depth)
 }
 
 fn extend(mut acc: Vec<Vec<u8>>, more: &[Vec<u8>]) -> Vec<Vec<u8>> {
@@ -275,18 +304,28 @@ fn dedup(v: &[Vec<u8>]) -> Vec<Vec<u8>> {
 }
 
 /// The `while changed && iteration < max_iterations` loop.
-fn fixpoint(ctx: &VarContext, results: Vec<Vec<u8>>, iteration: usize) -> Vec<Vec<u8>> {
+fn fixpoint(ctx: &VarContext, results: Vec<Vec<u8>>, iteration: usize, depth: usize) -> Vec<Vec<u8>> {
     if iteration >= 10 {
         return results;
     }
-    let (new, changed) = pass_all(ctx, &results, 0, Vec::new(), false);
+    let (new, changed) = pass_all(ctx, &results, 0, Vec::new(), false, depth);
     let results = dedup(&new);
-    if changed { fixpoint(ctx, results, iteration + 1) } else { results }
+    if changed { fixpoint(ctx, results, iteration + 1, depth) } else { results }
+}
+
+/// `resolve_aws_variables_with_depth` (03e77594): nesting stops at depth 10.
+pub fn resolve_aws_variables_with_depth(ctx: &VarContext, pattern: &[u8], depth: usize) -> Vec<Vec<u8>> {
+    if depth >= 10 {
+        let mut out = Vec::new();
+        out.push(pattern.to_vec());
+        return out;
+    }
+    let mut results = Vec::new();
+    results.push(pattern.to_vec());
+    fixpoint(ctx, results, 0, depth)
 }
 
 /// `resolve_aws_variables`.
 pub fn resolve_aws_variables(ctx: &VarContext, pattern: &[u8]) -> Vec<Vec<u8>> {
-    let mut results = Vec::new();
-    results.push(pattern.to_vec());
-    fixpoint(ctx, results, 0)
+    resolve_aws_variables_with_depth(ctx, pattern, 0)
 }
