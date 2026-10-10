@@ -22,7 +22,7 @@
  "nora-total": {
   "date": "2026-10-09",
   "change": "added: every role-rule pattern is shorter than Usize.max",
-  "reason": "Same capacity boundary as nora-glob-match, reached through `transition`; gpt-6.1-sol proved the unconditional statement false. Then also: namespace scopes (provider and rule) shorter than Usize.max; a scope of Usize.max `/` overflows its split (gpt-6.1-sol, 2026-10-10)."
+  "reason": "Same capacity boundary as nora-glob-match, reached through `transition`; gpt-6.1-sol proved the unconditional statement false. Then also: namespace scopes (provider and rule) shorter than Usize.max; a scope of Usize.max `/` overflows its split (gpt-6.1-sol, 2026-10-10). Then also: the request namespace shorter than Usize.max; a namespace of Usize.max `/` overflows namespace_match's split (gpt-6.1-sol, 2026-10-10)."
  },
  "nora-middleware-total": {
   "date": "2026-10-09",
