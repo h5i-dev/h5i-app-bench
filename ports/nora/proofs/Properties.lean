@@ -211,10 +211,12 @@ theorem reference_shape (x : Slice U8) (h : validation.validate_docker_reference
   apply nora_kernel.Verified.NoraReference.reference_shape <;> assumption
 
 /-- The middleware never panics or loops, as long as no failure counter is at
-`u32::MAX`. -/
+`u32::MAX` and every OIDC role-rule pattern is shorter than `Usize.max` (see
+`transition_total`; Rust cannot allocate a longer one). -/
 theorem middleware_total (cfg : middleware.Config) (fs : Slice lockout.FailureEntry)
     (cr : oracle.Crypto) (jw : Option middleware.Jwt) (req : middleware.Request)
-    (hf : ∀ e ∈ fs.val, e.failures.val < U32.max) :
+    (hf : ∀ e ∈ fs.val, e.failures.val < U32.max)
+    (hpat : ∀ p b, cfg.oidc = some (p, b) → ∀ rule ∈ p.role_rules.val, rule.pattern.length < Usize.max) :
     ∃ y, middleware.auth_middleware cfg fs cr jw req = ok y := by
   sorry
 

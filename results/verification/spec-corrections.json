@@ -1,8 +1,37 @@
 {
- "kanidm-str-contains-spec": {"date": "2026-10-06", "change": "added `hay.length < Usize.max`", "reason": "A model proved the unconditional statement false: Aeneas allows a slice of length Usize.max, where the loop's checked `i + needle.len()` overflows. Rust slices cannot be that long."},
- "oxicloud-keeps-owner": {"date": "2026-10-06", "change": "added `GrantsUnique db`", "reason": "Upstream enforces this with a UNIQUE key; without it the property is false for states the database cannot reach."},
- "rustfs-force-delete": {"date": "2026-10-06", "change": "added `UpstreamAction` for statement actions", "reason": "The port's (family, name) action pair is wider than upstream's enum; the precondition restricts to actions upstream can represent."},
- "rustfs-resolution-terminates": {"date": "2026-10-06", "change": "conclusion weakened to `ok ∨ fail`", "reason": "The property is termination, not success; chosen by the maintainer."},
- "nora-glob-match": {"date": "2026-10-09", "change": "added `pattern.length < Usize.max`", "reason": "gpt-6.1-sol proved the unconditional statement false in Lean: a pattern of Usize.max `*` bytes splits into Usize.max + 1 parts, more than a modeled Vec holds. Rust cannot allocate such a pattern."},
- "nora-total": {"date": "2026-10-09", "change": "added: every role-rule pattern is shorter than Usize.max", "reason": "Same capacity boundary as nora-glob-match, reached through `transition`; gpt-6.1-sol proved the unconditional statement false."}
+ "kanidm-str-contains-spec": {
+  "date": "2026-10-06",
+  "change": "added `hay.length < Usize.max`",
+  "reason": "A model proved the unconditional statement false: Aeneas allows a slice of length Usize.max, where the loop's checked `i + needle.len()` overflows. Rust slices cannot be that long."
+ },
+ "oxicloud-keeps-owner": {
+  "date": "2026-10-06",
+  "change": "added `GrantsUnique db`",
+  "reason": "Upstream enforces this with a UNIQUE key; without it the property is false for states the database cannot reach."
+ },
+ "rustfs-force-delete": {
+  "date": "2026-10-06",
+  "change": "added `UpstreamAction` for statement actions",
+  "reason": "The port's (family, name) action pair is wider than upstream's enum; the precondition restricts to actions upstream can represent."
+ },
+ "rustfs-resolution-terminates": {
+  "date": "2026-10-06",
+  "change": "conclusion weakened to `ok ∨ fail`",
+  "reason": "The property is termination, not success; chosen by the maintainer."
+ },
+ "nora-glob-match": {
+  "date": "2026-10-09",
+  "change": "added `pattern.length < Usize.max`",
+  "reason": "gpt-6.1-sol proved the unconditional statement false in Lean: a pattern of Usize.max `*` bytes splits into Usize.max + 1 parts, more than a modeled Vec holds. Rust cannot allocate such a pattern."
+ },
+ "nora-total": {
+  "date": "2026-10-09",
+  "change": "added: every role-rule pattern is shorter than Usize.max",
+  "reason": "Same capacity boundary as nora-glob-match, reached through `transition`; gpt-6.1-sol proved the unconditional statement false."
+ },
+ "nora-middleware-total": {
+  "date": "2026-10-09",
+  "change": "added: every OIDC role-rule pattern in the config is shorter than Usize.max",
+  "reason": "Same capacity boundary as nora-glob-match, reached through the middleware's OIDC path; gpt-6.1-sol proved the unconditional statement false."
+ }
 }
