@@ -17,104 +17,7 @@ set_option maxHeartbeats 1000000
 /- You can set the `maxRecDepth` value with the `-max-recdepth` CLI option -/
 set_option maxRecDepth 2048
 
-/- You can remove the following line by using the CLI option `-all-computable`: -/
-noncomputable section
-
 namespace rustfs_kernel
-
-/-- [core::cmp::impls::{impl core::cmp::PartialEq<bool> for bool}::ne]:
-    Source: '/rustc/library/core/src/cmp.rs', lines 2188:16-2188:50
-    Name pattern: [core::cmp::impls::{core::cmp::PartialEq<bool, bool>}::ne]
-    Visibility: public -/
-@[rust_fun "core::cmp::impls::{core::cmp::PartialEq<bool, bool>}::ne"]
-axiom Bool.Insts.CoreCmpPartialEqBool.ne : Bool → Bool → Result Bool
-
-/-- [core::fmt::{impl core::fmt::Debug for (U, T)}::fmt]:
-    Source: '/rustc/library/core/src/fmt/mod.rs', lines 3094:16-3094:62
-    Name pattern: [core::fmt::{core::fmt::Debug<(@U, @T)>}::fmt]
-    Visibility: public -/
-@[rust_fun "core::fmt::{core::fmt::Debug<(@U, @T)>}::fmt"]
-axiom Pair.Insts.CoreFmtDebug.fmt
-  {U : Type} {T : Type} (DebugInst : core.fmt.Debug U) (DebugInst1 :
-  core.fmt.Debug T) :
-  (U × T) → core.fmt.Formatter → Result ((core.result.Result Unit
-    core.fmt.Error) × core.fmt.Formatter)
-
-/-- Trait implementation: [core::fmt::{impl core::fmt::Debug for (U, T)}]
-    Source: '/rustc/library/core/src/fmt/mod.rs', lines 3092:12-3092:57
-    Name pattern: [core::fmt::Debug<(@U, @T)>] -/
-@[reducible, rust_trait_impl "core::fmt::Debug<(@U, @T)>"]
-def Pair.Insts.CoreFmtDebug {U : Type} {T : Type} (DebugInst : core.fmt.Debug
-  U) (DebugInst1 : core.fmt.Debug T) : core.fmt.Debug (U × T) := {
-  fmt := Pair.Insts.CoreFmtDebug.fmt DebugInst DebugInst1
-}
-
-/-- [core::mem::maybe_uninit::MaybeUninit]
-    Source: '/rustc/library/core/src/mem/maybe_uninit.rs', lines 355:0-355:24
-    Name pattern: [core::mem::maybe_uninit::MaybeUninit]
-    Visibility: public -/
-@[rust_type "core::mem::maybe_uninit::MaybeUninit"]
-axiom core.mem.maybe_uninit.MaybeUninit (T : Type) : Type
-
-/-- [core::option::{impl core::fmt::Debug for core::option::Option<T>}::fmt]:
-    Source: '/rustc/library/core/src/option.rs', lines 592:15-592:20
-    Name pattern: [core::option::{core::fmt::Debug<core::option::Option<@T>>}::fmt]
-    Visibility: public -/
-@[rust_fun "core::option::{core::fmt::Debug<core::option::Option<@T>>}::fmt"]
-axiom core.option.Option.Insts.CoreFmtDebug.fmt
-  {T : Type} (fmtDebugInst : core.fmt.Debug T) :
-  Option T → core.fmt.Formatter → Result ((core.result.Result Unit
-    core.fmt.Error) × core.fmt.Formatter)
-
-/-- Trait implementation: [core::option::{impl core::fmt::Debug for core::option::Option<T>}]
-    Source: '/rustc/library/core/src/option.rs', lines 592:15-592:20
-    Name pattern: [core::fmt::Debug<core::option::Option<@T>>] -/
-@[reducible, rust_trait_impl "core::fmt::Debug<core::option::Option<@T>>"]
-def core.option.Option.Insts.CoreFmtDebug {T : Type} (fmtDebugInst :
-  core.fmt.Debug T) : core.fmt.Debug (Option T) := {
-  fmt := core.option.Option.Insts.CoreFmtDebug.fmt fmtDebugInst
-}
-
-/-- [core::option::{impl core::cmp::PartialEq<core::option::Option<T>> for core::option::Option<T>}::eq]:
-    Source: '/rustc/library/core/src/option.rs', lines 2441:4-2441:38
-    Name pattern: [core::option::{core::cmp::PartialEq<core::option::Option<@T>, core::option::Option<@T>>}::eq]
-    Visibility: public -/
-@[rust_fun
-  "core::option::{core::cmp::PartialEq<core::option::Option<@T>, core::option::Option<@T>>}::eq"]
-axiom core.option.Option.Insts.CoreCmpPartialEqOption.eq
-  {T : Type} (cmpPartialEqInst : core.cmp.PartialEq T T) :
-  Option T → Option T → Result Bool
-
-/-- [core::tuple::{impl core::cmp::PartialEq<(U, T)> for (U, T)}::ne]:
-    Source: '/rustc/library/core/src/tuple.rs', lines 34:16-34:55
-    Name pattern: [core::tuple::{core::cmp::PartialEq<(@U, @T), (@U, @T)>}::ne]
-    Visibility: public -/
-@[rust_fun "core::tuple::{core::cmp::PartialEq<(@U, @T), (@U, @T)>}::ne"]
-axiom Pair.Insts.CoreCmpPartialEqPair.ne
-  {U : Type} {T : Type} (cmpPartialEqInst : core.cmp.PartialEq U U)
-  (cmpPartialEqInst1 : core.cmp.PartialEq T T) :
-  (U × T) → (U × T) → Result Bool
-
-/-- [core::tuple::{impl core::cmp::PartialEq<(U, T)> for (U, T)}::eq]:
-    Source: '/rustc/library/core/src/tuple.rs', lines 30:16-30:55
-    Name pattern: [core::tuple::{core::cmp::PartialEq<(@U, @T), (@U, @T)>}::eq]
-    Visibility: public -/
-@[rust_fun "core::tuple::{core::cmp::PartialEq<(@U, @T), (@U, @T)>}::eq"]
-axiom Pair.Insts.CoreCmpPartialEqPair.eq
-  {U : Type} {T : Type} (cmpPartialEqInst : core.cmp.PartialEq U U)
-  (cmpPartialEqInst1 : core.cmp.PartialEq T T) :
-  (U × T) → (U × T) → Result Bool
-
-/-- Trait implementation: [core::tuple::{impl core::cmp::PartialEq<(U, T)> for (U, T)}]
-    Source: '/rustc/library/core/src/tuple.rs', lines 28:12-28:74
-    Name pattern: [core::cmp::PartialEq<(@U, @T), (@U, @T)>] -/
-@[reducible, rust_trait_impl "core::cmp::PartialEq<(@U, @T), (@U, @T)>"]
-def Pair.Insts.CoreCmpPartialEqPair {U : Type} {T : Type} (cmpPartialEqInst :
-  core.cmp.PartialEq U U) (cmpPartialEqInst1 : core.cmp.PartialEq T T) :
-  core.cmp.PartialEq (U × T) (U × T) := {
-  eq := Pair.Insts.CoreCmpPartialEqPair.eq cmpPartialEqInst cmpPartialEqInst1
-  ne := Pair.Insts.CoreCmpPartialEqPair.ne cmpPartialEqInst cmpPartialEqInst1
-}
 
 /-- [rustfs_kernel::acts::Family]
     Source: 'ports/rustfs/kernel/src/acts.rs', lines 5:0-11:1
@@ -133,27 +36,6 @@ inductive acts.Family where
 def acts.Family.Insts.CoreCloneClone.clone
   (self : acts.Family) : Result acts.Family := do
   ok self
-
-/-- [rustfs_kernel::acts::{impl core::fmt::Debug for rustfs_kernel::acts::Family}::fmt]:
-    Source: 'ports/rustfs/kernel/src/acts.rs', lines 4:22-4:27
-    Visibility: public -/
-def acts.Family.Insts.CoreFmtDebug.fmt
-  (self : acts.Family) (f : core.fmt.Formatter) :
-  Result ((core.result.Result Unit core.fmt.Error) × core.fmt.Formatter)
-  := do
-  match self with
-  | acts.Family.S3 => core.fmt.Formatter.write_str f (toStr "S3")
-  | acts.Family.Admin => core.fmt.Formatter.write_str f (toStr "Admin")
-  | acts.Family.Sts => core.fmt.Formatter.write_str f (toStr "Sts")
-  | acts.Family.Kms => core.fmt.Formatter.write_str f (toStr "Kms")
-  | acts.Family.None => core.fmt.Formatter.write_str f (toStr "None")
-
-/-- Trait implementation: [rustfs_kernel::acts::{impl core::fmt::Debug for rustfs_kernel::acts::Family}]
-    Source: 'ports/rustfs/kernel/src/acts.rs', lines 4:22-4:27 -/
-@[reducible]
-def acts.Family.Insts.CoreFmtDebug : core.fmt.Debug acts.Family := {
-  fmt := acts.Family.Insts.CoreFmtDebug.fmt
-}
 
 /-- [rustfs_kernel::acts::{impl core::cmp::PartialEq<rustfs_kernel::acts::Family> for rustfs_kernel::acts::Family}::eq]:
     Source: 'ports/rustfs/kernel/src/acts.rs', lines 4:29-4:38
@@ -195,27 +77,6 @@ def acts.Action.Insts.CoreCloneClone.clone
 @[reducible]
 def acts.Action.Insts.CoreCloneClone : core.clone.Clone acts.Action := {
   clone := acts.Action.Insts.CoreCloneClone.clone
-}
-
-/-- [rustfs_kernel::acts::{impl core::fmt::Debug for rustfs_kernel::acts::Action}::fmt]:
-    Source: 'ports/rustfs/kernel/src/acts.rs', lines 14:16-14:21
-    Visibility: public -/
-def acts.Action.Insts.CoreFmtDebug.fmt
-  (self : acts.Action) (f : core.fmt.Formatter) :
-  Result ((core.result.Result Unit core.fmt.Error) × core.fmt.Formatter)
-  := do
-  let dyn := Dyn.mk _ acts.Family.Insts.CoreFmtDebug self.family
-  let dyn1 :=
-    Dyn.mk _ (core.fmt.DebugShared (core.fmt.DebugVec core.fmt.DebugU8))
-      self.name
-  core.fmt.Formatter.debug_struct_field2_finish f (toStr "Action") (toStr
-    "family") dyn (toStr "name") dyn1
-
-/-- Trait implementation: [rustfs_kernel::acts::{impl core::fmt::Debug for rustfs_kernel::acts::Action}]
-    Source: 'ports/rustfs/kernel/src/acts.rs', lines 14:16-14:21 -/
-@[reducible]
-def acts.Action.Insts.CoreFmtDebug : core.fmt.Debug acts.Action := {
-  fmt := acts.Action.Insts.CoreFmtDebug.fmt
 }
 
 /-- [rustfs_kernel::acts::{impl core::cmp::PartialEq<rustfs_kernel::acts::Action> for rustfs_kernel::acts::Action}::eq]:
@@ -4010,107 +3871,6 @@ inductive claims.ClaimLookup where
 | Found : Std.Usize → claims.ClaimLookup
 | Ambiguous : claims.ClaimLookup
 
-/-- [rustfs_kernel::claims::{impl core::clone::Clone for rustfs_kernel::claims::ClaimLookup}::clone]:
-    Source: 'ports/rustfs/kernel/src/claims.rs', lines 13:9-13:14
-    Visibility: public -/
-def claims.ClaimLookup.Insts.CoreCloneClone.clone
-  (self : claims.ClaimLookup) : Result claims.ClaimLookup := do
-  ok self
-
-/-- Trait implementation: [rustfs_kernel::claims::{impl core::clone::Clone for rustfs_kernel::claims::ClaimLookup}]
-    Source: 'ports/rustfs/kernel/src/claims.rs', lines 13:9-13:14 -/
-@[reducible]
-def claims.ClaimLookup.Insts.CoreCloneClone : core.clone.Clone
-  claims.ClaimLookup := {
-  clone := claims.ClaimLookup.Insts.CoreCloneClone.clone
-}
-
-/-- Trait implementation: [rustfs_kernel::claims::{impl core::marker::Copy for rustfs_kernel::claims::ClaimLookup}]
-    Source: 'ports/rustfs/kernel/src/claims.rs', lines 13:16-13:20 -/
-@[reducible]
-def claims.ClaimLookup.Insts.CoreMarkerCopy : core.marker.Copy
-  claims.ClaimLookup := {
-  cloneInst := claims.ClaimLookup.Insts.CoreCloneClone
-}
-
-/-- [rustfs_kernel::claims::{impl core::fmt::Debug for rustfs_kernel::claims::ClaimLookup}::fmt]:
-    Source: 'ports/rustfs/kernel/src/claims.rs', lines 13:22-13:27
-    Visibility: public -/
-def claims.ClaimLookup.Insts.CoreFmtDebug.fmt
-  (self : claims.ClaimLookup) (f : core.fmt.Formatter) :
-  Result ((core.result.Result Unit core.fmt.Error) × core.fmt.Formatter)
-  := do
-  match self with
-  | claims.ClaimLookup.Missing =>
-    core.fmt.Formatter.write_str f (toStr "Missing")
-  | claims.ClaimLookup.Found __self_0 =>
-    let __self_01 :=
-      Dyn.mk _ (core.fmt.DebugShared core.fmt.DebugUsize) __self_0
-    core.fmt.Formatter.debug_tuple_field1_finish f (toStr "Found") __self_01
-  | claims.ClaimLookup.Ambiguous =>
-    core.fmt.Formatter.write_str f (toStr "Ambiguous")
-
-/-- Trait implementation: [rustfs_kernel::claims::{impl core::fmt::Debug for rustfs_kernel::claims::ClaimLookup}]
-    Source: 'ports/rustfs/kernel/src/claims.rs', lines 13:22-13:27 -/
-@[reducible]
-def claims.ClaimLookup.Insts.CoreFmtDebug : core.fmt.Debug claims.ClaimLookup
-  := {
-  fmt := claims.ClaimLookup.Insts.CoreFmtDebug.fmt
-}
-
-/-- Trait implementation: [rustfs_kernel::claims::{impl core::marker::StructuralPartialEq for rustfs_kernel::claims::ClaimLookup}]
-    Source: 'ports/rustfs/kernel/src/claims.rs', lines 13:29-13:38 -/
-@[reducible]
-def claims.ClaimLookup.Insts.CoreMarkerStructuralPartialEq :
-  core.marker.StructuralPartialEq claims.ClaimLookup := {
-}
-
-/-- [rustfs_kernel::claims::{impl core::cmp::PartialEq<rustfs_kernel::claims::ClaimLookup> for rustfs_kernel::claims::ClaimLookup}::eq]:
-    Source: 'ports/rustfs/kernel/src/claims.rs', lines 13:29-13:38
-    Visibility: public -/
-def claims.ClaimLookup.Insts.CoreCmpPartialEqClaimLookup.eq
-  (self : claims.ClaimLookup) (other : claims.ClaimLookup) : Result Bool := do
-  let self1 := read_discriminant self
-  let other1 := read_discriminant other
-  if self1 = other1
-  then
-    match self with
-    | claims.ClaimLookup.Missing => ok true
-    | claims.ClaimLookup.Found __self_0 =>
-      match other with
-      | claims.ClaimLookup.Missing => ok true
-      | claims.ClaimLookup.Found __arg1_0 =>
-        lift (core.cmp.impls.PartialEqUsize.eq __self_0 __arg1_0)
-      | claims.ClaimLookup.Ambiguous => ok true
-    | claims.ClaimLookup.Ambiguous => ok true
-  else ok false
-
-/-- Trait implementation: [rustfs_kernel::claims::{impl core::cmp::PartialEq<rustfs_kernel::claims::ClaimLookup> for rustfs_kernel::claims::ClaimLookup}]
-    Source: 'ports/rustfs/kernel/src/claims.rs', lines 13:29-13:38 -/
-@[reducible]
-impl_def claims.ClaimLookup.Insts.CoreCmpPartialEqClaimLookup :
-  core.cmp.PartialEq claims.ClaimLookup claims.ClaimLookup := {
-  eq := claims.ClaimLookup.Insts.CoreCmpPartialEqClaimLookup.eq
-  ne := core.cmp.PartialEq.ne.trait_default
-    claims.ClaimLookup.Insts.CoreCmpPartialEqClaimLookup
-}
-
-/-- [rustfs_kernel::claims::{impl core::cmp::Eq for rustfs_kernel::claims::ClaimLookup}::assert_fields_are_eq]:
-    Source: 'ports/rustfs/kernel/src/claims.rs', lines 13:40-13:42
-    Visibility: public -/
-def claims.ClaimLookup.Insts.CoreCmpEq.assert_fields_are_eq
-  (self : claims.ClaimLookup) : Result Unit := do
-  ok ()
-
-/-- Trait implementation: [rustfs_kernel::claims::{impl core::cmp::Eq for rustfs_kernel::claims::ClaimLookup}]
-    Source: 'ports/rustfs/kernel/src/claims.rs', lines 13:40-13:42 -/
-@[reducible]
-def claims.ClaimLookup.Insts.CoreCmpEq : core.cmp.Eq claims.ClaimLookup := {
-  partialEqInst := claims.ClaimLookup.Insts.CoreCmpPartialEqClaimLookup
-  assert_fields_are_eq :=
-    claims.ClaimLookup.Insts.CoreCmpEq.assert_fields_are_eq
-}
-
 /-- [rustfs_kernel::unicode::append_scalar]:
     Source: 'ports/rustfs/kernel/src/unicode.rs', lines 456:0-472:1
     Visibility: public -/
@@ -5734,123 +5494,6 @@ def conddata.FuncKeyValue.Insts.CoreCloneClone {T : Type} (corecloneCloneInst :
   clone := conddata.FuncKeyValue.Insts.CoreCloneClone.clone corecloneCloneInst
 }
 
-/-- [rustfs_kernel::condfuncs::{impl core::fmt::Debug for rustfs_kernel::condfuncs::Key}::fmt]:
-    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 51:9-51:14
-    Visibility: public -/
-def condfuncs.Key.Insts.CoreFmtDebug.fmt
-  (self : condfuncs.Key) (f : core.fmt.Formatter) :
-  Result ((core.result.Result Unit core.fmt.Error) × core.fmt.Formatter)
-  := do
-  let dyn := Dyn.mk _ (core.fmt.DebugVec core.fmt.DebugU8) self.key_name
-  let dyn1 := Dyn.mk _ (core.fmt.DebugVec core.fmt.DebugU8) self.name
-  let dyn2 :=
-    Dyn.mk _ (core.fmt.DebugShared (core.option.Option.Insts.CoreFmtDebug
-      (core.fmt.DebugVec core.fmt.DebugU8))) self.variable
-  core.fmt.Formatter.debug_struct_field3_finish f (toStr "Key") (toStr
-    "key_name") dyn (toStr "name") dyn1 (toStr "variable") dyn2
-
-/-- Trait implementation: [rustfs_kernel::condfuncs::{impl core::fmt::Debug for rustfs_kernel::condfuncs::Key}]
-    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 51:9-51:14 -/
-@[reducible]
-def condfuncs.Key.Insts.CoreFmtDebug : core.fmt.Debug condfuncs.Key := {
-  fmt := condfuncs.Key.Insts.CoreFmtDebug.fmt
-}
-
-/-- [rustfs_kernel::conddata::{impl core::fmt::Debug for rustfs_kernel::conddata::FuncKeyValue<T>}::fmt]:
-    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 8:16-8:21
-    Visibility: public -/
-def conddata.FuncKeyValue.Insts.CoreFmtDebug.fmt
-  {T : Type} (corefmtDebugInst : core.fmt.Debug T)
-  (self : conddata.FuncKeyValue T) (f : core.fmt.Formatter) :
-  Result ((core.result.Result Unit core.fmt.Error) × core.fmt.Formatter)
-  := do
-  let dyn := Dyn.mk _ condfuncs.Key.Insts.CoreFmtDebug self.key
-  let dyn1 := Dyn.mk _ (core.fmt.DebugShared corefmtDebugInst) self.values
-  core.fmt.Formatter.debug_struct_field2_finish f (toStr "FuncKeyValue") (toStr
-    "key") dyn (toStr "values") dyn1
-
-/-- Trait implementation: [rustfs_kernel::conddata::{impl core::fmt::Debug for rustfs_kernel::conddata::FuncKeyValue<T>}]
-    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 8:16-8:21 -/
-@[reducible]
-def conddata.FuncKeyValue.Insts.CoreFmtDebug {T : Type} (corefmtDebugInst :
-  core.fmt.Debug T) : core.fmt.Debug (conddata.FuncKeyValue T) := {
-  fmt := conddata.FuncKeyValue.Insts.CoreFmtDebug.fmt corefmtDebugInst
-}
-
-/-- Trait implementation: [rustfs_kernel::conddata::{impl core::marker::StructuralPartialEq for rustfs_kernel::conddata::FuncKeyValue<T>}]
-    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 8:23-8:32 -/
-@[reducible]
-def conddata.FuncKeyValue.Insts.CoreMarkerStructuralPartialEq {T : Type}
-  (corecmpPartialEqInst : core.cmp.PartialEq T T) :
-  core.marker.StructuralPartialEq (conddata.FuncKeyValue T) := {
-}
-
-/-- [rustfs_kernel::condfuncs::{impl core::cmp::PartialEq<rustfs_kernel::condfuncs::Key> for rustfs_kernel::condfuncs::Key}::eq]:
-    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 51:16-51:25
-    Visibility: public -/
-def condfuncs.Key.Insts.CoreCmpPartialEqKey.eq
-  (self : condfuncs.Key) (other : condfuncs.Key) : Result Bool := do
-  let b ←
-    alloc.vec.partial_eq.PartialEqVec.eq core.cmp.PartialEqU8 self.key_name
-      other.key_name
-  if b
-  then
-    let b1 ←
-      alloc.vec.partial_eq.PartialEqVec.eq core.cmp.PartialEqU8 self.name
-        other.name
-    if b1
-    then
-      core.option.Option.Insts.CoreCmpPartialEqOption.eq (core.cmp.PartialEqVec
-        core.cmp.PartialEqU8) self.variable other.variable
-    else ok false
-  else ok false
-
-/-- [rustfs_kernel::conddata::{impl core::cmp::PartialEq<rustfs_kernel::conddata::FuncKeyValue<T>> for rustfs_kernel::conddata::FuncKeyValue<T>}::eq]:
-    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 8:23-8:32
-    Visibility: public -/
-def conddata.FuncKeyValue.Insts.CoreCmpPartialEqFuncKeyValue.eq
-  {T : Type} (corecmpPartialEqInst : core.cmp.PartialEq T T)
-  (self : conddata.FuncKeyValue T) (other : conddata.FuncKeyValue T) :
-  Result Bool
-  := do
-  let b ← condfuncs.Key.Insts.CoreCmpPartialEqKey.eq self.key other.key
-  if b
-  then corecmpPartialEqInst.eq self.values other.values
-  else ok false
-
-/-- Trait implementation: [rustfs_kernel::conddata::{impl core::cmp::PartialEq<rustfs_kernel::conddata::FuncKeyValue<T>> for rustfs_kernel::conddata::FuncKeyValue<T>}]
-    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 8:23-8:32 -/
-@[reducible]
-impl_def conddata.FuncKeyValue.Insts.CoreCmpPartialEqFuncKeyValue {T : Type}
-  (corecmpPartialEqInst : core.cmp.PartialEq T T) : core.cmp.PartialEq
-  (conddata.FuncKeyValue T) (conddata.FuncKeyValue T) := {
-  eq := conddata.FuncKeyValue.Insts.CoreCmpPartialEqFuncKeyValue.eq
-    corecmpPartialEqInst
-  ne := core.cmp.PartialEq.ne.trait_default
-    (conddata.FuncKeyValue.Insts.CoreCmpPartialEqFuncKeyValue
-    corecmpPartialEqInst)
-}
-
-/-- [rustfs_kernel::conddata::{impl core::cmp::Eq for rustfs_kernel::conddata::FuncKeyValue<T>}::assert_fields_are_eq]:
-    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 8:34-8:36
-    Visibility: public -/
-def conddata.FuncKeyValue.Insts.CoreCmpEq.assert_fields_are_eq
-  {T : Type} (corecmpEqInst : core.cmp.Eq T) (self : conddata.FuncKeyValue T) :
-  Result Unit
-  := do
-  ok ()
-
-/-- Trait implementation: [rustfs_kernel::conddata::{impl core::cmp::Eq for rustfs_kernel::conddata::FuncKeyValue<T>}]
-    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 8:34-8:36 -/
-@[reducible]
-def conddata.FuncKeyValue.Insts.CoreCmpEq {T : Type} (corecmpEqInst :
-  core.cmp.Eq T) : core.cmp.Eq (conddata.FuncKeyValue T) := {
-  partialEqInst := conddata.FuncKeyValue.Insts.CoreCmpPartialEqFuncKeyValue
-    corecmpEqInst.partialEqInst
-  assert_fields_are_eq :=
-    conddata.FuncKeyValue.Insts.CoreCmpEq.assert_fields_are_eq corecmpEqInst
-}
-
 /-- [rustfs_kernel::conddata::InnerFunc]
     Source: 'ports/rustfs/kernel/src/conddata.rs', lines 14:0-16:1
     Visibility: public -/
@@ -5869,89 +5512,6 @@ def conddata.InnerFunc.Insts.CoreCloneClone.clone
     alloc.vec.CloneVec.clone (conddata.FuncKeyValue.Insts.CoreCloneClone
       corecloneCloneInst) self.entries
   ok { entries := v }
-
-/-- Trait implementation: [rustfs_kernel::conddata::{impl core::clone::Clone for rustfs_kernel::conddata::InnerFunc<T>}]
-    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 13:9-13:14 -/
-@[reducible]
-def conddata.InnerFunc.Insts.CoreCloneClone {T : Type} (corecloneCloneInst :
-  core.clone.Clone T) : core.clone.Clone (conddata.InnerFunc T) := {
-  clone := conddata.InnerFunc.Insts.CoreCloneClone.clone corecloneCloneInst
-}
-
-/-- [rustfs_kernel::conddata::{impl core::fmt::Debug for rustfs_kernel::conddata::InnerFunc<T>}::fmt]:
-    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 13:16-13:21
-    Visibility: public -/
-def conddata.InnerFunc.Insts.CoreFmtDebug.fmt
-  {T : Type} (corefmtDebugInst : core.fmt.Debug T)
-  (self : conddata.InnerFunc T) (f : core.fmt.Formatter) :
-  Result ((core.result.Result Unit core.fmt.Error) × core.fmt.Formatter)
-  := do
-  let dyn :=
-    Dyn.mk _ (core.fmt.DebugShared (core.fmt.DebugVec
-      (conddata.FuncKeyValue.Insts.CoreFmtDebug corefmtDebugInst)))
-      self.entries
-  core.fmt.Formatter.debug_struct_field1_finish f (toStr "InnerFunc") (toStr
-    "entries") dyn
-
-/-- Trait implementation: [rustfs_kernel::conddata::{impl core::fmt::Debug for rustfs_kernel::conddata::InnerFunc<T>}]
-    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 13:16-13:21 -/
-@[reducible]
-def conddata.InnerFunc.Insts.CoreFmtDebug {T : Type} (corefmtDebugInst :
-  core.fmt.Debug T) : core.fmt.Debug (conddata.InnerFunc T) := {
-  fmt := conddata.InnerFunc.Insts.CoreFmtDebug.fmt corefmtDebugInst
-}
-
-/-- Trait implementation: [rustfs_kernel::conddata::{impl core::marker::StructuralPartialEq for rustfs_kernel::conddata::InnerFunc<T>}]
-    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 13:23-13:32 -/
-@[reducible]
-def conddata.InnerFunc.Insts.CoreMarkerStructuralPartialEq {T : Type}
-  (corecmpPartialEqInst : core.cmp.PartialEq T T) :
-  core.marker.StructuralPartialEq (conddata.InnerFunc T) := {
-}
-
-/-- [rustfs_kernel::conddata::{impl core::cmp::PartialEq<rustfs_kernel::conddata::InnerFunc<T>> for rustfs_kernel::conddata::InnerFunc<T>}::eq]:
-    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 13:23-13:32
-    Visibility: public -/
-def conddata.InnerFunc.Insts.CoreCmpPartialEqInnerFunc.eq
-  {T : Type} (corecmpPartialEqInst : core.cmp.PartialEq T T)
-  (self : conddata.InnerFunc T) (other : conddata.InnerFunc T) :
-  Result Bool
-  := do
-  alloc.vec.partial_eq.PartialEqVec.eq
-    (conddata.FuncKeyValue.Insts.CoreCmpPartialEqFuncKeyValue
-    corecmpPartialEqInst) self.entries other.entries
-
-/-- Trait implementation: [rustfs_kernel::conddata::{impl core::cmp::PartialEq<rustfs_kernel::conddata::InnerFunc<T>> for rustfs_kernel::conddata::InnerFunc<T>}]
-    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 13:23-13:32 -/
-@[reducible]
-impl_def conddata.InnerFunc.Insts.CoreCmpPartialEqInnerFunc {T : Type}
-  (corecmpPartialEqInst : core.cmp.PartialEq T T) : core.cmp.PartialEq
-  (conddata.InnerFunc T) (conddata.InnerFunc T) := {
-  eq := conddata.InnerFunc.Insts.CoreCmpPartialEqInnerFunc.eq
-    corecmpPartialEqInst
-  ne := core.cmp.PartialEq.ne.trait_default
-    (conddata.InnerFunc.Insts.CoreCmpPartialEqInnerFunc corecmpPartialEqInst)
-}
-
-/-- [rustfs_kernel::conddata::{impl core::cmp::Eq for rustfs_kernel::conddata::InnerFunc<T>}::assert_fields_are_eq]:
-    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 13:34-13:36
-    Visibility: public -/
-def conddata.InnerFunc.Insts.CoreCmpEq.assert_fields_are_eq
-  {T : Type} (corecmpEqInst : core.cmp.Eq T) (self : conddata.InnerFunc T) :
-  Result Unit
-  := do
-  ok ()
-
-/-- Trait implementation: [rustfs_kernel::conddata::{impl core::cmp::Eq for rustfs_kernel::conddata::InnerFunc<T>}]
-    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 13:34-13:36 -/
-@[reducible]
-def conddata.InnerFunc.Insts.CoreCmpEq {T : Type} (corecmpEqInst : core.cmp.Eq
-  T) : core.cmp.Eq (conddata.InnerFunc T) := {
-  partialEqInst := conddata.InnerFunc.Insts.CoreCmpPartialEqInnerFunc
-    corecmpEqInst.partialEqInst
-  assert_fields_are_eq :=
-    conddata.InnerFunc.Insts.CoreCmpEq.assert_fields_are_eq corecmpEqInst
-}
 
 /-- [rustfs_kernel::conddata::clone_key_value]:
     Source: 'ports/rustfs/kernel/src/conddata.rs', lines 18:0-23:1
@@ -6130,14 +5690,6 @@ def conddata.contains_key_name
   := do
   conddata.contains_key_name_loop inner «name» 0#usize
 
-/-- [rustfs_kernel::condfuncs::IpAddr]
-    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 24:0-27:1
-    Visibility: public -/
-@[discriminant isize]
-inductive condfuncs.IpAddr where
-| V4 : Std.U32 → condfuncs.IpAddr
-| V6 : Std.U128 → condfuncs.IpAddr
-
 /-- [rustfs_kernel::conddata::DateFuncValue]
     Source: 'ports/rustfs/kernel/src/conddata.rs', lines 66:0-69:1
     Visibility: public -/
@@ -6162,108 +5714,12 @@ def conddata.DateFuncValue.Insts.CoreCloneClone : core.clone.Clone
   clone := conddata.DateFuncValue.Insts.CoreCloneClone.clone
 }
 
-/-- [rustfs_kernel::conddata::{impl core::fmt::Debug for rustfs_kernel::conddata::DateFuncValue}::fmt]:
-    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 65:16-65:21
-    Visibility: public -/
-def conddata.DateFuncValue.Insts.CoreFmtDebug.fmt
-  (self : conddata.DateFuncValue) (f : core.fmt.Formatter) :
-  Result ((core.result.Result Unit core.fmt.Error) × core.fmt.Formatter)
-  := do
-  let dyn := Dyn.mk _ core.fmt.DebugI128 self.unix_nanos
-  let dyn1 :=
-    Dyn.mk _ (core.fmt.DebugShared core.fmt.DebugI32) self.offset_seconds
-  core.fmt.Formatter.debug_struct_field2_finish f (toStr "DateFuncValue")
-    (toStr "unix_nanos") dyn (toStr "offset_seconds") dyn1
-
-/-- Trait implementation: [rustfs_kernel::conddata::{impl core::fmt::Debug for rustfs_kernel::conddata::DateFuncValue}]
-    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 65:16-65:21 -/
-@[reducible]
-def conddata.DateFuncValue.Insts.CoreFmtDebug : core.fmt.Debug
-  conddata.DateFuncValue := {
-  fmt := conddata.DateFuncValue.Insts.CoreFmtDebug.fmt
-}
-
 /-- [rustfs_kernel::conddata::BinaryFuncValueError]
     Source: 'ports/rustfs/kernel/src/conddata.rs', lines 73:0-75:1
     Visibility: public -/
 @[discriminant isize]
 inductive conddata.BinaryFuncValueError where
 | InvalidBase64 : conddata.BinaryFuncValueError
-
-/-- [rustfs_kernel::conddata::{impl core::clone::Clone for rustfs_kernel::conddata::BinaryFuncValueError}::clone]:
-    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 72:9-72:14
-    Visibility: public -/
-def conddata.BinaryFuncValueError.Insts.CoreCloneClone.clone
-  (self : conddata.BinaryFuncValueError) :
-  Result conddata.BinaryFuncValueError
-  := do
-  ok conddata.BinaryFuncValueError.InvalidBase64
-
-/-- Trait implementation: [rustfs_kernel::conddata::{impl core::clone::Clone for rustfs_kernel::conddata::BinaryFuncValueError}]
-    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 72:9-72:14 -/
-@[reducible]
-def conddata.BinaryFuncValueError.Insts.CoreCloneClone : core.clone.Clone
-  conddata.BinaryFuncValueError := {
-  clone := conddata.BinaryFuncValueError.Insts.CoreCloneClone.clone
-}
-
-/-- [rustfs_kernel::conddata::{impl core::fmt::Debug for rustfs_kernel::conddata::BinaryFuncValueError}::fmt]:
-    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 72:16-72:21
-    Visibility: public -/
-def conddata.BinaryFuncValueError.Insts.CoreFmtDebug.fmt
-  (self : conddata.BinaryFuncValueError) (f : core.fmt.Formatter) :
-  Result ((core.result.Result Unit core.fmt.Error) × core.fmt.Formatter)
-  := do
-  core.fmt.Formatter.write_str f (toStr "InvalidBase64")
-
-/-- Trait implementation: [rustfs_kernel::conddata::{impl core::fmt::Debug for rustfs_kernel::conddata::BinaryFuncValueError}]
-    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 72:16-72:21 -/
-@[reducible]
-def conddata.BinaryFuncValueError.Insts.CoreFmtDebug : core.fmt.Debug
-  conddata.BinaryFuncValueError := {
-  fmt := conddata.BinaryFuncValueError.Insts.CoreFmtDebug.fmt
-}
-
-/-- Trait implementation: [rustfs_kernel::conddata::{impl core::marker::StructuralPartialEq for rustfs_kernel::conddata::BinaryFuncValueError}]
-    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 72:23-72:32 -/
-@[reducible]
-def conddata.BinaryFuncValueError.Insts.CoreMarkerStructuralPartialEq :
-  core.marker.StructuralPartialEq conddata.BinaryFuncValueError := {
-}
-
-/-- [rustfs_kernel::conddata::{impl core::cmp::PartialEq<rustfs_kernel::conddata::BinaryFuncValueError> for rustfs_kernel::conddata::BinaryFuncValueError}::eq]:
-    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 72:23-72:32
-    Visibility: public -/
-def conddata.BinaryFuncValueError.Insts.CoreCmpPartialEqBinaryFuncValueError.eq
-  (self : conddata.BinaryFuncValueError)
-  (other : conddata.BinaryFuncValueError) :
-  Result Bool
-  := do
-  ok true
-
-/-- Trait implementation: [rustfs_kernel::conddata::{impl core::cmp::PartialEq<rustfs_kernel::conddata::BinaryFuncValueError> for rustfs_kernel::conddata::BinaryFuncValueError}]
-    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 72:23-72:32 -/
-@[reducible]
-impl_def
-  conddata.BinaryFuncValueError.Insts.CoreCmpPartialEqBinaryFuncValueError :
-  core.cmp.PartialEq conddata.BinaryFuncValueError
-  conddata.BinaryFuncValueError := {
-  eq :=
-    conddata.BinaryFuncValueError.Insts.CoreCmpPartialEqBinaryFuncValueError.eq
-  ne := core.cmp.PartialEq.ne.trait_default
-    conddata.BinaryFuncValueError.Insts.CoreCmpPartialEqBinaryFuncValueError
-}
-
-/-- Trait implementation: [rustfs_kernel::conddata::{impl core::cmp::Eq for rustfs_kernel::conddata::BinaryFuncValueError}]
-    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 72:34-72:36 -/
-@[reducible]
-impl_def conddata.BinaryFuncValueError.Insts.CoreCmpEq : core.cmp.Eq
-  conddata.BinaryFuncValueError := {
-  partialEqInst :=
-    conddata.BinaryFuncValueError.Insts.CoreCmpPartialEqBinaryFuncValueError
-  assert_fields_are_eq := core.cmp.Eq.assert_fields_are_eq.default
-    conddata.BinaryFuncValueError.Insts.CoreCmpEq
-}
 
 /-- [rustfs_kernel::conddata::BinaryFuncValue]
     Source: 'ports/rustfs/kernel/src/conddata.rs', lines 77:0-80:1
@@ -6291,30 +5747,6 @@ def conddata.BinaryFuncValue.Insts.CoreCloneClone.clone
 def conddata.BinaryFuncValue.Insts.CoreCloneClone : core.clone.Clone
   conddata.BinaryFuncValue := {
   clone := conddata.BinaryFuncValue.Insts.CoreCloneClone.clone
-}
-
-/-- [rustfs_kernel::conddata::{impl core::fmt::Debug for rustfs_kernel::conddata::BinaryFuncValue}::fmt]:
-    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 76:16-76:21
-    Visibility: public -/
-def conddata.BinaryFuncValue.Insts.CoreFmtDebug.fmt
-  (self : conddata.BinaryFuncValue) (f : core.fmt.Formatter) :
-  Result ((core.result.Result Unit core.fmt.Error) × core.fmt.Formatter)
-  := do
-  let dyn :=
-    Dyn.mk _ (core.fmt.DebugVec (core.fmt.DebugVec core.fmt.DebugU8))
-      self.encoded
-  let dyn1 :=
-    Dyn.mk _ (core.fmt.DebugShared (core.fmt.DebugVec (core.fmt.DebugVec
-      core.fmt.DebugU8))) self.decoded
-  core.fmt.Formatter.debug_struct_field2_finish f (toStr "BinaryFuncValue")
-    (toStr "encoded") dyn (toStr "decoded") dyn1
-
-/-- Trait implementation: [rustfs_kernel::conddata::{impl core::fmt::Debug for rustfs_kernel::conddata::BinaryFuncValue}]
-    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 76:16-76:21 -/
-@[reducible]
-def conddata.BinaryFuncValue.Insts.CoreFmtDebug : core.fmt.Debug
-  conddata.BinaryFuncValue := {
-  fmt := conddata.BinaryFuncValue.Insts.CoreFmtDebug.fmt
 }
 
 /-- [rustfs_kernel::conddata::binary_eq]:
@@ -6368,94 +5800,6 @@ def conddata.Op.Insts.CoreCloneClone.clone
   (self : conddata.Op) : Result conddata.Op := do
   ok self
 
-/-- Trait implementation: [rustfs_kernel::conddata::{impl core::clone::Clone for rustfs_kernel::conddata::Op}]
-    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 87:9-87:14 -/
-@[reducible]
-def conddata.Op.Insts.CoreCloneClone : core.clone.Clone conddata.Op := {
-  clone := conddata.Op.Insts.CoreCloneClone.clone
-}
-
-/-- Trait implementation: [rustfs_kernel::conddata::{impl core::marker::Copy for rustfs_kernel::conddata::Op}]
-    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 87:16-87:20 -/
-@[reducible]
-def conddata.Op.Insts.CoreMarkerCopy : core.marker.Copy conddata.Op := {
-  cloneInst := conddata.Op.Insts.CoreCloneClone
-}
-
-/-- [rustfs_kernel::conddata::{impl core::fmt::Debug for rustfs_kernel::conddata::Op}::fmt]:
-    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 87:22-87:27
-    Visibility: public -/
-def conddata.Op.Insts.CoreFmtDebug.fmt
-  (self : conddata.Op) (f : core.fmt.Formatter) :
-  Result ((core.result.Result Unit core.fmt.Error) × core.fmt.Formatter)
-  := do
-  match self with
-  | conddata.Op.StringEquals =>
-    core.fmt.Formatter.write_str f (toStr "StringEquals")
-  | conddata.Op.StringNotEquals =>
-    core.fmt.Formatter.write_str f (toStr "StringNotEquals")
-  | conddata.Op.StringEqualsIgnoreCase =>
-    core.fmt.Formatter.write_str f (toStr "StringEqualsIgnoreCase")
-  | conddata.Op.StringNotEqualsIgnoreCase =>
-    core.fmt.Formatter.write_str f (toStr "StringNotEqualsIgnoreCase")
-  | conddata.Op.StringLike =>
-    core.fmt.Formatter.write_str f (toStr "StringLike")
-  | conddata.Op.StringNotLike =>
-    core.fmt.Formatter.write_str f (toStr "StringNotLike")
-  | conddata.Op.ArnLike => core.fmt.Formatter.write_str f (toStr "ArnLike")
-  | conddata.Op.ArnNotLike =>
-    core.fmt.Formatter.write_str f (toStr "ArnNotLike")
-  | conddata.Op.ArnEquals => core.fmt.Formatter.write_str f (toStr "ArnEquals")
-  | conddata.Op.ArnNotEquals =>
-    core.fmt.Formatter.write_str f (toStr "ArnNotEquals")
-  | conddata.Op.BinaryEquals =>
-    core.fmt.Formatter.write_str f (toStr "BinaryEquals")
-  | conddata.Op.IpAddress => core.fmt.Formatter.write_str f (toStr "IpAddress")
-  | conddata.Op.NotIpAddress =>
-    core.fmt.Formatter.write_str f (toStr "NotIpAddress")
-  | conddata.Op.Null => core.fmt.Formatter.write_str f (toStr "Null")
-  | conddata.Op.Boolean => core.fmt.Formatter.write_str f (toStr "Boolean")
-  | conddata.Op.NumericEquals =>
-    core.fmt.Formatter.write_str f (toStr "NumericEquals")
-  | conddata.Op.NumericNotEquals =>
-    core.fmt.Formatter.write_str f (toStr "NumericNotEquals")
-  | conddata.Op.NumericLessThan =>
-    core.fmt.Formatter.write_str f (toStr "NumericLessThan")
-  | conddata.Op.NumericLessThanEquals =>
-    core.fmt.Formatter.write_str f (toStr "NumericLessThanEquals")
-  | conddata.Op.NumericGreaterThan =>
-    core.fmt.Formatter.write_str f (toStr "NumericGreaterThan")
-  | conddata.Op.NumericGreaterThanIfExists =>
-    core.fmt.Formatter.write_str f (toStr "NumericGreaterThanIfExists")
-  | conddata.Op.NumericGreaterThanEquals =>
-    core.fmt.Formatter.write_str f (toStr "NumericGreaterThanEquals")
-  | conddata.Op.DateEquals =>
-    core.fmt.Formatter.write_str f (toStr "DateEquals")
-  | conddata.Op.DateNotEquals =>
-    core.fmt.Formatter.write_str f (toStr "DateNotEquals")
-  | conddata.Op.DateLessThan =>
-    core.fmt.Formatter.write_str f (toStr "DateLessThan")
-  | conddata.Op.DateLessThanEquals =>
-    core.fmt.Formatter.write_str f (toStr "DateLessThanEquals")
-  | conddata.Op.DateGreaterThan =>
-    core.fmt.Formatter.write_str f (toStr "DateGreaterThan")
-  | conddata.Op.DateGreaterThanEquals =>
-    core.fmt.Formatter.write_str f (toStr "DateGreaterThanEquals")
-
-/-- Trait implementation: [rustfs_kernel::conddata::{impl core::fmt::Debug for rustfs_kernel::conddata::Op}]
-    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 87:22-87:27 -/
-@[reducible]
-def conddata.Op.Insts.CoreFmtDebug : core.fmt.Debug conddata.Op := {
-  fmt := conddata.Op.Insts.CoreFmtDebug.fmt
-}
-
-/-- Trait implementation: [rustfs_kernel::conddata::{impl core::marker::StructuralPartialEq for rustfs_kernel::conddata::Op}]
-    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 87:29-87:38 -/
-@[reducible]
-def conddata.Op.Insts.CoreMarkerStructuralPartialEq :
-  core.marker.StructuralPartialEq conddata.Op := {
-}
-
 /-- [rustfs_kernel::conddata::{impl core::cmp::PartialEq<rustfs_kernel::conddata::Op> for rustfs_kernel::conddata::Op}::eq]:
     Source: 'ports/rustfs/kernel/src/conddata.rs', lines 87:29-87:38
     Visibility: public -/
@@ -6475,14 +5819,13 @@ impl_def conddata.Op.Insts.CoreCmpPartialEqOp : core.cmp.PartialEq conddata.Op
     conddata.Op.Insts.CoreCmpPartialEqOp
 }
 
-/-- Trait implementation: [rustfs_kernel::conddata::{impl core::cmp::Eq for rustfs_kernel::conddata::Op}]
-    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 87:40-87:42 -/
-@[reducible]
-impl_def conddata.Op.Insts.CoreCmpEq : core.cmp.Eq conddata.Op := {
-  partialEqInst := conddata.Op.Insts.CoreCmpPartialEqOp
-  assert_fields_are_eq := core.cmp.Eq.assert_fields_are_eq.default
-    conddata.Op.Insts.CoreCmpEq
-}
+/-- [rustfs_kernel::condfuncs::IpAddr]
+    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 24:0-27:1
+    Visibility: public -/
+@[discriminant isize]
+inductive condfuncs.IpAddr where
+| V4 : Std.U32 → condfuncs.IpAddr
+| V6 : Std.U128 → condfuncs.IpAddr
 
 /-- [rustfs_kernel::conddata::Data]
     Source: 'ports/rustfs/kernel/src/conddata.rs', lines 119:0-126:1
@@ -6539,83 +5882,6 @@ def conddata.Data.Insts.CoreCloneClone.clone
         conddata.BinaryFuncValue.Insts.CoreCloneClone __self_0
     ok (conddata.Data.Binary «if»)
 
-/-- Trait implementation: [rustfs_kernel::conddata::{impl core::clone::Clone for rustfs_kernel::conddata::Data}]
-    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 118:9-118:14 -/
-@[reducible]
-def conddata.Data.Insts.CoreCloneClone : core.clone.Clone conddata.Data := {
-  clone := conddata.Data.Insts.CoreCloneClone.clone
-}
-
-/-- [rustfs_kernel::condfuncs::{impl core::fmt::Debug for rustfs_kernel::condfuncs::IpAddr}::fmt]:
-    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 23:22-23:27
-    Visibility: public -/
-def condfuncs.IpAddr.Insts.CoreFmtDebug.fmt
-  (self : condfuncs.IpAddr) (f : core.fmt.Formatter) :
-  Result ((core.result.Result Unit core.fmt.Error) × core.fmt.Formatter)
-  := do
-  match self with
-  | condfuncs.IpAddr.V4 __self_0 =>
-    let __self_01 := Dyn.mk _ (core.fmt.DebugShared core.fmt.DebugU32) __self_0
-    core.fmt.Formatter.debug_tuple_field1_finish f (toStr "V4") __self_01
-  | condfuncs.IpAddr.V6 __self_0 =>
-    let __self_01 :=
-      Dyn.mk _ (core.fmt.DebugShared core.fmt.DebugU128) __self_0
-    core.fmt.Formatter.debug_tuple_field1_finish f (toStr "V6") __self_01
-
-/-- Trait implementation: [rustfs_kernel::condfuncs::{impl core::fmt::Debug for rustfs_kernel::condfuncs::IpAddr}]
-    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 23:22-23:27 -/
-@[reducible]
-def condfuncs.IpAddr.Insts.CoreFmtDebug : core.fmt.Debug condfuncs.IpAddr := {
-  fmt := condfuncs.IpAddr.Insts.CoreFmtDebug.fmt
-}
-
-/-- [rustfs_kernel::conddata::{impl core::fmt::Debug for rustfs_kernel::conddata::Data}::fmt]:
-    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 118:16-118:21
-    Visibility: public -/
-def conddata.Data.Insts.CoreFmtDebug.fmt
-  (self : conddata.Data) (f : core.fmt.Formatter) :
-  Result ((core.result.Result Unit core.fmt.Error) × core.fmt.Formatter)
-  := do
-  match self with
-  | conddata.Data.Str __self_0 =>
-    let __self_01 :=
-      Dyn.mk _ (core.fmt.DebugShared (conddata.InnerFunc.Insts.CoreFmtDebug
-        (core.fmt.DebugVec (core.fmt.DebugVec core.fmt.DebugU8)))) __self_0
-    core.fmt.Formatter.debug_tuple_field1_finish f (toStr "Str") __self_01
-  | conddata.Data.Addr __self_0 =>
-    let __self_01 :=
-      Dyn.mk _ (core.fmt.DebugShared (conddata.InnerFunc.Insts.CoreFmtDebug
-        (core.fmt.DebugVec (Pair.Insts.CoreFmtDebug
-        condfuncs.IpAddr.Insts.CoreFmtDebug core.fmt.DebugU8)))) __self_0
-    core.fmt.Formatter.debug_tuple_field1_finish f (toStr "Addr") __self_01
-  | conddata.Data.Boolean __self_0 =>
-    let __self_01 :=
-      Dyn.mk _ (core.fmt.DebugShared (conddata.InnerFunc.Insts.CoreFmtDebug
-        core.fmt.DebugBool)) __self_0
-    core.fmt.Formatter.debug_tuple_field1_finish f (toStr "Boolean") __self_01
-  | conddata.Data.Num __self_0 =>
-    let __self_01 :=
-      Dyn.mk _ (core.fmt.DebugShared (conddata.InnerFunc.Insts.CoreFmtDebug
-        core.fmt.DebugI64)) __self_0
-    core.fmt.Formatter.debug_tuple_field1_finish f (toStr "Num") __self_01
-  | conddata.Data.Date __self_0 =>
-    let __self_01 :=
-      Dyn.mk _ (core.fmt.DebugShared (conddata.InnerFunc.Insts.CoreFmtDebug
-        conddata.DateFuncValue.Insts.CoreFmtDebug)) __self_0
-    core.fmt.Formatter.debug_tuple_field1_finish f (toStr "Date") __self_01
-  | conddata.Data.Binary __self_0 =>
-    let __self_01 :=
-      Dyn.mk _ (core.fmt.DebugShared (conddata.InnerFunc.Insts.CoreFmtDebug
-        conddata.BinaryFuncValue.Insts.CoreFmtDebug)) __self_0
-    core.fmt.Formatter.debug_tuple_field1_finish f (toStr "Binary") __self_01
-
-/-- Trait implementation: [rustfs_kernel::conddata::{impl core::fmt::Debug for rustfs_kernel::conddata::Data}]
-    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 118:16-118:21 -/
-@[reducible]
-def conddata.Data.Insts.CoreFmtDebug : core.fmt.Debug conddata.Data := {
-  fmt := conddata.Data.Insts.CoreFmtDebug.fmt
-}
-
 /-- [rustfs_kernel::conddata::Condition]
     Source: 'ports/rustfs/kernel/src/conddata.rs', lines 128:0-132:1
     Visibility: public -/
@@ -6642,28 +5908,6 @@ def conddata.Condition.Insts.CoreCloneClone : core.clone.Clone
   clone := conddata.Condition.Insts.CoreCloneClone.clone
 }
 
-/-- [rustfs_kernel::conddata::{impl core::fmt::Debug for rustfs_kernel::conddata::Condition}::fmt]:
-    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 127:16-127:21
-    Visibility: public -/
-def conddata.Condition.Insts.CoreFmtDebug.fmt
-  (self : conddata.Condition) (f : core.fmt.Formatter) :
-  Result ((core.result.Result Unit core.fmt.Error) × core.fmt.Formatter)
-  := do
-  let dyn := Dyn.mk _ conddata.Op.Insts.CoreFmtDebug self.op
-  let dyn1 := Dyn.mk _ core.fmt.DebugUsize self.wrappers
-  let dyn2 :=
-    Dyn.mk _ (core.fmt.DebugShared conddata.Data.Insts.CoreFmtDebug) self.data
-  core.fmt.Formatter.debug_struct_field3_finish f (toStr "Condition") (toStr
-    "op") dyn (toStr "wrappers") dyn1 (toStr "data") dyn2
-
-/-- Trait implementation: [rustfs_kernel::conddata::{impl core::fmt::Debug for rustfs_kernel::conddata::Condition}]
-    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 127:16-127:21 -/
-@[reducible]
-def conddata.Condition.Insts.CoreFmtDebug : core.fmt.Debug conddata.Condition
-  := {
-  fmt := conddata.Condition.Insts.CoreFmtDebug.fmt
-}
-
 /-- [rustfs_kernel::conddata::Functions]
     Source: 'ports/rustfs/kernel/src/conddata.rs', lines 134:0-138:1
     Visibility: public -/
@@ -6687,42 +5931,6 @@ def conddata.Functions.Insts.CoreCloneClone.clone
     alloc.vec.CloneVec.clone conddata.Condition.Insts.CoreCloneClone
       self.for_normal
   ok { for_any_value := v, for_all_values := v1, for_normal := v2 }
-
-/-- Trait implementation: [rustfs_kernel::conddata::{impl core::clone::Clone for rustfs_kernel::conddata::Functions}]
-    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 133:9-133:14 -/
-@[reducible]
-def conddata.Functions.Insts.CoreCloneClone : core.clone.Clone
-  conddata.Functions := {
-  clone := conddata.Functions.Insts.CoreCloneClone.clone
-}
-
-/-- [rustfs_kernel::conddata::{impl core::fmt::Debug for rustfs_kernel::conddata::Functions}::fmt]:
-    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 133:16-133:21
-    Visibility: public -/
-def conddata.Functions.Insts.CoreFmtDebug.fmt
-  (self : conddata.Functions) (f : core.fmt.Formatter) :
-  Result ((core.result.Result Unit core.fmt.Error) × core.fmt.Formatter)
-  := do
-  let dyn :=
-    Dyn.mk _ (core.fmt.DebugVec conddata.Condition.Insts.CoreFmtDebug)
-      self.for_any_value
-  let dyn1 :=
-    Dyn.mk _ (core.fmt.DebugVec conddata.Condition.Insts.CoreFmtDebug)
-      self.for_all_values
-  let dyn2 :=
-    Dyn.mk _ (core.fmt.DebugShared (core.fmt.DebugVec
-      conddata.Condition.Insts.CoreFmtDebug)) self.for_normal
-  core.fmt.Formatter.debug_struct_field3_finish f (toStr "Functions") (toStr
-    "for_any_value") dyn (toStr "for_all_values") dyn1 (toStr "for_normal")
-    dyn2
-
-/-- Trait implementation: [rustfs_kernel::conddata::{impl core::fmt::Debug for rustfs_kernel::conddata::Functions}]
-    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 133:16-133:21 -/
-@[reducible]
-def conddata.Functions.Insts.CoreFmtDebug : core.fmt.Debug conddata.Functions
-  := {
-  fmt := conddata.Functions.Insts.CoreFmtDebug.fmt
-}
 
 /-- [rustfs_kernel::conddata::op_name_late]:
     Source: 'ports/rustfs/kernel/src/conddata.rs', lines 159:0-177:1 -/
@@ -7102,15 +6310,33 @@ def conddata.string_set_eq
   then conddata.string_covers right left
   else ok false
 
-/-- Trait implementation: [rustfs_kernel::condfuncs::{impl core::cmp::PartialEq<rustfs_kernel::condfuncs::Key> for rustfs_kernel::condfuncs::Key}]
-    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 51:16-51:25 -/
-@[reducible]
-impl_def condfuncs.Key.Insts.CoreCmpPartialEqKey : core.cmp.PartialEq
-  condfuncs.Key condfuncs.Key := {
-  eq := condfuncs.Key.Insts.CoreCmpPartialEqKey.eq
-  ne := core.cmp.PartialEq.ne.trait_default
-    condfuncs.Key.Insts.CoreCmpPartialEqKey
-}
+/-- [rustfs_kernel::conddata::key_eq]:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 236:0-245:1
+    Visibility: public -/
+def conddata.key_eq (a : condfuncs.Key) (b : condfuncs.Key) : Result Bool := do
+  let s := alloc.vec.Vec.deref a.key_name
+  let s1 := alloc.vec.Vec.deref b.key_name
+  let b1 ← bytes.eq s s1
+  if b1
+  then
+    let s2 := alloc.vec.Vec.deref a.name
+    let s3 := alloc.vec.Vec.deref b.name
+    let b2 ← bytes.eq s2 s3
+    if b2
+    then
+      match a.variable with
+      | none => match b.variable with
+                | none => ok true
+                | some _ => ok false
+      | some x =>
+        match b.variable with
+        | none => ok false
+        | some y =>
+          let s4 := alloc.vec.Vec.deref x
+          let s5 := alloc.vec.Vec.deref y
+          bytes.eq s4 s5
+    else ok false
+  else ok false
 
 /-- [rustfs_kernel::conddata::string_inner_eq]: loop body 0:
     Source: 'ports/rustfs/kernel/src/conddata.rs', lines 210:4-219:1 -/
@@ -7131,12 +6357,9 @@ def conddata.string_inner_eq_loop.body
     let fkv1 ←
       alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
         (conddata.FuncKeyValue (alloc.vec.Vec (alloc.vec.Vec Std.U8)))) v1 i
-    let b ←
-      core.cmp.PartialEq.ne.trait_default
-        condfuncs.Key.Insts.CoreCmpPartialEqKey fkv.key fkv1.key
+    let b ← conddata.key_eq fkv.key fkv1.key
     if b
-    then ok (done false)
-    else
+    then
       let s := alloc.vec.Vec.deref fkv.values
       let s1 := alloc.vec.Vec.deref fkv1.values
       let b1 ← conddata.string_set_eq s s1
@@ -7144,6 +6367,7 @@ def conddata.string_inner_eq_loop.body
       then let i2 ← i + 1#usize
            ok (cont i2)
       else ok (done false)
+    else ok (done false)
   else ok (done true)
 
 /-- [rustfs_kernel::conddata::string_inner_eq]: loop 0:
@@ -7191,17 +6415,15 @@ def conddata.binary_inner_eq_loop.body
     let fkv1 ←
       alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
         (conddata.FuncKeyValue conddata.BinaryFuncValue)) v1 i
-    let b ←
-      core.cmp.PartialEq.ne.trait_default
-        condfuncs.Key.Insts.CoreCmpPartialEqKey fkv.key fkv1.key
+    let b ← conddata.key_eq fkv.key fkv1.key
     if b
-    then ok (done false)
-    else
+    then
       let b1 ← conddata.binary_eq fkv.values fkv1.values
       if b1
       then let i2 ← i + 1#usize
            ok (cont i2)
       else ok (done false)
+    else ok (done false)
   else ok (done true)
 
 /-- [rustfs_kernel::conddata::binary_inner_eq]: loop 0:
@@ -7252,18 +6474,226 @@ def condfuncs.IpAddr.Insts.CoreCmpPartialEqIpAddr.eq
         lift (core.cmp.impls.PartialEqU128.eq __self_0 __arg1_0)
   else ok false
 
-/-- Trait implementation: [rustfs_kernel::condfuncs::{impl core::cmp::PartialEq<rustfs_kernel::condfuncs::IpAddr> for rustfs_kernel::condfuncs::IpAddr}]
-    Source: 'ports/rustfs/kernel/src/condfuncs.rs', lines 23:29-23:38 -/
-@[reducible]
-impl_def condfuncs.IpAddr.Insts.CoreCmpPartialEqIpAddr : core.cmp.PartialEq
-  condfuncs.IpAddr condfuncs.IpAddr := {
-  eq := condfuncs.IpAddr.Insts.CoreCmpPartialEqIpAddr.eq
-  ne := core.cmp.PartialEq.ne.trait_default
-    condfuncs.IpAddr.Insts.CoreCmpPartialEqIpAddr
-}
+/-- [rustfs_kernel::conddata::addr_pairs_eq]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 267:4-274:1 -/
+@[rust_loop_body]
+def conddata.addr_pairs_eq_loop.body
+  (l : Slice (condfuncs.IpAddr × Std.U8))
+  (r : Slice (condfuncs.IpAddr × Std.U8)) (j : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i := Slice.len l
+  if j < i
+  then
+    let (ia, i1) ← Slice.index_usize l j
+    let (ia1, i2) ← Slice.index_usize r j
+    let b ← condfuncs.IpAddr.Insts.CoreCmpPartialEqIpAddr.eq ia ia1
+    if b
+    then
+      if i1 != i2
+      then ok (done false)
+      else let j1 ← j + 1#usize
+           ok (cont j1)
+    else ok (done false)
+  else ok (done true)
+
+/-- [rustfs_kernel::conddata::addr_pairs_eq]: loop 0:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 267:4-274:1 -/
+@[rust_loop]
+def conddata.addr_pairs_eq_loop
+  (l : Slice (condfuncs.IpAddr × Std.U8))
+  (r : Slice (condfuncs.IpAddr × Std.U8)) (j : Std.Usize) :
+  Result Bool
+  := do
+  loop
+    (fun j1 => conddata.addr_pairs_eq_loop.body l r j1)
+    j
+
+/-- [rustfs_kernel::conddata::addr_pairs_eq]:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 262:0-274:1 -/
+def conddata.addr_pairs_eq
+  (l : Slice (condfuncs.IpAddr × Std.U8))
+  (r : Slice (condfuncs.IpAddr × Std.U8)) :
+  Result Bool
+  := do
+  let i := Slice.len l
+  let i1 := Slice.len r
+  if i != i1
+  then ok false
+  else conddata.addr_pairs_eq_loop l r 0#usize
+
+/-- [rustfs_kernel::conddata::addr_inner_eq]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 252:4-261:1 -/
+@[rust_loop_body]
+def conddata.addr_inner_eq_loop.body
+  (v : alloc.vec.Vec (conddata.FuncKeyValue (alloc.vec.Vec (condfuncs.IpAddr ×
+  Std.U8))))
+  (v1 : alloc.vec.Vec (conddata.FuncKeyValue (alloc.vec.Vec (condfuncs.IpAddr
+  × Std.U8)))) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let fkv ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+        (conddata.FuncKeyValue (alloc.vec.Vec (condfuncs.IpAddr × Std.U8)))) v
+        i
+    let fkv1 ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+        (conddata.FuncKeyValue (alloc.vec.Vec (condfuncs.IpAddr × Std.U8))))
+        v1 i
+    let b ← conddata.key_eq fkv.key fkv1.key
+    if b
+    then
+      let s := alloc.vec.Vec.deref fkv.values
+      let s1 := alloc.vec.Vec.deref fkv1.values
+      let b1 ← conddata.addr_pairs_eq s s1
+      if b1
+      then let i2 ← i + 1#usize
+           ok (cont i2)
+      else ok (done false)
+    else ok (done false)
+  else ok (done true)
+
+/-- [rustfs_kernel::conddata::addr_inner_eq]: loop 0:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 252:4-261:1 -/
+@[rust_loop]
+def conddata.addr_inner_eq_loop
+  (v : alloc.vec.Vec (conddata.FuncKeyValue (alloc.vec.Vec (condfuncs.IpAddr ×
+  Std.U8))))
+  (v1 : alloc.vec.Vec (conddata.FuncKeyValue (alloc.vec.Vec (condfuncs.IpAddr
+  × Std.U8)))) (i : Std.Usize) :
+  Result Bool
+  := do
+  loop
+    (fun i1 => conddata.addr_inner_eq_loop.body v v1 i1)
+    i
+
+/-- [rustfs_kernel::conddata::addr_inner_eq]:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 247:0-261:1 -/
+def conddata.addr_inner_eq
+  (left : conddata.InnerFunc (alloc.vec.Vec (condfuncs.IpAddr × Std.U8)))
+  (right : conddata.InnerFunc (alloc.vec.Vec (condfuncs.IpAddr × Std.U8))) :
+  Result Bool
+  := do
+  let i := alloc.vec.Vec.len left.entries
+  let i1 := alloc.vec.Vec.len right.entries
+  if i != i1
+  then ok false
+  else conddata.addr_inner_eq_loop left.entries right.entries 0#usize
+
+/-- [rustfs_kernel::conddata::bool_inner_eq]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 281:4-295:1 -/
+@[rust_loop_body]
+def conddata.bool_inner_eq_loop.body
+  (v : alloc.vec.Vec (conddata.FuncKeyValue Bool))
+  (v1 : alloc.vec.Vec (conddata.FuncKeyValue Bool)) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let fkv ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+        (conddata.FuncKeyValue Bool)) v i
+    let fkv1 ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+        (conddata.FuncKeyValue Bool)) v1 i
+    let b ← conddata.key_eq fkv.key fkv1.key
+    if b
+    then
+      if fkv.values
+      then
+        if fkv1.values
+        then let i2 ← i + 1#usize
+             ok (cont i2)
+        else ok (done false)
+      else
+        if fkv1.values
+        then ok (done false)
+        else let i2 ← i + 1#usize
+             ok (cont i2)
+    else ok (done false)
+  else ok (done true)
+
+/-- [rustfs_kernel::conddata::bool_inner_eq]: loop 0:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 281:4-295:1 -/
+@[rust_loop]
+def conddata.bool_inner_eq_loop
+  (v : alloc.vec.Vec (conddata.FuncKeyValue Bool))
+  (v1 : alloc.vec.Vec (conddata.FuncKeyValue Bool)) (i : Std.Usize) :
+  Result Bool
+  := do
+  loop
+    (fun i1 => conddata.bool_inner_eq_loop.body v v1 i1)
+    i
+
+/-- [rustfs_kernel::conddata::bool_inner_eq]:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 276:0-295:1 -/
+def conddata.bool_inner_eq
+  (left : conddata.InnerFunc Bool) (right : conddata.InnerFunc Bool) :
+  Result Bool
+  := do
+  let i := alloc.vec.Vec.len left.entries
+  let i1 := alloc.vec.Vec.len right.entries
+  if i != i1
+  then ok false
+  else conddata.bool_inner_eq_loop left.entries right.entries 0#usize
+
+/-- [rustfs_kernel::conddata::num_inner_eq]: loop body 0:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 302:4-311:1 -/
+@[rust_loop_body]
+def conddata.num_inner_eq_loop.body
+  (v : alloc.vec.Vec (conddata.FuncKeyValue Std.I64))
+  (v1 : alloc.vec.Vec (conddata.FuncKeyValue Std.I64)) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let fkv ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+        (conddata.FuncKeyValue Std.I64)) v i
+    let fkv1 ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+        (conddata.FuncKeyValue Std.I64)) v1 i
+    let b ← conddata.key_eq fkv.key fkv1.key
+    if b
+    then
+      if fkv.values != fkv1.values
+      then ok (done false)
+      else let i2 ← i + 1#usize
+           ok (cont i2)
+    else ok (done false)
+  else ok (done true)
+
+/-- [rustfs_kernel::conddata::num_inner_eq]: loop 0:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 302:4-311:1 -/
+@[rust_loop]
+def conddata.num_inner_eq_loop
+  (v : alloc.vec.Vec (conddata.FuncKeyValue Std.I64))
+  (v1 : alloc.vec.Vec (conddata.FuncKeyValue Std.I64)) (i : Std.Usize) :
+  Result Bool
+  := do
+  loop
+    (fun i1 => conddata.num_inner_eq_loop.body v v1 i1)
+    i
+
+/-- [rustfs_kernel::conddata::num_inner_eq]:
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 297:0-311:1 -/
+def conddata.num_inner_eq
+  (left : conddata.InnerFunc Std.I64) (right : conddata.InnerFunc Std.I64) :
+  Result Bool
+  := do
+  let i := alloc.vec.Vec.len left.entries
+  let i1 := alloc.vec.Vec.len right.entries
+  if i != i1
+  then ok false
+  else conddata.num_inner_eq_loop left.entries right.entries 0#usize
 
 /-- [rustfs_kernel::conddata::date_inner_eq]: loop body 0:
-    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 581:4-590:1 -/
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 662:4-671:1 -/
 @[rust_loop_body]
 def conddata.date_inner_eq_loop.body
   (v : alloc.vec.Vec (conddata.FuncKeyValue conddata.DateFuncValue))
@@ -7280,20 +6710,18 @@ def conddata.date_inner_eq_loop.body
     let fkv1 ←
       alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
         (conddata.FuncKeyValue conddata.DateFuncValue)) v1 i
-    let b ←
-      core.cmp.PartialEq.ne.trait_default
-        condfuncs.Key.Insts.CoreCmpPartialEqKey fkv.key fkv1.key
+    let b ← conddata.key_eq fkv.key fkv1.key
     if b
-    then ok (done false)
-    else
+    then
       if fkv.values.unix_nanos != fkv1.values.unix_nanos
       then ok (done false)
       else let i2 ← i + 1#usize
            ok (cont i2)
+    else ok (done false)
   else ok (done true)
 
 /-- [rustfs_kernel::conddata::date_inner_eq]: loop 0:
-    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 581:4-590:1 -/
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 662:4-671:1 -/
 @[rust_loop]
 def conddata.date_inner_eq_loop
   (v : alloc.vec.Vec (conddata.FuncKeyValue conddata.DateFuncValue))
@@ -7306,7 +6734,7 @@ def conddata.date_inner_eq_loop
     i
 
 /-- [rustfs_kernel::conddata::date_inner_eq]:
-    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 576:0-590:1 -/
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 657:0-671:1 -/
 def conddata.date_inner_eq
   (left : conddata.InnerFunc conddata.DateFuncValue)
   (right : conddata.InnerFunc conddata.DateFuncValue) :
@@ -7319,7 +6747,7 @@ def conddata.date_inner_eq
   else conddata.date_inner_eq_loop left.entries right.entries 0#usize
 
 /-- [rustfs_kernel::conddata::condition_eq]:
-    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 236:0-249:1
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 313:0-326:1
     Visibility: public -/
 def conddata.condition_eq
   (left : conddata.Condition) (right : conddata.Condition) : Result Bool := do
@@ -7344,11 +6772,7 @@ def conddata.condition_eq
       | conddata.Data.Addr l =>
         match right.data with
         | conddata.Data.Str _ => ok false
-        | conddata.Data.Addr r =>
-          conddata.InnerFunc.Insts.CoreCmpPartialEqInnerFunc.eq
-            (core.cmp.PartialEqVec (Pair.Insts.CoreCmpPartialEqPair
-            condfuncs.IpAddr.Insts.CoreCmpPartialEqIpAddr
-            core.cmp.PartialEqU8)) l r
+        | conddata.Data.Addr r => conddata.addr_inner_eq l r
         | conddata.Data.Boolean _ => ok false
         | conddata.Data.Num _ => ok false
         | conddata.Data.Date _ => ok false
@@ -7357,9 +6781,7 @@ def conddata.condition_eq
         match right.data with
         | conddata.Data.Str _ => ok false
         | conddata.Data.Addr _ => ok false
-        | conddata.Data.Boolean r =>
-          conddata.InnerFunc.Insts.CoreCmpPartialEqInnerFunc.eq
-            core.cmp.PartialEqBool l r
+        | conddata.Data.Boolean r => conddata.bool_inner_eq l r
         | conddata.Data.Num _ => ok false
         | conddata.Data.Date _ => ok false
         | conddata.Data.Binary _ => ok false
@@ -7368,9 +6790,7 @@ def conddata.condition_eq
         | conddata.Data.Str _ => ok false
         | conddata.Data.Addr _ => ok false
         | conddata.Data.Boolean _ => ok false
-        | conddata.Data.Num r =>
-          conddata.InnerFunc.Insts.CoreCmpPartialEqInnerFunc.eq
-            core.cmp.PartialEqI64 l r
+        | conddata.Data.Num r => conddata.num_inner_eq l r
         | conddata.Data.Date _ => ok false
         | conddata.Data.Binary _ => ok false
       | conddata.Data.Date l =>
@@ -7391,7 +6811,7 @@ def conddata.condition_eq
         | conddata.Data.Binary r => conddata.binary_inner_eq l r
 
 /-- [rustfs_kernel::conddata::contains_condition]: loop body 0:
-    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 252:4-259:1 -/
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 329:4-336:1 -/
 @[rust_loop_body]
 def conddata.contains_condition_loop.body
   (set : Slice conddata.Condition) (c : conddata.Condition) (i : Std.Usize) :
@@ -7409,7 +6829,7 @@ def conddata.contains_condition_loop.body
   else ok (done false)
 
 /-- [rustfs_kernel::conddata::contains_condition]: loop 0:
-    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 252:4-259:1 -/
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 329:4-336:1 -/
 @[rust_loop]
 def conddata.contains_condition_loop
   (set : Slice conddata.Condition) (c : conddata.Condition) (i : Std.Usize) :
@@ -7420,14 +6840,14 @@ def conddata.contains_condition_loop
     i
 
 /-- [rustfs_kernel::conddata::contains_condition]:
-    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 250:0-259:1 -/
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 327:0-336:1 -/
 @[reducible]
 def conddata.contains_condition
   (set : Slice conddata.Condition) (c : conddata.Condition) : Result Bool := do
   conddata.contains_condition_loop set c 0#usize
 
 /-- [rustfs_kernel::conddata::list_covers]: loop body 0:
-    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 262:4-269:1 -/
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 339:4-346:1 -/
 @[rust_loop_body]
 def conddata.list_covers_loop.body
   (left : Slice conddata.Condition) (right : Slice conddata.Condition)
@@ -7446,7 +6866,7 @@ def conddata.list_covers_loop.body
   else ok (done true)
 
 /-- [rustfs_kernel::conddata::list_covers]: loop 0:
-    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 262:4-269:1 -/
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 339:4-346:1 -/
 @[rust_loop]
 def conddata.list_covers_loop
   (left : Slice conddata.Condition) (right : Slice conddata.Condition)
@@ -7458,7 +6878,7 @@ def conddata.list_covers_loop
     i
 
 /-- [rustfs_kernel::conddata::list_covers]:
-    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 260:0-269:1 -/
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 337:0-346:1 -/
 @[reducible]
 def conddata.list_covers
   (left : Slice conddata.Condition) (right : Slice conddata.Condition) :
@@ -7467,7 +6887,7 @@ def conddata.list_covers
   conddata.list_covers_loop left right 0#usize
 
 /-- [rustfs_kernel::conddata::functions_eq]:
-    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 271:0-281:1
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 348:0-358:1
     Visibility: public -/
 def conddata.functions_eq
   (left : conddata.Functions) (right : conddata.Functions) : Result Bool := do
@@ -7503,7 +6923,7 @@ def conddata.functions_eq
         else ok false
 
 /-- [rustfs_kernel::conddata::is_empty]:
-    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 283:0-287:1
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 360:0-364:1
     Visibility: public -/
 def conddata.is_empty (functions : conddata.Functions) : Result Bool := do
   let i := alloc.vec.Vec.len functions.for_any_value
@@ -7517,7 +6937,7 @@ def conddata.is_empty (functions : conddata.Functions) : Result Bool := do
   else ok false
 
 /-- [rustfs_kernel::conddata::base64_digit]:
-    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 289:0-306:1
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 366:0-383:1
     Visibility: public -/
 def conddata.base64_digit (c : Std.U8) : Result (Option Std.U8) := do
   if c >= 65#u8
@@ -7617,7 +7037,7 @@ def conddata.base64_digit (c : Std.U8) : Result (Option Std.U8) := do
              else ok none
 
 /-- [rustfs_kernel::conddata::decode_base64]: loop body 0:
-    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 314:4-349:1
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 391:4-426:1
     Visibility: public -/
 @[rust_loop_body]
 def conddata.decode_base64_loop.body
@@ -7716,7 +7136,7 @@ def conddata.decode_base64_loop.body
   else ok (done (core.result.Result.Ok out))
 
 /-- [rustfs_kernel::conddata::decode_base64]: loop 0:
-    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 314:4-349:1
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 391:4-426:1
     Visibility: public -/
 @[rust_loop]
 def conddata.decode_base64_loop
@@ -7729,7 +7149,7 @@ def conddata.decode_base64_loop
     (out, i)
 
 /-- [rustfs_kernel::conddata::decode_base64]:
-    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 308:0-349:1
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 385:0-426:1
     Visibility: public -/
 def conddata.decode_base64
   (encoded : Slice Std.U8) :
@@ -7743,7 +7163,7 @@ def conddata.decode_base64
   else conddata.decode_base64_loop encoded (alloc.vec.Vec.new Std.U8) 0#usize
 
 /-- [rustfs_kernel::conddata::binary_from_encoded_values]: loop body 0:
-    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 360:4-365:1
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 441:4-446:1
     Visibility: public -/
 @[rust_loop_body]
 def conddata.binary_from_encoded_values_loop.body
@@ -7776,7 +7196,7 @@ def conddata.binary_from_encoded_values_loop.body
   else ok (done (core.result.Result.Ok { encoded, decoded }))
 
 /-- [rustfs_kernel::conddata::binary_from_encoded_values]: loop 0:
-    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 360:4-365:1
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 441:4-446:1
     Visibility: public -/
 @[rust_loop]
 def conddata.binary_from_encoded_values_loop
@@ -7791,7 +7211,7 @@ def conddata.binary_from_encoded_values_loop
     (decoded, i)
 
 /-- [rustfs_kernel::conddata::binary_from_encoded_values]:
-    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 355:0-365:1
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 436:0-446:1
     Visibility: public -/
 @[reducible]
 def conddata.binary_from_encoded_values
@@ -7803,7 +7223,7 @@ def conddata.binary_from_encoded_values
     (alloc.vec.Vec Std.U8)) 0#usize
 
 /-- [rustfs_kernel::conddata::binary_new]:
-    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 351:0-353:1
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 428:0-434:1
     Visibility: public -/
 def conddata.binary_new
   (encoded : Slice Std.U8) :
@@ -7811,14 +7231,11 @@ def conddata.binary_new
     conddata.BinaryFuncValueError)
   := do
   let v ← alloc.slice.Slice.to_vec core.clone.CloneU8 encoded
-  let y ←
-    lift (Std.Array.to_slice (Array.make 1#usize [ v ] : Array (alloc.vec.Vec
-      Std.U8) 1#usize))
-  let ret := alloc.slice.Slice.into_vec y
-  conddata.binary_from_encoded_values ret
+  let __v ← alloc.vec.Vec.push (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) v
+  conddata.binary_from_encoded_values __v
 
 /-- [rustfs_kernel::conddata::binary_key_matches]: loop body 0:
-    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 370:4-381:1 -/
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 451:4-462:1 -/
 @[rust_loop_body]
 def conddata.binary_key_matches_loop.body
   (expected : conddata.BinaryFuncValue)
@@ -7845,7 +7262,7 @@ def conddata.binary_key_matches_loop.body
   else ok (done matched)
 
 /-- [rustfs_kernel::conddata::binary_key_matches]: loop 0:
-    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 370:4-381:1 -/
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 451:4-462:1 -/
 @[rust_loop]
 def conddata.binary_key_matches_loop
   (expected : conddata.BinaryFuncValue)
@@ -7858,7 +7275,7 @@ def conddata.binary_key_matches_loop
     (matched, i)
 
 /-- [rustfs_kernel::conddata::binary_key_matches]:
-    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 367:0-381:1 -/
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 448:0-462:1 -/
 @[reducible]
 def conddata.binary_key_matches
   (expected : conddata.BinaryFuncValue)
@@ -7921,7 +7338,7 @@ def condfuncs.get_value
   condfuncs.get_value_loop values «name» 0#usize
 
 /-- [rustfs_kernel::conddata::binary_evaluate]: loop body 0:
-    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 385:4-400:1
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 466:4-481:1
     Visibility: public -/
 @[rust_loop_body]
 def conddata.binary_evaluate_loop.body
@@ -7951,7 +7368,7 @@ def conddata.binary_evaluate_loop.body
   else ok (done true)
 
 /-- [rustfs_kernel::conddata::binary_evaluate]: loop 0:
-    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 385:4-400:1
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 466:4-481:1
     Visibility: public -/
 @[rust_loop]
 def conddata.binary_evaluate_loop
@@ -7965,7 +7382,7 @@ def conddata.binary_evaluate_loop
     i
 
 /-- [rustfs_kernel::conddata::binary_evaluate]:
-    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 383:0-400:1
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 464:0-481:1
     Visibility: public -/
 @[reducible]
 def conddata.binary_evaluate
@@ -7977,7 +7394,7 @@ def conddata.binary_evaluate
   conddata.binary_evaluate_loop inner values 0#usize
 
 /-- [rustfs_kernel::conddata::legacy_pairs]: loop body 0:
-    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 405:4-411:5
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 486:4-492:5
     Visibility: public -/
 @[rust_loop_body]
 def conddata.legacy_pairs_loop.body
@@ -8001,7 +7418,7 @@ def conddata.legacy_pairs_loop.body
   else ok (done out)
 
 /-- [rustfs_kernel::conddata::legacy_pairs]: loop 0:
-    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 405:4-411:5
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 486:4-492:5
     Visibility: public -/
 @[rust_loop]
 def conddata.legacy_pairs_loop
@@ -8016,7 +7433,7 @@ def conddata.legacy_pairs_loop
     (out, i)
 
 /-- [rustfs_kernel::conddata::legacy_pairs]:
-    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 402:0-413:1
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 483:0-494:1
     Visibility: public -/
 @[reducible]
 def conddata.legacy_pairs
@@ -8044,7 +7461,7 @@ inductive condfuncs.StrOp where
 | ArnNotEquals : condfuncs.StrOp
 
 /-- [rustfs_kernel::conddata::str_op]:
-    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 414:0-428:1
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 495:0-509:1
     Visibility: public -/
 def conddata.str_op (op : conddata.Op) : Result condfuncs.StrOp := do
   match op with
@@ -8092,7 +7509,7 @@ inductive condfuncs.NumOp where
 | Ge : condfuncs.NumOp
 
 /-- [rustfs_kernel::conddata::num_op]:
-    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 429:0-439:1
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 510:0-520:1
     Visibility: public -/
 def conddata.num_op (op : conddata.Op) : Result condfuncs.NumOp := do
   match op with
@@ -8155,7 +7572,7 @@ structure condfuncs.Condition where
   cond : condfuncs.Cond
 
 /-- [rustfs_kernel::conddata::key_presence]: loop body 0:
-    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 469:4-472:5 -/
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 550:4-553:5 -/
 @[rust_loop_body]
 def conddata.key_presence_loop.body
   {T : Type} (f : conddata.InnerFunc T)
@@ -8176,7 +7593,7 @@ def conddata.key_presence_loop.body
   else ok (done out)
 
 /-- [rustfs_kernel::conddata::key_presence]: loop 0:
-    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 469:4-472:5 -/
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 550:4-553:5 -/
 @[rust_loop]
 def conddata.key_presence_loop
   {T : Type} (f : conddata.InnerFunc T)
@@ -8188,7 +7605,7 @@ def conddata.key_presence_loop
     (out, i)
 
 /-- [rustfs_kernel::conddata::key_presence]:
-    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 466:0-474:1 -/
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 547:0-555:1 -/
 @[reducible]
 def conddata.key_presence
   {T : Type} (f : conddata.InnerFunc T) :
@@ -8198,7 +7615,7 @@ def conddata.key_presence
     0#usize
 
 /-- [rustfs_kernel::conddata::condition_view]:
-    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 441:0-465:1
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 522:0-546:1
     Visibility: public -/
 def conddata.condition_view
   (c : conddata.Condition) : Result condfuncs.Condition := do
@@ -8248,7 +7665,7 @@ def conddata.condition_view
   ok { if_exists := (c.wrappers > 0#usize), cond }
 
 /-- [rustfs_kernel::conddata::views]: loop body 0:
-    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 478:4-481:5 -/
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 559:4-562:5 -/
 @[rust_loop_body]
 def conddata.views_loop.body
   (cs : Slice conddata.Condition) (out : alloc.vec.Vec condfuncs.Condition)
@@ -8267,7 +7684,7 @@ def conddata.views_loop.body
   else ok (done out)
 
 /-- [rustfs_kernel::conddata::views]: loop 0:
-    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 478:4-481:5 -/
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 559:4-562:5 -/
 @[rust_loop]
 def conddata.views_loop
   (cs : Slice conddata.Condition) (out : alloc.vec.Vec condfuncs.Condition)
@@ -8279,7 +7696,7 @@ def conddata.views_loop
     (out, i)
 
 /-- [rustfs_kernel::conddata::views]:
-    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 475:0-483:1 -/
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 556:0-564:1 -/
 @[reducible]
 def conddata.views
   (cs : Slice conddata.Condition) :
@@ -8296,7 +7713,7 @@ structure condfuncs.Functions where
   for_normal : alloc.vec.Vec condfuncs.Condition
 
 /-- [rustfs_kernel::conddata::matching_view]:
-    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 484:0-490:1
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 565:0-571:1
     Visibility: public -/
 def conddata.matching_view
   (f : conddata.Functions) : Result condfuncs.Functions := do
@@ -8309,7 +7726,7 @@ def conddata.matching_view
   ok { for_any_value := v, for_all_values := v1, for_normal := v2 }
 
 /-- [rustfs_kernel::conddata::inner_has_value]: loop body 0:
-    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 493:4-505:1 -/
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 574:4-586:1 -/
 @[rust_loop_body]
 def conddata.inner_has_value_loop.body
   {T : Type} (f : conddata.InnerFunc T)
@@ -8334,7 +7751,7 @@ def conddata.inner_has_value_loop.body
   else ok (done false)
 
 /-- [rustfs_kernel::conddata::inner_has_value]: loop 0:
-    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 493:4-505:1 -/
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 574:4-586:1 -/
 @[rust_loop]
 def conddata.inner_has_value_loop
   {T : Type} (f : conddata.InnerFunc T)
@@ -8347,7 +7764,7 @@ def conddata.inner_has_value_loop
     i
 
 /-- [rustfs_kernel::conddata::inner_has_value]:
-    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 491:0-505:1 -/
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 572:0-586:1 -/
 @[reducible]
 def conddata.inner_has_value
   {T : Type} (f : conddata.InnerFunc T)
@@ -8358,7 +7775,7 @@ def conddata.inner_has_value
   conddata.inner_has_value_loop f values 0#usize
 
 /-- [rustfs_kernel::conddata::has_any_key_in]:
-    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 506:0-515:1
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 587:0-596:1
     Visibility: public -/
 def conddata.has_any_key_in
   (c : conddata.Condition)
@@ -10649,7 +10066,7 @@ def condfuncs.condition_evaluate
   else condfuncs.eval_cond c.cond q values ctx env
 
 /-- [rustfs_kernel::conddata::condition_evaluate]:
-    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 517:0-532:1
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 598:0-613:1
     Visibility: public -/
 def conddata.condition_evaluate
   (c : conddata.Condition) (q : condfuncs.Quantifier)
@@ -10697,7 +10114,7 @@ def conddata.condition_evaluate
     | conddata.Data.Binary f => conddata.binary_evaluate f values
 
 /-- [rustfs_kernel::conddata::all_hold]: loop body 0:
-    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 541:4-548:1 -/
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 622:4-629:1 -/
 @[rust_loop_body]
 def conddata.all_hold_loop.body
   (cs : Slice conddata.Condition) (q : condfuncs.Quantifier)
@@ -10718,7 +10135,7 @@ def conddata.all_hold_loop.body
   else ok (done true)
 
 /-- [rustfs_kernel::conddata::all_hold]: loop 0:
-    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 541:4-548:1 -/
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 622:4-629:1 -/
 @[rust_loop]
 def conddata.all_hold_loop
   (cs : Slice conddata.Condition) (q : condfuncs.Quantifier)
@@ -10732,7 +10149,7 @@ def conddata.all_hold_loop
     i
 
 /-- [rustfs_kernel::conddata::all_hold]:
-    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 533:0-548:1 -/
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 614:0-629:1 -/
 @[reducible]
 def conddata.all_hold
   (cs : Slice conddata.Condition) (q : condfuncs.Quantifier)
@@ -10744,7 +10161,7 @@ def conddata.all_hold
   conddata.all_hold_loop cs q values ctx env 0#usize
 
 /-- [rustfs_kernel::conddata::functions_evaluate]:
-    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 549:0-574:1
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 630:0-655:1
     Visibility: public -/
 def conddata.functions_evaluate
   (f : conddata.Functions)
@@ -10768,7 +10185,7 @@ def conddata.functions_evaluate
   else ok false
 
 /-- [rustfs_kernel::conddata::to_key]:
-    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 593:0-599:1
+    Source: 'ports/rustfs/kernel/src/conddata.rs', lines 674:0-680:1
     Visibility: public -/
 def conddata.to_key
   (c : conddata.Condition) : Result (alloc.vec.Vec Std.U8) := do
@@ -11129,19 +10546,17 @@ def defaults.allow
     }
 
 /-- [rustfs_kernel::defaults::kms_allow]:
-    Source: 'ports/rustfs/kernel/src/defaults.rs', lines 50:0-52:1
+    Source: 'ports/rustfs/kernel/src/defaults.rs', lines 50:0-56:1
     Visibility: public -/
 def defaults.kms_allow
   (actions : alloc.vec.Vec acts.Action) : Result stmts.Statement := do
   let v ← defaults.all_kms_keys
-  let y ←
-    lift (Std.Array.to_slice (Array.make 1#usize [ rsrc.Resource.Kms v ] :
-      Array rsrc.Resource 1#usize))
-  let ret := alloc.slice.Slice.into_vec y
-  defaults.allow actions ret
+  let __v ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new rsrc.Resource) (rsrc.Resource.Kms v)
+  defaults.allow actions __v
 
 /-- [rustfs_kernel::defaults::assume_role_allow]:
-    Source: 'ports/rustfs/kernel/src/defaults.rs', lines 55:0-63:1
+    Source: 'ports/rustfs/kernel/src/defaults.rs', lines 59:0-71:1
     Visibility: public -/
 def defaults.assume_role_allow : Result stmts.Statement := do
   let s ←
@@ -11151,15 +10566,13 @@ def defaults.assume_role_allow : Result stmts.Statement := do
         101#u8, 82#u8, 111#u8, 108#u8, 101#u8
         ]))
   let v ← alloc.slice.Slice.to_vec core.clone.CloneU8 s
-  let y ←
-    lift (Std.Array.to_slice
-      (Array.make 1#usize [ { family := acts.Family.Sts, «name» := v } ] :
-      Array acts.Action 1#usize))
-  let ret := alloc.slice.Slice.into_vec y
-  defaults.allow ret (alloc.vec.Vec.new rsrc.Resource)
+  let __v ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new acts.Action)
+      ({ family := acts.Family.Sts, «name» := v } : acts.Action)
+  defaults.allow __v (alloc.vec.Vec.new rsrc.Resource)
 
 /-- [rustfs_kernel::defaults::default_policies]:
-    Source: 'ports/rustfs/kernel/src/defaults.rs', lines 66:0-318:1
+    Source: 'ports/rustfs/kernel/src/defaults.rs', lines 74:0-414:1
     Visibility: public -/
 def defaults.default_policies
   : Result (alloc.vec.Vec ((alloc.vec.Vec Std.U8) × defaults.Policy)) := do
@@ -11173,18 +10586,15 @@ def defaults.default_policies
   let s1 ←
     lift (Array.to_slice (Array.make 4#usize [ 115#u8, 51#u8, 58#u8, 42#u8 ]))
   let v2 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s1
-  let y ←
-    lift (Std.Array.to_slice
-      (Array.make 1#usize [ { family := acts.Family.S3, «name» := v2 } ] :
-      Array acts.Action 1#usize))
-  let ret := alloc.slice.Slice.into_vec y
+  let __v ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new acts.Action)
+      ({ family := acts.Family.S3, «name» := v2 } : acts.Action)
   let s2 ← lift (Array.to_slice (Array.make 1#usize [ 42#u8 ]))
   let v3 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s2
-  let y1 ←
-    lift (Std.Array.to_slice (Array.make 1#usize [ rsrc.Resource.S3 v3 ] :
-      Array rsrc.Resource 1#usize))
-  let ret1 := alloc.slice.Slice.into_vec y1
-  let s3 ← defaults.allow ret ret1
+  let __v1 ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new rsrc.Resource) (rsrc.Resource.S3 v3)
+  let s3 ← defaults.allow __v __v1
+  let __v2 ← alloc.vec.Vec.push (alloc.vec.Vec.new stmts.Statement) s3
   let s4 ←
     lift (Array.to_slice
       (Array.make 14#usize [
@@ -11192,16 +10602,16 @@ def defaults.default_policies
         101#u8, 82#u8, 111#u8, 108#u8, 101#u8
         ]))
   let v4 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s4
-  let y2 ←
-    lift (Std.Array.to_slice
-      (Array.make 1#usize [ { family := acts.Family.Sts, «name» := v4 } ] :
-      Array acts.Action 1#usize))
-  let ret2 := alloc.slice.Slice.into_vec y2
-  let s5 ← defaults.allow ret2 (alloc.vec.Vec.new rsrc.Resource)
-  let y3 ←
-    lift (Std.Array.to_slice (Array.make 2#usize [ s3, s5 ] : Array
-      stmts.Statement 2#usize))
-  let ret3 := alloc.slice.Slice.into_vec y3
+  let __v3 ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new acts.Action)
+      ({ family := acts.Family.Sts, «name» := v4 } : acts.Action)
+  let s5 ← defaults.allow __v3 (alloc.vec.Vec.new rsrc.Resource)
+  let __v4 ← alloc.vec.Vec.push __v2 s5
+  let __v5 ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new ((alloc.vec.Vec Std.U8) ×
+      defaults.Policy)) (v,
+      ({ id := (alloc.vec.Vec.new Std.U8), version := v1, statements := __v4 }
+      : defaults.Policy))
   let s6 ←
     lift (Array.to_slice
       (Array.make 8#usize [
@@ -11216,6 +10626,9 @@ def defaults.default_policies
         111#u8, 110#u8
         ]))
   let v6 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s7
+  let __v6 ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new acts.Action)
+      ({ family := acts.Family.S3, «name» := v6 } : acts.Action)
   let s8 ←
     lift (Array.to_slice
       (Array.make 12#usize [
@@ -11223,6 +10636,9 @@ def defaults.default_policies
         101#u8, 99#u8, 116#u8
         ]))
   let v7 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s8
+  let __v7 ←
+    alloc.vec.Vec.push __v6 ({ family := acts.Family.S3, «name» := v7 } :
+      acts.Action)
   let s9 ←
     lift (Array.to_slice
       (Array.make 17#usize [
@@ -11230,21 +10646,15 @@ def defaults.default_policies
         107#u8, 101#u8, 116#u8, 81#u8, 117#u8, 111#u8, 116#u8, 97#u8
         ]))
   let v8 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s9
-  let y4 ←
-    lift (Std.Array.to_slice
-      (Array.make 3#usize [
-         { family := acts.Family.S3, «name» := v6 },
-         { family := acts.Family.S3, «name» := v7 },
-         { family := acts.Family.S3, «name» := v8 }
-         ] : Array acts.Action 3#usize))
-  let ret4 := alloc.slice.Slice.into_vec y4
+  let __v8 ←
+    alloc.vec.Vec.push __v7 ({ family := acts.Family.S3, «name» := v8 } :
+      acts.Action)
   let s10 ← lift (Array.to_slice (Array.make 1#usize [ 42#u8 ]))
   let v9 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s10
-  let y5 ←
-    lift (Std.Array.to_slice (Array.make 1#usize [ rsrc.Resource.S3 v9 ] :
-      Array rsrc.Resource 1#usize))
-  let ret5 := alloc.slice.Slice.into_vec y5
-  let s11 ← defaults.allow ret4 ret5
+  let __v9 ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new rsrc.Resource) (rsrc.Resource.S3 v9)
+  let s11 ← defaults.allow __v8 __v9
+  let __v10 ← alloc.vec.Vec.push (alloc.vec.Vec.new stmts.Statement) s11
   let s12 ←
     lift (Array.to_slice
       (Array.make 14#usize [
@@ -11252,16 +10662,15 @@ def defaults.default_policies
         101#u8, 82#u8, 111#u8, 108#u8, 101#u8
         ]))
   let v10 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s12
-  let y6 ←
-    lift (Std.Array.to_slice
-      (Array.make 1#usize [ { family := acts.Family.Sts, «name» := v10 } ] :
-      Array acts.Action 1#usize))
-  let ret6 := alloc.slice.Slice.into_vec y6
-  let s13 ← defaults.allow ret6 (alloc.vec.Vec.new rsrc.Resource)
-  let y7 ←
-    lift (Std.Array.to_slice (Array.make 2#usize [ s11, s13 ] : Array
-      stmts.Statement 2#usize))
-  let ret7 := alloc.slice.Slice.into_vec y7
+  let __v11 ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new acts.Action)
+      ({ family := acts.Family.Sts, «name» := v10 } : acts.Action)
+  let s13 ← defaults.allow __v11 (alloc.vec.Vec.new rsrc.Resource)
+  let __v12 ← alloc.vec.Vec.push __v10 s13
+  let __v13 ←
+    alloc.vec.Vec.push __v5 (v5,
+      ({ id := (alloc.vec.Vec.new Std.U8), version := v1, statements := __v12 }
+      : defaults.Policy))
   let s14 ←
     lift (Array.to_slice
       (Array.make 9#usize [
@@ -11275,18 +10684,15 @@ def defaults.default_policies
         101#u8, 99#u8, 116#u8
         ]))
   let v12 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s15
-  let y8 ←
-    lift (Std.Array.to_slice
-      (Array.make 1#usize [ { family := acts.Family.S3, «name» := v12 } ] :
-      Array acts.Action 1#usize))
-  let ret8 := alloc.slice.Slice.into_vec y8
+  let __v14 ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new acts.Action)
+      ({ family := acts.Family.S3, «name» := v12 } : acts.Action)
   let s16 ← lift (Array.to_slice (Array.make 1#usize [ 42#u8 ]))
   let v13 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s16
-  let y9 ←
-    lift (Std.Array.to_slice (Array.make 1#usize [ rsrc.Resource.S3 v13 ] :
-      Array rsrc.Resource 1#usize))
-  let ret9 := alloc.slice.Slice.into_vec y9
-  let s17 ← defaults.allow ret8 ret9
+  let __v15 ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new rsrc.Resource) (rsrc.Resource.S3 v13)
+  let s17 ← defaults.allow __v14 __v15
+  let __v16 ← alloc.vec.Vec.push (alloc.vec.Vec.new stmts.Statement) s17
   let s18 ←
     lift (Array.to_slice
       (Array.make 14#usize [
@@ -11294,16 +10700,15 @@ def defaults.default_policies
         101#u8, 82#u8, 111#u8, 108#u8, 101#u8
         ]))
   let v14 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s18
-  let y10 ←
-    lift (Std.Array.to_slice
-      (Array.make 1#usize [ { family := acts.Family.Sts, «name» := v14 } ] :
-      Array acts.Action 1#usize))
-  let ret10 := alloc.slice.Slice.into_vec y10
-  let s19 ← defaults.allow ret10 (alloc.vec.Vec.new rsrc.Resource)
-  let y11 ←
-    lift (Std.Array.to_slice (Array.make 2#usize [ s17, s19 ] : Array
-      stmts.Statement 2#usize))
-  let ret11 := alloc.slice.Slice.into_vec y11
+  let __v17 ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new acts.Action)
+      ({ family := acts.Family.Sts, «name» := v14 } : acts.Action)
+  let s19 ← defaults.allow __v17 (alloc.vec.Vec.new rsrc.Resource)
+  let __v18 ← alloc.vec.Vec.push __v16 s19
+  let __v19 ←
+    alloc.vec.Vec.push __v13 (v11,
+      ({ id := (alloc.vec.Vec.new Std.U8), version := v1, statements := __v18 }
+      : defaults.Policy))
   let s20 ←
     lift (Array.to_slice
       (Array.make 11#usize [
@@ -11318,6 +10723,9 @@ def defaults.default_policies
         102#u8, 105#u8, 108#u8, 105#u8, 110#u8, 103#u8
         ]))
   let v16 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s21
+  let __v20 ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new acts.Action)
+      ({ family := acts.Family.Admin, «name» := v16 } : acts.Action)
   let s22 ←
     lift (Array.to_slice
       (Array.make 17#usize [
@@ -11325,6 +10733,9 @@ def defaults.default_policies
         118#u8, 101#u8, 114#u8, 84#u8, 114#u8, 97#u8, 99#u8, 101#u8
         ]))
   let v17 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s22
+  let __v21 ←
+    alloc.vec.Vec.push __v20 ({ family := acts.Family.Admin, «name» := v17 }
+      : acts.Action)
   let s23 ←
     lift (Array.to_slice
       (Array.make 16#usize [
@@ -11332,6 +10743,9 @@ def defaults.default_policies
         115#u8, 111#u8, 108#u8, 101#u8, 76#u8, 111#u8, 103#u8
         ]))
   let v18 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s23
+  let __v22 ←
+    alloc.vec.Vec.push __v21 ({ family := acts.Family.Admin, «name» := v18 }
+      : acts.Action)
   let s24 ←
     lift (Array.to_slice
       (Array.make 16#usize [
@@ -11339,6 +10753,9 @@ def defaults.default_policies
         118#u8, 101#u8, 114#u8, 73#u8, 110#u8, 102#u8, 111#u8
         ]))
   let v19 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s24
+  let __v23 ←
+    alloc.vec.Vec.push __v22 ({ family := acts.Family.Admin, «name» := v19 }
+      : acts.Action)
   let s25 ←
     lift (Array.to_slice
       (Array.make 18#usize [
@@ -11346,6 +10763,9 @@ def defaults.default_policies
         76#u8, 111#u8, 99#u8, 107#u8, 115#u8, 73#u8, 110#u8, 102#u8, 111#u8
         ]))
   let v20 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s25
+  let __v24 ←
+    alloc.vec.Vec.push __v23 ({ family := acts.Family.Admin, «name» := v20 }
+      : acts.Action)
   let s26 ←
     lift (Array.to_slice
       (Array.make 13#usize [
@@ -11353,6 +10773,9 @@ def defaults.default_policies
         73#u8, 110#u8, 102#u8, 111#u8
         ]))
   let v21 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s26
+  let __v25 ←
+    alloc.vec.Vec.push __v24 ({ family := acts.Family.Admin, «name» := v21 }
+      : acts.Action)
   let s27 ←
     lift (Array.to_slice
       (Array.make 16#usize [
@@ -11360,6 +10783,9 @@ def defaults.default_policies
         109#u8, 101#u8, 116#u8, 104#u8, 101#u8, 117#u8, 115#u8
         ]))
   let v22 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s27
+  let __v26 ←
+    alloc.vec.Vec.push __v25 ({ family := acts.Family.Admin, «name» := v22 }
+      : acts.Action)
   let s28 ←
     lift (Array.to_slice
       (Array.make 22#usize [
@@ -11368,26 +10794,15 @@ def defaults.default_policies
         105#u8, 116#u8, 111#u8, 114#u8
         ]))
   let v23 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s28
-  let y12 ←
-    lift (Std.Array.to_slice
-      (Array.make 8#usize [
-         { family := acts.Family.Admin, «name» := v16 },
-         { family := acts.Family.Admin, «name» := v17 },
-         { family := acts.Family.Admin, «name» := v18 },
-         { family := acts.Family.Admin, «name» := v19 },
-         { family := acts.Family.Admin, «name» := v20 },
-         { family := acts.Family.Admin, «name» := v21 },
-         { family := acts.Family.Admin, «name» := v22 },
-         { family := acts.Family.Admin, «name» := v23 }
-         ] : Array acts.Action 8#usize))
-  let ret12 := alloc.slice.Slice.into_vec y12
+  let __v27 ←
+    alloc.vec.Vec.push __v26 ({ family := acts.Family.Admin, «name» := v23 }
+      : acts.Action)
   let s29 ← lift (Array.to_slice (Array.make 1#usize [ 42#u8 ]))
   let v24 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s29
-  let y13 ←
-    lift (Std.Array.to_slice (Array.make 1#usize [ rsrc.Resource.S3 v24 ] :
-      Array rsrc.Resource 1#usize))
-  let ret13 := alloc.slice.Slice.into_vec y13
-  let s30 ← defaults.allow ret12 ret13
+  let __v28 ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new rsrc.Resource) (rsrc.Resource.S3 v24)
+  let s30 ← defaults.allow __v27 __v28
+  let __v29 ← alloc.vec.Vec.push (alloc.vec.Vec.new stmts.Statement) s30
   let s31 ←
     lift (Array.to_slice
       (Array.make 14#usize [
@@ -11395,16 +10810,15 @@ def defaults.default_policies
         101#u8, 82#u8, 111#u8, 108#u8, 101#u8
         ]))
   let v25 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s31
-  let y14 ←
-    lift (Std.Array.to_slice
-      (Array.make 1#usize [ { family := acts.Family.Sts, «name» := v25 } ] :
-      Array acts.Action 1#usize))
-  let ret14 := alloc.slice.Slice.into_vec y14
-  let s32 ← defaults.allow ret14 (alloc.vec.Vec.new rsrc.Resource)
-  let y15 ←
-    lift (Std.Array.to_slice (Array.make 2#usize [ s30, s32 ] : Array
-      stmts.Statement 2#usize))
-  let ret15 := alloc.slice.Slice.into_vec y15
+  let __v30 ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new acts.Action)
+      ({ family := acts.Family.Sts, «name» := v25 } : acts.Action)
+  let s32 ← defaults.allow __v30 (alloc.vec.Vec.new rsrc.Resource)
+  let __v31 ← alloc.vec.Vec.push __v29 s32
+  let __v32 ←
+    alloc.vec.Vec.push __v19 (v15,
+      ({ id := (alloc.vec.Vec.new Std.U8), version := v1, statements := __v31 }
+      : defaults.Policy))
   let s33 ←
     lift (Array.to_slice
       (Array.make 12#usize [
@@ -11418,37 +10832,32 @@ def defaults.default_policies
         97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 58#u8, 42#u8
         ]))
   let v27 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s34
-  let y16 ←
-    lift (Std.Array.to_slice
-      (Array.make 1#usize [ { family := acts.Family.Admin, «name» := v27 } ]
-      : Array acts.Action 1#usize))
-  let ret16 := alloc.slice.Slice.into_vec y16
-  let s35 ← defaults.allow ret16 (alloc.vec.Vec.new rsrc.Resource)
+  let __v33 ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new acts.Action)
+      ({ family := acts.Family.Admin, «name» := v27 } : acts.Action)
+  let s35 ← defaults.allow __v33 (alloc.vec.Vec.new rsrc.Resource)
+  let __v34 ← alloc.vec.Vec.push (alloc.vec.Vec.new stmts.Statement) s35
   let s36 ←
     lift (Array.to_slice
       (Array.make 5#usize [ 107#u8, 109#u8, 115#u8, 58#u8, 42#u8 ]))
   let v28 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s36
-  let y17 ←
-    lift (Std.Array.to_slice
-      (Array.make 1#usize [ { family := acts.Family.Kms, «name» := v28 } ] :
-      Array acts.Action 1#usize))
-  let ret17 := alloc.slice.Slice.into_vec y17
-  let s37 ← defaults.allow ret17 (alloc.vec.Vec.new rsrc.Resource)
+  let __v35 ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new acts.Action)
+      ({ family := acts.Family.Kms, «name» := v28 } : acts.Action)
+  let s37 ← defaults.allow __v35 (alloc.vec.Vec.new rsrc.Resource)
+  let __v36 ← alloc.vec.Vec.push __v34 s37
   let s38 ←
     lift (Array.to_slice (Array.make 4#usize [ 115#u8, 51#u8, 58#u8, 42#u8 ]))
   let v29 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s38
-  let y18 ←
-    lift (Std.Array.to_slice
-      (Array.make 1#usize [ { family := acts.Family.S3, «name» := v29 } ] :
-      Array acts.Action 1#usize))
-  let ret18 := alloc.slice.Slice.into_vec y18
+  let __v37 ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new acts.Action)
+      ({ family := acts.Family.S3, «name» := v29 } : acts.Action)
   let s39 ← lift (Array.to_slice (Array.make 1#usize [ 42#u8 ]))
   let v30 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s39
-  let y19 ←
-    lift (Std.Array.to_slice (Array.make 1#usize [ rsrc.Resource.S3 v30 ] :
-      Array rsrc.Resource 1#usize))
-  let ret19 := alloc.slice.Slice.into_vec y19
-  let s40 ← defaults.allow ret18 ret19
+  let __v38 ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new rsrc.Resource) (rsrc.Resource.S3 v30)
+  let s40 ← defaults.allow __v37 __v38
+  let __v39 ← alloc.vec.Vec.push __v36 s40
   let s41 ←
     lift (Array.to_slice
       (Array.make 14#usize [
@@ -11456,16 +10865,15 @@ def defaults.default_policies
         101#u8, 82#u8, 111#u8, 108#u8, 101#u8
         ]))
   let v31 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s41
-  let y20 ←
-    lift (Std.Array.to_slice
-      (Array.make 1#usize [ { family := acts.Family.Sts, «name» := v31 } ] :
-      Array acts.Action 1#usize))
-  let ret20 := alloc.slice.Slice.into_vec y20
-  let s42 ← defaults.allow ret20 (alloc.vec.Vec.new rsrc.Resource)
-  let y21 ←
-    lift (Std.Array.to_slice (Array.make 4#usize [ s35, s37, s40, s42 ] : Array
-      stmts.Statement 4#usize))
-  let ret21 := alloc.slice.Slice.into_vec y21
+  let __v40 ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new acts.Action)
+      ({ family := acts.Family.Sts, «name» := v31 } : acts.Action)
+  let s42 ← defaults.allow __v40 (alloc.vec.Vec.new rsrc.Resource)
+  let __v41 ← alloc.vec.Vec.push __v39 s42
+  let __v42 ←
+    alloc.vec.Vec.push __v32 (v26,
+      ({ id := (alloc.vec.Vec.new Std.U8), version := v1, statements := __v41 }
+      : defaults.Policy))
   let v32 ← defaults.kms_key_administrator
   let s43 ←
     lift (Array.to_slice
@@ -11474,6 +10882,9 @@ def defaults.default_policies
         105#u8, 98#u8, 101#u8, 75#u8, 101#u8, 121#u8
         ]))
   let v33 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s43
+  let __v43 ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new acts.Action)
+      ({ family := acts.Family.Kms, «name» := v33 } : acts.Action)
   let s44 ←
     lift (Array.to_slice
       (Array.make 12#usize [
@@ -11481,6 +10892,9 @@ def defaults.default_policies
         101#u8, 121#u8, 115#u8
         ]))
   let v34 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s44
+  let __v44 ←
+    alloc.vec.Vec.push __v43 ({ family := acts.Family.Kms, «name» := v34 } :
+      acts.Action)
   let s45 ←
     lift (Array.to_slice
       (Array.make 13#usize [
@@ -11488,6 +10902,9 @@ def defaults.default_policies
         101#u8, 75#u8, 101#u8, 121#u8
         ]))
   let v35 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s45
+  let __v45 ←
+    alloc.vec.Vec.push __v44 ({ family := acts.Family.Kms, «name» := v35 } :
+      acts.Action)
   let s46 ←
     lift (Array.to_slice
       (Array.make 14#usize [
@@ -11495,6 +10912,9 @@ def defaults.default_policies
         108#u8, 101#u8, 75#u8, 101#u8, 121#u8
         ]))
   let v36 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s46
+  let __v46 ←
+    alloc.vec.Vec.push __v45 ({ family := acts.Family.Kms, «name» := v36 } :
+      acts.Action)
   let s47 ←
     lift (Array.to_slice
       (Array.make 13#usize [
@@ -11502,6 +10922,9 @@ def defaults.default_policies
         101#u8, 75#u8, 101#u8, 121#u8
         ]))
   let v37 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s47
+  let __v47 ←
+    alloc.vec.Vec.push __v46 ({ family := acts.Family.Kms, «name» := v37 } :
+      acts.Action)
   let s48 ←
     lift (Array.to_slice
       (Array.make 13#usize [
@@ -11509,23 +10932,17 @@ def defaults.default_policies
         101#u8, 75#u8, 101#u8, 121#u8
         ]))
   let v38 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s48
-  let y22 ←
-    lift (Std.Array.to_slice
-      (Array.make 6#usize [
-         { family := acts.Family.Kms, «name» := v33 },
-         { family := acts.Family.Kms, «name» := v34 },
-         { family := acts.Family.Kms, «name» := v35 },
-         { family := acts.Family.Kms, «name» := v36 },
-         { family := acts.Family.Kms, «name» := v37 },
-         { family := acts.Family.Kms, «name» := v38 }
-         ] : Array acts.Action 6#usize))
-  let ret22 := alloc.slice.Slice.into_vec y22
-  let s49 ← defaults.kms_allow ret22
+  let __v48 ←
+    alloc.vec.Vec.push __v47 ({ family := acts.Family.Kms, «name» := v38 } :
+      acts.Action)
+  let s49 ← defaults.kms_allow __v48
+  let __v49 ← alloc.vec.Vec.push (alloc.vec.Vec.new stmts.Statement) s49
   let s50 ← defaults.assume_role_allow
-  let y23 ←
-    lift (Std.Array.to_slice (Array.make 2#usize [ s49, s50 ] : Array
-      stmts.Statement 2#usize))
-  let ret23 := alloc.slice.Slice.into_vec y23
+  let __v50 ← alloc.vec.Vec.push __v49 s50
+  let __v51 ←
+    alloc.vec.Vec.push __v42 (v32,
+      ({ id := (alloc.vec.Vec.new Std.U8), version := v1, statements := __v50 }
+      : defaults.Policy))
   let v39 ← defaults.kms_key_user
   let s51 ←
     lift (Array.to_slice
@@ -11535,6 +10952,9 @@ def defaults.default_policies
         121#u8
         ]))
   let v40 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s51
+  let __v52 ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new acts.Action)
+      ({ family := acts.Family.Kms, «name» := v40 } : acts.Action)
   let s52 ←
     lift (Array.to_slice
       (Array.make 11#usize [
@@ -11542,6 +10962,9 @@ def defaults.default_policies
         112#u8, 116#u8
         ]))
   let v41 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s52
+  let __v53 ←
+    alloc.vec.Vec.push __v52 ({ family := acts.Family.Kms, «name» := v41 } :
+      acts.Action)
   let s53 ←
     lift (Array.to_slice
       (Array.make 15#usize [
@@ -11549,19 +10972,16 @@ def defaults.default_policies
         105#u8, 98#u8, 101#u8, 75#u8, 101#u8, 121#u8
         ]))
   let v42 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s53
-  let y24 ←
-    lift (Std.Array.to_slice
-      (Array.make 3#usize [
-         { family := acts.Family.Kms, «name» := v40 },
-         { family := acts.Family.Kms, «name» := v41 },
-         { family := acts.Family.Kms, «name» := v42 }
-         ] : Array acts.Action 3#usize))
-  let ret24 := alloc.slice.Slice.into_vec y24
-  let s54 ← defaults.kms_allow ret24
-  let y25 ←
-    lift (Std.Array.to_slice (Array.make 2#usize [ s54, s50 ] : Array
-      stmts.Statement 2#usize))
-  let ret25 := alloc.slice.Slice.into_vec y25
+  let __v54 ←
+    alloc.vec.Vec.push __v53 ({ family := acts.Family.Kms, «name» := v42 } :
+      acts.Action)
+  let s54 ← defaults.kms_allow __v54
+  let __v55 ← alloc.vec.Vec.push (alloc.vec.Vec.new stmts.Statement) s54
+  let __v56 ← alloc.vec.Vec.push __v55 s50
+  let __v57 ←
+    alloc.vec.Vec.push __v51 (v39,
+      ({ id := (alloc.vec.Vec.new Std.U8), version := v1, statements := __v56 }
+      : defaults.Policy))
   let v43 ← defaults.kms_auditor
   let s55 ←
     lift (Array.to_slice
@@ -11570,6 +10990,9 @@ def defaults.default_policies
         105#u8, 98#u8, 101#u8, 75#u8, 101#u8, 121#u8
         ]))
   let v44 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s55
+  let __v58 ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new acts.Action)
+      ({ family := acts.Family.Kms, «name» := v44 } : acts.Action)
   let s56 ←
     lift (Array.to_slice
       (Array.make 12#usize [
@@ -11577,40 +11000,15 @@ def defaults.default_policies
         101#u8, 121#u8, 115#u8
         ]))
   let v45 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s56
-  let y26 ←
-    lift (Std.Array.to_slice
-      (Array.make 2#usize [
-         { family := acts.Family.Kms, «name» := v44 },
-         { family := acts.Family.Kms, «name» := v45 }
-         ] : Array acts.Action 2#usize))
-  let ret26 := alloc.slice.Slice.into_vec y26
-  let s57 ← defaults.kms_allow ret26
-  let y27 ←
-    lift (Std.Array.to_slice (Array.make 2#usize [ s57, s50 ] : Array
-      stmts.Statement 2#usize))
-  let ret27 := alloc.slice.Slice.into_vec y27
-  let y28 ←
-    lift (Std.Array.to_slice
-      (Array.make 8#usize [
-         (v,
-         { id := (alloc.vec.Vec.new Std.U8), version := v1, statements := ret3
-         }), (v5,
-         { id := (alloc.vec.Vec.new Std.U8), version := v1, statements := ret7
-         }), (v11,
-         { id := (alloc.vec.Vec.new Std.U8), version := v1, statements := ret11
-         }), (v15,
-         { id := (alloc.vec.Vec.new Std.U8), version := v1, statements := ret15
-         }), (v26,
-         { id := (alloc.vec.Vec.new Std.U8), version := v1, statements := ret21
-         }), (v32,
-         { id := (alloc.vec.Vec.new Std.U8), version := v1, statements := ret23
-         }), (v39,
-         { id := (alloc.vec.Vec.new Std.U8), version := v1, statements := ret25
-         }), (v43,
-         { id := (alloc.vec.Vec.new Std.U8), version := v1, statements := ret27
-         })
-         ] : Array ((alloc.vec.Vec Std.U8) × defaults.Policy) 8#usize))
-  ok (alloc.slice.Slice.into_vec y28)
+  let __v59 ←
+    alloc.vec.Vec.push __v58 ({ family := acts.Family.Kms, «name» := v45 } :
+      acts.Action)
+  let s57 ← defaults.kms_allow __v59
+  let __v60 ← alloc.vec.Vec.push (alloc.vec.Vec.new stmts.Statement) s57
+  let __v61 ← alloc.vec.Vec.push __v60 s50
+  alloc.vec.Vec.push __v57 (v43,
+    ({ id := (alloc.vec.Vec.new Std.U8), version := v1, statements := __v61 } :
+    defaults.Policy))
 
 /-- [rustfs_kernel::docdata::Timestamp]
     Source: 'ports/rustfs/kernel/src/docdata.rs', lines 5:0-8:1
@@ -11618,92 +11016,6 @@ def defaults.default_policies
 structure docdata.Timestamp where
   unix_nanos : Std.I128
   offset_seconds : Std.I32
-
-/-- [rustfs_kernel::docdata::{impl core::clone::Clone for rustfs_kernel::docdata::Timestamp}::clone]:
-    Source: 'ports/rustfs/kernel/src/docdata.rs', lines 4:9-4:14
-    Visibility: public -/
-def docdata.Timestamp.Insts.CoreCloneClone.clone
-  (self : docdata.Timestamp) : Result docdata.Timestamp := do
-  ok self
-
-/-- Trait implementation: [rustfs_kernel::docdata::{impl core::clone::Clone for rustfs_kernel::docdata::Timestamp}]
-    Source: 'ports/rustfs/kernel/src/docdata.rs', lines 4:9-4:14 -/
-@[reducible]
-def docdata.Timestamp.Insts.CoreCloneClone : core.clone.Clone docdata.Timestamp
-  := {
-  clone := docdata.Timestamp.Insts.CoreCloneClone.clone
-}
-
-/-- Trait implementation: [rustfs_kernel::docdata::{impl core::marker::Copy for rustfs_kernel::docdata::Timestamp}]
-    Source: 'ports/rustfs/kernel/src/docdata.rs', lines 4:16-4:20 -/
-@[reducible]
-def docdata.Timestamp.Insts.CoreMarkerCopy : core.marker.Copy docdata.Timestamp
-  := {
-  cloneInst := docdata.Timestamp.Insts.CoreCloneClone
-}
-
-/-- [rustfs_kernel::docdata::{impl core::fmt::Debug for rustfs_kernel::docdata::Timestamp}::fmt]:
-    Source: 'ports/rustfs/kernel/src/docdata.rs', lines 4:22-4:27
-    Visibility: public -/
-def docdata.Timestamp.Insts.CoreFmtDebug.fmt
-  (self : docdata.Timestamp) (f : core.fmt.Formatter) :
-  Result ((core.result.Result Unit core.fmt.Error) × core.fmt.Formatter)
-  := do
-  let dyn := Dyn.mk _ core.fmt.DebugI128 self.unix_nanos
-  let dyn1 :=
-    Dyn.mk _ (core.fmt.DebugShared core.fmt.DebugI32) self.offset_seconds
-  core.fmt.Formatter.debug_struct_field2_finish f (toStr "Timestamp") (toStr
-    "unix_nanos") dyn (toStr "offset_seconds") dyn1
-
-/-- Trait implementation: [rustfs_kernel::docdata::{impl core::fmt::Debug for rustfs_kernel::docdata::Timestamp}]
-    Source: 'ports/rustfs/kernel/src/docdata.rs', lines 4:22-4:27 -/
-@[reducible]
-def docdata.Timestamp.Insts.CoreFmtDebug : core.fmt.Debug docdata.Timestamp
-  := {
-  fmt := docdata.Timestamp.Insts.CoreFmtDebug.fmt
-}
-
-/-- Trait implementation: [rustfs_kernel::docdata::{impl core::marker::StructuralPartialEq for rustfs_kernel::docdata::Timestamp}]
-    Source: 'ports/rustfs/kernel/src/docdata.rs', lines 4:29-4:38 -/
-@[reducible]
-def docdata.Timestamp.Insts.CoreMarkerStructuralPartialEq :
-  core.marker.StructuralPartialEq docdata.Timestamp := {
-}
-
-/-- [rustfs_kernel::docdata::{impl core::cmp::PartialEq<rustfs_kernel::docdata::Timestamp> for rustfs_kernel::docdata::Timestamp}::eq]:
-    Source: 'ports/rustfs/kernel/src/docdata.rs', lines 4:29-4:38
-    Visibility: public -/
-def docdata.Timestamp.Insts.CoreCmpPartialEqTimestamp.eq
-  (self : docdata.Timestamp) (other : docdata.Timestamp) : Result Bool := do
-  if self.unix_nanos = other.unix_nanos
-  then ok (self.offset_seconds = other.offset_seconds)
-  else ok false
-
-/-- Trait implementation: [rustfs_kernel::docdata::{impl core::cmp::PartialEq<rustfs_kernel::docdata::Timestamp> for rustfs_kernel::docdata::Timestamp}]
-    Source: 'ports/rustfs/kernel/src/docdata.rs', lines 4:29-4:38 -/
-@[reducible]
-impl_def docdata.Timestamp.Insts.CoreCmpPartialEqTimestamp : core.cmp.PartialEq
-  docdata.Timestamp docdata.Timestamp := {
-  eq := docdata.Timestamp.Insts.CoreCmpPartialEqTimestamp.eq
-  ne := core.cmp.PartialEq.ne.trait_default
-    docdata.Timestamp.Insts.CoreCmpPartialEqTimestamp
-}
-
-/-- [rustfs_kernel::docdata::{impl core::cmp::Eq for rustfs_kernel::docdata::Timestamp}::assert_fields_are_eq]:
-    Source: 'ports/rustfs/kernel/src/docdata.rs', lines 4:40-4:42
-    Visibility: public -/
-def docdata.Timestamp.Insts.CoreCmpEq.assert_fields_are_eq
-  (self : docdata.Timestamp) : Result Unit := do
-  ok ()
-
-/-- Trait implementation: [rustfs_kernel::docdata::{impl core::cmp::Eq for rustfs_kernel::docdata::Timestamp}]
-    Source: 'ports/rustfs/kernel/src/docdata.rs', lines 4:40-4:42 -/
-@[reducible]
-def docdata.Timestamp.Insts.CoreCmpEq : core.cmp.Eq docdata.Timestamp := {
-  partialEqInst := docdata.Timestamp.Insts.CoreCmpPartialEqTimestamp
-  assert_fields_are_eq :=
-    docdata.Timestamp.Insts.CoreCmpEq.assert_fields_are_eq
-}
 
 /-- [rustfs_kernel::manage::Statement]
     Source: 'ports/rustfs/kernel/src/manage.rs', lines 11:0-19:1
@@ -11802,23 +11114,8 @@ inductive extras.PrincipalValues where
 | Single : alloc.vec.Vec Std.U8 → extras.PrincipalValues
 | Multiple : alloc.vec.Vec (alloc.vec.Vec Std.U8) → extras.PrincipalValues
 
-/-- [rustfs_kernel::extras::PrincipalObject]
-    Source: 'ports/rustfs/kernel/src/extras.rs', lines 7:0-10:1
-    Visibility: public -/
-structure extras.PrincipalObject where
-  aws : Option extras.PrincipalValues
-  service : Option extras.PrincipalValues
-
-/-- [rustfs_kernel::extras::PrincipalFormat]
-    Source: 'ports/rustfs/kernel/src/extras.rs', lines 3:0-6:1
-    Visibility: public -/
-@[discriminant isize]
-inductive extras.PrincipalFormat where
-| Wildcard : alloc.vec.Vec Std.U8 → extras.PrincipalFormat
-| Object : extras.PrincipalObject → extras.PrincipalFormat
-
 /-- [rustfs_kernel::extras::unique_values]: loop body 0:
-    Source: 'ports/rustfs/kernel/src/extras.rs', lines 25:4-30:5 -/
+    Source: 'ports/rustfs/kernel/src/extras.rs', lines 29:4-34:5 -/
 @[rust_loop_body]
 def extras.unique_values_loop.body
   (values : Slice (alloc.vec.Vec Std.U8))
@@ -11845,7 +11142,7 @@ def extras.unique_values_loop.body
   else ok (done out)
 
 /-- [rustfs_kernel::extras::unique_values]: loop 0:
-    Source: 'ports/rustfs/kernel/src/extras.rs', lines 25:4-30:5 -/
+    Source: 'ports/rustfs/kernel/src/extras.rs', lines 29:4-34:5 -/
 @[rust_loop]
 def extras.unique_values_loop
   (values : Slice (alloc.vec.Vec Std.U8))
@@ -11857,7 +11154,7 @@ def extras.unique_values_loop
     (out, i)
 
 /-- [rustfs_kernel::extras::unique_values]:
-    Source: 'ports/rustfs/kernel/src/extras.rs', lines 22:0-32:1 -/
+    Source: 'ports/rustfs/kernel/src/extras.rs', lines 26:0-36:1 -/
 @[reducible]
 def extras.unique_values
   (values : Slice (alloc.vec.Vec Std.U8)) :
@@ -11867,7 +11164,7 @@ def extras.unique_values
     0#usize
 
 /-- [rustfs_kernel::extras::principal_values_into_set]:
-    Source: 'ports/rustfs/kernel/src/extras.rs', lines 16:0-21:1
+    Source: 'ports/rustfs/kernel/src/extras.rs', lines 16:0-25:1
     Visibility: public -/
 def extras.principal_values_into_set
   (values : extras.PrincipalValues) :
@@ -11875,16 +11172,13 @@ def extras.principal_values_into_set
   := do
   match values with
   | extras.PrincipalValues.Single s =>
-    let y ←
-      lift (Std.Array.to_slice (Array.make 1#usize [ s ] : Array (alloc.vec.Vec
-        Std.U8) 1#usize))
-    ok (alloc.slice.Slice.into_vec y)
+    alloc.vec.Vec.push (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) s
   | extras.PrincipalValues.Multiple v =>
     let s := alloc.vec.Vec.deref v
     extras.unique_values s
 
 /-- [rustfs_kernel::extras::LazyBuf]
-    Source: 'ports/rustfs/kernel/src/extras.rs', lines 33:0-37:1
+    Source: 'ports/rustfs/kernel/src/extras.rs', lines 37:0-41:1
     Visibility: public -/
 structure extras.LazyBuf where
   source : Slice Std.U8
@@ -11892,13 +11186,13 @@ structure extras.LazyBuf where
   written : Std.Usize
 
 /-- [rustfs_kernel::extras::lazybuf_new]:
-    Source: 'ports/rustfs/kernel/src/extras.rs', lines 38:0-44:1
+    Source: 'ports/rustfs/kernel/src/extras.rs', lines 42:0-48:1
     Visibility: public -/
 def extras.lazybuf_new (source : Slice Std.U8) : Result extras.LazyBuf := do
   ok { source, buffer := none, written := 0#usize }
 
 /-- [rustfs_kernel::extras::is_match_as_pattern_prefix]: loop body 0:
-    Source: 'ports/rustfs/kernel/src/extras.rs', lines 48:4-60:1
+    Source: 'ports/rustfs/kernel/src/extras.rs', lines 52:4-64:1
     Visibility: public -/
 @[rust_loop_body]
 def extras.is_match_as_pattern_prefix_loop.body
@@ -11934,7 +11228,7 @@ def extras.is_match_as_pattern_prefix_loop.body
     ok (done (i2 <= i3))
 
 /-- [rustfs_kernel::extras::is_match_as_pattern_prefix]: loop 0:
-    Source: 'ports/rustfs/kernel/src/extras.rs', lines 48:4-60:1
+    Source: 'ports/rustfs/kernel/src/extras.rs', lines 52:4-64:1
     Visibility: public -/
 @[rust_loop]
 def extras.is_match_as_pattern_prefix_loop
@@ -11946,7 +11240,7 @@ def extras.is_match_as_pattern_prefix_loop
     i
 
 /-- [rustfs_kernel::extras::is_match_as_pattern_prefix]:
-    Source: 'ports/rustfs/kernel/src/extras.rs', lines 46:0-60:1
+    Source: 'ports/rustfs/kernel/src/extras.rs', lines 50:0-64:1
     Visibility: public -/
 @[reducible]
 def extras.is_match_as_pattern_prefix
@@ -11964,59 +11258,6 @@ inductive keytables.KeyFamily where
 | Ldap : keytables.KeyFamily
 | Sts : keytables.KeyFamily
 | Aws : keytables.KeyFamily
-
-/-- [rustfs_kernel::keytables::{impl core::clone::Clone for rustfs_kernel::keytables::KeyFamily}::clone]:
-    Source: 'ports/rustfs/kernel/src/keytables.rs', lines 3:9-3:14
-    Visibility: public -/
-def keytables.KeyFamily.Insts.CoreCloneClone.clone
-  (self : keytables.KeyFamily) : Result keytables.KeyFamily := do
-  ok self
-
-/-- Trait implementation: [rustfs_kernel::keytables::{impl core::clone::Clone for rustfs_kernel::keytables::KeyFamily}]
-    Source: 'ports/rustfs/kernel/src/keytables.rs', lines 3:9-3:14 -/
-@[reducible]
-def keytables.KeyFamily.Insts.CoreCloneClone : core.clone.Clone
-  keytables.KeyFamily := {
-  clone := keytables.KeyFamily.Insts.CoreCloneClone.clone
-}
-
-/-- Trait implementation: [rustfs_kernel::keytables::{impl core::marker::Copy for rustfs_kernel::keytables::KeyFamily}]
-    Source: 'ports/rustfs/kernel/src/keytables.rs', lines 3:16-3:20 -/
-@[reducible]
-def keytables.KeyFamily.Insts.CoreMarkerCopy : core.marker.Copy
-  keytables.KeyFamily := {
-  cloneInst := keytables.KeyFamily.Insts.CoreCloneClone
-}
-
-/-- [rustfs_kernel::keytables::{impl core::fmt::Debug for rustfs_kernel::keytables::KeyFamily}::fmt]:
-    Source: 'ports/rustfs/kernel/src/keytables.rs', lines 3:22-3:27
-    Visibility: public -/
-def keytables.KeyFamily.Insts.CoreFmtDebug.fmt
-  (self : keytables.KeyFamily) (f : core.fmt.Formatter) :
-  Result ((core.result.Result Unit core.fmt.Error) × core.fmt.Formatter)
-  := do
-  match self with
-  | keytables.KeyFamily.S3 => core.fmt.Formatter.write_str f (toStr "S3")
-  | keytables.KeyFamily.Jwt => core.fmt.Formatter.write_str f (toStr "Jwt")
-  | keytables.KeyFamily.Svc => core.fmt.Formatter.write_str f (toStr "Svc")
-  | keytables.KeyFamily.Ldap => core.fmt.Formatter.write_str f (toStr "Ldap")
-  | keytables.KeyFamily.Sts => core.fmt.Formatter.write_str f (toStr "Sts")
-  | keytables.KeyFamily.Aws => core.fmt.Formatter.write_str f (toStr "Aws")
-
-/-- Trait implementation: [rustfs_kernel::keytables::{impl core::fmt::Debug for rustfs_kernel::keytables::KeyFamily}]
-    Source: 'ports/rustfs/kernel/src/keytables.rs', lines 3:22-3:27 -/
-@[reducible]
-def keytables.KeyFamily.Insts.CoreFmtDebug : core.fmt.Debug keytables.KeyFamily
-  := {
-  fmt := keytables.KeyFamily.Insts.CoreFmtDebug.fmt
-}
-
-/-- Trait implementation: [rustfs_kernel::keytables::{impl core::marker::StructuralPartialEq for rustfs_kernel::keytables::KeyFamily}]
-    Source: 'ports/rustfs/kernel/src/keytables.rs', lines 3:29-3:38 -/
-@[reducible]
-def keytables.KeyFamily.Insts.CoreMarkerStructuralPartialEq :
-  core.marker.StructuralPartialEq keytables.KeyFamily := {
-}
 
 /-- [rustfs_kernel::keytables::{impl core::cmp::PartialEq<rustfs_kernel::keytables::KeyFamily> for rustfs_kernel::keytables::KeyFamily}::eq]:
     Source: 'ports/rustfs/kernel/src/keytables.rs', lines 3:29-3:38
@@ -12037,16 +11278,6 @@ impl_def keytables.KeyFamily.Insts.CoreCmpPartialEqKeyFamily :
   eq := keytables.KeyFamily.Insts.CoreCmpPartialEqKeyFamily.eq
   ne := core.cmp.PartialEq.ne.trait_default
     keytables.KeyFamily.Insts.CoreCmpPartialEqKeyFamily
-}
-
-/-- Trait implementation: [rustfs_kernel::keytables::{impl core::cmp::Eq for rustfs_kernel::keytables::KeyFamily}]
-    Source: 'ports/rustfs/kernel/src/keytables.rs', lines 3:40-3:42 -/
-@[reducible]
-impl_def keytables.KeyFamily.Insts.CoreCmpEq : core.cmp.Eq keytables.KeyFamily
-  := {
-  partialEqInst := keytables.KeyFamily.Insts.CoreCmpPartialEqKeyFamily
-  assert_fields_are_eq := core.cmp.Eq.assert_fields_are_eq.default
-    keytables.KeyFamily.Insts.CoreCmpEq
 }
 
 /-- [rustfs_kernel::keytables::key_count]:
@@ -12909,99 +12140,6 @@ def manage.Statement.Insts.CoreCloneClone.clone
       conditions := f
     }
 
-/-- Trait implementation: [rustfs_kernel::manage::{impl core::clone::Clone for rustfs_kernel::manage::Statement}]
-    Source: 'ports/rustfs/kernel/src/manage.rs', lines 10:9-10:14 -/
-@[reducible]
-def manage.Statement.Insts.CoreCloneClone : core.clone.Clone manage.Statement
-  := {
-  clone := manage.Statement.Insts.CoreCloneClone.clone
-}
-
-/-- [rustfs_kernel::stmts::{impl core::fmt::Debug for rustfs_kernel::stmts::Effect}::fmt]:
-    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 9:22-9:27
-    Visibility: public -/
-def stmts.Effect.Insts.CoreFmtDebug.fmt
-  (self : stmts.Effect) (f : core.fmt.Formatter) :
-  Result ((core.result.Result Unit core.fmt.Error) × core.fmt.Formatter)
-  := do
-  match self with
-  | stmts.Effect.Allow => core.fmt.Formatter.write_str f (toStr "Allow")
-  | stmts.Effect.Deny => core.fmt.Formatter.write_str f (toStr "Deny")
-
-/-- Trait implementation: [rustfs_kernel::stmts::{impl core::fmt::Debug for rustfs_kernel::stmts::Effect}]
-    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 9:22-9:27 -/
-@[reducible]
-def stmts.Effect.Insts.CoreFmtDebug : core.fmt.Debug stmts.Effect := {
-  fmt := stmts.Effect.Insts.CoreFmtDebug.fmt
-}
-
-/-- [rustfs_kernel::rsrc::{impl core::fmt::Debug for rustfs_kernel::rsrc::Resource}::fmt]:
-    Source: 'ports/rustfs/kernel/src/rsrc.rs', lines 7:16-7:21
-    Visibility: public -/
-def rsrc.Resource.Insts.CoreFmtDebug.fmt
-  (self : rsrc.Resource) (f : core.fmt.Formatter) :
-  Result ((core.result.Result Unit core.fmt.Error) × core.fmt.Formatter)
-  := do
-  match self with
-  | rsrc.Resource.S3 __self_0 =>
-    let __self_01 :=
-      Dyn.mk _ (core.fmt.DebugShared (core.fmt.DebugVec core.fmt.DebugU8))
-        __self_0
-    core.fmt.Formatter.debug_tuple_field1_finish f (toStr "S3") __self_01
-  | rsrc.Resource.Kms __self_0 =>
-    let __self_01 :=
-      Dyn.mk _ (core.fmt.DebugShared (core.fmt.DebugVec core.fmt.DebugU8))
-        __self_0
-    core.fmt.Formatter.debug_tuple_field1_finish f (toStr "Kms") __self_01
-
-/-- Trait implementation: [rustfs_kernel::rsrc::{impl core::fmt::Debug for rustfs_kernel::rsrc::Resource}]
-    Source: 'ports/rustfs/kernel/src/rsrc.rs', lines 7:16-7:21 -/
-@[reducible]
-def rsrc.Resource.Insts.CoreFmtDebug : core.fmt.Debug rsrc.Resource := {
-  fmt := rsrc.Resource.Insts.CoreFmtDebug.fmt
-}
-
-/-- [rustfs_kernel::manage::{impl core::fmt::Debug for rustfs_kernel::manage::Statement}::fmt]:
-    Source: 'ports/rustfs/kernel/src/manage.rs', lines 10:16-10:21
-    Visibility: public -/
-def manage.Statement.Insts.CoreFmtDebug.fmt
-  (self : manage.Statement) (f : core.fmt.Formatter) :
-  Result ((core.result.Result Unit core.fmt.Error) × core.fmt.Formatter)
-  := do
-  let dyn := Dyn.mk _ (core.fmt.DebugVec core.fmt.DebugU8) self.sid
-  let dyn1 := Dyn.mk _ stmts.Effect.Insts.CoreFmtDebug self.effect
-  let dyn2 :=
-    Dyn.mk _ (core.fmt.DebugVec acts.Action.Insts.CoreFmtDebug) self.actions
-  let dyn3 :=
-    Dyn.mk _ (core.fmt.DebugVec acts.Action.Insts.CoreFmtDebug)
-      self.not_actions
-  let dyn4 :=
-    Dyn.mk _ (core.fmt.DebugVec rsrc.Resource.Insts.CoreFmtDebug)
-      self.resources
-  let dyn5 :=
-    Dyn.mk _ (core.fmt.DebugVec rsrc.Resource.Insts.CoreFmtDebug)
-      self.not_resources
-  let dyn6 :=
-    Dyn.mk _ (core.fmt.DebugShared conddata.Functions.Insts.CoreFmtDebug)
-      self.conditions
-  let values :=
-    Array.to_slice
-      (Array.make 7#usize [ dyn, dyn1, dyn2, dyn3, dyn4, dyn5, dyn6 ])
-  let s ←
-    lift (Array.to_slice
-      (Array.make 7#usize [
-        toStr "sid", toStr "effect", toStr "actions", toStr "not_actions",
-        toStr "resources", toStr "not_resources", toStr "conditions"
-        ]))
-  core.fmt.Formatter.debug_struct_fields_finish f (toStr "Statement") s values
-
-/-- Trait implementation: [rustfs_kernel::manage::{impl core::fmt::Debug for rustfs_kernel::manage::Statement}]
-    Source: 'ports/rustfs/kernel/src/manage.rs', lines 10:16-10:21 -/
-@[reducible]
-def manage.Statement.Insts.CoreFmtDebug : core.fmt.Debug manage.Statement := {
-  fmt := manage.Statement.Insts.CoreFmtDebug.fmt
-}
-
 /-- [rustfs_kernel::stmts::Principal]
     Source: 'ports/rustfs/kernel/src/stmts.rs', lines 35:0-38:1
     Visibility: public -/
@@ -13022,165 +12160,6 @@ structure manage.BPStatement where
   not_resources : alloc.vec.Vec rsrc.Resource
   conditions : conddata.Functions
 
-/-- [rustfs_kernel::stmts::{impl core::clone::Clone for rustfs_kernel::stmts::Principal}::clone]:
-    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 34:9-34:14
-    Visibility: public -/
-def stmts.Principal.Insts.CoreCloneClone.clone
-  (self : stmts.Principal) : Result stmts.Principal := do
-  let v ←
-    alloc.vec.CloneVec.clone (core.clone.CloneallocvecVec core.clone.CloneU8)
-      self.aws
-  let v1 ←
-    alloc.vec.CloneVec.clone (core.clone.CloneallocvecVec core.clone.CloneU8)
-      self.service
-  ok { aws := v, service := v1 }
-
-/-- [rustfs_kernel::manage::{impl core::clone::Clone for rustfs_kernel::manage::BPStatement}::clone]:
-    Source: 'ports/rustfs/kernel/src/manage.rs', lines 20:9-20:14
-    Visibility: public -/
-def manage.BPStatement.Insts.CoreCloneClone.clone
-  (self : manage.BPStatement) : Result manage.BPStatement := do
-  let v ← alloc.vec.CloneVec.clone core.clone.CloneU8 self.sid
-  let e ← stmts.Effect.Insts.CoreCloneClone.clone self.effect
-  let p ← stmts.Principal.Insts.CoreCloneClone.clone self.principal
-  let v1 ←
-    alloc.vec.CloneVec.clone acts.Action.Insts.CoreCloneClone self.actions
-  let v2 ←
-    alloc.vec.CloneVec.clone acts.Action.Insts.CoreCloneClone self.not_actions
-  let v3 ←
-    alloc.vec.CloneVec.clone rsrc.Resource.Insts.CoreCloneClone self.resources
-  let v4 ←
-    alloc.vec.CloneVec.clone rsrc.Resource.Insts.CoreCloneClone
-      self.not_resources
-  let f ← conddata.Functions.Insts.CoreCloneClone.clone self.conditions
-  ok
-    {
-      sid := v,
-      effect := e,
-      principal := p,
-      actions := v1,
-      not_actions := v2,
-      resources := v3,
-      not_resources := v4,
-      conditions := f
-    }
-
-/-- Trait implementation: [rustfs_kernel::manage::{impl core::clone::Clone for rustfs_kernel::manage::BPStatement}]
-    Source: 'ports/rustfs/kernel/src/manage.rs', lines 20:9-20:14 -/
-@[reducible]
-def manage.BPStatement.Insts.CoreCloneClone : core.clone.Clone
-  manage.BPStatement := {
-  clone := manage.BPStatement.Insts.CoreCloneClone.clone
-}
-
-/-- [rustfs_kernel::stmts::{impl core::fmt::Debug for rustfs_kernel::stmts::Principal}::fmt]:
-    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 34:16-34:21
-    Visibility: public -/
-def stmts.Principal.Insts.CoreFmtDebug.fmt
-  (self : stmts.Principal) (f : core.fmt.Formatter) :
-  Result ((core.result.Result Unit core.fmt.Error) × core.fmt.Formatter)
-  := do
-  let dyn :=
-    Dyn.mk _ (core.fmt.DebugVec (core.fmt.DebugVec core.fmt.DebugU8)) self.aws
-  let dyn1 :=
-    Dyn.mk _ (core.fmt.DebugShared (core.fmt.DebugVec (core.fmt.DebugVec
-      core.fmt.DebugU8))) self.service
-  core.fmt.Formatter.debug_struct_field2_finish f (toStr "Principal") (toStr
-    "aws") dyn (toStr "service") dyn1
-
-/-- Trait implementation: [rustfs_kernel::stmts::{impl core::fmt::Debug for rustfs_kernel::stmts::Principal}]
-    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 34:16-34:21 -/
-@[reducible]
-def stmts.Principal.Insts.CoreFmtDebug : core.fmt.Debug stmts.Principal := {
-  fmt := stmts.Principal.Insts.CoreFmtDebug.fmt
-}
-
-/-- [rustfs_kernel::manage::{impl core::fmt::Debug for rustfs_kernel::manage::BPStatement}::fmt]:
-    Source: 'ports/rustfs/kernel/src/manage.rs', lines 20:16-20:21
-    Visibility: public -/
-def manage.BPStatement.Insts.CoreFmtDebug.fmt
-  (self : manage.BPStatement) (f : core.fmt.Formatter) :
-  Result ((core.result.Result Unit core.fmt.Error) × core.fmt.Formatter)
-  := do
-  let dyn := Dyn.mk _ (core.fmt.DebugVec core.fmt.DebugU8) self.sid
-  let dyn1 := Dyn.mk _ stmts.Effect.Insts.CoreFmtDebug self.effect
-  let dyn2 := Dyn.mk _ stmts.Principal.Insts.CoreFmtDebug self.principal
-  let dyn3 :=
-    Dyn.mk _ (core.fmt.DebugVec acts.Action.Insts.CoreFmtDebug) self.actions
-  let dyn4 :=
-    Dyn.mk _ (core.fmt.DebugVec acts.Action.Insts.CoreFmtDebug)
-      self.not_actions
-  let dyn5 :=
-    Dyn.mk _ (core.fmt.DebugVec rsrc.Resource.Insts.CoreFmtDebug)
-      self.resources
-  let dyn6 :=
-    Dyn.mk _ (core.fmt.DebugVec rsrc.Resource.Insts.CoreFmtDebug)
-      self.not_resources
-  let dyn7 :=
-    Dyn.mk _ (core.fmt.DebugShared conddata.Functions.Insts.CoreFmtDebug)
-      self.conditions
-  let values :=
-    Array.to_slice
-      (Array.make 8#usize [ dyn, dyn1, dyn2, dyn3, dyn4, dyn5, dyn6, dyn7 ])
-  let s ←
-    lift (Array.to_slice
-      (Array.make 8#usize [
-        toStr "sid", toStr "effect", toStr "principal", toStr "actions", toStr
-        "not_actions", toStr "resources", toStr "not_resources", toStr
-        "conditions"
-        ]))
-  core.fmt.Formatter.debug_struct_fields_finish f (toStr "BPStatement") s
-    values
-
-/-- Trait implementation: [rustfs_kernel::manage::{impl core::fmt::Debug for rustfs_kernel::manage::BPStatement}]
-    Source: 'ports/rustfs/kernel/src/manage.rs', lines 20:16-20:21 -/
-@[reducible]
-def manage.BPStatement.Insts.CoreFmtDebug : core.fmt.Debug manage.BPStatement
-  := {
-  fmt := manage.BPStatement.Insts.CoreFmtDebug.fmt
-}
-
-/-- [rustfs_kernel::manage::{impl core::clone::Clone for rustfs_kernel::manage::Policy}::clone]:
-    Source: 'ports/rustfs/kernel/src/manage.rs', lines 31:9-31:14
-    Visibility: public -/
-def manage.Policy.Insts.CoreCloneClone.clone
-  (self : manage.Policy) : Result manage.Policy := do
-  let v ← alloc.vec.CloneVec.clone core.clone.CloneU8 self.id
-  let v1 ← alloc.vec.CloneVec.clone core.clone.CloneU8 self.version
-  let v2 ←
-    alloc.vec.CloneVec.clone manage.Statement.Insts.CoreCloneClone
-      self.statements
-  ok { id := v, version := v1, statements := v2 }
-
-/-- Trait implementation: [rustfs_kernel::manage::{impl core::clone::Clone for rustfs_kernel::manage::Policy}]
-    Source: 'ports/rustfs/kernel/src/manage.rs', lines 31:9-31:14 -/
-@[reducible]
-def manage.Policy.Insts.CoreCloneClone : core.clone.Clone manage.Policy := {
-  clone := manage.Policy.Insts.CoreCloneClone.clone
-}
-
-/-- [rustfs_kernel::manage::{impl core::fmt::Debug for rustfs_kernel::manage::Policy}::fmt]:
-    Source: 'ports/rustfs/kernel/src/manage.rs', lines 31:16-31:21
-    Visibility: public -/
-def manage.Policy.Insts.CoreFmtDebug.fmt
-  (self : manage.Policy) (f : core.fmt.Formatter) :
-  Result ((core.result.Result Unit core.fmt.Error) × core.fmt.Formatter)
-  := do
-  let dyn := Dyn.mk _ (core.fmt.DebugVec core.fmt.DebugU8) self.id
-  let dyn1 := Dyn.mk _ (core.fmt.DebugVec core.fmt.DebugU8) self.version
-  let dyn2 :=
-    Dyn.mk _ (core.fmt.DebugShared (core.fmt.DebugVec
-      manage.Statement.Insts.CoreFmtDebug)) self.statements
-  core.fmt.Formatter.debug_struct_field3_finish f (toStr "Policy") (toStr "id")
-    dyn (toStr "version") dyn1 (toStr "statements") dyn2
-
-/-- Trait implementation: [rustfs_kernel::manage::{impl core::fmt::Debug for rustfs_kernel::manage::Policy}]
-    Source: 'ports/rustfs/kernel/src/manage.rs', lines 31:16-31:21 -/
-@[reducible]
-def manage.Policy.Insts.CoreFmtDebug : core.fmt.Debug manage.Policy := {
-  fmt := manage.Policy.Insts.CoreFmtDebug.fmt
-}
-
 /-- [rustfs_kernel::manage::BucketPolicy]
     Source: 'ports/rustfs/kernel/src/manage.rs', lines 38:0-42:1
     Visibility: public -/
@@ -13188,49 +12167,6 @@ structure manage.BucketPolicy where
   id : alloc.vec.Vec Std.U8
   version : alloc.vec.Vec Std.U8
   statements : alloc.vec.Vec manage.BPStatement
-
-/-- [rustfs_kernel::manage::{impl core::clone::Clone for rustfs_kernel::manage::BucketPolicy}::clone]:
-    Source: 'ports/rustfs/kernel/src/manage.rs', lines 37:9-37:14
-    Visibility: public -/
-def manage.BucketPolicy.Insts.CoreCloneClone.clone
-  (self : manage.BucketPolicy) : Result manage.BucketPolicy := do
-  let v ← alloc.vec.CloneVec.clone core.clone.CloneU8 self.id
-  let v1 ← alloc.vec.CloneVec.clone core.clone.CloneU8 self.version
-  let v2 ←
-    alloc.vec.CloneVec.clone manage.BPStatement.Insts.CoreCloneClone
-      self.statements
-  ok { id := v, version := v1, statements := v2 }
-
-/-- Trait implementation: [rustfs_kernel::manage::{impl core::clone::Clone for rustfs_kernel::manage::BucketPolicy}]
-    Source: 'ports/rustfs/kernel/src/manage.rs', lines 37:9-37:14 -/
-@[reducible]
-def manage.BucketPolicy.Insts.CoreCloneClone : core.clone.Clone
-  manage.BucketPolicy := {
-  clone := manage.BucketPolicy.Insts.CoreCloneClone.clone
-}
-
-/-- [rustfs_kernel::manage::{impl core::fmt::Debug for rustfs_kernel::manage::BucketPolicy}::fmt]:
-    Source: 'ports/rustfs/kernel/src/manage.rs', lines 37:16-37:21
-    Visibility: public -/
-def manage.BucketPolicy.Insts.CoreFmtDebug.fmt
-  (self : manage.BucketPolicy) (f : core.fmt.Formatter) :
-  Result ((core.result.Result Unit core.fmt.Error) × core.fmt.Formatter)
-  := do
-  let dyn := Dyn.mk _ (core.fmt.DebugVec core.fmt.DebugU8) self.id
-  let dyn1 := Dyn.mk _ (core.fmt.DebugVec core.fmt.DebugU8) self.version
-  let dyn2 :=
-    Dyn.mk _ (core.fmt.DebugShared (core.fmt.DebugVec
-      manage.BPStatement.Insts.CoreFmtDebug)) self.statements
-  core.fmt.Formatter.debug_struct_field3_finish f (toStr "BucketPolicy") (toStr
-    "id") dyn (toStr "version") dyn1 (toStr "statements") dyn2
-
-/-- Trait implementation: [rustfs_kernel::manage::{impl core::fmt::Debug for rustfs_kernel::manage::BucketPolicy}]
-    Source: 'ports/rustfs/kernel/src/manage.rs', lines 37:16-37:21 -/
-@[reducible]
-def manage.BucketPolicy.Insts.CoreFmtDebug : core.fmt.Debug manage.BucketPolicy
-  := {
-  fmt := manage.BucketPolicy.Insts.CoreFmtDebug.fmt
-}
 
 /-- [rustfs_kernel::stmts::{impl core::cmp::PartialEq<rustfs_kernel::stmts::Effect> for rustfs_kernel::stmts::Effect}::eq]:
     Source: 'ports/rustfs/kernel/src/stmts.rs', lines 9:29-9:38
@@ -14529,6 +13465,19 @@ structure stmts.BPStatement where
   resources : alloc.vec.Vec rsrc.Resource
   not_resources : alloc.vec.Vec rsrc.Resource
   conditions : condfuncs.Functions
+
+/-- [rustfs_kernel::stmts::{impl core::clone::Clone for rustfs_kernel::stmts::Principal}::clone]:
+    Source: 'ports/rustfs/kernel/src/stmts.rs', lines 34:9-34:14
+    Visibility: public -/
+def stmts.Principal.Insts.CoreCloneClone.clone
+  (self : stmts.Principal) : Result stmts.Principal := do
+  let v ←
+    alloc.vec.CloneVec.clone (core.clone.CloneallocvecVec core.clone.CloneU8)
+      self.aws
+  let v1 ←
+    alloc.vec.CloneVec.clone (core.clone.CloneallocvecVec core.clone.CloneU8)
+      self.service
+  ok { aws := v, service := v1 }
 
 /-- [rustfs_kernel::manage::bp_statement_view]:
     Source: 'ports/rustfs/kernel/src/manage.rs', lines 155:0-165:1
@@ -18159,7 +17108,7 @@ def varctx.array_strings
     0#usize
 
 /-- [rustfs_kernel::varctx::get_claim_as_strings]:
-    Source: 'ports/rustfs/kernel/src/varctx.rs', lines 63:0-79:1
+    Source: 'ports/rustfs/kernel/src/varctx.rs', lines 63:0-83:1
     Visibility: public -/
 def varctx.get_claim_as_strings
   (resolver : varctx.VariableResolver) («name» : Slice Std.U8) :
@@ -18181,41 +17130,33 @@ def varctx.get_claim_as_strings
         match o1 with
         | none => ok none
         | some s =>
-          let y ←
-            lift (Std.Array.to_slice (Array.make 1#usize [ s ] : Array
-              (alloc.vec.Vec Std.U8) 1#usize))
-          let ret := alloc.slice.Slice.into_vec y
-          ok (some ret)
+          let __v ←
+            alloc.vec.Vec.push (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) s
+          ok (some __v)
       | claims.Value.Bool _ =>
         let o1 ← varctx.scalar_string v
         match o1 with
         | none => ok none
         | some s =>
-          let y ←
-            lift (Std.Array.to_slice (Array.make 1#usize [ s ] : Array
-              (alloc.vec.Vec Std.U8) 1#usize))
-          let ret := alloc.slice.Slice.into_vec y
-          ok (some ret)
+          let __v ←
+            alloc.vec.Vec.push (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) s
+          ok (some __v)
       | claims.Value.Number _ =>
         let o1 ← varctx.scalar_string v
         match o1 with
         | none => ok none
         | some s =>
-          let y ←
-            lift (Std.Array.to_slice (Array.make 1#usize [ s ] : Array
-              (alloc.vec.Vec Std.U8) 1#usize))
-          let ret := alloc.slice.Slice.into_vec y
-          ok (some ret)
+          let __v ←
+            alloc.vec.Vec.push (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) s
+          ok (some __v)
       | claims.Value.String _ =>
         let o1 ← varctx.scalar_string v
         match o1 with
         | none => ok none
         | some s =>
-          let y ←
-            lift (Std.Array.to_slice (Array.make 1#usize [ s ] : Array
-              (alloc.vec.Vec Std.U8) 1#usize))
-          let ret := alloc.slice.Slice.into_vec y
-          ok (some ret)
+          let __v ←
+            alloc.vec.Vec.push (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) s
+          ok (some __v)
       | claims.Value.Array array =>
         let s := alloc.vec.Vec.deref array
         let v1 ← varctx.array_strings s
@@ -18225,14 +17166,12 @@ def varctx.get_claim_as_strings
         match o1 with
         | none => ok none
         | some s =>
-          let y ←
-            lift (Std.Array.to_slice (Array.make 1#usize [ s ] : Array
-              (alloc.vec.Vec Std.U8) 1#usize))
-          let ret := alloc.slice.Slice.into_vec y
-          ok (some ret)
+          let __v ←
+            alloc.vec.Vec.push (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) s
+          ok (some __v)
 
 /-- [rustfs_kernel::varctx::resolve_username]:
-    Source: 'ports/rustfs/kernel/src/varctx.rs', lines 81:0-83:1
+    Source: 'ports/rustfs/kernel/src/varctx.rs', lines 85:0-87:1
     Visibility: public -/
 def varctx.resolve_username
   (resolver : varctx.VariableResolver) :
@@ -18241,7 +17180,7 @@ def varctx.resolve_username
   varctx.clone_option resolver.context.username
 
 /-- [rustfs_kernel::varctx::resolve_userid]:
-    Source: 'ports/rustfs/kernel/src/varctx.rs', lines 85:0-100:1
+    Source: 'ports/rustfs/kernel/src/varctx.rs', lines 89:0-104:1
     Visibility: public -/
 def varctx.resolve_userid
   (resolver : varctx.VariableResolver) :
@@ -18277,7 +17216,7 @@ def varctx.resolve_userid
       ok (some v2)
 
 /-- [rustfs_kernel::varctx::resolve_principal_type]:
-    Source: 'ports/rustfs/kernel/src/varctx.rs', lines 102:0-112:1
+    Source: 'ports/rustfs/kernel/src/varctx.rs', lines 106:0-116:1
     Visibility: public -/
 def varctx.resolve_principal_type
   (resolver : varctx.VariableResolver) : Result (alloc.vec.Vec Std.U8) := do
@@ -18343,7 +17282,7 @@ def varctx.resolve_principal_type
         alloc.slice.Slice.to_vec core.clone.CloneU8 s2
 
 /-- [rustfs_kernel::varctx::resolve_secure_transport]:
-    Source: 'ports/rustfs/kernel/src/varctx.rs', lines 114:0-120:1
+    Source: 'ports/rustfs/kernel/src/varctx.rs', lines 118:0-124:1
     Visibility: public -/
 def varctx.resolve_secure_transport
   (resolver : varctx.VariableResolver) : Result (alloc.vec.Vec Std.U8) := do
@@ -18360,7 +17299,7 @@ def varctx.resolve_secure_transport
     alloc.slice.Slice.to_vec core.clone.CloneU8 s
 
 /-- [rustfs_kernel::varctx::resolve_account_id]:
-    Source: 'ports/rustfs/kernel/src/varctx.rs', lines 122:0-124:1
+    Source: 'ports/rustfs/kernel/src/varctx.rs', lines 126:0-128:1
     Visibility: public -/
 def varctx.resolve_account_id
   (resolver : varctx.VariableResolver) :
@@ -18369,7 +17308,7 @@ def varctx.resolve_account_id
   varctx.clone_option resolver.context.account_id
 
 /-- [rustfs_kernel::varctx::resolve_region]:
-    Source: 'ports/rustfs/kernel/src/varctx.rs', lines 126:0-128:1
+    Source: 'ports/rustfs/kernel/src/varctx.rs', lines 130:0-132:1
     Visibility: public -/
 def varctx.resolve_region
   (resolver : varctx.VariableResolver) :
@@ -18378,7 +17317,7 @@ def varctx.resolve_region
   varctx.clone_option resolver.context.region
 
 /-- [rustfs_kernel::varctx::resolve_source_ip]:
-    Source: 'ports/rustfs/kernel/src/varctx.rs', lines 130:0-132:1
+    Source: 'ports/rustfs/kernel/src/varctx.rs', lines 134:0-136:1
     Visibility: public -/
 def varctx.resolve_source_ip
   (resolver : varctx.VariableResolver) :
@@ -18387,7 +17326,7 @@ def varctx.resolve_source_ip
   varctx.clone_option resolver.context.source_ip
 
 /-- [rustfs_kernel::varctx::resolve_custom_variable]: loop body 0:
-    Source: 'ports/rustfs/kernel/src/varctx.rs', lines 140:4-148:1
+    Source: 'ports/rustfs/kernel/src/varctx.rs', lines 144:4-152:1
     Visibility: public -/
 @[rust_loop_body]
 def varctx.resolve_custom_variable_loop.body
@@ -18414,7 +17353,7 @@ def varctx.resolve_custom_variable_loop.body
   else ok (done none)
 
 /-- [rustfs_kernel::varctx::resolve_custom_variable]: loop 0:
-    Source: 'ports/rustfs/kernel/src/varctx.rs', lines 140:4-148:1
+    Source: 'ports/rustfs/kernel/src/varctx.rs', lines 144:4-152:1
     Visibility: public -/
 @[rust_loop]
 def varctx.resolve_custom_variable_loop
@@ -18427,7 +17366,7 @@ def varctx.resolve_custom_variable_loop
     i
 
 /-- [rustfs_kernel::varctx::resolve_custom_variable]:
-    Source: 'ports/rustfs/kernel/src/varctx.rs', lines 134:0-148:1
+    Source: 'ports/rustfs/kernel/src/varctx.rs', lines 138:0-152:1
     Visibility: public -/
 def varctx.resolve_custom_variable
   (resolver : varctx.VariableResolver) («name» : Slice Std.U8) :
@@ -18447,7 +17386,7 @@ def varctx.resolve_custom_variable
   else ok none
 
 /-- [rustfs_kernel::varctx::is_dynamic]:
-    Source: 'ports/rustfs/kernel/src/varctx.rs', lines 150:0-152:1
+    Source: 'ports/rustfs/kernel/src/varctx.rs', lines 154:0-156:1
     Visibility: public -/
 def varctx.is_dynamic («name» : Slice Std.U8) : Result Bool := do
   let s ←
@@ -18469,7 +17408,7 @@ def varctx.is_dynamic («name» : Slice Std.U8) : Result Bool := do
     bytes.eq «name» s1
 
 /-- [rustfs_kernel::varctx::resolve]:
-    Source: 'ports/rustfs/kernel/src/varctx.rs', lines 154:0-187:1
+    Source: 'ports/rustfs/kernel/src/varctx.rs', lines 158:0-191:1
     Visibility: public -/
 def varctx.resolve
   (resolver : varctx.VariableResolver) («name» : Slice Std.U8)
@@ -18577,7 +17516,7 @@ def varctx.resolve
                   else varctx.resolve_custom_variable resolver «name»
 
 /-- [rustfs_kernel::varctx::resolve_multiple]:
-    Source: 'ports/rustfs/kernel/src/varctx.rs', lines 188:0-209:1
+    Source: 'ports/rustfs/kernel/src/varctx.rs', lines 192:0-221:1
     Visibility: public -/
 def varctx.resolve_multiple
   (resolver : varctx.VariableResolver) («name» : Slice Std.U8)
@@ -18597,11 +17536,9 @@ def varctx.resolve_multiple
     match o with
     | none => ok none
     | some v =>
-      let y ←
-        lift (Std.Array.to_slice (Array.make 1#usize [ v ] : Array
-          (alloc.vec.Vec Std.U8) 1#usize))
-      let ret := alloc.slice.Slice.into_vec y
-      ok (some ret)
+      let __v ←
+        alloc.vec.Vec.push (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) v
+      ok (some __v)
   else
     let s1 ←
       lift (Array.to_slice
@@ -18629,10 +17566,8 @@ def varctx.resolve_multiple
       match o with
       | none => ok none
       | some v =>
-        let y ←
-          lift (Std.Array.to_slice (Array.make 1#usize [ v ] : Array
-            (alloc.vec.Vec Std.U8) 1#usize))
-        let ret := alloc.slice.Slice.into_vec y
-        ok (some ret)
+        let __v ←
+          alloc.vec.Vec.push (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) v
+        ok (some __v)
 
 end rustfs_kernel

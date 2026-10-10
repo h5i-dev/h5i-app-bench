@@ -77,6 +77,8 @@ evaluator's ASCII-only ignore-case behavior remains documented below.
 | `IfExists` | `IfExists(Box<Condition>)`, nestable | a flag | nested wrappers behave as one |
 | `Option::clone`, `?` on `Option`, `&'static [u8]` tables | | hand-written `Clone`, `match`, `Vec<u8>` | not in Aeneas' library |
 | module names | | `acts`, `rsrc` | a module may not share a name with a local variable in the generated Lean |
+| derived `PartialEq` on condition data (`Key`, address/bool/number functions) | `==` | `conddata::key_eq`, `addr_inner_eq`, `bool_inner_eq`, `num_inner_eq`: the same field-by-field, in-order comparison | `Option`, tuple and `bool` equality have no Aeneas model |
+| `vec![a, b, ..]` | array-backed macro | `Vec::new()` and `push` per element | the macro's array initialisation has no Aeneas model |
 
 ## Built-in policies (`policy.rs::default`)
 

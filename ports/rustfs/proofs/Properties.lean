@@ -1,3 +1,7 @@
+import Verified.RustfsCleanIdempotent
+import Verified.RustfsCleanCanonical
+import Verified.RustfsParseI64
+import Verified.RustfsResolutionTerminates
 import Verified.RustfsGetObjectVersion
 import Verified.RustfsNotActionForceDelete
 import Verified.RustfsExplicitDeny
@@ -91,17 +95,17 @@ theorem wildcard_is_glob (p n : Slice U8) :
 /-- `path::clean` is idempotent. -/
 theorem clean_idempotent (p : Slice U8) (c : alloc.vec.Vec U8) (h : pathclean.clean p = ok c) :
     pathclean.clean c.deref = ok c := by
-  sorry
+  apply rustfs_kernel.Verified.RustfsCleanIdempotent.clean_idempotent <;> assumption
 
 /-- A cleaned path has no empty or `.` segment. -/
 theorem clean_canonical (p : Slice U8) (c : alloc.vec.Vec U8) (h : pathclean.clean p = ok c) :
     CleanShape (nats c.val) := by
-  sorry
+  apply rustfs_kernel.Verified.RustfsCleanCanonical.clean_canonical <;> assumption
 
 /-- The condition parser reads integers as `str::parse::<i64>` does. -/
 theorem parse_i64_spec (s : Slice U8) :
     ∃ r, bytes.parse_i64 s = ok r ∧ r.map (·.val) = parseI64Spec (nats s.val) := by
-  sorry
+  apply rustfs_kernel.Verified.RustfsParseI64.parse_i64_spec <;> assumption
 
 /-! ## Policy variables -/
 
@@ -112,6 +116,6 @@ outgrow `Usize.max` (in Rust, a capacity-overflow panic or out of memory). -/
 theorem resolution_terminates (ctx : awsvars.VarContext) (p : Slice U8) (hv : PlainValues ctx) :
     (∃ r, awsvars.resolve_aws_variables ctx p = ok r) ∨
       ∃ err, awsvars.resolve_aws_variables ctx p = fail err := by
-  sorry
+  apply rustfs_kernel.Verified.RustfsResolutionTerminates.resolution_terminates <;> assumption
 
 end rustfs_kernel.Properties
