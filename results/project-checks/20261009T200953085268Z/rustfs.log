@@ -1,0 +1,79 @@
+
+$ lake build
+⚠ [146/210] Replayed Aeneas.Std.WP
+warning: Aeneas/Std/WP.lean:756:4: 'simp -failIfUnchanged only' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Aeneas/Std/WP.lean:761:4: 'simp -failIfUnchanged only' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Aeneas/Std/WP.lean:896:11: 'cases i' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Aeneas/Std/WP.lean:896:23: 'simp' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Aeneas/Std/WP.lean:927:19: 'simp at hspec' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+⚠ [1264/1384] Replayed Aeneas.Std.Core.Core
+warning: Aeneas/Std/Core/Core.lean:38:4: The namespace 'core' is duplicated in the declaration 'Aeneas.Std.core.core.clone.CloneGlobal'
+
+Note: This linter can be disabled with `set_option linter.dupNamespace false`
+warning: Aeneas/Std/Core/Core.lean:59:4: The namespace 'core' is duplicated in the declaration 'Aeneas.Std.core.core.clone.CloneBox'
+
+Note: This linter can be disabled with `set_option linter.dupNamespace false`
+warning: Aeneas/Std/Core/Core.lean:68:4: The namespace 'core' is duplicated in the declaration 'Aeneas.Std.core.core.marker.CopyBool'
+
+Note: This linter can be disabled with `set_option linter.dupNamespace false`
+✔ [1730/1733] Built RustfsKernel (18s)
+✔ [1731/1733] Built Spec (10s)
+⚠ [1732/1733] Built Properties (7.8s)
+warning: Properties.lean:11:8: declaration uses `sorry`
+warning: Properties.lean:19:8: declaration uses `sorry`
+warning: Properties.lean:25:8: declaration uses `sorry`
+warning: Properties.lean:33:8: declaration uses `sorry`
+warning: Properties.lean:43:8: declaration uses `sorry`
+warning: Properties.lean:51:8: declaration uses `sorry`
+warning: Properties.lean:58:8: declaration uses `sorry`
+warning: Properties.lean:69:8: declaration uses `sorry`
+warning: Properties.lean:76:8: declaration uses `sorry`
+warning: Properties.lean:83:8: declaration uses `sorry`
+warning: Properties.lean:88:8: declaration uses `sorry`
+warning: Properties.lean:93:8: declaration uses `sorry`
+warning: Properties.lean:98:8: declaration uses `sorry`
+warning: Properties.lean:108:8: declaration uses `sorry`
+Build completed successfully (1733 jobs).
+
+$ lake env lean /home/ht2673/Dev/h5i-app-bench/ports/rustfs/proofs/.lake/h5i/Gate.lean
+gate: 15 theorems in 2 modules checked against propext, Classical.choice, Quot.sound
+
+Error: ports/rustfs: proof gate failed:
+  Properties.lean:15: sorry
+  Properties.lean:22: sorry
+  Properties.lean:29: sorry
+  Properties.lean:37: sorry
+  Properties.lean:47: sorry
+  Properties.lean:54: sorry
+  Properties.lean:63: sorry
+  Properties.lean:73: sorry
+  Properties.lean:78: sorry
+  Properties.lean:85: sorry
+  Properties.lean:90: sorry
+  Properties.lean:95: sorry
+  Properties.lean:100: sorry
+  Properties.lean:111: sorry
+  rustfs_kernel.Properties.deny_only_ignores_allows depends on [sorryAx]
+  rustfs_kernel.Properties.bucket_policy_total depends on [sorryAx]
+  rustfs_kernel.Properties.wildcard_is_glob depends on [sorryAx]
+  rustfs_kernel.Properties.resolution_terminates depends on [sorryAx]
+  rustfs_kernel.Properties.clean_idempotent depends on [sorryAx]
+  rustfs_kernel.Properties.explicit_deny_wins depends on [sorryAx]
+  rustfs_kernel.Properties.force_delete_needs_explicit_grant depends on [sorryAx]
+  rustfs_kernel.Properties.clean_canonical depends on [sorryAx]
+  rustfs_kernel.Properties.not_action_never_grants_force_delete depends on [sorryAx]
+  rustfs_kernel.Properties.bucket_allow_needs_principal depends on [sorryAx]
+  rustfs_kernel.Properties.get_object_version_covers_get_object depends on [sorryAx]
+  rustfs_kernel.Properties.parse_i64_spec depends on [sorryAx]
+  rustfs_kernel.Properties.allow_needs_allow_statement depends on [sorryAx]
+  rustfs_kernel.Properties.owner_allowed_unless_denied depends on [sorryAx]

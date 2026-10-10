@@ -1,0 +1,25 @@
+# Standard h5i-app project. Keep every selected theorem in the final gate.
+[extract]
+crate = "kernel"
+start-from = ["transition"]
+
+[check]
+theorems = [
+  "tuwunel_kernel.Properties.messages_visible",
+  "tuwunel_kernel.Properties.messages_ordered",
+  "tuwunel_kernel.Properties.messages_nothing_after_leaving",
+  "tuwunel_kernel.Properties.context_visible",
+  "tuwunel_kernel.Properties.context_matches_spec",
+  "tuwunel_kernel.Properties.context_agrees_with_messages",
+  "tuwunel_kernel.Properties.context_base_served_by_event",
+  "tuwunel_kernel.Properties.relations_visible",
+  "tuwunel_kernel.Properties.threads_visible",
+  "tuwunel_kernel.Properties.room_event_visible",
+  "tuwunel_kernel.Properties.world_readable_event_served",
+  "tuwunel_kernel.Properties.state_reads_need_membership",
+  "tuwunel_kernel.Properties.joined_members_need_join",
+  "tuwunel_kernel.Properties.initial_sync_visible",
+  "tuwunel_kernel.Properties.initial_sync_stops_at_departure",
+  "tuwunel_kernel.Properties.server_sees_joined_only",
+  "tuwunel_kernel.Properties.transition_total",
+]

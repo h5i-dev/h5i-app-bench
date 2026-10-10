@@ -1,0 +1,88 @@
+
+$ lake build
+⚠ [146/196] Replayed Aeneas.Std.WP
+warning: Aeneas/Std/WP.lean:756:4: 'simp -failIfUnchanged only' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Aeneas/Std/WP.lean:761:4: 'simp -failIfUnchanged only' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Aeneas/Std/WP.lean:896:11: 'cases i' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Aeneas/Std/WP.lean:896:23: 'simp' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Aeneas/Std/WP.lean:927:19: 'simp at hspec' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+⚠ [1264/1349] Replayed Aeneas.Std.Core.Core
+warning: Aeneas/Std/Core/Core.lean:38:4: The namespace 'core' is duplicated in the declaration 'Aeneas.Std.core.core.clone.CloneGlobal'
+
+Note: This linter can be disabled with `set_option linter.dupNamespace false`
+warning: Aeneas/Std/Core/Core.lean:59:4: The namespace 'core' is duplicated in the declaration 'Aeneas.Std.core.core.clone.CloneBox'
+
+Note: This linter can be disabled with `set_option linter.dupNamespace false`
+warning: Aeneas/Std/Core/Core.lean:68:4: The namespace 'core' is duplicated in the declaration 'Aeneas.Std.core.core.marker.CopyBool'
+
+Note: This linter can be disabled with `set_option linter.dupNamespace false`
+✔ [1730/1733] Built TuwunelKernel (21s)
+✔ [1731/1733] Built Spec (9.5s)
+⚠ [1732/1733] Built Properties (9.9s)
+warning: Properties.lean:9:8: declaration uses `sorry`
+warning: Properties.lean:20:8: declaration uses `sorry`
+warning: Properties.lean:34:8: declaration uses `sorry`
+warning: Properties.lean:47:8: declaration uses `sorry`
+warning: Properties.lean:56:8: declaration uses `sorry`
+warning: Properties.lean:68:8: declaration uses `sorry`
+warning: Properties.lean:80:8: declaration uses `sorry`
+warning: Properties.lean:90:8: declaration uses `sorry`
+warning: Properties.lean:101:8: declaration uses `sorry`
+warning: Properties.lean:110:8: declaration uses `sorry`
+warning: Properties.lean:117:8: declaration uses `sorry`
+warning: Properties.lean:125:8: declaration uses `sorry`
+warning: Properties.lean:133:8: declaration uses `sorry`
+warning: Properties.lean:139:8: declaration uses `sorry`
+warning: Properties.lean:148:8: declaration uses `sorry`
+warning: Properties.lean:160:8: declaration uses `sorry`
+warning: Properties.lean:167:8: declaration uses `sorry`
+Build completed successfully (1733 jobs).
+
+$ lake env lean /home/ht2673/Dev/h5i-app-bench/ports/tuwunel/proofs/.lake/h5i/Gate.lean
+gate: 17 theorems in 2 modules checked against propext, Classical.choice, Quot.sound
+
+Error: ports/tuwunel: proof gate failed:
+  Properties.lean:15: sorry
+  Properties.lean:28: sorry
+  Properties.lean:43: sorry
+  Properties.lean:52: sorry
+  Properties.lean:62: sorry
+  Properties.lean:77: sorry
+  Properties.lean:85: sorry
+  Properties.lean:98: sorry
+  Properties.lean:106: sorry
+  Properties.lean:113: sorry
+  Properties.lean:121: sorry
+  Properties.lean:129: sorry
+  Properties.lean:136: sorry
+  Properties.lean:144: sorry
+  Properties.lean:155: sorry
+  Properties.lean:164: sorry
+  Properties.lean:169: sorry
+  tuwunel_kernel.Properties.initial_sync_visible depends on [sorryAx]
+  tuwunel_kernel.Properties.context_visible depends on [sorryAx]
+  tuwunel_kernel.Properties.initial_sync_stops_at_departure depends on [sorryAx]
+  tuwunel_kernel.Properties.relations_visible depends on [sorryAx]
+  tuwunel_kernel.Properties.context_matches_spec depends on [sorryAx]
+  tuwunel_kernel.Properties.state_reads_need_membership depends on [sorryAx]
+  tuwunel_kernel.Properties.world_readable_event_served depends on [sorryAx]
+  tuwunel_kernel.Properties.messages_visible depends on [sorryAx]
+  tuwunel_kernel.Properties.context_base_served_by_event depends on [sorryAx]
+  tuwunel_kernel.Properties.joined_members_need_join depends on [sorryAx]
+  tuwunel_kernel.Properties.context_agrees_with_messages depends on [sorryAx]
+  tuwunel_kernel.Properties.transition_total depends on [sorryAx]
+  tuwunel_kernel.Properties.room_event_visible depends on [sorryAx]
+  tuwunel_kernel.Properties.threads_visible depends on [sorryAx]
+  tuwunel_kernel.Properties.server_sees_joined_only depends on [sorryAx]
+  tuwunel_kernel.Properties.messages_ordered depends on [sorryAx]
+  tuwunel_kernel.Properties.messages_nothing_after_leaving depends on [sorryAx]

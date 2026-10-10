@@ -1,0 +1,104 @@
+
+$ lake build
+⚠ [146/219] Replayed Aeneas.Std.WP
+warning: Aeneas/Std/WP.lean:756:4: 'simp -failIfUnchanged only' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Aeneas/Std/WP.lean:761:4: 'simp -failIfUnchanged only' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Aeneas/Std/WP.lean:896:11: 'cases i' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Aeneas/Std/WP.lean:896:23: 'simp' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Aeneas/Std/WP.lean:927:19: 'simp at hspec' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+⚠ [1261/1278] Replayed Aeneas.Std.Core.Core
+warning: Aeneas/Std/Core/Core.lean:38:4: The namespace 'core' is duplicated in the declaration 'Aeneas.Std.core.core.clone.CloneGlobal'
+
+Note: This linter can be disabled with `set_option linter.dupNamespace false`
+warning: Aeneas/Std/Core/Core.lean:59:4: The namespace 'core' is duplicated in the declaration 'Aeneas.Std.core.core.clone.CloneBox'
+
+Note: This linter can be disabled with `set_option linter.dupNamespace false`
+warning: Aeneas/Std/Core/Core.lean:68:4: The namespace 'core' is duplicated in the declaration 'Aeneas.Std.core.core.marker.CopyBool'
+
+Note: This linter can be disabled with `set_option linter.dupNamespace false`
+ℹ [1732/1744] Replayed Verified.Derived
+info: Verified/Derived.lean:6:0: h5i_derive_all: no eq spec for oxicloud_kernel.model.Role; derive it by hand
+info: Verified/Derived.lean:6:0: h5i_derive_all: no eq spec for oxicloud_kernel.model.Resource; derive it by hand
+info: Verified/Derived.lean:6:0: h5i_derive_all: no eq spec for oxicloud_kernel.model.Subject; derive it by hand
+⚠ [1733/1744] Replayed Verified.OxicloudMigrationReadonly
+warning: Verified/OxicloudMigrationReadonly.lean:15:4: This simp argument is unused:
+  model.Permission.Insts.CoreCmpPartialEqPermission
+
+Hint: Omit it from the simp argument list.
+  simp_all [acl.check, acl.read_only_gate_applies, core.cmp.PartialEq.ne.trait_default,
+      core.cmp.PartialEq.ne.default, m̵o̵d̵e̵l̵.̵P̵e̵r̵m̵i̵s̵s̵i̵o̵n̵.̵I̵n̵s̵t̵s̵.̵C̵o̵r̵e̵C̵m̵p̵P̵a̵r̵t̵i̵a̵l̵E̵q̵P̵e̵r̵m̵i̵s̵s̵i̵o̵n̵,̵model.Permission.Insts.CoreCmpPartialEqPermission.eq,
+      model.Permission.read_discriminant]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+⚠ [1734/1744] Replayed Verified.OxicloudDriveReadOnly
+warning: Verified/OxicloudDriveReadOnly.lean:61:19: This simp argument is unused:
+  bind_tc_ok
+
+Hint: Omit it from the simp argument list.
+  simp only [hg,̵ ̵b̵i̵n̵d̵_̵t̵c̵_̵o̵k̵]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/OxicloudDriveReadOnly.lean:62:69: This simp argument is unused:
+  bind_tc_ok
+
+Hint: Omit it from the simp argument list.
+  simp only [Bool.false_eq_true, ite_true, ite_false,̵ ̵b̵i̵n̵d̵_̵t̵c̵_̵o̵k̵]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+⚠ [1738/1744] Replayed Verified.OxicloudCreateNeedsShare
+warning: Verified/OxicloudCreateNeedsShare.lean:16:7: Local variable 'unit' resembles constructor 'PUnit.unit' - write '.unit' (with a dot) or 'PUnit.unit' to use the constructor.
+
+Note: This linter can be disabled with `set_option linter.constructorNameAsVariable false`
+⚠ [1739/1744] Replayed Verified.OxicloudSharingPolicies
+warning: Verified/OxicloudSharingPolicies.lean:68:7: Local variable 'unit' resembles constructor 'PUnit.unit' - write '.unit' (with a dot) or 'PUnit.unit' to use the constructor.
+
+Note: This linter can be disabled with `set_option linter.constructorNameAsVariable false`
+warning: Verified/OxicloudSharingPolicies.lean:74:9: Local variable 'unit' resembles constructor 'PUnit.unit' - write '.unit' (with a dot) or 'PUnit.unit' to use the constructor.
+
+Note: This linter can be disabled with `set_option linter.constructorNameAsVariable false`
+⚠ [1740/1744] Replayed Verified.OxicloudPersonalDrive
+warning: Verified/OxicloudPersonalDrive.lean:34:2: 'all_goals h5i_invert h' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+⚠ [1742/1744] Replayed Verified.OxicloudRefusedWritesNothing
+warning: Verified/OxicloudRefusedWritesNothing.lean:28:24: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: Verified/OxicloudRefusedWritesNothing.lean:38:33: 'done' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/OxicloudRefusedWritesNothing.lean:41:33: 'done' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+⚠ [1743/1744] Built Properties (8.6s)
+warning: Properties.lean:23:95: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: Properties.lean:40:8: declaration uses `sorry`
+warning: Properties.lean:59:8: declaration uses `sorry`
+Build completed successfully (1744 jobs).
+
+note: solutions.oxicloud-create-needs-share.Solution is not built by `lake build`, so its theorems are not gated
+note: solutions.oxicloud-drive-read-only.Solution is not built by `lake build`, so its theorems are not gated
+note: solutions.oxicloud-migration-readonly.Solution is not built by `lake build`, so its theorems are not gated
+note: solutions.oxicloud-personal-drive.Solution is not built by `lake build`, so its theorems are not gated
+note: solutions.oxicloud-refused-writes-nothing.Solution is not built by `lake build`, so its theorems are not gated
+note: solutions.oxicloud-sharing-policies.Solution is not built by `lake build`, so its theorems are not gated
+$ lake env lean /home/ht2673/Dev/h5i-app-bench/ports/oxicloud/proofs/.lake/h5i/Gate.lean
+gate: 309 theorems in 13 modules checked against propext, Classical.choice, Quot.sound
+
+Error: ports/oxicloud: proof gate failed:
+  Properties.lean:44: sorry
+  Properties.lean:61: sorry
+  oxicloud_kernel.Properties.fewer_grants_allow_no_more depends on [sorryAx]
+  oxicloud_kernel.Properties.check_total depends on [sorryAx]

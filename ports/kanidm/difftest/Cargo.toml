@@ -10,6 +10,7 @@ kanidm-kernel = { path = "../kernel" }
 kanidmd_lib = { path = "upstream" }
 kanidm_proto = { path = "upstream/proto" }
 uuid = "1"
+serde_json = "1"
 
 [workspace]
 exclude = ["upstream"]

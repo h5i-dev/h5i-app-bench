@@ -20,7 +20,7 @@ set_option maxRecDepth 2048
 namespace artifactkeeper_kernel
 
 /-- [artifactkeeper_kernel::handlers::GateError]
-    Source: 'src/handlers.rs', lines 14:0-19:1
+    Source: 'ports/artifactkeeper/kernel/src/handlers.rs', lines 14:0-19:1
     Visibility: public -/
 @[discriminant isize]
 inductive handlers.GateError where
@@ -28,7 +28,7 @@ inductive handlers.GateError where
 | MissingScope : handlers.GateError
 
 /-- [artifactkeeper_kernel::AccessScope]
-    Source: 'src/lib.rs', lines 145:0-148:1
+    Source: 'ports/artifactkeeper/kernel/src/lib.rs', lines 145:0-148:1
     Visibility: public -/
 @[discriminant isize]
 inductive AccessScope where
@@ -36,7 +36,7 @@ inductive AccessScope where
 | Restricted : alloc.vec.Vec Std.U64 → AccessScope
 
 /-- [artifactkeeper_kernel::AuthExtension]
-    Source: 'src/lib.rs', lines 169:0-179:1
+    Source: 'ports/artifactkeeper/kernel/src/lib.rs', lines 169:0-179:1
     Visibility: public -/
 structure AuthExtension where
   user_id : Std.U64
@@ -50,7 +50,7 @@ structure AuthExtension where
   iat_ms : Option Std.I64
 
 /-- [artifactkeeper_kernel::{impl core::clone::Clone for artifactkeeper_kernel::AccessScope}::clone]:
-    Source: 'src/lib.rs', lines 144:9-144:14
+    Source: 'ports/artifactkeeper/kernel/src/lib.rs', lines 144:9-144:14
     Visibility: public -/
 def AccessScope.Insts.CoreCloneClone.clone
   (self : AccessScope) : Result AccessScope := do
@@ -61,7 +61,7 @@ def AccessScope.Insts.CoreCloneClone.clone
     ok (AccessScope.Restricted v)
 
 /-- [artifactkeeper_kernel::clone_opt_scopes]:
-    Source: 'src/lib.rs', lines 105:0-110:1
+    Source: 'ports/artifactkeeper/kernel/src/lib.rs', lines 105:0-110:1
     Visibility: public -/
 def clone_opt_scopes
   (s : Option (alloc.vec.Vec (alloc.vec.Vec Std.U8))) :
@@ -76,7 +76,7 @@ def clone_opt_scopes
     ok (some v1)
 
 /-- [artifactkeeper_kernel::clone_opt_i64]:
-    Source: 'src/lib.rs', lines 98:0-103:1
+    Source: 'ports/artifactkeeper/kernel/src/lib.rs', lines 98:0-103:1
     Visibility: public -/
 def clone_opt_i64 (v : Option Std.I64) : Result (Option Std.I64) := do
   match v with
@@ -84,7 +84,7 @@ def clone_opt_i64 (v : Option Std.I64) : Result (Option Std.I64) := do
   | some _ => ok v
 
 /-- [artifactkeeper_kernel::{artifactkeeper_kernel::AuthExtension}::duplicate]:
-    Source: 'src/lib.rs', lines 182:4-194:5
+    Source: 'ports/artifactkeeper/kernel/src/lib.rs', lines 182:4-194:5
     Visibility: public -/
 def AuthExtension.duplicate (self : AuthExtension) : Result AuthExtension := do
   let v ← alloc.vec.CloneVec.clone core.clone.CloneU8 self.username
@@ -104,7 +104,7 @@ def AuthExtension.duplicate (self : AuthExtension) : Result AuthExtension := do
     }
 
 /-- [artifactkeeper_kernel::handlers::require_auth_basic]:
-    Source: 'src/handlers.rs', lines 22:0-27:1
+    Source: 'ports/artifactkeeper/kernel/src/handlers.rs', lines 22:0-27:1
     Visibility: public -/
 def handlers.require_auth_basic
   (auth : Option AuthExtension) :
@@ -117,7 +117,7 @@ def handlers.require_auth_basic
     ok (core.result.Result.Ok ae)
 
 /-- [artifactkeeper_kernel::strs::bytes_eq]: loop body 0:
-    Source: 'src/strs.rs', lines 9:4-16:1
+    Source: 'ports/artifactkeeper/kernel/src/strs.rs', lines 9:4-16:1
     Visibility: public -/
 @[rust_loop_body]
 def strs.bytes_eq_loop.body
@@ -136,7 +136,7 @@ def strs.bytes_eq_loop.body
   else ok (done true)
 
 /-- [artifactkeeper_kernel::strs::bytes_eq]: loop 0:
-    Source: 'src/strs.rs', lines 9:4-16:1
+    Source: 'ports/artifactkeeper/kernel/src/strs.rs', lines 9:4-16:1
     Visibility: public -/
 @[rust_loop]
 def strs.bytes_eq_loop
@@ -146,7 +146,7 @@ def strs.bytes_eq_loop
     i
 
 /-- [artifactkeeper_kernel::strs::bytes_eq]:
-    Source: 'src/strs.rs', lines 4:0-16:1
+    Source: 'ports/artifactkeeper/kernel/src/strs.rs', lines 4:0-16:1
     Visibility: public -/
 def strs.bytes_eq (a : Slice Std.U8) (b : Slice Std.U8) : Result Bool := do
   let i := Slice.len a
@@ -156,7 +156,7 @@ def strs.bytes_eq (a : Slice Std.U8) (b : Slice Std.U8) : Result Bool := do
   else strs.bytes_eq_loop a b 0#usize
 
 /-- [artifactkeeper_kernel::strs::any_eq]: loop body 0:
-    Source: 'src/strs.rs', lines 219:4-226:1
+    Source: 'ports/artifactkeeper/kernel/src/strs.rs', lines 219:4-226:1
     Visibility: public -/
 @[rust_loop_body]
 def strs.any_eq_loop.body
@@ -176,7 +176,7 @@ def strs.any_eq_loop.body
   else ok (done false)
 
 /-- [artifactkeeper_kernel::strs::any_eq]: loop 0:
-    Source: 'src/strs.rs', lines 219:4-226:1
+    Source: 'ports/artifactkeeper/kernel/src/strs.rs', lines 219:4-226:1
     Visibility: public -/
 @[rust_loop]
 def strs.any_eq_loop
@@ -188,7 +188,7 @@ def strs.any_eq_loop
     i
 
 /-- [artifactkeeper_kernel::strs::any_eq]:
-    Source: 'src/strs.rs', lines 217:0-226:1
+    Source: 'ports/artifactkeeper/kernel/src/strs.rs', lines 217:0-226:1
     Visibility: public -/
 @[reducible]
 def strs.any_eq
@@ -196,7 +196,7 @@ def strs.any_eq
   strs.any_eq_loop list s 0#usize
 
 /-- [artifactkeeper_kernel::strs::find_byte]: loop body 0:
-    Source: 'src/strs.rs', lines 91:4-98:1
+    Source: 'ports/artifactkeeper/kernel/src/strs.rs', lines 91:4-98:1
     Visibility: public -/
 @[rust_loop_body]
 def strs.find_byte_loop.body
@@ -214,7 +214,7 @@ def strs.find_byte_loop.body
   else ok (done none)
 
 /-- [artifactkeeper_kernel::strs::find_byte]: loop 0:
-    Source: 'src/strs.rs', lines 91:4-98:1
+    Source: 'ports/artifactkeeper/kernel/src/strs.rs', lines 91:4-98:1
     Visibility: public -/
 @[rust_loop]
 def strs.find_byte_loop
@@ -226,7 +226,7 @@ def strs.find_byte_loop
     i
 
 /-- [artifactkeeper_kernel::strs::find_byte]:
-    Source: 'src/strs.rs', lines 89:0-98:1
+    Source: 'ports/artifactkeeper/kernel/src/strs.rs', lines 89:0-98:1
     Visibility: public -/
 @[reducible]
 def strs.find_byte
@@ -234,7 +234,7 @@ def strs.find_byte
   strs.find_byte_loop s b 0#usize
 
 /-- [artifactkeeper_kernel::strs::sub]: loop body 0:
-    Source: 'src/strs.rs', lines 48:4-51:5
+    Source: 'ports/artifactkeeper/kernel/src/strs.rs', lines 48:4-51:5
     Visibility: public -/
 @[rust_loop_body]
 def strs.sub_loop.body
@@ -256,7 +256,7 @@ def strs.sub_loop.body
   else ok (done out)
 
 /-- [artifactkeeper_kernel::strs::sub]: loop 0:
-    Source: 'src/strs.rs', lines 48:4-51:5
+    Source: 'ports/artifactkeeper/kernel/src/strs.rs', lines 48:4-51:5
     Visibility: public -/
 @[rust_loop]
 def strs.sub_loop
@@ -269,7 +269,7 @@ def strs.sub_loop
     (out, i)
 
 /-- [artifactkeeper_kernel::strs::sub]:
-    Source: 'src/strs.rs', lines 45:0-53:1
+    Source: 'ports/artifactkeeper/kernel/src/strs.rs', lines 45:0-53:1
     Visibility: public -/
 @[reducible]
 def strs.sub
@@ -279,7 +279,7 @@ def strs.sub
   strs.sub_loop s b (alloc.vec.Vec.new Std.U8) a
 
 /-- [artifactkeeper_kernel::strs::split_once]:
-    Source: 'src/strs.rs', lines 143:0-148:1
+    Source: 'ports/artifactkeeper/kernel/src/strs.rs', lines 143:0-148:1
     Visibility: public -/
 def strs.split_once
   (s : Slice Std.U8) (sep : Std.U8) :
@@ -296,7 +296,7 @@ def strs.split_once
     ok (some (v, v1))
 
 /-- [artifactkeeper_kernel::token_scope::scopes_grant_access]:
-    Source: 'src/token_scope.rs', lines 63:0-72:1
+    Source: 'ports/artifactkeeper/kernel/src/token_scope.rs', lines 63:0-72:1
     Visibility: public -/
 def token_scope.scopes_grant_access
   (scopes : Slice (alloc.vec.Vec Std.U8)) (required_scope : Slice Std.U8) :
@@ -332,7 +332,7 @@ def token_scope.scopes_grant_access
         else ok false
 
 /-- [artifactkeeper_kernel::token_scope::{artifactkeeper_kernel::AuthExtension}::has_scope]:
-    Source: 'src/token_scope.rs', lines 75:4-80:5
+    Source: 'ports/artifactkeeper/kernel/src/token_scope.rs', lines 75:4-80:5
     Visibility: public -/
 def token_scope.AuthExtension.has_scope
   (self : AuthExtension) (scope : Slice Std.U8) : Result Bool := do
@@ -343,7 +343,7 @@ def token_scope.AuthExtension.has_scope
     token_scope.scopes_grant_access s scope
 
 /-- [artifactkeeper_kernel::handlers::require_auth_basic_scope]:
-    Source: 'src/handlers.rs', lines 30:0-36:1
+    Source: 'ports/artifactkeeper/kernel/src/handlers.rs', lines 30:0-36:1
     Visibility: public -/
 def handlers.require_auth_basic_scope
   (auth : Option AuthExtension) (scope : Slice Std.U8) :
@@ -362,7 +362,7 @@ def handlers.require_auth_basic_scope
       AuthExtension (core.convert.FromSame handlers.GateError) residual
 
 /-- [artifactkeeper_kernel::handlers::require_scope_response]:
-    Source: 'src/handlers.rs', lines 39:0-46:1
+    Source: 'ports/artifactkeeper/kernel/src/handlers.rs', lines 39:0-46:1
     Visibility: public -/
 def handlers.require_scope_response
   (auth : Option AuthExtension) (scope : Slice Std.U8) :
@@ -377,13 +377,13 @@ def handlers.require_scope_response
     else ok (core.result.Result.Err handlers.GateError.MissingScope)
 
 /-- [artifactkeeper_kernel::handlers::Conditions]
-    Source: 'src/handlers.rs', lines 50:0-52:1
+    Source: 'ports/artifactkeeper/kernel/src/handlers.rs', lines 50:0-52:1
     Visibility: public -/
 structure handlers.Conditions where
   allowed_cidrs : Option (alloc.vec.Vec (alloc.vec.Vec Std.U8))
 
 /-- [artifactkeeper_kernel::handlers::CreatePermissionRequest]
-    Source: 'src/handlers.rs', lines 56:0-63:1
+    Source: 'ports/artifactkeeper/kernel/src/handlers.rs', lines 56:0-63:1
     Visibility: public -/
 structure handlers.CreatePermissionRequest where
   principal_type : alloc.vec.Vec Std.U8
@@ -394,7 +394,7 @@ structure handlers.CreatePermissionRequest where
   conditions : Option handlers.Conditions
 
 /-- [artifactkeeper_kernel::AppError]
-    Source: 'src/lib.rs', lines 56:0-62:1
+    Source: 'ports/artifactkeeper/kernel/src/lib.rs', lines 56:0-62:1
     Visibility: public -/
 @[discriminant isize]
 inductive AppError where
@@ -405,7 +405,7 @@ inductive AppError where
 | Conflict : AppError
 
 /-- [artifactkeeper_kernel::handlers::require_auth]:
-    Source: 'src/handlers.rs', lines 66:0-71:1
+    Source: 'ports/artifactkeeper/kernel/src/handlers.rs', lines 66:0-71:1
     Visibility: public -/
 def handlers.require_auth
   (auth : Option AuthExtension) :
@@ -418,7 +418,7 @@ def handlers.require_auth
     ok (core.result.Result.Ok ae)
 
 /-- [artifactkeeper_kernel::handlers::any_not_read]: loop body 0:
-    Source: 'src/handlers.rs', lines 76:4-83:1 -/
+    Source: 'ports/artifactkeeper/kernel/src/handlers.rs', lines 76:4-83:1 -/
 @[rust_loop_body]
 def handlers.any_not_read_loop.body
   (actions : Slice (alloc.vec.Vec Std.U8)) (i : Std.Usize) :
@@ -440,7 +440,7 @@ def handlers.any_not_read_loop.body
   else ok (done false)
 
 /-- [artifactkeeper_kernel::handlers::any_not_read]: loop 0:
-    Source: 'src/handlers.rs', lines 76:4-83:1 -/
+    Source: 'ports/artifactkeeper/kernel/src/handlers.rs', lines 76:4-83:1 -/
 @[rust_loop]
 def handlers.any_not_read_loop
   (actions : Slice (alloc.vec.Vec Std.U8)) (i : Std.Usize) : Result Bool := do
@@ -449,14 +449,14 @@ def handlers.any_not_read_loop
     i
 
 /-- [artifactkeeper_kernel::handlers::any_not_read]:
-    Source: 'src/handlers.rs', lines 74:0-83:1 -/
+    Source: 'ports/artifactkeeper/kernel/src/handlers.rs', lines 74:0-83:1 -/
 @[reducible]
 def handlers.any_not_read
   (actions : Slice (alloc.vec.Vec Std.U8)) : Result Bool := do
   handlers.any_not_read_loop actions 0#usize
 
 /-- [artifactkeeper_kernel::handlers::validate_anonymous_rule]:
-    Source: 'src/handlers.rs', lines 86:0-97:1
+    Source: 'ports/artifactkeeper/kernel/src/handlers.rs', lines 86:0-97:1
     Visibility: public -/
 def handlers.validate_anonymous_rule
   (payload : handlers.CreatePermissionRequest) :
@@ -505,7 +505,7 @@ def handlers.validate_anonymous_rule
   else ok (core.result.Result.Ok ())
 
 /-- [artifactkeeper_kernel::User]
-    Source: 'src/lib.rs', lines 66:0-74:1
+    Source: 'ports/artifactkeeper/kernel/src/lib.rs', lines 66:0-74:1
     Visibility: public -/
 structure User where
   id : Std.U64
@@ -517,7 +517,7 @@ structure User where
   must_change_password : Bool
 
 /-- [artifactkeeper_kernel::trusted::ApiTokenValidation]
-    Source: 'src/trusted.rs', lines 20:0-24:1
+    Source: 'ports/artifactkeeper/kernel/src/trusted.rs', lines 20:0-24:1
     Visibility: public -/
 structure trusted.ApiTokenValidation where
   user : User
@@ -525,7 +525,7 @@ structure trusted.ApiTokenValidation where
   allowed_repo_ids : AccessScope
 
 /-- [artifactkeeper_kernel::trusted::AuthErr]
-    Source: 'src/trusted.rs', lines 12:0-16:1
+    Source: 'ports/artifactkeeper/kernel/src/trusted.rs', lines 12:0-16:1
     Visibility: public -/
 @[discriminant isize]
 inductive trusted.AuthErr where
@@ -534,7 +534,7 @@ inductive trusted.AuthErr where
 | Other : trusted.AuthErr
 
 /-- [artifactkeeper_kernel::net::IpAddr]
-    Source: 'src/net.rs', lines 8:0-11:1
+    Source: 'ports/artifactkeeper/kernel/src/net.rs', lines 8:0-11:1
     Visibility: public -/
 @[discriminant isize]
 inductive net.IpAddr where
@@ -542,7 +542,7 @@ inductive net.IpAddr where
 | V6 : Std.U128 → net.IpAddr
 
 /-- [artifactkeeper_kernel::Claims]
-    Source: 'src/lib.rs', lines 78:0-87:1
+    Source: 'ports/artifactkeeper/kernel/src/lib.rs', lines 78:0-87:1
     Visibility: public -/
 structure Claims where
   sub : Std.U64
@@ -555,7 +555,7 @@ structure Claims where
   scopes : Option (alloc.vec.Vec (alloc.vec.Vec Std.U8))
 
 /-- [artifactkeeper_kernel::trusted::Oracle]
-    Source: 'src/trusted.rs', lines 27:0-39:1
+    Source: 'ports/artifactkeeper/kernel/src/trusted.rs', lines 27:0-39:1
     Visibility: public -/
 structure trusted.Oracle where
   jwt : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × Claims)
@@ -568,7 +568,7 @@ structure trusted.Oracle where
   ip : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × net.IpAddr)
 
 /-- [artifactkeeper_kernel::trusted::{artifactkeeper_kernel::trusted::Oracle}::parse_ip]: loop body 0:
-    Source: 'src/trusted.rs', lines 97:8-104:5
+    Source: 'ports/artifactkeeper/kernel/src/trusted.rs', lines 97:8-104:5
     Visibility: public -/
 @[rust_loop_body]
 def trusted.Oracle.parse_ip_loop.body
@@ -590,7 +590,7 @@ def trusted.Oracle.parse_ip_loop.body
   else ok (done none)
 
 /-- [artifactkeeper_kernel::trusted::{artifactkeeper_kernel::trusted::Oracle}::parse_ip]: loop 0:
-    Source: 'src/trusted.rs', lines 97:8-104:5
+    Source: 'ports/artifactkeeper/kernel/src/trusted.rs', lines 97:8-104:5
     Visibility: public -/
 @[rust_loop]
 def trusted.Oracle.parse_ip_loop
@@ -602,7 +602,7 @@ def trusted.Oracle.parse_ip_loop
     i
 
 /-- [artifactkeeper_kernel::trusted::{artifactkeeper_kernel::trusted::Oracle}::parse_ip]:
-    Source: 'src/trusted.rs', lines 95:4-104:5
+    Source: 'ports/artifactkeeper/kernel/src/trusted.rs', lines 95:4-104:5
     Visibility: public -/
 @[reducible]
 def trusted.Oracle.parse_ip
@@ -610,7 +610,7 @@ def trusted.Oracle.parse_ip
   trusted.Oracle.parse_ip_loop self s 0#usize
 
 /-- [artifactkeeper_kernel::net::decimal_from]: loop body 0:
-    Source: 'src/net.rs', lines 35:4-47:1 -/
+    Source: 'ports/artifactkeeper/kernel/src/net.rs', lines 35:4-47:1 -/
 @[rust_loop_body]
 def net.decimal_from_loop.body
   (s : Slice Std.U8) (v : Std.U32) (i : Std.Usize) :
@@ -638,7 +638,7 @@ def net.decimal_from_loop.body
        ok (done (some i2))
 
 /-- [artifactkeeper_kernel::net::decimal_from]: loop 0:
-    Source: 'src/net.rs', lines 35:4-47:1 -/
+    Source: 'ports/artifactkeeper/kernel/src/net.rs', lines 35:4-47:1 -/
 @[rust_loop]
 def net.decimal_from_loop
   (s : Slice Std.U8) (v : Std.U32) (i : Std.Usize) :
@@ -649,14 +649,14 @@ def net.decimal_from_loop
     (v, i)
 
 /-- [artifactkeeper_kernel::net::decimal_from]:
-    Source: 'src/net.rs', lines 32:0-47:1 -/
+    Source: 'ports/artifactkeeper/kernel/src/net.rs', lines 32:0-47:1 -/
 @[reducible]
 def net.decimal_from
   (s : Slice Std.U8) (start : Std.Usize) : Result (Option Std.U8) := do
   net.decimal_from_loop s 0#u32 start
 
 /-- [artifactkeeper_kernel::net::parse_u8]:
-    Source: 'src/net.rs', lines 23:0-29:1
+    Source: 'ports/artifactkeeper/kernel/src/net.rs', lines 23:0-29:1
     Visibility: public -/
 def net.parse_u8 (s : Slice Std.U8) : Result (Option Std.U8) := do
   let i := Slice.len s
@@ -675,14 +675,14 @@ def net.parse_u8 (s : Slice Std.U8) : Result (Option Std.U8) := do
   else net.decimal_from s start
 
 /-- [artifactkeeper_kernel::net::CidrRange]
-    Source: 'src/net.rs', lines 16:0-19:1
+    Source: 'ports/artifactkeeper/kernel/src/net.rs', lines 16:0-19:1
     Visibility: public -/
 structure net.CidrRange where
   network : net.IpAddr
   prefix_len : Std.U8
 
 /-- [artifactkeeper_kernel::net::{artifactkeeper_kernel::net::CidrRange}::parse]:
-    Source: 'src/net.rs', lines 51:4-72:5
+    Source: 'ports/artifactkeeper/kernel/src/net.rs', lines 51:4-72:5
     Visibility: public -/
 def net.CidrRange.parse
   (oracle : trusted.Oracle) (s : Slice Std.U8) :
@@ -712,7 +712,7 @@ def net.CidrRange.parse
         else ok (core.result.Result.Ok { network := ip, prefix_len := p1 })
 
 /-- [artifactkeeper_kernel::handlers::parse_cidrs]: loop body 0:
-    Source: 'src/handlers.rs', lines 103:4-109:5 -/
+    Source: 'ports/artifactkeeper/kernel/src/handlers.rs', lines 103:4-109:5 -/
 @[rust_loop_body]
 def handlers.parse_cidrs_loop.body
   (oracle : trusted.Oracle) (cidrs : Slice (alloc.vec.Vec Std.U8))
@@ -735,7 +735,7 @@ def handlers.parse_cidrs_loop.body
   else ok (done out)
 
 /-- [artifactkeeper_kernel::handlers::parse_cidrs]: loop 0:
-    Source: 'src/handlers.rs', lines 103:4-109:5 -/
+    Source: 'ports/artifactkeeper/kernel/src/handlers.rs', lines 103:4-109:5 -/
 @[rust_loop]
 def handlers.parse_cidrs_loop
   (oracle : trusted.Oracle) (cidrs : Slice (alloc.vec.Vec Std.U8))
@@ -747,7 +747,7 @@ def handlers.parse_cidrs_loop
     (out, i)
 
 /-- [artifactkeeper_kernel::handlers::parse_cidrs]:
-    Source: 'src/handlers.rs', lines 100:0-111:1 -/
+    Source: 'ports/artifactkeeper/kernel/src/handlers.rs', lines 100:0-111:1 -/
 @[reducible]
 def handlers.parse_cidrs
   (oracle : trusted.Oracle) (cidrs : Slice (alloc.vec.Vec Std.U8)) :
@@ -757,7 +757,7 @@ def handlers.parse_cidrs
     0#usize
 
 /-- [artifactkeeper_kernel::tables::Ticket]
-    Source: 'src/tables.rs', lines 71:0-76:1
+    Source: 'ports/artifactkeeper/kernel/src/tables.rs', lines 71:0-76:1
     Visibility: public -/
 structure tables.Ticket where
   ticket : alloc.vec.Vec Std.U8
@@ -766,7 +766,7 @@ structure tables.Ticket where
   live : Bool
 
 /-- [artifactkeeper_kernel::tables::RoleAssignment]
-    Source: 'src/tables.rs', lines 63:0-67:1
+    Source: 'ports/artifactkeeper/kernel/src/tables.rs', lines 63:0-67:1
     Visibility: public -/
 structure tables.RoleAssignment where
   user_id : Std.U64
@@ -774,14 +774,14 @@ structure tables.RoleAssignment where
   repository_id : Option Std.U64
 
 /-- [artifactkeeper_kernel::tables::Role]
-    Source: 'src/tables.rs', lines 57:0-60:1
+    Source: 'ports/artifactkeeper/kernel/src/tables.rs', lines 57:0-60:1
     Visibility: public -/
 structure tables.Role where
   id : Std.U64
   permissions : alloc.vec.Vec (alloc.vec.Vec Std.U8)
 
 /-- [artifactkeeper_kernel::tables::Permission]
-    Source: 'src/tables.rs', lines 47:0-54:1
+    Source: 'ports/artifactkeeper/kernel/src/tables.rs', lines 47:0-54:1
     Visibility: public -/
 structure tables.Permission where
   principal_type : alloc.vec.Vec Std.U8
@@ -792,7 +792,7 @@ structure tables.Permission where
   allowed_cidrs : Option (alloc.vec.Vec net.CidrRange)
 
 /-- [artifactkeeper_kernel::Visibility]
-    Source: 'src/lib.rs', lines 38:0-42:1
+    Source: 'ports/artifactkeeper/kernel/src/lib.rs', lines 38:0-42:1
     Visibility: public -/
 @[discriminant isize]
 inductive Visibility where
@@ -801,7 +801,7 @@ inductive Visibility where
 | Private : Visibility
 
 /-- [artifactkeeper_kernel::tables::Repository]
-    Source: 'src/tables.rs', lines 37:0-42:1
+    Source: 'ports/artifactkeeper/kernel/src/tables.rs', lines 37:0-42:1
     Visibility: public -/
 structure tables.Repository where
   id : Std.U64
@@ -810,7 +810,7 @@ structure tables.Repository where
   project_id : Option Std.U64
 
 /-- [artifactkeeper_kernel::tables::Query]
-    Source: 'src/tables.rs', lines 9:0-32:1
+    Source: 'ports/artifactkeeper/kernel/src/tables.rs', lines 9:0-32:1
     Visibility: public -/
 @[discriminant isize]
 inductive tables.Query where
@@ -827,7 +827,7 @@ inductive tables.Query where
 | InsertPermission : tables.Query
 
 /-- [artifactkeeper_kernel::tables::Db]
-    Source: 'src/tables.rs', lines 79:0-90:1
+    Source: 'ports/artifactkeeper/kernel/src/tables.rs', lines 79:0-90:1
     Visibility: public -/
 structure tables.Db where
   users : alloc.vec.Vec User
@@ -841,7 +841,7 @@ structure tables.Db where
   failing : alloc.vec.Vec tables.Query
 
 /-- [artifactkeeper_kernel::handlers::duplicate]: loop body 0:
-    Source: 'src/handlers.rs', lines 116:4-128:1 -/
+    Source: 'ports/artifactkeeper/kernel/src/handlers.rs', lines 116:4-128:1 -/
 @[rust_loop_body]
 def handlers.duplicate_loop.body
   (db : tables.Db) (payload : handlers.CreatePermissionRequest) (i : Std.Usize)
@@ -879,7 +879,7 @@ def handlers.duplicate_loop.body
   else ok (done false)
 
 /-- [artifactkeeper_kernel::handlers::duplicate]: loop 0:
-    Source: 'src/handlers.rs', lines 116:4-128:1 -/
+    Source: 'ports/artifactkeeper/kernel/src/handlers.rs', lines 116:4-128:1 -/
 @[rust_loop]
 def handlers.duplicate_loop
   (db : tables.Db) (payload : handlers.CreatePermissionRequest) (i : Std.Usize)
@@ -891,7 +891,7 @@ def handlers.duplicate_loop
     i
 
 /-- [artifactkeeper_kernel::handlers::duplicate]:
-    Source: 'src/handlers.rs', lines 114:0-128:1 -/
+    Source: 'ports/artifactkeeper/kernel/src/handlers.rs', lines 114:0-128:1 -/
 @[reducible]
 def handlers.duplicate
   (db : tables.Db) (payload : handlers.CreatePermissionRequest) :
@@ -900,7 +900,7 @@ def handlers.duplicate
   handlers.duplicate_loop db payload 0#usize
 
 /-- [artifactkeeper_kernel::tables::{impl core::cmp::PartialEq<artifactkeeper_kernel::tables::Query> for artifactkeeper_kernel::tables::Query}::eq]:
-    Source: 'src/tables.rs', lines 8:29-8:38
+    Source: 'ports/artifactkeeper/kernel/src/tables.rs', lines 8:29-8:38
     Visibility: public -/
 def tables.Query.Insts.CoreCmpPartialEqQuery.eq
   (self : tables.Query) (other : tables.Query) : Result Bool := do
@@ -909,7 +909,7 @@ def tables.Query.Insts.CoreCmpPartialEqQuery.eq
   ok (self1 = other1)
 
 /-- [artifactkeeper_kernel::tables::{artifactkeeper_kernel::tables::Db}::fails]: loop body 0:
-    Source: 'src/tables.rs', lines 95:8-102:5
+    Source: 'ports/artifactkeeper/kernel/src/tables.rs', lines 95:8-102:5
     Visibility: public -/
 @[rust_loop_body]
 def tables.Db.fails_loop.body
@@ -930,7 +930,7 @@ def tables.Db.fails_loop.body
   else ok (done false)
 
 /-- [artifactkeeper_kernel::tables::{artifactkeeper_kernel::tables::Db}::fails]: loop 0:
-    Source: 'src/tables.rs', lines 95:8-102:5
+    Source: 'ports/artifactkeeper/kernel/src/tables.rs', lines 95:8-102:5
     Visibility: public -/
 @[rust_loop]
 def tables.Db.fails_loop
@@ -940,14 +940,14 @@ def tables.Db.fails_loop
     i
 
 /-- [artifactkeeper_kernel::tables::{artifactkeeper_kernel::tables::Db}::fails]:
-    Source: 'src/tables.rs', lines 93:4-102:5
+    Source: 'ports/artifactkeeper/kernel/src/tables.rs', lines 93:4-102:5
     Visibility: public -/
 @[reducible]
 def tables.Db.fails (self : tables.Db) (q : tables.Query) : Result Bool := do
   tables.Db.fails_loop self q 0#usize
 
 /-- [artifactkeeper_kernel::Method]
-    Source: 'src/lib.rs', lines 25:0-34:1
+    Source: 'ports/artifactkeeper/kernel/src/lib.rs', lines 25:0-34:1
     Visibility: public -/
 @[discriminant isize]
 inductive Method where
@@ -961,7 +961,7 @@ inductive Method where
 | Other : Method
 
 /-- [artifactkeeper_kernel::resolve::Write]
-    Source: 'src/resolve.rs', lines 30:0-37:1
+    Source: 'ports/artifactkeeper/kernel/src/resolve.rs', lines 30:0-37:1
     Visibility: public -/
 @[discriminant isize]
 inductive resolve.Write where
@@ -974,7 +974,7 @@ inductive resolve.Write where
 | InsertPermission : tables.Permission → resolve.Write
 
 /-- [artifactkeeper_kernel::token_scope::{artifactkeeper_kernel::AuthExtension}::require_admin]:
-    Source: 'src/token_scope.rs', lines 128:4-130:5
+    Source: 'ports/artifactkeeper/kernel/src/token_scope.rs', lines 128:4-130:5
     Visibility: public -/
 def token_scope.AuthExtension.require_admin
   (self : AuthExtension) : Result (core.result.Result Unit AppError) := do
@@ -983,7 +983,7 @@ def token_scope.AuthExtension.require_admin
   else ok (core.result.Result.Err AppError.Authorization)
 
 /-- [artifactkeeper_kernel::token_scope::{artifactkeeper_kernel::AuthExtension}::require_scope]:
-    Source: 'src/token_scope.rs', lines 90:4-92:5
+    Source: 'ports/artifactkeeper/kernel/src/token_scope.rs', lines 90:4-92:5
     Visibility: public -/
 def token_scope.AuthExtension.require_scope
   (self : AuthExtension) (scope : Slice Std.U8) :
@@ -995,7 +995,7 @@ def token_scope.AuthExtension.require_scope
   else ok (core.result.Result.Err AppError.Authorization)
 
 /-- [artifactkeeper_kernel::permission::all_parse]: loop body 0:
-    Source: 'src/permission.rs', lines 290:4-298:1 -/
+    Source: 'ports/artifactkeeper/kernel/src/permission.rs', lines 290:4-298:1 -/
 @[rust_loop_body]
 def permission.all_parse_loop.body
   (oracle : trusted.Oracle) (cidrs : Slice (alloc.vec.Vec Std.U8))
@@ -1015,7 +1015,7 @@ def permission.all_parse_loop.body
   else ok (done true)
 
 /-- [artifactkeeper_kernel::permission::all_parse]: loop 0:
-    Source: 'src/permission.rs', lines 290:4-298:1 -/
+    Source: 'ports/artifactkeeper/kernel/src/permission.rs', lines 290:4-298:1 -/
 @[rust_loop]
 def permission.all_parse_loop
   (oracle : trusted.Oracle) (cidrs : Slice (alloc.vec.Vec Std.U8))
@@ -1027,7 +1027,7 @@ def permission.all_parse_loop
     i
 
 /-- [artifactkeeper_kernel::permission::all_parse]:
-    Source: 'src/permission.rs', lines 288:0-298:1 -/
+    Source: 'ports/artifactkeeper/kernel/src/permission.rs', lines 288:0-298:1 -/
 @[reducible]
 def permission.all_parse
   (oracle : trusted.Oracle) (cidrs : Slice (alloc.vec.Vec Std.U8)) :
@@ -1036,7 +1036,7 @@ def permission.all_parse
   permission.all_parse_loop oracle cidrs 0#usize
 
 /-- [artifactkeeper_kernel::permission::validate_conditions]:
-    Source: 'src/permission.rs', lines 301:0-311:1
+    Source: 'ports/artifactkeeper/kernel/src/permission.rs', lines 301:0-311:1
     Visibility: public -/
 def permission.validate_conditions
   (oracle : trusted.Oracle)
@@ -1057,7 +1057,7 @@ def permission.validate_conditions
       else ok (core.result.Result.Err AppError.Validation)
 
 /-- [artifactkeeper_kernel::permission::group_exists]: loop body 0:
-    Source: 'src/permission.rs', lines 250:4-257:1 -/
+    Source: 'ports/artifactkeeper/kernel/src/permission.rs', lines 250:4-257:1 -/
 @[rust_loop_body]
 def permission.group_exists_loop.body
   (db : tables.Db) (id : Std.U64) (i : Std.Usize) :
@@ -1076,7 +1076,7 @@ def permission.group_exists_loop.body
   else ok (done false)
 
 /-- [artifactkeeper_kernel::permission::group_exists]: loop 0:
-    Source: 'src/permission.rs', lines 250:4-257:1 -/
+    Source: 'ports/artifactkeeper/kernel/src/permission.rs', lines 250:4-257:1 -/
 @[rust_loop]
 def permission.group_exists_loop
   (db : tables.Db) (id : Std.U64) (i : Std.Usize) : Result Bool := do
@@ -1085,13 +1085,13 @@ def permission.group_exists_loop
     i
 
 /-- [artifactkeeper_kernel::permission::group_exists]:
-    Source: 'src/permission.rs', lines 248:0-257:1 -/
+    Source: 'ports/artifactkeeper/kernel/src/permission.rs', lines 248:0-257:1 -/
 @[reducible]
 def permission.group_exists (db : tables.Db) (id : Std.U64) : Result Bool := do
   permission.group_exists_loop db id 0#usize
 
 /-- [artifactkeeper_kernel::permission::user_exists]: loop body 0:
-    Source: 'src/permission.rs', lines 239:4-246:1 -/
+    Source: 'ports/artifactkeeper/kernel/src/permission.rs', lines 239:4-246:1 -/
 @[rust_loop_body]
 def permission.user_exists_loop.body
   (db : tables.Db) (id : Std.U64) (service_account : Bool) (i : Std.Usize) :
@@ -1114,7 +1114,7 @@ def permission.user_exists_loop.body
   else ok (done false)
 
 /-- [artifactkeeper_kernel::permission::user_exists]: loop 0:
-    Source: 'src/permission.rs', lines 239:4-246:1 -/
+    Source: 'ports/artifactkeeper/kernel/src/permission.rs', lines 239:4-246:1 -/
 @[rust_loop]
 def permission.user_exists_loop
   (db : tables.Db) (id : Std.U64) (service_account : Bool) (i : Std.Usize) :
@@ -1125,14 +1125,14 @@ def permission.user_exists_loop
     i
 
 /-- [artifactkeeper_kernel::permission::user_exists]:
-    Source: 'src/permission.rs', lines 237:0-246:1 -/
+    Source: 'ports/artifactkeeper/kernel/src/permission.rs', lines 237:0-246:1 -/
 @[reducible]
 def permission.user_exists
   (db : tables.Db) (id : Std.U64) (service_account : Bool) : Result Bool := do
   permission.user_exists_loop db id service_account 0#usize
 
 /-- [artifactkeeper_kernel::permission::validate_principal]:
-    Source: 'src/permission.rs', lines 260:0-285:1
+    Source: 'ports/artifactkeeper/kernel/src/permission.rs', lines 260:0-285:1
     Visibility: public -/
 def permission.validate_principal
   (db : tables.Db) (principal_type : Slice Std.U8) (principal_id : Std.U64) :
@@ -1206,7 +1206,7 @@ def permission.validate_principal
         else ok (core.result.Result.Err AppError.Validation)
 
 /-- [artifactkeeper_kernel::handlers::create_permission_gates]:
-    Source: 'src/handlers.rs', lines 163:0-174:1 -/
+    Source: 'ports/artifactkeeper/kernel/src/handlers.rs', lines 163:0-174:1 -/
 def handlers.create_permission_gates
   (db : tables.Db) (oracle : trusted.Oracle) (auth : Option AuthExtension)
   (payload : handlers.CreatePermissionRequest) :
@@ -1273,7 +1273,7 @@ def handlers.create_permission_gates
       Unit (core.convert.FromSame AppError) residual
 
 /-- [artifactkeeper_kernel::handlers::create_permission]:
-    Source: 'src/handlers.rs', lines 132:0-161:1
+    Source: 'ports/artifactkeeper/kernel/src/handlers.rs', lines 132:0-161:1
     Visibility: public -/
 def handlers.create_permission
   (db : tables.Db) (oracle : trusted.Oracle) (auth : Option AuthExtension)
@@ -1328,7 +1328,7 @@ def handlers.create_permission
   | core.result.Result.Err _ => ok (alloc.vec.Vec.new resolve.Write, r)
 
 /-- [artifactkeeper_kernel::http::Request]
-    Source: 'src/http.rs', lines 9:0-16:1
+    Source: 'ports/artifactkeeper/kernel/src/http.rs', lines 9:0-16:1
     Visibility: public -/
 structure http.Request where
   method : Method
@@ -1337,7 +1337,7 @@ structure http.Request where
   headers : alloc.vec.Vec ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec Std.U8))
 
 /-- [artifactkeeper_kernel::http::visible_ascii]: loop body 0:
-    Source: 'src/http.rs', lines 21:4-29:1
+    Source: 'ports/artifactkeeper/kernel/src/http.rs', lines 21:4-29:1
     Visibility: public -/
 @[rust_loop_body]
 def http.visible_ascii_loop.body
@@ -1366,7 +1366,7 @@ def http.visible_ascii_loop.body
   else ok (done true)
 
 /-- [artifactkeeper_kernel::http::visible_ascii]: loop 0:
-    Source: 'src/http.rs', lines 21:4-29:1
+    Source: 'ports/artifactkeeper/kernel/src/http.rs', lines 21:4-29:1
     Visibility: public -/
 @[rust_loop]
 def http.visible_ascii_loop
@@ -1376,14 +1376,14 @@ def http.visible_ascii_loop
     i
 
 /-- [artifactkeeper_kernel::http::visible_ascii]:
-    Source: 'src/http.rs', lines 19:0-29:1
+    Source: 'ports/artifactkeeper/kernel/src/http.rs', lines 19:0-29:1
     Visibility: public -/
 @[reducible]
 def http.visible_ascii (v : Slice Std.U8) : Result Bool := do
   http.visible_ascii_loop v 0#usize
 
 /-- [artifactkeeper_kernel::http::header_get]: loop body 0:
-    Source: 'src/http.rs', lines 34:4-41:1
+    Source: 'ports/artifactkeeper/kernel/src/http.rs', lines 34:4-41:1
     Visibility: public -/
 @[rust_loop_body]
 def http.header_get_loop.body
@@ -1406,7 +1406,7 @@ def http.header_get_loop.body
   else ok (done none)
 
 /-- [artifactkeeper_kernel::http::header_get]: loop 0:
-    Source: 'src/http.rs', lines 34:4-41:1
+    Source: 'ports/artifactkeeper/kernel/src/http.rs', lines 34:4-41:1
     Visibility: public -/
 @[rust_loop]
 def http.header_get_loop
@@ -1419,7 +1419,7 @@ def http.header_get_loop
     i
 
 /-- [artifactkeeper_kernel::http::header_get]:
-    Source: 'src/http.rs', lines 32:0-41:1
+    Source: 'ports/artifactkeeper/kernel/src/http.rs', lines 32:0-41:1
     Visibility: public -/
 @[reducible]
 def http.header_get
@@ -1430,7 +1430,7 @@ def http.header_get
   http.header_get_loop headers «name» 0#usize
 
 /-- [artifactkeeper_kernel::http::header_str]:
-    Source: 'src/http.rs', lines 44:0-51:1
+    Source: 'ports/artifactkeeper/kernel/src/http.rs', lines 44:0-51:1
     Visibility: public -/
 def http.header_str
   (headers : Slice ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec Std.U8)))
@@ -1448,7 +1448,7 @@ def http.header_str
     else ok none
 
 /-- [artifactkeeper_kernel::http::contains_key]: loop body 0:
-    Source: 'src/http.rs', lines 55:4-62:1
+    Source: 'ports/artifactkeeper/kernel/src/http.rs', lines 55:4-62:1
     Visibility: public -/
 @[rust_loop_body]
 def http.contains_key_loop.body
@@ -1469,7 +1469,7 @@ def http.contains_key_loop.body
   else ok (done false)
 
 /-- [artifactkeeper_kernel::http::contains_key]: loop 0:
-    Source: 'src/http.rs', lines 55:4-62:1
+    Source: 'ports/artifactkeeper/kernel/src/http.rs', lines 55:4-62:1
     Visibility: public -/
 @[rust_loop]
 def http.contains_key_loop
@@ -1482,7 +1482,7 @@ def http.contains_key_loop
     i
 
 /-- [artifactkeeper_kernel::http::contains_key]:
-    Source: 'src/http.rs', lines 53:0-62:1
+    Source: 'ports/artifactkeeper/kernel/src/http.rs', lines 53:0-62:1
     Visibility: public -/
 @[reducible]
 def http.contains_key
@@ -1493,7 +1493,7 @@ def http.contains_key
   http.contains_key_loop headers «name» 0#usize
 
 /-- [artifactkeeper_kernel::http::ExtractedToken]
-    Source: 'src/http.rs', lines 66:0-72:1
+    Source: 'ports/artifactkeeper/kernel/src/http.rs', lines 66:0-72:1
     Visibility: public -/
 @[discriminant isize]
 inductive http.ExtractedToken where
@@ -1504,7 +1504,7 @@ inductive http.ExtractedToken where
 | Invalid : http.ExtractedToken
 
 /-- [artifactkeeper_kernel::strs::contains_byte]: loop body 0:
-    Source: 'src/strs.rs', lines 67:4-74:1
+    Source: 'ports/artifactkeeper/kernel/src/strs.rs', lines 67:4-74:1
     Visibility: public -/
 @[rust_loop_body]
 def strs.contains_byte_loop.body
@@ -1522,7 +1522,7 @@ def strs.contains_byte_loop.body
   else ok (done false)
 
 /-- [artifactkeeper_kernel::strs::contains_byte]: loop 0:
-    Source: 'src/strs.rs', lines 67:4-74:1
+    Source: 'ports/artifactkeeper/kernel/src/strs.rs', lines 67:4-74:1
     Visibility: public -/
 @[rust_loop]
 def strs.contains_byte_loop
@@ -1532,14 +1532,14 @@ def strs.contains_byte_loop
     i
 
 /-- [artifactkeeper_kernel::strs::contains_byte]:
-    Source: 'src/strs.rs', lines 65:0-74:1
+    Source: 'ports/artifactkeeper/kernel/src/strs.rs', lines 65:0-74:1
     Visibility: public -/
 @[reducible]
 def strs.contains_byte (s : Slice Std.U8) (b : Std.U8) : Result Bool := do
   strs.contains_byte_loop s b 0#usize
 
 /-- [artifactkeeper_kernel::strs::starts_with_at]: loop body 0:
-    Source: 'src/strs.rs', lines 24:4-31:1
+    Source: 'ports/artifactkeeper/kernel/src/strs.rs', lines 24:4-31:1
     Visibility: public -/
 @[rust_loop_body]
 def strs.starts_with_at_loop.body
@@ -1560,7 +1560,7 @@ def strs.starts_with_at_loop.body
   else ok (done true)
 
 /-- [artifactkeeper_kernel::strs::starts_with_at]: loop 0:
-    Source: 'src/strs.rs', lines 24:4-31:1
+    Source: 'ports/artifactkeeper/kernel/src/strs.rs', lines 24:4-31:1
     Visibility: public -/
 @[rust_loop]
 def strs.starts_with_at_loop
@@ -1573,7 +1573,7 @@ def strs.starts_with_at_loop
     i
 
 /-- [artifactkeeper_kernel::strs::starts_with_at]:
-    Source: 'src/strs.rs', lines 19:0-31:1
+    Source: 'ports/artifactkeeper/kernel/src/strs.rs', lines 19:0-31:1
     Visibility: public -/
 def strs.starts_with_at
   (s : Slice Std.U8) («from» : Std.Usize) (p : Slice Std.U8) :
@@ -1591,13 +1591,13 @@ def strs.starts_with_at
     else strs.starts_with_at_loop s «from» p 0#usize
 
 /-- [artifactkeeper_kernel::strs::starts_with]:
-    Source: 'src/strs.rs', lines 33:0-35:1
+    Source: 'ports/artifactkeeper/kernel/src/strs.rs', lines 33:0-35:1
     Visibility: public -/
 def strs.starts_with (s : Slice Std.U8) (p : Slice Std.U8) : Result Bool := do
   strs.starts_with_at s 0#usize p
 
 /-- [artifactkeeper_kernel::strs::strip_prefix]:
-    Source: 'src/strs.rs', lines 56:0-58:1
+    Source: 'ports/artifactkeeper/kernel/src/strs.rs', lines 56:0-58:1
     Visibility: public -/
 def strs.strip_prefix
   (s : Slice Std.U8) (p : Slice Std.U8) :
@@ -1613,7 +1613,7 @@ def strs.strip_prefix
   else ok none
 
 /-- [artifactkeeper_kernel::http::extract_token_from_auth_header]:
-    Source: 'src/http.rs', lines 75:0-91:1
+    Source: 'ports/artifactkeeper/kernel/src/http.rs', lines 75:0-91:1
     Visibility: public -/
 def http.extract_token_from_auth_header
   (auth_header : Slice Std.U8) : Result http.ExtractedToken := do
@@ -1671,7 +1671,7 @@ def http.extract_token_from_auth_header
   | some token => ok (http.ExtractedToken.Bearer token)
 
 /-- [artifactkeeper_kernel::strs::is_ws]:
-    Source: 'src/strs.rs', lines 159:0-161:1
+    Source: 'ports/artifactkeeper/kernel/src/strs.rs', lines 159:0-161:1
     Visibility: public -/
 def strs.is_ws (b : Std.U8) : Result Bool := do
   if b = 32#u8
@@ -1681,7 +1681,7 @@ def strs.is_ws (b : Std.U8) : Result Bool := do
        else ok false
 
 /-- [artifactkeeper_kernel::strs::trim]: loop body 0:
-    Source: 'src/strs.rs', lines 167:4-169:5
+    Source: 'ports/artifactkeeper/kernel/src/strs.rs', lines 167:4-169:5
     Visibility: public -/
 @[rust_loop_body]
 def strs.trim_loop0.body
@@ -1700,7 +1700,7 @@ def strs.trim_loop0.body
   else ok (done a)
 
 /-- [artifactkeeper_kernel::strs::trim]: loop 0:
-    Source: 'src/strs.rs', lines 167:4-169:5
+    Source: 'ports/artifactkeeper/kernel/src/strs.rs', lines 167:4-169:5
     Visibility: public -/
 @[rust_loop]
 def strs.trim_loop0 (s : Slice Std.U8) (a : Std.Usize) : Result Std.Usize := do
@@ -1709,7 +1709,7 @@ def strs.trim_loop0 (s : Slice Std.U8) (a : Std.Usize) : Result Std.Usize := do
     a
 
 /-- [artifactkeeper_kernel::strs::trim]: loop body 1:
-    Source: 'src/strs.rs', lines 171:4-173:5
+    Source: 'ports/artifactkeeper/kernel/src/strs.rs', lines 171:4-173:5
     Visibility: public -/
 @[rust_loop_body]
 def strs.trim_loop1.body
@@ -1727,7 +1727,7 @@ def strs.trim_loop1.body
   else ok (done b)
 
 /-- [artifactkeeper_kernel::strs::trim]: loop 1:
-    Source: 'src/strs.rs', lines 171:4-173:5
+    Source: 'ports/artifactkeeper/kernel/src/strs.rs', lines 171:4-173:5
     Visibility: public -/
 @[rust_loop]
 def strs.trim_loop1
@@ -1737,7 +1737,7 @@ def strs.trim_loop1
     b
 
 /-- [artifactkeeper_kernel::strs::trim]:
-    Source: 'src/strs.rs', lines 165:0-175:1
+    Source: 'ports/artifactkeeper/kernel/src/strs.rs', lines 165:0-175:1
     Visibility: public -/
 def strs.trim (s : Slice Std.U8) : Result (alloc.vec.Vec Std.U8) := do
   let a ← strs.trim_loop0 s 0#usize
@@ -1746,7 +1746,7 @@ def strs.trim (s : Slice Std.U8) : Result (alloc.vec.Vec Std.U8) := do
   strs.sub s a b1
 
 /-- [artifactkeeper_kernel::http::find_session_cookie]: loop body 0:
-    Source: 'src/http.rs', lines 96:4-105:1 -/
+    Source: 'ports/artifactkeeper/kernel/src/http.rs', lines 96:4-105:1 -/
 @[rust_loop_body]
 def http.find_session_cookie_loop.body
   (pieces : Slice (alloc.vec.Vec Std.U8)) (i : Std.Usize) :
@@ -1773,7 +1773,7 @@ def http.find_session_cookie_loop.body
   else ok (done none)
 
 /-- [artifactkeeper_kernel::http::find_session_cookie]: loop 0:
-    Source: 'src/http.rs', lines 96:4-105:1 -/
+    Source: 'ports/artifactkeeper/kernel/src/http.rs', lines 96:4-105:1 -/
 @[rust_loop]
 def http.find_session_cookie_loop
   (pieces : Slice (alloc.vec.Vec Std.U8)) (i : Std.Usize) :
@@ -1784,7 +1784,7 @@ def http.find_session_cookie_loop
     i
 
 /-- [artifactkeeper_kernel::http::find_session_cookie]:
-    Source: 'src/http.rs', lines 94:0-105:1 -/
+    Source: 'ports/artifactkeeper/kernel/src/http.rs', lines 94:0-105:1 -/
 @[reducible]
 def http.find_session_cookie
   (pieces : Slice (alloc.vec.Vec Std.U8)) :
@@ -1793,7 +1793,7 @@ def http.find_session_cookie
   http.find_session_cookie_loop pieces 0#usize
 
 /-- [artifactkeeper_kernel::strs::split]: loop body 0:
-    Source: 'src/strs.rs', lines 129:4-137:5
+    Source: 'ports/artifactkeeper/kernel/src/strs.rs', lines 129:4-137:5
     Visibility: public -/
 @[rust_loop_body]
 def strs.split_loop.body
@@ -1822,7 +1822,7 @@ def strs.split_loop.body
   else ok (done (out, cur))
 
 /-- [artifactkeeper_kernel::strs::split]: loop 0:
-    Source: 'src/strs.rs', lines 129:4-137:5
+    Source: 'ports/artifactkeeper/kernel/src/strs.rs', lines 129:4-137:5
     Visibility: public -/
 @[rust_loop]
 def strs.split_loop
@@ -1836,7 +1836,7 @@ def strs.split_loop
     (out, cur, i)
 
 /-- [artifactkeeper_kernel::strs::split]:
-    Source: 'src/strs.rs', lines 125:0-140:1
+    Source: 'ports/artifactkeeper/kernel/src/strs.rs', lines 125:0-140:1
     Visibility: public -/
 def strs.split
   (s : Slice Std.U8) (sep : Std.U8) :
@@ -1848,7 +1848,7 @@ def strs.split
   alloc.vec.Vec.push out cur
 
 /-- [artifactkeeper_kernel::http::session_cookie_token]:
-    Source: 'src/http.rs', lines 108:0-114:1
+    Source: 'ports/artifactkeeper/kernel/src/http.rs', lines 108:0-114:1
     Visibility: public -/
 def http.session_cookie_token
   (headers : Slice ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec Std.U8))) :
@@ -1867,7 +1867,7 @@ def http.session_cookie_token
     http.find_session_cookie s2
 
 /-- [artifactkeeper_kernel::http::extract_token]:
-    Source: 'src/http.rs', lines 117:0-131:1
+    Source: 'ports/artifactkeeper/kernel/src/http.rs', lines 117:0-131:1
     Visibility: public -/
 def http.extract_token (req : http.Request) : Result http.ExtractedToken := do
   let s := alloc.vec.Vec.deref req.headers
@@ -1925,7 +1925,7 @@ def http.extract_token (req : http.Request) : Result http.ExtractedToken := do
     else ok result
 
 /-- [artifactkeeper_kernel::http::has_header_credential]:
-    Source: 'src/http.rs', lines 134:0-140:1
+    Source: 'ports/artifactkeeper/kernel/src/http.rs', lines 134:0-140:1
     Visibility: public -/
 def http.has_header_credential
   (headers : Slice ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec Std.U8))) :
@@ -1964,7 +1964,7 @@ def http.has_header_credential
     http.contains_key headers s1
 
 /-- [artifactkeeper_kernel::http::credential_is_session_cookie]:
-    Source: 'src/http.rs', lines 143:0-145:1
+    Source: 'ports/artifactkeeper/kernel/src/http.rs', lines 143:0-145:1
     Visibility: public -/
 def http.credential_is_session_cookie
   (headers : Slice ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec Std.U8))) :
@@ -1978,7 +1978,7 @@ def http.credential_is_session_cookie
     ok (core.option.Option.is_some o)
 
 /-- [artifactkeeper_kernel::http::is_state_changing_method]:
-    Source: 'src/http.rs', lines 153:0-155:1
+    Source: 'ports/artifactkeeper/kernel/src/http.rs', lines 153:0-155:1
     Visibility: public -/
 def http.is_state_changing_method (method : Method) : Result Bool := do
   match method with
@@ -1992,7 +1992,7 @@ def http.is_state_changing_method (method : Method) : Result Bool := do
   | Method.Other => ok false
 
 /-- [artifactkeeper_kernel::strs::to_ascii_lower]:
-    Source: 'src/strs.rs', lines 186:0-188:1
+    Source: 'ports/artifactkeeper/kernel/src/strs.rs', lines 186:0-188:1
     Visibility: public -/
 def strs.to_ascii_lower (b : Std.U8) : Result Std.U8 := do
   if b >= 65#u8
@@ -2002,7 +2002,7 @@ def strs.to_ascii_lower (b : Std.U8) : Result Std.U8 := do
   else ok b
 
 /-- [artifactkeeper_kernel::strs::eq_ignore_ascii_case]: loop body 0:
-    Source: 'src/strs.rs', lines 196:4-203:1
+    Source: 'ports/artifactkeeper/kernel/src/strs.rs', lines 196:4-203:1
     Visibility: public -/
 @[rust_loop_body]
 def strs.eq_ignore_ascii_case_loop.body
@@ -2023,7 +2023,7 @@ def strs.eq_ignore_ascii_case_loop.body
   else ok (done true)
 
 /-- [artifactkeeper_kernel::strs::eq_ignore_ascii_case]: loop 0:
-    Source: 'src/strs.rs', lines 196:4-203:1
+    Source: 'ports/artifactkeeper/kernel/src/strs.rs', lines 196:4-203:1
     Visibility: public -/
 @[rust_loop]
 def strs.eq_ignore_ascii_case_loop
@@ -2033,7 +2033,7 @@ def strs.eq_ignore_ascii_case_loop
     i
 
 /-- [artifactkeeper_kernel::strs::eq_ignore_ascii_case]:
-    Source: 'src/strs.rs', lines 191:0-203:1
+    Source: 'ports/artifactkeeper/kernel/src/strs.rs', lines 191:0-203:1
     Visibility: public -/
 def strs.eq_ignore_ascii_case
   (a : Slice Std.U8) (b : Slice Std.U8) : Result Bool := do
@@ -2044,7 +2044,7 @@ def strs.eq_ignore_ascii_case
   else strs.eq_ignore_ascii_case_loop a b 0#usize
 
 /-- [artifactkeeper_kernel::http::declares_same_origin]:
-    Source: 'src/http.rs', lines 158:0-166:1
+    Source: 'ports/artifactkeeper/kernel/src/http.rs', lines 158:0-166:1
     Visibility: public -/
 def http.declares_same_origin
   (headers : Slice ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec Std.U8))) :
@@ -2080,7 +2080,7 @@ def http.declares_same_origin
       strs.eq_ignore_ascii_case s4 s5
 
 /-- [artifactkeeper_kernel::strs::ascii_lowercase]: loop body 0:
-    Source: 'src/strs.rs', lines 209:4-212:5
+    Source: 'ports/artifactkeeper/kernel/src/strs.rs', lines 209:4-212:5
     Visibility: public -/
 @[rust_loop_body]
 def strs.ascii_lowercase_loop.body
@@ -2099,7 +2099,7 @@ def strs.ascii_lowercase_loop.body
   else ok (done out)
 
 /-- [artifactkeeper_kernel::strs::ascii_lowercase]: loop 0:
-    Source: 'src/strs.rs', lines 209:4-212:5
+    Source: 'ports/artifactkeeper/kernel/src/strs.rs', lines 209:4-212:5
     Visibility: public -/
 @[rust_loop]
 def strs.ascii_lowercase_loop
@@ -2111,7 +2111,7 @@ def strs.ascii_lowercase_loop
     (out, i)
 
 /-- [artifactkeeper_kernel::strs::ascii_lowercase]:
-    Source: 'src/strs.rs', lines 206:0-214:1
+    Source: 'ports/artifactkeeper/kernel/src/strs.rs', lines 206:0-214:1
     Visibility: public -/
 @[reducible]
 def strs.ascii_lowercase
@@ -2119,7 +2119,7 @@ def strs.ascii_lowercase
   strs.ascii_lowercase_loop s (alloc.vec.Vec.new Std.U8) 0#usize
 
 /-- [artifactkeeper_kernel::strs::contains]: loop body 0:
-    Source: 'src/strs.rs', lines 79:4-86:1
+    Source: 'ports/artifactkeeper/kernel/src/strs.rs', lines 79:4-86:1
     Visibility: public -/
 @[rust_loop_body]
 def strs.contains_loop.body
@@ -2137,7 +2137,7 @@ def strs.contains_loop.body
   else ok (done false)
 
 /-- [artifactkeeper_kernel::strs::contains]: loop 0:
-    Source: 'src/strs.rs', lines 79:4-86:1
+    Source: 'ports/artifactkeeper/kernel/src/strs.rs', lines 79:4-86:1
     Visibility: public -/
 @[rust_loop]
 def strs.contains_loop
@@ -2147,14 +2147,14 @@ def strs.contains_loop
     i
 
 /-- [artifactkeeper_kernel::strs::contains]:
-    Source: 'src/strs.rs', lines 77:0-86:1
+    Source: 'ports/artifactkeeper/kernel/src/strs.rs', lines 77:0-86:1
     Visibility: public -/
 @[reducible]
 def strs.contains (s : Slice Std.U8) (p : Slice Std.U8) : Result Bool := do
   strs.contains_loop s p 0#usize
 
 /-- [artifactkeeper_kernel::http::is_browser_request]:
-    Source: 'src/http.rs', lines 169:0-177:1
+    Source: 'ports/artifactkeeper/kernel/src/http.rs', lines 169:0-177:1
     Visibility: public -/
 def http.is_browser_request
   (headers : Slice ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec Std.U8))) :
@@ -2199,7 +2199,7 @@ def http.is_browser_request
         strs.contains s4 s5
 
 /-- [artifactkeeper_kernel::http::violates_csrf_contract]:
-    Source: 'src/http.rs', lines 180:0-186:1
+    Source: 'ports/artifactkeeper/kernel/src/http.rs', lines 180:0-186:1
     Visibility: public -/
 def http.violates_csrf_contract
   (method : Method)
@@ -2231,7 +2231,7 @@ def http.violates_csrf_contract
   else ok false
 
 /-- [artifactkeeper_kernel::strs::seg_nonempty]:
-    Source: 'src/strs.rs', lines 245:0-247:1
+    Source: 'ports/artifactkeeper/kernel/src/strs.rs', lines 245:0-247:1
     Visibility: public -/
 def strs.seg_nonempty
   (segs : Slice (alloc.vec.Vec Std.U8)) (i : Std.Usize) : Result Bool := do
@@ -2244,7 +2244,7 @@ def strs.seg_nonempty
   else ok false
 
 /-- [artifactkeeper_kernel::strs::seg_is]:
-    Source: 'src/strs.rs', lines 240:0-242:1
+    Source: 'ports/artifactkeeper/kernel/src/strs.rs', lines 240:0-242:1
     Visibility: public -/
 def strs.seg_is
   (segs : Slice (alloc.vec.Vec Std.U8)) (i : Std.Usize) (lit : Slice Std.U8) :
@@ -2259,7 +2259,7 @@ def strs.seg_is
   else ok false
 
 /-- [artifactkeeper_kernel::strs::trim_start_byte]: loop body 0:
-    Source: 'src/strs.rs', lines 180:4-182:5
+    Source: 'ports/artifactkeeper/kernel/src/strs.rs', lines 180:4-182:5
     Visibility: public -/
 @[rust_loop_body]
 def strs.trim_start_byte_loop.body
@@ -2277,7 +2277,7 @@ def strs.trim_start_byte_loop.body
   else ok (done a)
 
 /-- [artifactkeeper_kernel::strs::trim_start_byte]: loop 0:
-    Source: 'src/strs.rs', lines 180:4-182:5
+    Source: 'ports/artifactkeeper/kernel/src/strs.rs', lines 180:4-182:5
     Visibility: public -/
 @[rust_loop]
 def strs.trim_start_byte_loop
@@ -2287,7 +2287,7 @@ def strs.trim_start_byte_loop
     a
 
 /-- [artifactkeeper_kernel::strs::trim_start_byte]:
-    Source: 'src/strs.rs', lines 178:0-184:1
+    Source: 'ports/artifactkeeper/kernel/src/strs.rs', lines 178:0-184:1
     Visibility: public -/
 def strs.trim_start_byte
   (s : Slice Std.U8) (c : Std.U8) : Result (alloc.vec.Vec Std.U8) := do
@@ -2296,7 +2296,7 @@ def strs.trim_start_byte
   strs.sub s a i
 
 /-- [artifactkeeper_kernel::paths::is_nuget_push_path]:
-    Source: 'src/paths.rs', lines 111:0-133:1
+    Source: 'ports/artifactkeeper/kernel/src/paths.rs', lines 111:0-133:1
     Visibility: public -/
 def paths.is_nuget_push_path (path : Slice Std.U8) : Result Bool := do
   let trimmed ← strs.trim_start_byte path 47#u8
@@ -2352,7 +2352,7 @@ def paths.is_nuget_push_path (path : Slice Std.U8) : Result Bool := do
   else ok false
 
 /-- [artifactkeeper_kernel::{impl core::cmp::PartialEq<artifactkeeper_kernel::Method> for artifactkeeper_kernel::Method}::eq]:
-    Source: 'src/lib.rs', lines 24:29-24:38
+    Source: 'ports/artifactkeeper/kernel/src/lib.rs', lines 24:29-24:38
     Visibility: public -/
 def Method.Insts.CoreCmpPartialEqMethod.eq
   (self : Method) (other : Method) : Result Bool := do
@@ -2361,7 +2361,7 @@ def Method.Insts.CoreCmpPartialEqMethod.eq
   ok (self1 = other1)
 
 /-- Trait implementation: [artifactkeeper_kernel::{impl core::cmp::PartialEq<artifactkeeper_kernel::Method> for artifactkeeper_kernel::Method}]
-    Source: 'src/lib.rs', lines 24:29-24:38 -/
+    Source: 'ports/artifactkeeper/kernel/src/lib.rs', lines 24:29-24:38 -/
 @[reducible]
 impl_def Method.Insts.CoreCmpPartialEqMethod : core.cmp.PartialEq Method Method
   := {
@@ -2370,7 +2370,7 @@ impl_def Method.Insts.CoreCmpPartialEqMethod : core.cmp.PartialEq Method Method
 }
 
 /-- [artifactkeeper_kernel::http::extract_nuget_push_api_key]:
-    Source: 'src/http.rs', lines 189:0-199:1
+    Source: 'ports/artifactkeeper/kernel/src/http.rs', lines 189:0-199:1
     Visibility: public -/
 def http.extract_nuget_push_api_key
   (req : http.Request) : Result (Option (alloc.vec.Vec Std.U8)) := do
@@ -2402,7 +2402,7 @@ def http.extract_nuget_push_api_key
     else ok none
 
 /-- [artifactkeeper_kernel::paths::extract_conda_url_token]:
-    Source: 'src/paths.rs', lines 92:0-108:1
+    Source: 'ports/artifactkeeper/kernel/src/paths.rs', lines 92:0-108:1
     Visibility: public -/
 def paths.extract_conda_url_token
   (path : Slice Std.U8) : Result (Option (alloc.vec.Vec Std.U8)) := do
@@ -2446,7 +2446,7 @@ def paths.extract_conda_url_token
   else ok none
 
 /-- [artifactkeeper_kernel::http::extract_visibility_token]:
-    Source: 'src/http.rs', lines 202:0-214:1
+    Source: 'ports/artifactkeeper/kernel/src/http.rs', lines 202:0-214:1
     Visibility: public -/
 def http.extract_visibility_token
   (req : http.Request) : Result http.ExtractedToken := do
@@ -2472,7 +2472,7 @@ def http.extract_visibility_token
   else ok extracted
 
 /-- [artifactkeeper_kernel::{artifactkeeper_kernel::Visibility}::allows_anonymous_read]:
-    Source: 'src/lib.rs', lines 45:4-47:5
+    Source: 'ports/artifactkeeper/kernel/src/lib.rs', lines 45:4-47:5
     Visibility: public -/
 def Visibility.allows_anonymous_read (self : Visibility) : Result Bool := do
   match self with
@@ -2481,7 +2481,7 @@ def Visibility.allows_anonymous_read (self : Visibility) : Result Bool := do
   | Visibility.Private => ok false
 
 /-- [artifactkeeper_kernel::{artifactkeeper_kernel::Visibility}::allows_authenticated_read]:
-    Source: 'src/lib.rs', lines 49:4-51:5
+    Source: 'ports/artifactkeeper/kernel/src/lib.rs', lines 49:4-51:5
     Visibility: public -/
 def Visibility.allows_authenticated_read
   (self : Visibility) : Result Bool := do
@@ -2491,7 +2491,7 @@ def Visibility.allows_authenticated_read
   | Visibility.Private => ok false
 
 /-- [artifactkeeper_kernel::{impl core::clone::Clone for artifactkeeper_kernel::User}::clone]:
-    Source: 'src/lib.rs', lines 65:9-65:14
+    Source: 'ports/artifactkeeper/kernel/src/lib.rs', lines 65:9-65:14
     Visibility: public -/
 def User.Insts.CoreCloneClone.clone (self : User) : Result User := do
   let i ← lift (core.clone.impls.CloneU64.clone self.id)
@@ -2513,7 +2513,7 @@ def User.Insts.CoreCloneClone.clone (self : User) : Result User := do
     }
 
 /-- [artifactkeeper_kernel::clone_opt_ids]:
-    Source: 'src/lib.rs', lines 91:0-96:1
+    Source: 'ports/artifactkeeper/kernel/src/lib.rs', lines 91:0-96:1
     Visibility: public -/
 def clone_opt_ids
   (v : Option (alloc.vec.Vec Std.U64)) :
@@ -2526,7 +2526,7 @@ def clone_opt_ids
     ok (some v1)
 
 /-- [artifactkeeper_kernel::{artifactkeeper_kernel::Claims}::duplicate]:
-    Source: 'src/lib.rs', lines 113:4-124:5
+    Source: 'ports/artifactkeeper/kernel/src/lib.rs', lines 113:4-124:5
     Visibility: public -/
 def Claims.duplicate (self : Claims) : Result Claims := do
   let v ← alloc.vec.CloneVec.clone core.clone.CloneU8 self.username
@@ -2546,7 +2546,7 @@ def Claims.duplicate (self : Claims) : Result Claims := do
     }
 
 /-- [artifactkeeper_kernel::{artifactkeeper_kernel::Claims}::effective_iat_ms]:
-    Source: 'src/lib.rs', lines 127:4-140:5
+    Source: 'ports/artifactkeeper/kernel/src/lib.rs', lines 127:4-140:5
     Visibility: public -/
 def Claims.effective_iat_ms (self : Claims) : Result Std.I64 := do
   match self.iat_ms with
@@ -2562,7 +2562,7 @@ def Claims.effective_iat_ms (self : Claims) : Result Std.I64 := do
   | some ms => ok ms
 
 /-- [artifactkeeper_kernel::strs::contains_id]: loop body 0:
-    Source: 'src/strs.rs', lines 230:4-237:1
+    Source: 'ports/artifactkeeper/kernel/src/strs.rs', lines 230:4-237:1
     Visibility: public -/
 @[rust_loop_body]
 def strs.contains_id_loop.body
@@ -2580,7 +2580,7 @@ def strs.contains_id_loop.body
   else ok (done false)
 
 /-- [artifactkeeper_kernel::strs::contains_id]: loop 0:
-    Source: 'src/strs.rs', lines 230:4-237:1
+    Source: 'ports/artifactkeeper/kernel/src/strs.rs', lines 230:4-237:1
     Visibility: public -/
 @[rust_loop]
 def strs.contains_id_loop
@@ -2590,14 +2590,14 @@ def strs.contains_id_loop
     i
 
 /-- [artifactkeeper_kernel::strs::contains_id]:
-    Source: 'src/strs.rs', lines 228:0-237:1
+    Source: 'ports/artifactkeeper/kernel/src/strs.rs', lines 228:0-237:1
     Visibility: public -/
 @[reducible]
 def strs.contains_id (list : Slice Std.U64) (x : Std.U64) : Result Bool := do
   strs.contains_id_loop list x 0#usize
 
 /-- [artifactkeeper_kernel::{artifactkeeper_kernel::AccessScope}::grants]:
-    Source: 'src/lib.rs', lines 151:4-156:5
+    Source: 'ports/artifactkeeper/kernel/src/lib.rs', lines 151:4-156:5
     Visibility: public -/
 def AccessScope.grants
   (self : AccessScope) (repo_id : Std.U64) : Result Bool := do
@@ -2608,7 +2608,7 @@ def AccessScope.grants
     strs.contains_id s repo_id
 
 /-- [artifactkeeper_kernel::{artifactkeeper_kernel::AccessScope}::from_option]:
-    Source: 'src/lib.rs', lines 159:4-164:5
+    Source: 'ports/artifactkeeper/kernel/src/lib.rs', lines 159:4-164:5
     Visibility: public -/
 def AccessScope.from_option
   (value : Option (alloc.vec.Vec Std.U64)) : Result AccessScope := do
@@ -2619,7 +2619,7 @@ def AccessScope.from_option
     ok (AccessScope.Restricted v)
 
 /-- [artifactkeeper_kernel::middleware::Deny]
-    Source: 'src/middleware.rs', lines 20:0-28:1
+    Source: 'ports/artifactkeeper/kernel/src/middleware.rs', lines 20:0-28:1
     Visibility: public -/
 @[discriminant isize]
 inductive middleware.Deny where
@@ -2632,7 +2632,7 @@ inductive middleware.Deny where
 | InvalidTicket : middleware.Deny
 
 /-- [artifactkeeper_kernel::middleware::Response]
-    Source: 'src/middleware.rs', lines 31:0-58:1
+    Source: 'ports/artifactkeeper/kernel/src/middleware.rs', lines 31:0-58:1
     Visibility: public -/
 @[discriminant isize]
 inductive middleware.Response where
@@ -2651,7 +2651,7 @@ inductive middleware.Response where
 | OciUnauthorized : middleware.Response
 
 /-- [artifactkeeper_kernel::middleware::Outcome]
-    Source: 'src/middleware.rs', lines 61:0-66:1
+    Source: 'ports/artifactkeeper/kernel/src/middleware.rs', lines 61:0-66:1
     Visibility: public -/
 @[discriminant isize]
 inductive middleware.Outcome where
@@ -2659,7 +2659,7 @@ inductive middleware.Outcome where
 | Respond : middleware.Response → middleware.Outcome
 
 /-- [artifactkeeper_kernel::middleware::respond]:
-    Source: 'src/middleware.rs', lines 68:0-70:1 -/
+    Source: 'ports/artifactkeeper/kernel/src/middleware.rs', lines 68:0-70:1 -/
 def middleware.respond
   (writes : alloc.vec.Vec resolve.Write) (r : middleware.Response) :
   Result ((alloc.vec.Vec resolve.Write) × middleware.Outcome)
@@ -2667,7 +2667,7 @@ def middleware.respond
   ok (writes, middleware.Outcome.Respond r)
 
 /-- [artifactkeeper_kernel::middleware::csrf_guard]:
-    Source: 'src/middleware.rs', lines 73:0-75:1
+    Source: 'ports/artifactkeeper/kernel/src/middleware.rs', lines 73:0-75:1
     Visibility: public -/
 def middleware.csrf_guard
   (req : http.Request) : Result (Option middleware.Response) := do
@@ -2678,7 +2678,7 @@ def middleware.csrf_guard
   else ok none
 
 /-- [artifactkeeper_kernel::trusted::{artifactkeeper_kernel::trusted::Oracle}::authenticate]: loop body 0:
-    Source: 'src/trusted.rs', lines 69:8-79:5
+    Source: 'ports/artifactkeeper/kernel/src/trusted.rs', lines 69:8-79:5
     Visibility: public -/
 @[rust_loop_body]
 def trusted.Oracle.authenticate_loop.body
@@ -2713,7 +2713,7 @@ def trusted.Oracle.authenticate_loop.body
   else ok (done (core.result.Result.Err trusted.AuthErr.Other))
 
 /-- [artifactkeeper_kernel::trusted::{artifactkeeper_kernel::trusted::Oracle}::authenticate]: loop 0:
-    Source: 'src/trusted.rs', lines 69:8-79:5
+    Source: 'ports/artifactkeeper/kernel/src/trusted.rs', lines 69:8-79:5
     Visibility: public -/
 @[rust_loop]
 def trusted.Oracle.authenticate_loop
@@ -2726,7 +2726,7 @@ def trusted.Oracle.authenticate_loop
     i
 
 /-- [artifactkeeper_kernel::trusted::{artifactkeeper_kernel::trusted::Oracle}::authenticate]:
-    Source: 'src/trusted.rs', lines 67:4-79:5
+    Source: 'ports/artifactkeeper/kernel/src/trusted.rs', lines 67:4-79:5
     Visibility: public -/
 @[reducible]
 def trusted.Oracle.authenticate
@@ -2736,7 +2736,7 @@ def trusted.Oracle.authenticate
   trusted.Oracle.authenticate_loop self username password 0#usize
 
 /-- [artifactkeeper_kernel::trusted::{artifactkeeper_kernel::trusted::Oracle}::validate_access_token]: loop body 0:
-    Source: 'src/trusted.rs', lines 44:8-51:5
+    Source: 'ports/artifactkeeper/kernel/src/trusted.rs', lines 44:8-51:5
     Visibility: public -/
 @[rust_loop_body]
 def trusted.Oracle.validate_access_token_loop.body
@@ -2759,7 +2759,7 @@ def trusted.Oracle.validate_access_token_loop.body
   else ok (done none)
 
 /-- [artifactkeeper_kernel::trusted::{artifactkeeper_kernel::trusted::Oracle}::validate_access_token]: loop 0:
-    Source: 'src/trusted.rs', lines 44:8-51:5
+    Source: 'ports/artifactkeeper/kernel/src/trusted.rs', lines 44:8-51:5
     Visibility: public -/
 @[rust_loop]
 def trusted.Oracle.validate_access_token_loop
@@ -2771,7 +2771,7 @@ def trusted.Oracle.validate_access_token_loop
     i
 
 /-- [artifactkeeper_kernel::trusted::{artifactkeeper_kernel::trusted::Oracle}::validate_access_token]:
-    Source: 'src/trusted.rs', lines 42:4-51:5
+    Source: 'ports/artifactkeeper/kernel/src/trusted.rs', lines 42:4-51:5
     Visibility: public -/
 @[reducible]
 def trusted.Oracle.validate_access_token
@@ -2779,7 +2779,7 @@ def trusted.Oracle.validate_access_token
   trusted.Oracle.validate_access_token_loop self token 0#usize
 
 /-- [artifactkeeper_kernel::token_scope::from_user]:
-    Source: 'src/token_scope.rs', lines 155:0-167:1
+    Source: 'ports/artifactkeeper/kernel/src/token_scope.rs', lines 155:0-167:1
     Visibility: public -/
 def token_scope.from_user (user : User) : Result AuthExtension := do
   let v ← alloc.vec.CloneVec.clone core.clone.CloneU8 user.username
@@ -2798,7 +2798,7 @@ def token_scope.from_user (user : User) : Result AuthExtension := do
     }
 
 /-- [artifactkeeper_kernel::token_scope::{artifactkeeper_kernel::AuthExtension}::with_scope_gated_admin]:
-    Source: 'src/token_scope.rs', lines 123:4-126:5
+    Source: 'ports/artifactkeeper/kernel/src/token_scope.rs', lines 123:4-126:5
     Visibility: public -/
 def token_scope.AuthExtension.with_scope_gated_admin
   (self : AuthExtension) : Result AuthExtension := do
@@ -2812,7 +2812,7 @@ def token_scope.AuthExtension.with_scope_gated_admin
   else ok self
 
 /-- [artifactkeeper_kernel::token_scope::from_claims]:
-    Source: 'src/token_scope.rs', lines 138:0-152:1
+    Source: 'ports/artifactkeeper/kernel/src/token_scope.rs', lines 138:0-152:1
     Visibility: public -/
 def token_scope.from_claims (claims : Claims) : Result AuthExtension := do
   let i ← Claims.effective_iat_ms claims
@@ -2834,7 +2834,7 @@ def token_scope.from_claims (claims : Claims) : Result AuthExtension := do
     }
 
 /-- [artifactkeeper_kernel::trusted::{artifactkeeper_kernel::trusted::Oracle}::base64_decode]: loop body 0:
-    Source: 'src/trusted.rs', lines 83:8-93:5
+    Source: 'ports/artifactkeeper/kernel/src/trusted.rs', lines 83:8-93:5
     Visibility: public -/
 @[rust_loop_body]
 def trusted.Oracle.base64_decode_loop.body
@@ -2862,7 +2862,7 @@ def trusted.Oracle.base64_decode_loop.body
   else ok (done none)
 
 /-- [artifactkeeper_kernel::trusted::{artifactkeeper_kernel::trusted::Oracle}::base64_decode]: loop 0:
-    Source: 'src/trusted.rs', lines 83:8-93:5
+    Source: 'ports/artifactkeeper/kernel/src/trusted.rs', lines 83:8-93:5
     Visibility: public -/
 @[rust_loop]
 def trusted.Oracle.base64_decode_loop
@@ -2874,7 +2874,7 @@ def trusted.Oracle.base64_decode_loop
     i
 
 /-- [artifactkeeper_kernel::trusted::{artifactkeeper_kernel::trusted::Oracle}::base64_decode]:
-    Source: 'src/trusted.rs', lines 81:4-93:5
+    Source: 'ports/artifactkeeper/kernel/src/trusted.rs', lines 81:4-93:5
     Visibility: public -/
 @[reducible]
 def trusted.Oracle.base64_decode
@@ -2884,14 +2884,14 @@ def trusted.Oracle.base64_decode
   trusted.Oracle.base64_decode_loop self input 0#usize
 
 /-- [artifactkeeper_kernel::strs::is_cont_byte]:
-    Source: 'src/strs.rs', lines 250:0-252:1 -/
+    Source: 'ports/artifactkeeper/kernel/src/strs.rs', lines 250:0-252:1 -/
 def strs.is_cont_byte (b : Std.U8) : Result Bool := do
   if b >= 128#u8
   then ok (b <= 191#u8)
   else ok false
 
 /-- [artifactkeeper_kernel::strs::utf8_seq]:
-    Source: 'src/strs.rs', lines 256:0-294:1 -/
+    Source: 'ports/artifactkeeper/kernel/src/strs.rs', lines 256:0-294:1 -/
 def strs.utf8_seq (s : Slice Std.U8) (i : Std.Usize) : Result Std.Usize := do
   let i1 := Slice.len s
   let n ← i1 - i
@@ -3126,7 +3126,7 @@ def strs.utf8_seq (s : Slice Std.U8) (i : Std.Usize) : Result Std.Usize := do
         else ok 0#usize
 
 /-- [artifactkeeper_kernel::strs::is_utf8]: loop body 0:
-    Source: 'src/strs.rs', lines 299:4-307:1
+    Source: 'ports/artifactkeeper/kernel/src/strs.rs', lines 299:4-307:1
     Visibility: public -/
 @[rust_loop_body]
 def strs.is_utf8_loop.body
@@ -3144,7 +3144,7 @@ def strs.is_utf8_loop.body
   else ok (done true)
 
 /-- [artifactkeeper_kernel::strs::is_utf8]: loop 0:
-    Source: 'src/strs.rs', lines 299:4-307:1
+    Source: 'ports/artifactkeeper/kernel/src/strs.rs', lines 299:4-307:1
     Visibility: public -/
 @[rust_loop]
 def strs.is_utf8_loop (s : Slice Std.U8) (i : Std.Usize) : Result Bool := do
@@ -3153,14 +3153,14 @@ def strs.is_utf8_loop (s : Slice Std.U8) (i : Std.Usize) : Result Bool := do
     i
 
 /-- [artifactkeeper_kernel::strs::is_utf8]:
-    Source: 'src/strs.rs', lines 297:0-307:1
+    Source: 'ports/artifactkeeper/kernel/src/strs.rs', lines 297:0-307:1
     Visibility: public -/
 @[reducible]
 def strs.is_utf8 (s : Slice Std.U8) : Result Bool := do
   strs.is_utf8_loop s 0#usize
 
 /-- [artifactkeeper_kernel::resolve::decode_basic_credentials]:
-    Source: 'src/resolve.rs', lines 69:0-78:1
+    Source: 'ports/artifactkeeper/kernel/src/resolve.rs', lines 69:0-78:1
     Visibility: public -/
 def resolve.decode_basic_credentials
   (oracle : trusted.Oracle) (encoded : Slice Std.U8) :
@@ -3178,7 +3178,7 @@ def resolve.decode_basic_credentials
     else ok none
 
 /-- [artifactkeeper_kernel::trusted::{impl core::clone::Clone for artifactkeeper_kernel::trusted::ApiTokenValidation}::clone]:
-    Source: 'src/trusted.rs', lines 19:9-19:14
+    Source: 'ports/artifactkeeper/kernel/src/trusted.rs', lines 19:9-19:14
     Visibility: public -/
 def trusted.ApiTokenValidation.Insts.CoreCloneClone.clone
   (self : trusted.ApiTokenValidation) : Result trusted.ApiTokenValidation := do
@@ -3190,7 +3190,7 @@ def trusted.ApiTokenValidation.Insts.CoreCloneClone.clone
   ok { user := u, scopes := v, allowed_repo_ids := «as» }
 
 /-- [artifactkeeper_kernel::trusted::{artifactkeeper_kernel::trusted::Oracle}::validate_api_token]: loop body 0:
-    Source: 'src/trusted.rs', lines 55:8-65:5
+    Source: 'ports/artifactkeeper/kernel/src/trusted.rs', lines 55:8-65:5
     Visibility: public -/
 @[rust_loop_body]
 def trusted.Oracle.validate_api_token_loop.body
@@ -3219,7 +3219,7 @@ def trusted.Oracle.validate_api_token_loop.body
   else ok (done (core.result.Result.Err trusted.AuthErr.Other))
 
 /-- [artifactkeeper_kernel::trusted::{artifactkeeper_kernel::trusted::Oracle}::validate_api_token]: loop 0:
-    Source: 'src/trusted.rs', lines 55:8-65:5
+    Source: 'ports/artifactkeeper/kernel/src/trusted.rs', lines 55:8-65:5
     Visibility: public -/
 @[rust_loop]
 def trusted.Oracle.validate_api_token_loop
@@ -3231,7 +3231,7 @@ def trusted.Oracle.validate_api_token_loop
     i
 
 /-- [artifactkeeper_kernel::trusted::{artifactkeeper_kernel::trusted::Oracle}::validate_api_token]:
-    Source: 'src/trusted.rs', lines 53:4-65:5
+    Source: 'ports/artifactkeeper/kernel/src/trusted.rs', lines 53:4-65:5
     Visibility: public -/
 @[reducible]
 def trusted.Oracle.validate_api_token
@@ -3241,7 +3241,7 @@ def trusted.Oracle.validate_api_token
   trusted.Oracle.validate_api_token_loop self token 0#usize
 
 /-- [artifactkeeper_kernel::resolve::TokenAuthError]
-    Source: 'src/resolve.rs', lines 14:0-17:1
+    Source: 'ports/artifactkeeper/kernel/src/resolve.rs', lines 14:0-17:1
     Visibility: public -/
 @[discriminant isize]
 inductive resolve.TokenAuthError where
@@ -3249,7 +3249,7 @@ inductive resolve.TokenAuthError where
 | Overloaded : resolve.TokenAuthError
 
 /-- [artifactkeeper_kernel::resolve::classify_token_validation_err]:
-    Source: 'src/resolve.rs', lines 40:0-46:1
+    Source: 'ports/artifactkeeper/kernel/src/resolve.rs', lines 40:0-46:1
     Visibility: public -/
 def resolve.classify_token_validation_err
   (err : trusted.AuthErr) : Result resolve.TokenAuthError := do
@@ -3259,7 +3259,7 @@ def resolve.classify_token_validation_err
   | trusted.AuthErr.Other => ok resolve.TokenAuthError.Invalid
 
 /-- [artifactkeeper_kernel::resolve::validate_api_token_with_scopes]:
-    Source: 'src/resolve.rs', lines 49:0-66:1
+    Source: 'ports/artifactkeeper/kernel/src/resolve.rs', lines 49:0-66:1
     Visibility: public -/
 def resolve.validate_api_token_with_scopes
   (oracle : trusted.Oracle) (token : Slice Std.U8) :
@@ -3287,7 +3287,7 @@ def resolve.validate_api_token_with_scopes
     ok (core.result.Result.Err tae)
 
 /-- [artifactkeeper_kernel::middleware::header_result]:
-    Source: 'src/middleware.rs', lines 79:0-111:1 -/
+    Source: 'ports/artifactkeeper/kernel/src/middleware.rs', lines 79:0-111:1 -/
 def middleware.header_result
   (oracle : trusted.Oracle) (extracted : http.ExtractedToken) :
   Result (core.result.Result AuthExtension (core.result.Result middleware.Deny
@@ -3369,7 +3369,7 @@ def middleware.header_result
       middleware.Deny.InvalidHeaderFormat))
 
 /-- [artifactkeeper_kernel::resolve::active_user]: loop body 0:
-    Source: 'src/resolve.rs', lines 175:4-182:1
+    Source: 'ports/artifactkeeper/kernel/src/resolve.rs', lines 175:4-182:1
     Visibility: public -/
 @[rust_loop_body]
 def resolve.active_user_loop.body
@@ -3394,7 +3394,7 @@ def resolve.active_user_loop.body
   else ok (done none)
 
 /-- [artifactkeeper_kernel::resolve::active_user]: loop 0:
-    Source: 'src/resolve.rs', lines 175:4-182:1
+    Source: 'ports/artifactkeeper/kernel/src/resolve.rs', lines 175:4-182:1
     Visibility: public -/
 @[rust_loop]
 def resolve.active_user_loop
@@ -3406,7 +3406,7 @@ def resolve.active_user_loop
     i
 
 /-- [artifactkeeper_kernel::resolve::active_user]:
-    Source: 'src/resolve.rs', lines 173:0-182:1
+    Source: 'ports/artifactkeeper/kernel/src/resolve.rs', lines 173:0-182:1
     Visibility: public -/
 @[reducible]
 def resolve.active_user
@@ -3414,7 +3414,7 @@ def resolve.active_user
   resolve.active_user_loop db user_id 0#usize
 
 /-- [artifactkeeper_kernel::resolve::principal_must_change_password]:
-    Source: 'src/resolve.rs', lines 222:0-230:1
+    Source: 'ports/artifactkeeper/kernel/src/resolve.rs', lines 222:0-230:1
     Visibility: public -/
 def resolve.principal_must_change_password
   (db : tables.Db) (user_id : Std.U64) : Result Bool := do
@@ -3428,7 +3428,7 @@ def resolve.principal_must_change_password
     | some u => ok u.must_change_password
 
 /-- [artifactkeeper_kernel::paths::clone_path]:
-    Source: 'src/paths.rs', lines 343:0-348:1
+    Source: 'ports/artifactkeeper/kernel/src/paths.rs', lines 343:0-348:1
     Visibility: public -/
 def paths.clone_path
   (p : Option (alloc.vec.Vec Std.U8)) :
@@ -3441,7 +3441,7 @@ def paths.clone_path
     ok (some v1)
 
 /-- [artifactkeeper_kernel::resolve::validate_download_ticket]: loop body 0:
-    Source: 'src/resolve.rs', lines 161:4-170:1
+    Source: 'ports/artifactkeeper/kernel/src/resolve.rs', lines 161:4-170:1
     Visibility: public -/
 @[rust_loop_body]
 def resolve.validate_download_ticket_loop.body
@@ -3474,7 +3474,7 @@ def resolve.validate_download_ticket_loop.body
   else ok (done (none, writes))
 
 /-- [artifactkeeper_kernel::resolve::validate_download_ticket]: loop 0:
-    Source: 'src/resolve.rs', lines 161:4-170:1
+    Source: 'ports/artifactkeeper/kernel/src/resolve.rs', lines 161:4-170:1
     Visibility: public -/
 @[rust_loop]
 def resolve.validate_download_ticket_loop
@@ -3488,7 +3488,7 @@ def resolve.validate_download_ticket_loop
     i
 
 /-- [artifactkeeper_kernel::resolve::validate_download_ticket]:
-    Source: 'src/resolve.rs', lines 156:0-170:1
+    Source: 'ports/artifactkeeper/kernel/src/resolve.rs', lines 156:0-170:1
     Visibility: public -/
 def resolve.validate_download_ticket
   (db : tables.Db) (writes : alloc.vec.Vec resolve.Write)
@@ -3502,7 +3502,7 @@ def resolve.validate_download_ticket
   else resolve.validate_download_ticket_loop db writes ticket 0#usize
 
 /-- [artifactkeeper_kernel::paths::ticket_path_allowed]:
-    Source: 'src/paths.rs', lines 226:0-231:1
+    Source: 'ports/artifactkeeper/kernel/src/paths.rs', lines 226:0-231:1
     Visibility: public -/
 def paths.ticket_path_allowed
   (bound_path : Option (alloc.vec.Vec Std.U8)) (request_path : Slice Std.U8) :
@@ -3514,7 +3514,7 @@ def paths.ticket_path_allowed
               strs.bytes_eq s request_path
 
 /-- [artifactkeeper_kernel::paths::ticket_method_allowed]:
-    Source: 'src/paths.rs', lines 221:0-223:1
+    Source: 'ports/artifactkeeper/kernel/src/paths.rs', lines 221:0-223:1
     Visibility: public -/
 def paths.ticket_method_allowed (method : Method) : Result Bool := do
   match method with
@@ -3528,7 +3528,7 @@ def paths.ticket_method_allowed (method : Method) : Result Bool := do
   | Method.Other => ok false
 
 /-- [artifactkeeper_kernel::resolve::try_resolve_ticket_auth]:
-    Source: 'src/resolve.rs', lines 185:0-209:1
+    Source: 'ports/artifactkeeper/kernel/src/resolve.rs', lines 185:0-209:1
     Visibility: public -/
 def resolve.try_resolve_ticket_auth
   (db : tables.Db) (writes : alloc.vec.Vec resolve.Write)
@@ -3567,7 +3567,7 @@ def resolve.try_resolve_ticket_auth
   else ok (none, writes)
 
 /-- [artifactkeeper_kernel::strs::push_latin1]:
-    Source: 'src/strs.rs', lines 310:0-317:1
+    Source: 'ports/artifactkeeper/kernel/src/strs.rs', lines 310:0-317:1
     Visibility: public -/
 def strs.push_latin1
   (out : alloc.vec.Vec Std.U8) (b : Std.U8) :
@@ -3584,7 +3584,7 @@ def strs.push_latin1
     alloc.vec.Vec.push out1 i3
 
 /-- [artifactkeeper_kernel::paths::percent_hex_val]:
-    Source: 'src/paths.rs', lines 9:0-19:1
+    Source: 'ports/artifactkeeper/kernel/src/paths.rs', lines 9:0-19:1
     Visibility: public -/
 def paths.percent_hex_val (b : Std.U8) : Result (Option Std.U8) := do
   if b >= 48#u8
@@ -3644,7 +3644,7 @@ def paths.percent_hex_val (b : Std.U8) : Result (Option Std.U8) := do
       else ok none
 
 /-- [artifactkeeper_kernel::paths::hex_digit]:
-    Source: 'src/paths.rs', lines 263:0-268:1 -/
+    Source: 'ports/artifactkeeper/kernel/src/paths.rs', lines 263:0-268:1 -/
 def paths.hex_digit (b : Std.U8) : Result (Option Std.U32) := do
   let o ← paths.percent_hex_val b
   match o with
@@ -3653,7 +3653,7 @@ def paths.hex_digit (b : Std.U8) : Result (Option Std.U32) := do
               ok (some i)
 
 /-- [artifactkeeper_kernel::paths::decode_ticket]: loop body 0:
-    Source: 'src/paths.rs', lines 297:4-317:5 -/
+    Source: 'ports/artifactkeeper/kernel/src/paths.rs', lines 297:4-317:5 -/
 @[rust_loop_body]
 def paths.decode_ticket_loop.body
   (bytes : Slice Std.U8) (out : alloc.vec.Vec Std.U8) (i : Std.Usize) :
@@ -3706,7 +3706,7 @@ def paths.decode_ticket_loop.body
   else ok (done out)
 
 /-- [artifactkeeper_kernel::paths::decode_ticket]: loop 0:
-    Source: 'src/paths.rs', lines 297:4-317:5 -/
+    Source: 'ports/artifactkeeper/kernel/src/paths.rs', lines 297:4-317:5 -/
 @[rust_loop]
 def paths.decode_ticket_loop
   (bytes : Slice Std.U8) (out : alloc.vec.Vec Std.U8) (i : Std.Usize) :
@@ -3717,14 +3717,14 @@ def paths.decode_ticket_loop
     (out, i)
 
 /-- [artifactkeeper_kernel::paths::decode_ticket]:
-    Source: 'src/paths.rs', lines 294:0-319:1 -/
+    Source: 'ports/artifactkeeper/kernel/src/paths.rs', lines 294:0-319:1 -/
 @[reducible]
 def paths.decode_ticket
   (bytes : Slice Std.U8) : Result (alloc.vec.Vec Std.U8) := do
   paths.decode_ticket_loop bytes (alloc.vec.Vec.new Std.U8) 0#usize
 
 /-- [artifactkeeper_kernel::paths::find_ticket_pair]: loop body 0:
-    Source: 'src/paths.rs', lines 275:4-290:1 -/
+    Source: 'ports/artifactkeeper/kernel/src/paths.rs', lines 275:4-290:1 -/
 @[rust_loop_body]
 def paths.find_ticket_pair_loop.body
   (q : Slice Std.U8) (start : Std.Usize) (i : Std.Usize) :
@@ -3784,7 +3784,7 @@ def paths.find_ticket_pair_loop.body
   else ok (done none)
 
 /-- [artifactkeeper_kernel::paths::find_ticket_pair]: loop 0:
-    Source: 'src/paths.rs', lines 275:4-290:1 -/
+    Source: 'ports/artifactkeeper/kernel/src/paths.rs', lines 275:4-290:1 -/
 @[rust_loop]
 def paths.find_ticket_pair_loop
   (q : Slice Std.U8) (start : Std.Usize) (i : Std.Usize) :
@@ -3795,14 +3795,14 @@ def paths.find_ticket_pair_loop
     (start, i)
 
 /-- [artifactkeeper_kernel::paths::find_ticket_pair]:
-    Source: 'src/paths.rs', lines 272:0-290:1 -/
+    Source: 'ports/artifactkeeper/kernel/src/paths.rs', lines 272:0-290:1 -/
 @[reducible]
 def paths.find_ticket_pair
   (q : Slice Std.U8) : Result (Option (Std.Usize × Std.Usize)) := do
   paths.find_ticket_pair_loop q 0#usize 0#usize
 
 /-- [artifactkeeper_kernel::paths::extract_ticket_from_query]:
-    Source: 'src/paths.rs', lines 322:0-340:1
+    Source: 'ports/artifactkeeper/kernel/src/paths.rs', lines 322:0-340:1
     Visibility: public -/
 def paths.extract_ticket_from_query
   (query : Option (alloc.vec.Vec Std.U8)) :
@@ -3839,7 +3839,7 @@ def paths.extract_ticket_from_query
         ok (some v)
 
 /-- [artifactkeeper_kernel::strs::ends_with]:
-    Source: 'src/strs.rs', lines 37:0-42:1
+    Source: 'ports/artifactkeeper/kernel/src/strs.rs', lines 37:0-42:1
     Visibility: public -/
 def strs.ends_with (s : Slice Std.U8) (p : Slice Std.U8) : Result Bool := do
   let i := Slice.len s
@@ -3853,7 +3853,7 @@ def strs.ends_with (s : Slice Std.U8) (p : Slice Std.U8) : Result Bool := do
     strs.starts_with_at s i4 p
 
 /-- [artifactkeeper_kernel::strs::strip_suffix]:
-    Source: 'src/strs.rs', lines 61:0-63:1
+    Source: 'ports/artifactkeeper/kernel/src/strs.rs', lines 61:0-63:1
     Visibility: public -/
 def strs.strip_suffix
   (s : Slice Std.U8) (p : Slice Std.U8) :
@@ -3870,7 +3870,7 @@ def strs.strip_suffix
   else ok none
 
 /-- [artifactkeeper_kernel::paths::path_exempt_from_password_change]:
-    Source: 'src/paths.rs', lines 234:0-240:1
+    Source: 'ports/artifactkeeper/kernel/src/paths.rs', lines 234:0-240:1
     Visibility: public -/
 def paths.path_exempt_from_password_change
   (path : Slice Std.U8) : Result Bool := do
@@ -3910,7 +3910,7 @@ def paths.path_exempt_from_password_change
       strs.ends_with s5 s6
 
 /-- [artifactkeeper_kernel::middleware::auth_middleware]:
-    Source: 'src/middleware.rs', lines 115:0-144:1
+    Source: 'ports/artifactkeeper/kernel/src/middleware.rs', lines 115:0-144:1
     Visibility: public -/
 def middleware.auth_middleware
   (db : tables.Db) (oracle : trusted.Oracle) (req : http.Request) :
@@ -3973,7 +3973,7 @@ def middleware.auth_middleware
     middleware.respond (alloc.vec.Vec.new resolve.Write) refusal
 
 /-- [artifactkeeper_kernel::resolve::try_ticket]:
-    Source: 'src/resolve.rs', lines 212:0-218:1
+    Source: 'ports/artifactkeeper/kernel/src/resolve.rs', lines 212:0-218:1
     Visibility: public -/
 def resolve.try_ticket
   (db : tables.Db) (writes : alloc.vec.Vec resolve.Write) (req : http.Request)
@@ -3989,7 +3989,7 @@ def resolve.try_ticket
     resolve.try_resolve_ticket_auth db writes s req.method s1
 
 /-- [artifactkeeper_kernel::resolve::AuthOutcome]
-    Source: 'src/resolve.rs', lines 21:0-26:1
+    Source: 'ports/artifactkeeper/kernel/src/resolve.rs', lines 21:0-26:1
     Visibility: public -/
 @[discriminant isize]
 inductive resolve.AuthOutcome where
@@ -3999,7 +3999,7 @@ inductive resolve.AuthOutcome where
 | Overloaded : resolve.AuthOutcome
 
 /-- [artifactkeeper_kernel::resolve::resolve_basic]:
-    Source: 'src/resolve.rs', lines 115:0-137:1 -/
+    Source: 'ports/artifactkeeper/kernel/src/resolve.rs', lines 115:0-137:1 -/
 def resolve.resolve_basic
   (oracle : trusted.Oracle) (encoded : Slice Std.U8)
   (allow_basic_api_token : Bool) :
@@ -4045,7 +4045,7 @@ def resolve.resolve_basic
           ok (resolve.AuthOutcome.Resolved ae1)
 
 /-- [artifactkeeper_kernel::resolve::resolve_bearer]:
-    Source: 'src/resolve.rs', lines 96:0-113:1 -/
+    Source: 'ports/artifactkeeper/kernel/src/resolve.rs', lines 96:0-113:1 -/
 def resolve.resolve_bearer
   (oracle : trusted.Oracle) (token : Slice Std.U8) :
   Result resolve.AuthOutcome
@@ -4084,7 +4084,7 @@ def resolve.resolve_bearer
     ok (resolve.AuthOutcome.Resolved ae)
 
 /-- [artifactkeeper_kernel::resolve::try_resolve_auth_outcome]:
-    Source: 'src/resolve.rs', lines 140:0-152:1
+    Source: 'ports/artifactkeeper/kernel/src/resolve.rs', lines 140:0-152:1
     Visibility: public -/
 def resolve.try_resolve_auth_outcome
   (oracle : trusted.Oracle) (extracted : http.ExtractedToken)
@@ -4112,7 +4112,7 @@ def resolve.try_resolve_auth_outcome
   | http.ExtractedToken.Invalid => ok resolve.AuthOutcome.InvalidCredential
 
 /-- [artifactkeeper_kernel::middleware::optional_auth_middleware]:
-    Source: 'src/middleware.rs', lines 147:0-173:1
+    Source: 'ports/artifactkeeper/kernel/src/middleware.rs', lines 147:0-173:1
     Visibility: public -/
 def middleware.optional_auth_middleware
   (db : tables.Db) (oracle : trusted.Oracle) (req : http.Request) :
@@ -4173,7 +4173,7 @@ def middleware.optional_auth_middleware
     middleware.respond (alloc.vec.Vec.new resolve.Write) refusal
 
 /-- [artifactkeeper_kernel::middleware::admin_middleware]:
-    Source: 'src/middleware.rs', lines 176:0-213:1
+    Source: 'ports/artifactkeeper/kernel/src/middleware.rs', lines 176:0-213:1
     Visibility: public -/
 def middleware.admin_middleware
   (db : tables.Db) (oracle : trusted.Oracle) (req : http.Request) :
@@ -4381,7 +4381,7 @@ def middleware.admin_middleware
     middleware.respond (alloc.vec.Vec.new resolve.Write) refusal
 
 /-- [artifactkeeper_kernel::paths::is_oci_v2_path]:
-    Source: 'src/paths.rs', lines 258:0-260:1
+    Source: 'ports/artifactkeeper/kernel/src/paths.rs', lines 258:0-260:1
     Visibility: public -/
 def paths.is_oci_v2_path (path : Slice Std.U8) : Result Bool := do
   let s ← lift (Array.to_slice (Array.make 3#usize [ 47#u8, 118#u8, 50#u8 ]))
@@ -4402,7 +4402,7 @@ def paths.is_oci_v2_path (path : Slice Std.U8) : Result Bool := do
       strs.starts_with path s2
 
 /-- [artifactkeeper_kernel::paths::is_allowlisted]:
-    Source: 'src/paths.rs', lines 243:0-255:1
+    Source: 'ports/artifactkeeper/kernel/src/paths.rs', lines 243:0-255:1
     Visibility: public -/
 def paths.is_allowlisted (path : Slice Std.U8) : Result Bool := do
   let s ←
@@ -4508,7 +4508,7 @@ def paths.is_allowlisted (path : Slice Std.U8) : Result Bool := do
                       strs.bytes_eq path s10
 
 /-- [artifactkeeper_kernel::middleware::guest_access_guard]:
-    Source: 'src/middleware.rs', lines 217:0-240:1
+    Source: 'ports/artifactkeeper/kernel/src/middleware.rs', lines 217:0-240:1
     Visibility: public -/
 def middleware.guest_access_guard
   (guest_access_enabled : Bool) (oracle : trusted.Oracle) (req : http.Request)
@@ -4550,7 +4550,7 @@ def middleware.guest_access_guard
         ok (middleware.Outcome.Respond middleware.Response.ServiceUnavailable)
 
 /-- [artifactkeeper_kernel::middleware::lookup_repo]: loop body 0:
-    Source: 'src/middleware.rs', lines 250:4-262:1
+    Source: 'ports/artifactkeeper/kernel/src/middleware.rs', lines 250:4-262:1
     Visibility: public -/
 @[rust_loop_body]
 def middleware.lookup_repo_loop.body
@@ -4575,7 +4575,7 @@ def middleware.lookup_repo_loop.body
   else ok (done none)
 
 /-- [artifactkeeper_kernel::middleware::lookup_repo]: loop 0:
-    Source: 'src/middleware.rs', lines 250:4-262:1
+    Source: 'ports/artifactkeeper/kernel/src/middleware.rs', lines 250:4-262:1
     Visibility: public -/
 @[rust_loop]
 def middleware.lookup_repo_loop
@@ -4587,7 +4587,7 @@ def middleware.lookup_repo_loop
     i
 
 /-- [artifactkeeper_kernel::middleware::lookup_repo]:
-    Source: 'src/middleware.rs', lines 245:0-262:1
+    Source: 'ports/artifactkeeper/kernel/src/middleware.rs', lines 245:0-262:1
     Visibility: public -/
 def middleware.lookup_repo
   (db : tables.Db) (repo_key : Slice Std.U8) :
@@ -4599,7 +4599,7 @@ def middleware.lookup_repo
   else middleware.lookup_repo_loop db repo_key 0#usize
 
 /-- [artifactkeeper_kernel::middleware::role_grant_exists]: loop body 0:
-    Source: 'src/middleware.rs', lines 270:4-282:1
+    Source: 'ports/artifactkeeper/kernel/src/middleware.rs', lines 270:4-282:1
     Visibility: public -/
 @[rust_loop_body]
 def middleware.role_grant_exists_loop.body
@@ -4627,7 +4627,7 @@ def middleware.role_grant_exists_loop.body
   else ok (done false)
 
 /-- [artifactkeeper_kernel::middleware::role_grant_exists]: loop 0:
-    Source: 'src/middleware.rs', lines 270:4-282:1
+    Source: 'ports/artifactkeeper/kernel/src/middleware.rs', lines 270:4-282:1
     Visibility: public -/
 @[rust_loop]
 def middleware.role_grant_exists_loop
@@ -4639,7 +4639,7 @@ def middleware.role_grant_exists_loop
     i
 
 /-- [artifactkeeper_kernel::middleware::role_grant_exists]:
-    Source: 'src/middleware.rs', lines 265:0-282:1
+    Source: 'ports/artifactkeeper/kernel/src/middleware.rs', lines 265:0-282:1
     Visibility: public -/
 def middleware.role_grant_exists
   (db : tables.Db) (user_id : Std.U64) (repo_id : Std.U64) :
@@ -4653,7 +4653,7 @@ def middleware.role_grant_exists
     ok (core.result.Result.Ok b1)
 
 /-- [artifactkeeper_kernel::middleware::no_repo]:
-    Source: 'src/middleware.rs', lines 285:0-294:1 -/
+    Source: 'ports/artifactkeeper/kernel/src/middleware.rs', lines 285:0-294:1 -/
 def middleware.no_repo
   (oracle : trusted.Oracle) (req : http.Request) :
   Result middleware.Response
@@ -4669,7 +4669,7 @@ def middleware.no_repo
   | resolve.AuthOutcome.Overloaded => ok middleware.Response.ServiceUnavailable
 
 /-- [artifactkeeper_kernel::permission::push_distinct]: loop body 0:
-    Source: 'src/permission.rs', lines 200:4-205:5 -/
+    Source: 'ports/artifactkeeper/kernel/src/permission.rs', lines 200:4-205:5 -/
 @[rust_loop_body]
 def permission.push_distinct_loop.body
   (actions : Slice (alloc.vec.Vec Std.U8))
@@ -4696,7 +4696,7 @@ def permission.push_distinct_loop.body
   else ok (done out)
 
 /-- [artifactkeeper_kernel::permission::push_distinct]: loop 0:
-    Source: 'src/permission.rs', lines 200:4-205:5 -/
+    Source: 'ports/artifactkeeper/kernel/src/permission.rs', lines 200:4-205:5 -/
 @[rust_loop]
 def permission.push_distinct_loop
   (out : alloc.vec.Vec (alloc.vec.Vec Std.U8))
@@ -4708,7 +4708,7 @@ def permission.push_distinct_loop
     (out, j)
 
 /-- [artifactkeeper_kernel::permission::push_distinct]:
-    Source: 'src/permission.rs', lines 198:0-206:1 -/
+    Source: 'ports/artifactkeeper/kernel/src/permission.rs', lines 198:0-206:1 -/
 @[reducible]
 def permission.push_distinct
   (out : alloc.vec.Vec (alloc.vec.Vec Std.U8))
@@ -4718,7 +4718,7 @@ def permission.push_distinct
   permission.push_distinct_loop out actions 0#usize
 
 /-- [artifactkeeper_kernel::permission::project_of]: loop body 0:
-    Source: 'src/permission.rs', lines 14:4-21:1
+    Source: 'ports/artifactkeeper/kernel/src/permission.rs', lines 14:4-21:1
     Visibility: public -/
 @[rust_loop_body]
 def permission.project_of_loop.body
@@ -4738,7 +4738,7 @@ def permission.project_of_loop.body
   else ok (done none)
 
 /-- [artifactkeeper_kernel::permission::project_of]: loop 0:
-    Source: 'src/permission.rs', lines 14:4-21:1
+    Source: 'ports/artifactkeeper/kernel/src/permission.rs', lines 14:4-21:1
     Visibility: public -/
 @[rust_loop]
 def permission.project_of_loop
@@ -4750,7 +4750,7 @@ def permission.project_of_loop
     i
 
 /-- [artifactkeeper_kernel::permission::project_of]:
-    Source: 'src/permission.rs', lines 12:0-21:1
+    Source: 'ports/artifactkeeper/kernel/src/permission.rs', lines 12:0-21:1
     Visibility: public -/
 @[reducible]
 def permission.project_of
@@ -4758,7 +4758,7 @@ def permission.project_of
   permission.project_of_loop db repo_id 0#usize
 
 /-- [artifactkeeper_kernel::permission::project_is]:
-    Source: 'src/permission.rs', lines 25:0-30:1
+    Source: 'ports/artifactkeeper/kernel/src/permission.rs', lines 25:0-30:1
     Visibility: public -/
 def permission.project_is
   (db : tables.Db) (repo_id : Std.U64) (target_id : Std.U64) :
@@ -4770,7 +4770,7 @@ def permission.project_is
   | some pid => ok (pid = target_id)
 
 /-- [artifactkeeper_kernel::permission::target_matches]:
-    Source: 'src/permission.rs', lines 175:0-180:1
+    Source: 'ports/artifactkeeper/kernel/src/permission.rs', lines 175:0-180:1
     Visibility: public -/
 def permission.target_matches
   (db : tables.Db) (p : tables.Permission) (target_type : Slice Std.U8)
@@ -4827,7 +4827,7 @@ def permission.target_matches
     else ok false
 
 /-- [artifactkeeper_kernel::net::{artifactkeeper_kernel::net::CidrRange}::contains]:
-    Source: 'src/net.rs', lines 77:4-101:5
+    Source: 'ports/artifactkeeper/kernel/src/net.rs', lines 77:4-101:5
     Visibility: public -/
 def net.CidrRange.contains
   (self : net.CidrRange) (ip : net.IpAddr) : Result Bool := do
@@ -4870,7 +4870,7 @@ def net.CidrRange.contains
       ok (i = i1)
 
 /-- [artifactkeeper_kernel::net::any_contains]: loop body 0:
-    Source: 'src/net.rs', lines 107:4-114:1
+    Source: 'ports/artifactkeeper/kernel/src/net.rs', lines 107:4-114:1
     Visibility: public -/
 @[rust_loop_body]
 def net.any_contains_loop.body
@@ -4889,7 +4889,7 @@ def net.any_contains_loop.body
   else ok (done false)
 
 /-- [artifactkeeper_kernel::net::any_contains]: loop 0:
-    Source: 'src/net.rs', lines 107:4-114:1
+    Source: 'ports/artifactkeeper/kernel/src/net.rs', lines 107:4-114:1
     Visibility: public -/
 @[rust_loop]
 def net.any_contains_loop
@@ -4901,7 +4901,7 @@ def net.any_contains_loop
     i
 
 /-- [artifactkeeper_kernel::net::any_contains]:
-    Source: 'src/net.rs', lines 105:0-114:1
+    Source: 'ports/artifactkeeper/kernel/src/net.rs', lines 105:0-114:1
     Visibility: public -/
 @[reducible]
 def net.any_contains
@@ -4909,7 +4909,7 @@ def net.any_contains
   net.any_contains_loop ranges ip 0#usize
 
 /-- [artifactkeeper_kernel::permission::ip_condition]:
-    Source: 'src/permission.rs', lines 55:0-63:1
+    Source: 'ports/artifactkeeper/kernel/src/permission.rs', lines 55:0-63:1
     Visibility: public -/
 def permission.ip_condition
   (p : tables.Permission) (client_ip : Option net.IpAddr) : Result Bool := do
@@ -4922,7 +4922,7 @@ def permission.ip_condition
                  net.any_contains s ip
 
 /-- [artifactkeeper_kernel::permission::is_member]: loop body 0:
-    Source: 'src/permission.rs', lines 35:4-42:1
+    Source: 'ports/artifactkeeper/kernel/src/permission.rs', lines 35:4-42:1
     Visibility: public -/
 @[rust_loop_body]
 def permission.is_member_loop.body
@@ -4946,7 +4946,7 @@ def permission.is_member_loop.body
   else ok (done false)
 
 /-- [artifactkeeper_kernel::permission::is_member]: loop 0:
-    Source: 'src/permission.rs', lines 35:4-42:1
+    Source: 'ports/artifactkeeper/kernel/src/permission.rs', lines 35:4-42:1
     Visibility: public -/
 @[rust_loop]
 def permission.is_member_loop
@@ -4958,7 +4958,7 @@ def permission.is_member_loop
     i
 
 /-- [artifactkeeper_kernel::permission::is_member]:
-    Source: 'src/permission.rs', lines 33:0-42:1
+    Source: 'ports/artifactkeeper/kernel/src/permission.rs', lines 33:0-42:1
     Visibility: public -/
 @[reducible]
 def permission.is_member
@@ -4966,7 +4966,7 @@ def permission.is_member
   permission.is_member_loop db user_id group_id 0#usize
 
 /-- [artifactkeeper_kernel::permission::principal_matches]:
-    Source: 'src/permission.rs', lines 46:0-50:1
+    Source: 'ports/artifactkeeper/kernel/src/permission.rs', lines 46:0-50:1
     Visibility: public -/
 def permission.principal_matches
   (db : tables.Db) (p : tables.Permission) (user_id : Std.U64) :
@@ -5023,7 +5023,7 @@ def permission.principal_matches
       else ok false
 
 /-- [artifactkeeper_kernel::permission::query_actions]: loop body 0:
-    Source: 'src/permission.rs', lines 216:4-222:5
+    Source: 'ports/artifactkeeper/kernel/src/permission.rs', lines 216:4-222:5
     Visibility: public -/
 @[rust_loop_body]
 def permission.query_actions_loop.body
@@ -5060,7 +5060,7 @@ def permission.query_actions_loop.body
   else ok (done out)
 
 /-- [artifactkeeper_kernel::permission::query_actions]: loop 0:
-    Source: 'src/permission.rs', lines 216:4-222:5
+    Source: 'ports/artifactkeeper/kernel/src/permission.rs', lines 216:4-222:5
     Visibility: public -/
 @[rust_loop]
 def permission.query_actions_loop
@@ -5075,7 +5075,7 @@ def permission.query_actions_loop
     (out, i)
 
 /-- [artifactkeeper_kernel::permission::query_actions]:
-    Source: 'src/permission.rs', lines 209:0-224:1
+    Source: 'ports/artifactkeeper/kernel/src/permission.rs', lines 209:0-224:1
     Visibility: public -/
 def permission.query_actions
   (db : tables.Db) (client_ip : Option net.IpAddr) (user_id : Std.U64)
@@ -5092,7 +5092,7 @@ def permission.query_actions
     ok (core.result.Result.Ok out)
 
 /-- [artifactkeeper_kernel::permission::check_permission]:
-    Source: 'src/permission.rs', lines 227:0-234:1
+    Source: 'ports/artifactkeeper/kernel/src/permission.rs', lines 227:0-234:1
     Visibility: public -/
 def permission.check_permission
   (db : tables.Db) (client_ip : Option net.IpAddr) (user_id : Std.U64)
@@ -5116,7 +5116,7 @@ def permission.check_permission
         Bool (core.convert.FromSame AppError) residual
 
 /-- [artifactkeeper_kernel::permission::has_any_rules_for_target]: loop body 0:
-    Source: 'src/permission.rs', lines 188:4-195:1
+    Source: 'ports/artifactkeeper/kernel/src/permission.rs', lines 188:4-195:1
     Visibility: public -/
 @[rust_loop_body]
 def permission.has_any_rules_for_target_loop.body
@@ -5138,7 +5138,7 @@ def permission.has_any_rules_for_target_loop.body
   else ok (done false)
 
 /-- [artifactkeeper_kernel::permission::has_any_rules_for_target]: loop 0:
-    Source: 'src/permission.rs', lines 188:4-195:1
+    Source: 'ports/artifactkeeper/kernel/src/permission.rs', lines 188:4-195:1
     Visibility: public -/
 @[rust_loop]
 def permission.has_any_rules_for_target_loop
@@ -5152,7 +5152,7 @@ def permission.has_any_rules_for_target_loop
     i
 
 /-- [artifactkeeper_kernel::permission::has_any_rules_for_target]:
-    Source: 'src/permission.rs', lines 183:0-195:1
+    Source: 'ports/artifactkeeper/kernel/src/permission.rs', lines 183:0-195:1
     Visibility: public -/
 def permission.has_any_rules_for_target
   (db : tables.Db) (target_type : Slice Std.U8) (target_id : Std.U64) :
@@ -5167,7 +5167,7 @@ def permission.has_any_rules_for_target
     ok (core.result.Result.Ok b1)
 
 /-- [artifactkeeper_kernel::permission::role_has]: loop body 0:
-    Source: 'src/permission.rs', lines 106:4-113:1 -/
+    Source: 'ports/artifactkeeper/kernel/src/permission.rs', lines 106:4-113:1 -/
 @[rust_loop_body]
 def permission.role_has_loop.body
   (db : tables.Db) (role_id : Std.U64) (perm : Slice Std.U8) (i : Std.Usize) :
@@ -5192,7 +5192,7 @@ def permission.role_has_loop.body
   else ok (done false)
 
 /-- [artifactkeeper_kernel::permission::role_has]: loop 0:
-    Source: 'src/permission.rs', lines 106:4-113:1 -/
+    Source: 'ports/artifactkeeper/kernel/src/permission.rs', lines 106:4-113:1 -/
 @[rust_loop]
 def permission.role_has_loop
   (db : tables.Db) (role_id : Std.U64) (perm : Slice Std.U8) (i : Std.Usize) :
@@ -5203,7 +5203,7 @@ def permission.role_has_loop
     i
 
 /-- [artifactkeeper_kernel::permission::role_has]:
-    Source: 'src/permission.rs', lines 104:0-113:1 -/
+    Source: 'ports/artifactkeeper/kernel/src/permission.rs', lines 104:0-113:1 -/
 @[reducible]
 def permission.role_has
   (db : tables.Db) (role_id : Std.U64) (perm : Slice Std.U8) :
@@ -5212,7 +5212,7 @@ def permission.role_has
   permission.role_has_loop db role_id perm 0#usize
 
 /-- [artifactkeeper_kernel::permission::assigned_role_has]: loop body 0:
-    Source: 'src/permission.rs', lines 120:4-132:1
+    Source: 'ports/artifactkeeper/kernel/src/permission.rs', lines 120:4-132:1
     Visibility: public -/
 @[rust_loop_body]
 def permission.assigned_role_has_loop.body
@@ -5246,7 +5246,7 @@ def permission.assigned_role_has_loop.body
   else ok (done false)
 
 /-- [artifactkeeper_kernel::permission::assigned_role_has]: loop 0:
-    Source: 'src/permission.rs', lines 120:4-132:1
+    Source: 'ports/artifactkeeper/kernel/src/permission.rs', lines 120:4-132:1
     Visibility: public -/
 @[rust_loop]
 def permission.assigned_role_has_loop
@@ -5260,7 +5260,7 @@ def permission.assigned_role_has_loop
     i
 
 /-- [artifactkeeper_kernel::permission::assigned_role_has]:
-    Source: 'src/permission.rs', lines 118:0-132:1
+    Source: 'ports/artifactkeeper/kernel/src/permission.rs', lines 118:0-132:1
     Visibility: public -/
 @[reducible]
 def permission.assigned_role_has
@@ -5271,7 +5271,7 @@ def permission.assigned_role_has
   permission.assigned_role_has_loop db user_id repo_id perm 0#usize
 
 /-- [artifactkeeper_kernel::permission::repo_target_matches]:
-    Source: 'src/permission.rs', lines 67:0-70:1
+    Source: 'ports/artifactkeeper/kernel/src/permission.rs', lines 67:0-70:1
     Visibility: public -/
 def permission.repo_target_matches
   (db : tables.Db) (p : tables.Permission) (repo_id : Std.U64) :
@@ -5313,7 +5313,7 @@ def permission.repo_target_matches
     else ok false
 
 /-- [artifactkeeper_kernel::permission::applicable]:
-    Source: 'src/permission.rs', lines 73:0-75:1
+    Source: 'ports/artifactkeeper/kernel/src/permission.rs', lines 73:0-75:1
     Visibility: public -/
 def permission.applicable
   (db : tables.Db) (p : tables.Permission) (client_ip : Option net.IpAddr)
@@ -5330,7 +5330,7 @@ def permission.applicable
   else ok false
 
 /-- [artifactkeeper_kernel::permission::any_applicable_grants]: loop body 0:
-    Source: 'src/permission.rs', lines 93:4-101:1 -/
+    Source: 'ports/artifactkeeper/kernel/src/permission.rs', lines 93:4-101:1 -/
 @[rust_loop_body]
 def permission.any_applicable_grants_loop.body
   (db : tables.Db) (client_ip : Option net.IpAddr) (user_id : Std.U64)
@@ -5365,7 +5365,7 @@ def permission.any_applicable_grants_loop.body
   else ok (done false)
 
 /-- [artifactkeeper_kernel::permission::any_applicable_grants]: loop 0:
-    Source: 'src/permission.rs', lines 93:4-101:1 -/
+    Source: 'ports/artifactkeeper/kernel/src/permission.rs', lines 93:4-101:1 -/
 @[rust_loop]
 def permission.any_applicable_grants_loop
   (db : tables.Db) (client_ip : Option net.IpAddr) (user_id : Std.U64)
@@ -5378,7 +5378,7 @@ def permission.any_applicable_grants_loop
     i
 
 /-- [artifactkeeper_kernel::permission::any_applicable_grants]:
-    Source: 'src/permission.rs', lines 91:0-101:1 -/
+    Source: 'ports/artifactkeeper/kernel/src/permission.rs', lines 91:0-101:1 -/
 @[reducible]
 def permission.any_applicable_grants
   (db : tables.Db) (client_ip : Option net.IpAddr) (user_id : Std.U64)
@@ -5389,7 +5389,7 @@ def permission.any_applicable_grants
     0#usize
 
 /-- [artifactkeeper_kernel::permission::any_applicable]: loop body 0:
-    Source: 'src/permission.rs', lines 80:4-87:1 -/
+    Source: 'ports/artifactkeeper/kernel/src/permission.rs', lines 80:4-87:1 -/
 @[rust_loop_body]
 def permission.any_applicable_loop.body
   (db : tables.Db) (client_ip : Option net.IpAddr) (user_id : Std.U64)
@@ -5410,7 +5410,7 @@ def permission.any_applicable_loop.body
   else ok (done false)
 
 /-- [artifactkeeper_kernel::permission::any_applicable]: loop 0:
-    Source: 'src/permission.rs', lines 80:4-87:1 -/
+    Source: 'ports/artifactkeeper/kernel/src/permission.rs', lines 80:4-87:1 -/
 @[rust_loop]
 def permission.any_applicable_loop
   (db : tables.Db) (client_ip : Option net.IpAddr) (user_id : Std.U64)
@@ -5423,7 +5423,7 @@ def permission.any_applicable_loop
     i
 
 /-- [artifactkeeper_kernel::permission::any_applicable]:
-    Source: 'src/permission.rs', lines 78:0-87:1 -/
+    Source: 'ports/artifactkeeper/kernel/src/permission.rs', lines 78:0-87:1 -/
 @[reducible]
 def permission.any_applicable
   (db : tables.Db) (client_ip : Option net.IpAddr) (user_id : Std.U64)
@@ -5433,7 +5433,7 @@ def permission.any_applicable
   permission.any_applicable_loop db client_ip user_id repo_id 0#usize
 
 /-- [artifactkeeper_kernel::permission::check_repository_action]:
-    Source: 'src/permission.rs', lines 135:0-150:1
+    Source: 'ports/artifactkeeper/kernel/src/permission.rs', lines 135:0-150:1
     Visibility: public -/
 def permission.check_repository_action
   (db : tables.Db) (client_ip : Option net.IpAddr) (user_id : Std.U64)
@@ -5473,7 +5473,7 @@ def permission.check_repository_action
       else ok (core.result.Result.Ok decided)
 
 /-- [artifactkeeper_kernel::paths::authenticated_read_satisfies_acl]:
-    Source: 'src/paths.rs', lines 216:0-218:1
+    Source: 'ports/artifactkeeper/kernel/src/paths.rs', lines 216:0-218:1
     Visibility: public -/
 def paths.authenticated_read_satisfies_acl
   (visibility : Visibility) (action : Slice Std.U8) : Result Bool := do
@@ -5487,7 +5487,7 @@ def paths.authenticated_read_satisfies_acl
   else ok false
 
 /-- [artifactkeeper_kernel::paths::action_for_method]:
-    Source: 'src/paths.rs', lines 201:0-208:1
+    Source: 'ports/artifactkeeper/kernel/src/paths.rs', lines 201:0-208:1
     Visibility: public -/
 def paths.action_for_method
   (method : Method) : Result (alloc.vec.Vec Std.U8) := do
@@ -5534,7 +5534,7 @@ def paths.action_for_method
     alloc.slice.Slice.to_vec core.clone.CloneU8 s
 
 /-- [artifactkeeper_kernel::middleware::unwrap_false]:
-    Source: 'src/middleware.rs', lines 334:0-339:1 -/
+    Source: 'ports/artifactkeeper/kernel/src/middleware.rs', lines 334:0-339:1 -/
 def middleware.unwrap_false
   {E : Type} (r : core.result.Result Bool E) : Result Bool := do
   match r with
@@ -5542,7 +5542,7 @@ def middleware.unwrap_false
   | core.result.Result.Err _ => ok false
 
 /-- [artifactkeeper_kernel::middleware::permission_arm]:
-    Source: 'src/middleware.rs', lines 298:0-331:1 -/
+    Source: 'ports/artifactkeeper/kernel/src/middleware.rs', lines 298:0-331:1 -/
 def middleware.permission_arm
   (db : tables.Db) (client_ip : Option net.IpAddr) (ext : AuthExtension)
   (repo_id : Std.U64) (visibility : Visibility) (req : http.Request)
@@ -5723,14 +5723,14 @@ def middleware.permission_arm
       ok (some middleware.Response.PermissionServiceUnavailable)
 
 /-- [artifactkeeper_kernel::token_scope::{artifactkeeper_kernel::AuthExtension}::access_scope]:
-    Source: 'src/token_scope.rs', lines 82:4-84:5
+    Source: 'ports/artifactkeeper/kernel/src/token_scope.rs', lines 82:4-84:5
     Visibility: public -/
 def token_scope.AuthExtension.access_scope
   (self : AuthExtension) : Result AccessScope := do
   AccessScope.Insts.CoreCloneClone.clone self.allowed_repo_ids
 
 /-- [artifactkeeper_kernel::token_scope::{artifactkeeper_kernel::AuthExtension}::can_access_repo]:
-    Source: 'src/token_scope.rs', lines 86:4-88:5
+    Source: 'ports/artifactkeeper/kernel/src/token_scope.rs', lines 86:4-88:5
     Visibility: public -/
 def token_scope.AuthExtension.can_access_repo
   (self : AuthExtension) (repo_id : Std.U64) : Result Bool := do
@@ -5738,7 +5738,7 @@ def token_scope.AuthExtension.can_access_repo
   AccessScope.grants «as» repo_id
 
 /-- [artifactkeeper_kernel::permission::check_anonymous_repository_action]: loop body 0:
-    Source: 'src/permission.rs', lines 159:4-171:1
+    Source: 'ports/artifactkeeper/kernel/src/permission.rs', lines 159:4-171:1
     Visibility: public -/
 @[rust_loop_body]
 def permission.check_anonymous_repository_action_loop.body
@@ -5795,7 +5795,7 @@ def permission.check_anonymous_repository_action_loop.body
   else ok (done false)
 
 /-- [artifactkeeper_kernel::permission::check_anonymous_repository_action]: loop 0:
-    Source: 'src/permission.rs', lines 159:4-171:1
+    Source: 'ports/artifactkeeper/kernel/src/permission.rs', lines 159:4-171:1
     Visibility: public -/
 @[rust_loop]
 def permission.check_anonymous_repository_action_loop
@@ -5809,7 +5809,7 @@ def permission.check_anonymous_repository_action_loop
     i
 
 /-- [artifactkeeper_kernel::permission::check_anonymous_repository_action]:
-    Source: 'src/permission.rs', lines 153:0-171:1
+    Source: 'ports/artifactkeeper/kernel/src/permission.rs', lines 153:0-171:1
     Visibility: public -/
 def permission.check_anonymous_repository_action
   (db : tables.Db) (client_ip : Option net.IpAddr) (repository_id : Std.U64)
@@ -5826,7 +5826,7 @@ def permission.check_anonymous_repository_action
     ok (core.result.Result.Ok b1)
 
 /-- [artifactkeeper_kernel::paths::public_read_satisfies_acl]:
-    Source: 'src/paths.rs', lines 211:0-213:1
+    Source: 'ports/artifactkeeper/kernel/src/paths.rs', lines 211:0-213:1
     Visibility: public -/
 def paths.public_read_satisfies_acl
   (visibility : Visibility) (action : Slice Std.U8) : Result Bool := do
@@ -5840,7 +5840,7 @@ def paths.public_read_satisfies_acl
   else ok false
 
 /-- [artifactkeeper_kernel::paths::is_write_method]:
-    Source: 'src/paths.rs', lines 196:0-198:1
+    Source: 'ports/artifactkeeper/kernel/src/paths.rs', lines 196:0-198:1
     Visibility: public -/
 def paths.is_write_method (method : Method) : Result Bool := do
   match method with
@@ -5854,7 +5854,7 @@ def paths.is_write_method (method : Method) : Result Bool := do
   | Method.Other => ok false
 
 /-- [artifactkeeper_kernel::paths::should_allow_repo_access]:
-    Source: 'src/paths.rs', lines 191:0-193:1
+    Source: 'ports/artifactkeeper/kernel/src/paths.rs', lines 191:0-193:1
     Visibility: public -/
 def paths.should_allow_repo_access
   (visibility : Visibility) (has_auth : Bool) : Result Bool := do
@@ -5864,7 +5864,7 @@ def paths.should_allow_repo_access
   else ok has_auth
 
 /-- [artifactkeeper_kernel::paths::is_pypi_xmlrpc_tail]:
-    Source: 'src/paths.rs', lines 137:0-142:1 -/
+    Source: 'ports/artifactkeeper/kernel/src/paths.rs', lines 137:0-142:1 -/
 def paths.is_pypi_xmlrpc_tail
   (segments : Slice (alloc.vec.Vec Std.U8)) : Result Bool := do
   let b ← strs.seg_nonempty segments 1#usize
@@ -5891,7 +5891,7 @@ def paths.is_pypi_xmlrpc_tail
   else ok false
 
 /-- [artifactkeeper_kernel::paths::is_anonymous_readable_format_post]:
-    Source: 'src/paths.rs', lines 172:0-188:1
+    Source: 'ports/artifactkeeper/kernel/src/paths.rs', lines 172:0-188:1
     Visibility: public -/
 def paths.is_anonymous_readable_format_post
   (path : Slice Std.U8) : Result Bool := do
@@ -5949,7 +5949,7 @@ def paths.is_anonymous_readable_format_post
     else ok false
 
 /-- [artifactkeeper_kernel::paths::is_non_mutating_format_post]:
-    Source: 'src/paths.rs', lines 145:0-169:1
+    Source: 'ports/artifactkeeper/kernel/src/paths.rs', lines 145:0-169:1
     Visibility: public -/
 def paths.is_non_mutating_format_post (path : Slice Std.U8) : Result Bool := do
   let trimmed ← strs.trim_start_byte path 47#u8
@@ -6074,7 +6074,7 @@ def paths.is_non_mutating_format_post (path : Slice Std.U8) : Result Bool := do
         else ok false
 
 /-- [artifactkeeper_kernel::paths::percent_decode_bytes]: loop body 0:
-    Source: 'src/paths.rs', lines 25:4-49:1 -/
+    Source: 'ports/artifactkeeper/kernel/src/paths.rs', lines 25:4-49:1 -/
 @[rust_loop_body]
 def paths.percent_decode_bytes_loop.body
   (bytes : Slice Std.U8) (decoded : alloc.vec.Vec Std.U8) (i : Std.Usize) :
@@ -6119,7 +6119,7 @@ def paths.percent_decode_bytes_loop.body
   else ok (done (some decoded))
 
 /-- [artifactkeeper_kernel::paths::percent_decode_bytes]: loop 0:
-    Source: 'src/paths.rs', lines 25:4-49:1 -/
+    Source: 'ports/artifactkeeper/kernel/src/paths.rs', lines 25:4-49:1 -/
 @[rust_loop]
 def paths.percent_decode_bytes_loop
   (bytes : Slice Std.U8) (decoded : alloc.vec.Vec Std.U8) (i : Std.Usize) :
@@ -6131,14 +6131,14 @@ def paths.percent_decode_bytes_loop
     (decoded, i)
 
 /-- [artifactkeeper_kernel::paths::percent_decode_bytes]:
-    Source: 'src/paths.rs', lines 22:0-49:1 -/
+    Source: 'ports/artifactkeeper/kernel/src/paths.rs', lines 22:0-49:1 -/
 @[reducible]
 def paths.percent_decode_bytes
   (bytes : Slice Std.U8) : Result (Option (alloc.vec.Vec Std.U8)) := do
   paths.percent_decode_bytes_loop bytes (alloc.vec.Vec.new Std.U8) 0#usize
 
 /-- [artifactkeeper_kernel::paths::percent_decode_path_segment]:
-    Source: 'src/paths.rs', lines 52:0-62:1
+    Source: 'ports/artifactkeeper/kernel/src/paths.rs', lines 52:0-62:1
     Visibility: public -/
 def paths.percent_decode_path_segment
   (segment : Slice Std.U8) : Result (Option (alloc.vec.Vec Std.U8)) := do
@@ -6159,7 +6159,7 @@ def paths.percent_decode_path_segment
     ok (some v)
 
 /-- [artifactkeeper_kernel::paths::extract_repo_key]:
-    Source: 'src/paths.rs', lines 65:0-89:1
+    Source: 'ports/artifactkeeper/kernel/src/paths.rs', lines 65:0-89:1
     Visibility: public -/
 def paths.extract_repo_key
   (path : Slice Std.U8) : Result (alloc.vec.Vec Std.U8) := do
@@ -6236,7 +6236,7 @@ def paths.extract_repo_key
   | some decoded => ok decoded
 
 /-- [artifactkeeper_kernel::middleware::repo_visibility_middleware]:
-    Source: 'src/middleware.rs', lines 344:0-405:1
+    Source: 'ports/artifactkeeper/kernel/src/middleware.rs', lines 344:0-405:1
     Visibility: public -/
 def middleware.repo_visibility_middleware
   (db : tables.Db) (oracle : trusted.Oracle) (client_ip : Option net.IpAddr)
@@ -7040,7 +7040,7 @@ def middleware.repo_visibility_middleware
                   true)
 
 /-- [artifactkeeper_kernel::net::{impl core::cmp::PartialEq<artifactkeeper_kernel::net::IpAddr> for artifactkeeper_kernel::net::IpAddr}::eq]:
-    Source: 'src/net.rs', lines 7:29-7:38
+    Source: 'ports/artifactkeeper/kernel/src/net.rs', lines 7:29-7:38
     Visibility: public -/
 def net.IpAddr.Insts.CoreCmpPartialEqIpAddr.eq
   (self : net.IpAddr) (other : net.IpAddr) : Result Bool := do
@@ -7062,7 +7062,7 @@ def net.IpAddr.Insts.CoreCmpPartialEqIpAddr.eq
   else ok false
 
 /-- Trait implementation: [artifactkeeper_kernel::net::{impl core::cmp::PartialEq<artifactkeeper_kernel::net::IpAddr> for artifactkeeper_kernel::net::IpAddr}]
-    Source: 'src/net.rs', lines 7:29-7:38 -/
+    Source: 'ports/artifactkeeper/kernel/src/net.rs', lines 7:29-7:38 -/
 @[reducible]
 impl_def net.IpAddr.Insts.CoreCmpPartialEqIpAddr : core.cmp.PartialEq
   net.IpAddr net.IpAddr := {
@@ -7072,7 +7072,7 @@ impl_def net.IpAddr.Insts.CoreCmpPartialEqIpAddr : core.cmp.PartialEq
 }
 
 /-- [artifactkeeper_kernel::net::first_xff_token_in]:
-    Source: 'src/net.rs', lines 117:0-128:1
+    Source: 'ports/artifactkeeper/kernel/src/net.rs', lines 117:0-128:1
     Visibility: public -/
 def net.first_xff_token_in
   (headers : Slice ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec Std.U8))) :
@@ -7103,7 +7103,7 @@ def net.first_xff_token_in
     else ok none
 
 /-- [artifactkeeper_kernel::strs::rfind_byte]: loop body 0:
-    Source: 'src/strs.rs', lines 103:4-110:1
+    Source: 'ports/artifactkeeper/kernel/src/strs.rs', lines 103:4-110:1
     Visibility: public -/
 @[rust_loop_body]
 def strs.rfind_byte_loop.body
@@ -7120,7 +7120,7 @@ def strs.rfind_byte_loop.body
   else ok (done none)
 
 /-- [artifactkeeper_kernel::strs::rfind_byte]: loop 0:
-    Source: 'src/strs.rs', lines 103:4-110:1
+    Source: 'ports/artifactkeeper/kernel/src/strs.rs', lines 103:4-110:1
     Visibility: public -/
 @[rust_loop]
 def strs.rfind_byte_loop
@@ -7132,7 +7132,7 @@ def strs.rfind_byte_loop
     i
 
 /-- [artifactkeeper_kernel::strs::rfind_byte]:
-    Source: 'src/strs.rs', lines 101:0-110:1
+    Source: 'ports/artifactkeeper/kernel/src/strs.rs', lines 101:0-110:1
     Visibility: public -/
 def strs.rfind_byte
   (s : Slice Std.U8) (b : Std.U8) : Result (Option Std.Usize) := do
@@ -7140,7 +7140,7 @@ def strs.rfind_byte
   strs.rfind_byte_loop s b i
 
 /-- [artifactkeeper_kernel::strs::rsplit_once]:
-    Source: 'src/strs.rs', lines 151:0-156:1
+    Source: 'ports/artifactkeeper/kernel/src/strs.rs', lines 151:0-156:1
     Visibility: public -/
 def strs.rsplit_once
   (s : Slice Std.U8) (sep : Std.U8) :
@@ -7157,7 +7157,7 @@ def strs.rsplit_once
     ok (some (v, v1))
 
 /-- [artifactkeeper_kernel::strs::count_byte]: loop body 0:
-    Source: 'src/strs.rs', lines 115:4-120:5
+    Source: 'ports/artifactkeeper/kernel/src/strs.rs', lines 115:4-120:5
     Visibility: public -/
 @[rust_loop_body]
 def strs.count_byte_loop.body
@@ -7176,7 +7176,7 @@ def strs.count_byte_loop.body
   else ok (done n)
 
 /-- [artifactkeeper_kernel::strs::count_byte]: loop 0:
-    Source: 'src/strs.rs', lines 115:4-120:5
+    Source: 'ports/artifactkeeper/kernel/src/strs.rs', lines 115:4-120:5
     Visibility: public -/
 @[rust_loop]
 def strs.count_byte_loop
@@ -7188,14 +7188,14 @@ def strs.count_byte_loop
     (n, i)
 
 /-- [artifactkeeper_kernel::strs::count_byte]:
-    Source: 'src/strs.rs', lines 112:0-122:1
+    Source: 'ports/artifactkeeper/kernel/src/strs.rs', lines 112:0-122:1
     Visibility: public -/
 @[reducible]
 def strs.count_byte (s : Slice Std.U8) (b : Std.U8) : Result Std.Usize := do
   strs.count_byte_loop s b 0#usize 0#usize
 
 /-- [artifactkeeper_kernel::net::normalize_xff_token]:
-    Source: 'src/net.rs', lines 131:0-145:1
+    Source: 'ports/artifactkeeper/kernel/src/net.rs', lines 131:0-145:1
     Visibility: public -/
 def net.normalize_xff_token
   (token : Slice Std.U8) : Result (alloc.vec.Vec Std.U8) := do
@@ -7226,7 +7226,7 @@ def net.normalize_xff_token
       strs.sub s3 0#usize «end»
 
 /-- [artifactkeeper_kernel::net::Walk]
-    Source: 'src/net.rs', lines 149:0-155:1
+    Source: 'ports/artifactkeeper/kernel/src/net.rs', lines 149:0-155:1
     Visibility: public -/
 @[discriminant isize]
 inductive net.Walk where
@@ -7235,7 +7235,7 @@ inductive net.Walk where
 | Abort : net.Walk
 
 /-- [artifactkeeper_kernel::net::{impl core::cmp::PartialEq<artifactkeeper_kernel::net::Walk> for artifactkeeper_kernel::net::Walk}::eq]:
-    Source: 'src/net.rs', lines 148:29-148:38
+    Source: 'ports/artifactkeeper/kernel/src/net.rs', lines 148:29-148:38
     Visibility: public -/
 def net.Walk.Insts.CoreCmpPartialEqWalk.eq
   (self : net.Walk) (other : net.Walk) : Result Bool := do
@@ -7255,7 +7255,7 @@ def net.Walk.Insts.CoreCmpPartialEqWalk.eq
   else ok false
 
 /-- Trait implementation: [artifactkeeper_kernel::net::{impl core::cmp::PartialEq<artifactkeeper_kernel::net::Walk> for artifactkeeper_kernel::net::Walk}]
-    Source: 'src/net.rs', lines 148:29-148:38 -/
+    Source: 'ports/artifactkeeper/kernel/src/net.rs', lines 148:29-148:38 -/
 @[reducible]
 impl_def net.Walk.Insts.CoreCmpPartialEqWalk : core.cmp.PartialEq net.Walk
   net.Walk := {
@@ -7264,7 +7264,7 @@ impl_def net.Walk.Insts.CoreCmpPartialEqWalk : core.cmp.PartialEq net.Walk
 }
 
 /-- [artifactkeeper_kernel::net::walk_token]:
-    Source: 'src/net.rs', lines 157:0-168:1 -/
+    Source: 'ports/artifactkeeper/kernel/src/net.rs', lines 157:0-168:1 -/
 def net.walk_token
   (oracle : trusted.Oracle) (proxies : Slice net.CidrRange)
   (raw : Slice Std.U8) :
@@ -7286,7 +7286,7 @@ def net.walk_token
       else ok (net.Walk.Found ip)
 
 /-- [artifactkeeper_kernel::net::walk_line]: loop body 0:
-    Source: 'src/net.rs', lines 174:10-176:54 -/
+    Source: 'ports/artifactkeeper/kernel/src/net.rs', lines 174:10-176:54 -/
 @[rust_loop_body]
 def net.walk_line_loop.body
   (oracle : trusted.Oracle) (proxies : Slice net.CidrRange)
@@ -7310,7 +7310,7 @@ def net.walk_line_loop.body
   else ok (done net.Walk.Next)
 
 /-- [artifactkeeper_kernel::net::walk_line]: loop 0:
-    Source: 'src/net.rs', lines 174:10-176:54 -/
+    Source: 'ports/artifactkeeper/kernel/src/net.rs', lines 174:10-176:54 -/
 @[rust_loop]
 def net.walk_line_loop
   (oracle : trusted.Oracle) (proxies : Slice net.CidrRange)
@@ -7322,7 +7322,7 @@ def net.walk_line_loop
     k
 
 /-- [artifactkeeper_kernel::net::walk_line]:
-    Source: 'src/net.rs', lines 171:0-182:1 -/
+    Source: 'ports/artifactkeeper/kernel/src/net.rs', lines 171:0-182:1 -/
 def net.walk_line
   (oracle : trusted.Oracle) (proxies : Slice net.CidrRange)
   (line : Slice Std.U8) :
@@ -7333,7 +7333,7 @@ def net.walk_line
   net.walk_line_loop oracle proxies tokens k
 
 /-- [artifactkeeper_kernel::net::is_xff_line]:
-    Source: 'src/net.rs', lines 184:0-186:1 -/
+    Source: 'ports/artifactkeeper/kernel/src/net.rs', lines 184:0-186:1 -/
 def net.is_xff_line
   (h : ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec Std.U8))) : Result Bool := do
   let (v, v1) := h
@@ -7351,7 +7351,7 @@ def net.is_xff_line
   else ok false
 
 /-- [artifactkeeper_kernel::net::xff_lines]: loop body 0:
-    Source: 'src/net.rs', lines 192:4-198:5 -/
+    Source: 'ports/artifactkeeper/kernel/src/net.rs', lines 192:4-198:5 -/
 @[rust_loop_body]
 def net.xff_lines_loop.body
   (headers : Slice ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec Std.U8)))
@@ -7377,7 +7377,7 @@ def net.xff_lines_loop.body
   else ok (done out)
 
 /-- [artifactkeeper_kernel::net::xff_lines]: loop 0:
-    Source: 'src/net.rs', lines 192:4-198:5 -/
+    Source: 'ports/artifactkeeper/kernel/src/net.rs', lines 192:4-198:5 -/
 @[rust_loop]
 def net.xff_lines_loop
   (headers : Slice ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec Std.U8)))
@@ -7389,7 +7389,7 @@ def net.xff_lines_loop
     (out, i)
 
 /-- [artifactkeeper_kernel::net::xff_lines]:
-    Source: 'src/net.rs', lines 189:0-200:1 -/
+    Source: 'ports/artifactkeeper/kernel/src/net.rs', lines 189:0-200:1 -/
 @[reducible]
 def net.xff_lines
   (headers : Slice ((alloc.vec.Vec Std.U8) × (alloc.vec.Vec Std.U8))) :
@@ -7398,7 +7398,7 @@ def net.xff_lines
   net.xff_lines_loop headers (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) 0#usize
 
 /-- [artifactkeeper_kernel::net::rightmost_untrusted_xff_token]: loop body 0:
-    Source: 'src/net.rs', lines 207:4-216:1
+    Source: 'ports/artifactkeeper/kernel/src/net.rs', lines 207:4-216:1
     Visibility: public -/
 @[rust_loop_body]
 def net.rightmost_untrusted_xff_token_loop.body
@@ -7421,7 +7421,7 @@ def net.rightmost_untrusted_xff_token_loop.body
   else ok (done none)
 
 /-- [artifactkeeper_kernel::net::rightmost_untrusted_xff_token]: loop 0:
-    Source: 'src/net.rs', lines 207:4-216:1
+    Source: 'ports/artifactkeeper/kernel/src/net.rs', lines 207:4-216:1
     Visibility: public -/
 @[rust_loop]
 def net.rightmost_untrusted_xff_token_loop
@@ -7435,7 +7435,7 @@ def net.rightmost_untrusted_xff_token_loop
     k
 
 /-- [artifactkeeper_kernel::net::rightmost_untrusted_xff_token]:
-    Source: 'src/net.rs', lines 203:0-216:1
+    Source: 'ports/artifactkeeper/kernel/src/net.rs', lines 203:0-216:1
     Visibility: public -/
 def net.rightmost_untrusted_xff_token
   (oracle : trusted.Oracle)
@@ -7448,7 +7448,7 @@ def net.rightmost_untrusted_xff_token
   net.rightmost_untrusted_xff_token_loop oracle trusted_proxies lines k
 
 /-- [artifactkeeper_kernel::net::resolve_client_ip_addr]:
-    Source: 'src/net.rs', lines 219:0-235:1
+    Source: 'ports/artifactkeeper/kernel/src/net.rs', lines 219:0-235:1
     Visibility: public -/
 def net.resolve_client_ip_addr
   (oracle : trusted.Oracle)
@@ -7479,7 +7479,7 @@ def net.resolve_client_ip_addr
     else ok peer
 
 /-- [artifactkeeper_kernel::token_scope::is_allowed_scope]:
-    Source: 'src/token_scope.rs', lines 7:0-21:1
+    Source: 'ports/artifactkeeper/kernel/src/token_scope.rs', lines 7:0-21:1
     Visibility: public -/
 def token_scope.is_allowed_scope (s : Slice Std.U8) : Result Bool := do
   let s1 ←
@@ -7612,7 +7612,7 @@ def token_scope.is_allowed_scope (s : Slice Std.U8) : Result Bool := do
                           strs.bytes_eq s s13
 
 /-- [artifactkeeper_kernel::token_scope::is_admin_only_scope]:
-    Source: 'src/token_scope.rs', lines 24:0-33:1
+    Source: 'ports/artifactkeeper/kernel/src/token_scope.rs', lines 24:0-33:1
     Visibility: public -/
 def token_scope.is_admin_only_scope (s : Slice Std.U8) : Result Bool := do
   let s1 ←
@@ -7688,7 +7688,7 @@ def token_scope.is_admin_only_scope (s : Slice Std.U8) : Result Bool := do
                 strs.bytes_eq s s8
 
 /-- [artifactkeeper_kernel::token_scope::validate_scopes_pure]: loop body 0:
-    Source: 'src/token_scope.rs', lines 38:4-45:1
+    Source: 'ports/artifactkeeper/kernel/src/token_scope.rs', lines 38:4-45:1
     Visibility: public -/
 @[rust_loop_body]
 def token_scope.validate_scopes_pure_loop.body
@@ -7711,7 +7711,7 @@ def token_scope.validate_scopes_pure_loop.body
   else ok (done (core.result.Result.Ok ()))
 
 /-- [artifactkeeper_kernel::token_scope::validate_scopes_pure]: loop 0:
-    Source: 'src/token_scope.rs', lines 38:4-45:1
+    Source: 'ports/artifactkeeper/kernel/src/token_scope.rs', lines 38:4-45:1
     Visibility: public -/
 @[rust_loop]
 def token_scope.validate_scopes_pure_loop
@@ -7723,7 +7723,7 @@ def token_scope.validate_scopes_pure_loop
     i
 
 /-- [artifactkeeper_kernel::token_scope::validate_scopes_pure]:
-    Source: 'src/token_scope.rs', lines 36:0-45:1
+    Source: 'ports/artifactkeeper/kernel/src/token_scope.rs', lines 36:0-45:1
     Visibility: public -/
 @[reducible]
 def token_scope.validate_scopes_pure
@@ -7733,7 +7733,7 @@ def token_scope.validate_scopes_pure
   token_scope.validate_scopes_pure_loop scopes 0#usize
 
 /-- [artifactkeeper_kernel::token_scope::enforce_admin_only_scopes]: loop body 0:
-    Source: 'src/token_scope.rs', lines 53:4-60:1
+    Source: 'ports/artifactkeeper/kernel/src/token_scope.rs', lines 53:4-60:1
     Visibility: public -/
 @[rust_loop_body]
 def token_scope.enforce_admin_only_scopes_loop.body
@@ -7756,7 +7756,7 @@ def token_scope.enforce_admin_only_scopes_loop.body
   else ok (done (core.result.Result.Ok ()))
 
 /-- [artifactkeeper_kernel::token_scope::enforce_admin_only_scopes]: loop 0:
-    Source: 'src/token_scope.rs', lines 53:4-60:1
+    Source: 'ports/artifactkeeper/kernel/src/token_scope.rs', lines 53:4-60:1
     Visibility: public -/
 @[rust_loop]
 def token_scope.enforce_admin_only_scopes_loop
@@ -7768,7 +7768,7 @@ def token_scope.enforce_admin_only_scopes_loop
     i
 
 /-- [artifactkeeper_kernel::token_scope::enforce_admin_only_scopes]:
-    Source: 'src/token_scope.rs', lines 48:0-60:1
+    Source: 'ports/artifactkeeper/kernel/src/token_scope.rs', lines 48:0-60:1
     Visibility: public -/
 def token_scope.enforce_admin_only_scopes
   (scopes : Slice (alloc.vec.Vec Std.U8)) (caller_is_admin : Bool) :

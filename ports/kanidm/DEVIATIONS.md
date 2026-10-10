@@ -85,3 +85,9 @@ requires its premises to hold at least 300 times.
 | `constrain` sets that are always empty (search, create) | kept | kept | |
 | byte-string constants | `ATTR_*`, `ENTRYCLASS_*` | literals (`b"class"`) | Aeneas rejects a constant reference used in two branches |
 | errors | `OperationError` | `OperationError::InvalidState` only | the only one returned |
+
+`valueset::str_contains` loops while `i <= hay.len() - needle.len()` rather
+than `i + needle.len() <= hay.len()`. The two agree in Rust, where a slice holds
+at most `isize::MAX` bytes; in the extracted model a slice may hold
+`Usize.max`, where the sum overflows. The rewrite keeps the original theorem
+statements free of a length precondition.

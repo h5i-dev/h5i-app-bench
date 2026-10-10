@@ -723,16 +723,6 @@ theorem = "rustfs_kernel.Properties.bucket_allow_needs_principal"
 property = "A bucket policy allows a non-owner only through an Allow statement whose principal matches the account."
 
 [[task]]
-id = "rustfs-bucket-total"
-repo = "rustfs/rustfs"
-src = "bench:ports/rustfs"
-ns = "rustfs_kernel"
-given = ["Spec.lean"]
-module = "Properties"
-theorem = "rustfs_kernel.Properties.bucket_policy_total"
-property = "Bucket policy evaluation always terminates without a panic."
-
-[[task]]
 id = "rustfs-wildcard"
 repo = "rustfs/rustfs"
 src = "bench:ports/rustfs"
@@ -985,16 +975,6 @@ given = ["Spec.lean"]
 module = "Properties"
 theorem = "oxicloud_kernel.Properties.expired_grants_ignored"
 property = "Expired grants play no part in an access decision."
-
-[[task]]
-id = "oxicloud-fewer-grants"
-repo = "AtalayaLabs/OxiCloud"
-src = "bench:ports/oxicloud"
-ns = "oxicloud_kernel"
-given = ["Spec.lean"]
-module = "Properties"
-theorem = "oxicloud_kernel.Properties.fewer_grants_allow_no_more"
-property = "Taking grants away never allows more."
 
 [[task]]
 id = "oxicloud-token-grant"

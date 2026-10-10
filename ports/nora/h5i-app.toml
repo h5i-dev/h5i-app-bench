@@ -1,0 +1,33 @@
+# Standard h5i-app project. Keep every selected theorem in the final gate.
+[extract]
+crate = "kernel"
+start-from = ["transition","validation","middleware::auth_middleware","tokens::revoke_token","tokens::revoke_all_for_user"]
+
+[check]
+theorems = [
+  "nora_kernel.Properties.read_only_cannot_write",
+  "nora_kernel.Properties.provider_ceiling",
+  "nora_kernel.Properties.rule_narrows",
+  "nora_kernel.Properties.audit_never_denies",
+  "nora_kernel.Properties.lifetime_bounded",
+  "nora_kernel.Properties.glob_match_spec",
+  "nora_kernel.Properties.segment_glob_spec",
+  "nora_kernel.Properties.transition_total",
+  "nora_kernel.Properties.admin_path_needs_admin",
+  "nora_kernel.Properties.no_credentials_no_write_role",
+  "nora_kernel.Properties.writes_need_write_role",
+  "nora_kernel.Properties.locked_out_only_open",
+  "nora_kernel.Properties.catalog_and_token_pages_need_credentials",
+  "nora_kernel.Properties.failure_recorded_only_for_bad_credentials",
+  "nora_kernel.Properties.failures_cleared_only_for_good_credentials",
+  "nora_kernel.Properties.token_accepted_only_unexpired",
+  "nora_kernel.Properties.untrusted_peer_is_client",
+  "nora_kernel.Properties.trusted_proxies_contains_spec",
+  "nora_kernel.Properties.storage_key_safe",
+  "nora_kernel.Properties.docker_name_shape",
+  "nora_kernel.Properties.digest_iff",
+  "nora_kernel.Properties.reference_shape",
+  "nora_kernel.Properties.middleware_total",
+  "nora_kernel.Properties.revoked_token_rejected",
+  "nora_kernel.Properties.revoke_all_effective",
+]

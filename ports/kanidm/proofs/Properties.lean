@@ -1,3 +1,6 @@
+import Verified.KanidmSynchroniseSeesNothing
+import Verified.KanidmReadonlyCannotModify
+import Verified.KanidmDeleteProtected
 import Spec
 open Aeneas Aeneas.Std Result kanidm_kernel kanidm_kernel.Spec
 
@@ -49,7 +52,7 @@ theorem synchronise_sees_nothing (ctl : AccessControlsInner) (ident : Identity) 
     (hs : (IsUser ident ∧ ident.scope = .Synchronise) ∨ ∃ s, ident.origin = .Synch s)
     (h : access.filter_entries ctl ident f es = ok (.Ok out)) :
     out.val = [] := by
-  sorry
+  apply kanidm_kernel.Verified.KanidmSynchroniseSeesNothing.synchronise_sees_nothing <;> assumption
 
 /-! ## Write operations need a profile -/
 
@@ -58,7 +61,7 @@ theorem readonly_cannot_modify (ctl : AccessControlsInner) (me : ModifyEvent) (e
     (hu : IsUser me.ident) (hs : me.ident.scope ≠ .ReadWrite) (hne : es.val ≠ [])
     (h : access.modify_allow_operation ctl me es = ok (.Ok b)) :
     b = false := by
-  sorry
+  apply kanidm_kernel.Verified.KanidmReadonlyCannotModify.readonly_cannot_modify <;> assumption
 
 /-- A user deletes an entry only through a delete profile that applies to it. -/
 theorem delete_needs_profile (ctl : AccessControlsInner) (de : DeleteEvent) (es : Slice Entry) (e : Entry)
@@ -93,7 +96,7 @@ theorem delete_protected (ctl : AccessControlsInner) (de : DeleteEvent) (es : Sl
     (hk : IsUser de.ident ∨ de.ident.origin = .Internal .Migration)
     (h : access.delete_allow_operation ctl de es = ok (.Ok true)) (he : e ∈ es.val) :
     UUID_ANONYMOUS < e.uuid ∧ ∀ c ∈ classes e, c ∉ protectedEntryClasses := by
-  sorry
+  apply kanidm_kernel.Verified.KanidmDeleteProtected.delete_protected <;> assumption
 
 /-- Users and migrations never create builtin entries or entries of a
 protected class. -/
@@ -155,20 +158,26 @@ theorem match_eq_spec (e : Entry) (a : alloc.vec.Vec U8) (v : PartialValue) :
       ∃ vs, ava e (nats a.val) = some vs ∧ ValueContains vs v := by
   sorry
 
-/-- The substring test of `Cnt` terms is `List.IsInfix`, for a haystack shorter
-than `Usize.max`. Aeneas lets a slice be `Usize.max` long, and then the loop's
-checked `i + needle.len()` overflows and the function fails; Rust slices hold at
-most `isize::MAX` bytes, so the bound only excludes lengths Rust cannot have. -/
-theorem str_contains_spec (hay needle : Slice U8) (hlt : hay.length < Usize.max) :
+/-- The substring test of `Cnt` terms is `List.IsInfix`. -/
+theorem str_contains_spec (hay needle : Slice U8) :
     valueset.str_contains hay needle = ok (decide (needle.val <:+: hay.val)) := by
   sorry
 
 /-! ## Totality -/
 
 /-- The effective-permission report (search, modify and delete decisions for
-every entry) never panics, overflows or loops. -/
+every entry) never panics, overflows or loops, when the access profiles and
+sync agreements list fewer than `Usize.max - 73` attributes and classes in total
+(the kernel's search, migration, create and modify modules insert 73 distinct
+fixed attribute and class names of their own into the same grant sets). Without the bound, two
+search profiles granting `Usize.max + 1` distinct attributes overflow the
+union of their grants; Rust cannot hold that many distinct strings. -/
 theorem effective_permission_check_total (ctl : AccessControlsInner) (ident : Identity)
-    (attrs : Option (alloc.vec.Vec (alloc.vec.Vec U8))) (es : Slice Entry) :
+    (attrs : Option (alloc.vec.Vec (alloc.vec.Vec U8))) (es : Slice Entry)
+    (hcap : (ctl.acps_search.val.map (·.attrs.length)).sum +
+      (ctl.acps_modify.val.map (fun m => m.presattrs.length + m.remattrs.length +
+        m.pres_classes.length + m.rem_classes.length)).sum +
+      (ctl.sync_agreements.val.map (·.attrs.length)).sum + 73 < Usize.max) :
     ∃ y, access.effective_permission_check ctl ident attrs es = ok y := by
   sorry
 

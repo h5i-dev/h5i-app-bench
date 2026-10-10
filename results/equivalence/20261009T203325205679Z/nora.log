@@ -1,0 +1,49 @@
+    Finished `release` profile [optimized] target(s) in 0.96s
+     Running unittests src/lib.rs (ports/nora/difftest/target/release/deps/nora_difftest-305602746fba4d27)
+
+running 24 tests
+test middleware_props::admin_path_needs_admin ... ok
+test middleware_props::catalog_and_token_pages_never_anonymous ... ok
+test middleware_props::cidr_contains_spec ... ok
+test middleware_props::failures_recorded_only_for_bad_credentials ... ok
+test middleware_props::locked_out_ip_authenticates_only_on_open_paths ... ok
+test middleware_props::no_credentials_no_write_role ... ok
+test middleware_props::revoke_all_effective ... ok
+test middleware_props::revoked_token_rejected ... ok
+test middleware_props::token_accepted_only_unexpired_with_prefix ... ok
+test middleware_props::total_below_counter_limit ... 
+thread 'middleware_props::total_below_counter_limit' (1536058) panicked at /home/ht2673/Dev/h5i-app-bench/ports/nora/kernel/src/lockout.rs:61:34:
+attempt to add with overflow
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+ok
+test middleware_props::untrusted_peer_is_client ... ok
+test middleware_props::validators_characterized ... ok
+test middleware_props::writes_need_write_role ... ok
+test middleware_tests::middleware_agrees ... {"418 S[[\"**\"], [\"npm/pkg\"]]Enforce": 1, "418 S[[\"**\", \"lib/**\"], [\"**\", \"npm/pkg\"]]Enforce": 1, "418 S[[]]Enforce": 4, "401 {\"error\":\"Basic or Bearer authentication required\"}": 1376, "403 Admin role required": 32, "418 S[[\"lib/**\"], [\"**\", \"team-*\"]]Enforce": 1, "418 S[[\"\", \"npm/pkg\"]]Enforce": 1, "418 S[[\"team-*\"]]Audit": 2, "418 S[[], [\"lib/*\", \"lib/*\"]]Enforce": 1, "401 {\"error\":\"Authentication required\"}": 2446, "401 {\"error\":\"Basic auth not configured\"}": 1589, "418 S[[\"lib/*\", \"**\"]]Enforce": 1, "401 {\"error\":\"Invalid credentials encoding\"}": 1893, "418 S[[\"lib/**\", \"lib/**\"], [\"\"]]Enforce": 1, "418 S[[\"\"]]Enforce": 1, "403 Read-only token": 61, "418 S[[\"**\"]]Enforce": 2, "418 S[[\"\"], []]Enforce": 1, "418 S[[]]Audit": 6, "401 {\"error\":\"Invalid or expired token\"}": 2219, "418 S[[\"team-*\"], [\"**\"]]Enforce": 1, "418 S[[\"\", \"npm/pkg\"], [\"lib/*\", \"lib/*\"]]Enforce": 1, "418 S[[], [\"lib/**\"]]Enforce": 1, "418 S[[\"\", \"lib/**\"]]Enforce": 1, "418 S[[], [\"lib/*\"]]Enforce": 1, "403 Read-only OIDC identity": 14, "418 S[[\"**\"], [\"lib/*\"]]Enforce": 1, "418 S[[\"lib/*\"], [\"lib/*\"]]Enforce": 1, "418 S[[\"\"], [\"npm/pkg\", \"lib/*\"]]Enforce": 1, "418 S[[\"npm/pkg\"]]Enforce": 2, "418 S[[\"lib/**\", \"npm/pkg\"]]Audit": 1, "503 Token verification unavailable": 78, "429": 218, "418 S[[\"\", \"\"], []]Audit": 1, "401 {\"error\":\"Invalid username or password\"}": 1085, "418 U": 8422, "401 {\"error\":\"Invalid credentials format\"}": 302, "418 S[[\"team-*\"], [\"lib/**\"]]Audit": 1, "418 S[[\"lib/*\"]]Enforce": 3, "401 Authentication required": 226}
+ok
+test middleware_tests::revoke_agrees ... ok
+test props::audit_never_denies ... ok
+test props::lifetime_bounded ... ok
+test props::matchers_agree_with_models ... ok
+test props::provider_ceiling ... ok
+test props::read_only_cannot_write ... ok
+test props::rule_narrows ... ok
+test tests::namespace_match_agrees ... ok
+test tests::transition_agrees ... {"Err(AdminRequired)": 5961, "Err(NamespaceDenied)": 25457, "Err(NoRoleRule)": 362080, "Err(ReadOnly)": 14784, "Err(TokenLifetime)": 71067, "Ok(())": 20651}
+ok
+test validation_tests::validation_agrees ... ok
+
+test result: ok. 24 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 84.43s
+
+     Running unittests src/bin/performance.rs (ports/nora/difftest/target/release/deps/performance-95c00ce898a0ef50)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests nora_difftest
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

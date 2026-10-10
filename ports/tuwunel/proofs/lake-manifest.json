@@ -3,13 +3,16 @@
   "packagesDir": ".lake/packages",
   "packages": [
     {
-      "type": "path",
+      "type": "git",
       "scope": "",
       "name": "h5i_app_lib",
       "manifestFile": "lake-manifest.json",
       "inherited": false,
-      "dir": "../../../../h5i/crates/h5i-app-core/proofs",
-      "configFile": "lakefile.lean"
+      "configFile": "lakefile.lean",
+      "url": "https://github.com/h5i-dev/h5i",
+      "subDir": "crates/h5i-app-core/proofs",
+      "rev": "d337c3cfffa41aadf155cdf0ca92e24ebe9470cc",
+      "inputRev": "v0.5.0"
     },
     {
       "url": "https://github.com/AeneasVerif/aeneas",

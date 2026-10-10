@@ -1,0 +1,26 @@
+# Standard h5i-app project. Keep every selected theorem in the final gate.
+[extract]
+crate = "kernel"
+start-from = ["access"]
+
+[check]
+theorems = [
+  "kanidm_kernel.Properties.protected_deny_overrides_modify",
+  "kanidm_kernel.Properties.protected_deny_overrides_create",
+  "kanidm_kernel.Properties.search_attrs_granted",
+  "kanidm_kernel.Properties.anonymous_reads_by_profile_only",
+  "kanidm_kernel.Properties.synchronise_sees_nothing",
+  "kanidm_kernel.Properties.readonly_cannot_modify",
+  "kanidm_kernel.Properties.delete_needs_profile",
+  "kanidm_kernel.Properties.create_needs_profile",
+  "kanidm_kernel.Properties.modify_needs_profile",
+  "kanidm_kernel.Properties.delete_protected",
+  "kanidm_kernel.Properties.create_protected",
+  "kanidm_kernel.Properties.tombstone_locked",
+  "kanidm_kernel.Properties.protected_class_never_added",
+  "kanidm_kernel.Properties.sync_object_constrained",
+  "kanidm_kernel.Properties.account_request_creates_signups",
+  "kanidm_kernel.Properties.match_eq_spec",
+  "kanidm_kernel.Properties.str_contains_spec",
+  "kanidm_kernel.Properties.effective_permission_check_total",
+]

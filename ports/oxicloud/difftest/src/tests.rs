@@ -18,7 +18,16 @@ use oxicloud_kernel::model::*;
 use sqlx::PgPool;
 use uuid::Uuid;
 
-pub const DB: &str = "postgres://bench:bench@127.0.0.1:55433/oxicloud";
+/// These tests truncate tables. Never default to a developer's database.
+pub async fn disposable_database() -> PgPool {
+    let url = std::env::var("H5I_BENCH_DATABASE_URL")
+        .expect("set H5I_BENCH_DATABASE_URL to a disposable PostgreSQL database");
+    let database = url.rsplit('/').next().unwrap().split('?').next().unwrap();
+    assert_eq!(database, "h5i_bench_disposable", "refusing destructive tests against a non-benchmark database");
+    let pool = PgPool::connect(&url).await.unwrap();
+    sqlx::migrate!("../upstream-src/migrations").run(&pool).await.unwrap();
+    pool
+}
 
 /// xorshift64*.
 pub struct Rng(pub u64);
@@ -313,7 +322,7 @@ pub fn random_subject(r: &mut Rng) -> Subject {
 
 #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
 async fn check_agrees() {
-    let pool = Arc::new(PgPool::connect(DB).await.unwrap());
+    let pool = Arc::new(disposable_database().await);
     let mut r = Rng(0x0C1C_0A0D_1234_5678);
     let cases: usize = std::env::var("CASES").ok().and_then(|s| s.parse().ok()).unwrap_or(400);
     let (mut yes, mut no) = (0, 0);

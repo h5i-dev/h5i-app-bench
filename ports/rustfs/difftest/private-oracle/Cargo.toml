@@ -1,0 +1,27 @@
+[package]
+name = "rustfs-private-oracle"
+version = "0.1.0"
+edition = "2024"
+publish = false
+
+[dependencies]
+rustfs-credentials = { path = "../../upstream-src/crates/credentials" }
+rustfs-config = { path = "../../upstream-src/crates/config", features = ["opa"] }
+rustfs-crypto = { path = "../../upstream-src/crates/crypto" }
+serde = { version = "1", features = ["derive", "rc"] }
+serde_json = { version = "1", features = ["raw_value"] }
+strum = { version = "0.28", features = ["derive"] }
+thiserror = "2"
+time = { version = "0.3", features = ["serde", "parsing", "formatting", "macros"] }
+ipnetwork = { version = "0.21", features = ["serde"] }
+base64-simd = "0.8"
+futures = "0.3"
+tokio = { version = "1", features = ["macros", "rt-multi-thread", "time"] }
+jsonwebtoken = { version = "11", features = ["aws_lc_rs"] }
+regex = "1"
+reqwest = { version = "0.13", features = ["json"] }
+jiff = "0.2"
+tracing = "0.1"
+moka = { version = "0.12", features = ["future"] }
+async-trait = "0.1"
+pollster = "1"

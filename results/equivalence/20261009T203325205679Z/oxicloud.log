@@ -1,0 +1,74 @@
+warning: oxicloud@0.0.0: OxiCloud vframework-final-12-g0440f57-dirty (tag=framework-final hash=0440f57de91a019d995fadc2ef67f03d5bd1e04e branch=change-scope)
+warning: unused import: `oxicloud::application::ports::authorization_ports::AuthorizationEngine`
+ --> src/tests.rs:7:5
+  |
+7 | use oxicloud::application::ports::authorization_ports::AuthorizationEngine;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |
+help: if this is a test module, consider adding a `#[cfg(test)]` to the containing module
+ --> src/lib.rs:2:1
+  |
+2 | pub mod tests;
+  | ^^^^^^^^^^^^^^
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused import: `oxicloud_kernel::acl::check`
+  --> src/tests.rs:16:5
+   |
+16 | use oxicloud_kernel::acl::check;
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+help: if this is a test module, consider adding a `#[cfg(test)]` to the containing module
+  --> src/lib.rs:2:1
+   |
+ 2 | pub mod tests;
+   | ^^^^^^^^^^^^^^
+
+   Compiling oxicloud-difftest v0.1.0 (/home/ht2673/Dev/h5i-app-bench/ports/oxicloud/difftest)
+warning: `oxicloud-difftest` (lib) generated 2 warnings (run `cargo fix --lib -p oxicloud-difftest` to apply 2 suggestions)
+    Finished `release` profile [optimized] target(s) in 12.38s
+     Running unittests src/lib.rs (ports/oxicloud/difftest/target/release/deps/oxicloud_difftest-3696f7e5b2025930)
+
+running 13 tests
+test endpoints::endpoints_agree ... {
+    "create Err(AccessDenied)": 26,
+    "create Err(InvalidInput)": 1,
+    "create Err(NotFound)": 167,
+    "create Err(OperationNotSupported)": 7,
+    "create Ok(())": 9,
+    "revoke Err(AccessDenied)": 20,
+    "revoke Err(NotFound)": 109,
+    "revoke Ok(())": 64,
+    "set Err(AccessDenied)": 34,
+    "set Err(NotFound)": 154,
+    "set Ok(())": 9,
+}
+ok
+test props::create_needs_share ... ok
+test props::create_respects_sharing_policies ... ok
+test props::drive_keeps_an_owner ... ok
+test props::expired_grants_ignored ... ok
+test props::failed_write_changes_nothing ... ok
+test props::fewer_grants_allow_no_more ... ok
+test props::personal_drive_members_fixed ... ok
+test props::read_only_blocks_mutations ... ok
+test props::role_expansion_is_monotone ... ok
+test props::share_needs_owner ... ok
+test props::token_needs_its_own_grant ... ok
+test tests::check_agrees ... allowed 1257, denied 8743
+ok
+
+test result: ok. 13 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 193.40s
+
+     Running unittests src/bin/performance.rs (ports/oxicloud/difftest/target/release/deps/performance-5098df9bcd5084c8)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests oxicloud_difftest
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

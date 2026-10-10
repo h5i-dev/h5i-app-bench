@@ -1,0 +1,73 @@
+
+$ lake build
+⚠ [146/215] Replayed Aeneas.Std.WP
+warning: Aeneas/Std/WP.lean:756:4: 'simp -failIfUnchanged only' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Aeneas/Std/WP.lean:761:4: 'simp -failIfUnchanged only' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Aeneas/Std/WP.lean:896:11: 'cases i' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Aeneas/Std/WP.lean:896:23: 'simp' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Aeneas/Std/WP.lean:927:19: 'simp at hspec' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+⚠ [1258/1283] Replayed Aeneas.Std.Core.Core
+warning: Aeneas/Std/Core/Core.lean:38:4: The namespace 'core' is duplicated in the declaration 'Aeneas.Std.core.core.clone.CloneGlobal'
+
+Note: This linter can be disabled with `set_option linter.dupNamespace false`
+warning: Aeneas/Std/Core/Core.lean:59:4: The namespace 'core' is duplicated in the declaration 'Aeneas.Std.core.core.clone.CloneBox'
+
+Note: This linter can be disabled with `set_option linter.dupNamespace false`
+warning: Aeneas/Std/Core/Core.lean:68:4: The namespace 'core' is duplicated in the declaration 'Aeneas.Std.core.core.marker.CopyBool'
+
+Note: This linter can be disabled with `set_option linter.dupNamespace false`
+✔ [1730/1743] Built NoraKernel (85s)
+✔ [1731/1743] Built Spec (11s)
+✔ [1732/1743] Built Verified.NoraAuditNeverDenies (11s)
+✔ [1733/1743] Built Verified.NoraLifetime (11s)
+✔ [1734/1743] Built Verified.NoraUntrustedPeer (13s)
+✔ [1735/1743] Built Verified.NoraCidr (13s)
+✔ [1736/1743] Built Verified.NoraReadOnly (14s)
+✔ [1737/1743] Built Verified.NoraDigest (17s)
+⚠ [1738/1743] Built Verified.NoraReference (20s)
+warning: Verified/NoraReference.lean:218:2: 'all_goals try simp_all [WP.spec_ok, UScalar.le_equiv, UScalar.lt_equiv]' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/NoraReference.lean:227:2: 'all_goals simp_all' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/NoraReference.lean:227:12: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: Verified/NoraReference.lean:276:45: This simp argument is unused:
+  hx
+
+Hint: Omit it from the simp argument list.
+  simp [nats,̵ ̵h̵x̵]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+✔ [1739/1743] Built Verified.NoraAdminPath (21s)
+ℹ [1740/1743] Built Verified.NoraTokenUnexpired (29s)
+info: Verified/NoraTokenUnexpired.lean:8:0: h5i_derive_all: no eq spec for nora_kernel.net.IpAddr; derive it by hand
+info: Verified/NoraTokenUnexpired.lean:8:0: h5i_derive_all: no eq spec for nora_kernel.validation.ValidationError; derive it by hand
+info: Verified/NoraTokenUnexpired.lean:8:0: h5i_derive_all: no clone spec for nora_kernel.tokens.TokenFile; derive it by hand
+info: Verified/NoraTokenUnexpired.lean:8:0: h5i_derive_all: no clone spec for nora_kernel.tokens.TokenStore; derive it by hand
+ℹ [1741/1743] Built Verified.NoraRevokeAll (32s)
+info: Verified/NoraRevokeAll.lean:8:0: h5i_derive_all: no eq spec for nora_kernel.net.IpAddr; derive it by hand
+info: Verified/NoraRevokeAll.lean:8:0: h5i_derive_all: no eq spec for nora_kernel.validation.ValidationError; derive it by hand
+info: Verified/NoraRevokeAll.lean:8:0: h5i_derive_all: no clone spec for nora_kernel.tokens.TokenFile; derive it by hand
+info: Verified/NoraRevokeAll.lean:8:0: h5i_derive_all: no clone spec for nora_kernel.tokens.TokenStore; derive it by hand
+✖ [1742/1743] Building Properties (8.6s)
+trace: .> LEAN_PATH=/home/ht2673/.cache/h5i/lake/leanprover-lean4-v4.31.0-dc4cdc4e98604e9b/packages/Cli/.lake/build/lib/lean:/home/ht2673/.cache/h5i/lake/leanprover-lean4-v4.31.0-dc4cdc4e98604e9b/packages/batteries/.lake/build/lib/lean:/home/ht2673/.cache/h5i/lake/leanprover-lean4-v4.31.0-dc4cdc4e98604e9b/packages/Qq/.lake/build/lib/lean:/home/ht2673/.cache/h5i/lake/leanprover-lean4-v4.31.0-dc4cdc4e98604e9b/packages/aesop/.lake/build/lib/lean:/home/ht2673/.cache/h5i/lake/leanprover-lean4-v4.31.0-dc4cdc4e98604e9b/packages/proofwidgets/.lake/build/lib/lean:/home/ht2673/.cache/h5i/lake/leanprover-lean4-v4.31.0-dc4cdc4e98604e9b/packages/importGraph/.lake/build/lib/lean:/home/ht2673/.cache/h5i/lake/leanprover-lean4-v4.31.0-dc4cdc4e98604e9b/packages/LeanSearchClient/.lake/build/lib/lean:/home/ht2673/.cache/h5i/lake/leanprover-lean4-v4.31.0-dc4cdc4e98604e9b/packages/plausible/.lake/build/lib/lean:/home/ht2673/.cache/h5i/lake/leanprover-lean4-v4.31.0-dc4cdc4e98604e9b/packages/mathlib/.lake/build/lib/lean:/home/ht2673/.cache/h5i/lake/leanprover-lean4-v4.31.0-dc4cdc4e98604e9b/packages/aeneas/backends/lean/.lake/build/lib/lean:/home/ht2673/.cache/h5i/lake/leanprover-lean4-v4.31.0-dc4cdc4e98604e9b/packages/h5i_app_lib/crates/h5i-app-core/proofs/.lake/build/lib/lean:/home/ht2673/Dev/h5i-app-bench/ports/nora/proofs/.lake/build/lib/lean /home/ht2673/.elan/toolchains/leanprover--lean4---v4.31.0/bin/lean /home/ht2673/Dev/h5i-app-bench/ports/nora/proofs/Properties.lean -o /home/ht2673/Dev/h5i-app-bench/ports/nora/proofs/.lake/build/lib/lean/Properties.olean -i /home/ht2673/Dev/h5i-app-bench/ports/nora/proofs/.lake/build/lib/lean/Properties.ilean -c /home/ht2673/Dev/h5i-app-bench/ports/nora/proofs/.lake/build/ir/Properties.c --setup /home/ht2673/Dev/h5i-app-bench/ports/nora/proofs/.lake/build/ir/Properties.setup.json --json
+error: Properties.lean:1:0: import Verified.NoraTokenUnexpired failed, environment already contains 'nora_kernel.middleware.HttpMethod.ofNat' from Verified.NoraRevokeAll
+error: Lean exited with code 1
+Some required targets logged failures:
+- Properties
+error: build failed
+
+Error: `lake build` failed

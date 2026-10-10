@@ -1,0 +1,89 @@
+
+$ lake build
+⚠ [146/237] Replayed Aeneas.Std.WP
+warning: Aeneas/Std/WP.lean:756:4: 'simp -failIfUnchanged only' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Aeneas/Std/WP.lean:761:4: 'simp -failIfUnchanged only' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Aeneas/Std/WP.lean:896:11: 'cases i' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Aeneas/Std/WP.lean:896:23: 'simp' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Aeneas/Std/WP.lean:927:19: 'simp at hspec' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+⚠ [1264/1335] Replayed Aeneas.Std.Core.Core
+warning: Aeneas/Std/Core/Core.lean:38:4: The namespace 'core' is duplicated in the declaration 'Aeneas.Std.core.core.clone.CloneGlobal'
+
+Note: This linter can be disabled with `set_option linter.dupNamespace false`
+warning: Aeneas/Std/Core/Core.lean:59:4: The namespace 'core' is duplicated in the declaration 'Aeneas.Std.core.core.clone.CloneBox'
+
+Note: This linter can be disabled with `set_option linter.dupNamespace false`
+warning: Aeneas/Std/Core/Core.lean:68:4: The namespace 'core' is duplicated in the declaration 'Aeneas.Std.core.core.marker.CopyBool'
+
+Note: This linter can be disabled with `set_option linter.dupNamespace false`
+✔ [1732/1739] Built Verified.TuwunelContextBaseServedByEvent (11s)
+✔ [1733/1739] Built Verified.TuwunelStateReadsNeedMembership (12s)
+⚠ [1734/1739] Built Verified.TuwunelJoinedMembersNeedJoin (12s)
+warning: Verified/TuwunelJoinedMembersNeedJoin.lean:200:45: 'assumption' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/TuwunelJoinedMembersNeedJoin.lean:204:21: '(cases hv) <;> simp_all' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/TuwunelJoinedMembersNeedJoin.lean:204:21: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+✔ [1735/1739] Built Verified.TuwunelMessagesOrdered (14s)
+✔ [1736/1739] Built Verified.TuwunelRoomEventVisible (14s)
+✔ [1737/1739] Built Verified.TuwunelMessagesVisible (17s)
+⚠ [1738/1739] Built Properties (10s)
+warning: Properties.lean:40:8: declaration uses `sorry`
+warning: Properties.lean:53:8: declaration uses `sorry`
+warning: Properties.lean:62:8: declaration uses `sorry`
+warning: Properties.lean:74:8: declaration uses `sorry`
+warning: Properties.lean:96:8: declaration uses `sorry`
+warning: Properties.lean:107:8: declaration uses `sorry`
+warning: Properties.lean:119:75: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: Properties.lean:123:8: declaration uses `sorry`
+warning: Properties.lean:145:8: declaration uses `sorry`
+warning: Properties.lean:154:8: declaration uses `sorry`
+warning: Properties.lean:166:8: declaration uses `sorry`
+warning: Properties.lean:173:8: declaration uses `sorry`
+Build completed successfully (1739 jobs).
+
+note: solutions.tuwunel-context-base-served-by-event.Solution is not built by `lake build`, so its theorems are not gated
+note: solutions.tuwunel-joined-members-need-join.Solution is not built by `lake build`, so its theorems are not gated
+note: solutions.tuwunel-room-event-visible.Solution is not built by `lake build`, so its theorems are not gated
+$ lake env lean /home/ht2673/Dev/h5i-app-bench/ports/tuwunel/proofs/.lake/h5i/Gate.lean
+gate: 438 theorems in 8 modules checked against propext, Classical.choice, Quot.sound
+
+Error: ports/tuwunel: proof gate failed:
+  Properties.lean:49: sorry
+  Properties.lean:58: sorry
+  Properties.lean:68: sorry
+  Properties.lean:83: sorry
+  Properties.lean:104: sorry
+  Properties.lean:112: sorry
+  Properties.lean:127: sorry
+  Properties.lean:150: sorry
+  Properties.lean:161: sorry
+  Properties.lean:170: sorry
+  Properties.lean:175: sorry
+  tuwunel_kernel.Properties.initial_sync_visible depends on [sorryAx]
+  tuwunel_kernel.Properties.context_visible depends on [sorryAx]
+  tuwunel_kernel.Properties.initial_sync_stops_at_departure depends on [sorryAx]
+  tuwunel_kernel.Properties.relations_visible depends on [sorryAx]
+  tuwunel_kernel.Properties.context_matches_spec depends on [sorryAx]
+  tuwunel_kernel.Properties.world_readable_event_served depends on [sorryAx]
+  tuwunel_kernel.Properties.context_agrees_with_messages depends on [sorryAx]
+  tuwunel_kernel.Properties.transition_total depends on [sorryAx]
+  tuwunel_kernel.Properties.threads_visible depends on [sorryAx]
+  tuwunel_kernel.Properties.server_sees_joined_only depends on [sorryAx]
+  tuwunel_kernel.Properties.messages_nothing_after_leaving depends on [sorryAx]

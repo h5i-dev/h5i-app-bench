@@ -1,0 +1,26 @@
+    Finished `release` profile [optimized] target(s) in 2.36s
+     Running unittests src/lib.rs (ports/rustfs/difftest/target/release/deps/rustfs_difftest-eb9b782dc3511b29)
+
+running 13 tests
+test props::allow_needs_allow_statement ... ok
+test props::bucket_allow_needs_principal ... ok
+test props::clean_idempotent_and_canonical ... ok
+test props::deny_only_ignores_allows ... ok
+test props::explicit_deny_wins ... ok
+test props::force_delete_needs_explicit_grant ... ok
+test props::get_object_version_covers_get_object ... ok
+test props::owner_allowed_unless_denied ... ok
+test props::parse_i64_like_std ... ok
+test props::resolution_terminates_without_nested_values ... ok
+test props::wildcard_matches_glob ... ok
+test tests::bucket_policies_agree ... ok
+test tests::identity_policies_agree ... ok
+
+test result: ok. 13 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 67.79s
+
+   Doc-tests rustfs_difftest
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

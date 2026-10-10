@@ -1,0 +1,124 @@
+warning: eliding a lifetime that's named elsewhere is confusing
+  --> upstream/tuwunel_service/src/rooms/pdu_metadata/relations.rs:34:51
+   |
+28 |     &'a self,
+   |      -- the lifetime is named here
+...
+33 |     user_id: Option<&'a UserId>,
+   |                      -- the lifetime is named here
+34 | ) -> impl Stream<Item = (PduCount, Pdu)> + Send + '_ {
+   |                                                   ^^ the same lifetime is elided here
+   |
+   = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+   = note: `#[warn(mismatched_lifetime_syntaxes)]` on by default
+help: consistently use `'a`
+   |
+34 - ) -> impl Stream<Item = (PduCount, Pdu)> + Send + '_ {
+34 + ) -> impl Stream<Item = (PduCount, Pdu)> + Send + 'a {
+   |
+
+warning: eliding a lifetime that's named elsewhere is confusing
+   --> upstream/tuwunel_service/src/rooms/state_cache/mod.rs:143:25
+    |
+141 |     &'a self,
+    |      -- the lifetime is named here
+142 |     room_id: &'a RoomId,
+    |               -- the lifetime is named here
+143 | ) -> impl Stream<Item = &UserId> + Send + 'a {
+    |                         ^^^^^^^           -- the same lifetime is named here
+    |                         |
+    |                         the same lifetime is elided here
+    |
+    = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+help: consistently use `'a`
+    |
+143 | ) -> impl Stream<Item = &'a UserId> + Send + 'a {
+    |                          ++
+
+warning: `tuwunel_service` (lib) generated 2 warnings (run `cargo fix --lib -p tuwunel_service` to apply 2 suggestions)
+   Compiling tuwunel-difftest v0.1.0 (/home/ht2673/Dev/h5i-app-bench/ports/tuwunel/difftest)
+warning: unused `Result` that must be used
+  --> src/bin/performance.rs:56:21
+   |
+56 | /                     black_box(if kernel {
+57 | |                         transition(black_box(s), black_box(q))
+58 | |                     } else {
+59 | |                         upstream(black_box(s), black_box(q))
+60 | |                     });
+   | |______________________^
+   |
+   = note: this `Result` may be an `Err` variant, which should be handled
+   = note: `#[warn(unused_must_use)]` (part of `#[warn(unused)]`) on by default
+help: use `let _ = ...` to ignore the resulting value
+   |
+56 |                     let _ = black_box(if kernel {
+   |                     +++++++
+
+warning: `tuwunel-difftest` (bin "performance" test) generated 1 warning
+    Finished `release` profile [optimized] target(s) in 5.38s
+     Running unittests src/lib.rs (ports/tuwunel/difftest/target/release/deps/tuwunel_difftest-e3fc476cfc6e17be)
+
+running 18 tests
+test props::context_agrees_with_messages ... context_agrees_with_messages: 11057 hits
+ok
+test props::context_base_served_by_event ... context_base_served_by_event: 16542 hits
+ok
+test props::context_matches_spec ... context_matches_spec: 5552 hits
+ok
+test props::context_visible ... context_visible: 16542 hits
+ok
+test props::initial_sync_stops_at_departure ... initial_sync_stops_at_departure: 1627 hits
+ok
+test props::initial_sync_visible ... initial_sync_visible: 15024 hits
+ok
+test props::joined_members_need_join ... joined_members_need_join: 11307 hits
+ok
+test props::messages_nothing_after_leaving ... messages_nothing_after_leaving: 8582 hits
+ok
+test props::messages_ordered ... messages_ordered: 10207 hits
+ok
+test props::messages_visible ... messages_visible: 12891 hits
+ok
+test props::relations_visible ... relations_visible: 3078 hits
+ok
+test props::room_event_visible ... room_event_visible: 19366 hits
+ok
+test props::server_sees_joined_only ... server_sees_joined_only: 1896 hits
+ok
+test props::state_reads_need_membership ... state_reads_need_membership: 5448 hits
+ok
+test props::threads_visible ... threads_visible: 5690 hits
+ok
+test props::transition_total ... transition_total: 4000 hits
+ok
+test props::world_readable_event_served ... world_readable_event_served: 9114 hits
+ok
+test tests::kernel_agrees_with_upstream ... Seen { ok: [18976, 5688, 1500, 2889, 10608, 2405, 7896, 8913, 9425, 7050, 5631], err: [21305, 11573, 11353, 7142, 9451, 17407, 9663, 10547, 9817, 7142, 334] }
+{
+    "context: ignored sender": 630,
+    "event: id not in the timeline": 728,
+    "initial sync: departed": 1201,
+    "members: at token": 1793,
+    "messages: exhausted backward token": 1546,
+    "messages: related_by filter": 141,
+    "messages: to bound": 973,
+    "relations: recursion interleaved": 32,
+    "threads: next batch": 61,
+    "threads: participated": 557,
+}
+ok
+
+test result: ok. 18 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 37.67s
+
+     Running unittests src/bin/performance.rs (ports/tuwunel/difftest/target/release/deps/performance-939fb59a46097042)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests tuwunel_difftest
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

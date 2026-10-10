@@ -1,0 +1,25 @@
+# Standard h5i-app project. Keep every selected theorem in the final gate.
+[extract]
+crate = "kernel"
+start-from = ["middleware::repo_visibility_middleware","middleware::auth_middleware","middleware::optional_auth_middleware","middleware::admin_middleware","middleware::guest_access_guard","handlers::create_permission","handlers::require_auth_basic_scope","handlers::require_scope_response","net::resolve_client_ip_addr","token_scope::validate_scopes_pure","token_scope::enforce_admin_only_scopes","net::CidrRange::contains"]
+
+[check]
+theorems = [
+  "artifactkeeper_kernel.Properties.anonymous_never_mutates",
+  "artifactkeeper_kernel.Properties.anonymous_needs_rule",
+  "artifactkeeper_kernel.Properties.private_needs_grant",
+  "artifactkeeper_kernel.Properties.mutation_needs_action",
+  "artifactkeeper_kernel.Properties.scoped_token_confined",
+  "artifactkeeper_kernel.Properties.ticket_read_only",
+  "artifactkeeper_kernel.Properties.ticket_consumed_on_read",
+  "artifactkeeper_kernel.Properties.repo_visibility_total",
+  "artifactkeeper_kernel.Properties.check_repository_action_spec",
+  "artifactkeeper_kernel.Properties.rule_overrides_role",
+  "artifactkeeper_kernel.Properties.cidr_contains_spec",
+  "artifactkeeper_kernel.Properties.admin_gate",
+  "artifactkeeper_kernel.Properties.admin_denial_audited",
+  "artifactkeeper_kernel.Properties.guest_blocks_anonymous",
+  "artifactkeeper_kernel.Properties.only_admin_creates_rules",
+  "artifactkeeper_kernel.Properties.anonymous_rule_read_only",
+  "artifactkeeper_kernel.Properties.scopes_grant_access_spec",
+]

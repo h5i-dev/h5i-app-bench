@@ -1,0 +1,1024 @@
+{
+  "selected_specs": 101,
+  "legacy_tasks_outside_port_corpus": [
+    "atuin-isolation",
+    "atuin-reply-confined",
+    "kellnr-read-only"
+  ],
+  "inventoried_specs": 101,
+  "with_candidates": 99,
+  "checked_this_run": 0,
+  "accepted_specs": 99,
+  "selected_spec_completion_percent": 98.01980198019803,
+  "upstream_code_coverage_percent": null,
+  "tasks": [
+    {
+      "id": "nora-read-only",
+      "repo": "getnora-io/nora",
+      "src": "bench:ports/nora",
+      "theorem": "nora_kernel.Properties.read_only_cannot_write",
+      "candidates": 1,
+      "status": "previously_checked",
+      "checks": [],
+      "certificate": "results/verification/nora-read-only/certificate.json"
+    },
+    {
+      "id": "nora-provider-ceiling",
+      "repo": "getnora-io/nora",
+      "src": "bench:ports/nora",
+      "theorem": "nora_kernel.Properties.provider_ceiling",
+      "candidates": 1,
+      "status": "previously_checked",
+      "checks": [],
+      "certificate": "results/verification/nora-provider-ceiling/certificate.json"
+    },
+    {
+      "id": "nora-rule-narrows",
+      "repo": "getnora-io/nora",
+      "src": "bench:ports/nora",
+      "theorem": "nora_kernel.Properties.rule_narrows",
+      "candidates": 1,
+      "status": "previously_checked",
+      "checks": [],
+      "certificate": "results/verification/nora-rule-narrows/certificate.json"
+    },
+    {
+      "id": "nora-audit-never-denies",
+      "repo": "getnora-io/nora",
+      "src": "bench:ports/nora",
+      "theorem": "nora_kernel.Properties.audit_never_denies",
+      "candidates": 1,
+      "status": "previously_checked",
+      "checks": [],
+      "certificate": "results/verification/nora-audit-never-denies/certificate.json"
+    },
+    {
+      "id": "nora-lifetime",
+      "repo": "getnora-io/nora",
+      "src": "bench:ports/nora",
+      "theorem": "nora_kernel.Properties.lifetime_bounded",
+      "candidates": 1,
+      "status": "previously_checked",
+      "checks": [],
+      "certificate": "results/verification/nora-lifetime/certificate.json"
+    },
+    {
+      "id": "nora-glob-match",
+      "repo": "getnora-io/nora",
+      "src": "bench:ports/nora",
+      "theorem": "nora_kernel.Properties.glob_match_spec",
+      "candidates": 1,
+      "status": "previously_checked",
+      "checks": [],
+      "certificate": "results/verification/nora-glob-match/certificate.json"
+    },
+    {
+      "id": "nora-segment-glob",
+      "repo": "getnora-io/nora",
+      "src": "bench:ports/nora",
+      "theorem": "nora_kernel.Properties.segment_glob_spec",
+      "candidates": 1,
+      "status": "previously_checked",
+      "checks": [],
+      "certificate": "results/verification/nora-segment-glob/certificate.json"
+    },
+    {
+      "id": "nora-total",
+      "repo": "getnora-io/nora",
+      "src": "bench:ports/nora",
+      "theorem": "nora_kernel.Properties.transition_total",
+      "candidates": 1,
+      "status": "previously_checked",
+      "checks": [],
+      "certificate": "results/verification/nora-total/certificate.json"
+    },
+    {
+      "id": "nora-admin-path",
+      "repo": "getnora-io/nora",
+      "src": "bench:ports/nora",
+      "theorem": "nora_kernel.Properties.admin_path_needs_admin",
+      "candidates": 1,
+      "status": "previously_checked",
+      "checks": [],
+      "certificate": "results/verification/nora-admin-path/certificate.json"
+    },
+    {
+      "id": "nora-no-credentials",
+      "repo": "getnora-io/nora",
+      "src": "bench:ports/nora",
+      "theorem": "nora_kernel.Properties.no_credentials_no_write_role",
+      "candidates": 1,
+      "status": "previously_checked",
+      "checks": [],
+      "certificate": "results/verification/nora-no-credentials/certificate.json"
+    },
+    {
+      "id": "nora-writes-need-write-role",
+      "repo": "getnora-io/nora",
+      "src": "bench:ports/nora",
+      "theorem": "nora_kernel.Properties.writes_need_write_role",
+      "candidates": 1,
+      "status": "previously_checked",
+      "checks": [],
+      "certificate": "results/verification/nora-writes-need-write-role/certificate.json"
+    },
+    {
+      "id": "nora-lockout",
+      "repo": "getnora-io/nora",
+      "src": "bench:ports/nora",
+      "theorem": "nora_kernel.Properties.locked_out_only_open",
+      "candidates": 1,
+      "status": "previously_checked",
+      "checks": [],
+      "certificate": "results/verification/nora-lockout/certificate.json"
+    },
+    {
+      "id": "nora-catalog-token-pages",
+      "repo": "getnora-io/nora",
+      "src": "bench:ports/nora",
+      "theorem": "nora_kernel.Properties.catalog_and_token_pages_need_credentials",
+      "candidates": 1,
+      "status": "previously_checked",
+      "checks": [],
+      "certificate": "results/verification/nora-catalog-token-pages/certificate.json"
+    },
+    {
+      "id": "nora-failure-recorded",
+      "repo": "getnora-io/nora",
+      "src": "bench:ports/nora",
+      "theorem": "nora_kernel.Properties.failure_recorded_only_for_bad_credentials",
+      "candidates": 1,
+      "status": "previously_checked",
+      "checks": [],
+      "certificate": "results/verification/nora-failure-recorded/certificate.json"
+    },
+    {
+      "id": "nora-failures-cleared",
+      "repo": "getnora-io/nora",
+      "src": "bench:ports/nora",
+      "theorem": "nora_kernel.Properties.failures_cleared_only_for_good_credentials",
+      "candidates": 1,
+      "status": "previously_checked",
+      "checks": [],
+      "certificate": "results/verification/nora-failures-cleared/certificate.json"
+    },
+    {
+      "id": "nora-token-unexpired",
+      "repo": "getnora-io/nora",
+      "src": "bench:ports/nora",
+      "theorem": "nora_kernel.Properties.token_accepted_only_unexpired",
+      "candidates": 1,
+      "status": "previously_checked",
+      "checks": [],
+      "certificate": "results/verification/nora-token-unexpired/certificate.json"
+    },
+    {
+      "id": "nora-untrusted-peer",
+      "repo": "getnora-io/nora",
+      "src": "bench:ports/nora",
+      "theorem": "nora_kernel.Properties.untrusted_peer_is_client",
+      "candidates": 1,
+      "status": "previously_checked",
+      "checks": [],
+      "certificate": "results/verification/nora-untrusted-peer/certificate.json"
+    },
+    {
+      "id": "nora-cidr",
+      "repo": "getnora-io/nora",
+      "src": "bench:ports/nora",
+      "theorem": "nora_kernel.Properties.trusted_proxies_contains_spec",
+      "candidates": 1,
+      "status": "previously_checked",
+      "checks": [],
+      "certificate": "results/verification/nora-cidr/certificate.json"
+    },
+    {
+      "id": "nora-storage-key",
+      "repo": "getnora-io/nora",
+      "src": "bench:ports/nora",
+      "theorem": "nora_kernel.Properties.storage_key_safe",
+      "candidates": 1,
+      "status": "previously_checked",
+      "checks": [],
+      "certificate": "results/verification/nora-storage-key/certificate.json"
+    },
+    {
+      "id": "nora-docker-name",
+      "repo": "getnora-io/nora",
+      "src": "bench:ports/nora",
+      "theorem": "nora_kernel.Properties.docker_name_shape",
+      "candidates": 1,
+      "status": "previously_checked",
+      "checks": [],
+      "certificate": "results/verification/nora-docker-name/certificate.json"
+    },
+    {
+      "id": "nora-digest",
+      "repo": "getnora-io/nora",
+      "src": "bench:ports/nora",
+      "theorem": "nora_kernel.Properties.digest_iff",
+      "candidates": 1,
+      "status": "previously_checked",
+      "checks": [],
+      "certificate": "results/verification/nora-digest/certificate.json"
+    },
+    {
+      "id": "nora-reference",
+      "repo": "getnora-io/nora",
+      "src": "bench:ports/nora",
+      "theorem": "nora_kernel.Properties.reference_shape",
+      "candidates": 1,
+      "status": "previously_checked",
+      "checks": [],
+      "certificate": "results/verification/nora-reference/certificate.json"
+    },
+    {
+      "id": "nora-middleware-total",
+      "repo": "getnora-io/nora",
+      "src": "bench:ports/nora",
+      "theorem": "nora_kernel.Properties.middleware_total",
+      "candidates": 1,
+      "status": "previously_checked",
+      "checks": [],
+      "certificate": "results/verification/nora-middleware-total/certificate.json"
+    },
+    {
+      "id": "artifactkeeper-anonymous-never-mutates",
+      "repo": "artifact-keeper/artifact-keeper",
+      "src": "bench:ports/artifactkeeper",
+      "theorem": "artifactkeeper_kernel.Properties.anonymous_never_mutates",
+      "candidates": 1,
+      "status": "previously_checked",
+      "checks": [],
+      "certificate": "results/verification/artifactkeeper-anonymous-never-mutates/certificate.json"
+    },
+    {
+      "id": "artifactkeeper-anonymous-needs-rule",
+      "repo": "artifact-keeper/artifact-keeper",
+      "src": "bench:ports/artifactkeeper",
+      "theorem": "artifactkeeper_kernel.Properties.anonymous_needs_rule",
+      "candidates": 1,
+      "status": "previously_checked",
+      "checks": [],
+      "certificate": "results/verification/artifactkeeper-anonymous-needs-rule/certificate.json"
+    },
+    {
+      "id": "artifactkeeper-private-needs-grant",
+      "repo": "artifact-keeper/artifact-keeper",
+      "src": "bench:ports/artifactkeeper",
+      "theorem": "artifactkeeper_kernel.Properties.private_needs_grant",
+      "candidates": 1,
+      "status": "previously_checked",
+      "checks": [],
+      "certificate": "results/verification/artifactkeeper-private-needs-grant/certificate.json"
+    },
+    {
+      "id": "artifactkeeper-mutation-needs-action",
+      "repo": "artifact-keeper/artifact-keeper",
+      "src": "bench:ports/artifactkeeper",
+      "theorem": "artifactkeeper_kernel.Properties.mutation_needs_action",
+      "candidates": 1,
+      "status": "previously_checked",
+      "checks": [],
+      "certificate": "results/verification/artifactkeeper-mutation-needs-action/certificate.json"
+    },
+    {
+      "id": "artifactkeeper-scoped-token",
+      "repo": "artifact-keeper/artifact-keeper",
+      "src": "bench:ports/artifactkeeper",
+      "theorem": "artifactkeeper_kernel.Properties.scoped_token_confined",
+      "candidates": 1,
+      "status": "previously_checked",
+      "checks": [],
+      "certificate": "results/verification/artifactkeeper-scoped-token/certificate.json"
+    },
+    {
+      "id": "artifactkeeper-ticket-read-only",
+      "repo": "artifact-keeper/artifact-keeper",
+      "src": "bench:ports/artifactkeeper",
+      "theorem": "artifactkeeper_kernel.Properties.ticket_read_only",
+      "candidates": 1,
+      "status": "previously_checked",
+      "checks": [],
+      "certificate": "results/verification/artifactkeeper-ticket-read-only/certificate.json"
+    },
+    {
+      "id": "artifactkeeper-ticket-consumed",
+      "repo": "artifact-keeper/artifact-keeper",
+      "src": "bench:ports/artifactkeeper",
+      "theorem": "artifactkeeper_kernel.Properties.ticket_consumed_on_read",
+      "candidates": 1,
+      "status": "previously_checked",
+      "checks": [],
+      "certificate": "results/verification/artifactkeeper-ticket-consumed/certificate.json"
+    },
+    {
+      "id": "artifactkeeper-visibility-total",
+      "repo": "artifact-keeper/artifact-keeper",
+      "src": "bench:ports/artifactkeeper",
+      "theorem": "artifactkeeper_kernel.Properties.repo_visibility_total",
+      "candidates": 1,
+      "status": "previously_checked",
+      "checks": [],
+      "certificate": "results/verification/artifactkeeper-visibility-total/certificate.json"
+    },
+    {
+      "id": "artifactkeeper-repo-action-spec",
+      "repo": "artifact-keeper/artifact-keeper",
+      "src": "bench:ports/artifactkeeper",
+      "theorem": "artifactkeeper_kernel.Properties.check_repository_action_spec",
+      "candidates": 1,
+      "status": "previously_checked",
+      "checks": [],
+      "certificate": "results/verification/artifactkeeper-repo-action-spec/certificate.json"
+    },
+    {
+      "id": "artifactkeeper-rule-overrides-role",
+      "repo": "artifact-keeper/artifact-keeper",
+      "src": "bench:ports/artifactkeeper",
+      "theorem": "artifactkeeper_kernel.Properties.rule_overrides_role",
+      "candidates": 1,
+      "status": "previously_checked",
+      "checks": [],
+      "certificate": "results/verification/artifactkeeper-rule-overrides-role/certificate.json"
+    },
+    {
+      "id": "artifactkeeper-cidr-contains",
+      "repo": "artifact-keeper/artifact-keeper",
+      "src": "bench:ports/artifactkeeper",
+      "theorem": "artifactkeeper_kernel.Properties.cidr_contains_spec",
+      "candidates": 1,
+      "status": "previously_checked",
+      "checks": [],
+      "certificate": "results/verification/artifactkeeper-cidr-contains/certificate.json"
+    },
+    {
+      "id": "artifactkeeper-admin-gate",
+      "repo": "artifact-keeper/artifact-keeper",
+      "src": "bench:ports/artifactkeeper",
+      "theorem": "artifactkeeper_kernel.Properties.admin_gate",
+      "candidates": 1,
+      "status": "previously_checked",
+      "checks": [],
+      "certificate": "results/verification/artifactkeeper-admin-gate/certificate.json"
+    },
+    {
+      "id": "artifactkeeper-admin-audited",
+      "repo": "artifact-keeper/artifact-keeper",
+      "src": "bench:ports/artifactkeeper",
+      "theorem": "artifactkeeper_kernel.Properties.admin_denial_audited",
+      "candidates": 1,
+      "status": "previously_checked",
+      "checks": [],
+      "certificate": "results/verification/artifactkeeper-admin-audited/certificate.json"
+    },
+    {
+      "id": "artifactkeeper-guest-blocks-anonymous",
+      "repo": "artifact-keeper/artifact-keeper",
+      "src": "bench:ports/artifactkeeper",
+      "theorem": "artifactkeeper_kernel.Properties.guest_blocks_anonymous",
+      "candidates": 1,
+      "status": "previously_checked",
+      "checks": [],
+      "certificate": "results/verification/artifactkeeper-guest-blocks-anonymous/certificate.json"
+    },
+    {
+      "id": "artifactkeeper-only-admin-rules",
+      "repo": "artifact-keeper/artifact-keeper",
+      "src": "bench:ports/artifactkeeper",
+      "theorem": "artifactkeeper_kernel.Properties.only_admin_creates_rules",
+      "candidates": 1,
+      "status": "previously_checked",
+      "checks": [],
+      "certificate": "results/verification/artifactkeeper-only-admin-rules/certificate.json"
+    },
+    {
+      "id": "artifactkeeper-anonymous-rule-read",
+      "repo": "artifact-keeper/artifact-keeper",
+      "src": "bench:ports/artifactkeeper",
+      "theorem": "artifactkeeper_kernel.Properties.anonymous_rule_read_only",
+      "candidates": 1,
+      "status": "previously_checked",
+      "checks": [],
+      "certificate": "results/verification/artifactkeeper-anonymous-rule-read/certificate.json"
+    },
+    {
+      "id": "artifactkeeper-scopes-grant",
+      "repo": "artifact-keeper/artifact-keeper",
+      "src": "bench:ports/artifactkeeper",
+      "theorem": "artifactkeeper_kernel.Properties.scopes_grant_access_spec",
+      "candidates": 1,
+      "status": "previously_checked",
+      "checks": [],
+      "certificate": "results/verification/artifactkeeper-scopes-grant/certificate.json"
+    },
+    {
+      "id": "nora-revoke",
+      "repo": "getnora-io/nora",
+      "src": "bench:ports/nora",
+      "theorem": "nora_kernel.Properties.revoked_token_rejected",
+      "candidates": 2,
+      "status": "previously_checked",
+      "checks": [],
+      "certificate": "results/verification/nora-revoke/certificate.json"
+    },
+    {
+      "id": "nora-revoke-all",
+      "repo": "getnora-io/nora",
+      "src": "bench:ports/nora",
+      "theorem": "nora_kernel.Properties.revoke_all_effective",
+      "candidates": 1,
+      "status": "previously_checked",
+      "checks": [],
+      "certificate": "results/verification/nora-revoke-all/certificate.json"
+    },
+    {
+      "id": "kanidm-deny-overrides-modify",
+      "repo": "kanidm/kanidm",
+      "src": "bench:ports/kanidm",
+      "theorem": "kanidm_kernel.Properties.protected_deny_overrides_modify",
+      "candidates": 1,
+      "status": "previously_checked",
+      "checks": [],
+      "certificate": "results/verification/kanidm-deny-overrides-modify/certificate.json"
+    },
+    {
+      "id": "kanidm-deny-overrides-create",
+      "repo": "kanidm/kanidm",
+      "src": "bench:ports/kanidm",
+      "theorem": "kanidm_kernel.Properties.protected_deny_overrides_create",
+      "candidates": 1,
+      "status": "previously_checked",
+      "checks": [],
+      "certificate": "results/verification/kanidm-deny-overrides-create/certificate.json"
+    },
+    {
+      "id": "kanidm-search-attrs-granted",
+      "repo": "kanidm/kanidm",
+      "src": "bench:ports/kanidm",
+      "theorem": "kanidm_kernel.Properties.search_attrs_granted",
+      "candidates": 1,
+      "status": "previously_checked",
+      "checks": [],
+      "certificate": "results/verification/kanidm-search-attrs-granted/certificate.json"
+    },
+    {
+      "id": "kanidm-anonymous-profile-only",
+      "repo": "kanidm/kanidm",
+      "src": "bench:ports/kanidm",
+      "theorem": "kanidm_kernel.Properties.anonymous_reads_by_profile_only",
+      "candidates": 1,
+      "status": "previously_checked",
+      "checks": [],
+      "certificate": "results/verification/kanidm-anonymous-profile-only/certificate.json"
+    },
+    {
+      "id": "kanidm-synchronise-sees-nothing",
+      "repo": "kanidm/kanidm",
+      "src": "bench:ports/kanidm",
+      "theorem": "kanidm_kernel.Properties.synchronise_sees_nothing",
+      "candidates": 1,
+      "status": "previously_checked",
+      "checks": [],
+      "certificate": "results/verification/kanidm-synchronise-sees-nothing/certificate.json"
+    },
+    {
+      "id": "kanidm-readonly-cannot-modify",
+      "repo": "kanidm/kanidm",
+      "src": "bench:ports/kanidm",
+      "theorem": "kanidm_kernel.Properties.readonly_cannot_modify",
+      "candidates": 1,
+      "status": "previously_checked",
+      "checks": [],
+      "certificate": "results/verification/kanidm-readonly-cannot-modify/certificate.json"
+    },
+    {
+      "id": "kanidm-delete-needs-profile",
+      "repo": "kanidm/kanidm",
+      "src": "bench:ports/kanidm",
+      "theorem": "kanidm_kernel.Properties.delete_needs_profile",
+      "candidates": 1,
+      "status": "previously_checked",
+      "checks": [],
+      "certificate": "results/verification/kanidm-delete-needs-profile/certificate.json"
+    },
+    {
+      "id": "kanidm-create-needs-profile",
+      "repo": "kanidm/kanidm",
+      "src": "bench:ports/kanidm",
+      "theorem": "kanidm_kernel.Properties.create_needs_profile",
+      "candidates": 1,
+      "status": "previously_checked",
+      "checks": [],
+      "certificate": "results/verification/kanidm-create-needs-profile/certificate.json"
+    },
+    {
+      "id": "kanidm-modify-needs-profile",
+      "repo": "kanidm/kanidm",
+      "src": "bench:ports/kanidm",
+      "theorem": "kanidm_kernel.Properties.modify_needs_profile",
+      "candidates": 1,
+      "status": "previously_checked",
+      "checks": [],
+      "certificate": "results/verification/kanidm-modify-needs-profile/certificate.json"
+    },
+    {
+      "id": "kanidm-delete-protected",
+      "repo": "kanidm/kanidm",
+      "src": "bench:ports/kanidm",
+      "theorem": "kanidm_kernel.Properties.delete_protected",
+      "candidates": 1,
+      "status": "previously_checked",
+      "checks": [],
+      "certificate": "results/verification/kanidm-delete-protected/certificate.json"
+    },
+    {
+      "id": "kanidm-create-protected",
+      "repo": "kanidm/kanidm",
+      "src": "bench:ports/kanidm",
+      "theorem": "kanidm_kernel.Properties.create_protected",
+      "candidates": 1,
+      "status": "previously_checked",
+      "checks": [],
+      "certificate": "results/verification/kanidm-create-protected/certificate.json"
+    },
+    {
+      "id": "kanidm-tombstone-locked",
+      "repo": "kanidm/kanidm",
+      "src": "bench:ports/kanidm",
+      "theorem": "kanidm_kernel.Properties.tombstone_locked",
+      "candidates": 1,
+      "status": "previously_checked",
+      "checks": [],
+      "certificate": "results/verification/kanidm-tombstone-locked/certificate.json"
+    },
+    {
+      "id": "kanidm-protected-class-never-added",
+      "repo": "kanidm/kanidm",
+      "src": "bench:ports/kanidm",
+      "theorem": "kanidm_kernel.Properties.protected_class_never_added",
+      "candidates": 1,
+      "status": "previously_checked",
+      "checks": [],
+      "certificate": "results/verification/kanidm-protected-class-never-added/certificate.json"
+    },
+    {
+      "id": "kanidm-sync-object-constrained",
+      "repo": "kanidm/kanidm",
+      "src": "bench:ports/kanidm",
+      "theorem": "kanidm_kernel.Properties.sync_object_constrained",
+      "candidates": 1,
+      "status": "previously_checked",
+      "checks": [],
+      "certificate": "results/verification/kanidm-sync-object-constrained/certificate.json"
+    },
+    {
+      "id": "kanidm-account-request-signups",
+      "repo": "kanidm/kanidm",
+      "src": "bench:ports/kanidm",
+      "theorem": "kanidm_kernel.Properties.account_request_creates_signups",
+      "candidates": 1,
+      "status": "previously_checked",
+      "checks": [],
+      "certificate": "results/verification/kanidm-account-request-signups/certificate.json"
+    },
+    {
+      "id": "kanidm-match-eq-spec",
+      "repo": "kanidm/kanidm",
+      "src": "bench:ports/kanidm",
+      "theorem": "kanidm_kernel.Properties.match_eq_spec",
+      "candidates": 1,
+      "status": "previously_checked",
+      "checks": [],
+      "certificate": "results/verification/kanidm-match-eq-spec/certificate.json"
+    },
+    {
+      "id": "kanidm-str-contains-spec",
+      "repo": "kanidm/kanidm",
+      "src": "bench:ports/kanidm",
+      "theorem": "kanidm_kernel.Properties.str_contains_spec",
+      "candidates": 2,
+      "status": "previously_checked",
+      "checks": [],
+      "certificate": "results/verification/kanidm-str-contains-spec/certificate.json"
+    },
+    {
+      "id": "kanidm-effective-total",
+      "repo": "kanidm/kanidm",
+      "src": "bench:ports/kanidm",
+      "theorem": "kanidm_kernel.Properties.effective_permission_check_total",
+      "candidates": 0,
+      "status": "missing",
+      "checks": []
+    },
+    {
+      "id": "rustfs-explicit-deny",
+      "repo": "rustfs/rustfs",
+      "src": "bench:ports/rustfs",
+      "theorem": "rustfs_kernel.Properties.explicit_deny_wins",
+      "candidates": 1,
+      "status": "previously_checked",
+      "checks": [],
+      "certificate": "results/verification/rustfs-explicit-deny/certificate.json"
+    },
+    {
+      "id": "rustfs-allow-needs-statement",
+      "repo": "rustfs/rustfs",
+      "src": "bench:ports/rustfs",
+      "theorem": "rustfs_kernel.Properties.allow_needs_allow_statement",
+      "candidates": 1,
+      "status": "previously_checked",
+      "checks": [],
+      "certificate": "results/verification/rustfs-allow-needs-statement/certificate.json"
+    },
+    {
+      "id": "rustfs-owner",
+      "repo": "rustfs/rustfs",
+      "src": "bench:ports/rustfs",
+      "theorem": "rustfs_kernel.Properties.owner_allowed_unless_denied",
+      "candidates": 1,
+      "status": "previously_checked",
+      "checks": [],
+      "certificate": "results/verification/rustfs-owner/certificate.json"
+    },
+    {
+      "id": "rustfs-deny-only",
+      "repo": "rustfs/rustfs",
+      "src": "bench:ports/rustfs",
+      "theorem": "rustfs_kernel.Properties.deny_only_ignores_allows",
+      "candidates": 1,
+      "status": "previously_checked",
+      "checks": [],
+      "certificate": "results/verification/rustfs-deny-only/certificate.json"
+    },
+    {
+      "id": "rustfs-force-delete",
+      "repo": "rustfs/rustfs",
+      "src": "bench:ports/rustfs",
+      "theorem": "rustfs_kernel.Properties.force_delete_needs_explicit_grant",
+      "candidates": 1,
+      "status": "previously_checked",
+      "checks": [],
+      "certificate": "results/verification/rustfs-force-delete/certificate.json"
+    },
+    {
+      "id": "rustfs-not-action-force-delete",
+      "repo": "rustfs/rustfs",
+      "src": "bench:ports/rustfs",
+      "theorem": "rustfs_kernel.Properties.not_action_never_grants_force_delete",
+      "candidates": 1,
+      "status": "previously_checked",
+      "checks": [],
+      "certificate": "results/verification/rustfs-not-action-force-delete/certificate.json"
+    },
+    {
+      "id": "rustfs-get-object-version",
+      "repo": "rustfs/rustfs",
+      "src": "bench:ports/rustfs",
+      "theorem": "rustfs_kernel.Properties.get_object_version_covers_get_object",
+      "candidates": 1,
+      "status": "previously_checked",
+      "checks": [],
+      "certificate": "results/verification/rustfs-get-object-version/certificate.json"
+    },
+    {
+      "id": "rustfs-bucket-principal",
+      "repo": "rustfs/rustfs",
+      "src": "bench:ports/rustfs",
+      "theorem": "rustfs_kernel.Properties.bucket_allow_needs_principal",
+      "candidates": 1,
+      "status": "previously_checked",
+      "checks": [],
+      "certificate": "results/verification/rustfs-bucket-principal/certificate.json"
+    },
+    {
+      "id": "rustfs-wildcard",
+      "repo": "rustfs/rustfs",
+      "src": "bench:ports/rustfs",
+      "theorem": "rustfs_kernel.Properties.wildcard_is_glob",
+      "candidates": 1,
+      "status": "previously_checked",
+      "checks": [],
+      "certificate": "results/verification/rustfs-wildcard/certificate.json"
+    },
+    {
+      "id": "rustfs-clean-idempotent",
+      "repo": "rustfs/rustfs",
+      "src": "bench:ports/rustfs",
+      "theorem": "rustfs_kernel.Properties.clean_idempotent",
+      "candidates": 1,
+      "status": "previously_checked",
+      "checks": [],
+      "certificate": "results/verification/rustfs-clean-idempotent/certificate.json"
+    },
+    {
+      "id": "rustfs-clean-canonical",
+      "repo": "rustfs/rustfs",
+      "src": "bench:ports/rustfs",
+      "theorem": "rustfs_kernel.Properties.clean_canonical",
+      "candidates": 1,
+      "status": "previously_checked",
+      "checks": [],
+      "certificate": "results/verification/rustfs-clean-canonical/certificate.json"
+    },
+    {
+      "id": "rustfs-parse-i64",
+      "repo": "rustfs/rustfs",
+      "src": "bench:ports/rustfs",
+      "theorem": "rustfs_kernel.Properties.parse_i64_spec",
+      "candidates": 2,
+      "status": "previously_checked",
+      "checks": [],
+      "certificate": "results/verification/rustfs-parse-i64/certificate.json"
+    },
+    {
+      "id": "rustfs-resolution-terminates",
+      "repo": "rustfs/rustfs",
+      "src": "bench:ports/rustfs",
+      "theorem": "rustfs_kernel.Properties.resolution_terminates",
+      "candidates": 1,
+      "status": "previously_checked",
+      "checks": [],
+      "certificate": "results/verification/rustfs-resolution-terminates/certificate.json"
+    },
+    {
+      "id": "tuwunel-messages-visible",
+      "repo": "matrix-construct/tuwunel",
+      "src": "bench:ports/tuwunel",
+      "theorem": "tuwunel_kernel.Properties.messages_visible",
+      "candidates": 1,
+      "status": "previously_checked",
+      "checks": [],
+      "certificate": "results/verification/tuwunel-messages-visible/certificate.json"
+    },
+    {
+      "id": "tuwunel-messages-ordered",
+      "repo": "matrix-construct/tuwunel",
+      "src": "bench:ports/tuwunel",
+      "theorem": "tuwunel_kernel.Properties.messages_ordered",
+      "candidates": 1,
+      "status": "previously_checked",
+      "checks": [],
+      "certificate": "results/verification/tuwunel-messages-ordered/certificate.json"
+    },
+    {
+      "id": "tuwunel-messages-after-leaving",
+      "repo": "matrix-construct/tuwunel",
+      "src": "bench:ports/tuwunel",
+      "theorem": "tuwunel_kernel.Properties.messages_nothing_after_leaving",
+      "candidates": 1,
+      "status": "previously_checked",
+      "checks": [],
+      "certificate": "results/verification/tuwunel-messages-after-leaving/certificate.json"
+    },
+    {
+      "id": "tuwunel-context-visible",
+      "repo": "matrix-construct/tuwunel",
+      "src": "bench:ports/tuwunel",
+      "theorem": "tuwunel_kernel.Properties.context_visible",
+      "candidates": 1,
+      "status": "previously_checked",
+      "checks": [],
+      "certificate": "results/verification/tuwunel-context-visible/certificate.json"
+    },
+    {
+      "id": "tuwunel-context-matches-spec",
+      "repo": "matrix-construct/tuwunel",
+      "src": "bench:ports/tuwunel",
+      "theorem": "tuwunel_kernel.Properties.context_matches_spec",
+      "candidates": 1,
+      "status": "previously_checked",
+      "checks": [],
+      "certificate": "results/verification/tuwunel-context-matches-spec/certificate.json"
+    },
+    {
+      "id": "tuwunel-context-agrees-with-messages",
+      "repo": "matrix-construct/tuwunel",
+      "src": "bench:ports/tuwunel",
+      "theorem": "tuwunel_kernel.Properties.context_agrees_with_messages",
+      "candidates": 1,
+      "status": "previously_checked",
+      "checks": [],
+      "certificate": "results/verification/tuwunel-context-agrees-with-messages/certificate.json"
+    },
+    {
+      "id": "tuwunel-context-base-served-by-event",
+      "repo": "matrix-construct/tuwunel",
+      "src": "bench:ports/tuwunel",
+      "theorem": "tuwunel_kernel.Properties.context_base_served_by_event",
+      "candidates": 1,
+      "status": "previously_checked",
+      "checks": [],
+      "certificate": "results/verification/tuwunel-context-base-served-by-event/certificate.json"
+    },
+    {
+      "id": "tuwunel-relations-visible",
+      "repo": "matrix-construct/tuwunel",
+      "src": "bench:ports/tuwunel",
+      "theorem": "tuwunel_kernel.Properties.relations_visible",
+      "candidates": 1,
+      "status": "previously_checked",
+      "checks": [],
+      "certificate": "results/verification/tuwunel-relations-visible/certificate.json"
+    },
+    {
+      "id": "tuwunel-threads-visible",
+      "repo": "matrix-construct/tuwunel",
+      "src": "bench:ports/tuwunel",
+      "theorem": "tuwunel_kernel.Properties.threads_visible",
+      "candidates": 1,
+      "status": "previously_checked",
+      "checks": [],
+      "certificate": "results/verification/tuwunel-threads-visible/certificate.json"
+    },
+    {
+      "id": "tuwunel-room-event-visible",
+      "repo": "matrix-construct/tuwunel",
+      "src": "bench:ports/tuwunel",
+      "theorem": "tuwunel_kernel.Properties.room_event_visible",
+      "candidates": 1,
+      "status": "previously_checked",
+      "checks": [],
+      "certificate": "results/verification/tuwunel-room-event-visible/certificate.json"
+    },
+    {
+      "id": "tuwunel-world-readable-served",
+      "repo": "matrix-construct/tuwunel",
+      "src": "bench:ports/tuwunel",
+      "theorem": "tuwunel_kernel.Properties.world_readable_event_served",
+      "candidates": 1,
+      "status": "previously_checked",
+      "checks": [],
+      "certificate": "results/verification/tuwunel-world-readable-served/certificate.json"
+    },
+    {
+      "id": "tuwunel-state-reads-need-membership",
+      "repo": "matrix-construct/tuwunel",
+      "src": "bench:ports/tuwunel",
+      "theorem": "tuwunel_kernel.Properties.state_reads_need_membership",
+      "candidates": 1,
+      "status": "previously_checked",
+      "checks": [],
+      "certificate": "results/verification/tuwunel-state-reads-need-membership/certificate.json"
+    },
+    {
+      "id": "tuwunel-joined-members-need-join",
+      "repo": "matrix-construct/tuwunel",
+      "src": "bench:ports/tuwunel",
+      "theorem": "tuwunel_kernel.Properties.joined_members_need_join",
+      "candidates": 1,
+      "status": "previously_checked",
+      "checks": [],
+      "certificate": "results/verification/tuwunel-joined-members-need-join/certificate.json"
+    },
+    {
+      "id": "tuwunel-initial-sync-visible",
+      "repo": "matrix-construct/tuwunel",
+      "src": "bench:ports/tuwunel",
+      "theorem": "tuwunel_kernel.Properties.initial_sync_visible",
+      "candidates": 1,
+      "status": "previously_checked",
+      "checks": [],
+      "certificate": "results/verification/tuwunel-initial-sync-visible/certificate.json"
+    },
+    {
+      "id": "tuwunel-initial-sync-departure",
+      "repo": "matrix-construct/tuwunel",
+      "src": "bench:ports/tuwunel",
+      "theorem": "tuwunel_kernel.Properties.initial_sync_stops_at_departure",
+      "candidates": 1,
+      "status": "previously_checked",
+      "checks": [],
+      "certificate": "results/verification/tuwunel-initial-sync-departure/certificate.json"
+    },
+    {
+      "id": "tuwunel-server-sees-joined",
+      "repo": "matrix-construct/tuwunel",
+      "src": "bench:ports/tuwunel",
+      "theorem": "tuwunel_kernel.Properties.server_sees_joined_only",
+      "candidates": 1,
+      "status": "previously_checked",
+      "checks": [],
+      "certificate": "results/verification/tuwunel-server-sees-joined/certificate.json"
+    },
+    {
+      "id": "tuwunel-total",
+      "repo": "matrix-construct/tuwunel",
+      "src": "bench:ports/tuwunel",
+      "theorem": "tuwunel_kernel.Properties.transition_total",
+      "candidates": 0,
+      "status": "missing",
+      "checks": []
+    },
+    {
+      "id": "oxicloud-migration-readonly",
+      "repo": "AtalayaLabs/OxiCloud",
+      "src": "bench:ports/oxicloud",
+      "theorem": "oxicloud_kernel.Properties.migration_readonly_blocks_mutations",
+      "candidates": 1,
+      "status": "previously_checked",
+      "checks": [],
+      "certificate": "results/verification/oxicloud-migration-readonly/certificate.json"
+    },
+    {
+      "id": "oxicloud-drive-read-only",
+      "repo": "AtalayaLabs/OxiCloud",
+      "src": "bench:ports/oxicloud",
+      "theorem": "oxicloud_kernel.Properties.drive_read_only_blocks_mutations",
+      "candidates": 1,
+      "status": "previously_checked",
+      "checks": [],
+      "certificate": "results/verification/oxicloud-drive-read-only/certificate.json"
+    },
+    {
+      "id": "oxicloud-expired-grants",
+      "repo": "AtalayaLabs/OxiCloud",
+      "src": "bench:ports/oxicloud",
+      "theorem": "oxicloud_kernel.Properties.expired_grants_ignored",
+      "candidates": 1,
+      "status": "previously_checked",
+      "checks": [],
+      "certificate": "results/verification/oxicloud-expired-grants/certificate.json"
+    },
+    {
+      "id": "oxicloud-token-grant",
+      "repo": "AtalayaLabs/OxiCloud",
+      "src": "bench:ports/oxicloud",
+      "theorem": "oxicloud_kernel.Properties.token_needs_its_own_grant",
+      "candidates": 1,
+      "status": "previously_checked",
+      "checks": [],
+      "certificate": "results/verification/oxicloud-token-grant/certificate.json"
+    },
+    {
+      "id": "oxicloud-share-needs-owner",
+      "repo": "AtalayaLabs/OxiCloud",
+      "src": "bench:ports/oxicloud",
+      "theorem": "oxicloud_kernel.Properties.share_needs_owner",
+      "candidates": 1,
+      "status": "previously_checked",
+      "checks": [],
+      "certificate": "results/verification/oxicloud-share-needs-owner/certificate.json"
+    },
+    {
+      "id": "oxicloud-check-total",
+      "repo": "AtalayaLabs/OxiCloud",
+      "src": "bench:ports/oxicloud",
+      "theorem": "oxicloud_kernel.Properties.check_total",
+      "candidates": 1,
+      "status": "previously_checked",
+      "checks": [],
+      "certificate": "results/verification/oxicloud-check-total/certificate.json"
+    },
+    {
+      "id": "oxicloud-create-needs-share",
+      "repo": "AtalayaLabs/OxiCloud",
+      "src": "bench:ports/oxicloud",
+      "theorem": "oxicloud_kernel.Properties.create_needs_share",
+      "candidates": 1,
+      "status": "previously_checked",
+      "checks": [],
+      "certificate": "results/verification/oxicloud-create-needs-share/certificate.json"
+    },
+    {
+      "id": "oxicloud-sharing-policies",
+      "repo": "AtalayaLabs/OxiCloud",
+      "src": "bench:ports/oxicloud",
+      "theorem": "oxicloud_kernel.Properties.create_respects_sharing_policies",
+      "candidates": 1,
+      "status": "previously_checked",
+      "checks": [],
+      "certificate": "results/verification/oxicloud-sharing-policies/certificate.json"
+    },
+    {
+      "id": "oxicloud-personal-drive",
+      "repo": "AtalayaLabs/OxiCloud",
+      "src": "bench:ports/oxicloud",
+      "theorem": "oxicloud_kernel.Properties.personal_drive_members_fixed",
+      "candidates": 1,
+      "status": "previously_checked",
+      "checks": [],
+      "certificate": "results/verification/oxicloud-personal-drive/certificate.json"
+    },
+    {
+      "id": "oxicloud-keeps-owner",
+      "repo": "AtalayaLabs/OxiCloud",
+      "src": "bench:ports/oxicloud",
+      "theorem": "oxicloud_kernel.Properties.drive_keeps_an_owner",
+      "candidates": 1,
+      "status": "previously_checked",
+      "checks": [],
+      "certificate": "results/verification/oxicloud-keeps-owner/certificate.json"
+    },
+    {
+      "id": "oxicloud-refused-writes-nothing",
+      "repo": "AtalayaLabs/OxiCloud",
+      "src": "bench:ports/oxicloud",
+      "theorem": "oxicloud_kernel.Properties.refused_create_or_set_writes_nothing",
+      "candidates": 1,
+      "status": "previously_checked",
+      "checks": [],
+      "certificate": "results/verification/oxicloud-refused-writes-nothing/certificate.json"
+    }
+  ]
+}

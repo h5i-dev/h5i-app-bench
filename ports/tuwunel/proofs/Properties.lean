@@ -1,3 +1,9 @@
+import Verified.TuwunelMessagesVisible
+import Verified.TuwunelMessagesOrdered
+import Verified.TuwunelContextBaseServedByEvent
+import Verified.TuwunelRoomEventVisible
+import Verified.TuwunelStateReadsNeedMembership
+import Verified.TuwunelJoinedMembersNeedJoin
 import Spec
 open Aeneas Aeneas.Std Result tuwunel_kernel tuwunel_kernel.Spec
 open H5iAppLib hiding lit
@@ -12,7 +18,7 @@ theorem messages_visible (s : Snapshot) (u room : U64) (frm upto : Token) (dir :
     (hk : Keys s) :
     ∀ e ∈ chunk.val, InRoom s room.val e.val ∧ Visible s u.val room.val e.val ∧
       ∀ p ∈ timeline s, p.event_id = e → ¬ Ignored s u.val p := by
-  sorry
+  apply tuwunel_kernel.Verified.TuwunelMessagesVisible.messages_visible <;> assumption
 
 /-- `/messages` pages in order: forward above the `from` token and below
 `to`, backward below `from` and above `to`, at most `limit` (capped at
@@ -25,7 +31,7 @@ theorem messages_ordered (s : Snapshot) (u room : U64) (frm upto : Token) (dir :
       (dir = .Forward → cs.Pairwise (· < ·) ∧ ∀ c ∈ cs, st.val < c ∧ ∀ t, upto = .At t → c < t.val) ∧
       (dir = .Backward → cs.Pairwise (· > ·) ∧ ∀ c ∈ cs, c < st.val ∧ ∀ t, upto = .At t → t.val < c) ∧
       chunk.val.length ≤ min lim.val 1000 := by
-  sorry
+  apply tuwunel_kernel.Verified.TuwunelMessagesOrdered.messages_ordered <;> assumption
 
 /-- A user whose last membership event in the room is a leave or a ban,
 and who is not joined in the state cache, gets from `/messages` no event
@@ -82,7 +88,7 @@ theorem context_base_served_by_event (s : Snapshot) (u room ev lim : U64) (f : F
     (h : transition s ⟨u, .Context room ev lim f⟩ = ok (.Ok (.Context base st en before after state)))
     (hk : Keys s) :
     transition s ⟨u, .RoomEvent room ev⟩ = ok (.Ok (.RoomEvent ev)) := by
-  sorry
+  apply tuwunel_kernel.Verified.TuwunelContextBaseServedByEvent.context_base_served_by_event <;> assumption
 
 /-- `/relations` needs the room's state to be readable (joined, invited,
 once joined, or world-readable) and returns events of the room the user
@@ -110,7 +116,7 @@ see it when asking in that room. -/
 theorem room_event_visible (s : Snapshot) (u room ev x : U64)
     (h : transition s ⟨u, .RoomEvent room ev⟩ = ok (.Ok (.RoomEvent x))) :
     x = ev ∧ Visible s u.val room.val ev.val := by
-  sorry
+  apply tuwunel_kernel.Verified.TuwunelRoomEventVisible.room_event_visible <;> assumption
 
 /-- An event that is world-readable at the time it was sent is served by
 `/event` to anyone who has not ignored its sender. -/
@@ -126,14 +132,14 @@ theorem state_reads_need_membership (s : Snapshot) (u room : U64) (op : Op) (r :
     (hop : op = .State room ∨ (∃ k key, op = .StateEvent room k key) ∨ ∃ at_ m n, op = .Members room at_ m n)
     (h : transition s ⟨u, op⟩ = ok (.Ok r)) :
     Joined s u.val room.val ∨ Invited s u.val room.val ∨ OnceJoined s u.val room.val ∨ WorldReadableNow s room.val := by
-  sorry
+  apply tuwunel_kernel.Verified.TuwunelStateReadsNeedMembership.state_reads_need_membership <;> assumption
 
 /-- `/joined_members` needs the user to be joined or the room to be
 world-readable. -/
 theorem joined_members_need_join (s : Snapshot) (u room : U64) (r : Reply)
     (h : transition s ⟨u, .JoinedMembers room⟩ = ok (.Ok r)) :
     Joined s u.val room.val ∨ WorldReadableNow s room.val := by
-  sorry
+  apply tuwunel_kernel.Verified.TuwunelJoinedMembersNeedJoin.joined_members_need_join <;> assumption
 
 /-- `initialSync` returns events of the room the user may see. -/
 theorem initial_sync_visible (s : Snapshot) (u room : U64) (lim : Option U64)
@@ -163,8 +169,12 @@ theorem server_sees_joined_only (s : Snapshot) (origin room ev : U64) (p : Pdu) 
     ∃ m, Joined s m room.val ∧ m / 1000 = origin.val ∧ membershipAt s hp.val m = .Join := by
   sorry
 
-/-- Every request gets a reply: the kernel neither panics nor loops. -/
-theorem transition_total (s : Snapshot) (req : Request) :
+/-- Every request gets a reply: the kernel neither panics nor loops, when the
+relation rows `n` satisfy `(n + 1) ^ 4 < Usize.max`. The relations walker keeps
+every stream it opens; with recursion (depth 3) each yielded event below the
+last level adds its continuation and a child stream over up to `n` relations,
+so the queue holds at most `1 + 2 (n + n^2 + n^3) + n^4 ≤ (n + 1)^4` entries. -/
+theorem transition_total (s : Snapshot) (req : Request) (hr : (s.relations.length + 1) ^ 4 < Usize.max) :
     ∃ r, transition s req = ok r := by
   sorry
 

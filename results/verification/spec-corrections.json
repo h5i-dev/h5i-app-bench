@@ -1,0 +1,52 @@
+{
+ "oxicloud-keeps-owner": {
+  "date": "2026-10-06",
+  "change": "added `GrantsUnique db`",
+  "reason": "Upstream enforces this with a UNIQUE key; without it the property is false for states the database cannot reach."
+ },
+ "rustfs-force-delete": {
+  "date": "2026-10-06",
+  "change": "added `UpstreamAction` for statement actions",
+  "reason": "The port's (family, name) action pair is wider than upstream's enum; the precondition restricts to actions upstream can represent."
+ },
+ "rustfs-resolution-terminates": {
+  "date": "2026-10-06",
+  "change": "conclusion weakened to `ok ∨ fail`",
+  "reason": "The property is termination, not success; chosen by the maintainer."
+ },
+ "nora-glob-match": {
+  "date": "2026-10-09",
+  "change": "added `pattern.length < Usize.max`",
+  "reason": "gpt-6.1-sol proved the unconditional statement false in Lean: a pattern of Usize.max `*` bytes splits into Usize.max + 1 parts, more than a modeled Vec holds. Rust cannot allocate such a pattern."
+ },
+ "nora-total": {
+  "date": "2026-10-09",
+  "change": "added: every role-rule pattern is shorter than Usize.max",
+  "reason": "Same capacity boundary as nora-glob-match, reached through `transition`; gpt-6.1-sol proved the unconditional statement false. Then also: namespace scopes (provider and rule) shorter than Usize.max; a scope of Usize.max `/` overflows its split (gpt-6.1-sol, 2026-10-10). Then also: the request namespace shorter than Usize.max; a namespace of Usize.max `/` overflows namespace_match's split (gpt-6.1-sol, 2026-10-10)."
+ },
+ "nora-middleware-total": {
+  "date": "2026-10-09",
+  "change": "added: every OIDC role-rule pattern in the config is shorter than Usize.max",
+  "reason": "Same capacity boundary as nora-glob-match, reached through the middleware's OIDC path; gpt-6.1-sol proved the unconditional statement false."
+ },
+ "artifactkeeper-visibility-total": {
+  "date": "2026-10-10",
+  "change": "added: the request's path, query and header names and values are shorter than Usize.max",
+  "reason": "gpt-6.1-sol proved the unconditional statement false: a Cookie header of Usize.max `;` splits into Usize.max + 1 parts, more than a modeled Vec holds. Rust cannot allocate such a request. Then the query bound became 2 * length < Usize.max: decoding a ticket of Usize.max/2+1 bytes of 0x80 doubles it (gpt-6.1-sol, 2026-10-10). Then also: permission rows list fewer than Usize.max actions in total; two rows with Usize.max + 1 distinct actions overflow their union (gpt-6.1-sol, 2026-10-10)."
+ },
+ "kanidm-effective-total": {
+  "date": "2026-10-10",
+  "change": "added: the search and modify profiles list fewer than Usize.max attributes and classes in total",
+  "reason": "gpt-6.1-sol proved the unconditional statement false: two search profiles granting Usize.max + 1 distinct attributes overflow the union of their grants. Rust cannot hold that many distinct strings. Then sync agreements' attributes were added to the count: one agreement with Usize.max attributes overflows (gpt-6.1-sol, 2026-10-10). Then the bound reserves room for the 7 fixed attribute names the search modules add: Usize.max - 1 profile attributes plus class and displayname overflow (gpt-6.1-sol, 2026-10-10). Then the reserve grew to the 73 distinct fixed names any module inserts (the migration module merges its own), counted from kernel/src (2026-10-10)."
+ },
+ "oxicloud-check-total": {
+  "date": "2026-10-10",
+  "change": "added: memberships.length + 2 ≤ Usize.max",
+  "reason": "gpt-6.1-sol proved the unconditional statement false: Usize.max groups containing one user expand to Usize.max + 1 IDs, more than a Vec holds. Then the bound leaves room for the user and the internal group: Usize.max - 1 membership rows still overflow (gpt-6.1-sol, 2026-10-10)."
+ },
+ "tuwunel-total": {
+  "date": "2026-10-10",
+  "change": "added: (relations.length + 1)^4 < Usize.max",
+  "reason": "gpt-6.1-sol proved the unconditional statement false: Usize.max self-relations overflow the relations walker's queue (docs/tuwunel-totality-obstruction.md). Then the bound became (n + 1)^4 < Usize.max: with recursion each yielded event adds a continuation and a child stream, and Usize.max - 1 self-relations still overflow the queue (gpt-6.1-sol, 2026-10-10)."
+ }
+}

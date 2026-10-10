@@ -1,0 +1,85 @@
+
+$ lake build
+⚠ [146/213] Replayed Aeneas.Std.WP
+warning: Aeneas/Std/WP.lean:756:4: 'simp -failIfUnchanged only' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Aeneas/Std/WP.lean:761:4: 'simp -failIfUnchanged only' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Aeneas/Std/WP.lean:896:11: 'cases i' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Aeneas/Std/WP.lean:896:23: 'simp' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Aeneas/Std/WP.lean:927:19: 'simp at hspec' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+⚠ [1264/1337] Replayed Aeneas.Std.Core.Core
+warning: Aeneas/Std/Core/Core.lean:38:4: The namespace 'core' is duplicated in the declaration 'Aeneas.Std.core.core.clone.CloneGlobal'
+
+Note: This linter can be disabled with `set_option linter.dupNamespace false`
+warning: Aeneas/Std/Core/Core.lean:59:4: The namespace 'core' is duplicated in the declaration 'Aeneas.Std.core.core.clone.CloneBox'
+
+Note: This linter can be disabled with `set_option linter.dupNamespace false`
+warning: Aeneas/Std/Core/Core.lean:68:4: The namespace 'core' is duplicated in the declaration 'Aeneas.Std.core.core.marker.CopyBool'
+
+Note: This linter can be disabled with `set_option linter.dupNamespace false`
+✔ [1736/1739] Built Verified.ArtifactkeeperOnlyAdminRules (10s)
+⚠ [1737/1739] Built Verified.ArtifactkeeperAdminAudited (11s)
+warning: Verified/ArtifactkeeperAdminAudited.lean:30:18: This simp argument is unused:
+  Prod.mk.injEq
+
+Hint: Omit it from the simp argument list.
+  simp only [̵P̵r̵o̵d̵.̵m̵k̵.̵i̵n̵j̵E̵q̵,̵ ̵m̵i̵d̵d̵l̵e̵w̵a̵r̵e̵.̵O̵u̵t̵c̵o̵m̵e̵.̵R̵e̵s̵p̵o̵n̵d̵.̵i̵n̵j̵E̵q̵,̵[̲m̲i̲d̲d̲l̲e̲w̲a̲r̲e̲.̲O̲u̲t̲c̲o̲m̲e̲.̲R̲e̲s̲p̲o̲n̲d̲.̲i̲n̲j̲E̲q̲,̲ reduceCtorEq, and_false] at h
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+⚠ [1738/1739] Built Properties (8.9s)
+warning: Properties.lean:17:8: declaration uses `sorry`
+warning: Properties.lean:26:8: declaration uses `sorry`
+warning: Properties.lean:47:8: declaration uses `sorry`
+warning: Properties.lean:58:8: declaration uses `sorry`
+warning: Properties.lean:68:8: declaration uses `sorry`
+warning: Properties.lean:76:8: declaration uses `sorry`
+warning: Properties.lean:85:8: declaration uses `sorry`
+warning: Properties.lean:93:8: declaration uses `sorry`
+warning: Properties.lean:113:89: 'assumption' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Properties.lean:113:89: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: Properties.lean:135:8: declaration uses `sorry`
+warning: Properties.lean:152:8: declaration uses `sorry`
+warning: Properties.lean:163:8: declaration uses `sorry`
+Build completed successfully (1739 jobs).
+
+note: solutions.artifactkeeper-admin-audited.Solution is not built by `lake build`, so its theorems are not gated
+note: solutions.artifactkeeper-only-admin-rules.Solution is not built by `lake build`, so its theorems are not gated
+$ lake env lean /home/ht2673/Dev/h5i-app-bench/ports/artifactkeeper/proofs/.lake/h5i/Gate.lean
+gate: 143 theorems in 8 modules checked against propext, Classical.choice, Quot.sound
+
+Error: ports/artifactkeeper: proof gate failed:
+  Properties.lean:22: sorry
+  Properties.lean:31: sorry
+  Properties.lean:54: sorry
+  Properties.lean:64: sorry
+  Properties.lean:73: sorry
+  Properties.lean:82: sorry
+  Properties.lean:88: sorry
+  Properties.lean:97: sorry
+  Properties.lean:139: sorry
+  Properties.lean:160: sorry
+  Properties.lean:166: sorry
+  artifactkeeper_kernel.Properties.ticket_consumed_on_read depends on [sorryAx]
+  artifactkeeper_kernel.Properties.check_repository_action_spec depends on [sorryAx]
+  artifactkeeper_kernel.Properties.anonymous_needs_rule depends on [sorryAx]
+  artifactkeeper_kernel.Properties.guest_blocks_anonymous depends on [sorryAx]
+  artifactkeeper_kernel.Properties.mutation_needs_action depends on [sorryAx]
+  artifactkeeper_kernel.Properties.ticket_read_only depends on [sorryAx]
+  artifactkeeper_kernel.Properties.anonymous_rule_read_only depends on [sorryAx]
+  artifactkeeper_kernel.Properties.repo_visibility_total depends on [sorryAx]
+  artifactkeeper_kernel.Properties.anonymous_never_mutates depends on [sorryAx]
+  artifactkeeper_kernel.Properties.scoped_token_confined depends on [sorryAx]
+  artifactkeeper_kernel.Properties.scopes_grant_access_spec depends on [sorryAx]

@@ -5,7 +5,13 @@ edition = "2024"
 version = "0.1.0"
 publish = false
 
+[[bin]]
+name = "performance"
+path = "src/bin/performance.rs"
+test = false
+
 [dependencies]
+rustfs-private-oracle = { path = "private-oracle" }
 rustfs-kernel = { path = "../kernel" }
 # The upstream crate itself, from the pinned checkout (scripts/link-upstream.sh).
 rustfs-policy = { path = "../upstream-src/crates/policy" }

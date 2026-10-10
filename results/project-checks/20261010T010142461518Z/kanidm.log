@@ -1,0 +1,84 @@
+
+$ lake build
+⚠ [146/231] Replayed Aeneas.Std.WP
+warning: Aeneas/Std/WP.lean:756:4: 'simp -failIfUnchanged only' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Aeneas/Std/WP.lean:761:4: 'simp -failIfUnchanged only' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Aeneas/Std/WP.lean:896:11: 'cases i' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Aeneas/Std/WP.lean:896:23: 'simp' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Aeneas/Std/WP.lean:927:19: 'simp at hspec' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+⚠ [1264/1353] Replayed Aeneas.Std.Core.Core
+warning: Aeneas/Std/Core/Core.lean:38:4: The namespace 'core' is duplicated in the declaration 'Aeneas.Std.core.core.clone.CloneGlobal'
+
+Note: This linter can be disabled with `set_option linter.dupNamespace false`
+warning: Aeneas/Std/Core/Core.lean:59:4: The namespace 'core' is duplicated in the declaration 'Aeneas.Std.core.core.clone.CloneBox'
+
+Note: This linter can be disabled with `set_option linter.dupNamespace false`
+warning: Aeneas/Std/Core/Core.lean:68:4: The namespace 'core' is duplicated in the declaration 'Aeneas.Std.core.core.marker.CopyBool'
+
+Note: This linter can be disabled with `set_option linter.dupNamespace false`
+✔ [1732/1737] Built Verified.KanidmSynchroniseSeesNothing (11s)
+✔ [1733/1737] Built Verified.KanidmStrContainsSpec (12s)
+✔ [1734/1737] Built Verified.KanidmReadonlyCannotModify (12s)
+✔ [1735/1737] Built Verified.KanidmDeleteProtected (16s)
+⚠ [1736/1737] Built Properties (13s)
+warning: Properties.lean:13:8: declaration uses `sorry`
+warning: Properties.lean:20:8: declaration uses `sorry`
+warning: Properties.lean:31:8: declaration uses `sorry`
+warning: Properties.lean:40:8: declaration uses `sorry`
+warning: Properties.lean:68:8: declaration uses `sorry`
+warning: Properties.lean:76:8: declaration uses `sorry`
+warning: Properties.lean:85:8: declaration uses `sorry`
+warning: Properties.lean:104:8: declaration uses `sorry`
+warning: Properties.lean:111:8: declaration uses `sorry`
+warning: Properties.lean:118:8: declaration uses `sorry`
+warning: Properties.lean:131:8: declaration uses `sorry`
+warning: Properties.lean:144:8: declaration uses `sorry`
+warning: Properties.lean:157:8: declaration uses `sorry`
+warning: Properties.lean:168:71: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: Properties.lean:174:8: declaration uses `sorry`
+Build completed successfully (1737 jobs).
+
+$ lake env lean /home/ht2673/Dev/h5i-app-bench/ports/kanidm/proofs/.lake/h5i/Gate.lean
+gate: 68 theorems in 6 modules checked against propext, Classical.choice, Quot.sound
+
+Error: ports/kanidm: proof gate failed:
+  Properties.lean:17: sorry
+  Properties.lean:24: sorry
+  Properties.lean:36: sorry
+  Properties.lean:47: sorry
+  Properties.lean:71: sorry
+  Properties.lean:81: sorry
+  Properties.lean:90: sorry
+  Properties.lean:108: sorry
+  Properties.lean:115: sorry
+  Properties.lean:124: sorry
+  Properties.lean:138: sorry
+  Properties.lean:151: sorry
+  Properties.lean:160: sorry
+  Properties.lean:177: sorry
+  kanidm_kernel.Properties.delete_needs_profile depends on [sorryAx]
+  kanidm_kernel.Properties.protected_deny_overrides_create depends on [sorryAx]
+  kanidm_kernel.Properties.protected_deny_overrides_modify depends on [sorryAx]
+  kanidm_kernel.Properties.protected_class_never_added depends on [sorryAx]
+  kanidm_kernel.Properties.modify_needs_profile depends on [sorryAx]
+  kanidm_kernel.Properties.search_attrs_granted depends on [sorryAx]
+  kanidm_kernel.Properties.anonymous_reads_by_profile_only depends on [sorryAx]
+  kanidm_kernel.Properties.create_needs_profile depends on [sorryAx]
+  kanidm_kernel.Properties.match_eq_spec depends on [sorryAx]
+  kanidm_kernel.Properties.tombstone_locked depends on [sorryAx]
+  kanidm_kernel.Properties.create_protected depends on [sorryAx]
+  kanidm_kernel.Properties.account_request_creates_signups depends on [sorryAx]
+  kanidm_kernel.Properties.sync_object_constrained depends on [sorryAx]
+  kanidm_kernel.Properties.effective_permission_check_total depends on [sorryAx]
