@@ -133,4 +133,16 @@ theorem readonly_allows_only_reads (ps : alloc.vec.Vec (alloc.vec.Vec U8 × defa
     nats a.action.name.val ∈ readonlyNames := by
   apply rustfs_kernel.Verified.RustfsDefaults.readonly_allows_only_reads <;> assumption
 
+/-- The built-in policies that name their actions exactly (`readonly`,
+`writeonly`, `diagnostics`, `KMSKeyAdministrator`, `KMSKeyUser`, `KMSAuditor`)
+allow, apart from owners and deny-only checks, only the actions they name. -/
+theorem builtin_allows_only_listed (ps : alloc.vec.Vec (alloc.vec.Vec U8 × defaults.Policy))
+    (hps : defaults.default_policies = ok ps) (q : List Nat × List (List Nat)) (hq : q ∈ builtinOnly)
+    (x : alloc.vec.Vec U8 × defaults.Policy) (hx : x ∈ ps.val) (hn : nats x.1.val = q.1)
+    (a : stmts.Args) (e : condfuncs.Env)
+    (h : policies.policy_is_allowed (alloc.vec.Vec.deref x.2.statements) a e = ok true)
+    (ho : a.is_owner = false) (hd : a.deny_only = false) :
+    nats a.action.name.val ∈ q.2 := by
+  apply rustfs_kernel.Verified.RustfsDefaults.builtin_allows_only_listed <;> assumption
+
 end rustfs_kernel.Properties
