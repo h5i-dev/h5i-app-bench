@@ -39,4 +39,37 @@ with the actions it names. `readwrite` and `consoleAdmin` grant `s3:*`,
 def builtinOnly : List (List Nat × List (List Nat)) :=
   [(lit "readonly", readonlyNames), (lit "writeonly", writeonlyNames), (lit "diagnostics", diagnosticsNames), (lit "KMSKeyAdministrator", kmsAdministratorNames), (lit "KMSKeyUser", kmsUserNames), (lit "KMSAuditor", kmsAuditorNames)]
 
+/-! ## Validation (`valids`): `policy/{statement,resource,principal}.rs` `is_valid` -/
+
+/-- A KMS resource pattern `Resource::is_valid` accepts: `*`, `key/<id>` with
+no further `/`, or `alias/<name>`; neither may contain a backslash. -/
+def kmsResourceOK (p : List Nat) : Prop :=
+  p = lit "*" ∨
+  (lit "key/" <+: p ∧ 4 < p.length ∧ 47 ∉ p.drop 4 ∧ 92 ∉ p) ∨
+  (lit "alias/" <+: p ∧ 6 < p.length ∧ 92 ∉ p)
+
+/-- `Resource::is_valid`: an S3 pattern is nonempty and does not start with
+`/`; a KMS pattern is `kmsResourceOK`. -/
+def resourceOK : rsrc.Resource → Prop
+  | .S3 p => p.val ≠ [] ∧ (nats p.val).head? ≠ some 47
+  | .Kms p => kmsResourceOK (nats p.val)
+
+def isKmsResource : rsrc.Resource → Prop
+  | .S3 _ => False
+  | .Kms _ => True
+
+/-- The actions all belong to family `f` (entries of no family aside), and at
+least one does. -/
+def UniformFamily (l : List acts.Action) (f : acts.Family) : Prop :=
+  f ≠ .None ∧ (∃ a ∈ l, a.family = f) ∧ ∀ a ∈ l, a.family = f ∨ a.family = .None
+
+/-- What `BPStatement::is_valid` accepts. -/
+def BPStatementOK (st : stmts.BPStatement) : Prop :=
+  (st.principal.aws.val ≠ [] ∨ st.principal.service.val ≠ []) ∧
+  (st.actions.val ≠ [] ↔ st.not_actions.val = []) ∧
+  (∀ a ∈ st.actions.val ++ st.not_actions.val, a.family ≠ .Kms) ∧
+  (∀ r ∈ st.resources.val ++ st.not_resources.val, ¬ isKmsResource r) ∧
+  (st.resources.val ≠ [] ↔ st.not_resources.val = []) ∧
+  (∀ r ∈ st.resources.val ++ st.not_resources.val, resourceOK r)
+
 end rustfs_kernel.Spec

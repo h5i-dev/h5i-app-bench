@@ -20,4 +20,7 @@ theorems = [
   "rustfs_kernel.Properties.resolution_terminates",
   "rustfs_kernel.Properties.readonly_allows_only_reads",
   "rustfs_kernel.Properties.builtin_allows_only_listed",
+  "rustfs_kernel.Properties.resource_valid_iff",
+  "rustfs_kernel.Properties.bp_statement_valid_iff",
+  "rustfs_kernel.Properties.action_family_mixed_iff",
 ]

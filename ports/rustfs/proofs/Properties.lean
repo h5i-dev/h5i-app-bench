@@ -1,3 +1,4 @@
+import Verified.RustfsValids
 import Verified.RustfsDefaults
 import SpecKernel
 import Verified.RustfsCleanIdempotent
@@ -144,5 +145,29 @@ theorem builtin_allows_only_listed (ps : alloc.vec.Vec (alloc.vec.Vec U8 × defa
     (ho : a.is_owner = false) (hd : a.deny_only = false) :
     nats a.action.name.val ∈ q.2 := by
   apply rustfs_kernel.Verified.RustfsDefaults.builtin_allows_only_listed <;> assumption
+
+/-! ## Validation (`valids`) -/
+
+/-- `Resource::is_valid` accepts exactly the patterns of `resourceOK`: a
+nonempty S3 pattern not starting with `/`, or a KMS `*`, `key/<id>` or
+`alias/<name>` without backslashes. -/
+theorem resource_valid_iff (x : rsrc.Resource) (o : core.result.Result Unit valids.ValidationError)
+    (h : valids.resource_is_valid x = ok o) : (o = .Ok () ↔ resourceOK x) := by
+  apply rustfs_kernel.Verified.RustfsValids.resource_ok <;> assumption
+
+/-- `BPStatement::is_valid` accepts exactly the statements of `BPStatementOK`:
+a principal, exactly one of `Action`/`NotAction` and of `Resource`/`NotResource`,
+no KMS action or resource, and every resource pattern valid. -/
+theorem bp_statement_valid_iff (st : stmts.BPStatement) (sid : Slice U8)
+    (o : core.result.Result Unit valids.ValidationError)
+    (h : valids.bp_statement_is_valid st sid = ok o) : (o = .Ok () ↔ BPStatementOK st) := by
+  apply rustfs_kernel.Verified.RustfsValids.bp_statement_ok <;> assumption
+
+/-- `Statement::action_family` reports `Mixed` for a nonempty `Action` list
+exactly when the actions do not all belong to one family. -/
+theorem action_family_mixed_iff (st : stmts.Statement) (o : Option valids.ActionFamily)
+    (h : valids.action_family st = ok o) (hne : st.actions.val ≠ []) :
+    (o = some .Mixed ↔ ¬ ∃ f, UniformFamily st.actions.val f) := by
+  apply rustfs_kernel.Verified.RustfsValids.action_family_mixed <;> assumption
 
 end rustfs_kernel.Properties
