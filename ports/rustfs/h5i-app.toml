@@ -18,4 +18,5 @@ theorems = [
   "rustfs_kernel.Properties.clean_canonical",
   "rustfs_kernel.Properties.parse_i64_spec",
   "rustfs_kernel.Properties.resolution_terminates",
+  "rustfs_kernel.Properties.readonly_allows_only_reads",
 ]

@@ -1,3 +1,5 @@
+import Verified.RustfsDefaults
+import SpecKernel
 import Verified.RustfsCleanIdempotent
 import Verified.RustfsCleanCanonical
 import Verified.RustfsParseI64
@@ -117,5 +119,18 @@ theorem resolution_terminates (ctx : awsvars.VarContext) (p : Slice U8) (hv : Pl
     (∃ r, awsvars.resolve_aws_variables ctx p = ok r) ∨
       ∃ err, awsvars.resolve_aws_variables ctx p = fail err := by
   apply rustfs_kernel.Verified.RustfsResolutionTerminates.resolution_terminates <;> assumption
+
+/-! ## Built-in policies (`defaults`) -/
+
+/-- When the built-in `readonly` policy allows a request (not as owner, not
+deny-only), the action is one of the policy's read actions: `s3:GetBucketLocation`,
+`s3:GetObject`, `s3:GetBucketQuota` or `sts:AssumeRole`. -/
+theorem readonly_allows_only_reads (ps : alloc.vec.Vec (alloc.vec.Vec U8 × defaults.Policy))
+    (hps : defaults.default_policies = ok ps) (x : alloc.vec.Vec U8 × defaults.Policy) (hx : x ∈ ps.val)
+    (hn : nats x.1.val = lit "readonly") (a : stmts.Args) (e : condfuncs.Env)
+    (h : policies.policy_is_allowed (alloc.vec.Vec.deref x.2.statements) a e = ok true)
+    (ho : a.is_owner = false) (hd : a.deny_only = false) :
+    nats a.action.name.val ∈ readonlyNames := by
+  apply rustfs_kernel.Verified.RustfsDefaults.readonly_allows_only_reads <;> assumption
 
 end rustfs_kernel.Properties
