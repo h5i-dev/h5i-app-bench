@@ -8,7 +8,7 @@
       name="description"
       content="How much real-world Rust h5i-app can formally verify in Lean 4, and what the verifiable port costs at runtime: specs proved, upstream code covered, proof effort and paired performance for six open-source Rust servers."
     />
-    <meta name="theme-color" content="#08080b" />
+    <meta name="theme-color" content="#070707" />
     <link rel="canonical" href="https://benchmark.h5i.dev/" />
     <link rel="icon" type="image/png" href="./favicon.png" />
     <link rel="apple-touch-icon" href="./favicon.png" />
@@ -16,7 +16,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800;900&family=Space+Grotesk:wght@300;400;500;700&family=Space+Mono:wght@400;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500;600&display=swap"
     />
     <script>
       try { const t = localStorage.getItem("theme"); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
@@ -32,11 +32,11 @@
         <span>h5i-app</span><span class="brand-reading">/ bench</span>
       </a>
       <nav class="site-nav" aria-label="Benchmark sections">
-        <a href="#verified">[&gt; verified]</a>
-        <a href="#performance">[&gt; performance]</a>
-        <a href="#effort">[&gt; effort]</a>
-        <a href="#specs">[&gt; specs]</a>
-        <a href="#method">[&gt; method]</a>
+        <a href="#verified">Verified</a>
+        <a href="#performance">Performance</a>
+        <a href="#effort">Effort</a>
+        <a href="#specs">Specs</a>
+        <a href="#method">Method</a>
       </nav>
       <div class="theme" role="group" aria-label="Color theme">
         <button type="button" data-theme-set="light">light</button><button type="button" data-theme-set="dark">dark</button>
@@ -55,7 +55,7 @@
 
       <section id="verified" class="block">
         <div class="block-head">
-          <h2 class="term">verified</h2>
+          <h2 class="term" data-n="01">Verified</h2>
           <p>Proved specs, the upstream code they cover, and project checks. A theorem proves one property of a function, not all of its behavior.</p>
         </div>
         <div class="table-wrap">
@@ -84,7 +84,7 @@
 
       <section id="performance" class="block">
         <div class="block-head">
-          <h2 class="term">performance</h2>
+          <h2 class="term" data-n="02">Performance</h2>
           <p>Kernel time ÷ upstream time on the same inputs, release builds on one host. Below 1× the port is faster. Only measurements where both sides do the same work are plotted.</p>
         </div>
         <figure class="chart" id="perf-chart" aria-describedby="perf-caption"></figure>
@@ -100,7 +100,7 @@
 
       <section id="effort" class="block">
         <div class="block-head">
-          <h2 class="term">effort</h2>
+          <h2 class="term" data-n="03">Effort</h2>
           <p>Extracted Lean is generated. Spec and proof lines are written by hand; proof lines exclude the statement.</p>
         </div>
         <div class="table-wrap">
@@ -125,7 +125,7 @@
 
       <section id="specs" class="block">
         <div class="block-head">
-          <h2 class="term">specs</h2>
+          <h2 class="term" data-n="04">Specs</h2>
           <p>All 101 theorems. Open one for its statement, code, Lean and proof.</p>
         </div>
         <div class="filters" role="search">
@@ -160,7 +160,7 @@
 
       <section id="method" class="block">
         <div class="block-head">
-          <h2 class="term">method</h2>
+          <h2 class="term" data-n="05">Method</h2>
           <p>How specs are built and checked.</p>
         </div>
         <ol class="flow">
