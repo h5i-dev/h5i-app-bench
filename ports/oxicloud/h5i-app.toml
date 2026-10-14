@@ -1,7 +1,7 @@
 # Standard h5i-app project. Keep every selected theorem in the final gate.
 [extract]
 crate = "kernel"
-start-from = ["grantapi::transition", "userrole::as_bytes", "userrole::from_stored", "userrole::from_session", "userrole::rank", "userrole::at_least", "userrole::outranks", "userrole::is_anonymous", "userrole::str_at_least", "userrole::is_privileged", "authwire::subject_bytes", "authwire::subject_parse", "authwire::subject_id", "authwire::resource_bytes", "authwire::resource_parse", "authwire::resource_id", "authwire::permission_bytes", "authwire::permission_parse", "authwire::permission_all", "authwire::role_bytes", "authwire::role_parse", "authwire::role_all", "authwire::subject_user_id", "authwire::subject_token_id"]
+start-from = ["grantapi::transition", "userrole::as_bytes", "userrole::from_stored", "userrole::from_session", "userrole::rank", "userrole::at_least", "userrole::outranks", "userrole::is_anonymous", "userrole::str_at_least", "userrole::is_privileged", "authwire::subject_bytes", "authwire::subject_parse", "authwire::subject_id", "authwire::resource_bytes", "authwire::resource_parse", "authwire::resource_id", "authwire::permission_bytes", "authwire::permission_parse", "authwire::permission_all", "authwire::role_bytes", "authwire::role_parse", "authwire::role_all", "authwire::subject_user_id", "authwire::subject_token_id", "drivepolicy::resolve", "drivepolicy::refuse_public_links", "drivepolicy::refuse_sharing", "drivepolicy::refuse_owner_role_change", "drivepolicy::refuse_cross_drive_move", "drivepolicy::refuse_external_sharing"]
 
 [check]
 theorems = [
@@ -38,4 +38,10 @@ theorems = [
   "oxicloud_kernel.Properties.auth_role_all",
   "oxicloud_kernel.Properties.auth_user_identity",
   "oxicloud_kernel.Properties.auth_token_identity",
+  "oxicloud_kernel.Properties.drive_policy_override_precedence",
+  "oxicloud_kernel.Properties.drive_public_link_policy",
+  "oxicloud_kernel.Properties.drive_sharing_policy",
+  "oxicloud_kernel.Properties.drive_owner_roster_policy",
+  "oxicloud_kernel.Properties.drive_cross_move_policy",
+  "oxicloud_kernel.Properties.drive_external_sharing_policy",
 ]

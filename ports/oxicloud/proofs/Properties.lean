@@ -1,3 +1,4 @@
+import Verified.OxicloudDrivePolicy
 import Verified.OxicloudAuthWire
 import Verified.OxicloudMigrationReadonly
 import Verified.OxicloudDriveReadOnly
@@ -226,5 +227,43 @@ theorem auth_user_identity (s : model.Subject) (id : U64) :
 theorem auth_token_identity (s : model.Subject) (id : U64) :
     authwire.subject_token_id s = ok (some id) ↔ s = .Token id :=
   Verified.OxicloudAuthWire.token_identity s id
+
+
+/-- Explicit policy choices take precedence; missing choices inherit defaults. -/
+theorem drive_policy_override_precedence (d : drivepolicy.Policies) (o : drivepolicy.Overrides)
+    (r : drivepolicy.Policies) (h : drivepolicy.resolve d o = ok r) : SpecKernel.PolicyResolved d o r :=
+  post_of_ok (Verified.OxicloudDrivePolicy.resolve_spec d o) h
+
+/-- Both broad sharing restrictions and link-specific restrictions govern minting. -/
+theorem drive_public_link_policy (p : drivepolicy.Policies)
+    (r : core.result.Result Unit model.ErrorKind) (h : drivepolicy.refuse_public_links p = ok r) :
+    SpecKernel.GuardDecision (SpecKernel.PublicLinksAllowed p) r :=
+  Verified.OxicloudDrivePolicy.public_links_ok p r h
+
+/-- The sharing policy controls per-resource sharing. -/
+theorem drive_sharing_policy (p : drivepolicy.Policies)
+    (r : core.result.Result Unit model.ErrorKind) (h : drivepolicy.refuse_sharing p = ok r) :
+    SpecKernel.GuardDecision (SpecKernel.SharingAllowed p) r :=
+  Verified.OxicloudDrivePolicy.sharing_ok p r h
+
+/-- The owner-roster lock exempts administrators. -/
+theorem drive_owner_roster_policy (p : drivepolicy.Policies) (admin : Bool)
+    (r : core.result.Result Unit model.ErrorKind)
+    (h : drivepolicy.refuse_owner_role_change p admin = ok r) :
+    SpecKernel.GuardDecision (SpecKernel.OwnerChangesAllowed p admin) r :=
+  Verified.OxicloudDrivePolicy.owner_changes_ok p admin r h
+
+/-- The source drive controls the cross-drive move guard. -/
+theorem drive_cross_move_policy (p : drivepolicy.Policies)
+    (r : core.result.Result Unit model.ErrorKind) (h : drivepolicy.refuse_cross_drive_move p = ok r) :
+    SpecKernel.GuardDecision (SpecKernel.CrossDriveMoveAllowed p) r :=
+  Verified.OxicloudDrivePolicy.cross_drive_move_ok p r h
+
+/-- The external-sharing guard preserves the distinction between users, groups, and tokens. -/
+theorem drive_external_sharing_policy (p : drivepolicy.Policies) (s : model.Subject) (external : Bool)
+    (r : core.result.Result Unit model.ErrorKind)
+    (h : drivepolicy.refuse_external_sharing p s external = ok r) :
+    SpecKernel.GuardDecision (SpecKernel.ExternalSharingAllowed p s external) r :=
+  Verified.OxicloudDrivePolicy.external_sharing_ok p s external r h
 
 end oxicloud_kernel.Properties

@@ -88,3 +88,14 @@ for user roles. UUID payloads retain the existing injective `u64` identity
 representation. `Permission::ALL` and `Role::ALL` become functions returning
 owned vectors in exactly the upstream order. Enumeration order is independent
 of the kernel's existing role variant order.
+
+
+## Drive policy resolution and guards
+
+`drivepolicy::Policies` retains all ten upstream `DrivePolicies` knobs, while
+`model::DrivePolicies` remains the existing projection used by the ACL engine.
+`Overrides` preserves the distinction between an absent override and an explicit
+false value. The policy guard functions return the existing error-kind representation;
+error formatting and audit emission stay in the shell. Audit-only context is
+omitted from the pure interface; the owner guard retains `caller_is_admin`
+and the external-sharing guard retains both principal kind and external flag.

@@ -29,6 +29,12 @@ trap 'rm -rf "$tmp"' EXIT
   --start-from oxicloud_kernel::authwire::role_all \
   --start-from oxicloud_kernel::authwire::subject_user_id \
   --start-from oxicloud_kernel::authwire::subject_token_id \
+  --start-from oxicloud_kernel::drivepolicy::resolve \
+  --start-from oxicloud_kernel::drivepolicy::refuse_public_links \
+  --start-from oxicloud_kernel::drivepolicy::refuse_sharing \
+  --start-from oxicloud_kernel::drivepolicy::refuse_owner_role_change \
+  --start-from oxicloud_kernel::drivepolicy::refuse_cross_drive_move \
+  --start-from oxicloud_kernel::drivepolicy::refuse_external_sharing \
   --dest-file "$tmp/oxicloud_kernel.llbc")
 mkdir -p "$root/ports/oxicloud/proofs/generated"
 aeneas -backend lean "$tmp/oxicloud_kernel.llbc" -dest "$root/ports/oxicloud/proofs/generated"

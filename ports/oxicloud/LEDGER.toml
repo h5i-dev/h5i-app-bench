@@ -11892,7 +11892,8 @@ status = "todo"
 [[item]]
 upstream = "src/domain/entities/drive.rs:149 DrivePolicies"
 lines = 12
-status = "todo"
+status = "ported"
+kernel = ["drivepolicy::Policies"]
 
 [[item]]
 upstream = "src/domain/entities/drive.rs:246 POLICY_KNOBS"
@@ -11912,7 +11913,8 @@ status = "todo"
 [[item]]
 upstream = "src/domain/entities/drive.rs:285 DrivePolicyOverrides"
 lines = 12
-status = "todo"
+status = "ported"
+kernel = ["drivepolicy::Overrides"]
 
 [[item]]
 upstream = "src/domain/entities/drive.rs:318 DrivePolicyOverrides::from_value"
@@ -11937,7 +11939,8 @@ status = "todo"
 [[item]]
 upstream = "src/domain/entities/drive.rs:368 DrivePolicies::resolve"
 lines = 30
-status = "todo"
+status = "ported"
+kernel = ["drivepolicy::resolve"]
 
 [[item]]
 upstream = "src/domain/entities/drive.rs:409 DrivePolicies::knob_value"
@@ -11962,27 +11965,32 @@ status = "todo"
 [[item]]
 upstream = "src/domain/entities/drive.rs:480 DrivePolicies::refuse_public_links"
 lines = 26
-status = "todo"
+status = "ported"
+kernel = ["drivepolicy::refuse_public_links"]
 
 [[item]]
 upstream = "src/domain/entities/drive.rs:532 DrivePolicies::refuse_sharing"
 lines = 18
-status = "todo"
+status = "ported"
+kernel = ["drivepolicy::refuse_sharing"]
 
 [[item]]
 upstream = "src/domain/entities/drive.rs:567 DrivePolicies::refuse_owner_role_change"
 lines = 26
-status = "todo"
+status = "ported"
+kernel = ["drivepolicy::refuse_owner_role_change"]
 
 [[item]]
 upstream = "src/domain/entities/drive.rs:609 DrivePolicies::refuse_cross_drive_move"
 lines = 23
-status = "todo"
+status = "ported"
+kernel = ["drivepolicy::refuse_cross_drive_move"]
 
 [[item]]
 upstream = "src/domain/entities/drive.rs:648 DrivePolicies::refuse_external_sharing"
 lines = 32
-status = "todo"
+status = "ported"
+kernel = ["drivepolicy::refuse_external_sharing"]
 
 [[item]]
 upstream = "src/domain/entities/drive.rs:696 OwnerRoleChangeGateContext"

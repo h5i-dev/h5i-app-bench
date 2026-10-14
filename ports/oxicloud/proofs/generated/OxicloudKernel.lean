@@ -2050,6 +2050,181 @@ def authwire.subject_token_id
   | model.Subject.Group _ => ok none
   | model.Subject.Token id => ok (some id)
 
+/-- [oxicloud_kernel::drivepolicy::Policies]
+    Source: 'ports/oxicloud/kernel/src/drivepolicy.rs', lines 5:0-16:1
+    Visibility: public -/
+structure drivepolicy.Policies where
+  forbid_sharing : Bool
+  forbid_external_sharing : Bool
+  forbid_public_links : Bool
+  forbid_cross_drive_move : Bool
+  forbid_owner_role_change : Bool
+  include_in_photo_index : Bool
+  include_in_music_index : Bool
+  read_only : Bool
+  require_public_link_password : Bool
+  max_public_link_days : Option Std.U32
+
+/-- [oxicloud_kernel::drivepolicy::Overrides]
+    Source: 'ports/oxicloud/kernel/src/drivepolicy.rs', lines 19:0-30:1
+    Visibility: public -/
+structure drivepolicy.Overrides where
+  forbid_sharing : Option Bool
+  forbid_external_sharing : Option Bool
+  forbid_public_links : Option Bool
+  forbid_cross_drive_move : Option Bool
+  forbid_owner_role_change : Option Bool
+  include_in_photo_index : Option Bool
+  include_in_music_index : Option Bool
+  read_only : Option Bool
+  require_public_link_password : Option Bool
+  max_public_link_days : Option Std.U32
+
+/-- [oxicloud_kernel::drivepolicy::override_bool]:
+    Source: 'ports/oxicloud/kernel/src/drivepolicy.rs', lines 32:0-34:1 -/
+def drivepolicy.override_bool
+  (default : Bool) (value : Option Bool) : Result Bool := do
+  match value with
+  | none => ok default
+  | some v => ok v
+
+/-- [oxicloud_kernel::drivepolicy::override_cap]:
+    Source: 'ports/oxicloud/kernel/src/drivepolicy.rs', lines 35:0-37:1 -/
+def drivepolicy.override_cap
+  (default : Option Std.U32) (value : Option Std.U32) :
+  Result (Option Std.U32)
+  := do
+  match value with
+  | none => ok default
+  | some _ => ok value
+
+/-- [oxicloud_kernel::drivepolicy::resolve]:
+    Source: 'ports/oxicloud/kernel/src/drivepolicy.rs', lines 39:0-52:1
+    Visibility: public -/
+def drivepolicy.resolve
+  (default : drivepolicy.Policies) (overrides : drivepolicy.Overrides) :
+  Result drivepolicy.Policies
+  := do
+  let b ←
+    drivepolicy.override_bool default.forbid_sharing overrides.forbid_sharing
+  let b1 ←
+    drivepolicy.override_bool default.forbid_external_sharing
+      overrides.forbid_external_sharing
+  let b2 ←
+    drivepolicy.override_bool default.forbid_public_links
+      overrides.forbid_public_links
+  let b3 ←
+    drivepolicy.override_bool default.forbid_cross_drive_move
+      overrides.forbid_cross_drive_move
+  let b4 ←
+    drivepolicy.override_bool default.forbid_owner_role_change
+      overrides.forbid_owner_role_change
+  let b5 ←
+    drivepolicy.override_bool default.include_in_photo_index
+      overrides.include_in_photo_index
+  let b6 ←
+    drivepolicy.override_bool default.include_in_music_index
+      overrides.include_in_music_index
+  let b7 ← drivepolicy.override_bool default.read_only overrides.read_only
+  let b8 ←
+    drivepolicy.override_bool default.require_public_link_password
+      overrides.require_public_link_password
+  let o ←
+    drivepolicy.override_cap default.max_public_link_days
+      overrides.max_public_link_days
+  ok
+    {
+      forbid_sharing := b,
+      forbid_external_sharing := b1,
+      forbid_public_links := b2,
+      forbid_cross_drive_move := b3,
+      forbid_owner_role_change := b4,
+      include_in_photo_index := b5,
+      include_in_music_index := b6,
+      read_only := b7,
+      require_public_link_password := b8,
+      max_public_link_days := o
+    }
+
+/-- [oxicloud_kernel::model::ErrorKind]
+    Source: 'ports/oxicloud/kernel/src/model.rs', lines 127:0-133:1
+    Visibility: public -/
+@[discriminant isize]
+inductive model.ErrorKind where
+| NotFound : model.ErrorKind
+| AccessDenied : model.ErrorKind
+| InvalidInput : model.ErrorKind
+| OperationNotSupported : model.ErrorKind
+| Internal : model.ErrorKind
+
+/-- [oxicloud_kernel::drivepolicy::refuse_public_links]:
+    Source: 'ports/oxicloud/kernel/src/drivepolicy.rs', lines 55:0-59:1
+    Visibility: public -/
+def drivepolicy.refuse_public_links
+  (p : drivepolicy.Policies) :
+  Result (core.result.Result Unit model.ErrorKind)
+  := do
+  if p.forbid_public_links
+  then ok (core.result.Result.Err model.ErrorKind.OperationNotSupported)
+  else
+    if p.forbid_sharing
+    then ok (core.result.Result.Err model.ErrorKind.OperationNotSupported)
+    else ok (core.result.Result.Ok ())
+
+/-- [oxicloud_kernel::drivepolicy::refuse_sharing]:
+    Source: 'ports/oxicloud/kernel/src/drivepolicy.rs', lines 61:0-64:1
+    Visibility: public -/
+def drivepolicy.refuse_sharing
+  (p : drivepolicy.Policies) :
+  Result (core.result.Result Unit model.ErrorKind)
+  := do
+  if p.forbid_sharing
+  then ok (core.result.Result.Err model.ErrorKind.OperationNotSupported)
+  else ok (core.result.Result.Ok ())
+
+/-- [oxicloud_kernel::drivepolicy::refuse_owner_role_change]:
+    Source: 'ports/oxicloud/kernel/src/drivepolicy.rs', lines 66:0-70:1
+    Visibility: public -/
+def drivepolicy.refuse_owner_role_change
+  (p : drivepolicy.Policies) (caller_is_admin : Bool) :
+  Result (core.result.Result Unit model.ErrorKind)
+  := do
+  if p.forbid_owner_role_change
+  then
+    if caller_is_admin
+    then ok (core.result.Result.Ok ())
+    else ok (core.result.Result.Err model.ErrorKind.OperationNotSupported)
+  else ok (core.result.Result.Ok ())
+
+/-- [oxicloud_kernel::drivepolicy::refuse_cross_drive_move]:
+    Source: 'ports/oxicloud/kernel/src/drivepolicy.rs', lines 72:0-75:1
+    Visibility: public -/
+def drivepolicy.refuse_cross_drive_move
+  (p : drivepolicy.Policies) :
+  Result (core.result.Result Unit model.ErrorKind)
+  := do
+  if p.forbid_cross_drive_move
+  then ok (core.result.Result.Err model.ErrorKind.OperationNotSupported)
+  else ok (core.result.Result.Ok ())
+
+/-- [oxicloud_kernel::drivepolicy::refuse_external_sharing]:
+    Source: 'ports/oxicloud/kernel/src/drivepolicy.rs', lines 77:0-82:1
+    Visibility: public -/
+def drivepolicy.refuse_external_sharing
+  (p : drivepolicy.Policies) (subject : model.Subject) (is_external : Bool) :
+  Result (core.result.Result Unit model.ErrorKind)
+  := do
+  if p.forbid_external_sharing
+  then
+    match subject with
+    | model.Subject.User _ =>
+      if is_external
+      then ok (core.result.Result.Err model.ErrorKind.OperationNotSupported)
+      else ok (core.result.Result.Ok ())
+    | model.Subject.Group _ => ok (core.result.Result.Ok ())
+    | model.Subject.Token _ => ok (core.result.Result.Ok ())
+  else ok (core.result.Result.Ok ())
+
 /-- [oxicloud_kernel::grantapi::Env]
     Source: 'ports/oxicloud/kernel/src/grantapi.rs', lines 11:0-16:1
     Visibility: public -/
@@ -2084,17 +2259,6 @@ inductive grantapi.Request where
 inductive grantapi.Reply where
 | Granted : model.Grant → grantapi.Reply
 | NoContent : grantapi.Reply
-
-/-- [oxicloud_kernel::model::ErrorKind]
-    Source: 'ports/oxicloud/kernel/src/model.rs', lines 127:0-133:1
-    Visibility: public -/
-@[discriminant isize]
-inductive model.ErrorKind where
-| NotFound : model.ErrorKind
-| AccessDenied : model.ErrorKind
-| InvalidInput : model.ErrorKind
-| OperationNotSupported : model.ErrorKind
-| Internal : model.ErrorKind
 
 /-- [oxicloud_kernel::grantapi::require]:
     Source: 'ports/oxicloud/kernel/src/grantapi.rs', lines 36:0-42:1

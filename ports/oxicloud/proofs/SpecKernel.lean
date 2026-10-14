@@ -86,4 +86,42 @@ def GrantRoleWire : model.Role → List U8
 /-- Complete stable enumeration used by permission queries. -/
 def RoleOrder : List model.Role := [.Viewer, .Commenter, .Contributor, .Editor, .Owner]
 
+
+/-- A drive's explicit choices override its kind's defaults, including explicit
+false choices. An absent expiry cap override inherits the default cap. -/
+def PolicyResolved (d : drivepolicy.Policies) (o : drivepolicy.Overrides)
+    (r : drivepolicy.Policies) : Prop :=
+  r.forbid_sharing = o.forbid_sharing.getD d.forbid_sharing ∧
+  r.forbid_external_sharing = o.forbid_external_sharing.getD d.forbid_external_sharing ∧
+  r.forbid_public_links = o.forbid_public_links.getD d.forbid_public_links ∧
+  r.forbid_cross_drive_move = o.forbid_cross_drive_move.getD d.forbid_cross_drive_move ∧
+  r.forbid_owner_role_change = o.forbid_owner_role_change.getD d.forbid_owner_role_change ∧
+  r.include_in_photo_index = o.include_in_photo_index.getD d.include_in_photo_index ∧
+  r.include_in_music_index = o.include_in_music_index.getD d.include_in_music_index ∧
+  r.read_only = o.read_only.getD d.read_only ∧
+  r.require_public_link_password = o.require_public_link_password.getD d.require_public_link_password ∧
+  r.max_public_link_days = o.max_public_link_days.or d.max_public_link_days
+
+/-- Both the broad sharing policy and the link-specific policy permit minting. -/
+def PublicLinksAllowed (p : drivepolicy.Policies) : Prop :=
+  p.forbid_sharing = false ∧ p.forbid_public_links = false
+
+def SharingAllowed (p : drivepolicy.Policies) : Prop := p.forbid_sharing = false
+
+/-- Administrators may manage a locked owner roster. -/
+def OwnerChangesAllowed (p : drivepolicy.Policies) (admin : Bool) : Prop :=
+  p.forbid_owner_role_change = false ∨ admin = true
+
+def CrossDriveMoveAllowed (p : drivepolicy.Policies) : Prop :=
+  p.forbid_cross_drive_move = false
+
+/-- Only external user principals are constrained by the external-sharing knob. -/
+def ExternalSharingAllowed (p : drivepolicy.Policies) (s : model.Subject) (external : Bool) : Prop :=
+  p.forbid_external_sharing = false ∨ (∀ id, s ≠ .User id) ∨ external = false
+
+/-- A policy guard succeeds exactly when allowed and otherwise returns the
+canonical unsupported-operation refusal. -/
+def GuardDecision (allowed : Prop) (r : core.result.Result Unit model.ErrorKind) : Prop :=
+  (r = .Ok () ↔ allowed) ∧ (r = .Err .OperationNotSupported ↔ ¬allowed)
+
 end oxicloud_kernel.SpecKernel
