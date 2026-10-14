@@ -490,4 +490,50 @@ theorem action_family_mixed (st : stmts.Statement) (o) (h : valids.action_family
     (hne : st.actions.val ≠ []) : (o = some .Mixed ↔ ¬ ∃ f, UniformFamily st.actions.val f) := by
   rw [action_family_ok st o h, if_neg hne]; exact fam_mixed _
 
+def AllowsEmpty (fam : Option valids.ActionFamily) : Prop :=
+  fam = some .Admin ∨ fam = some .Sts ∨ fam = some .Kms
+
+theorem allows_empty_ok (fam) (b : Bool) (h : valids.family_allows_empty_resource fam = ok b) :
+    (b = true ↔ AllowsEmpty fam) := by
+  unfold valids.family_allows_empty_resource at h
+  unfold AllowsEmpty
+  rcases fam with _ | ⟨_ | _ | _ | _ | _⟩ <;> simp_all
+
+theorem family_is_kms_ok (fam) (b : Bool) (h : valids.family_is_kms fam = ok b) :
+    (b = true ↔ fam = some .Kms) := by
+  unfold valids.family_is_kms at h
+  rcases fam with _ | ⟨_ | _ | _ | _ | _⟩ <;> simp_all
+
+open Lean Elab Tactic in
+/-- Add what `hx : f .. = ok x` says, for the validators read back above. -/
+elab "vfact " hx:ident : tactic => withMainContext do
+  let thms := [``has_kms_action_ok, ``has_kms_resource_ok, ``resources_ok, ``principal_ok,
+    ``allows_empty_ok, ``family_is_kms_ok]
+  for thm in thms do
+    try
+      evalTactic (← `(tactic| have := $(mkIdent thm) (h := $hx)))
+      evalTactic (← `(tactic| try simp only [deref_val] at this))
+      return
+    catch _ => pure ()
+
+/-- One `let x ← f ..` of `h`: name its value, add what it means, split on it. -/
+macro "bstep " h:ident : tactic => `(tactic| (
+  have hh := bind_tc_eq_ok.1 $h:ident
+  clear $h:ident
+  obtain ⟨x, hx, $h⟩ := hh
+  vfact hx
+  first
+  | (cases x <;> vif $h [])
+  | (cases x <;> vsimp $h <;> try simp only [from_residual_err, bind_tc_ok, bind_ok, Result.ok.injEq] at $h:ident)))
+
+theorem rules_ok (st : stmts.Statement) (fam) (o) (h : valids.statement_resource_rules st fam = ok o) :
+    (o = .Ok () ↔ ((st.resources.val = [] → st.not_resources.val = [] → AllowsEmpty fam) ∧
+      (st.resources.val = [] ∨ st.not_resources.val = []) ∧
+      ((∃ r ∈ st.resources.val ++ st.not_resources.val, isKmsResource r) → fam = some .Kms))) := by
+  unfold valids.statement_resource_rules valids.error at h
+  by_cases hr : st.resources.val = [] <;> by_cases hnr : st.not_resources.val = [] <;>
+    simp only [len_zero, len_bne, hr, hnr] at h <;> vif h []
+  all_goals try vclose h
+  all_goals repeat (first | vclose h | bstep h)
+
 end rustfs_kernel.Verified.RustfsValids
