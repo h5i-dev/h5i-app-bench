@@ -65,4 +65,46 @@ def OpSpelling : conddata.Op → String
 def ConditionKeyName (c : conddata.Condition) : List Nat :=
   lit (OpSpelling c.op) ++ (List.replicate c.wrappers.val (lit "IfExists")).flatten
 
+
+
+def SameKey (a b : condfuncs.Key) : Prop :=
+  a.key_name.val = b.key_name.val ∧ a.name.val = b.name.val ∧
+    a.variable.map (·.val) = b.variable.map (·.val)
+
+def SameStringSet (a b : alloc.vec.Vec (alloc.vec.Vec U8)) : Prop :=
+  (∀ x ∈ a.val, ∃ y ∈ b.val, y.val = x.val) ∧
+  (∀ y ∈ b.val, ∃ x ∈ a.val, x.val = y.val)
+
+def SameStringEntry (p : conddata.FuncKeyValue (alloc.vec.Vec (alloc.vec.Vec U8)) ×
+    conddata.FuncKeyValue (alloc.vec.Vec (alloc.vec.Vec U8))) : Prop :=
+  SameKey p.1.key p.2.key ∧ SameStringSet p.1.values p.2.values
+
+def SameStringCondition (a b : conddata.InnerFunc (alloc.vec.Vec (alloc.vec.Vec U8))) : Prop :=
+  a.entries.val.length = b.entries.val.length ∧
+    ∀ p ∈ a.entries.val.zip b.entries.val, SameStringEntry p
+
+def SameNumberEntry (p : conddata.FuncKeyValue I64 × conddata.FuncKeyValue I64) : Prop :=
+  SameKey p.1.key p.2.key ∧ p.1.values = p.2.values
+
+def SameNumberCondition (a b : conddata.InnerFunc I64) : Prop :=
+  a.entries.val.length = b.entries.val.length ∧
+    ∀ p ∈ a.entries.val.zip b.entries.val, SameNumberEntry p
+
+def SameDateEntry (p : conddata.FuncKeyValue conddata.DateFuncValue × conddata.FuncKeyValue conddata.DateFuncValue) : Prop :=
+  SameKey p.1.key p.2.key ∧ p.1.values.unix_nanos = p.2.values.unix_nanos
+
+def SameDateCondition (a b : conddata.InnerFunc conddata.DateFuncValue) : Prop :=
+  a.entries.val.length = b.entries.val.length ∧
+    ∀ p ∈ a.entries.val.zip b.entries.val, SameDateEntry p
+
+
+def SameBinaryEntry (p : conddata.FuncKeyValue conddata.BinaryFuncValue ×
+    conddata.FuncKeyValue conddata.BinaryFuncValue) : Prop :=
+  SameKey p.1.key p.2.key ∧ p.1.values.decoded.val = p.2.values.decoded.val
+
+def SameBinaryCondition (a b : conddata.InnerFunc conddata.BinaryFuncValue) : Prop :=
+  a.entries.val.length = b.entries.val.length ∧
+    ∀ p ∈ a.entries.val.zip b.entries.val, SameBinaryEntry p
+
+
 end rustfs_kernel.Spec

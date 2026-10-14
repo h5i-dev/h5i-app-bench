@@ -2,6 +2,7 @@ import Verified.RustfsValids
 import Verified.RustfsCondData
 import Verified.RustfsConditionEval
 import Verified.RustfsConditionNames
+import Verified.RustfsConditionEquality
 import Verified.RustfsDefaults
 import SpecKernel
 import Verified.RustfsCleanIdempotent
@@ -278,5 +279,34 @@ theorem condition_wrapped_name_exact (c : conddata.Condition) (v : alloc.vec.Vec
 theorem condition_operator_names_injective (a b : conddata.Op) :
     OpSpelling a = OpSpelling b ↔ a = b := by
   cases a <;> cases b <;> decide
+
+/-- String condition entries retain key order and compare values as sets. -/
+theorem condition_string_equality_iff (a b : conddata.InnerFunc (alloc.vec.Vec (alloc.vec.Vec U8)))
+    (r : Bool) (h : conddata.string_inner_eq a b = ok r) :
+    (r = true ↔ SameStringCondition a b) := by
+  exact rustfs_kernel.Verified.RustfsConditionEquality.string_inner_ok a b r h
+
+/-- Numeric condition entries compare key fields and numeric values exactly. -/
+theorem condition_numeric_equality_iff (a b : conddata.InnerFunc (I64))
+    (r : Bool) (h : conddata.num_inner_eq a b = ok r) :
+    (r = true ↔ SameNumberCondition a b) := by
+  exact rustfs_kernel.Verified.RustfsConditionEquality.num_inner_ok a b r h
+
+/-- Date condition equality compares instants independently of source offsets. -/
+theorem condition_date_equality_iff (a b : conddata.InnerFunc (conddata.DateFuncValue))
+    (r : Bool) (h : conddata.date_inner_eq a b = ok r) :
+    (r = true ↔ SameDateCondition a b) := by
+  exact rustfs_kernel.Verified.RustfsConditionEquality.date_inner_ok a b r h
+
+/-- Binary condition equality compares decoded sequences in entry order. -/
+theorem condition_binary_equality_iff (a b : conddata.InnerFunc (conddata.BinaryFuncValue))
+    (r : Bool) (h : conddata.binary_inner_eq a b = ok r) :
+    (r = true ↔ SameBinaryCondition a b) := by
+  exact rustfs_kernel.Verified.RustfsConditionEquality.binary_inner_ok a b r h
+
+/-- Binary equality depends only on decoded bytes, preserving order and duplication. -/
+theorem condition_binary_value_equality_iff (a b : conddata.BinaryFuncValue) (r : Bool)
+    (h : conddata.binary_eq a b = ok r) : (r = true ↔ a.decoded.val = b.decoded.val) := by
+  exact rustfs_kernel.Verified.RustfsConditionEquality.binary_eq_ok a b r h
 
 end rustfs_kernel.Properties
