@@ -170,4 +170,27 @@ theorem action_family_mixed_iff (st : stmts.Statement) (o : Option valids.Action
     (o = some .Mixed ↔ ¬ ∃ f, UniformFamily st.actions.val f) := by
   apply rustfs_kernel.Verified.RustfsValids.action_family_mixed <;> assumption
 
+/-- Validation enforces action-family and resource boundaries. -/
+theorem statement_valid_iff (st : stmts.Statement) (sid : Slice U8)
+    (o : core.result.Result Unit valids.ValidationError)
+    (h : valids.statement_is_valid st sid = ok o) : (o = .Ok () ↔ StatementOK st) := by
+  exact rustfs_kernel.Verified.RustfsValids.statement_ok st sid o h
+
+/-- Admin classification requires an explicitly selected Admin action. -/
+theorem statement_admin_iff (st : stmts.Statement) (b : Bool)
+    (h : valids.is_admin st = ok b) : (b = true ↔ ∃ a ∈ st.actions.val, a.family = .Admin) := by
+  exact rustfs_kernel.Verified.RustfsValids.is_admin_ok st b h
+
+/-- STS classification requires an explicitly selected STS action. -/
+theorem statement_sts_iff (st : stmts.Statement) (b : Bool)
+    (h : valids.is_sts st = ok b) : (b = true ↔ ∃ a ∈ st.actions.val, a.family = .Sts) := by
+  exact rustfs_kernel.Verified.RustfsValids.is_sts_ok st b h
+
+/-- ID views preserve bytes and emptiness; default validation is unconditional. -/
+theorem validation_interfaces (id : Slice U8) (b : Bool) (view : Slice U8)
+    (he : valids.id_is_empty id = ok b) (hv : valids.id_as_slice id = ok view) :
+    (b = true ↔ id.val = []) ∧ view = id ∧ valids.default_is_valid = ok true := by
+  obtain ⟨hempty, hview⟩ := rustfs_kernel.Verified.RustfsValids.id_interface id b view he hv
+  exact ⟨hempty, hview, rustfs_kernel.Verified.RustfsValids.default_valid⟩
+
 end rustfs_kernel.Properties

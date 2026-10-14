@@ -536,4 +536,197 @@ theorem rules_ok (st : stmts.Statement) (fam) (o) (h : valids.statement_resource
   all_goals try vclose h
   all_goals repeat (first | vclose h | bstep h)
 
+theorem action_selection_ok (a n : Slice acts.Action) (o)
+    (h : valids.action_selection_valid a n = ok o) :
+    (o = .Ok () ↔ (a.val ≠ [] ↔ n.val = [])) := by
+  unfold valids.action_selection_valid valids.error at h
+  have hz (v : Slice acts.Action) : v.len = 0#usize ↔ v.val = [] := by
+    constructor
+    · intro hh; have := congrArg UScalar.val hh; simpa using this
+    · intro hh; apply UScalar.eq_of_val_eq; simp [hh]
+  have hn (v : Slice acts.Action) : (v.len != 0#usize) = !decide (v.val = []) := by
+    by_cases hv : v.len = 0#usize <;> simp_all
+  by_cases ha : a.val = [] <;> by_cases hn' : n.val = [] <;>
+    simp_all [hz, hn] <;> subst h <;> simp
+
+theorem family_is_mixed_ok (fam) (b : Bool) (h : valids.family_is_mixed fam = ok b) :
+    (b = true ↔ fam = some .Mixed) := by
+  unfold valids.family_is_mixed at h
+  rcases fam with _ | ⟨_ | _ | _ | _ | _⟩ <;> simp_all
+
+theorem checked_family_ok (st : stmts.Statement) (o)
+    (h : valids.checked_action_family st = ok o) :
+    (∃ fam, o = .Ok fam) ↔
+      (st.not_actions.val ≠ [] ∨ st.actions.val = [] ∨ ∃ f, UniformFamily st.actions.val f) := by
+  unfold valids.checked_action_family at h
+  by_cases hn : st.not_actions.val = [] <;> vsimp h <;> vif h [hn]
+  · bcase fam with hf at h
+    have hf' := action_family_ok _ _ hf
+    bcase b with hb at h
+    have hb' := family_is_mixed_ok _ _ hb
+    cases b <;> vif h [] <;> try vsimp h
+    all_goals
+      subst h
+      by_cases ha : st.actions.val = [] <;> simp_all [fam_mixed]
+  · subst h; simp_all
+
+theorem checked_family_value (st : stmts.Statement) (fam)
+    (h : valids.checked_action_family st = ok (.Ok fam)) :
+    fam = if st.not_actions.val ≠ [] then none
+      else if st.actions.val = [] then none else famModel (Saws st.actions.val) := by
+  unfold valids.checked_action_family at h
+  by_cases hn : st.not_actions.val = [] <;> vsimp h <;> vif h [hn]
+  · bcase f with hf at h
+    have hf' := action_family_ok _ _ hf
+    bcase b with hb at h
+    cases b <;> (try vsimp h) <;> (try vif h [])
+    all_goals simp_all
+  · simp only [core.result.Result.Ok.injEq] at h
+    subst h; simp_all
+
+theorem is_admin_ok (st : stmts.Statement) (r : Bool) (h : valids.is_admin st = ok r) :
+    (r = true ↔ ∃ a ∈ st.actions.val, a.family = .Admin) := by
+  unfold valids.is_admin valids.is_admin_loop at h
+  refine any_loop _ _ _ (fun i r _ hr => ?_) r h
+  unfold valids.is_admin_loop.body at hr
+  h5i_invert hr
+  · have h0 := vec_index_slice_ok_get? ha
+    have hlt : i.val < st.actions.val.length := by scalar_tac
+    rw [family_eq_ok] at hb
+    simp only [Result.ok.injEq, decide_eq_true_eq] at hb
+    exact .inl ⟨hlt, by rw [List.getElem?_eq_getElem hlt] at h0; simp_all, rfl⟩
+  · have h0 := vec_index_slice_ok_get? ha
+    have hlt : i.val < st.actions.val.length := by scalar_tac
+    rw [family_eq_ok] at hb
+    simp only [Result.ok.injEq] at hb
+    refine ⟨hlt, ?_, by have := add_ok_val hi2; scalar_tac⟩
+    rw [List.getElem?_eq_getElem hlt] at h0
+    simp only [Option.some.injEq] at h0
+    rw [h0]; intro he; simp_all
+  · exact .inr ⟨by scalar_tac, rfl⟩
+
+theorem is_sts_ok (st : stmts.Statement) (r : Bool) (h : valids.is_sts st = ok r) :
+    (r = true ↔ ∃ a ∈ st.actions.val, a.family = .Sts) := by
+  unfold valids.is_sts valids.is_sts_loop at h
+  refine any_loop _ _ _ (fun i r _ hr => ?_) r h
+  unfold valids.is_sts_loop.body at hr
+  h5i_invert hr
+  · have h0 := vec_index_slice_ok_get? ha
+    have hlt : i.val < st.actions.val.length := by scalar_tac
+    rw [family_eq_ok] at hb
+    simp only [Result.ok.injEq, decide_eq_true_eq] at hb
+    exact .inl ⟨hlt, by rw [List.getElem?_eq_getElem hlt] at h0; simp_all, rfl⟩
+  · have h0 := vec_index_slice_ok_get? ha
+    have hlt : i.val < st.actions.val.length := by scalar_tac
+    rw [family_eq_ok] at hb
+    simp only [Result.ok.injEq] at hb
+    refine ⟨hlt, ?_, by have := add_ok_val hi2; scalar_tac⟩
+    rw [List.getElem?_eq_getElem hlt] at h0
+    simp only [Option.some.injEq] at h0
+    rw [h0]; intro he; simp_all
+  · exact .inr ⟨by scalar_tac, rfl⟩
+
+theorem selected_rules_spec (st : stmts.Statement) (fam)
+    (hs : st.actions.val ≠ [] ↔ st.not_actions.val = [])
+    (hf : valids.checked_action_family st = ok (.Ok fam)) :
+    StatementOK st ↔
+      ((st.resources.val = [] → st.not_resources.val = [] → AllowsEmpty fam) ∧
+      (st.resources.val = [] ∨ st.not_resources.val = []) ∧
+      ((∃ r ∈ st.resources.val ++ st.not_resources.val, isKmsResource r) → fam = some .Kms)) ∧
+      (∀ r ∈ st.resources.val, resourceOK r) ∧
+      (∀ r ∈ st.not_resources.val, resourceOK r) := by
+  have hv := checked_family_value _ _ hf
+  have hok := (checked_family_ok _ _ hf).1 ⟨fam, rfl⟩
+  unfold StatementOK AllowsEmpty
+  by_cases hn : st.not_actions.val = []
+  · have ha : st.actions.val ≠ [] := hs.2 hn
+    simp only [hn, ne_eq, not_true_eq_false, ↓reduceIte, ha] at hv
+    subst fam
+    have hu : ∃ f, UniformFamily st.actions.val f := by simp_all
+    rw [fam_empty_ok, fam_kms]
+    simp only [List.mem_append, or_imp, forall_and]
+    simp_all
+  · have ha : st.actions.val = [] := by by_contra h; exact hn (hs.1 h)
+    simp only [hn, ne_eq, not_false_eq_true, ↓reduceIte] at hv
+    subst fam
+    simp only [List.mem_append, or_imp, forall_and]
+    simp_all [UniformFamily]
+
+theorem statement_ok (st : stmts.Statement) (sid : Slice U8) (o)
+    (h : valids.statement_is_valid st sid = ok o) : (o = .Ok () ↔ StatementOK st) := by
+  unfold valids.statement_is_valid at h
+  bcase e with he at h
+  bcase id with hid at h
+  bcase sel with hsel at h
+  have hsel' := action_selection_ok _ _ _ hsel
+  simp only [deref_val] at hsel'
+  cases sel with
+  | Err err =>
+    vsimp h
+    simp only [from_residual_err, bind_tc_ok, bind_ok, Result.ok.injEq] at h
+    subst h
+    unfold StatementOK
+    simp only [reduceCtorEq, false_iff]
+    intro hh; have hx := hsel'.2 hh.1; simp at hx
+  | Ok u =>
+    have hs := hsel'.1 rfl
+    vsimp h
+    bcase checked with hc at h
+    have hc' := checked_family_ok _ _ hc
+    cases checked with
+    | Err err =>
+      vsimp h
+      simp only [from_residual_err, bind_tc_ok, bind_ok, Result.ok.injEq] at h
+      subst h
+      simp only [reduceCtorEq, false_iff]
+      intro hh
+      have hh' := hh.2.1
+      have hn : st.not_actions.val = [] := by
+        by_contra hn
+        have hx := hc'.2 (Or.inl hn)
+        simpa using hx
+      have hx := hc'.2 (Or.inr (Or.inr (hh' hn)))
+      simpa using hx
+    | Ok fam =>
+      rw [selected_rules_spec st fam hs hc]
+      vsimp h
+      bcase rules with hr at h
+      have hr' := rules_ok _ _ _ hr
+      cases rules <;> vsimp h <;>
+        try simp only [from_residual_err, bind_tc_ok, bind_ok, Result.ok.injEq] at h
+      all_goals try vclose h
+      bcase a with ha at h
+      bcase n with hn at h
+      bcase rs with hrs at h
+      have hrs' := resources_ok _ _ hrs
+      rw [deref_val] at hrs'
+      cases rs <;> vsimp h <;>
+        try simp only [from_residual_err, bind_tc_ok, bind_ok, Result.ok.injEq] at h
+      all_goals try vclose h
+      bcase ns with hns at h
+      have hns' := resources_ok _ _ hns
+      rw [deref_val] at hns'
+      cases ns <;> vsimp h <;>
+        try simp only [from_residual_err, bind_tc_ok, bind_ok, Result.ok.injEq] at h
+      all_goals vclose h
+
+/-- IDs are opaque bytes: emptiness is literal and the view preserves them. -/
+theorem id_interface (id : Slice U8) (b : Bool) (view : Slice U8)
+    (he : valids.id_is_empty id = ok b) (hv : valids.id_as_slice id = ok view) :
+    (b = true ↔ id.val = []) ∧ view = id := by
+  unfold valids.id_is_empty at he
+  unfold valids.id_as_slice at hv
+  simp only [Result.ok.injEq] at he hv
+  subst b; subst view
+  constructor
+  · simp only [decide_eq_true_eq]
+    constructor
+    · intro hh; have := congrArg UScalar.val hh; simpa using this
+    · intro hh; apply UScalar.eq_of_val_eq; simp [hh]
+  · rfl
+
+/-- The default validator imposes no additional constraint. -/
+theorem default_valid : valids.default_is_valid = ok true := by
+  simp [valids.default_is_valid]
+
 end rustfs_kernel.Verified.RustfsValids

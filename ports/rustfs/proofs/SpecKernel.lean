@@ -63,6 +63,19 @@ least one does. -/
 def UniformFamily (l : List acts.Action) (f : acts.Family) : Prop :=
   f ≠ .None ∧ (∃ a ∈ l, a.family = f) ∧ ∀ a ∈ l, a.family = f ∨ a.family = .None
 
+/-- A statement selects exactly one action list; positive actions have one
+family, empty resource selections require Admin/Sts/Kms actions, and KMS
+resources require positive KMS actions. Every selected resource is valid. -/
+def StatementOK (st : stmts.Statement) : Prop :=
+  (st.actions.val ≠ [] ↔ st.not_actions.val = []) ∧
+  (st.not_actions.val = [] → ∃ f, UniformFamily st.actions.val f) ∧
+  (st.resources.val = [] → st.not_resources.val = [] →
+    ∃ f, (f = .Admin ∨ f = .Sts ∨ f = .Kms) ∧ UniformFamily st.actions.val f ∧ st.not_actions.val = []) ∧
+  (st.resources.val = [] ∨ st.not_resources.val = []) ∧
+  ((∃ r ∈ st.resources.val ++ st.not_resources.val, isKmsResource r) →
+    UniformFamily st.actions.val .Kms ∧ st.not_actions.val = []) ∧
+  (∀ r ∈ st.resources.val ++ st.not_resources.val, resourceOK r)
+
 /-- What `BPStatement::is_valid` accepts. -/
 def BPStatementOK (st : stmts.BPStatement) : Prop :=
   (st.principal.aws.val ≠ [] ∨ st.principal.service.val ≠ []) ∧
