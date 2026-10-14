@@ -107,4 +107,44 @@ def SameBinaryCondition (a b : conddata.InnerFunc conddata.BinaryFuncValue) : Pr
     ∀ p ∈ a.entries.val.zip b.entries.val, SameBinaryEntry p
 
 
+def SameBoolEntry (p : conddata.FuncKeyValue Bool × conddata.FuncKeyValue Bool) : Prop :=
+  SameKey p.1.key p.2.key ∧ p.1.values = p.2.values
+
+def SameBoolCondition (a b : conddata.InnerFunc Bool) : Prop :=
+  a.entries.val.length = b.entries.val.length ∧
+    ∀ p ∈ a.entries.val.zip b.entries.val, SameBoolEntry p
+
+def SameAddrEntry (p : conddata.FuncKeyValue (alloc.vec.Vec (condfuncs.IpAddr × U8)) ×
+    conddata.FuncKeyValue (alloc.vec.Vec (condfuncs.IpAddr × U8))) : Prop :=
+  SameKey p.1.key p.2.key ∧ p.1.values.val = p.2.values.val
+
+def SameAddrCondition (a b : conddata.InnerFunc (alloc.vec.Vec (condfuncs.IpAddr × U8))) : Prop :=
+  a.entries.val.length = b.entries.val.length ∧
+    ∀ p ∈ a.entries.val.zip b.entries.val, SameAddrEntry p
+
+def SameConditionData : conddata.Data → conddata.Data → Prop
+  | .Str a, .Str b => SameStringCondition a b
+  | .Addr a, .Addr b => SameAddrCondition a b
+  | .Boolean a, .Boolean b => SameBoolCondition a b
+  | .Num a, .Num b => SameNumberCondition a b
+  | .Date a, .Date b => SameDateCondition a b
+  | .Binary a, .Binary b => SameBinaryCondition a b
+  | _, _ => False
+
+/-- Equality preserves operator, wrapper depth and ordered data semantics. -/
+def SameCondition (a b : conddata.Condition) : Prop :=
+  a.op = b.op ∧ a.wrappers = b.wrappers ∧ SameConditionData a.data b.data
+
+/-- Every source condition has equivalent contents in the target group. -/
+def ConditionGroupCovered (a b : List conddata.Condition) : Prop :=
+  ∀ c ∈ a, ∃ d ∈ b, SameCondition d c
+/-- Group comparison retains quantifier boundaries and occurrence counts. -/
+def ConditionGroupsMatch (a b : conddata.Functions) : Prop :=
+  a.for_any_value.val.length = b.for_any_value.val.length ∧
+  a.for_all_values.val.length = b.for_all_values.val.length ∧
+  a.for_normal.val.length = b.for_normal.val.length ∧
+  ConditionGroupCovered a.for_any_value.val b.for_any_value.val ∧
+  ConditionGroupCovered a.for_all_values.val b.for_all_values.val ∧
+  ConditionGroupCovered a.for_normal.val b.for_normal.val
+
 end rustfs_kernel.Spec

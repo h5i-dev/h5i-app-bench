@@ -3,6 +3,8 @@ import Verified.RustfsCondData
 import Verified.RustfsConditionEval
 import Verified.RustfsConditionNames
 import Verified.RustfsConditionEquality
+import Verified.RustfsCompleteConditionEquality
+import Verified.RustfsConditionGroups
 import Verified.RustfsDefaults
 import SpecKernel
 import Verified.RustfsCleanIdempotent
@@ -308,5 +310,38 @@ theorem condition_binary_equality_iff (a b : conddata.InnerFunc (conddata.Binary
 theorem condition_binary_value_equality_iff (a b : conddata.BinaryFuncValue) (r : Bool)
     (h : conddata.binary_eq a b = ok r) : (r = true ↔ a.decoded.val = b.decoded.val) := by
   exact rustfs_kernel.Verified.RustfsConditionEquality.binary_eq_ok a b r h
+
+/-- Boolean conditions compare ordered keys and Boolean values. -/
+theorem condition_boolean_equality_iff (a b : conddata.InnerFunc Bool) (r : Bool)
+    (h : conddata.bool_inner_eq a b = ok r) : (r = true ↔ SameBoolCondition a b) := by
+  exact rustfs_kernel.Verified.RustfsCompleteConditionEquality.bool_inner_ok a b r h
+
+/-- Address conditions compare ordered keys, addresses and prefix widths. -/
+theorem condition_address_equality_iff
+    (a b : conddata.InnerFunc (alloc.vec.Vec (condfuncs.IpAddr × U8))) (r : Bool)
+    (h : conddata.addr_inner_eq a b = ok r) : (r = true ↔ SameAddrCondition a b) := by
+  exact rustfs_kernel.Verified.RustfsCompleteConditionEquality.addr_inner_ok a b r h
+
+/-- Condition equality preserves operators, wrappers and typed data contents. -/
+theorem condition_equality_iff (a b : conddata.Condition) (r : Bool)
+    (h : conddata.condition_eq a b = ok r) : (r = true ↔ SameCondition a b) := by
+  exact rustfs_kernel.Verified.RustfsCompleteConditionEquality.condition_eq_ok a b r h
+
+/-- Group membership finds an operator-, wrapper- and data-equivalent condition. -/
+theorem condition_membership_iff (xs : Slice conddata.Condition) (c : conddata.Condition) (r : Bool)
+    (h : conddata.contains_condition xs c = ok r) :
+    (r = true ↔ ∃ d ∈ xs.val, SameCondition d c) := by
+  exact rustfs_kernel.Verified.RustfsConditionGroups.contains_ok xs c r h
+
+/-- Group coverage requires every source condition to have an equivalent target. -/
+theorem condition_group_coverage_iff (a b : Slice conddata.Condition) (r : Bool)
+    (h : conddata.list_covers a b = ok r) :
+    (r = true ↔ ConditionGroupCovered a.val b.val) := by
+  exact rustfs_kernel.Verified.RustfsConditionGroups.covers_ok a b r h
+
+/-- Function comparison preserves quantifier boundaries, counts and coverage. -/
+theorem condition_groups_comparison_iff (a b : conddata.Functions) (r : Bool)
+    (h : conddata.functions_eq a b = ok r) : (r = true ↔ ConditionGroupsMatch a b) := by
+  exact rustfs_kernel.Verified.RustfsConditionGroups.functions_eq_ok a b r h
 
 end rustfs_kernel.Properties

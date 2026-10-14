@@ -46,4 +46,12 @@ theorems = [
   "rustfs_kernel.Properties.condition_binary_equality_iff",
   "rustfs_kernel.Properties.condition_binary_value_equality_iff",
 
+  "rustfs_kernel.Properties.condition_boolean_equality_iff",
+  "rustfs_kernel.Properties.condition_address_equality_iff",
+  "rustfs_kernel.Properties.condition_equality_iff",
+
+  "rustfs_kernel.Properties.condition_membership_iff",
+  "rustfs_kernel.Properties.condition_group_coverage_iff",
+  "rustfs_kernel.Properties.condition_groups_comparison_iff",
+
 ]
