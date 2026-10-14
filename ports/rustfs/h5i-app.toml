@@ -27,4 +27,11 @@ theorems = [
   "rustfs_kernel.Properties.statement_admin_iff",
   "rustfs_kernel.Properties.statement_sts_iff",
   "rustfs_kernel.Properties.validation_interfaces",
+  "rustfs_kernel.Properties.condition_key_membership_iff",
+  "rustfs_kernel.Properties.condition_key_equality_iff",
+  "rustfs_kernel.Properties.condition_string_set_equality_iff",
+  "rustfs_kernel.Properties.condition_structure_iff",
+  "rustfs_kernel.Properties.base64_symbol_iff",
+  "rustfs_kernel.Properties.base64_symbol_boundary",
+
 ]

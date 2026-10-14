@@ -1,4 +1,5 @@
 import Verified.RustfsValids
+import Verified.RustfsCondData
 import Verified.RustfsDefaults
 import SpecKernel
 import Verified.RustfsCleanIdempotent
@@ -192,5 +193,42 @@ theorem validation_interfaces (id : Slice U8) (b : Bool) (view : Slice U8)
     (b = true ↔ id.val = []) ∧ view = id ∧ valids.default_is_valid = ok true := by
   obtain ⟨hempty, hview⟩ := rustfs_kernel.Verified.RustfsValids.id_interface id b view he hv
   exact ⟨hempty, hview, rustfs_kernel.Verified.RustfsValids.default_valid⟩
+
+/-- Full condition-key membership ignores variable suffixes. -/
+theorem condition_key_membership_iff {T : Type} (f : conddata.InnerFunc T) (needle : Slice U8) (b : Bool)
+    (h : conddata.contains_key_name f needle = ok b) :
+    (b = true ↔ ∃ e ∈ f.entries.val, e.key.key_name.val = needle.val) := by
+  exact rustfs_kernel.Verified.RustfsCondData.contains_key_name_ok f needle b h
+
+/-- A condition key's two names and optional suffix all participate in equality. -/
+theorem condition_key_equality_iff (a c : condfuncs.Key) (b : Bool) (h : conddata.key_eq a c = ok b) :
+    (b = true ↔ a.key_name.val = c.key_name.val ∧ a.name.val = c.name.val ∧
+      a.variable.map (·.val) = c.variable.map (·.val)) := by
+  exact rustfs_kernel.Verified.RustfsCondData.key_eq_ok a c b h
+
+/-- String condition sets have equal membership regardless of order or duplication. -/
+theorem condition_string_set_equality_iff (l r : Slice (alloc.vec.Vec U8)) (b : Bool)
+    (h : conddata.string_set_eq l r = ok b) :
+    (b = true ↔ (∀ x ∈ l.val, ∃ y ∈ r.val, y.val = x.val) ∧
+      (∀ y ∈ r.val, ∃ x ∈ l.val, x.val = y.val)) := by
+  exact rustfs_kernel.Verified.RustfsCondData.string_set_eq_ok l r b h
+
+/-- Empty condition groups and negative IP classification are literal. -/
+theorem condition_structure_iff (f : conddata.Functions) (c : conddata.Condition) (empty neg : Bool)
+    (he : conddata.is_empty f = ok empty) (hn : conddata.is_negate c = ok neg) :
+    (empty = true ↔ f.for_any_value.val = [] ∧ f.for_all_values.val = [] ∧ f.for_normal.val = []) ∧
+    (neg = true ↔ c.wrappers.val = 0 ∧ c.op = .NotIpAddress) := by
+  exact ⟨rustfs_kernel.Verified.RustfsCondData.empty_ok f empty he,
+    rustfs_kernel.Verified.RustfsCondData.negate_ok c neg hn⟩
+
+/-- Base64 digit decoding is exact for the STANDARD alphabet. -/
+theorem base64_symbol_iff (c : U8) (o : Option U8) (h : conddata.base64_digit c = ok o) :
+    ∀ i : U8, o = some i ↔ Base64Symbol c.val i.val := by
+  exact rustfs_kernel.Verified.RustfsCondData.base64_digit_ok c o h
+
+/-- Invalid alphabet bytes are rejected and returned indices fit six bits. -/
+theorem base64_symbol_boundary (c : U8) (o : Option U8) (h : conddata.base64_digit c = ok o) :
+    (∀ i, o = some i → i.val < 64) ∧ (o = none ↔ ¬ ∃ i : U8, Base64Symbol c.val i.val) := by
+  exact rustfs_kernel.Verified.RustfsCondData.base64_digit_boundary c o h
 
 end rustfs_kernel.Properties
