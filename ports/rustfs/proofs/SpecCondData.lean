@@ -31,4 +31,38 @@ def RequestHasConditionKey (c : conddata.Condition)
     (values : alloc.vec.Vec (alloc.vec.Vec U8 × alloc.vec.Vec (alloc.vec.Vec U8))) : Prop :=
   ∃ needle ∈ ConditionLookupNames c, ∃ entry ∈ values.val, entry.1.val = needle
 
+/-- Canonical condition operator spellings used in policy keys. -/
+def OpSpelling : conddata.Op → String
+  | .StringEquals => "StringEquals"
+  | .StringNotEquals => "StringNotEquals"
+  | .StringEqualsIgnoreCase => "StringEqualsIgnoreCase"
+  | .StringNotEqualsIgnoreCase => "StringNotEqualsIgnoreCase"
+  | .StringLike => "StringLike"
+  | .StringNotLike => "StringNotLike"
+  | .ArnLike => "ArnLike"
+  | .ArnNotLike => "ArnNotLike"
+  | .ArnEquals => "ArnEquals"
+  | .ArnNotEquals => "ArnNotEquals"
+  | .BinaryEquals => "BinaryEquals"
+  | .IpAddress => "IpAddress"
+  | .NotIpAddress => "NotIpAddress"
+  | .Null => "Null"
+  | .Boolean => "Bool"
+  | .NumericEquals => "NumericEquals"
+  | .NumericNotEquals => "NumericNotEquals"
+  | .NumericLessThan => "NumericLessThan"
+  | .NumericLessThanEquals => "NumericLessThanEquals"
+  | .NumericGreaterThan => "NumericGreaterThan"
+  | .NumericGreaterThanIfExists => "NumericGreaterThanIfExists"
+  | .NumericGreaterThanEquals => "NumericGreaterThanEquals"
+  | .DateEquals => "DateEquals"
+  | .DateNotEquals => "DateNotEquals"
+  | .DateLessThan => "DateLessThan"
+  | .DateLessThanEquals => "DateLessThanEquals"
+  | .DateGreaterThan => "DateGreaterThan"
+  | .DateGreaterThanEquals => "DateGreaterThanEquals"
+/-- Nested wrappers retain one literal IfExists suffix per wrapper. -/
+def ConditionKeyName (c : conddata.Condition) : List Nat :=
+  lit (OpSpelling c.op) ++ (List.replicate c.wrappers.val (lit "IfExists")).flatten
+
 end rustfs_kernel.Spec

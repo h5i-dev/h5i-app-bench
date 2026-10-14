@@ -37,5 +37,8 @@ theorems = [
   "rustfs_kernel.Properties.request_key_presence_iff",
   "rustfs_kernel.Properties.condition_request_key_presence_iff",
   "rustfs_kernel.Properties.wrapped_condition_missing_keys_accept",
+  "rustfs_kernel.Properties.condition_operator_name_exact",
+  "rustfs_kernel.Properties.condition_wrapped_name_exact",
+  "rustfs_kernel.Properties.condition_operator_names_injective",
 
 ]

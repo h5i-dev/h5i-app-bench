@@ -1,6 +1,7 @@
 import Verified.RustfsValids
 import Verified.RustfsCondData
 import Verified.RustfsConditionEval
+import Verified.RustfsConditionNames
 import Verified.RustfsDefaults
 import SpecKernel
 import Verified.RustfsCleanIdempotent
@@ -262,5 +263,20 @@ theorem wrapped_condition_missing_keys_accept (c : conddata.Condition) (q : cond
     (hw : 0 < c.wrappers.val) (hm : ¬ RequestHasConditionKey c values)
     (h : conddata.condition_evaluate c q values ctx env = ok b) : b = true := by
   exact rustfs_kernel.Verified.RustfsConditionEval.missing_wrapped_key_ok c q values ctx env b hw hm h
+
+/-- Table characterization: condition operators have canonical policy spellings. -/
+theorem condition_operator_name_exact (op : conddata.Op) (v : alloc.vec.Vec U8)
+    (h : conddata.op_name op = ok v) : nats v.val = lit (OpSpelling op) := by
+  exact rustfs_kernel.Verified.RustfsConditionNames.op_name_ok op v h
+
+/-- Serialization preserves one IfExists suffix per wrapper, including nesting. -/
+theorem condition_wrapped_name_exact (c : conddata.Condition) (v : alloc.vec.Vec U8)
+    (h : conddata.to_key_with_suffix c = ok v) : nats v.val = ConditionKeyName c := by
+  exact rustfs_kernel.Verified.RustfsConditionNames.suffixed_key_ok c v h
+
+/-- Table structure: canonical operator spellings uniquely identify their operators. -/
+theorem condition_operator_names_injective (a b : conddata.Op) :
+    OpSpelling a = OpSpelling b ↔ a = b := by
+  cases a <;> cases b <;> decide
 
 end rustfs_kernel.Properties
