@@ -35,6 +35,27 @@ trap 'rm -rf "$tmp"' EXIT
   --start-from oxicloud_kernel::drivepolicy::refuse_owner_role_change \
   --start-from oxicloud_kernel::drivepolicy::refuse_cross_drive_move \
   --start-from oxicloud_kernel::drivepolicy::refuse_external_sharing \
+  --start-from oxicloud_kernel::session::origin_bytes \
+  --start-from oxicloud_kernel::session::origin_from_wire \
+  --start-from oxicloud_kernel::session::from_raw \
+  --start-from oxicloud_kernel::session::with_dpop_jkt \
+  --start-from oxicloud_kernel::session::with_oidc_id_token \
+  --start-from oxicloud_kernel::session::with_oidc_sid \
+  --start-from oxicloud_kernel::session::revoke \
+  --start-from oxicloud_kernel::session::id \
+  --start-from oxicloud_kernel::session::user_id \
+  --start-from oxicloud_kernel::session::refresh_token \
+  --start-from oxicloud_kernel::session::expires_at \
+  --start-from oxicloud_kernel::session::ip_address \
+  --start-from oxicloud_kernel::session::user_agent \
+  --start-from oxicloud_kernel::session::created_at \
+  --start-from oxicloud_kernel::session::is_revoked \
+  --start-from oxicloud_kernel::session::family_id \
+  --start-from oxicloud_kernel::session::oidc_id_token \
+  --start-from oxicloud_kernel::session::oidc_sid \
+  --start-from oxicloud_kernel::session::dpop_jkt \
+  --start-from oxicloud_kernel::session::origin \
+  --start-from oxicloud_kernel::session::last_seen_at \
   --dest-file "$tmp/oxicloud_kernel.llbc")
 mkdir -p "$root/ports/oxicloud/proofs/generated"
 aeneas -backend lean "$tmp/oxicloud_kernel.llbc" -dest "$root/ports/oxicloud/proofs/generated"

@@ -1,3 +1,4 @@
+import Verified.OxicloudSession
 import Verified.OxicloudDrivePolicy
 import Verified.OxicloudAuthWire
 import Verified.OxicloudMigrationReadonly
@@ -265,5 +266,61 @@ theorem drive_external_sharing_policy (p : drivepolicy.Policies) (s : model.Subj
     (h : drivepolicy.refuse_external_sharing p s external = ok r) :
     SpecKernel.GuardDecision (SpecKernel.ExternalSharingAllowed p s external) r :=
   Verified.OxicloudDrivePolicy.external_sharing_ok p s external r h
+
+
+
+/-- Session origins retain their canonical authentication-method discriminator. -/
+theorem session_origin_wire (o : session.SessionOrigin) (out : alloc.vec.Vec U8)
+    (h : session.origin_bytes o = ok out) : out.val = SpecKernel.OriginWire o :=
+  Verified.OxicloudSession.origin_bytes_ok o out h
+
+/-- Known origins are accepted only with their exact spelling. -/
+theorem session_origin_parse (raw : Slice U8) (o : session.SessionOrigin)
+    (h : session.origin_from_wire raw = ok o) : SpecKernel.OriginDecoded raw.val o :=
+  Verified.OxicloudSession.origin_parse_ok raw o h
+
+/-- Restoring a session preserves all identity, binding, revocation, and lifetime observations. -/
+theorem session_restoration_readback (snapshot r : session.Session)
+    (h : session.from_raw snapshot.id snapshot.user_id snapshot.refresh_token snapshot.expires_at snapshot.ip_address snapshot.user_agent snapshot.created_at snapshot.revoked snapshot.family_id snapshot.oidc_id_token snapshot.oidc_sid snapshot.dpop_jkt snapshot.origin snapshot.last_seen_at = ok r) :
+    session.id r = ok snapshot.id ∧
+    session.user_id r = ok snapshot.user_id ∧
+    session.refresh_token r = ok snapshot.refresh_token ∧
+    session.expires_at r = ok snapshot.expires_at ∧
+    session.ip_address r = ok snapshot.ip_address ∧
+    session.user_agent r = ok snapshot.user_agent ∧
+    session.created_at r = ok snapshot.created_at ∧
+    session.is_revoked r = ok snapshot.revoked ∧
+    session.family_id r = ok snapshot.family_id ∧
+    session.oidc_id_token r = ok snapshot.oidc_id_token ∧
+    session.oidc_sid r = ok snapshot.oidc_sid ∧
+    session.dpop_jkt r = ok snapshot.dpop_jkt ∧
+    session.origin r = ok snapshot.origin ∧
+    session.last_seen_at r = ok snapshot.last_seen_at :=
+  Verified.OxicloudSession.restored_readback snapshot r h
+
+/-- Revocation preserves security metadata and remains revoked when repeated. -/
+theorem session_revocation_frame (s r : session.Session) (h : session.revoke s = ok r) :
+    SpecKernel.SessionRevoked s r ∧ session.revoke r = ok r :=
+  Verified.OxicloudSession.revoke_ok s r h
+
+/-- Binding requires an unbound session and preserves all other security fields. -/
+theorem session_binding_frame (s r : session.Session) (key : alloc.vec.Vec U8)
+    (h : session.with_dpop_jkt s key = ok r) : SpecKernel.SessionBound s key r :=
+  Verified.OxicloudSession.bind_ok s r key h
+
+/-- An existing key binding cannot be overwritten. -/
+theorem session_binding_immutable (s : session.Session) (key : alloc.vec.Vec U8)
+    (h : s.dpop_jkt ≠ none) : session.with_dpop_jkt s key = fail .panic :=
+  Verified.OxicloudSession.no_rebind s key h
+
+/-- Updating logout metadata preserves identity, revocation, lifetime, and key binding. -/
+theorem session_oidc_token_frame (s r : session.Session) (token : alloc.vec.Vec U8)
+    (h : session.with_oidc_id_token s token = ok r) : SpecKernel.SessionTokenAttached s token r :=
+  Verified.OxicloudSession.token_attach_ok s r token h
+
+/-- Updating OIDC session metadata preserves the other security fields. -/
+theorem session_oidc_sid_frame (s r : session.Session) (sid : alloc.vec.Vec U8)
+    (h : session.with_oidc_sid s sid = ok r) : SpecKernel.SessionSidAttached s sid r :=
+  Verified.OxicloudSession.sid_attach_ok s r sid h
 
 end oxicloud_kernel.Properties

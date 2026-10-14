@@ -3305,6 +3305,293 @@ def grantapi.transition
   | grantapi.Request.RevokeGrant grant_id =>
     grantapi.revoke_grant db env caller grant_id
 
+/-- [oxicloud_kernel::session::Timestamp]
+    Source: 'ports/oxicloud/kernel/src/session.rs', lines 6:0-6:63
+    Visibility: public -/
+structure session.Timestamp where
+  seconds : Std.I64
+  nanoseconds : Std.U32
+
+/-- [oxicloud_kernel::session::SessionOrigin]
+    Source: 'ports/oxicloud/kernel/src/session.rs', lines 9:0-9:77
+    Visibility: public -/
+@[discriminant isize]
+inductive session.SessionOrigin where
+| Password : session.SessionOrigin
+| Opaque : session.SessionOrigin
+| MagicLink : session.SessionOrigin
+| Oidc : session.SessionOrigin
+| Device : session.SessionOrigin
+| Unknown : session.SessionOrigin
+
+/-- [oxicloud_kernel::session::origin_bytes]:
+    Source: 'ports/oxicloud/kernel/src/session.rs', lines 12:0-21:1
+    Visibility: public -/
+def session.origin_bytes
+  (origin : session.SessionOrigin) : Result (alloc.vec.Vec Std.U8) := do
+  match origin with
+  | session.SessionOrigin.Password =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 8#usize [
+          112#u8, 97#u8, 115#u8, 115#u8, 119#u8, 111#u8, 114#u8, 100#u8
+          ]))
+    bytes.copy s
+  | session.SessionOrigin.Opaque =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 6#usize [ 111#u8, 112#u8, 97#u8, 113#u8, 117#u8, 101#u8 ]))
+    bytes.copy s
+  | session.SessionOrigin.MagicLink =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 10#usize [
+          109#u8, 97#u8, 103#u8, 105#u8, 99#u8, 95#u8, 108#u8, 105#u8, 110#u8,
+          107#u8
+          ]))
+    bytes.copy s
+  | session.SessionOrigin.Oidc =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 4#usize [ 111#u8, 105#u8, 100#u8, 99#u8 ]))
+    bytes.copy s
+  | session.SessionOrigin.Device =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 6#usize [ 100#u8, 101#u8, 118#u8, 105#u8, 99#u8, 101#u8 ]))
+    bytes.copy s
+  | session.SessionOrigin.Unknown =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 7#usize [
+          117#u8, 110#u8, 107#u8, 110#u8, 111#u8, 119#u8, 110#u8
+          ]))
+    bytes.copy s
+
+/-- [oxicloud_kernel::session::origin_from_wire]:
+    Source: 'ports/oxicloud/kernel/src/session.rs', lines 23:0-30:1
+    Visibility: public -/
+def session.origin_from_wire
+  (raw : Slice Std.U8) : Result session.SessionOrigin := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 8#usize [
+        112#u8, 97#u8, 115#u8, 115#u8, 119#u8, 111#u8, 114#u8, 100#u8
+        ]))
+  let b ← bytes.equal raw s
+  if b
+  then ok session.SessionOrigin.Password
+  else
+    let s1 ←
+      lift (Array.to_slice
+        (Array.make 6#usize [ 111#u8, 112#u8, 97#u8, 113#u8, 117#u8, 101#u8 ]))
+    let b1 ← bytes.equal raw s1
+    if b1
+    then ok session.SessionOrigin.Opaque
+    else
+      let s2 ←
+        lift (Array.to_slice
+          (Array.make 10#usize [
+            109#u8, 97#u8, 103#u8, 105#u8, 99#u8, 95#u8, 108#u8, 105#u8,
+            110#u8, 107#u8
+            ]))
+      let b2 ← bytes.equal raw s2
+      if b2
+      then ok session.SessionOrigin.MagicLink
+      else
+        let s3 ←
+          lift (Array.to_slice
+            (Array.make 4#usize [ 111#u8, 105#u8, 100#u8, 99#u8 ]))
+        let b3 ← bytes.equal raw s3
+        if b3
+        then ok session.SessionOrigin.Oidc
+        else
+          let s4 ←
+            lift (Array.to_slice
+              (Array.make 6#usize [
+                100#u8, 101#u8, 118#u8, 105#u8, 99#u8, 101#u8
+                ]))
+          let b4 ← bytes.equal raw s4
+          if b4
+          then ok session.SessionOrigin.Device
+          else ok session.SessionOrigin.Unknown
+
+/-- [oxicloud_kernel::session::Session]
+    Source: 'ports/oxicloud/kernel/src/session.rs', lines 32:0-47:1
+    Visibility: public -/
+structure session.Session where
+  id : Std.U128
+  user_id : Std.U128
+  refresh_token : alloc.vec.Vec Std.U8
+  expires_at : session.Timestamp
+  ip_address : Option (alloc.vec.Vec Std.U8)
+  user_agent : Option (alloc.vec.Vec Std.U8)
+  created_at : session.Timestamp
+  revoked : Bool
+  family_id : Std.U128
+  oidc_id_token : Option (alloc.vec.Vec Std.U8)
+  oidc_sid : Option (alloc.vec.Vec Std.U8)
+  dpop_jkt : Option (alloc.vec.Vec Std.U8)
+  origin : session.SessionOrigin
+  last_seen_at : session.Timestamp
+
+/-- [oxicloud_kernel::session::from_raw]:
+    Source: 'ports/oxicloud/kernel/src/session.rs', lines 50:0-67:1
+    Visibility: public -/
+def session.from_raw
+  (id : Std.U128) (user_id : Std.U128) (refresh_token : alloc.vec.Vec Std.U8)
+  (expires_at : session.Timestamp) (ip_address : Option (alloc.vec.Vec Std.U8))
+  (user_agent : Option (alloc.vec.Vec Std.U8)) (created_at : session.Timestamp)
+  (revoked : Bool) (family_id : Std.U128)
+  (oidc_id_token : Option (alloc.vec.Vec Std.U8))
+  (oidc_sid : Option (alloc.vec.Vec Std.U8))
+  (dpop_jkt : Option (alloc.vec.Vec Std.U8)) (origin : session.SessionOrigin)
+  (last_seen_at : session.Timestamp) :
+  Result session.Session
+  := do
+  ok
+    {
+      id,
+      user_id,
+      refresh_token,
+      expires_at,
+      ip_address,
+      user_agent,
+      created_at,
+      revoked,
+      family_id,
+      oidc_id_token,
+      oidc_sid,
+      dpop_jkt,
+      origin,
+      last_seen_at
+    }
+
+/-- [oxicloud_kernel::session::with_dpop_jkt]:
+    Source: 'ports/oxicloud/kernel/src/session.rs', lines 70:0-74:1
+    Visibility: public -/
+def session.with_dpop_jkt
+  (s : session.Session) (jkt : alloc.vec.Vec Std.U8) :
+  Result session.Session
+  := do
+  match s.dpop_jkt with
+  | none => ok { s with dpop_jkt := (some jkt) }
+  | some _ => fail panic
+
+/-- [oxicloud_kernel::session::with_oidc_id_token]:
+    Source: 'ports/oxicloud/kernel/src/session.rs', lines 76:0-79:1
+    Visibility: public -/
+def session.with_oidc_id_token
+  (s : session.Session) (token : alloc.vec.Vec Std.U8) :
+  Result session.Session
+  := do
+  ok { s with oidc_id_token := (some token) }
+
+/-- [oxicloud_kernel::session::with_oidc_sid]:
+    Source: 'ports/oxicloud/kernel/src/session.rs', lines 81:0-84:1
+    Visibility: public -/
+def session.with_oidc_sid
+  (s : session.Session) (sid : alloc.vec.Vec Std.U8) :
+  Result session.Session
+  := do
+  ok { s with oidc_sid := (some sid) }
+
+/-- [oxicloud_kernel::session::revoke]:
+    Source: 'ports/oxicloud/kernel/src/session.rs', lines 86:0-86:52
+    Visibility: public -/
+def session.revoke (s : session.Session) : Result session.Session := do
+  ok { s with revoked := true }
+
+/-- [oxicloud_kernel::session::id]:
+    Source: 'ports/oxicloud/kernel/src/session.rs', lines 89:0-89:39
+    Visibility: public -/
+def session.id (s : session.Session) : Result Std.U128 := do
+  ok s.id
+
+/-- [oxicloud_kernel::session::user_id]:
+    Source: 'ports/oxicloud/kernel/src/session.rs', lines 92:0-92:49
+    Visibility: public -/
+def session.user_id (s : session.Session) : Result Std.U128 := do
+  ok s.user_id
+
+/-- [oxicloud_kernel::session::refresh_token]:
+    Source: 'ports/oxicloud/kernel/src/session.rs', lines 95:0-95:66
+    Visibility: public -/
+def session.refresh_token
+  (s : session.Session) : Result (alloc.vec.Vec Std.U8) := do
+  ok s.refresh_token
+
+/-- [oxicloud_kernel::session::expires_at]:
+    Source: 'ports/oxicloud/kernel/src/session.rs', lines 98:0-98:60
+    Visibility: public -/
+def session.expires_at (s : session.Session) : Result session.Timestamp := do
+  ok s.expires_at
+
+/-- [oxicloud_kernel::session::ip_address]:
+    Source: 'ports/oxicloud/kernel/src/session.rs', lines 101:0-101:68
+    Visibility: public -/
+def session.ip_address
+  (s : session.Session) : Result (Option (alloc.vec.Vec Std.U8)) := do
+  ok s.ip_address
+
+/-- [oxicloud_kernel::session::user_agent]:
+    Source: 'ports/oxicloud/kernel/src/session.rs', lines 104:0-104:68
+    Visibility: public -/
+def session.user_agent
+  (s : session.Session) : Result (Option (alloc.vec.Vec Std.U8)) := do
+  ok s.user_agent
+
+/-- [oxicloud_kernel::session::created_at]:
+    Source: 'ports/oxicloud/kernel/src/session.rs', lines 107:0-107:60
+    Visibility: public -/
+def session.created_at (s : session.Session) : Result session.Timestamp := do
+  ok s.created_at
+
+/-- [oxicloud_kernel::session::is_revoked]:
+    Source: 'ports/oxicloud/kernel/src/session.rs', lines 110:0-110:52
+    Visibility: public -/
+def session.is_revoked (s : session.Session) : Result Bool := do
+  ok s.revoked
+
+/-- [oxicloud_kernel::session::family_id]:
+    Source: 'ports/oxicloud/kernel/src/session.rs', lines 113:0-113:53
+    Visibility: public -/
+def session.family_id (s : session.Session) : Result Std.U128 := do
+  ok s.family_id
+
+/-- [oxicloud_kernel::session::oidc_id_token]:
+    Source: 'ports/oxicloud/kernel/src/session.rs', lines 116:0-116:74
+    Visibility: public -/
+def session.oidc_id_token
+  (s : session.Session) : Result (Option (alloc.vec.Vec Std.U8)) := do
+  ok s.oidc_id_token
+
+/-- [oxicloud_kernel::session::oidc_sid]:
+    Source: 'ports/oxicloud/kernel/src/session.rs', lines 119:0-119:64
+    Visibility: public -/
+def session.oidc_sid
+  (s : session.Session) : Result (Option (alloc.vec.Vec Std.U8)) := do
+  ok s.oidc_sid
+
+/-- [oxicloud_kernel::session::dpop_jkt]:
+    Source: 'ports/oxicloud/kernel/src/session.rs', lines 122:0-122:64
+    Visibility: public -/
+def session.dpop_jkt
+  (s : session.Session) : Result (Option (alloc.vec.Vec Std.U8)) := do
+  ok s.dpop_jkt
+
+/-- [oxicloud_kernel::session::origin]:
+    Source: 'ports/oxicloud/kernel/src/session.rs', lines 125:0-125:56
+    Visibility: public -/
+def session.origin (s : session.Session) : Result session.SessionOrigin := do
+  ok s.origin
+
+/-- [oxicloud_kernel::session::last_seen_at]:
+    Source: 'ports/oxicloud/kernel/src/session.rs', lines 128:0-128:64
+    Visibility: public -/
+def session.last_seen_at (s : session.Session) : Result session.Timestamp := do
+  ok s.last_seen_at
+
 /-- [oxicloud_kernel::userrole::UserRole]
     Source: 'ports/oxicloud/kernel/src/userrole.rs', lines 5:0-10:1
     Visibility: public -/

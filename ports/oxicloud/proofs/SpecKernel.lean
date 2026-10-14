@@ -124,4 +124,37 @@ canonical unsupported-operation refusal. -/
 def GuardDecision (allowed : Prop) (r : core.result.Result Unit model.ErrorKind) : Prop :=
   (r = .Ok () ↔ allowed) ∧ (r = .Err .OperationNotSupported ↔ ¬allowed)
 
+
+
+/-- Canonical session origins retain the authentication mechanism across restoration. -/
+def OriginWire : session.SessionOrigin → List U8
+  | .Password => [112#u8, 97#u8, 115#u8, 115#u8, 119#u8, 111#u8, 114#u8, 100#u8]
+  | .Opaque => [111#u8, 112#u8, 97#u8, 113#u8, 117#u8, 101#u8]
+  | .MagicLink => [109#u8, 97#u8, 103#u8, 105#u8, 99#u8, 95#u8, 108#u8, 105#u8, 110#u8, 107#u8]
+  | .Oidc => [111#u8, 105#u8, 100#u8, 99#u8]
+  | .Device => [100#u8, 101#u8, 118#u8, 105#u8, 99#u8, 101#u8]
+  | .Unknown => [117#u8, 110#u8, 107#u8, 110#u8, 111#u8, 119#u8, 110#u8]
+
+/-- Known authentication origins are recognized exactly, with Unknown as the fallback. -/
+def OriginDecoded (raw : List U8) (o : session.SessionOrigin) : Prop :=
+  ∀ known, known ≠ .Unknown → (o = known ↔ raw = OriginWire known)
+
+/-- Revocation changes no identity, credential, binding, or lifetime information. -/
+def SessionRevoked (before after : session.Session) : Prop :=
+  after.revoked = true ∧ { after with revoked := before.revoked } = before
+
+/-- Binding only applies to an unbound session and changes no other security state. -/
+def SessionBound (before : session.Session) (key : alloc.vec.Vec U8) (after : session.Session) : Prop :=
+  before.dpop_jkt = none ∧ after.dpop_jkt = some key ∧
+  { after with dpop_jkt := before.dpop_jkt } = before
+
+/-- OIDC logout metadata changes cannot alter the principal, DPoP binding, or revocation. -/
+def SessionTokenAttached (before : session.Session) (token : alloc.vec.Vec U8)
+    (after : session.Session) : Prop :=
+  after.oidc_id_token = some token ∧ { after with oidc_id_token := before.oidc_id_token } = before
+
+def SessionSidAttached (before : session.Session) (sid : alloc.vec.Vec U8)
+    (after : session.Session) : Prop :=
+  after.oidc_sid = some sid ∧ { after with oidc_sid := before.oidc_sid } = before
+
 end oxicloud_kernel.SpecKernel

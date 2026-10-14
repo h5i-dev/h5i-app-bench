@@ -99,3 +99,19 @@ false value. The policy guard functions return the existing error-kind represent
 error formatting and audit emission stay in the shell. Audit-only context is
 omitted from the pure interface; the owner guard retains `caller_is_admin`
 and the external-sharing guard retains both principal kind and external flag.
+
+### Session state (`domain/entities/session.rs`)
+
+- UUIDs in this module use their full 128-bit integer representation. UTC timestamps
+  use opaque `(seconds: i64, nanoseconds: u32)` components, including chrono's
+  leap-second representation. The pure state operations do no time arithmetic.
+  Timestamp validity and wall-clock reads remain in the shell.
+- Strings use UTF-8 byte vectors. Borrowed string getters return references to
+  those vectors; optional borrowed strings return references to optional vectors.
+  These expose the same immutable contents and presence information.
+- `SessionOrigin::as_str` returns owned bytes; `from_wire` compares bytes exactly,
+  retaining Unknown for every unrecognized spelling. No normalization is added.
+- Session fields are public for the extracted snapshot representation. Upstream
+  constructors, getters, revocation, and binding setters remain distinct functions.
+  `with_dpop_jkt` retains the panic on an already-bound session. Clock/randomness
+  in `new` and clock-based `is_expired` stay outside the pure state kernel.

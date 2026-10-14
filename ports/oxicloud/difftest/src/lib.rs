@@ -10,3 +10,6 @@ mod userrole;
 mod authwire;
 #[cfg(test)]
 mod drivepolicy;
+
+#[cfg(test)]
+mod session;

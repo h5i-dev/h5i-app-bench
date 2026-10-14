@@ -12883,22 +12883,26 @@ reason = "calls Utc::now"
 [[item]]
 upstream = "src/domain/entities/session.rs:4 SessionOrigin"
 lines = 10
-status = "todo"
+status = "ported"
+kernel = ["session::SessionOrigin"]
 
 [[item]]
 upstream = "src/domain/entities/session.rs:32 SessionOrigin::as_str"
 lines = 10
-status = "todo"
+status = "ported"
+kernel = ["session::origin_bytes"]
 
 [[item]]
 upstream = "src/domain/entities/session.rs:45 SessionOrigin::from_wire"
 lines = 10
-status = "todo"
+status = "ported"
+kernel = ["session::origin_from_wire"]
 
 [[item]]
 upstream = "src/domain/entities/session.rs:64 Session"
 lines = 16
-status = "todo"
+status = "ported"
+kernel = ["session::Session"]
 
 [[item]]
 upstream = "src/domain/entities/session.rs:113 Session::new"
@@ -12909,57 +12913,68 @@ reason = "uses new_v4"
 [[item]]
 upstream = "src/domain/entities/session.rs:146 Session::with_dpop_jkt"
 lines = 7
-status = "todo"
+status = "ported"
+kernel = ["session::with_dpop_jkt"]
 
 [[item]]
 upstream = "src/domain/entities/session.rs:161 Session::with_oidc_id_token"
 lines = 4
-status = "todo"
+status = "ported"
+kernel = ["session::with_oidc_id_token"]
 
 [[item]]
 upstream = "src/domain/entities/session.rs:169 Session::with_oidc_sid"
 lines = 4
-status = "todo"
+status = "ported"
+kernel = ["session::with_oidc_sid"]
 
 [[item]]
 upstream = "src/domain/entities/session.rs:179 Session::from_raw"
 lines = 33
-status = "todo"
+status = "ported"
+kernel = ["session::from_raw"]
 
 [[item]]
 upstream = "src/domain/entities/session.rs:215 Session::id"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["session::id"]
 
 [[item]]
 upstream = "src/domain/entities/session.rs:219 Session::user_id"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["session::user_id"]
 
 [[item]]
 upstream = "src/domain/entities/session.rs:223 Session::refresh_token"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["session::refresh_token"]
 
 [[item]]
 upstream = "src/domain/entities/session.rs:227 Session::expires_at"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["session::expires_at"]
 
 [[item]]
 upstream = "src/domain/entities/session.rs:231 Session::ip_address"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["session::ip_address"]
 
 [[item]]
 upstream = "src/domain/entities/session.rs:235 Session::user_agent"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["session::user_agent"]
 
 [[item]]
 upstream = "src/domain/entities/session.rs:239 Session::created_at"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["session::created_at"]
 
 [[item]]
 upstream = "src/domain/entities/session.rs:243 Session::is_expired"
@@ -12970,42 +12985,50 @@ reason = "calls Utc::now"
 [[item]]
 upstream = "src/domain/entities/session.rs:247 Session::is_revoked"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["session::is_revoked"]
 
 [[item]]
 upstream = "src/domain/entities/session.rs:251 Session::revoke"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["session::revoke"]
 
 [[item]]
 upstream = "src/domain/entities/session.rs:255 Session::family_id"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["session::family_id"]
 
 [[item]]
 upstream = "src/domain/entities/session.rs:259 Session::oidc_id_token"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["session::oidc_id_token"]
 
 [[item]]
 upstream = "src/domain/entities/session.rs:263 Session::oidc_sid"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["session::oidc_sid"]
 
 [[item]]
 upstream = "src/domain/entities/session.rs:267 Session::dpop_jkt"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["session::dpop_jkt"]
 
 [[item]]
 upstream = "src/domain/entities/session.rs:271 Session::origin"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["session::origin"]
 
 [[item]]
 upstream = "src/domain/entities/session.rs:275 Session::last_seen_at"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["session::last_seen_at"]
 
 [[item]]
 upstream = "src/domain/entities/share.rs:7 Share"
