@@ -6,6 +6,15 @@ tmp=$(mktemp -d -p "$root/results")
 trap 'rm -rf "$tmp"' EXIT
 (cd "$root/ports/oxicloud/kernel" && charon cargo --preset=aeneas \
   --start-from oxicloud_kernel::grantapi::transition \
+  --start-from oxicloud_kernel::userrole::as_bytes \
+  --start-from oxicloud_kernel::userrole::from_stored \
+  --start-from oxicloud_kernel::userrole::from_session \
+  --start-from oxicloud_kernel::userrole::rank \
+  --start-from oxicloud_kernel::userrole::at_least \
+  --start-from oxicloud_kernel::userrole::outranks \
+  --start-from oxicloud_kernel::userrole::is_anonymous \
+  --start-from oxicloud_kernel::userrole::str_at_least \
+  --start-from oxicloud_kernel::userrole::is_privileged \
   --dest-file "$tmp/oxicloud_kernel.llbc")
 mkdir -p "$root/ports/oxicloud/proofs/generated"
 aeneas -backend lean "$tmp/oxicloud_kernel.llbc" -dest "$root/ports/oxicloud/proofs/generated"

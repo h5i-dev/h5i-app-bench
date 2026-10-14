@@ -7,7 +7,7 @@ Which extracted kernel definitions do the project's theorems constrain?
 
 For every theorem in `<ns>.Properties`, collect the constants its statement
 mentions, then close over the bodies of the kernel definitions they reach
-(definitions in `<ns>` outside `Properties`, `Spec`, `Verified`). Prints one
+(definitions in `<ns>` outside `Properties`, `Spec`, `SpecKernel`, `Verified`). Prints one
 line per kernel definition: `reached <name>` or `unreached <name>`.
 
   lake env lean ../../../harness/lean/KernelReach.lean <ns>
@@ -16,6 +16,7 @@ line per kernel definition: `reached <name>` or `unreached <name>`.
 def isKernel (ns : Name) (n : Name) : Bool :=
   ns.isPrefixOf n && !(`Properties).isPrefixOf (n.replacePrefix ns .anonymous)
     && !(`Spec).isPrefixOf (n.replacePrefix ns .anonymous)
+    && !(`SpecKernel).isPrefixOf (n.replacePrefix ns .anonymous)
     && !(`Verified).isPrefixOf (n.replacePrefix ns .anonymous)
     && !n.isInternal
 

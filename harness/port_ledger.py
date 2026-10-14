@@ -74,8 +74,11 @@ def seed(app):
     print(f"wrote {path.relative_to(ROOT)}")
 
 
-def report(app):
+def report(app, security=False):
     ledger = tomllib.loads((ROOT / "ports" / app / "LEDGER.toml").read_text())["item"]
+    if security:
+        candidates = {key(i) for i in items(app) if i["security"] and not i["reasons"]}
+        ledger = [x for x in ledger if x["upstream"] in candidates]
     target = [x for x in ledger if x["status"] != "outside"]
     ported = sum(x["lines"] for x in target if x["status"] == "ported")
     total = sum(x["lines"] for x in target)
@@ -88,18 +91,19 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = ap.add_subparsers(dest="cmd", required=True)
     s = sub.add_parser("seed"); s.add_argument("app")
-    r = sub.add_parser("report"); r.add_argument("apps", nargs="*")
+    r = sub.add_parser("report"); r.add_argument("apps", nargs="*"); r.add_argument("--security", action="store_true", help="report only eligible security-kernel items")
     a = ap.parse_args()
     if a.cmd == "seed":
         seed(a.app)
     else:
         apps = a.apps or [p.parent.name for p in sorted((ROOT / "ports").glob("*/LEDGER.toml"))]
-        rows = [report(x) for x in apps]
+        rows = [report(x, security=a.security) for x in apps]
         for r in rows:
             print(f"{r['app']}: ported {r['ported_lines']:,} of {r['target_lines']:,} target lines "
                   f"({r['ported_lines'] / max(1, r['target_lines']):.0%}); {r['outside_lines']:,} outside")
         out = ROOT / "results/source-coverage/port-ledger.json"
-        out.write_text(json.dumps({"apps": rows}, indent=1) + "\n")
+        if not a.security:
+            out.write_text(json.dumps({"apps": rows}, indent=1) + "\n")
 
 
 if __name__ == "__main__":

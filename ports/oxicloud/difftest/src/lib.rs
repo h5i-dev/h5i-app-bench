@@ -4,3 +4,5 @@ pub mod tests;
 mod endpoints;
 #[cfg(test)]
 mod props;
+#[cfg(test)]
+mod userrole;

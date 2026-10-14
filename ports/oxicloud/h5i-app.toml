@@ -1,7 +1,7 @@
 # Standard h5i-app project. Keep every selected theorem in the final gate.
 [extract]
 crate = "kernel"
-start-from = ["grantapi::transition"]
+start-from = ["grantapi::transition", "userrole::as_bytes", "userrole::from_stored", "userrole::from_session", "userrole::rank", "userrole::at_least", "userrole::outranks", "userrole::is_anonymous", "userrole::str_at_least", "userrole::is_privileged"]
 
 [check]
 theorems = [
@@ -16,4 +16,12 @@ theorems = [
   "oxicloud_kernel.Properties.personal_drive_members_fixed",
   "oxicloud_kernel.Properties.drive_keeps_an_owner",
   "oxicloud_kernel.Properties.refused_create_or_set_writes_nothing",
+  "oxicloud_kernel.Properties.role_wire_canonical",
+  "oxicloud_kernel.Properties.stored_roles_canonical",
+  "oxicloud_kernel.Properties.session_roles_canonical",
+  "oxicloud_kernel.Properties.role_requirement_order",
+  "oxicloud_kernel.Properties.role_strict_order",
+  "oxicloud_kernel.Properties.anonymous_role_exact",
+  "oxicloud_kernel.Properties.privileged_roles_exact",
+  "oxicloud_kernel.Properties.session_role_requirement",
 ]

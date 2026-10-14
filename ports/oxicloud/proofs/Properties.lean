@@ -9,6 +9,8 @@ import Verified.OxicloudPersonalDrive
 import Verified.OxicloudKeepsOwner
 import Verified.OxicloudRefusedWritesNothing
 import Spec
+import Verified.OxicloudUserRole
+import Verified.OxicloudTotal
 open Aeneas Aeneas.Std Result oxicloud_kernel oxicloud_kernel.Spec
 open H5iAppLib hiding lit
 
@@ -54,7 +56,7 @@ user, the internal group and every group it reaches; with `Usize.max - 1`
 groups that is more IDs than a `Vec` holds, a table no database can store. -/
 theorem check_total (db : model.Db) (ro : Bool) (now : I64) (s : model.Subject) (p : model.Permission)
     (r : model.Resource) (hm : db.memberships.length + 2 ≤ Usize.max) : ∃ b, acl.check db ro now s p r = ok b := by
-  sorry
+  exact oxicloud_kernel.Verified.OxicloudTotal.check_total db ro now s p r hm
 
 /-! ## The grant endpoints -/
 
@@ -104,5 +106,49 @@ theorem refused_create_or_set_writes_nothing (db db' : model.Db) (env : grantapi
     (h : grantapi.transition db env caller req = ok (db', .Err err)) :
     db' = db := by
   apply oxicloud_kernel.Verified.OxicloudRefusedWritesNothing.refused_create_or_set_writes_nothing <;> assumption
+
+/-- Wire output uses the canonical spelling of the account role. -/
+theorem role_wire_canonical (r : userrole.UserRole) (out : alloc.vec.Vec U8)
+    (h : userrole.as_bytes r = ok out) : out.val = SpecKernel.RoleWire r :=
+  Verified.OxicloudUserRole.as_bytes_ok r out h
+
+/-- Stored accounts recognize precisely owner, admin, and user. -/
+theorem stored_roles_canonical (raw : Slice U8) (o : Option userrole.UserRole)
+    (h : userrole.from_stored raw = ok o) (r : userrole.UserRole) :
+    (o = some r ↔ SpecKernel.StoredRole raw.val r) :=
+  Verified.OxicloudUserRole.stored_ok raw o h r
+
+/-- Sessions recognize precisely the four canonical role spellings. -/
+theorem session_roles_canonical (raw : Slice U8) (o : Option userrole.UserRole)
+    (h : userrole.from_session raw = ok o) (r : userrole.UserRole) :
+    (o = some r ↔ SpecKernel.SessionRole raw.val r) :=
+  Verified.OxicloudUserRole.session_ok raw o h r
+
+/-- A role meets a minimum exactly when its policy level is sufficient. -/
+theorem role_requirement_order (r min : userrole.UserRole) (b : Bool)
+    (h : userrole.at_least r min = ok b) :
+    (b = true ↔ SpecKernel.RoleLevel min ≤ SpecKernel.RoleLevel r) :=
+  Verified.OxicloudUserRole.at_least_ok r min b h
+
+/-- Strict privilege comparisons exclude peers and lower roles. -/
+theorem role_strict_order (r target : userrole.UserRole) (b : Bool)
+    (h : userrole.outranks r target = ok b) :
+    (b = true ↔ SpecKernel.RoleLevel target < SpecKernel.RoleLevel r) :=
+  Verified.OxicloudUserRole.outranks_ok r target b h
+
+/-- Only the anonymous role has the anonymous flag. -/
+theorem anonymous_role_exact (r : userrole.UserRole) (b : Bool)
+    (h : userrole.is_anonymous r = ok b) : (b = true ↔ r = .Anonymous) :=
+  Verified.OxicloudUserRole.anonymous_ok r b h
+
+/-- The privileged flag selects administrators and owners. -/
+theorem privileged_roles_exact (r : userrole.UserRole) (b : Bool)
+    (h : userrole.is_privileged r = ok b) : (b = true ↔ r = .Admin ∨ r = .Owner) :=
+  Verified.OxicloudUserRole.privileged_ok r b h
+
+/-- Wire roles meet requirements only through a recognized spelling and sufficient privilege. -/
+theorem session_role_requirement (raw : Slice U8) (min : userrole.UserRole) (b : Bool)
+    (h : userrole.str_at_least raw min = ok b) : (b = true ↔ SpecKernel.MeetsRole raw.val min) :=
+  Verified.OxicloudUserRole.str_at_least_ok raw min b h
 
 end oxicloud_kernel.Properties

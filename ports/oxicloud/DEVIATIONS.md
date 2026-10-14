@@ -69,3 +69,12 @@ make the tests fail. `props.rs` checks every statement in
 `drive_keeps_an_owner` and `refused_create_or_set_writes_nothing` are about
 creating grants and setting roles; revocation is outside them.
 `create_respects_sharing_policies` is about `create_grant`.
+
+## User-role hierarchy
+
+`userrole` ports `domain/entities/user.rs` `UserRole`, including stored and
+session parsing, wire spelling, rank and privilege predicates. Wire inputs
+are byte slices and wire outputs are owned byte vectors; `as_bytes` is upstream `as_str`. The accepted spellings are
+ASCII, so comparison over UTF-8 bytes preserves string equality. Arbitrary
+byte slices are also accepted as inputs and unrecognized spellings are refused.
+`bytes::equal` replaces string equality with an indexed loop.

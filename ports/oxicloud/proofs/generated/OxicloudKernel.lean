@@ -1569,6 +1569,82 @@ def acl.clear_role
   := do
   acl.clear_role_loop grants s r (alloc.vec.Vec.new model.Grant) 0#usize
 
+/-- [oxicloud_kernel::bytes::equal]: loop body 0:
+    Source: 'ports/oxicloud/kernel/src/bytes.rs', lines 8:4-15:1
+    Visibility: public -/
+@[rust_loop_body]
+def bytes.equal_loop.body
+  (a : Slice Std.U8) (b : Slice Std.U8) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := Slice.len a
+  if i < i1
+  then
+    let i2 ← Slice.index_usize a i
+    let i3 ← Slice.index_usize b i
+    if i2 != i3
+    then ok (done false)
+    else let i4 ← i + 1#usize
+         ok (cont i4)
+  else ok (done true)
+
+/-- [oxicloud_kernel::bytes::equal]: loop 0:
+    Source: 'ports/oxicloud/kernel/src/bytes.rs', lines 8:4-15:1
+    Visibility: public -/
+@[rust_loop]
+def bytes.equal_loop
+  (a : Slice Std.U8) (b : Slice Std.U8) (i : Std.Usize) : Result Bool := do
+  loop
+    (fun i1 => bytes.equal_loop.body a b i1)
+    i
+
+/-- [oxicloud_kernel::bytes::equal]:
+    Source: 'ports/oxicloud/kernel/src/bytes.rs', lines 3:0-15:1
+    Visibility: public -/
+def bytes.equal (a : Slice Std.U8) (b : Slice Std.U8) : Result Bool := do
+  let i := Slice.len a
+  let i1 := Slice.len b
+  if i != i1
+  then ok false
+  else bytes.equal_loop a b 0#usize
+
+/-- [oxicloud_kernel::bytes::copy]: loop body 0:
+    Source: 'ports/oxicloud/kernel/src/bytes.rs', lines 21:4-24:5
+    Visibility: public -/
+@[rust_loop_body]
+def bytes.copy_loop.body
+  (a : Slice Std.U8) (out : alloc.vec.Vec Std.U8) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Std.U8) × Std.Usize) (alloc.vec.Vec
+    Std.U8))
+  := do
+  let i1 := Slice.len a
+  if i < i1
+  then
+    let i2 ← Slice.index_usize a i
+    let out1 ← alloc.vec.Vec.push out i2
+    let i3 ← i + 1#usize
+    ok (cont (out1, i3))
+  else ok (done out)
+
+/-- [oxicloud_kernel::bytes::copy]: loop 0:
+    Source: 'ports/oxicloud/kernel/src/bytes.rs', lines 21:4-24:5
+    Visibility: public -/
+@[rust_loop]
+def bytes.copy_loop
+  (a : Slice Std.U8) (out : alloc.vec.Vec Std.U8) (i : Std.Usize) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  loop
+    (fun (out1, i1) => bytes.copy_loop.body a out1 i1)
+    (out, i)
+
+/-- [oxicloud_kernel::bytes::copy]:
+    Source: 'ports/oxicloud/kernel/src/bytes.rs', lines 18:0-26:1
+    Visibility: public -/
+@[reducible]
+def bytes.copy (a : Slice Std.U8) : Result (alloc.vec.Vec Std.U8) := do
+  bytes.copy_loop a (alloc.vec.Vec.new Std.U8) 0#usize
+
 /-- [oxicloud_kernel::grantapi::Env]
     Source: 'ports/oxicloud/kernel/src/grantapi.rs', lines 11:0-16:1
     Visibility: public -/
@@ -2659,5 +2735,142 @@ def grantapi.transition
     grantapi.set_role_handler db env caller resource subject role expires_at
   | grantapi.Request.RevokeGrant grant_id =>
     grantapi.revoke_grant db env caller grant_id
+
+/-- [oxicloud_kernel::userrole::UserRole]
+    Source: 'ports/oxicloud/kernel/src/userrole.rs', lines 5:0-10:1
+    Visibility: public -/
+@[discriminant isize]
+inductive userrole.UserRole where
+| Owner : userrole.UserRole
+| Admin : userrole.UserRole
+| User : userrole.UserRole
+| Anonymous : userrole.UserRole
+
+/-- [oxicloud_kernel::userrole::as_bytes]:
+    Source: 'ports/oxicloud/kernel/src/userrole.rs', lines 13:0-20:1
+    Visibility: public -/
+def userrole.as_bytes
+  (role : userrole.UserRole) : Result (alloc.vec.Vec Std.U8) := do
+  match role with
+  | userrole.UserRole.Owner =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 5#usize [ 111#u8, 119#u8, 110#u8, 101#u8, 114#u8 ]))
+    bytes.copy s
+  | userrole.UserRole.Admin =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 5#usize [ 97#u8, 100#u8, 109#u8, 105#u8, 110#u8 ]))
+    bytes.copy s
+  | userrole.UserRole.User =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 4#usize [ 117#u8, 115#u8, 101#u8, 114#u8 ]))
+    bytes.copy s
+  | userrole.UserRole.Anonymous =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 9#usize [
+          97#u8, 110#u8, 111#u8, 110#u8, 121#u8, 109#u8, 111#u8, 117#u8, 115#u8
+          ]))
+    bytes.copy s
+
+/-- [oxicloud_kernel::userrole::from_stored]:
+    Source: 'ports/oxicloud/kernel/src/userrole.rs', lines 23:0-33:1
+    Visibility: public -/
+def userrole.from_stored
+  (raw : Slice Std.U8) : Result (Option userrole.UserRole) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 5#usize [ 111#u8, 119#u8, 110#u8, 101#u8, 114#u8 ]))
+  let b ← bytes.equal raw s
+  if b
+  then ok (some userrole.UserRole.Owner)
+  else
+    let s1 ←
+      lift (Array.to_slice
+        (Array.make 5#usize [ 97#u8, 100#u8, 109#u8, 105#u8, 110#u8 ]))
+    let b1 ← bytes.equal raw s1
+    if b1
+    then ok (some userrole.UserRole.Admin)
+    else
+      let s2 ←
+        lift (Array.to_slice
+          (Array.make 4#usize [ 117#u8, 115#u8, 101#u8, 114#u8 ]))
+      let b2 ← bytes.equal raw s2
+      if b2
+      then ok (some userrole.UserRole.User)
+      else ok none
+
+/-- [oxicloud_kernel::userrole::from_session]:
+    Source: 'ports/oxicloud/kernel/src/userrole.rs', lines 36:0-42:1
+    Visibility: public -/
+def userrole.from_session
+  (raw : Slice Std.U8) : Result (Option userrole.UserRole) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 9#usize [
+        97#u8, 110#u8, 111#u8, 110#u8, 121#u8, 109#u8, 111#u8, 117#u8, 115#u8
+        ]))
+  let b ← bytes.equal raw s
+  if b
+  then ok (some userrole.UserRole.Anonymous)
+  else userrole.from_stored raw
+
+/-- [oxicloud_kernel::userrole::rank]:
+    Source: 'ports/oxicloud/kernel/src/userrole.rs', lines 45:0-52:1
+    Visibility: public -/
+def userrole.rank (role : userrole.UserRole) : Result Std.U8 := do
+  match role with
+  | userrole.UserRole.Owner => ok 3#u8
+  | userrole.UserRole.Admin => ok 2#u8
+  | userrole.UserRole.User => ok 1#u8
+  | userrole.UserRole.Anonymous => ok 0#u8
+
+/-- [oxicloud_kernel::userrole::at_least]:
+    Source: 'ports/oxicloud/kernel/src/userrole.rs', lines 55:0-57:1
+    Visibility: public -/
+def userrole.at_least
+  (role : userrole.UserRole) (min : userrole.UserRole) : Result Bool := do
+  let i ← userrole.rank role
+  let i1 ← userrole.rank min
+  ok (i >= i1)
+
+/-- [oxicloud_kernel::userrole::outranks]:
+    Source: 'ports/oxicloud/kernel/src/userrole.rs', lines 60:0-62:1
+    Visibility: public -/
+def userrole.outranks
+  (role : userrole.UserRole) (target : userrole.UserRole) : Result Bool := do
+  let i ← userrole.rank role
+  let i1 ← userrole.rank target
+  ok (i > i1)
+
+/-- [oxicloud_kernel::userrole::is_anonymous]:
+    Source: 'ports/oxicloud/kernel/src/userrole.rs', lines 65:0-70:1
+    Visibility: public -/
+def userrole.is_anonymous (role : userrole.UserRole) : Result Bool := do
+  match role with
+  | userrole.UserRole.Owner => ok false
+  | userrole.UserRole.Admin => ok false
+  | userrole.UserRole.User => ok false
+  | userrole.UserRole.Anonymous => ok true
+
+/-- [oxicloud_kernel::userrole::str_at_least]:
+    Source: 'ports/oxicloud/kernel/src/userrole.rs', lines 73:0-78:1
+    Visibility: public -/
+def userrole.str_at_least
+  (raw : Slice Std.U8) (min : userrole.UserRole) : Result Bool := do
+  let o ← userrole.from_session raw
+  match o with
+  | none => ok false
+  | some role => userrole.at_least role min
+
+/-- [oxicloud_kernel::userrole::is_privileged]:
+    Source: 'ports/oxicloud/kernel/src/userrole.rs', lines 81:0-83:1
+    Visibility: public -/
+def userrole.is_privileged (role : userrole.UserRole) : Result Bool := do
+  let i ← userrole.rank role
+  let i1 ← userrole.rank userrole.UserRole.User
+  ok (i > i1)
 
 end oxicloud_kernel
