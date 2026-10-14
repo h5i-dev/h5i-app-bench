@@ -1,3 +1,4 @@
+import Verified.OxicloudAuthWire
 import Verified.OxicloudMigrationReadonly
 import Verified.OxicloudDriveReadOnly
 import Verified.OxicloudExpiredGrants
@@ -150,5 +151,80 @@ theorem privileged_roles_exact (r : userrole.UserRole) (b : Bool)
 theorem session_role_requirement (raw : Slice U8) (min : userrole.UserRole) (b : Bool)
     (h : userrole.str_at_least raw min = ok b) : (b = true ↔ SpecKernel.MeetsRole raw.val min) :=
   Verified.OxicloudUserRole.str_at_least_ok raw min b h
+
+
+/-- Authorization subjects use their canonical database discriminator. -/
+theorem auth_subject_wire (value : model.Subject) (out : alloc.vec.Vec U8)
+    (h : authwire.subject_bytes value = ok out) : out.val = SpecKernel.SubjectWire value :=
+  Verified.OxicloudAuthWire.subject_bytes_ok value out h
+
+/-- Parsing cannot change the subject namespace or identifier. -/
+theorem auth_subject_parse (raw : Slice U8) (id : U64) (o : Option model.Subject)
+    (h : authwire.subject_parse raw id = ok o) (value : model.Subject) :
+    (o = some value ↔ raw.val = SpecKernel.SubjectWire value ∧ id = SpecKernel.SubjectId value) :=
+  Verified.OxicloudAuthWire.subject_parse_ok raw id o h value
+
+/-- The projected subject identifier is preserved exactly. -/
+theorem auth_subject_id (value : model.Subject) :
+    authwire.subject_id value = ok (SpecKernel.SubjectId value) :=
+  Verified.OxicloudAuthWire.subject_id_ok value
+
+/-- Authorization resources use their canonical database discriminator. -/
+theorem auth_resource_wire (value : model.Resource) (out : alloc.vec.Vec U8)
+    (h : authwire.resource_bytes value = ok out) : out.val = SpecKernel.ResourceWire value :=
+  Verified.OxicloudAuthWire.resource_bytes_ok value out h
+
+/-- Parsing cannot change the resource namespace or identifier. -/
+theorem auth_resource_parse (raw : Slice U8) (id : U64) (o : Option model.Resource)
+    (h : authwire.resource_parse raw id = ok o) (value : model.Resource) :
+    (o = some value ↔ raw.val = SpecKernel.ResourceWire value ∧ id = SpecKernel.ResourceId value) :=
+  Verified.OxicloudAuthWire.resource_parse_ok raw id o h value
+
+/-- The projected resource identifier is preserved exactly. -/
+theorem auth_resource_id (value : model.Resource) :
+    authwire.resource_id value = ok (SpecKernel.ResourceId value) :=
+  Verified.OxicloudAuthWire.resource_id_ok value
+
+/-- Authorization permissions use their canonical database discriminator. -/
+theorem auth_permission_wire (value : model.Permission) (out : alloc.vec.Vec U8)
+    (h : authwire.permission_bytes value = ok out) : out.val = SpecKernel.PermissionWire value :=
+  Verified.OxicloudAuthWire.permission_bytes_ok value out h
+
+/-- Parsing cannot change the permission namespace. -/
+theorem auth_permission_parse (raw : Slice U8) (o : Option model.Permission)
+    (h : authwire.permission_parse raw = ok o) (value : model.Permission) :
+    (o = some value ↔ raw.val = SpecKernel.PermissionWire value) :=
+  Verified.OxicloudAuthWire.permission_parse_ok raw o h value
+
+/-- The query enumeration is complete and has the stable order. -/
+theorem auth_permission_all (out : alloc.vec.Vec model.Permission)
+    (h : authwire.permission_all = ok out) : out.val = SpecKernel.PermissionOrder :=
+  Verified.OxicloudAuthWire.permission_all_ok out h
+
+/-- Authorization roles use their canonical database discriminator. -/
+theorem auth_role_wire (value : model.Role) (out : alloc.vec.Vec U8)
+    (h : authwire.role_bytes value = ok out) : out.val = SpecKernel.GrantRoleWire value :=
+  Verified.OxicloudAuthWire.role_bytes_ok value out h
+
+/-- Parsing cannot change the role namespace. -/
+theorem auth_role_parse (raw : Slice U8) (o : Option model.Role)
+    (h : authwire.role_parse raw = ok o) (value : model.Role) :
+    (o = some value ↔ raw.val = SpecKernel.GrantRoleWire value) :=
+  Verified.OxicloudAuthWire.role_parse_ok raw o h value
+
+/-- The query enumeration is complete and has the stable order. -/
+theorem auth_role_all (out : alloc.vec.Vec model.Role)
+    (h : authwire.role_all = ok out) : out.val = SpecKernel.RoleOrder :=
+  Verified.OxicloudAuthWire.role_all_ok out h
+
+/-- Group and link identities cannot be used as user-row identities. -/
+theorem auth_user_identity (s : model.Subject) (id : U64) :
+    authwire.subject_user_id s = ok (some id) ↔ s = .User id :=
+  Verified.OxicloudAuthWire.user_identity s id
+
+/-- Users and groups cannot be used as share-token identities. -/
+theorem auth_token_identity (s : model.Subject) (id : U64) :
+    authwire.subject_token_id s = ok (some id) ↔ s = .Token id :=
+  Verified.OxicloudAuthWire.token_identity s id
 
 end oxicloud_kernel.Properties

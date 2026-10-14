@@ -78,3 +78,13 @@ are byte slices and wire outputs are owned byte vectors; `as_bytes` is upstream 
 ASCII, so comparison over UTF-8 bytes preserves string equality. Arbitrary
 byte slices are also accepted as inputs and unrecognized spellings are refused.
 `bytes::equal` replaces string equality with an indexed loop.
+
+## Authorization discriminators and identity
+
+`authwire` ports the `Subject`, `Resource`, `Permission`, and `Role` wire
+and identity helpers in `domain/services/authorization.rs`. String inputs
+are UTF-8 byte slices and static string results are owned byte vectors, as
+for user roles. UUID payloads retain the existing injective `u64` identity
+representation. `Permission::ALL` and `Role::ALL` become functions returning
+owned vectors in exactly the upstream order. Enumeration order is independent
+of the kernel's existing role variant order.

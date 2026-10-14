@@ -13892,32 +13892,38 @@ status = "todo"
 [[item]]
 upstream = "src/domain/services/authorization.rs:16 Subject"
 lines = 5
-status = "todo"
+status = "ported"
+kernel = ["model::Subject"]
 
 [[item]]
 upstream = "src/domain/services/authorization.rs:31 Subject::type_str"
 lines = 7
-status = "todo"
+status = "ported"
+kernel = ["authwire::subject_bytes"]
 
 [[item]]
 upstream = "src/domain/services/authorization.rs:40 Subject::id"
 lines = 5
-status = "todo"
+status = "ported"
+kernel = ["authwire::subject_id"]
 
 [[item]]
 upstream = "src/domain/services/authorization.rs:47 Subject::user_id"
 lines = 6
-status = "todo"
+status = "ported"
+kernel = ["authwire::subject_user_id"]
 
 [[item]]
 upstream = "src/domain/services/authorization.rs:61 Subject::token_id"
 lines = 6
-status = "todo"
+status = "ported"
+kernel = ["authwire::subject_token_id"]
 
 [[item]]
 upstream = "src/domain/services/authorization.rs:74 Subject::from_parts"
 lines = 8
-status = "todo"
+status = "ported"
+kernel = ["authwire::subject_parse"]
 
 [[item]]
 upstream = "src/domain/services/authorization.rs:91 Subject::fmt"
@@ -13928,26 +13934,26 @@ reason = "policy decoding or serialization"
 [[item]]
 upstream = "src/domain/services/authorization.rs:100 Resource"
 lines = 8
-status = "outside"
-reason = "uses File"
+status = "ported"
+kernel = ["model::Resource"]
 
 [[item]]
 upstream = "src/domain/services/authorization.rs:129 Resource::type_str"
 lines = 10
-status = "outside"
-reason = "uses File"
+status = "ported"
+kernel = ["authwire::resource_bytes"]
 
 [[item]]
 upstream = "src/domain/services/authorization.rs:140 Resource::id"
 lines = 10
-status = "outside"
-reason = "uses File"
+status = "ported"
+kernel = ["authwire::resource_id"]
 
 [[item]]
 upstream = "src/domain/services/authorization.rs:151 Resource::from_parts"
 lines = 11
-status = "outside"
-reason = "uses File"
+status = "ported"
+kernel = ["authwire::resource_parse"]
 
 [[item]]
 upstream = "src/domain/services/authorization.rs:163 Resource::parse"
@@ -13964,17 +13970,20 @@ reason = "policy decoding or serialization"
 [[item]]
 upstream = "src/domain/services/authorization.rs:202 Permission"
 lines = 9
-status = "todo"
+status = "ported"
+kernel = ["model::Permission"]
 
 [[item]]
 upstream = "src/domain/services/authorization.rs:241 Permission::as_str"
 lines = 11
-status = "todo"
+status = "ported"
+kernel = ["authwire::permission_bytes"]
 
 [[item]]
 upstream = "src/domain/services/authorization.rs:253 Permission::parse"
 lines = 12
-status = "todo"
+status = "ported"
+kernel = ["authwire::permission_parse"]
 
 [[item]]
 upstream = "src/domain/services/authorization.rs:270 Permission::fmt"
@@ -13990,7 +13999,8 @@ status = "todo"
 [[item]]
 upstream = "src/domain/services/authorization.rs:307 Role"
 lines = 7
-status = "todo"
+status = "ported"
+kernel = ["model::Role"]
 
 [[item]]
 upstream = "src/domain/services/authorization.rs:317 Role::expand"
@@ -14001,12 +14011,14 @@ kernel = ["acl::role_grants"]
 [[item]]
 upstream = "src/domain/services/authorization.rs:343 Role::as_str"
 lines = 9
-status = "todo"
+status = "ported"
+kernel = ["authwire::role_bytes"]
 
 [[item]]
 upstream = "src/domain/services/authorization.rs:355 Role::parse"
 lines = 10
-status = "todo"
+status = "ported"
+kernel = ["authwire::role_parse"]
 
 [[item]]
 upstream = "src/domain/services/authorization.rs:382 Role::fmt"

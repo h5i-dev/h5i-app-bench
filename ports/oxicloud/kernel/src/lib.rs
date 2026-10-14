@@ -8,3 +8,4 @@ pub mod grantapi;
 pub mod model;
 pub mod bytes;
 pub mod userrole;
+pub mod authwire;

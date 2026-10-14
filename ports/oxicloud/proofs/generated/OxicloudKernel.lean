@@ -1569,6 +1569,65 @@ def acl.clear_role
   := do
   acl.clear_role_loop grants s r (alloc.vec.Vec.new model.Grant) 0#usize
 
+/-- [oxicloud_kernel::bytes::copy]: loop body 0:
+    Source: 'ports/oxicloud/kernel/src/bytes.rs', lines 21:4-24:5
+    Visibility: public -/
+@[rust_loop_body]
+def bytes.copy_loop.body
+  (a : Slice Std.U8) (out : alloc.vec.Vec Std.U8) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Std.U8) × Std.Usize) (alloc.vec.Vec
+    Std.U8))
+  := do
+  let i1 := Slice.len a
+  if i < i1
+  then
+    let i2 ← Slice.index_usize a i
+    let out1 ← alloc.vec.Vec.push out i2
+    let i3 ← i + 1#usize
+    ok (cont (out1, i3))
+  else ok (done out)
+
+/-- [oxicloud_kernel::bytes::copy]: loop 0:
+    Source: 'ports/oxicloud/kernel/src/bytes.rs', lines 21:4-24:5
+    Visibility: public -/
+@[rust_loop]
+def bytes.copy_loop
+  (a : Slice Std.U8) (out : alloc.vec.Vec Std.U8) (i : Std.Usize) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  loop
+    (fun (out1, i1) => bytes.copy_loop.body a out1 i1)
+    (out, i)
+
+/-- [oxicloud_kernel::bytes::copy]:
+    Source: 'ports/oxicloud/kernel/src/bytes.rs', lines 18:0-26:1
+    Visibility: public -/
+@[reducible]
+def bytes.copy (a : Slice Std.U8) : Result (alloc.vec.Vec Std.U8) := do
+  bytes.copy_loop a (alloc.vec.Vec.new Std.U8) 0#usize
+
+/-- [oxicloud_kernel::authwire::subject_bytes]:
+    Source: 'ports/oxicloud/kernel/src/authwire.rs', lines 6:0-12:1
+    Visibility: public -/
+def authwire.subject_bytes
+  (value : model.Subject) : Result (alloc.vec.Vec Std.U8) := do
+  match value with
+  | model.Subject.User _ =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 4#usize [ 117#u8, 115#u8, 101#u8, 114#u8 ]))
+    bytes.copy s
+  | model.Subject.Group _ =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 5#usize [ 103#u8, 114#u8, 111#u8, 117#u8, 112#u8 ]))
+    bytes.copy s
+  | model.Subject.Token _ =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 5#usize [ 116#u8, 111#u8, 107#u8, 101#u8, 110#u8 ]))
+    bytes.copy s
+
 /-- [oxicloud_kernel::bytes::equal]: loop body 0:
     Source: 'ports/oxicloud/kernel/src/bytes.rs', lines 8:4-15:1
     Visibility: public -/
@@ -1608,42 +1667,388 @@ def bytes.equal (a : Slice Std.U8) (b : Slice Std.U8) : Result Bool := do
   then ok false
   else bytes.equal_loop a b 0#usize
 
-/-- [oxicloud_kernel::bytes::copy]: loop body 0:
-    Source: 'ports/oxicloud/kernel/src/bytes.rs', lines 21:4-24:5
+/-- [oxicloud_kernel::authwire::subject_parse]:
+    Source: 'ports/oxicloud/kernel/src/authwire.rs', lines 15:0-20:1
     Visibility: public -/
-@[rust_loop_body]
-def bytes.copy_loop.body
-  (a : Slice Std.U8) (out : alloc.vec.Vec Std.U8) (i : Std.Usize) :
-  Result (ControlFlow ((alloc.vec.Vec Std.U8) × Std.Usize) (alloc.vec.Vec
-    Std.U8))
-  := do
-  let i1 := Slice.len a
-  if i < i1
-  then
-    let i2 ← Slice.index_usize a i
-    let out1 ← alloc.vec.Vec.push out i2
-    let i3 ← i + 1#usize
-    ok (cont (out1, i3))
-  else ok (done out)
+def authwire.subject_parse
+  (raw : Slice Std.U8) (id : Std.U64) : Result (Option model.Subject) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 4#usize [ 117#u8, 115#u8, 101#u8, 114#u8 ]))
+  let b ← bytes.equal raw s
+  if b
+  then ok (some (model.Subject.User id))
+  else
+    let s1 ←
+      lift (Array.to_slice
+        (Array.make 5#usize [ 103#u8, 114#u8, 111#u8, 117#u8, 112#u8 ]))
+    let b1 ← bytes.equal raw s1
+    if b1
+    then ok (some (model.Subject.Group id))
+    else
+      let s2 ←
+        lift (Array.to_slice
+          (Array.make 5#usize [ 116#u8, 111#u8, 107#u8, 101#u8, 110#u8 ]))
+      let b2 ← bytes.equal raw s2
+      if b2
+      then ok (some (model.Subject.Token id))
+      else ok none
 
-/-- [oxicloud_kernel::bytes::copy]: loop 0:
-    Source: 'ports/oxicloud/kernel/src/bytes.rs', lines 21:4-24:5
+/-- [oxicloud_kernel::authwire::subject_id]:
+    Source: 'ports/oxicloud/kernel/src/authwire.rs', lines 23:0-29:1
     Visibility: public -/
-@[rust_loop]
-def bytes.copy_loop
-  (a : Slice Std.U8) (out : alloc.vec.Vec Std.U8) (i : Std.Usize) :
-  Result (alloc.vec.Vec Std.U8)
-  := do
-  loop
-    (fun (out1, i1) => bytes.copy_loop.body a out1 i1)
-    (out, i)
+def authwire.subject_id (value : model.Subject) : Result Std.U64 := do
+  match value with
+  | model.Subject.User id => ok id
+  | model.Subject.Group id => ok id
+  | model.Subject.Token id => ok id
 
-/-- [oxicloud_kernel::bytes::copy]:
-    Source: 'ports/oxicloud/kernel/src/bytes.rs', lines 18:0-26:1
+/-- [oxicloud_kernel::authwire::resource_bytes]:
+    Source: 'ports/oxicloud/kernel/src/authwire.rs', lines 32:0-41:1
     Visibility: public -/
-@[reducible]
-def bytes.copy (a : Slice Std.U8) : Result (alloc.vec.Vec Std.U8) := do
-  bytes.copy_loop a (alloc.vec.Vec.new Std.U8) 0#usize
+def authwire.resource_bytes
+  (value : model.Resource) : Result (alloc.vec.Vec Std.U8) := do
+  match value with
+  | model.Resource.Folder _ =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 6#usize [ 102#u8, 111#u8, 108#u8, 100#u8, 101#u8, 114#u8 ]))
+    bytes.copy s
+  | model.Resource.File _ =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 4#usize [ 102#u8, 105#u8, 108#u8, 101#u8 ]))
+    bytes.copy s
+  | model.Resource.Drive _ =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 5#usize [ 100#u8, 114#u8, 105#u8, 118#u8, 101#u8 ]))
+    bytes.copy s
+  | model.Resource.Calendar _ =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 8#usize [
+          99#u8, 97#u8, 108#u8, 101#u8, 110#u8, 100#u8, 97#u8, 114#u8
+          ]))
+    bytes.copy s
+  | model.Resource.AddressBook _ =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 12#usize [
+          97#u8, 100#u8, 100#u8, 114#u8, 101#u8, 115#u8, 115#u8, 95#u8, 98#u8,
+          111#u8, 111#u8, 107#u8
+          ]))
+    bytes.copy s
+  | model.Resource.Playlist _ =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 8#usize [
+          112#u8, 108#u8, 97#u8, 121#u8, 108#u8, 105#u8, 115#u8, 116#u8
+          ]))
+    bytes.copy s
+
+/-- [oxicloud_kernel::authwire::resource_parse]:
+    Source: 'ports/oxicloud/kernel/src/authwire.rs', lines 44:0-52:1
+    Visibility: public -/
+def authwire.resource_parse
+  (raw : Slice Std.U8) (id : Std.U64) : Result (Option model.Resource) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 6#usize [ 102#u8, 111#u8, 108#u8, 100#u8, 101#u8, 114#u8 ]))
+  let b ← bytes.equal raw s
+  if b
+  then ok (some (model.Resource.Folder id))
+  else
+    let s1 ←
+      lift (Array.to_slice
+        (Array.make 4#usize [ 102#u8, 105#u8, 108#u8, 101#u8 ]))
+    let b1 ← bytes.equal raw s1
+    if b1
+    then ok (some (model.Resource.File id))
+    else
+      let s2 ←
+        lift (Array.to_slice
+          (Array.make 5#usize [ 100#u8, 114#u8, 105#u8, 118#u8, 101#u8 ]))
+      let b2 ← bytes.equal raw s2
+      if b2
+      then ok (some (model.Resource.Drive id))
+      else
+        let s3 ←
+          lift (Array.to_slice
+            (Array.make 8#usize [
+              99#u8, 97#u8, 108#u8, 101#u8, 110#u8, 100#u8, 97#u8, 114#u8
+              ]))
+        let b3 ← bytes.equal raw s3
+        if b3
+        then ok (some (model.Resource.Calendar id))
+        else
+          let s4 ←
+            lift (Array.to_slice
+              (Array.make 12#usize [
+                97#u8, 100#u8, 100#u8, 114#u8, 101#u8, 115#u8, 115#u8, 95#u8,
+                98#u8, 111#u8, 111#u8, 107#u8
+                ]))
+          let b4 ← bytes.equal raw s4
+          if b4
+          then ok (some (model.Resource.AddressBook id))
+          else
+            let s5 ←
+              lift (Array.to_slice
+                (Array.make 8#usize [
+                  112#u8, 108#u8, 97#u8, 121#u8, 108#u8, 105#u8, 115#u8, 116#u8
+                  ]))
+            let b5 ← bytes.equal raw s5
+            if b5
+            then ok (some (model.Resource.Playlist id))
+            else ok none
+
+/-- [oxicloud_kernel::authwire::resource_id]:
+    Source: 'ports/oxicloud/kernel/src/authwire.rs', lines 55:0-64:1
+    Visibility: public -/
+def authwire.resource_id (value : model.Resource) : Result Std.U64 := do
+  match value with
+  | model.Resource.Folder id => ok id
+  | model.Resource.File id => ok id
+  | model.Resource.Drive id => ok id
+  | model.Resource.Calendar id => ok id
+  | model.Resource.AddressBook id => ok id
+  | model.Resource.Playlist id => ok id
+
+/-- [oxicloud_kernel::authwire::permission_bytes]:
+    Source: 'ports/oxicloud/kernel/src/authwire.rs', lines 67:0-77:1
+    Visibility: public -/
+def authwire.permission_bytes
+  (value : model.Permission) : Result (alloc.vec.Vec Std.U8) := do
+  match value with
+  | model.Permission.Read =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 4#usize [ 114#u8, 101#u8, 97#u8, 100#u8 ]))
+    bytes.copy s
+  | model.Permission.Create =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 6#usize [ 99#u8, 114#u8, 101#u8, 97#u8, 116#u8, 101#u8 ]))
+    bytes.copy s
+  | model.Permission.Share =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 5#usize [ 115#u8, 104#u8, 97#u8, 114#u8, 101#u8 ]))
+    bytes.copy s
+  | model.Permission.Comment =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 7#usize [
+          99#u8, 111#u8, 109#u8, 109#u8, 101#u8, 110#u8, 116#u8
+          ]))
+    bytes.copy s
+  | model.Permission.Delete =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 6#usize [ 100#u8, 101#u8, 108#u8, 101#u8, 116#u8, 101#u8 ]))
+    bytes.copy s
+  | model.Permission.Update =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 6#usize [ 117#u8, 112#u8, 100#u8, 97#u8, 116#u8, 101#u8 ]))
+    bytes.copy s
+  | model.Permission.Manage =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 6#usize [ 109#u8, 97#u8, 110#u8, 97#u8, 103#u8, 101#u8 ]))
+    bytes.copy s
+
+/-- [oxicloud_kernel::authwire::permission_parse]:
+    Source: 'ports/oxicloud/kernel/src/authwire.rs', lines 80:0-89:1
+    Visibility: public -/
+def authwire.permission_parse
+  (raw : Slice Std.U8) : Result (Option model.Permission) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 4#usize [ 114#u8, 101#u8, 97#u8, 100#u8 ]))
+  let b ← bytes.equal raw s
+  if b
+  then ok (some model.Permission.Read)
+  else
+    let s1 ←
+      lift (Array.to_slice
+        (Array.make 6#usize [ 99#u8, 114#u8, 101#u8, 97#u8, 116#u8, 101#u8 ]))
+    let b1 ← bytes.equal raw s1
+    if b1
+    then ok (some model.Permission.Create)
+    else
+      let s2 ←
+        lift (Array.to_slice
+          (Array.make 5#usize [ 115#u8, 104#u8, 97#u8, 114#u8, 101#u8 ]))
+      let b2 ← bytes.equal raw s2
+      if b2
+      then ok (some model.Permission.Share)
+      else
+        let s3 ←
+          lift (Array.to_slice
+            (Array.make 7#usize [
+              99#u8, 111#u8, 109#u8, 109#u8, 101#u8, 110#u8, 116#u8
+              ]))
+        let b3 ← bytes.equal raw s3
+        if b3
+        then ok (some model.Permission.Comment)
+        else
+          let s4 ←
+            lift (Array.to_slice
+              (Array.make 6#usize [
+                100#u8, 101#u8, 108#u8, 101#u8, 116#u8, 101#u8
+                ]))
+          let b4 ← bytes.equal raw s4
+          if b4
+          then ok (some model.Permission.Delete)
+          else
+            let s5 ←
+              lift (Array.to_slice
+                (Array.make 6#usize [
+                  117#u8, 112#u8, 100#u8, 97#u8, 116#u8, 101#u8
+                  ]))
+            let b5 ← bytes.equal raw s5
+            if b5
+            then ok (some model.Permission.Update)
+            else
+              let s6 ←
+                lift (Array.to_slice
+                  (Array.make 6#usize [
+                    109#u8, 97#u8, 110#u8, 97#u8, 103#u8, 101#u8
+                    ]))
+              let b6 ← bytes.equal raw s6
+              if b6
+              then ok (some model.Permission.Manage)
+              else ok none
+
+/-- [oxicloud_kernel::authwire::permission_all]:
+    Source: 'ports/oxicloud/kernel/src/authwire.rs', lines 92:0-102:1
+    Visibility: public -/
+def authwire.permission_all : Result (alloc.vec.Vec model.Permission) := do
+  let out ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new model.Permission)
+      model.Permission.Read
+  let out1 ← alloc.vec.Vec.push out model.Permission.Create
+  let out2 ← alloc.vec.Vec.push out1 model.Permission.Share
+  let out3 ← alloc.vec.Vec.push out2 model.Permission.Comment
+  let out4 ← alloc.vec.Vec.push out3 model.Permission.Delete
+  let out5 ← alloc.vec.Vec.push out4 model.Permission.Update
+  alloc.vec.Vec.push out5 model.Permission.Manage
+
+/-- [oxicloud_kernel::authwire::role_bytes]:
+    Source: 'ports/oxicloud/kernel/src/authwire.rs', lines 105:0-113:1
+    Visibility: public -/
+def authwire.role_bytes
+  (value : model.Role) : Result (alloc.vec.Vec Std.U8) := do
+  match value with
+  | model.Role.Owner =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 5#usize [ 111#u8, 119#u8, 110#u8, 101#u8, 114#u8 ]))
+    bytes.copy s
+  | model.Role.Editor =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 6#usize [ 101#u8, 100#u8, 105#u8, 116#u8, 111#u8, 114#u8 ]))
+    bytes.copy s
+  | model.Role.Contributor =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 11#usize [
+          99#u8, 111#u8, 110#u8, 116#u8, 114#u8, 105#u8, 98#u8, 117#u8, 116#u8,
+          111#u8, 114#u8
+          ]))
+    bytes.copy s
+  | model.Role.Commenter =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 9#usize [
+          99#u8, 111#u8, 109#u8, 109#u8, 101#u8, 110#u8, 116#u8, 101#u8, 114#u8
+          ]))
+    bytes.copy s
+  | model.Role.Viewer =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 6#usize [ 118#u8, 105#u8, 101#u8, 119#u8, 101#u8, 114#u8 ]))
+    bytes.copy s
+
+/-- [oxicloud_kernel::authwire::role_parse]:
+    Source: 'ports/oxicloud/kernel/src/authwire.rs', lines 116:0-123:1
+    Visibility: public -/
+def authwire.role_parse (raw : Slice Std.U8) : Result (Option model.Role) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 6#usize [ 118#u8, 105#u8, 101#u8, 119#u8, 101#u8, 114#u8 ]))
+  let b ← bytes.equal raw s
+  if b
+  then ok (some model.Role.Viewer)
+  else
+    let s1 ←
+      lift (Array.to_slice
+        (Array.make 9#usize [
+          99#u8, 111#u8, 109#u8, 109#u8, 101#u8, 110#u8, 116#u8, 101#u8, 114#u8
+          ]))
+    let b1 ← bytes.equal raw s1
+    if b1
+    then ok (some model.Role.Commenter)
+    else
+      let s2 ←
+        lift (Array.to_slice
+          (Array.make 11#usize [
+            99#u8, 111#u8, 110#u8, 116#u8, 114#u8, 105#u8, 98#u8, 117#u8,
+            116#u8, 111#u8, 114#u8
+            ]))
+      let b2 ← bytes.equal raw s2
+      if b2
+      then ok (some model.Role.Contributor)
+      else
+        let s3 ←
+          lift (Array.to_slice
+            (Array.make 6#usize [
+              101#u8, 100#u8, 105#u8, 116#u8, 111#u8, 114#u8
+              ]))
+        let b3 ← bytes.equal raw s3
+        if b3
+        then ok (some model.Role.Editor)
+        else
+          let s4 ←
+            lift (Array.to_slice
+              (Array.make 5#usize [ 111#u8, 119#u8, 110#u8, 101#u8, 114#u8 ]))
+          let b4 ← bytes.equal raw s4
+          if b4
+          then ok (some model.Role.Owner)
+          else ok none
+
+/-- [oxicloud_kernel::authwire::role_all]:
+    Source: 'ports/oxicloud/kernel/src/authwire.rs', lines 126:0-134:1
+    Visibility: public -/
+def authwire.role_all : Result (alloc.vec.Vec model.Role) := do
+  let out ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new model.Role) model.Role.Viewer
+  let out1 ← alloc.vec.Vec.push out model.Role.Commenter
+  let out2 ← alloc.vec.Vec.push out1 model.Role.Contributor
+  let out3 ← alloc.vec.Vec.push out2 model.Role.Editor
+  alloc.vec.Vec.push out3 model.Role.Owner
+
+/-- [oxicloud_kernel::authwire::subject_user_id]:
+    Source: 'ports/oxicloud/kernel/src/authwire.rs', lines 137:0-142:1
+    Visibility: public -/
+def authwire.subject_user_id
+  (value : model.Subject) : Result (Option Std.U64) := do
+  match value with
+  | model.Subject.User id => ok (some id)
+  | model.Subject.Group _ => ok none
+  | model.Subject.Token _ => ok none
+
+/-- [oxicloud_kernel::authwire::subject_token_id]:
+    Source: 'ports/oxicloud/kernel/src/authwire.rs', lines 145:0-150:1
+    Visibility: public -/
+def authwire.subject_token_id
+  (value : model.Subject) : Result (Option Std.U64) := do
+  match value with
+  | model.Subject.User _ => ok none
+  | model.Subject.Group _ => ok none
+  | model.Subject.Token id => ok (some id)
 
 /-- [oxicloud_kernel::grantapi::Env]
     Source: 'ports/oxicloud/kernel/src/grantapi.rs', lines 11:0-16:1

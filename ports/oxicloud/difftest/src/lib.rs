@@ -6,3 +6,5 @@ mod endpoints;
 mod props;
 #[cfg(test)]
 mod userrole;
+#[cfg(test)]
+mod authwire;

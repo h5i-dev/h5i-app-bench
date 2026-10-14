@@ -15,6 +15,20 @@ trap 'rm -rf "$tmp"' EXIT
   --start-from oxicloud_kernel::userrole::is_anonymous \
   --start-from oxicloud_kernel::userrole::str_at_least \
   --start-from oxicloud_kernel::userrole::is_privileged \
+  --start-from oxicloud_kernel::authwire::subject_bytes \
+  --start-from oxicloud_kernel::authwire::subject_parse \
+  --start-from oxicloud_kernel::authwire::subject_id \
+  --start-from oxicloud_kernel::authwire::resource_bytes \
+  --start-from oxicloud_kernel::authwire::resource_parse \
+  --start-from oxicloud_kernel::authwire::resource_id \
+  --start-from oxicloud_kernel::authwire::permission_bytes \
+  --start-from oxicloud_kernel::authwire::permission_parse \
+  --start-from oxicloud_kernel::authwire::permission_all \
+  --start-from oxicloud_kernel::authwire::role_bytes \
+  --start-from oxicloud_kernel::authwire::role_parse \
+  --start-from oxicloud_kernel::authwire::role_all \
+  --start-from oxicloud_kernel::authwire::subject_user_id \
+  --start-from oxicloud_kernel::authwire::subject_token_id \
   --dest-file "$tmp/oxicloud_kernel.llbc")
 mkdir -p "$root/ports/oxicloud/proofs/generated"
 aeneas -backend lean "$tmp/oxicloud_kernel.llbc" -dest "$root/ports/oxicloud/proofs/generated"

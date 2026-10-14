@@ -1,7 +1,7 @@
 # Standard h5i-app project. Keep every selected theorem in the final gate.
 [extract]
 crate = "kernel"
-start-from = ["grantapi::transition", "userrole::as_bytes", "userrole::from_stored", "userrole::from_session", "userrole::rank", "userrole::at_least", "userrole::outranks", "userrole::is_anonymous", "userrole::str_at_least", "userrole::is_privileged"]
+start-from = ["grantapi::transition", "userrole::as_bytes", "userrole::from_stored", "userrole::from_session", "userrole::rank", "userrole::at_least", "userrole::outranks", "userrole::is_anonymous", "userrole::str_at_least", "userrole::is_privileged", "authwire::subject_bytes", "authwire::subject_parse", "authwire::subject_id", "authwire::resource_bytes", "authwire::resource_parse", "authwire::resource_id", "authwire::permission_bytes", "authwire::permission_parse", "authwire::permission_all", "authwire::role_bytes", "authwire::role_parse", "authwire::role_all", "authwire::subject_user_id", "authwire::subject_token_id"]
 
 [check]
 theorems = [
@@ -24,4 +24,18 @@ theorems = [
   "oxicloud_kernel.Properties.anonymous_role_exact",
   "oxicloud_kernel.Properties.privileged_roles_exact",
   "oxicloud_kernel.Properties.session_role_requirement",
+  "oxicloud_kernel.Properties.auth_subject_wire",
+  "oxicloud_kernel.Properties.auth_subject_parse",
+  "oxicloud_kernel.Properties.auth_subject_id",
+  "oxicloud_kernel.Properties.auth_resource_wire",
+  "oxicloud_kernel.Properties.auth_resource_parse",
+  "oxicloud_kernel.Properties.auth_resource_id",
+  "oxicloud_kernel.Properties.auth_permission_wire",
+  "oxicloud_kernel.Properties.auth_permission_parse",
+  "oxicloud_kernel.Properties.auth_permission_all",
+  "oxicloud_kernel.Properties.auth_role_wire",
+  "oxicloud_kernel.Properties.auth_role_parse",
+  "oxicloud_kernel.Properties.auth_role_all",
+  "oxicloud_kernel.Properties.auth_user_identity",
+  "oxicloud_kernel.Properties.auth_token_identity",
 ]
