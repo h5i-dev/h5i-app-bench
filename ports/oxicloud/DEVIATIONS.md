@@ -115,3 +115,21 @@ and the external-sharing guard retains both principal kind and external flag.
   constructors, getters, revocation, and binding setters remain distinct functions.
   `with_dpop_jkt` retains the panic on an already-bound session. Clock/randomness
   in `new` and clock-based `is_expired` stay outside the pure state kernel.
+
+### Login and storage-boundary validation
+
+- `classify_email_verification` keeps both its rejection bit and all three audit
+  reason distinctions. Static reason strings use `EmailReason` variants; the shell
+  maps each variant back to its original string.
+- `validate_dpop_jkt` accepts UTF-8 bytes and returns an owned exact copy on success.
+  Its two static error messages use `JktError` variants, preserving length-error
+  precedence over alphabet errors. Byte scanning loops replace iterator `all`.
+- `is_valid_entry_name` scans bytes instead of Unicode scalar values. The permitted
+  characters are all ASCII, so every non-ASCII scalar is rejected by both versions;
+  the length check remains the upstream UTF-8 byte length check.
+- The differential-test build extracts the pinned private classification and JKT
+  validation function bodies verbatim into an oracle. Public storage validation is
+  called directly from the upstream crate. No upstream source is modified.
+- `AuthApplicationService::available_disk_space` and its caller `capped_quota` stay
+  in the shell: both execute a filesystem space query, although the ceiling's
+  syntactic classifier did not identify that I/O.

@@ -13,3 +13,6 @@ mod drivepolicy;
 
 #[cfg(test)]
 mod session;
+
+#[cfg(test)]
+mod validation;

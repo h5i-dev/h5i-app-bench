@@ -3508,17 +3508,20 @@ status = "todo"
 [[item]]
 upstream = "src/application/services/auth_application_service.rs:31 EmailVerificationDecision"
 lines = 4
-status = "todo"
+status = "ported"
+kernel = ["validation::EmailDecision"]
 
 [[item]]
 upstream = "src/application/services/auth_application_service.rs:49 classify_email_verification"
 lines = 27
-status = "todo"
+status = "ported"
+kernel = ["validation::classify_email_verification"]
 
 [[item]]
 upstream = "src/application/services/auth_application_service.rs:89 validate_dpop_jkt"
 lines = 12
-status = "todo"
+status = "ported"
+kernel = ["validation::validate_dpop_jkt"]
 
 [[item]]
 upstream = "src/application/services/auth_application_service.rs:253 OidcCallbackResult"
@@ -3655,12 +3658,14 @@ status = "todo"
 [[item]]
 upstream = "src/application/services/auth_application_service.rs:695 AuthApplicationService::capped_quota"
 lines = 27
-status = "todo"
+status = "outside"
+reason = "queries filesystem available space through available_disk_space; logs the selected cap"
 
 [[item]]
 upstream = "src/application/services/auth_application_service.rs:726 AuthApplicationService::available_disk_space"
 lines = 10
-status = "todo"
+status = "outside"
+reason = "filesystem available-space query performs I/O"
 
 [[item]]
 upstream = "src/application/services/auth_application_service.rs:738 AuthApplicationService::with_user_lifecycle"
@@ -9116,7 +9121,8 @@ status = "todo"
 [[item]]
 upstream = "src/common/config.rs:926 is_valid_entry_name"
 lines = 8
-status = "todo"
+status = "ported"
+kernel = ["validation::is_valid_entry_name"]
 
 [[item]]
 upstream = "src/common/config.rs:948 LEGACY_STORAGE_BACKEND_VARS"

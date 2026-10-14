@@ -1,3 +1,4 @@
+import Verified.OxicloudValidation
 import Verified.OxicloudSession
 import Verified.OxicloudDrivePolicy
 import Verified.OxicloudAuthWire
@@ -322,5 +323,25 @@ theorem session_oidc_token_frame (s r : session.Session) (token : alloc.vec.Vec 
 theorem session_oidc_sid_frame (s r : session.Session) (sid : alloc.vec.Vec U8)
     (h : session.with_oidc_sid s sid = ok r) : SpecKernel.SessionSidAttached s sid r :=
   Verified.OxicloudSession.sid_attach_ok s r sid h
+
+
+
+/-- Required email verification accepts only an explicit true claim and preserves audit distinctions. -/
+theorem verified_email_policy (claim : Option Bool) (required : Bool) (d : validation.EmailDecision)
+    (h : validation.classify_email_verification claim required = ok d) :
+    SpecKernel.VerifiedEmailDecision claim required d :=
+  Verified.OxicloudValidation.email_ok claim required d h
+
+/-- Storage selectors enforce their bounded lowercase ASCII namespace. -/
+theorem storage_selector_validation (raw : Slice U8) (r : Bool)
+    (h : validation.is_valid_entry_name raw = ok r) :
+    (r = true ↔ SpecKernel.ValidStorageName raw.val) :=
+  Verified.OxicloudValidation.storage_name_ok raw r h
+
+/-- Login thumbprint validation preserves valid input and rejects malformed length or alphabet. -/
+theorem login_thumbprint_validation (raw : Slice U8)
+    (r : core.result.Result (alloc.vec.Vec U8) validation.JktError)
+    (h : validation.validate_dpop_jkt raw = ok r) : SpecKernel.JktDecision raw.val r :=
+  Verified.OxicloudValidation.jkt_ok raw r h
 
 end oxicloud_kernel.Properties

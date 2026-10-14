@@ -157,4 +157,34 @@ def SessionSidAttached (before : session.Session) (sid : alloc.vec.Vec U8)
     (after : session.Session) : Prop :=
   after.oidc_sid = some sid ∧ { after with oidc_sid := before.oidc_sid } = before
 
+
+
+/-- Storage selectors use a bounded ASCII alphabet suitable for environment and URL names. -/
+def StorageByte (b : U8) : Prop :=
+  (97 ≤ b.val ∧ b.val ≤ 122) ∨ (48 ≤ b.val ∧ b.val ≤ 57) ∨ b.val = 95 ∨ b.val = 45
+
+def Base64UrlByte (b : U8) : Prop := StorageByte b ∨ (65 ≤ b.val ∧ b.val ≤ 90)
+
+def ValidStorageName (raw : List U8) : Prop :=
+  1 ≤ raw.length ∧ raw.length ≤ 32 ∧ ∀ b ∈ raw, StorageByte b
+
+/-- A login thumbprint has the unpadded base64url shape of a SHA-256 digest. -/
+def ValidJkt (raw : List U8) : Prop := raw.length = 43 ∧ ∀ b ∈ raw, Base64UrlByte b
+
+def JktDecision (raw : List U8)
+    (r : core.result.Result (alloc.vec.Vec U8) validation.JktError) : Prop :=
+  match r with
+  | .Ok value => ValidJkt raw ∧ value.val = raw
+  | .Err .WrongLength => raw.length ≠ 43
+  | .Err .BadAlphabet => raw.length = 43 ∧ ¬ ∀ b ∈ raw, Base64UrlByte b
+
+/-- Required verification admits only an explicit true claim; audit reasons distinguish
+asserted false claims from absent claims and flag-disabled acceptance. -/
+def VerifiedEmailDecision (claim : Option Bool) (required : Bool) (d : validation.EmailDecision) : Prop :=
+  (d.reject = false ↔ (required = true → claim = some true)) ∧
+  (d.reason = some .Unverified ↔ claim = some false ∧ required = true) ∧
+  (d.reason = some .UnverifiedFlagOff ↔ claim = some false ∧ required = false) ∧
+  (d.reason = some .ClaimAbsentRequired ↔ claim = none ∧ required = true) ∧
+  (d.reason = none ↔ claim = some true ∨ (claim = none ∧ required = false))
+
 end oxicloud_kernel.SpecKernel

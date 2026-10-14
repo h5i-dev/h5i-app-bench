@@ -3729,4 +3729,197 @@ def userrole.is_privileged (role : userrole.UserRole) : Result Bool := do
   let i1 ← userrole.rank userrole.UserRole.User
   ok (i > i1)
 
+/-- [oxicloud_kernel::validation::EmailReason]
+    Source: 'ports/oxicloud/kernel/src/validation.rs', lines 5:0-5:75
+    Visibility: public -/
+@[discriminant isize]
+inductive validation.EmailReason where
+| Unverified : validation.EmailReason
+| UnverifiedFlagOff : validation.EmailReason
+| ClaimAbsentRequired : validation.EmailReason
+
+/-- [oxicloud_kernel::validation::EmailDecision]
+    Source: 'ports/oxicloud/kernel/src/validation.rs', lines 6:0-6:78
+    Visibility: public -/
+structure validation.EmailDecision where
+  reject : Bool
+  reason : Option validation.EmailReason
+
+/-- [oxicloud_kernel::validation::classify_email_verification]:
+    Source: 'ports/oxicloud/kernel/src/validation.rs', lines 9:0-23:1
+    Visibility: public -/
+def validation.classify_email_verification
+  (claim : Option Bool) (must_verify : Bool) :
+  Result validation.EmailDecision
+  := do
+  match claim with
+  | none =>
+    if must_verify
+    then
+      ok
+        {
+          reject := true,
+          reason := (some validation.EmailReason.ClaimAbsentRequired)
+        }
+    else ok { reject := false, reason := none }
+  | some b =>
+    if b
+    then ok { reject := false, reason := none }
+    else
+      if must_verify
+      then
+        ok
+          { reject := true, reason := (some validation.EmailReason.Unverified)
+          }
+      else
+        ok
+          {
+            reject := false,
+            reason := (some validation.EmailReason.UnverifiedFlagOff)
+          }
+
+/-- [oxicloud_kernel::validation::storage_byte]:
+    Source: 'ports/oxicloud/kernel/src/validation.rs', lines 25:0-27:1 -/
+def validation.storage_byte (b : Std.U8) : Result Bool := do
+  if b >= 97#u8
+  then
+    if b <= 122#u8
+    then ok true
+    else
+      if b >= 48#u8
+      then
+        if b <= 57#u8
+        then ok true
+        else if b = 95#u8
+             then ok true
+             else ok (b = 45#u8)
+      else if b = 95#u8
+           then ok true
+           else ok (b = 45#u8)
+  else
+    if b >= 48#u8
+    then
+      if b <= 57#u8
+      then ok true
+      else if b = 95#u8
+           then ok true
+           else ok (b = 45#u8)
+    else if b = 95#u8
+         then ok true
+         else ok (b = 45#u8)
+
+/-- [oxicloud_kernel::validation::base64url_byte]:
+    Source: 'ports/oxicloud/kernel/src/validation.rs', lines 28:0-30:1 -/
+def validation.base64url_byte (b : Std.U8) : Result Bool := do
+  let b1 ← validation.storage_byte b
+  if b1
+  then ok true
+  else if b >= 65#u8
+       then ok (b <= 90#u8)
+       else ok false
+
+/-- [oxicloud_kernel::validation::all_storage]: loop body 0:
+    Source: 'ports/oxicloud/kernel/src/validation.rs', lines 33:4-38:1 -/
+@[rust_loop_body]
+def validation.all_storage_loop.body
+  (raw : Slice Std.U8) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := Slice.len raw
+  if i < i1
+  then
+    let i2 ← Slice.index_usize raw i
+    let b ← validation.storage_byte i2
+    if b
+    then let i3 ← i + 1#usize
+         ok (cont i3)
+    else ok (done false)
+  else ok (done true)
+
+/-- [oxicloud_kernel::validation::all_storage]: loop 0:
+    Source: 'ports/oxicloud/kernel/src/validation.rs', lines 33:4-38:1 -/
+@[rust_loop]
+def validation.all_storage_loop
+  (raw : Slice Std.U8) (i : Std.Usize) : Result Bool := do
+  loop
+    (fun i1 => validation.all_storage_loop.body raw i1)
+    i
+
+/-- [oxicloud_kernel::validation::all_storage]:
+    Source: 'ports/oxicloud/kernel/src/validation.rs', lines 31:0-38:1 -/
+@[reducible]
+def validation.all_storage (raw : Slice Std.U8) : Result Bool := do
+  validation.all_storage_loop raw 0#usize
+
+/-- [oxicloud_kernel::validation::all_base64url]: loop body 0:
+    Source: 'ports/oxicloud/kernel/src/validation.rs', lines 41:4-46:1 -/
+@[rust_loop_body]
+def validation.all_base64url_loop.body
+  (raw : Slice Std.U8) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := Slice.len raw
+  if i < i1
+  then
+    let i2 ← Slice.index_usize raw i
+    let b ← validation.base64url_byte i2
+    if b
+    then let i3 ← i + 1#usize
+         ok (cont i3)
+    else ok (done false)
+  else ok (done true)
+
+/-- [oxicloud_kernel::validation::all_base64url]: loop 0:
+    Source: 'ports/oxicloud/kernel/src/validation.rs', lines 41:4-46:1 -/
+@[rust_loop]
+def validation.all_base64url_loop
+  (raw : Slice Std.U8) (i : Std.Usize) : Result Bool := do
+  loop
+    (fun i1 => validation.all_base64url_loop.body raw i1)
+    i
+
+/-- [oxicloud_kernel::validation::all_base64url]:
+    Source: 'ports/oxicloud/kernel/src/validation.rs', lines 39:0-46:1 -/
+@[reducible]
+def validation.all_base64url (raw : Slice Std.U8) : Result Bool := do
+  validation.all_base64url_loop raw 0#usize
+
+/-- [oxicloud_kernel::validation::is_valid_entry_name]:
+    Source: 'ports/oxicloud/kernel/src/validation.rs', lines 49:0-52:1
+    Visibility: public -/
+def validation.is_valid_entry_name (raw : Slice Std.U8) : Result Bool := do
+  let i := Slice.len raw
+  if i < 1#usize
+  then ok false
+  else
+    let i1 := Slice.len raw
+    if i1 > 32#usize
+    then ok false
+    else validation.all_storage raw
+
+/-- [oxicloud_kernel::validation::JktError]
+    Source: 'ports/oxicloud/kernel/src/validation.rs', lines 54:0-54:46
+    Visibility: public -/
+@[discriminant isize]
+inductive validation.JktError where
+| WrongLength : validation.JktError
+| BadAlphabet : validation.JktError
+
+/-- [oxicloud_kernel::validation::validate_dpop_jkt]:
+    Source: 'ports/oxicloud/kernel/src/validation.rs', lines 56:0-60:1
+    Visibility: public -/
+def validation.validate_dpop_jkt
+  (raw : Slice Std.U8) :
+  Result (core.result.Result (alloc.vec.Vec Std.U8) validation.JktError)
+  := do
+  let i := Slice.len raw
+  if i != 43#usize
+  then ok (core.result.Result.Err validation.JktError.WrongLength)
+  else
+    let b ← validation.all_base64url raw
+    if b
+    then let v ← bytes.copy raw
+         ok (core.result.Result.Ok v)
+    else ok (core.result.Result.Err validation.JktError.BadAlphabet)
+
 end oxicloud_kernel

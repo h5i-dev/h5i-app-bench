@@ -56,6 +56,9 @@ trap 'rm -rf "$tmp"' EXIT
   --start-from oxicloud_kernel::session::dpop_jkt \
   --start-from oxicloud_kernel::session::origin \
   --start-from oxicloud_kernel::session::last_seen_at \
+  --start-from oxicloud_kernel::validation::classify_email_verification \
+  --start-from oxicloud_kernel::validation::is_valid_entry_name \
+  --start-from oxicloud_kernel::validation::validate_dpop_jkt \
   --dest-file "$tmp/oxicloud_kernel.llbc")
 mkdir -p "$root/ports/oxicloud/proofs/generated"
 aeneas -backend lean "$tmp/oxicloud_kernel.llbc" -dest "$root/ports/oxicloud/proofs/generated"
