@@ -11,4 +11,24 @@ def Base64Symbol (c i : Nat) : Prop :=
   (52 ≤ i ∧ i < 62 ∧ c = 48 + (i - 52)) ∨
   (i = 62 ∧ c = 43) ∨ (i = 63 ∧ c = 47)
 
+/-- Request keys use the base name, followed by a slash and variable suffix when present. -/
+def LookupName (k : condfuncs.Key) : List U8 :=
+  match k.variable with
+  | none => k.name.val
+  | some v => k.name.val ++ [47#u8] ++ v.val
+
+/-- The request key names associated with a condition, in entry order. -/
+def ConditionLookupNames (c : conddata.Condition) : List (List U8) :=
+  match c.data with
+  | .Str f => f.entries.val.map (fun e => LookupName e.key)
+  | .Addr f => f.entries.val.map (fun e => LookupName e.key)
+  | .Boolean f => f.entries.val.map (fun e => LookupName e.key)
+  | .Num f => f.entries.val.map (fun e => LookupName e.key)
+  | .Date f => f.entries.val.map (fun e => LookupName e.key)
+  | .Binary f => f.entries.val.map (fun e => LookupName e.key)
+
+def RequestHasConditionKey (c : conddata.Condition)
+    (values : alloc.vec.Vec (alloc.vec.Vec U8 × alloc.vec.Vec (alloc.vec.Vec U8))) : Prop :=
+  ∃ needle ∈ ConditionLookupNames c, ∃ entry ∈ values.val, entry.1.val = needle
+
 end rustfs_kernel.Spec

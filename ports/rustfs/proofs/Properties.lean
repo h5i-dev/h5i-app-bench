@@ -1,5 +1,6 @@
 import Verified.RustfsValids
 import Verified.RustfsCondData
+import Verified.RustfsConditionEval
 import Verified.RustfsDefaults
 import SpecKernel
 import Verified.RustfsCleanIdempotent
@@ -230,5 +231,36 @@ theorem base64_symbol_iff (c : U8) (o : Option U8) (h : conddata.base64_digit c 
 theorem base64_symbol_boundary (c : U8) (o : Option U8) (h : conddata.base64_digit c = ok o) :
     (∀ i, o = some i → i.val < 64) ∧ (o = none ↔ ¬ ∃ i : U8, Base64Symbol c.val i.val) := by
   exact rustfs_kernel.Verified.RustfsCondData.base64_digit_boundary c o h
+
+/-- Lookup keys and their enumeration preserve the optional variable suffix. -/
+theorem condition_lookup_names_exact {T : Type} (k : condfuncs.Key)
+    (v : alloc.vec.Vec U8) (f : conddata.InnerFunc T) (names : alloc.vec.Vec (alloc.vec.Vec U8))
+    (hk : condfuncs.key_lookup_name k = ok v) (hf : conddata.key_names f = ok names) :
+    v.val = LookupName k ∧ names.val.map (·.val) = f.entries.val.map (fun e => LookupName e.key) := by
+  exact ⟨rustfs_kernel.Verified.RustfsConditionEval.lookup_name_ok k v hk,
+    rustfs_kernel.Verified.RustfsConditionEval.key_names_ok f names hf⟩
+
+/-- A present request key is detected even when its value list is empty. -/
+theorem request_key_presence_iff
+    (values : alloc.vec.Vec (alloc.vec.Vec U8 × alloc.vec.Vec (alloc.vec.Vec U8)))
+    (needle : Slice U8) (o : Option (alloc.vec.Vec (alloc.vec.Vec U8)))
+    (h : condfuncs.get_value values needle = ok o) :
+    (o.isSome = true ↔ ∃ e ∈ values.val, e.1.val = needle.val) := by
+  exact rustfs_kernel.Verified.RustfsConditionEval.get_value_present_ok values needle o h
+
+/-- Presence depends on condition lookup names across all data variants. -/
+theorem condition_request_key_presence_iff (c : conddata.Condition)
+    (values : alloc.vec.Vec (alloc.vec.Vec U8 × alloc.vec.Vec (alloc.vec.Vec U8)))
+    (b : Bool) (h : conddata.has_any_key_in c values = ok b) :
+    (b = true ↔ RequestHasConditionKey c values) := by
+  exact rustfs_kernel.Verified.RustfsConditionEval.has_any_key_ok c values b h
+
+/-- Wrapped conditions accept a request when all associated keys are absent. -/
+theorem wrapped_condition_missing_keys_accept (c : conddata.Condition) (q : condfuncs.Quantifier)
+    (values : alloc.vec.Vec (alloc.vec.Vec U8 × alloc.vec.Vec (alloc.vec.Vec U8)))
+    (ctx : Option awsvars.VarContext) (env : condfuncs.Env) (b : Bool)
+    (hw : 0 < c.wrappers.val) (hm : ¬ RequestHasConditionKey c values)
+    (h : conddata.condition_evaluate c q values ctx env = ok b) : b = true := by
+  exact rustfs_kernel.Verified.RustfsConditionEval.missing_wrapped_key_ok c q values ctx env b hw hm h
 
 end rustfs_kernel.Properties

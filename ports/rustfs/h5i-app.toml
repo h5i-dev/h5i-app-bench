@@ -33,5 +33,9 @@ theorems = [
   "rustfs_kernel.Properties.condition_structure_iff",
   "rustfs_kernel.Properties.base64_symbol_iff",
   "rustfs_kernel.Properties.base64_symbol_boundary",
+  "rustfs_kernel.Properties.condition_lookup_names_exact",
+  "rustfs_kernel.Properties.request_key_presence_iff",
+  "rustfs_kernel.Properties.condition_request_key_presence_iff",
+  "rustfs_kernel.Properties.wrapped_condition_missing_keys_accept",
 
 ]
