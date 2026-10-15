@@ -738,4 +738,44 @@ theorem variable_multiple_exact (r : varctx.VariableResolver) (needle : Slice U8
     out.map (fun vs => vs.val.map (fun v => nats v.val)) = VariableMultiple r needle.val env := by
   exact Verified.RustfsVariableResolve.multiple_ok r needle env out h
 
+section
+open Verified.RustfsResolutionTerminates
+
+/-- Resolution terminates for every context, including substituted placeholder text. -/
+theorem variable_substitution_terminates (ctx : awsvars.VarContext) (p : Slice U8) (depth : Usize) :
+    Finishes (awsvars.resolve_aws_variables_with_depth ctx p depth) (fun _ => True) := by
+  exact depth_fin ctx p depth
+
+/-- Every scan either preserves the work list or strictly decreases its remaining-work score. -/
+theorem variable_scan_progress (ctx : awsvars.VarContext) (depth : Usize)
+    (results : alloc.vec.Vec awsvars.Pending) (i : Usize) (p : awsvars.Pending)
+    (hp : results.val[i.val]? = some p) (start : Usize) (hs : p.resume.val ≤ start.val) :
+    Finishes (awsvars.scan ctx results i start depth) (ScanPost results i) := by
+  exact scan_fin ctx depth (fun s d _ => depth_fin ctx s d) results i p hp start hs
+
+/-- Resuming a work list cannot diverge. -/
+theorem variable_pass_from_terminates (ctx : awsvars.VarContext) (depth : Usize)
+    (results : alloc.vec.Vec awsvars.Pending) (i : Usize) :
+    Finishes (awsvars.pass_from ctx results i depth) (fun _ => True) := by
+  exact pass_from_fin ctx depth (fun s d _ => depth_fin ctx s d) results i
+
+/-- A complete substitution pass cannot diverge. -/
+theorem variable_single_pass_terminates (ctx : awsvars.VarContext) (p : Slice U8) (depth : Usize) :
+    Finishes (awsvars.resolve_single_pass ctx p depth) (fun _ => True) := by
+  exact single_fin ctx depth (fun s d _ => depth_fin ctx s d) p
+
+/-- Iterating through an input list cannot diverge. -/
+theorem variable_pass_all_terminates (ctx : awsvars.VarContext) (depth : Usize)
+    (results : Slice (alloc.vec.Vec U8)) (k : Usize)
+    (acc : alloc.vec.Vec (alloc.vec.Vec U8)) (changed : Bool) :
+    Finishes (awsvars.pass_all ctx results k acc changed depth) (fun _ => True) := by
+  exact pass_all_fin ctx depth (fun s d _ => depth_fin ctx s d) results k acc changed
+
+/-- Repeated substitution terminates at every initial iteration and nesting depth. -/
+theorem variable_fixpoint_terminates (ctx : awsvars.VarContext) (depth : Usize)
+    (results : alloc.vec.Vec (alloc.vec.Vec U8)) (iteration : Usize) :
+    Finishes (awsvars.fixpoint ctx results iteration depth) (fun _ => True) := by
+  exact fixpoint_fin ctx depth (fun s d _ => depth_fin ctx s d) results iteration
+end
+
 end rustfs_kernel.Properties
