@@ -225,13 +225,16 @@ for name in "$@"; do
       for rep in $(seq 1 "$REPEATS"); do
         tag="${name}_${scenario}_c${conc}_r${rep}"
         echo "SEED $tag"
-        seed_db "$name"
         if [ "$name" = "upstream" ]; then
-          if ! curl -sf "$BASE/api/bookmarks/shared/" >/dev/null; then
-            echo "POINT_FAIL $tag server died; restarting" >&2
-            start_server "$name" "$port" "$dir"
-            seed_db upstream
-          fi
+          # Under overload uWSGI keeps working through its listen queue after
+          # k6 stops, so its writes would land after the reseed. Restart it.
+          start_server "$name" "$port" "$dir"
+          seed_db upstream
+        else
+          seed_db "$name"
+        fi
+        if [ "$name" = "upstream" ]; then
+          :
         elif ! curl -sf "$BASE/healthz" >/dev/null; then
           echo "POINT_FAIL $tag server died; restarting" >&2
           start_server "$name" "$port" "$dir"
