@@ -199,4 +199,28 @@ def MatchingViews (cs : List conddata.Condition) (vs : List condfuncs.Condition)
 def ConditionBaseKeyName (c : conddata.Condition) : List Nat :=
   if 0 < c.wrappers.val then lit "IfExists" else lit (OpSpelling c.op)
 
+/-- Standard Base64 byte packing from four six-bit symbols. -/
+def Base64Bytes (a b c d : BitVec 8) : List (BitVec 8) :=
+  [(a <<< 2) ||| (b >>> 4), (b <<< 4) ||| (c >>> 2), (c <<< 6) ||| d]
+
+/-- An unpadded sequence of complete three-byte/four-symbol blocks. -/
+inductive Base64Blocks : List Nat → List (BitVec 8) → Prop
+  | empty : Base64Blocks [] []
+  | append {es ds : _} {x y z w : Nat} {a b c d : BitVec 8} :
+      Base64Blocks es ds → Base64Symbol x a.toNat → Base64Symbol y b.toNat →
+      Base64Symbol z c.toNat → Base64Symbol w d.toNat →
+      Base64Blocks (es ++ [x, y, z, w]) (ds ++ Base64Bytes a b c d)
+
+/-- Canonical padded Base64: complete blocks followed by at most one padded block. -/
+inductive Base64Encoding : List Nat → List (BitVec 8) → Prop
+  | complete {es ds : _} : Base64Blocks es ds → Base64Encoding es ds
+  | one {es ds : _} {x y : Nat} {a b : BitVec 8} :
+      Base64Blocks es ds → Base64Symbol x a.toNat → Base64Symbol y b.toNat →
+      b &&& 15 = 0 → Base64Encoding (es ++ [x, y, 61, 61])
+        (ds ++ [(a <<< 2) ||| (b >>> 4)])
+  | two {es ds : _} {x y z : Nat} {a b c : BitVec 8} :
+      Base64Blocks es ds → Base64Symbol x a.toNat → Base64Symbol y b.toNat →
+      Base64Symbol z c.toNat → c &&& 3 = 0 →
+      Base64Encoding (es ++ [x, y, z, 61])
+        (ds ++ [(a <<< 2) ||| (b >>> 4), (b <<< 4) ||| (c >>> 2)])
 end rustfs_kernel.Spec

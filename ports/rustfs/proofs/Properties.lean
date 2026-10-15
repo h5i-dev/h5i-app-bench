@@ -1,3 +1,4 @@
+import Verified.RustfsBase64
 import Verified.RustfsValids
 import Verified.RustfsCondData
 import Verified.RustfsConditionEval
@@ -387,5 +388,19 @@ theorem condition_group_views_exact (f : conddata.Functions) (v : condfuncs.Func
 theorem condition_base_key_exact (c : conddata.Condition) (v : alloc.vec.Vec U8)
     (h : conddata.to_key c = ok v) : nats v.val = ConditionBaseKeyName c := by
   exact rustfs_kernel.Verified.RustfsConditionViews.base_key_ok c v h
+
+/-- Successful decoding returns exactly the bytes of a canonical Base64 encoding. -/
+theorem base64_decoding_sound (encoded : Slice U8) (v : alloc.vec.Vec U8)
+    (h : conddata.decode_base64 encoded = ok (.Ok v)) :
+    Base64Encoding (nats encoded.val) (v.val.map (·.bv)) := by
+  exact rustfs_kernel.Verified.RustfsBase64.decode_sound encoded v h
+
+/-- Accepted inputs consist of four-symbol blocks, with at most two padding bytes. -/
+theorem base64_decoding_lengths (encoded : Slice U8) (v : alloc.vec.Vec U8)
+    (h : conddata.decode_base64 encoded = ok (.Ok v)) :
+    encoded.val.length % 4 = 0 ∧ v.val.length ≤ 3 * (encoded.val.length / 4) ∧
+      3 * (encoded.val.length / 4) ≤ v.val.length + 2 := by
+  have hl := (rustfs_kernel.Verified.RustfsBase64.decode_sound encoded v h).lengths
+  simpa only [nats, List.length_map] using hl
 
 end rustfs_kernel.Properties

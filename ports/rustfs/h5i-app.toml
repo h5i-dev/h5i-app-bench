@@ -63,4 +63,6 @@ theorems = [
   "rustfs_kernel.Properties.condition_group_views_exact",
   "rustfs_kernel.Properties.condition_base_key_exact",
 
+  "rustfs_kernel.Properties.base64_decoding_sound",
+  "rustfs_kernel.Properties.base64_decoding_lengths",
 ]
