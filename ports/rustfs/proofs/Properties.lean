@@ -1,3 +1,5 @@
+import Verified.RustfsClaimStrings
+import Verified.RustfsClaimPath
 import Verified.RustfsClaimTree
 import Verified.RustfsClaimUnique
 import Verified.RustfsActionTables
@@ -604,5 +606,52 @@ theorem claim_unique_membership (values : Slice (alloc.vec.Vec U8))
     (out : alloc.vec.Vec (alloc.vec.Vec U8)) (h : claims.unique_values values = ok out) :
     out.val.Nodup ∧ ∀ x, x ∈ out.val ↔ x ∈ values.val := by
   exact rustfs_kernel.Verified.RustfsClaimUnique.unique_ok values out h
+
+
+/-- Claim strings and arrays are accepted and produce nonempty tokens. -/
+theorem claim_string_container (v : claims.Value) (out : alloc.vec.Vec (alloc.vec.Vec U8))
+    (b : Bool) (h : claims.value_strings v = ok (out,b)) :
+    NonemptyClaimTokens out.val ∧ (b = true ↔ ClaimStringContainer v) := by
+  exact rustfs_kernel.Verified.RustfsClaimStrings.value_ok v out b h
+
+/-- Policy extraction excludes empty names. -/
+theorem claim_exact_tokens_nonempty (table : alloc.vec.Vec (alloc.vec.Vec U8 × claims.Value))
+    (needle : Slice U8) (out : alloc.vec.Vec (alloc.vec.Vec U8)) (b : Bool)
+    (h : claims.values_from_claims table needle = ok (out,b)) :
+    NonemptyClaimTokens out.val := by
+  exact rustfs_kernel.Verified.RustfsClaimStrings.exact_nonempty table needle out b h
+
+/-- Policy extraction excludes empty names. -/
+theorem claim_lookup_tokens_nonempty (table : alloc.vec.Vec (alloc.vec.Vec U8 × claims.Value))
+    (needle : Slice U8) (out : alloc.vec.Vec (alloc.vec.Vec U8)) (b : Bool)
+    (h : claims.lookup_strings table needle = ok (out,b)) :
+    NonemptyClaimTokens out.val := by
+  exact rustfs_kernel.Verified.RustfsClaimStrings.lookup_nonempty table needle out b h
+
+/-- Policy extraction excludes empty names and repeated entries. -/
+theorem claim_values_unique_nonempty (table : alloc.vec.Vec (alloc.vec.Vec U8 × claims.Value))
+    (needle : Slice U8) (out : alloc.vec.Vec (alloc.vec.Vec U8)) (b : Bool)
+    (h : claims.get_values_from_claims table needle = ok (out,b)) :
+    NonemptyClaimTokens out.val ∧ out.val.Nodup := by
+  exact rustfs_kernel.Verified.RustfsClaimStrings.get_values_ok table needle out b h
+
+/-- Policy extraction excludes empty names and repeated entries. -/
+theorem claim_policies_unique_nonempty (table : alloc.vec.Vec (alloc.vec.Vec U8 × claims.Value))
+    (needle : Slice U8) (out : alloc.vec.Vec (alloc.vec.Vec U8)) (b : Bool)
+    (h : claims.get_policies_from_claims table needle = ok (out,b)) :
+    NonemptyClaimTokens out.val ∧ out.val.Nodup := by
+  exact rustfs_kernel.Verified.RustfsClaimStrings.policies_ok table needle out b h
+
+/-- Policy extraction excludes empty names and repeated entries. -/
+theorem claim_args_policies_unique_nonempty (table : alloc.vec.Vec (alloc.vec.Vec U8 × claims.Value))
+    (needle : Slice U8) (out : alloc.vec.Vec (alloc.vec.Vec U8)) (b : Bool)
+    (h : claims.args_get_policies table needle = ok (out,b)) :
+    NonemptyClaimTokens out.val ∧ out.val.Nodup := by
+  exact rustfs_kernel.Verified.RustfsClaimStrings.args_ok table needle out b h
+
+/-- Path splitting preserves every byte and its order. -/
+theorem claim_path_split_lossless (path : Slice U8) (second : Bool) (left right : alloc.vec.Vec U8)
+    (h : claims.split_path path second = ok (left,right)) : left.val ++ right.val = path.val := by
+  exact rustfs_kernel.Verified.RustfsClaimPath.path_preserved path second left right h
 
 end rustfs_kernel.Properties
