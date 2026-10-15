@@ -22,3 +22,6 @@ mod share;
 
 #[cfg(test)]
 mod subjectgroup;
+
+#[cfg(test)]
+mod magiclink;

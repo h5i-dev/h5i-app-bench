@@ -1,3 +1,4 @@
+import Verified.OxicloudMagicLink
 import Verified.OxicloudSubjectGroup
 import Verified.OxicloudShare
 import Verified.OxicloudValidation
@@ -401,5 +402,52 @@ theorem virtual_group_mutation_policy (group : subjectgroup.SubjectGroup) (r : B
     (h : subjectgroup.is_immutable group = ok r) :
     (r = true ↔ group.is_virtual = true) :=
   Verified.OxicloudSubjectGroup.immutability_ok group r h
+
+/-- Resource tokens use the exact canonical file and folder namespace. -/
+theorem magic_resource_wire (value : magiclink.MagicLinkResourceKind) (out : alloc.vec.Vec U8)
+    (h : magiclink.resource_bytes value = ok out) : out.val = SpecKernel.MagicResourceWire value :=
+  Verified.OxicloudMagicLink.resource_bytes_ok value out h
+
+/-- Unknown resource names cannot be interpreted as valid targets. -/
+theorem magic_resource_parse (raw : Slice U8) (o : Option magiclink.MagicLinkResourceKind)
+    (h : magiclink.resource_parse raw = ok o) (value : magiclink.MagicLinkResourceKind) :
+    (o = some value ↔ raw.val = SpecKernel.MagicResourceWire value) :=
+  Verified.OxicloudMagicLink.resource_parse_ok raw o h value
+
+/-- Lifecycle states have distinct canonical wire names. -/
+theorem magic_status_wire (value : magiclink.MagicLinkStatus) (out : alloc.vec.Vec U8)
+    (h : magiclink.status_bytes value = ok out) : out.val = SpecKernel.MagicStatusWire value :=
+  Verified.OxicloudMagicLink.status_bytes_ok value out h
+
+/-- Only recognized lifecycle names can restore a token state. -/
+theorem magic_status_parse (raw : Slice U8) (o : Option magiclink.MagicLinkStatus)
+    (h : magiclink.status_parse raw = ok o) (value : magiclink.MagicLinkStatus) :
+    (o = some value ↔ raw.val = SpecKernel.MagicStatusWire value) :=
+  Verified.OxicloudMagicLink.status_parse_ok raw o h value
+
+/-- Restoration preserves identity, target, browser challenge, and lifecycle evidence. -/
+theorem magic_restoration_readback (snapshot r : magiclink.MagicLinkToken)
+    (h : magiclink.from_raw snapshot.id snapshot.token snapshot.user_id snapshot.status snapshot.issued_at snapshot.expires_at snapshot.used_at snapshot.resource_kind snapshot.resource_id snapshot.request_challenge = ok r) :
+    magiclink.id r = ok snapshot.id ∧
+    magiclink.token r = ok snapshot.token ∧
+    magiclink.user_id r = ok snapshot.user_id ∧
+    magiclink.status r = ok snapshot.status ∧
+    magiclink.issued_at r = ok snapshot.issued_at ∧
+    magiclink.expires_at r = ok snapshot.expires_at ∧
+    magiclink.used_at r = ok snapshot.used_at ∧
+    magiclink.resource_kind r = ok snapshot.resource_kind ∧
+    magiclink.resource_id r = ok snapshot.resource_id ∧
+    magiclink.request_challenge r = ok snapshot.request_challenge :=
+  Verified.OxicloudMagicLink.restored_readback snapshot r h
+
+/-- A token expires strictly after its deadline, with nanosecond precision. -/
+theorem magic_expiry_rule (s : magiclink.MagicLinkToken) (now : session.Timestamp) (r : Bool)
+    (h : magiclink.is_expired s now = ok r) : (r = true ↔ SpecKernel.TimestampPast now s.expires_at) :=
+  Verified.OxicloudMagicLink.expired_ok s now r h
+
+/-- Redemption requires Pending status and a time at or before expiry. -/
+theorem magic_redemption_rule (s : magiclink.MagicLinkToken) (now : session.Timestamp) (r : Bool)
+    (h : magiclink.is_redeemable s now = ok r) : (r = true ↔ SpecKernel.MagicLinkRedeemable s now) :=
+  Verified.OxicloudMagicLink.redeemable_ok s now r h
 
 end oxicloud_kernel.Properties

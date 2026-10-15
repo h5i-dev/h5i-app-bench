@@ -76,6 +76,23 @@ trap 'rm -rf "$tmp"' EXIT
   --start-from oxicloud_kernel::share::access_count \
   --start-from oxicloud_kernel::subjectgroup::validate_name \
   --start-from oxicloud_kernel::subjectgroup::is_immutable \
+  --start-from oxicloud_kernel::magiclink::resource_bytes \
+  --start-from oxicloud_kernel::magiclink::resource_parse \
+  --start-from oxicloud_kernel::magiclink::status_bytes \
+  --start-from oxicloud_kernel::magiclink::status_parse \
+  --start-from oxicloud_kernel::magiclink::from_raw \
+  --start-from oxicloud_kernel::magiclink::id \
+  --start-from oxicloud_kernel::magiclink::token \
+  --start-from oxicloud_kernel::magiclink::user_id \
+  --start-from oxicloud_kernel::magiclink::status \
+  --start-from oxicloud_kernel::magiclink::issued_at \
+  --start-from oxicloud_kernel::magiclink::expires_at \
+  --start-from oxicloud_kernel::magiclink::used_at \
+  --start-from oxicloud_kernel::magiclink::resource_kind \
+  --start-from oxicloud_kernel::magiclink::resource_id \
+  --start-from oxicloud_kernel::magiclink::request_challenge \
+  --start-from oxicloud_kernel::magiclink::is_expired \
+  --start-from oxicloud_kernel::magiclink::is_redeemable \
   --dest-file "$tmp/oxicloud_kernel.llbc")
 mkdir -p "$root/ports/oxicloud/proofs/generated"
 aeneas -backend lean "$tmp/oxicloud_kernel.llbc" -dest "$root/ports/oxicloud/proofs/generated"

@@ -28,4 +28,18 @@ fn main() {
         pub fn jkt(raw: &str) -> Result<String, &'static str> { validate_dpop_jkt(raw) }
     "#);
     fs::write(PathBuf::from(env::var_os("OUT_DIR").unwrap()).join("auth_oracle.rs"), oracle).unwrap();
+    let path = "../upstream-src/src/domain/entities/magic_link_token.rs";
+    println!("cargo:rerun-if-changed={path}");
+    let source = fs::read_to_string(path).unwrap();
+    let mut oracle = String::from("use chrono::{DateTime, Utc}; use oxicloud::domain::entities::magic_link_token::MagicLinkStatus; pub struct Snapshot { pub expires_at: DateTime<Utc>, pub status: MagicLinkStatus } impl Snapshot {");
+    // Preserve the pinned methods, substituting the clock input for deterministic boundary tests.
+    for name in ["is_expired", "is_redeemable"] {
+        let method = item(&source, &format!("pub fn {name}(&self)"));
+        let method = method.replace("(&self)", "(&self, now: DateTime<Utc>)")
+            .replace("Utc::now()", "now").replace("self.is_expired()", "self.is_expired(now)");
+        oracle.push_str(&method);
+    }
+    oracle.push('}');
+    fs::write(PathBuf::from(env::var_os("OUT_DIR").unwrap()).join("magic_oracle.rs"), oracle).unwrap();
+
 }

@@ -12456,35 +12456,38 @@ status = "todo"
 [[item]]
 upstream = "src/domain/entities/magic_link_token.rs:32 MagicLinkResourceKind"
 lines = 4
-status = "outside"
-reason = "uses File"
+status = "ported"
+kernel = ["kernel/src/magiclink.rs::MagicLinkResourceKind"]
 
 [[item]]
 upstream = "src/domain/entities/magic_link_token.rs:42 MagicLinkResourceKind::as_str"
 lines = 6
-status = "outside"
-reason = "uses File"
+status = "ported"
+kernel = ["kernel/src/magiclink.rs::resource_bytes"]
 
 [[item]]
 upstream = "src/domain/entities/magic_link_token.rs:49 MagicLinkResourceKind::parse"
 lines = 7
-status = "outside"
-reason = "uses File"
+status = "ported"
+kernel = ["kernel/src/magiclink.rs::resource_parse"]
 
 [[item]]
 upstream = "src/domain/entities/magic_link_token.rs:58 MagicLinkStatus"
 lines = 5
-status = "todo"
+status = "ported"
+kernel = ["kernel/src/magiclink.rs::MagicLinkStatus"]
 
 [[item]]
 upstream = "src/domain/entities/magic_link_token.rs:69 MagicLinkStatus::as_str"
 lines = 7
-status = "todo"
+status = "ported"
+kernel = ["kernel/src/magiclink.rs::status_bytes"]
 
 [[item]]
 upstream = "src/domain/entities/magic_link_token.rs:77 MagicLinkStatus::parse"
 lines = 8
-status = "todo"
+status = "ported"
+kernel = ["kernel/src/magiclink.rs::status_parse"]
 
 [[item]]
 upstream = "src/domain/entities/magic_link_token.rs:88 MagicLinkStatus::fmt"
@@ -12495,7 +12498,8 @@ reason = "policy decoding or serialization"
 [[item]]
 upstream = "src/domain/entities/magic_link_token.rs:93 MagicLinkToken"
 lines = 12
-status = "todo"
+status = "ported"
+kernel = ["kernel/src/magiclink.rs::MagicLinkToken"]
 
 [[item]]
 upstream = "src/domain/entities/magic_link_token.rs:121 MagicLinkToken::new"
@@ -12506,69 +12510,80 @@ reason = "uses OsRng, new_v4"
 [[item]]
 upstream = "src/domain/entities/magic_link_token.rs:162 MagicLinkToken::from_raw"
 lines = 25
-status = "todo"
+status = "ported"
+kernel = ["kernel/src/magiclink.rs::from_raw"]
 
 [[item]]
 upstream = "src/domain/entities/magic_link_token.rs:192 MagicLinkToken::id"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["kernel/src/magiclink.rs::id"]
 
 [[item]]
 upstream = "src/domain/entities/magic_link_token.rs:196 MagicLinkToken::token"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["kernel/src/magiclink.rs::token"]
 
 [[item]]
 upstream = "src/domain/entities/magic_link_token.rs:200 MagicLinkToken::user_id"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["kernel/src/magiclink.rs::user_id"]
 
 [[item]]
 upstream = "src/domain/entities/magic_link_token.rs:204 MagicLinkToken::status"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["kernel/src/magiclink.rs::status"]
 
 [[item]]
 upstream = "src/domain/entities/magic_link_token.rs:208 MagicLinkToken::issued_at"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["kernel/src/magiclink.rs::issued_at"]
 
 [[item]]
 upstream = "src/domain/entities/magic_link_token.rs:212 MagicLinkToken::expires_at"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["kernel/src/magiclink.rs::expires_at"]
 
 [[item]]
 upstream = "src/domain/entities/magic_link_token.rs:216 MagicLinkToken::used_at"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["kernel/src/magiclink.rs::used_at"]
 
 [[item]]
 upstream = "src/domain/entities/magic_link_token.rs:220 MagicLinkToken::resource_kind"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["kernel/src/magiclink.rs::resource_kind"]
 
 [[item]]
 upstream = "src/domain/entities/magic_link_token.rs:224 MagicLinkToken::resource_id"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["kernel/src/magiclink.rs::resource_id"]
 
 [[item]]
 upstream = "src/domain/entities/magic_link_token.rs:228 MagicLinkToken::request_challenge"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["kernel/src/magiclink.rs::request_challenge"]
 
 [[item]]
 upstream = "src/domain/entities/magic_link_token.rs:238 MagicLinkToken::is_expired"
 lines = 3
-status = "outside"
-reason = "calls Utc::now"
+status = "ported"
+kernel = ["kernel/src/magiclink.rs::is_expired"]
 
 [[item]]
 upstream = "src/domain/entities/magic_link_token.rs:245 MagicLinkToken::is_redeemable"
 lines = 3
-status = "outside"
-reason = "calls shell AppPassword::is_expired"
+status = "ported"
+kernel = ["kernel/src/magiclink.rs::is_redeemable"]
 
 [[item]]
 upstream = "src/domain/entities/notification.rs:25 SHARE_GRANTED"

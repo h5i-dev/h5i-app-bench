@@ -18,3 +18,5 @@ pub mod validation;
 pub mod share;
 
 pub mod subjectgroup;
+
+pub mod magiclink;

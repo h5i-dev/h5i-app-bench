@@ -160,3 +160,20 @@ and the external-sharing guard retains both principal kind and external flag.
   The shell can format the same diagnostic from the original input and first
   invalid character; differential tests reconstruct and compare those strings.
   Random IDs and clock reads in group creation remain in the shell.
+
+### Magic-link row state and redemption
+
+- The complete row is transported: UUIDs use `u128`, text uses UTF-8 bytes,
+  timestamp seconds/nanoseconds use the session representation, and optional
+  resource kinds, IDs, use timestamps, and browser challenges remain independent.
+  Borrowed string views use borrowed byte vectors; absent and empty stay distinct.
+- Resource and lifecycle discriminators retain exact, case-sensitive spellings.
+- Expiry and redeemability take an explicit UTC timestamp instead of consulting
+  `Utc::now()`. The shell supplies that clock read. Timestamp comparison uses
+  signed seconds followed by nanoseconds, including Chrono's leap-second encoding.
+  Expiry is strict: equality remains within the lifetime; only Pending can redeem.
+  Random minting, timestamp arithmetic in minting, and display formatting stay
+  in the shell. The pure decision does not implement the transactional state change.
+- Differential tests compile the pinned expiry and redeemability method bodies
+  with only an explicit clock parameter substituted, compare boundary instants,
+  and also bracket calls to the original clock-reading methods.

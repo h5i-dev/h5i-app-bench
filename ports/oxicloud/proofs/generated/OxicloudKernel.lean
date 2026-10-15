@@ -3305,12 +3305,260 @@ def grantapi.transition
   | grantapi.Request.RevokeGrant grant_id =>
     grantapi.revoke_grant db env caller grant_id
 
+/-- [oxicloud_kernel::magiclink::MagicLinkResourceKind]
+    Source: 'ports/oxicloud/kernel/src/magiclink.rs', lines 5:0-5:47
+    Visibility: public -/
+@[discriminant isize]
+inductive magiclink.MagicLinkResourceKind where
+| File : magiclink.MagicLinkResourceKind
+| Folder : magiclink.MagicLinkResourceKind
+
+/-- [oxicloud_kernel::magiclink::MagicLinkStatus]
+    Source: 'ports/oxicloud/kernel/src/magiclink.rs', lines 7:0-7:51
+    Visibility: public -/
+@[discriminant isize]
+inductive magiclink.MagicLinkStatus where
+| Pending : magiclink.MagicLinkStatus
+| Used : magiclink.MagicLinkStatus
+| Expired : magiclink.MagicLinkStatus
+
+/-- [oxicloud_kernel::magiclink::resource_bytes]:
+    Source: 'ports/oxicloud/kernel/src/magiclink.rs', lines 8:0-13:1
+    Visibility: public -/
+def magiclink.resource_bytes
+  (value : magiclink.MagicLinkResourceKind) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  match value with
+  | magiclink.MagicLinkResourceKind.File =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 4#usize [ 102#u8, 105#u8, 108#u8, 101#u8 ]))
+    bytes.copy s
+  | magiclink.MagicLinkResourceKind.Folder =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 6#usize [ 102#u8, 111#u8, 108#u8, 100#u8, 101#u8, 114#u8 ]))
+    bytes.copy s
+
+/-- [oxicloud_kernel::magiclink::resource_parse]:
+    Source: 'ports/oxicloud/kernel/src/magiclink.rs', lines 14:0-18:1
+    Visibility: public -/
+def magiclink.resource_parse
+  (raw : Slice Std.U8) : Result (Option magiclink.MagicLinkResourceKind) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 4#usize [ 102#u8, 105#u8, 108#u8, 101#u8 ]))
+  let b ← bytes.equal raw s
+  if b
+  then ok (some magiclink.MagicLinkResourceKind.File)
+  else
+    let s1 ←
+      lift (Array.to_slice
+        (Array.make 6#usize [ 102#u8, 111#u8, 108#u8, 100#u8, 101#u8, 114#u8 ]))
+    let b1 ← bytes.equal raw s1
+    if b1
+    then ok (some magiclink.MagicLinkResourceKind.Folder)
+    else ok none
+
+/-- [oxicloud_kernel::magiclink::status_bytes]:
+    Source: 'ports/oxicloud/kernel/src/magiclink.rs', lines 19:0-25:1
+    Visibility: public -/
+def magiclink.status_bytes
+  (value : magiclink.MagicLinkStatus) : Result (alloc.vec.Vec Std.U8) := do
+  match value with
+  | magiclink.MagicLinkStatus.Pending =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 7#usize [
+          112#u8, 101#u8, 110#u8, 100#u8, 105#u8, 110#u8, 103#u8
+          ]))
+    bytes.copy s
+  | magiclink.MagicLinkStatus.Used =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 4#usize [ 117#u8, 115#u8, 101#u8, 100#u8 ]))
+    bytes.copy s
+  | magiclink.MagicLinkStatus.Expired =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 7#usize [
+          101#u8, 120#u8, 112#u8, 105#u8, 114#u8, 101#u8, 100#u8
+          ]))
+    bytes.copy s
+
+/-- [oxicloud_kernel::magiclink::status_parse]:
+    Source: 'ports/oxicloud/kernel/src/magiclink.rs', lines 26:0-31:1
+    Visibility: public -/
+def magiclink.status_parse
+  (raw : Slice Std.U8) : Result (Option magiclink.MagicLinkStatus) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 7#usize [
+        112#u8, 101#u8, 110#u8, 100#u8, 105#u8, 110#u8, 103#u8
+        ]))
+  let b ← bytes.equal raw s
+  if b
+  then ok (some magiclink.MagicLinkStatus.Pending)
+  else
+    let s1 ←
+      lift (Array.to_slice
+        (Array.make 4#usize [ 117#u8, 115#u8, 101#u8, 100#u8 ]))
+    let b1 ← bytes.equal raw s1
+    if b1
+    then ok (some magiclink.MagicLinkStatus.Used)
+    else
+      let s2 ←
+        lift (Array.to_slice
+          (Array.make 7#usize [
+            101#u8, 120#u8, 112#u8, 105#u8, 114#u8, 101#u8, 100#u8
+            ]))
+      let b2 ← bytes.equal raw s2
+      if b2
+      then ok (some magiclink.MagicLinkStatus.Expired)
+      else ok none
+
 /-- [oxicloud_kernel::session::Timestamp]
     Source: 'ports/oxicloud/kernel/src/session.rs', lines 6:0-6:63
     Visibility: public -/
 structure session.Timestamp where
   seconds : Std.I64
   nanoseconds : Std.U32
+
+/-- [oxicloud_kernel::magiclink::MagicLinkToken]
+    Source: 'ports/oxicloud/kernel/src/magiclink.rs', lines 32:0-43:1
+    Visibility: public -/
+structure magiclink.MagicLinkToken where
+  id : Std.U128
+  token : alloc.vec.Vec Std.U8
+  user_id : Std.U128
+  status : magiclink.MagicLinkStatus
+  issued_at : session.Timestamp
+  expires_at : session.Timestamp
+  used_at : Option session.Timestamp
+  resource_kind : Option magiclink.MagicLinkResourceKind
+  resource_id : Option Std.U128
+  request_challenge : Option (alloc.vec.Vec Std.U8)
+
+/-- [oxicloud_kernel::magiclink::from_raw]:
+    Source: 'ports/oxicloud/kernel/src/magiclink.rs', lines 44:0-46:1
+    Visibility: public -/
+def magiclink.from_raw
+  (id : Std.U128) (token : alloc.vec.Vec Std.U8) (user_id : Std.U128)
+  (status : magiclink.MagicLinkStatus) (issued_at : session.Timestamp)
+  (expires_at : session.Timestamp) (used_at : Option session.Timestamp)
+  (resource_kind : Option magiclink.MagicLinkResourceKind)
+  (resource_id : Option Std.U128)
+  (request_challenge : Option (alloc.vec.Vec Std.U8)) :
+  Result magiclink.MagicLinkToken
+  := do
+  ok
+    {
+      id,
+      token,
+      user_id,
+      status,
+      issued_at,
+      expires_at,
+      used_at,
+      resource_kind,
+      resource_id,
+      request_challenge
+    }
+
+/-- [oxicloud_kernel::magiclink::id]:
+    Source: 'ports/oxicloud/kernel/src/magiclink.rs', lines 47:0-47:46
+    Visibility: public -/
+def magiclink.id (s : magiclink.MagicLinkToken) : Result Std.U128 := do
+  ok s.id
+
+/-- [oxicloud_kernel::magiclink::token]:
+    Source: 'ports/oxicloud/kernel/src/magiclink.rs', lines 48:0-48:57
+    Visibility: public -/
+def magiclink.token
+  (s : magiclink.MagicLinkToken) : Result (alloc.vec.Vec Std.U8) := do
+  ok s.token
+
+/-- [oxicloud_kernel::magiclink::user_id]:
+    Source: 'ports/oxicloud/kernel/src/magiclink.rs', lines 49:0-49:56
+    Visibility: public -/
+def magiclink.user_id (s : magiclink.MagicLinkToken) : Result Std.U128 := do
+  ok s.user_id
+
+/-- [oxicloud_kernel::magiclink::status]:
+    Source: 'ports/oxicloud/kernel/src/magiclink.rs', lines 50:0-50:65
+    Visibility: public -/
+def magiclink.status
+  (s : magiclink.MagicLinkToken) : Result magiclink.MagicLinkStatus := do
+  ok s.status
+
+/-- [oxicloud_kernel::magiclink::issued_at]:
+    Source: 'ports/oxicloud/kernel/src/magiclink.rs', lines 51:0-51:65
+    Visibility: public -/
+def magiclink.issued_at
+  (s : magiclink.MagicLinkToken) : Result session.Timestamp := do
+  ok s.issued_at
+
+/-- [oxicloud_kernel::magiclink::expires_at]:
+    Source: 'ports/oxicloud/kernel/src/magiclink.rs', lines 52:0-52:67
+    Visibility: public -/
+def magiclink.expires_at
+  (s : magiclink.MagicLinkToken) : Result session.Timestamp := do
+  ok s.expires_at
+
+/-- [oxicloud_kernel::magiclink::used_at]:
+    Source: 'ports/oxicloud/kernel/src/magiclink.rs', lines 53:0-53:69
+    Visibility: public -/
+def magiclink.used_at
+  (s : magiclink.MagicLinkToken) : Result (Option session.Timestamp) := do
+  ok s.used_at
+
+/-- [oxicloud_kernel::magiclink::resource_kind]:
+    Source: 'ports/oxicloud/kernel/src/magiclink.rs', lines 54:0-54:93
+    Visibility: public -/
+def magiclink.resource_kind
+  (s : magiclink.MagicLinkToken) :
+  Result (Option magiclink.MagicLinkResourceKind)
+  := do
+  ok s.resource_kind
+
+/-- [oxicloud_kernel::magiclink::resource_id]:
+    Source: 'ports/oxicloud/kernel/src/magiclink.rs', lines 55:0-55:72
+    Visibility: public -/
+def magiclink.resource_id
+  (s : magiclink.MagicLinkToken) : Result (Option Std.U128) := do
+  ok s.resource_id
+
+/-- [oxicloud_kernel::magiclink::request_challenge]:
+    Source: 'ports/oxicloud/kernel/src/magiclink.rs', lines 56:0-56:89
+    Visibility: public -/
+def magiclink.request_challenge
+  (s : magiclink.MagicLinkToken) : Result (Option (alloc.vec.Vec Std.U8)) := do
+  ok s.request_challenge
+
+/-- [oxicloud_kernel::magiclink::is_expired]:
+    Source: 'ports/oxicloud/kernel/src/magiclink.rs', lines 58:0-61:1
+    Visibility: public -/
+def magiclink.is_expired
+  (s : magiclink.MagicLinkToken) (now : session.Timestamp) : Result Bool := do
+  if now.seconds > s.expires_at.seconds
+  then ok true
+  else
+    if now.seconds = s.expires_at.seconds
+    then ok (now.nanoseconds > s.expires_at.nanoseconds)
+    else ok false
+
+/-- [oxicloud_kernel::magiclink::is_redeemable]:
+    Source: 'ports/oxicloud/kernel/src/magiclink.rs', lines 62:0-67:1
+    Visibility: public -/
+def magiclink.is_redeemable
+  (s : magiclink.MagicLinkToken) (now : session.Timestamp) : Result Bool := do
+  match s.status with
+  | magiclink.MagicLinkStatus.Pending =>
+    let b ← magiclink.is_expired s now
+    ok (¬ b)
+  | magiclink.MagicLinkStatus.Used => ok false
+  | magiclink.MagicLinkStatus.Expired => ok false
 
 /-- [oxicloud_kernel::session::SessionOrigin]
     Source: 'ports/oxicloud/kernel/src/session.rs', lines 9:0-9:77

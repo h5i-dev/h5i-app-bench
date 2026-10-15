@@ -223,4 +223,27 @@ def GroupNameDecision (raw : List U8)
   | .Err .InvalidCharacter => 1 ≤ raw.length ∧ raw.length ≤ 64 ∧
       GroupNameStart raw ∧ ¬ (∀ b ∈ raw, GroupNameByte b)
 
+
+/-- Canonical magic-link resource discriminator. -/
+def MagicResourceWire : magiclink.MagicLinkResourceKind → List U8
+  | .File => [102#u8, 105#u8, 108#u8, 101#u8]
+  | .Folder => [102#u8, 111#u8, 108#u8, 100#u8, 101#u8, 114#u8]
+
+/-- Canonical magic-link status discriminator. -/
+def MagicStatusWire : magiclink.MagicLinkStatus → List U8
+  | .Pending => [112#u8, 101#u8, 110#u8, 100#u8, 105#u8, 110#u8, 103#u8]
+  | .Used => [117#u8, 115#u8, 101#u8, 100#u8]
+  | .Expired => [101#u8, 120#u8, 112#u8, 105#u8, 114#u8, 101#u8, 100#u8]
+
+/-- UTC deadlines compare signed seconds, then subsecond precision. -/
+def TimestampPast (now deadline : session.Timestamp) : Prop :=
+  deadline.seconds.val < now.seconds.val ∨
+    (now.seconds.val = deadline.seconds.val ∧ deadline.nanoseconds.val < now.nanoseconds.val)
+def TimestampWithin (now deadline : session.Timestamp) : Prop :=
+  now.seconds.val < deadline.seconds.val ∨
+    (now.seconds.val = deadline.seconds.val ∧ now.nanoseconds.val ≤ deadline.nanoseconds.val)
+/-- A magic link is usable only while Pending and at or before its deadline. -/
+def MagicLinkRedeemable (s : magiclink.MagicLinkToken) (now : session.Timestamp) : Prop :=
+  s.status = .Pending ∧ TimestampWithin now s.expires_at
+
 end oxicloud_kernel.SpecKernel
