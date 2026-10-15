@@ -1,3 +1,4 @@
+import Verified.RustfsManagementViews
 import Verified.RustfsManagementDecisions
 import Verified.RustfsResourceSets
 import Verified.RustfsDocuments
@@ -868,5 +869,38 @@ theorem metadata_allow_witness (p : manage.Policy) (a : stmts.Args) (e : condfun
     ∃ st ∈ p.statements.val, st.effect = .Allow ∧ manage.statement_is_allowed st a e = ok true := by
   have hh := ((metadata_policy_decision p a e true h).1 rfl).2
   simpa [ho,hd] using hh
+
+/-- Policy validation requires a supported version and every statement's action/resource rules. -/
+theorem metadata_policy_validity (p : manage.Policy) (out : core.result.Result Unit valids.ValidationError)
+    (h : manage.is_valid p = ok out) : (out = .Ok () ↔ MetadataPolicyOK p) :=
+  Verified.RustfsManagementViews.policy_ok p out h
+
+theorem metadata_policy_validate (p : manage.Policy) (out : core.result.Result Unit valids.ValidationError)
+    (h : manage.validate p = ok out) : (out = .Ok () ↔ MetadataPolicyOK p) :=
+  Verified.RustfsManagementViews.policy_ok p out h
+
+theorem metadata_bucket_validity (p : manage.BucketPolicy) (out : core.result.Result Unit valids.ValidationError)
+    (h : manage.bucket_is_valid p = ok out) : (out = .Ok () ↔ MetadataBucketPolicyOK p) :=
+  Verified.RustfsManagementViews.bucket_policy_ok p out h
+
+/-- Projection preserves every action/resource field used by matching and validation. -/
+theorem metadata_statement_projection (st : manage.Statement) (out : stmts.Statement)
+    (h : manage.statement_view st = ok out) :
+    out.effect = st.effect ∧ out.actions = st.actions ∧ out.not_actions = st.not_actions ∧
+    out.resources = st.resources ∧ out.not_resources = st.not_resources ∧
+    (StatementOK out ↔ MetadataStatementOK st) :=
+  Verified.RustfsManagementViews.statement_view_ok st out h
+
+theorem metadata_bucket_projection (st : manage.BPStatement) (out : stmts.BPStatement)
+    (h : manage.bp_statement_view st = ok out) :
+    out.effect = st.effect ∧ out.principal = st.principal ∧ out.actions = st.actions ∧
+    out.not_actions = st.not_actions ∧ out.resources = st.resources ∧
+    out.not_resources = st.not_resources ∧ (BPStatementOK out ↔ MetadataBPStatementOK st) :=
+  Verified.RustfsManagementViews.bp_view_ok st out h
+
+theorem metadata_version_validity (v : Slice U8) (out : core.result.Result Unit valids.ValidationError)
+    (h : manage.version_is_valid v = ok out) :
+    (out = .Ok () ↔ v.val = [] ∨ nats v.val = lit "2012-10-17") :=
+  Verified.RustfsManagementViews.version_ok v out h
 
 end rustfs_kernel.Properties
