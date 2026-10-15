@@ -187,4 +187,20 @@ def VerifiedEmailDecision (claim : Option Bool) (required : Bool) (d : validatio
   (d.reason = some .ClaimAbsentRequired ↔ claim = none ∧ required = true) ∧
   (d.reason = none ↔ claim = some true ∨ (claim = none ∧ required = false))
 
+
+
+/-- Password changes preserve the resource, creator, token, lifetime, and accounting state. -/
+def SharePasswordChanged (before : share.Share) (hash : Option (alloc.vec.Vec U8))
+    (after : share.Share) : Prop :=
+  after.password_hash = hash ∧ { after with password_hash := before.password_hash } = before
+
+/-- Rotating a share token cannot remove its password requirement or change its target or expiry. -/
+def ShareTokenChanged (before : share.Share) (token : alloc.vec.Vec U8) (after : share.Share) : Prop :=
+  after.token = token ∧ { after with token := before.token } = before
+
+/-- Access accounting increases by one without wrapping or changing authorization state. -/
+def ShareAccessCounted (before after : share.Share) : Prop :=
+  after.access_count.val = before.access_count.val + 1 ∧
+  { after with access_count := before.access_count } = before
+
 end oxicloud_kernel.SpecKernel

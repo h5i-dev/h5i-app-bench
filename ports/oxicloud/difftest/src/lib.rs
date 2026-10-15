@@ -16,3 +16,6 @@ mod session;
 
 #[cfg(test)]
 mod validation;
+
+#[cfg(test)]
+mod share;

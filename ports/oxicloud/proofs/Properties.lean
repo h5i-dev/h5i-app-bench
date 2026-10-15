@@ -1,3 +1,4 @@
+import Verified.OxicloudShare
 import Verified.OxicloudValidation
 import Verified.OxicloudSession
 import Verified.OxicloudDrivePolicy
@@ -343,5 +344,42 @@ theorem login_thumbprint_validation (raw : Slice U8)
     (r : core.result.Result (alloc.vec.Vec U8) validation.JktError)
     (h : validation.validate_dpop_jkt raw = ok r) : SpecKernel.JktDecision raw.val r :=
   Verified.OxicloudValidation.jkt_ok raw r h
+
+
+
+/-- Share restoration retains the complete target, creator, credential, lifetime, and accounting snapshot. -/
+theorem share_restoration_readback (snapshot r : share.Share)
+    (h : share.from_raw snapshot.id snapshot.item_id snapshot.item_name snapshot.item_type snapshot.token snapshot.password_hash snapshot.expires_at snapshot.created_at snapshot.created_by snapshot.access_count = ok r) :
+    share.id r = ok snapshot.id ∧
+    share.item_id r = ok snapshot.item_id ∧
+    share.item_name r = ok snapshot.item_name ∧
+    share.item_type r = ok snapshot.item_type ∧
+    share.token r = ok snapshot.token ∧
+    share.password_hash r = ok snapshot.password_hash ∧
+    share.expires_at r = ok snapshot.expires_at ∧
+    share.created_at r = ok snapshot.created_at ∧
+    share.created_by r = ok snapshot.created_by ∧
+    share.access_count r = ok snapshot.access_count :=
+  Verified.OxicloudShare.restored_readback snapshot r h
+
+/-- Changing password protection preserves the share token, target, creator, and expiry. -/
+theorem share_password_frame (s r : share.Share) (hash : Option (alloc.vec.Vec U8))
+    (h : share.with_password s hash = ok r) : SpecKernel.SharePasswordChanged s hash r :=
+  Verified.OxicloudShare.password_change_ok s r hash h
+
+/-- Token changes preserve the password requirement, target, creator, and expiry. -/
+theorem share_token_frame (s r : share.Share) (token : alloc.vec.Vec U8)
+    (h : share.with_token s token = ok r) : SpecKernel.ShareTokenChanged s token r :=
+  Verified.OxicloudShare.token_change_ok s r token h
+
+/-- A stored hash determines whether password verification is required. -/
+theorem share_password_required (s : share.Share) (r : Bool) (h : share.has_password s = ok r) :
+    (r = true ↔ ∃ hash, s.password_hash = some hash) ∧ (r = false ↔ s.password_hash = none) :=
+  Verified.OxicloudShare.password_required s r h
+
+/-- Successful access accounting cannot wrap or change authorization fields. -/
+theorem share_access_accounting (s r : share.Share) (h : share.increment_access_count s = ok r) :
+    SpecKernel.ShareAccessCounted s r :=
+  Verified.OxicloudShare.access_count_ok s r h
 
 end oxicloud_kernel.Properties

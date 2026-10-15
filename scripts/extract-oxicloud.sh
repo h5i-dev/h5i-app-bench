@@ -59,6 +59,21 @@ trap 'rm -rf "$tmp"' EXIT
   --start-from oxicloud_kernel::validation::classify_email_verification \
   --start-from oxicloud_kernel::validation::is_valid_entry_name \
   --start-from oxicloud_kernel::validation::validate_dpop_jkt \
+  --start-from oxicloud_kernel::share::from_raw \
+  --start-from oxicloud_kernel::share::with_password \
+  --start-from oxicloud_kernel::share::with_token \
+  --start-from oxicloud_kernel::share::increment_access_count \
+  --start-from oxicloud_kernel::share::has_password \
+  --start-from oxicloud_kernel::share::id \
+  --start-from oxicloud_kernel::share::item_id \
+  --start-from oxicloud_kernel::share::item_name \
+  --start-from oxicloud_kernel::share::item_type \
+  --start-from oxicloud_kernel::share::token \
+  --start-from oxicloud_kernel::share::password_hash \
+  --start-from oxicloud_kernel::share::expires_at \
+  --start-from oxicloud_kernel::share::created_at \
+  --start-from oxicloud_kernel::share::created_by \
+  --start-from oxicloud_kernel::share::access_count \
   --dest-file "$tmp/oxicloud_kernel.llbc")
 mkdir -p "$root/ports/oxicloud/proofs/generated"
 aeneas -backend lean "$tmp/oxicloud_kernel.llbc" -dest "$root/ports/oxicloud/proofs/generated"

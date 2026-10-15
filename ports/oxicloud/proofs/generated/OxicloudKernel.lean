@@ -3592,6 +3592,147 @@ def session.origin (s : session.Session) : Result session.SessionOrigin := do
 def session.last_seen_at (s : session.Session) : Result session.Timestamp := do
   ok s.last_seen_at
 
+/-- [oxicloud_kernel::share::ShareItemType]
+    Source: 'ports/oxicloud/kernel/src/share.rs', lines 3:0-3:39
+    Visibility: public -/
+@[discriminant isize]
+inductive share.ShareItemType where
+| File : share.ShareItemType
+| Folder : share.ShareItemType
+
+/-- [oxicloud_kernel::share::Share]
+    Source: 'ports/oxicloud/kernel/src/share.rs', lines 5:0-16:1
+    Visibility: public -/
+structure share.Share where
+  id : Std.U128
+  item_id : alloc.vec.Vec Std.U8
+  item_name : Option (alloc.vec.Vec Std.U8)
+  item_type : share.ShareItemType
+  token : alloc.vec.Vec Std.U8
+  password_hash : Option (alloc.vec.Vec Std.U8)
+  expires_at : Option Std.U64
+  created_at : Std.U64
+  created_by : Std.U128
+  access_count : Std.U64
+
+/-- [oxicloud_kernel::share::from_raw]:
+    Source: 'ports/oxicloud/kernel/src/share.rs', lines 19:0-32:1
+    Visibility: public -/
+def share.from_raw
+  (id : Std.U128) (item_id : alloc.vec.Vec Std.U8)
+  (item_name : Option (alloc.vec.Vec Std.U8)) (item_type : share.ShareItemType)
+  (token : alloc.vec.Vec Std.U8)
+  (password_hash : Option (alloc.vec.Vec Std.U8)) (expires_at : Option Std.U64)
+  (created_at : Std.U64) (created_by : Std.U128) (access_count : Std.U64) :
+  Result share.Share
+  := do
+  ok
+    {
+      id,
+      item_id,
+      item_name,
+      item_type,
+      token,
+      password_hash,
+      expires_at,
+      created_at,
+      created_by,
+      access_count
+    }
+
+/-- [oxicloud_kernel::share::with_password]:
+    Source: 'ports/oxicloud/kernel/src/share.rs', lines 34:0-37:1
+    Visibility: public -/
+def share.with_password
+  (s : share.Share) (hash : Option (alloc.vec.Vec Std.U8)) :
+  Result share.Share
+  := do
+  ok { s with password_hash := hash }
+
+/-- [oxicloud_kernel::share::with_token]:
+    Source: 'ports/oxicloud/kernel/src/share.rs', lines 39:0-42:1
+    Visibility: public -/
+def share.with_token
+  (s : share.Share) (token : alloc.vec.Vec Std.U8) : Result share.Share := do
+  ok { s with token }
+
+/-- [oxicloud_kernel::share::increment_access_count]:
+    Source: 'ports/oxicloud/kernel/src/share.rs', lines 44:0-47:1
+    Visibility: public -/
+def share.increment_access_count (s : share.Share) : Result share.Share := do
+  let i ← s.access_count + 1#u64
+  ok { s with access_count := i }
+
+/-- [oxicloud_kernel::share::has_password]:
+    Source: 'ports/oxicloud/kernel/src/share.rs', lines 49:0-51:1
+    Visibility: public -/
+def share.has_password (s : share.Share) : Result Bool := do
+  match s.password_hash with
+  | none => ok false
+  | some _ => ok true
+
+/-- [oxicloud_kernel::share::id]:
+    Source: 'ports/oxicloud/kernel/src/share.rs', lines 54:0-54:37
+    Visibility: public -/
+def share.id (s : share.Share) : Result Std.U128 := do
+  ok s.id
+
+/-- [oxicloud_kernel::share::item_id]:
+    Source: 'ports/oxicloud/kernel/src/share.rs', lines 57:0-57:52
+    Visibility: public -/
+def share.item_id (s : share.Share) : Result (alloc.vec.Vec Std.U8) := do
+  ok s.item_id
+
+/-- [oxicloud_kernel::share::item_name]:
+    Source: 'ports/oxicloud/kernel/src/share.rs', lines 60:0-60:64
+    Visibility: public -/
+def share.item_name
+  (s : share.Share) : Result (Option (alloc.vec.Vec Std.U8)) := do
+  ok s.item_name
+
+/-- [oxicloud_kernel::share::item_type]:
+    Source: 'ports/oxicloud/kernel/src/share.rs', lines 63:0-63:62
+    Visibility: public -/
+def share.item_type (s : share.Share) : Result share.ShareItemType := do
+  ok s.item_type
+
+/-- [oxicloud_kernel::share::token]:
+    Source: 'ports/oxicloud/kernel/src/share.rs', lines 66:0-66:48
+    Visibility: public -/
+def share.token (s : share.Share) : Result (alloc.vec.Vec Std.U8) := do
+  ok s.token
+
+/-- [oxicloud_kernel::share::password_hash]:
+    Source: 'ports/oxicloud/kernel/src/share.rs', lines 69:0-69:72
+    Visibility: public -/
+def share.password_hash
+  (s : share.Share) : Result (Option (alloc.vec.Vec Std.U8)) := do
+  ok s.password_hash
+
+/-- [oxicloud_kernel::share::expires_at]:
+    Source: 'ports/oxicloud/kernel/src/share.rs', lines 72:0-72:60
+    Visibility: public -/
+def share.expires_at (s : share.Share) : Result (Option Std.U64) := do
+  ok s.expires_at
+
+/-- [oxicloud_kernel::share::created_at]:
+    Source: 'ports/oxicloud/kernel/src/share.rs', lines 75:0-75:52
+    Visibility: public -/
+def share.created_at (s : share.Share) : Result Std.U64 := do
+  ok s.created_at
+
+/-- [oxicloud_kernel::share::created_by]:
+    Source: 'ports/oxicloud/kernel/src/share.rs', lines 78:0-78:53
+    Visibility: public -/
+def share.created_by (s : share.Share) : Result Std.U128 := do
+  ok s.created_by
+
+/-- [oxicloud_kernel::share::access_count]:
+    Source: 'ports/oxicloud/kernel/src/share.rs', lines 81:0-81:56
+    Visibility: public -/
+def share.access_count (s : share.Share) : Result Std.U64 := do
+  ok s.access_count
+
 /-- [oxicloud_kernel::userrole::UserRole]
     Source: 'ports/oxicloud/kernel/src/userrole.rs', lines 5:0-10:1
     Visibility: public -/

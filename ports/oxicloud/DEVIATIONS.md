@@ -133,3 +133,16 @@ and the external-sharing guard retains both principal kind and external flag.
 - `AuthApplicationService::available_disk_space` and its caller `capped_quota` stay
   in the shell: both execute a filesystem space query, although the ceiling's
   syntactic classifier did not identify that I/O.
+
+### Share state (`domain/entities/share.rs`)
+
+- Share UUIDs use full 128-bit integers, strings use UTF-8 byte vectors, and optional
+  strings use optional vectors. Borrowed getters return references to these values.
+- `ShareItemType` retains both variants. Timestamps and expiry are the original
+  unsigned seconds, without normalization or an added expiry check in restoration.
+- Share snapshots expose their fields for extraction. Each upstream restoration,
+  observation, password/token update, and access-counter operation is retained.
+  Password presence includes an empty stored hash, as upstream does.
+- The access counter retains checked integer addition in the kernel and differential
+  tests; extraction models an overflowing increment as failure. Clock and randomness
+  in share creation and expiry checks remain in the shell.

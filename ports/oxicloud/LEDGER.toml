@@ -13039,13 +13039,14 @@ kernel = ["session::last_seen_at"]
 [[item]]
 upstream = "src/domain/entities/share.rs:7 Share"
 lines = 12
-status = "todo"
+status = "ported"
+kernel = ["share::Share"]
 
 [[item]]
 upstream = "src/domain/entities/share.rs:22 ShareItemType"
 lines = 4
-status = "outside"
-reason = "uses File"
+status = "ported"
+kernel = ["share::ShareItemType"]
 
 [[item]]
 upstream = "src/domain/entities/share.rs:29 Share::new"
@@ -13056,62 +13057,74 @@ reason = "uses SystemTime, new_v4"
 [[item]]
 upstream = "src/domain/entities/share.rs:61 Share::from_raw"
 lines = 25
-status = "todo"
+status = "ported"
+kernel = ["share::from_raw"]
 
 [[item]]
 upstream = "src/domain/entities/share.rs:90 Share::id"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["share::id"]
 
 [[item]]
 upstream = "src/domain/entities/share.rs:94 Share::item_id"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["share::item_id"]
 
 [[item]]
 upstream = "src/domain/entities/share.rs:98 Share::item_name"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["share::item_name"]
 
 [[item]]
 upstream = "src/domain/entities/share.rs:102 Share::item_type"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["share::item_type"]
 
 [[item]]
 upstream = "src/domain/entities/share.rs:106 Share::token"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["share::token"]
 
 [[item]]
 upstream = "src/domain/entities/share.rs:110 Share::expires_at"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["share::expires_at"]
 
 [[item]]
 upstream = "src/domain/entities/share.rs:114 Share::created_at"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["share::created_at"]
 
 [[item]]
 upstream = "src/domain/entities/share.rs:118 Share::created_by"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["share::created_by"]
 
 [[item]]
 upstream = "src/domain/entities/share.rs:122 Share::access_count"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["share::access_count"]
 
 [[item]]
 upstream = "src/domain/entities/share.rs:128 Share::with_password"
 lines = 4
-status = "todo"
+status = "ported"
+kernel = ["share::with_password"]
 
 [[item]]
 upstream = "src/domain/entities/share.rs:133 Share::with_token"
 lines = 4
-status = "todo"
+status = "ported"
+kernel = ["share::with_token"]
 
 [[item]]
 upstream = "src/domain/entities/share.rs:138 Share::is_expired"
@@ -13122,17 +13135,20 @@ reason = "uses SystemTime"
 [[item]]
 upstream = "src/domain/entities/share.rs:151 Share::increment_access_count"
 lines = 4
-status = "todo"
+status = "ported"
+kernel = ["share::increment_access_count"]
 
 [[item]]
 upstream = "src/domain/entities/share.rs:156 Share::has_password"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["share::has_password"]
 
 [[item]]
 upstream = "src/domain/entities/share.rs:161 Share::password_hash"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["share::password_hash"]
 
 [[item]]
 upstream = "src/domain/entities/share.rs:171 ShareItemType::fmt"
