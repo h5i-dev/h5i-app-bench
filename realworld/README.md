@@ -76,9 +76,11 @@ the machine live under `/var/tmp` (`/var/tmp/go`, `/var/tmp/tools`).
 
 ## Benchmark
 
-See `bench/README.md` after the harness is in place. `scripts/bench-all.sh`
-reseeds identical data, pins the server and the load generator, and writes
-raw JSON plus a summary table.
+`scripts/bench-all.sh` reseeds identical data, pins the server to CPUs 0–3
+and k6 to CPUs 4–7, and writes raw JSON plus `bench/results/summary.md`.
+The load shape, production process settings, and kernel microbenchmark are
+in `bench/README.md`. The published run uses 10 s warmup, 30 s measure,
+3 repetitions, and concurrency 1, 16, 64, and 256.
 
 ## Proofs
 
