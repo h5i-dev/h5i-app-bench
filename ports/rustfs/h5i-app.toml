@@ -5,6 +5,17 @@ start-from = ["policies", "pathclean::clean", "defaults::default_version", "defa
 
 [check]
 theorems = [
+  "rustfs_kernel.Properties.metadata_statement_equality",
+  "rustfs_kernel.Properties.metadata_index_membership",
+  "rustfs_kernel.Properties.metadata_empty_policy",
+  "rustfs_kernel.Properties.metadata_resource_witness",
+  "rustfs_kernel.Properties.metadata_condition_tag",
+  "rustfs_kernel.Properties.metadata_condition_replacement",
+  "rustfs_kernel.Properties.metadata_active_tag_conditions",
+  "rustfs_kernel.Properties.metadata_functions_tag",
+  "rustfs_kernel.Properties.metadata_policy_tag",
+  "rustfs_kernel.Properties.metadata_bucket_tag",
+
   "rustfs_kernel.Properties.condition_key_table_lookup",
   "rustfs_kernel.Properties.condition_key_table_count",
   "rustfs_kernel.Properties.condition_key_table_distinct",

@@ -1,3 +1,6 @@
+import Verified.RustfsManagementTags
+import Verified.RustfsManagementEquality
+import Verified.RustfsManagementQueries
 import Verified.RustfsDerivedMembership
 import Verified.RustfsExtras
 import Verified.RustfsPatternPrefix
@@ -983,5 +986,53 @@ theorem server_derived_condition_membership (needle : Slice U8) (b : Bool)
     (h : keytables.is_server_derived_condition_key needle = ok b) :
     (b = true ↔ ∃ n ∈ serverDerivedNames, n.map asciiLower = (nats needle.val).map asciiLower) :=
   Verified.RustfsDerivedMembership.condition_key_ok needle b h
+
+
+/-- Statement comparison ignores IDs and compares semantic set fields. -/
+theorem metadata_statement_equality (a c : manage.Statement) (b : Bool)
+    (h : manage.statement_eq a c = ok b) : (b = true ↔ MetadataStatementEquivalent a c) :=
+  Verified.RustfsManagementEquality.statement_eq_ok a c b h
+
+theorem metadata_index_membership (xs : Slice Usize) (x : Usize) (b : Bool)
+    (h : manage.index_member xs x = ok b) : (b = true ↔ x ∈ xs.val) :=
+  Verified.RustfsManagementQueries.index_member_ok xs x b h
+
+theorem metadata_empty_policy (p : manage.Policy) :
+    manage.is_empty p = ok (decide (p.statements.val = [])) :=
+  Verified.RustfsManagementQueries.empty_ok p
+
+theorem metadata_resource_witness (p : manage.Policy) (needle : Slice U8) (b : Bool)
+    (h : manage.match_resource p needle = ok b) :
+    (b = true ↔ ∃ st ∈ p.statements.val, ∃ r ∈ st.resources.val,
+      resets.match_resource r needle = ok true) :=
+  Verified.RustfsManagementQueries.match_resource_ok p needle b h
+
+theorem metadata_condition_tag (c : conddata.Condition) (b : Bool)
+    (h : manage.condition_uses_tag c = ok b) : (b = true ↔ ConditionUsesExistingTag c) :=
+  Verified.RustfsManagementTags.condition_tag_ok c b h
+
+theorem metadata_condition_replacement (cs : Slice conddata.Condition) (i : Usize)
+    (hi : i.val < cs.val.length) (b : Bool) (h : manage.overwritten cs i = ok b) :
+    (b = true ↔ ∃ j, i.val < j ∧ ∃ hj : j < cs.val.length,
+      ConditionKeyName cs.val[i.val] = ConditionKeyName cs.val[j]) :=
+  Verified.RustfsManagementTags.overwritten_ok cs i hi b h
+
+theorem metadata_active_tag_conditions (cs : Slice conddata.Condition) (b : Bool)
+    (h : manage.list_uses_tag cs = ok b) : (b = true ↔ ActiveTagConditions cs.val) :=
+  Verified.RustfsManagementTags.list_tag_ok cs b h
+
+theorem metadata_functions_tag (f : conddata.Functions) (b : Bool)
+    (h : manage.functions_use_existing_object_tag f = ok b) : (b = true ↔ FunctionsUseExistingTag f) :=
+  Verified.RustfsManagementTags.functions_tag_ok f b h
+
+theorem metadata_policy_tag (p : manage.Policy) (b : Bool)
+    (h : manage.policy_uses_existing_object_tag_conditions p = ok b) :
+    (b = true ↔ ∃ st ∈ p.statements.val, FunctionsUseExistingTag st.conditions) :=
+  Verified.RustfsManagementTags.policy_tag_ok p b h
+
+theorem metadata_bucket_tag (p : manage.BucketPolicy) (b : Bool)
+    (h : manage.bucket_policy_uses_existing_object_tag_conditions p = ok b) :
+    (b = true ↔ ∃ st ∈ p.statements.val, FunctionsUseExistingTag st.conditions) :=
+  Verified.RustfsManagementTags.bucket_tag_ok p b h
 
 end rustfs_kernel.Properties
