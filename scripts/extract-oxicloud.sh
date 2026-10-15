@@ -131,6 +131,20 @@ trap 'rm -rf "$tmp"' EXIT
   --start-from oxicloud_kernel::liveauth::decide_internal_user \
   --start-from oxicloud_kernel::liveauth::anonymous_live_role \
   --start-from oxicloud_kernel::liveauth::decide_live_role \
+  --start-from oxicloud_kernel::policycompare::policy_knobs \
+  --start-from oxicloud_kernel::policycompare::non_defaultable_knobs \
+  --start-from oxicloud_kernel::policycompare::knob_applies_to_kind \
+  --start-from oxicloud_kernel::policycompare::knob_strictness \
+  --start-from oxicloud_kernel::policycompare::knob_value \
+  --start-from oxicloud_kernel::policycompare::knob_bool \
+  --start-from oxicloud_kernel::policycompare::at_least_as_strict_on \
+  --start-from oxicloud_kernel::policycompare::weaker_than \
+  --start-from oxicloud_kernel::policycompare::knob_from_bytes \
+  --start-from oxicloud_kernel::policycompare::knob_applies_to_kind_bytes \
+  --start-from oxicloud_kernel::policycompare::knob_strictness_bytes \
+  --start-from oxicloud_kernel::policycompare::knob_value_bytes \
+  --start-from oxicloud_kernel::policycompare::knob_bool_bytes \
+  --start-from oxicloud_kernel::policycompare::at_least_as_strict_on_bytes \
   --dest-file "$tmp/oxicloud_kernel.llbc")
 mkdir -p "$root/ports/oxicloud/proofs/generated"
 aeneas -backend lean "$tmp/oxicloud_kernel.llbc" -dest "$root/ports/oxicloud/proofs/generated"

@@ -354,4 +354,97 @@ def AnonymousLiveRole (claim : List U8) (out : Option liveauth.LiveRole) : Prop 
   (out = none ↔ claim ≠ RoleWire .Anonymous) ∧
   (∀ value, out = some value → ∃ role, value = .Active role ∧ role.val = RoleWire .Anonymous ∧ claim = RoleWire .Anonymous)
 
+
+/-- Canonical order of independently configurable drive policies. -/
+def PolicyKnobOrder : List policycompare.Knob :=
+  [.ForbidSharing, .ForbidExternalSharing, .ForbidPublicLinks, .ForbidCrossDriveMove,
+   .ForbidOwnerRoleChange, .IncludeInPhotoIndex, .IncludeInMusicIndex, .ReadOnly,
+   .MaxPublicLinkDays, .RequirePublicLinkPassword]
+
+def PolicyBit (p : drivepolicy.Policies) : policycompare.Knob → Bool
+  | .ForbidSharing => p.forbid_sharing
+  | .ForbidExternalSharing => p.forbid_external_sharing
+  | .ForbidPublicLinks => p.forbid_public_links
+  | .ForbidCrossDriveMove => p.forbid_cross_drive_move
+  | .ForbidOwnerRoleChange => p.forbid_owner_role_change
+  | .IncludeInPhotoIndex => p.include_in_photo_index
+  | .IncludeInMusicIndex => p.include_in_music_index
+  | .ReadOnly => p.read_only
+  | .RequirePublicLinkPassword => p.require_public_link_password
+  | _ => false
+
+/-- Every configured upper bound is respected, with no bound weaker than any finite bound. -/
+def PolicyCapRefines (own required : Option U32) : Prop :=
+  ∀ bound, required = some bound → ∃ cap, own = some cap ∧ cap.val ≤ bound.val
+
+/-- Refinement preserves prohibitions, reduces index exposure, and tightens link lifetimes. -/
+def PolicyRefines (p q : drivepolicy.Policies) (knob : policycompare.Knob) : Prop :=
+  match knob with
+  | .MaxPublicLinkDays => PolicyCapRefines p.max_public_link_days q.max_public_link_days
+  | .IncludeInPhotoIndex | .IncludeInMusicIndex => PolicyBit p knob = true → PolicyBit q knob = true
+  | _ => PolicyBit q knob = true → PolicyBit p knob = true
+
+def PolicyApplies (knob : policycompare.Knob) (kind : model.DriveKind) : Prop :=
+  knob ≠ .ForbidOwnerRoleChange ∨ kind ≠ .Personal
+
+def PolicyDefaultable (knob : policycompare.Knob) : Prop := knob ≠ .ReadOnly
+
+/-- Drift consists only of applicable standing defaults that the current drive fails to refine. -/
+def PolicyWeak (p d : drivepolicy.Policies) (kind : model.DriveKind) (knob : policycompare.Knob) : Prop :=
+  PolicyApplies knob kind ∧ PolicyDefaultable knob ∧ ¬PolicyRefines p d knob
+
+noncomputable def PolicyWeakerList (p d : drivepolicy.Policies) (kind : model.DriveKind) : List policycompare.Knob := by
+  classical
+  exact PolicyKnobOrder.filter (fun knob => decide (PolicyWeak p d kind knob))
+
+/-- Policy values have exactly the boolean, bounded-integer, or null shape declared by their knob. -/
+def PolicyValue (p : drivepolicy.Policies) (knob : policycompare.Knob) (out : policycompare.KnobValue) : Prop :=
+  match knob with
+  | .Other => out = .Null
+  | .MaxPublicLinkDays =>
+    match p.max_public_link_days with
+    | none => out = .Null
+    | some n => out = .Number n
+  | _ => out = .Bool (PolicyBit p knob)
+
+/-- Opt-in indices are false-stricter, link lifetime is smaller-stricter, and other flags are true-stricter. -/
+def PolicyStrictness (knob : policycompare.Knob) (out : policycompare.Strictness) : Prop :=
+  match knob with
+  | .IncludeInPhotoIndex | .IncludeInMusicIndex => out = .FalseIsStricter
+  | .MaxPublicLinkDays => out = .SmallerIsStricter
+  | _ => out = .TrueIsStricter
+
+
+/-- Exact policy-name spelling table; Other has no canonical spelling. -/
+def PolicyKnobWire : policycompare.Knob → Option (List U8)
+  | .ForbidSharing => some [102#u8, 111#u8, 114#u8, 98#u8, 105#u8, 100#u8, 95#u8, 115#u8, 104#u8, 97#u8, 114#u8, 105#u8, 110#u8, 103#u8]
+  | .ForbidExternalSharing => some [102#u8, 111#u8, 114#u8, 98#u8, 105#u8, 100#u8, 95#u8, 101#u8, 120#u8, 116#u8, 101#u8, 114#u8, 110#u8, 97#u8, 108#u8, 95#u8, 115#u8, 104#u8, 97#u8, 114#u8, 105#u8, 110#u8, 103#u8]
+  | .ForbidPublicLinks => some [102#u8, 111#u8, 114#u8, 98#u8, 105#u8, 100#u8, 95#u8, 112#u8, 117#u8, 98#u8, 108#u8, 105#u8, 99#u8, 95#u8, 108#u8, 105#u8, 110#u8, 107#u8, 115#u8]
+  | .ForbidCrossDriveMove => some [102#u8, 111#u8, 114#u8, 98#u8, 105#u8, 100#u8, 95#u8, 99#u8, 114#u8, 111#u8, 115#u8, 115#u8, 95#u8, 100#u8, 114#u8, 105#u8, 118#u8, 101#u8, 95#u8, 109#u8, 111#u8, 118#u8, 101#u8]
+  | .ForbidOwnerRoleChange => some [102#u8, 111#u8, 114#u8, 98#u8, 105#u8, 100#u8, 95#u8, 111#u8, 119#u8, 110#u8, 101#u8, 114#u8, 95#u8, 114#u8, 111#u8, 108#u8, 101#u8, 95#u8, 99#u8, 104#u8, 97#u8, 110#u8, 103#u8, 101#u8]
+  | .IncludeInPhotoIndex => some [105#u8, 110#u8, 99#u8, 108#u8, 117#u8, 100#u8, 101#u8, 95#u8, 105#u8, 110#u8, 95#u8, 112#u8, 104#u8, 111#u8, 116#u8, 111#u8, 95#u8, 105#u8, 110#u8, 100#u8, 101#u8, 120#u8]
+  | .IncludeInMusicIndex => some [105#u8, 110#u8, 99#u8, 108#u8, 117#u8, 100#u8, 101#u8, 95#u8, 105#u8, 110#u8, 95#u8, 109#u8, 117#u8, 115#u8, 105#u8, 99#u8, 95#u8, 105#u8, 110#u8, 100#u8, 101#u8, 120#u8]
+  | .ReadOnly => some [114#u8, 101#u8, 97#u8, 100#u8, 95#u8, 111#u8, 110#u8, 108#u8, 121#u8]
+  | .MaxPublicLinkDays => some [109#u8, 97#u8, 120#u8, 95#u8, 112#u8, 117#u8, 98#u8, 108#u8, 105#u8, 99#u8, 95#u8, 108#u8, 105#u8, 110#u8, 107#u8, 95#u8, 100#u8, 97#u8, 121#u8, 115#u8]
+  | .RequirePublicLinkPassword => some [114#u8, 101#u8, 113#u8, 117#u8, 105#u8, 114#u8, 101#u8, 95#u8, 112#u8, 117#u8, 98#u8, 108#u8, 105#u8, 99#u8, 95#u8, 108#u8, 105#u8, 110#u8, 107#u8, 95#u8, 112#u8, 97#u8, 115#u8, 115#u8, 119#u8, 111#u8, 114#u8, 100#u8]
+  | .Other => none
+
+def PolicyKnobNames : List (List U8) :=
+  [[102#u8, 111#u8, 114#u8, 98#u8, 105#u8, 100#u8, 95#u8, 115#u8, 104#u8, 97#u8, 114#u8, 105#u8, 110#u8, 103#u8],
+   [102#u8, 111#u8, 114#u8, 98#u8, 105#u8, 100#u8, 95#u8, 101#u8, 120#u8, 116#u8, 101#u8, 114#u8, 110#u8, 97#u8, 108#u8, 95#u8, 115#u8, 104#u8, 97#u8, 114#u8, 105#u8, 110#u8, 103#u8],
+   [102#u8, 111#u8, 114#u8, 98#u8, 105#u8, 100#u8, 95#u8, 112#u8, 117#u8, 98#u8, 108#u8, 105#u8, 99#u8, 95#u8, 108#u8, 105#u8, 110#u8, 107#u8, 115#u8],
+   [102#u8, 111#u8, 114#u8, 98#u8, 105#u8, 100#u8, 95#u8, 99#u8, 114#u8, 111#u8, 115#u8, 115#u8, 95#u8, 100#u8, 114#u8, 105#u8, 118#u8, 101#u8, 95#u8, 109#u8, 111#u8, 118#u8, 101#u8],
+   [102#u8, 111#u8, 114#u8, 98#u8, 105#u8, 100#u8, 95#u8, 111#u8, 119#u8, 110#u8, 101#u8, 114#u8, 95#u8, 114#u8, 111#u8, 108#u8, 101#u8, 95#u8, 99#u8, 104#u8, 97#u8, 110#u8, 103#u8, 101#u8],
+   [105#u8, 110#u8, 99#u8, 108#u8, 117#u8, 100#u8, 101#u8, 95#u8, 105#u8, 110#u8, 95#u8, 112#u8, 104#u8, 111#u8, 116#u8, 111#u8, 95#u8, 105#u8, 110#u8, 100#u8, 101#u8, 120#u8],
+   [105#u8, 110#u8, 99#u8, 108#u8, 117#u8, 100#u8, 101#u8, 95#u8, 105#u8, 110#u8, 95#u8, 109#u8, 117#u8, 115#u8, 105#u8, 99#u8, 95#u8, 105#u8, 110#u8, 100#u8, 101#u8, 120#u8],
+   [114#u8, 101#u8, 97#u8, 100#u8, 95#u8, 111#u8, 110#u8, 108#u8, 121#u8],
+   [109#u8, 97#u8, 120#u8, 95#u8, 112#u8, 117#u8, 98#u8, 108#u8, 105#u8, 99#u8, 95#u8, 108#u8, 105#u8, 110#u8, 107#u8, 95#u8, 100#u8, 97#u8, 121#u8, 115#u8],
+   [114#u8, 101#u8, 113#u8, 117#u8, 105#u8, 114#u8, 101#u8, 95#u8, 112#u8, 117#u8, 98#u8, 108#u8, 105#u8, 99#u8, 95#u8, 108#u8, 105#u8, 110#u8, 107#u8, 95#u8, 112#u8, 97#u8, 115#u8, 115#u8, 119#u8, 111#u8, 114#u8, 100#u8]]
+
+/-- Canonical names select their own knob; all other bytes select Other. -/
+def PolicyKnobParsed (raw : List U8) (knob : policycompare.Knob) : Prop :=
+  match knob with
+  | .Other => raw ∉ PolicyKnobNames
+  | _ => PolicyKnobWire knob = some raw
+
 end oxicloud_kernel.SpecKernel

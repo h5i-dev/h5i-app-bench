@@ -101,3 +101,55 @@ fn drive_policy_differential() {
         }
     }
 }
+
+#[test]
+fn policy_comparison_differential() {
+    use oxicloud_kernel::policycompare as pc;
+    fn name(k: pc::Knob) -> &'static str { match k {
+        pc::Knob::ForbidSharing=>"forbid_sharing",pc::Knob::ForbidExternalSharing=>"forbid_external_sharing",
+        pc::Knob::ForbidPublicLinks=>"forbid_public_links",pc::Knob::ForbidCrossDriveMove=>"forbid_cross_drive_move",
+        pc::Knob::ForbidOwnerRoleChange=>"forbid_owner_role_change",pc::Knob::IncludeInPhotoIndex=>"include_in_photo_index",
+        pc::Knob::IncludeInMusicIndex=>"include_in_music_index",pc::Knob::ReadOnly=>"read_only",
+        pc::Knob::MaxPublicLinkDays=>"max_public_link_days",pc::Knob::RequirePublicLinkPassword=>"require_public_link_password",pc::Knob::Other=>"unrecognized_knob",
+    } }
+    assert_eq!(pc::policy_knobs().into_iter().map(name).collect::<Vec<_>>(),upstream::POLICY_KNOBS);
+    assert_eq!(pc::non_defaultable_knobs().into_iter().map(name).collect::<Vec<_>>(),upstream::NON_DEFAULTABLE_KNOBS);
+    let mut rng=Rng(0xb349_91c3_4452_195a);
+    for trial in 0..10_000 {
+        let mut p=policies(&mut rng);let mut q=policies(&mut rng);
+        if trial<16 {p.max_public_link_days=[None,Some(0),Some(1),Some(u32::MAX)][trial%4];q.max_public_link_days=[None,Some(0),Some(1),Some(u32::MAX)][trial/4];}
+        let up=original(p);let uq=original(q);
+        let mut knobs=pc::policy_knobs();knobs.push(pc::Knob::Other);
+        for k in knobs {
+            let n=name(k);
+            assert_eq!(name(pc::knob_from_bytes(n.as_bytes())),n);
+            let vb=match pc::knob_value_bytes(&p,n.as_bytes()) {pc::KnobValue::Bool(b)=>serde_json::Value::Bool(b),pc::KnobValue::Number(v)=>serde_json::Value::from(v),pc::KnobValue::Null=>serde_json::Value::Null};
+            assert_eq!(vb,up.knob_value(n));
+            assert_eq!(pc::knob_bool_bytes(&p,n.as_bytes()),matches!(up.knob_value(n),serde_json::Value::Bool(true)));
+            assert_eq!(pc::at_least_as_strict_on_bytes(&p,&q,n.as_bytes()),up.at_least_as_strict_on(&uq,n));
+            assert_eq!(std::mem::discriminant(&pc::knob_strictness_bytes(n.as_bytes())),std::mem::discriminant(&pc::knob_strictness(k)));
+            let v=match pc::knob_value(&p,k) {pc::KnobValue::Bool(b)=>serde_json::Value::Bool(b),pc::KnobValue::Number(v)=>serde_json::Value::from(v),pc::KnobValue::Null=>serde_json::Value::Null};
+            assert_eq!(v,up.knob_value(n));
+            assert_eq!(pc::knob_bool(&p,k),matches!(up.knob_value(n),serde_json::Value::Bool(true)));
+            let st=match pc::knob_strictness(k) {pc::Strictness::TrueIsStricter=>upstream::Strictness::TrueIsStricter,pc::Strictness::FalseIsStricter=>upstream::Strictness::FalseIsStricter,pc::Strictness::SmallerIsStricter=>upstream::Strictness::SmallerIsStricter};
+            assert_eq!(st,upstream::knob_strictness(n));
+            assert_eq!(pc::at_least_as_strict_on(&p,&q,k),up.at_least_as_strict_on(&uq,n));
+            for (kind,ukind) in [(DriveKind::Personal,upstream::DriveKind::Personal),(DriveKind::Shared,upstream::DriveKind::Shared)] {
+                assert_eq!(pc::knob_applies_to_kind_bytes(n.as_bytes(),kind),upstream::knob_applies_to_kind(n,ukind));
+                assert_eq!(pc::knob_applies_to_kind(k,kind),upstream::knob_applies_to_kind(n,ukind));
+            }
+        }
+        for (kind,ukind) in [(DriveKind::Personal,upstream::DriveKind::Personal),(DriveKind::Shared,upstream::DriveKind::Shared)] {
+            assert_eq!(pc::weaker_than(&p,&q,kind).into_iter().map(name).collect::<Vec<_>>(),up.weaker_than(&uq,ukind));
+        }
+        for n in ["","READ_ONLY","read_only\0","include_in_music_index ","未知"] {
+            assert!(matches!(pc::knob_from_bytes(n.as_bytes()),pc::Knob::Other));
+            assert!(matches!(pc::knob_value_bytes(&p,n.as_bytes()),pc::KnobValue::Null));
+            assert!(pc::at_least_as_strict_on_bytes(&p,&q,n.as_bytes()));
+            assert_eq!(up.knob_value(n),serde_json::Value::Null);
+            assert!(matches!(upstream::knob_strictness(n),upstream::Strictness::TrueIsStricter));
+            assert!(up.at_least_as_strict_on(&uq,n));
+            assert!(upstream::knob_applies_to_kind(n,upstream::DriveKind::Personal));
+        }
+    }
+}

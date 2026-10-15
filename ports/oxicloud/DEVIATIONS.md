@@ -233,3 +233,20 @@ individually as outside; these are not counted as ported authorization logic.
 - Audit events remain in the shell. Differential oracles compile the pinned
   decision bodies, substituting inferred owned-string construction and the
   numeric 403 status, and replacing audit calls with no-op test events.
+
+### Drive-policy strictness comparison
+
+- Policy knob string inputs are represented by `Knob`: the ten canonical
+  spellings correspond to their named variants, and every other spelling maps
+  to Other. The byte-input entry points perform this classification inside
+  the extracted kernel; `knob_from_bytes` has a canonical-name recognition
+  proof. The compared upstream functions observe no distinction among
+  unrecognized spellings. Outputs from `weaker_than` contain only canonical
+  variants, mapped back to the exact names in POLICY_KNOBS order.
+- `KnobValue` represents the entire JSON value range these getters can emit:
+  Bool, an unsigned 32-bit Number, or Null. It does not accept arbitrary JSON.
+- The pinned ten-entry filter is expanded into ten ordered `append_weaker`
+  calls instead of iterator combinators. Each call keeps the upstream
+  applicability, non-defaultable, and strictness filters in the same order.
+  The two fixed name tables are represented by vectors of the corresponding
+  typed variants, constructed with explicit pushes.

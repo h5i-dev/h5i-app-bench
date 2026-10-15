@@ -26,3 +26,5 @@ pub mod userstate;
 pub mod admin;
 
 pub mod liveauth;
+
+pub mod policycompare;

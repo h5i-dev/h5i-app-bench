@@ -11916,17 +11916,20 @@ kernel = ["drivepolicy::Policies"]
 [[item]]
 upstream = "src/domain/entities/drive.rs:246 POLICY_KNOBS"
 lines = 12
-status = "todo"
+status = "ported"
+kernel = ["kernel/src/policycompare.rs::policy_knobs"]
 
 [[item]]
 upstream = "src/domain/entities/drive.rs:265 NON_DEFAULTABLE_KNOBS"
 lines = 1
-status = "todo"
+status = "ported"
+kernel = ["kernel/src/policycompare.rs::non_defaultable_knobs"]
 
 [[item]]
 upstream = "src/domain/entities/drive.rs:274 knob_applies_to_kind"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["kernel/src/policycompare.rs::knob_applies_to_kind_bytes", "kernel/src/policycompare.rs::knob_applies_to_kind", "kernel/src/policycompare.rs::knob_from_bytes"]
 
 [[item]]
 upstream = "src/domain/entities/drive.rs:285 DrivePolicyOverrides"
@@ -11942,12 +11945,14 @@ status = "todo"
 [[item]]
 upstream = "src/domain/entities/drive.rs:326 Strictness"
 lines = 5
-status = "todo"
+status = "ported"
+kernel = ["kernel/src/policycompare.rs::Strictness"]
 
 [[item]]
 upstream = "src/domain/entities/drive.rs:342 knob_strictness"
 lines = 7
-status = "todo"
+status = "ported"
+kernel = ["kernel/src/policycompare.rs::knob_strictness_bytes", "kernel/src/policycompare.rs::knob_strictness", "kernel/src/policycompare.rs::knob_from_bytes"]
 
 [[item]]
 upstream = "src/domain/entities/drive.rs:351 DrivePolicies::from_value"
@@ -11963,22 +11968,26 @@ kernel = ["drivepolicy::resolve"]
 [[item]]
 upstream = "src/domain/entities/drive.rs:409 DrivePolicies::knob_value"
 lines = 19
-status = "todo"
+status = "ported"
+kernel = ["kernel/src/policycompare.rs::knob_value_bytes", "kernel/src/policycompare.rs::knob_value", "kernel/src/policycompare.rs::knob_from_bytes"]
 
 [[item]]
 upstream = "src/domain/entities/drive.rs:432 DrivePolicies::at_least_as_strict_on"
 lines = 19
-status = "todo"
+status = "ported"
+kernel = ["kernel/src/policycompare.rs::at_least_as_strict_on_bytes", "kernel/src/policycompare.rs::at_least_as_strict_on", "kernel/src/policycompare.rs::knob_from_bytes"]
 
 [[item]]
 upstream = "src/domain/entities/drive.rs:459 DrivePolicies::knob_bool"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["kernel/src/policycompare.rs::knob_bool_bytes", "kernel/src/policycompare.rs::knob_bool", "kernel/src/policycompare.rs::knob_from_bytes"]
 
 [[item]]
 upstream = "src/domain/entities/drive.rs:463 DrivePolicies::weaker_than"
 lines = 9
-status = "todo"
+status = "ported"
+kernel = ["kernel/src/policycompare.rs::weaker_than"]
 
 [[item]]
 upstream = "src/domain/entities/drive.rs:480 DrivePolicies::refuse_public_links"

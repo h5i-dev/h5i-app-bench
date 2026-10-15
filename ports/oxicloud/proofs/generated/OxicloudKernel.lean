@@ -3883,6 +3883,420 @@ def magiclink.is_redeemable
   | magiclink.MagicLinkStatus.Used => ok false
   | magiclink.MagicLinkStatus.Expired => ok false
 
+/-- [oxicloud_kernel::policycompare::Knob]
+    Source: 'ports/oxicloud/kernel/src/policycompare.rs', lines 4:0-8:1
+    Visibility: public -/
+@[discriminant isize]
+inductive policycompare.Knob where
+| ForbidSharing : policycompare.Knob
+| ForbidExternalSharing : policycompare.Knob
+| ForbidPublicLinks : policycompare.Knob
+| ForbidCrossDriveMove : policycompare.Knob
+| ForbidOwnerRoleChange : policycompare.Knob
+| IncludeInPhotoIndex : policycompare.Knob
+| IncludeInMusicIndex : policycompare.Knob
+| ReadOnly : policycompare.Knob
+| MaxPublicLinkDays : policycompare.Knob
+| RequirePublicLinkPassword : policycompare.Knob
+| Other : policycompare.Knob
+
+/-- [oxicloud_kernel::policycompare::Strictness]
+    Source: 'ports/oxicloud/kernel/src/policycompare.rs', lines 10:0-10:74
+    Visibility: public -/
+@[discriminant isize]
+inductive policycompare.Strictness where
+| TrueIsStricter : policycompare.Strictness
+| FalseIsStricter : policycompare.Strictness
+| SmallerIsStricter : policycompare.Strictness
+
+/-- [oxicloud_kernel::policycompare::KnobValue]
+    Source: 'ports/oxicloud/kernel/src/policycompare.rs', lines 11:0-11:52
+    Visibility: public -/
+@[discriminant isize]
+inductive policycompare.KnobValue where
+| Bool : Bool → policycompare.KnobValue
+| Number : Std.U32 → policycompare.KnobValue
+| Null : policycompare.KnobValue
+
+/-- [oxicloud_kernel::policycompare::policy_knobs]:
+    Source: 'ports/oxicloud/kernel/src/policycompare.rs', lines 12:0-20:1
+    Visibility: public -/
+def policycompare.policy_knobs
+  : Result (alloc.vec.Vec policycompare.Knob) := do
+  let out ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new policycompare.Knob)
+      policycompare.Knob.ForbidSharing
+  let out1 ← alloc.vec.Vec.push out policycompare.Knob.ForbidExternalSharing
+  let out2 ← alloc.vec.Vec.push out1 policycompare.Knob.ForbidPublicLinks
+  let out3 ← alloc.vec.Vec.push out2 policycompare.Knob.ForbidCrossDriveMove
+  let out4 ← alloc.vec.Vec.push out3 policycompare.Knob.ForbidOwnerRoleChange
+  let out5 ← alloc.vec.Vec.push out4 policycompare.Knob.IncludeInPhotoIndex
+  let out6 ← alloc.vec.Vec.push out5 policycompare.Knob.IncludeInMusicIndex
+  let out7 ← alloc.vec.Vec.push out6 policycompare.Knob.ReadOnly
+  let out8 ← alloc.vec.Vec.push out7 policycompare.Knob.MaxPublicLinkDays
+  alloc.vec.Vec.push out8 policycompare.Knob.RequirePublicLinkPassword
+
+/-- [oxicloud_kernel::policycompare::non_defaultable_knobs]:
+    Source: 'ports/oxicloud/kernel/src/policycompare.rs', lines 21:0-23:1
+    Visibility: public -/
+def policycompare.non_defaultable_knobs
+  : Result (alloc.vec.Vec policycompare.Knob) := do
+  alloc.vec.Vec.push (alloc.vec.Vec.new policycompare.Knob)
+    policycompare.Knob.ReadOnly
+
+/-- [oxicloud_kernel::policycompare::knob_applies_to_kind]:
+    Source: 'ports/oxicloud/kernel/src/policycompare.rs', lines 24:0-29:1
+    Visibility: public -/
+def policycompare.knob_applies_to_kind
+  (knob : policycompare.Knob) (kind : model.DriveKind) : Result Bool := do
+  match knob with
+  | policycompare.Knob.ForbidSharing => ok true
+  | policycompare.Knob.ForbidExternalSharing => ok true
+  | policycompare.Knob.ForbidPublicLinks => ok true
+  | policycompare.Knob.ForbidCrossDriveMove => ok true
+  | policycompare.Knob.ForbidOwnerRoleChange =>
+    match kind with
+    | model.DriveKind.Personal => ok false
+    | model.DriveKind.Shared => ok true
+  | policycompare.Knob.IncludeInPhotoIndex => ok true
+  | policycompare.Knob.IncludeInMusicIndex => ok true
+  | policycompare.Knob.ReadOnly => ok true
+  | policycompare.Knob.MaxPublicLinkDays => ok true
+  | policycompare.Knob.RequirePublicLinkPassword => ok true
+  | policycompare.Knob.Other => ok true
+
+/-- [oxicloud_kernel::policycompare::knob_strictness]:
+    Source: 'ports/oxicloud/kernel/src/policycompare.rs', lines 30:0-36:1
+    Visibility: public -/
+def policycompare.knob_strictness
+  (knob : policycompare.Knob) : Result policycompare.Strictness := do
+  match knob with
+  | policycompare.Knob.ForbidSharing =>
+    ok policycompare.Strictness.TrueIsStricter
+  | policycompare.Knob.ForbidExternalSharing =>
+    ok policycompare.Strictness.TrueIsStricter
+  | policycompare.Knob.ForbidPublicLinks =>
+    ok policycompare.Strictness.TrueIsStricter
+  | policycompare.Knob.ForbidCrossDriveMove =>
+    ok policycompare.Strictness.TrueIsStricter
+  | policycompare.Knob.ForbidOwnerRoleChange =>
+    ok policycompare.Strictness.TrueIsStricter
+  | policycompare.Knob.IncludeInPhotoIndex =>
+    ok policycompare.Strictness.FalseIsStricter
+  | policycompare.Knob.IncludeInMusicIndex =>
+    ok policycompare.Strictness.FalseIsStricter
+  | policycompare.Knob.ReadOnly => ok policycompare.Strictness.TrueIsStricter
+  | policycompare.Knob.MaxPublicLinkDays =>
+    ok policycompare.Strictness.SmallerIsStricter
+  | policycompare.Knob.RequirePublicLinkPassword =>
+    ok policycompare.Strictness.TrueIsStricter
+  | policycompare.Knob.Other => ok policycompare.Strictness.TrueIsStricter
+
+/-- [oxicloud_kernel::policycompare::knob_value]:
+    Source: 'ports/oxicloud/kernel/src/policycompare.rs', lines 37:0-51:1
+    Visibility: public -/
+def policycompare.knob_value
+  (p : drivepolicy.Policies) (knob : policycompare.Knob) :
+  Result policycompare.KnobValue
+  := do
+  match knob with
+  | policycompare.Knob.ForbidSharing =>
+    ok (policycompare.KnobValue.Bool p.forbid_sharing)
+  | policycompare.Knob.ForbidExternalSharing =>
+    ok (policycompare.KnobValue.Bool p.forbid_external_sharing)
+  | policycompare.Knob.ForbidPublicLinks =>
+    ok (policycompare.KnobValue.Bool p.forbid_public_links)
+  | policycompare.Knob.ForbidCrossDriveMove =>
+    ok (policycompare.KnobValue.Bool p.forbid_cross_drive_move)
+  | policycompare.Knob.ForbidOwnerRoleChange =>
+    ok (policycompare.KnobValue.Bool p.forbid_owner_role_change)
+  | policycompare.Knob.IncludeInPhotoIndex =>
+    ok (policycompare.KnobValue.Bool p.include_in_photo_index)
+  | policycompare.Knob.IncludeInMusicIndex =>
+    ok (policycompare.KnobValue.Bool p.include_in_music_index)
+  | policycompare.Knob.ReadOnly =>
+    ok (policycompare.KnobValue.Bool p.read_only)
+  | policycompare.Knob.MaxPublicLinkDays =>
+    match p.max_public_link_days with
+    | none => ok policycompare.KnobValue.Null
+    | some n => ok (policycompare.KnobValue.Number n)
+  | policycompare.Knob.RequirePublicLinkPassword =>
+    ok (policycompare.KnobValue.Bool p.require_public_link_password)
+  | policycompare.Knob.Other => ok policycompare.KnobValue.Null
+
+/-- [oxicloud_kernel::policycompare::knob_bool]:
+    Source: 'ports/oxicloud/kernel/src/policycompare.rs', lines 52:0-54:1
+    Visibility: public -/
+def policycompare.knob_bool
+  (p : drivepolicy.Policies) (knob : policycompare.Knob) : Result Bool := do
+  let kv ← policycompare.knob_value p knob
+  match kv with
+  | policycompare.KnobValue.Bool value => ok value
+  | policycompare.KnobValue.Number _ => ok false
+  | policycompare.KnobValue.Null => ok false
+
+/-- [oxicloud_kernel::policycompare::at_least_as_strict_on]:
+    Source: 'ports/oxicloud/kernel/src/policycompare.rs', lines 55:0-64:1
+    Visibility: public -/
+def policycompare.at_least_as_strict_on
+  (p : drivepolicy.Policies) (other : drivepolicy.Policies)
+  (knob : policycompare.Knob) :
+  Result Bool
+  := do
+  let s ← policycompare.knob_strictness knob
+  match s with
+  | policycompare.Strictness.TrueIsStricter =>
+    let a ← policycompare.knob_bool p knob
+    let b ← policycompare.knob_bool other knob
+    if a
+    then ok true
+    else ok (¬ b)
+  | policycompare.Strictness.FalseIsStricter =>
+    let a ← policycompare.knob_bool p knob
+    let b ← policycompare.knob_bool other knob
+    if a
+    then ok b
+    else ok true
+  | policycompare.Strictness.SmallerIsStricter =>
+    match other.max_public_link_days with
+    | none => ok true
+    | some b =>
+      match p.max_public_link_days with
+      | none => ok false
+      | some a => ok (a <= b)
+
+/-- [oxicloud_kernel::policycompare::append_weaker]:
+    Source: 'ports/oxicloud/kernel/src/policycompare.rs', lines 65:0-71:1 -/
+def policycompare.append_weaker
+  (out : alloc.vec.Vec policycompare.Knob) (p : drivepolicy.Policies)
+  (default : drivepolicy.Policies) (kind : model.DriveKind)
+  (knob : policycompare.Knob) :
+  Result (alloc.vec.Vec policycompare.Knob)
+  := do
+  let b ← policycompare.knob_applies_to_kind knob kind
+  if b
+  then
+    let defaultable ←
+      match knob with
+      | policycompare.Knob.ForbidSharing => ok true
+      | policycompare.Knob.ForbidExternalSharing => ok true
+      | policycompare.Knob.ForbidPublicLinks => ok true
+      | policycompare.Knob.ForbidCrossDriveMove => ok true
+      | policycompare.Knob.ForbidOwnerRoleChange => ok true
+      | policycompare.Knob.IncludeInPhotoIndex => ok true
+      | policycompare.Knob.IncludeInMusicIndex => ok true
+      | policycompare.Knob.ReadOnly => ok false
+      | policycompare.Knob.MaxPublicLinkDays => ok true
+      | policycompare.Knob.RequirePublicLinkPassword => ok true
+      | policycompare.Knob.Other => ok true
+    if defaultable
+    then
+      let b1 ← policycompare.at_least_as_strict_on p default knob
+      if b1
+      then ok out
+      else alloc.vec.Vec.push out knob
+    else ok out
+  else ok out
+
+/-- [oxicloud_kernel::policycompare::weaker_than]:
+    Source: 'ports/oxicloud/kernel/src/policycompare.rs', lines 72:0-84:1
+    Visibility: public -/
+def policycompare.weaker_than
+  (p : drivepolicy.Policies) (default : drivepolicy.Policies)
+  (kind : model.DriveKind) :
+  Result (alloc.vec.Vec policycompare.Knob)
+  := do
+  let out ←
+    policycompare.append_weaker (alloc.vec.Vec.new policycompare.Knob) p
+      default kind policycompare.Knob.ForbidSharing
+  let out1 ←
+    policycompare.append_weaker out p default kind
+      policycompare.Knob.ForbidExternalSharing
+  let out2 ←
+    policycompare.append_weaker out1 p default kind
+      policycompare.Knob.ForbidPublicLinks
+  let out3 ←
+    policycompare.append_weaker out2 p default kind
+      policycompare.Knob.ForbidCrossDriveMove
+  let out4 ←
+    policycompare.append_weaker out3 p default kind
+      policycompare.Knob.ForbidOwnerRoleChange
+  let out5 ←
+    policycompare.append_weaker out4 p default kind
+      policycompare.Knob.IncludeInPhotoIndex
+  let out6 ←
+    policycompare.append_weaker out5 p default kind
+      policycompare.Knob.IncludeInMusicIndex
+  let out7 ←
+    policycompare.append_weaker out6 p default kind policycompare.Knob.ReadOnly
+  let out8 ←
+    policycompare.append_weaker out7 p default kind
+      policycompare.Knob.MaxPublicLinkDays
+  policycompare.append_weaker out8 p default kind
+    policycompare.Knob.RequirePublicLinkPassword
+
+/-- [oxicloud_kernel::policycompare::knob_from_bytes]:
+    Source: 'ports/oxicloud/kernel/src/policycompare.rs', lines 87:0-99:1
+    Visibility: public -/
+def policycompare.knob_from_bytes
+  (raw : Slice Std.U8) : Result policycompare.Knob := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 14#usize [
+        102#u8, 111#u8, 114#u8, 98#u8, 105#u8, 100#u8, 95#u8, 115#u8, 104#u8,
+        97#u8, 114#u8, 105#u8, 110#u8, 103#u8
+        ]))
+  let b ← bytes.equal raw s
+  if b
+  then ok policycompare.Knob.ForbidSharing
+  else
+    let s1 ←
+      lift (Array.to_slice
+        (Array.make 23#usize [
+          102#u8, 111#u8, 114#u8, 98#u8, 105#u8, 100#u8, 95#u8, 101#u8, 120#u8,
+          116#u8, 101#u8, 114#u8, 110#u8, 97#u8, 108#u8, 95#u8, 115#u8, 104#u8,
+          97#u8, 114#u8, 105#u8, 110#u8, 103#u8
+          ]))
+    let b1 ← bytes.equal raw s1
+    if b1
+    then ok policycompare.Knob.ForbidExternalSharing
+    else
+      let s2 ←
+        lift (Array.to_slice
+          (Array.make 19#usize [
+            102#u8, 111#u8, 114#u8, 98#u8, 105#u8, 100#u8, 95#u8, 112#u8,
+            117#u8, 98#u8, 108#u8, 105#u8, 99#u8, 95#u8, 108#u8, 105#u8,
+            110#u8, 107#u8, 115#u8
+            ]))
+      let b2 ← bytes.equal raw s2
+      if b2
+      then ok policycompare.Knob.ForbidPublicLinks
+      else
+        let s3 ←
+          lift (Array.to_slice
+            (Array.make 23#usize [
+              102#u8, 111#u8, 114#u8, 98#u8, 105#u8, 100#u8, 95#u8, 99#u8,
+              114#u8, 111#u8, 115#u8, 115#u8, 95#u8, 100#u8, 114#u8, 105#u8,
+              118#u8, 101#u8, 95#u8, 109#u8, 111#u8, 118#u8, 101#u8
+              ]))
+        let b3 ← bytes.equal raw s3
+        if b3
+        then ok policycompare.Knob.ForbidCrossDriveMove
+        else
+          let s4 ←
+            lift (Array.to_slice
+              (Array.make 24#usize [
+                102#u8, 111#u8, 114#u8, 98#u8, 105#u8, 100#u8, 95#u8, 111#u8,
+                119#u8, 110#u8, 101#u8, 114#u8, 95#u8, 114#u8, 111#u8, 108#u8,
+                101#u8, 95#u8, 99#u8, 104#u8, 97#u8, 110#u8, 103#u8, 101#u8
+                ]))
+          let b4 ← bytes.equal raw s4
+          if b4
+          then ok policycompare.Knob.ForbidOwnerRoleChange
+          else
+            let s5 ←
+              lift (Array.to_slice
+                (Array.make 22#usize [
+                  105#u8, 110#u8, 99#u8, 108#u8, 117#u8, 100#u8, 101#u8, 95#u8,
+                  105#u8, 110#u8, 95#u8, 112#u8, 104#u8, 111#u8, 116#u8,
+                  111#u8, 95#u8, 105#u8, 110#u8, 100#u8, 101#u8, 120#u8
+                  ]))
+            let b5 ← bytes.equal raw s5
+            if b5
+            then ok policycompare.Knob.IncludeInPhotoIndex
+            else
+              let s6 ←
+                lift (Array.to_slice
+                  (Array.make 22#usize [
+                    105#u8, 110#u8, 99#u8, 108#u8, 117#u8, 100#u8, 101#u8,
+                    95#u8, 105#u8, 110#u8, 95#u8, 109#u8, 117#u8, 115#u8,
+                    105#u8, 99#u8, 95#u8, 105#u8, 110#u8, 100#u8, 101#u8,
+                    120#u8
+                    ]))
+              let b6 ← bytes.equal raw s6
+              if b6
+              then ok policycompare.Knob.IncludeInMusicIndex
+              else
+                let s7 ←
+                  lift (Array.to_slice
+                    (Array.make 9#usize [
+                      114#u8, 101#u8, 97#u8, 100#u8, 95#u8, 111#u8, 110#u8,
+                      108#u8, 121#u8
+                      ]))
+                let b7 ← bytes.equal raw s7
+                if b7
+                then ok policycompare.Knob.ReadOnly
+                else
+                  let s8 ←
+                    lift (Array.to_slice
+                      (Array.make 20#usize [
+                        109#u8, 97#u8, 120#u8, 95#u8, 112#u8, 117#u8, 98#u8,
+                        108#u8, 105#u8, 99#u8, 95#u8, 108#u8, 105#u8, 110#u8,
+                        107#u8, 95#u8, 100#u8, 97#u8, 121#u8, 115#u8
+                        ]))
+                  let b8 ← bytes.equal raw s8
+                  if b8
+                  then ok policycompare.Knob.MaxPublicLinkDays
+                  else
+                    let s9 ←
+                      lift (Array.to_slice
+                        (Array.make 28#usize [
+                          114#u8, 101#u8, 113#u8, 117#u8, 105#u8, 114#u8,
+                          101#u8, 95#u8, 112#u8, 117#u8, 98#u8, 108#u8, 105#u8,
+                          99#u8, 95#u8, 108#u8, 105#u8, 110#u8, 107#u8, 95#u8,
+                          112#u8, 97#u8, 115#u8, 115#u8, 119#u8, 111#u8,
+                          114#u8, 100#u8
+                          ]))
+                    let b9 ← bytes.equal raw s9
+                    if b9
+                    then ok policycompare.Knob.RequirePublicLinkPassword
+                    else ok policycompare.Knob.Other
+
+/-- [oxicloud_kernel::policycompare::knob_applies_to_kind_bytes]:
+    Source: 'ports/oxicloud/kernel/src/policycompare.rs', lines 100:0-102:1
+    Visibility: public -/
+def policycompare.knob_applies_to_kind_bytes
+  (raw : Slice Std.U8) (kind : model.DriveKind) : Result Bool := do
+  let k ← policycompare.knob_from_bytes raw
+  policycompare.knob_applies_to_kind k kind
+
+/-- [oxicloud_kernel::policycompare::knob_strictness_bytes]:
+    Source: 'ports/oxicloud/kernel/src/policycompare.rs', lines 103:0-103:96
+    Visibility: public -/
+def policycompare.knob_strictness_bytes
+  (raw : Slice Std.U8) : Result policycompare.Strictness := do
+  let k ← policycompare.knob_from_bytes raw
+  policycompare.knob_strictness k
+
+/-- [oxicloud_kernel::policycompare::knob_value_bytes]:
+    Source: 'ports/oxicloud/kernel/src/policycompare.rs', lines 104:0-104:101
+    Visibility: public -/
+def policycompare.knob_value_bytes
+  (p : drivepolicy.Policies) (raw : Slice Std.U8) :
+  Result policycompare.KnobValue
+  := do
+  let k ← policycompare.knob_from_bytes raw
+  policycompare.knob_value p k
+
+/-- [oxicloud_kernel::policycompare::knob_bool_bytes]:
+    Source: 'ports/oxicloud/kernel/src/policycompare.rs', lines 105:0-105:94
+    Visibility: public -/
+def policycompare.knob_bool_bytes
+  (p : drivepolicy.Policies) (raw : Slice Std.U8) : Result Bool := do
+  let k ← policycompare.knob_from_bytes raw
+  policycompare.knob_bool p k
+
+/-- [oxicloud_kernel::policycompare::at_least_as_strict_on_bytes]:
+    Source: 'ports/oxicloud/kernel/src/policycompare.rs', lines 106:0-108:1
+    Visibility: public -/
+def policycompare.at_least_as_strict_on_bytes
+  (p : drivepolicy.Policies) (other : drivepolicy.Policies)
+  (raw : Slice Std.U8) :
+  Result Bool
+  := do
+  let k ← policycompare.knob_from_bytes raw
+  policycompare.at_least_as_strict_on p other k
+
 /-- [oxicloud_kernel::session::SessionOrigin]
     Source: 'ports/oxicloud/kernel/src/session.rs', lines 9:0-9:77
     Visibility: public -/

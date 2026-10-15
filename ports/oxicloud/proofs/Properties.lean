@@ -1,3 +1,4 @@
+import Verified.OxicloudPolicyCompare
 import Verified.OxicloudLiveAuth
 import Verified.OxicloudAdmin
 import Verified.OxicloudUserState
@@ -567,5 +568,53 @@ theorem live_account_role_policy (flags : liveauth.FlagsLookup) (id : U128) (cla
 theorem anonymous_role_lookup_bypass (claim : Slice U8) (r : Option liveauth.LiveRole)
     (h : liveauth.anonymous_live_role claim = ok r) : SpecKernel.AnonymousLiveRole claim.val r := by
   exact oxicloud_kernel.Verified.OxicloudLiveAuth.anonymous_ok claim r h
+
+theorem policy_knob_order (r : alloc.vec.Vec policycompare.Knob)
+    (h : policycompare.policy_knobs = ok r) : r.val = SpecKernel.PolicyKnobOrder := by
+  apply Verified.OxicloudPolicyCompare.knobs_ok <;> assumption
+
+theorem policy_default_exclusions (r : alloc.vec.Vec policycompare.Knob)
+    (h : policycompare.non_defaultable_knobs = ok r) : r.val = [.ReadOnly] := by
+  apply Verified.OxicloudPolicyCompare.non_defaultable_ok <;> assumption
+
+theorem policy_knob_name_partition (raw : Slice U8) (knob : policycompare.Knob)
+    (h : policycompare.knob_from_bytes raw = ok knob) : SpecKernel.PolicyKnobParsed raw.val knob := by
+  apply Verified.OxicloudPolicyCompare.parsed_ok <;> assumption
+
+theorem policy_knob_applicability (raw : Slice U8) (kind : model.DriveKind) (r : Bool)
+    (h : policycompare.knob_applies_to_kind_bytes raw kind = ok r) :
+    ∃ k, SpecKernel.PolicyKnobParsed raw.val k ∧ (r = true ↔ SpecKernel.PolicyApplies k kind) := by
+  apply Verified.OxicloudPolicyCompare.applies_bytes_ok <;> assumption
+
+theorem policy_knob_strictness (raw : Slice U8)  (r : policycompare.Strictness)
+    (h : policycompare.knob_strictness_bytes raw = ok r) :
+    ∃ k, SpecKernel.PolicyKnobParsed raw.val k ∧ SpecKernel.PolicyStrictness k r := by
+  apply Verified.OxicloudPolicyCompare.strictness_bytes_ok <;> assumption
+
+theorem policy_knob_value (raw : Slice U8) (p : drivepolicy.Policies) (r : policycompare.KnobValue)
+    (h : policycompare.knob_value_bytes p raw = ok r) :
+    ∃ k, SpecKernel.PolicyKnobParsed raw.val k ∧ SpecKernel.PolicyValue p k r := by
+  apply Verified.OxicloudPolicyCompare.value_bytes_ok <;> assumption
+
+theorem policy_knob_boolean (raw : Slice U8) (p : drivepolicy.Policies) (r : Bool)
+    (h : policycompare.knob_bool_bytes p raw = ok r) :
+    ∃ k, SpecKernel.PolicyKnobParsed raw.val k ∧ r = SpecKernel.PolicyBit p k := by
+  apply Verified.OxicloudPolicyCompare.bool_bytes_ok <;> assumption
+
+theorem policy_refinement_decision (raw : Slice U8) (p q : drivepolicy.Policies) (r : Bool)
+    (h : policycompare.at_least_as_strict_on_bytes p q raw = ok r) :
+    ∃ k, SpecKernel.PolicyKnobParsed raw.val k ∧ (r = true ↔ SpecKernel.PolicyRefines p q k) := by
+  apply Verified.OxicloudPolicyCompare.refinement_bytes_ok <;> assumption
+
+theorem policy_refinement_transitive (p q r : drivepolicy.Policies) (knob : policycompare.Knob)
+    (hpq : policycompare.at_least_as_strict_on p q knob = ok true)
+    (hqr : policycompare.at_least_as_strict_on q r knob = ok true)
+    (b : Bool) (hpr : policycompare.at_least_as_strict_on p r knob = ok b) : b = true := by
+  exact Verified.OxicloudPolicyCompare.checked_refinement_transitive p q r knob hpq hqr b hpr
+
+theorem policy_default_drift (p d : drivepolicy.Policies) (kind : model.DriveKind)
+    (r : alloc.vec.Vec policycompare.Knob) (h : policycompare.weaker_than p d kind = ok r) :
+    r.val = SpecKernel.PolicyWeakerList p d kind := by
+  apply Verified.OxicloudPolicyCompare.weaker_ok <;> assumption
 
 end oxicloud_kernel.Properties
