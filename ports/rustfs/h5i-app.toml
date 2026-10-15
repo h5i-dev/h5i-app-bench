@@ -5,6 +5,9 @@ start-from = ["policies", "pathclean::clean", "defaults::default_version", "defa
 
 [check]
 theorems = [
+  "rustfs_kernel.Properties.policy_variable_closing_spec",
+  "rustfs_kernel.Properties.policy_variable_value_spec",
+  "rustfs_kernel.Properties.policy_variable_values_spec",
   "rustfs_kernel.Properties.resource_common_substitution_spec",
   "rustfs_kernel.Properties.string_common_substitution_spec",
   "rustfs_kernel.Properties.administrative_table_actions_spec",

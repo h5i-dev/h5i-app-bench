@@ -1,3 +1,5 @@
+import Verified.RustfsAwsClosing
+import Verified.RustfsAwsValues
 import Verified.RustfsCommonSubstitution
 import Verified.RustfsStatementSkips
 import Verified.RustfsStatementResources
@@ -1439,5 +1441,27 @@ theorem string_common_substitution_spec (pattern : Slice U8)
     (out : alloc.vec.Vec U8) (h : condfuncs.replace_first_common pattern values = ok out) :
     out.val = Spec.SubstituteFirstCommon pattern.val (Spec.RequestValueLists values.val) :=
   Verified.RustfsCommonSubstitution.first_ok pattern values out h
+
+/-- Exact scalar lookup in the policy variable context. -/
+theorem policy_variable_value_spec (c : awsvars.VarContext) (needle : Slice U8)
+    (out : Option (alloc.vec.Vec U8)) (h : awsvars.resolve c needle = ok out) :
+    out.map (fun v => Spec.nats v.val) =
+      Spec.AwsValue (Verified.RustfsAwsValues.context c) (Spec.nats needle.val) :=
+  Verified.RustfsAwsValues.resolve_ok c needle out h
+
+/-- Exact list lookup, including present empty user-ID lists. -/
+theorem policy_variable_values_spec (c : awsvars.VarContext) (needle : Slice U8)
+    (out : Option (alloc.vec.Vec (alloc.vec.Vec U8)))
+    (h : awsvars.resolve_multiple c needle = ok out) :
+    out.map (fun v => v.val.map (fun s => Spec.nats s.val)) =
+      Spec.AwsValues (Verified.RustfsAwsValues.context c) (Spec.nats needle.val) :=
+  Verified.RustfsAwsValues.multiple_ok c needle out h
+
+/-- Balanced-brace scanning returns the first closing position, or the end
+position with the remaining balance when no closing brace is found. -/
+theorem policy_variable_closing_spec (s : Slice U8) (start : Usize) (out : Usize × Usize)
+    (h : awsvars.closing s start = ok out) :
+    (out.1.val,out.2.val) = Spec.ClosingAt (Spec.nats s.val) start.val 1 :=
+  Verified.RustfsAwsClosing.closing_ok s start out h
 
 end rustfs_kernel.Properties
