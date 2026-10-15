@@ -70,4 +70,7 @@ theorems = [
   "rustfs_kernel.Properties.binary_request_match_sound",
   "rustfs_kernel.Properties.condition_lookup_payload_sound",
   "rustfs_kernel.Properties.binary_condition_evaluation_sound",
+  "rustfs_kernel.Properties.condition_binary_acceptance_sound",
+  "rustfs_kernel.Properties.condition_group_binary_acceptance_sound",
+  "rustfs_kernel.Properties.functions_binary_acceptance_sound",
 ]

@@ -242,4 +242,12 @@ def BinaryEntrySatisfied
   ∃ kv ∈ values.val, kv.1.val = LookupName e.key ∧
     (∀ req ∈ kv.2.val, ValidBinaryRequest req) ∧
     ∃ req ∈ kv.2.val, MatchingBinaryRequest e.values req
+/-- Accepted binary conditions either use their missing-key wrapper or satisfy every entry. -/
+def BinaryConditionSafe
+    (values : alloc.vec.Vec (alloc.vec.Vec U8 × alloc.vec.Vec (alloc.vec.Vec U8)))
+    (c : conddata.Condition) : Prop :=
+  match c.data with
+  | .Binary f => (0 < c.wrappers.val ∧ ¬ RequestHasConditionKey c values) ∨
+      ∀ e ∈ f.entries.val, BinaryEntrySatisfied values e
+  | _ => True
 end rustfs_kernel.Spec

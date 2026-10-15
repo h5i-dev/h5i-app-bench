@@ -1,3 +1,4 @@
+import Verified.RustfsConditionBinarySafety
 import Verified.RustfsBinaryEvaluation
 import Verified.RustfsBinaryConstruction
 import Verified.RustfsBinaryMatch
@@ -442,5 +443,32 @@ theorem binary_condition_evaluation_sound (inner : conddata.InnerFunc conddata.B
     (b : Bool) (h : conddata.binary_evaluate inner values = ok b) (ht : b = true) :
     ∀ e ∈ inner.entries.val, BinaryEntrySatisfied values e := by
   exact rustfs_kernel.Verified.RustfsBinaryEvaluation.evaluate_sound inner values b h ht
+
+/-- Accepted binary conditions satisfy their entries or use a missing-key wrapper. -/
+theorem condition_binary_acceptance_sound (c : conddata.Condition) (q : condfuncs.Quantifier)
+    (values : alloc.vec.Vec (alloc.vec.Vec U8 × alloc.vec.Vec (alloc.vec.Vec U8)))
+    (ctx : Option awsvars.VarContext) (env : condfuncs.Env)
+    (h : conddata.condition_evaluate c q values ctx env = ok true) :
+    BinaryConditionSafe values c := by
+  exact rustfs_kernel.Verified.RustfsConditionBinarySafety.condition_sound c q values ctx env h
+
+/-- Conjunction preserves the binary acceptance guarantee for every condition. -/
+theorem condition_group_binary_acceptance_sound (cs : Slice conddata.Condition)
+    (q : condfuncs.Quantifier)
+    (values : alloc.vec.Vec (alloc.vec.Vec U8 × alloc.vec.Vec (alloc.vec.Vec U8)))
+    (ctx : Option awsvars.VarContext) (env : condfuncs.Env)
+    (h : conddata.all_hold cs q values ctx env = ok true) :
+    ∀ c ∈ cs.val, BinaryConditionSafe values c := by
+  exact rustfs_kernel.Verified.RustfsConditionBinarySafety.all_sound cs q values ctx env h
+
+/-- Function evaluation preserves binary validation across all three quantifier groups. -/
+theorem functions_binary_acceptance_sound (f : conddata.Functions)
+    (values : alloc.vec.Vec (alloc.vec.Vec U8 × alloc.vec.Vec (alloc.vec.Vec U8)))
+    (ctx : Option awsvars.VarContext) (env : condfuncs.Env)
+    (h : conddata.functions_evaluate f values ctx env = ok true) :
+    (∀ c ∈ f.for_any_value.val, BinaryConditionSafe values c) ∧
+    (∀ c ∈ f.for_all_values.val, BinaryConditionSafe values c) ∧
+    (∀ c ∈ f.for_normal.val, BinaryConditionSafe values c) := by
+  exact rustfs_kernel.Verified.RustfsConditionBinarySafety.functions_sound f values ctx env h
 
 end rustfs_kernel.Properties
