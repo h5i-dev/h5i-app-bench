@@ -1,3 +1,4 @@
+import Verified.RustfsCommonSubstitution
 import Verified.RustfsStatementSkips
 import Verified.RustfsStatementResources
 import Verified.RustfsStatementActions
@@ -1424,5 +1425,19 @@ theorem statement_resource_skip_spec (st : stmts.Statement) (args : stmts.Args) 
     (h : stmts.skips_resource_match st args = ok b) :
     b=true ↔ Spec.SkipResourceMatch st.actions.val args.action :=
   Verified.RustfsStatementSkips.skip_ok st args b h
+
+/-- Resource substitution applies all eligible common keys in data-table order. -/
+theorem resource_common_substitution_spec (pattern : Slice U8)
+    (values : alloc.vec.Vec (alloc.vec.Vec U8 × alloc.vec.Vec (alloc.vec.Vec U8)))
+    (out : alloc.vec.Vec U8) (h : rsrc.substitute_common pattern values = ok out) :
+    out.val = Spec.SubstituteCommon pattern.val (Spec.RequestValueLists values.val) :=
+  Verified.RustfsCommonSubstitution.all_ok pattern values out h
+
+/-- String substitution selects the first eligible common key in data-table order. -/
+theorem string_common_substitution_spec (pattern : Slice U8)
+    (values : alloc.vec.Vec (alloc.vec.Vec U8 × alloc.vec.Vec (alloc.vec.Vec U8)))
+    (out : alloc.vec.Vec U8) (h : condfuncs.replace_first_common pattern values = ok out) :
+    out.val = Spec.SubstituteFirstCommon pattern.val (Spec.RequestValueLists values.val) :=
+  Verified.RustfsCommonSubstitution.first_ok pattern values out h
 
 end rustfs_kernel.Properties
