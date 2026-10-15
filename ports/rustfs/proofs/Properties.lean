@@ -5,6 +5,8 @@ import Verified.RustfsConditionNames
 import Verified.RustfsConditionEquality
 import Verified.RustfsCompleteConditionEquality
 import Verified.RustfsConditionGroups
+import Verified.RustfsConditionCopies
+import Verified.RustfsConditionViews
 import Verified.RustfsDefaults
 import SpecKernel
 import Verified.RustfsCleanIdempotent
@@ -343,5 +345,47 @@ theorem condition_group_coverage_iff (a b : Slice conddata.Condition) (r : Bool)
 theorem condition_groups_comparison_iff (a b : conddata.Functions) (r : Bool)
     (h : conddata.functions_eq a b = ok r) : (r = true ↔ ConditionGroupsMatch a b) := by
   exact rustfs_kernel.Verified.RustfsConditionGroups.functions_eq_ok a b r h
+
+/-- Copying a condition entry preserves its key and typed value. -/
+theorem condition_entry_copy_exact {T : Type} (inst : core.clone.Clone T) [CloneLaw inst]
+    (e : conddata.FuncKeyValue T) : conddata.clone_key_value inst e = ok e := by
+  exact rustfs_kernel.Verified.RustfsConditionCopies.entry_clone inst e
+
+/-- Copying condition data preserves every entry and its position. -/
+theorem condition_data_copy_exact {T : Type} (inst : core.clone.Clone T) [CloneLaw inst]
+    (a b : conddata.InnerFunc T) (h : conddata.clone_inner inst a = ok b) : b = a := by
+  exact rustfs_kernel.Verified.RustfsConditionCopies.inner_clone inst a b h
+
+/-- Conversion to matching pairs preserves ordered keys and typed values. -/
+theorem condition_legacy_pairs_exact {T : Type} (inst : core.clone.Clone T) [CloneLaw inst]
+    (a : conddata.InnerFunc T) (b : alloc.vec.Vec (condfuncs.Key × T))
+    (h : conddata.legacy_pairs inst a = ok b) :
+    b.val = a.entries.val.map (fun e => (e.key, e.values)) := by
+  exact rustfs_kernel.Verified.RustfsConditionCopies.legacy_pairs_ok inst a b h
+
+/-- Presence views retain every key in its original position. -/
+theorem condition_presence_keys_exact {T : Type}
+    (a : conddata.InnerFunc T) (b : alloc.vec.Vec (condfuncs.Key × Bool))
+    (h : conddata.key_presence a = ok b) :
+    b.val = a.entries.val.map (fun e => (e.key, false)) := by
+  exact rustfs_kernel.Verified.RustfsConditionCopies.key_presence_ok a b h
+
+/-- A matching view preserves wrapper presence and the typed entry projection. -/
+theorem condition_matching_view_exact (c : conddata.Condition) (v : condfuncs.Condition)
+    (h : conddata.condition_view c = ok v) : MatchingView c v := by
+  exact rustfs_kernel.Verified.RustfsConditionViews.condition_view_ok c v h
+
+/-- Matching views preserve order and quantifier group boundaries. -/
+theorem condition_group_views_exact (f : conddata.Functions) (v : condfuncs.Functions)
+    (h : conddata.matching_view f = ok v) :
+    MatchingViews f.for_any_value.val v.for_any_value.val ∧
+    MatchingViews f.for_all_values.val v.for_all_values.val ∧
+    MatchingViews f.for_normal.val v.for_normal.val := by
+  exact rustfs_kernel.Verified.RustfsConditionViews.matching_view_ok f v h
+
+/-- Base-key serialization exposes the wrapper marker whenever a wrapper exists. -/
+theorem condition_base_key_exact (c : conddata.Condition) (v : alloc.vec.Vec U8)
+    (h : conddata.to_key c = ok v) : nats v.val = ConditionBaseKeyName c := by
+  exact rustfs_kernel.Verified.RustfsConditionViews.base_key_ok c v h
 
 end rustfs_kernel.Properties

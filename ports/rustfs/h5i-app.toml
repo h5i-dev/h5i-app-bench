@@ -54,4 +54,13 @@ theorems = [
   "rustfs_kernel.Properties.condition_group_coverage_iff",
   "rustfs_kernel.Properties.condition_groups_comparison_iff",
 
+  "rustfs_kernel.Properties.condition_entry_copy_exact",
+  "rustfs_kernel.Properties.condition_data_copy_exact",
+  "rustfs_kernel.Properties.condition_legacy_pairs_exact",
+  "rustfs_kernel.Properties.condition_presence_keys_exact",
+
+  "rustfs_kernel.Properties.condition_matching_view_exact",
+  "rustfs_kernel.Properties.condition_group_views_exact",
+  "rustfs_kernel.Properties.condition_base_key_exact",
+
 ]

@@ -44,7 +44,6 @@ theorem empty_ok (f : conddata.Functions) (b : Bool) (h : conddata.is_empty f = 
   by_cases ha : f.for_any_value.val = [] <;> by_cases hb : f.for_all_values.val = [] <;>
     simp_all <;> subst h <;> simp_all
 
-deriving instance DecidableEq for conddata.Op
 
 theorem op_notip_eq (op : conddata.Op) :
     conddata.Op.Insts.CoreCmpPartialEqOp.eq op .NotIpAddress = ok (decide (op = .NotIpAddress)) := by

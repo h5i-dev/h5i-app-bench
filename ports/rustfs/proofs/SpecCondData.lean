@@ -1,6 +1,8 @@
 import SpecKernel
 open Aeneas Aeneas.Std rustfs_kernel
 
+deriving instance DecidableEq for conddata.Op
+
 namespace rustfs_kernel.Spec
 
 /-- STANDARD base64 encodes six-bit indices using ASCII upper/lower letters,
@@ -146,5 +148,55 @@ def ConditionGroupsMatch (a b : conddata.Functions) : Prop :=
   ConditionGroupCovered a.for_any_value.val b.for_any_value.val ∧
   ConditionGroupCovered a.for_all_values.val b.for_all_values.val ∧
   ConditionGroupCovered a.for_normal.val b.for_normal.val
+
+/-- Table characterization: projection onto the legacy string operator family. -/
+def StringOpProjection : conddata.Op → condfuncs.StrOp
+  | .StringNotEquals => .StringNotEquals
+  | .StringEqualsIgnoreCase => .StringEqualsIgnoreCase
+  | .StringNotEqualsIgnoreCase => .StringNotEqualsIgnoreCase
+  | .StringLike => .StringLike
+  | .StringNotLike => .StringNotLike
+  | .ArnLike => .ArnLike
+  | .ArnNotLike => .ArnNotLike
+  | .ArnEquals => .ArnEquals
+  | .ArnNotEquals => .ArnNotEquals
+  | _ => .StringEquals
+
+/-- Table characterization: projection onto the legacy numeric operator family. -/
+def NumberOpProjection : conddata.Op → condfuncs.NumOp
+  | .NumericNotEquals => .Ne
+  | .NumericLessThan => .Lt
+  | .NumericLessThanEquals => .Le
+  | .NumericGreaterThan => .Gt
+  | .NumericGreaterThanIfExists | .NumericGreaterThanEquals => .Ge
+  | _ => .Eq
+
+/-- Matching views preserve typed entries and expose date/binary key presence. -/
+def MatchingViewContents (c : conddata.Condition) (d : condfuncs.Cond) : Prop :=
+  match c.data, d with
+  | .Str f, .Str op es => op = StringOpProjection c.op ∧
+      es.val = f.entries.val.map (fun e => (e.key, e.values))
+  | .Addr f, .Ip neg es => neg = decide (c.op = .NotIpAddress) ∧
+      es.val = f.entries.val.map (fun e => (e.key, e.values))
+  | .Boolean f, .Null es => c.op = .Null ∧
+      es.val = f.entries.val.map (fun e => (e.key, e.values))
+  | .Boolean f, .Bool es => c.op ≠ .Null ∧
+      es.val = f.entries.val.map (fun e => (e.key, e.values))
+  | .Num f, .Num op flag es => op = NumberOpProjection c.op ∧
+      flag = decide (c.op = .NumericGreaterThanIfExists) ∧
+      es.val = f.entries.val.map (fun e => (e.key, e.values))
+  | .Date f, .Null es => es.val = f.entries.val.map (fun e => (e.key, false))
+  | .Binary f, .Null es => es.val = f.entries.val.map (fun e => (e.key, false))
+  | _, _ => False
+
+def MatchingView (c : conddata.Condition) (v : condfuncs.Condition) : Prop :=
+  (v.if_exists = true ↔ 0 < c.wrappers.val) ∧ MatchingViewContents c v.cond
+
+/-- View sequences preserve length, order and each condition's typed contents. -/
+def MatchingViews (cs : List conddata.Condition) (vs : List condfuncs.Condition) : Prop :=
+  List.Forall₂ MatchingView cs vs
+/-- The base key exposes IfExists when a wrapper is present. -/
+def ConditionBaseKeyName (c : conddata.Condition) : List Nat :=
+  if 0 < c.wrappers.val then lit "IfExists" else lit (OpSpelling c.op)
 
 end rustfs_kernel.Spec
