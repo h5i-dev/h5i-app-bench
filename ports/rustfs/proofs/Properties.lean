@@ -1597,4 +1597,32 @@ theorem policy_variable_literal_pass_spec (ctx : awsvars.VarContext) (text : Sli
   rw [Spec.expansion_literal _ _ _ hm]
   exact Verified.RustfsAwsScan.single_pass_literal_ok ctx text depth hm out h
 
+/-- A scan with no placeholder in its remaining suffix preserves every pending text. -/
+theorem policy_variable_scan_literal_suffix_spec (ctx : awsvars.VarContext)
+    (inputs : alloc.vec.Vec awsvars.Pending) (i start depth : Usize) (entry : awsvars.Pending)
+    (hp : inputs.val[i.val]?=some entry)
+    (hm : Spec.HasPlaceholder (Spec.nats (entry.text.val.drop start.val))=false)
+    (out : alloc.vec.Vec awsvars.Pending × Bool)
+    (h : awsvars.scan ctx inputs i start depth=ok out) :
+    out=(inputs,false) ∧
+      Spec.ResumeAlternatives (Spec.ExpandVariables (Verified.RustfsAwsValues.context ctx) (depth.val+1))
+        (Verified.RustfsAwsValues.context ctx) (Spec.nats entry.text.val) start.val=[Spec.nats entry.text.val] := by
+  refine ⟨Verified.RustfsAwsScan.scan_suffix_literal_ok ctx inputs i start depth entry hp hm out h, ?_⟩
+  apply Spec.resume_literal
+  simpa only [Spec.nats,List.map_drop] using hm
+
+/-- An unbalanced first placeholder ends the scan and remains literal. -/
+theorem policy_variable_unbalanced_scan_spec (ctx : awsvars.VarContext)
+    (inputs : alloc.vec.Vec awsvars.Pending) (i start depth : Usize) (entry : awsvars.Pending) (pos : Nat)
+    (hp : inputs.val[i.val]?=some entry)
+    (hf : Spec.FirstOccurrence entry.text.val [36#u8,123#u8] start.val (some pos))
+    (hb : (Spec.ClosingAt (Spec.nats entry.text.val) (pos+2) 1).2 ≠ 0)
+    (out : alloc.vec.Vec awsvars.Pending × Bool)
+    (h : awsvars.scan ctx inputs i start depth=ok out) :
+    out=(inputs,false) ∧
+      Spec.ResumeAlternatives (Spec.ExpandVariables (Verified.RustfsAwsValues.context ctx) (depth.val+1))
+        (Verified.RustfsAwsValues.context ctx) (Spec.nats entry.text.val) start.val=[Spec.nats entry.text.val] :=
+  ⟨Verified.RustfsAwsScan.scan_unbalanced_ok ctx inputs i start depth entry pos hp hf hb out h,
+    Verified.RustfsAwsScan.resume_unbalanced _ _ entry.text.val start.val pos hf hb⟩
+
 end rustfs_kernel.Properties

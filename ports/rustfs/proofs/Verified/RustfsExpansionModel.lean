@@ -139,4 +139,58 @@ theorem placeholder_false_iff (text : List Nat) :
           intro k
           simpa [Nat.add_assoc] using h (k+1))
         simpa [HasPlaceholder,hh] using hr
+theorem resume_append (inner : List Nat → List (List Nat)) (c : AwsValueContext)
+    (pre post : List Nat) :
+    ResumeAlternatives inner c (pre++post) pre.length =
+      (ExpansionPass inner c post).map (pre++·) := by
+  simp [ResumeAlternatives]
+theorem resume_literal (inner : List Nat → List (List Nat)) (c : AwsValueContext)
+    (text : List Nat) (resume : Nat) (hm : HasPlaceholder (text.drop resume)=false) :
+    ResumeAlternatives inner c text resume=[text] := by
+  simp [ResumeAlternatives,expansion_literal inner c _ hm]
+theorem resume_wrapped (inner : List Nat → List (List Nat)) (c : AwsValueContext)
+    (pre inserted post : List Nat) :
+    ResumeAlternatives inner c (pre++inserted++post) (pre.length+inserted.length) =
+      (ExpansionPass inner c post).map (fun suffix => pre++inserted++suffix) := by
+  simpa [List.append_assoc] using resume_append inner c (pre++inserted) post
+theorem expansion_marker (inner : List Nat → List (List Nat)) (c : AwsValueContext)
+    (tail : List Nat) (closing : Nat) (hc : ClosingTail tail 1=(closing,0)) :
+    ExpansionPass inner c (36::123::tail) =
+      (PlaceholderAlternatives inner c (tail.take closing)
+        ((36::123::tail).take (closing+3))).flatMap (fun replacement =>
+          (ExpansionPass inner c (tail.drop (closing+1))).map (replacement++·)) := by
+  simp only [ExpansionPass,hc,ne_eq,not_true_eq_false,ite_false,PlaceholderAlternatives]
+
+ theorem expansion_unbalanced (inner : List Nat → List (List Nat)) (c : AwsValueContext)
+    (pre tail : List Nat) (closing balance : Nat) (hn : HasPlaceholder pre=false)
+    (hc : ClosingTail tail 1=(closing,balance)) (hb : balance ≠ 0) :
+    ExpansionPass inner c (pre++36::123::tail)=[pre++36::123::tail] := by
+  rw [expansion_pre inner c pre tail hn]
+  simp [ExpansionPass,hc,hb]
+theorem resume_marker (inner : List Nat → List (List Nat)) (c : AwsValueContext)
+    (pre middle tail : List Nat) (hm : HasPlaceholder middle=false) :
+    ResumeAlternatives inner c (pre++middle++36::123::tail) pre.length =
+      (ExpansionPass inner c (36::123::tail)).map (fun suffix => pre++middle++suffix) := by
+  rw [List.append_assoc,resume_append,expansion_pre inner c middle tail hm]
+  simp [List.map_map,Function.comp_def,List.append_assoc]
+theorem closing_tail_bound (text : List Nat) (balance : Nat) :
+    (ClosingTail text balance).1 ≤ text.length ∧
+    (balance ≠ 0 → (ClosingTail text balance).2=0 → (ClosingTail text balance).1 < text.length) := by
+  induction text generalizing balance with
+  | nil =>
+    by_cases hb : balance=0 <;> simp [ClosingTail,hb]
+  | cons head rest ih =>
+    by_cases hb : balance=0
+    · simp [ClosingTail,hb]
+    · simp only [ClosingTail,hb,ite_false]
+      generalize hnext : (if head=123 then balance+1 else if head=125 then balance-1 else balance) = next
+      by_cases hn : next=0
+      · simp [hn]
+      · simp only [hn,ite_false,Prod.fst,Prod.snd,List.length_cons]
+        obtain ⟨hl,hs⟩ := ih next
+        constructor
+        · omega
+        · intro _ he
+          have ht := hs hn he
+          omega
 end rustfs_kernel.Spec

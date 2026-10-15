@@ -7,6 +7,8 @@ start-from = ["policies", "pathclean::clean", "defaults::default_version", "defa
 theorems = [
   "rustfs_kernel.Properties.policy_variable_rounds_spec",
   "rustfs_kernel.Properties.policy_variable_literal_pass_spec",
+  "rustfs_kernel.Properties.policy_variable_scan_literal_suffix_spec",
+  "rustfs_kernel.Properties.policy_variable_unbalanced_scan_spec",
   "rustfs_kernel.Properties.policy_variable_pass_collection_spec",
   "rustfs_kernel.Properties.policy_variable_depth_cap_spec",
   "rustfs_kernel.Properties.operator_key_presence_spec",

@@ -52,4 +52,19 @@ def ExpandVariables (c : AwsValueContext) (depth : Nat) (text : List Nat) :
   else ExpansionRounds (ExpansionPass (ExpandVariables c (depth+1)) c) 10 [text]
 termination_by 10-depth
 decreasing_by omega
+/-- Alternatives remaining after an already scanned prefix. -/
+def ResumeAlternatives (inner : List Nat → List (List Nat)) (c : AwsValueContext)
+    (text : List Nat) (resume : Nat) : List (List Nat) :=
+  (ExpansionPass inner c (text.drop resume)).map (text.take resume ++ ·)
+/-- Alternatives inserted for a balanced placeholder. -/
+def PlaceholderAlternatives (inner : List Nat → List (List Nat)) (c : AwsValueContext)
+    (body literal : List Nat) : List (List Nat) :=
+  if HasPlaceholder body then
+    let expanded := inner body
+    if expanded=[] ∨ expanded=[body] then [literal] else expanded
+  else match AwsValues c body with
+    | none => [literal]
+    | some [] => [[]]
+    | some values => values
+
 end rustfs_kernel.Spec
