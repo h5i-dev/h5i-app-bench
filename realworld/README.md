@@ -53,8 +53,9 @@ HOST=http://127.0.0.1:8001 realworld/scripts/test-one.sh
 ```
 
 `WEB_CONCURRENCY` defaults to 1 in the test script and to 4 in each `run.sh`.
-Each process keeps a Postgres pool of `DB_POOL` connections (8). Four workers
-therefore open 32 connections.
+FastAPI and Fastify open `DB_POOL` connections per worker (default 8), so four
+workers open 32. Go and the Rust server are one process; their `run.sh`
+defaults `DB_POOL` to 32. The test script sets `DB_POOL` to 8 for every server.
 
 ## Run
 
