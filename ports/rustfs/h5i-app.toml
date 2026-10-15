@@ -5,6 +5,20 @@ start-from = ["policies", "pathclean::clean", "defaults::default_version", "defa
 
 [check]
 theorems = [
+  "rustfs_kernel.Properties.unicode_whitespace_table",
+  "rustfs_kernel.Properties.unicode_whitespace_table_structure",
+  "rustfs_kernel.Properties.unicode_range_0_table",
+  "rustfs_kernel.Properties.unicode_range_1_table",
+  "rustfs_kernel.Properties.unicode_range_2_table",
+  "rustfs_kernel.Properties.unicode_range_3_table",
+  "rustfs_kernel.Properties.unicode_range_4_table",
+  "rustfs_kernel.Properties.unicode_range_5_table",
+  "rustfs_kernel.Properties.unicode_range_6_table",
+  "rustfs_kernel.Properties.unicode_range_7_table",
+  "rustfs_kernel.Properties.unicode_range_8_table",
+  "rustfs_kernel.Properties.unicode_singleton_table_structure",
+  "rustfs_kernel.Properties.unicode_range_table_structure",
+
   "rustfs_kernel.Properties.date_value_preserves_instant",
   "rustfs_kernel.Properties.date_value_rejects_invalid",
   "rustfs_kernel.Properties.date_value_utc_offset",

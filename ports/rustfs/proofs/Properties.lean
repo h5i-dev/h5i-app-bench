@@ -1,3 +1,6 @@
+import Verified.RustfsUnicodeWhitespace
+import Verified.RustfsUnicodeTables
+import Verified.RustfsUnicodeStructure
 import Verified.RustfsDateValues
 import Verified.RustfsRequestTags
 import Verified.RustfsPolicyMerge
@@ -1103,5 +1106,92 @@ theorem date_value_utc_offset (s : Slice U8) (out : conddata.DateFuncValue)
     (hz : s.val[s.val.length - 1]? = some 90#u8 ∨ s.val[s.val.length - 1]? = some 122#u8)
     (h : dates.parse_value s = ok (some out)) : out.offset_seconds = 0#i32 :=
   Verified.RustfsDateValues.utc_offset s out hz h
+
+/-- Table characterization of lowercase range chunk 0. -/
+theorem unicode_range_0_table (cp : U32) (out : Option (U32 × U32 × Usize))
+    (h : unicode.range_0 cp = ok out) :
+    out.map (fun r => (r.1.val,r.2.1.val,r.2.2.val)) = LookupLowerRanges cp.val LowerRanges0 :=
+  Verified.RustfsUnicodeTables.range0_ok cp out h
+
+/-- Table characterization of lowercase range chunk 1. -/
+theorem unicode_range_1_table (cp : U32) (out : Option (U32 × U32 × Usize))
+    (h : unicode.range_1 cp = ok out) :
+    out.map (fun r => (r.1.val,r.2.1.val,r.2.2.val)) = LookupLowerRanges cp.val LowerRanges1 :=
+  Verified.RustfsUnicodeTables.range1_ok cp out h
+
+/-- Table characterization of lowercase range chunk 2. -/
+theorem unicode_range_2_table (cp : U32) (out : Option (U32 × U32 × Usize))
+    (h : unicode.range_2 cp = ok out) :
+    out.map (fun r => (r.1.val,r.2.1.val,r.2.2.val)) = LookupLowerRanges cp.val LowerRanges2 :=
+  Verified.RustfsUnicodeTables.range2_ok cp out h
+
+/-- Table characterization of lowercase range chunk 3. -/
+theorem unicode_range_3_table (cp : U32) (out : Option (U32 × U32 × Usize))
+    (h : unicode.range_3 cp = ok out) :
+    out.map (fun r => (r.1.val,r.2.1.val,r.2.2.val)) = LookupLowerRanges cp.val LowerRanges3 :=
+  Verified.RustfsUnicodeTables.range3_ok cp out h
+
+/-- Table characterization of lowercase range chunk 4. -/
+theorem unicode_range_4_table (cp : U32) (out : Option (U32 × U32 × Usize))
+    (h : unicode.range_4 cp = ok out) :
+    out.map (fun r => (r.1.val,r.2.1.val,r.2.2.val)) = LookupLowerRanges cp.val LowerRanges4 :=
+  Verified.RustfsUnicodeTables.range4_ok cp out h
+
+/-- Table characterization of lowercase range chunk 5. -/
+theorem unicode_range_5_table (cp : U32) (out : Option (U32 × U32 × Usize))
+    (h : unicode.range_5 cp = ok out) :
+    out.map (fun r => (r.1.val,r.2.1.val,r.2.2.val)) = LookupLowerRanges cp.val LowerRanges5 :=
+  Verified.RustfsUnicodeTables.range5_ok cp out h
+
+/-- Table characterization of lowercase range chunk 6. -/
+theorem unicode_range_6_table (cp : U32) (out : Option (U32 × U32 × Usize))
+    (h : unicode.range_6 cp = ok out) :
+    out.map (fun r => (r.1.val,r.2.1.val,r.2.2.val)) = LookupLowerRanges cp.val LowerRanges6 :=
+  Verified.RustfsUnicodeTables.range6_ok cp out h
+
+/-- Table characterization of lowercase range chunk 7. -/
+theorem unicode_range_7_table (cp : U32) (out : Option (U32 × U32 × Usize))
+    (h : unicode.range_7 cp = ok out) :
+    out.map (fun r => (r.1.val,r.2.1.val,r.2.2.val)) = LookupLowerRanges cp.val LowerRanges7 :=
+  Verified.RustfsUnicodeTables.range7_ok cp out h
+
+/-- Table characterization of lowercase range chunk 8. -/
+theorem unicode_range_8_table (cp : U32) (out : Option (U32 × U32 × Usize))
+    (h : unicode.range_8 cp = ok out) :
+    out.map (fun r => (r.1.val,r.2.1.val,r.2.2.val)) = LookupLowerRanges cp.val LowerRanges8 :=
+  Verified.RustfsUnicodeTables.range8_ok cp out h
+
+/-- Table structure: keys are unique and outputs are valid Unicode scalars. -/
+theorem unicode_singleton_table_structure :
+    (LowerSingletonEntries.map Prod.fst).Nodup ∧
+    (∀ r ∈ LowerSingletonEntries,
+      r.1 < 0x110000 ∧ r.2.1 < 0x110000 ∧ r.2.2.1 < 0x110000 ∧
+      (r.2.1 < 0xD800 ∨ 0xDFFF < r.2.1) ∧
+      (r.2.2.1 < 0xD800 ∨ 0xDFFF < r.2.2.1)) ∧
+    (∀ r ∈ LowerSingletonEntries,
+      r.2.2.2 = 1 ∨ (r.1 = 304 ∧ r.2.1 = 105 ∧ r.2.2.1 = 775 ∧ r.2.2.2 = 2)) :=
+  ⟨Verified.RustfsUnicodeStructure.singleton_keys_distinct,
+   Verified.RustfsUnicodeStructure.singleton_scalar_bounds,
+   Verified.RustfsUnicodeStructure.singleton_expansion_shape⟩
+
+/-- Table structure: ranges have ordered bounds and valid destination intervals. -/
+theorem unicode_range_table_structure :
+    ∀ r ∈ LowerRangeEntries,
+      r.1 ≤ r.2.1 ∧ r.2.1 < 0x110000 ∧ r.2.2.1 ≤ 2 ∧
+      (r.2.2.2 < 0 → (-r.2.2.2).toNat ≤ r.1) ∧
+      LowerRangeValue r.1 r < 0x110000 ∧ LowerRangeValue r.2.1 r < 0x110000 ∧
+      (LowerRangeValue r.2.1 r < 0xD800 ∨ 0xDFFF < LowerRangeValue r.1 r) :=
+  Verified.RustfsUnicodeStructure.range_entries_well_formed
+
+/-- Table characterization of the whitespace scalars used by trimming. -/
+theorem unicode_whitespace_table (cp : U32) (b : Bool)
+    (h : unicode.whitespace cp = ok b) :
+    b = true ↔ cp.val ∈ UnicodeWhitespace :=
+  Verified.RustfsUnicodeWhitespace.whitespace_ok cp b h
+
+theorem unicode_whitespace_table_structure :
+    UnicodeWhitespace.Nodup ∧ UnicodeWhitespace.length = 25 :=
+  ⟨Verified.RustfsUnicodeStructure.whitespace_distinct,
+   Verified.RustfsUnicodeStructure.whitespace_count⟩
 
 end rustfs_kernel.Properties
