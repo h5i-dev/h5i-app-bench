@@ -1,3 +1,9 @@
+import Verified.RustfsVariableScalars
+import Verified.RustfsVariableIdentity
+import Verified.RustfsVariablePrincipal
+import Verified.RustfsVariableCustom
+import Verified.RustfsVariableDynamic
+import Verified.RustfsVariableResolve
 import Verified.RustfsClaimStrings
 import Verified.RustfsClaimPath
 import Verified.RustfsClaimTree
@@ -653,5 +659,83 @@ theorem claim_args_policies_unique_nonempty (table : alloc.vec.Vec (alloc.vec.Ve
 theorem claim_path_split_lossless (path : Slice U8) (second : Bool) (left right : alloc.vec.Vec U8)
     (h : claims.split_path path second = ok (left,right)) : left.val ++ right.val = path.val := by
   exact rustfs_kernel.Verified.RustfsClaimPath.path_preserved path second left right h
+
+/-- A fresh context contains no caller-supplied identity or variable values. -/
+theorem variable_context_empty (c : varctx.VariableContext) (h : varctx.context_new = ok c) :
+    c.is_https = false ∧ c.source_ip = none ∧ c.account_id = none ∧ c.region = none ∧
+    c.username = none ∧ c.claims = none ∧ c.conditions.val = [] ∧ c.custom_variables.val = [] := by
+  exact Verified.RustfsVariableScalars.context_empty c h
+
+/-- Constructing a resolver preserves the supplied context. -/
+theorem variable_resolver_context (c : varctx.VariableContext) (r : varctx.VariableResolver)
+    (h : varctx.resolver_new c = ok r) : r.context = c := by
+  exact Verified.RustfsVariableScalars.resolver_context c r h
+
+/-- Identity-field resolution preserves the supplied value, including absence. -/
+theorem variable_username_exact (r : varctx.VariableResolver) (o : Option (alloc.vec.Vec U8))
+    (h : varctx.resolve_username r = ok o) : o = r.context.username := by
+  exact Verified.RustfsVariableScalars.username_ok r o h
+
+/-- Identity-field resolution preserves the supplied value, including absence. -/
+theorem variable_account_id_exact (r : varctx.VariableResolver) (o : Option (alloc.vec.Vec U8))
+    (h : varctx.resolve_account_id r = ok o) : o = r.context.account_id := by
+  exact Verified.RustfsVariableScalars.account_ok r o h
+
+/-- Identity-field resolution preserves the supplied value, including absence. -/
+theorem variable_region_exact (r : varctx.VariableResolver) (o : Option (alloc.vec.Vec U8))
+    (h : varctx.resolve_region r = ok o) : o = r.context.region := by
+  exact Verified.RustfsVariableScalars.region_ok r o h
+
+/-- Identity-field resolution preserves the supplied value, including absence. -/
+theorem variable_source_ip_exact (r : varctx.VariableResolver) (o : Option (alloc.vec.Vec U8))
+    (h : varctx.resolve_source_ip r = ok o) : o = r.context.source_ip := by
+  exact Verified.RustfsVariableScalars.source_ok r o h
+
+/-- The first exact-name claim supplies scalar values in their original order. -/
+theorem variable_claim_strings_exact (r : varctx.VariableResolver) (needle : Slice U8)
+    (o : Option (alloc.vec.Vec (alloc.vec.Vec U8)))
+    (h : varctx.get_claim_as_strings r needle = ok o) :
+    o.map (fun vs => vs.val.map (fun v => nats v.val)) = ResolverStrings r (nats needle.val) := by
+  exact Verified.RustfsVariableScalars.claim_strings_ok r needle o h
+
+/-- User-ID selection takes the last scalar, using parent only when sub supplies no string list. -/
+theorem variable_userid_exact (r : varctx.VariableResolver) (o : Option (alloc.vec.Vec U8))
+    (h : varctx.resolve_userid r = ok o) : o.map (fun v => nats v.val) = VariableUserID r := by
+  exact Verified.RustfsVariableIdentity.userid_ok r o h
+
+/-- Claim-key presence determines principal type, with role precedence. -/
+theorem variable_principal_type_exact (r : varctx.VariableResolver) (out : alloc.vec.Vec U8)
+    (h : varctx.resolve_principal_type r = ok out) : nats out.val = VariablePrincipalType r := by
+  exact Verified.RustfsVariablePrincipal.principal_ok r out h
+
+/-- SecureTransport faithfully reports the context's transport flag. -/
+theorem variable_secure_transport_exact (r : varctx.VariableResolver) (v : alloc.vec.Vec U8)
+    (h : varctx.resolve_secure_transport r = ok v) :
+    nats v.val = if r.context.is_https then lit "true" else lit "false" := by
+  exact Verified.RustfsVariableScalars.secure_ok r v h
+
+/-- Custom names require the prefix and select the first exact suffix match. -/
+theorem variable_custom_first (r : varctx.VariableResolver) (needle : Slice U8)
+    (out : Option (alloc.vec.Vec U8)) (h : varctx.resolve_custom_variable r needle = ok out) :
+    out = VariableCustom r needle.val := by
+  exact Verified.RustfsVariableCustom.custom_ok r needle out h
+
+/-- Exactly the two clock variable names are dynamic. -/
+theorem variable_dynamic_names (needle : Slice U8) (b : Bool) (h : varctx.is_dynamic needle = ok b) :
+    (b = true ↔ nats needle.val = lit "aws:CurrentTime" ∨ nats needle.val = lit "aws:EpochTime") := by
+  exact Verified.RustfsVariableDynamic.dynamic_ok needle b h
+
+/-- Standard variable substitution agrees with the context and explicit clock inputs. -/
+theorem variable_resolution_exact (r : varctx.VariableResolver) (needle : Slice U8) (env : condfuncs.Env)
+    (out : Option (alloc.vec.Vec U8)) (h : varctx.resolve r needle env = ok out) :
+    out.map (fun v => nats v.val) = VariableResolution r needle.val env := by
+  exact Verified.RustfsVariableResolve.resolve_ok r needle env out h
+
+/-- Multi-value user IDs preserve every scalar; other substitutions are singletons. -/
+theorem variable_multiple_exact (r : varctx.VariableResolver) (needle : Slice U8) (env : condfuncs.Env)
+    (out : Option (alloc.vec.Vec (alloc.vec.Vec U8)))
+    (h : varctx.resolve_multiple r needle env = ok out) :
+    out.map (fun vs => vs.val.map (fun v => nats v.val)) = VariableMultiple r needle.val env := by
+  exact Verified.RustfsVariableResolve.multiple_ok r needle env out h
 
 end rustfs_kernel.Properties

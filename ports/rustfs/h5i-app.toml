@@ -5,6 +5,21 @@ start-from = ["policies", "pathclean::clean", "defaults::default_version", "defa
 
 [check]
 theorems = [
+  "rustfs_kernel.Properties.variable_multiple_exact",
+  "rustfs_kernel.Properties.variable_context_empty",
+  "rustfs_kernel.Properties.variable_resolver_context",
+  "rustfs_kernel.Properties.variable_username_exact",
+  "rustfs_kernel.Properties.variable_account_id_exact",
+  "rustfs_kernel.Properties.variable_region_exact",
+  "rustfs_kernel.Properties.variable_source_ip_exact",
+  "rustfs_kernel.Properties.variable_claim_strings_exact",
+  "rustfs_kernel.Properties.variable_userid_exact",
+  "rustfs_kernel.Properties.variable_principal_type_exact",
+  "rustfs_kernel.Properties.variable_secure_transport_exact",
+  "rustfs_kernel.Properties.variable_custom_first",
+  "rustfs_kernel.Properties.variable_dynamic_names",
+  "rustfs_kernel.Properties.variable_resolution_exact",
+
   "rustfs_kernel.Properties.claim_string_container",
   "rustfs_kernel.Properties.claim_exact_tokens_nonempty",
   "rustfs_kernel.Properties.claim_lookup_tokens_nonempty",
