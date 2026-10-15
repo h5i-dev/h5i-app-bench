@@ -1,6 +1,6 @@
 //! HTTP shell for Conduit. JWT, bcrypt, and PostgreSQL live here.
-//! Authorization, validation, slug rules, and list-versus-detail shaping
-//! are `conduit_kernel::transition` and `shows_body`.
+//! Authorization, credential/token decisions, conflicts, validation, and response
+//! field policy live in `conduit_kernel`; this module supplies observations and I/O.
 
 use std::collections::{HashMap, HashSet};
 
@@ -11,8 +11,9 @@ use axum::routing::{get, post};
 use axum::{Json, Router};
 use axum::response::{IntoResponse, Response};
 use conduit_kernel::{
-    user_conflicts, token_actor, token_user_exists, Subject, TokenInput, authenticate_login, make_slug, shows_body, transition, ArticleView, Command, Delta, Error, Norm,
-    RawNum, RawText, Reply, TagDecision, TagInput, View,
+    authenticate_login, make_slug, shows_body, token_actor, token_user_exists, transition,
+    user_conflicts, user_fields, ArticleView, Command, Delta, Error, Norm, RawNum, RawText,
+    Reply, Subject, TagDecision, TagInput, TokenInput, UserView, View,
 };
 use serde::Deserialize;
 use serde::Serialize;
@@ -402,23 +403,33 @@ struct ArticleList {
     tag_list: Vec<String>,
 }
 
-fn user_json(u: &UserPublic, token: &str) -> Value {
-    json!({
-        "email": u.email,
-        "token": token,
-        "username": u.username,
-        "bio": u.bio,
-        "image": u.image,
-    })
+/// All user and profile objects pass through the kernel's field policy.
+fn identity_json(
+    viewer: i64,
+    subject: i64,
+    view: UserView,
+    username: &str,
+    bio: &Option<String>,
+    image: &Option<String>,
+    email: &str,
+    token: &str,
+) -> Value {
+    let fields = user_fields(viewer as u64, subject as u64, &view);
+    let mut value = json!({ "username": username, "bio": bio, "image": image });
+    if fields.email { value["email"] = json!(email); }
+    if fields.token { value["token"] = json!(token); }
+    value
+}
+
+fn user_json(u: &UserPublic, viewer: i64, token: &str) -> Value {
+    identity_json(viewer, u.id, UserView::User, &u.username, &u.bio, &u.image, &u.email, token)
 }
 
 fn profile_json(username: &str, bio: &Option<String>, image: &Option<String>, following: bool) -> Value {
-    json!({
-        "username": username,
-        "bio": bio,
-        "image": image,
-        "following": following,
-    })
+    // A profile never has private fields, regardless of viewer or subject.
+    let mut value = identity_json(0, 0, UserView::Profile, username, bio, image, "", "");
+    value["following"] = json!(following);
+    value
 }
 
 fn detail_json(a: &ArticleDetail) -> Value {
@@ -620,7 +631,7 @@ async fn register(State(app): State<App>, body: Bytes) -> Result<Response, ApiEr
     let token = sign_token(&app.secret, user.id)?;
     Ok(json_res(
         StatusCode::CREATED,
-        json!({ "user": user_json(&user, &token) }),
+        json!({ "user": user_json(&user, user.id, &token) }),
     ))
 }
 
@@ -660,7 +671,7 @@ async fn login(State(app): State<App>, body: Bytes) -> Result<Response, ApiError
     let token = sign_token(&app.secret, user.id)?;
     Ok(json_res(
         StatusCode::OK,
-        json!({ "user": user_json(&user, &token) }),
+        json!({ "user": user_json(&user, user.id, &token) }),
     ))
 }
 
@@ -674,7 +685,7 @@ async fn current_user(State(app): State<App>, headers: HeaderMap) -> Result<Resp
     let token = sign_token(&app.secret, user.id)?;
     Ok(json_res(
         StatusCode::OK,
-        json!({ "user": user_json(&user, &token) }),
+        json!({ "user": user_json(&user, uid, &token) }),
     ))
 }
 
@@ -769,7 +780,7 @@ async fn update_user(State(app): State<App>, headers: HeaderMap, body: Bytes) ->
     let token = sign_token(&app.secret, user.id)?;
     Ok(json_res(
         StatusCode::OK,
-        json!({ "user": user_json(&user, &token) }),
+        json!({ "user": user_json(&user, uid, &token) }),
     ))
 }
 

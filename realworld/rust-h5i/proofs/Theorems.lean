@@ -290,4 +290,21 @@ theorem user_conflicts_exact (username email : Bool) :
       (r = .Err .EmailTaken ↔ username = false ∧ email = true) ⦄ := by
   cases username <;> cases email <;> simp [user_conflicts]
 
+theorem user_fields_exact (viewer subject : Std.U64) :
+    user_fields viewer subject .User ⦃ fields =>
+      (fields.email = true ↔ viewer ≠ 0#u64 ∧ viewer = subject) ∧
+      fields.token = fields.email ⦄ := by
+  by_cases guest : viewer = 0#u64 <;> simp [user_fields, guest]
+
+theorem other_user_no_private_fields (viewer subject : Std.U64) (view : UserView)
+    (different : viewer ≠ subject) :
+    user_fields viewer subject view ⦃ fields =>
+      fields.email = false ∧ fields.token = false ⦄ := by
+  cases view <;> simp [user_fields, different]
+
+theorem profile_no_private_fields (viewer subject : Std.U64) :
+    user_fields viewer subject .Profile ⦃ fields =>
+      fields.email = false ∧ fields.token = false ⦄ := by
+  simp [user_fields]
+
 end conduit_kernel

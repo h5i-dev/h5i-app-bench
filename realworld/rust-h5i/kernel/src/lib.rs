@@ -771,3 +771,26 @@ pub fn user_conflicts(username_taken: bool, email_taken: bool) -> Result<(), Err
         Ok(())
     }
 }
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum UserView {
+    User,
+    Profile,
+}
+
+/// The public identity fields are always visible. Private fields need self-view.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct UserFields {
+    pub email: bool,
+    pub token: bool,
+}
+
+pub fn user_fields(viewer: u64, subject: u64, view: &UserView) -> UserFields {
+    match view {
+        UserView::Profile => UserFields { email: false, token: false },
+        UserView::User => {
+            let private = viewer != 0 && viewer == subject;
+            UserFields { email: private, token: private }
+        }
+    }
+}

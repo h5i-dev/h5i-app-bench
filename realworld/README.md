@@ -88,3 +88,19 @@ in `bench/README.md`. The published run uses 10 s warmup, 30 s measure,
 `rust-h5i` keeps authorization and validation in `kernel/`. `h5i app extract`
 writes `proofs/generated/`. `h5i app check` builds the Lean proofs and rejects
 `sorry` and new axioms.
+
+The kernel also decides login from user-existence/password-match observations,
+resolves verified JWT claims to actors (strictly `exp > now`, positive parsed
+subject, existing user), and rejects username/email conflicts in that order.
+User response fields follow a kernel policy: email and token require an
+identified self-view; profiles always omit both. The shell serializes every
+user/profile object through that policy.
+
+The shell retains bcrypt (including the dummy hash on unknown-user login),
+JWT signature verification/signing, claim/header decoding, and the clock:
+these are library operations or environmental observations. PostgreSQL reads,
+transactions, and unique constraints supply existence/conflict facts and enforce
+atomic writes; username/email constraint failures also use the kernel conflict
+decision. HTTP/JSON encoding and SQL execution remain shell I/O. Slug collision
+retries and their storage errors remain with persistence. Per-viewer following
+and favorited observations still come from SQL joins.

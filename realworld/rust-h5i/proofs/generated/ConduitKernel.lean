@@ -988,4 +988,33 @@ def user_conflicts
     then ok (core.result.Result.Err Error.EmailTaken)
     else ok (core.result.Result.Ok ())
 
+/-- [conduit_kernel::UserView]
+    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 776:0-779:1
+    Visibility: public -/
+@[discriminant isize]
+inductive UserView where
+| User : UserView
+| Profile : UserView
+
+/-- [conduit_kernel::UserFields]
+    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 783:0-786:1
+    Visibility: public -/
+structure UserFields where
+  email : Bool
+  token : Bool
+
+/-- [conduit_kernel::user_fields]:
+    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 788:0-796:1
+    Visibility: public -/
+def user_fields
+  (viewer : Std.U64) (subject : Std.U64) (view : UserView) :
+  Result UserFields
+  := do
+  match view with
+  | UserView.User =>
+    if viewer != 0#u64
+    then ok { email := (viewer = subject), token := (viewer = subject) }
+    else ok { email := false, token := false }
+  | UserView.Profile => ok { email := false, token := false }
+
 end conduit_kernel

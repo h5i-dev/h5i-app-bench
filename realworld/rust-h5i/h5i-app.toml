@@ -2,10 +2,13 @@
 
 [extract]
 crate = "kernel"
-start-from = ["transition", "shows_body", "authenticate_login", "token_actor", "user_conflicts"]
+start-from = ["transition", "shows_body", "authenticate_login", "token_actor", "user_conflicts", "user_fields"]
 
 [check]
 theorems = [
+  "conduit_kernel.other_user_no_private_fields",
+  "conduit_kernel.profile_no_private_fields",
+  "conduit_kernel.user_fields_exact",
   "conduit_kernel.user_conflicts_exact",
   "conduit_kernel.token_rejects_invalid",
   "conduit_kernel.token_missing_guest",
