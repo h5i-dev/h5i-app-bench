@@ -1,3 +1,4 @@
+import Verified.OxicloudPolicyDefaults
 import Verified.OxicloudPolicyCompare
 import Verified.OxicloudLiveAuth
 import Verified.OxicloudAdmin
@@ -616,5 +617,23 @@ theorem policy_default_drift (p d : drivepolicy.Policies) (kind : model.DriveKin
     (r : alloc.vec.Vec policycompare.Knob) (h : policycompare.weaker_than p d kind = ok r) :
     r.val = SpecKernel.PolicyWeakerList p d kind := by
   apply Verified.OxicloudPolicyCompare.weaker_ok <;> assumption
+
+theorem default_knob_eligibility (knob : policycompare.Knob) (kind : model.DriveKind)
+    (r : Option policydefaults.KeyRejection) (h : policydefaults.reject_knob knob kind = ok r) :
+    (r = none ↔ SpecKernel.DefaultKnobAllowed knob kind) ∧
+    (∀ reason, r = some reason → SpecKernel.DefaultKnobRejection knob kind reason) := by
+  apply Verified.OxicloudPolicyDefaults.knob_ok <;> assumption
+
+theorem default_input_first_rejection (kind : model.DriveKind) (isObject : Bool)
+    (keys : Slice (alloc.vec.Vec U8)) (r : policydefaults.Validation)
+    (h : policydefaults.validate kind isObject keys = ok r) :
+    SpecKernel.DefaultsValidation kind isObject keys.val r := by
+  apply Verified.OxicloudPolicyDefaults.validation_ok <;> assumption
+
+theorem default_input_validation (kind : model.DriveKind) (isObject : Bool)
+    (keys : Slice (alloc.vec.Vec U8)) (r : policydefaults.Validation)
+    (h : policydefaults.validate kind isObject keys = ok r) :
+    (r = .Valid ↔ isObject = true ∧ ∀ raw ∈ keys.val, SpecKernel.DefaultKeyAllowed raw.val kind) := by
+  apply Verified.OxicloudPolicyDefaults.validation_exact <;> assumption
 
 end oxicloud_kernel.Properties

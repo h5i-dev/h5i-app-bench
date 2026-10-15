@@ -4297,6 +4297,157 @@ def policycompare.at_least_as_strict_on_bytes
   let k ← policycompare.knob_from_bytes raw
   policycompare.at_least_as_strict_on p other k
 
+/-- [oxicloud_kernel::policydefaults::KeyRejection]
+    Source: 'ports/oxicloud/kernel/src/policydefaults.rs', lines 4:0-4:64
+    Visibility: public -/
+@[discriminant isize]
+inductive policydefaults.KeyRejection where
+| NotDefaultable : policydefaults.KeyRejection
+| Unknown : policydefaults.KeyRejection
+| NotApplicable : policydefaults.KeyRejection
+
+/-- [oxicloud_kernel::policydefaults::Validation]
+    Source: 'ports/oxicloud/kernel/src/policydefaults.rs', lines 5:0-5:71
+    Visibility: public -/
+@[discriminant isize]
+inductive policydefaults.Validation where
+| Valid : policydefaults.Validation
+| NotObject : policydefaults.Validation
+| Rejected :
+  Std.Usize →
+  policydefaults.KeyRejection →
+  policydefaults.Validation
+
+/-- [oxicloud_kernel::policydefaults::reject_knob]:
+    Source: 'ports/oxicloud/kernel/src/policydefaults.rs', lines 7:0-20:1
+    Visibility: public -/
+def policydefaults.reject_knob
+  (knob : policycompare.Knob) (kind : model.DriveKind) :
+  Result (Option policydefaults.KeyRejection)
+  := do
+  match knob with
+  | policycompare.Knob.ForbidSharing =>
+    let b ←
+      policycompare.knob_applies_to_kind policycompare.Knob.ForbidSharing kind
+    if b
+    then ok none
+    else ok (some policydefaults.KeyRejection.NotApplicable)
+  | policycompare.Knob.ForbidExternalSharing =>
+    let b ←
+      policycompare.knob_applies_to_kind
+        policycompare.Knob.ForbidExternalSharing kind
+    if b
+    then ok none
+    else ok (some policydefaults.KeyRejection.NotApplicable)
+  | policycompare.Knob.ForbidPublicLinks =>
+    let b ←
+      policycompare.knob_applies_to_kind policycompare.Knob.ForbidPublicLinks
+        kind
+    if b
+    then ok none
+    else ok (some policydefaults.KeyRejection.NotApplicable)
+  | policycompare.Knob.ForbidCrossDriveMove =>
+    let b ←
+      policycompare.knob_applies_to_kind
+        policycompare.Knob.ForbidCrossDriveMove kind
+    if b
+    then ok none
+    else ok (some policydefaults.KeyRejection.NotApplicable)
+  | policycompare.Knob.ForbidOwnerRoleChange =>
+    let b ←
+      policycompare.knob_applies_to_kind
+        policycompare.Knob.ForbidOwnerRoleChange kind
+    if b
+    then ok none
+    else ok (some policydefaults.KeyRejection.NotApplicable)
+  | policycompare.Knob.IncludeInPhotoIndex =>
+    let b ←
+      policycompare.knob_applies_to_kind policycompare.Knob.IncludeInPhotoIndex
+        kind
+    if b
+    then ok none
+    else ok (some policydefaults.KeyRejection.NotApplicable)
+  | policycompare.Knob.IncludeInMusicIndex =>
+    let b ←
+      policycompare.knob_applies_to_kind policycompare.Knob.IncludeInMusicIndex
+        kind
+    if b
+    then ok none
+    else ok (some policydefaults.KeyRejection.NotApplicable)
+  | policycompare.Knob.ReadOnly =>
+    ok (some policydefaults.KeyRejection.NotDefaultable)
+  | policycompare.Knob.MaxPublicLinkDays =>
+    let b ←
+      policycompare.knob_applies_to_kind policycompare.Knob.MaxPublicLinkDays
+        kind
+    if b
+    then ok none
+    else ok (some policydefaults.KeyRejection.NotApplicable)
+  | policycompare.Knob.RequirePublicLinkPassword =>
+    let b ←
+      policycompare.knob_applies_to_kind
+        policycompare.Knob.RequirePublicLinkPassword kind
+    if b
+    then ok none
+    else ok (some policydefaults.KeyRejection.NotApplicable)
+  | policycompare.Knob.Other => ok (some policydefaults.KeyRejection.Unknown)
+
+/-- [oxicloud_kernel::policydefaults::reject_key]:
+    Source: 'ports/oxicloud/kernel/src/policydefaults.rs', lines 21:0-23:1
+    Visibility: public -/
+def policydefaults.reject_key
+  (raw : Slice Std.U8) (kind : model.DriveKind) :
+  Result (Option policydefaults.KeyRejection)
+  := do
+  let k ← policycompare.knob_from_bytes raw
+  policydefaults.reject_knob k kind
+
+/-- [oxicloud_kernel::policydefaults::validate]: loop body 0:
+    Source: 'ports/oxicloud/kernel/src/policydefaults.rs', lines 29:4-37:1
+    Visibility: public -/
+@[rust_loop_body]
+def policydefaults.validate_loop.body
+  (kind : model.DriveKind) (keys : Slice (alloc.vec.Vec Std.U8))
+  (i : Std.Usize) :
+  Result (ControlFlow Std.Usize policydefaults.Validation)
+  := do
+  let i1 := Slice.len keys
+  if i < i1
+  then
+    let v ← Slice.index_usize keys i
+    let s := alloc.vec.Vec.deref v
+    let o ← policydefaults.reject_key s kind
+    match o with
+    | none => let i2 ← i + 1#usize
+              ok (cont i2)
+    | some reason => ok (done (policydefaults.Validation.Rejected i reason))
+  else ok (done policydefaults.Validation.Valid)
+
+/-- [oxicloud_kernel::policydefaults::validate]: loop 0:
+    Source: 'ports/oxicloud/kernel/src/policydefaults.rs', lines 29:4-37:1
+    Visibility: public -/
+@[rust_loop]
+def policydefaults.validate_loop
+  (kind : model.DriveKind) (keys : Slice (alloc.vec.Vec Std.U8))
+  (i : Std.Usize) :
+  Result policydefaults.Validation
+  := do
+  loop
+    (fun i1 => policydefaults.validate_loop.body kind keys i1)
+    i
+
+/-- [oxicloud_kernel::policydefaults::validate]:
+    Source: 'ports/oxicloud/kernel/src/policydefaults.rs', lines 26:0-37:1
+    Visibility: public -/
+def policydefaults.validate
+  (kind : model.DriveKind) (is_object : Bool)
+  (keys : Slice (alloc.vec.Vec Std.U8)) :
+  Result policydefaults.Validation
+  := do
+  if is_object
+  then policydefaults.validate_loop kind keys 0#usize
+  else ok policydefaults.Validation.NotObject
+
 /-- [oxicloud_kernel::session::SessionOrigin]
     Source: 'ports/oxicloud/kernel/src/session.rs', lines 9:0-9:77
     Visibility: public -/

@@ -34,3 +34,6 @@ mod admin;
 
 #[cfg(test)]
 mod liveauth;
+
+#[cfg(test)]
+mod policydefaults;

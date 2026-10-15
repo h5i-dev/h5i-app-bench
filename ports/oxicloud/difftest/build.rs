@@ -75,4 +75,12 @@ fn main() {
     "#);
     fs::write(PathBuf::from(env::var_os("OUT_DIR").unwrap()).join("liveauth_oracle.rs"), oracle).unwrap();
 
+    let path = "../upstream-src/src/application/services/drive_policy_defaults_service.rs";
+    println!("cargo:rerun-if-changed={path}");
+    let source = fs::read_to_string(path).unwrap();
+    let mut oracle = String::from("use oxicloud::{common::errors::{DomainError, ErrorKind}, domain::entities::drive::{DriveKind, POLICY_KNOBS, NON_DEFAULTABLE_KNOBS, knob_applies_to_kind}}; struct Oracle; impl Oracle {");
+    oracle.push_str(&item(&source, "fn validate(&self, kind: DriveKind, bag:"));
+    oracle.push_str("} pub fn validate(kind: DriveKind, bag: &serde_json::Value) -> Result<(), DomainError> { Oracle.validate(kind,bag) }");
+    fs::write(PathBuf::from(env::var_os("OUT_DIR").unwrap()).join("defaults_oracle.rs"), oracle).unwrap();
+
 }

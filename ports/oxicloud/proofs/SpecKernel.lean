@@ -447,4 +447,32 @@ def PolicyKnobParsed (raw : List U8) (knob : policycompare.Knob) : Prop :=
   | .Other => raw ∉ PolicyKnobNames
   | _ => PolicyKnobWire knob = some raw
 
+/-- Default settings must be recognized, standing policy, and applicable to the kind. -/
+def DefaultKnobAllowed (knob : policycompare.Knob) (kind : model.DriveKind) : Prop :=
+  knob ≠ .Other ∧ knob ≠ .ReadOnly ∧ PolicyApplies knob kind
+
+def DefaultKnobRejection (knob : policycompare.Knob) (kind : model.DriveKind)
+    (reason : policydefaults.KeyRejection) : Prop :=
+  match reason with
+  | .NotDefaultable => knob = .ReadOnly
+  | .Unknown => knob = .Other
+  | .NotApplicable => knob = .ForbidOwnerRoleChange ∧ kind = .Personal
+
+def DefaultKeyAllowed (raw : List U8) (kind : model.DriveKind) : Prop :=
+  ∃ knob, PolicyKnobParsed raw knob ∧ DefaultKnobAllowed knob kind
+
+def DefaultKeyRejection (raw : List U8) (kind : model.DriveKind)
+    (reason : policydefaults.KeyRejection) : Prop :=
+  ∃ knob, PolicyKnobParsed raw knob ∧ DefaultKnobRejection knob kind reason
+
+/-- A key failure identifies the first rejected key; success validates every key. -/
+def DefaultsValidation (kind : model.DriveKind) (isObject : Bool)
+    (keys : List (alloc.vec.Vec U8)) (r : policydefaults.Validation) : Prop :=
+  match r with
+  | .NotObject => isObject = false
+  | .Valid => isObject = true ∧ ∀ raw ∈ keys, DefaultKeyAllowed raw.val kind
+  | .Rejected index reason => isObject = true ∧
+      (∃ raw, keys[index.val]? = some raw ∧ DefaultKeyRejection raw.val kind reason) ∧
+      ∀ j < index.val, ∀ raw, keys[j]? = some raw → DefaultKeyAllowed raw.val kind
+
 end oxicloud_kernel.SpecKernel

@@ -5180,7 +5180,8 @@ status = "todo"
 [[item]]
 upstream = "src/application/services/drive_policy_defaults_service.rs:120 DrivePolicyDefaultsService::validate"
 lines = 35
-status = "todo"
+status = "ported"
+kernel = ["policydefaults::validate", "policydefaults::reject_key", "policydefaults::reject_knob"]
 
 [[item]]
 upstream = "src/application/services/drive_policy_defaults_service.rs:169 DrivePolicyDefaultsService::set"

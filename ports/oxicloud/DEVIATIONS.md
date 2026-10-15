@@ -1,8 +1,10 @@
 # OxiCloud: what the kernel covers and where it differs
 
-Upstream: AtalayaLabs/OxiCloud @ 8c0dd33. The kernel covers 1,257 lines of
-it (`difftest/count_loc.py`, which leaves out logging calls and the branches
-listed under "Not covered").
+Upstream: AtalayaLabs/OxiCloud @ 8c0dd33. Per-item security-kernel coverage
+is tracked in `LEDGER.toml`; run `python3 harness/port_ledger.py report
+oxicloud --security` from the worktree root for the current share.
+`difftest/count_loc.py` separately counts the original SQL-backed ACL and
+grant-handler port, leaving out logging and the branches listed below.
 
 ## Covered
 
@@ -250,3 +252,15 @@ individually as outside; these are not counted as ported authorization logic.
   applicability, non-defaultable, and strictness filters in the same order.
   The two fixed name tables are represented by vectors of the corresponding
   typed variants, constructed with explicit pushes.
+
+### Policy-default input validation
+
+- `DrivePolicyDefaultsService::validate` observes only whether the JSON value
+  is an object and its ordered keys. The shell supplies this boolean and the
+  complete UTF-8 key byte vectors in the pinned JSON map's iteration order;
+  values remain unobserved. The kernel accepts any key order, including the
+  order supplied by the shell, and returns the first rejected key's index.
+- `Validation` preserves success, the non-object rejection, and the three
+  ordered key rejection classes. The shell reconstructs the upstream
+  `InvalidInput` / `DrivePolicyDefaults` diagnostic from that class, original
+  key and drive kind. No policy-value type checks are added.

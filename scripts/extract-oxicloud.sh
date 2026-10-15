@@ -131,6 +131,9 @@ trap 'rm -rf "$tmp"' EXIT
   --start-from oxicloud_kernel::liveauth::decide_internal_user \
   --start-from oxicloud_kernel::liveauth::anonymous_live_role \
   --start-from oxicloud_kernel::liveauth::decide_live_role \
+  --start-from oxicloud_kernel::policydefaults::reject_knob \
+  --start-from oxicloud_kernel::policydefaults::reject_key \
+  --start-from oxicloud_kernel::policydefaults::validate \
   --start-from oxicloud_kernel::policycompare::policy_knobs \
   --start-from oxicloud_kernel::policycompare::non_defaultable_knobs \
   --start-from oxicloud_kernel::policycompare::knob_applies_to_kind \
