@@ -5,6 +5,25 @@ start-from = ["policies", "pathclean::clean", "defaults::default_version", "defa
 
 [check]
 theorems = [
+  "rustfs_kernel.Properties.unicode_decode_scalar_spec",
+  "rustfs_kernel.Properties.unicode_scalar_roundtrip_spec",
+  "rustfs_kernel.Properties.unicode_lower_spec",
+  "rustfs_kernel.Properties.unicode_trim_spec",
+
+  "rustfs_kernel.Properties.ip_networks_spec",
+  "rustfs_kernel.Properties.unicode_append_scalar_spec",
+  "rustfs_kernel.Properties.string_like_quantifier_spec",
+  "rustfs_kernel.Properties.numeric_comparison_spec",
+  "rustfs_kernel.Properties.ip_prefix_spec",
+  "rustfs_kernel.Properties.ip_parse_spec",
+  "rustfs_kernel.Properties.date_comparison_spec",
+  "rustfs_kernel.Properties.condition_values_spec",
+  "rustfs_kernel.Properties.null_conditions_spec",
+  "rustfs_kernel.Properties.bool_conditions_spec",
+  "rustfs_kernel.Properties.numeric_conditions_spec",
+  "rustfs_kernel.Properties.string_any_like_spec",
+  "rustfs_kernel.Properties.unicode_lowercase_scalar_spec",
+
   "rustfs_kernel.Properties.unicode_range_output_valid",
   "rustfs_kernel.Properties.unicode_range_dispatch_table",
   "rustfs_kernel.Properties.unicode_encoding_prefix",

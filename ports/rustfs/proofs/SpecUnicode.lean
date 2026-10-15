@@ -320,3 +320,147 @@ def LookupLowerSingleton (cp : Nat) : Nat × Nat × Nat :=
   ((LowerSingletonEntries.find? (fun r => r.1 == cp)).map
     (fun r => (r.2.1,r.2.2.1,r.2.2.2))).getD (cp,0,1)
 end rustfs_kernel.Spec
+
+namespace rustfs_kernel.Spec
+/-- First applicable lowercase range; otherwise a singleton exception or identity.
+The triple records the first scalar, optional second scalar, and output count.
+U+0130 has the two-scalar image U+0069 U+0307. -/
+def LowercaseScalar (cp : Nat) : Nat × Nat × Nat :=
+  (LookupLowerRanges cp LowerRangeEntries).getD (LookupLowerSingleton cp)
+end rustfs_kernel.Spec
+
+namespace rustfs_kernel.Spec
+/-- Scalar encoding expressed as numeric UTF-8 octets. The branches also
+specify the arithmetic behavior for inputs outside the Unicode scalar range. -/
+def EncodeScalar (cp : Nat) : List Nat :=
+  if cp < 128 then [cp % 256]
+  else if cp < 2048 then
+    [(192 ||| (cp >>> 6)) % 256, (128 ||| (cp &&& 63)) % 256]
+  else if cp < 65536 then
+    [(224 ||| (cp >>> 12)) % 256, (128 ||| ((cp >>> 6) &&& 63)) % 256,
+     (128 ||| (cp &&& 63)) % 256]
+  else
+    [(240 ||| (cp >>> 18)) % 256, (128 ||| ((cp >>> 12) &&& 63)) % 256,
+     (128 ||| ((cp >>> 6) &&& 63)) % 256, (128 ||| (cp &&& 63)) % 256]
+end rustfs_kernel.Spec
+
+namespace rustfs_kernel.Spec
+/-- Numeric decoding at a byte offset, with unavailable input represented by
+zero. Successful extracted calls establish that all consumed bytes exist. -/
+def DecodeScalar (bytes : List Nat) (offset : Nat) : Nat × Nat :=
+  let a := (bytes[offset]?).getD 0
+  let b := ((bytes[offset+1]?).getD 0) &&& 63
+  let c := ((bytes[offset+2]?).getD 0) &&& 63
+  let d := ((bytes[offset+3]?).getD 0) &&& 63
+  if a < 128 then (a,offset+1)
+  else if a < 224 then (((a &&& 31) <<< 6) ||| b,offset+2)
+  else if a < 240 then (((a &&& 15) <<< 12) ||| (b <<< 6) ||| c,offset+3)
+  else (((a &&& 7) <<< 18) ||| (b <<< 12) ||| (c <<< 6) ||| d,offset+4)
+end rustfs_kernel.Spec
+
+namespace rustfs_kernel.Spec
+/-- Every decoded unit consumes one to four octets. -/
+theorem decodeScalar_advances (bytes : List Nat) (offset : Nat) :
+    offset < (DecodeScalar bytes offset).2 := by
+  unfold DecodeScalar
+  dsimp only
+  split_ifs <;> simp only [Prod.snd] <;> omega
+
+/-- Lowercase byte output for one scalar, using only the mapping tables. -/
+def LowerScalarBytes (cp : Nat) : List Nat :=
+  let image := LowercaseScalar cp
+  EncodeScalar image.1 ++ if image.2.2 = 2 then EncodeScalar image.2.1 else []
+
+/-- Decode the input in order and concatenate each scalar's table image.
+The byte offset advances according to the numeric UTF-8 decoder. -/
+def LowerSuffix (bytes : List Nat) (offset : Nat) : List Nat :=
+  if h : offset < bytes.length then
+    let unit := DecodeScalar bytes offset
+    LowerScalarBytes unit.1 ++ LowerSuffix bytes unit.2
+  else []
+termination_by bytes.length - offset
+decreasing_by
+  have := decodeScalar_advances bytes offset
+  omega
+
+def LowerBytes (bytes : List Nat) : List Nat := LowerSuffix bytes 0
+end rustfs_kernel.Spec
+
+namespace rustfs_kernel.Spec
+/-- A decoded scalar together with its start and end byte offsets. -/
+abbrev ScalarSpan := Nat × Nat × Nat
+
+/-- The input's ordered scalar spans, obtained solely from its numeric bytes. -/
+def ScalarSpans (bytes : List Nat) (offset : Nat) : List ScalarSpan :=
+  if h : offset < bytes.length then
+    let unit := DecodeScalar bytes offset
+    (offset,unit.1,unit.2) :: ScalarSpans bytes unit.2
+  else []
+termination_by bytes.length - offset
+decreasing_by
+  have := decodeScalar_advances bytes offset
+  omega
+
+/-- Non-whitespace scalars determine the retained endpoints. Interior scalars,
+including whitespace, are retained byte for byte. An all-whitespace input
+retains the empty byte list. -/
+def TrimBytes (bytes : List Nat) : List Nat :=
+  let retained := (ScalarSpans bytes 0).filter (fun span => span.2.1 ∉ UnicodeWhitespace)
+  match retained.head?, retained.getLast? with
+  | some first, some last => (bytes.take last.2.2).drop first.1
+  | _, _ => []
+end rustfs_kernel.Spec
+
+namespace rustfs_kernel.Spec
+
+def ExtendBounds (limit : Nat) (bounds : Nat × Nat) (span : ScalarSpan) : Nat × Nat :=
+  (if bounds.1 = limit then span.1 else bounds.1, span.2.2)
+
+def SpanBounds (limit : Nat) (bounds : Nat × Nat) (spans : List ScalarSpan) : Nat × Nat :=
+  (spans.filter (fun span => span.2.1 ∉ UnicodeWhitespace)).foldl (ExtendBounds limit) bounds
+
+theorem bounds_fold (limit first last : Nat) (spans : List ScalarSpan)
+    (h : ∀ span ∈ spans, span.1 < limit) :
+    spans.foldl (ExtendBounds limit) (first,last) =
+      match spans.head?,spans.getLast? with
+      | some a,some b => (if first=limit then a.1 else first,b.2.2)
+      | _,_ => (first,last) := by
+  induction spans generalizing first last with
+  | nil => rfl
+  | cons a spans ih =>
+    rw [List.foldl_cons, ih _ _ (by intro s hs; exact h s (by simp [hs]))]
+    have ha : a.1 < limit := h a (by simp)
+    cases spans with
+    | nil => simp [ExtendBounds]
+    | cons b rest =>
+      simp only [List.head?_cons, List.getLast?_cons, ExtendBounds]
+      by_cases hf : first = limit
+      · simp [hf, show a.1 ≠ limit by omega]
+      · simp [hf]
+
+theorem spans_start_lt (bytes : List Nat) (offset : Nat) :
+    ∀ span ∈ ScalarSpans bytes offset, span.1 < bytes.length := by
+  rw [ScalarSpans]
+  split
+  · rename_i h
+    intro span hs
+    simp only [List.mem_cons] at hs
+    rcases hs with rfl | hs
+    · exact h
+    · exact spans_start_lt bytes _ span hs
+  · simp
+termination_by bytes.length - offset
+decreasing_by
+  have := decodeScalar_advances bytes offset
+  omega
+
+theorem spanBounds_cons (limit : Nat) (bounds : Nat × Nat) (span : ScalarSpan)
+    (rest : List ScalarSpan) :
+    SpanBounds limit bounds (span :: rest) =
+      if span.2.1 ∈ UnicodeWhitespace then SpanBounds limit bounds rest
+      else SpanBounds limit (ExtendBounds limit bounds span) rest := by
+  by_cases h : span.2.1 ∈ UnicodeWhitespace
+  · simp [SpanBounds,h]
+  · simp [SpanBounds,h]
+
+end rustfs_kernel.Spec

@@ -1,3 +1,16 @@
+import Verified.RustfsUnicodeRoundtrip
+import Verified.RustfsUnicodeLowerBytes
+import Verified.RustfsUnicodeTrimExact
+import Verified.RustfsIpNetworks
+import Verified.RustfsUnicodeCodec
+import Verified.RustfsLikeQuantifier
+import Verified.RustfsUnicodeLower
+import Verified.RustfsScalarOperators
+import Verified.RustfsOperatorLookup
+import Verified.RustfsIpLookup
+import Verified.RustfsStringLike
+import Verified.RustfsNullBool
+import Verified.RustfsNumeric
 import Verified.RustfsUnicodeSingleton
 import Verified.RustfsUnicodeTrim
 import Verified.RustfsUnicodeAppend
@@ -1237,5 +1250,120 @@ theorem unicode_singleton_table (cp : U32) (out : U32 × U32 × Usize)
     (h : unicode.singleton cp = ok out) :
     (out.1.val,out.2.1.val,out.2.2.val) = LookupLowerSingleton cp.val :=
   Verified.RustfsUnicodeSingleton.singleton_ok cp out h
+
+
+/-- Numeric operators compare mathematical signed values. -/
+theorem numeric_comparison_spec (op : condfuncs.NumOp) (a b : I64) (r : Bool)
+    (h : condfuncs.num_op op a b = ok r) :
+    r = true ↔ NumericComparison op a.val b.val :=
+  Verified.RustfsScalarOperators.numeric_ok op a b r h
+
+/-- CIDR membership is equality of same-family numeric address prefixes. -/
+theorem ip_prefix_spec (net ip : condfuncs.IpAddr) (pref : U8) (r : Bool)
+    (h : condfuncs.net_contains net pref ip = ok r) :
+    r = true ↔ IpPrefix net pref.val ip :=
+  Verified.RustfsScalarOperators.prefix_ok net ip pref r h
+
+/-- The first exact text entry determines address parsing. -/
+theorem ip_parse_spec (env : condfuncs.Env) (text : Slice U8) (out : Option condfuncs.IpAddr)
+    (h : condfuncs.parse_ip env text = ok out) :
+    out = ParsedAddress (env.ips.val.map (fun e => (e.1.val,e.2))) text.val :=
+  Verified.RustfsIpLookup.parse_ip_ok env text out h
+
+/-- Date operators compare UTC instants. -/
+theorem date_comparison_spec (op : conddata.Op) (a b : I128) (r : Bool)
+    (h : dates.compare op a b = ok r) :
+    r = true ↔ DateComparison op a.val b.val :=
+  Verified.RustfsScalarOperators.date_comparison_ok op a b r h
+
+/-- Request lookup selects the first exact byte-name entry. -/
+theorem condition_values_spec
+    (values : alloc.vec.Vec (alloc.vec.Vec U8 × alloc.vec.Vec (alloc.vec.Vec U8)))
+    (needle : Slice U8) (out : Option (alloc.vec.Vec (alloc.vec.Vec U8)))
+    (h : condfuncs.get_value values needle = ok out) :
+    out.map (fun vs => vs.val.map (·.val)) =
+      ConditionValues (RequestValueLists values.val) needle.val :=
+  Verified.RustfsOperatorLookup.lookup_ok values needle out h
+
+/-- Null requires the specified emptiness test for every condition key. -/
+theorem null_conditions_spec (funcs : Slice (condfuncs.Key × Bool))
+    (values : alloc.vec.Vec (alloc.vec.Vec U8 × alloc.vec.Vec (alloc.vec.Vec U8)))
+    (b : Bool) (h : condfuncs.null_func funcs values = ok b) :
+    b = true ↔ NullConditions funcs.val (RequestValueLists values.val) :=
+  Verified.RustfsNullBool.null_conditions_ok funcs values b h
+
+/-- Bool requires the exact spelling in each key's first value. -/
+theorem bool_conditions_spec (funcs : Slice (condfuncs.Key × Bool))
+    (values : alloc.vec.Vec (alloc.vec.Vec U8 × alloc.vec.Vec (alloc.vec.Vec U8)))
+    (b : Bool) (h : condfuncs.bool_func funcs values = ok b) :
+    b = true ↔ BoolConditions funcs.val (RequestValueLists values.val) :=
+  Verified.RustfsNullBool.bool_conditions_ok funcs values b h
+
+/-- Numeric evaluation follows the ordered missing-value and comparison rules. -/
+theorem numeric_conditions_spec (op : condfuncs.NumOp) (ifExists : Bool)
+    (funcs : Slice (condfuncs.Key × I64))
+    (values : alloc.vec.Vec (alloc.vec.Vec U8 × alloc.vec.Vec (alloc.vec.Vec U8)))
+    (b : Bool) (h : condfuncs.num_func op ifExists funcs values = ok b) :
+    b = true ↔ NumericConditions op ifExists (RequestValueLists values.val)
+      (funcs.val.map (fun e => (e.1,e.2.val))) :=
+  Verified.RustfsNumeric.numeric_conditions_ok op ifExists funcs values b h
+
+/-- A glob candidate matches exactly when the independent glob predicate holds. -/
+theorem string_any_like_spec (cands : Slice (alloc.vec.Vec U8)) (value : Slice U8) (b : Bool)
+    (h : condfuncs.any_like cands value = ok b) :
+    b = true ↔ AnyStringLike (cands.val.map (·.val)) value.val :=
+  Verified.RustfsStringLike.any_like_ok cands value b h
+
+/-- Scalar lowercasing uses the first range table image, then singleton or identity. -/
+theorem unicode_lowercase_scalar_spec (cp : U32) (out : U32 × U32 × Usize)
+    (h : unicode.lowercase_scalar cp = ok out) :
+    (out.1.val,out.2.1.val,out.2.2.val) = LowercaseScalar cp.val :=
+  Verified.RustfsUnicodeLower.scalar_ok cp out h
+
+/-- Network-list matching is the union of the numeric CIDR prefixes. -/
+theorem ip_networks_spec (networks : Slice (condfuncs.IpAddr × U8))
+    (address : condfuncs.IpAddr) (b : Bool)
+    (h : condfuncs.any_net networks address = ok b) :
+    b = true ↔ AnyNetwork networks.val address :=
+  Verified.RustfsIpNetworks.any_net_ok networks address b h
+
+/-- Scalar encoding appends exactly the specified UTF-8 bit fields. -/
+theorem unicode_append_scalar_spec (initial out : alloc.vec.Vec U8) (cp : U32)
+    (h : unicode.append_scalar initial cp = ok out) :
+    nats out.val = nats initial.val ++ EncodeScalar cp.val :=
+  Verified.RustfsUnicodeCodec.append_ok initial out cp h
+
+/-- Glob matching uses universal or existential request-value quantification. -/
+theorem string_like_quantifier_spec (requests candidates : alloc.vec.Vec (alloc.vec.Vec U8))
+    (q : condfuncs.Quantifier) (negate b : Bool)
+    (h : condfuncs.str_eval_like_loop q negate requests candidates 0#usize = ok b) :
+    b = true ↔ QuantifiedLike q negate (candidates.val.map (·.val))
+      (requests.val.map (·.val)) :=
+  Verified.RustfsLikeQuantifier.loop_ok requests candidates q negate b h
+
+
+/-- Scalar decoding computes the numeric UTF-8 bit fields and next byte offset. -/
+theorem unicode_decode_scalar_spec (s : Slice U8) (i : Usize) (out : U32 × Usize)
+    (h : unicode.scalar_at s i = ok out) :
+    (out.1.val,out.2.val) = DecodeScalar (nats s.val) i.val :=
+  Verified.RustfsUnicodeCodec.decode_ok s i out h
+
+/-- Decoding a scalar's emitted UTF-8 encoding returns the original scalar. -/
+theorem unicode_scalar_roundtrip_spec (cp : U32) (encoded : alloc.vec.Vec U8)
+    (actual : U32 × Usize) (hc : cp.val < 1114112)
+    (he : unicode.append_scalar (alloc.vec.Vec.new U8) cp = ok encoded)
+    (hd : unicode.scalar_at (alloc.vec.Vec.deref encoded) 0#usize = ok actual) :
+    actual.1 = cp ∧ actual.2.val = encoded.val.length :=
+  Verified.RustfsUnicodeRoundtrip.append_decode cp encoded actual hc he hd
+
+/-- Lowercasing concatenates the independent table image of every input scalar. -/
+theorem unicode_lower_spec (s : Slice U8) (out : alloc.vec.Vec U8)
+    (h : unicode.lower s = ok out) : nats out.val = LowerBytes (nats s.val) :=
+  Verified.RustfsUnicodeLowerBytes.lower_ok s out h
+
+/-- Trimming retains exactly the bytes between the non-whitespace endpoints. -/
+theorem unicode_trim_spec (s : Slice U8) (out : alloc.vec.Vec U8)
+    (h : unicode.trim s = ok out) : nats out.val = TrimBytes (nats s.val) :=
+  Verified.RustfsUnicodeTrimExact.trim_ok s out h
 
 end rustfs_kernel.Properties
