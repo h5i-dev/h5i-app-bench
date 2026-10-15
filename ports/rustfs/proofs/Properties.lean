@@ -1,3 +1,4 @@
+import Verified.RustfsDateValues
 import Verified.RustfsRequestTags
 import Verified.RustfsPolicyMerge
 import Verified.RustfsManagementTags
@@ -1086,5 +1087,21 @@ theorem metadata_bucket_request_tag_principal (p : manage.BucketPolicy) (a : stm
     ∃ st ∈ p.statements.val, FunctionsUseExistingTag st.conditions ∧
       stmts.principal_is_match st.principal a.account.deref = ok true :=
   Verified.RustfsRequestTags.bucket_needs_sound p a h
+
+/-- Source timezone retention preserves the UTC timestamp. -/
+theorem date_value_preserves_instant (s : Slice U8) (out : conddata.DateFuncValue)
+    (h : dates.parse_value s = ok (some out)) :
+    dates.parse_rfc3339 s = ok (some out.unix_nanos) :=
+  Verified.RustfsDateValues.parsed_instant s out h
+
+theorem date_value_rejects_invalid (s : Slice U8) (h : dates.parse_rfc3339 s = ok none) :
+    dates.parse_value s = ok none :=
+  Verified.RustfsDateValues.rejects_invalid s h
+
+/-- UTC designators cannot introduce a nonzero serialization offset. -/
+theorem date_value_utc_offset (s : Slice U8) (out : conddata.DateFuncValue)
+    (hz : s.val[s.val.length - 1]? = some 90#u8 ∨ s.val[s.val.length - 1]? = some 122#u8)
+    (h : dates.parse_value s = ok (some out)) : out.offset_seconds = 0#i32 :=
+  Verified.RustfsDateValues.utc_offset s out hz h
 
 end rustfs_kernel.Properties

@@ -5,6 +5,9 @@ start-from = ["policies", "pathclean::clean", "defaults::default_version", "defa
 
 [check]
 theorems = [
+  "rustfs_kernel.Properties.date_value_preserves_instant",
+  "rustfs_kernel.Properties.date_value_rejects_invalid",
+  "rustfs_kernel.Properties.date_value_utc_offset",
   "rustfs_kernel.Properties.metadata_request_tag_grant",
   "rustfs_kernel.Properties.metadata_bucket_request_tag_principal",
   "rustfs_kernel.Properties.metadata_statement_copy",
