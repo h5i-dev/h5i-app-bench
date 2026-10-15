@@ -1,3 +1,4 @@
+import Verified.RustfsManagementDecisions
 import Verified.RustfsResourceSets
 import Verified.RustfsDocuments
 import Verified.RustfsVariableScalars
@@ -834,5 +835,38 @@ theorem resource_empty_denies (xs : Slice rsrc.Resource) (needle : Slice U8)
     (values : alloc.vec.Vec ((alloc.vec.Vec U8) × (alloc.vec.Vec (alloc.vec.Vec U8))))
     (hx : xs.val = []) : resets.set_matches xs needle values = ok false :=
   Verified.RustfsResourceSets.empty_matches xs needle values hx
+
+/-- Explicit deny is checked before owner and deny-only privileges. -/
+theorem metadata_policy_decision (p : manage.Policy) (a : stmts.Args) (e : condfuncs.Env) (b : Bool)
+    (h : manage.policy_is_allowed p a e = ok b) :
+    (b = true ↔
+      (∀ st ∈ p.statements.val, st.effect = .Deny → manage.statement_is_allowed st a e = ok true) ∧
+      (a.deny_only = true ∨ a.is_owner = true ∨
+        ∃ st ∈ p.statements.val, st.effect = .Allow ∧ manage.statement_is_allowed st a e = ok true)) :=
+  Verified.RustfsManagementDecisions.decision_ok p a e b h
+
+/-- Bucket owners remain subject to every explicit deny. -/
+theorem metadata_bucket_decision (p : manage.BucketPolicy) (a : stmts.BucketPolicyArgs)
+    (e : condfuncs.Env) (b : Bool) (h : manage.bucket_policy_is_allowed p a e = ok b) :
+    (b = true ↔
+      (∀ st ∈ p.statements.val, st.effect = .Deny → manage.bp_statement_is_allowed st a e = ok true) ∧
+      (a.is_owner = true ∨
+        ∃ st ∈ p.statements.val, st.effect = .Allow ∧ manage.bp_statement_is_allowed st a e = ok true)) :=
+  Verified.RustfsManagementDecisions.bucket_decision_ok p a e b h
+
+/-- Successful authorization supplies evidence that each deny permits the request. -/
+theorem metadata_explicit_deny (p : manage.Policy) (a : stmts.Args) (e : condfuncs.Env)
+    (h : manage.policy_is_allowed p a e = ok true) (st : manage.Statement)
+    (hs : st ∈ p.statements.val) (hd : st.effect = .Deny) :
+    manage.statement_is_allowed st a e = ok true :=
+  ((metadata_policy_decision p a e true h).1 rfl).1 st hs hd
+
+/-- Non-owner authorization needs a matching allow in the supplied policy. -/
+theorem metadata_allow_witness (p : manage.Policy) (a : stmts.Args) (e : condfuncs.Env)
+    (h : manage.policy_is_allowed p a e = ok true) (ho : a.is_owner = false)
+    (hd : a.deny_only = false) :
+    ∃ st ∈ p.statements.val, st.effect = .Allow ∧ manage.statement_is_allowed st a e = ok true := by
+  have hh := ((metadata_policy_decision p a e true h).1 rfl).2
+  simpa [ho,hd] using hh
 
 end rustfs_kernel.Properties
