@@ -949,56 +949,60 @@ async fn list_articles(
         .await?;
         (rows, total)
     } else {
+        // Only the filters present go into the SQL, so each combination is
+        // its own prepared statement and Postgres plans it for that shape.
         let tag = query_opt(q, "tag");
         let author = query_opt(q, "author");
         let favorited = query_opt(q, "favorited");
-        let sql = format!(
-            "{select} WHERE $1::bigint >= 0
-             AND ($2::text IS NULL OR EXISTS (
+        let mut filters = String::new();
+        let mut args: Vec<&String> = Vec::new();
+        if let Some(t) = &tag {
+            args.push(t);
+            filters.push_str(&format!(
+                " AND EXISTS (
                SELECT 1 FROM article_tags at
                JOIN tags t ON t.id = at.tag_id
-               WHERE at.article_id = a.id AND t.name = $2
-             ))
-             AND ($3::text IS NULL OR u.username = $3)
-             AND ($4::text IS NULL OR EXISTS (
+               WHERE at.article_id = a.id AND t.name = ${})",
+                args.len() + 1
+            ));
+        }
+        if let Some(au) = &author {
+            args.push(au);
+            filters.push_str(&format!(" AND u.username = ${}", args.len() + 1));
+        }
+        if let Some(fv) = &favorited {
+            args.push(fv);
+            filters.push_str(&format!(
+                " AND EXISTS (
                SELECT 1 FROM favorites fv
                JOIN users fu ON fu.id = fv.user_id
-               WHERE fv.article_id = a.id AND fu.username = $4
-             ))
+               WHERE fv.article_id = a.id AND fu.username = ${})",
+                args.len() + 1
+            ));
+        }
+        let n = args.len();
+        let sql = format!(
+            "{select} WHERE $1::bigint >= 0{filters}
              ORDER BY a.created_at DESC, a.id DESC
-             LIMIT $5 OFFSET $6"
+             LIMIT ${} OFFSET ${}",
+            n + 2,
+            n + 3
         );
-        let rows = sqlx::query_as::<_, ArticleList>(&sql)
-            .bind(viewer)
-            .bind(&tag)
-            .bind(&author)
-            .bind(&favorited)
-            .bind(limit)
-            .bind(offset)
-            .fetch_all(&app.pool)
-            .await?;
-        let total: i64 = sqlx::query_scalar(
+        let mut rows_q = sqlx::query_as::<_, ArticleList>(&sql).bind(viewer);
+        for a in &args {
+            rows_q = rows_q.bind(*a);
+        }
+        let rows = rows_q.bind(limit).bind(offset).fetch_all(&app.pool).await?;
+        let count_sql = format!(
             "SELECT count(*)::bigint FROM articles a
              JOIN users u ON u.id = a.author_id
-             WHERE $1::bigint >= 0
-               AND ($2::text IS NULL OR EXISTS (
-                 SELECT 1 FROM article_tags at
-                 JOIN tags t ON t.id = at.tag_id
-                 WHERE at.article_id = a.id AND t.name = $2
-               ))
-               AND ($3::text IS NULL OR u.username = $3)
-               AND ($4::text IS NULL OR EXISTS (
-                 SELECT 1 FROM favorites fv
-                 JOIN users fu ON fu.id = fv.user_id
-                 WHERE fv.article_id = a.id AND fu.username = $4
-               ))",
-        )
-        .bind(viewer)
-        .bind(&tag)
-        .bind(&author)
-        .bind(&favorited)
-        .fetch_one(&app.pool)
-        .await?;
+             WHERE $1::bigint >= 0{filters}"
+        );
+        let mut count_q = sqlx::query_scalar::<_, i64>(&count_sql).bind(viewer);
+        for a in &args {
+            count_q = count_q.bind(*a);
+        }
+        let total: i64 = count_q.fetch_one(&app.pool).await?;
         (rows, total)
     };
     let articles: Vec<Value> = rows.iter().map(list_json).collect();

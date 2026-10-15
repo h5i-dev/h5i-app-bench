@@ -8,10 +8,15 @@
 #   BENCH_CONCURRENCY="1 16 64 256"
 #   BENCH_SCENARIOS="list slug feed login create favorite mixed"
 #   BENCH_OUT=realworld/bench/results
+#   SERVER_CPUS=0-3 K6_CPUS=4-7 PG_CPUS=8-15 CONDUIT_PG_CONTAINER=conduit-pg
+#   CONDUIT_PG_PORT=54329 BENCH_NO_SUMMARY=1 (scripts/bench-parallel.sh sets these)
 #   ./bench-all.sh [fastapi|go|fastify|rust-h5i ...]
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-export DATABASE_URL="${DATABASE_URL:-postgres://conduit:conduit@127.0.0.1:54329/conduit}"
+PG_CONTAINER="${CONDUIT_PG_CONTAINER:-conduit-pg}"
+export DATABASE_URL="${DATABASE_URL:-postgres://conduit:conduit@127.0.0.1:${CONDUIT_PG_PORT:-54329}/conduit}"
+SERVER_CPUS="${SERVER_CPUS:-0-3}"
+K6_CPUS="${K6_CPUS:-4-7}"
 export JWT_SECRET="${JWT_SECRET:-conduit-benchmark-secret}"
 export CARGO_TARGET_DIR="${CARGO_TARGET_DIR:-/var/tmp/rw-target}"
 K6="${K6:-/var/tmp/tools/k6}"
@@ -35,7 +40,7 @@ fi
 "$ROOT/scripts/up-db.sh" >/dev/null
 
 seed_db() {
-  docker exec -i conduit-pg psql -U conduit -d conduit -v ON_ERROR_STOP=1 \
+  docker exec -i "$PG_CONTAINER" psql -U conduit -d conduit -v ON_ERROR_STOP=1 \
     -v hash="$HASH" < "$ROOT/bench/seed.sql" >/dev/null
 }
 
@@ -101,7 +106,7 @@ start_server() {
       ;;
   esac
   export PORT="$port"
-  setsid taskset -c 0-3 "$dir/run.sh" > "$LOG_DIR/bench-${name}.log" 2>&1 &
+  setsid taskset -c "$SERVER_CPUS" "$dir/run.sh" > "$LOG_DIR/bench-${name}.log" 2>&1 &
   server_pid=$!
   wait_health "$port"
 }
@@ -109,7 +114,7 @@ start_server() {
 run_k6() {
   local seconds="$1"
   local summary="$2"
-  taskset -c 4-7 "$K6" run \
+  taskset -c "$K6_CPUS" "$K6" run \
     --quiet \
     --summary-export "$summary" \
     --summary-trend-stats 'avg,p(50),p(90),p(99)' \
@@ -135,7 +140,7 @@ kernel_bench() {
   local i
   : > "$OUT/kernel-bench.jsonl"
   for i in 1 2 3; do
-    taskset -c 0-3 "$bin" >> "$OUT/kernel-bench.jsonl"
+    taskset -c "$SERVER_CPUS" "$bin" >> "$OUT/kernel-bench.jsonl"
   done
 }
 
@@ -218,5 +223,7 @@ if printf '%s\n' "$@" | grep -qx rust-h5i || [ "$#" -eq 4 ]; then
   kernel_bench || echo "POINT_FAIL kernel-bench" >&2
 fi
 
-"$PY" "$ROOT/bench/summarize.py" "$OUT"
+if [ -z "${BENCH_NO_SUMMARY:-}" ]; then
+  "$PY" "$ROOT/bench/summarize.py" "$OUT"
+fi
 echo "BENCH_DONE $OUT"

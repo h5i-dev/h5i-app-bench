@@ -42,11 +42,11 @@ if [ "$ready" != 1 ]; then
   exit 1
 fi
 
-# Pin the server to CPUs 8-15 when the kernel allows it. Docker's cgroup
+# Pin the server to PG_CPUS (default 8-15) when the kernel allows it. Docker's cgroup
 # cpuset is not available here; sched_setaffinity still is.
 pin_tree() {
   local pid="$1"
-  taskset -acp 8-15 "$pid" >/dev/null 2>&1 || true
+  taskset -acp "${PG_CPUS:-8-15}" "$pid" >/dev/null 2>&1 || true
   local child
   for child in $(pgrep -P "$pid" 2>/dev/null || true); do
     pin_tree "$child"
