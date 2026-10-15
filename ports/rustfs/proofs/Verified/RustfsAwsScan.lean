@@ -314,4 +314,47 @@ theorem resume_unbalanced (inner : List Nat → List (List Nat)) (c : AwsValueCo
       simpa only [ClosingAt,nats,List.map_drop,hc',Prod.snd] using hb
     simp only [ExpansionPass,hc,hbalance,ne_eq,not_false_eq_true,ite_true,List.map_cons,List.map_nil]
     rw [←marker_split text pos hf.2.1]
+ theorem resume_skip_literal_prefix (inner : List Nat → List (List Nat)) (c : AwsValueContext)
+    (text : List U8) (offset pos : Nat)
+    (hf : FirstOccurrence text [36#u8,123#u8] offset (some pos)) :
+    ResumeAlternatives inner c (nats text) offset=ResumeAlternatives inner c (nats text) pos := by
+  have hs : FirstOccurrence text [36#u8,123#u8] pos (some pos) :=
+    ⟨Nat.le_refl _,hf.2.1,fun k hk hp _ => by omega⟩
+  rw [resume_first_marker inner c text offset pos hf,resume_first_marker inner c text pos pos hs]
+theorem resume_skip_placeholder (inner : List Nat → List (List Nat)) (c : AwsValueContext)
+    (text : List U8) (offset pos closing : Nat)
+    (hf : FirstOccurrence text [36#u8,123#u8] offset (some pos))
+    (hc : ClosingTail (nats (text.drop (pos+2))) 1=(closing,0))
+    (hr : PlaceholderAlternatives inner c ((nats (text.drop (pos+2))).take closing)
+      ((36::123::nats (text.drop (pos+2))).take (closing+3))=
+      [(36::123::nats (text.drop (pos+2))).take (closing+3)]) :
+    ResumeAlternatives inner c (nats text) offset =
+      ResumeAlternatives inner c (nats text) (pos+closing+3) := by
+  rw [resume_skip_literal_prefix inner c text offset pos hf]
+  have hp : (nats (text.take pos)).length=pos := by
+    have hb := hf.2.1.1
+    simp only [List.length_cons,List.length_nil] at hb
+    simp only [nats,List.length_map,List.length_take]
+    omega
+  have hs := marker_split text pos hf.2.1
+  have he := resume_keep_placeholder inner c (nats (text.take pos))
+    (nats (text.drop (pos+2))) closing hc hr
+  rw [←hs,hp] at he
+  exact he
+ theorem resume_balanced (inner : List Nat → List (List Nat)) (c : AwsValueContext)
+    (text : List U8) (offset pos closing : Nat)
+    (hf : FirstOccurrence text [36#u8,123#u8] offset (some pos))
+    (hc : ClosingTail (nats (text.drop (pos+2))) 1=(closing,0)) :
+    ResumeAlternatives inner c (nats text) offset =
+      (PlaceholderAlternatives inner c ((nats (text.drop (pos+2))).take closing)
+        ((36::123::nats (text.drop (pos+2))).take (closing+3))).flatMap
+          (fun replacement => (ExpansionPass inner c (nats (text.drop (pos+closing+3)))).map
+            (fun suffix => nats (text.take pos) ++ replacement ++ suffix)) := by
+  rw [resume_first_marker inner c text offset pos hf,expansion_marker inner c _ closing hc]
+  simp only [List.map_flatMap,List.map_map,Function.comp_def,List.append_assoc]
+  have he : (nats (text.drop (pos+2))).drop (closing+1)=nats (text.drop (pos+closing+3)) := by
+    simp only [nats,List.map_drop,List.drop_drop]
+    have hn : pos+2+(closing+1)=pos+closing+3 := by omega
+    rw [hn]
+  rw [he]
 end rustfs_kernel.Verified.RustfsAwsScan

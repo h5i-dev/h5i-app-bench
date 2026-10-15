@@ -1,3 +1,4 @@
+import Verified.RustfsAwsMeaning
 import Verified.RustfsAwsScan
 import Verified.RustfsAwsPasses
 import Verified.RustfsAwsResolution
@@ -1624,5 +1625,29 @@ theorem policy_variable_unbalanced_scan_spec (ctx : awsvars.VarContext)
         (Verified.RustfsAwsValues.context ctx) (Spec.nats entry.text.val) start.val=[Spec.nats entry.text.val] :=
   ⟨Verified.RustfsAwsScan.scan_unbalanced_ok ctx inputs i start depth entry pos hp hf hb out h,
     Verified.RustfsAwsScan.resume_unbalanced _ _ entry.text.val start.val pos hf hb⟩
+
+/-- Replacement values combine with suffix alternatives in replacement-major order.
+Inserted bytes remain literal during the current pass. -/
+theorem policy_variable_wrapped_alternatives_spec
+    (inner : List Nat → List (List Nat)) (ctx : Spec.AwsValueContext)
+    (pre post : Slice U8) (values : Slice (alloc.vec.Vec U8)) (offset : Usize)
+    (hout : offset.val=pre.val.length) (out : alloc.vec.Vec awsvars.Pending)
+    (h : awsvars.wrap_all pre values post offset=ok out) :
+    out.val.flatMap (Verified.RustfsAwsMeaning.pendingMeaning inner ctx) =
+      values.val.flatMap (fun value => (Spec.ExpansionPass inner ctx (Spec.nats post.val)).map
+        (fun suffix => Spec.nats pre.val ++ Spec.nats value.val ++ suffix)) :=
+  Verified.RustfsAwsMeaning.wrap_meaning_ok inner ctx pre post values offset hout out h
+
+/-- Splicing substitutes the selected pending entry and preserves the surrounding alternatives. -/
+theorem policy_variable_spliced_alternatives_spec
+    (inner : List Nat → List (List Nat)) (ctx : Spec.AwsValueContext)
+    (inputs replacements : Slice awsvars.Pending) (idx : Usize)
+    (out : alloc.vec.Vec awsvars.Pending) (hi : idx.val ≤ inputs.val.length)
+    (h : awsvars.splice inputs idx replacements=ok out) :
+    out.val.take idx.val=inputs.val.take idx.val ∧
+      (out.val.drop idx.val).flatMap (Verified.RustfsAwsMeaning.pendingMeaning inner ctx) =
+        replacements.val.flatMap (Verified.RustfsAwsMeaning.pendingMeaning inner ctx) ++
+          (inputs.val.drop (idx.val+1)).flatMap (Verified.RustfsAwsMeaning.pendingMeaning inner ctx) :=
+  Verified.RustfsAwsMeaning.splice_meaning_ok inner ctx inputs replacements idx out hi h
 
 end rustfs_kernel.Properties

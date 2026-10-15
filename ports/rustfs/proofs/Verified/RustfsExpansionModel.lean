@@ -193,4 +193,30 @@ theorem closing_tail_bound (text : List Nat) (balance : Nat) :
         · intro _ he
           have ht := hs hn he
           omega
+theorem marker_partition (tail : List Nat) (closing : Nat) :
+    (36::123::tail).take (closing+3) ++ tail.drop (closing+1) = 36::123::tail := by
+  simp [List.take]
+theorem resume_keep_placeholder (inner : List Nat → List (List Nat)) (c : AwsValueContext)
+    (pre tail : List Nat) (closing : Nat) (hc : ClosingTail tail 1=(closing,0))
+    (hr : PlaceholderAlternatives inner c (tail.take closing)
+      ((36::123::tail).take (closing+3))=[(36::123::tail).take (closing+3)]) :
+    ResumeAlternatives inner c (pre++36::123::tail) pre.length =
+      ResumeAlternatives inner c (pre++36::123::tail) (pre.length+closing+3) := by
+  have hb := (closing_tail_bound tail 1).2 (by omega)
+  rw [hc] at hb
+  have hbound : closing < tail.length := hb rfl
+  have hlen : ((36::123::tail).take (closing+3)).length=closing+3 := by
+    simp only [List.length_take,List.length_cons]
+    omega
+  have he : pre++36::123::tail =
+      (pre++(36::123::tail).take (closing+3)) ++ tail.drop (closing+1) := by
+    rw [List.append_assoc,marker_partition]
+  rw [resume_append,expansion_marker inner c tail closing hc,hr]
+  simp only [List.flatMap_cons,List.flatMap_nil,List.append_nil,List.map_map,Function.comp_def]
+  conv_rhs => rw [he]
+  have hp : pre.length+closing+3 = (pre++(36::123::tail).take (closing+3)).length := by
+    simp only [List.length_append,hlen]
+    omega
+  rw [hp,resume_append]
+  simp [List.map_map,Function.comp_def,List.append_assoc]
 end rustfs_kernel.Spec
