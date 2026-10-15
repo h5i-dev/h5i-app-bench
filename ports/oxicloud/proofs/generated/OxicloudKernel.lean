@@ -1569,6 +1569,41 @@ def acl.clear_role
   := do
   acl.clear_role_loop grants s r (alloc.vec.Vec.new model.Grant) 0#usize
 
+/-- [oxicloud_kernel::admin::Principal]
+    Source: 'ports/oxicloud/kernel/src/admin.rs', lines 4:0-4:59
+    Visibility: public -/
+@[discriminant isize]
+inductive admin.Principal where
+| User : Std.U128 → admin.Principal
+| Group : Std.U128 → admin.Principal
+| Token : Std.U128 → admin.Principal
+
+/-- [oxicloud_kernel::admin::AuthzDenialVisibility]
+    Source: 'ports/oxicloud/kernel/src/admin.rs', lines 6:0-6:50
+    Visibility: public -/
+@[discriminant isize]
+inductive admin.AuthzDenialVisibility where
+| Visible : admin.AuthzDenialVisibility
+| Hidden : admin.AuthzDenialVisibility
+
+/-- [oxicloud_kernel::admin::AdminDenial]
+    Source: 'ports/oxicloud/kernel/src/admin.rs', lines 8:0-8:80
+    Visibility: public -/
+@[discriminant isize]
+inductive admin.AdminDenial where
+| Inactive : admin.AdminDenial
+| ExternalAccount : admin.AdminDenial
+| NotAdmin : admin.AdminDenial
+| UnsupportedSubject : admin.AdminDenial
+
+/-- [oxicloud_kernel::admin::AdminDecision]
+    Source: 'ports/oxicloud/kernel/src/admin.rs', lines 9:0-9:55
+    Visibility: public -/
+@[discriminant isize]
+inductive admin.AdminDecision where
+| Allowed : admin.AdminDecision
+| Denied : admin.AdminDenial → admin.AdminDecision
+
 /-- [oxicloud_kernel::bytes::copy]: loop body 0:
     Source: 'ports/oxicloud/kernel/src/bytes.rs', lines 21:4-24:5
     Visibility: public -/
@@ -1605,6 +1640,128 @@ def bytes.copy_loop
 @[reducible]
 def bytes.copy (a : Slice Std.U8) : Result (alloc.vec.Vec Std.U8) := do
   bytes.copy_loop a (alloc.vec.Vec.new Std.U8) 0#usize
+
+/-- [oxicloud_kernel::admin::visibility_bytes]:
+    Source: 'ports/oxicloud/kernel/src/admin.rs', lines 10:0-12:1
+    Visibility: public -/
+def admin.visibility_bytes
+  (v : admin.AuthzDenialVisibility) : Result (alloc.vec.Vec Std.U8) := do
+  match v with
+  | admin.AuthzDenialVisibility.Visible =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 7#usize [
+          118#u8, 105#u8, 115#u8, 105#u8, 98#u8, 108#u8, 101#u8
+          ]))
+    bytes.copy s
+  | admin.AuthzDenialVisibility.Hidden =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 6#usize [ 104#u8, 105#u8, 100#u8, 100#u8, 101#u8, 110#u8 ]))
+    bytes.copy s
+
+/-- [oxicloud_kernel::admin::denial_bytes]:
+    Source: 'ports/oxicloud/kernel/src/admin.rs', lines 13:0-20:1
+    Visibility: public -/
+def admin.denial_bytes
+  (reason : admin.AdminDenial) : Result (alloc.vec.Vec Std.U8) := do
+  match reason with
+  | admin.AdminDenial.Inactive =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 8#usize [
+          105#u8, 110#u8, 97#u8, 99#u8, 116#u8, 105#u8, 118#u8, 101#u8
+          ]))
+    bytes.copy s
+  | admin.AdminDenial.ExternalAccount =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 16#usize [
+          101#u8, 120#u8, 116#u8, 101#u8, 114#u8, 110#u8, 97#u8, 108#u8, 95#u8,
+          97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8
+          ]))
+    bytes.copy s
+  | admin.AdminDenial.NotAdmin =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 9#usize [
+          110#u8, 111#u8, 116#u8, 95#u8, 97#u8, 100#u8, 109#u8, 105#u8, 110#u8
+          ]))
+    bytes.copy s
+  | admin.AdminDenial.UnsupportedSubject =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 19#usize [
+          117#u8, 110#u8, 115#u8, 117#u8, 112#u8, 112#u8, 111#u8, 114#u8,
+          116#u8, 101#u8, 100#u8, 95#u8, 115#u8, 117#u8, 98#u8, 106#u8, 101#u8,
+          99#u8, 116#u8
+          ]))
+    bytes.copy s
+
+/-- [oxicloud_kernel::userrole::UserRole]
+    Source: 'ports/oxicloud/kernel/src/userrole.rs', lines 5:0-10:1
+    Visibility: public -/
+@[discriminant isize]
+inductive userrole.UserRole where
+| Owner : userrole.UserRole
+| Admin : userrole.UserRole
+| User : userrole.UserRole
+| Anonymous : userrole.UserRole
+
+/-- [oxicloud_kernel::userrole::rank]:
+    Source: 'ports/oxicloud/kernel/src/userrole.rs', lines 45:0-52:1
+    Visibility: public -/
+def userrole.rank (role : userrole.UserRole) : Result Std.U8 := do
+  match role with
+  | userrole.UserRole.Owner => ok 3#u8
+  | userrole.UserRole.Admin => ok 2#u8
+  | userrole.UserRole.User => ok 1#u8
+  | userrole.UserRole.Anonymous => ok 0#u8
+
+/-- [oxicloud_kernel::userrole::at_least]:
+    Source: 'ports/oxicloud/kernel/src/userrole.rs', lines 55:0-57:1
+    Visibility: public -/
+def userrole.at_least
+  (role : userrole.UserRole) (min : userrole.UserRole) : Result Bool := do
+  let i ← userrole.rank role
+  let i1 ← userrole.rank min
+  ok (i >= i1)
+
+/-- [oxicloud_kernel::admin::system_admin_denial_reason]:
+    Source: 'ports/oxicloud/kernel/src/admin.rs', lines 21:0-31:1
+    Visibility: public -/
+def admin.system_admin_denial_reason
+  (subject : admin.Principal) (role : userrole.UserRole) (is_external : Bool)
+  (active : Bool) :
+  Result (Option admin.AdminDenial)
+  := do
+  match subject with
+  | admin.Principal.User _ =>
+    if active
+    then
+      if is_external
+      then ok (some admin.AdminDenial.ExternalAccount)
+      else
+        let b ← userrole.at_least role userrole.UserRole.Admin
+        if b
+        then ok none
+        else ok (some admin.AdminDenial.NotAdmin)
+    else ok (some admin.AdminDenial.Inactive)
+  | admin.Principal.Group _ => ok (some admin.AdminDenial.UnsupportedSubject)
+  | admin.Principal.Token _ => ok (some admin.AdminDenial.UnsupportedSubject)
+
+/-- [oxicloud_kernel::admin::require_system_admin]:
+    Source: 'ports/oxicloud/kernel/src/admin.rs', lines 32:0-37:1
+    Visibility: public -/
+def admin.require_system_admin
+  (subject : admin.Principal) (role : userrole.UserRole) (is_external : Bool)
+  (active : Bool) :
+  Result admin.AdminDecision
+  := do
+  let o ← admin.system_admin_denial_reason subject role is_external active
+  match o with
+  | none => ok admin.AdminDecision.Allowed
+  | some reason => ok (admin.AdminDecision.Denied reason)
 
 /-- [oxicloud_kernel::authwire::subject_bytes]:
     Source: 'ports/oxicloud/kernel/src/authwire.rs', lines 6:0-12:1
@@ -4116,16 +4273,6 @@ def subjectgroup.is_immutable
   (group : subjectgroup.SubjectGroup) : Result Bool := do
   ok group.is_virtual
 
-/-- [oxicloud_kernel::userrole::UserRole]
-    Source: 'ports/oxicloud/kernel/src/userrole.rs', lines 5:0-10:1
-    Visibility: public -/
-@[discriminant isize]
-inductive userrole.UserRole where
-| Owner : userrole.UserRole
-| Admin : userrole.UserRole
-| User : userrole.UserRole
-| Anonymous : userrole.UserRole
-
 /-- [oxicloud_kernel::userrole::as_bytes]:
     Source: 'ports/oxicloud/kernel/src/userrole.rs', lines 13:0-20:1
     Visibility: public -/
@@ -4196,25 +4343,6 @@ def userrole.from_session
   if b
   then ok (some userrole.UserRole.Anonymous)
   else userrole.from_stored raw
-
-/-- [oxicloud_kernel::userrole::rank]:
-    Source: 'ports/oxicloud/kernel/src/userrole.rs', lines 45:0-52:1
-    Visibility: public -/
-def userrole.rank (role : userrole.UserRole) : Result Std.U8 := do
-  match role with
-  | userrole.UserRole.Owner => ok 3#u8
-  | userrole.UserRole.Admin => ok 2#u8
-  | userrole.UserRole.User => ok 1#u8
-  | userrole.UserRole.Anonymous => ok 0#u8
-
-/-- [oxicloud_kernel::userrole::at_least]:
-    Source: 'ports/oxicloud/kernel/src/userrole.rs', lines 55:0-57:1
-    Visibility: public -/
-def userrole.at_least
-  (role : userrole.UserRole) (min : userrole.UserRole) : Result Bool := do
-  let i ← userrole.rank role
-  let i1 ← userrole.rank min
-  ok (i >= i1)
 
 /-- [oxicloud_kernel::userrole::outranks]:
     Source: 'ports/oxicloud/kernel/src/userrole.rs', lines 60:0-62:1

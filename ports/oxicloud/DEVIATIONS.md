@@ -193,3 +193,26 @@ and the external-sharing guard retains both principal kind and external flag.
   password and federation-subject presence determine the non-magic-link signal.
   Federation-issuer presence and email-verification timestamp presence retain
   their independent meanings. Federation discriminator spellings remain exact.
+
+### Deployment administrator decision
+
+- Administrator checks transport subject variants with full `u128` UUIDs. Their
+  outcome depends only on the variant; no identity bits are truncated.
+- Stable denial labels are typed `AdminDenial` values with an exact byte encoder.
+  `require_system_admin` returns `Allowed` or `Denied(reason)`; the shell maps
+  Allowed to `Ok(())`, and every Denied to the upstream `DomainError` with kind
+  AccessDenied, entity type `System`, message `Admin access required`, and no ID
+  or source. The reason is retained for the upstream audit event. Logging stays
+  in the shell; the pure decision uses the same reason and ordering.
+- Differential tests compile the pinned private reason function verbatim and
+  call the original public trait method on `PgAclEngine` using a lazy pool;
+  these administrator checks perform no database queries.
+
+### Reviewed discovery serialization boundary
+
+The CalDAV and CardDAV principal PROPFIND response generators, their standard
+and requested principal-property writers, and the CardDAV principal/home-set
+URL writers remain in the shell. Their only work is XML event serialization
+through `quick_xml::Writer<W: Write>` (including response-property selection
+and server-base-path URL formatting). The ledger records each reviewed item
+individually as outside; these are not counted as ported authorization logic.

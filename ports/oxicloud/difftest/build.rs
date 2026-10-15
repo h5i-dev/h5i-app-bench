@@ -42,4 +42,12 @@ fn main() {
     oracle.push('}');
     fs::write(PathBuf::from(env::var_os("OUT_DIR").unwrap()).join("magic_oracle.rs"), oracle).unwrap();
 
+    let path = "../upstream-src/src/application/ports/authorization_ports.rs";
+    println!("cargo:rerun-if-changed={path}");
+    let source = fs::read_to_string(path).unwrap();
+    let mut oracle = String::from("use oxicloud::domain::{services::authorization::Subject, entities::user::UserRole};");
+    oracle.push_str(&item(&source, "fn system_admin_denial_reason("));
+    oracle.push_str("pub fn reason(s: Subject, r: UserRole, e: bool, a: bool) -> Option<&'static str> { system_admin_denial_reason(s,r,e,a) }");
+    fs::write(PathBuf::from(env::var_os("OUT_DIR").unwrap()).join("admin_oracle.rs"), oracle).unwrap();
+
 }

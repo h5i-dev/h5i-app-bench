@@ -303,4 +303,25 @@ def MinimalAccountRestored (s r : userstate.User) : Prop :=
   r.notify_on_share = true ∧
   r.ui_preferences.val = [123#u8, 125#u8]
 
+def AdminVisibilityWire : admin.AuthzDenialVisibility → List U8
+  | .Visible => [118#u8,105#u8,115#u8,105#u8,98#u8,108#u8,101#u8]
+  | .Hidden => [104#u8,105#u8,100#u8,100#u8,101#u8,110#u8]
+def AdminDenialWire : admin.AdminDenial → List U8
+  | .Inactive => [105#u8,110#u8,97#u8,99#u8,116#u8,105#u8,118#u8,101#u8]
+  | .ExternalAccount => [101#u8,120#u8,116#u8,101#u8,114#u8,110#u8,97#u8,108#u8,95#u8,97#u8,99#u8,99#u8,111#u8,117#u8,110#u8,116#u8]
+  | .NotAdmin => [110#u8,111#u8,116#u8,95#u8,97#u8,100#u8,109#u8,105#u8,110#u8]
+  | .UnsupportedSubject => [117#u8,110#u8,115#u8,117#u8,112#u8,112#u8,111#u8,114#u8,116#u8,101#u8,100#u8,95#u8,115#u8,117#u8,98#u8,106#u8,101#u8,99#u8,116#u8]
+/-- Deployment administration requires a live internal user of at least administrator rank. -/
+def SystemAdminAllowed (subject : admin.Principal) (role : userrole.UserRole)
+    (is_external active : Bool) : Prop :=
+  (∃ id, subject = .User id) ∧ active = true ∧ is_external = false ∧ 2 ≤ RoleLevel role
+/-- Denial reasons retain their precedence and cannot misattribute a missing condition. -/
+def SystemAdminDenial (subject : admin.Principal) (role : userrole.UserRole)
+    (is_external active : Bool) (reason : admin.AdminDenial) : Prop :=
+  match reason with
+  | .Inactive => (∃ id, subject = .User id) ∧ active = false
+  | .ExternalAccount => (∃ id, subject = .User id) ∧ active = true ∧ is_external = true
+  | .NotAdmin => (∃ id, subject = .User id) ∧ active = true ∧ is_external = false ∧ RoleLevel role < 2
+  | .UnsupportedSubject => ∀ id, subject ≠ .User id
+
 end oxicloud_kernel.SpecKernel

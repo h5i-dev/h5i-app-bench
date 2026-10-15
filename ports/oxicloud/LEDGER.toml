@@ -150,7 +150,8 @@ status = "todo"
 [[item]]
 upstream = "src/application/adapters/caldav_adapter.rs:676 CalDavAdapter::generate_principal_propfind_response"
 lines = 41
-status = "todo"
+status = "outside"
+reason = "XML PROPFIND discovery-response serialization through quick_xml::Writer<W: Write>; emits resource/principal names and URLs, with no authorization or credential decision"
 
 [[item]]
 upstream = "src/application/adapters/caldav_adapter.rs:729 CalDavAdapter::write_root_response"
@@ -165,12 +166,14 @@ status = "todo"
 [[item]]
 upstream = "src/application/adapters/caldav_adapter.rs:850 CalDavAdapter::write_principal_props"
 lines = 28
-status = "todo"
+status = "outside"
+reason = "XML PROPFIND discovery-response serialization through quick_xml::Writer<W: Write>; emits resource/principal names and URLs, with no authorization or credential decision"
 
 [[item]]
 upstream = "src/application/adapters/caldav_adapter.rs:888 CalDavAdapter::write_principal_requested_props"
 lines = 64
-status = "todo"
+status = "outside"
+reason = "XML PROPFIND discovery-response serialization through quick_xml::Writer<W: Write>; emits resource/principal names and URLs, with no authorization or credential decision"
 
 [[item]]
 upstream = "src/application/adapters/caldav_adapter.rs:954 CalDavAdapter::write_calendar_response"
@@ -307,7 +310,8 @@ status = "todo"
 [[item]]
 upstream = "src/application/adapters/carddav_adapter.rs:235 CardDavAdapter::generate_principal_propfind_response"
 lines = 41
-status = "todo"
+status = "outside"
+reason = "XML PROPFIND discovery-response serialization through quick_xml::Writer<W: Write>; emits resource/principal names and URLs, with no authorization or credential decision"
 
 [[item]]
 upstream = "src/application/adapters/carddav_adapter.rs:290 CardDavAdapter::generate_addressbook_collection_propfind"
@@ -347,12 +351,14 @@ status = "todo"
 [[item]]
 upstream = "src/application/adapters/carddav_adapter.rs:545 CardDavAdapter::write_current_user_principal"
 lines = 15
-status = "todo"
+status = "outside"
+reason = "XML PROPFIND discovery-response serialization through quick_xml::Writer<W: Write>; emits resource/principal names and URLs, with no authorization or credential decision"
 
 [[item]]
 upstream = "src/application/adapters/carddav_adapter.rs:563 CardDavAdapter::write_addressbook_home_set"
 lines = 15
-status = "todo"
+status = "outside"
+reason = "XML PROPFIND discovery-response serialization through quick_xml::Writer<W: Write>; emits resource/principal names and URLs, with no authorization or credential decision"
 
 [[item]]
 upstream = "src/application/adapters/carddav_adapter.rs:581 CardDavAdapter::write_carddav_root_response"
@@ -362,12 +368,14 @@ status = "todo"
 [[item]]
 upstream = "src/application/adapters/carddav_adapter.rs:645 CardDavAdapter::write_carddav_principal_props"
 lines = 15
-status = "todo"
+status = "outside"
+reason = "XML PROPFIND discovery-response serialization through quick_xml::Writer<W: Write>; emits resource/principal names and URLs, with no authorization or credential decision"
 
 [[item]]
 upstream = "src/application/adapters/carddav_adapter.rs:664 CardDavAdapter::write_carddav_principal_requested_props"
 lines = 32
-status = "todo"
+status = "outside"
+reason = "XML PROPFIND discovery-response serialization through quick_xml::Writer<W: Write>; emits resource/principal names and URLs, with no authorization or credential decision"
 
 [[item]]
 upstream = "src/application/adapters/carddav_adapter.rs:698 CardDavAdapter::write_report_multistatus_start"
@@ -2559,22 +2567,26 @@ status = "todo"
 [[item]]
 upstream = "src/application/ports/authorization_ports.rs:20 AuthzDenialVisibility"
 lines = 4
-status = "todo"
+status = "ported"
+kernel = ["kernel/src/admin.rs::AuthzDenialVisibility"]
 
 [[item]]
 upstream = "src/application/ports/authorization_ports.rs:33 system_admin_denial_reason"
 lines = 14
-status = "todo"
+status = "ported"
+kernel = ["kernel/src/admin.rs::system_admin_denial_reason"]
 
 [[item]]
 upstream = "src/application/ports/authorization_ports.rs:52 AuthzDenialVisibility::as_str"
 lines = 6
-status = "todo"
+status = "ported"
+kernel = ["kernel/src/admin.rs::visibility_bytes"]
 
 [[item]]
 upstream = "src/application/ports/authorization_ports.rs:61 AuthorizationEngine::require_system_admin"
 lines = 27
-status = "todo"
+status = "ported"
+kernel = ["kernel/src/admin.rs::require_system_admin"]
 
 [[item]]
 upstream = "src/application/ports/authorization_ports.rs:111 AuthorizationEngine::check_files_read_batch"

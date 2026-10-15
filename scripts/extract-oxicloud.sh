@@ -124,6 +124,10 @@ trap 'rm -rf "$tmp"' EXIT
   --start-from oxicloud_kernel::userstate::is_oidc_user \
   --start-from oxicloud_kernel::userstate::has_login_credential \
   --start-from oxicloud_kernel::userstate::is_email_verified \
+  --start-from oxicloud_kernel::admin::visibility_bytes \
+  --start-from oxicloud_kernel::admin::denial_bytes \
+  --start-from oxicloud_kernel::admin::system_admin_denial_reason \
+  --start-from oxicloud_kernel::admin::require_system_admin \
   --dest-file "$tmp/oxicloud_kernel.llbc")
 mkdir -p "$root/ports/oxicloud/proofs/generated"
 aeneas -backend lean "$tmp/oxicloud_kernel.llbc" -dest "$root/ports/oxicloud/proofs/generated"

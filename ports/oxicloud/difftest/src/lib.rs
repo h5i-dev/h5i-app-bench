@@ -28,3 +28,6 @@ mod magiclink;
 
 #[cfg(test)]
 mod userstate;
+
+#[cfg(test)]
+mod admin;

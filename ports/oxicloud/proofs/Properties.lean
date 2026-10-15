@@ -1,3 +1,4 @@
+import Verified.OxicloudAdmin
 import Verified.OxicloudUserState
 import Verified.OxicloudMagicLink
 import Verified.OxicloudSubjectGroup
@@ -519,5 +520,31 @@ theorem account_email_verified (s : userstate.User) (r : Bool)
 theorem account_login_credential (s : userstate.User) (r : Bool)
     (h : userstate.has_login_credential s = ok r) : (r = true ↔ SpecKernel.AccountLoginCredential s) :=
   Verified.OxicloudUserState.credential_presence s r h
+
+/-- Authorization denial visibility labels remain stable. -/
+theorem admin_visibility_wire (value : admin.AuthzDenialVisibility) (out : alloc.vec.Vec U8)
+    (h : admin.visibility_bytes value = ok out) : out.val = SpecKernel.AdminVisibilityWire value :=
+  Verified.OxicloudAdmin.visibility_bytes_ok value out h
+
+/-- Administrator denial labels retain their exact audit spelling. -/
+theorem admin_denial_wire (value : admin.AdminDenial) (out : alloc.vec.Vec U8)
+    (h : admin.denial_bytes value = ok out) : out.val = SpecKernel.AdminDenialWire value :=
+  Verified.OxicloudAdmin.denial_bytes_ok value out h
+
+/-- Administrator denials identify the failed precondition in the prescribed order. -/
+theorem admin_denial_conditions (subject : admin.Principal) (role : userrole.UserRole)
+    (is_external active : Bool) (r : Option admin.AdminDenial)
+    (h : admin.system_admin_denial_reason subject role is_external active = ok r) :
+    (r = none ↔ SpecKernel.SystemAdminAllowed subject role is_external active) ∧
+    (∀ reason, r = some reason → SpecKernel.SystemAdminDenial subject role is_external active reason) :=
+  Verified.OxicloudAdmin.reason_decision_ok subject role is_external active r h
+
+/-- Only live internal users of administrator or owner rank can administer the deployment. -/
+theorem system_administrator_policy (subject : admin.Principal) (role : userrole.UserRole)
+    (is_external active : Bool) (r : admin.AdminDecision)
+    (h : admin.require_system_admin subject role is_external active = ok r) :
+    (r = .Allowed ↔ SpecKernel.SystemAdminAllowed subject role is_external active) ∧
+    (∀ reason, r = .Denied reason → SpecKernel.SystemAdminDenial subject role is_external active reason) :=
+  Verified.OxicloudAdmin.required_admin_ok subject role is_external active r h
 
 end oxicloud_kernel.Properties
