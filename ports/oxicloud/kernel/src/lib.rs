@@ -20,3 +20,5 @@ pub mod share;
 pub mod subjectgroup;
 
 pub mod magiclink;
+
+pub mod userstate;

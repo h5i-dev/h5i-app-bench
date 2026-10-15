@@ -4253,6 +4253,419 @@ def userrole.is_privileged (role : userrole.UserRole) : Result Bool := do
   let i1 ← userrole.rank userrole.UserRole.User
   ok (i > i1)
 
+/-- [oxicloud_kernel::userstate::FederationKind]
+    Source: 'ports/oxicloud/kernel/src/userstate.rs', lines 4:0-4:48
+    Visibility: public -/
+@[discriminant isize]
+inductive userstate.FederationKind where
+| MagicLink : userstate.FederationKind
+| Ocm : userstate.FederationKind
+| Oidc : userstate.FederationKind
+
+/-- [oxicloud_kernel::userstate::federation_bytes]:
+    Source: 'ports/oxicloud/kernel/src/userstate.rs', lines 5:0-11:1
+    Visibility: public -/
+def userstate.federation_bytes
+  (kind : userstate.FederationKind) : Result (alloc.vec.Vec Std.U8) := do
+  match kind with
+  | userstate.FederationKind.MagicLink =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 10#usize [
+          109#u8, 97#u8, 103#u8, 105#u8, 99#u8, 95#u8, 108#u8, 105#u8, 110#u8,
+          107#u8
+          ]))
+    bytes.copy s
+  | userstate.FederationKind.Ocm =>
+    let s ←
+      lift (Array.to_slice (Array.make 3#usize [ 111#u8, 99#u8, 109#u8 ]))
+    bytes.copy s
+  | userstate.FederationKind.Oidc =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 4#usize [ 111#u8, 105#u8, 100#u8, 99#u8 ]))
+    bytes.copy s
+
+/-- [oxicloud_kernel::userstate::federation_parse]:
+    Source: 'ports/oxicloud/kernel/src/userstate.rs', lines 12:0-17:1
+    Visibility: public -/
+def userstate.federation_parse
+  (raw : Slice Std.U8) : Result (Option userstate.FederationKind) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        109#u8, 97#u8, 103#u8, 105#u8, 99#u8, 95#u8, 108#u8, 105#u8, 110#u8,
+        107#u8
+        ]))
+  let b ← bytes.equal raw s
+  if b
+  then ok (some userstate.FederationKind.MagicLink)
+  else
+    let s1 ←
+      lift (Array.to_slice (Array.make 3#usize [ 111#u8, 99#u8, 109#u8 ]))
+    let b1 ← bytes.equal raw s1
+    if b1
+    then ok (some userstate.FederationKind.Ocm)
+    else
+      let s2 ←
+        lift (Array.to_slice
+          (Array.make 4#usize [ 111#u8, 105#u8, 100#u8, 99#u8 ]))
+      let b2 ← bytes.equal raw s2
+      if b2
+      then ok (some userstate.FederationKind.Oidc)
+      else ok none
+
+/-- [oxicloud_kernel::userstate::User]
+    Source: 'ports/oxicloud/kernel/src/userstate.rs', lines 18:0-41:1
+    Visibility: public -/
+structure userstate.User where
+  id : Std.U128
+  username : Option (alloc.vec.Vec Std.U8)
+  email : alloc.vec.Vec Std.U8
+  password_hash : Option (alloc.vec.Vec Std.U8)
+  role : userrole.UserRole
+  storage_quota_bytes : Std.I64
+  storage_used_bytes : Std.I64
+  created_at : session.Timestamp
+  updated_at : session.Timestamp
+  last_login_at : Option session.Timestamp
+  active : Bool
+  federation_kind : Option userstate.FederationKind
+  federation_issuer : Option (alloc.vec.Vec Std.U8)
+  federation_subject : Option (alloc.vec.Vec Std.U8)
+  image : Option (alloc.vec.Vec Std.U8)
+  is_external : Bool
+  given_name : Option (alloc.vec.Vec Std.U8)
+  family_name : Option (alloc.vec.Vec Std.U8)
+  email_verified_at : Option session.Timestamp
+  preferred_locale : Option (alloc.vec.Vec Std.U8)
+  notify_on_share : Bool
+  ui_preferences : alloc.vec.Vec Std.U8
+
+/-- [oxicloud_kernel::userstate::UserParts]
+    Source: 'ports/oxicloud/kernel/src/userstate.rs', lines 42:0-65:1
+    Visibility: public -/
+structure userstate.UserParts where
+  id : Std.U128
+  username : Option (alloc.vec.Vec Std.U8)
+  email : alloc.vec.Vec Std.U8
+  password_hash : Option (alloc.vec.Vec Std.U8)
+  role : userrole.UserRole
+  storage_quota_bytes : Std.I64
+  storage_used_bytes : Std.I64
+  created_at : session.Timestamp
+  updated_at : session.Timestamp
+  last_login_at : Option session.Timestamp
+  active : Bool
+  federation_kind : Option userstate.FederationKind
+  federation_issuer : Option (alloc.vec.Vec Std.U8)
+  federation_subject : Option (alloc.vec.Vec Std.U8)
+  image : Option (alloc.vec.Vec Std.U8)
+  is_external : Bool
+  given_name : Option (alloc.vec.Vec Std.U8)
+  family_name : Option (alloc.vec.Vec Std.U8)
+  email_verified_at : Option session.Timestamp
+  preferred_locale : Option (alloc.vec.Vec Std.U8)
+  notify_on_share : Bool
+  ui_preferences : alloc.vec.Vec Std.U8
+
+/-- [oxicloud_kernel::userstate::from_data_full]:
+    Source: 'ports/oxicloud/kernel/src/userstate.rs', lines 66:0-68:1
+    Visibility: public -/
+def userstate.from_data_full
+  (id : Std.U128) (username : Option (alloc.vec.Vec Std.U8))
+  (email : alloc.vec.Vec Std.U8)
+  (password_hash : Option (alloc.vec.Vec Std.U8)) (role : userrole.UserRole)
+  (storage_quota_bytes : Std.I64) (storage_used_bytes : Std.I64)
+  (created_at : session.Timestamp) (updated_at : session.Timestamp)
+  (last_login_at : Option session.Timestamp) (active : Bool)
+  (federation_kind : Option userstate.FederationKind)
+  (federation_issuer : Option (alloc.vec.Vec Std.U8))
+  (federation_subject : Option (alloc.vec.Vec Std.U8))
+  (image : Option (alloc.vec.Vec Std.U8)) (is_external : Bool)
+  (given_name : Option (alloc.vec.Vec Std.U8))
+  (family_name : Option (alloc.vec.Vec Std.U8))
+  (email_verified_at : Option session.Timestamp)
+  (preferred_locale : Option (alloc.vec.Vec Std.U8)) (notify_on_share : Bool)
+  (ui_preferences : alloc.vec.Vec Std.U8) :
+  Result userstate.User
+  := do
+  ok
+    {
+      id,
+      username,
+      email,
+      password_hash,
+      role,
+      storage_quota_bytes,
+      storage_used_bytes,
+      created_at,
+      updated_at,
+      last_login_at,
+      active,
+      federation_kind,
+      federation_issuer,
+      federation_subject,
+      image,
+      is_external,
+      given_name,
+      family_name,
+      email_verified_at,
+      preferred_locale,
+      notify_on_share,
+      ui_preferences
+    }
+
+/-- [oxicloud_kernel::userstate::from_data]:
+    Source: 'ports/oxicloud/kernel/src/userstate.rs', lines 69:0-71:1
+    Visibility: public -/
+def userstate.from_data
+  (id : Std.U128) (username : Option (alloc.vec.Vec Std.U8))
+  (email : alloc.vec.Vec Std.U8)
+  (password_hash : Option (alloc.vec.Vec Std.U8)) (role : userrole.UserRole)
+  (storage_quota_bytes : Std.I64) (storage_used_bytes : Std.I64)
+  (created_at : session.Timestamp) (updated_at : session.Timestamp)
+  (last_login_at : Option session.Timestamp) (active : Bool) :
+  Result userstate.User
+  := do
+  let s ← lift (Array.to_slice (Array.make 2#usize [ 123#u8, 125#u8 ]))
+  let v ← bytes.copy s
+  ok
+    {
+      id,
+      username,
+      email,
+      password_hash,
+      role,
+      storage_quota_bytes,
+      storage_used_bytes,
+      created_at,
+      updated_at,
+      last_login_at,
+      active,
+      federation_kind := none,
+      federation_issuer := none,
+      federation_subject := none,
+      image := none,
+      is_external := false,
+      given_name := none,
+      family_name := none,
+      email_verified_at := none,
+      preferred_locale := none,
+      notify_on_share := true,
+      ui_preferences := v
+    }
+
+/-- [oxicloud_kernel::userstate::into_parts]:
+    Source: 'ports/oxicloud/kernel/src/userstate.rs', lines 72:0-74:1
+    Visibility: public -/
+def userstate.into_parts
+  (s : userstate.User) : Result userstate.UserParts := do
+  ok
+    {
+      id := s.id,
+      username := s.username,
+      email := s.email,
+      password_hash := s.password_hash,
+      role := s.role,
+      storage_quota_bytes := s.storage_quota_bytes,
+      storage_used_bytes := s.storage_used_bytes,
+      created_at := s.created_at,
+      updated_at := s.updated_at,
+      last_login_at := s.last_login_at,
+      active := s.active,
+      federation_kind := s.federation_kind,
+      federation_issuer := s.federation_issuer,
+      federation_subject := s.federation_subject,
+      image := s.image,
+      is_external := s.is_external,
+      given_name := s.given_name,
+      family_name := s.family_name,
+      email_verified_at := s.email_verified_at,
+      preferred_locale := s.preferred_locale,
+      notify_on_share := s.notify_on_share,
+      ui_preferences := s.ui_preferences
+    }
+
+/-- [oxicloud_kernel::userstate::id]:
+    Source: 'ports/oxicloud/kernel/src/userstate.rs', lines 75:0-75:36
+    Visibility: public -/
+def userstate.id (s : userstate.User) : Result Std.U128 := do
+  ok s.id
+
+/-- [oxicloud_kernel::userstate::username]:
+    Source: 'ports/oxicloud/kernel/src/userstate.rs', lines 76:0-76:61
+    Visibility: public -/
+def userstate.username
+  (s : userstate.User) : Result (Option (alloc.vec.Vec Std.U8)) := do
+  ok s.username
+
+/-- [oxicloud_kernel::userstate::email]:
+    Source: 'ports/oxicloud/kernel/src/userstate.rs', lines 77:0-77:47
+    Visibility: public -/
+def userstate.email (s : userstate.User) : Result (alloc.vec.Vec Std.U8) := do
+  ok s.email
+
+/-- [oxicloud_kernel::userstate::password_hash]:
+    Source: 'ports/oxicloud/kernel/src/userstate.rs', lines 78:0-78:71
+    Visibility: public -/
+def userstate.password_hash
+  (s : userstate.User) : Result (Option (alloc.vec.Vec Std.U8)) := do
+  ok s.password_hash
+
+/-- [oxicloud_kernel::userstate::role]:
+    Source: 'ports/oxicloud/kernel/src/userstate.rs', lines 79:0-79:44
+    Visibility: public -/
+def userstate.role (s : userstate.User) : Result userrole.UserRole := do
+  ok s.role
+
+/-- [oxicloud_kernel::userstate::storage_quota_bytes]:
+    Source: 'ports/oxicloud/kernel/src/userstate.rs', lines 80:0-80:69
+    Visibility: public -/
+def userstate.storage_quota_bytes (s : userstate.User) : Result Std.I64 := do
+  ok s.storage_quota_bytes
+
+/-- [oxicloud_kernel::userstate::storage_used_bytes]:
+    Source: 'ports/oxicloud/kernel/src/userstate.rs', lines 81:0-81:67
+    Visibility: public -/
+def userstate.storage_used_bytes (s : userstate.User) : Result Std.I64 := do
+  ok s.storage_used_bytes
+
+/-- [oxicloud_kernel::userstate::created_at]:
+    Source: 'ports/oxicloud/kernel/src/userstate.rs', lines 82:0-82:57
+    Visibility: public -/
+def userstate.created_at (s : userstate.User) : Result session.Timestamp := do
+  ok s.created_at
+
+/-- [oxicloud_kernel::userstate::updated_at]:
+    Source: 'ports/oxicloud/kernel/src/userstate.rs', lines 83:0-83:57
+    Visibility: public -/
+def userstate.updated_at (s : userstate.User) : Result session.Timestamp := do
+  ok s.updated_at
+
+/-- [oxicloud_kernel::userstate::last_login_at]:
+    Source: 'ports/oxicloud/kernel/src/userstate.rs', lines 84:0-84:71
+    Visibility: public -/
+def userstate.last_login_at
+  (s : userstate.User) : Result (Option session.Timestamp) := do
+  ok s.last_login_at
+
+/-- [oxicloud_kernel::userstate::is_active]:
+    Source: 'ports/oxicloud/kernel/src/userstate.rs', lines 85:0-85:47
+    Visibility: public -/
+def userstate.is_active (s : userstate.User) : Result Bool := do
+  ok s.active
+
+/-- [oxicloud_kernel::userstate::federation_kind]:
+    Source: 'ports/oxicloud/kernel/src/userstate.rs', lines 86:0-86:80
+    Visibility: public -/
+def userstate.federation_kind
+  (s : userstate.User) : Result (Option userstate.FederationKind) := do
+  ok s.federation_kind
+
+/-- [oxicloud_kernel::userstate::federation_issuer]:
+    Source: 'ports/oxicloud/kernel/src/userstate.rs', lines 87:0-87:79
+    Visibility: public -/
+def userstate.federation_issuer
+  (s : userstate.User) : Result (Option (alloc.vec.Vec Std.U8)) := do
+  ok s.federation_issuer
+
+/-- [oxicloud_kernel::userstate::federation_subject]:
+    Source: 'ports/oxicloud/kernel/src/userstate.rs', lines 88:0-88:81
+    Visibility: public -/
+def userstate.federation_subject
+  (s : userstate.User) : Result (Option (alloc.vec.Vec Std.U8)) := do
+  ok s.federation_subject
+
+/-- [oxicloud_kernel::userstate::image]:
+    Source: 'ports/oxicloud/kernel/src/userstate.rs', lines 89:0-89:55
+    Visibility: public -/
+def userstate.image
+  (s : userstate.User) : Result (Option (alloc.vec.Vec Std.U8)) := do
+  ok s.image
+
+/-- [oxicloud_kernel::userstate::is_external]:
+    Source: 'ports/oxicloud/kernel/src/userstate.rs', lines 90:0-90:54
+    Visibility: public -/
+def userstate.is_external (s : userstate.User) : Result Bool := do
+  ok s.is_external
+
+/-- [oxicloud_kernel::userstate::given_name]:
+    Source: 'ports/oxicloud/kernel/src/userstate.rs', lines 91:0-91:65
+    Visibility: public -/
+def userstate.given_name
+  (s : userstate.User) : Result (Option (alloc.vec.Vec Std.U8)) := do
+  ok s.given_name
+
+/-- [oxicloud_kernel::userstate::family_name]:
+    Source: 'ports/oxicloud/kernel/src/userstate.rs', lines 92:0-92:67
+    Visibility: public -/
+def userstate.family_name
+  (s : userstate.User) : Result (Option (alloc.vec.Vec Std.U8)) := do
+  ok s.family_name
+
+/-- [oxicloud_kernel::userstate::email_verified_at]:
+    Source: 'ports/oxicloud/kernel/src/userstate.rs', lines 93:0-93:79
+    Visibility: public -/
+def userstate.email_verified_at
+  (s : userstate.User) : Result (Option session.Timestamp) := do
+  ok s.email_verified_at
+
+/-- [oxicloud_kernel::userstate::preferred_locale]:
+    Source: 'ports/oxicloud/kernel/src/userstate.rs', lines 94:0-94:77
+    Visibility: public -/
+def userstate.preferred_locale
+  (s : userstate.User) : Result (Option (alloc.vec.Vec Std.U8)) := do
+  ok s.preferred_locale
+
+/-- [oxicloud_kernel::userstate::notify_on_share]:
+    Source: 'ports/oxicloud/kernel/src/userstate.rs', lines 95:0-95:62
+    Visibility: public -/
+def userstate.notify_on_share (s : userstate.User) : Result Bool := do
+  ok s.notify_on_share
+
+/-- [oxicloud_kernel::userstate::ui_preferences]:
+    Source: 'ports/oxicloud/kernel/src/userstate.rs', lines 96:0-96:65
+    Visibility: public -/
+def userstate.ui_preferences
+  (s : userstate.User) : Result (alloc.vec.Vec Std.U8) := do
+  ok s.ui_preferences
+
+/-- [oxicloud_kernel::userstate::has_password]:
+    Source: 'ports/oxicloud/kernel/src/userstate.rs', lines 97:0-99:1
+    Visibility: public -/
+def userstate.has_password (s : userstate.User) : Result Bool := do
+  match s.password_hash with
+  | none => ok false
+  | some _ => ok true
+
+/-- [oxicloud_kernel::userstate::is_oidc_user]:
+    Source: 'ports/oxicloud/kernel/src/userstate.rs', lines 100:0-102:1
+    Visibility: public -/
+def userstate.is_oidc_user (s : userstate.User) : Result Bool := do
+  match s.federation_issuer with
+  | none => ok false
+  | some _ => ok true
+
+/-- [oxicloud_kernel::userstate::has_login_credential]:
+    Source: 'ports/oxicloud/kernel/src/userstate.rs', lines 103:0-105:1
+    Visibility: public -/
+def userstate.has_login_credential (s : userstate.User) : Result Bool := do
+  let b ← userstate.has_password s
+  if b
+  then ok true
+  else match s.federation_subject with
+       | none => ok false
+       | some _ => ok true
+
+/-- [oxicloud_kernel::userstate::is_email_verified]:
+    Source: 'ports/oxicloud/kernel/src/userstate.rs', lines 106:0-108:1
+    Visibility: public -/
+def userstate.is_email_verified (s : userstate.User) : Result Bool := do
+  match s.email_verified_at with
+  | none => ok false
+  | some _ => ok true
+
 /-- [oxicloud_kernel::validation::EmailReason]
     Source: 'ports/oxicloud/kernel/src/validation.rs', lines 5:0-5:75
     Visibility: public -/

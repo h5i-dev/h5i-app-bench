@@ -93,6 +93,37 @@ trap 'rm -rf "$tmp"' EXIT
   --start-from oxicloud_kernel::magiclink::request_challenge \
   --start-from oxicloud_kernel::magiclink::is_expired \
   --start-from oxicloud_kernel::magiclink::is_redeemable \
+  --start-from oxicloud_kernel::userstate::federation_bytes \
+  --start-from oxicloud_kernel::userstate::federation_parse \
+  --start-from oxicloud_kernel::userstate::from_data_full \
+  --start-from oxicloud_kernel::userstate::from_data \
+  --start-from oxicloud_kernel::userstate::into_parts \
+  --start-from oxicloud_kernel::userstate::id \
+  --start-from oxicloud_kernel::userstate::username \
+  --start-from oxicloud_kernel::userstate::email \
+  --start-from oxicloud_kernel::userstate::password_hash \
+  --start-from oxicloud_kernel::userstate::role \
+  --start-from oxicloud_kernel::userstate::storage_quota_bytes \
+  --start-from oxicloud_kernel::userstate::storage_used_bytes \
+  --start-from oxicloud_kernel::userstate::created_at \
+  --start-from oxicloud_kernel::userstate::updated_at \
+  --start-from oxicloud_kernel::userstate::last_login_at \
+  --start-from oxicloud_kernel::userstate::is_active \
+  --start-from oxicloud_kernel::userstate::federation_kind \
+  --start-from oxicloud_kernel::userstate::federation_issuer \
+  --start-from oxicloud_kernel::userstate::federation_subject \
+  --start-from oxicloud_kernel::userstate::image \
+  --start-from oxicloud_kernel::userstate::is_external \
+  --start-from oxicloud_kernel::userstate::given_name \
+  --start-from oxicloud_kernel::userstate::family_name \
+  --start-from oxicloud_kernel::userstate::email_verified_at \
+  --start-from oxicloud_kernel::userstate::preferred_locale \
+  --start-from oxicloud_kernel::userstate::notify_on_share \
+  --start-from oxicloud_kernel::userstate::ui_preferences \
+  --start-from oxicloud_kernel::userstate::has_password \
+  --start-from oxicloud_kernel::userstate::is_oidc_user \
+  --start-from oxicloud_kernel::userstate::has_login_credential \
+  --start-from oxicloud_kernel::userstate::is_email_verified \
   --dest-file "$tmp/oxicloud_kernel.llbc")
 mkdir -p "$root/ports/oxicloud/proofs/generated"
 aeneas -backend lean "$tmp/oxicloud_kernel.llbc" -dest "$root/ports/oxicloud/proofs/generated"

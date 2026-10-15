@@ -177,3 +177,19 @@ and the external-sharing guard retains both principal kind and external flag.
 - Differential tests compile the pinned expiry and redeemability method bodies
   with only an explicit clock parameter substituted, compare boundary instants,
   and also bracket calls to the original clock-reading methods.
+
+### Account snapshot and credential signals
+
+- `User` and `UserParts` retain all 22 upstream fields. UUIDs use all 128 bits;
+  text and optional borrowed text use UTF-8 byte vectors and borrowed vectors;
+  timestamps reuse the seconds/nanoseconds representation. Signed quota/usage
+  values and independent federation fields are preserved without extra validation.
+- The opaque `serde_json::Value` UI-preferences field is transported as canonical
+  JSON bytes supplied by the shell (`serde_json::to_vec`). These functions never
+  inspect it. Minimal restoration supplies the bytes `{}`, matching the upstream
+  empty-object default. Full restoration preserves any supplied JSON value.
+- Owned decomposition constructs a separate complete `UserParts` record by moving
+  all fields. Credential presence distinguishes absent from present-empty values;
+  password and federation-subject presence determine the non-magic-link signal.
+  Federation-issuer presence and email-verification timestamp presence retain
+  their independent meanings. Federation discriminator spellings remain exact.

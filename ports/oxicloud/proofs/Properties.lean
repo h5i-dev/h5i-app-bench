@@ -1,3 +1,4 @@
+import Verified.OxicloudUserState
 import Verified.OxicloudMagicLink
 import Verified.OxicloudSubjectGroup
 import Verified.OxicloudShare
@@ -449,5 +450,74 @@ theorem magic_expiry_rule (s : magiclink.MagicLinkToken) (now : session.Timestam
 theorem magic_redemption_rule (s : magiclink.MagicLinkToken) (now : session.Timestamp) (r : Bool)
     (h : magiclink.is_redeemable s now = ok r) : (r = true ↔ SpecKernel.MagicLinkRedeemable s now) :=
   Verified.OxicloudMagicLink.redeemable_ok s now r h
+
+/-- Federation names are canonical and distinguish the three trust chains. -/
+theorem account_federation_wire (value : userstate.FederationKind) (out : alloc.vec.Vec U8)
+    (h : userstate.federation_bytes value = ok out) : out.val = SpecKernel.FederationWire value :=
+  Verified.OxicloudUserState.federation_bytes_ok value out h
+
+/-- Unrecognized federation names cannot select a trust chain. -/
+theorem account_federation_parse (raw : Slice U8) (o : Option userstate.FederationKind)
+    (h : userstate.federation_parse raw = ok o) (value : userstate.FederationKind) :
+    (o = some value ↔ raw.val = SpecKernel.FederationWire value) :=
+  Verified.OxicloudUserState.federation_parse_ok raw o h value
+
+/-- Account hydration retains identity, role, credentials, verification, and profile state. -/
+theorem account_restoration_readback (snapshot r : userstate.User)
+    (h : userstate.from_data_full snapshot.id snapshot.username snapshot.email snapshot.password_hash snapshot.role snapshot.storage_quota_bytes snapshot.storage_used_bytes snapshot.created_at snapshot.updated_at snapshot.last_login_at snapshot.active snapshot.federation_kind snapshot.federation_issuer snapshot.federation_subject snapshot.image snapshot.is_external snapshot.given_name snapshot.family_name snapshot.email_verified_at snapshot.preferred_locale snapshot.notify_on_share snapshot.ui_preferences = ok r) :
+    userstate.id r = ok snapshot.id ∧
+    userstate.username r = ok snapshot.username ∧
+    userstate.email r = ok snapshot.email ∧
+    userstate.password_hash r = ok snapshot.password_hash ∧
+    userstate.role r = ok snapshot.role ∧
+    userstate.storage_quota_bytes r = ok snapshot.storage_quota_bytes ∧
+    userstate.storage_used_bytes r = ok snapshot.storage_used_bytes ∧
+    userstate.created_at r = ok snapshot.created_at ∧
+    userstate.updated_at r = ok snapshot.updated_at ∧
+    userstate.last_login_at r = ok snapshot.last_login_at ∧
+    userstate.is_active r = ok snapshot.active ∧
+    userstate.federation_kind r = ok snapshot.federation_kind ∧
+    userstate.federation_issuer r = ok snapshot.federation_issuer ∧
+    userstate.federation_subject r = ok snapshot.federation_subject ∧
+    userstate.image r = ok snapshot.image ∧
+    userstate.is_external r = ok snapshot.is_external ∧
+    userstate.given_name r = ok snapshot.given_name ∧
+    userstate.family_name r = ok snapshot.family_name ∧
+    userstate.email_verified_at r = ok snapshot.email_verified_at ∧
+    userstate.preferred_locale r = ok snapshot.preferred_locale ∧
+    userstate.notify_on_share r = ok snapshot.notify_on_share ∧
+    userstate.ui_preferences r = ok snapshot.ui_preferences :=
+  Verified.OxicloudUserState.restored_readback snapshot r h
+
+/-- Minimal hydration preserves supplied state and defaults to internal with no federation or email verification evidence. -/
+theorem account_minimal_restoration (snapshot r : userstate.User)
+    (h : userstate.from_data snapshot.id snapshot.username snapshot.email snapshot.password_hash snapshot.role snapshot.storage_quota_bytes snapshot.storage_used_bytes snapshot.created_at snapshot.updated_at snapshot.last_login_at snapshot.active = ok r) :
+    SpecKernel.MinimalAccountRestored snapshot r :=
+  Verified.OxicloudUserState.minimal_restored snapshot r h
+
+/-- Owned decomposition cannot drop or change authorization and credential fields. -/
+theorem account_decomposition_preserves_state (s : userstate.User) (p : userstate.UserParts)
+    (h : userstate.into_parts s = ok p) : SpecKernel.AccountPartsPreserved s p :=
+  Verified.OxicloudUserState.parts_preserved s p h
+
+/-- A configured password is identified by presence, including a present empty value. -/
+theorem account_password_presence (s : userstate.User) (r : Bool)
+    (h : userstate.has_password s = ok r) : (r = true ↔ ∃ value, s.password_hash = some value) :=
+  Verified.OxicloudUserState.password_presence s r h
+
+/-- Issuer presence is independent of password and subject presence. -/
+theorem account_issuer_presence (s : userstate.User) (r : Bool)
+    (h : userstate.is_oidc_user s = ok r) : (r = true ↔ ∃ value, s.federation_issuer = some value) :=
+  Verified.OxicloudUserState.issuer_presence s r h
+
+/-- Email verification requires a stored verification timestamp. -/
+theorem account_email_verified (s : userstate.User) (r : Bool)
+    (h : userstate.is_email_verified s = ok r) : (r = true ↔ ∃ value, s.email_verified_at = some value) :=
+  Verified.OxicloudUserState.email_verified s r h
+
+/-- The non-magic-link credential signal requires a password hash or a federation subject. -/
+theorem account_login_credential (s : userstate.User) (r : Bool)
+    (h : userstate.has_login_credential s = ok r) : (r = true ↔ SpecKernel.AccountLoginCredential s) :=
+  Verified.OxicloudUserState.credential_presence s r h
 
 end oxicloud_kernel.Properties

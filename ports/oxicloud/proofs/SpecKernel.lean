@@ -246,4 +246,61 @@ def TimestampWithin (now deadline : session.Timestamp) : Prop :=
 def MagicLinkRedeemable (s : magiclink.MagicLinkToken) (now : session.Timestamp) : Prop :=
   s.status = .Pending ∧ TimestampWithin now s.expires_at
 
+
+def FederationWire : userstate.FederationKind → List U8
+  | .MagicLink => [109#u8, 97#u8, 103#u8, 105#u8, 99#u8, 95#u8, 108#u8, 105#u8, 110#u8, 107#u8]
+  | .Ocm => [111#u8, 99#u8, 109#u8]
+  | .Oidc => [111#u8, 105#u8, 100#u8, 99#u8]
+
+def AccountLoginCredential (s : userstate.User) : Prop :=
+  (∃ hash, s.password_hash = some hash) ∨ (∃ subject, s.federation_subject = some subject)
+
+def AccountPartsPreserved (s : userstate.User) (p : userstate.UserParts) : Prop :=
+  p.id = s.id ∧
+  p.username = s.username ∧
+  p.email = s.email ∧
+  p.password_hash = s.password_hash ∧
+  p.role = s.role ∧
+  p.storage_quota_bytes = s.storage_quota_bytes ∧
+  p.storage_used_bytes = s.storage_used_bytes ∧
+  p.created_at = s.created_at ∧
+  p.updated_at = s.updated_at ∧
+  p.last_login_at = s.last_login_at ∧
+  p.active = s.active ∧
+  p.federation_kind = s.federation_kind ∧
+  p.federation_issuer = s.federation_issuer ∧
+  p.federation_subject = s.federation_subject ∧
+  p.image = s.image ∧
+  p.is_external = s.is_external ∧
+  p.given_name = s.given_name ∧
+  p.family_name = s.family_name ∧
+  p.email_verified_at = s.email_verified_at ∧
+  p.preferred_locale = s.preferred_locale ∧
+  p.notify_on_share = s.notify_on_share ∧
+  p.ui_preferences = s.ui_preferences
+
+def MinimalAccountRestored (s r : userstate.User) : Prop :=
+  r.id = s.id ∧
+  r.username = s.username ∧
+  r.email = s.email ∧
+  r.password_hash = s.password_hash ∧
+  r.role = s.role ∧
+  r.storage_quota_bytes = s.storage_quota_bytes ∧
+  r.storage_used_bytes = s.storage_used_bytes ∧
+  r.created_at = s.created_at ∧
+  r.updated_at = s.updated_at ∧
+  r.last_login_at = s.last_login_at ∧
+  r.active = s.active ∧
+  r.federation_kind = none ∧
+  r.federation_issuer = none ∧
+  r.federation_subject = none ∧
+  r.image = none ∧
+  r.is_external = false ∧
+  r.given_name = none ∧
+  r.family_name = none ∧
+  r.email_verified_at = none ∧
+  r.preferred_locale = none ∧
+  r.notify_on_share = true ∧
+  r.ui_preferences.val = [123#u8, 125#u8]
+
 end oxicloud_kernel.SpecKernel

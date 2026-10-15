@@ -25,3 +25,6 @@ mod subjectgroup;
 
 #[cfg(test)]
 mod magiclink;
+
+#[cfg(test)]
+mod userstate;

@@ -13372,17 +13372,20 @@ reason = "policy decoding or serialization"
 [[item]]
 upstream = "src/domain/entities/user.rs:147 FederationKind"
 lines = 5
-status = "todo"
+status = "ported"
+kernel = ["kernel/src/userstate.rs::FederationKind"]
 
 [[item]]
 upstream = "src/domain/entities/user.rs:174 FederationKind::as_str"
 lines = 7
-status = "todo"
+status = "ported"
+kernel = ["kernel/src/userstate.rs::federation_bytes"]
 
 [[item]]
 upstream = "src/domain/entities/user.rs:184 FederationKind::parse"
 lines = 8
-status = "todo"
+status = "ported"
+kernel = ["kernel/src/userstate.rs::federation_parse"]
 
 [[item]]
 upstream = "src/domain/entities/user.rs:198 FederationKind::fmt"
@@ -13398,17 +13401,20 @@ status = "todo"
 [[item]]
 upstream = "src/domain/entities/user.rs:224 User"
 lines = 24
-status = "todo"
+status = "ported"
+kernel = ["kernel/src/userstate.rs::User"]
 
 [[item]]
 upstream = "src/domain/entities/user.rs:323 UserParts"
 lines = 24
-status = "todo"
+status = "ported"
+kernel = ["kernel/src/userstate.rs::UserParts"]
 
 [[item]]
 upstream = "src/domain/entities/user.rs:354 User::into_parts"
 lines = 50
-status = "todo"
+status = "ported"
+kernel = ["kernel/src/userstate.rs::into_parts"]
 
 [[item]]
 upstream = "src/domain/entities/user.rs:408 User::new"
@@ -13419,72 +13425,86 @@ reason = "uses new_v4"
 [[item]]
 upstream = "src/domain/entities/user.rs:534 User::from_data"
 lines = 38
-status = "todo"
+status = "ported"
+kernel = ["kernel/src/userstate.rs::from_data"]
 
 [[item]]
 upstream = "src/domain/entities/user.rs:580 User::from_data_full"
 lines = 49
-status = "todo"
+status = "ported"
+kernel = ["kernel/src/userstate.rs::from_data_full"]
 
 [[item]]
 upstream = "src/domain/entities/user.rs:635 User::id"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["kernel/src/userstate.rs::id"]
 
 [[item]]
 upstream = "src/domain/entities/user.rs:639 User::username"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["kernel/src/userstate.rs::username"]
 
 [[item]]
 upstream = "src/domain/entities/user.rs:647 User::email"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["kernel/src/userstate.rs::email"]
 
 [[item]]
 upstream = "src/domain/entities/user.rs:651 User::role"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["kernel/src/userstate.rs::role"]
 
 [[item]]
 upstream = "src/domain/entities/user.rs:655 User::storage_quota_bytes"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["kernel/src/userstate.rs::storage_quota_bytes"]
 
 [[item]]
 upstream = "src/domain/entities/user.rs:659 User::storage_used_bytes"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["kernel/src/userstate.rs::storage_used_bytes"]
 
 [[item]]
 upstream = "src/domain/entities/user.rs:663 User::created_at"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["kernel/src/userstate.rs::created_at"]
 
 [[item]]
 upstream = "src/domain/entities/user.rs:667 User::updated_at"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["kernel/src/userstate.rs::updated_at"]
 
 [[item]]
 upstream = "src/domain/entities/user.rs:671 User::last_login_at"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["kernel/src/userstate.rs::last_login_at"]
 
 [[item]]
 upstream = "src/domain/entities/user.rs:675 User::is_active"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["kernel/src/userstate.rs::is_active"]
 
 [[item]]
 upstream = "src/domain/entities/user.rs:679 User::password_hash"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["kernel/src/userstate.rs::password_hash"]
 
 [[item]]
 upstream = "src/domain/entities/user.rs:687 User::has_password"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["kernel/src/userstate.rs::has_password"]
 
 [[item]]
 upstream = "src/domain/entities/user.rs:692 User::display_for_audit"
@@ -13499,47 +13519,56 @@ status = "todo"
 [[item]]
 upstream = "src/domain/entities/user.rs:764 User::federation_kind"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["kernel/src/userstate.rs::federation_kind"]
 
 [[item]]
 upstream = "src/domain/entities/user.rs:768 User::federation_issuer"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["kernel/src/userstate.rs::federation_issuer"]
 
 [[item]]
 upstream = "src/domain/entities/user.rs:772 User::federation_subject"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["kernel/src/userstate.rs::federation_subject"]
 
 [[item]]
 upstream = "src/domain/entities/user.rs:776 User::image"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["kernel/src/userstate.rs::image"]
 
 [[item]]
 upstream = "src/domain/entities/user.rs:780 User::is_external"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["kernel/src/userstate.rs::is_external"]
 
 [[item]]
 upstream = "src/domain/entities/user.rs:788 User::given_name"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["kernel/src/userstate.rs::given_name"]
 
 [[item]]
 upstream = "src/domain/entities/user.rs:792 User::family_name"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["kernel/src/userstate.rs::family_name"]
 
 [[item]]
 upstream = "src/domain/entities/user.rs:796 User::email_verified_at"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["kernel/src/userstate.rs::email_verified_at"]
 
 [[item]]
 upstream = "src/domain/entities/user.rs:803 User::is_email_verified"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["kernel/src/userstate.rs::is_email_verified"]
 
 [[item]]
 upstream = "src/domain/entities/user.rs:809 User::mark_email_verified"
@@ -13574,7 +13603,8 @@ reason = "calls Utc::now"
 [[item]]
 upstream = "src/domain/entities/user.rs:878 User::preferred_locale"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["kernel/src/userstate.rs::preferred_locale"]
 
 [[item]]
 upstream = "src/domain/entities/user.rs:887 User::set_preferred_locale"
@@ -13585,7 +13615,8 @@ reason = "calls Utc::now"
 [[item]]
 upstream = "src/domain/entities/user.rs:898 User::notify_on_share"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["kernel/src/userstate.rs::notify_on_share"]
 
 [[item]]
 upstream = "src/domain/entities/user.rs:908 User::set_notify_on_share"
@@ -13596,7 +13627,8 @@ reason = "calls Utc::now"
 [[item]]
 upstream = "src/domain/entities/user.rs:916 User::ui_preferences"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["kernel/src/userstate.rs::ui_preferences"]
 
 [[item]]
 upstream = "src/domain/entities/user.rs:926 User::set_username"
@@ -13613,12 +13645,14 @@ reason = "calls Utc::now"
 [[item]]
 upstream = "src/domain/entities/user.rs:951 User::is_oidc_user"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["kernel/src/userstate.rs::is_oidc_user"]
 
 [[item]]
 upstream = "src/domain/entities/user.rs:956 User::has_login_credential"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["kernel/src/userstate.rs::has_login_credential"]
 
 [[item]]
 upstream = "src/domain/entities/user.rs:965 User::update_password_hash"
