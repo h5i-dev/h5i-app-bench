@@ -1,3 +1,6 @@
+import Verified.RustfsKmsActions
+import Verified.RustfsPrincipal
+import Verified.RustfsKmsFilter
 import Verified.RustfsFindExact
 import Verified.RustfsAwsCollections
 import Verified.RustfsAwsClosing
@@ -1493,5 +1496,37 @@ theorem policy_variable_splice_spec (xs replacements : Slice awsvars.Pending) (i
     (h : awsvars.splice xs idx replacements = ok out) :
     out.val = xs.val.take idx.val ++ replacements.val ++ xs.val.drop (idx.val+1) :=
   Verified.RustfsAwsCollections.splice_ok xs replacements idx out h
+
+/-- Principal matching is existential over AWS and service wildcard patterns. -/
+theorem statement_principal_match_spec (p : stmts.Principal) (account : Slice U8)
+    (b : Bool) (h : stmts.principal_is_match p account = ok b) :
+    b=true ↔ Spec.PrincipalMatches (p.aws.val.map (fun v => Spec.nats v.val))
+      (p.service.val.map (fun v => Spec.nats v.val)) (Spec.nats account.val) := by
+  rw [Verified.RustfsPrincipal.principal_ok p account b h]
+  unfold Spec.PrincipalMatches
+  rw [←List.map_append]
+  constructor
+  · rintro ⟨pat,hp,hm⟩
+    exact ⟨Spec.nats pat.val,List.mem_map.mpr ⟨pat,hp,rfl⟩,hm⟩
+  · rintro ⟨pat,hp,hm⟩
+    obtain ⟨source,hs,rfl⟩ := List.mem_map.mp hp
+    exact ⟨source,hs,hm⟩
+
+/-- KMS statement resource filtering preserves exactly the KMS entries in order. -/
+theorem statement_kms_resources_spec (rs : Slice rsrc.Resource)
+    (out : alloc.vec.Vec rsrc.Resource) (h : stmts.kms_only rs = ok out) :
+    out.val = Spec.KmsResources rs.val :=
+  Verified.RustfsKmsFilter.filter_ok rs out h
+
+/-- The principal wildcard mode accepts a question mark at an exhausted name. -/
+theorem principal_wildcard_spec (pattern account : Slice U8) :
+    wildmatch.is_simple_match pattern account =
+      ok (Spec.simpleGlobSpec (Spec.nats pattern.val) (Spec.nats account.val)) :=
+  Verified.RustfsSimpleWildcard.wildcard_is_glob pattern account
+
+/-- The KMS-only action test quantifies over every action, including the empty list. -/
+theorem statement_kms_actions_spec (actions : Slice acts.Action) (b : Bool)
+    (h : stmts.all_kms actions = ok b) : b=true ↔ ∀ a ∈ actions.val, a.family=.Kms :=
+  Verified.RustfsKmsActions.all_ok actions b h
 
 end rustfs_kernel.Properties

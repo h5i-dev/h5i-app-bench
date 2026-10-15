@@ -65,3 +65,31 @@ def SkipResourceMatch (actions : List acts.Action) (requested : acts.Action) : P
   (∃ a ∈ actions, a.family=.Sts) ∨
     ((∃ a ∈ actions, a.family=.Admin) ∧ ¬ TableResourceAction requested)
 end rustfs_kernel.Spec
+
+namespace rustfs_kernel.Spec
+/-- Principal wildcard matching. At the end of the input, a question mark
+succeeds immediately, including when more pattern bytes follow it. -/
+def simpleGlobSpec : List Nat → List Nat → Bool
+  | [], n => n = []
+  | 42 :: p, n => simpleGlobSpec p n || match n with
+    | [] => false
+    | _ :: n' => simpleGlobSpec (42 :: p) n'
+  | 63 :: p, n => match n with
+    | [] => true
+    | _ :: n' => simpleGlobSpec p n'
+  | c :: p, n => match n with
+    | [] => false
+    | x :: n' => c = x && simpleGlobSpec p n'
+termination_by p n => p.length + n.length
+end rustfs_kernel.Spec
+namespace rustfs_kernel.Spec
+/-- AWS and service principal patterns share the same account-name matcher. -/
+def PrincipalMatches (aws service : List (List Nat)) (account : List Nat) : Prop :=
+  ∃ pattern ∈ aws ++ service, simpleGlobSpec pattern account = true
+/-- The resource variant is data; only KMS entries survive this filter. -/
+def KmsTag : rsrc.Resource → Bool
+  | .S3 _ => false
+  | .Kms _ => true
+def KmsResources (resources : List rsrc.Resource) : List rsrc.Resource :=
+  resources.filter KmsTag
+end rustfs_kernel.Spec
