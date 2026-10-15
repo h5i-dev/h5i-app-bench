@@ -146,6 +146,7 @@ pub enum Reply {
 pub enum Error {
     Unauthenticated,
     InvalidCredentials,
+    InvalidToken,
     ForbiddenArticle,
     ForbiddenComment,
     ArticleNotFound,
@@ -715,5 +716,45 @@ pub fn authenticate_login(user_exists: bool, password_matched: bool) -> Result<(
         Ok(())
     } else {
         Err(Error::InvalidCredentials)
+    }
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum Subject {
+    Invalid,
+    Parsed(i64),
+}
+
+/// JWT parsing and signature verification supply these observations.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum TokenInput {
+    Missing,
+    Invalid,
+    Claims { sub: Subject, exp: u64 },
+}
+
+/// Also used when rechecking a user inside a transaction.
+pub fn token_user_exists(exists: bool) -> Result<(), Error> {
+    if exists { Ok(()) } else { Err(Error::InvalidToken) }
+}
+
+/// Only a live, positive subject of an unexpired verified token is an actor.
+pub fn token_actor(token: &TokenInput, now: u64, user_exists: bool) -> Result<i64, Error> {
+    match token {
+        TokenInput::Missing => Ok(0),
+        TokenInput::Invalid => Err(Error::InvalidToken),
+        TokenInput::Claims { sub, exp } => {
+            if *exp <= now { return Err(Error::InvalidToken); }
+            match sub {
+                Subject::Invalid => Err(Error::InvalidToken),
+                Subject::Parsed(id) => {
+                    if *id <= 0 { return Err(Error::InvalidToken); }
+                    match token_user_exists(user_exists) {
+                        Ok(()) => Ok(*id),
+                        Err(e) => Err(e),
+                    }
+                }
+            }
+        }
     }
 }

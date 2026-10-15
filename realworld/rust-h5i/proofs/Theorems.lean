@@ -236,4 +236,51 @@ theorem login_success_iff (found matched : Bool) :
       (r = .Err .InvalidCredentials ↔ ¬ (found = true ∧ matched = true)) ⦄ := by
   cases found <;> cases matched <;> simp [authenticate_login]
 
+theorem token_missing_guest (now : Std.U64) (found : Bool) :
+    token_actor .Missing now found ⦃ r => r = .Ok 0#i64 ⦄ := by
+  simp [token_actor]
+
+theorem token_claims_exact (id : Std.I64) (exp now : Std.U64) (found : Bool) :
+    token_actor (.Claims (.Parsed id) exp) now found ⦃ r =>
+      (r = .Ok id ↔ ¬ exp ≤ now ∧ ¬ id ≤ 0#i64 ∧ found = true) ∧
+      (r = .Err .InvalidToken ↔ exp ≤ now ∨ id ≤ 0#i64 ∨ found = false) ⦄ := by
+  simp only [token_actor, token_user_exists]
+  split <;> simp_all
+  split <;> simp_all
+  cases found <;> simp_all
+
+theorem token_actor_safe (token : TokenInput) (now : Std.U64) (found : Bool) :
+    token_actor token now found ⦃ r =>
+      ∀ id, r = .Ok id → id ≠ 0#i64 →
+        ∃ exp, token = .Claims (.Parsed id) exp ∧
+          ¬ exp ≤ now ∧ ¬ id ≤ 0#i64 ∧ found = true ⦄ := by
+  cases token with
+  | Missing => simp [token_actor]
+  | Invalid => simp [token_actor]
+  | Claims sub exp =>
+    cases sub with
+    | Invalid =>
+      simp only [token_actor]
+      split <;> simp_all
+    | Parsed id =>
+      simp only [token_actor, token_user_exists]
+      split <;> simp_all
+      split <;> simp_all
+      cases found <;> simp_all
+
+theorem token_rejects_invalid (sub : Subject) (exp now : Std.U64) (found : Bool) :
+    token_actor (.Claims sub exp) now found ⦃ r =>
+      (exp ≤ now ∨ sub = .Invalid ∨
+        (∃ id, sub = .Parsed id ∧ id ≤ 0#i64) ∨ found = false) →
+      r = .Err .InvalidToken ⦄ := by
+  cases sub with
+  | Invalid =>
+    simp only [token_actor]
+    split <;> simp_all
+  | Parsed id =>
+    simp only [token_actor, token_user_exists]
+    split <;> simp_all
+    split <;> simp_all
+    cases found <;> simp_all
+
 end conduit_kernel

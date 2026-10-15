@@ -11,7 +11,7 @@ use axum::routing::{get, post};
 use axum::{Json, Router};
 use axum::response::{IntoResponse, Response};
 use conduit_kernel::{
-    authenticate_login, make_slug, shows_body, transition, ArticleView, Command, Delta, Error, Norm,
+    token_actor, token_user_exists, Subject, TokenInput, authenticate_login, make_slug, shows_body, transition, ArticleView, Command, Delta, Error, Norm,
     RawNum, RawText, Reply, TagDecision, TagInput, View,
 };
 use serde::Deserialize;
@@ -83,6 +83,7 @@ fn unique_field(err: &sqlx::Error) -> Option<&'static str> {
 
 fn map_kernel(err: Error) -> ApiError {
     match err {
+        Error::InvalidToken => api(StatusCode::UNAUTHORIZED, "token", "is invalid"),
         Error::InvalidCredentials => api(StatusCode::UNAUTHORIZED, "credentials", "invalid"),
         Error::Unauthenticated => api(StatusCode::UNAUTHORIZED, "token", "is missing"),
         Error::ForbiddenArticle => api(StatusCode::FORBIDDEN, "article", "forbidden"),
@@ -176,56 +177,50 @@ fn sign_token(secret: &[u8], user_id: i64) -> Result<String, ApiError> {
     .map_err(|_| server_error())
 }
 
-/// Missing header is anonymous. A present header that is not a valid
-/// `Token` JWT is rejected here; the kernel never treats it as a guest.
-fn read_token(headers: &HeaderMap, secret: &[u8]) -> Result<Option<i64>, ApiError> {
+/// Decode transport and verify the signature; the kernel interprets the claims.
+fn read_token(headers: &HeaderMap, secret: &[u8]) -> TokenInput {
     let Some(value) = headers.get(header::AUTHORIZATION) else {
-        return Ok(None);
+        return TokenInput::Missing;
     };
-    let Ok(value) = value.to_str() else {
-        return Err(api(StatusCode::UNAUTHORIZED, "token", "is invalid"));
-    };
-    if value.trim().is_empty() {
-        return Ok(None);
-    }
-    let Some(raw) = value.strip_prefix("Token ") else {
-        return Err(api(StatusCode::UNAUTHORIZED, "token", "is invalid"));
-    };
+    let Ok(value) = value.to_str() else { return TokenInput::Invalid; };
+    if value.trim().is_empty() { return TokenInput::Missing; }
+    let Some(raw) = value.strip_prefix("Token ") else { return TokenInput::Invalid; };
     let raw = raw.trim();
-    if raw.is_empty() {
-        return Err(api(StatusCode::UNAUTHORIZED, "token", "is invalid"));
-    }
+    if raw.is_empty() { return TokenInput::Invalid; }
     let mut validation = jsonwebtoken::Validation::new(jsonwebtoken::Algorithm::HS256);
-    validation.validate_exp = true;
-    let data = jsonwebtoken::decode::<Claims>(
+    // Expiry is a kernel decision, with no library clock or leeway.
+    validation.validate_exp = false;
+    let Ok(data) = jsonwebtoken::decode::<Claims>(
         raw,
         &jsonwebtoken::DecodingKey::from_secret(secret),
         &validation,
-    )
-    .map_err(|_| api(StatusCode::UNAUTHORIZED, "token", "is invalid"))?;
-    let id: i64 = data
-        .claims
-        .sub
-        .parse()
-        .map_err(|_| api(StatusCode::UNAUTHORIZED, "token", "is invalid"))?;
-    if id <= 0 {
-        return Err(api(StatusCode::UNAUTHORIZED, "token", "is invalid"));
-    }
-    Ok(Some(id))
+    ) else { return TokenInput::Invalid; };
+    let sub = match data.claims.sub.parse::<i64>() {
+        Ok(id) => Subject::Parsed(id),
+        Err(_) => Subject::Invalid,
+    };
+    TokenInput::Claims { sub, exp: data.claims.exp as u64 }
 }
 
-fn require_actor(headers: &HeaderMap, secret: &[u8], guest: &Command) -> Result<i64, ApiError> {
-    match read_token(headers, secret)? {
-        Some(id) => Ok(id),
-        None => {
-            let _ = decide(&empty_view(0), guest)?;
-            Err(api(StatusCode::UNAUTHORIZED, "token", "is missing"))
+async fn viewer_id(headers: &HeaderMap, app: &App) -> Result<i64, ApiError> {
+    let token = read_token(headers, &app.secret);
+    let now = std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)
+        .map_err(|_| server_error())?.as_secs();
+    let exists = match token {
+        TokenInput::Claims { sub: Subject::Parsed(id), .. } => {
+            sqlx::query_scalar::<_, bool>("SELECT EXISTS(SELECT 1 FROM users WHERE id = $1)")
+                .bind(id).fetch_one(&app.pool).await?
         }
-    }
+        _ => false,
+    };
+    token_actor(&token, now, exists).map_err(map_kernel)
 }
 
-fn viewer_id(headers: &HeaderMap, secret: &[u8]) -> Result<i64, ApiError> {
-    Ok(read_token(headers, secret)?.unwrap_or(0))
+async fn require_actor(headers: &HeaderMap, app: &App, _guest: &Command) -> Result<i64, ApiError> {
+    let id = viewer_id(headers, app).await?;
+    let _ = decide(&empty_view(id), &Command::CurrentUser)?;
+    Ok(id)
 }
 
 fn read_object(body: &Bytes, key: &'static str) -> Result<Map<String, Value>, ApiError> {
@@ -475,7 +470,8 @@ async fn load_user(pool: &PgPool, id: i64) -> Result<UserPublic, ApiError> {
     .bind(id)
     .fetch_optional(pool)
     .await?;
-    row.ok_or_else(|| api(StatusCode::UNAUTHORIZED, "token", "is invalid"))
+    token_user_exists(row.is_some()).map_err(map_kernel)?;
+    row.ok_or_else(server_error)
 }
 
 async fn allocate_slug(pool: &PgPool, title: &str, exclude_id: i64) -> Result<String, ApiError> {
@@ -669,7 +665,7 @@ async fn login(State(app): State<App>, body: Bytes) -> Result<Response, ApiError
 }
 
 async fn current_user(State(app): State<App>, headers: HeaderMap) -> Result<Response, ApiError> {
-    let uid = require_actor(&headers, &app.secret, &Command::CurrentUser)?;
+    let uid = require_actor(&headers, &app, &Command::CurrentUser).await?;
     match decide(&empty_view(uid), &Command::CurrentUser)? {
         Reply::Allow => {}
         _ => return Err(server_error()),
@@ -690,7 +686,7 @@ async fn update_user(State(app): State<App>, headers: HeaderMap, body: Bytes) ->
         bio: RawText::Absent,
         image: RawText::Absent,
     };
-    let uid = require_actor(&headers, &app.secret, &guest)?;
+    let uid = require_actor(&headers, &app, &guest).await?;
     let obj = read_object(&body, "user")?;
     let reply = decide(
         &empty_view(uid),
@@ -788,10 +784,7 @@ async fn load_user_tx(tx: &mut Transaction<'_, Postgres>, id: i64) -> Result<(),
         .bind(id)
         .fetch_optional(&mut **tx)
         .await?;
-    if row.is_none() {
-        return Err(api(StatusCode::UNAUTHORIZED, "token", "is invalid"));
-    }
-    Ok(())
+    token_user_exists(row.is_some()).map_err(map_kernel)
 }
 
 async fn get_profile(
@@ -799,7 +792,7 @@ async fn get_profile(
     headers: HeaderMap,
     Path(username): Path<String>,
 ) -> Result<Response, ApiError> {
-    let viewer = viewer_id(&headers, &app.secret)?;
+    let viewer = viewer_id(&headers, &app).await?;
     if viewer > 0 {
         load_user(&app.pool, viewer).await?;
     }
@@ -828,7 +821,7 @@ async fn set_follow(
     on: bool,
 ) -> Result<Response, ApiError> {
     let cmd = if on { Command::Follow } else { Command::Unfollow };
-    let uid = require_actor(headers, &app.secret, &cmd)?;
+    let uid = require_actor(headers, app, &cmd).await?;
     load_user(&app.pool, uid).await?;
     let row: Option<(i64, String, Option<String>, Option<String>)> = sqlx::query_as(
         "SELECT id, username, bio, image FROM users WHERE username = $1",
@@ -1014,7 +1007,7 @@ async fn feed(
     headers: HeaderMap,
     Query(q): Query<HashMap<String, String>>,
 ) -> Result<Response, ApiError> {
-    let uid = require_actor(&headers, &app.secret, &Command::Feed)?;
+    let uid = require_actor(&headers, &app, &Command::Feed).await?;
     list_articles(&app, uid, &q, true).await
 }
 
@@ -1023,7 +1016,7 @@ async fn get_articles(
     headers: HeaderMap,
     Query(q): Query<HashMap<String, String>>,
 ) -> Result<Response, ApiError> {
-    let viewer = viewer_id(&headers, &app.secret)?;
+    let viewer = viewer_id(&headers, &app).await?;
     list_articles(&app, viewer, &q, false).await
 }
 
@@ -1038,7 +1031,7 @@ async fn create_article(
         body: RawText::Absent,
         tags: TagInput::Absent,
     };
-    let uid = require_actor(&headers, &app.secret, &guest)?;
+    let uid = require_actor(&headers, &app, &guest).await?;
     let obj = read_object(&body, "article")?;
     let (tags_kind, tags) = tag_parts(&obj);
     decide(
@@ -1119,7 +1112,7 @@ async fn get_article(
     headers: HeaderMap,
     Path(slug): Path<String>,
 ) -> Result<Response, ApiError> {
-    let viewer = viewer_id(&headers, &app.secret)?;
+    let viewer = viewer_id(&headers, &app).await?;
     if viewer > 0 {
         load_user(&app.pool, viewer).await?;
     }
@@ -1141,7 +1134,7 @@ async fn update_article(
         body: RawText::Absent,
         tags: TagInput::Absent,
     };
-    let uid = require_actor(&headers, &app.secret, &guest)?;
+    let uid = require_actor(&headers, &app, &guest).await?;
     let obj = read_object(&body, "article")?;
     let (tags_kind, tags) = tag_parts(&obj);
     load_user(&app.pool, uid).await?;
@@ -1226,7 +1219,7 @@ async fn delete_article(
     headers: HeaderMap,
     Path(slug): Path<String>,
 ) -> Result<Response, ApiError> {
-    let uid = require_actor(&headers, &app.secret, &Command::DeleteArticle)?;
+    let uid = require_actor(&headers, &app, &Command::DeleteArticle).await?;
     load_user(&app.pool, uid).await?;
     let found: Option<(i64, i64)> =
         sqlx::query_as("SELECT id, author_id FROM articles WHERE slug = $1")
@@ -1256,7 +1249,7 @@ async fn list_comments(
     headers: HeaderMap,
     Path(slug): Path<String>,
 ) -> Result<Response, ApiError> {
-    let viewer = viewer_id(&headers, &app.secret)?;
+    let viewer = viewer_id(&headers, &app).await?;
     if viewer > 0 {
         load_user(&app.pool, viewer).await?;
     }
@@ -1309,11 +1302,11 @@ async fn create_comment(
 ) -> Result<Response, ApiError> {
     let uid = require_actor(
         &headers,
-        &app.secret,
+        &app,
         &Command::CreateComment {
             body: RawText::Absent,
         },
-    )?;
+    ).await?;
     let obj = read_object(&body, "comment")?;
     let author = load_user(&app.pool, uid).await?;
     let article_id: Option<i64> = sqlx::query_scalar("SELECT id FROM articles WHERE slug = $1")
@@ -1371,7 +1364,7 @@ async fn delete_comment(
     headers: HeaderMap,
     Path((slug, comment_id)): Path<(String, String)>,
 ) -> Result<Response, ApiError> {
-    let uid = require_actor(&headers, &app.secret, &Command::DeleteComment)?;
+    let uid = require_actor(&headers, &app, &Command::DeleteComment).await?;
     let Ok(comment_id) = comment_id.parse::<i64>() else {
         return Err(api(StatusCode::UNPROCESSABLE_ENTITY, "comment", "is invalid"));
     };
@@ -1420,7 +1413,7 @@ async fn set_favorite(
     } else {
         Command::Unfavorite
     };
-    let uid = require_actor(headers, &app.secret, &cmd)?;
+    let uid = require_actor(headers, app, &cmd).await?;
     load_user(&app.pool, uid).await?;
     let found: Option<(i64, bool)> = sqlx::query_as(
         "SELECT a.id,
