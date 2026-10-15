@@ -5,6 +5,8 @@ start-from = ["policies", "pathclean::clean", "defaults::default_version", "defa
 
 [check]
 theorems = [
+  "rustfs_kernel.Properties.operator_key_presence_spec",
+  "rustfs_kernel.Properties.condition_key_reference_spec",
   "rustfs_kernel.Properties.statement_kms_actions_spec",
   "rustfs_kernel.Properties.statement_principal_match_spec",
   "rustfs_kernel.Properties.statement_kms_resources_spec",

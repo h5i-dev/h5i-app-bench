@@ -1,3 +1,4 @@
+import Verified.RustfsConditionKeys
 import Verified.RustfsKmsActions
 import Verified.RustfsPrincipal
 import Verified.RustfsKmsFilter
@@ -1528,5 +1529,18 @@ theorem principal_wildcard_spec (pattern account : Slice U8) :
 theorem statement_kms_actions_spec (actions : Slice acts.Action) (b : Bool)
     (h : stmts.all_kms actions = ok b) : b=true ↔ ∀ a ∈ actions.val, a.family=.Kms :=
   Verified.RustfsKmsActions.all_ok actions b h
+
+/-- Operator key presence includes request entries with empty value lists. -/
+theorem operator_key_presence_spec (c : condfuncs.Cond)
+    (values : alloc.vec.Vec (alloc.vec.Vec U8 × alloc.vec.Vec (alloc.vec.Vec U8)))
+    (b : Bool) (h : condfuncs.has_any_key_in c values = ok b) :
+    b=true ↔ Spec.OperatorKeyPresent c (Spec.RequestValueLists values.val) :=
+  Verified.RustfsConditionKeys.has_key_ok c values b h
+
+/-- Resource-selection key references range over all three condition groups. -/
+theorem condition_key_reference_spec (f : condfuncs.Functions) (needle : Slice U8)
+    (b : Bool) (h : condfuncs.references_key_name f needle = ok b) :
+    b=true ↔ Spec.FunctionsReference f needle.val :=
+  Verified.RustfsConditionKeys.functions_ok f needle b h
 
 end rustfs_kernel.Properties
