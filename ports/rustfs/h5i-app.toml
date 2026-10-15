@@ -5,6 +5,14 @@ start-from = ["policies", "pathclean::clean", "defaults::default_version", "defa
 
 [check]
 theorems = [
+  "rustfs_kernel.Properties.claim_lookup_first",
+  "rustfs_kernel.Properties.claim_role_arn_origin",
+  "rustfs_kernel.Properties.claim_service_policy_name",
+  "rustfs_kernel.Properties.claim_existing_tag_key",
+  "rustfs_kernel.Properties.claim_existing_tag_tree",
+  "rustfs_kernel.Properties.claim_tokens_nonempty",
+  "rustfs_kernel.Properties.claim_unique_membership",
+
   "rustfs_kernel.Properties.action_name_table_lookup",
   "rustfs_kernel.Properties.action_name_table_count",
   "rustfs_kernel.Properties.action_name_table_sizes",

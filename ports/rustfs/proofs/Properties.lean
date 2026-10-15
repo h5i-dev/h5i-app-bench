@@ -1,3 +1,5 @@
+import Verified.RustfsClaimTree
+import Verified.RustfsClaimUnique
 import Verified.RustfsActionTables
 import Verified.RustfsActionSets
 import Verified.RustfsConditionBinarySafety
@@ -558,5 +560,49 @@ theorem admin_action_name_validation (needle : Slice U8) (b : Bool)
     (h : actsets.admin_is_valid needle = ok b) :
     (b = true ↔ nats needle.val ∈ adminActionNames) := by
   exact rustfs_kernel.Verified.RustfsActionTables.admin_valid_ok needle b h
+
+
+/-- Claim lookup returns the first exact name match, or certifies absence. -/
+theorem claim_lookup_first (table : alloc.vec.Vec (alloc.vec.Vec U8 × claims.Value))
+    (needle : Slice U8) (o : Option Usize) (h : claims.find table needle = ok o) :
+    ClaimLookupResult table.val needle.val o := by
+  exact rustfs_kernel.Verified.RustfsClaimLookup.find_ok table needle o h
+
+/-- A returned role ARN is the string in the first roleArn entry. -/
+theorem claim_role_arn_origin (table : alloc.vec.Vec (alloc.vec.Vec U8 × claims.Value))
+    (v : alloc.vec.Vec U8) (h : claims.get_role_arn table = ok (some v)) :
+    ∃ i : Usize, ∃ hi : i.val < table.val.length,
+      FirstNamedClaim table.val table.val[i.val].1.val i.val ∧
+      nats table.val[i.val].1.val = lit "roleArn" ∧
+      table.val[i.val].2 = claims.Value.String v := by
+  exact rustfs_kernel.Verified.RustfsClaimLookup.role_arn_sound table v h
+
+/-- Service-account policies use the designated claim name. -/
+theorem claim_service_policy_name (v : alloc.vec.Vec U8)
+    (h : claims.iam_policy_claim_name_sa = ok v) : nats v.val = lit "sa-policy" := by
+  exact rustfs_kernel.Verified.RustfsClaimLookup.service_policy_name_ok v h
+
+/-- Existing-object tag recognition accepts exactly the supported key forms. -/
+theorem claim_existing_tag_key (key : Slice U8) (b : Bool)
+    (h : claims.is_existing_object_tag_condition_key key = ok b) :
+    (b = true ↔ ExistingTagKey (nats key.val)) := by
+  exact rustfs_kernel.Verified.RustfsClaimTags.tag_key_ok key b h
+
+/-- Tag detection is exact across nested JSON objects and arrays. -/
+theorem claim_existing_tag_tree (v : claims.Value) (b : Bool)
+    (h : claims.value_uses_existing_object_tag v = ok b) :
+    (b = true ↔ ExistingTagUse v) := by
+  exact rustfs_kernel.Verified.RustfsClaimTree.value_ok v b h
+
+/-- Splitting claim strings never introduces an empty policy token. -/
+theorem claim_tokens_nonempty (s : Slice U8) (out : alloc.vec.Vec (alloc.vec.Vec U8))
+    (h : claims.split_values s = ok out) : NonemptyClaimTokens out.val := by
+  exact rustfs_kernel.Verified.RustfsClaimTokens.split_nonempty s out h
+
+/-- Deduplication removes repetition while preserving exactly the input tokens. -/
+theorem claim_unique_membership (values : Slice (alloc.vec.Vec U8))
+    (out : alloc.vec.Vec (alloc.vec.Vec U8)) (h : claims.unique_values values = ok out) :
+    out.val.Nodup ∧ ∀ x, x ∈ out.val ↔ x ∈ values.val := by
+  exact rustfs_kernel.Verified.RustfsClaimUnique.unique_ok values out h
 
 end rustfs_kernel.Properties
