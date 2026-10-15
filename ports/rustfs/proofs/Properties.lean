@@ -1,3 +1,4 @@
+import Verified.RustfsAwsScan
 import Verified.RustfsAwsPasses
 import Verified.RustfsAwsResolution
 import Verified.RustfsExpansionModel
@@ -1584,5 +1585,16 @@ theorem policy_variable_rounds_spec (ctx : awsvars.VarContext) (depth : Usize)
     Verified.RustfsAwsPasses.texts out.val =
       Spec.ExpansionRounds pass (10-iteration.val) (Verified.RustfsAwsPasses.texts inputs.val) :=
   Verified.RustfsAwsPasses.fixpoint_ok ctx depth pass hn hs inputs iteration out h
+
+/-- A substitution pass preserves every byte when there is no placeholder introducer. -/
+theorem policy_variable_literal_pass_spec (ctx : awsvars.VarContext) (text : Slice U8)
+    (depth : Usize) (out : alloc.vec.Vec (alloc.vec.Vec U8))
+    (hm : Spec.HasPlaceholder (Spec.nats text.val)=false)
+    (h : awsvars.resolve_single_pass ctx text depth=ok out) :
+    out.val.map (fun v => Spec.nats v.val)=
+      Spec.ExpansionPass (Spec.ExpandVariables (Verified.RustfsAwsValues.context ctx) (depth.val+1))
+        (Verified.RustfsAwsValues.context ctx) (Spec.nats text.val) := by
+  rw [Spec.expansion_literal _ _ _ hm]
+  exact Verified.RustfsAwsScan.single_pass_literal_ok ctx text depth hm out h
 
 end rustfs_kernel.Properties
