@@ -5,6 +5,9 @@ start-from = ["policies", "pathclean::clean", "defaults::default_version", "defa
 
 [check]
 theorems = [
+  "rustfs_kernel.Properties.principal_values_normalization",
+  "rustfs_kernel.Properties.lazy_buffer_initialization",
+  "rustfs_kernel.Properties.pattern_prefix_exact",
   "rustfs_kernel.Properties.variable_substitution_terminates",
   "rustfs_kernel.Properties.variable_scan_progress",
   "rustfs_kernel.Properties.variable_pass_from_terminates",

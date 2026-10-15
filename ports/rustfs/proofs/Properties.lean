@@ -1,3 +1,5 @@
+import Verified.RustfsExtras
+import Verified.RustfsPatternPrefix
 import Verified.RustfsManagementViews
 import Verified.RustfsManagementDecisions
 import Verified.RustfsResourceSets
@@ -902,5 +904,24 @@ theorem metadata_version_validity (v : Slice U8) (out : core.result.Result Unit 
     (h : manage.version_is_valid v = ok out) :
     (out = .Ok () ↔ v.val = [] ∨ nats v.val = lit "2012-10-17") :=
   Verified.RustfsManagementViews.version_ok v out h
+
+
+/-- Principal normalization retains precisely the supplied values without duplicates. -/
+theorem principal_values_normalization (v : extras.PrincipalValues) (out : alloc.vec.Vec (alloc.vec.Vec U8))
+    (h : extras.principal_values_into_set v = ok out) :
+    out.val.Nodup ∧ ∀ x, x ∈ out.val ↔ x ∈ (match v with
+      | .Single s => [s]
+      | .Multiple vs => vs.val) :=
+  Verified.RustfsExtras.principal_set_ok v out h
+
+theorem lazy_buffer_initialization (source : Slice U8) :
+    ∃ out, extras.lazybuf_new source = ok out ∧ out.source = source ∧
+      out.buffer = none ∧ out.written.val = 0 :=
+  Verified.RustfsExtras.lazybuf_initial source
+
+/-- Prefix acceptance has a compatible prefix ending at a star or at the end of the text. -/
+theorem pattern_prefix_exact (p t : Slice U8) (b : Bool)
+    (h : extras.is_match_as_pattern_prefix p t = ok b) : (b = true ↔ PatternPrefix p.val t.val) :=
+  Verified.RustfsPatternPrefix.prefix_ok p t b h
 
 end rustfs_kernel.Properties
