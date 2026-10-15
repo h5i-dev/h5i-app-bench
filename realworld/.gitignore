@@ -8,3 +8,4 @@ dist/
 *.log
 .pytest_cache/
 *.tsbuildinfo
+.h5i/
