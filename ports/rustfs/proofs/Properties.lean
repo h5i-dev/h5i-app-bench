@@ -1,3 +1,4 @@
+import Verified.RustfsRequestTags
 import Verified.RustfsPolicyMerge
 import Verified.RustfsManagementTags
 import Verified.RustfsManagementEquality
@@ -1070,5 +1071,20 @@ theorem metadata_policy_merge (ps : Slice manage.Policy) (out : manage.Policy)
     out.id.val = [] ∧ out.version.val = FirstPolicyVersion ps.val ∧
       DeduplicatedStatements ((ps.val.map (fun p => p.statements.val)).flatten) out.statements.val :=
   Verified.RustfsPolicyMerge.merge_ok ps out h
+
+/-- Tag loading for a force-delete allow requires an explicit matching grant. -/
+theorem metadata_request_tag_grant (p : manage.Policy) (a : stmts.Args) (e : condfuncs.Env)
+    (h : manage.policy_needs_existing_object_tag_for_args p a e = ok true) :
+    ∃ st ∈ p.statements.val, FunctionsUseExistingTag st.conditions ∧
+      (st.effect = .Allow → IsForceDelete a.action →
+        ∃ x ∈ st.actions.val, acts.action_is_match_for_effect x a.action false = ok true) :=
+  Verified.RustfsRequestTags.policy_needs_sound p a e h
+
+/-- Bucket tag loading requires a tag-reading statement with a matching principal. -/
+theorem metadata_bucket_request_tag_principal (p : manage.BucketPolicy) (a : stmts.BucketPolicyArgs)
+    (h : manage.bucket_policy_needs_existing_object_tag_for_args p a = ok true) :
+    ∃ st ∈ p.statements.val, FunctionsUseExistingTag st.conditions ∧
+      stmts.principal_is_match st.principal a.account.deref = ok true :=
+  Verified.RustfsRequestTags.bucket_needs_sound p a h
 
 end rustfs_kernel.Properties

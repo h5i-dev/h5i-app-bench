@@ -5,6 +5,8 @@ start-from = ["policies", "pathclean::clean", "defaults::default_version", "defa
 
 [check]
 theorems = [
+  "rustfs_kernel.Properties.metadata_request_tag_grant",
+  "rustfs_kernel.Properties.metadata_bucket_request_tag_principal",
   "rustfs_kernel.Properties.metadata_statement_copy",
   "rustfs_kernel.Properties.metadata_append_statements",
   "rustfs_kernel.Properties.metadata_retained_statements",
