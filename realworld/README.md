@@ -22,7 +22,7 @@ sharing one PostgreSQL schema, plus a load benchmark.
 Every server uses:
 
 - PostgreSQL database `postgres://conduit:conduit@127.0.0.1:54329/conduit`
-- bcrypt cost **12** (`BCRYPT_COST`)
+- bcrypt cost **12**, a hard-coded constant in each server
 - JWT **HS256**, claim `sub` = user id, expiry 60 days
 - default secret `conduit-benchmark-secret` (`JWT_SECRET`)
 - header `Authorization: Token <jwt>`
@@ -80,7 +80,8 @@ the machine live under `/var/tmp` (`/var/tmp/go`, `/var/tmp/tools`).
 and k6 to CPUs 4–7, and writes raw JSON plus `bench/results/summary.md`.
 The load shape, production process settings, and kernel microbenchmark are
 in `bench/README.md`. The published run uses 10 s warmup, 30 s measure,
-3 repetitions, and concurrency 1, 16, 64, and 256.
+3 repetitions, and concurrency 1, 16, 64, and 256. Login then allows up to
+60 s for in-flight requests to finish. Other scenarios allow 15 s.
 
 ## Proofs
 

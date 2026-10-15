@@ -7,7 +7,7 @@ k6. The published configuration is:
 | --- | --- |
 | Load generator | k6 v2 at `/var/tmp/tools/k6` |
 | Warmup | 10 s, discarded |
-| Measure | 30 s, then up to 15 s graceful stop |
+| Measure | 30 s, then up to 15 s graceful stop (60 s for login) |
 | Repetitions | 3 |
 | Concurrency | 1, 16, 64, 256 virtual users |
 | Server CPUs | 0–3 (`taskset`) |
@@ -41,10 +41,12 @@ User 1's token is an HS256 JWT with `sub` = `1`, minted by the script.
 | `feed` | `GET /api/articles/feed?limit=20` with user 1's token |
 | `login` | `POST /api/users/login` for a rotating user |
 | `create` | `POST /api/articles` as user 1 |
-| `favorite` | `POST /api/articles/article-N/favorite` as user 1, N in 5001–10000 |
+| `favorite` | `POST /api/articles/article-N/favorite` as user 1 with body `{}`, N in 5001–10000 |
 | `mixed` | 50% list, 20% slug, 15% feed, 10% favorite, 5% create |
 
-Login is its own scenario. bcrypt cost 12 dominates that row.
+Login is its own scenario. bcrypt cost 12 dominates that row. k6's
+requests/s uses the whole elapsed window, including the graceful stop while
+in-flight logins finish.
 
 ## Results
 
