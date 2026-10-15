@@ -5,6 +5,24 @@ start-from = ["policies", "pathclean::clean", "defaults::default_version", "defa
 
 [check]
 theorems = [
+  "rustfs_kernel.Properties.action_name_table_lookup",
+  "rustfs_kernel.Properties.action_name_table_count",
+  "rustfs_kernel.Properties.action_name_table_sizes",
+  "rustfs_kernel.Properties.action_name_table_distinct",
+  "rustfs_kernel.Properties.action_name_table_prefixes",
+  "rustfs_kernel.Properties.action_name_table_membership",
+  "rustfs_kernel.Properties.admin_action_name_validation",
+
+  "rustfs_kernel.Properties.action_set_membership",
+  "rustfs_kernel.Properties.action_set_containment",
+  "rustfs_kernel.Properties.action_set_equality",
+  "rustfs_kernel.Properties.action_set_unique_insertion",
+  "rustfs_kernel.Properties.action_set_empty",
+  "rustfs_kernel.Properties.action_set_slice",
+  "rustfs_kernel.Properties.action_set_validation_total",
+  "rustfs_kernel.Properties.action_grant_match",
+  "rustfs_kernel.Properties.action_set_grant_match",
+
   "rustfs_kernel.Properties.explicit_deny_wins",
   "rustfs_kernel.Properties.allow_needs_allow_statement",
   "rustfs_kernel.Properties.owner_allowed_unless_denied",

@@ -85,4 +85,17 @@ def BPStatementOK (st : stmts.BPStatement) : Prop :=
   (st.resources.val ≠ [] ↔ st.not_resources.val = []) ∧
   (∀ r ∈ st.resources.val ++ st.not_resources.val, resourceOK r)
 
+/-- Positive action matching combines wildcard names with the explicit-grant
+requirement for the two force-delete actions. -/
+def ActionGrantMatches (pattern requested : acts.Action) : Prop :=
+  globSpec (nats pattern.name.val) (nats requested.name.val) = true ∧
+  ¬ (pattern.family = .S3 ∧ nats pattern.name.val = lit "s3:*" ∧ IsForceDelete requested)
+
+/-- A set grants an action through a matching entry or the version-read
+compatibility rule. -/
+def ActionSetGrantMatches (entries : List acts.Action) (requested : acts.Action) : Prop :=
+  ∃ pattern ∈ entries, ActionGrantMatches pattern requested ∨
+    (pattern.family = .S3 ∧ nats pattern.name.val = lit "s3:GetObjectVersion" ∧
+     requested.family = .S3 ∧ nats requested.name.val = lit "s3:GetObject")
+
 end rustfs_kernel.Spec

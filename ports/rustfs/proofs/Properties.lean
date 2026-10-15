@@ -1,3 +1,5 @@
+import Verified.RustfsActionTables
+import Verified.RustfsActionSets
 import Verified.RustfsConditionBinarySafety
 import Verified.RustfsBinaryEvaluation
 import Verified.RustfsBinaryConstruction
@@ -470,5 +472,91 @@ theorem functions_binary_acceptance_sound (f : conddata.Functions)
     (∀ c ∈ f.for_all_values.val, BinaryConditionSafe values c) ∧
     (∀ c ∈ f.for_normal.val, BinaryConditionSafe values c) := by
   exact rustfs_kernel.Verified.RustfsConditionBinarySafety.functions_sound f values ctx env h
+
+/-- Membership uses both the family and the action name. -/
+theorem action_set_membership (xs : Slice acts.Action) (x : acts.Action) (b : Bool)
+    (h : actsets.member xs x = ok b) : (b = true ↔ x ∈ xs.val) := by
+  exact rustfs_kernel.Verified.RustfsActionSets.member_ok xs x b h
+
+/-- Coverage is inclusion of members, independent of order and duplicates. -/
+theorem action_set_containment (xs ys : Slice acts.Action) (b : Bool)
+    (h : actsets.covers xs ys = ok b) :
+    (b = true ↔ ∀ x ∈ xs.val, x ∈ ys.val) := by
+  exact rustfs_kernel.Verified.RustfsActionSets.covers_ok xs ys b h
+
+/-- Equality is extensional equality of action sets. -/
+theorem action_set_equality (xs ys : Slice acts.Action) (b : Bool)
+    (h : actsets.eq xs ys = ok b) :
+    (b = true ↔ ∀ x, x ∈ xs.val ↔ x ∈ ys.val) := by
+  exact rustfs_kernel.Verified.RustfsActionSets.eq_ok xs ys b h
+
+/-- Insertion preserves existing members and appends only an absent action. -/
+theorem action_set_unique_insertion (xs : alloc.vec.Vec acts.Action) (x : acts.Action)
+    (ys : alloc.vec.Vec acts.Action) (h : actsets.push_unique xs x = ok ys) :
+    ys.val = if x ∈ xs.val then xs.val else xs.val ++ [x] := by
+  exact rustfs_kernel.Verified.RustfsActionSets.push_unique_ok xs x ys h
+
+/-- Emptiness means that the set contains no entries. -/
+theorem action_set_empty (xs : Slice acts.Action) :
+    actsets.is_empty xs = ok (decide (xs.val = [])) := by
+  exact rustfs_kernel.Verified.RustfsActionSets.empty_ok xs
+
+/-- The action-set slice preserves all entries. -/
+theorem action_set_slice (xs : Slice acts.Action) : actsets.as_slice xs = ok xs := by
+  exact rustfs_kernel.Verified.RustfsActionSets.slice_ok xs
+
+/-- Action-set validation accepts every represented action list. -/
+theorem action_set_validation_total (xs : Slice acts.Action) : actsets.is_valid xs = ok true := by
+  exact rustfs_kernel.Verified.RustfsActionSets.validation_total xs
+
+/-- Wildcard action matching enforces the explicit-grant requirement. -/
+theorem action_grant_match (pattern requested : acts.Action) (b : Bool)
+    (h : actsets.action_is_match pattern requested = ok b) :
+    (b = true ↔ ActionGrantMatches pattern requested) := by
+  exact rustfs_kernel.Verified.RustfsActionSets.action_match_ok pattern requested b h
+
+/-- Set matching follows entry matching and version-read compatibility. -/
+theorem action_set_grant_match (xs : Slice acts.Action) (requested : acts.Action) (b : Bool)
+    (h : actsets.set_is_match xs requested = ok b) :
+    (b = true ↔ ActionSetGrantMatches xs.val requested) := by
+  exact rustfs_kernel.Verified.RustfsActionSets.set_match_ok xs requested b h
+
+/-- Data-table characterization: action lookup returns the indexed name or empty out of range. -/
+theorem action_name_table_lookup (f : acts.Family) (i : Usize) (v : alloc.vec.Vec U8)
+    (h : actsets.action_name f i = ok v) :
+    nats v.val = ((actionNames f)[i.val]?).getD [] := by
+  exact rustfs_kernel.Verified.RustfsActionTables.action_name_ok f i v h
+
+/-- Data-table characterization: reported action counts equal table lengths. -/
+theorem action_name_table_count (f : acts.Family) (n : Usize) (h : actsets.action_count f = ok n) :
+    n.val = (actionNames f).length := by
+  exact rustfs_kernel.Verified.RustfsActionTables.count_ok f n h
+
+/-- Data-table characterization: the four family table sizes. -/
+theorem action_name_table_sizes :
+    (s3ActionNames.length = 71 ∧ adminActionNames.length = 91 ∧
+      stsActionNames.length = 2 ∧ kmsActionNames.length = 18) := by
+  exact rustfs_kernel.Verified.RustfsActionTables.table_counts
+
+/-- Data-table structure: every family table has distinct entries. -/
+theorem action_name_table_distinct (f : acts.Family) : (actionNames f).Nodup := by
+  exact rustfs_kernel.Verified.RustfsActionTables.table_distinct f
+
+/-- Data-table structure: all names are nonempty and carry the family prefix. -/
+theorem action_name_table_prefixes (f : acts.Family) :
+    ∀ n ∈ actionNames f, familyPrefix f <+: n ∧ n ≠ [] := by
+  exact rustfs_kernel.Verified.RustfsActionTables.table_prefixes f
+
+/-- Name recognition is exact membership in the selected family table. -/
+theorem action_name_table_membership (f : acts.Family) (needle : Slice U8) (b : Bool)
+    (h : actsets.contains_name f needle = ok b) :
+    (b = true ↔ nats needle.val ∈ actionNames f) := by
+  exact rustfs_kernel.Verified.RustfsActionTables.contains_name_ok f needle b h
+
+/-- Admin name validation accepts exactly the Admin table entries. -/
+theorem admin_action_name_validation (needle : Slice U8) (b : Bool)
+    (h : actsets.admin_is_valid needle = ok b) :
+    (b = true ↔ nats needle.val ∈ adminActionNames) := by
+  exact rustfs_kernel.Verified.RustfsActionTables.admin_valid_ok needle b h
 
 end rustfs_kernel.Properties

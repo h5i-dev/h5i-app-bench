@@ -18,4 +18,4 @@ lean_lib Verified where
   globs := #[.submodules `Verified]
 
 @[default_target] lean_lib Proofs where
-  roots := #[`Spec, `SpecKernel, `SpecCondData, `Properties]
+  roots := #[`Spec, `SpecKernel, `SpecCondData, `SpecActionTables, `Properties]
