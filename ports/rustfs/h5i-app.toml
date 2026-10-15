@@ -65,4 +65,9 @@ theorems = [
 
   "rustfs_kernel.Properties.base64_decoding_sound",
   "rustfs_kernel.Properties.base64_decoding_lengths",
+  "rustfs_kernel.Properties.binary_values_construction_sound",
+  "rustfs_kernel.Properties.binary_single_construction_sound",
+  "rustfs_kernel.Properties.binary_request_match_sound",
+  "rustfs_kernel.Properties.condition_lookup_payload_sound",
+  "rustfs_kernel.Properties.binary_condition_evaluation_sound",
 ]

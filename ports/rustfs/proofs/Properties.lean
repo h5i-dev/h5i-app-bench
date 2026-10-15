@@ -1,3 +1,6 @@
+import Verified.RustfsBinaryEvaluation
+import Verified.RustfsBinaryConstruction
+import Verified.RustfsBinaryMatch
 import Verified.RustfsBase64
 import Verified.RustfsValids
 import Verified.RustfsCondData
@@ -402,5 +405,42 @@ theorem base64_decoding_lengths (encoded : Slice U8) (v : alloc.vec.Vec U8)
       3 * (encoded.val.length / 4) ≤ v.val.length + 2 := by
   have hl := (rustfs_kernel.Verified.RustfsBase64.decode_sound encoded v h).lengths
   simpa only [nats, List.length_map] using hl
+
+/-- Successful binary construction preserves inputs and their decoded order. -/
+theorem binary_values_construction_sound (es : alloc.vec.Vec (alloc.vec.Vec U8))
+    (v : conddata.BinaryFuncValue)
+    (h : conddata.binary_from_encoded_values es = ok (.Ok v)) :
+    v.encoded = es ∧ List.Forall₂ BinaryValueEncoding es.val v.decoded.val := by
+  exact rustfs_kernel.Verified.RustfsBinaryConstruction.from_values_ok es v h
+
+/-- A single-value constructor retains precisely that encoded value. -/
+theorem binary_single_construction_sound (es : Slice U8) (v : conddata.BinaryFuncValue)
+    (h : conddata.binary_new es = ok (.Ok v)) :
+    v.encoded.val.map (fun e => e.val) = [es.val] ∧
+      List.Forall₂ BinaryValueEncoding v.encoded.val v.decoded.val := by
+  exact rustfs_kernel.Verified.RustfsBinaryConstruction.new_ok es v h
+
+/-- A true binary match validates every request and matches an expected decoding. -/
+theorem binary_request_match_sound (f : conddata.BinaryFuncValue)
+    (requests : Slice (alloc.vec.Vec U8)) (b : Bool)
+    (h : conddata.binary_key_matches f requests = ok b) (ht : b = true) :
+    (∀ e ∈ requests.val, ValidBinaryRequest e) ∧
+      ∃ e ∈ requests.val, MatchingBinaryRequest f e := by
+  exact rustfs_kernel.Verified.RustfsBinaryMatch.match_sound f requests b h ht
+
+/-- Returned request data belongs to an entry with the requested name. -/
+theorem condition_lookup_payload_sound
+    (values : alloc.vec.Vec (alloc.vec.Vec U8 × alloc.vec.Vec (alloc.vec.Vec U8)))
+    (needle : Slice U8) (v : alloc.vec.Vec (alloc.vec.Vec U8))
+    (h : condfuncs.get_value values needle = ok (some v)) :
+    ∃ e ∈ values.val, e.1.val = needle.val ∧ e.2 = v := by
+  exact rustfs_kernel.Verified.RustfsConditionLookupContents.get_contents_ok values needle v h
+
+/-- Every entry of an accepted binary condition has valid named matching request data. -/
+theorem binary_condition_evaluation_sound (inner : conddata.InnerFunc conddata.BinaryFuncValue)
+    (values : alloc.vec.Vec (alloc.vec.Vec U8 × alloc.vec.Vec (alloc.vec.Vec U8)))
+    (b : Bool) (h : conddata.binary_evaluate inner values = ok b) (ht : b = true) :
+    ∀ e ∈ inner.entries.val, BinaryEntrySatisfied values e := by
+  exact rustfs_kernel.Verified.RustfsBinaryEvaluation.evaluate_sound inner values b h ht
 
 end rustfs_kernel.Properties

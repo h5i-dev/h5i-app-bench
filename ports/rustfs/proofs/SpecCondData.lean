@@ -223,4 +223,23 @@ inductive Base64Encoding : List Nat → List (BitVec 8) → Prop
       Base64Symbol z c.toNat → c &&& 3 = 0 →
       Base64Encoding (es ++ [x, y, z, 61])
         (ds ++ [(a <<< 2) ||| (b >>> 4), (b <<< 4) ||| (c >>> 2)])
+/-- Each binary condition value is paired with its canonical encoded input. -/
+def BinaryValueEncoding (e d : alloc.vec.Vec U8) : Prop :=
+  Base64Encoding (nats e.val) (d.val.map (·.bv))
+
+/-- A request value has a canonical Base64 decoding. -/
+def ValidBinaryRequest (e : alloc.vec.Vec U8) : Prop :=
+  ∃ ds, Base64Encoding (nats e.val) ds
+
+/-- A request value decodes to one of the expected byte strings. -/
+def MatchingBinaryRequest (f : conddata.BinaryFuncValue) (e : alloc.vec.Vec U8) : Prop :=
+  ∃ d ∈ f.decoded.val, Base64Encoding (nats e.val) (d.val.map (·.bv))
+
+/-- Each binary condition entry has named request data, all valid, including a match. -/
+def BinaryEntrySatisfied
+    (values : alloc.vec.Vec (alloc.vec.Vec U8 × alloc.vec.Vec (alloc.vec.Vec U8)))
+    (e : conddata.FuncKeyValue conddata.BinaryFuncValue) : Prop :=
+  ∃ kv ∈ values.val, kv.1.val = LookupName e.key ∧
+    (∀ req ∈ kv.2.val, ValidBinaryRequest req) ∧
+    ∃ req ∈ kv.2.val, MatchingBinaryRequest e.values req
 end rustfs_kernel.Spec
