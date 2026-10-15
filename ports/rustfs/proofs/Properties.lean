@@ -1,3 +1,6 @@
+import Verified.RustfsAwsPasses
+import Verified.RustfsAwsResolution
+import Verified.RustfsExpansionModel
 import Verified.RustfsConditionKeys
 import Verified.RustfsKmsActions
 import Verified.RustfsPrincipal
@@ -1542,5 +1545,44 @@ theorem condition_key_reference_spec (f : condfuncs.Functions) (needle : Slice U
     (b : Bool) (h : condfuncs.references_key_name f needle = ok b) :
     b=true ↔ Spec.FunctionsReference f needle.val :=
   Verified.RustfsConditionKeys.functions_ok f needle b h
+
+/-- Collecting single-pass alternatives preserves input and alternative order.
+The change flag records whether any input has alternatives other than itself. -/
+theorem policy_variable_pass_collection_spec (ctx : awsvars.VarContext) (depth : Usize)
+    (pass : List Nat → List (List Nat)) (hn : ∀ text, pass text ≠ [])
+    (hs : ∀ (text : Slice U8) (result : alloc.vec.Vec (alloc.vec.Vec U8)),
+      awsvars.resolve_single_pass ctx text depth=ok result →
+        Verified.RustfsAwsPasses.texts result.val=pass (Spec.nats text.val))
+    (inputs : Slice (alloc.vec.Vec U8)) (offset : Usize)
+    (acc : alloc.vec.Vec (alloc.vec.Vec U8)) (changed : Bool)
+    (out : alloc.vec.Vec (alloc.vec.Vec U8) × Bool)
+    (h : awsvars.pass_all ctx inputs offset acc changed depth=ok out) :
+    Verified.RustfsAwsPasses.texts out.1.val = Verified.RustfsAwsPasses.texts acc.val ++
+      ((Verified.RustfsAwsPasses.texts (inputs.val.drop offset.val)).flatMap pass) ∧
+    out.2 = (changed || (Verified.RustfsAwsPasses.texts (inputs.val.drop offset.val)).any
+      (fun text => decide (pass text ≠ [text]))) :=
+  Verified.RustfsAwsPasses.pass_all_ok ctx depth pass hn hs inputs offset acc changed out h
+
+/-- Reaching nesting depth ten leaves the input as its sole expansion. -/
+theorem policy_variable_depth_cap_spec (ctx : awsvars.VarContext) (text : Slice U8)
+    (depth : Usize) (out : alloc.vec.Vec (alloc.vec.Vec U8)) (hd : 10 ≤ depth.val)
+    (h : awsvars.resolve_aws_variables_with_depth ctx text depth=ok out) :
+    out.val.map (fun v => Spec.nats v.val)=
+      Spec.ExpandVariables (Verified.RustfsAwsValues.context ctx) depth.val (Spec.nats text.val) :=
+  Verified.RustfsAwsResolution.depth_cap_ok ctx text depth out hd h
+
+/-- Bounded expansion rounds concatenate alternatives and retain first occurrences.
+The single-pass premise supplies the per-input expansion semantics. -/
+theorem policy_variable_rounds_spec (ctx : awsvars.VarContext) (depth : Usize)
+    (pass : List Nat → List (List Nat)) (hn : ∀ text, pass text ≠ [])
+    (hs : ∀ (text : Slice U8) (result : alloc.vec.Vec (alloc.vec.Vec U8)),
+      awsvars.resolve_single_pass ctx text depth=ok result →
+        Verified.RustfsAwsPasses.texts result.val=pass (Spec.nats text.val))
+    (inputs : alloc.vec.Vec (alloc.vec.Vec U8)) (iteration : Usize)
+    (out : alloc.vec.Vec (alloc.vec.Vec U8))
+    (h : awsvars.fixpoint ctx inputs iteration depth=ok out) :
+    Verified.RustfsAwsPasses.texts out.val =
+      Spec.ExpansionRounds pass (10-iteration.val) (Verified.RustfsAwsPasses.texts inputs.val) :=
+  Verified.RustfsAwsPasses.fixpoint_ok ctx depth pass hn hs inputs iteration out h
 
 end rustfs_kernel.Properties
