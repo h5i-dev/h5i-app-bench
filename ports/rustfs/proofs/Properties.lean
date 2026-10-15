@@ -1,3 +1,4 @@
+import Verified.RustfsDocuments
 import Verified.RustfsVariableScalars
 import Verified.RustfsVariableIdentity
 import Verified.RustfsVariablePrincipal
@@ -777,5 +778,28 @@ theorem variable_fixpoint_terminates (ctx : awsvars.VarContext) (depth : Usize)
     Finishes (awsvars.fixpoint ctx results iteration depth) (fun _ => True) := by
   exact fixpoint_fin ctx depth (fun s d _ => depth_fin ctx s d) results iteration
 end
+
+/-- A successful update increments the revision and retains the original creation time. -/
+theorem document_update_revision (d : docdata.PolicyDoc) (p : manage.Policy) (t : docdata.Timestamp)
+    (out : docdata.PolicyDoc) (h : docdata.update_at d p t = ok out) :
+    out.version.val = d.version.val + 1 ∧ out.policy = p ∧
+    out.update_date = some t ∧ out.create_date = d.create_date.orElse (fun _ => some t) :=
+  Verified.RustfsDocuments.update_ok d p t out h
+
+theorem document_new_initialization (p : manage.Policy) (t : docdata.Timestamp) :
+    ∃ out, docdata.new_at p t = ok out ∧ out.version.val = 1 ∧ out.policy = p ∧
+      out.create_date = some t ∧ out.update_date = some t :=
+  Verified.RustfsDocuments.new_ok p t
+
+theorem document_policy_initialization (p : manage.Policy) :
+    ∃ out, docdata.default_policy p = ok out ∧ out.version.val = 1 ∧ out.policy = p ∧
+      out.create_date = none ∧ out.update_date = none :=
+  Verified.RustfsDocuments.default_policy_ok p
+
+theorem document_default_empty :
+    ∃ out, docdata.default_doc = ok out ∧ out.version.val = 0 ∧
+      out.policy.id.val = [] ∧ out.policy.version.val = [] ∧ out.policy.statements.val = [] ∧
+      out.create_date = none ∧ out.update_date = none :=
+  Verified.RustfsDocuments.default_doc_ok
 
 end rustfs_kernel.Properties
