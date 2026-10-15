@@ -1,3 +1,4 @@
+import Verified.RustfsUnicodeTrim
 import Verified.RustfsUnicodeAppend
 import Verified.RustfsUnicodeDecode
 import Verified.RustfsUnicodeInterval
@@ -1223,5 +1224,11 @@ theorem unicode_decoding_progress (s : Slice U8) (i : Usize) (out : U32 × Usize
     (h : unicode.scalar_at s i = ok out) :
     i.val < out.2.val ∧ out.2.val ≤ s.val.length ∧ out.2.val ≤ i.val + 4 :=
   Verified.RustfsUnicodeDecode.scalar_advances s i out h
+
+/-- Trimming preserves a contiguous segment of the original byte sequence. -/
+theorem unicode_trim_segment (s : Slice U8) (out : alloc.vec.Vec U8)
+    (h : unicode.trim s = ok out) :
+    ∃ a b : Nat, out.val = (s.val.take b).drop a :=
+  Verified.RustfsUnicodeTrim.trim_segment s out h
 
 end rustfs_kernel.Properties
