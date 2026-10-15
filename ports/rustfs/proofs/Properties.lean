@@ -1,3 +1,4 @@
+import Verified.RustfsStatementSkips
 import Verified.RustfsStatementResources
 import Verified.RustfsStatementActions
 import Verified.RustfsReplace
@@ -1412,5 +1413,16 @@ theorem statement_resource_bytes_spec (a : acts.Action) (bucket object : Slice U
     (h : stmts.build_resource a bucket object bucketOnly = ok out) :
     out.val = RequestResource a bucket.val object.val bucketOnly :=
   Verified.RustfsStatementResources.build_ok a bucket object bucketOnly out h
+
+/-- Administrative table operations are exactly the twenty names in the table. -/
+theorem administrative_table_actions_spec (a : acts.Action) (b : Bool)
+    (h : acts.is_table_resource_scoped a = ok b) :
+    b=true ↔ Spec.TableResourceAction a := Verified.RustfsStatementSkips.table_ok a b h
+
+/-- Resource matching is skipped exactly for the stated STS and administrative cases. -/
+theorem statement_resource_skip_spec (st : stmts.Statement) (args : stmts.Args) (b : Bool)
+    (h : stmts.skips_resource_match st args = ok b) :
+    b=true ↔ Spec.SkipResourceMatch st.actions.val args.action :=
+  Verified.RustfsStatementSkips.skip_ok st args b h
 
 end rustfs_kernel.Properties
