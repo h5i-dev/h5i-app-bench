@@ -357,4 +357,23 @@ theorem resume_skip_placeholder (inner : List Nat → List (List Nat)) (c : AwsV
     have hn : pos+2+(closing+1)=pos+closing+3 := by omega
     rw [hn]
   rw [he]
+ theorem contains_marker_ok (text marker : Slice U8) (b : Bool)
+    (hm : marker.val=[36#u8,123#u8]) (h : bytes.contains text marker=ok b) :
+    b=HasPlaceholder (nats text.val) := by
+  have hc := RustfsBytes.contains_ok text marker b h
+  rw [hm] at hc
+  have hn : b=false ↔ HasPlaceholder (nats text.val)=false := by
+    rw [placeholder_false_iff]
+    constructor
+    · intro hb k hk
+      have ho := (marker_occurrence_iff text.val k).mpr hk
+      have ht := hc.mpr ⟨k,ho⟩
+      simp [hb] at ht
+    · intro hn
+      cases hb : b with
+      | false => rfl
+      | true =>
+        obtain ⟨k,hk⟩ := hc.mp hb
+        exact False.elim (hn k ((marker_occurrence_iff text.val k).mp hk))
+  cases b <;> cases hh : HasPlaceholder (nats text.val) <;> simp_all
 end rustfs_kernel.Verified.RustfsAwsScan

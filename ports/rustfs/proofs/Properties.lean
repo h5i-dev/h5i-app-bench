@@ -1,3 +1,4 @@
+import Verified.RustfsAwsLayout
 import Verified.RustfsAwsMeaning
 import Verified.RustfsAwsScan
 import Verified.RustfsAwsPasses
@@ -1649,5 +1650,47 @@ theorem policy_variable_spliced_alternatives_spec
         replacements.val.flatMap (Verified.RustfsAwsMeaning.pendingMeaning inner ctx) ++
           (inputs.val.drop (idx.val+1)).flatMap (Verified.RustfsAwsMeaning.pendingMeaning inner ctx) :=
   Verified.RustfsAwsMeaning.splice_meaning_ok inner ctx inputs replacements idx out hi h
+
+/-- A balanced placeholder is replaced by the ordered alternatives of its resolved values. -/
+theorem policy_variable_balanced_replacement_spec (inner : List Nat → List (List Nat)) (c : AwsValueContext)
+    (text : List U8) (start pos closing : Nat)
+    (hf : FirstOccurrence text [36#u8,123#u8] start (some pos))
+    (hc : ClosingTail (nats (text.drop (pos+2))) 1=(closing,0))
+    (pre post : Slice U8) (values : Slice (alloc.vec.Vec U8)) (offset : Usize)
+    (hp : pre.val=text.take pos) (hs : post.val=text.drop (pos+closing+3))
+    (ho : offset.val=pos)
+    (hr : PlaceholderAlternatives inner c ((nats (text.drop (pos+2))).take closing)
+      ((36::123::nats (text.drop (pos+2))).take (closing+3))=
+        values.val.map (fun value => nats value.val))
+    (results : Slice awsvars.Pending) (idx : Usize) (new out : alloc.vec.Vec awsvars.Pending)
+    (hi : idx.val ≤ results.val.length)
+    (hw : awsvars.wrap_all pre values post offset=ok new)
+    (hsplice : awsvars.splice results idx new.slice=ok out) :
+    out.val.take idx.val=results.val.take idx.val ∧
+      (out.val.drop idx.val).flatMap (Verified.RustfsAwsMeaning.pendingMeaning inner c)=
+        ResumeAlternatives inner c (nats text) start ++
+          (results.val.drop (idx.val+1)).flatMap (Verified.RustfsAwsMeaning.pendingMeaning inner c) :=
+  Verified.RustfsAwsMeaning.wrapped_scan_ok inner c text start pos closing hf hc pre post values offset hp hs ho hr results idx new out hi hw hsplice
+
+/-- An empty resolved value removes the placeholder and resumes at its prefix position. -/
+theorem policy_variable_empty_replacement_spec (inner : List Nat → List (List Nat)) (c : AwsValueContext)
+    (text : List U8) (start pos closing : Nat)
+    (hf : FirstOccurrence text [36#u8,123#u8] start (some pos))
+    (hc : ClosingTail (nats (text.drop (pos+2))) 1=(closing,0))
+    (pre post : Slice U8) (offset : Usize)
+    (hp : pre.val=text.take pos) (hs : post.val=text.drop (pos+closing+3))
+    (ho : offset.val=pos)
+    (hr : PlaceholderAlternatives inner c ((nats (text.drop (pos+2))).take closing)
+      ((36::123::nats (text.drop (pos+2))).take (closing+3))=[[]])
+    (results : Slice awsvars.Pending) (idx : Usize) (v : alloc.vec.Vec U8)
+    (new out : alloc.vec.Vec awsvars.Pending) (hi : idx.val ≤ results.val.length)
+    (hconcat : bytes.concat pre post=ok v)
+    (hpush : (alloc.vec.Vec.new awsvars.Pending).push {text:=v,resume:=offset}=ok new)
+    (hsplice : awsvars.splice results idx new.slice=ok out) :
+    out.val.take idx.val=results.val.take idx.val ∧
+      (out.val.drop idx.val).flatMap (Verified.RustfsAwsMeaning.pendingMeaning inner c)=
+        ResumeAlternatives inner c (nats text) start ++
+          (results.val.drop (idx.val+1)).flatMap (Verified.RustfsAwsMeaning.pendingMeaning inner c) :=
+  Verified.RustfsAwsMeaning.empty_scan_ok inner c text start pos closing hf hc pre post offset hp hs ho hr results idx v new out hi hconcat hpush hsplice
 
 end rustfs_kernel.Properties
