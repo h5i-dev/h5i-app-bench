@@ -19,3 +19,6 @@ mod validation;
 
 #[cfg(test)]
 mod share;
+
+#[cfg(test)]
+mod subjectgroup;

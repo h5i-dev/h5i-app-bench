@@ -74,6 +74,8 @@ trap 'rm -rf "$tmp"' EXIT
   --start-from oxicloud_kernel::share::created_at \
   --start-from oxicloud_kernel::share::created_by \
   --start-from oxicloud_kernel::share::access_count \
+  --start-from oxicloud_kernel::subjectgroup::validate_name \
+  --start-from oxicloud_kernel::subjectgroup::is_immutable \
   --dest-file "$tmp/oxicloud_kernel.llbc")
 mkdir -p "$root/ports/oxicloud/proofs/generated"
 aeneas -backend lean "$tmp/oxicloud_kernel.llbc" -dest "$root/ports/oxicloud/proofs/generated"

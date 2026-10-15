@@ -203,4 +203,24 @@ def ShareAccessCounted (before after : share.Share) : Prop :=
   after.access_count.val = before.access_count.val + 1 ∧
   { after with access_count := before.access_count } = before
 
+/-- Subject names form a bounded ASCII namespace with an alphanumeric initial byte. -/
+def GroupAlphanumeric (b : U8) : Prop :=
+  (97 ≤ b.val ∧ b.val ≤ 122) ∨ (65 ≤ b.val ∧ b.val ≤ 90) ∨ (48 ≤ b.val ∧ b.val ≤ 57)
+def GroupNameByte (b : U8) : Prop :=
+  GroupAlphanumeric b ∨ b.val = 46 ∨ b.val = 45 ∨ b.val = 95
+def GroupNameStart (raw : List U8) : Prop :=
+  ∃ b, raw[0]? = some b ∧ GroupAlphanumeric b
+def ValidGroupName (raw : List U8) : Prop :=
+  1 ≤ raw.length ∧ raw.length ≤ 64 ∧ GroupNameStart raw ∧ ∀ b ∈ raw, GroupNameByte b
+/-- Typed rejection reasons retain length, initial-byte, and alphabet precedence. -/
+def GroupNameDecision (raw : List U8)
+    (r : core.result.Result Unit subjectgroup.NameError) : Prop :=
+  match r with
+  | .Ok _ => ValidGroupName raw
+  | .Err .Empty => raw.length = 0
+  | .Err .TooLong => 1 ≤ raw.length ∧ 64 < raw.length
+  | .Err .InvalidStart => 1 ≤ raw.length ∧ raw.length ≤ 64 ∧ ¬ GroupNameStart raw
+  | .Err .InvalidCharacter => 1 ≤ raw.length ∧ raw.length ≤ 64 ∧
+      GroupNameStart raw ∧ ¬ (∀ b ∈ raw, GroupNameByte b)
+
 end oxicloud_kernel.SpecKernel

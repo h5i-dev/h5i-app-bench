@@ -1,3 +1,4 @@
+import Verified.OxicloudSubjectGroup
 import Verified.OxicloudShare
 import Verified.OxicloudValidation
 import Verified.OxicloudSession
@@ -381,5 +382,24 @@ theorem share_password_required (s : share.Share) (r : Bool) (h : share.has_pass
 theorem share_access_accounting (s r : share.Share) (h : share.increment_access_count s = ok r) :
     SpecKernel.ShareAccessCounted s r :=
   Verified.OxicloudShare.access_count_ok s r h
+
+/-- Every accepted group name belongs to the bounded ASCII principal namespace. -/
+theorem subject_group_namespace (raw : Slice U8)
+    (r : core.result.Result Unit subjectgroup.NameError)
+    (h : subjectgroup.validate_name raw = ok r) :
+    (r = .Ok () ↔ SpecKernel.ValidGroupName raw.val) :=
+  Verified.OxicloudSubjectGroup.validation_exact raw r h
+
+/-- Rejection reasons distinguish length, initial-byte, and subsequent alphabet constraints. -/
+theorem subject_group_validation_reasons (raw : Slice U8)
+    (r : core.result.Result Unit subjectgroup.NameError)
+    (h : subjectgroup.validate_name raw = ok r) : SpecKernel.GroupNameDecision raw.val r :=
+  Verified.OxicloudSubjectGroup.validation_ok raw r h
+
+/-- Virtual groups are immutable regardless of their name, description, or timestamps. -/
+theorem virtual_group_mutation_policy (group : subjectgroup.SubjectGroup) (r : Bool)
+    (h : subjectgroup.is_immutable group = ok r) :
+    (r = true ↔ group.is_virtual = true) :=
+  Verified.OxicloudSubjectGroup.immutability_ok group r h
 
 end oxicloud_kernel.Properties

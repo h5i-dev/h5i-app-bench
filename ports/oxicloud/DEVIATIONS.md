@@ -146,3 +146,17 @@ and the external-sharing guard retains both principal kind and external flag.
 - The access counter retains checked integer addition in the kernel and differential
   tests; extraction models an overflowing increment as failure. Clock and randomness
   in share creation and expiry checks remain in the shell.
+
+### Subject-group namespace and virtual groups
+
+- UUIDs use their complete `u128` value; text uses UTF-8 bytes, timestamps use
+  the existing seconds/nanoseconds transport, and member tags retain their UUID.
+  The well-known Internal UUID and nesting bound retain their pinned values.
+- Name validation accepts precisely the upstream ASCII namespace and preserves
+  byte-length bounds and error precedence. ASCII predicates replace Unicode
+  character iteration; every non-ASCII character is rejected. The complete
+  byte scan also rechecks the already accepted initial alphanumeric byte.
+- `InvalidName(String)` diagnostics are represented by four typed reasons.
+  The shell can format the same diagnostic from the original input and first
+  invalid character; differential tests reconstruct and compare those strings.
+  Random IDs and clock reads in group creation remain in the shell.

@@ -13165,27 +13165,32 @@ reason = "policy decoding or serialization"
 [[item]]
 upstream = "src/domain/entities/subject_group.rs:23 INTERNAL_GROUP_ID"
 lines = 2
-status = "todo"
+status = "ported"
+kernel = ["kernel/src/subjectgroup.rs::INTERNAL_GROUP_ID"]
 
 [[item]]
 upstream = "src/domain/entities/subject_group.rs:33 MAX_GROUP_DEPTH"
 lines = 1
-status = "todo"
+status = "ported"
+kernel = ["kernel/src/subjectgroup.rs::MAX_GROUP_DEPTH"]
 
 [[item]]
 upstream = "src/domain/entities/subject_group.rs:40 MAX_NAME_LEN"
 lines = 1
-status = "todo"
+status = "ported"
+kernel = ["kernel/src/subjectgroup.rs::MAX_NAME_LEN"]
 
 [[item]]
 upstream = "src/domain/entities/subject_group.rs:43 SubjectGroup"
 lines = 8
-status = "todo"
+status = "ported"
+kernel = ["kernel/src/subjectgroup.rs::SubjectGroup"]
 
 [[item]]
 upstream = "src/domain/entities/subject_group.rs:53 GroupMember"
 lines = 4
-status = "todo"
+status = "ported"
+kernel = ["kernel/src/subjectgroup.rs::GroupMember"]
 
 [[item]]
 upstream = "src/domain/entities/subject_group.rs:64 SubjectGroup::new"
@@ -13196,12 +13201,14 @@ reason = "uses new_v4"
 [[item]]
 upstream = "src/domain/entities/subject_group.rs:81 SubjectGroup::validate_name"
 lines = 28
-status = "todo"
+status = "ported"
+kernel = ["kernel/src/subjectgroup.rs::validate_name"]
 
 [[item]]
 upstream = "src/domain/entities/subject_group.rs:117 SubjectGroup::is_immutable"
 lines = 3
-status = "todo"
+status = "ported"
+kernel = ["kernel/src/subjectgroup.rs::is_immutable"]
 
 [[item]]
 upstream = "src/domain/entities/trashed_item.rs:4 TrashedItemType"

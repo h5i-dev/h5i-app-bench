@@ -3733,6 +3733,141 @@ def share.created_by (s : share.Share) : Result Std.U128 := do
 def share.access_count (s : share.Share) : Result Std.U64 := do
   ok s.access_count
 
+/-- [oxicloud_kernel::subjectgroup::MAX_NAME_LEN]
+    Source: 'ports/oxicloud/kernel/src/subjectgroup.rs', lines 5:0-5:31 -/
+@[global_simps, irreducible]
+def subjectgroup.MAX_NAME_LEN : Std.Usize := 64#usize
+
+/-- [oxicloud_kernel::subjectgroup::SubjectGroup]
+    Source: 'ports/oxicloud/kernel/src/subjectgroup.rs', lines 6:0-13:1
+    Visibility: public -/
+structure subjectgroup.SubjectGroup where
+  id : Std.U128
+  «name» : alloc.vec.Vec Std.U8
+  description : Option (alloc.vec.Vec Std.U8)
+  is_virtual : Bool
+  created_at : session.Timestamp
+  updated_at : session.Timestamp
+
+/-- [oxicloud_kernel::subjectgroup::NameError]
+    Source: 'ports/oxicloud/kernel/src/subjectgroup.rs', lines 17:0-17:69
+    Visibility: public -/
+@[discriminant isize]
+inductive subjectgroup.NameError where
+| Empty : subjectgroup.NameError
+| TooLong : subjectgroup.NameError
+| InvalidStart : subjectgroup.NameError
+| InvalidCharacter : subjectgroup.NameError
+
+/-- [oxicloud_kernel::subjectgroup::alphanumeric]:
+    Source: 'ports/oxicloud/kernel/src/subjectgroup.rs', lines 18:0-20:1 -/
+def subjectgroup.alphanumeric (b : Std.U8) : Result Bool := do
+  if b >= 97#u8
+  then
+    if b <= 122#u8
+    then ok true
+    else
+      if b >= 65#u8
+      then
+        if b <= 90#u8
+        then ok true
+        else if b >= 48#u8
+             then ok (b <= 57#u8)
+             else ok false
+      else if b >= 48#u8
+           then ok (b <= 57#u8)
+           else ok false
+  else
+    if b >= 65#u8
+    then
+      if b <= 90#u8
+      then ok true
+      else if b >= 48#u8
+           then ok (b <= 57#u8)
+           else ok false
+    else if b >= 48#u8
+         then ok (b <= 57#u8)
+         else ok false
+
+/-- [oxicloud_kernel::subjectgroup::name_byte]:
+    Source: 'ports/oxicloud/kernel/src/subjectgroup.rs', lines 21:0-23:1 -/
+def subjectgroup.name_byte (b : Std.U8) : Result Bool := do
+  let b1 ← subjectgroup.alphanumeric b
+  if b1
+  then ok true
+  else
+    if b = 46#u8
+    then ok true
+    else if b = 45#u8
+         then ok true
+         else ok (b = 95#u8)
+
+/-- [oxicloud_kernel::subjectgroup::all_name]: loop body 0:
+    Source: 'ports/oxicloud/kernel/src/subjectgroup.rs', lines 26:4-31:1 -/
+@[rust_loop_body]
+def subjectgroup.all_name_loop.body
+  (raw : Slice Std.U8) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := Slice.len raw
+  if i < i1
+  then
+    let i2 ← Slice.index_usize raw i
+    let b ← subjectgroup.name_byte i2
+    if b
+    then let i3 ← i + 1#usize
+         ok (cont i3)
+    else ok (done false)
+  else ok (done true)
+
+/-- [oxicloud_kernel::subjectgroup::all_name]: loop 0:
+    Source: 'ports/oxicloud/kernel/src/subjectgroup.rs', lines 26:4-31:1 -/
+@[rust_loop]
+def subjectgroup.all_name_loop
+  (raw : Slice Std.U8) (i : Std.Usize) : Result Bool := do
+  loop
+    (fun i1 => subjectgroup.all_name_loop.body raw i1)
+    i
+
+/-- [oxicloud_kernel::subjectgroup::all_name]:
+    Source: 'ports/oxicloud/kernel/src/subjectgroup.rs', lines 24:0-31:1 -/
+@[reducible]
+def subjectgroup.all_name (raw : Slice Std.U8) : Result Bool := do
+  subjectgroup.all_name_loop raw 0#usize
+
+/-- [oxicloud_kernel::subjectgroup::validate_name]:
+    Source: 'ports/oxicloud/kernel/src/subjectgroup.rs', lines 33:0-39:1
+    Visibility: public -/
+def subjectgroup.validate_name
+  (raw : Slice Std.U8) :
+  Result (core.result.Result Unit subjectgroup.NameError)
+  := do
+  let i := Slice.len raw
+  if i = 0#usize
+  then ok (core.result.Result.Err subjectgroup.NameError.Empty)
+  else
+    let i1 := Slice.len raw
+    if i1 > subjectgroup.MAX_NAME_LEN
+    then ok (core.result.Result.Err subjectgroup.NameError.TooLong)
+    else
+      let i2 ← Slice.index_usize raw 0#usize
+      let b ← subjectgroup.alphanumeric i2
+      if b
+      then
+        let b1 ← subjectgroup.all_name raw
+        if b1
+        then ok (core.result.Result.Ok ())
+        else
+          ok (core.result.Result.Err subjectgroup.NameError.InvalidCharacter)
+      else ok (core.result.Result.Err subjectgroup.NameError.InvalidStart)
+
+/-- [oxicloud_kernel::subjectgroup::is_immutable]:
+    Source: 'ports/oxicloud/kernel/src/subjectgroup.rs', lines 40:0-40:70
+    Visibility: public -/
+def subjectgroup.is_immutable
+  (group : subjectgroup.SubjectGroup) : Result Bool := do
+  ok group.is_virtual
+
 /-- [oxicloud_kernel::userrole::UserRole]
     Source: 'ports/oxicloud/kernel/src/userrole.rs', lines 5:0-10:1
     Visibility: public -/
