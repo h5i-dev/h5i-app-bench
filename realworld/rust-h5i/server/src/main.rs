@@ -1551,6 +1551,9 @@ async fn run() -> Result<(), Box<dyn std::error::Error>> {
     let pool = PgPoolOptions::new()
         .max_connections(pool_size)
         .min_connections(1.min(pool_size))
+        // sqlx pings every connection on checkout by default, one extra
+        // round trip per query; pgx and node-postgres do not.
+        .test_before_acquire(false)
         .connect(&db_url)
         .await?;
     let dummy = bcrypt::hash("dummy-password-for-timing", BCRYPT_COST)?;
