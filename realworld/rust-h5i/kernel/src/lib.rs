@@ -145,6 +145,7 @@ pub enum Reply {
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum Error {
     Unauthenticated,
+    InvalidCredentials,
     ForbiddenArticle,
     ForbiddenComment,
     ArticleNotFound,
@@ -705,5 +706,14 @@ pub fn transition(view: &View, cmd: &Command) -> Result<Reply, Error> {
         Command::CurrentUser | Command::Feed => Ok(Reply::Allow),
         Command::Page { limit, offset } => page(limit, offset),
         Command::Slug { title, n } => Ok(Reply::Slug(make_slug(title, *n))),
+    }
+}
+
+/// Credential verification is an observation supplied by the bcrypt shell.
+pub fn authenticate_login(user_exists: bool, password_matched: bool) -> Result<(), Error> {
+    if user_exists && password_matched {
+        Ok(())
+    } else {
+        Err(Error::InvalidCredentials)
     }
 }

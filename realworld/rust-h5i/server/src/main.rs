@@ -11,8 +11,8 @@ use axum::routing::{get, post};
 use axum::{Json, Router};
 use axum::response::{IntoResponse, Response};
 use conduit_kernel::{
-    make_slug, shows_body, transition, ArticleView, Command, Delta, Error, Norm, RawNum, RawText,
-    Reply, TagDecision, TagInput, View,
+    authenticate_login, make_slug, shows_body, transition, ArticleView, Command, Delta, Error, Norm,
+    RawNum, RawText, Reply, TagDecision, TagInput, View,
 };
 use serde::Deserialize;
 use serde::Serialize;
@@ -83,6 +83,7 @@ fn unique_field(err: &sqlx::Error) -> Option<&'static str> {
 
 fn map_kernel(err: Error) -> ApiError {
     match err {
+        Error::InvalidCredentials => api(StatusCode::UNAUTHORIZED, "credentials", "invalid"),
         Error::Unauthenticated => api(StatusCode::UNAUTHORIZED, "token", "is missing"),
         Error::ForbiddenArticle => api(StatusCode::FORBIDDEN, "article", "forbidden"),
         Error::ForbiddenComment => api(StatusCode::FORBIDDEN, "comment", "forbidden"),
@@ -658,12 +659,8 @@ async fn login(State(app): State<App>, body: Bytes) -> Result<Response, ApiError
         None => (false, app.dummy.clone(), None),
     };
     let ok = check_password(password, hash).await?;
-    let Some(user) = user else {
-        return Err(api(StatusCode::UNAUTHORIZED, "credentials", "invalid"));
-    };
-    if !found || !ok {
-        return Err(api(StatusCode::UNAUTHORIZED, "credentials", "invalid"));
-    }
+    authenticate_login(found, ok).map_err(map_kernel)?;
+    let user = user.ok_or_else(server_error)?;
     let token = sign_token(&app.secret, user.id)?;
     Ok(json_res(
         StatusCode::OK,

@@ -230,4 +230,10 @@ theorem shows_body_detail : shows_body .Detail ⦃ r => r = true ⦄ := by
   unfold shows_body
   step*
 
+theorem login_success_iff (found matched : Bool) :
+    authenticate_login found matched ⦃ r =>
+      (r = .Ok () ↔ found = true ∧ matched = true) ∧
+      (r = .Err .InvalidCredentials ↔ ¬ (found = true ∧ matched = true)) ⦄ := by
+  cases found <;> cases matched <;> simp [authenticate_login]
+
 end conduit_kernel

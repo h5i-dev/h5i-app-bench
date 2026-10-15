@@ -2,10 +2,11 @@
 
 [extract]
 crate = "kernel"
-start-from = ["transition", "shows_body"]
+start-from = ["transition", "shows_body", "authenticate_login"]
 
 [check]
 theorems = [
+  "conduit_kernel.login_success_iff",
   "conduit_kernel.guest_cannot_mutate",
   "conduit_kernel.only_author_updates_article",
   "conduit_kernel.only_author_deletes_article",
