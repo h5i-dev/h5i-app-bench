@@ -1,0 +1,3 @@
+# Raw k6 summaries and per-point metadata stay local; summary.md,
+# summary.csv and points.csv are generated from them by bench/summarize.py.
+*.json
