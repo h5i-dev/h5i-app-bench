@@ -5,6 +5,12 @@ start-from = ["policies", "pathclean::clean", "defaults::default_version", "defa
 
 [check]
 theorems = [
+  "rustfs_kernel.Properties.metadata_statement_copy",
+  "rustfs_kernel.Properties.metadata_append_statements",
+  "rustfs_kernel.Properties.metadata_retained_statements",
+  "rustfs_kernel.Properties.metadata_duplicate_marks",
+  "rustfs_kernel.Properties.metadata_duplicate_selection",
+  "rustfs_kernel.Properties.metadata_policy_merge",
   "rustfs_kernel.Properties.metadata_statement_equality",
   "rustfs_kernel.Properties.metadata_index_membership",
   "rustfs_kernel.Properties.metadata_empty_policy",

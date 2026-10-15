@@ -39,4 +39,23 @@ def ActiveTagConditions (cs : List conddata.Condition) : Prop :=
 def FunctionsUseExistingTag (f : conddata.Functions) : Prop :=
   ActiveTagConditions f.for_all_values.val ∨ ActiveTagConditions f.for_any_value.val ∨
     ActiveTagConditions f.for_normal.val
+
+/-- Retain unmarked positions in their original order, including their statement IDs. -/
+def RetainStatements (ss : List manage.Statement) (removed : List Nat) : List manage.Statement :=
+  ((ss.zipIdx).filter (fun e => !decide (e.2 ∈ removed))).map Prod.fst
+/-- A later position has the same semantic fields as an earlier statement. -/
+def DuplicatePair (ss : List manage.Statement) (j k : Usize) : Prop :=
+  j.val < k.val ∧ ∃ hj : j.val < ss.length, ∃ hk : k.val < ss.length,
+    MetadataStatementEquivalent ss[j.val] ss[k.val]
+/-- Marks have an earlier, unmarked representative among the processed positions. -/
+def MarkedThrough (ss : List manage.Statement) (limit : Nat) (ds : List Usize) : Prop :=
+  ∀ k, k ∈ ds ↔ ∃ j, j.val < limit ∧ j ∉ ds ∧ DuplicatePair ss j k
+/-- Ordered selection with an earlier retained representative for exactly the removed positions. -/
+def DeduplicatedStatements (ss out : List manage.Statement) : Prop :=
+  ∃ ds : List Usize, MarkedThrough ss ss.length ds ∧
+    out = RetainStatements ss (ds.map (fun k => k.val))
+/-- The version of the first policy that supplies one, or empty when none does. -/
+def FirstPolicyVersion : List manage.Policy → List U8
+  | [] => []
+  | p :: ps => if p.version.val = [] then FirstPolicyVersion ps else p.version.val
 end rustfs_kernel.Spec

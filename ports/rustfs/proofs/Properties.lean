@@ -1,3 +1,4 @@
+import Verified.RustfsPolicyMerge
 import Verified.RustfsManagementTags
 import Verified.RustfsManagementEquality
 import Verified.RustfsManagementQueries
@@ -1034,5 +1035,40 @@ theorem metadata_bucket_tag (p : manage.BucketPolicy) (b : Bool)
     (h : manage.bucket_policy_uses_existing_object_tag_conditions p = ok b) :
     (b = true ↔ ∃ st ∈ p.statements.val, FunctionsUseExistingTag st.conditions) :=
   Verified.RustfsManagementTags.bucket_tag_ok p b h
+
+/-- Metadata copies preserve every field, including statement identifiers. -/
+theorem metadata_statement_copy (s : manage.Statement) :
+    manage.Statement.Insts.CoreCloneClone.clone s = ok s :=
+  Verified.RustfsManagementCopies.statement_clone s
+
+theorem metadata_append_statements (initial : alloc.vec.Vec manage.Statement)
+    (ss : Slice manage.Statement) (out : alloc.vec.Vec manage.Statement)
+    (h : manage.append_statements initial ss = ok out) :
+    out.val = initial.val ++ ss.val :=
+  Verified.RustfsStatementRetention.append_ok initial ss out h
+
+theorem metadata_retained_statements (ss : Slice manage.Statement) (ds : Slice Usize)
+    (out : alloc.vec.Vec manage.Statement) (h : manage.retained_statements ss ds = ok out) :
+    out.val = RetainStatements ss.val (ds.val.map (fun k => k.val)) :=
+  Verified.RustfsStatementRetention.retain_ok ss ds out h
+
+theorem metadata_duplicate_marks (ss : Slice manage.Statement) (i : Usize)
+    (hi : i.val < ss.val.length) (initial out : alloc.vec.Vec Usize)
+    (h : manage.mark_duplicates ss i initial = ok out) :
+    ∀ k, k ∈ out.val ↔ k ∈ initial.val ∨ i.val < k.val ∧
+      ∃ hk : k.val < ss.val.length, MetadataStatementEquivalent ss.val[i.val] ss.val[k.val] :=
+  Verified.RustfsDuplicateMarks.mark_ok ss i hi initial out h
+
+theorem metadata_duplicate_selection (p out : manage.Policy)
+    (h : manage.drop_duplicate_statements p = ok out) :
+    out.id = p.id ∧ out.version = p.version ∧
+      DeduplicatedStatements p.statements.val out.statements.val :=
+  Verified.RustfsDuplicateSelection.drop_ok p out h
+
+theorem metadata_policy_merge (ps : Slice manage.Policy) (out : manage.Policy)
+    (h : manage.merge_policies ps = ok out) :
+    out.id.val = [] ∧ out.version.val = FirstPolicyVersion ps.val ∧
+      DeduplicatedStatements ((ps.val.map (fun p => p.statements.val)).flatten) out.statements.val :=
+  Verified.RustfsPolicyMerge.merge_ok ps out h
 
 end rustfs_kernel.Properties
