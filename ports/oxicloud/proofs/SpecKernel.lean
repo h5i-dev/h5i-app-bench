@@ -324,4 +324,34 @@ def SystemAdminDenial (subject : admin.Principal) (role : userrole.UserRole)
   | .NotAdmin => (∃ id, subject = .User id) ∧ active = true ∧ is_external = false ∧ RoleLevel role < 2
   | .UnsupportedSubject => ∀ id, subject ≠ .User id
 
+
+/-- The internal-account restriction allows an existing internal account or an unavailable lookup. -/
+def InternalAccountAllowed (flags : liveauth.FlagsLookup) : Prop :=
+  match flags with
+  | .Found f => f.is_external = false
+  | .NotFound => False
+  | .Unavailable => True
+
+/-- Each internal-account denial identifies the account condition that caused it. -/
+def InternalAccountDenied (flags : liveauth.FlagsLookup) (reason : liveauth.InternalDenial) : Prop :=
+  match flags, reason with
+  | .Found f, .External => f.is_external = true
+  | .NotFound, .NoAccount => True
+  | _, _ => False
+
+/-- A live account supplies its current role; absence or inactivity revokes the session.
+    An unavailable lookup preserves the original claim bytes. -/
+def LiveAccountRole (flags : liveauth.FlagsLookup) (claim : List U8) (out : liveauth.LiveRole) : Prop :=
+  match flags, out with
+  | .Found f, .Active role => f.active = true ∧ role.val = RoleWire f.role
+  | .Found f, .Revoked => f.active = false
+  | .NotFound, .Revoked => True
+  | .Unavailable, .Active role => role.val = claim
+  | _, _ => False
+
+/-- Only the canonical anonymous session role can bypass the account lookup. -/
+def AnonymousLiveRole (claim : List U8) (out : Option liveauth.LiveRole) : Prop :=
+  (out = none ↔ claim ≠ RoleWire .Anonymous) ∧
+  (∀ value, out = some value → ∃ role, value = .Active role ∧ role.val = RoleWire .Anonymous ∧ claim = RoleWire .Anonymous)
+
 end oxicloud_kernel.SpecKernel

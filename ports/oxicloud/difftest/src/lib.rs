@@ -31,3 +31,6 @@ mod userstate;
 
 #[cfg(test)]
 mod admin;
+
+#[cfg(test)]
+mod liveauth;

@@ -24,3 +24,5 @@ pub mod magiclink;
 pub mod userstate;
 
 pub mod admin;
+
+pub mod liveauth;

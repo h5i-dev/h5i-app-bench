@@ -128,6 +128,9 @@ trap 'rm -rf "$tmp"' EXIT
   --start-from oxicloud_kernel::admin::denial_bytes \
   --start-from oxicloud_kernel::admin::system_admin_denial_reason \
   --start-from oxicloud_kernel::admin::require_system_admin \
+  --start-from oxicloud_kernel::liveauth::decide_internal_user \
+  --start-from oxicloud_kernel::liveauth::anonymous_live_role \
+  --start-from oxicloud_kernel::liveauth::decide_live_role \
   --dest-file "$tmp/oxicloud_kernel.llbc")
 mkdir -p "$root/ports/oxicloud/proofs/generated"
 aeneas -backend lean "$tmp/oxicloud_kernel.llbc" -dest "$root/ports/oxicloud/proofs/generated"

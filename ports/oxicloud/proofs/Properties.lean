@@ -1,3 +1,4 @@
+import Verified.OxicloudLiveAuth
 import Verified.OxicloudAdmin
 import Verified.OxicloudUserState
 import Verified.OxicloudMagicLink
@@ -546,5 +547,25 @@ theorem system_administrator_policy (subject : admin.Principal) (role : userrole
     (r = .Allowed ↔ SpecKernel.SystemAdminAllowed subject role is_external active) ∧
     (∀ reason, r = .Denied reason → SpecKernel.SystemAdminDenial subject role is_external active reason) :=
   Verified.OxicloudAdmin.required_admin_ok subject role is_external active r h
+
+
+/-- The internal-account restriction classifies external and absent accounts. -/
+theorem internal_account_policy (flags : liveauth.FlagsLookup) (id : U128)
+    (r : core.result.Result Unit liveauth.InternalDenial)
+    (h : liveauth.decide_internal_user flags id = ok r) :
+    (r = .Ok () ↔ SpecKernel.InternalAccountAllowed flags) ∧
+    (∀ reason, r = .Err reason → SpecKernel.InternalAccountDenied flags reason) := by
+  exact oxicloud_kernel.Verified.OxicloudLiveAuth.internal_ok flags id r h
+
+/-- Current active accounts supply the current role; inactive and missing accounts revoke. -/
+theorem live_account_role_policy (flags : liveauth.FlagsLookup) (id : U128) (claim : Slice U8)
+    (r : liveauth.LiveRole) (h : liveauth.decide_live_role flags id claim = ok r) :
+    SpecKernel.LiveAccountRole flags claim.val r := by
+  exact oxicloud_kernel.Verified.OxicloudLiveAuth.live_role_ok flags id claim r h
+
+/-- Only the canonical anonymous session claim can bypass the account lookup. -/
+theorem anonymous_role_lookup_bypass (claim : Slice U8) (r : Option liveauth.LiveRole)
+    (h : liveauth.anonymous_live_role claim = ok r) : SpecKernel.AnonymousLiveRole claim.val r := by
+  exact oxicloud_kernel.Verified.OxicloudLiveAuth.anonymous_ok claim r h
 
 end oxicloud_kernel.Properties

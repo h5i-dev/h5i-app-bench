@@ -49,5 +49,30 @@ fn main() {
     oracle.push_str(&item(&source, "fn system_admin_denial_reason("));
     oracle.push_str("pub fn reason(s: Subject, r: UserRole, e: bool, a: bool) -> Option<&'static str> { system_admin_denial_reason(s,r,e,a) }");
     fs::write(PathBuf::from(env::var_os("OUT_DIR").unwrap()).join("admin_oracle.rs"), oracle).unwrap();
+    let path = "../upstream-src/src/interfaces/middleware/user.rs";
+    println!("cargo:rerun-if-changed={path}");
+    let source = fs::read_to_string(path).unwrap();
+    let mut oracle = String::from(r#"
+      use oxicloud::domain::{entities::user::{UserFlags,UserRole},errors::{DomainError,ErrorKind}};
+      use oxicloud::interfaces::{errors::AppError,middleware::user::LiveRole};
+      use uuid::Uuid;
+      macro_rules! ignored_event { ($($tt:tt)*) => {} }
+      mod tracing { pub(crate) use ignored_event as info; pub(crate) use ignored_event as warn; }
+      fn audit_token_revoked(_: Uuid, _: &'static str) {}
+    "#);
+    for name in ["decide_internal_user", "anonymous_live_role", "decide_live_role"] {
+        let function=item(&source,&format!("fn {name}("))
+            .replace("StatusCode::FORBIDDEN","403u16.try_into().unwrap()")
+            .replace("SmolStr::new_static(r.as_str())","r.as_str().into()")
+            .replace("SmolStr::new_static(flags.role.as_str())","flags.role.as_str().into()")
+            .replace("SmolStr::new(claim_role)","claim_role.into()");
+        oracle.push_str(&function);
+    }
+    oracle.push_str(r#"
+      pub fn internal(f: Result<UserFlags,DomainError>, id: Uuid)->Result<(),AppError> { decide_internal_user(f,id) }
+      pub fn anonymous(s: &str)->Option<LiveRole> { anonymous_live_role(s) }
+      pub fn live(f: Result<UserFlags,DomainError>, id: Uuid, s: &str)->LiveRole { decide_live_role(f,id,s) }
+    "#);
+    fs::write(PathBuf::from(env::var_os("OUT_DIR").unwrap()).join("liveauth_oracle.rs"), oracle).unwrap();
 
 }

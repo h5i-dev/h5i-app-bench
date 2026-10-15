@@ -3462,6 +3462,172 @@ def grantapi.transition
   | grantapi.Request.RevokeGrant grant_id =>
     grantapi.revoke_grant db env caller grant_id
 
+/-- [oxicloud_kernel::liveauth::UserFlags]
+    Source: 'ports/oxicloud/kernel/src/liveauth.rs', lines 4:0-9:1
+    Visibility: public -/
+structure liveauth.UserFlags where
+  role : userrole.UserRole
+  is_external : Bool
+  active : Bool
+  force_password_change : Bool
+
+/-- [oxicloud_kernel::liveauth::FlagsLookup]
+    Source: 'ports/oxicloud/kernel/src/liveauth.rs', lines 11:0-11:64
+    Visibility: public -/
+@[discriminant isize]
+inductive liveauth.FlagsLookup where
+| Found : liveauth.UserFlags → liveauth.FlagsLookup
+| NotFound : liveauth.FlagsLookup
+| Unavailable : liveauth.FlagsLookup
+
+/-- [oxicloud_kernel::liveauth::LiveRole]
+    Source: 'ports/oxicloud/kernel/src/liveauth.rs', lines 12:0-12:46
+    Visibility: public -/
+@[discriminant isize]
+inductive liveauth.LiveRole where
+| Active : alloc.vec.Vec Std.U8 → liveauth.LiveRole
+| Revoked : liveauth.LiveRole
+
+/-- [oxicloud_kernel::liveauth::InternalDenial]
+    Source: 'ports/oxicloud/kernel/src/liveauth.rs', lines 13:0-13:47
+    Visibility: public -/
+@[discriminant isize]
+inductive liveauth.InternalDenial where
+| External : liveauth.InternalDenial
+| NoAccount : liveauth.InternalDenial
+
+/-- [oxicloud_kernel::liveauth::decide_internal_user]:
+    Source: 'ports/oxicloud/kernel/src/liveauth.rs', lines 15:0-21:1
+    Visibility: public -/
+def liveauth.decide_internal_user
+  (flags : liveauth.FlagsLookup) (_caller_id : Std.U128) :
+  Result (core.result.Result Unit liveauth.InternalDenial)
+  := do
+  match flags with
+  | liveauth.FlagsLookup.Found f =>
+    if f.is_external
+    then ok (core.result.Result.Err liveauth.InternalDenial.External)
+    else ok (core.result.Result.Ok ())
+  | liveauth.FlagsLookup.NotFound =>
+    ok (core.result.Result.Err liveauth.InternalDenial.NoAccount)
+  | liveauth.FlagsLookup.Unavailable => ok (core.result.Result.Ok ())
+
+/-- [oxicloud_kernel::userrole::is_anonymous]:
+    Source: 'ports/oxicloud/kernel/src/userrole.rs', lines 65:0-70:1
+    Visibility: public -/
+def userrole.is_anonymous (role : userrole.UserRole) : Result Bool := do
+  match role with
+  | userrole.UserRole.Owner => ok false
+  | userrole.UserRole.Admin => ok false
+  | userrole.UserRole.User => ok false
+  | userrole.UserRole.Anonymous => ok true
+
+/-- [oxicloud_kernel::userrole::from_stored]:
+    Source: 'ports/oxicloud/kernel/src/userrole.rs', lines 23:0-33:1
+    Visibility: public -/
+def userrole.from_stored
+  (raw : Slice Std.U8) : Result (Option userrole.UserRole) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 5#usize [ 111#u8, 119#u8, 110#u8, 101#u8, 114#u8 ]))
+  let b ← bytes.equal raw s
+  if b
+  then ok (some userrole.UserRole.Owner)
+  else
+    let s1 ←
+      lift (Array.to_slice
+        (Array.make 5#usize [ 97#u8, 100#u8, 109#u8, 105#u8, 110#u8 ]))
+    let b1 ← bytes.equal raw s1
+    if b1
+    then ok (some userrole.UserRole.Admin)
+    else
+      let s2 ←
+        lift (Array.to_slice
+          (Array.make 4#usize [ 117#u8, 115#u8, 101#u8, 114#u8 ]))
+      let b2 ← bytes.equal raw s2
+      if b2
+      then ok (some userrole.UserRole.User)
+      else ok none
+
+/-- [oxicloud_kernel::userrole::from_session]:
+    Source: 'ports/oxicloud/kernel/src/userrole.rs', lines 36:0-42:1
+    Visibility: public -/
+def userrole.from_session
+  (raw : Slice Std.U8) : Result (Option userrole.UserRole) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 9#usize [
+        97#u8, 110#u8, 111#u8, 110#u8, 121#u8, 109#u8, 111#u8, 117#u8, 115#u8
+        ]))
+  let b ← bytes.equal raw s
+  if b
+  then ok (some userrole.UserRole.Anonymous)
+  else userrole.from_stored raw
+
+/-- [oxicloud_kernel::userrole::as_bytes]:
+    Source: 'ports/oxicloud/kernel/src/userrole.rs', lines 13:0-20:1
+    Visibility: public -/
+def userrole.as_bytes
+  (role : userrole.UserRole) : Result (alloc.vec.Vec Std.U8) := do
+  match role with
+  | userrole.UserRole.Owner =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 5#usize [ 111#u8, 119#u8, 110#u8, 101#u8, 114#u8 ]))
+    bytes.copy s
+  | userrole.UserRole.Admin =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 5#usize [ 97#u8, 100#u8, 109#u8, 105#u8, 110#u8 ]))
+    bytes.copy s
+  | userrole.UserRole.User =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 4#usize [ 117#u8, 115#u8, 101#u8, 114#u8 ]))
+    bytes.copy s
+  | userrole.UserRole.Anonymous =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 9#usize [
+          97#u8, 110#u8, 111#u8, 110#u8, 121#u8, 109#u8, 111#u8, 117#u8, 115#u8
+          ]))
+    bytes.copy s
+
+/-- [oxicloud_kernel::liveauth::anonymous_live_role]:
+    Source: 'ports/oxicloud/kernel/src/liveauth.rs', lines 22:0-27:1
+    Visibility: public -/
+def liveauth.anonymous_live_role
+  (claim_role : Slice Std.U8) : Result (Option liveauth.LiveRole) := do
+  let o ← userrole.from_session claim_role
+  match o with
+  | none => ok none
+  | some role =>
+    let b ← userrole.is_anonymous role
+    if b
+    then
+      let v ← userrole.as_bytes role
+      ok (some (liveauth.LiveRole.Active v))
+    else ok none
+
+/-- [oxicloud_kernel::liveauth::decide_live_role]:
+    Source: 'ports/oxicloud/kernel/src/liveauth.rs', lines 28:0-34:1
+    Visibility: public -/
+def liveauth.decide_live_role
+  (flags : liveauth.FlagsLookup) (_user_id : Std.U128)
+  (claim_role : Slice Std.U8) :
+  Result liveauth.LiveRole
+  := do
+  match flags with
+  | liveauth.FlagsLookup.Found f =>
+    if f.active
+    then let v ← userrole.as_bytes f.role
+         ok (liveauth.LiveRole.Active v)
+    else ok liveauth.LiveRole.Revoked
+  | liveauth.FlagsLookup.NotFound => ok liveauth.LiveRole.Revoked
+  | liveauth.FlagsLookup.Unavailable =>
+    let v ← bytes.copy claim_role
+    ok (liveauth.LiveRole.Active v)
+
 /-- [oxicloud_kernel::magiclink::MagicLinkResourceKind]
     Source: 'ports/oxicloud/kernel/src/magiclink.rs', lines 5:0-5:47
     Visibility: public -/
@@ -4273,77 +4439,6 @@ def subjectgroup.is_immutable
   (group : subjectgroup.SubjectGroup) : Result Bool := do
   ok group.is_virtual
 
-/-- [oxicloud_kernel::userrole::as_bytes]:
-    Source: 'ports/oxicloud/kernel/src/userrole.rs', lines 13:0-20:1
-    Visibility: public -/
-def userrole.as_bytes
-  (role : userrole.UserRole) : Result (alloc.vec.Vec Std.U8) := do
-  match role with
-  | userrole.UserRole.Owner =>
-    let s ←
-      lift (Array.to_slice
-        (Array.make 5#usize [ 111#u8, 119#u8, 110#u8, 101#u8, 114#u8 ]))
-    bytes.copy s
-  | userrole.UserRole.Admin =>
-    let s ←
-      lift (Array.to_slice
-        (Array.make 5#usize [ 97#u8, 100#u8, 109#u8, 105#u8, 110#u8 ]))
-    bytes.copy s
-  | userrole.UserRole.User =>
-    let s ←
-      lift (Array.to_slice
-        (Array.make 4#usize [ 117#u8, 115#u8, 101#u8, 114#u8 ]))
-    bytes.copy s
-  | userrole.UserRole.Anonymous =>
-    let s ←
-      lift (Array.to_slice
-        (Array.make 9#usize [
-          97#u8, 110#u8, 111#u8, 110#u8, 121#u8, 109#u8, 111#u8, 117#u8, 115#u8
-          ]))
-    bytes.copy s
-
-/-- [oxicloud_kernel::userrole::from_stored]:
-    Source: 'ports/oxicloud/kernel/src/userrole.rs', lines 23:0-33:1
-    Visibility: public -/
-def userrole.from_stored
-  (raw : Slice Std.U8) : Result (Option userrole.UserRole) := do
-  let s ←
-    lift (Array.to_slice
-      (Array.make 5#usize [ 111#u8, 119#u8, 110#u8, 101#u8, 114#u8 ]))
-  let b ← bytes.equal raw s
-  if b
-  then ok (some userrole.UserRole.Owner)
-  else
-    let s1 ←
-      lift (Array.to_slice
-        (Array.make 5#usize [ 97#u8, 100#u8, 109#u8, 105#u8, 110#u8 ]))
-    let b1 ← bytes.equal raw s1
-    if b1
-    then ok (some userrole.UserRole.Admin)
-    else
-      let s2 ←
-        lift (Array.to_slice
-          (Array.make 4#usize [ 117#u8, 115#u8, 101#u8, 114#u8 ]))
-      let b2 ← bytes.equal raw s2
-      if b2
-      then ok (some userrole.UserRole.User)
-      else ok none
-
-/-- [oxicloud_kernel::userrole::from_session]:
-    Source: 'ports/oxicloud/kernel/src/userrole.rs', lines 36:0-42:1
-    Visibility: public -/
-def userrole.from_session
-  (raw : Slice Std.U8) : Result (Option userrole.UserRole) := do
-  let s ←
-    lift (Array.to_slice
-      (Array.make 9#usize [
-        97#u8, 110#u8, 111#u8, 110#u8, 121#u8, 109#u8, 111#u8, 117#u8, 115#u8
-        ]))
-  let b ← bytes.equal raw s
-  if b
-  then ok (some userrole.UserRole.Anonymous)
-  else userrole.from_stored raw
-
 /-- [oxicloud_kernel::userrole::outranks]:
     Source: 'ports/oxicloud/kernel/src/userrole.rs', lines 60:0-62:1
     Visibility: public -/
@@ -4352,16 +4447,6 @@ def userrole.outranks
   let i ← userrole.rank role
   let i1 ← userrole.rank target
   ok (i > i1)
-
-/-- [oxicloud_kernel::userrole::is_anonymous]:
-    Source: 'ports/oxicloud/kernel/src/userrole.rs', lines 65:0-70:1
-    Visibility: public -/
-def userrole.is_anonymous (role : userrole.UserRole) : Result Bool := do
-  match role with
-  | userrole.UserRole.Owner => ok false
-  | userrole.UserRole.Admin => ok false
-  | userrole.UserRole.User => ok false
-  | userrole.UserRole.Anonymous => ok true
 
 /-- [oxicloud_kernel::userrole::str_at_least]:
     Source: 'ports/oxicloud/kernel/src/userrole.rs', lines 73:0-78:1

@@ -13408,7 +13408,8 @@ reason = "policy decoding or serialization"
 [[item]]
 upstream = "src/domain/entities/user.rs:203 UserFlags"
 lines = 6
-status = "todo"
+status = "ported"
+kernel = ["kernel/src/liveauth.rs::UserFlags"]
 
 [[item]]
 upstream = "src/domain/entities/user.rs:224 User"
@@ -30702,7 +30703,8 @@ status = "todo"
 [[item]]
 upstream = "src/interfaces/middleware/user.rs:67 decide_internal_user"
 lines = 28
-status = "todo"
+status = "ported"
+kernel = ["kernel/src/liveauth.rs::decide_internal_user"]
 
 [[item]]
 upstream = "src/interfaces/middleware/user.rs:114 require_admin_user"
@@ -30712,7 +30714,8 @@ status = "todo"
 [[item]]
 upstream = "src/interfaces/middleware/user.rs:147 LiveRole"
 lines = 4
-status = "todo"
+status = "ported"
+kernel = ["kernel/src/liveauth.rs::LiveRole"]
 
 [[item]]
 upstream = "src/interfaces/middleware/user.rs:161 resolve_live_role"
@@ -30722,12 +30725,14 @@ status = "todo"
 [[item]]
 upstream = "src/interfaces/middleware/user.rs:192 anonymous_live_role"
 lines = 5
-status = "todo"
+status = "ported"
+kernel = ["kernel/src/liveauth.rs::anonymous_live_role"]
 
 [[item]]
 upstream = "src/interfaces/middleware/user.rs:214 decide_live_role"
 lines = 25
-status = "todo"
+status = "ported"
+kernel = ["kernel/src/liveauth.rs::decide_live_role"]
 
 [[item]]
 upstream = "src/interfaces/middleware/user.rs:245 audit_token_revoked"

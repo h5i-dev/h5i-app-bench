@@ -216,3 +216,20 @@ URL writers remain in the shell. Their only work is XML event serialization
 through `quick_xml::Writer<W: Write>` (including response-property selection
 and server-base-path URL formatting). The ledger records each reviewed item
 individually as outside; these are not counted as ported authorization logic.
+
+### Live-account role reconciliation
+
+- `UserFlags` preserves all four account flags. The lookup input is represented
+  by `FlagsLookup`: Found carries those flags, NotFound is exactly the upstream
+  NotFound error kind, and Unavailable represents every other domain error.
+  These decisions observe no other error fields. UUID inputs retain all 128 bits.
+- Live roles use owned UTF-8 bytes instead of SmolStr. A successful live lookup
+  supplies the canonical current account role; inactive or missing accounts
+  produce Revoked. Other lookup errors preserve the claim bytes exactly.
+- Internal-account failures use typed External/NoAccount results. The shell
+  maps both to status 403 and error type Forbidden, with the respective exact
+  messages `External users cannot access this endpoint` and
+  `This endpoint requires a user account`. Other outcomes map to `Ok(())`.
+- Audit events remain in the shell. Differential oracles compile the pinned
+  decision bodies, substituting inferred owned-string construction and the
+  numeric 403 status, and replacing audit calls with no-op test events.
