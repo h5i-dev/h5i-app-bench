@@ -146,13 +146,15 @@ inductive Reply where
 | Slug : alloc.vec.Vec Std.U8 → Reply
 
 /-- [conduit_kernel::Error]
-    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 146:0-175:1
+    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 146:0-177:1
     Visibility: public -/
 @[discriminant isize]
 inductive Error where
 | Unauthenticated : Error
 | InvalidCredentials : Error
 | InvalidToken : Error
+| UsernameTaken : Error
+| EmailTaken : Error
 | ForbiddenArticle : Error
 | ForbiddenComment : Error
 | ArticleNotFound : Error
@@ -180,7 +182,7 @@ inductive Error where
 | InvalidOffset : Error
 
 /-- [conduit_kernel::ArticleView]
-    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 178:0-181:1
+    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 180:0-183:1
     Visibility: public -/
 @[discriminant isize]
 inductive ArticleView where
@@ -188,7 +190,7 @@ inductive ArticleView where
 | Detail : ArticleView
 
 /-- [conduit_kernel::shows_body]:
-    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 184:0-189:1
+    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 186:0-191:1
     Visibility: public -/
 def shows_body (view : ArticleView) : Result Bool := do
   match view with
@@ -196,7 +198,7 @@ def shows_body (view : ArticleView) : Result Bool := do
   | ArticleView.Detail => ok true
 
 /-- [conduit_kernel::authed]:
-    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 191:0-210:1 -/
+    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 193:0-212:1 -/
 def authed (cmd : Command) : Result Bool := do
   match cmd with
   | Command.Register _ _ _ => ok false
@@ -217,7 +219,7 @@ def authed (cmd : Command) : Result Bool := do
   | Command.Slug _ _ => ok false
 
 /-- [conduit_kernel::require_text]:
-    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 212:0-224:1 -/
+    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 214:0-226:1 -/
 def require_text
   (field : RawText) (blank : Error) (invalid : Error) :
   Result (core.result.Result Unit Error)
@@ -233,7 +235,7 @@ def require_text
     else ok (core.result.Result.Ok ())
 
 /-- [conduit_kernel::password_new]:
-    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 226:0-240:1 -/
+    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 228:0-242:1 -/
 def password_new
   (field : RawText) : Result (core.result.Result Unit Error) := do
   match field with
@@ -251,7 +253,7 @@ def password_new
       else ok (core.result.Result.Ok ())
 
 /-- [conduit_kernel::password_login]:
-    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 242:0-254:1 -/
+    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 244:0-256:1 -/
 def password_login
   (field : RawText) : Result (core.result.Result Unit Error) := do
   match field with
@@ -265,7 +267,7 @@ def password_login
     else ok (core.result.Result.Ok ())
 
 /-- [conduit_kernel::password_update]:
-    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 256:0-271:1 -/
+    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 258:0-273:1 -/
 def password_update
   (field : RawText) : Result (core.result.Result Norm Error) := do
   match field with
@@ -283,7 +285,7 @@ def password_update
       else ok (core.result.Result.Ok Norm.Set)
 
 /-- [conduit_kernel::optional_required]:
-    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 273:0-286:1 -/
+    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 275:0-288:1 -/
 def optional_required
   (field : RawText) (blank : Error) (invalid : Error) :
   Result (core.result.Result Norm Error)
@@ -299,7 +301,7 @@ def optional_required
     else ok (core.result.Result.Ok Norm.Set)
 
 /-- [conduit_kernel::optional_clear]:
-    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 288:0-301:1 -/
+    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 290:0-303:1 -/
 def optional_clear
   (field : RawText) (invalid : Error) :
   Result (core.result.Result Norm Error)
@@ -315,7 +317,7 @@ def optional_clear
     else ok (core.result.Result.Ok Norm.Set)
 
 /-- [conduit_kernel::tags_of]:
-    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 303:0-309:1 -/
+    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 305:0-311:1 -/
 def tags_of
   (tags : TagInput) : Result (core.result.Result TagDecision Error) := do
   match tags with
@@ -325,7 +327,7 @@ def tags_of
   | TagInput.List => ok (core.result.Result.Ok TagDecision.Replace)
 
 /-- [conduit_kernel::register]:
-    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 311:0-324:1 -/
+    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 313:0-326:1 -/
 def register
   (username : RawText) (email : RawText) (password : RawText) :
   Result (core.result.Result Reply Error)
@@ -344,7 +346,7 @@ def register
   | core.result.Result.Err e => ok (core.result.Result.Err e)
 
 /-- [conduit_kernel::login]:
-    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 326:0-335:1 -/
+    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 328:0-337:1 -/
 def login
   (email : RawText) (password : RawText) :
   Result (core.result.Result Reply Error)
@@ -359,7 +361,7 @@ def login
   | core.result.Result.Err e => ok (core.result.Result.Err e)
 
 /-- [conduit_kernel::update_user]:
-    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 337:0-379:1 -/
+    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 339:0-381:1 -/
 def update_user
   (username : RawText) (email : RawText) (password : RawText) (bio : RawText)
   (image : RawText) :
@@ -412,7 +414,7 @@ def update_user
   | core.result.Result.Err e => ok (core.result.Result.Err e)
 
 /-- [conduit_kernel::create_article]:
-    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 381:0-403:1 -/
+    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 383:0-405:1 -/
 def create_article
   (title : RawText) (description : RawText) (body : RawText) (tags : TagInput)
   :
@@ -438,7 +440,7 @@ def create_article
   | core.result.Result.Err e => ok (core.result.Result.Err e)
 
 /-- [conduit_kernel::update_article]:
-    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 405:0-443:1 -/
+    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 407:0-445:1 -/
 def update_article
   (view : View) (title : RawText) (description : RawText) (body : RawText)
   (tags : TagInput) :
@@ -510,7 +512,7 @@ def update_article
   | core.result.Result.Err e => ok (core.result.Result.Err e)
 
 /-- [conduit_kernel::delete_article]:
-    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 445:0-453:1 -/
+    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 447:0-455:1 -/
 def delete_article
   (view : View) : Result (core.result.Result Reply Error) := do
   if view.article_exists
@@ -521,7 +523,7 @@ def delete_article
   else ok (core.result.Result.Err Error.ArticleNotFound)
 
 /-- [conduit_kernel::create_comment]:
-    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 455:0-464:1 -/
+    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 457:0-466:1 -/
 def create_comment
   (view : View) (body : RawText) :
   Result (core.result.Result Reply Error)
@@ -535,7 +537,7 @@ def create_comment
   | core.result.Result.Err e => ok (core.result.Result.Err e)
 
 /-- [conduit_kernel::delete_comment]:
-    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 466:0-477:1 -/
+    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 468:0-479:1 -/
 def delete_comment
   (view : View) : Result (core.result.Result Reply Error) := do
   if view.article_exists
@@ -549,7 +551,7 @@ def delete_comment
   else ok (core.result.Result.Err Error.ArticleNotFound)
 
 /-- [conduit_kernel::follow]:
-    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 479:0-494:1 -/
+    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 481:0-496:1 -/
 def follow
   (view : View) (on : Bool) : Result (core.result.Result Reply Error) := do
   if view.profile_exists
@@ -560,7 +562,7 @@ def follow
   else ok (core.result.Result.Err Error.ProfileNotFound)
 
 /-- [conduit_kernel::favorite]:
-    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 496:0-523:1 -/
+    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 498:0-525:1 -/
 def favorite
   (view : View) (on : Bool) : Result (core.result.Result Reply Error) := do
   if view.article_exists
@@ -577,7 +579,7 @@ def favorite
   else ok (core.result.Result.Err Error.ArticleNotFound)
 
 /-- [conduit_kernel::page]:
-    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 525:0-548:1 -/
+    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 527:0-550:1 -/
 def page
   (limit : RawNum) (offset : RawNum) :
   Result (core.result.Result Reply Error)
@@ -602,7 +604,7 @@ def page
       | RawNum.Value n1 => ok (core.result.Result.Ok (Reply.Page limit_n n1))
 
 /-- [conduit_kernel::lower_ascii]:
-    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 550:0-580:1 -/
+    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 552:0-582:1 -/
 def lower_ascii (c : Std.U8) : Result Std.U8 := do
   match c with
   | 65#uscalar => ok 97#u8
@@ -634,7 +636,7 @@ def lower_ascii (c : Std.U8) : Result Std.U8 := do
   | _ => ok c
 
 /-- [conduit_kernel::is_alnum]:
-    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 582:0-584:1 -/
+    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 584:0-586:1 -/
 def is_alnum (c : Std.U8) : Result Bool := do
   if c >= 97#u8
   then
@@ -648,7 +650,7 @@ def is_alnum (c : Std.U8) : Result Bool := do
        else ok false
 
 /-- [conduit_kernel::is_sep]:
-    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 586:0-588:1 -/
+    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 588:0-590:1 -/
 def is_sep (c : Std.U8) : Result Bool := do
   if c = 32#u8
   then ok true
@@ -666,7 +668,7 @@ def is_sep (c : Std.U8) : Result Bool := do
              else ok (c = 95#u8)
 
 /-- [conduit_kernel::push_article]:
-    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 590:0-598:1 -/
+    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 592:0-600:1 -/
 def push_article
   (out : alloc.vec.Vec Std.U8) : Result (alloc.vec.Vec Std.U8) := do
   let out1 ← alloc.vec.Vec.push out 97#u8
@@ -678,7 +680,7 @@ def push_article
   alloc.vec.Vec.push out6 101#u8
 
 /-- [conduit_kernel::slug_base]: loop body 0:
-    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 1:0-618:5 -/
+    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 1:0-620:5 -/
 @[rust_loop_body]
 def slug_base_loop.body
   (title : alloc.vec.Vec Std.U8) (out : alloc.vec.Vec Std.U8) (i : Std.Usize)
@@ -725,7 +727,7 @@ def slug_base_loop.body
   else ok (done out)
 
 /-- [conduit_kernel::slug_base]: loop 0:
-    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 1:0-618:5 -/
+    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 1:0-620:5 -/
 @[rust_loop]
 def slug_base_loop
   (title : alloc.vec.Vec Std.U8) (out : alloc.vec.Vec Std.U8) (i : Std.Usize)
@@ -738,7 +740,7 @@ def slug_base_loop
     (out, i, pending_hyphen)
 
 /-- [conduit_kernel::slug_base]:
-    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 600:0-623:1 -/
+    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 602:0-625:1 -/
 def slug_base
   (title : alloc.vec.Vec Std.U8) : Result (alloc.vec.Vec Std.U8) := do
   let out ← slug_base_loop title (alloc.vec.Vec.new Std.U8) 0#usize false
@@ -748,7 +750,7 @@ def slug_base
   else ok out
 
 /-- [conduit_kernel::digit]:
-    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 625:0-638:1 -/
+    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 627:0-640:1 -/
 def digit (n : Std.U64) : Result Std.U8 := do
   match n with
   | 0#uscalar => ok 48#u8
@@ -763,7 +765,7 @@ def digit (n : Std.U64) : Result Std.U8 := do
   | _ => ok 57#u8
 
 /-- [conduit_kernel::push_u64]: loop body 0:
-    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 1:0-652:5 -/
+    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 1:0-654:5 -/
 @[rust_loop_body]
 def push_u64_loop0.body
   (n : Std.U64) (rev : alloc.vec.Vec Std.U8) (guard : Std.U64) :
@@ -784,7 +786,7 @@ def push_u64_loop0.body
   else ok (done rev)
 
 /-- [conduit_kernel::push_u64]: loop 0:
-    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 1:0-652:5 -/
+    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 1:0-654:5 -/
 @[rust_loop]
 def push_u64_loop0
   (n : Std.U64) (rev : alloc.vec.Vec Std.U8) (guard : Std.U64) :
@@ -795,7 +797,7 @@ def push_u64_loop0
     (n, rev, guard)
 
 /-- [conduit_kernel::push_u64]: loop body 1:
-    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 654:4-657:5 -/
+    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 656:4-659:5 -/
 @[rust_loop_body]
 def push_u64_loop1.body
   (rev : alloc.vec.Vec Std.U8) (out : alloc.vec.Vec Std.U8) (i : Std.Usize) :
@@ -812,7 +814,7 @@ def push_u64_loop1.body
   else ok (done out)
 
 /-- [conduit_kernel::push_u64]: loop 1:
-    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 654:4-657:5 -/
+    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 656:4-659:5 -/
 @[rust_loop]
 def push_u64_loop1
   (out : alloc.vec.Vec Std.U8) (rev : alloc.vec.Vec Std.U8) (i : Std.Usize) :
@@ -823,7 +825,7 @@ def push_u64_loop1
     (out, i)
 
 /-- [conduit_kernel::push_u64]:
-    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 640:0-658:1 -/
+    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 642:0-660:1 -/
 def push_u64
   (out : alloc.vec.Vec Std.U8) (n : Std.U64) :
   Result (alloc.vec.Vec Std.U8)
@@ -836,7 +838,7 @@ def push_u64
     push_u64_loop1 out rev i
 
 /-- [conduit_kernel::make_slug]:
-    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 661:0-668:1
+    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 663:0-670:1
     Visibility: public -/
 def make_slug
   (title : alloc.vec.Vec Std.U8) (n : Std.U64) :
@@ -849,7 +851,7 @@ def make_slug
   else ok out
 
 /-- [conduit_kernel::transition]:
-    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 670:0-711:1
+    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 672:0-713:1
     Visibility: public -/
 def transition
   (view : View) (cmd : Command) : Result (core.result.Result Reply Error) := do
@@ -908,7 +910,7 @@ def transition
       ok (core.result.Result.Ok (Reply.Slug v))
 
 /-- [conduit_kernel::authenticate_login]:
-    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 714:0-720:1
+    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 716:0-722:1
     Visibility: public -/
 def authenticate_login
   (user_exists : Bool) (password_matched : Bool) :
@@ -922,7 +924,7 @@ def authenticate_login
   else ok (core.result.Result.Err Error.InvalidCredentials)
 
 /-- [conduit_kernel::Subject]
-    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 723:0-726:1
+    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 725:0-728:1
     Visibility: public -/
 @[discriminant isize]
 inductive Subject where
@@ -930,7 +932,7 @@ inductive Subject where
 | Parsed : Std.I64 → Subject
 
 /-- [conduit_kernel::TokenInput]
-    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 730:0-734:1
+    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 732:0-736:1
     Visibility: public -/
 @[discriminant isize]
 inductive TokenInput where
@@ -939,7 +941,7 @@ inductive TokenInput where
 | Claims : Subject → Std.U64 → TokenInput
 
 /-- [conduit_kernel::token_user_exists]:
-    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 737:0-739:1
+    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 739:0-741:1
     Visibility: public -/
 def token_user_exists
   («exists» : Bool) : Result (core.result.Result Unit Error) := do
@@ -948,7 +950,7 @@ def token_user_exists
   else ok (core.result.Result.Err Error.InvalidToken)
 
 /-- [conduit_kernel::token_actor]:
-    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 742:0-760:1
+    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 744:0-762:1
     Visibility: public -/
 def token_actor
   (token : TokenInput) (now : Std.U64) (user_exists : Bool) :
@@ -971,5 +973,19 @@ def token_actor
           match r with
           | core.result.Result.Ok _ => ok (core.result.Result.Ok id)
           | core.result.Result.Err e => ok (core.result.Result.Err e)
+
+/-- [conduit_kernel::user_conflicts]:
+    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 765:0-773:1
+    Visibility: public -/
+def user_conflicts
+  (username_taken : Bool) (email_taken : Bool) :
+  Result (core.result.Result Unit Error)
+  := do
+  if username_taken
+  then ok (core.result.Result.Err Error.UsernameTaken)
+  else
+    if email_taken
+    then ok (core.result.Result.Err Error.EmailTaken)
+    else ok (core.result.Result.Ok ())
 
 end conduit_kernel

@@ -11,7 +11,7 @@ use axum::routing::{get, post};
 use axum::{Json, Router};
 use axum::response::{IntoResponse, Response};
 use conduit_kernel::{
-    token_actor, token_user_exists, Subject, TokenInput, authenticate_login, make_slug, shows_body, transition, ArticleView, Command, Delta, Error, Norm,
+    user_conflicts, token_actor, token_user_exists, Subject, TokenInput, authenticate_login, make_slug, shows_body, transition, ArticleView, Command, Delta, Error, Norm,
     RawNum, RawText, Reply, TagDecision, TagInput, View,
 };
 use serde::Deserialize;
@@ -56,6 +56,12 @@ impl IntoResponse for ApiError {
 impl From<sqlx::Error> for ApiError {
     fn from(err: sqlx::Error) -> Self {
         if let Some(field) = unique_field(&err) {
+            if field == "username" || field == "email" {
+                return match user_conflicts(field == "username", field == "email") {
+                    Err(error) => map_kernel(error),
+                    Ok(()) => server_error(),
+                };
+            }
             return api(StatusCode::CONFLICT, field, "has already been taken");
         }
         eprintln!("database: {err}");
@@ -83,6 +89,8 @@ fn unique_field(err: &sqlx::Error) -> Option<&'static str> {
 
 fn map_kernel(err: Error) -> ApiError {
     match err {
+        Error::UsernameTaken => api(StatusCode::CONFLICT, "username", "has already been taken"),
+        Error::EmailTaken => api(StatusCode::CONFLICT, "email", "has already been taken"),
         Error::InvalidToken => api(StatusCode::UNAUTHORIZED, "token", "is invalid"),
         Error::InvalidCredentials => api(StatusCode::UNAUTHORIZED, "credentials", "invalid"),
         Error::Unauthenticated => api(StatusCode::UNAUTHORIZED, "token", "is missing"),
@@ -590,23 +598,15 @@ async fn register(State(app): State<App>, body: Bytes) -> Result<Response, ApiEr
     let email = text_string(&obj, "email");
     let password = text_string(&obj, "password");
     let hash = hash_password(password).await?;
-    let taken: Option<(String, String)> = sqlx::query_as(
-        "SELECT username, email FROM users WHERE username = $1 OR email = $2",
+    let (username_taken, email_taken): (bool, bool) = sqlx::query_as(
+        "SELECT EXISTS(SELECT 1 FROM users WHERE username = $1),
+                EXISTS(SELECT 1 FROM users WHERE email = $2)",
     )
     .bind(&username)
     .bind(&email)
-    .fetch_optional(&app.pool)
+    .fetch_one(&app.pool)
     .await?;
-    if let Some((taken_user, _)) = taken {
-        if taken_user == username {
-            return Err(api(
-                StatusCode::CONFLICT,
-                "username",
-                "has already been taken",
-            ));
-        }
-        return Err(api(StatusCode::CONFLICT, "email", "has already been taken"));
-    }
+    user_conflicts(username_taken, email_taken).map_err(map_kernel)?;
     let user = sqlx::query_as::<_, UserPublic>(
         "INSERT INTO users (username, email, password_hash)
          VALUES ($1, $2, $3)
@@ -719,33 +719,27 @@ async fn update_user(State(app): State<App>, headers: HeaderMap, body: Bytes) ->
     let image_val = text_string(&obj, "image");
     let mut tx = app.pool.begin().await?;
     let _ = load_user_tx(&mut tx, uid).await?;
-    if username == Norm::Set {
-        let clash: Option<i32> = sqlx::query_scalar(
-            "SELECT 1 FROM users WHERE username = $1 AND id <> $2",
+    let username_taken = if username == Norm::Set {
+        sqlx::query_scalar::<_, bool>(
+            "SELECT EXISTS(SELECT 1 FROM users WHERE username = $1 AND id <> $2)",
         )
         .bind(&username_val)
         .bind(uid)
-        .fetch_optional(&mut *tx)
-        .await?;
-        if clash.is_some() {
-            return Err(api(
-                StatusCode::CONFLICT,
-                "username",
-                "has already been taken",
-            ));
-        }
-    }
-    if email == Norm::Set {
-        let clash: Option<i32> =
-            sqlx::query_scalar("SELECT 1 FROM users WHERE email = $1 AND id <> $2")
-                .bind(&email_val)
-                .bind(uid)
-                .fetch_optional(&mut *tx)
-                .await?;
-        if clash.is_some() {
-            return Err(api(StatusCode::CONFLICT, "email", "has already been taken"));
-        }
-    }
+        .fetch_one(&mut *tx)
+        .await?
+    } else { false };
+    // Preserve username-before-email error order, including query failures.
+    user_conflicts(username_taken, false).map_err(map_kernel)?;
+    let email_taken = if email == Norm::Set {
+        sqlx::query_scalar::<_, bool>(
+            "SELECT EXISTS(SELECT 1 FROM users WHERE email = $1 AND id <> $2)",
+        )
+        .bind(&email_val)
+        .bind(uid)
+        .fetch_one(&mut *tx)
+        .await?
+    } else { false };
+    user_conflicts(username_taken, email_taken).map_err(map_kernel)?;
     let user = sqlx::query_as::<_, UserPublic>(
         "UPDATE users SET
            username = CASE WHEN $2::bool THEN $3::text ELSE username END,

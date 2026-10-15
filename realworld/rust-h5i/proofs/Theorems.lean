@@ -283,4 +283,11 @@ theorem token_rejects_invalid (sub : Subject) (exp now : Std.U64) (found : Bool)
     split <;> simp_all
     cases found <;> simp_all
 
+theorem user_conflicts_exact (username email : Bool) :
+    user_conflicts username email ⦃ r =>
+      (r = .Ok () ↔ username = false ∧ email = false) ∧
+      (r = .Err .UsernameTaken ↔ username = true) ∧
+      (r = .Err .EmailTaken ↔ username = false ∧ email = true) ⦄ := by
+  cases username <;> cases email <;> simp [user_conflicts]
+
 end conduit_kernel

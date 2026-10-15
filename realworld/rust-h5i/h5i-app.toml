@@ -2,10 +2,11 @@
 
 [extract]
 crate = "kernel"
-start-from = ["transition", "shows_body", "authenticate_login", "token_actor"]
+start-from = ["transition", "shows_body", "authenticate_login", "token_actor", "user_conflicts"]
 
 [check]
 theorems = [
+  "conduit_kernel.user_conflicts_exact",
   "conduit_kernel.token_rejects_invalid",
   "conduit_kernel.token_missing_guest",
   "conduit_kernel.token_actor_safe",

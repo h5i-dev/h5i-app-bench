@@ -147,6 +147,8 @@ pub enum Error {
     Unauthenticated,
     InvalidCredentials,
     InvalidToken,
+    UsernameTaken,
+    EmailTaken,
     ForbiddenArticle,
     ForbiddenComment,
     ArticleNotFound,
@@ -756,5 +758,16 @@ pub fn token_actor(token: &TokenInput, now: u64, user_exists: bool) -> Result<i6
                 }
             }
         }
+    }
+}
+
+/// Username conflicts take precedence over email conflicts on both writes.
+pub fn user_conflicts(username_taken: bool, email_taken: bool) -> Result<(), Error> {
+    if username_taken {
+        Err(Error::UsernameTaken)
+    } else if email_taken {
+        Err(Error::EmailTaken)
+    } else {
+        Ok(())
     }
 }
