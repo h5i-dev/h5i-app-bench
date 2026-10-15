@@ -1,3 +1,4 @@
+import SpecKeyTables
 import SpecCondData
 open Aeneas Aeneas.Std rustfs_kernel
 namespace rustfs_kernel.Spec
@@ -123,4 +124,43 @@ def QuantifiedLike (q : condfuncs.Quantifier) (negate : Bool)
   match q with
   | .ForAllValues => ∀ value ∈ requests, LikeValue q negate patterns value
   | _ => ∃ value ∈ requests, LikeValue q negate patterns value
+end rustfs_kernel.Spec
+
+namespace rustfs_kernel.Spec
+attribute [local instance] Classical.propDecidable
+/-- Ordered address evaluation stops at the first invalid address or matching
+numeric prefix. Valid addresses outside all prefixes leave evaluation pending. -/
+noncomputable def AddressDecision (table : List (List U8 × Option condfuncs.IpAddr))
+    (networks : List (condfuncs.IpAddr × U8)) : List (List U8) → Option Bool
+  | [] => none
+  | text :: rest =>
+    match ParsedAddress table text with
+    | none => some false
+    | some ip => if AnyNetwork networks ip then some true else AddressDecision table networks rest
+/-- Keys are considered in order. The first key with an invalid address or a
+matching prefix decides the result; absent and empty keys do not decide. -/
+noncomputable def AddressConditions (table : List (List U8 × Option condfuncs.IpAddr))
+    (values : List (List U8 × List (List U8))) :
+    List (condfuncs.Key × List (condfuncs.IpAddr × U8)) → Bool
+  | [] => false
+  | (key,networks) :: rest =>
+    match AddressDecision table networks ((ConditionValues values (LookupName key)).getD []) with
+    | some b => b
+    | none => AddressConditions table values rest
+
+end rustfs_kernel.Spec
+
+namespace rustfs_kernel.Spec
+/-- Equality uses ASCII case conversion when requested. With no quantifier,
+negation is applied by the outer string operator, rather than per value. -/
+def EqualityValue (q : condfuncs.Quantifier) (ignoreCase negate : Bool)
+    (candidates : List (List Nat)) (text : List Nat) : Bool :=
+  let hit := decide ((if ignoreCase then text.map asciiLower else text) ∈ candidates)
+  match q with | .None => hit | _ => hit ^^ negate
+
+def EqualityDecision (q : condfuncs.Quantifier) (ignoreCase negate : Bool)
+    (candidates : List (List Nat)) (requests : List (List Nat)) : Bool :=
+  match q with
+  | .ForAllValues => requests.all (EqualityValue q ignoreCase negate candidates)
+  | _ => requests.any (EqualityValue q ignoreCase negate candidates)
 end rustfs_kernel.Spec

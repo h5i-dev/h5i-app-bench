@@ -5,6 +5,12 @@ start-from = ["policies", "pathclean::clean", "defaults::default_version", "defa
 
 [check]
 theorems = [
+  "rustfs_kernel.Properties.bucket_listing_action_spec",
+  "rustfs_kernel.Properties.statement_resource_bytes_spec",
+  "rustfs_kernel.Properties.statement_action_coverage_spec",
+  "rustfs_kernel.Properties.byte_replacement_spec",
+  "rustfs_kernel.Properties.string_equality_quantifier_spec",
+  "rustfs_kernel.Properties.ip_conditions_spec",
   "rustfs_kernel.Properties.unicode_decode_scalar_spec",
   "rustfs_kernel.Properties.unicode_scalar_roundtrip_spec",
   "rustfs_kernel.Properties.unicode_lower_spec",

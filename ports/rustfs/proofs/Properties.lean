@@ -1,3 +1,8 @@
+import Verified.RustfsStatementResources
+import Verified.RustfsStatementActions
+import Verified.RustfsReplace
+import Verified.RustfsStringEquals
+import Verified.RustfsIpDecision
 import Verified.RustfsUnicodeRoundtrip
 import Verified.RustfsUnicodeLowerBytes
 import Verified.RustfsUnicodeTrimExact
@@ -1365,5 +1370,47 @@ theorem unicode_lower_spec (s : Slice U8) (out : alloc.vec.Vec U8)
 theorem unicode_trim_spec (s : Slice U8) (out : alloc.vec.Vec U8)
     (h : unicode.trim s = ok out) : nats out.val = TrimBytes (nats s.val) :=
   Verified.RustfsUnicodeTrimExact.trim_ok s out h
+
+/-- IP conditions follow the ordered parse-table and numeric-prefix decisions. -/
+theorem ip_conditions_spec
+    (funcs : Slice (condfuncs.Key × alloc.vec.Vec (condfuncs.IpAddr × U8)))
+    (values : alloc.vec.Vec (alloc.vec.Vec U8 × alloc.vec.Vec (alloc.vec.Vec U8)))
+    (env : condfuncs.Env) (b : Bool) (h : condfuncs.addr_func funcs values env = ok b) :
+    b = AddressConditions (env.ips.val.map (fun e => (e.1.val,e.2)))
+      (RequestValueLists values.val) (funcs.val.map (fun e => (e.1,e.2.val))) :=
+  Verified.RustfsIpDecision.conditions_ok funcs values env b h
+
+/-- Equality quantifies the request values after optional ASCII case conversion. -/
+theorem string_equality_quantifier_spec (requests candidates : alloc.vec.Vec (alloc.vec.Vec U8))
+    (q : condfuncs.Quantifier) (ignoreCase negate b : Bool)
+    (h : condfuncs.str_eval_loop q ignoreCase negate requests candidates 0#usize = ok b) :
+    b = EqualityDecision q ignoreCase negate (candidates.val.map (fun v => nats v.val))
+      (requests.val.map (fun v => nats v.val)) :=
+  Verified.RustfsStringEquals.loop_ok requests candidates q ignoreCase negate b h
+
+/-- Action and NotAction coverage includes effect-specific force-delete rules. -/
+theorem statement_action_coverage_spec (actions excluded : Slice acts.Action)
+    (requested : acts.Action) (deny b : Bool)
+    (h : acts.statement_covers actions excluded requested deny = ok b) :
+    b = true ↔ StatementActionCoverage deny actions.val excluded.val requested :=
+  Verified.RustfsStatementActions.coverage_ok actions excluded requested deny b h
+
+/-- Literal substitutions replace every non-overlapping occurrence in order. -/
+theorem byte_replacement_spec (s search replacement : Slice U8) (out : alloc.vec.Vec U8)
+    (h : bytes.replace s search replacement = ok out) :
+    out.val = ReplaceBytes s.val search.val replacement.val :=
+  Verified.RustfsReplace.replace_ok s search replacement out h
+
+/-- Bucket-only resources are selected by exactly these three listing actions. -/
+theorem bucket_listing_action_spec (a : acts.Action) (b : Bool)
+    (h : stmts.is_list_bucket a = ok b) : b=true ↔ ListBucketAction a :=
+  Verified.RustfsStatementResources.list_bucket_ok a b h
+
+/-- Resource construction preserves object bytes and inserts the bucket separator. -/
+theorem statement_resource_bytes_spec (a : acts.Action) (bucket object : Slice U8)
+    (bucketOnly : Bool) (out : alloc.vec.Vec U8)
+    (h : stmts.build_resource a bucket object bucketOnly = ok out) :
+    out.val = RequestResource a bucket.val object.val bucketOnly :=
+  Verified.RustfsStatementResources.build_ok a bucket object bucketOnly out h
 
 end rustfs_kernel.Properties
