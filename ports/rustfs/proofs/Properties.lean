@@ -1,3 +1,4 @@
+import Verified.RustfsUnicodeInterval
 import Verified.RustfsUnicodeWhitespace
 import Verified.RustfsUnicodeTables
 import Verified.RustfsUnicodeStructure
@@ -1193,5 +1194,19 @@ theorem unicode_whitespace_table_structure :
     UnicodeWhitespace.Nodup ∧ UnicodeWhitespace.length = 25 :=
   ⟨Verified.RustfsUnicodeStructure.whitespace_distinct,
    Verified.RustfsUnicodeStructure.whitespace_count⟩
+
+/-- Range mappings cannot produce a surrogate or an out-of-range scalar. -/
+theorem unicode_range_output_valid (cp : U32) (i : Usize) (out : U32 × U32 × Usize)
+    (h : unicode.range_chunk cp i = ok (some out)) :
+    out.2.1.val = 0 ∧ out.2.2.val = 1 ∧ out.1.val < 0x110000 ∧
+      (out.1.val < 0xD800 ∨ 0xDFFF < out.1.val) :=
+  Verified.RustfsUnicodeInterval.chunk_result_valid cp i out h
+
+/-- Table characterization of range dispatch, including absent chunk indices. -/
+theorem unicode_range_dispatch_table (cp : U32) (i : Usize) (out : Option (U32 × U32 × Usize))
+    (h : unicode.range_chunk cp i = ok out) :
+    out.map (fun r => (r.1.val,r.2.1.val,r.2.2.val)) =
+      LookupLowerRanges cp.val ((Verified.RustfsUnicodeChunks.Chunks[i.val]?).getD []) :=
+  Verified.RustfsUnicodeChunks.chunk_ok cp i out h
 
 end rustfs_kernel.Properties
