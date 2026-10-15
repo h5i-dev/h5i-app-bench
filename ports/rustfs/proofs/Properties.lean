@@ -1,3 +1,4 @@
+import Verified.RustfsUnicodeSingleton
 import Verified.RustfsUnicodeTrim
 import Verified.RustfsUnicodeAppend
 import Verified.RustfsUnicodeDecode
@@ -1230,5 +1231,11 @@ theorem unicode_trim_segment (s : Slice U8) (out : alloc.vec.Vec U8)
     (h : unicode.trim s = ok out) :
     ∃ a b : Nat, out.val = (s.val.take b).drop a :=
   Verified.RustfsUnicodeTrim.trim_segment s out h
+
+/-- Table characterization of singleton lowercase exceptions and identity fallback. -/
+theorem unicode_singleton_table (cp : U32) (out : U32 × U32 × Usize)
+    (h : unicode.singleton cp = ok out) :
+    (out.1.val,out.2.1.val,out.2.2.val) = LookupLowerSingleton cp.val :=
+  Verified.RustfsUnicodeSingleton.singleton_ok cp out h
 
 end rustfs_kernel.Properties

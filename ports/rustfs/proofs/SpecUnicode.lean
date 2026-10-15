@@ -315,4 +315,8 @@ def UnicodeWhitespace : List Nat :=
 def LowerRangeEntries : List LowerRange :=
   LowerRanges0 ++ LowerRanges1 ++ LowerRanges2 ++ LowerRanges3 ++ LowerRanges4 ++
   LowerRanges5 ++ LowerRanges6 ++ LowerRanges7 ++ LowerRanges8
+/-- Singleton exception lookup, with identity for unlisted scalars. -/
+def LookupLowerSingleton (cp : Nat) : Nat × Nat × Nat :=
+  ((LowerSingletonEntries.find? (fun r => r.1 == cp)).map
+    (fun r => (r.2.1,r.2.2.1,r.2.2.2))).getD (cp,0,1)
 end rustfs_kernel.Spec
