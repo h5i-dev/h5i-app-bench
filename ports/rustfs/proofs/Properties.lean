@@ -1,3 +1,5 @@
+import Verified.RustfsFindExact
+import Verified.RustfsAwsCollections
 import Verified.RustfsAwsClosing
 import Verified.RustfsAwsValues
 import Verified.RustfsCommonSubstitution
@@ -1463,5 +1465,33 @@ theorem policy_variable_closing_spec (s : Slice U8) (start : Usize) (out : Usize
     (h : awsvars.closing s start = ok out) :
     (out.1.val,out.2.val) = Spec.ClosingAt (Spec.nats s.val) start.val 1 :=
   Verified.RustfsAwsClosing.closing_ok s start out h
+
+/-- Literal byte search returns exactly the earliest occurrence from the offset. -/
+theorem byte_first_occurrence_spec (s p : Slice U8) (start : Usize)
+    (out : Option Usize) (expected : Option Nat)
+    (h : bytes.find_from s start p = ok out) :
+    out.map (·.val) = expected ↔ Spec.FirstOccurrence s.val p.val start.val expected :=
+  Verified.RustfsFindExact.find_iff s p start out expected h
+
+/-- Substitutions preserve replacement order and resume after the inserted bytes. -/
+theorem policy_variable_wrap_spec (pre post : Slice U8)
+    (values : Slice (alloc.vec.Vec U8)) (offset : Usize)
+    (out : alloc.vec.Vec awsvars.Pending) (h : awsvars.wrap_all pre values post offset = ok out) :
+    out.val.map Verified.RustfsAwsCollections.pending =
+      Spec.WrappedValues pre.val (values.val.map (·.val)) post.val offset.val :=
+  Verified.RustfsAwsCollections.wrap_ok pre post values offset out h
+
+/-- Duplicate expansion texts are removed in first-occurrence order. -/
+theorem policy_variable_dedup_spec (xs : Slice (alloc.vec.Vec U8))
+    (out : alloc.vec.Vec (alloc.vec.Vec U8)) (h : awsvars.dedup xs = ok out) :
+    out.val.map (·.val) = Spec.UniqueBytes (xs.val.map (·.val)) :=
+  Verified.RustfsAwsCollections.dedup_ok xs out h
+
+/-- Replacing a pending entry preserves exactly the prefix and suffix around it. -/
+theorem policy_variable_splice_spec (xs replacements : Slice awsvars.Pending) (idx : Usize)
+    (out : alloc.vec.Vec awsvars.Pending)
+    (h : awsvars.splice xs idx replacements = ok out) :
+    out.val = xs.val.take idx.val ++ replacements.val ++ xs.val.drop (idx.val+1) :=
+  Verified.RustfsAwsCollections.splice_ok xs replacements idx out h
 
 end rustfs_kernel.Properties
