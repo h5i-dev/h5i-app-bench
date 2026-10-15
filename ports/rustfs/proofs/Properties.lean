@@ -1,3 +1,5 @@
+import Verified.RustfsUnicodeAppend
+import Verified.RustfsUnicodeDecode
 import Verified.RustfsUnicodeInterval
 import Verified.RustfsUnicodeWhitespace
 import Verified.RustfsUnicodeTables
@@ -1208,5 +1210,18 @@ theorem unicode_range_dispatch_table (cp : U32) (i : Usize) (out : Option (U32 �
     out.map (fun r => (r.1.val,r.2.1.val,r.2.2.val)) =
       LookupLowerRanges cp.val ((Verified.RustfsUnicodeChunks.Chunks[i.val]?).getD []) :=
   Verified.RustfsUnicodeChunks.chunk_ok cp i out h
+
+/-- Successful encoding preserves the existing prefix and appends the scalar's byte width. -/
+theorem unicode_encoding_prefix (initial out : alloc.vec.Vec U8) (cp : U32)
+    (h : unicode.append_scalar initial cp = ok out) :
+    ∃ bs : List U8, out.val = initial.val ++ bs ∧
+      bs.length = Verified.RustfsUnicodeAppend.Utf8Width cp.val :=
+  Verified.RustfsUnicodeAppend.append_preserves_prefix initial out cp h
+
+/-- Successful decoding advances by one to four bytes without crossing the input boundary. -/
+theorem unicode_decoding_progress (s : Slice U8) (i : Usize) (out : U32 × Usize)
+    (h : unicode.scalar_at s i = ok out) :
+    i.val < out.2.val ∧ out.2.val ≤ s.val.length ∧ out.2.val ≤ i.val + 4 :=
+  Verified.RustfsUnicodeDecode.scalar_advances s i out h
 
 end rustfs_kernel.Properties

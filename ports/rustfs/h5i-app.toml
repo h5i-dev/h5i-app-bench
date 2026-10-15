@@ -7,6 +7,8 @@ start-from = ["policies", "pathclean::clean", "defaults::default_version", "defa
 theorems = [
   "rustfs_kernel.Properties.unicode_range_output_valid",
   "rustfs_kernel.Properties.unicode_range_dispatch_table",
+  "rustfs_kernel.Properties.unicode_encoding_prefix",
+  "rustfs_kernel.Properties.unicode_decoding_progress",
   "rustfs_kernel.Properties.unicode_whitespace_table",
   "rustfs_kernel.Properties.unicode_whitespace_table_structure",
   "rustfs_kernel.Properties.unicode_range_0_table",
