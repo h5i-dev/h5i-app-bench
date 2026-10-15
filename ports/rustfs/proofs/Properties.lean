@@ -1,3 +1,4 @@
+import Verified.RustfsResourceSets
 import Verified.RustfsDocuments
 import Verified.RustfsVariableScalars
 import Verified.RustfsVariableIdentity
@@ -801,5 +802,37 @@ theorem document_default_empty :
       out.policy.id.val = [] ∧ out.policy.version.val = [] ∧ out.policy.statements.val = [] ∧
       out.create_date = none ∧ out.update_date = none :=
   Verified.RustfsDocuments.default_doc_ok
+
+/-- Resource-set equality compares membership, independently of order or multiplicity. -/
+theorem resource_set_equality (xs ys : Slice rsrc.Resource) (b : Bool)
+    (h : resets.eq xs ys = ok b) :
+    (b = true ↔ ∀ x, x ∈ xs.val ↔ x ∈ ys.val) :=
+  Verified.RustfsResourceSets.eq_ok xs ys b h
+
+theorem resource_set_membership (xs : Slice rsrc.Resource) (x : rsrc.Resource) (b : Bool)
+    (h : resets.member xs x = ok b) : (b = true ↔ x ∈ xs.val) :=
+  Verified.RustfsResourceSets.member_ok xs x b h
+
+theorem resource_unique_insertion (xs : alloc.vec.Vec rsrc.Resource) (x : rsrc.Resource)
+    (ys : alloc.vec.Vec rsrc.Resource) (h : resets.push_unique xs x = ok ys) :
+    ys.val = if x ∈ xs.val then xs.val else xs.val ++ [x] :=
+  Verified.RustfsResourceSets.push_unique_ok xs x ys h
+
+theorem resource_set_empty (xs : Slice rsrc.Resource) :
+    resets.is_empty xs = ok (decide (xs.val = [])) :=
+  Verified.RustfsResourceSets.empty_ok xs
+
+theorem resource_slice_preserves (xs : Slice rsrc.Resource) : resets.as_slice xs = ok xs :=
+  Verified.RustfsResourceSets.slice_ok xs
+
+theorem resource_match_has_witness (xs : Slice rsrc.Resource) (needle : Slice U8) (b : Bool)
+    (h : resets.set_match_resource xs needle = ok b) :
+    (b = true ↔ ∃ x ∈ xs.val, resets.match_resource x needle = ok true) :=
+  Verified.RustfsResourceSets.set_match_ok xs needle b h
+
+theorem resource_empty_denies (xs : Slice rsrc.Resource) (needle : Slice U8)
+    (values : alloc.vec.Vec ((alloc.vec.Vec U8) × (alloc.vec.Vec (alloc.vec.Vec U8))))
+    (hx : xs.val = []) : resets.set_matches xs needle values = ok false :=
+  Verified.RustfsResourceSets.empty_matches xs needle values hx
 
 end rustfs_kernel.Properties
