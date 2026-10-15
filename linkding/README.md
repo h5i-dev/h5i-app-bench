@@ -77,7 +77,15 @@ linkding/rust-h5i/run.sh   # 127.0.0.1:8104  tokio worker threads = WEB_CONCURRE
 
 ## Benchmark
 
-`scripts/bench-parallel.sh` runs the four implementations and the upstream image at once, each with its own Postgres container and a disjoint CPU set. Scenarios cover bookmark list, text search, `#tag` search, get, create, update, archive, tag list, and a mixed workload. The seed is 50 users, 100000 bookmarks, and 2000 tags. Metrics are requests/s, p50/p90/p99, errors, and peak RSS and CPU. The published shape is 10 s warmup, 30 s measure, 3 repetitions, and concurrency 1, 16, 64, and 256.
+`scripts/bench-parallel.sh` runs the four implementations and the upstream image at once, each with its own Postgres container and a disjoint CPU set. Scenarios cover bookmark list, text search, `#tag` search, get, create, update, archive, tag list, and a mixed workload. The seed is 50 users, 100000 bookmarks owned by alice, and 2000 tags. Metrics are requests/s, p50/p90/p99, errors, and peak RSS and CPU. The published shape is 10 s warmup, 30 s measure, 3 repetitions, and concurrency 1, 16, 64, and 256.
+
+| Implementation | Server CPUs | Postgres CPUs | k6 CPUs | Postgres port | HTTP port |
+| --- | --- | --- | --- | --- | --- |
+| fastapi | 0-3 | 4-7 | 8-11 | 5440 | 8101 |
+| go | 12-15 | 16-19 | 20-23 | 5441 | 8102 |
+| fastify | 24-27 | 28-31 | 32-35 | 5442 | 8103 |
+| rust-h5i | 36-39 | 40-43 | 44-47 | 5443 | 8104 |
+| upstream | 48-51 | 52-55 | 56-59 | 5444 | 8105 |
 
 ## Proofs
 

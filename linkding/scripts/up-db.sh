@@ -60,7 +60,10 @@ if [ "$RESET" = 1 ]; then
     -c "DROP SCHEMA public CASCADE; CREATE SCHEMA public;" >/dev/null
 fi
 
-docker exec -i "$NAME" psql -U linkding -d linkding -v ON_ERROR_STOP=1 \
-  < "$ROOT/schema.sql" >/dev/null
+# The upstream image applies Django migrations itself. Skip schema.sql then.
+if [ "${LINKDING_SKIP_SCHEMA:-0}" != 1 ]; then
+  docker exec -i "$NAME" psql -U linkding -d linkding -v ON_ERROR_STOP=1 \
+    < "$ROOT/schema.sql" >/dev/null
+fi
 
 echo "postgres://linkding:linkding@127.0.0.1:${PORT}/linkding"
