@@ -1,0 +1,29 @@
+# Read by `h5i app extract` and `h5i app check`.
+
+[extract]
+crate = "kernel"
+start-from = [
+  "transition",
+  "can_see_own",
+  "can_see_shared",
+  "page_of",
+  "parse_search",
+  "bookmark_matches",
+  "valid_url",
+]
+
+[check]
+theorems = [
+  "linkding_kernel.guest_cannot_mutate",
+  "linkding_kernel.only_owner_updates_bookmark",
+  "linkding_kernel.only_owner_deletes_bookmark",
+  "linkding_kernel.only_owner_archives_bookmark",
+  "linkding_kernel.guest_may_list_shared",
+  "linkding_kernel.guest_cannot_read_bookmark",
+  "linkding_kernel.can_see_own_spec",
+  "linkding_kernel.can_see_shared_spec",
+  "linkding_kernel.empty_query_matches_all",
+  "linkding_kernel.failed_query_matches_nothing",
+  "linkding_kernel.page_falls_back",
+  "linkding_kernel.page_has_next_iff",
+]

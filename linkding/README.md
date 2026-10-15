@@ -83,4 +83,4 @@ linkding/rust-h5i/run.sh   # 127.0.0.1:8104  tokio worker threads = WEB_CONCURRE
 
 `rust-h5i/kernel` holds authorization, visibility, validation, pagination, and the search parser and match predicate. The HTTP process looks up tokens and rows and calls the kernel. `h5i app extract` writes `rust-h5i/proofs/generated/`. `h5i app check` builds the Lean proofs and rejects `sorry` and new axioms.
 
-Search term matching in the kernel folds ASCII case. SQL `ILIKE` and stored `name_lower` follow the same ASCII inputs used by the suite.
+Search term matching in the kernel folds ASCII case. SQL `ILIKE` and stored `name_lower` follow the same ASCII inputs used by the suite. Legacy search, selected by the viewer's profile flag, is applied in the HTTP process. The kernel evaluates the default query language.
