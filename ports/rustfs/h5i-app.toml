@@ -5,6 +5,16 @@ start-from = ["policies", "pathclean::clean", "defaults::default_version", "defa
 
 [check]
 theorems = [
+  "rustfs_kernel.Properties.condition_key_table_lookup",
+  "rustfs_kernel.Properties.condition_key_table_count",
+  "rustfs_kernel.Properties.condition_key_table_distinct",
+  "rustfs_kernel.Properties.condition_key_table_prefixes",
+  "rustfs_kernel.Properties.condition_key_canonical_membership",
+  "rustfs_kernel.Properties.condition_key_server_derived",
+  "rustfs_kernel.Properties.condition_common_key_table",
+  "rustfs_kernel.Properties.server_derived_name_list",
+  "rustfs_kernel.Properties.server_derived_condition_membership",
+
   "rustfs_kernel.Properties.claim_object_tag_traversal",
   "rustfs_kernel.Properties.claim_array_tag_traversal",
   "rustfs_kernel.Properties.principal_values_normalization",

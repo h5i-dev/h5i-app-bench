@@ -1,3 +1,4 @@
+import Verified.RustfsDerivedMembership
 import Verified.RustfsExtras
 import Verified.RustfsPatternPrefix
 import Verified.RustfsManagementViews
@@ -936,5 +937,51 @@ theorem claim_array_tag_traversal (es : Slice claims.Value) (i : Usize)
     (b : Bool) (h : claims.array_uses_tag es i = ok b) :
     (b = true ↔ ∃ v ∈ es.val.drop i.val, ExistingTagUse v) :=
   (Verified.RustfsClaimTree.all_ok (sizeOf (es.val.drop i.val))).2.2 es i (Nat.le_refl _) b h
+
+
+/-- Data-table characterization: canonical condition-key lookup in declaration order. -/
+theorem condition_key_table_lookup (f : keytables.KeyFamily) (i : Usize) (v : alloc.vec.Vec U8)
+    (h : keytables.key_name f i = ok v) : nats v.val = ((keyNames f)[i.val]?).getD [] :=
+  Verified.RustfsKeyTables.key_name_ok f i v h
+
+/-- Data-table characterization: each family count is its table's length. -/
+theorem condition_key_table_count (f : keytables.KeyFamily) (n : Usize)
+    (h : keytables.key_count f = ok n) : n.val = (keyNames f).length :=
+  Verified.RustfsKeyTables.count_ok f n h
+
+theorem condition_key_table_distinct (f : keytables.KeyFamily) : (keyNames f).Nodup :=
+  Verified.RustfsKeyTables.table_distinct f
+
+theorem condition_key_table_prefixes (f : keytables.KeyFamily) :
+    ∀ n ∈ keyNames f, keyPrefix f <+: n ∧ n ≠ [] :=
+  Verified.RustfsKeyTables.table_prefixes f
+
+/-- Canonical-name membership is exact table membership. -/
+theorem condition_key_canonical_membership (f : keytables.KeyFamily) (needle : Slice U8) (b : Bool)
+    (h : keytables.contains_name f needle = ok b) : (b = true ↔ nats needle.val ∈ keyNames f) :=
+  Verified.RustfsKeyTables.contains_name_ok f needle b h
+
+theorem condition_key_server_derived (f : keytables.KeyFamily) (needle : Slice U8) (b : Bool)
+    (h : keytables.is_server_derived f needle = ok b) :
+    (b = true ↔ nats needle.val ∈ keyNames f ∧
+      (f ≠ .S3 ∨ ¬ lit "s3:x-amz-" <+: nats needle.val)) :=
+  Verified.RustfsKeyTables.server_derived_ok f needle b h
+
+/-- Data-table characterization of common names and their variable spellings. -/
+theorem condition_common_key_table (i : Usize) (out : alloc.vec.Vec U8 × alloc.vec.Vec U8)
+    (h : keynames.common_key i = ok out) :
+    (nats out.1.val,nats out.2.val) = (commonKeyEntries[i.val]?).getD ([],[]) :=
+  Verified.RustfsCommonKeys.common_ok i out h
+
+/-- Filtering retains table order and repeated names. -/
+theorem server_derived_name_list (out : alloc.vec.Vec (alloc.vec.Vec U8))
+    (h : keytables.server_derived_key_names = ok out) :
+    out.val.map (fun v => nats v.val) = serverDerivedNames :=
+  Verified.RustfsDerivedKeys.derived_names_ok out h
+
+theorem server_derived_condition_membership (needle : Slice U8) (b : Bool)
+    (h : keytables.is_server_derived_condition_key needle = ok b) :
+    (b = true ↔ ∃ n ∈ serverDerivedNames, n.map asciiLower = (nats needle.val).map asciiLower) :=
+  Verified.RustfsDerivedMembership.condition_key_ok needle b h
 
 end rustfs_kernel.Properties
