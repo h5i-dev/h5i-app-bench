@@ -924,4 +924,17 @@ theorem pattern_prefix_exact (p t : Slice U8) (b : Bool)
     (h : extras.is_match_as_pattern_prefix p t = ok b) : (b = true ↔ PatternPrefix p.val t.val) :=
   Verified.RustfsPatternPrefix.prefix_ok p t b h
 
+
+/-- Object traversal finds a tag key or a recursively tag-using value in the remaining suffix. -/
+theorem claim_object_tag_traversal (es : Slice (alloc.vec.Vec U8 × claims.Value)) (i : Usize)
+    (b : Bool) (h : claims.object_uses_tag es i = ok b) :
+    (b = true ↔ ∃ e ∈ es.val.drop i.val, ExistingTagKey (nats e.1.val) ∨ ExistingTagUse e.2) :=
+  (Verified.RustfsClaimTree.all_ok (sizeOf (es.val.drop i.val))).2.1 es i (Nat.le_refl _) b h
+
+/-- Array traversal finds a recursively tag-using value in the remaining suffix. -/
+theorem claim_array_tag_traversal (es : Slice claims.Value) (i : Usize)
+    (b : Bool) (h : claims.array_uses_tag es i = ok b) :
+    (b = true ↔ ∃ v ∈ es.val.drop i.val, ExistingTagUse v) :=
+  (Verified.RustfsClaimTree.all_ok (sizeOf (es.val.drop i.val))).2.2 es i (Nat.le_refl _) b h
+
 end rustfs_kernel.Properties
