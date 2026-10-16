@@ -1045,34 +1045,52 @@ fn list(s: &Snapshot, token: &Text, flt: &Filter, limit: u64, offset: u64) -> Ou
     }
 }
 
-fn list_reply(s: &Snapshot, token: &Text, flt: &Filter, limit: u64, offset: u64) -> Result<Reply, Error> {
-    let viewer = tri!(actor(s, token));
-    if viewer == 0 && flt.scope != SCOPE_SHARED {
-        return Err(Error::Unauthenticated);
-    }
-    let me = find_user(&s.users, viewer);
-    let (lax, legacy) = match &me {
+/// What a listing resolves once: the caller and their search settings,
+/// `?user=`, the bundle, the parsed query, and for a paged listing its
+/// `simple_query` (tags lowercased).
+struct ListCtx {
+    viewer: u64,
+    lax: bool,
+    legacy: bool,
+    owner_filter: Option<u64>,
+    bundle: Option<Bundle>,
+    parsed: Parsed,
+    tags_wanted: bool,
+    paged: bool,
+    simple_tags: Vec<Text>,
+    simple_unread: bool,
+}
+
+fn search_flags(me: &Option<User>) -> (bool, bool) {
+    match me {
         Some(u) => (u.lax, u.legacy),
         None => (false, false),
-    };
-    let owner_filter = if flt.scope == SCOPE_SHARED {
-        match &flt.user {
-            None => None,
-            Some(name) => {
-                if name.len() == 0 {
-                    None
-                } else {
-                    match find_user_by_name(&s.users, name) {
-                        Some(o) => Some(o.id),
-                        None => None,
-                    }
+    }
+}
+
+/// `?user=`'s id in a shared listing.
+fn owner_filter_of(s: &Snapshot, flt: &Filter) -> Option<u64> {
+    if flt.scope != SCOPE_SHARED {
+        return None;
+    }
+    match &flt.user {
+        None => None,
+        Some(name) => {
+            if name.len() == 0 {
+                None
+            } else {
+                match find_user_by_name(&s.users, name) {
+                    Some(o) => Some(o.id),
+                    None => None,
                 }
             }
         }
-    } else {
-        None
-    };
-    let bundle = match flt.bundle {
+    }
+}
+
+/// The caller's bundle `?bundle=` names.
+fn bundle_of(s: &Snapshot, flt: &Filter, viewer: u64) -> Option<Bundle> {
+    match flt.bundle {
         None => None,
         Some(id) => {
             if viewer == 0 {
@@ -1090,23 +1108,135 @@ fn list_reply(s: &Snapshot, token: &Text, flt: &Filter, limit: u64, offset: u64)
                 }
             }
         }
-    };
+    }
+}
+
+fn lower_all(v: &Vec<Text>) -> Vec<Text> {
+    let mut out = Vec::new();
+    let mut i = 0;
+    while i < v.len() {
+        out.push(lower_text(&v[i]));
+        i += 1;
+    }
+    out
+}
+
+fn list_ctx(s: &Snapshot, flt: &Filter, viewer: u64) -> ListCtx {
+    let me = find_user(&s.users, viewer);
+    let (lax, legacy) = search_flags(&me);
+    let owner_filter = owner_filter_of(s, flt);
+    let bundle = bundle_of(s, flt, viewer);
     let parsed = parse_search(&flt.q);
     let tags_wanted = lax || bundle.is_some() || mentions_tags(&flt.q);
-    let mut sel: Vec<Bookmark> = Vec::new();
+    let pg = paged(flt);
+    let (simple_tags, simple_unread) = if pg {
+        match simple_query(&flt.q) {
+            Some((t, u)) => (lower_all(&t), u),
+            None => (Vec::new(), false),
+        }
+    } else {
+        (Vec::new(), false)
+    };
+    ListCtx { viewer, lax, legacy, owner_filter, bundle, parsed, tags_wanted, paged: pg, simple_tags, simple_unread }
+}
+
+/// Tag `tag` exists with lowercased name `lower`.
+fn tag_is(s: &Snapshot, tag: u64, lower: &Text) -> bool {
     let mut i = 0;
-    while i < s.bookmarks.len() {
-        let b = &s.bookmarks[i];
-        let in_scope = if flt.scope == SCOPE_SHARED {
-            shared_visible(s, viewer, b, owner_filter)
-        } else {
-            b.owner == viewer && b.archived == (flt.scope == SCOPE_ARCHIVED)
-        };
-        if in_scope && selected(s, flt, &parsed, lax, legacy, &bundle, tags_wanted, b) {
-            sel.push(b.clone());
+    while i < s.tags.len() {
+        if s.tags[i].id == tag && s.tags[i].name_lower == *lower {
+            return true;
         }
         i += 1;
     }
+    false
+}
+
+/// Bookmark `id` has a tag whose lowercased name is `lower`.
+fn has_tag_lower(s: &Snapshot, id: u64, lower: &Text) -> bool {
+    let mut i = 0;
+    while i < s.links.len() {
+        if s.links[i].bookmark == id && tag_is(s, s.links[i].tag, lower) {
+            return true;
+        }
+        i += 1;
+    }
+    false
+}
+
+fn all_tagged(s: &Snapshot, id: u64, lowers: &Vec<Text>) -> bool {
+    let mut i = 0;
+    while i < lowers.len() {
+        if !has_tag_lower(s, id, &lowers[i]) {
+            return false;
+        }
+        i += 1;
+    }
+    true
+}
+
+/// A paged listing selects what its read does (`paged_pred`): the unread
+/// and shared rules, `!unread`, and each `#tag`. These are the queries both
+/// search modes read as exactly that (`simple_query`).
+fn simple_selected(s: &Snapshot, flt: &Filter, ctx: &ListCtx, b: &Bookmark) -> bool {
+    if !flag_filter(flt.unread, b.unread) || !flag_filter(flt.shared, b.shared) {
+        return false;
+    }
+    if ctx.simple_unread && !b.unread {
+        return false;
+    }
+    all_tagged(s, b.id, &ctx.simple_tags)
+}
+
+fn in_scope(s: &Snapshot, flt: &Filter, ctx: &ListCtx, b: &Bookmark) -> bool {
+    if flt.scope == SCOPE_SHARED {
+        shared_visible(s, ctx.viewer, b, ctx.owner_filter)
+    } else {
+        b.owner == ctx.viewer && b.archived == (flt.scope == SCOPE_ARCHIVED)
+    }
+}
+
+fn keep(s: &Snapshot, flt: &Filter, ctx: &ListCtx, b: &Bookmark) -> bool {
+    if !in_scope(s, flt, ctx, b) {
+        return false;
+    }
+    if ctx.paged {
+        simple_selected(s, flt, ctx, b)
+    } else {
+        selected(s, flt, &ctx.parsed, ctx.lax, ctx.legacy, &ctx.bundle, ctx.tags_wanted, b)
+    }
+}
+
+/// The listing's bookmarks before sorting, in key order.
+fn select(s: &Snapshot, flt: &Filter, ctx: &ListCtx) -> Vec<Bookmark> {
+    let mut sel: Vec<Bookmark> = Vec::new();
+    let mut i = 0;
+    while i < s.bookmarks.len() {
+        if keep(s, flt, ctx, &s.bookmarks[i]) {
+            sel.push(s.bookmarks[i].clone());
+        }
+        i += 1;
+    }
+    sel
+}
+
+fn views(s: &Snapshot, page: &Vec<Bookmark>) -> Vec<BookmarkView> {
+    let mut items = Vec::new();
+    let mut j = 0;
+    while j < page.len() {
+        items.push(view(s, &page[j]));
+        j += 1;
+    }
+    items
+}
+
+fn list_reply(s: &Snapshot, token: &Text, flt: &Filter, limit: u64, offset: u64) -> Result<Reply, Error> {
+    let viewer = tri!(actor(s, token));
+    if viewer == 0 && flt.scope != SCOPE_SHARED {
+        return Err(Error::Unauthenticated);
+    }
+    let ctx = list_ctx(s, flt, viewer);
+    let sel = select(s, flt, &ctx);
     // One owner's bookmarks load in key order: by date added, then id.
     let sorted = if flt.scope != SCOPE_SHARED && flt.sort == SORT_ADDED_DESC {
         reversed(&sel)
@@ -1114,13 +1244,8 @@ fn list_reply(s: &Snapshot, token: &Text, flt: &Filter, limit: u64, offset: u64)
         sort_bookmarks(&sel, flt.sort)
     };
     let page = page_bookmarks(&sorted, offset, limit);
-    let mut items = Vec::new();
-    let mut j = 0;
-    while j < page.len() {
-        items.push(view(s, &page[j]));
-        j += 1;
-    }
-    let count = if paged(flt) { None } else { Some(sorted.len() as u64) };
+    let items = views(s, &page);
+    let count = if ctx.paged { None } else { Some(sorted.len() as u64) };
     Ok(Reply::Bookmarks { items, count })
 }
 
