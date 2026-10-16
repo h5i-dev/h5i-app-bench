@@ -1,3 +1,4 @@
+import Verified.RustfsResourceMeaning
 import Verified.RustfsPathFull
 import Verified.RustfsFunctionsMeaning
 import Verified.RustfsStringEval
@@ -1785,5 +1786,27 @@ theorem functions_evaluation_spec (f : condfuncs.Functions)
     b=true ↔ FunctionsHold (ctx.map Verified.RustfsAwsValues.context) (RequestValueLists values.val)
       (env.ips.val.map (fun e => (e.1.val,e.2))) f :=
   Verified.RustfsFunctionsMeaning.functions_ok f values ctx env b h
+
+theorem resource_pattern_evaluation_spec (pattern resource : Slice U8)
+    (values : alloc.vec.Vec (alloc.vec.Vec U8 × alloc.vec.Vec (alloc.vec.Vec U8))) (b : Bool)
+    (h : rsrc.pattern_matches pattern resource values=ok b) :
+    b=true ↔ ResourcePatternHolds (RequestValueLists values.val) (nats pattern.val) (nats resource.val) :=
+  Verified.RustfsResourceMeaning.pattern_ok pattern resource values b h
+
+theorem resource_evaluation_spec (r : rsrc.Resource) (resource : Slice U8)
+    (values : alloc.vec.Vec (alloc.vec.Vec U8 × alloc.vec.Vec (alloc.vec.Vec U8)))
+    (ctx : Option awsvars.VarContext) (b : Bool)
+    (h : rsrc.resource_is_match r resource values ctx=ok b) :
+    b=true ↔ ResourceHolds (ctx.map Verified.RustfsAwsValues.context) (RequestValueLists values.val)
+      (ResourceText r) (nats resource.val) :=
+  Verified.RustfsResourceMeaning.resource_ok r resource values ctx b h
+
+theorem resource_set_evaluation_spec (set : Slice rsrc.Resource) (resource : Slice U8)
+    (values : alloc.vec.Vec (alloc.vec.Vec U8 × alloc.vec.Vec (alloc.vec.Vec U8)))
+    (ctx : Option awsvars.VarContext) (b : Bool)
+    (h : rsrc.set_is_match set resource values ctx=ok b) :
+    b=true ↔ ResourceSetHolds (ctx.map Verified.RustfsAwsValues.context) (RequestValueLists values.val)
+      (set.val.map ResourceText) (nats resource.val) :=
+  Verified.RustfsResourceMeaning.set_ok set resource values ctx b h
 
 end rustfs_kernel.Properties
