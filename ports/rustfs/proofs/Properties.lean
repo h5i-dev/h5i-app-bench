@@ -1,3 +1,4 @@
+import Verified.RustfsPathFull
 import Verified.RustfsFunctionsMeaning
 import Verified.RustfsStringEval
 import Verified.RustfsAwsDepthMeaning
@@ -187,6 +188,13 @@ theorem clean_idempotent (p : Slice U8) (c : alloc.vec.Vec U8) (h : pathclean.cl
 theorem clean_canonical (p : Slice U8) (c : alloc.vec.Vec U8) (h : pathclean.clean p = ok c) :
     CleanShape (nats c.val) := by
   apply rustfs_kernel.Verified.RustfsCleanCanonical.clean_canonical <;> assumption
+
+/-- Path normalization removes slash and dot components, traverses parents with the
+relative-path barrier, and represents an empty result as a dot. -/
+theorem clean_exact (p : Slice U8) (c : alloc.vec.Vec U8) (h : pathclean.clean p=ok c) :
+    nats c.val=CleanPath (nats p.val) :=
+  Verified.RustfsPathFull.clean_meaning p c h
+
 
 /-- The condition parser reads integers as `str::parse::<i64>` does. -/
 theorem parse_i64_spec (s : Slice U8) :

@@ -211,6 +211,7 @@ theorems = [
   "rustfs_kernel.Properties.wildcard_is_glob",
   "rustfs_kernel.Properties.clean_idempotent",
   "rustfs_kernel.Properties.clean_canonical",
+  "rustfs_kernel.Properties.clean_exact",
   "rustfs_kernel.Properties.parse_i64_spec",
   "rustfs_kernel.Properties.resolution_terminates",
   "rustfs_kernel.Properties.readonly_allows_only_reads",
