@@ -15,7 +15,11 @@ pub enum PrincipalValues {
 /// Input Multiple values represent an upstream HashSet; remove repeated list entries.
 pub fn principal_values_into_set(values: PrincipalValues) -> Vec<Vec<u8>> {
     match values {
-        PrincipalValues::Single(s) => vec![s],
+        PrincipalValues::Single(s) => {
+            let mut __v = Vec::new();
+            __v.push(s);
+            __v
+        }
         PrincipalValues::Multiple(v) => unique_values(&v),
     }
 }

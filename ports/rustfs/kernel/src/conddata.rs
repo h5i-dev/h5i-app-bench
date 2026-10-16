@@ -208,7 +208,7 @@ fn string_inner_eq(left: &StringFunc, right: &StringFunc) -> bool {
     }
     let mut i = 0;
     while i < left.entries.len() {
-        if left.entries[i].key != right.entries[i].key
+        if !key_eq(&left.entries[i].key, &right.entries[i].key)
             || !string_set_eq(&left.entries[i].values, &right.entries[i].values)
         {
             return false;
@@ -223,8 +223,85 @@ fn binary_inner_eq(left: &BinaryFunc, right: &BinaryFunc) -> bool {
     }
     let mut i = 0;
     while i < left.entries.len() {
-        if left.entries[i].key != right.entries[i].key
+        if !key_eq(&left.entries[i].key, &right.entries[i].key)
             || !binary_eq(&left.entries[i].values, &right.entries[i].values)
+        {
+            return false;
+        }
+        i += 1;
+    }
+    true
+}
+/// `Key`'s derived `PartialEq`, field by field.
+pub fn key_eq(a: &Key, b: &Key) -> bool {
+    if !bytes::eq(&a.key_name, &b.key_name) || !bytes::eq(&a.name, &b.name) {
+        return false;
+    }
+    match (&a.variable, &b.variable) {
+        (None, None) => true,
+        (Some(x), Some(y)) => bytes::eq(x, y),
+        _ => false,
+    }
+}
+/// `AddrFunc`'s derived `PartialEq`: entries in order, keys and (address, prefix) pairs.
+fn addr_inner_eq(left: &AddrFunc, right: &AddrFunc) -> bool {
+    if left.entries.len() != right.entries.len() {
+        return false;
+    }
+    let mut i = 0;
+    while i < left.entries.len() {
+        if !key_eq(&left.entries[i].key, &right.entries[i].key)
+            || !addr_pairs_eq(&left.entries[i].values, &right.entries[i].values)
+        {
+            return false;
+        }
+        i += 1;
+    }
+    true
+}
+fn addr_pairs_eq(l: &[(IpAddr, u8)], r: &[(IpAddr, u8)]) -> bool {
+    if l.len() != r.len() {
+        return false;
+    }
+    let mut j = 0;
+    while j < l.len() {
+        if !(l[j].0 == r[j].0) || l[j].1 != r[j].1 {
+            return false;
+        }
+        j += 1;
+    }
+    true
+}
+/// `BoolFunc`'s derived `PartialEq`: entries in order.
+fn bool_inner_eq(left: &BoolFunc, right: &BoolFunc) -> bool {
+    if left.entries.len() != right.entries.len() {
+        return false;
+    }
+    let mut i = 0;
+    while i < left.entries.len() {
+        if !key_eq(&left.entries[i].key, &right.entries[i].key) {
+            return false;
+        }
+        if left.entries[i].values {
+            if !right.entries[i].values {
+                return false;
+            }
+        } else if right.entries[i].values {
+            return false;
+        }
+        i += 1;
+    }
+    true
+}
+/// `NumberFunc`'s derived `PartialEq`: entries in order.
+fn num_inner_eq(left: &NumberFunc, right: &NumberFunc) -> bool {
+    if left.entries.len() != right.entries.len() {
+        return false;
+    }
+    let mut i = 0;
+    while i < left.entries.len() {
+        if !key_eq(&left.entries[i].key, &right.entries[i].key)
+            || left.entries[i].values != right.entries[i].values
         {
             return false;
         }
@@ -240,9 +317,9 @@ pub fn condition_eq(left: &Condition, right: &Condition) -> bool {
     match (&left.data, &right.data) {
         (Data::Str(l), Data::Str(r)) => string_inner_eq(l, r),
         (Data::Binary(l), Data::Binary(r)) => binary_inner_eq(l, r),
-        (Data::Addr(l), Data::Addr(r)) => l == r,
-        (Data::Boolean(l), Data::Boolean(r)) => l == r,
-        (Data::Num(l), Data::Num(r)) => l == r,
+        (Data::Addr(l), Data::Addr(r)) => addr_inner_eq(l, r),
+        (Data::Boolean(l), Data::Boolean(r)) => bool_inner_eq(l, r),
+        (Data::Num(l), Data::Num(r)) => num_inner_eq(l, r),
         (Data::Date(l), Data::Date(r)) => date_inner_eq(l, r),
         _ => false,
     }
@@ -349,7 +426,11 @@ pub fn decode_base64(encoded: &[u8]) -> Result<Vec<u8>, BinaryFuncValueError> {
 }
 /// `BinaryFuncValue::new`.
 pub fn binary_new(encoded: &[u8]) -> Result<BinaryFuncValue, BinaryFuncValueError> {
-    binary_from_encoded_values(vec![encoded.to_vec()])
+    binary_from_encoded_values({
+        let mut __v = Vec::new();
+        __v.push(encoded.to_vec());
+        __v
+    })
 }
 /// `BinaryFuncValue::from_encoded_values`: retain order and stop at the first invalid value.
 pub fn binary_from_encoded_values(
@@ -579,7 +660,7 @@ fn date_inner_eq(left: &DateFunc, right: &DateFunc) -> bool {
     }
     let mut i = 0;
     while i < left.entries.len() {
-        if left.entries[i].key != right.entries[i].key
+        if !key_eq(&left.entries[i].key, &right.entries[i].key)
             || left.entries[i].values.unix_nanos != right.entries[i].values.unix_nanos
         {
             return false;

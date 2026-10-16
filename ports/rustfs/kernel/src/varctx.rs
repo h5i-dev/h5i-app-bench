@@ -72,7 +72,11 @@ pub fn get_claim_as_strings(resolver: &VariableResolver, name: &[u8]) -> Option<
     match &table[i].1 {
         Value::Array(array) => Some(array_strings(array)),
         value => match scalar_string(value) {
-            Some(s) => Some(vec![s]),
+            Some(s) => Some({
+                let mut __v = Vec::new();
+                __v.push(s);
+                __v
+            }),
             None => None,
         },
     }
@@ -192,7 +196,11 @@ pub fn resolve_multiple(
 ) -> Option<Vec<Vec<u8>>> {
     if bytes::eq(name, b"aws:username") {
         return match resolve_username(resolver) {
-            Some(v) => Some(vec![v]),
+            Some(v) => Some({
+                let mut __v = Vec::new();
+                __v.push(v);
+                __v
+            }),
             None => None,
         };
     }
@@ -203,7 +211,11 @@ pub fn resolve_multiple(
         };
     }
     match resolve(resolver, name, env) {
-        Some(v) => Some(vec![v]),
+        Some(v) => Some({
+            let mut __v = Vec::new();
+            __v.push(v);
+            __v
+        }),
         None => None,
     }
 }
