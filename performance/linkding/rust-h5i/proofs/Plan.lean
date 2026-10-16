@@ -112,6 +112,17 @@ theorem foldlM_slice {α β : Type} (l : List α) (K : α → Bool) (step step' 
   rw [foldlM_congr (l.filter K) step step' (fun x hx a => by
     obtain ⟨hm, hk⟩ := List.mem_filter.1 hx; exact hsame x hm hk a), foldlM_filter l K step hskip a]
 
+theorem foldlM_total {α β : Type} (step : β → α → Result β) (h : ∀ a x, ∃ r, step a x = ok r) :
+    ∀ (l : List α) (a : β), ∃ r, l.foldlM step a = ok r := by
+  intro l
+  induction l with
+  | nil => intro a; exact ⟨a, rfl⟩
+  | cons x xs ih =>
+    intro a
+    obtain ⟨a1, h1⟩ := h a x
+    obtain ⟨r, hr⟩ := ih a1
+    exact ⟨r, by simp only [List.foldlM_cons, h1, bind_tc_ok]; exact hr⟩
+
 /-- Unfolds a loop body over `v` to the shape `loop_foldlM` takes. -/
 macro "body_shape" v:term:max : tactic => `(tactic| (
   by_cases hlt : (‹Usize›).val < ($v).val.length
@@ -169,6 +180,25 @@ theorem lower_text_ok (t v : alloc.vec.Vec U8) (h : lower_text t = ok v) : v = l
   apply alloc.vec.Vec.ext
   rw [key _ _ _ ha]; simp [lowerT, alloc.vec.Vec.from_val]
 
+
+theorem lower_text_total (t : alloc.vec.Vec U8) : lower_text t = ok (lowerT t) := by
+  rw [lower_text_eq]
+  simp only [lower_ascii_eq, bind_ok]
+  have key : ∀ (l : List U8) (out : alloc.vec.Vec U8), out.val.length + l.length ≤ Usize.max →
+      ∃ w : alloc.vec.Vec U8, l.foldlM (fun (out : alloc.vec.Vec U8) c => out.push (lowerB c)) out = ok w ∧
+        w.val = out.val ++ l.map lowerB := by
+    intro l
+    induction l with
+    | nil => intro out _; exact ⟨out, rfl, by simp⟩
+    | cons c cs ih =>
+      intro out hl
+      simp only [List.length_cons] at hl
+      obtain ⟨o1, h1, h2⟩ := (WP.spec_equiv_exists _ _).1 (alloc.vec.Vec.push_spec out (lowerB c) (by omega))
+      obtain ⟨w, hw, hwv⟩ := ih o1 (by rw [h2]; simp; omega)
+      exact ⟨w, by simp only [List.foldlM_cons, h1, bind_tc_ok]; exact hw, by rw [hwv, h2]; simp⟩
+  obtain ⟨w, hw, hwv⟩ := key t.val (alloc.vec.Vec.new U8) (by simp)
+  rw [hw]; simp only [bind_tc_ok, bind_ok]
+  congr 1; apply alloc.vec.Vec.ext; rw [hwv]; simp [lowerT, vec_new_val, alloc.vec.Vec.from_val]
 
 /-! ## The plans, written out
 
