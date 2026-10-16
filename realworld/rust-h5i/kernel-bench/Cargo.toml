@@ -1,0 +1,12 @@
+[package]
+name = "conduit-kernel-bench"
+edition = "2024"
+version = "0.1.0"
+publish = false
+
+[[bin]]
+name = "kernel-bench"
+path = "src/main.rs"
+
+[dependencies]
+conduit-kernel = { path = "../kernel" }

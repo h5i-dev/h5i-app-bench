@@ -1,0 +1,32 @@
+[package]
+name = "conduit-server"
+description = "The RealWorld Conduit API on the verified conduit kernel, with a PostgreSQL store"
+edition = "2024"
+license = "Apache-2.0"
+version = "0.1.0"
+publish = false
+
+[dependencies]
+# h5i-app from git, h5i main (pinned in Cargo.lock; the Lean library in
+# proofs/lakefile.lean and lake-manifest.json is pinned to the same commit).
+h5i-app-core = { git = "https://github.com/h5i-dev/h5i", branch = "main" }
+h5i-app-pg = { git = "https://github.com/h5i-dev/h5i", branch = "main" }
+h5i-app-http = { git = "https://github.com/h5i-dev/h5i", branch = "main" }
+h5i-app-json = { git = "https://github.com/h5i-dev/h5i", branch = "main" }
+conduit-kernel = { path = "../kernel" }
+axum = "0.8"
+tokio = { version = "1", features = ["macros", "rt-multi-thread", "time", "signal"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+# Passwords (cost 12) and tokens (HS256, `sub` = user id), as the RealWorld
+# benchmark's other servers.
+bcrypt = "0.17"
+jsonwebtoken = "9"
+# Sends a listing's count with its plan on one connection.
+futures-util = { version = "0.3", default-features = false, features = ["alloc"] }
+
+[dev-dependencies]
+# `examples/load.rs` seeds the benchmark data with plain SQL.
+tokio-postgres = "0.7"

@@ -1,0 +1,9 @@
+[package]
+name = "conduit-kernel"
+description = "Conduit authorization and validation decisions, in the Aeneas subset"
+edition = "2024"
+version = "0.1.0"
+publish = false
+
+# No dependencies: Charon and Aeneas extract this crate to Lean.
+[dependencies]
