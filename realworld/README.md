@@ -1,7 +1,8 @@
 # RealWorld (Conduit) backends
 
-Four implementations of the [RealWorld API](https://github.com/realworld-apps/realworld),
-sharing one PostgreSQL schema, plus a load benchmark.
+Five implementations of the [RealWorld API](https://github.com/realworld-apps/realworld),
+four sharing one PostgreSQL schema and one on h5i-app's own tables, plus a
+load benchmark.
 
 | Directory | Stack |
 | --- | --- |
@@ -10,6 +11,7 @@ sharing one PostgreSQL schema, plus a load benchmark.
 | `go/` | Go, chi, pgx |
 | `fastify/` | TypeScript, Fastify, postgres.js |
 | `rust-h5i/` | Rust, axum, sqlx, h5i-app kernel and Lean proofs |
+| `rust-h5i-app/` | Rust, axum, the h5i-app engine (`h5i-app-pg`): Conduit from the [h5i-app cookbook](https://github.com/h5i-dev/h5i-app-cookbook/tree/main/conduit), pinned by git revision |
 | `bench/` | Seed, k6 scenarios, raw results, summary |
 | `schema.sql` | The shared database |
 
@@ -47,7 +49,8 @@ process tree to CPUs 8–15.
 Hurl is expected at `/var/tmp/tools/hurl`.
 
 ```sh
-realworld/scripts/test-all.sh                 # all four, ports 8001–8004
+realworld/scripts/test-all.sh                 # the four, ports 8001–8004
+realworld/scripts/test-all.sh rust-h5i-app    # port 8005
 realworld/scripts/test-all.sh fastapi         # one implementation
 HOST=http://127.0.0.1:8001 realworld/scripts/test-one.sh
 ```
@@ -68,6 +71,7 @@ realworld/fastapi/run.sh     # 127.0.0.1:8001  uvicorn workers = WEB_CONCURRENCY
 realworld/go/run.sh          # 127.0.0.1:8002  GOMAXPROCS = WEB_CONCURRENCY
 realworld/fastify/run.sh     # 127.0.0.1:8003  node cluster size = WEB_CONCURRENCY
 realworld/rust-h5i/run.sh    # 127.0.0.1:8004  tokio worker threads = WEB_CONCURRENCY
+realworld/rust-h5i-app/run.sh  # 127.0.0.1:8005  tokio worker threads = WEB_CONCURRENCY
 ```
 
 Release builds: `cargo build --release` (target dir `/var/tmp/rw-target`),
@@ -104,3 +108,31 @@ atomic writes; username/email constraint failures also use the kernel conflict
 decision. HTTP/JSON encoding and SQL execution remain shell I/O. Slug collision
 retries and their storage errors remain with persistence. Per-viewer following
 and favorited observations still come from SQL joins.
+
+## rust-h5i-app
+
+`rust-h5i-app/` runs the [Conduit entry of the h5i-app cookbook](https://github.com/h5i-dev/h5i-app-cookbook/tree/main/conduit) at a
+pinned revision (`rust-h5i-app/Cargo.toml`); its kernel, server, Lean proofs
+and their gate (`h5i app extract --check`, `h5i app check`, 627 theorems)
+live there. It is a standard h5i-app application: every request runs in the
+`h5i-app-pg` engine, which loads the rows the kernel's extracted read plan
+names (`Frame.frame` proves they are enough), calls the kernel, and stores
+the writes the kernel plans in one SERIALIZABLE transaction; read-only
+commands run on a deferrable read-only snapshot. It passes the same pinned
+Hurl suite.
+
+Its rows live in h5i-app's own tables (schema `conduit`, a `tenant_id` in
+every key, text as UTF-8 `bytea`, times in milliseconds), not in
+`schema.sql`'s. The benchmark gives it the same data: each point runs
+`bench/seed.sql` as for the others and then `bench/seed_h5i_app.sql`, which
+copies those rows (ids, slugs, bcrypt hashes, timestamps) into its tables
+and sets its id counters to continue after them.
+`bench/check_h5i_app_seed.sql` compares the two row for row.
+
+What differs from the other four, as the cookbook's README lists: request
+validation, bcrypt, JWTs, slugs and the clock are in the shell, as in
+`rust-h5i`; the login reads the stored hash through the engine and the
+kernel accepts it only if it equals the stored one; `tagList` comes back
+sorted by tag (the order the tags table loads), where the shared schema
+keeps the order given, so seeded articles list e.g. `["tag0", "tag19"]`
+instead of `["tag19", "tag0"]`.

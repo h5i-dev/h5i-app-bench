@@ -1,0 +1,19 @@
+# Conduit from the h5i-app cookbook, run as the RealWorld benchmark's fifth
+# server. The kernel, the server, the Lean proofs and their gate live in the
+# cookbook (conduit/ at the pinned revision); this crate only starts it.
+[workspace]
+
+[package]
+name = "rust-h5i-app"
+edition = "2024"
+version = "0.1.0"
+publish = false
+
+[[bin]]
+name = "conduit-h5i-app"
+path = "src/main.rs"
+
+[dependencies]
+# Pinned: a commit of github.com/h5i-dev/h5i-app-cookbook main. It depends on
+# the h5i crates by git; Cargo.lock pins those too.
+conduit-server = { git = "https://github.com/h5i-dev/h5i-app-cookbook", rev = "9b037afc8357dcbd87fb7ee5430ef5b6b38d9d72" }
