@@ -1,3 +1,4 @@
+import Verified.RustfsStatementMeaning
 import Verified.RustfsKmsMeaning
 import Verified.RustfsBPMeaning
 import Verified.RustfsStatementContext
@@ -1836,5 +1837,18 @@ theorem kms_scope_evaluation_spec (st : stmts.Statement) (args : stmts.Args)
     (h : stmts.kms_key_scope_matches st args ctx=ok b) :
     b=true ↔ KmsScopeHolds (ctx.map Verified.RustfsAwsValues.context) st args :=
   Verified.RustfsKmsMeaning.scope_ok st args ctx b h
+
+/-- Identity matching includes action coverage, KMS selection, and explicit resource skips. -/
+theorem statement_matching_spec (st : stmts.Statement) (args : stmts.Args)
+    (ctx : Option awsvars.VarContext) (b : Bool)
+    (h : stmts.reaches_condition_eval st args ctx=ok b) :
+    b=true ↔ StatementReaches (ctx.map Verified.RustfsAwsValues.context) st args :=
+  Verified.RustfsStatementMeaning.reaches_ok st args ctx b h
+
+/-- Identity statement effects apply to matching conjoined with condition satisfaction. -/
+theorem statement_allowed_spec (st : stmts.Statement) (args : stmts.Args)
+    (env : condfuncs.Env) (b : Bool) (h : stmts.statement_is_allowed st args env=ok b) :
+    b=true ↔ StatementAllowed st args env :=
+  Verified.RustfsStatementMeaning.allowed_ok st args env b h
 
 end rustfs_kernel.Properties
