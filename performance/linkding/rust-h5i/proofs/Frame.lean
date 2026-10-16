@@ -990,6 +990,185 @@ theorem select_slice {KB : Bookmark → Bool} (h : s'.bookmarks.val = s.bookmark
   · intro b hm hk a
     simp only [selStep, hsame b hm hk]
 
+/-! ### A paged listing's rule -/
+
+/-- Tag `tag` has lowercased name `lower`. -/
+def tagIs (s : Snapshot) (tag : U64) (lower : Text) : Bool :=
+  s.tags.val.any (fun x => decide (x.id = tag) && decide (x.name_lower = lower))
+
+/-- Bookmark `id` has a tag of lowercased name `lower`. -/
+def hasTag (s : Snapshot) (id : U64) (lower : Text) : Bool :=
+  s.links.val.any (fun l => decide (l.bookmark = id) && tagIs s l.tag lower)
+
+theorem tag_is_eq (s : Snapshot) (tag : U64) (lower : Text) : tag_is s tag lower = ok (tagIs s tag lower) := by
+  apply eq_ok_of_spec
+  unfold tag_is tag_is_loop tagIs
+  h5i_search_any s.tags.val (fun x => decide (x.id = tag) && decide (x.name_lower = lower))
+
+@[step] theorem tag_is_spec (s : Snapshot) (tag : U64) (lower : Text) : tag_is s tag lower ⦃ r => r = tagIs s tag lower ⦄ := by
+  rw [tag_is_eq]; simp
+
+theorem has_tag_lower_eq (s : Snapshot) (id : U64) (lower : Text) : has_tag_lower s id lower = ok (hasTag s id lower) := by
+  apply eq_ok_of_spec
+  unfold has_tag_lower has_tag_lower_loop hasTag
+  h5i_search_any s.links.val (fun l => decide (l.bookmark = id) && tagIs s l.tag lower)
+
+@[step] theorem has_tag_lower_spec (s : Snapshot) (id : U64) (lower : Text) :
+    has_tag_lower s id lower ⦃ r => r = hasTag s id lower ⦄ := by
+  rw [has_tag_lower_eq]; simp
+
+theorem all_tagged_eq (s : Snapshot) (id : U64) (lowers : alloc.vec.Vec Text) :
+    all_tagged s id lowers = ok (lowers.val.all (fun lw => hasTag s id lw)) := by
+  apply eq_ok_of_spec
+  unfold all_tagged all_tagged_loop
+  apply WP.spec_mono (loop_search lowers.val (fun lw => !hasTag s id lw) (fun b : Bool => b) (fun _ _ => false) true _ ?_ 0#usize (by simp))
+  · intro r hr
+    rw [search_all _ _ _ hr]; simp
+  · intro j hj; unfold all_tagged_loop.body; h5i_step
+
+theorem flag_filter_eq (rule : U8) (value : Bool) :
+    flag_filter rule value = ok (if rule = FLAG_YES then value else if rule = FLAG_NO then !value else true) := by
+  unfold flag_filter; split <;> (try split) <;> simp_all
+
+/-- Links of bookmark `id` and their tags loaded: `hasTag` reads the same. -/
+theorem hasTag_slice {KL : Link → Bool} {KT : Tag → Bool} (hl : s'.links.val = s.links.val.filter KL)
+    (ht : s'.tags.val = s.tags.val.filter KT) (id : U64) (lower : Text)
+    (hkl : ∀ l ∈ s.links.val, l.bookmark = id → KL l)
+    (hkt : ∀ l ∈ s.links.val, l.bookmark = id → ∀ x ∈ s.tags.val, x.id = l.tag → KT x) :
+    hasTag s' id lower = hasTag s id lower := by
+  unfold hasTag
+  rw [hl]
+  apply Bool.eq_iff_iff.2
+  simp only [List.any_eq_true, List.mem_filter, Bool.and_eq_true, decide_eq_true_eq]
+  constructor
+  · rintro ⟨l, ⟨hlm, -⟩, hb, hti⟩
+    refine ⟨l, hlm, hb, ?_⟩
+    unfold tagIs at hti ⊢; rw [ht] at hti
+    rw [any_slice _ _ _ (fun x hx hp => hkt l hlm hb x hx (by simp at hp; exact hp.1))] at hti; exact hti
+  · rintro ⟨l, hlm, hb, hti⟩
+    refine ⟨l, ⟨hlm, hkl l hlm hb⟩, hb, ?_⟩
+    unfold tagIs at hti ⊢; rw [ht]
+    rw [any_slice _ _ _ (fun x hx hp => hkt l hlm hb x hx (by simp at hp; exact hp.1))]; exact hti
+
+/-- A listing's unread or shared rule. -/
+def flagOk (rule : U8) (value : Bool) : Bool :=
+  if rule = FLAG_YES then value else if rule = FLAG_NO then !value else true
+
+/-- What a paged listing selects (`paged_pred`, `simple_selected`). -/
+def pagedSel (s : Snapshot) (v : U64) (flt : Filter) (tags : List Text) (u : Bool) (b : Bookmark) : Bool :=
+  decide (b.owner = v) && decide (b.archived = decide (flt.scope = SCOPE_ARCHIVED)) && flagOk flt.unread b.unread &&
+    flagOk flt.shared b.shared && (!u || b.unread) && tags.all (fun x => hasTag s b.id (lowerT x))
+
+theorem taggedA_holds (lower : Text) (b : Bookmark) :
+    (taggedA lower).holds (Snapshot.enc s) (Bookmark.row b) = hasTag s b.id lower := by
+  simp only [taggedA, holds_in_4, Bookmark.row, hasTag, tagIs]
+  simp only [List.getElem?_cons_succ, List.getElem?_cons_zero, Window.apply_default]
+  apply Bool.eq_iff_iff.2
+  simp only [List.any_eq_true, List.mem_filter, decide_eq_true_eq, Bool.and_eq_true]
+  constructor
+  · rintro ⟨l, ⟨hlm, hin⟩, hlb⟩
+    simp only [holds_in_3, Link.row, List.getElem?_cons_succ, List.getElem?_cons_zero, Window.apply_default,
+      List.any_eq_true, List.mem_filter, decide_eq_true_eq] at hin
+    obtain ⟨x, ⟨hxm, hxl⟩, hxi⟩ := hin
+    refine ⟨l, hlm, by simpa [Link.row] using hlb, x, hxm, ?_, ?_⟩
+    · simpa [Tag.row] using hxi
+    · simpa [eqB, Tag.row] using hxl
+  · rintro ⟨l, hlm, hlb, x, hxm, hxi, hxl⟩
+    refine ⟨l, ⟨hlm, ?_⟩, by simp [Link.row, hlb]⟩
+    simp only [holds_in_3, Link.row, List.getElem?_cons_succ, List.getElem?_cons_zero, Window.apply_default,
+      List.any_eq_true, List.mem_filter, decide_eq_true_eq]
+    exact ⟨x, ⟨hxm, by simp [eqB, Tag.row, hxl]⟩, by simp [Tag.row, hxi]⟩
+
+theorem simpleA_holds (tags : List Text) (u : Bool) (b : Bookmark) :
+    (simpleA tags u).holds (Snapshot.enc s) (Bookmark.row b) =
+      ((!u || b.unread) && tags.all (fun x => hasTag s b.id (lowerT x))) := by
+  unfold simpleA
+  have : ∀ (l : List Text) (base : Pred Val), (l.foldl (fun p x => .and p (taggedA (lowerT x))) base).holds
+      (Snapshot.enc s) (Bookmark.row b) = (base.holds (Snapshot.enc s) (Bookmark.row b) && l.all (fun x => hasTag s b.id (lowerT x))) := by
+    intro l
+    induction l with
+    | nil => intro base; simp
+    | cons x xs ih => intro base; rw [List.foldl_cons, ih, holds_and, taggedA_holds]; simp [Bool.and_assoc]
+  rw [this]
+  cases u <;> simp [eqT, Bookmark.row]
+
+theorem flagA_holds (col : Nat) (rule : U8) (base : Pred Val) (r : List Val) (x : Bool) (hx : r[col]? = some (.Bool x)) :
+    (flagA col rule base).holds (Snapshot.enc s) r = (base.holds (Snapshot.enc s) r && flagOk rule x) := by
+  unfold flagA flagOk
+  split
+  · simp [eqT, hx]
+  · split
+    · cases x <;> simp [eqT, hx]
+    · simp
+
+theorem pagedPred_holds (hk : Keys s) {t : Text} {v : U64} (ha : actorOf s t = .Ok v) (h0 : v ≠ 0#u64) (flt : Filter)
+    {tags : alloc.vec.Vec Text} {u : Bool} (hq : simple_query flt.q = ok (some (tags, u))) (b : Bookmark) :
+    (pagedPredA t flt.scope flt.q flt.unread flt.shared).holds (Snapshot.enc s) (Bookmark.row b) =
+      pagedSel s v flt tags.val u b := by
+  have hm : (simple_query flt.q).match = .ok (some (tags, u)) := by rw [hq]; rfl
+  unfold pagedPredA
+  rw [flagA_holds 10 _ _ _ b.shared (by simp [Bookmark.row]), flagA_holds 8 _ _ _ b.unread (by simp [Bookmark.row]),
+    holds_and, scopeA, holds_and, mine_holds_iff hk ha h0 b.owner (Bookmark.row b) 0 (by simp [Bookmark.row])]
+  simp only [searchA, hm, simpleA_holds, pagedSel]
+  simp only [eqT, holds_eq, Bookmark.row]
+  simp only [List.getElem?_cons_succ, List.getElem?_cons_zero, Option.some.injEq, h5i_app_sql.Val.Bool.injEq]
+  cases decide (b.owner = v) <;> cases b.archived <;> cases flagOk flt.unread b.unread <;>
+    cases flagOk flt.shared b.shared <;> simp [Bool.and_assoc]
+
+theorem bool_chain (a f1 f2 u un T : Bool) :
+    (if a = true then (if f1 = true then (if f2 = true then (if u = true then (if un = true then ok T else ok false)
+      else ok T) else ok false) else ok false) else ok false : Result Bool) =
+      ok (a && f1 && f2 && (!u || un) && T) := by
+  cases a <;> cases f1 <;> cases f2 <;> cases u <;> cases un <;> rfl
+
+theorem keep_paged_eq (flt : Filter) (ctx : ListCtx) (v : U64) (tags : alloc.vec.Vec Text) (u : Bool)
+    (hsc : flt.scope ≠ SCOPE_SHARED) (hv : ctx.viewer = v) (hp : ctx.paged = true)
+    (ht : ctx.simple_tags.val = tags.val.map lowerT) (hu : ctx.simple_unread = u) (b : Bookmark) :
+    keep s flt ctx b = ok (pagedSel s v flt tags.val u b) := by
+  unfold keep in_scope simple_selected
+  simp only [hsc, if_false, hv, hp, if_true, hu, flag_filter_eq, all_tagged_eq, ht, List.all_map, bind_tc_ok, bind_ok]
+  by_cases ho : b.owner = v
+  · simp only [ho, if_true, bind_tc_ok, bind_ok]
+    rw [bool_chain]
+    have e1 : decide ((b.archived = true) = (flt.scope = SCOPE_ARCHIVED)) =
+        decide (b.archived = decide (flt.scope = SCOPE_ARCHIVED)) := by
+      cases b.archived <;> by_cases hs : flt.scope = SCOPE_ARCHIVED <;> simp [hs]
+    rw [e1]
+    simp only [pagedSel, flagOk, ho, decide_true, Bool.true_and]
+    rfl
+  · simp only [ho, if_false, bind_tc_ok, bind_ok, Bool.false_eq_true]
+    simp [pagedSel, ho]
+
+
+/-- `select` with a `keep` that is a value: the bookmarks it keeps. -/
+theorem select_filter (flt : Filter) (ctx : ListCtx) (Q : Bookmark → Bool)
+    (hq : ∀ b ∈ s.bookmarks.val, keep s flt ctx b = ok (Q b)) :
+    select s flt ctx ⦃ w => w.val = s.bookmarks.val.filter Q ⦄ := by
+  rw [select_eq]
+  have key : ∀ (l : List Bookmark) (acc : alloc.vec.Vec Bookmark), (∀ b ∈ l, b ∈ s.bookmarks.val) →
+      acc.val.length + l.length ≤ Usize.max →
+      ∃ w : alloc.vec.Vec Bookmark, l.foldlM (selStep s flt ctx) acc = ok w ∧ w.val = acc.val ++ l.filter Q := by
+    intro l
+    induction l with
+    | nil => intro acc _ _; exact ⟨acc, rfl, by simp⟩
+    | cons x xs ih =>
+      intro acc hl hlen
+      simp only [List.length_cons] at hlen
+      have hx := hq x (hl x (by simp))
+      by_cases hqx : Q x = true
+      · obtain ⟨o1, h1, h2⟩ := (WP.spec_equiv_exists _ _).1 (alloc.vec.Vec.push_spec acc x (by omega))
+        obtain ⟨w, hw, hwv⟩ := ih o1 (fun b hb => hl b (by simp [hb])) (by rw [h2]; simp; omega)
+        refine ⟨w, ?_, by rw [hwv, h2]; simp [hqx]⟩
+        simp only [List.foldlM_cons, selStep, hx, hqx, if_true, Schema.Bookmark.clone_eq, h1, bind_tc_ok, bind_ok]
+        exact hw
+      · obtain ⟨w, hw, hwv⟩ := ih acc (fun b hb => hl b (by simp [hb])) (by omega)
+        refine ⟨w, ?_, by rw [hwv]; simp [hqx]⟩
+        simp only [Bool.not_eq_true] at hqx
+        simp only [List.foldlM_cons, selStep, hx, hqx, Bool.false_eq_true, if_false, bind_tc_ok, bind_ok]
+        exact hw
+  obtain ⟨w, hw, hwv⟩ := key s.bookmarks.val (alloc.vec.Vec.new Bookmark) (fun b hb => hb) (by simp)
+  rw [hw]; simp [hwv, vec_new_val]
+
 end Lookups
 
 /-! ## Commands -/
@@ -1621,6 +1800,128 @@ theorem list_shared_frame (hk : Keys s) (flt : Filter) (lim off : U64) (hsc : fl
         obtain ⟨hbm, hkeep⟩ := hmem b (hpm b hb')
         have hkb := hvis b hbm ctx hkeep
         exact view_slice hl ht b (hkl b hbm hkb) (hkt b hbm hkb))]
+
+theorem paged_facts {flt : Filter} (h : paged flt = ok true) :
+    flt.scope ≠ SCOPE_SHARED ∧ flt.sort = SORT_ADDED_DESC ∧ flt.bundle = none := by
+  unfold paged at h
+  by_cases h1 : flt.scope = SCOPE_SHARED
+  · simp [h1] at h
+  · by_cases h2 : flt.sort = SORT_ADDED_DESC
+    · refine ⟨h1, h2, ?_⟩
+      cases hb : flt.bundle with
+      | none => rfl
+      | some x => simp [h1, h2, hb] at h
+    · simp [h1, h2] at h
+
+/-- The newest `offset + limit` rows hold the page of the reversed list. -/
+theorem page_newestW (l : List Bookmark) (off lim : U64) :
+    (((newestW off lim).apply l).reverse.drop off.val).take lim.val = (l.reverse.drop off.val).take lim.val := by
+  unfold newestW
+  split
+  · simp [Window.apply, cut]
+  · exact page_of_newest l off.val lim.val
+
+theorem list_paged_frame (hk : Keys s) (flt : Filter) (lim off : U64) (hpg : pagedOf flt = true) :
+    list_reply (Snapshot.load (callerA t ++ [⟨2, pagedPredA t flt.scope flt.q flt.unread flt.shared, newestW off lim⟩] ++
+      tagReadsA (pagedPredA t flt.scope flt.q flt.unread flt.shared) (newestW off lim)) s) t flt lim off =
+      list_reply s t flt lim off := by
+  have hpg' : paged flt = ok true := by
+    cases hpm : (paged flt).match with
+    | ok b => simp [pagedOf, hpm] at hpg; subst hpg; exact Result.match.isOk.1 hpm
+    | vis e k => simp [pagedOf, hpm] at hpg
+    | div => simp [pagedOf, hpm] at hpg
+  obtain ⟨hsc, hsort, hbun⟩ := paged_facts hpg'
+  generalize hP : pagedPredA t flt.scope flt.q flt.unread flt.shared = P
+  generalize hW : newestW off lim = W
+  have hcall := caller_slice s t ([⟨2, P, W⟩] ++ tagReadsA P W)
+  simp only [List.append_assoc] at hcall ⊢
+  generalize hp : callerA t ++ ([⟨2, P, W⟩] ++ tagReadsA P W) = plan at hcall ⊢
+  have hb : (Snapshot.load plan s).bookmarks.val = W.apply (s.bookmarks.val.filter (fun x => P.holds (Snapshot.enc s) (Bookmark.row x))) := by
+    subst hp; simp [pickRows, callerA, tagReadsA]
+  have hl : (Snapshot.load plan s).links.val = s.links.val.filter
+      (fun x => (Pred.isIn 0 2 P 2 W).holds (Snapshot.enc s) (Link.row x)) := by
+    subst hp; simp [pickRows, callerA, tagReadsA]
+  have ht : (Snapshot.load plan s).tags.val = s.tags.val.filter (fun x =>
+      (Pred.isIn 0 4 (Pred.isIn 0 2 P 2 W) 1 {}).holds (Snapshot.enc s) (Tag.row x)) := by
+    subst hp; simp [pickRows, callerA, tagReadsA]
+  have hu : (Snapshot.load plan s).users.val = s.users.val.filter
+      (fun x => (mineA 0 t).holds (Snapshot.enc s) (User.row x)) := by
+    subst hp; simp [pickRows, callerA]
+  -- The window's links and tags are loaded.
+  have hkl : ∀ b ∈ W.apply (s.bookmarks.val.filter (fun x => P.holds (Snapshot.enc s) (Bookmark.row x))),
+      ∀ l ∈ s.links.val, l.bookmark = b.id → (Pred.isIn 0 2 P 2 W).holds (Snapshot.enc s) (Link.row l) := by
+    intro b hbw l _ hl'
+    simp only [holds_in_2, Link.row]; simp only [List.getElem?_cons_zero]
+    simp only [List.any_eq_true, decide_eq_true_eq]
+    exact ⟨b, hbw, by simp [Bookmark.row, hl']⟩
+  have hkt : ∀ b ∈ W.apply (s.bookmarks.val.filter (fun x => P.holds (Snapshot.enc s) (Bookmark.row x))),
+      ∀ l ∈ s.links.val, l.bookmark = b.id → ∀ x ∈ s.tags.val, x.id = l.tag →
+        (Pred.isIn 0 4 (Pred.isIn 0 2 P 2 W) 1 {}).holds (Snapshot.enc s) (Tag.row x) := by
+    intro b hbw l hlm hl' x _ hx
+    simp only [holds_in_4, Tag.row]; simp only [List.getElem?_cons_zero, Window.apply_default]
+    simp only [List.any_eq_true, List.mem_filter, decide_eq_true_eq]
+    exact ⟨l, ⟨hlm, hkl b hbw l hlm hl'⟩, by simp [Link.row, hx]⟩
+  have hsc' : (flt.scope != SCOPE_SHARED) = true := by simpa using hsc
+  unfold list_reply
+  rw [hcall.1, eq_ok_of_spec (actor_spec s t)]
+  simp only [bind_ok]
+  cases ha : actorOf s t with
+  | Err e => rfl
+  | Ok v =>
+    dsimp only
+    split
+    · simp only [hsc', if_true]
+    · rename_i h0
+      have hof : owner_filter_of (Snapshot.load plan s) flt = owner_filter_of s flt := by
+        unfold owner_filter_of; simp [hsc']
+      rw [list_ctx_slice flt v (find_user_viewer_slice hk hu (fun x _ h => h) ha) hof
+        (bundle_of_slice hk flt ha (fun id hid => by simp [hbun] at hid))]
+      apply bind_congr_ok; intro ctx hctx
+      obtain ⟨hcv, -, -, hpgc, hsim⟩ := list_ctx_ok hctx
+      have hcp : ctx.paged = true := by rw [hpg'] at hpgc; simp at hpgc; exact hpgc
+      obtain ⟨tags, u, hq, hts, hsu⟩ := hsim hcp
+      have hPS : ∀ b, P.holds (Snapshot.enc s) (Bookmark.row b) = pagedSel s v flt tags.val u b := by
+        intro b; subst hP; exact pagedPred_holds hk ha h0 flt hq b
+      -- The full selection.
+      obtain ⟨F, hF, hFv⟩ := (WP.spec_equiv_exists _ _).1 (select_filter flt ctx (pagedSel s v flt tags.val u)
+        (fun b _ => keep_paged_eq flt ctx v tags u hsc hcv hcp hts hsu b))
+      -- The slice's selection: the window.
+      have hwin : ∀ b ∈ (Snapshot.load plan s).bookmarks.val,
+          pagedSel (Snapshot.load plan s) v flt tags.val u b = pagedSel s v flt tags.val u b := by
+        intro b hbm
+        rw [hb] at hbm
+        have hh : ∀ lw, hasTag (Snapshot.load plan s) b.id lw = hasTag s b.id lw :=
+          fun lw => hasTag_slice hl ht b.id lw (hkl b hbm) (hkt b hbm)
+        simp only [pagedSel, hh]
+      obtain ⟨F', hF', hFv'⟩ := (WP.spec_equiv_exists _ _).1 (select_filter flt ctx
+        (pagedSel (Snapshot.load plan s) v flt tags.val u) (fun b _ => keep_paged_eq flt ctx v tags u hsc hcv hcp hts hsu b))
+      have hF'w : F'.val = W.apply (s.bookmarks.val.filter (fun x => P.holds (Snapshot.enc s) (Bookmark.row x))) := by
+        rw [hFv', List.filter_eq_self.2, hb]
+        intro b hbm
+        rw [hwin b hbm, ← hPS]
+        rw [hb] at hbm
+        exact (List.mem_filter.1 (Window.mem_apply hbm)).2
+      rw [hF', hF]
+      simp only [bind_tc_ok, bind_ok, hsc', hsort, if_true]
+      obtain ⟨R', hR', hRv'⟩ := (WP.spec_equiv_exists _ _).1 (reversed_spec F')
+      obtain ⟨R, hR, hRv⟩ := (WP.spec_equiv_exists _ _).1 (reversed_spec F)
+      rw [hR', hR]; simp only [bind_tc_ok, bind_ok]
+      obtain ⟨P1, hP1, hPv1⟩ := (WP.spec_equiv_exists _ _).1 (page_bookmarks_spec R' off lim)
+      obtain ⟨P2, hP2, hPv2⟩ := (WP.spec_equiv_exists _ _).1 (page_bookmarks_spec R off lim)
+      rw [hP1, hP2]; simp only [bind_tc_ok, bind_ok]
+      have hFP : s.bookmarks.val.filter (fun x => P.holds (Snapshot.enc s) (Bookmark.row x)) = F.val := by
+        rw [hFv]; exact List.filter_congr (fun b _ => hPS b)
+      have hPP : P1 = P2 := by
+        apply alloc.vec.Vec.ext
+        rw [hPv1, hPv2, hRv', hRv, hF'w, hFP, ← hW, page_newestW]
+      subst hPP
+      rw [views_slice P1 (fun b hb' => by
+        have hbw : b ∈ W.apply (s.bookmarks.val.filter (fun x => P.holds (Snapshot.enc s) (Bookmark.row x))) := by
+          rw [← hF'w]
+          rw [hPv1, hRv'] at hb'
+          exact List.mem_reverse.1 (List.mem_of_mem_drop (List.mem_of_mem_take hb'))
+        exact view_slice hl ht b (hkl b hbw) (hkt b hbw))]
+      simp only [hcp, if_true]
 
 end Commands
 
