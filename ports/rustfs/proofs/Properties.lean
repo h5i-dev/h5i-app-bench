@@ -1,3 +1,4 @@
+import Verified.RustfsStringEval
 import Verified.RustfsAwsDepthMeaning
 import Verified.RustfsAwsLayout
 import Verified.RustfsAwsMeaning
@@ -1708,5 +1709,35 @@ theorem policy_variable_depth_resolution_spec (ctx : awsvars.VarContext) (text :
     (h : awsvars.resolve_aws_variables_with_depth ctx text depth=ok out) :
     out.val.map (fun v => nats v.val)=ExpandVariables (Verified.RustfsAwsValues.context ctx) depth.val (nats text.val) :=
   Verified.RustfsAwsResolution.depth_ok ctx text depth out h
+
+/-- String policy candidates resolve variables, substitute common keys, and optionally fold ASCII case. -/
+theorem string_policy_candidates_spec (policy : Slice (alloc.vec.Vec U8))
+    (values : alloc.vec.Vec (alloc.vec.Vec U8 × alloc.vec.Vec (alloc.vec.Vec U8)))
+    (ctx : Option awsvars.VarContext) (ignoreCase : Bool)
+    (out : alloc.vec.Vec (alloc.vec.Vec U8))
+    (h : condfuncs.policy_values policy values ctx ignoreCase=ok out) :
+    Verified.RustfsPolicyValues.texts out.val=PolicyCandidates (ctx.map Verified.RustfsAwsValues.context)
+      (RequestValueLists values.val) ignoreCase (Verified.RustfsPolicyValues.texts policy.val) :=
+  Verified.RustfsPolicyValues.policy_values_ok policy values ctx ignoreCase out h
+
+/-- Equality operators compute the quantified comparison of fully resolved policy candidates. -/
+theorem string_evaluation_spec (key : condfuncs.Key) (policy : Slice (alloc.vec.Vec U8))
+    (q : condfuncs.Quantifier) (ignoreCase negate : Bool)
+    (values : alloc.vec.Vec (alloc.vec.Vec U8 × alloc.vec.Vec (alloc.vec.Vec U8)))
+    (ctx : Option awsvars.VarContext) (b : Bool)
+    (h : condfuncs.str_eval key policy q ignoreCase negate values ctx=ok b) :
+    b=StringEqualityEval (ctx.map Verified.RustfsAwsValues.context) (RequestValueLists values.val)
+      key (Verified.RustfsPolicyValues.texts policy.val) q ignoreCase negate :=
+  Verified.RustfsStringEval.equality_ok key policy q ignoreCase negate values ctx b h
+
+/-- Wildcard operators compute the quantified glob relation over resolved policy candidates. -/
+theorem string_like_evaluation_spec (key : condfuncs.Key) (policy : Slice (alloc.vec.Vec U8))
+    (q : condfuncs.Quantifier) (negate : Bool)
+    (values : alloc.vec.Vec (alloc.vec.Vec U8 × alloc.vec.Vec (alloc.vec.Vec U8)))
+    (ctx : Option awsvars.VarContext) (b : Bool)
+    (h : condfuncs.str_eval_like key policy q negate values ctx=ok b) :
+    b=true ↔ StringLikeEval (ctx.map Verified.RustfsAwsValues.context) (RequestValueLists values.val)
+      key (Verified.RustfsPolicyValues.texts policy.val) q negate :=
+  Verified.RustfsStringEval.like_ok key policy q negate values ctx b h
 
 end rustfs_kernel.Properties
