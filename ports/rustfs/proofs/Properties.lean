@@ -1,3 +1,4 @@
+import Verified.RustfsDateOffset
 import Verified.RustfsDateFraction
 import Verified.RustfsDateLeap
 import Verified.RustfsDateFields
@@ -1889,5 +1890,10 @@ theorem date_leap_second_spec (utc localDay year month day : I64) (r : Bool)
     (h : dates.leap_valid utc localDay year month day=ok r) :
     r=true ↔ LeapSecondValid utc.val localDay.val year.val month.val day.val :=
   Verified.RustfsDateLeap.leap_ok utc localDay year month day r h
+
+theorem date_offset_spec (s : Slice U8) (i : Usize) (r : Option I64)
+    (h : dates.offset s i=ok r) :
+    r.map (·.val)=DateOffset (nats s.val) i.val :=
+  Verified.RustfsDateOffset.offset_ok s i r h
 
 end rustfs_kernel.Properties
