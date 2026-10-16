@@ -50,7 +50,15 @@ run_impl() {
   setsid nice -n 19 taskset -c "$CPUS" "$dir/run.sh" > "$LOG_DIR/${name}.log" 2>&1 &
   pids+=("$!")
   wait_health "$port"
-  HOST="http://127.0.0.1:${port}" "$ROOT/scripts/test-one.sh"
+  if [ "$name" = rust-h5i ]; then
+    # Its own tables: copy the fixtures in; each file starts with no rows.
+    docker exec -i "${LINKDING_PG_CONTAINER:-linkding-pg}" psql -U linkding -d linkding -v ON_ERROR_STOP=1 -q \
+      < "$ROOT/bench/seed_h5i_app.sql" >/dev/null
+    TRUNCATE_SQL="TRUNCATE h5iapp.linkding_bookmarks, h5iapp.linkding_tags, h5iapp.linkding_bookmark_tags, h5iapp.linkding_bundles, h5iapp.linkding_counters, h5iapp.h5i_idempotency;" \
+      HOST="http://127.0.0.1:${port}" "$ROOT/scripts/test-one.sh"
+  else
+    HOST="http://127.0.0.1:${port}" "$ROOT/scripts/test-one.sh"
+  fi
   kill -- -"${pids[-1]}" >/dev/null 2>&1 || true
   unset 'pids[-1]'
   sleep 0.3
@@ -66,6 +74,7 @@ for name in "$@"; do
     go) run_impl go 8102 "$ROOT/go" ;;
     fastify) run_impl fastify 8103 "$ROOT/fastify" ;;
     rust-h5i-optimized) run_impl rust-h5i-optimized 8104 "$ROOT/rust-h5i-optimized" ;;
+    rust-h5i) run_impl rust-h5i 8106 "$ROOT/rust-h5i" ;;
     *) echo "unknown implementation: $name" >&2; exit 2 ;;
   esac
 done

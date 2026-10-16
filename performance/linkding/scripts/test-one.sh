@@ -8,9 +8,13 @@ HURL="${HURL:-/var/tmp/tools/hurl}"
 HOST="${HOST:?set HOST to the server origin}"
 PG="${LINKDING_PG_CONTAINER:-linkding-pg}"
 
+# rust-h5i keeps its rows in its own schema (see bench/seed_h5i_app.sql);
+# test-all.sh sets TRUNCATE_SQL for it.
+TRUNCATE_SQL="${TRUNCATE_SQL:-TRUNCATE bookmark_tags, bookmarks, tags, bundles RESTART IDENTITY CASCADE;}"
+
 truncate_rows() {
   docker exec -i "$PG" psql -U linkding -d linkding -v ON_ERROR_STOP=1 \
-    -c "TRUNCATE bookmark_tags, bookmarks, tags, bundles RESTART IDENTITY CASCADE;" \
+    -c "$TRUNCATE_SQL" \
     >/dev/null
 }
 
