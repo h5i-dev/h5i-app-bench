@@ -608,6 +608,189 @@ theorem filter_loop_spec {α : Type} (v : alloc.vec.Vec α) (P : α → Prop) [D
       rw [hout, this, List.take_length]
   · simp [vec_new_val]
 
+/-! ### The listing's context -/
+
+theorem find_user_by_name_eq (us : alloc.vec.Vec User) (n : Text) :
+    find_user_by_name us n = ok (us.val.find? (fun u => decide (u.username = n))) := by
+  apply eq_ok_of_spec
+  unfold find_user_by_name find_user_by_name_loop
+  apply WP.spec_mono (loop_search us.val (fun u => decide (u.username = n)) (fun o : Option User => o)
+    (fun _ x => some x) none _ ?_ 0#usize (by simp))
+  · intro r hr; exact search_find _ _ _ hr
+  · intro j hj; unfold find_user_by_name_loop.body; h5i_step
+
+theorem lower_all_ok (v w : alloc.vec.Vec Text) (h : lower_all v = ok w) : w.val = v.val.map lowerT := by
+  have hl : lower_all v = (do let a ← (v.val.foldlM (fun (out : alloc.vec.Vec Text) x =>
+      do let y ← lower_text x; out.push y) (alloc.vec.Vec.new Text)); ok a) := by
+    unfold lower_all lower_all_loop
+    have := loop_foldlM v.val v.len_ineq (fun (out : alloc.vec.Vec Text) x => do let y ← lower_text x; out.push y)
+      (fun x => x) (fun a i => (a, i)) (fun x => lower_all_loop.body v x.1 x.2) ?_ (alloc.vec.Vec.new Text) 0#usize (by simp)
+    · simpa using this
+    · intro a i hi
+      unfold lower_all_loop.body
+      body_shape v
+  rw [hl] at h
+  obtain ⟨a, ha, e⟩ := bind_tc_eq_ok.1 h
+  simp only [ok.injEq] at e; subst e
+  have := foldlM_abs (fun (out : alloc.vec.Vec Text) x => do let y ← lower_text x; out.push y) (fun o => o.val)
+    (fun l x => l ++ [lowerT x]) (fun a x r hr => by
+      simp only [lower_text_total, bind_tc_ok, bind_ok] at hr; rw [push_ok hr]) _ _ _ ha
+  rw [this]
+  simp only [vec_new_val]
+  have : ∀ (l : List Text) (acc : List Text), l.foldl (fun l x => l ++ [lowerT x]) acc = acc ++ l.map lowerT := by
+    intro l; induction l with
+    | nil => intro acc; simp
+    | cons y ys ih => intro acc; simp [ih]
+  rw [this]; simp
+
+theorem list_ctx_slice (flt : Filter) (v : U64) (hu : find_user s'.users v = find_user s.users v)
+    (ho : owner_filter_of s' flt = owner_filter_of s flt) (hb : bundle_of s' flt v = bundle_of s flt v) :
+    list_ctx s' flt v = list_ctx s flt v := by
+  unfold list_ctx; simp only [hu, ho, hb]
+
+theorem paged_simple {flt : Filter} (h : paged flt = ok true) : ∃ p, simple_query flt.q = ok (some p) := by
+  unfold paged at h
+  h5i_invert h
+  cases o with
+  | none => simp at h
+  | some p => exact ⟨p, ho⟩
+
+/-- What `list_ctx` resolves. -/
+theorem list_ctx_ok {s : Snapshot} {flt : Filter} {v : U64} {ctx : ListCtx} (h : list_ctx s flt v = ok ctx) :
+    ctx.viewer = v ∧ owner_filter_of s flt = ok ctx.owner_filter ∧ bundle_of s flt v = ok ctx.bundle ∧
+      paged flt = ok ctx.paged ∧ (ctx.paged = true → ∃ tags u, simple_query flt.q = ok (some (tags, u)) ∧
+        ctx.simple_tags.val = tags.val.map lowerT ∧ ctx.simple_unread = u) := by
+  unfold list_ctx at h
+  h5i_invert h
+  obtain ⟨lax, legacy⟩ := x
+  simp only [uncurry_apply_pair] at h
+  h5i_invert h
+  · subst hc
+    obtain ⟨p, hp⟩ := paged_simple hpg
+    rw [hp] at ho; simp at ho
+  · subst hc
+    obtain ⟨tg, u⟩ := p
+    simp only [uncurry_apply_pair] at h
+    h5i_invert h
+    exact ⟨rfl, howner_filter, hbundle, hpg, fun _ => ⟨tg, u, ho, lower_all_ok _ _ hsimple_tags, rfl⟩⟩
+  · simp only [Bool.not_eq_true] at hc; subst hc
+    exact ⟨rfl, howner_filter, hbundle, hpg, by simp⟩
+
+/-! ### The listing's selection -/
+
+/-- `select`'s step over the bookmarks. -/
+def selStep (s : Snapshot) (flt : Filter) (ctx : ListCtx) (sel : alloc.vec.Vec Bookmark) (b : Bookmark) :
+    Result (alloc.vec.Vec Bookmark) := do
+  let k ← keep s flt ctx b
+  if k then (do let b2 ← Bookmark.Insts.CoreCloneClone.clone b; sel.push b2) else ok sel
+
+theorem select_eq (s : Snapshot) (flt : Filter) (ctx : ListCtx) :
+    select s flt ctx = (do let a ← (s.bookmarks.val.foldlM (selStep s flt ctx) (alloc.vec.Vec.new Bookmark)); ok a) := by
+  unfold select select_loop
+  have := loop_foldlM s.bookmarks.val s.bookmarks.len_ineq (selStep s flt ctx) (fun x => x) (fun a i => (a, i))
+    (fun x => select_loop.body s flt ctx x.1 x.2) ?_ (alloc.vec.Vec.new Bookmark) 0#usize (by simp)
+  · simpa using this
+  · intro a i hi
+    unfold select_loop.body selStep
+    body_shape s.bookmarks
+
+/-- What `select` keeps: bookmarks of the state that `keep` accepts. -/
+theorem select_ok {s : Snapshot} {flt : Filter} {ctx : ListCtx} {sel : alloc.vec.Vec Bookmark}
+    (h : select s flt ctx = ok sel) : ∀ b ∈ sel.val, b ∈ s.bookmarks.val ∧ keep s flt ctx b = ok true := by
+  rw [select_eq] at h
+  obtain ⟨a, ha, e⟩ := bind_tc_eq_ok.1 h
+  simp only [ok.injEq] at e; subst e
+  have key : ∀ (l : List Bookmark) (acc r : alloc.vec.Vec Bookmark), l.foldlM (selStep s flt ctx) acc = ok r →
+      ∀ b ∈ r.val, b ∈ acc.val ∨ (b ∈ l ∧ keep s flt ctx b = ok true) := by
+    intro l
+    induction l with
+    | nil => intro acc r h b hb; simp only [List.foldlM_nil, pure_tc_eq, ok.injEq] at h; subst h; exact .inl hb
+    | cons x xs ih =>
+      intro acc r h b hb
+      simp only [List.foldlM_cons] at h
+      obtain ⟨a1, h1, h2⟩ := bind_tc_eq_ok.1 h
+      rcases ih a1 r h2 b hb with hb' | ⟨hm, hk⟩
+      · unfold selStep at h1
+        obtain ⟨k, hk, h3⟩ := bind_tc_eq_ok.1 h1
+        split at h3
+        · obtain ⟨b2, hb2, h4⟩ := bind_tc_eq_ok.1 h3
+          have e := bookmark_clone_ok hb2; subst e
+          rw [push_ok h4] at hb'
+          rcases List.mem_append.1 hb' with hb' | hb'
+          · exact .inl hb'
+          · simp at hb'; subst hb'; rename_i hkt; exact .inr ⟨by simp, by rw [hk, hkt]⟩
+        · simp only [ok.injEq] at h3; subst h3; exact .inl hb'
+      · exact .inr ⟨List.mem_cons_of_mem _ hm, hk⟩
+  intro b hb
+  rcases key _ _ _ ha b hb with hb' | hb'
+  · simp [vec_new_val] at hb'
+  · exact hb'
+
+/-- `tag_lowers`' step over the links. -/
+def tlStep (s : Snapshot) (id : U64) (out : alloc.vec.Vec Text) (l : Link) : Result (alloc.vec.Vec Text) :=
+  if l.bookmark = id then (do
+    let o ← find_tag s.tags l.tag
+    match o with
+    | none => ok out
+    | some t => do let v ← alloc.vec.CloneVec.clone core.clone.CloneU8 t.name_lower; out.push v)
+  else ok out
+
+theorem tag_lowers_eq (s : Snapshot) (id : U64) :
+    tag_lowers s id = (do let a ← (s.links.val.foldlM (tlStep s id) (alloc.vec.Vec.new Text)); ok a) := by
+  unfold tag_lowers tag_lowers_loop
+  have := loop_foldlM s.links.val s.links.len_ineq (tlStep s id) (fun x => x) (fun a i => (a, i))
+    (fun x => tag_lowers_loop.body s id x.1 x.2) ?_ (alloc.vec.Vec.new Text) 0#usize (by simp)
+  · simpa using this
+  · intro a i hi
+    unfold tag_lowers_loop.body tlStep
+    body_shape s.links
+
+theorem tag_lowers_slice {KL : Link → Bool} {KT : Tag → Bool} (hl : s'.links.val = s.links.val.filter KL)
+    (ht : s'.tags.val = s.tags.val.filter KT) (id : U64)
+    (hkl : ∀ l ∈ s.links.val, l.bookmark = id → KL l)
+    (hkt : ∀ l ∈ s.links.val, l.bookmark = id → ∀ x ∈ s.tags.val, x.id = l.tag → KT x) :
+    tag_lowers s' id = tag_lowers s id := by
+  rw [tag_lowers_eq, tag_lowers_eq, hl, foldlM_slice _ _ (tlStep s id) (tlStep s' id)]
+  · intro l hm hk a
+    have : ¬ l.bookmark = id := fun h => by simp [hkl l hm h] at hk
+    simp [tlStep, this]
+  · intro l hm _ a
+    unfold tlStep
+    split
+    · rename_i hb
+      rw [eq_ok_of_spec (find_tag_spec _ _), eq_ok_of_spec (find_tag_spec _ _), ht,
+        find?_slice _ _ _ (fun x hx hp => hkt l hm hb x hx (by simpa using hp))]
+    · rfl
+
+theorem selected_slice (flt : Filter) (parsed : search.Parsed) (lax legacy : Bool) (bundle : Option Bundle)
+    (tw : Bool) (b : Bookmark) (h : tag_lowers s' b.id = tag_lowers s b.id) :
+    selected s' flt parsed lax legacy bundle tw b = selected s flt parsed lax legacy bundle tw b := by
+  unfold selected facts
+  simp only [h]
+
+theorem shared_visible_slice (viewer : U64) (b : Bookmark) (o : Option U64)
+    (h : find_user s'.users b.owner = find_user s.users b.owner) :
+    shared_visible s' viewer b o = shared_visible s viewer b o := by
+  unfold shared_visible
+  simp only [h]
+
+theorem views_eq (s : Snapshot) (page : alloc.vec.Vec Bookmark) :
+    views s page = (do let a ← (page.val.foldlM (fun (items : alloc.vec.Vec BookmarkView) b =>
+      do let bv ← view s b; items.push bv) (alloc.vec.Vec.new BookmarkView)); ok a) := by
+  unfold views views_loop
+  have := loop_foldlM page.val page.len_ineq (fun (items : alloc.vec.Vec BookmarkView) b =>
+      do let bv ← view s b; items.push bv) (fun x => x) (fun a i => (a, i))
+    (fun x => views_loop.body s page x.1 x.2) ?_ (alloc.vec.Vec.new BookmarkView) 0#usize (by simp)
+  · simpa using this
+  · intro a i hi
+    unfold views_loop.body
+    body_shape page
+
+theorem views_slice (page : alloc.vec.Vec Bookmark) (h : ∀ b ∈ page.val, view s' b = view s b) :
+    views s' page = views s page := by
+  rw [views_eq, views_eq, foldlM_congr _ (fun (items : alloc.vec.Vec BookmarkView) b => do let bv ← view s b; items.push bv)
+    (fun (items : alloc.vec.Vec BookmarkView) b => do let bv ← view s' b; items.push bv) (fun b hb a => by simp only [h b hb])]
+
 end Lookups
 
 /-! ## Commands -/

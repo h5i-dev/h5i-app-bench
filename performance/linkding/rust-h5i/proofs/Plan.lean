@@ -103,6 +103,21 @@ theorem vec_index_eq {α : Type} (v : alloc.vec.Vec α) (i : Usize) (h : i.val <
 theorem lt_len_iff {α : Type} (v : alloc.vec.Vec α) (i : Usize) : i < alloc.vec.Vec.len v ↔ i.val < v.val.length := by
   simp [alloc.vec.Vec.len]
 
+/-- Binds that agree on every value the first computation returns. (A
+`Result` that is not `ok` is a failure, which has no continuation, or
+divergence.) -/
+theorem bind_congr_ok {α β : Type} (m : Result α) (f g : α → Result β) (h : ∀ x, m = ok x → f x = g x) :
+    (do let x ← m; f x) = (do let x ← m; g x) := by
+  change Std.bind m f = Std.bind m g
+  cases m using Result.cases with
+  | ret a => exact (bind_ok a f).trans ((h a rfl).trans (bind_ok a g).symm)
+  | vis e k =>
+    cases e with
+    | fail err =>
+      rw [bind_vis, bind_vis]
+      congr 1; funext y; exact y.elim
+  | div => simp
+
 /-- A fold over the rows a slice keeps, by a step that agrees on them,
 gives the fold over all rows when the step leaves the others unchanged. -/
 theorem foldlM_slice {α β : Type} (l : List α) (K : α → Bool) (step step' : β → α → Result β) (a : β)
