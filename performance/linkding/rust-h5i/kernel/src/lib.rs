@@ -539,6 +539,29 @@ fn same_url(b: &Bookmark, owner: u64, url: &Text, url_norm: &Text) -> bool {
     b.owner == owner && (b.url_norm == *url_norm || (b.url_norm.len() == 0 && b.url == *url))
 }
 
+/// A match with a lower id than the best so far, or the first match.
+fn improves(hit: bool, found: bool, id: u64, best: u64) -> bool {
+    if !hit {
+        return false;
+    }
+    if !found {
+        return true;
+    }
+    id < best
+}
+
+/// The first of the owner's bookmarks of this URL with id `id`.
+fn find_same_url(s: &Snapshot, owner: u64, url: &Text, url_norm: &Text, id: u64) -> Option<Bookmark> {
+    let mut i = 0;
+    while i < s.bookmarks.len() {
+        if s.bookmarks[i].id == id && same_url(&s.bookmarks[i], owner, url, url_norm) {
+            return Some(s.bookmarks[i].clone());
+        }
+        i += 1;
+    }
+    None
+}
+
 /// The owner's bookmark of a URL: same normalized URL, or, for a bookmark
 /// stored without one, the same URL; the lowest id if several.
 pub fn existing(s: &Snapshot, owner: u64, url: &Text, url_norm: &Text) -> Option<Bookmark> {
@@ -546,14 +569,18 @@ pub fn existing(s: &Snapshot, owner: u64, url: &Text, url_norm: &Text) -> Option
     let mut best: u64 = 0;
     let mut i = 0;
     while i < s.bookmarks.len() {
-        if same_url(&s.bookmarks[i], owner, url, url_norm) && (!found || s.bookmarks[i].id < best) {
-            found = true;
+        let hit = same_url(&s.bookmarks[i], owner, url, url_norm);
+        let better = improves(hit, found, s.bookmarks[i].id, best);
+        if better {
             best = s.bookmarks[i].id;
+        }
+        if hit {
+            found = true;
         }
         i += 1;
     }
     if found {
-        find_bookmark(&s.bookmarks, best)
+        find_same_url(s, owner, url, url_norm, best)
     } else {
         None
     }
@@ -1119,24 +1146,32 @@ fn tag_writes(
     let mut made: Vec<Tag> = Vec::new();
     let mut next = last;
     let mut i = 0;
+    // Each branch changes one variable, which keeps the extracted loop simple.
     while i < names.len() {
         let lower = lower_text(&names[i]);
         let found = match find_tag_named(&s.tags, owner, &lower) {
             Some(t) => Some(t),
             None => find_tag_named(&made, owner, &lower),
         };
+        let fresh = found.is_none();
+        if fresh {
+            next += 1;
+        }
         let t = match found {
             Some(t) => t,
-            None => {
-                next += 1;
-                let t = Tag { id: next, owner, name: names[i].clone(), name_lower: lower, added: now };
-                out.push(Write::PutTag(t.clone()));
-                made.push(t.clone());
-                t
-            }
+            None => Tag { id: next, owner, name: names[i].clone(), name_lower: lower, added: now },
         };
-        if !contains_text(&shown, &t.name) {
+        if fresh {
+            out.push(Write::PutTag(t.clone()));
+        }
+        if fresh {
+            made.push(t.clone());
+        }
+        let dup = contains_text(&shown, &t.name);
+        if !dup {
             out.push(Write::PutLink(Link { bookmark: id, tag: t.id }));
+        }
+        if !dup {
             shown.push(t.name.clone());
         }
         i += 1;
@@ -1395,8 +1430,11 @@ fn insert_bundle(v: &Vec<Bundle>, x: &Bundle) -> Vec<Bundle> {
     let mut placed = false;
     let mut i = 0;
     while i < v.len() {
-        if !placed && bundle_before(x, &v[i]) {
+        let here = if placed { false } else { bundle_before(x, &v[i]) };
+        if here {
             out.push(x.clone());
+        }
+        if here {
             placed = true;
         }
         out.push(v[i].clone());
@@ -1523,6 +1561,19 @@ fn update_bundle(s: &Snapshot, token: &Text, id: u64, f: &BundleFields, now: u64
     Ok((one(Write::PutBundle(b2.clone())), Reply::Bundle(b2)))
 }
 
+fn differs(a: u64, b: u64) -> bool {
+    a != b
+}
+
+/// `ws` with `x` written at position `pos`.
+fn renumbered(ws: Vec<Write>, x: &Bundle, pos: u64) -> Vec<Write> {
+    let mut out = ws;
+    let mut y = x.clone();
+    y.order = ORDER_BIAS + pos;
+    out.push(Write::PutBundle(y));
+    out
+}
+
 /// Deletes the bundle and renumbers the owner's others 0, 1, 2, ...
 fn delete_bundle(s: &Snapshot, token: &Text, id: u64) -> Outcome {
     let me = tri!(signed_in(s, token));
@@ -1533,10 +1584,11 @@ fn delete_bundle(s: &Snapshot, token: &Text, id: u64) -> Outcome {
     let mut pos: u64 = 0;
     let mut i = 0;
     while i < mine.len() {
-        if mine[i].id != b.id {
-            let mut x = mine[i].clone();
-            x.order = ORDER_BIAS + pos;
-            ws.push(Write::PutBundle(x));
+        let keep = differs(mine[i].id, b.id);
+        if keep {
+            ws = renumbered(ws, &mine[i], pos);
+        }
+        if keep {
             pos += 1;
         }
         i += 1;
