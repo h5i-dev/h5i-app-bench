@@ -23,6 +23,7 @@ Production settings during the bench (not the API-test defaults):
 | Go | one process, `GOMAXPROCS=4` | `DB_POOL=32` |
 | Fastify | `NODE_ENV=production`, cluster size 4, `UV_THREADPOOL_SIZE=4` | `DB_POOL=8` per worker (32 total) |
 | rust-h5i | `cargo --release`, tokio worker threads 4 | `DB_POOL=32` |
+| rust-h5i-app | `cargo --release`, tokio worker threads 4 | `DB_POOL=32` |
 
 ## Seed
 
@@ -31,6 +32,17 @@ password `password123`, one shared bcrypt cost-12 hash), 20 tags, 10 000
 articles (`article-1` … `article-10000`), two tags per article, 10 000
 comments, 1 000 follows (each user follows the next 10), and 5 000 favorites.
 User 1's token is an HS256 JWT with `sub` = `1`, minted by the script.
+
+rust-h5i-app stores its rows in h5i-app's tables (schema `conduit`), so
+for it every point also runs `seed_h5i_app.sql` after `seed.sql`: it copies
+the rows `seed.sql` just loaded, with the same ids, slugs, hashes and
+timestamps, and sets the id counters past them. `check_h5i_app_seed.sql`
+compares both sets of tables row for row (every `diff` is 0).
+
+rust-h5i-app shares rust-h5i's CPUs in `scripts/bench-parallel.sh` (server
+48–51, Postgres 52–55, k6 56–63) with its own container
+`conduit-pg-rust-h5i-app` on port 54335, so it runs on its own:
+`scripts/bench-parallel.sh rust-h5i-app`.
 
 ## Scenarios
 
