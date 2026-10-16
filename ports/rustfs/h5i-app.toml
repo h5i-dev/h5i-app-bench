@@ -5,6 +5,8 @@ start-from = ["policies", "pathclean::clean", "defaults::default_version", "defa
 
 [check]
 theorems = [
+  "rustfs_kernel.Properties.policy_variable_resolution_spec",
+  "rustfs_kernel.Properties.policy_variable_depth_resolution_spec",
   "rustfs_kernel.Properties.policy_variable_balanced_replacement_spec",
   "rustfs_kernel.Properties.policy_variable_empty_replacement_spec",
   "rustfs_kernel.Properties.policy_variable_wrapped_alternatives_spec",

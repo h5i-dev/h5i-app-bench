@@ -1,3 +1,4 @@
+import Verified.RustfsAwsDepthMeaning
 import Verified.RustfsAwsLayout
 import Verified.RustfsAwsMeaning
 import Verified.RustfsAwsScan
@@ -1692,5 +1693,20 @@ theorem policy_variable_empty_replacement_spec (inner : List Nat → List (List 
         ResumeAlternatives inner c (nats text) start ++
           (results.val.drop (idx.val+1)).flatMap (Verified.RustfsAwsMeaning.pendingMeaning inner c) :=
   Verified.RustfsAwsMeaning.empty_scan_ok inner c text start pos closing hf hc pre post offset hp hs ho hr results idx v new out hi hconcat hpush hsplice
+
+/-- Variable resolution computes the ordered, bounded substitution specification. -/
+theorem policy_variable_resolution_spec (ctx : awsvars.VarContext) (text : Slice U8)
+    (out : alloc.vec.Vec (alloc.vec.Vec U8))
+    (h : awsvars.resolve_aws_variables ctx text=ok out) :
+    out.val.map (fun v => nats v.val)=ExpandVariables (Verified.RustfsAwsValues.context ctx) 0 (nats text.val) := by
+  apply Verified.RustfsAwsResolution.depth_ok ctx text 0#usize out
+  exact h
+
+/-- The explicit nesting-depth entry point computes the same bounded specification. -/
+theorem policy_variable_depth_resolution_spec (ctx : awsvars.VarContext) (text : Slice U8) (depth : Usize)
+    (out : alloc.vec.Vec (alloc.vec.Vec U8))
+    (h : awsvars.resolve_aws_variables_with_depth ctx text depth=ok out) :
+    out.val.map (fun v => nats v.val)=ExpandVariables (Verified.RustfsAwsValues.context ctx) depth.val (nats text.val) :=
+  Verified.RustfsAwsResolution.depth_ok ctx text depth out h
 
 end rustfs_kernel.Properties
