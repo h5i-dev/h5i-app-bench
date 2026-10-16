@@ -3,24 +3,24 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>How much real-world Rust can Lean 4 verify? | h5i-app Benchmark</title>
+    <title>h5i-app Benchmark</title>
     <meta
       name="description"
-      content="How much real-world Rust h5i-app can formally verify in Lean 4, and what the verifiable port costs at runtime: specs proved, upstream code covered, proof effort and paired performance for six open-source Rust servers."
+      content="Two benchmarks for h5i-app: how much real-world Rust it can formally verify in Lean 4, and how fast its web servers run against Go, TypeScript and Python."
     />
     <meta name="theme-color" content="#070707" />
     <link rel="canonical" href="https://benchmark.h5i.dev/" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="h5i-app Benchmark" />
-    <meta property="og:title" content="How much real-world Rust can Lean 4 verify?" />
-    <meta property="og:description" content="How much real-world Rust h5i-app can formally verify in Lean 4, and what the verifiable port costs at runtime: specs proved, upstream code covered, proof effort and paired performance for six open-source Rust servers." />
+    <meta property="og:title" content="h5i-app Benchmark: verified, and fast?" />
+    <meta property="og:description" content="How much real-world Rust h5i-app can formally verify in Lean 4, and how fast its web servers run against Go, TypeScript and Python." />
     <meta property="og:url" content="https://benchmark.h5i.dev/" />
     <meta property="og:image" content="https://benchmark.h5i.dev/og-image.jpg" />
     <meta property="og:image:width" content="1280" />
     <meta property="og:image:height" content="640" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="How much real-world Rust can Lean 4 verify?" />
-    <meta name="twitter:description" content="How much real-world Rust h5i-app can formally verify in Lean 4, and what the verifiable port costs at runtime: specs proved, upstream code covered, proof effort and paired performance for six open-source Rust servers." />
+    <meta name="twitter:title" content="h5i-app Benchmark: verified, and fast?" />
+    <meta name="twitter:description" content="How much real-world Rust h5i-app can formally verify in Lean 4, and how fast its web servers run against Go, TypeScript and Python." />
     <meta name="twitter:image" content="https://benchmark.h5i.dev/og-image.jpg" />
     <link rel="icon" type="image/png" href="./favicon.png" />
     <link rel="apple-touch-icon" href="./favicon.png" />
@@ -33,8 +33,8 @@
     <script>
       try { const t = localStorage.getItem("theme"); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
     </script>
-    <link rel="stylesheet" href="./dashboard.css" />
-    <script src="./dashboard.js" defer></script>
+    <link rel="stylesheet" href="./site.css" />
+    <script src="./landing.js" defer></script>
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
@@ -43,12 +43,9 @@
         <img src="./logo.png" alt="" />
         <span>h5i-app</span><span class="brand-reading">/ bench</span>
       </a>
-      <nav class="site-nav" aria-label="Benchmark sections">
-        <a href="#verified">Verified</a>
-        <a href="#performance">Performance</a>
-        <a href="#effort">Effort</a>
-        <a href="#specs">Specs</a>
-        <a href="#method">Method</a>
+      <nav class="site-nav" aria-label="Benchmarks">
+        <a href="./prove/">Verification</a>
+        <a href="./performance/">Performance</a>
       </nav>
       <div class="theme" role="group" aria-label="Color theme">
         <button type="button" data-theme-set="light">light</button><button type="button" data-theme-set="dark">dark</button>
@@ -58,143 +55,36 @@
 
     <main id="main">
       <section class="intro">
-        <p class="prompt"><span class="ps">$</span> h5i app prove <span class="arg">ports/*</span><span class="caret" aria-hidden="true"></span></p>
-        <h1>How much real-world Rust can h5i-app verify?</h1>
-        <p class="lede">Security logic from six open-source Rust servers, ported to h5i-app and stated as 101 Lean 4 theorems. We measure how many are proved, how much upstream code they cover, and how fast the port runs.</p>
-        <p class="status-line" id="status-line" aria-live="polite"></p>
-      </section>
-      <div class="tiles" id="tiles" aria-live="polite"></div>
-
-      <section id="verified" class="block">
-        <div class="block-head">
-          <h2 class="term" data-n="01">Verified</h2>
-          <p>Proved specs, the upstream code they cover, and project checks. A theorem proves one property of a function, not all of its behavior.</p>
-        </div>
-        <div class="table-wrap">
-          <table class="apps sortable" id="apps-table">
-            <thead>
-              <tr>
-                <th scope="col" data-sort="app">Application</th>
-                <th scope="col" class="w-bar-s" data-sort="specs">Specs accepted</th>
-                <th scope="col" class="w-bar-s" data-sort="security">Of security kernel</th>
-                <th scope="col" class="w-bar-s" data-sort="ceiling">Of kernel ceiling</th>
-                <th scope="col" class="c" title="h5i app extract --check">Extract</th>
-                <th scope="col" class="c" title="Differential tests against the pinned upstream">Diff test</th>
-                <th scope="col" class="c" title="h5i app check: every selected theorem, sorry-free">Gate</th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </table>
-        </div>
-        <dl class="defs">
-          <div><dt>Specs accepted</dt><dd>Proof re-checked in a clean workspace: statement unchanged, only <code>propext</code>, <code>Classical.choice</code> and <code>Quot.sound</code>.</dd></div>
-          <div><dt>Of security kernel</dt><dd>Reached lines over the kernel-eligible lines whose module or name is about authentication, authorization, tokens, credentials, sessions, validation or visibility. Keyword-based; every selected spec is a security property.</dd></div>
-          <div><dt>Of kernel ceiling</dt><dd>Upstream lines in functions that accepted theorems are about, over the module's kernel ceiling: the lines that could be a kernel at all (pure, synchronous, no I/O, clock, randomness or locks, transitively). A static estimate; see <code>harness/kernel_ceiling.py</code>.</dd></div>
-          <div><dt>Gate</dt><dd><code>h5i app check</code>. Passes once every spec is proved.</dd></div>
-        </dl>
+        <p class="prompt"><span class="ps">$</span> h5i app check<span class="caret" aria-hidden="true"></span></p>
+        <h1>Can a web backend be proved correct and still be fast?</h1>
+        <p class="lede"><a href="https://github.com/h5i-dev/h5i">h5i-app</a> is a Rust framework whose kernel, the code that makes the decisions, is extracted to Lean 4 and proved there. This site holds two benchmarks for it: how much real code it can verify, and what that costs at runtime.</p>
       </section>
 
-      <section id="performance" class="block">
-        <div class="block-head">
-          <h2 class="term" data-n="02">Performance</h2>
-          <p>Kernel time ÷ upstream time on the same inputs, release builds on one host. Below 1× the port is faster. Only measurements where both sides do the same work are plotted.</p>
-        </div>
-        <figure class="chart" id="perf-chart" aria-describedby="perf-caption"></figure>
-        <p class="caption" id="perf-caption"></p>
-        <details class="data-table"><summary>Show the measurements as a table</summary>
-          <div class="table-wrap"><table id="perf-table"><thead><tr><th>Application</th><th>Benchmark</th><th class="num">Upstream ns</th><th class="num">Kernel ns</th><th class="num">Ratio</th><th>Boundary</th></tr></thead><tbody></tbody></table></div>
-        </details>
-        <details class="data-table"><summary id="excluded-summary">Excluded measurements</summary>
-          <p class="caption">One side does work the other does not (HTTP request construction, database round trips, input cloning), so the ratio does not compare the kernels. Kept as a record until matched runs replace them.</p>
-          <div class="table-wrap"><table id="excluded-table"><thead><tr><th>Application</th><th>Benchmark</th><th class="num">Ratio</th><th>Why not comparable</th></tr></thead><tbody></tbody></table></div>
-        </details>
-      </section>
+      <div class="bench-cards">
+        <a class="bench-card" href="./prove/">
+          <span class="step-k">Benchmark 1 · Lean 4</span>
+          <h2>Verification</h2>
+          <p>Security logic from six open-source Rust servers, ported to h5i-app and stated as Lean 4 theorems. How many are proved, how much upstream code they cover, how much proof it takes, and how fast the port is against the original.</p>
+          <div class="facts" id="prove-facts" aria-live="polite"></div>
+          <span class="go">Open the verification results →</span>
+        </a>
+        <a class="bench-card" href="./performance/">
+          <span class="step-k">Benchmark 2 · HTTP</span>
+          <h2>Web performance</h2>
+          <p>Real REST APIs (RealWorld and linkding) written in Rust on h5i-app and in Go, TypeScript and Python, on the same PostgreSQL data. Every implementation passes the same conformance suite; k6 measures throughput, latency and memory.</p>
+          <div class="facts" id="perf-facts" aria-live="polite"></div>
+          <span class="go">Open the performance results →</span>
+        </a>
+      </div>
 
-      <section id="effort" class="block">
+      <section id="about" class="block">
         <div class="block-head">
-          <h2 class="term" data-n="03">Effort</h2>
-          <p>Extracted Lean is generated. Spec and proof lines are written by hand; proof lines exclude the statement.</p>
+          <h2 class="term" data-n="—">What each one answers</h2>
         </div>
-        <div class="table-wrap">
-          <table class="effort sortable" id="effort-table">
-            <thead>
-              <tr>
-                <th scope="col" data-sort="app">Application</th>
-                <th scope="col" class="num" data-sort="rust">Ported Rust</th>
-                <th scope="col" class="num" data-sort="lean">Extracted Lean</th>
-                <th scope="col" class="num" data-sort="ratio">Lean / Rust</th>
-                <th scope="col" class="num" data-sort="spec">Spec</th>
-                <th scope="col" class="num" data-sort="proof">Proof lines</th>
-                <th scope="col" class="num" data-sort="per">Median per spec</th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </table>
-        </div>
-        <figure class="chart" id="effort-chart" aria-describedby="effort-caption"></figure>
-        <p class="caption" id="effort-caption">One mark per accepted spec. Log scales.</p>
-      </section>
-
-      <section id="specs" class="block">
-        <div class="block-head">
-          <h2 class="term" data-n="04">Specs</h2>
-          <p>All 101 theorems. Open one for its statement, code, Lean and proof.</p>
-        </div>
-        <div class="filters" role="search">
-          <label class="field"><span>Application</span><select id="f-app"><option value="">All</option></select></label>
-          <label class="field"><span>Status</span>
-            <select id="f-status">
-              <option value="">All</option>
-              <option value="accepted">Accepted</option>
-              <option value="open">Open</option>
-              <option value="corrected">Statement corrected</option>
-            </select>
-          </label>
-          <label class="field grow"><span>Search</span><input id="f-q" type="search" placeholder="spec, property or theorem" /></label>
-        </div>
-        <div class="table-wrap">
-          <table class="matrix sortable" id="matrix">
-            <thead>
-              <tr>
-                <th scope="col" data-sort="id">Spec</th>
-                <th scope="col">Property</th>
-                <th scope="col" data-sort="status">Status</th>
-                <th scope="col" class="num" data-sort="loc">Upstream lines</th>
-                <th scope="col" class="num" data-sort="proof">Proof lines</th>
-                <th scope="col" data-sort="prover">Prover</th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </table>
-        </div>
-        <p class="count" id="matrix-count"></p>
-      </section>
-
-      <section id="method" class="block">
-        <div class="block-head">
-          <h2 class="term" data-n="05">Method</h2>
-          <p>How specs are built and checked.</p>
-        </div>
-        <ol class="flow">
-          <li class="step rust"><span class="step-k">Rust</span><h3>Upstream code</h3>
-            <p>Security code of an open-source server, at a pinned commit.</p></li>
-          <li class="step rust"><span class="step-k">Rust</span><h3>h5i-app port</h3>
-            <p>Ported function by function. Each change is listed in DEVIATIONS.md.</p></li>
-          <li class="step lean"><span class="step-k">Lean 4</span><h3>Extracted model</h3>
-            <p>Aeneas turns the port into Lean. A spec states each property.</p></li>
-          <li class="step agent"><span class="step-k">Prover</span><h3>Proof</h3>
-            <p>Agents in an offline sandbox, 30 minutes per try, or by hand.</p></li>
-          <li class="step grade"><span class="step-k">Checker</span><h3>Accepted?</h3>
-            <p>Re-checked in isolation, then gated by <code>h5i app check</code>.</p></li>
-        </ol>
-        <div class="flow-notes">
-          <p class="bracket diff"><strong>Differential tests.</strong> Upstream and port must agree on random inputs. Testing, not proof.</p>
-          <p class="bracket hidden-ref"><strong>Corrections.</strong> A false spec gets a recorded precondition, never a silent change.</p>
-        </div>
-        <ul class="limits">
-          <li>Proofs cover the kernel. Parsing, database and I/O around it are trusted.</li>
-          <li>Coverage counts code a theorem is about, not code whose every behavior is proved.</li>
-          <li>Timings are pilots on one host.</li>
+        <ul class="landing-list">
+          <li><strong>Verification</strong> asks how much of a real server's security logic fits in a verified kernel. A theorem proves one property of a function, not all of its behavior. Parsing, the database and I/O around the kernel are trusted. Source: <a href="https://github.com/h5i-dev/h5i-app-bench/tree/main/prove"><code>prove/</code></a>.</li>
+          <li><strong>Web performance</strong> asks whether a server built that way is slower than one written without proofs. The h5i-app servers run their kernels on every request. Source: <a href="https://github.com/h5i-dev/h5i-app-bench/tree/main/performance"><code>performance/</code></a>.</li>
+          <li>Both are runs on one host. The scripts, raw results and summaries are in the repository.</li>
         </ul>
       </section>
     </main>
@@ -206,25 +96,7 @@
         <a href="https://github.com/h5i-dev/h5i">h5i on GitHub</a>
         <a href="https://github.com/h5i-dev/h5i-app-bench">Benchmark source</a>
       </nav>
-      <span class="legal" id="footer-snapshot">Apache 2.0</span>
+      <span class="legal">Apache 2.0</span>
     </footer>
-
-    <div class="drawer" id="drawer" hidden>
-      <div class="drawer-scrim" data-close></div>
-      <aside class="drawer-panel" role="dialog" aria-modal="true" aria-labelledby="d-title">
-        <header class="drawer-head">
-          <div>
-            <p class="eyebrow" id="d-app"></p>
-            <h2 id="d-title"></h2>
-            <p class="d-property" id="d-property"></p>
-          </div>
-          <button class="close" type="button" data-close aria-label="Close">×</button>
-        </header>
-        <div class="tabs" role="tablist" id="d-tabs"></div>
-        <div class="drawer-body" id="d-body"></div>
-      </aside>
-    </div>
-
-    <div class="tooltip" id="tooltip" role="tooltip" hidden></div>
   </body>
 </html>

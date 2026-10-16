@@ -8,7 +8,7 @@
    "name": "h5i_app_lib",
    "manifestFile": "lake-manifest.json",
    "inherited": false,
-   "dir": "../../../../../h5i/crates/h5i-app-core/proofs",
+   "dir": "../../../../../../h5i/crates/h5i-app-core/proofs",
    "configFile": "lakefile.lean"
   },
   {

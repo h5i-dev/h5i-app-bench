@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Web Performance | h5i-app Benchmark</title>
+    <meta
+      name="description"
+      content="Throughput, latency and memory of h5i-app web servers against Go, TypeScript and Python implementations of the same APIs: RealWorld (Conduit) and linkding, on PostgreSQL."
+    />
+    <meta name="theme-color" content="#070707" />
+    <link rel="canonical" href="https://benchmark.h5i.dev/performance/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="h5i-app Benchmark" />
+    <meta property="og:title" content="How fast is a verified web server?" />
+    <meta property="og:description" content="Throughput, latency and memory of h5i-app web servers against Go, TypeScript and Python implementations of the same APIs." />
+    <meta property="og:url" content="https://benchmark.h5i.dev/performance/" />
+    <meta property="og:image" content="https://benchmark.h5i.dev/og-image.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="icon" type="image/png" href="../favicon.png" />
+    <link rel="apple-touch-icon" href="../favicon.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500;600&display=swap"
+    />
+    <script>
+      try { const t = localStorage.getItem("theme"); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
+    </script>
+    <link rel="stylesheet" href="../site.css" />
+    <script src="./performance.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="site-header">
+      <a class="brand" href="../" aria-label="h5i-app benchmark home">
+        <img src="../logo.png" alt="" />
+        <span>h5i-app</span><span class="brand-reading">/ bench / performance</span>
+      </a>
+      <nav class="site-nav" aria-label="Benchmark sections" id="app-nav">
+        <a href="#overview">Overview</a>
+        <a href="#method">Method</a>
+      </nav>
+      <div class="theme" role="group" aria-label="Color theme">
+        <button type="button" data-theme-set="light">light</button><button type="button" data-theme-set="dark">dark</button>
+      </div>
+      <a class="github-link" href="https://github.com/h5i-dev/h5i-app-bench/tree/main/performance" target="_blank" rel="noreferrer">GitHub</a>
+    </header>
+
+    <main id="main">
+      <section class="intro">
+        <p class="prompt"><span class="ps">$</span> k6 run <span class="arg">bench/workload.js</span><span class="caret" aria-hidden="true"></span></p>
+        <h1>How fast is a verified web server?</h1>
+        <p class="lede">The same REST APIs on the same PostgreSQL data, written in Rust on h5i-app (whose decisions are proved in Lean 4) and in Go, TypeScript and Python. Every implementation passes the same conformance suite, then runs under k6 at 1 to 256 concurrent clients.</p>
+      </section>
+
+      <section id="overview" class="block">
+        <div class="block-head">
+          <h2 class="term" data-n="01">Overview</h2>
+          <p>Requests per second at <span class="conc-label">64</span> concurrent clients. Each row is shaded against that scenario's fastest implementation.</p>
+        </div>
+        <div class="filters">
+          <label class="field"><span>Concurrency</span><select id="f-conc"></select></label>
+        </div>
+        <div id="overview-tables"></div>
+      </section>
+
+      <div id="apps"></div>
+
+      <section id="method" class="block">
+        <div class="block-head">
+          <h2 class="term" data-n="—">Method</h2>
+          <p>Every point reseeds the database, warms up for 10 s and measures for 30 s. The published numbers are means of 3 repetitions.</p>
+        </div>
+        <ul class="limits">
+          <li>Each server and its PostgreSQL get their own CPUs. In the serial runs, the server has 4 cores and k6 runs on separate cores. Python, Node and Go run 4 workers. Rust runs 4 tokio threads.</li>
+          <li>Requests/s is k6's <code>http_reqs</code> rate over the whole window, including the graceful stop. Latencies are k6 percentiles. RSS is the peak resident memory of the server's whole process tree.</li>
+          <li>Login hashes with bcrypt at cost 12 in every implementation, so that scenario measures bcrypt more than the framework.</li>
+          <li>These are runs on one host. Raw points, summaries and the scripts are in <a href="https://github.com/h5i-dev/h5i-app-bench/tree/main/performance">performance/</a>.</li>
+        </ul>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <a class="footer-brand" href="https://h5i.dev/"><img src="../logo.png" alt="" /><span>h5i<span class="sub"> / high-five</span></span></a>
+      <nav aria-label="h5i">
+        <a href="https://h5i.dev/">h5i.dev</a>
+        <a href="https://github.com/h5i-dev/h5i">h5i on GitHub</a>
+        <a href="../prove/">Verification</a>
+        <a href="https://github.com/h5i-dev/h5i-app-bench/tree/main/performance">Benchmark source</a>
+      </nav>
+      <span class="legal">Apache 2.0</span>
+    </footer>
+  </body>
+</html>

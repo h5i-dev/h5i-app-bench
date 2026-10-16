@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Start Postgres 16 and apply linkding/schema.sql.
+# Start Postgres 16 and apply performance/linkding/schema.sql.
 #   ./up-db.sh           keep data, create anything missing
 #   ./up-db.sh --reset   drop and recreate the public schema, then apply it
 set -euo pipefail

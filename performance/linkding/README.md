@@ -40,8 +40,8 @@ The reference process is the image's uWSGI configuration (`processes = 2`, `thre
 The four implementations share `schema.sql`. The upstream container uses Django's tables and is seeded separately (`bench/seed_upstream.sql`).
 
 ```sh
-linkding/scripts/up-db.sh           # Postgres 16, container linkding-pg, port 5440
-linkding/scripts/up-db.sh --reset   # drop public and reapply schema.sql
+performance/linkding/scripts/up-db.sh           # Postgres 16, container linkding-pg, port 5440
+performance/linkding/scripts/up-db.sh --reset   # drop public and reapply schema.sql
 ```
 
 Default URL: `postgres://linkding:linkding@127.0.0.1:5440/linkding`.
@@ -53,10 +53,10 @@ Default URL: `postgres://linkding:linkding@127.0.0.1:5440/linkding`.
 Hurl is expected at `/var/tmp/tools/hurl`. Each file starts from the five fixture users (alice, bob, cara, dave, erin) and an empty bookmark, tag, and bundle set.
 
 ```sh
-linkding/scripts/test-upstream.sh          # suite against the pinned image
-linkding/scripts/test-all.sh               # fastapi, go, fastify, rust-h5i
-linkding/scripts/test-all.sh fastapi       # one implementation
-HOST=http://127.0.0.1:8101 linkding/scripts/test-one.sh
+performance/linkding/scripts/test-upstream.sh          # suite against the pinned image
+performance/linkding/scripts/test-all.sh               # fastapi, go, fastify, rust-h5i
+performance/linkding/scripts/test-all.sh fastapi       # one implementation
+HOST=http://127.0.0.1:8101 performance/linkding/scripts/test-one.sh
 ```
 
 Ports: FastAPI 8101, Go 8102, Fastify 8103, Rust 8104, upstream 8105.
@@ -69,10 +69,10 @@ Ports: FastAPI 8101, Go 8102, Fastify 8103, Rust 8104, upstream 8105.
 export DATABASE_URL=postgres://linkding:linkding@127.0.0.1:5440/linkding
 export WEB_CONCURRENCY=4
 
-linkding/fastapi/run.sh    # 127.0.0.1:8101  uvicorn workers = WEB_CONCURRENCY
-linkding/go/run.sh         # 127.0.0.1:8102  GOMAXPROCS = WEB_CONCURRENCY
-linkding/fastify/run.sh    # 127.0.0.1:8103  node cluster size = WEB_CONCURRENCY
-linkding/rust-h5i/run.sh   # 127.0.0.1:8104  tokio worker threads = WEB_CONCURRENCY
+performance/linkding/fastapi/run.sh    # 127.0.0.1:8101  uvicorn workers = WEB_CONCURRENCY
+performance/linkding/go/run.sh         # 127.0.0.1:8102  GOMAXPROCS = WEB_CONCURRENCY
+performance/linkding/fastify/run.sh    # 127.0.0.1:8103  node cluster size = WEB_CONCURRENCY
+performance/linkding/rust-h5i/run.sh   # 127.0.0.1:8104  tokio worker threads = WEB_CONCURRENCY
 ```
 
 ## Benchmark

@@ -36,8 +36,8 @@ then `id` descending. Default page size is 20.
 ## Database
 
 ```sh
-realworld/scripts/up-db.sh          # start Postgres 16 and apply schema.sql
-realworld/scripts/up-db.sh --reset  # drop public and reapply
+performance/realworld/scripts/up-db.sh          # start Postgres 16 and apply schema.sql
+performance/realworld/scripts/up-db.sh --reset  # drop public and reapply
 ```
 
 The container is `conduit-pg` (`postgres:16`, `max_connections=200`,
@@ -49,10 +49,10 @@ process tree to CPUs 8–15.
 Hurl is expected at `/var/tmp/tools/hurl`.
 
 ```sh
-realworld/scripts/test-all.sh                 # the four, ports 8001–8004
-realworld/scripts/test-all.sh rust-h5i-app    # port 8005
-realworld/scripts/test-all.sh fastapi         # one implementation
-HOST=http://127.0.0.1:8001 realworld/scripts/test-one.sh
+performance/realworld/scripts/test-all.sh                 # the four, ports 8001–8004
+performance/realworld/scripts/test-all.sh rust-h5i-app    # port 8005
+performance/realworld/scripts/test-all.sh fastapi         # one implementation
+HOST=http://127.0.0.1:8001 performance/realworld/scripts/test-one.sh
 ```
 
 `WEB_CONCURRENCY` defaults to 1 in the test script and to 4 in each `run.sh`.
@@ -67,11 +67,11 @@ export DATABASE_URL=postgres://conduit:conduit@127.0.0.1:54329/conduit
 export JWT_SECRET=conduit-benchmark-secret
 export WEB_CONCURRENCY=4
 
-realworld/fastapi/run.sh     # 127.0.0.1:8001  uvicorn workers = WEB_CONCURRENCY
-realworld/go/run.sh          # 127.0.0.1:8002  GOMAXPROCS = WEB_CONCURRENCY
-realworld/fastify/run.sh     # 127.0.0.1:8003  node cluster size = WEB_CONCURRENCY
-realworld/rust-h5i/run.sh    # 127.0.0.1:8004  tokio worker threads = WEB_CONCURRENCY
-realworld/rust-h5i-app/run.sh  # 127.0.0.1:8005  tokio worker threads = WEB_CONCURRENCY
+performance/realworld/fastapi/run.sh     # 127.0.0.1:8001  uvicorn workers = WEB_CONCURRENCY
+performance/realworld/go/run.sh          # 127.0.0.1:8002  GOMAXPROCS = WEB_CONCURRENCY
+performance/realworld/fastify/run.sh     # 127.0.0.1:8003  node cluster size = WEB_CONCURRENCY
+performance/realworld/rust-h5i/run.sh    # 127.0.0.1:8004  tokio worker threads = WEB_CONCURRENCY
+performance/realworld/rust-h5i-app/run.sh  # 127.0.0.1:8005  tokio worker threads = WEB_CONCURRENCY
 ```
 
 Release builds: `cargo build --release` (target dir `/var/tmp/rw-target`),

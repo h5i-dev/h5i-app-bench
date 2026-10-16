@@ -69,7 +69,7 @@ Each point writes:
 
 `bench/summarize.py` reads those files and writes `results/points.csv`,
 `results/summary.csv`, and `results/summary.md`. `bench-all.sh` runs it at
-the end. Run it again with `python3 realworld/bench/summarize.py realworld/bench/results`.
+the end. Run it again with `python3 performance/realworld/bench/summarize.py performance/realworld/bench/results`.
 
 RSS is the peak sum of `VmRSS` for every process in the server session.
 CPU percent sums that session; 100 means one fully busy core. Samples are

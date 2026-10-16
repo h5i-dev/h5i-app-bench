@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Start the shared Postgres 16 instance and apply realworld/schema.sql.
+# Start the shared Postgres 16 instance and apply performance/realworld/schema.sql.
 #   ./up-db.sh           keep data, create missing tables
 #   ./up-db.sh --reset   drop and recreate the public schema, then apply it
 set -euo pipefail

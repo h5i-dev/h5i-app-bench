@@ -1,4 +1,4 @@
-"""Write the data behind the benchmark dashboard (docs/, served at benchmark.h5i.dev).
+"""Write the data behind the benchmark dashboard (docs/prove/, served at benchmark.h5i.dev/prove/).
 
   python3 harness/dashboard.py <out dir> [--no-proofs]
 
@@ -13,7 +13,7 @@ import argparse, html, json, re, subprocess, sys, time
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-REPO = "https://github.com/h5i-dev/h5i-app-bench/blob/main"
+REPO = "https://github.com/h5i-dev/h5i-app-bench/blob/main/prove"
 SKIP_APPS = {"bootstrapacademy"}
 MAX_DECLS = 10
 # Runs before the framework moved into h5i as h5i-app used its old names. The
@@ -435,8 +435,8 @@ def prover(source):
             if model in rest:
                 return model
         return rest.split("-")[-1]
-    if source.startswith("docs/data/tasks") and ":" in source:
-        # docs/data/tasks/<id>.json:<model> · <agent>[:variant]
+    if source.startswith("docs/prove/data/tasks") and ":" in source:
+        # docs/prove/data/tasks/<id>.json:<model> · <agent>[:variant]
         return source.split(":", 1)[1].split(" · ")[0]
     if "/proofs/solutions/" in source:
         return SOLUTIONS_PROVER

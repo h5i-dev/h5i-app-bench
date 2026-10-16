@@ -1,6 +1,6 @@
 """Pure Conduit decisions shared by the FastAPI shell.
 
-Slug rules match realworld/rust-h5i/kernel (ASCII, hyphen-collapsed).
+Slug rules match performance/realworld/rust-h5i/kernel (ASCII, hyphen-collapsed).
 Validation matches the RealWorld Hurl suite: blank fields are rejected,
 empty bio/image become null, passwords are at least 8 bytes when set.
 """

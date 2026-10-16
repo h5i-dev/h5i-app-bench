@@ -19,8 +19,8 @@ Defaults: 10 s warmup, 30 s measure, 3 repetitions, concurrency 1, 16, 64, and
 `summarize.py` writes `points.csv`, `summary.csv`, and `summary.md`.
 
 ```sh
-linkding/scripts/bench-parallel.sh
-BENCH_DURATION=3 BENCH_REPEATS=1 BENCH_CONCURRENCY=1 linkding/scripts/bench-parallel.sh fastapi
+performance/linkding/scripts/bench-parallel.sh
+BENCH_DURATION=3 BENCH_REPEATS=1 BENCH_CONCURRENCY=1 performance/linkding/scripts/bench-parallel.sh fastapi
 ```
 
 Ports 5440 and 8105 are also used by the conformance database `linkding-pg` and
