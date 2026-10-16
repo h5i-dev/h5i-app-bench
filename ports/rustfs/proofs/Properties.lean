@@ -1,3 +1,4 @@
+import Verified.RustfsFunctionsMeaning
 import Verified.RustfsStringEval
 import Verified.RustfsAwsDepthMeaning
 import Verified.RustfsAwsLayout
@@ -1739,5 +1740,42 @@ theorem string_like_evaluation_spec (key : condfuncs.Key) (policy : Slice (alloc
     b=true ↔ StringLikeEval (ctx.map Verified.RustfsAwsValues.context) (RequestValueLists values.val)
       key (Verified.RustfsPolicyValues.texts policy.val) q negate :=
   Verified.RustfsStringEval.like_ok key policy q negate values ctx b h
+
+/-- A string operator requires every key entry to satisfy its quantified comparison. -/
+theorem string_function_spec (funcs : Slice (condfuncs.Key × alloc.vec.Vec (alloc.vec.Vec U8)))
+    (q : condfuncs.Quantifier) (ignoreCase like negate : Bool)
+    (values : alloc.vec.Vec (alloc.vec.Vec U8 × alloc.vec.Vec (alloc.vec.Vec U8)))
+    (ctx : Option awsvars.VarContext) (b : Bool)
+    (h : condfuncs.str_func funcs q ignoreCase like negate values ctx=ok b) :
+    b=true ↔ ∀ entry ∈ funcs.val, StringEntryHolds (ctx.map Verified.RustfsAwsValues.context)
+      (RequestValueLists values.val) entry.1 (Verified.RustfsPolicyValues.texts entry.2.val) q ignoreCase like negate :=
+  Verified.RustfsStringFunction.function_ok funcs q ignoreCase like negate values ctx b h
+
+/-- Each condition operator computes its independent list and numeric meaning. -/
+theorem condition_operator_evaluation_spec (c : condfuncs.Cond) (q : condfuncs.Quantifier)
+    (values : alloc.vec.Vec (alloc.vec.Vec U8 × alloc.vec.Vec (alloc.vec.Vec U8)))
+    (ctx : Option awsvars.VarContext) (env : condfuncs.Env) (b : Bool)
+    (h : condfuncs.eval_cond c q values ctx env=ok b) :
+    b=true ↔ OperatorHolds (ctx.map Verified.RustfsAwsValues.context) (RequestValueLists values.val)
+      (env.ips.val.map (fun e => (e.1.val,e.2))) q c :=
+  Verified.RustfsFunctionsMeaning.operator_ok c q values ctx env b h
+
+/-- IfExists bypasses the operator exactly when none of its request keys is present. -/
+theorem condition_evaluation_spec (c : condfuncs.Condition) (q : condfuncs.Quantifier)
+    (values : alloc.vec.Vec (alloc.vec.Vec U8 × alloc.vec.Vec (alloc.vec.Vec U8)))
+    (ctx : Option awsvars.VarContext) (env : condfuncs.Env) (b : Bool)
+    (h : condfuncs.condition_evaluate c q values ctx env=ok b) :
+    b=true ↔ ConditionHolds (ctx.map Verified.RustfsAwsValues.context) (RequestValueLists values.val)
+      (env.ips.val.map (fun e => (e.1.val,e.2))) q c :=
+  Verified.RustfsFunctionsMeaning.condition_ok c q values ctx env b h
+
+/-- Functions require every condition in each of the three quantifier groups. -/
+theorem functions_evaluation_spec (f : condfuncs.Functions)
+    (values : alloc.vec.Vec (alloc.vec.Vec U8 × alloc.vec.Vec (alloc.vec.Vec U8)))
+    (ctx : Option awsvars.VarContext) (env : condfuncs.Env) (b : Bool)
+    (h : condfuncs.functions_evaluate f values ctx env=ok b) :
+    b=true ↔ FunctionsHold (ctx.map Verified.RustfsAwsValues.context) (RequestValueLists values.val)
+      (env.ips.val.map (fun e => (e.1.val,e.2))) f :=
+  Verified.RustfsFunctionsMeaning.functions_ok f values ctx env b h
 
 end rustfs_kernel.Properties

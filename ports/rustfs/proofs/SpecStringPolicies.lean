@@ -29,4 +29,13 @@ def StringLikeEval (ctx : Option AwsValueContext)
     (policy : List (List Nat)) (q : condfuncs.Quantifier) (negate : Bool) : Prop :=
   QuantifiedLike q negate ((PolicyCandidates ctx values false policy).map BytesOfNats)
     ((ConditionValues values (LookupName key)).getD [])
+/-- Unquantified negation complements the whole existential result. Quantified
+negation applies within each request-value comparison. -/
+def StringEntryHolds (ctx : Option AwsValueContext)
+    (values : List (List U8 × List (List U8))) (key : condfuncs.Key)
+    (policy : List (List Nat)) (q : condfuncs.Quantifier) (ignoreCase like negate : Bool) : Prop :=
+  let innerNeg := match q with | .None => false | _ => negate
+  let matched := if like then StringLikeEval ctx values key policy q innerNeg
+    else StringEqualityEval ctx values key policy q ignoreCase innerNeg=true
+  match q with | .None => if negate then ¬matched else matched | _ => matched
 end rustfs_kernel.Spec
