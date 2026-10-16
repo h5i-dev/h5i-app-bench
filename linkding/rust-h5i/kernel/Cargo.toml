@@ -1,0 +1,8 @@
+[package]
+name = "linkding-kernel"
+description = "Linkding authorization, search, and validation decisions, in the Aeneas subset"
+edition = "2021"
+version = "0.1.0"
+publish = false
+
+[dependencies]
