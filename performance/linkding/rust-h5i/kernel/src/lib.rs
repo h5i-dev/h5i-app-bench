@@ -574,15 +574,18 @@ fn url_taken(s: &Snapshot, owner: u64, url: &Text, id: u64) -> bool {
 
 /* Listing */
 
-fn facts(s: &Snapshot, b: &Bookmark) -> BookmarkFacts {
-    let tags = tag_lowers(s, b.id);
+/// What search and bundles match against. With `tags` false the tag names
+/// are left out (empty, and `untagged` false): a query that names no tag,
+/// keyword or lax term never reads them, and looking them up scans every link.
+fn facts(s: &Snapshot, b: &Bookmark, tags_wanted: bool) -> BookmarkFacts {
+    let tags = if tags_wanted { tag_lowers(s, b.id) } else { Vec::new() };
     BookmarkFacts {
         title: b.title.clone(),
         description: b.description.clone(),
         notes: b.notes.clone(),
         url: b.url.clone(),
         unread: b.unread,
-        untagged: tags.len() == 0,
+        untagged: tags.len() == 0 && tags_wanted,
         tag_names: tags,
     }
 }
@@ -779,15 +782,38 @@ fn shared_visible(s: &Snapshot, viewer: u64, b: &Bookmark, owner_filter: Option<
     }
 }
 
+/// Whether a query can consult tags: only `#tag` and `!keyword` words do
+/// (and terms in lax mode, which the caller checks).
+fn mentions_tags(q: &Text) -> bool {
+    let mut found = false;
+    let mut i = 0;
+    while i < q.len() {
+        if q[i] == b'#' || q[i] == b'!' {
+            found = true;
+        }
+        i += 1;
+    }
+    found
+}
+
 /// Every filter of a listing but the scope.
-fn selected(s: &Snapshot, flt: &Filter, parsed: &Parsed, lax: bool, legacy: bool, bundle: &Option<Bundle>, b: &Bookmark) -> bool {
+fn selected(
+    s: &Snapshot,
+    flt: &Filter,
+    parsed: &Parsed,
+    lax: bool,
+    legacy: bool,
+    bundle: &Option<Bundle>,
+    tags_wanted: bool,
+    b: &Bookmark,
+) -> bool {
     if !since_ok(&flt.added_since, b.added) || !since_ok(&flt.modified_since, b.modified) {
         return false;
     }
     if !flag_filter(flt.unread, b.unread) || !flag_filter(flt.shared, b.shared) {
         return false;
     }
-    let f = facts(s, b);
+    let f = facts(s, b, tags_wanted);
     let q_ok = if legacy { legacy_matches(&flt.q, lax, &f) } else { bookmark_matches(parsed, lax, &f) };
     if !q_ok {
         return false;
@@ -1031,6 +1057,7 @@ fn list(s: &Snapshot, token: &Text, flt: &Filter, limit: u64, offset: u64) -> Ou
         }
     };
     let parsed = parse_search(&flt.q);
+    let tags_wanted = lax || bundle.is_some() || mentions_tags(&flt.q);
     let mut sel: Vec<Bookmark> = Vec::new();
     let mut i = 0;
     while i < s.bookmarks.len() {
@@ -1040,7 +1067,7 @@ fn list(s: &Snapshot, token: &Text, flt: &Filter, limit: u64, offset: u64) -> Ou
         } else {
             b.owner == viewer && b.archived == (flt.scope == SCOPE_ARCHIVED)
         };
-        if in_scope && selected(s, flt, &parsed, lax, legacy, &bundle, b) {
+        if in_scope && selected(s, flt, &parsed, lax, legacy, &bundle, tags_wanted, b) {
             sel.push(b.clone());
         }
         i += 1;

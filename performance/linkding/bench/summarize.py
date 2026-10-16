@@ -19,7 +19,7 @@ SCENARIOS = [
     "tags",
     "mixed",
 ]
-IMPLS = ["fastapi", "go", "fastify", "rust-h5i-optimized", "upstream"]
+IMPLS = ["fastapi", "go", "fastify", "rust-h5i-optimized", "rust-h5i", "upstream"]
 
 
 def load_point(summary_path: Path):

@@ -11,6 +11,9 @@
 #   fastify   24-27   28-31     32-35  5442     8103
 #   rust-h5i-optimized  36-39   40-43     44-47  5443     8104
 #   upstream  48-51   52-55     56-59  5444     8105
+#   rust-h5i  36-39   40-43     44-47  5445     8106  (shares rust-h5i-optimized's
+#             CPUs, so it is not in the default set: run it on its own,
+#             `bench-parallel.sh rust-h5i`)
 #
 # The script re-launches itself under setsid nohup and returns at once.
 # Progress: /var/tmp/ld-logs/<impl>/bench-all.log; done marker:
@@ -43,6 +46,7 @@ layout() {
     fastify)  echo "24-27 28-31 32-35 5442 8103" ;;
     rust-h5i-optimized) echo "36-39 40-43 44-47 5443 8104" ;;
     upstream) echo "48-51 52-55 56-59 5444 8105" ;;
+    rust-h5i) echo "36-39 40-43 44-47 5445 8106" ;;
     *) return 1 ;;
   esac
 }

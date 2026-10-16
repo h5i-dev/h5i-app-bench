@@ -11,7 +11,10 @@
 #   SERVER_CPUS=0-3 K6_CPUS=8-11 PG_CPUS=4-7
 #   LINKDING_PG_CONTAINER=linkding-pg-fastapi LINKDING_PG_PORT=5440
 #   BENCH_NO_SUMMARY=1
-#   ./bench-all.sh [fastapi|go|fastify|rust-h5i-optimized|upstream ...]
+#   ./bench-all.sh [fastapi|go|fastify|rust-h5i-optimized|rust-h5i|upstream ...]
+#
+# rust-h5i keeps its rows in h5i-app's own tables (schema h5iapp); each point
+# also copies the seeded rows into them (bench/seed_h5i_app.sql).
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 PG_CONTAINER="${LINKDING_PG_CONTAINER:-linkding-pg}"
@@ -61,6 +64,10 @@ seed_db() {
   else
     docker exec -i "$PG_CONTAINER" psql -U linkding -d linkding -v ON_ERROR_STOP=1 \
       < "$ROOT/bench/seed.sql" >/dev/null
+  fi
+  if [ "$name" = "rust-h5i" ]; then
+    docker exec -i "$PG_CONTAINER" psql -U linkding -d linkding -v ON_ERROR_STOP=1 -q \
+      < "$ROOT/bench/seed_h5i_app.sql" >/dev/null
   fi
 }
 
@@ -166,7 +173,7 @@ start_server() {
       export WEB_CONCURRENCY=4
       export DB_POOL=8
       ;;
-    go|rust-h5i-optimized)
+    go|rust-h5i-optimized|rust-h5i)
       export WEB_CONCURRENCY=4
       export DB_POOL=32
       ;;
@@ -196,6 +203,9 @@ prebuild() {
   if printf '%s\n' "$@" | grep -qx rust-h5i-optimized; then
     (cd "$ROOT/rust-h5i-optimized" && cargo build --release -p linkding-server)
   fi
+  if printf '%s\n' "$@" | grep -qx rust-h5i; then
+    (cd "$ROOT/rust-h5i" && CARGO_TARGET_DIR="${H5I_APP_TARGET_DIR:-/var/tmp/ld-target-h5i-app}" cargo build --release -p linkding-server)
+  fi
 }
 
 prebuild "$@"
@@ -206,6 +216,7 @@ for name in "$@"; do
     go) port=8102; dir="$ROOT/go" ;;
     fastify) port=8103; dir="$ROOT/fastify" ;;
     rust-h5i-optimized) port=8104; dir="$ROOT/rust-h5i-optimized" ;;
+    rust-h5i) port=8106; dir="$ROOT/rust-h5i" ;;
     upstream) port=8105; dir="" ;;
     *) echo "unknown implementation: $name" >&2; exit 2 ;;
   esac

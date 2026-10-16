@@ -2768,11 +2768,11 @@ def decode (r : Rows) : Result (Option Snapshot) := do
                   })
 
 /-- [linkding_kernel::LINK_TAG]
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1582:0-1582:24 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1609:0-1609:24 -/
 @[global_simps, irreducible] def LINK_TAG : Std.U32 := 1#u32
 
 /-- [linkding_kernel::LINK_BOOKMARK]
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1581:0-1581:29 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1608:0-1608:29 -/
 @[global_simps, irreducible] def LINK_BOOKMARK : Std.U32 := 0#u32
 
 /-- [linkding_kernel::Write]
@@ -2792,7 +2792,7 @@ inductive Write where
 | SetCounter : Counter → Write
 
 /-- [linkding_kernel::apply_write]:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1909:0-1922:1 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1936:0-1949:1 -/
 def apply_write (s : Snapshot) (w : Write) : Result Snapshot := do
   match w with
   | Write.PutBookmark x =>
@@ -2972,7 +2972,7 @@ def apply (snap : Snapshot) (ws : alloc.vec.Vec Write) : Result Snapshot := do
   apply_loop ws s 0#usize
 
 /-- [linkding_kernel::sql_write]:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1925:0-1938:1 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1952:0-1965:1 -/
 def sql_write
   (w : Write) (out : alloc.vec.Vec h5i_app_sql.Write) :
   Result (alloc.vec.Vec h5i_app_sql.Write)
@@ -4099,24 +4099,45 @@ structure search.BookmarkFacts where
   tag_names : alloc.vec.Vec (alloc.vec.Vec Std.U8)
 
 /-- [linkding_kernel::facts]:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 577:0-588:1 -/
-def facts (s : Snapshot) (b : Bookmark) : Result search.BookmarkFacts := do
-  let tags ← tag_lowers s b.id
-  let v ← alloc.vec.CloneVec.clone core.clone.CloneU8 b.title
-  let v1 ← alloc.vec.CloneVec.clone core.clone.CloneU8 b.description
-  let v2 ← alloc.vec.CloneVec.clone core.clone.CloneU8 b.notes
-  let v3 ← alloc.vec.CloneVec.clone core.clone.CloneU8 b.url
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 580:0-591:1 -/
+def facts
+  (s : Snapshot) (b : Bookmark) (tags_wanted : Bool) :
+  Result search.BookmarkFacts
+  := do
+  let (b1, tags) ←
+    if tags_wanted
+    then do
+         let tags1 ← tag_lowers s b.id
+         ok (b, tags1)
+    else ok (b, alloc.vec.Vec.new (alloc.vec.Vec Std.U8))
+  let v ← alloc.vec.CloneVec.clone core.clone.CloneU8 b1.title
+  let v1 ← alloc.vec.CloneVec.clone core.clone.CloneU8 b1.description
+  let v2 ← alloc.vec.CloneVec.clone core.clone.CloneU8 b1.notes
+  let v3 ← alloc.vec.CloneVec.clone core.clone.CloneU8 b1.url
   let i := alloc.vec.Vec.len tags
-  ok
-    {
-      title := v,
-      description := v1,
-      notes := v2,
-      url := v3,
-      unread := b.unread,
-      untagged := (i = 0#usize),
-      tag_names := tags
-    }
+  if i = 0#usize
+  then
+    ok
+      {
+        title := v,
+        description := v1,
+        notes := v2,
+        url := v3,
+        unread := b1.unread,
+        untagged := tags_wanted,
+        tag_names := tags
+      }
+  else
+    ok
+      {
+        title := v,
+        description := v1,
+        notes := v2,
+        url := v3,
+        unread := b1.unread,
+        untagged := false,
+        tag_names := tags
+      }
 
 /-- [linkding_kernel::search::Node]
     Source: 'performance/linkding/rust-h5i/kernel/src/search.rs', lines 29:0-34:1
@@ -4688,7 +4709,7 @@ def search.bookmark_matches
       else search.eval_parsed parsed lax bm
 
 /-- [linkding_kernel::term_hit]:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 592:0-597:1 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 595:0-600:1 -/
 def term_hit
   (f : search.BookmarkFacts) (term : alloc.vec.Vec Std.U8) (lax : Bool) :
   Result Bool
@@ -4702,7 +4723,7 @@ def term_hit
     { nodes := p, root := 0#usize, failed := false, empty := false } lax f
 
 /-- [linkding_kernel::has_tag_ci]:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 599:0-602:1 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 602:0-605:1 -/
 def has_tag_ci
   (f : search.BookmarkFacts) («name» : alloc.vec.Vec Std.U8) :
   Result Bool
@@ -4711,7 +4732,7 @@ def has_tag_ci
   contains_text f.tag_names lower
 
 /-- [linkding_kernel::words]: loop body 0:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 609:4-619:5 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 612:4-622:5 -/
 @[rust_loop_body]
 def words_loop.body
   (t : alloc.vec.Vec Std.U8) (out : alloc.vec.Vec (alloc.vec.Vec Std.U8))
@@ -4746,7 +4767,7 @@ def words_loop.body
   else ok (done (out, cur))
 
 /-- [linkding_kernel::words]: loop 0:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 609:4-619:5 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 612:4-622:5 -/
 @[rust_loop]
 def words_loop
   (t : alloc.vec.Vec Std.U8) (out : alloc.vec.Vec (alloc.vec.Vec Std.U8))
@@ -4758,7 +4779,7 @@ def words_loop
     (out, cur, i)
 
 /-- [linkding_kernel::words]:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 605:0-624:1 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 608:0-627:1 -/
 def words
   (t : alloc.vec.Vec Std.U8) :
   Result (alloc.vec.Vec (alloc.vec.Vec Std.U8))
@@ -4772,7 +4793,7 @@ def words
   else ok out
 
 /-- [linkding_kernel::rest_of]: loop body 0:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 629:4-632:5 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 632:4-635:5 -/
 @[rust_loop_body]
 def rest_of_loop.body
   (w : alloc.vec.Vec Std.U8) (out : alloc.vec.Vec Std.U8) (i : Std.Usize) :
@@ -4790,7 +4811,7 @@ def rest_of_loop.body
   else ok (done out)
 
 /-- [linkding_kernel::rest_of]: loop 0:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 629:4-632:5 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 632:4-635:5 -/
 @[rust_loop]
 def rest_of_loop
   (w : alloc.vec.Vec Std.U8) (out : alloc.vec.Vec Std.U8) (i : Std.Usize) :
@@ -4801,7 +4822,7 @@ def rest_of_loop
     (out, i)
 
 /-- [linkding_kernel::rest_of]:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 626:0-634:1 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 629:0-637:1 -/
 @[reducible]
 def rest_of (w : alloc.vec.Vec Std.U8) : Result (alloc.vec.Vec Std.U8) := do
   rest_of_loop w (alloc.vec.Vec.new Std.U8) 1#usize
@@ -4826,7 +4847,7 @@ def search.is_space (c : Std.U8) : Result Bool := do
              else ok (c = 12#u8)
 
 /-- [linkding_kernel::trim_text]: loop body 0:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-667:5 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-670:5 -/
 @[rust_loop_body]
 def trim_text_loop0.body
   (t : alloc.vec.Vec Std.U8) (start : Std.Usize) :
@@ -4846,7 +4867,7 @@ def trim_text_loop0.body
   else ok (done start)
 
 /-- [linkding_kernel::trim_text]: loop 0:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-667:5 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-670:5 -/
 @[rust_loop]
 def trim_text_loop0
   (t : alloc.vec.Vec Std.U8) (start : Std.Usize) : Result Std.Usize := do
@@ -4855,7 +4876,7 @@ def trim_text_loop0
     start
 
 /-- [linkding_kernel::trim_text]: loop body 1:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-671:5 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-674:5 -/
 @[rust_loop_body]
 def trim_text_loop1.body
   (t : alloc.vec.Vec Std.U8) (start : Std.Usize) («end» : Std.Usize) :
@@ -4873,7 +4894,7 @@ def trim_text_loop1.body
   else ok (done «end»)
 
 /-- [linkding_kernel::trim_text]: loop 1:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-671:5 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-674:5 -/
 @[rust_loop]
 def trim_text_loop1
   (t : alloc.vec.Vec Std.U8) (start : Std.Usize) («end» : Std.Usize) :
@@ -4884,7 +4905,7 @@ def trim_text_loop1
     «end»
 
 /-- [linkding_kernel::trim_text]: loop body 2:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 674:4-677:5 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 677:4-680:5 -/
 @[rust_loop_body]
 def trim_text_loop2.body
   (t : alloc.vec.Vec Std.U8) («end» : Std.Usize) (out : alloc.vec.Vec Std.U8)
@@ -4902,7 +4923,7 @@ def trim_text_loop2.body
   else ok (done out)
 
 /-- [linkding_kernel::trim_text]: loop 2:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 674:4-677:5 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 677:4-680:5 -/
 @[rust_loop]
 def trim_text_loop2
   (t : alloc.vec.Vec Std.U8) («end» : Std.Usize) (out : alloc.vec.Vec Std.U8)
@@ -4914,7 +4935,7 @@ def trim_text_loop2
     (out, i)
 
 /-- [linkding_kernel::trim_text]:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 663:0-679:1 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 666:0-682:1 -/
 def trim_text (t : alloc.vec.Vec Std.U8) : Result (alloc.vec.Vec Std.U8) := do
   let start ← trim_text_loop0 t 0#usize
   let «end» := alloc.vec.Vec.len t
@@ -4922,7 +4943,7 @@ def trim_text (t : alloc.vec.Vec Std.U8) : Result (alloc.vec.Vec Std.U8) := do
   trim_text_loop2 t end1 (alloc.vec.Vec.new Std.U8) start
 
 /-- [linkding_kernel::legacy_matches]: loop body 0:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-661:1 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-664:1 -/
 @[rust_loop_body]
 def legacy_matches_loop.body
   (lax : Bool) (f : search.BookmarkFacts)
@@ -4994,7 +5015,7 @@ def legacy_matches_loop.body
   else ok (done true)
 
 /-- [linkding_kernel::legacy_matches]: loop 0:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-661:1 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-664:1 -/
 @[rust_loop]
 def legacy_matches_loop
   (lax : Bool) (f : search.BookmarkFacts)
@@ -5006,7 +5027,7 @@ def legacy_matches_loop
     i
 
 /-- [linkding_kernel::legacy_matches]:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 638:0-661:1 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 641:0-664:1 -/
 def legacy_matches
   (q : alloc.vec.Vec Std.U8) (lax : Bool) (f : search.BookmarkFacts) :
   Result Bool
@@ -5016,7 +5037,7 @@ def legacy_matches
   legacy_matches_loop lax f ws 0#usize
 
 /-- [linkding_kernel::tag_words]:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 682:0-684:1 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 685:0-687:1 -/
 def tag_words
   (t : alloc.vec.Vec Std.U8) :
   Result (alloc.vec.Vec (alloc.vec.Vec Std.U8))
@@ -5025,7 +5046,7 @@ def tag_words
   words v
 
 /-- [linkding_kernel::any_of]: loop body 0:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 688:4-695:1 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 691:4-698:1 -/
 @[rust_loop_body]
 def any_of_loop.body
   (f : search.BookmarkFacts) (names : alloc.vec.Vec (alloc.vec.Vec Std.U8))
@@ -5046,7 +5067,7 @@ def any_of_loop.body
   else ok (done false)
 
 /-- [linkding_kernel::any_of]: loop 0:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 688:4-695:1 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 691:4-698:1 -/
 @[rust_loop]
 def any_of_loop
   (f : search.BookmarkFacts) (names : alloc.vec.Vec (alloc.vec.Vec Std.U8))
@@ -5058,7 +5079,7 @@ def any_of_loop
     i
 
 /-- [linkding_kernel::any_of]:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 686:0-695:1 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 689:0-698:1 -/
 @[reducible]
 def any_of
   (f : search.BookmarkFacts) (names : alloc.vec.Vec (alloc.vec.Vec Std.U8)) :
@@ -5067,7 +5088,7 @@ def any_of
   any_of_loop f names 0#usize
 
 /-- [linkding_kernel::all_of]: loop body 0:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 699:4-706:1 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 702:4-709:1 -/
 @[rust_loop_body]
 def all_of_loop.body
   (f : search.BookmarkFacts) (names : alloc.vec.Vec (alloc.vec.Vec Std.U8))
@@ -5088,7 +5109,7 @@ def all_of_loop.body
   else ok (done true)
 
 /-- [linkding_kernel::all_of]: loop 0:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 699:4-706:1 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 702:4-709:1 -/
 @[rust_loop]
 def all_of_loop
   (f : search.BookmarkFacts) (names : alloc.vec.Vec (alloc.vec.Vec Std.U8))
@@ -5100,7 +5121,7 @@ def all_of_loop
     i
 
 /-- [linkding_kernel::all_of]:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 697:0-706:1 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 700:0-709:1 -/
 @[reducible]
 def all_of
   (f : search.BookmarkFacts) (names : alloc.vec.Vec (alloc.vec.Vec Std.U8)) :
@@ -5109,7 +5130,7 @@ def all_of
   all_of_loop f names 0#usize
 
 /-- [linkding_kernel::flag_ok]:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 708:0-716:1 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 711:0-719:1 -/
 def flag_ok (rule : alloc.vec.Vec Std.U8) (value : Bool) : Result Bool := do
   let v ← yes_word
   let b ← alloc.vec.partial_eq.PartialEqVec.eq core.cmp.PartialEqU8 rule v
@@ -5124,7 +5145,7 @@ def flag_ok (rule : alloc.vec.Vec Std.U8) (value : Bool) : Result Bool := do
     else ok true
 
 /-- [linkding_kernel::bundle_matches]: loop body 0:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-743:1 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-746:1 -/
 @[rust_loop_body]
 def bundle_matches_loop.body
   (v : alloc.vec.Vec Std.U8) (v1 : alloc.vec.Vec Std.U8)
@@ -5215,7 +5236,7 @@ def bundle_matches_loop.body
       else ok (done false)
 
 /-- [linkding_kernel::bundle_matches]: loop 0:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-743:1 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-746:1 -/
 @[rust_loop]
 def bundle_matches_loop
   (v : alloc.vec.Vec Std.U8) (v1 : alloc.vec.Vec Std.U8)
@@ -5229,7 +5250,7 @@ def bundle_matches_loop
     i
 
 /-- [linkding_kernel::bundle_matches]:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 721:0-743:1 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 724:0-746:1 -/
 def bundle_matches
   (bu : Bundle) (b : Bookmark) (f : search.BookmarkFacts) : Result Bool := do
   let v ← trim_text bu.search
@@ -5238,7 +5259,7 @@ def bundle_matches
     bu.filter_shared b f ws 0#usize
 
 /-- [linkding_kernel::flag_filter]:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 745:0-753:1 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 748:0-756:1 -/
 def flag_filter (rule : Std.U8) (value : Bool) : Result Bool := do
   if rule = FLAG_YES
   then ok value
@@ -5247,14 +5268,14 @@ def flag_filter (rule : Std.U8) (value : Bool) : Result Bool := do
        else ok true
 
 /-- [linkding_kernel::since_ok]:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 755:0-760:1 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 758:0-763:1 -/
 def since_ok (since : Option Std.U64) (t : Std.U64) : Result Bool := do
   match since with
   | none => ok true
   | some x => ok (t > x)
 
 /-- [linkding_kernel::shared_visible]:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 764:0-780:1 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 767:0-783:1 -/
 def shared_visible
   (s : Snapshot) (viewer : Std.U64) (b : Bookmark)
   (owner_filter : Option Std.U64) :
@@ -5288,11 +5309,49 @@ def shared_visible
           else ok false
   else ok false
 
+/-- [linkding_kernel::mentions_tags]: loop body 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 790:4-795:5 -/
+@[rust_loop_body]
+def mentions_tags_loop.body
+  (q : alloc.vec.Vec Std.U8) (found : Bool) (i : Std.Usize) :
+  Result (ControlFlow (Bool × Std.Usize) Bool)
+  := do
+  let i1 := alloc.vec.Vec.len q
+  if i < i1
+  then
+    let i2 ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Std.U8) q i
+    let found1 ←
+      if i2 = 35#u8
+      then ok true
+      else if i2 = 33#u8
+           then ok true
+           else ok found
+    let i3 ← i + 1#usize
+    ok (cont (found1, i3))
+  else ok (done found)
+
+/-- [linkding_kernel::mentions_tags]: loop 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 790:4-795:5 -/
+@[rust_loop]
+def mentions_tags_loop
+  (q : alloc.vec.Vec Std.U8) (found : Bool) (i : Std.Usize) : Result Bool := do
+  loop
+    (fun (found1, i1) => mentions_tags_loop.body q found1 i1)
+    (found, i)
+
+/-- [linkding_kernel::mentions_tags]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 787:0-797:1 -/
+@[reducible]
+def mentions_tags (q : alloc.vec.Vec Std.U8) : Result Bool := do
+  mentions_tags_loop q false 0#usize
+
 /-- [linkding_kernel::selected]:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 783:0-799:1 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 800:0-825:1 -/
 def selected
   (s : Snapshot) (flt : Filter) (parsed : search.Parsed) (lax : Bool)
-  (legacy : Bool) (bundle : Option Bundle) (b : Bookmark) :
+  (legacy : Bool) (bundle : Option Bundle) (tags_wanted : Bool) (b : Bookmark)
+  :
   Result Bool
   := do
   let b1 ← since_ok flt.added_since b.added
@@ -5307,7 +5366,7 @@ def selected
         let b4 ← flag_filter flt.shared b.shared
         if b4
         then
-          let f ← facts s b
+          let f ← facts s b tags_wanted
           let q_ok ←
             if legacy
             then legacy_matches flt.q lax f
@@ -5324,7 +5383,7 @@ def selected
   else ok false
 
 /-- [linkding_kernel::before]:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 802:0-828:1 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 828:0-854:1 -/
 def before (sort : Std.U8) (x : Bookmark) (y : Bookmark) : Result Bool := do
   if sort = SORT_ADDED_ASC
   then if x.added != y.added
@@ -5386,7 +5445,7 @@ def before (sort : Std.U8) (x : Bookmark) (y : Bookmark) : Result Bool := do
             else ok (x.id > y.id)
 
 /-- [linkding_kernel::merge]: loop body 0:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 835:4-843:5 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 861:4-869:5 -/
 @[rust_loop_body]
 def merge_loop.body
   (a : alloc.vec.Vec Bookmark) (b : alloc.vec.Vec Bookmark) (sort : Std.U8)
@@ -5484,7 +5543,7 @@ def merge_loop.body
     else ok (done out)
 
 /-- [linkding_kernel::merge]: loop 0:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 835:4-843:5 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 861:4-869:5 -/
 @[rust_loop]
 def merge_loop
   (a : alloc.vec.Vec Bookmark) (b : alloc.vec.Vec Bookmark) (sort : Std.U8)
@@ -5496,7 +5555,7 @@ def merge_loop
     (out, i, j)
 
 /-- [linkding_kernel::merge]:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 831:0-845:1 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 857:0-871:1 -/
 @[reducible]
 def merge
   (a : alloc.vec.Vec Bookmark) (b : alloc.vec.Vec Bookmark) (sort : Std.U8) :
@@ -5505,7 +5564,7 @@ def merge
   merge_loop a b sort (alloc.vec.Vec.new Bookmark) 0#usize 0#usize
 
 /-- [linkding_kernel::sort_bookmarks]: loop body 0:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 851:4-856:5
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 877:4-882:5
     Visibility: public -/
 @[rust_loop_body]
 def sort_bookmarks_loop0.body
@@ -5527,7 +5586,7 @@ def sort_bookmarks_loop0.body
   else ok (done runs)
 
 /-- [linkding_kernel::sort_bookmarks]: loop 0:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 851:4-856:5
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 877:4-882:5
     Visibility: public -/
 @[rust_loop]
 def sort_bookmarks_loop0
@@ -5540,7 +5599,7 @@ def sort_bookmarks_loop0
     (runs, i)
 
 /-- [linkding_kernel::sort_bookmarks]: loop body 2:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 860:8-867:9
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 886:8-893:9
     Visibility: public -/
 @[rust_loop_body]
 def sort_bookmarks_loop1_loop0.body
@@ -5578,7 +5637,7 @@ def sort_bookmarks_loop1_loop0.body
   else ok (done next)
 
 /-- [linkding_kernel::sort_bookmarks]: loop 2:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 860:8-867:9
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 886:8-893:9
     Visibility: public -/
 @[rust_loop]
 def sort_bookmarks_loop1_loop0
@@ -5591,7 +5650,7 @@ def sort_bookmarks_loop1_loop0
     (next, k)
 
 /-- [linkding_kernel::sort_bookmarks]: loop body 1:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 857:4-869:5
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 883:4-895:5
     Visibility: public -/
 @[rust_loop_body]
 def sort_bookmarks_loop1.body
@@ -5609,7 +5668,7 @@ def sort_bookmarks_loop1.body
   else ok (done runs)
 
 /-- [linkding_kernel::sort_bookmarks]: loop 1:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 857:4-869:5
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 883:4-895:5
     Visibility: public -/
 @[rust_loop]
 def sort_bookmarks_loop1
@@ -5621,7 +5680,7 @@ def sort_bookmarks_loop1
     runs
 
 /-- [linkding_kernel::sort_bookmarks]:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 848:0-874:1
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 874:0-900:1
     Visibility: public -/
 def sort_bookmarks
   (v : alloc.vec.Vec Bookmark) (sort : Std.U8) :
@@ -5640,7 +5699,7 @@ def sort_bookmarks
     alloc.vec.CloneVec.clone Bookmark.Insts.CoreCloneClone v1
 
 /-- [linkding_kernel::reversed]: loop body 0:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 879:4-882:5 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 905:4-908:5 -/
 @[rust_loop_body]
 def reversed_loop.body
   (v : alloc.vec.Vec Bookmark) (out : alloc.vec.Vec Bookmark) (i : Std.Usize) :
@@ -5658,7 +5717,7 @@ def reversed_loop.body
   else ok (done out)
 
 /-- [linkding_kernel::reversed]: loop 0:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 879:4-882:5 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 905:4-908:5 -/
 @[rust_loop]
 def reversed_loop
   (v : alloc.vec.Vec Bookmark) (out : alloc.vec.Vec Bookmark) (i : Std.Usize) :
@@ -5669,14 +5728,14 @@ def reversed_loop
     (out, i)
 
 /-- [linkding_kernel::reversed]:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 876:0-884:1 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 902:0-910:1 -/
 def reversed
   (v : alloc.vec.Vec Bookmark) : Result (alloc.vec.Vec Bookmark) := do
   let i := alloc.vec.Vec.len v
   reversed_loop v (alloc.vec.Vec.new Bookmark) i
 
 /-- [linkding_kernel::on_page]:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 887:0-889:1 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 913:0-915:1 -/
 def on_page
   (k : Std.U64) (offset : Std.U64) (limit : Std.U64) : Result Bool := do
   if k >= offset
@@ -5685,7 +5744,7 @@ def on_page
   else ok false
 
 /-- [linkding_kernel::page_bookmarks]: loop body 0:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 894:4-899:5 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 920:4-925:5 -/
 @[rust_loop_body]
 def page_bookmarks_loop.body
   (v : alloc.vec.Vec Bookmark) (offset : Std.U64) (limit : Std.U64)
@@ -5713,7 +5772,7 @@ def page_bookmarks_loop.body
   else ok (done out)
 
 /-- [linkding_kernel::page_bookmarks]: loop 0:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 894:4-899:5 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 920:4-925:5 -/
 @[rust_loop]
 def page_bookmarks_loop
   (v : alloc.vec.Vec Bookmark) (offset : Std.U64) (limit : Std.U64)
@@ -5725,7 +5784,7 @@ def page_bookmarks_loop
     (out, i)
 
 /-- [linkding_kernel::page_bookmarks]:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 891:0-901:1 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 917:0-927:1 -/
 @[reducible]
 def page_bookmarks
   (v : alloc.vec.Vec Bookmark) (offset : Std.U64) (limit : Std.U64) :
@@ -5734,7 +5793,7 @@ def page_bookmarks
   page_bookmarks_loop v offset limit (alloc.vec.Vec.new Bookmark) 0#usize
 
 /-- [linkding_kernel::page_tags]: loop body 0:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 906:4-911:5 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 932:4-937:5 -/
 @[rust_loop_body]
 def page_tags_loop.body
   (v : alloc.vec.Vec Tag) (offset : Std.U64) (limit : Std.U64)
@@ -5760,7 +5819,7 @@ def page_tags_loop.body
   else ok (done out)
 
 /-- [linkding_kernel::page_tags]: loop 0:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 906:4-911:5 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 932:4-937:5 -/
 @[rust_loop]
 def page_tags_loop
   (v : alloc.vec.Vec Tag) (offset : Std.U64) (limit : Std.U64)
@@ -5772,7 +5831,7 @@ def page_tags_loop
     (out, i)
 
 /-- [linkding_kernel::page_tags]:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 903:0-913:1 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 929:0-939:1 -/
 @[reducible]
 def page_tags
   (v : alloc.vec.Vec Tag) (offset : Std.U64) (limit : Std.U64) :
@@ -5781,7 +5840,7 @@ def page_tags
   page_tags_loop v offset limit (alloc.vec.Vec.new Tag) 0#usize
 
 /-- [linkding_kernel::page_bundles]: loop body 0:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 918:4-923:5 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 944:4-949:5 -/
 @[rust_loop_body]
 def page_bundles_loop.body
   (v : alloc.vec.Vec Bundle) (offset : Std.U64) (limit : Std.U64)
@@ -5809,7 +5868,7 @@ def page_bundles_loop.body
   else ok (done out)
 
 /-- [linkding_kernel::page_bundles]: loop 0:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 918:4-923:5 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 944:4-949:5 -/
 @[rust_loop]
 def page_bundles_loop
   (v : alloc.vec.Vec Bundle) (offset : Std.U64) (limit : Std.U64)
@@ -5821,7 +5880,7 @@ def page_bundles_loop
     (out, i)
 
 /-- [linkding_kernel::page_bundles]:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 915:0-925:1 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 941:0-951:1 -/
 @[reducible]
 def page_bundles
   (v : alloc.vec.Vec Bundle) (offset : Std.U64) (limit : Std.U64) :
@@ -5830,7 +5889,7 @@ def page_bundles
   page_bundles_loop v offset limit (alloc.vec.Vec.new Bundle) 0#usize
 
 /-- [linkding_kernel::is_quote_or_paren]:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 927:0-929:1 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 953:0-955:1 -/
 def is_quote_or_paren (c : Std.U8) : Result Bool := do
   if c = 40#u8
   then ok true
@@ -5842,7 +5901,7 @@ def is_quote_or_paren (c : Std.U8) : Result Bool := do
          else ok (c = 39#u8)
 
 /-- [linkding_kernel::simple_query]: loop body 0:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 940:4-945:5
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 966:4-971:5
     Visibility: public -/
 @[rust_loop_body]
 def simple_query_loop0.body
@@ -5875,7 +5934,7 @@ def simple_query_loop0.body
   else ok (done ok1)
 
 /-- [linkding_kernel::simple_query]: loop 0:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 940:4-945:5
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 966:4-971:5
     Visibility: public -/
 @[rust_loop]
 def simple_query_loop0
@@ -5885,7 +5944,7 @@ def simple_query_loop0
     (ok1, i)
 
 /-- [linkding_kernel::simple_query]: loop body 1:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 950:4-967:5
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 976:4-993:5
     Visibility: public -/
 @[rust_loop_body]
 def simple_query_loop1.body
@@ -5949,7 +6008,7 @@ def simple_query_loop1.body
   else ok (done (ok1, tags, unread))
 
 /-- [linkding_kernel::simple_query]: loop 1:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 950:4-967:5
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 976:4-993:5
     Visibility: public -/
 @[rust_loop]
 def simple_query_loop1
@@ -5964,7 +6023,7 @@ def simple_query_loop1
     (ok1, tags, unread, j)
 
 /-- [linkding_kernel::simple_query]:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 936:0-973:1
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 962:0-999:1
     Visibility: public -/
 def simple_query
   (q : alloc.vec.Vec Std.U8) :
@@ -5981,7 +6040,7 @@ def simple_query
   else ok none
 
 /-- [linkding_kernel::paged]:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 977:0-985:1
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1003:0-1011:1
     Visibility: public -/
 def paged (flt : Filter) : Result Bool := do
   if flt.scope = SCOPE_SHARED
@@ -7300,7 +7359,7 @@ def search.parse_search
       else search.parse_tokens tokens
 
 /-- [linkding_kernel::list]: loop body 0:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-1047:5 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-1074:5 -/
 @[rust_loop_body]
 def list_loop0.body
   (c : Counter) (v : alloc.vec.Vec User) (v1 : alloc.vec.Vec Token)
@@ -7310,7 +7369,8 @@ def list_loop0.body
   (i2 : Std.U8) (o1 : Option Std.U64) (o2 : Option Std.U64) (i3 : Std.U8)
   (o3 : Option Std.U64) (viewer : Std.U64) (lax : Bool) (legacy : Bool)
   (owner_filter : Option Std.U64) (bundle : Option Bundle)
-  (parsed : search.Parsed) (sel : alloc.vec.Vec Bookmark) (i4 : Std.Usize) :
+  (parsed : search.Parsed) (tags_wanted : Bool) (sel : alloc.vec.Vec Bookmark)
+  (i4 : Std.Usize) :
   Result (ControlFlow ((alloc.vec.Vec Bookmark) × Std.Usize) (alloc.vec.Vec
     Bookmark))
   := do
@@ -7368,7 +7428,7 @@ def list_loop0.body
               modified_since := o2,
               sort := i3,
               bundle := o3
-            } parsed lax legacy bundle b1
+            } parsed lax legacy bundle tags_wanted b1
         if b2
         then
           let b3 ← Bookmark.Insts.CoreCloneClone.clone b1
@@ -7380,7 +7440,7 @@ def list_loop0.body
   else ok (done sel)
 
 /-- [linkding_kernel::list]: loop 0:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-1047:5 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-1074:5 -/
 @[rust_loop]
 def list_loop0
   (c : Counter) (v : alloc.vec.Vec User) (v1 : alloc.vec.Vec Token)
@@ -7390,16 +7450,17 @@ def list_loop0
   (i2 : Std.U8) (o1 : Option Std.U64) (o2 : Option Std.U64) (i3 : Std.U8)
   (o3 : Option Std.U64) (viewer : Std.U64) (lax : Bool) (legacy : Bool)
   (owner_filter : Option Std.U64) (bundle : Option Bundle)
-  (parsed : search.Parsed) (sel : alloc.vec.Vec Bookmark) (i4 : Std.Usize) :
+  (parsed : search.Parsed) (tags_wanted : Bool) (sel : alloc.vec.Vec Bookmark)
+  (i4 : Std.Usize) :
   Result (alloc.vec.Vec Bookmark)
   := do
   loop
     (fun (sel1, i5) => list_loop0.body c v v1 v2 v3 v4 v5 i v6 o i1 i2 o1 o2 i3
-      o3 viewer lax legacy owner_filter bundle parsed sel1 i5)
+      o3 viewer lax legacy owner_filter bundle parsed tags_wanted sel1 i5)
     (sel, i4)
 
 /-- [linkding_kernel::list]: loop body 1:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1057:4-1060:5 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1084:4-1087:5 -/
 @[rust_loop_body]
 def list_loop1.body
   (c : Counter) (v : alloc.vec.Vec User) (v1 : alloc.vec.Vec Token)
@@ -7433,7 +7494,7 @@ def list_loop1.body
   else ok (done items)
 
 /-- [linkding_kernel::list]: loop 1:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1057:4-1060:5 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1084:4-1087:5 -/
 @[rust_loop]
 def list_loop1
   (c : Counter) (v : alloc.vec.Vec User) (v1 : alloc.vec.Vec Token)
@@ -7448,7 +7509,7 @@ def list_loop1
     (items, j)
 
 /-- [linkding_kernel::list]: loop body 2:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-1047:5 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-1074:5 -/
 @[rust_loop_body]
 def list_loop2.body
   (c : Counter) (v : alloc.vec.Vec User) (v1 : alloc.vec.Vec Token)
@@ -7458,7 +7519,8 @@ def list_loop2.body
   (i2 : Std.U8) (o1 : Option Std.U64) (o2 : Option Std.U64) (i3 : Std.U8)
   (o3 : Option Std.U64) (viewer : Std.U64) (lax : Bool) (legacy : Bool)
   (owner_filter : Option Std.U64) (bundle : Option Bundle)
-  (parsed : search.Parsed) (sel : alloc.vec.Vec Bookmark) (i4 : Std.Usize) :
+  (parsed : search.Parsed) (tags_wanted : Bool) (sel : alloc.vec.Vec Bookmark)
+  (i4 : Std.Usize) :
   Result (ControlFlow ((alloc.vec.Vec Bookmark) × Std.Usize) (alloc.vec.Vec
     Bookmark))
   := do
@@ -7516,7 +7578,7 @@ def list_loop2.body
               modified_since := o2,
               sort := i3,
               bundle := o3
-            } parsed lax legacy bundle b1
+            } parsed lax legacy bundle tags_wanted b1
         if b2
         then
           let b3 ← Bookmark.Insts.CoreCloneClone.clone b1
@@ -7528,7 +7590,7 @@ def list_loop2.body
   else ok (done sel)
 
 /-- [linkding_kernel::list]: loop 2:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-1047:5 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-1074:5 -/
 @[rust_loop]
 def list_loop2
   (c : Counter) (v : alloc.vec.Vec User) (v1 : alloc.vec.Vec Token)
@@ -7538,16 +7600,17 @@ def list_loop2
   (i2 : Std.U8) (o1 : Option Std.U64) (o2 : Option Std.U64) (i3 : Std.U8)
   (o3 : Option Std.U64) (viewer : Std.U64) (lax : Bool) (legacy : Bool)
   (owner_filter : Option Std.U64) (bundle : Option Bundle)
-  (parsed : search.Parsed) (sel : alloc.vec.Vec Bookmark) (i4 : Std.Usize) :
+  (parsed : search.Parsed) (tags_wanted : Bool) (sel : alloc.vec.Vec Bookmark)
+  (i4 : Std.Usize) :
   Result (alloc.vec.Vec Bookmark)
   := do
   loop
     (fun (sel1, i5) => list_loop2.body c v v1 v2 v3 v4 v5 i v6 o i1 i2 o1 o2 i3
-      o3 viewer lax legacy owner_filter bundle parsed sel1 i5)
+      o3 viewer lax legacy owner_filter bundle parsed tags_wanted sel1 i5)
     (sel, i4)
 
 /-- [linkding_kernel::list]: loop body 3:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1057:4-1060:5 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1084:4-1087:5 -/
 @[rust_loop_body]
 def list_loop3.body
   (c : Counter) (v : alloc.vec.Vec User) (v1 : alloc.vec.Vec Token)
@@ -7581,7 +7644,7 @@ def list_loop3.body
   else ok (done items)
 
 /-- [linkding_kernel::list]: loop 3:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1057:4-1060:5 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1084:4-1087:5 -/
 @[rust_loop]
 def list_loop3
   (c : Counter) (v : alloc.vec.Vec User) (v1 : alloc.vec.Vec Token)
@@ -7596,7 +7659,7 @@ def list_loop3
     (items, j)
 
 /-- [linkding_kernel::list]:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 987:0-1063:1 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1013:0-1090:1 -/
 def list
   (s : Snapshot) (token : alloc.vec.Vec Std.U8) (flt : Filter)
   (limit : Std.U64) (offset : Std.U64) :
@@ -7652,11 +7715,19 @@ def list
                             else ok none
             ok (flt.bundle, o2)
         let parsed ← search.parse_search flt.q
+        let tags_wanted ←
+          if lax
+          then ok true
+          else
+            let b := core.option.Option.is_some bundle
+            if b
+            then ok true
+            else mentions_tags flt.q
         let sel ←
           list_loop0 s.counter s.users s.tokens s.bookmarks s.tags s.links
             s.bundles flt.scope flt.q o flt.unread flt.shared flt.added_since
             flt.modified_since flt.sort o1 v lax legacy owner_filter bundle
-            parsed (alloc.vec.Vec.new Bookmark) 0#usize
+            parsed tags_wanted (alloc.vec.Vec.new Bookmark) 0#usize
         let sorted ←
           if flt.scope != SCOPE_SHARED
           then
@@ -7722,11 +7793,19 @@ def list
                           else ok none
           ok (flt.bundle, o2)
       let parsed ← search.parse_search flt.q
+      let tags_wanted ←
+        if lax
+        then ok true
+        else
+          let b := core.option.Option.is_some bundle
+          if b
+          then ok true
+          else mentions_tags flt.q
       let sel ←
         list_loop2 s.counter s.users s.tokens s.bookmarks s.tags s.links
           s.bundles flt.scope flt.q o flt.unread flt.shared flt.added_since
           flt.modified_since flt.sort o1 v lax legacy owner_filter bundle
-          parsed (alloc.vec.Vec.new Bookmark) 0#usize
+          parsed tags_wanted (alloc.vec.Vec.new Bookmark) 0#usize
       let sorted ←
         if flt.scope != SCOPE_SHARED
         then
@@ -7752,7 +7831,7 @@ def list
   | core.result.Result.Err e => ok (core.result.Result.Err e)
 
 /-- [linkding_kernel::tag_writes]: loop body 0:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1087:4-1108:5 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1114:4-1135:5 -/
 @[rust_loop_body]
 def tag_writes_loop.body
   (s : Snapshot) (owner : Std.U64) (id : Std.U64)
@@ -7818,7 +7897,7 @@ def tag_writes_loop.body
   else ok (done (out, shown, next))
 
 /-- [linkding_kernel::tag_writes]: loop 0:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1087:4-1108:5 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1114:4-1135:5 -/
 @[rust_loop]
 def tag_writes_loop
   (s : Snapshot) (owner : Std.U64) (id : Std.U64)
@@ -7834,7 +7913,7 @@ def tag_writes_loop
     (out, shown, made, next, i)
 
 /-- [linkding_kernel::tag_writes]:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1069:0-1110:1 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1096:0-1137:1 -/
 def tag_writes
   (s : Snapshot) (owner : Std.U64) (id : Std.U64)
   (names : alloc.vec.Vec (alloc.vec.Vec Std.U8)) (now : Std.U64)
@@ -7854,7 +7933,7 @@ def tag_writes
     ok (core.result.Result.Ok (out, shown, next))
 
 /-- [linkding_kernel::set_counter]:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1112:0-1114:1 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1139:0-1141:1 -/
 def set_counter
   (s : Snapshot) (last_bookmark : Std.U64) (last_tag : Std.U64) :
   Result Write
@@ -7862,7 +7941,7 @@ def set_counter
   ok (Write.SetCounter { s.counter with last_bookmark, last_tag })
 
 /-- [linkding_kernel::create_bookmark]:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1116:0-1175:1 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1143:0-1202:1 -/
 def create_bookmark
   (s : Snapshot) (token : alloc.vec.Vec Std.U8) (f : BookmarkFields)
   (now : Std.U64) :
@@ -7989,7 +8068,7 @@ def create_bookmark
   | core.result.Result.Err e => ok (core.result.Result.Err e)
 
 /-- [linkding_kernel::own_bookmark]:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1178:0-1189:1 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1205:0-1216:1 -/
 def own_bookmark
   (s : Snapshot) (me : User) (id : Std.U64) :
   Result (core.result.Result Bookmark Error)
@@ -8003,7 +8082,7 @@ def own_bookmark
     else ok (core.result.Result.Err Error.NotFound)
 
 /-- [linkding_kernel::get_bookmark]:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1191:0-1195:1 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1218:0-1222:1 -/
 def get_bookmark
   (s : Snapshot) (token : alloc.vec.Vec Std.U8) (id : Std.U64) :
   Result (core.result.Result ((alloc.vec.Vec Write) × Reply) Error)
@@ -8020,7 +8099,7 @@ def get_bookmark
   | core.result.Result.Err e => ok (core.result.Result.Err e)
 
 /-- [linkding_kernel::update_bookmark]:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1197:0-1243:1 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1224:0-1270:1 -/
 def update_bookmark
   (s : Snapshot) (token : alloc.vec.Vec Std.U8) (id : Std.U64)
   (f : BookmarkFields) (now : Std.U64) :
@@ -8208,7 +8287,7 @@ def update_bookmark
   | core.result.Result.Err e => ok (core.result.Result.Err e)
 
 /-- [linkding_kernel::delete_bookmark]:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1245:0-1252:1 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1272:0-1279:1 -/
 def delete_bookmark
   (s : Snapshot) (token : alloc.vec.Vec Std.U8) (id : Std.U64) :
   Result (core.result.Result ((alloc.vec.Vec Write) × Reply) Error)
@@ -8228,7 +8307,7 @@ def delete_bookmark
   | core.result.Result.Err e => ok (core.result.Result.Err e)
 
 /-- [linkding_kernel::archive]:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1254:0-1272:1 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1281:0-1299:1 -/
 def archive
   (s : Snapshot) (token : alloc.vec.Vec Std.U8) (id : Std.U64)
   (archived : Bool) (now : Std.U64) :
@@ -8263,7 +8342,7 @@ def archive
   | core.result.Result.Err e => ok (core.result.Result.Err e)
 
 /-- [linkding_kernel::check]:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1274:0-1281:1 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1301:0-1308:1 -/
 def check
   (s : Snapshot) (token : alloc.vec.Vec Std.U8) (url : alloc.vec.Vec Std.U8)
   (url_norm : alloc.vec.Vec Std.U8) :
@@ -8283,7 +8362,7 @@ def check
   | core.result.Result.Err e => ok (core.result.Result.Err e)
 
 /-- [linkding_kernel::list_tags]: loop body 0:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1290:4-1295:5 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1317:4-1322:5 -/
 @[rust_loop_body]
 def list_tags_loop.body
   (s : Snapshot) (me : User) (mine1 : alloc.vec.Vec Tag) (i : Std.Usize) :
@@ -8306,7 +8385,7 @@ def list_tags_loop.body
   else ok (done mine1)
 
 /-- [linkding_kernel::list_tags]: loop 0:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1290:4-1295:5 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1317:4-1322:5 -/
 @[rust_loop]
 def list_tags_loop
   (s : Snapshot) (me : User) (mine1 : alloc.vec.Vec Tag) (i : Std.Usize) :
@@ -8317,7 +8396,7 @@ def list_tags_loop
     (mine1, i)
 
 /-- [linkding_kernel::list_tags]:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1286:0-1297:1 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1313:0-1324:1 -/
 def list_tags
   (s : Snapshot) (token : alloc.vec.Vec Std.U8) (limit : Std.U64)
   (offset : Std.U64) :
@@ -8332,7 +8411,7 @@ def list_tags
   | core.result.Result.Err e => ok (core.result.Result.Err e)
 
 /-- [linkding_kernel::create_tag]:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1300:0-1317:1 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1327:0-1344:1 -/
 def create_tag
   (s : Snapshot) (token : alloc.vec.Vec Std.U8)
   («name» : alloc.vec.Vec Std.U8) (now : Std.U64) :
@@ -8376,7 +8455,7 @@ def create_tag
   | core.result.Result.Err e => ok (core.result.Result.Err e)
 
 /-- [linkding_kernel::own_tag]:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1319:0-1330:1 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1346:0-1357:1 -/
 def own_tag
   (s : Snapshot) (me : User) (id : Std.U64) :
   Result (core.result.Result Tag Error)
@@ -8390,7 +8469,7 @@ def own_tag
     else ok (core.result.Result.Err Error.NotFound)
 
 /-- [linkding_kernel::get_tag]:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1332:0-1336:1 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1359:0-1363:1 -/
 def get_tag
   (s : Snapshot) (token : alloc.vec.Vec Std.U8) (id : Std.U64) :
   Result (core.result.Result ((alloc.vec.Vec Write) × Reply) Error)
@@ -8406,7 +8485,7 @@ def get_tag
   | core.result.Result.Err e => ok (core.result.Result.Err e)
 
 /-- [linkding_kernel::delete_tag]:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1338:0-1345:1 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1365:0-1372:1 -/
 def delete_tag
   (s : Snapshot) (token : alloc.vec.Vec Std.U8) (id : Std.U64) :
   Result (core.result.Result ((alloc.vec.Vec Write) × Reply) Error)
@@ -8425,14 +8504,14 @@ def delete_tag
   | core.result.Result.Err e => ok (core.result.Result.Err e)
 
 /-- [linkding_kernel::bundle_before]:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1350:0-1355:1 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1377:0-1382:1 -/
 def bundle_before (x : Bundle) (y : Bundle) : Result Bool := do
   if x.order != y.order
   then ok (x.order < y.order)
   else ok (x.id < y.id)
 
 /-- [linkding_kernel::insert_bundle]: loop body 0:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-1369:5 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-1396:5 -/
 @[rust_loop_body]
 def insert_bundle_loop.body
   (v : alloc.vec.Vec Bundle) (x : Bundle) (out : alloc.vec.Vec Bundle)
@@ -8469,7 +8548,7 @@ def insert_bundle_loop.body
   else ok (done (out, placed))
 
 /-- [linkding_kernel::insert_bundle]: loop 0:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-1369:5 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-1396:5 -/
 @[rust_loop]
 def insert_bundle_loop
   (v : alloc.vec.Vec Bundle) (x : Bundle) (out : alloc.vec.Vec Bundle)
@@ -8481,7 +8560,7 @@ def insert_bundle_loop
     (out, placed, i)
 
 /-- [linkding_kernel::insert_bundle]:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1358:0-1374:1 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1385:0-1401:1 -/
 def insert_bundle
   (v : alloc.vec.Vec Bundle) (x : Bundle) : Result (alloc.vec.Vec Bundle) := do
   let (out, placed) ←
@@ -8492,7 +8571,7 @@ def insert_bundle
        alloc.vec.Vec.push out b
 
 /-- [linkding_kernel::bundles_of]: loop body 0:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1380:4-1385:5
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1407:4-1412:5
     Visibility: public -/
 @[rust_loop_body]
 def bundles_of_loop.body
@@ -8515,7 +8594,7 @@ def bundles_of_loop.body
   else ok (done out)
 
 /-- [linkding_kernel::bundles_of]: loop 0:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1380:4-1385:5
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1407:4-1412:5
     Visibility: public -/
 @[rust_loop]
 def bundles_of_loop
@@ -8528,7 +8607,7 @@ def bundles_of_loop
     (out, i)
 
 /-- [linkding_kernel::bundles_of]:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1377:0-1387:1
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1404:0-1414:1
     Visibility: public -/
 @[reducible]
 def bundles_of
@@ -8536,7 +8615,7 @@ def bundles_of
   bundles_of_loop s owner (alloc.vec.Vec.new Bundle) 0#usize
 
 /-- [linkding_kernel::list_bundles]:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1389:0-1393:1 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1416:0-1420:1 -/
 def list_bundles
   (s : Snapshot) (token : alloc.vec.Vec Std.U8) (limit : Std.U64)
   (offset : Std.U64) :
@@ -8553,7 +8632,7 @@ def list_bundles
   | core.result.Result.Err e => ok (core.result.Result.Err e)
 
 /-- [linkding_kernel::off_text]:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1395:0-1400:1 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1422:0-1427:1 -/
 def off_text
   (t : Option (alloc.vec.Vec Std.U8)) : Result (alloc.vec.Vec Std.U8) := do
   match t with
@@ -8561,7 +8640,7 @@ def off_text
   | some x => alloc.vec.CloneVec.clone core.clone.CloneU8 x
 
 /-- [linkding_kernel::create_bundle]: loop body 0:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1411:12-1416:13 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1438:12-1443:13 -/
 @[rust_loop_body]
 def create_bundle_loop.body
   (mine1 : alloc.vec.Vec Bundle) (top : Std.U64) (i : Std.Usize) :
@@ -8581,7 +8660,7 @@ def create_bundle_loop.body
   else ok (done top)
 
 /-- [linkding_kernel::create_bundle]: loop 0:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1411:12-1416:13 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1438:12-1443:13 -/
 @[rust_loop]
 def create_bundle_loop
   (mine1 : alloc.vec.Vec Bundle) (top : Std.U64) (i : Std.Usize) :
@@ -8592,7 +8671,7 @@ def create_bundle_loop
     (top, i)
 
 /-- [linkding_kernel::create_bundle]:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1402:0-1450:1 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1429:0-1477:1 -/
 def create_bundle
   (s : Snapshot) (token : alloc.vec.Vec Std.U8) (f : BundleFields)
   (now : Std.U64) :
@@ -8758,7 +8837,7 @@ def create_bundle
   | core.result.Result.Err e => ok (core.result.Result.Err e)
 
 /-- [linkding_kernel::own_bundle]:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1452:0-1463:1 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1479:0-1490:1 -/
 def own_bundle
   (s : Snapshot) (me : User) (id : Std.U64) :
   Result (core.result.Result Bundle Error)
@@ -8772,7 +8851,7 @@ def own_bundle
     else ok (core.result.Result.Err Error.NotFound)
 
 /-- [linkding_kernel::get_bundle]:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1465:0-1469:1 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1492:0-1496:1 -/
 def get_bundle
   (s : Snapshot) (token : alloc.vec.Vec Std.U8) (id : Std.U64) :
   Result (core.result.Result ((alloc.vec.Vec Write) × Reply) Error)
@@ -8788,7 +8867,7 @@ def get_bundle
   | core.result.Result.Err e => ok (core.result.Result.Err e)
 
 /-- [linkding_kernel::update_bundle]:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1471:0-1489:1 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1498:0-1516:1 -/
 def update_bundle
   (s : Snapshot) (token : alloc.vec.Vec Std.U8) (id : Std.U64)
   (f : BundleFields) (now : Std.U64) :
@@ -8842,7 +8921,7 @@ def update_bundle
   | core.result.Result.Err e => ok (core.result.Result.Err e)
 
 /-- [linkding_kernel::delete_bundle]: loop body 0:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1500:4-1508:5 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1527:4-1535:5 -/
 @[rust_loop_body]
 def delete_bundle_loop.body
   (i : Std.U64) (mine1 : alloc.vec.Vec Bundle) (ws : alloc.vec.Vec Write)
@@ -8872,7 +8951,7 @@ def delete_bundle_loop.body
   else ok (done ws)
 
 /-- [linkding_kernel::delete_bundle]: loop 0:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1500:4-1508:5 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1527:4-1535:5 -/
 @[rust_loop]
 def delete_bundle_loop
   (i : Std.U64) (mine1 : alloc.vec.Vec Bundle) (ws : alloc.vec.Vec Write)
@@ -8884,7 +8963,7 @@ def delete_bundle_loop
     (ws, pos, i1)
 
 /-- [linkding_kernel::delete_bundle]:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1492:0-1510:1 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1519:0-1537:1 -/
 def delete_bundle
   (s : Snapshot) (token : alloc.vec.Vec Std.U8) (id : Std.U64) :
   Result (core.result.Result ((alloc.vec.Vec Write) × Reply) Error)
@@ -8903,7 +8982,7 @@ def delete_bundle
   | core.result.Result.Err e => ok (core.result.Result.Err e)
 
 /-- [linkding_kernel::profile]:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1512:0-1515:1 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1539:0-1542:1 -/
 def profile
   (s : Snapshot) (token : alloc.vec.Vec Std.U8) :
   Result (core.result.Result ((alloc.vec.Vec Write) × Reply) Error)
@@ -8915,7 +8994,7 @@ def profile
   | core.result.Result.Err e => ok (core.result.Result.Err e)
 
 /-- [linkding_kernel::transition]:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1518:0-1539:1
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1545:0-1566:1
     Visibility: public -/
 def transition
   (actor1 : Principal) (s : Snapshot) (cmd : Command) :
@@ -8945,7 +9024,7 @@ def transition
   | Command.DeleteBundle id => delete_bundle s actor1.token id
 
 /-- [linkding_kernel::read_only]:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1542:0-1554:1
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1569:0-1581:1
     Visibility: public -/
 def read_only (cmd : Command) : Result Bool := do
   match cmd with
@@ -8968,135 +9047,135 @@ def read_only (cmd : Command) : Result Bool := do
   | Command.DeleteBundle _ => ok false
 
 /-- [linkding_kernel::T_USERS]
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1559:0-1559:23 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1586:0-1586:23 -/
 @[global_simps, irreducible] def T_USERS : Std.U32 := 0#u32
 
 /-- [linkding_kernel::T_TOKENS]
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1560:0-1560:24 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1587:0-1587:24 -/
 @[global_simps, irreducible] def T_TOKENS : Std.U32 := 1#u32
 
 /-- [linkding_kernel::T_BOOKMARKS]
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1561:0-1561:27 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1588:0-1588:27 -/
 @[global_simps, irreducible] def T_BOOKMARKS : Std.U32 := 2#u32
 
 /-- [linkding_kernel::T_TAGS]
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1562:0-1562:22 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1589:0-1589:22 -/
 @[global_simps, irreducible] def T_TAGS : Std.U32 := 3#u32
 
 /-- [linkding_kernel::T_LINKS]
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1563:0-1563:23 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1590:0-1590:23 -/
 @[global_simps, irreducible] def T_LINKS : Std.U32 := 4#u32
 
 /-- [linkding_kernel::T_BUNDLES]
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1564:0-1564:25 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1591:0-1591:25 -/
 @[global_simps, irreducible] def T_BUNDLES : Std.U32 := 5#u32
 
 /-- [linkding_kernel::T_COUNTER]
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1565:0-1565:25 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1592:0-1592:25 -/
 @[global_simps, irreducible] def T_COUNTER : Std.U32 := 6#u32
 
 /-- [linkding_kernel::USER_ID]
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1566:0-1566:23 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1593:0-1593:23 -/
 @[global_simps, irreducible] def USER_ID : Std.U32 := 0#u32
 
 /-- [linkding_kernel::USER_NAME]
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1567:0-1567:25 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1594:0-1594:25 -/
 @[global_simps, irreducible] def USER_NAME : Std.U32 := 1#u32
 
 /-- [linkding_kernel::USER_SHARING]
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1568:0-1568:28 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1595:0-1595:28 -/
 @[global_simps, irreducible] def USER_SHARING : Std.U32 := 7#u32
 
 /-- [linkding_kernel::TOKEN_KEY]
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1569:0-1569:25 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1596:0-1596:25 -/
 @[global_simps, irreducible] def TOKEN_KEY : Std.U32 := 0#u32
 
 /-- [linkding_kernel::TOKEN_USER]
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1570:0-1570:26 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1597:0-1597:26 -/
 @[global_simps, irreducible] def TOKEN_USER : Std.U32 := 1#u32
 
 /-- [linkding_kernel::BM_OWNER]
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1571:0-1571:24 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1598:0-1598:24 -/
 @[global_simps, irreducible] def BM_OWNER : Std.U32 := 0#u32
 
 /-- [linkding_kernel::BM_ID]
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1572:0-1572:21 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1599:0-1599:21 -/
 @[global_simps, irreducible] def BM_ID : Std.U32 := 2#u32
 
 /-- [linkding_kernel::BM_URL]
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1573:0-1573:22 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1600:0-1600:22 -/
 @[global_simps, irreducible] def BM_URL : Std.U32 := 3#u32
 
 /-- [linkding_kernel::BM_URL_NORM]
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1574:0-1574:27 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1601:0-1601:27 -/
 @[global_simps, irreducible] def BM_URL_NORM : Std.U32 := 4#u32
 
 /-- [linkding_kernel::BM_UNREAD]
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1575:0-1575:25 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1602:0-1602:25 -/
 @[global_simps, irreducible] def BM_UNREAD : Std.U32 := 8#u32
 
 /-- [linkding_kernel::BM_ARCHIVED]
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1576:0-1576:27 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1603:0-1603:27 -/
 @[global_simps, irreducible] def BM_ARCHIVED : Std.U32 := 9#u32
 
 /-- [linkding_kernel::BM_SHARED]
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1577:0-1577:26 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1604:0-1604:26 -/
 @[global_simps, irreducible] def BM_SHARED : Std.U32 := 10#u32
 
 /-- [linkding_kernel::TAG_ID]
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1578:0-1578:22 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1605:0-1605:22 -/
 @[global_simps, irreducible] def TAG_ID : Std.U32 := 0#u32
 
 /-- [linkding_kernel::TAG_OWNER]
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1579:0-1579:25 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1606:0-1606:25 -/
 @[global_simps, irreducible] def TAG_OWNER : Std.U32 := 1#u32
 
 /-- [linkding_kernel::TAG_LOWER]
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1580:0-1580:25 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1607:0-1607:25 -/
 @[global_simps, irreducible] def TAG_LOWER : Std.U32 := 3#u32
 
 /-- [linkding_kernel::BUNDLE_ID]
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1583:0-1583:25 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1610:0-1610:25 -/
 @[global_simps, irreducible] def BUNDLE_ID : Std.U32 := 0#u32
 
 /-- [linkding_kernel::BUNDLE_OWNER]
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1584:0-1584:28 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1611:0-1611:28 -/
 @[global_simps, irreducible] def BUNDLE_OWNER : Std.U32 := 1#u32
 
 /-- [linkding_kernel::v_int]:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1590:0-1592:1 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1617:0-1619:1 -/
 def v_int (x : Std.U64) : Result h5i_app_sql.Val := do
   U64.Insts.H5i_app_sqlColumn.to_val x
 
 /-- [linkding_kernel::v_bool]:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1594:0-1596:1 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1621:0-1623:1 -/
 def v_bool (x : Bool) : Result h5i_app_sql.Val := do
   Bool.Insts.H5i_app_sqlColumn.to_val x
 
 /-- [linkding_kernel::v_bytes]:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1598:0-1600:1 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1625:0-1627:1 -/
 def v_bytes (t : alloc.vec.Vec Std.U8) : Result h5i_app_sql.Val := do
   alloc.vec.VecU8.Insts.H5i_app_sqlColumn.to_val t
 
 /-- [linkding_kernel::p_eq]:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1602:0-1604:1 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1629:0-1631:1 -/
 def p_eq (col : Std.U32) (v : h5i_app_sql.Val) : Result h5i_app_sql.Pred := do
   ok (h5i_app_sql.Pred.Eq col v)
 
 /-- [linkding_kernel::p_or]:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1606:0-1608:1 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1633:0-1635:1 -/
 def p_or
   (a : h5i_app_sql.Pred) (b : h5i_app_sql.Pred) : Result h5i_app_sql.Pred := do
   ok (h5i_app_sql.Pred.Or a b)
 
 /-- [linkding_kernel::p_and]:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1610:0-1612:1 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1637:0-1639:1 -/
 def p_and
   (a : h5i_app_sql.Pred) (b : h5i_app_sql.Pred) : Result h5i_app_sql.Pred := do
   ok (h5i_app_sql.Pred.And a b)
 
 /-- [linkding_kernel::p_in]:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1614:0-1616:1 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1641:0-1643:1 -/
 def p_in
   (col : Std.U32) (table : Std.U32) (pred : h5i_app_sql.Pred) (of : Std.U32)
   (window : h5i_app_sql.Window) :
@@ -9105,19 +9184,19 @@ def p_in
   ok (h5i_app_sql.Pred.In col table pred of window)
 
 /-- [linkding_kernel::whole]:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1618:0-1620:1 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1645:0-1647:1 -/
 def whole : Result h5i_app_sql.Window := do
   h5i_app_sql.whole
 
 /-- [linkding_kernel::rd]:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1622:0-1624:1 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1649:0-1651:1 -/
 def rd
   (table : Std.U32) (pred : h5i_app_sql.Pred) : Result h5i_app_sql.Read := do
   let w ← whole
   ok { table, pred, window := w }
 
 /-- [linkding_kernel::mine]:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1627:0-1629:1 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1654:0-1656:1 -/
 def mine
   (col : Std.U32) (token : alloc.vec.Vec Std.U8) :
   Result h5i_app_sql.Pred
@@ -9128,7 +9207,7 @@ def mine
   p_in col T_TOKENS p TOKEN_USER w
 
 /-- [linkding_kernel::caller_reads]:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1632:0-1637:1 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1659:0-1664:1 -/
 def caller_reads
   (token : alloc.vec.Vec Std.U8) :
   Result (alloc.vec.Vec h5i_app_sql.Read)
@@ -9142,7 +9221,7 @@ def caller_reads
   alloc.vec.Vec.push out r1
 
 /-- [linkding_kernel::caller_reads_and]:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1640:0-1645:1 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1667:0-1672:1 -/
 def caller_reads_and
   (token : alloc.vec.Vec Std.U8) (extra : h5i_app_sql.Pred) :
   Result (alloc.vec.Vec h5i_app_sql.Read)
@@ -9157,7 +9236,7 @@ def caller_reads_and
   alloc.vec.Vec.push out r1
 
 /-- [linkding_kernel::Sel]
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1649:0-1660:1 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1676:0-1687:1 -/
 @[discriminant isize]
 inductive Sel where
 | Paged : alloc.vec.Vec Std.U8 → Filter → Sel
@@ -9171,13 +9250,13 @@ inductive Sel where
 | Id : Std.U64 → Sel
 
 /-- [linkding_kernel::by_id]:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1793:0-1795:1 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1820:0-1822:1 -/
 def by_id (id : Std.U64) : Result h5i_app_sql.Pred := do
   let v ← v_int id
   p_eq BM_ID v
 
 /-- [linkding_kernel::url_pred]:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1770:0-1776:1 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1797:0-1803:1 -/
 def url_pred
   (token : alloc.vec.Vec Std.U8) (url : alloc.vec.Vec Std.U8)
   (url_norm : alloc.vec.Vec Std.U8) :
@@ -9195,7 +9274,7 @@ def url_pred
   p_and p4 same
 
 /-- [linkding_kernel::shared_pred]:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1722:0-1724:1 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1749:0-1751:1 -/
 def shared_pred : Result h5i_app_sql.Pred := do
   let v ← v_bool true
   let p ← p_eq BM_SHARED v
@@ -9205,7 +9284,7 @@ def shared_pred : Result h5i_app_sql.Pred := do
   p_and p p2
 
 /-- [linkding_kernel::scope_pred]:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1711:0-1713:1 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1738:0-1740:1 -/
 def scope_pred
   (token : alloc.vec.Vec Std.U8) (scope : Std.U8) :
   Result h5i_app_sql.Pred
@@ -9216,7 +9295,7 @@ def scope_pred
   p_and p p1
 
 /-- [linkding_kernel::flag_pred]:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1700:0-1708:1 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1727:0-1735:1 -/
 def flag_pred
   (col : Std.U32) (rule : Std.U8) (base : h5i_app_sql.Pred) :
   Result h5i_app_sql.Pred
@@ -9233,7 +9312,7 @@ def flag_pred
     else ok base
 
 /-- [linkding_kernel::tagged]:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1679:0-1681:1 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1706:0-1708:1 -/
 def tagged (lower : alloc.vec.Vec Std.U8) : Result h5i_app_sql.Pred := do
   let v ← v_bytes lower
   let p ← p_eq TAG_LOWER v
@@ -9242,7 +9321,7 @@ def tagged (lower : alloc.vec.Vec Std.U8) : Result h5i_app_sql.Pred := do
   p_in BM_ID T_LINKS p1 LINK_BOOKMARK w
 
 /-- [linkding_kernel::search_pred]: loop body 0:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1691:12-1694:13 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1718:12-1721:13 -/
 @[rust_loop_body]
 def search_pred_loop.body
   (tags : alloc.vec.Vec (alloc.vec.Vec Std.U8)) (p : h5i_app_sql.Pred)
@@ -9263,7 +9342,7 @@ def search_pred_loop.body
   else ok (done p)
 
 /-- [linkding_kernel::search_pred]: loop 0:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1691:12-1694:13 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1718:12-1721:13 -/
 @[rust_loop]
 def search_pred_loop
   (tags : alloc.vec.Vec (alloc.vec.Vec Std.U8)) (p : h5i_app_sql.Pred)
@@ -9275,7 +9354,7 @@ def search_pred_loop
     (p, i)
 
 /-- [linkding_kernel::search_pred]:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1685:0-1698:1 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1712:0-1725:1 -/
 def search_pred (q : alloc.vec.Vec Std.U8) : Result h5i_app_sql.Pred := do
   let o ← simple_query q
   match o with
@@ -9291,7 +9370,7 @@ def search_pred (q : alloc.vec.Vec Std.U8) : Result h5i_app_sql.Pred := do
     search_pred_loop tags p1 0#usize
 
 /-- [linkding_kernel::paged_pred]:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1716:0-1719:1 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1743:0-1746:1 -/
 def paged_pred
   (token : alloc.vec.Vec Std.U8) (flt : Filter) : Result h5i_app_sql.Pred := do
   let p ← scope_pred token flt.scope
@@ -9301,7 +9380,7 @@ def paged_pred
   flag_pred BM_SHARED flt.shared p2
 
 /-- [linkding_kernel::sel_pred]:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1662:0-1670:1 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1689:0-1697:1 -/
 def sel_pred (sel : Sel) : Result h5i_app_sql.Pred := do
   match sel with
   | Sel.Paged t f => paged_pred t f
@@ -9311,7 +9390,7 @@ def sel_pred (sel : Sel) : Result h5i_app_sql.Pred := do
   | Sel.Id id => by_id id
 
 /-- [linkding_kernel::tag_reads]:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1673:0-1676:1 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1700:0-1703:1 -/
 def tag_reads
   (sel : Sel) (w : h5i_app_sql.Window) (out : alloc.vec.Vec h5i_app_sql.Read) :
   Result (alloc.vec.Vec h5i_app_sql.Read)
@@ -9327,7 +9406,7 @@ def tag_reads
   alloc.vec.Vec.push out1 r1
 
 /-- [linkding_kernel::newest]:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1727:0-1730:1 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1754:0-1757:1 -/
 def newest
   (offset : Std.U64) (limit : Std.U64) : Result h5i_app_sql.Window := do
   let i ← core.num.U64.MAX - offset
@@ -9338,7 +9417,7 @@ def newest
     ok { desc := true, offset := 0#u64, limit := (some i1) }
 
 /-- [linkding_kernel::bundle_read]:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1762:0-1767:1 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1789:0-1794:1 -/
 def bundle_read
   (token : alloc.vec.Vec Std.U8) (flt : Filter)
   (out : alloc.vec.Vec h5i_app_sql.Read) :
@@ -9355,7 +9434,7 @@ def bundle_read
     alloc.vec.Vec.push out r
 
 /-- [linkding_kernel::list_reads]:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1734:0-1759:1 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1761:0-1786:1 -/
 def list_reads
   (token : alloc.vec.Vec Std.U8) (flt : Filter) (limit : Std.U64)
   (offset : Std.U64) :
@@ -9408,7 +9487,7 @@ def list_reads
       bundle_read token flt out2
 
 /-- [linkding_kernel::p_none_tag]:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1789:0-1791:1 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1816:0-1818:1 -/
 def p_none_tag : Result h5i_app_sql.Pred := do
   let v ← v_int 0#u64
   let p ← p_eq TAG_ID v
@@ -9417,7 +9496,7 @@ def p_none_tag : Result h5i_app_sql.Pred := do
   p_and p p1
 
 /-- [linkding_kernel::named_tags]: loop body 0:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1782:4-1785:5 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1809:4-1812:5 -/
 @[rust_loop_body]
 def named_tags_loop.body
   (names : alloc.vec.Vec (alloc.vec.Vec Std.U8)) (any : h5i_app_sql.Pred)
@@ -9439,7 +9518,7 @@ def named_tags_loop.body
   else ok (done any)
 
 /-- [linkding_kernel::named_tags]: loop 0:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1782:4-1785:5 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1809:4-1812:5 -/
 @[rust_loop]
 def named_tags_loop
   (names : alloc.vec.Vec (alloc.vec.Vec Std.U8)) (any : h5i_app_sql.Pred)
@@ -9451,7 +9530,7 @@ def named_tags_loop
     (any, i)
 
 /-- [linkding_kernel::named_tags]:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1779:0-1787:1 -/
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1806:0-1814:1 -/
 def named_tags
   (token : alloc.vec.Vec Std.U8) (names : alloc.vec.Vec (alloc.vec.Vec Std.U8))
   :
@@ -9463,7 +9542,7 @@ def named_tags
   p_and p any1
 
 /-- [linkding_kernel::reads]:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1799:0-1887:1
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1826:0-1914:1
     Visibility: public -/
 def reads
   (actor1 : Principal) (cmd : Command) :
@@ -9637,7 +9716,7 @@ def reads
     ok (some out1)
 
 /-- [linkding_kernel::list_count]:
-    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1891:0-1904:1
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1918:0-1931:1
     Visibility: public -/
 def list_count
   (actor1 : Principal) (cmd : Command) : Result (Option h5i_app_sql.Read) := do

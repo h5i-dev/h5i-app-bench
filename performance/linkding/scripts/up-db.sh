@@ -19,6 +19,7 @@ if ! docker ps -a --format '{{.Names}}' | grep -qx "$NAME"; then
     -e POSTGRES_PASSWORD=linkding \
     -e POSTGRES_DB=linkding \
     -p "127.0.0.1:${PORT}:5432" \
+    --shm-size=1g \
     -v "${DATA}:/var/lib/postgresql/data" \
     postgres:16 \
     -c max_connections=200 \
