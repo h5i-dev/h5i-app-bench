@@ -939,6 +939,57 @@ theorem reversed_spec (v : alloc.vec.Vec Bookmark) : reversed v ⦃ w => w.val =
       simp [this]
   · simp [alloc.vec.Vec.len, vec_new_val]
 
+/-- The caller's user row is loaded; a guest (0) has none. -/
+theorem find_user_viewer_slice {K : User → Bool} (hk : Keys s) (h : s'.users.val = s.users.val.filter K) {t : Text}
+    (hK : ∀ x ∈ s.users.val, (mineA 0 t).holds (Snapshot.enc s) (User.row x) → K x) {v : U64}
+    (ha : actorOf s t = .Ok v) : find_user s'.users v = find_user s.users v := by
+  rw [eq_ok_of_spec (find_user_spec _ _), eq_ok_of_spec (find_user_spec _ _), h]
+  by_cases h0 : v = 0#u64
+  · subst h0
+    have hn : s.users.val.find? (fun x => decide (x.id = 0#u64)) = none := by
+      rw [List.find?_eq_none]; intro x hx; simpa using hk.user_pos x hx
+    rw [hn]; congr 1; rw [List.find?_eq_none]
+    intro x hx; have := (List.mem_filter.1 hx).1; simpa using hk.user_pos x this
+  · obtain ⟨k, hkm, h1, h2⟩ := actorOf_ok ha h0
+    rw [find?_slice _ _ _ (fun x hx hp => hK x hx (by
+      rw [mine_holds s t x.id _ 0 (by simp [User.row])]; simp only [decide_eq_true_eq]
+      exact ⟨k, hkm, h1, h2.trans (by simpa using hp : x.id = v).symm⟩))]
+
+/-- The caller's bundle `?bundle=` names, loaded by its id and owner. -/
+theorem bundle_of_slice (hk : Keys s) (flt : Filter) {t : Text} {v : U64} (ha : actorOf s t = .Ok v)
+    (h : ∀ id, flt.bundle = some id → s'.bundles.val = s.bundles.val.filter (fun x =>
+      (Pred.and (eqU 0 id) (mineA 1 t)).holds (Snapshot.enc s) (Bundle.row x))) :
+    bundle_of s' flt v = bundle_of s flt v := by
+  unfold bundle_of
+  cases hb : flt.bundle with
+  | none => rfl
+  | some id =>
+    simp only []
+    split
+    · rfl
+    · rename_i h0
+      rw [eq_ok_of_spec (find_bundle_spec _ _), eq_ok_of_spec (find_bundle_spec _ _), h id hb,
+        List.filter_congr (fun x hx => show _ = decide (x.id = id ∧ x.owner = v) by
+          rw [holds_and, mine_holds_iff hk ha h0 x.owner _ 1 (by simp [Bundle.row])]
+          simp [eqU, Bundle.row])]
+      rw [find_filter_unique _ Bundle.id _ id hk.bundles]
+      simp only [bind_ok]
+      cases hf : s.bundles.val.find? (fun x => decide (x.id = id)) with
+      | none => rfl
+      | some b =>
+        have hi : b.id = id := by simpa using (find?_mem hf).2
+        by_cases ho : b.owner = v <;> simp [ho, hi]
+
+theorem select_slice {KB : Bookmark → Bool} (h : s'.bookmarks.val = s.bookmarks.val.filter KB) (flt : Filter)
+    (ctx : ListCtx) (hskip : ∀ b ∈ s.bookmarks.val, KB b = false → keep s flt ctx b = ok false)
+    (hsame : ∀ b ∈ s.bookmarks.val, KB b = true → keep s' flt ctx b = keep s flt ctx b) :
+    select s' flt ctx = select s flt ctx := by
+  rw [select_eq, select_eq, h, foldlM_slice _ _ (selStep s flt ctx) (selStep s' flt ctx)]
+  · intro b hm hk a
+    simp [selStep, hskip b hm hk]
+  · intro b hm hk a
+    simp only [selStep, hsame b hm hk]
+
 end Lookups
 
 /-! ## Commands -/
@@ -1283,6 +1334,111 @@ theorem list_tags_frame (hk : Keys s) (lim off : U64) :
           List.drop_take, List.take_take]
         congr 1; omega
     rw [this]
+
+theorem list_scope_frame (hk : Keys s) (flt : Filter) (lim off : U64) (hsc : flt.scope ≠ SCOPE_SHARED)
+    (hpg : pagedOf flt = false) :
+    list_reply (Snapshot.load (callerA t ++ [⟨2, scopeA t flt.scope, {}⟩] ++ tagReadsA (scopeA t flt.scope) {} ++
+      bundleReadA t flt.bundle) s) t flt lim off = list_reply s t flt lim off := by
+  have hcall := caller_slice s t ([⟨2, scopeA t flt.scope, {}⟩] ++ tagReadsA (scopeA t flt.scope) {} ++
+      bundleReadA t flt.bundle)
+  simp only [List.append_assoc] at hcall ⊢
+  generalize hp : callerA t ++ ([⟨2, scopeA t flt.scope, {}⟩] ++ (tagReadsA (scopeA t flt.scope) {} ++
+      bundleReadA t flt.bundle)) = plan at hcall ⊢
+  have hb : (Snapshot.load plan s).bookmarks.val =
+      s.bookmarks.val.filter (fun x => (scopeA t flt.scope).holds (Snapshot.enc s) (Bookmark.row x)) := by
+    subst hp; simp [pickRows, callerA, tagReadsA]
+  have hl : (Snapshot.load plan s).links.val = s.links.val.filter
+      (fun x => (Pred.isIn 0 2 (scopeA t flt.scope) 2 {}).holds (Snapshot.enc s) (Link.row x)) := by
+    subst hp; simp [pickRows, callerA, tagReadsA]
+  have ht : (Snapshot.load plan s).tags.val = s.tags.val.filter (fun x =>
+      (Pred.isIn 0 4 (Pred.isIn 0 2 (scopeA t flt.scope) 2 {}) 1 {}).holds (Snapshot.enc s) (Tag.row x)) := by
+    subst hp; simp [pickRows, callerA, tagReadsA]
+  have hu : (Snapshot.load plan s).users.val = s.users.val.filter
+      (fun x => (mineA 0 t).holds (Snapshot.enc s) (User.row x)) := by
+    subst hp; simp [pickRows, callerA]
+  have hbu : ∀ id, flt.bundle = some id → (Snapshot.load plan s).bundles.val = s.bundles.val.filter
+      (fun x => (Pred.and (eqU 0 id) (mineA 1 t)).holds (Snapshot.enc s) (Bundle.row x)) := by
+    intro id hid; subst hp; simp [pickRows, callerA, tagReadsA, bundleReadA, hid]
+  have hsc' : (flt.scope != SCOPE_SHARED) = true := by simpa using hsc
+  unfold list_reply
+  rw [hcall.1, eq_ok_of_spec (actor_spec s t)]
+  simp only [bind_ok]
+  cases ha : actorOf s t with
+  | Err e => rfl
+  | Ok v =>
+    dsimp only
+    split
+    · simp only [hsc', if_true]
+    · rename_i h0
+      obtain ⟨k0, hk0, hk1, hk2⟩ := actorOf_ok ha h0
+      -- the bookmarks of the scope
+      have hKB : ∀ b : Bookmark, (scopeA t flt.scope).holds (Snapshot.enc s) (Bookmark.row b) =
+          decide (b.owner = v ∧ b.archived = decide (flt.scope = SCOPE_ARCHIVED)) := by
+        intro b
+        rw [scopeA, holds_and, mine_holds_iff hk ha h0 b.owner (Bookmark.row b) 0 (by simp [Bookmark.row])]
+        simp [eqT, Bookmark.row]
+      have hof : owner_filter_of (Snapshot.load plan s) flt = owner_filter_of s flt := by
+        unfold owner_filter_of; simp [hsc']
+      rw [list_ctx_slice flt v (find_user_viewer_slice hk hu (fun x _ h => h) ha) hof
+        (bundle_of_slice hk flt ha hbu)]
+      apply bind_congr_ok; intro ctx hctx
+      obtain ⟨hcv, -, -, hpgc, -⟩ := list_ctx_ok hctx
+      have hcp : ctx.paged = false := by have := pagedOf_eq hpgc; rw [hpg] at this; exact this.symm
+      have hkl : ∀ b, b.owner = v → b.archived = decide (flt.scope = SCOPE_ARCHIVED) → b ∈ s.bookmarks.val →
+          ∀ l ∈ s.links.val, l.bookmark = b.id →
+            (Pred.isIn 0 2 (scopeA t flt.scope) 2 {}).holds (Snapshot.enc s) (Link.row l) := by
+        intro b h1 h2 hbm l _ hl'
+        simp only [holds_in_2, Link.row]; simp only [List.getElem?_cons_zero, Window.apply_default]
+        simp only [List.any_eq_true, List.mem_filter, decide_eq_true_eq]
+        exact ⟨b, ⟨hbm, by rw [hKB]; simp [h1, h2]⟩, by simp [Bookmark.row, hl']⟩
+      have hkt : ∀ b, b.owner = v → b.archived = decide (flt.scope = SCOPE_ARCHIVED) → b ∈ s.bookmarks.val →
+          ∀ l ∈ s.links.val, l.bookmark = b.id → ∀ x ∈ s.tags.val, x.id = l.tag →
+            (Pred.isIn 0 4 (Pred.isIn 0 2 (scopeA t flt.scope) 2 {}) 1 {}).holds (Snapshot.enc s) (Tag.row x) := by
+        intro b h1 h2 hbm l hlm hl' x _ hx
+        simp only [holds_in_4, Tag.row]; simp only [List.getElem?_cons_zero, Window.apply_default]
+        simp only [List.any_eq_true, List.mem_filter, decide_eq_true_eq]
+        exact ⟨l, ⟨hlm, hkl b h1 h2 hbm l hlm hl'⟩, by simp [Link.row, hx]⟩
+      have hsel : select (Snapshot.load plan s) flt ctx = select s flt ctx := by
+        refine select_slice hb flt ctx (fun b _ hkb => ?_) (fun b hbm hkb => ?_)
+        · rw [hKB] at hkb
+          unfold keep in_scope
+          simp only [hsc, if_false, hcv]
+          by_cases ho : b.owner = v
+          · have : ¬ b.archived = decide (flt.scope = SCOPE_ARCHIVED) := fun e => by simp [ho, e] at hkb
+            simp [ho, this]
+          · simp [ho]
+        · rw [hKB] at hkb
+          simp only [decide_eq_true_eq] at hkb
+          unfold keep
+          have his : in_scope (Snapshot.load plan s) flt ctx b = in_scope s flt ctx b := by
+            unfold in_scope; simp only [hsc, if_false]
+          rw [his, hcp]
+          simp only [Bool.false_eq_true, if_false]
+          rw [selected_slice _ _ _ _ _ _ b (tag_lowers_slice hl ht b.id
+            (hkl b hkb.1 hkb.2 hbm) (hkt b hkb.1 hkb.2 hbm))]
+      rw [hsel]
+      apply bind_congr_ok; intro sel hsel'
+      have hmem := select_ok hsel'
+      apply bind_congr_ok; intro sorted hsorted
+      have hsm : ∀ b ∈ sorted.val, b ∈ sel.val := by
+        repeat' split at hsorted
+        all_goals first
+          | exact sort_ok _ _ _ hsorted
+          | (intro b hb'; rw [post_of_ok (reversed_spec sel) hsorted, List.mem_reverse] at hb'; exact hb')
+      apply bind_congr_ok; intro page hpage
+      have hpm : ∀ b ∈ page.val, b ∈ sel.val := by
+        intro b hb'
+        rw [post_of_ok (page_bookmarks_spec sorted off lim) hpage] at hb'
+        exact hsm b (List.mem_of_mem_drop (List.mem_of_mem_take hb'))
+      rw [views_slice page (fun b hb' => by
+        obtain ⟨hbm, hkeep⟩ := hmem b (hpm b hb')
+        unfold keep in_scope at hkeep
+        simp only [hsc, if_false, hcv] at hkeep
+        by_cases ho : b.owner = v
+        · by_cases har : b.archived = decide (flt.scope = SCOPE_ARCHIVED)
+          · exact view_slice hl ht b (hkl b ho har hbm) (hkt b ho har hbm)
+          · simp [ho, har] at hkeep
+        · simp [ho] at hkeep)]
 
 end Commands
 
