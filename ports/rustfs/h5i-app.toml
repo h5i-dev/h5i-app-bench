@@ -5,6 +5,8 @@ start-from = ["policies", "pathclean::clean", "defaults::default_version", "defa
 
 [check]
 theorems = [
+  "rustfs_kernel.Properties.date_parser_spec",
+  "rustfs_kernel.Properties.date_conditions_spec",
   "rustfs_kernel.Properties.date_offset_spec",
   "rustfs_kernel.Properties.date_fraction_spec",
   "rustfs_kernel.Properties.date_leap_second_spec",

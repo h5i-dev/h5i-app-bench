@@ -1,3 +1,4 @@
+import Verified.RustfsDateEvaluate
 import Verified.RustfsDateOffset
 import Verified.RustfsDateFraction
 import Verified.RustfsDateLeap
@@ -1895,5 +1896,19 @@ theorem date_offset_spec (s : Slice U8) (i : Usize) (r : Option I64)
     (h : dates.offset s i=ok r) :
     r.map (·.val)=DateOffset (nats s.val) i.val :=
   Verified.RustfsDateOffset.offset_ok s i r h
+
+/-- Successful date parsing computes the independent UTC instant interpretation. -/
+theorem date_parser_spec (s : Slice U8) (r : Option I128)
+    (h : dates.parse_rfc3339 s=ok r) :
+    r.map (·.val)=ParseInstant (nats s.val) :=
+  Verified.RustfsDateParser.parse_ok s r h
+
+/-- Every date entry compares the parsed first request value with its expected instant. -/
+theorem date_conditions_spec (inner : conddata.InnerFunc conddata.DateFuncValue) (op : conddata.Op)
+    (values : alloc.vec.Vec (alloc.vec.Vec U8 × alloc.vec.Vec (alloc.vec.Vec U8)))
+    (b : Bool) (h : dates.evaluate inner op values=ok b) :
+    b=true ↔ DateConditionsHold (inner.entries.val.map (fun e=>(e.key,e.values.unix_nanos.val)))
+      op (RequestValueLists values.val) :=
+  Verified.RustfsDateEvaluate.evaluate_ok inner op values b h
 
 end rustfs_kernel.Properties
