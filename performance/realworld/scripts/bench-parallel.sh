@@ -10,8 +10,8 @@
 #   fastapi   0-3     4-7       8-15   0     54331
 #   go        16-19   20-23     24-31  0     54332
 #   fastify   32-35   36-39     40-47  1     54333
-#   rust-h5i  48-51   52-55     56-63  1     54334
-#   rust-h5i-app 48-51 52-55   56-63  1     54335  (shares rust-h5i's CPUs:
+#   rust-h5i-optimized  48-51   52-55     56-63  1     54334
+#   rust-h5i 48-51 52-55   56-63  1     54335  (shares rust-h5i-optimized's CPUs:
 #                                                   run it alone, by name)
 #
 # The script re-launches itself under setsid nohup and returns at once.
@@ -31,7 +31,7 @@ if [ -z "${RW_DETACHED:-}" ]; then
 fi
 
 if [ "$#" -eq 0 ]; then
-  set -- fastapi go fastify rust-h5i
+  set -- fastapi go fastify rust-h5i-optimized
 fi
 
 layout() {
@@ -39,8 +39,8 @@ layout() {
     fastapi)  echo "0-3 4-7 8-15 54331" ;;
     go)       echo "16-19 20-23 24-31 54332" ;;
     fastify)  echo "32-35 36-39 40-47 54333" ;;
-    rust-h5i) echo "48-51 52-55 56-63 54334" ;;
-    rust-h5i-app) echo "48-51 52-55 56-63 54335" ;;
+    rust-h5i-optimized) echo "48-51 52-55 56-63 54334" ;;
+    rust-h5i) echo "48-51 52-55 56-63 54335" ;;
     *) return 1 ;;
   esac
 }

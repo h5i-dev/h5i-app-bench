@@ -1,4 +1,4 @@
--- Compares the shared schema with rust-h5i-app's tables after seed.sql and
+-- Compares the shared schema with rust-h5i's tables after seed.sql and
 -- seed_h5i_app.sql: every diff column must be 0.
 WITH pu AS (SELECT id, username, email, password_hash, coalesce(bio,'') bio, coalesce(image,'') image FROM public.users),
      cu AS (SELECT id, convert_from(username,'UTF8') username, convert_from(email,'UTF8') email, convert_from(password,'UTF8') password_hash, convert_from(bio,'UTF8') bio, convert_from(image,'UTF8') image FROM conduit.conduit_users),

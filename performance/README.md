@@ -7,12 +7,21 @@ Results: <https://benchmark.h5i.dev/performance/>.
 
 | Directory | API | Implementations |
 | --- | --- | --- |
-| [`realworld/`](realworld) | [RealWorld (Conduit)](https://github.com/realworld-apps/realworld): users, articles, comments, follows, favorites | `rust-h5i`, `rust-h5i-app`, `go`, `fastify`, `fastapi` |
-| [`linkding/`](linkding) | [linkding](https://github.com/sissbruecker/linkding) 1.47.0 bookmarks API | `rust-h5i`, `go`, `fastify`, `fastapi`, and the upstream image |
+| [`realworld/`](realworld) | [RealWorld (Conduit)](https://github.com/realworld-apps/realworld): users, articles, comments, follows, favorites | `rust-h5i`, `rust-h5i-optimized`, `go`, `fastify`, `fastapi` |
+| [`linkding/`](linkding) | [linkding](https://github.com/sissbruecker/linkding) 1.47.0 bookmarks API | `rust-h5i-optimized`, `go`, `fastify`, `fastapi`, and the upstream image |
 
-`rust-h5i` keeps its decisions in an h5i-app kernel with Lean proofs and does
-its own SQL. `rust-h5i-app` runs every request through the h5i-app engine
-(`h5i-app-pg`), whose read plan and frame theorem are proved too.
+Two Rust implementations use h5i-app:
+
+- `rust-h5i` is a standard h5i-app application. Every request runs in the
+  h5i-app engine (`h5i-app-pg`): it loads the rows the kernel's read plan
+  names, calls the kernel, and stores the writes the kernel plans. The
+  kernel, the read plan's sufficiency and the writes are proved in Lean.
+- `rust-h5i-optimized` keeps the same kind of kernel with Lean proofs, but
+  the server issues its own SQL through sqlx. The queries are tuned by hand
+  and are not covered by the proofs.
+
+The upstream linkding image is measured as a reference. The site does not
+show it.
 
 Each directory has its own README with the contract, the database, the Hurl
 suite and the run commands. `bench/README.md` there has the load shape, and

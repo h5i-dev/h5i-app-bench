@@ -11,7 +11,7 @@
 #   SERVER_CPUS=0-3 K6_CPUS=8-11 PG_CPUS=4-7
 #   LINKDING_PG_CONTAINER=linkding-pg-fastapi LINKDING_PG_PORT=5440
 #   BENCH_NO_SUMMARY=1
-#   ./bench-all.sh [fastapi|go|fastify|rust-h5i|upstream ...]
+#   ./bench-all.sh [fastapi|go|fastify|rust-h5i-optimized|upstream ...]
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 PG_CONTAINER="${LINKDING_PG_CONTAINER:-linkding-pg}"
@@ -44,7 +44,7 @@ mkdir -p "$OUT" "$LOG_DIR" "$CARGO_HOME" "$CARGO_TARGET_DIR"
 echo $$ > "$LOG_DIR/bench-all.pid"
 
 if [ "$#" -eq 0 ]; then
-  set -- fastapi go fastify rust-h5i
+  set -- fastapi go fastify rust-h5i-optimized
 fi
 
 if [ "$#" -eq 1 ] && [ "$1" = "upstream" ]; then
@@ -166,7 +166,7 @@ start_server() {
       export WEB_CONCURRENCY=4
       export DB_POOL=8
       ;;
-    go|rust-h5i)
+    go|rust-h5i-optimized)
       export WEB_CONCURRENCY=4
       export DB_POOL=32
       ;;
@@ -193,8 +193,8 @@ run_k6() {
 }
 
 prebuild() {
-  if printf '%s\n' "$@" | grep -qx rust-h5i; then
-    (cd "$ROOT/rust-h5i" && cargo build --release -p linkding-server)
+  if printf '%s\n' "$@" | grep -qx rust-h5i-optimized; then
+    (cd "$ROOT/rust-h5i-optimized" && cargo build --release -p linkding-server)
   fi
 }
 
@@ -205,7 +205,7 @@ for name in "$@"; do
     fastapi) port=8101; dir="$ROOT/fastapi" ;;
     go) port=8102; dir="$ROOT/go" ;;
     fastify) port=8103; dir="$ROOT/fastify" ;;
-    rust-h5i) port=8104; dir="$ROOT/rust-h5i" ;;
+    rust-h5i-optimized) port=8104; dir="$ROOT/rust-h5i-optimized" ;;
     upstream) port=8105; dir="" ;;
     *) echo "unknown implementation: $name" >&2; exit 2 ;;
   esac

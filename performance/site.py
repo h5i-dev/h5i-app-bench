@@ -13,14 +13,16 @@ HERE = Path(__file__).resolve().parent
 REPO = "https://github.com/h5i-dev/h5i-app-bench/tree/main/performance"
 
 STACKS = {
-    "rust-h5i": "Rust, axum, sqlx, h5i-app kernel with Lean proofs",
-    "rust-h5i-app": "Rust, axum, the h5i-app engine (h5i-app-pg) with Lean proofs",
+    "rust-h5i": "Rust, axum, the h5i-app engine (h5i-app-pg): kernel, read plan and writes with Lean proofs",
+    "rust-h5i-optimized": "Rust, axum, h5i-app kernel with Lean proofs; hand-written SQL through sqlx",
     "go": "Go, chi, pgx",
     "fastify": "TypeScript, Fastify, postgres.js",
     "fastapi": "Python, FastAPI, asyncpg, uvicorn",
     "upstream": "linkding 1.47.0 image: Django, uWSGI",
 }
-H5I = {"rust-h5i", "rust-h5i-app"}
+H5I = ["rust-h5i", "rust-h5i-optimized"]
+# Measured as a reference and kept in the repository, not shown on the site.
+HIDDEN = {"upstream"}
 
 APPS = [
     {
@@ -45,7 +47,7 @@ APPS = [
         "title": "linkding",
         "upstream": "https://github.com/sissbruecker/linkding",
         "about": "The linkding bookmark manager's REST API. The Hurl suite was checked against the pinned "
-                 "1.47.0 image, which also runs in the benchmark as a reference.",
+                 "1.47.0 image.",
         "seed": "50 users, 100,000 bookmarks and 2,000 tags owned by one user, two tags per bookmark.",
         "scenarios": {
             "list": "GET /api/bookmarks/?limit=20 at a rotating offset",
@@ -75,10 +77,12 @@ def load(app):
     rows = []
     with path.open() as f:
         for r in csv.DictReader(f):
+            if r["impl"] in HIDDEN:
+                continue
             rows.append({"impl": r["impl"], "scenario": r["scenario"], "concurrency": int(r["concurrency"]),
                          "reps": int(r["reps"]), **{k: round(float(r[k]), 3) for k in FIELDS}})
     impls = list(dict.fromkeys(r["impl"] for r in rows))
-    impls.sort(key=lambda i: (i not in H5I, i == "upstream"))
+    impls.sort(key=lambda i: H5I.index(i) if i in H5I else len(H5I))
     scenarios = [s for s in app["scenarios"] if any(r["scenario"] == s for r in rows)]
     return {
         "id": app["id"], "title": app["title"], "upstream": app["upstream"], "about": app["about"],

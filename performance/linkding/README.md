@@ -8,7 +8,7 @@ Four implementations of the [linkding](https://github.com/sissbruecker/linkding)
 | `fastapi/` | Python, FastAPI, asyncpg, uvicorn |
 | `go/` | Go, chi, pgx |
 | `fastify/` | TypeScript, Fastify, postgres.js |
-| `rust-h5i/` | Rust, axum, sqlx, h5i-app kernel and Lean proofs |
+| `rust-h5i-optimized/` | Rust, axum, sqlx, h5i-app kernel and Lean proofs |
 | `tests/` | Hurl suite |
 | `bench/` | Seed, k6 scenarios, raw results, summary |
 | `schema.sql` | Shared database for the four implementations |
@@ -54,7 +54,7 @@ Hurl is expected at `/var/tmp/tools/hurl`. Each file starts from the five fixtur
 
 ```sh
 performance/linkding/scripts/test-upstream.sh          # suite against the pinned image
-performance/linkding/scripts/test-all.sh               # fastapi, go, fastify, rust-h5i
+performance/linkding/scripts/test-all.sh               # fastapi, go, fastify, rust-h5i-optimized
 performance/linkding/scripts/test-all.sh fastapi       # one implementation
 HOST=http://127.0.0.1:8101 performance/linkding/scripts/test-one.sh
 ```
@@ -72,7 +72,7 @@ export WEB_CONCURRENCY=4
 performance/linkding/fastapi/run.sh    # 127.0.0.1:8101  uvicorn workers = WEB_CONCURRENCY
 performance/linkding/go/run.sh         # 127.0.0.1:8102  GOMAXPROCS = WEB_CONCURRENCY
 performance/linkding/fastify/run.sh    # 127.0.0.1:8103  node cluster size = WEB_CONCURRENCY
-performance/linkding/rust-h5i/run.sh   # 127.0.0.1:8104  tokio worker threads = WEB_CONCURRENCY
+performance/linkding/rust-h5i-optimized/run.sh   # 127.0.0.1:8104  tokio worker threads = WEB_CONCURRENCY
 ```
 
 ## Benchmark
@@ -84,11 +84,11 @@ performance/linkding/rust-h5i/run.sh   # 127.0.0.1:8104  tokio worker threads = 
 | fastapi | 0-3 | 4-7 | 8-11 | 5440 | 8101 |
 | go | 12-15 | 16-19 | 20-23 | 5441 | 8102 |
 | fastify | 24-27 | 28-31 | 32-35 | 5442 | 8103 |
-| rust-h5i | 36-39 | 40-43 | 44-47 | 5443 | 8104 |
+| rust-h5i-optimized | 36-39 | 40-43 | 44-47 | 5443 | 8104 |
 | upstream | 48-51 | 52-55 | 56-59 | 5444 | 8105 |
 
 ## Proofs
 
-`rust-h5i/kernel` holds authorization, visibility, validation, pagination, and the search parser and match predicate. The HTTP process looks up tokens and rows and calls the kernel. `h5i app extract` writes `rust-h5i/proofs/generated/`. `h5i app check` builds the Lean proofs and rejects `sorry` and new axioms.
+`rust-h5i-optimized/kernel` holds authorization, visibility, validation, pagination, and the search parser and match predicate. The HTTP process looks up tokens and rows and calls the kernel. `h5i app extract` writes `rust-h5i-optimized/proofs/generated/`. `h5i app check` builds the Lean proofs and rejects `sorry` and new axioms.
 
 Search term matching in the kernel folds ASCII case. SQL `ILIKE` and stored `name_lower` follow the same ASCII inputs used by the suite. Legacy search, selected by the viewer's profile flag, is applied in the HTTP process. The kernel evaluates the default query language.

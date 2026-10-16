@@ -11,12 +11,12 @@
    "impls": [
     {
      "id": "rust-h5i",
-     "stack": "Rust, axum, sqlx, h5i-app kernel with Lean proofs",
+     "stack": "Rust, axum, the h5i-app engine (h5i-app-pg): kernel, read plan and writes with Lean proofs",
      "h5i": true
     },
     {
-     "id": "rust-h5i-app",
-     "stack": "Rust, axum, the h5i-app engine (h5i-app-pg) with Lean proofs",
+     "id": "rust-h5i-optimized",
+     "stack": "Rust, axum, h5i-app kernel with Lean proofs; hand-written SQL through sqlx",
      "h5i": true
     },
     {
@@ -241,7 +241,7 @@
      "cpu_peak_pct": 109.097
     },
     {
-     "impl": "rust-h5i",
+     "impl": "rust-h5i-optimized",
      "scenario": "list",
      "concurrency": 1,
      "reps": 3,
@@ -255,7 +255,7 @@
      "cpu_peak_pct": 10.76
     },
     {
-     "impl": "rust-h5i",
+     "impl": "rust-h5i-optimized",
      "scenario": "list",
      "concurrency": 16,
      "reps": 3,
@@ -269,7 +269,7 @@
      "cpu_peak_pct": 71.543
     },
     {
-     "impl": "rust-h5i",
+     "impl": "rust-h5i-optimized",
      "scenario": "list",
      "concurrency": 64,
      "reps": 3,
@@ -283,7 +283,7 @@
      "cpu_peak_pct": 70.397
     },
     {
-     "impl": "rust-h5i",
+     "impl": "rust-h5i-optimized",
      "scenario": "list",
      "concurrency": 256,
      "reps": 3,
@@ -297,7 +297,7 @@
      "cpu_peak_pct": 65.343
     },
     {
-     "impl": "rust-h5i-app",
+     "impl": "rust-h5i",
      "scenario": "list",
      "concurrency": 1,
      "reps": 3,
@@ -311,7 +311,7 @@
      "cpu_peak_pct": 35.413
     },
     {
-     "impl": "rust-h5i-app",
+     "impl": "rust-h5i",
      "scenario": "list",
      "concurrency": 16,
      "reps": 3,
@@ -325,7 +325,7 @@
      "cpu_peak_pct": 220.9
     },
     {
-     "impl": "rust-h5i-app",
+     "impl": "rust-h5i",
      "scenario": "list",
      "concurrency": 64,
      "reps": 3,
@@ -339,7 +339,7 @@
      "cpu_peak_pct": 204.723
     },
     {
-     "impl": "rust-h5i-app",
+     "impl": "rust-h5i",
      "scenario": "list",
      "concurrency": 256,
      "reps": 3,
@@ -521,7 +521,7 @@
      "cpu_peak_pct": 168.65
     },
     {
-     "impl": "rust-h5i",
+     "impl": "rust-h5i-optimized",
      "scenario": "slug",
      "concurrency": 1,
      "reps": 3,
@@ -535,7 +535,7 @@
      "cpu_peak_pct": 30.48
     },
     {
-     "impl": "rust-h5i",
+     "impl": "rust-h5i-optimized",
      "scenario": "slug",
      "concurrency": 16,
      "reps": 3,
@@ -549,7 +549,7 @@
      "cpu_peak_pct": 234.067
     },
     {
-     "impl": "rust-h5i",
+     "impl": "rust-h5i-optimized",
      "scenario": "slug",
      "concurrency": 64,
      "reps": 3,
@@ -563,7 +563,7 @@
      "cpu_peak_pct": 262.2
     },
     {
-     "impl": "rust-h5i",
+     "impl": "rust-h5i-optimized",
      "scenario": "slug",
      "concurrency": 256,
      "reps": 3,
@@ -577,7 +577,7 @@
      "cpu_peak_pct": 262.1
     },
     {
-     "impl": "rust-h5i-app",
+     "impl": "rust-h5i",
      "scenario": "slug",
      "concurrency": 1,
      "reps": 3,
@@ -591,7 +591,7 @@
      "cpu_peak_pct": 32.65
     },
     {
-     "impl": "rust-h5i-app",
+     "impl": "rust-h5i",
      "scenario": "slug",
      "concurrency": 16,
      "reps": 3,
@@ -605,7 +605,7 @@
      "cpu_peak_pct": 269.283
     },
     {
-     "impl": "rust-h5i-app",
+     "impl": "rust-h5i",
      "scenario": "slug",
      "concurrency": 64,
      "reps": 3,
@@ -619,7 +619,7 @@
      "cpu_peak_pct": 315.973
     },
     {
-     "impl": "rust-h5i-app",
+     "impl": "rust-h5i",
      "scenario": "slug",
      "concurrency": 256,
      "reps": 3,
@@ -801,7 +801,7 @@
      "cpu_peak_pct": 183.457
     },
     {
-     "impl": "rust-h5i",
+     "impl": "rust-h5i-optimized",
      "scenario": "feed",
      "concurrency": 1,
      "reps": 3,
@@ -815,7 +815,7 @@
      "cpu_peak_pct": 22.027
     },
     {
-     "impl": "rust-h5i",
+     "impl": "rust-h5i-optimized",
      "scenario": "feed",
      "concurrency": 16,
      "reps": 3,
@@ -829,7 +829,7 @@
      "cpu_peak_pct": 168.17
     },
     {
-     "impl": "rust-h5i",
+     "impl": "rust-h5i-optimized",
      "scenario": "feed",
      "concurrency": 64,
      "reps": 3,
@@ -843,7 +843,7 @@
      "cpu_peak_pct": 179.083
     },
     {
-     "impl": "rust-h5i",
+     "impl": "rust-h5i-optimized",
      "scenario": "feed",
      "concurrency": 256,
      "reps": 3,
@@ -857,7 +857,7 @@
      "cpu_peak_pct": 153.47
     },
     {
-     "impl": "rust-h5i-app",
+     "impl": "rust-h5i",
      "scenario": "feed",
      "concurrency": 1,
      "reps": 3,
@@ -871,7 +871,7 @@
      "cpu_peak_pct": 17.613
     },
     {
-     "impl": "rust-h5i-app",
+     "impl": "rust-h5i",
      "scenario": "feed",
      "concurrency": 16,
      "reps": 3,
@@ -885,7 +885,7 @@
      "cpu_peak_pct": 169.14
     },
     {
-     "impl": "rust-h5i-app",
+     "impl": "rust-h5i",
      "scenario": "feed",
      "concurrency": 64,
      "reps": 3,
@@ -899,7 +899,7 @@
      "cpu_peak_pct": 167.443
     },
     {
-     "impl": "rust-h5i-app",
+     "impl": "rust-h5i",
      "scenario": "feed",
      "concurrency": 256,
      "reps": 3,
@@ -1081,7 +1081,7 @@
      "cpu_peak_pct": 411.023
     },
     {
-     "impl": "rust-h5i",
+     "impl": "rust-h5i-optimized",
      "scenario": "login",
      "concurrency": 1,
      "reps": 3,
@@ -1095,7 +1095,7 @@
      "cpu_peak_pct": 102.45
     },
     {
-     "impl": "rust-h5i",
+     "impl": "rust-h5i-optimized",
      "scenario": "login",
      "concurrency": 16,
      "reps": 3,
@@ -1109,7 +1109,7 @@
      "cpu_peak_pct": 403.397
     },
     {
-     "impl": "rust-h5i",
+     "impl": "rust-h5i-optimized",
      "scenario": "login",
      "concurrency": 64,
      "reps": 3,
@@ -1123,7 +1123,7 @@
      "cpu_peak_pct": 403.45
     },
     {
-     "impl": "rust-h5i",
+     "impl": "rust-h5i-optimized",
      "scenario": "login",
      "concurrency": 256,
      "reps": 3,
@@ -1137,7 +1137,7 @@
      "cpu_peak_pct": 403.363
     },
     {
-     "impl": "rust-h5i-app",
+     "impl": "rust-h5i",
      "scenario": "login",
      "concurrency": 1,
      "reps": 3,
@@ -1151,7 +1151,7 @@
      "cpu_peak_pct": 102.07
     },
     {
-     "impl": "rust-h5i-app",
+     "impl": "rust-h5i",
      "scenario": "login",
      "concurrency": 16,
      "reps": 3,
@@ -1165,7 +1165,7 @@
      "cpu_peak_pct": 403.937
     },
     {
-     "impl": "rust-h5i-app",
+     "impl": "rust-h5i",
      "scenario": "login",
      "concurrency": 64,
      "reps": 3,
@@ -1179,7 +1179,7 @@
      "cpu_peak_pct": 403.947
     },
     {
-     "impl": "rust-h5i-app",
+     "impl": "rust-h5i",
      "scenario": "login",
      "concurrency": 256,
      "reps": 3,
@@ -1361,7 +1361,7 @@
      "cpu_peak_pct": 98.88
     },
     {
-     "impl": "rust-h5i",
+     "impl": "rust-h5i-optimized",
      "scenario": "create",
      "concurrency": 1,
      "reps": 3,
@@ -1375,7 +1375,7 @@
      "cpu_peak_pct": 28.6
     },
     {
-     "impl": "rust-h5i",
+     "impl": "rust-h5i-optimized",
      "scenario": "create",
      "concurrency": 16,
      "reps": 3,
@@ -1389,7 +1389,7 @@
      "cpu_peak_pct": 51.64
     },
     {
-     "impl": "rust-h5i",
+     "impl": "rust-h5i-optimized",
      "scenario": "create",
      "concurrency": 64,
      "reps": 3,
@@ -1403,7 +1403,7 @@
      "cpu_peak_pct": 56.293
     },
     {
-     "impl": "rust-h5i",
+     "impl": "rust-h5i-optimized",
      "scenario": "create",
      "concurrency": 256,
      "reps": 3,
@@ -1417,7 +1417,7 @@
      "cpu_peak_pct": 62.157
     },
     {
-     "impl": "rust-h5i-app",
+     "impl": "rust-h5i",
      "scenario": "create",
      "concurrency": 1,
      "reps": 3,
@@ -1431,7 +1431,7 @@
      "cpu_peak_pct": 26.353
     },
     {
-     "impl": "rust-h5i-app",
+     "impl": "rust-h5i",
      "scenario": "create",
      "concurrency": 16,
      "reps": 3,
@@ -1445,7 +1445,7 @@
      "cpu_peak_pct": 41.01
     },
     {
-     "impl": "rust-h5i-app",
+     "impl": "rust-h5i",
      "scenario": "create",
      "concurrency": 64,
      "reps": 3,
@@ -1459,7 +1459,7 @@
      "cpu_peak_pct": 43.84
     },
     {
-     "impl": "rust-h5i-app",
+     "impl": "rust-h5i",
      "scenario": "create",
      "concurrency": 256,
      "reps": 3,
@@ -1641,7 +1641,7 @@
      "cpu_peak_pct": 252.413
     },
     {
-     "impl": "rust-h5i",
+     "impl": "rust-h5i-optimized",
      "scenario": "favorite",
      "concurrency": 1,
      "reps": 3,
@@ -1655,7 +1655,7 @@
      "cpu_peak_pct": 36.673
     },
     {
-     "impl": "rust-h5i",
+     "impl": "rust-h5i-optimized",
      "scenario": "favorite",
      "concurrency": 16,
      "reps": 3,
@@ -1669,7 +1669,7 @@
      "cpu_peak_pct": 229.987
     },
     {
-     "impl": "rust-h5i",
+     "impl": "rust-h5i-optimized",
      "scenario": "favorite",
      "concurrency": 64,
      "reps": 3,
@@ -1683,7 +1683,7 @@
      "cpu_peak_pct": 250.61
     },
     {
-     "impl": "rust-h5i",
+     "impl": "rust-h5i-optimized",
      "scenario": "favorite",
      "concurrency": 256,
      "reps": 3,
@@ -1697,7 +1697,7 @@
      "cpu_peak_pct": 241.733
     },
     {
-     "impl": "rust-h5i-app",
+     "impl": "rust-h5i",
      "scenario": "favorite",
      "concurrency": 1,
      "reps": 3,
@@ -1711,7 +1711,7 @@
      "cpu_peak_pct": 29.053
     },
     {
-     "impl": "rust-h5i-app",
+     "impl": "rust-h5i",
      "scenario": "favorite",
      "concurrency": 16,
      "reps": 3,
@@ -1725,7 +1725,7 @@
      "cpu_peak_pct": 212.65
     },
     {
-     "impl": "rust-h5i-app",
+     "impl": "rust-h5i",
      "scenario": "favorite",
      "concurrency": 64,
      "reps": 3,
@@ -1739,7 +1739,7 @@
      "cpu_peak_pct": 282.46
     },
     {
-     "impl": "rust-h5i-app",
+     "impl": "rust-h5i",
      "scenario": "favorite",
      "concurrency": 256,
      "reps": 3,
@@ -1921,7 +1921,7 @@
      "cpu_peak_pct": 127.893
     },
     {
-     "impl": "rust-h5i",
+     "impl": "rust-h5i-optimized",
      "scenario": "mixed",
      "concurrency": 1,
      "reps": 3,
@@ -1935,7 +1935,7 @@
      "cpu_peak_pct": 13.15
     },
     {
-     "impl": "rust-h5i",
+     "impl": "rust-h5i-optimized",
      "scenario": "mixed",
      "concurrency": 16,
      "reps": 3,
@@ -1949,7 +1949,7 @@
      "cpu_peak_pct": 81.223
     },
     {
-     "impl": "rust-h5i",
+     "impl": "rust-h5i-optimized",
      "scenario": "mixed",
      "concurrency": 64,
      "reps": 3,
@@ -1963,7 +1963,7 @@
      "cpu_peak_pct": 78.067
     },
     {
-     "impl": "rust-h5i",
+     "impl": "rust-h5i-optimized",
      "scenario": "mixed",
      "concurrency": 256,
      "reps": 3,
@@ -1977,7 +1977,7 @@
      "cpu_peak_pct": 83.67
     },
     {
-     "impl": "rust-h5i-app",
+     "impl": "rust-h5i",
      "scenario": "mixed",
      "concurrency": 1,
      "reps": 3,
@@ -1991,7 +1991,7 @@
      "cpu_peak_pct": 21.987
     },
     {
-     "impl": "rust-h5i-app",
+     "impl": "rust-h5i",
      "scenario": "mixed",
      "concurrency": 16,
      "reps": 3,
@@ -2005,7 +2005,7 @@
      "cpu_peak_pct": 175.347
     },
     {
-     "impl": "rust-h5i-app",
+     "impl": "rust-h5i",
      "scenario": "mixed",
      "concurrency": 64,
      "reps": 3,
@@ -2019,7 +2019,7 @@
      "cpu_peak_pct": 162.563
     },
     {
-     "impl": "rust-h5i-app",
+     "impl": "rust-h5i",
      "scenario": "mixed",
      "concurrency": 256,
      "reps": 3,
@@ -2038,14 +2038,14 @@
    "id": "linkding",
    "title": "linkding",
    "upstream": "https://github.com/sissbruecker/linkding",
-   "about": "The linkding bookmark manager's REST API. The Hurl suite was checked against the pinned 1.47.0 image, which also runs in the benchmark as a reference.",
+   "about": "The linkding bookmark manager's REST API. The Hurl suite was checked against the pinned 1.47.0 image.",
    "seed": "50 users, 100,000 bookmarks and 2,000 tags owned by one user, two tags per bookmark.",
    "source": "https://github.com/h5i-dev/h5i-app-bench/tree/main/performance/linkding",
    "measured": "2026-10-16",
    "impls": [
     {
-     "id": "rust-h5i",
-     "stack": "Rust, axum, sqlx, h5i-app kernel with Lean proofs",
+     "id": "rust-h5i-optimized",
+     "stack": "Rust, axum, h5i-app kernel with Lean proofs; hand-written SQL through sqlx",
      "h5i": true
     },
     {
@@ -2061,11 +2061,6 @@
     {
      "id": "fastify",
      "stack": "TypeScript, Fastify, postgres.js",
-     "h5i": false
-    },
-    {
-     "id": "upstream",
-     "stack": "linkding 1.47.0 image: Django, uWSGI",
      "h5i": false
     }
    ],
@@ -2283,7 +2278,7 @@
      "cpu_peak_pct": 84.24
     },
     {
-     "impl": "rust-h5i",
+     "impl": "rust-h5i-optimized",
      "scenario": "list",
      "concurrency": 1,
      "reps": 3,
@@ -2297,7 +2292,7 @@
      "cpu_peak_pct": 10.5
     },
     {
-     "impl": "rust-h5i",
+     "impl": "rust-h5i-optimized",
      "scenario": "list",
      "concurrency": 16,
      "reps": 3,
@@ -2311,7 +2306,7 @@
      "cpu_peak_pct": 45.133
     },
     {
-     "impl": "rust-h5i",
+     "impl": "rust-h5i-optimized",
      "scenario": "list",
      "concurrency": 64,
      "reps": 3,
@@ -2325,7 +2320,7 @@
      "cpu_peak_pct": 49.927
     },
     {
-     "impl": "rust-h5i",
+     "impl": "rust-h5i-optimized",
      "scenario": "list",
      "concurrency": 256,
      "reps": 3,
@@ -2337,62 +2332,6 @@
      "errors": 0.0,
      "rss_peak_mb": 23.839,
      "cpu_peak_pct": 80.73
-    },
-    {
-     "impl": "upstream",
-     "scenario": "list",
-     "concurrency": 1,
-     "reps": 3,
-     "rps": 8.358,
-     "rps_stdev": 0.157,
-     "p50_ms": 117.268,
-     "p90_ms": 132.338,
-     "p99_ms": 137.239,
-     "errors": 0.0,
-     "rss_peak_mb": 242.148,
-     "cpu_peak_pct": 35.203
-    },
-    {
-     "impl": "upstream",
-     "scenario": "list",
-     "concurrency": 16,
-     "reps": 3,
-     "rps": 30.668,
-     "rps_stdev": 0.568,
-     "p50_ms": 517.798,
-     "p90_ms": 556.699,
-     "p99_ms": 584.734,
-     "errors": 0.0,
-     "rss_peak_mb": 248.958,
-     "cpu_peak_pct": 110.207
-    },
-    {
-     "impl": "upstream",
-     "scenario": "list",
-     "concurrency": 64,
-     "reps": 3,
-     "rps": 30.756,
-     "rps_stdev": 0.61,
-     "p50_ms": 2038.234,
-     "p90_ms": 2216.33,
-     "p99_ms": 2310.185,
-     "errors": 0.0,
-     "rss_peak_mb": 249.6,
-     "cpu_peak_pct": 108.16
-    },
-    {
-     "impl": "upstream",
-     "scenario": "list",
-     "concurrency": 256,
-     "reps": 3,
-     "rps": 25.073,
-     "rps_stdev": 2.326,
-     "p50_ms": 3454.635,
-     "p90_ms": 5369.485,
-     "p99_ms": 12776.078,
-     "errors": 4.0,
-     "rss_peak_mb": 254.62,
-     "cpu_peak_pct": 105.393
     },
     {
      "impl": "fastapi",
@@ -2563,7 +2502,7 @@
      "cpu_peak_pct": 55.24
     },
     {
-     "impl": "rust-h5i",
+     "impl": "rust-h5i-optimized",
      "scenario": "search",
      "concurrency": 1,
      "reps": 3,
@@ -2577,7 +2516,7 @@
      "cpu_peak_pct": 4.25
     },
     {
-     "impl": "rust-h5i",
+     "impl": "rust-h5i-optimized",
      "scenario": "search",
      "concurrency": 16,
      "reps": 3,
@@ -2591,7 +2530,7 @@
      "cpu_peak_pct": 9.647
     },
     {
-     "impl": "rust-h5i",
+     "impl": "rust-h5i-optimized",
      "scenario": "search",
      "concurrency": 64,
      "reps": 3,
@@ -2605,7 +2544,7 @@
      "cpu_peak_pct": 19.207
     },
     {
-     "impl": "rust-h5i",
+     "impl": "rust-h5i-optimized",
      "scenario": "search",
      "concurrency": 256,
      "reps": 3,
@@ -2617,62 +2556,6 @@
      "errors": 0.0,
      "rss_peak_mb": 25.172,
      "cpu_peak_pct": 65.767
-    },
-    {
-     "impl": "upstream",
-     "scenario": "search",
-     "concurrency": 1,
-     "reps": 3,
-     "rps": 5.049,
-     "rps_stdev": 0.039,
-     "p50_ms": 197.472,
-     "p90_ms": 207.177,
-     "p99_ms": 217.41,
-     "errors": 0.0,
-     "rss_peak_mb": 256.75,
-     "cpu_peak_pct": 24.667
-    },
-    {
-     "impl": "upstream",
-     "scenario": "search",
-     "concurrency": 16,
-     "reps": 3,
-     "rps": 13.564,
-     "rps_stdev": 0.25,
-     "p50_ms": 1174.055,
-     "p90_ms": 1239.551,
-     "p99_ms": 1283.681,
-     "errors": 0.0,
-     "rss_peak_mb": 257.005,
-     "cpu_peak_pct": 59.257
-    },
-    {
-     "impl": "upstream",
-     "scenario": "search",
-     "concurrency": 64,
-     "reps": 3,
-     "rps": 13.541,
-     "rps_stdev": 0.029,
-     "p50_ms": 4696.827,
-     "p90_ms": 4797.981,
-     "p99_ms": 4865.057,
-     "errors": 0.0,
-     "rss_peak_mb": 256.794,
-     "cpu_peak_pct": 58.94
-    },
-    {
-     "impl": "upstream",
-     "scenario": "search",
-     "concurrency": 256,
-     "reps": 3,
-     "rps": 9.198,
-     "rps_stdev": 1.524,
-     "p50_ms": 8397.68,
-     "p90_ms": 15091.264,
-     "p99_ms": 20118.183,
-     "errors": 0.0,
-     "rss_peak_mb": 259.733,
-     "cpu_peak_pct": 53.48
     },
     {
      "impl": "fastapi",
@@ -2843,7 +2726,7 @@
      "cpu_peak_pct": 166.29
     },
     {
-     "impl": "rust-h5i",
+     "impl": "rust-h5i-optimized",
      "scenario": "search_tag",
      "concurrency": 1,
      "reps": 3,
@@ -2857,7 +2740,7 @@
      "cpu_peak_pct": 26.773
     },
     {
-     "impl": "rust-h5i",
+     "impl": "rust-h5i-optimized",
      "scenario": "search_tag",
      "concurrency": 16,
      "reps": 3,
@@ -2871,7 +2754,7 @@
      "cpu_peak_pct": 146.627
     },
     {
-     "impl": "rust-h5i",
+     "impl": "rust-h5i-optimized",
      "scenario": "search_tag",
      "concurrency": 64,
      "reps": 3,
@@ -2885,7 +2768,7 @@
      "cpu_peak_pct": 157.667
     },
     {
-     "impl": "rust-h5i",
+     "impl": "rust-h5i-optimized",
      "scenario": "search_tag",
      "concurrency": 256,
      "reps": 3,
@@ -2897,62 +2780,6 @@
      "errors": 0.0,
      "rss_peak_mb": 24.987,
      "cpu_peak_pct": 153.373
-    },
-    {
-     "impl": "upstream",
-     "scenario": "search_tag",
-     "concurrency": 1,
-     "reps": 3,
-     "rps": 20.101,
-     "rps_stdev": 0.337,
-     "p50_ms": 49.941,
-     "p90_ms": 55.869,
-     "p99_ms": 61.378,
-     "errors": 0.0,
-     "rss_peak_mb": 259.758,
-     "cpu_peak_pct": 68.22
-    },
-    {
-     "impl": "upstream",
-     "scenario": "search_tag",
-     "concurrency": 16,
-     "reps": 3,
-     "rps": 91.4,
-     "rps_stdev": 6.683,
-     "p50_ms": 169.363,
-     "p90_ms": 206.146,
-     "p99_ms": 247.4,
-     "errors": 0.0,
-     "rss_peak_mb": 258.855,
-     "cpu_peak_pct": 197.783
-    },
-    {
-     "impl": "upstream",
-     "scenario": "search_tag",
-     "concurrency": 64,
-     "reps": 3,
-     "rps": 98.395,
-     "rps_stdev": 3.024,
-     "p50_ms": 643.726,
-     "p90_ms": 696.635,
-     "p99_ms": 742.788,
-     "errors": 0.0,
-     "rss_peak_mb": 257.186,
-     "cpu_peak_pct": 197.233
-    },
-    {
-     "impl": "upstream",
-     "scenario": "search_tag",
-     "concurrency": 256,
-     "reps": 3,
-     "rps": 69.167,
-     "rps_stdev": 5.186,
-     "p50_ms": 1262.103,
-     "p90_ms": 2218.945,
-     "p99_ms": 3621.378,
-     "errors": 1.667,
-     "rss_peak_mb": 259.965,
-     "cpu_peak_pct": 218.173
     },
     {
      "impl": "fastapi",
@@ -3123,7 +2950,7 @@
      "cpu_peak_pct": 287.643
     },
     {
-     "impl": "rust-h5i",
+     "impl": "rust-h5i-optimized",
      "scenario": "get",
      "concurrency": 1,
      "reps": 3,
@@ -3137,7 +2964,7 @@
      "cpu_peak_pct": 28.807
     },
     {
-     "impl": "rust-h5i",
+     "impl": "rust-h5i-optimized",
      "scenario": "get",
      "concurrency": 16,
      "reps": 3,
@@ -3151,7 +2978,7 @@
      "cpu_peak_pct": 169.81
     },
     {
-     "impl": "rust-h5i",
+     "impl": "rust-h5i-optimized",
      "scenario": "get",
      "concurrency": 64,
      "reps": 3,
@@ -3165,7 +2992,7 @@
      "cpu_peak_pct": 152.517
     },
     {
-     "impl": "rust-h5i",
+     "impl": "rust-h5i-optimized",
      "scenario": "get",
      "concurrency": 256,
      "reps": 3,
@@ -3177,62 +3004,6 @@
      "errors": 0.0,
      "rss_peak_mb": 24.186,
      "cpu_peak_pct": 183.087
-    },
-    {
-     "impl": "upstream",
-     "scenario": "get",
-     "concurrency": 1,
-     "reps": 3,
-     "rps": 33.341,
-     "rps_stdev": 4.821,
-     "p50_ms": 28.671,
-     "p90_ms": 38.56,
-     "p99_ms": 54.303,
-     "errors": 0.0,
-     "rss_peak_mb": 259.98,
-     "cpu_peak_pct": 61.007
-    },
-    {
-     "impl": "upstream",
-     "scenario": "get",
-     "concurrency": 16,
-     "reps": 3,
-     "rps": 148.069,
-     "rps_stdev": 0.987,
-     "p50_ms": 106.096,
-     "p90_ms": 127.648,
-     "p99_ms": 147.535,
-     "errors": 0.0,
-     "rss_peak_mb": 259.98,
-     "cpu_peak_pct": 180.13
-    },
-    {
-     "impl": "upstream",
-     "scenario": "get",
-     "concurrency": 64,
-     "reps": 3,
-     "rps": 167.993,
-     "rps_stdev": 30.462,
-     "p50_ms": 386.452,
-     "p90_ms": 428.397,
-     "p99_ms": 472.964,
-     "errors": 0.0,
-     "rss_peak_mb": 257.34,
-     "cpu_peak_pct": 194.057
-    },
-    {
-     "impl": "upstream",
-     "scenario": "get",
-     "concurrency": 256,
-     "reps": 3,
-     "rps": 164.12,
-     "rps_stdev": 18.018,
-     "p50_ms": 563.838,
-     "p90_ms": 612.72,
-     "p99_ms": 11600.116,
-     "errors": 36.0,
-     "rss_peak_mb": 259.811,
-     "cpu_peak_pct": 197.727
     },
     {
      "impl": "fastapi",
@@ -3403,7 +3174,7 @@
      "cpu_peak_pct": 231.203
     },
     {
-     "impl": "rust-h5i",
+     "impl": "rust-h5i-optimized",
      "scenario": "create",
      "concurrency": 1,
      "reps": 3,
@@ -3417,7 +3188,7 @@
      "cpu_peak_pct": 23.6
     },
     {
-     "impl": "rust-h5i",
+     "impl": "rust-h5i-optimized",
      "scenario": "create",
      "concurrency": 16,
      "reps": 3,
@@ -3431,7 +3202,7 @@
      "cpu_peak_pct": 112.177
     },
     {
-     "impl": "rust-h5i",
+     "impl": "rust-h5i-optimized",
      "scenario": "create",
      "concurrency": 64,
      "reps": 3,
@@ -3445,7 +3216,7 @@
      "cpu_peak_pct": 139.88
     },
     {
-     "impl": "rust-h5i",
+     "impl": "rust-h5i-optimized",
      "scenario": "create",
      "concurrency": 256,
      "reps": 3,
@@ -3457,62 +3228,6 @@
      "errors": 0.0,
      "rss_peak_mb": 24.333,
      "cpu_peak_pct": 160.05
-    },
-    {
-     "impl": "upstream",
-     "scenario": "create",
-     "concurrency": 1,
-     "reps": 3,
-     "rps": 17.8,
-     "rps_stdev": 1.327,
-     "p50_ms": 53.964,
-     "p90_ms": 72.122,
-     "p99_ms": 90.81,
-     "errors": 0.0,
-     "rss_peak_mb": 260.371,
-     "cpu_peak_pct": 60.107
-    },
-    {
-     "impl": "upstream",
-     "scenario": "create",
-     "concurrency": 16,
-     "reps": 3,
-     "rps": 80.394,
-     "rps_stdev": 0.922,
-     "p50_ms": 196.65,
-     "p90_ms": 230.066,
-     "p99_ms": 258.542,
-     "errors": 0.0,
-     "rss_peak_mb": 259.422,
-     "cpu_peak_pct": 168.27
-    },
-    {
-     "impl": "upstream",
-     "scenario": "create",
-     "concurrency": 64,
-     "reps": 3,
-     "rps": 106.374,
-     "rps_stdev": 21.451,
-     "p50_ms": 610.558,
-     "p90_ms": 675.672,
-     "p99_ms": 739.665,
-     "errors": 0.0,
-     "rss_peak_mb": 257.701,
-     "cpu_peak_pct": 198.49
-    },
-    {
-     "impl": "upstream",
-     "scenario": "create",
-     "concurrency": 256,
-     "reps": 3,
-     "rps": 95.134,
-     "rps_stdev": 5.595,
-     "p50_ms": 965.573,
-     "p90_ms": 1948.408,
-     "p99_ms": 19457.352,
-     "errors": 35.333,
-     "rss_peak_mb": 247.443,
-     "cpu_peak_pct": 207.583
     },
     {
      "impl": "fastapi",
@@ -3683,7 +3398,7 @@
      "cpu_peak_pct": 247.01
     },
     {
-     "impl": "rust-h5i",
+     "impl": "rust-h5i-optimized",
      "scenario": "update",
      "concurrency": 1,
      "reps": 3,
@@ -3697,7 +3412,7 @@
      "cpu_peak_pct": 28.833
     },
     {
-     "impl": "rust-h5i",
+     "impl": "rust-h5i-optimized",
      "scenario": "update",
      "concurrency": 16,
      "reps": 3,
@@ -3711,7 +3426,7 @@
      "cpu_peak_pct": 139.26
     },
     {
-     "impl": "rust-h5i",
+     "impl": "rust-h5i-optimized",
      "scenario": "update",
      "concurrency": 64,
      "reps": 3,
@@ -3725,7 +3440,7 @@
      "cpu_peak_pct": 142.393
     },
     {
-     "impl": "rust-h5i",
+     "impl": "rust-h5i-optimized",
      "scenario": "update",
      "concurrency": 256,
      "reps": 3,
@@ -3737,62 +3452,6 @@
      "errors": 0.0,
      "rss_peak_mb": 24.294,
      "cpu_peak_pct": 158.503
-    },
-    {
-     "impl": "upstream",
-     "scenario": "update",
-     "concurrency": 1,
-     "reps": 3,
-     "rps": 22.379,
-     "rps_stdev": 0.052,
-     "p50_ms": 43.806,
-     "p90_ms": 46.246,
-     "p99_ms": 49.643,
-     "errors": 0.0,
-     "rss_peak_mb": 238.28,
-     "cpu_peak_pct": 68.533
-    },
-    {
-     "impl": "upstream",
-     "scenario": "update",
-     "concurrency": 16,
-     "reps": 3,
-     "rps": 138.326,
-     "rps_stdev": 0.905,
-     "p50_ms": 113.788,
-     "p90_ms": 123.501,
-     "p99_ms": 142.505,
-     "errors": 0.0,
-     "rss_peak_mb": 243.358,
-     "cpu_peak_pct": 208.193
-    },
-    {
-     "impl": "upstream",
-     "scenario": "update",
-     "concurrency": 64,
-     "reps": 3,
-     "rps": 138.467,
-     "rps_stdev": 1.144,
-     "p50_ms": 458.848,
-     "p90_ms": 477.173,
-     "p99_ms": 506.981,
-     "errors": 0.0,
-     "rss_peak_mb": 244.077,
-     "cpu_peak_pct": 203.207
-    },
-    {
-     "impl": "upstream",
-     "scenario": "update",
-     "concurrency": 256,
-     "reps": 3,
-     "rps": 109.034,
-     "rps_stdev": 13.505,
-     "p50_ms": 754.342,
-     "p90_ms": 1552.417,
-     "p99_ms": 20130.322,
-     "errors": 33.333,
-     "rss_peak_mb": 245.868,
-     "cpu_peak_pct": 205.927
     },
     {
      "impl": "fastapi",
@@ -3963,7 +3622,7 @@
      "cpu_peak_pct": 257.34
     },
     {
-     "impl": "rust-h5i",
+     "impl": "rust-h5i-optimized",
      "scenario": "archive",
      "concurrency": 1,
      "reps": 3,
@@ -3977,7 +3636,7 @@
      "cpu_peak_pct": 35.523
     },
     {
-     "impl": "rust-h5i",
+     "impl": "rust-h5i-optimized",
      "scenario": "archive",
      "concurrency": 16,
      "reps": 3,
@@ -3991,7 +3650,7 @@
      "cpu_peak_pct": 156.193
     },
     {
-     "impl": "rust-h5i",
+     "impl": "rust-h5i-optimized",
      "scenario": "archive",
      "concurrency": 64,
      "reps": 3,
@@ -4005,7 +3664,7 @@
      "cpu_peak_pct": 131.797
     },
     {
-     "impl": "rust-h5i",
+     "impl": "rust-h5i-optimized",
      "scenario": "archive",
      "concurrency": 256,
      "reps": 3,
@@ -4017,62 +3676,6 @@
      "errors": 0.0,
      "rss_peak_mb": 24.027,
      "cpu_peak_pct": 148.78
-    },
-    {
-     "impl": "upstream",
-     "scenario": "archive",
-     "concurrency": 1,
-     "reps": 3,
-     "rps": 34.808,
-     "rps_stdev": 0.093,
-     "p50_ms": 28.313,
-     "p90_ms": 29.22,
-     "p99_ms": 30.594,
-     "errors": 0.0,
-     "rss_peak_mb": 236.465,
-     "cpu_peak_pct": 69.333
-    },
-    {
-     "impl": "upstream",
-     "scenario": "archive",
-     "concurrency": 16,
-     "reps": 3,
-     "rps": 223.679,
-     "rps_stdev": 0.664,
-     "p50_ms": 71.205,
-     "p90_ms": 74.059,
-     "p99_ms": 76.922,
-     "errors": 0.0,
-     "rss_peak_mb": 239.749,
-     "cpu_peak_pct": 200.327
-    },
-    {
-     "impl": "upstream",
-     "scenario": "archive",
-     "concurrency": 64,
-     "reps": 3,
-     "rps": 223.84,
-     "rps_stdev": 0.13,
-     "p50_ms": 285.58,
-     "p90_ms": 291.879,
-     "p99_ms": 296.69,
-     "errors": 0.0,
-     "rss_peak_mb": 240.29,
-     "cpu_peak_pct": 201.157
-    },
-    {
-     "impl": "upstream",
-     "scenario": "archive",
-     "concurrency": 256,
-     "reps": 3,
-     "rps": 178.613,
-     "rps_stdev": 13.657,
-     "p50_ms": 468.485,
-     "p90_ms": 607.75,
-     "p99_ms": 5086.858,
-     "errors": 41.0,
-     "rss_peak_mb": 242.355,
-     "cpu_peak_pct": 198.637
     },
     {
      "impl": "fastapi",
@@ -4243,7 +3846,7 @@
      "cpu_peak_pct": 263.683
     },
     {
-     "impl": "rust-h5i",
+     "impl": "rust-h5i-optimized",
      "scenario": "tags",
      "concurrency": 1,
      "reps": 3,
@@ -4257,7 +3860,7 @@
      "cpu_peak_pct": 35.32
     },
     {
-     "impl": "rust-h5i",
+     "impl": "rust-h5i-optimized",
      "scenario": "tags",
      "concurrency": 16,
      "reps": 3,
@@ -4271,7 +3874,7 @@
      "cpu_peak_pct": 198.17
     },
     {
-     "impl": "rust-h5i",
+     "impl": "rust-h5i-optimized",
      "scenario": "tags",
      "concurrency": 64,
      "reps": 3,
@@ -4285,7 +3888,7 @@
      "cpu_peak_pct": 187.897
     },
     {
-     "impl": "rust-h5i",
+     "impl": "rust-h5i-optimized",
      "scenario": "tags",
      "concurrency": 256,
      "reps": 3,
@@ -4297,62 +3900,6 @@
      "errors": 0.0,
      "rss_peak_mb": 23.935,
      "cpu_peak_pct": 209.203
-    },
-    {
-     "impl": "upstream",
-     "scenario": "tags",
-     "concurrency": 1,
-     "reps": 3,
-     "rps": 33.736,
-     "rps_stdev": 0.133,
-     "p50_ms": 29.126,
-     "p90_ms": 30.142,
-     "p99_ms": 32.095,
-     "errors": 0.0,
-     "rss_peak_mb": 237.602,
-     "cpu_peak_pct": 72.43
-    },
-    {
-     "impl": "upstream",
-     "scenario": "tags",
-     "concurrency": 16,
-     "reps": 3,
-     "rps": 214.751,
-     "rps_stdev": 1.096,
-     "p50_ms": 73.951,
-     "p90_ms": 77.488,
-     "p99_ms": 85.763,
-     "errors": 0.0,
-     "rss_peak_mb": 240.867,
-     "cpu_peak_pct": 207.117
-    },
-    {
-     "impl": "upstream",
-     "scenario": "tags",
-     "concurrency": 64,
-     "reps": 3,
-     "rps": 213.883,
-     "rps_stdev": 0.804,
-     "p50_ms": 298.275,
-     "p90_ms": 306.369,
-     "p99_ms": 321.14,
-     "errors": 0.0,
-     "rss_peak_mb": 241.422,
-     "cpu_peak_pct": 209.12
-    },
-    {
-     "impl": "upstream",
-     "scenario": "tags",
-     "concurrency": 256,
-     "reps": 3,
-     "rps": 153.174,
-     "rps_stdev": 16.211,
-     "p50_ms": 563.147,
-     "p90_ms": 1105.128,
-     "p99_ms": 14074.669,
-     "errors": 38.667,
-     "rss_peak_mb": 243.794,
-     "cpu_peak_pct": 200.327
     },
     {
      "impl": "fastapi",
@@ -4523,7 +4070,7 @@
      "cpu_peak_pct": 61.22
     },
     {
-     "impl": "rust-h5i",
+     "impl": "rust-h5i-optimized",
      "scenario": "mixed",
      "concurrency": 1,
      "reps": 3,
@@ -4537,7 +4084,7 @@
      "cpu_peak_pct": 6.533
     },
     {
-     "impl": "rust-h5i",
+     "impl": "rust-h5i-optimized",
      "scenario": "mixed",
      "concurrency": 16,
      "reps": 3,
@@ -4551,7 +4098,7 @@
      "cpu_peak_pct": 19.317
     },
     {
-     "impl": "rust-h5i",
+     "impl": "rust-h5i-optimized",
      "scenario": "mixed",
      "concurrency": 64,
      "reps": 3,
@@ -4565,7 +4112,7 @@
      "cpu_peak_pct": 34.107
     },
     {
-     "impl": "rust-h5i",
+     "impl": "rust-h5i-optimized",
      "scenario": "mixed",
      "concurrency": 256,
      "reps": 3,
@@ -4577,62 +4124,6 @@
      "errors": 0.0,
      "rss_peak_mb": 25.277,
      "cpu_peak_pct": 55.033
-    },
-    {
-     "impl": "upstream",
-     "scenario": "mixed",
-     "concurrency": 1,
-     "reps": 3,
-     "rps": 9.484,
-     "rps_stdev": 0.049,
-     "p50_ms": 117.748,
-     "p90_ms": 203.395,
-     "p99_ms": 220.829,
-     "errors": 0.0,
-     "rss_peak_mb": 240.447,
-     "cpu_peak_pct": 45.753
-    },
-    {
-     "impl": "upstream",
-     "scenario": "mixed",
-     "concurrency": 16,
-     "reps": 3,
-     "rps": 31.144,
-     "rps_stdev": 0.293,
-     "p50_ms": 463.113,
-     "p90_ms": 866.854,
-     "p99_ms": 1120.929,
-     "errors": 0.0,
-     "rss_peak_mb": 248.001,
-     "cpu_peak_pct": 121.61
-    },
-    {
-     "impl": "upstream",
-     "scenario": "mixed",
-     "concurrency": 64,
-     "reps": 3,
-     "rps": 32.36,
-     "rps_stdev": 0.909,
-     "p50_ms": 1933.237,
-     "p90_ms": 2807.454,
-     "p99_ms": 3091.847,
-     "errors": 0.0,
-     "rss_peak_mb": 248.574,
-     "cpu_peak_pct": 128.673
-    },
-    {
-     "impl": "upstream",
-     "scenario": "mixed",
-     "concurrency": 256,
-     "reps": 3,
-     "rps": 26.89,
-     "rps_stdev": 1.032,
-     "p50_ms": 3633.613,
-     "p90_ms": 5001.68,
-     "p99_ms": 14159.355,
-     "errors": 8.667,
-     "rss_peak_mb": 250.608,
-     "cpu_peak_pct": 121.963
     }
    ]
   }

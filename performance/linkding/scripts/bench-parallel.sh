@@ -9,7 +9,7 @@
 #   fastapi   0-3     4-7       8-11   5440     8101
 #   go        12-15   16-19     20-23  5441     8102
 #   fastify   24-27   28-31     32-35  5442     8103
-#   rust-h5i  36-39   40-43     44-47  5443     8104
+#   rust-h5i-optimized  36-39   40-43     44-47  5443     8104
 #   upstream  48-51   52-55     56-59  5444     8105
 #
 # The script re-launches itself under setsid nohup and returns at once.
@@ -33,7 +33,7 @@ if [ -z "${LD_DETACHED:-}" ]; then
 fi
 
 if [ "$#" -eq 0 ]; then
-  set -- fastapi go fastify rust-h5i upstream
+  set -- fastapi go fastify rust-h5i-optimized upstream
 fi
 
 layout() {
@@ -41,7 +41,7 @@ layout() {
     fastapi)  echo "0-3 4-7 8-11 5440 8101" ;;
     go)       echo "12-15 16-19 20-23 5441 8102" ;;
     fastify)  echo "24-27 28-31 32-35 5442 8103" ;;
-    rust-h5i) echo "36-39 40-43 44-47 5443 8104" ;;
+    rust-h5i-optimized) echo "36-39 40-43 44-47 5443 8104" ;;
     upstream) echo "48-51 52-55 56-59 5444 8105" ;;
     *) return 1 ;;
   esac

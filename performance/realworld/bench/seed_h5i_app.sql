@@ -1,6 +1,6 @@
--- The seed.sql dataset on rust-h5i-app's tables.
+-- The seed.sql dataset on rust-h5i's tables.
 --
--- rust-h5i-app keeps its rows in h5i-app's own tables (schema conduit, one
+-- rust-h5i keeps its rows in h5i-app's own tables (schema conduit, one
 -- tenant, id 1, every row keyed by tenant_id; text as UTF-8 bytea; times as
 -- milliseconds since 1970). Run this right after seed.sql, against the same
 -- database, once the server has created its tables: it copies the rows

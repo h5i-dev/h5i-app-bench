@@ -9,7 +9,7 @@ from collections import defaultdict
 from pathlib import Path
 
 SCENARIOS = ["list", "slug", "feed", "login", "create", "favorite", "mixed"]
-IMPLS = ["fastapi", "go", "fastify", "rust-h5i", "rust-h5i-app"]
+IMPLS = ["fastapi", "go", "fastify", "rust-h5i-optimized", "rust-h5i"]
 
 
 def load_point(summary_path: Path):
