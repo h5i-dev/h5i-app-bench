@@ -11,6 +11,8 @@
 #   go        16-19   20-23     24-31  0     54332
 #   fastify   32-35   36-39     40-47  1     54333
 #   rust-h5i  48-51   52-55     56-63  1     54334
+#   rust-h5i-app 48-51 52-55   56-63  1     54335  (shares rust-h5i's CPUs:
+#                                                   run it alone, by name)
 #
 # The script re-launches itself under setsid nohup and returns at once.
 # Progress: /var/tmp/rw-logs/<impl>/bench-all.log; done marker:
@@ -38,6 +40,7 @@ layout() {
     go)       echo "16-19 20-23 24-31 54332" ;;
     fastify)  echo "32-35 36-39 40-47 54333" ;;
     rust-h5i) echo "48-51 52-55 56-63 54334" ;;
+    rust-h5i-app) echo "48-51 52-55 56-63 54335" ;;
     *) return 1 ;;
   esac
 }

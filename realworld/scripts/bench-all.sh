@@ -10,7 +10,10 @@
 #   BENCH_OUT=realworld/bench/results
 #   SERVER_CPUS=0-3 K6_CPUS=4-7 PG_CPUS=8-15 CONDUIT_PG_CONTAINER=conduit-pg
 #   CONDUIT_PG_PORT=54329 BENCH_NO_SUMMARY=1 (scripts/bench-parallel.sh sets these)
-#   ./bench-all.sh [fastapi|go|fastify|rust-h5i ...]
+#   ./bench-all.sh [fastapi|go|fastify|rust-h5i|rust-h5i-app ...]
+#
+# rust-h5i-app keeps its rows in h5i-app's own tables (schema conduit); each
+# point loads seed.sql and then copies it there (bench/seed_h5i_app.sql).
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 PG_CONTAINER="${CONDUIT_PG_CONTAINER:-conduit-pg}"
@@ -42,6 +45,10 @@ fi
 seed_db() {
   docker exec -i "$PG_CONTAINER" psql -U conduit -d conduit -v ON_ERROR_STOP=1 \
     -v hash="$HASH" < "$ROOT/bench/seed.sql" >/dev/null
+  if [ "${1:-}" = rust-h5i-app ]; then
+    docker exec -i "$PG_CONTAINER" psql -U conduit -d conduit -v ON_ERROR_STOP=1 \
+      < "$ROOT/bench/seed_h5i_app.sql" >/dev/null
+  fi
 }
 
 TOKEN="$("$PY" - <<'PY'
@@ -100,7 +107,7 @@ start_server() {
       export WEB_CONCURRENCY=4
       export DB_POOL=8
       ;;
-    go|rust-h5i)
+    go|rust-h5i|rust-h5i-app)
       export WEB_CONCURRENCY=4
       export DB_POOL=32
       ;;
@@ -130,6 +137,9 @@ prebuild() {
   if printf '%s\n' "$@" | grep -qx rust-h5i; then
     (cd "$ROOT/rust-h5i" && cargo build --release -p conduit-server -p conduit-kernel-bench)
   fi
+  if printf '%s\n' "$@" | grep -qx rust-h5i-app; then
+    (cd "$ROOT/rust-h5i-app" && CARGO_TARGET_DIR="${H5I_APP_TARGET_DIR:-/var/tmp/rw-target-h5i-app}" cargo build --release)
+  fi
 }
 
 kernel_bench() {
@@ -152,6 +162,7 @@ for name in "$@"; do
     go) port=8002; dir="$ROOT/go" ;;
     fastify) port=8003; dir="$ROOT/fastify" ;;
     rust-h5i) port=8004; dir="$ROOT/rust-h5i" ;;
+    rust-h5i-app) port=8005; dir="$ROOT/rust-h5i-app" ;;
     *) echo "unknown implementation: $name" >&2; exit 2 ;;
   esac
   echo "START $name :$port"
@@ -162,7 +173,7 @@ for name in "$@"; do
       for rep in $(seq 1 "$REPEATS"); do
         tag="${name}_${scenario}_c${conc}_r${rep}"
         echo "SEED $tag"
-        seed_db
+        seed_db "$name"
         if ! curl -sf "$BASE/healthz" >/dev/null; then
           echo "POINT_FAIL $tag server died; restarting" >&2
           start_server "$name" "$port" "$dir"

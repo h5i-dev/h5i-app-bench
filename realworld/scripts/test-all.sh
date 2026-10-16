@@ -59,6 +59,7 @@ for name in "$@"; do
     go) run_impl go 8002 "$ROOT/go" ;;
     fastify) run_impl fastify 8003 "$ROOT/fastify" ;;
     rust-h5i) run_impl rust-h5i 8004 "$ROOT/rust-h5i" ;;
+    rust-h5i-app) run_impl rust-h5i-app 8005 "$ROOT/rust-h5i-app" ;;
     *) echo "unknown implementation: $name" >&2; exit 2 ;;
   esac
 done
