@@ -5,7 +5,7 @@ Benchmarks for [h5i-app](https://github.com/h5i-dev/h5i), a Rust framework whose
 | Benchmark | Question | Source | Results |
 | --- | --- | --- | --- |
 | Verification | How much real-world Rust can h5i-app prove? | [`prove/`](prove) | [benchmark.h5i.dev/prove](https://benchmark.h5i.dev/prove/) |
-| Web performance | Is an h5i-app server as fast as Go, TypeScript or Python? | [`performance/`](performance) | [benchmark.h5i.dev/performance](https://benchmark.h5i.dev/performance/) |
+| Performance | Is an h5i-app server as fast as Go, TypeScript or Python? | [`performance/`](performance) | [benchmark.h5i.dev/performance](https://benchmark.h5i.dev/performance/) |
 
 ## License
 
