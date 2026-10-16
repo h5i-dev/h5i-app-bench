@@ -103,11 +103,22 @@ theorem vec_index_eq {α : Type} (v : alloc.vec.Vec α) (i : Usize) (h : i.val <
 theorem lt_len_iff {α : Type} (v : alloc.vec.Vec α) (i : Usize) : i < alloc.vec.Vec.len v ↔ i.val < v.val.length := by
   simp [alloc.vec.Vec.len]
 
+/-- A fold over the rows a slice keeps, by a step that agrees on them,
+gives the fold over all rows when the step leaves the others unchanged. -/
+theorem foldlM_slice {α β : Type} (l : List α) (K : α → Bool) (step step' : β → α → Result β) (a : β)
+    (hskip : ∀ x ∈ l, K x = false → ∀ a, step a x = ok a)
+    (hsame : ∀ x ∈ l, K x = true → ∀ a, step' a x = step a x) :
+    (l.filter K).foldlM step' a = l.foldlM step a := by
+  rw [foldlM_congr (l.filter K) step step' (fun x hx a => by
+    obtain ⟨hm, hk⟩ := List.mem_filter.1 hx; exact hsame x hm hk a), foldlM_filter l K step hskip a]
+
 /-- Unfolds a loop body over `v` to the shape `loop_foldlM` takes. -/
 macro "body_shape" v:term:max : tactic => `(tactic| (
   by_cases hlt : (‹Usize›).val < ($v).val.length
   · simp only [(lt_len_iff _ _).2 hlt, vec_index_eq _ _ hlt, dif_pos hlt, if_true, bind_tc_eq, bind_ok, Std.bind_assoc]
-  · simp only [mt (lt_len_iff _ _).1 hlt, dif_neg hlt, if_false]; rfl))
+    try rfl
+  · simp only [mt (lt_len_iff _ _).1 hlt, dif_neg hlt, if_false]
+    try rfl))
 
 
 /-! ## Lowercasing -/
