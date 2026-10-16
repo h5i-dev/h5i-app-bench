@@ -1,3 +1,4 @@
+import Verified.RustfsKmsMeaning
 import Verified.RustfsBPMeaning
 import Verified.RustfsStatementContext
 import Verified.RustfsResourceMeaning
@@ -1828,5 +1829,12 @@ theorem statement_context_spec (args : stmts.Args) (env : condfuncs.Env) (out : 
     (h : stmts.resolver_for args env=ok out) :
     Verified.RustfsAwsValues.context out=PolicyContext args env :=
   Verified.RustfsStatementContext.resolver_ok args env out h
+
+/-- KMS scope follows filtered key patterns and the explicit empty-object cases. -/
+theorem kms_scope_evaluation_spec (st : stmts.Statement) (args : stmts.Args)
+    (ctx : Option awsvars.VarContext) (b : Bool)
+    (h : stmts.kms_key_scope_matches st args ctx=ok b) :
+    b=true ↔ KmsScopeHolds (ctx.map Verified.RustfsAwsValues.context) st args :=
+  Verified.RustfsKmsMeaning.scope_ok st args ctx b h
 
 end rustfs_kernel.Properties

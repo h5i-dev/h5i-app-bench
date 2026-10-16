@@ -215,6 +215,7 @@ theorems = [
   "rustfs_kernel.Properties.bucket_statement_matching_spec",
   "rustfs_kernel.Properties.bucket_statement_allowed_spec",
   "rustfs_kernel.Properties.statement_context_spec",
+  "rustfs_kernel.Properties.kms_scope_evaluation_spec",
   "rustfs_kernel.Properties.resource_pattern_evaluation_spec",
   "rustfs_kernel.Properties.resource_evaluation_spec",
   "rustfs_kernel.Properties.resource_set_evaluation_spec",
