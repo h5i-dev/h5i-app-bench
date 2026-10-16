@@ -1,3 +1,5 @@
+import Verified.RustfsDateFraction
+import Verified.RustfsDateLeap
 import Verified.RustfsDateFields
 import Verified.RustfsDateNanos
 import Verified.RustfsStatementMeaning
@@ -1877,5 +1879,15 @@ theorem date_calendar_fields_spec (s : Slice U8) (r : Option (I64 × I64 × I64)
 
 theorem date_nanos_spec (utc nano : I64) (r : I128) (h : dates.nanos utc nano=ok r) :
     r.val=InstantNanos utc.val nano.val := Verified.RustfsDateNanos.nanos_ok utc nano r h
+
+theorem date_fraction_spec (s : Slice U8) (r : Option (I64 × Usize))
+    (bound : 20≤s.val.length) (h : dates.fraction s=ok r) :
+    r.map (fun p=>(p.1.val,p.2.val))=DateFraction (nats s.val) :=
+  Verified.RustfsDateFraction.fraction_ok s r bound h
+
+theorem date_leap_second_spec (utc localDay year month day : I64) (r : Bool)
+    (h : dates.leap_valid utc localDay year month day=ok r) :
+    r=true ↔ LeapSecondValid utc.val localDay.val year.val month.val day.val :=
+  Verified.RustfsDateLeap.leap_ok utc localDay year month day r h
 
 end rustfs_kernel.Properties
