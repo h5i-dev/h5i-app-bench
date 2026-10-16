@@ -8,7 +8,7 @@ Results: <https://benchmark.h5i.dev/performance/>.
 | Directory | API | Implementations |
 | --- | --- | --- |
 | [`realworld/`](realworld) | [RealWorld (Conduit)](https://github.com/realworld-apps/realworld): users, articles, comments, follows, favorites | `rust-h5i`, `rust-h5i-optimized`, `go`, `fastify`, `fastapi` |
-| [`linkding/`](linkding) | [linkding](https://github.com/sissbruecker/linkding) 1.47.0 bookmarks API | `rust-h5i-optimized`, `go`, `fastify`, `fastapi`, and the upstream image |
+| [`linkding/`](linkding) | [linkding](https://github.com/sissbruecker/linkding) 1.47.0 bookmarks API | `rust-h5i`, `rust-h5i-optimized`, `go`, `fastify`, `fastapi`, and the upstream image |
 
 Two Rust implementations use h5i-app:
 
