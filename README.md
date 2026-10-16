@@ -6,8 +6,8 @@ whose kernel is extracted to Lean 4 and proved there. Results are published at
 
 | Benchmark | Question | Source | Results |
 | --- | --- | --- | --- |
-| Verification | How much of real servers' security logic can be ported to h5i-app and proved, and what does the port cost at runtime? Six open-source Rust servers, 101 Lean 4 specs. | [`prove/`](prove) | [benchmark.h5i.dev/prove](https://benchmark.h5i.dev/prove/) |
-| Web performance | Is a web server built on h5i-app slower than the same API in Go, TypeScript or Python? RealWorld and linkding on PostgreSQL, measured with k6. | [`performance/`](performance) | [benchmark.h5i.dev/performance](https://benchmark.h5i.dev/performance/) |
+| Verification | How much real-world Rust can h5i-app prove? | [`prove/`](prove) | [benchmark.h5i.dev/prove](https://benchmark.h5i.dev/prove/) |
+| Web performance | Is an h5i-app server as fast as Go, TypeScript or Python? | [`performance/`](performance) | [benchmark.h5i.dev/performance](https://benchmark.h5i.dev/performance/) |
 
 ```
 prove/          ports, servers, harness, results, agent benchmark
