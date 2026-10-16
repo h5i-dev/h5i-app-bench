@@ -1,3 +1,5 @@
+import Verified.RustfsDateFields
+import Verified.RustfsDateNanos
 import Verified.RustfsStatementMeaning
 import Verified.RustfsKmsMeaning
 import Verified.RustfsBPMeaning
@@ -1850,5 +1852,30 @@ theorem statement_allowed_spec (st : stmts.Statement) (args : stmts.Args)
     (env : condfuncs.Env) (b : Bool) (h : stmts.statement_is_allowed st args env=ok b) :
     b=true ↔ StatementAllowed st args env :=
   Verified.RustfsStatementMeaning.allowed_ok st args env b h
+
+/-- Decimal date fields are the value of the selected byte slice, or rejection. -/
+theorem date_digits_spec (s : Slice U8) (start count : Usize) (r : Option I64)
+    (h : dates.digits s start count=ok r) :
+    r.map (·.val)=DateDigits (nats s.val) start.val count.val :=
+  Verified.RustfsDateDigits.digits_ok s start count r h
+
+theorem date_month_days_spec (year month r : I64) (h : dates.month_days year month=ok r) :
+    r.val=MonthDays year.val month.val := Verified.RustfsDateMeaning.month_ok year month r h
+
+theorem date_civil_days_spec (year month day r : I64) (h : dates.civil_days year month day=ok r) :
+    r.val=CivilDays year.val month.val day.val := Verified.RustfsDateMeaning.civil_ok year month day r h
+
+theorem date_time_fields_spec (s : Slice U8) (r : Option (I64 × I64 × I64))
+    (h : dates.time_fields s=ok r) :
+    r.map (fun (a,b,c)=>(a.val,b.val,c.val))=DateTimeFields (nats s.val) :=
+  Verified.RustfsDateFields.time_ok s r h
+
+theorem date_calendar_fields_spec (s : Slice U8) (r : Option (I64 × I64 × I64))
+    (h : dates.calendar_fields s=ok r) :
+    r.map (fun (a,b,c)=>(a.val,b.val,c.val))=DateCalendar (nats s.val) :=
+  Verified.RustfsDateFields.calendar_ok s r h
+
+theorem date_nanos_spec (utc nano : I64) (r : I128) (h : dates.nanos utc nano=ok r) :
+    r.val=InstantNanos utc.val nano.val := Verified.RustfsDateNanos.nanos_ok utc nano r h
 
 end rustfs_kernel.Properties

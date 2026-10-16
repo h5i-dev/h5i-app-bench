@@ -5,6 +5,12 @@ start-from = ["policies", "pathclean::clean", "defaults::default_version", "defa
 
 [check]
 theorems = [
+  "rustfs_kernel.Properties.date_digits_spec",
+  "rustfs_kernel.Properties.date_month_days_spec",
+  "rustfs_kernel.Properties.date_civil_days_spec",
+  "rustfs_kernel.Properties.date_time_fields_spec",
+  "rustfs_kernel.Properties.date_calendar_fields_spec",
+  "rustfs_kernel.Properties.date_nanos_spec",
   "rustfs_kernel.Properties.string_function_spec",
   "rustfs_kernel.Properties.condition_operator_evaluation_spec",
   "rustfs_kernel.Properties.condition_evaluation_spec",
