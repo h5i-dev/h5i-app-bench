@@ -11,4 +11,6 @@ include = ["h5i_app_sql"]
 theorems = [
     "linkding_kernel.Storage.stored",
     "linkding_kernel.ReadOnly.read_only_sound",
+    "linkding_kernel.Theorems.guest_writes_nothing",
+    "linkding_kernel.Theorems.unknown_token_refused",
 ]
