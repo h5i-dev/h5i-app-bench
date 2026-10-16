@@ -1010,7 +1010,15 @@ pub fn paged(flt: &Filter) -> bool {
     simple_query(&flt.q).is_some()
 }
 
+/// A listing writes nothing: its reply is `list_reply`'s.
 fn list(s: &Snapshot, token: &Text, flt: &Filter, limit: u64, offset: u64) -> Outcome {
+    match list_reply(s, token, flt, limit, offset) {
+        Ok(r) => Ok((Vec::new(), r)),
+        Err(e) => Err(e),
+    }
+}
+
+fn list_reply(s: &Snapshot, token: &Text, flt: &Filter, limit: u64, offset: u64) -> Result<Reply, Error> {
     let viewer = tri!(actor(s, token));
     if viewer == 0 && flt.scope != SCOPE_SHARED {
         return Err(Error::Unauthenticated);
@@ -1086,7 +1094,7 @@ fn list(s: &Snapshot, token: &Text, flt: &Filter, limit: u64, offset: u64) -> Ou
         j += 1;
     }
     let count = if paged(flt) { None } else { Some(sorted.len() as u64) };
-    Ok((Vec::new(), Reply::Bookmarks { items, count }))
+    Ok(Reply::Bookmarks { items, count })
 }
 
 /* Bookmarks */
@@ -1674,8 +1682,9 @@ fn caller_reads_and(token: &Text, extra: Pred) -> Vec<Read> {
 /// Which bookmarks a plan views, as a predicate built afresh for each use
 /// (a `Pred` is never cloned).
 enum Sel {
-    /// A paged listing's selection before paging.
-    Paged(Text, Filter),
+    /// A paged listing's selection before paging: token, scope, query,
+    /// unread and shared rules.
+    Paged(Text, u8, Text, u8, u8),
     /// The caller's bookmarks of a scope.
     Scope(Text, u8),
     /// Shared bookmarks of users who share.
@@ -1688,7 +1697,7 @@ enum Sel {
 
 fn sel_pred(sel: &Sel) -> Pred {
     match sel {
-        Sel::Paged(t, f) => paged_pred(t, f),
+        Sel::Paged(t, scope, q, unread, shared) => paged_pred(t, *scope, q, *unread, *shared),
         Sel::Scope(t, scope) => scope_pred(t, *scope),
         Sel::Shared => shared_pred(),
         Sel::Url(t, url, norm) => url_pred(t, url, norm),
@@ -1740,9 +1749,9 @@ fn scope_pred(token: &Text, scope: u8) -> Pred {
 }
 
 /// The bookmarks a paged listing selects (before paging).
-fn paged_pred(token: &Text, flt: &Filter) -> Pred {
-    let base = p_and(scope_pred(token, flt.scope), search_pred(&flt.q));
-    flag_pred(BM_SHARED, flt.shared, flag_pred(BM_UNREAD, flt.unread, base))
+fn paged_pred(token: &Text, scope: u8, q: &Text, unread: u8, shared: u8) -> Pred {
+    let base = p_and(scope_pred(token, scope), search_pred(q));
+    flag_pred(BM_SHARED, shared, flag_pred(BM_UNREAD, unread, base))
 }
 
 /// Shared bookmarks of users who share.
@@ -1773,7 +1782,7 @@ fn list_reads(token: &Text, flt: &Filter, limit: u64, offset: u64) -> Vec<Read> 
     let mut out = caller_reads(token);
     if paged(flt) {
         let w = newest(offset, limit);
-        let sel = Sel::Paged(token.clone(), flt.clone());
+        let sel = Sel::Paged(token.clone(), flt.scope, flt.q.clone(), flt.unread, flt.shared);
         out.push(Read { table: T_BOOKMARKS, pred: sel_pred(&sel), window: w });
         tag_reads(&sel, w, &mut out);
     } else {
@@ -1920,7 +1929,7 @@ pub fn list_count(actor: &Principal, cmd: &Command) -> Option<Read> {
     match cmd {
         Command::List { filter, limit: _, offset: _ } => {
             if paged(filter) {
-                Some(rd(T_BOOKMARKS, paged_pred(t, filter)))
+                Some(rd(T_BOOKMARKS, paged_pred(t, filter.scope, &filter.q, filter.unread, filter.shared)))
             } else {
                 None
             }
