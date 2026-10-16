@@ -211,25 +211,40 @@ fn read_token(headers: &HeaderMap, secret: &[u8]) -> TokenInput {
     TokenInput::Claims { sub, exp: data.claims.exp as u64 }
 }
 
-async fn viewer_id(headers: &HeaderMap, app: &App) -> Result<i64, ApiError> {
+/// One read of the token's user row: its presence is the kernel's existence
+/// observation, and handlers that need the row reuse it.
+async fn authenticate(headers: &HeaderMap, app: &App) -> Result<(i64, Option<UserPublic>), ApiError> {
     let token = read_token(headers, &app.secret);
     let now = std::time::SystemTime::now()
         .duration_since(std::time::UNIX_EPOCH)
         .map_err(|_| server_error())?.as_secs();
-    let exists = match token {
+    let row = match token {
         TokenInput::Claims { sub: Subject::Parsed(id), .. } => {
-            sqlx::query_scalar::<_, bool>("SELECT EXISTS(SELECT 1 FROM users WHERE id = $1)")
-                .bind(id).fetch_one(&app.pool).await?
+            sqlx::query_as::<_, UserPublic>(
+                "SELECT id, username, email, bio, image FROM users WHERE id = $1",
+            )
+            .bind(id)
+            .fetch_optional(&app.pool)
+            .await?
         }
-        _ => false,
+        _ => None,
     };
-    token_actor(&token, now, exists).map_err(map_kernel)
+    let id = token_actor(&token, now, row.is_some()).map_err(map_kernel)?;
+    Ok((id, row))
+}
+
+async fn viewer_id(headers: &HeaderMap, app: &App) -> Result<i64, ApiError> {
+    Ok(authenticate(headers, app).await?.0)
+}
+
+async fn require_user(headers: &HeaderMap, app: &App) -> Result<(i64, UserPublic), ApiError> {
+    let (id, row) = authenticate(headers, app).await?;
+    let _ = decide(&empty_view(id), &Command::CurrentUser)?;
+    Ok((id, row.ok_or_else(server_error)?))
 }
 
 async fn require_actor(headers: &HeaderMap, app: &App, _guest: &Command) -> Result<i64, ApiError> {
-    let id = viewer_id(headers, app).await?;
-    let _ = decide(&empty_view(id), &Command::CurrentUser)?;
-    Ok(id)
+    Ok(require_user(headers, app).await?.0)
 }
 
 fn read_object(body: &Bytes, key: &'static str) -> Result<Map<String, Value>, ApiError> {
@@ -482,17 +497,6 @@ async fn check_password(password: String, hash: String) -> Result<bool, ApiError
         .map_err(|_| server_error())
 }
 
-async fn load_user(pool: &PgPool, id: i64) -> Result<UserPublic, ApiError> {
-    let row = sqlx::query_as::<_, UserPublic>(
-        "SELECT id, username, email, bio, image FROM users WHERE id = $1",
-    )
-    .bind(id)
-    .fetch_optional(pool)
-    .await?;
-    token_user_exists(row.is_some()).map_err(map_kernel)?;
-    row.ok_or_else(server_error)
-}
-
 async fn allocate_slug(pool: &PgPool, title: &str, exclude_id: i64) -> Result<String, ApiError> {
     for n in 0..100_000u64 {
         let slug = slug_string(title, n);
@@ -676,12 +680,11 @@ async fn login(State(app): State<App>, body: Bytes) -> Result<Response, ApiError
 }
 
 async fn current_user(State(app): State<App>, headers: HeaderMap) -> Result<Response, ApiError> {
-    let uid = require_actor(&headers, &app, &Command::CurrentUser).await?;
+    let (uid, user) = require_user(&headers, &app).await?;
     match decide(&empty_view(uid), &Command::CurrentUser)? {
         Reply::Allow => {}
         _ => return Err(server_error()),
     }
-    let user = load_user(&app.pool, uid).await?;
     let token = sign_token(&app.secret, user.id)?;
     Ok(json_res(
         StatusCode::OK,
@@ -798,9 +801,6 @@ async fn get_profile(
     Path(username): Path<String>,
 ) -> Result<Response, ApiError> {
     let viewer = viewer_id(&headers, &app).await?;
-    if viewer > 0 {
-        load_user(&app.pool, viewer).await?;
-    }
     let row: Option<(String, Option<String>, Option<String>, bool)> = sqlx::query_as(
         "SELECT username, bio, image,
            EXISTS(SELECT 1 FROM follows WHERE follower_id = $1 AND followee_id = users.id)
@@ -827,7 +827,6 @@ async fn set_follow(
 ) -> Result<Response, ApiError> {
     let cmd = if on { Command::Follow } else { Command::Unfollow };
     let uid = require_actor(headers, app, &cmd).await?;
-    load_user(&app.pool, uid).await?;
     let row: Option<(i64, String, Option<String>, Option<String>)> = sqlx::query_as(
         "SELECT id, username, bio, image FROM users WHERE username = $1",
     )
@@ -910,9 +909,6 @@ async fn list_articles(
         }
     }
     let (limit, offset) = page_of(q)?;
-    if viewer > 0 {
-        load_user(&app.pool, viewer).await?;
-    }
     let select = article_select(false);
     let (rows, total) = if feed {
         let sql = format!(
@@ -1030,13 +1026,7 @@ async fn create_article(
     headers: HeaderMap,
     body: Bytes,
 ) -> Result<Response, ApiError> {
-    let guest = Command::CreateArticle {
-        title: RawText::Absent,
-        description: RawText::Absent,
-        body: RawText::Absent,
-        tags: TagInput::Absent,
-    };
-    let uid = require_actor(&headers, &app, &guest).await?;
+    let (uid, author) = require_user(&headers, &app).await?;
     let obj = read_object(&body, "article")?;
     let (tags_kind, tags) = tag_parts(&obj);
     decide(
@@ -1051,7 +1041,6 @@ async fn create_article(
     let title = text_string(&obj, "title");
     let description = text_string(&obj, "description");
     let body = text_string(&obj, "body");
-    let author = load_user(&app.pool, uid).await?;
     let mut created: Option<(String, i64, String, String)> = None;
     for _ in 0..8 {
         let slug = allocate_slug(&app.pool, &title, 0).await?;
@@ -1118,9 +1107,6 @@ async fn get_article(
     Path(slug): Path<String>,
 ) -> Result<Response, ApiError> {
     let viewer = viewer_id(&headers, &app).await?;
-    if viewer > 0 {
-        load_user(&app.pool, viewer).await?;
-    }
     let Some(row) = fetch_detail(&app.pool, viewer, &slug).await? else {
         return Err(api(StatusCode::NOT_FOUND, "article", "not found"));
     };
@@ -1142,7 +1128,6 @@ async fn update_article(
     let uid = require_actor(&headers, &app, &guest).await?;
     let obj = read_object(&body, "article")?;
     let (tags_kind, tags) = tag_parts(&obj);
-    load_user(&app.pool, uid).await?;
     let found: Option<(i64, i64)> =
         sqlx::query_as("SELECT id, author_id FROM articles WHERE slug = $1")
             .bind(&slug)
@@ -1225,7 +1210,6 @@ async fn delete_article(
     Path(slug): Path<String>,
 ) -> Result<Response, ApiError> {
     let uid = require_actor(&headers, &app, &Command::DeleteArticle).await?;
-    load_user(&app.pool, uid).await?;
     let found: Option<(i64, i64)> =
         sqlx::query_as("SELECT id, author_id FROM articles WHERE slug = $1")
             .bind(&slug)
@@ -1255,9 +1239,6 @@ async fn list_comments(
     Path(slug): Path<String>,
 ) -> Result<Response, ApiError> {
     let viewer = viewer_id(&headers, &app).await?;
-    if viewer > 0 {
-        load_user(&app.pool, viewer).await?;
-    }
     let article_id: Option<i64> = sqlx::query_scalar("SELECT id FROM articles WHERE slug = $1")
         .bind(&slug)
         .fetch_optional(&app.pool)
@@ -1305,15 +1286,8 @@ async fn create_comment(
     Path(slug): Path<String>,
     body: Bytes,
 ) -> Result<Response, ApiError> {
-    let uid = require_actor(
-        &headers,
-        &app,
-        &Command::CreateComment {
-            body: RawText::Absent,
-        },
-    ).await?;
+    let (uid, author) = require_user(&headers, &app).await?;
     let obj = read_object(&body, "comment")?;
-    let author = load_user(&app.pool, uid).await?;
     let article_id: Option<i64> = sqlx::query_scalar("SELECT id FROM articles WHERE slug = $1")
         .bind(&slug)
         .fetch_optional(&app.pool)
@@ -1376,7 +1350,6 @@ async fn delete_comment(
     if comment_id <= 0 {
         return Err(api(StatusCode::UNPROCESSABLE_ENTITY, "comment", "is invalid"));
     }
-    load_user(&app.pool, uid).await?;
     let article_id: Option<i64> = sqlx::query_scalar("SELECT id FROM articles WHERE slug = $1")
         .bind(&slug)
         .fetch_optional(&app.pool)
@@ -1419,7 +1392,6 @@ async fn set_favorite(
         Command::Unfavorite
     };
     let uid = require_actor(headers, app, &cmd).await?;
-    load_user(&app.pool, uid).await?;
     let found: Option<(i64, bool)> = sqlx::query_as(
         "SELECT a.id,
            EXISTS(SELECT 1 FROM favorites f WHERE f.article_id = a.id AND f.user_id = $2)
