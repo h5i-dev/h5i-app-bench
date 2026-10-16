@@ -7,7 +7,7 @@
    "about": "The RealWorld blogging API: users, profiles, articles, comments, tags, follows and favorites. Every implementation passes the same pinned Hurl suite.",
    "seed": "100 users, 10,000 articles with two tags each, 10,000 comments, 1,000 follows, 5,000 favorites.",
    "source": "https://github.com/h5i-dev/h5i-app-bench/tree/main/performance/realworld",
-   "measured": null,
+   "measured": "2026-10-16",
    "impls": [
     {
      "id": "rust-h5i",
@@ -2041,7 +2041,7 @@
    "about": "The linkding bookmark manager's REST API. The Hurl suite was checked against the pinned 1.47.0 image, which also runs in the benchmark as a reference.",
    "seed": "50 users, 100,000 bookmarks and 2,000 tags owned by one user, two tags per bookmark.",
    "source": "https://github.com/h5i-dev/h5i-app-bench/tree/main/performance/linkding",
-   "measured": null,
+   "measured": "2026-10-16",
    "impls": [
     {
      "id": "rust-h5i",
