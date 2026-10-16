@@ -17,4 +17,10 @@ theorems = [
     "linkding_kernel.Owner.get_bookmark_owned",
     "linkding_kernel.Owner.get_tag_owned",
     "linkding_kernel.Owner.get_bundle_owned",
+    "linkding_kernel.Plan.reads_abs",
+    "linkding_kernel.Plan.count_abs",
+    "linkding_kernel.Frame.frame",
+    "linkding_kernel.Frame.load_for_sound",
+    "linkding_kernel.Frame.count_tags",
+    "linkding_kernel.Frame.count_paged",
 ]

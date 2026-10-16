@@ -283,9 +283,15 @@ def bundleReadA (t : Text) : Option U64 → List (Read Val)
   | none => []
   | some id => [⟨5, .and (eqU 0 id) (mineA 1 t), {}⟩]
 
+/-- The users a shared listing reads besides the caller: those who share,
+and `?user=`. -/
+def sharersA : Option Text → Pred Val
+  | none => eqT 7 true
+  | some n => .or (eqT 7 true) (eqB 1 n)
+
 def listA (t : Text) (flt : Filter) (lim off : U64) : List (Read Val) :=
   if flt.scope = SCOPE_SHARED then
-    callerAndA t (match flt.user with | none => eqT 7 true | some n => .or (eqT 7 true) (eqB 1 n)) ++
+    callerAndA t (sharersA flt.user) ++
       [⟨2, sharedA, {}⟩] ++ tagReadsA sharedA {} ++ bundleReadA t flt.bundle
   else if pagedOf flt then
     callerA t ++ [⟨2, pagedPredA t flt.scope flt.q flt.unread flt.shared, newestW off lim⟩] ++
@@ -529,10 +535,10 @@ theorem list_reads_ok (t : Text) (flt : Filter) (lim off : U64) (v : alloc.vec.V
     have htr := tag_reads_ok Sel.Shared w out1 out2 _ (by simp only [sel_pred]; exact hsp) hout2
     rw [bundle_read_ok _ _ _ _ h, htr, push_abs _ _ _ hout1, ha0]
     simp only [rd, whole, h5i_app_sql.whole, ok.injEq, bind_ok, bind_tc_ok] at hr hw; subst hr hw
-    have hx' : Pred.abs extra = (match flt.user with | none => eqT 7 true | some n => .or (eqT 7 true) (eqB 1 n)) := by
+    have hx' : Pred.abs extra = sharersA flt.user := by
       cases hu : flt.user <;> simp only [hu] at hx <;>
         simp [v_bool, bool_eq, p_eq, v_bytes, bytes_eq, p_or] at hx <;> obtain ⟨-, rfl⟩ := hx <;>
-        simp [Pred.abs, eqT, eqB, USER_SHARING, USER_NAME]
+        simp [Pred.abs, sharersA, eqT, eqB, USER_SHARING, USER_NAME]
     simp [listA, hc, hx', Read.abs, Pred.abs, Window.abs, sharedA, eqT, T_BOOKMARKS, BM_SHARED, BM_OWNER, T_USERS,
       USER_SHARING, USER_ID]
   · obtain ⟨out0, hc0, ha0⟩ := caller_reads_eq t

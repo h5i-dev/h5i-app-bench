@@ -1648,10 +1648,10 @@ theorem shared_hidden (b : Bookmark) (viewer : U64) (o : Option U64)
     | some u => cases o <;> simp [hf, hus u hf]
 
 theorem list_shared_frame (hk : Keys s) (flt : Filter) (lim off : U64) (hsc : flt.scope = SCOPE_SHARED) :
-    list_reply (Snapshot.load (callerAndA t (match flt.user with | none => eqT 7 true | some n => .or (eqT 7 true) (eqB 1 n)) ++
+    list_reply (Snapshot.load (callerAndA t (sharersA flt.user) ++
       [⟨2, sharedA, {}⟩] ++ tagReadsA sharedA {} ++ bundleReadA t flt.bundle) s) t flt lim off =
       list_reply s t flt lim off := by
-  generalize he : (match flt.user with | none => eqT 7 true | some n => .or (eqT 7 true) (eqB 1 n)) = extra
+  generalize he : sharersA flt.user = extra
   have hcall := caller_and_slice s t extra ([⟨2, sharedA, {}⟩] ++ tagReadsA sharedA {} ++ bundleReadA t flt.bundle)
   simp only [List.append_assoc] at hcall ⊢
   generalize hp : callerAndA t extra ++ ([⟨2, sharedA, {}⟩] ++ (tagReadsA sharedA {} ++
@@ -1672,7 +1672,7 @@ theorem list_shared_frame (hk : Keys s) (flt : Filter) (lim off : U64) (hsc : fl
       (fun x => (Pred.and (eqU 0 id) (mineA 1 t)).holds (Snapshot.enc s) (Bundle.row x)) := by
     intro id hid; subst hp; simp [pickRows, callerAndA, tagReadsA, bundleReadA, hid]
   have hshare : ∀ x ∈ s.users.val, x.sharing = true → (Pred.or (mineA 0 t) extra).holds (Snapshot.enc s) (User.row x) := by
-    intro x _ hx; subst he; cases flt.user <;> simp [eqT, User.row, hx]
+    intro x _ hx; subst he; cases flt.user <;> simp [sharersA, eqT, User.row, hx]
   have hpg : pagedOf flt = false := by
     have : paged flt = ok false := by unfold paged; simp [hsc]
     rw [pagedOf_eq this]
@@ -1708,7 +1708,7 @@ theorem list_shared_frame (hk : Keys s) (flt : Filter) (lim off : U64) (hsc : fl
             find?_slice _ _ _ (fun x _ hq => by
               have hxn : x.username = n := by simpa using hq
               simp only [holds_or, Bool.or_eq_true]; right
-              subst he; simp [hun, eqT, eqB, User.row, hxn])]
+              subst he; simp [hun, sharersA, eqT, eqB, User.row, hxn])]
     have tail : list_ctx (Snapshot.load plan s) flt v = list_ctx s flt v :=
       list_ctx_slice flt v (find_user_viewer_slice hk hu (fun x _ h => by simp [h]) ha) hof
         (bundle_of_slice hk flt ha hbu)
@@ -1924,5 +1924,85 @@ theorem list_paged_frame (hk : Keys s) (flt : Filter) (lim off : U64) (hpg : pag
       simp only [hcp, if_true]
 
 end Commands
+
+/-! ## The frame theorem -/
+
+theorem list_frame (a : Principal) (s : Snapshot) (hk : Keys s) (flt : Filter) (lim off : U64) :
+    list (Snapshot.load (listA a.token flt lim off) s) a.token flt lim off = list s a.token flt lim off := by
+  unfold list listA
+  split
+  · rename_i hsc; rw [list_shared_frame s a.token hk flt lim off hsc]
+  · rename_i hsc
+    split
+    · rename_i hpg; rw [list_paged_frame s a.token hk flt lim off hpg]
+    · rename_i hpg
+      rw [list_scope_frame s a.token hk flt lim off hsc (by simpa using hpg)]
+
+/-- On what its plan loads, a command gives the result it gives on the
+whole site. The database's primary keys must hold (`Keys`). -/
+theorem frame (a : Principal) (s : Snapshot) (c : Command) (plan : List (Read Val)) (hp : readsA a c = some plan)
+    (hk : Keys s) : transition a (Snapshot.load plan s) c = transition a s c := by
+  cases c <;> simp only [readsA, Option.some.injEq] at hp <;> subst hp <;> simp only [transition]
+  case Profile => have := profile_frame s a.token []; simpa using this
+  case List flt lim off => exact list_frame a s hk flt lim off
+  case Check url norm => exact check_frame s a.token url norm
+  case GetBookmark id => exact get_bookmark_frame s a.token id
+  case CreateBookmark f now => exact create_bookmark_frame s a.token f now
+  case UpdateBookmark id f now => exact update_bookmark_frame s a.token id f now
+  case DeleteBookmark id => exact (by_id_frame s a.token id).1
+  case Archive id ar now => exact (by_id_frame s a.token id).2 ar now
+  case ListTags lim off => exact list_tags_frame s a.token hk lim off
+  case CreateTag n now => exact create_tag_frame s a.token n now
+  case GetTag id => exact (tag_id_frame s a.token id).1
+  case DeleteTag id => exact (tag_id_frame s a.token id).2
+  case ListBundles l o => exact (bundle_frame s a.token hk []).1 l o
+  case CreateBundle f now => exact create_bundle_frame s a.token hk f now
+  case GetBundle id => exact (bundle_frame s a.token hk []).2.1 id
+  case UpdateBundle id f now => exact (bundle_frame s a.token hk []).2.2.1 id f now
+  case DeleteBundle id => exact (bundle_frame s a.token hk []).2.2.2 id
+
+/-- End to end: when `reads a c` names a plan, rows that hold what each of its
+reads returns from the tables of `s` decode to a snapshot on which
+`transition` gives the same result as on `s`. This is what `load_for` does,
+given that PostgreSQL returns `Read.rows` for each compiled read (tested). -/
+theorem load_for_sound (a : Principal) (s : Snapshot) (c : Command) (v : alloc.vec.Vec h5i_app_sql.Read)
+    (hr : reads a c = ok (some v)) (hk : Keys s) (r : Rows)
+    (hrows : ∀ t, t < 7 → Rows.tabs r t = load (v.val.map Read.abs) (Snapshot.enc s) t) :
+    ∃ s', decode r = ok (some s') ∧ transition a s' c = transition a s c := by
+  have hpl := reads_abs a c _ hr
+  exact ⟨_, Schema.decode_load _ s r hrows, frame a s c _ (by rw [← hpl]; rfl) hk⟩
+
+/-! ## What `list_count` counts -/
+
+/-- The tag list's count read counts the caller's tags, which `list_tags`
+pages through. -/
+theorem count_tags (s : Snapshot) (hk : Keys s) (t : Text) (me : User) (hme : signedOf s t = .Ok me) :
+    Read.count (Snapshot.enc s) ⟨3, mineA 1 t, {}⟩ = (s.tags.val.filter (fun x => decide (x.owner = me.id))).length ∧
+      list_tags_loop s me (alloc.vec.Vec.new Tag) 0#usize ⦃ w => w.val = s.tags.val.filter (fun x => decide (x.owner = me.id)) ⦄ := by
+  obtain ⟨ha, -, h0⟩ := signedOf_ok hme
+  refine ⟨?_, list_tags_loop_spec s me⟩
+  rw [Read.count, rows_enc _ _ Tag.row s.tags.val rfl, Window.apply_default, List.length_map]
+  congr 1
+  exact List.filter_congr (fun x _ => mine_holds_iff hk ha h0 x.owner _ 1 (by simp [Tag.row]))
+
+/-- A paged listing's count read counts the bookmarks the listing selects
+and pages through (newest first): `select` returns exactly them. -/
+theorem count_paged (s : Snapshot) (hk : Keys s) (t : Text) (flt : Filter) (v : U64) (ha : actorOf s t = .Ok v)
+    (h0 : v ≠ 0#u64) (tags : alloc.vec.Vec Text) (u : Bool) (hq : simple_query flt.q = ok (some (tags, u)))
+    (ctx : ListCtx) (hsc : flt.scope ≠ SCOPE_SHARED) (hv : ctx.viewer = v) (hp : ctx.paged = true)
+    (ht : ctx.simple_tags.val = tags.val.map lowerT) (hu : ctx.simple_unread = u) :
+    Read.count (Snapshot.enc s) ⟨2, pagedPredA t flt.scope flt.q flt.unread flt.shared, {}⟩ =
+      (s.bookmarks.val.filter (pagedSel s v flt tags.val u)).length ∧
+      select s flt ctx ⦃ w => w.val = s.bookmarks.val.filter (pagedSel s v flt tags.val u) ⦄ := by
+  refine ⟨?_, select_filter flt ctx _ (fun b _ => keep_paged_eq flt ctx v tags u hsc hv hp ht hu b)⟩
+  rw [Read.count, rows_enc _ _ Bookmark.row s.bookmarks.val rfl, Window.apply_default, List.length_map]
+  congr 1
+  exact List.filter_congr (fun b _ => pagedPred_holds hk ha h0 flt hq b)
+
+/-- `list_count` names, for a listing that `list_count` counts, the read
+whose count the frame-proved page is taken from (`countA`, `count_abs`). -/
+theorem count_read (a : Principal) (c : Command) (o : Option h5i_app_sql.Read) (h : list_count a c = ok o) :
+    o.map Read.abs = countA a c :=
+  count_abs a c o h
 
 end linkding_kernel.Frame
