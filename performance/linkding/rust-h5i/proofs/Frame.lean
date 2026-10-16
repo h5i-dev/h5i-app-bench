@@ -475,6 +475,139 @@ theorem url_taken_slice {K : Bookmark → Bool} (h : s'.bookmarks.val = s.bookma
   rw [url_taken_eq, url_taken_eq, h, any_slice _ _ _ (fun x hx hp => by
     simp only [Bool.and_eq_true, decide_eq_true_eq] at hp; exact hk x hx hp.1.1 hp.1.2)]
 
+/-! ### Paging -/
+
+theorem page_snoc {α : Type} (l : List α) (x : α) (off lim : Nat) :
+    ((l ++ [x]).drop off).take lim =
+      if off ≤ l.length ∧ l.length - off < lim then (l.drop off).take lim ++ [x] else (l.drop off).take lim := by
+  by_cases ho : off ≤ l.length
+  · rw [List.drop_append_of_le_length ho]
+    have hl : (l.drop off).length = l.length - off := List.length_drop
+    by_cases hlt : l.length - off < lim
+    · simp only [ho, hlt, and_self, if_true]
+      rw [List.take_of_length_le (by simp; omega), List.take_of_length_le (by omega)]
+    · simp only [hlt, and_false, if_false]
+      rw [List.take_append_of_le_length (by omega)]
+  · have : l.drop off = [] := List.drop_eq_nil_of_le (by omega)
+    have : (l ++ [x]).drop off = [] := List.drop_eq_nil_of_le (by simp; omega)
+    simp [*]
+
+theorem on_page_eq (k off lim : U64) : on_page k off lim = ok (decide (off.val ≤ k.val ∧ k.val - off.val < lim.val)) := by
+  unfold on_page
+  split
+  · rename_i h
+    have : off.val ≤ k.val := by scalar_tac
+    obtain ⟨d, hd, hdv⟩ := (WP.spec_equiv_exists _ _).1 (U64.sub_spec (x := k) (y := off) (by scalar_tac))
+    rw [hd]; simp only [bind_tc_ok, bind_ok]
+    congr 1
+    simp only [this, true_and, decide_eq_decide]
+    constructor <;> intro h' <;> scalar_tac
+  · rename_i h
+    have : ¬ off.val ≤ k.val := by scalar_tac
+    simp [this]
+
+/-- A paging loop (`page_tags`, `page_bookmarks`) keeps the elements at
+positions `offset` to `offset + limit`. -/
+theorem page_loop_spec {α : Type} (v : alloc.vec.Vec α) (off lim : U64) (clone : α → Result α)
+    (hclone : ∀ x, clone x = ok x) (body : (alloc.vec.Vec α) × Usize → Result (ControlFlow ((alloc.vec.Vec α) × Usize) (alloc.vec.Vec α)))
+    (hbody : ∀ out i, body (out, i) = if i < alloc.vec.Vec.len v then (do
+      let i2 ← lift (UScalar.cast .U64 i)
+      let b ← on_page i2 off lim
+      let out1 ← if b then (do let x ← alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice α) v i; let x' ← clone x; out.push x') else ok out
+      let i3 ← i + 1#usize
+      ok (ControlFlow.cont (out1, i3))) else ok (ControlFlow.done out)) :
+    loop body (alloc.vec.Vec.new α, 0#usize) ⦃ w => w.val = (v.val.drop off.val).take lim.val ⦄ := by
+  apply loop.spec_decr_nat (measure := fun x => v.val.length - x.2.val)
+    (inv := fun x => x.2.val ≤ v.val.length ∧ x.1.val = ((v.val.take x.2.val).drop off.val).take lim.val)
+  · rintro ⟨out, i⟩ ⟨hi, hout⟩
+    simp only at hi hout
+    rw [hbody]
+    by_cases hlt : i.val < v.val.length
+    · rw [if_pos ((lt_len_iff _ _).2 hlt)]
+      have hc : (UScalar.cast .U64 i).val = i.val := usize_cast_u64 i
+      obtain ⟨i3, hi3, hv3⟩ := succ_ok i v.val.length hlt v.len_ineq
+      simp only [lift, bind_tc_ok, bind_ok, on_page_eq, hc, vec_index_eq _ _ hlt, hclone]
+      have hlen : out.val.length < Usize.max := by
+        have := congrArg List.length hout
+        have h1 : (((v.val.take i.val).drop off.val).take lim.val).length ≤ i.val := by
+          simp only [List.length_take, List.length_drop]; omega
+        have := v.len_ineq; omega
+      have htk : v.val.take (i.val + 1) = v.val.take i.val ++ [v.val[i.val]] := by
+        rw [List.take_add_one, List.getElem?_eq_getElem hlt]; rfl
+      have htl : (v.val.take i.val).length = i.val := by simp; omega
+      split
+      · rename_i hb
+        obtain ⟨o1, h1, h2⟩ := (WP.spec_equiv_exists _ _).1 (alloc.vec.Vec.push_spec out v.val[i.val] hlen)
+        rw [h1]; simp only [bind_tc_ok, bind_ok, hi3, WP.spec_ok]
+        refine ⟨⟨by simp only [hv3]; omega, ?_⟩, by simp only [hv3]; omega⟩
+        simp only [hv3, htk, page_snoc, htl]
+        simp only [decide_eq_true_eq] at hb
+        rw [if_pos hb, h2, hout]
+      · rename_i hb
+        simp only [bind_tc_ok, bind_ok, hi3, WP.spec_ok]
+        refine ⟨⟨by simp only [hv3]; omega, ?_⟩, by simp only [hv3]; omega⟩
+        simp only [hv3, htk, page_snoc, htl]
+        simp only [decide_eq_true_eq] at hb
+        rw [if_neg hb, hout]
+    · rw [if_neg (mt (lt_len_iff _ _).1 hlt)]
+      simp only [WP.spec_ok]
+      have : i.val = v.val.length := by omega
+      rw [hout, this, List.take_length]
+  · simp [vec_new_val]
+
+theorem page_tags_spec (v : alloc.vec.Vec Tag) (off lim : U64) :
+    page_tags v off lim ⦃ w => w.val = (v.val.drop off.val).take lim.val ⦄ := by
+  unfold page_tags page_tags_loop
+  exact page_loop_spec v off lim _ (fun x => Schema.Tag.clone_eq x) _ (fun out i => rfl)
+
+theorem page_bookmarks_spec (v : alloc.vec.Vec Bookmark) (off lim : U64) :
+    page_bookmarks v off lim ⦃ w => w.val = (v.val.drop off.val).take lim.val ⦄ := by
+  unfold page_bookmarks page_bookmarks_loop
+  exact page_loop_spec v off lim _ (fun x => Schema.Bookmark.clone_eq x) _ (fun out i => rfl)
+
+/-- A loop that keeps the elements satisfying `P`. -/
+theorem filter_loop_spec {α : Type} (v : alloc.vec.Vec α) (P : α → Prop) [DecidablePred P] (clone : α → Result α)
+    (hclone : ∀ x, clone x = ok x) (body : (alloc.vec.Vec α) × Usize → Result (ControlFlow ((alloc.vec.Vec α) × Usize) (alloc.vec.Vec α)))
+    (hbody : ∀ out i, body (out, i) = if i < alloc.vec.Vec.len v then (do
+      let x ← alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice α) v i
+      let out1 ← if P x then (do let x' ← clone x; out.push x') else ok out
+      let i2 ← i + 1#usize
+      ok (ControlFlow.cont (out1, i2))) else ok (ControlFlow.done out)) :
+    loop body (alloc.vec.Vec.new α, 0#usize) ⦃ w => w.val = v.val.filter (fun x => decide (P x)) ⦄ := by
+  apply loop.spec_decr_nat (measure := fun x => v.val.length - x.2.val)
+    (inv := fun x => x.2.val ≤ v.val.length ∧ x.1.val = (v.val.take x.2.val).filter (fun x => decide (P x)))
+  · rintro ⟨out, i⟩ ⟨hi, hout⟩
+    simp only at hi hout
+    rw [hbody]
+    by_cases hlt : i.val < v.val.length
+    · rw [if_pos ((lt_len_iff _ _).2 hlt)]
+      obtain ⟨i3, hi3, hv3⟩ := succ_ok i v.val.length hlt v.len_ineq
+      simp only [bind_tc_ok, bind_ok, vec_index_eq _ _ hlt, hclone]
+      have hlen : out.val.length < Usize.max := by
+        have h1 := congrArg List.length hout
+        have h2 : ((v.val.take i.val).filter (fun x => decide (P x))).length ≤ i.val :=
+          (List.length_filter_le _ _).trans (by simp)
+        have := v.len_ineq; omega
+      have htk : v.val.take (i.val + 1) = v.val.take i.val ++ [v.val[i.val]] := by
+        rw [List.take_add_one, List.getElem?_eq_getElem hlt]; rfl
+      split
+      · rename_i hp
+        obtain ⟨o1, h1, h2⟩ := (WP.spec_equiv_exists _ _).1 (alloc.vec.Vec.push_spec out v.val[i.val] hlen)
+        rw [h1]; simp only [bind_tc_ok, bind_ok, hi3, WP.spec_ok]
+        refine ⟨⟨by simp only [hv3]; omega, ?_⟩, by simp only [hv3]; omega⟩
+        simp only [hv3, htk, List.filter_append, h2, hout]
+        simp [hp]
+      · rename_i hp
+        simp only [bind_tc_ok, bind_ok, hi3, WP.spec_ok]
+        refine ⟨⟨by simp only [hv3]; omega, ?_⟩, by simp only [hv3]; omega⟩
+        simp only [hv3, htk, List.filter_append, hout]
+        simp [hp]
+    · rw [if_neg (mt (lt_len_iff _ _).1 hlt)]
+      simp only [WP.spec_ok]
+      have : i.val = v.val.length := by omega
+      rw [hout, this, List.take_length]
+  · simp [vec_new_val]
+
 end Lookups
 
 /-! ## Commands -/
@@ -755,6 +888,70 @@ theorem update_bookmark_frame (id : U64) (f : BookmarkFields) (now : U64) :
           | none => simp only [hft, Option.getD_none] at htw; simp only [htn, htw, hc, set_counter]
           | some ns => simp only [hft, Option.getD_some] at htw; simp only [htn, htw, hc, set_counter]
       · simp only [hob, if_false]
+
+theorem create_tag_frame (n : Text) (now : U64) :
+    create_tag (Snapshot.load (callerA t ++ [⟨3, namedA t [n], {}⟩, ⟨6, .all, {}⟩]) s) t n now = create_tag s t n now := by
+  have hs := (caller_slice s t [⟨3, namedA t [n], {}⟩, ⟨6, .all, {}⟩]).2
+  have ht : (Snapshot.load (callerA t ++ [⟨3, namedA t [n], {}⟩, ⟨6, .all, {}⟩]) s).tags.val = s.tags.val.filter
+      (fun x => (namedA t [n]).holds (Snapshot.enc s) (Tag.row x)) := by simp [pickRows, callerA]
+  have hc : (Snapshot.load (callerA t ++ [⟨3, namedA t [n], {}⟩, ⟨6, .all, {}⟩]) s).counter = s.counter := by
+    simp [Snapshot.load, pickRows, callerA]
+  unfold create_tag
+  rw [hs, signed_in_eq]
+  simp only [bind_ok]
+  cases hme : signedOf s t with
+  | Err e => rfl
+  | Ok me =>
+    obtain ⟨ha, -, h0⟩ := signedOf_ok hme
+    dsimp only
+    simp only [lower_text_total, bind_tc_ok, bind_ok]
+    rw [find_tag_named_slice ht me.id _ (fun x _ ho hl => named_keep s t ha h0 [n] x ho n (by simp) hl)]
+    simp only [hc, set_counter]
+
+theorem list_tags_loop_spec (s : Snapshot) (me : User) :
+    list_tags_loop s me (alloc.vec.Vec.new Tag) 0#usize ⦃ w => w.val = s.tags.val.filter (fun x => decide (x.owner = me.id)) ⦄ := by
+  unfold list_tags_loop
+  exact filter_loop_spec s.tags (fun x => x.owner = me.id) _ (fun x => Schema.Tag.clone_eq x) _ (fun out i => rfl)
+
+theorem list_tags_frame (hk : Keys s) (lim off : U64) :
+    list_tags (Snapshot.load (callerA t ++ [⟨3, mineA 1 t,
+      ⟨false, 0, if lim.val > U64.rMax - off.val then none else some (off.val + lim.val)⟩⟩]) s) t lim off =
+      list_tags s t lim off := by
+  generalize hL : (if lim.val > U64.rMax - off.val then none else some (off.val + lim.val)) = L
+  have hs := (caller_slice s t [⟨3, mineA 1 t, ⟨false, 0, L⟩⟩]).2
+  have ht : (Snapshot.load (callerA t ++ [⟨3, mineA 1 t, ⟨false, 0, L⟩⟩]) s).tags.val =
+      cut 0 L (s.tags.val.filter (fun x => (mineA 1 t).holds (Snapshot.enc s) (Tag.row x))) := by
+    simp [pickRows, callerA, Window.apply]
+  unfold list_tags
+  rw [hs, signed_in_eq]
+  simp only [bind_ok]
+  cases hme : signedOf s t with
+  | Err e => rfl
+  | Ok me =>
+    obtain ⟨ha, -, h0⟩ := signedOf_ok hme
+    dsimp only
+    obtain ⟨m1, hm1, hv1⟩ := (WP.spec_equiv_exists _ _).1 (list_tags_loop_spec (Snapshot.load (callerA t ++ [⟨3, mineA 1 t, ⟨false, 0, L⟩⟩]) s) me)
+    obtain ⟨m2, hm2, hv2⟩ := (WP.spec_equiv_exists _ _).1 (list_tags_loop_spec s me)
+    rw [hm1, hm2]; simp only [bind_tc_ok, bind_ok]
+    obtain ⟨p1, hp1, hpv1⟩ := (WP.spec_equiv_exists _ _).1 (page_tags_spec m1 off lim)
+    obtain ⟨p2, hp2, hpv2⟩ := (WP.spec_equiv_exists _ _).1 (page_tags_spec m2 off lim)
+    rw [hp1, hp2]; simp only [bind_tc_ok, bind_ok]
+    have hK : s.tags.val.filter (fun x => (mineA 1 t).holds (Snapshot.enc s) (Tag.row x)) =
+        s.tags.val.filter (fun x => decide (x.owner = me.id)) :=
+      List.filter_congr (fun x _ => mine_holds_iff hk ha h0 x.owner _ 1 (by simp [Tag.row]))
+    rw [ht, hK] at hv1
+    have : p1 = p2 := by
+      apply alloc.vec.Vec.ext
+      rw [hpv1, hpv2, hv1, hv2]
+      subst hL
+      split
+      · simp [cut]
+      · rename_i hno
+        simp only [cut, List.drop_zero]
+        rw [List.filter_eq_self.2 (fun x hx => (List.mem_filter.1 (List.mem_of_mem_take hx)).2),
+          List.drop_take, List.take_take]
+        congr 1; omega
+    rw [this]
 
 end Commands
 
