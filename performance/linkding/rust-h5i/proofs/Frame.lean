@@ -791,6 +791,126 @@ theorem views_slice (page : alloc.vec.Vec Bookmark) (h : ∀ b ∈ page.val, vie
   rw [views_eq, views_eq, foldlM_congr _ (fun (items : alloc.vec.Vec BookmarkView) b => do let bv ← view s b; items.push bv)
     (fun (items : alloc.vec.Vec BookmarkView) b => do let bv ← view s' b; items.push bv) (fun b hb a => by simp only [h b hb])]
 
+/-! ### Sorting keeps the elements -/
+
+theorem bookmarks_clone_ok {v w : alloc.vec.Vec Bookmark} (h : alloc.vec.CloneVec.clone Bookmark.Insts.CoreCloneClone v = ok w) :
+    w = v := by
+  rw [vec_clone_eq _ v (fun x => Schema.Bookmark.clone_eq x)] at h; simp only [ok.injEq] at h; exact h.symm
+
+theorem merge_ok (a b : alloc.vec.Vec Bookmark) (sort : U8) (out : alloc.vec.Vec Bookmark) (h : merge a b sort = ok out) :
+    ∀ x ∈ out.val, x ∈ a.val ∨ x ∈ b.val := by
+  unfold merge merge_loop at h
+  refine loop_ok _ (fun st : (alloc.vec.Vec Bookmark) × Usize × Usize => ∀ x ∈ st.1.val, x ∈ a.val ∨ x ∈ b.val)
+    (fun r => ∀ x ∈ r.val, x ∈ a.val ∨ x ∈ b.val) (fun st => (a.length - st.2.1.val) + (b.length - st.2.2.val)) ?_ _ _
+    (by simp [vec_new_val]) h
+  rintro ⟨out, i, j⟩ c hI hb
+  unfold merge_loop.body at hb
+  h5i_invert hb
+  all_goals simp only at hI ⊢
+  all_goals first
+    | exact hI
+    | (refine ⟨fun x hx => ?_, ?_⟩
+       · rw [push_ok hout1] at hx
+         rcases List.mem_append.1 hx with hx | hx
+         · exact hI x hx
+         · simp at hx; subst hx
+           have := bookmark_clone_ok ‹Bookmark.Insts.CoreCloneClone.clone _ = ok _›; subst this
+           h5i_ok_facts
+           first | exact .inl (by assumption) | exact .inr (by assumption)
+       · h5i_ok_facts
+         have : a.val.length = (alloc.vec.Vec.len a).val := by simp [alloc.vec.Vec.len]
+         have : b.val.length = (alloc.vec.Vec.len b).val := by simp [alloc.vec.Vec.len]
+         scalar_tac)
+
+/-- Runs whose elements are elements of `v`. -/
+def Within (v : List Bookmark) (runs : List (alloc.vec.Vec Bookmark)) : Prop := ∀ r ∈ runs, ∀ x ∈ r.val, x ∈ v
+
+theorem runs_ok (v : alloc.vec.Vec Bookmark) (runs : alloc.vec.Vec (alloc.vec.Vec Bookmark))
+    (h : sort_bookmarks_loop0 v (alloc.vec.Vec.new _) 0#usize = ok runs) : Within v.val runs.val := by
+  unfold sort_bookmarks_loop0 at h
+  refine loop_ok _ (fun st : (alloc.vec.Vec (alloc.vec.Vec Bookmark)) × Usize => Within v.val st.1.val)
+    (fun r => Within v.val r.val) (fun st => v.length - st.2.val) ?_ _ _ (by simp [Within, vec_new_val]) h
+  rintro ⟨runs, i⟩ c hI hb
+  unfold sort_bookmarks_loop0.body at hb
+  h5i_invert hb
+  all_goals simp only at hI ⊢
+  · refine ⟨fun r0 hm x hx => ?_, ?_⟩
+    · rw [push_ok hruns1] at hm
+      rcases List.mem_append.1 hm with hm | hm
+      · exact hI r0 hm x hx
+      · simp at hm; subst hm
+        rw [push_ok hr] at hx; simp at hx; subst hx
+        rw [bookmark_clone_ok hb1]; exact Owner.index_mem _ _ _ hb_1
+    · h5i_ok_facts
+      have : v.val.length = (alloc.vec.Vec.len v).val := by simp [alloc.vec.Vec.len]
+      scalar_tac
+  · exact hI
+
+theorem pairs_ok (src : List Bookmark) (sort : U8) (runs next : alloc.vec.Vec (alloc.vec.Vec Bookmark))
+    (hr : Within src runs.val) (h : sort_bookmarks_loop1_loop0 sort runs (alloc.vec.Vec.new _) 0#usize = ok next) :
+    Within src next.val ∧ 2 * next.val.length ≤ runs.val.length + 1 := by
+  unfold sort_bookmarks_loop1_loop0 at h
+  refine loop_ok _ (fun st : (alloc.vec.Vec (alloc.vec.Vec Bookmark)) × Usize => Within src st.1.val ∧
+      st.2.val ≤ runs.val.length + 1 ∧ 2 * st.1.val.length = st.2.val)
+    (fun r => Within src r.val ∧ 2 * r.val.length ≤ runs.val.length + 1)
+    (fun st => runs.length + 2 - st.2.val) ?_ _ _ (by simp [Within, vec_new_val]) h
+  rintro ⟨next, k⟩ c ⟨hI, hk, hl⟩ hb
+  simp only at hI hk hl
+  unfold sort_bookmarks_loop1_loop0.body at hb
+  have hlen : runs.val.length = (alloc.vec.Vec.len runs).val := by simp [alloc.vec.Vec.len]
+  h5i_invert hb
+  · have hle : k.val + 2 ≤ runs.val.length + 1 := by h5i_ok_facts; scalar_tac
+    have hk2 : k1.val = k.val + 2 := by h5i_ok_facts; scalar_tac
+    have key : Within src next1.val ∧ next1.val.length = next.val.length + 1 := by
+      split at hnext1
+      · h5i_invert hnext1
+        rw [push_ok hnext1]
+        refine ⟨fun r0 hm x hx => ?_, by simp⟩
+        rcases List.mem_append.1 hm with hm | hm
+        · exact hI r0 hm x hx
+        · simp at hm; subst hm
+          rcases merge_ok _ _ _ _ hv2 x hx with hx | hx
+          · exact hr _ (Owner.index_mem _ _ _ hv) x hx
+          · exact hr _ (Owner.index_mem _ _ _ hv1) x hx
+      · h5i_invert hnext1
+        rw [push_ok hnext1]
+        refine ⟨fun r0 hm x hx => ?_, by simp⟩
+        rcases List.mem_append.1 hm with hm | hm
+        · exact hI r0 hm x hx
+        · simp at hm; subst hm
+          rw [bookmarks_clone_ok hv1] at hx
+          exact hr _ (Owner.index_mem _ _ _ hv) x hx
+    refine ⟨⟨key.1, ?_, ?_⟩, ?_⟩
+    · show k1.val ≤ _; omega
+    · show 2 * next1.val.length = k1.val; rw [key.2, hk2]; omega
+    · show runs.length + 2 - k1.val < runs.length + 2 - k.val
+      simp only [alloc.vec.Vec.length]; omega
+  · simp only
+    exact ⟨hI, by scalar_tac⟩
+
+theorem sort_ok (v : alloc.vec.Vec Bookmark) (sort : U8) (w : alloc.vec.Vec Bookmark)
+    (h : sort_bookmarks v sort = ok w) : ∀ x ∈ w.val, x ∈ v.val := by
+  unfold sort_bookmarks at h
+  h5i_invert h
+  · simp [vec_new_val]
+  · have h0 := runs_ok v runs hruns
+    have h1 : Within v.val runs1.val := by
+      unfold sort_bookmarks_loop1 at hruns1
+      refine loop_ok _ (fun r : alloc.vec.Vec (alloc.vec.Vec Bookmark) => Within v.val r.val)
+        (fun r => Within v.val r.val) (fun r => r.length) ?_ _ _ h0 hruns1
+      intro r c hI hb
+      unfold sort_bookmarks_loop1.body at hb
+      have hlen : r.val.length = (alloc.vec.Vec.len r).val := by simp [alloc.vec.Vec.len]
+      h5i_invert hb
+      · obtain ⟨hw, hl⟩ := pairs_ok v.val sort r next hI hnext
+        refine ⟨hw, ?_⟩
+        simp only [alloc.vec.Vec.length]
+        have : 1 < r.val.length := by scalar_tac
+        omega
+      · exact hI
+    rw [bookmarks_clone_ok h]
+    exact h1 _ (Owner.index_mem _ _ _ hv1)
+
 end Lookups
 
 /-! ## Commands -/
