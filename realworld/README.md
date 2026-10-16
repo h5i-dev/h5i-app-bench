@@ -11,7 +11,7 @@ load benchmark.
 | `go/` | Go, chi, pgx |
 | `fastify/` | TypeScript, Fastify, postgres.js |
 | `rust-h5i/` | Rust, axum, sqlx, h5i-app kernel and Lean proofs |
-| `rust-h5i-app/` | Rust, axum, the h5i-app engine (`h5i-app-pg`): Conduit from the [h5i-app cookbook](https://github.com/h5i-dev/h5i-app-cookbook/tree/main/conduit), pinned by git revision |
+| `rust-h5i-app/` | Rust, axum, the h5i-app engine (`h5i-app-pg`): Conduit: kernel, server and Lean proofs, on h5i `main` (pinned in `Cargo.lock` and `proofs/lake-manifest.json`) |
 | `bench/` | Seed, k6 scenarios, raw results, summary |
 | `schema.sql` | The shared database |
 
@@ -111,10 +111,10 @@ and favorited observations still come from SQL joins.
 
 ## rust-h5i-app
 
-`rust-h5i-app/` runs the [Conduit entry of the h5i-app cookbook](https://github.com/h5i-dev/h5i-app-cookbook/tree/main/conduit) at a
-pinned revision (`rust-h5i-app/Cargo.toml`); its kernel, server, Lean proofs
-and their gate (`h5i app extract --check`, `h5i app check`, 627 theorems)
-live there. It is a standard h5i-app application: every request runs in the
+`rust-h5i-app/` is Conduit's home: its kernel (`kernel/`), server
+(`server/`), Lean proofs (`proofs/`) and their gate (`h5i-app.toml`;
+`h5i app extract --check`, `h5i app check`, 627 theorems) live there, with
+the same layout as `rust-h5i/` (see `rust-h5i-app/README.md`). It is a standard h5i-app application: every request runs in the
 `h5i-app-pg` engine, which loads the rows the kernel's extracted read plan
 names (`Frame.frame` proves they are enough), calls the kernel, and stores
 the writes the kernel plans in one SERIALIZABLE transaction; read-only
@@ -129,7 +129,7 @@ copies those rows (ids, slugs, bcrypt hashes, timestamps) into its tables
 and sets its id counters to continue after them.
 `bench/check_h5i_app_seed.sql` compares the two row for row.
 
-What differs from the other four, as the cookbook's README lists: request
+What differs from the other four, as `rust-h5i-app/README.md` lists: request
 validation, bcrypt, JWTs, slugs and the clock are in the shell, as in
 `rust-h5i`; the login reads the stored hash through the engine and the
 kernel accepts it only if it equals the stored one; `tagList` comes back

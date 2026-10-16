@@ -234,7 +234,6 @@ checksum = "0c9ea0ac24bc397ab3c98583a3c9ba74fa56b09a4449bbe172b9b1ddb016027a"
 [[package]]
 name = "conduit-kernel"
 version = "0.1.0"
-source = "git+https://github.com/h5i-dev/h5i-app-cookbook?rev=9b037afc8357dcbd87fb7ee5430ef5b6b38d9d72#9b037afc8357dcbd87fb7ee5430ef5b6b38d9d72"
 dependencies = [
  "h5i-app-schema",
  "h5i-app-sql",
@@ -243,7 +242,6 @@ dependencies = [
 [[package]]
 name = "conduit-server"
 version = "0.1.0"
-source = "git+https://github.com/h5i-dev/h5i-app-cookbook?rev=9b037afc8357dcbd87fb7ee5430ef5b6b38d9d72#9b037afc8357dcbd87fb7ee5430ef5b6b38d9d72"
 dependencies = [
  "axum",
  "bcrypt",
@@ -257,6 +255,7 @@ dependencies = [
  "serde",
  "serde_json",
  "tokio",
+ "tokio-postgres",
  "tracing",
  "tracing-subscriber",
 ]
@@ -379,7 +378,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "39cab71617ae0d63f51a36d69f866391735b51691dbda63cf6f96d042b63efeb"
 dependencies = [
  "libc",
- "windows-sys 0.61.2",
+ "windows-sys 0.52.0",
 ]
 
 [[package]]
@@ -502,12 +501,12 @@ checksum = "e4eba85ea1d0a966a983acd07deee566e67395d2d96b6fb39e62b5a833f1eb0b"
 [[package]]
 name = "h5i-app-core"
 version = "0.1.1"
-source = "git+https://github.com/h5i-dev/h5i?branch=app-engine-perf#04d2b6d66842a00a39e0b8c1af12b93a7652d25a"
+source = "git+https://github.com/h5i-dev/h5i?branch=main#3fcbcdafdfdd759bfa52c765ce8dd2f73c88a26e"
 
 [[package]]
 name = "h5i-app-http"
 version = "0.1.1"
-source = "git+https://github.com/h5i-dev/h5i?branch=app-engine-perf#04d2b6d66842a00a39e0b8c1af12b93a7652d25a"
+source = "git+https://github.com/h5i-dev/h5i?branch=main#3fcbcdafdfdd759bfa52c765ce8dd2f73c88a26e"
 dependencies = [
  "axum",
  "h5i-app-core",
@@ -522,12 +521,12 @@ dependencies = [
 [[package]]
 name = "h5i-app-json"
 version = "0.1.1"
-source = "git+https://github.com/h5i-dev/h5i?branch=app-engine-perf#04d2b6d66842a00a39e0b8c1af12b93a7652d25a"
+source = "git+https://github.com/h5i-dev/h5i?branch=main#3fcbcdafdfdd759bfa52c765ce8dd2f73c88a26e"
 
 [[package]]
 name = "h5i-app-pg"
 version = "0.1.1"
-source = "git+https://github.com/h5i-dev/h5i?branch=app-engine-perf#04d2b6d66842a00a39e0b8c1af12b93a7652d25a"
+source = "git+https://github.com/h5i-dev/h5i?branch=main#3fcbcdafdfdd759bfa52c765ce8dd2f73c88a26e"
 dependencies = [
  "bytes",
  "deadpool-postgres",
@@ -543,7 +542,7 @@ dependencies = [
 [[package]]
 name = "h5i-app-pgsql"
 version = "0.1.1"
-source = "git+https://github.com/h5i-dev/h5i?branch=app-engine-perf#04d2b6d66842a00a39e0b8c1af12b93a7652d25a"
+source = "git+https://github.com/h5i-dev/h5i?branch=main#3fcbcdafdfdd759bfa52c765ce8dd2f73c88a26e"
 dependencies = [
  "h5i-app-sql",
 ]
@@ -551,17 +550,17 @@ dependencies = [
 [[package]]
 name = "h5i-app-schema"
 version = "0.1.1"
-source = "git+https://github.com/h5i-dev/h5i?branch=app-engine-perf#04d2b6d66842a00a39e0b8c1af12b93a7652d25a"
+source = "git+https://github.com/h5i-dev/h5i?branch=main#3fcbcdafdfdd759bfa52c765ce8dd2f73c88a26e"
 
 [[package]]
 name = "h5i-app-sql"
 version = "0.1.1"
-source = "git+https://github.com/h5i-dev/h5i?branch=app-engine-perf#04d2b6d66842a00a39e0b8c1af12b93a7652d25a"
+source = "git+https://github.com/h5i-dev/h5i?branch=main#3fcbcdafdfdd759bfa52c765ce8dd2f73c88a26e"
 
 [[package]]
 name = "h5i-app-token"
 version = "0.1.1"
-source = "git+https://github.com/h5i-dev/h5i?branch=app-engine-perf#04d2b6d66842a00a39e0b8c1af12b93a7652d25a"
+source = "git+https://github.com/h5i-dev/h5i?branch=main#3fcbcdafdfdd759bfa52c765ce8dd2f73c88a26e"
 
 [[package]]
 name = "hax-lib"
@@ -1220,13 +1219,6 @@ dependencies = [
  "libc",
  "untrusted",
  "windows-sys 0.52.0",
-]
-
-[[package]]
-name = "rust-h5i-app"
-version = "0.1.0"
-dependencies = [
- "conduit-server",
 ]
 
 [[package]]
