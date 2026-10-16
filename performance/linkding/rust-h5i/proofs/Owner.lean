@@ -1,4 +1,5 @@
 import Helpers
+import ReadOnly
 /-!
 # Writes touch only the caller's rows
 
@@ -6,6 +7,12 @@ import Helpers
 only rows that belong to the user the token names (`OwnWrite`). Links join
 one of the caller's bookmarks, written in the same write set, to one of the
 caller's tags, existing or written in the same write set.
+
+`get_bookmark_owned`, `get_tag_owned`, `get_bundle_owned`: a lookup by id
+replies only with a row of the caller's.
+
+Stated over the extracted `transition`, for every state and command; the
+read-only commands write nothing (`ReadOnly.lean`).
 -/
 open Aeneas Aeneas.Std Result linkding_kernel linkding_kernel.Spec linkding_kernel.Helpers H5iAppLib
 
@@ -314,5 +321,311 @@ theorem bundles_of_ok (s : Snapshot) (owner : U64) (r : alloc.vec.Vec Bundle) (h
       · exact ⟨hbm, by assumption⟩
     · simp only [ok.injEq] at hout1; subst hout1; exact hI
   · exact hI
+
+/-! ## The theorem -/
+
+/-- A write of user `u` in write set `ws` on state `s`: it creates or
+changes rows owned by `u`, or deletes rows of `s` owned by `u`. A link joins
+a bookmark `u` writes in `ws` to a tag of `u`, existing or written in `ws`. -/
+def OwnWrite (s : Snapshot) (u : U64) (ws : List Write) : Write → Prop
+  | .PutBookmark b => b.owner = u
+  | .DelBookmark o _ _ => o = u
+  | .PutTag t => t.owner = u
+  | .DelTag id => ∃ t ∈ s.tags.val, t.id = id ∧ t.owner = u
+  | .PutLink l => (∃ b, .PutBookmark b ∈ ws ∧ b.id = l.bookmark ∧ b.owner = u) ∧
+      ∃ t, t.id = l.tag ∧ t.owner = u ∧ (t ∈ s.tags.val ∨ .PutTag t ∈ ws)
+  | .DelLinksOf id => ∃ b ∈ s.bookmarks.val, b.id = id ∧ b.owner = u
+  | .DelLinksTo id => ∃ t ∈ s.tags.val, t.id = id ∧ t.owner = u
+  | .PutBundle b => b.owner = u
+  | .DelBundle id => ∃ b ∈ s.bundles.val, b.id = id ∧ b.owner = u
+  | .SetCounter _ => True
+
+/-- What a command writes, as `writes_own` states it for each command. -/
+def AllOwn (s : Snapshot) (u : U64) (ws : List Write) : Prop := ∀ w ∈ ws, OwnWrite s u ws w
+
+theorem ownWrite_mono {s u ws ws' w} (hs : ∀ x ∈ ws, x ∈ ws') (h : OwnWrite s u ws w) : OwnWrite s u ws' w := by
+  cases w with
+  | PutLink l =>
+    obtain ⟨⟨b, hb, h1, h2⟩, t, h3, h4, h5⟩ := h
+    exact ⟨⟨b, hs _ hb, h1, h2⟩, t, h3, h4, h5.imp id (hs _)⟩
+  | _ => exact h
+
+/-- The caller of a command that signed in as `me`. -/
+theorem me_eq {s : Snapshot} {t : alloc.vec.Vec U8} {me : User} {u : U64} (h : signed_in s t = ok (.Ok me))
+    (ha : actorOf s t = .Ok u) : me.id = u := by
+  have := (signed_in_ok _ _ _ h).1
+  rw [ha] at this
+  simp only [core.result.Result.Ok.injEq] at this
+  exact this.symm
+
+theorem delete_bookmark_own (s : Snapshot) (tk : alloc.vec.Vec U8) (id : U64) out rp u
+    (h : delete_bookmark s tk id = ok (.Ok (out, rp))) (ha : actorOf s tk = .Ok u) : AllOwn s u out.val := by
+  unfold delete_bookmark at h
+  h5i_invert h
+  obtain ⟨rfl, rfl⟩ := h
+  have := me_eq hr ha; subst this
+  obtain ⟨hm, ho, -⟩ := own_bookmark_ok _ _ _ _ hr1
+  rw [push_ok hws1, push_ok hws]
+  simp [AllOwn, OwnWrite]
+  exact ⟨⟨_, hm, rfl, ho⟩, ho⟩
+
+
+theorem one_ok {w : Write} {v : alloc.vec.Vec Write} (h : one w = ok v) : v.val = [w] := by
+  unfold one at h; simpa using push_ok h
+
+theorem archive_own (s : Snapshot) (tk : alloc.vec.Vec U8) (id : U64) (arch : Bool) (now : U64) out rp u
+    (h : archive s tk id arch now = ok (.Ok (out, rp))) (ha : actorOf s tk = .Ok u) : AllOwn s u out.val := by
+  unfold archive at h
+  h5i_invert h
+  obtain ⟨rfl, rfl⟩ := h
+  have := me_eq hr ha; subst this
+  obtain ⟨-, ho, -⟩ := own_bookmark_ok _ _ _ _ hr1
+  rw [one_ok hv7]
+  simp [AllOwn, OwnWrite, ho]
+
+theorem delete_tag_own (s : Snapshot) (tk : alloc.vec.Vec U8) (id : U64) out rp u
+    (h : delete_tag s tk id = ok (.Ok (out, rp))) (ha : actorOf s tk = .Ok u) : AllOwn s u out.val := by
+  unfold delete_tag at h
+  h5i_invert h
+  obtain ⟨rfl, rfl⟩ := h
+  have := me_eq hr ha; subst this
+  obtain ⟨hm, ho, -⟩ := own_tag_ok _ _ _ _ hr1
+  rw [push_ok hws1, push_ok hws]
+  simp [AllOwn, OwnWrite]
+  exact ⟨_, hm, rfl, ho⟩
+
+theorem create_tag_own (s : Snapshot) (tk : alloc.vec.Vec U8) (nm : alloc.vec.Vec U8) (now : U64) out rp u
+    (h : create_tag s tk nm now = ok (.Ok (out, rp))) (ha : actorOf s tk = .Ok u) : AllOwn s u out.val := by
+  unfold create_tag at h
+  h5i_invert h
+  all_goals obtain ⟨rfl, rfl⟩ := h
+  all_goals have := me_eq hr ha; subst this
+  · have e := tag_clone_ok ht; subst e
+    rw [push_ok hws1, push_ok hws]
+    simp [AllOwn, OwnWrite, set_counter] at hw ⊢
+    subst hw; simp
+  · simp [AllOwn]
+
+theorem update_bundle_own (s : Snapshot) (tk : alloc.vec.Vec U8) (id : U64) (f : BundleFields) (now : U64) out rp u
+    (h : update_bundle s tk id f now = ok (.Ok (out, rp))) (ha : actorOf s tk = .Ok u) : AllOwn s u out.val := by
+  unfold update_bundle at h
+  h5i_invert h
+  all_goals obtain ⟨rfl, rfl⟩ := h
+  all_goals have := me_eq hr ha; subst this
+  obtain ⟨-, ho, -⟩ := own_bundle_ok _ _ _ _ hr1
+  have e := bundle_clone_ok hb; subst e
+  rw [one_ok hv9]; simp [AllOwn, OwnWrite, ho]
+
+theorem create_bundle_own (s : Snapshot) (tk : alloc.vec.Vec U8) (f : BundleFields) (now : U64) out rp u
+    (h : create_bundle s tk f now = ok (.Ok (out, rp))) (ha : actorOf s tk = .Ok u) : AllOwn s u out.val := by
+  unfold create_bundle at h
+  h5i_invert h
+  all_goals obtain ⟨rfl, rfl⟩ := h
+  all_goals have := me_eq hr ha; subst this
+  all_goals first
+    | (have e := bundle_clone_ok hb; subst e
+       rw [push_ok hws1, push_ok hws]
+       simp [AllOwn, OwnWrite])
+
+theorem delete_bundle_own (s : Snapshot) (tk : alloc.vec.Vec U8) (id : U64) out rp u
+    (h : delete_bundle s tk id = ok (.Ok (out, rp))) (ha : actorOf s tk = .Ok u) : AllOwn s u out.val := by
+  unfold delete_bundle at h
+  h5i_invert h
+  all_goals obtain ⟨rfl, rfl⟩ := h
+  have := me_eq hr ha; subst this
+  obtain ⟨hm, ho, -⟩ := own_bundle_ok _ _ _ _ hr1
+  have hmine := bundles_of_ok _ _ _ hmine1
+  have hl := delete_bundle_loop_ok _ _ [.DelBundle v1.id] _ _ _ _ (by rw [one_ok hws]; intro w hw; exact .inl hw) hws1
+  intro w hw
+  rcases hl w hw with hw0 | ⟨y, x, rfl, hx, hyo, -⟩
+  · simp at hw0; subst hw0; exact ⟨_, hm, rfl, ho⟩
+  · show y.owner = _
+    rw [hyo]; exact (hmine x hx).2
+
+
+/-- A write set made by `tag_writes` from `ws0` for bookmark `id`, with the
+counter set after: the caller's if `ws0` is and writes bookmark `id`. -/
+theorem tw_own (s : Snapshot) (u id : U64) (ws0 out : List Write) (c : Write) (hc : ∃ k, c = .SetCounter k)
+    (htw : TwInv s u id ws0 out []) (hb : ∃ b, .PutBookmark b ∈ ws0 ∧ b.id = id ∧ b.owner = u)
+    (h0 : ∀ w ∈ ws0, OwnWrite s u (out ++ [c]) w) : AllOwn s u (out ++ [c]) := by
+  obtain ⟨k, rfl⟩ := hc
+  obtain ⟨b, hbm, hbi, hbo⟩ := hb
+  intro w hw
+  rcases List.mem_append.1 hw with hw | hw
+  · rcases htw.2.1 w hw with hw0 | ⟨t, rfl, ho⟩ | ⟨l, rfl, hl, t, ht, ho, hm⟩
+    · exact h0 w hw0
+    · exact ho
+    · exact ⟨⟨b, List.mem_append_left _ (htw.1 _ hbm), hbi.trans hl.symm, hbo⟩, t, ht, ho,
+        hm.imp (fun x => x) (List.mem_append_left _)⟩
+  · simp at hw; subst hw; trivial
+
+theorem set_counter_is (s : Snapshot) (a b : U64) (w : Write) (h : set_counter s a b = ok w) :
+    ∃ k, w = .SetCounter k := by
+  simp [set_counter] at h; exact ⟨_, h.symm⟩
+
+theorem create_bookmark_own (s : Snapshot) (tk : alloc.vec.Vec U8) (f : BookmarkFields) (now : U64) out rp u
+    (h : create_bookmark s tk f now = ok (.Ok (out, rp))) (ha : actorOf s tk = .Ok u) : AllOwn s u out.val := by
+  unfold create_bookmark at h
+  h5i_invert h
+  · obtain ⟨o1, s1, n1⟩ := v4
+    change (do let w ← set_counter s i1 n1; let ws2 ← o1.push w; ok (core.result.Result.Ok (ws2, _))) = _ at h
+    h5i_invert h
+    obtain ⟨rfl, rfl⟩ := h
+    have := me_eq hr ha; subst this
+    have e := bookmark_clone_ok hb3
+    have htw := tag_writes_ok _ _ _ _ _ _ _ _ _ _ hr1
+    rw [one_ok hws] at htw
+    rw [push_ok hws2]
+    refine tw_own _ _ _ _ _ _ (set_counter_is _ _ _ _ hw) htw ⟨b3, by simp, by rw [e], by rw [e]⟩ ?_
+    intro w hw; simp at hw; subst hw; rw [e]; rfl
+  · obtain ⟨o1, s1, n1⟩ := v4_1
+    change (do let w ← set_counter s s.counter.last_bookmark n1; let ws3 ← o1.push w; ok (core.result.Result.Ok (ws3, _))) = _ at h
+    h5i_invert h
+    obtain ⟨rfl, rfl⟩ := h
+    have := me_eq hr ha; subst this
+    have e := bookmark_clone_ok hb3
+    obtain ⟨hxm, hxo⟩ := existing_ok _ _ _ _ _ ho
+    have htw := tag_writes_ok _ _ _ _ _ _ _ _ _ _ hr1
+    rw [push_ok hws1, push_ok hws] at htw
+    rw [push_ok hws3]
+    refine tw_own _ _ _ _ _ _ (set_counter_is _ _ _ _ hw) htw ⟨b3, by simp, by rw [e], by rw [e]; exact hxo⟩ ?_
+    intro w hw; simp at hw
+    rcases hw with rfl | rfl
+    · show b3.owner = _; rw [e]; exact hxo
+    · exact ⟨x, hxm, rfl, hxo⟩
+
+
+theorem moved_ok (v1 : Bookmark) (i : U64) (ws : alloc.vec.Vec Write)
+    (h : (if (i != v1.added) = true then (alloc.vec.Vec.new Write).push (.DelBookmark v1.owner v1.added v1.id)
+      else ok (alloc.vec.Vec.new Write)) = ok ws) : ∀ w ∈ ws.val, w = .DelBookmark v1.owner v1.added v1.id := by
+  split at h
+  · rw [push_ok h]; simp
+  · simp only [ok.injEq] at h; subst h; simp
+
+theorem update_fin (s : Snapshot) (u : U64) (v1 b : Bookmark) (ws : List Write)
+    (hws : ∀ w ∈ ws, w = .DelBookmark v1.owner v1.added v1.id) (hm : v1 ∈ s.bookmarks.val) (ho : v1.owner = u)
+    (hbo : b.owner = v1.owner) (hbi : b.id = v1.id) :
+    AllOwn s u (ws ++ [.PutBookmark b]) ∧
+      ∀ o1 c, (∃ k, c = .SetCounter k) → TwInv s u v1.id (ws ++ [.PutBookmark b] ++ [.DelLinksOf v1.id]) o1 [] →
+        AllOwn s u (o1 ++ [c]) := by
+  refine ⟨?_, ?_⟩
+  · intro w hw
+    rcases List.mem_append.1 hw with hw | hw
+    · rw [hws w hw]; exact ho
+    · simp at hw; subst hw; exact hbo.trans ho
+  · intro o1 c hc htw
+    refine tw_own _ _ _ _ _ _ hc htw ⟨b, by simp, hbi, hbo.trans ho⟩ ?_
+    intro w hw
+    simp only [List.mem_append, List.mem_singleton] at hw
+    rcases hw with (hw | rfl) | rfl
+    · rw [hws w hw]; exact ho
+    · exact hbo.trans ho
+    · exact ⟨v1, hm, rfl, ho⟩
+
+theorem update_bookmark_own (s : Snapshot) (tk : alloc.vec.Vec U8) (id : U64) (f : BookmarkFields) (now : U64) out rp u
+    (h : update_bookmark s tk id f now = ok (.Ok (out, rp))) (ha : actorOf s tk = .Ok u) : AllOwn s u out.val := by
+  unfold update_bookmark at h
+  h5i_invert h
+  all_goals have := me_eq hr ha; subst this
+  all_goals obtain ⟨hm, ho, -⟩ := own_bookmark_ok _ _ _ _ hr1
+  all_goals have hmv := moved_ok _ _ _ hws
+  · obtain ⟨rfl, rfl⟩ := h
+    have e := bookmark_clone_ok hb3
+    rw [push_ok hws1]
+    exact (update_fin s _ v1 b3 _ hmv hm ho (by rw [e]) (by rw [e])).1
+  · obtain ⟨o1, s1, n1⟩ := v4_1
+    change (do let w ← set_counter s s.counter.last_bookmark n1; let ws4 ← o1.push w; ok (core.result.Result.Ok (ws4, _))) = _ at h
+    h5i_invert h
+    obtain ⟨rfl, rfl⟩ := h
+    have e := bookmark_clone_ok hb3
+    have htw := tag_writes_ok _ _ _ _ _ _ _ _ _ _ hr2
+    rw [push_ok hws2, push_ok hws1] at htw
+    rw [push_ok hws4]
+    exact (update_fin s _ v1 b3 _ hmv hm ho (by rw [e]) (by rw [e])).2 _ _ (set_counter_is _ _ _ _ hw) htw
+  · obtain ⟨rfl, rfl⟩ := h
+    have e := bookmark_clone_ok hb4
+    rw [push_ok hws1]
+    exact (update_fin s _ v1 b4 _ hmv hm ho (by rw [e]) (by rw [e])).1
+  · obtain ⟨o1, s1, n1⟩ := v4_1
+    change (do let w ← set_counter s s.counter.last_bookmark n1; let ws4 ← o1.push w; ok (core.result.Result.Ok (ws4, _))) = _ at h
+    h5i_invert h
+    obtain ⟨rfl, rfl⟩ := h
+    have e := bookmark_clone_ok hb4
+    have htw := tag_writes_ok _ _ _ _ _ _ _ _ _ _ hr2
+    rw [push_ok hws2, push_ok hws1] at htw
+    rw [push_ok hws4]
+    exact (update_fin s _ v1 b4 _ hmv hm ho (by rw [e]) (by rw [e])).2 _ _ (set_counter_is _ _ _ _ hw) htw
+
+
+/-- Every write of an accepted command is the caller's (`OwnWrite`): it
+creates or changes rows the caller owns, deletes rows of the state the
+caller owns, links the caller's bookmark written in the same write set to
+the caller's tag, or sets the id counters. -/
+theorem writes_own (o : U64) (s : Snapshot) (c : Command) (t : alloc.vec.Vec U8) (ws : alloc.vec.Vec Write)
+    (r : Reply) (u : U64) (h : transition ⟨o, t⟩ s c = ok (.Ok (ws, r))) (ha : Helpers.actorOf s t = .Ok u) :
+    ∀ w ∈ ws.val, OwnWrite s u ws.val w := by
+  have nil : ws.val = [] → ∀ w ∈ ws.val, OwnWrite s u ws.val w := fun e w hw => by simp [e] at hw
+  cases c <;> simp only [transition] at h
+  · exact nil (ReadOnly.profile_ws _ _ _ _ h)
+  · exact nil (ReadOnly.list_ws _ _ _ _ _ _ _ h)
+  · exact nil (ReadOnly.check_ws _ _ _ _ _ _ h)
+  · exact nil (ReadOnly.get_bookmark_ws _ _ _ _ _ h)
+  · exact create_bookmark_own _ _ _ _ _ _ _ h ha
+  · exact update_bookmark_own _ _ _ _ _ _ _ _ h ha
+  · exact delete_bookmark_own _ _ _ _ _ _ h ha
+  · exact archive_own _ _ _ _ _ _ _ _ h ha
+  · exact nil (ReadOnly.list_tags_ws _ _ _ _ _ _ h)
+  · exact create_tag_own _ _ _ _ _ _ _ h ha
+  · exact nil (ReadOnly.get_tag_ws _ _ _ _ _ h)
+  · exact delete_tag_own _ _ _ _ _ _ h ha
+  · exact nil (ReadOnly.list_bundles_ws _ _ _ _ _ _ h)
+  · exact create_bundle_own _ _ _ _ _ _ _ h ha
+  · exact nil (ReadOnly.get_bundle_ws _ _ _ _ _ h)
+  · exact update_bundle_own _ _ _ _ _ _ _ _ h ha
+  · exact delete_bundle_own _ _ _ _ _ _ h ha
+
+/-! ## Replies of the caller's rows -/
+
+theorem view_bookmark (s : Snapshot) (b : Bookmark) (v : BookmarkView) (h : view s b = ok v) : v.bookmark = b := by
+  unfold view at h
+  h5i_invert h
+  exact bookmark_clone_ok hb1
+
+/-- `GetBookmark` replies with one of the caller's bookmarks. -/
+theorem get_bookmark_owned (o : U64) (s : Snapshot) (t : alloc.vec.Vec U8) (id : U64) ws v u
+    (h : transition ⟨o, t⟩ s (.GetBookmark id) = ok (.Ok (ws, .Bookmark v))) (ha : Helpers.actorOf s t = .Ok u) :
+    v.bookmark ∈ s.bookmarks.val ∧ v.bookmark.owner = u ∧ v.bookmark.id = id := by
+  simp only [transition] at h
+  unfold get_bookmark at h
+  h5i_invert h
+  have := me_eq hr ha; subst this
+  simp only [Reply.Bookmark.injEq] at h
+  obtain ⟨-, rfl⟩ := h
+  rw [view_bookmark _ _ _ hbv]
+  exact own_bookmark_ok _ _ _ _ hr1
+
+/-- `GetTag` replies with one of the caller's tags. -/
+theorem get_tag_owned (o : U64) (s : Snapshot) (t : alloc.vec.Vec U8) (id : U64) ws x u
+    (h : transition ⟨o, t⟩ s (.GetTag id) = ok (.Ok (ws, .Tag x))) (ha : Helpers.actorOf s t = .Ok u) :
+    x ∈ s.tags.val ∧ x.owner = u ∧ x.id = id := by
+  simp only [transition] at h
+  unfold get_tag at h
+  h5i_invert h
+  have := me_eq hr ha; subst this
+  simp only [Reply.Tag.injEq] at h
+  obtain ⟨-, rfl⟩ := h
+  exact own_tag_ok _ _ _ _ hr1
+
+/-- `GetBundle` replies with one of the caller's bundles. -/
+theorem get_bundle_owned (o : U64) (s : Snapshot) (t : alloc.vec.Vec U8) (id : U64) ws x u
+    (h : transition ⟨o, t⟩ s (.GetBundle id) = ok (.Ok (ws, .Bundle x))) (ha : Helpers.actorOf s t = .Ok u) :
+    x ∈ s.bundles.val ∧ x.owner = u ∧ x.id = id := by
+  simp only [transition] at h
+  unfold get_bundle at h
+  h5i_invert h
+  have := me_eq hr ha; subst this
+  simp only [Reply.Bundle.injEq] at h
+  obtain ⟨-, rfl⟩ := h
+  exact own_bundle_ok _ _ _ _ hr1
 
 end linkding_kernel.Owner

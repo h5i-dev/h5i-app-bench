@@ -13,4 +13,8 @@ theorems = [
     "linkding_kernel.ReadOnly.read_only_sound",
     "linkding_kernel.Theorems.guest_writes_nothing",
     "linkding_kernel.Theorems.unknown_token_refused",
+    "linkding_kernel.Owner.writes_own",
+    "linkding_kernel.Owner.get_bookmark_owned",
+    "linkding_kernel.Owner.get_tag_owned",
+    "linkding_kernel.Owner.get_bundle_owned",
 ]
