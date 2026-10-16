@@ -69,11 +69,11 @@ def candidates(tid):
     accepted = ROOT / "results/verification" / tid / "Solution.lean"
     if accepted.exists():
         yield str(accepted.relative_to(ROOT)), accepted.read_text()
-    archive = ROOT / "docs/data/tasks" / f"{tid}.json"
+    archive = ROOT.parent / "docs/prove/data/tasks" / f"{tid}.json"
     if archive.exists():
         for p in json.loads(archive.read_text()).get("proofs", []):
             if p.get("code"):
-                yield str(archive.relative_to(ROOT)) + ":" + p["column"], p["code"]
+                yield str(archive.relative_to(ROOT.parent)) + ":" + p["column"], p["code"]
 
 
 def compatible_candidates(tid):

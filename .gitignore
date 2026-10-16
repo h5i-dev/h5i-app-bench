@@ -1,28 +1,3 @@
-tasks/
-results/runs/
-results/runs-aborted/
-results/scratch/
-results/upstream/
-results/tmp*
-results/verification/tmp*/
-env/h5i-app-lib/
 __pycache__/
 target/
-ports/**/proofs/.lake/
-ports/*/proofs/Scratch.lean
-results/protocol1/
-results/campaigns/
-results/build-logs/
-scripts/vertex_gemini_gateway.py
-
-# Host-side model access: keys, routing, prices, batch runs.
-harness/proxy.py
-harness/billing.py
-harness/pricing.py
-harness/campaign.py
-scripts/local-gateway.sh
-
-# Upstream checkouts, linked by scripts/link-upstream.sh.
-ports/*/upstream-src
 **/.lake/
-ports/*/.h5i/
