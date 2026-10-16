@@ -20,45 +20,45 @@ set_option maxRecDepth 2048
 namespace linkding_kernel
 
 /-- [linkding_kernel::NODE_TERM]
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 13:0-13:28
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 13:0-13:28
     Visibility: public -/
 @[global_simps, irreducible] def NODE_TERM : Std.U8 := 1#u8
 
 /-- [linkding_kernel::NODE_TAG]
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 14:0-14:27
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 14:0-14:27
     Visibility: public -/
 @[global_simps, irreducible] def NODE_TAG : Std.U8 := 2#u8
 
 /-- [linkding_kernel::NODE_KEYWORD]
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 15:0-15:31
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 15:0-15:31
     Visibility: public -/
 @[global_simps, irreducible] def NODE_KEYWORD : Std.U8 := 3#u8
 
 /-- [linkding_kernel::NODE_AND]
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 16:0-16:27
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 16:0-16:27
     Visibility: public -/
 @[global_simps, irreducible] def NODE_AND : Std.U8 := 4#u8
 
 /-- [linkding_kernel::NODE_OR]
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 17:0-17:26
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 17:0-17:26
     Visibility: public -/
 @[global_simps, irreducible] def NODE_OR : Std.U8 := 5#u8
 
 /-- [linkding_kernel::NODE_NOT]
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 18:0-18:27
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 18:0-18:27
     Visibility: public -/
 @[global_simps, irreducible] def NODE_NOT : Std.U8 := 6#u8
 
 /-- [linkding_kernel::OP_LPAREN]
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 19:0-19:24 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 19:0-19:24 -/
 @[global_simps, irreducible] def OP_LPAREN : Std.U8 := 7#u8
 
 /-- [linkding_kernel::TOK_RPAREN]
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 20:0-20:25 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 20:0-20:25 -/
 @[global_simps, irreducible] def TOK_RPAREN : Std.U8 := 8#u8
 
 /-- [linkding_kernel::View]
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 23:0-34:1
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 23:0-34:1
     Visibility: public -/
 structure View where
   actor : Std.U64
@@ -73,7 +73,7 @@ structure View where
   bundle_owner : Std.U64
 
 /-- [linkding_kernel::Command]
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 37:0-56:1
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 37:0-56:1
     Visibility: public -/
 @[discriminant isize]
 inductive Command where
@@ -97,14 +97,14 @@ inductive Command where
 | ReadProfile : Command
 
 /-- [linkding_kernel::Reply]
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 59:0-61:1
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 59:0-61:1
     Visibility: public -/
 @[discriminant isize]
 inductive Reply where
 | Allow : Reply
 
 /-- [linkding_kernel::Error]
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 64:0-67:1
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 64:0-67:1
     Visibility: public -/
 @[discriminant isize]
 inductive Error where
@@ -112,7 +112,7 @@ inductive Error where
 | NotFound : Error
 
 /-- [linkding_kernel::Page]
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 70:0-77:1
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 70:0-77:1
     Visibility: public -/
 structure Page where
   limit : Std.U64
@@ -123,7 +123,7 @@ structure Page where
   prev_offset : Std.U64
 
 /-- [linkding_kernel::Node]
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 80:0-85:1
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 80:0-85:1
     Visibility: public -/
 structure Node where
   kind : Std.U8
@@ -132,7 +132,7 @@ structure Node where
   right : Std.Usize
 
 /-- [linkding_kernel::Parsed]
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 88:0-93:1
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 88:0-93:1
     Visibility: public -/
 structure Parsed where
   nodes : alloc.vec.Vec Node
@@ -141,7 +141,7 @@ structure Parsed where
   empty : Bool
 
 /-- [linkding_kernel::BookmarkFacts]
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 96:0-104:1
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 96:0-104:1
     Visibility: public -/
 structure BookmarkFacts where
   title : alloc.vec.Vec Std.U8
@@ -153,13 +153,13 @@ structure BookmarkFacts where
   tag_names : alloc.vec.Vec (alloc.vec.Vec Std.U8)
 
 /-- [linkding_kernel::Token]
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 107:0-110:1 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 107:0-110:1 -/
 structure Token where
   kind : Std.U8
   text : alloc.vec.Vec Std.U8
 
 /-- [linkding_kernel::authed]:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 112:0-133:1 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 112:0-133:1 -/
 def authed (cmd : Command) : Result Bool := do
   match cmd with
   | Command.ReadBookmark => ok true
@@ -182,7 +182,7 @@ def authed (cmd : Command) : Result Bool := do
   | Command.ReadProfile => ok true
 
 /-- [linkding_kernel::can_see_own]:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 136:0-138:1
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 136:0-138:1
     Visibility: public -/
 def can_see_own (actor : Std.U64) (owner : Std.U64) : Result Bool := do
   if actor != 0#u64
@@ -190,7 +190,7 @@ def can_see_own (actor : Std.U64) (owner : Std.U64) : Result Bool := do
   else ok false
 
 /-- [linkding_kernel::can_see_shared]:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 142:0-150:1
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 142:0-150:1
     Visibility: public -/
 def can_see_shared
   (actor : Std.U64) (shared : Bool) (owner_sharing : Bool)
@@ -207,7 +207,7 @@ def can_see_shared
   else ok false
 
 /-- [linkding_kernel::owner_only]:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 152:0-157:1 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 152:0-157:1 -/
 def owner_only
   (actor : Std.U64) («exists» : Bool) (owner : Std.U64) :
   Result (core.result.Result Reply Error)
@@ -221,7 +221,7 @@ def owner_only
   else ok (core.result.Result.Err Error.NotFound)
 
 /-- [linkding_kernel::transition]:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 159:0-185:1
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 159:0-185:1
     Visibility: public -/
 def transition
   (view : View) (cmd : Command) : Result (core.result.Result Reply Error) := do
@@ -290,7 +290,7 @@ def transition
     | Command.ReadProfile => ok (core.result.Result.Ok Reply.Allow)
 
 /-- [linkding_kernel::page_of]:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 190:0-225:1
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 190:0-225:1
     Visibility: public -/
 def page_of
   (limit_bad : Bool) (limit : Std.U64) (offset_bad : Bool) (offset : Std.U64)
@@ -351,7 +351,7 @@ def page_of
       }
 
 /-- [linkding_kernel::empty_parsed]:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 227:0-234:1 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 227:0-234:1 -/
 def empty_parsed : Result Parsed := do
   ok
     {
@@ -362,7 +362,7 @@ def empty_parsed : Result Parsed := do
     }
 
 /-- [linkding_kernel::failed_parsed]:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 236:0-243:1 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 236:0-243:1 -/
 def failed_parsed : Result Parsed := do
   ok
     {
@@ -373,7 +373,7 @@ def failed_parsed : Result Parsed := do
     }
 
 /-- [linkding_kernel::lower_ascii]:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 245:0-275:1 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 245:0-275:1 -/
 def lower_ascii (c : Std.U8) : Result Std.U8 := do
   match c with
   | 65#uscalar => ok 97#u8
@@ -405,7 +405,7 @@ def lower_ascii (c : Std.U8) : Result Std.U8 := do
   | _ => ok c
 
 /-- [linkding_kernel::is_space]:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 277:0-279:1 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 277:0-279:1 -/
 def is_space (c : Std.U8) : Result Bool := do
   if c = 32#u8
   then ok true
@@ -423,7 +423,7 @@ def is_space (c : Std.U8) : Result Bool := do
              else ok (c = 12#u8)
 
 /-- [linkding_kernel::trim_ascii]: loop body 0:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-285:5 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 1:0-285:5 -/
 @[rust_loop_body]
 def trim_ascii_loop0.body
   (query : alloc.vec.Vec Std.U8) (start : Std.Usize) :
@@ -443,7 +443,7 @@ def trim_ascii_loop0.body
   else ok (done start)
 
 /-- [linkding_kernel::trim_ascii]: loop 0:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-285:5 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 1:0-285:5 -/
 @[rust_loop]
 def trim_ascii_loop0
   (query : alloc.vec.Vec Std.U8) (start : Std.Usize) : Result Std.Usize := do
@@ -452,7 +452,7 @@ def trim_ascii_loop0
     start
 
 /-- [linkding_kernel::trim_ascii]: loop body 1:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-294:5 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 1:0-294:5 -/
 @[rust_loop_body]
 def trim_ascii_loop1.body
   (query : alloc.vec.Vec Std.U8) (start : Std.Usize) («end» : Std.Usize) :
@@ -471,7 +471,7 @@ def trim_ascii_loop1.body
   else ok (done «end»)
 
 /-- [linkding_kernel::trim_ascii]: loop 1:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-294:5 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 1:0-294:5 -/
 @[rust_loop]
 def trim_ascii_loop1
   (query : alloc.vec.Vec Std.U8) (start : Std.Usize) («end» : Std.Usize) :
@@ -482,7 +482,7 @@ def trim_ascii_loop1
     «end»
 
 /-- [linkding_kernel::trim_ascii]: loop body 2:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 297:4-300:5 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 297:4-300:5 -/
 @[rust_loop_body]
 def trim_ascii_loop2.body
   (query : alloc.vec.Vec Std.U8) («end» : Std.Usize)
@@ -501,7 +501,7 @@ def trim_ascii_loop2.body
   else ok (done out)
 
 /-- [linkding_kernel::trim_ascii]: loop 2:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 297:4-300:5 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 297:4-300:5 -/
 @[rust_loop]
 def trim_ascii_loop2
   (query : alloc.vec.Vec Std.U8) («end» : Std.Usize)
@@ -513,7 +513,7 @@ def trim_ascii_loop2
     (out, i)
 
 /-- [linkding_kernel::trim_ascii]:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 281:0-302:1 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 281:0-302:1 -/
 def trim_ascii
   (query : alloc.vec.Vec Std.U8) : Result (alloc.vec.Vec Std.U8) := do
   let start ← trim_ascii_loop0 query 0#usize
@@ -522,7 +522,7 @@ def trim_ascii
   trim_ascii_loop2 query end1 (alloc.vec.Vec.new Std.U8) start
 
 /-- [linkding_kernel::push_copy]: loop body 0:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-309:5 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 1:0-309:5 -/
 @[rust_loop_body]
 def push_copy_loop.body
   (src : alloc.vec.Vec Std.U8) («to» : Std.Usize)
@@ -545,7 +545,7 @@ def push_copy_loop.body
   else ok (done out)
 
 /-- [linkding_kernel::push_copy]: loop 0:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-309:5 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 1:0-309:5 -/
 @[rust_loop]
 def push_copy_loop
   (out : alloc.vec.Vec Std.U8) (src : alloc.vec.Vec Std.U8)
@@ -557,7 +557,7 @@ def push_copy_loop
     (out, i)
 
 /-- [linkding_kernel::push_copy]:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 304:0-310:1 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 304:0-310:1 -/
 @[reducible]
 def push_copy
   (out : alloc.vec.Vec Std.U8) (src : alloc.vec.Vec Std.U8)
@@ -567,7 +567,7 @@ def push_copy
   push_copy_loop out src «to» «from»
 
 /-- [linkding_kernel::is_and]:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 312:0-317:1 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 312:0-317:1 -/
 def is_and (text : alloc.vec.Vec Std.U8) : Result Bool := do
   let i := alloc.vec.Vec.len text
   if i != 3#usize
@@ -594,7 +594,7 @@ def is_and (text : alloc.vec.Vec Std.U8) : Result Bool := do
     else ok false
 
 /-- [linkding_kernel::is_or]:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 319:0-324:1 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 319:0-324:1 -/
 def is_or (text : alloc.vec.Vec Std.U8) : Result Bool := do
   let i := alloc.vec.Vec.len text
   if i != 2#usize
@@ -614,7 +614,7 @@ def is_or (text : alloc.vec.Vec Std.U8) : Result Bool := do
     else ok false
 
 /-- [linkding_kernel::is_not_word]:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 326:0-331:1 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 326:0-331:1 -/
 def is_not_word (text : alloc.vec.Vec Std.U8) : Result Bool := do
   let i := alloc.vec.Vec.len text
   if i != 3#usize
@@ -641,7 +641,7 @@ def is_not_word (text : alloc.vec.Vec Std.U8) : Result Bool := do
     else ok false
 
 /-- [linkding_kernel::tokenize]: loop body 1:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-339:9 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 1:0-339:9 -/
 @[rust_loop_body]
 def tokenize_loop0_loop0.body
   (query : alloc.vec.Vec Std.U8) (i : Std.Usize) :
@@ -661,7 +661,7 @@ def tokenize_loop0_loop0.body
   else ok (done i)
 
 /-- [linkding_kernel::tokenize]: loop 1:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-339:9 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 1:0-339:9 -/
 @[rust_loop]
 def tokenize_loop0_loop0
   (query : alloc.vec.Vec Std.U8) (i : Std.Usize) : Result Std.Usize := do
@@ -670,7 +670,7 @@ def tokenize_loop0_loop0
     i
 
 /-- [linkding_kernel::tokenize]: loop body 2:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-385:13 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 1:0-385:13 -/
 @[rust_loop_body]
 def tokenize_loop0_loop1.body
   (query : alloc.vec.Vec Std.U8) (c : Std.U8) (i : Std.Usize)
@@ -722,7 +722,7 @@ def tokenize_loop0_loop1.body
   else ok (done (i, text))
 
 /-- [linkding_kernel::tokenize]: loop 2:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-385:13 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 1:0-385:13 -/
 @[rust_loop]
 def tokenize_loop0_loop1
   (query : alloc.vec.Vec Std.U8) (i : Std.Usize) (c : Std.U8)
@@ -734,7 +734,7 @@ def tokenize_loop0_loop1
     (i, text)
 
 /-- [linkding_kernel::tokenize]: loop body 3:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-385:13 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 1:0-385:13 -/
 @[rust_loop_body]
 def tokenize_loop0_loop2.body
   (query : alloc.vec.Vec Std.U8) (c : Std.U8) (i : Std.Usize)
@@ -786,7 +786,7 @@ def tokenize_loop0_loop2.body
   else ok (done (i, text))
 
 /-- [linkding_kernel::tokenize]: loop 3:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-385:13 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 1:0-385:13 -/
 @[rust_loop]
 def tokenize_loop0_loop2
   (query : alloc.vec.Vec Std.U8) (i : Std.Usize) (c : Std.U8)
@@ -798,7 +798,7 @@ def tokenize_loop0_loop2
     (i, text)
 
 /-- [linkding_kernel::tokenize]: loop body 4:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-405:13 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 1:0-405:13 -/
 @[rust_loop_body]
 def tokenize_loop0_loop3.body
   (query : alloc.vec.Vec Std.U8) (i : Std.Usize) :
@@ -830,7 +830,7 @@ def tokenize_loop0_loop3.body
   else ok (done i)
 
 /-- [linkding_kernel::tokenize]: loop 4:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-405:13 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 1:0-405:13 -/
 @[rust_loop]
 def tokenize_loop0_loop3
   (query : alloc.vec.Vec Std.U8) (i : Std.Usize) : Result Std.Usize := do
@@ -839,7 +839,7 @@ def tokenize_loop0_loop3
     i
 
 /-- [linkding_kernel::tokenize]: loop body 5:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-405:13 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 1:0-405:13 -/
 @[rust_loop_body]
 def tokenize_loop0_loop4.body
   (query : alloc.vec.Vec Std.U8) (i : Std.Usize) :
@@ -871,7 +871,7 @@ def tokenize_loop0_loop4.body
   else ok (done i)
 
 /-- [linkding_kernel::tokenize]: loop 5:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-405:13 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 1:0-405:13 -/
 @[rust_loop]
 def tokenize_loop0_loop4
   (query : alloc.vec.Vec Std.U8) (i : Std.Usize) : Result Std.Usize := do
@@ -880,7 +880,7 @@ def tokenize_loop0_loop4
     i
 
 /-- [linkding_kernel::tokenize]: loop body 6:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-424:13 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 1:0-424:13 -/
 @[rust_loop_body]
 def tokenize_loop0_loop5.body
   (query : alloc.vec.Vec Std.U8) (i : Std.Usize) :
@@ -918,7 +918,7 @@ def tokenize_loop0_loop5.body
   else ok (done i)
 
 /-- [linkding_kernel::tokenize]: loop 6:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-424:13 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 1:0-424:13 -/
 @[rust_loop]
 def tokenize_loop0_loop5
   (query : alloc.vec.Vec Std.U8) (i : Std.Usize) : Result Std.Usize := do
@@ -927,7 +927,7 @@ def tokenize_loop0_loop5
     i
 
 /-- [linkding_kernel::tokenize]: loop body 0:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-441:5 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 1:0-441:5 -/
 @[rust_loop_body]
 def tokenize_loop0.body
   (query : alloc.vec.Vec Std.U8) (tokens : alloc.vec.Vec Token) (i : Std.Usize)
@@ -1069,7 +1069,7 @@ def tokenize_loop0.body
   else ok (done tokens)
 
 /-- [linkding_kernel::tokenize]: loop 0:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-441:5 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 1:0-441:5 -/
 @[rust_loop]
 def tokenize_loop0
   (query : alloc.vec.Vec Std.U8) (tokens : alloc.vec.Vec Token) (i : Std.Usize)
@@ -1081,14 +1081,14 @@ def tokenize_loop0
     (tokens, i)
 
 /-- [linkding_kernel::tokenize]:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 333:0-443:1 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 333:0-443:1 -/
 @[reducible]
 def tokenize
   (query : alloc.vec.Vec Std.U8) : Result (alloc.vec.Vec Token) := do
   tokenize_loop0 query (alloc.vec.Vec.new Token) 0#usize
 
 /-- [linkding_kernel::prec]:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 445:0-455:1 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 445:0-455:1 -/
 def prec (op : Std.U8) : Result Std.U8 := do
   if op = NODE_OR
   then ok 1#u8
@@ -1100,12 +1100,12 @@ def prec (op : Std.U8) : Result Std.U8 := do
          else ok 0#u8
 
 /-- [linkding_kernel::leaf]:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 457:0-464:1 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 457:0-464:1 -/
 def leaf (kind : Std.U8) (text : alloc.vec.Vec Std.U8) : Result Node := do
   ok { kind, text, left := 0#usize, right := 0#usize }
 
 /-- [linkding_kernel::push_usize]:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 466:0-473:1 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 466:0-473:1 -/
 def push_usize
   (stack : alloc.vec.Vec Std.Usize) (len : Std.Usize) (item : Std.Usize) :
   Result ((alloc.vec.Vec Std.Usize) × Std.Usize)
@@ -1124,7 +1124,7 @@ def push_usize
   ok (stack1, len1)
 
 /-- [linkding_kernel::pop_usize]:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 475:0-485:1 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 475:0-485:1 -/
 def pop_usize
   (stack : alloc.vec.Vec Std.Usize) (len : Std.Usize) :
   Result (Std.Usize × Std.Usize)
@@ -1143,7 +1143,7 @@ def pop_usize
     else ok (0#usize, len1)
 
 /-- [linkding_kernel::push_u8]:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 487:0-494:1 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 487:0-494:1 -/
 def push_u8
   (stack : alloc.vec.Vec Std.U8) (len : Std.Usize) (item : Std.U8) :
   Result ((alloc.vec.Vec Std.U8) × Std.Usize)
@@ -1162,7 +1162,7 @@ def push_u8
   ok (stack1, len1)
 
 /-- [linkding_kernel::top_u8]:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 496:0-502:1 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 496:0-502:1 -/
 def top_u8
   (stack : alloc.vec.Vec Std.U8) (len : Std.Usize) : Result Std.U8 := do
   if len > 0#usize
@@ -1177,7 +1177,7 @@ def top_u8
   else ok 0#u8
 
 /-- [linkding_kernel::apply_op]:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 504:0-539:1 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 504:0-539:1 -/
 def apply_op
   (op : Std.U8) (values : alloc.vec.Vec Std.Usize) (values_len : Std.Usize)
   (nodes : alloc.vec.Vec Node) (failed : Bool) :
@@ -1218,7 +1218,7 @@ def apply_op
       ok (values1, values_len3, nodes1, failed)
 
 /-- [linkding_kernel::push_op]: loop body 0:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-563:5 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 1:0-563:5 -/
 @[rust_loop_body]
 def push_op_loop.body
   (ops : alloc.vec.Vec Std.U8) (op : Std.U8) (ops_len : Std.Usize)
@@ -1259,7 +1259,7 @@ def push_op_loop.body
   else ok (done (ops_len, values, values_len, nodes, failed))
 
 /-- [linkding_kernel::push_op]: loop 0:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-563:5 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 1:0-563:5 -/
 @[rust_loop]
 def push_op_loop
   (ops : alloc.vec.Vec Std.U8) (ops_len : Std.Usize)
@@ -1274,7 +1274,7 @@ def push_op_loop
     (ops_len, values, values_len, nodes, failed)
 
 /-- [linkding_kernel::push_op]:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 541:0-567:1 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 541:0-567:1 -/
 def push_op
   (ops : alloc.vec.Vec Std.U8) (ops_len : Std.Usize)
   (values : alloc.vec.Vec Std.Usize) (values_len : Std.Usize)
@@ -1291,7 +1291,7 @@ def push_op
     ok (ops1, ops_len2, values1, values_len1, nodes1, false)
 
 /-- [linkding_kernel::parse_tokens]: loop body 1:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-667:17 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 1:0-667:17 -/
 @[rust_loop_body]
 def parse_tokens_loop0_loop0.body
   (ops : alloc.vec.Vec Std.U8) (nodes : alloc.vec.Vec Node)
@@ -1317,7 +1317,7 @@ def parse_tokens_loop0_loop0.body
   else ok (done (nodes, values, values_len, ops_len, failed, false))
 
 /-- [linkding_kernel::parse_tokens]: loop 1:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-667:17 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 1:0-667:17 -/
 @[rust_loop]
 def parse_tokens_loop0_loop0
   (nodes : alloc.vec.Vec Node) (values : alloc.vec.Vec Std.Usize)
@@ -1333,7 +1333,7 @@ def parse_tokens_loop0_loop0
     (nodes, values, values_len, ops_len, failed)
 
 /-- [linkding_kernel::parse_tokens]: loop body 0:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-679:5 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 1:0-679:5 -/
 @[rust_loop_body]
 def parse_tokens_loop0.body
   (tokens : alloc.vec.Vec Token) (nodes : alloc.vec.Vec Node)
@@ -1560,7 +1560,7 @@ def parse_tokens_loop0.body
     ok (done (nodes, values, values_len, ops, ops_len, expect_operand, failed))
 
 /-- [linkding_kernel::parse_tokens]: loop 0:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-679:5 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 1:0-679:5 -/
 @[rust_loop]
 def parse_tokens_loop0
   (tokens : alloc.vec.Vec Token) (nodes : alloc.vec.Vec Node)
@@ -1577,7 +1577,7 @@ def parse_tokens_loop0
     (nodes, values, values_len, ops, ops_len, expect_operand, failed, i)
 
 /-- [linkding_kernel::parse_tokens]: loop body 2:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-691:5 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 1:0-691:5 -/
 @[rust_loop_body]
 def parse_tokens_loop1.body
   (ops : alloc.vec.Vec Std.U8) (nodes : alloc.vec.Vec Node)
@@ -1603,7 +1603,7 @@ def parse_tokens_loop1.body
   else ok (done (nodes, values, values_len, failed))
 
 /-- [linkding_kernel::parse_tokens]: loop 2:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-691:5 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 1:0-691:5 -/
 @[rust_loop]
 def parse_tokens_loop1
   (nodes : alloc.vec.Vec Node) (values : alloc.vec.Vec Std.Usize)
@@ -1618,7 +1618,7 @@ def parse_tokens_loop1
     (nodes, values, values_len, ops_len, failed)
 
 /-- [linkding_kernel::parse_tokens]:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 569:0-701:1 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 569:0-701:1 -/
 def parse_tokens (tokens : alloc.vec.Vec Token) : Result Parsed := do
   let (nodes, values, values_len, ops, ops_len, expect_operand, failed) ←
     parse_tokens_loop0 tokens (alloc.vec.Vec.new Node) (alloc.vec.Vec.new
@@ -1644,7 +1644,7 @@ def parse_tokens (tokens : alloc.vec.Vec Token) : Result Parsed := do
         ok { nodes := nodes1, root := i1, failed := false, empty := false }
 
 /-- [linkding_kernel::parse_search]:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 705:0-718:1
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 705:0-718:1
     Visibility: public -/
 def parse_search (query : alloc.vec.Vec Std.U8) : Result Parsed := do
   let i := alloc.vec.Vec.len query
@@ -1663,7 +1663,7 @@ def parse_search (query : alloc.vec.Vec Std.U8) : Result Parsed := do
       else parse_tokens tokens
 
 /-- [linkding_kernel::node_kind]:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 720:0-726:1 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 720:0-726:1 -/
 def node_kind
   (nodes : alloc.vec.Vec Node) (i : Std.Usize) : Result Std.U8 := do
   let i1 := alloc.vec.Vec.len nodes
@@ -1675,7 +1675,7 @@ def node_kind
   else ok 0#u8
 
 /-- [linkding_kernel::node_left]:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 728:0-734:1 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 728:0-734:1 -/
 def node_left
   (nodes : alloc.vec.Vec Node) (i : Std.Usize) : Result Std.Usize := do
   let i1 := alloc.vec.Vec.len nodes
@@ -1687,7 +1687,7 @@ def node_left
   else ok 0#usize
 
 /-- [linkding_kernel::node_right]:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 736:0-742:1 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 736:0-742:1 -/
 def node_right
   (nodes : alloc.vec.Vec Node) (i : Std.Usize) : Result Std.Usize := do
   let i1 := alloc.vec.Vec.len nodes
@@ -1699,7 +1699,7 @@ def node_right
   else ok 0#usize
 
 /-- [linkding_kernel::node_text_len]:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 744:0-750:1 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 744:0-750:1 -/
 def node_text_len
   (nodes : alloc.vec.Vec Node) (i : Std.Usize) : Result Std.Usize := do
   let i1 := alloc.vec.Vec.len nodes
@@ -1711,7 +1711,7 @@ def node_text_len
   else ok 0#usize
 
 /-- [linkding_kernel::node_text_at]:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 752:0-758:1 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 752:0-758:1 -/
 def node_text_at
   (nodes : alloc.vec.Vec Node) (i : Std.Usize) (j : Std.Usize) :
   Result Std.U8
@@ -1730,7 +1730,7 @@ def node_text_at
   else ok 0#u8
 
 /-- [linkding_kernel::contains_node]: loop body 1:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 776:12-786:13 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 776:12-786:13 -/
 @[rust_loop_body]
 def contains_node_loop0_loop0.body
   (hay : alloc.vec.Vec Std.U8) (nodes : alloc.vec.Vec Node) (node : Std.Usize)
@@ -1760,7 +1760,7 @@ def contains_node_loop0_loop0.body
   else ok (done ok1)
 
 /-- [linkding_kernel::contains_node]: loop 1:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 776:12-786:13 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 776:12-786:13 -/
 @[rust_loop]
 def contains_node_loop0_loop0
   (hay : alloc.vec.Vec Std.U8) (nodes : alloc.vec.Vec Node) (node : Std.Usize)
@@ -1773,7 +1773,7 @@ def contains_node_loop0_loop0
     (j, ok1)
 
 /-- [linkding_kernel::contains_node]: loop body 0:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-792:5 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 1:0-792:5 -/
 @[rust_loop_body]
 def contains_node_loop0.body
   (hay : alloc.vec.Vec Std.U8) (nodes : alloc.vec.Vec Node) (node : Std.Usize)
@@ -1802,7 +1802,7 @@ def contains_node_loop0.body
   else ok (done found)
 
 /-- [linkding_kernel::contains_node]: loop 0:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-792:5 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 1:0-792:5 -/
 @[rust_loop]
 def contains_node_loop0
   (hay : alloc.vec.Vec Std.U8) (nodes : alloc.vec.Vec Node) (node : Std.Usize)
@@ -1815,7 +1815,7 @@ def contains_node_loop0
     (found, i)
 
 /-- [linkding_kernel::contains_node]:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 760:0-794:1 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 760:0-794:1 -/
 def contains_node
   (hay : alloc.vec.Vec Std.U8) (nodes : alloc.vec.Vec Node) (node : Std.Usize)
   :
@@ -1831,7 +1831,7 @@ def contains_node
     else contains_node_loop0 hay nodes node nlen false 0#usize
 
 /-- [linkding_kernel::eq_node]: loop body 0:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 802:4-809:1 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 802:4-809:1 -/
 @[rust_loop_body]
 def eq_node_loop.body
   (hay : alloc.vec.Vec Std.U8) (nodes : alloc.vec.Vec Node) (node : Std.Usize)
@@ -1852,7 +1852,7 @@ def eq_node_loop.body
   else ok (done true)
 
 /-- [linkding_kernel::eq_node]: loop 0:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 802:4-809:1 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 802:4-809:1 -/
 @[rust_loop]
 def eq_node_loop
   (hay : alloc.vec.Vec Std.U8) (nodes : alloc.vec.Vec Node) (node : Std.Usize)
@@ -1864,7 +1864,7 @@ def eq_node_loop
     i
 
 /-- [linkding_kernel::eq_node]:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 796:0-809:1 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 796:0-809:1 -/
 def eq_node
   (hay : alloc.vec.Vec Std.U8) (nodes : alloc.vec.Vec Node) (node : Std.Usize)
   :
@@ -1877,7 +1877,7 @@ def eq_node
   else eq_node_loop hay nodes node nlen 0#usize
 
 /-- [linkding_kernel::any_tag]: loop body 0:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 813:4-820:1 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 813:4-820:1 -/
 @[rust_loop_body]
 def any_tag_loop.body
   (bm : BookmarkFacts) (nodes : alloc.vec.Vec Node) (node : Std.Usize)
@@ -1898,7 +1898,7 @@ def any_tag_loop.body
   else ok (done false)
 
 /-- [linkding_kernel::any_tag]: loop 0:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 813:4-820:1 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 813:4-820:1 -/
 @[rust_loop]
 def any_tag_loop
   (bm : BookmarkFacts) (nodes : alloc.vec.Vec Node) (node : Std.Usize)
@@ -1910,7 +1910,7 @@ def any_tag_loop
     i
 
 /-- [linkding_kernel::any_tag]:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 811:0-820:1 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 811:0-820:1 -/
 @[reducible]
 def any_tag
   (bm : BookmarkFacts) (nodes : alloc.vec.Vec Node) (node : Std.Usize) :
@@ -1919,7 +1919,7 @@ def any_tag
   any_tag_loop bm nodes node 0#usize
 
 /-- [linkding_kernel::is_word]: loop body 0:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 828:4-835:1 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 828:4-835:1 -/
 @[rust_loop_body]
 def is_word_loop.body
   (nodes : alloc.vec.Vec Node) (node : Std.Usize) (word : alloc.vec.Vec Std.U8)
@@ -1940,7 +1940,7 @@ def is_word_loop.body
   else ok (done true)
 
 /-- [linkding_kernel::is_word]: loop 0:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 828:4-835:1 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 828:4-835:1 -/
 @[rust_loop]
 def is_word_loop
   (nodes : alloc.vec.Vec Node) (node : Std.Usize) (word : alloc.vec.Vec Std.U8)
@@ -1952,7 +1952,7 @@ def is_word_loop
     i
 
 /-- [linkding_kernel::is_word]:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 822:0-835:1 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 822:0-835:1 -/
 def is_word
   (nodes : alloc.vec.Vec Node) (node : Std.Usize) (word : alloc.vec.Vec Std.U8)
   :
@@ -1965,7 +1965,7 @@ def is_word
   else is_word_loop nodes node word nlen 0#usize
 
 /-- [linkding_kernel::unread_word]:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 837:0-846:1 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 837:0-846:1 -/
 def unread_word : Result (alloc.vec.Vec Std.U8) := do
   let word ← alloc.vec.Vec.push (alloc.vec.Vec.new Std.U8) 117#u8
   let word1 ← alloc.vec.Vec.push word 110#u8
@@ -1975,7 +1975,7 @@ def unread_word : Result (alloc.vec.Vec Std.U8) := do
   alloc.vec.Vec.push word4 100#u8
 
 /-- [linkding_kernel::untagged_word]:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 848:0-859:1 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 848:0-859:1 -/
 def untagged_word : Result (alloc.vec.Vec Std.U8) := do
   let word ← alloc.vec.Vec.push (alloc.vec.Vec.new Std.U8) 117#u8
   let word1 ← alloc.vec.Vec.push word 110#u8
@@ -1987,7 +1987,7 @@ def untagged_word : Result (alloc.vec.Vec Std.U8) := do
   alloc.vec.Vec.push word6 100#u8
 
 /-- [linkding_kernel::keyword_matches]:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 861:0-871:1 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 861:0-871:1 -/
 def keyword_matches
   (nodes : alloc.vec.Vec Node) (node : Std.Usize) (bm : BookmarkFacts) :
   Result Bool
@@ -2004,7 +2004,7 @@ def keyword_matches
     else ok true
 
 /-- [linkding_kernel::term_matches]:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 873:0-885:1 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 873:0-885:1 -/
 def term_matches
   (nodes : alloc.vec.Vec Node) (node : Std.Usize) (lax : Bool)
   (bm : BookmarkFacts) :
@@ -2030,7 +2030,7 @@ def term_matches
              else ok false
 
 /-- [linkding_kernel::eval_parsed]: loop body 0:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-930:1 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 1:0-930:1 -/
 @[rust_loop_body]
 def eval_parsed_loop.body
   (parsed : Parsed) (lax : Bool) (bm : BookmarkFacts)
@@ -2134,7 +2134,7 @@ def eval_parsed_loop.body
     else ok (done false)
 
 /-- [linkding_kernel::eval_parsed]: loop 0:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-930:1 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 1:0-930:1 -/
 @[rust_loop]
 def eval_parsed_loop
   (parsed : Parsed) (lax : Bool) (bm : BookmarkFacts)
@@ -2146,14 +2146,14 @@ def eval_parsed_loop
     (vals, i)
 
 /-- [linkding_kernel::eval_parsed]:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 887:0-930:1 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 887:0-930:1 -/
 @[reducible]
 def eval_parsed
   (parsed : Parsed) (lax : Bool) (bm : BookmarkFacts) : Result Bool := do
   eval_parsed_loop parsed lax bm (alloc.vec.Vec.new Bool) 0#usize
 
 /-- [linkding_kernel::bookmark_matches]:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 935:0-946:1
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 935:0-946:1
     Visibility: public -/
 def bookmark_matches
   (parsed : Parsed) (lax : Bool) (bm : BookmarkFacts) : Result Bool := do
@@ -2169,14 +2169,14 @@ def bookmark_matches
       else eval_parsed parsed lax bm
 
 /-- [linkding_kernel::is_digit]:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 948:0-950:1 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 948:0-950:1 -/
 def is_digit (c : Std.U8) : Result Bool := do
   if c >= 48#u8
   then ok (c <= 57#u8)
   else ok false
 
 /-- [linkding_kernel::is_alpha]:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 952:0-954:1 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 952:0-954:1 -/
 def is_alpha (c : Std.U8) : Result Bool := do
   if c >= 97#u8
   then
@@ -2190,7 +2190,7 @@ def is_alpha (c : Std.U8) : Result Bool := do
        else ok false
 
 /-- [linkding_kernel::is_hex]:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 956:0-958:1 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 956:0-958:1 -/
 def is_hex (c : Std.U8) : Result Bool := do
   let b ← is_digit c
   if b
@@ -2208,7 +2208,7 @@ def is_hex (c : Std.U8) : Result Bool := do
          else ok false
 
 /-- [linkding_kernel::find_scheme]: loop body 0:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-969:1 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 1:0-969:1 -/
 @[rust_loop_body]
 def find_scheme_loop.body
   (value : alloc.vec.Vec Std.U8) (i : Std.Usize) :
@@ -2242,7 +2242,7 @@ def find_scheme_loop.body
        ok (done i3)
 
 /-- [linkding_kernel::find_scheme]: loop 0:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-969:1 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 1:0-969:1 -/
 @[rust_loop]
 def find_scheme_loop
   (value : alloc.vec.Vec Std.U8) (i : Std.Usize) : Result Std.Usize := do
@@ -2251,13 +2251,13 @@ def find_scheme_loop
     i
 
 /-- [linkding_kernel::find_scheme]:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 960:0-969:1 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 960:0-969:1 -/
 @[reducible]
 def find_scheme (value : alloc.vec.Vec Std.U8) : Result Std.Usize := do
   find_scheme_loop value 0#usize
 
 /-- [linkding_kernel::is_ipv4]: loop body 0:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 978:4-1012:5 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 978:4-1012:5 -/
 @[rust_loop_body]
 def is_ipv4_loop.body
   (host : alloc.vec.Vec Std.U8) (ok1 : Bool) (parts : Std.U32)
@@ -2327,7 +2327,7 @@ def is_ipv4_loop.body
   else ok (done (ok1, parts, digits, n, lead_zero))
 
 /-- [linkding_kernel::is_ipv4]: loop 0:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 978:4-1012:5 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 978:4-1012:5 -/
 @[rust_loop]
 def is_ipv4_loop
   (host : alloc.vec.Vec Std.U8) (ok1 : Bool) (parts : Std.U32)
@@ -2340,7 +2340,7 @@ def is_ipv4_loop
     (ok1, parts, digits, n, lead_zero, i)
 
 /-- [linkding_kernel::is_ipv4]:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 971:0-1014:1 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 971:0-1014:1 -/
 def is_ipv4 (host : alloc.vec.Vec Std.U8) : Result Bool := do
   let (ok1, parts, digits, n, lead_zero) ←
     is_ipv4_loop host true 0#u32 0#u32 0#u32 false 0#usize
@@ -2360,7 +2360,7 @@ def is_ipv4 (host : alloc.vec.Vec Std.U8) : Result Bool := do
   else ok false
 
 /-- [linkding_kernel::is_ipv6]: loop body 0:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1022:4-1032:1 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 1022:4-1032:1 -/
 @[rust_loop_body]
 def is_ipv6_loop.body
   (host : alloc.vec.Vec Std.U8) (colon : Bool) (i : Std.Usize) :
@@ -2387,7 +2387,7 @@ def is_ipv6_loop.body
   else ok (done colon)
 
 /-- [linkding_kernel::is_ipv6]: loop 0:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1022:4-1032:1 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 1022:4-1032:1 -/
 @[rust_loop]
 def is_ipv6_loop
   (host : alloc.vec.Vec Std.U8) (colon : Bool) (i : Std.Usize) :
@@ -2398,7 +2398,7 @@ def is_ipv6_loop
     (colon, i)
 
 /-- [linkding_kernel::is_ipv6]:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1016:0-1032:1 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 1016:0-1032:1 -/
 def is_ipv6 (host : alloc.vec.Vec Std.U8) : Result Bool := do
   let i := alloc.vec.Vec.len host
   if i = 0#usize
@@ -2406,7 +2406,7 @@ def is_ipv6 (host : alloc.vec.Vec Std.U8) : Result Bool := do
   else is_ipv6_loop host false 0#usize
 
 /-- [linkding_kernel::is_localhost]:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1034:0-1045:1 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 1034:0-1045:1 -/
 def is_localhost (host : alloc.vec.Vec Std.U8) : Result Bool := do
   let i := alloc.vec.Vec.len host
   if i = 9#usize
@@ -2476,7 +2476,7 @@ def is_localhost (host : alloc.vec.Vec Std.U8) : Result Bool := do
   else ok false
 
 /-- [linkding_kernel::label_ok]: loop body 0:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-1083:1 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 1:0-1083:1 -/
 @[rust_loop_body]
 def label_ok_loop0.body
   (host : alloc.vec.Vec Std.U8) («from» : Std.Usize) («to» : Std.Usize)
@@ -2522,7 +2522,7 @@ def label_ok_loop0.body
   else ok (done true)
 
 /-- [linkding_kernel::label_ok]: loop 0:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-1083:1 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 1:0-1083:1 -/
 @[rust_loop]
 def label_ok_loop0
   (host : alloc.vec.Vec Std.U8) («from» : Std.Usize) («to» : Std.Usize)
@@ -2534,7 +2534,7 @@ def label_ok_loop0
     i
 
 /-- [linkding_kernel::label_ok]: loop body 1:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-1083:1 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 1:0-1083:1 -/
 @[rust_loop_body]
 def label_ok_loop1.body
   (host : alloc.vec.Vec Std.U8) («from» : Std.Usize) («to» : Std.Usize)
@@ -2570,7 +2570,7 @@ def label_ok_loop1.body
     else ok (done true)
 
 /-- [linkding_kernel::label_ok]: loop 1:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-1083:1 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 1:0-1083:1 -/
 @[rust_loop]
 def label_ok_loop1
   (host : alloc.vec.Vec Std.U8) («from» : Std.Usize) («to» : Std.Usize)
@@ -2582,7 +2582,7 @@ def label_ok_loop1
     i
 
 /-- [linkding_kernel::label_ok]: loop body 2:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-1083:1 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 1:0-1083:1 -/
 @[rust_loop_body]
 def label_ok_loop2.body
   (host : alloc.vec.Vec Std.U8) («from» : Std.Usize) («to» : Std.Usize)
@@ -2618,7 +2618,7 @@ def label_ok_loop2.body
     else ok (done true)
 
 /-- [linkding_kernel::label_ok]: loop 2:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-1083:1 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 1:0-1083:1 -/
 @[rust_loop]
 def label_ok_loop2
   (host : alloc.vec.Vec Std.U8) («from» : Std.Usize) («to» : Std.Usize)
@@ -2630,7 +2630,7 @@ def label_ok_loop2
     i
 
 /-- [linkding_kernel::label_ok]: loop body 3:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-1083:1 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 1:0-1083:1 -/
 @[rust_loop_body]
 def label_ok_loop3.body
   (host : alloc.vec.Vec Std.U8) («from» : Std.Usize) («to» : Std.Usize)
@@ -2666,7 +2666,7 @@ def label_ok_loop3.body
     else ok (done true)
 
 /-- [linkding_kernel::label_ok]: loop 3:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-1083:1 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 1:0-1083:1 -/
 @[rust_loop]
 def label_ok_loop3
   (host : alloc.vec.Vec Std.U8) («from» : Std.Usize) («to» : Std.Usize)
@@ -2678,7 +2678,7 @@ def label_ok_loop3
     i
 
 /-- [linkding_kernel::label_ok]: loop body 4:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-1083:1 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 1:0-1083:1 -/
 @[rust_loop_body]
 def label_ok_loop4.body
   (host : alloc.vec.Vec Std.U8) («from» : Std.Usize) («to» : Std.Usize)
@@ -2714,7 +2714,7 @@ def label_ok_loop4.body
     else ok (done true)
 
 /-- [linkding_kernel::label_ok]: loop 4:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-1083:1 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 1:0-1083:1 -/
 @[rust_loop]
 def label_ok_loop4
   (host : alloc.vec.Vec Std.U8) («from» : Std.Usize) («to» : Std.Usize)
@@ -2726,7 +2726,7 @@ def label_ok_loop4
     i
 
 /-- [linkding_kernel::label_ok]: loop body 5:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-1083:1 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 1:0-1083:1 -/
 @[rust_loop_body]
 def label_ok_loop5.body
   (host : alloc.vec.Vec Std.U8) («from» : Std.Usize) («to» : Std.Usize)
@@ -2762,7 +2762,7 @@ def label_ok_loop5.body
     else ok (done true)
 
 /-- [linkding_kernel::label_ok]: loop 5:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-1083:1 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 1:0-1083:1 -/
 @[rust_loop]
 def label_ok_loop5
   (host : alloc.vec.Vec Std.U8) («from» : Std.Usize) («to» : Std.Usize)
@@ -2774,7 +2774,7 @@ def label_ok_loop5
     i
 
 /-- [linkding_kernel::label_ok]: loop body 6:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-1083:1 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 1:0-1083:1 -/
 @[rust_loop_body]
 def label_ok_loop6.body
   (host : alloc.vec.Vec Std.U8) («to» : Std.Usize) (i : Std.Usize) :
@@ -2805,7 +2805,7 @@ def label_ok_loop6.body
   else ok (done true)
 
 /-- [linkding_kernel::label_ok]: loop 6:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-1083:1 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 1:0-1083:1 -/
 @[rust_loop]
 def label_ok_loop6
   (host : alloc.vec.Vec Std.U8) («to» : Std.Usize) (i : Std.Usize) :
@@ -2816,7 +2816,7 @@ def label_ok_loop6
     i
 
 /-- [linkding_kernel::label_ok]:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1047:0-1083:1 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 1047:0-1083:1 -/
 def label_ok
   (host : alloc.vec.Vec Std.U8) («from» : Std.Usize) («to» : Std.Usize)
   (tld : Bool) :
@@ -2887,7 +2887,7 @@ def label_ok
             else label_ok_loop6 host «to» «from»
 
 /-- [linkding_kernel::is_domain]: loop body 0:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1096:4-1108:1 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 1096:4-1108:1 -/
 @[rust_loop_body]
 def is_domain_loop.body
   (host : alloc.vec.Vec Std.U8) («end» : Std.Usize) (labels : Std.I32)
@@ -2921,7 +2921,7 @@ def is_domain_loop.body
   else ok (done (labels >= 2#i32))
 
 /-- [linkding_kernel::is_domain]: loop 0:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1096:4-1108:1 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 1096:4-1108:1 -/
 @[rust_loop]
 def is_domain_loop
   (host : alloc.vec.Vec Std.U8) («end» : Std.Usize) (labels : Std.I32)
@@ -2934,7 +2934,7 @@ def is_domain_loop
     (labels, start, i)
 
 /-- [linkding_kernel::is_domain]:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1085:0-1108:1 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 1085:0-1108:1 -/
 def is_domain (host : alloc.vec.Vec Std.U8) : Result Bool := do
   let «end» := alloc.vec.Vec.len host
   let end1 ←
@@ -2957,7 +2957,7 @@ def is_domain (host : alloc.vec.Vec Std.U8) : Result Bool := do
     else is_domain_loop host end1 0#i32 0#usize 0#usize
 
 /-- [linkding_kernel::port_ok]: loop body 0:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-1131:1 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 1:0-1131:1 -/
 @[rust_loop_body]
 def port_ok_loop.body
   (host : alloc.vec.Vec Std.U8) («to» : Std.Usize) (n : Std.U32)
@@ -2986,7 +2986,7 @@ def port_ok_loop.body
   else ok (done true)
 
 /-- [linkding_kernel::port_ok]: loop 0:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-1131:1 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 1:0-1131:1 -/
 @[rust_loop]
 def port_ok_loop
   (host : alloc.vec.Vec Std.U8) («to» : Std.Usize) (n : Std.U32)
@@ -2998,7 +2998,7 @@ def port_ok_loop
     (n, i)
 
 /-- [linkding_kernel::port_ok]:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1110:0-1131:1 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 1110:0-1131:1 -/
 def port_ok
   (host : alloc.vec.Vec Std.U8) («from» : Std.Usize) («to» : Std.Usize) :
   Result Bool
@@ -3016,7 +3016,7 @@ def port_ok
       else port_ok_loop host «to» 0#u32 «from»
 
 /-- [linkding_kernel::host_ok]:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1133:0-1141:1 -/
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 1133:0-1141:1 -/
 def host_ok (host : alloc.vec.Vec Std.U8) : Result Bool := do
   let i := alloc.vec.Vec.len host
   if i = 0#usize
@@ -3043,7 +3043,7 @@ def host_ok (host : alloc.vec.Vec Std.U8) : Result Bool := do
                else ok false
 
 /-- [linkding_kernel::valid_url]: loop body 1:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-1195:5
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 1:0-1195:5
     Visibility: public -/
 @[rust_loop_body]
 def valid_url_loop0_loop0.body
@@ -3069,7 +3069,7 @@ def valid_url_loop0_loop0.body
   else ok (done «end»)
 
 /-- [linkding_kernel::valid_url]: loop 1:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-1195:5
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 1:0-1195:5
     Visibility: public -/
 @[rust_loop]
 def valid_url_loop0_loop0
@@ -3079,7 +3079,7 @@ def valid_url_loop0_loop0
     «end»
 
 /-- [linkding_kernel::valid_url]: loop body 2:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-1207:5
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 1:0-1207:5
     Visibility: public -/
 @[rust_loop_body]
 def valid_url_loop0_loop1.body
@@ -3100,7 +3100,7 @@ def valid_url_loop0_loop1.body
   else ok (done start)
 
 /-- [linkding_kernel::valid_url]: loop 2:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-1207:5
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 1:0-1207:5
     Visibility: public -/
 @[rust_loop]
 def valid_url_loop0_loop1
@@ -3113,7 +3113,7 @@ def valid_url_loop0_loop1
     «at»
 
 /-- [linkding_kernel::valid_url]: loop body 3:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-1216:9
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 1:0-1216:9
     Visibility: public -/
 @[rust_loop_body]
 def valid_url_loop0_loop2.body
@@ -3132,7 +3132,7 @@ def valid_url_loop0_loop2.body
   else ok (done close)
 
 /-- [linkding_kernel::valid_url]: loop 3:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-1216:9
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 1:0-1216:9
     Visibility: public -/
 @[rust_loop]
 def valid_url_loop0_loop2
@@ -3144,7 +3144,7 @@ def valid_url_loop0_loop2
     close
 
 /-- [linkding_kernel::valid_url]: loop body 4:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1235:4-1241:5
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 1235:4-1241:5
     Visibility: public -/
 @[rust_loop_body]
 def valid_url_loop0_loop3.body
@@ -3169,7 +3169,7 @@ def valid_url_loop0_loop3.body
   else ok (done (colon, colons))
 
 /-- [linkding_kernel::valid_url]: loop 4:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1235:4-1241:5
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 1235:4-1241:5
     Visibility: public -/
 @[rust_loop]
 def valid_url_loop0_loop3
@@ -3183,7 +3183,7 @@ def valid_url_loop0_loop3
     (colon, j, colons)
 
 /-- [linkding_kernel::valid_url]: loop body 0:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-1251:1
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 1:0-1251:1
     Visibility: public -/
 @[rust_loop_body]
 def valid_url_loop0.body
@@ -3419,7 +3419,7 @@ def valid_url_loop0.body
         else ok (done false)
 
 /-- [linkding_kernel::valid_url]: loop 0:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-1251:1
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 1:0-1251:1
     Visibility: public -/
 @[rust_loop]
 def valid_url_loop0
@@ -3429,7 +3429,7 @@ def valid_url_loop0
     i
 
 /-- [linkding_kernel::valid_url]:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1146:0-1251:1
+    Source: 'performance/linkding/rust-h5i-optimized/kernel/src/lib.rs', lines 1146:0-1251:1
     Visibility: public -/
 def valid_url (value : alloc.vec.Vec Std.U8) : Result Bool := do
   let i := alloc.vec.Vec.len value

@@ -218,7 +218,7 @@ structure h5i_app_sql.Read where
   window : h5i_app_sql.Window
 
 /-- [conduit_kernel::Principal]
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 19:0-22:1
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 19:0-22:1
     Visibility: public -/
 structure Principal where
   org : Std.U64
@@ -300,13 +300,13 @@ structure Snapshot where
   comments : alloc.vec.Vec Comment
 
 /-- [conduit_kernel::{impl core::clone::Clone for conduit_kernel::Counter}::clone]:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 89:13-89:18
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 89:13-89:18
     Visibility: public -/
 def Counter.Insts.CoreCloneClone.clone (self : Counter) : Result Counter := do
   ok self
 
 /-- [conduit_kernel::{impl core::clone::Clone for conduit_kernel::Comment}::clone]:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 79:13-79:18
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 79:13-79:18
     Visibility: public -/
 def Comment.Insts.CoreCloneClone.clone (self : Comment) : Result Comment := do
   let i ← lift (core.clone.impls.CloneU64.clone self.id)
@@ -317,28 +317,28 @@ def Comment.Insts.CoreCloneClone.clone (self : Comment) : Result Comment := do
   ok { id := i, article := i1, author := i2, body := v, created := i3 }
 
 /-- Trait implementation: [conduit_kernel::{impl core::clone::Clone for conduit_kernel::Comment}]
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 79:13-79:18 -/
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 79:13-79:18 -/
 @[reducible]
 def Comment.Insts.CoreCloneClone : core.clone.Clone Comment := {
   clone := Comment.Insts.CoreCloneClone.clone
 }
 
 /-- [conduit_kernel::{impl core::clone::Clone for conduit_kernel::Favorite}::clone]:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 74:13-74:18
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 74:13-74:18
     Visibility: public -/
 def Favorite.Insts.CoreCloneClone.clone
   (self : Favorite) : Result Favorite := do
   ok self
 
 /-- Trait implementation: [conduit_kernel::{impl core::clone::Clone for conduit_kernel::Favorite}]
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 74:13-74:18 -/
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 74:13-74:18 -/
 @[reducible]
 def Favorite.Insts.CoreCloneClone : core.clone.Clone Favorite := {
   clone := Favorite.Insts.CoreCloneClone.clone
 }
 
 /-- [conduit_kernel::{impl core::clone::Clone for conduit_kernel::Tag}::clone]:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 69:13-69:18
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 69:13-69:18
     Visibility: public -/
 def Tag.Insts.CoreCloneClone.clone (self : Tag) : Result Tag := do
   let i ← lift (core.clone.impls.CloneU64.clone self.article)
@@ -346,14 +346,14 @@ def Tag.Insts.CoreCloneClone.clone (self : Tag) : Result Tag := do
   ok { article := i, tag := v }
 
 /-- Trait implementation: [conduit_kernel::{impl core::clone::Clone for conduit_kernel::Tag}]
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 69:13-69:18 -/
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 69:13-69:18 -/
 @[reducible]
 def Tag.Insts.CoreCloneClone : core.clone.Clone Tag := {
   clone := Tag.Insts.CoreCloneClone.clone
 }
 
 /-- [conduit_kernel::{impl core::clone::Clone for conduit_kernel::Article}::clone]:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 56:13-56:18
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 56:13-56:18
     Visibility: public -/
 def Article.Insts.CoreCloneClone.clone (self : Article) : Result Article := do
   let i ← lift (core.clone.impls.CloneU64.clone self.id)
@@ -377,27 +377,27 @@ def Article.Insts.CoreCloneClone.clone (self : Article) : Result Article := do
     }
 
 /-- Trait implementation: [conduit_kernel::{impl core::clone::Clone for conduit_kernel::Article}]
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 56:13-56:18 -/
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 56:13-56:18 -/
 @[reducible]
 def Article.Insts.CoreCloneClone : core.clone.Clone Article := {
   clone := Article.Insts.CoreCloneClone.clone
 }
 
 /-- [conduit_kernel::{impl core::clone::Clone for conduit_kernel::Follow}::clone]:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 51:13-51:18
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 51:13-51:18
     Visibility: public -/
 def Follow.Insts.CoreCloneClone.clone (self : Follow) : Result Follow := do
   ok self
 
 /-- Trait implementation: [conduit_kernel::{impl core::clone::Clone for conduit_kernel::Follow}]
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 51:13-51:18 -/
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 51:13-51:18 -/
 @[reducible]
 def Follow.Insts.CoreCloneClone : core.clone.Clone Follow := {
   clone := Follow.Insts.CoreCloneClone.clone
 }
 
 /-- [conduit_kernel::{impl core::clone::Clone for conduit_kernel::User}::clone]:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 40:13-40:18
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 40:13-40:18
     Visibility: public -/
 def User.Insts.CoreCloneClone.clone (self : User) : Result User := do
   let i ← lift (core.clone.impls.CloneU64.clone self.id)
@@ -417,14 +417,14 @@ def User.Insts.CoreCloneClone.clone (self : User) : Result User := do
     }
 
 /-- Trait implementation: [conduit_kernel::{impl core::clone::Clone for conduit_kernel::User}]
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 40:13-40:18 -/
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 40:13-40:18 -/
 @[reducible]
 def User.Insts.CoreCloneClone : core.clone.Clone User := {
   clone := User.Insts.CoreCloneClone.clone
 }
 
 /-- [conduit_kernel::{impl core::clone::Clone for conduit_kernel::Snapshot}::clone]:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 28:13-28:18
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 28:13-28:18
     Visibility: public -/
 def Snapshot.Insts.CoreCloneClone.clone
   (self : Snapshot) : Result Snapshot := do
@@ -450,7 +450,7 @@ def Snapshot.Insts.CoreCloneClone.clone
     }
 
 /-- [conduit_kernel::Command]
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 99:0-136:1
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 99:0-136:1
     Visibility: public -/
 @[discriminant isize]
 inductive Command where
@@ -510,7 +510,7 @@ inductive Command where
 | GetTags : Command
 
 /-- [conduit_kernel::Write]
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 139:0-157:1
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 139:0-157:1
     Visibility: public -/
 @[discriminant isize]
 inductive Write where
@@ -530,7 +530,7 @@ inductive Write where
 | SetCounter : Counter → Write
 
 /-- [conduit_kernel::{impl core::clone::Clone for conduit_kernel::Write}::clone]:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 138:9-138:14
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 138:9-138:14
     Visibility: public -/
 def Write.Insts.CoreCloneClone.clone (self : Write) : Result Write := do
   match self with
@@ -578,7 +578,7 @@ def Write.Insts.CoreCloneClone.clone (self : Write) : Result Write := do
     ok (Write.SetCounter c)
 
 /-- [conduit_kernel::Account]
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 160:0-166:1
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 160:0-166:1
     Visibility: public -/
 structure Account where
   id : Std.U64
@@ -588,7 +588,7 @@ structure Account where
   image : alloc.vec.Vec Std.U8
 
 /-- [conduit_kernel::Profile]
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 170:0-175:1
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 170:0-175:1
     Visibility: public -/
 structure Profile where
   username : alloc.vec.Vec Std.U8
@@ -597,7 +597,7 @@ structure Profile where
   following : Bool
 
 /-- [conduit_kernel::ArticleView]
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 178:0-184:1
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 178:0-184:1
     Visibility: public -/
 structure ArticleView where
   article : Article
@@ -607,14 +607,14 @@ structure ArticleView where
   author : Profile
 
 /-- [conduit_kernel::CommentView]
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 187:0-190:1
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 187:0-190:1
     Visibility: public -/
 structure CommentView where
   comment : Comment
   author : Profile
 
 /-- [conduit_kernel::Reply]
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 193:0-202:1
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 193:0-202:1
     Visibility: public -/
 @[discriminant isize]
 inductive Reply where
@@ -628,7 +628,7 @@ inductive Reply where
 | Done : Reply
 
 /-- [conduit_kernel::Error]
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 205:0-217:1
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 205:0-217:1
     Visibility: public -/
 @[discriminant isize]
 inductive Error where
@@ -644,12 +644,12 @@ inductive Error where
 | Overflow : Error
 
 /-- [conduit_kernel::one]:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 221:0-225:1 -/
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 221:0-225:1 -/
 def one (w : Write) : Result (alloc.vec.Vec Write) := do
   alloc.vec.Vec.push (alloc.vec.Vec.new Write) w
 
 /-- [conduit_kernel::find_user]: loop body 0:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 231:4-238:1
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 231:4-238:1
     Visibility: public -/
 @[rust_loop_body]
 def find_user_loop.body
@@ -669,7 +669,7 @@ def find_user_loop.body
   else ok (done none)
 
 /-- [conduit_kernel::find_user]: loop 0:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 231:4-238:1
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 231:4-238:1
     Visibility: public -/
 @[rust_loop]
 def find_user_loop
@@ -681,7 +681,7 @@ def find_user_loop
     i
 
 /-- [conduit_kernel::find_user]:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 229:0-238:1
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 229:0-238:1
     Visibility: public -/
 @[reducible]
 def find_user
@@ -689,7 +689,7 @@ def find_user
   find_user_loop us id 0#usize
 
 /-- [conduit_kernel::find_user_by_name]: loop body 0:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 242:4-249:1
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 242:4-249:1
     Visibility: public -/
 @[rust_loop_body]
 def find_user_by_name_loop.body
@@ -712,7 +712,7 @@ def find_user_by_name_loop.body
   else ok (done none)
 
 /-- [conduit_kernel::find_user_by_name]: loop 0:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 242:4-249:1
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 242:4-249:1
     Visibility: public -/
 @[rust_loop]
 def find_user_by_name_loop
@@ -724,7 +724,7 @@ def find_user_by_name_loop
     i
 
 /-- [conduit_kernel::find_user_by_name]:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 240:0-249:1
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 240:0-249:1
     Visibility: public -/
 @[reducible]
 def find_user_by_name
@@ -734,7 +734,7 @@ def find_user_by_name
   find_user_by_name_loop us «name» 0#usize
 
 /-- [conduit_kernel::find_user_by_email]: loop body 0:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 253:4-260:1
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 253:4-260:1
     Visibility: public -/
 @[rust_loop_body]
 def find_user_by_email_loop.body
@@ -756,7 +756,7 @@ def find_user_by_email_loop.body
   else ok (done none)
 
 /-- [conduit_kernel::find_user_by_email]: loop 0:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 253:4-260:1
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 253:4-260:1
     Visibility: public -/
 @[rust_loop]
 def find_user_by_email_loop
@@ -768,7 +768,7 @@ def find_user_by_email_loop
     i
 
 /-- [conduit_kernel::find_user_by_email]:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 251:0-260:1
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 251:0-260:1
     Visibility: public -/
 @[reducible]
 def find_user_by_email
@@ -778,7 +778,7 @@ def find_user_by_email
   find_user_by_email_loop us email 0#usize
 
 /-- [conduit_kernel::find_article]: loop body 0:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 264:4-271:1
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 264:4-271:1
     Visibility: public -/
 @[rust_loop_body]
 def find_article_loop.body
@@ -800,7 +800,7 @@ def find_article_loop.body
   else ok (done none)
 
 /-- [conduit_kernel::find_article]: loop 0:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 264:4-271:1
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 264:4-271:1
     Visibility: public -/
 @[rust_loop]
 def find_article_loop
@@ -812,7 +812,7 @@ def find_article_loop
     i
 
 /-- [conduit_kernel::find_article]:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 262:0-271:1
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 262:0-271:1
     Visibility: public -/
 @[reducible]
 def find_article
@@ -822,7 +822,7 @@ def find_article
   find_article_loop v slug 0#usize
 
 /-- [conduit_kernel::find_comment]: loop body 0:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 275:4-282:1
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 275:4-282:1
     Visibility: public -/
 @[rust_loop_body]
 def find_comment_loop.body
@@ -842,7 +842,7 @@ def find_comment_loop.body
   else ok (done none)
 
 /-- [conduit_kernel::find_comment]: loop 0:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 275:4-282:1
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 275:4-282:1
     Visibility: public -/
 @[rust_loop]
 def find_comment_loop
@@ -854,7 +854,7 @@ def find_comment_loop
     i
 
 /-- [conduit_kernel::find_comment]:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 273:0-282:1
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 273:0-282:1
     Visibility: public -/
 @[reducible]
 def find_comment
@@ -862,7 +862,7 @@ def find_comment
   find_comment_loop v id 0#usize
 
 /-- [conduit_kernel::is_following]: loop body 0:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1:0-293:1
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 1:0-293:1
     Visibility: public -/
 @[rust_loop_body]
 def is_following_loop.body
@@ -886,7 +886,7 @@ def is_following_loop.body
   else ok (done false)
 
 /-- [conduit_kernel::is_following]: loop 0:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1:0-293:1
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 1:0-293:1
     Visibility: public -/
 @[rust_loop]
 def is_following_loop
@@ -899,7 +899,7 @@ def is_following_loop
     i
 
 /-- [conduit_kernel::is_following]:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 284:0-293:1
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 284:0-293:1
     Visibility: public -/
 @[reducible]
 def is_following
@@ -909,7 +909,7 @@ def is_following
   is_following_loop fs follower followed 0#usize
 
 /-- [conduit_kernel::is_favorited]: loop body 0:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1:0-304:1
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 1:0-304:1
     Visibility: public -/
 @[rust_loop_body]
 def is_favorited_loop.body
@@ -933,7 +933,7 @@ def is_favorited_loop.body
   else ok (done false)
 
 /-- [conduit_kernel::is_favorited]: loop 0:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1:0-304:1
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 1:0-304:1
     Visibility: public -/
 @[rust_loop]
 def is_favorited_loop
@@ -946,7 +946,7 @@ def is_favorited_loop
     i
 
 /-- [conduit_kernel::is_favorited]:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 295:0-304:1
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 295:0-304:1
     Visibility: public -/
 @[reducible]
 def is_favorited
@@ -956,7 +956,7 @@ def is_favorited
   is_favorited_loop fs article user 0#usize
 
 /-- [conduit_kernel::has_favorite]: loop body 0:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 309:4-316:1
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 309:4-316:1
     Visibility: public -/
 @[rust_loop_body]
 def has_favorite_loop.body
@@ -975,7 +975,7 @@ def has_favorite_loop.body
   else ok (done false)
 
 /-- [conduit_kernel::has_favorite]: loop 0:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 309:4-316:1
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 309:4-316:1
     Visibility: public -/
 @[rust_loop]
 def has_favorite_loop
@@ -987,7 +987,7 @@ def has_favorite_loop
     i
 
 /-- [conduit_kernel::has_favorite]:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 307:0-316:1
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 307:0-316:1
     Visibility: public -/
 @[reducible]
 def has_favorite
@@ -995,7 +995,7 @@ def has_favorite
   has_favorite_loop fs user 0#usize
 
 /-- [conduit_kernel::has_favorite_except]: loop body 0:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1:0-328:1
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 1:0-328:1
     Visibility: public -/
 @[rust_loop_body]
 def has_favorite_except_loop.body
@@ -1019,7 +1019,7 @@ def has_favorite_except_loop.body
   else ok (done false)
 
 /-- [conduit_kernel::has_favorite_except]: loop 0:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1:0-328:1
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 1:0-328:1
     Visibility: public -/
 @[rust_loop]
 def has_favorite_except_loop
@@ -1032,7 +1032,7 @@ def has_favorite_except_loop
     i
 
 /-- [conduit_kernel::has_favorite_except]:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 319:0-328:1
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 319:0-328:1
     Visibility: public -/
 @[reducible]
 def has_favorite_except
@@ -1042,7 +1042,7 @@ def has_favorite_except
   has_favorite_except_loop fs user except 0#usize
 
 /-- [conduit_kernel::has_tag]: loop body 0:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1:0-339:1
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 1:0-339:1
     Visibility: public -/
 @[rust_loop_body]
 def has_tag_loop.body
@@ -1068,7 +1068,7 @@ def has_tag_loop.body
   else ok (done false)
 
 /-- [conduit_kernel::has_tag]: loop 0:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1:0-339:1
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 1:0-339:1
     Visibility: public -/
 @[rust_loop]
 def has_tag_loop
@@ -1081,7 +1081,7 @@ def has_tag_loop
     i
 
 /-- [conduit_kernel::has_tag]:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 330:0-339:1
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 330:0-339:1
     Visibility: public -/
 @[reducible]
 def has_tag
@@ -1091,7 +1091,7 @@ def has_tag
   has_tag_loop ts article tag 0#usize
 
 /-- [conduit_kernel::contains_text]: loop body 0:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 343:4-350:1
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 343:4-350:1
     Visibility: public -/
 @[rust_loop_body]
 def contains_text_loop.body
@@ -1113,7 +1113,7 @@ def contains_text_loop.body
   else ok (done false)
 
 /-- [conduit_kernel::contains_text]: loop 0:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 343:4-350:1
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 343:4-350:1
     Visibility: public -/
 @[rust_loop]
 def contains_text_loop
@@ -1126,7 +1126,7 @@ def contains_text_loop
     i
 
 /-- [conduit_kernel::contains_text]:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 341:0-350:1
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 341:0-350:1
     Visibility: public -/
 @[reducible]
 def contains_text
@@ -1136,7 +1136,7 @@ def contains_text
   contains_text_loop v t 0#usize
 
 /-- [conduit_kernel::fav_count]: loop body 0:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 355:4-360:5
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 355:4-360:5
     Visibility: public -/
 @[rust_loop_body]
 def fav_count_loop.body
@@ -1157,7 +1157,7 @@ def fav_count_loop.body
   else ok (done n)
 
 /-- [conduit_kernel::fav_count]: loop 0:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 355:4-360:5
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 355:4-360:5
     Visibility: public -/
 @[rust_loop]
 def fav_count_loop
@@ -1170,7 +1170,7 @@ def fav_count_loop
     (n, i)
 
 /-- [conduit_kernel::fav_count]:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 352:0-362:1
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 352:0-362:1
     Visibility: public -/
 def fav_count
   (fs : alloc.vec.Vec Favorite) (article : Std.U64) : Result Std.U64 := do
@@ -1178,7 +1178,7 @@ def fav_count
   ok (UScalar.cast .U64 n)
 
 /-- [conduit_kernel::tags_of]: loop body 0:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 367:4-372:5
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 367:4-372:5
     Visibility: public -/
 @[rust_loop_body]
 def tags_of_loop.body
@@ -1204,7 +1204,7 @@ def tags_of_loop.body
   else ok (done out)
 
 /-- [conduit_kernel::tags_of]: loop 0:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 367:4-372:5
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 367:4-372:5
     Visibility: public -/
 @[rust_loop]
 def tags_of_loop
@@ -1217,7 +1217,7 @@ def tags_of_loop
     (out, i)
 
 /-- [conduit_kernel::tags_of]:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 364:0-374:1
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 364:0-374:1
     Visibility: public -/
 @[reducible]
 def tags_of
@@ -1227,7 +1227,7 @@ def tags_of
   tags_of_loop ts article (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) 0#usize
 
 /-- [conduit_kernel::dedup]: loop body 0:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 380:4-385:5
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 380:4-385:5
     Visibility: public -/
 @[rust_loop_body]
 def dedup_loop.body
@@ -1255,7 +1255,7 @@ def dedup_loop.body
   else ok (done out)
 
 /-- [conduit_kernel::dedup]: loop 0:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 380:4-385:5
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 380:4-385:5
     Visibility: public -/
 @[rust_loop]
 def dedup_loop
@@ -1268,7 +1268,7 @@ def dedup_loop
     (out, i)
 
 /-- [conduit_kernel::dedup]:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 377:0-387:1
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 377:0-387:1
     Visibility: public -/
 @[reducible]
 def dedup
@@ -1278,7 +1278,7 @@ def dedup
   dedup_loop v (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) 0#usize
 
 /-- [conduit_kernel::all_tags]: loop body 0:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 393:4-398:5
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 393:4-398:5
     Visibility: public -/
 @[rust_loop_body]
 def all_tags_loop.body
@@ -1305,7 +1305,7 @@ def all_tags_loop.body
   else ok (done out)
 
 /-- [conduit_kernel::all_tags]: loop 0:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 393:4-398:5
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 393:4-398:5
     Visibility: public -/
 @[rust_loop]
 def all_tags_loop
@@ -1318,7 +1318,7 @@ def all_tags_loop
     (out, i)
 
 /-- [conduit_kernel::all_tags]:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 390:0-400:1
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 390:0-400:1
     Visibility: public -/
 @[reducible]
 def all_tags
@@ -1328,7 +1328,7 @@ def all_tags
   all_tags_loop ts (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) 0#usize
 
 /-- [conduit_kernel::profile]:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 404:0-411:1
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 404:0-411:1
     Visibility: public -/
 def profile (s : Snapshot) (viewer : Std.U64) (u : User) : Result Profile := do
   let v ← alloc.vec.CloneVec.clone core.clone.CloneU8 u.username
@@ -1338,7 +1338,7 @@ def profile (s : Snapshot) (viewer : Std.U64) (u : User) : Result Profile := do
   ok { username := v, bio := v1, image := v2, following := b }
 
 /-- [conduit_kernel::author_profile]:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 413:0-418:1
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 413:0-418:1
     Visibility: public -/
 def author_profile
   (s : Snapshot) (viewer : Std.U64) (id : Std.U64) : Result Profile := do
@@ -1355,7 +1355,7 @@ def author_profile
   | some u => profile s viewer u
 
 /-- [conduit_kernel::favorited_flag]:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 420:0-426:1 -/
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 420:0-426:1 -/
 def favorited_flag
   (fs : alloc.vec.Vec Favorite) (article : Std.U64) (viewer : Std.U64)
   (up : Bool) :
@@ -1366,7 +1366,7 @@ def favorited_flag
   else is_favorited fs article viewer
 
 /-- [conduit_kernel::article_view]:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 428:0-436:1
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 428:0-436:1
     Visibility: public -/
 def article_view
   (s : Snapshot) (viewer : Std.U64) (a : Article) (up : Bool) :
@@ -1380,7 +1380,7 @@ def article_view
   ok { article := a1, tags := v, favorited := b, favorites := i, author := p }
 
 /-- [conduit_kernel::views]: loop body 0:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 441:4-444:5
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 441:4-444:5
     Visibility: public -/
 @[rust_loop_body]
 def views_loop.body
@@ -1401,7 +1401,7 @@ def views_loop.body
   else ok (done out)
 
 /-- [conduit_kernel::views]: loop 0:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 441:4-444:5
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 441:4-444:5
     Visibility: public -/
 @[rust_loop]
 def views_loop
@@ -1414,7 +1414,7 @@ def views_loop
     (out, i)
 
 /-- [conduit_kernel::views]:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 438:0-446:1
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 438:0-446:1
     Visibility: public -/
 @[reducible]
 def views
@@ -1424,7 +1424,7 @@ def views
   views_loop s viewer v up (alloc.vec.Vec.new ArticleView) 0#usize
 
 /-- [conduit_kernel::comment_views]: loop body 0:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 451:4-459:5
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 451:4-459:5
     Visibility: public -/
 @[rust_loop_body]
 def comment_views_loop.body
@@ -1452,7 +1452,7 @@ def comment_views_loop.body
   else ok (done out)
 
 /-- [conduit_kernel::comment_views]: loop 0:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 451:4-459:5
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 451:4-459:5
     Visibility: public -/
 @[rust_loop]
 def comment_views_loop
@@ -1465,7 +1465,7 @@ def comment_views_loop
     (out, i)
 
 /-- [conduit_kernel::comment_views]:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 448:0-461:1
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 448:0-461:1
     Visibility: public -/
 @[reducible]
 def comment_views
@@ -1475,7 +1475,7 @@ def comment_views
   comment_views_loop s viewer article (alloc.vec.Vec.new CommentView) 0#usize
 
 /-- [conduit_kernel::matches]:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 466:0-481:1
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 466:0-481:1
     Visibility: public -/
 def «matches»
   (s : Snapshot) (a : Article) (tag : Option (alloc.vec.Vec Std.U8))
@@ -1503,7 +1503,7 @@ def «matches»
   else ok false
 
 /-- [conduit_kernel::select]: loop body 0:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 486:4-491:5
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 486:4-491:5
     Visibility: public -/
 @[rust_loop_body]
 def select_loop.body
@@ -1532,7 +1532,7 @@ def select_loop.body
   else ok (done out)
 
 /-- [conduit_kernel::select]: loop 0:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 486:4-491:5
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 486:4-491:5
     Visibility: public -/
 @[rust_loop]
 def select_loop
@@ -1546,7 +1546,7 @@ def select_loop
     (out, i)
 
 /-- [conduit_kernel::select]:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 483:0-493:1
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 483:0-493:1
     Visibility: public -/
 @[reducible]
 def select
@@ -1557,7 +1557,7 @@ def select
   select_loop s tag author fav up (alloc.vec.Vec.new Article) 0#usize
 
 /-- [conduit_kernel::feed_select]: loop body 0:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 499:4-504:5
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 499:4-504:5
     Visibility: public -/
 @[rust_loop_body]
 def feed_select_loop.body
@@ -1585,7 +1585,7 @@ def feed_select_loop.body
   else ok (done out)
 
 /-- [conduit_kernel::feed_select]: loop 0:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 499:4-504:5
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 499:4-504:5
     Visibility: public -/
 @[rust_loop]
 def feed_select_loop
@@ -1598,7 +1598,7 @@ def feed_select_loop
     (out, i)
 
 /-- [conduit_kernel::feed_select]:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 496:0-506:1
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 496:0-506:1
     Visibility: public -/
 @[reducible]
 def feed_select
@@ -1606,7 +1606,7 @@ def feed_select
   feed_select_loop s user (alloc.vec.Vec.new Article) 0#usize
 
 /-- [conduit_kernel::page]: loop body 0:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1:0-521:5
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 1:0-521:5
     Visibility: public -/
 @[rust_loop_body]
 def page_loop.body
@@ -1633,7 +1633,7 @@ def page_loop.body
   else ok (done out)
 
 /-- [conduit_kernel::page]: loop 0:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1:0-521:5
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 1:0-521:5
     Visibility: public -/
 @[rust_loop]
 def page_loop
@@ -1646,7 +1646,7 @@ def page_loop
     (out, j)
 
 /-- [conduit_kernel::page]:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 510:0-523:1
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 510:0-523:1
     Visibility: public -/
 def page
   (v : alloc.vec.Vec Article) (offset : Std.U64) (limit : Std.U64) :
@@ -1662,7 +1662,7 @@ def page
     page_loop v limit (alloc.vec.Vec.new Article) start 0#usize
 
 /-- [conduit_kernel::resolve]:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 527:0-535:1 -/
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 527:0-535:1 -/
 def resolve
   (us : alloc.vec.Vec User) («name» : Option (alloc.vec.Vec Std.U8)) :
   Result (Option (Option Std.U64))
@@ -1676,7 +1676,7 @@ def resolve
     | some u => ok (some (some u.id))
 
 /-- [conduit_kernel::account]:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 539:0-547:1 -/
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 539:0-547:1 -/
 def account (u : User) : Result Account := do
   let v ← alloc.vec.CloneVec.clone core.clone.CloneU8 u.email
   let v1 ← alloc.vec.CloneVec.clone core.clone.CloneU8 u.username
@@ -1685,7 +1685,7 @@ def account (u : User) : Result Account := do
   ok { id := u.id, email := v, username := v1, bio := v2, image := v3 }
 
 /-- [conduit_kernel::register]:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 549:0-573:1 -/
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 549:0-573:1 -/
 def register
   (s : Snapshot) (username : alloc.vec.Vec Std.U8)
   (email : alloc.vec.Vec Std.U8) (password : alloc.vec.Vec Std.U8) :
@@ -1735,7 +1735,7 @@ def register
         ok (core.result.Result.Ok (ws1, Reply.Account a))
 
 /-- [conduit_kernel::login]:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 575:0-586:1 -/
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 575:0-586:1 -/
 def login
   (s : Snapshot) (email : alloc.vec.Vec Std.U8)
   (password : alloc.vec.Vec Std.U8) :
@@ -1755,7 +1755,7 @@ def login
     else ok (core.result.Result.Err Error.WrongPassword)
 
 /-- [conduit_kernel::current_user]:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 588:0-593:1 -/
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 588:0-593:1 -/
 def current_user
   (s : Snapshot) (user : Std.U64) :
   Result (core.result.Result ((alloc.vec.Vec Write) × Reply) Error)
@@ -1768,7 +1768,7 @@ def current_user
     ok (core.result.Result.Ok (alloc.vec.Vec.new Write, Reply.Account a))
 
 /-- [conduit_kernel::or_keep]:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 596:0-601:1 -/
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 596:0-601:1 -/
 def or_keep
   (new : Option (alloc.vec.Vec Std.U8)) (old : alloc.vec.Vec Std.U8) :
   Result (alloc.vec.Vec Std.U8)
@@ -1778,7 +1778,7 @@ def or_keep
   | some t => alloc.vec.CloneVec.clone core.clone.CloneU8 t
 
 /-- [conduit_kernel::name_taken]:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 604:0-612:1 -/
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 604:0-612:1 -/
 def name_taken
   (us : alloc.vec.Vec User) («name» : Option (alloc.vec.Vec Std.U8))
   (me : Std.U64) :
@@ -1793,7 +1793,7 @@ def name_taken
     | some o1 => ok (o1.id != me)
 
 /-- [conduit_kernel::email_taken]:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 614:0-622:1 -/
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 614:0-622:1 -/
 def email_taken
   (us : alloc.vec.Vec User) (email : Option (alloc.vec.Vec Std.U8))
   (me : Std.U64) :
@@ -1808,7 +1808,7 @@ def email_taken
     | some o1 => ok (o1.id != me)
 
 /-- [conduit_kernel::slug_taken]:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 625:0-633:1 -/
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 625:0-633:1 -/
 def slug_taken
   (v : alloc.vec.Vec Article) (slug : Option (alloc.vec.Vec Std.U8))
   (id : Std.U64) :
@@ -1823,7 +1823,7 @@ def slug_taken
     | some o1 => ok (o1.id != id)
 
 /-- [conduit_kernel::update_user]:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 635:0-663:1 -/
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 635:0-663:1 -/
 def update_user
   (s : Snapshot) (user : Std.U64) (email : Option (alloc.vec.Vec Std.U8))
   (username : Option (alloc.vec.Vec Std.U8))
@@ -1875,7 +1875,7 @@ def update_user
         ok (core.result.Result.Ok (v5, Reply.Account a))
 
 /-- [conduit_kernel::get_profile]:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 665:0-670:1 -/
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 665:0-670:1 -/
 def get_profile
   (s : Snapshot) (viewer : Std.U64) (username : alloc.vec.Vec Std.U8) :
   Result (core.result.Result ((alloc.vec.Vec Write) × Reply) Error)
@@ -1888,7 +1888,7 @@ def get_profile
     ok (core.result.Result.Ok (alloc.vec.Vec.new Write, Reply.Profile p))
 
 /-- [conduit_kernel::follow]:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 672:0-688:1 -/
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 672:0-688:1 -/
 def follow
   (s : Snapshot) (user : Std.U64) (username : alloc.vec.Vec Std.U8) :
   Result (core.result.Result ((alloc.vec.Vec Write) × Reply) Error)
@@ -1913,7 +1913,7 @@ def follow
           { username := v, bio := v1, image := v2, following := true }))
 
 /-- [conduit_kernel::unfollow]:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 690:0-702:1 -/
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 690:0-702:1 -/
 def unfollow
   (s : Snapshot) (user : Std.U64) (username : alloc.vec.Vec Std.U8) :
   Result (core.result.Result ((alloc.vec.Vec Write) × Reply) Error)
@@ -1934,7 +1934,7 @@ def unfollow
         { username := v, bio := v1, image := v2, following := false }))
 
 /-- [conduit_kernel::list_articles]:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 704:0-724:1 -/
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 704:0-724:1 -/
 def list_articles
   (s : Snapshot) (viewer : Std.U64) (tag : Option (alloc.vec.Vec Std.U8))
   (author : Option (alloc.vec.Vec Std.U8))
@@ -1960,7 +1960,7 @@ def list_articles
       ok (core.result.Result.Ok (alloc.vec.Vec.new Write, Reply.Articles v1))
 
 /-- [conduit_kernel::feed]:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 726:0-733:1 -/
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 726:0-733:1 -/
 def feed
   (s : Snapshot) (user : Std.U64) (limit : Std.U64) (offset : Std.U64)
   (up : Bool) :
@@ -1976,7 +1976,7 @@ def feed
     ok (core.result.Result.Ok (alloc.vec.Vec.new Write, Reply.Articles v1))
 
 /-- [conduit_kernel::get_article]:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 735:0-740:1 -/
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 735:0-740:1 -/
 def get_article
   (s : Snapshot) (viewer : Std.U64) (slug : alloc.vec.Vec Std.U8) (up : Bool) :
   Result (core.result.Result ((alloc.vec.Vec Write) × Reply) Error)
@@ -1989,7 +1989,7 @@ def get_article
     ok (core.result.Result.Ok (alloc.vec.Vec.new Write, Reply.Article av))
 
 /-- [conduit_kernel::tag_writes]: loop body 0:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 746:4-749:5
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 746:4-749:5
     Visibility: public -/
 @[rust_loop_body]
 def tag_writes_loop.body
@@ -2011,7 +2011,7 @@ def tag_writes_loop.body
   else ok (done out)
 
 /-- [conduit_kernel::tag_writes]: loop 0:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 746:4-749:5
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 746:4-749:5
     Visibility: public -/
 @[rust_loop]
 def tag_writes_loop
@@ -2024,7 +2024,7 @@ def tag_writes_loop
     (out, i)
 
 /-- [conduit_kernel::tag_writes]:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 743:0-751:1
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 743:0-751:1
     Visibility: public -/
 @[reducible]
 def tag_writes
@@ -2035,7 +2035,7 @@ def tag_writes
   tag_writes_loop article tags ws 0#usize
 
 /-- [conduit_kernel::create_article]:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 753:0-798:1 -/
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 753:0-798:1 -/
 def create_article
   (s : Snapshot) (user : Std.U64) (slug : alloc.vec.Vec Std.U8)
   (title : alloc.vec.Vec Std.U8) (description : alloc.vec.Vec Std.U8)
@@ -2104,7 +2104,7 @@ def create_article
             }))
 
 /-- [conduit_kernel::update_article]:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 800:0-861:1 -/
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 800:0-861:1 -/
 def update_article
   (s : Snapshot) (user : Std.U64) (slug : alloc.vec.Vec Std.U8)
   (new_slug : Option (alloc.vec.Vec Std.U8))
@@ -2204,7 +2204,7 @@ def update_article
                 }))
 
 /-- [conduit_kernel::delete_article]:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 863:0-884:1 -/
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 863:0-884:1 -/
 def delete_article
   (s : Snapshot) (user : Std.U64) (slug : alloc.vec.Vec Std.U8) :
   Result (core.result.Result ((alloc.vec.Vec Write) × Reply) Error)
@@ -2228,7 +2228,7 @@ def delete_article
         ok (core.result.Result.Ok (ws3, Reply.Done))
 
 /-- [conduit_kernel::favorite]:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 886:0-914:1 -/
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 886:0-914:1 -/
 def favorite
   (s : Snapshot) (user : Std.U64) (slug : alloc.vec.Vec Std.U8) :
   Result (core.result.Result ((alloc.vec.Vec Write) × Reply) Error)
@@ -2276,7 +2276,7 @@ def favorite
             }))
 
 /-- [conduit_kernel::dec_if]:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 917:0-923:1 -/
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 917:0-923:1 -/
 def dec_if (b : Bool) (n : Std.U64) : Result Std.U64 := do
   if b
   then if n > 0#u64
@@ -2285,7 +2285,7 @@ def dec_if (b : Bool) (n : Std.U64) : Result Std.U64 := do
   else ok n
 
 /-- [conduit_kernel::unfavorited_flag]:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 927:0-933:1 -/
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 927:0-933:1 -/
 def unfavorited_flag
   (fs : alloc.vec.Vec Favorite) (article : Std.U64) (viewer : Std.U64)
   (up : Bool) :
@@ -2296,7 +2296,7 @@ def unfavorited_flag
   else ok false
 
 /-- [conduit_kernel::unfavorite]:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 935:0-956:1 -/
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 935:0-956:1 -/
 def unfavorite
   (s : Snapshot) (user : Std.U64) (slug : alloc.vec.Vec Std.U8) (up : Bool) :
   Result (core.result.Result ((alloc.vec.Vec Write) × Reply) Error)
@@ -2327,7 +2327,7 @@ def unfavorite
         }))
 
 /-- [conduit_kernel::get_comments]:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 958:0-963:1 -/
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 958:0-963:1 -/
 def get_comments
   (s : Snapshot) (viewer : Std.U64) (slug : alloc.vec.Vec Std.U8) :
   Result (core.result.Result ((alloc.vec.Vec Write) × Reply) Error)
@@ -2340,7 +2340,7 @@ def get_comments
     ok (core.result.Result.Ok (alloc.vec.Vec.new Write, Reply.Comments v))
 
 /-- [conduit_kernel::add_comment]:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 965:0-985:1 -/
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 965:0-985:1 -/
 def add_comment
   (s : Snapshot) (user : Std.U64) (slug : alloc.vec.Vec Std.U8)
   (body : alloc.vec.Vec Std.U8) (now : Std.U64) :
@@ -2387,7 +2387,7 @@ def add_comment
           }))
 
 /-- [conduit_kernel::delete_comment]:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 987:0-1009:1 -/
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 987:0-1009:1 -/
 def delete_comment
   (s : Snapshot) (user : Std.U64) (slug : alloc.vec.Vec Std.U8) (id : Std.U64)
   :
@@ -2415,7 +2415,7 @@ def delete_comment
             ok (core.result.Result.Ok (v, Reply.Done))
 
 /-- [conduit_kernel::step]:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1011:0-1042:1 -/
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 1011:0-1042:1 -/
 def step
   (actor : Principal) (s : Snapshot) (cmd : Command) (up : Bool) :
   Result (core.result.Result ((alloc.vec.Vec Write) × Reply) Error)
@@ -2450,7 +2450,7 @@ def step
     ok (core.result.Result.Ok (alloc.vec.Vec.new Write, Reply.Tags v))
 
 /-- [conduit_kernel::transition]:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1045:0-1047:1
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 1045:0-1047:1
     Visibility: public -/
 def transition
   (actor : Principal) (s : Snapshot) (cmd : Command) :
@@ -2459,7 +2459,7 @@ def transition
   step actor s cmd false
 
 /-- [conduit_kernel::transition_upstream]:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1050:0-1052:1
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 1050:0-1052:1
     Visibility: public -/
 def transition_upstream
   (actor : Principal) (s : Snapshot) (cmd : Command) :
@@ -2468,7 +2468,7 @@ def transition_upstream
   step actor s cmd true
 
 /-- [conduit_kernel::read_only]:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1057:0-1069:1
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 1057:0-1069:1
     Visibility: public -/
 def read_only (cmd : Command) : Result Bool := do
   match cmd with
@@ -2493,110 +2493,110 @@ def read_only (cmd : Command) : Result Bool := do
   | Command.GetTags => ok true
 
 /-- [conduit_kernel::T_USERS]
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1074:0-1074:23 -/
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 1074:0-1074:23 -/
 @[global_simps, irreducible] def T_USERS : Std.U32 := 0#u32
 
 /-- [conduit_kernel::T_FOLLOWS]
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1075:0-1075:25 -/
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 1075:0-1075:25 -/
 @[global_simps, irreducible] def T_FOLLOWS : Std.U32 := 1#u32
 
 /-- [conduit_kernel::T_ARTICLES]
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1076:0-1076:26 -/
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 1076:0-1076:26 -/
 @[global_simps, irreducible] def T_ARTICLES : Std.U32 := 2#u32
 
 /-- [conduit_kernel::T_TAGS]
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1077:0-1077:22 -/
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 1077:0-1077:22 -/
 @[global_simps, irreducible] def T_TAGS : Std.U32 := 3#u32
 
 /-- [conduit_kernel::T_FAVORITES]
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1078:0-1078:27 -/
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 1078:0-1078:27 -/
 @[global_simps, irreducible] def T_FAVORITES : Std.U32 := 4#u32
 
 /-- [conduit_kernel::T_COMMENTS]
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1079:0-1079:26 -/
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 1079:0-1079:26 -/
 @[global_simps, irreducible] def T_COMMENTS : Std.U32 := 5#u32
 
 /-- [conduit_kernel::T_COUNTER]
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1080:0-1080:25 -/
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 1080:0-1080:25 -/
 @[global_simps, irreducible] def T_COUNTER : Std.U32 := 6#u32
 
 /-- [conduit_kernel::USER_ID]
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1081:0-1081:23 -/
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 1081:0-1081:23 -/
 @[global_simps, irreducible] def USER_ID : Std.U32 := 0#u32
 
 /-- [conduit_kernel::USER_NAME]
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1082:0-1082:25 -/
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 1082:0-1082:25 -/
 @[global_simps, irreducible] def USER_NAME : Std.U32 := 1#u32
 
 /-- [conduit_kernel::USER_EMAIL]
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1083:0-1083:26 -/
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 1083:0-1083:26 -/
 @[global_simps, irreducible] def USER_EMAIL : Std.U32 := 2#u32
 
 /-- [conduit_kernel::FOLLOW_FOLLOWER]
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1084:0-1084:31 -/
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 1084:0-1084:31 -/
 @[global_simps, irreducible] def FOLLOW_FOLLOWER : Std.U32 := 0#u32
 
 /-- [conduit_kernel::FOLLOW_FOLLOWED]
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1085:0-1085:31 -/
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 1085:0-1085:31 -/
 @[global_simps, irreducible] def FOLLOW_FOLLOWED : Std.U32 := 1#u32
 
 /-- [conduit_kernel::ARTICLE_ID]
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1086:0-1086:26 -/
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 1086:0-1086:26 -/
 @[global_simps, irreducible] def ARTICLE_ID : Std.U32 := 0#u32
 
 /-- [conduit_kernel::ARTICLE_AUTHOR]
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1087:0-1087:30 -/
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 1087:0-1087:30 -/
 @[global_simps, irreducible] def ARTICLE_AUTHOR : Std.U32 := 1#u32
 
 /-- [conduit_kernel::ARTICLE_SLUG]
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1088:0-1088:28 -/
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 1088:0-1088:28 -/
 @[global_simps, irreducible] def ARTICLE_SLUG : Std.U32 := 2#u32
 
 /-- [conduit_kernel::TAG_TAG]
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1089:0-1089:23 -/
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 1089:0-1089:23 -/
 @[global_simps, irreducible] def TAG_TAG : Std.U32 := 1#u32
 
 /-- [conduit_kernel::FAVORITE_USER]
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1090:0-1090:29 -/
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 1090:0-1090:29 -/
 @[global_simps, irreducible] def FAVORITE_USER : Std.U32 := 1#u32
 
 /-- [conduit_kernel::COMMENT_ID]
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1091:0-1091:26 -/
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 1091:0-1091:26 -/
 @[global_simps, irreducible] def COMMENT_ID : Std.U32 := 0#u32
 
 /-- [conduit_kernel::COMMENT_AUTHOR]
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1092:0-1092:30 -/
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 1092:0-1092:30 -/
 @[global_simps, irreducible] def COMMENT_AUTHOR : Std.U32 := 2#u32
 
 /-- [conduit_kernel::v_int]:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1094:0-1096:1 -/
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 1094:0-1096:1 -/
 def v_int (x : Std.U64) : Result h5i_app_sql.Val := do
   U64.Insts.H5i_app_sqlColumn.to_val x
 
 /-- [conduit_kernel::v_bytes]:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1098:0-1100:1 -/
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 1098:0-1100:1 -/
 def v_bytes (t : alloc.vec.Vec Std.U8) : Result h5i_app_sql.Val := do
   alloc.vec.VecU8.Insts.H5i_app_sqlColumn.to_val t
 
 /-- [conduit_kernel::p_eq]:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1102:0-1104:1 -/
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 1102:0-1104:1 -/
 def p_eq (col : Std.U32) (v : h5i_app_sql.Val) : Result h5i_app_sql.Pred := do
   ok (h5i_app_sql.Pred.Eq col v)
 
 /-- [conduit_kernel::p_or]:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1106:0-1108:1 -/
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 1106:0-1108:1 -/
 def p_or
   (a : h5i_app_sql.Pred) (b : h5i_app_sql.Pred) : Result h5i_app_sql.Pred := do
   ok (h5i_app_sql.Pred.Or a b)
 
 /-- [conduit_kernel::p_and]:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1110:0-1112:1 -/
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 1110:0-1112:1 -/
 def p_and
   (a : h5i_app_sql.Pred) (b : h5i_app_sql.Pred) : Result h5i_app_sql.Pred := do
   ok (h5i_app_sql.Pred.And a b)
 
 /-- [conduit_kernel::p_in]:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1115:0-1117:1 -/
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 1115:0-1117:1 -/
 def p_in
   (col : Std.U32) (table : Std.U32) (pred : h5i_app_sql.Pred) (of : Std.U32)
   (window : h5i_app_sql.Window) :
@@ -2605,20 +2605,20 @@ def p_in
   ok (h5i_app_sql.Pred.In col table pred of window)
 
 /-- [conduit_kernel::rd_where]:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1119:0-1121:1 -/
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 1119:0-1121:1 -/
 def rd_where
   (table : Std.U32) (pred : h5i_app_sql.Pred) : Result h5i_app_sql.Read := do
   let w ← h5i_app_sql.whole
   ok { table, pred, window := w }
 
 /-- [conduit_kernel::by_slug]:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1124:0-1126:1 -/
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 1124:0-1126:1 -/
 def by_slug (slug : alloc.vec.Vec Std.U8) : Result h5i_app_sql.Pred := do
   let v ← v_bytes slug
   p_eq ARTICLE_SLUG v
 
 /-- [conduit_kernel::of_articles]:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1129:0-1131:1 -/
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 1129:0-1131:1 -/
 def of_articles
   (col : Std.U32) (arts : h5i_app_sql.Pred) (w : h5i_app_sql.Window) :
   Result h5i_app_sql.Pred
@@ -2626,7 +2626,7 @@ def of_articles
   p_in col T_ARTICLES arts ARTICLE_ID w
 
 /-- [conduit_kernel::named]:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1134:0-1136:1 -/
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 1134:0-1136:1 -/
 def named
   (col : Std.U32) («name» : alloc.vec.Vec Std.U8) :
   Result h5i_app_sql.Pred
@@ -2637,7 +2637,7 @@ def named
   p_in col T_USERS p USER_ID w
 
 /-- [conduit_kernel::or_opt]:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1139:0-1144:1 -/
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 1139:0-1144:1 -/
 def or_opt
   (p : h5i_app_sql.Pred) (q : Option h5i_app_sql.Pred) :
   Result h5i_app_sql.Pred
@@ -2647,7 +2647,7 @@ def or_opt
   | some q1 => p_or p q1
 
 /-- [conduit_kernel::and_opt]:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1147:0-1152:1 -/
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 1147:0-1152:1 -/
 def and_opt
   (p : h5i_app_sql.Pred) (q : Option h5i_app_sql.Pred) :
   Result h5i_app_sql.Pred
@@ -2657,7 +2657,7 @@ def and_opt
   | some q1 => p_and p q1
 
 /-- [conduit_kernel::opt_text]:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1155:0-1160:1 -/
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 1155:0-1160:1 -/
 def opt_text
   (o : Option (alloc.vec.Vec Std.U8)) :
   Result (Option (alloc.vec.Vec Std.U8))
@@ -2669,7 +2669,7 @@ def opt_text
     ok (some v)
 
 /-- [conduit_kernel::newest]:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1163:0-1166:1 -/
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 1163:0-1166:1 -/
 def newest
   (offset : Std.U64) (limit : Std.U64) : Result h5i_app_sql.Window := do
   let i ← core.num.U64.MAX - offset
@@ -2680,7 +2680,7 @@ def newest
     ok { desc := true, offset := 0#u64, limit := (some i1) }
 
 /-- [conduit_kernel::Sel]
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1169:0-1176:1 -/
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 1169:0-1176:1 -/
 @[discriminant isize]
 inductive Sel where
 | Slug : alloc.vec.Vec Std.U8 → Sel
@@ -2692,7 +2692,7 @@ inductive Sel where
 | Feed : Std.U64 → Sel
 
 /-- [conduit_kernel::sel_pred]:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1180:0-1200:1 -/
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 1180:0-1200:1 -/
 def sel_pred (sel : Sel) : Result h5i_app_sql.Pred := do
   match sel with
   | Sel.Slug slug => by_slug slug
@@ -2732,7 +2732,7 @@ def sel_pred (sel : Sel) : Result h5i_app_sql.Pred := do
     p_in ARTICLE_AUTHOR T_FOLLOWS p FOLLOW_FOLLOWED w
 
 /-- [conduit_kernel::article_plan]:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1205:0-1213:1 -/
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 1205:0-1213:1 -/
 def article_plan
   (viewer : Std.U64) (sel : Sel) (w : h5i_app_sql.Window)
   (extra : Option h5i_app_sql.Pred) :
@@ -2758,7 +2758,7 @@ def article_plan
   alloc.vec.Vec.push out3 r3
 
 /-- [conduit_kernel::reads]:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1219:0-1337:1
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 1219:0-1337:1
     Visibility: public -/
 def reads
   (actor : Principal) (cmd : Command) :
@@ -2986,7 +2986,7 @@ def reads
     ok (some out)
 
 /-- [conduit_kernel::article_count]:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1342:0-1350:1
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 1342:0-1350:1
     Visibility: public -/
 def article_count
   (actor : Principal) (cmd : Command) : Result (Option h5i_app_sql.Read) := do
@@ -3021,15 +3021,15 @@ def article_count
   | Command.GetTags => ok none
 
 /-- [conduit_kernel::TAG_ARTICLE]
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1355:0-1355:27 -/
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 1355:0-1355:27 -/
 @[global_simps, irreducible] def TAG_ARTICLE : Std.U32 := 0#u32
 
 /-- [conduit_kernel::FAVORITE_ARTICLE]
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1356:0-1356:32 -/
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 1356:0-1356:32 -/
 @[global_simps, irreducible] def FAVORITE_ARTICLE : Std.U32 := 0#u32
 
 /-- [conduit_kernel::COMMENT_ARTICLE]
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1357:0-1357:31 -/
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 1357:0-1357:31 -/
 @[global_simps, irreducible] def COMMENT_ARTICLE : Std.U32 := 1#u32
 
 /-- [conduit_kernel::{conduit_kernel::Comment}::to_row]:
@@ -3718,7 +3718,7 @@ def User.put
   User.put_loop v x 0#usize
 
 /-- [conduit_kernel::apply_write]:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1361:0-1382:1 -/
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 1361:0-1382:1 -/
 def apply_write (s : Snapshot) (w : Write) : Result Snapshot := do
   match w with
   | Write.PutUser x => let v ← User.put s.users x
@@ -4003,7 +4003,7 @@ def User.sql_put (self : User) : Result h5i_app_sql.Write := do
   ok (h5i_app_sql.Write.Put User.TABLE User.KEY_LEN v)
 
 /-- [conduit_kernel::sql_write]:
-    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1385:0-1402:1 -/
+    Source: 'performance/realworld/rust-h5i/kernel/src/lib.rs', lines 1385:0-1402:1 -/
 def sql_write
   (w : Write) (out : alloc.vec.Vec h5i_app_sql.Write) :
   Result (alloc.vec.Vec h5i_app_sql.Write)
