@@ -1,3 +1,5 @@
+import Verified.RustfsBPMeaning
+import Verified.RustfsStatementContext
 import Verified.RustfsResourceMeaning
 import Verified.RustfsPathFull
 import Verified.RustfsFunctionsMeaning
@@ -1808,5 +1810,23 @@ theorem resource_set_evaluation_spec (set : Slice rsrc.Resource) (resource : Sli
     b=true ↔ ResourceSetHolds (ctx.map Verified.RustfsAwsValues.context) (RequestValueLists values.val)
       (set.val.map ResourceText) (nats resource.val) :=
   Verified.RustfsResourceMeaning.set_ok set resource values ctx b h
+
+/-- Bucket statements compute principal, action, and resource matching before conditions. -/
+theorem bucket_statement_matching_spec (st : stmts.BPStatement) (args : stmts.BucketPolicyArgs)
+    (b : Bool) (h : stmts.bp_reaches_condition_eval st args=ok b) :
+    b=true ↔ BucketStatementReaches st args :=
+  Verified.RustfsBPMeaning.reaches_ok st args b h
+
+/-- Bucket-policy effects apply to the matching and condition conjunction. -/
+theorem bucket_statement_allowed_spec (st : stmts.BPStatement) (args : stmts.BucketPolicyArgs)
+    (env : condfuncs.Env) (b : Bool) (h : stmts.bp_statement_is_allowed st args env=ok b) :
+    b=true ↔ BucketStatementAllowed st args (env.ips.val.map (fun e=>(e.1.val,e.2))) :=
+  Verified.RustfsBPMeaning.allowed_ok st args env b h
+
+/-- Resolver data is determined by the request claims and environment times. -/
+theorem statement_context_spec (args : stmts.Args) (env : condfuncs.Env) (out : awsvars.VarContext)
+    (h : stmts.resolver_for args env=ok out) :
+    Verified.RustfsAwsValues.context out=PolicyContext args env :=
+  Verified.RustfsStatementContext.resolver_ok args env out h
 
 end rustfs_kernel.Properties
