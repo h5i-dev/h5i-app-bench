@@ -911,6 +911,34 @@ theorem sort_ok (v : alloc.vec.Vec Bookmark) (sort : U8) (w : alloc.vec.Vec Book
     rw [bookmarks_clone_ok h]
     exact h1 _ (Owner.index_mem _ _ _ hv1)
 
+theorem reversed_spec (v : alloc.vec.Vec Bookmark) : reversed v ⦃ w => w.val = v.val.reverse ⦄ := by
+  unfold reversed reversed_loop
+  apply loop.spec_decr_nat (measure := fun x => x.2.val)
+    (inv := fun x => x.2.val ≤ v.val.length ∧ x.1.val = (v.val.drop x.2.val).reverse)
+  · rintro ⟨out, i⟩ ⟨hi, hout⟩
+    simp only at hi hout
+    unfold reversed_loop.body
+    by_cases h0 : i.val = 0
+    · have : ¬ i > 0#usize := by scalar_tac
+      simp only [this, if_false, WP.spec_ok]
+      rw [hout, h0]; simp
+    · have : i > 0#usize := by scalar_tac
+      simp only [this, if_true]
+      obtain ⟨i1, hi1, hv1⟩ := (WP.spec_equiv_exists _ _).1 (Usize.sub_spec (x := i) (y := 1#usize) (by scalar_tac))
+      have hv1' : i1.val = i.val - 1 := by scalar_tac
+      have hlt : i1.val < v.val.length := by omega
+      rw [hi1]; simp only [bind_tc_ok, bind_ok, vec_index_eq _ _ hlt, Schema.Bookmark.clone_eq]
+      have hlen : out.val.length < Usize.max := by
+        have := congrArg List.length hout; simp at this
+        have := v.len_ineq; omega
+      obtain ⟨o1, h1, h2⟩ := (WP.spec_equiv_exists _ _).1 (alloc.vec.Vec.push_spec out v.val[i1.val] hlen)
+      rw [h1]; simp only [bind_tc_ok, bind_ok, WP.spec_ok]
+      refine ⟨⟨by omega, ?_⟩, by omega⟩
+      rw [h2, hout, List.drop_eq_getElem_cons hlt]
+      have : i1.val + 1 = i.val := by omega
+      simp [this]
+  · simp [alloc.vec.Vec.len, vec_new_val]
+
 end Lookups
 
 /-! ## Commands -/
