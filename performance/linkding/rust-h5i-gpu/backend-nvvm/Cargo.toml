@@ -1,0 +1,22 @@
+[package]
+name = "linkding-gpu-nvvm"
+version = "0.1.0"
+edition = "2024"
+publish = false
+description = "Rust-CUDA resident launch of the linkding_batch kernel (host-only; needs the Rust-CUDA nightly + libNVVM)"
+
+[dependencies]
+linkding-gpu = { path = ".." }
+linkding-kernel = { path = "../../rust-h5i/kernel" }
+# The GPU launch shell and SoA output type come from the h5i framework, not
+# re-implemented here. Pinned in Cargo.lock; branch moves to main once merged.
+h5i-app-gpu = { git = "https://github.com/h5i-dev/h5i", branch = "app-gpu" }
+h5i-app-gpu-backend-nvvm = { git = "https://github.com/h5i-dev/h5i", branch = "app-gpu" }
+cust = { git = "https://github.com/Rust-GPU/rust-cuda", rev = "3a82c35a7196731fb60eebdac2a40d2b1bf0ba95" }
+
+# Separate toolchain invocation; never part of the surrounding workspace.
+[workspace]
+members = ["device"]
+
+[[example]]
+name = "measure"

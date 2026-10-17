@@ -1,3 +1,4 @@
+# linkding's own Cargo workspace: the kernel (extracted to Lean) and the server.
 [workspace]
-resolver = "2"
+resolver = "3"
 members = ["kernel", "server"]

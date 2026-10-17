@@ -19,362 +19,3192 @@ set_option maxRecDepth 2048
 
 namespace linkding_kernel
 
-/-- [linkding_kernel::NODE_TERM]
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 13:0-13:28
+/-- [h5i_app_sql::Val]
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-sql/src/lib.rs', lines 8:0-8:12
+    Name pattern: [h5i_app_sql::Val]
     Visibility: public -/
-@[global_simps, irreducible] def NODE_TERM : Std.U8 := 1#u8
+@[discriminant isize, rust_type "h5i_app_sql::Val"]
+inductive h5i_app_sql.Val where
+| Int : Std.I64 → h5i_app_sql.Val
+| Bool : Bool → h5i_app_sql.Val
+| Text : alloc.vec.Vec Std.U8 → h5i_app_sql.Val
+| Bytes : alloc.vec.Vec Std.U8 → h5i_app_sql.Val
+| Null : h5i_app_sql.Val
 
-/-- [linkding_kernel::NODE_TAG]
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 14:0-14:27
+/-- [h5i_app_sql::{impl h5i_app_sql::Column for u64}::to_val]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-sql/src/lib.rs', lines 25:4-25:27
+    Name pattern: [h5i_app_sql::{h5i_app_sql::Column<u64>}::to_val]
     Visibility: public -/
-@[global_simps, irreducible] def NODE_TAG : Std.U8 := 2#u8
+@[rust_fun "h5i_app_sql::{h5i_app_sql::Column<u64>}::to_val"]
+def U64.Insts.H5i_app_sqlColumn.to_val
+  (self : Std.U64) : Result h5i_app_sql.Val := do
+  let i ← lift (UScalar.hcast .I64 self)
+  ok (h5i_app_sql.Val.Int i)
 
-/-- [linkding_kernel::NODE_KEYWORD]
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 15:0-15:31
+/-- [h5i_app_sql::{impl h5i_app_sql::Column for u64}::from_val]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-sql/src/lib.rs', lines 28:4-28:39
+    Name pattern: [h5i_app_sql::{h5i_app_sql::Column<u64>}::from_val]
     Visibility: public -/
-@[global_simps, irreducible] def NODE_KEYWORD : Std.U8 := 3#u8
+@[rust_fun "h5i_app_sql::{h5i_app_sql::Column<u64>}::from_val"]
+def U64.Insts.H5i_app_sqlColumn.from_val
+  (v : h5i_app_sql.Val) : Result (Option Std.U64) := do
+  match v with
+  | h5i_app_sql.Val.Int i =>
+    let i1 ← lift (IScalar.hcast .U64 i)
+    ok (some i1)
+  | h5i_app_sql.Val.Bool _ => ok none
+  | h5i_app_sql.Val.Text _ => ok none
+  | h5i_app_sql.Val.Bytes _ => ok none
+  | h5i_app_sql.Val.Null => ok none
 
-/-- [linkding_kernel::NODE_AND]
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 16:0-16:27
+/-- [h5i_app_sql::{impl h5i_app_sql::Column for bool}::to_val]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-sql/src/lib.rs', lines 55:4-55:27
+    Name pattern: [h5i_app_sql::{h5i_app_sql::Column<bool>}::to_val]
     Visibility: public -/
-@[global_simps, irreducible] def NODE_AND : Std.U8 := 4#u8
+@[rust_fun "h5i_app_sql::{h5i_app_sql::Column<bool>}::to_val"]
+def Bool.Insts.H5i_app_sqlColumn.to_val
+  (self : Bool) : Result h5i_app_sql.Val := do
+  ok (h5i_app_sql.Val.Bool self)
 
-/-- [linkding_kernel::NODE_OR]
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 17:0-17:26
+/-- [h5i_app_sql::{impl h5i_app_sql::Column for bool}::from_val]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-sql/src/lib.rs', lines 58:4-58:40
+    Name pattern: [h5i_app_sql::{h5i_app_sql::Column<bool>}::from_val]
     Visibility: public -/
-@[global_simps, irreducible] def NODE_OR : Std.U8 := 5#u8
+@[rust_fun "h5i_app_sql::{h5i_app_sql::Column<bool>}::from_val"]
+def Bool.Insts.H5i_app_sqlColumn.from_val
+  (v : h5i_app_sql.Val) : Result (Option Bool) := do
+  match v with
+  | h5i_app_sql.Val.Int _ => ok none
+  | h5i_app_sql.Val.Bool b => ok (some b)
+  | h5i_app_sql.Val.Text _ => ok none
+  | h5i_app_sql.Val.Bytes _ => ok none
+  | h5i_app_sql.Val.Null => ok none
 
-/-- [linkding_kernel::NODE_NOT]
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 18:0-18:27
+/-- [h5i_app_sql::{impl h5i_app_sql::Column for alloc::vec::Vec<u8>}::to_val]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-sql/src/lib.rs', lines 67:4-67:27
+    Name pattern: [h5i_app_sql::{h5i_app_sql::Column<alloc::vec::Vec<u8>>}::to_val]
     Visibility: public -/
-@[global_simps, irreducible] def NODE_NOT : Std.U8 := 6#u8
+@[rust_fun "h5i_app_sql::{h5i_app_sql::Column<alloc::vec::Vec<u8>>}::to_val"]
+def alloc.vec.VecU8.Insts.H5i_app_sqlColumn.to_val
+  (self : alloc.vec.Vec Std.U8) : Result h5i_app_sql.Val := do
+  let v ← alloc.vec.CloneVec.clone core.clone.CloneU8 self
+  ok (h5i_app_sql.Val.Bytes v)
 
-/-- [linkding_kernel::OP_LPAREN]
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 19:0-19:24 -/
-@[global_simps, irreducible] def OP_LPAREN : Std.U8 := 7#u8
-
-/-- [linkding_kernel::TOK_RPAREN]
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 20:0-20:25 -/
-@[global_simps, irreducible] def TOK_RPAREN : Std.U8 := 8#u8
-
-/-- [linkding_kernel::View]
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 23:0-34:1
+/-- [h5i_app_sql::{impl h5i_app_sql::Column for alloc::vec::Vec<u8>}::from_val]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-sql/src/lib.rs', lines 70:4-70:43
+    Name pattern: [h5i_app_sql::{h5i_app_sql::Column<alloc::vec::Vec<u8>>}::from_val]
     Visibility: public -/
-structure View where
-  actor : Std.U64
-  bookmark_exists : Bool
-  bookmark_owner : Std.U64
-  bookmark_shared : Bool
-  owner_sharing : Bool
-  owner_public : Bool
-  tag_exists : Bool
-  tag_owner : Std.U64
-  bundle_exists : Bool
-  bundle_owner : Std.U64
+@[rust_fun "h5i_app_sql::{h5i_app_sql::Column<alloc::vec::Vec<u8>>}::from_val"]
+def alloc.vec.VecU8.Insts.H5i_app_sqlColumn.from_val
+  (v : h5i_app_sql.Val) : Result (Option (alloc.vec.Vec Std.U8)) := do
+  match v with
+  | h5i_app_sql.Val.Int _ => ok none
+  | h5i_app_sql.Val.Bool _ => ok none
+  | h5i_app_sql.Val.Text _ => ok none
+  | h5i_app_sql.Val.Bytes b =>
+    let v1 ← alloc.vec.CloneVec.clone core.clone.CloneU8 b
+    ok (some v1)
+  | h5i_app_sql.Val.Null => ok none
+
+/-- [h5i_app_sql::{impl h5i_app_sql::Zero for u64}::zero]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-sql/src/lib.rs', lines 104:4-104:20
+    Name pattern: [h5i_app_sql::{h5i_app_sql::Zero<u64>}::zero]
+    Visibility: public -/
+@[rust_fun "h5i_app_sql::{h5i_app_sql::Zero<u64>}::zero"]
+def U64.Insts.H5i_app_sqlZero.zero : Result Std.U64 := do
+  ok 0#u64
+
+/-- [h5i_app_sql::val_eq]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-sql/src/lib.rs', lines 134:0-134:39
+    Name pattern: [h5i_app_sql::val_eq]
+    Visibility: public -/
+@[rust_fun "h5i_app_sql::val_eq"]
+def h5i_app_sql.val_eq
+  (a : h5i_app_sql.Val) (b : h5i_app_sql.Val) : Result Bool := do
+  match a with
+  | h5i_app_sql.Val.Int x =>
+    match b with
+    | h5i_app_sql.Val.Int y => ok (x = y)
+    | h5i_app_sql.Val.Bool _ => ok false
+    | h5i_app_sql.Val.Text _ => ok false
+    | h5i_app_sql.Val.Bytes _ => ok false
+    | h5i_app_sql.Val.Null => ok false
+  | h5i_app_sql.Val.Bool x =>
+    match b with
+    | h5i_app_sql.Val.Int _ => ok false
+    | h5i_app_sql.Val.Bool y => ok (x = y)
+    | h5i_app_sql.Val.Text _ => ok false
+    | h5i_app_sql.Val.Bytes _ => ok false
+    | h5i_app_sql.Val.Null => ok false
+  | h5i_app_sql.Val.Text x =>
+    match b with
+    | h5i_app_sql.Val.Int _ => ok false
+    | h5i_app_sql.Val.Bool _ => ok false
+    | h5i_app_sql.Val.Text y =>
+      alloc.vec.partial_eq.PartialEqVec.eq core.cmp.PartialEqU8 x y
+    | h5i_app_sql.Val.Bytes _ => ok false
+    | h5i_app_sql.Val.Null => ok false
+  | h5i_app_sql.Val.Bytes x =>
+    match b with
+    | h5i_app_sql.Val.Int _ => ok false
+    | h5i_app_sql.Val.Bool _ => ok false
+    | h5i_app_sql.Val.Text _ => ok false
+    | h5i_app_sql.Val.Bytes y =>
+      alloc.vec.partial_eq.PartialEqVec.eq core.cmp.PartialEqU8 x y
+    | h5i_app_sql.Val.Null => ok false
+  | h5i_app_sql.Val.Null =>
+    match b with
+    | h5i_app_sql.Val.Int _ => ok false
+    | h5i_app_sql.Val.Bool _ => ok false
+    | h5i_app_sql.Val.Text _ => ok false
+    | h5i_app_sql.Val.Bytes _ => ok false
+    | h5i_app_sql.Val.Null => ok true
+
+/-- [h5i_app_sql::has_col]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-sql/src/lib.rs', lines 160:0-160:59
+    Name pattern: [h5i_app_sql::has_col]
+    Visibility: public -/
+@[rust_fun "h5i_app_sql::has_col"]
+def h5i_app_sql.has_col
+  (row : alloc.vec.Vec h5i_app_sql.Val) (col : Std.U32) (val : h5i_app_sql.Val)
+  :
+  Result Bool
+  := do
+  let i ← lift (UScalar.cast .Usize col)
+  let i1 := alloc.vec.Vec.len row
+  if i < i1
+  then
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+        h5i_app_sql.Val) row i
+    h5i_app_sql.val_eq v val
+  else ok false
+
+/-- [h5i_app_sql::Write]
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-sql/src/lib.rs', lines 171:0-171:14
+    Name pattern: [h5i_app_sql::Write]
+    Visibility: public -/
+@[discriminant isize, rust_type "h5i_app_sql::Write"]
+inductive h5i_app_sql.Write where
+| Put :
+  Std.U32 →
+  Std.U32 →
+  alloc.vec.Vec h5i_app_sql.Val →
+  h5i_app_sql.Write
+| Del : Std.U32 → alloc.vec.Vec h5i_app_sql.Val → h5i_app_sql.Write
+| DelWhere : Std.U32 → Std.U32 → h5i_app_sql.Val → h5i_app_sql.Write
+
+/-- [h5i_app_sql::Window]
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-sql/src/lib.rs', lines 237:0-237:17
+    Name pattern: [h5i_app_sql::Window]
+    Visibility: public -/
+@[rust_type "h5i_app_sql::Window"]
+structure h5i_app_sql.Window where
+  desc : Bool
+  offset : Std.U64
+  limit : Option Std.U64
+
+/-- [h5i_app_sql::whole]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-sql/src/lib.rs', lines 244:0-244:24
+    Name pattern: [h5i_app_sql::whole]
+    Visibility: public -/
+@[rust_fun "h5i_app_sql::whole"]
+def h5i_app_sql.whole : Result h5i_app_sql.Window := do
+  ok { desc := false, offset := 0#u64, limit := none }
+
+/-- [h5i_app_sql::Pred]
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-sql/src/lib.rs', lines 250:0-250:13
+    Name pattern: [h5i_app_sql::Pred]
+    Visibility: public -/
+@[discriminant isize, rust_type "h5i_app_sql::Pred"]
+inductive h5i_app_sql.Pred where
+| All : h5i_app_sql.Pred
+| Eq : Std.U32 → h5i_app_sql.Val → h5i_app_sql.Pred
+| In :
+  Std.U32 →
+  Std.U32 →
+  h5i_app_sql.Pred →
+  Std.U32 →
+  h5i_app_sql.Window →
+  h5i_app_sql.Pred
+| And : h5i_app_sql.Pred → h5i_app_sql.Pred → h5i_app_sql.Pred
+| Or : h5i_app_sql.Pred → h5i_app_sql.Pred → h5i_app_sql.Pred
+
+/-- [h5i_app_sql::Read]
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-sql/src/lib.rs', lines 265:0-265:15
+    Name pattern: [h5i_app_sql::Read]
+    Visibility: public -/
+@[rust_type "h5i_app_sql::Read"]
+structure h5i_app_sql.Read where
+  table : Std.U32
+  pred : h5i_app_sql.Pred
+  window : h5i_app_sql.Window
+
+/-- [linkding_kernel::User]
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 95:12-98:13
+    Visibility: public -/
+structure User where
+  id : Std.U64
+  username : alloc.vec.Vec Std.U8
+  theme : alloc.vec.Vec Std.U8
+  date_display : alloc.vec.Vec Std.U8
+  link_target : alloc.vec.Vec Std.U8
+  web_archive : alloc.vec.Vec Std.U8
+  lax : Bool
+  sharing : Bool
+  public_sharing : Bool
+  favicons : Bool
+  display_url : Bool
+  permanent_notes : Bool
+  search_prefs : alloc.vec.Vec Std.U8
+  legacy : Bool
+
+/-- [linkding_kernel::Token]
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 95:12-98:13
+    Visibility: public -/
+structure Token where
+  key : alloc.vec.Vec Std.U8
+  user : Std.U64
+
+/-- [linkding_kernel::Bookmark]
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 95:12-98:13
+    Visibility: public -/
+structure Bookmark where
+  owner : Std.U64
+  added : Std.U64
+  id : Std.U64
+  url : alloc.vec.Vec Std.U8
+  url_norm : alloc.vec.Vec Std.U8
+  title : alloc.vec.Vec Std.U8
+  description : alloc.vec.Vec Std.U8
+  notes : alloc.vec.Vec Std.U8
+  unread : Bool
+  archived : Bool
+  shared : Bool
+  modified : Std.U64
+
+/-- [linkding_kernel::Tag]
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 95:12-98:13
+    Visibility: public -/
+structure Tag where
+  id : Std.U64
+  owner : Std.U64
+  «name» : alloc.vec.Vec Std.U8
+  name_lower : alloc.vec.Vec Std.U8
+  added : Std.U64
+
+/-- [linkding_kernel::Link]
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 95:12-98:13
+    Visibility: public -/
+structure Link where
+  bookmark : Std.U64
+  tag : Std.U64
+
+/-- [linkding_kernel::Bundle]
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 95:12-98:13
+    Visibility: public -/
+structure Bundle where
+  id : Std.U64
+  owner : Std.U64
+  «name» : alloc.vec.Vec Std.U8
+  search : alloc.vec.Vec Std.U8
+  any_tags : alloc.vec.Vec Std.U8
+  all_tags : alloc.vec.Vec Std.U8
+  excluded_tags : alloc.vec.Vec Std.U8
+  filter_unread : alloc.vec.Vec Std.U8
+  filter_shared : alloc.vec.Vec Std.U8
+  order : Std.U64
+  created : Std.U64
+  modified : Std.U64
+
+/-- [linkding_kernel::Counter]
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 95:12-98:13
+    Visibility: public -/
+structure Counter where
+  last_bookmark : Std.U64
+  last_tag : Std.U64
+  last_bundle : Std.U64
+
+/-- [linkding_kernel::{linkding_kernel::User}::TABLE]
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 135:12-135:60
+    Visibility: public -/
+@[global_simps, irreducible] def User.TABLE : Std.U32 := 0#u32
+
+/-- [linkding_kernel::{linkding_kernel::Token}::TABLE]
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 135:12-135:60
+    Visibility: public -/
+@[global_simps, irreducible] def Token.TABLE : Std.U32 := 1#u32
+
+/-- [linkding_kernel::{linkding_kernel::Bookmark}::TABLE]
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 135:12-135:60
+    Visibility: public -/
+@[global_simps, irreducible] def Bookmark.TABLE : Std.U32 := 2#u32
+
+/-- [linkding_kernel::{linkding_kernel::Tag}::TABLE]
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 135:12-135:60
+    Visibility: public -/
+@[global_simps, irreducible] def Tag.TABLE : Std.U32 := 3#u32
+
+/-- [linkding_kernel::{linkding_kernel::Link}::TABLE]
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 135:12-135:60
+    Visibility: public -/
+@[global_simps, irreducible] def Link.TABLE : Std.U32 := 4#u32
+
+/-- [linkding_kernel::{linkding_kernel::Bundle}::TABLE]
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 135:12-135:60
+    Visibility: public -/
+@[global_simps, irreducible] def Bundle.TABLE : Std.U32 := 5#u32
+
+/-- [linkding_kernel::{linkding_kernel::Counter}::TABLE]
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 135:12-135:60
+    Visibility: public -/
+@[global_simps, irreducible] def Counter.TABLE : Std.U32 := 6#u32
+
+/-- [linkding_kernel::{linkding_kernel::User}::KEY_LEN]
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 136:12-136:62
+    Visibility: public -/
+@[global_simps, irreducible] def User.KEY_LEN : Std.U32 := 1#u32
+
+/-- [linkding_kernel::{linkding_kernel::Token}::KEY_LEN]
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 136:12-136:62
+    Visibility: public -/
+@[global_simps, irreducible] def Token.KEY_LEN : Std.U32 := 1#u32
+
+/-- [linkding_kernel::{linkding_kernel::Bookmark}::KEY_LEN]
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 136:12-136:62
+    Visibility: public -/
+@[global_simps, irreducible] def Bookmark.KEY_LEN : Std.U32 := 3#u32
+
+/-- [linkding_kernel::{linkding_kernel::Tag}::KEY_LEN]
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 136:12-136:62
+    Visibility: public -/
+@[global_simps, irreducible] def Tag.KEY_LEN : Std.U32 := 1#u32
+
+/-- [linkding_kernel::{linkding_kernel::Link}::KEY_LEN]
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 136:12-136:62
+    Visibility: public -/
+@[global_simps, irreducible] def Link.KEY_LEN : Std.U32 := 2#u32
+
+/-- [linkding_kernel::{linkding_kernel::Bundle}::KEY_LEN]
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 136:12-136:62
+    Visibility: public -/
+@[global_simps, irreducible] def Bundle.KEY_LEN : Std.U32 := 1#u32
+
+/-- [linkding_kernel::{linkding_kernel::Counter}::KEY_LEN]
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 136:12-136:62
+    Visibility: public -/
+@[global_simps, irreducible] def Counter.KEY_LEN : Std.U32 := 0#u32
+
+/-- [linkding_kernel::{linkding_kernel::User}::to_row]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 138:12-143:13
+    Visibility: public -/
+def User.to_row (self : User) : Result (alloc.vec.Vec h5i_app_sql.Val) := do
+  let v ← U64.Insts.H5i_app_sqlColumn.to_val self.id
+  let out ← alloc.vec.Vec.push (alloc.vec.Vec.new h5i_app_sql.Val) v
+  let v1 ← alloc.vec.VecU8.Insts.H5i_app_sqlColumn.to_val self.username
+  let out1 ← alloc.vec.Vec.push out v1
+  let v2 ← alloc.vec.VecU8.Insts.H5i_app_sqlColumn.to_val self.theme
+  let out2 ← alloc.vec.Vec.push out1 v2
+  let v3 ← alloc.vec.VecU8.Insts.H5i_app_sqlColumn.to_val self.date_display
+  let out3 ← alloc.vec.Vec.push out2 v3
+  let v4 ← alloc.vec.VecU8.Insts.H5i_app_sqlColumn.to_val self.link_target
+  let out4 ← alloc.vec.Vec.push out3 v4
+  let v5 ← alloc.vec.VecU8.Insts.H5i_app_sqlColumn.to_val self.web_archive
+  let out5 ← alloc.vec.Vec.push out4 v5
+  let v6 ← Bool.Insts.H5i_app_sqlColumn.to_val self.lax
+  let out6 ← alloc.vec.Vec.push out5 v6
+  let v7 ← Bool.Insts.H5i_app_sqlColumn.to_val self.sharing
+  let out7 ← alloc.vec.Vec.push out6 v7
+  let v8 ← Bool.Insts.H5i_app_sqlColumn.to_val self.public_sharing
+  let out8 ← alloc.vec.Vec.push out7 v8
+  let v9 ← Bool.Insts.H5i_app_sqlColumn.to_val self.favicons
+  let out9 ← alloc.vec.Vec.push out8 v9
+  let v10 ← Bool.Insts.H5i_app_sqlColumn.to_val self.display_url
+  let out10 ← alloc.vec.Vec.push out9 v10
+  let v11 ← Bool.Insts.H5i_app_sqlColumn.to_val self.permanent_notes
+  let out11 ← alloc.vec.Vec.push out10 v11
+  let v12 ← alloc.vec.VecU8.Insts.H5i_app_sqlColumn.to_val self.search_prefs
+  let out12 ← alloc.vec.Vec.push out11 v12
+  let v13 ← Bool.Insts.H5i_app_sqlColumn.to_val self.legacy
+  alloc.vec.Vec.push out12 v13
+
+/-- [linkding_kernel::{linkding_kernel::Token}::to_row]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 138:12-143:13
+    Visibility: public -/
+def Token.to_row (self : Token) : Result (alloc.vec.Vec h5i_app_sql.Val) := do
+  let v ← alloc.vec.VecU8.Insts.H5i_app_sqlColumn.to_val self.key
+  let out ← alloc.vec.Vec.push (alloc.vec.Vec.new h5i_app_sql.Val) v
+  let v1 ← U64.Insts.H5i_app_sqlColumn.to_val self.user
+  alloc.vec.Vec.push out v1
+
+/-- [linkding_kernel::{linkding_kernel::Bookmark}::to_row]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 138:12-143:13
+    Visibility: public -/
+def Bookmark.to_row
+  (self : Bookmark) : Result (alloc.vec.Vec h5i_app_sql.Val) := do
+  let v ← U64.Insts.H5i_app_sqlColumn.to_val self.owner
+  let out ← alloc.vec.Vec.push (alloc.vec.Vec.new h5i_app_sql.Val) v
+  let v1 ← U64.Insts.H5i_app_sqlColumn.to_val self.added
+  let out1 ← alloc.vec.Vec.push out v1
+  let v2 ← U64.Insts.H5i_app_sqlColumn.to_val self.id
+  let out2 ← alloc.vec.Vec.push out1 v2
+  let v3 ← alloc.vec.VecU8.Insts.H5i_app_sqlColumn.to_val self.url
+  let out3 ← alloc.vec.Vec.push out2 v3
+  let v4 ← alloc.vec.VecU8.Insts.H5i_app_sqlColumn.to_val self.url_norm
+  let out4 ← alloc.vec.Vec.push out3 v4
+  let v5 ← alloc.vec.VecU8.Insts.H5i_app_sqlColumn.to_val self.title
+  let out5 ← alloc.vec.Vec.push out4 v5
+  let v6 ← alloc.vec.VecU8.Insts.H5i_app_sqlColumn.to_val self.description
+  let out6 ← alloc.vec.Vec.push out5 v6
+  let v7 ← alloc.vec.VecU8.Insts.H5i_app_sqlColumn.to_val self.notes
+  let out7 ← alloc.vec.Vec.push out6 v7
+  let v8 ← Bool.Insts.H5i_app_sqlColumn.to_val self.unread
+  let out8 ← alloc.vec.Vec.push out7 v8
+  let v9 ← Bool.Insts.H5i_app_sqlColumn.to_val self.archived
+  let out9 ← alloc.vec.Vec.push out8 v9
+  let v10 ← Bool.Insts.H5i_app_sqlColumn.to_val self.shared
+  let out10 ← alloc.vec.Vec.push out9 v10
+  let v11 ← U64.Insts.H5i_app_sqlColumn.to_val self.modified
+  alloc.vec.Vec.push out10 v11
+
+/-- [linkding_kernel::{linkding_kernel::Tag}::to_row]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 138:12-143:13
+    Visibility: public -/
+def Tag.to_row (self : Tag) : Result (alloc.vec.Vec h5i_app_sql.Val) := do
+  let v ← U64.Insts.H5i_app_sqlColumn.to_val self.id
+  let out ← alloc.vec.Vec.push (alloc.vec.Vec.new h5i_app_sql.Val) v
+  let v1 ← U64.Insts.H5i_app_sqlColumn.to_val self.owner
+  let out1 ← alloc.vec.Vec.push out v1
+  let v2 ← alloc.vec.VecU8.Insts.H5i_app_sqlColumn.to_val self.name
+  let out2 ← alloc.vec.Vec.push out1 v2
+  let v3 ← alloc.vec.VecU8.Insts.H5i_app_sqlColumn.to_val self.name_lower
+  let out3 ← alloc.vec.Vec.push out2 v3
+  let v4 ← U64.Insts.H5i_app_sqlColumn.to_val self.added
+  alloc.vec.Vec.push out3 v4
+
+/-- [linkding_kernel::{linkding_kernel::Link}::to_row]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 138:12-143:13
+    Visibility: public -/
+def Link.to_row (self : Link) : Result (alloc.vec.Vec h5i_app_sql.Val) := do
+  let v ← U64.Insts.H5i_app_sqlColumn.to_val self.bookmark
+  let out ← alloc.vec.Vec.push (alloc.vec.Vec.new h5i_app_sql.Val) v
+  let v1 ← U64.Insts.H5i_app_sqlColumn.to_val self.tag
+  alloc.vec.Vec.push out v1
+
+/-- [linkding_kernel::{linkding_kernel::Bundle}::to_row]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 138:12-143:13
+    Visibility: public -/
+def Bundle.to_row
+  (self : Bundle) : Result (alloc.vec.Vec h5i_app_sql.Val) := do
+  let v ← U64.Insts.H5i_app_sqlColumn.to_val self.id
+  let out ← alloc.vec.Vec.push (alloc.vec.Vec.new h5i_app_sql.Val) v
+  let v1 ← U64.Insts.H5i_app_sqlColumn.to_val self.owner
+  let out1 ← alloc.vec.Vec.push out v1
+  let v2 ← alloc.vec.VecU8.Insts.H5i_app_sqlColumn.to_val self.name
+  let out2 ← alloc.vec.Vec.push out1 v2
+  let v3 ← alloc.vec.VecU8.Insts.H5i_app_sqlColumn.to_val self.search
+  let out3 ← alloc.vec.Vec.push out2 v3
+  let v4 ← alloc.vec.VecU8.Insts.H5i_app_sqlColumn.to_val self.any_tags
+  let out4 ← alloc.vec.Vec.push out3 v4
+  let v5 ← alloc.vec.VecU8.Insts.H5i_app_sqlColumn.to_val self.all_tags
+  let out5 ← alloc.vec.Vec.push out4 v5
+  let v6 ← alloc.vec.VecU8.Insts.H5i_app_sqlColumn.to_val self.excluded_tags
+  let out6 ← alloc.vec.Vec.push out5 v6
+  let v7 ← alloc.vec.VecU8.Insts.H5i_app_sqlColumn.to_val self.filter_unread
+  let out7 ← alloc.vec.Vec.push out6 v7
+  let v8 ← alloc.vec.VecU8.Insts.H5i_app_sqlColumn.to_val self.filter_shared
+  let out8 ← alloc.vec.Vec.push out7 v8
+  let v9 ← U64.Insts.H5i_app_sqlColumn.to_val self.order
+  let out9 ← alloc.vec.Vec.push out8 v9
+  let v10 ← U64.Insts.H5i_app_sqlColumn.to_val self.created
+  let out10 ← alloc.vec.Vec.push out9 v10
+  let v11 ← U64.Insts.H5i_app_sqlColumn.to_val self.modified
+  alloc.vec.Vec.push out10 v11
+
+/-- [linkding_kernel::{linkding_kernel::Counter}::to_row]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 138:12-143:13
+    Visibility: public -/
+def Counter.to_row
+  (self : Counter) : Result (alloc.vec.Vec h5i_app_sql.Val) := do
+  let v ← U64.Insts.H5i_app_sqlColumn.to_val self.last_bookmark
+  let out ← alloc.vec.Vec.push (alloc.vec.Vec.new h5i_app_sql.Val) v
+  let v1 ← U64.Insts.H5i_app_sqlColumn.to_val self.last_tag
+  let out1 ← alloc.vec.Vec.push out v1
+  let v2 ← U64.Insts.H5i_app_sqlColumn.to_val self.last_bundle
+  alloc.vec.Vec.push out1 v2
+
+/-- [linkding_kernel::{linkding_kernel::Counter}::from_row]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 146:12-167:13
+    Visibility: public -/
+def Counter.from_row
+  (row : alloc.vec.Vec h5i_app_sql.Val) : Result (Option Counter) := do
+  let i := alloc.vec.Vec.len row
+  let i1 ← 0#usize + 1#usize
+  let i2 ← i1 + 1#usize
+  let i3 ← i2 + 1#usize
+  if i != i3
+  then ok none
+  else
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+        h5i_app_sql.Val) row 0#usize
+    let o ← U64.Insts.H5i_app_sqlColumn.from_val v
+    match o with
+    | none => ok none
+    | some x =>
+      let v1 ←
+        alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+          h5i_app_sql.Val) row i1
+      let o1 ← U64.Insts.H5i_app_sqlColumn.from_val v1
+      match o1 with
+      | none => ok none
+      | some x1 =>
+        let i4 ← i1 + 1#usize
+        let v2 ←
+          alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+            h5i_app_sql.Val) row i4
+        let o2 ← U64.Insts.H5i_app_sqlColumn.from_val v2
+        match o2 with
+        | none => ok none
+        | some x2 =>
+          let _ ← i4 + 1#usize
+          ok (some { last_bookmark := x, last_tag := x1, last_bundle := x2 })
+
+/-- [linkding_kernel::{linkding_kernel::User}::from_row]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 146:12-167:13
+    Visibility: public -/
+def User.from_row
+  (row : alloc.vec.Vec h5i_app_sql.Val) : Result (Option User) := do
+  let i := alloc.vec.Vec.len row
+  let i1 ← 0#usize + 1#usize
+  let i2 ← i1 + 1#usize
+  let i3 ← i2 + 1#usize
+  let i4 ← i3 + 1#usize
+  let i5 ← i4 + 1#usize
+  let i6 ← i5 + 1#usize
+  let i7 ← i6 + 1#usize
+  let i8 ← i7 + 1#usize
+  let i9 ← i8 + 1#usize
+  let i10 ← i9 + 1#usize
+  let i11 ← i10 + 1#usize
+  let i12 ← i11 + 1#usize
+  let i13 ← i12 + 1#usize
+  let i14 ← i13 + 1#usize
+  if i != i14
+  then ok none
+  else
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+        h5i_app_sql.Val) row 0#usize
+    let o ← U64.Insts.H5i_app_sqlColumn.from_val v
+    match o with
+    | none => ok none
+    | some x =>
+      let v1 ←
+        alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+          h5i_app_sql.Val) row i1
+      let o1 ← alloc.vec.VecU8.Insts.H5i_app_sqlColumn.from_val v1
+      match o1 with
+      | none => ok none
+      | some x1 =>
+        let i15 ← i1 + 1#usize
+        let v2 ←
+          alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+            h5i_app_sql.Val) row i15
+        let o2 ← alloc.vec.VecU8.Insts.H5i_app_sqlColumn.from_val v2
+        match o2 with
+        | none => ok none
+        | some x2 =>
+          let i16 ← i15 + 1#usize
+          let v3 ←
+            alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+              h5i_app_sql.Val) row i16
+          let o3 ← alloc.vec.VecU8.Insts.H5i_app_sqlColumn.from_val v3
+          match o3 with
+          | none => ok none
+          | some x3 =>
+            let i17 ← i16 + 1#usize
+            let v4 ←
+              alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+                h5i_app_sql.Val) row i17
+            let o4 ← alloc.vec.VecU8.Insts.H5i_app_sqlColumn.from_val v4
+            match o4 with
+            | none => ok none
+            | some x4 =>
+              let i18 ← i17 + 1#usize
+              let v5 ←
+                alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+                  h5i_app_sql.Val) row i18
+              let o5 ← alloc.vec.VecU8.Insts.H5i_app_sqlColumn.from_val v5
+              match o5 with
+              | none => ok none
+              | some x5 =>
+                let i19 ← i18 + 1#usize
+                let v6 ←
+                  alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+                    h5i_app_sql.Val) row i19
+                let o6 ← Bool.Insts.H5i_app_sqlColumn.from_val v6
+                match o6 with
+                | none => ok none
+                | some x6 =>
+                  let i20 ← i19 + 1#usize
+                  let v7 ←
+                    alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+                      h5i_app_sql.Val) row i20
+                  let o7 ← Bool.Insts.H5i_app_sqlColumn.from_val v7
+                  match o7 with
+                  | none => ok none
+                  | some x7 =>
+                    let i21 ← i20 + 1#usize
+                    let v8 ←
+                      alloc.vec.Vec.index
+                        (core.slice.index.SliceIndexUsizeSlice h5i_app_sql.Val)
+                        row i21
+                    let o8 ← Bool.Insts.H5i_app_sqlColumn.from_val v8
+                    match o8 with
+                    | none => ok none
+                    | some x8 =>
+                      let i22 ← i21 + 1#usize
+                      let v9 ←
+                        alloc.vec.Vec.index
+                          (core.slice.index.SliceIndexUsizeSlice
+                          h5i_app_sql.Val) row i22
+                      let o9 ← Bool.Insts.H5i_app_sqlColumn.from_val v9
+                      match o9 with
+                      | none => ok none
+                      | some x9 =>
+                        let i23 ← i22 + 1#usize
+                        let v10 ←
+                          alloc.vec.Vec.index
+                            (core.slice.index.SliceIndexUsizeSlice
+                            h5i_app_sql.Val) row i23
+                        let o10 ← Bool.Insts.H5i_app_sqlColumn.from_val v10
+                        match o10 with
+                        | none => ok none
+                        | some x10 =>
+                          let i24 ← i23 + 1#usize
+                          let v11 ←
+                            alloc.vec.Vec.index
+                              (core.slice.index.SliceIndexUsizeSlice
+                              h5i_app_sql.Val) row i24
+                          let o11 ← Bool.Insts.H5i_app_sqlColumn.from_val v11
+                          match o11 with
+                          | none => ok none
+                          | some x11 =>
+                            let i25 ← i24 + 1#usize
+                            let v12 ←
+                              alloc.vec.Vec.index
+                                (core.slice.index.SliceIndexUsizeSlice
+                                h5i_app_sql.Val) row i25
+                            let o12 ←
+                              alloc.vec.VecU8.Insts.H5i_app_sqlColumn.from_val
+                                v12
+                            match o12 with
+                            | none => ok none
+                            | some x12 =>
+                              let i26 ← i25 + 1#usize
+                              let v13 ←
+                                alloc.vec.Vec.index
+                                  (core.slice.index.SliceIndexUsizeSlice
+                                  h5i_app_sql.Val) row i26
+                              let o13 ←
+                                Bool.Insts.H5i_app_sqlColumn.from_val v13
+                              match o13 with
+                              | none => ok none
+                              | some x13 =>
+                                let _ ← i26 + 1#usize
+                                ok (some
+                                  {
+                                    id := x,
+                                    username := x1,
+                                    theme := x2,
+                                    date_display := x3,
+                                    link_target := x4,
+                                    web_archive := x5,
+                                    lax := x6,
+                                    sharing := x7,
+                                    public_sharing := x8,
+                                    favicons := x9,
+                                    display_url := x10,
+                                    permanent_notes := x11,
+                                    search_prefs := x12,
+                                    legacy := x13
+                                  })
+
+/-- [linkding_kernel::{linkding_kernel::Token}::from_row]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 146:12-167:13
+    Visibility: public -/
+def Token.from_row
+  (row : alloc.vec.Vec h5i_app_sql.Val) : Result (Option Token) := do
+  let i := alloc.vec.Vec.len row
+  let i1 ← 0#usize + 1#usize
+  let i2 ← i1 + 1#usize
+  if i != i2
+  then ok none
+  else
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+        h5i_app_sql.Val) row 0#usize
+    let o ← alloc.vec.VecU8.Insts.H5i_app_sqlColumn.from_val v
+    match o with
+    | none => ok none
+    | some x =>
+      let v1 ←
+        alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+          h5i_app_sql.Val) row i1
+      let o1 ← U64.Insts.H5i_app_sqlColumn.from_val v1
+      match o1 with
+      | none => ok none
+      | some x1 => let _ ← i1 + 1#usize
+                   ok (some { key := x, user := x1 })
+
+/-- [linkding_kernel::{linkding_kernel::Bookmark}::from_row]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 146:12-167:13
+    Visibility: public -/
+def Bookmark.from_row
+  (row : alloc.vec.Vec h5i_app_sql.Val) : Result (Option Bookmark) := do
+  let i := alloc.vec.Vec.len row
+  let i1 ← 0#usize + 1#usize
+  let i2 ← i1 + 1#usize
+  let i3 ← i2 + 1#usize
+  let i4 ← i3 + 1#usize
+  let i5 ← i4 + 1#usize
+  let i6 ← i5 + 1#usize
+  let i7 ← i6 + 1#usize
+  let i8 ← i7 + 1#usize
+  let i9 ← i8 + 1#usize
+  let i10 ← i9 + 1#usize
+  let i11 ← i10 + 1#usize
+  let i12 ← i11 + 1#usize
+  if i != i12
+  then ok none
+  else
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+        h5i_app_sql.Val) row 0#usize
+    let o ← U64.Insts.H5i_app_sqlColumn.from_val v
+    match o with
+    | none => ok none
+    | some x =>
+      let v1 ←
+        alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+          h5i_app_sql.Val) row i1
+      let o1 ← U64.Insts.H5i_app_sqlColumn.from_val v1
+      match o1 with
+      | none => ok none
+      | some x1 =>
+        let i13 ← i1 + 1#usize
+        let v2 ←
+          alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+            h5i_app_sql.Val) row i13
+        let o2 ← U64.Insts.H5i_app_sqlColumn.from_val v2
+        match o2 with
+        | none => ok none
+        | some x2 =>
+          let i14 ← i13 + 1#usize
+          let v3 ←
+            alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+              h5i_app_sql.Val) row i14
+          let o3 ← alloc.vec.VecU8.Insts.H5i_app_sqlColumn.from_val v3
+          match o3 with
+          | none => ok none
+          | some x3 =>
+            let i15 ← i14 + 1#usize
+            let v4 ←
+              alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+                h5i_app_sql.Val) row i15
+            let o4 ← alloc.vec.VecU8.Insts.H5i_app_sqlColumn.from_val v4
+            match o4 with
+            | none => ok none
+            | some x4 =>
+              let i16 ← i15 + 1#usize
+              let v5 ←
+                alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+                  h5i_app_sql.Val) row i16
+              let o5 ← alloc.vec.VecU8.Insts.H5i_app_sqlColumn.from_val v5
+              match o5 with
+              | none => ok none
+              | some x5 =>
+                let i17 ← i16 + 1#usize
+                let v6 ←
+                  alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+                    h5i_app_sql.Val) row i17
+                let o6 ← alloc.vec.VecU8.Insts.H5i_app_sqlColumn.from_val v6
+                match o6 with
+                | none => ok none
+                | some x6 =>
+                  let i18 ← i17 + 1#usize
+                  let v7 ←
+                    alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+                      h5i_app_sql.Val) row i18
+                  let o7 ←
+                    alloc.vec.VecU8.Insts.H5i_app_sqlColumn.from_val v7
+                  match o7 with
+                  | none => ok none
+                  | some x7 =>
+                    let i19 ← i18 + 1#usize
+                    let v8 ←
+                      alloc.vec.Vec.index
+                        (core.slice.index.SliceIndexUsizeSlice h5i_app_sql.Val)
+                        row i19
+                    let o8 ← Bool.Insts.H5i_app_sqlColumn.from_val v8
+                    match o8 with
+                    | none => ok none
+                    | some x8 =>
+                      let i20 ← i19 + 1#usize
+                      let v9 ←
+                        alloc.vec.Vec.index
+                          (core.slice.index.SliceIndexUsizeSlice
+                          h5i_app_sql.Val) row i20
+                      let o9 ← Bool.Insts.H5i_app_sqlColumn.from_val v9
+                      match o9 with
+                      | none => ok none
+                      | some x9 =>
+                        let i21 ← i20 + 1#usize
+                        let v10 ←
+                          alloc.vec.Vec.index
+                            (core.slice.index.SliceIndexUsizeSlice
+                            h5i_app_sql.Val) row i21
+                        let o10 ← Bool.Insts.H5i_app_sqlColumn.from_val v10
+                        match o10 with
+                        | none => ok none
+                        | some x10 =>
+                          let i22 ← i21 + 1#usize
+                          let v11 ←
+                            alloc.vec.Vec.index
+                              (core.slice.index.SliceIndexUsizeSlice
+                              h5i_app_sql.Val) row i22
+                          let o11 ← U64.Insts.H5i_app_sqlColumn.from_val v11
+                          match o11 with
+                          | none => ok none
+                          | some x11 =>
+                            let _ ← i22 + 1#usize
+                            ok (some
+                              {
+                                owner := x,
+                                added := x1,
+                                id := x2,
+                                url := x3,
+                                url_norm := x4,
+                                title := x5,
+                                description := x6,
+                                notes := x7,
+                                unread := x8,
+                                archived := x9,
+                                shared := x10,
+                                modified := x11
+                              })
+
+/-- [linkding_kernel::{linkding_kernel::Tag}::from_row]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 146:12-167:13
+    Visibility: public -/
+def Tag.from_row
+  (row : alloc.vec.Vec h5i_app_sql.Val) : Result (Option Tag) := do
+  let i := alloc.vec.Vec.len row
+  let i1 ← 0#usize + 1#usize
+  let i2 ← i1 + 1#usize
+  let i3 ← i2 + 1#usize
+  let i4 ← i3 + 1#usize
+  let i5 ← i4 + 1#usize
+  if i != i5
+  then ok none
+  else
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+        h5i_app_sql.Val) row 0#usize
+    let o ← U64.Insts.H5i_app_sqlColumn.from_val v
+    match o with
+    | none => ok none
+    | some x =>
+      let v1 ←
+        alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+          h5i_app_sql.Val) row i1
+      let o1 ← U64.Insts.H5i_app_sqlColumn.from_val v1
+      match o1 with
+      | none => ok none
+      | some x1 =>
+        let i6 ← i1 + 1#usize
+        let v2 ←
+          alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+            h5i_app_sql.Val) row i6
+        let o2 ← alloc.vec.VecU8.Insts.H5i_app_sqlColumn.from_val v2
+        match o2 with
+        | none => ok none
+        | some x2 =>
+          let i7 ← i6 + 1#usize
+          let v3 ←
+            alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+              h5i_app_sql.Val) row i7
+          let o3 ← alloc.vec.VecU8.Insts.H5i_app_sqlColumn.from_val v3
+          match o3 with
+          | none => ok none
+          | some x3 =>
+            let i8 ← i7 + 1#usize
+            let v4 ←
+              alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+                h5i_app_sql.Val) row i8
+            let o4 ← U64.Insts.H5i_app_sqlColumn.from_val v4
+            match o4 with
+            | none => ok none
+            | some x4 =>
+              let _ ← i8 + 1#usize
+              ok (some
+                {
+                  id := x,
+                  owner := x1,
+                  «name» := x2,
+                  name_lower := x3,
+                  added := x4
+                })
+
+/-- [linkding_kernel::{linkding_kernel::Link}::from_row]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 146:12-167:13
+    Visibility: public -/
+def Link.from_row
+  (row : alloc.vec.Vec h5i_app_sql.Val) : Result (Option Link) := do
+  let i := alloc.vec.Vec.len row
+  let i1 ← 0#usize + 1#usize
+  let i2 ← i1 + 1#usize
+  if i != i2
+  then ok none
+  else
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+        h5i_app_sql.Val) row 0#usize
+    let o ← U64.Insts.H5i_app_sqlColumn.from_val v
+    match o with
+    | none => ok none
+    | some x =>
+      let v1 ←
+        alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+          h5i_app_sql.Val) row i1
+      let o1 ← U64.Insts.H5i_app_sqlColumn.from_val v1
+      match o1 with
+      | none => ok none
+      | some x1 =>
+        let _ ← i1 + 1#usize
+        ok (some { bookmark := x, tag := x1 })
+
+/-- [linkding_kernel::{linkding_kernel::Bundle}::from_row]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 146:12-167:13
+    Visibility: public -/
+def Bundle.from_row
+  (row : alloc.vec.Vec h5i_app_sql.Val) : Result (Option Bundle) := do
+  let i := alloc.vec.Vec.len row
+  let i1 ← 0#usize + 1#usize
+  let i2 ← i1 + 1#usize
+  let i3 ← i2 + 1#usize
+  let i4 ← i3 + 1#usize
+  let i5 ← i4 + 1#usize
+  let i6 ← i5 + 1#usize
+  let i7 ← i6 + 1#usize
+  let i8 ← i7 + 1#usize
+  let i9 ← i8 + 1#usize
+  let i10 ← i9 + 1#usize
+  let i11 ← i10 + 1#usize
+  let i12 ← i11 + 1#usize
+  if i != i12
+  then ok none
+  else
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+        h5i_app_sql.Val) row 0#usize
+    let o ← U64.Insts.H5i_app_sqlColumn.from_val v
+    match o with
+    | none => ok none
+    | some x =>
+      let v1 ←
+        alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+          h5i_app_sql.Val) row i1
+      let o1 ← U64.Insts.H5i_app_sqlColumn.from_val v1
+      match o1 with
+      | none => ok none
+      | some x1 =>
+        let i13 ← i1 + 1#usize
+        let v2 ←
+          alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+            h5i_app_sql.Val) row i13
+        let o2 ← alloc.vec.VecU8.Insts.H5i_app_sqlColumn.from_val v2
+        match o2 with
+        | none => ok none
+        | some x2 =>
+          let i14 ← i13 + 1#usize
+          let v3 ←
+            alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+              h5i_app_sql.Val) row i14
+          let o3 ← alloc.vec.VecU8.Insts.H5i_app_sqlColumn.from_val v3
+          match o3 with
+          | none => ok none
+          | some x3 =>
+            let i15 ← i14 + 1#usize
+            let v4 ←
+              alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+                h5i_app_sql.Val) row i15
+            let o4 ← alloc.vec.VecU8.Insts.H5i_app_sqlColumn.from_val v4
+            match o4 with
+            | none => ok none
+            | some x4 =>
+              let i16 ← i15 + 1#usize
+              let v5 ←
+                alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+                  h5i_app_sql.Val) row i16
+              let o5 ← alloc.vec.VecU8.Insts.H5i_app_sqlColumn.from_val v5
+              match o5 with
+              | none => ok none
+              | some x5 =>
+                let i17 ← i16 + 1#usize
+                let v6 ←
+                  alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+                    h5i_app_sql.Val) row i17
+                let o6 ← alloc.vec.VecU8.Insts.H5i_app_sqlColumn.from_val v6
+                match o6 with
+                | none => ok none
+                | some x6 =>
+                  let i18 ← i17 + 1#usize
+                  let v7 ←
+                    alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+                      h5i_app_sql.Val) row i18
+                  let o7 ←
+                    alloc.vec.VecU8.Insts.H5i_app_sqlColumn.from_val v7
+                  match o7 with
+                  | none => ok none
+                  | some x7 =>
+                    let i19 ← i18 + 1#usize
+                    let v8 ←
+                      alloc.vec.Vec.index
+                        (core.slice.index.SliceIndexUsizeSlice h5i_app_sql.Val)
+                        row i19
+                    let o8 ←
+                      alloc.vec.VecU8.Insts.H5i_app_sqlColumn.from_val v8
+                    match o8 with
+                    | none => ok none
+                    | some x8 =>
+                      let i20 ← i19 + 1#usize
+                      let v9 ←
+                        alloc.vec.Vec.index
+                          (core.slice.index.SliceIndexUsizeSlice
+                          h5i_app_sql.Val) row i20
+                      let o9 ← U64.Insts.H5i_app_sqlColumn.from_val v9
+                      match o9 with
+                      | none => ok none
+                      | some x9 =>
+                        let i21 ← i20 + 1#usize
+                        let v10 ←
+                          alloc.vec.Vec.index
+                            (core.slice.index.SliceIndexUsizeSlice
+                            h5i_app_sql.Val) row i21
+                        let o10 ← U64.Insts.H5i_app_sqlColumn.from_val v10
+                        match o10 with
+                        | none => ok none
+                        | some x10 =>
+                          let i22 ← i21 + 1#usize
+                          let v11 ←
+                            alloc.vec.Vec.index
+                              (core.slice.index.SliceIndexUsizeSlice
+                              h5i_app_sql.Val) row i22
+                          let o11 ← U64.Insts.H5i_app_sqlColumn.from_val v11
+                          match o11 with
+                          | none => ok none
+                          | some x11 =>
+                            let _ ← i22 + 1#usize
+                            ok (some
+                              {
+                                id := x,
+                                owner := x1,
+                                «name» := x2,
+                                search := x3,
+                                any_tags := x4,
+                                all_tags := x5,
+                                excluded_tags := x6,
+                                filter_unread := x7,
+                                filter_shared := x8,
+                                order := x9,
+                                created := x10,
+                                modified := x11
+                              })
+
+/-- [linkding_kernel::{linkding_kernel::User}::from_rows]: loop body 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 174:16-180:17
+    Visibility: public -/
+@[rust_loop_body]
+def User.from_rows_loop.body
+  (rows : alloc.vec.Vec (alloc.vec.Vec h5i_app_sql.Val))
+  (out : alloc.vec.Vec User) (ok1 : Bool) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec User) × Bool × Std.Usize)
+    ((alloc.vec.Vec User) × Bool))
+  := do
+  let i1 := alloc.vec.Vec.len rows
+  if i < i1
+  then
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice (alloc.vec.Vec
+        h5i_app_sql.Val)) rows i
+    let o ← User.from_row v
+    let (out1, ok2) ←
+      match o with
+      | none => ok (out, false)
+      | some x => do
+                  let out2 ← alloc.vec.Vec.push out x
+                  ok (out2, ok1)
+    let i2 ← i + 1#usize
+    ok (cont (out1, ok2, i2))
+  else ok (done (out, ok1))
+
+/-- [linkding_kernel::{linkding_kernel::User}::from_rows]: loop 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 174:16-180:17
+    Visibility: public -/
+@[rust_loop]
+def User.from_rows_loop
+  (rows : alloc.vec.Vec (alloc.vec.Vec h5i_app_sql.Val))
+  (out : alloc.vec.Vec User) (ok1 : Bool) (i : Std.Usize) :
+  Result ((alloc.vec.Vec User) × Bool)
+  := do
+  loop
+    (fun (out1, ok2, i1) => User.from_rows_loop.body rows out1 ok2 i1)
+    (out, ok1, i)
+
+/-- [linkding_kernel::{linkding_kernel::User}::from_rows]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 170:12-186:13
+    Visibility: public -/
+def User.from_rows
+  (rows : alloc.vec.Vec (alloc.vec.Vec h5i_app_sql.Val)) :
+  Result (Option (alloc.vec.Vec User))
+  := do
+  let (out, ok1) ←
+    User.from_rows_loop rows (alloc.vec.Vec.new User) true 0#usize
+  if ok1
+  then ok (some out)
+  else ok none
+
+/-- [linkding_kernel::{linkding_kernel::Token}::from_rows]: loop body 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 174:16-180:17
+    Visibility: public -/
+@[rust_loop_body]
+def Token.from_rows_loop.body
+  (rows : alloc.vec.Vec (alloc.vec.Vec h5i_app_sql.Val))
+  (out : alloc.vec.Vec Token) (ok1 : Bool) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Token) × Bool × Std.Usize)
+    ((alloc.vec.Vec Token) × Bool))
+  := do
+  let i1 := alloc.vec.Vec.len rows
+  if i < i1
+  then
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice (alloc.vec.Vec
+        h5i_app_sql.Val)) rows i
+    let o ← Token.from_row v
+    let (out1, ok2) ←
+      match o with
+      | none => ok (out, false)
+      | some x => do
+                  let out2 ← alloc.vec.Vec.push out x
+                  ok (out2, ok1)
+    let i2 ← i + 1#usize
+    ok (cont (out1, ok2, i2))
+  else ok (done (out, ok1))
+
+/-- [linkding_kernel::{linkding_kernel::Token}::from_rows]: loop 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 174:16-180:17
+    Visibility: public -/
+@[rust_loop]
+def Token.from_rows_loop
+  (rows : alloc.vec.Vec (alloc.vec.Vec h5i_app_sql.Val))
+  (out : alloc.vec.Vec Token) (ok1 : Bool) (i : Std.Usize) :
+  Result ((alloc.vec.Vec Token) × Bool)
+  := do
+  loop
+    (fun (out1, ok2, i1) => Token.from_rows_loop.body rows out1 ok2 i1)
+    (out, ok1, i)
+
+/-- [linkding_kernel::{linkding_kernel::Token}::from_rows]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 170:12-186:13
+    Visibility: public -/
+def Token.from_rows
+  (rows : alloc.vec.Vec (alloc.vec.Vec h5i_app_sql.Val)) :
+  Result (Option (alloc.vec.Vec Token))
+  := do
+  let (out, ok1) ←
+    Token.from_rows_loop rows (alloc.vec.Vec.new Token) true 0#usize
+  if ok1
+  then ok (some out)
+  else ok none
+
+/-- [linkding_kernel::{linkding_kernel::Bookmark}::from_rows]: loop body 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 174:16-180:17
+    Visibility: public -/
+@[rust_loop_body]
+def Bookmark.from_rows_loop.body
+  (rows : alloc.vec.Vec (alloc.vec.Vec h5i_app_sql.Val))
+  (out : alloc.vec.Vec Bookmark) (ok1 : Bool) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Bookmark) × Bool × Std.Usize)
+    ((alloc.vec.Vec Bookmark) × Bool))
+  := do
+  let i1 := alloc.vec.Vec.len rows
+  if i < i1
+  then
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice (alloc.vec.Vec
+        h5i_app_sql.Val)) rows i
+    let o ← Bookmark.from_row v
+    let (out1, ok2) ←
+      match o with
+      | none => ok (out, false)
+      | some x => do
+                  let out2 ← alloc.vec.Vec.push out x
+                  ok (out2, ok1)
+    let i2 ← i + 1#usize
+    ok (cont (out1, ok2, i2))
+  else ok (done (out, ok1))
+
+/-- [linkding_kernel::{linkding_kernel::Bookmark}::from_rows]: loop 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 174:16-180:17
+    Visibility: public -/
+@[rust_loop]
+def Bookmark.from_rows_loop
+  (rows : alloc.vec.Vec (alloc.vec.Vec h5i_app_sql.Val))
+  (out : alloc.vec.Vec Bookmark) (ok1 : Bool) (i : Std.Usize) :
+  Result ((alloc.vec.Vec Bookmark) × Bool)
+  := do
+  loop
+    (fun (out1, ok2, i1) => Bookmark.from_rows_loop.body rows out1 ok2 i1)
+    (out, ok1, i)
+
+/-- [linkding_kernel::{linkding_kernel::Bookmark}::from_rows]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 170:12-186:13
+    Visibility: public -/
+def Bookmark.from_rows
+  (rows : alloc.vec.Vec (alloc.vec.Vec h5i_app_sql.Val)) :
+  Result (Option (alloc.vec.Vec Bookmark))
+  := do
+  let (out, ok1) ←
+    Bookmark.from_rows_loop rows (alloc.vec.Vec.new Bookmark) true 0#usize
+  if ok1
+  then ok (some out)
+  else ok none
+
+/-- [linkding_kernel::{linkding_kernel::Tag}::from_rows]: loop body 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 174:16-180:17
+    Visibility: public -/
+@[rust_loop_body]
+def Tag.from_rows_loop.body
+  (rows : alloc.vec.Vec (alloc.vec.Vec h5i_app_sql.Val))
+  (out : alloc.vec.Vec Tag) (ok1 : Bool) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Tag) × Bool × Std.Usize)
+    ((alloc.vec.Vec Tag) × Bool))
+  := do
+  let i1 := alloc.vec.Vec.len rows
+  if i < i1
+  then
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice (alloc.vec.Vec
+        h5i_app_sql.Val)) rows i
+    let o ← Tag.from_row v
+    let (out1, ok2) ←
+      match o with
+      | none => ok (out, false)
+      | some x => do
+                  let out2 ← alloc.vec.Vec.push out x
+                  ok (out2, ok1)
+    let i2 ← i + 1#usize
+    ok (cont (out1, ok2, i2))
+  else ok (done (out, ok1))
+
+/-- [linkding_kernel::{linkding_kernel::Tag}::from_rows]: loop 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 174:16-180:17
+    Visibility: public -/
+@[rust_loop]
+def Tag.from_rows_loop
+  (rows : alloc.vec.Vec (alloc.vec.Vec h5i_app_sql.Val))
+  (out : alloc.vec.Vec Tag) (ok1 : Bool) (i : Std.Usize) :
+  Result ((alloc.vec.Vec Tag) × Bool)
+  := do
+  loop
+    (fun (out1, ok2, i1) => Tag.from_rows_loop.body rows out1 ok2 i1)
+    (out, ok1, i)
+
+/-- [linkding_kernel::{linkding_kernel::Tag}::from_rows]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 170:12-186:13
+    Visibility: public -/
+def Tag.from_rows
+  (rows : alloc.vec.Vec (alloc.vec.Vec h5i_app_sql.Val)) :
+  Result (Option (alloc.vec.Vec Tag))
+  := do
+  let (out, ok1) ←
+    Tag.from_rows_loop rows (alloc.vec.Vec.new Tag) true 0#usize
+  if ok1
+  then ok (some out)
+  else ok none
+
+/-- [linkding_kernel::{linkding_kernel::Link}::from_rows]: loop body 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 174:16-180:17
+    Visibility: public -/
+@[rust_loop_body]
+def Link.from_rows_loop.body
+  (rows : alloc.vec.Vec (alloc.vec.Vec h5i_app_sql.Val))
+  (out : alloc.vec.Vec Link) (ok1 : Bool) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Link) × Bool × Std.Usize)
+    ((alloc.vec.Vec Link) × Bool))
+  := do
+  let i1 := alloc.vec.Vec.len rows
+  if i < i1
+  then
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice (alloc.vec.Vec
+        h5i_app_sql.Val)) rows i
+    let o ← Link.from_row v
+    let (out1, ok2) ←
+      match o with
+      | none => ok (out, false)
+      | some x => do
+                  let out2 ← alloc.vec.Vec.push out x
+                  ok (out2, ok1)
+    let i2 ← i + 1#usize
+    ok (cont (out1, ok2, i2))
+  else ok (done (out, ok1))
+
+/-- [linkding_kernel::{linkding_kernel::Link}::from_rows]: loop 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 174:16-180:17
+    Visibility: public -/
+@[rust_loop]
+def Link.from_rows_loop
+  (rows : alloc.vec.Vec (alloc.vec.Vec h5i_app_sql.Val))
+  (out : alloc.vec.Vec Link) (ok1 : Bool) (i : Std.Usize) :
+  Result ((alloc.vec.Vec Link) × Bool)
+  := do
+  loop
+    (fun (out1, ok2, i1) => Link.from_rows_loop.body rows out1 ok2 i1)
+    (out, ok1, i)
+
+/-- [linkding_kernel::{linkding_kernel::Link}::from_rows]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 170:12-186:13
+    Visibility: public -/
+def Link.from_rows
+  (rows : alloc.vec.Vec (alloc.vec.Vec h5i_app_sql.Val)) :
+  Result (Option (alloc.vec.Vec Link))
+  := do
+  let (out, ok1) ←
+    Link.from_rows_loop rows (alloc.vec.Vec.new Link) true 0#usize
+  if ok1
+  then ok (some out)
+  else ok none
+
+/-- [linkding_kernel::{linkding_kernel::Bundle}::from_rows]: loop body 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 174:16-180:17
+    Visibility: public -/
+@[rust_loop_body]
+def Bundle.from_rows_loop.body
+  (rows : alloc.vec.Vec (alloc.vec.Vec h5i_app_sql.Val))
+  (out : alloc.vec.Vec Bundle) (ok1 : Bool) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Bundle) × Bool × Std.Usize)
+    ((alloc.vec.Vec Bundle) × Bool))
+  := do
+  let i1 := alloc.vec.Vec.len rows
+  if i < i1
+  then
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice (alloc.vec.Vec
+        h5i_app_sql.Val)) rows i
+    let o ← Bundle.from_row v
+    let (out1, ok2) ←
+      match o with
+      | none => ok (out, false)
+      | some x => do
+                  let out2 ← alloc.vec.Vec.push out x
+                  ok (out2, ok1)
+    let i2 ← i + 1#usize
+    ok (cont (out1, ok2, i2))
+  else ok (done (out, ok1))
+
+/-- [linkding_kernel::{linkding_kernel::Bundle}::from_rows]: loop 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 174:16-180:17
+    Visibility: public -/
+@[rust_loop]
+def Bundle.from_rows_loop
+  (rows : alloc.vec.Vec (alloc.vec.Vec h5i_app_sql.Val))
+  (out : alloc.vec.Vec Bundle) (ok1 : Bool) (i : Std.Usize) :
+  Result ((alloc.vec.Vec Bundle) × Bool)
+  := do
+  loop
+    (fun (out1, ok2, i1) => Bundle.from_rows_loop.body rows out1 ok2 i1)
+    (out, ok1, i)
+
+/-- [linkding_kernel::{linkding_kernel::Bundle}::from_rows]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 170:12-186:13
+    Visibility: public -/
+def Bundle.from_rows
+  (rows : alloc.vec.Vec (alloc.vec.Vec h5i_app_sql.Val)) :
+  Result (Option (alloc.vec.Vec Bundle))
+  := do
+  let (out, ok1) ←
+    Bundle.from_rows_loop rows (alloc.vec.Vec.new Bundle) true 0#usize
+  if ok1
+  then ok (some out)
+  else ok none
+
+/-- [linkding_kernel::{linkding_kernel::Counter}::from_rows]: loop body 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 174:16-180:17
+    Visibility: public -/
+@[rust_loop_body]
+def Counter.from_rows_loop.body
+  (rows : alloc.vec.Vec (alloc.vec.Vec h5i_app_sql.Val))
+  (out : alloc.vec.Vec Counter) (ok1 : Bool) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Counter) × Bool × Std.Usize)
+    ((alloc.vec.Vec Counter) × Bool))
+  := do
+  let i1 := alloc.vec.Vec.len rows
+  if i < i1
+  then
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice (alloc.vec.Vec
+        h5i_app_sql.Val)) rows i
+    let o ← Counter.from_row v
+    let (out1, ok2) ←
+      match o with
+      | none => ok (out, false)
+      | some x => do
+                  let out2 ← alloc.vec.Vec.push out x
+                  ok (out2, ok1)
+    let i2 ← i + 1#usize
+    ok (cont (out1, ok2, i2))
+  else ok (done (out, ok1))
+
+/-- [linkding_kernel::{linkding_kernel::Counter}::from_rows]: loop 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 174:16-180:17
+    Visibility: public -/
+@[rust_loop]
+def Counter.from_rows_loop
+  (rows : alloc.vec.Vec (alloc.vec.Vec h5i_app_sql.Val))
+  (out : alloc.vec.Vec Counter) (ok1 : Bool) (i : Std.Usize) :
+  Result ((alloc.vec.Vec Counter) × Bool)
+  := do
+  loop
+    (fun (out1, ok2, i1) => Counter.from_rows_loop.body rows out1 ok2 i1)
+    (out, ok1, i)
+
+/-- [linkding_kernel::{linkding_kernel::Counter}::from_rows]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 170:12-186:13
+    Visibility: public -/
+def Counter.from_rows
+  (rows : alloc.vec.Vec (alloc.vec.Vec h5i_app_sql.Val)) :
+  Result (Option (alloc.vec.Vec Counter))
+  := do
+  let (out, ok1) ←
+    Counter.from_rows_loop rows (alloc.vec.Vec.new Counter) true 0#usize
+  if ok1
+  then ok (some out)
+  else ok none
+
+/-- [linkding_kernel::{linkding_kernel::User}::sql_put]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 189:12-191:13
+    Visibility: public -/
+def User.sql_put (self : User) : Result h5i_app_sql.Write := do
+  let v ← User.to_row self
+  ok (h5i_app_sql.Write.Put User.TABLE User.KEY_LEN v)
+
+/-- [linkding_kernel::{linkding_kernel::Token}::sql_put]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 189:12-191:13
+    Visibility: public -/
+def Token.sql_put (self : Token) : Result h5i_app_sql.Write := do
+  let v ← Token.to_row self
+  ok (h5i_app_sql.Write.Put Token.TABLE Token.KEY_LEN v)
+
+/-- [linkding_kernel::{linkding_kernel::Bookmark}::sql_put]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 189:12-191:13
+    Visibility: public -/
+def Bookmark.sql_put (self : Bookmark) : Result h5i_app_sql.Write := do
+  let v ← Bookmark.to_row self
+  ok (h5i_app_sql.Write.Put Bookmark.TABLE Bookmark.KEY_LEN v)
+
+/-- [linkding_kernel::{linkding_kernel::Tag}::sql_put]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 189:12-191:13
+    Visibility: public -/
+def Tag.sql_put (self : Tag) : Result h5i_app_sql.Write := do
+  let v ← Tag.to_row self
+  ok (h5i_app_sql.Write.Put Tag.TABLE Tag.KEY_LEN v)
+
+/-- [linkding_kernel::{linkding_kernel::Link}::sql_put]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 189:12-191:13
+    Visibility: public -/
+def Link.sql_put (self : Link) : Result h5i_app_sql.Write := do
+  let v ← Link.to_row self
+  ok (h5i_app_sql.Write.Put Link.TABLE Link.KEY_LEN v)
+
+/-- [linkding_kernel::{linkding_kernel::Bundle}::sql_put]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 189:12-191:13
+    Visibility: public -/
+def Bundle.sql_put (self : Bundle) : Result h5i_app_sql.Write := do
+  let v ← Bundle.to_row self
+  ok (h5i_app_sql.Write.Put Bundle.TABLE Bundle.KEY_LEN v)
+
+/-- [linkding_kernel::{linkding_kernel::Counter}::sql_put]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 189:12-191:13
+    Visibility: public -/
+def Counter.sql_put (self : Counter) : Result h5i_app_sql.Write := do
+  let v ← Counter.to_row self
+  ok (h5i_app_sql.Write.Put Counter.TABLE Counter.KEY_LEN v)
+
+/-- [linkding_kernel::{linkding_kernel::Counter}::from_one]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 204:12-212:13
+    Visibility: public -/
+def Counter.from_one
+  (rows : alloc.vec.Vec (alloc.vec.Vec h5i_app_sql.Val)) :
+  Result (Option Counter)
+  := do
+  let i := alloc.vec.Vec.len rows
+  if i = 0#usize
+  then
+    let i1 ← U64.Insts.H5i_app_sqlZero.zero
+    ok (some { last_bookmark := i1, last_tag := i1, last_bundle := i1 })
+  else
+    let i1 := alloc.vec.Vec.len rows
+    if i1 = 1#usize
+    then
+      let v ←
+        alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+          (alloc.vec.Vec h5i_app_sql.Val)) rows 0#usize
+      Counter.from_row v
+    else ok none
+
+/-- [linkding_kernel::{linkding_kernel::User}::put]: loop body 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 220:16-228:13
+    Visibility: public -/
+@[rust_loop_body]
+def User.put_loop.body
+  (v : alloc.vec.Vec User) (x : User) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize (alloc.vec.Vec User))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let u ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice User) v i
+    if u.id = x.id
+    then
+      let (_, index_mut_back) ←
+        alloc.vec.Vec.index_mut (core.slice.index.SliceIndexUsizeSlice User) v
+          i
+      let v1 := index_mut_back x
+      ok (done v1)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else let v1 ← alloc.vec.Vec.push v x
+       ok (done v1)
+
+/-- [linkding_kernel::{linkding_kernel::User}::put]: loop 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 220:16-228:13
+    Visibility: public -/
+@[rust_loop]
+def User.put_loop
+  (v : alloc.vec.Vec User) (x : User) (i : Std.Usize) :
+  Result (alloc.vec.Vec User)
+  := do
+  loop
+    (fun i1 => User.put_loop.body v x i1)
+    i
+
+/-- [linkding_kernel::{linkding_kernel::User}::put]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 218:12-228:13
+    Visibility: public -/
+@[reducible]
+def User.put
+  (v : alloc.vec.Vec User) (x : User) : Result (alloc.vec.Vec User) := do
+  User.put_loop v x 0#usize
+
+/-- [linkding_kernel::{linkding_kernel::Token}::put]: loop body 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 220:16-228:13
+    Visibility: public -/
+@[rust_loop_body]
+def Token.put_loop.body
+  (v : alloc.vec.Vec Token) (x : Token) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize (alloc.vec.Vec Token))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let t ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Token) v i
+    let b ←
+      alloc.vec.partial_eq.PartialEqVec.eq core.cmp.PartialEqU8 t.key x.key
+    if b
+    then
+      let (_, index_mut_back) ←
+        alloc.vec.Vec.index_mut (core.slice.index.SliceIndexUsizeSlice Token) v
+          i
+      let v1 := index_mut_back x
+      ok (done v1)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else let v1 ← alloc.vec.Vec.push v x
+       ok (done v1)
+
+/-- [linkding_kernel::{linkding_kernel::Token}::put]: loop 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 220:16-228:13
+    Visibility: public -/
+@[rust_loop]
+def Token.put_loop
+  (v : alloc.vec.Vec Token) (x : Token) (i : Std.Usize) :
+  Result (alloc.vec.Vec Token)
+  := do
+  loop
+    (fun i1 => Token.put_loop.body v x i1)
+    i
+
+/-- [linkding_kernel::{linkding_kernel::Token}::put]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 218:12-228:13
+    Visibility: public -/
+@[reducible]
+def Token.put
+  (v : alloc.vec.Vec Token) (x : Token) : Result (alloc.vec.Vec Token) := do
+  Token.put_loop v x 0#usize
+
+/-- [linkding_kernel::{linkding_kernel::Bookmark}::put]: loop body 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 220:16-228:13
+    Visibility: public -/
+@[rust_loop_body]
+def Bookmark.put_loop.body
+  (v : alloc.vec.Vec Bookmark) (x : Bookmark) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize (alloc.vec.Vec Bookmark))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let b ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Bookmark) v i
+    if b.owner = x.owner
+    then
+      if b.added = x.added
+      then
+        if b.id = x.id
+        then
+          let (_, index_mut_back) ←
+            alloc.vec.Vec.index_mut (core.slice.index.SliceIndexUsizeSlice
+              Bookmark) v i
+          let v1 := index_mut_back x
+          ok (done v1)
+        else let i2 ← i + 1#usize
+             ok (cont i2)
+      else let i2 ← i + 1#usize
+           ok (cont i2)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else let v1 ← alloc.vec.Vec.push v x
+       ok (done v1)
+
+/-- [linkding_kernel::{linkding_kernel::Bookmark}::put]: loop 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 220:16-228:13
+    Visibility: public -/
+@[rust_loop]
+def Bookmark.put_loop
+  (v : alloc.vec.Vec Bookmark) (x : Bookmark) (i : Std.Usize) :
+  Result (alloc.vec.Vec Bookmark)
+  := do
+  loop
+    (fun i1 => Bookmark.put_loop.body v x i1)
+    i
+
+/-- [linkding_kernel::{linkding_kernel::Bookmark}::put]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 218:12-228:13
+    Visibility: public -/
+@[reducible]
+def Bookmark.put
+  (v : alloc.vec.Vec Bookmark) (x : Bookmark) :
+  Result (alloc.vec.Vec Bookmark)
+  := do
+  Bookmark.put_loop v x 0#usize
+
+/-- [linkding_kernel::{linkding_kernel::Tag}::put]: loop body 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 220:16-228:13
+    Visibility: public -/
+@[rust_loop_body]
+def Tag.put_loop.body
+  (v : alloc.vec.Vec Tag) (x : Tag) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize (alloc.vec.Vec Tag))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let t ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Tag) v i
+    if t.id = x.id
+    then
+      let (_, index_mut_back) ←
+        alloc.vec.Vec.index_mut (core.slice.index.SliceIndexUsizeSlice Tag) v i
+      let v1 := index_mut_back x
+      ok (done v1)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else let v1 ← alloc.vec.Vec.push v x
+       ok (done v1)
+
+/-- [linkding_kernel::{linkding_kernel::Tag}::put]: loop 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 220:16-228:13
+    Visibility: public -/
+@[rust_loop]
+def Tag.put_loop
+  (v : alloc.vec.Vec Tag) (x : Tag) (i : Std.Usize) :
+  Result (alloc.vec.Vec Tag)
+  := do
+  loop
+    (fun i1 => Tag.put_loop.body v x i1)
+    i
+
+/-- [linkding_kernel::{linkding_kernel::Tag}::put]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 218:12-228:13
+    Visibility: public -/
+@[reducible]
+def Tag.put
+  (v : alloc.vec.Vec Tag) (x : Tag) : Result (alloc.vec.Vec Tag) := do
+  Tag.put_loop v x 0#usize
+
+/-- [linkding_kernel::{linkding_kernel::Link}::put]: loop body 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 220:16-228:13
+    Visibility: public -/
+@[rust_loop_body]
+def Link.put_loop.body
+  (v : alloc.vec.Vec Link) (x : Link) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize (alloc.vec.Vec Link))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let l ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Link) v i
+    if l.bookmark = x.bookmark
+    then
+      if l.tag = x.tag
+      then
+        let (_, index_mut_back) ←
+          alloc.vec.Vec.index_mut (core.slice.index.SliceIndexUsizeSlice Link)
+            v i
+        let v1 := index_mut_back x
+        ok (done v1)
+      else let i2 ← i + 1#usize
+           ok (cont i2)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else let v1 ← alloc.vec.Vec.push v x
+       ok (done v1)
+
+/-- [linkding_kernel::{linkding_kernel::Link}::put]: loop 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 220:16-228:13
+    Visibility: public -/
+@[rust_loop]
+def Link.put_loop
+  (v : alloc.vec.Vec Link) (x : Link) (i : Std.Usize) :
+  Result (alloc.vec.Vec Link)
+  := do
+  loop
+    (fun i1 => Link.put_loop.body v x i1)
+    i
+
+/-- [linkding_kernel::{linkding_kernel::Link}::put]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 218:12-228:13
+    Visibility: public -/
+@[reducible]
+def Link.put
+  (v : alloc.vec.Vec Link) (x : Link) : Result (alloc.vec.Vec Link) := do
+  Link.put_loop v x 0#usize
+
+/-- [linkding_kernel::{linkding_kernel::Bundle}::put]: loop body 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 220:16-228:13
+    Visibility: public -/
+@[rust_loop_body]
+def Bundle.put_loop.body
+  (v : alloc.vec.Vec Bundle) (x : Bundle) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize (alloc.vec.Vec Bundle))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let b ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Bundle) v i
+    if b.id = x.id
+    then
+      let (_, index_mut_back) ←
+        alloc.vec.Vec.index_mut (core.slice.index.SliceIndexUsizeSlice Bundle)
+          v i
+      let v1 := index_mut_back x
+      ok (done v1)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else let v1 ← alloc.vec.Vec.push v x
+       ok (done v1)
+
+/-- [linkding_kernel::{linkding_kernel::Bundle}::put]: loop 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 220:16-228:13
+    Visibility: public -/
+@[rust_loop]
+def Bundle.put_loop
+  (v : alloc.vec.Vec Bundle) (x : Bundle) (i : Std.Usize) :
+  Result (alloc.vec.Vec Bundle)
+  := do
+  loop
+    (fun i1 => Bundle.put_loop.body v x i1)
+    i
+
+/-- [linkding_kernel::{linkding_kernel::Bundle}::put]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 218:12-228:13
+    Visibility: public -/
+@[reducible]
+def Bundle.put
+  (v : alloc.vec.Vec Bundle) (x : Bundle) : Result (alloc.vec.Vec Bundle) := do
+  Bundle.put_loop v x 0#usize
+
+/-- [linkding_kernel::{impl core::clone::Clone for linkding_kernel::User}::clone]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 49:13-49:18
+    Visibility: public -/
+def User.Insts.CoreCloneClone.clone (self : User) : Result User := do
+  let i ← lift (core.clone.impls.CloneU64.clone self.id)
+  let v ← alloc.vec.CloneVec.clone core.clone.CloneU8 self.username
+  let v1 ← alloc.vec.CloneVec.clone core.clone.CloneU8 self.theme
+  let v2 ← alloc.vec.CloneVec.clone core.clone.CloneU8 self.date_display
+  let v3 ← alloc.vec.CloneVec.clone core.clone.CloneU8 self.link_target
+  let v4 ← alloc.vec.CloneVec.clone core.clone.CloneU8 self.web_archive
+  let b ← lift (core.clone.impls.CloneBool.clone self.lax)
+  let b1 ← lift (core.clone.impls.CloneBool.clone self.sharing)
+  let b2 ← lift (core.clone.impls.CloneBool.clone self.public_sharing)
+  let b3 ← lift (core.clone.impls.CloneBool.clone self.favicons)
+  let b4 ← lift (core.clone.impls.CloneBool.clone self.display_url)
+  let b5 ← lift (core.clone.impls.CloneBool.clone self.permanent_notes)
+  let v5 ← alloc.vec.CloneVec.clone core.clone.CloneU8 self.search_prefs
+  let b6 ← lift (core.clone.impls.CloneBool.clone self.legacy)
+  ok
+    {
+      id := i,
+      username := v,
+      theme := v1,
+      date_display := v2,
+      link_target := v3,
+      web_archive := v4,
+      lax := b,
+      sharing := b1,
+      public_sharing := b2,
+      favicons := b3,
+      display_url := b4,
+      permanent_notes := b5,
+      search_prefs := v5,
+      legacy := b6
+    }
+
+/-- [linkding_kernel::{linkding_kernel::User}::del]: loop body 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 234:16-239:17
+    Visibility: public -/
+@[rust_loop_body]
+def User.del_loop.body
+  (v : alloc.vec.Vec User) (id : Std.U64) (out : alloc.vec.Vec User)
+  (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec User) × Std.Usize) (alloc.vec.Vec User))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let u ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice User) v i
+    let out1 ←
+      if u.id = id
+      then ok out
+      else
+        do
+        let u1 ← User.Insts.CoreCloneClone.clone u
+        alloc.vec.Vec.push out u1
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
+  else ok (done out)
+
+/-- [linkding_kernel::{linkding_kernel::User}::del]: loop 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 234:16-239:17
+    Visibility: public -/
+@[rust_loop]
+def User.del_loop
+  (v : alloc.vec.Vec User) (id : Std.U64) (out : alloc.vec.Vec User)
+  (i : Std.Usize) :
+  Result (alloc.vec.Vec User)
+  := do
+  loop
+    (fun (out1, i1) => User.del_loop.body v id out1 i1)
+    (out, i)
+
+/-- [linkding_kernel::{linkding_kernel::User}::del]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 231:12-241:13
+    Visibility: public -/
+@[reducible]
+def User.del
+  (v : alloc.vec.Vec User) (id : Std.U64) : Result (alloc.vec.Vec User) := do
+  User.del_loop v id (alloc.vec.Vec.new User) 0#usize
+
+/-- [linkding_kernel::{impl core::clone::Clone for linkding_kernel::Token}::clone]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 67:13-67:18
+    Visibility: public -/
+def Token.Insts.CoreCloneClone.clone (self : Token) : Result Token := do
+  let v ← alloc.vec.CloneVec.clone core.clone.CloneU8 self.key
+  let i ← lift (core.clone.impls.CloneU64.clone self.user)
+  ok { key := v, user := i }
+
+/-- [linkding_kernel::{linkding_kernel::Token}::del]: loop body 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 234:16-239:17
+    Visibility: public -/
+@[rust_loop_body]
+def Token.del_loop.body
+  (v : alloc.vec.Vec Token) (key : alloc.vec.Vec Std.U8)
+  (out : alloc.vec.Vec Token) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Token) × Std.Usize) (alloc.vec.Vec
+    Token))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let t ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Token) v i
+    let b ←
+      alloc.vec.partial_eq.PartialEqVec.eq core.cmp.PartialEqU8 t.key key
+    let out1 ←
+      if b
+      then ok out
+      else
+        do
+        let t1 ← Token.Insts.CoreCloneClone.clone t
+        alloc.vec.Vec.push out t1
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
+  else ok (done out)
+
+/-- [linkding_kernel::{linkding_kernel::Token}::del]: loop 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 234:16-239:17
+    Visibility: public -/
+@[rust_loop]
+def Token.del_loop
+  (v : alloc.vec.Vec Token) (key : alloc.vec.Vec Std.U8)
+  (out : alloc.vec.Vec Token) (i : Std.Usize) :
+  Result (alloc.vec.Vec Token)
+  := do
+  loop
+    (fun (out1, i1) => Token.del_loop.body v key out1 i1)
+    (out, i)
+
+/-- [linkding_kernel::{linkding_kernel::Token}::del]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 231:12-241:13
+    Visibility: public -/
+@[reducible]
+def Token.del
+  (v : alloc.vec.Vec Token) (key : alloc.vec.Vec Std.U8) :
+  Result (alloc.vec.Vec Token)
+  := do
+  Token.del_loop v key (alloc.vec.Vec.new Token) 0#usize
+
+/-- [linkding_kernel::{impl core::clone::Clone for linkding_kernel::Bookmark}::clone]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 74:13-74:18
+    Visibility: public -/
+def Bookmark.Insts.CoreCloneClone.clone
+  (self : Bookmark) : Result Bookmark := do
+  let i ← lift (core.clone.impls.CloneU64.clone self.owner)
+  let i1 ← lift (core.clone.impls.CloneU64.clone self.added)
+  let i2 ← lift (core.clone.impls.CloneU64.clone self.id)
+  let v ← alloc.vec.CloneVec.clone core.clone.CloneU8 self.url
+  let v1 ← alloc.vec.CloneVec.clone core.clone.CloneU8 self.url_norm
+  let v2 ← alloc.vec.CloneVec.clone core.clone.CloneU8 self.title
+  let v3 ← alloc.vec.CloneVec.clone core.clone.CloneU8 self.description
+  let v4 ← alloc.vec.CloneVec.clone core.clone.CloneU8 self.notes
+  let b ← lift (core.clone.impls.CloneBool.clone self.unread)
+  let b1 ← lift (core.clone.impls.CloneBool.clone self.archived)
+  let b2 ← lift (core.clone.impls.CloneBool.clone self.shared)
+  let i3 ← lift (core.clone.impls.CloneU64.clone self.modified)
+  ok
+    {
+      owner := i,
+      added := i1,
+      id := i2,
+      url := v,
+      url_norm := v1,
+      title := v2,
+      description := v3,
+      notes := v4,
+      unread := b,
+      archived := b1,
+      shared := b2,
+      modified := i3
+    }
+
+/-- [linkding_kernel::{linkding_kernel::Bookmark}::del]: loop body 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 234:16-239:17
+    Visibility: public -/
+@[rust_loop_body]
+def Bookmark.del_loop.body
+  (v : alloc.vec.Vec Bookmark) (owner : Std.U64) (added : Std.U64)
+  (id : Std.U64) (out : alloc.vec.Vec Bookmark) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Bookmark) × Std.Usize) (alloc.vec.Vec
+    Bookmark))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let b ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Bookmark) v i
+    let out1 ←
+      if b.owner = owner
+      then
+        if b.added = added
+        then
+          if b.id = id
+          then ok out
+          else
+            do
+            let b1 ← Bookmark.Insts.CoreCloneClone.clone b
+            alloc.vec.Vec.push out b1
+        else
+          do
+          let b1 ← Bookmark.Insts.CoreCloneClone.clone b
+          alloc.vec.Vec.push out b1
+      else
+        do
+        let b1 ← Bookmark.Insts.CoreCloneClone.clone b
+        alloc.vec.Vec.push out b1
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
+  else ok (done out)
+
+/-- [linkding_kernel::{linkding_kernel::Bookmark}::del]: loop 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 234:16-239:17
+    Visibility: public -/
+@[rust_loop]
+def Bookmark.del_loop
+  (v : alloc.vec.Vec Bookmark) (owner : Std.U64) (added : Std.U64)
+  (id : Std.U64) (out : alloc.vec.Vec Bookmark) (i : Std.Usize) :
+  Result (alloc.vec.Vec Bookmark)
+  := do
+  loop
+    (fun (out1, i1) => Bookmark.del_loop.body v owner added id out1 i1)
+    (out, i)
+
+/-- [linkding_kernel::{linkding_kernel::Bookmark}::del]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 231:12-241:13
+    Visibility: public -/
+@[reducible]
+def Bookmark.del
+  (v : alloc.vec.Vec Bookmark) (owner : Std.U64) (added : Std.U64)
+  (id : Std.U64) :
+  Result (alloc.vec.Vec Bookmark)
+  := do
+  Bookmark.del_loop v owner added id (alloc.vec.Vec.new Bookmark) 0#usize
+
+/-- [linkding_kernel::{impl core::clone::Clone for linkding_kernel::Tag}::clone]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 89:13-89:18
+    Visibility: public -/
+def Tag.Insts.CoreCloneClone.clone (self : Tag) : Result Tag := do
+  let i ← lift (core.clone.impls.CloneU64.clone self.id)
+  let i1 ← lift (core.clone.impls.CloneU64.clone self.owner)
+  let v ← alloc.vec.CloneVec.clone core.clone.CloneU8 self.name
+  let v1 ← alloc.vec.CloneVec.clone core.clone.CloneU8 self.name_lower
+  let i2 ← lift (core.clone.impls.CloneU64.clone self.added)
+  ok { id := i, owner := i1, «name» := v, name_lower := v1, added := i2 }
+
+/-- [linkding_kernel::{linkding_kernel::Tag}::del]: loop body 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 234:16-239:17
+    Visibility: public -/
+@[rust_loop_body]
+def Tag.del_loop.body
+  (v : alloc.vec.Vec Tag) (id : Std.U64) (out : alloc.vec.Vec Tag)
+  (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Tag) × Std.Usize) (alloc.vec.Vec Tag))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let t ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Tag) v i
+    let out1 ←
+      if t.id = id
+      then ok out
+      else
+        do
+        let t1 ← Tag.Insts.CoreCloneClone.clone t
+        alloc.vec.Vec.push out t1
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
+  else ok (done out)
+
+/-- [linkding_kernel::{linkding_kernel::Tag}::del]: loop 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 234:16-239:17
+    Visibility: public -/
+@[rust_loop]
+def Tag.del_loop
+  (v : alloc.vec.Vec Tag) (id : Std.U64) (out : alloc.vec.Vec Tag)
+  (i : Std.Usize) :
+  Result (alloc.vec.Vec Tag)
+  := do
+  loop
+    (fun (out1, i1) => Tag.del_loop.body v id out1 i1)
+    (out, i)
+
+/-- [linkding_kernel::{linkding_kernel::Tag}::del]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 231:12-241:13
+    Visibility: public -/
+@[reducible]
+def Tag.del
+  (v : alloc.vec.Vec Tag) (id : Std.U64) : Result (alloc.vec.Vec Tag) := do
+  Tag.del_loop v id (alloc.vec.Vec.new Tag) 0#usize
+
+/-- [linkding_kernel::{impl core::clone::Clone for linkding_kernel::Link}::clone]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 99:13-99:18
+    Visibility: public -/
+def Link.Insts.CoreCloneClone.clone (self : Link) : Result Link := do
+  ok self
+
+/-- [linkding_kernel::{linkding_kernel::Link}::del]: loop body 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 234:16-239:17
+    Visibility: public -/
+@[rust_loop_body]
+def Link.del_loop.body
+  (v : alloc.vec.Vec Link) (bookmark : Std.U64) (tag : Std.U64)
+  (out : alloc.vec.Vec Link) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Link) × Std.Usize) (alloc.vec.Vec Link))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let l ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Link) v i
+    let out1 ←
+      if l.bookmark = bookmark
+      then
+        if l.tag = tag
+        then ok out
+        else
+          do
+          let l1 ← Link.Insts.CoreCloneClone.clone l
+          alloc.vec.Vec.push out l1
+      else
+        do
+        let l1 ← Link.Insts.CoreCloneClone.clone l
+        alloc.vec.Vec.push out l1
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
+  else ok (done out)
+
+/-- [linkding_kernel::{linkding_kernel::Link}::del]: loop 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 234:16-239:17
+    Visibility: public -/
+@[rust_loop]
+def Link.del_loop
+  (v : alloc.vec.Vec Link) (bookmark : Std.U64) (tag : Std.U64)
+  (out : alloc.vec.Vec Link) (i : Std.Usize) :
+  Result (alloc.vec.Vec Link)
+  := do
+  loop
+    (fun (out1, i1) => Link.del_loop.body v bookmark tag out1 i1)
+    (out, i)
+
+/-- [linkding_kernel::{linkding_kernel::Link}::del]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 231:12-241:13
+    Visibility: public -/
+@[reducible]
+def Link.del
+  (v : alloc.vec.Vec Link) (bookmark : Std.U64) (tag : Std.U64) :
+  Result (alloc.vec.Vec Link)
+  := do
+  Link.del_loop v bookmark tag (alloc.vec.Vec.new Link) 0#usize
+
+/-- [linkding_kernel::{impl core::clone::Clone for linkding_kernel::Bundle}::clone]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 106:13-106:18
+    Visibility: public -/
+def Bundle.Insts.CoreCloneClone.clone (self : Bundle) : Result Bundle := do
+  let i ← lift (core.clone.impls.CloneU64.clone self.id)
+  let i1 ← lift (core.clone.impls.CloneU64.clone self.owner)
+  let v ← alloc.vec.CloneVec.clone core.clone.CloneU8 self.name
+  let v1 ← alloc.vec.CloneVec.clone core.clone.CloneU8 self.search
+  let v2 ← alloc.vec.CloneVec.clone core.clone.CloneU8 self.any_tags
+  let v3 ← alloc.vec.CloneVec.clone core.clone.CloneU8 self.all_tags
+  let v4 ← alloc.vec.CloneVec.clone core.clone.CloneU8 self.excluded_tags
+  let v5 ← alloc.vec.CloneVec.clone core.clone.CloneU8 self.filter_unread
+  let v6 ← alloc.vec.CloneVec.clone core.clone.CloneU8 self.filter_shared
+  let i2 ← lift (core.clone.impls.CloneU64.clone self.order)
+  let i3 ← lift (core.clone.impls.CloneU64.clone self.created)
+  let i4 ← lift (core.clone.impls.CloneU64.clone self.modified)
+  ok
+    {
+      id := i,
+      owner := i1,
+      «name» := v,
+      search := v1,
+      any_tags := v2,
+      all_tags := v3,
+      excluded_tags := v4,
+      filter_unread := v5,
+      filter_shared := v6,
+      order := i2,
+      created := i3,
+      modified := i4
+    }
+
+/-- [linkding_kernel::{linkding_kernel::Bundle}::del]: loop body 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 234:16-239:17
+    Visibility: public -/
+@[rust_loop_body]
+def Bundle.del_loop.body
+  (v : alloc.vec.Vec Bundle) (id : Std.U64) (out : alloc.vec.Vec Bundle)
+  (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Bundle) × Std.Usize) (alloc.vec.Vec
+    Bundle))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let b ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Bundle) v i
+    let out1 ←
+      if b.id = id
+      then ok out
+      else
+        do
+        let b1 ← Bundle.Insts.CoreCloneClone.clone b
+        alloc.vec.Vec.push out b1
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
+  else ok (done out)
+
+/-- [linkding_kernel::{linkding_kernel::Bundle}::del]: loop 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 234:16-239:17
+    Visibility: public -/
+@[rust_loop]
+def Bundle.del_loop
+  (v : alloc.vec.Vec Bundle) (id : Std.U64) (out : alloc.vec.Vec Bundle)
+  (i : Std.Usize) :
+  Result (alloc.vec.Vec Bundle)
+  := do
+  loop
+    (fun (out1, i1) => Bundle.del_loop.body v id out1 i1)
+    (out, i)
+
+/-- [linkding_kernel::{linkding_kernel::Bundle}::del]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 231:12-241:13
+    Visibility: public -/
+@[reducible]
+def Bundle.del
+  (v : alloc.vec.Vec Bundle) (id : Std.U64) :
+  Result (alloc.vec.Vec Bundle)
+  := do
+  Bundle.del_loop v id (alloc.vec.Vec.new Bundle) 0#usize
+
+/-- [linkding_kernel::{linkding_kernel::User}::del_where]: loop body 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 247:16-252:17
+    Visibility: public -/
+@[rust_loop_body]
+def User.del_where_loop.body
+  (v : alloc.vec.Vec User) (col : Std.U32) (val : h5i_app_sql.Val)
+  (out : alloc.vec.Vec User) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec User) × Std.Usize) (alloc.vec.Vec User))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let u ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice User) v i
+    let v1 ← User.to_row u
+    let b ← h5i_app_sql.has_col v1 col val
+    let out1 ←
+      if b
+      then ok out
+      else
+        do
+        let u1 ← User.Insts.CoreCloneClone.clone u
+        alloc.vec.Vec.push out u1
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
+  else ok (done out)
+
+/-- [linkding_kernel::{linkding_kernel::User}::del_where]: loop 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 247:16-252:17
+    Visibility: public -/
+@[rust_loop]
+def User.del_where_loop
+  (v : alloc.vec.Vec User) (col : Std.U32) (val : h5i_app_sql.Val)
+  (out : alloc.vec.Vec User) (i : Std.Usize) :
+  Result (alloc.vec.Vec User)
+  := do
+  loop
+    (fun (out1, i1) => User.del_where_loop.body v col val out1 i1)
+    (out, i)
+
+/-- [linkding_kernel::{linkding_kernel::User}::del_where]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 244:12-254:13
+    Visibility: public -/
+@[reducible]
+def User.del_where
+  (v : alloc.vec.Vec User) (col : Std.U32) (val : h5i_app_sql.Val) :
+  Result (alloc.vec.Vec User)
+  := do
+  User.del_where_loop v col val (alloc.vec.Vec.new User) 0#usize
+
+/-- [linkding_kernel::{linkding_kernel::Token}::del_where]: loop body 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 247:16-252:17
+    Visibility: public -/
+@[rust_loop_body]
+def Token.del_where_loop.body
+  (v : alloc.vec.Vec Token) (col : Std.U32) (val : h5i_app_sql.Val)
+  (out : alloc.vec.Vec Token) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Token) × Std.Usize) (alloc.vec.Vec
+    Token))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let t ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Token) v i
+    let v1 ← Token.to_row t
+    let b ← h5i_app_sql.has_col v1 col val
+    let out1 ←
+      if b
+      then ok out
+      else
+        do
+        let t1 ← Token.Insts.CoreCloneClone.clone t
+        alloc.vec.Vec.push out t1
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
+  else ok (done out)
+
+/-- [linkding_kernel::{linkding_kernel::Token}::del_where]: loop 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 247:16-252:17
+    Visibility: public -/
+@[rust_loop]
+def Token.del_where_loop
+  (v : alloc.vec.Vec Token) (col : Std.U32) (val : h5i_app_sql.Val)
+  (out : alloc.vec.Vec Token) (i : Std.Usize) :
+  Result (alloc.vec.Vec Token)
+  := do
+  loop
+    (fun (out1, i1) => Token.del_where_loop.body v col val out1 i1)
+    (out, i)
+
+/-- [linkding_kernel::{linkding_kernel::Token}::del_where]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 244:12-254:13
+    Visibility: public -/
+@[reducible]
+def Token.del_where
+  (v : alloc.vec.Vec Token) (col : Std.U32) (val : h5i_app_sql.Val) :
+  Result (alloc.vec.Vec Token)
+  := do
+  Token.del_where_loop v col val (alloc.vec.Vec.new Token) 0#usize
+
+/-- [linkding_kernel::{linkding_kernel::Bookmark}::del_where]: loop body 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 247:16-252:17
+    Visibility: public -/
+@[rust_loop_body]
+def Bookmark.del_where_loop.body
+  (v : alloc.vec.Vec Bookmark) (col : Std.U32) (val : h5i_app_sql.Val)
+  (out : alloc.vec.Vec Bookmark) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Bookmark) × Std.Usize) (alloc.vec.Vec
+    Bookmark))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let b ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Bookmark) v i
+    let v1 ← Bookmark.to_row b
+    let b1 ← h5i_app_sql.has_col v1 col val
+    let out1 ←
+      if b1
+      then ok out
+      else
+        do
+        let b2 ← Bookmark.Insts.CoreCloneClone.clone b
+        alloc.vec.Vec.push out b2
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
+  else ok (done out)
+
+/-- [linkding_kernel::{linkding_kernel::Bookmark}::del_where]: loop 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 247:16-252:17
+    Visibility: public -/
+@[rust_loop]
+def Bookmark.del_where_loop
+  (v : alloc.vec.Vec Bookmark) (col : Std.U32) (val : h5i_app_sql.Val)
+  (out : alloc.vec.Vec Bookmark) (i : Std.Usize) :
+  Result (alloc.vec.Vec Bookmark)
+  := do
+  loop
+    (fun (out1, i1) => Bookmark.del_where_loop.body v col val out1 i1)
+    (out, i)
+
+/-- [linkding_kernel::{linkding_kernel::Bookmark}::del_where]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 244:12-254:13
+    Visibility: public -/
+@[reducible]
+def Bookmark.del_where
+  (v : alloc.vec.Vec Bookmark) (col : Std.U32) (val : h5i_app_sql.Val) :
+  Result (alloc.vec.Vec Bookmark)
+  := do
+  Bookmark.del_where_loop v col val (alloc.vec.Vec.new Bookmark) 0#usize
+
+/-- [linkding_kernel::{linkding_kernel::Tag}::del_where]: loop body 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 247:16-252:17
+    Visibility: public -/
+@[rust_loop_body]
+def Tag.del_where_loop.body
+  (v : alloc.vec.Vec Tag) (col : Std.U32) (val : h5i_app_sql.Val)
+  (out : alloc.vec.Vec Tag) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Tag) × Std.Usize) (alloc.vec.Vec Tag))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let t ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Tag) v i
+    let v1 ← Tag.to_row t
+    let b ← h5i_app_sql.has_col v1 col val
+    let out1 ←
+      if b
+      then ok out
+      else
+        do
+        let t1 ← Tag.Insts.CoreCloneClone.clone t
+        alloc.vec.Vec.push out t1
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
+  else ok (done out)
+
+/-- [linkding_kernel::{linkding_kernel::Tag}::del_where]: loop 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 247:16-252:17
+    Visibility: public -/
+@[rust_loop]
+def Tag.del_where_loop
+  (v : alloc.vec.Vec Tag) (col : Std.U32) (val : h5i_app_sql.Val)
+  (out : alloc.vec.Vec Tag) (i : Std.Usize) :
+  Result (alloc.vec.Vec Tag)
+  := do
+  loop
+    (fun (out1, i1) => Tag.del_where_loop.body v col val out1 i1)
+    (out, i)
+
+/-- [linkding_kernel::{linkding_kernel::Tag}::del_where]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 244:12-254:13
+    Visibility: public -/
+@[reducible]
+def Tag.del_where
+  (v : alloc.vec.Vec Tag) (col : Std.U32) (val : h5i_app_sql.Val) :
+  Result (alloc.vec.Vec Tag)
+  := do
+  Tag.del_where_loop v col val (alloc.vec.Vec.new Tag) 0#usize
+
+/-- [linkding_kernel::{linkding_kernel::Link}::del_where]: loop body 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 247:16-252:17
+    Visibility: public -/
+@[rust_loop_body]
+def Link.del_where_loop.body
+  (v : alloc.vec.Vec Link) (col : Std.U32) (val : h5i_app_sql.Val)
+  (out : alloc.vec.Vec Link) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Link) × Std.Usize) (alloc.vec.Vec Link))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let l ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Link) v i
+    let v1 ← Link.to_row l
+    let b ← h5i_app_sql.has_col v1 col val
+    let out1 ←
+      if b
+      then ok out
+      else
+        do
+        let l1 ← Link.Insts.CoreCloneClone.clone l
+        alloc.vec.Vec.push out l1
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
+  else ok (done out)
+
+/-- [linkding_kernel::{linkding_kernel::Link}::del_where]: loop 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 247:16-252:17
+    Visibility: public -/
+@[rust_loop]
+def Link.del_where_loop
+  (v : alloc.vec.Vec Link) (col : Std.U32) (val : h5i_app_sql.Val)
+  (out : alloc.vec.Vec Link) (i : Std.Usize) :
+  Result (alloc.vec.Vec Link)
+  := do
+  loop
+    (fun (out1, i1) => Link.del_where_loop.body v col val out1 i1)
+    (out, i)
+
+/-- [linkding_kernel::{linkding_kernel::Link}::del_where]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 244:12-254:13
+    Visibility: public -/
+@[reducible]
+def Link.del_where
+  (v : alloc.vec.Vec Link) (col : Std.U32) (val : h5i_app_sql.Val) :
+  Result (alloc.vec.Vec Link)
+  := do
+  Link.del_where_loop v col val (alloc.vec.Vec.new Link) 0#usize
+
+/-- [linkding_kernel::{linkding_kernel::Bundle}::del_where]: loop body 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 247:16-252:17
+    Visibility: public -/
+@[rust_loop_body]
+def Bundle.del_where_loop.body
+  (v : alloc.vec.Vec Bundle) (col : Std.U32) (val : h5i_app_sql.Val)
+  (out : alloc.vec.Vec Bundle) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Bundle) × Std.Usize) (alloc.vec.Vec
+    Bundle))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let b ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Bundle) v i
+    let v1 ← Bundle.to_row b
+    let b1 ← h5i_app_sql.has_col v1 col val
+    let out1 ←
+      if b1
+      then ok out
+      else
+        do
+        let b2 ← Bundle.Insts.CoreCloneClone.clone b
+        alloc.vec.Vec.push out b2
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
+  else ok (done out)
+
+/-- [linkding_kernel::{linkding_kernel::Bundle}::del_where]: loop 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 247:16-252:17
+    Visibility: public -/
+@[rust_loop]
+def Bundle.del_where_loop
+  (v : alloc.vec.Vec Bundle) (col : Std.U32) (val : h5i_app_sql.Val)
+  (out : alloc.vec.Vec Bundle) (i : Std.Usize) :
+  Result (alloc.vec.Vec Bundle)
+  := do
+  loop
+    (fun (out1, i1) => Bundle.del_where_loop.body v col val out1 i1)
+    (out, i)
+
+/-- [linkding_kernel::{linkding_kernel::Bundle}::del_where]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 244:12-254:13
+    Visibility: public -/
+@[reducible]
+def Bundle.del_where
+  (v : alloc.vec.Vec Bundle) (col : Std.U32) (val : h5i_app_sql.Val) :
+  Result (alloc.vec.Vec Bundle)
+  := do
+  Bundle.del_where_loop v col val (alloc.vec.Vec.new Bundle) 0#usize
+
+/-- [linkding_kernel::{linkding_kernel::User}::sql_del]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 257:12-261:13
+    Visibility: public -/
+def User.sql_del (id : Std.U64) : Result h5i_app_sql.Write := do
+  let v ← U64.Insts.H5i_app_sqlColumn.to_val id
+  let key ← alloc.vec.Vec.push (alloc.vec.Vec.new h5i_app_sql.Val) v
+  ok (h5i_app_sql.Write.Del User.TABLE key)
+
+/-- [linkding_kernel::{linkding_kernel::Token}::sql_del]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 257:12-261:13
+    Visibility: public -/
+def Token.sql_del (key : alloc.vec.Vec Std.U8) : Result h5i_app_sql.Write := do
+  let v ← alloc.vec.VecU8.Insts.H5i_app_sqlColumn.to_val key
+  let key1 ← alloc.vec.Vec.push (alloc.vec.Vec.new h5i_app_sql.Val) v
+  ok (h5i_app_sql.Write.Del Token.TABLE key1)
+
+/-- [linkding_kernel::{linkding_kernel::Bookmark}::sql_del]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 257:12-261:13
+    Visibility: public -/
+def Bookmark.sql_del
+  (owner : Std.U64) (added : Std.U64) (id : Std.U64) :
+  Result h5i_app_sql.Write
+  := do
+  let v ← U64.Insts.H5i_app_sqlColumn.to_val owner
+  let key ← alloc.vec.Vec.push (alloc.vec.Vec.new h5i_app_sql.Val) v
+  let v1 ← U64.Insts.H5i_app_sqlColumn.to_val added
+  let key1 ← alloc.vec.Vec.push key v1
+  let v2 ← U64.Insts.H5i_app_sqlColumn.to_val id
+  let key2 ← alloc.vec.Vec.push key1 v2
+  ok (h5i_app_sql.Write.Del Bookmark.TABLE key2)
+
+/-- [linkding_kernel::{linkding_kernel::Tag}::sql_del]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 257:12-261:13
+    Visibility: public -/
+def Tag.sql_del (id : Std.U64) : Result h5i_app_sql.Write := do
+  let v ← U64.Insts.H5i_app_sqlColumn.to_val id
+  let key ← alloc.vec.Vec.push (alloc.vec.Vec.new h5i_app_sql.Val) v
+  ok (h5i_app_sql.Write.Del Tag.TABLE key)
+
+/-- [linkding_kernel::{linkding_kernel::Link}::sql_del]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 257:12-261:13
+    Visibility: public -/
+def Link.sql_del
+  (bookmark : Std.U64) (tag : Std.U64) : Result h5i_app_sql.Write := do
+  let v ← U64.Insts.H5i_app_sqlColumn.to_val bookmark
+  let key ← alloc.vec.Vec.push (alloc.vec.Vec.new h5i_app_sql.Val) v
+  let v1 ← U64.Insts.H5i_app_sqlColumn.to_val tag
+  let key1 ← alloc.vec.Vec.push key v1
+  ok (h5i_app_sql.Write.Del Link.TABLE key1)
+
+/-- [linkding_kernel::{linkding_kernel::Bundle}::sql_del]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 257:12-261:13
+    Visibility: public -/
+def Bundle.sql_del (id : Std.U64) : Result h5i_app_sql.Write := do
+  let v ← U64.Insts.H5i_app_sqlColumn.to_val id
+  let key ← alloc.vec.Vec.push (alloc.vec.Vec.new h5i_app_sql.Val) v
+  ok (h5i_app_sql.Write.Del Bundle.TABLE key)
+
+/-- [linkding_kernel::{linkding_kernel::User}::sql_del_where]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 264:12-266:13
+    Visibility: public -/
+def User.sql_del_where
+  (col : Std.U32) (val : h5i_app_sql.Val) : Result h5i_app_sql.Write := do
+  ok (h5i_app_sql.Write.DelWhere User.TABLE col val)
+
+/-- [linkding_kernel::{linkding_kernel::Token}::sql_del_where]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 264:12-266:13
+    Visibility: public -/
+def Token.sql_del_where
+  (col : Std.U32) (val : h5i_app_sql.Val) : Result h5i_app_sql.Write := do
+  ok (h5i_app_sql.Write.DelWhere Token.TABLE col val)
+
+/-- [linkding_kernel::{linkding_kernel::Bookmark}::sql_del_where]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 264:12-266:13
+    Visibility: public -/
+def Bookmark.sql_del_where
+  (col : Std.U32) (val : h5i_app_sql.Val) : Result h5i_app_sql.Write := do
+  ok (h5i_app_sql.Write.DelWhere Bookmark.TABLE col val)
+
+/-- [linkding_kernel::{linkding_kernel::Tag}::sql_del_where]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 264:12-266:13
+    Visibility: public -/
+def Tag.sql_del_where
+  (col : Std.U32) (val : h5i_app_sql.Val) : Result h5i_app_sql.Write := do
+  ok (h5i_app_sql.Write.DelWhere Tag.TABLE col val)
+
+/-- [linkding_kernel::{linkding_kernel::Link}::sql_del_where]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 264:12-266:13
+    Visibility: public -/
+def Link.sql_del_where
+  (col : Std.U32) (val : h5i_app_sql.Val) : Result h5i_app_sql.Write := do
+  ok (h5i_app_sql.Write.DelWhere Link.TABLE col val)
+
+/-- [linkding_kernel::{linkding_kernel::Bundle}::sql_del_where]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 264:12-266:13
+    Visibility: public -/
+def Bundle.sql_del_where
+  (col : Std.U32) (val : h5i_app_sql.Val) : Result h5i_app_sql.Write := do
+  ok (h5i_app_sql.Write.DelWhere Bundle.TABLE col val)
+
+/-- [linkding_kernel::Snapshot]
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 278:8-280:9
+    Visibility: public -/
+structure Snapshot where
+  counter : Counter
+  users : alloc.vec.Vec User
+  tokens : alloc.vec.Vec Token
+  bookmarks : alloc.vec.Vec Bookmark
+  tags : alloc.vec.Vec Tag
+  links : alloc.vec.Vec Link
+  bundles : alloc.vec.Vec Bundle
+
+/-- [linkding_kernel::Rows]
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 284:8-286:9
+    Visibility: public -/
+structure Rows where
+  counter : alloc.vec.Vec (alloc.vec.Vec h5i_app_sql.Val)
+  users : alloc.vec.Vec (alloc.vec.Vec h5i_app_sql.Val)
+  tokens : alloc.vec.Vec (alloc.vec.Vec h5i_app_sql.Val)
+  bookmarks : alloc.vec.Vec (alloc.vec.Vec h5i_app_sql.Val)
+  tags : alloc.vec.Vec (alloc.vec.Vec h5i_app_sql.Val)
+  links : alloc.vec.Vec (alloc.vec.Vec h5i_app_sql.Val)
+  bundles : alloc.vec.Vec (alloc.vec.Vec h5i_app_sql.Val)
+
+/-- [linkding_kernel::decode]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 289:8-297:9
+    Visibility: public -/
+def decode (r : Rows) : Result (Option Snapshot) := do
+  let o ← Counter.from_one r.counter
+  match o with
+  | none => ok none
+  | some x =>
+    let o1 ← User.from_rows r.users
+    match o1 with
+    | none => ok none
+    | some x1 =>
+      let o2 ← Token.from_rows r.tokens
+      match o2 with
+      | none => ok none
+      | some x2 =>
+        let o3 ← Bookmark.from_rows r.bookmarks
+        match o3 with
+        | none => ok none
+        | some x3 =>
+          let o4 ← Tag.from_rows r.tags
+          match o4 with
+          | none => ok none
+          | some x4 =>
+            let o5 ← Link.from_rows r.links
+            match o5 with
+            | none => ok none
+            | some x5 =>
+              let o6 ← Bundle.from_rows r.bundles
+              match o6 with
+              | none => ok none
+              | some x6 =>
+                ok (some
+                  {
+                    counter := x,
+                    users := x1,
+                    tokens := x2,
+                    bookmarks := x3,
+                    tags := x4,
+                    links := x5,
+                    bundles := x6
+                  })
+
+/-- [linkding_kernel::LINK_TAG]
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1794:0-1794:24 -/
+@[global_simps, irreducible] def LINK_TAG : Std.U32 := 1#u32
+
+/-- [linkding_kernel::LINK_BOOKMARK]
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1793:0-1793:29 -/
+@[global_simps, irreducible] def LINK_BOOKMARK : Std.U32 := 0#u32
+
+/-- [linkding_kernel::Write]
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 225:0-238:1
+    Visibility: public -/
+@[discriminant isize]
+inductive Write where
+| PutBookmark : Bookmark → Write
+| DelBookmark : Std.U64 → Std.U64 → Std.U64 → Write
+| PutTag : Tag → Write
+| DelTag : Std.U64 → Write
+| PutLink : Link → Write
+| DelLinksOf : Std.U64 → Write
+| DelLinksTo : Std.U64 → Write
+| PutBundle : Bundle → Write
+| DelBundle : Std.U64 → Write
+| SetCounter : Counter → Write
+
+/-- [linkding_kernel::apply_write]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 2122:0-2135:1 -/
+def apply_write (s : Snapshot) (w : Write) : Result Snapshot := do
+  match w with
+  | Write.PutBookmark x =>
+    let v ← Bookmark.put s.bookmarks x
+    ok { s with bookmarks := v }
+  | Write.DelBookmark o a id =>
+    let v ← Bookmark.del s.bookmarks o a id
+    ok { s with bookmarks := v }
+  | Write.PutTag x => let v ← Tag.put s.tags x
+                      ok { s with tags := v }
+  | Write.DelTag id => let v ← Tag.del s.tags id
+                       ok { s with tags := v }
+  | Write.PutLink x => let v ← Link.put s.links x
+                       ok { s with links := v }
+  | Write.DelLinksOf id =>
+    let v ← U64.Insts.H5i_app_sqlColumn.to_val id
+    let v1 ← Link.del_where s.links LINK_BOOKMARK v
+    ok { s with links := v1 }
+  | Write.DelLinksTo id =>
+    let v ← U64.Insts.H5i_app_sqlColumn.to_val id
+    let v1 ← Link.del_where s.links LINK_TAG v
+    ok { s with links := v1 }
+  | Write.PutBundle x =>
+    let v ← Bundle.put s.bundles x
+    ok { s with bundles := v }
+  | Write.DelBundle id =>
+    let v ← Bundle.del s.bundles id
+    ok { s with bundles := v }
+  | Write.SetCounter c => ok { s with counter := c }
+
+/-- [linkding_kernel::{impl core::clone::Clone for linkding_kernel::Counter}::clone]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 123:13-123:18
+    Visibility: public -/
+def Counter.Insts.CoreCloneClone.clone (self : Counter) : Result Counter := do
+  ok self
+
+/-- [linkding_kernel::{impl core::clone::Clone for linkding_kernel::Write}::clone]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 224:9-224:14
+    Visibility: public -/
+def Write.Insts.CoreCloneClone.clone (self : Write) : Result Write := do
+  match self with
+  | Write.PutBookmark __self_0 =>
+    let b ← Bookmark.Insts.CoreCloneClone.clone __self_0
+    ok (Write.PutBookmark b)
+  | Write.DelBookmark __self_0 __self_1 __self_2 =>
+    let i ← lift (core.clone.impls.CloneU64.clone __self_0)
+    let i1 ← lift (core.clone.impls.CloneU64.clone __self_1)
+    let i2 ← lift (core.clone.impls.CloneU64.clone __self_2)
+    ok (Write.DelBookmark i i1 i2)
+  | Write.PutTag __self_0 =>
+    let t ← Tag.Insts.CoreCloneClone.clone __self_0
+    ok (Write.PutTag t)
+  | Write.DelTag __self_0 =>
+    let i ← lift (core.clone.impls.CloneU64.clone __self_0)
+    ok (Write.DelTag i)
+  | Write.PutLink __self_0 =>
+    let l ← Link.Insts.CoreCloneClone.clone __self_0
+    ok (Write.PutLink l)
+  | Write.DelLinksOf __self_0 =>
+    let i ← lift (core.clone.impls.CloneU64.clone __self_0)
+    ok (Write.DelLinksOf i)
+  | Write.DelLinksTo __self_0 =>
+    let i ← lift (core.clone.impls.CloneU64.clone __self_0)
+    ok (Write.DelLinksTo i)
+  | Write.PutBundle __self_0 =>
+    let b ← Bundle.Insts.CoreCloneClone.clone __self_0
+    ok (Write.PutBundle b)
+  | Write.DelBundle __self_0 =>
+    let i ← lift (core.clone.impls.CloneU64.clone __self_0)
+    ok (Write.DelBundle i)
+  | Write.SetCounter __self_0 =>
+    let c ← Counter.Insts.CoreCloneClone.clone __self_0
+    ok (Write.SetCounter c)
+
+/-- Trait implementation: [linkding_kernel::{impl core::clone::Clone for linkding_kernel::Bundle}]
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 106:13-106:18 -/
+@[reducible]
+def Bundle.Insts.CoreCloneClone : core.clone.Clone Bundle := {
+  clone := Bundle.Insts.CoreCloneClone.clone
+}
+
+/-- Trait implementation: [linkding_kernel::{impl core::clone::Clone for linkding_kernel::Link}]
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 99:13-99:18 -/
+@[reducible]
+def Link.Insts.CoreCloneClone : core.clone.Clone Link := {
+  clone := Link.Insts.CoreCloneClone.clone
+}
+
+/-- Trait implementation: [linkding_kernel::{impl core::clone::Clone for linkding_kernel::Tag}]
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 89:13-89:18 -/
+@[reducible]
+def Tag.Insts.CoreCloneClone : core.clone.Clone Tag := {
+  clone := Tag.Insts.CoreCloneClone.clone
+}
+
+/-- Trait implementation: [linkding_kernel::{impl core::clone::Clone for linkding_kernel::Bookmark}]
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 74:13-74:18 -/
+@[reducible]
+def Bookmark.Insts.CoreCloneClone : core.clone.Clone Bookmark := {
+  clone := Bookmark.Insts.CoreCloneClone.clone
+}
+
+/-- Trait implementation: [linkding_kernel::{impl core::clone::Clone for linkding_kernel::Token}]
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 67:13-67:18 -/
+@[reducible]
+def Token.Insts.CoreCloneClone : core.clone.Clone Token := {
+  clone := Token.Insts.CoreCloneClone.clone
+}
+
+/-- Trait implementation: [linkding_kernel::{impl core::clone::Clone for linkding_kernel::User}]
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 49:13-49:18 -/
+@[reducible]
+def User.Insts.CoreCloneClone : core.clone.Clone User := {
+  clone := User.Insts.CoreCloneClone.clone
+}
+
+/-- [linkding_kernel::{impl core::clone::Clone for linkding_kernel::Snapshot}::clone]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 37:13-37:18
+    Visibility: public -/
+def Snapshot.Insts.CoreCloneClone.clone
+  (self : Snapshot) : Result Snapshot := do
+  let c ← Counter.Insts.CoreCloneClone.clone self.counter
+  let v ← alloc.vec.CloneVec.clone User.Insts.CoreCloneClone self.users
+  let v1 ← alloc.vec.CloneVec.clone Token.Insts.CoreCloneClone self.tokens
+  let v2 ←
+    alloc.vec.CloneVec.clone Bookmark.Insts.CoreCloneClone self.bookmarks
+  let v3 ← alloc.vec.CloneVec.clone Tag.Insts.CoreCloneClone self.tags
+  let v4 ← alloc.vec.CloneVec.clone Link.Insts.CoreCloneClone self.links
+  let v5 ← alloc.vec.CloneVec.clone Bundle.Insts.CoreCloneClone self.bundles
+  ok
+    {
+      counter := c,
+      users := v,
+      tokens := v1,
+      bookmarks := v2,
+      tags := v3,
+      links := v4,
+      bundles := v5
+    }
+
+/-- [linkding_kernel::apply]: loop body 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 306:12-309:13
+    Visibility: public -/
+@[rust_loop_body]
+def apply_loop.body
+  (ws : alloc.vec.Vec Write) (s : Snapshot) (i : Std.Usize) :
+  Result (ControlFlow (Snapshot × Std.Usize) Snapshot)
+  := do
+  let i1 := alloc.vec.Vec.len ws
+  if i < i1
+  then
+    let w ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Write) ws i
+    let w1 ← Write.Insts.CoreCloneClone.clone w
+    let s1 ← apply_write s w1
+    let i2 ← i + 1#usize
+    ok (cont (s1, i2))
+  else ok (done s)
+
+/-- [linkding_kernel::apply]: loop 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 306:12-309:13
+    Visibility: public -/
+@[rust_loop]
+def apply_loop
+  (ws : alloc.vec.Vec Write) (s : Snapshot) (i : Std.Usize) :
+  Result Snapshot
+  := do
+  loop
+    (fun (s1, i1) => apply_loop.body ws s1 i1)
+    (s, i)
+
+/-- [linkding_kernel::apply]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 303:8-311:9
+    Visibility: public -/
+def apply (snap : Snapshot) (ws : alloc.vec.Vec Write) : Result Snapshot := do
+  let s ← Snapshot.Insts.CoreCloneClone.clone snap
+  apply_loop ws s 0#usize
+
+/-- [linkding_kernel::sql_write]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 2138:0-2151:1 -/
+def sql_write
+  (w : Write) (out : alloc.vec.Vec h5i_app_sql.Write) :
+  Result (alloc.vec.Vec h5i_app_sql.Write)
+  := do
+  match w with
+  | Write.PutBookmark x =>
+    let w1 ← Bookmark.sql_put x
+    alloc.vec.Vec.push out w1
+  | Write.DelBookmark o a id =>
+    let w1 ← Bookmark.sql_del o a id
+    alloc.vec.Vec.push out w1
+  | Write.PutTag x => let w1 ← Tag.sql_put x
+                      alloc.vec.Vec.push out w1
+  | Write.DelTag id => let w1 ← Tag.sql_del id
+                       alloc.vec.Vec.push out w1
+  | Write.PutLink x => let w1 ← Link.sql_put x
+                       alloc.vec.Vec.push out w1
+  | Write.DelLinksOf id =>
+    let v ← U64.Insts.H5i_app_sqlColumn.to_val id
+    let w1 ← Link.sql_del_where LINK_BOOKMARK v
+    alloc.vec.Vec.push out w1
+  | Write.DelLinksTo id =>
+    let v ← U64.Insts.H5i_app_sqlColumn.to_val id
+    let w1 ← Link.sql_del_where LINK_TAG v
+    alloc.vec.Vec.push out w1
+  | Write.PutBundle x => let w1 ← Bundle.sql_put x
+                         alloc.vec.Vec.push out w1
+  | Write.DelBundle id =>
+    let w1 ← Bundle.sql_del id
+    alloc.vec.Vec.push out w1
+  | Write.SetCounter c =>
+    let w1 ← Counter.sql_put c
+    alloc.vec.Vec.push out w1
+
+/-- [linkding_kernel::sql_writes]: loop body 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 317:12-320:13
+    Visibility: public -/
+@[rust_loop_body]
+def sql_writes_loop.body
+  (ws : alloc.vec.Vec Write) (out : alloc.vec.Vec h5i_app_sql.Write)
+  (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec h5i_app_sql.Write) × Std.Usize)
+    (alloc.vec.Vec h5i_app_sql.Write))
+  := do
+  let i1 := alloc.vec.Vec.len ws
+  if i < i1
+  then
+    let w ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Write) ws i
+    let out1 ← sql_write w out
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
+  else ok (done out)
+
+/-- [linkding_kernel::sql_writes]: loop 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 317:12-320:13
+    Visibility: public -/
+@[rust_loop]
+def sql_writes_loop
+  (ws : alloc.vec.Vec Write) (out : alloc.vec.Vec h5i_app_sql.Write)
+  (i : Std.Usize) :
+  Result (alloc.vec.Vec h5i_app_sql.Write)
+  := do
+  loop
+    (fun (out1, i1) => sql_writes_loop.body ws out1 i1)
+    (out, i)
+
+/-- [linkding_kernel::sql_writes]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 314:8-322:9
+    Visibility: public -/
+@[reducible]
+def sql_writes
+  (ws : alloc.vec.Vec Write) : Result (alloc.vec.Vec h5i_app_sql.Write) := do
+  sql_writes_loop ws (alloc.vec.Vec.new h5i_app_sql.Write) 0#usize
+
+/-- [linkding_kernel::Principal]
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 28:0-31:1
+    Visibility: public -/
+structure Principal where
+  org : Std.U64
+  token : alloc.vec.Vec Std.U8
+
+/-- [linkding_kernel::ORDER_BIAS]
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 133:0-133:39
+    Visibility: public -/
+@[global_simps, irreducible] def ORDER_BIAS : Std.U64 := 2147483648#u64
+
+/-- [linkding_kernel::SCOPE_ARCHIVED]
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 137:0-137:33
+    Visibility: public -/
+@[global_simps, irreducible] def SCOPE_ARCHIVED : Std.U8 := 1#u8
+
+/-- [linkding_kernel::SCOPE_SHARED]
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 138:0-138:31
+    Visibility: public -/
+@[global_simps, irreducible] def SCOPE_SHARED : Std.U8 := 2#u8
+
+/-- [linkding_kernel::FLAG_YES]
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 142:0-142:27
+    Visibility: public -/
+@[global_simps, irreducible] def FLAG_YES : Std.U8 := 1#u8
+
+/-- [linkding_kernel::FLAG_NO]
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 143:0-143:26
+    Visibility: public -/
+@[global_simps, irreducible] def FLAG_NO : Std.U8 := 2#u8
+
+/-- [linkding_kernel::SORT_ADDED_DESC]
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 146:0-146:34
+    Visibility: public -/
+@[global_simps, irreducible] def SORT_ADDED_DESC : Std.U8 := 0#u8
+
+/-- [linkding_kernel::SORT_ADDED_ASC]
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 147:0-147:33
+    Visibility: public -/
+@[global_simps, irreducible] def SORT_ADDED_ASC : Std.U8 := 1#u8
+
+/-- [linkding_kernel::SORT_MODIFIED_ASC]
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 148:0-148:36
+    Visibility: public -/
+@[global_simps, irreducible] def SORT_MODIFIED_ASC : Std.U8 := 2#u8
+
+/-- [linkding_kernel::SORT_MODIFIED_DESC]
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 149:0-149:37
+    Visibility: public -/
+@[global_simps, irreducible] def SORT_MODIFIED_DESC : Std.U8 := 3#u8
+
+/-- [linkding_kernel::SORT_TITLE_ASC]
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 150:0-150:33
+    Visibility: public -/
+@[global_simps, irreducible] def SORT_TITLE_ASC : Std.U8 := 4#u8
+
+/-- [linkding_kernel::SORT_TITLE_DESC]
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 151:0-151:34
+    Visibility: public -/
+@[global_simps, irreducible] def SORT_TITLE_DESC : Std.U8 := 5#u8
+
+/-- [linkding_kernel::Filter]
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 155:0-166:1
+    Visibility: public -/
+structure Filter where
+  scope : Std.U8
+  q : alloc.vec.Vec Std.U8
+  user : Option (alloc.vec.Vec Std.U8)
+  unread : Std.U8
+  shared : Std.U8
+  added_since : Option Std.U64
+  modified_since : Option Std.U64
+  sort : Std.U8
+  bundle : Option Std.U64
+
+/-- [linkding_kernel::BookmarkFields]
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 170:0-184:1
+    Visibility: public -/
+structure BookmarkFields where
+  url : Option (alloc.vec.Vec Std.U8)
+  url_norm : Option (alloc.vec.Vec Std.U8)
+  title : Option (alloc.vec.Vec Std.U8)
+  description : Option (alloc.vec.Vec Std.U8)
+  notes : Option (alloc.vec.Vec Std.U8)
+  unread : Option Bool
+  shared : Option Bool
+  archived : Option Bool
+  tags : Option (alloc.vec.Vec (alloc.vec.Vec Std.U8))
+  added : Option Std.U64
+  modified : Option Std.U64
+
+/-- [linkding_kernel::BundleFields]
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 187:0-196:1
+    Visibility: public -/
+structure BundleFields where
+  «name» : Option (alloc.vec.Vec Std.U8)
+  search : Option (alloc.vec.Vec Std.U8)
+  any_tags : Option (alloc.vec.Vec Std.U8)
+  all_tags : Option (alloc.vec.Vec Std.U8)
+  excluded_tags : Option (alloc.vec.Vec Std.U8)
+  filter_unread : Option (alloc.vec.Vec Std.U8)
+  filter_shared : Option (alloc.vec.Vec Std.U8)
+  order : Option Std.U64
 
 /-- [linkding_kernel::Command]
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 37:0-56:1
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 199:0-222:1
     Visibility: public -/
 @[discriminant isize]
 inductive Command where
-| ReadBookmark : Command
-| UpdateBookmark : Command
-| DeleteBookmark : Command
-| ArchiveBookmark : Command
-| UnarchiveBookmark : Command
-| ReadTag : Command
-| UpdateTag : Command
-| DeleteTag : Command
-| ReadBundle : Command
-| UpdateBundle : Command
-| DeleteBundle : Command
-| ListOwn : Command
-| ListArchived : Command
-| ListShared : Command
-| CreateBookmark : Command
-| CreateTag : Command
-| CreateBundle : Command
-| ReadProfile : Command
+| Profile : Command
+| List : Filter → Std.U64 → Std.U64 → Command
+| Check : alloc.vec.Vec Std.U8 → alloc.vec.Vec Std.U8 → Command
+| GetBookmark : Std.U64 → Command
+| CreateBookmark : BookmarkFields → Std.U64 → Command
+| UpdateBookmark : Std.U64 → BookmarkFields → Std.U64 → Command
+| DeleteBookmark : Std.U64 → Command
+| Archive : Std.U64 → Bool → Std.U64 → Command
+| ListTags : Std.U64 → Std.U64 → Command
+| CreateTag : alloc.vec.Vec Std.U8 → Std.U64 → Command
+| GetTag : Std.U64 → Command
+| DeleteTag : Std.U64 → Command
+| ListBundles : Std.U64 → Std.U64 → Command
+| CreateBundle : BundleFields → Std.U64 → Command
+| GetBundle : Std.U64 → Command
+| UpdateBundle : Std.U64 → BundleFields → Std.U64 → Command
+| DeleteBundle : Std.U64 → Command
+
+/-- [linkding_kernel::BookmarkView]
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 242:0-245:1
+    Visibility: public -/
+structure BookmarkView where
+  bookmark : Bookmark
+  tags : alloc.vec.Vec (alloc.vec.Vec Std.U8)
 
 /-- [linkding_kernel::Reply]
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 59:0-61:1
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 248:0-262:1
     Visibility: public -/
 @[discriminant isize]
 inductive Reply where
-| Allow : Reply
+| Profile : User → Reply
+| Bookmarks : alloc.vec.Vec BookmarkView → Option Std.U64 → Reply
+| Bookmark : BookmarkView → Reply
+| Found : Option BookmarkView → Reply
+| Tags : alloc.vec.Vec Tag → Reply
+| Tag : Tag → Reply
+| Bundles : alloc.vec.Vec Bundle → Std.U64 → Reply
+| Bundle : Bundle → Reply
+| Done : Reply
 
 /-- [linkding_kernel::Error]
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 64:0-67:1
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 265:0-274:1
     Visibility: public -/
 @[discriminant isize]
 inductive Error where
 | Unauthenticated : Error
+| BadToken : Error
 | NotFound : Error
+| DuplicateUrl : Error
+| Overflow : Error
 
-/-- [linkding_kernel::Page]
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 70:0-77:1
+/-- [linkding_kernel::one]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 288:0-292:1 -/
+def one (w : Write) : Result (alloc.vec.Vec Write) := do
+  alloc.vec.Vec.push (alloc.vec.Vec.new Write) w
+
+/-- [linkding_kernel::search::lower_ascii]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/search.rs', lines 119:0-149:1
     Visibility: public -/
-structure Page where
-  limit : Std.U64
-  offset : Std.U64
-  has_next : Bool
-  has_prev : Bool
-  prev_drop_offset : Bool
-  prev_offset : Std.U64
-
-/-- [linkding_kernel::Node]
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 80:0-85:1
-    Visibility: public -/
-structure Node where
-  kind : Std.U8
-  text : alloc.vec.Vec Std.U8
-  left : Std.Usize
-  right : Std.Usize
-
-/-- [linkding_kernel::Parsed]
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 88:0-93:1
-    Visibility: public -/
-structure Parsed where
-  nodes : alloc.vec.Vec Node
-  root : Std.Usize
-  failed : Bool
-  empty : Bool
-
-/-- [linkding_kernel::BookmarkFacts]
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 96:0-104:1
-    Visibility: public -/
-structure BookmarkFacts where
-  title : alloc.vec.Vec Std.U8
-  description : alloc.vec.Vec Std.U8
-  notes : alloc.vec.Vec Std.U8
-  url : alloc.vec.Vec Std.U8
-  unread : Bool
-  untagged : Bool
-  tag_names : alloc.vec.Vec (alloc.vec.Vec Std.U8)
-
-/-- [linkding_kernel::Token]
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 107:0-110:1 -/
-structure Token where
-  kind : Std.U8
-  text : alloc.vec.Vec Std.U8
-
-/-- [linkding_kernel::authed]:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 112:0-133:1 -/
-def authed (cmd : Command) : Result Bool := do
-  match cmd with
-  | Command.ReadBookmark => ok true
-  | Command.UpdateBookmark => ok true
-  | Command.DeleteBookmark => ok true
-  | Command.ArchiveBookmark => ok true
-  | Command.UnarchiveBookmark => ok true
-  | Command.ReadTag => ok true
-  | Command.UpdateTag => ok true
-  | Command.DeleteTag => ok true
-  | Command.ReadBundle => ok true
-  | Command.UpdateBundle => ok true
-  | Command.DeleteBundle => ok true
-  | Command.ListOwn => ok true
-  | Command.ListArchived => ok true
-  | Command.ListShared => ok false
-  | Command.CreateBookmark => ok true
-  | Command.CreateTag => ok true
-  | Command.CreateBundle => ok true
-  | Command.ReadProfile => ok true
-
-/-- [linkding_kernel::can_see_own]:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 136:0-138:1
-    Visibility: public -/
-def can_see_own (actor : Std.U64) (owner : Std.U64) : Result Bool := do
-  if actor != 0#u64
-  then ok (actor = owner)
-  else ok false
-
-/-- [linkding_kernel::can_see_shared]:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 142:0-150:1
-    Visibility: public -/
-def can_see_shared
-  (actor : Std.U64) (shared : Bool) (owner_sharing : Bool)
-  (owner_public : Bool) :
-  Result Bool
-  := do
-  if shared
-  then
-    if owner_sharing
-    then if actor != 0#u64
-         then ok true
-         else ok owner_public
-    else ok false
-  else ok false
-
-/-- [linkding_kernel::owner_only]:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 152:0-157:1 -/
-def owner_only
-  (actor : Std.U64) («exists» : Bool) (owner : Std.U64) :
-  Result (core.result.Result Reply Error)
-  := do
-  if «exists»
-  then
-    let b ← can_see_own actor owner
-    if b
-    then ok (core.result.Result.Ok Reply.Allow)
-    else ok (core.result.Result.Err Error.NotFound)
-  else ok (core.result.Result.Err Error.NotFound)
-
-/-- [linkding_kernel::transition]:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 159:0-185:1
-    Visibility: public -/
-def transition
-  (view : View) (cmd : Command) : Result (core.result.Result Reply Error) := do
-  let b ← authed cmd
-  if b
-  then
-    if view.actor = 0#u64
-    then ok (core.result.Result.Err Error.Unauthenticated)
-    else
-      match cmd with
-      | Command.ReadBookmark =>
-        owner_only view.actor view.bookmark_exists view.bookmark_owner
-      | Command.UpdateBookmark =>
-        owner_only view.actor view.bookmark_exists view.bookmark_owner
-      | Command.DeleteBookmark =>
-        owner_only view.actor view.bookmark_exists view.bookmark_owner
-      | Command.ArchiveBookmark =>
-        owner_only view.actor view.bookmark_exists view.bookmark_owner
-      | Command.UnarchiveBookmark =>
-        owner_only view.actor view.bookmark_exists view.bookmark_owner
-      | Command.ReadTag => owner_only view.actor view.tag_exists view.tag_owner
-      | Command.UpdateTag =>
-        owner_only view.actor view.tag_exists view.tag_owner
-      | Command.DeleteTag =>
-        owner_only view.actor view.tag_exists view.tag_owner
-      | Command.ReadBundle =>
-        owner_only view.actor view.bundle_exists view.bundle_owner
-      | Command.UpdateBundle =>
-        owner_only view.actor view.bundle_exists view.bundle_owner
-      | Command.DeleteBundle =>
-        owner_only view.actor view.bundle_exists view.bundle_owner
-      | Command.ListOwn => ok (core.result.Result.Ok Reply.Allow)
-      | Command.ListArchived => ok (core.result.Result.Ok Reply.Allow)
-      | Command.ListShared => ok (core.result.Result.Ok Reply.Allow)
-      | Command.CreateBookmark => ok (core.result.Result.Ok Reply.Allow)
-      | Command.CreateTag => ok (core.result.Result.Ok Reply.Allow)
-      | Command.CreateBundle => ok (core.result.Result.Ok Reply.Allow)
-      | Command.ReadProfile => ok (core.result.Result.Ok Reply.Allow)
-  else
-    match cmd with
-    | Command.ReadBookmark =>
-      owner_only view.actor view.bookmark_exists view.bookmark_owner
-    | Command.UpdateBookmark =>
-      owner_only view.actor view.bookmark_exists view.bookmark_owner
-    | Command.DeleteBookmark =>
-      owner_only view.actor view.bookmark_exists view.bookmark_owner
-    | Command.ArchiveBookmark =>
-      owner_only view.actor view.bookmark_exists view.bookmark_owner
-    | Command.UnarchiveBookmark =>
-      owner_only view.actor view.bookmark_exists view.bookmark_owner
-    | Command.ReadTag => owner_only view.actor view.tag_exists view.tag_owner
-    | Command.UpdateTag => owner_only view.actor view.tag_exists view.tag_owner
-    | Command.DeleteTag => owner_only view.actor view.tag_exists view.tag_owner
-    | Command.ReadBundle =>
-      owner_only view.actor view.bundle_exists view.bundle_owner
-    | Command.UpdateBundle =>
-      owner_only view.actor view.bundle_exists view.bundle_owner
-    | Command.DeleteBundle =>
-      owner_only view.actor view.bundle_exists view.bundle_owner
-    | Command.ListOwn => ok (core.result.Result.Ok Reply.Allow)
-    | Command.ListArchived => ok (core.result.Result.Ok Reply.Allow)
-    | Command.ListShared => ok (core.result.Result.Ok Reply.Allow)
-    | Command.CreateBookmark => ok (core.result.Result.Ok Reply.Allow)
-    | Command.CreateTag => ok (core.result.Result.Ok Reply.Allow)
-    | Command.CreateBundle => ok (core.result.Result.Ok Reply.Allow)
-    | Command.ReadProfile => ok (core.result.Result.Ok Reply.Allow)
-
-/-- [linkding_kernel::page_of]:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 190:0-225:1
-    Visibility: public -/
-def page_of
-  (limit_bad : Bool) (limit : Std.U64) (offset_bad : Bool) (offset : Std.U64)
-  (count : Std.U64) :
-  Result Page
-  := do
-  let limit_n ←
-    if limit_bad
-    then ok 100#u64
-    else if limit = 0#u64
-         then ok 100#u64
-         else ok limit
-  let offset_n ← if offset_bad
-                   then ok 0#u64
-                   else ok offset
-  let has_next ←
-    if offset_n < count
-    then
-      do
-      let rest ← count - offset_n
-      if rest > limit_n
-      then ok true
-      else ok false
-    else ok false
-  if offset_n > 0#u64
-  then
-    if offset_n <= limit_n
-    then
-      ok
-        {
-          limit := limit_n,
-          offset := offset_n,
-          has_next,
-          has_prev := true,
-          prev_drop_offset := true,
-          prev_offset := 0#u64
-        }
-    else
-      let prev_offset ← offset_n - limit_n
-      ok
-        {
-          limit := limit_n,
-          offset := offset_n,
-          has_next,
-          has_prev := true,
-          prev_drop_offset := false,
-          prev_offset
-        }
-  else
-    ok
-      {
-        limit := limit_n,
-        offset := offset_n,
-        has_next,
-        has_prev := false,
-        prev_drop_offset := false,
-        prev_offset := 0#u64
-      }
-
-/-- [linkding_kernel::empty_parsed]:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 227:0-234:1 -/
-def empty_parsed : Result Parsed := do
-  ok
-    {
-      nodes := (alloc.vec.Vec.new Node),
-      root := 0#usize,
-      failed := false,
-      empty := true
-    }
-
-/-- [linkding_kernel::failed_parsed]:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 236:0-243:1 -/
-def failed_parsed : Result Parsed := do
-  ok
-    {
-      nodes := (alloc.vec.Vec.new Node),
-      root := 0#usize,
-      failed := true,
-      empty := false
-    }
-
-/-- [linkding_kernel::lower_ascii]:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 245:0-275:1 -/
-def lower_ascii (c : Std.U8) : Result Std.U8 := do
+def search.lower_ascii (c : Std.U8) : Result Std.U8 := do
   match c with
   | 65#uscalar => ok 97#u8
   | 66#uscalar => ok 98#u8
@@ -404,9 +3234,1627 @@ def lower_ascii (c : Std.U8) : Result Std.U8 := do
   | 90#uscalar => ok 122#u8
   | _ => ok c
 
-/-- [linkding_kernel::is_space]:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 277:0-279:1 -/
-def is_space (c : Std.U8) : Result Bool := do
+/-- [linkding_kernel::lower_text]: loop body 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 300:4-303:5
+    Visibility: public -/
+@[rust_loop_body]
+def lower_text_loop.body
+  (t : alloc.vec.Vec Std.U8) (out : alloc.vec.Vec Std.U8) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Std.U8) × Std.Usize) (alloc.vec.Vec
+    Std.U8))
+  := do
+  let i1 := alloc.vec.Vec.len t
+  if i < i1
+  then
+    let i2 ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Std.U8) t i
+    let i3 ← search.lower_ascii i2
+    let out1 ← alloc.vec.Vec.push out i3
+    let i4 ← i + 1#usize
+    ok (cont (out1, i4))
+  else ok (done out)
+
+/-- [linkding_kernel::lower_text]: loop 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 300:4-303:5
+    Visibility: public -/
+@[rust_loop]
+def lower_text_loop
+  (t : alloc.vec.Vec Std.U8) (out : alloc.vec.Vec Std.U8) (i : Std.Usize) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  loop
+    (fun (out1, i1) => lower_text_loop.body t out1 i1)
+    (out, i)
+
+/-- [linkding_kernel::lower_text]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 297:0-305:1
+    Visibility: public -/
+@[reducible]
+def lower_text (t : alloc.vec.Vec Std.U8) : Result (alloc.vec.Vec Std.U8) := do
+  lower_text_loop t (alloc.vec.Vec.new Std.U8) 0#usize
+
+/-- [linkding_kernel::eq_ci]: loop body 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 313:4-320:1
+    Visibility: public -/
+@[rust_loop_body]
+def eq_ci_loop.body
+  (a : alloc.vec.Vec Std.U8) (b : alloc.vec.Vec Std.U8) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := alloc.vec.Vec.len a
+  if i < i1
+  then
+    let i2 ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Std.U8) a i
+    let i3 ← search.lower_ascii i2
+    let i4 ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Std.U8) b i
+    let i5 ← search.lower_ascii i4
+    if i3 != i5
+    then ok (done false)
+    else let i6 ← i + 1#usize
+         ok (cont i6)
+  else ok (done true)
+
+/-- [linkding_kernel::eq_ci]: loop 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 313:4-320:1
+    Visibility: public -/
+@[rust_loop]
+def eq_ci_loop
+  (a : alloc.vec.Vec Std.U8) (b : alloc.vec.Vec Std.U8) (i : Std.Usize) :
+  Result Bool
+  := do
+  loop
+    (fun i1 => eq_ci_loop.body a b i1)
+    i
+
+/-- [linkding_kernel::eq_ci]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 308:0-320:1
+    Visibility: public -/
+def eq_ci
+  (a : alloc.vec.Vec Std.U8) (b : alloc.vec.Vec Std.U8) : Result Bool := do
+  let i := alloc.vec.Vec.len a
+  let i1 := alloc.vec.Vec.len b
+  if i != i1
+  then ok false
+  else eq_ci_loop a b 0#usize
+
+/-- [linkding_kernel::less_ci]: loop body 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-337:1 -/
+@[rust_loop_body]
+def less_ci_loop.body
+  (a : alloc.vec.Vec Std.U8) (b : alloc.vec.Vec Std.U8) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := alloc.vec.Vec.len a
+  if i < i1
+  then
+    let i2 := alloc.vec.Vec.len b
+    if i < i2
+    then
+      let i3 ←
+        alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Std.U8) a i
+      let x ← search.lower_ascii i3
+      let i4 ←
+        alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Std.U8) b i
+      let y ← search.lower_ascii i4
+      if x < y
+      then ok (done true)
+      else
+        if x > y
+        then ok (done false)
+        else let i5 ← i + 1#usize
+             ok (cont i5)
+    else
+      let i3 := alloc.vec.Vec.len a
+      let i4 := alloc.vec.Vec.len b
+      ok (done (i3 < i4))
+  else
+    let i2 := alloc.vec.Vec.len a
+    let i3 := alloc.vec.Vec.len b
+    ok (done (i2 < i3))
+
+/-- [linkding_kernel::less_ci]: loop 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-337:1 -/
+@[rust_loop]
+def less_ci_loop
+  (a : alloc.vec.Vec Std.U8) (b : alloc.vec.Vec Std.U8) (i : Std.Usize) :
+  Result Bool
+  := do
+  loop
+    (fun i1 => less_ci_loop.body a b i1)
+    i
+
+/-- [linkding_kernel::less_ci]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 323:0-337:1 -/
+@[reducible]
+def less_ci
+  (a : alloc.vec.Vec Std.U8) (b : alloc.vec.Vec Std.U8) : Result Bool := do
+  less_ci_loop a b 0#usize
+
+/-- [linkding_kernel::contains_text]: loop body 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 341:4-348:1 -/
+@[rust_loop_body]
+def contains_text_loop.body
+  (v : alloc.vec.Vec (alloc.vec.Vec Std.U8)) (t : alloc.vec.Vec Std.U8)
+  (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let v1 ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice (alloc.vec.Vec
+        Std.U8)) v i
+    let b ← alloc.vec.partial_eq.PartialEqVec.eq core.cmp.PartialEqU8 v1 t
+    if b
+    then ok (done true)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else ok (done false)
+
+/-- [linkding_kernel::contains_text]: loop 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 341:4-348:1 -/
+@[rust_loop]
+def contains_text_loop
+  (v : alloc.vec.Vec (alloc.vec.Vec Std.U8)) (t : alloc.vec.Vec Std.U8)
+  (i : Std.Usize) :
+  Result Bool
+  := do
+  loop
+    (fun i1 => contains_text_loop.body v t i1)
+    i
+
+/-- [linkding_kernel::contains_text]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 339:0-348:1 -/
+@[reducible]
+def contains_text
+  (v : alloc.vec.Vec (alloc.vec.Vec Std.U8)) (t : alloc.vec.Vec Std.U8) :
+  Result Bool
+  := do
+  contains_text_loop v t 0#usize
+
+/-- [linkding_kernel::or_keep]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 350:0-355:1 -/
+def or_keep
+  (new : Option (alloc.vec.Vec Std.U8)) (old : alloc.vec.Vec Std.U8) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  match new with
+  | none => alloc.vec.CloneVec.clone core.clone.CloneU8 old
+  | some t => alloc.vec.CloneVec.clone core.clone.CloneU8 t
+
+/-- [linkding_kernel::or_empty]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 357:0-362:1 -/
+def or_empty
+  (new : Option (alloc.vec.Vec Std.U8)) : Result (alloc.vec.Vec Std.U8) := do
+  match new with
+  | none => ok (alloc.vec.Vec.new Std.U8)
+  | some t => alloc.vec.CloneVec.clone core.clone.CloneU8 t
+
+/-- [linkding_kernel::flag_or]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 364:0-369:1 -/
+def flag_or (new : Option Bool) (old : Bool) : Result Bool := do
+  match new with
+  | none => ok old
+  | some b => ok b
+
+/-- [linkding_kernel::time_or]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 371:0-376:1 -/
+def time_or (new : Option Std.U64) (old : Std.U64) : Result Std.U64 := do
+  match new with
+  | none => ok old
+  | some t => ok t
+
+/-- [linkding_kernel::yes_word]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 378:0-384:1 -/
+def yes_word : Result (alloc.vec.Vec Std.U8) := do
+  let w ← alloc.vec.Vec.push (alloc.vec.Vec.new Std.U8) 121#u8
+  let w1 ← alloc.vec.Vec.push w 101#u8
+  alloc.vec.Vec.push w1 115#u8
+
+/-- [linkding_kernel::no_word]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 386:0-391:1 -/
+def no_word : Result (alloc.vec.Vec Std.U8) := do
+  let w ← alloc.vec.Vec.push (alloc.vec.Vec.new Std.U8) 110#u8
+  alloc.vec.Vec.push w 111#u8
+
+/-- [linkding_kernel::off_word]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 393:0-399:1 -/
+def off_word : Result (alloc.vec.Vec Std.U8) := do
+  let w ← alloc.vec.Vec.push (alloc.vec.Vec.new Std.U8) 111#u8
+  let w1 ← alloc.vec.Vec.push w 102#u8
+  alloc.vec.Vec.push w1 102#u8
+
+/-- [linkding_kernel::find_user]: loop body 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 437:4-444:1
+    Visibility: public -/
+@[rust_loop_body]
+def find_user_loop.body
+  (us : alloc.vec.Vec User) (id : Std.U64) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize (Option User))
+  := do
+  let i1 := alloc.vec.Vec.len us
+  if i < i1
+  then
+    let u ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice User) us i
+    if u.id = id
+    then let u1 ← User.Insts.CoreCloneClone.clone u
+         ok (done (some u1))
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else ok (done none)
+
+/-- [linkding_kernel::find_user]: loop 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 437:4-444:1
+    Visibility: public -/
+@[rust_loop]
+def find_user_loop
+  (us : alloc.vec.Vec User) (id : Std.U64) (i : Std.Usize) :
+  Result (Option User)
+  := do
+  loop
+    (fun i1 => find_user_loop.body us id i1)
+    i
+
+/-- [linkding_kernel::find_user]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 435:0-444:1
+    Visibility: public -/
+@[reducible]
+def find_user
+  (us : alloc.vec.Vec User) (id : Std.U64) : Result (Option User) := do
+  find_user_loop us id 0#usize
+
+/-- [linkding_kernel::actor]: loop body 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-421:1
+    Visibility: public -/
+@[rust_loop_body]
+def actor_loop.body
+  (s : Snapshot) (token : alloc.vec.Vec Std.U8) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize (core.result.Result Std.U64 Error))
+  := do
+  let i1 := alloc.vec.Vec.len s.tokens
+  if i < i1
+  then
+    let t ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Token)
+        s.tokens i
+    let b ←
+      alloc.vec.partial_eq.PartialEqVec.eq core.cmp.PartialEqU8 t.key token
+    if b
+    then
+      let o ← find_user s.users t.user
+      let b1 := core.option.Option.is_some o
+      if b1
+      then ok (done (core.result.Result.Ok t.user))
+      else ok (done (core.result.Result.Err Error.BadToken))
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else ok (done (core.result.Result.Err Error.BadToken))
+
+/-- [linkding_kernel::actor]: loop 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-421:1
+    Visibility: public -/
+@[rust_loop]
+def actor_loop
+  (s : Snapshot) (token : alloc.vec.Vec Std.U8) (i : Std.Usize) :
+  Result (core.result.Result Std.U64 Error)
+  := do
+  loop
+    (fun i1 => actor_loop.body s token i1)
+    i
+
+/-- [linkding_kernel::actor]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 405:0-421:1
+    Visibility: public -/
+def actor
+  (s : Snapshot) (token : alloc.vec.Vec Std.U8) :
+  Result (core.result.Result Std.U64 Error)
+  := do
+  let i := alloc.vec.Vec.len token
+  if i = 0#usize
+  then ok (core.result.Result.Ok 0#u64)
+  else actor_loop s token 0#usize
+
+/-- [linkding_kernel::signed_in]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 424:0-433:1 -/
+def signed_in
+  (s : Snapshot) (token : alloc.vec.Vec Std.U8) :
+  Result (core.result.Result User Error)
+  := do
+  let r ← actor s token
+  match r with
+  | core.result.Result.Ok v =>
+    if v = 0#u64
+    then ok (core.result.Result.Err Error.Unauthenticated)
+    else
+      let o ← find_user s.users v
+      match o with
+      | none => ok (core.result.Result.Err Error.BadToken)
+      | some me => ok (core.result.Result.Ok me)
+  | core.result.Result.Err e => ok (core.result.Result.Err e)
+
+/-- [linkding_kernel::find_user_by_name]: loop body 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 448:4-455:1
+    Visibility: public -/
+@[rust_loop_body]
+def find_user_by_name_loop.body
+  (us : alloc.vec.Vec User) («name» : alloc.vec.Vec Std.U8) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize (Option User))
+  := do
+  let i1 := alloc.vec.Vec.len us
+  if i < i1
+  then
+    let u ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice User) us i
+    let b ←
+      alloc.vec.partial_eq.PartialEqVec.eq core.cmp.PartialEqU8 u.username
+        «name»
+    if b
+    then let u1 ← User.Insts.CoreCloneClone.clone u
+         ok (done (some u1))
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else ok (done none)
+
+/-- [linkding_kernel::find_user_by_name]: loop 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 448:4-455:1
+    Visibility: public -/
+@[rust_loop]
+def find_user_by_name_loop
+  (us : alloc.vec.Vec User) («name» : alloc.vec.Vec Std.U8) (i : Std.Usize) :
+  Result (Option User)
+  := do
+  loop
+    (fun i1 => find_user_by_name_loop.body us «name» i1)
+    i
+
+/-- [linkding_kernel::find_user_by_name]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 446:0-455:1
+    Visibility: public -/
+@[reducible]
+def find_user_by_name
+  (us : alloc.vec.Vec User) («name» : alloc.vec.Vec Std.U8) :
+  Result (Option User)
+  := do
+  find_user_by_name_loop us «name» 0#usize
+
+/-- [linkding_kernel::find_bookmark]: loop body 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 459:4-466:1
+    Visibility: public -/
+@[rust_loop_body]
+def find_bookmark_loop.body
+  (v : alloc.vec.Vec Bookmark) (id : Std.U64) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize (Option Bookmark))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let b ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Bookmark) v i
+    if b.id = id
+    then let b1 ← Bookmark.Insts.CoreCloneClone.clone b
+         ok (done (some b1))
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else ok (done none)
+
+/-- [linkding_kernel::find_bookmark]: loop 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 459:4-466:1
+    Visibility: public -/
+@[rust_loop]
+def find_bookmark_loop
+  (v : alloc.vec.Vec Bookmark) (id : Std.U64) (i : Std.Usize) :
+  Result (Option Bookmark)
+  := do
+  loop
+    (fun i1 => find_bookmark_loop.body v id i1)
+    i
+
+/-- [linkding_kernel::find_bookmark]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 457:0-466:1
+    Visibility: public -/
+@[reducible]
+def find_bookmark
+  (v : alloc.vec.Vec Bookmark) (id : Std.U64) : Result (Option Bookmark) := do
+  find_bookmark_loop v id 0#usize
+
+/-- [linkding_kernel::find_tag]: loop body 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 470:4-477:1
+    Visibility: public -/
+@[rust_loop_body]
+def find_tag_loop.body
+  (v : alloc.vec.Vec Tag) (id : Std.U64) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize (Option Tag))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let t ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Tag) v i
+    if t.id = id
+    then let t1 ← Tag.Insts.CoreCloneClone.clone t
+         ok (done (some t1))
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else ok (done none)
+
+/-- [linkding_kernel::find_tag]: loop 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 470:4-477:1
+    Visibility: public -/
+@[rust_loop]
+def find_tag_loop
+  (v : alloc.vec.Vec Tag) (id : Std.U64) (i : Std.Usize) :
+  Result (Option Tag)
+  := do
+  loop
+    (fun i1 => find_tag_loop.body v id i1)
+    i
+
+/-- [linkding_kernel::find_tag]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 468:0-477:1
+    Visibility: public -/
+@[reducible]
+def find_tag (v : alloc.vec.Vec Tag) (id : Std.U64) : Result (Option Tag) := do
+  find_tag_loop v id 0#usize
+
+/-- [linkding_kernel::find_tag_named]: loop body 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-489:1
+    Visibility: public -/
+@[rust_loop_body]
+def find_tag_named_loop.body
+  (v : alloc.vec.Vec Tag) (owner : Std.U64) (lower : alloc.vec.Vec Std.U8)
+  (i : Std.Usize) :
+  Result (ControlFlow Std.Usize (Option Tag))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let t ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Tag) v i
+    if t.owner = owner
+    then
+      let b ←
+        alloc.vec.partial_eq.PartialEqVec.eq core.cmp.PartialEqU8 t.name_lower
+          lower
+      if b
+      then let t1 ← Tag.Insts.CoreCloneClone.clone t
+           ok (done (some t1))
+      else let i2 ← i + 1#usize
+           ok (cont i2)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else ok (done none)
+
+/-- [linkding_kernel::find_tag_named]: loop 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-489:1
+    Visibility: public -/
+@[rust_loop]
+def find_tag_named_loop
+  (v : alloc.vec.Vec Tag) (owner : Std.U64) (lower : alloc.vec.Vec Std.U8)
+  (i : Std.Usize) :
+  Result (Option Tag)
+  := do
+  loop
+    (fun i1 => find_tag_named_loop.body v owner lower i1)
+    i
+
+/-- [linkding_kernel::find_tag_named]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 480:0-489:1
+    Visibility: public -/
+@[reducible]
+def find_tag_named
+  (v : alloc.vec.Vec Tag) (owner : Std.U64) (lower : alloc.vec.Vec Std.U8) :
+  Result (Option Tag)
+  := do
+  find_tag_named_loop v owner lower 0#usize
+
+/-- [linkding_kernel::find_bundle]: loop body 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 493:4-500:1
+    Visibility: public -/
+@[rust_loop_body]
+def find_bundle_loop.body
+  (v : alloc.vec.Vec Bundle) (id : Std.U64) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize (Option Bundle))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let b ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Bundle) v i
+    if b.id = id
+    then let b1 ← Bundle.Insts.CoreCloneClone.clone b
+         ok (done (some b1))
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else ok (done none)
+
+/-- [linkding_kernel::find_bundle]: loop 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 493:4-500:1
+    Visibility: public -/
+@[rust_loop]
+def find_bundle_loop
+  (v : alloc.vec.Vec Bundle) (id : Std.U64) (i : Std.Usize) :
+  Result (Option Bundle)
+  := do
+  loop
+    (fun i1 => find_bundle_loop.body v id i1)
+    i
+
+/-- [linkding_kernel::find_bundle]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 491:0-500:1
+    Visibility: public -/
+@[reducible]
+def find_bundle
+  (v : alloc.vec.Vec Bundle) (id : Std.U64) : Result (Option Bundle) := do
+  find_bundle_loop v id 0#usize
+
+/-- [linkding_kernel::tag_names]: loop body 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 506:4-514:5
+    Visibility: public -/
+@[rust_loop_body]
+def tag_names_loop.body
+  (s : Snapshot) (bookmark : Std.U64)
+  (out : alloc.vec.Vec (alloc.vec.Vec Std.U8)) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec (alloc.vec.Vec Std.U8)) × Std.Usize)
+    (alloc.vec.Vec (alloc.vec.Vec Std.U8)))
+  := do
+  let i1 := alloc.vec.Vec.len s.links
+  if i < i1
+  then
+    let l ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Link) 
+        s.links i
+    let out1 ←
+      if l.bookmark = bookmark
+      then
+        do
+        let o ← find_tag s.tags l.tag
+        match o with
+        | none => ok out
+        | some t =>
+          let v ← alloc.vec.CloneVec.clone core.clone.CloneU8 t.name
+          alloc.vec.Vec.push out v
+      else ok out
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
+  else ok (done out)
+
+/-- [linkding_kernel::tag_names]: loop 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 506:4-514:5
+    Visibility: public -/
+@[rust_loop]
+def tag_names_loop
+  (s : Snapshot) (bookmark : Std.U64)
+  (out : alloc.vec.Vec (alloc.vec.Vec Std.U8)) (i : Std.Usize) :
+  Result (alloc.vec.Vec (alloc.vec.Vec Std.U8))
+  := do
+  loop
+    (fun (out1, i1) => tag_names_loop.body s bookmark out1 i1)
+    (out, i)
+
+/-- [linkding_kernel::tag_names]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 503:0-516:1
+    Visibility: public -/
+@[reducible]
+def tag_names
+  (s : Snapshot) (bookmark : Std.U64) :
+  Result (alloc.vec.Vec (alloc.vec.Vec Std.U8))
+  := do
+  tag_names_loop s bookmark (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) 0#usize
+
+/-- [linkding_kernel::tag_lowers]: loop body 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 522:4-530:5 -/
+@[rust_loop_body]
+def tag_lowers_loop.body
+  (s : Snapshot) (bookmark : Std.U64)
+  (out : alloc.vec.Vec (alloc.vec.Vec Std.U8)) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec (alloc.vec.Vec Std.U8)) × Std.Usize)
+    (alloc.vec.Vec (alloc.vec.Vec Std.U8)))
+  := do
+  let i1 := alloc.vec.Vec.len s.links
+  if i < i1
+  then
+    let l ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Link) 
+        s.links i
+    let out1 ←
+      if l.bookmark = bookmark
+      then
+        do
+        let o ← find_tag s.tags l.tag
+        match o with
+        | none => ok out
+        | some t =>
+          let v ← alloc.vec.CloneVec.clone core.clone.CloneU8 t.name_lower
+          alloc.vec.Vec.push out v
+      else ok out
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
+  else ok (done out)
+
+/-- [linkding_kernel::tag_lowers]: loop 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 522:4-530:5 -/
+@[rust_loop]
+def tag_lowers_loop
+  (s : Snapshot) (bookmark : Std.U64)
+  (out : alloc.vec.Vec (alloc.vec.Vec Std.U8)) (i : Std.Usize) :
+  Result (alloc.vec.Vec (alloc.vec.Vec Std.U8))
+  := do
+  loop
+    (fun (out1, i1) => tag_lowers_loop.body s bookmark out1 i1)
+    (out, i)
+
+/-- [linkding_kernel::tag_lowers]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 519:0-532:1 -/
+@[reducible]
+def tag_lowers
+  (s : Snapshot) (bookmark : Std.U64) :
+  Result (alloc.vec.Vec (alloc.vec.Vec Std.U8))
+  := do
+  tag_lowers_loop s bookmark (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) 0#usize
+
+/-- [linkding_kernel::view]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 534:0-536:1
+    Visibility: public -/
+def view (s : Snapshot) (b : Bookmark) : Result BookmarkView := do
+  let b1 ← Bookmark.Insts.CoreCloneClone.clone b
+  let v ← tag_names s b.id
+  ok { bookmark := b1, tags := v }
+
+/-- [linkding_kernel::same_url]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 538:0-540:1 -/
+def same_url
+  (b : Bookmark) (owner : Std.U64) (url : alloc.vec.Vec Std.U8)
+  (url_norm : alloc.vec.Vec Std.U8) :
+  Result Bool
+  := do
+  if b.owner = owner
+  then
+    let b1 ←
+      alloc.vec.partial_eq.PartialEqVec.eq core.cmp.PartialEqU8 b.url_norm
+        url_norm
+    if b1
+    then ok true
+    else
+      let i := alloc.vec.Vec.len b.url_norm
+      if i = 0#usize
+      then alloc.vec.partial_eq.PartialEqVec.eq core.cmp.PartialEqU8 b.url url
+      else ok false
+  else ok false
+
+/-- [linkding_kernel::improves]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 543:0-551:1 -/
+def improves
+  (hit : Bool) (found : Bool) (id : Std.U64) (best : Std.U64) :
+  Result Bool
+  := do
+  if hit
+  then if found
+       then ok (id < best)
+       else ok true
+  else ok false
+
+/-- [linkding_kernel::find_same_url]: loop body 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-563:1 -/
+@[rust_loop_body]
+def find_same_url_loop.body
+  (s : Snapshot) (owner : Std.U64) (url : alloc.vec.Vec Std.U8)
+  (url_norm : alloc.vec.Vec Std.U8) (id : Std.U64) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize (Option Bookmark))
+  := do
+  let i1 := alloc.vec.Vec.len s.bookmarks
+  if i < i1
+  then
+    let b ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Bookmark)
+        s.bookmarks i
+    if b.id = id
+    then
+      let b1 ← same_url b owner url url_norm
+      if b1
+      then let b2 ← Bookmark.Insts.CoreCloneClone.clone b
+           ok (done (some b2))
+      else let i2 ← i + 1#usize
+           ok (cont i2)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else ok (done none)
+
+/-- [linkding_kernel::find_same_url]: loop 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-563:1 -/
+@[rust_loop]
+def find_same_url_loop
+  (s : Snapshot) (owner : Std.U64) (url : alloc.vec.Vec Std.U8)
+  (url_norm : alloc.vec.Vec Std.U8) (id : Std.U64) (i : Std.Usize) :
+  Result (Option Bookmark)
+  := do
+  loop
+    (fun i1 => find_same_url_loop.body s owner url url_norm id i1)
+    i
+
+/-- [linkding_kernel::find_same_url]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 554:0-563:1 -/
+@[reducible]
+def find_same_url
+  (s : Snapshot) (owner : Std.U64) (url : alloc.vec.Vec Std.U8)
+  (url_norm : alloc.vec.Vec Std.U8) (id : Std.U64) :
+  Result (Option Bookmark)
+  := do
+  find_same_url_loop s owner url url_norm id 0#usize
+
+/-- [linkding_kernel::existing]: loop body 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 571:4-581:5
+    Visibility: public -/
+@[rust_loop_body]
+def existing_loop.body
+  (s : Snapshot) (owner : Std.U64) (url : alloc.vec.Vec Std.U8)
+  (url_norm : alloc.vec.Vec Std.U8) (found : Bool) (best : Std.U64)
+  (i : Std.Usize) :
+  Result (ControlFlow (Bool × Std.U64 × Std.Usize) (Counter × (alloc.vec.Vec
+    User) × (alloc.vec.Vec Token) × (alloc.vec.Vec Bookmark) ×
+    (alloc.vec.Vec Tag) × (alloc.vec.Vec Link) × (alloc.vec.Vec Bundle) ×
+    Bool × Std.U64))
+  := do
+  let i1 := alloc.vec.Vec.len s.bookmarks
+  if i < i1
+  then
+    let b ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Bookmark)
+        s.bookmarks i
+    let hit ← same_url b owner url url_norm
+    let better ← improves hit found b.id best
+    let best1 ← if better
+                  then ok b.id
+                  else ok best
+    let found1 ← if hit
+                   then ok true
+                   else ok found
+    let i2 ← i + 1#usize
+    ok (cont (found1, best1, i2))
+  else
+    ok (done (s.counter, s.users, s.tokens, s.bookmarks, s.tags, s.links,
+      s.bundles, found, best))
+
+/-- [linkding_kernel::existing]: loop 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 571:4-581:5
+    Visibility: public -/
+@[rust_loop]
+def existing_loop
+  (s : Snapshot) (owner : Std.U64) (url : alloc.vec.Vec Std.U8)
+  (url_norm : alloc.vec.Vec Std.U8) (found : Bool) (best : Std.U64)
+  (i : Std.Usize) :
+  Result (Counter × (alloc.vec.Vec User) × (alloc.vec.Vec Token) ×
+    (alloc.vec.Vec Bookmark) × (alloc.vec.Vec Tag) × (alloc.vec.Vec Link) ×
+    (alloc.vec.Vec Bundle) × Bool × Std.U64)
+  := do
+  loop
+    (fun (found1, best1, i1) => existing_loop.body s owner url url_norm found1
+      best1 i1)
+    (found, best, i)
+
+/-- [linkding_kernel::existing]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 567:0-587:1
+    Visibility: public -/
+def existing
+  (s : Snapshot) (owner : Std.U64) (url : alloc.vec.Vec Std.U8)
+  (url_norm : alloc.vec.Vec Std.U8) :
+  Result (Option Bookmark)
+  := do
+  let (c, v, v1, v2, v3, v4, v5, found, best) ←
+    existing_loop s owner url url_norm false 0#u64 0#usize
+  if found
+  then
+    find_same_url
+      {
+        counter := c,
+        users := v,
+        tokens := v1,
+        bookmarks := v2,
+        tags := v3,
+        links := v4,
+        bundles := v5
+      } owner url url_norm best
+  else ok none
+
+/-- [linkding_kernel::url_taken]: loop body 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-600:1 -/
+@[rust_loop_body]
+def url_taken_loop.body
+  (s : Snapshot) (owner : Std.U64) (url : alloc.vec.Vec Std.U8) (id : Std.U64)
+  (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := alloc.vec.Vec.len s.bookmarks
+  if i < i1
+  then
+    let b ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Bookmark)
+        s.bookmarks i
+    if b.owner = owner
+    then
+      let b1 ←
+        alloc.vec.partial_eq.PartialEqVec.eq core.cmp.PartialEqU8 b.url url
+      if b1
+      then
+        if b.id != id
+        then ok (done true)
+        else let i2 ← i + 1#usize
+             ok (cont i2)
+      else let i2 ← i + 1#usize
+           ok (cont i2)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else ok (done false)
+
+/-- [linkding_kernel::url_taken]: loop 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-600:1 -/
+@[rust_loop]
+def url_taken_loop
+  (s : Snapshot) (owner : Std.U64) (url : alloc.vec.Vec Std.U8) (id : Std.U64)
+  (i : Std.Usize) :
+  Result Bool
+  := do
+  loop
+    (fun i1 => url_taken_loop.body s owner url id i1)
+    i
+
+/-- [linkding_kernel::url_taken]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 590:0-600:1 -/
+@[reducible]
+def url_taken
+  (s : Snapshot) (owner : Std.U64) (url : alloc.vec.Vec Std.U8) (id : Std.U64)
+  :
+  Result Bool
+  := do
+  url_taken_loop s owner url id 0#usize
+
+/-- [linkding_kernel::search::BookmarkFacts]
+    Source: 'performance/linkding/rust-h5i/kernel/src/search.rs', lines 45:0-53:1
+    Visibility: public -/
+structure search.BookmarkFacts where
+  title : alloc.vec.Vec Std.U8
+  description : alloc.vec.Vec Std.U8
+  notes : alloc.vec.Vec Std.U8
+  url : alloc.vec.Vec Std.U8
+  unread : Bool
+  untagged : Bool
+  tag_names : alloc.vec.Vec (alloc.vec.Vec Std.U8)
+
+/-- [linkding_kernel::facts]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 607:0-618:1 -/
+def facts
+  (s : Snapshot) (b : Bookmark) (tags_wanted : Bool) :
+  Result search.BookmarkFacts
+  := do
+  let (b1, tags) ←
+    if tags_wanted
+    then do
+         let tags1 ← tag_lowers s b.id
+         ok (b, tags1)
+    else ok (b, alloc.vec.Vec.new (alloc.vec.Vec Std.U8))
+  let v ← alloc.vec.CloneVec.clone core.clone.CloneU8 b1.title
+  let v1 ← alloc.vec.CloneVec.clone core.clone.CloneU8 b1.description
+  let v2 ← alloc.vec.CloneVec.clone core.clone.CloneU8 b1.notes
+  let v3 ← alloc.vec.CloneVec.clone core.clone.CloneU8 b1.url
+  let i := alloc.vec.Vec.len tags
+  if i = 0#usize
+  then
+    ok
+      {
+        title := v,
+        description := v1,
+        notes := v2,
+        url := v3,
+        unread := b1.unread,
+        untagged := tags_wanted,
+        tag_names := tags
+      }
+  else
+    ok
+      {
+        title := v,
+        description := v1,
+        notes := v2,
+        url := v3,
+        unread := b1.unread,
+        untagged := false,
+        tag_names := tags
+      }
+
+/-- [linkding_kernel::search::Node]
+    Source: 'performance/linkding/rust-h5i/kernel/src/search.rs', lines 29:0-34:1
+    Visibility: public -/
+structure search.Node where
+  kind : Std.U8
+  text : alloc.vec.Vec Std.U8
+  left : Std.Usize
+  right : Std.Usize
+
+/-- [linkding_kernel::search::node_text_at]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/search.rs', lines 626:0-632:1 -/
+def search.node_text_at
+  (nodes : alloc.vec.Vec search.Node) (i : Std.Usize) (j : Std.Usize) :
+  Result Std.U8
+  := do
+  let i1 := alloc.vec.Vec.len nodes
+  if i < i1
+  then
+    let n ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice search.Node)
+        nodes i
+    let i2 := alloc.vec.Vec.len n.text
+    if j < i2
+    then
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Std.U8) 
+        n.text j
+    else ok 0#u8
+  else ok 0#u8
+
+/-- [linkding_kernel::search::node_text_len]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/search.rs', lines 618:0-624:1 -/
+def search.node_text_len
+  (nodes : alloc.vec.Vec search.Node) (i : Std.Usize) : Result Std.Usize := do
+  let i1 := alloc.vec.Vec.len nodes
+  if i < i1
+  then
+    let n ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice search.Node)
+        nodes i
+    ok (alloc.vec.Vec.len n.text)
+  else ok 0#usize
+
+/-- [linkding_kernel::search::eq_node]: loop body 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/search.rs', lines 676:4-683:1 -/
+@[rust_loop_body]
+def search.eq_node_loop.body
+  (hay : alloc.vec.Vec Std.U8) (nodes : alloc.vec.Vec search.Node)
+  (node : Std.Usize) (nlen : Std.Usize) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  if i < nlen
+  then
+    let i1 ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Std.U8) hay i
+    let i2 ← search.lower_ascii i1
+    let i3 ← search.node_text_at nodes node i
+    let i4 ← search.lower_ascii i3
+    if i2 != i4
+    then ok (done false)
+    else let i5 ← i + 1#usize
+         ok (cont i5)
+  else ok (done true)
+
+/-- [linkding_kernel::search::eq_node]: loop 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/search.rs', lines 676:4-683:1 -/
+@[rust_loop]
+def search.eq_node_loop
+  (hay : alloc.vec.Vec Std.U8) (nodes : alloc.vec.Vec search.Node)
+  (node : Std.Usize) (nlen : Std.Usize) (i : Std.Usize) :
+  Result Bool
+  := do
+  loop
+    (fun i1 => search.eq_node_loop.body hay nodes node nlen i1)
+    i
+
+/-- [linkding_kernel::search::eq_node]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/search.rs', lines 670:0-683:1 -/
+def search.eq_node
+  (hay : alloc.vec.Vec Std.U8) (nodes : alloc.vec.Vec search.Node)
+  (node : Std.Usize) :
+  Result Bool
+  := do
+  let nlen ← search.node_text_len nodes node
+  let i := alloc.vec.Vec.len hay
+  if i != nlen
+  then ok false
+  else search.eq_node_loop hay nodes node nlen 0#usize
+
+/-- [linkding_kernel::search::any_tag]: loop body 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/search.rs', lines 687:4-694:1 -/
+@[rust_loop_body]
+def search.any_tag_loop.body
+  (bm : search.BookmarkFacts) (nodes : alloc.vec.Vec search.Node)
+  (node : Std.Usize) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := alloc.vec.Vec.len bm.tag_names
+  if i < i1
+  then
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice (alloc.vec.Vec
+        Std.U8)) bm.tag_names i
+    let b ← search.eq_node v nodes node
+    if b
+    then ok (done true)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else ok (done false)
+
+/-- [linkding_kernel::search::any_tag]: loop 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/search.rs', lines 687:4-694:1 -/
+@[rust_loop]
+def search.any_tag_loop
+  (bm : search.BookmarkFacts) (nodes : alloc.vec.Vec search.Node)
+  (node : Std.Usize) (i : Std.Usize) :
+  Result Bool
+  := do
+  loop
+    (fun i1 => search.any_tag_loop.body bm nodes node i1)
+    i
+
+/-- [linkding_kernel::search::any_tag]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/search.rs', lines 685:0-694:1 -/
+@[reducible]
+def search.any_tag
+  (bm : search.BookmarkFacts) (nodes : alloc.vec.Vec search.Node)
+  (node : Std.Usize) :
+  Result Bool
+  := do
+  search.any_tag_loop bm nodes node 0#usize
+
+/-- [linkding_kernel::search::contains_node]: loop body 1:
+    Source: 'performance/linkding/rust-h5i/kernel/src/search.rs', lines 650:12-660:13 -/
+@[rust_loop_body]
+def search.contains_node_loop0_loop0.body
+  (hay : alloc.vec.Vec Std.U8) (nodes : alloc.vec.Vec search.Node)
+  (node : Std.Usize) (nlen : Std.Usize) (i : Std.Usize) (j : Std.Usize)
+  (ok1 : Bool) :
+  Result (ControlFlow (Std.Usize × Bool) Bool)
+  := do
+  if j < nlen
+  then
+    let idx ← i + j
+    let i1 := alloc.vec.Vec.len hay
+    let ok2 ←
+      if idx < i1
+      then
+        do
+        let i2 ←
+          alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Std.U8)
+            hay idx
+        let i3 ← search.lower_ascii i2
+        let i4 ← search.node_text_at nodes node j
+        let i5 ← search.lower_ascii i4
+        if i3 != i5
+        then ok false
+        else ok ok1
+      else ok false
+    let j1 ← j + 1#usize
+    ok (cont (j1, ok2))
+  else ok (done ok1)
+
+/-- [linkding_kernel::search::contains_node]: loop 1:
+    Source: 'performance/linkding/rust-h5i/kernel/src/search.rs', lines 650:12-660:13 -/
+@[rust_loop]
+def search.contains_node_loop0_loop0
+  (hay : alloc.vec.Vec Std.U8) (nodes : alloc.vec.Vec search.Node)
+  (node : Std.Usize) (nlen : Std.Usize) (i : Std.Usize) (j : Std.Usize)
+  (ok1 : Bool) :
+  Result Bool
+  := do
+  loop
+    (fun (j1, ok2) => search.contains_node_loop0_loop0.body hay nodes node nlen
+      i j1 ok2)
+    (j, ok1)
+
+/-- [linkding_kernel::search::contains_node]: loop body 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/search.rs', lines 644:4-666:5 -/
+@[rust_loop_body]
+def search.contains_node_loop0.body
+  (hay : alloc.vec.Vec Std.U8) (nodes : alloc.vec.Vec search.Node)
+  (node : Std.Usize) (nlen : Std.Usize) (found : Bool) (i : Std.Usize) :
+  Result (ControlFlow (Bool × Std.Usize) Bool)
+  := do
+  let i1 := alloc.vec.Vec.len hay
+  if i < i1
+  then
+    if found
+    then ok (done true)
+    else
+      let i2 := alloc.vec.Vec.len hay
+      let i3 ← i2 - i
+      if i3 < nlen
+      then let i4 := alloc.vec.Vec.len hay
+           ok (cont (false, i4))
+      else
+        let ok1 ←
+          search.contains_node_loop0_loop0 hay nodes node nlen i 0#usize true
+        let found1 ← if ok1
+                       then ok true
+                       else ok false
+        let i4 ← i + 1#usize
+        ok (cont (found1, i4))
+  else ok (done found)
+
+/-- [linkding_kernel::search::contains_node]: loop 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/search.rs', lines 644:4-666:5 -/
+@[rust_loop]
+def search.contains_node_loop0
+  (hay : alloc.vec.Vec Std.U8) (nodes : alloc.vec.Vec search.Node)
+  (node : Std.Usize) (nlen : Std.Usize) (found : Bool) (i : Std.Usize) :
+  Result Bool
+  := do
+  loop
+    (fun (found1, i1) => search.contains_node_loop0.body hay nodes node nlen
+      found1 i1)
+    (found, i)
+
+/-- [linkding_kernel::search::contains_node]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/search.rs', lines 634:0-668:1 -/
+def search.contains_node
+  (hay : alloc.vec.Vec Std.U8) (nodes : alloc.vec.Vec search.Node)
+  (node : Std.Usize) :
+  Result Bool
+  := do
+  let nlen ← search.node_text_len nodes node
+  if nlen = 0#usize
+  then ok true
+  else
+    let i := alloc.vec.Vec.len hay
+    if nlen > i
+    then ok false
+    else search.contains_node_loop0 hay nodes node nlen false 0#usize
+
+/-- [linkding_kernel::search::term_matches]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/search.rs', lines 747:0-759:1 -/
+def search.term_matches
+  (nodes : alloc.vec.Vec search.Node) (node : Std.Usize) (lax : Bool)
+  (bm : search.BookmarkFacts) :
+  Result Bool
+  := do
+  let b ← search.contains_node bm.title nodes node
+  if b
+  then ok true
+  else
+    let b1 ← search.contains_node bm.description nodes node
+    if b1
+    then ok true
+    else
+      let b2 ← search.contains_node bm.notes nodes node
+      if b2
+      then ok true
+      else
+        let b3 ← search.contains_node bm.url nodes node
+        if b3
+        then ok true
+        else if lax
+             then search.any_tag bm nodes node
+             else ok false
+
+/-- [linkding_kernel::search::untagged_word]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/search.rs', lines 722:0-733:1
+    Visibility: public -/
+def search.untagged_word : Result (alloc.vec.Vec Std.U8) := do
+  let word ← alloc.vec.Vec.push (alloc.vec.Vec.new Std.U8) 117#u8
+  let word1 ← alloc.vec.Vec.push word 110#u8
+  let word2 ← alloc.vec.Vec.push word1 116#u8
+  let word3 ← alloc.vec.Vec.push word2 97#u8
+  let word4 ← alloc.vec.Vec.push word3 103#u8
+  let word5 ← alloc.vec.Vec.push word4 103#u8
+  let word6 ← alloc.vec.Vec.push word5 101#u8
+  alloc.vec.Vec.push word6 100#u8
+
+/-- [linkding_kernel::search::unread_word]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/search.rs', lines 711:0-720:1
+    Visibility: public -/
+def search.unread_word : Result (alloc.vec.Vec Std.U8) := do
+  let word ← alloc.vec.Vec.push (alloc.vec.Vec.new Std.U8) 117#u8
+  let word1 ← alloc.vec.Vec.push word 110#u8
+  let word2 ← alloc.vec.Vec.push word1 114#u8
+  let word3 ← alloc.vec.Vec.push word2 101#u8
+  let word4 ← alloc.vec.Vec.push word3 97#u8
+  alloc.vec.Vec.push word4 100#u8
+
+/-- [linkding_kernel::search::is_word]: loop body 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/search.rs', lines 702:4-709:1 -/
+@[rust_loop_body]
+def search.is_word_loop.body
+  (nodes : alloc.vec.Vec search.Node) (node : Std.Usize)
+  (word : alloc.vec.Vec Std.U8) (nlen : Std.Usize) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  if i < nlen
+  then
+    let i1 ← search.node_text_at nodes node i
+    let i2 ← search.lower_ascii i1
+    let i3 ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Std.U8) word i
+    let i4 ← search.lower_ascii i3
+    if i2 != i4
+    then ok (done false)
+    else let i5 ← i + 1#usize
+         ok (cont i5)
+  else ok (done true)
+
+/-- [linkding_kernel::search::is_word]: loop 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/search.rs', lines 702:4-709:1 -/
+@[rust_loop]
+def search.is_word_loop
+  (nodes : alloc.vec.Vec search.Node) (node : Std.Usize)
+  (word : alloc.vec.Vec Std.U8) (nlen : Std.Usize) (i : Std.Usize) :
+  Result Bool
+  := do
+  loop
+    (fun i1 => search.is_word_loop.body nodes node word nlen i1)
+    i
+
+/-- [linkding_kernel::search::is_word]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/search.rs', lines 696:0-709:1 -/
+def search.is_word
+  (nodes : alloc.vec.Vec search.Node) (node : Std.Usize)
+  (word : alloc.vec.Vec Std.U8) :
+  Result Bool
+  := do
+  let nlen ← search.node_text_len nodes node
+  let i := alloc.vec.Vec.len word
+  if nlen != i
+  then ok false
+  else search.is_word_loop nodes node word nlen 0#usize
+
+/-- [linkding_kernel::search::keyword_matches]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/search.rs', lines 735:0-745:1 -/
+def search.keyword_matches
+  (nodes : alloc.vec.Vec search.Node) (node : Std.Usize)
+  (bm : search.BookmarkFacts) :
+  Result Bool
+  := do
+  let unread ← search.unread_word
+  let b ← search.is_word nodes node unread
+  if b
+  then ok bm.unread
+  else
+    let untagged ← search.untagged_word
+    let b1 ← search.is_word nodes node untagged
+    if b1
+    then ok bm.untagged
+    else ok true
+
+/-- [linkding_kernel::search::node_right]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/search.rs', lines 610:0-616:1 -/
+def search.node_right
+  (nodes : alloc.vec.Vec search.Node) (i : Std.Usize) : Result Std.Usize := do
+  let i1 := alloc.vec.Vec.len nodes
+  if i < i1
+  then
+    let n ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice search.Node)
+        nodes i
+    ok n.right
+  else ok 0#usize
+
+/-- [linkding_kernel::search::node_left]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/search.rs', lines 602:0-608:1 -/
+def search.node_left
+  (nodes : alloc.vec.Vec search.Node) (i : Std.Usize) : Result Std.Usize := do
+  let i1 := alloc.vec.Vec.len nodes
+  if i < i1
+  then
+    let n ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice search.Node)
+        nodes i
+    ok n.left
+  else ok 0#usize
+
+/-- [linkding_kernel::search::node_kind]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/search.rs', lines 594:0-600:1 -/
+def search.node_kind
+  (nodes : alloc.vec.Vec search.Node) (i : Std.Usize) : Result Std.U8 := do
+  let i1 := alloc.vec.Vec.len nodes
+  if i < i1
+  then
+    let n ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice search.Node)
+        nodes i
+    ok n.kind
+  else ok 0#u8
+
+/-- [linkding_kernel::search::Parsed]
+    Source: 'performance/linkding/rust-h5i/kernel/src/search.rs', lines 37:0-42:1
+    Visibility: public -/
+structure search.Parsed where
+  nodes : alloc.vec.Vec search.Node
+  root : Std.Usize
+  failed : Bool
+  empty : Bool
+
+/-- [linkding_kernel::search::NODE_NOT]
+    Source: 'performance/linkding/rust-h5i/kernel/src/search.rs', lines 14:0-14:27
+    Visibility: public -/
+@[global_simps, irreducible] def search.NODE_NOT : Std.U8 := 6#u8
+
+/-- [linkding_kernel::search::NODE_OR]
+    Source: 'performance/linkding/rust-h5i/kernel/src/search.rs', lines 13:0-13:26
+    Visibility: public -/
+@[global_simps, irreducible] def search.NODE_OR : Std.U8 := 5#u8
+
+/-- [linkding_kernel::search::NODE_AND]
+    Source: 'performance/linkding/rust-h5i/kernel/src/search.rs', lines 12:0-12:27
+    Visibility: public -/
+@[global_simps, irreducible] def search.NODE_AND : Std.U8 := 4#u8
+
+/-- [linkding_kernel::search::NODE_KEYWORD]
+    Source: 'performance/linkding/rust-h5i/kernel/src/search.rs', lines 11:0-11:31
+    Visibility: public -/
+@[global_simps, irreducible] def search.NODE_KEYWORD : Std.U8 := 3#u8
+
+/-- [linkding_kernel::search::NODE_TAG]
+    Source: 'performance/linkding/rust-h5i/kernel/src/search.rs', lines 10:0-10:27
+    Visibility: public -/
+@[global_simps, irreducible] def search.NODE_TAG : Std.U8 := 2#u8
+
+/-- [linkding_kernel::search::NODE_TERM]
+    Source: 'performance/linkding/rust-h5i/kernel/src/search.rs', lines 9:0-9:28
+    Visibility: public -/
+@[global_simps, irreducible] def search.NODE_TERM : Std.U8 := 1#u8
+
+/-- [linkding_kernel::search::eval_parsed]: loop body 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/search.rs', lines 764:4-804:1 -/
+@[rust_loop_body]
+def search.eval_parsed_loop.body
+  (parsed : search.Parsed) (lax : Bool) (bm : search.BookmarkFacts)
+  (vals : alloc.vec.Vec Bool) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Bool) × Std.Usize) Bool)
+  := do
+  let i1 := alloc.vec.Vec.len parsed.nodes
+  if i < i1
+  then
+    let kind ← search.node_kind parsed.nodes i
+    let left ← search.node_left parsed.nodes i
+    let right ← search.node_right parsed.nodes i
+    if kind = search.NODE_TERM
+    then
+      let value ← search.term_matches parsed.nodes i lax bm
+      let vals1 ← alloc.vec.Vec.push vals value
+      let i2 ← i + 1#usize
+      ok (cont (vals1, i2))
+    else
+      if kind = search.NODE_TAG
+      then
+        let value ← search.any_tag bm parsed.nodes i
+        let vals1 ← alloc.vec.Vec.push vals value
+        let i2 ← i + 1#usize
+        ok (cont (vals1, i2))
+      else
+        if kind = search.NODE_KEYWORD
+        then
+          let value ← search.keyword_matches parsed.nodes i bm
+          let vals1 ← alloc.vec.Vec.push vals value
+          let i2 ← i + 1#usize
+          ok (cont (vals1, i2))
+        else
+          if kind = search.NODE_AND
+          then
+            let i2 := alloc.vec.Vec.len vals
+            if left < i2
+            then
+              let i3 := alloc.vec.Vec.len vals
+              if right < i3
+              then
+                let b ←
+                  alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+                    Bool) vals left
+                let value ←
+                  if b
+                  then
+                    alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+                      Bool) vals right
+                  else ok false
+                let vals1 ← alloc.vec.Vec.push vals value
+                let i4 ← i + 1#usize
+                ok (cont (vals1, i4))
+              else ok (done false)
+            else ok (done false)
+          else
+            if kind = search.NODE_OR
+            then
+              let i2 := alloc.vec.Vec.len vals
+              if left < i2
+              then
+                let i3 := alloc.vec.Vec.len vals
+                if right < i3
+                then
+                  let b ←
+                    alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+                      Bool) vals left
+                  let value ←
+                    if b
+                    then ok true
+                    else
+                      alloc.vec.Vec.index
+                        (core.slice.index.SliceIndexUsizeSlice Bool) vals right
+                  let vals1 ← alloc.vec.Vec.push vals value
+                  let i4 ← i + 1#usize
+                  ok (cont (vals1, i4))
+                else ok (done false)
+              else ok (done false)
+            else
+              if kind = search.NODE_NOT
+              then
+                let i2 := alloc.vec.Vec.len vals
+                if left < i2
+                then
+                  let b ←
+                    alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+                      Bool) vals left
+                  let vals1 ← alloc.vec.Vec.push vals (¬ b)
+                  let i3 ← i + 1#usize
+                  ok (cont (vals1, i3))
+                else ok (done false)
+              else ok (done false)
+  else
+    let i2 := alloc.vec.Vec.len vals
+    if parsed.root < i2
+    then
+      let b ←
+        alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Bool) vals
+          parsed.root
+      ok (done b)
+    else ok (done false)
+
+/-- [linkding_kernel::search::eval_parsed]: loop 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/search.rs', lines 764:4-804:1 -/
+@[rust_loop]
+def search.eval_parsed_loop
+  (parsed : search.Parsed) (lax : Bool) (bm : search.BookmarkFacts)
+  (vals : alloc.vec.Vec Bool) (i : Std.Usize) :
+  Result Bool
+  := do
+  loop
+    (fun (vals1, i1) => search.eval_parsed_loop.body parsed lax bm vals1 i1)
+    (vals, i)
+
+/-- [linkding_kernel::search::eval_parsed]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/search.rs', lines 761:0-804:1 -/
+@[reducible]
+def search.eval_parsed
+  (parsed : search.Parsed) (lax : Bool) (bm : search.BookmarkFacts) :
+  Result Bool
+  := do
+  search.eval_parsed_loop parsed lax bm (alloc.vec.Vec.new Bool) 0#usize
+
+/-- [linkding_kernel::search::bookmark_matches]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/search.rs', lines 809:0-820:1
+    Visibility: public -/
+def search.bookmark_matches
+  (parsed : search.Parsed) (lax : Bool) (bm : search.BookmarkFacts) :
+  Result Bool
+  := do
+  if parsed.failed
+  then ok false
+  else
+    if parsed.empty
+    then ok true
+    else
+      let i := alloc.vec.Vec.len parsed.nodes
+      if i = 0#usize
+      then ok false
+      else search.eval_parsed parsed lax bm
+
+/-- [linkding_kernel::term_hit]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 622:0-627:1 -/
+def term_hit
+  (f : search.BookmarkFacts) (term : alloc.vec.Vec Std.U8) (lax : Bool) :
+  Result Bool
+  := do
+  let v ← alloc.vec.CloneVec.clone core.clone.CloneU8 term
+  let p ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new search.Node)
+      ({ kind := search.NODE_TERM, text := v, left := 0#usize, right := 0#usize
+       } : search.Node)
+  search.bookmark_matches
+    { nodes := p, root := 0#usize, failed := false, empty := false } lax f
+
+/-- [linkding_kernel::has_tag_ci]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 629:0-632:1 -/
+def has_tag_ci
+  (f : search.BookmarkFacts) («name» : alloc.vec.Vec Std.U8) :
+  Result Bool
+  := do
+  let lower ← lower_text «name»
+  contains_text f.tag_names lower
+
+/-- [linkding_kernel::words]: loop body 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 639:4-649:5 -/
+@[rust_loop_body]
+def words_loop.body
+  (t : alloc.vec.Vec Std.U8) (out : alloc.vec.Vec (alloc.vec.Vec Std.U8))
+  (cur : alloc.vec.Vec Std.U8) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec (alloc.vec.Vec Std.U8)) × (alloc.vec.Vec
+    Std.U8) × Std.Usize) ((alloc.vec.Vec (alloc.vec.Vec Std.U8)) ×
+    (alloc.vec.Vec Std.U8)))
+  := do
+  let i1 := alloc.vec.Vec.len t
+  if i < i1
+  then
+    let i2 ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Std.U8) t i
+    let (out1, cur1) ←
+      if i2 = 32#u8
+      then
+        do
+        let i3 := alloc.vec.Vec.len cur
+        let out2 ←
+          if i3 > 0#usize
+          then
+            do
+            let v ← alloc.vec.CloneVec.clone core.clone.CloneU8 cur
+            alloc.vec.Vec.push out v
+          else ok out
+        ok (out2, alloc.vec.Vec.new Std.U8)
+      else do
+           let cur2 ← alloc.vec.Vec.push cur i2
+           ok (out, cur2)
+    let i3 ← i + 1#usize
+    ok (cont (out1, cur1, i3))
+  else ok (done (out, cur))
+
+/-- [linkding_kernel::words]: loop 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 639:4-649:5 -/
+@[rust_loop]
+def words_loop
+  (t : alloc.vec.Vec Std.U8) (out : alloc.vec.Vec (alloc.vec.Vec Std.U8))
+  (cur : alloc.vec.Vec Std.U8) (i : Std.Usize) :
+  Result ((alloc.vec.Vec (alloc.vec.Vec Std.U8)) × (alloc.vec.Vec Std.U8))
+  := do
+  loop
+    (fun (out1, cur1, i1) => words_loop.body t out1 cur1 i1)
+    (out, cur, i)
+
+/-- [linkding_kernel::words]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 635:0-654:1 -/
+def words
+  (t : alloc.vec.Vec Std.U8) :
+  Result (alloc.vec.Vec (alloc.vec.Vec Std.U8))
+  := do
+  let (out, cur) ←
+    words_loop t (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) (alloc.vec.Vec.new
+      Std.U8) 0#usize
+  let i := alloc.vec.Vec.len cur
+  if i > 0#usize
+  then alloc.vec.Vec.push out cur
+  else ok out
+
+/-- [linkding_kernel::rest_of]: loop body 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 659:4-662:5 -/
+@[rust_loop_body]
+def rest_of_loop.body
+  (w : alloc.vec.Vec Std.U8) (out : alloc.vec.Vec Std.U8) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Std.U8) × Std.Usize) (alloc.vec.Vec
+    Std.U8))
+  := do
+  let i1 := alloc.vec.Vec.len w
+  if i < i1
+  then
+    let i2 ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Std.U8) w i
+    let out1 ← alloc.vec.Vec.push out i2
+    let i3 ← i + 1#usize
+    ok (cont (out1, i3))
+  else ok (done out)
+
+/-- [linkding_kernel::rest_of]: loop 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 659:4-662:5 -/
+@[rust_loop]
+def rest_of_loop
+  (w : alloc.vec.Vec Std.U8) (out : alloc.vec.Vec Std.U8) (i : Std.Usize) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  loop
+    (fun (out1, i1) => rest_of_loop.body w out1 i1)
+    (out, i)
+
+/-- [linkding_kernel::rest_of]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 656:0-664:1 -/
+@[reducible]
+def rest_of (w : alloc.vec.Vec Std.U8) : Result (alloc.vec.Vec Std.U8) := do
+  rest_of_loop w (alloc.vec.Vec.new Std.U8) 1#usize
+
+/-- [linkding_kernel::search::is_space]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/search.rs', lines 151:0-153:1
+    Visibility: public -/
+def search.is_space (c : Std.U8) : Result Bool := do
   if c = 32#u8
   then ok true
   else
@@ -422,109 +4870,1724 @@ def is_space (c : Std.U8) : Result Bool := do
              then ok true
              else ok (c = 12#u8)
 
-/-- [linkding_kernel::trim_ascii]: loop body 0:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-285:5 -/
+/-- [linkding_kernel::trim_text]: loop body 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-697:5 -/
 @[rust_loop_body]
-def trim_ascii_loop0.body
-  (query : alloc.vec.Vec Std.U8) (start : Std.Usize) :
+def trim_text_loop0.body
+  (t : alloc.vec.Vec Std.U8) (start : Std.Usize) :
   Result (ControlFlow Std.Usize Std.Usize)
   := do
-  let i := alloc.vec.Vec.len query
+  let i := alloc.vec.Vec.len t
   if start < i
   then
     let i1 ←
-      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Std.U8) query
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Std.U8) t
         start
-    let b ← is_space i1
+    let b ← search.is_space i1
     if b
     then let start1 ← start + 1#usize
          ok (cont start1)
     else ok (done start)
   else ok (done start)
 
-/-- [linkding_kernel::trim_ascii]: loop 0:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-285:5 -/
+/-- [linkding_kernel::trim_text]: loop 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-697:5 -/
 @[rust_loop]
-def trim_ascii_loop0
-  (query : alloc.vec.Vec Std.U8) (start : Std.Usize) : Result Std.Usize := do
+def trim_text_loop0
+  (t : alloc.vec.Vec Std.U8) (start : Std.Usize) : Result Std.Usize := do
   loop
-    (fun start1 => trim_ascii_loop0.body query start1)
+    (fun start1 => trim_text_loop0.body t start1)
     start
 
-/-- [linkding_kernel::trim_ascii]: loop body 1:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-294:5 -/
+/-- [linkding_kernel::trim_text]: loop body 1:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-701:5 -/
 @[rust_loop_body]
-def trim_ascii_loop1.body
-  (query : alloc.vec.Vec Std.U8) (start : Std.Usize) («end» : Std.Usize) :
+def trim_text_loop1.body
+  (t : alloc.vec.Vec Std.U8) (start : Std.Usize) («end» : Std.Usize) :
   Result (ControlFlow Std.Usize Std.Usize)
   := do
   if «end» > start
   then
-    let prev ← «end» - 1#usize
-    let i ←
-      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Std.U8) query
-        prev
-    let b ← is_space i
+    let i ← «end» - 1#usize
+    let i1 ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Std.U8) t i
+    let b ← search.is_space i1
     if b
-    then ok (cont prev)
+    then ok (cont i)
     else ok (done «end»)
   else ok (done «end»)
 
-/-- [linkding_kernel::trim_ascii]: loop 1:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-294:5 -/
+/-- [linkding_kernel::trim_text]: loop 1:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-701:5 -/
 @[rust_loop]
-def trim_ascii_loop1
-  (query : alloc.vec.Vec Std.U8) (start : Std.Usize) («end» : Std.Usize) :
+def trim_text_loop1
+  (t : alloc.vec.Vec Std.U8) (start : Std.Usize) («end» : Std.Usize) :
   Result Std.Usize
   := do
   loop
-    (fun end1 => trim_ascii_loop1.body query start end1)
+    (fun end1 => trim_text_loop1.body t start end1)
     «end»
 
-/-- [linkding_kernel::trim_ascii]: loop body 2:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 297:4-300:5 -/
+/-- [linkding_kernel::trim_text]: loop body 2:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 704:4-707:5 -/
 @[rust_loop_body]
-def trim_ascii_loop2.body
-  (query : alloc.vec.Vec Std.U8) («end» : Std.Usize)
-  (out : alloc.vec.Vec Std.U8) (i : Std.Usize) :
+def trim_text_loop2.body
+  (t : alloc.vec.Vec Std.U8) («end» : Std.Usize) (out : alloc.vec.Vec Std.U8)
+  (i : Std.Usize) :
   Result (ControlFlow ((alloc.vec.Vec Std.U8) × Std.Usize) (alloc.vec.Vec
     Std.U8))
   := do
   if i < «end»
   then
     let i1 ←
-      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Std.U8) query
-        i
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Std.U8) t i
     let out1 ← alloc.vec.Vec.push out i1
     let i2 ← i + 1#usize
     ok (cont (out1, i2))
   else ok (done out)
 
-/-- [linkding_kernel::trim_ascii]: loop 2:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 297:4-300:5 -/
+/-- [linkding_kernel::trim_text]: loop 2:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 704:4-707:5 -/
 @[rust_loop]
-def trim_ascii_loop2
-  (query : alloc.vec.Vec Std.U8) («end» : Std.Usize)
-  (out : alloc.vec.Vec Std.U8) (i : Std.Usize) :
+def trim_text_loop2
+  (t : alloc.vec.Vec Std.U8) («end» : Std.Usize) (out : alloc.vec.Vec Std.U8)
+  (i : Std.Usize) :
   Result (alloc.vec.Vec Std.U8)
   := do
   loop
-    (fun (out1, i1) => trim_ascii_loop2.body query «end» out1 i1)
+    (fun (out1, i1) => trim_text_loop2.body t «end» out1 i1)
     (out, i)
 
-/-- [linkding_kernel::trim_ascii]:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 281:0-302:1 -/
-def trim_ascii
-  (query : alloc.vec.Vec Std.U8) : Result (alloc.vec.Vec Std.U8) := do
-  let start ← trim_ascii_loop0 query 0#usize
-  let «end» := alloc.vec.Vec.len query
-  let end1 ← trim_ascii_loop1 query start «end»
-  trim_ascii_loop2 query end1 (alloc.vec.Vec.new Std.U8) start
+/-- [linkding_kernel::trim_text]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 693:0-709:1 -/
+def trim_text (t : alloc.vec.Vec Std.U8) : Result (alloc.vec.Vec Std.U8) := do
+  let start ← trim_text_loop0 t 0#usize
+  let «end» := alloc.vec.Vec.len t
+  let end1 ← trim_text_loop1 t start «end»
+  trim_text_loop2 t end1 (alloc.vec.Vec.new Std.U8) start
 
-/-- [linkding_kernel::push_copy]: loop body 0:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-309:5 -/
+/-- [linkding_kernel::legacy_matches]: loop body 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-691:1 -/
 @[rust_loop_body]
-def push_copy_loop.body
+def legacy_matches_loop.body
+  (lax : Bool) (f : search.BookmarkFacts)
+  (ws : alloc.vec.Vec (alloc.vec.Vec Std.U8)) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := alloc.vec.Vec.len ws
+  if i < i1
+  then
+    let w ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice (alloc.vec.Vec
+        Std.U8)) ws i
+    let i2 ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Std.U8) w
+        0#usize
+    if i2 = 35#u8
+    then
+      let i3 := alloc.vec.Vec.len w
+      if i3 > 1#usize
+      then
+        let v ← rest_of w
+        let b ← has_tag_ci f v
+        if b
+        then let i4 ← i + 1#usize
+             ok (cont i4)
+        else ok (done false)
+      else let i4 ← i + 1#usize
+           ok (cont i4)
+    else
+      if i2 = 33#u8
+      then
+        let k ← rest_of w
+        let v ← search.untagged_word
+        let b ← alloc.vec.partial_eq.PartialEqVec.eq core.cmp.PartialEqU8 k v
+        if b
+        then
+          if f.untagged
+          then
+            let v1 ← search.unread_word
+            let b1 ←
+              alloc.vec.partial_eq.PartialEqVec.eq core.cmp.PartialEqU8 k v1
+            if b1
+            then
+              if f.unread
+              then let i3 ← i + 1#usize
+                   ok (cont i3)
+              else ok (done false)
+            else let i3 ← i + 1#usize
+                 ok (cont i3)
+          else ok (done false)
+        else
+          let v1 ← search.unread_word
+          let b1 ←
+            alloc.vec.partial_eq.PartialEqVec.eq core.cmp.PartialEqU8 k v1
+          if b1
+          then
+            if f.unread
+            then let i3 ← i + 1#usize
+                 ok (cont i3)
+            else ok (done false)
+          else let i3 ← i + 1#usize
+               ok (cont i3)
+      else
+        let b ← term_hit f w lax
+        if b
+        then let i3 ← i + 1#usize
+             ok (cont i3)
+        else ok (done false)
+  else ok (done true)
+
+/-- [linkding_kernel::legacy_matches]: loop 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-691:1 -/
+@[rust_loop]
+def legacy_matches_loop
+  (lax : Bool) (f : search.BookmarkFacts)
+  (ws : alloc.vec.Vec (alloc.vec.Vec Std.U8)) (i : Std.Usize) :
+  Result Bool
+  := do
+  loop
+    (fun i1 => legacy_matches_loop.body lax f ws i1)
+    i
+
+/-- [linkding_kernel::legacy_matches]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 668:0-691:1 -/
+def legacy_matches
+  (q : alloc.vec.Vec Std.U8) (lax : Bool) (f : search.BookmarkFacts) :
+  Result Bool
+  := do
+  let v ← trim_text q
+  let ws ← words v
+  legacy_matches_loop lax f ws 0#usize
+
+/-- [linkding_kernel::tag_words]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 712:0-714:1 -/
+def tag_words
+  (t : alloc.vec.Vec Std.U8) :
+  Result (alloc.vec.Vec (alloc.vec.Vec Std.U8))
+  := do
+  let v ← trim_text t
+  words v
+
+/-- [linkding_kernel::any_of]: loop body 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 718:4-725:1 -/
+@[rust_loop_body]
+def any_of_loop.body
+  (f : search.BookmarkFacts) (names : alloc.vec.Vec (alloc.vec.Vec Std.U8))
+  (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := alloc.vec.Vec.len names
+  if i < i1
+  then
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice (alloc.vec.Vec
+        Std.U8)) names i
+    let b ← has_tag_ci f v
+    if b
+    then ok (done true)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else ok (done false)
+
+/-- [linkding_kernel::any_of]: loop 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 718:4-725:1 -/
+@[rust_loop]
+def any_of_loop
+  (f : search.BookmarkFacts) (names : alloc.vec.Vec (alloc.vec.Vec Std.U8))
+  (i : Std.Usize) :
+  Result Bool
+  := do
+  loop
+    (fun i1 => any_of_loop.body f names i1)
+    i
+
+/-- [linkding_kernel::any_of]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 716:0-725:1 -/
+@[reducible]
+def any_of
+  (f : search.BookmarkFacts) (names : alloc.vec.Vec (alloc.vec.Vec Std.U8)) :
+  Result Bool
+  := do
+  any_of_loop f names 0#usize
+
+/-- [linkding_kernel::all_of]: loop body 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 729:4-736:1 -/
+@[rust_loop_body]
+def all_of_loop.body
+  (f : search.BookmarkFacts) (names : alloc.vec.Vec (alloc.vec.Vec Std.U8))
+  (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := alloc.vec.Vec.len names
+  if i < i1
+  then
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice (alloc.vec.Vec
+        Std.U8)) names i
+    let b ← has_tag_ci f v
+    if b
+    then let i2 ← i + 1#usize
+         ok (cont i2)
+    else ok (done false)
+  else ok (done true)
+
+/-- [linkding_kernel::all_of]: loop 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 729:4-736:1 -/
+@[rust_loop]
+def all_of_loop
+  (f : search.BookmarkFacts) (names : alloc.vec.Vec (alloc.vec.Vec Std.U8))
+  (i : Std.Usize) :
+  Result Bool
+  := do
+  loop
+    (fun i1 => all_of_loop.body f names i1)
+    i
+
+/-- [linkding_kernel::all_of]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 727:0-736:1 -/
+@[reducible]
+def all_of
+  (f : search.BookmarkFacts) (names : alloc.vec.Vec (alloc.vec.Vec Std.U8)) :
+  Result Bool
+  := do
+  all_of_loop f names 0#usize
+
+/-- [linkding_kernel::flag_ok]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 738:0-746:1 -/
+def flag_ok (rule : alloc.vec.Vec Std.U8) (value : Bool) : Result Bool := do
+  let v ← yes_word
+  let b ← alloc.vec.partial_eq.PartialEqVec.eq core.cmp.PartialEqU8 rule v
+  if b
+  then ok value
+  else
+    let v1 ← no_word
+    let b1 ←
+      alloc.vec.partial_eq.PartialEqVec.eq core.cmp.PartialEqU8 rule v1
+    if b1
+    then ok (¬ value)
+    else ok true
+
+/-- [linkding_kernel::bundle_matches]: loop body 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-773:1 -/
+@[rust_loop_body]
+def bundle_matches_loop.body
+  (v : alloc.vec.Vec Std.U8) (v1 : alloc.vec.Vec Std.U8)
+  (v2 : alloc.vec.Vec Std.U8) (v3 : alloc.vec.Vec Std.U8)
+  (v4 : alloc.vec.Vec Std.U8) (b : Bookmark) (f : search.BookmarkFacts)
+  (ws : alloc.vec.Vec (alloc.vec.Vec Std.U8)) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := alloc.vec.Vec.len ws
+  if i < i1
+  then
+    let w ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice (alloc.vec.Vec
+        Std.U8)) ws i
+    let i2 ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Std.U8) w
+        0#usize
+    if i2 != 35#u8
+    then
+      if i2 != 33#u8
+      then
+        let b1 ← term_hit f w false
+        if b1
+        then let i3 ← i + 1#usize
+             ok (cont i3)
+        else ok (done false)
+      else let i3 ← i + 1#usize
+           ok (cont i3)
+    else let i3 ← i + 1#usize
+         ok (cont i3)
+  else
+    let any ← tag_words v
+    let i2 := alloc.vec.Vec.len any
+    if i2 > 0#usize
+    then
+      let b1 ← any_of f any
+      if b1
+      then
+        let v5 ← tag_words v1
+        let b2 ← all_of f v5
+        if b2
+        then
+          let ex ← tag_words v2
+          let i3 := alloc.vec.Vec.len ex
+          if i3 > 0#usize
+          then
+            let b3 ← any_of f ex
+            if b3
+            then ok (done false)
+            else
+              let b4 ← flag_ok v3 b.unread
+              if b4
+              then let b5 ← flag_ok v4 b.shared
+                   ok (done b5)
+              else ok (done false)
+          else
+            let b3 ← flag_ok v3 b.unread
+            if b3
+            then let b4 ← flag_ok v4 b.shared
+                 ok (done b4)
+            else ok (done false)
+        else ok (done false)
+      else ok (done false)
+    else
+      let v5 ← tag_words v1
+      let b1 ← all_of f v5
+      if b1
+      then
+        let ex ← tag_words v2
+        let i3 := alloc.vec.Vec.len ex
+        if i3 > 0#usize
+        then
+          let b2 ← any_of f ex
+          if b2
+          then ok (done false)
+          else
+            let b3 ← flag_ok v3 b.unread
+            if b3
+            then let b4 ← flag_ok v4 b.shared
+                 ok (done b4)
+            else ok (done false)
+        else
+          let b2 ← flag_ok v3 b.unread
+          if b2
+          then let b3 ← flag_ok v4 b.shared
+               ok (done b3)
+          else ok (done false)
+      else ok (done false)
+
+/-- [linkding_kernel::bundle_matches]: loop 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-773:1 -/
+@[rust_loop]
+def bundle_matches_loop
+  (v : alloc.vec.Vec Std.U8) (v1 : alloc.vec.Vec Std.U8)
+  (v2 : alloc.vec.Vec Std.U8) (v3 : alloc.vec.Vec Std.U8)
+  (v4 : alloc.vec.Vec Std.U8) (b : Bookmark) (f : search.BookmarkFacts)
+  (ws : alloc.vec.Vec (alloc.vec.Vec Std.U8)) (i : Std.Usize) :
+  Result Bool
+  := do
+  loop
+    (fun i1 => bundle_matches_loop.body v v1 v2 v3 v4 b f ws i1)
+    i
+
+/-- [linkding_kernel::bundle_matches]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 751:0-773:1 -/
+def bundle_matches
+  (bu : Bundle) (b : Bookmark) (f : search.BookmarkFacts) : Result Bool := do
+  let v ← trim_text bu.search
+  let ws ← words v
+  bundle_matches_loop bu.any_tags bu.all_tags bu.excluded_tags bu.filter_unread
+    bu.filter_shared b f ws 0#usize
+
+/-- [linkding_kernel::flag_filter]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 775:0-783:1 -/
+def flag_filter (rule : Std.U8) (value : Bool) : Result Bool := do
+  if rule = FLAG_YES
+  then ok value
+  else if rule = FLAG_NO
+       then ok (¬ value)
+       else ok true
+
+/-- [linkding_kernel::since_ok]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 785:0-790:1 -/
+def since_ok (since : Option Std.U64) (t : Std.U64) : Result Bool := do
+  match since with
+  | none => ok true
+  | some x => ok (t > x)
+
+/-- [linkding_kernel::shared_visible]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 794:0-810:1 -/
+def shared_visible
+  (s : Snapshot) (viewer : Std.U64) (b : Bookmark)
+  (owner_filter : Option Std.U64) :
+  Result Bool
+  := do
+  if b.shared
+  then
+    match owner_filter with
+    | none =>
+      let o ← find_user s.users b.owner
+      match o with
+      | none => ok false
+      | some o1 =>
+        if o1.sharing
+        then if viewer != 0#u64
+             then ok true
+             else ok o1.public_sharing
+        else ok false
+    | some o =>
+      if b.owner != o
+      then ok false
+      else
+        let o1 ← find_user s.users b.owner
+        match o1 with
+        | none => ok false
+        | some o2 =>
+          if o2.sharing
+          then if viewer != 0#u64
+               then ok true
+               else ok o2.public_sharing
+          else ok false
+  else ok false
+
+/-- [linkding_kernel::mentions_tags]: loop body 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 817:4-822:5 -/
+@[rust_loop_body]
+def mentions_tags_loop.body
+  (q : alloc.vec.Vec Std.U8) (found : Bool) (i : Std.Usize) :
+  Result (ControlFlow (Bool × Std.Usize) Bool)
+  := do
+  let i1 := alloc.vec.Vec.len q
+  if i < i1
+  then
+    let i2 ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Std.U8) q i
+    let found1 ←
+      if i2 = 35#u8
+      then ok true
+      else if i2 = 33#u8
+           then ok true
+           else ok found
+    let i3 ← i + 1#usize
+    ok (cont (found1, i3))
+  else ok (done found)
+
+/-- [linkding_kernel::mentions_tags]: loop 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 817:4-822:5 -/
+@[rust_loop]
+def mentions_tags_loop
+  (q : alloc.vec.Vec Std.U8) (found : Bool) (i : Std.Usize) : Result Bool := do
+  loop
+    (fun (found1, i1) => mentions_tags_loop.body q found1 i1)
+    (found, i)
+
+/-- [linkding_kernel::mentions_tags]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 814:0-824:1 -/
+@[reducible]
+def mentions_tags (q : alloc.vec.Vec Std.U8) : Result Bool := do
+  mentions_tags_loop q false 0#usize
+
+/-- [linkding_kernel::selected]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 827:0-852:1 -/
+def selected
+  (s : Snapshot) (flt : Filter) (parsed : search.Parsed) (lax : Bool)
+  (legacy : Bool) (bundle : Option Bundle) (tags_wanted : Bool) (b : Bookmark)
+  :
+  Result Bool
+  := do
+  let b1 ← since_ok flt.added_since b.added
+  if b1
+  then
+    let b2 ← since_ok flt.modified_since b.modified
+    if b2
+    then
+      let b3 ← flag_filter flt.unread b.unread
+      if b3
+      then
+        let b4 ← flag_filter flt.shared b.shared
+        if b4
+        then
+          let f ← facts s b tags_wanted
+          let q_ok ←
+            if legacy
+            then legacy_matches flt.q lax f
+            else search.bookmark_matches parsed lax f
+          if q_ok
+          then
+            match bundle with
+            | none => ok true
+            | some bu => bundle_matches bu b f
+          else ok false
+        else ok false
+      else ok false
+    else ok false
+  else ok false
+
+/-- [linkding_kernel::before]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 855:0-881:1 -/
+def before (sort : Std.U8) (x : Bookmark) (y : Bookmark) : Result Bool := do
+  if sort = SORT_ADDED_ASC
+  then if x.added != y.added
+       then ok (x.added < y.added)
+       else ok (x.id > y.id)
+  else
+    if sort = SORT_MODIFIED_ASC
+    then
+      if x.modified != y.modified
+      then ok (x.modified < y.modified)
+      else ok (x.id > y.id)
+    else
+      if sort = SORT_MODIFIED_DESC
+      then
+        if x.modified != y.modified
+        then ok (x.modified > y.modified)
+        else ok (x.id > y.id)
+      else
+        if sort = SORT_TITLE_ASC
+        then
+          let i := alloc.vec.Vec.len x.title
+          let tx ←
+            if i > 0#usize
+            then alloc.vec.CloneVec.clone core.clone.CloneU8 x.title
+            else alloc.vec.CloneVec.clone core.clone.CloneU8 x.url
+          let i1 := alloc.vec.Vec.len y.title
+          let ty ←
+            if i1 > 0#usize
+            then alloc.vec.CloneVec.clone core.clone.CloneU8 y.title
+            else alloc.vec.CloneVec.clone core.clone.CloneU8 y.url
+          let b ← eq_ci tx ty
+          if b
+          then ok (x.id > y.id)
+          else if sort = SORT_TITLE_ASC
+               then less_ci tx ty
+               else less_ci ty tx
+        else
+          if sort = SORT_TITLE_DESC
+          then
+            let i := alloc.vec.Vec.len x.title
+            let tx ←
+              if i > 0#usize
+              then alloc.vec.CloneVec.clone core.clone.CloneU8 x.title
+              else alloc.vec.CloneVec.clone core.clone.CloneU8 x.url
+            let i1 := alloc.vec.Vec.len y.title
+            let ty ←
+              if i1 > 0#usize
+              then alloc.vec.CloneVec.clone core.clone.CloneU8 y.title
+              else alloc.vec.CloneVec.clone core.clone.CloneU8 y.url
+            let b ← eq_ci tx ty
+            if b
+            then ok (x.id > y.id)
+            else if sort = SORT_TITLE_ASC
+                 then less_ci tx ty
+                 else less_ci ty tx
+          else
+            if x.added != y.added
+            then ok (x.added > y.added)
+            else ok (x.id > y.id)
+
+/-- [linkding_kernel::merge]: loop body 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 888:4-896:5 -/
+@[rust_loop_body]
+def merge_loop.body
+  (a : alloc.vec.Vec Bookmark) (b : alloc.vec.Vec Bookmark) (sort : Std.U8)
+  (out : alloc.vec.Vec Bookmark) (i : Std.Usize) (j : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Bookmark) × Std.Usize × Std.Usize)
+    (alloc.vec.Vec Bookmark))
+  := do
+  let i1 := alloc.vec.Vec.len a
+  if i < i1
+  then
+    let i2 := alloc.vec.Vec.len b
+    if j >= i2
+    then
+      let b1 ←
+        alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Bookmark) a
+          i
+      let b2 ← Bookmark.Insts.CoreCloneClone.clone b1
+      let out1 ← alloc.vec.Vec.push out b2
+      let i3 ← i + 1#usize
+      ok (cont (out1, i3, j))
+    else
+      let i3 := alloc.vec.Vec.len a
+      if i < i3
+      then
+        let b1 ←
+          alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Bookmark)
+            b j
+        let b2 ←
+          alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Bookmark)
+            a i
+        let b3 ← before sort b1 b2
+        if b3
+        then
+          let b4 ← Bookmark.Insts.CoreCloneClone.clone b1
+          let out1 ← alloc.vec.Vec.push out b4
+          let j1 ← j + 1#usize
+          ok (cont (out1, i, j1))
+        else
+          let b4 ← Bookmark.Insts.CoreCloneClone.clone b2
+          let out1 ← alloc.vec.Vec.push out b4
+          let i4 ← i + 1#usize
+          ok (cont (out1, i4, j))
+      else
+        let b1 ←
+          alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Bookmark)
+            b j
+        let b2 ← Bookmark.Insts.CoreCloneClone.clone b1
+        let out1 ← alloc.vec.Vec.push out b2
+        let j1 ← j + 1#usize
+        ok (cont (out1, i, j1))
+  else
+    let i2 := alloc.vec.Vec.len b
+    if j < i2
+    then
+      let i3 := alloc.vec.Vec.len b
+      if j >= i3
+      then
+        let b1 ←
+          alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Bookmark)
+            a i
+        let b2 ← Bookmark.Insts.CoreCloneClone.clone b1
+        let out1 ← alloc.vec.Vec.push out b2
+        let i4 ← i + 1#usize
+        ok (cont (out1, i4, j))
+      else
+        let i4 := alloc.vec.Vec.len a
+        if i < i4
+        then
+          let b1 ←
+            alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+              Bookmark) b j
+          let b2 ←
+            alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+              Bookmark) a i
+          let b3 ← before sort b1 b2
+          if b3
+          then
+            let b4 ← Bookmark.Insts.CoreCloneClone.clone b1
+            let out1 ← alloc.vec.Vec.push out b4
+            let j1 ← j + 1#usize
+            ok (cont (out1, i, j1))
+          else
+            let b4 ← Bookmark.Insts.CoreCloneClone.clone b2
+            let out1 ← alloc.vec.Vec.push out b4
+            let i5 ← i + 1#usize
+            ok (cont (out1, i5, j))
+        else
+          let b1 ←
+            alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+              Bookmark) b j
+          let b2 ← Bookmark.Insts.CoreCloneClone.clone b1
+          let out1 ← alloc.vec.Vec.push out b2
+          let j1 ← j + 1#usize
+          ok (cont (out1, i, j1))
+    else ok (done out)
+
+/-- [linkding_kernel::merge]: loop 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 888:4-896:5 -/
+@[rust_loop]
+def merge_loop
+  (a : alloc.vec.Vec Bookmark) (b : alloc.vec.Vec Bookmark) (sort : Std.U8)
+  (out : alloc.vec.Vec Bookmark) (i : Std.Usize) (j : Std.Usize) :
+  Result (alloc.vec.Vec Bookmark)
+  := do
+  loop
+    (fun (out1, i1, j1) => merge_loop.body a b sort out1 i1 j1)
+    (out, i, j)
+
+/-- [linkding_kernel::merge]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 884:0-898:1 -/
+@[reducible]
+def merge
+  (a : alloc.vec.Vec Bookmark) (b : alloc.vec.Vec Bookmark) (sort : Std.U8) :
+  Result (alloc.vec.Vec Bookmark)
+  := do
+  merge_loop a b sort (alloc.vec.Vec.new Bookmark) 0#usize 0#usize
+
+/-- [linkding_kernel::sort_bookmarks]: loop body 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 904:4-909:5
+    Visibility: public -/
+@[rust_loop_body]
+def sort_bookmarks_loop0.body
+  (v : alloc.vec.Vec Bookmark) (runs : alloc.vec.Vec (alloc.vec.Vec Bookmark))
+  (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec (alloc.vec.Vec Bookmark)) × Std.Usize)
+    (alloc.vec.Vec (alloc.vec.Vec Bookmark)))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let b ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Bookmark) v i
+    let b1 ← Bookmark.Insts.CoreCloneClone.clone b
+    let r ← alloc.vec.Vec.push (alloc.vec.Vec.new Bookmark) b1
+    let runs1 ← alloc.vec.Vec.push runs r
+    let i2 ← i + 1#usize
+    ok (cont (runs1, i2))
+  else ok (done runs)
+
+/-- [linkding_kernel::sort_bookmarks]: loop 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 904:4-909:5
+    Visibility: public -/
+@[rust_loop]
+def sort_bookmarks_loop0
+  (v : alloc.vec.Vec Bookmark) (runs : alloc.vec.Vec (alloc.vec.Vec Bookmark))
+  (i : Std.Usize) :
+  Result (alloc.vec.Vec (alloc.vec.Vec Bookmark))
+  := do
+  loop
+    (fun (runs1, i1) => sort_bookmarks_loop0.body v runs1 i1)
+    (runs, i)
+
+/-- [linkding_kernel::sort_bookmarks]: loop body 2:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 913:8-920:9
+    Visibility: public -/
+@[rust_loop_body]
+def sort_bookmarks_loop1_loop0.body
+  (sort : Std.U8) (runs : alloc.vec.Vec (alloc.vec.Vec Bookmark))
+  (next : alloc.vec.Vec (alloc.vec.Vec Bookmark)) (k : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec (alloc.vec.Vec Bookmark)) × Std.Usize)
+    (alloc.vec.Vec (alloc.vec.Vec Bookmark)))
+  := do
+  let i := alloc.vec.Vec.len runs
+  if k < i
+  then
+    let i1 ← k + 1#usize
+    let i2 := alloc.vec.Vec.len runs
+    let next1 ←
+      if i1 < i2
+      then
+        do
+        let v ←
+          alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+            (alloc.vec.Vec Bookmark)) runs k
+        let v1 ←
+          alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+            (alloc.vec.Vec Bookmark)) runs i1
+        let v2 ← merge v v1 sort
+        alloc.vec.Vec.push next v2
+      else
+        do
+        let v ←
+          alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+            (alloc.vec.Vec Bookmark)) runs k
+        let v1 ← alloc.vec.CloneVec.clone Bookmark.Insts.CoreCloneClone v
+        alloc.vec.Vec.push next v1
+    let k1 ← k + 2#usize
+    ok (cont (next1, k1))
+  else ok (done next)
+
+/-- [linkding_kernel::sort_bookmarks]: loop 2:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 913:8-920:9
+    Visibility: public -/
+@[rust_loop]
+def sort_bookmarks_loop1_loop0
+  (sort : Std.U8) (runs : alloc.vec.Vec (alloc.vec.Vec Bookmark))
+  (next : alloc.vec.Vec (alloc.vec.Vec Bookmark)) (k : Std.Usize) :
+  Result (alloc.vec.Vec (alloc.vec.Vec Bookmark))
+  := do
+  loop
+    (fun (next1, k1) => sort_bookmarks_loop1_loop0.body sort runs next1 k1)
+    (next, k)
+
+/-- [linkding_kernel::sort_bookmarks]: loop body 1:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 910:4-922:5
+    Visibility: public -/
+@[rust_loop_body]
+def sort_bookmarks_loop1.body
+  (sort : Std.U8) (runs : alloc.vec.Vec (alloc.vec.Vec Bookmark)) :
+  Result (ControlFlow (alloc.vec.Vec (alloc.vec.Vec Bookmark)) (alloc.vec.Vec
+    (alloc.vec.Vec Bookmark)))
+  := do
+  let i := alloc.vec.Vec.len runs
+  if i > 1#usize
+  then
+    let next ←
+      sort_bookmarks_loop1_loop0 sort runs (alloc.vec.Vec.new (alloc.vec.Vec
+        Bookmark)) 0#usize
+    ok (cont next)
+  else ok (done runs)
+
+/-- [linkding_kernel::sort_bookmarks]: loop 1:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 910:4-922:5
+    Visibility: public -/
+@[rust_loop]
+def sort_bookmarks_loop1
+  (sort : Std.U8) (runs : alloc.vec.Vec (alloc.vec.Vec Bookmark)) :
+  Result (alloc.vec.Vec (alloc.vec.Vec Bookmark))
+  := do
+  loop
+    (fun runs1 => sort_bookmarks_loop1.body sort runs1)
+    runs
+
+/-- [linkding_kernel::sort_bookmarks]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 901:0-927:1
+    Visibility: public -/
+def sort_bookmarks
+  (v : alloc.vec.Vec Bookmark) (sort : Std.U8) :
+  Result (alloc.vec.Vec Bookmark)
+  := do
+  let runs ←
+    sort_bookmarks_loop0 v (alloc.vec.Vec.new (alloc.vec.Vec Bookmark)) 0#usize
+  let runs1 ← sort_bookmarks_loop1 sort runs
+  let i := alloc.vec.Vec.len runs1
+  if i = 0#usize
+  then ok (alloc.vec.Vec.new Bookmark)
+  else
+    let v1 ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice (alloc.vec.Vec
+        Bookmark)) runs1 0#usize
+    alloc.vec.CloneVec.clone Bookmark.Insts.CoreCloneClone v1
+
+/-- [linkding_kernel::reversed]: loop body 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 932:4-935:5 -/
+@[rust_loop_body]
+def reversed_loop.body
+  (v : alloc.vec.Vec Bookmark) (out : alloc.vec.Vec Bookmark) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Bookmark) × Std.Usize) (alloc.vec.Vec
+    Bookmark))
+  := do
+  if i > 0#usize
+  then
+    let i1 ← i - 1#usize
+    let b ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Bookmark) v i1
+    let b1 ← Bookmark.Insts.CoreCloneClone.clone b
+    let out1 ← alloc.vec.Vec.push out b1
+    ok (cont (out1, i1))
+  else ok (done out)
+
+/-- [linkding_kernel::reversed]: loop 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 932:4-935:5 -/
+@[rust_loop]
+def reversed_loop
+  (v : alloc.vec.Vec Bookmark) (out : alloc.vec.Vec Bookmark) (i : Std.Usize) :
+  Result (alloc.vec.Vec Bookmark)
+  := do
+  loop
+    (fun (out1, i1) => reversed_loop.body v out1 i1)
+    (out, i)
+
+/-- [linkding_kernel::reversed]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 929:0-937:1 -/
+def reversed
+  (v : alloc.vec.Vec Bookmark) : Result (alloc.vec.Vec Bookmark) := do
+  let i := alloc.vec.Vec.len v
+  reversed_loop v (alloc.vec.Vec.new Bookmark) i
+
+/-- [linkding_kernel::on_page]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 940:0-942:1 -/
+def on_page
+  (k : Std.U64) (offset : Std.U64) (limit : Std.U64) : Result Bool := do
+  if k >= offset
+  then let i ← k - offset
+       ok (i < limit)
+  else ok false
+
+/-- [linkding_kernel::page_bookmarks]: loop body 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 947:4-952:5 -/
+@[rust_loop_body]
+def page_bookmarks_loop.body
+  (v : alloc.vec.Vec Bookmark) (offset : Std.U64) (limit : Std.U64)
+  (out : alloc.vec.Vec Bookmark) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Bookmark) × Std.Usize) (alloc.vec.Vec
+    Bookmark))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let i2 ← lift (UScalar.cast .U64 i)
+    let b ← on_page i2 offset limit
+    let out1 ←
+      if b
+      then
+        do
+        let b1 ←
+          alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Bookmark)
+            v i
+        let b2 ← Bookmark.Insts.CoreCloneClone.clone b1
+        alloc.vec.Vec.push out b2
+      else ok out
+    let i3 ← i + 1#usize
+    ok (cont (out1, i3))
+  else ok (done out)
+
+/-- [linkding_kernel::page_bookmarks]: loop 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 947:4-952:5 -/
+@[rust_loop]
+def page_bookmarks_loop
+  (v : alloc.vec.Vec Bookmark) (offset : Std.U64) (limit : Std.U64)
+  (out : alloc.vec.Vec Bookmark) (i : Std.Usize) :
+  Result (alloc.vec.Vec Bookmark)
+  := do
+  loop
+    (fun (out1, i1) => page_bookmarks_loop.body v offset limit out1 i1)
+    (out, i)
+
+/-- [linkding_kernel::page_bookmarks]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 944:0-954:1 -/
+@[reducible]
+def page_bookmarks
+  (v : alloc.vec.Vec Bookmark) (offset : Std.U64) (limit : Std.U64) :
+  Result (alloc.vec.Vec Bookmark)
+  := do
+  page_bookmarks_loop v offset limit (alloc.vec.Vec.new Bookmark) 0#usize
+
+/-- [linkding_kernel::page_tags]: loop body 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 959:4-964:5 -/
+@[rust_loop_body]
+def page_tags_loop.body
+  (v : alloc.vec.Vec Tag) (offset : Std.U64) (limit : Std.U64)
+  (out : alloc.vec.Vec Tag) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Tag) × Std.Usize) (alloc.vec.Vec Tag))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let i2 ← lift (UScalar.cast .U64 i)
+    let b ← on_page i2 offset limit
+    let out1 ←
+      if b
+      then
+        do
+        let t ←
+          alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Tag) v i
+        let t1 ← Tag.Insts.CoreCloneClone.clone t
+        alloc.vec.Vec.push out t1
+      else ok out
+    let i3 ← i + 1#usize
+    ok (cont (out1, i3))
+  else ok (done out)
+
+/-- [linkding_kernel::page_tags]: loop 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 959:4-964:5 -/
+@[rust_loop]
+def page_tags_loop
+  (v : alloc.vec.Vec Tag) (offset : Std.U64) (limit : Std.U64)
+  (out : alloc.vec.Vec Tag) (i : Std.Usize) :
+  Result (alloc.vec.Vec Tag)
+  := do
+  loop
+    (fun (out1, i1) => page_tags_loop.body v offset limit out1 i1)
+    (out, i)
+
+/-- [linkding_kernel::page_tags]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 956:0-966:1 -/
+@[reducible]
+def page_tags
+  (v : alloc.vec.Vec Tag) (offset : Std.U64) (limit : Std.U64) :
+  Result (alloc.vec.Vec Tag)
+  := do
+  page_tags_loop v offset limit (alloc.vec.Vec.new Tag) 0#usize
+
+/-- [linkding_kernel::page_bundles]: loop body 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 971:4-976:5 -/
+@[rust_loop_body]
+def page_bundles_loop.body
+  (v : alloc.vec.Vec Bundle) (offset : Std.U64) (limit : Std.U64)
+  (out : alloc.vec.Vec Bundle) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Bundle) × Std.Usize) (alloc.vec.Vec
+    Bundle))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let i2 ← lift (UScalar.cast .U64 i)
+    let b ← on_page i2 offset limit
+    let out1 ←
+      if b
+      then
+        do
+        let b1 ←
+          alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Bundle) v
+            i
+        let b2 ← Bundle.Insts.CoreCloneClone.clone b1
+        alloc.vec.Vec.push out b2
+      else ok out
+    let i3 ← i + 1#usize
+    ok (cont (out1, i3))
+  else ok (done out)
+
+/-- [linkding_kernel::page_bundles]: loop 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 971:4-976:5 -/
+@[rust_loop]
+def page_bundles_loop
+  (v : alloc.vec.Vec Bundle) (offset : Std.U64) (limit : Std.U64)
+  (out : alloc.vec.Vec Bundle) (i : Std.Usize) :
+  Result (alloc.vec.Vec Bundle)
+  := do
+  loop
+    (fun (out1, i1) => page_bundles_loop.body v offset limit out1 i1)
+    (out, i)
+
+/-- [linkding_kernel::page_bundles]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 968:0-978:1 -/
+@[reducible]
+def page_bundles
+  (v : alloc.vec.Vec Bundle) (offset : Std.U64) (limit : Std.U64) :
+  Result (alloc.vec.Vec Bundle)
+  := do
+  page_bundles_loop v offset limit (alloc.vec.Vec.new Bundle) 0#usize
+
+/-- [linkding_kernel::is_quote_or_paren]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 980:0-982:1 -/
+def is_quote_or_paren (c : Std.U8) : Result Bool := do
+  if c = 40#u8
+  then ok true
+  else
+    if c = 41#u8
+    then ok true
+    else if c = 34#u8
+         then ok true
+         else ok (c = 39#u8)
+
+/-- [linkding_kernel::simple_query]: loop body 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 993:4-998:5
+    Visibility: public -/
+@[rust_loop_body]
+def simple_query_loop0.body
+  (t : alloc.vec.Vec Std.U8) (ok1 : Bool) (i : Std.Usize) :
+  Result (ControlFlow (Bool × Std.Usize) Bool)
+  := do
+  let i1 := alloc.vec.Vec.len t
+  if i < i1
+  then
+    let i2 ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Std.U8) t i
+    let b ← search.is_space i2
+    let ok2 ←
+      if b
+      then
+        if i2 != 32#u8
+        then ok false
+        else do
+             let b1 ← is_quote_or_paren i2
+             if b1
+             then ok false
+             else ok ok1
+      else do
+           let b1 ← is_quote_or_paren i2
+           if b1
+           then ok false
+           else ok ok1
+    let i3 ← i + 1#usize
+    ok (cont (ok2, i3))
+  else ok (done ok1)
+
+/-- [linkding_kernel::simple_query]: loop 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 993:4-998:5
+    Visibility: public -/
+@[rust_loop]
+def simple_query_loop0
+  (t : alloc.vec.Vec Std.U8) (ok1 : Bool) (i : Std.Usize) : Result Bool := do
+  loop
+    (fun (ok2, i1) => simple_query_loop0.body t ok2 i1)
+    (ok1, i)
+
+/-- [linkding_kernel::simple_query]: loop body 1:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1003:4-1020:5
+    Visibility: public -/
+@[rust_loop_body]
+def simple_query_loop1.body
+  (ws : alloc.vec.Vec (alloc.vec.Vec Std.U8)) (ok1 : Bool)
+  (tags : alloc.vec.Vec (alloc.vec.Vec Std.U8)) (unread : Bool) (j : Std.Usize)
+  :
+  Result (ControlFlow (Bool × (alloc.vec.Vec (alloc.vec.Vec Std.U8)) × Bool
+    × Std.Usize) (Bool × (alloc.vec.Vec (alloc.vec.Vec Std.U8)) × Bool))
+  := do
+  let i := alloc.vec.Vec.len ws
+  if j < i
+  then
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice (alloc.vec.Vec
+        Std.U8)) ws j
+    let w ← alloc.vec.CloneVec.clone core.clone.CloneU8 v
+    let i1 ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Std.U8) w
+        0#usize
+    let (ok2, tags1, unread1) ←
+      if i1 = 35#u8
+      then
+        do
+        let i2 := alloc.vec.Vec.len w
+        let v1 ←
+          if i2 > 1#usize
+          then do
+               let v2 ← rest_of w
+               alloc.vec.Vec.push tags v2
+          else ok tags
+        ok (ok1, v1, unread)
+      else
+        do
+        let (b, b1) ←
+          if i1 = 33#u8
+          then
+            do
+            let k ← rest_of w
+            let v1 ← search.unread_word
+            let b2 ←
+              alloc.vec.partial_eq.PartialEqVec.eq core.cmp.PartialEqU8 k v1
+            if b2
+            then ok (ok1, true)
+            else
+              let b3 ← eq_ci k v1
+              let b4 ←
+                if b3
+                then ok false
+                else
+                  do
+                  let v2 ← search.untagged_word
+                  let b5 ← eq_ci k v2
+                  if b5
+                  then ok false
+                  else ok ok1
+              ok (b4, unread)
+          else ok (false, unread)
+        ok (b, tags, b1)
+    let j1 ← j + 1#usize
+    ok (cont (ok2, tags1, unread1, j1))
+  else ok (done (ok1, tags, unread))
+
+/-- [linkding_kernel::simple_query]: loop 1:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1003:4-1020:5
+    Visibility: public -/
+@[rust_loop]
+def simple_query_loop1
+  (ok1 : Bool) (ws : alloc.vec.Vec (alloc.vec.Vec Std.U8))
+  (tags : alloc.vec.Vec (alloc.vec.Vec Std.U8)) (unread : Bool) (j : Std.Usize)
+  :
+  Result (Bool × (alloc.vec.Vec (alloc.vec.Vec Std.U8)) × Bool)
+  := do
+  loop
+    (fun (ok2, tags1, unread1, j1) => simple_query_loop1.body ws ok2 tags1
+      unread1 j1)
+    (ok1, tags, unread, j)
+
+/-- [linkding_kernel::simple_query]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 989:0-1026:1
+    Visibility: public -/
+def simple_query
+  (q : alloc.vec.Vec Std.U8) :
+  Result (Option ((alloc.vec.Vec (alloc.vec.Vec Std.U8)) × Bool))
+  := do
+  let t ← trim_text q
+  let ok1 ← simple_query_loop0 t true 0#usize
+  let ws ← words t
+  let (ok2, tags, unread) ←
+    simple_query_loop1 ok1 ws (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) false
+      0#usize
+  if ok2
+  then ok (some (tags, unread))
+  else ok none
+
+/-- [linkding_kernel::paged]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1030:0-1038:1
+    Visibility: public -/
+def paged (flt : Filter) : Result Bool := do
+  if flt.scope = SCOPE_SHARED
+  then ok false
+  else
+    if flt.sort != SORT_ADDED_DESC
+    then ok false
+    else
+      let b := core.option.Option.is_some flt.added_since
+      if b
+      then ok false
+      else
+        let b1 := core.option.Option.is_some flt.modified_since
+        if b1
+        then ok false
+        else
+          let b2 := core.option.Option.is_some flt.bundle
+          if b2
+          then ok false
+          else let o ← simple_query flt.q
+               ok (core.option.Option.is_some o)
+
+/-- [linkding_kernel::views]: loop body 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1226:4-1229:5 -/
+@[rust_loop_body]
+def views_loop.body
+  (s : Snapshot) (page : alloc.vec.Vec Bookmark)
+  (items : alloc.vec.Vec BookmarkView) (j : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec BookmarkView) × Std.Usize)
+    (alloc.vec.Vec BookmarkView))
+  := do
+  let i := alloc.vec.Vec.len page
+  if j < i
+  then
+    let b ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Bookmark) page
+        j
+    let bv ← view s b
+    let items1 ← alloc.vec.Vec.push items bv
+    let j1 ← j + 1#usize
+    ok (cont (items1, j1))
+  else ok (done items)
+
+/-- [linkding_kernel::views]: loop 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1226:4-1229:5 -/
+@[rust_loop]
+def views_loop
+  (s : Snapshot) (page : alloc.vec.Vec Bookmark)
+  (items : alloc.vec.Vec BookmarkView) (j : Std.Usize) :
+  Result (alloc.vec.Vec BookmarkView)
+  := do
+  loop
+    (fun (items1, j1) => views_loop.body s page items1 j1)
+    (items, j)
+
+/-- [linkding_kernel::views]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1223:0-1231:1 -/
+@[reducible]
+def views
+  (s : Snapshot) (page : alloc.vec.Vec Bookmark) :
+  Result (alloc.vec.Vec BookmarkView)
+  := do
+  views_loop s page (alloc.vec.Vec.new BookmarkView) 0#usize
+
+/-- [linkding_kernel::ListCtx]
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1051:0-1062:1 -/
+structure ListCtx where
+  viewer : Std.U64
+  lax : Bool
+  legacy : Bool
+  owner_filter : Option Std.U64
+  bundle : Option Bundle
+  parsed : search.Parsed
+  tags_wanted : Bool
+  paged : Bool
+  simple_tags : alloc.vec.Vec (alloc.vec.Vec Std.U8)
+  simple_unread : Bool
+
+/-- [linkding_kernel::in_scope]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1191:0-1197:1 -/
+def in_scope
+  (s : Snapshot) (flt : Filter) (ctx : ListCtx) (b : Bookmark) :
+  Result Bool
+  := do
+  if flt.scope = SCOPE_SHARED
+  then shared_visible s ctx.viewer b ctx.owner_filter
+  else
+    if b.owner = ctx.viewer
+    then ok (b.archived = (flt.scope = SCOPE_ARCHIVED))
+    else ok false
+
+/-- [linkding_kernel::tag_is]: loop body 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-1153:1 -/
+@[rust_loop_body]
+def tag_is_loop.body
+  (s : Snapshot) (tag : Std.U64) (lower : alloc.vec.Vec Std.U8) (i : Std.Usize)
+  :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := alloc.vec.Vec.len s.tags
+  if i < i1
+  then
+    let t ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Tag) s.tags i
+    if t.id = tag
+    then
+      let b ←
+        alloc.vec.partial_eq.PartialEqVec.eq core.cmp.PartialEqU8 t.name_lower
+          lower
+      if b
+      then ok (done true)
+      else let i2 ← i + 1#usize
+           ok (cont i2)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else ok (done false)
+
+/-- [linkding_kernel::tag_is]: loop 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-1153:1 -/
+@[rust_loop]
+def tag_is_loop
+  (s : Snapshot) (tag : Std.U64) (lower : alloc.vec.Vec Std.U8) (i : Std.Usize)
+  :
+  Result Bool
+  := do
+  loop
+    (fun i1 => tag_is_loop.body s tag lower i1)
+    i
+
+/-- [linkding_kernel::tag_is]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1144:0-1153:1 -/
+@[reducible]
+def tag_is
+  (s : Snapshot) (tag : Std.U64) (lower : alloc.vec.Vec Std.U8) :
+  Result Bool
+  := do
+  tag_is_loop s tag lower 0#usize
+
+/-- [linkding_kernel::has_tag_lower]: loop body 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-1165:1 -/
+@[rust_loop_body]
+def has_tag_lower_loop.body
+  (s : Snapshot) (id : Std.U64) (lower : alloc.vec.Vec Std.U8) (i : Std.Usize)
+  :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := alloc.vec.Vec.len s.links
+  if i < i1
+  then
+    let l ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Link) 
+        s.links i
+    if l.bookmark = id
+    then
+      let b ← tag_is s l.tag lower
+      if b
+      then ok (done true)
+      else let i2 ← i + 1#usize
+           ok (cont i2)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else ok (done false)
+
+/-- [linkding_kernel::has_tag_lower]: loop 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-1165:1 -/
+@[rust_loop]
+def has_tag_lower_loop
+  (s : Snapshot) (id : Std.U64) (lower : alloc.vec.Vec Std.U8) (i : Std.Usize)
+  :
+  Result Bool
+  := do
+  loop
+    (fun i1 => has_tag_lower_loop.body s id lower i1)
+    i
+
+/-- [linkding_kernel::has_tag_lower]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1156:0-1165:1 -/
+@[reducible]
+def has_tag_lower
+  (s : Snapshot) (id : Std.U64) (lower : alloc.vec.Vec Std.U8) :
+  Result Bool
+  := do
+  has_tag_lower_loop s id lower 0#usize
+
+/-- [linkding_kernel::all_tagged]: loop body 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1169:4-1176:1 -/
+@[rust_loop_body]
+def all_tagged_loop.body
+  (s : Snapshot) (id : Std.U64) (lowers : alloc.vec.Vec (alloc.vec.Vec Std.U8))
+  (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := alloc.vec.Vec.len lowers
+  if i < i1
+  then
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice (alloc.vec.Vec
+        Std.U8)) lowers i
+    let b ← has_tag_lower s id v
+    if b
+    then let i2 ← i + 1#usize
+         ok (cont i2)
+    else ok (done false)
+  else ok (done true)
+
+/-- [linkding_kernel::all_tagged]: loop 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1169:4-1176:1 -/
+@[rust_loop]
+def all_tagged_loop
+  (s : Snapshot) (id : Std.U64) (lowers : alloc.vec.Vec (alloc.vec.Vec Std.U8))
+  (i : Std.Usize) :
+  Result Bool
+  := do
+  loop
+    (fun i1 => all_tagged_loop.body s id lowers i1)
+    i
+
+/-- [linkding_kernel::all_tagged]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1167:0-1176:1 -/
+@[reducible]
+def all_tagged
+  (s : Snapshot) (id : Std.U64) (lowers : alloc.vec.Vec (alloc.vec.Vec Std.U8))
+  :
+  Result Bool
+  := do
+  all_tagged_loop s id lowers 0#usize
+
+/-- [linkding_kernel::simple_selected]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1181:0-1189:1 -/
+def simple_selected
+  (s : Snapshot) (flt : Filter) (ctx : ListCtx) (b : Bookmark) :
+  Result Bool
+  := do
+  let b1 ← flag_filter flt.unread b.unread
+  if b1
+  then
+    let b2 ← flag_filter flt.shared b.shared
+    if b2
+    then
+      if ctx.simple_unread
+      then if b.unread
+           then all_tagged s b.id ctx.simple_tags
+           else ok false
+      else all_tagged s b.id ctx.simple_tags
+    else ok false
+  else ok false
+
+/-- [linkding_kernel::keep]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1199:0-1208:1 -/
+def keep
+  (s : Snapshot) (flt : Filter) (ctx : ListCtx) (b : Bookmark) :
+  Result Bool
+  := do
+  let b1 ← in_scope s flt ctx b
+  if b1
+  then
+    if ctx.paged
+    then simple_selected s flt ctx b
+    else
+      selected s flt ctx.parsed ctx.lax ctx.legacy ctx.bundle ctx.tags_wanted b
+  else ok false
+
+/-- [linkding_kernel::select]: loop body 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1214:4-1219:5 -/
+@[rust_loop_body]
+def select_loop.body
+  (s : Snapshot) (flt : Filter) (ctx : ListCtx) (sel : alloc.vec.Vec Bookmark)
+  (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Bookmark) × Std.Usize) (alloc.vec.Vec
+    Bookmark))
+  := do
+  let i1 := alloc.vec.Vec.len s.bookmarks
+  if i < i1
+  then
+    let b ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Bookmark)
+        s.bookmarks i
+    let b1 ← keep s flt ctx b
+    let sel1 ←
+      if b1
+      then
+        do
+        let b2 ← Bookmark.Insts.CoreCloneClone.clone b
+        alloc.vec.Vec.push sel b2
+      else ok sel
+    let i2 ← i + 1#usize
+    ok (cont (sel1, i2))
+  else ok (done sel)
+
+/-- [linkding_kernel::select]: loop 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1214:4-1219:5 -/
+@[rust_loop]
+def select_loop
+  (s : Snapshot) (flt : Filter) (ctx : ListCtx) (sel : alloc.vec.Vec Bookmark)
+  (i : Std.Usize) :
+  Result (alloc.vec.Vec Bookmark)
+  := do
+  loop
+    (fun (sel1, i1) => select_loop.body s flt ctx sel1 i1)
+    (sel, i)
+
+/-- [linkding_kernel::select]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1211:0-1221:1 -/
+@[reducible]
+def select
+  (s : Snapshot) (flt : Filter) (ctx : ListCtx) :
+  Result (alloc.vec.Vec Bookmark)
+  := do
+  select_loop s flt ctx (alloc.vec.Vec.new Bookmark) 0#usize
+
+/-- [linkding_kernel::search::pop_usize]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/search.rs', lines 349:0-359:1 -/
+def search.pop_usize
+  (stack : alloc.vec.Vec Std.Usize) (len : Std.Usize) :
+  Result (Std.Usize × Std.Usize)
+  := do
+  if len = 0#usize
+  then ok (0#usize, len)
+  else
+    let len1 ← len - 1#usize
+    let i := alloc.vec.Vec.len stack
+    if len1 < i
+    then
+      let i1 ←
+        alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Std.Usize)
+          stack len1
+      ok (i1, len1)
+    else ok (0#usize, len1)
+
+/-- [linkding_kernel::search::push_usize]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/search.rs', lines 340:0-347:1 -/
+def search.push_usize
+  (stack : alloc.vec.Vec Std.Usize) (len : Std.Usize) (item : Std.Usize) :
+  Result ((alloc.vec.Vec Std.Usize) × Std.Usize)
+  := do
+  let i := alloc.vec.Vec.len stack
+  let stack1 ←
+    if len < i
+    then
+      do
+      let (_, index_mut_back) ←
+        alloc.vec.Vec.index_mut (core.slice.index.SliceIndexUsizeSlice
+          Std.Usize) stack len
+      ok (index_mut_back item)
+    else alloc.vec.Vec.push stack item
+  let len1 ← len + 1#usize
+  ok (stack1, len1)
+
+/-- [linkding_kernel::search::apply_op]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/search.rs', lines 378:0-413:1 -/
+def search.apply_op
+  (op : Std.U8) (values : alloc.vec.Vec Std.Usize) (values_len : Std.Usize)
+  (nodes : alloc.vec.Vec search.Node) (failed : Bool) :
+  Result ((alloc.vec.Vec Std.Usize) × Std.Usize × (alloc.vec.Vec search.Node)
+    × Bool)
+  := do
+  if op = search.NODE_NOT
+  then
+    if values_len = 0#usize
+    then ok (values, values_len, nodes, true)
+    else
+      let (left, values_len1) ← search.pop_usize values values_len
+      let nodes1 ←
+        alloc.vec.Vec.push nodes
+          ({
+             kind := search.NODE_NOT,
+             text := (alloc.vec.Vec.new Std.U8),
+             left,
+             right := 0#usize
+           } : search.Node)
+      let i := alloc.vec.Vec.len nodes1
+      let i1 ← i - 1#usize
+      let (values1, values_len2) ← search.push_usize values values_len1 i1
+      ok (values1, values_len2, nodes1, failed)
+  else
+    if values_len < 2#usize
+    then ok (values, values_len, nodes, true)
+    else
+      let (right, values_len1) ← search.pop_usize values values_len
+      let (left, values_len2) ← search.pop_usize values values_len1
+      let nodes1 ←
+        alloc.vec.Vec.push nodes
+          ({ kind := op, text := (alloc.vec.Vec.new Std.U8), left, right } :
+          search.Node)
+      let i := alloc.vec.Vec.len nodes1
+      let i1 ← i - 1#usize
+      let (values1, values_len3) ← search.push_usize values values_len2 i1
+      ok (values1, values_len3, nodes1, failed)
+
+/-- [linkding_kernel::search::top_u8]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/search.rs', lines 370:0-376:1 -/
+def search.top_u8
+  (stack : alloc.vec.Vec Std.U8) (len : Std.Usize) : Result Std.U8 := do
+  if len > 0#usize
+  then
+    let i ← len - 1#usize
+    let i1 := alloc.vec.Vec.len stack
+    if i < i1
+    then
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Std.U8) stack
+        i
+    else ok 0#u8
+  else ok 0#u8
+
+/-- [linkding_kernel::search::push_u8]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/search.rs', lines 361:0-368:1 -/
+def search.push_u8
+  (stack : alloc.vec.Vec Std.U8) (len : Std.Usize) (item : Std.U8) :
+  Result ((alloc.vec.Vec Std.U8) × Std.Usize)
+  := do
+  let i := alloc.vec.Vec.len stack
+  let stack1 ←
+    if len < i
+    then
+      do
+      let (_, index_mut_back) ←
+        alloc.vec.Vec.index_mut (core.slice.index.SliceIndexUsizeSlice Std.U8)
+          stack len
+      ok (index_mut_back item)
+    else alloc.vec.Vec.push stack item
+  let len1 ← len + 1#usize
+  ok (stack1, len1)
+
+/-- [linkding_kernel::search::prec]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/search.rs', lines 319:0-329:1 -/
+def search.prec (op : Std.U8) : Result Std.U8 := do
+  if op = search.NODE_OR
+  then ok 1#u8
+  else
+    if op = search.NODE_AND
+    then ok 2#u8
+    else if op = search.NODE_NOT
+         then ok 3#u8
+         else ok 0#u8
+
+/-- [linkding_kernel::search::OP_LPAREN]
+    Source: 'performance/linkding/rust-h5i/kernel/src/search.rs', lines 15:0-15:24 -/
+@[global_simps, irreducible] def search.OP_LPAREN : Std.U8 := 7#u8
+
+/-- [linkding_kernel::search::push_op]: loop body 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/search.rs', lines 424:4-437:5 -/
+@[rust_loop_body]
+def search.push_op_loop.body
+  (ops : alloc.vec.Vec Std.U8) (op : Std.U8) (ops_len : Std.Usize)
+  (values : alloc.vec.Vec Std.Usize) (values_len : Std.Usize)
+  (nodes : alloc.vec.Vec search.Node) (failed : Bool) :
+  Result (ControlFlow (Std.Usize × (alloc.vec.Vec Std.Usize) × Std.Usize ×
+    (alloc.vec.Vec search.Node) × Bool) (Std.Usize × (alloc.vec.Vec
+    Std.Usize) × Std.Usize × (alloc.vec.Vec search.Node) × Bool))
+  := do
+  if ops_len > 0#usize
+  then
+    if failed
+    then ok (done (ops_len, values, values_len, nodes, true))
+    else
+      let top ← search.top_u8 ops ops_len
+      if top = search.OP_LPAREN
+      then ok (done (ops_len, values, values_len, nodes, false))
+      else
+        let top_p ← search.prec top
+        let op_p ← search.prec op
+        if top_p > op_p
+        then
+          let ops_len1 ← ops_len - 1#usize
+          let (values1, values_len1, nodes1, failed1) ←
+            search.apply_op top values values_len nodes false
+          ok (cont (ops_len1, values1, values_len1, nodes1, failed1))
+        else
+          if top_p = op_p
+          then
+            if op != search.NODE_NOT
+            then
+              let ops_len1 ← ops_len - 1#usize
+              let (values1, values_len1, nodes1, failed1) ←
+                search.apply_op top values values_len nodes false
+              ok (cont (ops_len1, values1, values_len1, nodes1, failed1))
+            else ok (done (ops_len, values, values_len, nodes, false))
+          else ok (done (ops_len, values, values_len, nodes, false))
+  else ok (done (ops_len, values, values_len, nodes, failed))
+
+/-- [linkding_kernel::search::push_op]: loop 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/search.rs', lines 424:4-437:5 -/
+@[rust_loop]
+def search.push_op_loop
+  (ops : alloc.vec.Vec Std.U8) (ops_len : Std.Usize)
+  (values : alloc.vec.Vec Std.Usize) (values_len : Std.Usize)
+  (nodes : alloc.vec.Vec search.Node) (op : Std.U8) (failed : Bool) :
+  Result (Std.Usize × (alloc.vec.Vec Std.Usize) × Std.Usize × (alloc.vec.Vec
+    search.Node) × Bool)
+  := do
+  loop
+    (fun (ops_len1, values1, values_len1, nodes1, failed1) =>
+      search.push_op_loop.body ops op ops_len1 values1 values_len1 nodes1
+      failed1)
+    (ops_len, values, values_len, nodes, failed)
+
+/-- [linkding_kernel::search::push_op]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/search.rs', lines 415:0-441:1 -/
+def search.push_op
+  (ops : alloc.vec.Vec Std.U8) (ops_len : Std.Usize)
+  (values : alloc.vec.Vec Std.Usize) (values_len : Std.Usize)
+  (nodes : alloc.vec.Vec search.Node) (op : Std.U8) (failed : Bool) :
+  Result ((alloc.vec.Vec Std.U8) × Std.Usize × (alloc.vec.Vec Std.Usize) ×
+    Std.Usize × (alloc.vec.Vec search.Node) × Bool)
+  := do
+  let (ops_len1, values1, values_len1, nodes1, failed1) ←
+    search.push_op_loop ops ops_len values values_len nodes op failed
+  if failed1
+  then ok (ops, ops_len1, values1, values_len1, nodes1, true)
+  else
+    let (ops1, ops_len2) ← search.push_u8 ops ops_len1 op
+    ok (ops1, ops_len2, values1, values_len1, nodes1, false)
+
+/-- [linkding_kernel::search::leaf]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/search.rs', lines 331:0-338:1 -/
+def search.leaf
+  (kind : Std.U8) (text : alloc.vec.Vec Std.U8) : Result search.Node := do
+  ok { kind, text, left := 0#usize, right := 0#usize }
+
+/-- [linkding_kernel::search::push_copy]: loop body 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/search.rs', lines 180:4-183:5 -/
+@[rust_loop_body]
+def search.push_copy_loop.body
   (src : alloc.vec.Vec Std.U8) («to» : Std.Usize)
   (out : alloc.vec.Vec Std.U8) (i : Std.Usize) :
   Result (ControlFlow ((alloc.vec.Vec Std.U8) × Std.Usize) (alloc.vec.Vec
@@ -544,31 +6607,416 @@ def push_copy_loop.body
     else ok (done out)
   else ok (done out)
 
-/-- [linkding_kernel::push_copy]: loop 0:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-309:5 -/
+/-- [linkding_kernel::search::push_copy]: loop 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/search.rs', lines 180:4-183:5 -/
 @[rust_loop]
-def push_copy_loop
+def search.push_copy_loop
   (out : alloc.vec.Vec Std.U8) (src : alloc.vec.Vec Std.U8)
   («to» : Std.Usize) (i : Std.Usize) :
   Result (alloc.vec.Vec Std.U8)
   := do
   loop
-    (fun (out1, i1) => push_copy_loop.body src «to» out1 i1)
+    (fun (out1, i1) => search.push_copy_loop.body src «to» out1 i1)
     (out, i)
 
-/-- [linkding_kernel::push_copy]:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 304:0-310:1 -/
+/-- [linkding_kernel::search::push_copy]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/search.rs', lines 178:0-184:1 -/
 @[reducible]
-def push_copy
+def search.push_copy
   (out : alloc.vec.Vec Std.U8) (src : alloc.vec.Vec Std.U8)
   («from» : Std.Usize) («to» : Std.Usize) :
   Result (alloc.vec.Vec Std.U8)
   := do
-  push_copy_loop out src «to» «from»
+  search.push_copy_loop out src «to» «from»
 
-/-- [linkding_kernel::is_and]:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 312:0-317:1 -/
-def is_and (text : alloc.vec.Vec Std.U8) : Result Bool := do
+/-- [linkding_kernel::search::failed_parsed]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/search.rs', lines 110:0-117:1 -/
+def search.failed_parsed : Result search.Parsed := do
+  ok
+    {
+      nodes := (alloc.vec.Vec.new search.Node),
+      root := 0#usize,
+      failed := true,
+      empty := false
+    }
+
+/-- [linkding_kernel::search::Token]
+    Source: 'performance/linkding/rust-h5i/kernel/src/search.rs', lines 56:0-59:1 -/
+structure search.Token where
+  kind : Std.U8
+  text : alloc.vec.Vec Std.U8
+
+/-- [linkding_kernel::search::TOK_RPAREN]
+    Source: 'performance/linkding/rust-h5i/kernel/src/search.rs', lines 16:0-16:25 -/
+@[global_simps, irreducible] def search.TOK_RPAREN : Std.U8 := 8#u8
+
+/-- [linkding_kernel::search::parse_tokens]: loop body 1:
+    Source: 'performance/linkding/rust-h5i/kernel/src/search.rs', lines 533:16-541:17 -/
+@[rust_loop_body]
+def search.parse_tokens_loop0_loop0.body
+  (ops : alloc.vec.Vec Std.U8) (nodes : alloc.vec.Vec search.Node)
+  (values : alloc.vec.Vec Std.Usize) (values_len : Std.Usize)
+  (ops_len : Std.Usize) (failed : Bool) :
+  Result (ControlFlow ((alloc.vec.Vec search.Node) × (alloc.vec.Vec Std.Usize)
+    × Std.Usize × Std.Usize × Bool) ((alloc.vec.Vec search.Node) ×
+    (alloc.vec.Vec Std.Usize) × Std.Usize × Std.Usize × Bool × Bool))
+  := do
+  if ops_len > 0#usize
+  then
+    if failed
+    then ok (done (nodes, values, values_len, ops_len, true, false))
+    else
+      let top ← search.top_u8 ops ops_len
+      if top = search.OP_LPAREN
+      then ok (done (nodes, values, values_len, ops_len, false, true))
+      else
+        let ops_len1 ← ops_len - 1#usize
+        let (values1, values_len1, nodes1, failed1) ←
+          search.apply_op top values values_len nodes false
+        ok (cont (nodes1, values1, values_len1, ops_len1, failed1))
+  else ok (done (nodes, values, values_len, ops_len, failed, false))
+
+/-- [linkding_kernel::search::parse_tokens]: loop 1:
+    Source: 'performance/linkding/rust-h5i/kernel/src/search.rs', lines 533:16-541:17 -/
+@[rust_loop]
+def search.parse_tokens_loop0_loop0
+  (nodes : alloc.vec.Vec search.Node) (values : alloc.vec.Vec Std.Usize)
+  (values_len : Std.Usize) (ops : alloc.vec.Vec Std.U8) (ops_len : Std.Usize)
+  (failed : Bool) :
+  Result ((alloc.vec.Vec search.Node) × (alloc.vec.Vec Std.Usize) × Std.Usize
+    × Std.Usize × Bool × Bool)
+  := do
+  loop
+    (fun (nodes1, values1, values_len1, ops_len1, failed1) =>
+      search.parse_tokens_loop0_loop0.body ops nodes1 values1 values_len1
+      ops_len1 failed1)
+    (nodes, values, values_len, ops_len, failed)
+
+/-- [linkding_kernel::search::parse_tokens]: loop body 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/search.rs', lines 452:4-553:5 -/
+@[rust_loop_body]
+def search.parse_tokens_loop0.body
+  (tokens : alloc.vec.Vec search.Token) (nodes : alloc.vec.Vec search.Node)
+  (values : alloc.vec.Vec Std.Usize) (values_len : Std.Usize)
+  (ops : alloc.vec.Vec Std.U8) (ops_len : Std.Usize) (expect_operand : Bool)
+  (failed : Bool) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec search.Node) × (alloc.vec.Vec Std.Usize)
+    × Std.Usize × (alloc.vec.Vec Std.U8) × Std.Usize × Bool × Bool ×
+    Std.Usize) ((alloc.vec.Vec search.Node) × (alloc.vec.Vec Std.Usize) ×
+    Std.Usize × (alloc.vec.Vec Std.U8) × Std.Usize × Bool × Bool))
+  := do
+  let i1 := alloc.vec.Vec.len tokens
+  if i < i1
+  then
+    if failed
+    then
+      ok (done (nodes, values, values_len, ops, ops_len, expect_operand, true))
+    else
+      let t ←
+        alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+          search.Token) tokens i
+      if t.kind = search.NODE_TERM
+      then
+        let (nodes1, values1, values_len1, ops1, ops_len1, failed1) ←
+          if expect_operand
+          then ok (nodes, values, values_len, ops, ops_len, false)
+          else
+            do
+            let (ops2, ops_len2, values2, values_len2, nodes2, failed2) ←
+              search.push_op ops ops_len values values_len nodes
+                search.NODE_AND false
+            ok (nodes2, values2, values_len2, ops2, ops_len2, failed2)
+        let (nodes2, values2, values_len2, expect_operand1) ←
+          if failed1
+          then ok (nodes1, values1, values_len1, expect_operand)
+          else
+            do
+            let i2 := alloc.vec.Vec.len t.text
+            let text ←
+              search.push_copy (alloc.vec.Vec.new Std.U8) t.text 0#usize i2
+            let n ← search.leaf t.kind text
+            let nodes3 ← alloc.vec.Vec.push nodes1 n
+            let i3 := alloc.vec.Vec.len nodes3
+            let i4 ← i3 - 1#usize
+            let (values3, values_len3) ←
+              search.push_usize values1 values_len1 i4
+            ok (nodes3, values3, values_len3, false)
+        let i2 ← i + 1#usize
+        ok (cont (nodes2, values2, values_len2, ops1, ops_len1,
+          expect_operand1, failed1, i2))
+      else
+        if t.kind = search.NODE_TAG
+        then
+          let (nodes1, values1, values_len1, ops1, ops_len1, failed1) ←
+            if expect_operand
+            then ok (nodes, values, values_len, ops, ops_len, false)
+            else
+              do
+              let (ops2, ops_len2, values2, values_len2, nodes2, failed2) ←
+                search.push_op ops ops_len values values_len nodes
+                  search.NODE_AND false
+              ok (nodes2, values2, values_len2, ops2, ops_len2, failed2)
+          let (nodes2, values2, values_len2, expect_operand1) ←
+            if failed1
+            then ok (nodes1, values1, values_len1, expect_operand)
+            else
+              do
+              let i2 := alloc.vec.Vec.len t.text
+              let text ←
+                search.push_copy (alloc.vec.Vec.new Std.U8) t.text 0#usize i2
+              let n ← search.leaf t.kind text
+              let nodes3 ← alloc.vec.Vec.push nodes1 n
+              let i3 := alloc.vec.Vec.len nodes3
+              let i4 ← i3 - 1#usize
+              let (values3, values_len3) ←
+                search.push_usize values1 values_len1 i4
+              ok (nodes3, values3, values_len3, false)
+          let i2 ← i + 1#usize
+          ok (cont (nodes2, values2, values_len2, ops1, ops_len1,
+            expect_operand1, failed1, i2))
+        else
+          if t.kind = search.NODE_KEYWORD
+          then
+            let (nodes1, values1, values_len1, ops1, ops_len1, failed1) ←
+              if expect_operand
+              then ok (nodes, values, values_len, ops, ops_len, false)
+              else
+                do
+                let (ops2, ops_len2, values2, values_len2, nodes2, failed2) ←
+                  search.push_op ops ops_len values values_len nodes
+                    search.NODE_AND false
+                ok (nodes2, values2, values_len2, ops2, ops_len2, failed2)
+            let (nodes2, values2, values_len2, expect_operand1) ←
+              if failed1
+              then ok (nodes1, values1, values_len1, expect_operand)
+              else
+                do
+                let i2 := alloc.vec.Vec.len t.text
+                let text ←
+                  search.push_copy (alloc.vec.Vec.new Std.U8) t.text 0#usize i2
+                let n ← search.leaf t.kind text
+                let nodes3 ← alloc.vec.Vec.push nodes1 n
+                let i3 := alloc.vec.Vec.len nodes3
+                let i4 ← i3 - 1#usize
+                let (values3, values_len3) ←
+                  search.push_usize values1 values_len1 i4
+                ok (nodes3, values3, values_len3, false)
+            let i2 ← i + 1#usize
+            ok (cont (nodes2, values2, values_len2, ops1, ops_len1,
+              expect_operand1, failed1, i2))
+          else
+            if t.kind = search.NODE_AND
+            then
+              let (nodes1, values1, values_len1, ops1, ops_len1, failed1) ←
+                if expect_operand
+                then ok (nodes, values, values_len, ops, ops_len, true)
+                else
+                  do
+                  let (ops2, ops_len2, values2, values_len2, nodes2, failed2)
+                    ←
+                    search.push_op ops ops_len values values_len nodes 
+                      t.kind false
+                  ok (nodes2, values2, values_len2, ops2, ops_len2, failed2)
+              let i2 ← i + 1#usize
+              ok (cont (nodes1, values1, values_len1, ops1, ops_len1, true,
+                failed1, i2))
+            else
+              if t.kind = search.NODE_OR
+              then
+                let (nodes1, values1, values_len1, ops1, ops_len1, failed1) ←
+                  if expect_operand
+                  then ok (nodes, values, values_len, ops, ops_len, true)
+                  else
+                    do
+                    let (ops2, ops_len2, values2, values_len2, nodes2, failed2)
+                      ←
+                      search.push_op ops ops_len values values_len nodes 
+                        t.kind false
+                    ok (nodes2, values2, values_len2, ops2, ops_len2, failed2)
+                let i2 ← i + 1#usize
+                ok (cont (nodes1, values1, values_len1, ops1, ops_len1, true,
+                  failed1, i2))
+              else
+                if t.kind = search.NODE_NOT
+                then
+                  let (nodes1, values1, values_len1, ops1, ops_len1, failed1)
+                    ←
+                    if expect_operand
+                    then ok (nodes, values, values_len, ops, ops_len, false)
+                    else
+                      do
+                      let (ops2, ops_len2, values2, values_len2, nodes2,
+                        failed2) ←
+                        search.push_op ops ops_len values values_len nodes
+                          search.NODE_AND false
+                      ok (nodes2, values2, values_len2, ops2, ops_len2,
+                        failed2)
+                  let (nodes2, values2, values_len2, ops2, ops_len2,
+                    expect_operand1, failed2) ←
+                    if failed1
+                    then
+                      ok (nodes1, values1, values_len1, ops1, ops_len1,
+                        expect_operand, true)
+                    else
+                      do
+                      let (ops3, ops_len3, values3, values_len3, nodes3,
+                        failed3) ←
+                        search.push_op ops1 ops_len1 values1 values_len1 nodes1
+                          search.NODE_NOT false
+                      ok (nodes3, values3, values_len3, ops3, ops_len3, true,
+                        failed3)
+                  let i2 ← i + 1#usize
+                  ok (cont (nodes2, values2, values_len2, ops2, ops_len2,
+                    expect_operand1, failed2, i2))
+                else
+                  if t.kind = search.OP_LPAREN
+                  then
+                    let (nodes1, values1, values_len1, ops1, ops_len1, failed1)
+                      ←
+                      if expect_operand
+                      then ok (nodes, values, values_len, ops, ops_len, false)
+                      else
+                        do
+                        let (ops2, ops_len2, values2, values_len2, nodes2,
+                          failed2) ←
+                          search.push_op ops ops_len values values_len nodes
+                            search.NODE_AND false
+                        ok (nodes2, values2, values_len2, ops2, ops_len2,
+                          failed2)
+                    let (ops2, ops_len2, expect_operand1) ←
+                      if failed1
+                      then ok (ops1, ops_len1, expect_operand)
+                      else
+                        do
+                        let (ops3, ops_len3) ←
+                          search.push_u8 ops1 ops_len1 search.OP_LPAREN
+                        ok (ops3, ops_len3, true)
+                    let i2 ← i + 1#usize
+                    ok (cont (nodes1, values1, values_len1, ops2, ops_len2,
+                      expect_operand1, failed1, i2))
+                  else
+                    if t.kind = search.TOK_RPAREN
+                    then
+                      if expect_operand
+                      then
+                        let i2 ← i + 1#usize
+                        ok (cont (nodes, values, values_len, ops, ops_len,
+                          true, true, i2))
+                      else
+                        let (nodes1, values1, values_len1, ops_len1, failed1,
+                          saw) ←
+                          search.parse_tokens_loop0_loop0 nodes values
+                            values_len ops ops_len false
+                        let (ops_len2, failed2) ←
+                          if saw
+                          then
+                            if ops_len1 = 0#usize
+                            then ok (ops_len1, true)
+                            else
+                              do
+                              let ops_len3 ← ops_len1 - 1#usize
+                              ok (ops_len3, failed1)
+                          else ok (ops_len1, true)
+                        let i2 ← i + 1#usize
+                        ok (cont (nodes1, values1, values_len1, ops, ops_len2,
+                          false, failed2, i2))
+                    else
+                      let i2 ← i + 1#usize
+                      ok (cont (nodes, values, values_len, ops, ops_len,
+                        expect_operand, true, i2))
+  else
+    ok (done (nodes, values, values_len, ops, ops_len, expect_operand, failed))
+
+/-- [linkding_kernel::search::parse_tokens]: loop 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/search.rs', lines 452:4-553:5 -/
+@[rust_loop]
+def search.parse_tokens_loop0
+  (tokens : alloc.vec.Vec search.Token) (nodes : alloc.vec.Vec search.Node)
+  (values : alloc.vec.Vec Std.Usize) (values_len : Std.Usize)
+  (ops : alloc.vec.Vec Std.U8) (ops_len : Std.Usize) (expect_operand : Bool)
+  (failed : Bool) (i : Std.Usize) :
+  Result ((alloc.vec.Vec search.Node) × (alloc.vec.Vec Std.Usize) × Std.Usize
+    × (alloc.vec.Vec Std.U8) × Std.Usize × Bool × Bool)
+  := do
+  loop
+    (fun (nodes1, values1, values_len1, ops1, ops_len1, expect_operand1,
+      failed1, i1) => search.parse_tokens_loop0.body tokens nodes1 values1
+      values_len1 ops1 ops_len1 expect_operand1 failed1 i1)
+    (nodes, values, values_len, ops, ops_len, expect_operand, failed, i)
+
+/-- [linkding_kernel::search::parse_tokens]: loop body 2:
+    Source: 'performance/linkding/rust-h5i/kernel/src/search.rs', lines 557:4-565:5 -/
+@[rust_loop_body]
+def search.parse_tokens_loop1.body
+  (ops : alloc.vec.Vec Std.U8) (nodes : alloc.vec.Vec search.Node)
+  (values : alloc.vec.Vec Std.Usize) (values_len : Std.Usize)
+  (ops_len : Std.Usize) (failed : Bool) :
+  Result (ControlFlow ((alloc.vec.Vec search.Node) × (alloc.vec.Vec Std.Usize)
+    × Std.Usize × Std.Usize × Bool) ((alloc.vec.Vec search.Node) ×
+    (alloc.vec.Vec Std.Usize) × Std.Usize × Bool))
+  := do
+  if ops_len > 0#usize
+  then
+    if failed
+    then ok (done (nodes, values, values_len, true))
+    else
+      let top ← search.top_u8 ops ops_len
+      if top = search.OP_LPAREN
+      then ok (done (nodes, values, values_len, true))
+      else
+        let ops_len1 ← ops_len - 1#usize
+        let (values1, values_len1, nodes1, failed1) ←
+          search.apply_op top values values_len nodes false
+        ok (cont (nodes1, values1, values_len1, ops_len1, failed1))
+  else ok (done (nodes, values, values_len, failed))
+
+/-- [linkding_kernel::search::parse_tokens]: loop 2:
+    Source: 'performance/linkding/rust-h5i/kernel/src/search.rs', lines 557:4-565:5 -/
+@[rust_loop]
+def search.parse_tokens_loop1
+  (nodes : alloc.vec.Vec search.Node) (values : alloc.vec.Vec Std.Usize)
+  (values_len : Std.Usize) (ops : alloc.vec.Vec Std.U8) (ops_len : Std.Usize)
+  (failed : Bool) :
+  Result ((alloc.vec.Vec search.Node) × (alloc.vec.Vec Std.Usize) × Std.Usize
+    × Bool)
+  := do
+  loop
+    (fun (nodes1, values1, values_len1, ops_len1, failed1) =>
+      search.parse_tokens_loop1.body ops nodes1 values1 values_len1 ops_len1
+      failed1)
+    (nodes, values, values_len, ops_len, failed)
+
+/-- [linkding_kernel::search::parse_tokens]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/search.rs', lines 443:0-575:1 -/
+def search.parse_tokens
+  (tokens : alloc.vec.Vec search.Token) : Result search.Parsed := do
+  let (nodes, values, values_len, ops, ops_len, expect_operand, failed) ←
+    search.parse_tokens_loop0 tokens (alloc.vec.Vec.new search.Node)
+      (alloc.vec.Vec.new Std.Usize) 0#usize (alloc.vec.Vec.new Std.U8) 0#usize
+      true false 0#usize
+  let failed1 ← if expect_operand
+                  then ok true
+                  else ok failed
+  let (nodes1, values1, values_len1, failed2) ←
+    search.parse_tokens_loop1 nodes values values_len ops ops_len failed1
+  if failed2
+  then search.failed_parsed
+  else
+    if values_len1 != 1#usize
+    then search.failed_parsed
+    else
+      let i := alloc.vec.Vec.len values1
+      if i = 0#usize
+      then search.failed_parsed
+      else
+        let i1 ←
+          alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Std.Usize)
+            values1 0#usize
+        ok { nodes := nodes1, root := i1, failed := false, empty := false }
+
+/-- [linkding_kernel::search::is_not_word]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/search.rs', lines 200:0-205:1 -/
+def search.is_not_word (text : alloc.vec.Vec Std.U8) : Result Bool := do
   let i := alloc.vec.Vec.len text
   if i != 3#usize
   then ok false
@@ -576,26 +7024,26 @@ def is_and (text : alloc.vec.Vec Std.U8) : Result Bool := do
     let i1 ←
       alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Std.U8) text
         0#usize
-    let i2 ← lower_ascii i1
-    if i2 = 97#u8
+    let i2 ← search.lower_ascii i1
+    if i2 = 110#u8
     then
       let i3 ←
         alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Std.U8) text
           1#usize
-      let i4 ← lower_ascii i3
-      if i4 = 110#u8
+      let i4 ← search.lower_ascii i3
+      if i4 = 111#u8
       then
         let i5 ←
           alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Std.U8)
             text 2#usize
-        let i6 ← lower_ascii i5
-        ok (i6 = 100#u8)
+        let i6 ← search.lower_ascii i5
+        ok (i6 = 116#u8)
       else ok false
     else ok false
 
-/-- [linkding_kernel::is_or]:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 319:0-324:1 -/
-def is_or (text : alloc.vec.Vec Std.U8) : Result Bool := do
+/-- [linkding_kernel::search::is_or]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/search.rs', lines 193:0-198:1 -/
+def search.is_or (text : alloc.vec.Vec Std.U8) : Result Bool := do
   let i := alloc.vec.Vec.len text
   if i != 2#usize
   then ok false
@@ -603,19 +7051,19 @@ def is_or (text : alloc.vec.Vec Std.U8) : Result Bool := do
     let i1 ←
       alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Std.U8) text
         0#usize
-    let i2 ← lower_ascii i1
+    let i2 ← search.lower_ascii i1
     if i2 = 111#u8
     then
       let i3 ←
         alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Std.U8) text
           1#usize
-      let i4 ← lower_ascii i3
+      let i4 ← search.lower_ascii i3
       ok (i4 = 114#u8)
     else ok false
 
-/-- [linkding_kernel::is_not_word]:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 326:0-331:1 -/
-def is_not_word (text : alloc.vec.Vec Std.U8) : Result Bool := do
+/-- [linkding_kernel::search::is_and]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/search.rs', lines 186:0-191:1 -/
+def search.is_and (text : alloc.vec.Vec Std.U8) : Result Bool := do
   let i := alloc.vec.Vec.len text
   if i != 3#usize
   then ok false
@@ -623,27 +7071,27 @@ def is_not_word (text : alloc.vec.Vec Std.U8) : Result Bool := do
     let i1 ←
       alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Std.U8) text
         0#usize
-    let i2 ← lower_ascii i1
-    if i2 = 110#u8
+    let i2 ← search.lower_ascii i1
+    if i2 = 97#u8
     then
       let i3 ←
         alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Std.U8) text
           1#usize
-      let i4 ← lower_ascii i3
-      if i4 = 111#u8
+      let i4 ← search.lower_ascii i3
+      if i4 = 110#u8
       then
         let i5 ←
           alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Std.U8)
             text 2#usize
-        let i6 ← lower_ascii i5
-        ok (i6 = 116#u8)
+        let i6 ← search.lower_ascii i5
+        ok (i6 = 100#u8)
       else ok false
     else ok false
 
-/-- [linkding_kernel::tokenize]: loop body 1:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-339:9 -/
+/-- [linkding_kernel::search::tokenize]: loop body 1:
+    Source: 'performance/linkding/rust-h5i/kernel/src/search.rs', lines 211:8-213:9 -/
 @[rust_loop_body]
-def tokenize_loop0_loop0.body
+def search.tokenize_loop0_loop0.body
   (query : alloc.vec.Vec Std.U8) (i : Std.Usize) :
   Result (ControlFlow Std.Usize Std.Usize)
   := do
@@ -653,26 +7101,26 @@ def tokenize_loop0_loop0.body
     let i2 ←
       alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Std.U8) query
         i
-    let b ← is_space i2
+    let b ← search.is_space i2
     if b
     then let i3 ← i + 1#usize
          ok (cont i3)
     else ok (done i)
   else ok (done i)
 
-/-- [linkding_kernel::tokenize]: loop 1:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-339:9 -/
+/-- [linkding_kernel::search::tokenize]: loop 1:
+    Source: 'performance/linkding/rust-h5i/kernel/src/search.rs', lines 211:8-213:9 -/
 @[rust_loop]
-def tokenize_loop0_loop0
+def search.tokenize_loop0_loop0
   (query : alloc.vec.Vec Std.U8) (i : Std.Usize) : Result Std.Usize := do
   loop
-    (fun i1 => tokenize_loop0_loop0.body query i1)
+    (fun i1 => search.tokenize_loop0_loop0.body query i1)
     i
 
-/-- [linkding_kernel::tokenize]: loop body 2:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-385:13 -/
+/-- [linkding_kernel::search::tokenize]: loop body 2:
+    Source: 'performance/linkding/rust-h5i/kernel/src/search.rs', lines 234:12-259:13 -/
 @[rust_loop_body]
-def tokenize_loop0_loop1.body
+def search.tokenize_loop0_loop1.body
   (query : alloc.vec.Vec Std.U8) (c : Std.U8) (i : Std.Usize)
   (text : alloc.vec.Vec Std.U8) :
   Result (ControlFlow (Std.Usize × (alloc.vec.Vec Std.U8)) (Std.Usize ×
@@ -721,22 +7169,22 @@ def tokenize_loop0_loop1.body
     else ok (done (i, text))
   else ok (done (i, text))
 
-/-- [linkding_kernel::tokenize]: loop 2:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-385:13 -/
+/-- [linkding_kernel::search::tokenize]: loop 2:
+    Source: 'performance/linkding/rust-h5i/kernel/src/search.rs', lines 234:12-259:13 -/
 @[rust_loop]
-def tokenize_loop0_loop1
+def search.tokenize_loop0_loop1
   (query : alloc.vec.Vec Std.U8) (i : Std.Usize) (c : Std.U8)
   (text : alloc.vec.Vec Std.U8) :
   Result (Std.Usize × (alloc.vec.Vec Std.U8))
   := do
   loop
-    (fun (i1, text1) => tokenize_loop0_loop1.body query c i1 text1)
+    (fun (i1, text1) => search.tokenize_loop0_loop1.body query c i1 text1)
     (i, text)
 
-/-- [linkding_kernel::tokenize]: loop body 3:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-385:13 -/
+/-- [linkding_kernel::search::tokenize]: loop body 3:
+    Source: 'performance/linkding/rust-h5i/kernel/src/search.rs', lines 234:12-259:13 -/
 @[rust_loop_body]
-def tokenize_loop0_loop2.body
+def search.tokenize_loop0_loop2.body
   (query : alloc.vec.Vec Std.U8) (c : Std.U8) (i : Std.Usize)
   (text : alloc.vec.Vec Std.U8) :
   Result (ControlFlow (Std.Usize × (alloc.vec.Vec Std.U8)) (Std.Usize ×
@@ -785,22 +7233,22 @@ def tokenize_loop0_loop2.body
     else ok (done (i, text))
   else ok (done (i, text))
 
-/-- [linkding_kernel::tokenize]: loop 3:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-385:13 -/
+/-- [linkding_kernel::search::tokenize]: loop 3:
+    Source: 'performance/linkding/rust-h5i/kernel/src/search.rs', lines 234:12-259:13 -/
 @[rust_loop]
-def tokenize_loop0_loop2
+def search.tokenize_loop0_loop2
   (query : alloc.vec.Vec Std.U8) (i : Std.Usize) (c : Std.U8)
   (text : alloc.vec.Vec Std.U8) :
   Result (Std.Usize × (alloc.vec.Vec Std.U8))
   := do
   loop
-    (fun (i1, text1) => tokenize_loop0_loop2.body query c i1 text1)
+    (fun (i1, text1) => search.tokenize_loop0_loop2.body query c i1 text1)
     (i, text)
 
-/-- [linkding_kernel::tokenize]: loop body 4:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-405:13 -/
+/-- [linkding_kernel::search::tokenize]: loop body 4:
+    Source: 'performance/linkding/rust-h5i/kernel/src/search.rs', lines 271:12-279:13 -/
 @[rust_loop_body]
-def tokenize_loop0_loop3.body
+def search.tokenize_loop0_loop3.body
   (query : alloc.vec.Vec Std.U8) (i : Std.Usize) :
   Result (ControlFlow Std.Usize Std.Usize)
   := do
@@ -810,7 +7258,7 @@ def tokenize_loop0_loop3.body
     let i2 ←
       alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Std.U8) query
         i
-    let b ← is_space i2
+    let b ← search.is_space i2
     if b
     then ok (done i)
     else
@@ -829,19 +7277,19 @@ def tokenize_loop0_loop3.body
       else ok (done i)
   else ok (done i)
 
-/-- [linkding_kernel::tokenize]: loop 4:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-405:13 -/
+/-- [linkding_kernel::search::tokenize]: loop 4:
+    Source: 'performance/linkding/rust-h5i/kernel/src/search.rs', lines 271:12-279:13 -/
 @[rust_loop]
-def tokenize_loop0_loop3
+def search.tokenize_loop0_loop3
   (query : alloc.vec.Vec Std.U8) (i : Std.Usize) : Result Std.Usize := do
   loop
-    (fun i1 => tokenize_loop0_loop3.body query i1)
+    (fun i1 => search.tokenize_loop0_loop3.body query i1)
     i
 
-/-- [linkding_kernel::tokenize]: loop body 5:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-405:13 -/
+/-- [linkding_kernel::search::tokenize]: loop body 5:
+    Source: 'performance/linkding/rust-h5i/kernel/src/search.rs', lines 271:12-279:13 -/
 @[rust_loop_body]
-def tokenize_loop0_loop4.body
+def search.tokenize_loop0_loop4.body
   (query : alloc.vec.Vec Std.U8) (i : Std.Usize) :
   Result (ControlFlow Std.Usize Std.Usize)
   := do
@@ -851,7 +7299,7 @@ def tokenize_loop0_loop4.body
     let i2 ←
       alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Std.U8) query
         i
-    let b ← is_space i2
+    let b ← search.is_space i2
     if b
     then ok (done i)
     else
@@ -870,19 +7318,19 @@ def tokenize_loop0_loop4.body
       else ok (done i)
   else ok (done i)
 
-/-- [linkding_kernel::tokenize]: loop 5:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-405:13 -/
+/-- [linkding_kernel::search::tokenize]: loop 5:
+    Source: 'performance/linkding/rust-h5i/kernel/src/search.rs', lines 271:12-279:13 -/
 @[rust_loop]
-def tokenize_loop0_loop4
+def search.tokenize_loop0_loop4
   (query : alloc.vec.Vec Std.U8) (i : Std.Usize) : Result Std.Usize := do
   loop
-    (fun i1 => tokenize_loop0_loop4.body query i1)
+    (fun i1 => search.tokenize_loop0_loop4.body query i1)
     i
 
-/-- [linkding_kernel::tokenize]: loop body 6:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-424:13 -/
+/-- [linkding_kernel::search::tokenize]: loop body 6:
+    Source: 'performance/linkding/rust-h5i/kernel/src/search.rs', lines 288:12-298:13 -/
 @[rust_loop_body]
-def tokenize_loop0_loop5.body
+def search.tokenize_loop0_loop5.body
   (query : alloc.vec.Vec Std.U8) (i : Std.Usize) :
   Result (ControlFlow Std.Usize Std.Usize)
   := do
@@ -892,7 +7340,7 @@ def tokenize_loop0_loop5.body
     let i2 ←
       alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Std.U8) query
         i
-    let b ← is_space i2
+    let b ← search.is_space i2
     if b
     then ok (done i)
     else
@@ -917,28 +7365,28 @@ def tokenize_loop0_loop5.body
       else ok (done i)
   else ok (done i)
 
-/-- [linkding_kernel::tokenize]: loop 6:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-424:13 -/
+/-- [linkding_kernel::search::tokenize]: loop 6:
+    Source: 'performance/linkding/rust-h5i/kernel/src/search.rs', lines 288:12-298:13 -/
 @[rust_loop]
-def tokenize_loop0_loop5
+def search.tokenize_loop0_loop5
   (query : alloc.vec.Vec Std.U8) (i : Std.Usize) : Result Std.Usize := do
   loop
-    (fun i1 => tokenize_loop0_loop5.body query i1)
+    (fun i1 => search.tokenize_loop0_loop5.body query i1)
     i
 
-/-- [linkding_kernel::tokenize]: loop body 0:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-441:5 -/
+/-- [linkding_kernel::search::tokenize]: loop body 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/search.rs', lines 210:4-315:5 -/
 @[rust_loop_body]
-def tokenize_loop0.body
-  (query : alloc.vec.Vec Std.U8) (tokens : alloc.vec.Vec Token) (i : Std.Usize)
-  :
-  Result (ControlFlow ((alloc.vec.Vec Token) × Std.Usize) (alloc.vec.Vec
-    Token))
+def search.tokenize_loop0.body
+  (query : alloc.vec.Vec Std.U8) (tokens : alloc.vec.Vec search.Token)
+  (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec search.Token) × Std.Usize)
+    (alloc.vec.Vec search.Token))
   := do
   let i1 := alloc.vec.Vec.len query
   if i < i1
   then
-    let i2 ← tokenize_loop0_loop0 query i
+    let i2 ← search.tokenize_loop0_loop0 query i
     let i3 := alloc.vec.Vec.len query
     if i2 >= i3
     then ok (done tokens)
@@ -950,7 +7398,8 @@ def tokenize_loop0.body
       then
         let tokens1 ←
           alloc.vec.Vec.push tokens
-            ({ kind := OP_LPAREN, text := (alloc.vec.Vec.new Std.U8) } : Token)
+            ({ kind := search.OP_LPAREN, text := (alloc.vec.Vec.new Std.U8) } :
+            search.Token)
         let i4 ← i2 + 1#usize
         ok (cont (tokens1, i4))
       else
@@ -958,8 +7407,8 @@ def tokenize_loop0.body
         then
           let tokens1 ←
             alloc.vec.Vec.push tokens
-              ({ kind := TOK_RPAREN, text := (alloc.vec.Vec.new Std.U8) } :
-              Token)
+              ({ kind := search.TOK_RPAREN, text := (alloc.vec.Vec.new Std.U8)
+               } : search.Token)
           let i4 ← i2 + 1#usize
           ok (cont (tokens1, i4))
         else
@@ -967,7 +7416,7 @@ def tokenize_loop0.body
           then
             let i4 ← i2 + 1#usize
             let (i5, text) ←
-              tokenize_loop0_loop1 query i4 c (alloc.vec.Vec.new Std.U8)
+              search.tokenize_loop0_loop1 query i4 c (alloc.vec.Vec.new Std.U8)
             let i6 := alloc.vec.Vec.len query
             let i7 ←
               if i5 < i6
@@ -981,14 +7430,16 @@ def tokenize_loop0.body
                 else ok i5
               else ok i5
             let tokens1 ←
-              alloc.vec.Vec.push tokens ({ kind := NODE_TERM, text } : Token)
+              alloc.vec.Vec.push tokens ({ kind := search.NODE_TERM, text } :
+                search.Token)
             ok (cont (tokens1, i7))
           else
             if c = 39#u8
             then
               let i4 ← i2 + 1#usize
               let (i5, text) ←
-                tokenize_loop0_loop2 query i4 c (alloc.vec.Vec.new Std.U8)
+                search.tokenize_loop0_loop2 query i4 c (alloc.vec.Vec.new
+                  Std.U8)
               let i6 := alloc.vec.Vec.len query
               let i7 ←
                 if i5 < i6
@@ -1002,2443 +7453,2390 @@ def tokenize_loop0.body
                   else ok i5
                 else ok i5
               let tokens1 ←
-                alloc.vec.Vec.push tokens ({ kind := NODE_TERM, text } : Token)
+                alloc.vec.Vec.push tokens ({ kind := search.NODE_TERM, text } :
+                  search.Token)
               ok (cont (tokens1, i7))
             else
               if c = 35#u8
               then
                 let i4 ← i2 + 1#usize
-                let i5 ← tokenize_loop0_loop3 query i4
+                let i5 ← search.tokenize_loop0_loop3 query i4
                 if i5 > i4
                 then
-                  let text ← push_copy (alloc.vec.Vec.new Std.U8) query i4 i5
+                  let text ←
+                    search.push_copy (alloc.vec.Vec.new Std.U8) query i4 i5
                   let kind ←
                     if c = 35#u8
-                    then ok NODE_TAG
-                    else ok NODE_KEYWORD
+                    then ok search.NODE_TAG
+                    else ok search.NODE_KEYWORD
                   let tokens1 ←
-                    alloc.vec.Vec.push tokens ({ kind, text } : Token)
+                    alloc.vec.Vec.push tokens ({ kind, text } : search.Token)
                   ok (cont (tokens1, i5))
                 else ok (cont (tokens, i5))
               else
                 if c = 33#u8
                 then
                   let i4 ← i2 + 1#usize
-                  let i5 ← tokenize_loop0_loop4 query i4
+                  let i5 ← search.tokenize_loop0_loop4 query i4
                   if i5 > i4
                   then
                     let text ←
-                      push_copy (alloc.vec.Vec.new Std.U8) query i4 i5
+                      search.push_copy (alloc.vec.Vec.new Std.U8) query i4 i5
                     let kind ←
                       if c = 35#u8
-                      then ok NODE_TAG
-                      else ok NODE_KEYWORD
+                      then ok search.NODE_TAG
+                      else ok search.NODE_KEYWORD
                     let tokens1 ←
-                      alloc.vec.Vec.push tokens ({ kind, text } : Token)
+                      alloc.vec.Vec.push tokens ({ kind, text } : search.Token)
                     ok (cont (tokens1, i5))
                   else ok (cont (tokens, i5))
                 else
-                  let i4 ← tokenize_loop0_loop5 query i2
+                  let i4 ← search.tokenize_loop0_loop5 query i2
                   if i4 > i2
                   then
                     let text ←
-                      push_copy (alloc.vec.Vec.new Std.U8) query i2 i4
-                    let b ← is_and text
+                      search.push_copy (alloc.vec.Vec.new Std.U8) query i2 i4
+                    let b ← search.is_and text
                     let kind ←
                       if b
-                      then ok NODE_AND
+                      then ok search.NODE_AND
                       else
                         do
-                        let b1 ← is_or text
+                        let b1 ← search.is_or text
                         if b1
-                        then ok NODE_OR
+                        then ok search.NODE_OR
                         else
-                          let b2 ← is_not_word text
+                          let b2 ← search.is_not_word text
                           if b2
-                          then ok NODE_NOT
-                          else ok NODE_TERM
-                    let keep ←
-                      if kind = NODE_TERM
+                          then ok search.NODE_NOT
+                          else ok search.NODE_TERM
+                    let keep1 ←
+                      if kind = search.NODE_TERM
                       then ok text
                       else ok (alloc.vec.Vec.new Std.U8)
                     let tokens1 ←
-                      alloc.vec.Vec.push tokens ({ kind, text := keep } :
-                        Token)
+                      alloc.vec.Vec.push tokens ({ kind, text := keep1 } :
+                        search.Token)
                     ok (cont (tokens1, i4))
                   else ok (cont (tokens, i4))
   else ok (done tokens)
 
-/-- [linkding_kernel::tokenize]: loop 0:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-441:5 -/
+/-- [linkding_kernel::search::tokenize]: loop 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/search.rs', lines 210:4-315:5 -/
 @[rust_loop]
-def tokenize_loop0
-  (query : alloc.vec.Vec Std.U8) (tokens : alloc.vec.Vec Token) (i : Std.Usize)
-  :
-  Result (alloc.vec.Vec Token)
+def search.tokenize_loop0
+  (query : alloc.vec.Vec Std.U8) (tokens : alloc.vec.Vec search.Token)
+  (i : Std.Usize) :
+  Result (alloc.vec.Vec search.Token)
   := do
   loop
-    (fun (tokens1, i1) => tokenize_loop0.body query tokens1 i1)
+    (fun (tokens1, i1) => search.tokenize_loop0.body query tokens1 i1)
     (tokens, i)
 
-/-- [linkding_kernel::tokenize]:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 333:0-443:1 -/
+/-- [linkding_kernel::search::tokenize]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/search.rs', lines 207:0-317:1 -/
 @[reducible]
-def tokenize
-  (query : alloc.vec.Vec Std.U8) : Result (alloc.vec.Vec Token) := do
-  tokenize_loop0 query (alloc.vec.Vec.new Token) 0#usize
+def search.tokenize
+  (query : alloc.vec.Vec Std.U8) : Result (alloc.vec.Vec search.Token) := do
+  search.tokenize_loop0 query (alloc.vec.Vec.new search.Token) 0#usize
 
-/-- [linkding_kernel::prec]:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 445:0-455:1 -/
-def prec (op : Std.U8) : Result Std.U8 := do
-  if op = NODE_OR
-  then ok 1#u8
-  else
-    if op = NODE_AND
-    then ok 2#u8
-    else if op = NODE_NOT
-         then ok 3#u8
-         else ok 0#u8
-
-/-- [linkding_kernel::leaf]:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 457:0-464:1 -/
-def leaf (kind : Std.U8) (text : alloc.vec.Vec Std.U8) : Result Node := do
-  ok { kind, text, left := 0#usize, right := 0#usize }
-
-/-- [linkding_kernel::push_usize]:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 466:0-473:1 -/
-def push_usize
-  (stack : alloc.vec.Vec Std.Usize) (len : Std.Usize) (item : Std.Usize) :
-  Result ((alloc.vec.Vec Std.Usize) × Std.Usize)
-  := do
-  let i := alloc.vec.Vec.len stack
-  let stack1 ←
-    if len < i
-    then
-      do
-      let (_, index_mut_back) ←
-        alloc.vec.Vec.index_mut (core.slice.index.SliceIndexUsizeSlice
-          Std.Usize) stack len
-      ok (index_mut_back item)
-    else alloc.vec.Vec.push stack item
-  let len1 ← len + 1#usize
-  ok (stack1, len1)
-
-/-- [linkding_kernel::pop_usize]:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 475:0-485:1 -/
-def pop_usize
-  (stack : alloc.vec.Vec Std.Usize) (len : Std.Usize) :
-  Result (Std.Usize × Std.Usize)
-  := do
-  if len = 0#usize
-  then ok (0#usize, len)
-  else
-    let len1 ← len - 1#usize
-    let i := alloc.vec.Vec.len stack
-    if len1 < i
-    then
-      let i1 ←
-        alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Std.Usize)
-          stack len1
-      ok (i1, len1)
-    else ok (0#usize, len1)
-
-/-- [linkding_kernel::push_u8]:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 487:0-494:1 -/
-def push_u8
-  (stack : alloc.vec.Vec Std.U8) (len : Std.Usize) (item : Std.U8) :
-  Result ((alloc.vec.Vec Std.U8) × Std.Usize)
-  := do
-  let i := alloc.vec.Vec.len stack
-  let stack1 ←
-    if len < i
-    then
-      do
-      let (_, index_mut_back) ←
-        alloc.vec.Vec.index_mut (core.slice.index.SliceIndexUsizeSlice Std.U8)
-          stack len
-      ok (index_mut_back item)
-    else alloc.vec.Vec.push stack item
-  let len1 ← len + 1#usize
-  ok (stack1, len1)
-
-/-- [linkding_kernel::top_u8]:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 496:0-502:1 -/
-def top_u8
-  (stack : alloc.vec.Vec Std.U8) (len : Std.Usize) : Result Std.U8 := do
-  if len > 0#usize
-  then
-    let i ← len - 1#usize
-    let i1 := alloc.vec.Vec.len stack
-    if i < i1
-    then
-      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Std.U8) stack
-        i
-    else ok 0#u8
-  else ok 0#u8
-
-/-- [linkding_kernel::apply_op]:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 504:0-539:1 -/
-def apply_op
-  (op : Std.U8) (values : alloc.vec.Vec Std.Usize) (values_len : Std.Usize)
-  (nodes : alloc.vec.Vec Node) (failed : Bool) :
-  Result ((alloc.vec.Vec Std.Usize) × Std.Usize × (alloc.vec.Vec Node) ×
-    Bool)
-  := do
-  if op = NODE_NOT
-  then
-    if values_len = 0#usize
-    then ok (values, values_len, nodes, true)
-    else
-      let (left, values_len1) ← pop_usize values values_len
-      let nodes1 ←
-        alloc.vec.Vec.push nodes
-          ({
-             kind := NODE_NOT,
-             text := (alloc.vec.Vec.new Std.U8),
-             left,
-             right := 0#usize
-           } : Node)
-      let i := alloc.vec.Vec.len nodes1
-      let i1 ← i - 1#usize
-      let (values1, values_len2) ← push_usize values values_len1 i1
-      ok (values1, values_len2, nodes1, failed)
-  else
-    if values_len < 2#usize
-    then ok (values, values_len, nodes, true)
-    else
-      let (right, values_len1) ← pop_usize values values_len
-      let (left, values_len2) ← pop_usize values values_len1
-      let nodes1 ←
-        alloc.vec.Vec.push nodes
-          ({ kind := op, text := (alloc.vec.Vec.new Std.U8), left, right } :
-          Node)
-      let i := alloc.vec.Vec.len nodes1
-      let i1 ← i - 1#usize
-      let (values1, values_len3) ← push_usize values values_len2 i1
-      ok (values1, values_len3, nodes1, failed)
-
-/-- [linkding_kernel::push_op]: loop body 0:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-563:5 -/
+/-- [linkding_kernel::search::trim_ascii]: loop body 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/search.rs', lines 157:4-159:5 -/
 @[rust_loop_body]
-def push_op_loop.body
-  (ops : alloc.vec.Vec Std.U8) (op : Std.U8) (ops_len : Std.Usize)
-  (values : alloc.vec.Vec Std.Usize) (values_len : Std.Usize)
-  (nodes : alloc.vec.Vec Node) (failed : Bool) :
-  Result (ControlFlow (Std.Usize × (alloc.vec.Vec Std.Usize) × Std.Usize ×
-    (alloc.vec.Vec Node) × Bool) (Std.Usize × (alloc.vec.Vec Std.Usize) ×
-    Std.Usize × (alloc.vec.Vec Node) × Bool))
+def search.trim_ascii_loop0.body
+  (query : alloc.vec.Vec Std.U8) (start : Std.Usize) :
+  Result (ControlFlow Std.Usize Std.Usize)
   := do
-  if ops_len > 0#usize
-  then
-    if failed
-    then ok (done (ops_len, values, values_len, nodes, true))
-    else
-      let top ← top_u8 ops ops_len
-      if top = OP_LPAREN
-      then ok (done (ops_len, values, values_len, nodes, false))
-      else
-        let top_p ← prec top
-        let op_p ← prec op
-        if top_p > op_p
-        then
-          let ops_len1 ← ops_len - 1#usize
-          let (values1, values_len1, nodes1, failed1) ←
-            apply_op top values values_len nodes false
-          ok (cont (ops_len1, values1, values_len1, nodes1, failed1))
-        else
-          if top_p = op_p
-          then
-            if op != NODE_NOT
-            then
-              let ops_len1 ← ops_len - 1#usize
-              let (values1, values_len1, nodes1, failed1) ←
-                apply_op top values values_len nodes false
-              ok (cont (ops_len1, values1, values_len1, nodes1, failed1))
-            else ok (done (ops_len, values, values_len, nodes, false))
-          else ok (done (ops_len, values, values_len, nodes, false))
-  else ok (done (ops_len, values, values_len, nodes, failed))
-
-/-- [linkding_kernel::push_op]: loop 0:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-563:5 -/
-@[rust_loop]
-def push_op_loop
-  (ops : alloc.vec.Vec Std.U8) (ops_len : Std.Usize)
-  (values : alloc.vec.Vec Std.Usize) (values_len : Std.Usize)
-  (nodes : alloc.vec.Vec Node) (op : Std.U8) (failed : Bool) :
-  Result (Std.Usize × (alloc.vec.Vec Std.Usize) × Std.Usize × (alloc.vec.Vec
-    Node) × Bool)
-  := do
-  loop
-    (fun (ops_len1, values1, values_len1, nodes1, failed1) => push_op_loop.body
-      ops op ops_len1 values1 values_len1 nodes1 failed1)
-    (ops_len, values, values_len, nodes, failed)
-
-/-- [linkding_kernel::push_op]:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 541:0-567:1 -/
-def push_op
-  (ops : alloc.vec.Vec Std.U8) (ops_len : Std.Usize)
-  (values : alloc.vec.Vec Std.Usize) (values_len : Std.Usize)
-  (nodes : alloc.vec.Vec Node) (op : Std.U8) (failed : Bool) :
-  Result ((alloc.vec.Vec Std.U8) × Std.Usize × (alloc.vec.Vec Std.Usize) ×
-    Std.Usize × (alloc.vec.Vec Node) × Bool)
-  := do
-  let (ops_len1, values1, values_len1, nodes1, failed1) ←
-    push_op_loop ops ops_len values values_len nodes op failed
-  if failed1
-  then ok (ops, ops_len1, values1, values_len1, nodes1, true)
-  else
-    let (ops1, ops_len2) ← push_u8 ops ops_len1 op
-    ok (ops1, ops_len2, values1, values_len1, nodes1, false)
-
-/-- [linkding_kernel::parse_tokens]: loop body 1:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-667:17 -/
-@[rust_loop_body]
-def parse_tokens_loop0_loop0.body
-  (ops : alloc.vec.Vec Std.U8) (nodes : alloc.vec.Vec Node)
-  (values : alloc.vec.Vec Std.Usize) (values_len : Std.Usize)
-  (ops_len : Std.Usize) (failed : Bool) :
-  Result (ControlFlow ((alloc.vec.Vec Node) × (alloc.vec.Vec Std.Usize) ×
-    Std.Usize × Std.Usize × Bool) ((alloc.vec.Vec Node) × (alloc.vec.Vec
-    Std.Usize) × Std.Usize × Std.Usize × Bool × Bool))
-  := do
-  if ops_len > 0#usize
-  then
-    if failed
-    then ok (done (nodes, values, values_len, ops_len, true, false))
-    else
-      let top ← top_u8 ops ops_len
-      if top = OP_LPAREN
-      then ok (done (nodes, values, values_len, ops_len, false, true))
-      else
-        let ops_len1 ← ops_len - 1#usize
-        let (values1, values_len1, nodes1, failed1) ←
-          apply_op top values values_len nodes false
-        ok (cont (nodes1, values1, values_len1, ops_len1, failed1))
-  else ok (done (nodes, values, values_len, ops_len, failed, false))
-
-/-- [linkding_kernel::parse_tokens]: loop 1:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-667:17 -/
-@[rust_loop]
-def parse_tokens_loop0_loop0
-  (nodes : alloc.vec.Vec Node) (values : alloc.vec.Vec Std.Usize)
-  (values_len : Std.Usize) (ops : alloc.vec.Vec Std.U8) (ops_len : Std.Usize)
-  (failed : Bool) :
-  Result ((alloc.vec.Vec Node) × (alloc.vec.Vec Std.Usize) × Std.Usize ×
-    Std.Usize × Bool × Bool)
-  := do
-  loop
-    (fun (nodes1, values1, values_len1, ops_len1, failed1) =>
-      parse_tokens_loop0_loop0.body ops nodes1 values1 values_len1 ops_len1
-      failed1)
-    (nodes, values, values_len, ops_len, failed)
-
-/-- [linkding_kernel::parse_tokens]: loop body 0:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-679:5 -/
-@[rust_loop_body]
-def parse_tokens_loop0.body
-  (tokens : alloc.vec.Vec Token) (nodes : alloc.vec.Vec Node)
-  (values : alloc.vec.Vec Std.Usize) (values_len : Std.Usize)
-  (ops : alloc.vec.Vec Std.U8) (ops_len : Std.Usize) (expect_operand : Bool)
-  (failed : Bool) (i : Std.Usize) :
-  Result (ControlFlow ((alloc.vec.Vec Node) × (alloc.vec.Vec Std.Usize) ×
-    Std.Usize × (alloc.vec.Vec Std.U8) × Std.Usize × Bool × Bool ×
-    Std.Usize) ((alloc.vec.Vec Node) × (alloc.vec.Vec Std.Usize) × Std.Usize
-    × (alloc.vec.Vec Std.U8) × Std.Usize × Bool × Bool))
-  := do
-  let i1 := alloc.vec.Vec.len tokens
-  if i < i1
-  then
-    if failed
-    then
-      ok (done (nodes, values, values_len, ops, ops_len, expect_operand, true))
-    else
-      let t ←
-        alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Token)
-          tokens i
-      if t.kind = NODE_TERM
-      then
-        let (nodes1, values1, values_len1, ops1, ops_len1, failed1) ←
-          if expect_operand
-          then ok (nodes, values, values_len, ops, ops_len, false)
-          else
-            do
-            let (ops2, ops_len2, values2, values_len2, nodes2, failed2) ←
-              push_op ops ops_len values values_len nodes NODE_AND false
-            ok (nodes2, values2, values_len2, ops2, ops_len2, failed2)
-        let (nodes2, values2, values_len2, expect_operand1) ←
-          if failed1
-          then ok (nodes1, values1, values_len1, expect_operand)
-          else
-            do
-            let i2 := alloc.vec.Vec.len t.text
-            let text ← push_copy (alloc.vec.Vec.new Std.U8) t.text 0#usize i2
-            let n ← leaf t.kind text
-            let nodes3 ← alloc.vec.Vec.push nodes1 n
-            let i3 := alloc.vec.Vec.len nodes3
-            let i4 ← i3 - 1#usize
-            let (values3, values_len3) ← push_usize values1 values_len1 i4
-            ok (nodes3, values3, values_len3, false)
-        let i2 ← i + 1#usize
-        ok (cont (nodes2, values2, values_len2, ops1, ops_len1,
-          expect_operand1, failed1, i2))
-      else
-        if t.kind = NODE_TAG
-        then
-          let (nodes1, values1, values_len1, ops1, ops_len1, failed1) ←
-            if expect_operand
-            then ok (nodes, values, values_len, ops, ops_len, false)
-            else
-              do
-              let (ops2, ops_len2, values2, values_len2, nodes2, failed2) ←
-                push_op ops ops_len values values_len nodes NODE_AND false
-              ok (nodes2, values2, values_len2, ops2, ops_len2, failed2)
-          let (nodes2, values2, values_len2, expect_operand1) ←
-            if failed1
-            then ok (nodes1, values1, values_len1, expect_operand)
-            else
-              do
-              let i2 := alloc.vec.Vec.len t.text
-              let text ←
-                push_copy (alloc.vec.Vec.new Std.U8) t.text 0#usize i2
-              let n ← leaf t.kind text
-              let nodes3 ← alloc.vec.Vec.push nodes1 n
-              let i3 := alloc.vec.Vec.len nodes3
-              let i4 ← i3 - 1#usize
-              let (values3, values_len3) ← push_usize values1 values_len1 i4
-              ok (nodes3, values3, values_len3, false)
-          let i2 ← i + 1#usize
-          ok (cont (nodes2, values2, values_len2, ops1, ops_len1,
-            expect_operand1, failed1, i2))
-        else
-          if t.kind = NODE_KEYWORD
-          then
-            let (nodes1, values1, values_len1, ops1, ops_len1, failed1) ←
-              if expect_operand
-              then ok (nodes, values, values_len, ops, ops_len, false)
-              else
-                do
-                let (ops2, ops_len2, values2, values_len2, nodes2, failed2) ←
-                  push_op ops ops_len values values_len nodes NODE_AND false
-                ok (nodes2, values2, values_len2, ops2, ops_len2, failed2)
-            let (nodes2, values2, values_len2, expect_operand1) ←
-              if failed1
-              then ok (nodes1, values1, values_len1, expect_operand)
-              else
-                do
-                let i2 := alloc.vec.Vec.len t.text
-                let text ←
-                  push_copy (alloc.vec.Vec.new Std.U8) t.text 0#usize i2
-                let n ← leaf t.kind text
-                let nodes3 ← alloc.vec.Vec.push nodes1 n
-                let i3 := alloc.vec.Vec.len nodes3
-                let i4 ← i3 - 1#usize
-                let (values3, values_len3) ←
-                  push_usize values1 values_len1 i4
-                ok (nodes3, values3, values_len3, false)
-            let i2 ← i + 1#usize
-            ok (cont (nodes2, values2, values_len2, ops1, ops_len1,
-              expect_operand1, failed1, i2))
-          else
-            if t.kind = NODE_AND
-            then
-              let (nodes1, values1, values_len1, ops1, ops_len1, failed1) ←
-                if expect_operand
-                then ok (nodes, values, values_len, ops, ops_len, true)
-                else
-                  do
-                  let (ops2, ops_len2, values2, values_len2, nodes2, failed2)
-                    ←
-                    push_op ops ops_len values values_len nodes t.kind false
-                  ok (nodes2, values2, values_len2, ops2, ops_len2, failed2)
-              let i2 ← i + 1#usize
-              ok (cont (nodes1, values1, values_len1, ops1, ops_len1, true,
-                failed1, i2))
-            else
-              if t.kind = NODE_OR
-              then
-                let (nodes1, values1, values_len1, ops1, ops_len1, failed1) ←
-                  if expect_operand
-                  then ok (nodes, values, values_len, ops, ops_len, true)
-                  else
-                    do
-                    let (ops2, ops_len2, values2, values_len2, nodes2, failed2)
-                      ←
-                      push_op ops ops_len values values_len nodes t.kind false
-                    ok (nodes2, values2, values_len2, ops2, ops_len2, failed2)
-                let i2 ← i + 1#usize
-                ok (cont (nodes1, values1, values_len1, ops1, ops_len1, true,
-                  failed1, i2))
-              else
-                if t.kind = NODE_NOT
-                then
-                  let (nodes1, values1, values_len1, ops1, ops_len1, failed1)
-                    ←
-                    if expect_operand
-                    then ok (nodes, values, values_len, ops, ops_len, false)
-                    else
-                      do
-                      let (ops2, ops_len2, values2, values_len2, nodes2,
-                        failed2) ←
-                        push_op ops ops_len values values_len nodes NODE_AND
-                          false
-                      ok (nodes2, values2, values_len2, ops2, ops_len2,
-                        failed2)
-                  let (nodes2, values2, values_len2, ops2, ops_len2,
-                    expect_operand1, failed2) ←
-                    if failed1
-                    then
-                      ok (nodes1, values1, values_len1, ops1, ops_len1,
-                        expect_operand, true)
-                    else
-                      do
-                      let (ops3, ops_len3, values3, values_len3, nodes3,
-                        failed3) ←
-                        push_op ops1 ops_len1 values1 values_len1 nodes1
-                          NODE_NOT false
-                      ok (nodes3, values3, values_len3, ops3, ops_len3, true,
-                        failed3)
-                  let i2 ← i + 1#usize
-                  ok (cont (nodes2, values2, values_len2, ops2, ops_len2,
-                    expect_operand1, failed2, i2))
-                else
-                  if t.kind = OP_LPAREN
-                  then
-                    let (nodes1, values1, values_len1, ops1, ops_len1, failed1)
-                      ←
-                      if expect_operand
-                      then ok (nodes, values, values_len, ops, ops_len, false)
-                      else
-                        do
-                        let (ops2, ops_len2, values2, values_len2, nodes2,
-                          failed2) ←
-                          push_op ops ops_len values values_len nodes 
-                            NODE_AND false
-                        ok (nodes2, values2, values_len2, ops2, ops_len2,
-                          failed2)
-                    let (ops2, ops_len2, expect_operand1) ←
-                      if failed1
-                      then ok (ops1, ops_len1, expect_operand)
-                      else
-                        do
-                        let (ops3, ops_len3) ←
-                          push_u8 ops1 ops_len1 OP_LPAREN
-                        ok (ops3, ops_len3, true)
-                    let i2 ← i + 1#usize
-                    ok (cont (nodes1, values1, values_len1, ops2, ops_len2,
-                      expect_operand1, failed1, i2))
-                  else
-                    if t.kind = TOK_RPAREN
-                    then
-                      if expect_operand
-                      then
-                        let i2 ← i + 1#usize
-                        ok (cont (nodes, values, values_len, ops, ops_len,
-                          true, true, i2))
-                      else
-                        let (nodes1, values1, values_len1, ops_len1, failed1,
-                          saw) ←
-                          parse_tokens_loop0_loop0 nodes values values_len ops
-                            ops_len false
-                        let (ops_len2, failed2) ←
-                          if saw
-                          then
-                            if ops_len1 = 0#usize
-                            then ok (ops_len1, true)
-                            else
-                              do
-                              let ops_len3 ← ops_len1 - 1#usize
-                              ok (ops_len3, failed1)
-                          else ok (ops_len1, true)
-                        let i2 ← i + 1#usize
-                        ok (cont (nodes1, values1, values_len1, ops, ops_len2,
-                          false, failed2, i2))
-                    else
-                      let i2 ← i + 1#usize
-                      ok (cont (nodes, values, values_len, ops, ops_len,
-                        expect_operand, true, i2))
-  else
-    ok (done (nodes, values, values_len, ops, ops_len, expect_operand, failed))
-
-/-- [linkding_kernel::parse_tokens]: loop 0:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-679:5 -/
-@[rust_loop]
-def parse_tokens_loop0
-  (tokens : alloc.vec.Vec Token) (nodes : alloc.vec.Vec Node)
-  (values : alloc.vec.Vec Std.Usize) (values_len : Std.Usize)
-  (ops : alloc.vec.Vec Std.U8) (ops_len : Std.Usize) (expect_operand : Bool)
-  (failed : Bool) (i : Std.Usize) :
-  Result ((alloc.vec.Vec Node) × (alloc.vec.Vec Std.Usize) × Std.Usize ×
-    (alloc.vec.Vec Std.U8) × Std.Usize × Bool × Bool)
-  := do
-  loop
-    (fun (nodes1, values1, values_len1, ops1, ops_len1, expect_operand1,
-      failed1, i1) => parse_tokens_loop0.body tokens nodes1 values1 values_len1
-      ops1 ops_len1 expect_operand1 failed1 i1)
-    (nodes, values, values_len, ops, ops_len, expect_operand, failed, i)
-
-/-- [linkding_kernel::parse_tokens]: loop body 2:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-691:5 -/
-@[rust_loop_body]
-def parse_tokens_loop1.body
-  (ops : alloc.vec.Vec Std.U8) (nodes : alloc.vec.Vec Node)
-  (values : alloc.vec.Vec Std.Usize) (values_len : Std.Usize)
-  (ops_len : Std.Usize) (failed : Bool) :
-  Result (ControlFlow ((alloc.vec.Vec Node) × (alloc.vec.Vec Std.Usize) ×
-    Std.Usize × Std.Usize × Bool) ((alloc.vec.Vec Node) × (alloc.vec.Vec
-    Std.Usize) × Std.Usize × Bool))
-  := do
-  if ops_len > 0#usize
-  then
-    if failed
-    then ok (done (nodes, values, values_len, true))
-    else
-      let top ← top_u8 ops ops_len
-      if top = OP_LPAREN
-      then ok (done (nodes, values, values_len, true))
-      else
-        let ops_len1 ← ops_len - 1#usize
-        let (values1, values_len1, nodes1, failed1) ←
-          apply_op top values values_len nodes false
-        ok (cont (nodes1, values1, values_len1, ops_len1, failed1))
-  else ok (done (nodes, values, values_len, failed))
-
-/-- [linkding_kernel::parse_tokens]: loop 2:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-691:5 -/
-@[rust_loop]
-def parse_tokens_loop1
-  (nodes : alloc.vec.Vec Node) (values : alloc.vec.Vec Std.Usize)
-  (values_len : Std.Usize) (ops : alloc.vec.Vec Std.U8) (ops_len : Std.Usize)
-  (failed : Bool) :
-  Result ((alloc.vec.Vec Node) × (alloc.vec.Vec Std.Usize) × Std.Usize ×
-    Bool)
-  := do
-  loop
-    (fun (nodes1, values1, values_len1, ops_len1, failed1) =>
-      parse_tokens_loop1.body ops nodes1 values1 values_len1 ops_len1 failed1)
-    (nodes, values, values_len, ops_len, failed)
-
-/-- [linkding_kernel::parse_tokens]:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 569:0-701:1 -/
-def parse_tokens (tokens : alloc.vec.Vec Token) : Result Parsed := do
-  let (nodes, values, values_len, ops, ops_len, expect_operand, failed) ←
-    parse_tokens_loop0 tokens (alloc.vec.Vec.new Node) (alloc.vec.Vec.new
-      Std.Usize) 0#usize (alloc.vec.Vec.new Std.U8) 0#usize true false 0#usize
-  let failed1 ← if expect_operand
-                  then ok true
-                  else ok failed
-  let (nodes1, values1, values_len1, failed2) ←
-    parse_tokens_loop1 nodes values values_len ops ops_len failed1
-  if failed2
-  then failed_parsed
-  else
-    if values_len1 != 1#usize
-    then failed_parsed
-    else
-      let i := alloc.vec.Vec.len values1
-      if i = 0#usize
-      then failed_parsed
-      else
-        let i1 ←
-          alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Std.Usize)
-            values1 0#usize
-        ok { nodes := nodes1, root := i1, failed := false, empty := false }
-
-/-- [linkding_kernel::parse_search]:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 705:0-718:1
-    Visibility: public -/
-def parse_search (query : alloc.vec.Vec Std.U8) : Result Parsed := do
   let i := alloc.vec.Vec.len query
-  if i = 0#usize
-  then empty_parsed
-  else
-    let trimmed ← trim_ascii query
-    let i1 := alloc.vec.Vec.len trimmed
-    if i1 = 0#usize
-    then empty_parsed
-    else
-      let tokens ← tokenize trimmed
-      let i2 := alloc.vec.Vec.len tokens
-      if i2 = 0#usize
-      then empty_parsed
-      else parse_tokens tokens
-
-/-- [linkding_kernel::node_kind]:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 720:0-726:1 -/
-def node_kind
-  (nodes : alloc.vec.Vec Node) (i : Std.Usize) : Result Std.U8 := do
-  let i1 := alloc.vec.Vec.len nodes
-  if i < i1
-  then
-    let n ←
-      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Node) nodes i
-    ok n.kind
-  else ok 0#u8
-
-/-- [linkding_kernel::node_left]:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 728:0-734:1 -/
-def node_left
-  (nodes : alloc.vec.Vec Node) (i : Std.Usize) : Result Std.Usize := do
-  let i1 := alloc.vec.Vec.len nodes
-  if i < i1
-  then
-    let n ←
-      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Node) nodes i
-    ok n.left
-  else ok 0#usize
-
-/-- [linkding_kernel::node_right]:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 736:0-742:1 -/
-def node_right
-  (nodes : alloc.vec.Vec Node) (i : Std.Usize) : Result Std.Usize := do
-  let i1 := alloc.vec.Vec.len nodes
-  if i < i1
-  then
-    let n ←
-      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Node) nodes i
-    ok n.right
-  else ok 0#usize
-
-/-- [linkding_kernel::node_text_len]:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 744:0-750:1 -/
-def node_text_len
-  (nodes : alloc.vec.Vec Node) (i : Std.Usize) : Result Std.Usize := do
-  let i1 := alloc.vec.Vec.len nodes
-  if i < i1
-  then
-    let n ←
-      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Node) nodes i
-    ok (alloc.vec.Vec.len n.text)
-  else ok 0#usize
-
-/-- [linkding_kernel::node_text_at]:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 752:0-758:1 -/
-def node_text_at
-  (nodes : alloc.vec.Vec Node) (i : Std.Usize) (j : Std.Usize) :
-  Result Std.U8
-  := do
-  let i1 := alloc.vec.Vec.len nodes
-  if i < i1
-  then
-    let n ←
-      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Node) nodes i
-    let i2 := alloc.vec.Vec.len n.text
-    if j < i2
-    then
-      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Std.U8) 
-        n.text j
-    else ok 0#u8
-  else ok 0#u8
-
-/-- [linkding_kernel::contains_node]: loop body 1:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 776:12-786:13 -/
-@[rust_loop_body]
-def contains_node_loop0_loop0.body
-  (hay : alloc.vec.Vec Std.U8) (nodes : alloc.vec.Vec Node) (node : Std.Usize)
-  (nlen : Std.Usize) (i : Std.Usize) (j : Std.Usize) (ok1 : Bool) :
-  Result (ControlFlow (Std.Usize × Bool) Bool)
-  := do
-  if j < nlen
-  then
-    let idx ← i + j
-    let i1 := alloc.vec.Vec.len hay
-    let ok2 ←
-      if idx < i1
-      then
-        do
-        let i2 ←
-          alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Std.U8)
-            hay idx
-        let i3 ← lower_ascii i2
-        let i4 ← node_text_at nodes node j
-        let i5 ← lower_ascii i4
-        if i3 != i5
-        then ok false
-        else ok ok1
-      else ok false
-    let j1 ← j + 1#usize
-    ok (cont (j1, ok2))
-  else ok (done ok1)
-
-/-- [linkding_kernel::contains_node]: loop 1:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 776:12-786:13 -/
-@[rust_loop]
-def contains_node_loop0_loop0
-  (hay : alloc.vec.Vec Std.U8) (nodes : alloc.vec.Vec Node) (node : Std.Usize)
-  (nlen : Std.Usize) (i : Std.Usize) (j : Std.Usize) (ok1 : Bool) :
-  Result Bool
-  := do
-  loop
-    (fun (j1, ok2) => contains_node_loop0_loop0.body hay nodes node nlen i j1
-      ok2)
-    (j, ok1)
-
-/-- [linkding_kernel::contains_node]: loop body 0:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-792:5 -/
-@[rust_loop_body]
-def contains_node_loop0.body
-  (hay : alloc.vec.Vec Std.U8) (nodes : alloc.vec.Vec Node) (node : Std.Usize)
-  (nlen : Std.Usize) (found : Bool) (i : Std.Usize) :
-  Result (ControlFlow (Bool × Std.Usize) Bool)
-  := do
-  let i1 := alloc.vec.Vec.len hay
-  if i < i1
-  then
-    if found
-    then ok (done true)
-    else
-      let i2 := alloc.vec.Vec.len hay
-      let i3 ← i2 - i
-      if i3 < nlen
-      then let i4 := alloc.vec.Vec.len hay
-           ok (cont (false, i4))
-      else
-        let ok1 ←
-          contains_node_loop0_loop0 hay nodes node nlen i 0#usize true
-        let found1 ← if ok1
-                       then ok true
-                       else ok false
-        let i4 ← i + 1#usize
-        ok (cont (found1, i4))
-  else ok (done found)
-
-/-- [linkding_kernel::contains_node]: loop 0:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-792:5 -/
-@[rust_loop]
-def contains_node_loop0
-  (hay : alloc.vec.Vec Std.U8) (nodes : alloc.vec.Vec Node) (node : Std.Usize)
-  (nlen : Std.Usize) (found : Bool) (i : Std.Usize) :
-  Result Bool
-  := do
-  loop
-    (fun (found1, i1) => contains_node_loop0.body hay nodes node nlen found1
-      i1)
-    (found, i)
-
-/-- [linkding_kernel::contains_node]:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 760:0-794:1 -/
-def contains_node
-  (hay : alloc.vec.Vec Std.U8) (nodes : alloc.vec.Vec Node) (node : Std.Usize)
-  :
-  Result Bool
-  := do
-  let nlen ← node_text_len nodes node
-  if nlen = 0#usize
-  then ok true
-  else
-    let i := alloc.vec.Vec.len hay
-    if nlen > i
-    then ok false
-    else contains_node_loop0 hay nodes node nlen false 0#usize
-
-/-- [linkding_kernel::eq_node]: loop body 0:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 802:4-809:1 -/
-@[rust_loop_body]
-def eq_node_loop.body
-  (hay : alloc.vec.Vec Std.U8) (nodes : alloc.vec.Vec Node) (node : Std.Usize)
-  (nlen : Std.Usize) (i : Std.Usize) :
-  Result (ControlFlow Std.Usize Bool)
-  := do
-  if i < nlen
+  if start < i
   then
     let i1 ←
-      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Std.U8) hay i
-    let i2 ← lower_ascii i1
-    let i3 ← node_text_at nodes node i
-    let i4 ← lower_ascii i3
-    if i2 != i4
-    then ok (done false)
-    else let i5 ← i + 1#usize
-         ok (cont i5)
-  else ok (done true)
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Std.U8) query
+        start
+    let b ← search.is_space i1
+    if b
+    then let start1 ← start + 1#usize
+         ok (cont start1)
+    else ok (done start)
+  else ok (done start)
 
-/-- [linkding_kernel::eq_node]: loop 0:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 802:4-809:1 -/
+/-- [linkding_kernel::search::trim_ascii]: loop 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/search.rs', lines 157:4-159:5 -/
 @[rust_loop]
-def eq_node_loop
-  (hay : alloc.vec.Vec Std.U8) (nodes : alloc.vec.Vec Node) (node : Std.Usize)
-  (nlen : Std.Usize) (i : Std.Usize) :
-  Result Bool
+def search.trim_ascii_loop0
+  (query : alloc.vec.Vec Std.U8) (start : Std.Usize) : Result Std.Usize := do
+  loop
+    (fun start1 => search.trim_ascii_loop0.body query start1)
+    start
+
+/-- [linkding_kernel::search::trim_ascii]: loop body 1:
+    Source: 'performance/linkding/rust-h5i/kernel/src/search.rs', lines 161:4-168:5 -/
+@[rust_loop_body]
+def search.trim_ascii_loop1.body
+  (query : alloc.vec.Vec Std.U8) (start : Std.Usize) («end» : Std.Usize) :
+  Result (ControlFlow Std.Usize Std.Usize)
+  := do
+  if «end» > start
+  then
+    let prev ← «end» - 1#usize
+    let i ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Std.U8) query
+        prev
+    let b ← search.is_space i
+    if b
+    then ok (cont prev)
+    else ok (done «end»)
+  else ok (done «end»)
+
+/-- [linkding_kernel::search::trim_ascii]: loop 1:
+    Source: 'performance/linkding/rust-h5i/kernel/src/search.rs', lines 161:4-168:5 -/
+@[rust_loop]
+def search.trim_ascii_loop1
+  (query : alloc.vec.Vec Std.U8) (start : Std.Usize) («end» : Std.Usize) :
+  Result Std.Usize
   := do
   loop
-    (fun i1 => eq_node_loop.body hay nodes node nlen i1)
-    i
+    (fun end1 => search.trim_ascii_loop1.body query start end1)
+    «end»
 
-/-- [linkding_kernel::eq_node]:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 796:0-809:1 -/
-def eq_node
-  (hay : alloc.vec.Vec Std.U8) (nodes : alloc.vec.Vec Node) (node : Std.Usize)
-  :
-  Result Bool
-  := do
-  let nlen ← node_text_len nodes node
-  let i := alloc.vec.Vec.len hay
-  if i != nlen
-  then ok false
-  else eq_node_loop hay nodes node nlen 0#usize
-
-/-- [linkding_kernel::any_tag]: loop body 0:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 813:4-820:1 -/
+/-- [linkding_kernel::search::trim_ascii]: loop body 2:
+    Source: 'performance/linkding/rust-h5i/kernel/src/search.rs', lines 171:4-174:5 -/
 @[rust_loop_body]
-def any_tag_loop.body
-  (bm : BookmarkFacts) (nodes : alloc.vec.Vec Node) (node : Std.Usize)
-  (i : Std.Usize) :
-  Result (ControlFlow Std.Usize Bool)
+def search.trim_ascii_loop2.body
+  (query : alloc.vec.Vec Std.U8) («end» : Std.Usize)
+  (out : alloc.vec.Vec Std.U8) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Std.U8) × Std.Usize) (alloc.vec.Vec
+    Std.U8))
   := do
-  let i1 := alloc.vec.Vec.len bm.tag_names
+  if i < «end»
+  then
+    let i1 ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Std.U8) query
+        i
+    let out1 ← alloc.vec.Vec.push out i1
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
+  else ok (done out)
+
+/-- [linkding_kernel::search::trim_ascii]: loop 2:
+    Source: 'performance/linkding/rust-h5i/kernel/src/search.rs', lines 171:4-174:5 -/
+@[rust_loop]
+def search.trim_ascii_loop2
+  (query : alloc.vec.Vec Std.U8) («end» : Std.Usize)
+  (out : alloc.vec.Vec Std.U8) (i : Std.Usize) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  loop
+    (fun (out1, i1) => search.trim_ascii_loop2.body query «end» out1 i1)
+    (out, i)
+
+/-- [linkding_kernel::search::trim_ascii]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/search.rs', lines 155:0-176:1 -/
+def search.trim_ascii
+  (query : alloc.vec.Vec Std.U8) : Result (alloc.vec.Vec Std.U8) := do
+  let start ← search.trim_ascii_loop0 query 0#usize
+  let «end» := alloc.vec.Vec.len query
+  let end1 ← search.trim_ascii_loop1 query start «end»
+  search.trim_ascii_loop2 query end1 (alloc.vec.Vec.new Std.U8) start
+
+/-- [linkding_kernel::search::empty_parsed]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/search.rs', lines 101:0-108:1 -/
+def search.empty_parsed : Result search.Parsed := do
+  ok
+    {
+      nodes := (alloc.vec.Vec.new search.Node),
+      root := 0#usize,
+      failed := false,
+      empty := true
+    }
+
+/-- [linkding_kernel::search::parse_search]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/search.rs', lines 579:0-592:1
+    Visibility: public -/
+def search.parse_search
+  (query : alloc.vec.Vec Std.U8) : Result search.Parsed := do
+  let i := alloc.vec.Vec.len query
+  if i = 0#usize
+  then search.empty_parsed
+  else
+    let trimmed ← search.trim_ascii query
+    let i1 := alloc.vec.Vec.len trimmed
+    if i1 = 0#usize
+    then search.empty_parsed
+    else
+      let tokens ← search.tokenize trimmed
+      let i2 := alloc.vec.Vec.len tokens
+      if i2 = 0#usize
+      then search.empty_parsed
+      else search.parse_tokens tokens
+
+/-- [linkding_kernel::lower_all]: loop body 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1117:4-1120:5 -/
+@[rust_loop_body]
+def lower_all_loop.body
+  (v : alloc.vec.Vec (alloc.vec.Vec Std.U8))
+  (out : alloc.vec.Vec (alloc.vec.Vec Std.U8)) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec (alloc.vec.Vec Std.U8)) × Std.Usize)
+    (alloc.vec.Vec (alloc.vec.Vec Std.U8)))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let v1 ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice (alloc.vec.Vec
+        Std.U8)) v i
+    let v2 ← lower_text v1
+    let out1 ← alloc.vec.Vec.push out v2
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
+  else ok (done out)
+
+/-- [linkding_kernel::lower_all]: loop 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1117:4-1120:5 -/
+@[rust_loop]
+def lower_all_loop
+  (v : alloc.vec.Vec (alloc.vec.Vec Std.U8))
+  (out : alloc.vec.Vec (alloc.vec.Vec Std.U8)) (i : Std.Usize) :
+  Result (alloc.vec.Vec (alloc.vec.Vec Std.U8))
+  := do
+  loop
+    (fun (out1, i1) => lower_all_loop.body v out1 i1)
+    (out, i)
+
+/-- [linkding_kernel::lower_all]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1114:0-1122:1 -/
+@[reducible]
+def lower_all
+  (v : alloc.vec.Vec (alloc.vec.Vec Std.U8)) :
+  Result (alloc.vec.Vec (alloc.vec.Vec Std.U8))
+  := do
+  lower_all_loop v (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) 0#usize
+
+/-- [linkding_kernel::bundle_of]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1092:0-1112:1 -/
+def bundle_of
+  (s : Snapshot) (flt : Filter) (viewer : Std.U64) :
+  Result (Option Bundle)
+  := do
+  match flt.bundle with
+  | none => ok none
+  | some id =>
+    if viewer = 0#u64
+    then ok none
+    else
+      let o ← find_bundle s.bundles id
+      match o with
+      | none => ok none
+      | some b => if b.owner = viewer
+                  then ok o
+                  else ok none
+
+/-- [linkding_kernel::owner_filter_of]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1072:0-1089:1 -/
+def owner_filter_of
+  (s : Snapshot) (flt : Filter) : Result (Option Std.U64) := do
+  if flt.scope != SCOPE_SHARED
+  then ok none
+  else
+    match flt.user with
+    | none => ok none
+    | some «name» =>
+      let i := alloc.vec.Vec.len «name»
+      if i = 0#usize
+      then ok none
+      else
+        let o ← find_user_by_name s.users «name»
+        match o with
+        | none => ok none
+        | some o1 => ok (some o1.id)
+
+/-- [linkding_kernel::search_flags]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1064:0-1069:1 -/
+def search_flags (me : Option User) : Result (Bool × Bool) := do
+  match me with
+  | none => ok (false, false)
+  | some u => ok (u.lax, u.legacy)
+
+/-- [linkding_kernel::list_ctx]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1124:0-1141:1 -/
+def list_ctx
+  (s : Snapshot) (flt : Filter) (viewer : Std.U64) : Result ListCtx := do
+  let me ← find_user s.users viewer
+  let (lax, legacy) ← search_flags me
+  let owner_filter ← owner_filter_of s flt
+  let bundle ← bundle_of s flt viewer
+  let parsed ← search.parse_search flt.q
+  let tags_wanted ←
+    if lax
+    then ok true
+    else
+      let b := core.option.Option.is_some bundle
+      if b
+      then ok true
+      else mentions_tags flt.q
+  let pg ← paged flt
+  if pg
+  then
+    let o ← simple_query flt.q
+    match o with
+    | none =>
+      ok
+        {
+          viewer,
+          lax,
+          legacy,
+          owner_filter,
+          bundle,
+          parsed,
+          tags_wanted,
+          paged := true,
+          simple_tags := (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)),
+          simple_unread := false
+        }
+    | some p =>
+      let (t, u) := p
+      let simple_tags ← lower_all t
+      ok
+        {
+          viewer,
+          lax,
+          legacy,
+          owner_filter,
+          bundle,
+          parsed,
+          tags_wanted,
+          paged := true,
+          simple_tags,
+          simple_unread := u
+        }
+  else
+    ok
+      {
+        viewer,
+        lax,
+        legacy,
+        owner_filter,
+        bundle,
+        parsed,
+        tags_wanted,
+        paged := false,
+        simple_tags := (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)),
+        simple_unread := false
+      }
+
+/-- [linkding_kernel::list_reply]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1233:0-1250:1 -/
+def list_reply
+  (s : Snapshot) (token : alloc.vec.Vec Std.U8) (flt : Filter)
+  (limit : Std.U64) (offset : Std.U64) :
+  Result (core.result.Result Reply Error)
+  := do
+  let r ← actor s token
+  match r with
+  | core.result.Result.Ok v =>
+    if v = 0#u64
+    then
+      if flt.scope != SCOPE_SHARED
+      then ok (core.result.Result.Err Error.Unauthenticated)
+      else
+        let ctx ← list_ctx s flt v
+        let sel ← select s flt ctx
+        let sorted ←
+          if flt.scope != SCOPE_SHARED
+          then
+            if flt.sort = SORT_ADDED_DESC
+            then reversed sel
+            else sort_bookmarks sel flt.sort
+          else sort_bookmarks sel flt.sort
+        let page ← page_bookmarks sorted offset limit
+        let items ← views s page
+        if ctx.paged
+        then ok (core.result.Result.Ok (Reply.Bookmarks items none))
+        else
+          let i := alloc.vec.Vec.len sorted
+          let i1 ← lift (UScalar.cast .U64 i)
+          ok (core.result.Result.Ok (Reply.Bookmarks items (some i1)))
+    else
+      let ctx ← list_ctx s flt v
+      let sel ← select s flt ctx
+      let sorted ←
+        if flt.scope != SCOPE_SHARED
+        then
+          if flt.sort = SORT_ADDED_DESC
+          then reversed sel
+          else sort_bookmarks sel flt.sort
+        else sort_bookmarks sel flt.sort
+      let page ← page_bookmarks sorted offset limit
+      let items ← views s page
+      if ctx.paged
+      then ok (core.result.Result.Ok (Reply.Bookmarks items none))
+      else
+        let i := alloc.vec.Vec.len sorted
+        let i1 ← lift (UScalar.cast .U64 i)
+        ok (core.result.Result.Ok (Reply.Bookmarks items (some i1)))
+  | core.result.Result.Err e => ok (core.result.Result.Err e)
+
+/-- [linkding_kernel::list]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1041:0-1046:1 -/
+def list
+  (s : Snapshot) (token : alloc.vec.Vec Std.U8) (flt : Filter)
+  (limit : Std.U64) (offset : Std.U64) :
+  Result (core.result.Result ((alloc.vec.Vec Write) × Reply) Error)
+  := do
+  let r ← list_reply s token flt limit offset
+  match r with
+  | core.result.Result.Ok r1 =>
+    ok (core.result.Result.Ok (alloc.vec.Vec.new Write, r1))
+  | core.result.Result.Err e => ok (core.result.Result.Err e)
+
+/-- [linkding_kernel::tag_writes]: loop body 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1275:4-1303:5 -/
+@[rust_loop_body]
+def tag_writes_loop.body
+  (s : Snapshot) (owner : Std.U64) (id : Std.U64)
+  (names : alloc.vec.Vec (alloc.vec.Vec Std.U8)) (now : Std.U64)
+  (out : alloc.vec.Vec Write) (shown : alloc.vec.Vec (alloc.vec.Vec Std.U8))
+  (made : alloc.vec.Vec Tag) (next : Std.U64) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Write) × (alloc.vec.Vec (alloc.vec.Vec
+    Std.U8)) × (alloc.vec.Vec Tag) × Std.U64 × Std.Usize) ((alloc.vec.Vec
+    Write) × (alloc.vec.Vec (alloc.vec.Vec Std.U8)) × Std.U64))
+  := do
+  let i1 := alloc.vec.Vec.len names
   if i < i1
   then
     let v ←
       alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice (alloc.vec.Vec
-        Std.U8)) bm.tag_names i
-    let b ← eq_node v nodes node
-    if b
-    then ok (done true)
-    else let i2 ← i + 1#usize
-         ok (cont i2)
-  else ok (done false)
-
-/-- [linkding_kernel::any_tag]: loop 0:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 813:4-820:1 -/
-@[rust_loop]
-def any_tag_loop
-  (bm : BookmarkFacts) (nodes : alloc.vec.Vec Node) (node : Std.Usize)
-  (i : Std.Usize) :
-  Result Bool
-  := do
-  loop
-    (fun i1 => any_tag_loop.body bm nodes node i1)
-    i
-
-/-- [linkding_kernel::any_tag]:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 811:0-820:1 -/
-@[reducible]
-def any_tag
-  (bm : BookmarkFacts) (nodes : alloc.vec.Vec Node) (node : Std.Usize) :
-  Result Bool
-  := do
-  any_tag_loop bm nodes node 0#usize
-
-/-- [linkding_kernel::is_word]: loop body 0:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 828:4-835:1 -/
-@[rust_loop_body]
-def is_word_loop.body
-  (nodes : alloc.vec.Vec Node) (node : Std.Usize) (word : alloc.vec.Vec Std.U8)
-  (nlen : Std.Usize) (i : Std.Usize) :
-  Result (ControlFlow Std.Usize Bool)
-  := do
-  if i < nlen
-  then
-    let i1 ← node_text_at nodes node i
-    let i2 ← lower_ascii i1
-    let i3 ←
-      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Std.U8) word i
-    let i4 ← lower_ascii i3
-    if i2 != i4
-    then ok (done false)
-    else let i5 ← i + 1#usize
-         ok (cont i5)
-  else ok (done true)
-
-/-- [linkding_kernel::is_word]: loop 0:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 828:4-835:1 -/
-@[rust_loop]
-def is_word_loop
-  (nodes : alloc.vec.Vec Node) (node : Std.Usize) (word : alloc.vec.Vec Std.U8)
-  (nlen : Std.Usize) (i : Std.Usize) :
-  Result Bool
-  := do
-  loop
-    (fun i1 => is_word_loop.body nodes node word nlen i1)
-    i
-
-/-- [linkding_kernel::is_word]:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 822:0-835:1 -/
-def is_word
-  (nodes : alloc.vec.Vec Node) (node : Std.Usize) (word : alloc.vec.Vec Std.U8)
-  :
-  Result Bool
-  := do
-  let nlen ← node_text_len nodes node
-  let i := alloc.vec.Vec.len word
-  if nlen != i
-  then ok false
-  else is_word_loop nodes node word nlen 0#usize
-
-/-- [linkding_kernel::unread_word]:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 837:0-846:1 -/
-def unread_word : Result (alloc.vec.Vec Std.U8) := do
-  let word ← alloc.vec.Vec.push (alloc.vec.Vec.new Std.U8) 117#u8
-  let word1 ← alloc.vec.Vec.push word 110#u8
-  let word2 ← alloc.vec.Vec.push word1 114#u8
-  let word3 ← alloc.vec.Vec.push word2 101#u8
-  let word4 ← alloc.vec.Vec.push word3 97#u8
-  alloc.vec.Vec.push word4 100#u8
-
-/-- [linkding_kernel::untagged_word]:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 848:0-859:1 -/
-def untagged_word : Result (alloc.vec.Vec Std.U8) := do
-  let word ← alloc.vec.Vec.push (alloc.vec.Vec.new Std.U8) 117#u8
-  let word1 ← alloc.vec.Vec.push word 110#u8
-  let word2 ← alloc.vec.Vec.push word1 116#u8
-  let word3 ← alloc.vec.Vec.push word2 97#u8
-  let word4 ← alloc.vec.Vec.push word3 103#u8
-  let word5 ← alloc.vec.Vec.push word4 103#u8
-  let word6 ← alloc.vec.Vec.push word5 101#u8
-  alloc.vec.Vec.push word6 100#u8
-
-/-- [linkding_kernel::keyword_matches]:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 861:0-871:1 -/
-def keyword_matches
-  (nodes : alloc.vec.Vec Node) (node : Std.Usize) (bm : BookmarkFacts) :
-  Result Bool
-  := do
-  let unread ← unread_word
-  let b ← is_word nodes node unread
-  if b
-  then ok bm.unread
-  else
-    let untagged ← untagged_word
-    let b1 ← is_word nodes node untagged
-    if b1
-    then ok bm.untagged
-    else ok true
-
-/-- [linkding_kernel::term_matches]:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 873:0-885:1 -/
-def term_matches
-  (nodes : alloc.vec.Vec Node) (node : Std.Usize) (lax : Bool)
-  (bm : BookmarkFacts) :
-  Result Bool
-  := do
-  let b ← contains_node bm.title nodes node
-  if b
-  then ok true
-  else
-    let b1 ← contains_node bm.description nodes node
-    if b1
-    then ok true
-    else
-      let b2 ← contains_node bm.notes nodes node
-      if b2
-      then ok true
-      else
-        let b3 ← contains_node bm.url nodes node
-        if b3
-        then ok true
-        else if lax
-             then any_tag bm nodes node
-             else ok false
-
-/-- [linkding_kernel::eval_parsed]: loop body 0:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-930:1 -/
-@[rust_loop_body]
-def eval_parsed_loop.body
-  (parsed : Parsed) (lax : Bool) (bm : BookmarkFacts)
-  (vals : alloc.vec.Vec Bool) (i : Std.Usize) :
-  Result (ControlFlow ((alloc.vec.Vec Bool) × Std.Usize) Bool)
-  := do
-  let i1 := alloc.vec.Vec.len parsed.nodes
-  if i < i1
-  then
-    let kind ← node_kind parsed.nodes i
-    let left ← node_left parsed.nodes i
-    let right ← node_right parsed.nodes i
-    if kind = NODE_TERM
-    then
-      let value ← term_matches parsed.nodes i lax bm
-      let vals1 ← alloc.vec.Vec.push vals value
-      let i2 ← i + 1#usize
-      ok (cont (vals1, i2))
-    else
-      if kind = NODE_TAG
-      then
-        let value ← any_tag bm parsed.nodes i
-        let vals1 ← alloc.vec.Vec.push vals value
-        let i2 ← i + 1#usize
-        ok (cont (vals1, i2))
-      else
-        if kind = NODE_KEYWORD
-        then
-          let value ← keyword_matches parsed.nodes i bm
-          let vals1 ← alloc.vec.Vec.push vals value
-          let i2 ← i + 1#usize
-          ok (cont (vals1, i2))
-        else
-          if kind = NODE_AND
-          then
-            let i2 := alloc.vec.Vec.len vals
-            if left < i2
-            then
-              let i3 := alloc.vec.Vec.len vals
-              if right < i3
-              then
-                let b ←
-                  alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
-                    Bool) vals left
-                let value ←
-                  if b
-                  then
-                    alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
-                      Bool) vals right
-                  else ok false
-                let vals1 ← alloc.vec.Vec.push vals value
-                let i4 ← i + 1#usize
-                ok (cont (vals1, i4))
-              else ok (done false)
-            else ok (done false)
-          else
-            if kind = NODE_OR
-            then
-              let i2 := alloc.vec.Vec.len vals
-              if left < i2
-              then
-                let i3 := alloc.vec.Vec.len vals
-                if right < i3
-                then
-                  let b ←
-                    alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
-                      Bool) vals left
-                  let value ←
-                    if b
-                    then ok true
-                    else
-                      alloc.vec.Vec.index
-                        (core.slice.index.SliceIndexUsizeSlice Bool) vals right
-                  let vals1 ← alloc.vec.Vec.push vals value
-                  let i4 ← i + 1#usize
-                  ok (cont (vals1, i4))
-                else ok (done false)
-              else ok (done false)
-            else
-              if kind = NODE_NOT
-              then
-                let i2 := alloc.vec.Vec.len vals
-                if left < i2
-                then
-                  let b ←
-                    alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
-                      Bool) vals left
-                  let vals1 ← alloc.vec.Vec.push vals (¬ b)
-                  let i3 ← i + 1#usize
-                  ok (cont (vals1, i3))
-                else ok (done false)
-              else ok (done false)
-  else
-    let i2 := alloc.vec.Vec.len vals
-    if parsed.root < i2
-    then
-      let b ←
-        alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Bool) vals
-          parsed.root
-      ok (done b)
-    else ok (done false)
-
-/-- [linkding_kernel::eval_parsed]: loop 0:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-930:1 -/
-@[rust_loop]
-def eval_parsed_loop
-  (parsed : Parsed) (lax : Bool) (bm : BookmarkFacts)
-  (vals : alloc.vec.Vec Bool) (i : Std.Usize) :
-  Result Bool
-  := do
-  loop
-    (fun (vals1, i1) => eval_parsed_loop.body parsed lax bm vals1 i1)
-    (vals, i)
-
-/-- [linkding_kernel::eval_parsed]:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 887:0-930:1 -/
-@[reducible]
-def eval_parsed
-  (parsed : Parsed) (lax : Bool) (bm : BookmarkFacts) : Result Bool := do
-  eval_parsed_loop parsed lax bm (alloc.vec.Vec.new Bool) 0#usize
-
-/-- [linkding_kernel::bookmark_matches]:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 935:0-946:1
-    Visibility: public -/
-def bookmark_matches
-  (parsed : Parsed) (lax : Bool) (bm : BookmarkFacts) : Result Bool := do
-  if parsed.failed
-  then ok false
-  else
-    if parsed.empty
-    then ok true
-    else
-      let i := alloc.vec.Vec.len parsed.nodes
-      if i = 0#usize
-      then ok false
-      else eval_parsed parsed lax bm
-
-/-- [linkding_kernel::is_digit]:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 948:0-950:1 -/
-def is_digit (c : Std.U8) : Result Bool := do
-  if c >= 48#u8
-  then ok (c <= 57#u8)
-  else ok false
-
-/-- [linkding_kernel::is_alpha]:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 952:0-954:1 -/
-def is_alpha (c : Std.U8) : Result Bool := do
-  if c >= 97#u8
-  then
-    if c <= 122#u8
-    then ok true
-    else if c >= 65#u8
-         then ok (c <= 90#u8)
-         else ok false
-  else if c >= 65#u8
-       then ok (c <= 90#u8)
-       else ok false
-
-/-- [linkding_kernel::is_hex]:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 956:0-958:1 -/
-def is_hex (c : Std.U8) : Result Bool := do
-  let b ← is_digit c
-  if b
-  then ok true
-  else
-    if c >= 97#u8
-    then
-      if c <= 102#u8
-      then ok true
-      else if c >= 65#u8
-           then ok (c <= 70#u8)
-           else ok false
-    else if c >= 65#u8
-         then ok (c <= 70#u8)
-         else ok false
-
-/-- [linkding_kernel::find_scheme]: loop body 0:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-969:1 -/
-@[rust_loop_body]
-def find_scheme_loop.body
-  (value : alloc.vec.Vec Std.U8) (i : Std.Usize) :
-  Result (ControlFlow Std.Usize Std.Usize)
-  := do
-  let i1 ← i + 2#usize
-  let i2 := alloc.vec.Vec.len value
-  if i1 < i2
-  then
-    let i3 ←
-      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Std.U8) value
-        i
-    if i3 = 58#u8
-    then
-      let i4 ← i + 1#usize
-      let i5 ←
-        alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Std.U8)
-          value i4
-      if i5 = 47#u8
-      then
-        let i6 ←
-          alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Std.U8)
-            value i1
-        if i6 = 47#u8
-        then ok (done i)
-        else ok (cont i4)
-      else ok (cont i4)
-    else let i4 ← i + 1#usize
-         ok (cont i4)
-  else let i3 := alloc.vec.Vec.len value
-       ok (done i3)
-
-/-- [linkding_kernel::find_scheme]: loop 0:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-969:1 -/
-@[rust_loop]
-def find_scheme_loop
-  (value : alloc.vec.Vec Std.U8) (i : Std.Usize) : Result Std.Usize := do
-  loop
-    (fun i1 => find_scheme_loop.body value i1)
-    i
-
-/-- [linkding_kernel::find_scheme]:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 960:0-969:1 -/
-@[reducible]
-def find_scheme (value : alloc.vec.Vec Std.U8) : Result Std.Usize := do
-  find_scheme_loop value 0#usize
-
-/-- [linkding_kernel::is_ipv4]: loop body 0:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 978:4-1012:5 -/
-@[rust_loop_body]
-def is_ipv4_loop.body
-  (host : alloc.vec.Vec Std.U8) (ok1 : Bool) (parts : Std.U32)
-  (digits : Std.U32) (n : Std.U32) (lead_zero : Bool) (i : Std.Usize) :
-  Result (ControlFlow (Bool × Std.U32 × Std.U32 × Std.U32 × Bool ×
-    Std.Usize) (Bool × Std.U32 × Std.U32 × Std.U32 × Bool))
-  := do
-  let i1 := alloc.vec.Vec.len host
-  if i < i1
-  then
-    let c ←
-      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Std.U8) host i
-    let b ← is_digit c
-    let (ok2, parts1, digits1, n1, lead_zero1) ←
-      if b
+        Std.U8)) names i
+    let lower ← lower_text v
+    let o ← find_tag_named s.tags owner lower
+    let found ←
+      match o with
+      | none => find_tag_named made owner lower
+      | some _ => ok o
+    let fresh := core.option.Option.is_none found
+    let next1 ← if fresh
+                  then next + 1#u64
+                  else ok next
+    let t ←
+      match found with
+      | none =>
+        do
+        let v1 ← alloc.vec.CloneVec.clone core.clone.CloneU8 v
+        ok
+          ({
+             id := next1,
+             owner,
+             «name» := v1,
+             name_lower := lower,
+             added := now
+           } : Tag)
+      | some t1 => ok t1
+    let out1 ←
+      if fresh
       then
         do
-        let (ok3, lead_zero2) ←
-          if digits = 0#u32
-          then
-            do
-            let b1 ← if parts >= 4#u32
-                       then ok false
-                       else ok ok1
-            ok (b1, c = 48#u8)
-          else ok (ok1, lead_zero)
-        let digits2 ← digits + 1#u32
-        let ok4 ← if digits2 > 3#u32
-                    then ok false
-                    else ok ok3
-        let i2 ← c - 48#u8
-        let digit ← lift (UScalar.cast .U32 i2)
-        let (ok5, n2) ←
-          if n > 25#u32
-          then ok (false, n)
-          else do
-               let i3 ← n * 10#u32
-               let n3 ← i3 + digit
-               ok (ok4, n3)
-        let b1 ← if n2 > 255#u32
-                   then ok false
-                   else ok ok5
-        ok (b1, parts, digits2, n2, lead_zero2)
+        let t1 ← Tag.Insts.CoreCloneClone.clone t
+        alloc.vec.Vec.push out (Write.PutTag t1)
+      else ok out
+    let made1 ←
+      if fresh
+      then
+        do
+        let t1 ← Tag.Insts.CoreCloneClone.clone t
+        alloc.vec.Vec.push made t1
+      else ok made
+    let dup ← contains_text shown t.name
+    let out2 ←
+      if dup
+      then ok out1
       else
-        if c = 46#u8
-        then
-          do
-          let ok3 ←
-            if digits = 0#u32
-            then ok false
-            else
-              if lead_zero
-              then
-                if digits > 1#u32
-                then ok false
-                else if parts >= 3#u32
-                     then ok false
-                     else ok ok1
-              else if parts >= 3#u32
-                   then ok false
-                   else ok ok1
-          let parts2 ← parts + 1#u32
-          ok (ok3, parts2, 0#u32, 0#u32, false)
-        else ok (false, parts, digits, n, lead_zero)
+        alloc.vec.Vec.push out1 (Write.PutLink { bookmark := id, tag := t.id })
+    let shown1 ←
+      if dup
+      then ok shown
+      else
+        do
+        let v1 ← alloc.vec.CloneVec.clone core.clone.CloneU8 t.name
+        alloc.vec.Vec.push shown v1
     let i2 ← i + 1#usize
-    ok (cont (ok2, parts1, digits1, n1, lead_zero1, i2))
-  else ok (done (ok1, parts, digits, n, lead_zero))
+    ok (cont (out2, shown1, made1, next1, i2))
+  else ok (done (out, shown, next))
 
-/-- [linkding_kernel::is_ipv4]: loop 0:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 978:4-1012:5 -/
+/-- [linkding_kernel::tag_writes]: loop 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1275:4-1303:5 -/
 @[rust_loop]
-def is_ipv4_loop
-  (host : alloc.vec.Vec Std.U8) (ok1 : Bool) (parts : Std.U32)
-  (digits : Std.U32) (n : Std.U32) (lead_zero : Bool) (i : Std.Usize) :
-  Result (Bool × Std.U32 × Std.U32 × Std.U32 × Bool)
+def tag_writes_loop
+  (s : Snapshot) (owner : Std.U64) (id : Std.U64)
+  (names : alloc.vec.Vec (alloc.vec.Vec Std.U8)) (now : Std.U64)
+  (out : alloc.vec.Vec Write) (shown : alloc.vec.Vec (alloc.vec.Vec Std.U8))
+  (made : alloc.vec.Vec Tag) (next : Std.U64) (i : Std.Usize) :
+  Result ((alloc.vec.Vec Write) × (alloc.vec.Vec (alloc.vec.Vec Std.U8)) ×
+    Std.U64)
   := do
   loop
-    (fun (ok2, parts1, digits1, n1, lead_zero1, i1) => is_ipv4_loop.body host
-      ok2 parts1 digits1 n1 lead_zero1 i1)
-    (ok1, parts, digits, n, lead_zero, i)
+    (fun (out1, shown1, made1, next1, i1) => tag_writes_loop.body s owner id
+      names now out1 shown1 made1 next1 i1)
+    (out, shown, made, next, i)
 
-/-- [linkding_kernel::is_ipv4]:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 971:0-1014:1 -/
-def is_ipv4 (host : alloc.vec.Vec Std.U8) : Result Bool := do
-  let (ok1, parts, digits, n, lead_zero) ←
-    is_ipv4_loop host true 0#u32 0#u32 0#u32 false 0#usize
-  if ok1
-  then
-    if parts = 3#u32
-    then
-      if digits > 0#u32
-      then
-        if lead_zero
-        then if digits > 1#u32
-             then ok false
-             else ok (n <= 255#u32)
-        else ok (n <= 255#u32)
-      else ok false
-    else ok false
-  else ok false
-
-/-- [linkding_kernel::is_ipv6]: loop body 0:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1022:4-1032:1 -/
-@[rust_loop_body]
-def is_ipv6_loop.body
-  (host : alloc.vec.Vec Std.U8) (colon : Bool) (i : Std.Usize) :
-  Result (ControlFlow (Bool × Std.Usize) Bool)
+/-- [linkding_kernel::tag_writes]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1256:0-1305:1 -/
+def tag_writes
+  (s : Snapshot) (owner : Std.U64) (id : Std.U64)
+  (names : alloc.vec.Vec (alloc.vec.Vec Std.U8)) (now : Std.U64)
+  (ws : alloc.vec.Vec Write) (last : Std.U64) :
+  Result (core.result.Result ((alloc.vec.Vec Write) × (alloc.vec.Vec
+    (alloc.vec.Vec Std.U8)) × Std.U64) Error)
   := do
-  let i1 := alloc.vec.Vec.len host
-  if i < i1
-  then
-    let c ←
-      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Std.U8) host i
-    if c = 58#u8
-    then let i2 ← i + 1#usize
-         ok (cont (true, i2))
-    else
-      let b ← is_hex c
-      if b
-      then let i2 ← i + 1#usize
-           ok (cont (colon, i2))
+  let i := alloc.vec.Vec.len names
+  let i1 ← lift (UScalar.cast .U64 i)
+  let i2 ← core.num.U64.MAX - i1
+  if last > i2
+  then ok (core.result.Result.Err Error.Overflow)
+  else
+    let (out, shown, next) ←
+      tag_writes_loop s owner id names now ws (alloc.vec.Vec.new (alloc.vec.Vec
+        Std.U8)) (alloc.vec.Vec.new Tag) last 0#usize
+    ok (core.result.Result.Ok (out, shown, next))
+
+/-- [linkding_kernel::set_counter]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1307:0-1309:1 -/
+def set_counter
+  (s : Snapshot) (last_bookmark : Std.U64) (last_tag : Std.U64) :
+  Result Write
+  := do
+  ok (Write.SetCounter { s.counter with last_bookmark, last_tag })
+
+/-- [linkding_kernel::create_bookmark]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1311:0-1370:1 -/
+def create_bookmark
+  (s : Snapshot) (token : alloc.vec.Vec Std.U8) (f : BookmarkFields)
+  (now : Std.U64) :
+  Result (core.result.Result ((alloc.vec.Vec Write) × Reply) Error)
+  := do
+  let r ← signed_in s token
+  match r with
+  | core.result.Result.Ok v =>
+    let url ← or_empty f.url
+    let url_norm ← or_empty f.url_norm
+    let names ←
+      match f.tags with
+      | none => ok (alloc.vec.Vec.new (alloc.vec.Vec Std.U8))
+      | some t =>
+        alloc.vec.CloneVec.clone (core.clone.CloneallocvecVec
+          core.clone.CloneU8) t
+    let o ← existing s v.id url url_norm
+    match o with
+    | none =>
+      if s.counter.last_bookmark = core.num.U64.MAX
+      then ok (core.result.Result.Err Error.Overflow)
       else
-        if c != 46#u8
-        then ok (done false)
-        else let i2 ← i + 1#usize
-             ok (cont (colon, i2))
-  else ok (done colon)
+        let i ← time_or f.added now
+        let i1 ← s.counter.last_bookmark + 1#u64
+        let v1 ← or_empty f.title
+        let v2 ← or_empty f.description
+        let v3 ← or_empty f.notes
+        let b ← flag_or f.unread false
+        let b1 ← flag_or f.archived false
+        let b2 ← flag_or f.shared false
+        let i2 ← time_or f.modified now
+        let b3 ←
+          Bookmark.Insts.CoreCloneClone.clone
+            {
+              owner := v.id,
+              added := i,
+              id := i1,
+              url,
+              url_norm,
+              title := v1,
+              description := v2,
+              notes := v3,
+              unread := b,
+              archived := b1,
+              shared := b2,
+              modified := i2
+            }
+        let ws ← one (Write.PutBookmark b3)
+        let r1 ← tag_writes s v.id i1 names now ws s.counter.last_tag
+        match r1 with
+        | core.result.Result.Ok v4 =>
+          let (ws1, shown, last_tag) := v4
+          let w ← set_counter s i1 last_tag
+          let ws2 ← alloc.vec.Vec.push ws1 w
+          ok (core.result.Result.Ok (ws2, Reply.Bookmark
+            {
+              bookmark :=
+                {
+                  owner := v.id,
+                  added := i,
+                  id := i1,
+                  url,
+                  url_norm,
+                  title := v1,
+                  description := v2,
+                  notes := v3,
+                  unread := b,
+                  archived := b1,
+                  shared := b2,
+                  modified := i2
+                },
+              tags := shown
+            }))
+        | core.result.Result.Err e => ok (core.result.Result.Err e)
+    | some b =>
+      let v1 ← alloc.vec.CloneVec.clone core.clone.CloneU8 b.url
+      let v2 ← alloc.vec.CloneVec.clone core.clone.CloneU8 b.url_norm
+      let v3 ← or_empty f.title
+      let v4 ← or_empty f.description
+      let v5 ← or_empty f.notes
+      let b1 ← flag_or f.unread false
+      let b2 ← flag_or f.shared false
+      let b3 ←
+        Bookmark.Insts.CoreCloneClone.clone
+          {
+            b
+              with
+              url := v1,
+              url_norm := v2,
+              title := v3,
+              description := v4,
+              notes := v5,
+              unread := b1,
+              shared := b2,
+              modified := now
+          }
+      let ws ←
+        alloc.vec.Vec.push (alloc.vec.Vec.new Write) (Write.PutBookmark b3)
+      let ws1 ← alloc.vec.Vec.push ws (Write.DelLinksOf b.id)
+      let r1 ← tag_writes s v.id b.id names now ws1 s.counter.last_tag
+      match r1 with
+      | core.result.Result.Ok v6 =>
+        let (ws2, shown, last_tag) := v6
+        let w ← set_counter s s.counter.last_bookmark last_tag
+        let ws3 ← alloc.vec.Vec.push ws2 w
+        ok (core.result.Result.Ok (ws3, Reply.Bookmark
+          {
+            bookmark :=
+              {
+                b
+                  with
+                  url := v1,
+                  url_norm := v2,
+                  title := v3,
+                  description := v4,
+                  notes := v5,
+                  unread := b1,
+                  shared := b2,
+                  modified := now
+              },
+            tags := shown
+          }))
+      | core.result.Result.Err e => ok (core.result.Result.Err e)
+  | core.result.Result.Err e => ok (core.result.Result.Err e)
 
-/-- [linkding_kernel::is_ipv6]: loop 0:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1022:4-1032:1 -/
-@[rust_loop]
-def is_ipv6_loop
-  (host : alloc.vec.Vec Std.U8) (colon : Bool) (i : Std.Usize) :
-  Result Bool
+/-- [linkding_kernel::own_bookmark]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1373:0-1384:1 -/
+def own_bookmark
+  (s : Snapshot) (me : User) (id : Std.U64) :
+  Result (core.result.Result Bookmark Error)
   := do
-  loop
-    (fun (colon1, i1) => is_ipv6_loop.body host colon1 i1)
-    (colon, i)
+  let o ← find_bookmark s.bookmarks id
+  match o with
+  | none => ok (core.result.Result.Err Error.NotFound)
+  | some b =>
+    if b.owner = me.id
+    then ok (core.result.Result.Ok b)
+    else ok (core.result.Result.Err Error.NotFound)
 
-/-- [linkding_kernel::is_ipv6]:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1016:0-1032:1 -/
-def is_ipv6 (host : alloc.vec.Vec Std.U8) : Result Bool := do
-  let i := alloc.vec.Vec.len host
-  if i = 0#usize
-  then ok false
-  else is_ipv6_loop host false 0#usize
+/-- [linkding_kernel::get_bookmark]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1386:0-1390:1 -/
+def get_bookmark
+  (s : Snapshot) (token : alloc.vec.Vec Std.U8) (id : Std.U64) :
+  Result (core.result.Result ((alloc.vec.Vec Write) × Reply) Error)
+  := do
+  let r ← signed_in s token
+  match r with
+  | core.result.Result.Ok v =>
+    let r1 ← own_bookmark s v id
+    match r1 with
+    | core.result.Result.Ok v1 =>
+      let bv ← view s v1
+      ok (core.result.Result.Ok (alloc.vec.Vec.new Write, Reply.Bookmark bv))
+    | core.result.Result.Err e => ok (core.result.Result.Err e)
+  | core.result.Result.Err e => ok (core.result.Result.Err e)
 
-/-- [linkding_kernel::is_localhost]:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1034:0-1045:1 -/
-def is_localhost (host : alloc.vec.Vec Std.U8) : Result Bool := do
-  let i := alloc.vec.Vec.len host
-  if i = 9#usize
-  then
-    let i1 ←
-      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Std.U8) host
-        0#usize
-    let i2 ← lower_ascii i1
-    if i2 = 108#u8
-    then
-      let i3 ←
-        alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Std.U8) host
-          1#usize
-      let i4 ← lower_ascii i3
-      if i4 = 111#u8
-      then
-        let i5 ←
-          alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Std.U8)
-            host 2#usize
-        let i6 ← lower_ascii i5
-        if i6 = 99#u8
-        then
-          let i7 ←
-            alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Std.U8)
-              host 3#usize
-          let i8 ← lower_ascii i7
-          if i8 = 97#u8
+/-- [linkding_kernel::update_bookmark]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1392:0-1438:1 -/
+def update_bookmark
+  (s : Snapshot) (token : alloc.vec.Vec Std.U8) (id : Std.U64)
+  (f : BookmarkFields) (now : Std.U64) :
+  Result (core.result.Result ((alloc.vec.Vec Write) × Reply) Error)
+  := do
+  let r ← signed_in s token
+  match r with
+  | core.result.Result.Ok v =>
+    let r1 ← own_bookmark s v id
+    match r1 with
+    | core.result.Result.Ok v1 =>
+      match f.url with
+      | none =>
+        let url ← or_keep none v1.url
+        let url_norm ←
+          alloc.vec.CloneVec.clone core.clone.CloneU8 v1.url_norm
+        let i ← time_or f.added v1.added
+        let v2 ← or_keep f.title v1.title
+        let v3 ← or_keep f.description v1.description
+        let v4 ← or_keep f.notes v1.notes
+        let b ← flag_or f.unread v1.unread
+        let b1 ← flag_or f.archived v1.archived
+        let b2 ← flag_or f.shared v1.shared
+        let ws ←
+          if i != v1.added
           then
-            let i9 ←
-              alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
-                Std.U8) host 4#usize
-            let i10 ← lower_ascii i9
-            if i10 = 108#u8
-            then
-              let i11 ←
-                alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
-                  Std.U8) host 5#usize
-              let i12 ← lower_ascii i11
-              if i12 = 104#u8
-              then
-                let i13 ←
-                  alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
-                    Std.U8) host 6#usize
-                let i14 ← lower_ascii i13
-                if i14 = 111#u8
-                then
-                  let i15 ←
-                    alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
-                      Std.U8) host 7#usize
-                  let i16 ← lower_ascii i15
-                  if i16 = 115#u8
-                  then
-                    let i17 ←
-                      alloc.vec.Vec.index
-                        (core.slice.index.SliceIndexUsizeSlice Std.U8) host
-                        8#usize
-                    let i18 ← lower_ascii i17
-                    ok (i18 = 116#u8)
-                  else ok false
-                else ok false
-              else ok false
-            else ok false
-          else ok false
-        else ok false
-      else ok false
-    else ok false
-  else ok false
-
-/-- [linkding_kernel::label_ok]: loop body 0:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-1083:1 -/
-@[rust_loop_body]
-def label_ok_loop0.body
-  (host : alloc.vec.Vec Std.U8) («from» : Std.Usize) («to» : Std.Usize)
-  (i : Std.Usize) :
-  Result (ControlFlow Std.Usize Bool)
-  := do
-  if i < «to»
-  then
-    let c ←
-      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Std.U8) host i
-    let i1 ← «from» + 4#usize
-    if i >= i1
-    then
-      let b ← is_alpha c
-      if b
-      then let i2 ← i + 1#usize
-           ok (cont i2)
-      else
-        let b1 ← is_digit c
-        if b1
-        then let i2 ← i + 1#usize
-             ok (cont i2)
-        else ok (done false)
-    else
-      let b ← is_alpha c
-      if b
-      then let i2 ← i + 1#usize
-           ok (cont i2)
-      else
-        let b1 ← is_digit c
-        if b1
-        then let i2 ← i + 1#usize
-             ok (cont i2)
-        else
-          if c = 45#u8
-          then let i2 ← i + 1#usize
-               ok (cont i2)
-          else
-            if c >= 128#u8
-            then let i2 ← i + 1#usize
-                 ok (cont i2)
-            else ok (done false)
-  else ok (done true)
-
-/-- [linkding_kernel::label_ok]: loop 0:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-1083:1 -/
-@[rust_loop]
-def label_ok_loop0
-  (host : alloc.vec.Vec Std.U8) («from» : Std.Usize) («to» : Std.Usize)
-  (i : Std.Usize) :
-  Result Bool
-  := do
-  loop
-    (fun i1 => label_ok_loop0.body host «from» «to» i1)
-    i
-
-/-- [linkding_kernel::label_ok]: loop body 1:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-1083:1 -/
-@[rust_loop_body]
-def label_ok_loop1.body
-  (host : alloc.vec.Vec Std.U8) («from» : Std.Usize) («to» : Std.Usize)
-  (i : Std.Usize) :
-  Result (ControlFlow Std.Usize Bool)
-  := do
-  if i < «to»
-  then
-    let c ←
-      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Std.U8) host i
-    let b ← is_alpha c
-    if b
-    then let i1 ← i + 1#usize
-         ok (cont i1)
-    else
-      let b1 ← is_digit c
-      if b1
-      then let i1 ← i + 1#usize
-           ok (cont i1)
-      else
-        if c = 45#u8
-        then let i1 ← i + 1#usize
-             ok (cont i1)
-        else
-          if c >= 128#u8
-          then let i1 ← i + 1#usize
-               ok (cont i1)
-          else ok (done false)
-  else
-    let i1 ← «to» - «from»
-    if i1 < 2#usize
-    then ok (done false)
-    else ok (done true)
-
-/-- [linkding_kernel::label_ok]: loop 1:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-1083:1 -/
-@[rust_loop]
-def label_ok_loop1
-  (host : alloc.vec.Vec Std.U8) («from» : Std.Usize) («to» : Std.Usize)
-  (i : Std.Usize) :
-  Result Bool
-  := do
-  loop
-    (fun i1 => label_ok_loop1.body host «from» «to» i1)
-    i
-
-/-- [linkding_kernel::label_ok]: loop body 2:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-1083:1 -/
-@[rust_loop_body]
-def label_ok_loop2.body
-  (host : alloc.vec.Vec Std.U8) («from» : Std.Usize) («to» : Std.Usize)
-  (i : Std.Usize) :
-  Result (ControlFlow Std.Usize Bool)
-  := do
-  if i < «to»
-  then
-    let c ←
-      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Std.U8) host i
-    let b ← is_alpha c
-    if b
-    then let i1 ← i + 1#usize
-         ok (cont i1)
-    else
-      let b1 ← is_digit c
-      if b1
-      then let i1 ← i + 1#usize
-           ok (cont i1)
-      else
-        if c = 45#u8
-        then let i1 ← i + 1#usize
-             ok (cont i1)
-        else
-          if c >= 128#u8
-          then let i1 ← i + 1#usize
-               ok (cont i1)
-          else ok (done false)
-  else
-    let i1 ← «to» - «from»
-    if i1 < 2#usize
-    then ok (done false)
-    else ok (done true)
-
-/-- [linkding_kernel::label_ok]: loop 2:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-1083:1 -/
-@[rust_loop]
-def label_ok_loop2
-  (host : alloc.vec.Vec Std.U8) («from» : Std.Usize) («to» : Std.Usize)
-  (i : Std.Usize) :
-  Result Bool
-  := do
-  loop
-    (fun i1 => label_ok_loop2.body host «from» «to» i1)
-    i
-
-/-- [linkding_kernel::label_ok]: loop body 3:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-1083:1 -/
-@[rust_loop_body]
-def label_ok_loop3.body
-  (host : alloc.vec.Vec Std.U8) («from» : Std.Usize) («to» : Std.Usize)
-  (i : Std.Usize) :
-  Result (ControlFlow Std.Usize Bool)
-  := do
-  if i < «to»
-  then
-    let c ←
-      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Std.U8) host i
-    let b ← is_alpha c
-    if b
-    then let i1 ← i + 1#usize
-         ok (cont i1)
-    else
-      let b1 ← is_digit c
-      if b1
-      then let i1 ← i + 1#usize
-           ok (cont i1)
-      else
-        if c = 45#u8
-        then let i1 ← i + 1#usize
-             ok (cont i1)
-        else
-          if c >= 128#u8
-          then let i1 ← i + 1#usize
-               ok (cont i1)
-          else ok (done false)
-  else
-    let i1 ← «to» - «from»
-    if i1 < 2#usize
-    then ok (done false)
-    else ok (done true)
-
-/-- [linkding_kernel::label_ok]: loop 3:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-1083:1 -/
-@[rust_loop]
-def label_ok_loop3
-  (host : alloc.vec.Vec Std.U8) («from» : Std.Usize) («to» : Std.Usize)
-  (i : Std.Usize) :
-  Result Bool
-  := do
-  loop
-    (fun i1 => label_ok_loop3.body host «from» «to» i1)
-    i
-
-/-- [linkding_kernel::label_ok]: loop body 4:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-1083:1 -/
-@[rust_loop_body]
-def label_ok_loop4.body
-  (host : alloc.vec.Vec Std.U8) («from» : Std.Usize) («to» : Std.Usize)
-  (i : Std.Usize) :
-  Result (ControlFlow Std.Usize Bool)
-  := do
-  if i < «to»
-  then
-    let c ←
-      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Std.U8) host i
-    let b ← is_alpha c
-    if b
-    then let i1 ← i + 1#usize
-         ok (cont i1)
-    else
-      let b1 ← is_digit c
-      if b1
-      then let i1 ← i + 1#usize
-           ok (cont i1)
-      else
-        if c = 45#u8
-        then let i1 ← i + 1#usize
-             ok (cont i1)
-        else
-          if c >= 128#u8
-          then let i1 ← i + 1#usize
-               ok (cont i1)
-          else ok (done false)
-  else
-    let i1 ← «to» - «from»
-    if i1 < 2#usize
-    then ok (done false)
-    else ok (done true)
-
-/-- [linkding_kernel::label_ok]: loop 4:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-1083:1 -/
-@[rust_loop]
-def label_ok_loop4
-  (host : alloc.vec.Vec Std.U8) («from» : Std.Usize) («to» : Std.Usize)
-  (i : Std.Usize) :
-  Result Bool
-  := do
-  loop
-    (fun i1 => label_ok_loop4.body host «from» «to» i1)
-    i
-
-/-- [linkding_kernel::label_ok]: loop body 5:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-1083:1 -/
-@[rust_loop_body]
-def label_ok_loop5.body
-  (host : alloc.vec.Vec Std.U8) («from» : Std.Usize) («to» : Std.Usize)
-  (i : Std.Usize) :
-  Result (ControlFlow Std.Usize Bool)
-  := do
-  if i < «to»
-  then
-    let c ←
-      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Std.U8) host i
-    let b ← is_alpha c
-    if b
-    then let i1 ← i + 1#usize
-         ok (cont i1)
-    else
-      let b1 ← is_digit c
-      if b1
-      then let i1 ← i + 1#usize
-           ok (cont i1)
-      else
-        if c = 45#u8
-        then let i1 ← i + 1#usize
-             ok (cont i1)
-        else
-          if c >= 128#u8
-          then let i1 ← i + 1#usize
-               ok (cont i1)
-          else ok (done false)
-  else
-    let i1 ← «to» - «from»
-    if i1 < 2#usize
-    then ok (done false)
-    else ok (done true)
-
-/-- [linkding_kernel::label_ok]: loop 5:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-1083:1 -/
-@[rust_loop]
-def label_ok_loop5
-  (host : alloc.vec.Vec Std.U8) («from» : Std.Usize) («to» : Std.Usize)
-  (i : Std.Usize) :
-  Result Bool
-  := do
-  loop
-    (fun i1 => label_ok_loop5.body host «from» «to» i1)
-    i
-
-/-- [linkding_kernel::label_ok]: loop body 6:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-1083:1 -/
-@[rust_loop_body]
-def label_ok_loop6.body
-  (host : alloc.vec.Vec Std.U8) («to» : Std.Usize) (i : Std.Usize) :
-  Result (ControlFlow Std.Usize Bool)
-  := do
-  if i < «to»
-  then
-    let c ←
-      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Std.U8) host i
-    let b ← is_alpha c
-    if b
-    then let i1 ← i + 1#usize
-         ok (cont i1)
-    else
-      let b1 ← is_digit c
-      if b1
-      then let i1 ← i + 1#usize
-           ok (cont i1)
-      else
-        if c = 45#u8
-        then let i1 ← i + 1#usize
-             ok (cont i1)
-        else
-          if c >= 128#u8
-          then let i1 ← i + 1#usize
-               ok (cont i1)
-          else ok (done false)
-  else ok (done true)
-
-/-- [linkding_kernel::label_ok]: loop 6:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-1083:1 -/
-@[rust_loop]
-def label_ok_loop6
-  (host : alloc.vec.Vec Std.U8) («to» : Std.Usize) (i : Std.Usize) :
-  Result Bool
-  := do
-  loop
-    (fun i1 => label_ok_loop6.body host «to» i1)
-    i
-
-/-- [linkding_kernel::label_ok]:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1047:0-1083:1 -/
-def label_ok
-  (host : alloc.vec.Vec Std.U8) («from» : Std.Usize) («to» : Std.Usize)
-  (tld : Bool) :
-  Result Bool
-  := do
-  if «to» <= «from»
-  then ok false
-  else
-    let i ← «to» - «from»
-    if i > 63#usize
-    then ok false
-    else
-      let i1 := alloc.vec.Vec.len host
-      if «to» > i1
-      then ok false
-      else
-        let i2 ←
-          alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Std.U8)
-            host «from»
-        if i2 = 45#u8
-        then ok false
-        else
-          let i3 ← «to» - 1#usize
-          let i4 ←
-            alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Std.U8)
-              host i3
-          if i4 = 45#u8
-          then ok false
-          else
-            if tld
-            then
-              if i >= 4#usize
-              then
-                let i5 ← lower_ascii i2
-                if i5 = 120#u8
-                then
-                  let i6 ← «from» + 1#usize
-                  let i7 ←
-                    alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
-                      Std.U8) host i6
-                  let i8 ← lower_ascii i7
-                  if i8 = 110#u8
-                  then
-                    let i9 ← «from» + 2#usize
-                    let i10 ←
-                      alloc.vec.Vec.index
-                        (core.slice.index.SliceIndexUsizeSlice Std.U8) host i9
-                    if i10 = 45#u8
-                    then
-                      let i11 ← «from» + 3#usize
-                      let i12 ←
-                        alloc.vec.Vec.index
-                          (core.slice.index.SliceIndexUsizeSlice Std.U8) host
-                          i11
-                      if i12 = 45#u8
-                      then
-                        if i < 5#usize
-                        then ok false
-                        else
-                          if i > 63#usize
-                          then ok false
-                          else label_ok_loop0 host «from» «to» «from»
-                      else label_ok_loop1 host «from» «to» «from»
-                    else label_ok_loop2 host «from» «to» «from»
-                  else label_ok_loop3 host «from» «to» «from»
-                else label_ok_loop4 host «from» «to» «from»
-              else label_ok_loop5 host «from» «to» «from»
-            else label_ok_loop6 host «to» «from»
-
-/-- [linkding_kernel::is_domain]: loop body 0:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1096:4-1108:1 -/
-@[rust_loop_body]
-def is_domain_loop.body
-  (host : alloc.vec.Vec Std.U8) («end» : Std.Usize) (labels : Std.I32)
-  (start : Std.Usize) (i : Std.Usize) :
-  Result (ControlFlow (Std.I32 × Std.Usize × Std.Usize) Bool)
-  := do
-  if i <= «end»
-  then
-    if i = «end»
-    then
-      let labels1 ← labels + 1#i32
-      let b ← label_ok host start i (i = «end»)
-      if b
-      then let start1 ← i + 1#usize
-           ok (cont (labels1, start1, start1))
-      else ok (done false)
-    else
-      let i1 ←
-        alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Std.U8) host
-          i
-      if i1 = 46#u8
-      then
-        let labels1 ← labels + 1#i32
-        let b ← label_ok host start i (i = «end»)
+            alloc.vec.Vec.push (alloc.vec.Vec.new Write) (Write.DelBookmark
+              v1.owner v1.added v1.id)
+          else ok (alloc.vec.Vec.new Write)
+        let b3 ←
+          Bookmark.Insts.CoreCloneClone.clone
+            {
+              v1
+                with
+                added := i,
+                url,
+                url_norm,
+                title := v2,
+                description := v3,
+                notes := v4,
+                unread := b,
+                archived := b1,
+                shared := b2,
+                modified := now
+            }
+        let ws1 ← alloc.vec.Vec.push ws (Write.PutBookmark b3)
+        match f.tags with
+        | none =>
+          let v5 ← tag_names s v1.id
+          ok (core.result.Result.Ok (ws1, Reply.Bookmark
+            {
+              bookmark :=
+                {
+                  v1
+                    with
+                    added := i,
+                    url,
+                    url_norm,
+                    title := v2,
+                    description := v3,
+                    notes := v4,
+                    unread := b,
+                    archived := b1,
+                    shared := b2,
+                    modified := now
+                },
+              tags := v5
+            }))
+        | some names =>
+          let ws2 ← alloc.vec.Vec.push ws1 (Write.DelLinksOf v1.id)
+          let r2 ← tag_writes s v.id v1.id names now ws2 s.counter.last_tag
+          match r2 with
+          | core.result.Result.Ok v5 =>
+            let (ws3, shown, last_tag) := v5
+            let w ← set_counter s s.counter.last_bookmark last_tag
+            let ws4 ← alloc.vec.Vec.push ws3 w
+            ok (core.result.Result.Ok (ws4, Reply.Bookmark
+              {
+                bookmark :=
+                  {
+                    v1
+                      with
+                      added := i,
+                      url,
+                      url_norm,
+                      title := v2,
+                      description := v3,
+                      notes := v4,
+                      unread := b,
+                      archived := b1,
+                      shared := b2,
+                      modified := now
+                  },
+                tags := shown
+              }))
+          | core.result.Result.Err e => ok (core.result.Result.Err e)
+      | some u =>
+        let b ← url_taken s v.id u id
         if b
-        then let start1 ← i + 1#usize
-             ok (cont (labels1, start1, start1))
-        else ok (done false)
-      else let i2 ← i + 1#usize
-           ok (cont (labels, start, i2))
-  else ok (done (labels >= 2#i32))
-
-/-- [linkding_kernel::is_domain]: loop 0:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1096:4-1108:1 -/
-@[rust_loop]
-def is_domain_loop
-  (host : alloc.vec.Vec Std.U8) («end» : Std.Usize) (labels : Std.I32)
-  (start : Std.Usize) (i : Std.Usize) :
-  Result Bool
-  := do
-  loop
-    (fun (labels1, start1, i1) => is_domain_loop.body host «end» labels1
-      start1 i1)
-    (labels, start, i)
-
-/-- [linkding_kernel::is_domain]:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1085:0-1108:1 -/
-def is_domain (host : alloc.vec.Vec Std.U8) : Result Bool := do
-  let «end» := alloc.vec.Vec.len host
-  let end1 ←
-    if «end» > 0#usize
-    then
-      do
-      let i ← «end» - 1#usize
-      let i1 ←
-        alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Std.U8) host
-          i
-      if i1 = 46#u8
-      then ok i
-      else ok «end»
-    else ok «end»
-  if end1 = 0#usize
-  then ok false
-  else
-    if end1 > 253#usize
-    then ok false
-    else is_domain_loop host end1 0#i32 0#usize 0#usize
-
-/-- [linkding_kernel::port_ok]: loop body 0:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-1131:1 -/
-@[rust_loop_body]
-def port_ok_loop.body
-  (host : alloc.vec.Vec Std.U8) («to» : Std.Usize) (n : Std.U32)
-  (i : Std.Usize) :
-  Result (ControlFlow (Std.U32 × Std.Usize) Bool)
-  := do
-  if i < «to»
-  then
-    let i1 ←
-      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Std.U8) host i
-    let b ← is_digit i1
-    if b
-    then
-      let i2 ← i1 - 48#u8
-      let digit ← lift (UScalar.cast .U32 i2)
-      if n > 6553#u32
-      then ok (done false)
-      else
-        let i3 ← n * 10#u32
-        let n1 ← i3 + digit
-        if n1 > 65535#u32
-        then ok (done false)
-        else let i4 ← i + 1#usize
-             ok (cont (n1, i4))
-    else ok (done false)
-  else ok (done true)
-
-/-- [linkding_kernel::port_ok]: loop 0:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-1131:1 -/
-@[rust_loop]
-def port_ok_loop
-  (host : alloc.vec.Vec Std.U8) («to» : Std.Usize) (n : Std.U32)
-  (i : Std.Usize) :
-  Result Bool
-  := do
-  loop
-    (fun (n1, i1) => port_ok_loop.body host «to» n1 i1)
-    (n, i)
-
-/-- [linkding_kernel::port_ok]:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1110:0-1131:1 -/
-def port_ok
-  (host : alloc.vec.Vec Std.U8) («from» : Std.Usize) («to» : Std.Usize) :
-  Result Bool
-  := do
-  if «to» <= «from»
-  then ok false
-  else
-    let i ← «to» - «from»
-    if i > 5#usize
-    then ok false
-    else
-      let i1 := alloc.vec.Vec.len host
-      if «to» > i1
-      then ok false
-      else port_ok_loop host «to» 0#u32 «from»
-
-/-- [linkding_kernel::host_ok]:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1133:0-1141:1 -/
-def host_ok (host : alloc.vec.Vec Std.U8) : Result Bool := do
-  let i := alloc.vec.Vec.len host
-  if i = 0#usize
-  then ok false
-  else
-    let i1 := alloc.vec.Vec.len host
-    if i1 > 253#usize
-    then ok false
-    else
-      let b ← is_localhost host
-      if b
-      then ok true
-      else
-        let b1 ← is_ipv4 host
-        if b1
-        then ok true
+        then ok (core.result.Result.Err Error.DuplicateUrl)
         else
-          let b2 ← is_ipv6 host
-          if b2
-          then ok true
-          else let b3 ← is_domain host
-               if b3
-               then ok true
-               else ok false
+          let url ← or_keep f.url v1.url
+          let url_norm ← or_empty f.url_norm
+          let i ← time_or f.added v1.added
+          let v2 ← or_keep f.title v1.title
+          let v3 ← or_keep f.description v1.description
+          let v4 ← or_keep f.notes v1.notes
+          let b1 ← flag_or f.unread v1.unread
+          let b2 ← flag_or f.archived v1.archived
+          let b3 ← flag_or f.shared v1.shared
+          let ws ←
+            if i != v1.added
+            then
+              alloc.vec.Vec.push (alloc.vec.Vec.new Write) (Write.DelBookmark
+                v1.owner v1.added v1.id)
+            else ok (alloc.vec.Vec.new Write)
+          let b4 ←
+            Bookmark.Insts.CoreCloneClone.clone
+              {
+                v1
+                  with
+                  added := i,
+                  url,
+                  url_norm,
+                  title := v2,
+                  description := v3,
+                  notes := v4,
+                  unread := b1,
+                  archived := b2,
+                  shared := b3,
+                  modified := now
+              }
+          let ws1 ← alloc.vec.Vec.push ws (Write.PutBookmark b4)
+          match f.tags with
+          | none =>
+            let v5 ← tag_names s v1.id
+            ok (core.result.Result.Ok (ws1, Reply.Bookmark
+              {
+                bookmark :=
+                  {
+                    v1
+                      with
+                      added := i,
+                      url,
+                      url_norm,
+                      title := v2,
+                      description := v3,
+                      notes := v4,
+                      unread := b1,
+                      archived := b2,
+                      shared := b3,
+                      modified := now
+                  },
+                tags := v5
+              }))
+          | some names =>
+            let ws2 ← alloc.vec.Vec.push ws1 (Write.DelLinksOf v1.id)
+            let r2 ← tag_writes s v.id v1.id names now ws2 s.counter.last_tag
+            match r2 with
+            | core.result.Result.Ok v5 =>
+              let (ws3, shown, last_tag) := v5
+              let w ← set_counter s s.counter.last_bookmark last_tag
+              let ws4 ← alloc.vec.Vec.push ws3 w
+              ok (core.result.Result.Ok (ws4, Reply.Bookmark
+                {
+                  bookmark :=
+                    {
+                      v1
+                        with
+                        added := i,
+                        url,
+                        url_norm,
+                        title := v2,
+                        description := v3,
+                        notes := v4,
+                        unread := b1,
+                        archived := b2,
+                        shared := b3,
+                        modified := now
+                    },
+                  tags := shown
+                }))
+            | core.result.Result.Err e => ok (core.result.Result.Err e)
+    | core.result.Result.Err e => ok (core.result.Result.Err e)
+  | core.result.Result.Err e => ok (core.result.Result.Err e)
 
-/-- [linkding_kernel::valid_url]: loop body 1:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-1195:5
-    Visibility: public -/
+/-- [linkding_kernel::delete_bookmark]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1440:0-1447:1 -/
+def delete_bookmark
+  (s : Snapshot) (token : alloc.vec.Vec Std.U8) (id : Std.U64) :
+  Result (core.result.Result ((alloc.vec.Vec Write) × Reply) Error)
+  := do
+  let r ← signed_in s token
+  match r with
+  | core.result.Result.Ok v =>
+    let r1 ← own_bookmark s v id
+    match r1 with
+    | core.result.Result.Ok v1 =>
+      let ws ←
+        alloc.vec.Vec.push (alloc.vec.Vec.new Write) (Write.DelLinksOf v1.id)
+      let ws1 ←
+        alloc.vec.Vec.push ws (Write.DelBookmark v1.owner v1.added v1.id)
+      ok (core.result.Result.Ok (ws1, Reply.Done))
+    | core.result.Result.Err e => ok (core.result.Result.Err e)
+  | core.result.Result.Err e => ok (core.result.Result.Err e)
+
+/-- [linkding_kernel::archive]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1449:0-1467:1 -/
+def archive
+  (s : Snapshot) (token : alloc.vec.Vec Std.U8) (id : Std.U64)
+  (archived : Bool) (now : Std.U64) :
+  Result (core.result.Result ((alloc.vec.Vec Write) × Reply) Error)
+  := do
+  let r ← signed_in s token
+  match r with
+  | core.result.Result.Ok v =>
+    let r1 ← own_bookmark s v id
+    match r1 with
+    | core.result.Result.Ok v1 =>
+      let v2 ← alloc.vec.CloneVec.clone core.clone.CloneU8 v1.url
+      let v3 ← alloc.vec.CloneVec.clone core.clone.CloneU8 v1.url_norm
+      let v4 ← alloc.vec.CloneVec.clone core.clone.CloneU8 v1.title
+      let v5 ← alloc.vec.CloneVec.clone core.clone.CloneU8 v1.description
+      let v6 ← alloc.vec.CloneVec.clone core.clone.CloneU8 v1.notes
+      let v7 ←
+        one (Write.PutBookmark
+          {
+            v1
+              with
+              url := v2,
+              url_norm := v3,
+              title := v4,
+              description := v5,
+              notes := v6,
+              archived,
+              modified := now
+          })
+      ok (core.result.Result.Ok (v7, Reply.Done))
+    | core.result.Result.Err e => ok (core.result.Result.Err e)
+  | core.result.Result.Err e => ok (core.result.Result.Err e)
+
+/-- [linkding_kernel::check]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1469:0-1476:1 -/
+def check
+  (s : Snapshot) (token : alloc.vec.Vec Std.U8) (url : alloc.vec.Vec Std.U8)
+  (url_norm : alloc.vec.Vec Std.U8) :
+  Result (core.result.Result ((alloc.vec.Vec Write) × Reply) Error)
+  := do
+  let r ← signed_in s token
+  match r with
+  | core.result.Result.Ok v =>
+    let o ← existing s v.id url url_norm
+    let found ←
+      match o with
+      | none => ok none
+      | some b => do
+                  let bv ← view s b
+                  ok (some bv)
+    ok (core.result.Result.Ok (alloc.vec.Vec.new Write, Reply.Found found))
+  | core.result.Result.Err e => ok (core.result.Result.Err e)
+
+/-- [linkding_kernel::list_tags]: loop body 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1485:4-1490:5 -/
 @[rust_loop_body]
-def valid_url_loop0_loop0.body
-  (value : alloc.vec.Vec Std.U8) («end» : Std.Usize) :
-  Result (ControlFlow Std.Usize Std.Usize)
+def list_tags_loop.body
+  (s : Snapshot) (me : User) (mine1 : alloc.vec.Vec Tag) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Tag) × Std.Usize) (alloc.vec.Vec Tag))
   := do
-  let i := alloc.vec.Vec.len value
-  if «end» < i
-  then
-    let i1 ←
-      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Std.U8) value
-        «end»
-    if i1 != 47#u8
-    then
-      if i1 != 63#u8
-      then
-        if i1 != 35#u8
-        then let end1 ← «end» + 1#usize
-             ok (cont end1)
-        else ok (done «end»)
-      else ok (done «end»)
-    else ok (done «end»)
-  else ok (done «end»)
-
-/-- [linkding_kernel::valid_url]: loop 1:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-1195:5
-    Visibility: public -/
-@[rust_loop]
-def valid_url_loop0_loop0
-  (value : alloc.vec.Vec Std.U8) («end» : Std.Usize) : Result Std.Usize := do
-  loop
-    (fun end1 => valid_url_loop0_loop0.body value end1)
-    «end»
-
-/-- [linkding_kernel::valid_url]: loop body 2:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-1207:5
-    Visibility: public -/
-@[rust_loop_body]
-def valid_url_loop0_loop1.body
-  (value : alloc.vec.Vec Std.U8) (start : Std.Usize) («end» : Std.Usize)
-  («at» : Std.Usize) :
-  Result (ControlFlow Std.Usize Std.Usize)
-  := do
-  if «at» < «end»
-  then
-    let i ←
-      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Std.U8) value
-        «at»
-    if i = 64#u8
-    then let host_from ← «at» + 1#usize
-         ok (done host_from)
-    else let at1 ← «at» + 1#usize
-         ok (cont at1)
-  else ok (done start)
-
-/-- [linkding_kernel::valid_url]: loop 2:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-1207:5
-    Visibility: public -/
-@[rust_loop]
-def valid_url_loop0_loop1
-  (value : alloc.vec.Vec Std.U8) (start : Std.Usize) («end» : Std.Usize)
-  («at» : Std.Usize) :
-  Result Std.Usize
-  := do
-  loop
-    (fun at1 => valid_url_loop0_loop1.body value start «end» at1)
-    «at»
-
-/-- [linkding_kernel::valid_url]: loop body 3:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-1216:9
-    Visibility: public -/
-@[rust_loop_body]
-def valid_url_loop0_loop2.body
-  (value : alloc.vec.Vec Std.U8) («end» : Std.Usize) (close : Std.Usize) :
-  Result (ControlFlow Std.Usize Std.Usize)
-  := do
-  if close < «end»
-  then
-    let i ←
-      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Std.U8) value
-        close
-    if i != 93#u8
-    then let close1 ← close + 1#usize
-         ok (cont close1)
-    else ok (done close)
-  else ok (done close)
-
-/-- [linkding_kernel::valid_url]: loop 3:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-1216:9
-    Visibility: public -/
-@[rust_loop]
-def valid_url_loop0_loop2
-  (value : alloc.vec.Vec Std.U8) («end» : Std.Usize) (close : Std.Usize) :
-  Result Std.Usize
-  := do
-  loop
-    (fun close1 => valid_url_loop0_loop2.body value «end» close1)
-    close
-
-/-- [linkding_kernel::valid_url]: loop body 4:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1235:4-1241:5
-    Visibility: public -/
-@[rust_loop_body]
-def valid_url_loop0_loop3.body
-  (value : alloc.vec.Vec Std.U8) («end» : Std.Usize) (colon : Std.Usize)
-  (j : Std.Usize) (colons : Std.I32) :
-  Result (ControlFlow (Std.Usize × Std.Usize × Std.I32) (Std.Usize ×
-    Std.I32))
-  := do
-  if j < «end»
-  then
-    let i ←
-      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Std.U8) value
-        j
-    let (colon1, colons1) ←
-      if i = 58#u8
-      then do
-           let colons2 ← colons + 1#i32
-           ok (j, colons2)
-      else ok (colon, colons)
-    let j1 ← j + 1#usize
-    ok (cont (colon1, j1, colons1))
-  else ok (done (colon, colons))
-
-/-- [linkding_kernel::valid_url]: loop 4:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1235:4-1241:5
-    Visibility: public -/
-@[rust_loop]
-def valid_url_loop0_loop3
-  (value : alloc.vec.Vec Std.U8) («end» : Std.Usize) (colon : Std.Usize)
-  (j : Std.Usize) (colons : Std.I32) :
-  Result (Std.Usize × Std.I32)
-  := do
-  loop
-    (fun (colon1, j1, colons1) => valid_url_loop0_loop3.body value «end»
-      colon1 j1 colons1)
-    (colon, j, colons)
-
-/-- [linkding_kernel::valid_url]: loop body 0:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-1251:1
-    Visibility: public -/
-@[rust_loop_body]
-def valid_url_loop0.body
-  (value : alloc.vec.Vec Std.U8) (i : Std.Usize) :
-  Result (ControlFlow Std.Usize Bool)
-  := do
-  let i1 := alloc.vec.Vec.len value
+  let i1 := alloc.vec.Vec.len s.tags
   if i < i1
   then
-    let c ←
-      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Std.U8) value
-        i
-    if c = 9#u8
-    then ok (done false)
-    else
-      if c = 13#u8
-      then ok (done false)
-      else
-        if c = 10#u8
-        then ok (done false)
-        else let i2 ← i + 1#usize
-             ok (cont i2)
-  else
-    let split ← find_scheme value
-    let i2 := alloc.vec.Vec.len value
-    if split >= i2
-    then ok (done false)
-    else
-      if split = 0#usize
-      then ok (done false)
-      else
-        let accepted ←
-          if split = 5#usize
-          then
-            do
-            let i3 ←
-              alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
-                Std.U8) value 0#usize
-            let i4 ← lower_ascii i3
-            if i4 = 104#u8
-            then
-              let i5 ←
-                alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
-                  Std.U8) value 1#usize
-              let i6 ← lower_ascii i5
-              if i6 = 116#u8
-              then
-                let i7 ←
-                  alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
-                    Std.U8) value 2#usize
-                let i8 ← lower_ascii i7
-                if i8 = 116#u8
-                then
-                  let i9 ←
-                    alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
-                      Std.U8) value 3#usize
-                  let i10 ← lower_ascii i9
-                  if i10 = 112#u8
-                  then
-                    let i11 ←
-                      alloc.vec.Vec.index
-                        (core.slice.index.SliceIndexUsizeSlice Std.U8) value
-                        4#usize
-                    let i12 ← lower_ascii i11
-                    ok (i12 = 115#u8)
-                  else ok false
-                else ok false
-              else ok false
-            else ok false
-          else
-            if split = 4#usize
-            then
-              do
-              let i3 ←
-                alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
-                  Std.U8) value 0#usize
-              let i4 ← lower_ascii i3
-              let http ←
-                if i4 = 104#u8
-                then
-                  do
-                  let i5 ←
-                    alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
-                      Std.U8) value 1#usize
-                  let i6 ← lower_ascii i5
-                  if i6 = 116#u8
-                  then
-                    let i7 ←
-                      alloc.vec.Vec.index
-                        (core.slice.index.SliceIndexUsizeSlice Std.U8) value
-                        2#usize
-                    let i8 ← lower_ascii i7
-                    if i8 = 116#u8
-                    then
-                      let i9 ←
-                        alloc.vec.Vec.index
-                          (core.slice.index.SliceIndexUsizeSlice Std.U8) value
-                          3#usize
-                      let i10 ← lower_ascii i9
-                      ok (i10 = 112#u8)
-                    else ok false
-                  else ok false
-                else ok false
-              let i5 ← lower_ascii i3
-              let accepted1 ←
-                if i5 = 102#u8
-                then
-                  do
-                  let i6 ←
-                    alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
-                      Std.U8) value 1#usize
-                  let i7 ← lower_ascii i6
-                  if i7 = 116#u8
-                  then
-                    let i8 ←
-                      alloc.vec.Vec.index
-                        (core.slice.index.SliceIndexUsizeSlice Std.U8) value
-                        2#usize
-                    let i9 ← lower_ascii i8
-                    if i9 = 112#u8
-                    then
-                      let i10 ←
-                        alloc.vec.Vec.index
-                          (core.slice.index.SliceIndexUsizeSlice Std.U8) value
-                          3#usize
-                      let i11 ← lower_ascii i10
-                      ok (i11 = 115#u8)
-                    else ok false
-                  else ok false
-                else ok false
-              if http
-              then ok true
-              else ok accepted1
-            else
-              if split = 3#usize
-              then
-                do
-                let i3 ←
-                  alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
-                    Std.U8) value 0#usize
-                let i4 ← lower_ascii i3
-                if i4 = 102#u8
-                then
-                  let i5 ←
-                    alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
-                      Std.U8) value 1#usize
-                  let i6 ← lower_ascii i5
-                  if i6 = 116#u8
-                  then
-                    let i7 ←
-                      alloc.vec.Vec.index
-                        (core.slice.index.SliceIndexUsizeSlice Std.U8) value
-                        2#usize
-                    let i8 ← lower_ascii i7
-                    ok (i8 = 112#u8)
-                  else ok false
-                else ok false
-              else ok false
-        if accepted
-        then
-          let start ← split + 3#usize
-          let i3 := alloc.vec.Vec.len value
-          if start >= i3
-          then ok (done false)
-          else
-            let «end» ← valid_url_loop0_loop0 value start
-            if «end» <= start
-            then ok (done false)
-            else
-              let host_from ← valid_url_loop0_loop1 value start «end» start
-              if host_from >= «end»
-              then ok (done false)
-              else
-                let i4 ←
-                  alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
-                    Std.U8) value host_from
-                if i4 = 91#u8
-                then
-                  let close ← host_from + 1#usize
-                  let close1 ← valid_url_loop0_loop2 value «end» close
-                  if close1 >= «end»
-                  then ok (done false)
-                  else
-                    let i5 ←
-                      alloc.vec.Vec.index
-                        (core.slice.index.SliceIndexUsizeSlice Std.U8) value
-                        close1
-                    if i5 != 93#u8
-                    then ok (done false)
-                    else
-                      let i6 ← host_from + 1#usize
-                      let host ←
-                        push_copy (alloc.vec.Vec.new Std.U8) value i6 close1
-                      let b ← host_ok host
-                      if b
-                      then
-                        let i7 ← close1 + 1#usize
-                        if i7 < «end»
-                        then
-                          let i8 ←
-                            alloc.vec.Vec.index
-                              (core.slice.index.SliceIndexUsizeSlice Std.U8)
-                              value i7
-                          if i8 != 58#u8
-                          then ok (done false)
-                          else
-                            let i9 ← close1 + 2#usize
-                            let b1 ← port_ok value i9 «end»
-                            ok (done b1)
-                        else ok (done true)
-                      else ok (done false)
-                else
-                  let (colon, colons) ←
-                    valid_url_loop0_loop3 value «end» «end» host_from 0#i32
-                  if colons = 1#i32
-                  then
-                    let host ←
-                      push_copy (alloc.vec.Vec.new Std.U8) value host_from
-                        colon
-                    let b ← host_ok host
-                    if b
-                    then
-                      let i5 ← colon + 1#usize
-                      let b1 ← port_ok value i5 «end»
-                      ok (done b1)
-                    else ok (done false)
-                  else
-                    let host ←
-                      push_copy (alloc.vec.Vec.new Std.U8) value host_from
-                        «end»
-                    let b ← host_ok host
-                    ok (done b)
-        else ok (done false)
+    let t ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Tag) s.tags i
+    let mine2 ←
+      if t.owner = me.id
+      then
+        do
+        let t1 ← Tag.Insts.CoreCloneClone.clone t
+        alloc.vec.Vec.push mine1 t1
+      else ok mine1
+    let i2 ← i + 1#usize
+    ok (cont (mine2, i2))
+  else ok (done mine1)
 
-/-- [linkding_kernel::valid_url]: loop 0:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1:0-1251:1
+/-- [linkding_kernel::list_tags]: loop 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1485:4-1490:5 -/
+@[rust_loop]
+def list_tags_loop
+  (s : Snapshot) (me : User) (mine1 : alloc.vec.Vec Tag) (i : Std.Usize) :
+  Result (alloc.vec.Vec Tag)
+  := do
+  loop
+    (fun (mine2, i1) => list_tags_loop.body s me mine2 i1)
+    (mine1, i)
+
+/-- [linkding_kernel::list_tags]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1481:0-1492:1 -/
+def list_tags
+  (s : Snapshot) (token : alloc.vec.Vec Std.U8) (limit : Std.U64)
+  (offset : Std.U64) :
+  Result (core.result.Result ((alloc.vec.Vec Write) × Reply) Error)
+  := do
+  let r ← signed_in s token
+  match r with
+  | core.result.Result.Ok v =>
+    let mine1 ← list_tags_loop s v (alloc.vec.Vec.new Tag) 0#usize
+    let v1 ← page_tags mine1 offset limit
+    ok (core.result.Result.Ok (alloc.vec.Vec.new Write, Reply.Tags v1))
+  | core.result.Result.Err e => ok (core.result.Result.Err e)
+
+/-- [linkding_kernel::create_tag]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1495:0-1512:1 -/
+def create_tag
+  (s : Snapshot) (token : alloc.vec.Vec Std.U8)
+  («name» : alloc.vec.Vec Std.U8) (now : Std.U64) :
+  Result (core.result.Result ((alloc.vec.Vec Write) × Reply) Error)
+  := do
+  let r ← signed_in s token
+  match r with
+  | core.result.Result.Ok v =>
+    let lower ← lower_text «name»
+    let o ← find_tag_named s.tags v.id lower
+    match o with
+    | none =>
+      if s.counter.last_tag = core.num.U64.MAX
+      then ok (core.result.Result.Err Error.Overflow)
+      else
+        let i ← s.counter.last_tag + 1#u64
+        let v1 ← alloc.vec.CloneVec.clone core.clone.CloneU8 «name»
+        let t ←
+          Tag.Insts.CoreCloneClone.clone
+            {
+              id := i,
+              owner := v.id,
+              «name» := v1,
+              name_lower := lower,
+              added := now
+            }
+        let ws ←
+          alloc.vec.Vec.push (alloc.vec.Vec.new Write) (Write.PutTag t)
+        let w ← set_counter s s.counter.last_bookmark i
+        let ws1 ← alloc.vec.Vec.push ws w
+        ok (core.result.Result.Ok (ws1, Reply.Tag
+          {
+            id := i,
+            owner := v.id,
+            «name» := v1,
+            name_lower := lower,
+            added := now
+          }))
+    | some t =>
+      ok (core.result.Result.Ok (alloc.vec.Vec.new Write, Reply.Tag t))
+  | core.result.Result.Err e => ok (core.result.Result.Err e)
+
+/-- [linkding_kernel::own_tag]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1514:0-1525:1 -/
+def own_tag
+  (s : Snapshot) (me : User) (id : Std.U64) :
+  Result (core.result.Result Tag Error)
+  := do
+  let o ← find_tag s.tags id
+  match o with
+  | none => ok (core.result.Result.Err Error.NotFound)
+  | some t =>
+    if t.owner = me.id
+    then ok (core.result.Result.Ok t)
+    else ok (core.result.Result.Err Error.NotFound)
+
+/-- [linkding_kernel::get_tag]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1527:0-1531:1 -/
+def get_tag
+  (s : Snapshot) (token : alloc.vec.Vec Std.U8) (id : Std.U64) :
+  Result (core.result.Result ((alloc.vec.Vec Write) × Reply) Error)
+  := do
+  let r ← signed_in s token
+  match r with
+  | core.result.Result.Ok v =>
+    let r1 ← own_tag s v id
+    match r1 with
+    | core.result.Result.Ok v1 =>
+      ok (core.result.Result.Ok (alloc.vec.Vec.new Write, Reply.Tag v1))
+    | core.result.Result.Err e => ok (core.result.Result.Err e)
+  | core.result.Result.Err e => ok (core.result.Result.Err e)
+
+/-- [linkding_kernel::delete_tag]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1533:0-1540:1 -/
+def delete_tag
+  (s : Snapshot) (token : alloc.vec.Vec Std.U8) (id : Std.U64) :
+  Result (core.result.Result ((alloc.vec.Vec Write) × Reply) Error)
+  := do
+  let r ← signed_in s token
+  match r with
+  | core.result.Result.Ok v =>
+    let r1 ← own_tag s v id
+    match r1 with
+    | core.result.Result.Ok v1 =>
+      let ws ←
+        alloc.vec.Vec.push (alloc.vec.Vec.new Write) (Write.DelLinksTo v1.id)
+      let ws1 ← alloc.vec.Vec.push ws (Write.DelTag v1.id)
+      ok (core.result.Result.Ok (ws1, Reply.Done))
+    | core.result.Result.Err e => ok (core.result.Result.Err e)
+  | core.result.Result.Err e => ok (core.result.Result.Err e)
+
+/-- [linkding_kernel::bundle_before]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1545:0-1550:1 -/
+def bundle_before (x : Bundle) (y : Bundle) : Result Bool := do
+  if x.order != y.order
+  then ok (x.order < y.order)
+  else ok (x.id < y.id)
+
+/-- [linkding_kernel::insert_bundle]: loop body 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1557:4-1567:5 -/
+@[rust_loop_body]
+def insert_bundle_loop.body
+  (v : alloc.vec.Vec Bundle) (x : Bundle) (out : alloc.vec.Vec Bundle)
+  (placed : Bool) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Bundle) × Bool × Std.Usize)
+    ((alloc.vec.Vec Bundle) × Bool))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let here ←
+      if placed
+      then ok false
+      else
+        do
+        let b ←
+          alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Bundle) v
+            i
+        bundle_before x b
+    let out1 ←
+      if here
+      then
+        do
+        let b ← Bundle.Insts.CoreCloneClone.clone x
+        alloc.vec.Vec.push out b
+      else ok out
+    let placed1 ← if here
+                    then ok true
+                    else ok placed
+    let b ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Bundle) v i
+    let b1 ← Bundle.Insts.CoreCloneClone.clone b
+    let out2 ← alloc.vec.Vec.push out1 b1
+    let i2 ← i + 1#usize
+    ok (cont (out2, placed1, i2))
+  else ok (done (out, placed))
+
+/-- [linkding_kernel::insert_bundle]: loop 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1557:4-1567:5 -/
+@[rust_loop]
+def insert_bundle_loop
+  (v : alloc.vec.Vec Bundle) (x : Bundle) (out : alloc.vec.Vec Bundle)
+  (placed : Bool) (i : Std.Usize) :
+  Result ((alloc.vec.Vec Bundle) × Bool)
+  := do
+  loop
+    (fun (out1, placed1, i1) => insert_bundle_loop.body v x out1 placed1 i1)
+    (out, placed, i)
+
+/-- [linkding_kernel::insert_bundle]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1553:0-1572:1 -/
+def insert_bundle
+  (v : alloc.vec.Vec Bundle) (x : Bundle) : Result (alloc.vec.Vec Bundle) := do
+  let (out, placed) ←
+    insert_bundle_loop v x (alloc.vec.Vec.new Bundle) false 0#usize
+  if placed
+  then ok out
+  else let b ← Bundle.Insts.CoreCloneClone.clone x
+       alloc.vec.Vec.push out b
+
+/-- [linkding_kernel::bundles_of]: loop body 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1578:4-1583:5
+    Visibility: public -/
+@[rust_loop_body]
+def bundles_of_loop.body
+  (s : Snapshot) (owner : Std.U64) (out : alloc.vec.Vec Bundle) (i : Std.Usize)
+  :
+  Result (ControlFlow ((alloc.vec.Vec Bundle) × Std.Usize) (alloc.vec.Vec
+    Bundle))
+  := do
+  let i1 := alloc.vec.Vec.len s.bundles
+  if i < i1
+  then
+    let b ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Bundle)
+        s.bundles i
+    let out1 ← if b.owner = owner
+                 then insert_bundle out b
+                 else ok out
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
+  else ok (done out)
+
+/-- [linkding_kernel::bundles_of]: loop 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1578:4-1583:5
     Visibility: public -/
 @[rust_loop]
-def valid_url_loop0
-  (value : alloc.vec.Vec Std.U8) (i : Std.Usize) : Result Bool := do
+def bundles_of_loop
+  (s : Snapshot) (owner : Std.U64) (out : alloc.vec.Vec Bundle) (i : Std.Usize)
+  :
+  Result (alloc.vec.Vec Bundle)
+  := do
   loop
-    (fun i1 => valid_url_loop0.body value i1)
-    i
+    (fun (out1, i1) => bundles_of_loop.body s owner out1 i1)
+    (out, i)
 
-/-- [linkding_kernel::valid_url]:
-    Source: 'linkding/rust-h5i/kernel/src/lib.rs', lines 1146:0-1251:1
+/-- [linkding_kernel::bundles_of]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1575:0-1585:1
     Visibility: public -/
-def valid_url (value : alloc.vec.Vec Std.U8) : Result Bool := do
-  let i := alloc.vec.Vec.len value
-  if i = 0#usize
-  then ok false
+@[reducible]
+def bundles_of
+  (s : Snapshot) (owner : Std.U64) : Result (alloc.vec.Vec Bundle) := do
+  bundles_of_loop s owner (alloc.vec.Vec.new Bundle) 0#usize
+
+/-- [linkding_kernel::list_bundles]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1587:0-1591:1 -/
+def list_bundles
+  (s : Snapshot) (token : alloc.vec.Vec Std.U8) (limit : Std.U64)
+  (offset : Std.U64) :
+  Result (core.result.Result ((alloc.vec.Vec Write) × Reply) Error)
+  := do
+  let r ← signed_in s token
+  match r with
+  | core.result.Result.Ok v =>
+    let mine1 ← bundles_of s v.id
+    let v1 ← page_bundles mine1 offset limit
+    let i := alloc.vec.Vec.len mine1
+    let i1 ← lift (UScalar.cast .U64 i)
+    ok (core.result.Result.Ok (alloc.vec.Vec.new Write, Reply.Bundles v1 i1))
+  | core.result.Result.Err e => ok (core.result.Result.Err e)
+
+/-- [linkding_kernel::off_text]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1593:0-1598:1 -/
+def off_text
+  (t : Option (alloc.vec.Vec Std.U8)) : Result (alloc.vec.Vec Std.U8) := do
+  match t with
+  | none => off_word
+  | some x => alloc.vec.CloneVec.clone core.clone.CloneU8 x
+
+/-- [linkding_kernel::create_bundle]: loop body 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1609:12-1614:13 -/
+@[rust_loop_body]
+def create_bundle_loop.body
+  (mine1 : alloc.vec.Vec Bundle) (top : Std.U64) (i : Std.Usize) :
+  Result (ControlFlow (Std.U64 × Std.Usize) Std.U64)
+  := do
+  let i1 := alloc.vec.Vec.len mine1
+  if i < i1
+  then
+    let b ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Bundle) mine1
+        i
+    let top1 ← if b.order >= top
+                 then ok b.order
+                 else ok top
+    let i2 ← i + 1#usize
+    ok (cont (top1, i2))
+  else ok (done top)
+
+/-- [linkding_kernel::create_bundle]: loop 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1609:12-1614:13 -/
+@[rust_loop]
+def create_bundle_loop
+  (mine1 : alloc.vec.Vec Bundle) (top : Std.U64) (i : Std.Usize) :
+  Result Std.U64
+  := do
+  loop
+    (fun (top1, i1) => create_bundle_loop.body mine1 top1 i1)
+    (top, i)
+
+/-- [linkding_kernel::create_bundle]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1600:0-1648:1 -/
+def create_bundle
+  (s : Snapshot) (token : alloc.vec.Vec Std.U8) (f : BundleFields)
+  (now : Std.U64) :
+  Result (core.result.Result ((alloc.vec.Vec Write) × Reply) Error)
+  := do
+  let r ← signed_in s token
+  match r with
+  | core.result.Result.Ok v =>
+    match f.order with
+    | none =>
+      let mine1 ← bundles_of s v.id
+      let top ← create_bundle_loop mine1 ORDER_BIAS 0#usize
+      let i := alloc.vec.Vec.len mine1
+      if i = 0#usize
+      then
+        if s.counter.last_bundle = core.num.U64.MAX
+        then ok (core.result.Result.Err Error.Overflow)
+        else
+          let i1 ← s.counter.last_bundle + 1#u64
+          let v1 ← or_empty f.name
+          let v2 ← or_empty f.search
+          let v3 ← or_empty f.any_tags
+          let v4 ← or_empty f.all_tags
+          let v5 ← or_empty f.excluded_tags
+          let v6 ← off_text f.filter_unread
+          let v7 ← off_text f.filter_shared
+          let b ←
+            Bundle.Insts.CoreCloneClone.clone
+              {
+                id := i1,
+                owner := v.id,
+                «name» := v1,
+                search := v2,
+                any_tags := v3,
+                all_tags := v4,
+                excluded_tags := v5,
+                filter_unread := v6,
+                filter_shared := v7,
+                order := ORDER_BIAS,
+                created := now,
+                modified := now
+              }
+          let ws ←
+            alloc.vec.Vec.push (alloc.vec.Vec.new Write) (Write.PutBundle b)
+          let ws1 ←
+            alloc.vec.Vec.push ws (Write.SetCounter
+              { s.counter with last_bundle := i1 })
+          ok (core.result.Result.Ok (ws1, Reply.Bundle
+            {
+              id := i1,
+              owner := v.id,
+              «name» := v1,
+              search := v2,
+              any_tags := v3,
+              all_tags := v4,
+              excluded_tags := v5,
+              filter_unread := v6,
+              filter_shared := v7,
+              order := ORDER_BIAS,
+              created := now,
+              modified := now
+            }))
+      else
+        if top = core.num.U64.MAX
+        then ok (core.result.Result.Err Error.Overflow)
+        else
+          let order ← top + 1#u64
+          if s.counter.last_bundle = core.num.U64.MAX
+          then ok (core.result.Result.Err Error.Overflow)
+          else
+            let i1 ← s.counter.last_bundle + 1#u64
+            let v1 ← or_empty f.name
+            let v2 ← or_empty f.search
+            let v3 ← or_empty f.any_tags
+            let v4 ← or_empty f.all_tags
+            let v5 ← or_empty f.excluded_tags
+            let v6 ← off_text f.filter_unread
+            let v7 ← off_text f.filter_shared
+            let b ←
+              Bundle.Insts.CoreCloneClone.clone
+                {
+                  id := i1,
+                  owner := v.id,
+                  «name» := v1,
+                  search := v2,
+                  any_tags := v3,
+                  all_tags := v4,
+                  excluded_tags := v5,
+                  filter_unread := v6,
+                  filter_shared := v7,
+                  order,
+                  created := now,
+                  modified := now
+                }
+            let ws ←
+              alloc.vec.Vec.push (alloc.vec.Vec.new Write) (Write.PutBundle b)
+            let ws1 ←
+              alloc.vec.Vec.push ws (Write.SetCounter
+                { s.counter with last_bundle := i1 })
+            ok (core.result.Result.Ok (ws1, Reply.Bundle
+              {
+                id := i1,
+                owner := v.id,
+                «name» := v1,
+                search := v2,
+                any_tags := v3,
+                all_tags := v4,
+                excluded_tags := v5,
+                filter_unread := v6,
+                filter_shared := v7,
+                order,
+                created := now,
+                modified := now
+              }))
+    | some o =>
+      if s.counter.last_bundle = core.num.U64.MAX
+      then ok (core.result.Result.Err Error.Overflow)
+      else
+        let i ← s.counter.last_bundle + 1#u64
+        let v1 ← or_empty f.name
+        let v2 ← or_empty f.search
+        let v3 ← or_empty f.any_tags
+        let v4 ← or_empty f.all_tags
+        let v5 ← or_empty f.excluded_tags
+        let v6 ← off_text f.filter_unread
+        let v7 ← off_text f.filter_shared
+        let b ←
+          Bundle.Insts.CoreCloneClone.clone
+            {
+              id := i,
+              owner := v.id,
+              «name» := v1,
+              search := v2,
+              any_tags := v3,
+              all_tags := v4,
+              excluded_tags := v5,
+              filter_unread := v6,
+              filter_shared := v7,
+              order := o,
+              created := now,
+              modified := now
+            }
+        let ws ←
+          alloc.vec.Vec.push (alloc.vec.Vec.new Write) (Write.PutBundle b)
+        let ws1 ←
+          alloc.vec.Vec.push ws (Write.SetCounter
+            { s.counter with last_bundle := i })
+        ok (core.result.Result.Ok (ws1, Reply.Bundle
+          {
+            id := i,
+            owner := v.id,
+            «name» := v1,
+            search := v2,
+            any_tags := v3,
+            all_tags := v4,
+            excluded_tags := v5,
+            filter_unread := v6,
+            filter_shared := v7,
+            order := o,
+            created := now,
+            modified := now
+          }))
+  | core.result.Result.Err e => ok (core.result.Result.Err e)
+
+/-- [linkding_kernel::own_bundle]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1650:0-1661:1 -/
+def own_bundle
+  (s : Snapshot) (me : User) (id : Std.U64) :
+  Result (core.result.Result Bundle Error)
+  := do
+  let o ← find_bundle s.bundles id
+  match o with
+  | none => ok (core.result.Result.Err Error.NotFound)
+  | some b =>
+    if b.owner = me.id
+    then ok (core.result.Result.Ok b)
+    else ok (core.result.Result.Err Error.NotFound)
+
+/-- [linkding_kernel::get_bundle]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1663:0-1667:1 -/
+def get_bundle
+  (s : Snapshot) (token : alloc.vec.Vec Std.U8) (id : Std.U64) :
+  Result (core.result.Result ((alloc.vec.Vec Write) × Reply) Error)
+  := do
+  let r ← signed_in s token
+  match r with
+  | core.result.Result.Ok v =>
+    let r1 ← own_bundle s v id
+    match r1 with
+    | core.result.Result.Ok v1 =>
+      ok (core.result.Result.Ok (alloc.vec.Vec.new Write, Reply.Bundle v1))
+    | core.result.Result.Err e => ok (core.result.Result.Err e)
+  | core.result.Result.Err e => ok (core.result.Result.Err e)
+
+/-- [linkding_kernel::update_bundle]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1669:0-1687:1 -/
+def update_bundle
+  (s : Snapshot) (token : alloc.vec.Vec Std.U8) (id : Std.U64)
+  (f : BundleFields) (now : Std.U64) :
+  Result (core.result.Result ((alloc.vec.Vec Write) × Reply) Error)
+  := do
+  let r ← signed_in s token
+  match r with
+  | core.result.Result.Ok v =>
+    let r1 ← own_bundle s v id
+    match r1 with
+    | core.result.Result.Ok v1 =>
+      let v2 ← or_keep f.name v1.name
+      let v3 ← or_keep f.search v1.search
+      let v4 ← or_keep f.any_tags v1.any_tags
+      let v5 ← or_keep f.all_tags v1.all_tags
+      let v6 ← or_keep f.excluded_tags v1.excluded_tags
+      let v7 ← or_keep f.filter_unread v1.filter_unread
+      let v8 ← or_keep f.filter_shared v1.filter_shared
+      let i ← time_or f.order v1.order
+      let b ←
+        Bundle.Insts.CoreCloneClone.clone
+          {
+            v1
+              with
+              «name» := v2,
+              search := v3,
+              any_tags := v4,
+              all_tags := v5,
+              excluded_tags := v6,
+              filter_unread := v7,
+              filter_shared := v8,
+              order := i,
+              modified := now
+          }
+      let v9 ← one (Write.PutBundle b)
+      ok (core.result.Result.Ok (v9, Reply.Bundle
+        {
+          v1
+            with
+            «name» := v2,
+            search := v3,
+            any_tags := v4,
+            all_tags := v5,
+            excluded_tags := v6,
+            filter_unread := v7,
+            filter_shared := v8,
+            order := i,
+            modified := now
+        }))
+    | core.result.Result.Err e => ok (core.result.Result.Err e)
+  | core.result.Result.Err e => ok (core.result.Result.Err e)
+
+/-- [linkding_kernel::differs]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1689:0-1691:1 -/
+def differs (a : Std.U64) (b : Std.U64) : Result Bool := do
+  ok (a != b)
+
+/-- [linkding_kernel::renumbered]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1694:0-1700:1 -/
+def renumbered
+  (ws : alloc.vec.Vec Write) (x : Bundle) (pos : Std.U64) :
+  Result (alloc.vec.Vec Write)
+  := do
+  let y ← Bundle.Insts.CoreCloneClone.clone x
+  let i ← ORDER_BIAS + pos
+  alloc.vec.Vec.push ws (Write.PutBundle { y with order := i })
+
+/-- [linkding_kernel::delete_bundle]: loop body 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1711:4-1720:5 -/
+@[rust_loop_body]
+def delete_bundle_loop.body
+  (i : Std.U64) (mine1 : alloc.vec.Vec Bundle) (ws : alloc.vec.Vec Write)
+  (pos : Std.U64) (i1 : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Write) × Std.U64 × Std.Usize)
+    (alloc.vec.Vec Write))
+  := do
+  let i2 := alloc.vec.Vec.len mine1
+  if i1 < i2
+  then
+    let b ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Bundle) mine1
+        i1
+    let keep1 ← differs b.id i
+    let ws1 ← if keep1
+                then renumbered ws b pos
+                else ok ws
+    let pos1 ← if keep1
+                 then pos + 1#u64
+                 else ok pos
+    let i3 ← i1 + 1#usize
+    ok (cont (ws1, pos1, i3))
+  else ok (done ws)
+
+/-- [linkding_kernel::delete_bundle]: loop 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1711:4-1720:5 -/
+@[rust_loop]
+def delete_bundle_loop
+  (i : Std.U64) (mine1 : alloc.vec.Vec Bundle) (ws : alloc.vec.Vec Write)
+  (pos : Std.U64) (i1 : Std.Usize) :
+  Result (alloc.vec.Vec Write)
+  := do
+  loop
+    (fun (ws1, pos1, i2) => delete_bundle_loop.body i mine1 ws1 pos1 i2)
+    (ws, pos, i1)
+
+/-- [linkding_kernel::delete_bundle]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1703:0-1722:1 -/
+def delete_bundle
+  (s : Snapshot) (token : alloc.vec.Vec Std.U8) (id : Std.U64) :
+  Result (core.result.Result ((alloc.vec.Vec Write) × Reply) Error)
+  := do
+  let r ← signed_in s token
+  match r with
+  | core.result.Result.Ok v =>
+    let r1 ← own_bundle s v id
+    match r1 with
+    | core.result.Result.Ok v1 =>
+      let mine1 ← bundles_of s v.id
+      let ws ← one (Write.DelBundle v1.id)
+      let ws1 ← delete_bundle_loop v1.id mine1 ws 0#u64 0#usize
+      ok (core.result.Result.Ok (ws1, Reply.Done))
+    | core.result.Result.Err e => ok (core.result.Result.Err e)
+  | core.result.Result.Err e => ok (core.result.Result.Err e)
+
+/-- [linkding_kernel::profile]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1724:0-1727:1 -/
+def profile
+  (s : Snapshot) (token : alloc.vec.Vec Std.U8) :
+  Result (core.result.Result ((alloc.vec.Vec Write) × Reply) Error)
+  := do
+  let r ← signed_in s token
+  match r with
+  | core.result.Result.Ok v =>
+    ok (core.result.Result.Ok (alloc.vec.Vec.new Write, Reply.Profile v))
+  | core.result.Result.Err e => ok (core.result.Result.Err e)
+
+/-- [linkding_kernel::transition]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1730:0-1751:1
+    Visibility: public -/
+def transition
+  (actor1 : Principal) (s : Snapshot) (cmd : Command) :
+  Result (core.result.Result ((alloc.vec.Vec Write) × Reply) Error)
+  := do
+  match cmd with
+  | Command.Profile => profile s actor1.token
+  | Command.List filter limit offset => list s actor1.token filter limit offset
+  | Command.Check url url_norm => check s actor1.token url url_norm
+  | Command.GetBookmark id => get_bookmark s actor1.token id
+  | Command.CreateBookmark fields now =>
+    create_bookmark s actor1.token fields now
+  | Command.UpdateBookmark id fields now =>
+    update_bookmark s actor1.token id fields now
+  | Command.DeleteBookmark id => delete_bookmark s actor1.token id
+  | Command.Archive id archived now => archive s actor1.token id archived now
+  | Command.ListTags limit offset => list_tags s actor1.token limit offset
+  | Command.CreateTag «name» now => create_tag s actor1.token «name» now
+  | Command.GetTag id => get_tag s actor1.token id
+  | Command.DeleteTag id => delete_tag s actor1.token id
+  | Command.ListBundles limit offset =>
+    list_bundles s actor1.token limit offset
+  | Command.CreateBundle fields now => create_bundle s actor1.token fields now
+  | Command.GetBundle id => get_bundle s actor1.token id
+  | Command.UpdateBundle id fields now =>
+    update_bundle s actor1.token id fields now
+  | Command.DeleteBundle id => delete_bundle s actor1.token id
+
+/-- [linkding_kernel::read_only]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1754:0-1766:1
+    Visibility: public -/
+def read_only (cmd : Command) : Result Bool := do
+  match cmd with
+  | Command.Profile => ok true
+  | Command.List _ _ _ => ok true
+  | Command.Check _ _ => ok true
+  | Command.GetBookmark _ => ok true
+  | Command.CreateBookmark _ _ => ok false
+  | Command.UpdateBookmark _ _ _ => ok false
+  | Command.DeleteBookmark _ => ok false
+  | Command.Archive _ _ _ => ok false
+  | Command.ListTags _ _ => ok true
+  | Command.CreateTag _ _ => ok false
+  | Command.GetTag _ => ok true
+  | Command.DeleteTag _ => ok false
+  | Command.ListBundles _ _ => ok true
+  | Command.CreateBundle _ _ => ok false
+  | Command.GetBundle _ => ok true
+  | Command.UpdateBundle _ _ _ => ok false
+  | Command.DeleteBundle _ => ok false
+
+/-- [linkding_kernel::T_USERS]
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1771:0-1771:23 -/
+@[global_simps, irreducible] def T_USERS : Std.U32 := 0#u32
+
+/-- [linkding_kernel::T_TOKENS]
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1772:0-1772:24 -/
+@[global_simps, irreducible] def T_TOKENS : Std.U32 := 1#u32
+
+/-- [linkding_kernel::T_BOOKMARKS]
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1773:0-1773:27 -/
+@[global_simps, irreducible] def T_BOOKMARKS : Std.U32 := 2#u32
+
+/-- [linkding_kernel::T_TAGS]
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1774:0-1774:22 -/
+@[global_simps, irreducible] def T_TAGS : Std.U32 := 3#u32
+
+/-- [linkding_kernel::T_LINKS]
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1775:0-1775:23 -/
+@[global_simps, irreducible] def T_LINKS : Std.U32 := 4#u32
+
+/-- [linkding_kernel::T_BUNDLES]
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1776:0-1776:25 -/
+@[global_simps, irreducible] def T_BUNDLES : Std.U32 := 5#u32
+
+/-- [linkding_kernel::T_COUNTER]
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1777:0-1777:25 -/
+@[global_simps, irreducible] def T_COUNTER : Std.U32 := 6#u32
+
+/-- [linkding_kernel::USER_ID]
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1778:0-1778:23 -/
+@[global_simps, irreducible] def USER_ID : Std.U32 := 0#u32
+
+/-- [linkding_kernel::USER_NAME]
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1779:0-1779:25 -/
+@[global_simps, irreducible] def USER_NAME : Std.U32 := 1#u32
+
+/-- [linkding_kernel::USER_SHARING]
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1780:0-1780:28 -/
+@[global_simps, irreducible] def USER_SHARING : Std.U32 := 7#u32
+
+/-- [linkding_kernel::TOKEN_KEY]
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1781:0-1781:25 -/
+@[global_simps, irreducible] def TOKEN_KEY : Std.U32 := 0#u32
+
+/-- [linkding_kernel::TOKEN_USER]
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1782:0-1782:26 -/
+@[global_simps, irreducible] def TOKEN_USER : Std.U32 := 1#u32
+
+/-- [linkding_kernel::BM_OWNER]
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1783:0-1783:24 -/
+@[global_simps, irreducible] def BM_OWNER : Std.U32 := 0#u32
+
+/-- [linkding_kernel::BM_ID]
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1784:0-1784:21 -/
+@[global_simps, irreducible] def BM_ID : Std.U32 := 2#u32
+
+/-- [linkding_kernel::BM_URL]
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1785:0-1785:22 -/
+@[global_simps, irreducible] def BM_URL : Std.U32 := 3#u32
+
+/-- [linkding_kernel::BM_URL_NORM]
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1786:0-1786:27 -/
+@[global_simps, irreducible] def BM_URL_NORM : Std.U32 := 4#u32
+
+/-- [linkding_kernel::BM_UNREAD]
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1787:0-1787:25 -/
+@[global_simps, irreducible] def BM_UNREAD : Std.U32 := 8#u32
+
+/-- [linkding_kernel::BM_ARCHIVED]
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1788:0-1788:27 -/
+@[global_simps, irreducible] def BM_ARCHIVED : Std.U32 := 9#u32
+
+/-- [linkding_kernel::BM_SHARED]
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1789:0-1789:26 -/
+@[global_simps, irreducible] def BM_SHARED : Std.U32 := 10#u32
+
+/-- [linkding_kernel::TAG_ID]
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1790:0-1790:22 -/
+@[global_simps, irreducible] def TAG_ID : Std.U32 := 0#u32
+
+/-- [linkding_kernel::TAG_OWNER]
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1791:0-1791:25 -/
+@[global_simps, irreducible] def TAG_OWNER : Std.U32 := 1#u32
+
+/-- [linkding_kernel::TAG_LOWER]
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1792:0-1792:25 -/
+@[global_simps, irreducible] def TAG_LOWER : Std.U32 := 3#u32
+
+/-- [linkding_kernel::BUNDLE_ID]
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1795:0-1795:25 -/
+@[global_simps, irreducible] def BUNDLE_ID : Std.U32 := 0#u32
+
+/-- [linkding_kernel::BUNDLE_OWNER]
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1796:0-1796:28 -/
+@[global_simps, irreducible] def BUNDLE_OWNER : Std.U32 := 1#u32
+
+/-- [linkding_kernel::v_int]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1802:0-1804:1 -/
+def v_int (x : Std.U64) : Result h5i_app_sql.Val := do
+  U64.Insts.H5i_app_sqlColumn.to_val x
+
+/-- [linkding_kernel::v_bool]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1806:0-1808:1 -/
+def v_bool (x : Bool) : Result h5i_app_sql.Val := do
+  Bool.Insts.H5i_app_sqlColumn.to_val x
+
+/-- [linkding_kernel::v_bytes]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1810:0-1812:1 -/
+def v_bytes (t : alloc.vec.Vec Std.U8) : Result h5i_app_sql.Val := do
+  alloc.vec.VecU8.Insts.H5i_app_sqlColumn.to_val t
+
+/-- [linkding_kernel::p_eq]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1814:0-1816:1 -/
+def p_eq (col : Std.U32) (v : h5i_app_sql.Val) : Result h5i_app_sql.Pred := do
+  ok (h5i_app_sql.Pred.Eq col v)
+
+/-- [linkding_kernel::p_or]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1818:0-1820:1 -/
+def p_or
+  (a : h5i_app_sql.Pred) (b : h5i_app_sql.Pred) : Result h5i_app_sql.Pred := do
+  ok (h5i_app_sql.Pred.Or a b)
+
+/-- [linkding_kernel::p_and]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1822:0-1824:1 -/
+def p_and
+  (a : h5i_app_sql.Pred) (b : h5i_app_sql.Pred) : Result h5i_app_sql.Pred := do
+  ok (h5i_app_sql.Pred.And a b)
+
+/-- [linkding_kernel::p_in]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1826:0-1828:1 -/
+def p_in
+  (col : Std.U32) (table : Std.U32) (pred : h5i_app_sql.Pred) (of : Std.U32)
+  (window : h5i_app_sql.Window) :
+  Result h5i_app_sql.Pred
+  := do
+  ok (h5i_app_sql.Pred.In col table pred of window)
+
+/-- [linkding_kernel::whole]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1830:0-1832:1 -/
+def whole : Result h5i_app_sql.Window := do
+  h5i_app_sql.whole
+
+/-- [linkding_kernel::rd]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1834:0-1836:1 -/
+def rd
+  (table : Std.U32) (pred : h5i_app_sql.Pred) : Result h5i_app_sql.Read := do
+  let w ← whole
+  ok { table, pred, window := w }
+
+/-- [linkding_kernel::mine]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1839:0-1841:1 -/
+def mine
+  (col : Std.U32) (token : alloc.vec.Vec Std.U8) :
+  Result h5i_app_sql.Pred
+  := do
+  let v ← v_bytes token
+  let p ← p_eq TOKEN_KEY v
+  let w ← whole
+  p_in col T_TOKENS p TOKEN_USER w
+
+/-- [linkding_kernel::caller_reads]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1844:0-1849:1 -/
+def caller_reads
+  (token : alloc.vec.Vec Std.U8) :
+  Result (alloc.vec.Vec h5i_app_sql.Read)
+  := do
+  let v ← v_bytes token
+  let p ← p_eq TOKEN_KEY v
+  let r ← rd T_TOKENS p
+  let out ← alloc.vec.Vec.push (alloc.vec.Vec.new h5i_app_sql.Read) r
+  let p1 ← mine USER_ID token
+  let r1 ← rd T_USERS p1
+  alloc.vec.Vec.push out r1
+
+/-- [linkding_kernel::caller_reads_and]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1852:0-1857:1 -/
+def caller_reads_and
+  (token : alloc.vec.Vec Std.U8) (extra : h5i_app_sql.Pred) :
+  Result (alloc.vec.Vec h5i_app_sql.Read)
+  := do
+  let v ← v_bytes token
+  let p ← p_eq TOKEN_KEY v
+  let r ← rd T_TOKENS p
+  let out ← alloc.vec.Vec.push (alloc.vec.Vec.new h5i_app_sql.Read) r
+  let p1 ← mine USER_ID token
+  let p2 ← p_or p1 extra
+  let r1 ← rd T_USERS p2
+  alloc.vec.Vec.push out r1
+
+/-- [linkding_kernel::Sel]
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1861:0-1873:1 -/
+@[discriminant isize]
+inductive Sel where
+| Paged :
+  alloc.vec.Vec Std.U8 →
+  Std.U8 →
+  alloc.vec.Vec Std.U8 →
+  Std.U8 →
+  Std.U8 →
+  Sel
+| Scope : alloc.vec.Vec Std.U8 → Std.U8 → Sel
+| Shared : Sel
+| Url :
+  alloc.vec.Vec Std.U8 →
+  alloc.vec.Vec Std.U8 →
+  alloc.vec.Vec Std.U8 →
+  Sel
+| Id : Std.U64 → Sel
+
+/-- [linkding_kernel::by_id]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 2006:0-2008:1 -/
+def by_id (id : Std.U64) : Result h5i_app_sql.Pred := do
+  let v ← v_int id
+  p_eq BM_ID v
+
+/-- [linkding_kernel::url_pred]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1983:0-1989:1 -/
+def url_pred
+  (token : alloc.vec.Vec Std.U8) (url : alloc.vec.Vec Std.U8)
+  (url_norm : alloc.vec.Vec Std.U8) :
+  Result h5i_app_sql.Pred
+  := do
+  let v ← v_bytes url_norm
+  let p ← p_eq BM_URL_NORM v
+  let v1 ← v_bytes (alloc.vec.Vec.new Std.U8)
+  let p1 ← p_eq BM_URL_NORM v1
+  let v2 ← v_bytes url
+  let p2 ← p_eq BM_URL v2
+  let p3 ← p_and p1 p2
+  let same ← p_or p p3
+  let p4 ← mine BM_OWNER token
+  p_and p4 same
+
+/-- [linkding_kernel::shared_pred]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1935:0-1937:1 -/
+def shared_pred : Result h5i_app_sql.Pred := do
+  let v ← v_bool true
+  let p ← p_eq BM_SHARED v
+  let p1 ← p_eq USER_SHARING v
+  let w ← whole
+  let p2 ← p_in BM_OWNER T_USERS p1 USER_ID w
+  p_and p p2
+
+/-- [linkding_kernel::scope_pred]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1924:0-1926:1 -/
+def scope_pred
+  (token : alloc.vec.Vec Std.U8) (scope : Std.U8) :
+  Result h5i_app_sql.Pred
+  := do
+  let p ← mine BM_OWNER token
+  let v ← v_bool (scope = SCOPE_ARCHIVED)
+  let p1 ← p_eq BM_ARCHIVED v
+  p_and p p1
+
+/-- [linkding_kernel::flag_pred]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1913:0-1921:1 -/
+def flag_pred
+  (col : Std.U32) (rule : Std.U8) (base : h5i_app_sql.Pred) :
+  Result h5i_app_sql.Pred
+  := do
+  if rule = FLAG_YES
+  then let v ← v_bool true
+       let p ← p_eq col v
+       p_and base p
   else
-    let i1 := alloc.vec.Vec.len value
-    if i1 > 2048#usize
-    then ok false
-    else valid_url_loop0 value 0#usize
+    if rule = FLAG_NO
+    then let v ← v_bool false
+         let p ← p_eq col v
+         p_and base p
+    else ok base
+
+/-- [linkding_kernel::tagged]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1892:0-1894:1 -/
+def tagged (lower : alloc.vec.Vec Std.U8) : Result h5i_app_sql.Pred := do
+  let v ← v_bytes lower
+  let p ← p_eq TAG_LOWER v
+  let w ← whole
+  let p1 ← p_in LINK_TAG T_TAGS p TAG_ID w
+  p_in BM_ID T_LINKS p1 LINK_BOOKMARK w
+
+/-- [linkding_kernel::search_pred]: loop body 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1904:12-1907:13 -/
+@[rust_loop_body]
+def search_pred_loop.body
+  (tags : alloc.vec.Vec (alloc.vec.Vec Std.U8)) (p : h5i_app_sql.Pred)
+  (i : Std.Usize) :
+  Result (ControlFlow (h5i_app_sql.Pred × Std.Usize) h5i_app_sql.Pred)
+  := do
+  let i1 := alloc.vec.Vec.len tags
+  if i < i1
+  then
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice (alloc.vec.Vec
+        Std.U8)) tags i
+    let v1 ← lower_text v
+    let p1 ← tagged v1
+    let p2 ← p_and p p1
+    let i2 ← i + 1#usize
+    ok (cont (p2, i2))
+  else ok (done p)
+
+/-- [linkding_kernel::search_pred]: loop 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1904:12-1907:13 -/
+@[rust_loop]
+def search_pred_loop
+  (tags : alloc.vec.Vec (alloc.vec.Vec Std.U8)) (p : h5i_app_sql.Pred)
+  (i : Std.Usize) :
+  Result h5i_app_sql.Pred
+  := do
+  loop
+    (fun (p1, i1) => search_pred_loop.body tags p1 i1)
+    (p, i)
+
+/-- [linkding_kernel::search_pred]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1898:0-1911:1 -/
+def search_pred (q : alloc.vec.Vec Std.U8) : Result h5i_app_sql.Pred := do
+  let o ← simple_query q
+  match o with
+  | none => ok h5i_app_sql.Pred.All
+  | some p =>
+    let (tags, unread) := p
+    let p1 ←
+      if unread
+      then do
+           let v ← v_bool true
+           p_eq BM_UNREAD v
+      else ok h5i_app_sql.Pred.All
+    search_pred_loop tags p1 0#usize
+
+/-- [linkding_kernel::paged_pred]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1929:0-1932:1 -/
+def paged_pred
+  (token : alloc.vec.Vec Std.U8) (scope : Std.U8) (q : alloc.vec.Vec Std.U8)
+  (unread : Std.U8) (shared : Std.U8) :
+  Result h5i_app_sql.Pred
+  := do
+  let p ← scope_pred token scope
+  let p1 ← search_pred q
+  let base ← p_and p p1
+  let p2 ← flag_pred BM_UNREAD unread base
+  flag_pred BM_SHARED shared p2
+
+/-- [linkding_kernel::sel_pred]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1875:0-1883:1 -/
+def sel_pred (sel : Sel) : Result h5i_app_sql.Pred := do
+  match sel with
+  | Sel.Paged t scope q unread shared => paged_pred t scope q unread shared
+  | Sel.Scope t scope => scope_pred t scope
+  | Sel.Shared => shared_pred
+  | Sel.Url t url norm => url_pred t url norm
+  | Sel.Id id => by_id id
+
+/-- [linkding_kernel::tag_reads]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1886:0-1889:1 -/
+def tag_reads
+  (sel : Sel) (w : h5i_app_sql.Window) (out : alloc.vec.Vec h5i_app_sql.Read) :
+  Result (alloc.vec.Vec h5i_app_sql.Read)
+  := do
+  let p ← sel_pred sel
+  let p1 ← p_in LINK_BOOKMARK T_BOOKMARKS p BM_ID w
+  let r ← rd T_LINKS p1
+  let out1 ← alloc.vec.Vec.push out r
+  let p2 ← p_in LINK_BOOKMARK T_BOOKMARKS p BM_ID w
+  let w1 ← whole
+  let p3 ← p_in TAG_ID T_LINKS p2 LINK_TAG w1
+  let r1 ← rd T_TAGS p3
+  alloc.vec.Vec.push out1 r1
+
+/-- [linkding_kernel::newest]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1940:0-1943:1 -/
+def newest
+  (offset : Std.U64) (limit : Std.U64) : Result h5i_app_sql.Window := do
+  let i ← core.num.U64.MAX - offset
+  if limit > i
+  then ok { desc := true, offset := 0#u64, limit := none }
+  else
+    let i1 ← offset + limit
+    ok { desc := true, offset := 0#u64, limit := (some i1) }
+
+/-- [linkding_kernel::bundle_read]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1975:0-1980:1 -/
+def bundle_read
+  (token : alloc.vec.Vec Std.U8) (flt : Filter)
+  (out : alloc.vec.Vec h5i_app_sql.Read) :
+  Result (alloc.vec.Vec h5i_app_sql.Read)
+  := do
+  match flt.bundle with
+  | none => ok out
+  | some id =>
+    let v ← v_int id
+    let p ← p_eq BUNDLE_ID v
+    let p1 ← mine BUNDLE_OWNER token
+    let p2 ← p_and p p1
+    let r ← rd T_BUNDLES p2
+    alloc.vec.Vec.push out r
+
+/-- [linkding_kernel::list_reads]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1947:0-1972:1 -/
+def list_reads
+  (token : alloc.vec.Vec Std.U8) (flt : Filter) (limit : Std.U64)
+  (offset : Std.U64) :
+  Result (alloc.vec.Vec h5i_app_sql.Read)
+  := do
+  if flt.scope = SCOPE_SHARED
+  then
+    let (o, extra) ←
+      match flt.user with
+      | none =>
+        do
+        let v ← v_bool true
+        let extra1 ← p_eq USER_SHARING v
+        ok (none, extra1)
+      | some n =>
+        do
+        let v ← v_bool true
+        let p ← p_eq USER_SHARING v
+        let v1 ← v_bytes n
+        let p1 ← p_eq USER_NAME v1
+        let extra1 ← p_or p p1
+        ok (flt.user, extra1)
+    let out ← caller_reads_and token extra
+    let p ← shared_pred
+    let r ← rd T_BOOKMARKS p
+    let out1 ← alloc.vec.Vec.push out r
+    let w ← whole
+    let out2 ← tag_reads Sel.Shared w out1
+    bundle_read token { flt with user := o } out2
+  else
+    let out ← caller_reads token
+    let b ← paged flt
+    if b
+    then
+      let w ← newest offset limit
+      let v ← alloc.vec.CloneVec.clone core.clone.CloneU8 token
+      let v1 ← alloc.vec.CloneVec.clone core.clone.CloneU8 flt.q
+      let p ← sel_pred (Sel.Paged v flt.scope v1 flt.unread flt.shared)
+      let out1 ←
+        alloc.vec.Vec.push out
+          ({ table := T_BOOKMARKS, pred := p, window := w } : h5i_app_sql.Read)
+      tag_reads (Sel.Paged v flt.scope v1 flt.unread flt.shared) w out1
+    else
+      let v ← alloc.vec.CloneVec.clone core.clone.CloneU8 token
+      let p ← sel_pred (Sel.Scope v flt.scope)
+      let r ← rd T_BOOKMARKS p
+      let out1 ← alloc.vec.Vec.push out r
+      let w ← whole
+      let out2 ← tag_reads (Sel.Scope v flt.scope) w out1
+      bundle_read token flt out2
+
+/-- [linkding_kernel::p_none_tag]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 2002:0-2004:1 -/
+def p_none_tag : Result h5i_app_sql.Pred := do
+  let v ← v_int 0#u64
+  let p ← p_eq TAG_ID v
+  let v1 ← v_int 1#u64
+  let p1 ← p_eq TAG_ID v1
+  p_and p p1
+
+/-- [linkding_kernel::named_tags]: loop body 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1995:4-1998:5 -/
+@[rust_loop_body]
+def named_tags_loop.body
+  (names : alloc.vec.Vec (alloc.vec.Vec Std.U8)) (any : h5i_app_sql.Pred)
+  (i : Std.Usize) :
+  Result (ControlFlow (h5i_app_sql.Pred × Std.Usize) h5i_app_sql.Pred)
+  := do
+  let i1 := alloc.vec.Vec.len names
+  if i < i1
+  then
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice (alloc.vec.Vec
+        Std.U8)) names i
+    let v1 ← lower_text v
+    let v2 ← v_bytes v1
+    let p ← p_eq TAG_LOWER v2
+    let any1 ← p_or any p
+    let i2 ← i + 1#usize
+    ok (cont (any1, i2))
+  else ok (done any)
+
+/-- [linkding_kernel::named_tags]: loop 0:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1995:4-1998:5 -/
+@[rust_loop]
+def named_tags_loop
+  (names : alloc.vec.Vec (alloc.vec.Vec Std.U8)) (any : h5i_app_sql.Pred)
+  (i : Std.Usize) :
+  Result h5i_app_sql.Pred
+  := do
+  loop
+    (fun (any1, i1) => named_tags_loop.body names any1 i1)
+    (any, i)
+
+/-- [linkding_kernel::named_tags]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 1992:0-2000:1 -/
+def named_tags
+  (token : alloc.vec.Vec Std.U8) (names : alloc.vec.Vec (alloc.vec.Vec Std.U8))
+  :
+  Result h5i_app_sql.Pred
+  := do
+  let any ← p_none_tag
+  let any1 ← named_tags_loop names any 0#usize
+  let p ← mine TAG_OWNER token
+  p_and p any1
+
+/-- [linkding_kernel::reads]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 2012:0-2100:1
+    Visibility: public -/
+def reads
+  (actor1 : Principal) (cmd : Command) :
+  Result (Option (alloc.vec.Vec h5i_app_sql.Read))
+  := do
+  match cmd with
+  | Command.Profile => let v ← caller_reads actor1.token
+                       ok (some v)
+  | Command.List filter limit offset =>
+    let v ← list_reads actor1.token filter limit offset
+    ok (some v)
+  | Command.Check url url_norm =>
+    let out ← caller_reads actor1.token
+    let p ← url_pred actor1.token url url_norm
+    let r ← rd T_BOOKMARKS p
+    let out1 ← alloc.vec.Vec.push out r
+    let v ← alloc.vec.CloneVec.clone core.clone.CloneU8 actor1.token
+    let v1 ← alloc.vec.CloneVec.clone core.clone.CloneU8 url
+    let v2 ← alloc.vec.CloneVec.clone core.clone.CloneU8 url_norm
+    let w ← whole
+    let out2 ← tag_reads (Sel.Url v v1 v2) w out1
+    ok (some out2)
+  | Command.GetBookmark id =>
+    let out ← caller_reads actor1.token
+    let p ← by_id id
+    let r ← rd T_BOOKMARKS p
+    let out1 ← alloc.vec.Vec.push out r
+    let w ← whole
+    let out2 ← tag_reads (Sel.Id id) w out1
+    ok (some out2)
+  | Command.CreateBookmark fields _ =>
+    let url ← or_empty fields.url
+    let norm ← or_empty fields.url_norm
+    let names ←
+      match fields.tags with
+      | none => ok (alloc.vec.Vec.new (alloc.vec.Vec Std.U8))
+      | some n =>
+        alloc.vec.CloneVec.clone (core.clone.CloneallocvecVec
+          core.clone.CloneU8) n
+    let out ← caller_reads actor1.token
+    let p ← url_pred actor1.token url norm
+    let r ← rd T_BOOKMARKS p
+    let out1 ← alloc.vec.Vec.push out r
+    let p1 ← named_tags actor1.token names
+    let r1 ← rd T_TAGS p1
+    let out2 ← alloc.vec.Vec.push out1 r1
+    let r2 ← rd T_COUNTER h5i_app_sql.Pred.All
+    let out3 ← alloc.vec.Vec.push out2 r2
+    ok (some out3)
+  | Command.UpdateBookmark id fields _ =>
+    let out ← caller_reads actor1.token
+    let dup ←
+      match fields.url with
+      | none => by_id id
+      | some u =>
+        do
+        let p ← by_id id
+        let p1 ← mine BM_OWNER actor1.token
+        let v ← v_bytes u
+        let p2 ← p_eq BM_URL v
+        let p3 ← p_and p1 p2
+        p_or p p3
+    let r ← rd T_BOOKMARKS dup
+    let out1 ← alloc.vec.Vec.push out r
+    let v ← v_int id
+    let p ← p_eq LINK_BOOKMARK v
+    let r1 ← rd T_LINKS p
+    let out2 ← alloc.vec.Vec.push out1 r1
+    let names ←
+      match fields.tags with
+      | none => ok (alloc.vec.Vec.new (alloc.vec.Vec Std.U8))
+      | some n =>
+        alloc.vec.CloneVec.clone (core.clone.CloneallocvecVec
+          core.clone.CloneU8) n
+    let p1 ← p_eq LINK_BOOKMARK v
+    let w ← whole
+    let p2 ← p_in TAG_ID T_LINKS p1 LINK_TAG w
+    let p3 ← named_tags actor1.token names
+    let p4 ← p_or p2 p3
+    let r2 ← rd T_TAGS p4
+    let out3 ← alloc.vec.Vec.push out2 r2
+    let r3 ← rd T_COUNTER h5i_app_sql.Pred.All
+    let out4 ← alloc.vec.Vec.push out3 r3
+    ok (some out4)
+  | Command.DeleteBookmark id =>
+    let out ← caller_reads actor1.token
+    let p ← by_id id
+    let r ← rd T_BOOKMARKS p
+    let out1 ← alloc.vec.Vec.push out r
+    ok (some out1)
+  | Command.Archive id _ _ =>
+    let out ← caller_reads actor1.token
+    let p ← by_id id
+    let r ← rd T_BOOKMARKS p
+    let out1 ← alloc.vec.Vec.push out r
+    ok (some out1)
+  | Command.ListTags limit offset =>
+    let out ← caller_reads actor1.token
+    let i ← core.num.U64.MAX - offset
+    let lim ←
+      if limit > i
+      then ok none
+      else do
+           let i1 ← offset + limit
+           ok (some i1)
+    let p ← mine TAG_OWNER actor1.token
+    let out1 ←
+      alloc.vec.Vec.push out
+        ({
+           table := T_TAGS,
+           pred := p,
+           window := { desc := false, offset := 0#u64, limit := lim }
+         } : h5i_app_sql.Read)
+    ok (some out1)
+  | Command.CreateTag «name» _ =>
+    let v ← alloc.vec.CloneVec.clone core.clone.CloneU8 «name»
+    let names ←
+      alloc.vec.Vec.push (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) v
+    let out ← caller_reads actor1.token
+    let p ← named_tags actor1.token names
+    let r ← rd T_TAGS p
+    let out1 ← alloc.vec.Vec.push out r
+    let r1 ← rd T_COUNTER h5i_app_sql.Pred.All
+    let out2 ← alloc.vec.Vec.push out1 r1
+    ok (some out2)
+  | Command.GetTag id =>
+    let out ← caller_reads actor1.token
+    let v ← v_int id
+    let p ← p_eq TAG_ID v
+    let r ← rd T_TAGS p
+    let out1 ← alloc.vec.Vec.push out r
+    ok (some out1)
+  | Command.DeleteTag id =>
+    let out ← caller_reads actor1.token
+    let v ← v_int id
+    let p ← p_eq TAG_ID v
+    let r ← rd T_TAGS p
+    let out1 ← alloc.vec.Vec.push out r
+    ok (some out1)
+  | Command.ListBundles _ _ =>
+    let out ← caller_reads actor1.token
+    let p ← mine BUNDLE_OWNER actor1.token
+    let r ← rd T_BUNDLES p
+    let out1 ← alloc.vec.Vec.push out r
+    ok (some out1)
+  | Command.CreateBundle _ _ =>
+    let out ← caller_reads actor1.token
+    let p ← mine BUNDLE_OWNER actor1.token
+    let r ← rd T_BUNDLES p
+    let out1 ← alloc.vec.Vec.push out r
+    let r1 ← rd T_COUNTER h5i_app_sql.Pred.All
+    let out2 ← alloc.vec.Vec.push out1 r1
+    ok (some out2)
+  | Command.GetBundle _ =>
+    let out ← caller_reads actor1.token
+    let p ← mine BUNDLE_OWNER actor1.token
+    let r ← rd T_BUNDLES p
+    let out1 ← alloc.vec.Vec.push out r
+    ok (some out1)
+  | Command.UpdateBundle _ _ _ =>
+    let out ← caller_reads actor1.token
+    let p ← mine BUNDLE_OWNER actor1.token
+    let r ← rd T_BUNDLES p
+    let out1 ← alloc.vec.Vec.push out r
+    ok (some out1)
+  | Command.DeleteBundle _ =>
+    let out ← caller_reads actor1.token
+    let p ← mine BUNDLE_OWNER actor1.token
+    let r ← rd T_BUNDLES p
+    let out1 ← alloc.vec.Vec.push out r
+    ok (some out1)
+
+/-- [linkding_kernel::list_count]:
+    Source: 'performance/linkding/rust-h5i/kernel/src/lib.rs', lines 2104:0-2117:1
+    Visibility: public -/
+def list_count
+  (actor1 : Principal) (cmd : Command) : Result (Option h5i_app_sql.Read) := do
+  match cmd with
+  | Command.Profile => ok none
+  | Command.List filter _ _ =>
+    let b ← paged filter
+    if b
+    then
+      let p ←
+        paged_pred actor1.token filter.scope filter.q filter.unread
+          filter.shared
+      let r ← rd T_BOOKMARKS p
+      ok (some r)
+    else ok none
+  | Command.Check _ _ => ok none
+  | Command.GetBookmark _ => ok none
+  | Command.CreateBookmark _ _ => ok none
+  | Command.UpdateBookmark _ _ _ => ok none
+  | Command.DeleteBookmark _ => ok none
+  | Command.Archive _ _ _ => ok none
+  | Command.ListTags _ _ =>
+    let p ← mine TAG_OWNER actor1.token
+    let r ← rd T_TAGS p
+    ok (some r)
+  | Command.CreateTag _ _ => ok none
+  | Command.GetTag _ => ok none
+  | Command.DeleteTag _ => ok none
+  | Command.ListBundles _ _ => ok none
+  | Command.CreateBundle _ _ => ok none
+  | Command.GetBundle _ => ok none
+  | Command.UpdateBundle _ _ _ => ok none
+  | Command.DeleteBundle _ => ok none
 
 end linkding_kernel
