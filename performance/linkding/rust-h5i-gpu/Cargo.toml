@@ -14,4 +14,5 @@ linkding-kernel = { path = "../rust-h5i/kernel" }
 # Standalone benchmark. The GPU backend is a workspace of its own (it needs the
 # Rust-CUDA nightly + libNVVM) and is never built here or in CI.
 [workspace]
+members = ["server"]
 exclude = ["backend-nvvm"]
