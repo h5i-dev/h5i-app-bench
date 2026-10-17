@@ -24,8 +24,8 @@ const row = (app, impl, scenario, conc) =>
 
 const implName = (i) => `<span class="impl${i.h5i ? " h5i" : ""}">${esc(i.id)}</span>`;
 
-// Scenario x implementation, requests/s at one concurrency, shaded per row
-// against that scenario's fastest implementation.
+// Scenario x implementation, requests/s at one concurrency, drawn as a length
+// bar per row against that scenario's fastest implementation.
 function renderOverview() {
   for (const el of document.querySelectorAll(".conc-label")) el.textContent = CONC;
   $("#overview-tables").innerHTML = DATA.apps.map((app) => {
@@ -34,10 +34,11 @@ function renderOverview() {
       const vals = app.impls.map((i) => row(app, i.id, s.id, CONC)?.rps ?? null);
       const best = Math.max(...vals.filter((v) => v != null));
       const cells = vals.map((v, k) => {
-        if (v == null) return `<td class="num">–</td>`;
+        if (v == null) return `<td class="num ov-cell">–</td>`;
         const f = v / best;
-        const top = v === best ? " best" : "";
-        return `<td class="num heat${top}" style="--f:${f.toFixed(3)}" title="${esc(app.impls[k].id)} · ${esc(s.id)}: ${rps(v)} req/s, ${Math.round(f * 100)}% of the fastest">${rps(v)}</td>`;
+        const top = v === best;
+        const win = top ? ` <span class="win" aria-hidden="true">●</span>` : "";
+        return `<td class="num ov-cell${top ? " best" : ""}" style="--f:${f.toFixed(3)}" title="${esc(app.impls[k].id)} · ${esc(s.id)}: ${rps(v)} req/s, ${Math.round(f * 100)}% of the fastest"><span class="ov-bar" aria-hidden="true"></span><span class="ov-val">${rps(v)}${win}</span></td>`;
       }).join("");
       return `<tr><th scope="row"><a href="#${esc(app.id)}" data-app="${esc(app.id)}" data-scenario="${esc(s.id)}">${esc(s.id)}</a></th>${cells}</tr>`;
     }).join("");
