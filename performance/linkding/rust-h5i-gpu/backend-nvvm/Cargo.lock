@@ -221,7 +221,7 @@ checksum = "e4eba85ea1d0a966a983acd07deee566e67395d2d96b6fb39e62b5a833f1eb0b"
 [[package]]
 name = "h5i-app-gpu"
 version = "0.1.1"
-source = "git+https://github.com/h5i-dev/h5i?branch=app-gpu#6423dbd32191d65ffa27b34adb4534737230156c"
+source = "git+https://github.com/h5i-dev/h5i?branch=main#0d52512471d09f13db79230a05ea9387ef18f637"
 dependencies = [
  "parallel-kernel",
 ]
@@ -229,7 +229,7 @@ dependencies = [
 [[package]]
 name = "h5i-app-gpu-backend-nvvm"
 version = "0.1.0"
-source = "git+https://github.com/h5i-dev/h5i?branch=app-gpu#6423dbd32191d65ffa27b34adb4534737230156c"
+source = "git+https://github.com/h5i-dev/h5i?branch=main#0d52512471d09f13db79230a05ea9387ef18f637"
 dependencies = [
  "cust",
  "h5i-app-gpu",
@@ -239,12 +239,12 @@ dependencies = [
 [[package]]
 name = "h5i-app-schema"
 version = "0.1.1"
-source = "git+https://github.com/h5i-dev/h5i?branch=app-gpu#6423dbd32191d65ffa27b34adb4534737230156c"
+source = "git+https://github.com/h5i-dev/h5i?branch=main#0d52512471d09f13db79230a05ea9387ef18f637"
 
 [[package]]
 name = "h5i-app-sql"
 version = "0.1.1"
-source = "git+https://github.com/h5i-dev/h5i?branch=app-gpu#6423dbd32191d65ffa27b34adb4534737230156c"
+source = "git+https://github.com/h5i-dev/h5i?branch=main#0d52512471d09f13db79230a05ea9387ef18f637"
 
 [[package]]
 name = "half"
@@ -379,7 +379,7 @@ dependencies = [
 [[package]]
 name = "parallel-kernel"
 version = "0.1.0"
-source = "git+https://github.com/h5i-dev/h5i?branch=app-gpu#6423dbd32191d65ffa27b34adb4534737230156c"
+source = "git+https://github.com/h5i-dev/h5i?branch=main#0d52512471d09f13db79230a05ea9387ef18f637"
 dependencies = [
  "h5i-app-schema",
  "h5i-app-sql",

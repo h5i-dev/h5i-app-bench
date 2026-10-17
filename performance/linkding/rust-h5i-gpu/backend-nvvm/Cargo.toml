@@ -9,9 +9,9 @@ description = "Rust-CUDA resident launch of the linkding_batch kernel (host-only
 linkding-gpu = { path = ".." }
 linkding-kernel = { path = "../../rust-h5i-optimized/kernel" }
 # The GPU launch shell and SoA output type come from the h5i framework, not
-# re-implemented here. Pinned in Cargo.lock; branch moves to main once merged.
-h5i-app-gpu = { git = "https://github.com/h5i-dev/h5i", branch = "app-gpu" }
-h5i-app-gpu-backend-nvvm = { git = "https://github.com/h5i-dev/h5i", branch = "app-gpu" }
+# re-implemented here. Tracks main (the GPU crates landed there); pinned in Cargo.lock.
+h5i-app-gpu = { git = "https://github.com/h5i-dev/h5i", branch = "main" }
+h5i-app-gpu-backend-nvvm = { git = "https://github.com/h5i-dev/h5i", branch = "main" }
 cust = { git = "https://github.com/Rust-GPU/rust-cuda", rev = "3a82c35a7196731fb60eebdac2a40d2b1bf0ba95" }
 
 # Separate toolchain invocation; never part of the surrounding workspace.
