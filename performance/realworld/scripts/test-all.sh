@@ -50,7 +50,7 @@ run_impl() {
 }
 
 if [ "$#" -eq 0 ]; then
-  set -- fastapi go fastify rust-h5i
+  set -- fastapi go fastify rust-h5i-optimized
 fi
 
 for name in "$@"; do
@@ -58,8 +58,8 @@ for name in "$@"; do
     fastapi) run_impl fastapi 8001 "$ROOT/fastapi" ;;
     go) run_impl go 8002 "$ROOT/go" ;;
     fastify) run_impl fastify 8003 "$ROOT/fastify" ;;
-    rust-h5i) run_impl rust-h5i 8004 "$ROOT/rust-h5i" ;;
-    rust-h5i-app) run_impl rust-h5i-app 8005 "$ROOT/rust-h5i-app" ;;
+    rust-h5i-optimized) run_impl rust-h5i-optimized 8004 "$ROOT/rust-h5i-optimized" ;;
+    rust-h5i) run_impl rust-h5i 8005 "$ROOT/rust-h5i" ;;
     *) echo "unknown implementation: $name" >&2; exit 2 ;;
   esac
 done

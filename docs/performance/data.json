@@ -10,12 +10,12 @@
    "measured": "2026-10-16",
    "impls": [
     {
-     "id": "rust-h5i",
+     "id": "rust-h5i-optimized",
      "stack": "Rust, axum, sqlx, h5i-app kernel with Lean proofs",
      "h5i": true
     },
     {
-     "id": "rust-h5i-app",
+     "id": "rust-h5i",
      "stack": "Rust, axum, the h5i-app engine (h5i-app-pg) with Lean proofs",
      "h5i": true
     },
@@ -241,7 +241,7 @@
      "cpu_peak_pct": 109.097
     },
     {
-     "impl": "rust-h5i",
+     "impl": "rust-h5i-optimized",
      "scenario": "list",
      "concurrency": 1,
      "reps": 3,
@@ -255,7 +255,7 @@
      "cpu_peak_pct": 10.76
     },
     {
-     "impl": "rust-h5i",
+     "impl": "rust-h5i-optimized",
      "scenario": "list",
      "concurrency": 16,
      "reps": 3,
@@ -269,7 +269,7 @@
      "cpu_peak_pct": 71.543
     },
     {
-     "impl": "rust-h5i",
+     "impl": "rust-h5i-optimized",
      "scenario": "list",
      "concurrency": 64,
      "reps": 3,
@@ -283,7 +283,7 @@
      "cpu_peak_pct": 70.397
     },
     {
-     "impl": "rust-h5i",
+     "impl": "rust-h5i-optimized",
      "scenario": "list",
      "concurrency": 256,
      "reps": 3,
@@ -297,7 +297,7 @@
      "cpu_peak_pct": 65.343
     },
     {
-     "impl": "rust-h5i-app",
+     "impl": "rust-h5i",
      "scenario": "list",
      "concurrency": 1,
      "reps": 3,
@@ -311,7 +311,7 @@
      "cpu_peak_pct": 35.413
     },
     {
-     "impl": "rust-h5i-app",
+     "impl": "rust-h5i",
      "scenario": "list",
      "concurrency": 16,
      "reps": 3,
@@ -325,7 +325,7 @@
      "cpu_peak_pct": 220.9
     },
     {
-     "impl": "rust-h5i-app",
+     "impl": "rust-h5i",
      "scenario": "list",
      "concurrency": 64,
      "reps": 3,
@@ -339,7 +339,7 @@
      "cpu_peak_pct": 204.723
     },
     {
-     "impl": "rust-h5i-app",
+     "impl": "rust-h5i",
      "scenario": "list",
      "concurrency": 256,
      "reps": 3,
@@ -521,7 +521,7 @@
      "cpu_peak_pct": 168.65
     },
     {
-     "impl": "rust-h5i",
+     "impl": "rust-h5i-optimized",
      "scenario": "slug",
      "concurrency": 1,
      "reps": 3,
@@ -535,7 +535,7 @@
      "cpu_peak_pct": 30.48
     },
     {
-     "impl": "rust-h5i",
+     "impl": "rust-h5i-optimized",
      "scenario": "slug",
      "concurrency": 16,
      "reps": 3,
@@ -549,7 +549,7 @@
      "cpu_peak_pct": 234.067
     },
     {
-     "impl": "rust-h5i",
+     "impl": "rust-h5i-optimized",
      "scenario": "slug",
      "concurrency": 64,
      "reps": 3,
@@ -563,7 +563,7 @@
      "cpu_peak_pct": 262.2
     },
     {
-     "impl": "rust-h5i",
+     "impl": "rust-h5i-optimized",
      "scenario": "slug",
      "concurrency": 256,
      "reps": 3,
@@ -577,7 +577,7 @@
      "cpu_peak_pct": 262.1
     },
     {
-     "impl": "rust-h5i-app",
+     "impl": "rust-h5i",
      "scenario": "slug",
      "concurrency": 1,
      "reps": 3,
@@ -591,7 +591,7 @@
      "cpu_peak_pct": 32.65
     },
     {
-     "impl": "rust-h5i-app",
+     "impl": "rust-h5i",
      "scenario": "slug",
      "concurrency": 16,
      "reps": 3,
@@ -605,7 +605,7 @@
      "cpu_peak_pct": 269.283
     },
     {
-     "impl": "rust-h5i-app",
+     "impl": "rust-h5i",
      "scenario": "slug",
      "concurrency": 64,
      "reps": 3,
@@ -619,7 +619,7 @@
      "cpu_peak_pct": 315.973
     },
     {
-     "impl": "rust-h5i-app",
+     "impl": "rust-h5i",
      "scenario": "slug",
      "concurrency": 256,
      "reps": 3,
@@ -801,7 +801,7 @@
      "cpu_peak_pct": 183.457
     },
     {
-     "impl": "rust-h5i",
+     "impl": "rust-h5i-optimized",
      "scenario": "feed",
      "concurrency": 1,
      "reps": 3,
@@ -815,7 +815,7 @@
      "cpu_peak_pct": 22.027
     },
     {
-     "impl": "rust-h5i",
+     "impl": "rust-h5i-optimized",
      "scenario": "feed",
      "concurrency": 16,
      "reps": 3,
@@ -829,7 +829,7 @@
      "cpu_peak_pct": 168.17
     },
     {
-     "impl": "rust-h5i",
+     "impl": "rust-h5i-optimized",
      "scenario": "feed",
      "concurrency": 64,
      "reps": 3,
@@ -843,7 +843,7 @@
      "cpu_peak_pct": 179.083
     },
     {
-     "impl": "rust-h5i",
+     "impl": "rust-h5i-optimized",
      "scenario": "feed",
      "concurrency": 256,
      "reps": 3,
@@ -857,7 +857,7 @@
      "cpu_peak_pct": 153.47
     },
     {
-     "impl": "rust-h5i-app",
+     "impl": "rust-h5i",
      "scenario": "feed",
      "concurrency": 1,
      "reps": 3,
@@ -871,7 +871,7 @@
      "cpu_peak_pct": 17.613
     },
     {
-     "impl": "rust-h5i-app",
+     "impl": "rust-h5i",
      "scenario": "feed",
      "concurrency": 16,
      "reps": 3,
@@ -885,7 +885,7 @@
      "cpu_peak_pct": 169.14
     },
     {
-     "impl": "rust-h5i-app",
+     "impl": "rust-h5i",
      "scenario": "feed",
      "concurrency": 64,
      "reps": 3,
@@ -899,7 +899,7 @@
      "cpu_peak_pct": 167.443
     },
     {
-     "impl": "rust-h5i-app",
+     "impl": "rust-h5i",
      "scenario": "feed",
      "concurrency": 256,
      "reps": 3,
@@ -1081,7 +1081,7 @@
      "cpu_peak_pct": 411.023
     },
     {
-     "impl": "rust-h5i",
+     "impl": "rust-h5i-optimized",
      "scenario": "login",
      "concurrency": 1,
      "reps": 3,
@@ -1095,7 +1095,7 @@
      "cpu_peak_pct": 102.45
     },
     {
-     "impl": "rust-h5i",
+     "impl": "rust-h5i-optimized",
      "scenario": "login",
      "concurrency": 16,
      "reps": 3,
@@ -1109,7 +1109,7 @@
      "cpu_peak_pct": 403.397
     },
     {
-     "impl": "rust-h5i",
+     "impl": "rust-h5i-optimized",
      "scenario": "login",
      "concurrency": 64,
      "reps": 3,
@@ -1123,7 +1123,7 @@
      "cpu_peak_pct": 403.45
     },
     {
-     "impl": "rust-h5i",
+     "impl": "rust-h5i-optimized",
      "scenario": "login",
      "concurrency": 256,
      "reps": 3,
@@ -1137,7 +1137,7 @@
      "cpu_peak_pct": 403.363
     },
     {
-     "impl": "rust-h5i-app",
+     "impl": "rust-h5i",
      "scenario": "login",
      "concurrency": 1,
      "reps": 3,
@@ -1151,7 +1151,7 @@
      "cpu_peak_pct": 102.07
     },
     {
-     "impl": "rust-h5i-app",
+     "impl": "rust-h5i",
      "scenario": "login",
      "concurrency": 16,
      "reps": 3,
@@ -1165,7 +1165,7 @@
      "cpu_peak_pct": 403.937
     },
     {
-     "impl": "rust-h5i-app",
+     "impl": "rust-h5i",
      "scenario": "login",
      "concurrency": 64,
      "reps": 3,
@@ -1179,7 +1179,7 @@
      "cpu_peak_pct": 403.947
     },
     {
-     "impl": "rust-h5i-app",
+     "impl": "rust-h5i",
      "scenario": "login",
      "concurrency": 256,
      "reps": 3,
@@ -1361,7 +1361,7 @@
      "cpu_peak_pct": 98.88
     },
     {
-     "impl": "rust-h5i",
+     "impl": "rust-h5i-optimized",
      "scenario": "create",
      "concurrency": 1,
      "reps": 3,
@@ -1375,7 +1375,7 @@
      "cpu_peak_pct": 28.6
     },
     {
-     "impl": "rust-h5i",
+     "impl": "rust-h5i-optimized",
      "scenario": "create",
      "concurrency": 16,
      "reps": 3,
@@ -1389,7 +1389,7 @@
      "cpu_peak_pct": 51.64
     },
     {
-     "impl": "rust-h5i",
+     "impl": "rust-h5i-optimized",
      "scenario": "create",
      "concurrency": 64,
      "reps": 3,
@@ -1403,7 +1403,7 @@
      "cpu_peak_pct": 56.293
     },
     {
-     "impl": "rust-h5i",
+     "impl": "rust-h5i-optimized",
      "scenario": "create",
      "concurrency": 256,
      "reps": 3,
@@ -1417,7 +1417,7 @@
      "cpu_peak_pct": 62.157
     },
     {
-     "impl": "rust-h5i-app",
+     "impl": "rust-h5i",
      "scenario": "create",
      "concurrency": 1,
      "reps": 3,
@@ -1431,7 +1431,7 @@
      "cpu_peak_pct": 26.353
     },
     {
-     "impl": "rust-h5i-app",
+     "impl": "rust-h5i",
      "scenario": "create",
      "concurrency": 16,
      "reps": 3,
@@ -1445,7 +1445,7 @@
      "cpu_peak_pct": 41.01
     },
     {
-     "impl": "rust-h5i-app",
+     "impl": "rust-h5i",
      "scenario": "create",
      "concurrency": 64,
      "reps": 3,
@@ -1459,7 +1459,7 @@
      "cpu_peak_pct": 43.84
     },
     {
-     "impl": "rust-h5i-app",
+     "impl": "rust-h5i",
      "scenario": "create",
      "concurrency": 256,
      "reps": 3,
@@ -1641,7 +1641,7 @@
      "cpu_peak_pct": 252.413
     },
     {
-     "impl": "rust-h5i",
+     "impl": "rust-h5i-optimized",
      "scenario": "favorite",
      "concurrency": 1,
      "reps": 3,
@@ -1655,7 +1655,7 @@
      "cpu_peak_pct": 36.673
     },
     {
-     "impl": "rust-h5i",
+     "impl": "rust-h5i-optimized",
      "scenario": "favorite",
      "concurrency": 16,
      "reps": 3,
@@ -1669,7 +1669,7 @@
      "cpu_peak_pct": 229.987
     },
     {
-     "impl": "rust-h5i",
+     "impl": "rust-h5i-optimized",
      "scenario": "favorite",
      "concurrency": 64,
      "reps": 3,
@@ -1683,7 +1683,7 @@
      "cpu_peak_pct": 250.61
     },
     {
-     "impl": "rust-h5i",
+     "impl": "rust-h5i-optimized",
      "scenario": "favorite",
      "concurrency": 256,
      "reps": 3,
@@ -1697,7 +1697,7 @@
      "cpu_peak_pct": 241.733
     },
     {
-     "impl": "rust-h5i-app",
+     "impl": "rust-h5i",
      "scenario": "favorite",
      "concurrency": 1,
      "reps": 3,
@@ -1711,7 +1711,7 @@
      "cpu_peak_pct": 29.053
     },
     {
-     "impl": "rust-h5i-app",
+     "impl": "rust-h5i",
      "scenario": "favorite",
      "concurrency": 16,
      "reps": 3,
@@ -1725,7 +1725,7 @@
      "cpu_peak_pct": 212.65
     },
     {
-     "impl": "rust-h5i-app",
+     "impl": "rust-h5i",
      "scenario": "favorite",
      "concurrency": 64,
      "reps": 3,
@@ -1739,7 +1739,7 @@
      "cpu_peak_pct": 282.46
     },
     {
-     "impl": "rust-h5i-app",
+     "impl": "rust-h5i",
      "scenario": "favorite",
      "concurrency": 256,
      "reps": 3,
@@ -1921,7 +1921,7 @@
      "cpu_peak_pct": 127.893
     },
     {
-     "impl": "rust-h5i",
+     "impl": "rust-h5i-optimized",
      "scenario": "mixed",
      "concurrency": 1,
      "reps": 3,
@@ -1935,7 +1935,7 @@
      "cpu_peak_pct": 13.15
     },
     {
-     "impl": "rust-h5i",
+     "impl": "rust-h5i-optimized",
      "scenario": "mixed",
      "concurrency": 16,
      "reps": 3,
@@ -1949,7 +1949,7 @@
      "cpu_peak_pct": 81.223
     },
     {
-     "impl": "rust-h5i",
+     "impl": "rust-h5i-optimized",
      "scenario": "mixed",
      "concurrency": 64,
      "reps": 3,
@@ -1963,7 +1963,7 @@
      "cpu_peak_pct": 78.067
     },
     {
-     "impl": "rust-h5i",
+     "impl": "rust-h5i-optimized",
      "scenario": "mixed",
      "concurrency": 256,
      "reps": 3,
@@ -1977,7 +1977,7 @@
      "cpu_peak_pct": 83.67
     },
     {
-     "impl": "rust-h5i-app",
+     "impl": "rust-h5i",
      "scenario": "mixed",
      "concurrency": 1,
      "reps": 3,
@@ -1991,7 +1991,7 @@
      "cpu_peak_pct": 21.987
     },
     {
-     "impl": "rust-h5i-app",
+     "impl": "rust-h5i",
      "scenario": "mixed",
      "concurrency": 16,
      "reps": 3,
@@ -2005,7 +2005,7 @@
      "cpu_peak_pct": 175.347
     },
     {
-     "impl": "rust-h5i-app",
+     "impl": "rust-h5i",
      "scenario": "mixed",
      "concurrency": 64,
      "reps": 3,
@@ -2019,7 +2019,7 @@
      "cpu_peak_pct": 162.563
     },
     {
-     "impl": "rust-h5i-app",
+     "impl": "rust-h5i",
      "scenario": "mixed",
      "concurrency": 256,
      "reps": 3,

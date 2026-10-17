@@ -19,1002 +19,5206 @@ set_option maxRecDepth 2048
 
 namespace conduit_kernel
 
-/-- [conduit_kernel::View]
-    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 10:0-18:1
+/-- [h5i_app_sql::Val]
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-sql/src/lib.rs', lines 8:0-8:12
+    Name pattern: [h5i_app_sql::Val]
     Visibility: public -/
-structure View where
-  actor : Std.U64
-  article_exists : Bool
-  article_author : Std.U64
-  comment_exists : Bool
-  comment_author : Std.U64
-  profile_exists : Bool
-  already : Bool
+@[discriminant isize, rust_type "h5i_app_sql::Val"]
+inductive h5i_app_sql.Val where
+| Int : Std.I64 → h5i_app_sql.Val
+| Bool : Bool → h5i_app_sql.Val
+| Text : alloc.vec.Vec Std.U8 → h5i_app_sql.Val
+| Bytes : alloc.vec.Vec Std.U8 → h5i_app_sql.Val
+| Null : h5i_app_sql.Val
 
-/-- [conduit_kernel::RawText]
-    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 21:0-26:1
+/-- [h5i_app_sql::{impl h5i_app_sql::Column for u64}::to_val]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-sql/src/lib.rs', lines 25:4-25:27
+    Name pattern: [h5i_app_sql::{h5i_app_sql::Column<u64>}::to_val]
     Visibility: public -/
-@[discriminant isize]
-inductive RawText where
-| Absent : RawText
-| Null : RawText
-| Invalid : RawText
-| Text : alloc.vec.Vec Std.U8 → RawText
+@[rust_fun "h5i_app_sql::{h5i_app_sql::Column<u64>}::to_val"]
+def U64.Insts.H5i_app_sqlColumn.to_val
+  (self : Std.U64) : Result h5i_app_sql.Val := do
+  let i ← lift (UScalar.hcast .I64 self)
+  ok (h5i_app_sql.Val.Int i)
 
-/-- [conduit_kernel::TagInput]
-    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 29:0-34:1
+/-- [h5i_app_sql::{impl h5i_app_sql::Column for u64}::from_val]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-sql/src/lib.rs', lines 28:4-28:39
+    Name pattern: [h5i_app_sql::{h5i_app_sql::Column<u64>}::from_val]
     Visibility: public -/
-@[discriminant isize]
-inductive TagInput where
-| Absent : TagInput
-| Null : TagInput
-| Invalid : TagInput
-| List : TagInput
+@[rust_fun "h5i_app_sql::{h5i_app_sql::Column<u64>}::from_val"]
+def U64.Insts.H5i_app_sqlColumn.from_val
+  (v : h5i_app_sql.Val) : Result (Option Std.U64) := do
+  match v with
+  | h5i_app_sql.Val.Int i =>
+    let i1 ← lift (IScalar.hcast .U64 i)
+    ok (some i1)
+  | h5i_app_sql.Val.Bool _ => ok none
+  | h5i_app_sql.Val.Text _ => ok none
+  | h5i_app_sql.Val.Bytes _ => ok none
+  | h5i_app_sql.Val.Null => ok none
 
-/-- [conduit_kernel::RawNum]
-    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 37:0-41:1
+/-- [h5i_app_sql::{impl h5i_app_sql::Column for alloc::vec::Vec<u8>}::to_val]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-sql/src/lib.rs', lines 67:4-67:27
+    Name pattern: [h5i_app_sql::{h5i_app_sql::Column<alloc::vec::Vec<u8>>}::to_val]
     Visibility: public -/
-@[discriminant isize]
-inductive RawNum where
-| Absent : RawNum
-| Invalid : RawNum
-| Value : Std.U64 → RawNum
+@[rust_fun "h5i_app_sql::{h5i_app_sql::Column<alloc::vec::Vec<u8>>}::to_val"]
+def alloc.vec.VecU8.Insts.H5i_app_sqlColumn.to_val
+  (self : alloc.vec.Vec Std.U8) : Result h5i_app_sql.Val := do
+  let v ← alloc.vec.CloneVec.clone core.clone.CloneU8 self
+  ok (h5i_app_sql.Val.Bytes v)
+
+/-- [h5i_app_sql::{impl h5i_app_sql::Column for alloc::vec::Vec<u8>}::from_val]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-sql/src/lib.rs', lines 70:4-70:43
+    Name pattern: [h5i_app_sql::{h5i_app_sql::Column<alloc::vec::Vec<u8>>}::from_val]
+    Visibility: public -/
+@[rust_fun "h5i_app_sql::{h5i_app_sql::Column<alloc::vec::Vec<u8>>}::from_val"]
+def alloc.vec.VecU8.Insts.H5i_app_sqlColumn.from_val
+  (v : h5i_app_sql.Val) : Result (Option (alloc.vec.Vec Std.U8)) := do
+  match v with
+  | h5i_app_sql.Val.Int _ => ok none
+  | h5i_app_sql.Val.Bool _ => ok none
+  | h5i_app_sql.Val.Text _ => ok none
+  | h5i_app_sql.Val.Bytes b =>
+    let v1 ← alloc.vec.CloneVec.clone core.clone.CloneU8 b
+    ok (some v1)
+  | h5i_app_sql.Val.Null => ok none
+
+/-- [h5i_app_sql::{impl h5i_app_sql::Zero for u64}::zero]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-sql/src/lib.rs', lines 104:4-104:20
+    Name pattern: [h5i_app_sql::{h5i_app_sql::Zero<u64>}::zero]
+    Visibility: public -/
+@[rust_fun "h5i_app_sql::{h5i_app_sql::Zero<u64>}::zero"]
+def U64.Insts.H5i_app_sqlZero.zero : Result Std.U64 := do
+  ok 0#u64
+
+/-- [h5i_app_sql::val_eq]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-sql/src/lib.rs', lines 134:0-134:39
+    Name pattern: [h5i_app_sql::val_eq]
+    Visibility: public -/
+@[rust_fun "h5i_app_sql::val_eq"]
+def h5i_app_sql.val_eq
+  (a : h5i_app_sql.Val) (b : h5i_app_sql.Val) : Result Bool := do
+  match a with
+  | h5i_app_sql.Val.Int x =>
+    match b with
+    | h5i_app_sql.Val.Int y => ok (x = y)
+    | h5i_app_sql.Val.Bool _ => ok false
+    | h5i_app_sql.Val.Text _ => ok false
+    | h5i_app_sql.Val.Bytes _ => ok false
+    | h5i_app_sql.Val.Null => ok false
+  | h5i_app_sql.Val.Bool x =>
+    match b with
+    | h5i_app_sql.Val.Int _ => ok false
+    | h5i_app_sql.Val.Bool y => ok (x = y)
+    | h5i_app_sql.Val.Text _ => ok false
+    | h5i_app_sql.Val.Bytes _ => ok false
+    | h5i_app_sql.Val.Null => ok false
+  | h5i_app_sql.Val.Text x =>
+    match b with
+    | h5i_app_sql.Val.Int _ => ok false
+    | h5i_app_sql.Val.Bool _ => ok false
+    | h5i_app_sql.Val.Text y =>
+      alloc.vec.partial_eq.PartialEqVec.eq core.cmp.PartialEqU8 x y
+    | h5i_app_sql.Val.Bytes _ => ok false
+    | h5i_app_sql.Val.Null => ok false
+  | h5i_app_sql.Val.Bytes x =>
+    match b with
+    | h5i_app_sql.Val.Int _ => ok false
+    | h5i_app_sql.Val.Bool _ => ok false
+    | h5i_app_sql.Val.Text _ => ok false
+    | h5i_app_sql.Val.Bytes y =>
+      alloc.vec.partial_eq.PartialEqVec.eq core.cmp.PartialEqU8 x y
+    | h5i_app_sql.Val.Null => ok false
+  | h5i_app_sql.Val.Null =>
+    match b with
+    | h5i_app_sql.Val.Int _ => ok false
+    | h5i_app_sql.Val.Bool _ => ok false
+    | h5i_app_sql.Val.Text _ => ok false
+    | h5i_app_sql.Val.Bytes _ => ok false
+    | h5i_app_sql.Val.Null => ok true
+
+/-- [h5i_app_sql::has_col]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-sql/src/lib.rs', lines 160:0-160:59
+    Name pattern: [h5i_app_sql::has_col]
+    Visibility: public -/
+@[rust_fun "h5i_app_sql::has_col"]
+def h5i_app_sql.has_col
+  (row : alloc.vec.Vec h5i_app_sql.Val) (col : Std.U32) (val : h5i_app_sql.Val)
+  :
+  Result Bool
+  := do
+  let i ← lift (UScalar.cast .Usize col)
+  let i1 := alloc.vec.Vec.len row
+  if i < i1
+  then
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+        h5i_app_sql.Val) row i
+    h5i_app_sql.val_eq v val
+  else ok false
+
+/-- [h5i_app_sql::Write]
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-sql/src/lib.rs', lines 171:0-171:14
+    Name pattern: [h5i_app_sql::Write]
+    Visibility: public -/
+@[discriminant isize, rust_type "h5i_app_sql::Write"]
+inductive h5i_app_sql.Write where
+| Put :
+  Std.U32 →
+  Std.U32 →
+  alloc.vec.Vec h5i_app_sql.Val →
+  h5i_app_sql.Write
+| Del : Std.U32 → alloc.vec.Vec h5i_app_sql.Val → h5i_app_sql.Write
+| DelWhere : Std.U32 → Std.U32 → h5i_app_sql.Val → h5i_app_sql.Write
+
+/-- [h5i_app_sql::Window]
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-sql/src/lib.rs', lines 237:0-237:17
+    Name pattern: [h5i_app_sql::Window]
+    Visibility: public -/
+@[rust_type "h5i_app_sql::Window"]
+structure h5i_app_sql.Window where
+  desc : Bool
+  offset : Std.U64
+  limit : Option Std.U64
+
+/-- [h5i_app_sql::whole]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-sql/src/lib.rs', lines 244:0-244:24
+    Name pattern: [h5i_app_sql::whole]
+    Visibility: public -/
+@[rust_fun "h5i_app_sql::whole"]
+def h5i_app_sql.whole : Result h5i_app_sql.Window := do
+  ok { desc := false, offset := 0#u64, limit := none }
+
+/-- [h5i_app_sql::Pred]
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-sql/src/lib.rs', lines 250:0-250:13
+    Name pattern: [h5i_app_sql::Pred]
+    Visibility: public -/
+@[discriminant isize, rust_type "h5i_app_sql::Pred"]
+inductive h5i_app_sql.Pred where
+| All : h5i_app_sql.Pred
+| Eq : Std.U32 → h5i_app_sql.Val → h5i_app_sql.Pred
+| In :
+  Std.U32 →
+  Std.U32 →
+  h5i_app_sql.Pred →
+  Std.U32 →
+  h5i_app_sql.Window →
+  h5i_app_sql.Pred
+| And : h5i_app_sql.Pred → h5i_app_sql.Pred → h5i_app_sql.Pred
+| Or : h5i_app_sql.Pred → h5i_app_sql.Pred → h5i_app_sql.Pred
+
+/-- [h5i_app_sql::Read]
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-sql/src/lib.rs', lines 265:0-265:15
+    Name pattern: [h5i_app_sql::Read]
+    Visibility: public -/
+@[rust_type "h5i_app_sql::Read"]
+structure h5i_app_sql.Read where
+  table : Std.U32
+  pred : h5i_app_sql.Pred
+  window : h5i_app_sql.Window
+
+/-- [conduit_kernel::Principal]
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 19:0-22:1
+    Visibility: public -/
+structure Principal where
+  org : Std.U64
+  user : Std.U64
+
+/-- [conduit_kernel::Counter]
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 95:12-98:13
+    Visibility: public -/
+structure Counter where
+  last_user : Std.U64
+  last_article : Std.U64
+  last_comment : Std.U64
+
+/-- [conduit_kernel::Comment]
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 95:12-98:13
+    Visibility: public -/
+structure Comment where
+  id : Std.U64
+  article : Std.U64
+  author : Std.U64
+  body : alloc.vec.Vec Std.U8
+  created : Std.U64
+
+/-- [conduit_kernel::Favorite]
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 95:12-98:13
+    Visibility: public -/
+structure Favorite where
+  article : Std.U64
+  user : Std.U64
+
+/-- [conduit_kernel::Tag]
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 95:12-98:13
+    Visibility: public -/
+structure Tag where
+  article : Std.U64
+  tag : alloc.vec.Vec Std.U8
+
+/-- [conduit_kernel::Article]
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 95:12-98:13
+    Visibility: public -/
+structure Article where
+  id : Std.U64
+  author : Std.U64
+  slug : alloc.vec.Vec Std.U8
+  title : alloc.vec.Vec Std.U8
+  description : alloc.vec.Vec Std.U8
+  body : alloc.vec.Vec Std.U8
+  created : Std.U64
+  updated : Std.U64
+
+/-- [conduit_kernel::Follow]
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 95:12-98:13
+    Visibility: public -/
+structure Follow where
+  follower : Std.U64
+  followed : Std.U64
+
+/-- [conduit_kernel::User]
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 95:12-98:13
+    Visibility: public -/
+structure User where
+  id : Std.U64
+  username : alloc.vec.Vec Std.U8
+  email : alloc.vec.Vec Std.U8
+  password : alloc.vec.Vec Std.U8
+  bio : alloc.vec.Vec Std.U8
+  image : alloc.vec.Vec Std.U8
+
+/-- [conduit_kernel::Snapshot]
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 278:8-280:9
+    Visibility: public -/
+structure Snapshot where
+  counter : Counter
+  users : alloc.vec.Vec User
+  follows : alloc.vec.Vec Follow
+  articles : alloc.vec.Vec Article
+  tags : alloc.vec.Vec Tag
+  favorites : alloc.vec.Vec Favorite
+  comments : alloc.vec.Vec Comment
+
+/-- [conduit_kernel::{impl core::clone::Clone for conduit_kernel::Counter}::clone]:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 89:13-89:18
+    Visibility: public -/
+def Counter.Insts.CoreCloneClone.clone (self : Counter) : Result Counter := do
+  ok self
+
+/-- [conduit_kernel::{impl core::clone::Clone for conduit_kernel::Comment}::clone]:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 79:13-79:18
+    Visibility: public -/
+def Comment.Insts.CoreCloneClone.clone (self : Comment) : Result Comment := do
+  let i ← lift (core.clone.impls.CloneU64.clone self.id)
+  let i1 ← lift (core.clone.impls.CloneU64.clone self.article)
+  let i2 ← lift (core.clone.impls.CloneU64.clone self.author)
+  let v ← alloc.vec.CloneVec.clone core.clone.CloneU8 self.body
+  let i3 ← lift (core.clone.impls.CloneU64.clone self.created)
+  ok { id := i, article := i1, author := i2, body := v, created := i3 }
+
+/-- Trait implementation: [conduit_kernel::{impl core::clone::Clone for conduit_kernel::Comment}]
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 79:13-79:18 -/
+@[reducible]
+def Comment.Insts.CoreCloneClone : core.clone.Clone Comment := {
+  clone := Comment.Insts.CoreCloneClone.clone
+}
+
+/-- [conduit_kernel::{impl core::clone::Clone for conduit_kernel::Favorite}::clone]:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 74:13-74:18
+    Visibility: public -/
+def Favorite.Insts.CoreCloneClone.clone
+  (self : Favorite) : Result Favorite := do
+  ok self
+
+/-- Trait implementation: [conduit_kernel::{impl core::clone::Clone for conduit_kernel::Favorite}]
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 74:13-74:18 -/
+@[reducible]
+def Favorite.Insts.CoreCloneClone : core.clone.Clone Favorite := {
+  clone := Favorite.Insts.CoreCloneClone.clone
+}
+
+/-- [conduit_kernel::{impl core::clone::Clone for conduit_kernel::Tag}::clone]:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 69:13-69:18
+    Visibility: public -/
+def Tag.Insts.CoreCloneClone.clone (self : Tag) : Result Tag := do
+  let i ← lift (core.clone.impls.CloneU64.clone self.article)
+  let v ← alloc.vec.CloneVec.clone core.clone.CloneU8 self.tag
+  ok { article := i, tag := v }
+
+/-- Trait implementation: [conduit_kernel::{impl core::clone::Clone for conduit_kernel::Tag}]
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 69:13-69:18 -/
+@[reducible]
+def Tag.Insts.CoreCloneClone : core.clone.Clone Tag := {
+  clone := Tag.Insts.CoreCloneClone.clone
+}
+
+/-- [conduit_kernel::{impl core::clone::Clone for conduit_kernel::Article}::clone]:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 56:13-56:18
+    Visibility: public -/
+def Article.Insts.CoreCloneClone.clone (self : Article) : Result Article := do
+  let i ← lift (core.clone.impls.CloneU64.clone self.id)
+  let i1 ← lift (core.clone.impls.CloneU64.clone self.author)
+  let v ← alloc.vec.CloneVec.clone core.clone.CloneU8 self.slug
+  let v1 ← alloc.vec.CloneVec.clone core.clone.CloneU8 self.title
+  let v2 ← alloc.vec.CloneVec.clone core.clone.CloneU8 self.description
+  let v3 ← alloc.vec.CloneVec.clone core.clone.CloneU8 self.body
+  let i2 ← lift (core.clone.impls.CloneU64.clone self.created)
+  let i3 ← lift (core.clone.impls.CloneU64.clone self.updated)
+  ok
+    {
+      id := i,
+      author := i1,
+      slug := v,
+      title := v1,
+      description := v2,
+      body := v3,
+      created := i2,
+      updated := i3
+    }
+
+/-- Trait implementation: [conduit_kernel::{impl core::clone::Clone for conduit_kernel::Article}]
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 56:13-56:18 -/
+@[reducible]
+def Article.Insts.CoreCloneClone : core.clone.Clone Article := {
+  clone := Article.Insts.CoreCloneClone.clone
+}
+
+/-- [conduit_kernel::{impl core::clone::Clone for conduit_kernel::Follow}::clone]:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 51:13-51:18
+    Visibility: public -/
+def Follow.Insts.CoreCloneClone.clone (self : Follow) : Result Follow := do
+  ok self
+
+/-- Trait implementation: [conduit_kernel::{impl core::clone::Clone for conduit_kernel::Follow}]
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 51:13-51:18 -/
+@[reducible]
+def Follow.Insts.CoreCloneClone : core.clone.Clone Follow := {
+  clone := Follow.Insts.CoreCloneClone.clone
+}
+
+/-- [conduit_kernel::{impl core::clone::Clone for conduit_kernel::User}::clone]:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 40:13-40:18
+    Visibility: public -/
+def User.Insts.CoreCloneClone.clone (self : User) : Result User := do
+  let i ← lift (core.clone.impls.CloneU64.clone self.id)
+  let v ← alloc.vec.CloneVec.clone core.clone.CloneU8 self.username
+  let v1 ← alloc.vec.CloneVec.clone core.clone.CloneU8 self.email
+  let v2 ← alloc.vec.CloneVec.clone core.clone.CloneU8 self.password
+  let v3 ← alloc.vec.CloneVec.clone core.clone.CloneU8 self.bio
+  let v4 ← alloc.vec.CloneVec.clone core.clone.CloneU8 self.image
+  ok
+    {
+      id := i,
+      username := v,
+      email := v1,
+      password := v2,
+      bio := v3,
+      image := v4
+    }
+
+/-- Trait implementation: [conduit_kernel::{impl core::clone::Clone for conduit_kernel::User}]
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 40:13-40:18 -/
+@[reducible]
+def User.Insts.CoreCloneClone : core.clone.Clone User := {
+  clone := User.Insts.CoreCloneClone.clone
+}
+
+/-- [conduit_kernel::{impl core::clone::Clone for conduit_kernel::Snapshot}::clone]:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 28:13-28:18
+    Visibility: public -/
+def Snapshot.Insts.CoreCloneClone.clone
+  (self : Snapshot) : Result Snapshot := do
+  let c ← Counter.Insts.CoreCloneClone.clone self.counter
+  let v ← alloc.vec.CloneVec.clone User.Insts.CoreCloneClone self.users
+  let v1 ← alloc.vec.CloneVec.clone Follow.Insts.CoreCloneClone self.follows
+  let v2 ←
+    alloc.vec.CloneVec.clone Article.Insts.CoreCloneClone self.articles
+  let v3 ← alloc.vec.CloneVec.clone Tag.Insts.CoreCloneClone self.tags
+  let v4 ←
+    alloc.vec.CloneVec.clone Favorite.Insts.CoreCloneClone self.favorites
+  let v5 ←
+    alloc.vec.CloneVec.clone Comment.Insts.CoreCloneClone self.comments
+  ok
+    {
+      counter := c,
+      users := v,
+      follows := v1,
+      articles := v2,
+      tags := v3,
+      favorites := v4,
+      comments := v5
+    }
 
 /-- [conduit_kernel::Command]
-    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 44:0-92:1
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 99:0-136:1
     Visibility: public -/
 @[discriminant isize]
 inductive Command where
-| Register : RawText → RawText → RawText → Command
-| Login : RawText → RawText → Command
-| UpdateUser :
-  RawText →
-  RawText →
-  RawText →
-  RawText →
-  RawText →
+| Register :
+  alloc.vec.Vec Std.U8 →
+  alloc.vec.Vec Std.U8 →
+  alloc.vec.Vec Std.U8 →
   Command
-| CreateArticle : RawText → RawText → RawText → TagInput → Command
-| UpdateArticle : RawText → RawText → RawText → TagInput → Command
-| DeleteArticle : Command
-| CreateComment : RawText → Command
-| DeleteComment : Command
-| Follow : Command
-| Unfollow : Command
-| Favorite : Command
-| Unfavorite : Command
+| Login : alloc.vec.Vec Std.U8 → alloc.vec.Vec Std.U8 → Command
 | CurrentUser : Command
-| Feed : Command
-| Page : RawNum → RawNum → Command
-| Slug : alloc.vec.Vec Std.U8 → Std.U64 → Command
+| UpdateUser :
+  Option (alloc.vec.Vec Std.U8) →
+  Option (alloc.vec.Vec Std.U8) →
+  Option (alloc.vec.Vec Std.U8) →
+  Option (alloc.vec.Vec Std.U8) →
+  Option (alloc.vec.Vec Std.U8) →
+  Command
+| GetProfile : alloc.vec.Vec Std.U8 → Command
+| Follow : alloc.vec.Vec Std.U8 → Command
+| Unfollow : alloc.vec.Vec Std.U8 → Command
+| ListArticles :
+  Option (alloc.vec.Vec Std.U8) →
+  Option (alloc.vec.Vec Std.U8) →
+  Option (alloc.vec.Vec Std.U8) →
+  Std.U64 →
+  Std.U64 →
+  Command
+| Feed : Std.U64 → Std.U64 → Command
+| GetArticle : alloc.vec.Vec Std.U8 → Command
+| CreateArticle :
+  alloc.vec.Vec Std.U8 →
+  alloc.vec.Vec Std.U8 →
+  alloc.vec.Vec Std.U8 →
+  alloc.vec.Vec Std.U8 →
+  alloc.vec.Vec (alloc.vec.Vec Std.U8) →
+  Std.U64 →
+  Command
+| UpdateArticle :
+  alloc.vec.Vec Std.U8 →
+  Option (alloc.vec.Vec Std.U8) →
+  Option (alloc.vec.Vec Std.U8) →
+  Option (alloc.vec.Vec Std.U8) →
+  Option (alloc.vec.Vec Std.U8) →
+  Option (alloc.vec.Vec (alloc.vec.Vec Std.U8)) →
+  Std.U64 →
+  Command
+| DeleteArticle : alloc.vec.Vec Std.U8 → Command
+| Favorite : alloc.vec.Vec Std.U8 → Command
+| Unfavorite : alloc.vec.Vec Std.U8 → Command
+| GetComments : alloc.vec.Vec Std.U8 → Command
+| AddComment :
+  alloc.vec.Vec Std.U8 →
+  alloc.vec.Vec Std.U8 →
+  Std.U64 →
+  Command
+| DeleteComment : alloc.vec.Vec Std.U8 → Std.U64 → Command
+| GetTags : Command
 
-/-- [conduit_kernel::Norm]
-    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 95:0-99:1
+/-- [conduit_kernel::Write]
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 139:0-157:1
     Visibility: public -/
 @[discriminant isize]
-inductive Norm where
-| Keep : Norm
-| Clear : Norm
-| Set : Norm
+inductive Write where
+| PutUser : User → Write
+| PutFollow : Follow → Write
+| DelFollow : Follow → Write
+| PutArticle : Article → Write
+| DelArticle : Std.U64 → Write
+| PutTag : Tag → Write
+| DelTagsOf : Std.U64 → Write
+| PutFavorite : Favorite → Write
+| DelFavorite : Favorite → Write
+| DelFavoritesOf : Std.U64 → Write
+| PutComment : Comment → Write
+| DelComment : Std.U64 → Write
+| DelCommentsOf : Std.U64 → Write
+| SetCounter : Counter → Write
 
-/-- [conduit_kernel::{impl core::cmp::PartialEq<conduit_kernel::Norm> for conduit_kernel::Norm}::eq]:
-    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 94:29-94:38
+/-- [conduit_kernel::{impl core::clone::Clone for conduit_kernel::Write}::clone]:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 138:9-138:14
     Visibility: public -/
-def Norm.Insts.CoreCmpPartialEqNorm.eq
-  (self : Norm) (other : Norm) : Result Bool := do
-  let self1 := read_discriminant self
-  let other1 := read_discriminant other
-  ok (self1 = other1)
+def Write.Insts.CoreCloneClone.clone (self : Write) : Result Write := do
+  match self with
+  | Write.PutUser __self_0 =>
+    let u ← User.Insts.CoreCloneClone.clone __self_0
+    ok (Write.PutUser u)
+  | Write.PutFollow __self_0 =>
+    let f ← Follow.Insts.CoreCloneClone.clone __self_0
+    ok (Write.PutFollow f)
+  | Write.DelFollow __self_0 =>
+    let f ← Follow.Insts.CoreCloneClone.clone __self_0
+    ok (Write.DelFollow f)
+  | Write.PutArticle __self_0 =>
+    let a ← Article.Insts.CoreCloneClone.clone __self_0
+    ok (Write.PutArticle a)
+  | Write.DelArticle __self_0 =>
+    let i ← lift (core.clone.impls.CloneU64.clone __self_0)
+    ok (Write.DelArticle i)
+  | Write.PutTag __self_0 =>
+    let t ← Tag.Insts.CoreCloneClone.clone __self_0
+    ok (Write.PutTag t)
+  | Write.DelTagsOf __self_0 =>
+    let i ← lift (core.clone.impls.CloneU64.clone __self_0)
+    ok (Write.DelTagsOf i)
+  | Write.PutFavorite __self_0 =>
+    let f ← Favorite.Insts.CoreCloneClone.clone __self_0
+    ok (Write.PutFavorite f)
+  | Write.DelFavorite __self_0 =>
+    let f ← Favorite.Insts.CoreCloneClone.clone __self_0
+    ok (Write.DelFavorite f)
+  | Write.DelFavoritesOf __self_0 =>
+    let i ← lift (core.clone.impls.CloneU64.clone __self_0)
+    ok (Write.DelFavoritesOf i)
+  | Write.PutComment __self_0 =>
+    let c ← Comment.Insts.CoreCloneClone.clone __self_0
+    ok (Write.PutComment c)
+  | Write.DelComment __self_0 =>
+    let i ← lift (core.clone.impls.CloneU64.clone __self_0)
+    ok (Write.DelComment i)
+  | Write.DelCommentsOf __self_0 =>
+    let i ← lift (core.clone.impls.CloneU64.clone __self_0)
+    ok (Write.DelCommentsOf i)
+  | Write.SetCounter __self_0 =>
+    let c ← Counter.Insts.CoreCloneClone.clone __self_0
+    ok (Write.SetCounter c)
 
-/-- [conduit_kernel::TagDecision]
-    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 102:0-105:1
+/-- [conduit_kernel::Account]
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 160:0-166:1
     Visibility: public -/
-@[discriminant isize]
-inductive TagDecision where
-| Keep : TagDecision
-| Replace : TagDecision
+structure Account where
+  id : Std.U64
+  email : alloc.vec.Vec Std.U8
+  username : alloc.vec.Vec Std.U8
+  bio : alloc.vec.Vec Std.U8
+  image : alloc.vec.Vec Std.U8
 
-/-- [conduit_kernel::{impl core::cmp::PartialEq<conduit_kernel::TagDecision> for conduit_kernel::TagDecision}::eq]:
-    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 101:29-101:38
+/-- [conduit_kernel::Profile]
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 170:0-175:1
     Visibility: public -/
-def TagDecision.Insts.CoreCmpPartialEqTagDecision.eq
-  (self : TagDecision) (other : TagDecision) : Result Bool := do
-  let self1 := read_discriminant self
-  let other1 := read_discriminant other
-  ok (self1 = other1)
+structure Profile where
+  username : alloc.vec.Vec Std.U8
+  bio : alloc.vec.Vec Std.U8
+  image : alloc.vec.Vec Std.U8
+  following : Bool
 
-/-- [conduit_kernel::Delta]
-    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 108:0-112:1
+/-- [conduit_kernel::ArticleView]
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 178:0-184:1
     Visibility: public -/
-@[discriminant isize]
-inductive Delta where
-| Up : Delta
-| Same : Delta
-| Down : Delta
+structure ArticleView where
+  article : Article
+  tags : alloc.vec.Vec (alloc.vec.Vec Std.U8)
+  favorited : Bool
+  favorites : Std.U64
+  author : Profile
+
+/-- [conduit_kernel::CommentView]
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 187:0-190:1
+    Visibility: public -/
+structure CommentView where
+  comment : Comment
+  author : Profile
 
 /-- [conduit_kernel::Reply]
-    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 115:0-143:1
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 193:0-202:1
     Visibility: public -/
 @[discriminant isize]
 inductive Reply where
-| Allow : Reply
-| UserUpdate : Norm → Norm → Norm → Norm → Norm → Reply
-| ArticleUpdate : Norm → Norm → Norm → TagDecision → Reply
-| Follow : Bool → Bool → Reply
-| Favorite : Bool → Delta → Reply
-| Page : Std.U64 → Std.U64 → Reply
-| Slug : alloc.vec.Vec Std.U8 → Reply
+| Account : Account → Reply
+| Profile : Profile → Reply
+| Article : ArticleView → Reply
+| Articles : alloc.vec.Vec ArticleView → Reply
+| Comment : CommentView → Reply
+| Comments : alloc.vec.Vec CommentView → Reply
+| Tags : alloc.vec.Vec (alloc.vec.Vec Std.U8) → Reply
+| Done : Reply
 
 /-- [conduit_kernel::Error]
-    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 146:0-177:1
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 205:0-217:1
     Visibility: public -/
 @[discriminant isize]
 inductive Error where
-| Unauthenticated : Error
-| InvalidCredentials : Error
-| InvalidToken : Error
+| Unauthorized : Error
+| WrongPassword : Error
+| UnknownEmail : Error
+| NotFound : Error
+| CommentNotFound : Error
+| Forbidden : Error
 | UsernameTaken : Error
 | EmailTaken : Error
-| ForbiddenArticle : Error
-| ForbiddenComment : Error
-| ArticleNotFound : Error
-| CommentNotFound : Error
-| ProfileNotFound : Error
-| BlankUsername : Error
-| BlankEmail : Error
-| BlankPassword : Error
-| BlankTitle : Error
-| BlankDescription : Error
-| BlankBody : Error
-| ShortPassword : Error
-| InvalidUsername : Error
-| InvalidEmail : Error
-| InvalidPassword : Error
-| InvalidBio : Error
-| InvalidImage : Error
-| InvalidTitle : Error
-| InvalidDescription : Error
-| InvalidBody : Error
-| InvalidTags : Error
-| InvalidUser : Error
-| InvalidArticle : Error
-| InvalidLimit : Error
-| InvalidOffset : Error
+| SlugTaken : Error
+| Overflow : Error
 
-/-- [conduit_kernel::ArticleView]
-    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 180:0-183:1
+/-- [conduit_kernel::one]:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 221:0-225:1 -/
+def one (w : Write) : Result (alloc.vec.Vec Write) := do
+  alloc.vec.Vec.push (alloc.vec.Vec.new Write) w
+
+/-- [conduit_kernel::find_user]: loop body 0:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 231:4-238:1
     Visibility: public -/
-@[discriminant isize]
-inductive ArticleView where
-| List : ArticleView
-| Detail : ArticleView
-
-/-- [conduit_kernel::shows_body]:
-    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 186:0-191:1
-    Visibility: public -/
-def shows_body (view : ArticleView) : Result Bool := do
-  match view with
-  | ArticleView.List => ok false
-  | ArticleView.Detail => ok true
-
-/-- [conduit_kernel::authed]:
-    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 193:0-212:1 -/
-def authed (cmd : Command) : Result Bool := do
-  match cmd with
-  | Command.Register _ _ _ => ok false
-  | Command.Login _ _ => ok false
-  | Command.UpdateUser _ _ _ _ _ => ok true
-  | Command.CreateArticle _ _ _ _ => ok true
-  | Command.UpdateArticle _ _ _ _ => ok true
-  | Command.DeleteArticle => ok true
-  | Command.CreateComment _ => ok true
-  | Command.DeleteComment => ok true
-  | Command.Follow => ok true
-  | Command.Unfollow => ok true
-  | Command.Favorite => ok true
-  | Command.Unfavorite => ok true
-  | Command.CurrentUser => ok true
-  | Command.Feed => ok true
-  | Command.Page _ _ => ok false
-  | Command.Slug _ _ => ok false
-
-/-- [conduit_kernel::require_text]:
-    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 214:0-226:1 -/
-def require_text
-  (field : RawText) (blank : Error) (invalid : Error) :
-  Result (core.result.Result Unit Error)
-  := do
-  match field with
-  | RawText.Absent => ok (core.result.Result.Err blank)
-  | RawText.Null => ok (core.result.Result.Err blank)
-  | RawText.Invalid => ok (core.result.Result.Err invalid)
-  | RawText.Text v =>
-    let i := alloc.vec.Vec.len v
-    if i = 0#usize
-    then ok (core.result.Result.Err blank)
-    else ok (core.result.Result.Ok ())
-
-/-- [conduit_kernel::password_new]:
-    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 228:0-242:1 -/
-def password_new
-  (field : RawText) : Result (core.result.Result Unit Error) := do
-  match field with
-  | RawText.Absent => ok (core.result.Result.Err Error.BlankPassword)
-  | RawText.Null => ok (core.result.Result.Err Error.BlankPassword)
-  | RawText.Invalid => ok (core.result.Result.Err Error.InvalidPassword)
-  | RawText.Text v =>
-    let i := alloc.vec.Vec.len v
-    if i = 0#usize
-    then ok (core.result.Result.Err Error.BlankPassword)
-    else
-      let i1 := alloc.vec.Vec.len v
-      if i1 < 8#usize
-      then ok (core.result.Result.Err Error.ShortPassword)
-      else ok (core.result.Result.Ok ())
-
-/-- [conduit_kernel::password_login]:
-    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 244:0-256:1 -/
-def password_login
-  (field : RawText) : Result (core.result.Result Unit Error) := do
-  match field with
-  | RawText.Absent => ok (core.result.Result.Err Error.BlankPassword)
-  | RawText.Null => ok (core.result.Result.Err Error.BlankPassword)
-  | RawText.Invalid => ok (core.result.Result.Err Error.InvalidPassword)
-  | RawText.Text v =>
-    let i := alloc.vec.Vec.len v
-    if i = 0#usize
-    then ok (core.result.Result.Err Error.BlankPassword)
-    else ok (core.result.Result.Ok ())
-
-/-- [conduit_kernel::password_update]:
-    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 258:0-273:1 -/
-def password_update
-  (field : RawText) : Result (core.result.Result Norm Error) := do
-  match field with
-  | RawText.Absent => ok (core.result.Result.Ok Norm.Keep)
-  | RawText.Null => ok (core.result.Result.Err Error.BlankPassword)
-  | RawText.Invalid => ok (core.result.Result.Err Error.InvalidPassword)
-  | RawText.Text v =>
-    let i := alloc.vec.Vec.len v
-    if i = 0#usize
-    then ok (core.result.Result.Err Error.BlankPassword)
-    else
-      let i1 := alloc.vec.Vec.len v
-      if i1 < 8#usize
-      then ok (core.result.Result.Err Error.ShortPassword)
-      else ok (core.result.Result.Ok Norm.Set)
-
-/-- [conduit_kernel::optional_required]:
-    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 275:0-288:1 -/
-def optional_required
-  (field : RawText) (blank : Error) (invalid : Error) :
-  Result (core.result.Result Norm Error)
-  := do
-  match field with
-  | RawText.Absent => ok (core.result.Result.Ok Norm.Keep)
-  | RawText.Null => ok (core.result.Result.Err blank)
-  | RawText.Invalid => ok (core.result.Result.Err invalid)
-  | RawText.Text v =>
-    let i := alloc.vec.Vec.len v
-    if i = 0#usize
-    then ok (core.result.Result.Err blank)
-    else ok (core.result.Result.Ok Norm.Set)
-
-/-- [conduit_kernel::optional_clear]:
-    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 290:0-303:1 -/
-def optional_clear
-  (field : RawText) (invalid : Error) :
-  Result (core.result.Result Norm Error)
-  := do
-  match field with
-  | RawText.Absent => ok (core.result.Result.Ok Norm.Keep)
-  | RawText.Null => ok (core.result.Result.Ok Norm.Clear)
-  | RawText.Invalid => ok (core.result.Result.Err invalid)
-  | RawText.Text v =>
-    let i := alloc.vec.Vec.len v
-    if i = 0#usize
-    then ok (core.result.Result.Ok Norm.Clear)
-    else ok (core.result.Result.Ok Norm.Set)
-
-/-- [conduit_kernel::tags_of]:
-    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 305:0-311:1 -/
-def tags_of
-  (tags : TagInput) : Result (core.result.Result TagDecision Error) := do
-  match tags with
-  | TagInput.Absent => ok (core.result.Result.Ok TagDecision.Keep)
-  | TagInput.Null => ok (core.result.Result.Err Error.InvalidTags)
-  | TagInput.Invalid => ok (core.result.Result.Err Error.InvalidTags)
-  | TagInput.List => ok (core.result.Result.Ok TagDecision.Replace)
-
-/-- [conduit_kernel::register]:
-    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 313:0-326:1 -/
-def register
-  (username : RawText) (email : RawText) (password : RawText) :
-  Result (core.result.Result Reply Error)
-  := do
-  let r ← require_text username Error.BlankUsername Error.InvalidUsername
-  match r with
-  | core.result.Result.Ok _ =>
-    let r1 ← require_text email Error.BlankEmail Error.InvalidEmail
-    match r1 with
-    | core.result.Result.Ok _ =>
-      let r2 ← password_new password
-      match r2 with
-      | core.result.Result.Ok _ => ok (core.result.Result.Ok Reply.Allow)
-      | core.result.Result.Err e => ok (core.result.Result.Err e)
-    | core.result.Result.Err e => ok (core.result.Result.Err e)
-  | core.result.Result.Err e => ok (core.result.Result.Err e)
-
-/-- [conduit_kernel::login]:
-    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 328:0-337:1 -/
-def login
-  (email : RawText) (password : RawText) :
-  Result (core.result.Result Reply Error)
-  := do
-  let r ← require_text email Error.BlankEmail Error.InvalidEmail
-  match r with
-  | core.result.Result.Ok _ =>
-    let r1 ← password_login password
-    match r1 with
-    | core.result.Result.Ok _ => ok (core.result.Result.Ok Reply.Allow)
-    | core.result.Result.Err e => ok (core.result.Result.Err e)
-  | core.result.Result.Err e => ok (core.result.Result.Err e)
-
-/-- [conduit_kernel::update_user]:
-    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 339:0-381:1 -/
-def update_user
-  (username : RawText) (email : RawText) (password : RawText) (bio : RawText)
-  (image : RawText) :
-  Result (core.result.Result Reply Error)
-  := do
-  let r ←
-    optional_required username Error.BlankUsername Error.InvalidUsername
-  match r with
-  | core.result.Result.Ok v =>
-    let r1 ← optional_required email Error.BlankEmail Error.InvalidEmail
-    match r1 with
-    | core.result.Result.Ok v1 =>
-      let r2 ← password_update password
-      match r2 with
-      | core.result.Result.Ok v2 =>
-        let r3 ← optional_clear bio Error.InvalidBio
-        match r3 with
-        | core.result.Result.Ok v3 =>
-          let r4 ← optional_clear image Error.InvalidImage
-          match r4 with
-          | core.result.Result.Ok v4 =>
-            let b ← Norm.Insts.CoreCmpPartialEqNorm.eq v Norm.Keep
-            if b
-            then
-              let b1 ← Norm.Insts.CoreCmpPartialEqNorm.eq v1 Norm.Keep
-              if b1
-              then
-                let b2 ← Norm.Insts.CoreCmpPartialEqNorm.eq v2 Norm.Keep
-                if b2
-                then
-                  let b3 ← Norm.Insts.CoreCmpPartialEqNorm.eq v3 Norm.Keep
-                  if b3
-                  then
-                    let b4 ← Norm.Insts.CoreCmpPartialEqNorm.eq v4 Norm.Keep
-                    if b4
-                    then ok (core.result.Result.Err Error.InvalidUser)
-                    else
-                      ok (core.result.Result.Ok (Reply.UserUpdate v v1 v2 v3
-                        v4))
-                  else
-                    ok (core.result.Result.Ok (Reply.UserUpdate v v1 v2 v3 v4))
-                else
-                  ok (core.result.Result.Ok (Reply.UserUpdate v v1 v2 v3 v4))
-              else ok (core.result.Result.Ok (Reply.UserUpdate v v1 v2 v3 v4))
-            else ok (core.result.Result.Ok (Reply.UserUpdate v v1 v2 v3 v4))
-          | core.result.Result.Err e => ok (core.result.Result.Err e)
-        | core.result.Result.Err e => ok (core.result.Result.Err e)
-      | core.result.Result.Err e => ok (core.result.Result.Err e)
-    | core.result.Result.Err e => ok (core.result.Result.Err e)
-  | core.result.Result.Err e => ok (core.result.Result.Err e)
-
-/-- [conduit_kernel::create_article]:
-    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 383:0-405:1 -/
-def create_article
-  (title : RawText) (description : RawText) (body : RawText) (tags : TagInput)
-  :
-  Result (core.result.Result Reply Error)
-  := do
-  let r ← require_text title Error.BlankTitle Error.InvalidTitle
-  match r with
-  | core.result.Result.Ok _ =>
-    let r1 ←
-      require_text description Error.BlankDescription Error.InvalidDescription
-    match r1 with
-    | core.result.Result.Ok _ =>
-      let r2 ← require_text body Error.BlankBody Error.InvalidBody
-      match r2 with
-      | core.result.Result.Ok _ =>
-        match tags with
-        | TagInput.Absent => ok (core.result.Result.Ok Reply.Allow)
-        | TagInput.Null => ok (core.result.Result.Err Error.InvalidTags)
-        | TagInput.Invalid => ok (core.result.Result.Err Error.InvalidTags)
-        | TagInput.List => ok (core.result.Result.Ok Reply.Allow)
-      | core.result.Result.Err e => ok (core.result.Result.Err e)
-    | core.result.Result.Err e => ok (core.result.Result.Err e)
-  | core.result.Result.Err e => ok (core.result.Result.Err e)
-
-/-- [conduit_kernel::update_article]:
-    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 407:0-445:1 -/
-def update_article
-  (view : View) (title : RawText) (description : RawText) (body : RawText)
-  (tags : TagInput) :
-  Result (core.result.Result Reply Error)
-  := do
-  let r ← optional_required title Error.BlankTitle Error.InvalidTitle
-  match r with
-  | core.result.Result.Ok v =>
-    let r1 ←
-      optional_required description Error.BlankDescription
-        Error.InvalidDescription
-    match r1 with
-    | core.result.Result.Ok v1 =>
-      let r2 ← optional_required body Error.BlankBody Error.InvalidBody
-      match r2 with
-      | core.result.Result.Ok v2 =>
-        let r3 ← tags_of tags
-        match r3 with
-        | core.result.Result.Ok v3 =>
-          let b ← Norm.Insts.CoreCmpPartialEqNorm.eq v Norm.Keep
-          if b
-          then
-            let b1 ← Norm.Insts.CoreCmpPartialEqNorm.eq v1 Norm.Keep
-            if b1
-            then
-              let b2 ← Norm.Insts.CoreCmpPartialEqNorm.eq v2 Norm.Keep
-              if b2
-              then
-                let b3 ←
-                  TagDecision.Insts.CoreCmpPartialEqTagDecision.eq v3
-                    TagDecision.Keep
-                if b3
-                then ok (core.result.Result.Err Error.InvalidArticle)
-                else
-                  if view.article_exists
-                  then
-                    if view.article_author != view.actor
-                    then ok (core.result.Result.Err Error.ForbiddenArticle)
-                    else
-                      ok (core.result.Result.Ok (Reply.ArticleUpdate v v1 v2
-                        v3))
-                  else ok (core.result.Result.Err Error.ArticleNotFound)
-              else
-                if view.article_exists
-                then
-                  if view.article_author != view.actor
-                  then ok (core.result.Result.Err Error.ForbiddenArticle)
-                  else
-                    ok (core.result.Result.Ok (Reply.ArticleUpdate v v1 v2 v3))
-                else ok (core.result.Result.Err Error.ArticleNotFound)
-            else
-              if view.article_exists
-              then
-                if view.article_author != view.actor
-                then ok (core.result.Result.Err Error.ForbiddenArticle)
-                else
-                  ok (core.result.Result.Ok (Reply.ArticleUpdate v v1 v2 v3))
-              else ok (core.result.Result.Err Error.ArticleNotFound)
-          else
-            if view.article_exists
-            then
-              if view.article_author != view.actor
-              then ok (core.result.Result.Err Error.ForbiddenArticle)
-              else ok (core.result.Result.Ok (Reply.ArticleUpdate v v1 v2 v3))
-            else ok (core.result.Result.Err Error.ArticleNotFound)
-        | core.result.Result.Err e => ok (core.result.Result.Err e)
-      | core.result.Result.Err e => ok (core.result.Result.Err e)
-    | core.result.Result.Err e => ok (core.result.Result.Err e)
-  | core.result.Result.Err e => ok (core.result.Result.Err e)
-
-/-- [conduit_kernel::delete_article]:
-    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 447:0-455:1 -/
-def delete_article
-  (view : View) : Result (core.result.Result Reply Error) := do
-  if view.article_exists
-  then
-    if view.article_author != view.actor
-    then ok (core.result.Result.Err Error.ForbiddenArticle)
-    else ok (core.result.Result.Ok Reply.Allow)
-  else ok (core.result.Result.Err Error.ArticleNotFound)
-
-/-- [conduit_kernel::create_comment]:
-    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 457:0-466:1 -/
-def create_comment
-  (view : View) (body : RawText) :
-  Result (core.result.Result Reply Error)
-  := do
-  let r ← require_text body Error.BlankBody Error.InvalidBody
-  match r with
-  | core.result.Result.Ok _ =>
-    if view.article_exists
-    then ok (core.result.Result.Ok Reply.Allow)
-    else ok (core.result.Result.Err Error.ArticleNotFound)
-  | core.result.Result.Err e => ok (core.result.Result.Err e)
-
-/-- [conduit_kernel::delete_comment]:
-    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 468:0-479:1 -/
-def delete_comment
-  (view : View) : Result (core.result.Result Reply Error) := do
-  if view.article_exists
-  then
-    if view.comment_exists
-    then
-      if view.comment_author != view.actor
-      then ok (core.result.Result.Err Error.ForbiddenComment)
-      else ok (core.result.Result.Ok Reply.Allow)
-    else ok (core.result.Result.Err Error.CommentNotFound)
-  else ok (core.result.Result.Err Error.ArticleNotFound)
-
-/-- [conduit_kernel::follow]:
-    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 481:0-496:1 -/
-def follow
-  (view : View) (on : Bool) : Result (core.result.Result Reply Error) := do
-  if view.profile_exists
-  then
-    if on
-    then ok (core.result.Result.Ok (Reply.Follow true (¬ view.already)))
-    else ok (core.result.Result.Ok (Reply.Follow false view.already))
-  else ok (core.result.Result.Err Error.ProfileNotFound)
-
-/-- [conduit_kernel::favorite]:
-    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 498:0-525:1 -/
-def favorite
-  (view : View) (on : Bool) : Result (core.result.Result Reply Error) := do
-  if view.article_exists
-  then
-    if on
-    then
-      if view.already
-      then ok (core.result.Result.Ok (Reply.Favorite true Delta.Same))
-      else ok (core.result.Result.Ok (Reply.Favorite true Delta.Up))
-    else
-      if view.already
-      then ok (core.result.Result.Ok (Reply.Favorite false Delta.Down))
-      else ok (core.result.Result.Ok (Reply.Favorite false Delta.Same))
-  else ok (core.result.Result.Err Error.ArticleNotFound)
-
-/-- [conduit_kernel::page]:
-    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 527:0-550:1 -/
-def page
-  (limit : RawNum) (offset : RawNum) :
-  Result (core.result.Result Reply Error)
-  := do
-  match limit with
-  | RawNum.Absent =>
-    match offset with
-    | RawNum.Absent => ok (core.result.Result.Ok (Reply.Page 20#u64 0#u64))
-    | RawNum.Invalid => ok (core.result.Result.Err Error.InvalidOffset)
-    | RawNum.Value n => ok (core.result.Result.Ok (Reply.Page 20#u64 n))
-  | RawNum.Invalid => ok (core.result.Result.Err Error.InvalidLimit)
-  | RawNum.Value n =>
-    if n < 1#u64
-    then ok (core.result.Result.Err Error.InvalidLimit)
-    else
-      let limit_n ← if n > 100#u64
-                      then ok 100#u64
-                      else ok n
-      match offset with
-      | RawNum.Absent => ok (core.result.Result.Ok (Reply.Page limit_n 0#u64))
-      | RawNum.Invalid => ok (core.result.Result.Err Error.InvalidOffset)
-      | RawNum.Value n1 => ok (core.result.Result.Ok (Reply.Page limit_n n1))
-
-/-- [conduit_kernel::lower_ascii]:
-    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 552:0-582:1 -/
-def lower_ascii (c : Std.U8) : Result Std.U8 := do
-  match c with
-  | 65#uscalar => ok 97#u8
-  | 66#uscalar => ok 98#u8
-  | 67#uscalar => ok 99#u8
-  | 68#uscalar => ok 100#u8
-  | 69#uscalar => ok 101#u8
-  | 70#uscalar => ok 102#u8
-  | 71#uscalar => ok 103#u8
-  | 72#uscalar => ok 104#u8
-  | 73#uscalar => ok 105#u8
-  | 74#uscalar => ok 106#u8
-  | 75#uscalar => ok 107#u8
-  | 76#uscalar => ok 108#u8
-  | 77#uscalar => ok 109#u8
-  | 78#uscalar => ok 110#u8
-  | 79#uscalar => ok 111#u8
-  | 80#uscalar => ok 112#u8
-  | 81#uscalar => ok 113#u8
-  | 82#uscalar => ok 114#u8
-  | 83#uscalar => ok 115#u8
-  | 84#uscalar => ok 116#u8
-  | 85#uscalar => ok 117#u8
-  | 86#uscalar => ok 118#u8
-  | 87#uscalar => ok 119#u8
-  | 88#uscalar => ok 120#u8
-  | 89#uscalar => ok 121#u8
-  | 90#uscalar => ok 122#u8
-  | _ => ok c
-
-/-- [conduit_kernel::is_alnum]:
-    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 584:0-586:1 -/
-def is_alnum (c : Std.U8) : Result Bool := do
-  if c >= 97#u8
-  then
-    if c <= 122#u8
-    then ok true
-    else if c >= 48#u8
-         then ok (c <= 57#u8)
-         else ok false
-  else if c >= 48#u8
-       then ok (c <= 57#u8)
-       else ok false
-
-/-- [conduit_kernel::is_sep]:
-    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 588:0-590:1 -/
-def is_sep (c : Std.U8) : Result Bool := do
-  if c = 32#u8
-  then ok true
-  else
-    if c = 9#u8
-    then ok true
-    else
-      if c = 10#u8
-      then ok true
-      else
-        if c = 13#u8
-        then ok true
-        else if c = 45#u8
-             then ok true
-             else ok (c = 95#u8)
-
-/-- [conduit_kernel::push_article]:
-    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 592:0-600:1 -/
-def push_article
-  (out : alloc.vec.Vec Std.U8) : Result (alloc.vec.Vec Std.U8) := do
-  let out1 ← alloc.vec.Vec.push out 97#u8
-  let out2 ← alloc.vec.Vec.push out1 114#u8
-  let out3 ← alloc.vec.Vec.push out2 116#u8
-  let out4 ← alloc.vec.Vec.push out3 105#u8
-  let out5 ← alloc.vec.Vec.push out4 99#u8
-  let out6 ← alloc.vec.Vec.push out5 108#u8
-  alloc.vec.Vec.push out6 101#u8
-
-/-- [conduit_kernel::slug_base]: loop body 0:
-    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 1:0-620:5 -/
 @[rust_loop_body]
-def slug_base_loop.body
-  (title : alloc.vec.Vec Std.U8) (out : alloc.vec.Vec Std.U8) (i : Std.Usize)
-  (pending_hyphen : Bool) :
-  Result (ControlFlow ((alloc.vec.Vec Std.U8) × Std.Usize × Bool)
-    (alloc.vec.Vec Std.U8))
+def find_user_loop.body
+  (us : alloc.vec.Vec User) (id : Std.U64) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize (Option User))
   := do
-  let i1 := alloc.vec.Vec.len title
+  let i1 := alloc.vec.Vec.len us
   if i < i1
   then
-    let i2 ←
-      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Std.U8) title
-        i
-    let c ← lower_ascii i2
-    let b ← is_alnum c
-    let (out1, pending_hyphen1) ←
+    let u ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice User) us i
+    if u.id = id
+    then let u1 ← User.Insts.CoreCloneClone.clone u
+         ok (done (some u1))
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else ok (done none)
+
+/-- [conduit_kernel::find_user]: loop 0:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 231:4-238:1
+    Visibility: public -/
+@[rust_loop]
+def find_user_loop
+  (us : alloc.vec.Vec User) (id : Std.U64) (i : Std.Usize) :
+  Result (Option User)
+  := do
+  loop
+    (fun i1 => find_user_loop.body us id i1)
+    i
+
+/-- [conduit_kernel::find_user]:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 229:0-238:1
+    Visibility: public -/
+@[reducible]
+def find_user
+  (us : alloc.vec.Vec User) (id : Std.U64) : Result (Option User) := do
+  find_user_loop us id 0#usize
+
+/-- [conduit_kernel::find_user_by_name]: loop body 0:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 242:4-249:1
+    Visibility: public -/
+@[rust_loop_body]
+def find_user_by_name_loop.body
+  (us : alloc.vec.Vec User) («name» : alloc.vec.Vec Std.U8) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize (Option User))
+  := do
+  let i1 := alloc.vec.Vec.len us
+  if i < i1
+  then
+    let u ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice User) us i
+    let b ←
+      alloc.vec.partial_eq.PartialEqVec.eq core.cmp.PartialEqU8 u.username
+        «name»
+    if b
+    then let u1 ← User.Insts.CoreCloneClone.clone u
+         ok (done (some u1))
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else ok (done none)
+
+/-- [conduit_kernel::find_user_by_name]: loop 0:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 242:4-249:1
+    Visibility: public -/
+@[rust_loop]
+def find_user_by_name_loop
+  (us : alloc.vec.Vec User) («name» : alloc.vec.Vec Std.U8) (i : Std.Usize) :
+  Result (Option User)
+  := do
+  loop
+    (fun i1 => find_user_by_name_loop.body us «name» i1)
+    i
+
+/-- [conduit_kernel::find_user_by_name]:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 240:0-249:1
+    Visibility: public -/
+@[reducible]
+def find_user_by_name
+  (us : alloc.vec.Vec User) («name» : alloc.vec.Vec Std.U8) :
+  Result (Option User)
+  := do
+  find_user_by_name_loop us «name» 0#usize
+
+/-- [conduit_kernel::find_user_by_email]: loop body 0:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 253:4-260:1
+    Visibility: public -/
+@[rust_loop_body]
+def find_user_by_email_loop.body
+  (us : alloc.vec.Vec User) (email : alloc.vec.Vec Std.U8) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize (Option User))
+  := do
+  let i1 := alloc.vec.Vec.len us
+  if i < i1
+  then
+    let u ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice User) us i
+    let b ←
+      alloc.vec.partial_eq.PartialEqVec.eq core.cmp.PartialEqU8 u.email email
+    if b
+    then let u1 ← User.Insts.CoreCloneClone.clone u
+         ok (done (some u1))
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else ok (done none)
+
+/-- [conduit_kernel::find_user_by_email]: loop 0:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 253:4-260:1
+    Visibility: public -/
+@[rust_loop]
+def find_user_by_email_loop
+  (us : alloc.vec.Vec User) (email : alloc.vec.Vec Std.U8) (i : Std.Usize) :
+  Result (Option User)
+  := do
+  loop
+    (fun i1 => find_user_by_email_loop.body us email i1)
+    i
+
+/-- [conduit_kernel::find_user_by_email]:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 251:0-260:1
+    Visibility: public -/
+@[reducible]
+def find_user_by_email
+  (us : alloc.vec.Vec User) (email : alloc.vec.Vec Std.U8) :
+  Result (Option User)
+  := do
+  find_user_by_email_loop us email 0#usize
+
+/-- [conduit_kernel::find_article]: loop body 0:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 264:4-271:1
+    Visibility: public -/
+@[rust_loop_body]
+def find_article_loop.body
+  (v : alloc.vec.Vec Article) (slug : alloc.vec.Vec Std.U8) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize (Option Article))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let a ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Article) v i
+    let b ←
+      alloc.vec.partial_eq.PartialEqVec.eq core.cmp.PartialEqU8 a.slug slug
+    if b
+    then let a1 ← Article.Insts.CoreCloneClone.clone a
+         ok (done (some a1))
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else ok (done none)
+
+/-- [conduit_kernel::find_article]: loop 0:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 264:4-271:1
+    Visibility: public -/
+@[rust_loop]
+def find_article_loop
+  (v : alloc.vec.Vec Article) (slug : alloc.vec.Vec Std.U8) (i : Std.Usize) :
+  Result (Option Article)
+  := do
+  loop
+    (fun i1 => find_article_loop.body v slug i1)
+    i
+
+/-- [conduit_kernel::find_article]:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 262:0-271:1
+    Visibility: public -/
+@[reducible]
+def find_article
+  (v : alloc.vec.Vec Article) (slug : alloc.vec.Vec Std.U8) :
+  Result (Option Article)
+  := do
+  find_article_loop v slug 0#usize
+
+/-- [conduit_kernel::find_comment]: loop body 0:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 275:4-282:1
+    Visibility: public -/
+@[rust_loop_body]
+def find_comment_loop.body
+  (v : alloc.vec.Vec Comment) (id : Std.U64) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize (Option Comment))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let c ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Comment) v i
+    if c.id = id
+    then let c1 ← Comment.Insts.CoreCloneClone.clone c
+         ok (done (some c1))
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else ok (done none)
+
+/-- [conduit_kernel::find_comment]: loop 0:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 275:4-282:1
+    Visibility: public -/
+@[rust_loop]
+def find_comment_loop
+  (v : alloc.vec.Vec Comment) (id : Std.U64) (i : Std.Usize) :
+  Result (Option Comment)
+  := do
+  loop
+    (fun i1 => find_comment_loop.body v id i1)
+    i
+
+/-- [conduit_kernel::find_comment]:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 273:0-282:1
+    Visibility: public -/
+@[reducible]
+def find_comment
+  (v : alloc.vec.Vec Comment) (id : Std.U64) : Result (Option Comment) := do
+  find_comment_loop v id 0#usize
+
+/-- [conduit_kernel::is_following]: loop body 0:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1:0-293:1
+    Visibility: public -/
+@[rust_loop_body]
+def is_following_loop.body
+  (fs : alloc.vec.Vec Follow) (follower : Std.U64) (followed : Std.U64)
+  (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := alloc.vec.Vec.len fs
+  if i < i1
+  then
+    let f ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Follow) fs i
+    if f.follower = follower
+    then
+      if f.followed = followed
+      then ok (done true)
+      else let i2 ← i + 1#usize
+           ok (cont i2)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else ok (done false)
+
+/-- [conduit_kernel::is_following]: loop 0:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1:0-293:1
+    Visibility: public -/
+@[rust_loop]
+def is_following_loop
+  (fs : alloc.vec.Vec Follow) (follower : Std.U64) (followed : Std.U64)
+  (i : Std.Usize) :
+  Result Bool
+  := do
+  loop
+    (fun i1 => is_following_loop.body fs follower followed i1)
+    i
+
+/-- [conduit_kernel::is_following]:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 284:0-293:1
+    Visibility: public -/
+@[reducible]
+def is_following
+  (fs : alloc.vec.Vec Follow) (follower : Std.U64) (followed : Std.U64) :
+  Result Bool
+  := do
+  is_following_loop fs follower followed 0#usize
+
+/-- [conduit_kernel::is_favorited]: loop body 0:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1:0-304:1
+    Visibility: public -/
+@[rust_loop_body]
+def is_favorited_loop.body
+  (fs : alloc.vec.Vec Favorite) (article : Std.U64) (user : Std.U64)
+  (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := alloc.vec.Vec.len fs
+  if i < i1
+  then
+    let f ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Favorite) fs i
+    if f.article = article
+    then
+      if f.user = user
+      then ok (done true)
+      else let i2 ← i + 1#usize
+           ok (cont i2)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else ok (done false)
+
+/-- [conduit_kernel::is_favorited]: loop 0:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1:0-304:1
+    Visibility: public -/
+@[rust_loop]
+def is_favorited_loop
+  (fs : alloc.vec.Vec Favorite) (article : Std.U64) (user : Std.U64)
+  (i : Std.Usize) :
+  Result Bool
+  := do
+  loop
+    (fun i1 => is_favorited_loop.body fs article user i1)
+    i
+
+/-- [conduit_kernel::is_favorited]:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 295:0-304:1
+    Visibility: public -/
+@[reducible]
+def is_favorited
+  (fs : alloc.vec.Vec Favorite) (article : Std.U64) (user : Std.U64) :
+  Result Bool
+  := do
+  is_favorited_loop fs article user 0#usize
+
+/-- [conduit_kernel::has_favorite]: loop body 0:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 309:4-316:1
+    Visibility: public -/
+@[rust_loop_body]
+def has_favorite_loop.body
+  (fs : alloc.vec.Vec Favorite) (user : Std.U64) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := alloc.vec.Vec.len fs
+  if i < i1
+  then
+    let f ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Favorite) fs i
+    if f.user = user
+    then ok (done true)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else ok (done false)
+
+/-- [conduit_kernel::has_favorite]: loop 0:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 309:4-316:1
+    Visibility: public -/
+@[rust_loop]
+def has_favorite_loop
+  (fs : alloc.vec.Vec Favorite) (user : Std.U64) (i : Std.Usize) :
+  Result Bool
+  := do
+  loop
+    (fun i1 => has_favorite_loop.body fs user i1)
+    i
+
+/-- [conduit_kernel::has_favorite]:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 307:0-316:1
+    Visibility: public -/
+@[reducible]
+def has_favorite
+  (fs : alloc.vec.Vec Favorite) (user : Std.U64) : Result Bool := do
+  has_favorite_loop fs user 0#usize
+
+/-- [conduit_kernel::has_favorite_except]: loop body 0:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1:0-328:1
+    Visibility: public -/
+@[rust_loop_body]
+def has_favorite_except_loop.body
+  (fs : alloc.vec.Vec Favorite) (user : Std.U64) (except : Std.U64)
+  (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := alloc.vec.Vec.len fs
+  if i < i1
+  then
+    let f ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Favorite) fs i
+    if f.user = user
+    then
+      if f.article != except
+      then ok (done true)
+      else let i2 ← i + 1#usize
+           ok (cont i2)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else ok (done false)
+
+/-- [conduit_kernel::has_favorite_except]: loop 0:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1:0-328:1
+    Visibility: public -/
+@[rust_loop]
+def has_favorite_except_loop
+  (fs : alloc.vec.Vec Favorite) (user : Std.U64) (except : Std.U64)
+  (i : Std.Usize) :
+  Result Bool
+  := do
+  loop
+    (fun i1 => has_favorite_except_loop.body fs user except i1)
+    i
+
+/-- [conduit_kernel::has_favorite_except]:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 319:0-328:1
+    Visibility: public -/
+@[reducible]
+def has_favorite_except
+  (fs : alloc.vec.Vec Favorite) (user : Std.U64) (except : Std.U64) :
+  Result Bool
+  := do
+  has_favorite_except_loop fs user except 0#usize
+
+/-- [conduit_kernel::has_tag]: loop body 0:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1:0-339:1
+    Visibility: public -/
+@[rust_loop_body]
+def has_tag_loop.body
+  (ts : alloc.vec.Vec Tag) (article : Std.U64) (tag : alloc.vec.Vec Std.U8)
+  (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := alloc.vec.Vec.len ts
+  if i < i1
+  then
+    let t ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Tag) ts i
+    if t.article = article
+    then
+      let b ←
+        alloc.vec.partial_eq.PartialEqVec.eq core.cmp.PartialEqU8 t.tag tag
+      if b
+      then ok (done true)
+      else let i2 ← i + 1#usize
+           ok (cont i2)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else ok (done false)
+
+/-- [conduit_kernel::has_tag]: loop 0:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1:0-339:1
+    Visibility: public -/
+@[rust_loop]
+def has_tag_loop
+  (ts : alloc.vec.Vec Tag) (article : Std.U64) (tag : alloc.vec.Vec Std.U8)
+  (i : Std.Usize) :
+  Result Bool
+  := do
+  loop
+    (fun i1 => has_tag_loop.body ts article tag i1)
+    i
+
+/-- [conduit_kernel::has_tag]:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 330:0-339:1
+    Visibility: public -/
+@[reducible]
+def has_tag
+  (ts : alloc.vec.Vec Tag) (article : Std.U64) (tag : alloc.vec.Vec Std.U8) :
+  Result Bool
+  := do
+  has_tag_loop ts article tag 0#usize
+
+/-- [conduit_kernel::contains_text]: loop body 0:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 343:4-350:1
+    Visibility: public -/
+@[rust_loop_body]
+def contains_text_loop.body
+  (v : alloc.vec.Vec (alloc.vec.Vec Std.U8)) (t : alloc.vec.Vec Std.U8)
+  (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let v1 ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice (alloc.vec.Vec
+        Std.U8)) v i
+    let b ← alloc.vec.partial_eq.PartialEqVec.eq core.cmp.PartialEqU8 v1 t
+    if b
+    then ok (done true)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else ok (done false)
+
+/-- [conduit_kernel::contains_text]: loop 0:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 343:4-350:1
+    Visibility: public -/
+@[rust_loop]
+def contains_text_loop
+  (v : alloc.vec.Vec (alloc.vec.Vec Std.U8)) (t : alloc.vec.Vec Std.U8)
+  (i : Std.Usize) :
+  Result Bool
+  := do
+  loop
+    (fun i1 => contains_text_loop.body v t i1)
+    i
+
+/-- [conduit_kernel::contains_text]:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 341:0-350:1
+    Visibility: public -/
+@[reducible]
+def contains_text
+  (v : alloc.vec.Vec (alloc.vec.Vec Std.U8)) (t : alloc.vec.Vec Std.U8) :
+  Result Bool
+  := do
+  contains_text_loop v t 0#usize
+
+/-- [conduit_kernel::fav_count]: loop body 0:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 355:4-360:5
+    Visibility: public -/
+@[rust_loop_body]
+def fav_count_loop.body
+  (fs : alloc.vec.Vec Favorite) (article : Std.U64) (n : Std.Usize)
+  (i : Std.Usize) :
+  Result (ControlFlow (Std.Usize × Std.Usize) Std.Usize)
+  := do
+  let i1 := alloc.vec.Vec.len fs
+  if i < i1
+  then
+    let f ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Favorite) fs i
+    let n1 ← if f.article = article
+               then n + 1#usize
+               else ok n
+    let i2 ← i + 1#usize
+    ok (cont (n1, i2))
+  else ok (done n)
+
+/-- [conduit_kernel::fav_count]: loop 0:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 355:4-360:5
+    Visibility: public -/
+@[rust_loop]
+def fav_count_loop
+  (fs : alloc.vec.Vec Favorite) (article : Std.U64) (n : Std.Usize)
+  (i : Std.Usize) :
+  Result Std.Usize
+  := do
+  loop
+    (fun (n1, i1) => fav_count_loop.body fs article n1 i1)
+    (n, i)
+
+/-- [conduit_kernel::fav_count]:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 352:0-362:1
+    Visibility: public -/
+def fav_count
+  (fs : alloc.vec.Vec Favorite) (article : Std.U64) : Result Std.U64 := do
+  let n ← fav_count_loop fs article 0#usize 0#usize
+  ok (UScalar.cast .U64 n)
+
+/-- [conduit_kernel::tags_of]: loop body 0:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 367:4-372:5
+    Visibility: public -/
+@[rust_loop_body]
+def tags_of_loop.body
+  (ts : alloc.vec.Vec Tag) (article : Std.U64)
+  (out : alloc.vec.Vec (alloc.vec.Vec Std.U8)) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec (alloc.vec.Vec Std.U8)) × Std.Usize)
+    (alloc.vec.Vec (alloc.vec.Vec Std.U8)))
+  := do
+  let i1 := alloc.vec.Vec.len ts
+  if i < i1
+  then
+    let t ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Tag) ts i
+    let out1 ←
+      if t.article = article
+      then
+        do
+        let v ← alloc.vec.CloneVec.clone core.clone.CloneU8 t.tag
+        alloc.vec.Vec.push out v
+      else ok out
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
+  else ok (done out)
+
+/-- [conduit_kernel::tags_of]: loop 0:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 367:4-372:5
+    Visibility: public -/
+@[rust_loop]
+def tags_of_loop
+  (ts : alloc.vec.Vec Tag) (article : Std.U64)
+  (out : alloc.vec.Vec (alloc.vec.Vec Std.U8)) (i : Std.Usize) :
+  Result (alloc.vec.Vec (alloc.vec.Vec Std.U8))
+  := do
+  loop
+    (fun (out1, i1) => tags_of_loop.body ts article out1 i1)
+    (out, i)
+
+/-- [conduit_kernel::tags_of]:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 364:0-374:1
+    Visibility: public -/
+@[reducible]
+def tags_of
+  (ts : alloc.vec.Vec Tag) (article : Std.U64) :
+  Result (alloc.vec.Vec (alloc.vec.Vec Std.U8))
+  := do
+  tags_of_loop ts article (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) 0#usize
+
+/-- [conduit_kernel::dedup]: loop body 0:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 380:4-385:5
+    Visibility: public -/
+@[rust_loop_body]
+def dedup_loop.body
+  (v : alloc.vec.Vec (alloc.vec.Vec Std.U8))
+  (out : alloc.vec.Vec (alloc.vec.Vec Std.U8)) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec (alloc.vec.Vec Std.U8)) × Std.Usize)
+    (alloc.vec.Vec (alloc.vec.Vec Std.U8)))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let v1 ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice (alloc.vec.Vec
+        Std.U8)) v i
+    let b ← contains_text out v1
+    let out1 ←
+      if b
+      then ok out
+      else
+        do
+        let v2 ← alloc.vec.CloneVec.clone core.clone.CloneU8 v1
+        alloc.vec.Vec.push out v2
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
+  else ok (done out)
+
+/-- [conduit_kernel::dedup]: loop 0:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 380:4-385:5
+    Visibility: public -/
+@[rust_loop]
+def dedup_loop
+  (v : alloc.vec.Vec (alloc.vec.Vec Std.U8))
+  (out : alloc.vec.Vec (alloc.vec.Vec Std.U8)) (i : Std.Usize) :
+  Result (alloc.vec.Vec (alloc.vec.Vec Std.U8))
+  := do
+  loop
+    (fun (out1, i1) => dedup_loop.body v out1 i1)
+    (out, i)
+
+/-- [conduit_kernel::dedup]:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 377:0-387:1
+    Visibility: public -/
+@[reducible]
+def dedup
+  (v : alloc.vec.Vec (alloc.vec.Vec Std.U8)) :
+  Result (alloc.vec.Vec (alloc.vec.Vec Std.U8))
+  := do
+  dedup_loop v (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) 0#usize
+
+/-- [conduit_kernel::all_tags]: loop body 0:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 393:4-398:5
+    Visibility: public -/
+@[rust_loop_body]
+def all_tags_loop.body
+  (ts : alloc.vec.Vec Tag) (out : alloc.vec.Vec (alloc.vec.Vec Std.U8))
+  (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec (alloc.vec.Vec Std.U8)) × Std.Usize)
+    (alloc.vec.Vec (alloc.vec.Vec Std.U8)))
+  := do
+  let i1 := alloc.vec.Vec.len ts
+  if i < i1
+  then
+    let t ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Tag) ts i
+    let b ← contains_text out t.tag
+    let out1 ←
+      if b
+      then ok out
+      else
+        do
+        let v ← alloc.vec.CloneVec.clone core.clone.CloneU8 t.tag
+        alloc.vec.Vec.push out v
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
+  else ok (done out)
+
+/-- [conduit_kernel::all_tags]: loop 0:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 393:4-398:5
+    Visibility: public -/
+@[rust_loop]
+def all_tags_loop
+  (ts : alloc.vec.Vec Tag) (out : alloc.vec.Vec (alloc.vec.Vec Std.U8))
+  (i : Std.Usize) :
+  Result (alloc.vec.Vec (alloc.vec.Vec Std.U8))
+  := do
+  loop
+    (fun (out1, i1) => all_tags_loop.body ts out1 i1)
+    (out, i)
+
+/-- [conduit_kernel::all_tags]:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 390:0-400:1
+    Visibility: public -/
+@[reducible]
+def all_tags
+  (ts : alloc.vec.Vec Tag) :
+  Result (alloc.vec.Vec (alloc.vec.Vec Std.U8))
+  := do
+  all_tags_loop ts (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) 0#usize
+
+/-- [conduit_kernel::profile]:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 404:0-411:1
+    Visibility: public -/
+def profile (s : Snapshot) (viewer : Std.U64) (u : User) : Result Profile := do
+  let v ← alloc.vec.CloneVec.clone core.clone.CloneU8 u.username
+  let v1 ← alloc.vec.CloneVec.clone core.clone.CloneU8 u.bio
+  let v2 ← alloc.vec.CloneVec.clone core.clone.CloneU8 u.image
+  let b ← is_following s.follows viewer u.id
+  ok { username := v, bio := v1, image := v2, following := b }
+
+/-- [conduit_kernel::author_profile]:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 413:0-418:1
+    Visibility: public -/
+def author_profile
+  (s : Snapshot) (viewer : Std.U64) (id : Std.U64) : Result Profile := do
+  let o ← find_user s.users id
+  match o with
+  | none =>
+    ok
+      {
+        username := (alloc.vec.Vec.new Std.U8),
+        bio := (alloc.vec.Vec.new Std.U8),
+        image := (alloc.vec.Vec.new Std.U8),
+        following := false
+      }
+  | some u => profile s viewer u
+
+/-- [conduit_kernel::favorited_flag]:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 420:0-426:1 -/
+def favorited_flag
+  (fs : alloc.vec.Vec Favorite) (article : Std.U64) (viewer : Std.U64)
+  (up : Bool) :
+  Result Bool
+  := do
+  if up
+  then has_favorite fs viewer
+  else is_favorited fs article viewer
+
+/-- [conduit_kernel::article_view]:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 428:0-436:1
+    Visibility: public -/
+def article_view
+  (s : Snapshot) (viewer : Std.U64) (a : Article) (up : Bool) :
+  Result ArticleView
+  := do
+  let a1 ← Article.Insts.CoreCloneClone.clone a
+  let v ← tags_of s.tags a.id
+  let b ← favorited_flag s.favorites a.id viewer up
+  let i ← fav_count s.favorites a.id
+  let p ← author_profile s viewer a.author
+  ok { article := a1, tags := v, favorited := b, favorites := i, author := p }
+
+/-- [conduit_kernel::views]: loop body 0:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 441:4-444:5
+    Visibility: public -/
+@[rust_loop_body]
+def views_loop.body
+  (s : Snapshot) (viewer : Std.U64) (v : alloc.vec.Vec Article) (up : Bool)
+  (out : alloc.vec.Vec ArticleView) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec ArticleView) × Std.Usize) (alloc.vec.Vec
+    ArticleView))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let a ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Article) v i
+    let av ← article_view s viewer a up
+    let out1 ← alloc.vec.Vec.push out av
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
+  else ok (done out)
+
+/-- [conduit_kernel::views]: loop 0:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 441:4-444:5
+    Visibility: public -/
+@[rust_loop]
+def views_loop
+  (s : Snapshot) (viewer : Std.U64) (v : alloc.vec.Vec Article) (up : Bool)
+  (out : alloc.vec.Vec ArticleView) (i : Std.Usize) :
+  Result (alloc.vec.Vec ArticleView)
+  := do
+  loop
+    (fun (out1, i1) => views_loop.body s viewer v up out1 i1)
+    (out, i)
+
+/-- [conduit_kernel::views]:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 438:0-446:1
+    Visibility: public -/
+@[reducible]
+def views
+  (s : Snapshot) (viewer : Std.U64) (v : alloc.vec.Vec Article) (up : Bool) :
+  Result (alloc.vec.Vec ArticleView)
+  := do
+  views_loop s viewer v up (alloc.vec.Vec.new ArticleView) 0#usize
+
+/-- [conduit_kernel::comment_views]: loop body 0:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 451:4-459:5
+    Visibility: public -/
+@[rust_loop_body]
+def comment_views_loop.body
+  (s : Snapshot) (viewer : Std.U64) (article : Std.U64)
+  (out : alloc.vec.Vec CommentView) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec CommentView) × Std.Usize) (alloc.vec.Vec
+    CommentView))
+  := do
+  let i1 := alloc.vec.Vec.len s.comments
+  if i < i1
+  then
+    let c ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Comment)
+        s.comments i
+    let out1 ←
+      if c.article = article
+      then
+        do
+        let c1 ← Comment.Insts.CoreCloneClone.clone c
+        let p ← author_profile s viewer c.author
+        alloc.vec.Vec.push out ({ comment := c1, author := p } : CommentView)
+      else ok out
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
+  else ok (done out)
+
+/-- [conduit_kernel::comment_views]: loop 0:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 451:4-459:5
+    Visibility: public -/
+@[rust_loop]
+def comment_views_loop
+  (s : Snapshot) (viewer : Std.U64) (article : Std.U64)
+  (out : alloc.vec.Vec CommentView) (i : Std.Usize) :
+  Result (alloc.vec.Vec CommentView)
+  := do
+  loop
+    (fun (out1, i1) => comment_views_loop.body s viewer article out1 i1)
+    (out, i)
+
+/-- [conduit_kernel::comment_views]:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 448:0-461:1
+    Visibility: public -/
+@[reducible]
+def comment_views
+  (s : Snapshot) (viewer : Std.U64) (article : Std.U64) :
+  Result (alloc.vec.Vec CommentView)
+  := do
+  comment_views_loop s viewer article (alloc.vec.Vec.new CommentView) 0#usize
+
+/-- [conduit_kernel::matches]:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 466:0-481:1
+    Visibility: public -/
+def «matches»
+  (s : Snapshot) (a : Article) (tag : Option (alloc.vec.Vec Std.U8))
+  (author : Option Std.U64) (fav : Option Std.U64) (up : Bool) :
+  Result Bool
+  := do
+  let (s1, a1, tag_ok) ←
+    match tag with
+    | none => ok (s, a, true)
+    | some t => do
+                let tag_ok1 ← has_tag s.tags a.id t
+                ok (s, a, tag_ok1)
+  let (a2, author_ok) ←
+    match author with
+    | none => ok (a1, true)
+    | some u => ok (a1, a1.author = u)
+  let fav_ok ←
+    match fav with
+    | none => ok true
+    | some u => favorited_flag s1.favorites a2.id u up
+  if tag_ok
+  then if author_ok
+       then ok fav_ok
+       else ok false
+  else ok false
+
+/-- [conduit_kernel::select]: loop body 0:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 486:4-491:5
+    Visibility: public -/
+@[rust_loop_body]
+def select_loop.body
+  (s : Snapshot) (tag : Option (alloc.vec.Vec Std.U8))
+  (author : Option Std.U64) (fav : Option Std.U64) (up : Bool)
+  (out : alloc.vec.Vec Article) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Article) × Std.Usize) (alloc.vec.Vec
+    Article))
+  := do
+  let i1 := alloc.vec.Vec.len s.articles
+  if i < i1
+  then
+    let a ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Article)
+        s.articles i
+    let b ← «matches» s a tag author fav up
+    let out1 ←
       if b
       then
         do
-        let out2 ←
-          if pending_hyphen
-          then
-            let i3 := alloc.vec.Vec.len out
-            if i3 > 0#usize
-            then alloc.vec.Vec.push out 45#u8
-            else ok out
-          else ok out
-        let out3 ← alloc.vec.Vec.push out2 c
-        ok (out3, false)
-      else
-        do
-        let b1 ← is_sep c
-        let b2 ←
-          if b1
-          then
-            let i3 := alloc.vec.Vec.len out
-            if i3 > 0#usize
-            then ok true
-            else ok pending_hyphen
-          else ok pending_hyphen
-        ok (out, b2)
-    let i3 ← i + 1#usize
-    ok (cont (out1, i3, pending_hyphen1))
+        let a1 ← Article.Insts.CoreCloneClone.clone a
+        alloc.vec.Vec.push out a1
+      else ok out
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
   else ok (done out)
 
-/-- [conduit_kernel::slug_base]: loop 0:
-    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 1:0-620:5 -/
+/-- [conduit_kernel::select]: loop 0:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 486:4-491:5
+    Visibility: public -/
 @[rust_loop]
-def slug_base_loop
-  (title : alloc.vec.Vec Std.U8) (out : alloc.vec.Vec Std.U8) (i : Std.Usize)
-  (pending_hyphen : Bool) :
-  Result (alloc.vec.Vec Std.U8)
+def select_loop
+  (s : Snapshot) (tag : Option (alloc.vec.Vec Std.U8))
+  (author : Option Std.U64) (fav : Option Std.U64) (up : Bool)
+  (out : alloc.vec.Vec Article) (i : Std.Usize) :
+  Result (alloc.vec.Vec Article)
   := do
   loop
-    (fun (out1, i1, pending_hyphen1) => slug_base_loop.body title out1 i1
-      pending_hyphen1)
-    (out, i, pending_hyphen)
-
-/-- [conduit_kernel::slug_base]:
-    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 602:0-625:1 -/
-def slug_base
-  (title : alloc.vec.Vec Std.U8) : Result (alloc.vec.Vec Std.U8) := do
-  let out ← slug_base_loop title (alloc.vec.Vec.new Std.U8) 0#usize false
-  let i := alloc.vec.Vec.len out
-  if i = 0#usize
-  then push_article out
-  else ok out
-
-/-- [conduit_kernel::digit]:
-    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 627:0-640:1 -/
-def digit (n : Std.U64) : Result Std.U8 := do
-  match n with
-  | 0#uscalar => ok 48#u8
-  | 1#uscalar => ok 49#u8
-  | 2#uscalar => ok 50#u8
-  | 3#uscalar => ok 51#u8
-  | 4#uscalar => ok 52#u8
-  | 5#uscalar => ok 53#u8
-  | 6#uscalar => ok 54#u8
-  | 7#uscalar => ok 55#u8
-  | 8#uscalar => ok 56#u8
-  | _ => ok 57#u8
-
-/-- [conduit_kernel::push_u64]: loop body 0:
-    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 1:0-654:5 -/
-@[rust_loop_body]
-def push_u64_loop0.body
-  (n : Std.U64) (rev : alloc.vec.Vec Std.U8) (guard : Std.U64) :
-  Result (ControlFlow (Std.U64 × (alloc.vec.Vec Std.U8) × Std.U64)
-    (alloc.vec.Vec Std.U8))
-  := do
-  if n > 0#u64
-  then
-    if guard < 20#u64
-    then
-      let rem ← n % 10#u64
-      let i ← digit rem
-      let rev1 ← alloc.vec.Vec.push rev i
-      let n1 ← n / 10#u64
-      let guard1 ← guard + 1#u64
-      ok (cont (n1, rev1, guard1))
-    else ok (done rev)
-  else ok (done rev)
-
-/-- [conduit_kernel::push_u64]: loop 0:
-    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 1:0-654:5 -/
-@[rust_loop]
-def push_u64_loop0
-  (n : Std.U64) (rev : alloc.vec.Vec Std.U8) (guard : Std.U64) :
-  Result (alloc.vec.Vec Std.U8)
-  := do
-  loop
-    (fun (n1, rev1, guard1) => push_u64_loop0.body n1 rev1 guard1)
-    (n, rev, guard)
-
-/-- [conduit_kernel::push_u64]: loop body 1:
-    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 656:4-659:5 -/
-@[rust_loop_body]
-def push_u64_loop1.body
-  (rev : alloc.vec.Vec Std.U8) (out : alloc.vec.Vec Std.U8) (i : Std.Usize) :
-  Result (ControlFlow ((alloc.vec.Vec Std.U8) × Std.Usize) (alloc.vec.Vec
-    Std.U8))
-  := do
-  if i > 0#usize
-  then
-    let i1 ← i - 1#usize
-    let i2 ←
-      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Std.U8) rev i1
-    let out1 ← alloc.vec.Vec.push out i2
-    ok (cont (out1, i1))
-  else ok (done out)
-
-/-- [conduit_kernel::push_u64]: loop 1:
-    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 656:4-659:5 -/
-@[rust_loop]
-def push_u64_loop1
-  (out : alloc.vec.Vec Std.U8) (rev : alloc.vec.Vec Std.U8) (i : Std.Usize) :
-  Result (alloc.vec.Vec Std.U8)
-  := do
-  loop
-    (fun (out1, i1) => push_u64_loop1.body rev out1 i1)
+    (fun (out1, i1) => select_loop.body s tag author fav up out1 i1)
     (out, i)
 
-/-- [conduit_kernel::push_u64]:
-    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 642:0-660:1 -/
-def push_u64
-  (out : alloc.vec.Vec Std.U8) (n : Std.U64) :
-  Result (alloc.vec.Vec Std.U8)
+/-- [conduit_kernel::select]:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 483:0-493:1
+    Visibility: public -/
+@[reducible]
+def select
+  (s : Snapshot) (tag : Option (alloc.vec.Vec Std.U8))
+  (author : Option Std.U64) (fav : Option Std.U64) (up : Bool) :
+  Result (alloc.vec.Vec Article)
   := do
-  if n = 0#u64
-  then alloc.vec.Vec.push out 48#u8
+  select_loop s tag author fav up (alloc.vec.Vec.new Article) 0#usize
+
+/-- [conduit_kernel::feed_select]: loop body 0:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 499:4-504:5
+    Visibility: public -/
+@[rust_loop_body]
+def feed_select_loop.body
+  (s : Snapshot) (user : Std.U64) (out : alloc.vec.Vec Article) (i : Std.Usize)
+  :
+  Result (ControlFlow ((alloc.vec.Vec Article) × Std.Usize) (alloc.vec.Vec
+    Article))
+  := do
+  let i1 := alloc.vec.Vec.len s.articles
+  if i < i1
+  then
+    let a ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Article)
+        s.articles i
+    let b ← is_following s.follows user a.author
+    let out1 ←
+      if b
+      then
+        do
+        let a1 ← Article.Insts.CoreCloneClone.clone a
+        alloc.vec.Vec.push out a1
+      else ok out
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
+  else ok (done out)
+
+/-- [conduit_kernel::feed_select]: loop 0:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 499:4-504:5
+    Visibility: public -/
+@[rust_loop]
+def feed_select_loop
+  (s : Snapshot) (user : Std.U64) (out : alloc.vec.Vec Article) (i : Std.Usize)
+  :
+  Result (alloc.vec.Vec Article)
+  := do
+  loop
+    (fun (out1, i1) => feed_select_loop.body s user out1 i1)
+    (out, i)
+
+/-- [conduit_kernel::feed_select]:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 496:0-506:1
+    Visibility: public -/
+@[reducible]
+def feed_select
+  (s : Snapshot) (user : Std.U64) : Result (alloc.vec.Vec Article) := do
+  feed_select_loop s user (alloc.vec.Vec.new Article) 0#usize
+
+/-- [conduit_kernel::page]: loop body 0:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1:0-521:5
+    Visibility: public -/
+@[rust_loop_body]
+def page_loop.body
+  (v : alloc.vec.Vec Article) (limit : Std.U64) (start : Std.Usize)
+  (out : alloc.vec.Vec Article) (j : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Article) × Std.Usize) (alloc.vec.Vec
+    Article))
+  := do
+  if j < start
+  then
+    let i ← lift (UScalar.cast .U64 j)
+    if i < limit
+    then
+      let i1 ← start - 1#usize
+      let i2 ← i1 - j
+      let a ←
+        alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Article) v
+          i2
+      let a1 ← Article.Insts.CoreCloneClone.clone a
+      let out1 ← alloc.vec.Vec.push out a1
+      let j1 ← j + 1#usize
+      ok (cont (out1, j1))
+    else ok (done out)
+  else ok (done out)
+
+/-- [conduit_kernel::page]: loop 0:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1:0-521:5
+    Visibility: public -/
+@[rust_loop]
+def page_loop
+  (v : alloc.vec.Vec Article) (limit : Std.U64) (out : alloc.vec.Vec Article)
+  (start : Std.Usize) (j : Std.Usize) :
+  Result (alloc.vec.Vec Article)
+  := do
+  loop
+    (fun (out1, j1) => page_loop.body v limit start out1 j1)
+    (out, j)
+
+/-- [conduit_kernel::page]:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 510:0-523:1
+    Visibility: public -/
+def page
+  (v : alloc.vec.Vec Article) (offset : Std.U64) (limit : Std.U64) :
+  Result (alloc.vec.Vec Article)
+  := do
+  let n := alloc.vec.Vec.len v
+  let i ← lift (UScalar.cast .U64 n)
+  if offset >= i
+  then ok (alloc.vec.Vec.new Article)
   else
-    let rev ← push_u64_loop0 n (alloc.vec.Vec.new Std.U8) 0#u64
-    let i := alloc.vec.Vec.len rev
-    push_u64_loop1 out rev i
+    let i1 ← lift (UScalar.cast .Usize offset)
+    let start ← n - i1
+    page_loop v limit (alloc.vec.Vec.new Article) start 0#usize
 
-/-- [conduit_kernel::make_slug]:
-    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 663:0-670:1
-    Visibility: public -/
-def make_slug
-  (title : alloc.vec.Vec Std.U8) (n : Std.U64) :
-  Result (alloc.vec.Vec Std.U8)
+/-- [conduit_kernel::resolve]:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 527:0-535:1 -/
+def resolve
+  (us : alloc.vec.Vec User) («name» : Option (alloc.vec.Vec Std.U8)) :
+  Result (Option (Option Std.U64))
   := do
-  let out ← slug_base title
-  if n > 0#u64
-  then let out1 ← alloc.vec.Vec.push out 45#u8
-       push_u64 out1 n
-  else ok out
+  match «name» with
+  | none => ok (some none)
+  | some n =>
+    let o ← find_user_by_name us n
+    match o with
+    | none => ok none
+    | some u => ok (some (some u.id))
 
-/-- [conduit_kernel::transition]:
-    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 672:0-713:1
-    Visibility: public -/
-def transition
-  (view : View) (cmd : Command) : Result (core.result.Result Reply Error) := do
-  let b ← authed cmd
+/-- [conduit_kernel::account]:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 539:0-547:1 -/
+def account (u : User) : Result Account := do
+  let v ← alloc.vec.CloneVec.clone core.clone.CloneU8 u.email
+  let v1 ← alloc.vec.CloneVec.clone core.clone.CloneU8 u.username
+  let v2 ← alloc.vec.CloneVec.clone core.clone.CloneU8 u.bio
+  let v3 ← alloc.vec.CloneVec.clone core.clone.CloneU8 u.image
+  ok { id := u.id, email := v, username := v1, bio := v2, image := v3 }
+
+/-- [conduit_kernel::register]:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 549:0-573:1 -/
+def register
+  (s : Snapshot) (username : alloc.vec.Vec Std.U8)
+  (email : alloc.vec.Vec Std.U8) (password : alloc.vec.Vec Std.U8) :
+  Result (core.result.Result ((alloc.vec.Vec Write) × Reply) Error)
+  := do
+  let o ← find_user_by_name s.users username
+  let b := core.option.Option.is_some o
   if b
-  then
-    if view.actor = 0#u64
-    then ok (core.result.Result.Err Error.Unauthenticated)
-    else
-      match cmd with
-      | Command.Register username email password =>
-        register username email password
-      | Command.Login email password => login email password
-      | Command.UpdateUser username email password bio image =>
-        update_user username email password bio image
-      | Command.CreateArticle title description body tags =>
-        create_article title description body tags
-      | Command.UpdateArticle title description body tags =>
-        update_article view title description body tags
-      | Command.DeleteArticle => delete_article view
-      | Command.CreateComment body => create_comment view body
-      | Command.DeleteComment => delete_comment view
-      | Command.Follow => follow view true
-      | Command.Unfollow => follow view false
-      | Command.Favorite => favorite view true
-      | Command.Unfavorite => favorite view false
-      | Command.CurrentUser => ok (core.result.Result.Ok Reply.Allow)
-      | Command.Feed => ok (core.result.Result.Ok Reply.Allow)
-      | Command.Page limit offset => page limit offset
-      | Command.Slug title n =>
-        let v ← make_slug title n
-        ok (core.result.Result.Ok (Reply.Slug v))
-  else
-    match cmd with
-    | Command.Register username email password =>
-      register username email password
-    | Command.Login email password => login email password
-    | Command.UpdateUser username email password bio image =>
-      update_user username email password bio image
-    | Command.CreateArticle title description body tags =>
-      create_article title description body tags
-    | Command.UpdateArticle title description body tags =>
-      update_article view title description body tags
-    | Command.DeleteArticle => delete_article view
-    | Command.CreateComment body => create_comment view body
-    | Command.DeleteComment => delete_comment view
-    | Command.Follow => follow view true
-    | Command.Unfollow => follow view false
-    | Command.Favorite => favorite view true
-    | Command.Unfavorite => favorite view false
-    | Command.CurrentUser => ok (core.result.Result.Ok Reply.Allow)
-    | Command.Feed => ok (core.result.Result.Ok Reply.Allow)
-    | Command.Page limit offset => page limit offset
-    | Command.Slug title n =>
-      let v ← make_slug title n
-      ok (core.result.Result.Ok (Reply.Slug v))
-
-/-- [conduit_kernel::authenticate_login]:
-    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 716:0-722:1
-    Visibility: public -/
-def authenticate_login
-  (user_exists : Bool) (password_matched : Bool) :
-  Result (core.result.Result Unit Error)
-  := do
-  if user_exists
-  then
-    if password_matched
-    then ok (core.result.Result.Ok ())
-    else ok (core.result.Result.Err Error.InvalidCredentials)
-  else ok (core.result.Result.Err Error.InvalidCredentials)
-
-/-- [conduit_kernel::Subject]
-    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 725:0-728:1
-    Visibility: public -/
-@[discriminant isize]
-inductive Subject where
-| Invalid : Subject
-| Parsed : Std.I64 → Subject
-
-/-- [conduit_kernel::TokenInput]
-    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 732:0-736:1
-    Visibility: public -/
-@[discriminant isize]
-inductive TokenInput where
-| Missing : TokenInput
-| Invalid : TokenInput
-| Claims : Subject → Std.U64 → TokenInput
-
-/-- [conduit_kernel::token_user_exists]:
-    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 739:0-741:1
-    Visibility: public -/
-def token_user_exists
-  («exists» : Bool) : Result (core.result.Result Unit Error) := do
-  if «exists»
-  then ok (core.result.Result.Ok ())
-  else ok (core.result.Result.Err Error.InvalidToken)
-
-/-- [conduit_kernel::token_actor]:
-    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 744:0-762:1
-    Visibility: public -/
-def token_actor
-  (token : TokenInput) (now : Std.U64) (user_exists : Bool) :
-  Result (core.result.Result Std.I64 Error)
-  := do
-  match token with
-  | TokenInput.Missing => ok (core.result.Result.Ok 0#i64)
-  | TokenInput.Invalid => ok (core.result.Result.Err Error.InvalidToken)
-  | TokenInput.Claims sub exp =>
-    if exp <= now
-    then ok (core.result.Result.Err Error.InvalidToken)
-    else
-      match sub with
-      | Subject.Invalid => ok (core.result.Result.Err Error.InvalidToken)
-      | Subject.Parsed id =>
-        if id <= 0#i64
-        then ok (core.result.Result.Err Error.InvalidToken)
-        else
-          let r ← token_user_exists user_exists
-          match r with
-          | core.result.Result.Ok _ => ok (core.result.Result.Ok id)
-          | core.result.Result.Err e => ok (core.result.Result.Err e)
-
-/-- [conduit_kernel::user_conflicts]:
-    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 765:0-773:1
-    Visibility: public -/
-def user_conflicts
-  (username_taken : Bool) (email_taken : Bool) :
-  Result (core.result.Result Unit Error)
-  := do
-  if username_taken
   then ok (core.result.Result.Err Error.UsernameTaken)
   else
-    if email_taken
+    let o1 ← find_user_by_email s.users email
+    let b1 := core.option.Option.is_some o1
+    if b1
     then ok (core.result.Result.Err Error.EmailTaken)
-    else ok (core.result.Result.Ok ())
+    else
+      if s.counter.last_user = core.num.U64.MAX
+      then ok (core.result.Result.Err Error.Overflow)
+      else
+        let i ← s.counter.last_user + 1#u64
+        let v ← alloc.vec.CloneVec.clone core.clone.CloneU8 username
+        let v1 ← alloc.vec.CloneVec.clone core.clone.CloneU8 email
+        let v2 ← alloc.vec.CloneVec.clone core.clone.CloneU8 password
+        let ws ←
+          alloc.vec.Vec.push (alloc.vec.Vec.new Write) (Write.SetCounter
+            { s.counter with last_user := i })
+        let u ←
+          User.Insts.CoreCloneClone.clone
+            {
+              id := i,
+              username := v,
+              email := v1,
+              password := v2,
+              bio := (alloc.vec.Vec.new Std.U8),
+              image := (alloc.vec.Vec.new Std.U8)
+            }
+        let ws1 ← alloc.vec.Vec.push ws (Write.PutUser u)
+        let a ←
+          account
+            {
+              id := i,
+              username := v,
+              email := v1,
+              password := v2,
+              bio := (alloc.vec.Vec.new Std.U8),
+              image := (alloc.vec.Vec.new Std.U8)
+            }
+        ok (core.result.Result.Ok (ws1, Reply.Account a))
 
-/-- [conduit_kernel::UserView]
-    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 776:0-779:1
-    Visibility: public -/
-@[discriminant isize]
-inductive UserView where
-| User : UserView
-| Profile : UserView
-
-/-- [conduit_kernel::UserFields]
-    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 783:0-786:1
-    Visibility: public -/
-structure UserFields where
-  email : Bool
-  token : Bool
-
-/-- [conduit_kernel::user_fields]:
-    Source: 'realworld/rust-h5i/kernel/src/lib.rs', lines 788:0-796:1
-    Visibility: public -/
-def user_fields
-  (viewer : Std.U64) (subject : Std.U64) (view : UserView) :
-  Result UserFields
+/-- [conduit_kernel::login]:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 575:0-586:1 -/
+def login
+  (s : Snapshot) (email : alloc.vec.Vec Std.U8)
+  (password : alloc.vec.Vec Std.U8) :
+  Result (core.result.Result ((alloc.vec.Vec Write) × Reply) Error)
   := do
-  match view with
-  | UserView.User =>
-    if viewer != 0#u64
-    then ok { email := (viewer = subject), token := (viewer = subject) }
-    else ok { email := false, token := false }
-  | UserView.Profile => ok { email := false, token := false }
+  let o ← find_user_by_email s.users email
+  match o with
+  | none => ok (core.result.Result.Err Error.UnknownEmail)
+  | some u =>
+    let b ←
+      alloc.vec.partial_eq.PartialEqVec.eq core.cmp.PartialEqU8 u.password
+        password
+    if b
+    then
+      let a ← account u
+      ok (core.result.Result.Ok (alloc.vec.Vec.new Write, Reply.Account a))
+    else ok (core.result.Result.Err Error.WrongPassword)
+
+/-- [conduit_kernel::current_user]:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 588:0-593:1 -/
+def current_user
+  (s : Snapshot) (user : Std.U64) :
+  Result (core.result.Result ((alloc.vec.Vec Write) × Reply) Error)
+  := do
+  let o ← find_user s.users user
+  match o with
+  | none => ok (core.result.Result.Err Error.Unauthorized)
+  | some me =>
+    let a ← account me
+    ok (core.result.Result.Ok (alloc.vec.Vec.new Write, Reply.Account a))
+
+/-- [conduit_kernel::or_keep]:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 596:0-601:1 -/
+def or_keep
+  (new : Option (alloc.vec.Vec Std.U8)) (old : alloc.vec.Vec Std.U8) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  match new with
+  | none => alloc.vec.CloneVec.clone core.clone.CloneU8 old
+  | some t => alloc.vec.CloneVec.clone core.clone.CloneU8 t
+
+/-- [conduit_kernel::name_taken]:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 604:0-612:1 -/
+def name_taken
+  (us : alloc.vec.Vec User) («name» : Option (alloc.vec.Vec Std.U8))
+  (me : Std.U64) :
+  Result Bool
+  := do
+  match «name» with
+  | none => ok false
+  | some n =>
+    let o ← find_user_by_name us n
+    match o with
+    | none => ok false
+    | some o1 => ok (o1.id != me)
+
+/-- [conduit_kernel::email_taken]:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 614:0-622:1 -/
+def email_taken
+  (us : alloc.vec.Vec User) (email : Option (alloc.vec.Vec Std.U8))
+  (me : Std.U64) :
+  Result Bool
+  := do
+  match email with
+  | none => ok false
+  | some e =>
+    let o ← find_user_by_email us e
+    match o with
+    | none => ok false
+    | some o1 => ok (o1.id != me)
+
+/-- [conduit_kernel::slug_taken]:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 625:0-633:1 -/
+def slug_taken
+  (v : alloc.vec.Vec Article) (slug : Option (alloc.vec.Vec Std.U8))
+  (id : Std.U64) :
+  Result Bool
+  := do
+  match slug with
+  | none => ok false
+  | some n =>
+    let o ← find_article v n
+    match o with
+    | none => ok false
+    | some o1 => ok (o1.id != id)
+
+/-- [conduit_kernel::update_user]:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 635:0-663:1 -/
+def update_user
+  (s : Snapshot) (user : Std.U64) (email : Option (alloc.vec.Vec Std.U8))
+  (username : Option (alloc.vec.Vec Std.U8))
+  (password : Option (alloc.vec.Vec Std.U8))
+  (bio : Option (alloc.vec.Vec Std.U8)) (image : Option (alloc.vec.Vec Std.U8))
+  :
+  Result (core.result.Result ((alloc.vec.Vec Write) × Reply) Error)
+  := do
+  let o ← find_user s.users user
+  match o with
+  | none => ok (core.result.Result.Err Error.Unauthorized)
+  | some me =>
+    let b ← name_taken s.users username me.id
+    if b
+    then ok (core.result.Result.Err Error.UsernameTaken)
+    else
+      let b1 ← email_taken s.users email me.id
+      if b1
+      then ok (core.result.Result.Err Error.EmailTaken)
+      else
+        let v ← or_keep username me.username
+        let v1 ← or_keep email me.email
+        let v2 ← or_keep password me.password
+        let v3 ← or_keep bio me.bio
+        let v4 ← or_keep image me.image
+        let u ←
+          User.Insts.CoreCloneClone.clone
+            {
+              me
+                with
+                username := v,
+                email := v1,
+                password := v2,
+                bio := v3,
+                image := v4
+            }
+        let v5 ← one (Write.PutUser u)
+        let a ←
+          account
+            {
+              me
+                with
+                username := v,
+                email := v1,
+                password := v2,
+                bio := v3,
+                image := v4
+            }
+        ok (core.result.Result.Ok (v5, Reply.Account a))
+
+/-- [conduit_kernel::get_profile]:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 665:0-670:1 -/
+def get_profile
+  (s : Snapshot) (viewer : Std.U64) (username : alloc.vec.Vec Std.U8) :
+  Result (core.result.Result ((alloc.vec.Vec Write) × Reply) Error)
+  := do
+  let o ← find_user_by_name s.users username
+  match o with
+  | none => ok (core.result.Result.Err Error.NotFound)
+  | some u =>
+    let p ← profile s viewer u
+    ok (core.result.Result.Ok (alloc.vec.Vec.new Write, Reply.Profile p))
+
+/-- [conduit_kernel::follow]:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 672:0-688:1 -/
+def follow
+  (s : Snapshot) (user : Std.U64) (username : alloc.vec.Vec Std.U8) :
+  Result (core.result.Result ((alloc.vec.Vec Write) × Reply) Error)
+  := do
+  let o ← find_user s.users user
+  match o with
+  | none => ok (core.result.Result.Err Error.Unauthorized)
+  | some me =>
+    let o1 ← find_user_by_name s.users username
+    match o1 with
+    | none => ok (core.result.Result.Err Error.NotFound)
+    | some t =>
+      if t.id = me.id
+      then ok (core.result.Result.Err Error.Forbidden)
+      else
+        let v ← alloc.vec.CloneVec.clone core.clone.CloneU8 t.username
+        let v1 ← alloc.vec.CloneVec.clone core.clone.CloneU8 t.bio
+        let v2 ← alloc.vec.CloneVec.clone core.clone.CloneU8 t.image
+        let v3 ←
+          one (Write.PutFollow { follower := me.id, followed := t.id })
+        ok (core.result.Result.Ok (v3, Reply.Profile
+          { username := v, bio := v1, image := v2, following := true }))
+
+/-- [conduit_kernel::unfollow]:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 690:0-702:1 -/
+def unfollow
+  (s : Snapshot) (user : Std.U64) (username : alloc.vec.Vec Std.U8) :
+  Result (core.result.Result ((alloc.vec.Vec Write) × Reply) Error)
+  := do
+  let o ← find_user s.users user
+  match o with
+  | none => ok (core.result.Result.Err Error.Unauthorized)
+  | some me =>
+    let o1 ← find_user_by_name s.users username
+    match o1 with
+    | none => ok (core.result.Result.Err Error.NotFound)
+    | some t =>
+      let v ← alloc.vec.CloneVec.clone core.clone.CloneU8 t.username
+      let v1 ← alloc.vec.CloneVec.clone core.clone.CloneU8 t.bio
+      let v2 ← alloc.vec.CloneVec.clone core.clone.CloneU8 t.image
+      let v3 ← one (Write.DelFollow { follower := me.id, followed := t.id })
+      ok (core.result.Result.Ok (v3, Reply.Profile
+        { username := v, bio := v1, image := v2, following := false }))
+
+/-- [conduit_kernel::list_articles]:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 704:0-724:1 -/
+def list_articles
+  (s : Snapshot) (viewer : Std.U64) (tag : Option (alloc.vec.Vec Std.U8))
+  (author : Option (alloc.vec.Vec Std.U8))
+  (favorited : Option (alloc.vec.Vec Std.U8)) (limit : Std.U64)
+  (offset : Std.U64) (up : Bool) :
+  Result (core.result.Result ((alloc.vec.Vec Write) × Reply) Error)
+  := do
+  let o ← resolve s.users author
+  match o with
+  | none =>
+    ok (core.result.Result.Ok (alloc.vec.Vec.new Write, Reply.Articles
+      (alloc.vec.Vec.new ArticleView)))
+  | some a =>
+    let o1 ← resolve s.users favorited
+    match o1 with
+    | none =>
+      ok (core.result.Result.Ok (alloc.vec.Vec.new Write, Reply.Articles
+        (alloc.vec.Vec.new ArticleView)))
+    | some f =>
+      let sel ← select s tag a f up
+      let v ← page sel offset limit
+      let v1 ← views s viewer v up
+      ok (core.result.Result.Ok (alloc.vec.Vec.new Write, Reply.Articles v1))
+
+/-- [conduit_kernel::feed]:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 726:0-733:1 -/
+def feed
+  (s : Snapshot) (user : Std.U64) (limit : Std.U64) (offset : Std.U64)
+  (up : Bool) :
+  Result (core.result.Result ((alloc.vec.Vec Write) × Reply) Error)
+  := do
+  let o ← find_user s.users user
+  match o with
+  | none => ok (core.result.Result.Err Error.Unauthorized)
+  | some me =>
+    let sel ← feed_select s me.id
+    let v ← page sel offset limit
+    let v1 ← views s me.id v up
+    ok (core.result.Result.Ok (alloc.vec.Vec.new Write, Reply.Articles v1))
+
+/-- [conduit_kernel::get_article]:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 735:0-740:1 -/
+def get_article
+  (s : Snapshot) (viewer : Std.U64) (slug : alloc.vec.Vec Std.U8) (up : Bool) :
+  Result (core.result.Result ((alloc.vec.Vec Write) × Reply) Error)
+  := do
+  let o ← find_article s.articles slug
+  match o with
+  | none => ok (core.result.Result.Err Error.NotFound)
+  | some a =>
+    let av ← article_view s viewer a up
+    ok (core.result.Result.Ok (alloc.vec.Vec.new Write, Reply.Article av))
+
+/-- [conduit_kernel::tag_writes]: loop body 0:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 746:4-749:5
+    Visibility: public -/
+@[rust_loop_body]
+def tag_writes_loop.body
+  (article : Std.U64) (tags : alloc.vec.Vec (alloc.vec.Vec Std.U8))
+  (out : alloc.vec.Vec Write) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Write) × Std.Usize) (alloc.vec.Vec
+    Write))
+  := do
+  let i1 := alloc.vec.Vec.len tags
+  if i < i1
+  then
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice (alloc.vec.Vec
+        Std.U8)) tags i
+    let v1 ← alloc.vec.CloneVec.clone core.clone.CloneU8 v
+    let out1 ← alloc.vec.Vec.push out (Write.PutTag { article, tag := v1 })
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
+  else ok (done out)
+
+/-- [conduit_kernel::tag_writes]: loop 0:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 746:4-749:5
+    Visibility: public -/
+@[rust_loop]
+def tag_writes_loop
+  (article : Std.U64) (tags : alloc.vec.Vec (alloc.vec.Vec Std.U8))
+  (out : alloc.vec.Vec Write) (i : Std.Usize) :
+  Result (alloc.vec.Vec Write)
+  := do
+  loop
+    (fun (out1, i1) => tag_writes_loop.body article tags out1 i1)
+    (out, i)
+
+/-- [conduit_kernel::tag_writes]:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 743:0-751:1
+    Visibility: public -/
+@[reducible]
+def tag_writes
+  (ws : alloc.vec.Vec Write) (article : Std.U64)
+  (tags : alloc.vec.Vec (alloc.vec.Vec Std.U8)) :
+  Result (alloc.vec.Vec Write)
+  := do
+  tag_writes_loop article tags ws 0#usize
+
+/-- [conduit_kernel::create_article]:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 753:0-798:1 -/
+def create_article
+  (s : Snapshot) (user : Std.U64) (slug : alloc.vec.Vec Std.U8)
+  (title : alloc.vec.Vec Std.U8) (description : alloc.vec.Vec Std.U8)
+  (body : alloc.vec.Vec Std.U8) (tags : alloc.vec.Vec (alloc.vec.Vec Std.U8))
+  (now : Std.U64) :
+  Result (core.result.Result ((alloc.vec.Vec Write) × Reply) Error)
+  := do
+  let o ← find_user s.users user
+  match o with
+  | none => ok (core.result.Result.Err Error.Unauthorized)
+  | some me =>
+    let o1 ← find_article s.articles slug
+    let b := core.option.Option.is_some o1
+    if b
+    then ok (core.result.Result.Err Error.SlugTaken)
+    else
+      if s.counter.last_article = core.num.U64.MAX
+      then ok (core.result.Result.Err Error.Overflow)
+      else
+        let i ← s.counter.last_article + 1#u64
+        let v ← alloc.vec.CloneVec.clone core.clone.CloneU8 slug
+        let v1 ← alloc.vec.CloneVec.clone core.clone.CloneU8 title
+        let v2 ← alloc.vec.CloneVec.clone core.clone.CloneU8 description
+        let v3 ← alloc.vec.CloneVec.clone core.clone.CloneU8 body
+        let ts ← dedup tags
+        let i1 := alloc.vec.Vec.len ts
+        let i2 ← core.num.Usize.MAX - 2#usize
+        if i1 > i2
+        then ok (core.result.Result.Err Error.Overflow)
+        else
+          let ws ←
+            alloc.vec.Vec.push (alloc.vec.Vec.new Write) (Write.SetCounter
+              { s.counter with last_article := i })
+          let a ←
+            Article.Insts.CoreCloneClone.clone
+              {
+                id := i,
+                author := me.id,
+                slug := v,
+                title := v1,
+                description := v2,
+                body := v3,
+                created := now,
+                updated := now
+              }
+          let ws1 ← alloc.vec.Vec.push ws (Write.PutArticle a)
+          let ws2 ← tag_writes ws1 i ts
+          let p ← profile s me.id me
+          ok (core.result.Result.Ok (ws2, Reply.Article
+            {
+              article :=
+                {
+                  id := i,
+                  author := me.id,
+                  slug := v,
+                  title := v1,
+                  description := v2,
+                  body := v3,
+                  created := now,
+                  updated := now
+                },
+              tags := ts,
+              favorited := false,
+              favorites := 0#u64,
+              author := p
+            }))
+
+/-- [conduit_kernel::update_article]:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 800:0-861:1 -/
+def update_article
+  (s : Snapshot) (user : Std.U64) (slug : alloc.vec.Vec Std.U8)
+  (new_slug : Option (alloc.vec.Vec Std.U8))
+  (title : Option (alloc.vec.Vec Std.U8))
+  (description : Option (alloc.vec.Vec Std.U8))
+  (body : Option (alloc.vec.Vec Std.U8))
+  (tags : Option (alloc.vec.Vec (alloc.vec.Vec Std.U8))) (now : Std.U64)
+  (up : Bool) :
+  Result (core.result.Result ((alloc.vec.Vec Write) × Reply) Error)
+  := do
+  let o ← find_user s.users user
+  match o with
+  | none => ok (core.result.Result.Err Error.Unauthorized)
+  | some me =>
+    let o1 ← find_article s.articles slug
+    match o1 with
+    | none => ok (core.result.Result.Err Error.NotFound)
+    | some a =>
+      if a.author != me.id
+      then ok (core.result.Result.Err Error.Forbidden)
+      else
+        let b ← slug_taken s.articles new_slug a.id
+        if b
+        then ok (core.result.Result.Err Error.SlugTaken)
+        else
+          let v ← or_keep new_slug a.slug
+          let v1 ← or_keep title a.title
+          let v2 ← or_keep description a.description
+          let v3 ← or_keep body a.body
+          match tags with
+          | none =>
+            let v4 ←
+              article_view s me.id
+                {
+                  a
+                    with
+                    slug := v,
+                    title := v1,
+                    description := v2,
+                    body := v3,
+                    updated := now
+                } up
+            let v5 ←
+              one (Write.PutArticle
+                {
+                  a
+                    with
+                    slug := v,
+                    title := v1,
+                    description := v2,
+                    body := v3,
+                    updated := now
+                })
+            ok (core.result.Result.Ok (v5, Reply.Article v4))
+          | some tags1 =>
+            let ts ← dedup tags1
+            let i := alloc.vec.Vec.len ts
+            let i1 ← core.num.Usize.MAX - 2#usize
+            if i > i1
+            then ok (core.result.Result.Err Error.Overflow)
+            else
+              let a1 ←
+                Article.Insts.CoreCloneClone.clone
+                  {
+                    a
+                      with
+                      slug := v,
+                      title := v1,
+                      description := v2,
+                      body := v3,
+                      updated := now
+                  }
+              let ws ←
+                alloc.vec.Vec.push (alloc.vec.Vec.new Write) (Write.PutArticle
+                  a1)
+              let ws1 ← alloc.vec.Vec.push ws (Write.DelTagsOf a.id)
+              let ws2 ← tag_writes ws1 a.id ts
+              let b1 ← favorited_flag s.favorites a.id me.id up
+              let i2 ← fav_count s.favorites a.id
+              let p ← author_profile s me.id a.author
+              ok (core.result.Result.Ok (ws2, Reply.Article
+                {
+                  article :=
+                    {
+                      a
+                        with
+                        slug := v,
+                        title := v1,
+                        description := v2,
+                        body := v3,
+                        updated := now
+                    },
+                  tags := ts,
+                  favorited := b1,
+                  favorites := i2,
+                  author := p
+                }))
+
+/-- [conduit_kernel::delete_article]:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 863:0-884:1 -/
+def delete_article
+  (s : Snapshot) (user : Std.U64) (slug : alloc.vec.Vec Std.U8) :
+  Result (core.result.Result ((alloc.vec.Vec Write) × Reply) Error)
+  := do
+  let o ← find_user s.users user
+  match o with
+  | none => ok (core.result.Result.Err Error.Unauthorized)
+  | some me =>
+    let o1 ← find_article s.articles slug
+    match o1 with
+    | none => ok (core.result.Result.Err Error.NotFound)
+    | some a =>
+      if a.author != me.id
+      then ok (core.result.Result.Err Error.Forbidden)
+      else
+        let ws ←
+          alloc.vec.Vec.push (alloc.vec.Vec.new Write) (Write.DelTagsOf a.id)
+        let ws1 ← alloc.vec.Vec.push ws (Write.DelFavoritesOf a.id)
+        let ws2 ← alloc.vec.Vec.push ws1 (Write.DelCommentsOf a.id)
+        let ws3 ← alloc.vec.Vec.push ws2 (Write.DelArticle a.id)
+        ok (core.result.Result.Ok (ws3, Reply.Done))
+
+/-- [conduit_kernel::favorite]:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 886:0-914:1 -/
+def favorite
+  (s : Snapshot) (user : Std.U64) (slug : alloc.vec.Vec Std.U8) :
+  Result (core.result.Result ((alloc.vec.Vec Write) × Reply) Error)
+  := do
+  let o ← find_user s.users user
+  match o with
+  | none => ok (core.result.Result.Err Error.Unauthorized)
+  | some me =>
+    let o1 ← find_article s.articles slug
+    match o1 with
+    | none => ok (core.result.Result.Err Error.NotFound)
+    | some a =>
+      let already ← is_favorited s.favorites a.id me.id
+      let n ← fav_count s.favorites a.id
+      if already
+      then
+        let a1 ← Article.Insts.CoreCloneClone.clone a
+        let v ← tags_of s.tags a.id
+        let p ← author_profile s me.id a.author
+        let v1 ← one (Write.PutFavorite { article := a.id, user := me.id })
+        ok (core.result.Result.Ok (v1, Reply.Article
+          {
+            article := a1,
+            tags := v,
+            favorited := true,
+            favorites := n,
+            author := p
+          }))
+      else
+        if n = core.num.U64.MAX
+        then ok (core.result.Result.Err Error.Overflow)
+        else
+          let count ← n + 1#u64
+          let a1 ← Article.Insts.CoreCloneClone.clone a
+          let v ← tags_of s.tags a.id
+          let p ← author_profile s me.id a.author
+          let v1 ← one (Write.PutFavorite { article := a.id, user := me.id })
+          ok (core.result.Result.Ok (v1, Reply.Article
+            {
+              article := a1,
+              tags := v,
+              favorited := true,
+              favorites := count,
+              author := p
+            }))
+
+/-- [conduit_kernel::dec_if]:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 917:0-923:1 -/
+def dec_if (b : Bool) (n : Std.U64) : Result Std.U64 := do
+  if b
+  then if n > 0#u64
+       then n - 1#u64
+       else ok n
+  else ok n
+
+/-- [conduit_kernel::unfavorited_flag]:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 927:0-933:1 -/
+def unfavorited_flag
+  (fs : alloc.vec.Vec Favorite) (article : Std.U64) (viewer : Std.U64)
+  (up : Bool) :
+  Result Bool
+  := do
+  if up
+  then has_favorite_except fs viewer article
+  else ok false
+
+/-- [conduit_kernel::unfavorite]:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 935:0-956:1 -/
+def unfavorite
+  (s : Snapshot) (user : Std.U64) (slug : alloc.vec.Vec Std.U8) (up : Bool) :
+  Result (core.result.Result ((alloc.vec.Vec Write) × Reply) Error)
+  := do
+  let o ← find_user s.users user
+  match o with
+  | none => ok (core.result.Result.Err Error.Unauthorized)
+  | some me =>
+    let o1 ← find_article s.articles slug
+    match o1 with
+    | none => ok (core.result.Result.Err Error.NotFound)
+    | some a =>
+      let already ← is_favorited s.favorites a.id me.id
+      let n ← fav_count s.favorites a.id
+      let count ← dec_if already n
+      let a1 ← Article.Insts.CoreCloneClone.clone a
+      let v ← tags_of s.tags a.id
+      let b ← unfavorited_flag s.favorites a.id me.id up
+      let p ← author_profile s me.id a.author
+      let v1 ← one (Write.DelFavorite { article := a.id, user := me.id })
+      ok (core.result.Result.Ok (v1, Reply.Article
+        {
+          article := a1,
+          tags := v,
+          favorited := b,
+          favorites := count,
+          author := p
+        }))
+
+/-- [conduit_kernel::get_comments]:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 958:0-963:1 -/
+def get_comments
+  (s : Snapshot) (viewer : Std.U64) (slug : alloc.vec.Vec Std.U8) :
+  Result (core.result.Result ((alloc.vec.Vec Write) × Reply) Error)
+  := do
+  let o ← find_article s.articles slug
+  match o with
+  | none => ok (core.result.Result.Err Error.NotFound)
+  | some a =>
+    let v ← comment_views s viewer a.id
+    ok (core.result.Result.Ok (alloc.vec.Vec.new Write, Reply.Comments v))
+
+/-- [conduit_kernel::add_comment]:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 965:0-985:1 -/
+def add_comment
+  (s : Snapshot) (user : Std.U64) (slug : alloc.vec.Vec Std.U8)
+  (body : alloc.vec.Vec Std.U8) (now : Std.U64) :
+  Result (core.result.Result ((alloc.vec.Vec Write) × Reply) Error)
+  := do
+  let o ← find_user s.users user
+  match o with
+  | none => ok (core.result.Result.Err Error.Unauthorized)
+  | some me =>
+    let o1 ← find_article s.articles slug
+    match o1 with
+    | none => ok (core.result.Result.Err Error.NotFound)
+    | some a =>
+      if s.counter.last_comment = core.num.U64.MAX
+      then ok (core.result.Result.Err Error.Overflow)
+      else
+        let i ← s.counter.last_comment + 1#u64
+        let v ← alloc.vec.CloneVec.clone core.clone.CloneU8 body
+        let ws ←
+          alloc.vec.Vec.push (alloc.vec.Vec.new Write) (Write.SetCounter
+            { s.counter with last_comment := i })
+        let c ←
+          Comment.Insts.CoreCloneClone.clone
+            {
+              id := i,
+              article := a.id,
+              author := me.id,
+              body := v,
+              created := now
+            }
+        let ws1 ← alloc.vec.Vec.push ws (Write.PutComment c)
+        let p ← profile s me.id me
+        ok (core.result.Result.Ok (ws1, Reply.Comment
+          {
+            comment :=
+              {
+                id := i,
+                article := a.id,
+                author := me.id,
+                body := v,
+                created := now
+              },
+            author := p
+          }))
+
+/-- [conduit_kernel::delete_comment]:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 987:0-1009:1 -/
+def delete_comment
+  (s : Snapshot) (user : Std.U64) (slug : alloc.vec.Vec Std.U8) (id : Std.U64)
+  :
+  Result (core.result.Result ((alloc.vec.Vec Write) × Reply) Error)
+  := do
+  let o ← find_user s.users user
+  match o with
+  | none => ok (core.result.Result.Err Error.Unauthorized)
+  | some me =>
+    let o1 ← find_article s.articles slug
+    match o1 with
+    | none => ok (core.result.Result.Err Error.NotFound)
+    | some a =>
+      let o2 ← find_comment s.comments id
+      match o2 with
+      | none => ok (core.result.Result.Err Error.CommentNotFound)
+      | some c =>
+        if c.article != a.id
+        then ok (core.result.Result.Err Error.CommentNotFound)
+        else
+          if c.author != me.id
+          then ok (core.result.Result.Err Error.Forbidden)
+          else
+            let v ← one (Write.DelComment id)
+            ok (core.result.Result.Ok (v, Reply.Done))
+
+/-- [conduit_kernel::step]:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1011:0-1042:1 -/
+def step
+  (actor : Principal) (s : Snapshot) (cmd : Command) (up : Bool) :
+  Result (core.result.Result ((alloc.vec.Vec Write) × Reply) Error)
+  := do
+  match cmd with
+  | Command.Register username email password =>
+    register s username email password
+  | Command.Login email password => login s email password
+  | Command.CurrentUser => current_user s actor.user
+  | Command.UpdateUser email username password bio image =>
+    update_user s actor.user email username password bio image
+  | Command.GetProfile username => get_profile s actor.user username
+  | Command.Follow username => follow s actor.user username
+  | Command.Unfollow username => unfollow s actor.user username
+  | Command.ListArticles tag author favorited limit offset =>
+    list_articles s actor.user tag author favorited limit offset up
+  | Command.Feed limit offset => feed s actor.user limit offset up
+  | Command.GetArticle slug => get_article s actor.user slug up
+  | Command.CreateArticle slug title description body tags now =>
+    create_article s actor.user slug title description body tags now
+  | Command.UpdateArticle slug new_slug title description body tags now =>
+    update_article s actor.user slug new_slug title description body tags now
+      up
+  | Command.DeleteArticle slug => delete_article s actor.user slug
+  | Command.Favorite slug => favorite s actor.user slug
+  | Command.Unfavorite slug => unfavorite s actor.user slug up
+  | Command.GetComments slug => get_comments s actor.user slug
+  | Command.AddComment slug body now => add_comment s actor.user slug body now
+  | Command.DeleteComment slug id => delete_comment s actor.user slug id
+  | Command.GetTags =>
+    let v ← all_tags s.tags
+    ok (core.result.Result.Ok (alloc.vec.Vec.new Write, Reply.Tags v))
+
+/-- [conduit_kernel::transition]:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1045:0-1047:1
+    Visibility: public -/
+def transition
+  (actor : Principal) (s : Snapshot) (cmd : Command) :
+  Result (core.result.Result ((alloc.vec.Vec Write) × Reply) Error)
+  := do
+  step actor s cmd false
+
+/-- [conduit_kernel::transition_upstream]:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1050:0-1052:1
+    Visibility: public -/
+def transition_upstream
+  (actor : Principal) (s : Snapshot) (cmd : Command) :
+  Result (core.result.Result ((alloc.vec.Vec Write) × Reply) Error)
+  := do
+  step actor s cmd true
+
+/-- [conduit_kernel::read_only]:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1057:0-1069:1
+    Visibility: public -/
+def read_only (cmd : Command) : Result Bool := do
+  match cmd with
+  | Command.Register _ _ _ => ok false
+  | Command.Login _ _ => ok true
+  | Command.CurrentUser => ok true
+  | Command.UpdateUser _ _ _ _ _ => ok false
+  | Command.GetProfile _ => ok true
+  | Command.Follow _ => ok false
+  | Command.Unfollow _ => ok false
+  | Command.ListArticles _ _ _ _ _ => ok true
+  | Command.Feed _ _ => ok true
+  | Command.GetArticle _ => ok true
+  | Command.CreateArticle _ _ _ _ _ _ => ok false
+  | Command.UpdateArticle _ _ _ _ _ _ _ => ok false
+  | Command.DeleteArticle _ => ok false
+  | Command.Favorite _ => ok false
+  | Command.Unfavorite _ => ok false
+  | Command.GetComments _ => ok true
+  | Command.AddComment _ _ _ => ok false
+  | Command.DeleteComment _ _ => ok false
+  | Command.GetTags => ok true
+
+/-- [conduit_kernel::T_USERS]
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1074:0-1074:23 -/
+@[global_simps, irreducible] def T_USERS : Std.U32 := 0#u32
+
+/-- [conduit_kernel::T_FOLLOWS]
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1075:0-1075:25 -/
+@[global_simps, irreducible] def T_FOLLOWS : Std.U32 := 1#u32
+
+/-- [conduit_kernel::T_ARTICLES]
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1076:0-1076:26 -/
+@[global_simps, irreducible] def T_ARTICLES : Std.U32 := 2#u32
+
+/-- [conduit_kernel::T_TAGS]
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1077:0-1077:22 -/
+@[global_simps, irreducible] def T_TAGS : Std.U32 := 3#u32
+
+/-- [conduit_kernel::T_FAVORITES]
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1078:0-1078:27 -/
+@[global_simps, irreducible] def T_FAVORITES : Std.U32 := 4#u32
+
+/-- [conduit_kernel::T_COMMENTS]
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1079:0-1079:26 -/
+@[global_simps, irreducible] def T_COMMENTS : Std.U32 := 5#u32
+
+/-- [conduit_kernel::T_COUNTER]
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1080:0-1080:25 -/
+@[global_simps, irreducible] def T_COUNTER : Std.U32 := 6#u32
+
+/-- [conduit_kernel::USER_ID]
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1081:0-1081:23 -/
+@[global_simps, irreducible] def USER_ID : Std.U32 := 0#u32
+
+/-- [conduit_kernel::USER_NAME]
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1082:0-1082:25 -/
+@[global_simps, irreducible] def USER_NAME : Std.U32 := 1#u32
+
+/-- [conduit_kernel::USER_EMAIL]
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1083:0-1083:26 -/
+@[global_simps, irreducible] def USER_EMAIL : Std.U32 := 2#u32
+
+/-- [conduit_kernel::FOLLOW_FOLLOWER]
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1084:0-1084:31 -/
+@[global_simps, irreducible] def FOLLOW_FOLLOWER : Std.U32 := 0#u32
+
+/-- [conduit_kernel::FOLLOW_FOLLOWED]
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1085:0-1085:31 -/
+@[global_simps, irreducible] def FOLLOW_FOLLOWED : Std.U32 := 1#u32
+
+/-- [conduit_kernel::ARTICLE_ID]
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1086:0-1086:26 -/
+@[global_simps, irreducible] def ARTICLE_ID : Std.U32 := 0#u32
+
+/-- [conduit_kernel::ARTICLE_AUTHOR]
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1087:0-1087:30 -/
+@[global_simps, irreducible] def ARTICLE_AUTHOR : Std.U32 := 1#u32
+
+/-- [conduit_kernel::ARTICLE_SLUG]
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1088:0-1088:28 -/
+@[global_simps, irreducible] def ARTICLE_SLUG : Std.U32 := 2#u32
+
+/-- [conduit_kernel::TAG_TAG]
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1089:0-1089:23 -/
+@[global_simps, irreducible] def TAG_TAG : Std.U32 := 1#u32
+
+/-- [conduit_kernel::FAVORITE_USER]
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1090:0-1090:29 -/
+@[global_simps, irreducible] def FAVORITE_USER : Std.U32 := 1#u32
+
+/-- [conduit_kernel::COMMENT_ID]
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1091:0-1091:26 -/
+@[global_simps, irreducible] def COMMENT_ID : Std.U32 := 0#u32
+
+/-- [conduit_kernel::COMMENT_AUTHOR]
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1092:0-1092:30 -/
+@[global_simps, irreducible] def COMMENT_AUTHOR : Std.U32 := 2#u32
+
+/-- [conduit_kernel::v_int]:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1094:0-1096:1 -/
+def v_int (x : Std.U64) : Result h5i_app_sql.Val := do
+  U64.Insts.H5i_app_sqlColumn.to_val x
+
+/-- [conduit_kernel::v_bytes]:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1098:0-1100:1 -/
+def v_bytes (t : alloc.vec.Vec Std.U8) : Result h5i_app_sql.Val := do
+  alloc.vec.VecU8.Insts.H5i_app_sqlColumn.to_val t
+
+/-- [conduit_kernel::p_eq]:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1102:0-1104:1 -/
+def p_eq (col : Std.U32) (v : h5i_app_sql.Val) : Result h5i_app_sql.Pred := do
+  ok (h5i_app_sql.Pred.Eq col v)
+
+/-- [conduit_kernel::p_or]:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1106:0-1108:1 -/
+def p_or
+  (a : h5i_app_sql.Pred) (b : h5i_app_sql.Pred) : Result h5i_app_sql.Pred := do
+  ok (h5i_app_sql.Pred.Or a b)
+
+/-- [conduit_kernel::p_and]:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1110:0-1112:1 -/
+def p_and
+  (a : h5i_app_sql.Pred) (b : h5i_app_sql.Pred) : Result h5i_app_sql.Pred := do
+  ok (h5i_app_sql.Pred.And a b)
+
+/-- [conduit_kernel::p_in]:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1115:0-1117:1 -/
+def p_in
+  (col : Std.U32) (table : Std.U32) (pred : h5i_app_sql.Pred) (of : Std.U32)
+  (window : h5i_app_sql.Window) :
+  Result h5i_app_sql.Pred
+  := do
+  ok (h5i_app_sql.Pred.In col table pred of window)
+
+/-- [conduit_kernel::rd_where]:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1119:0-1121:1 -/
+def rd_where
+  (table : Std.U32) (pred : h5i_app_sql.Pred) : Result h5i_app_sql.Read := do
+  let w ← h5i_app_sql.whole
+  ok { table, pred, window := w }
+
+/-- [conduit_kernel::by_slug]:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1124:0-1126:1 -/
+def by_slug (slug : alloc.vec.Vec Std.U8) : Result h5i_app_sql.Pred := do
+  let v ← v_bytes slug
+  p_eq ARTICLE_SLUG v
+
+/-- [conduit_kernel::of_articles]:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1129:0-1131:1 -/
+def of_articles
+  (col : Std.U32) (arts : h5i_app_sql.Pred) (w : h5i_app_sql.Window) :
+  Result h5i_app_sql.Pred
+  := do
+  p_in col T_ARTICLES arts ARTICLE_ID w
+
+/-- [conduit_kernel::named]:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1134:0-1136:1 -/
+def named
+  (col : Std.U32) («name» : alloc.vec.Vec Std.U8) :
+  Result h5i_app_sql.Pred
+  := do
+  let v ← v_bytes «name»
+  let p ← p_eq USER_NAME v
+  let w ← h5i_app_sql.whole
+  p_in col T_USERS p USER_ID w
+
+/-- [conduit_kernel::or_opt]:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1139:0-1144:1 -/
+def or_opt
+  (p : h5i_app_sql.Pred) (q : Option h5i_app_sql.Pred) :
+  Result h5i_app_sql.Pred
+  := do
+  match q with
+  | none => ok p
+  | some q1 => p_or p q1
+
+/-- [conduit_kernel::and_opt]:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1147:0-1152:1 -/
+def and_opt
+  (p : h5i_app_sql.Pred) (q : Option h5i_app_sql.Pred) :
+  Result h5i_app_sql.Pred
+  := do
+  match q with
+  | none => ok p
+  | some q1 => p_and p q1
+
+/-- [conduit_kernel::opt_text]:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1155:0-1160:1 -/
+def opt_text
+  (o : Option (alloc.vec.Vec Std.U8)) :
+  Result (Option (alloc.vec.Vec Std.U8))
+  := do
+  match o with
+  | none => ok none
+  | some t =>
+    let v ← alloc.vec.CloneVec.clone core.clone.CloneU8 t
+    ok (some v)
+
+/-- [conduit_kernel::newest]:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1163:0-1166:1 -/
+def newest
+  (offset : Std.U64) (limit : Std.U64) : Result h5i_app_sql.Window := do
+  let i ← core.num.U64.MAX - offset
+  if limit > i
+  then ok { desc := true, offset := 0#u64, limit := none }
+  else
+    let i1 ← offset + limit
+    ok { desc := true, offset := 0#u64, limit := (some i1) }
+
+/-- [conduit_kernel::Sel]
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1169:0-1176:1 -/
+@[discriminant isize]
+inductive Sel where
+| Slug : alloc.vec.Vec Std.U8 → Sel
+| List :
+  Option (alloc.vec.Vec Std.U8) →
+  Option (alloc.vec.Vec Std.U8) →
+  Option (alloc.vec.Vec Std.U8) →
+  Sel
+| Feed : Std.U64 → Sel
+
+/-- [conduit_kernel::sel_pred]:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1180:0-1200:1 -/
+def sel_pred (sel : Sel) : Result h5i_app_sql.Pred := do
+  match sel with
+  | Sel.Slug slug => by_slug slug
+  | Sel.List tag author favorited =>
+    let by_tag ←
+      match tag with
+      | none => ok none
+      | some t =>
+        do
+        let v ← v_bytes t
+        let p ← p_eq TAG_TAG v
+        let w ← h5i_app_sql.whole
+        let p1 ← p_in ARTICLE_ID T_TAGS p 0#u32 w
+        ok (some p1)
+    let by_author ←
+      match author with
+      | none => ok none
+      | some a => do
+                  let p ← named ARTICLE_AUTHOR a
+                  ok (some p)
+    let by_fav ←
+      match favorited with
+      | none => ok none
+      | some f =>
+        do
+        let p ← named FAVORITE_USER f
+        let w ← h5i_app_sql.whole
+        let p1 ← p_in ARTICLE_ID T_FAVORITES p 0#u32 w
+        ok (some p1)
+    let p ← and_opt h5i_app_sql.Pred.All by_tag
+    let p1 ← and_opt p by_author
+    and_opt p1 by_fav
+  | Sel.Feed u =>
+    let v ← v_int u
+    let p ← p_eq FOLLOW_FOLLOWER v
+    let w ← h5i_app_sql.whole
+    p_in ARTICLE_AUTHOR T_FOLLOWS p FOLLOW_FOLLOWED w
+
+/-- [conduit_kernel::article_plan]:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1205:0-1213:1 -/
+def article_plan
+  (viewer : Std.U64) (sel : Sel) (w : h5i_app_sql.Window)
+  (extra : Option h5i_app_sql.Pred) :
+  Result (alloc.vec.Vec h5i_app_sql.Read)
+  := do
+  let p ← sel_pred sel
+  let p1 ← p_in USER_ID T_ARTICLES p ARTICLE_AUTHOR w
+  let p2 ← or_opt p1 extra
+  let r ← rd_where T_USERS p2
+  let out ← alloc.vec.Vec.push (alloc.vec.Vec.new h5i_app_sql.Read) r
+  let v ← v_int viewer
+  let p3 ← p_eq FOLLOW_FOLLOWER v
+  let r1 ← rd_where T_FOLLOWS p3
+  let out1 ← alloc.vec.Vec.push out r1
+  let out2 ←
+    alloc.vec.Vec.push out1 ({ table := T_ARTICLES, pred := p, window := w } :
+      h5i_app_sql.Read)
+  let p4 ← of_articles 0#u32 p w
+  let r2 ← rd_where T_TAGS p4
+  let out3 ← alloc.vec.Vec.push out2 r2
+  let p5 ← of_articles 0#u32 p w
+  let r3 ← rd_where T_FAVORITES p5
+  alloc.vec.Vec.push out3 r3
+
+/-- [conduit_kernel::reads]:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1219:0-1337:1
+    Visibility: public -/
+def reads
+  (actor : Principal) (cmd : Command) :
+  Result (Option (alloc.vec.Vec h5i_app_sql.Read))
+  := do
+  match cmd with
+  | Command.Register username email _ =>
+    let v ← v_bytes username
+    let p ← p_eq USER_NAME v
+    let v1 ← v_bytes email
+    let p1 ← p_eq USER_EMAIL v1
+    let p2 ← p_or p p1
+    let r ← rd_where T_USERS p2
+    let out ← alloc.vec.Vec.push (alloc.vec.Vec.new h5i_app_sql.Read) r
+    let r1 ← rd_where T_COUNTER h5i_app_sql.Pred.All
+    let out1 ← alloc.vec.Vec.push out r1
+    ok (some out1)
+  | Command.Login email _ =>
+    let v ← v_bytes email
+    let p ← p_eq USER_EMAIL v
+    let r ← rd_where T_USERS p
+    let out ← alloc.vec.Vec.push (alloc.vec.Vec.new h5i_app_sql.Read) r
+    ok (some out)
+  | Command.CurrentUser =>
+    let v ← v_int actor.user
+    let p ← p_eq USER_ID v
+    let r ← rd_where T_USERS p
+    let out ← alloc.vec.Vec.push (alloc.vec.Vec.new h5i_app_sql.Read) r
+    ok (some out)
+  | Command.UpdateUser email username _ _ _ =>
+    let by_name ←
+      match username with
+      | none => ok none
+      | some n => do
+                  let v ← v_bytes n
+                  let p ← p_eq USER_NAME v
+                  ok (some p)
+    let by_email ←
+      match email with
+      | none => ok none
+      | some e =>
+        do
+        let v ← v_bytes e
+        let p ← p_eq USER_EMAIL v
+        ok (some p)
+    let v ← v_int actor.user
+    let p ← p_eq USER_ID v
+    let p1 ← or_opt p by_name
+    let p2 ← or_opt p1 by_email
+    let r ← rd_where T_USERS p2
+    let out ← alloc.vec.Vec.push (alloc.vec.Vec.new h5i_app_sql.Read) r
+    ok (some out)
+  | Command.GetProfile username =>
+    let v ← v_bytes username
+    let p ← p_eq USER_NAME v
+    let r ← rd_where T_USERS p
+    let out ← alloc.vec.Vec.push (alloc.vec.Vec.new h5i_app_sql.Read) r
+    let v1 ← v_int actor.user
+    let p1 ← p_eq FOLLOW_FOLLOWER v1
+    let r1 ← rd_where T_FOLLOWS p1
+    let out1 ← alloc.vec.Vec.push out r1
+    ok (some out1)
+  | Command.Follow username =>
+    let v ← v_int actor.user
+    let p ← p_eq USER_ID v
+    let v1 ← v_bytes username
+    let p1 ← p_eq USER_NAME v1
+    let p2 ← p_or p p1
+    let r ← rd_where T_USERS p2
+    let out ← alloc.vec.Vec.push (alloc.vec.Vec.new h5i_app_sql.Read) r
+    ok (some out)
+  | Command.Unfollow username =>
+    let v ← v_int actor.user
+    let p ← p_eq USER_ID v
+    let v1 ← v_bytes username
+    let p1 ← p_eq USER_NAME v1
+    let p2 ← p_or p p1
+    let r ← rd_where T_USERS p2
+    let out ← alloc.vec.Vec.push (alloc.vec.Vec.new h5i_app_sql.Read) r
+    ok (some out)
+  | Command.ListArticles tag author favorited limit offset =>
+    let names ←
+      match author with
+      | none => ok none
+      | some a => do
+                  let v ← v_bytes a
+                  let p ← p_eq USER_NAME v
+                  ok (some p)
+    let names1 ←
+      match favorited with
+      | none => ok names
+      | some f =>
+        do
+        let v ← v_bytes f
+        let p ← p_eq USER_NAME v
+        let p1 ← or_opt p names
+        ok (some p1)
+    let o ← opt_text tag
+    let o1 ← opt_text author
+    let o2 ← opt_text favorited
+    let w ← newest offset limit
+    let v ← article_plan actor.user (Sel.List o o1 o2) w names1
+    ok (some v)
+  | Command.Feed limit offset =>
+    let w ← newest offset limit
+    let v ← v_int actor.user
+    let p ← p_eq USER_ID v
+    let v1 ← article_plan actor.user (Sel.Feed actor.user) w (some p)
+    ok (some v1)
+  | Command.GetArticle slug =>
+    let v ← alloc.vec.CloneVec.clone core.clone.CloneU8 slug
+    let w ← h5i_app_sql.whole
+    let v1 ← article_plan actor.user (Sel.Slug v) w none
+    ok (some v1)
+  | Command.CreateArticle slug _ _ _ _ _ =>
+    let v ← v_int actor.user
+    let p ← p_eq USER_ID v
+    let r ← rd_where T_USERS p
+    let out ← alloc.vec.Vec.push (alloc.vec.Vec.new h5i_app_sql.Read) r
+    let p1 ← p_eq FOLLOW_FOLLOWER v
+    let r1 ← rd_where T_FOLLOWS p1
+    let out1 ← alloc.vec.Vec.push out r1
+    let p2 ← by_slug slug
+    let r2 ← rd_where T_ARTICLES p2
+    let out2 ← alloc.vec.Vec.push out1 r2
+    let r3 ← rd_where T_COUNTER h5i_app_sql.Pred.All
+    let out3 ← alloc.vec.Vec.push out2 r3
+    ok (some out3)
+  | Command.UpdateArticle slug new_slug _ _ _ _ _ =>
+    let renamed ←
+      match new_slug with
+      | none => ok none
+      | some n => do
+                  let p ← by_slug n
+                  ok (some p)
+    let v ← v_int actor.user
+    let p ← p_eq USER_ID v
+    let r ← rd_where T_USERS p
+    let out ← alloc.vec.Vec.push (alloc.vec.Vec.new h5i_app_sql.Read) r
+    let p1 ← p_eq FOLLOW_FOLLOWER v
+    let r1 ← rd_where T_FOLLOWS p1
+    let out1 ← alloc.vec.Vec.push out r1
+    let p2 ← by_slug slug
+    let p3 ← or_opt p2 renamed
+    let r2 ← rd_where T_ARTICLES p3
+    let out2 ← alloc.vec.Vec.push out1 r2
+    let w ← h5i_app_sql.whole
+    let p4 ← of_articles 0#u32 p2 w
+    let r3 ← rd_where T_TAGS p4
+    let out3 ← alloc.vec.Vec.push out2 r3
+    let p5 ← of_articles 0#u32 p2 w
+    let r4 ← rd_where T_FAVORITES p5
+    let out4 ← alloc.vec.Vec.push out3 r4
+    ok (some out4)
+  | Command.DeleteArticle slug =>
+    let v ← v_int actor.user
+    let p ← p_eq USER_ID v
+    let r ← rd_where T_USERS p
+    let out ← alloc.vec.Vec.push (alloc.vec.Vec.new h5i_app_sql.Read) r
+    let p1 ← by_slug slug
+    let r1 ← rd_where T_ARTICLES p1
+    let out1 ← alloc.vec.Vec.push out r1
+    ok (some out1)
+  | Command.Favorite slug =>
+    let v ← alloc.vec.CloneVec.clone core.clone.CloneU8 slug
+    let w ← h5i_app_sql.whole
+    let v1 ← v_int actor.user
+    let p ← p_eq USER_ID v1
+    let v2 ← article_plan actor.user (Sel.Slug v) w (some p)
+    ok (some v2)
+  | Command.Unfavorite slug =>
+    let v ← alloc.vec.CloneVec.clone core.clone.CloneU8 slug
+    let w ← h5i_app_sql.whole
+    let v1 ← v_int actor.user
+    let p ← p_eq USER_ID v1
+    let v2 ← article_plan actor.user (Sel.Slug v) w (some p)
+    ok (some v2)
+  | Command.GetComments slug =>
+    let p ← by_slug slug
+    let w ← h5i_app_sql.whole
+    let on ← of_articles 1#u32 p w
+    let p1 ← p_in USER_ID T_COMMENTS on COMMENT_AUTHOR w
+    let r ← rd_where T_USERS p1
+    let out ← alloc.vec.Vec.push (alloc.vec.Vec.new h5i_app_sql.Read) r
+    let v ← v_int actor.user
+    let p2 ← p_eq FOLLOW_FOLLOWER v
+    let r1 ← rd_where T_FOLLOWS p2
+    let out1 ← alloc.vec.Vec.push out r1
+    let r2 ← rd_where T_ARTICLES p
+    let out2 ← alloc.vec.Vec.push out1 r2
+    let p3 ← of_articles 1#u32 p w
+    let r3 ← rd_where T_COMMENTS p3
+    let out3 ← alloc.vec.Vec.push out2 r3
+    ok (some out3)
+  | Command.AddComment slug _ _ =>
+    let v ← v_int actor.user
+    let p ← p_eq USER_ID v
+    let r ← rd_where T_USERS p
+    let out ← alloc.vec.Vec.push (alloc.vec.Vec.new h5i_app_sql.Read) r
+    let p1 ← p_eq FOLLOW_FOLLOWER v
+    let r1 ← rd_where T_FOLLOWS p1
+    let out1 ← alloc.vec.Vec.push out r1
+    let p2 ← by_slug slug
+    let r2 ← rd_where T_ARTICLES p2
+    let out2 ← alloc.vec.Vec.push out1 r2
+    let r3 ← rd_where T_COUNTER h5i_app_sql.Pred.All
+    let out3 ← alloc.vec.Vec.push out2 r3
+    ok (some out3)
+  | Command.DeleteComment slug id =>
+    let v ← v_int actor.user
+    let p ← p_eq USER_ID v
+    let r ← rd_where T_USERS p
+    let out ← alloc.vec.Vec.push (alloc.vec.Vec.new h5i_app_sql.Read) r
+    let p1 ← by_slug slug
+    let r1 ← rd_where T_ARTICLES p1
+    let out1 ← alloc.vec.Vec.push out r1
+    let v1 ← v_int id
+    let p2 ← p_eq COMMENT_ID v1
+    let r2 ← rd_where T_COMMENTS p2
+    let out2 ← alloc.vec.Vec.push out1 r2
+    ok (some out2)
+  | Command.GetTags =>
+    let r ← rd_where T_TAGS h5i_app_sql.Pred.All
+    let out ← alloc.vec.Vec.push (alloc.vec.Vec.new h5i_app_sql.Read) r
+    ok (some out)
+
+/-- [conduit_kernel::article_count]:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1342:0-1350:1
+    Visibility: public -/
+def article_count
+  (actor : Principal) (cmd : Command) : Result (Option h5i_app_sql.Read) := do
+  match cmd with
+  | Command.Register _ _ _ => ok none
+  | Command.Login _ _ => ok none
+  | Command.CurrentUser => ok none
+  | Command.UpdateUser _ _ _ _ _ => ok none
+  | Command.GetProfile _ => ok none
+  | Command.Follow _ => ok none
+  | Command.Unfollow _ => ok none
+  | Command.ListArticles tag author favorited _ _ =>
+    let o ← opt_text tag
+    let o1 ← opt_text author
+    let o2 ← opt_text favorited
+    let p ← sel_pred (Sel.List o o1 o2)
+    let r ← rd_where T_ARTICLES p
+    ok (some r)
+  | Command.Feed _ _ =>
+    let p ← sel_pred (Sel.Feed actor.user)
+    let r ← rd_where T_ARTICLES p
+    ok (some r)
+  | Command.GetArticle _ => ok none
+  | Command.CreateArticle _ _ _ _ _ _ => ok none
+  | Command.UpdateArticle _ _ _ _ _ _ _ => ok none
+  | Command.DeleteArticle _ => ok none
+  | Command.Favorite _ => ok none
+  | Command.Unfavorite _ => ok none
+  | Command.GetComments _ => ok none
+  | Command.AddComment _ _ _ => ok none
+  | Command.DeleteComment _ _ => ok none
+  | Command.GetTags => ok none
+
+/-- [conduit_kernel::TAG_ARTICLE]
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1355:0-1355:27 -/
+@[global_simps, irreducible] def TAG_ARTICLE : Std.U32 := 0#u32
+
+/-- [conduit_kernel::FAVORITE_ARTICLE]
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1356:0-1356:32 -/
+@[global_simps, irreducible] def FAVORITE_ARTICLE : Std.U32 := 0#u32
+
+/-- [conduit_kernel::COMMENT_ARTICLE]
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1357:0-1357:31 -/
+@[global_simps, irreducible] def COMMENT_ARTICLE : Std.U32 := 1#u32
+
+/-- [conduit_kernel::{conduit_kernel::Comment}::to_row]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 138:12-143:13
+    Visibility: public -/
+def Comment.to_row
+  (self : Comment) : Result (alloc.vec.Vec h5i_app_sql.Val) := do
+  let v ← U64.Insts.H5i_app_sqlColumn.to_val self.id
+  let out ← alloc.vec.Vec.push (alloc.vec.Vec.new h5i_app_sql.Val) v
+  let v1 ← U64.Insts.H5i_app_sqlColumn.to_val self.article
+  let out1 ← alloc.vec.Vec.push out v1
+  let v2 ← U64.Insts.H5i_app_sqlColumn.to_val self.author
+  let out2 ← alloc.vec.Vec.push out1 v2
+  let v3 ← alloc.vec.VecU8.Insts.H5i_app_sqlColumn.to_val self.body
+  let out3 ← alloc.vec.Vec.push out2 v3
+  let v4 ← U64.Insts.H5i_app_sqlColumn.to_val self.created
+  alloc.vec.Vec.push out3 v4
+
+/-- [conduit_kernel::{conduit_kernel::Comment}::del_where]: loop body 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 247:16-252:17
+    Visibility: public -/
+@[rust_loop_body]
+def Comment.del_where_loop.body
+  (v : alloc.vec.Vec Comment) (col : Std.U32) (val : h5i_app_sql.Val)
+  (out : alloc.vec.Vec Comment) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Comment) × Std.Usize) (alloc.vec.Vec
+    Comment))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let c ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Comment) v i
+    let v1 ← Comment.to_row c
+    let b ← h5i_app_sql.has_col v1 col val
+    let out1 ←
+      if b
+      then ok out
+      else
+        do
+        let c1 ← Comment.Insts.CoreCloneClone.clone c
+        alloc.vec.Vec.push out c1
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
+  else ok (done out)
+
+/-- [conduit_kernel::{conduit_kernel::Comment}::del_where]: loop 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 247:16-252:17
+    Visibility: public -/
+@[rust_loop]
+def Comment.del_where_loop
+  (v : alloc.vec.Vec Comment) (col : Std.U32) (val : h5i_app_sql.Val)
+  (out : alloc.vec.Vec Comment) (i : Std.Usize) :
+  Result (alloc.vec.Vec Comment)
+  := do
+  loop
+    (fun (out1, i1) => Comment.del_where_loop.body v col val out1 i1)
+    (out, i)
+
+/-- [conduit_kernel::{conduit_kernel::Comment}::del_where]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 244:12-254:13
+    Visibility: public -/
+@[reducible]
+def Comment.del_where
+  (v : alloc.vec.Vec Comment) (col : Std.U32) (val : h5i_app_sql.Val) :
+  Result (alloc.vec.Vec Comment)
+  := do
+  Comment.del_where_loop v col val (alloc.vec.Vec.new Comment) 0#usize
+
+/-- [conduit_kernel::{conduit_kernel::Favorite}::to_row]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 138:12-143:13
+    Visibility: public -/
+def Favorite.to_row
+  (self : Favorite) : Result (alloc.vec.Vec h5i_app_sql.Val) := do
+  let v ← U64.Insts.H5i_app_sqlColumn.to_val self.article
+  let out ← alloc.vec.Vec.push (alloc.vec.Vec.new h5i_app_sql.Val) v
+  let v1 ← U64.Insts.H5i_app_sqlColumn.to_val self.user
+  alloc.vec.Vec.push out v1
+
+/-- [conduit_kernel::{conduit_kernel::Favorite}::del_where]: loop body 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 247:16-252:17
+    Visibility: public -/
+@[rust_loop_body]
+def Favorite.del_where_loop.body
+  (v : alloc.vec.Vec Favorite) (col : Std.U32) (val : h5i_app_sql.Val)
+  (out : alloc.vec.Vec Favorite) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Favorite) × Std.Usize) (alloc.vec.Vec
+    Favorite))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let f ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Favorite) v i
+    let v1 ← Favorite.to_row f
+    let b ← h5i_app_sql.has_col v1 col val
+    let out1 ←
+      if b
+      then ok out
+      else
+        do
+        let f1 ← Favorite.Insts.CoreCloneClone.clone f
+        alloc.vec.Vec.push out f1
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
+  else ok (done out)
+
+/-- [conduit_kernel::{conduit_kernel::Favorite}::del_where]: loop 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 247:16-252:17
+    Visibility: public -/
+@[rust_loop]
+def Favorite.del_where_loop
+  (v : alloc.vec.Vec Favorite) (col : Std.U32) (val : h5i_app_sql.Val)
+  (out : alloc.vec.Vec Favorite) (i : Std.Usize) :
+  Result (alloc.vec.Vec Favorite)
+  := do
+  loop
+    (fun (out1, i1) => Favorite.del_where_loop.body v col val out1 i1)
+    (out, i)
+
+/-- [conduit_kernel::{conduit_kernel::Favorite}::del_where]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 244:12-254:13
+    Visibility: public -/
+@[reducible]
+def Favorite.del_where
+  (v : alloc.vec.Vec Favorite) (col : Std.U32) (val : h5i_app_sql.Val) :
+  Result (alloc.vec.Vec Favorite)
+  := do
+  Favorite.del_where_loop v col val (alloc.vec.Vec.new Favorite) 0#usize
+
+/-- [conduit_kernel::{conduit_kernel::Tag}::to_row]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 138:12-143:13
+    Visibility: public -/
+def Tag.to_row (self : Tag) : Result (alloc.vec.Vec h5i_app_sql.Val) := do
+  let v ← U64.Insts.H5i_app_sqlColumn.to_val self.article
+  let out ← alloc.vec.Vec.push (alloc.vec.Vec.new h5i_app_sql.Val) v
+  let v1 ← alloc.vec.VecU8.Insts.H5i_app_sqlColumn.to_val self.tag
+  alloc.vec.Vec.push out v1
+
+/-- [conduit_kernel::{conduit_kernel::Tag}::del_where]: loop body 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 247:16-252:17
+    Visibility: public -/
+@[rust_loop_body]
+def Tag.del_where_loop.body
+  (v : alloc.vec.Vec Tag) (col : Std.U32) (val : h5i_app_sql.Val)
+  (out : alloc.vec.Vec Tag) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Tag) × Std.Usize) (alloc.vec.Vec Tag))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let t ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Tag) v i
+    let v1 ← Tag.to_row t
+    let b ← h5i_app_sql.has_col v1 col val
+    let out1 ←
+      if b
+      then ok out
+      else
+        do
+        let t1 ← Tag.Insts.CoreCloneClone.clone t
+        alloc.vec.Vec.push out t1
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
+  else ok (done out)
+
+/-- [conduit_kernel::{conduit_kernel::Tag}::del_where]: loop 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 247:16-252:17
+    Visibility: public -/
+@[rust_loop]
+def Tag.del_where_loop
+  (v : alloc.vec.Vec Tag) (col : Std.U32) (val : h5i_app_sql.Val)
+  (out : alloc.vec.Vec Tag) (i : Std.Usize) :
+  Result (alloc.vec.Vec Tag)
+  := do
+  loop
+    (fun (out1, i1) => Tag.del_where_loop.body v col val out1 i1)
+    (out, i)
+
+/-- [conduit_kernel::{conduit_kernel::Tag}::del_where]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 244:12-254:13
+    Visibility: public -/
+@[reducible]
+def Tag.del_where
+  (v : alloc.vec.Vec Tag) (col : Std.U32) (val : h5i_app_sql.Val) :
+  Result (alloc.vec.Vec Tag)
+  := do
+  Tag.del_where_loop v col val (alloc.vec.Vec.new Tag) 0#usize
+
+/-- [conduit_kernel::{conduit_kernel::Comment}::del]: loop body 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 234:16-239:17
+    Visibility: public -/
+@[rust_loop_body]
+def Comment.del_loop.body
+  (v : alloc.vec.Vec Comment) (id : Std.U64) (out : alloc.vec.Vec Comment)
+  (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Comment) × Std.Usize) (alloc.vec.Vec
+    Comment))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let c ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Comment) v i
+    let out1 ←
+      if c.id = id
+      then ok out
+      else
+        do
+        let c1 ← Comment.Insts.CoreCloneClone.clone c
+        alloc.vec.Vec.push out c1
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
+  else ok (done out)
+
+/-- [conduit_kernel::{conduit_kernel::Comment}::del]: loop 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 234:16-239:17
+    Visibility: public -/
+@[rust_loop]
+def Comment.del_loop
+  (v : alloc.vec.Vec Comment) (id : Std.U64) (out : alloc.vec.Vec Comment)
+  (i : Std.Usize) :
+  Result (alloc.vec.Vec Comment)
+  := do
+  loop
+    (fun (out1, i1) => Comment.del_loop.body v id out1 i1)
+    (out, i)
+
+/-- [conduit_kernel::{conduit_kernel::Comment}::del]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 231:12-241:13
+    Visibility: public -/
+@[reducible]
+def Comment.del
+  (v : alloc.vec.Vec Comment) (id : Std.U64) :
+  Result (alloc.vec.Vec Comment)
+  := do
+  Comment.del_loop v id (alloc.vec.Vec.new Comment) 0#usize
+
+/-- [conduit_kernel::{conduit_kernel::Favorite}::del]: loop body 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 234:16-239:17
+    Visibility: public -/
+@[rust_loop_body]
+def Favorite.del_loop.body
+  (v : alloc.vec.Vec Favorite) (article : Std.U64) (user : Std.U64)
+  (out : alloc.vec.Vec Favorite) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Favorite) × Std.Usize) (alloc.vec.Vec
+    Favorite))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let f ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Favorite) v i
+    let out1 ←
+      if f.article = article
+      then
+        if f.user = user
+        then ok out
+        else
+          do
+          let f1 ← Favorite.Insts.CoreCloneClone.clone f
+          alloc.vec.Vec.push out f1
+      else
+        do
+        let f1 ← Favorite.Insts.CoreCloneClone.clone f
+        alloc.vec.Vec.push out f1
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
+  else ok (done out)
+
+/-- [conduit_kernel::{conduit_kernel::Favorite}::del]: loop 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 234:16-239:17
+    Visibility: public -/
+@[rust_loop]
+def Favorite.del_loop
+  (v : alloc.vec.Vec Favorite) (article : Std.U64) (user : Std.U64)
+  (out : alloc.vec.Vec Favorite) (i : Std.Usize) :
+  Result (alloc.vec.Vec Favorite)
+  := do
+  loop
+    (fun (out1, i1) => Favorite.del_loop.body v article user out1 i1)
+    (out, i)
+
+/-- [conduit_kernel::{conduit_kernel::Favorite}::del]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 231:12-241:13
+    Visibility: public -/
+@[reducible]
+def Favorite.del
+  (v : alloc.vec.Vec Favorite) (article : Std.U64) (user : Std.U64) :
+  Result (alloc.vec.Vec Favorite)
+  := do
+  Favorite.del_loop v article user (alloc.vec.Vec.new Favorite) 0#usize
+
+/-- [conduit_kernel::{conduit_kernel::Article}::del]: loop body 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 234:16-239:17
+    Visibility: public -/
+@[rust_loop_body]
+def Article.del_loop.body
+  (v : alloc.vec.Vec Article) (id : Std.U64) (out : alloc.vec.Vec Article)
+  (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Article) × Std.Usize) (alloc.vec.Vec
+    Article))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let a ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Article) v i
+    let out1 ←
+      if a.id = id
+      then ok out
+      else
+        do
+        let a1 ← Article.Insts.CoreCloneClone.clone a
+        alloc.vec.Vec.push out a1
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
+  else ok (done out)
+
+/-- [conduit_kernel::{conduit_kernel::Article}::del]: loop 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 234:16-239:17
+    Visibility: public -/
+@[rust_loop]
+def Article.del_loop
+  (v : alloc.vec.Vec Article) (id : Std.U64) (out : alloc.vec.Vec Article)
+  (i : Std.Usize) :
+  Result (alloc.vec.Vec Article)
+  := do
+  loop
+    (fun (out1, i1) => Article.del_loop.body v id out1 i1)
+    (out, i)
+
+/-- [conduit_kernel::{conduit_kernel::Article}::del]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 231:12-241:13
+    Visibility: public -/
+@[reducible]
+def Article.del
+  (v : alloc.vec.Vec Article) (id : Std.U64) :
+  Result (alloc.vec.Vec Article)
+  := do
+  Article.del_loop v id (alloc.vec.Vec.new Article) 0#usize
+
+/-- [conduit_kernel::{conduit_kernel::Follow}::del]: loop body 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 234:16-239:17
+    Visibility: public -/
+@[rust_loop_body]
+def Follow.del_loop.body
+  (v : alloc.vec.Vec Follow) (follower : Std.U64) (followed : Std.U64)
+  (out : alloc.vec.Vec Follow) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Follow) × Std.Usize) (alloc.vec.Vec
+    Follow))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let f ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Follow) v i
+    let out1 ←
+      if f.follower = follower
+      then
+        if f.followed = followed
+        then ok out
+        else
+          do
+          let f1 ← Follow.Insts.CoreCloneClone.clone f
+          alloc.vec.Vec.push out f1
+      else
+        do
+        let f1 ← Follow.Insts.CoreCloneClone.clone f
+        alloc.vec.Vec.push out f1
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
+  else ok (done out)
+
+/-- [conduit_kernel::{conduit_kernel::Follow}::del]: loop 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 234:16-239:17
+    Visibility: public -/
+@[rust_loop]
+def Follow.del_loop
+  (v : alloc.vec.Vec Follow) (follower : Std.U64) (followed : Std.U64)
+  (out : alloc.vec.Vec Follow) (i : Std.Usize) :
+  Result (alloc.vec.Vec Follow)
+  := do
+  loop
+    (fun (out1, i1) => Follow.del_loop.body v follower followed out1 i1)
+    (out, i)
+
+/-- [conduit_kernel::{conduit_kernel::Follow}::del]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 231:12-241:13
+    Visibility: public -/
+@[reducible]
+def Follow.del
+  (v : alloc.vec.Vec Follow) (follower : Std.U64) (followed : Std.U64) :
+  Result (alloc.vec.Vec Follow)
+  := do
+  Follow.del_loop v follower followed (alloc.vec.Vec.new Follow) 0#usize
+
+/-- [conduit_kernel::{conduit_kernel::Comment}::put]: loop body 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 220:16-228:13
+    Visibility: public -/
+@[rust_loop_body]
+def Comment.put_loop.body
+  (v : alloc.vec.Vec Comment) (x : Comment) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize (alloc.vec.Vec Comment))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let c ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Comment) v i
+    if c.id = x.id
+    then
+      let (_, index_mut_back) ←
+        alloc.vec.Vec.index_mut (core.slice.index.SliceIndexUsizeSlice Comment)
+          v i
+      let v1 := index_mut_back x
+      ok (done v1)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else let v1 ← alloc.vec.Vec.push v x
+       ok (done v1)
+
+/-- [conduit_kernel::{conduit_kernel::Comment}::put]: loop 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 220:16-228:13
+    Visibility: public -/
+@[rust_loop]
+def Comment.put_loop
+  (v : alloc.vec.Vec Comment) (x : Comment) (i : Std.Usize) :
+  Result (alloc.vec.Vec Comment)
+  := do
+  loop
+    (fun i1 => Comment.put_loop.body v x i1)
+    i
+
+/-- [conduit_kernel::{conduit_kernel::Comment}::put]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 218:12-228:13
+    Visibility: public -/
+@[reducible]
+def Comment.put
+  (v : alloc.vec.Vec Comment) (x : Comment) :
+  Result (alloc.vec.Vec Comment)
+  := do
+  Comment.put_loop v x 0#usize
+
+/-- [conduit_kernel::{conduit_kernel::Favorite}::put]: loop body 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 220:16-228:13
+    Visibility: public -/
+@[rust_loop_body]
+def Favorite.put_loop.body
+  (v : alloc.vec.Vec Favorite) (x : Favorite) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize (alloc.vec.Vec Favorite))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let f ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Favorite) v i
+    if f.article = x.article
+    then
+      if f.user = x.user
+      then
+        let (_, index_mut_back) ←
+          alloc.vec.Vec.index_mut (core.slice.index.SliceIndexUsizeSlice
+            Favorite) v i
+        let v1 := index_mut_back x
+        ok (done v1)
+      else let i2 ← i + 1#usize
+           ok (cont i2)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else let v1 ← alloc.vec.Vec.push v x
+       ok (done v1)
+
+/-- [conduit_kernel::{conduit_kernel::Favorite}::put]: loop 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 220:16-228:13
+    Visibility: public -/
+@[rust_loop]
+def Favorite.put_loop
+  (v : alloc.vec.Vec Favorite) (x : Favorite) (i : Std.Usize) :
+  Result (alloc.vec.Vec Favorite)
+  := do
+  loop
+    (fun i1 => Favorite.put_loop.body v x i1)
+    i
+
+/-- [conduit_kernel::{conduit_kernel::Favorite}::put]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 218:12-228:13
+    Visibility: public -/
+@[reducible]
+def Favorite.put
+  (v : alloc.vec.Vec Favorite) (x : Favorite) :
+  Result (alloc.vec.Vec Favorite)
+  := do
+  Favorite.put_loop v x 0#usize
+
+/-- [conduit_kernel::{conduit_kernel::Tag}::put]: loop body 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 220:16-228:13
+    Visibility: public -/
+@[rust_loop_body]
+def Tag.put_loop.body
+  (v : alloc.vec.Vec Tag) (x : Tag) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize (alloc.vec.Vec Tag))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let t ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Tag) v i
+    if t.article = x.article
+    then
+      let b ←
+        alloc.vec.partial_eq.PartialEqVec.eq core.cmp.PartialEqU8 t.tag x.tag
+      if b
+      then
+        let (_, index_mut_back) ←
+          alloc.vec.Vec.index_mut (core.slice.index.SliceIndexUsizeSlice Tag) v
+            i
+        let v1 := index_mut_back x
+        ok (done v1)
+      else let i2 ← i + 1#usize
+           ok (cont i2)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else let v1 ← alloc.vec.Vec.push v x
+       ok (done v1)
+
+/-- [conduit_kernel::{conduit_kernel::Tag}::put]: loop 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 220:16-228:13
+    Visibility: public -/
+@[rust_loop]
+def Tag.put_loop
+  (v : alloc.vec.Vec Tag) (x : Tag) (i : Std.Usize) :
+  Result (alloc.vec.Vec Tag)
+  := do
+  loop
+    (fun i1 => Tag.put_loop.body v x i1)
+    i
+
+/-- [conduit_kernel::{conduit_kernel::Tag}::put]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 218:12-228:13
+    Visibility: public -/
+@[reducible]
+def Tag.put
+  (v : alloc.vec.Vec Tag) (x : Tag) : Result (alloc.vec.Vec Tag) := do
+  Tag.put_loop v x 0#usize
+
+/-- [conduit_kernel::{conduit_kernel::Article}::put]: loop body 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 220:16-228:13
+    Visibility: public -/
+@[rust_loop_body]
+def Article.put_loop.body
+  (v : alloc.vec.Vec Article) (x : Article) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize (alloc.vec.Vec Article))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let a ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Article) v i
+    if a.id = x.id
+    then
+      let (_, index_mut_back) ←
+        alloc.vec.Vec.index_mut (core.slice.index.SliceIndexUsizeSlice Article)
+          v i
+      let v1 := index_mut_back x
+      ok (done v1)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else let v1 ← alloc.vec.Vec.push v x
+       ok (done v1)
+
+/-- [conduit_kernel::{conduit_kernel::Article}::put]: loop 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 220:16-228:13
+    Visibility: public -/
+@[rust_loop]
+def Article.put_loop
+  (v : alloc.vec.Vec Article) (x : Article) (i : Std.Usize) :
+  Result (alloc.vec.Vec Article)
+  := do
+  loop
+    (fun i1 => Article.put_loop.body v x i1)
+    i
+
+/-- [conduit_kernel::{conduit_kernel::Article}::put]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 218:12-228:13
+    Visibility: public -/
+@[reducible]
+def Article.put
+  (v : alloc.vec.Vec Article) (x : Article) :
+  Result (alloc.vec.Vec Article)
+  := do
+  Article.put_loop v x 0#usize
+
+/-- [conduit_kernel::{conduit_kernel::Follow}::put]: loop body 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 220:16-228:13
+    Visibility: public -/
+@[rust_loop_body]
+def Follow.put_loop.body
+  (v : alloc.vec.Vec Follow) (x : Follow) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize (alloc.vec.Vec Follow))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let f ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Follow) v i
+    if f.follower = x.follower
+    then
+      if f.followed = x.followed
+      then
+        let (_, index_mut_back) ←
+          alloc.vec.Vec.index_mut (core.slice.index.SliceIndexUsizeSlice
+            Follow) v i
+        let v1 := index_mut_back x
+        ok (done v1)
+      else let i2 ← i + 1#usize
+           ok (cont i2)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else let v1 ← alloc.vec.Vec.push v x
+       ok (done v1)
+
+/-- [conduit_kernel::{conduit_kernel::Follow}::put]: loop 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 220:16-228:13
+    Visibility: public -/
+@[rust_loop]
+def Follow.put_loop
+  (v : alloc.vec.Vec Follow) (x : Follow) (i : Std.Usize) :
+  Result (alloc.vec.Vec Follow)
+  := do
+  loop
+    (fun i1 => Follow.put_loop.body v x i1)
+    i
+
+/-- [conduit_kernel::{conduit_kernel::Follow}::put]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 218:12-228:13
+    Visibility: public -/
+@[reducible]
+def Follow.put
+  (v : alloc.vec.Vec Follow) (x : Follow) : Result (alloc.vec.Vec Follow) := do
+  Follow.put_loop v x 0#usize
+
+/-- [conduit_kernel::{conduit_kernel::User}::put]: loop body 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 220:16-228:13
+    Visibility: public -/
+@[rust_loop_body]
+def User.put_loop.body
+  (v : alloc.vec.Vec User) (x : User) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize (alloc.vec.Vec User))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let u ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice User) v i
+    if u.id = x.id
+    then
+      let (_, index_mut_back) ←
+        alloc.vec.Vec.index_mut (core.slice.index.SliceIndexUsizeSlice User) v
+          i
+      let v1 := index_mut_back x
+      ok (done v1)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else let v1 ← alloc.vec.Vec.push v x
+       ok (done v1)
+
+/-- [conduit_kernel::{conduit_kernel::User}::put]: loop 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 220:16-228:13
+    Visibility: public -/
+@[rust_loop]
+def User.put_loop
+  (v : alloc.vec.Vec User) (x : User) (i : Std.Usize) :
+  Result (alloc.vec.Vec User)
+  := do
+  loop
+    (fun i1 => User.put_loop.body v x i1)
+    i
+
+/-- [conduit_kernel::{conduit_kernel::User}::put]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 218:12-228:13
+    Visibility: public -/
+@[reducible]
+def User.put
+  (v : alloc.vec.Vec User) (x : User) : Result (alloc.vec.Vec User) := do
+  User.put_loop v x 0#usize
+
+/-- [conduit_kernel::apply_write]:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1361:0-1382:1 -/
+def apply_write (s : Snapshot) (w : Write) : Result Snapshot := do
+  match w with
+  | Write.PutUser x => let v ← User.put s.users x
+                       ok { s with users := v }
+  | Write.PutFollow x =>
+    let v ← Follow.put s.follows x
+    ok { s with follows := v }
+  | Write.DelFollow x =>
+    let v ← Follow.del s.follows x.follower x.followed
+    ok { s with follows := v }
+  | Write.PutArticle x =>
+    let v ← Article.put s.articles x
+    ok { s with articles := v }
+  | Write.DelArticle id =>
+    let v ← Article.del s.articles id
+    ok { s with articles := v }
+  | Write.PutTag x => let v ← Tag.put s.tags x
+                      ok { s with tags := v }
+  | Write.DelTagsOf id =>
+    let v ← U64.Insts.H5i_app_sqlColumn.to_val id
+    let v1 ← Tag.del_where s.tags TAG_ARTICLE v
+    ok { s with tags := v1 }
+  | Write.PutFavorite x =>
+    let v ← Favorite.put s.favorites x
+    ok { s with favorites := v }
+  | Write.DelFavorite x =>
+    let v ← Favorite.del s.favorites x.article x.user
+    ok { s with favorites := v }
+  | Write.DelFavoritesOf id =>
+    let v ← U64.Insts.H5i_app_sqlColumn.to_val id
+    let v1 ← Favorite.del_where s.favorites FAVORITE_ARTICLE v
+    ok { s with favorites := v1 }
+  | Write.PutComment x =>
+    let v ← Comment.put s.comments x
+    ok { s with comments := v }
+  | Write.DelComment id =>
+    let v ← Comment.del s.comments id
+    ok { s with comments := v }
+  | Write.DelCommentsOf id =>
+    let v ← U64.Insts.H5i_app_sqlColumn.to_val id
+    let v1 ← Comment.del_where s.comments COMMENT_ARTICLE v
+    ok { s with comments := v1 }
+  | Write.SetCounter c => ok { s with counter := c }
+
+/-- [conduit_kernel::{conduit_kernel::Comment}::TABLE]
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 135:12-135:60
+    Visibility: public -/
+@[global_simps, irreducible] def Comment.TABLE : Std.U32 := 5#u32
+
+/-- [conduit_kernel::{conduit_kernel::Comment}::sql_del_where]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 264:12-266:13
+    Visibility: public -/
+def Comment.sql_del_where
+  (col : Std.U32) (val : h5i_app_sql.Val) : Result h5i_app_sql.Write := do
+  ok (h5i_app_sql.Write.DelWhere Comment.TABLE col val)
+
+/-- [conduit_kernel::{conduit_kernel::Favorite}::TABLE]
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 135:12-135:60
+    Visibility: public -/
+@[global_simps, irreducible] def Favorite.TABLE : Std.U32 := 4#u32
+
+/-- [conduit_kernel::{conduit_kernel::Favorite}::sql_del_where]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 264:12-266:13
+    Visibility: public -/
+def Favorite.sql_del_where
+  (col : Std.U32) (val : h5i_app_sql.Val) : Result h5i_app_sql.Write := do
+  ok (h5i_app_sql.Write.DelWhere Favorite.TABLE col val)
+
+/-- [conduit_kernel::{conduit_kernel::Tag}::TABLE]
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 135:12-135:60
+    Visibility: public -/
+@[global_simps, irreducible] def Tag.TABLE : Std.U32 := 3#u32
+
+/-- [conduit_kernel::{conduit_kernel::Tag}::sql_del_where]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 264:12-266:13
+    Visibility: public -/
+def Tag.sql_del_where
+  (col : Std.U32) (val : h5i_app_sql.Val) : Result h5i_app_sql.Write := do
+  ok (h5i_app_sql.Write.DelWhere Tag.TABLE col val)
+
+/-- [conduit_kernel::{conduit_kernel::Comment}::sql_del]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 257:12-261:13
+    Visibility: public -/
+def Comment.sql_del (id : Std.U64) : Result h5i_app_sql.Write := do
+  let v ← U64.Insts.H5i_app_sqlColumn.to_val id
+  let key ← alloc.vec.Vec.push (alloc.vec.Vec.new h5i_app_sql.Val) v
+  ok (h5i_app_sql.Write.Del Comment.TABLE key)
+
+/-- [conduit_kernel::{conduit_kernel::Favorite}::sql_del]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 257:12-261:13
+    Visibility: public -/
+def Favorite.sql_del
+  (article : Std.U64) (user : Std.U64) : Result h5i_app_sql.Write := do
+  let v ← U64.Insts.H5i_app_sqlColumn.to_val article
+  let key ← alloc.vec.Vec.push (alloc.vec.Vec.new h5i_app_sql.Val) v
+  let v1 ← U64.Insts.H5i_app_sqlColumn.to_val user
+  let key1 ← alloc.vec.Vec.push key v1
+  ok (h5i_app_sql.Write.Del Favorite.TABLE key1)
+
+/-- [conduit_kernel::{conduit_kernel::Article}::TABLE]
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 135:12-135:60
+    Visibility: public -/
+@[global_simps, irreducible] def Article.TABLE : Std.U32 := 2#u32
+
+/-- [conduit_kernel::{conduit_kernel::Article}::sql_del]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 257:12-261:13
+    Visibility: public -/
+def Article.sql_del (id : Std.U64) : Result h5i_app_sql.Write := do
+  let v ← U64.Insts.H5i_app_sqlColumn.to_val id
+  let key ← alloc.vec.Vec.push (alloc.vec.Vec.new h5i_app_sql.Val) v
+  ok (h5i_app_sql.Write.Del Article.TABLE key)
+
+/-- [conduit_kernel::{conduit_kernel::Follow}::TABLE]
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 135:12-135:60
+    Visibility: public -/
+@[global_simps, irreducible] def Follow.TABLE : Std.U32 := 1#u32
+
+/-- [conduit_kernel::{conduit_kernel::Follow}::sql_del]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 257:12-261:13
+    Visibility: public -/
+def Follow.sql_del
+  (follower : Std.U64) (followed : Std.U64) : Result h5i_app_sql.Write := do
+  let v ← U64.Insts.H5i_app_sqlColumn.to_val follower
+  let key ← alloc.vec.Vec.push (alloc.vec.Vec.new h5i_app_sql.Val) v
+  let v1 ← U64.Insts.H5i_app_sqlColumn.to_val followed
+  let key1 ← alloc.vec.Vec.push key v1
+  ok (h5i_app_sql.Write.Del Follow.TABLE key1)
+
+/-- [conduit_kernel::{conduit_kernel::Counter}::to_row]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 138:12-143:13
+    Visibility: public -/
+def Counter.to_row
+  (self : Counter) : Result (alloc.vec.Vec h5i_app_sql.Val) := do
+  let v ← U64.Insts.H5i_app_sqlColumn.to_val self.last_user
+  let out ← alloc.vec.Vec.push (alloc.vec.Vec.new h5i_app_sql.Val) v
+  let v1 ← U64.Insts.H5i_app_sqlColumn.to_val self.last_article
+  let out1 ← alloc.vec.Vec.push out v1
+  let v2 ← U64.Insts.H5i_app_sqlColumn.to_val self.last_comment
+  alloc.vec.Vec.push out1 v2
+
+/-- [conduit_kernel::{conduit_kernel::Counter}::KEY_LEN]
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 136:12-136:62
+    Visibility: public -/
+@[global_simps, irreducible] def Counter.KEY_LEN : Std.U32 := 0#u32
+
+/-- [conduit_kernel::{conduit_kernel::Counter}::TABLE]
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 135:12-135:60
+    Visibility: public -/
+@[global_simps, irreducible] def Counter.TABLE : Std.U32 := 6#u32
+
+/-- [conduit_kernel::{conduit_kernel::Counter}::sql_put]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 189:12-191:13
+    Visibility: public -/
+def Counter.sql_put (self : Counter) : Result h5i_app_sql.Write := do
+  let v ← Counter.to_row self
+  ok (h5i_app_sql.Write.Put Counter.TABLE Counter.KEY_LEN v)
+
+/-- [conduit_kernel::{conduit_kernel::Comment}::KEY_LEN]
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 136:12-136:62
+    Visibility: public -/
+@[global_simps, irreducible] def Comment.KEY_LEN : Std.U32 := 1#u32
+
+/-- [conduit_kernel::{conduit_kernel::Comment}::sql_put]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 189:12-191:13
+    Visibility: public -/
+def Comment.sql_put (self : Comment) : Result h5i_app_sql.Write := do
+  let v ← Comment.to_row self
+  ok (h5i_app_sql.Write.Put Comment.TABLE Comment.KEY_LEN v)
+
+/-- [conduit_kernel::{conduit_kernel::Favorite}::KEY_LEN]
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 136:12-136:62
+    Visibility: public -/
+@[global_simps, irreducible] def Favorite.KEY_LEN : Std.U32 := 2#u32
+
+/-- [conduit_kernel::{conduit_kernel::Favorite}::sql_put]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 189:12-191:13
+    Visibility: public -/
+def Favorite.sql_put (self : Favorite) : Result h5i_app_sql.Write := do
+  let v ← Favorite.to_row self
+  ok (h5i_app_sql.Write.Put Favorite.TABLE Favorite.KEY_LEN v)
+
+/-- [conduit_kernel::{conduit_kernel::Tag}::KEY_LEN]
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 136:12-136:62
+    Visibility: public -/
+@[global_simps, irreducible] def Tag.KEY_LEN : Std.U32 := 2#u32
+
+/-- [conduit_kernel::{conduit_kernel::Tag}::sql_put]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 189:12-191:13
+    Visibility: public -/
+def Tag.sql_put (self : Tag) : Result h5i_app_sql.Write := do
+  let v ← Tag.to_row self
+  ok (h5i_app_sql.Write.Put Tag.TABLE Tag.KEY_LEN v)
+
+/-- [conduit_kernel::{conduit_kernel::Article}::to_row]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 138:12-143:13
+    Visibility: public -/
+def Article.to_row
+  (self : Article) : Result (alloc.vec.Vec h5i_app_sql.Val) := do
+  let v ← U64.Insts.H5i_app_sqlColumn.to_val self.id
+  let out ← alloc.vec.Vec.push (alloc.vec.Vec.new h5i_app_sql.Val) v
+  let v1 ← U64.Insts.H5i_app_sqlColumn.to_val self.author
+  let out1 ← alloc.vec.Vec.push out v1
+  let v2 ← alloc.vec.VecU8.Insts.H5i_app_sqlColumn.to_val self.slug
+  let out2 ← alloc.vec.Vec.push out1 v2
+  let v3 ← alloc.vec.VecU8.Insts.H5i_app_sqlColumn.to_val self.title
+  let out3 ← alloc.vec.Vec.push out2 v3
+  let v4 ← alloc.vec.VecU8.Insts.H5i_app_sqlColumn.to_val self.description
+  let out4 ← alloc.vec.Vec.push out3 v4
+  let v5 ← alloc.vec.VecU8.Insts.H5i_app_sqlColumn.to_val self.body
+  let out5 ← alloc.vec.Vec.push out4 v5
+  let v6 ← U64.Insts.H5i_app_sqlColumn.to_val self.created
+  let out6 ← alloc.vec.Vec.push out5 v6
+  let v7 ← U64.Insts.H5i_app_sqlColumn.to_val self.updated
+  alloc.vec.Vec.push out6 v7
+
+/-- [conduit_kernel::{conduit_kernel::Article}::KEY_LEN]
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 136:12-136:62
+    Visibility: public -/
+@[global_simps, irreducible] def Article.KEY_LEN : Std.U32 := 1#u32
+
+/-- [conduit_kernel::{conduit_kernel::Article}::sql_put]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 189:12-191:13
+    Visibility: public -/
+def Article.sql_put (self : Article) : Result h5i_app_sql.Write := do
+  let v ← Article.to_row self
+  ok (h5i_app_sql.Write.Put Article.TABLE Article.KEY_LEN v)
+
+/-- [conduit_kernel::{conduit_kernel::Follow}::to_row]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 138:12-143:13
+    Visibility: public -/
+def Follow.to_row
+  (self : Follow) : Result (alloc.vec.Vec h5i_app_sql.Val) := do
+  let v ← U64.Insts.H5i_app_sqlColumn.to_val self.follower
+  let out ← alloc.vec.Vec.push (alloc.vec.Vec.new h5i_app_sql.Val) v
+  let v1 ← U64.Insts.H5i_app_sqlColumn.to_val self.followed
+  alloc.vec.Vec.push out v1
+
+/-- [conduit_kernel::{conduit_kernel::Follow}::KEY_LEN]
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 136:12-136:62
+    Visibility: public -/
+@[global_simps, irreducible] def Follow.KEY_LEN : Std.U32 := 2#u32
+
+/-- [conduit_kernel::{conduit_kernel::Follow}::sql_put]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 189:12-191:13
+    Visibility: public -/
+def Follow.sql_put (self : Follow) : Result h5i_app_sql.Write := do
+  let v ← Follow.to_row self
+  ok (h5i_app_sql.Write.Put Follow.TABLE Follow.KEY_LEN v)
+
+/-- [conduit_kernel::{conduit_kernel::User}::to_row]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 138:12-143:13
+    Visibility: public -/
+def User.to_row (self : User) : Result (alloc.vec.Vec h5i_app_sql.Val) := do
+  let v ← U64.Insts.H5i_app_sqlColumn.to_val self.id
+  let out ← alloc.vec.Vec.push (alloc.vec.Vec.new h5i_app_sql.Val) v
+  let v1 ← alloc.vec.VecU8.Insts.H5i_app_sqlColumn.to_val self.username
+  let out1 ← alloc.vec.Vec.push out v1
+  let v2 ← alloc.vec.VecU8.Insts.H5i_app_sqlColumn.to_val self.email
+  let out2 ← alloc.vec.Vec.push out1 v2
+  let v3 ← alloc.vec.VecU8.Insts.H5i_app_sqlColumn.to_val self.password
+  let out3 ← alloc.vec.Vec.push out2 v3
+  let v4 ← alloc.vec.VecU8.Insts.H5i_app_sqlColumn.to_val self.bio
+  let out4 ← alloc.vec.Vec.push out3 v4
+  let v5 ← alloc.vec.VecU8.Insts.H5i_app_sqlColumn.to_val self.image
+  alloc.vec.Vec.push out4 v5
+
+/-- [conduit_kernel::{conduit_kernel::User}::KEY_LEN]
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 136:12-136:62
+    Visibility: public -/
+@[global_simps, irreducible] def User.KEY_LEN : Std.U32 := 1#u32
+
+/-- [conduit_kernel::{conduit_kernel::User}::TABLE]
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 135:12-135:60
+    Visibility: public -/
+@[global_simps, irreducible] def User.TABLE : Std.U32 := 0#u32
+
+/-- [conduit_kernel::{conduit_kernel::User}::sql_put]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 189:12-191:13
+    Visibility: public -/
+def User.sql_put (self : User) : Result h5i_app_sql.Write := do
+  let v ← User.to_row self
+  ok (h5i_app_sql.Write.Put User.TABLE User.KEY_LEN v)
+
+/-- [conduit_kernel::sql_write]:
+    Source: 'realworld/rust-h5i-app/kernel/src/lib.rs', lines 1385:0-1402:1 -/
+def sql_write
+  (w : Write) (out : alloc.vec.Vec h5i_app_sql.Write) :
+  Result (alloc.vec.Vec h5i_app_sql.Write)
+  := do
+  match w with
+  | Write.PutUser x => let w1 ← User.sql_put x
+                       alloc.vec.Vec.push out w1
+  | Write.PutFollow x => let w1 ← Follow.sql_put x
+                         alloc.vec.Vec.push out w1
+  | Write.DelFollow x =>
+    let w1 ← Follow.sql_del x.follower x.followed
+    alloc.vec.Vec.push out w1
+  | Write.PutArticle x =>
+    let w1 ← Article.sql_put x
+    alloc.vec.Vec.push out w1
+  | Write.DelArticle id =>
+    let w1 ← Article.sql_del id
+    alloc.vec.Vec.push out w1
+  | Write.PutTag x => let w1 ← Tag.sql_put x
+                      alloc.vec.Vec.push out w1
+  | Write.DelTagsOf id =>
+    let v ← U64.Insts.H5i_app_sqlColumn.to_val id
+    let w1 ← Tag.sql_del_where TAG_ARTICLE v
+    alloc.vec.Vec.push out w1
+  | Write.PutFavorite x =>
+    let w1 ← Favorite.sql_put x
+    alloc.vec.Vec.push out w1
+  | Write.DelFavorite x =>
+    let w1 ← Favorite.sql_del x.article x.user
+    alloc.vec.Vec.push out w1
+  | Write.DelFavoritesOf id =>
+    let v ← U64.Insts.H5i_app_sqlColumn.to_val id
+    let w1 ← Favorite.sql_del_where FAVORITE_ARTICLE v
+    alloc.vec.Vec.push out w1
+  | Write.PutComment x =>
+    let w1 ← Comment.sql_put x
+    alloc.vec.Vec.push out w1
+  | Write.DelComment id =>
+    let w1 ← Comment.sql_del id
+    alloc.vec.Vec.push out w1
+  | Write.DelCommentsOf id =>
+    let v ← U64.Insts.H5i_app_sqlColumn.to_val id
+    let w1 ← Comment.sql_del_where COMMENT_ARTICLE v
+    alloc.vec.Vec.push out w1
+  | Write.SetCounter c =>
+    let w1 ← Counter.sql_put c
+    alloc.vec.Vec.push out w1
+
+/-- [conduit_kernel::{conduit_kernel::Counter}::from_row]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 146:12-167:13
+    Visibility: public -/
+def Counter.from_row
+  (row : alloc.vec.Vec h5i_app_sql.Val) : Result (Option Counter) := do
+  let i := alloc.vec.Vec.len row
+  let i1 ← 0#usize + 1#usize
+  let i2 ← i1 + 1#usize
+  let i3 ← i2 + 1#usize
+  if i != i3
+  then ok none
+  else
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+        h5i_app_sql.Val) row 0#usize
+    let o ← U64.Insts.H5i_app_sqlColumn.from_val v
+    match o with
+    | none => ok none
+    | some x =>
+      let v1 ←
+        alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+          h5i_app_sql.Val) row i1
+      let o1 ← U64.Insts.H5i_app_sqlColumn.from_val v1
+      match o1 with
+      | none => ok none
+      | some x1 =>
+        let i4 ← i1 + 1#usize
+        let v2 ←
+          alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+            h5i_app_sql.Val) row i4
+        let o2 ← U64.Insts.H5i_app_sqlColumn.from_val v2
+        match o2 with
+        | none => ok none
+        | some x2 =>
+          let _ ← i4 + 1#usize
+          ok (some { last_user := x, last_article := x1, last_comment := x2 })
+
+/-- [conduit_kernel::{conduit_kernel::User}::from_row]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 146:12-167:13
+    Visibility: public -/
+def User.from_row
+  (row : alloc.vec.Vec h5i_app_sql.Val) : Result (Option User) := do
+  let i := alloc.vec.Vec.len row
+  let i1 ← 0#usize + 1#usize
+  let i2 ← i1 + 1#usize
+  let i3 ← i2 + 1#usize
+  let i4 ← i3 + 1#usize
+  let i5 ← i4 + 1#usize
+  let i6 ← i5 + 1#usize
+  if i != i6
+  then ok none
+  else
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+        h5i_app_sql.Val) row 0#usize
+    let o ← U64.Insts.H5i_app_sqlColumn.from_val v
+    match o with
+    | none => ok none
+    | some x =>
+      let v1 ←
+        alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+          h5i_app_sql.Val) row i1
+      let o1 ← alloc.vec.VecU8.Insts.H5i_app_sqlColumn.from_val v1
+      match o1 with
+      | none => ok none
+      | some x1 =>
+        let i7 ← i1 + 1#usize
+        let v2 ←
+          alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+            h5i_app_sql.Val) row i7
+        let o2 ← alloc.vec.VecU8.Insts.H5i_app_sqlColumn.from_val v2
+        match o2 with
+        | none => ok none
+        | some x2 =>
+          let i8 ← i7 + 1#usize
+          let v3 ←
+            alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+              h5i_app_sql.Val) row i8
+          let o3 ← alloc.vec.VecU8.Insts.H5i_app_sqlColumn.from_val v3
+          match o3 with
+          | none => ok none
+          | some x3 =>
+            let i9 ← i8 + 1#usize
+            let v4 ←
+              alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+                h5i_app_sql.Val) row i9
+            let o4 ← alloc.vec.VecU8.Insts.H5i_app_sqlColumn.from_val v4
+            match o4 with
+            | none => ok none
+            | some x4 =>
+              let i10 ← i9 + 1#usize
+              let v5 ←
+                alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+                  h5i_app_sql.Val) row i10
+              let o5 ← alloc.vec.VecU8.Insts.H5i_app_sqlColumn.from_val v5
+              match o5 with
+              | none => ok none
+              | some x5 =>
+                let _ ← i10 + 1#usize
+                ok (some
+                  {
+                    id := x,
+                    username := x1,
+                    email := x2,
+                    password := x3,
+                    bio := x4,
+                    image := x5
+                  })
+
+/-- [conduit_kernel::{conduit_kernel::Follow}::from_row]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 146:12-167:13
+    Visibility: public -/
+def Follow.from_row
+  (row : alloc.vec.Vec h5i_app_sql.Val) : Result (Option Follow) := do
+  let i := alloc.vec.Vec.len row
+  let i1 ← 0#usize + 1#usize
+  let i2 ← i1 + 1#usize
+  if i != i2
+  then ok none
+  else
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+        h5i_app_sql.Val) row 0#usize
+    let o ← U64.Insts.H5i_app_sqlColumn.from_val v
+    match o with
+    | none => ok none
+    | some x =>
+      let v1 ←
+        alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+          h5i_app_sql.Val) row i1
+      let o1 ← U64.Insts.H5i_app_sqlColumn.from_val v1
+      match o1 with
+      | none => ok none
+      | some x1 =>
+        let _ ← i1 + 1#usize
+        ok (some { follower := x, followed := x1 })
+
+/-- [conduit_kernel::{conduit_kernel::Article}::from_row]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 146:12-167:13
+    Visibility: public -/
+def Article.from_row
+  (row : alloc.vec.Vec h5i_app_sql.Val) : Result (Option Article) := do
+  let i := alloc.vec.Vec.len row
+  let i1 ← 0#usize + 1#usize
+  let i2 ← i1 + 1#usize
+  let i3 ← i2 + 1#usize
+  let i4 ← i3 + 1#usize
+  let i5 ← i4 + 1#usize
+  let i6 ← i5 + 1#usize
+  let i7 ← i6 + 1#usize
+  let i8 ← i7 + 1#usize
+  if i != i8
+  then ok none
+  else
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+        h5i_app_sql.Val) row 0#usize
+    let o ← U64.Insts.H5i_app_sqlColumn.from_val v
+    match o with
+    | none => ok none
+    | some x =>
+      let v1 ←
+        alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+          h5i_app_sql.Val) row i1
+      let o1 ← U64.Insts.H5i_app_sqlColumn.from_val v1
+      match o1 with
+      | none => ok none
+      | some x1 =>
+        let i9 ← i1 + 1#usize
+        let v2 ←
+          alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+            h5i_app_sql.Val) row i9
+        let o2 ← alloc.vec.VecU8.Insts.H5i_app_sqlColumn.from_val v2
+        match o2 with
+        | none => ok none
+        | some x2 =>
+          let i10 ← i9 + 1#usize
+          let v3 ←
+            alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+              h5i_app_sql.Val) row i10
+          let o3 ← alloc.vec.VecU8.Insts.H5i_app_sqlColumn.from_val v3
+          match o3 with
+          | none => ok none
+          | some x3 =>
+            let i11 ← i10 + 1#usize
+            let v4 ←
+              alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+                h5i_app_sql.Val) row i11
+            let o4 ← alloc.vec.VecU8.Insts.H5i_app_sqlColumn.from_val v4
+            match o4 with
+            | none => ok none
+            | some x4 =>
+              let i12 ← i11 + 1#usize
+              let v5 ←
+                alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+                  h5i_app_sql.Val) row i12
+              let o5 ← alloc.vec.VecU8.Insts.H5i_app_sqlColumn.from_val v5
+              match o5 with
+              | none => ok none
+              | some x5 =>
+                let i13 ← i12 + 1#usize
+                let v6 ←
+                  alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+                    h5i_app_sql.Val) row i13
+                let o6 ← U64.Insts.H5i_app_sqlColumn.from_val v6
+                match o6 with
+                | none => ok none
+                | some x6 =>
+                  let i14 ← i13 + 1#usize
+                  let v7 ←
+                    alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+                      h5i_app_sql.Val) row i14
+                  let o7 ← U64.Insts.H5i_app_sqlColumn.from_val v7
+                  match o7 with
+                  | none => ok none
+                  | some x7 =>
+                    let _ ← i14 + 1#usize
+                    ok (some
+                      {
+                        id := x,
+                        author := x1,
+                        slug := x2,
+                        title := x3,
+                        description := x4,
+                        body := x5,
+                        created := x6,
+                        updated := x7
+                      })
+
+/-- [conduit_kernel::{conduit_kernel::Tag}::from_row]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 146:12-167:13
+    Visibility: public -/
+def Tag.from_row
+  (row : alloc.vec.Vec h5i_app_sql.Val) : Result (Option Tag) := do
+  let i := alloc.vec.Vec.len row
+  let i1 ← 0#usize + 1#usize
+  let i2 ← i1 + 1#usize
+  if i != i2
+  then ok none
+  else
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+        h5i_app_sql.Val) row 0#usize
+    let o ← U64.Insts.H5i_app_sqlColumn.from_val v
+    match o with
+    | none => ok none
+    | some x =>
+      let v1 ←
+        alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+          h5i_app_sql.Val) row i1
+      let o1 ← alloc.vec.VecU8.Insts.H5i_app_sqlColumn.from_val v1
+      match o1 with
+      | none => ok none
+      | some x1 => let _ ← i1 + 1#usize
+                   ok (some { article := x, tag := x1 })
+
+/-- [conduit_kernel::{conduit_kernel::Favorite}::from_row]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 146:12-167:13
+    Visibility: public -/
+def Favorite.from_row
+  (row : alloc.vec.Vec h5i_app_sql.Val) : Result (Option Favorite) := do
+  let i := alloc.vec.Vec.len row
+  let i1 ← 0#usize + 1#usize
+  let i2 ← i1 + 1#usize
+  if i != i2
+  then ok none
+  else
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+        h5i_app_sql.Val) row 0#usize
+    let o ← U64.Insts.H5i_app_sqlColumn.from_val v
+    match o with
+    | none => ok none
+    | some x =>
+      let v1 ←
+        alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+          h5i_app_sql.Val) row i1
+      let o1 ← U64.Insts.H5i_app_sqlColumn.from_val v1
+      match o1 with
+      | none => ok none
+      | some x1 =>
+        let _ ← i1 + 1#usize
+        ok (some { article := x, user := x1 })
+
+/-- [conduit_kernel::{conduit_kernel::Comment}::from_row]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 146:12-167:13
+    Visibility: public -/
+def Comment.from_row
+  (row : alloc.vec.Vec h5i_app_sql.Val) : Result (Option Comment) := do
+  let i := alloc.vec.Vec.len row
+  let i1 ← 0#usize + 1#usize
+  let i2 ← i1 + 1#usize
+  let i3 ← i2 + 1#usize
+  let i4 ← i3 + 1#usize
+  let i5 ← i4 + 1#usize
+  if i != i5
+  then ok none
+  else
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+        h5i_app_sql.Val) row 0#usize
+    let o ← U64.Insts.H5i_app_sqlColumn.from_val v
+    match o with
+    | none => ok none
+    | some x =>
+      let v1 ←
+        alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+          h5i_app_sql.Val) row i1
+      let o1 ← U64.Insts.H5i_app_sqlColumn.from_val v1
+      match o1 with
+      | none => ok none
+      | some x1 =>
+        let i6 ← i1 + 1#usize
+        let v2 ←
+          alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+            h5i_app_sql.Val) row i6
+        let o2 ← U64.Insts.H5i_app_sqlColumn.from_val v2
+        match o2 with
+        | none => ok none
+        | some x2 =>
+          let i7 ← i6 + 1#usize
+          let v3 ←
+            alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+              h5i_app_sql.Val) row i7
+          let o3 ← alloc.vec.VecU8.Insts.H5i_app_sqlColumn.from_val v3
+          match o3 with
+          | none => ok none
+          | some x3 =>
+            let i8 ← i7 + 1#usize
+            let v4 ←
+              alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+                h5i_app_sql.Val) row i8
+            let o4 ← U64.Insts.H5i_app_sqlColumn.from_val v4
+            match o4 with
+            | none => ok none
+            | some x4 =>
+              let _ ← i8 + 1#usize
+              ok (some
+                {
+                  id := x,
+                  article := x1,
+                  author := x2,
+                  body := x3,
+                  created := x4
+                })
+
+/-- [conduit_kernel::{conduit_kernel::User}::from_rows]: loop body 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 174:16-180:17
+    Visibility: public -/
+@[rust_loop_body]
+def User.from_rows_loop.body
+  (rows : alloc.vec.Vec (alloc.vec.Vec h5i_app_sql.Val))
+  (out : alloc.vec.Vec User) (ok1 : Bool) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec User) × Bool × Std.Usize)
+    ((alloc.vec.Vec User) × Bool))
+  := do
+  let i1 := alloc.vec.Vec.len rows
+  if i < i1
+  then
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice (alloc.vec.Vec
+        h5i_app_sql.Val)) rows i
+    let o ← User.from_row v
+    let (out1, ok2) ←
+      match o with
+      | none => ok (out, false)
+      | some x => do
+                  let out2 ← alloc.vec.Vec.push out x
+                  ok (out2, ok1)
+    let i2 ← i + 1#usize
+    ok (cont (out1, ok2, i2))
+  else ok (done (out, ok1))
+
+/-- [conduit_kernel::{conduit_kernel::User}::from_rows]: loop 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 174:16-180:17
+    Visibility: public -/
+@[rust_loop]
+def User.from_rows_loop
+  (rows : alloc.vec.Vec (alloc.vec.Vec h5i_app_sql.Val))
+  (out : alloc.vec.Vec User) (ok1 : Bool) (i : Std.Usize) :
+  Result ((alloc.vec.Vec User) × Bool)
+  := do
+  loop
+    (fun (out1, ok2, i1) => User.from_rows_loop.body rows out1 ok2 i1)
+    (out, ok1, i)
+
+/-- [conduit_kernel::{conduit_kernel::User}::from_rows]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 170:12-186:13
+    Visibility: public -/
+def User.from_rows
+  (rows : alloc.vec.Vec (alloc.vec.Vec h5i_app_sql.Val)) :
+  Result (Option (alloc.vec.Vec User))
+  := do
+  let (out, ok1) ←
+    User.from_rows_loop rows (alloc.vec.Vec.new User) true 0#usize
+  if ok1
+  then ok (some out)
+  else ok none
+
+/-- [conduit_kernel::{conduit_kernel::Follow}::from_rows]: loop body 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 174:16-180:17
+    Visibility: public -/
+@[rust_loop_body]
+def Follow.from_rows_loop.body
+  (rows : alloc.vec.Vec (alloc.vec.Vec h5i_app_sql.Val))
+  (out : alloc.vec.Vec Follow) (ok1 : Bool) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Follow) × Bool × Std.Usize)
+    ((alloc.vec.Vec Follow) × Bool))
+  := do
+  let i1 := alloc.vec.Vec.len rows
+  if i < i1
+  then
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice (alloc.vec.Vec
+        h5i_app_sql.Val)) rows i
+    let o ← Follow.from_row v
+    let (out1, ok2) ←
+      match o with
+      | none => ok (out, false)
+      | some x => do
+                  let out2 ← alloc.vec.Vec.push out x
+                  ok (out2, ok1)
+    let i2 ← i + 1#usize
+    ok (cont (out1, ok2, i2))
+  else ok (done (out, ok1))
+
+/-- [conduit_kernel::{conduit_kernel::Follow}::from_rows]: loop 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 174:16-180:17
+    Visibility: public -/
+@[rust_loop]
+def Follow.from_rows_loop
+  (rows : alloc.vec.Vec (alloc.vec.Vec h5i_app_sql.Val))
+  (out : alloc.vec.Vec Follow) (ok1 : Bool) (i : Std.Usize) :
+  Result ((alloc.vec.Vec Follow) × Bool)
+  := do
+  loop
+    (fun (out1, ok2, i1) => Follow.from_rows_loop.body rows out1 ok2 i1)
+    (out, ok1, i)
+
+/-- [conduit_kernel::{conduit_kernel::Follow}::from_rows]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 170:12-186:13
+    Visibility: public -/
+def Follow.from_rows
+  (rows : alloc.vec.Vec (alloc.vec.Vec h5i_app_sql.Val)) :
+  Result (Option (alloc.vec.Vec Follow))
+  := do
+  let (out, ok1) ←
+    Follow.from_rows_loop rows (alloc.vec.Vec.new Follow) true 0#usize
+  if ok1
+  then ok (some out)
+  else ok none
+
+/-- [conduit_kernel::{conduit_kernel::Article}::from_rows]: loop body 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 174:16-180:17
+    Visibility: public -/
+@[rust_loop_body]
+def Article.from_rows_loop.body
+  (rows : alloc.vec.Vec (alloc.vec.Vec h5i_app_sql.Val))
+  (out : alloc.vec.Vec Article) (ok1 : Bool) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Article) × Bool × Std.Usize)
+    ((alloc.vec.Vec Article) × Bool))
+  := do
+  let i1 := alloc.vec.Vec.len rows
+  if i < i1
+  then
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice (alloc.vec.Vec
+        h5i_app_sql.Val)) rows i
+    let o ← Article.from_row v
+    let (out1, ok2) ←
+      match o with
+      | none => ok (out, false)
+      | some x => do
+                  let out2 ← alloc.vec.Vec.push out x
+                  ok (out2, ok1)
+    let i2 ← i + 1#usize
+    ok (cont (out1, ok2, i2))
+  else ok (done (out, ok1))
+
+/-- [conduit_kernel::{conduit_kernel::Article}::from_rows]: loop 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 174:16-180:17
+    Visibility: public -/
+@[rust_loop]
+def Article.from_rows_loop
+  (rows : alloc.vec.Vec (alloc.vec.Vec h5i_app_sql.Val))
+  (out : alloc.vec.Vec Article) (ok1 : Bool) (i : Std.Usize) :
+  Result ((alloc.vec.Vec Article) × Bool)
+  := do
+  loop
+    (fun (out1, ok2, i1) => Article.from_rows_loop.body rows out1 ok2 i1)
+    (out, ok1, i)
+
+/-- [conduit_kernel::{conduit_kernel::Article}::from_rows]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 170:12-186:13
+    Visibility: public -/
+def Article.from_rows
+  (rows : alloc.vec.Vec (alloc.vec.Vec h5i_app_sql.Val)) :
+  Result (Option (alloc.vec.Vec Article))
+  := do
+  let (out, ok1) ←
+    Article.from_rows_loop rows (alloc.vec.Vec.new Article) true 0#usize
+  if ok1
+  then ok (some out)
+  else ok none
+
+/-- [conduit_kernel::{conduit_kernel::Tag}::from_rows]: loop body 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 174:16-180:17
+    Visibility: public -/
+@[rust_loop_body]
+def Tag.from_rows_loop.body
+  (rows : alloc.vec.Vec (alloc.vec.Vec h5i_app_sql.Val))
+  (out : alloc.vec.Vec Tag) (ok1 : Bool) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Tag) × Bool × Std.Usize)
+    ((alloc.vec.Vec Tag) × Bool))
+  := do
+  let i1 := alloc.vec.Vec.len rows
+  if i < i1
+  then
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice (alloc.vec.Vec
+        h5i_app_sql.Val)) rows i
+    let o ← Tag.from_row v
+    let (out1, ok2) ←
+      match o with
+      | none => ok (out, false)
+      | some x => do
+                  let out2 ← alloc.vec.Vec.push out x
+                  ok (out2, ok1)
+    let i2 ← i + 1#usize
+    ok (cont (out1, ok2, i2))
+  else ok (done (out, ok1))
+
+/-- [conduit_kernel::{conduit_kernel::Tag}::from_rows]: loop 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 174:16-180:17
+    Visibility: public -/
+@[rust_loop]
+def Tag.from_rows_loop
+  (rows : alloc.vec.Vec (alloc.vec.Vec h5i_app_sql.Val))
+  (out : alloc.vec.Vec Tag) (ok1 : Bool) (i : Std.Usize) :
+  Result ((alloc.vec.Vec Tag) × Bool)
+  := do
+  loop
+    (fun (out1, ok2, i1) => Tag.from_rows_loop.body rows out1 ok2 i1)
+    (out, ok1, i)
+
+/-- [conduit_kernel::{conduit_kernel::Tag}::from_rows]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 170:12-186:13
+    Visibility: public -/
+def Tag.from_rows
+  (rows : alloc.vec.Vec (alloc.vec.Vec h5i_app_sql.Val)) :
+  Result (Option (alloc.vec.Vec Tag))
+  := do
+  let (out, ok1) ←
+    Tag.from_rows_loop rows (alloc.vec.Vec.new Tag) true 0#usize
+  if ok1
+  then ok (some out)
+  else ok none
+
+/-- [conduit_kernel::{conduit_kernel::Favorite}::from_rows]: loop body 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 174:16-180:17
+    Visibility: public -/
+@[rust_loop_body]
+def Favorite.from_rows_loop.body
+  (rows : alloc.vec.Vec (alloc.vec.Vec h5i_app_sql.Val))
+  (out : alloc.vec.Vec Favorite) (ok1 : Bool) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Favorite) × Bool × Std.Usize)
+    ((alloc.vec.Vec Favorite) × Bool))
+  := do
+  let i1 := alloc.vec.Vec.len rows
+  if i < i1
+  then
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice (alloc.vec.Vec
+        h5i_app_sql.Val)) rows i
+    let o ← Favorite.from_row v
+    let (out1, ok2) ←
+      match o with
+      | none => ok (out, false)
+      | some x => do
+                  let out2 ← alloc.vec.Vec.push out x
+                  ok (out2, ok1)
+    let i2 ← i + 1#usize
+    ok (cont (out1, ok2, i2))
+  else ok (done (out, ok1))
+
+/-- [conduit_kernel::{conduit_kernel::Favorite}::from_rows]: loop 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 174:16-180:17
+    Visibility: public -/
+@[rust_loop]
+def Favorite.from_rows_loop
+  (rows : alloc.vec.Vec (alloc.vec.Vec h5i_app_sql.Val))
+  (out : alloc.vec.Vec Favorite) (ok1 : Bool) (i : Std.Usize) :
+  Result ((alloc.vec.Vec Favorite) × Bool)
+  := do
+  loop
+    (fun (out1, ok2, i1) => Favorite.from_rows_loop.body rows out1 ok2 i1)
+    (out, ok1, i)
+
+/-- [conduit_kernel::{conduit_kernel::Favorite}::from_rows]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 170:12-186:13
+    Visibility: public -/
+def Favorite.from_rows
+  (rows : alloc.vec.Vec (alloc.vec.Vec h5i_app_sql.Val)) :
+  Result (Option (alloc.vec.Vec Favorite))
+  := do
+  let (out, ok1) ←
+    Favorite.from_rows_loop rows (alloc.vec.Vec.new Favorite) true 0#usize
+  if ok1
+  then ok (some out)
+  else ok none
+
+/-- [conduit_kernel::{conduit_kernel::Comment}::from_rows]: loop body 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 174:16-180:17
+    Visibility: public -/
+@[rust_loop_body]
+def Comment.from_rows_loop.body
+  (rows : alloc.vec.Vec (alloc.vec.Vec h5i_app_sql.Val))
+  (out : alloc.vec.Vec Comment) (ok1 : Bool) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Comment) × Bool × Std.Usize)
+    ((alloc.vec.Vec Comment) × Bool))
+  := do
+  let i1 := alloc.vec.Vec.len rows
+  if i < i1
+  then
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice (alloc.vec.Vec
+        h5i_app_sql.Val)) rows i
+    let o ← Comment.from_row v
+    let (out1, ok2) ←
+      match o with
+      | none => ok (out, false)
+      | some x => do
+                  let out2 ← alloc.vec.Vec.push out x
+                  ok (out2, ok1)
+    let i2 ← i + 1#usize
+    ok (cont (out1, ok2, i2))
+  else ok (done (out, ok1))
+
+/-- [conduit_kernel::{conduit_kernel::Comment}::from_rows]: loop 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 174:16-180:17
+    Visibility: public -/
+@[rust_loop]
+def Comment.from_rows_loop
+  (rows : alloc.vec.Vec (alloc.vec.Vec h5i_app_sql.Val))
+  (out : alloc.vec.Vec Comment) (ok1 : Bool) (i : Std.Usize) :
+  Result ((alloc.vec.Vec Comment) × Bool)
+  := do
+  loop
+    (fun (out1, ok2, i1) => Comment.from_rows_loop.body rows out1 ok2 i1)
+    (out, ok1, i)
+
+/-- [conduit_kernel::{conduit_kernel::Comment}::from_rows]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 170:12-186:13
+    Visibility: public -/
+def Comment.from_rows
+  (rows : alloc.vec.Vec (alloc.vec.Vec h5i_app_sql.Val)) :
+  Result (Option (alloc.vec.Vec Comment))
+  := do
+  let (out, ok1) ←
+    Comment.from_rows_loop rows (alloc.vec.Vec.new Comment) true 0#usize
+  if ok1
+  then ok (some out)
+  else ok none
+
+/-- [conduit_kernel::{conduit_kernel::Counter}::from_rows]: loop body 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 174:16-180:17
+    Visibility: public -/
+@[rust_loop_body]
+def Counter.from_rows_loop.body
+  (rows : alloc.vec.Vec (alloc.vec.Vec h5i_app_sql.Val))
+  (out : alloc.vec.Vec Counter) (ok1 : Bool) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Counter) × Bool × Std.Usize)
+    ((alloc.vec.Vec Counter) × Bool))
+  := do
+  let i1 := alloc.vec.Vec.len rows
+  if i < i1
+  then
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice (alloc.vec.Vec
+        h5i_app_sql.Val)) rows i
+    let o ← Counter.from_row v
+    let (out1, ok2) ←
+      match o with
+      | none => ok (out, false)
+      | some x => do
+                  let out2 ← alloc.vec.Vec.push out x
+                  ok (out2, ok1)
+    let i2 ← i + 1#usize
+    ok (cont (out1, ok2, i2))
+  else ok (done (out, ok1))
+
+/-- [conduit_kernel::{conduit_kernel::Counter}::from_rows]: loop 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 174:16-180:17
+    Visibility: public -/
+@[rust_loop]
+def Counter.from_rows_loop
+  (rows : alloc.vec.Vec (alloc.vec.Vec h5i_app_sql.Val))
+  (out : alloc.vec.Vec Counter) (ok1 : Bool) (i : Std.Usize) :
+  Result ((alloc.vec.Vec Counter) × Bool)
+  := do
+  loop
+    (fun (out1, ok2, i1) => Counter.from_rows_loop.body rows out1 ok2 i1)
+    (out, ok1, i)
+
+/-- [conduit_kernel::{conduit_kernel::Counter}::from_rows]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 170:12-186:13
+    Visibility: public -/
+def Counter.from_rows
+  (rows : alloc.vec.Vec (alloc.vec.Vec h5i_app_sql.Val)) :
+  Result (Option (alloc.vec.Vec Counter))
+  := do
+  let (out, ok1) ←
+    Counter.from_rows_loop rows (alloc.vec.Vec.new Counter) true 0#usize
+  if ok1
+  then ok (some out)
+  else ok none
+
+/-- [conduit_kernel::{conduit_kernel::Counter}::from_one]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 204:12-212:13
+    Visibility: public -/
+def Counter.from_one
+  (rows : alloc.vec.Vec (alloc.vec.Vec h5i_app_sql.Val)) :
+  Result (Option Counter)
+  := do
+  let i := alloc.vec.Vec.len rows
+  if i = 0#usize
+  then
+    let i1 ← U64.Insts.H5i_app_sqlZero.zero
+    ok (some { last_user := i1, last_article := i1, last_comment := i1 })
+  else
+    let i1 := alloc.vec.Vec.len rows
+    if i1 = 1#usize
+    then
+      let v ←
+        alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+          (alloc.vec.Vec h5i_app_sql.Val)) rows 0#usize
+      Counter.from_row v
+    else ok none
+
+/-- [conduit_kernel::{conduit_kernel::User}::del]: loop body 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 234:16-239:17
+    Visibility: public -/
+@[rust_loop_body]
+def User.del_loop.body
+  (v : alloc.vec.Vec User) (id : Std.U64) (out : alloc.vec.Vec User)
+  (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec User) × Std.Usize) (alloc.vec.Vec User))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let u ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice User) v i
+    let out1 ←
+      if u.id = id
+      then ok out
+      else
+        do
+        let u1 ← User.Insts.CoreCloneClone.clone u
+        alloc.vec.Vec.push out u1
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
+  else ok (done out)
+
+/-- [conduit_kernel::{conduit_kernel::User}::del]: loop 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 234:16-239:17
+    Visibility: public -/
+@[rust_loop]
+def User.del_loop
+  (v : alloc.vec.Vec User) (id : Std.U64) (out : alloc.vec.Vec User)
+  (i : Std.Usize) :
+  Result (alloc.vec.Vec User)
+  := do
+  loop
+    (fun (out1, i1) => User.del_loop.body v id out1 i1)
+    (out, i)
+
+/-- [conduit_kernel::{conduit_kernel::User}::del]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 231:12-241:13
+    Visibility: public -/
+@[reducible]
+def User.del
+  (v : alloc.vec.Vec User) (id : Std.U64) : Result (alloc.vec.Vec User) := do
+  User.del_loop v id (alloc.vec.Vec.new User) 0#usize
+
+/-- [conduit_kernel::{conduit_kernel::Tag}::del]: loop body 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 234:16-239:17
+    Visibility: public -/
+@[rust_loop_body]
+def Tag.del_loop.body
+  (v : alloc.vec.Vec Tag) (article : Std.U64) (tag : alloc.vec.Vec Std.U8)
+  (out : alloc.vec.Vec Tag) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Tag) × Std.Usize) (alloc.vec.Vec Tag))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let t ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Tag) v i
+    let out1 ←
+      if t.article = article
+      then
+        do
+        let b ←
+          alloc.vec.partial_eq.PartialEqVec.eq core.cmp.PartialEqU8 t.tag tag
+        if b
+        then ok out
+        else
+          let t1 ← Tag.Insts.CoreCloneClone.clone t
+          alloc.vec.Vec.push out t1
+      else
+        do
+        let t1 ← Tag.Insts.CoreCloneClone.clone t
+        alloc.vec.Vec.push out t1
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
+  else ok (done out)
+
+/-- [conduit_kernel::{conduit_kernel::Tag}::del]: loop 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 234:16-239:17
+    Visibility: public -/
+@[rust_loop]
+def Tag.del_loop
+  (v : alloc.vec.Vec Tag) (article : Std.U64) (tag : alloc.vec.Vec Std.U8)
+  (out : alloc.vec.Vec Tag) (i : Std.Usize) :
+  Result (alloc.vec.Vec Tag)
+  := do
+  loop
+    (fun (out1, i1) => Tag.del_loop.body v article tag out1 i1)
+    (out, i)
+
+/-- [conduit_kernel::{conduit_kernel::Tag}::del]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 231:12-241:13
+    Visibility: public -/
+@[reducible]
+def Tag.del
+  (v : alloc.vec.Vec Tag) (article : Std.U64) (tag : alloc.vec.Vec Std.U8) :
+  Result (alloc.vec.Vec Tag)
+  := do
+  Tag.del_loop v article tag (alloc.vec.Vec.new Tag) 0#usize
+
+/-- [conduit_kernel::{conduit_kernel::User}::del_where]: loop body 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 247:16-252:17
+    Visibility: public -/
+@[rust_loop_body]
+def User.del_where_loop.body
+  (v : alloc.vec.Vec User) (col : Std.U32) (val : h5i_app_sql.Val)
+  (out : alloc.vec.Vec User) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec User) × Std.Usize) (alloc.vec.Vec User))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let u ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice User) v i
+    let v1 ← User.to_row u
+    let b ← h5i_app_sql.has_col v1 col val
+    let out1 ←
+      if b
+      then ok out
+      else
+        do
+        let u1 ← User.Insts.CoreCloneClone.clone u
+        alloc.vec.Vec.push out u1
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
+  else ok (done out)
+
+/-- [conduit_kernel::{conduit_kernel::User}::del_where]: loop 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 247:16-252:17
+    Visibility: public -/
+@[rust_loop]
+def User.del_where_loop
+  (v : alloc.vec.Vec User) (col : Std.U32) (val : h5i_app_sql.Val)
+  (out : alloc.vec.Vec User) (i : Std.Usize) :
+  Result (alloc.vec.Vec User)
+  := do
+  loop
+    (fun (out1, i1) => User.del_where_loop.body v col val out1 i1)
+    (out, i)
+
+/-- [conduit_kernel::{conduit_kernel::User}::del_where]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 244:12-254:13
+    Visibility: public -/
+@[reducible]
+def User.del_where
+  (v : alloc.vec.Vec User) (col : Std.U32) (val : h5i_app_sql.Val) :
+  Result (alloc.vec.Vec User)
+  := do
+  User.del_where_loop v col val (alloc.vec.Vec.new User) 0#usize
+
+/-- [conduit_kernel::{conduit_kernel::Follow}::del_where]: loop body 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 247:16-252:17
+    Visibility: public -/
+@[rust_loop_body]
+def Follow.del_where_loop.body
+  (v : alloc.vec.Vec Follow) (col : Std.U32) (val : h5i_app_sql.Val)
+  (out : alloc.vec.Vec Follow) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Follow) × Std.Usize) (alloc.vec.Vec
+    Follow))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let f ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Follow) v i
+    let v1 ← Follow.to_row f
+    let b ← h5i_app_sql.has_col v1 col val
+    let out1 ←
+      if b
+      then ok out
+      else
+        do
+        let f1 ← Follow.Insts.CoreCloneClone.clone f
+        alloc.vec.Vec.push out f1
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
+  else ok (done out)
+
+/-- [conduit_kernel::{conduit_kernel::Follow}::del_where]: loop 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 247:16-252:17
+    Visibility: public -/
+@[rust_loop]
+def Follow.del_where_loop
+  (v : alloc.vec.Vec Follow) (col : Std.U32) (val : h5i_app_sql.Val)
+  (out : alloc.vec.Vec Follow) (i : Std.Usize) :
+  Result (alloc.vec.Vec Follow)
+  := do
+  loop
+    (fun (out1, i1) => Follow.del_where_loop.body v col val out1 i1)
+    (out, i)
+
+/-- [conduit_kernel::{conduit_kernel::Follow}::del_where]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 244:12-254:13
+    Visibility: public -/
+@[reducible]
+def Follow.del_where
+  (v : alloc.vec.Vec Follow) (col : Std.U32) (val : h5i_app_sql.Val) :
+  Result (alloc.vec.Vec Follow)
+  := do
+  Follow.del_where_loop v col val (alloc.vec.Vec.new Follow) 0#usize
+
+/-- [conduit_kernel::{conduit_kernel::Article}::del_where]: loop body 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 247:16-252:17
+    Visibility: public -/
+@[rust_loop_body]
+def Article.del_where_loop.body
+  (v : alloc.vec.Vec Article) (col : Std.U32) (val : h5i_app_sql.Val)
+  (out : alloc.vec.Vec Article) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Article) × Std.Usize) (alloc.vec.Vec
+    Article))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let a ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Article) v i
+    let v1 ← Article.to_row a
+    let b ← h5i_app_sql.has_col v1 col val
+    let out1 ←
+      if b
+      then ok out
+      else
+        do
+        let a1 ← Article.Insts.CoreCloneClone.clone a
+        alloc.vec.Vec.push out a1
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
+  else ok (done out)
+
+/-- [conduit_kernel::{conduit_kernel::Article}::del_where]: loop 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 247:16-252:17
+    Visibility: public -/
+@[rust_loop]
+def Article.del_where_loop
+  (v : alloc.vec.Vec Article) (col : Std.U32) (val : h5i_app_sql.Val)
+  (out : alloc.vec.Vec Article) (i : Std.Usize) :
+  Result (alloc.vec.Vec Article)
+  := do
+  loop
+    (fun (out1, i1) => Article.del_where_loop.body v col val out1 i1)
+    (out, i)
+
+/-- [conduit_kernel::{conduit_kernel::Article}::del_where]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 244:12-254:13
+    Visibility: public -/
+@[reducible]
+def Article.del_where
+  (v : alloc.vec.Vec Article) (col : Std.U32) (val : h5i_app_sql.Val) :
+  Result (alloc.vec.Vec Article)
+  := do
+  Article.del_where_loop v col val (alloc.vec.Vec.new Article) 0#usize
+
+/-- [conduit_kernel::{conduit_kernel::User}::sql_del]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 257:12-261:13
+    Visibility: public -/
+def User.sql_del (id : Std.U64) : Result h5i_app_sql.Write := do
+  let v ← U64.Insts.H5i_app_sqlColumn.to_val id
+  let key ← alloc.vec.Vec.push (alloc.vec.Vec.new h5i_app_sql.Val) v
+  ok (h5i_app_sql.Write.Del User.TABLE key)
+
+/-- [conduit_kernel::{conduit_kernel::Tag}::sql_del]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 257:12-261:13
+    Visibility: public -/
+def Tag.sql_del
+  (article : Std.U64) (tag : alloc.vec.Vec Std.U8) :
+  Result h5i_app_sql.Write
+  := do
+  let v ← U64.Insts.H5i_app_sqlColumn.to_val article
+  let key ← alloc.vec.Vec.push (alloc.vec.Vec.new h5i_app_sql.Val) v
+  let v1 ← alloc.vec.VecU8.Insts.H5i_app_sqlColumn.to_val tag
+  let key1 ← alloc.vec.Vec.push key v1
+  ok (h5i_app_sql.Write.Del Tag.TABLE key1)
+
+/-- [conduit_kernel::{conduit_kernel::User}::sql_del_where]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 264:12-266:13
+    Visibility: public -/
+def User.sql_del_where
+  (col : Std.U32) (val : h5i_app_sql.Val) : Result h5i_app_sql.Write := do
+  ok (h5i_app_sql.Write.DelWhere User.TABLE col val)
+
+/-- [conduit_kernel::{conduit_kernel::Follow}::sql_del_where]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 264:12-266:13
+    Visibility: public -/
+def Follow.sql_del_where
+  (col : Std.U32) (val : h5i_app_sql.Val) : Result h5i_app_sql.Write := do
+  ok (h5i_app_sql.Write.DelWhere Follow.TABLE col val)
+
+/-- [conduit_kernel::{conduit_kernel::Article}::sql_del_where]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 264:12-266:13
+    Visibility: public -/
+def Article.sql_del_where
+  (col : Std.U32) (val : h5i_app_sql.Val) : Result h5i_app_sql.Write := do
+  ok (h5i_app_sql.Write.DelWhere Article.TABLE col val)
+
+/-- [conduit_kernel::Rows]
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 284:8-286:9
+    Visibility: public -/
+structure Rows where
+  counter : alloc.vec.Vec (alloc.vec.Vec h5i_app_sql.Val)
+  users : alloc.vec.Vec (alloc.vec.Vec h5i_app_sql.Val)
+  follows : alloc.vec.Vec (alloc.vec.Vec h5i_app_sql.Val)
+  articles : alloc.vec.Vec (alloc.vec.Vec h5i_app_sql.Val)
+  tags : alloc.vec.Vec (alloc.vec.Vec h5i_app_sql.Val)
+  favorites : alloc.vec.Vec (alloc.vec.Vec h5i_app_sql.Val)
+  comments : alloc.vec.Vec (alloc.vec.Vec h5i_app_sql.Val)
+
+/-- [conduit_kernel::decode]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 289:8-297:9
+    Visibility: public -/
+def decode (r : Rows) : Result (Option Snapshot) := do
+  let o ← Counter.from_one r.counter
+  match o with
+  | none => ok none
+  | some x =>
+    let o1 ← User.from_rows r.users
+    match o1 with
+    | none => ok none
+    | some x1 =>
+      let o2 ← Follow.from_rows r.follows
+      match o2 with
+      | none => ok none
+      | some x2 =>
+        let o3 ← Article.from_rows r.articles
+        match o3 with
+        | none => ok none
+        | some x3 =>
+          let o4 ← Tag.from_rows r.tags
+          match o4 with
+          | none => ok none
+          | some x4 =>
+            let o5 ← Favorite.from_rows r.favorites
+            match o5 with
+            | none => ok none
+            | some x5 =>
+              let o6 ← Comment.from_rows r.comments
+              match o6 with
+              | none => ok none
+              | some x6 =>
+                ok (some
+                  {
+                    counter := x,
+                    users := x1,
+                    follows := x2,
+                    articles := x3,
+                    tags := x4,
+                    favorites := x5,
+                    comments := x6
+                  })
+
+/-- [conduit_kernel::apply]: loop body 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 306:12-309:13
+    Visibility: public -/
+@[rust_loop_body]
+def apply_loop.body
+  (ws : alloc.vec.Vec Write) (s : Snapshot) (i : Std.Usize) :
+  Result (ControlFlow (Snapshot × Std.Usize) Snapshot)
+  := do
+  let i1 := alloc.vec.Vec.len ws
+  if i < i1
+  then
+    let w ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Write) ws i
+    let w1 ← Write.Insts.CoreCloneClone.clone w
+    let s1 ← apply_write s w1
+    let i2 ← i + 1#usize
+    ok (cont (s1, i2))
+  else ok (done s)
+
+/-- [conduit_kernel::apply]: loop 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 306:12-309:13
+    Visibility: public -/
+@[rust_loop]
+def apply_loop
+  (ws : alloc.vec.Vec Write) (s : Snapshot) (i : Std.Usize) :
+  Result Snapshot
+  := do
+  loop
+    (fun (s1, i1) => apply_loop.body ws s1 i1)
+    (s, i)
+
+/-- [conduit_kernel::apply]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 303:8-311:9
+    Visibility: public -/
+def apply (snap : Snapshot) (ws : alloc.vec.Vec Write) : Result Snapshot := do
+  let s ← Snapshot.Insts.CoreCloneClone.clone snap
+  apply_loop ws s 0#usize
+
+/-- [conduit_kernel::sql_writes]: loop body 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 317:12-320:13
+    Visibility: public -/
+@[rust_loop_body]
+def sql_writes_loop.body
+  (ws : alloc.vec.Vec Write) (out : alloc.vec.Vec h5i_app_sql.Write)
+  (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec h5i_app_sql.Write) × Std.Usize)
+    (alloc.vec.Vec h5i_app_sql.Write))
+  := do
+  let i1 := alloc.vec.Vec.len ws
+  if i < i1
+  then
+    let w ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Write) ws i
+    let out1 ← sql_write w out
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
+  else ok (done out)
+
+/-- [conduit_kernel::sql_writes]: loop 0:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 317:12-320:13
+    Visibility: public -/
+@[rust_loop]
+def sql_writes_loop
+  (ws : alloc.vec.Vec Write) (out : alloc.vec.Vec h5i_app_sql.Write)
+  (i : Std.Usize) :
+  Result (alloc.vec.Vec h5i_app_sql.Write)
+  := do
+  loop
+    (fun (out1, i1) => sql_writes_loop.body ws out1 i1)
+    (out, i)
+
+/-- [conduit_kernel::sql_writes]:
+    Source: '/cargo/git/checkouts/h5i-65ea82406b9a50c7/3fcbcda/crates/h5i-app-schema/src/lib.rs', lines 314:8-322:9
+    Visibility: public -/
+@[reducible]
+def sql_writes
+  (ws : alloc.vec.Vec Write) : Result (alloc.vec.Vec h5i_app_sql.Write) := do
+  sql_writes_loop ws (alloc.vec.Vec.new h5i_app_sql.Write) 0#usize
 
 end conduit_kernel

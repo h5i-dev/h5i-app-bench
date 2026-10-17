@@ -10,8 +10,8 @@ load benchmark.
 | `fastapi/` | Python, FastAPI, asyncpg, uvicorn |
 | `go/` | Go, chi, pgx |
 | `fastify/` | TypeScript, Fastify, postgres.js |
-| `rust-h5i/` | Rust, axum, sqlx, h5i-app kernel and Lean proofs |
-| `rust-h5i-app/` | Rust, axum, the h5i-app engine (`h5i-app-pg`): Conduit: kernel, server and Lean proofs, on h5i `main` (pinned in `Cargo.lock` and `proofs/lake-manifest.json`) |
+| `rust-h5i-optimized/` | Rust, axum, sqlx, h5i-app kernel and Lean proofs |
+| `rust-h5i/` | Rust, axum, the h5i-app engine (`h5i-app-pg`): Conduit: kernel, server and Lean proofs, on h5i `main` (pinned in `Cargo.lock` and `proofs/lake-manifest.json`) |
 | `bench/` | Seed, k6 scenarios, raw results, summary |
 | `schema.sql` | The shared database |
 
@@ -50,7 +50,7 @@ Hurl is expected at `/var/tmp/tools/hurl`.
 
 ```sh
 performance/realworld/scripts/test-all.sh                 # the four, ports 8001–8004
-performance/realworld/scripts/test-all.sh rust-h5i-app    # port 8005
+performance/realworld/scripts/test-all.sh rust-h5i    # port 8005
 performance/realworld/scripts/test-all.sh fastapi         # one implementation
 HOST=http://127.0.0.1:8001 performance/realworld/scripts/test-one.sh
 ```
@@ -70,8 +70,8 @@ export WEB_CONCURRENCY=4
 performance/realworld/fastapi/run.sh     # 127.0.0.1:8001  uvicorn workers = WEB_CONCURRENCY
 performance/realworld/go/run.sh          # 127.0.0.1:8002  GOMAXPROCS = WEB_CONCURRENCY
 performance/realworld/fastify/run.sh     # 127.0.0.1:8003  node cluster size = WEB_CONCURRENCY
-performance/realworld/rust-h5i/run.sh    # 127.0.0.1:8004  tokio worker threads = WEB_CONCURRENCY
-performance/realworld/rust-h5i-app/run.sh  # 127.0.0.1:8005  tokio worker threads = WEB_CONCURRENCY
+performance/realworld/rust-h5i-optimized/run.sh    # 127.0.0.1:8004  tokio worker threads = WEB_CONCURRENCY
+performance/realworld/rust-h5i/run.sh  # 127.0.0.1:8005  tokio worker threads = WEB_CONCURRENCY
 ```
 
 Release builds: `cargo build --release` (target dir `/var/tmp/rw-target`),
@@ -89,7 +89,7 @@ in `bench/README.md`. The published run uses 10 s warmup, 30 s measure,
 
 ## Proofs
 
-`rust-h5i` keeps authorization and validation in `kernel/`. `h5i app extract`
+`rust-h5i-optimized` keeps authorization and validation in `kernel/`. `h5i app extract`
 writes `proofs/generated/`. `h5i app check` builds the Lean proofs and rejects
 `sorry` and new axioms.
 
@@ -109,12 +109,12 @@ decision. HTTP/JSON encoding and SQL execution remain shell I/O. Slug collision
 retries and their storage errors remain with persistence. Per-viewer following
 and favorited observations still come from SQL joins.
 
-## rust-h5i-app
+## rust-h5i
 
-`rust-h5i-app/` is Conduit's home: its kernel (`kernel/`), server
+`rust-h5i/` is Conduit's home: its kernel (`kernel/`), server
 (`server/`), Lean proofs (`proofs/`) and their gate (`h5i-app.toml`;
 `h5i app extract --check`, `h5i app check`, 627 theorems) live there, with
-the same layout as `rust-h5i/` (see `rust-h5i-app/README.md`). It is a standard h5i-app application: every request runs in the
+the same layout as `rust-h5i-optimized/` (see `rust-h5i/README.md`). It is a standard h5i-app application: every request runs in the
 `h5i-app-pg` engine, which loads the rows the kernel's extracted read plan
 names (`Frame.frame` proves they are enough), calls the kernel, and stores
 the writes the kernel plans in one SERIALIZABLE transaction; read-only
@@ -129,9 +129,9 @@ copies those rows (ids, slugs, bcrypt hashes, timestamps) into its tables
 and sets its id counters to continue after them.
 `bench/check_h5i_app_seed.sql` compares the two row for row.
 
-What differs from the other four, as `rust-h5i-app/README.md` lists: request
+What differs from the other four, as `rust-h5i/README.md` lists: request
 validation, bcrypt, JWTs, slugs and the clock are in the shell, as in
-`rust-h5i`; the login reads the stored hash through the engine and the
+`rust-h5i-optimized`; the login reads the stored hash through the engine and the
 kernel accepts it only if it equals the stored one; `tagList` comes back
 sorted by tag (the order the tags table loads), where the shared schema
 keeps the order given, so seeded articles list e.g. `["tag0", "tag19"]`
