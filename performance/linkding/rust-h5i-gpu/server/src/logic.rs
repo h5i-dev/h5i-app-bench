@@ -1,8 +1,10 @@
-//! Request validation, URL normalization, dates, query strings and paging
-//! links, as `rust-h5i-optimized` does them. Nothing here reads the database.
+//! Request validation, URL normalization, and SQL compiled from the kernel AST.
+//! Text comparison in SQL is `ILIKE`. The kernel predicate uses ASCII case-folding.
 
 use chrono::{DateTime, NaiveDateTime, Utc};
-use linkding_kernel::page_of;
+use linkding_kernel::{
+    page_of, parse_search, Parsed, NODE_AND, NODE_KEYWORD, NODE_NOT, NODE_OR, NODE_TAG, NODE_TERM,
+};
 use serde_json::{Map, Value};
 use url::Url;
 
@@ -15,6 +17,35 @@ const TRUE_VALUES: &[&str] = &[
 const FALSE_VALUES: &[&str] = &[
     "f", "F", "n", "N", "no", "NO", "No", "false", "False", "FALSE", "off", "Off", "OFF", "0",
 ];
+
+#[derive(Clone, Debug)]
+pub enum Arg {
+    I64(i64),
+    I64Array(Vec<i64>),
+    Text(String),
+    Bool(bool),
+    Time(DateTime<Utc>),
+}
+
+#[derive(Clone, Debug)]
+pub struct Sql {
+    pub text: String,
+    pub args: Vec<Arg>,
+}
+
+impl Sql {
+    pub fn new() -> Self {
+        Self {
+            text: String::new(),
+            args: Vec::new(),
+        }
+    }
+
+    pub fn bind(&mut self, arg: Arg) -> String {
+        self.args.push(arg);
+        format!("${}", self.args.len())
+    }
+}
 
 #[derive(Clone, Debug)]
 pub struct BookmarkIn {
@@ -410,6 +441,12 @@ pub fn page_links(raw: &str, count: i64, limit_bad: bool, limit: u64, offset_bad
     (next, prev)
 }
 
+pub fn page_limit_offset(count: i64, limit_bad: bool, limit: u64, offset_bad: bool, offset: u64) -> (i64, i64) {
+    let count_u = if count < 0 { 0 } else { count as u64 };
+    let page = page_of(limit_bad, limit, offset_bad, offset, count_u);
+    (page.limit as i64, page.offset as i64)
+}
+
 pub fn classify_auth(header: &str) -> (&'static str, String) {
     if header.trim().is_empty() {
         return ("absent", String::new());
@@ -777,6 +814,197 @@ pub fn parse_tag_string(raw: &str, delimiter: &str) -> Vec<String> {
 
 pub fn bookmark_tag_names(raw: &[String]) -> Vec<String> {
     parse_tag_string(&raw.join(","), ",")
+}
+
+fn like_contains(text: &str) -> String {
+    let mut out = String::from("%");
+    for ch in text.chars() {
+        if ch == '\\' || ch == '%' || ch == '_' {
+            out.push('\\');
+        }
+        out.push(ch);
+    }
+    out.push('%');
+    out
+}
+
+const UNTAGGED_SQL: &str = "NOT EXISTS (SELECT 1 FROM bookmark_tags bt WHERE bt.bookmark_id = b.id)";
+
+fn term_sql(term: &str, lax: bool, sql: &mut Sql) -> String {
+    let placeholder = sql.bind(Arg::Text(like_contains(term)));
+    let mut out = format!(
+        "(b.title ILIKE {placeholder} ESCAPE '\\' OR b.description ILIKE {placeholder} ESCAPE '\\' OR b.notes ILIKE {placeholder} ESCAPE '\\' OR b.url ILIKE {placeholder} ESCAPE '\\'"
+    );
+    if lax {
+        let tag = sql.bind(Arg::Text(term.to_lowercase()));
+        out.push_str(&format!(
+            " OR EXISTS (SELECT 1 FROM bookmark_tags bt JOIN tags t ON t.id = bt.tag_id WHERE bt.bookmark_id = b.id AND t.name_lower = {tag})"
+        ));
+    }
+    out.push(')');
+    out
+}
+
+fn tag_sql(tag: &str, sql: &mut Sql) -> String {
+    let placeholder = sql.bind(Arg::Text(tag.to_lowercase()));
+    format!(
+        "EXISTS (SELECT 1 FROM bookmark_tags bt JOIN tags t ON t.id = bt.tag_id WHERE bt.bookmark_id = b.id AND t.name_lower = {placeholder})"
+    )
+}
+
+fn keyword_sql(keyword: &str) -> String {
+    match keyword.to_ascii_lowercase().as_str() {
+        "unread" => "b.unread".to_string(),
+        "untagged" => UNTAGGED_SQL.to_string(),
+        _ => "TRUE".to_string(),
+    }
+}
+
+fn node_text(parsed: &Parsed, idx: usize) -> String {
+    if idx >= parsed.nodes.len() {
+        return String::new();
+    }
+    String::from_utf8_lossy(&parsed.nodes[idx].text).into_owned()
+}
+
+fn compile_at(parsed: &Parsed, idx: usize, lax: bool, sql: &mut Sql) -> String {
+    if idx >= parsed.nodes.len() {
+        return "FALSE".to_string();
+    }
+    let kind = parsed.nodes[idx].kind;
+    let left = parsed.nodes[idx].left;
+    let right = parsed.nodes[idx].right;
+    if kind == NODE_TERM {
+        term_sql(&node_text(parsed, idx), lax, sql)
+    } else if kind == NODE_TAG {
+        tag_sql(&node_text(parsed, idx), sql)
+    } else if kind == NODE_KEYWORD {
+        keyword_sql(&node_text(parsed, idx))
+    } else if kind == NODE_AND {
+        let l = compile_at(parsed, left, lax, sql);
+        let r = compile_at(parsed, right, lax, sql);
+        format!("({l} AND {r})")
+    } else if kind == NODE_OR {
+        let l = compile_at(parsed, left, lax, sql);
+        let r = compile_at(parsed, right, lax, sql);
+        format!("({l} OR {r})")
+    } else if kind == NODE_NOT {
+        let inner = compile_at(parsed, left, lax, sql);
+        format!("(NOT ({inner}))")
+    } else {
+        "FALSE".to_string()
+    }
+}
+
+fn legacy_sql(query: &str, lax: bool, sql: &mut Sql) -> String {
+    let mut terms = Vec::new();
+    let mut tags = Vec::new();
+    let mut untagged = false;
+    let mut unread = false;
+    for word in query.trim().split(' ') {
+        if word.is_empty() {
+            continue;
+        }
+        if let Some(tag) = word.strip_prefix('#') {
+            if !tag.is_empty() {
+                tags.push(tag.to_string());
+            }
+        } else if let Some(keyword) = word.strip_prefix('!') {
+            if keyword == "untagged" {
+                untagged = true;
+            }
+            if keyword == "unread" {
+                unread = true;
+            }
+        } else {
+            terms.push(word.to_string());
+        }
+    }
+    tags = unique_ci(tags);
+    let mut conds = Vec::new();
+    for term in terms {
+        conds.push(term_sql(&term, lax, sql));
+    }
+    for tag in tags {
+        conds.push(tag_sql(&tag, sql));
+    }
+    if untagged {
+        conds.push(UNTAGGED_SQL.to_string());
+    }
+    if unread {
+        conds.push("b.unread".to_string());
+    }
+    if conds.is_empty() {
+        String::new()
+    } else {
+        format!("({})", conds.join(" AND "))
+    }
+}
+
+/// Compiles `q`. The default parser is the kernel. Legacy profile mode splits
+/// on spaces in the shell and does not treat `and` / `or` / `not` as operators.
+pub fn search_sql(query: &str, legacy: bool, lax: bool, sql: &mut Sql) -> String {
+    if legacy {
+        return legacy_sql(query, lax, sql);
+    }
+    let bytes = query.as_bytes().to_vec();
+    let parsed = parse_search(&bytes);
+    if parsed.failed {
+        return "FALSE".to_string();
+    }
+    if parsed.empty {
+        return String::new();
+    }
+    compile_at(&parsed, parsed.root, lax, sql)
+}
+
+pub fn bundle_search_sql(search: &str, sql: &mut Sql) -> String {
+    let mut terms = Vec::new();
+    for word in search.trim().split(' ') {
+        if word.is_empty() || word.starts_with('#') || word.starts_with('!') {
+            continue;
+        }
+        terms.push(word.to_string());
+    }
+    if terms.is_empty() {
+        return String::new();
+    }
+    let mut conds = Vec::new();
+    for term in terms {
+        conds.push(term_sql(&term, false, sql));
+    }
+    format!("({})", conds.join(" AND "))
+}
+
+pub fn order_sql(sort_key: &str) -> &'static str {
+    match sort_key {
+        "added_asc" => "b.date_added ASC",
+        "added_desc" => "b.date_added DESC",
+        "modified_asc" => "b.date_modified ASC",
+        "modified_desc" => "b.date_modified DESC",
+        "title_asc" => "lower(CASE WHEN b.title <> '' THEN b.title ELSE b.url END) ASC",
+        "title_desc" => "lower(CASE WHEN b.title <> '' THEN b.title ELSE b.url END) DESC",
+        _ => "b.date_added DESC",
+    }
+}
+
+pub fn flag_sql(field: &str, raw: &str) -> String {
+    match raw {
+        "yes" => format!("b.{field}"),
+        "no" => format!("NOT b.{field}"),
+        _ => String::new(),
+    }
+}
+
+pub fn since_sql(column: &str, raw: &str, sql: &mut Sql) -> String {
+    if raw.is_empty() {
+        return String::new();
+    }
+    let Some(parsed) = parse_time(raw) else {
+        return String::new();
+    };
+    let placeholder = sql.bind(Arg::Time(parsed));
+    format!("{column} > {placeholder}")
 }
 
 pub fn json_detail(raw: &[u8]) -> String {

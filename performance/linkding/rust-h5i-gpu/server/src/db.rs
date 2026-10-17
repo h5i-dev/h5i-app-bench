@@ -79,6 +79,7 @@ fn bind_query<'a>(
     for arg in args {
         query = match arg {
             Arg::I64(value) => query.bind(value),
+            Arg::I64Array(value) => query.bind(value),
             Arg::Text(value) => query.bind(value),
             Arg::Bool(value) => query.bind(value),
             Arg::Time(value) => query.bind(value),
@@ -351,6 +352,7 @@ pub async fn list_bookmarks(
     viewer: Option<&UserRow>,
     request_url: &str,
     pairs: &[(String, String)],
+    gpu_ids: Option<&[i64]>,
 ) -> Result<Value, sqlx::Error> {
     let mut sql = Sql::new();
     let mut where_parts: Vec<String> = Vec::new();
@@ -410,7 +412,16 @@ pub async fn list_bookmarks(
             where_parts.push(clause);
         }
     }
-    let search = search_sql(query_get(pairs, "q").unwrap_or(""), legacy, lax, &mut sql);
+    // The GPU variant computes the search matches itself and passes their ids;
+    // Postgres then only filters by id and does the scope, sort, paging and
+    // count exactly as it would for the predicate, so the result is identical.
+    let search = match gpu_ids {
+        Some(ids) => {
+            let ph = sql.bind(Arg::I64Array(ids.to_vec()));
+            format!("b.id = ANY(${ph})")
+        }
+        None => search_sql(query_get(pairs, "q").unwrap_or(""), legacy, lax, &mut sql),
+    };
     if !search.is_empty() {
         where_parts.push(search);
     }

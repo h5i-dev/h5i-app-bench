@@ -13,6 +13,7 @@
 //! builds and its CPU conformance test runs on stable with no GPU.
 pub mod predicate;
 pub mod pack;
+pub use linkding_kernel::BookmarkFacts;
 
 #[cfg(test)]
 mod tests {
