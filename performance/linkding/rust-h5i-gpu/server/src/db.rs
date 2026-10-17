@@ -4,6 +4,7 @@ use chrono::{DateTime, Utc};
 use serde_json::{json, Value};
 use sqlx::postgres::PgRow;
 use sqlx::{PgPool, Postgres, Row, Transaction};
+use linkding_gpu::BookmarkFacts;
 
 use crate::logic::{
     archive_url, bookmark_tag_names, bundle_search_sql, flag_sql, fmt_time, normalize_url, order_sql,
@@ -418,7 +419,7 @@ pub async fn list_bookmarks(
     let search = match gpu_ids {
         Some(ids) => {
             let ph = sql.bind(Arg::I64Array(ids.to_vec()));
-            format!("b.id = ANY(${ph})")
+            format!("b.id = ANY({ph})")
         }
         None => search_sql(query_get(pairs, "q").unwrap_or(""), legacy, lax, &mut sql),
     };
@@ -1033,4 +1034,46 @@ pub async fn delete_bundle(pool: &PgPool, owner_id: i64, id: i64) -> Result<bool
 pub async fn ping(pool: &PgPool) -> Result<(), sqlx::Error> {
     sqlx::query("SELECT 1").execute(pool).await?;
     Ok(())
+}
+
+
+/// Load every bookmark of one owner with the facts linkding's search reads,
+/// for the GPU-resident search index. Scope/unread/paging are applied later by
+/// the listing query; this is only the searchable content.
+pub async fn load_facts(pool: &PgPool, owner_id: i64) -> Result<Vec<(i64, BookmarkFacts)>, sqlx::Error> {
+    let rows = sqlx::query(
+        "SELECT b.id, b.title, b.description, b.notes, b.url, b.unread, \
+                COALESCE(array_agg(t.name ORDER BY t.name) FILTER (WHERE t.name IS NOT NULL), '{}') AS tags \
+         FROM bookmarks b \
+         LEFT JOIN bookmark_tags bt ON bt.bookmark_id = b.id \
+         LEFT JOIN tags t ON t.id = bt.tag_id \
+         WHERE b.owner_id = $1 \
+         GROUP BY b.id",
+    )
+    .bind(owner_id)
+    .fetch_all(pool)
+    .await?;
+    let mut out = Vec::with_capacity(rows.len());
+    for row in rows {
+        let id: i64 = row.try_get("id")?;
+        let title: String = row.try_get("title")?;
+        let description: String = row.try_get("description")?;
+        let notes: String = row.try_get("notes")?;
+        let url: String = row.try_get("url")?;
+        let unread: bool = row.try_get("unread")?;
+        let tags: Vec<String> = row.try_get("tags")?;
+        out.push((
+            id,
+            BookmarkFacts {
+                title: title.into_bytes(),
+                description: description.into_bytes(),
+                notes: notes.into_bytes(),
+                url: url.into_bytes(),
+                unread,
+                untagged: tags.is_empty(),
+                tag_names: tags.into_iter().map(String::into_bytes).collect(),
+            },
+        ));
+    }
+    Ok(out)
 }

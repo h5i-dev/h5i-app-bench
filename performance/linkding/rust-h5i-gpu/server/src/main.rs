@@ -5,13 +5,19 @@ mod db;
 mod gpu_search;
 mod logic;
 
+use std::collections::HashMap;
 use std::net::SocketAddr;
+use std::sync::Arc;
+use tokio::sync::Mutex;
+use crate::gpu_search::SearchIndex;
 
 use axum::body::Body;
 use axum::extract::{Path, State};
 use axum::http::{header, HeaderMap, Request, StatusCode};
 use axum::response::{IntoResponse, Response};
 use axum::routing::get;
+use axum::middleware::{self, Next};
+use axum::http::Method;
 use axum::Router;
 use linkding_kernel::{Command, Error as KernelError, Reply, View};
 use serde_json::{json, Map, Value};
@@ -32,6 +38,39 @@ use crate::logic::{
 #[derive(Clone)]
 struct App {
     pool: PgPool,
+    /// Per-owner GPU-resident search index, built on first search and dropped on
+    /// a write to that owner. The benchmark's search scenarios are read-only, so
+    /// the index stays warm across them.
+    indices: Arc<Mutex<HashMap<i64, Arc<SearchIndex>>>>,
+    /// The compiled device PTX (empty without the `gpu` feature; the CPU scan
+    /// needs none).
+    ptx: Arc<String>,
+}
+
+impl App {
+    /// Search ids for `owner`'s bookmarks matching `q`, via the GPU index
+    /// (built from PostgreSQL on first use). `None` on any error, so the caller
+    /// falls back to the SQL predicate.
+    async fn gpu_match_ids(&self, owner: i64, q: &str, lax: bool) -> Option<Vec<i64>> {
+        let index = {
+            let mut cache = self.indices.lock().await;
+            match cache.get(&owner) {
+                Some(index) => index.clone(),
+                None => {
+                    let facts = db::load_facts(&self.pool, owner).await.ok()?;
+                    let index = Arc::new(SearchIndex::build(facts, &self.ptx).ok()?);
+                    cache.insert(owner, index.clone());
+                    index
+                }
+            }
+        };
+        index.matching_ids(q, lax).ok()
+    }
+
+    /// Drop a cached index so the next search rebuilds it. Call after a write.
+    async fn forget(&self, owner: i64) {
+        self.indices.lock().await.remove(&owner);
+    }
 }
 
 fn empty_view(actor: u64) -> View {
@@ -273,7 +312,22 @@ async fn bookmark_list(State(app): State<App>, req: Request<Body>, kind: &'stati
     }
     let pairs = query_pairs(&req);
     let url = request_url(&req);
-    match list_bookmarks(&app.pool, kind, auth.user.as_ref(), &url, &pairs, None).await {
+    // Only the active list is GPU-accelerated for now (the benchmark's search
+    // scenario); other scopes keep the SQL predicate.
+    let q = pairs.iter().find(|(k, _)| k == "q").map(|(_, v)| v.as_str()).unwrap_or("");
+    let gpu_ids = if kind == "active" && !q.is_empty() {
+        match auth.user.as_ref() {
+            // GPU search implements linkding's modern query parser only; a user
+            // on legacy search keeps the SQL path.
+            Some(user) if !user.legacy_search => {
+                app.gpu_match_ids(user.id, q, user.tag_search == "lax").await
+            }
+            _ => None,
+        }
+    } else {
+        None
+    };
+    match list_bookmarks(&app.pool, kind, auth.user.as_ref(), &url, &pairs, gpu_ids.as_deref()).await {
         Ok(payload) => json_response(StatusCode::OK, payload, &[]),
         Err(err) => server_error(err),
     }
@@ -785,6 +839,17 @@ async fn bundle_delete(State(app): State<App>, Path(id_raw): Path<String>, req: 
     }
 }
 
+/// Drop the GPU search indices after any successful write, so the next search
+/// rebuilds from the committed data. Reads (GET) leave the warm index in place.
+async fn invalidate_on_write(State(app): State<App>, req: Request<Body>, next: Next) -> Response {
+    let write = req.method() != Method::GET && req.method() != Method::HEAD;
+    let resp = next.run(req).await;
+    if write && resp.status().is_success() {
+        app.indices.lock().await.clear();
+    }
+    resp
+}
+
 fn router(app: App) -> Router {
     Router::new()
         .route("/healthz", get(health))
@@ -800,6 +865,7 @@ fn router(app: App) -> Router {
         .route("/api/tags/:id/", get(tag_get).delete(tag_delete))
         .route("/api/bundles/", get(bundles).post(bundle_create))
         .route("/api/bundles/:id/", get(bundle_get).put(bundle_write).patch(bundle_write).delete(bundle_delete))
+        .layer(middleware::from_fn_with_state(app.clone(), invalidate_on_write))
         .with_state(app)
 }
 
@@ -839,7 +905,13 @@ async fn run() -> Result<(), Box<dyn std::error::Error>> {
         })
         .connect(&db_url)
         .await?;
-    let app = App { pool };
+    let ptx = env_string("H5I_GPU_PTX", "");
+    let ptx = if ptx.is_empty() { String::new() } else { std::fs::read_to_string(&ptx).unwrap_or_default() };
+    let app = App {
+        pool,
+        indices: Arc::new(Mutex::new(HashMap::new())),
+        ptx: Arc::new(ptx),
+    };
     let addr: SocketAddr = format!("127.0.0.1:{port}").parse()?;
     let listener = tokio::net::TcpListener::bind(addr).await?;
     eprintln!(
