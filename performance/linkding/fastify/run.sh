@@ -12,7 +12,10 @@ export DATABASE_URL="${DATABASE_URL:-postgres://linkding:linkding@127.0.0.1:5440
 export DB_POOL="${DB_POOL:-8}"
 export WEB_CONCURRENCY="${WEB_CONCURRENCY:-4}"
 if [ ! -x node_modules/.bin/tsc ]; then
-  npm install --cache "$npm_config_cache" --no-audit --no-fund
+  # NODE_ENV=production above would otherwise skip devDependencies, and the
+  # TypeScript compiler used by the build step is one. Install it explicitly;
+  # the runtime still runs under production.
+  npm install --include=dev --cache "$npm_config_cache" --no-audit --no-fund
 fi
 ./node_modules/.bin/tsc -p tsconfig.json
 exec node dist/server.js

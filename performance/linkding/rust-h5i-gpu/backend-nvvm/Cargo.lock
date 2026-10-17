@@ -127,7 +127,7 @@ source = "git+https://github.com/Rust-GPU/rust-cuda?rev=3a82c35a7196731fb60eebda
 dependencies = [
  "bitflags",
  "cuda_std_macros",
- "glam 0.34.1",
+ "glam",
  "half",
  "paste",
  "vek",
@@ -153,7 +153,7 @@ dependencies = [
  "cust_core",
  "cust_derive",
  "cust_raw",
- "glam 0.30.10",
+ "glam",
  "mint",
  "serde_json",
  "vek",
@@ -165,7 +165,7 @@ version = "0.1.1"
 source = "git+https://github.com/Rust-GPU/rust-cuda?rev=3a82c35a7196731fb60eebdac2a40d2b1bf0ba95#3a82c35a7196731fb60eebdac2a40d2b1bf0ba95"
 dependencies = [
  "cust_derive",
- "glam 0.30.10",
+ "glam",
  "mint",
  "vek",
 ]
@@ -208,15 +208,6 @@ version = "0.30.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "19fc433e8437a212d1b6f1e68c7824af3aed907da60afa994e7f542d18d12aa9"
 dependencies = [
- "libm",
-]
-
-[[package]]
-name = "glam"
-version = "0.34.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "fc148d4ddd3930c52f9e5ae79b89805c6f07e9ff417e7b083e0348cea60a5aba"
-dependencies = [
  "bytemuck",
  "libm",
 ]
@@ -230,7 +221,7 @@ checksum = "e4eba85ea1d0a966a983acd07deee566e67395d2d96b6fb39e62b5a833f1eb0b"
 [[package]]
 name = "h5i-app-gpu"
 version = "0.1.1"
-source = "git+https://github.com/h5i-dev/h5i?branch=app-gpu#6423dbd32191d65ffa27b34adb4534737230156c"
+source = "git+https://github.com/h5i-dev/h5i?branch=main#0d52512471d09f13db79230a05ea9387ef18f637"
 dependencies = [
  "parallel-kernel",
 ]
@@ -238,7 +229,7 @@ dependencies = [
 [[package]]
 name = "h5i-app-gpu-backend-nvvm"
 version = "0.1.0"
-source = "git+https://github.com/h5i-dev/h5i?branch=app-gpu#6423dbd32191d65ffa27b34adb4534737230156c"
+source = "git+https://github.com/h5i-dev/h5i?branch=main#0d52512471d09f13db79230a05ea9387ef18f637"
 dependencies = [
  "cust",
  "h5i-app-gpu",
@@ -248,22 +239,12 @@ dependencies = [
 [[package]]
 name = "h5i-app-schema"
 version = "0.1.1"
-source = "git+https://github.com/h5i-dev/h5i?branch=app-gpu#6423dbd32191d65ffa27b34adb4534737230156c"
-
-[[package]]
-name = "h5i-app-schema"
-version = "0.1.1"
-source = "git+https://github.com/h5i-dev/h5i?branch=main#7f72c22a2e91274c8344a852af0c5f142350f9d2"
+source = "git+https://github.com/h5i-dev/h5i?branch=main#0d52512471d09f13db79230a05ea9387ef18f637"
 
 [[package]]
 name = "h5i-app-sql"
 version = "0.1.1"
-source = "git+https://github.com/h5i-dev/h5i?branch=app-gpu#6423dbd32191d65ffa27b34adb4534737230156c"
-
-[[package]]
-name = "h5i-app-sql"
-version = "0.1.1"
-source = "git+https://github.com/h5i-dev/h5i?branch=main#7f72c22a2e91274c8344a852af0c5f142350f9d2"
+source = "git+https://github.com/h5i-dev/h5i?branch=main#0d52512471d09f13db79230a05ea9387ef18f637"
 
 [[package]]
 name = "half"
@@ -341,10 +322,6 @@ dependencies = [
 [[package]]
 name = "linkding-kernel"
 version = "0.1.0"
-dependencies = [
- "h5i-app-schema 0.1.1 (git+https://github.com/h5i-dev/h5i?branch=main)",
- "h5i-app-sql 0.1.1 (git+https://github.com/h5i-dev/h5i?branch=main)",
-]
 
 [[package]]
 name = "log"
@@ -402,10 +379,10 @@ dependencies = [
 [[package]]
 name = "parallel-kernel"
 version = "0.1.0"
-source = "git+https://github.com/h5i-dev/h5i?branch=app-gpu#6423dbd32191d65ffa27b34adb4534737230156c"
+source = "git+https://github.com/h5i-dev/h5i?branch=main#0d52512471d09f13db79230a05ea9387ef18f637"
 dependencies = [
- "h5i-app-schema 0.1.1 (git+https://github.com/h5i-dev/h5i?branch=app-gpu)",
- "h5i-app-sql 0.1.1 (git+https://github.com/h5i-dev/h5i?branch=app-gpu)",
+ "h5i-app-schema",
+ "h5i-app-sql",
 ]
 
 [[package]]

@@ -9,9 +9,10 @@ description = "GPU benchmark of linkding's bookmark-search predicate (CPU predic
 # Reuse the existing linkding kernel (parser + the real bookmark_matches) as the
 # CPU oracle instead of copying it. The device evaluator in src/predicate.rs is
 # the only GPU-specific restatement, checked against this.
-linkding-kernel = { path = "../rust-h5i/kernel" }
+linkding-kernel = { path = "../rust-h5i-optimized/kernel" }
 
 # Standalone benchmark. The GPU backend is a workspace of its own (it needs the
 # Rust-CUDA nightly + libNVVM) and is never built here or in CI.
 [workspace]
+members = ["server"]
 exclude = ["backend-nvvm"]

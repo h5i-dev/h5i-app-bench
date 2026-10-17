@@ -505,8 +505,16 @@ details.data-table td.scope { color: var(--faint); font-size: 12px; max-width: 6
 .sub-head { margin: 30px 0 12px; font: 500 11px var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--faint); }
 .block-head + .filters + div > .sub-head:first-child, .app-body > .sub-head:first-child { margin-top: 0; }
 .perf-matrix th[scope="row"] a { font-family: var(--mono); font-size: 12.5px; color: var(--ink); }
-.perf-matrix td.heat { background: color-mix(in srgb, var(--spot-solid) calc(var(--f) * 22%), transparent); color: var(--text); }
-.perf-matrix td.best { color: var(--ink); font-weight: 600; }
+/* Overview cell: a thin length bar (req/s as % of the row's fastest) under the
+   number — length reads at a glance in both themes, where a faint color wash did
+   not. The fastest is the full accent bar, marked with a dot and bold ink. */
+.perf-matrix td.ov-cell { position: relative; padding-bottom: 13px; color: var(--text); }
+.perf-matrix td.ov-cell .ov-val { position: relative; }
+.perf-matrix td.ov-cell .ov-bar { position: absolute; left: 10px; right: 10px; bottom: 5px; height: 3px; background: var(--line2); border-radius: 2px; }
+.perf-matrix td.ov-cell .ov-bar::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: calc(var(--f, 0) * 100%); background: color-mix(in srgb, var(--faint) 75%, transparent); border-radius: 2px; }
+.perf-matrix td.ov-cell.best { color: var(--ink); font-weight: 600; }
+.perf-matrix td.ov-cell.best .ov-bar::before { background: var(--spot-solid); }
+.perf-matrix td.ov-cell .win { color: var(--spot); font-size: 9px; vertical-align: 1px; margin-left: 5px; }
 .perf-bars th, .perf-bars td { padding: 8px 12px; }
 .perf-bars thead th.on, .perf-bars td.on { background: color-mix(in srgb, var(--ink) 4%, transparent); }
 .perf-bars .bar-track { min-width: 60px; }

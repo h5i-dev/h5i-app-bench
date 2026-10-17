@@ -10,7 +10,9 @@ use cust::{
     prelude::*,
 };
 use h5i_app_gpu::batch::Output;
-use h5i_app_gpu_backend_nvvm::{Failure, Nvvm};
+// Re-exported so the server can name `linkding_gpu_nvvm::Nvvm` alongside the
+// linkding-specific `ResidentLinkding`/`upload_linkding`/`linkding` below.
+pub use h5i_app_gpu_backend_nvvm::{Failure, Nvvm};
 use linkding_gpu::pack::{Query, Rows};
 use std::time::Instant;
 

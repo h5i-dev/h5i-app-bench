@@ -111,7 +111,7 @@ fn check(gpu: &mut Nvvm) -> Result<(), Failure> {
                 );
             }
             let uploaded = upload_linkding(&gpu, &r)?;
-            let out = linkding(&mut gpu, &uploaded, &q)?;
+            let out = linkding(&mut *gpu, &uploaded, &q)?;
             assert_eq!(out.values, cpu, "GPU {s}");
             assert!(out.errors.iter().all(|e| *e == 0));
         }
@@ -136,7 +136,7 @@ fn check(gpu: &mut Nvvm) -> Result<(), Failure> {
     ] {
         let cpu = edge.cpu(&q, 1);
         let up = upload_linkding(&gpu, &edge)?;
-        let out = linkding(&mut gpu, &up, &q)?;
+        let out = linkding(&mut *gpu, &up, &q)?;
         for i in 0..cpu.len() {
             assert_eq!(out.errors[i], (cpu[i] == 2) as u32);
             assert_eq!(out.values[i], if cpu[i] == 2 { 0 } else { cpu[i] });
@@ -157,7 +157,7 @@ fn check(gpu: &mut Nvvm) -> Result<(), Failure> {
             }
             let cpu = r.cpu(&q, 1);
             let up = upload_linkding(&gpu, &r)?;
-            let out = linkding(&mut gpu, &up, &q)?;
+            let out = linkding(&mut *gpu, &up, &q)?;
             for i in 0..cpu.len() {
                 assert_eq!(out.errors[i], (cpu[i] == 2) as u32);
                 assert_eq!(out.values[i], if cpu[i] == 2 { 0 } else { cpu[i] });
@@ -168,7 +168,7 @@ fn check(gpu: &mut Nvvm) -> Result<(), Failure> {
     broken.fields.truncate(512);
     let q = Query::new("alpha", false);
     let up = upload_linkding(&gpu, &broken)?;
-    let out = linkding(&mut gpu, &up, &q)?;
+    let out = linkding(&mut *gpu, &up, &q)?;
     for i in 0..broken.len() {
         assert_eq!(out.errors[i], (broken.at(&q, i) == 2) as u32);
     }
@@ -177,11 +177,11 @@ fn check(gpu: &mut Nvvm) -> Result<(), Failure> {
         ..Rows::default()
     };
     let up = upload_linkding(&gpu, &oversized)?;
-    let out = linkding(&mut gpu, &up, &q)?;
+    let out = linkding(&mut *gpu, &up, &q)?;
     assert!(out.errors.iter().all(|e| *e == 1));
     let q = Query::new("alpha", true);
     let up = upload_linkding(&gpu, &r)?;
-    let whole = linkding(&mut gpu, &up, &q)?;
+    let whole = linkding(&mut *gpu, &up, &q)?;
     let mut joined = vec![];
     for range in [0..128, 128..257] {
         let mut part = Rows::default();
@@ -189,7 +189,7 @@ fn check(gpu: &mut Nvvm) -> Result<(), Failure> {
             part.push(&bookmarks[i]);
         }
         let up = upload_linkding(&gpu, &part)?;
-        joined.extend(linkding(&mut gpu, &up, &q)?.values);
+        joined.extend(linkding(&mut *gpu, &up, &q)?.values);
     }
     assert_eq!(whole.values, joined);
     println!(
