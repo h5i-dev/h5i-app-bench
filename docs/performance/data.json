@@ -2049,6 +2049,11 @@
      "h5i": true
     },
     {
+     "id": "rust-h5i-gpu",
+     "stack": "Rust, axum, sqlx, plus a GPU-resident search index (Rust-CUDA) that the engine's read plan feeds",
+     "h5i": true
+    },
+    {
      "id": "rust-h5i-optimized",
      "stack": "Rust, axum, sqlx, h5i-app kernel with Lean proofs",
      "h5i": true
@@ -2066,11 +2071,6 @@
     {
      "id": "fastify",
      "stack": "TypeScript, Fastify, postgres.js",
-     "h5i": false
-    },
-    {
-     "id": "rust-h5i-gpu",
-     "stack": "",
      "h5i": false
     },
     {
