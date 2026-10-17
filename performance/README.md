@@ -7,12 +7,12 @@ Results: <https://benchmark.h5i.dev/performance/>.
 
 | Directory | API | Implementations |
 | --- | --- | --- |
-| [`realworld/`](realworld) | [RealWorld (Conduit)](https://github.com/realworld-apps/realworld): users, articles, comments, follows, favorites | `rust-h5i`, `rust-h5i-app`, `go`, `fastify`, `fastapi` |
+| [`realworld/`](realworld) | [RealWorld (Conduit)](https://github.com/realworld-apps/realworld): users, articles, comments, follows, favorites | `rust-h5i`, `rust-h5i-optimized`, `go`, `fastify`, `fastapi` |
 | [`linkding/`](linkding) | [linkding](https://github.com/sissbruecker/linkding) 1.47.0 bookmarks API | `rust-h5i`, `go`, `fastify`, `fastapi`, and the upstream image |
 
-`rust-h5i` keeps its decisions in an h5i-app kernel with Lean proofs and does
-its own SQL. `rust-h5i-app` runs every request through the h5i-app engine
-(`h5i-app-pg`), whose read plan and frame theorem are proved too.
+`rust-h5i` runs every request through the h5i-app engine (`h5i-app-pg`), whose
+read plan and frame theorem are proved. `rust-h5i-optimized` keeps its decisions
+in an h5i-app kernel with Lean proofs but does its own hand-written SQL.
 
 Each directory has its own README with the contract, the database, the Hurl
 suite and the run commands. `bench/README.md` there has the load shape, and

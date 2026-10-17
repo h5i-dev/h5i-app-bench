@@ -1,310 +1,275 @@
-import ConduitKernel
-import H5iAppLib
-open Aeneas Aeneas.Std Result Aeneas.Std.WP H5iAppLib
+import Commands
+/-!
+# Who may write what
 
-h5i_derive_all
+`effect_of` sums up `Commands.lean`: a successful command writes nothing, or
+it does one of eleven things. The policy theorem and the invariants are case
+analyses over those eleven, so they never look at the code again.
+-/
+open Aeneas Aeneas.Std Result conduit_kernel conduit_kernel.Spec conduit_kernel.Helpers
+  conduit_kernel.Commands H5iAppLib
 
-namespace conduit_kernel
+namespace conduit_kernel.Theorems
 
-set_option maxHeartbeats 40000000
+/-- What a successful command writes, as a function of the state before. -/
+inductive Effect (s : Snapshot) (u : U64) : List Write → Prop
+  | none : Effect s u []
+  | register (x : User) :
+      userByName (Snapshot.toSt s) x.username = none → userByEmail (Snapshot.toSt s) x.email = none →
+      x.id.val = s.counter.last_user.val + 1 →
+      Effect s u [.SetCounter { s.counter with last_user := x.id }, .PutUser x]
+  | updateUser (me x : User) (n e : Option Text) :
+      userById (Snapshot.toSt s) u = some me →
+      (n.bind (userByName (Snapshot.toSt s))).any (·.id ≠ me.id) = false →
+      (e.bind (userByEmail (Snapshot.toSt s))).any (·.id ≠ me.id) = false →
+      x.id = me.id → x.username = n.getD me.username → x.email = e.getD me.email →
+      Effect s u [.PutUser x]
+  | follow (me t : User) :
+      userById (Snapshot.toSt s) u = some me → t ∈ s.users.val → t.id ≠ me.id →
+      Effect s u [.PutFollow ⟨me.id, t.id⟩]
+  | unfollow (me t : User) :
+      userById (Snapshot.toSt s) u = some me → Effect s u [.DelFollow ⟨me.id, t.id⟩]
+  | create (me : User) (a : Article) (tags : List Text) :
+      userById (Snapshot.toSt s) u = some me → articleBySlug (Snapshot.toSt s) a.slug = none →
+      a.id.val = s.counter.last_article.val + 1 → a.author = me.id → tags.Nodup →
+      Effect s u ([.SetCounter { s.counter with last_article := a.id }, .PutArticle a] ++
+        tags.map (fun t => .PutTag ⟨a.id, t⟩))
+  | update (me : User) (a a2 : Article) (ns : Option Text) (tg : Option (alloc.vec.Vec Text)) :
+      userById (Snapshot.toSt s) u = some me → a ∈ s.articles.val → a.author = me.id →
+      (ns.bind (articleBySlug (Snapshot.toSt s))).any (·.id ≠ a.id) = false →
+      a2.id = a.id → a2.author = a.author → a2.slug = ns.getD a.slug →
+      Effect s u (.PutArticle a2 :: retagW a.id tg)
+  | delete (me : User) (a : Article) :
+      userById (Snapshot.toSt s) u = some me → a ∈ s.articles.val → a.author = me.id →
+      Effect s u [.DelTagsOf a.id, .DelFavoritesOf a.id, .DelCommentsOf a.id, .DelArticle a.id]
+  | favorite (me : User) (a : Article) :
+      userById (Snapshot.toSt s) u = some me → a ∈ s.articles.val → Effect s u [.PutFavorite ⟨a.id, me.id⟩]
+  | unfavorite (me : User) (a : Article) :
+      userById (Snapshot.toSt s) u = some me → Effect s u [.DelFavorite ⟨a.id, me.id⟩]
+  | comment (me : User) (a : Article) (c : Comment) :
+      userById (Snapshot.toSt s) u = some me → a ∈ s.articles.val →
+      c.id.val = s.counter.last_comment.val + 1 → c.article = a.id → c.author = me.id →
+      Effect s u [.SetCounter { s.counter with last_comment := c.id }, .PutComment c]
+  | uncomment (me : User) (c : Comment) (id : U64) :
+      userById (Snapshot.toSt s) u = some me → c ∈ s.comments.val → c.id = id → c.author = me.id →
+      Effect s u [.DelComment id]
 
-def bytes (l : List Std.U8) (h : l.length ≤ Std.Usize.max) : alloc.vec.Vec Std.U8 :=
-  alloc.vec.Vec.from l h
+/-! ## Lookups -/
 
-def oneByte : alloc.vec.Vec Std.U8 := bytes [97#u8] (by scalar_tac)
-def sevenBytes : alloc.vec.Vec Std.U8 :=
-  bytes [1#u8, 1#u8, 1#u8, 1#u8, 1#u8, 1#u8, 1#u8] (by scalar_tac)
-def emptyBytes : alloc.vec.Vec Std.U8 := bytes [] (by scalar_tac)
+theorem userById_some {s : St} {u : U64} {me : User} (h : userById s u = some me) : me ∈ s.users ∧ me.id = u := by
+  have := find?_mem h; simpa using this
 
-theorem empty_len : alloc.vec.Vec.len emptyBytes = 0#usize := by
-  apply UScalar.eq_of_val_eq
-  simp [emptyBytes, bytes, alloc.vec.Vec.from_val]
-theorem one_len : alloc.vec.Vec.len oneByte = 1#usize := by
-  apply UScalar.eq_of_val_eq
-  simp [oneByte, bytes, alloc.vec.Vec.from_val]
-theorem seven_len : alloc.vec.Vec.len sevenBytes = 7#usize := by
-  apply UScalar.eq_of_val_eq
-  simp [sevenBytes, bytes, alloc.vec.Vec.from_val]
+theorem userByName_some {s : St} {n : Text} {x : User} (h : userByName s n = some x) :
+    x ∈ s.users ∧ x.username = n := by
+  have := find?_mem h; simpa using this
 
-abbrev R := core.result.Result Reply Error
+theorem articleBySlug_some {s : St} {n : Text} {a : Article} (h : articleBySlug s n = some a) :
+    a ∈ s.articles ∧ a.slug = n := by
+  have := find?_mem h; simpa using this
 
-def errAuth : R := .Err .Unauthenticated
-def err (e : Error) : R := .Err e
-def allow : R := .Ok .Allow
+theorem commentById_some {s : St} {id : U64} {c : Comment} (h : commentById s id = some c) :
+    c ∈ s.comments ∧ c.id = id := by
+  have := find?_mem h; simpa using this
 
-/-- Commands that change or reveal a user's own data. Guests are refused. -/
-def Mutating : Command → Prop
-  | .UpdateUser _ _ _ _ _ => True
-  | .CreateArticle _ _ _ _ => True
-  | .UpdateArticle _ _ _ _ => True
-  | .DeleteArticle => True
-  | .CreateComment _ => True
-  | .DeleteComment => True
-  | .Follow => True
-  | .Unfollow => True
-  | .Favorite => True
-  | .Unfavorite => True
-  | .CurrentUser => True
-  | .Feed => True
-  | _ => False
+theorem distinct_nodup_aux {α} [DecidableEq α] (l acc : List α) (h : acc.Nodup) :
+    (l.foldl (fun acc x => if acc.any (· = x) then acc else acc ++ [x]) acc).Nodup := by
+  induction l generalizing acc with
+  | nil => simpa
+  | cons y ys ih =>
+    rw [List.foldl_cons]; apply ih
+    split
+    · exact h
+    · rename_i hy
+      simp only [List.any_eq_true, decide_eq_true_eq, not_exists, not_and] at hy
+      exact List.nodup_append.2 ⟨h, List.nodup_singleton y, fun a ha b hb => by
+        simp at hb; subst hb; exact hy a ha⟩
 
-theorem guest_cannot_mutate (v : View) (c : Command) (ha : v.actor = 0#u64) (hm : Mutating c) :
-    transition v c ⦃ r => r = errAuth ⦄ := by
-  cases c
-  case Register => simp [Mutating] at hm
-  case Login => simp [Mutating] at hm
-  case Page => simp [Mutating] at hm
-  case Slug => simp [Mutating] at hm
-  all_goals (unfold transition authed; simp [ha, errAuth])
+theorem distinct_nodup {α} [DecidableEq α] (l : List α) : (distinct l).Nodup :=
+  distinct_nodup_aux l [] List.nodup_nil
 
-/-- An article update is `Ok` only for the article's author. Field validation is
-irrelevant: every `Ok` arm sits under the same ownership test. -/
-theorem only_author_updates_article
-    (v : View) (title description body : RawText) (tags : TagInput) :
-    transition v (.UpdateArticle title description body tags) ⦃ r =>
-      ∀ a b c d, r = .Ok (.ArticleUpdate a b c d) →
-        v.actor ≠ 0#u64 ∧ v.article_exists = true ∧ v.article_author = v.actor ⦄ := by
-  unfold transition authed update_article optional_required tags_of
-  h5i_steps
+/-! ## What a command writes -/
 
-theorem only_author_deletes_article (v : View) :
-    transition v .DeleteArticle ⦃ r =>
-      (r = allow → v.actor ≠ 0#u64 ∧ v.article_exists = true ∧ v.article_author = v.actor) ∧
-      (v.actor ≠ 0#u64 → v.article_exists = true → v.article_author ≠ v.actor →
-        r = err .ForbiddenArticle) ⦄ := by
-  unfold transition authed delete_article
-  h5i_steps
-  all_goals (simp_all [allow, err, ↓reduceCtorEq])
+/-- The writes of a read-only command. -/
+theorem ws_nil {ws : alloc.vec.Vec Write} (h : ws = alloc.vec.Vec.new Write) : ws.val = [] := by
+  subst h; rfl
 
-theorem only_author_deletes_comment (v : View) :
-    transition v .DeleteComment ⦃ r =>
-      (r = allow →
-        v.actor ≠ 0#u64 ∧ v.article_exists = true ∧ v.comment_exists = true ∧
-          v.comment_author = v.actor) ∧
-      (v.actor ≠ 0#u64 → v.article_exists = true → v.comment_exists = true →
-        v.comment_author ≠ v.actor → r = err .ForbiddenComment) ⦄ := by
-  unfold transition authed delete_comment
-  h5i_steps
-  all_goals (simp_all [allow, err, ↓reduceCtorEq])
+theorem effect_of (a : Principal) (s : Snapshot) (c : Command) (up : Bool) ws r
+    (h : step a s c up = .ok (.Ok (ws, r))) : Effect s a.user ws.val := by
+  cases c <;> simp only [step] at h
+  case Register n e p =>
+    obtain ⟨hn, he, x, hid, hxn, hxe, hws, -⟩ := post_of_ok (register_spec s n e p) h ws r rfl
+    rw [hws]; subst hxn hxe; exact .register x hn he hid
+  case Login e p =>
+    have := post_of_ok (login_spec s e p) h
+    revert this; split <;> (try split) <;> intro h' <;> simp_all [ws_nil]; exact .none
+  case CurrentUser =>
+    have := post_of_ok (current_user_spec s a.user) h
+    revert this; split <;> intro h' <;> simp_all [ws_nil]; exact .none
+  case UpdateUser e n p b i =>
+    obtain ⟨me, hme, hn, he, x, hid, hxn, hxe, hws, -⟩ := post_of_ok (update_user_spec s a.user e n p b i) h ws r rfl
+    rw [hws]; exact .updateUser me x n e hme hn he hid hxn hxe
+  case GetProfile n =>
+    have := post_of_ok (get_profile_spec s a.user n) h
+    revert this; split <;> intro h' <;> simp_all [ws_nil]; exact .none
+  case Follow n =>
+    obtain ⟨me, t, hme, ht, hne, hws, -⟩ := post_of_ok (follow_spec s a.user n) h ws r rfl
+    rw [hws]; exact .follow me t hme (userByName_some ht).1 hne
+  case Unfollow n =>
+    obtain ⟨me, t, hme, ht, hws, -⟩ := post_of_ok (unfollow_spec s a.user n) h ws r rfl
+    rw [hws]; exact .unfollow me t hme
+  case ListArticles tag au fav lim off =>
+    obtain ⟨vs, hr, -⟩ := post_of_ok (list_articles_spec s a.user tag au fav lim off up) h
+    simp only [core.result.Result.Ok.injEq, Prod.mk.injEq] at hr
+    rw [ws_nil hr.1]; exact .none
+  case Feed lim off =>
+    have := post_of_ok (feed_spec s a.user lim off up) h
+    split at this
+    · simp at this
+    · obtain ⟨vs, hr, -⟩ := this
+      simp only [core.result.Result.Ok.injEq, Prod.mk.injEq] at hr
+      rw [ws_nil hr.1]; exact .none
+  case GetArticle slug =>
+    have := post_of_ok (get_article_spec s a.user slug up) h
+    split at this
+    · simp at this
+    · obtain ⟨vs, hr, -⟩ := this
+      simp only [core.result.Result.Ok.injEq, Prod.mk.injEq] at hr
+      rw [ws_nil hr.1]; exact .none
+  case CreateArticle slug t d b tags now =>
+    obtain ⟨me, hme, hslug, x, hid, hau, hxs, hws, -⟩ := post_of_ok (create_article_spec s a.user slug t d b tags now) h ws r rfl
+    rw [hws]; subst hxs; exact .create me x _ hme hslug hid hau (distinct_nodup _)
+  case UpdateArticle slug ns t d b tg now =>
+    obtain ⟨me, x, hme, hx, hau, hns, x2, hid, hau2, hs2, hws, -⟩ :=
+      post_of_ok (update_article_spec s a.user slug ns t d b tg now up) h ws r rfl
+    rw [hws]; exact .update me x x2 ns tg hme (articleBySlug_some hx).1 hau hns hid hau2 hs2
+  case DeleteArticle slug =>
+    obtain ⟨me, x, hme, hx, hau, hws⟩ := post_of_ok (delete_article_spec s a.user slug) h ws r rfl
+    rw [hws]; exact .delete me x hme (articleBySlug_some hx).1 hau
+  case Favorite slug =>
+    obtain ⟨me, x, hme, hx, hws, -⟩ := post_of_ok (favorite_spec s a.user slug) h ws r rfl
+    rw [hws]; exact .favorite me x hme (articleBySlug_some hx).1
+  case Unfavorite slug =>
+    obtain ⟨me, x, hme, hx, hws, -⟩ := post_of_ok (unfavorite_spec s a.user slug up) h ws r rfl
+    rw [hws]; exact .unfavorite me x hme
+  case GetComments slug =>
+    have := post_of_ok (get_comments_spec s a.user slug) h
+    split at this
+    · simp at this
+    · obtain ⟨vs, hr, -⟩ := this
+      simp only [core.result.Result.Ok.injEq, Prod.mk.injEq] at hr
+      rw [ws_nil hr.1]; exact .none
+  case AddComment slug body now =>
+    obtain ⟨me, x, hme, hx, cm, hid, har, hau, hws, -⟩ := post_of_ok (add_comment_spec s a.user slug body now) h ws r rfl
+    rw [hws]; exact .comment me x cm hme (articleBySlug_some hx).1 hid har hau
+  case DeleteComment slug id =>
+    obtain ⟨me, x, cm, hme, -, hc, -, hau, hws⟩ := post_of_ok (delete_comment_spec s a.user slug id) h ws r rfl
+    obtain ⟨hcm, hcid⟩ := commentById_some hc
+    rw [hws]; exact .uncomment me cm id hme hcm hcid hau
+  case GetTags =>
+    obtain ⟨v, hv, -⟩ := (WP.spec_equiv_exists _ _).1 (all_tags_spec s.tags)
+    rw [hv] at h; simp only [bind_ok, Result.ok.injEq, core.result.Result.Ok.injEq, Prod.mk.injEq] at h
+    rw [ws_nil h.1.symm]; exact .none
 
-theorem favorite_consistent (v : View) (ha : v.actor ≠ 0#u64) (hx : v.article_exists = true) :
-    (v.already = true →
-      transition v .Favorite ⦃ r => r = .Ok (.Favorite true .Same) ⦄) ∧
-    (v.already = false →
-      transition v .Favorite ⦃ r => r = .Ok (.Favorite true .Up) ⦄) := by
-  constructor
-  · intro hb
-    unfold transition authed favorite
-    simp [ha, hx, hb]
-  · intro hb
-    unfold transition authed favorite
-    simp [ha, hx, hb]
+/-- The kernel never fails: no panic, overflow or bad index, in either variant. -/
+theorem step_total (a : Principal) (s : Snapshot) (c : Command) (up : Bool) : ∃ r, step a s c up = ok r := by
+  cases c <;> simp only [step]
+  · exact ok_of (register_spec _ _ _ _)
+  · exact ok_of (login_spec _ _ _)
+  · exact ok_of (current_user_spec _ _)
+  · exact ok_of (update_user_spec _ _ _ _ _ _ _)
+  · exact ok_of (get_profile_spec _ _ _)
+  · exact ok_of (follow_spec _ _ _)
+  · exact ok_of (unfollow_spec _ _ _)
+  · exact ok_of (list_articles_spec _ _ _ _ _ _ _ _)
+  · exact ok_of (feed_spec _ _ _ _ _)
+  · exact ok_of (get_article_spec _ _ _ _)
+  · exact ok_of (create_article_spec _ _ _ _ _ _ _ _)
+  · exact ok_of (update_article_spec _ _ _ _ _ _ _ _ _ _)
+  · exact ok_of (delete_article_spec _ _ _)
+  · exact ok_of (favorite_spec _ _ _)
+  · exact ok_of (unfavorite_spec _ _ _ _)
+  · exact ok_of (get_comments_spec _ _ _)
+  · exact ok_of (add_comment_spec _ _ _ _ _)
+  · exact ok_of (delete_comment_spec _ _ _ _)
+  · obtain ⟨v, hv, -⟩ := (WP.spec_equiv_exists _ _).1 (all_tags_spec s.tags); rw [hv]; simp
 
-theorem unfavorite_consistent (v : View) (ha : v.actor ≠ 0#u64) (hx : v.article_exists = true) :
-    (v.already = true →
-      transition v .Unfavorite ⦃ r => r = .Ok (.Favorite false .Down) ⦄) ∧
-    (v.already = false →
-      transition v .Unfavorite ⦃ r => r = .Ok (.Favorite false .Same) ⦄) := by
-  constructor
-  · intro hb
-    unfold transition authed favorite
-    simp [ha, hx, hb]
-  · intro hb
-    unfold transition authed favorite
-    simp [ha, hx, hb]
+theorem transition_total (a : Principal) (s : Snapshot) (c : Command) : ∃ r, transition a s c = ok r :=
+  step_total a s c false
 
-theorem follow_consistent (v : View) (ha : v.actor ≠ 0#u64) (hp : v.profile_exists = true) :
-    transition v .Follow ⦃ r => r = .Ok (.Follow true (¬ v.already)) ⦄ := by
-  unfold transition authed follow
-  simp [ha, hp]
+theorem transition_upstream_total (a : Principal) (s : Snapshot) (c : Command) :
+    ∃ r, transition_upstream a s c = ok r :=
+  step_total a s c true
 
-theorem unfollow_consistent (v : View) (ha : v.actor ≠ 0#u64) (hp : v.profile_exists = true) :
-    transition v .Unfollow ⦃ r => r = .Ok (.Follow false v.already) ⦄ := by
-  unfold transition authed follow
-  simp [ha, hp]
+/-! ## The policy -/
 
-theorem register_rejects_blanks (v : View) (email password : RawText) :
-    (transition v (.Register .Absent email password) ⦃ r => r = err .BlankUsername ⦄) ∧
-    (transition v (.Register .Null email password) ⦃ r => r = err .BlankUsername ⦄) ∧
-    (transition v (.Register .Invalid email password) ⦃ r => r = err .InvalidUsername ⦄) ∧
-    (transition v (.Register (.Text oneByte) .Absent password) ⦃ r => r = err .BlankEmail ⦄) ∧
-    (transition v (.Register (.Text oneByte) (.Text oneByte) .Absent) ⦃ r =>
-      r = err .BlankPassword ⦄) ∧
-    (transition v (.Register (.Text oneByte) (.Text oneByte) (.Text emptyBytes)) ⦃ r =>
-      r = err .BlankPassword ⦄) := by
-  refine ⟨?_, ?_, ?_, ?_, ?_, ?_⟩ <;>
-    (unfold transition authed register require_text password_new;
-      simp [one_len, empty_len]; rfl)
+/-- Every write of a successful command is allowed by the policy, judged
+against the state before the command. -/
+theorem authorized (a : Principal) (s : Snapshot) (c : Command) ws r
+    (h : transition a s c = .ok (.Ok (ws, r))) :
+    ∀ w ∈ ws.val, allowed (Snapshot.toSt s) a.user w := by
+  have he := effect_of a s c false ws r h
+  revert he; generalize ws.val = l; intro he
+  cases he with
+  | none => simp
+  | register x hn he hid =>
+    intro w hw; simp at hw
+    rcases hw with rfl | rfl
+    · simp [allowed, Snapshot.toSt, hid]
+    · exact .inl (by simp [Snapshot.toSt, hid])
+  | updateUser me x n e hme hn he hid =>
+    obtain ⟨hm, hmu⟩ := userById_some hme
+    intro w hw; simp at hw; subst hw
+    exact .inr ⟨hid.trans hmu, me, hm, hmu⟩
+  | follow me t hme ht hne =>
+    obtain ⟨hm, hmu⟩ := userById_some hme
+    intro w hw; simp at hw; subst hw
+    exact ⟨hmu, ⟨me, hm, hmu⟩, hmu ▸ hne, t, ht, rfl⟩
+  | unfollow me t hme =>
+    obtain ⟨hm, hmu⟩ := userById_some hme
+    intro w hw; simp at hw; subst hw
+    exact ⟨hmu, me, hm, hmu⟩
+  | create me x tags hme hslug hid hau hnd =>
+    obtain ⟨hm, hmu⟩ := userById_some hme
+    intro w hw; simp at hw
+    rcases hw with rfl | rfl | ⟨t, -, rfl⟩
+    · simp [allowed, Snapshot.toSt, hid]
+    · exact ⟨hau.trans hmu, ⟨me, hm, hmu⟩, .inl (by simp [Snapshot.toSt, hid])⟩
+    · exact .inl ⟨by simp [Snapshot.toSt, hid], me, hm, hmu⟩
+  | update me x x2 ns tg hme hx hau hns hid hau2 hs2 =>
+    obtain ⟨hm, hmu⟩ := userById_some hme
+    have hwr : wrote (Snapshot.toSt s) a.user x.id := ⟨x, hx, rfl, hau.trans hmu⟩
+    intro w hw
+    rcases List.mem_cons.1 hw with rfl | hw
+    · exact ⟨hau2.trans (hau.trans hmu), ⟨me, hm, hmu⟩, .inr ⟨x, hx, hid.symm, hau.trans hmu⟩⟩
+    · cases tg with
+      | none => simp [retagW] at hw
+      | some ts =>
+        simp only [retagW, List.mem_cons, List.mem_map] at hw
+        rcases hw with rfl | ⟨t, -, rfl⟩
+        · exact hwr
+        · exact .inr hwr
+  | delete me x hme hx hau =>
+    obtain ⟨hm, hmu⟩ := userById_some hme
+    have hw : wrote (Snapshot.toSt s) a.user x.id := ⟨x, hx, rfl, hau.trans hmu⟩
+    intro w hw'; simp at hw'
+    rcases hw' with rfl | rfl | rfl | rfl <;> exact hw
+  | favorite me x hme hx =>
+    obtain ⟨hm, hmu⟩ := userById_some hme
+    intro w hw; simp at hw; subst hw
+    exact ⟨hmu, ⟨me, hm, hmu⟩, x, hx, rfl⟩
+  | unfavorite me x hme =>
+    obtain ⟨hm, hmu⟩ := userById_some hme
+    intro w hw; simp at hw; subst hw
+    exact ⟨hmu, me, hm, hmu⟩
+  | comment me x cm hme hx hid har hau =>
+    obtain ⟨hm, hmu⟩ := userById_some hme
+    intro w hw; simp at hw
+    rcases hw with rfl | rfl
+    · simp [allowed, Snapshot.toSt, hid]
+    · exact ⟨hau.trans hmu, ⟨me, hm, hmu⟩, by simp [Snapshot.toSt, hid], x, hx, har.symm⟩
+  | uncomment me cm id hme hcm hcid hau =>
+    obtain ⟨hm, hmu⟩ := userById_some hme
+    intro w hw; simp at hw; subst hw
+    exact ⟨cm, hcm, hcid, hau.trans hmu⟩
 
-theorem register_rejects_short_password (v : View) :
-    transition v (.Register (.Text oneByte) (.Text oneByte) (.Text sevenBytes)) ⦃ r =>
-      r = err .ShortPassword ⦄ := by
-  unfold transition authed register require_text password_new
-  simp [one_len, seven_len]
-  rfl
-
-theorem login_rejects_blank_password (v : View) :
-    (transition v (.Login (.Text oneByte) .Absent) ⦃ r => r = err .BlankPassword ⦄) ∧
-    (transition v (.Login (.Text oneByte) .Null) ⦃ r => r = err .BlankPassword ⦄) ∧
-    (transition v (.Login (.Text oneByte) (.Text emptyBytes)) ⦃ r => r = err .BlankPassword ⦄) ∧
-    (transition v (.Login (.Text oneByte) (.Text sevenBytes)) ⦃ r => r = allow ⦄) := by
-  refine ⟨?_, ?_, ?_, ?_⟩ <;>
-    (unfold transition authed login require_text password_login;
-      simp [one_len, empty_len, seven_len]; rfl)
-
-theorem update_user_rejects_nulls_and_short_password (v : View) (ha : v.actor ≠ 0#u64) :
-    (transition v (.UpdateUser .Null .Absent .Absent .Absent .Absent) ⦃ r =>
-      r = err .BlankUsername ⦄) ∧
-    (transition v (.UpdateUser .Absent .Null .Absent .Absent .Absent) ⦃ r =>
-      r = err .BlankEmail ⦄) ∧
-    (transition v (.UpdateUser .Absent .Absent .Null .Absent .Absent) ⦃ r =>
-      r = err .BlankPassword ⦄) ∧
-    (transition v (.UpdateUser .Absent .Absent (.Text emptyBytes) .Absent .Absent) ⦃ r =>
-      r = err .BlankPassword ⦄) ∧
-    (transition v (.UpdateUser .Absent .Absent (.Text sevenBytes) .Absent .Absent) ⦃ r =>
-      r = err .ShortPassword ⦄) := by
-  refine ⟨?_, ?_, ?_, ?_, ?_⟩ <;>
-    (unfold transition authed update_user optional_required password_update optional_clear;
-      simp [ha, empty_len, seven_len]; rfl)
-
-theorem article_rejects_blank_and_null_tags
-    (v : View) (description body : RawText) (tags : TagInput) (ha : v.actor ≠ 0#u64) :
-    (transition v (.CreateArticle .Absent description body tags) ⦃ r => r = err .BlankTitle ⦄) ∧
-    (transition v (.CreateArticle .Null description body tags) ⦃ r => r = err .BlankTitle ⦄) ∧
-    (transition v (.CreateArticle (.Text oneByte) (.Text oneByte) .Absent .List) ⦃ r =>
-      r = err .BlankBody ⦄) ∧
-    (transition v (.CreateArticle (.Text oneByte) (.Text oneByte) (.Text oneByte) .Null) ⦃ r =>
-      r = err .InvalidTags ⦄) ∧
-    (transition v (.UpdateArticle .Absent .Absent .Absent .Null) ⦃ r => r = err .InvalidTags ⦄) ∧
-    (transition v (.UpdateArticle .Absent .Absent .Absent .Invalid) ⦃ r =>
-      r = err .InvalidTags ⦄) ∧
-    (transition v (.UpdateArticle (.Text emptyBytes) .Absent .Absent .Absent) ⦃ r =>
-      r = err .BlankTitle ⦄) := by
-  refine ⟨?_, ?_, ?_, ?_, ?_, ?_, ?_⟩ <;>
-    (unfold transition authed create_article update_article require_text optional_required tags_of;
-      simp [ha, one_len, empty_len]; rfl)
-
-theorem delete_unknown_before_forbidden (v : View) (ha : v.actor ≠ 0#u64)
-    (hx : v.article_exists = false) :
-    (transition v .DeleteArticle ⦃ r => r = err .ArticleNotFound ⦄) ∧
-    (transition v (.UpdateArticle .Absent .Absent (.Text oneByte) .Absent) ⦃ r =>
-      r = err .ArticleNotFound ⦄) := by
-  constructor
-  · unfold transition authed delete_article; simp [ha, hx]; rfl
-  · unfold transition authed update_article optional_required tags_of
-    simp [ha, hx, one_len]
-    h5i_steps
-    all_goals rfl
-
-theorem comment_delete_checks_article_first (v : View) (ha : v.actor ≠ 0#u64) :
-    (v.article_exists = false →
-      transition v .DeleteComment ⦃ r => r = err .ArticleNotFound ⦄) ∧
-    (v.article_exists = true → v.comment_exists = false →
-      transition v .DeleteComment ⦃ r => r = err .CommentNotFound ⦄) := by
-  constructor
-  · intro hx
-    unfold transition authed delete_comment
-    simp [ha, hx]
-    rfl
-  · intro hx hc
-    unfold transition authed delete_comment
-    simp [ha, hx, hc]
-    rfl
-
-theorem page_rejects_bad_limit (v : View) (offset : RawNum) :
-    (transition v (.Page .Invalid offset) ⦃ r => r = err .InvalidLimit ⦄) ∧
-    (transition v (.Page (.Value 0#u64) offset) ⦃ r => r = err .InvalidLimit ⦄) ∧
-    (transition v (.Page (.Value 101#u64) .Absent) ⦃ r => r = .Ok (.Page 100#u64 0#u64) ⦄) := by
-  refine ⟨?_, ?_, ?_⟩
-  · unfold transition authed page; step*; rfl
-  · unfold transition authed page; step*; rfl
-  · unfold transition authed page
-    have hcap : (101#u64 > 100#u64) = true := by decide
-    simp [hcap]
-
-theorem shows_body_list : shows_body .List ⦃ r => r = false ⦄ := by
-  unfold shows_body
-  step*
-
-theorem shows_body_detail : shows_body .Detail ⦃ r => r = true ⦄ := by
-  unfold shows_body
-  step*
-
-theorem login_success_iff (found matched : Bool) :
-    authenticate_login found matched ⦃ r =>
-      (r = .Ok () ↔ found = true ∧ matched = true) ∧
-      (r = .Err .InvalidCredentials ↔ ¬ (found = true ∧ matched = true)) ⦄ := by
-  cases found <;> cases matched <;> simp [authenticate_login]
-
-theorem token_missing_guest (now : Std.U64) (found : Bool) :
-    token_actor .Missing now found ⦃ r => r = .Ok 0#i64 ⦄ := by
-  simp [token_actor]
-
-theorem token_claims_exact (id : Std.I64) (exp now : Std.U64) (found : Bool) :
-    token_actor (.Claims (.Parsed id) exp) now found ⦃ r =>
-      (r = .Ok id ↔ ¬ exp ≤ now ∧ ¬ id ≤ 0#i64 ∧ found = true) ∧
-      (r = .Err .InvalidToken ↔ exp ≤ now ∨ id ≤ 0#i64 ∨ found = false) ⦄ := by
-  simp only [token_actor, token_user_exists]
-  split <;> simp_all
-  split <;> simp_all
-  cases found <;> simp_all
-
-theorem token_actor_safe (token : TokenInput) (now : Std.U64) (found : Bool) :
-    token_actor token now found ⦃ r =>
-      ∀ id, r = .Ok id → id ≠ 0#i64 →
-        ∃ exp, token = .Claims (.Parsed id) exp ∧
-          ¬ exp ≤ now ∧ ¬ id ≤ 0#i64 ∧ found = true ⦄ := by
-  cases token with
-  | Missing => simp [token_actor]
-  | Invalid => simp [token_actor]
-  | Claims sub exp =>
-    cases sub with
-    | Invalid =>
-      simp only [token_actor]
-      split <;> simp_all
-    | Parsed id =>
-      simp only [token_actor, token_user_exists]
-      split <;> simp_all
-      split <;> simp_all
-      cases found <;> simp_all
-
-theorem token_rejects_invalid (sub : Subject) (exp now : Std.U64) (found : Bool) :
-    token_actor (.Claims sub exp) now found ⦃ r =>
-      (exp ≤ now ∨ sub = .Invalid ∨
-        (∃ id, sub = .Parsed id ∧ id ≤ 0#i64) ∨ found = false) →
-      r = .Err .InvalidToken ⦄ := by
-  cases sub with
-  | Invalid =>
-    simp only [token_actor]
-    split <;> simp_all
-  | Parsed id =>
-    simp only [token_actor, token_user_exists]
-    split <;> simp_all
-    split <;> simp_all
-    cases found <;> simp_all
-
-theorem user_conflicts_exact (username email : Bool) :
-    user_conflicts username email ⦃ r =>
-      (r = .Ok () ↔ username = false ∧ email = false) ∧
-      (r = .Err .UsernameTaken ↔ username = true) ∧
-      (r = .Err .EmailTaken ↔ username = false ∧ email = true) ⦄ := by
-  cases username <;> cases email <;> simp [user_conflicts]
-
-theorem user_fields_exact (viewer subject : Std.U64) :
-    user_fields viewer subject .User ⦃ fields =>
-      (fields.email = true ↔ viewer ≠ 0#u64 ∧ viewer = subject) ∧
-      fields.token = fields.email ⦄ := by
-  by_cases guest : viewer = 0#u64 <;> simp [user_fields, guest]
-
-theorem other_user_no_private_fields (viewer subject : Std.U64) (view : UserView)
-    (different : viewer ≠ subject) :
-    user_fields viewer subject view ⦃ fields =>
-      fields.email = false ∧ fields.token = false ⦄ := by
-  cases view <;> simp [user_fields, different]
-
-theorem profile_no_private_fields (viewer subject : Std.U64) :
-    user_fields viewer subject .Profile ⦃ fields =>
-      fields.email = false ∧ fields.token = false ⦄ := by
-  simp [user_fields]
-
-end conduit_kernel
+end conduit_kernel.Theorems

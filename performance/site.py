@@ -21,15 +21,15 @@ STACKS = {
     "fastapi": "Python, FastAPI, asyncpg, uvicorn",
     "upstream": "linkding 1.47.0 image: Django, uWSGI",
 }
-H5I = {"rust-h5i", "rust-h5i-app", "rust-h5i-optimized"}
+H5I = {"rust-h5i", "rust-h5i-optimized", "rust-h5i-gpu"}
 
 APPS = [
     {
         "id": "realworld",
         "title": "RealWorld (Conduit)",
         "stacks": {
-            "rust-h5i": "Rust, axum, sqlx, h5i-app kernel with Lean proofs",
-            "rust-h5i-app": "Rust, axum, the h5i-app engine (h5i-app-pg) with Lean proofs",
+            "rust-h5i": "Rust, axum, the h5i-app engine (h5i-app-pg) with Lean proofs",
+            "rust-h5i-optimized": "Rust, axum, sqlx, h5i-app kernel with Lean proofs",
         },
         "upstream": "https://github.com/realworld-apps/realworld",
         "about": "The RealWorld blogging API: users, profiles, articles, comments, tags, follows and favorites. "
@@ -51,6 +51,7 @@ APPS = [
         "stacks": {
             "rust-h5i": "Rust, axum, the h5i-app engine (h5i-app-pg): kernel, read plans and writes with Lean proofs",
             "rust-h5i-optimized": "Rust, axum, sqlx, h5i-app kernel with Lean proofs",
+            "rust-h5i-gpu": "Rust, axum, sqlx, plus a GPU-resident search index (Rust-CUDA) that the engine's read plan feeds",
         },
         "upstream": "https://github.com/sissbruecker/linkding",
         "about": "The linkding bookmark manager's REST API. The Hurl suite was checked against the pinned "

@@ -1,36 +1,28 @@
-# Read by `h5i app extract` and `h5i app check`.
+# Read by `h5i app` (extract, check, prove, mutate, doctor).
 
 [extract]
-crate = "kernel"
-start-from = ["transition", "shows_body", "authenticate_login", "token_actor", "user_conflicts", "user_fields"]
+start-from = ["transition", "transition_upstream", "read_only", "reads", "article_count"]
+schema = true
+include = ["h5i_app_sql"]
 
 [check]
+# Must exist and use only the standard axioms (every theorem in a hand-written
+# module is gated as well).
 theorems = [
-  "conduit_kernel.other_user_no_private_fields",
-  "conduit_kernel.profile_no_private_fields",
-  "conduit_kernel.user_fields_exact",
-  "conduit_kernel.user_conflicts_exact",
-  "conduit_kernel.token_rejects_invalid",
-  "conduit_kernel.token_missing_guest",
-  "conduit_kernel.token_actor_safe",
-  "conduit_kernel.token_claims_exact",
-  "conduit_kernel.login_success_iff",
-  "conduit_kernel.guest_cannot_mutate",
-  "conduit_kernel.only_author_updates_article",
-  "conduit_kernel.only_author_deletes_article",
-  "conduit_kernel.only_author_deletes_comment",
-  "conduit_kernel.favorite_consistent",
-  "conduit_kernel.unfavorite_consistent",
-  "conduit_kernel.follow_consistent",
-  "conduit_kernel.unfollow_consistent",
-  "conduit_kernel.register_rejects_blanks",
-  "conduit_kernel.register_rejects_short_password",
-  "conduit_kernel.login_rejects_blank_password",
-  "conduit_kernel.update_user_rejects_nulls_and_short_password",
-  "conduit_kernel.article_rejects_blank_and_null_tags",
-  "conduit_kernel.delete_unknown_before_forbidden",
-  "conduit_kernel.comment_delete_checks_article_first",
-  "conduit_kernel.page_rejects_bad_limit",
-  "conduit_kernel.shows_body_list",
-  "conduit_kernel.shows_body_detail",
+    "conduit_kernel.Storage.db_inv",
+    "conduit_kernel.ReadOnly.read_only_sound",
+    "conduit_kernel.Plan.reads_abs",
+    "conduit_kernel.Schema.decode_load",
+    "conduit_kernel.Frame.frame",
+    "conduit_kernel.Frame.load_for_sound_inv",
+    "conduit_kernel.Plan.count_abs",
+    "conduit_kernel.Frame.count_list",
+    "conduit_kernel.Frame.count_list_unknown",
+    "conduit_kernel.Frame.count_feed",
+    "conduit_kernel.Replies.update_reply",
 ]
+
+[[mutant]]
+name = "edit_others_article"
+old = "if a.author != me.id {\n        return Err(Error::Forbidden);\n    }\n    if slug_taken"
+new = "if false {\n        return Err(Error::Forbidden);\n    }\n    if slug_taken"

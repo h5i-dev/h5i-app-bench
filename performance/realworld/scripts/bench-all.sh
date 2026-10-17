@@ -10,9 +10,9 @@
 #   BENCH_OUT=realworld/bench/results
 #   SERVER_CPUS=0-3 K6_CPUS=4-7 PG_CPUS=8-15 CONDUIT_PG_CONTAINER=conduit-pg
 #   CONDUIT_PG_PORT=54329 BENCH_NO_SUMMARY=1 (scripts/bench-parallel.sh sets these)
-#   ./bench-all.sh [fastapi|go|fastify|rust-h5i|rust-h5i-app ...]
+#   ./bench-all.sh [fastapi|go|fastify|rust-h5i-optimized|rust-h5i ...]
 #
-# rust-h5i-app keeps its rows in h5i-app's own tables (schema conduit); each
+# rust-h5i keeps its rows in h5i-app's own tables (schema conduit); each
 # point loads seed.sql and then copies it there (bench/seed_h5i_app.sql).
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
@@ -37,7 +37,7 @@ mkdir -p "$OUT" "$LOG_DIR"
 echo $$ > "$LOG_DIR/bench-all.pid"
 
 if [ "$#" -eq 0 ]; then
-  set -- fastapi go fastify rust-h5i
+  set -- fastapi go fastify rust-h5i-optimized
 fi
 
 "$ROOT/scripts/up-db.sh" >/dev/null
@@ -45,7 +45,7 @@ fi
 seed_db() {
   docker exec -i "$PG_CONTAINER" psql -U conduit -d conduit -v ON_ERROR_STOP=1 \
     -v hash="$HASH" < "$ROOT/bench/seed.sql" >/dev/null
-  if [ "${1:-}" = rust-h5i-app ]; then
+  if [ "${1:-}" = rust-h5i ]; then
     docker exec -i "$PG_CONTAINER" psql -U conduit -d conduit -v ON_ERROR_STOP=1 \
       < "$ROOT/bench/seed_h5i_app.sql" >/dev/null
   fi
@@ -107,7 +107,7 @@ start_server() {
       export WEB_CONCURRENCY=4
       export DB_POOL=8
       ;;
-    go|rust-h5i|rust-h5i-app)
+    go|rust-h5i-optimized|rust-h5i)
       export WEB_CONCURRENCY=4
       export DB_POOL=32
       ;;
@@ -134,18 +134,18 @@ run_k6() {
 }
 
 prebuild() {
-  if printf '%s\n' "$@" | grep -qx rust-h5i; then
-    (cd "$ROOT/rust-h5i" && cargo build --release -p conduit-server -p conduit-kernel-bench)
+  if printf '%s\n' "$@" | grep -qx rust-h5i-optimized; then
+    (cd "$ROOT/rust-h5i-optimized" && cargo build --release -p conduit-server -p conduit-kernel-bench)
   fi
-  if printf '%s\n' "$@" | grep -qx rust-h5i-app; then
-    (cd "$ROOT/rust-h5i-app" && CARGO_TARGET_DIR="${H5I_APP_TARGET_DIR:-/var/tmp/rw-target-h5i-app}" cargo build --release)
+  if printf '%s\n' "$@" | grep -qx rust-h5i; then
+    (cd "$ROOT/rust-h5i" && CARGO_TARGET_DIR="${H5I_APP_TARGET_DIR:-/var/tmp/rw-target-h5i-app}" cargo build --release)
   fi
 }
 
 kernel_bench() {
   local bin="$CARGO_TARGET_DIR/release/kernel-bench"
   if [ ! -x "$bin" ]; then
-    (cd "$ROOT/rust-h5i" && cargo build --release -p conduit-kernel-bench)
+    (cd "$ROOT/rust-h5i-optimized" && cargo build --release -p conduit-kernel-bench)
   fi
   local i
   : > "$OUT/kernel-bench.jsonl"
@@ -161,8 +161,8 @@ for name in "$@"; do
     fastapi) port=8001; dir="$ROOT/fastapi" ;;
     go) port=8002; dir="$ROOT/go" ;;
     fastify) port=8003; dir="$ROOT/fastify" ;;
-    rust-h5i) port=8004; dir="$ROOT/rust-h5i" ;;
-    rust-h5i-app) port=8005; dir="$ROOT/rust-h5i-app" ;;
+    rust-h5i-optimized) port=8004; dir="$ROOT/rust-h5i-optimized" ;;
+    rust-h5i) port=8005; dir="$ROOT/rust-h5i" ;;
     *) echo "unknown implementation: $name" >&2; exit 2 ;;
   esac
   echo "START $name :$port"
@@ -230,7 +230,7 @@ PY
   server_pid=""
 done
 
-if printf '%s\n' "$@" | grep -qx rust-h5i || [ "$#" -eq 4 ]; then
+if printf '%s\n' "$@" | grep -qx rust-h5i-optimized || [ "$#" -eq 4 ]; then
   kernel_bench || echo "POINT_FAIL kernel-bench" >&2
 fi
 

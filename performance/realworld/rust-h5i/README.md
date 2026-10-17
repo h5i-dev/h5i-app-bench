@@ -1,4 +1,4 @@
-# Conduit (rust-h5i-app)
+# Conduit (rust-h5i)
 
 The [RealWorld](https://github.com/gothinkster/realworld) "Conduit" backend
 on [h5i-app](https://github.com/h5i-dev/h5i): a port of
@@ -9,7 +9,7 @@ a Medium clone: users follow each other, write articles with tags, favorite
 them and comment on them, and read a feed of the authors they follow.
 
 This directory is Conduit's home and the RealWorld benchmark's fifth server,
-`rust-h5i-app` (the h5i-app counterpart of `../rust-h5i`). It used to be the
+`rust-h5i` (the h5i-app counterpart of `../rust-h5i-optimized`). It used to be the
 `conduit` entry of the h5i-app cookbook and, before that,
 `examples/app/conduit` in h5i.
 
@@ -39,7 +39,7 @@ delete it, not the author of the article.
 
 The HTTP API follows the [RealWorld spec](https://github.com/realworld-apps/realworld)
 and passes its Hurl suite (`spec/api/hurl` at `ebbcdeb`, as pinned by this
-benchmark; `../scripts/test-all.sh rust-h5i-app`):
+benchmark; `../scripts/test-all.sh rust-h5i`):
 `201` for sign-up, new articles and comments, `204` for deletes, `409` for
 a taken username or email, errors as `{"errors": {"<field>": ["..."]}}`
 (`token` "is missing" or "is invalid", `credentials` "invalid", `<thing>`
@@ -185,7 +185,7 @@ commit; to move both, run `cargo update` for the `h5i-app-*` crates and
 `h5i app check .`.
 
 All commands below run from this directory, which is its own Cargo workspace
-(outside the workspace of `../rust-h5i`).
+(outside the workspace of `../rust-h5i-optimized`).
 
 ## Building and testing
 
@@ -232,7 +232,7 @@ address, `DB_POOL` the connections (default 32), `WEB_CONCURRENCY` the
 worker threads, and `GET /healthz` answers `ok`.
 
 To run the RealWorld Hurl suite against it, use `../scripts/test-one.sh`
-with `HOST=http://127.0.0.1:8080`, or `../scripts/test-all.sh rust-h5i-app`,
+with `HOST=http://127.0.0.1:8080`, or `../scripts/test-all.sh rust-h5i`,
 which starts it through `run.sh`.
 
 ## In the benchmark
@@ -242,8 +242,8 @@ and serves on 127.0.0.1:8005 with the same environment as the other servers
 (`DATABASE_URL`, `JWT_SECRET`, `DB_POOL`, `WEB_CONCURRENCY`). The server
 creates its tables in the schema `conduit` of the database at start; the
 benchmark seeds them from the shared dataset with `../bench/seed_h5i_app.sql`
-(see `../bench/README.md`). `../scripts/bench-parallel.sh rust-h5i-app`
-runs it on rust-h5i's CPUs with its own database container.
+(see `../bench/README.md`). `../scripts/bench-parallel.sh rust-h5i`
+runs it on rust-h5i-optimized's CPUs with its own database container.
 
 ## Load test
 
