@@ -62,6 +62,13 @@ seed_db() {
     docker exec -i "$PG_CONTAINER" psql -U linkding -d linkding -v ON_ERROR_STOP=1 \
       < "$ROOT/bench/seed.sql" >/dev/null
   fi
+  # rust-h5i (the h5i-app engine) keeps its rows in its own schema `h5iapp`,
+  # which the server creates at start. Copy the shared dataset into it so the
+  # engine sees the same bookmarks, tags and tokens as the SQL variants.
+  if [ "$name" = "rust-h5i" ]; then
+    docker exec -i "$PG_CONTAINER" psql -U linkding -d linkding -v ON_ERROR_STOP=1 \
+      < "$ROOT/bench/seed_h5i_app.sql" >/dev/null
+  fi
 }
 
 server_pid=""
@@ -166,7 +173,7 @@ start_server() {
       export WEB_CONCURRENCY=4
       export DB_POOL=8
       ;;
-    go|rust-h5i)
+    go|rust-h5i|rust-h5i-optimized|rust-h5i-gpu)
       export WEB_CONCURRENCY=4
       export DB_POOL=32
       ;;
@@ -206,6 +213,8 @@ for name in "$@"; do
     go) port=8102; dir="$ROOT/go" ;;
     fastify) port=8103; dir="$ROOT/fastify" ;;
     rust-h5i) port=8104; dir="$ROOT/rust-h5i" ;;
+    rust-h5i-optimized) port=8106; dir="$ROOT/rust-h5i-optimized" ;;
+    rust-h5i-gpu) port=8107; dir="$ROOT/rust-h5i-gpu/server" ;;
     upstream) port=8105; dir="" ;;
     *) echo "unknown implementation: $name" >&2; exit 2 ;;
   esac

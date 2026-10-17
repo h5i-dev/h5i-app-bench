@@ -33,16 +33,21 @@ if [ -z "${LD_DETACHED:-}" ]; then
 fi
 
 if [ "$#" -eq 0 ]; then
-  set -- fastapi go fastify rust-h5i upstream
+  set -- fastapi go fastify rust-h5i rust-h5i-optimized upstream rust-h5i-gpu
 fi
 
+# Seven variants share physical cores 0-62: 3 server, 3 Postgres, 3 k6 each.
+# Ports and container names take an optional prefix/base so a run can stay off
+# any stale containers from an earlier run.
 layout() {
   case "$1" in
-    fastapi)  echo "0-3 4-7 8-11 5440 8101" ;;
-    go)       echo "12-15 16-19 20-23 5441 8102" ;;
-    fastify)  echo "24-27 28-31 32-35 5442 8103" ;;
-    rust-h5i) echo "36-39 40-43 44-47 5443 8104" ;;
-    upstream) echo "48-51 52-55 56-59 5444 8105" ;;
+    fastapi)             echo "0-2 3-5 6-8 5468 8101" ;;
+    go)                  echo "9-11 12-14 15-17 5461 8102" ;;
+    fastify)             echo "18-20 21-23 24-26 5462 8103" ;;
+    rust-h5i)            echo "27-29 30-32 33-35 5463 8104" ;;
+    rust-h5i-optimized)  echo "36-38 39-41 42-44 5466 8106" ;;
+    upstream)            echo "45-47 48-50 51-53 5464 8105" ;;
+    rust-h5i-gpu)        echo "54-56 57-59 60-62 5467 8107" ;;
     *) return 1 ;;
   esac
 }
@@ -57,8 +62,8 @@ for name in "$@"; do
   echo "START $name server=$server pg=$pg k6=$k6 pgport=$port http=$http $(date -Is)"
   (
     export SERVER_CPUS="$server" PG_CPUS="$pg" K6_CPUS="$k6"
-    export LINKDING_PG_CONTAINER="linkding-pg-$name" LINKDING_PG_PORT="$port"
-    export LINKDING_PG_DATA="/var/tmp/linkding-pg-data-$name"
+    export LINKDING_PG_CONTAINER="${PG_PREFIX:-linkding-pg-}$name" LINKDING_PG_PORT="$port"
+    export LINKDING_PG_DATA="${PG_DATA_ROOT:-/var/tmp}/linkding-pg-data-${PG_PREFIX:-}$name"
     export BENCH_PORT="$http"
     export LOG_DIR="$LOGS/$name" BENCH_OUT="$OUT" BENCH_NO_SUMMARY=1
     exec bash "$ROOT/scripts/bench-all.sh" "$name"

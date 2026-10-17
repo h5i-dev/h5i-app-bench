@@ -12,20 +12,25 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 REPO = "https://github.com/h5i-dev/h5i-app-bench/tree/main/performance"
 
+# Shared across apps. The h5i Rust variants differ in meaning per app (the same
+# id names the engine in one app and the hand-written-SQL build in another), so
+# their descriptions live in each app's own `stacks` below.
 STACKS = {
-    "rust-h5i": "Rust, axum, sqlx, h5i-app kernel with Lean proofs",
-    "rust-h5i-app": "Rust, axum, the h5i-app engine (h5i-app-pg) with Lean proofs",
     "go": "Go, chi, pgx",
     "fastify": "TypeScript, Fastify, postgres.js",
     "fastapi": "Python, FastAPI, asyncpg, uvicorn",
     "upstream": "linkding 1.47.0 image: Django, uWSGI",
 }
-H5I = {"rust-h5i", "rust-h5i-app"}
+H5I = {"rust-h5i", "rust-h5i-app", "rust-h5i-optimized"}
 
 APPS = [
     {
         "id": "realworld",
         "title": "RealWorld (Conduit)",
+        "stacks": {
+            "rust-h5i": "Rust, axum, sqlx, h5i-app kernel with Lean proofs",
+            "rust-h5i-app": "Rust, axum, the h5i-app engine (h5i-app-pg) with Lean proofs",
+        },
         "upstream": "https://github.com/realworld-apps/realworld",
         "about": "The RealWorld blogging API: users, profiles, articles, comments, tags, follows and favorites. "
                  "Every implementation passes the same pinned Hurl suite.",
@@ -43,6 +48,10 @@ APPS = [
     {
         "id": "linkding",
         "title": "linkding",
+        "stacks": {
+            "rust-h5i": "Rust, axum, the h5i-app engine (h5i-app-pg): kernel, read plans and writes with Lean proofs",
+            "rust-h5i-optimized": "Rust, axum, sqlx, h5i-app kernel with Lean proofs",
+        },
         "upstream": "https://github.com/sissbruecker/linkding",
         "about": "The linkding bookmark manager's REST API. The Hurl suite was checked against the pinned "
                  "1.47.0 image, which also runs in the benchmark as a reference.",
@@ -83,7 +92,7 @@ def load(app):
     return {
         "id": app["id"], "title": app["title"], "upstream": app["upstream"], "about": app["about"],
         "seed": app["seed"], "source": f"{REPO}/{app['id']}", "measured": last_change(path),
-        "impls": [{"id": i, "stack": STACKS.get(i, ""), "h5i": i in H5I} for i in impls],
+        "impls": [{"id": i, "stack": app.get("stacks", {}).get(i) or STACKS.get(i, ""), "h5i": i in H5I} for i in impls],
         "scenarios": [{"id": s, "requests": app["scenarios"][s]} for s in scenarios],
         "concurrency": sorted({r["concurrency"] for r in rows}),
         "rows": rows,

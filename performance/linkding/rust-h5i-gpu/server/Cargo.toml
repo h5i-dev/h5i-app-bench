@@ -16,3 +16,8 @@ serde_json = "1"
 sqlx = { version = "0.8", default-features = false, features = ["runtime-tokio", "tls-rustls", "postgres", "chrono", "json"] }
 tokio = { version = "1", features = ["macros", "rt-multi-thread", "net"] }
 url = "2"
+
+[features]
+# CPU-only by default (portable, builds in CI). `gpu` pulls in the Rust-CUDA
+# resident launch; host-only, needs the Rust-CUDA nightly + libNVVM + a device.
+gpu = ["dep:linkding-gpu-nvvm"]
