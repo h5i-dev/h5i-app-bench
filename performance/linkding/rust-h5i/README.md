@@ -187,6 +187,32 @@ serves on 127.0.0.1:8106. Each benchmark point seeds the shared tables with
 `../scripts/bench-parallel.sh rust-h5i` runs it on rust-h5i-optimized's CPUs
 with its own database container (`linkding-pg-rust-h5i`, port 5445).
 
+## Performance
+
+Requests per second at 64 clients, from `../bench/results/summary.md` (means
+of 3 runs; server, database and k6 on 4 cores each):
+
+| Scenario | rust-h5i | rust-h5i-optimized |
+|---|---:|---:|
+| list | 112 | 294 |
+| search (`q=alpha`) | 6.9 | 19.8 |
+| search_tag (`#tagN`) | 2324 | 1993 |
+| get | 12833 | 3357 |
+| create | 34 | 1552 |
+| update | 3032 | 2013 |
+| archive | 5123 | 2553 |
+| tags | 5319 | 4346 |
+| mixed | 32 | 83 |
+
+Lookups by id, edits and the tag list load a few rows and are faster than
+the hand-written SQL. Text search reads all of alice's 100,000 bookmarks and
+filters in the kernel. Every create takes ids from the one counter row and
+locks it (`lock_for`), so creates run one at a time; the server's CPU stays
+under 10% in that scenario. A plain `list` at a rotating offset reads
+`offset + limit` rows newest first. The engine's
+peak memory is about 1.9 GB (2.7 GB during text search), against 24 MB for
+`rust-h5i-optimized`.
+
 ## License
 
 Apache-2.0, as h5i. The upstream application is
