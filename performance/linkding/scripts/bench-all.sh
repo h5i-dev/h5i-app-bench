@@ -6,7 +6,9 @@
 #
 #   BENCH_WARMUP=10 BENCH_DURATION=30 BENCH_REPEATS=3
 #   BENCH_CONCURRENCY="1 16 64 256"
-#   BENCH_SCENARIOS="list search search_tag get create update archive tags mixed"
+#   BENCH_SCENARIOS="list search search_complex search_tag get create update archive tags mixed"
+#   BENCH_SERVER_BIN=/absolute/path/to/prebuilt/server (one implementation only)
+#   BENCH_IMPL_LABEL=rust-h5i-cpu-scan (label a CPU-only GPU-server build)
 #   BENCH_OUT=linkding/bench/results
 #   SERVER_CPUS=0-3 K6_CPUS=8-11 PG_CPUS=4-7
 #   LINKDING_PG_CONTAINER=linkding-pg-fastapi LINKDING_PG_PORT=5440
@@ -36,7 +38,7 @@ WARMUP="${BENCH_WARMUP:-10}"
 DURATION="${BENCH_DURATION:-30}"
 REPEATS="${BENCH_REPEATS:-3}"
 CONCURRENCIES="${BENCH_CONCURRENCY:-1 16 64 256}"
-SCENARIOS="${BENCH_SCENARIOS:-list search search_tag get create update archive tags mixed}"
+SCENARIOS="${BENCH_SCENARIOS:-list search search_complex search_tag get create update archive tags mixed}"
 LOG_DIR="${LOG_DIR:-/var/tmp/ld-logs}"
 TOKEN="$(printf 'a%.0s' {1..40})"
 UPSTREAM_NAME="${LINKDING_UPSTREAM_CONTAINER:-linkding-upstream}"
@@ -45,6 +47,10 @@ echo $$ > "$LOG_DIR/bench-all.pid"
 
 if [ "$#" -eq 0 ]; then
   set -- fastapi go fastify rust-h5i
+fi
+if [ -n "${BENCH_SERVER_BIN:-}${BENCH_IMPL_LABEL:-}" ] && [ "$#" -ne 1 ]; then
+  echo 'BENCH_SERVER_BIN and BENCH_IMPL_LABEL require one implementation' >&2
+  exit 2
 fi
 
 if [ "$#" -eq 1 ] && [ "$1" = "upstream" ]; then
@@ -84,6 +90,8 @@ cleanup() {
   fi
 }
 trap cleanup EXIT
+trap 'exit 130' INT
+trap 'exit 143' TERM
 
 wait_health() {
   local name="$1"
@@ -132,9 +140,6 @@ start_upstream() {
   local port="$1"
   cleanup
   server_pid=""
-  if docker ps --format '{{.Names}}' | grep -qx linkding-up; then
-    docker stop linkding-up >/dev/null
-  fi
   free_port "$port"
   docker rm -f "$UPSTREAM_NAME" >/dev/null 2>&1 || true
   docker run -d --name "$UPSTREAM_NAME" --network host \
@@ -179,7 +184,7 @@ start_server() {
       ;;
   esac
   export PORT="$port"
-  setsid taskset -c "$SERVER_CPUS" "$dir/run.sh" > "$LOG_DIR/bench-${name}.log" 2>&1 &
+  setsid taskset -c "$SERVER_CPUS" "${BENCH_SERVER_BIN:-$dir/run.sh}" >> "${SERVER_LOG:-$LOG_DIR/bench-${name}.log}" 2>&1 &
   server_pid=$!
   wait_health "$name" "$port"
 }
@@ -196,10 +201,14 @@ run_k6() {
     -e "SCENARIO=$scenario" \
     -e "VUS=$conc" \
     -e "DURATION=${seconds}s" \
-    "$ROOT/bench/workload.js" >/dev/null
+    "$ROOT/bench/workload.js" > "${summary%.json}.log" 2>&1
 }
 
 prebuild() {
+  if [ -n "${BENCH_SERVER_BIN:-}" ]; then
+    test -x "$BENCH_SERVER_BIN"
+    return
+  fi
   if printf '%s\n' "$@" | grep -qx rust-h5i; then
     (cd "$ROOT/rust-h5i" && cargo build --release -p linkding-server)
   fi
@@ -208,6 +217,7 @@ prebuild() {
 prebuild "$@"
 
 for name in "$@"; do
+  label="${BENCH_IMPL_LABEL:-$name}"
   case "$name" in
     fastapi) port=8101; dir="$ROOT/fastapi" ;;
     go) port=8102; dir="$ROOT/go" ;;
@@ -232,7 +242,8 @@ for name in "$@"; do
   for scenario in $SCENARIOS; do
     for conc in $CONCURRENCIES; do
       for rep in $(seq 1 "$REPEATS"); do
-        tag="${name}_${scenario}_c${conc}_r${rep}"
+        tag="${label}_${scenario}_c${conc}_r${rep}"
+        SERVER_LOG="$LOG_DIR/${tag}.server.log"
         echo "SEED $tag"
         if [ "$name" = "upstream" ]; then
           # Under overload uWSGI keeps working through its listen queue after
@@ -240,7 +251,11 @@ for name in "$@"; do
           start_server "$name" "$port" "$dir"
           seed_db upstream
         else
+          # Direct SQL reseeding cannot notify resident indices. Stop before
+          # the seed (also drain writes), then rebuild during the warmup.
+          cleanup
           seed_db "$name"
+          start_server "$name" "$port" "$dir"
         fi
         if [ "$name" = "upstream" ]; then
           :
@@ -248,17 +263,20 @@ for name in "$@"; do
           echo "POINT_FAIL $tag server died; restarting" >&2
           start_server "$name" "$port" "$dir"
         fi
-        run_k6 "$WARMUP" "$LOG_DIR/warmup-${tag}.json" || true
+        run_k6 "$WARMUP" "$LOG_DIR/warmup-${tag}.json"
         meta_tmp="$OUT/${tag}.meta.json"
         summary="$OUT/${tag}.summary.json"
         "$PY" -u "$ROOT/bench/sample_proc.py" "$server_pid" > "$meta_tmp.sample" &
         sampler=$!
         if ! run_k6 "$DURATION" "$summary"; then
           echo "POINT_FAIL $tag k6 exited non-zero" >&2
+          kill "$sampler" >/dev/null 2>&1 || true
+          wait "$sampler" >/dev/null 2>&1 || true
+          exit 1
         fi
         kill "$sampler" >/dev/null 2>&1 || true
         wait "$sampler" >/dev/null 2>&1 || true
-        "$PY" - "$meta_tmp" "$meta_tmp.sample" "$name" "$scenario" "$conc" "$rep" "$WARMUP" "$DURATION" <<'PY'
+        "$PY" - "$meta_tmp" "$meta_tmp.sample" "$label" "$scenario" "$conc" "$rep" "$WARMUP" "$DURATION" <<'PY'
 import json, sys
 dest, sample, impl, scenario, conc, rep, warmup, duration = sys.argv[1:]
 try:

@@ -61,6 +61,7 @@ APPS = [
             "list": "GET /api/bookmarks/?limit=20 at a rotating offset",
             "search": "GET /api/bookmarks/?q=alpha&limit=20",
             "search_tag": "GET /api/bookmarks/?q=#tagN&limit=20",
+            "search_complex": "GET /api/bookmarks/: eight-term boolean text search (1000 matches)",
             "get": "GET /api/bookmarks/{id}/",
             "create": "POST /api/bookmarks/ with two tags",
             "update": "PATCH /api/bookmarks/{id}/ (title)",

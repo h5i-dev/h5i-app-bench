@@ -81,6 +81,12 @@ HTTP 200
 [Asserts]
 jsonpath "$.count" == 3
 
+GET {{host}}/api/bookmarks/?q=%28alpha%20or%20missing%29%20and%20not%20%28absent%20or%20unknown%29%20and%20%28example%20or%20bookmark%29%20and%20not%20%28zeta%20and%20beta%29
+Authorization: Token {{alice}}
+HTTP 200
+[Asserts]
+jsonpath "$.count" == 3
+
 GET {{host}}/api/bookmarks/?q=%23alpha
 Authorization: Token {{alice}}
 HTTP 200
