@@ -523,6 +523,7 @@ details.data-table td.scope { color: var(--faint); font-size: 12px; max-width: 6
 .perf-matrix td.ov-cell .ov-bar::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: calc(var(--f, 0) * 100%); background: color-mix(in srgb, var(--faint) 75%, transparent); border-radius: 2px; }
 .perf-matrix td.ov-cell.best { color: var(--ink); font-weight: 600; }
 .perf-matrix td.ov-cell.best .ov-bar::before { background: var(--spot-solid); }
+.perf-matrix td.ov-cell.second .ov-bar::before { background: color-mix(in srgb, var(--spot-solid) 45%, var(--panel)); }
 .perf-matrix td.ov-cell .win { color: var(--spot); font-size: 9px; vertical-align: 1px; margin-left: 5px; }
 .perf-bars th, .perf-bars td { padding: 8px 12px; }
 .perf-bars thead th.on, .perf-bars td.on { background: color-mix(in srgb, var(--ink) 4%, transparent); }

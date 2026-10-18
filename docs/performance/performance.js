@@ -32,13 +32,14 @@ function renderOverview() {
     const head = app.impls.map((i) => `<th scope="col" class="num">${implName(i)}</th>`).join("");
     const body = app.scenarios.map((s) => {
       const vals = app.impls.map((i) => row(app, i.id, s.id, CONC)?.rps ?? null);
-      const best = Math.max(...vals.filter((v) => v != null));
+      const ranked = [...new Set(vals.filter((v) => v != null))].sort((a, b) => b - a);
+      const [best, second] = ranked;
       const cells = vals.map((v, k) => {
         if (v == null) return `<td class="num ov-cell">–</td>`;
         const f = v / best;
         const top = v === best;
         const win = top ? ` <span class="win" aria-hidden="true">●</span>` : "";
-        return `<td class="num ov-cell${top ? " best" : ""}" style="--f:${f.toFixed(3)}" title="${esc(app.impls[k].id)} · ${esc(s.id)}: ${rps(v)} req/s, ${Math.round(f * 100)}% of the fastest"><span class="ov-bar" aria-hidden="true"></span><span class="ov-val">${rps(v)}${win}</span></td>`;
+        return `<td class="num ov-cell${top ? " best" : v === second ? " second" : ""}" style="--f:${f.toFixed(3)}" title="${esc(app.impls[k].id)} · ${esc(s.id)}: ${rps(v)} req/s, ${Math.round(f * 100)}% of the fastest"><span class="ov-bar" aria-hidden="true"></span><span class="ov-val">${rps(v)}${win}</span></td>`;
       }).join("");
       return `<tr><th scope="row"><a href="#${esc(app.id)}" data-app="${esc(app.id)}" data-scenario="${esc(s.id)}">${esc(s.id)}</a></th>${cells}</tr>`;
     }).join("");
