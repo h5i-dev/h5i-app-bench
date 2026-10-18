@@ -53,7 +53,9 @@ source built without GPU support (`rust-h5i-cpu-scan`), the GPU build, and the
 pinned upstream image. Each has four server, four PostgreSQL and four client
 CPUs, with independent temporary databases and ports. The runner saves artifact
 hashes, revision, configuration, raw k6 JSON/logs and standard summaries, then
-removes its containers. Only the search and mixed subset is rerun; this does
+removes its containers. Raw JSON, logs and metadata stay local; publish only
+`summary.csv`, `summary.md` and `points.csv`, as in the existing results directories.
+Only the search and mixed subset is rerun; this does
 not replace published results for the other endpoints or implementations.
 CPU/GPU comparisons isolate the scan backend; comparisons with optimized SQL
 or upstream also include differences in indexing, language and architecture.
