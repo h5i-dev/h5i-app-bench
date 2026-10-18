@@ -1,0 +1,13 @@
+mode,query,table,execution_ms,planning_ms,nodes
+membership,rows,linkding_users,0.187,0.971,Merge Join > Index Scan:linkding_users > Sort > Seq Scan:linkding_tokens
+membership,rows,linkding_tokens,0.045,0.407,Seq Scan:linkding_tokens
+membership,rows,linkding_bookmarks,0.432,1.051,Sort > Limit > Merge Join > Index Scan:linkding_bookmarks > Sort > Seq Scan:linkding_tokens
+membership,rows,linkding_tags,1.789,1.614,Sort > Hash Join > Seq Scan:linkding_tags > Hash > Nested Loop > Aggregate > Limit > Merge Join > Index Scan:linkding_bookmarks > Sort > Seq Scan:linkding_tokens > Index Only Scan:linkding_bookmark_tags
+membership,rows,linkding_bookmark_tags,1.089,1.185,Sort > Nested Loop > Aggregate > Limit > Merge Join > Index Scan:linkding_bookmarks > Sort > Seq Scan:linkding_tokens > Index Only Scan:linkding_bookmark_tags
+membership,count,linkding_bookmarks,47.885,1.043,Aggregate > Hash Join > Seq Scan:linkding_bookmarks > Hash > Seq Scan:linkding_tokens
+scalar,rows,linkding_users,0.077,0.675,Seq Scan:linkding_users > Seq Scan:linkding_tokens:InitPlan 1 (returns $0)
+scalar,rows,linkding_tokens,0.04,0.375,Seq Scan:linkding_tokens
+scalar,rows,linkding_bookmarks,0.506,1.045,Sort > Limit > Seq Scan:linkding_tokens:InitPlan 1 (returns $0) > Index Scan:linkding_bookmarks
+scalar,rows,linkding_tags,1.715,1.517,Sort > Hash Join > Seq Scan:linkding_tags > Hash > Nested Loop > Aggregate > Limit > Seq Scan:linkding_tokens:InitPlan 1 (returns $0) > Index Scan:linkding_bookmarks > Index Only Scan:linkding_bookmark_tags
+scalar,rows,linkding_bookmark_tags,1.099,1.132,Sort > Nested Loop > Aggregate > Limit > Seq Scan:linkding_tokens:InitPlan 1 (returns $0) > Index Scan:linkding_bookmarks > Index Only Scan:linkding_bookmark_tags
+scalar,count,linkding_bookmarks,33.305,0.758,Aggregate > Seq Scan:linkding_tokens:InitPlan 1 (returns $0) > Seq Scan:linkding_bookmarks

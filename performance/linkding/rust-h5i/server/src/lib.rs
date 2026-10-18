@@ -6,7 +6,7 @@ pub mod api;
 pub mod logic;
 
 use h5i_app_core::{Kernel, TenantId};
-use h5i_app_pg::{DbError, EngineConfig, Lock, Store, Tx};
+use h5i_app_pg::{DbError, EngineConfig, Lock, ReadSqlMode, Store, Tx};
 use linkding_kernel as k;
 use std::cell::Cell;
 
@@ -87,6 +87,16 @@ impl Store<Linkding> for LinkdingStore {
     /// paged listing or the tag list it also counts the rows before paging
     /// (`k::list_count`), sent on the same connection as the plan's reads.
     async fn load_for(tx: &Tx<'_>, t: TenantId, actor: &k::Principal, cmd: &k::Command) -> Result<k::Snapshot, DbError> {
+        // Keep the ordinary paged/list strategy. These reads benefit from
+        // unique token lookups becoming scalar parameters for the indexed
+        // bookmark predicate; the read plan and transaction stay the same.
+        let mode = match cmd {
+            k::Command::CreateBookmark { .. } => ReadSqlMode::ScalarWhenUnique,
+            k::Command::List { filter, .. } if !k::paged(filter) => ReadSqlMode::ScalarWhenUnique,
+            _ => tx.read_sql_mode(),
+        };
+        let scoped = tx.with_read_sql_mode(mode);
+        let tx = &scoped;
         let count = k::list_count(actor, cmd).filter(|_| LIST_COUNT.try_with(|_| ()).is_ok());
         match (k::reads(actor, cmd), count) {
             (None, _) => schema_load(tx, t).await,

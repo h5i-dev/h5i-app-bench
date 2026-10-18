@@ -1,5 +1,13 @@
 # Benchmark
 
+Latest follow-up: [single-get, creation and search improvements](hotpaths-2026-10-18.md).
+
+Follow-up: [selectable SQL modes and fixed-offset list measurement](sql-modes-2026-10-18.md).
+
+The [unique-membership SQL experiment](scalar-membership-2026-10-18.md)
+measures an engine renderer optimization separately from the published
+cross-language and CPU/GPU results.
+
 `scripts/bench-parallel.sh` runs FastAPI, Go, Fastify, Rust, and the upstream
 linkding 1.47.0 image together. Each one has its own Postgres 16 container
 (`linkding-pg-<impl>` on ports 5440–5444) and its own CPUs.
@@ -71,3 +79,7 @@ BENCH_DURATION=3 BENCH_REPEATS=1 BENCH_CONCURRENCY=1 performance/linkding/script
 Ports 5440 and 8105 are also used by the conformance database `linkding-pg` and
 the image container `linkding-up`. Stop those before a run that includes
 fastapi or upstream.
+
+The [optimized single-get experiment](single-get-2026-10-18.md) removes a duplicate bookmark
+lookup and compares before/after HTTP throughput with a freshly measured Go
+server. It is separate from the original cross-language ranking.

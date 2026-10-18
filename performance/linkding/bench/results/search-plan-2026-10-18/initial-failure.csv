@@ -1,0 +1,2 @@
+attempt,phase,scenario,concurrency,rep,postgres_shm_bytes,requests,http_failures,postgres_error,measurement_started
+initial-after,warmup,search,64,1,67108864,96,41,dynamic shared memory: No space left on device,False

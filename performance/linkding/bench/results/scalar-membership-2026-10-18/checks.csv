@@ -1,0 +1,8 @@
+check,status,cases,notes
+pgsql unit tests,passed,7,release build
+PostgreSQL randomized reads,passed,3200,rows and exact counts against reference
+PostgreSQL unique membership,passed,120,rows and exact counts against reference
+PostgreSQL statement cache,passed,,bounded cache with varying query shapes
+Linkding Hurl conformance,passed,200,9 files; includes mutation visibility and search
+pgsql Lean gate,passed,203,4 modules; existing theorem/axiom gates unchanged
+Linkding Lean gate,passed,493,9 modules; existing theorem/axiom gates unchanged

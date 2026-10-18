@@ -81,3 +81,38 @@ taken about four times a second during the measured window.
 same branch inlined, for 2 000 000 iterations. `bench-all.sh` runs it three
 times on CPUs 0–3 and appends JSON lines to `results/kernel-bench.jsonl`.
 That is the kernel measurement: the HTTP server always calls the kernel.
+
+## Paired optional GPU measurement
+
+The GPU variant is explicit: `CONDUIT_GPU_PTX=/path/conduit_gpu_device.ptx
+scripts/bench-all.sh rust-h5i-gpu`. Build instructions and policy scope are in
+[`../rust-h5i-gpu/README.md`](../rust-h5i-gpu/README.md). It shares the optimized
+CPU server's source; no new workload or database schema is introduced.
+`scripts/test-all.sh rust-h5i-gpu` runs the same pinned Hurl suite.
+
+For isolated CPU/GPU comparisons, use prebuilt release executables:
+
+```sh
+python3 performance/realworld/bench/remeasure-gpu.py \
+  --cpu-bin /path/to/cpu/conduit-server \
+  --gpu-bin /path/to/gpu/conduit-server \
+  --ptx /path/to/conduit_gpu_device.ptx --out /var/tmp/conduit-gpu-run
+```
+
+The default is all seven shared scenarios, concurrency 1/16, three repetitions,
+10 s warmup and 30 s measurement. Each variant has four server, four PostgreSQL
+and four client CPUs on disjoint affinity, four Tokio threads and a pool of 32.
+The runner starts its own databases, records local artifact hashes and run
+configuration, and removes only its containers afterwards. `--lanes 2` splits
+scenarios across two independent CPU/GPU pairs (48 CPU IDs, GPUs 0 and 1).
+Use one lane on hosts with only one GPU. Raw JSON, logs and metadata remain
+local; publish only `summary.csv`, `summary.md` and `points.csv`.
+
+`BENCH_SERVER_BIN` bypasses builds for a prebuilt single-variant run and
+`BENCH_PORT` selects its HTTP port. `BENCH_STRICT=1` makes failed warmups or
+measurements stop the harness. Both failed HTTP requests and failed k6 checks
+are thresholds; ordinary sweeps still record overload failures and continue.
+GPU is optional and not included in the default portable sweep.
+
+The [2026-10-18 paired HTTP measurement](gpu-policy-2026-10-18.md) reports
+all seven scenarios, including those that do not execute GPU policies.

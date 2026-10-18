@@ -40,7 +40,7 @@ function bookmarkId() {
 }
 
 function list() {
-  const offset = ((__ITER + __VU) % 50) * 20;
+  const offset = __ENV.LIST_OFFSET === undefined ? ((__ITER + __VU) % 50) * 20 : Number(__ENV.LIST_OFFSET);
   const res = http.get(`${base}/api/bookmarks/?limit=20&offset=${offset}`, auth);
   check(res, { 'list 200': (r) => r.status === 200 });
 }

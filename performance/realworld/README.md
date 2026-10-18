@@ -1,7 +1,7 @@
 # RealWorld (Conduit) backends
 
-Five implementations of the [RealWorld API](https://github.com/realworld-apps/realworld),
-four sharing one PostgreSQL schema and one on h5i-app's own tables, plus a
+Six implementations of the [RealWorld API](https://github.com/realworld-apps/realworld),
+five sharing one PostgreSQL schema and one on h5i-app's own tables, plus a
 load benchmark.
 
 | Directory | Stack |
@@ -12,7 +12,8 @@ load benchmark.
 | `fastify/` | TypeScript, Fastify, postgres.js |
 | `rust-h5i-optimized/` | Rust, axum, sqlx, h5i-app kernel and Lean proofs |
 | `rust-h5i/` | Rust, axum, the h5i-app engine (`h5i-app-pg`): Conduit: kernel, server and Lean proofs, on h5i `main` (pinned in `Cargo.lock` and `proofs/lake-manifest.json`) |
-| `bench/` | Seed, k6 scenarios, raw results, summary |
+| `rust-h5i-gpu/` | Same optimized HTTP shell, optional CUDA policy backend (port 8006) |
+| `bench/` | Seed, shared k6 scenarios and generated summaries (raw artifacts stay local) |
 | `schema.sql` | The shared database |
 
 ## Contract
@@ -136,3 +137,10 @@ kernel accepts it only if it equals the stored one; `tagList` comes back
 sorted by tag (the order the tags table loads), where the shared schema
 keeps the order given, so seeded articles list e.g. `["tag0", "tag19"]`
 instead of `["tag19", "tag0"]`.
+
+## Optional GPU comparison
+
+`rust-h5i-gpu/` dispatches eight existing authorization/state-transition kinds
+to CUDA and keeps the same REST API, PostgreSQL queries and bcrypt settings.
+See its [build, tests and scope](rust-h5i-gpu/README.md). GPU conformance testing
+is separate from the existing CPU kernel's Lean proofs.

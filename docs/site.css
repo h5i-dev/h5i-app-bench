@@ -504,6 +504,15 @@ details.data-table td.scope { color: var(--faint); font-size: 12px; max-width: 6
 .impl.h5i::before { content: ""; display: inline-block; width: 6px; height: 6px; margin-right: 7px; background: var(--spot-solid); vertical-align: middle; }
 .sub-head { margin: 30px 0 12px; font: 500 11px var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--faint); }
 .block-head + .filters + div > .sub-head:first-child, .app-body > .sub-head:first-child { margin-top: 0; }
+/* Equal plotting widths: headings and values must not change the bar scale.
+   Keep readable columns on narrow screens via the table wrapper's scroll. */
+.perf-matrix, .perf-bars { table-layout: fixed; }
+.perf-matrix { min-width: calc(160px + var(--perf-columns) * 180px); }
+.perf-bars { min-width: calc(220px + var(--perf-columns) * 190px); }
+.perf-matrix tr > :first-child { width: 160px; }
+.perf-bars tr > :first-child { width: 220px; }
+.perf-matrix thead th, .perf-bars thead th,
+.perf-matrix .impl, .perf-bars .impl { white-space: normal; overflow-wrap: anywhere; }
 .perf-matrix th[scope="row"] a { font-family: var(--mono); font-size: 12.5px; color: var(--ink); }
 /* Overview cell: a thin length bar (req/s as % of the row's fastest) under the
    number — length reads at a glance in both themes, where a faint color wash did
@@ -514,11 +523,12 @@ details.data-table td.scope { color: var(--faint); font-size: 12px; max-width: 6
 .perf-matrix td.ov-cell .ov-bar::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: calc(var(--f, 0) * 100%); background: color-mix(in srgb, var(--faint) 75%, transparent); border-radius: 2px; }
 .perf-matrix td.ov-cell.best { color: var(--ink); font-weight: 600; }
 .perf-matrix td.ov-cell.best .ov-bar::before { background: var(--spot-solid); }
+.perf-matrix td.ov-cell.second .ov-bar::before { background: color-mix(in srgb, var(--spot-solid) 45%, var(--panel)); }
 .perf-matrix td.ov-cell .win { color: var(--spot); font-size: 9px; vertical-align: 1px; margin-left: 5px; }
 .perf-bars th, .perf-bars td { padding: 8px 12px; }
 .perf-bars thead th.on, .perf-bars td.on { background: color-mix(in srgb, var(--ink) 4%, transparent); }
 .perf-bars .bar-track { min-width: 60px; }
-.perf-bars .bar-label { min-width: 64px; font-size: 12.5px; }
+.perf-bars .bar-label { flex: 0 0 64px; min-width: 0; font-size: 12.5px; white-space: normal; overflow-wrap: anywhere; }
 .bar-fill.other { background: var(--faint); }
 .perf-detail .sub { display: block; color: var(--faint); font: 11.5px var(--sans); white-space: normal; font-weight: 400; }
 .perf-detail th[scope="row"] { min-width: 220px; }

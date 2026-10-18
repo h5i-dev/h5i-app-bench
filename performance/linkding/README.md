@@ -1,5 +1,9 @@
 # Linkding API backends
 
+Latest follow-up: [single-get, creation and search improvements](bench/hotpaths-2026-10-18.md).
+
+Follow-up: [selectable SQL modes and fixed-offset list measurement](bench/sql-modes-2026-10-18.md).
+
 Five implementations of the [linkding](https://github.com/sissbruecker/linkding) REST API, one shared PostgreSQL schema, a Hurl conformance suite checked against the pinned upstream image, and a load benchmark. The upstream server is included in the benchmark as a reference.
 
 | Directory | Stack |
@@ -92,6 +96,17 @@ performance/linkding/rust-h5i/run.sh             # 127.0.0.1:8106  tokio worker 
 | upstream | 48-51 | 52-55 | 56-59 | 5444 | 8105 |
 | rust-h5i | 36-39 | 40-43 | 44-47 | 5445 | 8106 |
 
+The [search execution-plan experiment](bench/search-plan-2026-10-18.md)
+compares the normal engine application before and after analyzing its seeded
+tables. It is separate from the published cross-language ranking. New
+PostgreSQL containers allocate 1 GiB of shared memory for parallel queries
+(`LINKDING_PG_SHM_SIZE` overrides this); existing containers keep their capacity.
+
+The follow-up [scalar-membership experiment](bench/scalar-membership-2026-10-18.md)
+keeps the application read plans and exact counts, and changes how the engine
+renders primary-key membership lookups. It includes its own HTTP before/after
+results and validation of the existing proof gates.
+
 ## Proofs
 
 Both Rust implementations have a kernel extracted to Lean (`h5i app extract`
@@ -115,3 +130,7 @@ covered by the proofs. Search term matching in its kernel folds ASCII case.
 SQL `ILIKE` and stored `name_lower` follow the same ASCII inputs used by the
 suite. Legacy search, selected by the viewer's profile flag, is applied in
 its HTTP process; the kernel evaluates the default query language.
+
+The [optimized single-get experiment](bench/single-get-2026-10-18.md) removes a duplicate bookmark
+lookup and compares before/after HTTP throughput with a freshly measured Go
+server. It is separate from the original cross-language ranking.

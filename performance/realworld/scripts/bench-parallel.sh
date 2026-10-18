@@ -34,17 +34,23 @@ if [ "$#" -eq 0 ]; then
   set -- fastapi go fastify rust-h5i-optimized
 fi
 
+# GPU shares fastapi CPU allocation; run it alone or with nonoverlapping variants.
 layout() {
   case "$1" in
     fastapi)  echo "0-3 4-7 8-15 54331" ;;
     go)       echo "16-19 20-23 24-31 54332" ;;
     fastify)  echo "32-35 36-39 40-47 54333" ;;
     rust-h5i-optimized) echo "48-51 52-55 56-63 54334" ;;
+    rust-h5i-gpu) echo "0-3 4-7 8-15 54336" ;;
     rust-h5i) echo "48-51 52-55 56-63 54335" ;;
     *) return 1 ;;
   esac
 }
 
+if [[ " $* " == *" rust-h5i-gpu "* && " $* " == *" fastapi "* ]]; then
+  echo "rust-h5i-gpu and fastapi share CPUs; run them separately" >&2
+  exit 2
+fi
 rm -f "$LOGS/parallel.done"
 mkdir -p "$OUT"
 pids=()

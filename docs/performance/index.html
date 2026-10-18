@@ -41,6 +41,7 @@
       <nav class="site-nav" aria-label="Benchmark sections" id="app-nav">
         <a href="#overview">Overview</a>
         <a href="#gpu-search">Optional GPU search</a>
+        <a href="#gpu-conduit">Optional GPU policies</a>
         <a href="#method">Method</a>
       </nav>
       <div class="theme" role="group" aria-label="Color theme">
@@ -53,7 +54,7 @@
       <section class="intro">
         <p class="prompt"><span class="ps">$</span> k6 run <span class="arg">bench/workload.js</span><span class="caret" aria-hidden="true"></span></p>
         <h1>How fast is a verified web server?</h1>
-        <p class="lede">The same REST APIs on the same PostgreSQL data, written in Rust on h5i-app (whose decisions are proved in Lean 4) and in Go, TypeScript and Python. Every implementation passes the same conformance suite, then runs under k6 at 1 to 256 concurrent clients.</p>
+        <p class="lede">The same REST APIs on the same PostgreSQL data, written in Rust on h5i-app (whose CPU decisions are proved in Lean 4) and in Go, TypeScript and Python. Every implementation passes the same conformance suite, then runs under k6 at 1 to 256 concurrent clients.</p>
       </section>
 
       <section id="overview" class="block">
@@ -68,6 +69,109 @@
       </section>
 
       <div id="apps"></div>
+
+      <section id="search-initialization" class="block">
+        <div class="block-head">
+          <h2 class="term" data-n="+">Linkding search initialization</h2>
+          <p>Normal h5i-app engine HTTP experiment · 2026-10-18. The same release binary before and after updating statistics on its seeded tables.</p>
+        </div>
+        <p class="caption">The engine seed now runs <code>ANALYZE</code> after loading its data. Both comparison variants use fresh PostgreSQL containers with 1 GiB of shared memory; the initial 64 MiB attempt failed during parallel-search warmup and is documented separately. Application decisions, read plans, Lean proof sources, isolation and locks are unchanged.</p>
+        <p class="caption">This experiment uses engine timing counters, 5 s warmup and a 15 s arrival window. It is separate from the earlier cross-language and CPU/GPU results; writes and mixed traffic were not remeasured. Search still loads 287,002 physical rows per request.</p>
+        <div class="table-wrap">
+          <table class="perf-detail">
+            <caption>Instrumented HTTP requests per second, mean of three repetitions. Before/after differ in post-seed statistics.</caption>
+            <thead><tr><th scope="col">Scenario</th><th scope="col" class="num">Clients</th><th scope="col" class="num">Before</th><th scope="col" class="num">After</th><th scope="col" class="num">After / before</th></tr></thead>
+            <tbody>
+              <tr><th scope="row"><code>get</code></th><td class="num">1</td><td class="num">480.12</td><td class="num">462.90</td><td class="num">0.96×</td></tr>
+              <tr><th scope="row"><code>get</code></th><td class="num">64</td><td class="num">11407.44</td><td class="num">11503.83</td><td class="num">1.01×</td></tr>
+              <tr><th scope="row"><code>list</code></th><td class="num">1</td><td class="num">31.72</td><td class="num">21.60</td><td class="num">0.68×</td></tr>
+              <tr><th scope="row"><code>list</code></th><td class="num">64</td><td class="num">136.91</td><td class="num">120.64</td><td class="num">0.88×</td></tr>
+              <tr><th scope="row"><code>search</code></th><td class="num">1</td><td class="num">0.97</td><td class="num">1.87</td><td class="num">1.93×</td></tr>
+              <tr><th scope="row"><code>search</code></th><td class="num">64</td><td class="num">4.13</td><td class="num">7.54</td><td class="num">1.83×</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="caption">Search improves, while list throughput regresses and varies across repetitions. Get remains close to baseline. All 36 measured points passed with zero failed HTTP requests. This is not a uniform speedup or a comparison with Go.</p>
+        <p class="caption"><a href="https://github.com/h5i-dev/h5i-app-bench/blob/measure-engine-cost/performance/linkding/bench/search-plan-2026-10-18.md">Results, limitations and reproduction</a> · <a href="https://github.com/h5i-dev/h5i-app-bench/blob/measure-engine-cost/performance/linkding/bench/results/search-plan-2026-10-18/comparison.csv">Summary CSV</a></p>
+      </section>
+
+      <section id="linkding-hotpaths" class="block">
+        <div class="block-head">
+          <h2 class="term" data-n="+">Linkding retrieval, creation and search improvements</h2>
+          <p>Latest targeted HTTP comparison · 2026-10-18. Optimized get combines bookmark and tags; the normal engine selects equivalent scalar SQL for creation and nonpaged listings.</p>
+        </div>
+        <div class="table-wrap"><table class="perf-detail">
+          <caption>Release binaries without timing probes; requests per second, mean of three repetitions. Before/after/reference run concurrently and rotate independent CPU/database slots.</caption>
+          <thead><tr><th scope="col">Route</th><th scope="col" class="num">Clients</th><th scope="col" class="num">Before</th><th scope="col" class="num">After</th><th scope="col" class="num">Ratio</th><th scope="col">Reference</th><th scope="col" class="num">Reference req/s</th></tr></thead><tbody>
+            <tr><th scope="row">Optimized get</th><td class="num">1</td><td class="num">460.12</td><td class="num">694.76</td><td class="num">1.51×</td><td>h5i</td><td class="num">475.71</td></tr>
+            <tr><th scope="row">Optimized get</th><td class="num">64</td><td class="num">4353.98</td><td class="num">6573.41</td><td class="num">1.51×</td><td>h5i</td><td class="num">8582.49</td></tr>
+            <tr><th scope="row">Engine create</th><td class="num">1</td><td class="num">48.54</td><td class="num">174.66</td><td class="num">3.60×</td><td>Go</td><td class="num">152.26</td></tr>
+            <tr><th scope="row">Engine create</th><td class="num">64</td><td class="num">29.88</td><td class="num">224.81</td><td class="num">7.52×</td><td>Go</td><td class="num">3525.29</td></tr>
+            <tr><th scope="row">Engine search</th><td class="num">1</td><td class="num">1.86</td><td class="num">2.36</td><td class="num">1.27×</td><td>Go</td><td class="num">4.73</td></tr>
+            <tr><th scope="row">Engine search</th><td class="num">64</td><td class="num">6.68</td><td class="num">10.24</td><td class="num">1.53×</td><td>Go</td><td class="num">19.21</td></tr>
+          </tbody></table></div>
+        <p class="caption">Optimized get improves about 1.51× but remains below normal h5i at 64 clients. Engine creation and search improve; Go remains faster at 64 clients. Search still loads 287,002 physical rows per request. Paged listings retain their prior SQL strategy.</p>
+        <p class="caption">54 measured points, 1,141,807 HTTP requests, zero failures. The kernel and read plans are unchanged; existing Lean gates and API conformance pass. Read SQL rendering remains differential-tested within the existing trust boundary, rather than formally proved. Raw logs stay local under /dev/shm.</p>
+        <p class="caption">These targeted runs are separate from the older full-suite table. Get uses normal h5i as its reference; creation/search use Go. They do not establish a new whole-application ranking.</p>
+        <p class="caption"><a href="https://github.com/h5i-dev/h5i-app-bench/blob/measure-engine-cost/performance/linkding/bench/hotpaths-2026-10-18.md">Results, validation and reproduction</a> · <a href="https://github.com/h5i-dev/h5i-app-bench/tree/measure-engine-cost/performance/linkding/bench/results/hotpaths-2026-10-18">Summary CSVs</a></p>
+      </section>
+
+      <section id="optimized-single-get" class="block">
+        <div class="block-head">
+          <h2 class="term" data-n="+">Optimized single-bookmark retrieval</h2>
+          <p>Linkding HTTP get · 2026-10-18. Reuse the authorized bookmark row. Concurrent before/after/Go runs rotate CPU and database slots.</p>
+        </div>
+        <div class="table-wrap"><table class="perf-detail">
+          <caption>HTTP requests per second, mean of three repetitions; five-second warmup and 15-second measurement.</caption>
+          <thead><tr><th scope="col">Clients</th><th scope="col" class="num">Before</th><th scope="col" class="num">After</th><th scope="col" class="num">Ratio</th><th scope="col" class="num">Go</th></tr></thead><tbody>
+            <tr><th scope="row">1</th><td class="num">331.60</td><td class="num">399.48</td><td class="num">1.20×</td><td class="num">402.78</td></tr>
+            <tr><th scope="row">64</th><td class="num">2866.83</td><td class="num">3676.61</td><td class="num">1.28×</td><td class="num">6450.85</td></tr>
+          </tbody></table></div>
+        <p class="caption">18 points, 636,179 measured requests, zero failures. Both Rust versions pass 200 API conformance requests; the unchanged kernel passes its existing Lean proof gate. Handwritten SQL and the HTTP shell remain outside that proof boundary.</p>
+        <p class="caption">Only the optimized get route changed. Go was measured concurrently with slot rotation on a busy shared host; normal-engine and GPU variants were not rerun. The earlier sequential series regressed at 64 clients and is retained separately in the report. These results are separate from the original cross-language table and do not establish whole-application performance.</p>
+        <p class="caption"><a href="https://github.com/h5i-dev/h5i-app-bench/blob/measure-engine-cost/performance/linkding/bench/single-get-2026-10-18.md">Results, validation and reproduction</a> · <a href="https://github.com/h5i-dev/h5i-app-bench/blob/measure-engine-cost/performance/linkding/bench/results/single-get-2026-10-18/summary.csv">Summary CSV</a></p>
+      </section>
+
+      <section id="read-sql-modes" class="block">
+        <div class="block-head">
+          <h2 class="term" data-n="+">Selectable read SQL modes</h2>
+          <p>Linkding HTTP list experiment · 2026-10-18. One binary, fixed offset 100, alternating pool settings; original IN mode remains the default.</p>
+        </div>
+        <div class="table-wrap"><table class="perf-detail">
+          <caption>HTTP requests per second, mean of three repetitions; timing probes enabled.</caption>
+          <thead><tr><th scope="col">Clients</th><th scope="col" class="num">Membership</th><th scope="col" class="num">Scalar when unique</th><th scope="col" class="num">Ratio</th></tr></thead><tbody>
+            <tr><th scope="row">1</th><td class="num">31.20</td><td class="num">47.86</td><td class="num">1.53×</td></tr>
+            <tr><th scope="row">64</th><td class="num">154.11</td><td class="num">259.12</td><td class="num">1.68×</td></tr>
+          </tbody></table></div>
+        <p class="caption">12 points, 22,458 HTTP requests, zero failures. Exact-count wait falls from 29.50 to 18.42 ms at one client and 195.30 to 108.30 ms at 64 clients. Both modes return 20 results and the exact total of 95,000. Per-query timers overlap.</p>
+        <p class="caption">The earlier rotating-offset regression is not reproduced at this fixed offset; its cause remains unresolved. These are separate workloads, not a replacement of earlier results or a Go comparison. Both modes pass API conformance and database differential tests; existing proof gates are retained. Default application dependency pins are unchanged.</p>
+        <p class="caption"><a href="https://github.com/h5i-dev/h5i-app-bench/blob/measure-engine-cost/performance/linkding/bench/sql-modes-2026-10-18.md">Results, validation and reproduction</a> · <a href="https://github.com/h5i-dev/h5i-app-bench/blob/measure-engine-cost/performance/linkding/bench/results/sql-modes-2026-10-18/comparison.csv">Summary CSV</a></p>
+      </section>
+
+      <section id="scalar-membership" class="block">
+        <div class="block-head">
+          <h2 class="term" data-n="+">Linkding unique-membership SQL</h2>
+          <p>Normal h5i-app engine HTTP experiment · 2026-10-18. Primary-key membership lookups use scalar subqueries; application decisions and read/count plans are unchanged.</p>
+        </div>
+        <p class="caption">Both variants use the same analyzed seed, four server CPUs, four PostgreSQL CPUs, four client CPUs, and 1 GiB container shared memory. Timing probes are enabled; each point has 5 s warmup and a 15 s arrival window, with slow requests fully drained. Search still loads 287,002 physical rows per request.</p>
+        <div class="table-wrap">
+          <table class="perf-detail">
+            <caption>Instrumented HTTP requests per second, mean of three repetitions. Separate from the earlier cross-language and CPU/GPU tables.</caption>
+            <thead><tr><th scope="col">Scenario</th><th scope="col" class="num">Clients</th><th scope="col" class="num">Before</th><th scope="col" class="num">After</th><th scope="col" class="num">After / before</th></tr></thead>
+            <tbody>
+              <tr><th scope="row"><code>get</code></th><td class="num">1</td><td class="num">480.17</td><td class="num">490.78</td><td class="num">1.02×</td></tr>
+              <tr><th scope="row"><code>get</code></th><td class="num">64</td><td class="num">11443.34</td><td class="num">11180.28</td><td class="num">0.98×</td></tr>
+              <tr><th scope="row"><code>list</code></th><td class="num">1</td><td class="num">21.81</td><td class="num">22.23</td><td class="num">1.02×</td></tr>
+              <tr><th scope="row"><code>list</code></th><td class="num">64</td><td class="num">120.26</td><td class="num">107.66</td><td class="num">0.90×</td></tr>
+              <tr><th scope="row"><code>search</code></th><td class="num">1</td><td class="num">1.87</td><td class="num">2.40</td><td class="num">1.28×</td></tr>
+              <tr><th scope="row"><code>search</code></th><td class="num">64</td><td class="num">7.70</td><td class="num">11.81</td><td class="num">1.53×</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="caption">Search improves 1.28× at one client and 1.53× at 64 clients. Get stays close to baseline. List reaches 0.90× baseline at 64 clients and has worse p99 latency; its baseline also varies substantially. This is not a uniform speedup or evidence of outperforming Go.</p>
+        <p class="caption">All 36 selected points pass: 1,076,011 HTTP requests and zero failures. Search uses a repeated baseline after the proof checks finished. Existing SQL and Linkding Lean gates pass, alongside DB differential tests and 200 API conformance requests. The read SQL renderer remains differential-tested rather than formally proved. Default application dependency pins are unchanged.</p>
+        <p class="caption"><a href="https://github.com/h5i-dev/h5i-app-bench/blob/measure-engine-cost/performance/linkding/bench/scalar-membership-2026-10-18.md">Results, validation and reproduction</a> · <a href="https://github.com/h5i-dev/h5i-app-bench/blob/measure-engine-cost/performance/linkding/bench/results/scalar-membership-2026-10-18/comparison.csv">Summary CSV</a></p>
+      </section>
 
       <section id="gpu-search" class="block">
         <div class="block-head">
@@ -101,6 +205,44 @@
         <p class="caption"><a href="https://github.com/h5i-dev/h5i-app-bench/blob/bench-text-search/performance/linkding/bench/text-search-2026-10-17.md">Full methodology and reproduction</a> · <a href="https://github.com/h5i-dev/h5i-app-bench/blob/bench-text-search/performance/linkding/bench/results/text-search-2026-10-17/summary.csv">Summary CSV</a> · <a href="https://github.com/h5i-dev/h5i-app-bench/blob/bench-text-search/performance/linkding/bench/results/text-search-2026-10-17/points.csv">Per-point CSV summaries</a></p>
       </section>
 
+      <section id="gpu-conduit" class="block">
+        <div class="block-head">
+          <h2 class="term" data-n="+">Optional GPU policies</h2>
+          <p>RealWorld (Conduit) HTTP API remeasurement · 2026-10-18. The existing seven scenarios compare the same application with CPU or optional GPU policy decisions.</p>
+        </div>
+        <p class="caption">CUDA executes eight small authorization and state decisions. HTTP handling, JWT, input validation, bcrypt, SQL transactions and JSON responses remain shared. The workload and seed are unchanged. Guest list, slug and login do not call these GPU decisions and serve as controls. The CPU kernel has Lean proofs; the GPU implementation is checked against its CPU oracle and the shared API tests.</p>
+        <div class="table-wrap">
+          <table class="perf-detail">
+            <caption>End-to-end HTTP requests per second and p99 latency, means of three repetitions. GPU / CPU is the throughput ratio.</caption>
+            <thead><tr><th scope="col">Scenario</th><th scope="col" class="num">Clients</th><th scope="col" class="num">CPU req/s</th><th scope="col" class="num">GPU req/s</th><th scope="col" class="num">GPU / CPU</th><th scope="col" class="num">CPU p99 ms</th><th scope="col" class="num">GPU p99 ms</th></tr></thead>
+            <tbody>
+              <tr><th scope="row"><code>list</code></th><td class="num">1</td><td class="num">83.37</td><td class="num">82.83</td><td class="num">0.99×</td><td class="num">32.69</td><td class="num">32.65</td></tr>
+              <tr><th scope="row"><code>list</code></th><td class="num">16</td><td class="num">766.32</td><td class="num">769.67</td><td class="num">1.00×</td><td class="num">78.78</td><td class="num">78.82</td></tr>
+              <tr><th scope="row"><code>slug</code></th><td class="num">1</td><td class="num">1,110.16</td><td class="num">1,118.36</td><td class="num">1.01×</td><td class="num">0.96</td><td class="num">1.00</td></tr>
+              <tr><th scope="row"><code>slug</code></th><td class="num">16</td><td class="num">13,560.10</td><td class="num">14,174.03</td><td class="num">1.05×</td><td class="num">8.89</td><td class="num">8.55</td></tr>
+              <tr><th scope="row"><code>feed</code></th><td class="num">1</td><td class="num">187.76</td><td class="num">179.55</td><td class="num">0.96×</td><td class="num">5.80</td><td class="num">6.10</td></tr>
+              <tr><th scope="row"><code>feed</code></th><td class="num">16</td><td class="num">2,194.92</td><td class="num">2,201.72</td><td class="num">1.00×</td><td class="num">14.30</td><td class="num">13.99</td></tr>
+              <tr><th scope="row"><code>login</code></th><td class="num">1</td><td class="num">3.85</td><td class="num">3.83</td><td class="num">1.00×</td><td class="num">260.47</td><td class="num">261.96</td></tr>
+              <tr><th scope="row"><code>login</code></th><td class="num">16</td><td class="num">15.45</td><td class="num">15.41</td><td class="num">1.00×</td><td class="num">1,113.43</td><td class="num">1,104.02</td></tr>
+              <tr><th scope="row"><code>create</code></th><td class="num">1</td><td class="num">196.21</td><td class="num">190.83</td><td class="num">0.97×</td><td class="num">5.64</td><td class="num">5.78</td></tr>
+              <tr><th scope="row"><code>create</code></th><td class="num">16</td><td class="num">216.31</td><td class="num">209.85</td><td class="num">0.97×</td><td class="num">363.18</td><td class="num">367.29</td></tr>
+              <tr><th scope="row"><code>favorite</code></th><td class="num">1</td><td class="num">504.53</td><td class="num">439.16</td><td class="num">0.87×</td><td class="num">2.63</td><td class="num">3.15</td></tr>
+              <tr><th scope="row"><code>favorite</code></th><td class="num">16</td><td class="num">4,457.18</td><td class="num">4,725.08</td><td class="num">1.06×</td><td class="num">19.18</td><td class="num">17.90</td></tr>
+              <tr><th scope="row"><code>mixed</code></th><td class="num">1</td><td class="num">121.54</td><td class="num">123.87</td><td class="num">1.02×</td><td class="num">35.13</td><td class="num">33.75</td></tr>
+              <tr><th scope="row"><code>mixed</code></th><td class="num">16</td><td class="num">1,001.07</td><td class="num">982.93</td><td class="num">0.98×</td><td class="num">68.70</td><td class="num">71.16</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="caption">This workload shows no consistent end-to-end GPU benefit. Mixed throughput is 1.02× CPU at one client and 0.98× at 16; at 16 clients, mixed p99 is 71.16 ms on GPU versus 68.70 ms on CPU. Favorite falls to 0.87× at one client. Its 1.06× result at 16 clients is not an established GPU gain: its GPU throughput standard deviation is about 5%, and the non-offloaded slug control also reaches 1.05×. GPU host RSS is approximately 93–98 MiB versus 7–11 MiB on CPU, including idle controls. CPU remains the default.</p>
+        <ul class="limits">
+          <li>100 users, 10,000 articles, 10,000 comments, 1,000 follows and 5,000 favorites. Each point uses a reseeded database, a fresh server, 10 s warmup and 30 s measurement. Startup is excluded. Request rate includes k6's graceful stop; latency figures average per-repetition percentiles.</li>
+          <li>Dual AMD EPYC 7502 host, two RTX 3090 GPUs. Two CPU/GPU pairs split the scenarios, using a separate GPU per pair. Each variant has four server, four PostgreSQL and four client CPUs, with disjoint affinity, four Tokio threads and a 32-connection pool. The host is shared; clocks and NUMA placement are not fixed.</li>
+          <li>84 points, 4,467,960 measured requests, zero HTTP failures and zero failed k6 status checks. CPU and GPU each passed 13 Hurl files (154 requests). All GPU-executing scenarios logged device execution; no runtime CPU fallback was logged.</li>
+          <li>These results cover CPU/GPU variants at 1 and 16 clients and remain separate from the earlier cross-language overview. They do not establish higher-concurrency behavior, cost or power savings.</li>
+        </ul>
+        <p class="caption"><a href="https://github.com/h5i-dev/h5i-app-bench/blob/bench-conduit-gpu/performance/realworld/bench/gpu-policy-2026-10-18.md">Methodology and reproduction</a> · <a href="https://github.com/h5i-dev/h5i-app-bench/blob/bench-conduit-gpu/performance/realworld/bench/results/gpu-policy-2026-10-18/summary.csv">Summary CSV</a> · <a href="https://github.com/h5i-dev/h5i-app-bench/blob/bench-conduit-gpu/performance/realworld/bench/results/gpu-policy-2026-10-18/points.csv">Per-point CSV summaries</a></p>
+      </section>
+
       <section id="method" class="block">
         <div class="block-head">
           <h2 class="term" data-n="—">Method</h2>
@@ -110,7 +252,7 @@
           <li>Each server and its PostgreSQL get their own CPUs. In the serial runs, the server has 4 cores and k6 runs on separate cores. Python, Node and Go run 4 workers. Rust runs 4 tokio threads.</li>
           <li>Requests/s is k6's <code>http_reqs</code> rate over the whole window, including the graceful stop. Latencies are k6 percentiles. RSS is the peak resident memory of the server's whole process tree.</li>
           <li>Login hashes with bcrypt at cost 12 in every implementation, so that scenario measures bcrypt more than the framework.</li>
-          <li>These are runs on one host. Raw points, summaries and the scripts are in <a href="https://github.com/h5i-dev/h5i-app-bench/tree/main/performance">performance/</a>.</li>
+          <li>These are runs on one host. Per-point CSV summaries, aggregate summaries and the scripts are in <a href="https://github.com/h5i-dev/h5i-app-bench/tree/main/performance">performance/</a>.</li>
         </ul>
       </section>
     </main>

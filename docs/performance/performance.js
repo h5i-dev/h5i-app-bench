@@ -32,18 +32,19 @@ function renderOverview() {
     const head = app.impls.map((i) => `<th scope="col" class="num">${implName(i)}</th>`).join("");
     const body = app.scenarios.map((s) => {
       const vals = app.impls.map((i) => row(app, i.id, s.id, CONC)?.rps ?? null);
-      const best = Math.max(...vals.filter((v) => v != null));
+      const ranked = [...new Set(vals.filter((v) => v != null))].sort((a, b) => b - a);
+      const [best, second] = ranked;
       const cells = vals.map((v, k) => {
         if (v == null) return `<td class="num ov-cell">–</td>`;
         const f = v / best;
         const top = v === best;
         const win = top ? ` <span class="win" aria-hidden="true">●</span>` : "";
-        return `<td class="num ov-cell${top ? " best" : ""}" style="--f:${f.toFixed(3)}" title="${esc(app.impls[k].id)} · ${esc(s.id)}: ${rps(v)} req/s, ${Math.round(f * 100)}% of the fastest"><span class="ov-bar" aria-hidden="true"></span><span class="ov-val">${rps(v)}${win}</span></td>`;
+        return `<td class="num ov-cell${top ? " best" : v === second ? " second" : ""}" style="--f:${f.toFixed(3)}" title="${esc(app.impls[k].id)} · ${esc(s.id)}: ${rps(v)} req/s, ${Math.round(f * 100)}% of the fastest"><span class="ov-bar" aria-hidden="true"></span><span class="ov-val">${rps(v)}${win}</span></td>`;
       }).join("");
       return `<tr><th scope="row"><a href="#${esc(app.id)}" data-app="${esc(app.id)}" data-scenario="${esc(s.id)}">${esc(s.id)}</a></th>${cells}</tr>`;
     }).join("");
     return `<h3 class="sub-head">${esc(app.title)}</h3>
-      <div class="table-wrap"><table class="perf-matrix"><thead><tr><th scope="col">Scenario</th>${head}</tr></thead><tbody>${body}</tbody></table></div>`;
+      <div class="table-wrap"><table class="perf-matrix" style="--perf-columns:${app.impls.length}"><thead><tr><th scope="col">Scenario</th>${head}</tr></thead><tbody>${body}</tbody></table></div>`;
   }).join("");
 }
 
@@ -75,7 +76,7 @@ function renderApp(app) {
   }).join("");
   return `<div class="tabs scenario-tabs" role="tablist" aria-label="${esc(app.title)} scenario">${tabs}</div>
     <p class="caption"><code>${esc(sc)}</code>: ${esc(s.requests)}</p>
-    <div class="table-wrap"><table class="perf-bars"><thead><tr><th scope="col">Requests/s</th>${concHead}</tr></thead><tbody>${bars}</tbody></table></div>
+    <div class="table-wrap"><table class="perf-bars" style="--perf-columns:${app.concurrency.length}"><thead><tr><th scope="col">Requests/s</th>${concHead}</tr></thead><tbody>${bars}</tbody></table></div>
     <h3 class="sub-head">At ${CONC} clients</h3>
     <div class="table-wrap"><table class="perf-detail"><thead><tr><th scope="col">Implementation</th><th scope="col" class="num">req/s</th><th scope="col" class="num">p50 ms</th><th scope="col" class="num">p90 ms</th><th scope="col" class="num">p99 ms</th><th scope="col" class="num">RSS MiB</th><th scope="col" class="num">CPU peak %</th><th scope="col" class="num">Errors</th></tr></thead><tbody>${detail}</tbody></table></div>`;
 }
