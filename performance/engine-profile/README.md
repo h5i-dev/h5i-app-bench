@@ -64,6 +64,9 @@ Linkding gets a 120 s graceful drain in a **local copy** of the
 workload to count all slow in-flight searches. The 15 s arrival window is unchanged.
 Run `--mode pristine` against an unmodified binary for controls. `--mode off`
 disables counters in an instrumented binary, which alone is not a pristine control.
+The runner snapshots the h5i-app seed into the local output directory and records
+its SHA-256. Use `--engine-seed-sql /absolute/path/to/seed.sql` to compare seed
+initialization while keeping the application binary and workload identical.
 `--keep-going` retains failed points and continues instead of stopping at the
 first k6 threshold failure. It does not suppress errors in the output. For a
 resumed run, pass `--replace-duplicates` to the profile summarizer: later inputs

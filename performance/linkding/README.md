@@ -92,6 +92,12 @@ performance/linkding/rust-h5i/run.sh             # 127.0.0.1:8106  tokio worker 
 | upstream | 48-51 | 52-55 | 56-59 | 5444 | 8105 |
 | rust-h5i | 36-39 | 40-43 | 44-47 | 5445 | 8106 |
 
+The [search execution-plan experiment](bench/search-plan-2026-10-18.md)
+compares the normal engine application before and after analyzing its seeded
+tables. It is separate from the published cross-language ranking. New
+PostgreSQL containers allocate 1 GiB of shared memory for parallel queries
+(`LINKDING_PG_SHM_SIZE` overrides this); existing containers keep their capacity.
+
 ## Proofs
 
 Both Rust implementations have a kernel extracted to Lean (`h5i app extract`

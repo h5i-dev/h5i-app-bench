@@ -70,6 +70,31 @@
 
       <div id="apps"></div>
 
+      <section id="search-initialization" class="block">
+        <div class="block-head">
+          <h2 class="term" data-n="+">Linkding search initialization</h2>
+          <p>Normal h5i-app engine HTTP experiment · 2026-10-18. The same release binary before and after updating statistics on its seeded tables.</p>
+        </div>
+        <p class="caption">The engine seed now runs <code>ANALYZE</code> after loading its data. Both comparison variants use fresh PostgreSQL containers with 1 GiB of shared memory; the initial 64 MiB attempt failed during parallel-search warmup and is documented separately. Application decisions, read plans, Lean proof sources, isolation and locks are unchanged.</p>
+        <p class="caption">This experiment uses engine timing counters, 5 s warmup and a 15 s arrival window. It is separate from the earlier cross-language and CPU/GPU results; writes and mixed traffic were not remeasured. Search still loads 287,002 physical rows per request.</p>
+        <div class="table-wrap">
+          <table class="perf-detail">
+            <caption>Instrumented HTTP requests per second, mean of three repetitions. Before/after differ in post-seed statistics.</caption>
+            <thead><tr><th scope="col">Scenario</th><th scope="col" class="num">Clients</th><th scope="col" class="num">Before</th><th scope="col" class="num">After</th><th scope="col" class="num">After / before</th></tr></thead>
+            <tbody>
+              <tr><th scope="row"><code>get</code></th><td class="num">1</td><td class="num">480.12</td><td class="num">462.90</td><td class="num">0.96×</td></tr>
+              <tr><th scope="row"><code>get</code></th><td class="num">64</td><td class="num">11407.44</td><td class="num">11503.83</td><td class="num">1.01×</td></tr>
+              <tr><th scope="row"><code>list</code></th><td class="num">1</td><td class="num">31.72</td><td class="num">21.60</td><td class="num">0.68×</td></tr>
+              <tr><th scope="row"><code>list</code></th><td class="num">64</td><td class="num">136.91</td><td class="num">120.64</td><td class="num">0.88×</td></tr>
+              <tr><th scope="row"><code>search</code></th><td class="num">1</td><td class="num">0.97</td><td class="num">1.87</td><td class="num">1.93×</td></tr>
+              <tr><th scope="row"><code>search</code></th><td class="num">64</td><td class="num">4.13</td><td class="num">7.54</td><td class="num">1.83×</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="caption">Search improves, while list throughput regresses and varies across repetitions. Get remains close to baseline. All 36 measured points passed with zero failed HTTP requests. This is not a uniform speedup or a comparison with Go.</p>
+        <p class="caption"><a href="https://github.com/h5i-dev/h5i-app-bench/blob/measure-engine-cost/performance/linkding/bench/search-plan-2026-10-18.md">Results, limitations and reproduction</a> · <a href="https://github.com/h5i-dev/h5i-app-bench/blob/measure-engine-cost/performance/linkding/bench/results/search-plan-2026-10-18/comparison.csv">Summary CSV</a></p>
+      </section>
+
       <section id="gpu-search" class="block">
         <div class="block-head">
           <h2 class="term" data-n="+">Optional GPU search</h2>

@@ -14,7 +14,10 @@ fi
 
 if ! docker ps -a --format '{{.Names}}' | grep -qx "$NAME"; then
   mkdir -p "$DATA"
+  # Parallel joins use dynamic shared memory; Docker's 64 MiB default can
+  # fail concurrent searches even when the host and data volume have space.
   docker run -d --name "$NAME" \
+    --shm-size "${LINKDING_PG_SHM_SIZE:-1g}" \
     -e POSTGRES_USER=linkding \
     -e POSTGRES_PASSWORD=linkding \
     -e POSTGRES_DB=linkding \

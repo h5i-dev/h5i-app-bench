@@ -18,6 +18,8 @@ BENCH = Path(__file__).resolve().parents[2]
 p = argparse.ArgumentParser(description=__doc__)
 p.add_argument('--app', choices=['linkding', 'realworld'], required=True)
 p.add_argument('--binary', type=Path, required=True)
+p.add_argument('--engine-seed-sql', type=Path,
+               help='Override the h5i-app seed for controlled initialization comparisons')
 p.add_argument('--out', type=Path, required=True)
 p.add_argument('--scratch-root', type=Path, default=Path('/dev/shm/h5i-engine-profile'),
                help='Database and temporary files; default is RAM-backed, with no disk fallback')
@@ -42,6 +44,8 @@ if shutil.disk_usage(a.scratch_root).free < 4 * 1024**3:
 a.out = a.out.resolve()
 a.out.mkdir(parents=True, exist_ok=False)
 root = BENCH / 'performance' / a.app
+engine_seed = (a.engine_seed_sql or root/'bench/seed_h5i_app.sql').read_bytes()
+(a.out/'engine-seed.sql').write_bytes(engine_seed)
 container = f'h5i-engine-{a.app}-{os.getpid()}'
 first = a.cpu_base
 prefix = 'LINKDING' if a.app == 'linkding' else 'CONDUIT'
@@ -69,6 +73,7 @@ if a.app == 'linkding':
 (a.out/'workload.js').write_text(workload)
 script = (root / 'scripts/bench-all.sh').read_text()
 script = script.replace('$ROOT/bench/workload.js', str(a.out/'workload.js'))
+script = script.replace('$ROOT/bench/seed_h5i_app.sql', str(a.out/'engine-seed.sql'))
 script = script.replace('ROOT="$(cd "$(dirname "$0")/.." && pwd)"', 'ROOT=' + shlex.quote(str(root)))
 if a.mode == 'on':
     script = script.replace('        meta_tmp="$OUT/${tag}.meta.json"',
@@ -78,6 +83,7 @@ if a.mode == 'on':
 (a.out/'bench.sh').write_text(script)
 metadata = {k: str(v) if isinstance(v, Path) else v for k,v in vars(a).items()}
 metadata.update(binary_sha256=hashlib.sha256(a.binary.read_bytes()).hexdigest(),
+    engine_seed_sha256=hashlib.sha256(engine_seed).hexdigest(),
     bench_revision=subprocess.check_output(['git','rev-parse','HEAD'], cwd=BENCH,text=True).strip(),
     started_utc=time.strftime('%Y-%m-%dT%H:%M:%SZ',time.gmtime()),
     layout={k:env[k] for k in ['SERVER_CPUS','PG_CPUS','K6_CPUS']},
@@ -90,6 +96,8 @@ metadata.update(binary_sha256=hashlib.sha256(a.binary.read_bytes()).hexdigest(),
     })
 try:
     subprocess.run([str(root/'scripts/up-db.sh')],env=env,check=True,stdout=subprocess.DEVNULL)
+    metadata['postgres_shm_size_bytes'] = int(subprocess.check_output(
+        ['docker', 'inspect', '-f', '{{.HostConfig.ShmSize}}', container], text=True))
     subprocess.run(['docker','exec','--user','postgres',container,'sh','-c',
         'for proc in /proc/[0-9]*; do taskset -apc '+env['PG_CPUS']+' "${proc##*/}" >/dev/null 2>&1 || true; done'],check=True)
     with (a.out/'harness.log').open('w') as log:

@@ -6,6 +6,11 @@ binaries and experiment worktrees on **`/dev/shm` (tmpfs)**. This supersedes the
 artifacts and approximately 13 GiB of database data were removed from `/var/tmp`.
 This is an HTTP end-to-end profile, not a kernel microbenchmark or a Go/Rust/GPU ranking.
 
+Follow-up: the [Linkding search plan experiment](../linkding/bench/search-plan-2026-10-18.md)
+found missing post-seed statistics and a container shared-memory limit. It
+compares corrected initialization separately; the measurements below retain
+their original initialization and are not revised retroactively.
+
 The normal applications retain h5i `3fcbcdafdfdd759bfa52c765ce8dd2f73c88a26e`
 and application benchmark base `671bf10`. The same release binaries were copied
 without rebuilding; latest h5i main was not substituted. The profiling runner is

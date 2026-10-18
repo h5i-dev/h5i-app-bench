@@ -116,3 +116,11 @@ VALUES (
               FROM public.bookmarks), 0));
 
 COMMIT;
+
+-- seed.sql analyzes the shared tables before this copy. TRUNCATE resets the
+-- engine tables' cardinality estimates, so analyze these populated tables too,
+-- before warmup rather than depending on autoanalyze or a preceding point.
+ANALYZE h5iapp.linkding_tokens, h5iapp.linkding_users,
+    h5iapp.linkding_bookmarks, h5iapp.linkding_tags,
+    h5iapp.linkding_bookmark_tags, h5iapp.linkding_bundles,
+    h5iapp.linkding_counters, h5iapp.h5i_clock;
