@@ -1,5 +1,9 @@
 # Benchmark
 
+The [unique-membership SQL experiment](scalar-membership-2026-10-18.md)
+measures an engine renderer optimization separately from the published
+cross-language and CPU/GPU results.
+
 `scripts/bench-parallel.sh` runs FastAPI, Go, Fastify, Rust, and the upstream
 linkding 1.47.0 image together. Each one has its own Postgres 16 container
 (`linkding-pg-<impl>` on ports 5440–5444) and its own CPUs.

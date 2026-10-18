@@ -95,6 +95,31 @@
         <p class="caption"><a href="https://github.com/h5i-dev/h5i-app-bench/blob/measure-engine-cost/performance/linkding/bench/search-plan-2026-10-18.md">Results, limitations and reproduction</a> · <a href="https://github.com/h5i-dev/h5i-app-bench/blob/measure-engine-cost/performance/linkding/bench/results/search-plan-2026-10-18/comparison.csv">Summary CSV</a></p>
       </section>
 
+      <section id="scalar-membership" class="block">
+        <div class="block-head">
+          <h2 class="term" data-n="+">Linkding unique-membership SQL</h2>
+          <p>Normal h5i-app engine HTTP experiment · 2026-10-18. Primary-key membership lookups use scalar subqueries; application decisions and read/count plans are unchanged.</p>
+        </div>
+        <p class="caption">Both variants use the same analyzed seed, four server CPUs, four PostgreSQL CPUs, four client CPUs, and 1 GiB container shared memory. Timing probes are enabled; each point has 5 s warmup and a 15 s arrival window, with slow requests fully drained. Search still loads 287,002 physical rows per request.</p>
+        <div class="table-wrap">
+          <table class="perf-detail">
+            <caption>Instrumented HTTP requests per second, mean of three repetitions. Separate from the earlier cross-language and CPU/GPU tables.</caption>
+            <thead><tr><th scope="col">Scenario</th><th scope="col" class="num">Clients</th><th scope="col" class="num">Before</th><th scope="col" class="num">After</th><th scope="col" class="num">After / before</th></tr></thead>
+            <tbody>
+              <tr><th scope="row"><code>get</code></th><td class="num">1</td><td class="num">480.17</td><td class="num">490.78</td><td class="num">1.02×</td></tr>
+              <tr><th scope="row"><code>get</code></th><td class="num">64</td><td class="num">11443.34</td><td class="num">11180.28</td><td class="num">0.98×</td></tr>
+              <tr><th scope="row"><code>list</code></th><td class="num">1</td><td class="num">21.81</td><td class="num">22.23</td><td class="num">1.02×</td></tr>
+              <tr><th scope="row"><code>list</code></th><td class="num">64</td><td class="num">120.26</td><td class="num">107.66</td><td class="num">0.90×</td></tr>
+              <tr><th scope="row"><code>search</code></th><td class="num">1</td><td class="num">1.87</td><td class="num">2.40</td><td class="num">1.28×</td></tr>
+              <tr><th scope="row"><code>search</code></th><td class="num">64</td><td class="num">7.70</td><td class="num">11.81</td><td class="num">1.53×</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="caption">Search improves 1.28× at one client and 1.53× at 64 clients. Get stays close to baseline. List reaches 0.90× baseline at 64 clients and has worse p99 latency; its baseline also varies substantially. This is not a uniform speedup or evidence of outperforming Go.</p>
+        <p class="caption">All 36 selected points pass: 1,076,011 HTTP requests and zero failures. Search uses a repeated baseline after the proof checks finished. Existing SQL and Linkding Lean gates pass, alongside DB differential tests and 200 API conformance requests. The read SQL renderer remains differential-tested rather than formally proved. Default application dependency pins are unchanged.</p>
+        <p class="caption"><a href="https://github.com/h5i-dev/h5i-app-bench/blob/measure-engine-cost/performance/linkding/bench/scalar-membership-2026-10-18.md">Results, validation and reproduction</a> · <a href="https://github.com/h5i-dev/h5i-app-bench/blob/measure-engine-cost/performance/linkding/bench/results/scalar-membership-2026-10-18/comparison.csv">Summary CSV</a></p>
+      </section>
+
       <section id="gpu-search" class="block">
         <div class="block-head">
           <h2 class="term" data-n="+">Optional GPU search</h2>

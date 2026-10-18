@@ -98,6 +98,11 @@ tables. It is separate from the published cross-language ranking. New
 PostgreSQL containers allocate 1 GiB of shared memory for parallel queries
 (`LINKDING_PG_SHM_SIZE` overrides this); existing containers keep their capacity.
 
+The follow-up [scalar-membership experiment](bench/scalar-membership-2026-10-18.md)
+keeps the application read plans and exact counts, and changes how the engine
+renders primary-key membership lookups. It includes its own HTTP before/after
+results and validation of the existing proof gates.
+
 ## Proofs
 
 Both Rust implementations have a kernel extracted to Lean (`h5i app extract`

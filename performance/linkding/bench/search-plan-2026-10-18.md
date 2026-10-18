@@ -4,6 +4,11 @@ This follows the [HTTP engine profile](../../engine-profile/REPORT.md). It
 investigates database work before changing the application's extracted read
 plans. It uses the existing Linkding HTTP workload, not a kernel microbenchmark.
 
+The [scalar-membership follow-up](scalar-membership-2026-10-18.md) separately
+measures a renderer optimization with these statistics already initialized.
+It retains the same application read/count plans and reports both improvements
+and regressions.
+
 ## What the queries do
 
 For `GET /api/bookmarks/?q=alpha&limit=20`, the normal `rust-h5i` read plan loads

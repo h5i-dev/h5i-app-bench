@@ -1,6 +1,8 @@
 # HTTP engine cost measurements
 
 Results and optimization priorities: [2026-10-18 report](REPORT.md).
+Follow-up: [unique-membership SQL optimization](../linkding/bench/scalar-membership-2026-10-18.md),
+measured separately with the same HTTP workloads.
 
 This experiment measures the normal `rust-h5i` Linkding and Conduit applications
 through their existing HTTP workloads. It separates engine stages before choosing
