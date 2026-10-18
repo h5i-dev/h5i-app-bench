@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Compare prebuilt get-route variants concurrently, rotating CPU/DB slots.
+"""Compare prebuilt route variants concurrently, rotating CPU/DB slots.
 
 Raw outputs stay in a new /dev/shm directory. Publish only summary CSV/Markdown.
 """
@@ -10,6 +10,7 @@ import json
 import os
 from pathlib import Path
 import socket
+import shlex
 import subprocess
 
 SLOTS = [('0-3', '4-7', '8-11'), ('12-15', '16-19', '20-23'),
@@ -24,7 +25,16 @@ def main():
     parser.add_argument('--k6', type=Path, default=Path('/var/tmp/tools/k6'))
     parser.add_argument('--pg-port', type=int, default=15725)
     parser.add_argument('--http-port', type=int, default=18425)
+    parser.add_argument('--before-impl', choices=['rust-h5i', 'rust-h5i-optimized'], default='rust-h5i-optimized')
+    parser.add_argument('--after-impl', choices=['rust-h5i', 'rust-h5i-optimized'], default='rust-h5i-optimized')
+    parser.add_argument('--reference-impl', choices=['go', 'rust-h5i'], default='go',
+                        help='Implementation behind the historical --go reference arm')
+    parser.add_argument('--scenarios', default='get')
+    parser.add_argument('--drain', type=int, default=5,
+                        help='Seconds to finish outstanding requests after measurement')
     args = parser.parse_args()
+    if args.drain < 5:
+        parser.error('--drain must be at least 5 seconds')
     out = args.out.resolve()
     if not out.is_relative_to('/dev/shm') or out.exists():
         parser.error('--out must be a new directory under /dev/shm')
@@ -45,17 +55,28 @@ def main():
     out.mkdir(parents=True)
     env = os.environ | {
         'TMPDIR': '/dev/shm', 'BENCH_WARMUP': '5', 'BENCH_DURATION': '15',
-        'BENCH_REPEATS': '1', 'BENCH_CONCURRENCY': '1 64', 'BENCH_SCENARIOS': 'get',
+        'BENCH_REPEATS': '1', 'BENCH_CONCURRENCY': '1 64', 'BENCH_SCENARIOS': args.scenarios,
         'BENCH_STRICT': '1', 'BENCH_NO_SUMMARY': '1', 'WEB_CONCURRENCY': '4',
         'LINKDING_PG_SHM_SIZE': '1g', 'K6': str(args.k6.resolve()),
     }
     for key in ['CARGO_HOME', 'CARGO_TARGET_DIR', 'GOPATH', 'GOCACHE', 'GOMODCACHE',
                 'PIP_CACHE_DIR', 'npm_config_cache', 'XDG_CACHE_HOME']:
         env[key] = str(out / key.lower())
+    implementations = {'before': args.before_impl, 'after': args.after_impl, 'go': args.reference_impl}
+    script = root / 'scripts/bench-all.sh'
+    if args.drain != 5:
+        workload = out / 'workload.js'
+        workload.write_text((root / 'bench/workload.js').read_text().replace(
+            "gracefulStop: '5s'", f"gracefulStop: '{args.drain}s'"))
+        script = out / 'bench.sh'
+        script.write_text((root / 'scripts/bench-all.sh').read_text().replace(
+            'ROOT="$(cd "$(dirname "$0")/.." && pwd)"', 'ROOT=' + shlex.quote(str(root))).replace(
+            '$ROOT/bench/workload.js', str(workload)))
     metadata = {
         'revision': subprocess.check_output(['git', '-C', str(root), 'rev-parse', 'HEAD'], text=True).strip(),
         'binaries': {n: {'path': str(p), 'sha256': hashlib.sha256(p.read_bytes()).hexdigest()}
                      for n, p in binaries.items()},
+        'implementations': implementations, 'scenarios': args.scenarios.split(), 'drain_s': args.drain,
         'slots': SLOTS, 'containers': containers, 'warmup_s': 5, 'measurement_s': 15,
         'concurrency': [1, 64], 'orders': [['before', 'after', 'go'], ['after', 'go', 'before'], ['go', 'before', 'after']],
     }
@@ -75,8 +96,7 @@ def main():
             'BENCH_PORT': str(args.http_port + slot),
         }
         with (out / f'{name}-r{rep}.log').open('w') as log:
-            subprocess.run([str(root / 'scripts/bench-all.sh'),
-                            'go' if name == 'go' else 'rust-h5i-optimized'],
+            subprocess.run(['bash', str(script), implementations[name]],
                            env=arm_env, stdout=log, stderr=subprocess.STDOUT, check=True)
         return name
 

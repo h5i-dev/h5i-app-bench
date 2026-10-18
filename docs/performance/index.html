@@ -95,6 +95,27 @@
         <p class="caption"><a href="https://github.com/h5i-dev/h5i-app-bench/blob/measure-engine-cost/performance/linkding/bench/search-plan-2026-10-18.md">Results, limitations and reproduction</a> · <a href="https://github.com/h5i-dev/h5i-app-bench/blob/measure-engine-cost/performance/linkding/bench/results/search-plan-2026-10-18/comparison.csv">Summary CSV</a></p>
       </section>
 
+      <section id="linkding-hotpaths" class="block">
+        <div class="block-head">
+          <h2 class="term" data-n="+">Linkding retrieval, creation and search improvements</h2>
+          <p>Latest targeted HTTP comparison · 2026-10-18. Optimized get combines bookmark and tags; the normal engine selects equivalent scalar SQL for creation and nonpaged listings.</p>
+        </div>
+        <div class="table-wrap"><table class="perf-detail">
+          <caption>Release binaries without timing probes; requests per second, mean of three repetitions. Before/after/reference run concurrently and rotate independent CPU/database slots.</caption>
+          <thead><tr><th scope="col">Route</th><th scope="col" class="num">Clients</th><th scope="col" class="num">Before</th><th scope="col" class="num">After</th><th scope="col" class="num">Ratio</th><th scope="col">Reference</th><th scope="col" class="num">Reference req/s</th></tr></thead><tbody>
+            <tr><th scope="row">Optimized get</th><td class="num">1</td><td class="num">460.12</td><td class="num">694.76</td><td class="num">1.51×</td><td>h5i</td><td class="num">475.71</td></tr>
+            <tr><th scope="row">Optimized get</th><td class="num">64</td><td class="num">4353.98</td><td class="num">6573.41</td><td class="num">1.51×</td><td>h5i</td><td class="num">8582.49</td></tr>
+            <tr><th scope="row">Engine create</th><td class="num">1</td><td class="num">48.54</td><td class="num">174.66</td><td class="num">3.60×</td><td>Go</td><td class="num">152.26</td></tr>
+            <tr><th scope="row">Engine create</th><td class="num">64</td><td class="num">29.88</td><td class="num">224.81</td><td class="num">7.52×</td><td>Go</td><td class="num">3525.29</td></tr>
+            <tr><th scope="row">Engine search</th><td class="num">1</td><td class="num">1.86</td><td class="num">2.36</td><td class="num">1.27×</td><td>Go</td><td class="num">4.73</td></tr>
+            <tr><th scope="row">Engine search</th><td class="num">64</td><td class="num">6.68</td><td class="num">10.24</td><td class="num">1.53×</td><td>Go</td><td class="num">19.21</td></tr>
+          </tbody></table></div>
+        <p class="caption">Optimized get improves about 1.51× but remains below normal h5i at 64 clients. Engine creation and search improve; Go remains faster at 64 clients. Search still loads 287,002 physical rows per request. Paged listings retain their prior SQL strategy.</p>
+        <p class="caption">54 measured points, 1,141,807 HTTP requests, zero failures. The kernel and read plans are unchanged; existing Lean gates and API conformance pass. Read SQL rendering remains differential-tested within the existing trust boundary, rather than formally proved. Raw logs stay local under /dev/shm.</p>
+        <p class="caption">These targeted runs are separate from the older full-suite table. Get uses normal h5i as its reference; creation/search use Go. They do not establish a new whole-application ranking.</p>
+        <p class="caption"><a href="https://github.com/h5i-dev/h5i-app-bench/blob/measure-engine-cost/performance/linkding/bench/hotpaths-2026-10-18.md">Results, validation and reproduction</a> · <a href="https://github.com/h5i-dev/h5i-app-bench/tree/measure-engine-cost/performance/linkding/bench/results/hotpaths-2026-10-18">Summary CSVs</a></p>
+      </section>
+
       <section id="optimized-single-get" class="block">
         <div class="block-head">
           <h2 class="term" data-n="+">Optimized single-bookmark retrieval</h2>

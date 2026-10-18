@@ -1,5 +1,7 @@
 # Linkding optimized single-bookmark retrieval
 
+Follow-up: [get, creation and search improvements](hotpaths-2026-10-18.md).
+
 2026-10-18. Based on benchmark revision `48dd5b48805d74ff7b6ab173d3d8835598e14ded`.
 The only application-code change is
 `rust-h5i-optimized/server/src/main.rs::bookmark_get`.

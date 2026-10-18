@@ -8,7 +8,7 @@ publish = false
 
 # Extracted to Lean by Charon + Aeneas (`h5i app extract`).
 [dependencies]
-# h5i-app from git, h5i main (pinned in Cargo.lock; the Lean library in
+# h5i-app from git, a fixed h5i revision (the Lean library in
 # proofs/lakefile.lean and lake-manifest.json is pinned to the same commit).
-h5i-app-schema = { git = "https://github.com/h5i-dev/h5i", branch = "main" }
-h5i-app-sql = { git = "https://github.com/h5i-dev/h5i", branch = "main" }
+h5i-app-schema = { git = "https://github.com/h5i-dev/h5i", rev = "8e764ab849f71e771bc8d026491a3c104f8cb6a5" }
+h5i-app-sql = { git = "https://github.com/h5i-dev/h5i", rev = "8e764ab849f71e771bc8d026491a3c104f8cb6a5" }

@@ -368,13 +368,13 @@ async fn bookmark_get(State(app): State<App>, Path(id_raw): Path<String>, req: R
     };
     let mut view = empty_view(auth.actor);
     let row = match path_id(&id_raw) {
-        Some(id) => match get_by_id(&app.pool, id).await {
+        Some(id) => match db::get_with_tags(&app.pool, id).await {
             Ok(row) => row,
             Err(err) => return server_error(err),
         },
         None => None,
     };
-    if let Some(row) = &row {
+    if let Some((row, _)) = &row {
         view.bookmark_exists = true;
         view.bookmark_owner = row.owner_id as u64;
         view.bookmark_shared = row.shared;
@@ -384,10 +384,7 @@ async fn bookmark_get(State(app): State<App>, Path(id_raw): Path<String>, req: R
     }
     // Return the row whose ownership was checked above, without fetching it again.
     match row {
-        Some(row) => match serialize(&app.pool, &row).await {
-            Ok(payload) => json_response(StatusCode::OK, payload, &[]),
-            Err(err) => server_error(err),
-        },
+        Some((row, names)) => json_response(StatusCode::OK, db::bookmark_json(&row, names), &[]),
         None => not_found("bookmark"),
     }
 }

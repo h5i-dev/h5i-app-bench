@@ -1,0 +1,11 @@
+mode,table,planning_ms,execution_ms,nodes
+membership,linkding_counters,0.361,0.042,Seq Scan:linkding_counters
+membership,linkding_users,0.59,0.142,Merge Join > Index Scan:linkding_users:linkding_users_pkey > Sort > Seq Scan:linkding_tokens
+membership,linkding_tokens,0.411,0.045,Seq Scan:linkding_tokens
+membership,linkding_bookmarks,0.859,20.087,Sort > Nested Loop > Seq Scan:linkding_bookmarks > Seq Scan:linkding_tokens
+membership,linkding_tags,0.695,0.143,Sort > Nested Loop > Seq Scan:linkding_tokens > Bitmap Heap Scan:linkding_tags > BitmapOr > Bitmap Index Scan:linkding_tags_pkey > Bitmap Index Scan:linkding_tags_h5i_idx_3_3 > Bitmap Index Scan:linkding_tags_h5i_idx_3_3
+scalar,linkding_counters,0.395,0.061,Seq Scan:linkding_counters
+scalar,linkding_users,0.674,0.065,Seq Scan:linkding_users > Seq Scan:linkding_tokens
+scalar,linkding_tokens,0.386,0.045,Seq Scan:linkding_tokens
+scalar,linkding_bookmarks,0.888,0.198,Sort > Seq Scan:linkding_tokens > Bitmap Heap Scan:linkding_bookmarks > BitmapOr > Bitmap Index Scan:linkding_bookmarks_h5i_idx_2_0_4 > Bitmap Index Scan:linkding_bookmarks_h5i_idx_2_0_3
+scalar,linkding_tags,0.78,0.132,Sort > Seq Scan:linkding_tokens > Bitmap Heap Scan:linkding_tags > BitmapOr > Bitmap Index Scan:linkding_tags_pkey > Bitmap Index Scan:linkding_tags_h5i_idx_3_3 > Bitmap Index Scan:linkding_tags_h5i_idx_3_3

@@ -1,5 +1,7 @@
 # Linkding API backends
 
+Latest follow-up: [single-get, creation and search improvements](bench/hotpaths-2026-10-18.md).
+
 Follow-up: [selectable SQL modes and fixed-offset list measurement](bench/sql-modes-2026-10-18.md).
 
 Five implementations of the [linkding](https://github.com/sissbruecker/linkding) REST API, one shared PostgreSQL schema, a Hurl conformance suite checked against the pinned upstream image, and a load benchmark. The upstream server is included in the benchmark as a reference.

@@ -6,7 +6,7 @@ runs in the h5i-app engine (`h5i-app-pg`): the engine loads the rows the
 kernel's read plan names, calls the kernel, and stores the writes the kernel
 returns. The kernel, its read plans and its writes are proved in Lean. It
 serves the same API as the other linkding implementations and passes the same
-Hurl suite (`../tests`, 8 files, 189 requests).
+Hurl suite (`../tests`, 9 files, 200 requests).
 
 `../rust-h5i-optimized` is the same API with a similar kernel and Lean proofs,
 but with hand-written SQL through sqlx, which the proofs do not cover.
@@ -54,6 +54,18 @@ plan's rows (`LinkdingStore::load_for`), calls the kernel, writes the write
 set and retries on serialization failures. Writes take per-key advisory locks
 on what they change (`lock_for`: a bookmark, a tag, a caller's bundles, the
 id counters); these only reduce retries.
+
+## SQL strategy
+
+The Rust crates and Lean library are pinned to the same h5i revision.
+`LinkdingStore::load_for` opts into `ScalarWhenUnique` for bookmark creation
+and nonpaged listings, using a transaction-scoped handle. This lets unique
+token lookups become scalar parameters in PostgreSQL's indexed bookmark
+predicate. Other commands, including paged listings, retain the pool's
+original membership strategy. Both renderings implement the same read plan;
+this does not change authorization, transaction isolation, advisory locks,
+counters, retry behavior or the kernel. See the
+[HTTP comparison](../bench/hotpaths-2026-10-18.md).
 
 ## Read plans
 

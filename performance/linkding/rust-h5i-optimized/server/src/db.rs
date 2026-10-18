@@ -320,6 +320,28 @@ pub async fn get_by_id(pool: &PgPool, id: i64) -> Result<Option<BookmarkRow>, sq
     row.as_ref().map(scan_bookmark).transpose()
 }
 
+/// Fetch the bookmark and its tag names in one statement. Keep the same
+/// unfiltered ID lookup used for authorization; the kernel checks ownership
+/// before the handler returns either the row or its tags.
+pub async fn get_with_tags(
+    pool: &PgPool,
+    id: i64,
+) -> Result<Option<(BookmarkRow, Vec<String>)>, sqlx::Error> {
+    let row = sqlx::query(&format!(
+        "SELECT {BOOKMARK_COLUMNS},
+                ARRAY(SELECT t.name FROM bookmark_tags bt
+                      JOIN tags t ON t.id = bt.tag_id
+                      WHERE bt.bookmark_id = b.id)
+         FROM bookmarks b WHERE b.id = $1"
+    ))
+    .bind(id)
+    .fetch_optional(pool)
+    .await?;
+    row.as_ref()
+        .map(|row| Ok((scan_bookmark(row)?, row.try_get(12)?)))
+        .transpose()
+}
+
 async fn get_owned_tx(
     tx: &mut Transaction<'_, Postgres>,
     owner_id: i64,
