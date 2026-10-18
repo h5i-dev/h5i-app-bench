@@ -95,6 +95,22 @@
         <p class="caption"><a href="https://github.com/h5i-dev/h5i-app-bench/blob/measure-engine-cost/performance/linkding/bench/search-plan-2026-10-18.md">Results, limitations and reproduction</a> · <a href="https://github.com/h5i-dev/h5i-app-bench/blob/measure-engine-cost/performance/linkding/bench/results/search-plan-2026-10-18/comparison.csv">Summary CSV</a></p>
       </section>
 
+      <section id="optimized-single-get" class="block">
+        <div class="block-head">
+          <h2 class="term" data-n="+">Optimized single-bookmark retrieval</h2>
+          <p>Linkding HTTP get · 2026-10-18. Reuse the authorized bookmark row. Concurrent before/after/Go runs rotate CPU and database slots.</p>
+        </div>
+        <div class="table-wrap"><table class="perf-detail">
+          <caption>HTTP requests per second, mean of three repetitions; five-second warmup and 15-second measurement.</caption>
+          <thead><tr><th scope="col">Clients</th><th scope="col" class="num">Before</th><th scope="col" class="num">After</th><th scope="col" class="num">Ratio</th><th scope="col" class="num">Go</th></tr></thead><tbody>
+            <tr><th scope="row">1</th><td class="num">331.60</td><td class="num">399.48</td><td class="num">1.20×</td><td class="num">402.78</td></tr>
+            <tr><th scope="row">64</th><td class="num">2866.83</td><td class="num">3676.61</td><td class="num">1.28×</td><td class="num">6450.85</td></tr>
+          </tbody></table></div>
+        <p class="caption">18 points, 636,179 measured requests, zero failures. Both Rust versions pass 200 API conformance requests; the unchanged kernel passes its existing Lean proof gate. Handwritten SQL and the HTTP shell remain outside that proof boundary.</p>
+        <p class="caption">Only the optimized get route changed. Go was measured concurrently with slot rotation on a busy shared host; normal-engine and GPU variants were not rerun. The earlier sequential series regressed at 64 clients and is retained separately in the report. These results are separate from the original cross-language table and do not establish whole-application performance.</p>
+        <p class="caption"><a href="https://github.com/h5i-dev/h5i-app-bench/blob/measure-engine-cost/performance/linkding/bench/single-get-2026-10-18.md">Results, validation and reproduction</a> · <a href="https://github.com/h5i-dev/h5i-app-bench/blob/measure-engine-cost/performance/linkding/bench/results/single-get-2026-10-18/summary.csv">Summary CSV</a></p>
+      </section>
+
       <section id="read-sql-modes" class="block">
         <div class="block-head">
           <h2 class="term" data-n="+">Selectable read SQL modes</h2>

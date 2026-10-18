@@ -128,3 +128,7 @@ covered by the proofs. Search term matching in its kernel folds ASCII case.
 SQL `ILIKE` and stored `name_lower` follow the same ASCII inputs used by the
 suite. Legacy search, selected by the viewer's profile flag, is applied in
 its HTTP process; the kernel evaluates the default query language.
+
+The [optimized single-get experiment](bench/single-get-2026-10-18.md) removes a duplicate bookmark
+lookup and compares before/after HTTP throughput with a freshly measured Go
+server. It is separate from the original cross-language ranking.

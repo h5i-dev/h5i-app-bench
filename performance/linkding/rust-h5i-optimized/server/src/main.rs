@@ -367,30 +367,28 @@ async fn bookmark_get(State(app): State<App>, Path(id_raw): Path<String>, req: R
         Err(response) => return response,
     };
     let mut view = empty_view(auth.actor);
-    if let Some(id) = path_id(&id_raw) {
-        match get_by_id(&app.pool, id).await {
-            Ok(Some(row)) => {
-                view.bookmark_exists = true;
-                view.bookmark_owner = row.owner_id as u64;
-                view.bookmark_shared = row.shared;
-            }
-            Ok(None) => {}
+    let row = match path_id(&id_raw) {
+        Some(id) => match get_by_id(&app.pool, id).await {
+            Ok(row) => row,
             Err(err) => return server_error(err),
-        }
+        },
+        None => None,
+    };
+    if let Some(row) = &row {
+        view.bookmark_exists = true;
+        view.bookmark_owner = row.owner_id as u64;
+        view.bookmark_shared = row.shared;
     }
     if let Err(err) = decide(&view, &Command::ReadBookmark) {
         return kernel_error(err, "bookmark");
     }
-    let Some(id) = path_id(&id_raw) else {
-        return not_found("bookmark");
-    };
-    match get_by_id(&app.pool, id).await {
-        Ok(Some(row)) => match serialize(&app.pool, &row).await {
+    // Return the row whose ownership was checked above, without fetching it again.
+    match row {
+        Some(row) => match serialize(&app.pool, &row).await {
             Ok(payload) => json_response(StatusCode::OK, payload, &[]),
             Err(err) => server_error(err),
         },
-        Ok(None) => not_found("bookmark"),
-        Err(err) => server_error(err),
+        None => not_found("bookmark"),
     }
 }
 
