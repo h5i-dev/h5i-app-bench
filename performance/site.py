@@ -22,10 +22,13 @@ STACKS = {
     "upstream": "linkding 1.47.0 image: Django, uWSGI",
 }
 H5I = {"rust-h5i", "rust-h5i-optimized", "rust-h5i-cpu-scan", "rust-h5i-gpu"}
+H5I_ORDER = ["rust-h5i", "rust-h5i-optimized", "rust-h5i-cpu-scan", "rust-h5i-gpu"]
 
 APPS = [
     {
         "id": "realworld",
+        "gpu_summary": "gpu-policy-2026-10-18/summary.csv",
+        "measurement_note": "GPU results are from a separate HTTP run at 1 and 16 clients with different CPU allocations; unmeasured cells are shown as –. Cross-run rankings are descriptive, not a matched GPU speedup comparison. See Optional GPU policies below for the paired CPU/GPU results and conditions.",
         "title": "RealWorld (Conduit)",
         "stacks": {
             "rust-h5i": "Rust, axum, the h5i-app engine (h5i-app-pg) with Lean proofs",
@@ -90,12 +93,21 @@ def load(app):
         for r in csv.DictReader(f):
             rows.append({"impl": r["impl"], "scenario": r["scenario"], "concurrency": int(r["concurrency"]),
                          "reps": int(r["reps"]), **{k: round(float(r[k]), 3) for k in FIELDS}})
+    if app.get("gpu_summary"):
+        with (path.parent / app["gpu_summary"]).open() as f:
+            for r in csv.DictReader(f):
+                if r["impl"] == "rust-h5i-gpu":
+                    rows.append({"impl": r["impl"], "scenario": r["scenario"], "concurrency": int(r["concurrency"]),
+                                 "reps": int(r["reps"]), **{k: round(float(r[k]), 3) for k in FIELDS}})
     impls = list(dict.fromkeys(r["impl"] for r in rows))
     impls.sort(key=lambda i: (i not in H5I, i == "upstream"))
+    if app["id"] == "realworld":
+        impls.sort(key=lambda i: (i not in H5I, H5I_ORDER.index(i) if i in H5I else i == "upstream"))
     scenarios = [s for s in app["scenarios"] if any(r["scenario"] == s for r in rows)]
     return {
         "id": app["id"], "title": app["title"], "upstream": app["upstream"], "about": app["about"],
         "seed": app["seed"], "source": f"{REPO}/{app['id']}", "measured": last_change(path),
+        "measurement_note": app.get("measurement_note", ""),
         "impls": [{"id": i, "stack": app.get("stacks", {}).get(i) or STACKS.get(i, ""), "h5i": i in H5I} for i in impls],
         "scenarios": [{"id": s, "requests": app["scenarios"][s]} for s in scenarios],
         "concurrency": sorted({r["concurrency"] for r in rows}),
