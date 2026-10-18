@@ -2252,13 +2252,13 @@
      "h5i": true
     },
     {
-     "id": "rust-h5i-gpu",
-     "stack": "Rust, axum, sqlx, GPU-resident search index (Rust-CUDA), with SQL fallback",
+     "id": "rust-h5i-optimized",
+     "stack": "Rust, axum, sqlx, h5i-app kernel with Lean proofs",
      "h5i": true
     },
     {
-     "id": "rust-h5i-optimized",
-     "stack": "Rust, axum, sqlx, h5i-app kernel with Lean proofs",
+     "id": "rust-h5i-gpu",
+     "stack": "Rust, axum, sqlx, GPU-resident search index (Rust-CUDA), with SQL fallback",
      "h5i": true
     },
     {

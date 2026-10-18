@@ -22,7 +22,7 @@ STACKS = {
     "upstream": "linkding 1.47.0 image: Django, uWSGI",
 }
 H5I = {"rust-h5i", "rust-h5i-optimized", "rust-h5i-cpu-scan", "rust-h5i-gpu"}
-H5I_ORDER = ["rust-h5i", "rust-h5i-optimized", "rust-h5i-cpu-scan", "rust-h5i-gpu"]
+H5I_ORDER = ["rust-h5i", "rust-h5i-optimized", "rust-h5i-gpu", "rust-h5i-cpu-scan"]
 
 APPS = [
     {
@@ -100,9 +100,7 @@ def load(app):
                     rows.append({"impl": r["impl"], "scenario": r["scenario"], "concurrency": int(r["concurrency"]),
                                  "reps": int(r["reps"]), **{k: round(float(r[k]), 3) for k in FIELDS}})
     impls = list(dict.fromkeys(r["impl"] for r in rows))
-    impls.sort(key=lambda i: (i not in H5I, i == "upstream"))
-    if app["id"] == "realworld":
-        impls.sort(key=lambda i: (i not in H5I, H5I_ORDER.index(i) if i in H5I else i == "upstream"))
+    impls.sort(key=lambda i: (i not in H5I, H5I_ORDER.index(i) if i in H5I else i == "upstream"))
     scenarios = [s for s in app["scenarios"] if any(r["scenario"] == s for r in rows)]
     return {
         "id": app["id"], "title": app["title"], "upstream": app["upstream"], "about": app["about"],
