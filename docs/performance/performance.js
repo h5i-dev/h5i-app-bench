@@ -44,6 +44,7 @@ function renderOverview() {
       return `<tr><th scope="row"><a href="#${esc(app.id)}" data-app="${esc(app.id)}" data-scenario="${esc(s.id)}">${esc(s.id)}</a></th>${cells}</tr>`;
     }).join("");
     return `<h3 class="sub-head">${esc(app.title)}</h3>
+      ${app.measurement_note ? `<p class="caption">${esc(app.measurement_note)}</p>` : ""}
       <div class="table-wrap"><table class="perf-matrix" style="--perf-columns:${app.impls.length}"><thead><tr><th scope="col">Scenario</th>${head}</tr></thead><tbody>${body}</tbody></table></div>`;
   }).join("");
 }
@@ -87,6 +88,7 @@ function renderApps() {
       <div class="block-head">
         <h2 class="term" data-n="${String(k + 2).padStart(2, "0")}">${esc(app.title)}</h2>
         <p>${esc(app.about)} Seed: ${esc(app.seed)} <a href="${esc(app.upstream)}" target="_blank" rel="noreferrer">Upstream</a> · <a href="${esc(app.source)}" target="_blank" rel="noreferrer">implementations and raw results</a>${app.measured ? ` · measured ${esc(app.measured)}` : ""}</p>
+        ${app.measurement_note ? `<p class="caption">${esc(app.measurement_note)}</p>` : ""}
       </div>
       <div class="app-body" data-app="${esc(app.id)}">${renderApp(app)}</div>
     </section>`).join("");
