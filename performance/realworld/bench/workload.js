@@ -16,6 +16,7 @@ export const options = {
       gracefulStop: scenario === 'login' ? '60s' : '15s',
     },
   },
+  thresholds: { http_req_failed: ['rate==0'], checks: ['rate==1'] },
   summaryTrendStats: ['avg', 'p(50)', 'p(90)', 'p(99)'],
 };
 

@@ -1,0 +1,9 @@
+[package]
+name = "conduit-gpu"
+version = "0.1.0"
+edition = "2024"
+publish = false
+[dependencies]
+conduit-kernel = { path = "../rust-h5i-optimized/kernel" }
+[workspace]
+exclude = ["backend-nvvm"]

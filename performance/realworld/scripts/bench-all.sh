@@ -68,6 +68,8 @@ cleanup() {
   fi
 }
 trap cleanup EXIT
+trap 'exit 130' INT
+trap 'exit 143' TERM
 
 wait_health() {
   local port="$1"
@@ -107,13 +109,15 @@ start_server() {
       export WEB_CONCURRENCY=4
       export DB_POOL=8
       ;;
-    go|rust-h5i-optimized|rust-h5i)
+    go|rust-h5i-optimized|rust-h5i|rust-h5i-gpu)
       export WEB_CONCURRENCY=4
       export DB_POOL=32
       ;;
   esac
   export PORT="$port"
-  setsid taskset -c "$SERVER_CPUS" "$dir/run.sh" > "$LOG_DIR/bench-${name}.log" 2>&1 &
+  local command=("$dir/run.sh")
+  if [ -n "${BENCH_SERVER_BIN:-}" ]; then command=("$BENCH_SERVER_BIN"); fi
+  setsid taskset -c "$SERVER_CPUS" "${command[@]}" > "$LOG_DIR/bench-${name}.log" 2>&1 &
   server_pid=$!
   wait_health "$port"
 }
@@ -130,10 +134,14 @@ run_k6() {
     -e "SCENARIO=$scenario" \
     -e "VUS=$conc" \
     -e "DURATION=${seconds}s" \
-    "$ROOT/bench/workload.js" >/dev/null
+    "$ROOT/bench/workload.js" > "${summary%.json}.log" 2>&1
 }
 
 prebuild() {
+  if [ -n "${BENCH_SERVER_BIN:-}" ]; then return; fi
+  if printf '%s\n' "$@" | rg -qx rust-h5i-gpu; then
+    (cd "$ROOT/rust-h5i-optimized" && CUDA_PATH="${CUDA_PATH:-/usr/local/cuda-12.6}" BINDGEN_EXTRA_CLANG_ARGS="${BINDGEN_EXTRA_CLANG_ARGS:--I/usr/lib/gcc/x86_64-linux-gnu/13/include}" CARGO_TARGET_DIR="${CONDUIT_GPU_TARGET_DIR:-/var/tmp/conduit-gpu-server-target}" cargo build --release -p conduit-server --features gpu)
+  fi
   if printf '%s\n' "$@" | grep -qx rust-h5i-optimized; then
     (cd "$ROOT/rust-h5i-optimized" && cargo build --release -p conduit-server -p conduit-kernel-bench)
   fi
@@ -163,8 +171,10 @@ for name in "$@"; do
     fastify) port=8003; dir="$ROOT/fastify" ;;
     rust-h5i-optimized) port=8004; dir="$ROOT/rust-h5i-optimized" ;;
     rust-h5i) port=8005; dir="$ROOT/rust-h5i" ;;
+    rust-h5i-gpu) port=8006; dir="$ROOT/rust-h5i-gpu" ;;
     *) echo "unknown implementation: $name" >&2; exit 2 ;;
   esac
+  port="${BENCH_PORT:-$port}"
   echo "START $name :$port"
   start_server "$name" "$port" "$dir"
   BASE="http://127.0.0.1:${port}"
@@ -178,13 +188,18 @@ for name in "$@"; do
           echo "POINT_FAIL $tag server died; restarting" >&2
           start_server "$name" "$port" "$dir"
         fi
-        run_k6 "$WARMUP" "$LOG_DIR/warmup-${tag}.json" || true
+        if ! run_k6 "$WARMUP" "$LOG_DIR/warmup-${tag}.json"; then
+          echo "POINT_FAIL $tag warmup failed" >&2
+          if [ "${BENCH_STRICT:-0}" = 1 ]; then exit 1; fi
+        fi
         meta_tmp="$OUT/${tag}.meta.json"
         summary="$OUT/${tag}.summary.json"
         "$PY" -u "$ROOT/bench/sample_proc.py" "$server_pid" > "$meta_tmp.sample" &
         sampler=$!
+        measure_failed=0
         if ! run_k6 "$DURATION" "$summary"; then
           echo "POINT_FAIL $tag k6 exited non-zero" >&2
+          measure_failed=1
         fi
         kill "$sampler" >/dev/null 2>&1 || true
         wait "$sampler" >/dev/null 2>&1 || true
@@ -209,6 +224,8 @@ print("POINT", impl, scenario, "c="+conc, "r="+rep,
       "cpu_peak="+str(stats["cpu_peak_pct"]))
 PY
         rm -f "$meta_tmp.sample"
+        cp "$LOG_DIR/bench-${name}.log" "$LOG_DIR/${tag}.server.log"
+        if [ "$measure_failed" = 1 ] && [ "${BENCH_STRICT:-0}" = 1 ]; then exit 1; fi
         # Flag a high HTTP failure rate without stopping the sweep.
         "$PY" - "$summary" "$tag" <<'PY'
 import json, sys
@@ -231,7 +248,7 @@ PY
 done
 
 if printf '%s\n' "$@" | grep -qx rust-h5i-optimized || [ "$#" -eq 4 ]; then
-  kernel_bench || echo "POINT_FAIL kernel-bench" >&2
+  if [ -z "${BENCH_SERVER_BIN:-}" ]; then kernel_bench || echo "POINT_FAIL kernel-bench" >&2; fi
 fi
 
 if [ -z "${BENCH_NO_SUMMARY:-}" ]; then

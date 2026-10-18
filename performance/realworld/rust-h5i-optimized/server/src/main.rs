@@ -23,6 +23,9 @@ use sqlx::PgPool;
 use sqlx::Postgres;
 use sqlx::Transaction;
 
+#[cfg(feature = "gpu")]
+mod gpu_policy;
+
 const BCRYPT_COST: u32 = 12;
 const JWT_TTL_SECS: u64 = 60 * 24 * 60 * 60;
 
@@ -31,6 +34,8 @@ struct App {
     pool: PgPool,
     secret: Vec<u8>,
     dummy: String,
+    #[cfg(feature = "gpu")]
+    policy: gpu_policy::Dispatcher,
 }
 
 struct ApiError {
@@ -133,6 +138,14 @@ fn map_kernel(err: Error) -> ApiError {
 
 fn decide(view: &View, cmd: &Command) -> Result<Reply, ApiError> {
     transition(view, cmd).map_err(map_kernel)
+}
+
+async fn decide_policy(app: &App, view: &View, cmd: &Command) -> Result<Reply, ApiError> {
+    #[cfg(feature = "gpu")]
+    if let Some(result) = app.policy.run(view, cmd).await { return result.map_err(map_kernel); }
+    #[cfg(not(feature = "gpu"))]
+    let _ = app;
+    decide(view, cmd)
 }
 
 fn empty_view(actor: i64) -> View {
@@ -239,7 +252,7 @@ async fn viewer_id(headers: &HeaderMap, app: &App) -> Result<i64, ApiError> {
 
 async fn require_user(headers: &HeaderMap, app: &App) -> Result<(i64, UserPublic), ApiError> {
     let (id, row) = authenticate(headers, app).await?;
-    let _ = decide(&empty_view(id), &Command::CurrentUser)?;
+    let _ = decide_policy(app, &empty_view(id), &Command::CurrentUser).await?;
     Ok((id, row.ok_or_else(server_error)?))
 }
 
@@ -681,7 +694,7 @@ async fn login(State(app): State<App>, body: Bytes) -> Result<Response, ApiError
 
 async fn current_user(State(app): State<App>, headers: HeaderMap) -> Result<Response, ApiError> {
     let (uid, user) = require_user(&headers, &app).await?;
-    match decide(&empty_view(uid), &Command::CurrentUser)? {
+    match decide_policy(&app, &empty_view(uid), &Command::CurrentUser).await? {
         Reply::Allow => {}
         _ => return Err(server_error()),
     }
@@ -852,7 +865,7 @@ async fn set_follow(
     let mut view = empty_view(uid);
     view.profile_exists = exists;
     view.already = already;
-    let reply = decide(&view, &cmd)?;
+    let reply = decide_policy(&app, &view, &cmd).await?;
     let Reply::Follow { following, changed } = reply else {
         return Err(server_error());
     };
@@ -903,7 +916,7 @@ async fn list_articles(
     feed: bool,
 ) -> Result<Response, ApiError> {
     if feed {
-        match decide(&empty_view(viewer), &Command::Feed)? {
+        match decide_policy(app, &empty_view(viewer), &Command::Feed).await? {
             Reply::Allow => {}
             _ => return Err(server_error()),
         }
@@ -1222,7 +1235,7 @@ async fn delete_article(
     let mut view = empty_view(uid);
     view.article_exists = exists;
     view.article_author = author;
-    match decide(&view, &Command::DeleteArticle)? {
+    match decide_policy(&app, &view, &Command::DeleteArticle).await? {
         Reply::Allow => {}
         _ => return Err(server_error()),
     }
@@ -1369,7 +1382,7 @@ async fn delete_comment(
     view.article_exists = article_id.is_some();
     view.comment_exists = comment_author.is_some();
     view.comment_author = comment_author.unwrap_or(0) as u64;
-    match decide(&view, &Command::DeleteComment)? {
+    match decide_policy(&app, &view, &Command::DeleteComment).await? {
         Reply::Allow => {}
         _ => return Err(server_error()),
     }
@@ -1408,7 +1421,7 @@ async fn set_favorite(
     let mut view = empty_view(uid);
     view.article_exists = exists;
     view.already = already;
-    let reply = decide(&view, &cmd)?;
+    let reply = decide_policy(&app, &view, &cmd).await?;
     let Reply::Favorite { delta, .. } = reply else {
         return Err(server_error());
     };
@@ -1528,6 +1541,8 @@ async fn run() -> Result<(), Box<dyn std::error::Error>> {
         pool,
         secret: secret.into_bytes(),
         dummy,
+        #[cfg(feature = "gpu")]
+        policy: gpu_policy::Dispatcher::start()?,
     };
     let addr = format!("127.0.0.1:{port}");
     let listener = tokio::net::TcpListener::bind(&addr).await?;
