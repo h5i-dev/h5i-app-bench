@@ -19,6 +19,10 @@ suite and the run commands. `bench/README.md` there has the load shape, and
 `bench/results/` the summaries (`summary.md`, `summary.csv`, `points.csv`).
 Raw k6 JSON is not committed.
 
+Engine-stage attribution experiments, with unchanged kernels and proof sources,
+live in [`engine-profile/`](engine-profile). These diagnostic runs are separate
+from the published cross-framework performance ranking.
+
 After a benchmark's `summarize.py` has rewritten its `summary.csv`, refresh the
 site's data:
 
