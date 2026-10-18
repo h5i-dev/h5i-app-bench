@@ -8,8 +8,8 @@
 //! so the server builds and is correct even without a GPU or the Rust-CUDA
 //! toolchain. The matching rows are the same ones `search_sql` would select, so
 //! the listing query (scope, sort, paging, count, JSON) is unchanged.
-use linkding_gpu::BookmarkFacts;
 use linkding_gpu::pack::{Query, Rows};
+use linkding_gpu::BookmarkFacts;
 
 pub struct SearchIndex {
     ids: Vec<i64>,
@@ -30,6 +30,9 @@ impl SearchIndex {
     /// uploading the packed columns to the device under the `gpu` feature.
     /// `ptx` is the compiled device module (ignored without `gpu`).
     pub fn build(bookmarks: Vec<(i64, BookmarkFacts)>, _ptx: &str) -> Result<Self, String> {
+        if bookmarks.len() > 1_000_000 {
+            return Err("search index exceeds the million-row kernel capacity".into());
+        }
         let mut ids = Vec::with_capacity(bookmarks.len());
         let mut rows = Rows::default();
         for (id, facts) in &bookmarks {
@@ -39,7 +42,8 @@ impl SearchIndex {
         #[cfg(feature = "gpu")]
         let gpu = {
             let nvvm = linkding_gpu_nvvm::Nvvm::new(_ptx).map_err(|e| e.to_string())?;
-            let resident = linkding_gpu_nvvm::upload_linkding(&nvvm, &rows).map_err(|e| e.to_string())?;
+            let resident =
+                linkding_gpu_nvvm::upload_linkding(&nvvm, &rows).map_err(|e| e.to_string())?;
             std::sync::Mutex::new(Gpu { nvvm, resident })
         };
         Ok(Self {
@@ -58,10 +62,32 @@ impl SearchIndex {
         self.ids.is_empty()
     }
 
+    /// Host allocation capacities plus device columns/output buffers. CUDA
+    /// context/module overhead is not included in this cache accounting.
+    pub fn bytes(&self) -> usize {
+        let host = self.ids.capacity() * 8
+            + self.rows.fields.capacity()
+            + self.rows.lengths.capacity() * 4
+            + self.rows.tags.capacity() * 8
+            + self.rows.meta.capacity() * 4;
+        #[cfg(feature = "gpu")]
+        let device = self.rows.fields.len()
+            + self.rows.lengths.len() * 4
+            + self.rows.tags.len() * 8
+            + self.rows.meta.len() * 4
+            + self.ids.len() * 8;
+        #[cfg(not(feature = "gpu"))]
+        let device = 0;
+        host + device
+    }
+
     /// Bookmark ids whose row matches the query, in the index's row order.
     pub fn matching_ids(&self, query: &str, lax: bool) -> Result<Vec<i64>, String> {
         let q = Query::new(query, lax);
         let values = self.values(&q)?;
+        if values.len() != self.ids.len() || values.iter().any(|&v| v > 1) {
+            return Err("search kernel returned an incomplete result or a row error".into());
+        }
         Ok(self
             .ids
             .iter()
@@ -73,14 +99,45 @@ impl SearchIndex {
 
     #[cfg(feature = "gpu")]
     fn values(&self, q: &Query) -> Result<Vec<u32>, String> {
-        let mut gpu = self.gpu.lock().unwrap();
+        let mut gpu = self.gpu.lock().map_err(|_| "search GPU lock poisoned")?;
         let Gpu { nvvm, resident } = &mut *gpu;
-        Ok(linkding_gpu_nvvm::linkding(nvvm, resident, q).map_err(|e| e.to_string())?.values)
+        let out = linkding_gpu_nvvm::linkding(nvvm, resident, q).map_err(|e| e.to_string())?;
+        if out.errors.len() != self.ids.len() || out.errors.iter().any(|&e| e != 0) {
+            return Err("search GPU returned an incomplete error column or a row error".into());
+        }
+        Ok(out.values)
     }
 
     #[cfg(not(feature = "gpu"))]
     fn values(&self, q: &Query) -> Result<Vec<u32>, String> {
-        let threads = std::thread::available_parallelism().map(|n| n.get()).unwrap_or(1);
+        let threads = std::thread::available_parallelism()
+            .map(|n| n.get())
+            .unwrap_or(1);
         Ok(self.rows.cpu(q, threads))
+    }
+}
+
+#[cfg(all(test, not(feature = "gpu")))]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn an_unrepresentable_row_must_not_become_a_negative_decision() {
+        let mut bad = linkding_gpu::pack::fixture(1);
+        bad.title = vec![b'a'; 129];
+        let index = SearchIndex::build(vec![(91, bad)], "").unwrap();
+        assert!(index.matching_ids("alpha", false).is_err());
+    }
+
+    #[test]
+    fn an_unrepresentable_query_must_trigger_fallback() {
+        let index = SearchIndex::build(vec![(91, linkding_gpu::pack::fixture(1))], "").unwrap();
+        assert!(index
+            .matching_ids(&vec!["a"; 129].join(" and "), false)
+            .is_err());
+        assert_eq!(
+            index.matching_ids("doesnotexist", false).unwrap(),
+            Vec::<i64>::new()
+        );
     }
 }

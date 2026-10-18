@@ -20,6 +20,10 @@ export const options = {
     },
   },
   summaryTrendStats: ['avg', 'p(50)', 'p(90)', 'p(99)'],
+  thresholds: {
+    http_req_failed: ['rate==0'],
+    checks: ['rate==1'],
+  },
 };
 
 const base = __ENV.BASE;
@@ -44,6 +48,19 @@ function list() {
 function search() {
   const res = http.get(`${base}/api/bookmarks/?q=alpha&limit=20`, auth);
   check(res, { 'search 200': (r) => r.status === 200 });
+}
+
+// Same 1000 active matches as `alpha` on the shared seed. Exercise boolean
+// parsing and repeated field matching without comparing an empty result to a
+// populated one. Keep the original search and mixed scenarios unchanged.
+function searchComplex() {
+  const query = '(alpha or missing) and not (absent or unknown) and (example or bookmark) and not (zeta and beta)';
+  const res = http.get(`${base}/api/bookmarks/?q=${encodeURIComponent(query)}&limit=20`, auth);
+  check(res, {
+    'search_complex 200': (r) => r.status === 200,
+    'search_complex count': (r) => r.status === 200 && r.json('count') === 1000,
+    'search_complex page': (r) => r.status === 200 && r.json('results').length === 20,
+  });
 }
 
 function searchTag() {
@@ -110,6 +127,8 @@ export default function () {
     list();
   } else if (scenario === 'search') {
     search();
+  } else if (scenario === 'search_complex') {
+    searchComplex();
   } else if (scenario === 'search_tag') {
     searchTag();
   } else if (scenario === 'get') {
@@ -124,5 +143,7 @@ export default function () {
     tags();
   } else if (scenario === 'mixed') {
     mixed();
+  } else {
+    throw new Error(`Unknown scenario: ${scenario}`);
   }
 }

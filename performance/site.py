@@ -21,7 +21,7 @@ STACKS = {
     "fastapi": "Python, FastAPI, asyncpg, uvicorn",
     "upstream": "linkding 1.47.0 image: Django, uWSGI",
 }
-H5I = {"rust-h5i", "rust-h5i-optimized", "rust-h5i-gpu"}
+H5I = {"rust-h5i", "rust-h5i-optimized", "rust-h5i-cpu-scan", "rust-h5i-gpu"}
 
 APPS = [
     {
@@ -51,7 +51,8 @@ APPS = [
         "stacks": {
             "rust-h5i": "Rust, axum, the h5i-app engine (h5i-app-pg): kernel, read plans and writes with Lean proofs",
             "rust-h5i-optimized": "Rust, axum, sqlx, h5i-app kernel with Lean proofs",
-            "rust-h5i-gpu": "Rust, axum, sqlx, plus a GPU-resident search index (Rust-CUDA) that the engine's read plan feeds",
+            "rust-h5i-cpu-scan": "Rust, axum, sqlx, resident search index evaluated on CPU",
+            "rust-h5i-gpu": "Rust, axum, sqlx, GPU-resident search index (Rust-CUDA), with SQL fallback",
         },
         "upstream": "https://github.com/sissbruecker/linkding",
         "about": "The linkding bookmark manager's REST API. The Hurl suite was checked against the pinned "
@@ -61,6 +62,7 @@ APPS = [
             "list": "GET /api/bookmarks/?limit=20 at a rotating offset",
             "search": "GET /api/bookmarks/?q=alpha&limit=20",
             "search_tag": "GET /api/bookmarks/?q=#tagN&limit=20",
+            "search_complex": "GET /api/bookmarks/: eight-term boolean text search (1000 matches)",
             "get": "GET /api/bookmarks/{id}/",
             "create": "POST /api/bookmarks/ with two tags",
             "update": "PATCH /api/bookmarks/{id}/ (title)",

@@ -40,6 +40,7 @@
       </a>
       <nav class="site-nav" aria-label="Benchmark sections" id="app-nav">
         <a href="#overview">Overview</a>
+        <a href="#gpu-search">Optional GPU search</a>
         <a href="#method">Method</a>
       </nav>
       <div class="theme" role="group" aria-label="Color theme">
@@ -67,6 +68,38 @@
       </section>
 
       <div id="apps"></div>
+
+      <section id="gpu-search" class="block">
+        <div class="block-head">
+          <h2 class="term" data-n="+">Optional GPU search</h2>
+          <p>Linkding HTTP API remeasurement · 2026-10-17. GPU acceleration is optional and especially useful for repeated, parallel text searches over a resident index.</p>
+        </div>
+        <p class="caption">These requests include authentication, database operations, search, pagination, tag fetching and JSON responses. At 16 clients, GPU throughput is 6.94× the resident CPU scan for simple search and 12.51× for complex search. CPU and GPU use the same application source and result path.</p>
+        <!-- Values from bench/results/text-search-2026-10-17/summary.csv; separate from the earlier overview dataset. -->
+        <div class="table-wrap">
+          <table class="perf-detail">
+            <caption>Requests per second, mean of three repetitions. GPU / CPU compares resident scan backends.</caption>
+            <thead><tr><th scope="col">Scenario</th><th scope="col" class="num">Clients</th><th scope="col" class="num">Optimized SQL</th><th scope="col" class="num">CPU scan</th><th scope="col" class="num">GPU scan</th><th scope="col" class="num">Upstream 1.47.0</th><th scope="col" class="num">GPU / CPU</th></tr></thead>
+            <tbody>
+              <tr><th scope="row"><code>search</code></th><td class="num">1</td><td class="num">4.72</td><td class="num">34.69</td><td class="num">65.26</td><td class="num">4.95</td><td class="num">1.88×</td></tr>
+              <tr><th scope="row"><code>search</code></th><td class="num">16</td><td class="num">19.52</td><td class="num">96.32</td><td class="num">668.96</td><td class="num">13.53</td><td class="num">6.94×</td></tr>
+              <tr><th scope="row"><code>search_complex</code></th><td class="num">1</td><td class="num">2.26</td><td class="num">10.72</td><td class="num">48.29</td><td class="num">1.86</td><td class="num">4.50×</td></tr>
+              <tr><th scope="row"><code>search_complex</code></th><td class="num">16</td><td class="num">5.00</td><td class="num">15.26</td><td class="num">190.91</td><td class="num">4.15</td><td class="num">12.51×</td></tr>
+              <tr><th scope="row"><code>mixed</code></th><td class="num">1</td><td class="num">15.89</td><td class="num">8.76</td><td class="num">7.37</td><td class="num">9.88</td><td class="num">0.84×</td></tr>
+              <tr><th scope="row"><code>mixed</code></th><td class="num">16</td><td class="num">84.31</td><td class="num">32.24</td><td class="num">35.67</td><td class="num">34.00</td><td class="num">1.11×</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="caption">At 16 clients, p99 search latency falls from 201 to 46 ms; complex search falls from 1,131 to 90 ms. The existing read/write mixed workload improves only 1.11× in throughput, with p99 increasing from 2,720 to 2,834 ms. At one client, mixed throughput is lower on GPU. Optimized SQL remains faster for this mixed workload.</p>
+        <ul class="limits">
+          <li>Same shared Linkding workload and seed: 100,000 bookmarks, 2,000 tags and 50 users. Simple search uses <code>q=alpha</code>. Complex search uses an eight-term boolean expression; both return 1,000 active matches and a first page of 20. The complex query is synthetic, on the existing seed.</li>
+          <li>Dual AMD EPYC 7502 host, one NVIDIA RTX 3090. Each variant has four server CPUs, four PostgreSQL CPUs and four client CPUs, with disjoint affinity. Four variants run concurrently on a shared host; clocks and NUMA placement are not fixed.</li>
+          <li>Each point starts with a fresh database and server, then 10 s warmup and 30 s measurement. Initial index creation is in warmup; write-triggered invalidation and rebuilding are included in mixed measurements. This measures warm operation, rather than cold start.</li>
+          <li>72 measurement points, 128,022 measured requests, zero HTTP failures and zero failed response checks. Expanded search conformance also passed 42 requests each on CPU and GPU. Latency figures average per-repetition percentiles; request rate includes k6's graceful stop.</li>
+          <li>These results cover two text searches and the existing mixed scenario at 1 and 16 clients. Earlier overview results use different conditions and remain separate. GPU gains apply to these search workloads; whole-application, cost and power improvements were not established.</li>
+        </ul>
+        <p class="caption"><a href="https://github.com/h5i-dev/h5i-app-bench/blob/bench-text-search/performance/linkding/bench/text-search-2026-10-17.md">Full methodology and reproduction</a> · <a href="https://github.com/h5i-dev/h5i-app-bench/blob/bench-text-search/performance/linkding/bench/results/text-search-2026-10-17/summary.csv">Summary CSV</a> · <a href="https://github.com/h5i-dev/h5i-app-bench/blob/bench-text-search/performance/linkding/bench/results/text-search-2026-10-17/points.csv">Per-point CSV summaries</a></p>
+      </section>
 
       <section id="method" class="block">
         <div class="block-head">

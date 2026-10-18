@@ -11,6 +11,7 @@ from pathlib import Path
 SCENARIOS = [
     "list",
     "search",
+    "search_complex",
     "search_tag",
     "get",
     "create",
@@ -19,7 +20,7 @@ SCENARIOS = [
     "tags",
     "mixed",
 ]
-IMPLS = ["fastapi", "go", "fastify", "rust-h5i", "upstream"]
+IMPLS = ["fastapi", "go", "fastify", "rust-h5i", "rust-h5i-optimized", "rust-h5i-cpu-scan", "rust-h5i-gpu", "upstream"]
 
 
 def load_point(summary_path: Path):

@@ -1,0 +1,6 @@
+# Only generated CSV/Markdown summaries are published; raw artifacts stay local.
+*
+!.gitignore
+!summary.csv
+!summary.md
+!points.csv
