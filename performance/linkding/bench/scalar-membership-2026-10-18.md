@@ -1,5 +1,7 @@
 # Linkding: scalar subqueries for unique membership
 
+Follow-up: [selectable SQL modes and fixed-offset list measurement](sql-modes-2026-10-18.md).
+
 This follows the [seed-statistics experiment](search-plan-2026-10-18.md).
 It changes the engine's SQL renderer, while retaining the application's
 extracted decisions, read plans, count plans, isolation and locks.

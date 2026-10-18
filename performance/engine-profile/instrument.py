@@ -10,10 +10,15 @@ from pathlib import Path
 p = argparse.ArgumentParser(description=__doc__)
 p.add_argument('h5i', type=Path)
 p.add_argument('bench', type=Path)
+p.add_argument('--read-sql-modes', action='store_true', help='Linkding SQL-mode hook and per-read/count timers; needs the mode-enabled engine')
 a = p.parse_args()
 pg = a.h5i / 'crates/h5i-app-pg/src'
 
 stages = 'http engine pool lock unlock begin clock load kernel write commit rollback backoff sql_compile sql_query pg_decode snapshot_decode read_plan sql_prepare'.split()
+if a.read_sql_modes:
+    if 'pub fn compile_read_with_mode' not in (a.h5i / 'crates/h5i-app-pgsql/src/read.rs').read_text():
+        p.error('--read-sql-modes requires the mode-enabled engine sources')
+    stages += ['count_query'] + [f'read_table_{i}' for i in range(8)]
 module = '''//! Benchmark-only aggregate probes; not part of the extracted logic.
 use std::{future::Future, sync::{OnceLock, atomic::{AtomicU64, Ordering}}, time::Instant};
 static ENABLED: OnceLock<bool> = OnceLock::new();
@@ -63,6 +68,19 @@ s = s.replace('let st = prepare(tx, sql).await?;', 'let st = crate::profile::mea
 s = s.replace('Ok(tx.0.query(&st, &refs(vals)).await?)', 'Ok(crate::profile::measure("sql_query", tx.0.query(&st, &refs(vals))).await?)')
 s = s.replace('let (sql, vals, kinds) = compiled_read(schema, tenant, q, false)?;', 'let (sql, vals, kinds) = { let _t = crate::profile::start("sql_compile"); compiled_read(schema, tenant, q, false)? };')
 s = s.replace('let (sql, vals, _) = compiled_read(schema, tenant, q, true)?;', 'let (sql, vals, _) = { let _t = crate::profile::start("sql_compile"); compiled_read(schema, tenant, q, true)? };')
+# The mode-enabled engine passes the transaction into compiled_read.
+for count, binding in [('false', 'kinds'), ('true', '_')]:
+    old = f'let (sql, vals, {binding}) = compiled_read(tx, schema, tenant, q, {count})?;'
+    new = f'let (sql, vals, {binding}) = {{ let _t = crate::profile::start("sql_compile"); compiled_read(tx, schema, tenant, q, {count})? }};'
+    s = s.replace(old, new)
+if a.read_sql_modes:
+    s = s.replace('    let rows = query(tx, &sql, &vals).await?;', '    let stage = format!("read_table_{}", q.table);\n    let rows = crate::profile::measure(&stage, query(tx, &sql, &vals)).await?;')
+    # load_table uses a Query, whose table id is the function parameter.
+    start = s.index('pub async fn load_table(')
+    end = s.index('pub async fn load_tables(', start)
+    s = s[:start] + s[start:end].replace('q.table', 'table') + s[end:]
+    start = s.index('pub async fn count_read(')
+    s = s[:start] + s[start:].replace('    let stage = format!("read_table_{}", q.table);\n    let rows = crate::profile::measure(&stage, query(tx, &sql, &vals)).await?;', '    let rows = crate::profile::measure("count_query", query(tx, &sql, &vals)).await?;', 1)
 s = s.replace('    rows.iter().map(|r| read_row(&kinds, r)).collect()', '    let timer = crate::profile::start("pg_decode");\n    timer.units(rows.len());\n    rows.iter().map(|r| read_row(&kinds, r)).collect()')
 f.write_text(s)
 f = a.h5i / 'crates/h5i-app-schema/src/lib.rs'
@@ -77,6 +95,17 @@ for app in ['linkding', 'realworld']:
             out.write(f'{crate} = {{ path = "{a.h5i / "crates" / crate}" }}\n')
     f = root / 'server/src/lib.rs'
     s = f.read_text().replace('    let listener = tokio::net::TcpListener', '    let router = router.route("/__engine_profile", axum::routing::get(|| async { h5i_app_pg::profile::report() }));\n    let listener = tokio::net::TcpListener')
+    if a.read_sql_modes and app == 'linkding':
+        anchor = '    let pool = h5i_app_pg::pool(&h5i_app_pg::with_schema(&url, "h5iapp")?, pool_size)?;'
+        assert anchor in s
+        hook = """
+    match std::env::var("H5I_READ_SQL_MODE").as_deref() {
+        Ok("scalar") => pool.set_read_sql_mode(h5i_app_pg::ReadSqlMode::ScalarWhenUnique),
+        Ok("membership") | Err(_) => {},
+        Ok(other) => panic!("invalid H5I_READ_SQL_MODE: {other}"),
+    }
+"""
+        s = s.replace(anchor, anchor + hook)
     # Time application plan construction separately, retaining its evaluation order.
     count_fn = 'list_count' if app == 'linkding' else 'article_count'
     s = s.replace(f'        let count = k::{count_fn}', f'        let read_plan_timer = h5i_app_pg::profile::start("read_plan");\n        let count = k::{count_fn}')

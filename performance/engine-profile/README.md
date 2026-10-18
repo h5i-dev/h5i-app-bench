@@ -1,5 +1,7 @@
 # HTTP engine cost measurements
 
+Follow-up: [selectable SQL modes and fixed-offset list measurement](../linkding/bench/sql-modes-2026-10-18.md).
+
 Results and optimization priorities: [2026-10-18 report](REPORT.md).
 Follow-up: [unique-membership SQL optimization](../linkding/bench/scalar-membership-2026-10-18.md),
 measured separately with the same HTTP workloads.
@@ -122,3 +124,12 @@ transition needs extraction and reproof of affected theorems. A SQL compiler,
 store, lock or isolation change also needs its database/refinement assumptions
 reviewed; retaining an unchanged kernel proof alone cannot establish its safety.
 Do not disable isolation or locking to manufacture a performance gain.
+
+For the [selectable SQL experiment](../linkding/bench/sql-modes-2026-10-18.md),
+`instrument.py --read-sql-modes` adds a Linkding-only pool-setting hook and
+per-table/count timers. It requires the mode-enabled engine sources.
+`run.py --read-sql-mode membership|scalar --list-offset 100` selects the
+experimental setting and fixes the workload offset. Without these options,
+the original instrumentation and rotating-offset workload are retained.
+Do not use the SQL-mode flag with an ordinary production server: the selection
+hook is benchmark-only. Per-table/count timers overlap with pipelined work.

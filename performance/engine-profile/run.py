@@ -25,6 +25,10 @@ p.add_argument('--scratch-root', type=Path, default=Path('/dev/shm/h5i-engine-pr
                help='Database and temporary files; default is RAM-backed, with no disk fallback')
 p.add_argument('--mode', choices=['on', 'off', 'pristine'], default='on')
 p.add_argument('--scenarios', required=True)
+p.add_argument('--read-sql-mode', choices=['membership', 'scalar'],
+               help='Requires a binary with the experimental H5I_READ_SQL_MODE hook')
+p.add_argument('--list-offset', type=int,
+               help='Fix Linkding list offset for SQL-strategy comparisons')
 p.add_argument('--concurrency', default='1 64')
 p.add_argument('--repeats', type=int, default=3)
 p.add_argument('--warmup', type=int, default=5)
@@ -37,6 +41,10 @@ p.add_argument('--python', default=os.environ.get('PY', 'python3'),
 p.add_argument('--keep-going', action='store_true',
                help='Retain failed points and continue; errors remain in summaries')
 a = p.parse_args()
+if a.read_sql_mode is not None and a.app != 'linkding':
+    p.error('--read-sql-mode currently requires the instrumented Linkding server')
+if a.list_offset is not None and (a.app != 'linkding' or a.list_offset < 0):
+    p.error('--list-offset requires linkding and a nonnegative integer')
 a.scratch_root = a.scratch_root.resolve()
 a.scratch_root.mkdir(parents=True, exist_ok=True)
 if shutil.disk_usage(a.scratch_root).free < 4 * 1024**3:
@@ -67,6 +75,10 @@ env = dict(os.environ, **{
     'H5I_ENGINE_PROFILE': '1' if a.mode == 'on' else '0', 'PY': a.python,
 })
 env.pop('DATABASE_URL', None)
+if a.read_sql_mode:
+    env['H5I_READ_SQL_MODE'] = a.read_sql_mode
+if a.list_offset is not None:
+    env['LIST_OFFSET'] = str(a.list_offset)
 workload = (root / 'bench/workload.js').read_text()
 if a.app == 'linkding':
     workload = workload.replace("gracefulStop: '5s'", "gracefulStop: '120s'")

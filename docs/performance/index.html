@@ -95,6 +95,22 @@
         <p class="caption"><a href="https://github.com/h5i-dev/h5i-app-bench/blob/measure-engine-cost/performance/linkding/bench/search-plan-2026-10-18.md">Results, limitations and reproduction</a> · <a href="https://github.com/h5i-dev/h5i-app-bench/blob/measure-engine-cost/performance/linkding/bench/results/search-plan-2026-10-18/comparison.csv">Summary CSV</a></p>
       </section>
 
+      <section id="read-sql-modes" class="block">
+        <div class="block-head">
+          <h2 class="term" data-n="+">Selectable read SQL modes</h2>
+          <p>Linkding HTTP list experiment · 2026-10-18. One binary, fixed offset 100, alternating pool settings; original IN mode remains the default.</p>
+        </div>
+        <div class="table-wrap"><table class="perf-detail">
+          <caption>HTTP requests per second, mean of three repetitions; timing probes enabled.</caption>
+          <thead><tr><th scope="col">Clients</th><th scope="col" class="num">Membership</th><th scope="col" class="num">Scalar when unique</th><th scope="col" class="num">Ratio</th></tr></thead><tbody>
+            <tr><th scope="row">1</th><td class="num">31.20</td><td class="num">47.86</td><td class="num">1.53×</td></tr>
+            <tr><th scope="row">64</th><td class="num">154.11</td><td class="num">259.12</td><td class="num">1.68×</td></tr>
+          </tbody></table></div>
+        <p class="caption">12 points, 22,458 HTTP requests, zero failures. Exact-count wait falls from 29.50 to 18.42 ms at one client and 195.30 to 108.30 ms at 64 clients. Both modes return 20 results and the exact total of 95,000. Per-query timers overlap.</p>
+        <p class="caption">The earlier rotating-offset regression is not reproduced at this fixed offset; its cause remains unresolved. These are separate workloads, not a replacement of earlier results or a Go comparison. Both modes pass API conformance and database differential tests; existing proof gates are retained. Default application dependency pins are unchanged.</p>
+        <p class="caption"><a href="https://github.com/h5i-dev/h5i-app-bench/blob/measure-engine-cost/performance/linkding/bench/sql-modes-2026-10-18.md">Results, validation and reproduction</a> · <a href="https://github.com/h5i-dev/h5i-app-bench/blob/measure-engine-cost/performance/linkding/bench/results/sql-modes-2026-10-18/comparison.csv">Summary CSV</a></p>
+      </section>
+
       <section id="scalar-membership" class="block">
         <div class="block-head">
           <h2 class="term" data-n="+">Linkding unique-membership SQL</h2>
