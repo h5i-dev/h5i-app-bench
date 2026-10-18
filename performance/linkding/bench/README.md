@@ -29,8 +29,10 @@ dataset, not a production traffic trace. The original `mixed` remains 40% list,
 Every point now stops the server before reseeding and restarts it afterwards:
 direct SQL reseeding cannot invalidate a resident CPU/GPU index. Index building
 is in warmup; rebuilds caused by writes during `mixed` are in the measurement.
-The shared k6 workload rejects failed HTTP/status checks; failed points stop the
-run. Client logs are saved beside the summaries.
+The shared k6 workload detects failed HTTP/status checks. The usual harness
+records `POINT_FAIL` and continues, retaining overload observations as before;
+`BENCH_STRICT=1` stops on a failed point. The controlled runner below enables
+strict mode. Client logs are saved beside the summaries.
 
 For a controlled remeasurement of the affected search scenarios and mixed
 traffic, use the same harness with prebuilt servers:
@@ -55,6 +57,9 @@ removes its containers. Only the search and mixed subset is rerun; this does
 not replace published results for the other endpoints or implementations.
 CPU/GPU comparisons isolate the scan backend; comparisons with optimized SQL
 or upstream also include differences in indexing, language and architecture.
+
+The [2026-10-17 remeasurement](text-search-2026-10-17.md) records all 72 points,
+including the mixed workload where GPU acceleration has little benefit.
 
 ```sh
 performance/linkding/scripts/bench-parallel.sh

@@ -9,6 +9,7 @@
 #   BENCH_SCENARIOS="list search search_complex search_tag get create update archive tags mixed"
 #   BENCH_SERVER_BIN=/absolute/path/to/prebuilt/server (one implementation only)
 #   BENCH_IMPL_LABEL=rust-h5i-cpu-scan (label a CPU-only GPU-server build)
+#   BENCH_STRICT=1 (stop on failed warmup/measurement checks)
 #   BENCH_OUT=linkding/bench/results
 #   SERVER_CPUS=0-3 K6_CPUS=8-11 PG_CPUS=4-7
 #   LINKDING_PG_CONTAINER=linkding-pg-fastapi LINKDING_PG_PORT=5440
@@ -263,16 +264,18 @@ for name in "$@"; do
           echo "POINT_FAIL $tag server died; restarting" >&2
           start_server "$name" "$port" "$dir"
         fi
-        run_k6 "$WARMUP" "$LOG_DIR/warmup-${tag}.json"
+        if ! run_k6 "$WARMUP" "$LOG_DIR/warmup-${tag}.json"; then
+          echo "POINT_FAIL $tag warmup checks failed" >&2
+          if [ "${BENCH_STRICT:-0}" = 1 ]; then exit 1; fi
+        fi
         meta_tmp="$OUT/${tag}.meta.json"
         summary="$OUT/${tag}.summary.json"
         "$PY" -u "$ROOT/bench/sample_proc.py" "$server_pid" > "$meta_tmp.sample" &
         sampler=$!
+        measure_failed=0
         if ! run_k6 "$DURATION" "$summary"; then
           echo "POINT_FAIL $tag k6 exited non-zero" >&2
-          kill "$sampler" >/dev/null 2>&1 || true
-          wait "$sampler" >/dev/null 2>&1 || true
-          exit 1
+          measure_failed=1
         fi
         kill "$sampler" >/dev/null 2>&1 || true
         wait "$sampler" >/dev/null 2>&1 || true
@@ -310,6 +313,7 @@ rate = float(failed.get("value", 0) or 0)
 if rate > 0.01:
     print(f"POINT_FAIL {tag} http_req_failed={rate:.4f} passes={failed.get('passes')}", flush=True)
 PY
+        if [ "$measure_failed" = 1 ] && [ "${BENCH_STRICT:-0}" = 1 ]; then exit 1; fi
       done
     done
   done

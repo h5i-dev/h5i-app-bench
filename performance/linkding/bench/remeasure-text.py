@@ -40,7 +40,7 @@ def main():
     metadata = {k: str(v) if isinstance(v, Path) else v for k, v in vars(args).items()}
     metadata.update(started_utc=time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime()),
                     revision=subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip(),
-                    scenarios='search search_complex mixed',
+                    scenarios='search search_complex mixed', strict=True,
                     sha256={k: hashlib.sha256(v.read_bytes()).hexdigest()
                             for k, v in vars(args).items() if k.endswith('_bin') or k == 'ptx'},
                     layout=[])
@@ -58,7 +58,7 @@ def main():
                        LINKDING_PG_DATA=f'/var/tmp/{container}',
                        LINKDING_UPSTREAM_CONTAINER=upstream,
                        BENCH_PORT=str(args.http_port_base+i), BENCH_OUT=str(args.out),
-                       LOG_DIR=str(log_dir), BENCH_NO_SUMMARY='1', BENCH_IMPL_LABEL=label,
+                       LOG_DIR=str(log_dir), BENCH_NO_SUMMARY='1', BENCH_IMPL_LABEL=label, BENCH_STRICT='1',
                        BENCH_SCENARIOS=metadata['scenarios'], BENCH_CONCURRENCY=args.concurrency,
                        BENCH_REPEATS=str(args.repeats), BENCH_WARMUP=str(args.warmup),
                        BENCH_DURATION=str(args.duration), CUDA_VISIBLE_DEVICES='0',

@@ -2050,7 +2050,7 @@
     },
     {
      "id": "rust-h5i-gpu",
-     "stack": "Rust, axum, sqlx, plus a GPU-resident search index (Rust-CUDA) that the engine's read plan feeds",
+     "stack": "Rust, axum, sqlx, GPU-resident search index (Rust-CUDA), with SQL fallback",
      "h5i": true
     },
     {
