@@ -880,6 +880,14 @@ fn env_u32(key: &str, default: u32) -> u32 {
         .unwrap_or(default)
 }
 
+// Zero disables the resident cache; pool/worker settings above require > 0.
+fn env_cache_limit(key: &str, default: u32) -> u32 {
+    std::env::var(key)
+        .ok()
+        .and_then(|value| value.parse().ok())
+        .unwrap_or(default)
+}
+
 async fn run() -> Result<(), Box<dyn std::error::Error>> {
     let db_url = env_string(
         "DATABASE_URL",
@@ -908,8 +916,8 @@ async fn run() -> Result<(), Box<dyn std::error::Error>> {
         search: SearchWorker::start(
             ptx,
             env_u32("H5I_SEARCH_QUEUE", 32) as usize,
-            env_u32("H5I_SEARCH_CACHE_ENTRIES", 8) as usize,
-            (env_u32("H5I_SEARCH_CACHE_MIB", 256) as usize).saturating_mul(1024 * 1024),
+            env_cache_limit("H5I_SEARCH_CACHE_ENTRIES", 8) as usize,
+            (env_cache_limit("H5I_SEARCH_CACHE_MIB", 256) as usize).saturating_mul(1024 * 1024),
         )?,
     };
     let addr: SocketAddr = format!("127.0.0.1:{port}").parse()?;
