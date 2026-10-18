@@ -15,20 +15,20 @@ measurements describe that pinned engine, **not a rebuilt latest h5i main**.
 Later engine changes must be measured separately before transferring numbers.
 
 Only summary CSVs and the report belong in git. Raw logs, k6 JSON, counter
-captures, copied harnesses and database files stay under `/var/tmp`.
+captures, copied harnesses and database files stay under `/dev/shm`.
 
 ## Reproduce
 
 Use disposable worktrees for both repositories; the probe generator modifies
 source files and Cargo patches in those worktrees. Install the prerequisites of
-the existing performance harness, including k6, Docker, curl, taskset and Python
+the existing performance harness, including k6, Docker, curl, taskset, findmnt and Python
 with PyJWT (Conduit). See each application's README for build prerequisites.
 
 ```sh
-git -C /path/to/h5i worktree add --detach /var/tmp/h5i-probe 3fcbcdafdfdd759bfa52c765ce8dd2f73c88a26e
-git -C /path/to/h5i-app-bench worktree add --detach /var/tmp/bench-probe HEAD
-cd /var/tmp/bench-probe
-python3 performance/engine-profile/instrument.py /var/tmp/h5i-probe /var/tmp/bench-probe
+git -C /path/to/h5i worktree add --detach /dev/shm/h5i-probe 3fcbcdafdfdd759bfa52c765ce8dd2f73c88a26e
+git -C /path/to/h5i-app-bench worktree add --detach /dev/shm/bench-probe HEAD
+cd /dev/shm/bench-probe
+python3 performance/engine-profile/instrument.py /dev/shm/h5i-probe /dev/shm/bench-probe
 cargo build --release --manifest-path performance/linkding/rust-h5i/Cargo.toml -p linkding-server
 cargo build --release --manifest-path performance/realworld/rust-h5i/Cargo.toml -p conduit-server
 ```
@@ -41,13 +41,13 @@ before rebuilding the instrumented versions.
 ```sh
 python3 performance/engine-profile/run.py --app linkding \
   --binary /absolute/path/to/instrumented-linkding-server \
-  --out /var/tmp/linkding-profile --scenarios 'get list search create mixed'
+  --out /dev/shm/linkding-profile --scenarios 'get list search create mixed'
 python3 performance/engine-profile/run.py --app realworld \
   --binary /absolute/path/to/instrumented-conduit-server \
-  --out /var/tmp/conduit-profile --scenarios 'slug list create favorite mixed' \
+  --out /dev/shm/conduit-profile --scenarios 'slug list create favorite mixed' \
   --python /path/to/python-with-pyjwt
 python3 performance/engine-profile/summarize.py \
-  /var/tmp/linkding-profile /var/tmp/conduit-profile \
+  /dev/shm/linkding-profile /dev/shm/conduit-profile \
   --out performance/engine-profile/results/2026-10-18
 ```
 
@@ -56,7 +56,11 @@ four server CPUs, four PostgreSQL CPUs, four load-generator CPUs, four Tokio
 workers, and a 32-connection pool. Change `--cpu-base`, `--pg-port` and
 `--http-port` to use disjoint resources for concurrent experiments. Each run
 creates and removes its own PostgreSQL container; raw output and DB files are
-retained locally. Linkding gets a 120 s graceful drain in a **local copy** of the
+retained locally. Database and temporary files default to
+`--scratch-root /dev/shm/h5i-engine-profile`, with a 4 GiB free-space preflight
+and no disk fallback. Use `/dev/shm` for `--out` and binaries as well. Each
+run records filesystem type and free bytes before/after in its local `run.json`.
+Linkding gets a 120 s graceful drain in a **local copy** of the
 workload to count all slow in-flight searches. The 15 s arrival window is unchanged.
 Run `--mode pristine` against an unmodified binary for controls. `--mode off`
 disables counters in an instrumented binary, which alone is not a pristine control.

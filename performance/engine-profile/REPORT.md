@@ -1,153 +1,157 @@
 # Engine cost: Linkding and Conduit
 
-Measured 2026-10-18. This is an HTTP end-to-end profiling experiment, not a
-kernel microbenchmark or a new Go/Rust/GPU ranking. The normal applications use
-their original h5i pin, `3fcbcdafdfdd759bfa52c765ce8dd2f73c88a26e`; the benchmark
-base is `671bf10`. Latest h5i main was not substituted for that pin.
+Remeasured 2026-10-18 with PostgreSQL data, raw captures, logs, temporary files,
+binaries and experiment worktrees on **`/dev/shm` (tmpfs)**. This supersedes the
+`/var/tmp` measurements published in `253a07a`. The old experiment's temporary
+artifacts and approximately 13 GiB of database data were removed from `/var/tmp`.
+This is an HTTP end-to-end profile, not a kernel microbenchmark or a Go/Rust/GPU ranking.
+
+The normal applications retain h5i `3fcbcdafdfdd759bfa52c765ce8dd2f73c88a26e`
+and application benchmark base `671bf10`. The same release binaries were copied
+without rebuilding; latest h5i main was not substituted. The profiling runner is
+based on `253a07a`, with the storage changes accompanying this report.
 
 ## Decision
 
-Both shared engine work and application-specific work deserve investigation.
-The dominant cause changes with the endpoint. Start with the application read
-plan for Linkding text search; examine transaction round trips for light reads;
-examine application counter contention and engine connection admission for
-writes. Do not replace the proved execution path with hand-written optimized
-SQL or weaken transaction isolation to get a better score.
+Both engine and application work deserve investigation, depending on the endpoint.
+Start with Linkding search's application read plan; examine transaction round trips
+for light reads; examine application counter contention and engine admission for
+writes. Do not weaken isolation or bypass proved logic for a faster score.
 
-`engine` time includes the application's database reads and waits. It is not a
-measurement of generic framework CPU overhead. Likewise, a pool wait is queueing
-behind limited capacity, not automatically a reason to increase the pool size.
+`engine` includes application database reads and waits; it is not generic framework
+CPU overhead. Pool wait measures queueing behind capacity, not proof that a larger
+pool improves throughput.
 
-All 60 profile points completed and matched their counter deltas: 1,278,942 HTTP requests. Each of the 20 scenario/concurrency groups has three repetitions. Only Conduit favorite at concurrency 64 has measured HTTP failures (611 requests); see the failure discussion below.
+All **60 profile points** completed with matching HTTP, engine and k6 counters:
+**1,308,812 requests**. Each of 20 scenario/concurrency groups has three repetitions.
+There were **510 failed HTTP requests**, all in Conduit favorite at concurrency
+64; the per-point summaries retain errors.
 
-Representative per-request means, in milliseconds. `load` includes nested conversion; columns are not all exclusive CPU costs.
+Representative per-request mean wall times, in milliseconds. Load includes nested
+conversion, and these columns are not all exclusive CPU costs.
 
 | Application / endpoint | Concurrency | HTTP | Pool wait | Lock wait | Load | Kernel |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| Linkding get | 1 | 1.958 | 0.002 | 0.000 | 1.124 | 0.003 |
-| Linkding search | 1 | 1,026.339 | 0.005 | 0.000 | 965.295 | 41.621 |
-| Linkding search | 64 | 13,539.468 | 5,619.437 | 0.000 | 7,804.950 | 50.089 |
-| Linkding create | 64 | 1,999.451 | 966.191 | 1,000.007 | 28.592 | 0.007 |
-| Conduit slug | 1 | 1.536 | 0.002 | 0.000 | 0.743 | 0.002 |
-| Conduit list | 64 | 60.530 | 29.978 | 0.000 | 18.022 | 0.145 |
-| Conduit create | 64 | 261.752 | 130.012 | 127.596 | 0.746 | 0.004 |
-| Conduit favorite | 64 | 15.233 | 7.446 | 2.969 | 1.062 | 0.002 |
+| Linkding get | 1 | 2.336 | 0.002 | 0.000 | 1.267 | 0.003 |
+| Linkding search | 1 | 962.695 | 0.007 | 0.000 | 900.590 | 40.980 |
+| Linkding search | 64 | 13,303.812 | 5,491.696 | 0.000 | 7,691.850 | 50.927 |
+| Linkding create | 64 | 2,061.473 | 995.587 | 1,031.601 | 29.893 | 0.007 |
+| Conduit slug | 1 | 1.645 | 0.002 | 0.000 | 0.797 | 0.002 |
+| Conduit list | 64 | 61.888 | 30.650 | 0.000 | 18.608 | 0.151 |
+| Conduit create | 64 | 235.068 | 116.872 | 114.481 | 0.702 | 0.004 |
+| Conduit favorite | 64 | 12.322 | 6.017 | 2.376 | 0.884 | 0.002 |
 
-For light reads, BEGIN + COMMIT averages 0.788 ms of 1.958 ms for Linkding get, and 0.748 ms of 1.536 ms for Conduit slug. SQL construction averages 0.079/0.059 ms; generic row decoding 0.005/0.004 ms. Those fixed boundaries deserve investigation before rewriting these kernels.
+For light reads, BEGIN + COMMIT averages
+1.022 ms
+of 2.336 ms for Linkding get, and
+0.801 ms
+of 1.645 ms for Conduit slug.
+SQL construction averages 0.079/0.060 ms;
+generic row decoding 0.005/0.004 ms.
+These fixed boundaries deserve investigation before rewriting these kernels.
 
-Linkding text search converts **287,002 rows per request**. At concurrency 1, its load phase averages 965 ms, including 84.6 ms of generic row conversion and 20.0 ms of snapshot decoding; the kernel is 41.6 ms. Reducing the candidate snapshot is the largest application-specific opportunity. At concurrency 64, queueing adds substantial latency.
+Linkding search converts **287,002 rows/request**.
+At concurrency 1, load averages 900.590 ms, including
+85.913 ms of generic row conversion and
+17.714 ms of snapshot decoding;
+kernel evaluation averages 40.980 ms.
+Reducing the candidate snapshot remains the principal application opportunity.
 
-At concurrency 64, pool + advisory-lock waits account for about **98%** of the observed Linkding create mean and **98%** of Conduit create. These waits explain latency under contention; moving the wait or increasing the pool does not eliminate the serialized critical section.
+At concurrency 64, pool + advisory-lock waits account for
+98.3%
+of Linkding create and
+98.4%
+of Conduit create. Moving the wait or increasing pool capacity does not remove
+the serialized critical section.
 
-Full summaries: [profile-summary.csv](results/2026-10-18/profile-summary.csv), [per-repetition points](results/2026-10-18/profile-points.csv), and [control points](results/2026-10-18/control-points.csv).
+Full summaries: [profile-summary.csv](results/2026-10-18/profile-summary.csv),
+[per-repetition points](results/2026-10-18/profile-points.csv),
+[control points](results/2026-10-18/control-points.csv), and
+[storage/run summary](results/2026-10-18/storage-summary.csv).
 
 ## What to investigate next
 
-1. **Application query plans and indexes first for Linkding search.** Ordinary
-   free-text search falls back to `Pred::All` within the selected owner/scope;
-   the kernel filters that snapshot. A conservative SQL prefilter could reduce
-   the snapshot, but it must have no false negatives under the existing ASCII
-   search semantics. Pagination, counts, ownership, tag/bundle relations and
-   supported query syntax must remain correct. Changing that read plan requires
-   extraction and rechecking the affected sufficiency, frame and count proofs.
-   SQL `ILIKE` alone must not be assumed equivalent to the kernel predicate.
-2. **Shared engine for light read-only requests.** Measure ways to reduce wire
-   round trips and repeated plan/SQL construction while retaining the same
-   `SERIALIZABLE READ ONLY DEFERRABLE` transaction and snapshot semantics. The
-   engine already pipelines table reads and caches prepared statements; these
-   are not missing features. Generic row conversion is a nested measured cost,
-   not a justification for changing application decisions.
-3. **Write contention spans app and engine.** Both applications serialize creates
-   on an application counter key. Connection acquisition precedes advisory-lock
-   acquisition, so blocked writers occupy scarce pool connections. Investigate
-   the query plans/indexes used inside the critical section as well: Linkding
-   create spends about 29 ms loading only a few rows at concurrency 64. A small
-   result set does not imply a cheap database query. Reducing this critical
-   section could help throughput without removing the counter lock. Also study
-   admission before occupying a connection, retaining the database lock for
-   cross-process correctness. This alone cannot increase throughput through the
-   same serialized counter. A different ID allocation strategy changes application
-   logic and storage assumptions and needs corresponding reproof.
-4. **Resolve Conduit favorite resource failures before ranking its speed.** The
-   instrumented database log reports `out of shared memory` with a hint to
-   increase `max_pred_locks_per_transaction`. Unmodified binaries also fail the
-   same workload. Retain `SERIALIZABLE`; separately test predicate-lock capacity
-   and query plans. The current experiment does not change database settings or
-   establish that configuration alone fixes every error.
+1. **Application read plans/indexes for Linkding search.** Free-text search falls
+   back to `Pred::All` within the owner/scope; the kernel filters that snapshot.
+   A conservative SQL prefilter must have no false negatives under the existing
+   ASCII semantics. Preserve pagination, counts, ownership, relations and query
+   syntax. Changing the read plan requires extraction and rechecking sufficiency,
+   frame and count proofs. Do not assume SQL `ILIKE` equals the kernel predicate.
+2. **Shared engine for light reads.** Investigate fewer wire round trips and less
+   repeated plan/SQL construction while preserving `SERIALIZABLE READ ONLY
+   DEFERRABLE` snapshot semantics. Table reads are already pipelined and prepared
+   statements cached. Generic row conversion is a nested measured cost.
+3. **Write contention across app and engine.** Creates serialize on an application
+   counter key. Pool acquisition precedes advisory-lock acquisition, occupying
+   connections while blocked. Investigate admission and the SQL/indexes inside
+   the critical section, retaining database locks for cross-process correctness.
+   Different ID allocation changes application logic/storage assumptions and
+   requires corresponding reproof.
+4. **Conduit favorite predicate-lock capacity.** A pristine binary also fails
+   on tmpfs: **461 / 218,849 requests** across three concurrency-64
+   repetitions. Its PostgreSQL log records 461 `out of shared memory`
+   errors with `max_pred_locks_per_transaction` hints. Changing the host data
+   directory did not resolve that limit. Retain `SERIALIZABLE` and separately
+   investigate capacity and query plans; no configuration fix is claimed here.
 
-For the optimized and GPU variants, a separate profile is needed: their HTTP/SQL
-shell differs from this engine path. These measurements do not establish which
-optimization would beat Go, or by how much.
+Optimized/GPU variants need separate attribution; their HTTP/SQL shell differs.
+This experiment does not establish an optimization that beats Go.
 
 ## Method and limits
 
 Host: AMD EPYC 7502, two sockets, 128 logical CPUs. Each server, PostgreSQL and k6
-gets its own four logical CPUs; Tokio has four workers and the pool has 32
-connections. Release builds use rustc 1.98.1; k6 is v2.3.0.
-PostgreSQL 16 uses the existing harness settings (`max_connections=200`,
-`shared_buffers=512MB`, default predicate-lock limits). Linkding profiling
-uses CPU groups 0–3 / 4–7 / 8–11; Conduit uses 12–15 / 16–19 / 20–23.
-Applications seed and restart through the existing harness for each point.
-Five scenarios per application, concurrency 1/64, three repetitions, 5 s warmup
-and a 15 s arrival window. Linkding's local workload copy allows 120 s for slow
-in-flight requests to drain. Reported RPS uses k6's actual elapsed measurement,
-including drain, not a fixed 15 s divisor.
+gets four logical CPUs; Tokio has four workers and the pool has 32 connections.
+Release binaries use rustc 1.98.1; k6 is v2.3.0. PostgreSQL 16 retains
+`max_connections=200`, `shared_buffers=512MB` and default predicate-lock limits.
+Linkding uses CPUs 0–3 / 4–7 / 8–11; Conduit 12–15 / 16–19 / 20–23.
 
-Times are mean wall time per completed request, then averaged across repetitions.
-They include scheduling/queueing; these are not CPU samples. SQL query futures
-are pipelined: their summed lifetimes overlap and must not be added to the
-parent load time. Load combines database execution, protocol/network, scheduling
-and conversion. No database CPU versus I/O attribution is claimed.
+Five scenarios/app, concurrency 1/64, three repetitions, 5 s warmup and 15 s
+arrival window. Each point reseeds and restarts through the existing HTTP harness.
+Linkding's local workload copy allows a 120 s graceful drain; RPS uses actual k6
+elapsed time including drain. Failed points are retained, not hidden or counted
+as passing. Quiescent before/after counter deltas must match completed requests.
 
-Before/after snapshots are taken with warmup and measurement requests drained.
-The summarizer checks that HTTP counter deltas, engine invocations and k6
-request counts agree exactly. Conduit favorite failures stopped the initial
-strict run; its favorite/mixed scenarios were resumed with failures retained.
-Later captures replace the repeated initial favorite points, not count them twice.
+DB bind mounts were verified to originate in `/dev/shm`; output mount types and
+free bytes before/after each run are recorded locally and summarized in git.
+The minimum of these recorded free-space samples was **84.2 GiB**.
+The runner defaults DB/temp/cache paths to `/dev/shm`, checks for 4 GiB free
+before starting, and does not fall back to `/var/tmp`. PostgreSQL settings were
+unchanged. This removes the `/var` capacity dependency for experiment data;
+it is not a controlled measurement of a tmpfs-versus-disk speedup.
 
-Control binaries were built from the original locked dependencies, without probes.
-Controls used the same per-app CPU allocation for pristine/instrumented pairs.
-An initial sequential control and two alternating batches were retained in
-`control-points.csv`; the final batch used pristine/on/on/pristine/pristine/on
-order, 3 s warmup and 10 s measure at concurrency 64.
+Wall times include scheduling and queueing. Pipelined SQL futures overlap;
+do not add their summed lifetimes to load. Load combines DB execution,
+protocol/network, scheduling and conversion; DB CPU versus I/O is not isolated.
 
-| Final control | Pristine RPS, mean ± SD | Probed RPS, mean ± SD | Observed difference |
+Pristine/probed controls use identical CPU allocations within each app:
+24–27 / 28–31 / 32–35 for Linkding, 48–51 / 52–55 / 56–59 for Conduit.
+Order: pristine/on/on/pristine/pristine/on; 3 s warmup, 10 s measurement,
+concurrency 64, one point per run, three runs per mode.
+
+| Control | Pristine RPS, mean ± SD | Probed RPS, mean ± SD | Observed difference |
 | --- | ---: | ---: | ---: |
-| Linkding get | 3,870 ± 14 | 3,814 ± 88 | −1.5% |
-| Conduit slug | 12,970 ± 640 | 13,629 ± 44 | +5.1% |
+| Linkding get | 3,809 ± 50 | 3,670 ± 230 | -3.7% |
+| Conduit slug | 10,070 ± 2,981 | 11,905 ± 1,467 | +18.2% |
 
-These are not proof of zero instrumentation overhead or an overhead bound.
-Earlier controls showed substantially different throughput, and a positive
-instrumented difference indicates environmental/order variation. Runs share a
-host even though their CPU sets and database instances are disjoint; CPU pinning
-does not isolate memory, storage or scheduler effects. Treat small timing
-percentages cautiously. The experiment supports prioritizing large bottlenecks,
-not claiming a small speedup. Future changes need pristine before/after runs
-with the same workload and guarantee scope.
-
-Conduit favorite also failed without probes: **455 / 195,232 requests** across
-three concurrency-64 repetitions. Its error rates are evidence to investigate,
-not a passing benchmark score.
+These noisy controls do **not** establish zero overhead, a stable overhead bound,
+or a speedup from probes. Positive differences and large variation are consistent with
+host/order effects and prevent attributing these differences to probes. CPU pinning does not isolate memory or scheduling; profiles
+and controls share a host. Use these results to prioritize large bottlenecks,
+not small percentage improvements. Future changes need pristine before/after
+measurements with identical workloads and guarantee scope.
 
 ## Safety and validation
 
 No kernel, extracted read/count plan, extraction configuration, generated Lean,
-handwritten theorem, SQL, lock or transaction isolation was changed. Timing
-probes and a benchmark-only counter endpoint were added in disposable worktrees;
-application path patches are not part of the final benchmark source changes.
+handwritten theorem, SQL, lock or isolation level changed. This storage rerun
+uses the same binaries previously validated by HTTP conformance (Linkding
+9 files / 200 requests; Conduit 13 files / 154 requests) and release kernel tests
+(Linkding 4, Conduit 2). Counter/request agreement is checked for all new points.
 
-The instrumented binaries passed the existing HTTP conformance suites:
-Linkding 9 files / 200 requests, Conduit 13 files / 154 requests. Release kernel
-tests passed: Linkding 4 tests, Conduit 2 tests. Python probe/aggregation scripts
-compile, and the diff passes whitespace validation.
+Lean was not rerun; no new proof is claimed for timing instrumentation. Existing
+proofs cover each application's `h5i-app.toml` claims, not the entire HTTP/DB stack.
+Future logic changes require extraction and reproof; engine/store/compiler
+changes also require reviewing refinement and concurrency assumptions.
 
-The Lean sources are unchanged; this experiment did not rerun Lean or prove
-new instrumentation. Existing proofs cover the claims gated by each application's
-`h5i-app.toml`, not all runtime/database behavior. Future logic changes require
-re-extraction and reproof; engine/store/compiler changes also need their trusted
-refinement and concurrency assumptions reviewed. HTTP regression tests alone
-cannot preserve a formal guarantee after such a change.
-
-Only aggregate CSVs and this report are retained in git. Raw JSON, counter
-captures, server/database logs and build artifacts stay outside the repository.
-See [README](README.md) for reproduction and counter definitions.
+Only summary CSVs and documentation are committed. Raw JSON, counters and logs
+remain in `/dev/shm`. See [README](README.md) for reproduction and stage definitions.
