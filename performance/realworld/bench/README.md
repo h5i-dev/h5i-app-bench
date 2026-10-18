@@ -113,3 +113,6 @@ local; publish only `summary.csv`, `summary.md` and `points.csv`.
 measurements stop the harness. Both failed HTTP requests and failed k6 checks
 are thresholds; ordinary sweeps still record overload failures and continue.
 GPU is optional and not included in the default portable sweep.
+
+The [2026-10-18 paired HTTP measurement](gpu-policy-2026-10-18.md) reports
+all seven scenarios, including those that do not execute GPU policies.

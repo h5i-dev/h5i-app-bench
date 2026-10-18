@@ -41,6 +41,7 @@
       <nav class="site-nav" aria-label="Benchmark sections" id="app-nav">
         <a href="#overview">Overview</a>
         <a href="#gpu-search">Optional GPU search</a>
+        <a href="#gpu-conduit">Optional GPU policies</a>
         <a href="#method">Method</a>
       </nav>
       <div class="theme" role="group" aria-label="Color theme">
@@ -53,7 +54,7 @@
       <section class="intro">
         <p class="prompt"><span class="ps">$</span> k6 run <span class="arg">bench/workload.js</span><span class="caret" aria-hidden="true"></span></p>
         <h1>How fast is a verified web server?</h1>
-        <p class="lede">The same REST APIs on the same PostgreSQL data, written in Rust on h5i-app (whose decisions are proved in Lean 4) and in Go, TypeScript and Python. Every implementation passes the same conformance suite, then runs under k6 at 1 to 256 concurrent clients.</p>
+        <p class="lede">The same REST APIs on the same PostgreSQL data, written in Rust on h5i-app (whose CPU decisions are proved in Lean 4) and in Go, TypeScript and Python. Every implementation passes the same conformance suite, then runs under k6 at 1 to 256 concurrent clients.</p>
       </section>
 
       <section id="overview" class="block">
@@ -101,6 +102,44 @@
         <p class="caption"><a href="https://github.com/h5i-dev/h5i-app-bench/blob/bench-text-search/performance/linkding/bench/text-search-2026-10-17.md">Full methodology and reproduction</a> · <a href="https://github.com/h5i-dev/h5i-app-bench/blob/bench-text-search/performance/linkding/bench/results/text-search-2026-10-17/summary.csv">Summary CSV</a> · <a href="https://github.com/h5i-dev/h5i-app-bench/blob/bench-text-search/performance/linkding/bench/results/text-search-2026-10-17/points.csv">Per-point CSV summaries</a></p>
       </section>
 
+      <section id="gpu-conduit" class="block">
+        <div class="block-head">
+          <h2 class="term" data-n="+">Optional GPU policies</h2>
+          <p>RealWorld (Conduit) HTTP API remeasurement · 2026-10-18. The existing seven scenarios compare the same application with CPU or optional GPU policy decisions.</p>
+        </div>
+        <p class="caption">CUDA executes eight small authorization and state decisions. HTTP handling, JWT, input validation, bcrypt, SQL transactions and JSON responses remain shared. The workload and seed are unchanged. Guest list, slug and login do not call these GPU decisions and serve as controls. The CPU kernel has Lean proofs; the GPU implementation is checked against its CPU oracle and the shared API tests.</p>
+        <div class="table-wrap">
+          <table class="perf-detail">
+            <caption>End-to-end HTTP requests per second and p99 latency, means of three repetitions. GPU / CPU is the throughput ratio.</caption>
+            <thead><tr><th scope="col">Scenario</th><th scope="col" class="num">Clients</th><th scope="col" class="num">CPU req/s</th><th scope="col" class="num">GPU req/s</th><th scope="col" class="num">GPU / CPU</th><th scope="col" class="num">CPU p99 ms</th><th scope="col" class="num">GPU p99 ms</th></tr></thead>
+            <tbody>
+              <tr><th scope="row"><code>list</code></th><td class="num">1</td><td class="num">83.37</td><td class="num">82.83</td><td class="num">0.99×</td><td class="num">32.69</td><td class="num">32.65</td></tr>
+              <tr><th scope="row"><code>list</code></th><td class="num">16</td><td class="num">766.32</td><td class="num">769.67</td><td class="num">1.00×</td><td class="num">78.78</td><td class="num">78.82</td></tr>
+              <tr><th scope="row"><code>slug</code></th><td class="num">1</td><td class="num">1,110.16</td><td class="num">1,118.36</td><td class="num">1.01×</td><td class="num">0.96</td><td class="num">1.00</td></tr>
+              <tr><th scope="row"><code>slug</code></th><td class="num">16</td><td class="num">13,560.10</td><td class="num">14,174.03</td><td class="num">1.05×</td><td class="num">8.89</td><td class="num">8.55</td></tr>
+              <tr><th scope="row"><code>feed</code></th><td class="num">1</td><td class="num">187.76</td><td class="num">179.55</td><td class="num">0.96×</td><td class="num">5.80</td><td class="num">6.10</td></tr>
+              <tr><th scope="row"><code>feed</code></th><td class="num">16</td><td class="num">2,194.92</td><td class="num">2,201.72</td><td class="num">1.00×</td><td class="num">14.30</td><td class="num">13.99</td></tr>
+              <tr><th scope="row"><code>login</code></th><td class="num">1</td><td class="num">3.85</td><td class="num">3.83</td><td class="num">1.00×</td><td class="num">260.47</td><td class="num">261.96</td></tr>
+              <tr><th scope="row"><code>login</code></th><td class="num">16</td><td class="num">15.45</td><td class="num">15.41</td><td class="num">1.00×</td><td class="num">1,113.43</td><td class="num">1,104.02</td></tr>
+              <tr><th scope="row"><code>create</code></th><td class="num">1</td><td class="num">196.21</td><td class="num">190.83</td><td class="num">0.97×</td><td class="num">5.64</td><td class="num">5.78</td></tr>
+              <tr><th scope="row"><code>create</code></th><td class="num">16</td><td class="num">216.31</td><td class="num">209.85</td><td class="num">0.97×</td><td class="num">363.18</td><td class="num">367.29</td></tr>
+              <tr><th scope="row"><code>favorite</code></th><td class="num">1</td><td class="num">504.53</td><td class="num">439.16</td><td class="num">0.87×</td><td class="num">2.63</td><td class="num">3.15</td></tr>
+              <tr><th scope="row"><code>favorite</code></th><td class="num">16</td><td class="num">4,457.18</td><td class="num">4,725.08</td><td class="num">1.06×</td><td class="num">19.18</td><td class="num">17.90</td></tr>
+              <tr><th scope="row"><code>mixed</code></th><td class="num">1</td><td class="num">121.54</td><td class="num">123.87</td><td class="num">1.02×</td><td class="num">35.13</td><td class="num">33.75</td></tr>
+              <tr><th scope="row"><code>mixed</code></th><td class="num">16</td><td class="num">1,001.07</td><td class="num">982.93</td><td class="num">0.98×</td><td class="num">68.70</td><td class="num">71.16</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="caption">This workload shows no consistent end-to-end GPU benefit. Mixed throughput is 1.02× CPU at one client and 0.98× at 16; at 16 clients, mixed p99 is 71.16 ms on GPU versus 68.70 ms on CPU. Favorite falls to 0.87× at one client. Its 1.06× result at 16 clients is not an established GPU gain: its GPU throughput standard deviation is about 5%, and the non-offloaded slug control also reaches 1.05×. GPU host RSS is approximately 93–98 MiB versus 7–11 MiB on CPU, including idle controls. CPU remains the default.</p>
+        <ul class="limits">
+          <li>100 users, 10,000 articles, 10,000 comments, 1,000 follows and 5,000 favorites. Each point uses a reseeded database, a fresh server, 10 s warmup and 30 s measurement. Startup is excluded. Request rate includes k6's graceful stop; latency figures average per-repetition percentiles.</li>
+          <li>Dual AMD EPYC 7502 host, two RTX 3090 GPUs. Two CPU/GPU pairs split the scenarios, using a separate GPU per pair. Each variant has four server, four PostgreSQL and four client CPUs, with disjoint affinity, four Tokio threads and a 32-connection pool. The host is shared; clocks and NUMA placement are not fixed.</li>
+          <li>84 points, 4,467,960 measured requests, zero HTTP failures and zero failed k6 status checks. CPU and GPU each passed 13 Hurl files (154 requests). All GPU-executing scenarios logged device execution; no runtime CPU fallback was logged.</li>
+          <li>These results cover CPU/GPU variants at 1 and 16 clients and remain separate from the earlier cross-language overview. They do not establish higher-concurrency behavior, cost or power savings.</li>
+        </ul>
+        <p class="caption"><a href="https://github.com/h5i-dev/h5i-app-bench/blob/bench-conduit-gpu/performance/realworld/bench/gpu-policy-2026-10-18.md">Methodology and reproduction</a> · <a href="https://github.com/h5i-dev/h5i-app-bench/blob/bench-conduit-gpu/performance/realworld/bench/results/gpu-policy-2026-10-18/summary.csv">Summary CSV</a> · <a href="https://github.com/h5i-dev/h5i-app-bench/blob/bench-conduit-gpu/performance/realworld/bench/results/gpu-policy-2026-10-18/points.csv">Per-point CSV summaries</a></p>
+      </section>
+
       <section id="method" class="block">
         <div class="block-head">
           <h2 class="term" data-n="—">Method</h2>
@@ -110,7 +149,7 @@
           <li>Each server and its PostgreSQL get their own CPUs. In the serial runs, the server has 4 cores and k6 runs on separate cores. Python, Node and Go run 4 workers. Rust runs 4 tokio threads.</li>
           <li>Requests/s is k6's <code>http_reqs</code> rate over the whole window, including the graceful stop. Latencies are k6 percentiles. RSS is the peak resident memory of the server's whole process tree.</li>
           <li>Login hashes with bcrypt at cost 12 in every implementation, so that scenario measures bcrypt more than the framework.</li>
-          <li>These are runs on one host. Raw points, summaries and the scripts are in <a href="https://github.com/h5i-dev/h5i-app-bench/tree/main/performance">performance/</a>.</li>
+          <li>These are runs on one host. Per-point CSV summaries, aggregate summaries and the scripts are in <a href="https://github.com/h5i-dev/h5i-app-bench/tree/main/performance">performance/</a>.</li>
         </ul>
       </section>
     </main>

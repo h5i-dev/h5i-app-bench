@@ -30,6 +30,7 @@ APPS = [
         "stacks": {
             "rust-h5i": "Rust, axum, the h5i-app engine (h5i-app-pg) with Lean proofs",
             "rust-h5i-optimized": "Rust, axum, sqlx, h5i-app kernel with Lean proofs",
+            "rust-h5i-gpu": "Rust, axum, sqlx, optional CUDA policy decisions (CPU kernel has Lean proofs; GPU checked by conformance tests)",
         },
         "upstream": "https://github.com/realworld-apps/realworld",
         "about": "The RealWorld blogging API: users, profiles, articles, comments, tags, follows and favorites. "
