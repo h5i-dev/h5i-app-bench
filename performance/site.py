@@ -1,12 +1,13 @@
 """Write the data behind the performance page (docs/performance/, served at
-benchmark.h5i.dev/performance/) from each application's summary.csv.
+benchmark.h5i.dev/performance/) from each application's summary.csv and the
+supplemental summaries configured in APPS (later runs replace matching points).
 
   python3 performance/site.py [out.json]
 
 The default output is docs/performance/data.json. Run it after a benchmark's
 summarize.py has rewritten bench/results/summary.csv.
 """
-import csv, json, subprocess, sys
+import csv, json, re, subprocess, sys
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -27,8 +28,8 @@ H5I_ORDER = ["rust-h5i", "rust-h5i-optimized", "rust-h5i-gpu", "rust-h5i-cpu-sca
 APPS = [
     {
         "id": "realworld",
-        "gpu_summary": "gpu-policy-2026-10-18/summary.csv",
-        "measurement_note": "GPU results are from a separate HTTP run at 1 and 16 clients with different CPU allocations; unmeasured cells are shown as –. Cross-run rankings are descriptive, not a matched GPU speedup comparison. See Optional GPU policies below for the paired CPU/GPU results and conditions.",
+        "summaries": ["gpu-policy-2026-10-18/summary.csv"],
+        "measurement_note": "CPU/GPU policies: paired run at 1/16 clients on 2026-10-18. Other results use the earlier run; CPU allocations differ.",
         "title": "RealWorld (Conduit)",
         "stacks": {
             "rust-h5i": "Rust, axum, the h5i-app engine (h5i-app-pg) with Lean proofs",
@@ -36,8 +37,7 @@ APPS = [
             "rust-h5i-gpu": "Rust, axum, sqlx, optional CUDA policy decisions (CPU kernel has Lean proofs; GPU checked by conformance tests)",
         },
         "upstream": "https://github.com/realworld-apps/realworld",
-        "about": "The RealWorld blogging API: users, profiles, articles, comments, tags, follows and favorites. "
-                 "Every implementation passes the same pinned Hurl suite.",
+        "about": "RealWorld blogging API. All implementations pass the same Hurl suite.",
         "seed": "100 users, 10,000 articles with two tags each, 10,000 comments, 1,000 follows, 5,000 favorites.",
         "scenarios": {
             "list": "GET /api/articles: limit 20 at offset 0, a later offset, and tag=tagN",
@@ -52,6 +52,13 @@ APPS = [
     {
         "id": "linkding",
         "title": "linkding",
+        "summaries": [
+            "text-search-2026-10-17/summary.csv",
+            "complex-languages-2026-10-19/summary.csv",
+            "complex-engine-2026-10-19/summary.csv",
+            "summary-refresh-2026-10-19/summary.csv",
+        ],
+        "measurement_note": "2026-10-19 refresh: h5i engine, optimized get/mixed. Complex search and CPU/GPU search use separate runs. Dates and source CSVs appear in the details; cross-run CPU allocations differ.",
         "stacks": {
             "rust-h5i": "Rust, axum, the h5i-app engine (h5i-app-pg): kernel, read plans and writes with Lean proofs",
             "rust-h5i-optimized": "Rust, axum, sqlx, h5i-app kernel with Lean proofs",
@@ -59,8 +66,7 @@ APPS = [
             "rust-h5i-gpu": "Rust, axum, sqlx, GPU-resident search index (Rust-CUDA), with SQL fallback",
         },
         "upstream": "https://github.com/sissbruecker/linkding",
-        "about": "The linkding bookmark manager's REST API. The Hurl suite was checked against the pinned "
-                 "1.47.0 image, which also runs in the benchmark as a reference.",
+        "about": "Bookmark REST API, checked against linkding 1.47.0. Upstream results appear below.",
         "seed": "50 users, 100,000 bookmarks and 2,000 tags owned by one user, two tags per bookmark.",
         "scenarios": {
             "list": "GET /api/bookmarks/?limit=20 at a rotating offset",
@@ -88,23 +94,33 @@ def last_change(path):
 
 def load(app):
     path = HERE / app["id"] / "bench/results/summary.csv"
-    rows = []
-    with path.open() as f:
-        for r in csv.DictReader(f):
-            rows.append({"impl": r["impl"], "scenario": r["scenario"], "concurrency": int(r["concurrency"]),
-                         "reps": int(r["reps"]), **{k: round(float(r[k]), 3) for k in FIELDS}})
-    if app.get("gpu_summary"):
-        with (path.parent / app["gpu_summary"]).open() as f:
+    # Later configured runs replace the same implementation/scenario/client
+    # point. Appending duplicates left .find() rendering the stale first row.
+    points = {}
+    for summary in ["summary.csv", *app.get("summaries", [])]:
+        summary_path = path.parent / summary
+        date = re.search(r"\d{4}-\d{2}-\d{2}", summary)
+        measured = date.group() if date else last_change(summary_path)
+        source = f"{REPO.replace('/tree/', '/blob/')}/{app['id']}/bench/results/{summary}"
+        seen = set()
+        with summary_path.open() as f:
             for r in csv.DictReader(f):
-                if r["impl"] == "rust-h5i-gpu":
-                    rows.append({"impl": r["impl"], "scenario": r["scenario"], "concurrency": int(r["concurrency"]),
-                                 "reps": int(r["reps"]), **{k: round(float(r[k]), 3) for k in FIELDS}})
+                key = (r["impl"], r["scenario"], int(r["concurrency"]))
+                if key in seen:
+                    raise ValueError(f"Duplicate measurement in {summary_path}: {key}")
+                seen.add(key)
+                points[key] = {"impl": key[0], "scenario": key[1], "concurrency": key[2],
+                               "reps": int(r["reps"]), "measured": measured, "source": source,
+                               **{k: round(float(r[k]), 3) for k in FIELDS}}
+    rows = list(points.values())
+    dates = sorted({r["measured"] for r in rows if r["measured"]})
     impls = list(dict.fromkeys(r["impl"] for r in rows))
     impls.sort(key=lambda i: (i not in H5I, H5I_ORDER.index(i) if i in H5I else i == "upstream"))
     scenarios = [s for s in app["scenarios"] if any(r["scenario"] == s for r in rows)]
     return {
         "id": app["id"], "title": app["title"], "upstream": app["upstream"], "about": app["about"],
-        "seed": app["seed"], "source": f"{REPO}/{app['id']}", "measured": last_change(path),
+        "seed": app["seed"], "source": f"{REPO}/{app['id']}",
+        "measured": "–".join(dict.fromkeys([dates[0], dates[-1]])) if dates else None,
         "measurement_note": app.get("measurement_note", ""),
         "impls": [{"id": i, "stack": app.get("stacks", {}).get(i) or STACKS.get(i, ""), "h5i": i in H5I} for i in impls],
         "scenarios": [{"id": s, "requests": app["scenarios"][s]} for s in scenarios],

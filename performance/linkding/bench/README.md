@@ -1,6 +1,8 @@
 # Benchmark
 
-Latest follow-up: [single-get, creation and search improvements](hotpaths-2026-10-18.md).
+Latest measurements: [summary refresh](summary-refresh-2026-10-19.md).
+
+Implementation changes: [single-get, creation and search improvements](hotpaths-2026-10-18.md).
 
 Follow-up: [selectable SQL modes and fixed-offset list measurement](sql-modes-2026-10-18.md).
 

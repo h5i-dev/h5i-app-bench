@@ -29,3 +29,16 @@ site's data:
 ```sh
 python3 performance/site.py          # writes docs/performance/data.json
 ```
+
+The overview defaults to 16 clients so Conduit's GPU results and Linkding's
+`search_complex` results are visible. It omits the upstream and resident CPU-scan
+columns; the application details retain both. The generator also loads the
+targeted summaries listed in `site.py`, with their separate conditions noted
+on the page. See [the complex-search comparison](linkding/bench/complex-languages-2026-10-19.md)
+for the additional Go, FastAPI and Fastify measurements, and the
+[h5i engine run](linkding/bench/complex-engine-2026-10-19.md).
+
+Configured supplemental summaries replace earlier rows with the same
+implementation, scenario and concurrency. Both the overview and details use
+these selected rows. The details link each measurement date to its source CSV;
+the application heading shows the date range across the selected runs.
