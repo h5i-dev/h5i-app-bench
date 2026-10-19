@@ -2,7 +2,9 @@
 import argparse
 import hashlib
 import json
+import re
 import subprocess
+import tomllib
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -22,7 +24,7 @@ def main():
         base = ROOT / "ports" / app
         files = [base / "h5i-app.toml", *base.glob("kernel/src/**/*.rs"),
                  *base.glob("proofs/**/*.lean"), base / "proofs/lean-toolchain",
-                 base / "proofs/lake-manifest.json"]
+                 base / "proofs/lake-manifest.json", base / "proofs/lakefile.lean"]
         files = sorted(p for p in files if ".lake" not in p.parts)
         command = ["h5i", "app", "extract", "--check"] if args.action == "extract-check" else ["h5i", "app", args.action]
         command.append(str(base.relative_to(ROOT)))
@@ -36,6 +38,11 @@ def main():
         row.update(exit_code=process.returncode, passed=process.returncode == 0,
                    finished_at=datetime.now(timezone.utc).isoformat(),
                    log=str(log.relative_to(ROOT)))
+        if row["passed"] and args.action == "check":
+            gate = re.search(r"gate: (\d+) theorems in (\d+) modules checked", log.read_text())
+            if gate:
+                row.update(gated_theorems=tomllib.loads((base / "h5i-app.toml").read_text())["check"]["theorems"],
+                           checked_theorems=int(gate[1]), checked_modules=int(gate[2]))
         rows.append(row)
         (output / "summary.json").write_text(json.dumps(rows, indent=2) + "\n")
         print(f"{app}: {'passed' if row['passed'] else 'failed'}; {row['log']}", flush=True)

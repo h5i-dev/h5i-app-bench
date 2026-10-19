@@ -60,7 +60,7 @@
       <section class="intro">
         <p class="prompt"><span class="ps">$</span> h5i app prove <span class="arg">ports/*</span><span class="caret" aria-hidden="true"></span></p>
         <h1>How much real-world Rust can h5i-app verify?</h1>
-        <p class="lede">Security logic from six open-source Rust servers, ported to h5i-app and stated as 101 Lean 4 theorems. We measure how many are proved, how much upstream code they cover, and how fast the port runs.</p>
+        <p class="lede">Security logic from six open-source Rust servers, ported to h5i-app and stated as <span id="property-total">356</span> Lean 4 properties. We measure how many are proved, how much upstream code they cover, and how fast the port runs.</p>
         <p class="status-line" id="status-line" aria-live="polite"></p>
       </section>
       <div class="tiles" id="tiles" aria-live="polite"></div>
@@ -87,7 +87,7 @@
           </table>
         </div>
         <dl class="defs">
-          <div><dt>Specs accepted</dt><dd>Proof re-checked in a clean workspace: statement unchanged, only <code>propext</code>, <code>Classical.choice</code> and <code>Quot.sound</code>.</dd></div>
+          <div><dt>Specs accepted</dt><dd>Per application, the larger of the benchmark task set and the source-matched project gate set; the two sets are not added together. Project properties pass <code>h5i app check</code>; benchmark proofs are re-checked in a clean workspace. Only <code>propext</code>, <code>Classical.choice</code> and <code>Quot.sound</code> are allowed.</dd></div>
           <div><dt>Of security kernel</dt><dd>Reached lines over the kernel-eligible lines whose module or name is about authentication, authorization, tokens, credentials, sessions, validation or visibility. Keyword-based; every selected spec is a security property.</dd></div>
           <div><dt>Of kernel ceiling</dt><dd>Upstream lines in functions that accepted theorems are about, over the module's kernel ceiling: the lines that could be a kernel at all (pure, synchronous, no I/O, clock, randomness or locks, transitively). A static estimate; see <code>harness/kernel_ceiling.py</code>.</dd></div>
           <div><dt>Gate</dt><dd><code>h5i app check</code>. Passes once every spec is proved.</dd></div>
@@ -132,14 +132,15 @@
           </table>
         </div>
         <figure class="chart" id="effort-chart" aria-describedby="effort-caption"></figure>
-        <p class="caption" id="effort-caption">One mark per accepted spec. Log scales.</p>
+        <p class="caption" id="effort-caption">One mark per accepted benchmark task. Log scales.</p>
       </section>
 
       <section id="specs" class="block">
         <div class="block-head">
           <h2 class="term" data-n="04">Specs</h2>
-          <p>All 101 theorems. Open one for its statement, code, Lean and proof.</p>
+          <p>Project properties and the original 101 timed benchmark tasks. Open a task for its statement, code, Lean and proof.</p>
         </div>
+        <div id="project-properties"></div>
         <div class="filters" role="search">
           <label class="field"><span>Application</span><select id="f-app"><option value="">All</option></select></label>
           <label class="field"><span>Status</span>

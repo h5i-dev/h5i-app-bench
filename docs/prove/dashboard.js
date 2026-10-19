@@ -129,6 +129,7 @@ function matchedPerf() {
 
 function renderHeader() {
   const s = INDEX.stats;
+  $("#property-total").textContent = fmt(s.properties);
   const parts = [
     `[ snapshot <b>${esc(INDEX.generated)}</b> ]`,
     `[ <b>${s.accepted}/${s.properties}</b> specs accepted ]`,
@@ -149,7 +150,7 @@ function renderTiles() {
     [`${s.accepted}<small>/${s.properties}</small>`, "specs verified", `re-checked · ${pctText(s.accepted, s.properties)}`, [s.accepted, s.properties]],
     [kLines(s.upstream_reached), "upstream lines reached", `${pctText(s.upstream_reached, s.security_kernel_lines, 1)} of ${kLines(s.security_kernel_lines)} security-kernel lines · ${pctText(s.upstream_reached, s.ceiling_lines, 1)} of the ${kLines(s.ceiling_lines)} kernel ceiling`, [s.upstream_reached, s.upstream_selected]],
     [med == null ? "–" : ratioText(med), "median runtime ratio", `kernel ÷ upstream · ${m.length} workloads${m.length ? ` · ${ratioText(Math.min(...m))}–${ratioText(Math.max(...m))}` : ""}`],
-    [kLines(s.proof_loc), "lines of Lean proof", `median ${fmt(median(proofs))} per spec · ${kLines(s.rust_loc)} lines of ported Rust`],
+    [kLines(s.proof_loc), "lines of Lean proof", `median ${fmt(median(proofs))} per benchmark task · ${kLines(s.rust_loc)} lines of ported Rust`],
   ];
   $("#tiles").innerHTML = tiles.map(([v, l, sub, frac]) =>
     `<div class="tile"><span class="v">${v}</span><span class="l">${l}</span>${frac ? bar(...frac) : ""}<span class="s">${sub}</span></div>`).join("");
@@ -171,12 +172,22 @@ function renderApps() {
     const eq = INDEX.equivalence[a.app];
 
     return `<tr><td>${esc(a.app)}<span class="sub"><a href="https://github.com/${esc(a.repo)}/tree/${esc(a.commit)}" target="_blank" rel="noreferrer">${esc(a.repo)} @ ${esc(a.commit)}</a></span></td>
-      <td>${barRow(a.accepted, a.specs)}</td>
+      <td>${barRow(a.accepted, a.specs)}${a.project_properties ? `<a class="sub" href="#project-properties">${fmt(a.project_properties.count)} project properties</a>` : ""}</td>
       <td>${a.security_kernel_lines ? barRowPct(a.upstream_reached, a.security_kernel_lines, 1) : "–"}</td>
       <td>${a.ceiling_lines ? barRowPct(a.upstream_reached, a.ceiling_lines, 1) : "–"}</td>
       <td class="c">${passMark(gate.extract, "extract --check")}</td>
       <td class="c">${passMark(eq, "differential tests")}</td>
       <td class="c">${passMark(gate.check, "h5i app check")}</td></tr>`;
+  }).join("");
+}
+
+function renderProjectProperties() {
+  $("#project-properties").innerHTML = appRows().filter((a) => a.project_properties).map((a) => {
+    const p = a.project_properties;
+    return `<details><summary>${esc(a.app)} · ${fmt(p.count)}/${fmt(p.count)} project properties verified</summary>
+      <p>Gate checked ${fmt(p.checked_theorems)} theorems across ${fmt(p.checked_modules)} modules on ${esc(p.when)}. This includes supporting lemmas.
+      <a href="${esc(p.source)}" target="_blank" rel="noreferrer">Statements and proofs</a>.</p>
+      <ol>${p.names.map((name) => `<li><code>${esc(name)}</code></li>`).join("")}</ol></details>`;
   }).join("");
 }
 
@@ -330,7 +341,7 @@ function renderMatrix() {
   }
   if (!tasks.length) html = `<tr><td class="count" colspan="6">No spec matches the filters.</td></tr>`;
   $("#matrix tbody").innerHTML = html;
-  $("#matrix-count").textContent = `${tasks.length} of ${INDEX.tasks.length} specs · ${tasks.filter((t) => t.status === "accepted").length} accepted`;
+  $("#matrix-count").textContent = `${tasks.length} of ${INDEX.tasks.length} benchmark tasks · ${tasks.filter((t) => t.status === "accepted").length} accepted`;
 }
 
 // ---- Tooltip ----------------------------------------------------------------
@@ -486,6 +497,7 @@ async function main() {
   renderTiles();
   sortable("apps-table", renderApps);
   renderApps();
+  renderProjectProperties();
   renderPerf();
   sortable("effort-table", renderEffort);
   renderEffort();
