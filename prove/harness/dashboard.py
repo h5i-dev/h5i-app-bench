@@ -9,7 +9,7 @@ it comes from, the differential tests that touch it, and each model's
 accepted proof. Code is matched through the `Source:` ranges Aeneas writes
 above every generated declaration.
 """
-import argparse, html, json, re, subprocess, sys, time
+import argparse, hashlib, html, json, re, subprocess, sys, time, tomllib
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -567,6 +567,52 @@ def gates():
     return out
 
 
+def refresh_project_checks(index):
+    """Use the larger per-app property set, backed by a source-matched gate.
+
+    Timed benchmark tasks remain separate; project properties do not create
+    model runs or add a second copy of an existing benchmark property.
+    """
+    latest = {}
+    for path in sorted((ROOT / "results/project-checks").glob("*/summary.json")):
+        for row in json.loads(path.read_text()):
+            if "check" in row.get("command", []):
+                latest[row["app"]] = row
+    index["gates"] = gates()
+    for app, info in index["apps"].items():
+        for key in ("specs", "accepted", "spec_loc", "proof_loc"):
+            info.setdefault("benchmark_" + key, info[key])
+            info[key] = info["benchmark_" + key]
+        info.pop("project_properties", None)
+        row = latest.get(app, {})
+        names = row.get("gated_theorems", [])
+        hashes = row.get("source_sha256", {})
+        if not (row.get("passed") and names and hashes):
+            continue
+        if any(not (ROOT / p).is_file() or hashlib.sha256((ROOT / p).read_bytes()).hexdigest() != h
+               for p, h in hashes.items()):
+            continue
+        port = ROOT / "ports" / app
+        configured = tomllib.loads((port / "h5i-app.toml").read_text())["check"]["theorems"]
+        if names != configured:
+            continue
+        info["project_properties"] = {"count": len(names), "names": names,
+                                      "checked_theorems": row.get("checked_theorems"),
+                                      "checked_modules": row.get("checked_modules"),
+                                      "when": row["finished_at"][:10], "log": row["log"],
+                                      "source": f"{REPO}/ports/{app}/proofs/Properties.lean"}
+        if len(names) >= info["benchmark_specs"]:
+            info.update(specs=len(names), accepted=len(names),
+                        spec_loc=sum(lean_lines(f) for f in (port / "proofs").glob("Spec*.lean")),
+                        proof_loc=sum(lean_lines(f) for f in (port / "proofs/Verified").glob("*.lean"))
+                                   + lean_lines(port / "proofs/Properties.lean"))
+    stats = index["stats"]
+    stats["benchmark_properties"] = len(index["tasks"])
+    stats["benchmark_accepted"] = sum(t["status"] == "accepted" for t in index["tasks"])
+    for total, key in (("properties", "specs"), ("accepted", "accepted"), ("proof_loc", "proof_loc")):
+        stats[total] = sum(a[key] for a in index["apps"].values())
+
+
 # ---- Main ---------------------------------------------------------------
 
 def app_info(port):
@@ -582,9 +628,20 @@ def main():
     ap.add_argument("out")
     ap.add_argument("--no-proofs", action="store_true", help="leave the models' accepted proofs out")
     ap.add_argument("--skip-agent", action="append", default=[], help="leave this agent's runs out")
+    ap.add_argument("--refresh-project-checks", action="store_true",
+                    help="refresh project property counts in an existing snapshot, retaining benchmark runs")
     a = ap.parse_args()
     out = Path(a.out)
     (out / "tasks").mkdir(parents=True, exist_ok=True)
+    if a.refresh_project_checks:
+        path = out / "index.json"
+        index = json.loads(path.read_text())
+        index.setdefault("benchmark_generated", index["generated"])
+        refresh_project_checks(index)
+        index["generated"] = time.strftime("%Y-%m-%d %H:%M")
+        path.write_text(json.dumps(index, ensure_ascii=False))
+        print(f"{index['stats']['accepted']}/{index['stats']['properties']} properties -> {out}")
+        return
 
     ts = tasks()
     runs = {k: [r for r in v if r["agent"] not in a.skip_agent] for k, v in results({t["id"] for t in ts}).items()}
@@ -686,6 +743,7 @@ def main():
     index = {"generated": time.strftime("%Y-%m-%d %H:%M"), "stats": stats, "apps": apps, "columns": columns,
              "tasks": index_tasks, "proofs": not a.no_proofs, "time_limit_min": 30,
              "performance": performance(), "equivalence": equivalence(), "gates": gates()}
+    refresh_project_checks(index)
     (out / "index.json").write_text(json.dumps(index, ensure_ascii=False))
     print(f"{len(index_tasks)} tasks, {sum(len(v) for v in runs.values())} runs, {len(columns)} columns -> {out}",
           file=sys.stderr)
