@@ -7,7 +7,7 @@ const rps = (n) => num(n, n < 100 ? 1 : 0);
 const ms = (n) => num(n, n < 10 ? 2 : n < 100 ? 1 : 0);
 
 let DATA = null;
-let CONC = 64;
+let CONC = 16;
 const pick = {}; // app id -> scenario id
 
 function currentTheme() {
@@ -29,9 +29,10 @@ const implName = (i) => `<span class="impl${i.h5i ? " h5i" : ""}">${esc(i.id)}</
 function renderOverview() {
   for (const el of document.querySelectorAll(".conc-label")) el.textContent = CONC;
   $("#overview-tables").innerHTML = DATA.apps.map((app) => {
-    const head = app.impls.map((i) => `<th scope="col" class="num">${implName(i)}</th>`).join("");
+    const impls = app.impls.filter((i) => i.id !== "upstream" && i.id !== "rust-h5i-cpu-scan");
+    const head = impls.map((i) => `<th scope="col" class="num">${implName(i)}</th>`).join("");
     const body = app.scenarios.map((s) => {
-      const vals = app.impls.map((i) => row(app, i.id, s.id, CONC)?.rps ?? null);
+      const vals = impls.map((i) => row(app, i.id, s.id, CONC)?.rps ?? null);
       const ranked = [...new Set(vals.filter((v) => v != null))].sort((a, b) => b - a);
       const [best, second] = ranked;
       const cells = vals.map((v, k) => {
@@ -39,13 +40,14 @@ function renderOverview() {
         const f = v / best;
         const top = v === best;
         const win = top ? ` <span class="win" aria-hidden="true">●</span>` : "";
-        return `<td class="num ov-cell${top ? " best" : v === second ? " second" : ""}" style="--f:${f.toFixed(3)}" title="${esc(app.impls[k].id)} · ${esc(s.id)}: ${rps(v)} req/s, ${Math.round(f * 100)}% of the fastest"><span class="ov-bar" aria-hidden="true"></span><span class="ov-val">${rps(v)}${win}</span></td>`;
+        const measured = row(app, impls[k].id, s.id, CONC)?.measured;
+        return `<td class="num ov-cell${top ? " best" : v === second ? " second" : ""}" style="--f:${f.toFixed(3)}" title="${esc(impls[k].id)} · ${esc(s.id)}: ${rps(v)} req/s, ${Math.round(f * 100)}% of the fastest · ${esc(measured || '')}"><span class="ov-bar" aria-hidden="true"></span><span class="ov-val">${rps(v)}${win}</span></td>`;
       }).join("");
       return `<tr><th scope="row"><a href="#${esc(app.id)}" data-app="${esc(app.id)}" data-scenario="${esc(s.id)}">${esc(s.id)}</a></th>${cells}</tr>`;
     }).join("");
     return `<h3 class="sub-head">${esc(app.title)}</h3>
       ${app.measurement_note ? `<p class="caption">${esc(app.measurement_note)}</p>` : ""}
-      <div class="table-wrap"><table class="perf-matrix" style="--perf-columns:${app.impls.length}"><thead><tr><th scope="col">Scenario</th>${head}</tr></thead><tbody>${body}</tbody></table></div>`;
+      <div class="table-wrap"><table class="perf-matrix" style="--perf-columns:${impls.length}"><thead><tr><th scope="col">Scenario</th>${head}</tr></thead><tbody>${body}</tbody></table></div>`;
   }).join("");
 }
 
@@ -73,13 +75,13 @@ function renderApp(app) {
     if (!r) return "";
     return `<tr><th scope="row">${implName(i)}<span class="sub">${esc(i.stack)}</span></th>
       <td class="num">${rps(r.rps)}</td><td class="num">${ms(r.p50_ms)}</td><td class="num">${ms(r.p90_ms)}</td><td class="num">${ms(r.p99_ms)}</td>
-      <td class="num">${num(r.rss_peak_mb, 0)}</td><td class="num">${num(r.cpu_peak_pct, 0)}</td><td class="num">${num(r.errors, 1)}</td></tr>`;
+      <td class="num">${num(r.rss_peak_mb, 0)}</td><td class="num">${num(r.cpu_peak_pct, 0)}</td><td class="num">${num(r.errors, 1)}</td><td>${r.source ? `<a href="${esc(r.source)}" target="_blank" rel="noreferrer">${esc(r.measured || 'CSV')}</a>` : "–"}</td></tr>`;
   }).join("");
   return `<div class="tabs scenario-tabs" role="tablist" aria-label="${esc(app.title)} scenario">${tabs}</div>
     <p class="caption"><code>${esc(sc)}</code>: ${esc(s.requests)}</p>
     <div class="table-wrap"><table class="perf-bars" style="--perf-columns:${app.concurrency.length}"><thead><tr><th scope="col">Requests/s</th>${concHead}</tr></thead><tbody>${bars}</tbody></table></div>
     <h3 class="sub-head">At ${CONC} clients</h3>
-    <div class="table-wrap"><table class="perf-detail"><thead><tr><th scope="col">Implementation</th><th scope="col" class="num">req/s</th><th scope="col" class="num">p50 ms</th><th scope="col" class="num">p90 ms</th><th scope="col" class="num">p99 ms</th><th scope="col" class="num">RSS MiB</th><th scope="col" class="num">CPU peak %</th><th scope="col" class="num">Errors</th></tr></thead><tbody>${detail}</tbody></table></div>`;
+    <div class="table-wrap"><table class="perf-detail"><thead><tr><th scope="col">Implementation</th><th scope="col" class="num">req/s</th><th scope="col" class="num">p50 ms</th><th scope="col" class="num">p90 ms</th><th scope="col" class="num">p99 ms</th><th scope="col" class="num">RSS MiB</th><th scope="col" class="num">CPU peak %</th><th scope="col" class="num">Errors</th><th scope="col">Measured</th></tr></thead><tbody>${detail}</tbody></table></div>`;
 }
 
 function renderApps() {
@@ -87,8 +89,8 @@ function renderApps() {
     <section id="${esc(app.id)}" class="block">
       <div class="block-head">
         <h2 class="term" data-n="${String(k + 2).padStart(2, "0")}">${esc(app.title)}</h2>
-        <p>${esc(app.about)} Seed: ${esc(app.seed)} <a href="${esc(app.upstream)}" target="_blank" rel="noreferrer">Upstream</a> · <a href="${esc(app.source)}" target="_blank" rel="noreferrer">implementations and raw results</a>${app.measured ? ` · measured ${esc(app.measured)}` : ""}</p>
-        ${app.measurement_note ? `<p class="caption">${esc(app.measurement_note)}</p>` : ""}
+        <p>${esc(app.about)} <a href="${esc(app.upstream)}" target="_blank" rel="noreferrer">Upstream</a> · <a href="${esc(app.source)}" target="_blank" rel="noreferrer">Source and results</a>${app.measured ? ` · ${esc(app.measured)}` : ""}</p>
+        <p class="caption">Seed: ${esc(app.seed)}</p>
       </div>
       <div class="app-body" data-app="${esc(app.id)}">${renderApp(app)}</div>
     </section>`).join("");
