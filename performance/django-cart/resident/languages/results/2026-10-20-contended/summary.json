@@ -1,0 +1,68 @@
+{
+  "contended": true,
+  "note": "Diagnostic with external vLLM processes active on GPU 0. Not an isolated CPU/GPU speedup. Fixed prior best GPU path per shape; same canonical fixture and full owned output, eight changing warmups and 50 timed changing rounds, three resets/repetitions. No competing processes stopped or modified. No official timings replaced.",
+  "rounds": 696,
+  "checked_totals": 34922496,
+  "points": [
+    {
+      "carts": 4096,
+      "lines": 512,
+      "factor": 16,
+      "variant": "gpu-scan-compact-pinned-encode4",
+      "mean_us": 2324.8527933333335,
+      "stdev_us": 40.055312314829415,
+      "repeats_us": [
+        2320.20454,
+        2367.02944,
+        2287.3244
+      ],
+      "prior_gpu_us": 239.17122,
+      "slowdown_vs_prior": 9.720453795959788
+    },
+    {
+      "carts": 65536,
+      "lines": 2048,
+      "factor": 1,
+      "variant": "gpu-delta-compact-pinned-encode4",
+      "mean_us": 2314.5768866666667,
+      "stdev_us": 11.576446748295881,
+      "repeats_us": [
+        2319.3712,
+        2322.98598,
+        2301.37348
+      ],
+      "prior_gpu_us": 361.2180333333333,
+      "slowdown_vs_prior": 6.407700261550249
+    },
+    {
+      "carts": 65536,
+      "lines": 2048,
+      "factor": 16,
+      "variant": "gpu-delta-compact-pinned-encode4",
+      "mean_us": 3168.362526666667,
+      "stdev_us": 53.1311348664126,
+      "repeats_us": [
+        3147.45546,
+        3228.76692,
+        3128.8652
+      ],
+      "prior_gpu_us": 2860.981853333333,
+      "slowdown_vs_prior": 1.107438875564766
+    },
+    {
+      "carts": 65536,
+      "lines": 2048,
+      "factor": 64,
+      "variant": "gpu-delta-compact-pinned-encode4",
+      "mean_us": 14238.615493333335,
+      "stdev_us": 68.01436054797952,
+      "repeats_us": [
+        14161.57004,
+        14263.94914,
+        14290.3273
+      ],
+      "prior_gpu_us": 10859.330653333333,
+      "slowdown_vs_prior": 1.3111872129027318
+    }
+  ]
+}

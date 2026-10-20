@@ -1,0 +1,18 @@
+[package]
+name = "django-cart-gpu-nvvm"
+version = "0.1.0"
+edition = "2024"
+publish = false
+
+[dependencies]
+django-cart-pricing = { path = ".." }
+h5i-app-gpu-backend-nvvm = { git = "https://github.com/h5i-dev/h5i", rev = "0d52512471d09f13db79230a05ea9387ef18f637" }
+cust = { git = "https://github.com/Rust-GPU/rust-cuda", rev = "3a82c35a7196731fb60eebdac2a40d2b1bf0ba95" }
+rayon = "1.10"
+axum = "0.7"
+serde_json = "1"
+sqlx = { version = "0.8", default-features = false, features = ["runtime-tokio", "postgres"] }
+tokio = { version = "1", features = ["macros", "rt-multi-thread", "net", "sync", "time"] }
+
+[workspace]
+members = ["device"]

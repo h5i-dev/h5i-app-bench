@@ -1,0 +1,2396 @@
+{
+  "date": "2026-10-20",
+  "shapes": 4,
+  "rounds": 4872,
+  "checked_totals": 244457472,
+  "points": [
+    {
+      "carts": 4096,
+      "lines": 512,
+      "factor": 16,
+      "command_bytes": 2129920,
+      "result_bytes": 32768,
+      "modes": [
+        {
+          "variant": "cpu-delta-4",
+          "mode": "plain",
+          "timings": {
+            "total_us": {
+              "mean": 527.3843466666667,
+              "stdev": 41.276052311820415
+            },
+            "upload_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "enqueue_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "sync_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "alloc_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "download_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "validate_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "device_update_or_fused_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "device_scan_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "timer_tail_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 508.5651,
+              "upload_us": 0.0,
+              "enqueue_us": 0.0,
+              "sync_us": 0.0,
+              "alloc_us": 0.0,
+              "download_us": 0.0,
+              "validate_us": 0.0,
+              "device_update_or_fused_us": 0.0,
+              "device_scan_us": 0.0,
+              "timer_tail_us": 0.0
+            },
+            {
+              "total_us": 574.71612,
+              "upload_us": 0.0,
+              "enqueue_us": 0.0,
+              "sync_us": 0.0,
+              "alloc_us": 0.0,
+              "download_us": 0.0,
+              "validate_us": 0.0,
+              "device_update_or_fused_us": 0.0,
+              "device_scan_us": 0.0,
+              "timer_tail_us": 0.0
+            },
+            {
+              "total_us": 498.87182,
+              "upload_us": 0.0,
+              "enqueue_us": 0.0,
+              "sync_us": 0.0,
+              "alloc_us": 0.0,
+              "download_us": 0.0,
+              "validate_us": 0.0,
+              "device_update_or_fused_us": 0.0,
+              "device_scan_us": 0.0,
+              "timer_tail_us": 0.0
+            }
+          ]
+        },
+        {
+          "variant": "gpu-scan",
+          "mode": "plain",
+          "timings": {
+            "total_us": {
+              "mean": 301.8521866666667,
+              "stdev": 30.273954314706458
+            },
+            "upload_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "enqueue_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "sync_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "alloc_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "download_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "validate_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "device_update_or_fused_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "device_scan_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "timer_tail_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 283.54458,
+              "upload_us": 0.0,
+              "enqueue_us": 0.0,
+              "sync_us": 0.0,
+              "alloc_us": 0.0,
+              "download_us": 0.0,
+              "validate_us": 0.0,
+              "device_update_or_fused_us": 0.0,
+              "device_scan_us": 0.0,
+              "timer_tail_us": 0.0
+            },
+            {
+              "total_us": 336.79622,
+              "upload_us": 0.0,
+              "enqueue_us": 0.0,
+              "sync_us": 0.0,
+              "alloc_us": 0.0,
+              "download_us": 0.0,
+              "validate_us": 0.0,
+              "device_update_or_fused_us": 0.0,
+              "device_scan_us": 0.0,
+              "timer_tail_us": 0.0
+            },
+            {
+              "total_us": 285.21576,
+              "upload_us": 0.0,
+              "enqueue_us": 0.0,
+              "sync_us": 0.0,
+              "alloc_us": 0.0,
+              "download_us": 0.0,
+              "validate_us": 0.0,
+              "device_update_or_fused_us": 0.0,
+              "device_scan_us": 0.0,
+              "timer_tail_us": 0.0
+            }
+          ]
+        },
+        {
+          "variant": "gpu-scan",
+          "mode": "host",
+          "timings": {
+            "total_us": {
+              "mean": 284.4630466666667,
+              "stdev": 2.7330682396408266
+            },
+            "upload_us": {
+              "mean": 158.21742666666665,
+              "stdev": 1.9344202145690406
+            },
+            "enqueue_us": {
+              "mean": 5.5022866666666665,
+              "stdev": 0.11632731808708281
+            },
+            "sync_us": {
+              "mean": 106.77096,
+              "stdev": 0.31445169040728815
+            },
+            "alloc_us": {
+              "mean": 0.6503333333333333,
+              "stdev": 0.023055874161118536
+            },
+            "download_us": {
+              "mean": 10.840266666666666,
+              "stdev": 0.2656846644677356
+            },
+            "validate_us": {
+              "mean": 2.4817733333333334,
+              "stdev": 0.12163170694080291
+            },
+            "device_update_or_fused_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "device_scan_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "timer_tail_us": {
+              "mean": 0.14306666666666668,
+              "stdev": 0.004460194315647392
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 282.58646,
+              "upload_us": 156.86599999999999,
+              "enqueue_us": 5.43832,
+              "sync_us": 106.6604,
+              "alloc_us": 0.6242,
+              "download_us": 10.58236,
+              "validate_us": 2.41518,
+              "device_update_or_fused_us": 0.0,
+              "device_scan_us": 0.0,
+              "timer_tail_us": 0.1448
+            },
+            {
+              "total_us": 287.59872,
+              "upload_us": 160.43334,
+              "enqueue_us": 5.63656,
+              "sync_us": 107.12576,
+              "alloc_us": 0.6678,
+              "download_us": 11.1131,
+              "validate_us": 2.62216,
+              "device_update_or_fused_us": 0.0,
+              "device_scan_us": 0.0,
+              "timer_tail_us": 0.1464
+            },
+            {
+              "total_us": 283.20396,
+              "upload_us": 157.35294,
+              "enqueue_us": 5.43198,
+              "sync_us": 106.52672,
+              "alloc_us": 0.659,
+              "download_us": 10.82534,
+              "validate_us": 2.40798,
+              "device_update_or_fused_us": 0.0,
+              "device_scan_us": 0.0,
+              "timer_tail_us": 0.138
+            }
+          ]
+        },
+        {
+          "variant": "gpu-scan",
+          "mode": "events",
+          "timings": {
+            "total_us": {
+              "mean": 289.50418,
+              "stdev": 0.19672447737892107
+            },
+            "upload_us": {
+              "mean": 156.96533333333332,
+              "stdev": 0.3818882843624965
+            },
+            "enqueue_us": {
+              "mean": 10.334973333333334,
+              "stdev": 0.17778460038297264
+            },
+            "sync_us": {
+              "mean": 108.0878,
+              "stdev": 0.34314003380543884
+            },
+            "alloc_us": {
+              "mean": 0.64152,
+              "stdev": 0.00944705245036777
+            },
+            "download_us": {
+              "mean": 11.016766666666667,
+              "stdev": 0.19464083881172922
+            },
+            "validate_us": {
+              "mean": 2.457786666666667,
+              "stdev": 0.08887301127638986
+            },
+            "device_update_or_fused_us": {
+              "mean": 18.126294013333332,
+              "stdev": 0.09507043826839445
+            },
+            "device_scan_us": {
+              "mean": 52.89066577333333,
+              "stdev": 0.13507233219576287
+            },
+            "timer_tail_us": {
+              "mean": 0.98126,
+              "stdev": 0.003960151512253047
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 289.33198,
+              "upload_us": 156.6864,
+              "enqueue_us": 10.5221,
+              "sync_us": 108.03432,
+              "alloc_us": 0.6352,
+              "download_us": 10.89358,
+              "validate_us": 2.56038,
+              "device_update_or_fused_us": 18.2323208,
+              "device_scan_us": 52.78207916,
+              "timer_tail_us": 0.9783999999999999
+            },
+            {
+              "total_us": 289.46198,
+              "upload_us": 157.40058,
+              "enqueue_us": 10.31452,
+              "sync_us": 107.77454,
+              "alloc_us": 0.65238,
+              "download_us": 10.91556,
+              "validate_us": 2.4044,
+              "device_update_or_fused_us": 18.097920600000002,
+              "device_scan_us": 52.84799906,
+              "timer_tail_us": 0.98578
+            },
+            {
+              "total_us": 289.71858000000003,
+              "upload_us": 156.80902,
+              "enqueue_us": 10.1683,
+              "sync_us": 108.45454,
+              "alloc_us": 0.63698,
+              "download_us": 11.24116,
+              "validate_us": 2.40858,
+              "device_update_or_fused_us": 18.04864064,
+              "device_scan_us": 53.0419191,
+              "timer_tail_us": 0.9796
+            }
+          ]
+        },
+        {
+          "variant": "gpu-delta",
+          "mode": "plain",
+          "timings": {
+            "total_us": {
+              "mean": 338.66416,
+              "stdev": 1.6190607825526384
+            },
+            "upload_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "enqueue_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "sync_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "alloc_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "download_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "validate_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "device_update_or_fused_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "device_scan_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "timer_tail_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 338.11592,
+              "upload_us": 0.0,
+              "enqueue_us": 0.0,
+              "sync_us": 0.0,
+              "alloc_us": 0.0,
+              "download_us": 0.0,
+              "validate_us": 0.0,
+              "device_update_or_fused_us": 0.0,
+              "device_scan_us": 0.0,
+              "timer_tail_us": 0.0
+            },
+            {
+              "total_us": 337.3904,
+              "upload_us": 0.0,
+              "enqueue_us": 0.0,
+              "sync_us": 0.0,
+              "alloc_us": 0.0,
+              "download_us": 0.0,
+              "validate_us": 0.0,
+              "device_update_or_fused_us": 0.0,
+              "device_scan_us": 0.0,
+              "timer_tail_us": 0.0
+            },
+            {
+              "total_us": 340.48616,
+              "upload_us": 0.0,
+              "enqueue_us": 0.0,
+              "sync_us": 0.0,
+              "alloc_us": 0.0,
+              "download_us": 0.0,
+              "validate_us": 0.0,
+              "device_update_or_fused_us": 0.0,
+              "device_scan_us": 0.0,
+              "timer_tail_us": 0.0
+            }
+          ]
+        },
+        {
+          "variant": "gpu-delta",
+          "mode": "host",
+          "timings": {
+            "total_us": {
+              "mean": 338.6470733333333,
+              "stdev": 1.6993261782639904
+            },
+            "upload_us": {
+              "mean": 159.41566666666665,
+              "stdev": 2.009489177311817
+            },
+            "enqueue_us": {
+              "mean": 3.3373133333333334,
+              "stdev": 0.4503714170918637
+            },
+            "sync_us": {
+              "mean": 161.99591333333333,
+              "stdev": 1.9856940572337312
+            },
+            "alloc_us": {
+              "mean": 0.6554666666666666,
+              "stdev": 0.053854000160928964
+            },
+            "download_us": {
+              "mean": 10.811119999999999,
+              "stdev": 0.9224259126889274
+            },
+            "validate_us": {
+              "mean": 2.4315933333333333,
+              "stdev": 0.06880340204767009
+            },
+            "device_update_or_fused_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "device_scan_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "timer_tail_us": {
+              "mean": 0.15053333333333332,
+              "stdev": 0.016688119526577387
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 340.4095,
+              "upload_us": 161.6915,
+              "enqueue_us": 3.85638,
+              "sync_us": 159.76033999999999,
+              "alloc_us": 0.7176,
+              "download_us": 11.8735,
+              "validate_us": 2.51018,
+              "device_update_or_fused_us": 0.0,
+              "device_scan_us": 0.0,
+              "timer_tail_us": 0.1698
+            },
+            {
+              "total_us": 337.0188,
+              "upload_us": 157.88598,
+              "enqueue_us": 3.10538,
+              "sync_us": 162.67252,
+              "alloc_us": 0.6265999999999999,
+              "download_us": 10.346119999999999,
+              "validate_us": 2.3822,
+              "device_update_or_fused_us": 0.0,
+              "device_scan_us": 0.0,
+              "timer_tail_us": 0.1412
+            },
+            {
+              "total_us": 338.51292,
+              "upload_us": 158.66952,
+              "enqueue_us": 3.05018,
+              "sync_us": 163.55488,
+              "alloc_us": 0.6222,
+              "download_us": 10.21374,
+              "validate_us": 2.4024,
+              "device_update_or_fused_us": 0.0,
+              "device_scan_us": 0.0,
+              "timer_tail_us": 0.1406
+            }
+          ]
+        },
+        {
+          "variant": "gpu-delta",
+          "mode": "events",
+          "timings": {
+            "total_us": {
+              "mean": 585.8584666666667,
+              "stdev": 399.8885846957636
+            },
+            "upload_us": {
+              "mean": 406.17391333333336,
+              "stdev": 406.7597103067463
+            },
+            "enqueue_us": {
+              "mean": 7.89122,
+              "stdev": 1.3072572675644225
+            },
+            "sync_us": {
+              "mean": 157.31254666666666,
+              "stdev": 7.2772453332379285
+            },
+            "alloc_us": {
+              "mean": 0.7311866666666667,
+              "stdev": 0.14492588496653505
+            },
+            "download_us": {
+              "mean": 11.209406666666666,
+              "stdev": 0.9151627536855574
+            },
+            "validate_us": {
+              "mean": 2.5401933333333333,
+              "stdev": 0.24214724473620045
+            },
+            "device_update_or_fused_us": {
+              "mean": 121.09162720666667,
+              "stdev": 0.16476409250245774
+            },
+            "device_scan_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "timer_tail_us": {
+              "mean": 0.7582466666666666,
+              "stdev": 0.16823255848180316
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 1047.4095,
+              "upload_us": 875.624,
+              "enqueue_us": 7.72776,
+              "sync_us": 150.03022,
+              "alloc_us": 0.6888,
+              "download_us": 10.93894,
+              "validate_us": 2.39978,
+              "device_update_or_fused_us": 121.16416072,
+              "device_scan_us": 0.0,
+              "timer_tail_us": 0.676
+            },
+            {
+              "total_us": 366.86696,
+              "upload_us": 184.33002,
+              "enqueue_us": 9.27252,
+              "sync_us": 157.32272,
+              "alloc_us": 0.89258,
+              "download_us": 12.22932,
+              "validate_us": 2.8198,
+              "device_update_or_fused_us": 121.20768042,
+              "device_scan_us": 0.0,
+              "timer_tail_us": 0.95178
+            },
+            {
+              "total_us": 343.29894,
+              "upload_us": 158.56772,
+              "enqueue_us": 6.67338,
+              "sync_us": 164.5847,
+              "alloc_us": 0.61218,
+              "download_us": 10.45996,
+              "validate_us": 2.401,
+              "device_update_or_fused_us": 120.90304048,
+              "device_scan_us": 0.0,
+              "timer_tail_us": 0.64696
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "carts": 65536,
+      "lines": 2048,
+      "factor": 1,
+      "command_bytes": 2621440,
+      "result_bytes": 524288,
+      "modes": [
+        {
+          "variant": "cpu-delta-4",
+          "mode": "plain",
+          "timings": {
+            "total_us": {
+              "mean": 2285.9094866666665,
+              "stdev": 149.04256156098012
+            },
+            "upload_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "enqueue_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "sync_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "alloc_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "download_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "validate_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "device_update_or_fused_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "device_scan_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "timer_tail_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 2438.27274,
+              "upload_us": 0.0,
+              "enqueue_us": 0.0,
+              "sync_us": 0.0,
+              "alloc_us": 0.0,
+              "download_us": 0.0,
+              "validate_us": 0.0,
+              "device_update_or_fused_us": 0.0,
+              "device_scan_us": 0.0,
+              "timer_tail_us": 0.0
+            },
+            {
+              "total_us": 2279.02984,
+              "upload_us": 0.0,
+              "enqueue_us": 0.0,
+              "sync_us": 0.0,
+              "alloc_us": 0.0,
+              "download_us": 0.0,
+              "validate_us": 0.0,
+              "device_update_or_fused_us": 0.0,
+              "device_scan_us": 0.0,
+              "timer_tail_us": 0.0
+            },
+            {
+              "total_us": 2140.42588,
+              "upload_us": 0.0,
+              "enqueue_us": 0.0,
+              "sync_us": 0.0,
+              "alloc_us": 0.0,
+              "download_us": 0.0,
+              "validate_us": 0.0,
+              "device_update_or_fused_us": 0.0,
+              "device_scan_us": 0.0,
+              "timer_tail_us": 0.0
+            }
+          ]
+        },
+        {
+          "variant": "gpu-scan",
+          "mode": "plain",
+          "timings": {
+            "total_us": {
+              "mean": 2936.93912,
+              "stdev": 70.58258652738365
+            },
+            "upload_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "enqueue_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "sync_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "alloc_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "download_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "validate_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "device_update_or_fused_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "device_scan_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "timer_tail_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 2902.80356,
+              "upload_us": 0.0,
+              "enqueue_us": 0.0,
+              "sync_us": 0.0,
+              "alloc_us": 0.0,
+              "download_us": 0.0,
+              "validate_us": 0.0,
+              "device_update_or_fused_us": 0.0,
+              "device_scan_us": 0.0,
+              "timer_tail_us": 0.0
+            },
+            {
+              "total_us": 2889.91342,
+              "upload_us": 0.0,
+              "enqueue_us": 0.0,
+              "sync_us": 0.0,
+              "alloc_us": 0.0,
+              "download_us": 0.0,
+              "validate_us": 0.0,
+              "device_update_or_fused_us": 0.0,
+              "device_scan_us": 0.0,
+              "timer_tail_us": 0.0
+            },
+            {
+              "total_us": 3018.10038,
+              "upload_us": 0.0,
+              "enqueue_us": 0.0,
+              "sync_us": 0.0,
+              "alloc_us": 0.0,
+              "download_us": 0.0,
+              "validate_us": 0.0,
+              "device_update_or_fused_us": 0.0,
+              "device_scan_us": 0.0,
+              "timer_tail_us": 0.0
+            }
+          ]
+        },
+        {
+          "variant": "gpu-scan",
+          "mode": "host",
+          "timings": {
+            "total_us": {
+              "mean": 2893.9090866666666,
+              "stdev": 8.388288413361348
+            },
+            "upload_us": {
+              "mean": 218.86384,
+              "stdev": 9.377345621187272
+            },
+            "enqueue_us": {
+              "mean": 6.996353333333333,
+              "stdev": 0.2183643572869287
+            },
+            "sync_us": {
+              "mean": 2553.2005733333335,
+              "stdev": 1.5725595429533588
+            },
+            "alloc_us": {
+              "mean": 8.86654,
+              "stdev": 0.13953434129274406
+            },
+            "download_us": {
+              "mean": 69.34273333333333,
+              "stdev": 0.7650975875882268
+            },
+            "validate_us": {
+              "mean": 36.639046666666665,
+              "stdev": 0.5542149194431115
+            },
+            "device_update_or_fused_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "device_scan_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "timer_tail_us": {
+              "mean": 0.1766,
+              "stdev": 0.007714920608794365
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 2893.48992,
+              "upload_us": 217.63416,
+              "enqueue_us": 7.24314,
+              "sync_us": 2553.08372,
+              "alloc_us": 9.02572,
+              "download_us": 69.22784,
+              "validate_us": 37.27534,
+              "device_update_or_fused_us": 0.0,
+              "device_scan_us": 0.0,
+              "timer_tail_us": 0.1678
+            },
+            {
+              "total_us": 2902.4991,
+              "upload_us": 228.79536000000002,
+              "enqueue_us": 6.82818,
+              "sync_us": 2551.6897,
+              "alloc_us": 8.76536,
+              "download_us": 70.15878,
+              "validate_us": 36.26172,
+              "device_update_or_fused_us": 0.0,
+              "device_scan_us": 0.0,
+              "timer_tail_us": 0.1822
+            },
+            {
+              "total_us": 2885.73824,
+              "upload_us": 210.162,
+              "enqueue_us": 6.91774,
+              "sync_us": 2554.8283,
+              "alloc_us": 8.80854,
+              "download_us": 68.64158,
+              "validate_us": 36.38008,
+              "device_update_or_fused_us": 0.0,
+              "device_scan_us": 0.0,
+              "timer_tail_us": 0.17980000000000002
+            }
+          ]
+        },
+        {
+          "variant": "gpu-scan",
+          "mode": "events",
+          "timings": {
+            "total_us": {
+              "mean": 2903.43496,
+              "stdev": 2.645655641083915
+            },
+            "upload_us": {
+              "mean": 224.39292666666665,
+              "stdev": 1.7243704428380158
+            },
+            "enqueue_us": {
+              "mean": 13.389326666666667,
+              "stdev": 0.5785335600752414
+            },
+            "sync_us": {
+              "mean": 2550.2491,
+              "stdev": 0.6691797465554404
+            },
+            "alloc_us": {
+              "mean": 8.84626,
+              "stdev": 0.16280696176761028
+            },
+            "download_us": {
+              "mean": 70.27552,
+              "stdev": 0.8968186019480207
+            },
+            "validate_us": {
+              "mean": 36.28182666666667,
+              "stdev": 0.4635093036103322
+            },
+            "device_update_or_fused_us": {
+              "mean": 23.36448074666667,
+              "stdev": 0.10775597117934553
+            },
+            "device_scan_us": {
+              "mean": 2499.6989506266664,
+              "stdev": 0.07698440030029433
+            },
+            "timer_tail_us": {
+              "mean": 1.20218,
+              "stdev": 0.020959961832026315
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 2901.42864,
+              "upload_us": 222.68431999999999,
+              "enqueue_us": 13.6488,
+              "sync_us": 2550.75902,
+              "alloc_us": 8.92252,
+              "download_us": 69.49744,
+              "validate_us": 35.91654,
+              "device_update_or_fused_us": 23.3926407,
+              "device_scan_us": 2499.7868444,
+              "timer_tail_us": 1.19038
+            },
+            {
+              "total_us": 2902.443,
+              "upload_us": 224.36182,
+              "enqueue_us": 12.72648,
+              "sync_us": 2550.49692,
+              "alloc_us": 8.65932,
+              "download_us": 70.07276,
+              "validate_us": 36.1257,
+              "device_update_or_fused_us": 23.24544072,
+              "device_scan_us": 2499.66651944,
+              "timer_tail_us": 1.18978
+            },
+            {
+              "total_us": 2906.43324,
+              "upload_us": 226.13264,
+              "enqueue_us": 13.7927,
+              "sync_us": 2549.49136,
+              "alloc_us": 8.95694,
+              "download_us": 71.25636,
+              "validate_us": 36.80324,
+              "device_update_or_fused_us": 23.45536082,
+              "device_scan_us": 2499.6434880399997,
+              "timer_tail_us": 1.22638
+            }
+          ]
+        },
+        {
+          "variant": "gpu-delta",
+          "mode": "plain",
+          "timings": {
+            "total_us": {
+              "mean": 397.44902666666667,
+              "stdev": 4.693685746802118
+            },
+            "upload_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "enqueue_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "sync_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "alloc_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "download_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "validate_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "device_update_or_fused_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "device_scan_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "timer_tail_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 392.17334,
+              "upload_us": 0.0,
+              "enqueue_us": 0.0,
+              "sync_us": 0.0,
+              "alloc_us": 0.0,
+              "download_us": 0.0,
+              "validate_us": 0.0,
+              "device_update_or_fused_us": 0.0,
+              "device_scan_us": 0.0,
+              "timer_tail_us": 0.0
+            },
+            {
+              "total_us": 399.01168,
+              "upload_us": 0.0,
+              "enqueue_us": 0.0,
+              "sync_us": 0.0,
+              "alloc_us": 0.0,
+              "download_us": 0.0,
+              "validate_us": 0.0,
+              "device_update_or_fused_us": 0.0,
+              "device_scan_us": 0.0,
+              "timer_tail_us": 0.0
+            },
+            {
+              "total_us": 401.16206,
+              "upload_us": 0.0,
+              "enqueue_us": 0.0,
+              "sync_us": 0.0,
+              "alloc_us": 0.0,
+              "download_us": 0.0,
+              "validate_us": 0.0,
+              "device_update_or_fused_us": 0.0,
+              "device_scan_us": 0.0,
+              "timer_tail_us": 0.0
+            }
+          ]
+        },
+        {
+          "variant": "gpu-delta",
+          "mode": "host",
+          "timings": {
+            "total_us": {
+              "mean": 631.5560466666667,
+              "stdev": 409.5941625630919
+            },
+            "upload_us": {
+              "mean": 437.26418,
+              "stdev": 408.55324006052973
+            },
+            "enqueue_us": {
+              "mean": 3.5715,
+              "stdev": 0.3763026802987191
+            },
+            "sync_us": {
+              "mean": 84.20816666666666,
+              "stdev": 0.44070526447199626
+            },
+            "alloc_us": {
+              "mean": 8.466373333333333,
+              "stdev": 0.4317936638411145
+            },
+            "download_us": {
+              "mean": 61.04707333333334,
+              "stdev": 0.5101525357511534
+            },
+            "validate_us": {
+              "mean": 36.99875333333333,
+              "stdev": 0.4431651495022286
+            },
+            "device_update_or_fused_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "device_scan_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "timer_tail_us": {
+              "mean": 0.1748,
+              "stdev": 0.009206519429187123
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 392.5675,
+              "upload_us": 199.11262,
+              "enqueue_us": 3.97978,
+              "sync_us": 83.71314,
+              "alloc_us": 8.2101,
+              "download_us": 60.54196,
+              "validate_us": 37.0099,
+              "device_update_or_fused_us": 0.0,
+              "device_scan_us": 0.0,
+              "timer_tail_us": 0.18080000000000002
+            },
+            {
+              "total_us": 397.5949,
+              "upload_us": 203.66642,
+              "enqueue_us": 3.23858,
+              "sync_us": 84.35354,
+              "alloc_us": 8.22412,
+              "download_us": 61.56212,
+              "validate_us": 36.55012,
+              "device_update_or_fused_us": 0.0,
+              "device_scan_us": 0.0,
+              "timer_tail_us": 0.1794
+            },
+            {
+              "total_us": 1104.50574,
+              "upload_us": 909.0135,
+              "enqueue_us": 3.49614,
+              "sync_us": 84.55781999999999,
+              "alloc_us": 8.9649,
+              "download_us": 61.03714,
+              "validate_us": 37.43624,
+              "device_update_or_fused_us": 0.0,
+              "device_scan_us": 0.0,
+              "timer_tail_us": 0.1642
+            }
+          ]
+        },
+        {
+          "variant": "gpu-delta",
+          "mode": "events",
+          "timings": {
+            "total_us": {
+              "mean": 398.0288,
+              "stdev": 1.2734770688159336
+            },
+            "upload_us": {
+              "mean": 201.25740666666667,
+              "stdev": 1.4378080776422586
+            },
+            "enqueue_us": {
+              "mean": 6.833146666666667,
+              "stdev": 0.24696647572764455
+            },
+            "sync_us": {
+              "mean": 84.22128666666667,
+              "stdev": 0.9558588641286601
+            },
+            "alloc_us": {
+              "mean": 8.204773333333334,
+              "stdev": 0.07180451332147099
+            },
+            "download_us": {
+              "mean": 60.95491333333333,
+              "stdev": 0.5186483704142298
+            },
+            "validate_us": {
+              "mean": 36.557273333333335,
+              "stdev": 0.20271108241370056
+            },
+            "device_update_or_fused_us": {
+              "mean": 63.491839113333334,
+              "stdev": 0.12254124749489975
+            },
+            "device_scan_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "timer_tail_us": {
+              "mean": 0.8716466666666667,
+              "stdev": 0.023601129916453883
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 397.48588,
+              "upload_us": 200.04128,
+              "enqueue_us": 6.56714,
+              "sync_us": 85.32208,
+              "alloc_us": 8.1759,
+              "download_us": 60.7743,
+              "validate_us": 36.60518,
+              "device_update_or_fused_us": 63.559039080000005,
+              "device_scan_us": 0.0,
+              "timer_tail_us": 0.89858
+            },
+            {
+              "total_us": 399.48376,
+              "upload_us": 202.84428,
+              "enqueue_us": 6.87714,
+              "sync_us": 83.6012,
+              "alloc_us": 8.28652,
+              "download_us": 61.53972,
+              "validate_us": 36.3349,
+              "device_update_or_fused_us": 63.35039906,
+              "device_scan_us": 0.0,
+              "timer_tail_us": 0.86178
+            },
+            {
+              "total_us": 397.11676,
+              "upload_us": 200.88666,
+              "enqueue_us": 7.05516,
+              "sync_us": 83.74058,
+              "alloc_us": 8.1519,
+              "download_us": 60.55072,
+              "validate_us": 36.73174,
+              "device_update_or_fused_us": 63.566079200000004,
+              "device_scan_us": 0.0,
+              "timer_tail_us": 0.85458
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "carts": 65536,
+      "lines": 2048,
+      "factor": 16,
+      "command_bytes": 34078720,
+      "result_bytes": 524288,
+      "modes": [
+        {
+          "variant": "cpu-delta-4",
+          "mode": "plain",
+          "timings": {
+            "total_us": {
+              "mean": 12112.429673333334,
+              "stdev": 21.502456570256204
+            },
+            "upload_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "enqueue_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "sync_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "alloc_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "download_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "validate_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "device_update_or_fused_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "device_scan_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "timer_tail_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 12134.55066,
+              "upload_us": 0.0,
+              "enqueue_us": 0.0,
+              "sync_us": 0.0,
+              "alloc_us": 0.0,
+              "download_us": 0.0,
+              "validate_us": 0.0,
+              "device_update_or_fused_us": 0.0,
+              "device_scan_us": 0.0,
+              "timer_tail_us": 0.0
+            },
+            {
+              "total_us": 12091.60434,
+              "upload_us": 0.0,
+              "enqueue_us": 0.0,
+              "sync_us": 0.0,
+              "alloc_us": 0.0,
+              "download_us": 0.0,
+              "validate_us": 0.0,
+              "device_update_or_fused_us": 0.0,
+              "device_scan_us": 0.0,
+              "timer_tail_us": 0.0
+            },
+            {
+              "total_us": 12111.13402,
+              "upload_us": 0.0,
+              "enqueue_us": 0.0,
+              "sync_us": 0.0,
+              "alloc_us": 0.0,
+              "download_us": 0.0,
+              "validate_us": 0.0,
+              "device_update_or_fused_us": 0.0,
+              "device_scan_us": 0.0,
+              "timer_tail_us": 0.0
+            }
+          ]
+        },
+        {
+          "variant": "gpu-scan",
+          "mode": "plain",
+          "timings": {
+            "total_us": {
+              "mean": 5761.872213333333,
+              "stdev": 54.06643550783913
+            },
+            "upload_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "enqueue_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "sync_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "alloc_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "download_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "validate_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "device_update_or_fused_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "device_scan_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "timer_tail_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 5732.80238,
+              "upload_us": 0.0,
+              "enqueue_us": 0.0,
+              "sync_us": 0.0,
+              "alloc_us": 0.0,
+              "download_us": 0.0,
+              "validate_us": 0.0,
+              "device_update_or_fused_us": 0.0,
+              "device_scan_us": 0.0,
+              "timer_tail_us": 0.0
+            },
+            {
+              "total_us": 5728.55958,
+              "upload_us": 0.0,
+              "enqueue_us": 0.0,
+              "sync_us": 0.0,
+              "alloc_us": 0.0,
+              "download_us": 0.0,
+              "validate_us": 0.0,
+              "device_update_or_fused_us": 0.0,
+              "device_scan_us": 0.0,
+              "timer_tail_us": 0.0
+            },
+            {
+              "total_us": 5824.25468,
+              "upload_us": 0.0,
+              "enqueue_us": 0.0,
+              "sync_us": 0.0,
+              "alloc_us": 0.0,
+              "download_us": 0.0,
+              "validate_us": 0.0,
+              "device_update_or_fused_us": 0.0,
+              "device_scan_us": 0.0,
+              "timer_tail_us": 0.0
+            }
+          ]
+        },
+        {
+          "variant": "gpu-scan",
+          "mode": "host",
+          "timings": {
+            "total_us": {
+              "mean": 5781.531186666667,
+              "stdev": 85.46615059388222
+            },
+            "upload_us": {
+              "mean": 2692.7434,
+              "stdev": 84.28352674606602
+            },
+            "enqueue_us": {
+              "mean": 23.325913333333332,
+              "stdev": 0.6695129185709063
+            },
+            "sync_us": {
+              "mean": 2920.739146666667,
+              "stdev": 5.895812869531503
+            },
+            "alloc_us": {
+              "mean": 33.812713333333335,
+              "stdev": 0.05188471965167903
+            },
+            "download_us": {
+              "mean": 71.99423333333334,
+              "stdev": 0.8802755492079345
+            },
+            "validate_us": {
+              "mean": 38.91578,
+              "stdev": 3.423413337766856
+            },
+            "device_update_or_fused_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "device_scan_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "timer_tail_us": {
+              "mean": 0.9031266666666666,
+              "stdev": 0.039105806900425095
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 5730.54454,
+              "upload_us": 2646.01176,
+              "enqueue_us": 24.09516,
+              "sync_us": 2917.10132,
+              "alloc_us": 33.75654,
+              "download_us": 71.79356,
+              "validate_us": 37.7862,
+              "device_update_or_fused_us": 0.0,
+              "device_scan_us": 0.0,
+              "timer_tail_us": 0.9472
+            },
+            {
+              "total_us": 5733.84846,
+              "upload_us": 2642.17798,
+              "enqueue_us": 22.87464,
+              "sync_us": 2927.54156,
+              "alloc_us": 33.82276,
+              "download_us": 71.23162,
+              "validate_us": 36.1999,
+              "device_update_or_fused_us": 0.0,
+              "device_scan_us": 0.0,
+              "timer_tail_us": 0.8896
+            },
+            {
+              "total_us": 5880.20056,
+              "upload_us": 2790.04046,
+              "enqueue_us": 23.00794,
+              "sync_us": 2917.57456,
+              "alloc_us": 33.85884,
+              "download_us": 72.95752,
+              "validate_us": 42.76124,
+              "device_update_or_fused_us": 0.0,
+              "device_scan_us": 0.0,
+              "timer_tail_us": 0.87258
+            }
+          ]
+        },
+        {
+          "variant": "gpu-scan",
+          "mode": "events",
+          "timings": {
+            "total_us": {
+              "mean": 5733.620646666666,
+              "stdev": 3.4910909351854578
+            },
+            "upload_us": {
+              "mean": 2640.3742666666667,
+              "stdev": 0.5490743681263871
+            },
+            "enqueue_us": {
+              "mean": 30.697366666666667,
+              "stdev": 0.12476061290861537
+            },
+            "sync_us": {
+              "mean": 2921.2174133333333,
+              "stdev": 3.6995016888403955
+            },
+            "alloc_us": {
+              "mean": 33.769346666666664,
+              "stdev": 0.6139400212832956
+            },
+            "download_us": {
+              "mean": 71.3142,
+              "stdev": 0.08422867682684199
+            },
+            "validate_us": {
+              "mean": 36.24805333333333,
+              "stdev": 0.2615596454603282
+            },
+            "device_update_or_fused_us": {
+              "mean": 427.97802802666666,
+              "stdev": 1.6982159685685478
+            },
+            "device_scan_us": {
+              "mean": 2499.3825768533334,
+              "stdev": 2.194169561387153
+            },
+            "timer_tail_us": {
+              "mean": 3.080913333333333,
+              "stdev": 0.11459697087328867
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 5735.9846,
+              "upload_us": 2639.8275,
+              "enqueue_us": 30.84038,
+              "sync_us": 2923.96198,
+              "alloc_us": 33.65338,
+              "download_us": 71.3931,
+              "validate_us": 36.30826,
+              "device_update_or_fused_us": 429.18336092,
+              "device_scan_us": 2500.8703707199998,
+              "timer_tail_us": 3.17858
+            },
+            {
+              "total_us": 5729.61086,
+              "upload_us": 2640.3696800000002,
+              "enqueue_us": 30.61084,
+              "sync_us": 2917.0102,
+              "alloc_us": 34.433,
+              "download_us": 71.2255,
+              "validate_us": 35.96164,
+              "device_update_or_fused_us": 426.03584042,
+              "device_scan_us": 2496.86266412,
+              "timer_tail_us": 3.1094
+            },
+            {
+              "total_us": 5735.26648,
+              "upload_us": 2640.92562,
+              "enqueue_us": 30.64088,
+              "sync_us": 2922.68006,
+              "alloc_us": 33.22166,
+              "download_us": 71.324,
+              "validate_us": 36.47426,
+              "device_update_or_fused_us": 428.71488274,
+              "device_scan_us": 2500.41469572,
+              "timer_tail_us": 2.95476
+            }
+          ]
+        },
+        {
+          "variant": "gpu-delta",
+          "mode": "plain",
+          "timings": {
+            "total_us": {
+              "mean": 3580.985906666667,
+              "stdev": 5.924119571593101
+            },
+            "upload_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "enqueue_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "sync_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "alloc_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "download_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "validate_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "device_update_or_fused_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "device_scan_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "timer_tail_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 3587.77762,
+              "upload_us": 0.0,
+              "enqueue_us": 0.0,
+              "sync_us": 0.0,
+              "alloc_us": 0.0,
+              "download_us": 0.0,
+              "validate_us": 0.0,
+              "device_update_or_fused_us": 0.0,
+              "device_scan_us": 0.0,
+              "timer_tail_us": 0.0
+            },
+            {
+              "total_us": 3578.2969200000002,
+              "upload_us": 0.0,
+              "enqueue_us": 0.0,
+              "sync_us": 0.0,
+              "alloc_us": 0.0,
+              "download_us": 0.0,
+              "validate_us": 0.0,
+              "device_update_or_fused_us": 0.0,
+              "device_scan_us": 0.0,
+              "timer_tail_us": 0.0
+            },
+            {
+              "total_us": 3576.88318,
+              "upload_us": 0.0,
+              "enqueue_us": 0.0,
+              "sync_us": 0.0,
+              "alloc_us": 0.0,
+              "download_us": 0.0,
+              "validate_us": 0.0,
+              "device_update_or_fused_us": 0.0,
+              "device_scan_us": 0.0,
+              "timer_tail_us": 0.0
+            }
+          ]
+        },
+        {
+          "variant": "gpu-delta",
+          "mode": "host",
+          "timings": {
+            "total_us": {
+              "mean": 3611.2275066666666,
+              "stdev": 29.809715634888832
+            },
+            "upload_us": {
+              "mean": 2640.1291533333333,
+              "stdev": 30.036227535030594
+            },
+            "enqueue_us": {
+              "mean": 18.286986666666667,
+              "stdev": 0.2245959432699825
+            },
+            "sync_us": {
+              "mean": 811.3357,
+              "stdev": 0.7365582700641933
+            },
+            "alloc_us": {
+              "mean": 33.52021333333333,
+              "stdev": 0.13637011011703823
+            },
+            "download_us": {
+              "mean": 71.39923333333333,
+              "stdev": 0.8875680945895544
+            },
+            "validate_us": {
+              "mean": 36.556219999999996,
+              "stdev": 0.1176070014922603
+            },
+            "device_update_or_fused_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "device_scan_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "timer_tail_us": {
+              "mean": 0.87364,
+              "stdev": 0.05957196656146243
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 3588.39834,
+              "upload_us": 2618.22076,
+              "enqueue_us": 18.14802,
+              "sync_us": 810.49476,
+              "alloc_us": 33.66408,
+              "download_us": 71.35524,
+              "validate_us": 36.51548,
+              "device_update_or_fused_us": 0.0,
+              "device_scan_us": 0.0,
+              "timer_tail_us": 0.9298
+            },
+            {
+              "total_us": 3600.33198,
+              "upload_us": 2627.79834,
+              "enqueue_us": 18.16684,
+              "sync_us": 811.86632,
+              "alloc_us": 33.50372,
+              "download_us": 72.30798,
+              "validate_us": 36.68878,
+              "device_update_or_fused_us": 0.0,
+              "device_scan_us": 0.0,
+              "timer_tail_us": 0.87996
+            },
+            {
+              "total_us": 3644.9522,
+              "upload_us": 2674.36836,
+              "enqueue_us": 18.5461,
+              "sync_us": 811.64602,
+              "alloc_us": 33.39284,
+              "download_us": 70.53448,
+              "validate_us": 36.4644,
+              "device_update_or_fused_us": 0.0,
+              "device_scan_us": 0.0,
+              "timer_tail_us": 0.81116
+            }
+          ]
+        },
+        {
+          "variant": "gpu-delta",
+          "mode": "events",
+          "timings": {
+            "total_us": {
+              "mean": 3653.0097533333333,
+              "stdev": 50.021987286237845
+            },
+            "upload_us": {
+              "mean": 2678.109086666667,
+              "stdev": 46.5687675270982
+            },
+            "enqueue_us": {
+              "mean": 25.041146666666666,
+              "stdev": 0.6269777292163825
+            },
+            "sync_us": {
+              "mean": 808.1038666666667,
+              "stdev": 0.8597336690704502
+            },
+            "alloc_us": {
+              "mean": 33.669760000000004,
+              "stdev": 0.868159631404272
+            },
+            "download_us": {
+              "mean": 70.96884,
+              "stdev": 0.5289025365792844
+            },
+            "validate_us": {
+              "mean": 37.11705333333333,
+              "stdev": 0.7639731964757208
+            },
+            "device_update_or_fused_us": {
+              "mean": 808.4351993333333,
+              "stdev": 1.481650059723406
+            },
+            "device_scan_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "timer_tail_us": {
+              "mean": 2.295593333333333,
+              "stdev": 0.04565387314712004
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 3623.25938,
+              "upload_us": 2649.47978,
+              "enqueue_us": 25.00032,
+              "sync_us": 807.68118,
+              "alloc_us": 33.60176,
+              "download_us": 70.69922,
+              "validate_us": 36.79712,
+              "device_update_or_fused_us": 808.04479606,
+              "device_scan_us": 0.0,
+              "timer_tail_us": 2.30378
+            },
+            {
+              "total_us": 3710.76134,
+              "upload_us": 2731.84356,
+              "enqueue_us": 25.68754,
+              "sync_us": 809.09312,
+              "alloc_us": 34.56992,
+              "download_us": 71.57822,
+              "validate_us": 37.98898,
+              "device_update_or_fused_us": 810.07295976,
+              "device_scan_us": 0.0,
+              "timer_tail_us": 2.2464
+            },
+            {
+              "total_us": 3625.00854,
+              "upload_us": 2653.00392,
+              "enqueue_us": 24.43558,
+              "sync_us": 807.5373,
+              "alloc_us": 32.8376,
+              "download_us": 70.62908,
+              "validate_us": 36.56506,
+              "device_update_or_fused_us": 807.18784218,
+              "device_scan_us": 0.0,
+              "timer_tail_us": 2.3366
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "carts": 65536,
+      "lines": 2048,
+      "factor": 64,
+      "command_bytes": 134742016,
+      "result_bytes": 524288,
+      "modes": [
+        {
+          "variant": "cpu-delta-4",
+          "mode": "plain",
+          "timings": {
+            "total_us": {
+              "mean": 50954.25192666667,
+              "stdev": 72.7675843013212
+            },
+            "upload_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "enqueue_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "sync_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "alloc_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "download_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "validate_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "device_update_or_fused_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "device_scan_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "timer_tail_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 51038.09158,
+              "upload_us": 0.0,
+              "enqueue_us": 0.0,
+              "sync_us": 0.0,
+              "alloc_us": 0.0,
+              "download_us": 0.0,
+              "validate_us": 0.0,
+              "device_update_or_fused_us": 0.0,
+              "device_scan_us": 0.0,
+              "timer_tail_us": 0.0
+            },
+            {
+              "total_us": 50907.5045,
+              "upload_us": 0.0,
+              "enqueue_us": 0.0,
+              "sync_us": 0.0,
+              "alloc_us": 0.0,
+              "download_us": 0.0,
+              "validate_us": 0.0,
+              "device_update_or_fused_us": 0.0,
+              "device_scan_us": 0.0,
+              "timer_tail_us": 0.0
+            },
+            {
+              "total_us": 50917.159700000004,
+              "upload_us": 0.0,
+              "enqueue_us": 0.0,
+              "sync_us": 0.0,
+              "alloc_us": 0.0,
+              "download_us": 0.0,
+              "validate_us": 0.0,
+              "device_update_or_fused_us": 0.0,
+              "device_scan_us": 0.0,
+              "timer_tail_us": 0.0
+            }
+          ]
+        },
+        {
+          "variant": "gpu-scan",
+          "mode": "plain",
+          "timings": {
+            "total_us": {
+              "mean": 16307.04452,
+              "stdev": 870.5877998878677
+            },
+            "upload_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "enqueue_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "sync_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "alloc_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "download_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "validate_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "device_update_or_fused_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "device_scan_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "timer_tail_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 15757.18002,
+              "upload_us": 0.0,
+              "enqueue_us": 0.0,
+              "sync_us": 0.0,
+              "alloc_us": 0.0,
+              "download_us": 0.0,
+              "validate_us": 0.0,
+              "device_update_or_fused_us": 0.0,
+              "device_scan_us": 0.0,
+              "timer_tail_us": 0.0
+            },
+            {
+              "total_us": 15853.1696,
+              "upload_us": 0.0,
+              "enqueue_us": 0.0,
+              "sync_us": 0.0,
+              "alloc_us": 0.0,
+              "download_us": 0.0,
+              "validate_us": 0.0,
+              "device_update_or_fused_us": 0.0,
+              "device_scan_us": 0.0,
+              "timer_tail_us": 0.0
+            },
+            {
+              "total_us": 17310.78394,
+              "upload_us": 0.0,
+              "enqueue_us": 0.0,
+              "sync_us": 0.0,
+              "alloc_us": 0.0,
+              "download_us": 0.0,
+              "validate_us": 0.0,
+              "device_update_or_fused_us": 0.0,
+              "device_scan_us": 0.0,
+              "timer_tail_us": 0.0
+            }
+          ]
+        },
+        {
+          "variant": "gpu-scan",
+          "mode": "host",
+          "timings": {
+            "total_us": {
+              "mean": 15352.35758,
+              "stdev": 492.6346538973671
+            },
+            "upload_us": {
+              "mean": 10983.817426666667,
+              "stdev": 510.04976844083205
+            },
+            "enqueue_us": {
+              "mean": 25.861146666666667,
+              "stdev": 1.0054220316530433
+            },
+            "sync_us": {
+              "mean": 4199.7055666666665,
+              "stdev": 17.915553657784024
+            },
+            "alloc_us": {
+              "mean": 32.114893333333335,
+              "stdev": 0.05024348846699813
+            },
+            "download_us": {
+              "mean": 74.77492666666666,
+              "stdev": 0.20120748528157426
+            },
+            "validate_us": {
+              "mean": 36.08362,
+              "stdev": 0.3362717282199015
+            },
+            "device_update_or_fused_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "device_scan_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "timer_tail_us": {
+              "mean": 0.9231333333333334,
+              "stdev": 0.04104452866501615
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 15582.245859999999,
+              "upload_us": 11223.40502,
+              "enqueue_us": 26.99938,
+              "sync_us": 4189.33356,
+              "alloc_us": 32.06832,
+              "download_us": 74.70204,
+              "validate_us": 35.73754,
+              "device_update_or_fused_us": 0.0,
+              "device_scan_us": 0.0,
+              "timer_tail_us": 0.9424
+            },
+            {
+              "total_us": 14786.80004,
+              "upload_us": 10398.08468,
+              "enqueue_us": 25.49,
+              "sync_us": 4220.39264,
+              "alloc_us": 32.10822,
+              "download_us": 74.62031999999999,
+              "validate_us": 36.10418,
+              "device_update_or_fused_us": 0.0,
+              "device_scan_us": 0.0,
+              "timer_tail_us": 0.876
+            },
+            {
+              "total_us": 15688.02684,
+              "upload_us": 11329.96258,
+              "enqueue_us": 25.09406,
+              "sync_us": 4189.3904999999995,
+              "alloc_us": 32.16814,
+              "download_us": 75.00242,
+              "validate_us": 36.40914,
+              "device_update_or_fused_us": 0.0,
+              "device_scan_us": 0.0,
+              "timer_tail_us": 0.951
+            }
+          ]
+        },
+        {
+          "variant": "gpu-scan",
+          "mode": "events",
+          "timings": {
+            "total_us": {
+              "mean": 15628.742853333333,
+              "stdev": 63.05445837601106
+            },
+            "upload_us": {
+              "mean": 11252.650666666666,
+              "stdev": 62.03946507581574
+            },
+            "enqueue_us": {
+              "mean": 33.81606,
+              "stdev": 1.1625135298997586
+            },
+            "sync_us": {
+              "mean": 4198.191866666666,
+              "stdev": 8.489780209506808
+            },
+            "alloc_us": {
+              "mean": 32.20178,
+              "stdev": 0.1795417912353564
+            },
+            "download_us": {
+              "mean": 75.49563333333333,
+              "stdev": 2.296179543009069
+            },
+            "validate_us": {
+              "mean": 36.38684666666667,
+              "stdev": 0.8471241104663082
+            },
+            "device_update_or_fused_us": {
+              "mean": 1706.1288547666666,
+              "stdev": 5.7246894509291
+            },
+            "device_scan_us": {
+              "mean": 2502.5139031733333,
+              "stdev": 2.7591835239098397
+            },
+            "timer_tail_us": {
+              "mean": 3.1699133333333336,
+              "stdev": 0.07542382735802615
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 15691.13338,
+              "upload_us": 11310.6394,
+              "enqueue_us": 35.02834,
+              "sync_us": 4202.88962,
+              "alloc_us": 32.16736,
+              "download_us": 74.57592,
+              "validate_us": 35.83274,
+              "device_update_or_fused_us": 1710.1081634,
+              "device_scan_us": 2504.1273548199997,
+              "timer_tail_us": 3.2484
+            },
+            {
+              "total_us": 15630.05038,
+              "upload_us": 11260.0826,
+              "enqueue_us": 33.70914,
+              "sync_us": 4188.3915,
+              "alloc_us": 32.39604,
+              "download_us": 78.1091,
+              "validate_us": 37.362,
+              "device_update_or_fused_us": 1699.5679975,
+              "device_scan_us": 2499.32796024,
+              "timer_tail_us": 3.16336
+            },
+            {
+              "total_us": 15565.0448,
+              "upload_us": 11187.23,
+              "enqueue_us": 32.7107,
+              "sync_us": 4203.29448,
+              "alloc_us": 32.04194,
+              "download_us": 73.80188,
+              "validate_us": 35.9658,
+              "device_update_or_fused_us": 1708.7104034,
+              "device_scan_us": 2504.08639446,
+              "timer_tail_us": 3.09798
+            }
+          ]
+        },
+        {
+          "variant": "gpu-delta",
+          "mode": "plain",
+          "timings": {
+            "total_us": {
+              "mean": 14414.00046,
+              "stdev": 263.9675483462472
+            },
+            "upload_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "enqueue_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "sync_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "alloc_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "download_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "validate_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "device_update_or_fused_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "device_scan_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "timer_tail_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 14109.99928,
+              "upload_us": 0.0,
+              "enqueue_us": 0.0,
+              "sync_us": 0.0,
+              "alloc_us": 0.0,
+              "download_us": 0.0,
+              "validate_us": 0.0,
+              "device_update_or_fused_us": 0.0,
+              "device_scan_us": 0.0,
+              "timer_tail_us": 0.0
+            },
+            {
+              "total_us": 14585.14076,
+              "upload_us": 0.0,
+              "enqueue_us": 0.0,
+              "sync_us": 0.0,
+              "alloc_us": 0.0,
+              "download_us": 0.0,
+              "validate_us": 0.0,
+              "device_update_or_fused_us": 0.0,
+              "device_scan_us": 0.0,
+              "timer_tail_us": 0.0
+            },
+            {
+              "total_us": 14546.86134,
+              "upload_us": 0.0,
+              "enqueue_us": 0.0,
+              "sync_us": 0.0,
+              "alloc_us": 0.0,
+              "download_us": 0.0,
+              "validate_us": 0.0,
+              "device_update_or_fused_us": 0.0,
+              "device_scan_us": 0.0,
+              "timer_tail_us": 0.0
+            }
+          ]
+        },
+        {
+          "variant": "gpu-delta",
+          "mode": "host",
+          "timings": {
+            "total_us": {
+              "mean": 14749.1905,
+              "stdev": 203.59334537908364
+            },
+            "upload_us": {
+              "mean": 11385.636093333334,
+              "stdev": 201.46177565305288
+            },
+            "enqueue_us": {
+              "mean": 21.537466666666667,
+              "stdev": 1.305352630109325
+            },
+            "sync_us": {
+              "mean": 3198.4957066666666,
+              "stdev": 0.5243290700823235
+            },
+            "alloc_us": {
+              "mean": 32.32242,
+              "stdev": 0.32292974901671967
+            },
+            "download_us": {
+              "mean": 75.05056,
+              "stdev": 0.8525650691882694
+            },
+            "validate_us": {
+              "mean": 36.14825333333334,
+              "stdev": 0.19559020152689957
+            },
+            "device_update_or_fused_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "device_scan_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "timer_tail_us": {
+              "mean": 0.8788666666666667,
+              "stdev": 0.07154029167772057
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 14735.38736,
+              "upload_us": 11370.3081,
+              "enqueue_us": 22.3957,
+              "sync_us": 3198.01662,
+              "alloc_us": 32.65644,
+              "download_us": 75.85994,
+              "validate_us": 36.15056,
+              "device_update_or_fused_us": 0.0,
+              "device_scan_us": 0.0,
+              "timer_tail_us": 0.9448
+            },
+            {
+              "total_us": 14959.33418,
+              "upload_us": 11594.32406,
+              "enqueue_us": 22.18144,
+              "sync_us": 3199.05584,
+              "alloc_us": 32.29896,
+              "download_us": 75.1312,
+              "validate_us": 36.34268,
+              "device_update_or_fused_us": 0.0,
+              "device_scan_us": 0.0,
+              "timer_tail_us": 0.8028
+            },
+            {
+              "total_us": 14552.84996,
+              "upload_us": 11192.27612,
+              "enqueue_us": 20.03526,
+              "sync_us": 3198.41466,
+              "alloc_us": 32.01186,
+              "download_us": 74.16054,
+              "validate_us": 35.95152,
+              "device_update_or_fused_us": 0.0,
+              "device_scan_us": 0.0,
+              "timer_tail_us": 0.889
+            }
+          ]
+        },
+        {
+          "variant": "gpu-delta",
+          "mode": "events",
+          "timings": {
+            "total_us": {
+              "mean": 14597.901766666666,
+              "stdev": 40.398632065061484
+            },
+            "upload_us": {
+              "mean": 11229.49054,
+              "stdev": 38.59639201566435
+            },
+            "enqueue_us": {
+              "mean": 28.199473333333334,
+              "stdev": 1.1058443958050042
+            },
+            "sync_us": {
+              "mean": 3197.5885866666667,
+              "stdev": 0.7425304767707448
+            },
+            "alloc_us": {
+              "mean": 32.17934666666667,
+              "stdev": 0.08000700302681911
+            },
+            "download_us": {
+              "mean": 74.44882,
+              "stdev": 0.34825676274840217
+            },
+            "validate_us": {
+              "mean": 35.995,
+              "stdev": 0.1248324044469218
+            },
+            "device_update_or_fused_us": {
+              "mean": 3201.6902256133335,
+              "stdev": 1.506267243757985
+            },
+            "device_scan_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "timer_tail_us": {
+              "mean": 2.621713333333333,
+              "stdev": 0.1134891260576683
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 14641.741680000001,
+              "upload_us": 11271.07536,
+              "enqueue_us": 29.44554,
+              "sync_us": 3198.20026,
+              "alloc_us": 32.14232,
+              "download_us": 74.85086,
+              "validate_us": 36.02734,
+              "device_update_or_fused_us": 3203.4163046,
+              "device_scan_us": 0.0,
+              "timer_tail_us": 2.49376
+            },
+            {
+              "total_us": 14589.78746,
+              "upload_us": 11222.58008,
+              "enqueue_us": 27.81806,
+              "sync_us": 3196.76242,
+              "alloc_us": 32.27116,
+              "download_us": 74.25526,
+              "validate_us": 36.10048,
+              "device_update_or_fused_us": 3200.64190388,
+              "device_scan_us": 0.0,
+              "timer_tail_us": 2.7102
+            },
+            {
+              "total_us": 14562.176159999999,
+              "upload_us": 11194.81618,
+              "enqueue_us": 27.33482,
+              "sync_us": 3197.80308,
+              "alloc_us": 32.12456,
+              "download_us": 74.24034,
+              "validate_us": 35.85718,
+              "device_update_or_fused_us": 3201.01246836,
+              "device_scan_us": 0.0,
+              "timer_tail_us": 2.66118
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

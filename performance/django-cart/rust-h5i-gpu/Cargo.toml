@@ -1,0 +1,12 @@
+[package]
+name = "django-cart-pricing"
+version = "0.1.0"
+edition = "2024"
+publish = false
+
+[workspace]
+exclude = ["backend-nvvm"]
+
+[[bin]]
+name = "cart-check"
+path = "src/check.rs"

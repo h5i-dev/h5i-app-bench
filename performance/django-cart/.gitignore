@@ -1,0 +1,10 @@
+javascript/node_modules/
+
+# Keep measurement samples, command output and run metadata local.
+# Only aggregate summaries and the placement report belong in Git.
+**/results/**/*
+!**/results/**/
+!**/results/**/summary*.csv
+!**/results/**/summary*.json
+!**/results/**/summary*.md
+!**/results/**/placement.md
