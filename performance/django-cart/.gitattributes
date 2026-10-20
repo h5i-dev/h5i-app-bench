@@ -1,0 +1,4 @@
+# Preserve recorded CSV bytes, including Python csv.writer's CRLF endings.
+*.csv -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+# These files retain verbatim command output, including nvidia-smi padding.
+**/environment.txt -text -whitespace

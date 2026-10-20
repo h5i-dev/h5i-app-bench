@@ -1,0 +1,15 @@
+// Independent resident grouped-delta implementation; no SQL/HTTP.
+package main
+import("encoding/binary";"encoding/json";"fmt";"os";"path/filepath";"runtime";"strconv";"sync";"time")
+type Meta struct {Carts int `json:"carts"`; Lines int `json:"lines"`; Rounds int `json:"rounds"`; Words int `json:"command_words"`}
+func read(p string)[]uint64{b,e:=os.ReadFile(p);if e!=nil{panic(e)};if len(b)%8!=0{panic("bad words")};v:=make([]uint64,len(b)/8);for i:=range v{v[i]=binary.LittleEndian.Uint64(b[i*8:])};return v}
+func finish(s,k,v uint64)uint64{if k==1{if v>10000{v=10000};return (s*10000-s*v+5000)/10000};if k==2{if v>s{return 0};return s-v};return s}
+type Job struct{cmd,out []uint64; lo,hi int; wg *sync.WaitGroup}
+func main(){runtime.GOMAXPROCS(4);dir,name:=os.Args[1],os.Args[2];rep,e:=strconv.Atoi(os.Args[3]);if e!=nil{panic(e)};var m Meta;b,e:=os.ReadFile(filepath.Join(dir,"manifest.json"));if e!=nil{panic(e)};if e=json.Unmarshal(b,&m);e!=nil{panic(e)}
+base:=read(filepath.Join(dir,"base.bin"));commands:=read(filepath.Join(dir,"commands.bin"));expected:=read(filepath.Join(dir,"expected.bin"));n,cap,w:=m.Carts,m.Lines,2*m.Lines+3
+if len(base)!=n*w||len(commands)!=m.Rounds*m.Words||len(expected)!=m.Rounds*n{panic("bad fixture")}
+for r:=0;r<m.Rounds;r++{cmd:=commands[r*m.Words:(r+1)*m.Words];seen:=make([]bool,n);for _,id:=range cmd[:n]{if id>=uint64(n)||seen[id]{panic("invalid query")};seen[id]=true};for k:=0;k<(len(cmd)-n)/4;k++{p:=n+4*k;if cmd[p]!=cmd[k%n]||cmd[p+1]>=uint64(cap)||cmd[p+2]>99999999||cmd[p+3]<1||cmd[p+3]>1000{panic("invalid patch")}}}
+start:=time.Now();rows:=append([]uint64(nil),base...);base=nil;sums,totals:=make([]uint64,n),make([]uint64,n);for id:=0;id<n;id++{off:=id*w;for j:=0;j<int(rows[off]);j++{sums[id]+=rows[off+1+j]*rows[off+1+cap+j]};totals[id]=finish(sums[id],rows[off+w-2],rows[off+w-1])}
+work:=func(cmd,out []uint64,lo,hi int){updates:=(len(cmd)-n)/4;for i:=lo;i<hi;i++{id:=int(cmd[i]);off:=id*w;s:=sums[id];for k:=i;k<updates;k+=n{p:=n+4*k;slot:=int(cmd[p+1]);s-=rows[off+1+slot]*rows[off+1+cap+slot];s+=cmd[p+2]*cmd[p+3];rows[off+1+slot]=cmd[p+2];rows[off+1+cap+slot]=cmd[p+3]};if i<updates{sums[id]=s;totals[id]=finish(s,rows[off+w-2],rows[off+w-1])};out[i]=totals[id]}}
+jobs:=make(chan Job);var workers sync.WaitGroup;if name=="go-4"{for t:=0;t<4;t++{workers.Add(1);go func(){defer workers.Done();for j:=range jobs{work(j.cmd,j.out,j.lo,j.hi);j.wg.Done()}}()}};init:=float64(time.Since(start).Nanoseconds())/1e6
+for r:=0;r<m.Rounds;r++{cmd:=commands[r*m.Words:(r+1)*m.Words];start=time.Now();out:=make([]uint64,n);if name=="go-4"{var wg sync.WaitGroup;wg.Add(4);for t:=0;t<4;t++{jobs<-Job{cmd,out,t*n/4,(t+1)*n/4,&wg}};wg.Wait()}else{work(cmd,out,0,n)};us:=float64(time.Since(start).Nanoseconds())/1e3;var checksum uint64;for i,v:=range out{if v!=expected[r*n+i]{panic(fmt.Sprintf("wrong result round=%d query=%d got=%d expected=%d",r,i,v,expected[r*n+i]))};checksum+=v};fmt.Printf("%s,%d,%d,%.6f,%.6f,%d,%d\n",name,rep,r,us,init,n,checksum)};close(jobs);workers.Wait()}

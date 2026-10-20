@@ -1,0 +1,5406 @@
+{
+  "date": "2026-10-20",
+  "variants": [
+    "cpu-delta-4",
+    "gpu-scan-pageable",
+    "gpu-delta-pageable",
+    "gpu-scan-pinned",
+    "gpu-delta-pinned",
+    "gpu-scan-compact-pageable",
+    "gpu-delta-compact-pageable",
+    "gpu-scan-compact-pinned",
+    "gpu-delta-compact-pinned",
+    "gpu-scan-compact-pageable-encode4",
+    "gpu-delta-compact-pageable-encode4",
+    "gpu-scan-compact-pinned-encode4",
+    "gpu-delta-compact-pinned-encode4"
+  ],
+  "rounds": 16008,
+  "checked_totals": 803217408,
+  "points": [
+    {
+      "carts": 4096,
+      "lines": 512,
+      "factor": 16,
+      "source_bytes": 2129920,
+      "result_bytes": 32768,
+      "modes": [
+        {
+          "variant": "cpu-delta-4",
+          "mode": "plain",
+          "timings": {
+            "total_us": {
+              "mean": 663.0261533333334,
+              "stdev": 163.62250021854612
+            },
+            "encoding_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_upload_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_kernels_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_download_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "timer_tail_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 849.26828,
+              "encoding_us": 0.0,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.0
+            },
+            {
+              "total_us": 542.37828,
+              "encoding_us": 0.0,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.0
+            },
+            {
+              "total_us": 597.4319,
+              "encoding_us": 0.0,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.0
+            }
+          ],
+          "init_ms": 28.733115333333334,
+          "command_bytes": 0
+        },
+        {
+          "variant": "gpu-scan-pageable",
+          "mode": "plain",
+          "timings": {
+            "total_us": {
+              "mean": 272.9426466666667,
+              "stdev": 0.7435266885145144
+            },
+            "encoding_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_upload_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_kernels_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_download_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "timer_tail_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 272.42506,
+              "encoding_us": 0.0,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.0
+            },
+            {
+              "total_us": 273.79466,
+              "encoding_us": 0.0,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.0
+            },
+            {
+              "total_us": 272.60822,
+              "encoding_us": 0.0,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.0
+            }
+          ],
+          "init_ms": 4.17714,
+          "command_bytes": 2129920
+        },
+        {
+          "variant": "gpu-delta-pageable",
+          "mode": "plain",
+          "timings": {
+            "total_us": {
+              "mean": 328.48258,
+              "stdev": 1.6028047272203907
+            },
+            "encoding_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_upload_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_kernels_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_download_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "timer_tail_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 326.63214,
+              "encoding_us": 0.0,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.0
+            },
+            {
+              "total_us": 329.43758,
+              "encoding_us": 0.0,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.0
+            },
+            {
+              "total_us": 329.37802,
+              "encoding_us": 0.0,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.0
+            }
+          ],
+          "init_ms": 6.627697333333334,
+          "command_bytes": 2129920
+        },
+        {
+          "variant": "gpu-scan-pinned",
+          "mode": "plain",
+          "timings": {
+            "total_us": {
+              "mean": 341.94164666666666,
+              "stdev": 1.1671631680846208
+            },
+            "encoding_us": {
+              "mean": 142.14776666666666,
+              "stdev": 2.7080261307700324
+            },
+            "event_upload_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_kernels_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_download_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "timer_tail_us": {
+              "mean": 0.1026,
+              "stdev": 0.0047286361670147515
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 343.28888,
+              "encoding_us": 141.7325,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.1032
+            },
+            {
+              "total_us": 341.23654,
+              "encoding_us": 139.67136,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.107
+            },
+            {
+              "total_us": 341.29952000000003,
+              "encoding_us": 145.03943999999998,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.0976
+            }
+          ],
+          "init_ms": 7.865674,
+          "command_bytes": 2129920
+        },
+        {
+          "variant": "gpu-scan-pinned",
+          "mode": "events",
+          "timings": {
+            "total_us": {
+              "mean": 346.30888666666664,
+              "stdev": 10.637684781592908
+            },
+            "encoding_us": {
+              "mean": 142.17846666666668,
+              "stdev": 2.83500869002784
+            },
+            "event_upload_us": {
+              "mean": 110.15423983333334,
+              "stdev": 11.721103190090211
+            },
+            "event_kernels_us": {
+              "mean": 74.2777602,
+              "stdev": 2.1596214302445484
+            },
+            "event_download_us": {
+              "mean": 9.45344,
+              "stdev": 0.44519211493466443
+            },
+            "timer_tail_us": {
+              "mean": 1.5379933333333333,
+              "stdev": 0.10132610785643222
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 334.05494,
+              "encoding_us": 145.45168,
+              "event_upload_us": 96.62272076,
+              "event_kernels_us": 72.28159982,
+              "event_download_us": 9.06112,
+              "timer_tail_us": 1.6322
+            },
+            {
+              "total_us": 351.70038,
+              "encoding_us": 140.49908,
+              "event_upload_us": 117.1603193,
+              "event_kernels_us": 73.98143994,
+              "event_download_us": 9.93728,
+              "timer_tail_us": 1.55098
+            },
+            {
+              "total_us": 353.17134,
+              "encoding_us": 140.58464,
+              "event_upload_us": 116.67967944,
+              "event_kernels_us": 76.57024084,
+              "event_download_us": 9.36192,
+              "timer_tail_us": 1.4308
+            }
+          ],
+          "init_ms": 8.119542333333333,
+          "command_bytes": 2129920
+        },
+        {
+          "variant": "gpu-delta-pinned",
+          "mode": "plain",
+          "timings": {
+            "total_us": {
+              "mean": 387.7693733333333,
+              "stdev": 8.964496293854637
+            },
+            "encoding_us": {
+              "mean": 143.70504666666668,
+              "stdev": 1.350192059869023
+            },
+            "event_upload_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_kernels_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_download_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "timer_tail_us": {
+              "mean": 0.10466666666666667,
+              "stdev": 0.004100406483915139
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 377.43116,
+              "encoding_us": 143.57546,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.1022
+            },
+            {
+              "total_us": 392.4877,
+              "encoding_us": 142.42432,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.1024
+            },
+            {
+              "total_us": 393.38926,
+              "encoding_us": 145.11536,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.1094
+            }
+          ],
+          "init_ms": 11.160501333333332,
+          "command_bytes": 2129920
+        },
+        {
+          "variant": "gpu-delta-pinned",
+          "mode": "events",
+          "timings": {
+            "total_us": {
+              "mean": 393.78008,
+              "stdev": 11.08690188514357
+            },
+            "encoding_us": {
+              "mean": 143.19346666666667,
+              "stdev": 1.5195803407958908
+            },
+            "event_upload_us": {
+              "mean": 104.0996264,
+              "stdev": 13.544103406113638
+            },
+            "event_kernels_us": {
+              "mean": 127.75893344,
+              "stdev": 1.129717880667025
+            },
+            "event_download_us": {
+              "mean": 8.545066666666667,
+              "stdev": 0.2615841626194773
+            },
+            "timer_tail_us": {
+              "mean": 1.4593666666666667,
+              "stdev": 0.04445575028422456
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 387.43654,
+              "encoding_us": 143.59064,
+              "event_upload_us": 96.53248024,
+              "event_kernels_us": 128.47999992,
+              "event_download_us": 8.65152,
+              "timer_tail_us": 1.5106
+            },
+            {
+              "total_us": 406.58196,
+              "encoding_us": 141.51474,
+              "event_upload_us": 119.7363198,
+              "event_kernels_us": 126.4569599,
+              "event_download_us": 8.73664,
+              "timer_tail_us": 1.43652
+            },
+            {
+              "total_us": 387.32174,
+              "encoding_us": 144.47502,
+              "event_upload_us": 96.03007916,
+              "event_kernels_us": 128.3398405,
+              "event_download_us": 8.24704,
+              "timer_tail_us": 1.43098
+            }
+          ],
+          "init_ms": 11.186311333333332,
+          "command_bytes": 2129920
+        },
+        {
+          "variant": "gpu-scan-compact-pageable",
+          "mode": "plain",
+          "timings": {
+            "total_us": {
+              "mean": 296.29973333333334,
+              "stdev": 3.4220551466236295
+            },
+            "encoding_us": {
+              "mean": 158.4479,
+              "stdev": 2.059363352883594
+            },
+            "event_upload_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_kernels_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_download_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "timer_tail_us": {
+              "mean": 0.10593333333333334,
+              "stdev": 0.0005773502691896262
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 299.70862,
+              "encoding_us": 156.47674,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.1056
+            },
+            {
+              "total_us": 292.86466,
+              "encoding_us": 158.28158,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.1056
+            },
+            {
+              "total_us": 296.32592,
+              "encoding_us": 160.58538,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.1066
+            }
+          ],
+          "init_ms": 3.1732583333333335,
+          "command_bytes": 557056
+        },
+        {
+          "variant": "gpu-scan-compact-pageable",
+          "mode": "events",
+          "timings": {
+            "total_us": {
+              "mean": 305.21766,
+              "stdev": 4.113473892514691
+            },
+            "encoding_us": {
+              "mean": 158.3174,
+              "stdev": 0.990139700648343
+            },
+            "event_upload_us": {
+              "mean": 58.15509346666666,
+              "stdev": 3.2031833887481733
+            },
+            "event_kernels_us": {
+              "mean": 67.61557434000001,
+              "stdev": 0.031066938688378815
+            },
+            "event_download_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "timer_tail_us": {
+              "mean": 0.97946,
+              "stdev": 0.017701604447055055
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 303.06164,
+              "encoding_us": 157.20766,
+              "event_upload_us": 57.19936016,
+              "event_kernels_us": 67.61408104,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.9802
+            },
+            {
+              "total_us": 302.63038,
+              "encoding_us": 158.63408,
+              "event_upload_us": 55.53855966,
+              "event_kernels_us": 67.58528098000001,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.99678
+            },
+            {
+              "total_us": 309.96096,
+              "encoding_us": 159.11046,
+              "event_upload_us": 61.72736058,
+              "event_kernels_us": 67.647361,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.9614
+            }
+          ],
+          "init_ms": 3.1104249999999998,
+          "command_bytes": 557056
+        },
+        {
+          "variant": "gpu-delta-compact-pageable",
+          "mode": "plain",
+          "timings": {
+            "total_us": {
+              "mean": 361.29509333333334,
+              "stdev": 33.715496289939615
+            },
+            "encoding_us": {
+              "mean": 176.59006666666667,
+              "stdev": 33.93352236189066
+            },
+            "event_upload_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_kernels_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_download_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "timer_tail_us": {
+              "mean": 0.11046666666666667,
+              "stdev": 0.0046231302526895494
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 343.2623,
+              "encoding_us": 154.97254,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.108
+            },
+            {
+              "total_us": 340.43092,
+              "encoding_us": 159.09696,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.1076
+            },
+            {
+              "total_us": 400.19205999999997,
+              "encoding_us": 215.7007,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.1158
+            }
+          ],
+          "init_ms": 6.196651,
+          "command_bytes": 557056
+        },
+        {
+          "variant": "gpu-delta-compact-pageable",
+          "mode": "events",
+          "timings": {
+            "total_us": {
+              "mean": 353.02429333333333,
+              "stdev": 1.454131917307821
+            },
+            "encoding_us": {
+              "mean": 158.65533333333335,
+              "stdev": 0.4927644148407391
+            },
+            "event_upload_us": {
+              "mean": 59.59274726,
+              "stdev": 0.2625063832966106
+            },
+            "event_kernels_us": {
+              "mean": 113.79434799333333,
+              "stdev": 0.4080657566461596
+            },
+            "event_download_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "timer_tail_us": {
+              "mean": 0.9760666666666666,
+              "stdev": 0.007365686209263412
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 352.1919,
+              "encoding_us": 158.36812,
+              "event_upload_us": 59.3113606,
+              "event_kernels_us": 113.69408142,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.9796
+            },
+            {
+              "total_us": 354.70336,
+              "encoding_us": 159.22432,
+              "event_upload_us": 59.8310406,
+              "event_kernels_us": 114.24320125999999,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.981
+            },
+            {
+              "total_us": 352.17762,
+              "encoding_us": 158.37356,
+              "event_upload_us": 59.63584058,
+              "event_kernels_us": 113.4457613,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.9676
+            }
+          ],
+          "init_ms": 9.481244,
+          "command_bytes": 557056
+        },
+        {
+          "variant": "gpu-scan-compact-pinned",
+          "mode": "plain",
+          "timings": {
+            "total_us": {
+              "mean": 271.93009333333333,
+              "stdev": 1.3950347941658456
+            },
+            "encoding_us": {
+              "mean": 157.78941333333333,
+              "stdev": 1.8910574039233583
+            },
+            "event_upload_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_kernels_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_download_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "timer_tail_us": {
+              "mean": 0.10366666666666667,
+              "stdev": 0.0014047538337136972
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 271.85142,
+              "encoding_us": 157.55014,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.1022
+            },
+            {
+              "total_us": 270.57606,
+              "encoding_us": 156.02938,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.1038
+            },
+            {
+              "total_us": 273.3628,
+              "encoding_us": 159.78872,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.105
+            }
+          ],
+          "init_ms": 5.481340333333333,
+          "command_bytes": 557056
+        },
+        {
+          "variant": "gpu-scan-compact-pinned",
+          "mode": "events",
+          "timings": {
+            "total_us": {
+              "mean": 283.50679333333335,
+              "stdev": 2.2541679405344364
+            },
+            "encoding_us": {
+              "mean": 159.46039333333334,
+              "stdev": 1.9855000720557447
+            },
+            "event_upload_us": {
+              "mean": 30.678186800000002,
+              "stdev": 1.722737097633499
+            },
+            "event_kernels_us": {
+              "mean": 73.85258666,
+              "stdev": 1.6119006225222248
+            },
+            "event_download_us": {
+              "mean": 8.888959999999999,
+              "stdev": 0.15150707442228575
+            },
+            "timer_tail_us": {
+              "mean": 1.4799799999999999,
+              "stdev": 0.0423349642730451
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 281.27334,
+              "encoding_us": 158.07152,
+              "event_upload_us": 28.9798401,
+              "event_kernels_us": 74.91072022,
+              "event_download_us": 8.86016,
+              "timer_tail_us": 1.5062
+            },
+            {
+              "total_us": 283.46592,
+              "encoding_us": 158.57512,
+              "event_upload_us": 30.6304003,
+              "event_kernels_us": 74.64960006,
+              "event_download_us": 9.0528,
+              "timer_tail_us": 1.4311399999999999
+            },
+            {
+              "total_us": 285.78112,
+              "encoding_us": 161.73454,
+              "event_upload_us": 32.42432,
+              "event_kernels_us": 71.9974397,
+              "event_download_us": 8.753919999999999,
+              "timer_tail_us": 1.5026
+            }
+          ],
+          "init_ms": 5.337624333333333,
+          "command_bytes": 557056
+        },
+        {
+          "variant": "gpu-delta-compact-pinned",
+          "mode": "plain",
+          "timings": {
+            "total_us": {
+              "mean": 318.72826000000003,
+              "stdev": 0.45158094025322953
+            },
+            "encoding_us": {
+              "mean": 158.57448,
+              "stdev": 0.6840116668595678
+            },
+            "event_upload_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_kernels_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_download_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "timer_tail_us": {
+              "mean": 0.1018,
+              "stdev": 0.0008717797887081358
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 318.32726,
+              "encoding_us": 157.78498,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.1022
+            },
+            {
+              "total_us": 319.21742,
+              "encoding_us": 158.9495,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.1024
+            },
+            {
+              "total_us": 318.6401,
+              "encoding_us": 158.98896,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.1008
+            }
+          ],
+          "init_ms": 8.622581,
+          "command_bytes": 557056
+        },
+        {
+          "variant": "gpu-delta-compact-pinned",
+          "mode": "events",
+          "timings": {
+            "total_us": {
+              "mean": 322.91674666666665,
+              "stdev": 1.1683684010333975
+            },
+            "encoding_us": {
+              "mean": 156.09196666666665,
+              "stdev": 2.0582949820016876
+            },
+            "event_upload_us": {
+              "mean": 30.702720046666666,
+              "stdev": 3.035664371835598
+            },
+            "event_kernels_us": {
+              "mean": 118.10432004,
+              "stdev": 1.8563568785477047
+            },
+            "event_download_us": {
+              "mean": 7.491840000000001,
+              "stdev": 0.2013845197625677
+            },
+            "timer_tail_us": {
+              "mean": 1.4825933333333332,
+              "stdev": 0.042490376949767525
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 321.6974,
+              "encoding_us": 153.71954,
+              "event_upload_us": 34.20800004,
+              "event_kernels_us": 115.9635196,
+              "event_download_us": 7.3459200000000004,
+              "timer_tail_us": 1.4828
+            },
+            {
+              "total_us": 324.0264,
+              "encoding_us": 157.40176,
+              "event_upload_us": 28.94592016,
+              "event_kernels_us": 119.26848042,
+              "event_download_us": 7.408,
+              "timer_tail_us": 1.44
+            },
+            {
+              "total_us": 323.02644,
+              "encoding_us": 157.1546,
+              "event_upload_us": 28.95423994,
+              "event_kernels_us": 119.0809601,
+              "event_download_us": 7.7216000000000005,
+              "timer_tail_us": 1.52498
+            }
+          ],
+          "init_ms": 8.488499,
+          "command_bytes": 557056
+        },
+        {
+          "variant": "gpu-scan-compact-pageable-encode4",
+          "mode": "plain",
+          "timings": {
+            "total_us": {
+              "mean": 267.1858066666667,
+              "stdev": 5.591452051992714
+            },
+            "encoding_us": {
+              "mean": 128.72705333333334,
+              "stdev": 2.669773474310752
+            },
+            "event_upload_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_kernels_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_download_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "timer_tail_us": {
+              "mean": 0.11853333333333334,
+              "stdev": 0.002402776172125346
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 272.53964,
+              "encoding_us": 129.4946,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.1162
+            },
+            {
+              "total_us": 261.38372,
+              "encoding_us": 125.75758,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.121
+            },
+            {
+              "total_us": 267.63406,
+              "encoding_us": 130.92898,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.1184
+            }
+          ],
+          "init_ms": 3.178414666666667,
+          "command_bytes": 557056
+        },
+        {
+          "variant": "gpu-scan-compact-pageable-encode4",
+          "mode": "events",
+          "timings": {
+            "total_us": {
+              "mean": 274.26112666666666,
+              "stdev": 2.8546197242598264
+            },
+            "encoding_us": {
+              "mean": 124.61179333333334,
+              "stdev": 1.5889215527940128
+            },
+            "event_upload_us": {
+              "mean": 59.096106686666666,
+              "stdev": 3.5186010572652386
+            },
+            "event_kernels_us": {
+              "mean": 67.65440099333333,
+              "stdev": 0.02496001230769615
+            },
+            "event_download_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "timer_tail_us": {
+              "mean": 1.02026,
+              "stdev": 0.029256021602398378
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 271.00342,
+              "encoding_us": 125.03282,
+              "event_upload_us": 56.79872042,
+              "event_kernels_us": 67.62560098,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.99518
+            },
+            {
+              "total_us": 275.45482,
+              "encoding_us": 122.85476,
+              "event_upload_us": 63.14687936,
+              "event_kernels_us": 67.66976102,
+              "event_download_us": 0.0,
+              "timer_tail_us": 1.0524
+            },
+            {
+              "total_us": 276.32514,
+              "encoding_us": 125.9478,
+              "event_upload_us": 57.34272028,
+              "event_kernels_us": 67.66784098,
+              "event_download_us": 0.0,
+              "timer_tail_us": 1.0132
+            }
+          ],
+          "init_ms": 3.048769,
+          "command_bytes": 557056
+        },
+        {
+          "variant": "gpu-delta-compact-pageable-encode4",
+          "mode": "plain",
+          "timings": {
+            "total_us": {
+              "mean": 314.10748666666666,
+              "stdev": 6.570202881930918
+            },
+            "encoding_us": {
+              "mean": 127.16088666666667,
+              "stdev": 2.448249769474787
+            },
+            "event_upload_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_kernels_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_download_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "timer_tail_us": {
+              "mean": 0.1216,
+              "stdev": 0.008022468448052631
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 307.2866,
+              "encoding_us": 124.70462,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.119
+            },
+            {
+              "total_us": 314.64144,
+              "encoding_us": 129.60104,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.1306
+            },
+            {
+              "total_us": 320.39442,
+              "encoding_us": 127.177,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.1152
+            }
+          ],
+          "init_ms": 6.182007333333333,
+          "command_bytes": 557056
+        },
+        {
+          "variant": "gpu-delta-compact-pageable-encode4",
+          "mode": "events",
+          "timings": {
+            "total_us": {
+              "mean": 322.6309533333333,
+              "stdev": 9.21194232705207
+            },
+            "encoding_us": {
+              "mean": 125.94861333333333,
+              "stdev": 6.482382313203479
+            },
+            "event_upload_us": {
+              "mean": 61.65589378,
+              "stdev": 3.435247479325982
+            },
+            "event_kernels_us": {
+              "mean": 113.51850791999999,
+              "stdev": 0.09983244069674405
+            },
+            "event_download_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "timer_tail_us": {
+              "mean": 1.01786,
+              "stdev": 0.013407565028743953
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 312.15628,
+              "encoding_us": 119.24882,
+              "event_upload_us": 57.98656052,
+              "event_kernels_us": 113.62624122,
+              "event_download_us": 0.0,
+              "timer_tail_us": 1.012
+            },
+            {
+              "total_us": 326.26492,
+              "encoding_us": 126.40786,
+              "event_upload_us": 64.7955203,
+              "event_kernels_us": 113.42912129999999,
+              "event_download_us": 0.0,
+              "timer_tail_us": 1.0332
+            },
+            {
+              "total_us": 329.47166,
+              "encoding_us": 132.18916,
+              "event_upload_us": 62.18560052,
+              "event_kernels_us": 113.50016124,
+              "event_download_us": 0.0,
+              "timer_tail_us": 1.00838
+            }
+          ],
+          "init_ms": 6.371693,
+          "command_bytes": 557056
+        },
+        {
+          "variant": "gpu-scan-compact-pinned-encode4",
+          "mode": "plain",
+          "timings": {
+            "total_us": {
+              "mean": 239.17122,
+              "stdev": 3.9579197994401025
+            },
+            "encoding_us": {
+              "mean": 125.38031333333333,
+              "stdev": 3.3997442451062936
+            },
+            "event_upload_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_kernels_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_download_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "timer_tail_us": {
+              "mean": 0.11126666666666667,
+              "stdev": 0.005661566332149903
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 235.88948,
+              "encoding_us": 122.74962,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.1078
+            },
+            {
+              "total_us": 238.0575,
+              "encoding_us": 124.1722,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.1082
+            },
+            {
+              "total_us": 243.56668,
+              "encoding_us": 129.21912,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.1178
+            }
+          ],
+          "init_ms": 5.482866333333333,
+          "command_bytes": 557056
+        },
+        {
+          "variant": "gpu-scan-compact-pinned-encode4",
+          "mode": "events",
+          "timings": {
+            "total_us": {
+              "mean": 250.30478666666667,
+              "stdev": 8.348842080799809
+            },
+            "encoding_us": {
+              "mean": 126.53663333333333,
+              "stdev": 7.746142173374643
+            },
+            "event_upload_us": {
+              "mean": 30.423253186666667,
+              "stdev": 2.953847352951335
+            },
+            "event_kernels_us": {
+              "mean": 73.76618656666666,
+              "stdev": 2.0997014221833985
+            },
+            "event_download_us": {
+              "mean": 9.06304,
+              "stdev": 0.1139829039812554
+            },
+            "timer_tail_us": {
+              "mean": 1.5213933333333334,
+              "stdev": 0.03431017536144826
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 259.91288000000003,
+              "encoding_us": 135.40846,
+              "event_upload_us": 33.83359986,
+              "event_kernels_us": 71.34272014,
+              "event_download_us": 9.08544,
+              "timer_tail_us": 1.53998
+            },
+            {
+              "total_us": 246.1838,
+              "encoding_us": 123.08598,
+              "event_upload_us": 28.66943974,
+              "event_kernels_us": 74.91583982,
+              "event_download_us": 8.93952,
+              "timer_tail_us": 1.4818
+            },
+            {
+              "total_us": 244.81768,
+              "encoding_us": 121.11546,
+              "event_upload_us": 28.76671996,
+              "event_kernels_us": 75.03999974,
+              "event_download_us": 9.16416,
+              "timer_tail_us": 1.5424
+            }
+          ],
+          "init_ms": 5.385163666666667,
+          "command_bytes": 557056
+        },
+        {
+          "variant": "gpu-delta-compact-pinned-encode4",
+          "mode": "plain",
+          "timings": {
+            "total_us": {
+              "mean": 286.73788666666667,
+              "stdev": 3.1358784233023824
+            },
+            "encoding_us": {
+              "mean": 126.42141333333333,
+              "stdev": 2.826507848517918
+            },
+            "event_upload_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_kernels_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_download_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "timer_tail_us": {
+              "mean": 0.11039333333333333,
+              "stdev": 0.0009078178965703076
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 290.34212,
+              "encoding_us": 129.67518,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.11118
+            },
+            {
+              "total_us": 284.63434,
+              "encoding_us": 124.57339999999999,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.1106
+            },
+            {
+              "total_us": 285.2372,
+              "encoding_us": 125.01566,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.1094
+            }
+          ],
+          "init_ms": 8.585138,
+          "command_bytes": 557056
+        },
+        {
+          "variant": "gpu-delta-compact-pinned-encode4",
+          "mode": "events",
+          "timings": {
+            "total_us": {
+              "mean": 289.59849333333335,
+              "stdev": 2.6199579936581827
+            },
+            "encoding_us": {
+              "mean": 123.10292666666666,
+              "stdev": 3.5122099595743586
+            },
+            "event_upload_us": {
+              "mean": 30.55637322,
+              "stdev": 3.3418286582305012
+            },
+            "event_kernels_us": {
+              "mean": 118.09578684666667,
+              "stdev": 2.4664061378442654
+            },
+            "event_download_us": {
+              "mean": 7.5910400000000005,
+              "stdev": 0.1281135496346895
+            },
+            "timer_tail_us": {
+              "mean": 1.5268466666666667,
+              "stdev": 0.051054419332055206
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 286.76372,
+              "encoding_us": 119.0908,
+              "event_upload_us": 34.4134399,
+              "event_kernels_us": 115.26527998,
+              "event_download_us": 7.72864,
+              "timer_tail_us": 1.5826
+            },
+            {
+              "total_us": 290.10088,
+              "encoding_us": 124.5964,
+              "event_upload_us": 28.52735978,
+              "event_kernels_us": 119.2384006,
+              "event_download_us": 7.56928,
+              "timer_tail_us": 1.48238
+            },
+            {
+              "total_us": 291.93088,
+              "encoding_us": 125.62158,
+              "event_upload_us": 28.728319980000002,
+              "event_kernels_us": 119.78367996,
+              "event_download_us": 7.4752,
+              "timer_tail_us": 1.51556
+            }
+          ],
+          "init_ms": 9.769272333333333,
+          "command_bytes": 557056
+        }
+      ],
+      "best_gpu": "gpu-scan-compact-pinned-encode4",
+      "ratio": 2.7721820097473824,
+      "speedup_vs_legacy": 1.1412018831808721
+    },
+    {
+      "carts": 65536,
+      "lines": 2048,
+      "factor": 1,
+      "source_bytes": 2621440,
+      "result_bytes": 524288,
+      "modes": [
+        {
+          "variant": "cpu-delta-4",
+          "mode": "plain",
+          "timings": {
+            "total_us": {
+              "mean": 2035.7679066666667,
+              "stdev": 48.33919472708812
+            },
+            "encoding_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_upload_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_kernels_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_download_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "timer_tail_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 2068.47434,
+              "encoding_us": 0.0,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.0
+            },
+            {
+              "total_us": 1980.24334,
+              "encoding_us": 0.0,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.0
+            },
+            {
+              "total_us": 2058.58604,
+              "encoding_us": 0.0,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.0
+            }
+          ],
+          "init_ms": 1499.0056983333334,
+          "command_bytes": 0
+        },
+        {
+          "variant": "gpu-scan-pageable",
+          "mode": "plain",
+          "timings": {
+            "total_us": {
+              "mean": 3126.7602466666667,
+              "stdev": 419.2512813855837
+            },
+            "encoding_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_upload_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_kernels_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_download_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "timer_tail_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 3610.8548,
+              "encoding_us": 0.0,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.0
+            },
+            {
+              "total_us": 2881.39868,
+              "encoding_us": 0.0,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.0
+            },
+            {
+              "total_us": 2888.02726,
+              "encoding_us": 0.0,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.0
+            }
+          ],
+          "init_ms": 168.569481,
+          "command_bytes": 2621440
+        },
+        {
+          "variant": "gpu-delta-pageable",
+          "mode": "plain",
+          "timings": {
+            "total_us": {
+              "mean": 380.0692066666667,
+              "stdev": 1.0701219912390143
+            },
+            "encoding_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_upload_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_kernels_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_download_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "timer_tail_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 378.83702,
+              "encoding_us": 0.0,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.0
+            },
+            {
+              "total_us": 380.605,
+              "encoding_us": 0.0,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.0
+            },
+            {
+              "total_us": 380.7656,
+              "encoding_us": 0.0,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.0
+            }
+          ],
+          "init_ms": 283.70614266666666,
+          "command_bytes": 2621440
+        },
+        {
+          "variant": "gpu-scan-pinned",
+          "mode": "plain",
+          "timings": {
+            "total_us": {
+              "mean": 2946.92176,
+              "stdev": 59.34720238985485
+            },
+            "encoding_us": {
+              "mean": 202.70248,
+              "stdev": 60.85081522063283
+            },
+            "event_upload_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_kernels_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_download_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "timer_tail_us": {
+              "mean": 0.12733333333333333,
+              "stdev": 0.0017009801096230675
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 2911.93148,
+              "encoding_us": 168.01502,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.128
+            },
+            {
+              "total_us": 3015.44484,
+              "encoding_us": 272.96508,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.1286
+            },
+            {
+              "total_us": 2913.38896,
+              "encoding_us": 167.12734,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.1254
+            }
+          ],
+          "init_ms": 214.56192833333333,
+          "command_bytes": 2621440
+        },
+        {
+          "variant": "gpu-scan-pinned",
+          "mode": "events",
+          "timings": {
+            "total_us": {
+              "mean": 2923.385493333333,
+              "stdev": 1.7781337738577094
+            },
+            "encoding_us": {
+              "mean": 167.28404666666665,
+              "stdev": 0.3582015490381549
+            },
+            "event_upload_us": {
+              "mean": 144.34282741333334,
+              "stdev": 2.4403926592540595
+            },
+            "event_kernels_us": {
+              "mean": 2524.54399742,
+              "stdev": 0.29279081043879385
+            },
+            "event_download_us": {
+              "mean": 34.03178674666667,
+              "stdev": 0.46553127341117523
+            },
+            "timer_tail_us": {
+              "mean": 1.7319866666666666,
+              "stdev": 0.07303533756568344
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 2921.42958,
+              "encoding_us": 167.19425999999999,
+              "event_upload_us": 142.79232118,
+              "event_kernels_us": 2524.67006682,
+              "event_download_us": 34.38400022,
+              "timer_tail_us": 1.65296
+            },
+            {
+              "total_us": 2924.90434,
+              "encoding_us": 166.97928,
+              "event_upload_us": 147.15584012,
+              "event_kernels_us": 2524.2092895,
+              "event_download_us": 33.5040003,
+              "timer_tail_us": 1.746
+            },
+            {
+              "total_us": 2923.82256,
+              "encoding_us": 167.6786,
+              "event_upload_us": 143.08032094,
+              "event_kernels_us": 2524.75263594,
+              "event_download_us": 34.20735972,
+              "timer_tail_us": 1.797
+            }
+          ],
+          "init_ms": 190.60584933333334,
+          "command_bytes": 2621440
+        },
+        {
+          "variant": "gpu-delta-pinned",
+          "mode": "plain",
+          "timings": {
+            "total_us": {
+              "mean": 474.74446666666665,
+              "stdev": 64.3844550806678
+            },
+            "encoding_us": {
+              "mean": 205.72260666666665,
+              "stdev": 59.252971661115296
+            },
+            "event_upload_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_kernels_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_download_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "timer_tail_us": {
+              "mean": 0.11666666666666667,
+              "stdev": 0.0015143755588800717
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 549.08868,
+              "encoding_us": 274.1373,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.116
+            },
+            {
+              "total_us": 437.32434,
+              "encoding_us": 170.81744,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.1184
+            },
+            {
+              "total_us": 437.82038,
+              "encoding_us": 172.21308,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.11560000000000001
+            }
+          ],
+          "init_ms": 287.36296433333337,
+          "command_bytes": 2621440
+        },
+        {
+          "variant": "gpu-delta-pinned",
+          "mode": "events",
+          "timings": {
+            "total_us": {
+              "mean": 448.48094,
+              "stdev": 9.258445048041251
+            },
+            "encoding_us": {
+              "mean": 171.74454,
+              "stdev": 2.7205485152079247
+            },
+            "event_upload_us": {
+              "mean": 127.46538608666667,
+              "stdev": 11.211404078825732
+            },
+            "event_kernels_us": {
+              "mean": 69.37536010666668,
+              "stdev": 0.8616664226580025
+            },
+            "event_download_us": {
+              "mean": 27.243093453333334,
+              "stdev": 0.04392439521423272
+            },
+            "timer_tail_us": {
+              "mean": 1.58712,
+              "stdev": 0.010937787710501648
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 458.8656,
+              "encoding_us": 170.7841,
+              "event_upload_us": 139.29727936,
+              "event_kernels_us": 70.29312034,
+              "event_download_us": 27.20448016,
+              "timer_tail_us": 1.5984
+            },
+            {
+              "total_us": 441.08908,
+              "encoding_us": 174.81504,
+              "event_upload_us": 116.99968038,
+              "event_kernels_us": 68.58367954,
+              "event_download_us": 27.23392006,
+              "timer_tail_us": 1.57656
+            },
+            {
+              "total_us": 445.48814,
+              "encoding_us": 169.63448,
+              "event_upload_us": 126.09919852,
+              "event_kernels_us": 69.24928044,
+              "event_download_us": 27.29088014,
+              "timer_tail_us": 1.5864
+            }
+          ],
+          "init_ms": 286.632233,
+          "command_bytes": 2621440
+        },
+        {
+          "variant": "gpu-scan-compact-pageable",
+          "mode": "plain",
+          "timings": {
+            "total_us": {
+              "mean": 2946.20956,
+              "stdev": 2.4530892865120313
+            },
+            "encoding_us": {
+              "mean": 183.59674,
+              "stdev": 0.883566153041193
+            },
+            "event_upload_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_kernels_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_download_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "timer_tail_us": {
+              "mean": 0.13686666666666666,
+              "stdev": 0.0029687258770949763
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 2943.79616,
+              "encoding_us": 183.61398,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.1336
+            },
+            {
+              "total_us": 2946.13202,
+              "encoding_us": 184.47156,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.1376
+            },
+            {
+              "total_us": 2948.7005,
+              "encoding_us": 182.70468,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.1394
+            }
+          ],
+          "init_ms": 187.26345566666666,
+          "command_bytes": 1048576
+        },
+        {
+          "variant": "gpu-scan-compact-pageable",
+          "mode": "events",
+          "timings": {
+            "total_us": {
+              "mean": 2953.92504,
+              "stdev": 2.553311113671971
+            },
+            "encoding_us": {
+              "mean": 185.59222,
+              "stdev": 1.3547465334888251
+            },
+            "event_upload_us": {
+              "mean": 120.79274702000001,
+              "stdev": 0.33420077118457614
+            },
+            "event_kernels_us": {
+              "mean": 2520.2325027133334,
+              "stdev": 1.8408566992882418
+            },
+            "event_download_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "timer_tail_us": {
+              "mean": 1.2123133333333334,
+              "stdev": 0.07098333419425534
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 2955.83856,
+              "encoding_us": 184.52492,
+              "event_upload_us": 120.47232036,
+              "event_kernels_us": 2521.52121082,
+              "event_download_us": 0.0,
+              "timer_tail_us": 1.2936
+            },
+            {
+              "total_us": 2951.0258,
+              "encoding_us": 185.13542,
+              "event_upload_us": 120.76672066,
+              "event_kernels_us": 2518.12418932,
+              "event_download_us": 0.0,
+              "timer_tail_us": 1.16256
+            },
+            {
+              "total_us": 2954.91076,
+              "encoding_us": 187.11632,
+              "event_upload_us": 121.13920004,
+              "event_kernels_us": 2521.052108,
+              "event_download_us": 0.0,
+              "timer_tail_us": 1.18078
+            }
+          ],
+          "init_ms": 188.63669466666667,
+          "command_bytes": 1048576
+        },
+        {
+          "variant": "gpu-delta-compact-pageable",
+          "mode": "plain",
+          "timings": {
+            "total_us": {
+              "mean": 462.36656666666664,
+              "stdev": 7.411277671665882
+            },
+            "encoding_us": {
+              "mean": 190.41492,
+              "stdev": 2.408971237935408
+            },
+            "event_upload_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_kernels_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_download_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "timer_tail_us": {
+              "mean": 0.12086666666666666,
+              "stdev": 0.00150111069989303
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 466.69066,
+              "encoding_us": 192.82248,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.1226
+            },
+            {
+              "total_us": 453.80892,
+              "encoding_us": 188.00454,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.12
+            },
+            {
+              "total_us": 466.60012,
+              "encoding_us": 190.41774,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.12
+            }
+          ],
+          "init_ms": 281.91263033333337,
+          "command_bytes": 1048576
+        },
+        {
+          "variant": "gpu-delta-compact-pageable",
+          "mode": "events",
+          "timings": {
+            "total_us": {
+              "mean": 469.2097,
+              "stdev": 6.439456352705557
+            },
+            "encoding_us": {
+              "mean": 189.11898666666667,
+              "stdev": 1.5976434326010653
+            },
+            "event_upload_us": {
+              "mean": 103.06858714666666,
+              "stdev": 4.018722079287204
+            },
+            "event_kernels_us": {
+              "mean": 62.99626530666667,
+              "stdev": 1.9243168826770138
+            },
+            "event_download_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "timer_tail_us": {
+              "mean": 1.1472,
+              "stdev": 0.007472616676907735
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 473.96762,
+              "encoding_us": 190.6918,
+              "event_upload_us": 105.1539198,
+              "event_kernels_us": 61.98527886,
+              "event_download_us": 0.0,
+              "timer_tail_us": 1.1484
+            },
+            {
+              "total_us": 461.88218,
+              "encoding_us": 189.16754,
+              "event_upload_us": 98.43584172,
+              "event_kernels_us": 61.788158440000004,
+              "event_download_us": 0.0,
+              "timer_tail_us": 1.154
+            },
+            {
+              "total_us": 471.7793,
+              "encoding_us": 187.49762,
+              "event_upload_us": 105.61599992,
+              "event_kernels_us": 65.21535862,
+              "event_download_us": 0.0,
+              "timer_tail_us": 1.1392
+            }
+          ],
+          "init_ms": 282.4567226666667,
+          "command_bytes": 1048576
+        },
+        {
+          "variant": "gpu-scan-compact-pinned",
+          "mode": "plain",
+          "timings": {
+            "total_us": {
+              "mean": 2847.5396133333334,
+              "stdev": 5.0976267200072485
+            },
+            "encoding_us": {
+              "mean": 187.32988666666668,
+              "stdev": 3.1175336342906337
+            },
+            "event_upload_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_kernels_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_download_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "timer_tail_us": {
+              "mean": 0.133,
+              "stdev": 0.00993378075055011
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 2841.6828,
+              "encoding_us": 184.84508,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.1262
+            },
+            {
+              "total_us": 2850.9770399999998,
+              "encoding_us": 186.31656,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.12840000000000001
+            },
+            {
+              "total_us": 2849.959,
+              "encoding_us": 190.82802,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.1444
+            }
+          ],
+          "init_ms": 193.018257,
+          "command_bytes": 1048576
+        },
+        {
+          "variant": "gpu-scan-compact-pinned",
+          "mode": "events",
+          "timings": {
+            "total_us": {
+              "mean": 2857.4186133333333,
+              "stdev": 1.7877703403213832
+            },
+            "encoding_us": {
+              "mean": 186.91812666666667,
+              "stdev": 1.4799535917498607
+            },
+            "event_upload_us": {
+              "mean": 61.162666873333336,
+              "stdev": 0.11855092159575452
+            },
+            "event_kernels_us": {
+              "mean": 2521.916376753333,
+              "stdev": 2.0351371217918106
+            },
+            "event_download_us": {
+              "mean": 34.15829344,
+              "stdev": 0.17005767463399002
+            },
+            "timer_tail_us": {
+              "mean": 1.7001666666666666,
+              "stdev": 0.056080664522929216
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 2859.4822599999998,
+              "encoding_us": 188.21374,
+              "event_upload_us": 61.2364802,
+              "event_kernels_us": 2523.2787323000002,
+              "event_download_us": 34.33216032,
+              "timer_tail_us": 1.6478
+            },
+            {
+              "total_us": 2856.34048,
+              "encoding_us": 187.23536,
+              "event_upload_us": 61.22560016,
+              "event_kernels_us": 2519.57695484,
+              "event_download_us": 33.99231986,
+              "timer_tail_us": 1.75934
+            },
+            {
+              "total_us": 2856.4331,
+              "encoding_us": 185.30528,
+              "event_upload_us": 61.02592026,
+              "event_kernels_us": 2522.89344312,
+              "event_download_us": 34.15040014,
+              "timer_tail_us": 1.69336
+            }
+          ],
+          "init_ms": 191.800283,
+          "command_bytes": 1048576
+        },
+        {
+          "variant": "gpu-delta-compact-pinned",
+          "mode": "plain",
+          "timings": {
+            "total_us": {
+              "mean": 379.90897333333334,
+              "stdev": 5.099678592395155
+            },
+            "encoding_us": {
+              "mean": 189.80790666666667,
+              "stdev": 2.80347064349411
+            },
+            "event_upload_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_kernels_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_download_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "timer_tail_us": {
+              "mean": 0.11486666666666666,
+              "stdev": 0.003177000681985031
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 375.43422,
+              "encoding_us": 189.8101,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.1166
+            },
+            {
+              "total_us": 385.46134,
+              "encoding_us": 187.00334,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.1168
+            },
+            {
+              "total_us": 378.83136,
+              "encoding_us": 192.61028,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.1112
+            }
+          ],
+          "init_ms": 284.815571,
+          "command_bytes": 1048576
+        },
+        {
+          "variant": "gpu-delta-compact-pinned",
+          "mode": "events",
+          "timings": {
+            "total_us": {
+              "mean": 390.06804666666665,
+              "stdev": 5.659785110914837
+            },
+            "encoding_us": {
+              "mean": 189.63635333333332,
+              "stdev": 1.8792713355269668
+            },
+            "event_upload_us": {
+              "mean": 52.50901332666667,
+              "stdev": 4.860365730677317
+            },
+            "event_kernels_us": {
+              "mean": 66.58623976,
+              "stdev": 0.30337719297288
+            },
+            "event_download_us": {
+              "mean": 28.338773346666667,
+              "stdev": 2.5181363759707702
+            },
+            "timer_tail_us": {
+              "mean": 1.6009933333333333,
+              "stdev": 0.04067303939138715
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 385.72076,
+              "encoding_us": 189.9099,
+              "event_upload_us": 49.61344004,
+              "event_kernels_us": 66.33087952,
+              "event_download_us": 26.641280000000002,
+              "timer_tail_us": 1.643
+            },
+            {
+              "total_us": 396.46768,
+              "encoding_us": 187.6353,
+              "event_upload_us": 58.120319699999996,
+              "event_kernels_us": 66.92160012000001,
+              "event_download_us": 31.23199992,
+              "timer_tail_us": 1.5618
+            },
+            {
+              "total_us": 388.0157,
+              "encoding_us": 191.36386,
+              "event_upload_us": 49.79328024,
+              "event_kernels_us": 66.50623964,
+              "event_download_us": 27.143040120000002,
+              "timer_tail_us": 1.59818
+            }
+          ],
+          "init_ms": 283.5478043333333,
+          "command_bytes": 1048576
+        },
+        {
+          "variant": "gpu-scan-compact-pageable-encode4",
+          "mode": "plain",
+          "timings": {
+            "total_us": {
+              "mean": 3020.2335066666665,
+              "stdev": 134.94198345187658
+            },
+            "encoding_us": {
+              "mean": 216.39656666666667,
+              "stdev": 61.38882623437701
+            },
+            "event_upload_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_kernels_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_download_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "timer_tail_us": {
+              "mean": 0.13546666666666668,
+              "stdev": 0.00816169916949487
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 3175.87808,
+              "encoding_us": 287.03032,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.12840000000000001
+            },
+            {
+              "total_us": 2948.76842,
+              "encoding_us": 186.25102,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.1336
+            },
+            {
+              "total_us": 2936.05402,
+              "encoding_us": 175.90836,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.1444
+            }
+          ],
+          "init_ms": 189.50296466666666,
+          "command_bytes": 1048576
+        },
+        {
+          "variant": "gpu-scan-compact-pageable-encode4",
+          "mode": "events",
+          "timings": {
+            "total_us": {
+              "mean": 3043.42414,
+              "stdev": 169.26599647729378
+            },
+            "encoding_us": {
+              "mean": 273.04388,
+              "stdev": 170.62344655918892
+            },
+            "event_upload_us": {
+              "mean": 121.34698698666666,
+              "stdev": 1.4241810117433686
+            },
+            "event_kernels_us": {
+              "mean": 2520.5160141466667,
+              "stdev": 2.076956086218088
+            },
+            "event_download_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "timer_tail_us": {
+              "mean": 1.2126533333333334,
+              "stdev": 0.022301581408799977
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 3238.69662,
+              "encoding_us": 469.799,
+              "event_upload_us": 119.7535998,
+              "event_kernels_us": 2521.72345176,
+              "event_download_us": 0.0,
+              "timer_tail_us": 1.2348
+            },
+            {
+              "total_us": 2953.03162,
+              "encoding_us": 183.49398,
+              "event_upload_us": 121.7913604,
+              "event_kernels_us": 2518.11777106,
+              "event_download_us": 0.0,
+              "timer_tail_us": 1.1902
+            },
+            {
+              "total_us": 2938.54418,
+              "encoding_us": 165.83866,
+              "event_upload_us": 122.49600076,
+              "event_kernels_us": 2521.70681962,
+              "event_download_us": 0.0,
+              "timer_tail_us": 1.21296
+            }
+          ],
+          "init_ms": 190.34518133333333,
+          "command_bytes": 1048576
+        },
+        {
+          "variant": "gpu-delta-compact-pageable-encode4",
+          "mode": "plain",
+          "timings": {
+            "total_us": {
+              "mean": 439.2948866666667,
+              "stdev": 3.2085280867920223
+            },
+            "encoding_us": {
+              "mean": 164.71503333333334,
+              "stdev": 3.3981811817696457
+            },
+            "event_upload_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_kernels_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_download_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "timer_tail_us": {
+              "mean": 0.12326666666666668,
+              "stdev": 0.003716629297271034
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 436.27442,
+              "encoding_us": 162.54476,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.1222
+            },
+            {
+              "total_us": 438.9471,
+              "encoding_us": 162.96908,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.1274
+            },
+            {
+              "total_us": 442.66314,
+              "encoding_us": 168.63126,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.1202
+            }
+          ],
+          "init_ms": 280.8435856666667,
+          "command_bytes": 1048576
+        },
+        {
+          "variant": "gpu-delta-compact-pageable-encode4",
+          "mode": "events",
+          "timings": {
+            "total_us": {
+              "mean": 449.3320933333333,
+              "stdev": 2.106723006978703
+            },
+            "encoding_us": {
+              "mean": 169.24486666666667,
+              "stdev": 4.181730007991115
+            },
+            "event_upload_us": {
+              "mean": 103.34976070666667,
+              "stdev": 2.3736847248701025
+            },
+            "event_kernels_us": {
+              "mean": 62.88447876666667,
+              "stdev": 1.7499604620173572
+            },
+            "event_download_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "timer_tail_us": {
+              "mean": 1.20878,
+              "stdev": 0.05701905295600766
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 450.53618,
+              "encoding_us": 169.7412,
+              "event_upload_us": 101.3184007,
+              "event_kernels_us": 64.90495874,
+              "event_download_us": 0.0,
+              "timer_tail_us": 1.18658
+            },
+            {
+              "total_us": 446.8995,
+              "encoding_us": 164.83712,
+              "event_upload_us": 105.9590409,
+              "event_kernels_us": 61.89887872,
+              "event_download_us": 0.0,
+              "timer_tail_us": 1.27356
+            },
+            {
+              "total_us": 450.5606,
+              "encoding_us": 173.15628,
+              "event_upload_us": 102.77184052,
+              "event_kernels_us": 61.84959884,
+              "event_download_us": 0.0,
+              "timer_tail_us": 1.1662
+            }
+          ],
+          "init_ms": 280.44552533333336,
+          "command_bytes": 1048576
+        },
+        {
+          "variant": "gpu-scan-compact-pinned-encode4",
+          "mode": "plain",
+          "timings": {
+            "total_us": {
+              "mean": 2832.9641866666666,
+              "stdev": 4.289315153090743
+            },
+            "encoding_us": {
+              "mean": 172.38106,
+              "stdev": 1.948042259397891
+            },
+            "event_upload_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_kernels_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_download_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "timer_tail_us": {
+              "mean": 0.1228,
+              "stdev": 0.0056000000000000025
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 2832.3143,
+              "encoding_us": 173.88916,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.12040000000000001
+            },
+            {
+              "total_us": 2837.54136,
+              "encoding_us": 173.07238,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.1188
+            },
+            {
+              "total_us": 2829.0369,
+              "encoding_us": 170.18164,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.1292
+            }
+          ],
+          "init_ms": 191.26878399999998,
+          "command_bytes": 1048576
+        },
+        {
+          "variant": "gpu-scan-compact-pinned-encode4",
+          "mode": "events",
+          "timings": {
+            "total_us": {
+              "mean": 2842.20088,
+              "stdev": 3.164522796315529
+            },
+            "encoding_us": {
+              "mean": 171.36483333333334,
+              "stdev": 1.2090896973067606
+            },
+            "event_upload_us": {
+              "mean": 61.01674677333333,
+              "stdev": 0.27651564626699443
+            },
+            "event_kernels_us": {
+              "mean": 2522.5448481333333,
+              "stdev": 2.125458770262693
+            },
+            "event_download_us": {
+              "mean": 33.97888016666666,
+              "stdev": 0.1801677654812103
+            },
+            "timer_tail_us": {
+              "mean": 1.83978,
+              "stdev": 0.02894726930126565
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 2845.07558,
+              "encoding_us": 172.72416,
+              "event_upload_us": 61.335679920000004,
+              "event_kernels_us": 2523.68063924,
+              "event_download_us": 34.03520052,
+              "timer_tail_us": 1.81858
+            },
+            {
+              "total_us": 2838.81,
+              "encoding_us": 170.96098,
+              "event_upload_us": 60.87040036,
+              "event_kernels_us": 2520.09279258,
+              "event_download_us": 33.77727998,
+              "timer_tail_us": 1.87276
+            },
+            {
+              "total_us": 2842.71706,
+              "encoding_us": 170.40936,
+              "event_upload_us": 60.84416004,
+              "event_kernels_us": 2523.86111258,
+              "event_download_us": 34.124159999999996,
+              "timer_tail_us": 1.828
+            }
+          ],
+          "init_ms": 192.069024,
+          "command_bytes": 1048576
+        },
+        {
+          "variant": "gpu-delta-compact-pinned-encode4",
+          "mode": "plain",
+          "timings": {
+            "total_us": {
+              "mean": 361.2180333333333,
+              "stdev": 1.6459478040731819
+            },
+            "encoding_us": {
+              "mean": 168.89632666666665,
+              "stdev": 1.8716097976162955
+            },
+            "event_upload_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_kernels_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_download_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "timer_tail_us": {
+              "mean": 0.1118,
+              "stdev": 0.0013856406460551014
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 362.92768,
+              "encoding_us": 167.95062,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.111
+            },
+            {
+              "total_us": 359.6442,
+              "encoding_us": 167.68628,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.1134
+            },
+            {
+              "total_us": 361.08222,
+              "encoding_us": 171.05208,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.111
+            }
+          ],
+          "init_ms": 283.360179,
+          "command_bytes": 1048576
+        },
+        {
+          "variant": "gpu-delta-compact-pinned-encode4",
+          "mode": "events",
+          "timings": {
+            "total_us": {
+              "mean": 370.63245333333333,
+              "stdev": 4.489766970894271
+            },
+            "encoding_us": {
+              "mean": 169.66620666666665,
+              "stdev": 3.113553254423844
+            },
+            "event_upload_us": {
+              "mean": 52.39914657333333,
+              "stdev": 0.9608672671606783
+            },
+            "event_kernels_us": {
+              "mean": 68.92266684666667,
+              "stdev": 1.4701501647151807
+            },
+            "event_download_us": {
+              "mean": 26.753920073333333,
+              "stdev": 0.16715169223680942
+            },
+            "timer_tail_us": {
+              "mean": 1.7805199999999999,
+              "stdev": 0.07310520364515782
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 369.89306,
+              "encoding_us": 169.9962,
+              "event_upload_us": 53.1168,
+              "event_kernels_us": 67.39456016,
+              "event_download_us": 26.56447988,
+              "timer_tail_us": 1.7964
+            },
+            {
+              "total_us": 366.55828,
+              "encoding_us": 166.4008,
+              "event_upload_us": 51.3075197,
+              "event_kernels_us": 69.04640076,
+              "event_download_us": 26.816640200000002,
+              "timer_tail_us": 1.70078
+            },
+            {
+              "total_us": 375.44602,
+              "encoding_us": 172.60162,
+              "event_upload_us": 52.77312002,
+              "event_kernels_us": 70.32703962000001,
+              "event_download_us": 26.88064014,
+              "timer_tail_us": 1.84438
+            }
+          ],
+          "init_ms": 311.048076,
+          "command_bytes": 1048576
+        }
+      ],
+      "best_gpu": "gpu-delta-compact-pinned-encode4",
+      "ratio": 5.635842396572855,
+      "speedup_vs_legacy": 1.0521877968255737
+    },
+    {
+      "carts": 65536,
+      "lines": 2048,
+      "factor": 16,
+      "source_bytes": 34078720,
+      "result_bytes": 524288,
+      "modes": [
+        {
+          "variant": "cpu-delta-4",
+          "mode": "plain",
+          "timings": {
+            "total_us": {
+              "mean": 10967.178466666666,
+              "stdev": 33.46625649332382
+            },
+            "encoding_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_upload_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_kernels_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_download_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "timer_tail_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 10939.0195,
+              "encoding_us": 0.0,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.0
+            },
+            {
+              "total_us": 10958.33864,
+              "encoding_us": 0.0,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.0
+            },
+            {
+              "total_us": 11004.17726,
+              "encoding_us": 0.0,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.0
+            }
+          ],
+          "init_ms": 1544.250829,
+          "command_bytes": 0
+        },
+        {
+          "variant": "gpu-scan-pageable",
+          "mode": "plain",
+          "timings": {
+            "total_us": {
+              "mean": 5744.002053333334,
+              "stdev": 23.862791051445242
+            },
+            "encoding_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_upload_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_kernels_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_download_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "timer_tail_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 5741.24412,
+              "encoding_us": 0.0,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.0
+            },
+            {
+              "total_us": 5769.12398,
+              "encoding_us": 0.0,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.0
+            },
+            {
+              "total_us": 5721.63806,
+              "encoding_us": 0.0,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.0
+            }
+          ],
+          "init_ms": 184.31778566666665,
+          "command_bytes": 34078720
+        },
+        {
+          "variant": "gpu-delta-pageable",
+          "mode": "plain",
+          "timings": {
+            "total_us": {
+              "mean": 3591.77278,
+              "stdev": 31.690690899751562
+            },
+            "encoding_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_upload_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_kernels_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_download_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "timer_tail_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 3574.10828,
+              "encoding_us": 0.0,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.0
+            },
+            {
+              "total_us": 3628.35884,
+              "encoding_us": 0.0,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.0
+            },
+            {
+              "total_us": 3572.85122,
+              "encoding_us": 0.0,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.0
+            }
+          ],
+          "init_ms": 294.55353033333336,
+          "command_bytes": 34078720
+        },
+        {
+          "variant": "gpu-scan-pinned",
+          "mode": "plain",
+          "timings": {
+            "total_us": {
+              "mean": 6500.853993333333,
+              "stdev": 51.576833278430044
+            },
+            "encoding_us": {
+              "mean": 2155.3974000000003,
+              "stdev": 56.00622162108786
+            },
+            "event_upload_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_kernels_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_download_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "timer_tail_us": {
+              "mean": 1.2915066666666666,
+              "stdev": 0.14647866920931973
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 6487.8011,
+              "encoding_us": 2152.30272,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 1.18316
+            },
+            {
+              "total_us": 6557.70326,
+              "encoding_us": 2212.8868,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 1.2332
+            },
+            {
+              "total_us": 6457.05762,
+              "encoding_us": 2101.00268,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 1.45816
+            }
+          ],
+          "init_ms": 237.55609033333334,
+          "command_bytes": 34078720
+        },
+        {
+          "variant": "gpu-scan-pinned",
+          "mode": "events",
+          "timings": {
+            "total_us": {
+              "mean": 6481.12392,
+              "stdev": 27.05132547670102
+            },
+            "encoding_us": {
+              "mean": 2120.4651400000002,
+              "stdev": 30.257534554031242
+            },
+            "event_upload_us": {
+              "mean": 1316.6188804600001,
+              "stdev": 5.866335633333879
+            },
+            "event_kernels_us": {
+              "mean": 2931.5106153733336,
+              "stdev": 2.7775682120723193
+            },
+            "event_download_us": {
+              "mean": 26.966399906666666,
+              "stdev": 0.2983223555391144
+            },
+            "timer_tail_us": {
+              "mean": 4.269166666666667,
+              "stdev": 0.10088209025061554
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 6476.30832,
+              "encoding_us": 2123.39732,
+              "event_upload_us": 1309.92127654,
+              "event_kernels_us": 2929.73760132,
+              "event_download_us": 26.63999992,
+              "timer_tail_us": 4.38056
+            },
+            {
+              "total_us": 6510.25964,
+              "encoding_us": 2149.14984,
+              "event_upload_us": 1319.08991818,
+              "event_kernels_us": 2930.08255958,
+              "event_download_us": 27.03423998,
+              "timer_tail_us": 4.24298
+            },
+            {
+              "total_us": 6456.8038,
+              "encoding_us": 2088.84826,
+              "event_upload_us": 1320.84544666,
+              "event_kernels_us": 2934.71168522,
+              "event_download_us": 27.22495982,
+              "timer_tail_us": 4.18396
+            }
+          ],
+          "init_ms": 221.212683,
+          "command_bytes": 34078720
+        },
+        {
+          "variant": "gpu-delta-pinned",
+          "mode": "plain",
+          "timings": {
+            "total_us": {
+              "mean": 4302.63534,
+              "stdev": 8.434097373946255
+            },
+            "encoding_us": {
+              "mean": 2069.4402999999998,
+              "stdev": 2.9684219618510825
+            },
+            "event_upload_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_kernels_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_download_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "timer_tail_us": {
+              "mean": 1.3265866666666666,
+              "stdev": 0.2556213147085612
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 4292.89658,
+              "encoding_us": 2066.7021,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 1.0662
+            },
+            {
+              "total_us": 4307.46712,
+              "encoding_us": 2072.59496,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 1.3364
+            },
+            {
+              "total_us": 4307.5423200000005,
+              "encoding_us": 2069.02384,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 1.57716
+            }
+          ],
+          "init_ms": 327.9312923333333,
+          "command_bytes": 34078720
+        },
+        {
+          "variant": "gpu-delta-pinned",
+          "mode": "events",
+          "timings": {
+            "total_us": {
+              "mean": 4594.9524,
+              "stdev": 473.7338786347034
+            },
+            "encoding_us": {
+              "mean": 2342.0452266666666,
+              "stdev": 464.7349501855771
+            },
+            "event_upload_us": {
+              "mean": 1328.57386748,
+              "stdev": 9.75383666004596
+            },
+            "event_kernels_us": {
+              "mean": 812.4693365666667,
+              "stdev": 0.29491520155876993
+            },
+            "event_download_us": {
+              "mean": 27.136853293333335,
+              "stdev": 0.5224807013398464
+            },
+            "timer_tail_us": {
+              "mean": 4.02576,
+              "stdev": 0.15012954406112056
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 4317.89906,
+              "encoding_us": 2069.08512,
+              "event_upload_us": 1324.07040116,
+              "event_kernels_us": 812.15744614,
+              "event_download_us": 27.37599974,
+              "timer_tail_us": 3.92736
+            },
+            {
+              "total_us": 4325.00034,
+              "encoding_us": 2078.4026,
+              "event_upload_us": 1321.88544276,
+              "event_kernels_us": 812.74368046,
+              "event_download_us": 27.49695998,
+              "timer_tail_us": 3.9513599999999998
+            },
+            {
+              "total_us": 5141.9578,
+              "encoding_us": 2878.64796,
+              "event_upload_us": 1339.76575852,
+              "event_kernels_us": 812.5068831,
+              "event_download_us": 26.53760016,
+              "timer_tail_us": 4.19856
+            }
+          ],
+          "init_ms": 328.83890866666667,
+          "command_bytes": 34078720
+        },
+        {
+          "variant": "gpu-scan-compact-pageable",
+          "mode": "plain",
+          "timings": {
+            "total_us": {
+              "mean": 6012.844226666667,
+              "stdev": 12.997871707034408
+            },
+            "encoding_us": {
+              "mean": 2298.5333466666666,
+              "stdev": 6.318124812389647
+            },
+            "event_upload_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_kernels_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_download_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "timer_tail_us": {
+              "mean": 1.3840000000000001,
+              "stdev": 0.29508107360520436
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 6000.35072,
+              "encoding_us": 2294.73122,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 1.1848
+            },
+            {
+              "total_us": 6026.29368,
+              "encoding_us": 2305.82668,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 1.2442
+            },
+            {
+              "total_us": 6011.88828,
+              "encoding_us": 2295.04214,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 1.723
+            }
+          ],
+          "init_ms": 182.220543,
+          "command_bytes": 8912896
+        },
+        {
+          "variant": "gpu-scan-compact-pageable",
+          "mode": "events",
+          "timings": {
+            "total_us": {
+              "mean": 6027.661373333333,
+              "stdev": 8.12462265406413
+            },
+            "encoding_us": {
+              "mean": 2293.4648333333334,
+              "stdev": 2.7017983242524823
+            },
+            "event_upload_us": {
+              "mean": 698.59242676,
+              "stdev": 6.616690448742679
+            },
+            "event_kernels_us": {
+              "mean": 2868.9172586199998,
+              "stdev": 2.6201323365582643
+            },
+            "event_download_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "timer_tail_us": {
+              "mean": 3.62618,
+              "stdev": 0.2353559950373052
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 6030.61248,
+              "encoding_us": 2293.82254,
+              "event_upload_us": 698.81983992,
+              "event_kernels_us": 2871.93401336,
+              "event_download_us": 0.0,
+              "timer_tail_us": 3.8902
+            },
+            {
+              "total_us": 6018.47364,
+              "encoding_us": 2290.602,
+              "event_upload_us": 691.86496142,
+              "event_kernels_us": 2867.21016892,
+              "event_download_us": 0.0,
+              "timer_tail_us": 3.43838
+            },
+            {
+              "total_us": 6033.898,
+              "encoding_us": 2295.96996,
+              "event_upload_us": 705.09247894,
+              "event_kernels_us": 2867.60759358,
+              "event_download_us": 0.0,
+              "timer_tail_us": 3.54996
+            }
+          ],
+          "init_ms": 186.12597833333334,
+          "command_bytes": 8912896
+        },
+        {
+          "variant": "gpu-delta-compact-pageable",
+          "mode": "plain",
+          "timings": {
+            "total_us": {
+              "mean": 3921.299433333333,
+              "stdev": 10.021792100264967
+            },
+            "encoding_us": {
+              "mean": 2315.6373533333335,
+              "stdev": 4.245009077084799
+            },
+            "event_upload_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_kernels_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_download_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "timer_tail_us": {
+              "mean": 1.3733266666666666,
+              "stdev": 0.07235012186121967
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 3915.50736,
+              "encoding_us": 2311.6543,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 1.45498
+            },
+            {
+              "total_us": 3932.8716,
+              "encoding_us": 2320.10306,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 1.3172
+            },
+            {
+              "total_us": 3915.51934,
+              "encoding_us": 2315.1547,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 1.3477999999999999
+            }
+          ],
+          "init_ms": 283.547658,
+          "command_bytes": 8912896
+        },
+        {
+          "variant": "gpu-delta-compact-pageable",
+          "mode": "events",
+          "timings": {
+            "total_us": {
+              "mean": 3932.65904,
+              "stdev": 5.819522696544808
+            },
+            "encoding_us": {
+              "mean": 2314.082026666667,
+              "stdev": 4.8400148804868595
+            },
+            "event_upload_us": {
+              "mean": 672.6594122,
+              "stdev": 1.7383915332861157
+            },
+            "event_kernels_us": {
+              "mean": 778.1595730066667,
+              "stdev": 1.901734442837074
+            },
+            "event_download_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "timer_tail_us": {
+              "mean": 3.427293333333333,
+              "stdev": 0.2433802591282484
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 3938.1275,
+              "encoding_us": 2318.83836,
+              "event_upload_us": 673.6486375,
+              "event_kernels_us": 780.18624062,
+              "event_download_us": 0.0,
+              "timer_tail_us": 3.70694
+            },
+            {
+              "total_us": 3926.54268,
+              "encoding_us": 2309.16246,
+              "event_upload_us": 673.67743966,
+              "event_kernels_us": 777.8783988,
+              "event_download_us": 0.0,
+              "timer_tail_us": 3.3116
+            },
+            {
+              "total_us": 3933.30694,
+              "encoding_us": 2314.24526,
+              "event_upload_us": 670.65215944,
+              "event_kernels_us": 776.4140796,
+              "event_download_us": 0.0,
+              "timer_tail_us": 3.26334
+            }
+          ],
+          "init_ms": 283.09105500000004,
+          "command_bytes": 8912896
+        },
+        {
+          "variant": "gpu-scan-compact-pinned",
+          "mode": "plain",
+          "timings": {
+            "total_us": {
+              "mean": 5816.570226666667,
+              "stdev": 23.42778176531756
+            },
+            "encoding_us": {
+              "mean": 2391.9870666666666,
+              "stdev": 19.86692833373431
+            },
+            "event_upload_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_kernels_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_download_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "timer_tail_us": {
+              "mean": 1.44672,
+              "stdev": 0.13042207941909215
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 5794.05966,
+              "encoding_us": 2370.27122,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 1.58218
+            },
+            {
+              "total_us": 5814.83256,
+              "encoding_us": 2396.44098,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 1.43598
+            },
+            {
+              "total_us": 5840.81846,
+              "encoding_us": 2409.2490000000003,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 1.322
+            }
+          ],
+          "init_ms": 200.41277833333334,
+          "command_bytes": 8912896
+        },
+        {
+          "variant": "gpu-scan-compact-pinned",
+          "mode": "events",
+          "timings": {
+            "total_us": {
+              "mean": 5837.446906666667,
+              "stdev": 13.794194633400505
+            },
+            "encoding_us": {
+              "mean": 2397.60268,
+              "stdev": 11.91062913597749
+            },
+            "event_upload_us": {
+              "mean": 446.29909375333335,
+              "stdev": 5.159541199674552
+            },
+            "event_kernels_us": {
+              "mean": 2878.08939458,
+              "stdev": 7.0435625891908185
+            },
+            "event_download_us": {
+              "mean": 27.201280046666668,
+              "stdev": 0.637226289406205
+            },
+            "timer_tail_us": {
+              "mean": 4.098713333333333,
+              "stdev": 0.11453749487977014
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 5832.81738,
+              "encoding_us": 2390.59882,
+              "event_upload_us": 450.26751932,
+              "event_kernels_us": 2876.5228796,
+              "event_download_us": 26.92352008,
+              "timer_tail_us": 4.21656
+            },
+            {
+              "total_us": 5852.96036,
+              "encoding_us": 2411.3550999999998,
+              "event_upload_us": 440.4665613,
+              "event_kernels_us": 2885.78433038,
+              "event_download_us": 26.75008004,
+              "timer_tail_us": 4.09178
+            },
+            {
+              "total_us": 5826.56298,
+              "encoding_us": 2390.85412,
+              "event_upload_us": 448.16320064,
+              "event_kernels_us": 2871.96097376,
+              "event_download_us": 27.93024002,
+              "timer_tail_us": 3.9878
+            }
+          ],
+          "init_ms": 198.21359266666667,
+          "command_bytes": 8912896
+        },
+        {
+          "variant": "gpu-delta-compact-pinned",
+          "mode": "plain",
+          "timings": {
+            "total_us": {
+              "mean": 3673.9709933333334,
+              "stdev": 3.8652509700837836
+            },
+            "encoding_us": {
+              "mean": 2421.5818066666666,
+              "stdev": 9.190665758830244
+            },
+            "event_upload_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_kernels_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_download_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "timer_tail_us": {
+              "mean": 1.4474,
+              "stdev": 0.14133661945865272
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 3672.29788,
+              "encoding_us": 2410.98362,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 1.5992
+            },
+            {
+              "total_us": 3678.3909400000002,
+              "encoding_us": 2427.35752,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 1.4234
+            },
+            {
+              "total_us": 3671.22416,
+              "encoding_us": 2426.40428,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 1.3195999999999999
+            }
+          ],
+          "init_ms": 295.154036,
+          "command_bytes": 8912896
+        },
+        {
+          "variant": "gpu-delta-compact-pinned",
+          "mode": "events",
+          "timings": {
+            "total_us": {
+              "mean": 3694.935773333333,
+              "stdev": 5.94486732334162
+            },
+            "encoding_us": {
+              "mean": 2425.3672133333334,
+              "stdev": 3.7609913268889223
+            },
+            "event_upload_us": {
+              "mean": 371.18271990666665,
+              "stdev": 4.086077487436298
+            },
+            "event_kernels_us": {
+              "mean": 783.75466866,
+              "stdev": 1.1929509050697744
+            },
+            "event_download_us": {
+              "mean": 27.194880053333332,
+              "stdev": 0.143655384572957
+            },
+            "timer_tail_us": {
+              "mean": 3.983233333333333,
+              "stdev": 0.05502577698981943
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 3690.94166,
+              "encoding_us": 2421.41954,
+              "event_upload_us": 368.68735848,
+              "event_kernels_us": 784.865923,
+              "event_download_us": 27.02912008,
+              "timer_tail_us": 3.95776
+            },
+            {
+              "total_us": 3701.76778,
+              "encoding_us": 2428.90852,
+              "event_upload_us": 375.89823968,
+              "event_kernels_us": 782.49408248,
+              "event_download_us": 27.28319998,
+              "timer_tail_us": 3.94556
+            },
+            {
+              "total_us": 3692.09788,
+              "encoding_us": 2425.77358,
+              "event_upload_us": 368.96256156,
+              "event_kernels_us": 783.9040005,
+              "event_download_us": 27.272320099999998,
+              "timer_tail_us": 4.04638
+            }
+          ],
+          "init_ms": 295.142493,
+          "command_bytes": 8912896
+        },
+        {
+          "variant": "gpu-scan-compact-pageable-encode4",
+          "mode": "plain",
+          "timings": {
+            "total_us": {
+              "mean": 5163.472866666666,
+              "stdev": 13.776602119613273
+            },
+            "encoding_us": {
+              "mean": 1467.61184,
+              "stdev": 21.846757437102738
+            },
+            "event_upload_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_kernels_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_download_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "timer_tail_us": {
+              "mean": 1.3306533333333332,
+              "stdev": 0.09153672559870896
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 5171.68492,
+              "encoding_us": 1487.42558,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 1.42818
+            },
+            {
+              "total_us": 5147.56784,
+              "encoding_us": 1444.18304,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 1.2466
+            },
+            {
+              "total_us": 5171.16584,
+              "encoding_us": 1471.2269,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 1.31718
+            }
+          ],
+          "init_ms": 187.49491066666667,
+          "command_bytes": 8912896
+        },
+        {
+          "variant": "gpu-scan-compact-pageable-encode4",
+          "mode": "events",
+          "timings": {
+            "total_us": {
+              "mean": 5165.8764,
+              "stdev": 24.416653172136495
+            },
+            "encoding_us": {
+              "mean": 1446.0824133333333,
+              "stdev": 17.6686087641821
+            },
+            "event_upload_us": {
+              "mean": 676.1326960733334,
+              "stdev": 5.842515814922218
+            },
+            "event_kernels_us": {
+              "mean": 2871.9067017533334,
+              "stdev": 4.621443544923619
+            },
+            "event_download_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "timer_tail_us": {
+              "mean": 3.53818,
+              "stdev": 0.20209218787474204
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 5137.82078,
+              "encoding_us": 1426.47586,
+              "event_upload_us": 670.72960376,
+              "event_kernels_us": 2871.92377568,
+              "event_download_us": 0.0,
+              "timer_tail_us": 3.37316
+            },
+            {
+              "total_us": 5182.3197,
+              "encoding_us": 1460.77108,
+              "event_upload_us": 682.33280424,
+              "event_kernels_us": 2867.2767449000003,
+              "event_download_us": 0.0,
+              "timer_tail_us": 3.4778000000000002
+            },
+            {
+              "total_us": 5177.48872,
+              "encoding_us": 1451.0003,
+              "event_upload_us": 675.33568022,
+              "event_kernels_us": 2876.51958468,
+              "event_download_us": 0.0,
+              "timer_tail_us": 3.76358
+            }
+          ],
+          "init_ms": 191.11754233333335,
+          "command_bytes": 8912896
+        },
+        {
+          "variant": "gpu-delta-compact-pageable-encode4",
+          "mode": "plain",
+          "timings": {
+            "total_us": {
+              "mean": 3018.3789666666667,
+              "stdev": 12.671981369625353
+            },
+            "encoding_us": {
+              "mean": 1431.29522,
+              "stdev": 8.053867655033844
+            },
+            "event_upload_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_kernels_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_download_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "timer_tail_us": {
+              "mean": 1.15252,
+              "stdev": 0.11278855970354437
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 3026.01114,
+              "encoding_us": 1438.25506,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 1.11536
+            },
+            {
+              "total_us": 3025.37452,
+              "encoding_us": 1433.15714,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 1.063
+            },
+            {
+              "total_us": 3003.75124,
+              "encoding_us": 1422.47346,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 1.2792
+            }
+          ],
+          "init_ms": 292.62123633333334,
+          "command_bytes": 8912896
+        },
+        {
+          "variant": "gpu-delta-compact-pageable-encode4",
+          "mode": "events",
+          "timings": {
+            "total_us": {
+              "mean": 3029.7240333333334,
+              "stdev": 19.688735574651172
+            },
+            "encoding_us": {
+              "mean": 1428.8117466666667,
+              "stdev": 18.240851306825927
+            },
+            "event_upload_us": {
+              "mean": 656.4454412533333,
+              "stdev": 2.3740191637070827
+            },
+            "event_kernels_us": {
+              "mean": 777.5923168133334,
+              "stdev": 1.1528359836165911
+            },
+            "event_download_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "timer_tail_us": {
+              "mean": 3.36384,
+              "stdev": 0.08304410635319044
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 3037.52714,
+              "encoding_us": 1436.1041,
+              "event_upload_us": 654.71552016,
+              "event_kernels_us": 778.8524770399999,
+              "event_download_us": 0.0,
+              "timer_tail_us": 3.37878
+            },
+            {
+              "total_us": 3007.32978,
+              "encoding_us": 1408.05286,
+              "event_upload_us": 655.46880012,
+              "event_kernels_us": 776.59071556,
+              "event_download_us": 0.0,
+              "timer_tail_us": 3.4384
+            },
+            {
+              "total_us": 3044.31518,
+              "encoding_us": 1442.27828,
+              "event_upload_us": 659.15200348,
+              "event_kernels_us": 777.33375784,
+              "event_download_us": 0.0,
+              "timer_tail_us": 3.27434
+            }
+          ],
+          "init_ms": 281.990834,
+          "command_bytes": 8912896
+        },
+        {
+          "variant": "gpu-scan-compact-pinned-encode4",
+          "mode": "plain",
+          "timings": {
+            "total_us": {
+              "mean": 5050.350753333333,
+              "stdev": 19.420962422128383
+            },
+            "encoding_us": {
+              "mean": 1655.5948466666666,
+              "stdev": 9.745626114361903
+            },
+            "event_upload_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_kernels_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_download_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "timer_tail_us": {
+              "mean": 1.16552,
+              "stdev": 0.15383550695466897
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 5029.33352,
+              "encoding_us": 1646.99792,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 1.20176
+            },
+            {
+              "total_us": 5067.6329,
+              "encoding_us": 1666.18194,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.9968
+            },
+            {
+              "total_us": 5054.08584,
+              "encoding_us": 1653.60468,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 1.298
+            }
+          ],
+          "init_ms": 201.561813,
+          "command_bytes": 8912896
+        },
+        {
+          "variant": "gpu-scan-compact-pinned-encode4",
+          "mode": "events",
+          "timings": {
+            "total_us": {
+              "mean": 5060.79338,
+              "stdev": 22.961915670945167
+            },
+            "encoding_us": {
+              "mean": 1652.52352,
+              "stdev": 14.968689115603963
+            },
+            "event_upload_us": {
+              "mean": 419.66933352,
+              "stdev": 6.258491837110694
+            },
+            "event_kernels_us": {
+              "mean": 2870.811312993333,
+              "stdev": 0.16352967084039696
+            },
+            "event_download_us": {
+              "mean": 26.753920013333335,
+              "stdev": 0.34060077942368555
+            },
+            "timer_tail_us": {
+              "mean": 4.0817733333333335,
+              "stdev": 0.1298910625614147
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 5034.33952,
+              "encoding_us": 1635.32198,
+              "event_upload_us": 413.09055864,
+              "event_kernels_us": 2870.75072766,
+              "event_download_us": 26.3699201,
+              "timer_tail_us": 4.21136
+            },
+            {
+              "total_us": 5075.56774,
+              "encoding_us": 1662.58782,
+              "event_upload_us": 420.36864164,
+              "event_kernels_us": 2870.68672178,
+              "event_download_us": 26.8723201,
+              "timer_tail_us": 4.08238
+            },
+            {
+              "total_us": 5072.47288,
+              "encoding_us": 1659.66076,
+              "event_upload_us": 425.54880028,
+              "event_kernels_us": 2870.99648954,
+              "event_download_us": 27.01951984,
+              "timer_tail_us": 3.95158
+            }
+          ],
+          "init_ms": 195.875165,
+          "command_bytes": 8912896
+        },
+        {
+          "variant": "gpu-delta-compact-pinned-encode4",
+          "mode": "plain",
+          "timings": {
+            "total_us": {
+              "mean": 2860.981853333333,
+              "stdev": 14.889772232809095
+            },
+            "encoding_us": {
+              "mean": 1612.31692,
+              "stdev": 12.664785297619552
+            },
+            "event_upload_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_kernels_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_download_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "timer_tail_us": {
+              "mean": 1.2519866666666666,
+              "stdev": 0.11451331858492851
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 2877.06646,
+              "encoding_us": 1625.31584,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 1.13798
+            },
+            {
+              "total_us": 2858.19972,
+              "encoding_us": 1611.61986,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 1.25098
+            },
+            {
+              "total_us": 2847.67938,
+              "encoding_us": 1600.01506,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 1.367
+            }
+          ],
+          "init_ms": 292.4902836666667,
+          "command_bytes": 8912896
+        },
+        {
+          "variant": "gpu-delta-compact-pinned-encode4",
+          "mode": "events",
+          "timings": {
+            "total_us": {
+              "mean": 2870.107613333333,
+              "stdev": 12.268243372061496
+            },
+            "encoding_us": {
+              "mean": 1605.49736,
+              "stdev": 10.7305817347057
+            },
+            "event_upload_us": {
+              "mean": 364.98666704,
+              "stdev": 0.41449960003651776
+            },
+            "event_kernels_us": {
+              "mean": 782.50901344,
+              "stdev": 1.0580285314776428
+            },
+            "event_download_us": {
+              "mean": 27.041706806666667,
+              "stdev": 0.17381780875081448
+            },
+            "timer_tail_us": {
+              "mean": 4.093046666666667,
+              "stdev": 0.05502172055955109
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 2883.2418,
+              "encoding_us": 1616.78898,
+              "event_upload_us": 365.2908808,
+              "event_kernels_us": 782.12415936,
+              "event_download_us": 26.89408016,
+              "timer_tail_us": 4.15398
+            },
+            {
+              "total_us": 2858.94382,
+              "encoding_us": 1595.43342,
+              "event_upload_us": 364.51455952,
+              "event_kernels_us": 783.70560176,
+              "event_download_us": 26.99776016,
+              "timer_tail_us": 4.047
+            },
+            {
+              "total_us": 2868.13722,
+              "encoding_us": 1604.26968,
+              "event_upload_us": 365.1545608,
+              "event_kernels_us": 781.6972792,
+              "event_download_us": 27.2332801,
+              "timer_tail_us": 4.0781600000000005
+            }
+          ],
+          "init_ms": 297.49414733333333,
+          "command_bytes": 8912896
+        }
+      ],
+      "best_gpu": "gpu-delta-compact-pinned-encode4",
+      "ratio": 3.8333617718996695,
+      "speedup_vs_legacy": 1.2554336113020854
+    },
+    {
+      "carts": 65536,
+      "lines": 2048,
+      "factor": 64,
+      "source_bytes": 134742016,
+      "result_bytes": 524288,
+      "modes": [
+        {
+          "variant": "cpu-delta-4",
+          "mode": "plain",
+          "timings": {
+            "total_us": {
+              "mean": 53042.363366666665,
+              "stdev": 50.250401129578975
+            },
+            "encoding_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_upload_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_kernels_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_download_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "timer_tail_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 52984.36858,
+              "encoding_us": 0.0,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.0
+            },
+            {
+              "total_us": 53069.7619,
+              "encoding_us": 0.0,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.0
+            },
+            {
+              "total_us": 53072.95962,
+              "encoding_us": 0.0,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.0
+            }
+          ],
+          "init_ms": 1545.3351913333333,
+          "command_bytes": 0
+        },
+        {
+          "variant": "gpu-scan-pageable",
+          "mode": "plain",
+          "timings": {
+            "total_us": {
+              "mean": 14700.762933333333,
+              "stdev": 29.382754370931817
+            },
+            "encoding_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_upload_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_kernels_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_download_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "timer_tail_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 14693.86426,
+              "encoding_us": 0.0,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.0
+            },
+            {
+              "total_us": 14675.44332,
+              "encoding_us": 0.0,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.0
+            },
+            {
+              "total_us": 14732.98122,
+              "encoding_us": 0.0,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.0
+            }
+          ],
+          "init_ms": 209.92476033333332,
+          "command_bytes": 134742016
+        },
+        {
+          "variant": "gpu-delta-pageable",
+          "mode": "plain",
+          "timings": {
+            "total_us": {
+              "mean": 13717.545893333334,
+              "stdev": 45.08162711031788
+            },
+            "encoding_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_upload_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_kernels_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_download_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "timer_tail_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 13766.83654,
+              "encoding_us": 0.0,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.0
+            },
+            {
+              "total_us": 13678.40308,
+              "encoding_us": 0.0,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.0
+            },
+            {
+              "total_us": 13707.39806,
+              "encoding_us": 0.0,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.0
+            }
+          ],
+          "init_ms": 303.053497,
+          "command_bytes": 134742016
+        },
+        {
+          "variant": "gpu-scan-pinned",
+          "mode": "plain",
+          "timings": {
+            "total_us": {
+              "mean": 18358.503653333333,
+              "stdev": 175.25802549206455
+            },
+            "encoding_us": {
+              "mean": 8279.339106666666,
+              "stdev": 59.814677300576555
+            },
+            "event_upload_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_kernels_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_download_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "timer_tail_us": {
+              "mean": 1.2184533333333334,
+              "stdev": 0.170978082026128
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 18559.20678,
+              "encoding_us": 8345.37622,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 1.18116
+            },
+            {
+              "total_us": 18280.60352,
+              "encoding_us": 8263.8454,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 1.0692
+            },
+            {
+              "total_us": 18235.70066,
+              "encoding_us": 8228.7957,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 1.405
+            }
+          ],
+          "init_ms": 335.41511733333334,
+          "command_bytes": 134742016
+        },
+        {
+          "variant": "gpu-scan-pinned",
+          "mode": "events",
+          "timings": {
+            "total_us": {
+              "mean": 18193.748813333335,
+              "stdev": 162.39949876807864
+            },
+            "encoding_us": {
+              "mean": 8228.233273333333,
+              "stdev": 73.65337582331263
+            },
+            "event_upload_us": {
+              "mean": 5629.76618132,
+              "stdev": 197.5356734400053
+            },
+            "event_kernels_us": {
+              "mean": 4215.84746998,
+              "stdev": 1.460838198740653
+            },
+            "event_download_us": {
+              "mean": 29.166506786666666,
+              "stdev": 2.8642473633816867
+            },
+            "timer_tail_us": {
+              "mean": 4.384293333333334,
+              "stdev": 0.15002805648722287
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 18136.51798,
+              "encoding_us": 8313.13638,
+              "event_upload_us": 5480.74622152,
+              "event_kernels_us": 4214.22016144,
+              "event_download_us": 32.47040012,
+              "timer_tail_us": 4.21978
+            },
+            {
+              "total_us": 18377.01568,
+              "encoding_us": 8190.07318,
+              "event_upload_us": 5853.82592206,
+              "event_kernels_us": 4216.2764836,
+              "event_download_us": 27.38368006,
+              "timer_tail_us": 4.51356
+            },
+            {
+              "total_us": 18067.71278,
+              "encoding_us": 8181.49026,
+              "event_upload_us": 5554.72640038,
+              "event_kernels_us": 4217.0457649,
+              "event_download_us": 27.645440179999998,
+              "timer_tail_us": 4.4195400000000005
+            }
+          ],
+          "init_ms": 310.73795366666667,
+          "command_bytes": 134742016
+        },
+        {
+          "variant": "gpu-delta-pinned",
+          "mode": "plain",
+          "timings": {
+            "total_us": {
+              "mean": 17228.99696,
+              "stdev": 337.2492991395354
+            },
+            "encoding_us": {
+              "mean": 8234.5226,
+              "stdev": 47.909581124785625
+            },
+            "event_upload_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_kernels_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_download_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "timer_tail_us": {
+              "mean": 1.3604533333333333,
+              "stdev": 0.06486213173596239
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 17581.90156,
+              "encoding_us": 8288.2898,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 1.4226
+            },
+            {
+              "total_us": 16909.95838,
+              "encoding_us": 8218.91482,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 1.29318
+            },
+            {
+              "total_us": 17195.13094,
+              "encoding_us": 8196.36318,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 1.36558
+            }
+          ],
+          "init_ms": 429.82620733333334,
+          "command_bytes": 134742016
+        },
+        {
+          "variant": "gpu-delta-pinned",
+          "mode": "events",
+          "timings": {
+            "total_us": {
+              "mean": 17346.30616,
+              "stdev": 242.3264117088299
+            },
+            "encoding_us": {
+              "mean": 8220.71214,
+              "stdev": 50.51862532776182
+            },
+            "event_upload_us": {
+              "mean": 5801.012681346667,
+              "stdev": 186.22160329165888
+            },
+            "event_kernels_us": {
+              "mean": 3205.1272488066666,
+              "stdev": 0.9028949500485913
+            },
+            "event_download_us": {
+              "mean": 27.32053342,
+              "stdev": 0.028118703431622705
+            },
+            "timer_tail_us": {
+              "mean": 4.34068,
+              "stdev": 0.14202363042817895
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 17622.83352,
+              "encoding_us": 8278.1992,
+              "event_upload_us": 6013.87262346,
+              "event_kernels_us": 3204.21438706,
+              "event_download_us": 27.34016012,
+              "timer_tail_us": 4.50434
+            },
+            {
+              "total_us": 17171.00798,
+              "encoding_us": 8183.3919,
+              "event_upload_us": 5668.1920052000005,
+              "event_kernels_us": 3205.1475239,
+              "event_download_us": 27.33311998,
+              "timer_tail_us": 4.26792
+            },
+            {
+              "total_us": 17245.07698,
+              "encoding_us": 8200.54532,
+              "event_upload_us": 5720.97341538,
+              "event_kernels_us": 3206.01983546,
+              "event_download_us": 27.28832016,
+              "timer_tail_us": 4.24978
+            }
+          ],
+          "init_ms": 431.35402266666665,
+          "command_bytes": 134742016
+        },
+        {
+          "variant": "gpu-scan-compact-pageable",
+          "mode": "plain",
+          "timings": {
+            "total_us": {
+              "mean": 16008.329153333334,
+              "stdev": 49.50541761695342
+            },
+            "encoding_us": {
+              "mean": 9276.492786666666,
+              "stdev": 33.64602539106379
+            },
+            "event_upload_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_kernels_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_download_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "timer_tail_us": {
+              "mean": 1.3700666666666668,
+              "stdev": 0.18010378489452505
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 16045.46218,
+              "encoding_us": 9295.25096,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 1.5052
+            },
+            {
+              "total_us": 15952.12436,
+              "encoding_us": 9237.64926,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 1.4394
+            },
+            {
+              "total_us": 16027.40092,
+              "encoding_us": 9296.57814,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 1.1656
+            }
+          ],
+          "init_ms": 172.45083400000001,
+          "command_bytes": 34078720
+        },
+        {
+          "variant": "gpu-scan-compact-pageable",
+          "mode": "events",
+          "timings": {
+            "total_us": {
+              "mean": 15969.28138,
+              "stdev": 48.989723798245805
+            },
+            "encoding_us": {
+              "mean": 9246.938413333333,
+              "stdev": 41.610329379298946
+            },
+            "event_upload_us": {
+              "mean": 2555.2868190866666,
+              "stdev": 17.234803204258558
+            },
+            "event_kernels_us": {
+              "mean": 3993.813360546667,
+              "stdev": 8.126436140187302
+            },
+            "event_download_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "timer_tail_us": {
+              "mean": 3.69798,
+              "stdev": 0.11313821812279004
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 16017.77438,
+              "encoding_us": 9285.27346,
+              "event_upload_us": 2571.65694712,
+              "event_kernels_us": 3985.21604068,
+              "event_download_us": 0.0,
+              "timer_tail_us": 3.67276
+            },
+            {
+              "total_us": 15970.26016,
+              "encoding_us": 9252.8555,
+              "event_upload_us": 2556.90239906,
+              "event_kernels_us": 3994.85571388,
+              "event_download_us": 0.0,
+              "timer_tail_us": 3.8216
+            },
+            {
+              "total_us": 15919.8096,
+              "encoding_us": 9202.68628,
+              "event_upload_us": 2537.30111108,
+              "event_kernels_us": 4001.36832708,
+              "event_download_us": 0.0,
+              "timer_tail_us": 3.59958
+            }
+          ],
+          "init_ms": 184.76163033333333,
+          "command_bytes": 34078720
+        },
+        {
+          "variant": "gpu-delta-compact-pageable",
+          "mode": "plain",
+          "timings": {
+            "total_us": {
+              "mean": 15058.48864,
+              "stdev": 19.749876391500777
+            },
+            "encoding_us": {
+              "mean": 9269.812406666666,
+              "stdev": 13.10146655516555
+            },
+            "event_upload_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_kernels_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_download_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "timer_tail_us": {
+              "mean": 1.4791,
+              "stdev": 0.06443833641552214
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 15081.255079999999,
+              "encoding_us": 9284.86768,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 1.47298
+            },
+            {
+              "total_us": 15048.256300000001,
+              "encoding_us": 9263.57026,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 1.41794
+            },
+            {
+              "total_us": 15045.95454,
+              "encoding_us": 9260.99928,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 1.54638
+            }
+          ],
+          "init_ms": 289.05962566666665,
+          "command_bytes": 34078720
+        },
+        {
+          "variant": "gpu-delta-compact-pageable",
+          "mode": "events",
+          "timings": {
+            "total_us": {
+              "mean": 15091.065606666667,
+              "stdev": 82.04159571345821
+            },
+            "encoding_us": {
+              "mean": 9282.883726666667,
+              "stdev": 49.37991268853091
+            },
+            "event_upload_us": {
+              "mean": 2546.8550428,
+              "stdev": 24.41867687567439
+            },
+            "event_kernels_us": {
+              "mean": 3087.7787748666665,
+              "stdev": 1.220297258753331
+            },
+            "event_download_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "timer_tail_us": {
+              "mean": 3.7313,
+              "stdev": 0.04202212274504951
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 15177.54686,
+              "encoding_us": 9333.9525,
+              "event_upload_us": 2572.54401204,
+              "event_kernels_us": 3087.24032872,
+              "event_download_us": 0.0,
+              "timer_tail_us": 3.71136
+            },
+            {
+              "total_us": 15081.3148,
+              "encoding_us": 9279.31206,
+              "event_upload_us": 2544.07680996,
+              "event_kernels_us": 3089.17568682,
+              "event_download_us": 0.0,
+              "timer_tail_us": 3.77958
+            },
+            {
+              "total_us": 15014.33516,
+              "encoding_us": 9235.38662,
+              "event_upload_us": 2523.9443064,
+              "event_kernels_us": 3086.92030906,
+              "event_download_us": 0.0,
+              "timer_tail_us": 3.70296
+            }
+          ],
+          "init_ms": 289.1867373333333,
+          "command_bytes": 34078720
+        },
+        {
+          "variant": "gpu-scan-compact-pinned",
+          "mode": "plain",
+          "timings": {
+            "total_us": {
+              "mean": 15218.811813333334,
+              "stdev": 28.189244746359158
+            },
+            "encoding_us": {
+              "mean": 9500.812033333334,
+              "stdev": 14.499118205936245
+            },
+            "event_upload_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_kernels_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_download_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "timer_tail_us": {
+              "mean": 1.30484,
+              "stdev": 0.2118904509410464
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 15243.91432,
+              "encoding_us": 9517.5186,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 1.16256
+            },
+            {
+              "total_us": 15224.2058,
+              "encoding_us": 9491.51408,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 1.2036
+            },
+            {
+              "total_us": 15188.31532,
+              "encoding_us": 9493.40342,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 1.54836
+            }
+          ],
+          "init_ms": 224.31856933333333,
+          "command_bytes": 34078720
+        },
+        {
+          "variant": "gpu-scan-compact-pinned",
+          "mode": "events",
+          "timings": {
+            "total_us": {
+              "mean": 15258.22008,
+              "stdev": 54.650355218211935
+            },
+            "encoding_us": {
+              "mean": 9515.455066666666,
+              "stdev": 53.7600364332552
+            },
+            "event_upload_us": {
+              "mean": 1630.06293142,
+              "stdev": 5.738604408611657
+            },
+            "event_kernels_us": {
+              "mean": 3998.4134435666665,
+              "stdev": 7.895764422757291
+            },
+            "event_download_us": {
+              "mean": 27.310933373333334,
+              "stdev": 0.35960954912646015
+            },
+            "timer_tail_us": {
+              "mean": 4.08876,
+              "stdev": 0.08269450042173274
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 15309.41492,
+              "encoding_us": 9564.0227,
+              "event_upload_us": 1627.0636774,
+              "event_kernels_us": 4002.76796818,
+              "event_download_us": 27.71392,
+              "timer_tail_us": 4.09496
+            },
+            {
+              "total_us": 15264.5754,
+              "encoding_us": 9524.65304,
+              "event_upload_us": 1636.67968038,
+              "event_kernels_us": 3989.29920192,
+              "event_download_us": 27.19616008,
+              "timer_tail_us": 4.00314
+            },
+            {
+              "total_us": 15200.66992,
+              "encoding_us": 9457.68946,
+              "event_upload_us": 1626.44543648,
+              "event_kernels_us": 4003.1731606,
+              "event_download_us": 27.02272004,
+              "timer_tail_us": 4.1681799999999996
+            }
+          ],
+          "init_ms": 216.806395,
+          "command_bytes": 34078720
+        },
+        {
+          "variant": "gpu-delta-compact-pinned",
+          "mode": "plain",
+          "timings": {
+            "total_us": {
+              "mean": 14328.033113333333,
+              "stdev": 19.843770906461547
+            },
+            "encoding_us": {
+              "mean": 9521.574466666667,
+              "stdev": 27.244578522519802
+            },
+            "event_upload_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_kernels_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_download_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "timer_tail_us": {
+              "mean": 1.3446466666666668,
+              "stdev": 0.20223209867212813
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 14346.56152,
+              "encoding_us": 9543.29852,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 1.28356
+            },
+            {
+              "total_us": 14330.44362,
+              "encoding_us": 9530.41818,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 1.18
+            },
+            {
+              "total_us": 14307.0942,
+              "encoding_us": 9491.0067,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 1.57038
+            }
+          ],
+          "init_ms": 323.29817033333336,
+          "command_bytes": 34078720
+        },
+        {
+          "variant": "gpu-delta-compact-pinned",
+          "mode": "events",
+          "timings": {
+            "total_us": {
+              "mean": 14371.375833333334,
+              "stdev": 57.703568465011024
+            },
+            "encoding_us": {
+              "mean": 9535.679973333334,
+              "stdev": 47.167611195078976
+            },
+            "event_upload_us": {
+              "mean": 1626.2212324266668,
+              "stdev": 8.602924710843125
+            },
+            "event_kernels_us": {
+              "mean": 3093.7294944,
+              "stdev": 0.5427961531768927
+            },
+            "event_download_us": {
+              "mean": 28.588586606666667,
+              "stdev": 2.7031968285856913
+            },
+            "timer_tail_us": {
+              "mean": 4.02798,
+              "stdev": 0.07014869920390551
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 14427.53252,
+              "encoding_us": 9583.28468,
+              "event_upload_us": 1631.35360248,
+              "event_kernels_us": 3093.1507254,
+              "event_download_us": 31.69984002,
+              "timer_tail_us": 4.06878
+            },
+            {
+              "total_us": 14374.35424,
+              "encoding_us": 9534.79328,
+              "event_upload_us": 1631.0208058,
+              "event_kernels_us": 3094.22719956,
+              "event_download_us": 27.25055986,
+              "timer_tail_us": 3.94698
+            },
+            {
+              "total_us": 14312.24074,
+              "encoding_us": 9488.96196,
+              "event_upload_us": 1616.289289,
+              "event_kernels_us": 3093.81055824,
+              "event_download_us": 26.81535994,
+              "timer_tail_us": 4.06818
+            }
+          ],
+          "init_ms": 321.7030296666667,
+          "command_bytes": 34078720
+        },
+        {
+          "variant": "gpu-scan-compact-pageable-encode4",
+          "mode": "plain",
+          "timings": {
+            "total_us": {
+              "mean": 12601.653339999999,
+              "stdev": 162.16561184550665
+            },
+            "encoding_us": {
+              "mean": 5865.2726600000005,
+              "stdev": 75.75591513615831
+            },
+            "event_upload_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_kernels_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_download_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "timer_tail_us": {
+              "mean": 1.09066,
+              "stdev": 0.10641933470944086
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 12505.26864,
+              "encoding_us": 5818.5383,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.9894000000000001
+            },
+            {
+              "total_us": 12788.8787,
+              "encoding_us": 5952.67798,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 1.081
+            },
+            {
+              "total_us": 12510.81268,
+              "encoding_us": 5824.6017,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 1.20158
+            }
+          ],
+          "init_ms": 189.17473866666666,
+          "command_bytes": 34078720
+        },
+        {
+          "variant": "gpu-scan-compact-pageable-encode4",
+          "mode": "events",
+          "timings": {
+            "total_us": {
+              "mean": 12632.902013333332,
+              "stdev": 124.88746000365163
+            },
+            "encoding_us": {
+              "mean": 5891.496166666667,
+              "stdev": 85.43024138728025
+            },
+            "event_upload_us": {
+              "mean": 2576.55765216,
+              "stdev": 44.53198961624181
+            },
+            "event_kernels_us": {
+              "mean": 3993.2409445666667,
+              "stdev": 7.115087061034065
+            },
+            "event_download_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "timer_tail_us": {
+              "mean": 3.4884933333333334,
+              "stdev": 0.07150058274820797
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 12580.159959999999,
+              "encoding_us": 5858.38284,
+              "event_upload_us": 2552.22527986,
+              "event_kernels_us": 3997.3919629800002,
+              "event_download_us": 0.0,
+              "timer_tail_us": 3.45816
+            },
+            {
+              "total_us": 12775.50808,
+              "encoding_us": 5988.52616,
+              "event_upload_us": 2627.95456406,
+              "event_kernels_us": 3985.02530112,
+              "event_download_us": 0.0,
+              "timer_tail_us": 3.57016
+            },
+            {
+              "total_us": 12543.038,
+              "encoding_us": 5827.5795,
+              "event_upload_us": 2549.49311256,
+              "event_kernels_us": 3997.3055696,
+              "event_download_us": 0.0,
+              "timer_tail_us": 3.43716
+            }
+          ],
+          "init_ms": 195.901881,
+          "command_bytes": 34078720
+        },
+        {
+          "variant": "gpu-delta-compact-pageable-encode4",
+          "mode": "plain",
+          "timings": {
+            "total_us": {
+              "mean": 11745.963733333334,
+              "stdev": 58.513426215740715
+            },
+            "encoding_us": {
+              "mean": 5952.484513333334,
+              "stdev": 60.490261959605455
+            },
+            "event_upload_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_kernels_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_download_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "timer_tail_us": {
+              "mean": 1.10978,
+              "stdev": 0.16379096434174875
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 11688.20234,
+              "encoding_us": 5898.56576,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.92538
+            },
+            {
+              "total_us": 11805.20126,
+              "encoding_us": 6017.89708,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 1.16558
+            },
+            {
+              "total_us": 11744.4876,
+              "encoding_us": 5940.9907,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 1.23838
+            }
+          ],
+          "init_ms": 288.035104,
+          "command_bytes": 34078720
+        },
+        {
+          "variant": "gpu-delta-compact-pageable-encode4",
+          "mode": "events",
+          "timings": {
+            "total_us": {
+              "mean": 11775.064106666667,
+              "stdev": 148.0953204207205
+            },
+            "encoding_us": {
+              "mean": 5974.409326666667,
+              "stdev": 153.82887306752053
+            },
+            "event_upload_us": {
+              "mean": 2541.5780290266666,
+              "stdev": 17.452168856666656
+            },
+            "event_kernels_us": {
+              "mean": 3086.5510415533336,
+              "stdev": 1.0930147076867103
+            },
+            "event_download_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "timer_tail_us": {
+              "mean": 3.4769799999999997,
+              "stdev": 0.15747346570136828
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 11699.06556,
+              "encoding_us": 5912.80786,
+              "event_upload_us": 2526.1888027200002,
+              "event_kernels_us": 3087.18847748,
+              "event_download_us": 0.0,
+              "timer_tail_us": 3.40136
+            },
+            {
+              "total_us": 11945.72984,
+              "encoding_us": 6149.49196,
+              "event_upload_us": 2538.00512324,
+              "event_kernels_us": 3085.28895848,
+              "event_download_us": 0.0,
+              "timer_tail_us": 3.37158
+            },
+            {
+              "total_us": 11680.39692,
+              "encoding_us": 5860.92816,
+              "event_upload_us": 2560.54016112,
+              "event_kernels_us": 3087.1756887,
+              "event_download_us": 0.0,
+              "timer_tail_us": 3.658
+            }
+          ],
+          "init_ms": 286.7532336666667,
+          "command_bytes": 34078720
+        },
+        {
+          "variant": "gpu-scan-compact-pinned-encode4",
+          "mode": "plain",
+          "timings": {
+            "total_us": {
+              "mean": 11785.32544,
+              "stdev": 38.89332204560019
+            },
+            "encoding_us": {
+              "mean": 6236.75048,
+              "stdev": 33.45957603058969
+            },
+            "event_upload_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_kernels_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_download_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "timer_tail_us": {
+              "mean": 1.11412,
+              "stdev": 0.29258908865506245
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 11758.07142,
+              "encoding_us": 6216.73622,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 1.0402
+            },
+            {
+              "total_us": 11768.0396,
+              "encoding_us": 6218.13742,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.86558
+            },
+            {
+              "total_us": 11829.8653,
+              "encoding_us": 6275.3778,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 1.43658
+            }
+          ],
+          "init_ms": 225.43345733333334,
+          "command_bytes": 34078720
+        },
+        {
+          "variant": "gpu-scan-compact-pinned-encode4",
+          "mode": "events",
+          "timings": {
+            "total_us": {
+              "mean": 11872.2311,
+              "stdev": 18.414791360545
+            },
+            "encoding_us": {
+              "mean": 6300.75662,
+              "stdev": 25.42509089430342
+            },
+            "event_upload_us": {
+              "mean": 1455.058136,
+              "stdev": 14.110850761399103
+            },
+            "event_kernels_us": {
+              "mean": 3999.3055963666666,
+              "stdev": 8.011481463230947
+            },
+            "event_download_us": {
+              "mean": 28.752000086666666,
+              "stdev": 2.6601242733580777
+            },
+            "timer_tail_us": {
+              "mean": 3.967353333333333,
+              "stdev": 0.40995599828924717
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 11890.86748,
+              "encoding_us": 6302.30008,
+              "event_upload_us": 1468.48768234,
+              "event_kernels_us": 4005.5174351,
+              "event_download_us": 27.34464016,
+              "timer_tail_us": 3.60134
+            },
+            {
+              "total_us": 11871.77962,
+              "encoding_us": 6325.37482,
+              "event_upload_us": 1440.3526449,
+              "event_kernels_us": 3990.26304244,
+              "event_download_us": 27.09120026,
+              "timer_tail_us": 3.89038
+            },
+            {
+              "total_us": 11854.0462,
+              "encoding_us": 6274.59496,
+              "event_upload_us": 1456.33408076,
+              "event_kernels_us": 4002.13631156,
+              "event_download_us": 31.82015984,
+              "timer_tail_us": 4.41034
+            }
+          ],
+          "init_ms": 210.58383800000001,
+          "command_bytes": 34078720
+        },
+        {
+          "variant": "gpu-delta-compact-pinned-encode4",
+          "mode": "plain",
+          "timings": {
+            "total_us": {
+              "mean": 10859.330653333333,
+              "stdev": 69.030976183294
+            },
+            "encoding_us": {
+              "mean": 6279.534386666666,
+              "stdev": 63.558705727024716
+            },
+            "event_upload_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_kernels_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "event_download_us": {
+              "mean": 0.0,
+              "stdev": 0.0
+            },
+            "timer_tail_us": {
+              "mean": 1.0878666666666668,
+              "stdev": 0.0991940186368782
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 10927.17174,
+              "encoding_us": 6337.8969,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 1.1234
+            },
+            {
+              "total_us": 10861.65188,
+              "encoding_us": 6288.88976,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 0.9758
+            },
+            {
+              "total_us": 10789.16834,
+              "encoding_us": 6211.8165,
+              "event_upload_us": 0.0,
+              "event_kernels_us": 0.0,
+              "event_download_us": 0.0,
+              "timer_tail_us": 1.1644
+            }
+          ],
+          "init_ms": 323.21272400000004,
+          "command_bytes": 34078720
+        },
+        {
+          "variant": "gpu-delta-compact-pinned-encode4",
+          "mode": "events",
+          "timings": {
+            "total_us": {
+              "mean": 10839.027320000001,
+              "stdev": 51.33109874784656
+            },
+            "encoding_us": {
+              "mean": 6241.493166666667,
+              "stdev": 46.3198821003697
+            },
+            "event_upload_us": {
+              "mean": 1384.76863384,
+              "stdev": 9.579259273889415
+            },
+            "event_kernels_us": {
+              "mean": 3094.050567946667,
+              "stdev": 1.6211127789836965
+            },
+            "event_download_us": {
+              "mean": 27.38325323333333,
+              "stdev": 0.10075550997011541
+            },
+            "timer_tail_us": {
+              "mean": 4.071706666666667,
+              "stdev": 0.15194253168001795
+            }
+          },
+          "repeats": [
+            {
+              "total_us": 10874.50228,
+              "encoding_us": 6268.84806,
+              "event_upload_us": 1395.42975424,
+              "event_kernels_us": 3092.62210844,
+              "event_download_us": 27.30111982,
+              "timer_tail_us": 3.94314
+            },
+            {
+              "total_us": 10780.16774,
+              "encoding_us": 6188.01228,
+              "event_upload_us": 1381.99103116,
+              "event_kernels_us": 3093.7171173,
+              "event_download_us": 27.352959939999998,
+              "timer_tail_us": 4.0326
+            },
+            {
+              "total_us": 10862.41194,
+              "encoding_us": 6267.61916,
+              "event_upload_us": 1376.88511612,
+              "event_kernels_us": 3095.8124781,
+              "event_download_us": 27.49567994,
+              "timer_tail_us": 4.23938
+            }
+          ],
+          "init_ms": 321.67064300000004,
+          "command_bytes": 34078720
+        }
+      ],
+      "best_gpu": "gpu-delta-compact-pinned-encode4",
+      "ratio": 4.884496573495993,
+      "speedup_vs_legacy": 1.2632036293252251
+    }
+  ]
+}

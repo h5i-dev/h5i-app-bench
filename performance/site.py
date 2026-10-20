@@ -81,6 +81,48 @@ APPS = [
             "mixed": "40% list, 20% search, 15% get, 10% tags, 8% update, 5% archive, 2% create",
         },
     },
+    {
+        "id": "django-cart", "title": "django-cart totals", "results": "http/results/2026-10-19",
+        "upstream": "https://github.com/bmentges/django-cart/tree/6b3daa26842c978b9520d479c4d33e3620e731a2",
+        "about": "Read-only HTTP adapters for django-cart pricing, checked against the pinned library. Includes PostgreSQL, queueing, transfer and JSON; no Django deployment score.",
+        "seed": "4,096 or 65,536 carts, 32 price/quantity lines each; rotating IDs and mixed discount kinds.",
+        "measurement_note": "2026-10-19 paired run: each server, PostgreSQL and client gets four CPU cores. SQL variants aggregate in PostgreSQL. Batch variants collect up to 256 requests for 1 ms, fetch fresh rows in one SQL query, then compute on CPU or CUDA. GPU-single is the same GPU path without coalescing; no resident input cache. Three repetitions per point.",
+        "stacks": {
+            "go-sql": "Go net/http, pgx, per-request SQL SUM (16 connections)",
+            "javascript-sql": "Node.js HTTP, postgres.js, per-request SQL SUM (16 connections)",
+            "rust-sql": "Rust axum, sqlx, per-request SQL SUM (16 connections)",
+            "go-batch": "Go net/http, pgx, shared SQL batch worker and CPU pricing",
+            "javascript-batch": "Node.js HTTP, postgres.js, shared SQL batch worker and CPU pricing",
+            "rust-cpu-batch": "Rust axum, sqlx, shared SQL batch worker and CPU pricing",
+            "rust-gpu-single": "Rust axum, sqlx, one request / SQL / CUDA launch; fresh uploads",
+            "rust-gpu-batch": "Rust axum, sqlx, shared SQL batch worker and CUDA pricing; fresh uploads, h5i NVVM launch shell (no Lean proof)",
+        },
+        "scenarios": {
+            "total_4096": "GET /carts/{id}/total over 4,096 carts (131,072 line rows)",
+            "total_65536": "GET /carts/{id}/total over 65,536 carts (2,097,152 line rows)",
+        },
+    },
+    {
+        "id": "django-cart-lines", "title": "django-cart line scaling", "directory": "django-cart",
+        "nav_title": "Cart scaling", "results": "http/lines/results/2026-10-19",
+        "diagnostic_url": f"{REPO.replace('/tree/', '/blob/')}/django-cart/http/lines/results/2026-10-19/placement.md",
+        "upstream": "https://github.com/bmentges/django-cart/tree/6b3daa26842c978b9520d479c4d33e3620e731a2",
+        "about": "The same cart total with 32, 128, 512 or 2,048 lines. Live HTTP and PostgreSQL; exact upstream Decimal checks. This measures read-only adapters to the pricing library.",
+        "seed": "Fixed 4,096 carts: 131,072 to 8,388,608 line rows. Each HTTP request returns one cart total.",
+        "measurement_note": "2026-10-19: nine implementations, 16/256 clients, three repetitions. Each server, PostgreSQL and client gets four CPU cores. Batch variants share one SQL worker, collect up to 256 requests for 1 ms, and fetch fresh rows. CUDA includes allocation, upload and download. Cooperative CUDA uses 32 threads per cart; parallel CPU uses four Rayon workers. SQL baselines use 16 connections. No resident input cache. These CUDA mappings are not an optimal-GPU bound.",
+        "stacks": {
+            "go-sql": "Go net/http, pgx, PostgreSQL SUM (16 connections)",
+            "javascript-sql": "Node.js HTTP, postgres.js, PostgreSQL SUM (16 connections)",
+            "rust-sql": "Rust axum, sqlx, PostgreSQL SUM (16 connections)",
+            "go-batch": "Go net/http, pgx, one SQL batch worker and CPU pricing",
+            "javascript-batch": "Node.js HTTP, postgres.js, one SQL batch worker and CPU pricing",
+            "rust-cpu-batch": "Rust axum, sqlx, one SQL batch worker and serial CPU pricing",
+            "rust-cpu-parallel": "Rust axum, sqlx, one SQL batch worker and four Rayon pricing workers",
+            "rust-gpu-batch": "Rust axum, sqlx, one SQL batch worker, CUDA one thread/cart; fresh transfers",
+            "rust-gpu-cooperative": "Rust axum, sqlx, one SQL batch worker, CUDA one 32-thread warp/cart; fresh transfers",
+        },
+        "scenarios": {f"lines_{n}": f"GET /carts/{{id}}/total: {n:,} lines/cart, 4,096 carts ({n*4096:,} line rows)" for n in [32,128,512,2048]},
+    },
 ]
 
 FIELDS = ["rps", "rps_stdev", "p50_ms", "p90_ms", "p99_ms", "errors", "rss_peak_mb", "cpu_peak_pct"]
@@ -93,15 +135,17 @@ def last_change(path):
 
 
 def load(app):
-    path = HERE / app["id"] / "bench/results/summary.csv"
+    results = app.get("results", "bench/results")
+    directory = app.get("directory", app["id"])
+    path = HERE / directory / results / "summary.csv"
     # Later configured runs replace the same implementation/scenario/client
     # point. Appending duplicates left .find() rendering the stale first row.
     points = {}
     for summary in ["summary.csv", *app.get("summaries", [])]:
         summary_path = path.parent / summary
-        date = re.search(r"\d{4}-\d{2}-\d{2}", summary)
+        date = re.search(r"\d{4}-\d{2}-\d{2}", str(summary_path))
         measured = date.group() if date else last_change(summary_path)
-        source = f"{REPO.replace('/tree/', '/blob/')}/{app['id']}/bench/results/{summary}"
+        source = f"{REPO.replace('/tree/', '/blob/')}/{directory}/{results}/{summary}"
         seen = set()
         with summary_path.open() as f:
             for r in csv.DictReader(f):
@@ -111,7 +155,8 @@ def load(app):
                 seen.add(key)
                 points[key] = {"impl": key[0], "scenario": key[1], "concurrency": key[2],
                                "reps": int(r["reps"]), "measured": measured, "source": source,
-                               **{k: round(float(r[k]), 3) for k in FIELDS}}
+                               **{k: round(float(r[k]), 3) for k in FIELDS},
+                               **{k: round(float(r[k]), 6 if k.endswith("_ms_per_batch") else 3) for k in ("mean_batch", "mean_queue_wait_ms", "sql_queries", "gpu_launches", "lines", "carts", "sql_fetch_ms_per_batch", "pack_ms_per_batch", "compute_ms_per_batch") if r.get(k) not in (None, "")}}
     rows = list(points.values())
     dates = sorted({r["measured"] for r in rows if r["measured"]})
     impls = list(dict.fromkeys(r["impl"] for r in rows))
@@ -119,7 +164,8 @@ def load(app):
     scenarios = [s for s in app["scenarios"] if any(r["scenario"] == s for r in rows)]
     return {
         "id": app["id"], "title": app["title"], "upstream": app["upstream"], "about": app["about"],
-        "seed": app["seed"], "source": f"{REPO}/{app['id']}",
+        "seed": app["seed"], "source": f"{REPO}/{directory}",
+        **{k: app[k] for k in ("nav_title", "diagnostic_url") if k in app},
         "measured": "–".join(dict.fromkeys([dates[0], dates[-1]])) if dates else None,
         "measurement_note": app.get("measurement_note", ""),
         "impls": [{"id": i, "stack": app.get("stacks", {}).get(i) or STACKS.get(i, ""), "h5i": i in H5I} for i in impls],
@@ -131,7 +177,20 @@ def load(app):
 
 def main():
     out = Path(sys.argv[1]) if len(sys.argv) > 1 else HERE.parent / "docs/performance/data.json"
-    data = {"apps": [load(a) for a in APPS]}
+    cart = HERE / "django-cart/bench/results/2026-10-19-scale-soa/summary.json"
+    resident = HERE / "django-cart/resident/results/2026-10-19/summary.json"
+    resident_scale = HERE / "django-cart/resident/scale/results/2026-10-19/summary.json"
+    resident_phases = HERE / "django-cart/resident/scale/profile/results/2026-10-20/summary.json"
+    resident_transport = HERE / "django-cart/resident/scale/transport/results/2026-10-20/summary.json"
+    resident_languages = HERE / "django-cart/resident/languages/results/2026-10-20/summary.json"
+    resident_contended = HERE / "django-cart/resident/languages/results/2026-10-20-contended/summary.json"
+    data = {"apps": [load(a) for a in APPS], "cart_pricing": json.loads(cart.read_text()),
+            "cart_resident": json.loads(resident.read_text()),
+            "cart_resident_scale": json.loads(resident_scale.read_text()),
+            "cart_update_phases": json.loads(resident_phases.read_text()),
+            "cart_update_transport": json.loads(resident_transport.read_text()),
+            "cart_resident_languages": json.loads(resident_languages.read_text()),
+            "cart_resident_languages_contended": json.loads(resident_contended.read_text())}
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(data, indent=1) + "\n")
     print(f"wrote {out}")

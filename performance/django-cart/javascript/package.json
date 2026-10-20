@@ -1,0 +1,8 @@
+{
+  "name": "django-cart-query-bench",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "postgres": "3.4.9"
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "utc": "2026-10-20T00:56:12Z",
+  "command": [
+    "taskset",
+    "-c",
+    "64-67",
+    "/var/tmp/h5i-gpu-target/release/examples/resident_scale",
+    "/var/tmp/h5i-gpu-target/nvptx64-nvidia-cuda/release/django_cart_resident_device.ptx",
+    "/var/tmp/cart-lines-oracle.json",
+    "/home/ht2673/Dev/h5i-app-bench/performance/django-cart/resident/scale/results/2026-10-19/conformance.json"
+  ],
+  "cpu_affinity": [
+    64,
+    65,
+    66,
+    67
+  ],
+  "source_sha256": {
+    "resident/scale/run.py": "3ad17745a6fb3371aeecf8180249fb7b5378a174dd983dde29fa754d1bda0ecb",
+    "resident/scale/summarize.py": "83c2e6bccf783876000dc74f9e56f06d8c2aac028319591cf123c4e23c8ad39f",
+    "resident/scale/build.sh": "499ef7bc232559f87d32f1ebf577f7bb6b908bb10ca34621b684c268705b67ca",
+    "rust-h5i-gpu/backend-nvvm/examples/resident_scale.rs": "02404d7854b0cc050f207062693822c771c3280dbddb559196c4d3262df2b99a",
+    "rust-h5i-gpu/backend-nvvm/resident-device/src/lib.rs": "5cb52cdcd8631bca736d106088c34a3db882003799a345f8a656b34f3a88d7a5",
+    "rust-h5i-gpu/backend-nvvm/Cargo.toml": "f88f2b4f38344fc516f6fdcb252996493b233b86ded1e58c10ab25e8b012f7fe",
+    "rust-h5i-gpu/backend-nvvm/Cargo.lock": "c0f1f37aa5d9b29a293f2388f6eca0b6481804dd6b5fd57b948640db76f5bd68",
+    "rust-h5i-gpu/src/pricing.rs": "580ea1b6838a0f5b8e7a588f2aabadcf202519ced8fc4c3199046e3189f6a79e",
+    "rust-h5i-gpu/src/wide.rs": "c4863650393c3ab37b8fb667b9919b72774ce164e4ac127b7da67c141bf82745"
+  },
+  "artifact_sha256": {
+    "/var/tmp/h5i-gpu-target/release/examples/resident_scale": "f9ccb618c3537306d66905f9e99f61cd4c6eb8e0512d3fdf3597bc9b8254b9e0",
+    "/var/tmp/h5i-gpu-target/nvptx64-nvidia-cuda/release/django_cart_resident_device.ptx": "a81b379b6215a0c14535e1e906921f818e400e0ac2e9c31e72c238135abebea4"
+  },
+  "oracle_sha256": "6317a833f754e71ac5c964f8cd1cebda8ab2394b650e53919e09d4bedaf429f1",
+  "upstream_commit": "6b3daa26842c978b9520d479c4d33e3620e731a2",
+  "versions": {
+    "go": "go version go1.27.2 linux/amd64",
+    "node": "v24.21.0",
+    "k6": "k6 v2.3.0 (commit/e088784614, go1.26.8, linux/amd64)",
+    "gpu": "Mon Oct 19 18:15:35 2026       \n+-----------------------------------------------------------------------------------------+\n| NVIDIA-SMI 560.35.03              Driver Version: 560.35.03      CUDA Version: 12.6     |\n|-----------------------------------------+------------------------+----------------------+\n| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |\n| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |\n|                                         |                        |               MIG M. |\n|=========================================+========================+======================|\n|   0  NVIDIA GeForce RTX 3090        Off |   00000000:01:00.0 Off |                  N/A |\n| 32%   33C    P8             23W /  350W |       2MiB /  24576MiB |      0%      Default |\n|                                         |                        |                  N/A |\n+-----------------------------------------+------------------------+----------------------+\n|   1  NVIDIA GeForce RTX 3090        Off |   00000000:25:00.0 Off |                  N/A |\n| 30%   29C    P8             21W /  350W |       2MiB /  24576MiB |      0%      Default |\n|                                         |                        |                  N/A |\n+-----------------------------------------+------------------------+----------------------+\n|   2  NVIDIA GeForce RTX 3090        Off |   00000000:C1:00.0 Off |                  N/A |\n| 30%   27C    P8             17W /  350W |       2MiB /  24576MiB |      0%      Default |\n|                                         |                        |                  N/A |\n+-----------------------------------------+------------------------+----------------------+\n|   3  NVIDIA GeForce RTX 3090        Off |   00000000:E1:00.0 Off |                  N/A |\n| 30%   25C    P8             27W /  350W |       2MiB /  24576MiB |      0%      Default |\n|                                         |                        |                  N/A |\n+-----------------------------------------+------------------------+----------------------+\n                                                                                         \n+-----------------------------------------------------------------------------------------+\n| Processes:                                                                              |\n|  GPU   GI   CI        PID   Type   Process name                              GPU Memory |\n|        ID   ID                                                               Usage      |\n|=========================================================================================|\n|  No running processes found                                                             |\n+-----------------------------------------------------------------------------------------+",
+    "cpu": "Architecture:                            x86_64\nCPU op-mode(s):                          32-bit, 64-bit\nAddress sizes:                           43 bits physical, 48 bits virtual\nByte Order:                              Little Endian\nCPU(s):                                  128\nOn-line CPU(s) list:                     0-127\nVendor ID:                               AuthenticAMD\nModel name:                              AMD EPYC 7502 32-Core Processor\nCPU family:                              23\nModel:                                   49\nThread(s) per core:                      2\nCore(s) per socket:                      32\nSocket(s):                               2\nStepping:                                0\nFrequency boost:                         enabled\nCPU(s) scaling MHz:                      63%\nCPU max MHz:                             2500.0000\nCPU min MHz:                             1500.0000\nBogoMIPS:                                5000.17\nFlags:                                   fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl nonstop_tsc cpuid extd_apicid aperfmperf rapl pni pclmulqdq monitor ssse3 fma cx16 sse4_1 sse4_2 movbe popcnt aes xsave avx f16c rdrand lahf_lm cmp_legacy svm extapic cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw ibs skinit wdt tce topoext perfctr_core perfctr_nb bpext perfctr_llc mwaitx cpb cat_l3 cdp_l3 hw_pstate ssbd mba ibrs ibpb stibp vmmcall fsgsbase bmi1 avx2 smep bmi2 cqm rdt_a rdseed adx smap clflushopt clwb sha_ni xsaveopt xsavec xgetbv1 xsaves cqm_llc cqm_occup_llc cqm_mbm_total cqm_mbm_local clzero irperf xsaveerptr rdpru wbnoinvd amd_ppin arat npt lbrv svm_lock nrip_save tsc_scale vmcb_clean flushbyasid decodeassists pausefilter pfthreshold avic v_vmsave_vmload vgif v_spec_ctrl umip rdpid overflow_recov succor smca sev sev_es ibpb_exit_to_user\nVirtualization:                          AMD-V\nL1d cache:                               2 MiB (64 instances)\nL1i cache:                               2 MiB (64 instances)\nL2 cache:                                32 MiB (64 instances)\nL3 cache:                                256 MiB (16 instances)\nNUMA node(s):                            2\nNUMA node0 CPU(s):                       0-31,64-95\nNUMA node1 CPU(s):                       32-63,96-127\nVulnerability Gather data sampling:      Not affected\nVulnerability Indirect target selection: Not affected\nVulnerability Itlb multihit:             Not affected\nVulnerability L1tf:                      Not affected\nVulnerability Mds:                       Not affected\nVulnerability Meltdown:                  Not affected\nVulnerability Mmio stale data:           Not affected\nVulnerability Reg file data sampling:    Not affected\nVulnerability Retbleed:                  Mitigation; untrained return thunk; SMT enabled with STIBP protection\nVulnerability Spec rstack overflow:      Mitigation; Safe RET\nVulnerability Spec store bypass:         Mitigation; Speculative Store Bypass disabled via prctl\nVulnerability Spectre v1:                Mitigation; usercopy/swapgs barriers and __user pointer sanitization\nVulnerability Spectre v2:                Mitigation; Retpolines; IBPB conditional; STIBP always-on; RSB filling; PBRSB-eIBRS Not affected; BHI Not affected\nVulnerability Srbds:                     Not affected\nVulnerability Tsa:                       Not affected\nVulnerability Tsx async abort:           Not affected\nVulnerability Vmscape:                   Mitigation; IBPB before exit to userspace"
+  },
+  "gpu_at_start": "index, name, uuid, driver_version, temperature.gpu\n0, NVIDIA GeForce RTX 3090, GPU-f7fa9ce0-9cfe-2fff-f510-55947bd13861, 560.35.03, 29\n1, NVIDIA GeForce RTX 3090, GPU-be4af521-9ead-98f3-b71c-82ce2ea6bf14, 560.35.03, 28\n2, NVIDIA GeForce RTX 3090, GPU-f06007a2-63c3-f729-b988-980a8e97d561, 560.35.03, 27\n3, NVIDIA GeForce RTX 3090, GPU-b18f0085-4cdb-2b30-f099-5530e61ac096, 560.35.03, 25\n",
+  "config": {
+    "populations": [
+      4096,
+      16384,
+      65536
+    ],
+    "lines": [
+      512,
+      2048
+    ],
+    "update_factors": [
+      1,
+      16,
+      64
+    ],
+    "repeats": 3,
+    "iterations": 50,
+    "warmup": 8,
+    "smoke": false
+  },
+  "note": "All population carts queried; same normalized updates and complete outputs on CPU/GPU. Includes single/four-thread grouped CPU delta, original CPU delta, one/four-thread scans, GPU scan/delta. GPU command upload and complete download included. No HTTP/database/CDC; initial placement separate. Shared host, uncontrolled clocks/NUMA/cache."
+}
