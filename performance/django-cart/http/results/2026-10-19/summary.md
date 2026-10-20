@@ -75,4 +75,4 @@ HTTP → queue → fresh PostgreSQL rows → CPU/CUDA → JSON. No GPU input res
 | 65536 | 256 | javascript-batch | 8967 ± 134 | 54.643 | 100.19 | 10.069 | 450 | 0 |
 | 65536 | 256 | rust-gpu-single | 782 ± 10 | 337.964 | 1.00 | 312.874 | 4171 | 4171 |
 
-Latency percentiles and counters are means across repetitions. Mean batch is requests / SQL calls per repetition; includes duplicate-ID coalescing. Counts reflect the entire measured k6 run, including completion after the duration. RPS uses k6 elapsed time. CPU peak and RSS cover only the server process; PostgreSQL has a separate four-core allocation. See [method and limitations](../../README.md), [raw points](points.csv), [correctness](conformance.json) and [environment](environment.json).
+Latency percentiles and counters are means across repetitions. Mean batch is requests / SQL calls per repetition; includes duplicate-ID coalescing. Counts reflect the entire measured k6 run, including completion after the duration. RPS uses k6 elapsed time. CPU peak and RSS cover only the server process; PostgreSQL has a separate four-core allocation. See [method and limitations](../../README.md).

@@ -4,9 +4,8 @@ This evaluates input-path changes identified by the [phase diagnostic](../profil
 using the same changing canonical command trace and independent full-rescan oracle.
 The previous measured sources, binaries, PTX and result directories remain intact.
 
-[Dashboard](../../../../../docs/performance/index.html#cart-update-transport) ·
-[All measurements](results/2026-10-20/summary.md) ·
-[Every round](results/2026-10-20/rounds.csv)
+[Dashboard](../../../../../docs/performance/index.html#cart-update-transport)
+[All measurements](results/2026-10-20/summary.md)
 
 ## Findings
 

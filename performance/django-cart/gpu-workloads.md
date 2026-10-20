@@ -60,7 +60,7 @@ Median repetition means for 262,144 carts × 32 lines, in milliseconds:
 | GPU with input upload on every iteration | 149.375756 |
 | Initial resident-input preparation/upload, separately recorded | 151.553882 |
 
-See the [raw snapshot points](bench/results/2026-10-19-scale-soa/points.csv)
+See the [snapshot summary](bench/results/2026-10-19-scale-soa/summary.md)
 and [method](README.md#measurement). These are calculation measurements, not
 HTTP times. The resident path is 4.65× faster than the measured 16-thread CPU
 path. Fresh transfer eliminates that advantage. Residency excludes initial

@@ -84,4 +84,4 @@ Scan compares the fastest measured one/four-worker CPU full rescan with GPU full
 - This experiment starts from a normalized in-process event stream. It does not measure database commit, CDC delivery, durable recovery, cross-process cache coherence or HTTP queueing. It establishes immediate visibility only within this single process. Adding those costs may change the result.
 - CPU and GPU each use CPUs 64–67, GPU device 0 (RTX 3090). Variant order rotates and reverses across repetitions; workload order is fixed. Shared host activity, clocks, NUMA placement and cache effects are uncontrolled. Data is repeatedly accessed, but query IDs and event values change. Short rounds are sensitive to timer/launch overhead.
 
-[Method and reproduction](../../README.md) · [Per-repetition CSV](points.csv) · [Summary CSV](summary.csv) · [Upstream conformance](conformance.json) · [Environment and hashes](environment.json)
+[Method and reproduction](../../README.md) · [Summary CSV](summary.csv)

@@ -113,4 +113,4 @@ The scalar GPU launches at most two 128-thread blocks at the configured 256-requ
 
 Native SQL uses 16 connections; each batched variant has one active SQL worker. Every server, PostgreSQL and k6 receives four CPU cores on the same shared host. Rust parallel uses four Rayon workers within the same server CPU allocation. Warm database conditions, uncontrolled clocks/NUMA and short runs limit generalization.
 
-[GPU placement diagnostic](placement.md) · [Method and reproduction](../../README.md) · [Per-repetition CSV](points.csv) · [Correctness](conformance.json) · [Environment and source hashes](environment.json)
+[GPU placement diagnostic](placement.md) · [Method and reproduction](../../README.md)

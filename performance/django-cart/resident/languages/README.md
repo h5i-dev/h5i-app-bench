@@ -4,9 +4,8 @@ Independent Go, JavaScript and Python implementations now share the resident
 update workload with Rust and CUDA. This is a calculation/update batch benchmark,
 not a Django, HTTP, SQL or language-wide throughput score.
 
-[Dashboard](../../../../docs/performance/index.html#cart-resident-languages) ·
-[All timings](results/2026-10-20/summary.md) ·
-[Every new CPU round](results/2026-10-20/rounds-cpu.csv)
+[Dashboard](../../../../docs/performance/index.html#cart-resident-languages)
+[All timings](results/2026-10-20/summary.md)
 
 ## Findings
 
@@ -41,7 +40,7 @@ explicitly contended diagnostic is reported separately below.
 ## GPU availability and reference policy
 
 External vLLM jobs occupied all four GPUs at 100% utilization during the new CPU
-measurements. Read-only [process inspection](results/2026-10-20/gpu-contention.txt)
+measurements. Read-only process inspection
 confirmed these were another user's vLLM generation workers, not abandoned cart
 benchmark processes. Initial contended GPU trials were discarded. A subsequent deliberate diagnostic
 rerun is retained separately, without replacing the baseline timings. The dashboard explicitly
@@ -83,9 +82,7 @@ processes were captured before and after each repetition. The effect of
 contention differs by shape; these measurements do not identify a particular
 scheduling or transfer component as the cause.
 
-[Rerun mean ± SD and raw evidence](results/2026-10-20-contended/summary.md) ·
-[Environment and utilization snapshots](results/2026-10-20-contended/environment.json) ·
-[Diagnostic runner](../measure_contended_languages.py)
+[Rerun mean ± SD](results/2026-10-20-contended/summary.md) · [Diagnostic runner](../measure_contended_languages.py)
 
 ## Common input and output
 

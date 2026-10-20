@@ -6,9 +6,8 @@ example copies its generator, independent full-rescan oracle, CPU paths and
 GPU calls, and reuses the same resident PTX. This is a synchronous Rust
 calculation diagnostic, excluding SQL/HTTP, CDC and durable cache coherence.
 
-[Dashboard](../../../../../docs/performance/index.html#cart-update-phases) ·
-[All phase measurements](results/2026-10-20/summary.md) ·
-[Every round](results/2026-10-20/rounds.csv)
+[Dashboard](../../../../../docs/performance/index.html#cart-update-phases)
+[All phase measurements](results/2026-10-20/summary.md)
 
 ## Findings
 

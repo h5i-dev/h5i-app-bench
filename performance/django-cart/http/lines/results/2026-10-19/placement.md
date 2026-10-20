@@ -28,4 +28,4 @@ CPU means use six repetition means (three alongside each GPU layout); GPU column
 
 These batches cover low-load batches (~8 carts), the larger observed batches (~128), and the configured 256-request maximum. They are synthetic full carts, not a replay of the precise HTTP batch membership. Frozen, repeatedly accessed host input has different cache conditions from decoded SQL rows. Layout and method order are fixed; clocks, NUMA and shared-host activity are uncontrolled. Buffer reuse is measured as a diagnostic and has not been integrated into the HTTP implementation. The resident case does not measure update propagation or residency maintenance.
 
-[Per-repetition CSV](placement.csv) · [Environment and hashes](placement-environment.json) · [HTTP results](summary.md) · [Method](../../README.md)
+[HTTP results](summary.md) · [Method](../../README.md)

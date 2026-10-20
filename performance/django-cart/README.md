@@ -141,11 +141,11 @@ packing, cost and power are excluded. `upload_ms` records the initial upload
 separately. Measurements run in the fixed order CPU 1, CPU 16, resident GPU,
 upload-each GPU on a shared host; clocks and NUMA placement are uncontrolled.
 
-See [the SoA results](bench/results/2026-10-19-scale-soa/summary.md),
-[original row-layout scaling](bench/results/2026-10-19-scale/summary.md), and
-[host conditions](bench/results/2026-10-19-scale-soa/environment.txt).
-Each directory contains `points.csv` (Rust/GPU), `go.csv`, `javascript.csv`,
-`summary.json` (medians and measured ranges) and `summary.md`. The summarizer
+See [the SoA results](bench/results/2026-10-19-scale-soa/summary.md)
+and [original row-layout scaling](bench/results/2026-10-19-scale/summary.md).
+Only aggregate summaries (`summary.json`, `summary.csv`, `summary.md`) and the
+placement report are committed. Raw samples, logs, environment dumps and
+validation output stay local and are ignored by Git. The summarizer
 rejects incomplete grids, duplicate points and cross-language checksum or
 iteration mismatches. Each repetition validates its full last result vector;
 checksums additionally check that the languages use matching generated data.

@@ -33,4 +33,4 @@ CPU/GPU ratios include the fastest measured implementation on each side, includi
 - Initial allocation/copy/upload/subtotal setup is separately recorded as init_ms; generation, CUDA context/module loading, trace validation and oracle comparisons are excluded. The update/query means do not amortize startup or rebuilds.
 - No HTTP, database commit, CDC delivery, durable recovery, concurrent writers, insertion/deletion, retries or cross-process coherence. This tests line-price/quantity replacement under the existing total contract. Go/JavaScript are not measured in this resident sweep. These are measured implementations, not optimal CPU/GPU bounds.
 
-[Method](../../README.md) · [All implementation timings](summary.csv) · [Raw repetitions](points.csv) · [Upstream checks](conformance.json) · [Environment/hashes](environment.json)
+[Method](../../README.md) · [All implementation timings](summary.csv)
