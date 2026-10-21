@@ -556,3 +556,7 @@ details.data-table td.scope { color: var(--faint); font-size: 12px; max-width: 6
 }
 #apps > section { padding: 44px var(--gut) 50px; border-bottom: 1px solid var(--line2); }
 @media (max-width: 900px) { #apps > section { padding: 34px var(--gut) 40px; } }
+
+/* Cart batch comparisons share the application chart layout. */
+.batch-bars .bar-label { flex-basis: 100px; }
+.batch-bars .sub { display: block; color: var(--faint); font: 11.5px var(--sans); }

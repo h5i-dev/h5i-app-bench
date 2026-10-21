@@ -111,6 +111,25 @@ function rerender() {
   for (const app of DATA.apps) $(`.app-body[data-app="${app.id}"]`).innerHTML = renderApp(app);
 }
 
+// Batch latency uses the shared bar layout; shorter bars mean less time.
+function batchBars(entries, unit = "µs") {
+  const maximum = Math.max(...entries.map((e) => e.time));
+  const minimum = Math.min(...entries.map((e) => e.time));
+  const body = entries.map((e) => `<tr><th scope="row"><span class="impl">${esc(e.label)}</span>${e.reference ? '<span class="sub">Prior GPU reference</span>' : ""}</th><td><div class="bar-row" title="${esc(e.label)}: ${num(e.time, 3)} ${unit}/batch${e.reference ? ' · prior run reference' : ''}"><div class="bar-track" aria-hidden="true"><div class="bar-fill${e.time === minimum ? "" : " other"}" style="width:${(e.time / maximum * 100).toFixed(2)}%"></div></div><span class="bar-label">${num(e.time, 3)}</span></div></td></tr>`).join("");
+  return `<h3 class="sub-head">Time per batch</h3><div class="table-wrap"><table class="perf-bars batch-bars" style="--perf-columns:1"><caption>${unit}/batch · lower is faster; shorter bars mean less time. Accent marks the lowest displayed time.</caption><thead><tr><th scope="col">Implementation</th><th scope="col">${unit}/batch</th></tr></thead><tbody>${body}</tbody></table></div>`;
+}
+
+function revealHashTarget() {
+  const target = document.getElementById(location.hash.slice(1));
+  if (!target) return;
+  let parent = target.parentElement;
+  while (parent) {
+    if (parent.tagName === "DETAILS") parent.open = true;
+    parent = parent.parentElement;
+  }
+  target.scrollIntoView();
+}
+
 function renderCart() {
   const data = DATA.cart_pricing;
   const lines = Number($("#cart-lines").value);
@@ -118,13 +137,14 @@ function renderCart() {
   const labels = {rust1: "Rust 1T", rust16: "Rust 16T", go: "Go 1T", javascript: "Node 1T", resident: "GPU resident", upload_each: "GPU upload"};
   const body = data.points.filter((p) => p.lines === lines).map((p) => {
     const bestCPU = Math.min(...["rust1", "rust16", "go", "javascript"].map((i) => p.ms[i]));
+    const fastest = Math.min(...impls.map(([id]) => p.ms[id]));
     const cells = impls.map(([id]) => {
       const range = p.range_ms[id];
-      return `<td class="num" title="Repetition means: ${num(range[0], 6)}–${num(range[1], 6)} ms">${num(p.ms[id], 6)}</td>`;
+      return `<td class="num ov-cell${p.ms[id] === fastest ? " best" : ""}" style="--f:${(fastest / p.ms[id]).toFixed(3)}" title="Repetition means: ${num(range[0], 6)}–${num(range[1], 6)} ms"><span class="ov-bar" aria-hidden="true"></span><span class="ov-val">${num(p.ms[id], 6)}</span></td>`;
     }).join("");
     return `<tr><th scope="row">${num(p.carts)}</th>${cells}<td class="num">${num(bestCPU / p.ms.resident, 2)}×</td></tr>`;
   }).join("");
-  $("#cart-results").innerHTML = `<table class="perf-detail"><caption>${esc(data.measured)} · best CPU / resident uses the fastest measured CPU implementation for each row.</caption><thead><tr><th scope="col">Carts</th>${impls.map(([id, name]) => `<th scope="col" class="num" title="${esc(name)}">${esc(labels[id])} ms</th>`).join("")}<th scope="col" class="num" title="Fastest measured CPU / GPU resident">CPU/GPU</th></tr></thead><tbody>${body}</tbody></table>`;
+  $("#cart-results").innerHTML = `<table class="perf-matrix" style="--perf-columns:${impls.length + 1}"><caption>${esc(data.measured)} · milliseconds/batch, lower is faster. Longer cell bars indicate faster calculation; accent marks the fastest. Best CPU / resident uses the fastest measured CPU implementation for each row.</caption><thead><tr><th scope="col">Carts</th>${impls.map(([id, name]) => `<th scope="col" class="num" title="${esc(name)}">${esc(labels[id])} ms</th>`).join("")}<th scope="col" class="num" title="Fastest measured CPU / GPU resident">CPU/GPU</th></tr></thead><tbody>${body}</tbody></table>`;
 }
 
 function renderResident() {
@@ -142,7 +162,7 @@ function renderResident() {
     const r = timing[impl];
     return `<tr><th scope="row">${esc(labels[impl])}</th><td class="num">${num(r.mean_us, 3)} ± ${num(r.stdev_us, 3)}</td><td class="num">${num(r.p50_us, 3)}</td><td class="num">${num(r.p99_us, 3)}</td><td class="num">${num(r.init_ms, 3)}</td></tr>`;
   }).join("");
-  $("#resident-results").innerHTML = `<p class="caption">${num(lines)} lines/cart · ${num(queries)} queries · ${num(point.updates)} replacements/batch. Full-rescan CPU/GPU: <strong>${num(scanRatio, 2)}×</strong>. Best CPU/GPU including incremental totals on both: <strong>${num(bestRatio, 2)}×</strong>. Above 1 favors GPU. ${num(data.checked_totals)} exact totals checked across the complete experiment.</p><div class="table-wrap"><table class="perf-detail"><thead><tr><th scope="col">Backend</th><th scope="col" class="num">µs/batch ± stdev</th><th scope="col" class="num">p50 µs</th><th scope="col" class="num">p99 µs</th><th scope="col" class="num">Initial placement ms</th></tr></thead><tbody>${body}</tbody></table></div>`;
+  $("#resident-results").innerHTML = `<p class="caption">${num(lines)} lines/cart · ${num(queries)} queries · ${num(point.updates)} replacements/batch. Full-rescan CPU/GPU: <strong>${num(scanRatio, 2)}×</strong>. Best CPU/GPU including incremental totals on both: <strong>${num(bestRatio, 2)}×</strong>. Above 1 favors GPU. ${num(data.checked_totals)} exact totals checked across the complete experiment.</p>${batchBars(data.implementations.map((impl) => ({label: labels[impl], time: timing[impl].mean_us})))}<h3 class="sub-head">Timing details</h3><div class="table-wrap"><table class="perf-detail"><thead><tr><th scope="col">Backend</th><th scope="col" class="num">µs/batch ± stdev</th><th scope="col" class="num">p50 µs</th><th scope="col" class="num">p99 µs</th><th scope="col" class="num">Initial placement ms</th></tr></thead><tbody>${body}</tbody></table></div>`;
 }
 
 function renderResidentScale() {
@@ -159,7 +179,7 @@ function renderResidentScale() {
     const t = point.timings[impl];
     return `<tr><th scope="row">${esc(labels[impl])}</th><td class="num">${num(t.mean_us, 3)} ± ${num(t.stdev_us, 3)}</td><td class="num">${num(t.p50_us, 3)}</td><td class="num">${num(t.p99_us, 3)}</td><td class="num">${num(t.init_ms, 3)}</td></tr>`;
   }).join("");
-  $("#scale-results").innerHTML = `<p class="caption">${num(carts)} queried carts × ${num(lines)} lines · ${num(point.updates)} replacements/batch. Best CPU/GPU: <strong>${num(point.ratio, 2)}×</strong> (${esc(labels[point.best_cpu])} / ${esc(labels[point.best_gpu])}). ${num(data.checked_totals)} exact totals checked across this sweep.</p><div class="table-wrap"><table class="perf-detail"><thead><tr><th scope="col">Backend</th><th scope="col" class="num">µs/batch ± stdev</th><th scope="col" class="num">p50 µs</th><th scope="col" class="num">p99 µs</th><th scope="col" class="num">Initial placement ms</th></tr></thead><tbody>${body}</tbody></table></div>`;
+  $("#scale-results").innerHTML = `<p class="caption">${num(carts)} queried carts × ${num(lines)} lines · ${num(point.updates)} replacements/batch. Best CPU/GPU: <strong>${num(point.ratio, 2)}×</strong> (${esc(labels[point.best_cpu])} / ${esc(labels[point.best_gpu])}). ${num(data.checked_totals)} exact totals checked across this sweep.</p>${batchBars(data.implementations.map((impl) => ({label: labels[impl], time: point.timings[impl].mean_us})))}<h3 class="sub-head">Timing details</h3><div class="table-wrap"><table class="perf-detail"><thead><tr><th scope="col">Backend</th><th scope="col" class="num">µs/batch ± stdev</th><th scope="col" class="num">p50 µs</th><th scope="col" class="num">p99 µs</th><th scope="col" class="num">Initial placement ms</th></tr></thead><tbody>${body}</tbody></table></div>`;
 }
 
 function renderUpdatePhases() {
@@ -205,7 +225,7 @@ function renderResidentLanguages() {
   const rows = p.timings.map((t) => `<tr><th scope="row">${esc(labels[t.variant] + (t.historical ? " · prior run" : ""))}</th><td class="num">${num(t.mean_us, 3)} ± ${num(t.stdev_us, 3)}</td><td class="num">${t.variant.startsWith("gpu") ? "—" : `${num(t.mean_us / gpu, 2)}×`}</td></tr>`).join("");
   const reference = data.historical_gpu;
   const note = reference ? `CPU measurements are new; GPU values are prior-run references (${esc(data.gpu_reference_utc)}). External vLLM jobs occupied all GPUs; a new contended GPU rerun is reported separately below. These ratios are references, not contemporary measured speedups. ` : "";
-  $("#language-results").innerHTML = `<p class="caption">${note}Fastest measured CPU: <strong>${esc(labels[p.best_cpu])}</strong>. ${reference ? "Prior" : "Fastest"} GPU: <strong>${esc(labels[p.best_gpu])}</strong>. ${reference ? "Reference CPU / prior GPU" : "Fastest CPU / GPU"}: <strong>${num(p.ratio, 2)}×</strong>. Ratios above 1 favor GPU. ${num(data.checked_totals)} exact totals checked across ${num(data.rounds)} new ${reference ? "CPU " : ""}changing rounds, plus 808 upstream cases per implementation.</p><div class="table-wrap"><table class="perf-detail"><thead><tr><th scope="col">Implementation</th><th scope="col">Total µs/batch ± SD</th><th scope="col">CPU / ${reference ? "prior GPU (reference)" : "fastest GPU"}</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+  $("#language-results").innerHTML = `<p class="caption">${note}Fastest measured CPU: <strong>${esc(labels[p.best_cpu])}</strong>. ${reference ? "Prior" : "Fastest"} GPU: <strong>${esc(labels[p.best_gpu])}</strong>. ${reference ? "Reference CPU / prior GPU" : "Fastest CPU / GPU"}: <strong>${num(p.ratio, 2)}×</strong>. Ratios above 1 favor GPU. ${num(data.checked_totals)} exact totals checked across ${num(data.rounds)} new ${reference ? "CPU " : ""}changing rounds, plus 808 upstream cases per implementation.</p>${batchBars(p.timings.map((t) => ({label: labels[t.variant], time: t.mean_us, reference: t.historical})))}<h3 class="sub-head">Timing details</h3><div class="table-wrap"><table class="perf-detail"><thead><tr><th scope="col">Implementation</th><th scope="col">Total µs/batch ± SD</th><th scope="col">CPU / ${reference ? "prior GPU (reference)" : "fastest GPU"}</th></tr></thead><tbody>${rows}</tbody></table></div>`;
   const current = DATA.cart_resident_languages_contended.points.find((t) => t.carts === p.carts && t.lines === p.lines && t.factor === p.factor);
   $("#language-contended").innerHTML = `<p class="caption"><strong>New GPU measurement under external contention:</strong> ${esc(labels[current.variant])}: <strong>${num(current.mean_us, 3)} ± ${num(current.stdev_us, 3)} µs/batch</strong>, ${num(current.slowdown_vs_prior, 2)}× the prior GPU time. GPU 0 was shared with external vLLM processing. Three repetitions, identical input and complete results; this is a contended diagnostic, not an isolated CPU/GPU speedup. <a href="https://github.com/h5i-dev/h5i-app-bench/blob/main/performance/django-cart/resident/languages/results/2026-10-20-contended/summary.md">Rerun details and evidence</a>.</p>`;
 
@@ -243,6 +263,9 @@ async function main() {
   for (const id of ["#resident-lines", "#resident-queries", "#resident-updates"]) $(id).addEventListener("input", renderResident);
   renderResidentScale();
   for (const id of ["#scale-lines", "#scale-carts", "#scale-factor"]) $(id).addEventListener("input", renderResidentScale);
+
+  window.addEventListener("hashchange", revealHashTarget);
+  revealHashTarget();
 
   document.addEventListener("click", (e) => {
     const t = e.target.closest("[data-app][data-scenario]");
