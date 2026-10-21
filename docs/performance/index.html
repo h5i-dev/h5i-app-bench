@@ -43,8 +43,6 @@
         <a href="#gpu-search">GPU search</a>
         <a href="#gpu-conduit">GPU policies</a>
         <a href="#gpu-cart">GPU carts</a>
-        <a href="#cart-resident">Cart updates</a>
-        <a href="#cart-resident-scale">Cart bulk updates</a>
         <a href="#cart-resident-languages">Cart languages</a>
         <a href="#method">Method</a>
       </nav>
@@ -73,100 +71,6 @@
       </section>
 
       <div id="apps"></div>
-
-      <section id="gpu-cart" class="block">
-        <div class="block-head">
-          <h2 class="term" data-n="+">GPU cart pricing</h2>
-          <p>django-cart 3.1.1 · 2026-10-19. Recalculate already-loaded cart snapshots.</p>
-        </div>
-        <p class="caption">Compare Rust, Go, Node.js and CUDA using identical cart snapshots. Select lines per cart to see how batch size changes the result. Milliseconds per complete batch, lower is faster; median of three repetition means. Hover over a timing for its measured range.</p>
-        <label>Lines/cart <select id="cart-lines"><option>1</option><option selected>8</option><option>32</option></select></label>
-        <div id="cart-results" class="table-wrap"></div>
-        <p class="caption">GPU resident reuses unchanged input; upload each transfers all snapshots every call. Both download all totals. A CPU could cache unchanged totals too; useful residency needs changing prices or discount scenarios, including synchronization costs. See <a href="https://github.com/h5i-dev/h5i-app-bench/blob/main/performance/django-cart/gpu-workloads.md">candidate workloads and evaluation requirements</a>. This is an offline calculation microbenchmark. For HTTP request coalescing and SQL query batching, see <a href="#django-cart">django-cart totals</a> and the <a href="#django-cart-lines">32–2,048 lines/cart comparison</a> above. Session handling, database aggregation and checkout transactions are excluded. This does not establish a speedup over a Django deployment.</p>
-        <details class="dev">
-          <summary>Run conditions and correctness</summary>
-          <ul class="limits">
-            <li>EPYC 7502, CPUs 64–79, RTX 3090 device 0, CUDA 12.6. Eight warmup passes; three repetitions, each averaging 100 iterations below 4,096 carts and 10 otherwise; shared host and uncontrolled clocks/NUMA placement.</li>
-            <li>GPU snapshots are transposed on upload for contiguous reads; upload-each timing includes that conversion. The same integer pricing source runs on CPU and CUDA using h5i's NVVM launch shell. CPU 16 uses persistent Rayon workers. GPU resident timing includes launch, synchronization, result allocation, download and error validation.</li>
-            <li>4,146 cases agree with the pinned upstream's Decimal methods; 49 exercise its ORM aggregate. Rust, Go, Node.js and CUDA agree with this corpus. CPU/GPU checks also cover malformed snapshots and batch boundaries. This pricing kernel has no Lean proof.</li>
-            <li>None, percentage and fixed discounts, final half-up rounding, default zero tax/shipping. Fixed-width snapshots reserve 32 lines; no mutations or live cache invalidation are measured.</li>
-          </ul>
-        </details>
-        <p class="caption"><a href="https://github.com/h5i-dev/h5i-app-bench/tree/main/performance/django-cart">Contract and reproduction</a> · <a href="https://github.com/h5i-dev/h5i-app-bench/blob/main/performance/django-cart/bench/results/2026-10-19-scale-soa/summary.md">All batch sizes</a> · <a href="https://github.com/bmentges/django-cart/tree/6b3daa26842c978b9520d479c4d33e3620e731a2">Upstream source</a></p>
-      </section>
-
-      <section id="cart-resident" class="block">
-        <div class="block-head">
-          <h2 class="term" data-n="+">Resident carts with updates</h2>
-          <p>CPU and GPU retain the same 4,096-cart population. Apply line replacements, then query current totals.</p>
-        </div>
-        <p class="caption">Microseconds per complete update-and-query batch, lower is faster. GPU includes command upload, mutation/query kernels, synchronization and full result download. CPU and GPU delta maintain subtotals and cached totals; this baseline matters because simple sums do not require full rescans. This is a calculation experiment: database commits, CDC, HTTP and cross-process coherence are excluded.</p>
-        <div class="filters">
-          <label class="field"><span>Lines/cart</span><select id="resident-lines"><option>32</option><option>128</option><option>512</option><option selected>2048</option></select></label>
-          <label class="field"><span>Queries/batch</span><select id="resident-queries"><option>8</option><option selected>128</option><option>256</option><option>4096</option></select></label>
-          <label class="field"><span>Replacements/batch</span><select id="resident-updates"><option value="none">None</option><option value="one" selected>One</option><option value="per-query">One per queried cart</option><option value="sixteen-per-query">Sixteen per queried cart</option></select></label>
-        </div>
-        <div id="resident-results"></div>
-        <p class="caption">These initial results use a single-thread CPU delta baseline. See <a href="#cart-resident-scale">larger cart update batches</a> for grouped single/four-thread CPU delta comparisons.</p>
-        <p class="caption">Three repetitions × 100 changing rounds after eight warmups. Every warmup and timed output is checked against a separate full-rescan state machine; the very next query must observe replacements. CPU delta is single-threaded; the four-worker CPU path rescans all lines. Parallel CPU delta is not part of this initial run. One/four CPU workers share CPUs 64–67; RTX 3090 device 0. Variant order rotates/reverses; clocks, NUMA, host activity and caches are uncontrolled. Initial placement is separate and includes subtotal initialization for both delta paths. p50/p99 are averaged iteration percentiles, not pooled HTTP percentiles.</p>
-        <p class="caption"><a href="https://github.com/h5i-dev/h5i-app-bench/blob/main/performance/django-cart/resident/README.md">Method and limits</a> · <a href="https://github.com/h5i-dev/h5i-app-bench/blob/main/performance/django-cart/resident/results/2026-10-19/summary.md">All shapes and update rates</a></p>
-      </section>
-
-      <section id="cart-resident-scale" class="block">
-        <div class="block-head">
-          <h2 class="term" data-n="+">Larger cart update batches</h2>
-          <p>4,096–65,536 resident carts, including single/four-thread incremental CPU baselines.</p>
-        </div>
-        <p id="scale-summary" class="caption"></p>
-        <p class="caption">Every cart is queried after changing 1, 16 or 64 of its lines. CPU and GPU retain the same data and cached subtotals. The comparison uses the fastest measured implementation on each side; above 1 favors GPU. GPU timing includes fresh command upload, kernels, synchronization and complete result download.</p>
-        <div class="filters">
-          <label class="field"><span>Lines/cart</span><select id="scale-lines"><option>512</option><option selected>2048</option></select></label>
-          <label class="field"><span>Carts/queries</span><select id="scale-carts"><option>4096</option><option>16384</option><option selected>65536</option></select></label>
-          <label class="field"><span>Replacements/cart</span><select id="scale-factor"><option>1</option><option selected>16</option><option>64</option></select></label>
-        </div>
-        <div id="scale-results"></div>
-        <p class="caption"><a href="#cart-update-phases">Measured update transfer, kernel and result phases</a> for four selected conditions.</p>
-        <p class="caption">Seven implementations × 18 shapes × three repetitions; 50 changing measured rounds after eight warmups. Every output is checked exactly against an independent full-rescan state machine. Grouped CPU delta processes all changes for a cart together, with either one thread or four persistent Rayon workers. CPUs 64–67, RTX 3090 device 0; shared host, uncontrolled clocks/NUMA/cache. Initial placement is separate. Iteration percentiles are averaged across repetitions; with 50 rounds p99 is the maximum round. These are Rust calculation measurements, excluding HTTP, database commits, CDC delivery and durable cache coherence.</p>
-        <p class="caption"><a href="https://github.com/h5i-dev/h5i-app-bench/blob/main/performance/django-cart/resident/scale/README.md">Method and findings</a> · <a href="https://github.com/h5i-dev/h5i-app-bench/blob/main/performance/django-cart/resident/scale/results/2026-10-19/summary.md">All shapes</a></p>
-      </section>
-
-      <section id="cart-update-phases" class="block">
-        <div class="block-head">
-          <h2 class="term" data-n="+">Cart update GPU phases</h2>
-          <p>Separate changing-trace replay of the 1.79× condition and three larger update batches.</p>
-        </div>
-        <div class="filters"><label class="field"><span>Carts × lines · replacements/cart</span><select id="phase-shape"></select></label></div>
-        <div id="phase-results"></div>
-        <p class="caption"><a href="#cart-update-transport">Compact input and pinned-buffer comparison</a>, including packing costs.</p>
-        <p class="caption">The one-update delta host replay and small-shape delta event replay contain large upload outliers; all rounds are retained. Host columns are disjoint wall-time intervals. Upload/download include pageable staging and driver overhead; they are not isolated PCIe times. Sync includes remaining kernel execution and waiting overhead. Device event intervals come from a separate replay, overlap enqueue/sync, and must not be added to the host columns. Delta fuses update and total gathering in one kernel. All modes replay the same 58 changing rounds from reset state; three repetitions, eight warmups. Initialization is excluded. Shared host, uncontrolled clocks/NUMA/cache.</p>
-        <p class="caption"><a href="https://github.com/h5i-dev/h5i-app-bench/blob/main/performance/django-cart/resident/scale/profile/README.md">Findings and method</a> · <a href="https://github.com/h5i-dev/h5i-app-bench/blob/main/performance/django-cart/resident/scale/profile/results/2026-10-20/summary.md">All phase timings</a></p>
-      </section>
-
-      <section id="cart-update-transport" class="block">
-        <div class="block-head">
-          <h2 class="term" data-n="+">Compact cart updates and pinned buffers</h2>
-          <p>32-byte versus 8-byte replacements, with pageable or reusable page-locked host staging.</p>
-        </div>
-        <div class="filters"><label class="field"><span>Carts × lines · replacements/cart</span><select id="transport-shape"></select></label></div>
-        <div id="transport-results"></div>
-        <p class="caption">All paths consume the same canonical commands and return a fresh owned vector of every queried total. Encoding and staging copies are timed. A compact replacement packs slot (11 bits), price (27) and quantity (10); cart ID comes from the validated round-robin query order. Query IDs remain explicit. This format requires that routing contract. Compact encoders run on one or four workers; encode4 uses the same persistent Rayon pool and four-core budget as CPU4. Pinned paths copy/encode into reusable locked input, queue upload/kernels/full download in one stream, wait, then copy locked output into an owned vector. There is no overlap across batches. Initialization is separate.</p>
-        <p class="caption">Plain runs drive comparisons. Event runs are separate diagnostics: upload, kernels and download use the same stream. Pageable upload intervals include possible host submission gaps; they do not isolate DMA. Event readout is included in the diagnostic total. Three repetitions, 50 changing rounds after eight warmups; CPUs 64–67 and RTX 3090 device 0. Shared host, uncontrolled clocks/NUMA/cache. Controls retain the original host calls and kernel source, compiled into a separate PTX. HTTP, database commits and CDC are excluded.</p>
-        <p class="caption"><a href="https://github.com/h5i-dev/h5i-app-bench/blob/main/performance/django-cart/resident/scale/transport/README.md">Findings and method</a> · <a href="https://github.com/h5i-dev/h5i-app-bench/blob/main/performance/django-cart/resident/scale/transport/results/2026-10-20/summary.md">All timings</a></p>
-      </section>
-
-      <section id="cart-resident-languages" class="block">
-        <div class="block-head">
-          <h2 class="term" data-n="+">Resident cart updates across languages</h2>
-          <p>Go, JavaScript, Python, NumPy, Rust and GPU: the same changing input and every total returned.</p>
-        </div>
-        <div class="filters"><label class="field"><span>Carts × lines · replacements/cart</span><select id="language-shape"></select></label></div>
-        <div id="language-results"></div>
-        <div id="language-contended"></div>
-        <p class="caption">Every path retains rows, subtotals and totals between batches. Canonical commands contain explicit u64 query IDs and four u64 fields per replacement. Timings include applying updates, pricing, worker dispatch/join and a complete freshly owned output. GPU paths also include encoding where applicable, upload, synchronization and full download. All returned values are checked exactly outside timing. No SQL/HTTP is included.</p>
-        <p class="caption">One or four persistent computation workers; Python 4 uses fork processes, JavaScript 4 uses worker threads, Go 4 uses goroutines, Rust 4 uses Rayon. NumPy is a separate native vectorized implementation with native thread counts fixed to one. All modes share the same four-core allocation (CPUs 64–67), with GC enabled. CPU timings are collected without concurrent benchmark processes. If GPU references from the prior run are shown, their status is explicit above and their ratios are not contemporary speedups. JavaScript uses exact Float64 integer subtotals and quotient/remainder discount rounding. CPython loops use Python integers with u64 retained storage; NumPy is used for untimed input validation in every Python mode.</p>
-        <p class="caption">Initial placement, loading, worker creation and validation are excluded. Python imports initial subtotal caches from fixtures, computes initial totals itself, and independently rescans subtotals for every upstream gate; other languages construct their initial caches. Initialization timings are not comparable cache-construction costs. Three repetitions, eight changing warmups and 50 changing timed rounds; RTX 3090 device 0. Shared host; clocks, NUMA and cache placement are uncontrolled. This is a resident calculation/update benchmark, not a Django deployment speedup.</p>
-        <p class="caption"><a href="https://github.com/h5i-dev/h5i-app-bench/blob/main/performance/django-cart/resident/languages/README.md">Findings and method</a> · <a href="https://github.com/h5i-dev/h5i-app-bench/blob/main/performance/django-cart/resident/languages/results/2026-10-20/summary.md">All timings</a></p>
-      </section>
 
       <section id="gpu-search" class="block">
         <div class="block-head">
@@ -241,6 +145,120 @@
         </details>
         <p class="caption"><a href="https://github.com/h5i-dev/h5i-app-bench/blob/bench-conduit-gpu/performance/realworld/bench/gpu-policy-2026-10-18.md">Report</a> · <a href="https://github.com/h5i-dev/h5i-app-bench/blob/bench-conduit-gpu/performance/realworld/bench/results/gpu-policy-2026-10-18/summary.csv">Summary CSV</a> · <a href="https://github.com/h5i-dev/h5i-app-bench/blob/bench-conduit-gpu/performance/realworld/bench/results/gpu-policy-2026-10-18/points.csv">Per-point CSV</a></p>
       </section>
+
+      <section id="gpu-cart" class="block">
+        <div class="block-head">
+          <h2 class="term" data-n="+">GPU cart pricing</h2>
+          <p>django-cart 3.1.1 · 2026-10-19. Recalculate already-loaded cart snapshots.</p>
+        </div>
+        <p class="caption">Compare Rust, Go, Node.js and CUDA using identical cart snapshots. Select lines per cart to see how batch size changes the result. Milliseconds per complete batch, lower is faster; median of three repetition means. Hover over a timing for its measured range.</p>
+        <div class="filters"><label class="field"><span>Lines/cart</span><select id="cart-lines"><option>1</option><option selected>8</option><option>32</option></select></label></div>
+        <div id="cart-results" class="table-wrap"></div>
+        <p class="caption">GPU resident reuses unchanged input; upload each transfers all snapshots every call. Both download all totals. A CPU could cache unchanged totals too; useful residency needs changing prices or discount scenarios, including synchronization costs. See <a href="https://github.com/h5i-dev/h5i-app-bench/blob/main/performance/django-cart/gpu-workloads.md">candidate workloads and evaluation requirements</a>. This is an offline calculation microbenchmark. For HTTP request coalescing and SQL query batching, see <a href="#django-cart">django-cart totals</a> and the <a href="#django-cart-lines">32–2,048 lines/cart comparison</a> above. Session handling, database aggregation and checkout transactions are excluded. This does not establish a speedup over a Django deployment.</p>
+        <details class="dev">
+          <summary>Run conditions and correctness</summary>
+          <ul class="limits">
+            <li>EPYC 7502, CPUs 64–79, RTX 3090 device 0, CUDA 12.6. Eight warmup passes; three repetitions, each averaging 100 iterations below 4,096 carts and 10 otherwise; shared host and uncontrolled clocks/NUMA placement.</li>
+            <li>GPU snapshots are transposed on upload for contiguous reads; upload-each timing includes that conversion. The same integer pricing source runs on CPU and CUDA using h5i's NVVM launch shell. CPU 16 uses persistent Rayon workers. GPU resident timing includes launch, synchronization, result allocation, download and error validation.</li>
+            <li>4,146 cases agree with the pinned upstream's Decimal methods; 49 exercise its ORM aggregate. Rust, Go, Node.js and CUDA agree with this corpus. CPU/GPU checks also cover malformed snapshots and batch boundaries. This pricing kernel has no Lean proof.</li>
+            <li>None, percentage and fixed discounts, final half-up rounding, default zero tax/shipping. Fixed-width snapshots reserve 32 lines; no mutations or live cache invalidation are measured.</li>
+          </ul>
+        </details>
+        <p class="caption"><a href="https://github.com/h5i-dev/h5i-app-bench/tree/main/performance/django-cart">Contract and reproduction</a> · <a href="https://github.com/h5i-dev/h5i-app-bench/blob/main/performance/django-cart/bench/results/2026-10-19-scale-soa/summary.md">All batch sizes</a> · <a href="https://github.com/bmentges/django-cart/tree/6b3daa26842c978b9520d479c4d33e3620e731a2">Upstream source</a></p>
+      </section>
+
+      <section id="cart-resident-languages" class="block">
+        <div class="block-head">
+          <h2 class="term" data-n="+">Resident cart updates across languages</h2>
+          <p>Go, JavaScript, Python, NumPy, Rust and GPU: the same changing input and every total returned.</p>
+        </div>
+        <div class="filters"><label class="field"><span>Carts × lines · replacements/cart</span><select id="language-shape"></select></label></div>
+        <div id="language-results"></div>
+        <div id="language-contended"></div>
+        <details class="dev">
+          <summary>Run conditions and correctness</summary>
+        <p class="caption">Every path retains rows, subtotals and totals between batches. Canonical commands contain explicit u64 query IDs and four u64 fields per replacement. Timings include applying updates, pricing, worker dispatch/join and a complete freshly owned output. GPU paths also include encoding where applicable, upload, synchronization and full download. All returned values are checked exactly outside timing. No SQL/HTTP is included.</p>
+        <p class="caption">One or four persistent computation workers; Python 4 uses fork processes, JavaScript 4 uses worker threads, Go 4 uses goroutines, Rust 4 uses Rayon. NumPy is a separate native vectorized implementation with native thread counts fixed to one. All modes share the same four-core allocation (CPUs 64–67), with GC enabled. CPU timings are collected without concurrent benchmark processes. If GPU references from the prior run are shown, their status is explicit above and their ratios are not contemporary speedups. JavaScript uses exact Float64 integer subtotals and quotient/remainder discount rounding. CPython loops use Python integers with u64 retained storage; NumPy is used for untimed input validation in every Python mode.</p>
+        <p class="caption">Initial placement, loading, worker creation and validation are excluded. Python imports initial subtotal caches from fixtures, computes initial totals itself, and independently rescans subtotals for every upstream gate; other languages construct their initial caches. Initialization timings are not comparable cache-construction costs. Three repetitions, eight changing warmups and 50 changing timed rounds; RTX 3090 device 0. Shared host; clocks, NUMA and cache placement are uncontrolled. This is a resident calculation/update benchmark, not a Django deployment speedup.</p>
+        </details>
+        <p class="caption"><a href="https://github.com/h5i-dev/h5i-app-bench/blob/main/performance/django-cart/resident/languages/README.md">Findings and method</a> · <a href="https://github.com/h5i-dev/h5i-app-bench/blob/main/performance/django-cart/resident/languages/results/2026-10-20/summary.md">All timings</a></p>
+      </section>
+
+      <details class="block dev" id="cart-experiments">
+        <summary>Cart update and GPU tuning experiments · 2026-10-19–20</summary>
+        <p class="caption">Resident update sweeps, transfer diagnostics and compact-buffer comparisons. Calculation timings exclude HTTP and SQL.</p>
+      <section id="cart-resident" class="block">
+        <div class="block-head">
+          <h2 class="term" data-n="+">Resident carts with updates</h2>
+          <p>CPU and GPU retain the same 4,096-cart population. Apply line replacements, then query current totals.</p>
+        </div>
+        <p class="caption">Microseconds per complete update-and-query batch, lower is faster. GPU includes command upload, mutation/query kernels, synchronization and full result download. CPU and GPU delta maintain subtotals and cached totals; this baseline matters because simple sums do not require full rescans. This is a calculation experiment: database commits, CDC, HTTP and cross-process coherence are excluded.</p>
+        <div class="filters">
+          <label class="field"><span>Lines/cart</span><select id="resident-lines"><option>32</option><option>128</option><option>512</option><option selected>2048</option></select></label>
+          <label class="field"><span>Queries/batch</span><select id="resident-queries"><option>8</option><option selected>128</option><option>256</option><option>4096</option></select></label>
+          <label class="field"><span>Replacements/batch</span><select id="resident-updates"><option value="none">None</option><option value="one" selected>One</option><option value="per-query">One per queried cart</option><option value="sixteen-per-query">Sixteen per queried cart</option></select></label>
+        </div>
+        <div id="resident-results"></div>
+        <p class="caption">These initial results use a single-thread CPU delta baseline. See <a href="#cart-resident-scale">larger cart update batches</a> for grouped single/four-thread CPU delta comparisons.</p>
+        <details class="dev">
+          <summary>Run conditions and correctness</summary>
+        <p class="caption">Three repetitions × 100 changing rounds after eight warmups. Every warmup and timed output is checked against a separate full-rescan state machine; the very next query must observe replacements. CPU delta is single-threaded; the four-worker CPU path rescans all lines. Parallel CPU delta is not part of this initial run. One/four CPU workers share CPUs 64–67; RTX 3090 device 0. Variant order rotates/reverses; clocks, NUMA, host activity and caches are uncontrolled. Initial placement is separate and includes subtotal initialization for both delta paths. p50/p99 are averaged iteration percentiles, not pooled HTTP percentiles.</p>
+        </details>
+        <p class="caption"><a href="https://github.com/h5i-dev/h5i-app-bench/blob/main/performance/django-cart/resident/README.md">Method and limits</a> · <a href="https://github.com/h5i-dev/h5i-app-bench/blob/main/performance/django-cart/resident/results/2026-10-19/summary.md">All shapes and update rates</a></p>
+      </section>
+
+      <section id="cart-resident-scale" class="block">
+        <div class="block-head">
+          <h2 class="term" data-n="+">Larger cart update batches</h2>
+          <p>4,096–65,536 resident carts, including single/four-thread incremental CPU baselines.</p>
+        </div>
+        <p id="scale-summary" class="caption"></p>
+        <p class="caption">Every cart is queried after changing 1, 16 or 64 of its lines. CPU and GPU retain the same data and cached subtotals. The comparison uses the fastest measured implementation on each side; above 1 favors GPU. GPU timing includes fresh command upload, kernels, synchronization and complete result download.</p>
+        <div class="filters">
+          <label class="field"><span>Lines/cart</span><select id="scale-lines"><option>512</option><option selected>2048</option></select></label>
+          <label class="field"><span>Carts/queries</span><select id="scale-carts"><option>4096</option><option>16384</option><option selected>65536</option></select></label>
+          <label class="field"><span>Replacements/cart</span><select id="scale-factor"><option>1</option><option selected>16</option><option>64</option></select></label>
+        </div>
+        <div id="scale-results"></div>
+        <p class="caption"><a href="#cart-update-phases">Measured update transfer, kernel and result phases</a> for four selected conditions.</p>
+        <details class="dev">
+          <summary>Run conditions and correctness</summary>
+        <p class="caption">Seven implementations × 18 shapes × three repetitions; 50 changing measured rounds after eight warmups. Every output is checked exactly against an independent full-rescan state machine. Grouped CPU delta processes all changes for a cart together, with either one thread or four persistent Rayon workers. CPUs 64–67, RTX 3090 device 0; shared host, uncontrolled clocks/NUMA/cache. Initial placement is separate. Iteration percentiles are averaged across repetitions; with 50 rounds p99 is the maximum round. These are Rust calculation measurements, excluding HTTP, database commits, CDC delivery and durable cache coherence.</p>
+        </details>
+        <p class="caption"><a href="https://github.com/h5i-dev/h5i-app-bench/blob/main/performance/django-cart/resident/scale/README.md">Method and findings</a> · <a href="https://github.com/h5i-dev/h5i-app-bench/blob/main/performance/django-cart/resident/scale/results/2026-10-19/summary.md">All shapes</a></p>
+      </section>
+
+      <section id="cart-update-phases" class="block">
+        <div class="block-head">
+          <h2 class="term" data-n="+">Cart update GPU phases</h2>
+          <p>Separate changing-trace replay of the 1.79× condition and three larger update batches.</p>
+        </div>
+        <div class="filters"><label class="field"><span>Carts × lines · replacements/cart</span><select id="phase-shape"></select></label></div>
+        <div id="phase-results"></div>
+        <p class="caption"><a href="#cart-update-transport">Compact input and pinned-buffer comparison</a>, including packing costs.</p>
+        <details class="dev">
+          <summary>Run conditions and correctness</summary>
+        <p class="caption">The one-update delta host replay and small-shape delta event replay contain large upload outliers; all rounds are retained. Host columns are disjoint wall-time intervals. Upload/download include pageable staging and driver overhead; they are not isolated PCIe times. Sync includes remaining kernel execution and waiting overhead. Device event intervals come from a separate replay, overlap enqueue/sync, and must not be added to the host columns. Delta fuses update and total gathering in one kernel. All modes replay the same 58 changing rounds from reset state; three repetitions, eight warmups. Initialization is excluded. Shared host, uncontrolled clocks/NUMA/cache.</p>
+        </details>
+        <p class="caption"><a href="https://github.com/h5i-dev/h5i-app-bench/blob/main/performance/django-cart/resident/scale/profile/README.md">Findings and method</a> · <a href="https://github.com/h5i-dev/h5i-app-bench/blob/main/performance/django-cart/resident/scale/profile/results/2026-10-20/summary.md">All phase timings</a></p>
+      </section>
+
+      <section id="cart-update-transport" class="block">
+        <div class="block-head">
+          <h2 class="term" data-n="+">Compact cart updates and pinned buffers</h2>
+          <p>32-byte versus 8-byte replacements, with pageable or reusable page-locked host staging.</p>
+        </div>
+        <div class="filters"><label class="field"><span>Carts × lines · replacements/cart</span><select id="transport-shape"></select></label></div>
+        <div id="transport-results"></div>
+        <details class="dev">
+          <summary>Run conditions and correctness</summary>
+        <p class="caption">All paths consume the same canonical commands and return a fresh owned vector of every queried total. Encoding and staging copies are timed. A compact replacement packs slot (11 bits), price (27) and quantity (10); cart ID comes from the validated round-robin query order. Query IDs remain explicit. This format requires that routing contract. Compact encoders run on one or four workers; encode4 uses the same persistent Rayon pool and four-core budget as CPU4. Pinned paths copy/encode into reusable locked input, queue upload/kernels/full download in one stream, wait, then copy locked output into an owned vector. There is no overlap across batches. Initialization is separate.</p>
+        <p class="caption">Plain runs drive comparisons. Event runs are separate diagnostics: upload, kernels and download use the same stream. Pageable upload intervals include possible host submission gaps; they do not isolate DMA. Event readout is included in the diagnostic total. Three repetitions, 50 changing rounds after eight warmups; CPUs 64–67 and RTX 3090 device 0. Shared host, uncontrolled clocks/NUMA/cache. Controls retain the original host calls and kernel source, compiled into a separate PTX. HTTP, database commits and CDC are excluded.</p>
+        </details>
+        <p class="caption"><a href="https://github.com/h5i-dev/h5i-app-bench/blob/main/performance/django-cart/resident/scale/transport/README.md">Findings and method</a> · <a href="https://github.com/h5i-dev/h5i-app-bench/blob/main/performance/django-cart/resident/scale/transport/results/2026-10-20/summary.md">All timings</a></p>
+      </section>
+
+      </details>
 
       <details class="block dev" id="linkding-experiments">
         <summary>Linkding tuning experiments · 2026-10-18</summary>
