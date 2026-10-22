@@ -3,6 +3,8 @@ import csv
 from pathlib import Path
 import tempfile
 import unittest
+import json
+import subprocess
 from unittest.mock import patch
 
 import importlib.util
@@ -13,6 +15,47 @@ spec.loader.exec_module(site)
 
 
 class MeasurementSelectionTests(unittest.TestCase):
+    def test_framework_comparison_keeps_strategy_results_separate(self):
+        self.assertEqual([a['id'] for a in site.APPS], ['realworld', 'linkding', 'django-cart'])
+        cart = site.load(site.APPS[-1])
+        self.assertEqual([i['id'] for i in cart['impls']], site.COMPARISON_ORDER)
+        self.assertEqual(cart['rows'], [])
+        self.assertEqual(cart['concurrency'], [1, 16, 64, 256])
+        self.assertEqual([s['id'] for s in cart['scenarios']], ['total_4096', 'total_65536'])
+        experiments = [site.load(a) for a in site.SUPPLEMENTAL_APPS]
+        self.assertEqual([a['id'] for a in experiments], ['django-cart-batching', 'django-cart-lines'])
+        self.assertIn('go-sql', [i['id'] for i in experiments[0]['impls']])
+        self.assertGreater(len(experiments[0]['rows']), 0)
+
+    def test_overview_renders_identical_columns_and_pending_details(self):
+        # Exercise the actual JS renderer against the generated data, including
+        # absent framework values and preserved supplemental measurements.
+        data = json.loads((site.HERE.parent / 'docs/performance/data.json').read_text())
+        script = (site.HERE.parent / 'docs/performance/performance.js').read_text().split('\nmain().catch')[0]
+        check = r'''
+const vm = require('node:vm');
+const fs = require('node:fs');
+const assert = require('node:assert/strict');
+const input = JSON.parse(fs.readFileSync(0, 'utf8'));
+const target = {innerHTML: ''};
+const context = vm.createContext({document: {querySelector: () => target, querySelectorAll: () => []}});
+vm.runInContext(input.script, context);
+context.fixture = input.data;
+vm.runInContext('DATA = fixture; renderOverview()', context);
+const heads = [...target.innerHTML.matchAll(/<thead>(.*?)<\/thead>/gs)].map(m =>
+  [...m[1].matchAll(/<span class="impl[^"]*">([^<]+)<\/span>/g)].map(n => n[1]));
+assert.equal(heads.length, 3);
+for (const head of heads) assert.deepEqual(head, input.order);
+const detail = vm.runInContext('pick["django-cart"] = "total_4096"; renderApp(DATA.apps[2])', context);
+assert.ok(!detail.includes('NaN') && !detail.includes('Infinity'));
+assert.equal((detail.match(/class="sub"/g) || []).length, 6);
+const supplemental = vm.runInContext('for (const app of allApps()) pick[app.id] = app.scenarios[0].id; renderSections(DATA.supplemental_apps)', context);
+assert.ok(supplemental.includes('go-sql') && supplemental.includes('rust-gpu-batch'));
+'''
+        result = subprocess.run(['node', '-e', check], input=json.dumps(dict(data=data, script=script, order=site.COMPARISON_ORDER)),
+                                text=True, capture_output=True)
+        self.assertEqual(result.returncode, 0, result.stderr)
+
     def test_new_run_replaces_old_point_and_retains_other_clients(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)

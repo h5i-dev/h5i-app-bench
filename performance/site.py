@@ -23,7 +23,7 @@ STACKS = {
     "upstream": "linkding 1.47.0 image: Django, uWSGI",
 }
 H5I = {"rust-h5i", "rust-h5i-optimized", "rust-h5i-cpu-scan", "rust-h5i-gpu"}
-H5I_ORDER = ["rust-h5i", "rust-h5i-optimized", "rust-h5i-gpu", "rust-h5i-cpu-scan"]
+COMPARISON_ORDER = ["rust-h5i", "rust-h5i-optimized", "rust-h5i-gpu", "fastapi", "go", "fastify"]
 
 APPS = [
     {
@@ -81,8 +81,14 @@ APPS = [
             "mixed": "40% list, 20% search, 15% get, 10% tags, 8% update, 5% archive, 2% create",
         },
     },
+]
+
+# Execution-strategy experiments retain their original names and measurements.
+# They do not supply framework-comparison columns.
+SUPPLEMENTAL_APPS = [
     {
-        "id": "django-cart", "title": "django-cart totals", "results": "http/results/2026-10-19",
+        "id": "django-cart-batching", "directory": "django-cart", "nav_title": "Cart batching",
+        "title": "django-cart request batching", "results": "http/results/2026-10-19",
         "upstream": "https://github.com/bmentges/django-cart/tree/6b3daa26842c978b9520d479c4d33e3620e731a2",
         "about": "Read-only HTTP adapters for django-cart pricing, checked against the pinned library. Includes PostgreSQL, queueing, transfer and JSON; no Django deployment score.",
         "seed": "4,096 or 65,536 carts, 32 price/quantity lines each; rotating IDs and mixed discount kinds.",
@@ -125,6 +131,26 @@ APPS = [
     },
 ]
 
+APPS.append({
+    "id": "django-cart", "title": "django-cart totals",
+    "results": "comparison/results/2026-10-22", "allow_missing": True,
+    "implementations": COMPARISON_ORDER,
+    "upstream": "https://github.com/bmentges/django-cart/tree/6b3daa26842c978b9520d479c4d33e3620e731a2",
+    "about": "Read-only pricing API checked against pinned django-cart 3.1.1. Framework comparison; application pricing has differential tests, no Lean proof.",
+    "seed": "4,096 or 65,536 carts, 32 lines/cart; the same committed PostgreSQL rows for all implementations.",
+    "measurement_note": "Standard comparison awaits measurement: six implementations, 1/16/64/256 clients, fresh seed, 10 s warmup, 30 s measurement, three repetitions. No request batching. Existing SQL/batch measurements are in supplemental experiments below.",
+    "stacks": {
+        "rust-h5i": "Rust, axum, h5i-app PostgreSQL engine; complete per-cart tenants, default transaction path (pricing not Lean-proved)",
+        "rust-h5i-optimized": "Rust, axum, sqlx, PostgreSQL SUM and shared pricing kernel (pricing not Lean-proved)",
+        "rust-h5i-gpu": "Rust, axum, sqlx, h5i NVVM CUDA adapter; one SQL/CUDA worker, fresh upload/download per request (no Lean proof)",
+        "go": "Go net/http, pgx, PostgreSQL SUM (32 connections)",
+    },
+    "scenarios": {
+        "total_4096": "GET /carts/{id}/total over 4,096 carts (131,072 line rows)",
+        "total_65536": "GET /carts/{id}/total over 65,536 carts (2,097,152 line rows)",
+    },
+})
+
 FIELDS = ["rps", "rps_stdev", "p50_ms", "p90_ms", "p99_ms", "errors", "rss_peak_mb", "cpu_peak_pct"]
 
 
@@ -147,6 +173,8 @@ def load(app):
         measured = date.group() if date else last_change(summary_path)
         source = f"{REPO.replace('/tree/', '/blob/')}/{directory}/{results}/{summary}"
         seen = set()
+        if not summary_path.exists() and app.get("allow_missing") and summary == "summary.csv":
+            continue
         with summary_path.open() as f:
             for r in csv.DictReader(f):
                 key = (r["impl"], r["scenario"], int(r["concurrency"]))
@@ -159,18 +187,18 @@ def load(app):
                                **{k: round(float(r[k]), 6 if k.endswith("_ms_per_batch") else 3) for k in ("mean_batch", "mean_queue_wait_ms", "sql_queries", "gpu_launches", "lines", "carts", "sql_fetch_ms_per_batch", "pack_ms_per_batch", "compute_ms_per_batch") if r.get(k) not in (None, "")}}
     rows = list(points.values())
     dates = sorted({r["measured"] for r in rows if r["measured"]})
-    impls = list(dict.fromkeys(r["impl"] for r in rows))
-    impls.sort(key=lambda i: (i not in H5I, H5I_ORDER.index(i) if i in H5I else i == "upstream"))
-    scenarios = [s for s in app["scenarios"] if any(r["scenario"] == s for r in rows)]
+    impls = list(dict.fromkeys([*app.get("implementations", []), *(r["impl"] for r in rows)]))
+    impls.sort(key=lambda i: (0, COMPARISON_ORDER.index(i)) if i in COMPARISON_ORDER else (1, i))
+    scenarios = [s for s in app["scenarios"] if not rows or any(r["scenario"] == s for r in rows)]
     return {
         "id": app["id"], "title": app["title"], "upstream": app["upstream"], "about": app["about"],
         "seed": app["seed"], "source": f"{REPO}/{directory}",
         **{k: app[k] for k in ("nav_title", "diagnostic_url") if k in app},
         "measured": "–".join(dict.fromkeys([dates[0], dates[-1]])) if dates else None,
-        "measurement_note": app.get("measurement_note", ""),
+        "measurement_note": app.get("measurement_note", "") if not rows or not app.get("allow_missing") else "Paired framework comparison: fresh seed, 10 s warmup, 30 s measurement, three repetitions. No request batching. Four server cores; Python/Node four workers, Rust CPU/Go 32 connections. CUDA uses one SQL/CUDA worker and fresh transfers.",
         "impls": [{"id": i, "stack": app.get("stacks", {}).get(i) or STACKS.get(i, ""), "h5i": i in H5I} for i in impls],
         "scenarios": [{"id": s, "requests": app["scenarios"][s]} for s in scenarios],
-        "concurrency": sorted({r["concurrency"] for r in rows}),
+        "concurrency": sorted({r["concurrency"] for r in rows}) or [1, 16, 64, 256],
         "rows": rows,
     }
 
@@ -184,7 +212,7 @@ def main():
     resident_transport = HERE / "django-cart/resident/scale/transport/results/2026-10-20/summary.json"
     resident_languages = HERE / "django-cart/resident/languages/results/2026-10-20/summary.json"
     resident_contended = HERE / "django-cart/resident/languages/results/2026-10-20-contended/summary.json"
-    data = {"apps": [load(a) for a in APPS], "cart_pricing": json.loads(cart.read_text()),
+    data = {"apps": [load(a) for a in APPS], "supplemental_apps": [load(a) for a in SUPPLEMENTAL_APPS], "cart_pricing": json.loads(cart.read_text()),
             "cart_resident": json.loads(resident.read_text()),
             "cart_resident_scale": json.loads(resident_scale.read_text()),
             "cart_update_phases": json.loads(resident_phases.read_text()),

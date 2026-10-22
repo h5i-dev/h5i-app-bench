@@ -2570,11 +2570,6 @@
      "h5i": true
     },
     {
-     "id": "rust-h5i-cpu-scan",
-     "stack": "Rust, axum, sqlx, resident search index evaluated on CPU",
-     "h5i": true
-    },
-    {
      "id": "fastapi",
      "stack": "Python, FastAPI, asyncpg, uvicorn",
      "h5i": false
@@ -2588,6 +2583,11 @@
      "id": "fastify",
      "stack": "TypeScript, Fastify, postgres.js",
      "h5i": false
+    },
+    {
+     "id": "rust-h5i-cpu-scan",
+     "stack": "Rust, axum, sqlx, resident search index evaluated on CPU",
+     "h5i": true
     },
     {
      "id": "upstream",
@@ -7002,30 +7002,82 @@
    "id": "django-cart",
    "title": "django-cart totals",
    "upstream": "https://github.com/bmentges/django-cart/tree/6b3daa26842c978b9520d479c4d33e3620e731a2",
+   "about": "Read-only pricing API checked against pinned django-cart 3.1.1. Framework comparison; application pricing has differential tests, no Lean proof.",
+   "seed": "4,096 or 65,536 carts, 32 lines/cart; the same committed PostgreSQL rows for all implementations.",
+   "source": "https://github.com/h5i-dev/h5i-app-bench/tree/main/performance/django-cart",
+   "measured": null,
+   "measurement_note": "Standard comparison awaits measurement: six implementations, 1/16/64/256 clients, fresh seed, 10 s warmup, 30 s measurement, three repetitions. No request batching. Existing SQL/batch measurements are in supplemental experiments below.",
+   "impls": [
+    {
+     "id": "rust-h5i",
+     "stack": "Rust, axum, h5i-app PostgreSQL engine; complete per-cart tenants, default transaction path (pricing not Lean-proved)",
+     "h5i": true
+    },
+    {
+     "id": "rust-h5i-optimized",
+     "stack": "Rust, axum, sqlx, PostgreSQL SUM and shared pricing kernel (pricing not Lean-proved)",
+     "h5i": true
+    },
+    {
+     "id": "rust-h5i-gpu",
+     "stack": "Rust, axum, sqlx, h5i NVVM CUDA adapter; one SQL/CUDA worker, fresh upload/download per request (no Lean proof)",
+     "h5i": true
+    },
+    {
+     "id": "fastapi",
+     "stack": "Python, FastAPI, asyncpg, uvicorn",
+     "h5i": false
+    },
+    {
+     "id": "go",
+     "stack": "Go net/http, pgx, PostgreSQL SUM (32 connections)",
+     "h5i": false
+    },
+    {
+     "id": "fastify",
+     "stack": "TypeScript, Fastify, postgres.js",
+     "h5i": false
+    }
+   ],
+   "scenarios": [
+    {
+     "id": "total_4096",
+     "requests": "GET /carts/{id}/total over 4,096 carts (131,072 line rows)"
+    },
+    {
+     "id": "total_65536",
+     "requests": "GET /carts/{id}/total over 65,536 carts (2,097,152 line rows)"
+    }
+   ],
+   "concurrency": [
+    1,
+    16,
+    64,
+    256
+   ],
+   "rows": []
+  }
+ ],
+ "supplemental_apps": [
+  {
+   "id": "django-cart-batching",
+   "title": "django-cart request batching",
+   "upstream": "https://github.com/bmentges/django-cart/tree/6b3daa26842c978b9520d479c4d33e3620e731a2",
    "about": "Read-only HTTP adapters for django-cart pricing, checked against the pinned library. Includes PostgreSQL, queueing, transfer and JSON; no Django deployment score.",
    "seed": "4,096 or 65,536 carts, 32 price/quantity lines each; rotating IDs and mixed discount kinds.",
    "source": "https://github.com/h5i-dev/h5i-app-bench/tree/main/performance/django-cart",
+   "nav_title": "Cart batching",
    "measured": "2026-10-19",
    "measurement_note": "2026-10-19 paired run: each server, PostgreSQL and client gets four CPU cores. SQL variants aggregate in PostgreSQL. Batch variants collect up to 256 requests for 1 ms, fetch fresh rows in one SQL query, then compute on CPU or CUDA. GPU-single is the same GPU path without coalescing; no resident input cache. Three repetitions per point.",
    "impls": [
     {
-     "id": "go-sql",
-     "stack": "Go net/http, pgx, per-request SQL SUM (16 connections)",
-     "h5i": false
-    },
-    {
-     "id": "javascript-sql",
-     "stack": "Node.js HTTP, postgres.js, per-request SQL SUM (16 connections)",
-     "h5i": false
-    },
-    {
-     "id": "rust-sql",
-     "stack": "Rust axum, sqlx, per-request SQL SUM (16 connections)",
-     "h5i": false
-    },
-    {
      "id": "go-batch",
      "stack": "Go net/http, pgx, shared SQL batch worker and CPU pricing",
+     "h5i": false
+    },
+    {
+     "id": "go-sql",
+     "stack": "Go net/http, pgx, per-request SQL SUM (16 connections)",
      "h5i": false
     },
     {
@@ -7034,8 +7086,18 @@
      "h5i": false
     },
     {
+     "id": "javascript-sql",
+     "stack": "Node.js HTTP, postgres.js, per-request SQL SUM (16 connections)",
+     "h5i": false
+    },
+    {
      "id": "rust-cpu-batch",
      "stack": "Rust axum, sqlx, shared SQL batch worker and CPU pricing",
+     "h5i": false
+    },
+    {
+     "id": "rust-gpu-batch",
+     "stack": "Rust axum, sqlx, shared SQL batch worker and CUDA pricing; fresh uploads, h5i NVVM launch shell (no Lean proof)",
      "h5i": false
     },
     {
@@ -7044,8 +7106,8 @@
      "h5i": false
     },
     {
-     "id": "rust-gpu-batch",
-     "stack": "Rust axum, sqlx, shared SQL batch worker and CUDA pricing; fresh uploads, h5i NVVM launch shell (no Lean proof)",
+     "id": "rust-sql",
+     "stack": "Rust axum, sqlx, per-request SQL SUM (16 connections)",
      "h5i": false
     }
    ],
@@ -8361,28 +8423,23 @@
    "measurement_note": "2026-10-19: nine implementations, 16/256 clients, three repetitions. Each server, PostgreSQL and client gets four CPU cores. Batch variants share one SQL worker, collect up to 256 requests for 1 ms, and fetch fresh rows. CUDA includes allocation, upload and download. Cooperative CUDA uses 32 threads per cart; parallel CPU uses four Rayon workers. SQL baselines use 16 connections. No resident input cache. These CUDA mappings are not an optimal-GPU bound.",
    "impls": [
     {
-     "id": "go-sql",
-     "stack": "Go net/http, pgx, PostgreSQL SUM (16 connections)",
-     "h5i": false
-    },
-    {
-     "id": "javascript-sql",
-     "stack": "Node.js HTTP, postgres.js, PostgreSQL SUM (16 connections)",
-     "h5i": false
-    },
-    {
-     "id": "rust-sql",
-     "stack": "Rust axum, sqlx, PostgreSQL SUM (16 connections)",
-     "h5i": false
-    },
-    {
      "id": "go-batch",
      "stack": "Go net/http, pgx, one SQL batch worker and CPU pricing",
      "h5i": false
     },
     {
+     "id": "go-sql",
+     "stack": "Go net/http, pgx, PostgreSQL SUM (16 connections)",
+     "h5i": false
+    },
+    {
      "id": "javascript-batch",
      "stack": "Node.js HTTP, postgres.js, one SQL batch worker and CPU pricing",
+     "h5i": false
+    },
+    {
+     "id": "javascript-sql",
+     "stack": "Node.js HTTP, postgres.js, PostgreSQL SUM (16 connections)",
      "h5i": false
     },
     {
@@ -8403,6 +8460,11 @@
     {
      "id": "rust-gpu-cooperative",
      "stack": "Rust axum, sqlx, one SQL batch worker, CUDA one 32-thread warp/cart; fresh transfers",
+     "h5i": false
+    },
+    {
+     "id": "rust-sql",
+     "stack": "Rust axum, sqlx, PostgreSQL SUM (16 connections)",
      "h5i": false
     }
    ],

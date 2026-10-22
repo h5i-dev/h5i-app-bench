@@ -3,17 +3,25 @@
 An application-computation benchmark based on
 [bmentges/django-cart](https://github.com/bmentges/django-cart), pinned to
 **3.1.1**, commit `6b3daa26842c978b9520d479c4d33e3620e731a2`.
-The upstream is a session-backed Django library, not a REST service. Four
-experiments share its checked pricing contract:
+The upstream is a session-backed Django library, not a REST service.
+
+The [standard framework comparison](comparison/README.md) uses the same six
+implementations, HTTP metrics, client counts and 10 s / 30 s / three-repetition
+protocol as RealWorld and linkding. All six passed the 4,146-case HTTP gate,
+committed-update freshness checks and error-status checks. Performance results
+await a complete run with an idle GPU; no historical batching values are
+renamed as framework results.
+
+The following supplemental experiments share its checked pricing contract:
 
 - [HTTP/SQL batching](http/README.md): real HTTP requests, a bounded collection
   queue, fresh PostgreSQL reads, CPU/GPU calculation and JSON responses. Includes
   native SQL aggregate baselines in Go, Node.js and Rust, and GPU single/batch
-  ablations. [Results](http/results/2026-10-19/summary.md) feed the normal dashboard.
+  ablations. [Results](http/results/2026-10-19/summary.md) appear under supplemental experiments on the dashboard.
 - [Lines per cart](http/lines/README.md): fixed 4,096 carts, increasing each
   cart from 32 to 128, 512 and 2,048 lines. Compares SQL SUM, Go/Node/Rust CPU
   batching, four-worker CPU and scalar/cooperative CUDA with fresh transfers.
-  [Results](http/lines/results/2026-10-19/summary.md) feed the normal dashboard.
+  [Results](http/lines/results/2026-10-19/summary.md) appear under supplemental experiments on the dashboard.
 - Snapshot pricing below: already-loaded cart snapshots, from one cart through
   large batches, with resident and upload-each GPU timings. These remain
   supplemental calculation measurements, separate from HTTP rankings.

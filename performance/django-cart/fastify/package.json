@@ -1,0 +1,1 @@
+{"name":"django-cart-fastify","private":true,"type":"module","dependencies":{"fastify":"5.12.7","postgres":"3.4.9"}}
