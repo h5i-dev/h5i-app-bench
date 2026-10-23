@@ -52,7 +52,7 @@ func serve() {
 	if e != nil {
 		panic(e)
 	}
-	config.MaxConns = 16
+	config.MaxConns = int32(envInt("DB_POOL", 16))
 	pool, e := pgxpool.NewWithConfig(ctx, config)
 	if e != nil {
 		panic(e)

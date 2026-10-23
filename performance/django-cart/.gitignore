@@ -1,4 +1,5 @@
 javascript/node_modules/
+fastify/node_modules/
 
 # Keep measurement samples, command output and run metadata local.
 # Only aggregate summaries and the placement report belong in Git.

@@ -6,6 +6,9 @@ const num = (n, d = 0) => (n == null ? "–" : Number(n).toLocaleString("en", { 
 const rps = (n) => num(n, n < 100 ? 1 : 0);
 const ms = (n) => num(n, n < 10 ? 2 : n < 100 ? 1 : 0);
 
+const COMPARISON_ORDER = ["rust-h5i", "rust-h5i-optimized", "rust-h5i-gpu", "fastapi", "go", "fastify"];
+const allApps = () => [...DATA.apps, ...(DATA.supplemental_apps || [])];
+
 let DATA = null;
 let CONC = 16;
 const pick = {}; // app id -> scenario id
@@ -29,7 +32,7 @@ const implName = (i) => `<span class="impl${i.h5i ? " h5i" : ""}">${esc(i.id)}</
 function renderOverview() {
   for (const el of document.querySelectorAll(".conc-label")) el.textContent = CONC;
   $("#overview-tables").innerHTML = DATA.apps.map((app) => {
-    const impls = app.impls.filter((i) => i.id !== "upstream" && i.id !== "rust-h5i-cpu-scan");
+    const impls = COMPARISON_ORDER.map((id) => app.impls.find((i) => i.id === id) || {id, h5i: id.startsWith("rust-h5i")});
     const head = impls.map((i) => `<th scope="col" class="num">${implName(i)}</th>`).join("");
     const body = app.scenarios.map((s) => {
       const vals = impls.map((i) => row(app, i.id, s.id, CONC)?.rps ?? null);
@@ -58,7 +61,7 @@ function renderApp(app) {
   const s = app.scenarios.find((x) => x.id === sc);
   const tabs = app.scenarios.map((x) =>
     `<button type="button" role="tab" aria-selected="${x.id === sc}" data-app="${esc(app.id)}" data-scenario="${esc(x.id)}">${esc(x.id)}</button>`).join("");
-  const max = Math.max(...app.rows.filter((r) => r.scenario === sc).map((r) => r.rps));
+  const max = Math.max(0, ...app.rows.filter((r) => r.scenario === sc).map((r) => r.rps));
   const concHead = app.concurrency.map((c) => `<th scope="col" class="w-conc${c === CONC ? " on" : ""}">${c} clients</th>`).join("");
   const bars = app.impls.map((i) => {
     const cells = app.concurrency.map((c) => {
@@ -72,7 +75,7 @@ function renderApp(app) {
   }).join("");
   const detail = app.impls.map((i) => {
     const r = row(app, i.id, sc, CONC);
-    if (!r) return "";
+    if (!r) return `<tr><th scope="row">${implName(i)}<span class="sub">${esc(i.stack)}</span></th>${'<td class="num">–</td>'.repeat(8)}</tr>`;
     return `<tr><th scope="row">${implName(i)}<span class="sub">${esc(i.stack)}</span></th>
       <td class="num">${rps(r.rps)}</td><td class="num">${ms(r.p50_ms)}</td><td class="num">${ms(r.p90_ms)}</td><td class="num">${ms(r.p99_ms)}</td>
       <td class="num">${num(r.rss_peak_mb, 0)}</td><td class="num">${num(r.cpu_peak_pct, 0)}</td><td class="num">${num(r.errors, 1)}</td><td>${r.source ? `<a href="${esc(r.source)}" target="_blank" rel="noreferrer">${esc(r.measured || 'CSV')}</a>` : "–"}</td></tr>`;
@@ -94,21 +97,27 @@ function renderApp(app) {
     <div class="table-wrap"><table class="perf-detail"><thead><tr><th scope="col">Implementation</th><th scope="col" class="num">req/s</th><th scope="col" class="num">p50 ms</th><th scope="col" class="num">p90 ms</th><th scope="col" class="num">p99 ms</th><th scope="col" class="num">RSS MiB</th><th scope="col" class="num">CPU peak %</th><th scope="col" class="num">Errors</th><th scope="col">Measured</th></tr></thead><tbody>${detail}</tbody></table></div>${batches}${phases}`;
 }
 
-function renderApps() {
-  $("#apps").innerHTML = DATA.apps.map((app, k) => `
+function renderSections(apps) {
+  return apps.map((app, k) => `
     <section id="${esc(app.id)}" class="block">
       <div class="block-head">
         <h2 class="term" data-n="${String(k + 2).padStart(2, "0")}">${esc(app.title)}</h2>
         <p>${esc(app.about)} <a href="${esc(app.upstream)}" target="_blank" rel="noreferrer">Upstream</a> · <a href="${esc(app.source)}" target="_blank" rel="noreferrer">Source and results</a>${app.measured ? ` · ${esc(app.measured)}` : ""}</p>
         <p class="caption">Seed: ${esc(app.seed)}</p>
       </div>
+      ${app.measurement_note ? `<p class="caption">${esc(app.measurement_note)}</p>` : ""}
       <div class="app-body" data-app="${esc(app.id)}">${renderApp(app)}</div>
     </section>`).join("");
 }
 
+function renderApps() {
+  $("#apps").innerHTML = renderSections(DATA.apps);
+  $("#supplemental-apps").innerHTML = renderSections(DATA.supplemental_apps || []);
+}
+
 function rerender() {
   renderOverview();
-  for (const app of DATA.apps) $(`.app-body[data-app="${app.id}"]`).innerHTML = renderApp(app);
+  for (const app of allApps()) $(`.app-body[data-app="${app.id}"]`).innerHTML = renderApp(app);
 }
 
 // Batch latency uses the shared bar layout; shorter bars mean less time.
@@ -250,7 +259,7 @@ async function main() {
   $("#f-conc").innerHTML = concs.map((c) => `<option value="${c}"${c === CONC ? " selected" : ""}>${c} clients</option>`).join("");
   $("#f-conc").addEventListener("input", (e) => { CONC = Number(e.target.value); rerender(); });
 
-  for (const app of DATA.apps) pick[app.id] = app.scenarios.some((s) => s.id === "mixed") ? "mixed" : app.scenarios[0].id;
+  for (const app of allApps()) pick[app.id] = app.scenarios.some((s) => s.id === "mixed") ? "mixed" : app.scenarios[0].id;
   const nav = $("#app-nav");
   nav.querySelector('a[href="#method"]').insertAdjacentHTML("beforebegin",
     DATA.apps.map((a) => `<a href="#${esc(a.id)}">${esc(a.nav_title || a.title.split(" ")[0])}</a>`).join(""));
@@ -271,7 +280,7 @@ async function main() {
     const t = e.target.closest("[data-app][data-scenario]");
     if (!t) return;
     pick[t.dataset.app] = t.dataset.scenario;
-    const app = DATA.apps.find((a) => a.id === t.dataset.app);
+    const app = allApps().find((a) => a.id === t.dataset.app);
     $(`.app-body[data-app="${app.id}"]`).innerHTML = renderApp(app);
   });
 }
