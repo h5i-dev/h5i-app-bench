@@ -1,0 +1,10 @@
+[package]
+name="oxicloud-dav-difftest"
+version="0.1.0"
+edition="2024"
+[workspace]
+[dependencies]
+oxicloud-kernel={path="../kernel"}
+uuid="1"
+chrono="0.4"
+serde_json="1"

@@ -8467,6 +8467,5498 @@ def entry_validation.validate
             invalid))
   else ok (core.result.Result.Err entry_validation.Error.NoClassFound)
 
+/-- [kanidm_kernel::migration_defaults::SystemConfig]
+    Source: 'prove/ports/kanidm/kernel/src/migration_defaults.rs', lines 5:0-9:1
+    Visibility: public -/
+structure migration_defaults.SystemConfig where
+  object : Bool
+  system_config : Bool
+  system : Bool
+  uuid : Std.U128
+  description : alloc.vec.Vec Std.U8
+  badlist_password : alloc.vec.Vec (alloc.vec.Vec Std.U8)
+
+/-- [kanidm_kernel::migration_defaults::table_part_0]:
+    Source: 'prove/ports/kanidm/kernel/src/migration_defaults.rs', lines 10:0-37:1
+    Visibility: public -/
+def migration_defaults.table_part_0
+  : Result (alloc.vec.Vec (alloc.vec.Vec Std.U8)) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        49#u8, 48#u8, 48#u8, 112#u8, 114#u8, 101#u8, 116#u8, 101#u8, 97#u8,
+        109#u8, 97#u8, 114#u8, 101#u8
+        ]))
+  let v ← alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  let out ← alloc.vec.Vec.push (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) v
+  let s1 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        49#u8, 52#u8, 100#u8, 101#u8, 102#u8, 101#u8, 98#u8, 114#u8, 101#u8,
+        114#u8, 111#u8
+        ]))
+  let v1 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s1
+  let out1 ← alloc.vec.Vec.push out v1
+  let s2 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        49#u8, 108#u8, 105#u8, 102#u8, 101#u8, 49#u8, 108#u8, 111#u8, 118#u8,
+        101#u8
+        ]))
+  let v2 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s2
+  let out2 ← alloc.vec.Vec.push out1 v2
+  let s3 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        49#u8, 108#u8, 105#u8, 102#u8, 101#u8, 50#u8, 108#u8, 105#u8, 118#u8,
+        101#u8
+        ]))
+  let v3 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s3
+  let out3 ← alloc.vec.Vec.push out2 v3
+  let s4 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        49#u8, 108#u8, 111#u8, 118#u8, 101#u8, 49#u8, 108#u8, 105#u8, 102#u8,
+        101#u8
+        ]))
+  let v4 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s4
+  let out4 ← alloc.vec.Vec.push out3 v4
+  let s5 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        49#u8, 108#u8, 111#u8, 118#u8, 101#u8, 52#u8, 108#u8, 105#u8, 102#u8,
+        101#u8
+        ]))
+  let v5 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s5
+  let out5 ← alloc.vec.Vec.push out4 v5
+  let s6 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        50#u8, 49#u8, 50#u8, 50#u8, 50#u8, 52#u8, 50#u8, 51#u8, 54#u8, 50#u8,
+        52#u8, 56#u8
+        ]))
+  let v6 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s6
+  let out6 ← alloc.vec.Vec.push out5 v6
+  let s7 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        50#u8, 56#u8, 49#u8, 51#u8, 51#u8, 48#u8, 56#u8, 48#u8, 48#u8, 52#u8
+        ]))
+  let v7 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s7
+  let out7 ← alloc.vec.Vec.push out6 v7
+  let s8 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        50#u8, 102#u8, 97#u8, 115#u8, 116#u8, 50#u8, 102#u8, 117#u8, 114#u8,
+        105#u8, 111#u8, 117#u8, 115#u8
+        ]))
+  let v8 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s8
+  let out8 ← alloc.vec.Vec.push out7 v8
+  let s9 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        50#u8, 103#u8, 101#u8, 116#u8, 104#u8, 101#u8, 114#u8, 52#u8, 101#u8,
+        118#u8, 101#u8, 114#u8
+        ]))
+  let v9 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s9
+  let out9 ← alloc.vec.Vec.push out8 v9
+  let s10 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        50#u8, 112#u8, 97#u8, 99#u8, 115#u8, 104#u8, 97#u8, 107#u8, 117#u8,
+        114#u8
+        ]))
+  let v10 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s10
+  let out10 ← alloc.vec.Vec.push out9 v10
+  let s11 ←
+    lift (Array.to_slice
+      (Array.make 15#usize [
+        51#u8, 48#u8, 115#u8, 101#u8, 99#u8, 111#u8, 110#u8, 100#u8, 115#u8,
+        116#u8, 111#u8, 109#u8, 97#u8, 114#u8, 115#u8
+        ]))
+  let v11 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s11
+  let out11 ← alloc.vec.Vec.push out10 v11
+  let s12 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        51#u8, 100#u8, 111#u8, 111#u8, 114#u8, 115#u8, 100#u8, 111#u8, 119#u8,
+        110#u8
+        ]))
+  let v12 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s12
+  let out12 ← alloc.vec.Vec.push out11 v12
+  let s13 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        54#u8, 99#u8, 121#u8, 99#u8, 108#u8, 101#u8, 109#u8, 105#u8, 110#u8,
+        100#u8
+        ]))
+  let v13 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s13
+  let out13 ← alloc.vec.Vec.push out12 v13
+  let s14 ←
+    lift (Array.to_slice
+      (Array.make 17#usize [
+        60#u8, 100#u8, 105#u8, 118#u8, 62#u8, 60#u8, 101#u8, 109#u8, 98#u8,
+        101#u8, 100#u8, 32#u8, 115#u8, 114#u8, 99#u8, 61#u8, 92#u8
+        ]))
+  let v14 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s14
+  let out14 ← alloc.vec.Vec.push out13 v14
+  let s15 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        64#u8, 104#u8, 111#u8, 116#u8, 109#u8, 97#u8, 105#u8, 108#u8, 46#u8,
+        99#u8, 111#u8, 109#u8
+        ]))
+  let v15 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s15
+  let out15 ← alloc.vec.Vec.push out14 v15
+  let s16 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        64#u8, 121#u8, 97#u8, 104#u8, 111#u8, 111#u8, 46#u8, 99#u8, 111#u8,
+        109#u8
+        ]))
+  let v16 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s16
+  let out16 ← alloc.vec.Vec.push out15 v16
+  let s17 ←
+    lift (Array.to_slice
+      (Array.make 39#usize [
+        108#u8, 101#u8, 116#u8, 115#u8, 32#u8, 121#u8, 111#u8, 117#u8, 32#u8,
+        117#u8, 112#u8, 100#u8, 97#u8, 116#u8, 101#u8, 32#u8, 121#u8, 111#u8,
+        117#u8, 114#u8, 32#u8, 102#u8, 117#u8, 110#u8, 110#u8, 111#u8, 116#u8,
+        101#u8, 115#u8, 32#u8, 97#u8, 110#u8, 100#u8, 32#u8, 109#u8, 111#u8,
+        114#u8, 101#u8, 33#u8
+        ]))
+  let v17 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s17
+  let out17 ← alloc.vec.Vec.push out16 v17
+  let s18 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        116#u8, 101#u8, 113#u8, 117#u8, 105#u8, 101#u8, 114#u8, 111#u8, 109#u8,
+        117#u8, 99#u8, 104#u8, 111#u8
+        ]))
+  let v18 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s18
+  let out18 ← alloc.vec.Vec.push out17 v18
+  let s19 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        116#u8, 101#u8, 120#u8, 116#u8, 32#u8, 111#u8, 110#u8, 108#u8, 121#u8,
+        32#u8, 97#u8, 100#u8
+        ]))
+  let v19 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s19
+  let out19 ← alloc.vec.Vec.push out18 v19
+  let s20 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        97#u8, 98#u8, 114#u8, 101#u8, 116#u8, 101#u8, 115#u8, 101#u8, 115#u8,
+        97#u8, 109#u8, 111#u8
+        ]))
+  let v20 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s20
+  let out20 ← alloc.vec.Vec.push out19 v20
+  let s21 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 105#u8, 115#u8, 116#u8, 114#u8,
+        97#u8, 100#u8, 111#u8, 114#u8
+        ]))
+  let v21 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s21
+  let out21 ← alloc.vec.Vec.push out20 v21
+  let s22 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        97#u8, 101#u8, 114#u8, 111#u8, 112#u8, 111#u8, 115#u8, 116#u8, 97#u8,
+        108#u8, 101#u8
+        ]))
+  let v22 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s22
+  let out22 ← alloc.vec.Vec.push out21 v22
+  let s23 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        97#u8, 107#u8, 105#u8, 110#u8, 107#u8, 97#u8, 108#u8, 97#u8, 110#u8,
+        103#u8
+        ]))
+  let v23 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s23
+  alloc.vec.Vec.push out22 v23
+
+/-- [kanidm_kernel::migration_defaults::table_part_1]:
+    Source: 'prove/ports/kanidm/kernel/src/migration_defaults.rs', lines 38:0-65:1
+    Visibility: public -/
+def migration_defaults.table_part_1
+  : Result (alloc.vec.Vec (alloc.vec.Vec Std.U8)) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        97#u8, 107#u8, 117#u8, 99#u8, 105#u8, 110#u8, 116#u8, 97#u8, 107#u8,
+        97#u8, 109#u8, 117#u8
+        ]))
+  let v ← alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  let out ← alloc.vec.Vec.push (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) v
+  let s1 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        97#u8, 107#u8, 117#u8, 115#u8, 97#u8, 121#u8, 97#u8, 110#u8, 103#u8,
+        107#u8, 97#u8, 109#u8, 117#u8
+        ]))
+  let v1 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s1
+  let out1 ← alloc.vec.Vec.push out v1
+  let s2 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        97#u8, 108#u8, 102#u8, 97#u8, 121#u8, 111#u8, 109#u8, 101#u8, 103#u8,
+        97#u8
+        ]))
+  let v2 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s2
+  let out2 ← alloc.vec.Vec.push out1 v2
+  let s3 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        97#u8, 108#u8, 104#u8, 97#u8, 109#u8, 100#u8, 117#u8, 108#u8, 105#u8,
+        108#u8, 108#u8, 97#u8, 104#u8
+        ]))
+  let v3 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s3
+  let out3 ← alloc.vec.Vec.push out2 v3
+  let s4 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        97#u8, 108#u8, 108#u8, 97#u8, 98#u8, 111#u8, 117#u8, 116#u8, 109#u8,
+        101#u8
+        ]))
+  let v4 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s4
+  let out4 ← alloc.vec.Vec.push out3 v4
+  let s5 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        97#u8, 108#u8, 108#u8, 97#u8, 104#u8, 117#u8, 97#u8, 107#u8, 98#u8,
+        97#u8, 114#u8
+        ]))
+  let v5 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s5
+  let out5 ← alloc.vec.Vec.push out4 v5
+  let s6 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        97#u8, 108#u8, 108#u8, 101#u8, 121#u8, 101#u8, 115#u8, 111#u8, 110#u8,
+        109#u8, 101#u8
+        ]))
+  let v6 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s6
+  let out6 ← alloc.vec.Vec.push out5 v6
+  let s7 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        97#u8, 108#u8, 113#u8, 117#u8, 105#u8, 109#u8, 105#u8, 115#u8, 116#u8,
+        97#u8
+        ]))
+  let v7 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s7
+  let out7 ← alloc.vec.Vec.push out6 v7
+  let s8 ←
+    lift (Array.to_slice
+      (Array.make 16#usize [
+        97#u8, 108#u8, 119#u8, 97#u8, 121#u8, 115#u8, 97#u8, 110#u8, 100#u8,
+        102#u8, 111#u8, 114#u8, 101#u8, 118#u8, 101#u8, 114#u8
+        ]))
+  let v8 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s8
+  let out8 ← alloc.vec.Vec.push out7 v8
+  let s9 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        97#u8, 109#u8, 97#u8, 114#u8, 116#u8, 101#u8, 100#u8, 117#u8, 101#u8,
+        108#u8, 101#u8
+        ]))
+  let v9 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s9
+  let out9 ← alloc.vec.Vec.push out8 v9
+  let s10 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        97#u8, 109#u8, 105#u8, 103#u8, 97#u8, 115#u8, 52#u8, 101#u8, 118#u8,
+        101#u8, 114#u8
+        ]))
+  let v10 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s10
+  let out10 ← alloc.vec.Vec.push out9 v10
+  let s11 ←
+    lift (Array.to_slice
+      (Array.make 16#usize [
+        97#u8, 109#u8, 105#u8, 103#u8, 97#u8, 115#u8, 112#u8, 111#u8, 114#u8,
+        115#u8, 105#u8, 101#u8, 109#u8, 112#u8, 114#u8, 101#u8
+        ]))
+  let v11 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s11
+  let out11 ← alloc.vec.Vec.push out10 v11
+  let s12 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        97#u8, 109#u8, 105#u8, 103#u8, 97#u8, 115#u8, 120#u8, 49#u8, 48#u8,
+        48#u8, 112#u8, 114#u8, 101#u8
+        ]))
+  let v12 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s12
+  let out12 ← alloc.vec.Vec.push out11 v12
+  let s13 ←
+    lift (Array.to_slice
+      (Array.make 14#usize [
+        97#u8, 109#u8, 105#u8, 103#u8, 97#u8, 115#u8, 120#u8, 115#u8, 105#u8,
+        101#u8, 109#u8, 112#u8, 114#u8, 101#u8
+        ]))
+  let v13 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s13
+  let out13 ← alloc.vec.Vec.push out12 v13
+  let s14 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        97#u8, 109#u8, 111#u8, 97#u8, 109#u8, 105#u8, 102#u8, 97#u8, 109#u8,
+        105#u8, 108#u8, 105#u8, 97#u8
+        ]))
+  let v14 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s14
+  let out14 ← alloc.vec.Vec.push out13 v14
+  let s15 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        97#u8, 109#u8, 111#u8, 114#u8, 100#u8, 101#u8, 108#u8, 98#u8, 117#u8,
+        101#u8, 110#u8, 111#u8
+        ]))
+  let v15 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s15
+  let out15 ← alloc.vec.Vec.push out14 v15
+  let s16 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        97#u8, 109#u8, 111#u8, 114#u8, 100#u8, 101#u8, 109#u8, 105#u8, 118#u8,
+        105#u8, 100#u8, 97#u8
+        ]))
+  let v16 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s16
+  let out16 ← alloc.vec.Vec.push out15 v16
+  let s17 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        97#u8, 109#u8, 111#u8, 114#u8, 101#u8, 115#u8, 112#u8, 101#u8, 114#u8,
+        114#u8, 111#u8, 115#u8
+        ]))
+  let v17 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s17
+  let out17 ← alloc.vec.Vec.push out16 v17
+  let s18 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        97#u8, 109#u8, 111#u8, 114#u8, 101#u8, 116#u8, 101#u8, 114#u8, 110#u8,
+        111#u8
+        ]))
+  let v18 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s18
+  let out18 ← alloc.vec.Vec.push out17 v18
+  let s19 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        97#u8, 109#u8, 111#u8, 114#u8, 105#u8, 109#u8, 112#u8, 111#u8, 115#u8,
+        105#u8, 98#u8, 108#u8, 101#u8
+        ]))
+  let v19 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s19
+  let out19 ← alloc.vec.Vec.push out18 v19
+  let s20 ←
+    lift (Array.to_slice
+      (Array.make 14#usize [
+        97#u8, 109#u8, 111#u8, 114#u8, 112#u8, 111#u8, 114#u8, 115#u8, 105#u8,
+        101#u8, 109#u8, 112#u8, 114#u8, 101#u8
+        ]))
+  let v20 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s20
+  let out20 ← alloc.vec.Vec.push out19 v20
+  let s21 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        97#u8, 109#u8, 111#u8, 114#u8, 112#u8, 114#u8, 111#u8, 104#u8, 105#u8,
+        98#u8, 105#u8, 100#u8, 111#u8
+        ]))
+  let v21 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s21
+  let out21 ← alloc.vec.Vec.push out20 v21
+  let s22 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        97#u8, 109#u8, 111#u8, 114#u8, 118#u8, 101#u8, 114#u8, 100#u8, 97#u8,
+        100#u8, 101#u8, 114#u8, 111#u8
+        ]))
+  let v22 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s22
+  let out22 ← alloc.vec.Vec.push out21 v22
+  let s23 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        97#u8, 109#u8, 111#u8, 116#u8, 101#u8, 109#u8, 117#u8, 105#u8, 116#u8,
+        111#u8
+        ]))
+  let v23 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s23
+  alloc.vec.Vec.push out22 v23
+
+/-- [kanidm_kernel::migration_defaults::table_part_2]:
+    Source: 'prove/ports/kanidm/kernel/src/migration_defaults.rs', lines 66:0-93:1
+    Visibility: public -/
+def migration_defaults.table_part_2
+  : Result (alloc.vec.Vec (alloc.vec.Vec Std.U8)) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        97#u8, 110#u8, 97#u8, 114#u8, 97#u8, 110#u8, 106#u8, 97#u8, 100#u8,
+        111#u8
+        ]))
+  let v ← alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  let out ← alloc.vec.Vec.push (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) v
+  let s1 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        97#u8, 110#u8, 103#u8, 101#u8, 108#u8, 100#u8, 101#u8, 97#u8, 109#u8,
+        111#u8, 114#u8
+        ]))
+  let v1 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s1
+  let out1 ← alloc.vec.Vec.push out v1
+  let s2 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        97#u8, 110#u8, 103#u8, 101#u8, 108#u8, 108#u8, 111#u8, 99#u8, 115#u8,
+        105#u8, 110#u8
+        ]))
+  let v2 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s2
+  let out2 ← alloc.vec.Vec.push out1 v2
+  let s3 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        97#u8, 110#u8, 103#u8, 101#u8, 108#u8, 111#u8, 102#u8, 100#u8, 101#u8,
+        97#u8, 116#u8, 104#u8
+        ]))
+  let v3 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s3
+  let out3 ← alloc.vec.Vec.push out2 v3
+  let s4 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        97#u8, 110#u8, 103#u8, 103#u8, 97#u8, 110#u8, 100#u8, 97#u8, 107#u8,
+        111#u8
+        ]))
+  let v4 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s4
+  let out4 ← alloc.vec.Vec.push out3 v4
+  let s5 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        97#u8, 110#u8, 105#u8, 118#u8, 101#u8, 114#u8, 115#u8, 97#u8, 114#u8,
+        105#u8, 111#u8
+        ]))
+  let v5 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s5
+  let out5 ← alloc.vec.Vec.push out4 v5
+  let s6 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        97#u8, 112#u8, 97#u8, 105#u8, 120#u8, 111#u8, 110#u8, 97#u8, 100#u8,
+        97#u8
+        ]))
+  let v6 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s6
+  let out6 ← alloc.vec.Vec.push out5 v6
+  let s7 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        97#u8, 112#u8, 111#u8, 99#u8, 97#u8, 108#u8, 105#u8, 112#u8, 115#u8,
+        97#u8
+        ]))
+  let v7 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s7
+  let out7 ← alloc.vec.Vec.push out6 v7
+  let s8 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        97#u8, 112#u8, 111#u8, 99#u8, 97#u8, 108#u8, 105#u8, 112#u8, 115#u8,
+        101#u8
+        ]))
+  let v8 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s8
+  let out8 ← alloc.vec.Vec.push out7 v8
+  let s9 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        97#u8, 112#u8, 111#u8, 99#u8, 97#u8, 108#u8, 105#u8, 112#u8, 115#u8,
+        105#u8, 115#u8
+        ]))
+  let v9 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s9
+  let out9 ← alloc.vec.Vec.push out8 v9
+  let s10 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        97#u8, 112#u8, 111#u8, 108#u8, 105#u8, 110#u8, 97#u8, 114#u8, 105#u8,
+        111#u8
+        ]))
+  let v10 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s10
+  let out10 ← alloc.vec.Vec.push out9 v10
+  let s11 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        97#u8, 114#u8, 113#u8, 117#u8, 105#u8, 116#u8, 101#u8, 99#u8, 116#u8,
+        117#u8, 114#u8, 97#u8
+        ]))
+  let v11 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s11
+  let out11 ← alloc.vec.Vec.push out10 v11
+  let s12 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        97#u8, 114#u8, 114#u8, 111#u8, 108#u8, 108#u8, 97#u8, 100#u8, 111#u8,
+        114#u8, 97#u8
+        ]))
+  let v12 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s12
+  let out12 ← alloc.vec.Vec.push out11 v12
+  let s13 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        97#u8, 115#u8, 105#u8, 101#u8, 115#u8, 108#u8, 97#u8, 118#u8, 105#u8,
+        100#u8, 97#u8
+        ]))
+  let v13 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s13
+  let out13 ← alloc.vec.Vec.push out12 v13
+  let s14 ←
+    lift (Array.to_slice
+      (Array.make 15#usize [
+        97#u8, 115#u8, 115#u8, 97#u8, 108#u8, 97#u8, 109#u8, 117#u8, 97#u8,
+        108#u8, 97#u8, 105#u8, 107#u8, 117#u8, 109#u8
+        ]))
+  let v14 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s14
+  let out14 ← alloc.vec.Vec.push out13 v14
+  let s15 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        97#u8, 117#u8, 120#u8, 105#u8, 108#u8, 105#u8, 97#u8, 100#u8, 111#u8,
+        114#u8, 97#u8
+        ]))
+  let v15 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s15
+  let out15 ← alloc.vec.Vec.push out14 v15
+  let s16 ←
+    lift (Array.to_slice
+      (Array.make 16#usize [
+        97#u8, 118#u8, 101#u8, 110#u8, 103#u8, 101#u8, 100#u8, 115#u8, 101#u8,
+        118#u8, 101#u8, 110#u8, 102#u8, 111#u8, 108#u8, 100#u8
+        ]))
+  let v16 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s16
+  let out16 ← alloc.vec.Vec.push out15 v16
+  let s17 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        97#u8, 121#u8, 97#u8, 109#u8, 103#u8, 111#u8, 114#u8, 101#u8, 110#u8,
+        103#u8
+        ]))
+  let v17 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s17
+  let out17 ← alloc.vec.Vec.push out16 v17
+  let s18 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        98#u8, 97#u8, 98#u8, 97#u8, 115#u8, 111#u8, 110#u8, 105#u8, 99#u8,
+        111#u8, 115#u8
+        ]))
+  let v18 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s18
+  let out18 ← alloc.vec.Vec.push out17 v18
+  let s19 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        98#u8, 97#u8, 108#u8, 108#u8, 97#u8, 52#u8, 108#u8, 105#u8, 102#u8,
+        101#u8
+        ]))
+  let v19 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s19
+  let out19 ← alloc.vec.Vec.push out18 v19
+  let s20 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        98#u8, 97#u8, 114#u8, 114#u8, 105#u8, 111#u8, 102#u8, 105#u8, 110#u8,
+        111#u8
+        ]))
+  let v20 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s20
+  let out20 ← alloc.vec.Vec.push out19 v20
+  let s21 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        98#u8, 98#u8, 97#u8, 108#u8, 108#u8, 52#u8, 108#u8, 105#u8, 102#u8,
+        101#u8
+        ]))
+  let v21 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s21
+  let out21 ← alloc.vec.Vec.push out20 v21
+  let s22 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        98#u8, 101#u8, 98#u8, 105#u8, 116#u8, 97#u8, 108#u8, 105#u8, 110#u8,
+        100#u8, 97#u8
+        ]))
+  let v22 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s22
+  let out22 ← alloc.vec.Vec.push out21 v22
+  let s23 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        98#u8, 101#u8, 108#u8, 108#u8, 105#u8, 115#u8, 115#u8, 105#u8, 109#u8,
+        97#u8
+        ]))
+  let v23 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s23
+  alloc.vec.Vec.push out22 v23
+
+/-- [kanidm_kernel::migration_defaults::table_part_3]:
+    Source: 'prove/ports/kanidm/kernel/src/migration_defaults.rs', lines 94:0-121:1
+    Visibility: public -/
+def migration_defaults.table_part_3
+  : Result (alloc.vec.Vec (alloc.vec.Vec Std.U8)) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        98#u8, 101#u8, 110#u8, 100#u8, 105#u8, 99#u8, 105#u8, 111#u8, 110#u8,
+        101#u8, 115#u8
+        ]))
+  let v ← alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  let out ← alloc.vec.Vec.push (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) v
+  let s1 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        98#u8, 101#u8, 110#u8, 102#u8, 105#u8, 113#u8, 117#u8, 105#u8, 115#u8,
+        116#u8, 97#u8
+        ]))
+  let v1 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s1
+  let out1 ← alloc.vec.Vec.push out v1
+  let s2 ←
+    lift (Array.to_slice
+      (Array.make 16#usize [
+        98#u8, 101#u8, 115#u8, 116#u8, 102#u8, 114#u8, 105#u8, 101#u8, 110#u8,
+        100#u8, 115#u8, 52#u8, 101#u8, 118#u8, 101#u8, 114#u8
+        ]))
+  let v2 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s2
+  let out2 ← alloc.vec.Vec.push out1 v2
+  let s3 ←
+    lift (Array.to_slice
+      (Array.make 18#usize [
+        98#u8, 101#u8, 115#u8, 116#u8, 102#u8, 114#u8, 105#u8, 101#u8, 110#u8,
+        100#u8, 115#u8, 102#u8, 111#u8, 114#u8, 101#u8, 118#u8, 101#u8, 114#u8
+        ]))
+  let v3 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s3
+  let out3 ← alloc.vec.Vec.push out2 v3
+  let s4 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        98#u8, 105#u8, 101#u8, 110#u8, 118#u8, 101#u8, 110#u8, 105#u8, 100#u8,
+        111#u8
+        ]))
+  let v4 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s4
+  let out4 ← alloc.vec.Vec.push out3 v4
+  let s5 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        98#u8, 105#u8, 108#u8, 108#u8, 97#u8, 110#u8, 100#u8, 98#u8, 101#u8,
+        110#u8
+        ]))
+  let v5 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s5
+  let out5 ← alloc.vec.Vec.push out4 v5
+  let s6 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        98#u8, 108#u8, 97#u8, 99#u8, 107#u8, 97#u8, 110#u8, 100#u8, 119#u8,
+        104#u8, 105#u8, 116#u8, 101#u8
+        ]))
+  let v6 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s6
+  let out6 ← alloc.vec.Vec.push out5 v6
+  let s7 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        98#u8, 108#u8, 97#u8, 99#u8, 107#u8, 101#u8, 121#u8, 101#u8, 100#u8,
+        112#u8, 101#u8, 97#u8, 115#u8
+        ]))
+  let v7 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s7
+  let out7 ← alloc.vec.Vec.push out6 v7
+  let s8 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        98#u8, 111#u8, 98#u8, 101#u8, 115#u8, 112#u8, 111#u8, 110#u8, 106#u8,
+        97#u8
+        ]))
+  let v8 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s8
+  let out8 ← alloc.vec.Vec.push out7 v8
+  let s9 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        98#u8, 111#u8, 98#u8, 116#u8, 104#u8, 101#u8, 98#u8, 117#u8, 105#u8,
+        108#u8, 100#u8, 101#u8, 114#u8
+        ]))
+  let v9 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s9
+  let out9 ← alloc.vec.Vec.push out8 v9
+  let s10 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        98#u8, 111#u8, 109#u8, 98#u8, 111#u8, 110#u8, 99#u8, 105#u8, 116#u8,
+        111#u8
+        ]))
+  let v10 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s10
+  let out10 ← alloc.vec.Vec.push out9 v10
+  let s11 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        98#u8, 111#u8, 114#u8, 114#u8, 101#u8, 103#u8, 117#u8, 105#u8, 116#u8,
+        111#u8
+        ]))
+  let v11 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s11
+  let out11 ← alloc.vec.Vec.push out10 v11
+  let s12 ←
+    lift (Array.to_slice
+      (Array.make 15#usize [
+        98#u8, 111#u8, 121#u8, 115#u8, 111#u8, 118#u8, 101#u8, 114#u8, 102#u8,
+        108#u8, 111#u8, 119#u8, 101#u8, 114#u8, 115#u8
+        ]))
+  let v12 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s12
+  let out12 ← alloc.vec.Vec.push out11 v12
+  let s13 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        98#u8, 114#u8, 105#u8, 110#u8, 103#u8, 109#u8, 101#u8, 116#u8, 111#u8,
+        108#u8, 105#u8, 102#u8, 101#u8
+        ]))
+  let v13 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s13
+  let out13 ← alloc.vec.Vec.push out12 v13
+  let s14 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        98#u8, 117#u8, 115#u8, 116#u8, 105#u8, 116#u8, 98#u8, 97#u8, 98#u8,
+        121#u8
+        ]))
+  let v14 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s14
+  let out14 ← alloc.vec.Vec.push out13 v14
+  let s15 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        99#u8, 97#u8, 99#u8, 104#u8, 111#u8, 114#u8, 114#u8, 105#u8, 116#u8,
+        97#u8
+        ]))
+  let v15 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s15
+  let out15 ← alloc.vec.Vec.push out14 v15
+  let s16 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        99#u8, 97#u8, 99#u8, 104#u8, 111#u8, 114#u8, 114#u8, 105#u8, 116#u8,
+        111#u8
+        ]))
+  let v16 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s16
+  let out16 ← alloc.vec.Vec.push out15 v16
+  let s17 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        99#u8, 97#u8, 102#u8, 101#u8, 116#u8, 97#u8, 99#u8, 117#u8, 98#u8,
+        97#u8
+        ]))
+  let v17 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s17
+  let out17 ← alloc.vec.Vec.push out16 v17
+  let s18 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        99#u8, 97#u8, 108#u8, 99#u8, 117#u8, 108#u8, 97#u8, 100#u8, 111#u8,
+        114#u8, 97#u8
+        ]))
+  let v18 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s18
+  let out18 ← alloc.vec.Vec.push out17 v18
+  let s19 ←
+    lift (Array.to_slice
+      (Array.make 15#usize [
+        99#u8, 97#u8, 108#u8, 105#u8, 102#u8, 111#u8, 114#u8, 110#u8, 105#u8,
+        99#u8, 97#u8, 116#u8, 105#u8, 111#u8, 110#u8
+        ]))
+  let v19 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s19
+  let out19 ← alloc.vec.Vec.push out18 v19
+  let s20 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        99#u8, 97#u8, 109#u8, 105#u8, 108#u8, 111#u8, 116#u8, 101#u8, 97#u8,
+        109#u8, 111#u8
+        ]))
+  let v20 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s20
+  let out20 ← alloc.vec.Vec.push out19 v20
+  let s21 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        99#u8, 97#u8, 110#u8, 100#u8, 121#u8, 108#u8, 97#u8, 110#u8, 100#u8,
+        49#u8
+        ]))
+  let v21 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s21
+  let out21 ← alloc.vec.Vec.push out20 v21
+  let s22 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        99#u8, 97#u8, 110#u8, 100#u8, 121#u8, 115#u8, 104#u8, 111#u8, 112#u8,
+        49#u8
+        ]))
+  let v22 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s22
+  let out22 ← alloc.vec.Vec.push out21 v22
+  let s23 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        99#u8, 97#u8, 110#u8, 116#u8, 116#u8, 111#u8, 117#u8, 99#u8, 104#u8,
+        116#u8, 104#u8, 105#u8, 115#u8
+        ]))
+  let v23 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s23
+  alloc.vec.Vec.push out22 v23
+
+/-- [kanidm_kernel::migration_defaults::table_part_4]:
+    Source: 'prove/ports/kanidm/kernel/src/migration_defaults.rs', lines 122:0-149:1
+    Visibility: public -/
+def migration_defaults.table_part_4
+  : Result (alloc.vec.Vec (alloc.vec.Vec Std.U8)) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        99#u8, 97#u8, 112#u8, 101#u8, 114#u8, 117#u8, 99#u8, 105#u8, 116#u8,
+        97#u8
+        ]))
+  let v ← alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  let out ← alloc.vec.Vec.push (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) v
+  let s1 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        99#u8, 97#u8, 112#u8, 114#u8, 105#u8, 99#u8, 104#u8, 111#u8, 115#u8,
+        97#u8
+        ]))
+  let v1 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s1
+  let out1 ← alloc.vec.Vec.push out v1
+  let s2 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        99#u8, 97#u8, 114#u8, 97#u8, 100#u8, 101#u8, 112#u8, 101#u8, 114#u8,
+        114#u8, 111#u8
+        ]))
+  let v2 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s2
+  let out2 ← alloc.vec.Vec.push out1 v2
+  let s3 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        99#u8, 97#u8, 114#u8, 97#u8, 110#u8, 103#u8, 117#u8, 101#u8, 106#u8,
+        111#u8
+        ]))
+  let v3 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s3
+  let out3 ← alloc.vec.Vec.push out2 v3
+  let s4 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        99#u8, 97#u8, 114#u8, 105#u8, 99#u8, 97#u8, 116#u8, 117#u8, 114#u8,
+        97#u8
+        ]))
+  let v4 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s4
+  let out4 ← alloc.vec.Vec.push out3 v4
+  let s5 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        99#u8, 97#u8, 114#u8, 105#u8, 116#u8, 97#u8, 100#u8, 101#u8, 97#u8,
+        110#u8, 103#u8, 101#u8, 108#u8
+        ]))
+  let v5 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s5
+  let out5 ← alloc.vec.Vec.push out4 v5
+  let s6 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        99#u8, 97#u8, 114#u8, 116#u8, 101#u8, 108#u8, 100#u8, 101#u8, 115#u8,
+        97#u8, 110#u8, 116#u8, 97#u8
+        ]))
+  let v6 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s6
+  let out6 ← alloc.vec.Vec.push out5 v6
+  let s7 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        99#u8, 97#u8, 115#u8, 116#u8, 114#u8, 97#u8, 118#u8, 101#u8, 116#u8,
+        101#u8
+        ]))
+  let v7 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s7
+  let out7 ← alloc.vec.Vec.push out6 v7
+  let s8 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        99#u8, 97#u8, 116#u8, 105#u8, 110#u8, 116#u8, 104#u8, 101#u8, 104#u8,
+        97#u8, 116#u8
+        ]))
+  let v8 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s8
+  let out8 ← alloc.vec.Vec.push out7 v8
+  let s9 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        99#u8, 97#u8, 116#u8, 115#u8, 97#u8, 110#u8, 100#u8, 100#u8, 111#u8,
+        103#u8, 115#u8
+        ]))
+  let v9 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s9
+  let out9 ← alloc.vec.Vec.push out8 v9
+  let s10 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        99#u8, 101#u8, 108#u8, 116#u8, 105#u8, 99#u8, 102#u8, 99#u8, 49#u8,
+        56#u8, 56#u8, 56#u8
+        ]))
+  let v10 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s10
+  let out10 ← alloc.vec.Vec.push out9 v10
+  let s11 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        99#u8, 101#u8, 110#u8, 105#u8, 99#u8, 105#u8, 101#u8, 110#u8, 116#u8,
+        97#u8
+        ]))
+  let v11 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s11
+  let out11 ← alloc.vec.Vec.push out10 v11
+  let s12 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        99#u8, 104#u8, 97#u8, 112#u8, 97#u8, 114#u8, 114#u8, 105#u8, 116#u8,
+        97#u8
+        ]))
+  let v12 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s12
+  let out12 ← alloc.vec.Vec.push out11 v12
+  let s13 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        99#u8, 104#u8, 97#u8, 112#u8, 97#u8, 114#u8, 114#u8, 105#u8, 116#u8,
+        111#u8
+        ]))
+  let v13 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s13
+  let out13 ← alloc.vec.Vec.push out12 v13
+  let s14 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        99#u8, 104#u8, 97#u8, 114#u8, 111#u8, 108#u8, 97#u8, 115#u8, 116#u8,
+        114#u8, 97#u8
+        ]))
+  let v14 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s14
+  let out14 ← alloc.vec.Vec.push out13 v14
+  let s15 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        99#u8, 104#u8, 105#u8, 99#u8, 97#u8, 102#u8, 114#u8, 101#u8, 115#u8,
+        97#u8
+        ]))
+  let v15 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s15
+  let out15 ← alloc.vec.Vec.push out14 v15
+  let s16 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        99#u8, 104#u8, 105#u8, 107#u8, 105#u8, 115#u8, 116#u8, 114#u8, 105#u8,
+        107#u8, 105#u8, 115#u8
+        ]))
+  let v16 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s16
+  let out16 ← alloc.vec.Vec.push out15 v16
+  let s17 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        99#u8, 104#u8, 105#u8, 108#u8, 105#u8, 110#u8, 100#u8, 114#u8, 105#u8,
+        110#u8, 97#u8
+        ]))
+  let v17 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s17
+  let out17 ← alloc.vec.Vec.push out16 v17
+  let s18 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        99#u8, 104#u8, 105#u8, 110#u8, 103#u8, 97#u8, 116#u8, 117#u8, 109#u8,
+        97#u8, 100#u8, 114#u8, 101#u8
+        ]))
+  let v18 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s18
+  let out18 ← alloc.vec.Vec.push out17 v18
+  let s19 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        99#u8, 104#u8, 105#u8, 113#u8, 117#u8, 105#u8, 116#u8, 105#u8, 116#u8,
+        97#u8, 115#u8
+        ]))
+  let v19 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s19
+  let out19 ← alloc.vec.Vec.push out18 v19
+  let s20 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        99#u8, 104#u8, 111#u8, 99#u8, 111#u8, 104#u8, 111#u8, 108#u8, 105#u8,
+        99#u8
+        ]))
+  let v20 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s20
+  let out20 ← alloc.vec.Vec.push out19 v20
+  let s21 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        99#u8, 104#u8, 114#u8, 105#u8, 115#u8, 32#u8, 98#u8, 114#u8, 111#u8,
+        119#u8, 110#u8
+        ]))
+  let v21 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s21
+  let out21 ← alloc.vec.Vec.push out20 v21
+  let s22 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        99#u8, 104#u8, 117#u8, 112#u8, 97#u8, 99#u8, 104#u8, 117#u8, 112#u8,
+        115#u8
+        ]))
+  let v22 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s22
+  let out22 ← alloc.vec.Vec.push out21 v22
+  let s23 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        99#u8, 105#u8, 110#u8, 116#u8, 97#u8, 115#u8, 101#u8, 106#u8, 97#u8,
+        116#u8, 105#u8
+        ]))
+  let v23 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s23
+  alloc.vec.Vec.push out22 v23
+
+/-- [kanidm_kernel::migration_defaults::table_part_5]:
+    Source: 'prove/ports/kanidm/kernel/src/migration_defaults.rs', lines 150:0-177:1
+    Visibility: public -/
+def migration_defaults.table_part_5
+  : Result (alloc.vec.Vec (alloc.vec.Vec Std.U8)) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 111#u8, 102#u8, 50#u8, 48#u8,
+        48#u8, 52#u8
+        ]))
+  let v ← alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  let out ← alloc.vec.Vec.push (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) v
+  let s1 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 111#u8, 102#u8, 50#u8, 48#u8,
+        48#u8, 53#u8
+        ]))
+  let v1 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s1
+  let out1 ← alloc.vec.Vec.push out v1
+  let s2 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 111#u8, 102#u8, 50#u8, 48#u8,
+        48#u8, 54#u8
+        ]))
+  let v2 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s2
+  let out2 ← alloc.vec.Vec.push out1 v2
+  let s3 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 111#u8, 102#u8, 50#u8, 48#u8,
+        48#u8, 55#u8
+        ]))
+  let v3 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s3
+  let out3 ← alloc.vec.Vec.push out2 v3
+  let s4 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 111#u8, 102#u8, 50#u8, 48#u8,
+        48#u8, 56#u8
+        ]))
+  let v4 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s4
+  let out4 ← alloc.vec.Vec.push out3 v4
+  let s5 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 111#u8, 102#u8, 50#u8, 48#u8,
+        48#u8, 57#u8
+        ]))
+  let v5 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s5
+  let out5 ← alloc.vec.Vec.push out4 v5
+  let s6 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 111#u8, 102#u8, 50#u8, 48#u8,
+        49#u8, 48#u8
+        ]))
+  let v6 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s6
+  let out6 ← alloc.vec.Vec.push out5 v6
+  let s7 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 111#u8, 102#u8, 50#u8, 48#u8,
+        49#u8, 49#u8
+        ]))
+  let v7 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s7
+  let out7 ← alloc.vec.Vec.push out6 v7
+  let s8 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 111#u8, 102#u8, 50#u8, 48#u8,
+        49#u8, 50#u8
+        ]))
+  let v8 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s8
+  let out8 ← alloc.vec.Vec.push out7 v8
+  let s9 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        99#u8, 111#u8, 109#u8, 112#u8, 117#u8, 116#u8, 97#u8, 99#u8, 105#u8,
+        111#u8, 110#u8
+        ]))
+  let v9 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s9
+  let out9 ← alloc.vec.Vec.push out8 v9
+  let s10 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        99#u8, 111#u8, 109#u8, 117#u8, 110#u8, 105#u8, 99#u8, 97#u8, 99#u8,
+        105#u8, 111#u8, 110#u8
+        ]))
+  let v10 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s10
+  let out10 ← alloc.vec.Vec.push out9 v10
+  let s11 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        99#u8, 111#u8, 110#u8, 102#u8, 105#u8, 100#u8, 101#u8, 110#u8, 99#u8,
+        105#u8, 97#u8, 108#u8
+        ]))
+  let v11 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s11
+  let out11 ← alloc.vec.Vec.push out10 v11
+  let s12 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        99#u8, 111#u8, 110#u8, 116#u8, 97#u8, 98#u8, 105#u8, 108#u8, 105#u8,
+        100#u8, 97#u8, 100#u8
+        ]))
+  let v12 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s12
+  let out12 ← alloc.vec.Vec.push out11 v12
+  let s13 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        99#u8, 111#u8, 111#u8, 107#u8, 105#u8, 101#u8, 115#u8, 110#u8, 99#u8,
+        114#u8, 101#u8, 97#u8, 109#u8
+        ]))
+  let v13 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s13
+  let out13 ← alloc.vec.Vec.push out12 v13
+  let s14 ←
+    lift (Array.to_slice
+      (Array.make 14#usize [
+        99#u8, 111#u8, 114#u8, 97#u8, 122#u8, 111#u8, 110#u8, 100#u8, 101#u8,
+        109#u8, 101#u8, 108#u8, 111#u8, 110#u8
+        ]))
+  let v14 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s14
+  let out14 ← alloc.vec.Vec.push out13 v14
+  let s15 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        99#u8, 111#u8, 115#u8, 105#u8, 116#u8, 97#u8, 114#u8, 105#u8, 99#u8,
+        97#u8
+        ]))
+  let v15 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s15
+  let out15 ← alloc.vec.Vec.push out14 v15
+  let s16 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        99#u8, 114#u8, 97#u8, 100#u8, 108#u8, 101#u8, 111#u8, 102#u8, 102#u8,
+        105#u8, 108#u8, 116#u8, 104#u8
+        ]))
+  let v16 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s16
+  let out16 ← alloc.vec.Vec.push out15 v16
+  let s17 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        99#u8, 114#u8, 97#u8, 122#u8, 121#u8, 115#u8, 101#u8, 120#u8, 121#u8,
+        99#u8, 111#u8, 111#u8, 108#u8
+        ]))
+  let v17 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s17
+  let out17 ← alloc.vec.Vec.push out16 v17
+  let s18 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        99#u8, 114#u8, 101#u8, 112#u8, 117#u8, 115#u8, 99#u8, 117#u8, 108#u8,
+        111#u8
+        ]))
+  let v18 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s18
+  let out18 ← alloc.vec.Vec.push out17 v18
+  let s19 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        99#u8, 114#u8, 105#u8, 115#u8, 111#u8, 115#u8, 116#u8, 111#u8, 109#u8,
+        111#u8
+        ]))
+  let v19 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s19
+  let out19 ← alloc.vec.Vec.push out18 v19
+  let s20 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        99#u8, 114#u8, 105#u8, 115#u8, 116#u8, 111#u8, 109#u8, 101#u8, 97#u8,
+        109#u8, 97#u8
+        ]))
+  let v20 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s20
+  let out20 ← alloc.vec.Vec.push out19 v20
+  let s21 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        99#u8, 114#u8, 105#u8, 115#u8, 116#u8, 111#u8, 116#u8, 101#u8, 97#u8,
+        109#u8, 97#u8
+        ]))
+  let v21 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s21
+  let out21 ← alloc.vec.Vec.push out20 v21
+  let s22 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        99#u8, 114#u8, 105#u8, 115#u8, 116#u8, 111#u8, 116#u8, 101#u8, 97#u8,
+        109#u8, 111#u8
+        ]))
+  let v22 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s22
+  let out22 ← alloc.vec.Vec.push out21 v22
+  let s23 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        99#u8, 114#u8, 105#u8, 115#u8, 116#u8, 111#u8, 118#u8, 105#u8, 118#u8,
+        101#u8
+        ]))
+  let v23 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s23
+  alloc.vec.Vec.push out22 v23
+
+/-- [kanidm_kernel::migration_defaults::table_part_6]:
+    Source: 'prove/ports/kanidm/kernel/src/migration_defaults.rs', lines 178:0-205:1
+    Visibility: public -/
+def migration_defaults.table_part_6
+  : Result (alloc.vec.Vec (alloc.vec.Vec Std.U8)) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        99#u8, 117#u8, 97#u8, 108#u8, 113#u8, 117#u8, 105#u8, 101#u8, 114#u8,
+        97#u8
+        ]))
+  let v ← alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  let out ← alloc.vec.Vec.push (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) v
+  let s1 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        99#u8, 117#u8, 97#u8, 108#u8, 113#u8, 117#u8, 105#u8, 101#u8, 114#u8,
+        99#u8, 111#u8, 115#u8, 97#u8
+        ]))
+  let v1 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s1
+  let out1 ← alloc.vec.Vec.push out v1
+  let s2 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        99#u8, 117#u8, 99#u8, 104#u8, 117#u8, 114#u8, 114#u8, 117#u8, 109#u8,
+        105#u8, 110#u8
+        ]))
+  let v2 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s2
+  let out2 ← alloc.vec.Vec.push out1 v2
+  let s3 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        99#u8, 121#u8, 109#u8, 114#u8, 117#u8, 97#u8, 109#u8, 98#u8, 121#u8,
+        116#u8, 104#u8
+        ]))
+  let v3 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s3
+  let out3 ← alloc.vec.Vec.push out2 v3
+  let s4 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        100#u8, 97#u8, 100#u8, 100#u8, 121#u8, 115#u8, 108#u8, 105#u8, 108#u8,
+        103#u8, 105#u8, 114#u8, 108#u8
+        ]))
+  let v4 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s4
+  let out4 ← alloc.vec.Vec.push out3 v4
+  let s5 ←
+    lift (Array.to_slice
+      (Array.make 16#usize [
+        100#u8, 97#u8, 100#u8, 100#u8, 121#u8, 115#u8, 108#u8, 105#u8, 116#u8,
+        116#u8, 108#u8, 101#u8, 103#u8, 105#u8, 114#u8, 108#u8
+        ]))
+  let v5 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s5
+  let out5 ← alloc.vec.Vec.push out4 v5
+  let s6 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        100#u8, 97#u8, 110#u8, 105#u8, 116#u8, 121#u8, 107#u8, 97#u8, 110#u8,
+        101#u8
+        ]))
+  let v6 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s6
+  let out6 ← alloc.vec.Vec.push out5 v6
+  let s7 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        100#u8, 97#u8, 118#u8, 101#u8, 121#u8, 104#u8, 97#u8, 118#u8, 111#u8,
+        107#u8
+        ]))
+  let v7 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s7
+  let out7 ← alloc.vec.Vec.push out6 v7
+  let s8 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        100#u8, 99#u8, 115#u8, 104#u8, 111#u8, 101#u8, 99#u8, 111#u8, 117#u8,
+        115#u8, 97#u8
+        ]))
+  let v8 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s8
+  let out8 ← alloc.vec.Vec.push out7 v8
+  let s9 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        100#u8, 101#u8, 112#u8, 111#u8, 114#u8, 116#u8, 105#u8, 118#u8, 111#u8,
+        99#u8, 97#u8, 108#u8, 105#u8
+        ]))
+  let v9 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s9
+  let out9 ← alloc.vec.Vec.push out8 v9
+  let s10 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        100#u8, 101#u8, 112#u8, 114#u8, 101#u8, 100#u8, 97#u8, 100#u8, 111#u8,
+        114#u8
+        ]))
+  let v10 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s10
+  let out10 ← alloc.vec.Vec.push out9 v10
+  let s11 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        100#u8, 101#u8, 115#u8, 105#u8, 100#u8, 101#u8, 114#u8, 97#u8, 116#u8,
+        97#u8
+        ]))
+  let v11 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s11
+  let out11 ← alloc.vec.Vec.push out10 v11
+  let s12 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        100#u8, 103#u8, 101#u8, 110#u8, 101#u8, 114#u8, 97#u8, 116#u8, 105#u8,
+        111#u8, 110#u8, 120#u8
+        ]))
+  let v12 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s12
+  let out12 ← alloc.vec.Vec.push out11 v12
+  let s13 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        100#u8, 105#u8, 109#u8, 109#u8, 117#u8, 98#u8, 111#u8, 114#u8, 103#u8,
+        105#u8, 114#u8
+        ]))
+  let v13 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s13
+  let out13 ← alloc.vec.Vec.push out12 v13
+  let s14 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        100#u8, 105#u8, 111#u8, 115#u8, 101#u8, 115#u8, 98#u8, 117#u8, 101#u8,
+        110#u8, 111#u8
+        ]))
+  let v14 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s14
+  let out14 ← alloc.vec.Vec.push out13 v14
+  let s15 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        100#u8, 105#u8, 111#u8, 115#u8, 116#u8, 101#u8, 98#u8, 101#u8, 110#u8,
+        100#u8, 105#u8, 103#u8, 97#u8
+        ]))
+  let v15 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s15
+  let out15 ← alloc.vec.Vec.push out14 v15
+  let s16 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        100#u8, 105#u8, 118#u8, 97#u8, 108#u8, 105#u8, 99#u8, 105#u8, 111#u8,
+        117#u8, 115#u8
+        ]))
+  let v16 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s16
+  let out16 ← alloc.vec.Vec.push out15 v16
+  let s17 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        100#u8, 111#u8, 108#u8, 99#u8, 101#u8, 103#u8, 97#u8, 98#u8, 98#u8,
+        97#u8, 110#u8, 97#u8
+        ]))
+  let v17 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s17
+  let out17 ← alloc.vec.Vec.push out16 v17
+  let s18 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        100#u8, 114#u8, 97#u8, 99#u8, 111#u8, 109#u8, 97#u8, 108#u8, 102#u8,
+        111#u8, 121#u8
+        ]))
+  let v18 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s18
+  let out18 ← alloc.vec.Vec.push out17 v18
+  let s19 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        100#u8, 114#u8, 97#u8, 103#u8, 111#u8, 115#u8, 116#u8, 101#u8, 97#u8,
+        109#u8, 101#u8, 97#u8
+        ]))
+  let v19 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s19
+  let out19 ← alloc.vec.Vec.push out18 v19
+  let s20 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        101#u8, 97#u8, 116#u8, 109#u8, 121#u8, 115#u8, 104#u8, 111#u8, 114#u8,
+        116#u8, 115#u8
+        ]))
+  let v20 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s20
+  let out20 ← alloc.vec.Vec.push out19 v20
+  let s21 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        101#u8, 99#u8, 117#u8, 97#u8, 116#u8, 111#u8, 114#u8, 105#u8, 97#u8,
+        110#u8, 97#u8
+        ]))
+  let v21 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s21
+  let out21 ← alloc.vec.Vec.push out20 v21
+  let s22 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        101#u8, 108#u8, 97#u8, 109#u8, 111#u8, 114#u8, 97#u8, 112#u8, 101#u8,
+        115#u8, 116#u8, 97#u8
+        ]))
+  let v22 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s22
+  let out22 ← alloc.vec.Vec.push out21 v22
+  let s23 ←
+    lift (Array.to_slice
+      (Array.make 14#usize [
+        101#u8, 108#u8, 97#u8, 109#u8, 111#u8, 114#u8, 100#u8, 101#u8, 109#u8,
+        105#u8, 118#u8, 105#u8, 100#u8, 97#u8
+        ]))
+  let v23 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s23
+  alloc.vec.Vec.push out22 v23
+
+/-- [kanidm_kernel::migration_defaults::table_part_7]:
+    Source: 'prove/ports/kanidm/kernel/src/migration_defaults.rs', lines 206:0-233:1
+    Visibility: public -/
+def migration_defaults.table_part_7
+  : Result (alloc.vec.Vec (alloc.vec.Vec Std.U8)) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        101#u8, 108#u8, 97#u8, 109#u8, 111#u8, 114#u8, 100#u8, 117#u8, 101#u8,
+        108#u8, 101#u8
+        ]))
+  let v ← alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  let out ← alloc.vec.Vec.push (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) v
+  let s1 ←
+    lift (Array.to_slice
+      (Array.make 14#usize [
+        101#u8, 108#u8, 97#u8, 109#u8, 111#u8, 114#u8, 110#u8, 111#u8, 101#u8,
+        120#u8, 105#u8, 115#u8, 116#u8, 101#u8
+        ]))
+  let v1 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s1
+  let out1 ← alloc.vec.Vec.push out v1
+  let s2 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        101#u8, 109#u8, 112#u8, 101#u8, 114#u8, 97#u8, 116#u8, 114#u8, 105#u8,
+        122#u8
+        ]))
+  let v2 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s2
+  let out2 ← alloc.vec.Vec.push out1 v2
+  let s3 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        101#u8, 110#u8, 99#u8, 97#u8, 110#u8, 116#u8, 97#u8, 100#u8, 105#u8,
+        97#u8
+        ]))
+  let v3 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s3
+  let out3 ← alloc.vec.Vec.push out2 v3
+  let s4 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        101#u8, 110#u8, 102#u8, 101#u8, 114#u8, 109#u8, 97#u8, 103#u8, 101#u8,
+        109#u8
+        ]))
+  let v4 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s4
+  let out4 ← alloc.vec.Vec.push out3 v4
+  let s5 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        101#u8, 110#u8, 102#u8, 101#u8, 114#u8, 109#u8, 101#u8, 114#u8, 105#u8,
+        97#u8
+        ]))
+  let v5 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s5
+  let out5 ← alloc.vec.Vec.push out4 v5
+  let s6 ←
+    lift (Array.to_slice
+      (Array.make 18#usize [
+        101#u8, 114#u8, 101#u8, 115#u8, 101#u8, 108#u8, 97#u8, 109#u8, 111#u8,
+        114#u8, 100#u8, 101#u8, 109#u8, 105#u8, 118#u8, 105#u8, 100#u8, 97#u8
+        ]))
+  let v6 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s6
+  let out6 ← alloc.vec.Vec.push out5 v6
+  let s7 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        101#u8, 114#u8, 101#u8, 115#u8, 108#u8, 111#u8, 109#u8, 97#u8, 120#u8,
+        105#u8, 109#u8, 111#u8
+        ]))
+  let v7 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s7
+  let out7 ← alloc.vec.Vec.push out6 v7
+  let s8 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        101#u8, 114#u8, 101#u8, 115#u8, 108#u8, 111#u8, 109#u8, 101#u8, 106#u8,
+        111#u8, 114#u8
+        ]))
+  let v8 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s8
+  let out8 ← alloc.vec.Vec.push out7 v8
+  let s9 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        101#u8, 114#u8, 101#u8, 115#u8, 109#u8, 105#u8, 97#u8, 109#u8, 111#u8,
+        114#u8
+        ]))
+  let v9 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s9
+  let out9 ← alloc.vec.Vec.push out8 v9
+  let s10 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        101#u8, 114#u8, 101#u8, 115#u8, 109#u8, 105#u8, 118#u8, 105#u8, 100#u8,
+        97#u8
+        ]))
+  let v10 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s10
+  let out10 ← alloc.vec.Vec.push out9 v10
+  let s11 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        101#u8, 115#u8, 99#u8, 114#u8, 105#u8, 116#u8, 111#u8, 114#u8, 105#u8,
+        111#u8
+        ]))
+  let v11 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s11
+  let out11 ← alloc.vec.Vec.push out10 v11
+  let s12 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        101#u8, 115#u8, 112#u8, 105#u8, 114#u8, 105#u8, 116#u8, 117#u8, 115#u8,
+        97#u8, 110#u8, 116#u8, 111#u8
+        ]))
+  let v12 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s12
+  let out12 ← alloc.vec.Vec.push out11 v12
+  let s13 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        101#u8, 115#u8, 116#u8, 97#u8, 100#u8, 111#u8, 115#u8, 117#u8, 110#u8,
+        105#u8, 100#u8, 111#u8, 115#u8
+        ]))
+  let v13 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s13
+  let out13 ← alloc.vec.Vec.push out12 v13
+  let s14 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        101#u8, 115#u8, 116#u8, 114#u8, 101#u8, 108#u8, 105#u8, 110#u8, 104#u8,
+        97#u8
+        ]))
+  let v14 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s14
+  let out14 ← alloc.vec.Vec.push out13 v14
+  let s15 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        101#u8, 115#u8, 116#u8, 117#u8, 100#u8, 105#u8, 97#u8, 110#u8, 116#u8,
+        101#u8
+        ]))
+  let v15 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s15
+  let out15 ← alloc.vec.Vec.push out14 v15
+  let s16 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        101#u8, 119#u8, 97#u8, 110#u8, 107#u8, 111#u8, 115#u8, 97#u8, 121#u8,
+        111#u8
+        ]))
+  let v16 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s16
+  let out16 ← alloc.vec.Vec.push out15 v16
+  let s17 ←
+    lift (Array.to_slice
+      (Array.make 14#usize [
+        101#u8, 120#u8, 116#u8, 114#u8, 97#u8, 116#u8, 101#u8, 114#u8, 114#u8,
+        101#u8, 115#u8, 116#u8, 114#u8, 101#u8
+        ]))
+  let v17 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s17
+  let out17 ← alloc.vec.Vec.push out16 v17
+  let s18 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        101#u8, 121#u8, 101#u8, 115#u8, 104#u8, 105#u8, 101#u8, 108#u8, 100#u8,
+        50#u8, 49#u8
+        ]))
+  let v18 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s18
+  let out18 ← alloc.vec.Vec.push out17 v18
+  let s19 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        102#u8, 97#u8, 100#u8, 101#u8, 116#u8, 111#u8, 98#u8, 108#u8, 97#u8,
+        99#u8, 107#u8
+        ]))
+  let v19 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s19
+  let out19 ← alloc.vec.Vec.push out18 v19
+  let s20 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        102#u8, 101#u8, 114#u8, 103#u8, 97#u8, 108#u8, 105#u8, 99#u8, 105#u8,
+        111#u8, 117#u8, 115#u8
+        ]))
+  let v20 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s20
+  let out20 ← alloc.vec.Vec.push out19 v20
+  let s21 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        102#u8, 105#u8, 103#u8, 117#u8, 101#u8, 105#u8, 114#u8, 101#u8, 100#u8,
+        111#u8
+        ]))
+  let v21 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s21
+  let out21 ← alloc.vec.Vec.push out20 v21
+  let s22 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        102#u8, 105#u8, 108#u8, 97#u8, 100#u8, 101#u8, 108#u8, 102#u8, 105#u8,
+        97#u8
+        ]))
+  let v22 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s22
+  let out22 ← alloc.vec.Vec.push out21 v22
+  let s23 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        102#u8, 105#u8, 110#u8, 105#u8, 115#u8, 116#u8, 101#u8, 114#u8, 114#u8,
+        97#u8
+        ]))
+  let v23 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s23
+  alloc.vec.Vec.push out22 v23
+
+/-- [kanidm_kernel::migration_defaults::table_part_8]:
+    Source: 'prove/ports/kanidm/kernel/src/migration_defaults.rs', lines 234:0-261:1
+    Visibility: public -/
+def migration_defaults.table_part_8
+  : Result (alloc.vec.Vec (alloc.vec.Vec Std.U8)) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        102#u8, 105#u8, 115#u8, 104#u8, 97#u8, 110#u8, 100#u8, 99#u8, 104#u8,
+        105#u8, 112#u8, 115#u8
+        ]))
+  let v ← alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  let out ← alloc.vec.Vec.push (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) v
+  let s1 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        102#u8, 108#u8, 111#u8, 114#u8, 100#u8, 101#u8, 108#u8, 105#u8, 122#u8,
+        97#u8
+        ]))
+  let v1 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s1
+  let out1 ← alloc.vec.Vec.push out v1
+  let s2 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        102#u8, 108#u8, 111#u8, 114#u8, 100#u8, 101#u8, 108#u8, 111#u8, 116#u8,
+        111#u8
+        ]))
+  let v2 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s2
+  let out2 ← alloc.vec.Vec.push out1 v2
+  let s3 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        102#u8, 108#u8, 111#u8, 114#u8, 105#u8, 99#u8, 105#u8, 101#u8, 110#u8,
+        116#u8, 97#u8
+        ]))
+  let v3 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s3
+  let out3 ← alloc.vec.Vec.push out2 v3
+  let s4 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        102#u8, 108#u8, 111#u8, 114#u8, 105#u8, 110#u8, 115#u8, 97#u8, 108#u8,
+        97#u8, 109#u8
+        ]))
+  let v4 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s4
+  let out4 ← alloc.vec.Vec.push out3 v4
+  let s5 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        102#u8, 108#u8, 111#u8, 114#u8, 105#u8, 112#u8, 111#u8, 110#u8, 100#u8,
+        105#u8, 97#u8
+        ]))
+  let v5 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s5
+  let out5 ← alloc.vec.Vec.push out4 v5
+  let s6 ←
+    lift (Array.to_slice
+      (Array.make 14#usize [
+        102#u8, 111#u8, 114#u8, 101#u8, 118#u8, 101#u8, 114#u8, 97#u8, 110#u8,
+        100#u8, 101#u8, 118#u8, 101#u8, 114#u8
+        ]))
+  let v6 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s6
+  let out6 ← alloc.vec.Vec.push out5 v6
+  let s7 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        102#u8, 114#u8, 97#u8, 110#u8, 103#u8, 105#u8, 112#u8, 97#u8, 110#u8,
+        105#u8
+        ]))
+  let v7 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s7
+  let out7 ← alloc.vec.Vec.push out6 v7
+  let s8 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        102#u8, 114#u8, 101#u8, 101#u8, 50#u8, 114#u8, 104#u8, 121#u8, 109#u8,
+        101#u8
+        ]))
+  let v8 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s8
+  let out8 ← alloc.vec.Vec.push out7 v8
+  let s9 ←
+    lift (Array.to_slice
+      (Array.make 14#usize [
+        102#u8, 114#u8, 101#u8, 115#u8, 97#u8, 115#u8, 99#u8, 111#u8, 110#u8,
+        99#u8, 114#u8, 101#u8, 109#u8, 97#u8
+        ]))
+  let v9 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s9
+  let out9 ← alloc.vec.Vec.push out8 v9
+  let s10 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        102#u8, 114#u8, 111#u8, 111#u8, 116#u8, 108#u8, 111#u8, 111#u8, 112#u8,
+        115#u8
+        ]))
+  let v10 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s10
+  let out10 ← alloc.vec.Vec.push out9 v10
+  let s11 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        102#u8, 117#u8, 99#u8, 107#u8, 101#u8, 118#u8, 101#u8, 114#u8, 121#u8,
+        49#u8
+        ]))
+  let v11 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s11
+  let out11 ← alloc.vec.Vec.push out10 v11
+  let s12 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        102#u8, 117#u8, 99#u8, 107#u8, 116#u8, 104#u8, 101#u8, 112#u8, 111#u8,
+        112#u8, 101#u8
+        ]))
+  let v12 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s12
+  let out12 ← alloc.vec.Vec.push out11 v12
+  let s13 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        102#u8, 117#u8, 110#u8, 105#u8, 110#u8, 116#u8, 104#u8, 101#u8, 115#u8,
+        117#u8, 110#u8
+        ]))
+  let v13 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s13
+  let out13 ← alloc.vec.Vec.push out12 v13
+  let s14 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        102#u8, 117#u8, 110#u8, 107#u8, 121#u8, 109#u8, 117#u8, 110#u8, 107#u8,
+        121#u8
+        ]))
+  let v14 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s14
+  let out14 ← alloc.vec.Vec.push out13 v14
+  let s15 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        102#u8, 117#u8, 115#u8, 104#u8, 105#u8, 103#u8, 105#u8, 121#u8, 117#u8,
+        103#u8, 105#u8
+        ]))
+  let v15 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s15
+  let out15 ← alloc.vec.Vec.push out14 v15
+  let s16 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        102#u8, 117#u8, 115#u8, 104#u8, 105#u8, 103#u8, 105#u8, 121#u8, 117#u8,
+        117#u8, 103#u8, 105#u8
+        ]))
+  let v16 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s16
+  let out16 ← alloc.vec.Vec.push out15 v16
+  let s17 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        103#u8, 97#u8, 115#u8, 116#u8, 114#u8, 111#u8, 110#u8, 111#u8, 109#u8,
+        105#u8, 97#u8
+        ]))
+  let v17 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s17
+  let out17 ← alloc.vec.Vec.push out16 v17
+  let s18 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        103#u8, 97#u8, 116#u8, 105#u8, 116#u8, 111#u8, 108#u8, 105#u8, 110#u8,
+        100#u8, 111#u8
+        ]))
+  let v18 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s18
+  let out18 ← alloc.vec.Vec.push out17 v18
+  let s19 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        103#u8, 101#u8, 97#u8, 114#u8, 115#u8, 111#u8, 102#u8, 119#u8, 97#u8,
+        114#u8
+        ]))
+  let v19 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s19
+  let out19 ← alloc.vec.Vec.push out18 v19
+  let s20 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        103#u8, 101#u8, 116#u8, 116#u8, 104#u8, 101#u8, 114#u8, 101#u8, 102#u8,
+        97#u8, 115#u8, 116#u8
+        ]))
+  let v20 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s20
+  let out20 ← alloc.vec.Vec.push out19 v20
+  let s21 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        103#u8, 105#u8, 114#u8, 108#u8, 121#u8, 103#u8, 105#u8, 114#u8, 108#u8,
+        49#u8
+        ]))
+  let v21 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s21
+  let out21 ← alloc.vec.Vec.push out20 v21
+  let s22 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        103#u8, 108#u8, 111#u8, 114#u8, 121#u8, 116#u8, 111#u8, 103#u8, 111#u8,
+        100#u8
+        ]))
+  let v22 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s22
+  let out22 ← alloc.vec.Vec.push out21 v22
+  let s23 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        103#u8, 111#u8, 100#u8, 115#u8, 99#u8, 104#u8, 105#u8, 108#u8, 100#u8,
+        49#u8
+        ]))
+  let v23 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s23
+  alloc.vec.Vec.push out22 v23
+
+/-- [kanidm_kernel::migration_defaults::table_part_9]:
+    Source: 'prove/ports/kanidm/kernel/src/migration_defaults.rs', lines 262:0-289:1
+    Visibility: public -/
+def migration_defaults.table_part_9
+  : Result (alloc.vec.Vec (alloc.vec.Vec Std.U8)) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 14#usize [
+        103#u8, 111#u8, 102#u8, 117#u8, 99#u8, 107#u8, 121#u8, 111#u8, 117#u8,
+        114#u8, 115#u8, 101#u8, 108#u8, 102#u8
+        ]))
+  let v ← alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  let out ← alloc.vec.Vec.push (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) v
+  let s1 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        103#u8, 111#u8, 111#u8, 100#u8, 121#u8, 50#u8, 115#u8, 104#u8, 111#u8,
+        101#u8, 115#u8
+        ]))
+  let v1 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s1
+  let out1 ← alloc.vec.Vec.push out v1
+  let s2 ←
+    lift (Array.to_slice
+      (Array.make 14#usize [
+        103#u8, 114#u8, 97#u8, 110#u8, 100#u8, 116#u8, 104#u8, 101#u8, 102#u8,
+        116#u8, 97#u8, 117#u8, 116#u8, 111#u8
+        ]))
+  let v2 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s2
+  let out2 ← alloc.vec.Vec.push out1 v2
+  let s3 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        103#u8, 114#u8, 101#u8, 110#u8, 111#u8, 117#u8, 105#u8, 108#u8, 108#u8,
+        101#u8
+        ]))
+  let v3 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s3
+  let out3 ← alloc.vec.Vec.push out2 v3
+  let s4 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        103#u8, 114#u8, 121#u8, 102#u8, 102#u8, 105#u8, 110#u8, 100#u8, 111#u8,
+        114#u8
+        ]))
+  let v4 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s4
+  let out4 ← alloc.vec.Vec.push out3 v4
+  let s5 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        103#u8, 117#u8, 109#u8, 109#u8, 121#u8, 98#u8, 101#u8, 97#u8, 114#u8,
+        49#u8
+        ]))
+  let v5 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s5
+  let out5 ← alloc.vec.Vec.push out4 v5
+  let s6 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        103#u8, 117#u8, 110#u8, 115#u8, 97#u8, 110#u8, 100#u8, 114#u8, 111#u8,
+        115#u8, 101#u8, 115#u8
+        ]))
+  let v6 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s6
+  let out6 ← alloc.vec.Vec.push out5 v6
+  let s7 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        103#u8, 117#u8, 110#u8, 115#u8, 110#u8, 114#u8, 111#u8, 115#u8, 101#u8,
+        115#u8
+        ]))
+  let v7 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s7
+  let out7 ← alloc.vec.Vec.push out6 v7
+  let s8 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        104#u8, 97#u8, 98#u8, 98#u8, 111#u8, 104#u8, 111#u8, 116#u8, 101#u8,
+        108#u8
+        ]))
+  let v8 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s8
+  let out8 ← alloc.vec.Vec.push out7 v8
+  let s9 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        104#u8, 97#u8, 107#u8, 117#u8, 110#u8, 97#u8, 109#u8, 97#u8, 116#u8,
+        97#u8, 116#u8, 97#u8
+        ]))
+  let v9 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s9
+  let out9 ← alloc.vec.Vec.push out8 v9
+  let s10 ←
+    lift (Array.to_slice
+      (Array.make 14#usize [
+        104#u8, 97#u8, 110#u8, 110#u8, 97#u8, 104#u8, 32#u8, 109#u8, 111#u8,
+        110#u8, 116#u8, 97#u8, 110#u8, 97#u8
+        ]))
+  let v10 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s10
+  let out10 ← alloc.vec.Vec.push out9 v10
+  let s11 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        104#u8, 97#u8, 112#u8, 112#u8, 121#u8, 103#u8, 111#u8, 108#u8, 117#u8,
+        99#u8, 107#u8, 121#u8
+        ]))
+  let v11 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s11
+  let out11 ← alloc.vec.Vec.push out10 v11
+  let s12 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        104#u8, 97#u8, 114#u8, 114#u8, 121#u8, 32#u8, 112#u8, 111#u8, 116#u8,
+        116#u8, 101#u8, 114#u8
+        ]))
+  let v12 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s12
+  let out12 ← alloc.vec.Vec.push out11 v12
+  let s13 ←
+    lift (Array.to_slice
+      (Array.make 14#usize [
+        104#u8, 97#u8, 116#u8, 101#u8, 105#u8, 116#u8, 111#u8, 114#u8, 108#u8,
+        111#u8, 118#u8, 101#u8, 105#u8, 116#u8
+        ]))
+  let v13 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s13
+  let out13 ← alloc.vec.Vec.push out12 v13
+  let s14 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        104#u8, 97#u8, 118#u8, 101#u8, 97#u8, 110#u8, 105#u8, 99#u8, 101#u8,
+        100#u8, 97#u8, 121#u8
+        ]))
+  let v14 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s14
+  let out14 ← alloc.vec.Vec.push out13 v14
+  let s15 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        104#u8, 101#u8, 108#u8, 108#u8, 111#u8, 32#u8, 107#u8, 105#u8, 116#u8,
+        116#u8, 121#u8
+        ]))
+  let v15 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s15
+  let out15 ← alloc.vec.Vec.push out14 v15
+  let s16 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        104#u8, 105#u8, 110#u8, 100#u8, 105#u8, 107#u8, 111#u8, 97#u8, 108#u8,
+        97#u8, 109#u8
+        ]))
+  let v16 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s16
+  let out16 ← alloc.vec.Vec.push out15 v16
+  let s17 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        104#u8, 105#u8, 112#u8, 111#u8, 112#u8, 111#u8, 116#u8, 97#u8, 109#u8,
+        111#u8
+        ]))
+  let v17 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s17
+  let out17 ← alloc.vec.Vec.push out16 v17
+  let s18 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        104#u8, 111#u8, 99#u8, 117#u8, 115#u8, 112#u8, 111#u8, 99#u8, 117#u8,
+        115#u8
+        ]))
+  let v18 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s18
+  let out18 ← alloc.vec.Vec.push out17 v18
+  let s19 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        104#u8, 111#u8, 108#u8, 97#u8, 97#u8, 116#u8, 111#u8, 100#u8, 111#u8,
+        115#u8
+        ]))
+  let v19 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s19
+  let out19 ← alloc.vec.Vec.push out18 v19
+  let s20 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        104#u8, 111#u8, 108#u8, 97#u8, 99#u8, 111#u8, 109#u8, 111#u8, 101#u8,
+        115#u8, 116#u8, 97#u8, 115#u8
+        ]))
+  let v20 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s20
+  let out20 ← alloc.vec.Vec.push out19 v20
+  let s21 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        104#u8, 111#u8, 108#u8, 97#u8, 113#u8, 117#u8, 101#u8, 116#u8, 97#u8,
+        108#u8
+        ]))
+  let v21 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s21
+  let out21 ← alloc.vec.Vec.push out20 v21
+  let s22 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        104#u8, 111#u8, 108#u8, 108#u8, 97#u8, 98#u8, 97#u8, 99#u8, 107#u8,
+        49#u8
+        ]))
+  let v22 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s22
+  let out22 ← alloc.vec.Vec.push out21 v22
+  let s23 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        104#u8, 111#u8, 109#u8, 101#u8, 97#u8, 110#u8, 100#u8, 97#u8, 119#u8,
+        97#u8, 121#u8
+        ]))
+  let v23 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s23
+  alloc.vec.Vec.push out22 v23
+
+/-- [kanidm_kernel::migration_defaults::table_part_10]:
+    Source: 'prove/ports/kanidm/kernel/src/migration_defaults.rs', lines 290:0-317:1
+    Visibility: public -/
+def migration_defaults.table_part_10
+  : Result (alloc.vec.Vec (alloc.vec.Vec Std.U8)) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        104#u8, 111#u8, 109#u8, 101#u8, 115#u8, 119#u8, 101#u8, 101#u8, 116#u8,
+        104#u8, 111#u8, 109#u8, 101#u8
+        ]))
+  let v ← alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  let out ← alloc.vec.Vec.push (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) v
+  let s1 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        104#u8, 111#u8, 111#u8, 98#u8, 97#u8, 115#u8, 116#u8, 97#u8, 110#u8,
+        107#u8
+        ]))
+  let v1 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s1
+  let out1 ← alloc.vec.Vec.push out v1
+  let s2 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        104#u8, 111#u8, 116#u8, 97#u8, 110#u8, 100#u8, 115#u8, 101#u8, 120#u8,
+        121#u8
+        ]))
+  let v2 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s2
+  let out2 ← alloc.vec.Vec.push out1 v2
+  let s3 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        104#u8, 111#u8, 116#u8, 109#u8, 97#u8, 105#u8, 108#u8, 46#u8, 99#u8,
+        111#u8, 109#u8
+        ]))
+  let v3 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s3
+  let out3 ← alloc.vec.Vec.push out2 v3
+  let s4 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        104#u8, 111#u8, 116#u8, 109#u8, 97#u8, 105#u8, 108#u8, 49#u8, 50#u8,
+        51#u8
+        ]))
+  let v4 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s4
+  let out4 ← alloc.vec.Vec.push out3 v4
+  let s5 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        104#u8, 117#u8, 103#u8, 115#u8, 97#u8, 110#u8, 100#u8, 107#u8, 105#u8,
+        115#u8, 115#u8, 101#u8, 115#u8
+        ]))
+  let v5 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s5
+  let out5 ← alloc.vec.Vec.push out4 v5
+  let s6 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        104#u8, 117#u8, 103#u8, 115#u8, 110#u8, 107#u8, 105#u8, 115#u8, 115#u8,
+        101#u8, 115#u8
+        ]))
+  let v6 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s6
+  let out6 ← alloc.vec.Vec.push out5 v6
+  let s7 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        104#u8, 117#u8, 110#u8, 110#u8, 105#u8, 98#u8, 117#u8, 110#u8, 110#u8,
+        105#u8
+        ]))
+  let v7 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s7
+  let out7 ← alloc.vec.Vec.push out6 v7
+  let s8 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        104#u8, 117#u8, 110#u8, 116#u8, 101#u8, 114#u8, 120#u8, 104#u8, 117#u8,
+        110#u8, 116#u8, 101#u8, 114#u8
+        ]))
+  let v8 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s8
+  let out8 ← alloc.vec.Vec.push out7 v8
+  let s9 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        105#u8, 32#u8, 108#u8, 111#u8, 118#u8, 101#u8, 32#u8, 121#u8, 111#u8,
+        117#u8
+        ]))
+  let v9 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s9
+  let out9 ← alloc.vec.Vec.push out8 v9
+  let s10 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        105#u8, 46#u8, 108#u8, 111#u8, 118#u8, 101#u8, 46#u8, 121#u8, 111#u8,
+        117#u8
+        ]))
+  let v10 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s10
+  let out10 ← alloc.vec.Vec.push out9 v10
+  let s11 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        105#u8, 95#u8, 108#u8, 111#u8, 118#u8, 101#u8, 95#u8, 121#u8, 111#u8,
+        117#u8
+        ]))
+  let v11 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s11
+  let out11 ← alloc.vec.Vec.push out10 v11
+  let s12 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        105#u8, 97#u8, 109#u8, 119#u8, 104#u8, 97#u8, 116#u8, 105#u8, 97#u8,
+        109#u8
+        ]))
+  let v12 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s12
+  let out12 ← alloc.vec.Vec.push out11 v12
+  let s13 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        105#u8, 99#u8, 104#u8, 108#u8, 105#u8, 101#u8, 98#u8, 101#u8, 100#u8,
+        105#u8, 99#u8, 104#u8
+        ]))
+  let v13 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s13
+  let out13 ← alloc.vec.Vec.push out12 v13
+  let s14 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        105#u8, 100#u8, 111#u8, 110#u8, 116#u8, 108#u8, 111#u8, 118#u8, 101#u8,
+        121#u8, 111#u8, 117#u8
+        ]))
+  let v14 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s14
+  let out14 ← alloc.vec.Vec.push out13 v14
+  let s15 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        105#u8, 104#u8, 97#u8, 116#u8, 101#u8, 108#u8, 105#u8, 102#u8, 101#u8,
+        49#u8
+        ]))
+  let v15 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s15
+  let out15 ← alloc.vec.Vec.push out14 v15
+  let s16 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        105#u8, 104#u8, 97#u8, 116#u8, 101#u8, 109#u8, 121#u8, 108#u8, 105#u8,
+        102#u8, 101#u8
+        ]))
+  let v16 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s16
+  let out16 ← alloc.vec.Vec.push out15 v16
+  let s17 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        105#u8, 104#u8, 97#u8, 118#u8, 101#u8, 51#u8, 107#u8, 105#u8, 100#u8,
+        115#u8
+        ]))
+  let v17 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s17
+  let out17 ← alloc.vec.Vec.push out16 v17
+  let s18 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        105#u8, 104#u8, 101#u8, 97#u8, 114#u8, 116#u8, 121#u8, 111#u8, 117#u8,
+        33#u8
+        ]))
+  let v18 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s18
+  let out18 ← alloc.vec.Vec.push out17 v18
+  let s19 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        105#u8, 104#u8, 101#u8, 97#u8, 114#u8, 116#u8, 121#u8, 111#u8, 117#u8,
+        49#u8
+        ]))
+  let v19 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s19
+  let out19 ← alloc.vec.Vec.push out18 v19
+  let s20 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        105#u8, 104#u8, 101#u8, 97#u8, 114#u8, 116#u8, 121#u8, 111#u8, 117#u8,
+        50#u8
+        ]))
+  let v20 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s20
+  let out20 ← alloc.vec.Vec.push out19 v20
+  let s21 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        105#u8, 107#u8, 97#u8, 119#u8, 108#u8, 97#u8, 109#u8, 97#u8, 110#u8,
+        103#u8
+        ]))
+  let v21 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s21
+  let out21 ← alloc.vec.Vec.push out20 v21
+  let s22 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        105#u8, 107#u8, 104#u8, 111#u8, 117#u8, 118#u8, 97#u8, 110#u8, 106#u8,
+        111#u8, 117#u8
+        ]))
+  let v22 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s22
+  let out22 ← alloc.vec.Vec.push out21 v22
+  let s23 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        105#u8, 108#u8, 108#u8, 110#u8, 101#u8, 118#u8, 101#u8, 114#u8, 116#u8,
+        101#u8, 108#u8, 108#u8
+        ]))
+  let v23 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s23
+  alloc.vec.Vec.push out22 v23
+
+/-- [kanidm_kernel::migration_defaults::table_part_11]:
+    Source: 'prove/ports/kanidm/kernel/src/migration_defaults.rs', lines 318:0-345:1
+    Visibility: public -/
+def migration_defaults.table_part_11
+  : Result (alloc.vec.Vec (alloc.vec.Vec Std.U8)) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        105#u8, 108#u8, 111#u8, 118#u8, 101#u8, 50#u8, 100#u8, 97#u8, 110#u8,
+        99#u8, 101#u8
+        ]))
+  let v ← alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  let out ← alloc.vec.Vec.push (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) v
+  let s1 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        105#u8, 108#u8, 111#u8, 118#u8, 101#u8, 98#u8, 111#u8, 121#u8, 115#u8,
+        33#u8
+        ]))
+  let v1 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s1
+  let out1 ← alloc.vec.Vec.push out v1
+  let s2 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        105#u8, 108#u8, 111#u8, 118#u8, 101#u8, 98#u8, 111#u8, 121#u8, 115#u8,
+        49#u8
+        ]))
+  let v2 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s2
+  let out2 ← alloc.vec.Vec.push out1 v2
+  let s3 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        105#u8, 108#u8, 111#u8, 118#u8, 101#u8, 98#u8, 111#u8, 121#u8, 115#u8,
+        50#u8
+        ]))
+  let v3 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s3
+  let out3 ← alloc.vec.Vec.push out2 v3
+  let s4 ←
+    lift (Array.to_slice
+      (Array.make 15#usize [
+        105#u8, 108#u8, 111#u8, 118#u8, 101#u8, 99#u8, 104#u8, 114#u8, 105#u8,
+        115#u8, 98#u8, 114#u8, 111#u8, 119#u8, 110#u8
+        ]))
+  let v4 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s4
+  let out4 ← alloc.vec.Vec.push out3 v4
+  let s5 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        105#u8, 108#u8, 111#u8, 118#u8, 101#u8, 99#u8, 111#u8, 100#u8, 121#u8,
+        49#u8
+        ]))
+  let v5 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s5
+  let out5 ← alloc.vec.Vec.push out4 v5
+  let s6 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        105#u8, 108#u8, 111#u8, 118#u8, 101#u8, 100#u8, 111#u8, 103#u8, 115#u8,
+        49#u8
+        ]))
+  let v6 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s6
+  let out6 ← alloc.vec.Vec.push out5 v6
+  let s7 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        105#u8, 108#u8, 111#u8, 118#u8, 101#u8, 106#u8, 97#u8, 107#u8, 101#u8,
+        49#u8
+        ]))
+  let v7 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s7
+  let out7 ← alloc.vec.Vec.push out6 v7
+  let s8 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        105#u8, 108#u8, 111#u8, 118#u8, 101#u8, 106#u8, 111#u8, 115#u8, 101#u8,
+        49#u8
+        ]))
+  let v8 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s8
+  let out8 ← alloc.vec.Vec.push out7 v8
+  let s9 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        105#u8, 108#u8, 111#u8, 118#u8, 101#u8, 106#u8, 111#u8, 115#u8, 104#u8,
+        33#u8
+        ]))
+  let v9 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s9
+  let out9 ← alloc.vec.Vec.push out8 v9
+  let s10 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        105#u8, 108#u8, 111#u8, 118#u8, 101#u8, 106#u8, 111#u8, 115#u8, 104#u8,
+        49#u8
+        ]))
+  let v10 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s10
+  let out10 ← alloc.vec.Vec.push out9 v10
+  let s11 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        105#u8, 108#u8, 111#u8, 118#u8, 101#u8, 107#u8, 121#u8, 108#u8, 101#u8,
+        49#u8
+        ]))
+  let v11 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s11
+  let out11 ← alloc.vec.Vec.push out10 v11
+  let s12 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        105#u8, 108#u8, 111#u8, 118#u8, 101#u8, 109#u8, 105#u8, 107#u8, 101#u8,
+        33#u8
+        ]))
+  let v12 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s12
+  let out12 ← alloc.vec.Vec.push out11 v12
+  let s13 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        105#u8, 108#u8, 111#u8, 118#u8, 101#u8, 109#u8, 121#u8, 98#u8, 111#u8,
+        111#u8
+        ]))
+  let v13 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s13
+  let out13 ← alloc.vec.Vec.push out12 v13
+  let s14 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        105#u8, 108#u8, 111#u8, 118#u8, 101#u8, 109#u8, 121#u8, 99#u8, 97#u8,
+        116#u8
+        ]))
+  let v14 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s14
+  let out14 ← alloc.vec.Vec.push out13 v14
+  let s15 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        105#u8, 108#u8, 111#u8, 118#u8, 101#u8, 109#u8, 121#u8, 100#u8, 97#u8,
+        100#u8
+        ]))
+  let v15 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s15
+  let out15 ← alloc.vec.Vec.push out14 v15
+  let s16 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        105#u8, 108#u8, 111#u8, 118#u8, 101#u8, 109#u8, 121#u8, 100#u8, 97#u8,
+        100#u8, 100#u8, 121#u8
+        ]))
+  let v16 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s16
+  let out16 ← alloc.vec.Vec.push out15 v16
+  let s17 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        105#u8, 108#u8, 111#u8, 118#u8, 101#u8, 109#u8, 121#u8, 100#u8, 111#u8,
+        103#u8
+        ]))
+  let v17 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s17
+  let out17 ← alloc.vec.Vec.push out16 v17
+  let s18 ←
+    lift (Array.to_slice
+      (Array.make 14#usize [
+        105#u8, 108#u8, 111#u8, 118#u8, 101#u8, 109#u8, 121#u8, 102#u8, 114#u8,
+        105#u8, 101#u8, 110#u8, 100#u8, 115#u8
+        ]))
+  let v18 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s18
+  let out18 ← alloc.vec.Vec.push out17 v18
+  let s19 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        105#u8, 108#u8, 111#u8, 118#u8, 101#u8, 109#u8, 121#u8, 109#u8, 111#u8,
+        109#u8
+        ]))
+  let v19 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s19
+  let out19 ← alloc.vec.Vec.push out18 v19
+  let s20 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        105#u8, 108#u8, 111#u8, 118#u8, 101#u8, 109#u8, 121#u8, 109#u8, 111#u8,
+        109#u8, 109#u8, 121#u8
+        ]))
+  let v20 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s20
+  let out20 ← alloc.vec.Vec.push out19 v20
+  let s21 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        105#u8, 108#u8, 111#u8, 118#u8, 101#u8, 109#u8, 121#u8, 109#u8, 117#u8,
+        109#u8
+        ]))
+  let v21 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s21
+  let out21 ← alloc.vec.Vec.push out20 v21
+  let s22 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        105#u8, 108#u8, 111#u8, 118#u8, 101#u8, 109#u8, 121#u8, 109#u8, 117#u8,
+        109#u8, 109#u8, 121#u8
+        ]))
+  let v22 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s22
+  let out22 ← alloc.vec.Vec.push out21 v22
+  let s23 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        105#u8, 108#u8, 111#u8, 118#u8, 101#u8, 109#u8, 121#u8, 115#u8, 105#u8,
+        115#u8, 116#u8, 101#u8, 114#u8
+        ]))
+  let v23 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s23
+  alloc.vec.Vec.push out22 v23
+
+/-- [kanidm_kernel::migration_defaults::table_part_12]:
+    Source: 'prove/ports/kanidm/kernel/src/migration_defaults.rs', lines 346:0-373:1
+    Visibility: public -/
+def migration_defaults.table_part_12
+  : Result (alloc.vec.Vec (alloc.vec.Vec Std.U8)) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        105#u8, 108#u8, 111#u8, 118#u8, 101#u8, 109#u8, 121#u8, 115#u8, 111#u8,
+        110#u8
+        ]))
+  let v ← alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  let out ← alloc.vec.Vec.push (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) v
+  let s1 ←
+    lift (Array.to_slice
+      (Array.make 14#usize [
+        105#u8, 108#u8, 111#u8, 118#u8, 101#u8, 110#u8, 105#u8, 99#u8, 107#u8,
+        106#u8, 111#u8, 110#u8, 97#u8, 115#u8
+        ]))
+  let v1 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s1
+  let out1 ← alloc.vec.Vec.push out v1
+  let s2 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        105#u8, 108#u8, 111#u8, 118#u8, 101#u8, 110#u8, 111#u8, 111#u8, 110#u8,
+        101#u8
+        ]))
+  let v2 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s2
+  let out2 ← alloc.vec.Vec.push out1 v2
+  let s3 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        105#u8, 108#u8, 111#u8, 118#u8, 101#u8, 112#u8, 105#u8, 110#u8, 107#u8,
+        49#u8
+        ]))
+  let v3 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s3
+  let out3 ← alloc.vec.Vec.push out2 v3
+  let s4 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        105#u8, 108#u8, 111#u8, 118#u8, 101#u8, 114#u8, 121#u8, 97#u8, 110#u8,
+        33#u8
+        ]))
+  let v4 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s4
+  let out4 ← alloc.vec.Vec.push out3 v4
+  let s5 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        105#u8, 108#u8, 111#u8, 118#u8, 101#u8, 114#u8, 121#u8, 97#u8, 110#u8,
+        49#u8
+        ]))
+  let v5 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s5
+  let out5 ← alloc.vec.Vec.push out4 v5
+  let s6 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        105#u8, 108#u8, 111#u8, 118#u8, 101#u8, 115#u8, 111#u8, 109#u8, 101#u8,
+        49#u8
+        ]))
+  let v6 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s6
+  let out6 ← alloc.vec.Vec.push out5 v6
+  let s7 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        105#u8, 108#u8, 111#u8, 118#u8, 101#u8, 116#u8, 104#u8, 101#u8, 108#u8,
+        111#u8, 114#u8, 100#u8
+        ]))
+  let v7 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s7
+  let out7 ← alloc.vec.Vec.push out6 v7
+  let s8 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        105#u8, 108#u8, 111#u8, 118#u8, 101#u8, 116#u8, 104#u8, 105#u8, 115#u8,
+        103#u8, 97#u8, 109#u8, 101#u8
+        ]))
+  let v8 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s8
+  let out8 ← alloc.vec.Vec.push out7 v8
+  let s9 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        105#u8, 108#u8, 111#u8, 118#u8, 101#u8, 116#u8, 111#u8, 100#u8, 97#u8,
+        110#u8, 99#u8, 101#u8
+        ]))
+  let v9 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s9
+  let out9 ← alloc.vec.Vec.push out8 v9
+  let s10 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        105#u8, 108#u8, 111#u8, 118#u8, 101#u8, 117#u8, 115#u8, 111#u8, 109#u8,
+        117#u8, 99#u8, 104#u8
+        ]))
+  let v10 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s10
+  let out10 ← alloc.vec.Vec.push out9 v10
+  let s11 ←
+    lift (Array.to_slice
+      (Array.make 14#usize [
+        105#u8, 108#u8, 111#u8, 118#u8, 101#u8, 121#u8, 111#u8, 117#u8, 115#u8,
+        111#u8, 109#u8, 117#u8, 99#u8, 104#u8
+        ]))
+  let v11 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s11
+  let out11 ← alloc.vec.Vec.push out10 v11
+  let s12 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        105#u8, 108#u8, 111#u8, 118#u8, 101#u8, 122#u8, 97#u8, 99#u8, 101#u8,
+        102#u8, 114#u8, 111#u8, 110#u8
+        ]))
+  let v12 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s12
+  let out12 ← alloc.vec.Vec.push out11 v12
+  let s13 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        105#u8, 108#u8, 117#u8, 118#u8, 50#u8, 100#u8, 97#u8, 110#u8, 99#u8,
+        101#u8
+        ]))
+  let v13 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s13
+  let out13 ← alloc.vec.Vec.push out12 v13
+  let s14 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        105#u8, 108#u8, 117#u8, 118#u8, 117#u8, 52#u8, 101#u8, 118#u8, 101#u8,
+        114#u8
+        ]))
+  let v14 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s14
+  let out14 ← alloc.vec.Vec.push out13 v14
+  let s15 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        105#u8, 109#u8, 112#u8, 114#u8, 105#u8, 109#u8, 97#u8, 110#u8, 116#u8,
+        97#u8
+        ]))
+  let v15 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s15
+  let out15 ← alloc.vec.Vec.push out14 v15
+  let s16 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        105#u8, 109#u8, 116#u8, 104#u8, 101#u8, 98#u8, 101#u8, 115#u8, 116#u8,
+        49#u8
+        ]))
+  let v16 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s16
+  let out16 ← alloc.vec.Vec.push out15 v16
+  let s17 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        105#u8, 110#u8, 97#u8, 108#u8, 99#u8, 97#u8, 110#u8, 122#u8, 97#u8,
+        98#u8, 108#u8, 101#u8
+        ]))
+  let v17 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s17
+  let out17 ← alloc.vec.Vec.push out16 v17
+  let s18 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        105#u8, 110#u8, 100#u8, 114#u8, 97#u8, 103#u8, 111#u8, 115#u8, 116#u8,
+        105#u8, 116#u8, 97#u8
+        ]))
+  let v18 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s18
+  let out18 ← alloc.vec.Vec.push out17 v18
+  let s19 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        105#u8, 110#u8, 102#u8, 114#u8, 97#u8, 109#u8, 117#u8, 110#u8, 100#u8,
+        111#u8
+        ]))
+  let v19 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s19
+  let out19 ← alloc.vec.Vec.push out18 v19
+  let s20 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        105#u8, 110#u8, 103#u8, 108#u8, 97#u8, 116#u8, 101#u8, 114#u8, 114#u8,
+        97#u8
+        ]))
+  let v20 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s20
+  let out20 ← alloc.vec.Vec.push out19 v20
+  let s21 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        105#u8, 110#u8, 103#u8, 111#u8, 100#u8, 105#u8, 116#u8, 114#u8, 117#u8,
+        115#u8, 116#u8
+        ]))
+  let v21 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s21
+  let out21 ← alloc.vec.Vec.push out20 v21
+  let s22 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        105#u8, 110#u8, 109#u8, 97#u8, 99#u8, 117#u8, 108#u8, 97#u8, 100#u8,
+        97#u8
+        ]))
+  let v22 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s22
+  let out22 ← alloc.vec.Vec.push out21 v22
+  let s23 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        105#u8, 110#u8, 111#u8, 108#u8, 118#u8, 105#u8, 100#u8, 97#u8, 98#u8,
+        108#u8, 101#u8
+        ]))
+  let v23 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s23
+  alloc.vec.Vec.push out22 v23
+
+/-- [kanidm_kernel::migration_defaults::table_part_13]:
+    Source: 'prove/ports/kanidm/kernel/src/migration_defaults.rs', lines 374:0-401:1
+    Visibility: public -/
+def migration_defaults.table_part_13
+  : Result (alloc.vec.Vec (alloc.vec.Vec Std.U8)) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 16#usize [
+        105#u8, 110#u8, 115#u8, 97#u8, 110#u8, 101#u8, 99#u8, 108#u8, 111#u8,
+        119#u8, 110#u8, 112#u8, 111#u8, 115#u8, 115#u8, 101#u8
+        ]))
+  let v ← alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  let out ← alloc.vec.Vec.push (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) v
+  let s1 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        105#u8, 110#u8, 115#u8, 112#u8, 105#u8, 114#u8, 97#u8, 99#u8, 105#u8,
+        111#u8, 110#u8
+        ]))
+  let v1 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s1
+  let out1 ← alloc.vec.Vec.push out v1
+  let s2 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        105#u8, 110#u8, 116#u8, 101#u8, 108#u8, 105#u8, 103#u8, 101#u8, 110#u8,
+        99#u8, 105#u8, 97#u8
+        ]))
+  let v2 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s2
+  let out2 ← alloc.vec.Vec.push out1 v2
+  let s3 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        105#u8, 110#u8, 116#u8, 101#u8, 108#u8, 105#u8, 103#u8, 101#u8, 110#u8,
+        116#u8, 101#u8
+        ]))
+  let v3 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s3
+  let out3 ← alloc.vec.Vec.push out2 v3
+  let s4 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        105#u8, 110#u8, 118#u8, 117#u8, 52#u8, 117#u8, 114#u8, 97#u8, 113#u8,
+        116#u8
+        ]))
+  let v4 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s4
+  let out4 ← alloc.vec.Vec.push out3 v4
+  let s5 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        105#u8, 111#u8, 114#u8, 105#u8, 121#u8, 97#u8, 103#u8, 97#u8, 109#u8,
+        105#u8
+        ]))
+  let v5 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s5
+  let out5 ← alloc.vec.Vec.push out4 v5
+  let s6 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        105#u8, 116#u8, 115#u8, 97#u8, 108#u8, 108#u8, 97#u8, 98#u8, 111#u8,
+        117#u8, 116#u8, 109#u8, 101#u8
+        ]))
+  let v6 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s6
+  let out6 ← alloc.vec.Vec.push out5 v6
+  let s7 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        105#u8, 117#u8, 98#u8, 105#u8, 114#u8, 101#u8, 97#u8, 109#u8, 101#u8,
+        97#u8
+        ]))
+  let v7 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s7
+  let out7 ← alloc.vec.Vec.push out6 v7
+  let s8 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        105#u8, 119#u8, 105#u8, 108#u8, 108#u8, 115#u8, 117#u8, 114#u8, 118#u8,
+        105#u8, 118#u8, 101#u8
+        ]))
+  let v8 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s8
+  let out8 ← alloc.vec.Vec.push out7 v8
+  let s9 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        106#u8, 97#u8, 98#u8, 98#u8, 97#u8, 119#u8, 111#u8, 99#u8, 107#u8,
+        101#u8, 101#u8, 122#u8
+        ]))
+  let v9 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s9
+  let out9 ← alloc.vec.Vec.push out8 v9
+  let s10 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        106#u8, 97#u8, 99#u8, 107#u8, 97#u8, 110#u8, 100#u8, 106#u8, 105#u8,
+        108#u8, 108#u8
+        ]))
+  let v10 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s10
+  let out10 ← alloc.vec.Vec.push out9 v10
+  let s11 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        106#u8, 97#u8, 109#u8, 105#u8, 114#u8, 111#u8, 113#u8, 117#u8, 97#u8,
+        105#u8
+        ]))
+  let v11 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s11
+  let out11 ← alloc.vec.Vec.push out10 v11
+  let s12 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        106#u8, 101#u8, 110#u8, 115#u8, 101#u8, 110#u8, 97#u8, 99#u8, 107#u8,
+        108#u8, 101#u8, 115#u8
+        ]))
+  let v12 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s12
+  let out12 ← alloc.vec.Vec.push out11 v12
+  let s13 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        106#u8, 101#u8, 115#u8, 117#u8, 115#u8, 101#u8, 115#u8, 97#u8, 109#u8,
+        111#u8, 114#u8
+        ]))
+  let v13 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s13
+  let out13 ← alloc.vec.Vec.push out12 v13
+  let s14 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        106#u8, 105#u8, 103#u8, 103#u8, 108#u8, 121#u8, 112#u8, 117#u8, 102#u8,
+        102#u8
+        ]))
+  let v14 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s14
+  let out14 ← alloc.vec.Vec.push out13 v14
+  let s15 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        106#u8, 111#u8, 101#u8, 121#u8, 106#u8, 111#u8, 114#u8, 100#u8, 105#u8,
+        115#u8, 111#u8, 110#u8
+        ]))
+  let v15 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s15
+  let out15 ← alloc.vec.Vec.push out14 v15
+  let s16 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        106#u8, 111#u8, 103#u8, 97#u8, 98#u8, 111#u8, 110#u8, 105#u8, 116#u8,
+        111#u8
+        ]))
+  let v16 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s16
+  let out16 ← alloc.vec.Vec.push out15 v16
+  let s17 ←
+    lift (Array.to_slice
+      (Array.make 14#usize [
+        106#u8, 111#u8, 110#u8, 97#u8, 115#u8, 32#u8, 98#u8, 114#u8, 111#u8,
+        116#u8, 104#u8, 101#u8, 114#u8, 115#u8
+        ]))
+  let v17 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s17
+  let out17 ← alloc.vec.Vec.push out16 v17
+  let s18 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        106#u8, 111#u8, 115#u8, 104#u8, 103#u8, 114#u8, 111#u8, 98#u8, 97#u8,
+        110#u8
+        ]))
+  let v18 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s18
+  let out18 ← alloc.vec.Vec.push out17 v18
+  let s19 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        106#u8, 117#u8, 103#u8, 103#u8, 97#u8, 108#u8, 101#u8, 116#u8, 116#u8,
+        101#u8
+        ]))
+  let v19 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s19
+  let out19 ← alloc.vec.Vec.push out18 v19
+  let s20 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        107#u8, 97#u8, 103#u8, 97#u8, 110#u8, 100#u8, 97#u8, 104#u8, 97#u8,
+        110#u8
+        ]))
+  let v20 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s20
+  let out20 ← alloc.vec.Vec.push out19 v20
+  let s21 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        107#u8, 97#u8, 108#u8, 101#u8, 105#u8, 100#u8, 111#u8, 115#u8, 116#u8,
+        97#u8, 114#u8
+        ]))
+  let v21 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s21
+  let out21 ← alloc.vec.Vec.push out20 v21
+  let s22 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        107#u8, 101#u8, 101#u8, 112#u8, 105#u8, 116#u8, 114#u8, 101#u8, 97#u8,
+        108#u8
+        ]))
+  let v22 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s22
+  let out22 ← alloc.vec.Vec.push out21 v22
+  let s23 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        107#u8, 101#u8, 116#u8, 101#u8, 105#u8, 109#u8, 112#u8, 111#u8, 114#u8,
+        116#u8, 97#u8
+        ]))
+  let v23 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s23
+  alloc.vec.Vec.push out22 v23
+
+/-- [kanidm_kernel::migration_defaults::table_part_14]:
+    Source: 'prove/ports/kanidm/kernel/src/migration_defaults.rs', lines 402:0-429:1
+    Visibility: public -/
+def migration_defaults.table_part_14
+  : Result (alloc.vec.Vec (alloc.vec.Vec Std.U8)) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        107#u8, 105#u8, 108#u8, 111#u8, 109#u8, 101#u8, 116#u8, 114#u8, 111#u8,
+        115#u8
+        ]))
+  let v ← alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  let out ← alloc.vec.Vec.push (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) v
+  let s1 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        107#u8, 105#u8, 109#u8, 115#u8, 97#u8, 109#u8, 115#u8, 111#u8, 111#u8,
+        110#u8
+        ]))
+  let v1 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s1
+  let out1 ← alloc.vec.Vec.push out v1
+  let s2 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        107#u8, 105#u8, 110#u8, 103#u8, 111#u8, 102#u8, 107#u8, 105#u8, 110#u8,
+        103#u8, 115#u8
+        ]))
+  let v2 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s2
+  let out2 ← alloc.vec.Vec.push out1 v2
+  let s3 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        107#u8, 109#u8, 122#u8, 119#u8, 97#u8, 56#u8, 97#u8, 119#u8, 97#u8,
+        97#u8
+        ]))
+  let v3 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s3
+  let out3 ← alloc.vec.Vec.push out2 v3
+  let s4 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        107#u8, 117#u8, 109#u8, 98#u8, 105#u8, 97#u8, 107#u8, 105#u8, 110#u8,
+        103#u8, 115#u8
+        ]))
+  let v4 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s4
+  let out4 ← alloc.vec.Vec.push out3 v4
+  let s5 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        107#u8, 117#u8, 118#u8, 104#u8, 108#u8, 117#u8, 98#u8, 107#u8, 111#u8,
+        106#u8
+        ]))
+  let v5 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s5
+  let out5 ← alloc.vec.Vec.push out4 v5
+  let s6 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        108#u8, 97#u8, 99#u8, 114#u8, 97#u8, 109#u8, 105#u8, 111#u8, 97#u8,
+        114#u8, 97#u8
+        ]))
+  let v6 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s6
+  let out6 ← alloc.vec.Vec.push out5 v6
+  let s7 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        108#u8, 97#u8, 99#u8, 117#u8, 110#u8, 97#u8, 99#u8, 111#u8, 105#u8,
+        108#u8
+        ]))
+  let v7 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s7
+  let out7 ← alloc.vec.Vec.push out6 v7
+  let s8 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        108#u8, 97#u8, 102#u8, 102#u8, 121#u8, 116#u8, 97#u8, 102#u8, 102#u8,
+        121#u8
+        ]))
+  let v8 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s8
+  let out8 ← alloc.vec.Vec.push out7 v8
+  let s9 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        108#u8, 97#u8, 109#u8, 97#u8, 114#u8, 97#u8, 118#u8, 105#u8, 108#u8,
+        108#u8, 97#u8
+        ]))
+  let v9 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s9
+  let out9 ← alloc.vec.Vec.push out8 v9
+  let s10 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        108#u8, 97#u8, 109#u8, 97#u8, 115#u8, 104#u8, 101#u8, 114#u8, 109#u8,
+        111#u8, 115#u8, 97#u8
+        ]))
+  let v10 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s10
+  let out10 ← alloc.vec.Vec.push out9 v10
+  let s11 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        108#u8, 97#u8, 112#u8, 114#u8, 105#u8, 110#u8, 99#u8, 101#u8, 115#u8,
+        105#u8, 116#u8, 97#u8
+        ]))
+  let v11 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s11
+  let out11 ← alloc.vec.Vec.push out10 v11
+  let s12 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        108#u8, 97#u8, 114#u8, 99#u8, 101#u8, 110#u8, 99#u8, 105#u8, 101#u8,
+        108#u8
+        ]))
+  let v12 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s12
+  let out12 ← alloc.vec.Vec.push out11 v12
+  let s13 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        108#u8, 97#u8, 115#u8, 100#u8, 105#u8, 118#u8, 105#u8, 110#u8, 97#u8,
+        115#u8
+        ]))
+  let v13 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s13
+  let out13 ← alloc.vec.Vec.push out12 v13
+  let s14 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        108#u8, 97#u8, 118#u8, 105#u8, 100#u8, 97#u8, 101#u8, 115#u8, 98#u8,
+        101#u8, 108#u8, 108#u8, 97#u8
+        ]))
+  let v14 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s14
+  let out14 ← alloc.vec.Vec.push out13 v14
+  let s15 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        108#u8, 97#u8, 118#u8, 105#u8, 100#u8, 97#u8, 108#u8, 111#u8, 99#u8,
+        97#u8
+        ]))
+  let v15 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s15
+  let out15 ← alloc.vec.Vec.push out14 v15
+  let s16 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        108#u8, 101#u8, 101#u8, 100#u8, 111#u8, 110#u8, 103#u8, 119#u8, 111#u8,
+        111#u8, 107#u8
+        ]))
+  let v16 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s16
+  let out16 ← alloc.vec.Vec.push out15 v16
+  let s17 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        108#u8, 101#u8, 111#u8, 116#u8, 104#u8, 101#u8, 108#u8, 105#u8, 111#u8,
+        110#u8
+        ]))
+  let v17 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s17
+  let out17 ← alloc.vec.Vec.push out16 v17
+  let s18 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        108#u8, 105#u8, 99#u8, 101#u8, 110#u8, 99#u8, 105#u8, 97#u8, 100#u8,
+        97#u8
+        ]))
+  let v18 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s18
+  let out18 ← alloc.vec.Vec.push out17 v18
+  let s19 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        108#u8, 105#u8, 102#u8, 101#u8, 103#u8, 111#u8, 101#u8, 115#u8, 111#u8,
+        110#u8
+        ]))
+  let v19 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s19
+  let out19 ← alloc.vec.Vec.push out18 v19
+  let s20 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        108#u8, 105#u8, 102#u8, 101#u8, 115#u8, 97#u8, 98#u8, 105#u8, 116#u8,
+        99#u8, 104#u8
+        ]))
+  let v20 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s20
+  let out20 ← alloc.vec.Vec.push out19 v20
+  let s21 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        108#u8, 105#u8, 110#u8, 107#u8, 105#u8, 110#u8, 32#u8, 112#u8, 97#u8,
+        114#u8, 107#u8
+        ]))
+  let v21 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s21
+  let out21 ← alloc.vec.Vec.push out20 v21
+  let s22 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        108#u8, 105#u8, 112#u8, 103#u8, 108#u8, 111#u8, 115#u8, 115#u8, 49#u8,
+        50#u8
+        ]))
+  let v22 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s22
+  let out22 ← alloc.vec.Vec.push out21 v22
+  let s23 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        108#u8, 105#u8, 116#u8, 101#u8, 114#u8, 97#u8, 116#u8, 117#u8, 114#u8,
+        97#u8
+        ]))
+  let v23 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s23
+  alloc.vec.Vec.push out22 v23
+
+/-- [kanidm_kernel::migration_defaults::table_part_15]:
+    Source: 'prove/ports/kanidm/kernel/src/migration_defaults.rs', lines 430:0-457:1
+    Visibility: public -/
+def migration_defaults.table_part_15
+  : Result (alloc.vec.Vec (alloc.vec.Vec Std.U8)) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        108#u8, 105#u8, 118#u8, 101#u8, 108#u8, 97#u8, 117#u8, 103#u8, 104#u8,
+        108#u8, 111#u8, 118#u8, 101#u8
+        ]))
+  let v ← alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  let out ← alloc.vec.Vec.push (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) v
+  let s1 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        108#u8, 105#u8, 118#u8, 101#u8, 108#u8, 111#u8, 118#u8, 101#u8, 108#u8,
+        97#u8, 117#u8, 103#u8, 104#u8
+        ]))
+  let v1 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s1
+  let out1 ← alloc.vec.Vec.push out v1
+  let s2 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        108#u8, 105#u8, 118#u8, 101#u8, 121#u8, 111#u8, 117#u8, 114#u8, 108#u8,
+        105#u8, 102#u8, 101#u8
+        ]))
+  let v2 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s2
+  let out2 ← alloc.vec.Vec.push out1 v2
+  let s3 ←
+    lift (Array.to_slice
+      (Array.make 14#usize [
+        108#u8, 111#u8, 114#u8, 100#u8, 111#u8, 102#u8, 116#u8, 104#u8, 101#u8,
+        114#u8, 105#u8, 110#u8, 103#u8, 115#u8
+        ]))
+  let v3 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s3
+  let out3 ← alloc.vec.Vec.push out2 v3
+  let s4 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        108#u8, 111#u8, 115#u8, 101#u8, 114#u8, 102#u8, 97#u8, 99#u8, 101#u8,
+        49#u8
+        ]))
+  let v4 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s4
+  let out4 ← alloc.vec.Vec.push out3 v4
+  let s5 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        108#u8, 111#u8, 115#u8, 109#u8, 101#u8, 106#u8, 111#u8, 114#u8, 101#u8,
+        115#u8
+        ]))
+  let v5 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s5
+  let out5 ← alloc.vec.Vec.push out4 v5
+  let s6 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        108#u8, 111#u8, 116#u8, 115#u8, 111#u8, 102#u8, 108#u8, 111#u8, 118#u8,
+        101#u8
+        ]))
+  let v6 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s6
+  let out6 ← alloc.vec.Vec.push out5 v6
+  let s7 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        108#u8, 111#u8, 118#u8, 101#u8, 97#u8, 110#u8, 100#u8, 104#u8, 97#u8,
+        116#u8, 101#u8
+        ]))
+  let v7 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s7
+  let out7 ← alloc.vec.Vec.push out6 v7
+  let s8 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        108#u8, 111#u8, 118#u8, 101#u8, 97#u8, 110#u8, 100#u8, 112#u8, 101#u8,
+        97#u8, 99#u8, 101#u8
+        ]))
+  let v8 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s8
+  let out8 ← alloc.vec.Vec.push out7 v8
+  let s9 ←
+    lift (Array.to_slice
+      (Array.make 14#usize [
+        108#u8, 111#u8, 118#u8, 101#u8, 105#u8, 115#u8, 105#u8, 110#u8, 116#u8,
+        104#u8, 101#u8, 97#u8, 105#u8, 114#u8
+        ]))
+  let v9 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s9
+  let out9 ← alloc.vec.Vec.push out8 v9
+  let s10 ←
+    lift (Array.to_slice
+      (Array.make 14#usize [
+        108#u8, 111#u8, 118#u8, 101#u8, 109#u8, 101#u8, 111#u8, 114#u8, 104#u8,
+        97#u8, 116#u8, 101#u8, 109#u8, 101#u8
+        ]))
+  let v10 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s10
+  let out10 ← alloc.vec.Vec.push out9 v10
+  let s11 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        108#u8, 111#u8, 118#u8, 101#u8, 110#u8, 107#u8, 114#u8, 97#u8, 110#u8,
+        100#u8, 115#u8
+        ]))
+  let v11 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s11
+  let out11 ← alloc.vec.Vec.push out10 v11
+  let s12 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        108#u8, 111#u8, 118#u8, 101#u8, 111#u8, 102#u8, 109#u8, 121#u8, 108#u8,
+        105#u8, 102#u8, 101#u8
+        ]))
+  let v12 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s12
+  let out12 ← alloc.vec.Vec.push out11 v12
+  let s13 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        108#u8, 111#u8, 118#u8, 101#u8, 111#u8, 114#u8, 104#u8, 97#u8, 116#u8,
+        101#u8
+        ]))
+  let v13 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s13
+  let out13 ← alloc.vec.Vec.push out12 v13
+  let s14 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        108#u8, 111#u8, 118#u8, 101#u8, 116#u8, 111#u8, 108#u8, 111#u8, 118#u8,
+        101#u8
+        ]))
+  let v14 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s14
+  let out14 ← alloc.vec.Vec.push out13 v14
+  let s15 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        108#u8, 111#u8, 118#u8, 101#u8, 117#u8, 52#u8, 101#u8, 118#u8, 101#u8,
+        114#u8
+        ]))
+  let v15 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s15
+  let out15 ← alloc.vec.Vec.push out14 v15
+  let s16 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        108#u8, 111#u8, 118#u8, 101#u8, 121#u8, 100#u8, 111#u8, 118#u8, 101#u8,
+        121#u8
+        ]))
+  let v16 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s16
+  let out16 ← alloc.vec.Vec.push out15 v16
+  let s17 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        108#u8, 111#u8, 118#u8, 101#u8, 121#u8, 111#u8, 117#u8, 115#u8, 111#u8,
+        109#u8, 117#u8, 99#u8, 104#u8
+        ]))
+  let v17 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s17
+  let out17 ← alloc.vec.Vec.push out16 v17
+  let s18 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        108#u8, 117#u8, 99#u8, 105#u8, 101#u8, 114#u8, 110#u8, 97#u8, 103#u8,
+        97#u8
+        ]))
+  let v18 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s18
+  let out18 ← alloc.vec.Vec.push out17 v18
+  let s19 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        108#u8, 117#u8, 118#u8, 109#u8, 101#u8, 52#u8, 101#u8, 118#u8, 101#u8,
+        114#u8
+        ]))
+  let v19 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s19
+  let out19 ← alloc.vec.Vec.push out18 v19
+  let s20 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        108#u8, 117#u8, 122#u8, 118#u8, 105#u8, 109#u8, 105#u8, 110#u8, 100#u8,
+        97#u8
+        ]))
+  let v20 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s20
+  let out20 ← alloc.vec.Vec.push out19 v20
+  let s21 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        109#u8, 97#u8, 99#u8, 104#u8, 117#u8, 112#u8, 105#u8, 99#u8, 104#u8,
+        117#u8
+        ]))
+  let v21 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s21
+  let out21 ← alloc.vec.Vec.push out20 v21
+  let s22 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        109#u8, 97#u8, 100#u8, 97#u8, 108#u8, 105#u8, 110#u8, 117#u8, 116#u8,
+        122#u8, 97#u8
+        ]))
+  let v22 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s22
+  let out22 ← alloc.vec.Vec.push out21 v22
+  let s23 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        109#u8, 97#u8, 104#u8, 97#u8, 108#u8, 32#u8, 107#u8, 105#u8, 116#u8,
+        97#u8
+        ]))
+  let v23 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s23
+  alloc.vec.Vec.push out22 v23
+
+/-- [kanidm_kernel::migration_defaults::table_part_16]:
+    Source: 'prove/ports/kanidm/kernel/src/migration_defaults.rs', lines 458:0-485:1
+    Visibility: public -/
+def migration_defaults.table_part_16
+  : Result (alloc.vec.Vec (alloc.vec.Vec Std.U8)) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        109#u8, 97#u8, 104#u8, 97#u8, 108#u8, 107#u8, 111#u8, 107#u8, 97#u8,
+        121#u8, 111#u8
+        ]))
+  let v ← alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  let out ← alloc.vec.Vec.push (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) v
+  let s1 ←
+    lift (Array.to_slice
+      (Array.make 16#usize [
+        109#u8, 97#u8, 104#u8, 97#u8, 108#u8, 110#u8, 97#u8, 109#u8, 97#u8,
+        104#u8, 97#u8, 108#u8, 107#u8, 105#u8, 116#u8, 97#u8
+        ]))
+  let v1 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s1
+  let out1 ← alloc.vec.Vec.push out v1
+  let s2 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        109#u8, 97#u8, 107#u8, 101#u8, 100#u8, 111#u8, 110#u8, 105#u8, 106#u8,
+        97#u8
+        ]))
+  let v2 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s2
+  let out2 ← alloc.vec.Vec.push out1 v2
+  let s3 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        109#u8, 97#u8, 109#u8, 105#u8, 99#u8, 104#u8, 117#u8, 108#u8, 97#u8,
+        49#u8
+        ]))
+  let v3 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s3
+  let out3 ← alloc.vec.Vec.push out2 v3
+  let s4 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        109#u8, 97#u8, 112#u8, 97#u8, 103#u8, 109#u8, 97#u8, 104#u8, 97#u8,
+        108#u8
+        ]))
+  let v4 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s4
+  let out4 ← alloc.vec.Vec.push out3 v4
+  let s5 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        109#u8, 97#u8, 114#u8, 97#u8, 118#u8, 105#u8, 108#u8, 108#u8, 111#u8,
+        115#u8, 97#u8
+        ]))
+  let v5 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s5
+  let out5 ← alloc.vec.Vec.push out4 v5
+  let s6 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        109#u8, 97#u8, 114#u8, 97#u8, 118#u8, 105#u8, 108#u8, 108#u8, 111#u8,
+        115#u8, 111#u8
+        ]))
+  let v6 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s6
+  let out6 ← alloc.vec.Vec.push out5 v6
+  let s7 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        109#u8, 97#u8, 114#u8, 100#u8, 101#u8, 99#u8, 111#u8, 112#u8, 97#u8,
+        115#u8
+        ]))
+  let v7 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s7
+  let out7 ← alloc.vec.Vec.push out6 v7
+  let s8 ←
+    lift (Array.to_slice
+      (Array.make 14#usize [
+        109#u8, 97#u8, 114#u8, 105#u8, 97#u8, 100#u8, 101#u8, 108#u8, 99#u8,
+        97#u8, 114#u8, 109#u8, 101#u8, 110#u8
+        ]))
+  let v8 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s8
+  let out8 ← alloc.vec.Vec.push out7 v8
+  let s9 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        109#u8, 97#u8, 116#u8, 114#u8, 105#u8, 109#u8, 111#u8, 110#u8, 105#u8,
+        111#u8
+        ]))
+  let v9 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s9
+  let out9 ← alloc.vec.Vec.push out8 v9
+  let s10 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        109#u8, 101#u8, 97#u8, 109#u8, 111#u8, 109#u8, 117#u8, 99#u8, 104#u8,
+        111#u8
+        ]))
+  let v10 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s10
+  let out10 ← alloc.vec.Vec.push out9 v10
+  let s11 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        109#u8, 101#u8, 106#u8, 111#u8, 114#u8, 101#u8, 115#u8, 97#u8, 109#u8,
+        105#u8, 103#u8, 97#u8, 115#u8
+        ]))
+  let v11 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s11
+  let out11 ← alloc.vec.Vec.push out10 v11
+  let s12 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        109#u8, 101#u8, 109#u8, 121#u8, 115#u8, 101#u8, 108#u8, 102#u8, 97#u8,
+        110#u8, 100#u8, 105#u8
+        ]))
+  let v12 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s12
+  let out12 ← alloc.vec.Vec.push out11 v12
+  let s13 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        109#u8, 101#u8, 110#u8, 101#u8, 107#u8, 101#u8, 116#u8, 101#u8, 104#u8,
+        101#u8
+        ]))
+  let v13 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s13
+  let out13 ← alloc.vec.Vec.push out12 v13
+  let s14 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        109#u8, 101#u8, 113#u8, 117#u8, 105#u8, 101#u8, 114#u8, 111#u8, 109#u8,
+        117#u8, 99#u8, 104#u8, 111#u8
+        ]))
+  let v14 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s14
+  let out14 ← alloc.vec.Vec.push out13 v14
+  let s15 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        109#u8, 101#u8, 114#u8, 99#u8, 97#u8, 100#u8, 111#u8, 116#u8, 101#u8,
+        99#u8, 110#u8, 105#u8, 97#u8
+        ]))
+  let v15 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s15
+  let out15 ← alloc.vec.Vec.push out14 v15
+  let s16 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        109#u8, 101#u8, 116#u8, 97#u8, 109#u8, 111#u8, 114#u8, 102#u8, 111#u8,
+        115#u8, 105#u8, 115#u8
+        ]))
+  let v16 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s16
+  let out16 ← alloc.vec.Vec.push out15 v16
+  let s17 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        109#u8, 105#u8, 97#u8, 109#u8, 111#u8, 114#u8, 101#u8, 114#u8, 101#u8,
+        115#u8, 116#u8, 117#u8
+        ]))
+  let v17 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s17
+  let out17 ← alloc.vec.Vec.push out16 v17
+  let s18 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        109#u8, 105#u8, 97#u8, 109#u8, 111#u8, 114#u8, 116#u8, 101#u8, 97#u8,
+        109#u8, 111#u8
+        ]))
+  let v18 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s18
+  let out18 ← alloc.vec.Vec.push out17 v18
+  let s19 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        109#u8, 105#u8, 107#u8, 101#u8, 115#u8, 104#u8, 105#u8, 110#u8, 111#u8,
+        100#u8, 97#u8
+        ]))
+  let v19 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s19
+  let out19 ← alloc.vec.Vec.push out18 v19
+  let s20 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        109#u8, 105#u8, 108#u8, 97#u8, 103#u8, 114#u8, 105#u8, 116#u8, 111#u8,
+        115#u8
+        ]))
+  let v20 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s20
+  let out20 ← alloc.vec.Vec.push out19 v20
+  let s21 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        109#u8, 105#u8, 108#u8, 108#u8, 111#u8, 110#u8, 97#u8, 114#u8, 105#u8,
+        111#u8, 115#u8
+        ]))
+  let v21 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s21
+  let out21 ← alloc.vec.Vec.push out20 v21
+  let s22 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        109#u8, 105#u8, 109#u8, 97#u8, 109#u8, 97#u8, 109#u8, 101#u8, 109#u8,
+        105#u8, 109#u8, 97#u8
+        ]))
+  let v22 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s22
+  let out22 ← alloc.vec.Vec.push out21 v22
+  let s23 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        109#u8, 105#u8, 109#u8, 101#u8, 106#u8, 111#u8, 114#u8, 97#u8, 109#u8,
+        105#u8, 103#u8, 97#u8
+        ]))
+  let v23 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s23
+  alloc.vec.Vec.push out22 v23
+
+/-- [kanidm_kernel::migration_defaults::table_part_17]:
+    Source: 'prove/ports/kanidm/kernel/src/migration_defaults.rs', lines 486:0-513:1
+    Visibility: public -/
+def migration_defaults.table_part_17
+  : Result (alloc.vec.Vec (alloc.vec.Vec Std.U8)) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        109#u8, 105#u8, 114#u8, 109#u8, 111#u8, 100#u8, 101#u8, 112#u8, 111#u8,
+        110#u8
+        ]))
+  let v ← alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  let out ← alloc.vec.Vec.push (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) v
+  let s1 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        109#u8, 105#u8, 115#u8, 51#u8, 97#u8, 109#u8, 111#u8, 114#u8, 101#u8,
+        115#u8
+        ]))
+  let v1 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s1
+  let out1 ← alloc.vec.Vec.push out v1
+  let s2 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        109#u8, 105#u8, 115#u8, 100#u8, 111#u8, 115#u8, 97#u8, 109#u8, 111#u8,
+        114#u8, 101#u8, 115#u8
+        ]))
+  let v2 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s2
+  let out2 ← alloc.vec.Vec.push out1 v2
+  let s3 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        109#u8, 105#u8, 115#u8, 101#u8, 114#u8, 105#u8, 99#u8, 111#u8, 114#u8,
+        100#u8, 105#u8, 97#u8
+        ]))
+  let v3 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s3
+  let out3 ← alloc.vec.Vec.push out2 v3
+  let s4 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        109#u8, 105#u8, 115#u8, 115#u8, 116#u8, 104#u8, 97#u8, 110#u8, 103#u8,
+        49#u8
+        ]))
+  let v4 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s4
+  let out4 ← alloc.vec.Vec.push out3 v4
+  let s5 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        109#u8, 105#u8, 117#u8, 110#u8, 105#u8, 99#u8, 111#u8, 97#u8, 109#u8,
+        111#u8, 114#u8
+        ]))
+  let v5 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s5
+  let out5 ← alloc.vec.Vec.push out4 v5
+  let s6 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        109#u8, 105#u8, 118#u8, 105#u8, 100#u8, 97#u8, 101#u8, 114#u8, 101#u8,
+        115#u8, 116#u8, 117#u8
+        ]))
+  let v6 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s6
+  let out6 ← alloc.vec.Vec.push out5 v6
+  let s7 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        109#u8, 105#u8, 118#u8, 105#u8, 100#u8, 97#u8, 108#u8, 111#u8, 99#u8,
+        97#u8
+        ]))
+  let v7 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s7
+  let out7 ← alloc.vec.Vec.push out6 v7
+  let s8 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        109#u8, 111#u8, 109#u8, 109#u8, 97#u8, 115#u8, 103#u8, 105#u8, 114#u8,
+        108#u8
+        ]))
+  let v8 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s8
+  let out8 ← alloc.vec.Vec.push out7 v8
+  let s9 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        109#u8, 111#u8, 109#u8, 109#u8, 121#u8, 97#u8, 110#u8, 100#u8, 100#u8,
+        97#u8, 100#u8, 100#u8, 121#u8
+        ]))
+  let v9 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s9
+  let out9 ← alloc.vec.Vec.push out8 v9
+  let s10 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        109#u8, 111#u8, 110#u8, 115#u8, 101#u8, 114#u8, 114#u8, 97#u8, 116#u8,
+        104#u8
+        ]))
+  let v10 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s10
+  let out10 ← alloc.vec.Vec.push out9 v10
+  let s11 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        109#u8, 111#u8, 114#u8, 101#u8, 116#u8, 104#u8, 97#u8, 110#u8, 119#u8,
+        111#u8, 114#u8, 100#u8, 115#u8
+        ]))
+  let v11 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s11
+  let out11 ← alloc.vec.Vec.push out10 v11
+  let s12 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        109#u8, 111#u8, 115#u8, 99#u8, 114#u8, 97#u8, 99#u8, 105#u8, 117#u8,
+        110#u8
+        ]))
+  let v12 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s12
+  let out12 ← alloc.vec.Vec.push out11 v12
+  let s13 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        109#u8, 111#u8, 117#u8, 108#u8, 105#u8, 110#u8, 114#u8, 111#u8, 117#u8,
+        103#u8, 101#u8
+        ]))
+  let v13 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s13
+  let out13 ← alloc.vec.Vec.push out12 v13
+  let s14 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        109#u8, 115#u8, 110#u8, 104#u8, 111#u8, 116#u8, 109#u8, 97#u8, 105#u8,
+        108#u8
+        ]))
+  let v14 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s14
+  let out14 ← alloc.vec.Vec.push out13 v14
+  let s15 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        109#u8, 117#u8, 105#u8, 101#u8, 115#u8, 116#u8, 101#u8, 97#u8, 117#u8,
+        97#u8
+        ]))
+  let v15 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s15
+  let out15 ← alloc.vec.Vec.push out14 v15
+  let s16 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        109#u8, 117#u8, 109#u8, 109#u8, 121#u8, 97#u8, 110#u8, 100#u8, 100#u8,
+        97#u8, 100#u8, 100#u8, 121#u8
+        ]))
+  let v16 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s16
+  let out16 ← alloc.vec.Vec.push out15 v16
+  let s17 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        109#u8, 117#u8, 109#u8, 109#u8, 121#u8, 115#u8, 103#u8, 105#u8, 114#u8,
+        108#u8
+        ]))
+  let v17 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s17
+  let out17 ← alloc.vec.Vec.push out16 v17
+  let s18 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        109#u8, 117#u8, 115#u8, 105#u8, 99#u8, 105#u8, 115#u8, 108#u8, 105#u8,
+        102#u8, 101#u8
+        ]))
+  let v18 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s18
+  let out18 ← alloc.vec.Vec.push out17 v18
+  let s19 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        109#u8, 117#u8, 115#u8, 105#u8, 99#u8, 105#u8, 115#u8, 109#u8, 121#u8,
+        108#u8, 105#u8, 102#u8, 101#u8
+        ]))
+  let v19 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s19
+  let out19 ← alloc.vec.Vec.push out18 v19
+  let s20 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        109#u8, 117#u8, 116#u8, 104#u8, 97#u8, 102#u8, 117#u8, 99#u8, 107#u8,
+        97#u8
+        ]))
+  let v20 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s20
+  let out20 ← alloc.vec.Vec.push out19 v20
+  let s21 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        109#u8, 117#u8, 195#u8, 177#u8, 101#u8, 113#u8, 117#u8, 105#u8, 116#u8,
+        97#u8
+        ]))
+  let v21 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s21
+  let out21 ← alloc.vec.Vec.push out20 v21
+  let s22 ←
+    lift (Array.to_slice
+      (Array.make 17#usize [
+        109#u8, 121#u8, 99#u8, 104#u8, 101#u8, 109#u8, 105#u8, 99#u8, 97#u8,
+        108#u8, 114#u8, 111#u8, 109#u8, 97#u8, 110#u8, 99#u8, 101#u8
+        ]))
+  let v22 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s22
+  let out22 ← alloc.vec.Vec.push out21 v22
+  let s23 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        109#u8, 121#u8, 108#u8, 105#u8, 116#u8, 116#u8, 108#u8, 101#u8, 112#u8,
+        111#u8, 110#u8, 121#u8
+        ]))
+  let v23 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s23
+  alloc.vec.Vec.push out22 v23
+
+/-- [kanidm_kernel::migration_defaults::table_part_18]:
+    Source: 'prove/ports/kanidm/kernel/src/migration_defaults.rs', lines 514:0-541:1
+    Visibility: public -/
+def migration_defaults.table_part_18
+  : Result (alloc.vec.Vec (alloc.vec.Vec Std.U8)) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        109#u8, 121#u8, 111#u8, 110#u8, 108#u8, 121#u8, 108#u8, 111#u8, 118#u8,
+        101#u8
+        ]))
+  let v ← alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  let out ← alloc.vec.Vec.push (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) v
+  let s1 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        109#u8, 121#u8, 115#u8, 108#u8, 105#u8, 100#u8, 101#u8, 115#u8, 104#u8,
+        111#u8, 119#u8
+        ]))
+  let v1 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s1
+  let out1 ← alloc.vec.Vec.push out v1
+  let s2 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        109#u8, 121#u8, 115#u8, 112#u8, 97#u8, 99#u8, 101#u8, 46#u8, 99#u8,
+        111#u8, 109#u8
+        ]))
+  let v2 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s2
+  let out2 ← alloc.vec.Vec.push out1 v2
+  let s3 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        110#u8, 97#u8, 98#u8, 117#u8, 99#u8, 111#u8, 100#u8, 111#u8, 110#u8,
+        111#u8, 115#u8, 111#u8, 114#u8
+        ]))
+  let v3 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s3
+  let out3 ← alloc.vec.Vec.push out2 v3
+  let s4 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        110#u8, 97#u8, 115#u8, 99#u8, 105#u8, 109#u8, 101#u8, 110#u8, 116#u8,
+        111#u8
+        ]))
+  let v4 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s4
+  let out4 ← alloc.vec.Vec.push out3 v4
+  let s5 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        110#u8, 97#u8, 115#u8, 105#u8, 103#u8, 111#u8, 114#u8, 101#u8, 110#u8,
+        103#u8
+        ]))
+  let v5 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s5
+  let out5 ← alloc.vec.Vec.push out4 v5
+  let s6 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        110#u8, 101#u8, 98#u8, 117#u8, 110#u8, 97#u8, 116#u8, 105#u8, 99#u8,
+        97#u8
+        ]))
+  let v6 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s6
+  let out6 ← alloc.vec.Vec.push out5 v6
+  let s7 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        110#u8, 101#u8, 112#u8, 111#u8, 109#u8, 117#u8, 99#u8, 101#u8, 110#u8,
+        111#u8
+        ]))
+  let v7 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s7
+  let out7 ← alloc.vec.Vec.push out6 v7
+  let s8 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        110#u8, 101#u8, 118#u8, 101#u8, 114#u8, 115#u8, 97#u8, 121#u8, 110#u8,
+        101#u8, 118#u8, 101#u8, 114#u8
+        ]))
+  let v8 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s8
+  let out8 ← alloc.vec.Vec.push out7 v8
+  let s9 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        110#u8, 105#u8, 99#u8, 107#u8, 32#u8, 106#u8, 111#u8, 110#u8, 97#u8,
+        115#u8
+        ]))
+  let v9 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s9
+  let out9 ← alloc.vec.Vec.push out8 v9
+  let s10 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        110#u8, 105#u8, 99#u8, 107#u8, 106#u8, 111#u8, 110#u8, 97#u8, 115#u8,
+        49#u8
+        ]))
+  let v10 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s10
+  let out10 ← alloc.vec.Vec.push out9 v10
+  let s11 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        110#u8, 105#u8, 115#u8, 116#u8, 101#u8, 108#u8, 114#u8, 111#u8, 111#u8,
+        121#u8
+        ]))
+  let v11 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s11
+  let out11 ← alloc.vec.Vec.push out10 v11
+  let s12 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        110#u8, 111#u8, 109#u8, 101#u8, 97#u8, 99#u8, 117#u8, 101#u8, 114#u8,
+        100#u8, 111#u8
+        ]))
+  let v12 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s12
+  let out12 ← alloc.vec.Vec.push out11 v12
+  let s13 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        110#u8, 111#u8, 109#u8, 101#u8, 111#u8, 108#u8, 118#u8, 105#u8, 100#u8,
+        101#u8, 115#u8
+        ]))
+  let v13 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s13
+  let out13 ← alloc.vec.Vec.push out12 v13
+  let s14 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        110#u8, 111#u8, 115#u8, 101#u8, 113#u8, 117#u8, 101#u8, 112#u8, 111#u8,
+        110#u8, 101#u8, 114#u8
+        ]))
+  let v14 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s14
+  let out14 ← alloc.vec.Vec.push out13 v14
+  let s15 ←
+    lift (Array.to_slice
+      (Array.make 15#usize [
+        110#u8, 117#u8, 110#u8, 99#u8, 97#u8, 116#u8, 101#u8, 111#u8, 108#u8,
+        118#u8, 105#u8, 100#u8, 97#u8, 114#u8, 101#u8
+        ]))
+  let v15 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s15
+  let out15 ← alloc.vec.Vec.push out14 v15
+  let s16 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        110#u8, 121#u8, 109#u8, 112#u8, 104#u8, 101#u8, 116#u8, 97#u8, 109#u8,
+        105#u8, 110#u8, 101#u8
+        ]))
+  let v16 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s16
+  let out16 ← alloc.vec.Vec.push out15 v16
+  let s17 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        111#u8, 100#u8, 111#u8, 110#u8, 116#u8, 111#u8, 108#u8, 111#u8, 103#u8,
+        105#u8, 97#u8
+        ]))
+  let v17 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s17
+  let out17 ← alloc.vec.Vec.push out16 v17
+  let s18 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        111#u8, 106#u8, 111#u8, 115#u8, 118#u8, 101#u8, 114#u8, 100#u8, 101#u8,
+        115#u8
+        ]))
+  let v18 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s18
+  let out18 ← alloc.vec.Vec.push out17 v18
+  let s19 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        111#u8, 110#u8, 101#u8, 97#u8, 110#u8, 100#u8, 111#u8, 110#u8, 108#u8,
+        121#u8
+        ]))
+  let v19 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s19
+  let out19 ← alloc.vec.Vec.push out18 v19
+  let s20 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        111#u8, 110#u8, 101#u8, 111#u8, 102#u8, 97#u8, 107#u8, 105#u8, 110#u8,
+        100#u8
+        ]))
+  let v20 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s20
+  let out20 ← alloc.vec.Vec.push out19 v20
+  let s21 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        111#u8, 110#u8, 101#u8, 116#u8, 114#u8, 101#u8, 101#u8, 104#u8, 105#u8,
+        108#u8, 108#u8
+        ]))
+  let v21 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s21
+  let out21 ← alloc.vec.Vec.push out20 v21
+  let s22 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        111#u8, 110#u8, 111#u8, 109#u8, 97#u8, 116#u8, 111#u8, 112#u8, 111#u8,
+        101#u8, 105#u8, 97#u8
+        ]))
+  let v22 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s22
+  let out22 ← alloc.vec.Vec.push out21 v22
+  let s23 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        111#u8, 115#u8, 105#u8, 116#u8, 111#u8, 108#u8, 105#u8, 110#u8, 100#u8,
+        111#u8
+        ]))
+  let v23 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s23
+  alloc.vec.Vec.push out22 v23
+
+/-- [kanidm_kernel::migration_defaults::table_part_19]:
+    Source: 'prove/ports/kanidm/kernel/src/migration_defaults.rs', lines 542:0-569:1
+    Visibility: public -/
+def migration_defaults.table_part_19
+  : Result (alloc.vec.Vec (alloc.vec.Vec Std.U8)) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        111#u8, 115#u8, 105#u8, 116#u8, 111#u8, 112#u8, 97#u8, 110#u8, 100#u8,
+        97#u8
+        ]))
+  let v ← alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  let out ← alloc.vec.Vec.push (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) v
+  let s1 ←
+    lift (Array.to_slice
+      (Array.make 15#usize [
+        112#u8, 97#u8, 100#u8, 114#u8, 105#u8, 110#u8, 111#u8, 115#u8, 109#u8,
+        97#u8, 103#u8, 105#u8, 99#u8, 111#u8, 115#u8
+        ]))
+  let v1 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s1
+  let out1 ← alloc.vec.Vec.push out v1
+  let s2 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        112#u8, 97#u8, 105#u8, 110#u8, 105#u8, 115#u8, 108#u8, 111#u8, 118#u8,
+        101#u8
+        ]))
+  let v2 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s2
+  let out2 ← alloc.vec.Vec.push out1 v2
+  let s3 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        112#u8, 97#u8, 110#u8, 100#u8, 97#u8, 108#u8, 97#u8, 110#u8, 100#u8,
+        105#u8, 97#u8
+        ]))
+  let v3 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s3
+  let out3 ← alloc.vec.Vec.push out2 v3
+  let s4 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        112#u8, 97#u8, 110#u8, 103#u8, 97#u8, 110#u8, 105#u8, 98#u8, 97#u8,
+        110#u8
+        ]))
+  let v4 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s4
+  let out4 ← alloc.vec.Vec.push out3 v4
+  let s5 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        112#u8, 97#u8, 110#u8, 103#u8, 105#u8, 108#u8, 105#u8, 110#u8, 97#u8,
+        110#u8
+        ]))
+  let v5 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s5
+  let out5 ← alloc.vec.Vec.push out4 v5
+  let s6 ←
+    lift (Array.to_slice
+      (Array.make 15#usize [
+        112#u8, 97#u8, 110#u8, 105#u8, 99#u8, 97#u8, 116#u8, 116#u8, 104#u8,
+        101#u8, 100#u8, 105#u8, 115#u8, 99#u8, 111#u8
+        ]))
+  let v6 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s6
+  let out6 ← alloc.vec.Vec.push out5 v6
+  let s7 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        112#u8, 97#u8, 110#u8, 116#u8, 101#u8, 108#u8, 105#u8, 109#u8, 111#u8,
+        110#u8
+        ]))
+  let v7 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s7
+  let out7 ← alloc.vec.Vec.push out6 v7
+  let s8 ←
+    lift (Array.to_slice
+      (Array.make 14#usize [
+        112#u8, 97#u8, 114#u8, 97#u8, 108#u8, 101#u8, 108#u8, 101#u8, 112#u8,
+        105#u8, 112#u8, 101#u8, 100#u8, 111#u8
+        ]))
+  let v8 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s8
+  let out8 ← alloc.vec.Vec.push out7 v8
+  let s9 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        112#u8, 97#u8, 114#u8, 97#u8, 108#u8, 101#u8, 108#u8, 105#u8, 112#u8,
+        105#u8, 112#u8, 101#u8, 100#u8
+        ]))
+  let v9 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s9
+  let out9 ← alloc.vec.Vec.push out8 v9
+  let s10 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        112#u8, 97#u8, 114#u8, 97#u8, 115#u8, 105#u8, 101#u8, 109#u8, 112#u8,
+        114#u8, 101#u8
+        ]))
+  let v10 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s10
+  let out10 ← alloc.vec.Vec.push out9 v10
+  let s11 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        112#u8, 97#u8, 115#u8, 97#u8, 119#u8, 97#u8, 121#u8, 97#u8, 107#u8,
+        111#u8
+        ]))
+  let v11 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s11
+  let out11 ← alloc.vec.Vec.push out10 v11
+  let s12 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        112#u8, 97#u8, 115#u8, 111#u8, 100#u8, 101#u8, 98#u8, 108#u8, 97#u8,
+        115#u8
+        ]))
+  let v12 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s12
+  let out12 ← alloc.vec.Vec.push out11 v12
+  let s13 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        112#u8, 101#u8, 97#u8, 99#u8, 101#u8, 38#u8, 108#u8, 111#u8, 118#u8,
+        101#u8
+        ]))
+  let v13 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s13
+  let out13 ← alloc.vec.Vec.push out12 v13
+  let s14 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        112#u8, 101#u8, 97#u8, 99#u8, 101#u8, 97#u8, 110#u8, 100#u8, 108#u8,
+        111#u8, 118#u8, 101#u8
+        ]))
+  let v14 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s14
+  let out14 ← alloc.vec.Vec.push out13 v14
+  let s15 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        112#u8, 101#u8, 114#u8, 105#u8, 119#u8, 105#u8, 110#u8, 107#u8, 108#u8,
+        101#u8
+        ]))
+  let v15 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s15
+  let out15 ← alloc.vec.Vec.push out14 v15
+  let s16 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        112#u8, 101#u8, 116#u8, 101#u8, 119#u8, 101#u8, 110#u8, 116#u8, 122#u8,
+        49#u8
+        ]))
+  let v16 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s16
+  let out16 ← alloc.vec.Vec.push out15 v16
+  let s17 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        112#u8, 105#u8, 109#u8, 112#u8, 109#u8, 121#u8, 114#u8, 105#u8, 100#u8,
+        101#u8
+        ]))
+  let v17 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s17
+  let out17 ← alloc.vec.Vec.push out16 v17
+  let s18 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        112#u8, 105#u8, 110#u8, 107#u8, 97#u8, 104#u8, 111#u8, 108#u8, 105#u8,
+        99#u8
+        ]))
+  let v18 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s18
+  let out18 ← alloc.vec.Vec.push out17 v18
+  let s19 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        112#u8, 105#u8, 110#u8, 107#u8, 97#u8, 110#u8, 100#u8, 98#u8, 108#u8,
+        117#u8, 101#u8
+        ]))
+  let v19 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s19
+  let out19 ← alloc.vec.Vec.push out18 v19
+  let s20 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        112#u8, 108#u8, 97#u8, 121#u8, 97#u8, 52#u8, 108#u8, 105#u8, 102#u8,
+        101#u8
+        ]))
+  let v20 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s20
+  let out20 ← alloc.vec.Vec.push out19 v20
+  let s21 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        112#u8, 111#u8, 108#u8, 105#u8, 99#u8, 97#u8, 114#u8, 112#u8, 105#u8,
+        111#u8
+        ]))
+  let v21 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s21
+  let out21 ← alloc.vec.Vec.push out20 v21
+  let s22 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        112#u8, 111#u8, 108#u8, 105#u8, 116#u8, 101#u8, 99#u8, 110#u8, 105#u8,
+        99#u8, 111#u8
+        ]))
+  let v22 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s22
+  let out22 ← alloc.vec.Vec.push out21 v22
+  let s23 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        112#u8, 114#u8, 97#u8, 105#u8, 115#u8, 101#u8, 116#u8, 104#u8, 101#u8,
+        108#u8, 111#u8, 114#u8, 100#u8
+        ]))
+  let v23 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s23
+  alloc.vec.Vec.push out22 v23
+
+/-- [kanidm_kernel::migration_defaults::table_part_20]:
+    Source: 'prove/ports/kanidm/kernel/src/migration_defaults.rs', lines 570:0-597:1
+    Visibility: public -/
+def migration_defaults.table_part_20
+  : Result (alloc.vec.Vec (alloc.vec.Vec Std.U8)) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        112#u8, 114#u8, 101#u8, 116#u8, 116#u8, 121#u8, 105#u8, 110#u8, 112#u8,
+        105#u8, 110#u8, 107#u8
+        ]))
+  let v ← alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  let out ← alloc.vec.Vec.push (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) v
+  let s1 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        112#u8, 114#u8, 111#u8, 115#u8, 116#u8, 105#u8, 116#u8, 117#u8, 116#u8,
+        97#u8
+        ]))
+  let v1 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s1
+  let out1 ← alloc.vec.Vec.push out v1
+  let s2 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        112#u8, 115#u8, 105#u8, 99#u8, 111#u8, 108#u8, 111#u8, 103#u8, 105#u8,
+        97#u8
+        ]))
+  let v2 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s2
+  let out2 ← alloc.vec.Vec.push out1 v2
+  let s3 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        112#u8, 115#u8, 105#u8, 104#u8, 111#u8, 108#u8, 111#u8, 103#u8, 105#u8,
+        101#u8
+        ]))
+  let v3 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s3
+  let out3 ← alloc.vec.Vec.push out2 v3
+  let s4 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        112#u8, 117#u8, 99#u8, 99#u8, 97#u8, 121#u8, 103#u8, 97#u8, 114#u8,
+        117#u8
+        ]))
+  let v4 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s4
+  let out4 ← alloc.vec.Vec.push out3 v4
+  let s5 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        112#u8, 117#u8, 110#u8, 107#u8, 110#u8, 111#u8, 116#u8, 100#u8, 101#u8,
+        97#u8, 100#u8
+        ]))
+  let v5 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s5
+  let out5 ← alloc.vec.Vec.push out4 v5
+  let s6 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        112#u8, 117#u8, 115#u8, 115#u8, 105#u8, 110#u8, 98#u8, 111#u8, 111#u8,
+        116#u8, 115#u8
+        ]))
+  let v6 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s6
+  let out6 ← alloc.vec.Vec.push out5 v6
+  let s7 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        113#u8, 117#u8, 101#u8, 116#u8, 101#u8, 105#u8, 109#u8, 112#u8, 111#u8,
+        114#u8, 116#u8, 97#u8
+        ]))
+  let v7 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s7
+  let out7 ← alloc.vec.Vec.push out6 v7
+  let s8 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        113#u8, 117#u8, 101#u8, 116#u8, 122#u8, 97#u8, 108#u8, 99#u8, 111#u8,
+        97#u8, 116#u8, 108#u8
+        ]))
+  let v8 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s8
+  let out8 ← alloc.vec.Vec.push out7 v8
+  let s9 ←
+    lift (Array.to_slice
+      (Array.make 26#usize [
+        113#u8, 119#u8, 101#u8, 114#u8, 116#u8, 121#u8, 117#u8, 105#u8, 111#u8,
+        112#u8, 97#u8, 115#u8, 100#u8, 102#u8, 103#u8, 104#u8, 106#u8, 107#u8,
+        108#u8, 122#u8, 120#u8, 99#u8, 118#u8, 98#u8, 110#u8, 109#u8
+        ]))
+  let v9 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s9
+  let out9 ← alloc.vec.Vec.push out8 v9
+  let s10 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        114#u8, 101#u8, 99#u8, 117#u8, 101#u8, 114#u8, 100#u8, 97#u8, 109#u8,
+        101#u8
+        ]))
+  let v10 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s10
+  let out10 ← alloc.vec.Vec.push out9 v10
+  let s11 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        114#u8, 101#u8, 115#u8, 105#u8, 115#u8, 116#u8, 101#u8, 110#u8, 99#u8,
+        105#u8, 97#u8
+        ]))
+  let v11 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s11
+  let out11 ← alloc.vec.Vec.push out10 v11
+  let s12 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        114#u8, 101#u8, 115#u8, 116#u8, 105#u8, 110#u8, 112#u8, 101#u8, 97#u8,
+        99#u8, 101#u8
+        ]))
+  let v12 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s12
+  let out12 ← alloc.vec.Vec.push out11 v12
+  let s13 ←
+    lift (Array.to_slice
+      (Array.make 14#usize [
+        114#u8, 101#u8, 121#u8, 109#u8, 105#u8, 115#u8, 116#u8, 101#u8, 114#u8,
+        105#u8, 111#u8, 54#u8, 49#u8, 57#u8
+        ]))
+  let v13 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s13
+  let out13 ← alloc.vec.Vec.push out12 v13
+  let s14 ←
+    lift (Array.to_slice
+      (Array.make 14#usize [
+        114#u8, 101#u8, 121#u8, 109#u8, 121#u8, 115#u8, 116#u8, 101#u8, 114#u8,
+        105#u8, 111#u8, 54#u8, 49#u8, 57#u8
+        ]))
+  let v14 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s14
+  let out14 ← alloc.vec.Vec.push out13 v14
+  let s15 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        114#u8, 105#u8, 99#u8, 97#u8, 114#u8, 100#u8, 111#u8, 97#u8, 114#u8,
+        106#u8, 111#u8, 110#u8, 97#u8
+        ]))
+  let v15 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s15
+  let out15 ← alloc.vec.Vec.push out14 v15
+  let s16 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        114#u8, 111#u8, 109#u8, 101#u8, 111#u8, 121#u8, 106#u8, 117#u8, 108#u8,
+        105#u8, 101#u8, 116#u8, 97#u8
+        ]))
+  let v16 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s16
+  let out16 ← alloc.vec.Vec.push out15 v16
+  let s17 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        114#u8, 111#u8, 115#u8, 101#u8, 115#u8, 97#u8, 114#u8, 101#u8, 114#u8,
+        101#u8, 100#u8
+        ]))
+  let v17 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s17
+  let out17 ← alloc.vec.Vec.push out16 v17
+  let s18 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        114#u8, 111#u8, 115#u8, 105#u8, 116#u8, 97#u8, 102#u8, 114#u8, 101#u8,
+        115#u8, 105#u8, 116#u8, 97#u8
+        ]))
+  let v18 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s18
+  let out18 ← alloc.vec.Vec.push out17 v18
+  let s19 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        114#u8, 117#u8, 112#u8, 101#u8, 114#u8, 116#u8, 103#u8, 114#u8, 105#u8,
+        110#u8, 116#u8
+        ]))
+  let v19 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s19
+  let out19 ← alloc.vec.Vec.push out18 v19
+  let s20 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        114#u8, 121#u8, 97#u8, 110#u8, 115#u8, 104#u8, 101#u8, 99#u8, 107#u8,
+        108#u8, 101#u8, 114#u8
+        ]))
+  let v20 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s20
+  let out20 ← alloc.vec.Vec.push out19 v20
+  let s21 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        114#u8, 121#u8, 111#u8, 109#u8, 97#u8, 101#u8, 99#u8, 104#u8, 105#u8,
+        122#u8, 101#u8, 110#u8
+        ]))
+  let v21 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s21
+  let out21 ← alloc.vec.Vec.push out20 v21
+  let s22 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        115#u8, 97#u8, 109#u8, 112#u8, 97#u8, 103#u8, 117#u8, 105#u8, 116#u8,
+        97#u8
+        ]))
+  let v22 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s22
+  let out22 ← alloc.vec.Vec.push out21 v22
+  let s23 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        115#u8, 97#u8, 110#u8, 103#u8, 114#u8, 101#u8, 97#u8, 122#u8, 117#u8,
+        108#u8
+        ]))
+  let v23 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s23
+  alloc.vec.Vec.push out22 v23
+
+/-- [kanidm_kernel::migration_defaults::table_part_21]:
+    Source: 'prove/ports/kanidm/kernel/src/migration_defaults.rs', lines 598:0-625:1
+    Visibility: public -/
+def migration_defaults.table_part_21
+  : Result (alloc.vec.Vec (alloc.vec.Vec Std.U8)) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        115#u8, 97#u8, 114#u8, 97#u8, 110#u8, 103#u8, 104#u8, 101#u8, 121#u8,
+        111#u8
+        ]))
+  let v ← alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  let out ← alloc.vec.Vec.push (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) v
+  let s1 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        115#u8, 97#u8, 115#u8, 115#u8, 121#u8, 103#u8, 105#u8, 114#u8, 108#u8,
+        49#u8
+        ]))
+  let v1 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s1
+  let out1 ← alloc.vec.Vec.push out v1
+  let s2 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        115#u8, 97#u8, 115#u8, 117#u8, 107#u8, 101#u8, 117#u8, 99#u8, 104#u8,
+        105#u8, 104#u8, 97#u8
+        ]))
+  let v2 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s2
+  let out2 ← alloc.vec.Vec.push out1 v2
+  let s3 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        115#u8, 99#u8, 104#u8, 111#u8, 107#u8, 111#u8, 108#u8, 97#u8, 100#u8,
+        101#u8
+        ]))
+  let v3 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s3
+  let out3 ← alloc.vec.Vec.push out2 v3
+  let s4 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        115#u8, 101#u8, 98#u8, 97#u8, 115#u8, 116#u8, 101#u8, 97#u8, 109#u8,
+        111#u8
+        ]))
+  let v4 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s4
+  let out4 ← alloc.vec.Vec.push out3 v4
+  let s5 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        115#u8, 101#u8, 99#u8, 116#u8, 117#u8, 109#u8, 115#u8, 101#u8, 109#u8,
+        112#u8, 114#u8, 97#u8
+        ]))
+  let v5 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s5
+  let out5 ← alloc.vec.Vec.push out4 v5
+  let s6 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        115#u8, 101#u8, 109#u8, 101#u8, 111#u8, 108#u8, 118#u8, 105#u8, 100#u8,
+        111#u8
+        ]))
+  let v6 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s6
+  let out6 ← alloc.vec.Vec.push out5 v6
+  let s7 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        115#u8, 101#u8, 110#u8, 105#u8, 115#u8, 101#u8, 118#u8, 105#u8, 121#u8,
+        111#u8, 114#u8, 117#u8, 109#u8
+        ]))
+  let v7 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s7
+  let out7 ← alloc.vec.Vec.push out6 v7
+  let s8 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        115#u8, 101#u8, 110#u8, 116#u8, 105#u8, 109#u8, 105#u8, 101#u8, 110#u8,
+        116#u8, 111#u8
+        ]))
+  let v8 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s8
+  let out8 ← alloc.vec.Vec.push out7 v8
+  let s9 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        115#u8, 101#u8, 115#u8, 115#u8, 104#u8, 111#u8, 109#u8, 97#u8, 114#u8,
+        117#u8
+        ]))
+  let v9 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s9
+  let out9 ← alloc.vec.Vec.push out8 v9
+  let s10 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        115#u8, 101#u8, 115#u8, 115#u8, 104#u8, 111#u8, 117#u8, 109#u8, 97#u8,
+        114#u8, 117#u8
+        ]))
+  let v10 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s10
+  let out10 ← alloc.vec.Vec.push out9 v10
+  let s11 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        115#u8, 101#u8, 120#u8, 97#u8, 110#u8, 100#u8, 116#u8, 104#u8, 101#u8,
+        99#u8, 105#u8, 116#u8, 121#u8
+        ]))
+  let v11 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s11
+  let out11 ← alloc.vec.Vec.push out10 v11
+  let s12 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        115#u8, 101#u8, 120#u8, 111#u8, 110#u8, 116#u8, 104#u8, 101#u8, 98#u8,
+        101#u8, 97#u8, 99#u8, 104#u8
+        ]))
+  let v12 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s12
+  let out12 ← alloc.vec.Vec.push out11 v12
+  let s13 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        115#u8, 101#u8, 120#u8, 121#u8, 109#u8, 111#u8, 109#u8, 109#u8, 97#u8,
+        49#u8
+        ]))
+  let v13 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s13
+  let out13 ← alloc.vec.Vec.push out12 v13
+  let s14 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        115#u8, 101#u8, 120#u8, 121#u8, 116#u8, 104#u8, 97#u8, 110#u8, 103#u8,
+        49#u8
+        ]))
+  let v14 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s14
+  let out14 ← alloc.vec.Vec.push out13 v14
+  let s15 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        115#u8, 101#u8, 120#u8, 121#u8, 116#u8, 104#u8, 105#u8, 110#u8, 103#u8,
+        49#u8
+        ]))
+  let v15 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s15
+  let out15 ← alloc.vec.Vec.push out14 v15
+  let s16 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        115#u8, 104#u8, 97#u8, 103#u8, 103#u8, 121#u8, 50#u8, 100#u8, 111#u8,
+        112#u8, 101#u8
+        ]))
+  let v16 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s16
+  let out16 ← alloc.vec.Vec.push out15 v16
+  let s17 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        115#u8, 104#u8, 105#u8, 112#u8, 112#u8, 117#u8, 117#u8, 100#u8, 101#u8,
+        110#u8
+        ]))
+  let v17 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s17
+  let out17 ← alloc.vec.Vec.push out16 v17
+  let s18 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        115#u8, 104#u8, 111#u8, 112#u8, 97#u8, 104#u8, 111#u8, 108#u8, 105#u8,
+        99#u8
+        ]))
+  let v18 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s18
+  let out18 ← alloc.vec.Vec.push out17 v18
+  let s19 ←
+    lift (Array.to_slice
+      (Array.make 14#usize [
+        115#u8, 104#u8, 111#u8, 119#u8, 109#u8, 101#u8, 116#u8, 104#u8, 101#u8,
+        109#u8, 111#u8, 110#u8, 101#u8, 121#u8
+        ]))
+  let v19 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s19
+  let out19 ← alloc.vec.Vec.push out18 v19
+  let s20 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        115#u8, 105#u8, 101#u8, 109#u8, 112#u8, 114#u8, 101#u8, 106#u8, 117#u8,
+        110#u8, 116#u8, 111#u8, 115#u8
+        ]))
+  let v20 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s20
+  let out20 ← alloc.vec.Vec.push out19 v20
+  let s21 ←
+    lift (Array.to_slice
+      (Array.make 14#usize [
+        115#u8, 105#u8, 101#u8, 109#u8, 112#u8, 114#u8, 101#u8, 116#u8, 101#u8,
+        97#u8, 109#u8, 97#u8, 114#u8, 101#u8
+        ]))
+  let v21 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s21
+  let out21 ← alloc.vec.Vec.push out20 v21
+  let s22 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        115#u8, 105#u8, 109#u8, 97#u8, 110#u8, 106#u8, 117#u8, 110#u8, 116#u8,
+        97#u8, 107#u8
+        ]))
+  let v22 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s22
+  let out22 ← alloc.vec.Vec.push out21 v22
+  let s23 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        115#u8, 105#u8, 109#u8, 112#u8, 108#u8, 101#u8, 109#u8, 101#u8, 110#u8,
+        116#u8, 101#u8, 121#u8, 111#u8
+        ]))
+  let v23 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s23
+  alloc.vec.Vec.push out22 v23
+
+/-- [kanidm_kernel::migration_defaults::table_part_22]:
+    Source: 'prove/ports/kanidm/kernel/src/migration_defaults.rs', lines 626:0-653:1
+    Visibility: public -/
+def migration_defaults.table_part_22
+  : Result (alloc.vec.Vec (alloc.vec.Vec Std.U8)) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        115#u8, 105#u8, 110#u8, 116#u8, 101#u8, 114#u8, 107#u8, 108#u8, 97#u8,
+        97#u8, 115#u8
+        ]))
+  let v ← alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  let out ← alloc.vec.Vec.push (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) v
+  let s1 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        115#u8, 107#u8, 56#u8, 101#u8, 114#u8, 52#u8, 108#u8, 105#u8, 102#u8,
+        101#u8
+        ]))
+  let v1 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s1
+  let out1 ← alloc.vec.Vec.push out v1
+  let s2 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        115#u8, 107#u8, 97#u8, 116#u8, 101#u8, 111#u8, 114#u8, 100#u8, 105#u8,
+        101#u8
+        ]))
+  let v2 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s2
+  let out2 ← alloc.vec.Vec.push out1 v2
+  let s3 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        115#u8, 111#u8, 108#u8, 111#u8, 112#u8, 97#u8, 114#u8, 97#u8, 109#u8,
+        105#u8
+        ]))
+  let v3 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s3
+  let out3 ← alloc.vec.Vec.push out2 v3
+  let s4 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        115#u8, 111#u8, 108#u8, 111#u8, 112#u8, 97#u8, 114#u8, 97#u8, 116#u8,
+        105#u8
+        ]))
+  let v4 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s4
+  let out4 ← alloc.vec.Vec.push out3 v4
+  let s5 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        115#u8, 111#u8, 109#u8, 111#u8, 115#u8, 116#u8, 117#u8, 121#u8, 121#u8,
+        111#u8
+        ]))
+  let v5 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s5
+  let out5 ← alloc.vec.Vec.push out4 v5
+  let s6 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        115#u8, 111#u8, 117#u8, 108#u8, 106#u8, 97#u8, 98#u8, 111#u8, 121#u8,
+        49#u8
+        ]))
+  let v6 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s6
+  let out6 ← alloc.vec.Vec.push out5 v6
+  let s7 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        115#u8, 111#u8, 117#u8, 108#u8, 106#u8, 97#u8, 103#u8, 105#u8, 114#u8,
+        108#u8
+        ]))
+  let v7 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s7
+  let out7 ← alloc.vec.Vec.push out6 v7
+  let s8 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        115#u8, 111#u8, 117#u8, 108#u8, 106#u8, 97#u8, 103#u8, 117#u8, 114#u8,
+        108#u8
+        ]))
+  let v8 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s8
+  let out8 ← alloc.vec.Vec.push out7 v8
+  let s9 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        115#u8, 111#u8, 121#u8, 101#u8, 108#u8, 109#u8, 101#u8, 106#u8, 111#u8,
+        114#u8
+        ]))
+  let v9 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s9
+  let out9 ← alloc.vec.Vec.push out8 v9
+  let s10 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        115#u8, 111#u8, 121#u8, 108#u8, 97#u8, 109#u8, 101#u8, 106#u8, 111#u8,
+        114#u8
+        ]))
+  let v10 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s10
+  let out10 ← alloc.vec.Vec.push out9 v10
+  let s11 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        115#u8, 111#u8, 121#u8, 108#u8, 111#u8, 109#u8, 97#u8, 120#u8, 105#u8,
+        109#u8, 111#u8
+        ]))
+  let v11 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s11
+  let out11 ← alloc.vec.Vec.push out10 v11
+  let s12 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        115#u8, 111#u8, 121#u8, 108#u8, 111#u8, 109#u8, 101#u8, 106#u8, 111#u8,
+        114#u8
+        ]))
+  let v12 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s12
+  let out12 ← alloc.vec.Vec.push out11 v12
+  let s13 ←
+    lift (Array.to_slice
+      (Array.make 20#usize [
+        115#u8, 112#u8, 111#u8, 110#u8, 103#u8, 101#u8, 98#u8, 111#u8, 98#u8,
+        115#u8, 113#u8, 117#u8, 97#u8, 114#u8, 101#u8, 112#u8, 97#u8, 110#u8,
+        116#u8, 115#u8
+        ]))
+  let v13 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s13
+  let out13 ← alloc.vec.Vec.push out12 v13
+  let s14 ←
+    lift (Array.to_slice
+      (Array.make 15#usize [
+        115#u8, 116#u8, 101#u8, 97#u8, 117#u8, 97#u8, 98#u8, 117#u8, 99#u8,
+        117#u8, 114#u8, 101#u8, 115#u8, 116#u8, 105#u8
+        ]))
+  let v14 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s14
+  let out14 ← alloc.vec.Vec.push out13 v14
+  let s15 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        115#u8, 117#u8, 97#u8, 110#u8, 107#u8, 117#u8, 108#u8, 97#u8, 114#u8,
+        98#u8
+        ]))
+  let v15 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s15
+  let out15 ← alloc.vec.Vec.push out14 v15
+  let s16 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        115#u8, 117#u8, 98#u8, 104#u8, 97#u8, 110#u8, 97#u8, 108#u8, 108#u8,
+        97#u8, 104#u8
+        ]))
+  let v16 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s16
+  let out16 ← alloc.vec.Vec.push out15 v16
+  let s17 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        115#u8, 117#u8, 103#u8, 97#u8, 114#u8, 97#u8, 110#u8, 100#u8, 115#u8,
+        112#u8, 105#u8, 99#u8, 101#u8
+        ]))
+  let v17 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s17
+  let out17 ← alloc.vec.Vec.push out16 v17
+  let s18 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        115#u8, 117#u8, 103#u8, 97#u8, 114#u8, 110#u8, 115#u8, 112#u8, 105#u8,
+        99#u8, 101#u8
+        ]))
+  let v18 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s18
+  let out18 ← alloc.vec.Vec.push out17 v18
+  let s19 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        115#u8, 117#u8, 112#u8, 101#u8, 114#u8, 99#u8, 104#u8, 105#u8, 99#u8,
+        97#u8
+        ]))
+  let v19 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s19
+  let out19 ← alloc.vec.Vec.push out18 v19
+  let s20 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        115#u8, 117#u8, 112#u8, 101#u8, 114#u8, 105#u8, 110#u8, 103#u8, 103#u8,
+        111#u8
+        ]))
+  let v20 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s20
+  let out20 ← alloc.vec.Vec.push out19 v20
+  let s21 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        115#u8, 117#u8, 112#u8, 101#u8, 114#u8, 112#u8, 111#u8, 100#u8, 101#u8,
+        114#u8, 111#u8, 115#u8, 97#u8
+        ]))
+  let v21 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s21
+  let out21 ← alloc.vec.Vec.push out20 v21
+  let s22 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        115#u8, 117#u8, 112#u8, 108#u8, 97#u8, 100#u8, 105#u8, 116#u8, 97#u8,
+        104#u8
+        ]))
+  let v22 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s22
+  let out22 ← alloc.vec.Vec.push out21 v22
+  let s23 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        116#u8, 97#u8, 109#u8, 97#u8, 103#u8, 111#u8, 116#u8, 99#u8, 104#u8,
+        105#u8
+        ]))
+  let v23 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s23
+  alloc.vec.Vec.push out22 v23
+
+/-- [kanidm_kernel::migration_defaults::table_part_23]:
+    Source: 'prove/ports/kanidm/kernel/src/migration_defaults.rs', lines 654:0-681:1
+    Visibility: public -/
+def migration_defaults.table_part_23
+  : Result (alloc.vec.Vec (alloc.vec.Vec Std.U8)) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        116#u8, 97#u8, 117#u8, 103#u8, 97#u8, 109#u8, 109#u8, 97#u8, 112#u8,
+        104#u8, 105#u8
+        ]))
+  let v ← alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  let out ← alloc.vec.Vec.push (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) v
+  let s1 ←
+    lift (Array.to_slice
+      (Array.make 17#usize [
+        116#u8, 101#u8, 97#u8, 109#u8, 97#u8, 114#u8, 101#u8, 112#u8, 111#u8,
+        114#u8, 115#u8, 105#u8, 101#u8, 109#u8, 112#u8, 114#u8, 101#u8
+        ]))
+  let v1 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s1
+  let out1 ← alloc.vec.Vec.push out v1
+  let s2 ←
+    lift (Array.to_slice
+      (Array.make 14#usize [
+        116#u8, 101#u8, 97#u8, 109#u8, 97#u8, 114#u8, 101#u8, 115#u8, 105#u8,
+        101#u8, 109#u8, 112#u8, 114#u8, 101#u8
+        ]))
+  let v2 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s2
+  let out2 ← alloc.vec.Vec.push out1 v2
+  let s3 ←
+    lift (Array.to_slice
+      (Array.make 14#usize [
+        116#u8, 101#u8, 97#u8, 109#u8, 97#u8, 114#u8, 101#u8, 120#u8, 49#u8,
+        48#u8, 48#u8, 112#u8, 114#u8, 101#u8
+        ]))
+  let v3 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s3
+  let out3 ← alloc.vec.Vec.push out2 v3
+  let s4 ←
+    lift (Array.to_slice
+      (Array.make 15#usize [
+        116#u8, 101#u8, 97#u8, 109#u8, 97#u8, 114#u8, 101#u8, 120#u8, 115#u8,
+        105#u8, 101#u8, 109#u8, 112#u8, 114#u8, 101#u8
+        ]))
+  let v4 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s4
+  let out4 ← alloc.vec.Vec.push out3 v4
+  let s5 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        116#u8, 101#u8, 97#u8, 109#u8, 111#u8, 98#u8, 101#u8, 98#u8, 105#u8,
+        116#u8, 111#u8
+        ]))
+  let v5 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s5
+  let out5 ← alloc.vec.Vec.push out4 v5
+  let s6 ←
+    lift (Array.to_slice
+      (Array.make 14#usize [
+        116#u8, 101#u8, 97#u8, 109#u8, 111#u8, 100#u8, 101#u8, 109#u8, 97#u8,
+        115#u8, 105#u8, 97#u8, 100#u8, 111#u8
+        ]))
+  let v6 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s6
+  let out6 ← alloc.vec.Vec.push out5 v6
+  let s7 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        116#u8, 101#u8, 97#u8, 109#u8, 111#u8, 103#u8, 111#u8, 114#u8, 100#u8,
+        111#u8
+        ]))
+  let v7 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s7
+  let out7 ← alloc.vec.Vec.push out6 v7
+  let s8 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        116#u8, 101#u8, 97#u8, 109#u8, 111#u8, 109#u8, 105#u8, 97#u8, 109#u8,
+        111#u8, 114#u8
+        ]))
+  let v8 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s8
+  let out8 ← alloc.vec.Vec.push out7 v8
+  let s9 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        116#u8, 101#u8, 97#u8, 109#u8, 111#u8, 109#u8, 105#u8, 98#u8, 101#u8,
+        98#u8, 101#u8
+        ]))
+  let v9 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s9
+  let out9 ← alloc.vec.Vec.push out8 v9
+  let s10 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        116#u8, 101#u8, 97#u8, 109#u8, 111#u8, 109#u8, 105#u8, 118#u8, 105#u8,
+        100#u8, 97#u8
+        ]))
+  let v10 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s10
+  let out10 ← alloc.vec.Vec.push out9 v10
+  let s11 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        116#u8, 101#u8, 97#u8, 109#u8, 111#u8, 115#u8, 111#u8, 108#u8, 111#u8,
+        97#u8, 116#u8, 105#u8
+        ]))
+  let v11 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s11
+  let out11 ← alloc.vec.Vec.push out10 v11
+  let s12 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        116#u8, 101#u8, 97#u8, 109#u8, 111#u8, 116#u8, 97#u8, 110#u8, 116#u8,
+        111#u8
+        ]))
+  let v12 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s12
+  let out12 ← alloc.vec.Vec.push out11 v12
+  let s13 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        116#u8, 101#u8, 97#u8, 109#u8, 111#u8, 120#u8, 49#u8, 48#u8, 48#u8,
+        112#u8, 114#u8, 101#u8
+        ]))
+  let v13 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s13
+  let out13 ← alloc.vec.Vec.push out12 v13
+  let s14 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        116#u8, 101#u8, 99#u8, 110#u8, 111#u8, 108#u8, 111#u8, 103#u8, 105#u8,
+        97#u8
+        ]))
+  let v14 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s14
+  let out14 ← alloc.vec.Vec.push out13 v14
+  let s15 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        116#u8, 101#u8, 101#u8, 120#u8, 116#u8, 114#u8, 97#u8, 195#u8, 177#u8,
+        111#u8
+        ]))
+  let v15 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s15
+  let out15 ← alloc.vec.Vec.push out14 v15
+  let s16 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        116#u8, 101#u8, 105#u8, 117#u8, 98#u8, 101#u8, 115#u8, 99#u8, 109#u8,
+        117#u8, 108#u8, 116#u8
+        ]))
+  let v16 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s16
+  let out16 ← alloc.vec.Vec.push out15 v16
+  let s17 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        116#u8, 101#u8, 107#u8, 101#u8, 108#u8, 111#u8, 109#u8, 117#u8, 99#u8,
+        104#u8, 111#u8
+        ]))
+  let v17 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s17
+  let out17 ← alloc.vec.Vec.push out16 v17
+  let s18 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        116#u8, 101#u8, 107#u8, 101#u8, 108#u8, 111#u8, 109#u8, 117#u8, 120#u8,
+        111#u8
+        ]))
+  let v18 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s18
+  let out18 ← alloc.vec.Vec.push out17 v18
+  let s19 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        116#u8, 101#u8, 107#u8, 105#u8, 101#u8, 114#u8, 111#u8, 109#u8, 117#u8,
+        99#u8, 104#u8, 111#u8
+        ]))
+  let v19 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s19
+  let out19 ← alloc.vec.Vec.push out18 v19
+  let s20 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        116#u8, 101#u8, 107#u8, 105#u8, 101#u8, 114#u8, 111#u8, 109#u8, 117#u8,
+        120#u8, 111#u8
+        ]))
+  let v20 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s20
+  let out20 ← alloc.vec.Vec.push out19 v20
+  let s21 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        116#u8, 101#u8, 108#u8, 101#u8, 99#u8, 111#u8, 109#u8, 97#u8, 110#u8,
+        100#u8, 97#u8
+        ]))
+  let v21 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s21
+  let out21 ← alloc.vec.Vec.push out20 v21
+  let s22 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        116#u8, 101#u8, 108#u8, 101#u8, 116#u8, 117#u8, 98#u8, 98#u8, 105#u8,
+        101#u8, 115#u8
+        ]))
+  let v22 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s22
+  let out22 ← alloc.vec.Vec.push out21 v22
+  let s23 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        116#u8, 101#u8, 110#u8, 101#u8, 99#u8, 101#u8, 115#u8, 105#u8, 116#u8,
+        111#u8
+        ]))
+  let v23 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s23
+  alloc.vec.Vec.push out22 v23
+
+/-- [kanidm_kernel::migration_defaults::table_part_24]:
+    Source: 'prove/ports/kanidm/kernel/src/migration_defaults.rs', lines 682:0-709:1
+    Visibility: public -/
+def migration_defaults.table_part_24
+  : Result (alloc.vec.Vec (alloc.vec.Vec Std.U8)) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        116#u8, 101#u8, 110#u8, 103#u8, 111#u8, 117#u8, 110#u8, 97#u8, 109#u8,
+        111#u8, 114#u8
+        ]))
+  let v ← alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  let out ← alloc.vec.Vec.push (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) v
+  let s1 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        116#u8, 101#u8, 111#u8, 108#u8, 118#u8, 105#u8, 100#u8, 97#u8, 114#u8,
+        101#u8
+        ]))
+  let v1 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s1
+  let out1 ← alloc.vec.Vec.push out v1
+  let s2 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        116#u8, 101#u8, 113#u8, 117#u8, 105#u8, 101#u8, 114#u8, 111#u8, 109#u8,
+        117#u8, 99#u8, 104#u8, 111#u8
+        ]))
+  let v2 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s2
+  let out2 ← alloc.vec.Vec.push out1 v2
+  let s3 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        116#u8, 101#u8, 113#u8, 117#u8, 105#u8, 101#u8, 114#u8, 111#u8, 109#u8,
+        117#u8, 120#u8, 111#u8
+        ]))
+  let v3 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s3
+  let out3 ← alloc.vec.Vec.push out2 v3
+  let s4 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        116#u8, 101#u8, 115#u8, 105#u8, 103#u8, 111#u8, 97#u8, 109#u8, 97#u8,
+        110#u8, 100#u8, 111#u8
+        ]))
+  let v4 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s4
+  let out4 ← alloc.vec.Vec.push out3 v4
+  let s5 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        116#u8, 104#u8, 97#u8, 105#u8, 116#u8, 97#u8, 110#u8, 105#u8, 117#u8,
+        109#u8
+        ]))
+  let v5 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s5
+  let out5 ← alloc.vec.Vec.push out4 v5
+  let s6 ←
+    lift (Array.to_slice
+      (Array.make 14#usize [
+        116#u8, 104#u8, 101#u8, 98#u8, 108#u8, 97#u8, 99#u8, 107#u8, 112#u8,
+        97#u8, 114#u8, 97#u8, 100#u8, 101#u8
+        ]))
+  let v6 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s6
+  let out6 ← alloc.vec.Vec.push out5 v6
+  let s7 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        116#u8, 104#u8, 101#u8, 111#u8, 110#u8, 101#u8, 97#u8, 110#u8, 100#u8,
+        111#u8, 110#u8, 108#u8, 121#u8
+        ]))
+  let v7 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s7
+  let out7 ← alloc.vec.Vec.push out6 v7
+  let s8 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        116#u8, 104#u8, 101#u8, 118#u8, 101#u8, 114#u8, 111#u8, 110#u8, 105#u8,
+        99#u8, 97#u8, 115#u8
+        ]))
+  let v8 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s8
+  let out8 ← alloc.vec.Vec.push out7 v8
+  let s9 ←
+    lift (Array.to_slice
+      (Array.make 16#usize [
+        116#u8, 104#u8, 105#u8, 115#u8, 105#u8, 115#u8, 109#u8, 121#u8, 112#u8,
+        97#u8, 115#u8, 115#u8, 119#u8, 111#u8, 114#u8, 100#u8
+        ]))
+  let v9 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s9
+  let out9 ← alloc.vec.Vec.push out8 v9
+  let s10 ←
+    lift (Array.to_slice
+      (Array.make 14#usize [
+        116#u8, 104#u8, 114#u8, 101#u8, 101#u8, 100#u8, 97#u8, 121#u8, 115#u8,
+        103#u8, 114#u8, 97#u8, 99#u8, 101#u8
+        ]))
+  let v10 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s10
+  let out10 ← alloc.vec.Vec.push out9 v10
+  let s11 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        116#u8, 105#u8, 109#u8, 98#u8, 105#u8, 114#u8, 105#u8, 99#u8, 104#u8,
+        101#u8
+        ]))
+  let v11 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s11
+  let out11 ← alloc.vec.Vec.push out10 v11
+  let s12 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        116#u8, 105#u8, 110#u8, 107#u8, 121#u8, 119#u8, 105#u8, 110#u8, 107#u8,
+        121#u8
+        ]))
+  let v12 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s12
+  let out12 ← alloc.vec.Vec.push out11 v12
+  let s13 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        116#u8, 105#u8, 116#u8, 111#u8, 101#u8, 108#u8, 98#u8, 97#u8, 109#u8,
+        98#u8, 105#u8, 110#u8, 111#u8
+        ]))
+  let v13 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s13
+  let out13 ← alloc.vec.Vec.push out12 v13
+  let s14 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        116#u8, 105#u8, 118#u8, 111#u8, 103#u8, 108#u8, 105#u8, 111#u8, 98#u8,
+        101#u8, 110#u8, 101#u8
+        ]))
+  let v14 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s14
+  let out14 ← alloc.vec.Vec.push out13 v14
+  let s15 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        116#u8, 111#u8, 100#u8, 97#u8, 108#u8, 97#u8, 118#u8, 105#u8, 100#u8,
+        97#u8
+        ]))
+  let v15 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s15
+  let out15 ← alloc.vec.Vec.push out14 v15
+  let s16 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        116#u8, 111#u8, 100#u8, 111#u8, 99#u8, 97#u8, 109#u8, 98#u8, 105#u8,
+        111#u8
+        ]))
+  let v16 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s16
+  let out16 ← alloc.vec.Vec.push out15 v16
+  let s17 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        116#u8, 111#u8, 100#u8, 111#u8, 112#u8, 111#u8, 100#u8, 101#u8, 114#u8,
+        111#u8, 115#u8, 111#u8
+        ]))
+  let v17 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s17
+  let out17 ← alloc.vec.Vec.push out16 v17
+  let s18 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        116#u8, 111#u8, 104#u8, 111#u8, 115#u8, 104#u8, 105#u8, 110#u8, 107#u8,
+        105#u8
+        ]))
+  let v18 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s18
+  let out18 ← alloc.vec.Vec.push out17 v18
+  let s19 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        116#u8, 111#u8, 107#u8, 105#u8, 111#u8, 32#u8, 104#u8, 111#u8, 116#u8,
+        101#u8, 108#u8
+        ]))
+  let v19 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s19
+  let out19 ← alloc.vec.Vec.push out18 v19
+  let s20 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        116#u8, 111#u8, 109#u8, 97#u8, 110#u8, 100#u8, 106#u8, 101#u8, 114#u8,
+        114#u8, 121#u8
+        ]))
+  let v20 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s20
+  let out20 ← alloc.vec.Vec.push out19 v20
+  let s21 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        116#u8, 111#u8, 109#u8, 119#u8, 101#u8, 108#u8, 108#u8, 105#u8, 110#u8,
+        103#u8
+        ]))
+  let v21 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s21
+  let out21 ← alloc.vec.Vec.push out20 v21
+  let s22 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        116#u8, 114#u8, 97#u8, 110#u8, 100#u8, 97#u8, 102#u8, 105#u8, 114#u8,
+        105#u8
+        ]))
+  let v22 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s22
+  let out22 ← alloc.vec.Vec.push out21 v22
+  let s23 ←
+    lift (Array.to_slice
+      (Array.make 14#usize [
+        116#u8, 114#u8, 105#u8, 110#u8, 99#u8, 104#u8, 101#u8, 114#u8, 97#u8,
+        110#u8, 111#u8, 114#u8, 116#u8, 101#u8
+        ]))
+  let v23 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s23
+  alloc.vec.Vec.push out22 v23
+
+/-- [kanidm_kernel::migration_defaults::table_part_25]:
+    Source: 'prove/ports/kanidm/kernel/src/migration_defaults.rs', lines 710:0-737:1
+    Visibility: public -/
+def migration_defaults.table_part_25
+  : Result (alloc.vec.Vec (alloc.vec.Vec Std.U8)) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        116#u8, 114#u8, 105#u8, 115#u8, 107#u8, 101#u8, 108#u8, 105#u8, 111#u8,
+        110#u8
+        ]))
+  let v ← alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  let out ← alloc.vec.Vec.push (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) v
+  let s1 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        116#u8, 117#u8, 101#u8, 114#u8, 101#u8, 115#u8, 109#u8, 105#u8, 97#u8,
+        109#u8, 111#u8, 114#u8
+        ]))
+  let v1 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s1
+  let out1 ← alloc.vec.Vec.push out v1
+  let s2 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        116#u8, 117#u8, 101#u8, 114#u8, 101#u8, 115#u8, 109#u8, 105#u8, 118#u8,
+        105#u8, 100#u8, 97#u8
+        ]))
+  let v2 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s2
+  let out2 ← alloc.vec.Vec.push out1 v2
+  let s3 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        116#u8, 117#u8, 109#u8, 97#u8, 109#u8, 97#u8, 99#u8, 97#u8, 108#u8,
+        97#u8, 116#u8, 97#u8
+        ]))
+  let v3 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s3
+  let out3 ← alloc.vec.Vec.push out2 v3
+  let s4 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        116#u8, 117#u8, 116#u8, 116#u8, 105#u8, 102#u8, 114#u8, 117#u8, 116#u8,
+        116#u8, 105#u8
+        ]))
+  let v4 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s4
+  let out4 ← alloc.vec.Vec.push out3 v4
+  let s5 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        116#u8, 117#u8, 121#u8, 121#u8, 111#u8, 120#u8, 49#u8, 48#u8, 48#u8,
+        112#u8, 114#u8, 101#u8
+        ]))
+  let v5 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s5
+  let out5 ← alloc.vec.Vec.push out4 v5
+  let s6 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        117#u8, 99#u8, 104#u8, 105#u8, 104#u8, 97#u8, 115#u8, 97#u8, 115#u8,
+        117#u8, 107#u8, 101#u8
+        ]))
+  let v6 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s6
+  let out6 ← alloc.vec.Vec.push out5 v6
+  let s7 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        117#u8, 110#u8, 100#u8, 101#u8, 114#u8, 109#u8, 121#u8, 115#u8, 107#u8,
+        105#u8, 110#u8
+        ]))
+  let v7 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s7
+  let out7 ← alloc.vec.Vec.push out6 v7
+  let s8 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        117#u8, 110#u8, 102#u8, 111#u8, 114#u8, 103#u8, 101#u8, 116#u8, 97#u8,
+        98#u8, 108#u8, 101#u8
+        ]))
+  let v8 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s8
+  let out8 ← alloc.vec.Vec.push out7 v8
+  let s9 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        117#u8, 110#u8, 111#u8, 100#u8, 111#u8, 115#u8, 116#u8, 114#u8, 101#u8,
+        115#u8
+        ]))
+  let v9 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s9
+  let out9 ← alloc.vec.Vec.push out8 v9
+  let s10 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        118#u8, 97#u8, 99#u8, 97#u8, 99#u8, 105#u8, 111#u8, 110#u8, 101#u8,
+        115#u8
+        ]))
+  let v10 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s10
+  let out10 ← alloc.vec.Vec.push out9 v10
+  let s11 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        118#u8, 97#u8, 108#u8, 100#u8, 101#u8, 114#u8, 114#u8, 97#u8, 109#u8,
+        97#u8
+        ]))
+  let v11 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s11
+  let out11 ← alloc.vec.Vec.push out10 v11
+  let s12 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        118#u8, 97#u8, 116#u8, 111#u8, 115#u8, 108#u8, 111#u8, 99#u8, 111#u8,
+        115#u8
+        ]))
+  let v12 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s12
+  let out12 ← alloc.vec.Vec.push out11 v12
+  let s13 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        118#u8, 101#u8, 114#u8, 106#u8, 97#u8, 97#u8, 114#u8, 100#u8, 97#u8,
+        103#u8
+        ]))
+  let v13 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s13
+  let out13 ← alloc.vec.Vec.push out12 v13
+  let s14 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        118#u8, 101#u8, 116#u8, 101#u8, 97#u8, 108#u8, 97#u8, 109#u8, 105#u8,
+        101#u8, 114#u8, 100#u8, 97#u8
+        ]))
+  let v14 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s14
+  let out14 ← alloc.vec.Vec.push out13 v14
+  let s15 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        118#u8, 101#u8, 116#u8, 101#u8, 114#u8, 105#u8, 110#u8, 97#u8, 114#u8,
+        105#u8, 97#u8
+        ]))
+  let v15 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s15
+  let out15 ← alloc.vec.Vec.push out14 v15
+  let s16 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        118#u8, 105#u8, 108#u8, 108#u8, 97#u8, 99#u8, 111#u8, 114#u8, 116#u8,
+        97#u8
+        ]))
+  let v16 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s16
+  let out16 ← alloc.vec.Vec.push out15 v16
+  let s17 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        118#u8, 105#u8, 118#u8, 97#u8, 101#u8, 108#u8, 114#u8, 111#u8, 99#u8,
+        107#u8
+        ]))
+  let v17 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s17
+  let out17 ← alloc.vec.Vec.push out16 v17
+  let s18 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        118#u8, 105#u8, 118#u8, 97#u8, 108#u8, 97#u8, 114#u8, 97#u8, 122#u8,
+        97#u8
+        ]))
+  let v18 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s18
+  let out18 ← alloc.vec.Vec.push out17 v18
+  let s19 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        118#u8, 105#u8, 118#u8, 97#u8, 108#u8, 97#u8, 118#u8, 105#u8, 100#u8,
+        97#u8
+        ]))
+  let v19 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s19
+  let out19 ← alloc.vec.Vec.push out18 v19
+  let s20 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        118#u8, 105#u8, 118#u8, 101#u8, 108#u8, 97#u8, 118#u8, 105#u8, 100#u8,
+        97#u8
+        ]))
+  let v20 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s20
+  let out20 ← alloc.vec.Vec.push out19 v20
+  let s21 ←
+    lift (Array.to_slice
+      (Array.make 16#usize [
+        119#u8, 101#u8, 98#u8, 101#u8, 108#u8, 111#u8, 110#u8, 103#u8, 116#u8,
+        111#u8, 103#u8, 101#u8, 116#u8, 104#u8, 101#u8, 114#u8
+        ]))
+  let v21 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s21
+  let out21 ← alloc.vec.Vec.push out20 v21
+  let s22 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        119#u8, 101#u8, 101#u8, 122#u8, 121#u8, 102#u8, 98#u8, 97#u8, 98#u8,
+        121#u8
+        ]))
+  let v22 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s22
+  let out22 ← alloc.vec.Vec.push out21 v22
+  let s23 ←
+    lift (Array.to_slice
+      (Array.make 15#usize [
+        119#u8, 101#u8, 108#u8, 99#u8, 111#u8, 109#u8, 101#u8, 116#u8, 111#u8,
+        109#u8, 121#u8, 108#u8, 105#u8, 102#u8, 101#u8
+        ]))
+  let v23 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s23
+  alloc.vec.Vec.push out22 v23
+
+/-- [kanidm_kernel::migration_defaults::table_part_26]:
+    Source: 'prove/ports/kanidm/kernel/src/migration_defaults.rs', lines 738:0-753:1
+    Visibility: public -/
+def migration_defaults.table_part_26
+  : Result (alloc.vec.Vec (alloc.vec.Vec Std.U8)) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 14#usize [
+        119#u8, 104#u8, 101#u8, 114#u8, 101#u8, 105#u8, 115#u8, 116#u8, 104#u8,
+        101#u8, 108#u8, 111#u8, 118#u8, 101#u8
+        ]))
+  let v ← alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  let out ← alloc.vec.Vec.push (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) v
+  let s1 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        119#u8, 105#u8, 110#u8, 110#u8, 105#u8, 101#u8, 116#u8, 104#u8, 101#u8,
+        112#u8, 111#u8, 111#u8, 104#u8
+        ]))
+  let v1 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s1
+  let out1 ← alloc.vec.Vec.push out v1
+  let s2 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        119#u8, 105#u8, 112#u8, 101#u8, 109#u8, 101#u8, 100#u8, 111#u8, 119#u8,
+        110#u8
+        ]))
+  let v2 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s2
+  let out2 ← alloc.vec.Vec.push out1 v2
+  let s3 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        119#u8, 105#u8, 115#u8, 105#u8, 110#u8, 121#u8, 97#u8, 110#u8, 100#u8,
+        101#u8, 108#u8
+        ]))
+  let v3 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s3
+  let out3 ← alloc.vec.Vec.push out2 v3
+  let s4 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        119#u8, 105#u8, 115#u8, 105#u8, 110#u8, 121#u8, 121#u8, 97#u8, 110#u8,
+        100#u8, 101#u8, 108#u8
+        ]))
+  let v4 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s4
+  let out4 ← alloc.vec.Vec.push out3 v4
+  let s5 ←
+    lift (Array.to_slice
+      (Array.make 15#usize [
+        119#u8, 111#u8, 114#u8, 108#u8, 100#u8, 111#u8, 102#u8, 119#u8, 97#u8,
+        114#u8, 99#u8, 114#u8, 97#u8, 102#u8, 116#u8
+        ]))
+  let v5 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s5
+  let out5 ← alloc.vec.Vec.push out4 v5
+  let s6 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        121#u8, 111#u8, 115#u8, 111#u8, 121#u8, 101#u8, 108#u8, 109#u8, 101#u8,
+        106#u8, 111#u8, 114#u8
+        ]))
+  let v6 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s6
+  let out6 ← alloc.vec.Vec.push out5 v6
+  let s7 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        121#u8, 111#u8, 115#u8, 111#u8, 121#u8, 108#u8, 97#u8, 109#u8, 101#u8,
+        106#u8, 111#u8, 114#u8
+        ]))
+  let v7 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s7
+  let out7 ← alloc.vec.Vec.push out6 v7
+  let s8 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        121#u8, 111#u8, 117#u8, 99#u8, 97#u8, 110#u8, 116#u8, 115#u8, 101#u8,
+        101#u8, 109#u8, 101#u8
+        ]))
+  let v8 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s8
+  let out8 ← alloc.vec.Vec.push out7 v8
+  let s9 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        121#u8, 111#u8, 117#u8, 103#u8, 111#u8, 116#u8, 115#u8, 101#u8, 114#u8,
+        118#u8, 101#u8, 100#u8
+        ]))
+  let v9 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s9
+  let out9 ← alloc.vec.Vec.push out8 v9
+  let s10 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        121#u8, 117#u8, 121#u8, 117#u8, 104#u8, 97#u8, 107#u8, 117#u8, 115#u8,
+        104#u8, 111#u8
+        ]))
+  let v10 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s10
+  let out10 ← alloc.vec.Vec.push out9 v10
+  let s11 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        122#u8, 111#u8, 110#u8, 110#u8, 101#u8, 98#u8, 108#u8, 111#u8, 101#u8,
+        109#u8
+        ]))
+  let v11 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s11
+  alloc.vec.Vec.push out10 v11
+
+/-- [kanidm_kernel::migration_defaults::initialize]:
+    Source: 'prove/ports/kanidm/kernel/src/migration_defaults.rs', lines 754:0-813:1
+    Visibility: public -/
+def migration_defaults.initialize
+  (second : Slice Std.U8) : Result migration_defaults.SystemConfig := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 19#usize [
+        98#u8, 97#u8, 100#u8, 64#u8, 110#u8, 111#u8, 51#u8, 105#u8, 98#u8,
+        116#u8, 121#u8, 113#u8, 104#u8, 117#u8, 36#u8, 108#u8, 105#u8, 115#u8,
+        116#u8
+        ]))
+  let passwords ← bset.insert (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) s
+  let passwords1 ← bset.insert passwords second
+  let part ← migration_defaults.table_part_0
+  let s1 := alloc.vec.Vec.deref part
+  let passwords2 ← bset.extend passwords1 s1
+  let part1 ← migration_defaults.table_part_1
+  let s2 := alloc.vec.Vec.deref part1
+  let passwords3 ← bset.extend passwords2 s2
+  let part2 ← migration_defaults.table_part_2
+  let s3 := alloc.vec.Vec.deref part2
+  let passwords4 ← bset.extend passwords3 s3
+  let part3 ← migration_defaults.table_part_3
+  let s4 := alloc.vec.Vec.deref part3
+  let passwords5 ← bset.extend passwords4 s4
+  let part4 ← migration_defaults.table_part_4
+  let s5 := alloc.vec.Vec.deref part4
+  let passwords6 ← bset.extend passwords5 s5
+  let part5 ← migration_defaults.table_part_5
+  let s6 := alloc.vec.Vec.deref part5
+  let passwords7 ← bset.extend passwords6 s6
+  let part6 ← migration_defaults.table_part_6
+  let s7 := alloc.vec.Vec.deref part6
+  let passwords8 ← bset.extend passwords7 s7
+  let part7 ← migration_defaults.table_part_7
+  let s8 := alloc.vec.Vec.deref part7
+  let passwords9 ← bset.extend passwords8 s8
+  let part8 ← migration_defaults.table_part_8
+  let s9 := alloc.vec.Vec.deref part8
+  let passwords10 ← bset.extend passwords9 s9
+  let part9 ← migration_defaults.table_part_9
+  let s10 := alloc.vec.Vec.deref part9
+  let passwords11 ← bset.extend passwords10 s10
+  let part10 ← migration_defaults.table_part_10
+  let s11 := alloc.vec.Vec.deref part10
+  let passwords12 ← bset.extend passwords11 s11
+  let part11 ← migration_defaults.table_part_11
+  let s12 := alloc.vec.Vec.deref part11
+  let passwords13 ← bset.extend passwords12 s12
+  let part12 ← migration_defaults.table_part_12
+  let s13 := alloc.vec.Vec.deref part12
+  let passwords14 ← bset.extend passwords13 s13
+  let part13 ← migration_defaults.table_part_13
+  let s14 := alloc.vec.Vec.deref part13
+  let passwords15 ← bset.extend passwords14 s14
+  let part14 ← migration_defaults.table_part_14
+  let s15 := alloc.vec.Vec.deref part14
+  let passwords16 ← bset.extend passwords15 s15
+  let part15 ← migration_defaults.table_part_15
+  let s16 := alloc.vec.Vec.deref part15
+  let passwords17 ← bset.extend passwords16 s16
+  let part16 ← migration_defaults.table_part_16
+  let s17 := alloc.vec.Vec.deref part16
+  let passwords18 ← bset.extend passwords17 s17
+  let part17 ← migration_defaults.table_part_17
+  let s18 := alloc.vec.Vec.deref part17
+  let passwords19 ← bset.extend passwords18 s18
+  let part18 ← migration_defaults.table_part_18
+  let s19 := alloc.vec.Vec.deref part18
+  let passwords20 ← bset.extend passwords19 s19
+  let part19 ← migration_defaults.table_part_19
+  let s20 := alloc.vec.Vec.deref part19
+  let passwords21 ← bset.extend passwords20 s20
+  let part20 ← migration_defaults.table_part_20
+  let s21 := alloc.vec.Vec.deref part20
+  let passwords22 ← bset.extend passwords21 s21
+  let part21 ← migration_defaults.table_part_21
+  let s22 := alloc.vec.Vec.deref part21
+  let passwords23 ← bset.extend passwords22 s22
+  let part22 ← migration_defaults.table_part_22
+  let s23 := alloc.vec.Vec.deref part22
+  let passwords24 ← bset.extend passwords23 s23
+  let part23 ← migration_defaults.table_part_23
+  let s24 := alloc.vec.Vec.deref part23
+  let passwords25 ← bset.extend passwords24 s24
+  let part24 ← migration_defaults.table_part_24
+  let s25 := alloc.vec.Vec.deref part24
+  let passwords26 ← bset.extend passwords25 s25
+  let part25 ← migration_defaults.table_part_25
+  let s26 := alloc.vec.Vec.deref part25
+  let passwords27 ← bset.extend passwords26 s26
+  let part26 ← migration_defaults.table_part_26
+  let s27 := alloc.vec.Vec.deref part26
+  let passwords28 ← bset.extend passwords27 s27
+  let s28 ←
+    lift (Array.to_slice
+      (Array.make 42#usize [
+        83#u8, 121#u8, 115#u8, 116#u8, 101#u8, 109#u8, 32#u8, 40#u8, 114#u8,
+        101#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8, 101#u8, 100#u8,
+        41#u8, 32#u8, 99#u8, 111#u8, 110#u8, 102#u8, 105#u8, 103#u8, 117#u8,
+        114#u8, 97#u8, 116#u8, 105#u8, 111#u8, 110#u8, 32#u8, 111#u8, 112#u8,
+        116#u8, 105#u8, 111#u8, 110#u8, 115#u8, 46#u8
+        ]))
+  let v ← alloc.slice.Slice.to_vec core.clone.CloneU8 s28
+  ok
+    {
+      object := true,
+      system_config := true,
+      system := true,
+      uuid := 281474959933479#u128,
+      description := v,
+      badlist_password := passwords28
+    }
+
+/-- [kanidm_kernel::migration_defaults::dl11]:
+    Source: 'prove/ports/kanidm/kernel/src/migration_defaults.rs', lines 814:0-814:337
+    Visibility: public -/
+def migration_defaults.dl11 : Result migration_defaults.SystemConfig := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 77#usize [
+        100#u8, 101#u8, 109#u8, 111#u8, 95#u8, 98#u8, 97#u8, 100#u8, 108#u8,
+        105#u8, 115#u8, 116#u8, 95#u8, 115#u8, 104#u8, 111#u8, 104#u8, 102#u8,
+        105#u8, 101#u8, 51#u8, 97#u8, 101#u8, 99#u8, 105#u8, 50#u8, 111#u8,
+        111#u8, 98#u8, 117#u8, 114#u8, 48#u8, 97#u8, 114#u8, 117#u8, 57#u8,
+        117#u8, 117#u8, 115#u8, 104#u8, 97#u8, 104#u8, 54#u8, 101#u8, 105#u8,
+        112#u8, 105#u8, 50#u8, 119#u8, 111#u8, 104#u8, 52#u8, 104#u8, 111#u8,
+        104#u8, 110#u8, 103#u8, 111#u8, 105#u8, 103#u8, 104#u8, 97#u8, 105#u8,
+        114#u8, 117#u8, 101#u8, 112#u8, 105#u8, 101#u8, 110#u8, 51#u8, 111#u8,
+        110#u8, 103#u8, 111#u8, 111#u8, 49#u8
+        ]))
+  migration_defaults.initialize s
+
+/-- [kanidm_kernel::migration_defaults::dl12]:
+    Source: 'prove/ports/kanidm/kernel/src/migration_defaults.rs', lines 815:0-815:337
+    Visibility: public -/
+def migration_defaults.dl12 : Result migration_defaults.SystemConfig := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 77#usize [
+        100#u8, 101#u8, 109#u8, 111#u8, 95#u8, 98#u8, 97#u8, 100#u8, 108#u8,
+        105#u8, 115#u8, 116#u8, 95#u8, 115#u8, 104#u8, 111#u8, 104#u8, 102#u8,
+        105#u8, 101#u8, 51#u8, 97#u8, 101#u8, 99#u8, 105#u8, 50#u8, 111#u8,
+        111#u8, 98#u8, 117#u8, 114#u8, 48#u8, 97#u8, 114#u8, 117#u8, 57#u8,
+        117#u8, 117#u8, 115#u8, 104#u8, 97#u8, 104#u8, 54#u8, 101#u8, 105#u8,
+        112#u8, 105#u8, 50#u8, 119#u8, 111#u8, 104#u8, 52#u8, 104#u8, 111#u8,
+        104#u8, 110#u8, 103#u8, 111#u8, 105#u8, 103#u8, 104#u8, 97#u8, 105#u8,
+        114#u8, 117#u8, 101#u8, 112#u8, 105#u8, 101#u8, 110#u8, 51#u8, 111#u8,
+        110#u8, 103#u8, 111#u8, 111#u8, 49#u8
+        ]))
+  migration_defaults.initialize s
+
+/-- [kanidm_kernel::migration_defaults::dl13]:
+    Source: 'prove/ports/kanidm/kernel/src/migration_defaults.rs', lines 816:0-816:337
+    Visibility: public -/
+def migration_defaults.dl13 : Result migration_defaults.SystemConfig := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 77#usize [
+        100#u8, 101#u8, 109#u8, 111#u8, 95#u8, 98#u8, 97#u8, 100#u8, 108#u8,
+        105#u8, 115#u8, 116#u8, 95#u8, 115#u8, 104#u8, 111#u8, 104#u8, 102#u8,
+        105#u8, 101#u8, 51#u8, 97#u8, 101#u8, 99#u8, 105#u8, 50#u8, 111#u8,
+        111#u8, 98#u8, 117#u8, 114#u8, 48#u8, 97#u8, 114#u8, 117#u8, 57#u8,
+        117#u8, 117#u8, 115#u8, 104#u8, 97#u8, 104#u8, 54#u8, 101#u8, 105#u8,
+        112#u8, 105#u8, 50#u8, 119#u8, 111#u8, 104#u8, 52#u8, 104#u8, 111#u8,
+        104#u8, 110#u8, 103#u8, 111#u8, 105#u8, 103#u8, 104#u8, 97#u8, 105#u8,
+        114#u8, 117#u8, 101#u8, 112#u8, 105#u8, 101#u8, 110#u8, 51#u8, 111#u8,
+        110#u8, 103#u8, 111#u8, 111#u8, 49#u8
+        ]))
+  migration_defaults.initialize s
+
+/-- [kanidm_kernel::migration_defaults::dl14]:
+    Source: 'prove/ports/kanidm/kernel/src/migration_defaults.rs', lines 817:0-817:337
+    Visibility: public -/
+def migration_defaults.dl14 : Result migration_defaults.SystemConfig := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 77#usize [
+        100#u8, 101#u8, 109#u8, 111#u8, 95#u8, 98#u8, 97#u8, 100#u8, 108#u8,
+        105#u8, 115#u8, 116#u8, 95#u8, 115#u8, 104#u8, 111#u8, 104#u8, 102#u8,
+        105#u8, 101#u8, 51#u8, 97#u8, 101#u8, 99#u8, 105#u8, 50#u8, 111#u8,
+        111#u8, 98#u8, 117#u8, 114#u8, 48#u8, 97#u8, 114#u8, 117#u8, 57#u8,
+        117#u8, 117#u8, 115#u8, 104#u8, 97#u8, 104#u8, 54#u8, 101#u8, 105#u8,
+        112#u8, 105#u8, 50#u8, 119#u8, 111#u8, 104#u8, 52#u8, 104#u8, 111#u8,
+        104#u8, 110#u8, 103#u8, 111#u8, 105#u8, 103#u8, 104#u8, 97#u8, 105#u8,
+        114#u8, 117#u8, 101#u8, 112#u8, 105#u8, 101#u8, 110#u8, 51#u8, 111#u8,
+        110#u8, 103#u8, 111#u8, 111#u8, 49#u8
+        ]))
+  migration_defaults.initialize s
+
+/-- [kanidm_kernel::migration_defaults::dl15]:
+    Source: 'prove/ports/kanidm/kernel/src/migration_defaults.rs', lines 818:0-818:287
+    Visibility: public -/
+def migration_defaults.dl15 : Result migration_defaults.SystemConfig := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 64#usize [
+        100#u8, 101#u8, 109#u8, 111#u8, 95#u8, 98#u8, 97#u8, 100#u8, 108#u8,
+        105#u8, 115#u8, 116#u8, 95#u8, 115#u8, 104#u8, 111#u8, 104#u8, 102#u8,
+        105#u8, 101#u8, 51#u8, 97#u8, 101#u8, 99#u8, 105#u8, 50#u8, 111#u8,
+        111#u8, 98#u8, 117#u8, 114#u8, 48#u8, 97#u8, 114#u8, 117#u8, 57#u8,
+        117#u8, 117#u8, 115#u8, 104#u8, 97#u8, 104#u8, 54#u8, 101#u8, 105#u8,
+        112#u8, 105#u8, 50#u8, 119#u8, 111#u8, 104#u8, 52#u8, 104#u8, 111#u8,
+        104#u8, 110#u8, 103#u8, 111#u8, 105#u8, 103#u8, 104#u8, 97#u8, 105#u8,
+        114#u8
+        ]))
+  migration_defaults.initialize s
+
+/-- [kanidm_kernel::migration_defaults::dl_1_12]:
+    Source: 'prove/ports/kanidm/kernel/src/migration_defaults.rs', lines 819:0-819:290
+    Visibility: public -/
+def migration_defaults.dl_1_12 : Result migration_defaults.SystemConfig := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 64#usize [
+        100#u8, 101#u8, 109#u8, 111#u8, 95#u8, 98#u8, 97#u8, 100#u8, 108#u8,
+        105#u8, 115#u8, 116#u8, 95#u8, 115#u8, 104#u8, 111#u8, 104#u8, 102#u8,
+        105#u8, 101#u8, 51#u8, 97#u8, 101#u8, 99#u8, 105#u8, 50#u8, 111#u8,
+        111#u8, 98#u8, 117#u8, 114#u8, 48#u8, 97#u8, 114#u8, 117#u8, 57#u8,
+        117#u8, 117#u8, 115#u8, 104#u8, 97#u8, 104#u8, 54#u8, 101#u8, 105#u8,
+        112#u8, 105#u8, 50#u8, 119#u8, 111#u8, 104#u8, 52#u8, 104#u8, 111#u8,
+        104#u8, 110#u8, 103#u8, 111#u8, 105#u8, 103#u8, 104#u8, 97#u8, 105#u8,
+        114#u8
+        ]))
+  migration_defaults.initialize s
+
 /-- [kanidm_kernel::schema_tags::Syntax]
     Source: 'prove/ports/kanidm/kernel/src/schema_tags.rs', lines 5:0-53:1
     Visibility: public -/

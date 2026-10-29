@@ -299,3 +299,19 @@ individually as outside; these are not counted as ported authorization logic.
 The pure entity differential crate enables release overflow checks explicitly.
 The Share counter theorem describes checked arithmetic; increment at u64::MAX
 panics in both checked references. Wrapping release execution is outside this claim.
+
+
+## DAV and device persistence snapshots
+
+`davstate` ports the complete selected AddressBook, Contact, CalendarTodo,
+AudioFileMetadata, DeviceCode and TrashedItem products and reconstruction methods.
+UUID is full-width u128, UTF-8 strings are vectors, UTC instants are copied
+seconds/nanoseconds, and NaiveDate uses chrono's signed day ordinal. Borrowed
+views and owned getters preserve content; allocation, ownership and aliasing are
+outside the Lean observation boundary. Product arrays preserve every nested
+Email/Phone/Address field. CalendarTodo reconstruction resets recurrence_id to
+None exactly as upstream. Its Result is always Ok in the pinned constructor.
+No calendar/vCard parser, random ID generation, clock sampling, or persistence
+I/O is claimed. Exact constructors/getters are compiled in a minimal reference
+carrier using actual uuid/chrono types; all selected method bodies are verbatim.
+The unconditional proofs cover reconstruction and every selected observation.

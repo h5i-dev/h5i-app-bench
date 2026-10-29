@@ -1,0 +1,137 @@
+[
+  {
+    "file": "contact",
+    "type": "AddressBook",
+    "ctor": "from_raw",
+    "methods": [
+      "from_raw",
+      "id",
+      "name",
+      "owner_id",
+      "description",
+      "color",
+      "is_public",
+      "created_at",
+      "updated_at"
+    ]
+  },
+  {
+    "file": "contact",
+    "type": "Contact",
+    "ctor": "from_raw",
+    "methods": [
+      "from_raw",
+      "id",
+      "address_book_id",
+      "uid",
+      "full_name",
+      "first_name",
+      "last_name",
+      "nickname",
+      "email",
+      "phone",
+      "address",
+      "organization",
+      "title",
+      "notes",
+      "photo_url",
+      "birthday",
+      "anniversary",
+      "vcard",
+      "etag",
+      "created_at",
+      "updated_at",
+      "into_email"
+    ]
+  },
+  {
+    "file": "calendar_todo",
+    "type": "CalendarTodo",
+    "ctor": "with_id",
+    "methods": [
+      "with_id",
+      "id",
+      "calendar_id",
+      "summary",
+      "description",
+      "location",
+      "status",
+      "percent_complete",
+      "priority",
+      "start_time",
+      "due_time",
+      "completed_at",
+      "all_day",
+      "rrule",
+      "recurrence_id",
+      "ical_uid",
+      "ical_data",
+      "created_at",
+      "updated_at"
+    ]
+  },
+  {
+    "file": "playlist",
+    "type": "AudioFileMetadata",
+    "ctor": "with_all_fields",
+    "methods": [
+      "with_all_fields",
+      "file_id",
+      "title",
+      "artist",
+      "album",
+      "album_artist",
+      "genre",
+      "track_number",
+      "disc_number",
+      "year",
+      "duration_secs",
+      "bitrate",
+      "sample_rate",
+      "channels",
+      "format",
+      "created_at",
+      "updated_at"
+    ]
+  },
+  {
+    "file": "device_code",
+    "type": "DeviceCode",
+    "ctor": "from_raw",
+    "methods": [
+      "from_raw",
+      "id",
+      "device_code",
+      "user_code",
+      "client_name",
+      "scopes",
+      "status",
+      "user_id",
+      "access_token",
+      "refresh_token",
+      "verification_uri",
+      "verification_uri_complete",
+      "expires_at",
+      "poll_interval_secs",
+      "last_poll_at",
+      "created_at",
+      "authorized_at"
+    ]
+  },
+  {
+    "file": "trashed_item",
+    "type": "TrashedItem",
+    "ctor": "from_raw",
+    "methods": [
+      "from_raw",
+      "id",
+      "original_id",
+      "user_id",
+      "item_type",
+      "name",
+      "original_path",
+      "trashed_at",
+      "deletion_date"
+    ]
+  }
+]

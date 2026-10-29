@@ -304,3 +304,4 @@ pub mod entry_validation;
 
 pub mod value_observers;
 pub mod syntax_types;
+pub mod migration_defaults;

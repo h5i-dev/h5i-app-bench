@@ -2116,6 +2116,66 @@
         "end": 472,
         "sha256": "858d24c91f1a7ead945a803c3e80c1328a3a7a0a39678a780998493c7c6b80c8"
       }
+    ],
+    "migration_defaults.dl11": [
+      {
+        "file": "server/lib/src/migration_data/dl11/system_config.rs",
+        "name": "e_system_config_v1",
+        "kind": "fn",
+        "start": 38,
+        "end": 692,
+        "sha256": "afd2979a35068ae9f952c2a95deb618fa8900e7be732506f301fe7bde3b33566"
+      }
+    ],
+    "migration_defaults.dl12": [
+      {
+        "file": "server/lib/src/migration_data/dl12/system_config.rs",
+        "name": "e_system_config_v1",
+        "kind": "fn",
+        "start": 69,
+        "end": 723,
+        "sha256": "afd2979a35068ae9f952c2a95deb618fa8900e7be732506f301fe7bde3b33566"
+      }
+    ],
+    "migration_defaults.dl13": [
+      {
+        "file": "server/lib/src/migration_data/dl13/system_config.rs",
+        "name": "e_system_config_v1",
+        "kind": "fn",
+        "start": 68,
+        "end": 722,
+        "sha256": "afd2979a35068ae9f952c2a95deb618fa8900e7be732506f301fe7bde3b33566"
+      }
+    ],
+    "migration_defaults.dl14": [
+      {
+        "file": "server/lib/src/migration_data/dl14/system_config.rs",
+        "name": "e_system_config_v1",
+        "kind": "fn",
+        "start": 69,
+        "end": 723,
+        "sha256": "afd2979a35068ae9f952c2a95deb618fa8900e7be732506f301fe7bde3b33566"
+      }
+    ],
+    "migration_defaults.dl15": [
+      {
+        "file": "server/lib/src/migration_data/dl15/system_config.rs",
+        "name": "e_system_config_v1",
+        "kind": "fn",
+        "start": 69,
+        "end": 723,
+        "sha256": "64fc5e7992c4d511018fbf24a2ad8c09b3f6f53d37bad296e96294f3e8f6edc7"
+      }
+    ],
+    "migration_defaults.dl_1_12": [
+      {
+        "file": "server/lib/src/migration_data/dl_1_12/system_config.rs",
+        "name": "e_system_config_v1",
+        "kind": "fn",
+        "start": 84,
+        "end": 738,
+        "sha256": "64fc5e7992c4d511018fbf24a2ad8c09b3f6f53d37bad296e96294f3e8f6edc7"
+      }
     ]
   },
   "meaning": "Exact pinned item dependency reach from canonical theorem types; source correspondence is documented in ports/kanidm/DEVIATIONS.md. Counts source items reached by modeled operations, not behavioral equivalence or proof of omitted I/O, parsing, presentation, library internals, or other documented deviations."

@@ -2207,6 +2207,995 @@ def authwire.subject_token_id
   | model.Subject.Group _ => ok none
   | model.Subject.Token id => ok (some id)
 
+/-- [oxicloud_kernel::davstate::Email]
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 3:0-7:1
+    Visibility: public -/
+structure davstate.Email where
+  email : alloc.vec.Vec Std.U8
+  type : alloc.vec.Vec Std.U8
+  is_primary : Bool
+
+/-- [oxicloud_kernel::davstate::Phone]
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 8:0-12:1
+    Visibility: public -/
+structure davstate.Phone where
+  number : alloc.vec.Vec Std.U8
+  type : alloc.vec.Vec Std.U8
+  is_primary : Bool
+
+/-- [oxicloud_kernel::davstate::Address]
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 13:0-21:1
+    Visibility: public -/
+structure davstate.Address where
+  street : Option (alloc.vec.Vec Std.U8)
+  city : Option (alloc.vec.Vec Std.U8)
+  state : Option (alloc.vec.Vec Std.U8)
+  postal_code : Option (alloc.vec.Vec Std.U8)
+  country : Option (alloc.vec.Vec Std.U8)
+  type : alloc.vec.Vec Std.U8
+  is_primary : Bool
+
+/-- [oxicloud_kernel::davstate::DeviceCodeStatus]
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 23:0-32:1
+    Visibility: public -/
+@[discriminant isize]
+inductive davstate.DeviceCodeStatus where
+| Pending : davstate.DeviceCodeStatus
+| Authorized : davstate.DeviceCodeStatus
+| Denied : davstate.DeviceCodeStatus
+| Expired : davstate.DeviceCodeStatus
+
+/-- [oxicloud_kernel::davstate::TrashedItemType]
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 34:0-37:1
+    Visibility: public -/
+@[discriminant isize]
+inductive davstate.TrashedItemType where
+| File : davstate.TrashedItemType
+| Folder : davstate.TrashedItemType
+
+/-- [oxicloud_kernel::session::Timestamp]
+    Source: 'prove/ports/oxicloud/kernel/src/session.rs', lines 6:0-6:63
+    Visibility: public -/
+structure session.Timestamp where
+  seconds : Std.I64
+  nanoseconds : Std.U32
+
+/-- [oxicloud_kernel::davstate::AddressBook]
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 38:0-47:1
+    Visibility: public -/
+structure davstate.AddressBook where
+  id : Std.U128
+  «name» : alloc.vec.Vec Std.U8
+  owner_id : alloc.vec.Vec Std.U8
+  description : Option (alloc.vec.Vec Std.U8)
+  color : Option (alloc.vec.Vec Std.U8)
+  is_public : Bool
+  created_at : session.Timestamp
+  updated_at : session.Timestamp
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::AddressBook}::from_raw]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 49:4-69:5
+    Visibility: public -/
+def davstate.AddressBook.from_raw
+  (id : Std.U128) («name» : alloc.vec.Vec Std.U8)
+  (owner_id : alloc.vec.Vec Std.U8)
+  (description : Option (alloc.vec.Vec Std.U8))
+  (color : Option (alloc.vec.Vec Std.U8)) (is_public : Bool)
+  (created_at : session.Timestamp) (updated_at : session.Timestamp) :
+  Result davstate.AddressBook
+  := do
+  ok
+    {
+      id,
+      «name»,
+      owner_id,
+      description,
+      color,
+      is_public,
+      created_at,
+      updated_at
+    }
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::AddressBook}::id]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 70:4-70:40
+    Visibility: public -/
+def davstate.AddressBook.impl.id
+  (self : davstate.AddressBook) : Result Std.U128 := do
+  ok self.id
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::AddressBook}::name]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 71:4-71:49
+    Visibility: public -/
+def davstate.AddressBook.impl.name
+  (self : davstate.AddressBook) : Result (alloc.vec.Vec Std.U8) := do
+  ok self.name
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::AddressBook}::owner_id]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 72:4-72:57
+    Visibility: public -/
+def davstate.AddressBook.impl.owner_id
+  (self : davstate.AddressBook) : Result (alloc.vec.Vec Std.U8) := do
+  ok self.owner_id
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::AddressBook}::description]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 73:4-73:71
+    Visibility: public -/
+def davstate.AddressBook.impl.description
+  (self : davstate.AddressBook) : Result (Option (alloc.vec.Vec Std.U8)) := do
+  ok self.description
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::AddressBook}::color]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 74:4-74:59
+    Visibility: public -/
+def davstate.AddressBook.impl.color
+  (self : davstate.AddressBook) : Result (Option (alloc.vec.Vec Std.U8)) := do
+  ok self.color
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::AddressBook}::is_public]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 75:4-75:54
+    Visibility: public -/
+def davstate.AddressBook.impl.is_public
+  (self : davstate.AddressBook) : Result Bool := do
+  ok self.is_public
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::AddressBook}::created_at]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 76:4-76:61
+    Visibility: public -/
+def davstate.AddressBook.impl.created_at
+  (self : davstate.AddressBook) : Result session.Timestamp := do
+  ok self.created_at
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::AddressBook}::updated_at]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 77:4-77:61
+    Visibility: public -/
+def davstate.AddressBook.impl.updated_at
+  (self : davstate.AddressBook) : Result session.Timestamp := do
+  ok self.updated_at
+
+/-- [oxicloud_kernel::davstate::Contact]
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 79:0-100:1
+    Visibility: public -/
+structure davstate.Contact where
+  id : Std.U128
+  address_book_id : Std.U128
+  uid : alloc.vec.Vec Std.U8
+  full_name : Option (alloc.vec.Vec Std.U8)
+  first_name : Option (alloc.vec.Vec Std.U8)
+  last_name : Option (alloc.vec.Vec Std.U8)
+  nickname : Option (alloc.vec.Vec Std.U8)
+  email : alloc.vec.Vec davstate.Email
+  phone : alloc.vec.Vec davstate.Phone
+  address : alloc.vec.Vec davstate.Address
+  organization : Option (alloc.vec.Vec Std.U8)
+  title : Option (alloc.vec.Vec Std.U8)
+  notes : Option (alloc.vec.Vec Std.U8)
+  photo_url : Option (alloc.vec.Vec Std.U8)
+  birthday : Option Std.I32
+  anniversary : Option Std.I32
+  vcard : alloc.vec.Vec Std.U8
+  etag : alloc.vec.Vec Std.U8
+  created_at : session.Timestamp
+  updated_at : session.Timestamp
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::Contact}::from_raw]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 102:4-146:5
+    Visibility: public -/
+def davstate.Contact.from_raw
+  (id : Std.U128) (address_book_id : Std.U128) (uid : alloc.vec.Vec Std.U8)
+  (full_name : Option (alloc.vec.Vec Std.U8))
+  (first_name : Option (alloc.vec.Vec Std.U8))
+  (last_name : Option (alloc.vec.Vec Std.U8))
+  (nickname : Option (alloc.vec.Vec Std.U8))
+  (email : alloc.vec.Vec davstate.Email) (phone : alloc.vec.Vec davstate.Phone)
+  (address : alloc.vec.Vec davstate.Address)
+  (organization : Option (alloc.vec.Vec Std.U8))
+  (title : Option (alloc.vec.Vec Std.U8))
+  (notes : Option (alloc.vec.Vec Std.U8))
+  (photo_url : Option (alloc.vec.Vec Std.U8)) (birthday : Option Std.I32)
+  (anniversary : Option Std.I32) (vcard : alloc.vec.Vec Std.U8)
+  (etag : alloc.vec.Vec Std.U8) (created_at : session.Timestamp)
+  (updated_at : session.Timestamp) :
+  Result davstate.Contact
+  := do
+  ok
+    {
+      id,
+      address_book_id,
+      uid,
+      full_name,
+      first_name,
+      last_name,
+      nickname,
+      email,
+      phone,
+      address,
+      organization,
+      title,
+      notes,
+      photo_url,
+      birthday,
+      anniversary,
+      vcard,
+      etag,
+      created_at,
+      updated_at
+    }
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::Contact}::id]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 147:4-147:40
+    Visibility: public -/
+def davstate.Contact.impl.id (self : davstate.Contact) : Result Std.U128 := do
+  ok self.id
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::Contact}::address_book_id]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 148:4-148:66
+    Visibility: public -/
+def davstate.Contact.impl.address_book_id
+  (self : davstate.Contact) : Result Std.U128 := do
+  ok self.address_book_id
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::Contact}::uid]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 149:4-149:47
+    Visibility: public -/
+def davstate.Contact.impl.uid
+  (self : davstate.Contact) : Result (alloc.vec.Vec Std.U8) := do
+  ok self.uid
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::Contact}::full_name]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 150:4-150:67
+    Visibility: public -/
+def davstate.Contact.impl.full_name
+  (self : davstate.Contact) : Result (Option (alloc.vec.Vec Std.U8)) := do
+  ok self.full_name
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::Contact}::first_name]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 151:4-151:69
+    Visibility: public -/
+def davstate.Contact.impl.first_name
+  (self : davstate.Contact) : Result (Option (alloc.vec.Vec Std.U8)) := do
+  ok self.first_name
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::Contact}::last_name]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 152:4-152:67
+    Visibility: public -/
+def davstate.Contact.impl.last_name
+  (self : davstate.Contact) : Result (Option (alloc.vec.Vec Std.U8)) := do
+  ok self.last_name
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::Contact}::nickname]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 153:4-153:65
+    Visibility: public -/
+def davstate.Contact.impl.nickname
+  (self : davstate.Contact) : Result (Option (alloc.vec.Vec Std.U8)) := do
+  ok self.nickname
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::Contact}::email]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 154:4-154:54
+    Visibility: public -/
+def davstate.Contact.impl.email
+  (self : davstate.Contact) : Result (alloc.vec.Vec davstate.Email) := do
+  ok self.email
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::Contact}::phone]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 155:4-155:54
+    Visibility: public -/
+def davstate.Contact.impl.phone
+  (self : davstate.Contact) : Result (alloc.vec.Vec davstate.Phone) := do
+  ok self.phone
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::Contact}::address]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 156:4-156:60
+    Visibility: public -/
+def davstate.Contact.impl.address
+  (self : davstate.Contact) : Result (alloc.vec.Vec davstate.Address) := do
+  ok self.address
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::Contact}::organization]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 157:4-157:73
+    Visibility: public -/
+def davstate.Contact.impl.organization
+  (self : davstate.Contact) : Result (Option (alloc.vec.Vec Std.U8)) := do
+  ok self.organization
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::Contact}::title]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 158:4-158:59
+    Visibility: public -/
+def davstate.Contact.impl.title
+  (self : davstate.Contact) : Result (Option (alloc.vec.Vec Std.U8)) := do
+  ok self.title
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::Contact}::notes]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 159:4-159:59
+    Visibility: public -/
+def davstate.Contact.impl.notes
+  (self : davstate.Contact) : Result (Option (alloc.vec.Vec Std.U8)) := do
+  ok self.notes
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::Contact}::photo_url]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 160:4-160:67
+    Visibility: public -/
+def davstate.Contact.impl.photo_url
+  (self : davstate.Contact) : Result (Option (alloc.vec.Vec Std.U8)) := do
+  ok self.photo_url
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::Contact}::birthday]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 161:4-161:61
+    Visibility: public -/
+def davstate.Contact.impl.birthday
+  (self : davstate.Contact) : Result (Option Std.I32) := do
+  ok self.birthday
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::Contact}::anniversary]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 162:4-162:67
+    Visibility: public -/
+def davstate.Contact.impl.anniversary
+  (self : davstate.Contact) : Result (Option Std.I32) := do
+  ok self.anniversary
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::Contact}::vcard]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 163:4-163:51
+    Visibility: public -/
+def davstate.Contact.impl.vcard
+  (self : davstate.Contact) : Result (alloc.vec.Vec Std.U8) := do
+  ok self.vcard
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::Contact}::etag]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 164:4-164:49
+    Visibility: public -/
+def davstate.Contact.impl.etag
+  (self : davstate.Contact) : Result (alloc.vec.Vec Std.U8) := do
+  ok self.etag
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::Contact}::created_at]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 165:4-165:61
+    Visibility: public -/
+def davstate.Contact.impl.created_at
+  (self : davstate.Contact) : Result session.Timestamp := do
+  ok self.created_at
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::Contact}::updated_at]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 166:4-166:61
+    Visibility: public -/
+def davstate.Contact.impl.updated_at
+  (self : davstate.Contact) : Result session.Timestamp := do
+  ok self.updated_at
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::Contact}::into_email]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 167:4-167:59
+    Visibility: public -/
+def davstate.Contact.into_email
+  (self : davstate.Contact) : Result (alloc.vec.Vec davstate.Email) := do
+  ok self.email
+
+/-- [oxicloud_kernel::davstate::CalendarTodo]
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 169:0-231:1
+    Visibility: public -/
+structure davstate.CalendarTodo where
+  id : Std.U128
+  calendar_id : Std.U128
+  summary : Option (alloc.vec.Vec Std.U8)
+  description : Option (alloc.vec.Vec Std.U8)
+  location : Option (alloc.vec.Vec Std.U8)
+  status : Option (alloc.vec.Vec Std.U8)
+  percent_complete : Option Std.I16
+  priority : Option Std.I16
+  start_time : Option session.Timestamp
+  due_time : Option session.Timestamp
+  completed_at : Option session.Timestamp
+  all_day : Bool
+  rrule : Option (alloc.vec.Vec Std.U8)
+  recurrence_id : Option session.Timestamp
+  ical_uid : alloc.vec.Vec Std.U8
+  ical_data : alloc.vec.Vec Std.U8
+  created_at : session.Timestamp
+  updated_at : session.Timestamp
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::CalendarTodo}::with_id]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 233:4-272:5
+    Visibility: public -/
+def davstate.CalendarTodo.with_id
+  (id : Std.U128) (calendar_id : Std.U128)
+  (summary : Option (alloc.vec.Vec Std.U8))
+  (description : Option (alloc.vec.Vec Std.U8))
+  (location : Option (alloc.vec.Vec Std.U8))
+  (status : Option (alloc.vec.Vec Std.U8)) (percent_complete : Option Std.I16)
+  (priority : Option Std.I16) (start_time : Option session.Timestamp)
+  (due_time : Option session.Timestamp)
+  (completed_at : Option session.Timestamp) (all_day : Bool)
+  (rrule : Option (alloc.vec.Vec Std.U8)) (ical_uid : alloc.vec.Vec Std.U8)
+  (ical_data : alloc.vec.Vec Std.U8) (created_at : session.Timestamp)
+  (updated_at : session.Timestamp) :
+  Result davstate.CalendarTodo
+  := do
+  ok
+    {
+      id,
+      calendar_id,
+      summary,
+      description,
+      location,
+      status,
+      percent_complete,
+      priority,
+      start_time,
+      due_time,
+      completed_at,
+      all_day,
+      rrule,
+      recurrence_id := none,
+      ical_uid,
+      ical_data,
+      created_at,
+      updated_at
+    }
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::CalendarTodo}::id]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 273:4-273:40
+    Visibility: public -/
+def davstate.CalendarTodo.impl.id
+  (self : davstate.CalendarTodo) : Result Std.U128 := do
+  ok self.id
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::CalendarTodo}::calendar_id]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 274:4-274:58
+    Visibility: public -/
+def davstate.CalendarTodo.impl.calendar_id
+  (self : davstate.CalendarTodo) : Result Std.U128 := do
+  ok self.calendar_id
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::CalendarTodo}::summary]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 275:4-275:63
+    Visibility: public -/
+def davstate.CalendarTodo.impl.summary
+  (self : davstate.CalendarTodo) : Result (Option (alloc.vec.Vec Std.U8)) := do
+  ok self.summary
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::CalendarTodo}::description]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 276:4-276:71
+    Visibility: public -/
+def davstate.CalendarTodo.impl.description
+  (self : davstate.CalendarTodo) : Result (Option (alloc.vec.Vec Std.U8)) := do
+  ok self.description
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::CalendarTodo}::location]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 277:4-277:65
+    Visibility: public -/
+def davstate.CalendarTodo.impl.location
+  (self : davstate.CalendarTodo) : Result (Option (alloc.vec.Vec Std.U8)) := do
+  ok self.location
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::CalendarTodo}::status]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 278:4-278:61
+    Visibility: public -/
+def davstate.CalendarTodo.impl.status
+  (self : davstate.CalendarTodo) : Result (Option (alloc.vec.Vec Std.U8)) := do
+  ok self.status
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::CalendarTodo}::percent_complete]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 279:4-279:77
+    Visibility: public -/
+def davstate.CalendarTodo.impl.percent_complete
+  (self : davstate.CalendarTodo) : Result (Option Std.I16) := do
+  ok self.percent_complete
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::CalendarTodo}::priority]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 280:4-280:61
+    Visibility: public -/
+def davstate.CalendarTodo.impl.priority
+  (self : davstate.CalendarTodo) : Result (Option Std.I16) := do
+  ok self.priority
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::CalendarTodo}::start_time]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 281:4-281:71
+    Visibility: public -/
+def davstate.CalendarTodo.impl.start_time
+  (self : davstate.CalendarTodo) : Result (Option session.Timestamp) := do
+  ok self.start_time
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::CalendarTodo}::due_time]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 282:4-282:67
+    Visibility: public -/
+def davstate.CalendarTodo.impl.due_time
+  (self : davstate.CalendarTodo) : Result (Option session.Timestamp) := do
+  ok self.due_time
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::CalendarTodo}::completed_at]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 283:4-283:75
+    Visibility: public -/
+def davstate.CalendarTodo.impl.completed_at
+  (self : davstate.CalendarTodo) : Result (Option session.Timestamp) := do
+  ok self.completed_at
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::CalendarTodo}::all_day]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 284:4-284:50
+    Visibility: public -/
+def davstate.CalendarTodo.impl.all_day
+  (self : davstate.CalendarTodo) : Result Bool := do
+  ok self.all_day
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::CalendarTodo}::rrule]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 285:4-285:59
+    Visibility: public -/
+def davstate.CalendarTodo.impl.rrule
+  (self : davstate.CalendarTodo) : Result (Option (alloc.vec.Vec Std.U8)) := do
+  ok self.rrule
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::CalendarTodo}::recurrence_id]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 286:4-286:77
+    Visibility: public -/
+def davstate.CalendarTodo.impl.recurrence_id
+  (self : davstate.CalendarTodo) : Result (Option session.Timestamp) := do
+  ok self.recurrence_id
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::CalendarTodo}::ical_uid]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 287:4-287:57
+    Visibility: public -/
+def davstate.CalendarTodo.impl.ical_uid
+  (self : davstate.CalendarTodo) : Result (alloc.vec.Vec Std.U8) := do
+  ok self.ical_uid
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::CalendarTodo}::ical_data]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 288:4-288:59
+    Visibility: public -/
+def davstate.CalendarTodo.impl.ical_data
+  (self : davstate.CalendarTodo) : Result (alloc.vec.Vec Std.U8) := do
+  ok self.ical_data
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::CalendarTodo}::created_at]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 289:4-289:61
+    Visibility: public -/
+def davstate.CalendarTodo.impl.created_at
+  (self : davstate.CalendarTodo) : Result session.Timestamp := do
+  ok self.created_at
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::CalendarTodo}::updated_at]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 290:4-290:61
+    Visibility: public -/
+def davstate.CalendarTodo.impl.updated_at
+  (self : davstate.CalendarTodo) : Result session.Timestamp := do
+  ok self.updated_at
+
+/-- [oxicloud_kernel::davstate::AudioFileMetadata]
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 292:0-309:1
+    Visibility: public -/
+structure davstate.AudioFileMetadata where
+  file_id : Std.U128
+  title : Option (alloc.vec.Vec Std.U8)
+  artist : Option (alloc.vec.Vec Std.U8)
+  album : Option (alloc.vec.Vec Std.U8)
+  album_artist : Option (alloc.vec.Vec Std.U8)
+  genre : Option (alloc.vec.Vec Std.U8)
+  track_number : Option Std.I32
+  disc_number : Option Std.I32
+  year : Option Std.I32
+  duration_secs : Std.I32
+  bitrate : Option Std.I32
+  sample_rate : Option Std.I32
+  channels : Option Std.I16
+  format : Option (alloc.vec.Vec Std.U8)
+  created_at : session.Timestamp
+  updated_at : session.Timestamp
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::AudioFileMetadata}::with_all_fields]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 311:4-347:5
+    Visibility: public -/
+def davstate.AudioFileMetadata.with_all_fields
+  (file_id : Std.U128) (title : Option (alloc.vec.Vec Std.U8))
+  (artist : Option (alloc.vec.Vec Std.U8))
+  (album : Option (alloc.vec.Vec Std.U8))
+  (album_artist : Option (alloc.vec.Vec Std.U8))
+  (genre : Option (alloc.vec.Vec Std.U8)) (track_number : Option Std.I32)
+  (disc_number : Option Std.I32) (year : Option Std.I32)
+  (duration_secs : Std.I32) (bitrate : Option Std.I32)
+  (sample_rate : Option Std.I32) (channels : Option Std.I16)
+  (format : Option (alloc.vec.Vec Std.U8)) (created_at : session.Timestamp)
+  (updated_at : session.Timestamp) :
+  Result davstate.AudioFileMetadata
+  := do
+  ok
+    {
+      file_id,
+      title,
+      artist,
+      album,
+      album_artist,
+      genre,
+      track_number,
+      disc_number,
+      year,
+      duration_secs,
+      bitrate,
+      sample_rate,
+      channels,
+      format,
+      created_at,
+      updated_at
+    }
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::AudioFileMetadata}::file_id]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 348:4-348:50
+    Visibility: public -/
+def davstate.AudioFileMetadata.impl.file_id
+  (self : davstate.AudioFileMetadata) : Result Std.U128 := do
+  ok self.file_id
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::AudioFileMetadata}::title]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 349:4-349:59
+    Visibility: public -/
+def davstate.AudioFileMetadata.impl.title
+  (self : davstate.AudioFileMetadata) :
+  Result (Option (alloc.vec.Vec Std.U8))
+  := do
+  ok self.title
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::AudioFileMetadata}::artist]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 350:4-350:61
+    Visibility: public -/
+def davstate.AudioFileMetadata.impl.artist
+  (self : davstate.AudioFileMetadata) :
+  Result (Option (alloc.vec.Vec Std.U8))
+  := do
+  ok self.artist
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::AudioFileMetadata}::album]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 351:4-351:59
+    Visibility: public -/
+def davstate.AudioFileMetadata.impl.album
+  (self : davstate.AudioFileMetadata) :
+  Result (Option (alloc.vec.Vec Std.U8))
+  := do
+  ok self.album
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::AudioFileMetadata}::album_artist]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 352:4-352:73
+    Visibility: public -/
+def davstate.AudioFileMetadata.impl.album_artist
+  (self : davstate.AudioFileMetadata) :
+  Result (Option (alloc.vec.Vec Std.U8))
+  := do
+  ok self.album_artist
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::AudioFileMetadata}::genre]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 353:4-353:59
+    Visibility: public -/
+def davstate.AudioFileMetadata.impl.genre
+  (self : davstate.AudioFileMetadata) :
+  Result (Option (alloc.vec.Vec Std.U8))
+  := do
+  ok self.genre
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::AudioFileMetadata}::track_number]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 354:4-354:69
+    Visibility: public -/
+def davstate.AudioFileMetadata.impl.track_number
+  (self : davstate.AudioFileMetadata) : Result (Option Std.I32) := do
+  ok self.track_number
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::AudioFileMetadata}::disc_number]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 355:4-355:67
+    Visibility: public -/
+def davstate.AudioFileMetadata.impl.disc_number
+  (self : davstate.AudioFileMetadata) : Result (Option Std.I32) := do
+  ok self.disc_number
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::AudioFileMetadata}::year]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 356:4-356:53
+    Visibility: public -/
+def davstate.AudioFileMetadata.impl.year
+  (self : davstate.AudioFileMetadata) : Result (Option Std.I32) := do
+  ok self.year
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::AudioFileMetadata}::duration_secs]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 357:4-357:61
+    Visibility: public -/
+def davstate.AudioFileMetadata.impl.duration_secs
+  (self : davstate.AudioFileMetadata) : Result Std.I32 := do
+  ok self.duration_secs
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::AudioFileMetadata}::bitrate]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 358:4-358:59
+    Visibility: public -/
+def davstate.AudioFileMetadata.impl.bitrate
+  (self : davstate.AudioFileMetadata) : Result (Option Std.I32) := do
+  ok self.bitrate
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::AudioFileMetadata}::sample_rate]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 359:4-359:67
+    Visibility: public -/
+def davstate.AudioFileMetadata.impl.sample_rate
+  (self : davstate.AudioFileMetadata) : Result (Option Std.I32) := do
+  ok self.sample_rate
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::AudioFileMetadata}::channels]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 360:4-360:61
+    Visibility: public -/
+def davstate.AudioFileMetadata.impl.channels
+  (self : davstate.AudioFileMetadata) : Result (Option Std.I16) := do
+  ok self.channels
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::AudioFileMetadata}::format]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 361:4-361:61
+    Visibility: public -/
+def davstate.AudioFileMetadata.impl.format
+  (self : davstate.AudioFileMetadata) :
+  Result (Option (alloc.vec.Vec Std.U8))
+  := do
+  ok self.format
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::AudioFileMetadata}::created_at]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 362:4-362:61
+    Visibility: public -/
+def davstate.AudioFileMetadata.impl.created_at
+  (self : davstate.AudioFileMetadata) : Result session.Timestamp := do
+  ok self.created_at
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::AudioFileMetadata}::updated_at]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 363:4-363:61
+    Visibility: public -/
+def davstate.AudioFileMetadata.impl.updated_at
+  (self : davstate.AudioFileMetadata) : Result session.Timestamp := do
+  ok self.updated_at
+
+/-- [oxicloud_kernel::davstate::DeviceCode]
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 365:0-382:1
+    Visibility: public -/
+structure davstate.DeviceCode where
+  id : Std.U128
+  device_code : alloc.vec.Vec Std.U8
+  user_code : alloc.vec.Vec Std.U8
+  client_name : alloc.vec.Vec Std.U8
+  scopes : alloc.vec.Vec Std.U8
+  status : davstate.DeviceCodeStatus
+  user_id : Option Std.U128
+  access_token : Option (alloc.vec.Vec Std.U8)
+  refresh_token : Option (alloc.vec.Vec Std.U8)
+  verification_uri : alloc.vec.Vec Std.U8
+  verification_uri_complete : Option (alloc.vec.Vec Std.U8)
+  expires_at : session.Timestamp
+  poll_interval_secs : Std.I32
+  last_poll_at : Option session.Timestamp
+  created_at : session.Timestamp
+  authorized_at : Option session.Timestamp
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::DeviceCode}::from_raw]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 384:4-420:5
+    Visibility: public -/
+def davstate.DeviceCode.from_raw
+  (id : Std.U128) (device_code : alloc.vec.Vec Std.U8)
+  (user_code : alloc.vec.Vec Std.U8) (client_name : alloc.vec.Vec Std.U8)
+  (scopes : alloc.vec.Vec Std.U8) (status : davstate.DeviceCodeStatus)
+  (user_id : Option Std.U128) (access_token : Option (alloc.vec.Vec Std.U8))
+  (refresh_token : Option (alloc.vec.Vec Std.U8))
+  (verification_uri : alloc.vec.Vec Std.U8)
+  (verification_uri_complete : Option (alloc.vec.Vec Std.U8))
+  (expires_at : session.Timestamp) (poll_interval_secs : Std.I32)
+  (last_poll_at : Option session.Timestamp) (created_at : session.Timestamp)
+  (authorized_at : Option session.Timestamp) :
+  Result davstate.DeviceCode
+  := do
+  ok
+    {
+      id,
+      device_code,
+      user_code,
+      client_name,
+      scopes,
+      status,
+      user_id,
+      access_token,
+      refresh_token,
+      verification_uri,
+      verification_uri_complete,
+      expires_at,
+      poll_interval_secs,
+      last_poll_at,
+      created_at,
+      authorized_at
+    }
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::DeviceCode}::id]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 421:4-421:40
+    Visibility: public -/
+def davstate.DeviceCode.impl.id
+  (self : davstate.DeviceCode) : Result Std.U128 := do
+  ok self.id
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::DeviceCode}::device_code]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 422:4-422:63
+    Visibility: public -/
+def davstate.DeviceCode.impl.device_code
+  (self : davstate.DeviceCode) : Result (alloc.vec.Vec Std.U8) := do
+  ok self.device_code
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::DeviceCode}::user_code]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 423:4-423:59
+    Visibility: public -/
+def davstate.DeviceCode.impl.user_code
+  (self : davstate.DeviceCode) : Result (alloc.vec.Vec Std.U8) := do
+  ok self.user_code
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::DeviceCode}::client_name]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 424:4-424:63
+    Visibility: public -/
+def davstate.DeviceCode.impl.client_name
+  (self : davstate.DeviceCode) : Result (alloc.vec.Vec Std.U8) := do
+  ok self.client_name
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::DeviceCode}::scopes]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 425:4-425:53
+    Visibility: public -/
+def davstate.DeviceCode.impl.scopes
+  (self : davstate.DeviceCode) : Result (alloc.vec.Vec Std.U8) := do
+  ok self.scopes
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::DeviceCode}::status]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 426:4-426:60
+    Visibility: public -/
+def davstate.DeviceCode.impl.status
+  (self : davstate.DeviceCode) : Result davstate.DeviceCodeStatus := do
+  ok self.status
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::DeviceCode}::user_id]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 427:4-427:60
+    Visibility: public -/
+def davstate.DeviceCode.impl.user_id
+  (self : davstate.DeviceCode) : Result (Option Std.U128) := do
+  ok self.user_id
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::DeviceCode}::access_token]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 428:4-428:73
+    Visibility: public -/
+def davstate.DeviceCode.impl.access_token
+  (self : davstate.DeviceCode) : Result (Option (alloc.vec.Vec Std.U8)) := do
+  ok self.access_token
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::DeviceCode}::refresh_token]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 429:4-429:75
+    Visibility: public -/
+def davstate.DeviceCode.impl.refresh_token
+  (self : davstate.DeviceCode) : Result (Option (alloc.vec.Vec Std.U8)) := do
+  ok self.refresh_token
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::DeviceCode}::verification_uri]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 430:4-430:73
+    Visibility: public -/
+def davstate.DeviceCode.impl.verification_uri
+  (self : davstate.DeviceCode) : Result (alloc.vec.Vec Std.U8) := do
+  ok self.verification_uri
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::DeviceCode}::verification_uri_complete]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 431:4-431:99
+    Visibility: public -/
+def davstate.DeviceCode.impl.verification_uri_complete
+  (self : davstate.DeviceCode) : Result (Option (alloc.vec.Vec Std.U8)) := do
+  ok self.verification_uri_complete
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::DeviceCode}::expires_at]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 432:4-432:61
+    Visibility: public -/
+def davstate.DeviceCode.impl.expires_at
+  (self : davstate.DeviceCode) : Result session.Timestamp := do
+  ok self.expires_at
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::DeviceCode}::poll_interval_secs]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 433:4-433:71
+    Visibility: public -/
+def davstate.DeviceCode.impl.poll_interval_secs
+  (self : davstate.DeviceCode) : Result Std.I32 := do
+  ok self.poll_interval_secs
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::DeviceCode}::last_poll_at]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 434:4-434:75
+    Visibility: public -/
+def davstate.DeviceCode.impl.last_poll_at
+  (self : davstate.DeviceCode) : Result (Option session.Timestamp) := do
+  ok self.last_poll_at
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::DeviceCode}::created_at]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 435:4-435:61
+    Visibility: public -/
+def davstate.DeviceCode.impl.created_at
+  (self : davstate.DeviceCode) : Result session.Timestamp := do
+  ok self.created_at
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::DeviceCode}::authorized_at]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 436:4-436:77
+    Visibility: public -/
+def davstate.DeviceCode.impl.authorized_at
+  (self : davstate.DeviceCode) : Result (Option session.Timestamp) := do
+  ok self.authorized_at
+
+/-- [oxicloud_kernel::davstate::TrashedItem]
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 438:0-447:1
+    Visibility: public -/
+structure davstate.TrashedItem where
+  id : Std.U128
+  original_id : Std.U128
+  user_id : Std.U128
+  item_type : davstate.TrashedItemType
+  «name» : alloc.vec.Vec Std.U8
+  original_path : alloc.vec.Vec Std.U8
+  trashed_at : session.Timestamp
+  deletion_date : session.Timestamp
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::TrashedItem}::from_raw]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 449:4-469:5
+    Visibility: public -/
+def davstate.TrashedItem.from_raw
+  (id : Std.U128) (original_id : Std.U128) (user_id : Std.U128)
+  (item_type : davstate.TrashedItemType) («name» : alloc.vec.Vec Std.U8)
+  (original_path : alloc.vec.Vec Std.U8) (trashed_at : session.Timestamp)
+  (deletion_date : session.Timestamp) :
+  Result davstate.TrashedItem
+  := do
+  ok
+    {
+      id,
+      original_id,
+      user_id,
+      item_type,
+      «name»,
+      original_path,
+      trashed_at,
+      deletion_date
+    }
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::TrashedItem}::id]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 470:4-470:40
+    Visibility: public -/
+def davstate.TrashedItem.impl.id
+  (self : davstate.TrashedItem) : Result Std.U128 := do
+  ok self.id
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::TrashedItem}::original_id]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 471:4-471:58
+    Visibility: public -/
+def davstate.TrashedItem.impl.original_id
+  (self : davstate.TrashedItem) : Result Std.U128 := do
+  ok self.original_id
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::TrashedItem}::user_id]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 472:4-472:50
+    Visibility: public -/
+def davstate.TrashedItem.impl.user_id
+  (self : davstate.TrashedItem) : Result Std.U128 := do
+  ok self.user_id
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::TrashedItem}::item_type]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 473:4-473:67
+    Visibility: public -/
+def davstate.TrashedItem.impl.item_type
+  (self : davstate.TrashedItem) : Result davstate.TrashedItemType := do
+  ok self.item_type
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::TrashedItem}::name]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 474:4-474:49
+    Visibility: public -/
+def davstate.TrashedItem.impl.name
+  (self : davstate.TrashedItem) : Result (alloc.vec.Vec Std.U8) := do
+  ok self.name
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::TrashedItem}::original_path]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 475:4-475:67
+    Visibility: public -/
+def davstate.TrashedItem.impl.original_path
+  (self : davstate.TrashedItem) : Result (alloc.vec.Vec Std.U8) := do
+  ok self.original_path
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::TrashedItem}::trashed_at]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 476:4-476:61
+    Visibility: public -/
+def davstate.TrashedItem.impl.trashed_at
+  (self : davstate.TrashedItem) : Result session.Timestamp := do
+  ok self.trashed_at
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::TrashedItem}::deletion_date]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 477:4-477:67
+    Visibility: public -/
+def davstate.TrashedItem.impl.deletion_date
+  (self : davstate.TrashedItem) : Result session.Timestamp := do
+  ok self.deletion_date
+
 /-- [oxicloud_kernel::drivepolicy::Policies]
     Source: 'prove/ports/oxicloud/kernel/src/drivepolicy.rs', lines 5:0-16:1
     Visibility: public -/
@@ -3740,13 +4729,6 @@ def magiclink.status_parse
       if b2
       then ok (some magiclink.MagicLinkStatus.Expired)
       else ok none
-
-/-- [oxicloud_kernel::session::Timestamp]
-    Source: 'prove/ports/oxicloud/kernel/src/session.rs', lines 6:0-6:63
-    Visibility: public -/
-structure session.Timestamp where
-  seconds : Std.I64
-  nanoseconds : Std.U32
 
 /-- [oxicloud_kernel::magiclink::MagicLinkToken]
     Source: 'prove/ports/oxicloud/kernel/src/magiclink.rs', lines 32:0-43:1

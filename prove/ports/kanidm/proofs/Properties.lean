@@ -1,3 +1,4 @@
+import Verified.MigrationDefaults
 import Verified.ValueObservers
 import Verified.SyntaxTypes
 import Verified.EntryValidation
@@ -631,5 +632,29 @@ theorem syntax_types_display_spec (syntaxValue : syntax_types.SyntaxType) :
 theorem syntax_types_indices_spec (syntaxValue : syntax_types.SyntaxType) :
     syntax_types.index_types syntaxValue ⦃ r => r.val = Verified.SyntaxTypes.indicesModel syntaxValue ⦄ :=
   Verified.SyntaxTypes.indices_spec syntaxValue
+
+theorem migration_defaults_dl11_complete (r : migration_defaults.SystemConfig)
+ (h : migration_defaults.dl11 = ok r) : Verified.MigrationDefaults.Complete Verified.MigrationDefaults.longSentinel r :=
+ Verified.MigrationDefaults.dl11_complete r h
+
+theorem migration_defaults_dl12_complete (r : migration_defaults.SystemConfig)
+ (h : migration_defaults.dl12 = ok r) : Verified.MigrationDefaults.Complete Verified.MigrationDefaults.longSentinel r :=
+ Verified.MigrationDefaults.dl12_complete r h
+
+theorem migration_defaults_dl13_complete (r : migration_defaults.SystemConfig)
+ (h : migration_defaults.dl13 = ok r) : Verified.MigrationDefaults.Complete Verified.MigrationDefaults.longSentinel r :=
+ Verified.MigrationDefaults.dl13_complete r h
+
+theorem migration_defaults_dl14_complete (r : migration_defaults.SystemConfig)
+ (h : migration_defaults.dl14 = ok r) : Verified.MigrationDefaults.Complete Verified.MigrationDefaults.longSentinel r :=
+ Verified.MigrationDefaults.dl14_complete r h
+
+theorem migration_defaults_dl15_complete (r : migration_defaults.SystemConfig)
+ (h : migration_defaults.dl15 = ok r) : Verified.MigrationDefaults.Complete Verified.MigrationDefaults.shortSentinel r :=
+ Verified.MigrationDefaults.dl15_complete r h
+
+theorem migration_defaults_dl_1_12_complete (r : migration_defaults.SystemConfig)
+ (h : migration_defaults.dl_1_12 = ok r) : Verified.MigrationDefaults.Complete Verified.MigrationDefaults.shortSentinel r :=
+ Verified.MigrationDefaults.dl_1_12_complete r h
 
 end kanidm_kernel.Properties

@@ -1,0 +1,30 @@
+{
+  "revision": "f608c4fe14dfd8d5df8edeed470bf1fb92060abd",
+  "files": {
+    "server/lib/src/migration_data/dl11/system_config.rs": {
+      "file_sha256": "0fff2e79ec67fa08a59c81cea4cd83736d4fdee32583e83a0cd941ccda58ea97",
+      "reference_sha256": "47f998c36a2edff292e007745344e205b77ea152fd2e49f2ef80d4e9e17ad1e7"
+    },
+    "server/lib/src/migration_data/dl12/system_config.rs": {
+      "file_sha256": "a2db082abfa27c9b44b179d964b9085f6a7b14278ceb8dad4ba5a669f4e30def",
+      "reference_sha256": "47f998c36a2edff292e007745344e205b77ea152fd2e49f2ef80d4e9e17ad1e7"
+    },
+    "server/lib/src/migration_data/dl13/system_config.rs": {
+      "file_sha256": "d6f7cd4c73b19a757ad4ac7bd9fd780572c0d317f3e4f80a22f24ed16252fbce",
+      "reference_sha256": "47f998c36a2edff292e007745344e205b77ea152fd2e49f2ef80d4e9e17ad1e7"
+    },
+    "server/lib/src/migration_data/dl14/system_config.rs": {
+      "file_sha256": "2f8f50a2aa691abcfd1d866c8eae87617496a7eb1b9af5a89fd9bc94c4950194",
+      "reference_sha256": "47f998c36a2edff292e007745344e205b77ea152fd2e49f2ef80d4e9e17ad1e7"
+    },
+    "server/lib/src/migration_data/dl15/system_config.rs": {
+      "file_sha256": "c94f21dddbfc7919f964aa0df0c77f01717a9caabf906a26d3bea92a49712185",
+      "reference_sha256": "6f840e34bf5505d5f907b3301cf6fa3093fa1f283391df35c395845ca8abf9aa"
+    },
+    "server/lib/src/migration_data/dl_1_12/system_config.rs": {
+      "file_sha256": "2248569ccaed81f991da3fba9e30d09b0e25271a62764bae17dc9e8708fac20d",
+      "reference_sha256": "6f840e34bf5505d5f907b3301cf6fa3093fa1f283391df35c395845ca8abf9aa"
+    }
+  },
+  "boundary": "Original initializer bodies verbatim, minimal typed attribute-to-set carrier; original Value::new_iutf8 Unicode lowercase semantics. No schema validation, transactional migration, or storage claim."
+}

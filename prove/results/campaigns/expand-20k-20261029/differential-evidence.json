@@ -53,5 +53,21 @@
     "tests": 71,
     "reference_identity": "prove/ports/oxicloud/entity-difftest/reference/identity.json",
     "log": "oxicloud-entities-differential.log"
+  },
+  "oxicloud_dav": {
+    "log": "oxicloud-dav-differential.log",
+    "tests": 6,
+    "records": 3072,
+    "pin": "8c0dd334cf065ad11f60f9be24e2aafd5dda7550",
+    "reference": "prove/ports/oxicloud/dav-difftest/identity.json"
+  },
+  "kanidm_migration_defaults": {
+    "passed": true,
+    "tests": 7,
+    "versions": 6,
+    "unique_passwords_per_version": 637,
+    "reference_identity": "prove/ports/kanidm/difftest/migration_defaults/identity.json",
+    "log": "kanidm-defaults-differential.log",
+    "command": "CARGO_TARGET_DIR=/tmp/prove-kanidm-defaults-target cargo test --release --manifest-path prove/ports/kanidm/kernel/Cargo.toml --test migration_defaults -- --nocapture"
   }
 }

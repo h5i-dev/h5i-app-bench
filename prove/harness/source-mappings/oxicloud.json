@@ -1794,6 +1794,1029 @@
         "end": 378,
         "sha256": "0a56e9d94e79578b693e80b9948d5758f122aa759a62b6efbfca8c95f13193da"
       }
+    ],
+    "davstate.AddressBook.from_raw": [
+      {
+        "file": "src/domain/entities/contact.rs",
+        "self_ty": "AddressBook",
+        "name": "from_raw",
+        "kind": "method",
+        "start": 80,
+        "end": 101,
+        "sha256": "b53ef965792b1ae76d4329e1f201fb895c3c0c2351d8382b856075e4583655d0"
+      }
+    ],
+    "davstate.Contact.from_raw": [
+      {
+        "file": "src/domain/entities/contact.rs",
+        "self_ty": "Contact",
+        "name": "from_raw",
+        "kind": "method",
+        "start": 257,
+        "end": 303,
+        "sha256": "dd4b81a093075ad572ed0d6aea217afd5f2b63a20ddd432b94389f08588e533c"
+      }
+    ],
+    "davstate.Contact.into_email": [
+      {
+        "file": "src/domain/entities/contact.rs",
+        "self_ty": "Contact",
+        "name": "into_email",
+        "kind": "method",
+        "start": 470,
+        "end": 472,
+        "sha256": "a9c83aba6026c5f4ce411e5666bcce7ea557c8ee040a015f33dfcf73159e8a9a"
+      }
+    ],
+    "davstate.CalendarTodo.with_id": [
+      {
+        "file": "src/domain/entities/calendar_todo.rs",
+        "self_ty": "CalendarTodo",
+        "name": "with_id",
+        "kind": "method",
+        "start": 117,
+        "end": 160,
+        "sha256": "54c7d44139108d98a9227b233e69257cf97725151959c031cfbaac91e5496058"
+      }
+    ],
+    "davstate.AudioFileMetadata.with_all_fields": [
+      {
+        "file": "src/domain/entities/playlist.rs",
+        "self_ty": "AudioFileMetadata",
+        "name": "with_all_fields",
+        "kind": "method",
+        "start": 270,
+        "end": 307,
+        "sha256": "51e2b8b3fb0b074e6c776728612d76d0b4befecff88dd71b6ac9b49a4abae92f"
+      }
+    ],
+    "davstate.DeviceCode.from_raw": [
+      {
+        "file": "src/domain/entities/device_code.rs",
+        "self_ty": "DeviceCode",
+        "name": "from_raw",
+        "kind": "method",
+        "start": 111,
+        "end": 149,
+        "sha256": "2f3a0bec7f25081c6132e218f2ec837924264a5d39d2d0d34267afbfb25b76b1"
+      }
+    ],
+    "davstate.TrashedItem.from_raw": [
+      {
+        "file": "src/domain/entities/trashed_item.rs",
+        "self_ty": "TrashedItem",
+        "name": "from_raw",
+        "kind": "method",
+        "start": 55,
+        "end": 76,
+        "sha256": "00480c37b15b1a4ab3fc3c3da93bbe57ca5ce6222587c17d5c02319e4735690c"
+      }
+    ],
+    "davstate.TrashedItem.impl.id": [
+      {
+        "file": "src/domain/entities/trashed_item.rs",
+        "self_ty": "TrashedItem",
+        "name": "id",
+        "kind": "method",
+        "start": 80,
+        "end": 82,
+        "sha256": "14f6fa4a544d8841042550a963b402353489fbfacacd638cc851a79d567c55a2"
+      }
+    ],
+    "davstate.TrashedItem.impl.original_id": [
+      {
+        "file": "src/domain/entities/trashed_item.rs",
+        "self_ty": "TrashedItem",
+        "name": "original_id",
+        "kind": "method",
+        "start": 84,
+        "end": 86,
+        "sha256": "9a43a4c9f149cf0945ab1dd151e1e049fc8a0cddc68b70f23a8c66f3b8a85243"
+      }
+    ],
+    "davstate.TrashedItem.impl.user_id": [
+      {
+        "file": "src/domain/entities/trashed_item.rs",
+        "self_ty": "TrashedItem",
+        "name": "user_id",
+        "kind": "method",
+        "start": 88,
+        "end": 90,
+        "sha256": "e2414c43bb76e2d9a2be35633fa26119b2c08e78bbca553accf223d25acf0b7c"
+      }
+    ],
+    "davstate.TrashedItem.impl.item_type": [
+      {
+        "file": "src/domain/entities/trashed_item.rs",
+        "self_ty": "TrashedItem",
+        "name": "item_type",
+        "kind": "method",
+        "start": 92,
+        "end": 94,
+        "sha256": "635df452f7b52979498281aee1e54f6c2b86d969e5019bf6a6d2c97a3e302a1d"
+      }
+    ],
+    "davstate.TrashedItem.impl.name": [
+      {
+        "file": "src/domain/entities/trashed_item.rs",
+        "self_ty": "TrashedItem",
+        "name": "name",
+        "kind": "method",
+        "start": 96,
+        "end": 98,
+        "sha256": "b5bb9bd7655207aff9136241a0f5e8fd865ba7318c27d9b8dc020e69f9eff0e8"
+      }
+    ],
+    "davstate.TrashedItem.impl.original_path": [
+      {
+        "file": "src/domain/entities/trashed_item.rs",
+        "self_ty": "TrashedItem",
+        "name": "original_path",
+        "kind": "method",
+        "start": 100,
+        "end": 102,
+        "sha256": "8161f5b1a34b037c181fea10f280412d627970059e89cec9f3a608853989cc70"
+      }
+    ],
+    "davstate.TrashedItem.impl.trashed_at": [
+      {
+        "file": "src/domain/entities/trashed_item.rs",
+        "self_ty": "TrashedItem",
+        "name": "trashed_at",
+        "kind": "method",
+        "start": 104,
+        "end": 106,
+        "sha256": "6165738fee3fc491a8252676ec8f331f589d720a705731fbecdc443be052331b"
+      }
+    ],
+    "davstate.TrashedItem.impl.deletion_date": [
+      {
+        "file": "src/domain/entities/trashed_item.rs",
+        "self_ty": "TrashedItem",
+        "name": "deletion_date",
+        "kind": "method",
+        "start": 108,
+        "end": 110,
+        "sha256": "f8648545c99f8a1ef97cd4ccb2dc7606189e781fe2ac4e909588d803c7b5ecce"
+      }
+    ],
+    "davstate.AddressBook.impl.id": [
+      {
+        "file": "src/domain/entities/contact.rs",
+        "self_ty": "AddressBook",
+        "name": "id",
+        "kind": "method",
+        "start": 104,
+        "end": 106,
+        "sha256": "1f8a1d32ba3236a8404739c27b55d579c8a112436ef4dc698782b137ba198f37"
+      }
+    ],
+    "davstate.AddressBook.impl.name": [
+      {
+        "file": "src/domain/entities/contact.rs",
+        "self_ty": "AddressBook",
+        "name": "name",
+        "kind": "method",
+        "start": 107,
+        "end": 109,
+        "sha256": "b5bb9bd7655207aff9136241a0f5e8fd865ba7318c27d9b8dc020e69f9eff0e8"
+      }
+    ],
+    "davstate.AddressBook.impl.owner_id": [
+      {
+        "file": "src/domain/entities/contact.rs",
+        "self_ty": "AddressBook",
+        "name": "owner_id",
+        "kind": "method",
+        "start": 110,
+        "end": 112,
+        "sha256": "54f1c6567ee43f0960ee751fab33b694a1ec483bda368bdf05df45305aa374fd"
+      }
+    ],
+    "davstate.AddressBook.impl.description": [
+      {
+        "file": "src/domain/entities/contact.rs",
+        "self_ty": "AddressBook",
+        "name": "description",
+        "kind": "method",
+        "start": 113,
+        "end": 115,
+        "sha256": "5fe170c4d80285c8995bfa82c621319391e19525d2c61ea4eeb40ea4a41778fa"
+      }
+    ],
+    "davstate.AddressBook.impl.color": [
+      {
+        "file": "src/domain/entities/contact.rs",
+        "self_ty": "AddressBook",
+        "name": "color",
+        "kind": "method",
+        "start": 116,
+        "end": 118,
+        "sha256": "62d8fa732206fd9e3665a868debac37ebebc479146a62ace104f89ab4d5f0317"
+      }
+    ],
+    "davstate.AddressBook.impl.is_public": [
+      {
+        "file": "src/domain/entities/contact.rs",
+        "self_ty": "AddressBook",
+        "name": "is_public",
+        "kind": "method",
+        "start": 119,
+        "end": 121,
+        "sha256": "7f1593e0f03be5eb8d397daffacc7393ab4539f13547fc6e666dffdccf9c9c3f"
+      }
+    ],
+    "davstate.AddressBook.impl.created_at": [
+      {
+        "file": "src/domain/entities/contact.rs",
+        "self_ty": "AddressBook",
+        "name": "created_at",
+        "kind": "method",
+        "start": 122,
+        "end": 124,
+        "sha256": "8b5793135382f9fd86e305848745d7e420290664847827b6c2ea211e44062e46"
+      }
+    ],
+    "davstate.AddressBook.impl.updated_at": [
+      {
+        "file": "src/domain/entities/contact.rs",
+        "self_ty": "AddressBook",
+        "name": "updated_at",
+        "kind": "method",
+        "start": 125,
+        "end": 127,
+        "sha256": "840f48c1242153864b4b97b29ecb43175bfa27692cecd2ab002077d377a61251"
+      }
+    ],
+    "davstate.Contact.impl.id": [
+      {
+        "file": "src/domain/entities/contact.rs",
+        "self_ty": "Contact",
+        "name": "id",
+        "kind": "method",
+        "start": 306,
+        "end": 308,
+        "sha256": "1f8a1d32ba3236a8404739c27b55d579c8a112436ef4dc698782b137ba198f37"
+      }
+    ],
+    "davstate.Contact.impl.address_book_id": [
+      {
+        "file": "src/domain/entities/contact.rs",
+        "self_ty": "Contact",
+        "name": "address_book_id",
+        "kind": "method",
+        "start": 309,
+        "end": 311,
+        "sha256": "668e01408026d9c58642e54819198785c1fbd2d0aa5752870c65b981e9abde4a"
+      }
+    ],
+    "davstate.Contact.impl.uid": [
+      {
+        "file": "src/domain/entities/contact.rs",
+        "self_ty": "Contact",
+        "name": "uid",
+        "kind": "method",
+        "start": 312,
+        "end": 314,
+        "sha256": "87cc79499149b0f48ddb49cf6f5d06046b0937d04ab03354a8422f3960f89405"
+      }
+    ],
+    "davstate.Contact.impl.full_name": [
+      {
+        "file": "src/domain/entities/contact.rs",
+        "self_ty": "Contact",
+        "name": "full_name",
+        "kind": "method",
+        "start": 315,
+        "end": 317,
+        "sha256": "7a82ad17b3eff6b08bb0377a6f45d22b342d853256eaa5300de4ef65b6c5396b"
+      }
+    ],
+    "davstate.Contact.impl.first_name": [
+      {
+        "file": "src/domain/entities/contact.rs",
+        "self_ty": "Contact",
+        "name": "first_name",
+        "kind": "method",
+        "start": 318,
+        "end": 320,
+        "sha256": "a79c0c920b2190712fd2ab506f49c00896ac5eee3ad594da8dbbee6b9d91c522"
+      }
+    ],
+    "davstate.Contact.impl.last_name": [
+      {
+        "file": "src/domain/entities/contact.rs",
+        "self_ty": "Contact",
+        "name": "last_name",
+        "kind": "method",
+        "start": 321,
+        "end": 323,
+        "sha256": "7a2cc6d49ce7194627b7d1fca9763f099bf69488df1ea94bd3a61663dd9dd295"
+      }
+    ],
+    "davstate.Contact.impl.nickname": [
+      {
+        "file": "src/domain/entities/contact.rs",
+        "self_ty": "Contact",
+        "name": "nickname",
+        "kind": "method",
+        "start": 324,
+        "end": 326,
+        "sha256": "770f2388af67e9d267c4e1285f0a1c6016eafc026652d354cdef14613f40ed52"
+      }
+    ],
+    "davstate.Contact.impl.email": [
+      {
+        "file": "src/domain/entities/contact.rs",
+        "self_ty": "Contact",
+        "name": "email",
+        "kind": "method",
+        "start": 327,
+        "end": 329,
+        "sha256": "eab4fcb02102a971998ba0f07f156b7087db781203c889963c890913d7545518"
+      }
+    ],
+    "davstate.Contact.impl.phone": [
+      {
+        "file": "src/domain/entities/contact.rs",
+        "self_ty": "Contact",
+        "name": "phone",
+        "kind": "method",
+        "start": 330,
+        "end": 332,
+        "sha256": "902487e7db04e88d46b5a76e86cc8d36651c7d3b4d2e1dcbacdcc4d7b76a91c3"
+      }
+    ],
+    "davstate.Contact.impl.address": [
+      {
+        "file": "src/domain/entities/contact.rs",
+        "self_ty": "Contact",
+        "name": "address",
+        "kind": "method",
+        "start": 333,
+        "end": 335,
+        "sha256": "c136f89c9e3866bab9edb9afb82a004691f61e4367c93a579db2a539278b24b0"
+      }
+    ],
+    "davstate.Contact.impl.organization": [
+      {
+        "file": "src/domain/entities/contact.rs",
+        "self_ty": "Contact",
+        "name": "organization",
+        "kind": "method",
+        "start": 336,
+        "end": 338,
+        "sha256": "feb0b0476d0a67a09d55e3f2e70b56b89a874e8d8b5fa7ef7299c0574444da62"
+      }
+    ],
+    "davstate.Contact.impl.title": [
+      {
+        "file": "src/domain/entities/contact.rs",
+        "self_ty": "Contact",
+        "name": "title",
+        "kind": "method",
+        "start": 339,
+        "end": 341,
+        "sha256": "09f03e60f7ad5a0c440b19ea5bfe4e0cd4df648a01dedb02a434ff789faebcce"
+      }
+    ],
+    "davstate.Contact.impl.notes": [
+      {
+        "file": "src/domain/entities/contact.rs",
+        "self_ty": "Contact",
+        "name": "notes",
+        "kind": "method",
+        "start": 342,
+        "end": 344,
+        "sha256": "6bff12175335c1eb3bba442ebd776d4b17d03e1859ef18adec6710439767f0a2"
+      }
+    ],
+    "davstate.Contact.impl.photo_url": [
+      {
+        "file": "src/domain/entities/contact.rs",
+        "self_ty": "Contact",
+        "name": "photo_url",
+        "kind": "method",
+        "start": 345,
+        "end": 347,
+        "sha256": "6de9117eed12325198d725b14a11f1954e62ae4688775c087d12ed058ace79fb"
+      }
+    ],
+    "davstate.Contact.impl.birthday": [
+      {
+        "file": "src/domain/entities/contact.rs",
+        "self_ty": "Contact",
+        "name": "birthday",
+        "kind": "method",
+        "start": 348,
+        "end": 350,
+        "sha256": "5aade6cafe64c195d0834fa350aed352f7c8e29b8fa4fba976454a40a11f146f"
+      }
+    ],
+    "davstate.Contact.impl.anniversary": [
+      {
+        "file": "src/domain/entities/contact.rs",
+        "self_ty": "Contact",
+        "name": "anniversary",
+        "kind": "method",
+        "start": 351,
+        "end": 353,
+        "sha256": "68422c4d7a6a8f995a91eaf6640b2475f4805e4c4f74a537bcaf20a924af6efd"
+      }
+    ],
+    "davstate.Contact.impl.vcard": [
+      {
+        "file": "src/domain/entities/contact.rs",
+        "self_ty": "Contact",
+        "name": "vcard",
+        "kind": "method",
+        "start": 354,
+        "end": 356,
+        "sha256": "db8cd15ad1e28548e436d20896dd24277cb20c52156446bbbb3385985f0754db"
+      }
+    ],
+    "davstate.Contact.impl.etag": [
+      {
+        "file": "src/domain/entities/contact.rs",
+        "self_ty": "Contact",
+        "name": "etag",
+        "kind": "method",
+        "start": 357,
+        "end": 359,
+        "sha256": "66f29d5b120a7078419e8e9ebb5c182b2cb665b59757b5ffaa9ccf49e4768f1c"
+      }
+    ],
+    "davstate.Contact.impl.created_at": [
+      {
+        "file": "src/domain/entities/contact.rs",
+        "self_ty": "Contact",
+        "name": "created_at",
+        "kind": "method",
+        "start": 360,
+        "end": 362,
+        "sha256": "8b5793135382f9fd86e305848745d7e420290664847827b6c2ea211e44062e46"
+      }
+    ],
+    "davstate.Contact.impl.updated_at": [
+      {
+        "file": "src/domain/entities/contact.rs",
+        "self_ty": "Contact",
+        "name": "updated_at",
+        "kind": "method",
+        "start": 363,
+        "end": 365,
+        "sha256": "840f48c1242153864b4b97b29ecb43175bfa27692cecd2ab002077d377a61251"
+      }
+    ],
+    "davstate.CalendarTodo.impl.id": [
+      {
+        "file": "src/domain/entities/calendar_todo.rs",
+        "self_ty": "CalendarTodo",
+        "name": "id",
+        "kind": "method",
+        "start": 326,
+        "end": 329,
+        "sha256": "f7be0011e873aa9bd7b903e968f92e69240441d728e89c5bc8abf9753f92afbc"
+      }
+    ],
+    "davstate.CalendarTodo.impl.calendar_id": [
+      {
+        "file": "src/domain/entities/calendar_todo.rs",
+        "self_ty": "CalendarTodo",
+        "name": "calendar_id",
+        "kind": "method",
+        "start": 331,
+        "end": 334,
+        "sha256": "61f1e7607b2728d7734e3cf9a526e2dad8338ed270f54c5764ee4147b17f0965"
+      }
+    ],
+    "davstate.CalendarTodo.impl.summary": [
+      {
+        "file": "src/domain/entities/calendar_todo.rs",
+        "self_ty": "CalendarTodo",
+        "name": "summary",
+        "kind": "method",
+        "start": 336,
+        "end": 339,
+        "sha256": "04e97354295746b74aff0f166a6f0eb1074ce0331bb91e54931538175faccbcd"
+      }
+    ],
+    "davstate.CalendarTodo.impl.description": [
+      {
+        "file": "src/domain/entities/calendar_todo.rs",
+        "self_ty": "CalendarTodo",
+        "name": "description",
+        "kind": "method",
+        "start": 341,
+        "end": 344,
+        "sha256": "4055b4c5665d77d0d2f25555a3dadaeac84ad61168c371384af2aefb4d42301b"
+      }
+    ],
+    "davstate.CalendarTodo.impl.location": [
+      {
+        "file": "src/domain/entities/calendar_todo.rs",
+        "self_ty": "CalendarTodo",
+        "name": "location",
+        "kind": "method",
+        "start": 346,
+        "end": 349,
+        "sha256": "7a3b266cb3706327f48a2982c189db14a18f44f3810278d02bbe0e5480d5f2b1"
+      }
+    ],
+    "davstate.CalendarTodo.impl.status": [
+      {
+        "file": "src/domain/entities/calendar_todo.rs",
+        "self_ty": "CalendarTodo",
+        "name": "status",
+        "kind": "method",
+        "start": 351,
+        "end": 355,
+        "sha256": "d3f0db41a0f292a769efe9b3945c873c64b49154e8e4da40cdd44e50b1b8883b"
+      }
+    ],
+    "davstate.CalendarTodo.impl.percent_complete": [
+      {
+        "file": "src/domain/entities/calendar_todo.rs",
+        "self_ty": "CalendarTodo",
+        "name": "percent_complete",
+        "kind": "method",
+        "start": 357,
+        "end": 360,
+        "sha256": "0ab557eaca58a88c0d458e3c7ff16a5bd57b8472538a9c105a3a871e87ca2d65"
+      }
+    ],
+    "davstate.CalendarTodo.impl.priority": [
+      {
+        "file": "src/domain/entities/calendar_todo.rs",
+        "self_ty": "CalendarTodo",
+        "name": "priority",
+        "kind": "method",
+        "start": 362,
+        "end": 365,
+        "sha256": "519bf1a57000cde6bcca11dc27e3ed172265552eb0d9e7215ea07592fb89595d"
+      }
+    ],
+    "davstate.CalendarTodo.impl.start_time": [
+      {
+        "file": "src/domain/entities/calendar_todo.rs",
+        "self_ty": "CalendarTodo",
+        "name": "start_time",
+        "kind": "method",
+        "start": 367,
+        "end": 370,
+        "sha256": "812555387b6e772bf3a28797f9e7af8d95931593c7d8aade1c88da1753657c58"
+      }
+    ],
+    "davstate.CalendarTodo.impl.due_time": [
+      {
+        "file": "src/domain/entities/calendar_todo.rs",
+        "self_ty": "CalendarTodo",
+        "name": "due_time",
+        "kind": "method",
+        "start": 372,
+        "end": 375,
+        "sha256": "7b0884f076f1ca0ee363e102e8645ca8f23a2346b010c9594a78a077e2876984"
+      }
+    ],
+    "davstate.CalendarTodo.impl.completed_at": [
+      {
+        "file": "src/domain/entities/calendar_todo.rs",
+        "self_ty": "CalendarTodo",
+        "name": "completed_at",
+        "kind": "method",
+        "start": 377,
+        "end": 380,
+        "sha256": "dd8161f395012e795f7d1a299a28e1570875ae8c8f8c7429bf546af1a1e828a5"
+      }
+    ],
+    "davstate.CalendarTodo.impl.all_day": [
+      {
+        "file": "src/domain/entities/calendar_todo.rs",
+        "self_ty": "CalendarTodo",
+        "name": "all_day",
+        "kind": "method",
+        "start": 382,
+        "end": 385,
+        "sha256": "bf60c93b7c7fbbb04ea05748a5cb287f4f64300ea7b8d5959aa125979e6e837f"
+      }
+    ],
+    "davstate.CalendarTodo.impl.rrule": [
+      {
+        "file": "src/domain/entities/calendar_todo.rs",
+        "self_ty": "CalendarTodo",
+        "name": "rrule",
+        "kind": "method",
+        "start": 387,
+        "end": 390,
+        "sha256": "32c5596d109d1a32cadf4eb11b6851445a2c1e7a272cd563bb6148f9c2e98393"
+      }
+    ],
+    "davstate.CalendarTodo.impl.recurrence_id": [
+      {
+        "file": "src/domain/entities/calendar_todo.rs",
+        "self_ty": "CalendarTodo",
+        "name": "recurrence_id",
+        "kind": "method",
+        "start": 392,
+        "end": 397,
+        "sha256": "787197c31835f616f79dc63fc6f57f94d28d4af67de885b8351c24ed675df6bd"
+      }
+    ],
+    "davstate.CalendarTodo.impl.ical_uid": [
+      {
+        "file": "src/domain/entities/calendar_todo.rs",
+        "self_ty": "CalendarTodo",
+        "name": "ical_uid",
+        "kind": "method",
+        "start": 407,
+        "end": 410,
+        "sha256": "fa7456c06226f4801c8deb27338dd6a8f6edeb8049d47ee178e6d27ad11c6a3e"
+      }
+    ],
+    "davstate.CalendarTodo.impl.ical_data": [
+      {
+        "file": "src/domain/entities/calendar_todo.rs",
+        "self_ty": "CalendarTodo",
+        "name": "ical_data",
+        "kind": "method",
+        "start": 412,
+        "end": 415,
+        "sha256": "80c632d065080af3de8b02a16ad223f1e25310d643b67c22e9c15dc81fd4716c"
+      }
+    ],
+    "davstate.CalendarTodo.impl.created_at": [
+      {
+        "file": "src/domain/entities/calendar_todo.rs",
+        "self_ty": "CalendarTodo",
+        "name": "created_at",
+        "kind": "method",
+        "start": 417,
+        "end": 420,
+        "sha256": "1f7409d197ae5093bbabfc40a3336839f447778b208b198d5ac4204a85c2b22a"
+      }
+    ],
+    "davstate.CalendarTodo.impl.updated_at": [
+      {
+        "file": "src/domain/entities/calendar_todo.rs",
+        "self_ty": "CalendarTodo",
+        "name": "updated_at",
+        "kind": "method",
+        "start": 422,
+        "end": 425,
+        "sha256": "f03c9f5df3022698f93dfca134e59edce3223a0d10d733c076f257259654bf84"
+      }
+    ],
+    "davstate.AudioFileMetadata.impl.file_id": [
+      {
+        "file": "src/domain/entities/playlist.rs",
+        "self_ty": "AudioFileMetadata",
+        "name": "file_id",
+        "kind": "method",
+        "start": 309,
+        "end": 311,
+        "sha256": "3b9643c84147008e0ef18f1e760b14e8175fb32ff9930603c77b5ee769852d31"
+      }
+    ],
+    "davstate.AudioFileMetadata.impl.title": [
+      {
+        "file": "src/domain/entities/playlist.rs",
+        "self_ty": "AudioFileMetadata",
+        "name": "title",
+        "kind": "method",
+        "start": 313,
+        "end": 315,
+        "sha256": "09f03e60f7ad5a0c440b19ea5bfe4e0cd4df648a01dedb02a434ff789faebcce"
+      }
+    ],
+    "davstate.AudioFileMetadata.impl.artist": [
+      {
+        "file": "src/domain/entities/playlist.rs",
+        "self_ty": "AudioFileMetadata",
+        "name": "artist",
+        "kind": "method",
+        "start": 317,
+        "end": 319,
+        "sha256": "dec8c3530e8aa366dd399a610edc09d55284563e37d8f54c5dbea2b0ab31a32d"
+      }
+    ],
+    "davstate.AudioFileMetadata.impl.album": [
+      {
+        "file": "src/domain/entities/playlist.rs",
+        "self_ty": "AudioFileMetadata",
+        "name": "album",
+        "kind": "method",
+        "start": 321,
+        "end": 323,
+        "sha256": "d6bd57767041153e40ff60c27146c35230abc1ef3330d5d4d728c3267c14cf3e"
+      }
+    ],
+    "davstate.AudioFileMetadata.impl.album_artist": [
+      {
+        "file": "src/domain/entities/playlist.rs",
+        "self_ty": "AudioFileMetadata",
+        "name": "album_artist",
+        "kind": "method",
+        "start": 325,
+        "end": 327,
+        "sha256": "ac70b00ac5e979f6afe04343d9f3d2e382d817d1d560489f67e82830b1064f27"
+      }
+    ],
+    "davstate.AudioFileMetadata.impl.genre": [
+      {
+        "file": "src/domain/entities/playlist.rs",
+        "self_ty": "AudioFileMetadata",
+        "name": "genre",
+        "kind": "method",
+        "start": 329,
+        "end": 331,
+        "sha256": "61449361dd74bde662525fe16631da1d4328257a43b7b793c4e277449a1d553c"
+      }
+    ],
+    "davstate.AudioFileMetadata.impl.track_number": [
+      {
+        "file": "src/domain/entities/playlist.rs",
+        "self_ty": "AudioFileMetadata",
+        "name": "track_number",
+        "kind": "method",
+        "start": 333,
+        "end": 335,
+        "sha256": "4bac111deae80f1d61c34ee8351f54b1dd94ed95f5229fbf240a8a78b0295359"
+      }
+    ],
+    "davstate.AudioFileMetadata.impl.disc_number": [
+      {
+        "file": "src/domain/entities/playlist.rs",
+        "self_ty": "AudioFileMetadata",
+        "name": "disc_number",
+        "kind": "method",
+        "start": 337,
+        "end": 339,
+        "sha256": "e8e2dfa6a5e8b3b76ecf8eccf2826f6579442851dc0fe4f6a88c7db3f8022461"
+      }
+    ],
+    "davstate.AudioFileMetadata.impl.year": [
+      {
+        "file": "src/domain/entities/playlist.rs",
+        "self_ty": "AudioFileMetadata",
+        "name": "year",
+        "kind": "method",
+        "start": 341,
+        "end": 343,
+        "sha256": "e97062a218f3020e1d008ea0d7d0479d623d684f55209810abe6323402403c9f"
+      }
+    ],
+    "davstate.AudioFileMetadata.impl.duration_secs": [
+      {
+        "file": "src/domain/entities/playlist.rs",
+        "self_ty": "AudioFileMetadata",
+        "name": "duration_secs",
+        "kind": "method",
+        "start": 345,
+        "end": 347,
+        "sha256": "c6fb414700ec873f119a791a8c8dc4e291ef3084fccc1363f5733d7d08208e7d"
+      }
+    ],
+    "davstate.AudioFileMetadata.impl.bitrate": [
+      {
+        "file": "src/domain/entities/playlist.rs",
+        "self_ty": "AudioFileMetadata",
+        "name": "bitrate",
+        "kind": "method",
+        "start": 349,
+        "end": 351,
+        "sha256": "cf8e12e6e26f56facc79b3d9d50900a1572d17d1f5a5894d2de00e3cfce13589"
+      }
+    ],
+    "davstate.AudioFileMetadata.impl.sample_rate": [
+      {
+        "file": "src/domain/entities/playlist.rs",
+        "self_ty": "AudioFileMetadata",
+        "name": "sample_rate",
+        "kind": "method",
+        "start": 353,
+        "end": 355,
+        "sha256": "f13b8cef48ad2c9adeb13c6f221c0ca4608905d8526f34061bb6dd7d983c5c48"
+      }
+    ],
+    "davstate.AudioFileMetadata.impl.channels": [
+      {
+        "file": "src/domain/entities/playlist.rs",
+        "self_ty": "AudioFileMetadata",
+        "name": "channels",
+        "kind": "method",
+        "start": 357,
+        "end": 359,
+        "sha256": "53c8b8501b306b5045a3376a12a3e27939d46c1c2272d39969d99b3548834cdf"
+      }
+    ],
+    "davstate.AudioFileMetadata.impl.format": [
+      {
+        "file": "src/domain/entities/playlist.rs",
+        "self_ty": "AudioFileMetadata",
+        "name": "format",
+        "kind": "method",
+        "start": 361,
+        "end": 363,
+        "sha256": "a3c319628af2b7d5c0cb4de307f5f3f979dafe98f2eefb9d7c0d2ecaae7c57f8"
+      }
+    ],
+    "davstate.AudioFileMetadata.impl.created_at": [
+      {
+        "file": "src/domain/entities/playlist.rs",
+        "self_ty": "AudioFileMetadata",
+        "name": "created_at",
+        "kind": "method",
+        "start": 365,
+        "end": 367,
+        "sha256": "8b5793135382f9fd86e305848745d7e420290664847827b6c2ea211e44062e46"
+      }
+    ],
+    "davstate.AudioFileMetadata.impl.updated_at": [
+      {
+        "file": "src/domain/entities/playlist.rs",
+        "self_ty": "AudioFileMetadata",
+        "name": "updated_at",
+        "kind": "method",
+        "start": 369,
+        "end": 371,
+        "sha256": "840f48c1242153864b4b97b29ecb43175bfa27692cecd2ab002077d377a61251"
+      }
+    ],
+    "davstate.DeviceCode.impl.id": [
+      {
+        "file": "src/domain/entities/device_code.rs",
+        "self_ty": "DeviceCode",
+        "name": "id",
+        "kind": "method",
+        "start": 153,
+        "end": 155,
+        "sha256": "14f6fa4a544d8841042550a963b402353489fbfacacd638cc851a79d567c55a2"
+      }
+    ],
+    "davstate.DeviceCode.impl.device_code": [
+      {
+        "file": "src/domain/entities/device_code.rs",
+        "self_ty": "DeviceCode",
+        "name": "device_code",
+        "kind": "method",
+        "start": 157,
+        "end": 159,
+        "sha256": "57ff6cc8dd10140ec01789660c3976c8d525382d17195f1ba811a38d1f208e29"
+      }
+    ],
+    "davstate.DeviceCode.impl.user_code": [
+      {
+        "file": "src/domain/entities/device_code.rs",
+        "self_ty": "DeviceCode",
+        "name": "user_code",
+        "kind": "method",
+        "start": 161,
+        "end": 163,
+        "sha256": "b75bfd5669e2296b06ef468abdc16f95315e83f8c6226afe592e3ca2aabe8eaf"
+      }
+    ],
+    "davstate.DeviceCode.impl.client_name": [
+      {
+        "file": "src/domain/entities/device_code.rs",
+        "self_ty": "DeviceCode",
+        "name": "client_name",
+        "kind": "method",
+        "start": 165,
+        "end": 167,
+        "sha256": "2a558e084568db687fc5d8df2c452f35a0dc7e4d27b8a8bf7ade3f76f2d1be9a"
+      }
+    ],
+    "davstate.DeviceCode.impl.scopes": [
+      {
+        "file": "src/domain/entities/device_code.rs",
+        "self_ty": "DeviceCode",
+        "name": "scopes",
+        "kind": "method",
+        "start": 169,
+        "end": 171,
+        "sha256": "5845f5f2a7864d8493ab506a5fe7b548a19d21053eee99f0608fa1e5727b5b7f"
+      }
+    ],
+    "davstate.DeviceCode.impl.status": [
+      {
+        "file": "src/domain/entities/device_code.rs",
+        "self_ty": "DeviceCode",
+        "name": "status",
+        "kind": "method",
+        "start": 173,
+        "end": 175,
+        "sha256": "112b52f38545c0ca2f1423b6bcfb3dd71b9c422383f4b378156a9f954d4405a4"
+      }
+    ],
+    "davstate.DeviceCode.impl.user_id": [
+      {
+        "file": "src/domain/entities/device_code.rs",
+        "self_ty": "DeviceCode",
+        "name": "user_id",
+        "kind": "method",
+        "start": 177,
+        "end": 179,
+        "sha256": "dda1279bfb568fec9079e5ed4ffc27b4f566ebb185168b35598ef94859b0630c"
+      }
+    ],
+    "davstate.DeviceCode.impl.access_token": [
+      {
+        "file": "src/domain/entities/device_code.rs",
+        "self_ty": "DeviceCode",
+        "name": "access_token",
+        "kind": "method",
+        "start": 181,
+        "end": 183,
+        "sha256": "5312b2691c26c04ad3d417ffc0c3f756d8a80bcb5a0c09835cd966189c791c37"
+      }
+    ],
+    "davstate.DeviceCode.impl.refresh_token": [
+      {
+        "file": "src/domain/entities/device_code.rs",
+        "self_ty": "DeviceCode",
+        "name": "refresh_token",
+        "kind": "method",
+        "start": 185,
+        "end": 187,
+        "sha256": "7b24d91c4d699c808135906b8ef97c410aa3959c5afdd2901697379b3edb3e74"
+      }
+    ],
+    "davstate.DeviceCode.impl.verification_uri": [
+      {
+        "file": "src/domain/entities/device_code.rs",
+        "self_ty": "DeviceCode",
+        "name": "verification_uri",
+        "kind": "method",
+        "start": 189,
+        "end": 191,
+        "sha256": "9c837fd2466ef1bed6061e2055bf6682c1833a62c1122bb2e0788843b80c3d21"
+      }
+    ],
+    "davstate.DeviceCode.impl.verification_uri_complete": [
+      {
+        "file": "src/domain/entities/device_code.rs",
+        "self_ty": "DeviceCode",
+        "name": "verification_uri_complete",
+        "kind": "method",
+        "start": 193,
+        "end": 195,
+        "sha256": "5b935e662b32252b623e7dce49ea44f7f10fe4150f4a2a167fc7e48a7118e64d"
+      }
+    ],
+    "davstate.DeviceCode.impl.expires_at": [
+      {
+        "file": "src/domain/entities/device_code.rs",
+        "self_ty": "DeviceCode",
+        "name": "expires_at",
+        "kind": "method",
+        "start": 197,
+        "end": 199,
+        "sha256": "ef6abb0de9d935b22d52d9029321289ac2b376f5e6ebec90dd965b45aa5626f2"
+      }
+    ],
+    "davstate.DeviceCode.impl.poll_interval_secs": [
+      {
+        "file": "src/domain/entities/device_code.rs",
+        "self_ty": "DeviceCode",
+        "name": "poll_interval_secs",
+        "kind": "method",
+        "start": 201,
+        "end": 203,
+        "sha256": "e9fad331f42e4a8502eec1fbc4b54fbb94bb6fbecd777124b7b8760635624ee3"
+      }
+    ],
+    "davstate.DeviceCode.impl.last_poll_at": [
+      {
+        "file": "src/domain/entities/device_code.rs",
+        "self_ty": "DeviceCode",
+        "name": "last_poll_at",
+        "kind": "method",
+        "start": 205,
+        "end": 207,
+        "sha256": "de9219b718e29ee2dca114ece9db47f410d2a80cddcd3ae12a4e90edf94b1945"
+      }
+    ],
+    "davstate.DeviceCode.impl.created_at": [
+      {
+        "file": "src/domain/entities/device_code.rs",
+        "self_ty": "DeviceCode",
+        "name": "created_at",
+        "kind": "method",
+        "start": 209,
+        "end": 211,
+        "sha256": "e30b2db1182e3488d11bf8171655f78b07e22d49bcfef21bfd5460e057980cbc"
+      }
+    ],
+    "davstate.DeviceCode.impl.authorized_at": [
+      {
+        "file": "src/domain/entities/device_code.rs",
+        "self_ty": "DeviceCode",
+        "name": "authorized_at",
+        "kind": "method",
+        "start": 213,
+        "end": 215,
+        "sha256": "6cbe47a72e1baade6d697e230994d4903703beb650192c22f91fab876a7553e5"
+      }
     ]
   }
 }

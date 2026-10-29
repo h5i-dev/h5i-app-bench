@@ -1,0 +1,30 @@
+   Compiling kanidm-kernel v0.1.0 (/home/ht2673/Dev/h5i-app-bench/prove/ports/kanidm/kernel)
+warning: unused variable: `allow_cls`
+  --> src/migration.rs:83:75
+   |
+83 | fn add_domain_info(classes: &[Vec<u8>], allow_attrs: &mut Vec<Attribute>, allow_cls: &mut Vec<Vec<u8>>) {
+   |                                                                           ^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_allow_cls`
+   |
+   = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused variable: `allow_cls`
+   --> src/migration.rs:137:78
+    |
+137 | fn add_account_policy(classes: &[Vec<u8>], allow_attrs: &mut Vec<Attribute>, allow_cls: &mut Vec<Vec<u8>>) {
+    |                                                                              ^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_allow_cls`
+
+warning: `kanidm-kernel` (lib) generated 2 warnings (run `cargo fix --lib -p kanidm-kernel` to apply 2 suggestions)
+    Finished `release` profile [optimized] target(s) in 3.31s
+     Running tests/migration_defaults.rs (/tmp/prove-kanidm-defaults-target/release/deps/migration_defaults-9f045ad1442e9ed5)
+
+running 7 tests
+test dl15_exact_security_defaults ... ok
+test dl12_exact_security_defaults ... ok
+test dl11_exact_security_defaults ... ok
+test dl14_exact_security_defaults ... ok
+test dl13_exact_security_defaults ... ok
+test dl_1_12_exact_security_defaults ... ok
+test sentinel_version_distinction ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

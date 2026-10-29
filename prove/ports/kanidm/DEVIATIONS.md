@@ -226,3 +226,25 @@ The observer Boolean variant is renamed from upstream Bool to avoid shadowing
 Lean Bool inside generated inherent-method namespaces; the reference retains
 the original variant name. The syntax dispatch uses five ten-case helpers to
 keep generated Lean indentation bounded. These are structural adaptations.
+
+## Migration password security defaults at f608c4f
+
+`migration_defaults` ports all six versioned `e_system_config_v1` constructors
+(dl11, dl12, dl13, dl14, dl15, dl_1_12). The complete entry is represented by
+three class-presence fields, its UUID, description bytes and an extensional
+password set. No additional attributes or classes are representable. The
+initializer inserts every literal; dl15/dl_1_12 retain their shorter sentinel.
+
+Fixed literal Iutf8 normalization is precomputed as exact lowercase UTF-8 bytes,
+including the two non-ASCII words and escaped backslash. This is a fixed-data
+port, not a proof of arbitrary Unicode normalization. Shared owned chunks avoid
+unsupported nested constant slice borrows; their exact byte contents are
+specified independently in Lean. Duplicate normalized entries retain set
+semantics. Allocation failures and storage/migration I/O are outside the entry
+value model.
+
+The differential extractor retrieves each unchanged full initializer from its
+pinned git object. A minimal typed entry/map/value adapter preserves class, UUID,
+description and Unicode-lowercased password-set behavior. Seven release tests
+compare complete entries, all 637 distinct passwords per version, non-ASCII and
+case-fold boundaries, and the version-specific sentinel difference.
