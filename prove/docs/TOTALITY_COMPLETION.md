@@ -44,17 +44,19 @@ gate settings are used. The permitted kernel axioms are `propext`,
 
 ## Source coverage accounting
 
-The historical benchmark snapshot is separate from source-matched project
-verification. Passing project gates replace overlapping historical counts;
-their line counts are never added together. Kanidm currently has a partial
-source mapping, and Tuwunel has no project source mapping, so completing these
-proofs alone does not establish a 10,000-line source-matched total. The current
-exact mapped total is **5,662 lines**, up **1,407** from 4,255. This includes
-Nora at 987 and Kanidm at 420 (partial mapping); Tuwunel currently adds no
-source-matched project lines. The separate historical benchmark remains
-7,684 lines (99/101 tasks). The compatibility total of 7,528 mixes current
-project evidence with historical evidence and must not be labeled a current
-whole-project verified count.
+The [coverage recount](COVERAGE_RECOUNT.md) completes the missing core Kanidm
+and Tuwunel source mappings. All six current gates and extractions match their
+source inputs: **390/390 configured targets**, with **9,902 deduplicated pinned
+upstream executable lines** reached through theorem types and generated
+implementation dependencies. Kanidm contributes 2,705 and Tuwunel 1,955.
+The previous 5,662 total omitted Kanidm's core mapping and all Tuwunel mapping;
+the increase of 4,240 is an accounting correction, not new proof expansion.
+
+Historical fallback is now zero. The historical benchmark remains separate at
+7,684 lines and 99/101 task/model results. It overlaps the project coverage and
+must not be added. The dashboard's `whole_project_verified` flag now means all
+configured project gates have current source-matched mapping evidence; neither
+that flag nor the line count asserts complete upstream behavioral equivalence.
 
 ## Additional checks
 

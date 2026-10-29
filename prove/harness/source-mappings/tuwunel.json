@@ -1,0 +1,955 @@
+{
+  "upstream_revision": "7801b8ec6f7773d90b1bbfeeb352012d6e004e96",
+  "declarations": {
+    "api_context.build_state_response": [
+      {
+        "file": "src/api/client/context.rs",
+        "self_ty": "",
+        "name": "build_state_response",
+        "kind": "fn",
+        "start": 380,
+        "end": 416,
+        "sha256": "dc7dbcf25dba15a299fc162789ef44a33cb7087a1881695164cc30f5338d0ed2"
+      }
+    ],
+    "api_context.collect_timeline_half": [
+      {
+        "file": "src/api/client/context.rs",
+        "self_ty": "",
+        "name": "collect_timeline_half",
+        "kind": "fn",
+        "start": 323,
+        "end": 356,
+        "sha256": "60c160b38d000ed916b4d9dae49e020070b723958c528ea3652703b5258de623"
+      }
+    ],
+    "api_context.event_context": [
+      {
+        "file": "src/api/client/context.rs",
+        "self_ty": "",
+        "name": "event_context",
+        "kind": "fn",
+        "start": 84,
+        "end": 240,
+        "sha256": "a0ca1d4aaeeda4ce38d2f03936c98bd3b8d994c07b19dd9bfddb3e4762f9a474"
+      }
+    ],
+    "api_context.get_context_route": [
+      {
+        "file": "src/api/client/context.rs",
+        "self_ty": "",
+        "name": "get_context_route",
+        "kind": "fn",
+        "start": 47,
+        "end": 67,
+        "sha256": "7e033d7f8a13a8b08db716f1f3491b3633b87b34377f3e450d6f66d89c2e0163"
+      }
+    ],
+    "api_context.load_state_ids": [
+      {
+        "file": "src/api/client/context.rs",
+        "self_ty": "",
+        "name": "load_state_ids",
+        "kind": "fn",
+        "start": 358,
+        "end": 378,
+        "sha256": "c9e9be3c1bea228568f3ab01ff17ed94db931a1a6fc1cce4056634b013c9bb5e"
+      }
+    ],
+    "api_context.resolve_base_event": [
+      {
+        "file": "src/api/client/context.rs",
+        "self_ty": "",
+        "name": "resolve_base_event",
+        "kind": "fn",
+        "start": 242,
+        "end": 309,
+        "sha256": "2669462b2f917f42850cb022da86e534ce5ee9901b4888d3130e34998afbf0e3"
+      }
+    ],
+    "api_members.get_member_events_route": [
+      {
+        "file": "src/api/client/membership/members.rs",
+        "self_ty": "",
+        "name": "get_member_events_route",
+        "kind": "fn",
+        "start": 27,
+        "end": 90,
+        "sha256": "f1cb09f33653de9d16f46c80af8cd82d3317836b782d492d269aa364ea4c9a81"
+      }
+    ],
+    "api_members.joined_members_route": [
+      {
+        "file": "src/api/client/membership/members.rs",
+        "self_ty": "",
+        "name": "joined_members_route",
+        "kind": "fn",
+        "start": 92,
+        "end": 144,
+        "sha256": "0796184b0e86ad7a2a254dc7c2008a96f60fd2ee509c8d02263f4e8ee14c047c"
+      }
+    ],
+    "api_message.bounded": [
+      {
+        "file": "src/core/utils/math.rs",
+        "self_ty": "",
+        "name": "usize_from_ruma_bounded",
+        "kind": "fn",
+        "start": 157,
+        "end": 165,
+        "sha256": "b6ed2e98cf40df51d4557f191a5bfdfc081beca86490800c90c979c09329d920"
+      }
+    ],
+    "api_message.event_filter": [
+      {
+        "file": "src/api/client/message.rs",
+        "self_ty": "",
+        "name": "event_filter",
+        "kind": "fn",
+        "start": 429,
+        "end": 433,
+        "sha256": "5d7226540554b93f472dd05f3898fa43da8f0693e9edc2ee32bc2e81aec13900"
+      }
+    ],
+    "api_message.event_filters": [
+      {
+        "file": "src/api/client/message.rs",
+        "self_ty": "",
+        "name": "event_filters",
+        "kind": "fn",
+        "start": 321,
+        "end": 335,
+        "sha256": "72eca781c5c6b5d04b2232effd51bc8852da58ee917086b078f3386e7447bd71"
+      }
+    ],
+    "api_message.get_message_events_route": [
+      {
+        "file": "src/api/client/message.rs",
+        "self_ty": "",
+        "name": "get_message_events_route",
+        "kind": "fn",
+        "start": 87,
+        "end": 109,
+        "sha256": "c0502fc300f866e8a1586026c45bd84d84bea0ab9dc3c17ad9269923569ad006"
+      }
+    ],
+    "api_message.get_messages": [
+      {
+        "file": "src/api/client/message.rs",
+        "self_ty": "",
+        "name": "get_messages",
+        "kind": "fn",
+        "start": 111,
+        "end": 258,
+        "sha256": "455b00de0484c223c0718123826bd1dd0290b7f242a444ba96b644cef8e63376"
+      }
+    ],
+    "api_message.ignored_filter": [
+      {
+        "file": "src/api/client/message.rs",
+        "self_ty": "",
+        "name": "ignored_filter",
+        "kind": "fn",
+        "start": 367,
+        "end": 379,
+        "sha256": "b7101e0900c72eaead77aa488a8d4b519105de76e2b47ff94a9d0d1afe9bb1e7"
+      }
+    ],
+    "api_message.is_ignored_pdu": [
+      {
+        "file": "src/api/client/message.rs",
+        "self_ty": "",
+        "name": "is_ignored_pdu",
+        "kind": "fn",
+        "start": 381,
+        "end": 412,
+        "sha256": "9b243d2452207f09a84f65eed3fc0d3a2909dbf2f11c3fe0ca203868004f3959"
+      }
+    ],
+    "api_message.related_by_filter": [
+      {
+        "file": "src/api/client/message.rs",
+        "self_ty": "",
+        "name": "related_by_filter",
+        "kind": "fn",
+        "start": 337,
+        "end": 365,
+        "sha256": "4cb0625bff37e980f8c8236af55504b602625bddbbe312eea205459e553d8f18"
+      }
+    ],
+    "api_message.user_is_ignored": [
+      {
+        "file": "src/service/users/mod.rs",
+        "self_ty": "Service",
+        "name": "user_is_ignored",
+        "kind": "method",
+        "start": 133,
+        "end": 144,
+        "sha256": "9b3bcfb22983d0bc1ddbeb8380ee3327a2f6ba8720f02a08a193814cb12c4fe7"
+      }
+    ],
+    "api_message.visibility_filter": [
+      {
+        "file": "src/api/client/message.rs",
+        "self_ty": "",
+        "name": "visibility_filter",
+        "kind": "fn",
+        "start": 414,
+        "end": 427,
+        "sha256": "00f94507c480e221e0adec635420046cce1cd99986f505050ba65d3d41e91651"
+      }
+    ],
+    "api_relations.paginate_relations_with_filter": [
+      {
+        "file": "src/api/client/relations.rs",
+        "self_ty": "",
+        "name": "paginate_relations_with_filter",
+        "kind": "fn",
+        "start": 112,
+        "end": 261,
+        "sha256": "511557d2a7bcc36d24b4ed08b817eb6f4931f52845ee6697997f1a5bf0ca3705"
+      }
+    ],
+    "api_room.departure_snapshot": [
+      {
+        "file": "src/api/client/room/initial_sync.rs",
+        "self_ty": "",
+        "name": "departure_snapshot",
+        "kind": "fn",
+        "start": 156,
+        "end": 181,
+        "sha256": "dba161efc6fac22a903a1b851b32df88e0bb381e91044057abf152beb0e7db66"
+      }
+    ],
+    "api_room.get_room_event_route": [
+      {
+        "file": "src/api/client/room/event.rs",
+        "self_ty": "",
+        "name": "get_room_event_route",
+        "kind": "fn",
+        "start": 15,
+        "end": 109,
+        "sha256": "e3ade96d6ad8e8ccf0e49a7ec6bc7014ef8fd92e6e5aad5647448bb3271ee96c"
+      }
+    ],
+    "api_room.room_initial_sync_route": [
+      {
+        "file": "src/api/client/room/initial_sync.rs",
+        "self_ty": "",
+        "name": "room_initial_sync_route",
+        "kind": "fn",
+        "start": 30,
+        "end": 154,
+        "sha256": "886a26c9ecb2b5f680534020321024534b66a4c9f7015c32472ec89658ecbdc3"
+      }
+    ],
+    "api_state.get_state_events_for_key_route": [
+      {
+        "file": "src/api/client/state.rs",
+        "self_ty": "",
+        "name": "get_state_events_for_key_route",
+        "kind": "fn",
+        "start": 116,
+        "end": 170,
+        "sha256": "52a089b82140ca0023ed7f94a32b2d4c6c47f36d9564cd0d7d831741593616f2"
+      }
+    ],
+    "api_state.get_state_events_route": [
+      {
+        "file": "src/api/client/state.rs",
+        "self_ty": "",
+        "name": "get_state_events_route",
+        "kind": "fn",
+        "start": 77,
+        "end": 114,
+        "sha256": "03a6f794391aa859907ddb61ae0e08dbe0e5303da2c03ac7d33a955c851bb7d2"
+      }
+    ],
+    "api_threads.get_threads_route": [
+      {
+        "file": "src/api/client/threads.rs",
+        "self_ty": "",
+        "name": "get_threads_route",
+        "kind": "fn",
+        "start": 27,
+        "end": 123,
+        "sha256": "e6a010481732d66606028a5955ac5e0e136b6ebfd7a38736d9f4524a328b4443"
+      }
+    ],
+    "filters.is_forbidden_remote_server_name": [
+      {
+        "file": "src/core/config/net.rs",
+        "self_ty": "",
+        "name": "is_forbidden_remote_server_name",
+        "kind": "fn",
+        "start": 95,
+        "end": 133,
+        "sha256": "5026f85258b649c97fe692705f743fdd5049c030ca029a40596a469b135fb50a"
+      }
+    ],
+    "filters.matches": [
+      {
+        "file": "src/core/matrix/event/filter.rs",
+        "self_ty": "RoomEventFilter",
+        "name": "matches",
+        "kind": "method",
+        "start": 32,
+        "end": 51,
+        "sha256": "8d3802e7912ff3e2fb73343cc7f9e68774e66aff2058b68c36ddd560d6393ff8"
+      }
+    ],
+    "filters.matches_room": [
+      {
+        "file": "src/core/matrix/event/filter.rs",
+        "self_ty": "",
+        "name": "matches_room",
+        "kind": "fn",
+        "start": 96,
+        "end": 112,
+        "sha256": "5c18ceacbc1738dbb74f3c886ab3de270b6beae54a1b9ee387df90e028a9c308"
+      }
+    ],
+    "filters.matches_sender": [
+      {
+        "file": "src/core/matrix/event/filter.rs",
+        "self_ty": "",
+        "name": "matches_sender",
+        "kind": "fn",
+        "start": 114,
+        "end": 130,
+        "sha256": "a06cf3921a42f6abf69e6db443f894e50b259d61c3a34ee0844069a5f26dfd2c"
+      }
+    ],
+    "filters.matches_type": [
+      {
+        "file": "src/core/matrix/event/filter.rs",
+        "self_ty": "",
+        "name": "matches_type",
+        "kind": "fn",
+        "start": 132,
+        "end": 146,
+        "sha256": "023d6b98954ffcc3dc1a4bbb8e7ca4c787ea9cb37d1cdc81d0bc8995c297c138"
+      }
+    ],
+    "filters.matches_url": [
+      {
+        "file": "src/core/matrix/event/filter.rs",
+        "self_ty": "",
+        "name": "matches_url",
+        "kind": "fn",
+        "start": 148,
+        "end": 163,
+        "sha256": "92b448541285812a9351c8d8be6f3c96e7abec8dccec833dcbd88848fcc4ccc9"
+      }
+    ],
+    "svc_accessor.history_visibility_at": [
+      {
+        "file": "src/service/rooms/state_accessor/state.rs",
+        "self_ty": "",
+        "name": "state_get_content",
+        "kind": "fn",
+        "start": 100,
+        "end": 117,
+        "sha256": "3dca01026eee3fd303e460e195201ff91338d356cc3a42176ec473dee44c49ca"
+      }
+    ],
+    "svc_accessor.is_world_readable": [
+      {
+        "file": "src/service/rooms/state_accessor/mod.rs",
+        "self_ty": "Service",
+        "name": "is_world_readable",
+        "kind": "method",
+        "start": 129,
+        "end": 140,
+        "sha256": "35f7076a1ac85cc52a07a867e85c348c28e52425aec90c074bcda168b2cc5bf4"
+      }
+    ],
+    "svc_accessor.load_full_state": [
+      {
+        "file": "src/service/rooms/state_accessor/state.rs",
+        "self_ty": "",
+        "name": "load_full_state",
+        "kind": "fn",
+        "start": 503,
+        "end": 517,
+        "sha256": "5167db6fd9bc52d27e5cce881b87c705308d5da27b4e7c49c852d94b3b75c530"
+      }
+    ],
+    "svc_accessor.room_history_visibility": [
+      {
+        "file": "src/service/rooms/state_accessor/room_state.rs",
+        "self_ty": "",
+        "name": "room_state_get_content",
+        "kind": "fn",
+        "start": 15,
+        "end": 32,
+        "sha256": "8341f5664f7166f5e606bd10b535ad5d2adfb0097984226f2f63e1863ba076ce"
+      }
+    ],
+    "svc_accessor.room_state_full": [
+      {
+        "file": "src/service/rooms/state_accessor/room_state.rs",
+        "self_ty": "",
+        "name": "room_state_full",
+        "kind": "fn",
+        "start": 57,
+        "end": 73,
+        "sha256": "8b8ee6a57cd5e7af1b1e3a8c4aa7ad749c9f78a82fa43398925d7b1549b40b4d"
+      }
+    ],
+    "svc_accessor.room_state_full_pdus": [
+      {
+        "file": "src/service/rooms/state_accessor/room_state.rs",
+        "self_ty": "",
+        "name": "room_state_full_pdus",
+        "kind": "fn",
+        "start": 75,
+        "end": 91,
+        "sha256": "c481380f78e12771732f2bc3fd0664e817941a938c2fb0b14da8fb3807629639"
+      }
+    ],
+    "svc_accessor.room_state_get": [
+      {
+        "file": "src/service/rooms/state_accessor/room_state.rs",
+        "self_ty": "",
+        "name": "room_state_get",
+        "kind": "fn",
+        "start": 156,
+        "end": 173,
+        "sha256": "872051d665cdd28422ae0bb211e6337ddf7b27396ef3dd59cc203e84c509c84e"
+      }
+    ],
+    "svc_accessor.server_can_see_event": [
+      {
+        "file": "src/service/rooms/state_accessor/server_can.rs",
+        "self_ty": "",
+        "name": "server_can_see_event",
+        "kind": "fn",
+        "start": 16,
+        "end": 66,
+        "sha256": "6528b102ab3ef9492cb4838c5db0c815024e5708b7f0a604b079346aba132248"
+      }
+    ],
+    "svc_accessor.state_full": [
+      {
+        "file": "src/service/rooms/state_accessor/state.rs",
+        "self_ty": "",
+        "name": "state_full",
+        "kind": "fn",
+        "start": 376,
+        "end": 389,
+        "sha256": "7b15d6a03aa3cf1fd10c9361fb056c2c5b1ed25e70a0d7d31575df0038826a9f"
+      }
+    ],
+    "svc_accessor.state_full_ids": [
+      {
+        "file": "src/service/rooms/state_accessor/state.rs",
+        "self_ty": "",
+        "name": "state_full_ids",
+        "kind": "fn",
+        "start": 431,
+        "end": 451,
+        "sha256": "8088da40a8643c5bafd1a2900b0108948648cad115fe3000f1c28002b3a1cd2d"
+      }
+    ],
+    "svc_accessor.state_full_pdus": [
+      {
+        "file": "src/service/rooms/state_accessor/state.rs",
+        "self_ty": "",
+        "name": "state_full_pdus",
+        "kind": "fn",
+        "start": 391,
+        "end": 416,
+        "sha256": "c6582105c70e4fc58fd02011650f70a502d2dd044bb3f914dede1fba73b29278"
+      }
+    ],
+    "svc_accessor.state_full_pdus_strict": [
+      {
+        "file": "src/service/rooms/state_accessor/state.rs",
+        "self_ty": "",
+        "name": "state_full_pdus_strict",
+        "kind": "fn",
+        "start": 418,
+        "end": 429,
+        "sha256": "aee375cde42c8ad9aca5da40edf9c1acfd3dd226d97122c91ebee49652c35c48"
+      }
+    ],
+    "svc_accessor.state_get": [
+      {
+        "file": "src/service/rooms/state_accessor/state.rs",
+        "self_ty": "",
+        "name": "state_get",
+        "kind": "fn",
+        "start": 179,
+        "end": 195,
+        "sha256": "ddff5e43dacc117765abc5bd88be030a2a139416c3dd72d28e7e5feef128e251"
+      }
+    ],
+    "svc_accessor.state_get_id": [
+      {
+        "file": "src/service/rooms/state_accessor/state.rs",
+        "self_ty": "",
+        "name": "state_get_id",
+        "kind": "fn",
+        "start": 197,
+        "end": 215,
+        "sha256": "b57fbf32ee50b93add185fcce7185e177f65f189b8753f168c36fbcb648e3a36"
+      }
+    ],
+    "svc_accessor.user_can_see_event": [
+      {
+        "file": "src/service/rooms/state_accessor/user_can.rs",
+        "self_ty": "",
+        "name": "user_can_see_event",
+        "kind": "fn",
+        "start": 98,
+        "end": 145,
+        "sha256": "ee4ac1146c95fdf68623de57f08485d303b012294fcfa0cd7bf4edae9d4fc84e"
+      }
+    ],
+    "svc_accessor.user_can_see_room": [
+      {
+        "file": "src/service/rooms/state_accessor/user_can.rs",
+        "self_ty": "",
+        "name": "user_can_see_room",
+        "kind": "fn",
+        "start": 234,
+        "end": 253,
+        "sha256": "44f3b799d1e749439a4a52af922de90131396952a9b4c21172ed164a1d9f0c59"
+      }
+    ],
+    "svc_accessor.user_can_see_state_events": [
+      {
+        "file": "src/service/rooms/state_accessor/user_can.rs",
+        "self_ty": "",
+        "name": "user_can_see_state_events",
+        "kind": "fn",
+        "start": 190,
+        "end": 232,
+        "sha256": "8de35fed339be599c3b7ad9e9095ee9c7c08ea5e004712a0406aa4c76fc490d8"
+      }
+    ],
+    "svc_accessor.user_membership": [
+      {
+        "file": "src/service/rooms/state_accessor/state.rs",
+        "self_ty": "",
+        "name": "user_membership",
+        "kind": "fn",
+        "start": 58,
+        "end": 71,
+        "sha256": "c3e05fec7927942a64a2e70fecef65fec5aa9191e307063997238cab822499d4"
+      }
+    ],
+    "svc_accessor.user_shared_history": [
+      {
+        "file": "src/service/rooms/state_accessor/user_can.rs",
+        "self_ty": "",
+        "name": "user_shared_history",
+        "kind": "fn",
+        "start": 147,
+        "end": 188,
+        "sha256": "b4326203177b7162cdccc717b021dbbf6ecb8ae4c3c3c32dcd125ad41dc5f374"
+      }
+    ],
+    "svc_accessor.user_was_invited": [
+      {
+        "file": "src/service/rooms/state_accessor/state.rs",
+        "self_ty": "",
+        "name": "user_was_invited",
+        "kind": "fn",
+        "start": 45,
+        "end": 56,
+        "sha256": "b1bc2d2d9da04424486014a852fac88c948d25deaa22f0d0353c62231db303d8"
+      }
+    ],
+    "svc_accessor.user_was_joined": [
+      {
+        "file": "src/service/rooms/state_accessor/state.rs",
+        "self_ty": "",
+        "name": "user_was_joined",
+        "kind": "fn",
+        "start": 34,
+        "end": 43,
+        "sha256": "ddfb5ba4b764fd198d2f6d4891b7d98ed42566f9084be2e656019c9dc082acde"
+      }
+    ],
+    "svc_cache.get_left_count": [
+      {
+        "file": "src/service/rooms/state_cache/mod.rs",
+        "self_ty": "",
+        "name": "get_left_count",
+        "kind": "fn",
+        "start": 533,
+        "end": 546,
+        "sha256": "b8881b1a13b0d2efa00e6f038de82fbcb57ecc2d7d5d581b3faef72c6bed0ec7"
+      }
+    ],
+    "svc_cache.is_invited": [
+      {
+        "file": "src/service/rooms/state_cache/mod.rs",
+        "self_ty": "",
+        "name": "is_invited",
+        "kind": "fn",
+        "start": 971,
+        "end": 983,
+        "sha256": "064ef448715b74fcb7d3892344a81b8c12e60dbbda8b652085b25a0bb9382bd2"
+      }
+    ],
+    "svc_cache.is_joined": [
+      {
+        "file": "src/service/rooms/state_cache/mod.rs",
+        "self_ty": "",
+        "name": "is_joined",
+        "kind": "fn",
+        "start": 943,
+        "end": 955,
+        "sha256": "7266d553ecdd02ca574cad1b94be005bbb44ae721dd6ab3fbfe54b71313650d5"
+      }
+    ],
+    "svc_cache.is_knocked": [
+      {
+        "file": "src/service/rooms/state_cache/mod.rs",
+        "self_ty": "",
+        "name": "is_knocked",
+        "kind": "fn",
+        "start": 957,
+        "end": 969,
+        "sha256": "e845319ecc2907522a0742fca0fac833a396431bfa308e26552a1a3121f8635b"
+      }
+    ],
+    "svc_cache.is_left": [
+      {
+        "file": "src/service/rooms/state_cache/mod.rs",
+        "self_ty": "",
+        "name": "is_left",
+        "kind": "fn",
+        "start": 985,
+        "end": 994,
+        "sha256": "2275d3cc8e4d760b3520f302b7fa55c5e829e5772395405a46e4da9585e25ef3"
+      }
+    ],
+    "svc_cache.once_joined": [
+      {
+        "file": "src/service/rooms/state_cache/mod.rs",
+        "self_ty": "",
+        "name": "once_joined",
+        "kind": "fn",
+        "start": 913,
+        "end": 922,
+        "sha256": "4dca0f9d49b835086b8b5ee500ad4c58a9e8e56ee27c288ed7984fecf1f15c6f"
+      }
+    ],
+    "svc_cache.room_members": [
+      {
+        "file": "src/service/rooms/state_cache/mod.rs",
+        "self_ty": "",
+        "name": "room_members",
+        "kind": "fn",
+        "start": 326,
+        "end": 337,
+        "sha256": "dee25c8a0ab4a6319212fd08a5de7515a1035d420c922133e58a5ff04593c2c0"
+      }
+    ],
+    "svc_cache.user_membership": [
+      {
+        "file": "src/service/rooms/state_cache/mod.rs",
+        "self_ty": "",
+        "name": "user_membership",
+        "kind": "fn",
+        "start": 881,
+        "end": 911,
+        "sha256": "32d3de61009c5a776d0eea3690bdb0072f8bec7e985f23e96ab3a5ef3d2b0b31"
+      }
+    ],
+    "svc_relations.get_relations": [
+      {
+        "file": "src/service/rooms/pdu_metadata/relations.rs",
+        "self_ty": "",
+        "name": "get_relations",
+        "kind": "fn",
+        "start": 118,
+        "end": 175,
+        "sha256": "139c5ed4789feccaa4e081c353c82eea0f27bfc3c34c8c37b5adee347aed229d"
+      }
+    ],
+    "svc_relations.has_incoming_relation": [
+      {
+        "file": "src/service/rooms/pdu_metadata/relations.rs",
+        "self_ty": "",
+        "name": "has_incoming_relation",
+        "kind": "fn",
+        "start": 93,
+        "end": 116,
+        "sha256": "1db887885df37d4899b49029ef60fdc4d3d3e7d4c15f78bc2ccf890dd8182a15"
+      }
+    ],
+    "svc_relations.inc_bits": [
+      {
+        "file": "src/core/matrix/pdu/count.rs",
+        "self_ty": "Count",
+        "name": "saturating_inc",
+        "kind": "method",
+        "start": 177,
+        "end": 189,
+        "sha256": "b3c2df3d1025b0646c117f83168a9619aa91c7150a7ff8685834e8a705087710"
+      },
+      {
+        "file": "src/core/matrix/pdu/count.rs",
+        "self_ty": "Count",
+        "name": "saturating_add",
+        "kind": "method",
+        "start": 191,
+        "end": 203,
+        "sha256": "5447ec6e0dc7cd2809d3d8f6e8e2dfc326fcf51d8c96266ca1abdef699aaca58"
+      },
+      {
+        "file": "src/core/matrix/pdu/count.rs",
+        "self_ty": "Count",
+        "name": "saturating_sub",
+        "kind": "method",
+        "start": 205,
+        "end": 217,
+        "sha256": "daaeca9aa2b378d0cf1a6dcebc42a40fd1f7e11d5ec0068157c55593a68c611c"
+      }
+    ],
+    "svc_relations.relation_type_equal": [
+      {
+        "file": "src/core/matrix/event/relation.rs",
+        "self_ty": "RelationType",
+        "name": "relation_type_equal",
+        "kind": "method",
+        "start": 30,
+        "end": 35,
+        "sha256": "28ef8add56768f6378eab7339a23ddefccfa17e55e9b2d08eac957bb6ab3d4f6"
+      }
+    ],
+    "svc_threads.is_participant": [
+      {
+        "file": "src/service/rooms/threads/mod.rs",
+        "self_ty": "Service",
+        "name": "is_participant",
+        "kind": "method",
+        "start": 357,
+        "end": 367,
+        "sha256": "27c0439acb4368876a4bd97f7b84823bbda2553242ca0039ff7b9e56203b23d4"
+      }
+    ],
+    "svc_threads.threads_until": [
+      {
+        "file": "src/service/rooms/threads/mod.rs",
+        "self_ty": "Service",
+        "name": "threads_until",
+        "kind": "method",
+        "start": 270,
+        "end": 306,
+        "sha256": "c20ab968448afb840ed85974ed46e0ddcd90d8e85b24e03fa0d01e3e52c20f35"
+      }
+    ],
+    "svc_timeline.exists": [
+      {
+        "file": "src/service/rooms/metadata/mod.rs",
+        "self_ty": "",
+        "name": "exists",
+        "kind": "fn",
+        "start": 51,
+        "end": 70,
+        "sha256": "218297c9b13ad97dba0a6a6bd08740bbd3fb8751a835b86ca4770f1342ac26de"
+      }
+    ],
+    "svc_timeline.get_non_outlier": [
+      {
+        "file": "src/service/rooms/timeline/mod.rs",
+        "self_ty": "",
+        "name": "get_non_outlier",
+        "kind": "fn",
+        "start": 696,
+        "end": 709,
+        "sha256": "15c44446e27d2a0281755faf1196914d4e75a55dcb97604a9b8ad9cb07a6ee91"
+      }
+    ],
+    "svc_timeline.get_outlier": [
+      {
+        "file": "src/service/rooms/timeline/mod.rs",
+        "self_ty": "",
+        "name": "get_outlier",
+        "kind": "fn",
+        "start": 679,
+        "end": 694,
+        "sha256": "c826ff2c1065ed5ed90b3b491e3fbae642d3344846c8be6567bb15d518f52243"
+      }
+    ],
+    "svc_timeline.get_pdu": [
+      {
+        "file": "src/service/rooms/timeline/mod.rs",
+        "self_ty": "",
+        "name": "get_pdu",
+        "kind": "fn",
+        "start": 563,
+        "end": 568,
+        "sha256": "ca24af7aec5c6a0c62dd9f1337b1deb949ac00a5d3f13042ffa997938dde8326"
+      },
+      {
+        "file": "src/service/rooms/timeline/mod.rs",
+        "self_ty": "",
+        "name": "get",
+        "kind": "fn",
+        "start": 633,
+        "end": 650,
+        "sha256": "2258abd98b126083eb7fce343c41c52bd2f58e67ce90af553698db5b85a9b21b"
+      }
+    ],
+    "svc_timeline.get_pdu_count": [
+      {
+        "file": "src/service/rooms/timeline/mod.rs",
+        "self_ty": "",
+        "name": "get_pdu_count",
+        "kind": "fn",
+        "start": 774,
+        "end": 782,
+        "sha256": "ba2b9fa786eba2956eabde46b9f7fdf93cfb729cb6945f9dfe1360cadc341679"
+      }
+    ],
+    "svc_timeline.get_pdu_from_id": [
+      {
+        "file": "src/service/rooms/timeline/mod.rs",
+        "self_ty": "",
+        "name": "get_pdu_from_id",
+        "kind": "fn",
+        "start": 588,
+        "end": 595,
+        "sha256": "6766a768cbb517605dc9b391cb3b91d0f00d8477f730de3774e7c62acf1c1c83"
+      },
+      {
+        "file": "src/service/rooms/timeline/mod.rs",
+        "self_ty": "",
+        "name": "get_from_id",
+        "kind": "fn",
+        "start": 711,
+        "end": 722,
+        "sha256": "ffc66a75ba65fb4d4b01c2cd1c1db2dfe76c1ba24767abf044abfe1be448ce20"
+      }
+    ],
+    "svc_timeline.get_pdu_id": [
+      {
+        "file": "src/service/rooms/timeline/mod.rs",
+        "self_ty": "",
+        "name": "get_pdu_id",
+        "kind": "fn",
+        "start": 825,
+        "end": 836,
+        "sha256": "b5e0901ec029ada299a2cc00f203045382da505af27038455778d98b1490f1b4"
+      }
+    ],
+    "svc_timeline.get_room_shortstatehash": [
+      {
+        "file": "src/service/rooms/state/mod.rs",
+        "self_ty": "",
+        "name": "get_room_shortstatehash",
+        "kind": "fn",
+        "start": 685,
+        "end": 701,
+        "sha256": "d73a9cdc5d02b64d1b74e38fdc21a1b41343a1446092b84f3cdd13d768c343f7"
+      }
+    ],
+    "svc_timeline.get_shortroomid": [
+      {
+        "file": "src/service/rooms/short/mod.rs",
+        "self_ty": "",
+        "name": "get_shortroomid",
+        "kind": "fn",
+        "start": 383,
+        "end": 393,
+        "sha256": "50a962f1a21135c815fe27e174a76f2b3d0391d721d172360afd96dc6e6f5e11"
+      }
+    ],
+    "svc_timeline.last_timeline_count": [
+      {
+        "file": "src/service/rooms/timeline/mod.rs",
+        "self_ty": "",
+        "name": "last_timeline_count",
+        "kind": "fn",
+        "start": 419,
+        "end": 445,
+        "sha256": "cb6f44263a665d6c84e9788b03647c7cd646a5cfa11c48c96f84af15b65b19d3"
+      }
+    ],
+    "svc_timeline.next_shortstatehash": [
+      {
+        "file": "src/service/rooms/timeline/mod.rs",
+        "self_ty": "",
+        "name": "next_shortstatehash",
+        "kind": "fn",
+        "start": 267,
+        "end": 298,
+        "sha256": "69886087fd106e0cec8009d0590b4e7600978f54de425a41a347258b57f25df2"
+      }
+    ],
+    "svc_timeline.next_timeline_count": [
+      {
+        "file": "src/service/rooms/timeline/mod.rs",
+        "self_ty": "",
+        "name": "next_timeline_count",
+        "kind": "fn",
+        "start": 395,
+        "end": 417,
+        "sha256": "91245deaf33ae06465c8c9cafb00558095050b3e0461b52d6df312cb299d39a2"
+      }
+    ],
+    "svc_timeline.pdu_shortstatehash": [
+      {
+        "file": "src/service/rooms/state/mod.rs",
+        "self_ty": "",
+        "name": "pdu_shortstatehash",
+        "kind": "fn",
+        "start": 703,
+        "end": 714,
+        "sha256": "690194f2f005243f448b4645a8b2a45b3b1bf287b26567a28dde2be1d79ce4f8"
+      }
+    ],
+    "svc_timeline.pdus": [
+      {
+        "file": "src/service/rooms/timeline/pdus.rs",
+        "self_ty": "",
+        "name": "pdus",
+        "kind": "fn",
+        "start": 164,
+        "end": 188,
+        "sha256": "a2b5f1f108e11739c785e3e24097eda8d8c50ee65e59dcfbe7083848f3b53168"
+      }
+    ],
+    "svc_timeline.pdus_rev": [
+      {
+        "file": "src/service/rooms/timeline/pdus.rs",
+        "self_ty": "",
+        "name": "pdus_rev",
+        "kind": "fn",
+        "start": 190,
+        "end": 214,
+        "sha256": "69b941f41e7e6e23a3d4a8ccc0f325789a078b8ebf1f1b86122fb08353cf7f1b"
+      }
+    ],
+    "svc_timeline.shortstatehash_after": [
+      {
+        "file": "src/service/rooms/timeline/mod.rs",
+        "self_ty": "",
+        "name": "shortstatehash_after",
+        "kind": "fn",
+        "start": 300,
+        "end": 341,
+        "sha256": "b219a8da6ba373d450a435840f2547e410503453220c598b745ed5b6ac21a3f2"
+      }
+    ],
+    "svc_timeline.state_of": [
+      {
+        "file": "src/service/rooms/state/mod.rs",
+        "self_ty": "",
+        "name": "get_shortstatehash",
+        "kind": "fn",
+        "start": 716,
+        "end": 733,
+        "sha256": "c89f1e222c56e29a34e9c9c50e071619f42f4e6174dccacd99eb5e14d5cb006f"
+      }
+    ]
+  },
+  "meaning": "Exact pinned item dependency reach from canonical theorem types; source correspondence is documented in ports/tuwunel/DEVIATIONS.md. Counts source items reached by modeled operations, not behavioral equivalence or proof of omitted I/O, parsing, presentation, library internals, or other documented deviations."
+}

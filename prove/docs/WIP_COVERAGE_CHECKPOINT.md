@@ -37,3 +37,14 @@ configured project gates pass (390/390 targets). The dashboard’s
 project; Tuwunel’s missing mapping keeps that flag false. This does not indicate
 a remaining failure in the configured proof gates. Optional expansion proofs
 outside these target lists remain WIP.
+
+## Source mapping recount (2026-10-29)
+
+The missing Kanidm core and Tuwunel mappings are now recorded and hashed against
+immutable upstream items. Current source-matched reach is **9,902 lines**:
+ArtifactKeeper 1,504; Kanidm 2,705; Nora 987; OxiCloud 751; RustFS 2,000;
+Tuwunel 1,955. All 390 configured targets retain their passing, current gate
+and extraction evidence. Historical fallback is zero; the independent benchmark
+snapshot remains 7,684 and must not be added. This corrects the earlier 5,662
+partial-map figure, adding 4,240 without changing proofs. See the
+[recount and limitations](COVERAGE_RECOUNT.md).
