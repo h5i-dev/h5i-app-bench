@@ -301,3 +301,6 @@ pub mod credential_commit;
 pub mod account_policy;
 
 pub mod entry_validation;
+
+pub mod value_observers;
+pub mod syntax_types;

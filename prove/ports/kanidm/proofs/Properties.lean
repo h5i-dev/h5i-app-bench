@@ -1,3 +1,5 @@
+import Verified.ValueObservers
+import Verified.SyntaxTypes
 import Verified.EntryValidation
 import Verified.AccountPolicy
 import Verified.CredentialCommit
@@ -312,5 +314,322 @@ theorem entry_validation_spec (entry : entry_validation.Entry)
       kanidm_kernel.Verified.EntryValidation.outcome r =
         kanidm_kernel.Verified.EntryValidation.validateModel entry classes.val attrs.val ⦄ := by
   apply kanidm_kernel.Verified.EntryValidation.validate_spec <;> assumption
+
+
+theorem value_observers_Value_is_utf8_spec (v : value_observers.Value) :
+    value_observers.Value.is_utf8 v ⦃ r => r = Verified.ValueObservers.Value_is_utf8_model v ⦄ :=
+  Verified.ValueObservers.Value_is_utf8_spec v
+
+theorem value_observers_Value_is_iutf8_spec (v : value_observers.Value) :
+    value_observers.Value.is_iutf8 v ⦃ r => r = Verified.ValueObservers.Value_is_iutf8_model v ⦄ :=
+  Verified.ValueObservers.Value_is_iutf8_spec v
+
+theorem value_observers_Value_is_insensitive_utf8_spec (v : value_observers.Value) :
+    value_observers.Value.is_insensitive_utf8 v ⦃ r => r = Verified.ValueObservers.Value_is_insensitive_utf8_model v ⦄ :=
+  Verified.ValueObservers.Value_is_insensitive_utf8_spec v
+
+theorem value_observers_Value_is_iname_spec (v : value_observers.Value) :
+    value_observers.Value.is_iname v ⦃ r => r = Verified.ValueObservers.Value_is_iname_model v ⦄ :=
+  Verified.ValueObservers.Value_is_iname_spec v
+
+theorem value_observers_Value_is_uuid_spec (v : value_observers.Value) :
+    value_observers.Value.is_uuid v ⦃ r => r = Verified.ValueObservers.Value_is_uuid_model v ⦄ :=
+  Verified.ValueObservers.Value_is_uuid_spec v
+
+theorem value_observers_Value_is_bool_spec (v : value_observers.Value) :
+    value_observers.Value.is_bool v ⦃ r => r = Verified.ValueObservers.Value_is_bool_model v ⦄ :=
+  Verified.ValueObservers.Value_is_bool_spec v
+
+theorem value_observers_Value_is_syntax_spec (v : value_observers.Value) :
+    value_observers.Value.is_syntax v ⦃ r => r = Verified.ValueObservers.Value_is_syntax_model v ⦄ :=
+  Verified.ValueObservers.Value_is_syntax_spec v
+
+theorem value_observers_Value_is_index_spec (v : value_observers.Value) :
+    value_observers.Value.is_index v ⦃ r => r = Verified.ValueObservers.Value_is_index_model v ⦄ :=
+  Verified.ValueObservers.Value_is_index_spec v
+
+theorem value_observers_Value_is_refer_spec (v : value_observers.Value) :
+    value_observers.Value.is_refer v ⦃ r => r = Verified.ValueObservers.Value_is_refer_model v ⦄ :=
+  Verified.ValueObservers.Value_is_refer_spec v
+
+theorem value_observers_Value_is_json_filter_spec (v : value_observers.Value) :
+    value_observers.Value.is_json_filter v ⦃ r => r = Verified.ValueObservers.Value_is_json_filter_model v ⦄ :=
+  Verified.ValueObservers.Value_is_json_filter_spec v
+
+theorem value_observers_Value_is_credential_spec (v : value_observers.Value) :
+    value_observers.Value.is_credential v ⦃ r => r = Verified.ValueObservers.Value_is_credential_model v ⦄ :=
+  Verified.ValueObservers.Value_is_credential_spec v
+
+theorem value_observers_Value_is_secret_string_spec (v : value_observers.Value) :
+    value_observers.Value.is_secret_string v ⦃ r => r = Verified.ValueObservers.Value_is_secret_string_model v ⦄ :=
+  Verified.ValueObservers.Value_is_secret_string_spec v
+
+theorem value_observers_Value_is_sshkey_spec (v : value_observers.Value) :
+    value_observers.Value.is_sshkey v ⦃ r => r = Verified.ValueObservers.Value_is_sshkey_model v ⦄ :=
+  Verified.ValueObservers.Value_is_sshkey_spec v
+
+theorem value_observers_Value_is_spn_spec (v : value_observers.Value) :
+    value_observers.Value.is_spn v ⦃ r => r = Verified.ValueObservers.Value_is_spn_model v ⦄ :=
+  Verified.ValueObservers.Value_is_spn_spec v
+
+theorem value_observers_Value_is_uint32_spec (v : value_observers.Value) :
+    value_observers.Value.is_uint32 v ⦃ r => r = Verified.ValueObservers.Value_is_uint32_model v ⦄ :=
+  Verified.ValueObservers.Value_is_uint32_spec v
+
+theorem value_observers_Value_is_cid_spec (v : value_observers.Value) :
+    value_observers.Value.is_cid v ⦃ r => r = Verified.ValueObservers.Value_is_cid_model v ⦄ :=
+  Verified.ValueObservers.Value_is_cid_spec v
+
+theorem value_observers_Value_is_nsuniqueid_spec (v : value_observers.Value) :
+    value_observers.Value.is_nsuniqueid v ⦃ r => r = Verified.ValueObservers.Value_is_nsuniqueid_model v ⦄ :=
+  Verified.ValueObservers.Value_is_nsuniqueid_spec v
+
+theorem value_observers_Value_is_datetime_spec (v : value_observers.Value) :
+    value_observers.Value.is_datetime v ⦃ r => r = Verified.ValueObservers.Value_is_datetime_model v ⦄ :=
+  Verified.ValueObservers.Value_is_datetime_spec v
+
+theorem value_observers_Value_is_email_address_spec (v : value_observers.Value) :
+    value_observers.Value.is_email_address v ⦃ r => r = Verified.ValueObservers.Value_is_email_address_model v ⦄ :=
+  Verified.ValueObservers.Value_is_email_address_spec v
+
+theorem value_observers_Value_is_url_spec (v : value_observers.Value) :
+    value_observers.Value.is_url v ⦃ r => r = Verified.ValueObservers.Value_is_url_model v ⦄ :=
+  Verified.ValueObservers.Value_is_url_spec v
+
+theorem value_observers_Value_is_oauthscope_spec (v : value_observers.Value) :
+    value_observers.Value.is_oauthscope v ⦃ r => r = Verified.ValueObservers.Value_is_oauthscope_model v ⦄ :=
+  Verified.ValueObservers.Value_is_oauthscope_spec v
+
+theorem value_observers_Value_is_oauthscopemap_spec (v : value_observers.Value) :
+    value_observers.Value.is_oauthscopemap v ⦃ r => r = Verified.ValueObservers.Value_is_oauthscopemap_model v ⦄ :=
+  Verified.ValueObservers.Value_is_oauthscopemap_spec v
+
+theorem value_observers_Value_is_privatebinary_spec (v : value_observers.Value) :
+    value_observers.Value.is_privatebinary v ⦃ r => r = Verified.ValueObservers.Value_is_privatebinary_model v ⦄ :=
+  Verified.ValueObservers.Value_is_privatebinary_spec v
+
+theorem value_observers_Value_as_json_filter_spec (v : value_observers.Value) :
+    value_observers.Value.as_json_filter v ⦃ r => r = Verified.ValueObservers.Value_as_json_filter_model v ⦄ :=
+  Verified.ValueObservers.Value_as_json_filter_spec v
+
+theorem value_observers_Value_to_credential_spec (v : value_observers.Value) :
+    value_observers.Value.to_credential v ⦃ r => r = Verified.ValueObservers.Value_to_credential_model v ⦄ :=
+  Verified.ValueObservers.Value_to_credential_spec v
+
+theorem value_observers_Value_get_secret_str_spec (v : value_observers.Value) :
+    value_observers.Value.get_secret_str v ⦃ r => r = Verified.ValueObservers.Value_get_secret_str_model v ⦄ :=
+  Verified.ValueObservers.Value_get_secret_str_spec v
+
+theorem value_observers_Value_to_privatebinary_spec (v : value_observers.Value) :
+    value_observers.Value.to_privatebinary v ⦃ r => r = Verified.ValueObservers.Value_to_privatebinary_model v ⦄ :=
+  Verified.ValueObservers.Value_to_privatebinary_spec v
+
+theorem value_observers_Value_to_str_spec (v : value_observers.Value) :
+    value_observers.Value.to_str v ⦃ r => r = Verified.ValueObservers.Value_to_str_model v ⦄ :=
+  Verified.ValueObservers.Value_to_str_spec v
+
+theorem value_observers_Value_to_url_spec (v : value_observers.Value) :
+    value_observers.Value.to_url v ⦃ r => r = Verified.ValueObservers.Value_to_url_model v ⦄ :=
+  Verified.ValueObservers.Value_to_url_spec v
+
+theorem value_observers_Value_as_string_spec (v : value_observers.Value) :
+    value_observers.Value.as_string v ⦃ r => r = Verified.ValueObservers.Value_as_string_model v ⦄ :=
+  Verified.ValueObservers.Value_as_string_spec v
+
+theorem value_observers_Value_to_ref_uuid_spec (v : value_observers.Value) :
+    value_observers.Value.to_ref_uuid v ⦃ r => r = Verified.ValueObservers.Value_to_ref_uuid_model v ⦄ :=
+  Verified.ValueObservers.Value_to_ref_uuid_spec v
+
+theorem value_observers_Value_to_uuid_spec (v : value_observers.Value) :
+    value_observers.Value.to_uuid v ⦃ r => r = Verified.ValueObservers.Value_to_uuid_model v ⦄ :=
+  Verified.ValueObservers.Value_to_uuid_spec v
+
+theorem value_observers_Value_to_indextype_spec (v : value_observers.Value) :
+    value_observers.Value.to_indextype v ⦃ r => r = Verified.ValueObservers.Value_to_indextype_model v ⦄ :=
+  Verified.ValueObservers.Value_to_indextype_spec v
+
+theorem value_observers_Value_to_syntaxtype_spec (v : value_observers.Value) :
+    value_observers.Value.to_syntaxtype v ⦃ r => r = Verified.ValueObservers.Value_to_syntaxtype_model v ⦄ :=
+  Verified.ValueObservers.Value_to_syntaxtype_spec v
+
+theorem value_observers_Value_to_bool_spec (v : value_observers.Value) :
+    value_observers.Value.to_bool v ⦃ r => r = Verified.ValueObservers.Value_to_bool_model v ⦄ :=
+  Verified.ValueObservers.Value_to_bool_spec v
+
+theorem value_observers_Value_to_uint32_spec (v : value_observers.Value) :
+    value_observers.Value.to_uint32 v ⦃ r => r = Verified.ValueObservers.Value_to_uint32_model v ⦄ :=
+  Verified.ValueObservers.Value_to_uint32_spec v
+
+theorem value_observers_Value_to_utf8_spec (v : value_observers.Value) :
+    value_observers.Value.to_utf8 v ⦃ r => r = Verified.ValueObservers.Value_to_utf8_model v ⦄ :=
+  Verified.ValueObservers.Value_to_utf8_spec v
+
+theorem value_observers_Value_to_iutf8_spec (v : value_observers.Value) :
+    value_observers.Value.to_iutf8 v ⦃ r => r = Verified.ValueObservers.Value_to_iutf8_model v ⦄ :=
+  Verified.ValueObservers.Value_to_iutf8_spec v
+
+theorem value_observers_Value_to_iname_spec (v : value_observers.Value) :
+    value_observers.Value.to_iname v ⦃ r => r = Verified.ValueObservers.Value_to_iname_model v ⦄ :=
+  Verified.ValueObservers.Value_to_iname_spec v
+
+theorem value_observers_Value_to_jsonfilt_spec (v : value_observers.Value) :
+    value_observers.Value.to_jsonfilt v ⦃ r => r = Verified.ValueObservers.Value_to_jsonfilt_model v ⦄ :=
+  Verified.ValueObservers.Value_to_jsonfilt_spec v
+
+theorem value_observers_Value_to_cred_spec (v : value_observers.Value) :
+    value_observers.Value.to_cred v ⦃ r => r = Verified.ValueObservers.Value_to_cred_model v ⦄ :=
+  Verified.ValueObservers.Value_to_cred_spec v
+
+theorem value_observers_Value_to_spn_spec (v : value_observers.Value) :
+    value_observers.Value.to_spn v ⦃ r => r = Verified.ValueObservers.Value_to_spn_model v ⦄ :=
+  Verified.ValueObservers.Value_to_spn_spec v
+
+theorem value_observers_Value_to_cid_spec (v : value_observers.Value) :
+    value_observers.Value.to_cid v ⦃ r => r = Verified.ValueObservers.Value_to_cid_model v ⦄ :=
+  Verified.ValueObservers.Value_to_cid_spec v
+
+theorem value_observers_Value_to_nsuniqueid_spec (v : value_observers.Value) :
+    value_observers.Value.to_nsuniqueid v ⦃ r => r = Verified.ValueObservers.Value_to_nsuniqueid_model v ⦄ :=
+  Verified.ValueObservers.Value_to_nsuniqueid_spec v
+
+theorem value_observers_Value_to_emailaddress_spec (v : value_observers.Value) :
+    value_observers.Value.to_emailaddress v ⦃ r => r = Verified.ValueObservers.Value_to_emailaddress_model v ⦄ :=
+  Verified.ValueObservers.Value_to_emailaddress_spec v
+
+theorem value_observers_Value_to_oauthscope_spec (v : value_observers.Value) :
+    value_observers.Value.to_oauthscope v ⦃ r => r = Verified.ValueObservers.Value_to_oauthscope_model v ⦄ :=
+  Verified.ValueObservers.Value_to_oauthscope_spec v
+
+theorem value_observers_Value_to_oauthscopemap_spec (v : value_observers.Value) :
+    value_observers.Value.to_oauthscopemap v ⦃ r => r = Verified.ValueObservers.Value_to_oauthscopemap_model v ⦄ :=
+  Verified.ValueObservers.Value_to_oauthscopemap_spec v
+
+theorem value_observers_Value_to_restrictedstring_spec (v : value_observers.Value) :
+    value_observers.Value.to_restrictedstring v ⦃ r => r = Verified.ValueObservers.Value_to_restrictedstring_model v ⦄ :=
+  Verified.ValueObservers.Value_to_restrictedstring_spec v
+
+theorem value_observers_Value_to_phonenumber_spec (v : value_observers.Value) :
+    value_observers.Value.to_phonenumber v ⦃ r => r = Verified.ValueObservers.Value_to_phonenumber_model v ⦄ :=
+  Verified.ValueObservers.Value_to_phonenumber_spec v
+
+theorem value_observers_Value_to_publicbinary_spec (v : value_observers.Value) :
+    value_observers.Value.to_publicbinary v ⦃ r => r = Verified.ValueObservers.Value_to_publicbinary_model v ⦄ :=
+  Verified.ValueObservers.Value_to_publicbinary_spec v
+
+theorem value_observers_Value_to_address_spec (v : value_observers.Value) :
+    value_observers.Value.to_address v ⦃ r => r = Verified.ValueObservers.Value_to_address_model v ⦄ :=
+  Verified.ValueObservers.Value_to_address_spec v
+
+theorem value_observers_Value_to_intenttoken_spec (v : value_observers.Value) :
+    value_observers.Value.to_intenttoken v ⦃ r => r = Verified.ValueObservers.Value_to_intenttoken_model v ⦄ :=
+  Verified.ValueObservers.Value_to_intenttoken_spec v
+
+theorem value_observers_Value_to_session_spec (v : value_observers.Value) :
+    value_observers.Value.to_session v ⦃ r => r = Verified.ValueObservers.Value_to_session_model v ⦄ :=
+  Verified.ValueObservers.Value_to_session_spec v
+
+theorem value_observers_Value_migrate_iutf8_iname_spec (v : value_observers.Value) :
+    value_observers.Value.migrate_iutf8_iname v ⦃ r => r = Verified.ValueObservers.Value_migrate_iutf8_iname_model v ⦄ :=
+  Verified.ValueObservers.Value_migrate_iutf8_iname_spec v
+
+theorem value_observers_PartialValue_is_utf8_spec (v : value_observers.PartialValue) :
+    value_observers.PartialValue.is_utf8 v ⦃ r => r = Verified.ValueObservers.PartialValue_is_utf8_model v ⦄ :=
+  Verified.ValueObservers.PartialValue_is_utf8_spec v
+
+theorem value_observers_PartialValue_is_iutf8_spec (v : value_observers.PartialValue) :
+    value_observers.PartialValue.is_iutf8 v ⦃ r => r = Verified.ValueObservers.PartialValue_is_iutf8_model v ⦄ :=
+  Verified.ValueObservers.PartialValue_is_iutf8_spec v
+
+theorem value_observers_PartialValue_is_iname_spec (v : value_observers.PartialValue) :
+    value_observers.PartialValue.is_iname v ⦃ r => r = Verified.ValueObservers.PartialValue_is_iname_model v ⦄ :=
+  Verified.ValueObservers.PartialValue_is_iname_spec v
+
+theorem value_observers_PartialValue_is_bool_spec (v : value_observers.PartialValue) :
+    value_observers.PartialValue.is_bool v ⦃ r => r = Verified.ValueObservers.PartialValue_is_bool_model v ⦄ :=
+  Verified.ValueObservers.PartialValue_is_bool_spec v
+
+theorem value_observers_PartialValue_is_uuid_spec (v : value_observers.PartialValue) :
+    value_observers.PartialValue.is_uuid v ⦃ r => r = Verified.ValueObservers.PartialValue_is_uuid_model v ⦄ :=
+  Verified.ValueObservers.PartialValue_is_uuid_spec v
+
+theorem value_observers_PartialValue_is_refer_spec (v : value_observers.PartialValue) :
+    value_observers.PartialValue.is_refer v ⦃ r => r = Verified.ValueObservers.PartialValue_is_refer_model v ⦄ :=
+  Verified.ValueObservers.PartialValue_is_refer_spec v
+
+theorem value_observers_PartialValue_is_index_spec (v : value_observers.PartialValue) :
+    value_observers.PartialValue.is_index v ⦃ r => r = Verified.ValueObservers.PartialValue_is_index_model v ⦄ :=
+  Verified.ValueObservers.PartialValue_is_index_spec v
+
+theorem value_observers_PartialValue_is_syntax_spec (v : value_observers.PartialValue) :
+    value_observers.PartialValue.is_syntax v ⦃ r => r = Verified.ValueObservers.PartialValue_is_syntax_model v ⦄ :=
+  Verified.ValueObservers.PartialValue_is_syntax_spec v
+
+theorem value_observers_PartialValue_is_json_filter_spec (v : value_observers.PartialValue) :
+    value_observers.PartialValue.is_json_filter v ⦃ r => r = Verified.ValueObservers.PartialValue_is_json_filter_model v ⦄ :=
+  Verified.ValueObservers.PartialValue_is_json_filter_spec v
+
+theorem value_observers_PartialValue_is_credential_spec (v : value_observers.PartialValue) :
+    value_observers.PartialValue.is_credential v ⦃ r => r = Verified.ValueObservers.PartialValue_is_credential_model v ⦄ :=
+  Verified.ValueObservers.PartialValue_is_credential_spec v
+
+theorem value_observers_PartialValue_is_secret_string_spec (v : value_observers.PartialValue) :
+    value_observers.PartialValue.is_secret_string v ⦃ r => r = Verified.ValueObservers.PartialValue_is_secret_string_model v ⦄ :=
+  Verified.ValueObservers.PartialValue_is_secret_string_spec v
+
+theorem value_observers_PartialValue_is_sshkey_spec (v : value_observers.PartialValue) :
+    value_observers.PartialValue.is_sshkey v ⦃ r => r = Verified.ValueObservers.PartialValue_is_sshkey_model v ⦄ :=
+  Verified.ValueObservers.PartialValue_is_sshkey_spec v
+
+theorem value_observers_PartialValue_is_spn_spec (v : value_observers.PartialValue) :
+    value_observers.PartialValue.is_spn v ⦃ r => r = Verified.ValueObservers.PartialValue_is_spn_model v ⦄ :=
+  Verified.ValueObservers.PartialValue_is_spn_spec v
+
+theorem value_observers_PartialValue_is_uint32_spec (v : value_observers.PartialValue) :
+    value_observers.PartialValue.is_uint32 v ⦃ r => r = Verified.ValueObservers.PartialValue_is_uint32_model v ⦄ :=
+  Verified.ValueObservers.PartialValue_is_uint32_spec v
+
+theorem value_observers_PartialValue_is_cid_spec (v : value_observers.PartialValue) :
+    value_observers.PartialValue.is_cid v ⦃ r => r = Verified.ValueObservers.PartialValue_is_cid_model v ⦄ :=
+  Verified.ValueObservers.PartialValue_is_cid_spec v
+
+theorem value_observers_PartialValue_is_nsuniqueid_spec (v : value_observers.PartialValue) :
+    value_observers.PartialValue.is_nsuniqueid v ⦃ r => r = Verified.ValueObservers.PartialValue_is_nsuniqueid_model v ⦄ :=
+  Verified.ValueObservers.PartialValue_is_nsuniqueid_spec v
+
+theorem value_observers_PartialValue_is_datetime_spec (v : value_observers.PartialValue) :
+    value_observers.PartialValue.is_datetime v ⦃ r => r = Verified.ValueObservers.PartialValue_is_datetime_model v ⦄ :=
+  Verified.ValueObservers.PartialValue_is_datetime_spec v
+
+theorem value_observers_PartialValue_is_email_address_spec (v : value_observers.PartialValue) :
+    value_observers.PartialValue.is_email_address v ⦃ r => r = Verified.ValueObservers.PartialValue_is_email_address_model v ⦄ :=
+  Verified.ValueObservers.PartialValue_is_email_address_spec v
+
+theorem value_observers_PartialValue_is_url_spec (v : value_observers.PartialValue) :
+    value_observers.PartialValue.is_url v ⦃ r => r = Verified.ValueObservers.PartialValue_is_url_model v ⦄ :=
+  Verified.ValueObservers.PartialValue_is_url_spec v
+
+theorem value_observers_PartialValue_is_oauthscope_spec (v : value_observers.PartialValue) :
+    value_observers.PartialValue.is_oauthscope v ⦃ r => r = Verified.ValueObservers.PartialValue_is_oauthscope_model v ⦄ :=
+  Verified.ValueObservers.PartialValue_is_oauthscope_spec v
+
+theorem value_observers_PartialValue_is_privatebinary_spec (v : value_observers.PartialValue) :
+    value_observers.PartialValue.is_privatebinary v ⦃ r => r = Verified.ValueObservers.PartialValue_is_privatebinary_model v ⦄ :=
+  Verified.ValueObservers.PartialValue_is_privatebinary_spec v
+
+theorem value_observers_PartialValue_to_str_spec (v : value_observers.PartialValue) :
+    value_observers.PartialValue.to_str v ⦃ r => r = Verified.ValueObservers.PartialValue_to_str_model v ⦄ :=
+  Verified.ValueObservers.PartialValue_to_str_spec v
+
+theorem syntax_types_parse_spec (inputBytes : Slice U8) :
+    syntax_types.parse_normalized inputBytes ⦃ r => r = Verified.SyntaxTypes.parseModel inputBytes.val ⦄ :=
+  Verified.SyntaxTypes.parse_spec inputBytes
+
+theorem syntax_types_display_spec (syntaxValue : syntax_types.SyntaxType) :
+    syntax_types.display syntaxValue ⦃ r => r.val = Verified.SyntaxTypes.displayModel syntaxValue ⦄ :=
+  Verified.SyntaxTypes.display_spec syntaxValue
+
+theorem syntax_types_indices_spec (syntaxValue : syntax_types.SyntaxType) :
+    syntax_types.index_types syntaxValue ⦃ r => r.val = Verified.SyntaxTypes.indicesModel syntaxValue ⦄ :=
+  Verified.SyntaxTypes.indices_spec syntaxValue
 
 end kanidm_kernel.Properties

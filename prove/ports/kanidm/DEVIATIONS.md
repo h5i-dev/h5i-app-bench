@@ -192,3 +192,37 @@ The differential test runs the canonical Rust module against the verbatim
 pinned upstream method with map, name, clock-free schema, and ValueSet adapters:
 100,000 generated cases plus targeted checks for every error, error ordering,
 recycled/extensible behavior, and AVA boundaries.
+
+## Complete Value observers and SyntaxType metadata at f608c4f
+
+`value_observers` retains all 50 Value and 37 PartialValue variants and ports
+76 production predicates/getters plus the Iutf8-to-Iname migration. Theorems
+specify the exact tag test and returned payload for every variant, including
+the nested resource-server UUID selected by `to_ref_uuid`. This is separate
+from the restricted access-control Value representation. Strings, buffers,
+sets and other external payloads use stable injective u64 handles; UUIDs use
+u128, and boolean/integer scalars are exact. Getter borrows become copied
+handles; ownership, lifetimes, normalization, parsing, external type internals
+and cryptography are outside these observer proofs. No omitted variant is
+silently folded into a catch-all tag.
+
+`syntax_types` ports SyntaxType name dispatch, exact display bytes and ordered
+index lists. The caller supplies Unicode-uppercase UTF-8 bytes, matching the
+upstream `to_uppercase()` step before dispatch; Unicode normalization itself
+is an adapter, not a proved operation. The legacy RADIUS_UTF8STRING alias is
+retained, and IMAGE remains unrecognized by parsing although it has a display
+name. Display specifies successful Formatter output bytes, excluding sink
+failure. Index metadata retains exact ordered Eq/Pres/Sub lists.
+
+Each difftest directory contains a reproducible extractor from the immutable
+git object. The original selected method bodies remain unchanged in references;
+external observer payload types use Text/Payload adapters. Differential tests
+compare every variant across scalar/payload boundaries and random seeds
+(70,748,288 observer comparisons), and display/index/name/Unicode/random names
+(100,146 metadata comparisons). This evidence does not prove the adapters or
+whole-upstream equivalence; accounting remains pinned source dependency reach.
+
+The observer Boolean variant is renamed from upstream Bool to avoid shadowing
+Lean Bool inside generated inherent-method namespaces; the reference retains
+the original variant name. The syntax dispatch uses five ten-case helpers to
+keep generated Lean indentation bounded. These are structural adaptations.

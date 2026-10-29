@@ -9,3 +9,15 @@ pub mod model;
 
 pub mod drivepolicy;
 pub mod policycompare;
+pub mod bytes;
+pub mod userrole;
+pub mod authwire;
+pub mod session;
+pub mod validation;
+pub mod share;
+pub mod subjectgroup;
+pub mod magiclink;
+pub mod userstate;
+pub mod admin;
+pub mod liveauth;
+pub mod policydefaults;

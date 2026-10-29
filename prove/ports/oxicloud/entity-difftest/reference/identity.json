@@ -1,0 +1,41 @@
+{
+  "revision": "8c0dd334cf065ad11f60f9be24e2aafd5dda7550",
+  "input_sha256": {
+    "src/domain/entities/user.rs": "06f303cec626d51c71c0cdf06d4b9acb899ccb87244981042dd2b380d12cc2c7",
+    "src/domain/entities/session.rs": "6e0880238a907e057eb918583acc590d1fdd6e2983b702513457badf250dcd10",
+    "src/domain/entities/share.rs": "4ff31070f1af885bc870356ae22babe9d32e7b87430d333b063754dc49c30065",
+    "src/domain/entities/magic_link_token.rs": "4444b9831379f8114e3f6ad16bbbf5503852e0ab7924a0b08b9f0be9b8f7765f",
+    "src/domain/entities/subject_group.rs": "6a3b8d5e53445468291751400f7a22b3a4cd0ac260622e7a32dfb75c1a368590",
+    "src/domain/entities/entity_errors.rs": "20794e1012eef5cc25a8b735b6d800e507c3192921505d7ef9bc20b7223d8ad4",
+    "src/domain/entities/drive.rs": "916ff074ea7b276bfd032a2a9afd4b7af0eb895ebe831cc94f6f224e4f6955d2",
+    "src/domain/errors.rs": "f2bec204d3aa80c19c020863dcb47e1cf2210da1a476acec0d2aecdfcee1228d",
+    "src/domain/services/authorization.rs": "8493720fe2475d578ae81b3a57f0189983aae1678c4b98de6c667ffcccb9794a",
+    "src/interfaces/errors.rs": "e30c2a67393b2adc0438fb699fb93ed412b4c3607cc4e769564a830f2eb0d92a",
+    "src/common/config.rs": "5080a18bf67e4c371ddf526993634be57426d2544d6f7e3d767a2998c8c3305a",
+    "src/application/services/auth_application_service.rs": "357a62d8a8b7949f8ca3db9dd178e39c0bddccc74cd0c93e5fc370550138fe10",
+    "src/application/ports/authorization_ports.rs": "dc40e853f91e0e31663818b7231c71fed1f0fe3e5bb428fb18f4211c6d695c0d",
+    "src/interfaces/middleware/user.rs": "78568955e8c82edc3f2d2ed0fa3a6d7443b4c417c7680d4b1bdc5daa0e4505c8",
+    "src/application/services/drive_policy_defaults_service.rs": "4e015eb7d31020b78415cddbed0616a149a6ee0f8c4049cefb81ab2c1fee4b01"
+  },
+  "reference_sha256": {
+    "user.rs": "06f303cec626d51c71c0cdf06d4b9acb899ccb87244981042dd2b380d12cc2c7",
+    "session.rs": "6e0880238a907e057eb918583acc590d1fdd6e2983b702513457badf250dcd10",
+    "share.rs": "4ff31070f1af885bc870356ae22babe9d32e7b87430d333b063754dc49c30065",
+    "magic_link_token.rs": "4444b9831379f8114e3f6ad16bbbf5503852e0ab7924a0b08b9f0be9b8f7765f",
+    "subject_group.rs": "6a3b8d5e53445468291751400f7a22b3a4cd0ac260622e7a32dfb75c1a368590",
+    "entity_errors.rs": "20794e1012eef5cc25a8b735b6d800e507c3192921505d7ef9bc20b7223d8ad4",
+    "drive.rs": "916ff074ea7b276bfd032a2a9afd4b7af0eb895ebe831cc94f6f224e4f6955d2",
+    "domain_errors.rs": "280022b027239a2895c74c323d389d731e47a79892b89ad779b0ff9baa30dc9f",
+    "authorization.rs": "d5f54313a90c43671c5a65b392cc99f2fbd69e0cebf230f0ac4af0629da65ed6",
+    "app_error.rs": "2e14785a3f43cb153aafe778ee948e1908d2688e994a7b7b99cf54fe3de49ea9",
+    "config.rs": "2c6f4ced23e2f7d716c0b487be49fd5c79db3d4fdb38ba7d5bcda457a1f97377",
+    "auth_oracle.rs": "9c67380ea90dabd1b48da385245c19a95b7374ebdcbf3ff8661ab302e3b49cdf",
+    "magic_oracle.rs": "84a2006bfaea146c7416e9b2c9db61ba69cfc2c582eab624f1dff1e38d312b11",
+    "admin_oracle.rs": "28723b2af6af718dbddd7d885a6fafabad44cdc892bbb9dd85f36a36980337c1",
+    "admin.rs": "39d9bad6a2d38f3b396e0252f69cd297550c4a1679d0196f2ac9e5a16f53c830",
+    "live_role.rs": "b5153d4e038af2797360474e70d234fd3335cb6276a0d702b6008fa549d31fc5",
+    "liveauth_oracle.rs": "be84c37e971796b88c6665268fe0c223753f3780fac1786ac6c6d5685190d003",
+    "defaults_oracle.rs": "0f1204999318da7c330f7fc492f18d14d9124cc32bce3adf54724f8856b9f405"
+  },
+  "boundaries": "Entity files verbatim; original private decision/method bodies in minimal carriers; deterministic magic-link clock input; domain errors retained; HTTP response serialization outside scope."
+}

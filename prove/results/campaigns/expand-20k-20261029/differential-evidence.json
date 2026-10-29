@@ -35,5 +35,23 @@
     "per_configuration": "exact decision payload, attribution, audit/counter effects; 18 bypass-header download comparisons, two integrity handlers, three namespace decisions",
     "reference_identity": "prove/ports/nora/difftest/curation/identity.json",
     "log": "nora-curation-differential.log"
+  },
+  "kanidm_value_observers": {
+    "command": "cargo test --release --manifest-path prove/ports/kanidm/kernel/Cargo.toml --test value_observers --test syntax_types -- --nocapture",
+    "passed": true,
+    "observer_comparisons": 70748288,
+    "metadata_comparisons": 100146,
+    "reference_identities": [
+      "prove/ports/kanidm/difftest/value_observers/identity.json",
+      "prove/ports/kanidm/difftest/syntax_types/identity.json"
+    ],
+    "log": "kanidm-observers-differential.log"
+  },
+  "oxicloud_entities": {
+    "command": "cargo test --release --manifest-path prove/ports/oxicloud/entity-difftest/Cargo.toml -- --nocapture",
+    "passed": true,
+    "tests": 71,
+    "reference_identity": "prove/ports/oxicloud/entity-difftest/reference/identity.json",
+    "log": "oxicloud-entities-differential.log"
   }
 }

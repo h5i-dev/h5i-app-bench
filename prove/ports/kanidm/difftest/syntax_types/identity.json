@@ -1,0 +1,16 @@
+{
+  "upstream_revision": "f608c4fe14dfd8d5df8edeed470bf1fb92060abd",
+  "file": "server/lib/src/value.rs",
+  "file_sha256": "8d039c78bacc78b6c6bcdf8163b2f9168b23e88a96a88e10a8ee508dd9b79f1e",
+  "reference_sha256": "35c9c3a32e05026a86046fb010a29eed7dd3c0685d460fc667a31082731cfff8",
+  "adapters": [
+    "derive attributes removed; enums/selected bodies unchanged",
+    "Unicode uppercase computed before port boundary",
+    "formatted text compared to exact bytes; Formatter failure excluded"
+  ],
+  "selected_methods": [
+    "SyntaxType::try_from",
+    "SyntaxType::fmt",
+    "SyntaxType::index_types"
+  ]
+}

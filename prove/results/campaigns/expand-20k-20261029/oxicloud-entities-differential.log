@@ -1,0 +1,182 @@
+   Compiling proc-macro2 v1.0.107
+   Compiling unicode-ident v1.0.27
+   Compiling quote v1.0.47
+   Compiling serde_core v1.0.229
+   Compiling libc v0.2.191
+   Compiling zmij v1.0.23
+   Compiling autocfg v1.5.1
+   Compiling cfg-if v1.0.5
+   Compiling getrandom v0.4.3
+   Compiling serde_json v1.0.154
+   Compiling serde v1.0.229
+   Compiling itoa v1.0.18
+   Compiling equivalent v1.0.3
+   Compiling memchr v2.8.3
+   Compiling thiserror v2.0.21
+   Compiling once_cell v1.21.4
+   Compiling hashbrown v0.17.1
+   Compiling pin-project-lite v0.2.17
+   Compiling bytes v1.12.1
+   Compiling iana-time-zone v0.1.65
+   Compiling oxicloud-kernel v0.1.0 (/home/ht2673/Dev/h5i-app-bench/prove/ports/oxicloud/kernel)
+   Compiling base64 v0.22.1
+   Compiling smol_str v0.3.7
+   Compiling tracing-core v0.1.36
+   Compiling num-traits v0.2.19
+   Compiling http v1.5.0
+   Compiling syn v3.0.9
+   Compiling syn v2.0.119
+   Compiling chrono v0.4.45
+   Compiling getrandom v0.2.17
+   Compiling rand_core v0.6.4
+   Compiling indexmap v2.14.2
+   Compiling uuid v1.29.0
+   Compiling serde_derive v1.0.229
+   Compiling thiserror-impl v2.0.21
+   Compiling tracing-attributes v0.1.31
+   Compiling utoipa-gen v5.5.0
+   Compiling tracing v0.1.44
+   Compiling utoipa v5.5.0
+   Compiling oxicloud-entity-difftest v0.1.0 (/home/ht2673/Dev/h5i-app-bench/prove/ports/oxicloud/entity-difftest)
+    Finished `release` profile [optimized] target(s) in 15.64s
+     Running unittests src/lib.rs (prove/ports/oxicloud/entity-difftest/target/release/deps/oxicloud_entity_difftest-6817ab856e7b5424)
+
+running 71 tests
+
+thread 'session_ref::tests::with_dpop_jkt_rejects_double_bind' (2374923) panicked at src/../reference/session.rs:155:13:
+Session.dpop_jkt is immutable — call at construction time only
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'session::session_state_differential' (2374919) panicked at /home/ht2673/Dev/h5i-app-bench/prove/ports/oxicloud/kernel/src/session.rs:71:35:
+session key already bound
+
+thread 'session::session_state_differential' (2374919) panicked at src/../reference/session.rs:155:13:
+Session.dpop_jkt is immutable — call at construction time only
+test domain::errors::transient_tests::only_timeout_and_transient_backend_are_retryable ... ok
+test domain::errors::transient_tests::transient_backend_has_a_stable_wire_name ... ok
+test drive_ref::policy_default_tests::a_compliant_drive_reports_nothing ... ok
+test drive_ref::policy_default_tests::an_absent_cap_override_inherits_rather_than_clearing_the_cap ... ok
+test drive_ref::policy_default_tests::forbid_flags_treat_true_as_stricter ... ok
+test drive_ref::policy_default_tests::index_opt_ins_are_inverted_true_is_laxer ... ok
+test drive_ref::policy_default_tests::no_cap_is_the_laxest_value_of_all ... ok
+test drive_ref::policy_default_tests::read_only_is_never_reported_as_drift ... ok
+test drive_ref::policy_default_tests::resolve_lets_an_override_win_over_the_default ... ok
+test drive_ref::policy_default_tests::owner_role_change_is_never_compared_on_a_personal_drive ... ok
+test drive_ref::policy_default_tests::resolve_takes_the_default_when_nothing_is_overridden ... ok
+test drive_ref::policy_default_tests::weaker_than_reports_every_violated_knob_not_a_verdict ... ok
+test drive_ref::public_link_gate_tests::narrow_knob_wins_the_reason_when_both_are_set ... ok
+test drive_ref::public_link_gate_tests::permitted_when_neither_knob_is_set ... ok
+test drive_ref::public_link_gate_tests::refused_by_forbid_sharing_alone ... ok
+test drive_ref::public_link_gate_tests::refused_by_the_narrow_knob ... ok
+test entity_errors_ref::tests::test_calendar_error_display ... ok
+test entity_errors_ref::tests::test_calendar_event_error_display ... ok
+test entity_errors_ref::tests::test_errors_implement_error_trait ... ok
+test entity_errors_ref::tests::test_file_error_display ... ok
+test entity_errors_ref::tests::test_folder_error_display ... ok
+test entity_errors_ref::tests::test_share_error_display ... ok
+test entity_errors_ref::tests::test_subject_group_error_display ... ok
+test entity_errors_ref::tests::test_user_error_display ... ok
+test magic_link_token_ref::tests::each_token_is_unique ... ok
+test magic_link_token_ref::tests::new_token_is_pending_and_within_ttl ... ok
+test magic_link_token_ref::tests::new_token_with_resource_carries_both_fields ... ok
+test magic_link_token_ref::tests::status_round_trip ... ok
+test session_ref::tests::from_raw_round_trips_dpop_jkt ... ok
+test session_ref::tests::new_session_has_no_dpop_binding ... ok
+test session_ref::tests::session_origin_round_trip_snake_case_strings ... ok
+test session_ref::tests::with_dpop_jkt_rejects_double_bind - should panic ... ok
+test session_ref::tests::with_dpop_jkt_stores_thumbprint ... ok
+test share_ref::tests::test_create_share ... ok
+test share_ref::tests::test_has_password_with_hash ... ok
+test share_ref::tests::test_has_password_without_hash ... ok
+test share_ref::tests::test_share_item_type_conversion ... ok
+test subject_group_ref::tests::accepts_exactly_64_chars ... ok
+test subject_group_ref::tests::accepts_simple_rfc5321_local_part ... ok
+test subject_group_ref::tests::internal_group_id_is_stable ... ok
+test subject_group_ref::tests::rejects_empty_name ... ok
+test subject_group_ref::tests::rejects_non_alnum_start ... ok
+test subject_group_ref::tests::rejects_space ... ok
+test subject_group_ref::tests::rejects_too_long ... ok
+test subject_group_ref::tests::rejects_unicode ... ok
+test liveauth::live_account_differential ... ok
+test user_ref::role_tests::anonymous_is_below_user_is_below_admin_is_below_owner ... ok
+test admin::system_admin_differential ... ok
+test user_ref::role_tests::anonymous_is_not_parseable_from_storage ... ok
+test user_ref::role_tests::outranking_is_strict_so_peers_cannot_act_on_each_other ... ok
+test user_ref::role_tests::owner_round_trips_through_both_parsers ... ok
+test user_ref::role_tests::privileged_means_outranks_a_plain_user ... ok
+test user_ref::role_tests::wire_spelling_is_stable ... ok
+test user_ref::tests::display_full_email_only ... ok
+test user_ref::tests::display_full_given_family_takes_priority_over_username ... ok
+test user_ref::tests::display_full_given_family_with_email ... ok
+test user_ref::tests::display_full_partial_name_falls_through_to_username ... ok
+test user_ref::tests::display_full_partial_name_no_username_falls_to_email ... ok
+test user_ref::tests::display_full_username_only ... ok
+test user_ref::tests::validate_username_charset_and_boundary_rules_survive_normalization ... ok
+test user_ref::tests::validate_username_length_bounds_apply_after_trim ... ok
+test user_ref::tests::validate_username_lowercases_and_trims ... ok
+
+thread 'session::session_state_differential' (2374919) panicked at /home/ht2673/Dev/h5i-app-bench/prove/ports/oxicloud/kernel/src/session.rs:71:35:
+session key already bound
+
+thread 'session::session_state_differential' (2374919) panicked at src/../reference/session.rs:155:13:
+Session.dpop_jkt is immutable — call at construction time only
+
+thread 'session::session_state_differential' (2374919) panicked at /home/ht2673/Dev/h5i-app-bench/prove/ports/oxicloud/kernel/src/session.rs:71:35:
+session key already bound
+
+thread 'session::session_state_differential' (2374919) panicked at src/../reference/session.rs:155:13:
+Session.dpop_jkt is immutable — call at construction time only
+
+thread 'session::session_state_differential' (2374919) panicked at /home/ht2673/Dev/h5i-app-bench/prove/ports/oxicloud/kernel/src/session.rs:71:35:
+session key already bound
+
+thread 'session::session_state_differential' (2374919) panicked at src/../reference/session.rs:155:13:
+Session.dpop_jkt is immutable — call at construction time only
+test userrole::user_role_differential ... ok
+
+thread 'session::session_state_differential' (2374919) panicked at /home/ht2673/Dev/h5i-app-bench/prove/ports/oxicloud/kernel/src/session.rs:71:35:
+session key already bound
+
+thread 'session::session_state_differential' (2374919) panicked at src/../reference/session.rs:155:13:
+Session.dpop_jkt is immutable — call at construction time only
+
+thread 'session::session_state_differential' (2374919) panicked at /home/ht2673/Dev/h5i-app-bench/prove/ports/oxicloud/kernel/src/session.rs:71:35:
+session key already bound
+
+thread 'session::session_state_differential' (2374919) panicked at src/../reference/session.rs:155:13:
+Session.dpop_jkt is immutable — call at construction time only
+test subjectgroup::subject_group_validation_differential ... ok
+test magiclink::magic_link_state_and_expiry_differential ... ok
+test authwire::authorization_wire_differential ... ok
+
+thread 'share::sharing_state_differential' (2374925) panicked at /home/ht2673/Dev/h5i-app-bench/prove/ports/oxicloud/kernel/src/share.rs:45:5:
+attempt to add with overflow
+
+thread 'share::sharing_state_differential' (2374925) panicked at src/../reference/share.rs:152:9:
+attempt to add with overflow
+test share::sharing_state_differential ... ok
+
+thread 'session::session_state_differential' (2374919) panicked at /home/ht2673/Dev/h5i-app-bench/prove/ports/oxicloud/kernel/src/session.rs:71:35:
+session key already bound
+
+thread 'session::session_state_differential' (2374919) panicked at src/../reference/session.rs:155:13:
+Session.dpop_jkt is immutable — call at construction time only
+
+thread 'session::session_state_differential' (2374919) panicked at /home/ht2673/Dev/h5i-app-bench/prove/ports/oxicloud/kernel/src/session.rs:71:35:
+session key already bound
+
+thread 'session::session_state_differential' (2374919) panicked at src/../reference/session.rs:155:13:
+Session.dpop_jkt is immutable — call at construction time only
+test session::session_state_differential ... ok
+test userstate::account_state_differential ... ok
+test validation::login_and_storage_validation_differential ... ok
+test policydefaults::policy_defaults_validation_differential ... ok
+
+test result: ok. 71 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s
+
+   Doc-tests oxicloud_entity_difftest
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

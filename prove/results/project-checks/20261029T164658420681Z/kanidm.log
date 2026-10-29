@@ -1,0 +1,329 @@
+
+[earlier output omitted]
+r̵r̵ay̵.̵m̵a̵k̵e̵_̵v̵a̵l,̵ ̵a̵ll̵oc.vec.Vec.new]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+⚠ [1755/1764] Built Verified.EntryValidation (21s)
+warning: Verified/EntryValidation.lean:73:50: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all [validateModel, outcome, a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵UScalar.eq_equiv, Std.Array.empty]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/EntryValidation.lean:75:2: 'all_goals try grind' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/EntryValidation.lean:75:12: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+✔ [1756/1764] Built Verified.EffectivePermissionSupport (37s)
+✔ [1757/1764] Built Verified.MigrationBounds (16s)
+✔ [1758/1764] Built Verified.MigrationEntryAttrsBound (8.1s)
+⚠ [1759/1764] Built Verified.RecoveredProtectedDenyOverridesCreate (11s)
+warning: Verified/RecoveredProtectedDenyOverridesCreate.lean:84:16: 'scalar_tac' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/RecoveredProtectedDenyOverridesCreate.lean:84:16: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: Verified/RecoveredProtectedDenyOverridesCreate.lean:89:16: 'scalar_tac' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/RecoveredProtectedDenyOverridesCreate.lean:89:16: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: Verified/RecoveredProtectedDenyOverridesCreate.lean:265:12: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: Verified/RecoveredProtectedDenyOverridesCreate.lean:265:25: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: Verified/RecoveredProtectedDenyOverridesCreate.lean:271:29: 'scalar_tac' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/RecoveredProtectedDenyOverridesCreate.lean:271:29: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: Verified/RecoveredProtectedDenyOverridesCreate.lean:271:12: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: Verified/RecoveredProtectedDenyOverridesCreate.lean:277:12: 'scalar_tac' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/RecoveredProtectedDenyOverridesCreate.lean:277:12: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: Verified/RecoveredProtectedDenyOverridesCreate.lean:296:16: 'simp_all' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/RecoveredProtectedDenyOverridesCreate.lean:296:29: 'scalar_tac' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/RecoveredProtectedDenyOverridesCreate.lean:296:16: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: Verified/RecoveredProtectedDenyOverridesCreate.lean:296:29: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: Verified/RecoveredProtectedDenyOverridesCreate.lean:317:16: 'simp_all' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/RecoveredProtectedDenyOverridesCreate.lean:317:29: 'scalar_tac' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/RecoveredProtectedDenyOverridesCreate.lean:317:16: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: Verified/RecoveredProtectedDenyOverridesCreate.lean:317:29: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: Verified/RecoveredProtectedDenyOverridesCreate.lean:353:52: This simp argument is unused:
+  bind_tc_ok
+
+Hint: Omit it from the simp argument list.
+  simp only [create_acc.apply_create_access, h, b̵i̵n̵d̵_̵t̵c̵_̵o̵k̵,̵create_acc.message_queue,
+          create_acc.create_filter_entry, hr]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+⚠ [1760/1764] Built Verified.RecoveredProtectedDenyOverridesModify (14s)
+warning: Verified/RecoveredProtectedDenyOverridesModify.lean:104:17: This simp argument is unused:
+  WP.imp
+
+Hint: Omit it from the simp argument list.
+  simp [WP.qimp,̵ ̵W̵P̵.̵i̵m̵p̵]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+✔ [1761/1764] Built Verified.EffectivePermissionModifyBounds (269s)
+⚠ [1762/1764] Built Verified.RecoveredEffectivePermissionCheckTotal (13s)
+warning: Verified/RecoveredEffectivePermissionCheckTotal.lean:19:21: Variable name `hcap` is not explicitly referenced.
+
+The binding can be removed (if unused) or named `_` (if used implicitly).
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Verified/RecoveredEffectivePermissionCheckTotal.lean:37:21: Variable name `hcap` is not explicitly referenced.
+
+The binding can be removed (if unused) or named `_` (if used implicitly).
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Verified/RecoveredEffectivePermissionCheckTotal.lean:95:75: Variable name `r` is not explicitly referenced.
+
+The binding can be removed (if unused) or named `_` (if used implicitly).
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Verified/RecoveredEffectivePermissionCheckTotal.lean:106:24: This simp argument is unused:
+  Prod.fst
+
+Hint: Omit it from the simp argument list.
+  simp only [FourBound, P̵r̵o̵d̵.̵f̵s̵t̵,̵ ̵Prod.snd] at hallow
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/RecoveredEffectivePermissionCheckTotal.lean:106:34: This simp argument is unused:
+  Prod.snd
+
+Hint: Omit it from the simp argument list.
+  simp only [FourBound, Prod.fst,̵ ̵P̵r̵o̵d̵.̵s̵n̵d̵] at hallow
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/RecoveredEffectivePermissionCheckTotal.lean:112:24: This simp argument is unused:
+  Prod.fst
+
+Hint: Omit it from the simp argument list.
+  simp only [FourBound, P̵r̵o̵d̵.̵f̵s̵t̵,̵ ̵Prod.snd] at hconstrain
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/RecoveredEffectivePermissionCheckTotal.lean:112:34: This simp argument is unused:
+  Prod.snd
+
+Hint: Omit it from the simp argument list.
+  simp only [FourBound, Prod.fst,̵ ̵P̵r̵o̵d̵.̵s̵n̵d̵] at hconstrain
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/RecoveredEffectivePermissionCheckTotal.lean:122:29: This simp argument is unused:
+  Prod.fst
+
+Hint: Omit it from the simp argument list.
+  simp only [WP.spec_ok, P̵r̵o̵d̵.̵f̵s̵t̵,̵ ̵Prod.snd]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/RecoveredEffectivePermissionCheckTotal.lean:122:39: This simp argument is unused:
+  Prod.snd
+
+Hint: Omit it from the simp argument list.
+  simp only [WP.spec_ok, Prod.fst,̵ ̵P̵r̵o̵d̵.̵s̵n̵d̵]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/RecoveredEffectivePermissionCheckTotal.lean:127:31: This simp argument is unused:
+  Prod.fst
+
+Hint: Omit it from the simp argument list.
+  simp only [WP.spec_ok, P̵r̵o̵d̵.̵f̵s̵t̵,̵ ̵Prod.snd]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/RecoveredEffectivePermissionCheckTotal.lean:127:41: This simp argument is unused:
+  Prod.snd
+
+Hint: Omit it from the simp argument list.
+  simp only [WP.spec_ok, Prod.fst,̵ ̵P̵r̵o̵d̵.̵s̵n̵d̵]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/RecoveredEffectivePermissionCheckTotal.lean:137:19: This simp argument is unused:
+  Prod.fst
+
+Hint: Omit it from the simp argument list.
+  simp only [̵P̵r̵o̵d̵.̵f̵s̵t̵,̵ ̵P̵r̵o̵d̵.̵s̵n̵d̵]̵[̲P̲r̲o̲d̲.̲s̲n̲d̲]̲ at hsync
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/RecoveredEffectivePermissionCheckTotal.lean:137:29: This simp argument is unused:
+  Prod.snd
+
+Hint: Omit it from the simp argument list.
+  simp only [Prod.fst,̵ ̵P̵r̵o̵d̵.̵s̵n̵d̵] at hsync
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/RecoveredEffectivePermissionCheckTotal.lean:143:19: This simp argument is unused:
+  Prod.fst
+
+Hint: Omit it from the simp argument list.
+  simp only [̵P̵r̵o̵d̵.̵f̵s̵t̵,̵ ̵P̵r̵o̵d̵.̵s̵n̵d̵]̵[̲P̲r̲o̲d̲.̲s̲n̲d̲]̲ at hallowed
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/RecoveredEffectivePermissionCheckTotal.lean:143:29: This simp argument is unused:
+  Prod.snd
+
+Hint: Omit it from the simp argument list.
+  simp only [Prod.fst,̵ ̵P̵r̵o̵d̵.̵s̵n̵d̵] at hallowed
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/RecoveredEffectivePermissionCheckTotal.lean:144:51: This simp argument is unused:
+  Prod.fst
+
+Hint: Omit it from the simp argument list.
+  simp only [Aeneas.Std.uncurry, WP.spec_ok, Prod.f̵st̵,̵ ̵P̵r̵o̵d̵.̵s̵nd]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/RecoveredEffectivePermissionCheckTotal.lean:144:61: This simp argument is unused:
+  Prod.snd
+
+Hint: Omit it from the simp argument list.
+  simp only [Aeneas.Std.uncurry, WP.spec_ok, Prod.fst,̵ ̵P̵r̵o̵d̵.̵s̵n̵d̵]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/RecoveredEffectivePermissionCheckTotal.lean:155:124: Variable name `r` is not explicitly referenced.
+
+The binding can be removed (if unused) or named `_` (if used implicitly).
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+⚠ [1763/1764] Built Properties (6.6s)
+warning: Properties.lean:38:101: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: Properties.lean:45:101: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: Properties.lean:181:70: 'assumption' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Properties.lean:181:70: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: Properties.lean:186:78: 'assumption' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Properties.lean:186:78: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: Properties.lean:204:103: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: Properties.lean:212:65: 'assumption' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Properties.lean:212:65: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: Properties.lean:216:58: 'assumption' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Properties.lean:216:58: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: Properties.lean:220:53: 'assumption' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Properties.lean:220:53: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: Properties.lean:238:57: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: Properties.lean:242:65: 'assumption' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Properties.lean:242:65: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: Properties.lean:263:67: 'assumption' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Properties.lean:263:67: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: Properties.lean:268:65: 'assumption' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Properties.lean:268:65: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: Properties.lean:273:63: 'assumption' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Properties.lean:273:63: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: Properties.lean:281:68: 'assumption' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Properties.lean:281:68: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: Properties.lean:286:67: 'assumption' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Properties.lean:286:67: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: Properties.lean:293:65: 'assumption' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Properties.lean:293:65: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: Properties.lean:297:62: 'assumption' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Properties.lean:297:62: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: Properties.lean:301:63: 'assumption' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Properties.lean:301:63: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: Properties.lean:306:64: 'assumption' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Properties.lean:306:64: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: Properties.lean:316:61: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+Build completed successfully (1764 jobs).
+
+note: solutions.kanidm-anonymous-profile-only.Solution is not built by `lake build`, so its theorems are not gated
+$ lake env lean /home/ht2673/Dev/h5i-app-bench/prove/ports/kanidm/proofs/.lake/h5i/Gate.lean
+gate: 1699 theorems in 33 modules checked against propext, Classical.choice, Quot.sound
+
+ports/kanidm: proofs ok

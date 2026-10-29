@@ -1,32 +1,32 @@
 {
-  "recorded_at": "2026-10-29T16:19:32.084947+00:00",
+  "recorded_at": "2026-10-29T17:00:14.504548+00:00",
   "branch": "prove-20k-expansion",
   "baseline": {
     "lines": 10098,
     "properties": 405
   },
   "accepted": {
-    "lines": 10800,
-    "properties": 425
+    "lines": 12174,
+    "properties": 577
   },
   "target_lines": 20000,
-  "remaining_lines": 9200,
+  "remaining_lines": 7826,
   "apps": {
     "artifactkeeper": {
       "lines": 1566,
       "properties": 31
     },
     "kanidm": {
-      "lines": 2865,
-      "properties": 37
+      "lines": 3353,
+      "properties": 116
     },
     "nora": {
       "lines": 1467,
       "properties": 46
     },
     "oxicloud": {
-      "lines": 947,
-      "properties": 26
+      "lines": 1833,
+      "properties": 99
     },
     "rustfs": {
       "lines": 2000,
@@ -39,8 +39,8 @@
   },
   "changed_app_records": {
     "kanidm": {
-      "check": "20261029T124802079020Z",
-      "extract": "20261029T124803236760Z"
+      "check": "20261029T164658420681Z",
+      "extract": "20261029T165643397624Z"
     },
     "nora": {
       "check": "20261029T160557354150Z",
@@ -49,6 +49,10 @@
     "artifactkeeper": {
       "check": "20261029T130614832449Z",
       "extract": "20261029T130949735809Z"
+    },
+    "oxicloud": {
+      "check": "20261029T165009453648Z",
+      "extract": "20261029T165717512462Z"
     }
   },
   "validation": "All six canonical project gates and matching extraction checks fresh; 13 dashboard/accounting/reach harness tests passed.",

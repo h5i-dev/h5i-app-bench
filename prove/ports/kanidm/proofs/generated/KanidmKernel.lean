@@ -8856,4 +8856,5222 @@ def softlock.record_failure
     let s ← softlock.failure_next_state lock.policy i ct
     ok { lock with state := s }
 
+/-- [kanidm_kernel::syntax_types::SyntaxType]
+    Source: 'prove/ports/kanidm/kernel/src/syntax_types.rs', lines 8:0-56:1
+    Visibility: public -/
+@[discriminant isize]
+inductive syntax_types.SyntaxType where
+| Utf8String : syntax_types.SyntaxType
+| Utf8StringInsensitive : syntax_types.SyntaxType
+| Uuid : syntax_types.SyntaxType
+| Boolean : syntax_types.SyntaxType
+| SyntaxId : syntax_types.SyntaxType
+| IndexId : syntax_types.SyntaxType
+| ReferenceUuid : syntax_types.SyntaxType
+| JsonFilter : syntax_types.SyntaxType
+| Credential : syntax_types.SyntaxType
+| SecretUtf8String : syntax_types.SyntaxType
+| SshKey : syntax_types.SyntaxType
+| SecurityPrincipalName : syntax_types.SyntaxType
+| Uint32 : syntax_types.SyntaxType
+| Cid : syntax_types.SyntaxType
+| Utf8StringIname : syntax_types.SyntaxType
+| NsUniqueId : syntax_types.SyntaxType
+| DateTime : syntax_types.SyntaxType
+| EmailAddress : syntax_types.SyntaxType
+| Url : syntax_types.SyntaxType
+| OauthScope : syntax_types.SyntaxType
+| OauthScopeMap : syntax_types.SyntaxType
+| PrivateBinary : syntax_types.SyntaxType
+| IntentToken : syntax_types.SyntaxType
+| Passkey : syntax_types.SyntaxType
+| AttestedPasskey : syntax_types.SyntaxType
+| Session : syntax_types.SyntaxType
+| JwsKeyEs256 : syntax_types.SyntaxType
+| JwsKeyRs256 : syntax_types.SyntaxType
+| Oauth2Session : syntax_types.SyntaxType
+| UiHint : syntax_types.SyntaxType
+| TotpSecret : syntax_types.SyntaxType
+| ApiToken : syntax_types.SyntaxType
+| AuditLogString : syntax_types.SyntaxType
+| EcKeyPrivate : syntax_types.SyntaxType
+| Image : syntax_types.SyntaxType
+| CredentialType : syntax_types.SyntaxType
+| WebauthnAttestationCaList : syntax_types.SyntaxType
+| OauthClaimMap : syntax_types.SyntaxType
+| KeyInternal : syntax_types.SyntaxType
+| HexString : syntax_types.SyntaxType
+| Certificate : syntax_types.SyntaxType
+| ApplicationPassword : syntax_types.SyntaxType
+| Json : syntax_types.SyntaxType
+| Message : syntax_types.SyntaxType
+| Sha256 : syntax_types.SyntaxType
+| Int64 : syntax_types.SyntaxType
+| Uint64 : syntax_types.SyntaxType
+
+/-- [kanidm_kernel::syntax_types::IndexType]
+    Source: 'prove/ports/kanidm/kernel/src/syntax_types.rs', lines 58:0-63:1
+    Visibility: public -/
+@[discriminant isize]
+inductive syntax_types.IndexType where
+| Equality : syntax_types.IndexType
+| Presence : syntax_types.IndexType
+| SubString : syntax_types.IndexType
+| Ordering : syntax_types.IndexType
+
+/-- [kanidm_kernel::syntax_types::parse_part_4]:
+    Source: 'prove/ports/kanidm/kernel/src/syntax_types.rs', lines 116:0-125:1
+    Visibility: public -/
+def syntax_types.parse_part_4
+  («name» : Slice Std.U8) : Result (Option syntax_types.SyntaxType) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        67#u8, 69#u8, 82#u8, 84#u8, 73#u8, 70#u8, 73#u8, 67#u8, 65#u8, 84#u8,
+        69#u8
+        ]))
+  let b ← bset.bytes_eq «name» s
+  if b
+  then ok (some syntax_types.SyntaxType.Certificate)
+  else
+    let s1 ←
+      lift (Array.to_slice
+        (Array.make 20#usize [
+          65#u8, 80#u8, 80#u8, 76#u8, 73#u8, 67#u8, 65#u8, 84#u8, 73#u8, 79#u8,
+          78#u8, 95#u8, 80#u8, 65#u8, 83#u8, 83#u8, 87#u8, 79#u8, 82#u8, 68#u8
+          ]))
+    let b1 ← bset.bytes_eq «name» s1
+    if b1
+    then ok (some syntax_types.SyntaxType.ApplicationPassword)
+    else
+      let s2 ←
+        lift (Array.to_slice
+          (Array.make 4#usize [ 74#u8, 83#u8, 79#u8, 78#u8 ]))
+      let b2 ← bset.bytes_eq «name» s2
+      if b2
+      then ok (some syntax_types.SyntaxType.Json)
+      else
+        let s3 ←
+          lift (Array.to_slice
+            (Array.make 7#usize [
+              77#u8, 69#u8, 83#u8, 83#u8, 65#u8, 71#u8, 69#u8
+              ]))
+        let b3 ← bset.bytes_eq «name» s3
+        if b3
+        then ok (some syntax_types.SyntaxType.Message)
+        else
+          let s4 ←
+            lift (Array.to_slice
+              (Array.make 6#usize [ 83#u8, 72#u8, 65#u8, 50#u8, 53#u8, 54#u8 ]))
+          let b4 ← bset.bytes_eq «name» s4
+          if b4
+          then ok (some syntax_types.SyntaxType.Sha256)
+          else
+            let s5 ←
+              lift (Array.to_slice
+                (Array.make 5#usize [ 73#u8, 78#u8, 84#u8, 54#u8, 52#u8 ]))
+            let b5 ← bset.bytes_eq «name» s5
+            if b5
+            then ok (some syntax_types.SyntaxType.Int64)
+            else
+              let s6 ←
+                lift (Array.to_slice
+                  (Array.make 6#usize [
+                    85#u8, 73#u8, 78#u8, 84#u8, 54#u8, 52#u8
+                    ]))
+              let b6 ← bset.bytes_eq «name» s6
+              if b6
+              then ok (some syntax_types.SyntaxType.Uint64)
+              else ok none
+
+/-- [kanidm_kernel::syntax_types::parse_part_3]:
+    Source: 'prove/ports/kanidm/kernel/src/syntax_types.rs', lines 103:0-115:1
+    Visibility: public -/
+def syntax_types.parse_part_3
+  («name» : Slice Std.U8) : Result (Option syntax_types.SyntaxType) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 6#usize [ 85#u8, 73#u8, 72#u8, 73#u8, 78#u8, 84#u8 ]))
+  let b ← bset.bytes_eq «name» s
+  if b
+  then ok (some syntax_types.SyntaxType.UiHint)
+  else
+    let s1 ←
+      lift (Array.to_slice
+        (Array.make 10#usize [
+          84#u8, 79#u8, 84#u8, 80#u8, 83#u8, 69#u8, 67#u8, 82#u8, 69#u8, 84#u8
+          ]))
+    let b1 ← bset.bytes_eq «name» s1
+    if b1
+    then ok (some syntax_types.SyntaxType.TotpSecret)
+    else
+      let s2 ←
+        lift (Array.to_slice
+          (Array.make 8#usize [
+            65#u8, 80#u8, 73#u8, 84#u8, 79#u8, 75#u8, 69#u8, 78#u8
+            ]))
+      let b2 ← bset.bytes_eq «name» s2
+      if b2
+      then ok (some syntax_types.SyntaxType.ApiToken)
+      else
+        let s3 ←
+          lift (Array.to_slice
+            (Array.make 16#usize [
+              65#u8, 85#u8, 68#u8, 73#u8, 84#u8, 95#u8, 76#u8, 79#u8, 71#u8,
+              95#u8, 83#u8, 84#u8, 82#u8, 73#u8, 78#u8, 71#u8
+              ]))
+        let b3 ← bset.bytes_eq «name» s3
+        if b3
+        then ok (some syntax_types.SyntaxType.AuditLogString)
+        else
+          let s4 ←
+            lift (Array.to_slice
+              (Array.make 14#usize [
+                69#u8, 67#u8, 95#u8, 75#u8, 69#u8, 89#u8, 95#u8, 80#u8, 82#u8,
+                73#u8, 86#u8, 65#u8, 84#u8, 69#u8
+                ]))
+          let b4 ← bset.bytes_eq «name» s4
+          if b4
+          then ok (some syntax_types.SyntaxType.EcKeyPrivate)
+          else
+            let s5 ←
+              lift (Array.to_slice
+                (Array.make 15#usize [
+                  67#u8, 82#u8, 69#u8, 68#u8, 69#u8, 78#u8, 84#u8, 73#u8,
+                  65#u8, 76#u8, 95#u8, 84#u8, 89#u8, 80#u8, 69#u8
+                  ]))
+            let b5 ← bset.bytes_eq «name» s5
+            if b5
+            then ok (some syntax_types.SyntaxType.CredentialType)
+            else
+              let s6 ←
+                lift (Array.to_slice
+                  (Array.make 28#usize [
+                    87#u8, 69#u8, 66#u8, 65#u8, 85#u8, 84#u8, 72#u8, 78#u8,
+                    95#u8, 65#u8, 84#u8, 84#u8, 69#u8, 83#u8, 84#u8, 65#u8,
+                    84#u8, 73#u8, 79#u8, 78#u8, 95#u8, 67#u8, 65#u8, 95#u8,
+                    76#u8, 73#u8, 83#u8, 84#u8
+                    ]))
+              let b6 ← bset.bytes_eq «name» s6
+              if b6
+              then ok (some syntax_types.SyntaxType.WebauthnAttestationCaList)
+              else
+                let s7 ←
+                  lift (Array.to_slice
+                    (Array.make 15#usize [
+                      79#u8, 65#u8, 85#u8, 84#u8, 72#u8, 95#u8, 67#u8, 76#u8,
+                      65#u8, 73#u8, 77#u8, 95#u8, 77#u8, 65#u8, 80#u8
+                      ]))
+                let b7 ← bset.bytes_eq «name» s7
+                if b7
+                then ok (some syntax_types.SyntaxType.OauthClaimMap)
+                else
+                  let s8 ←
+                    lift (Array.to_slice
+                      (Array.make 12#usize [
+                        75#u8, 69#u8, 89#u8, 95#u8, 73#u8, 78#u8, 84#u8, 69#u8,
+                        82#u8, 78#u8, 65#u8, 76#u8
+                        ]))
+                  let b8 ← bset.bytes_eq «name» s8
+                  if b8
+                  then ok (some syntax_types.SyntaxType.KeyInternal)
+                  else
+                    let s9 ←
+                      lift (Array.to_slice
+                        (Array.make 10#usize [
+                          72#u8, 69#u8, 88#u8, 95#u8, 83#u8, 84#u8, 82#u8,
+                          73#u8, 78#u8, 71#u8
+                          ]))
+                    let b9 ← bset.bytes_eq «name» s9
+                    if b9
+                    then ok (some syntax_types.SyntaxType.HexString)
+                    else syntax_types.parse_part_4 «name»
+
+/-- [kanidm_kernel::syntax_types::parse_part_2]:
+    Source: 'prove/ports/kanidm/kernel/src/syntax_types.rs', lines 90:0-102:1
+    Visibility: public -/
+def syntax_types.parse_part_2
+  («name» : Slice Std.U8) : Result (Option syntax_types.SyntaxType) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        79#u8, 65#u8, 85#u8, 84#u8, 72#u8, 95#u8, 83#u8, 67#u8, 79#u8, 80#u8,
+        69#u8
+        ]))
+  let b ← bset.bytes_eq «name» s
+  if b
+  then ok (some syntax_types.SyntaxType.OauthScope)
+  else
+    let s1 ←
+      lift (Array.to_slice
+        (Array.make 15#usize [
+          79#u8, 65#u8, 85#u8, 84#u8, 72#u8, 95#u8, 83#u8, 67#u8, 79#u8, 80#u8,
+          69#u8, 95#u8, 77#u8, 65#u8, 80#u8
+          ]))
+    let b1 ← bset.bytes_eq «name» s1
+    if b1
+    then ok (some syntax_types.SyntaxType.OauthScopeMap)
+    else
+      let s2 ←
+        lift (Array.to_slice
+          (Array.make 14#usize [
+            80#u8, 82#u8, 73#u8, 86#u8, 65#u8, 84#u8, 69#u8, 95#u8, 66#u8,
+            73#u8, 78#u8, 65#u8, 82#u8, 89#u8
+            ]))
+      let b2 ← bset.bytes_eq «name» s2
+      if b2
+      then ok (some syntax_types.SyntaxType.PrivateBinary)
+      else
+        let s3 ←
+          lift (Array.to_slice
+            (Array.make 12#usize [
+              73#u8, 78#u8, 84#u8, 69#u8, 78#u8, 84#u8, 95#u8, 84#u8, 79#u8,
+              75#u8, 69#u8, 78#u8
+              ]))
+        let b3 ← bset.bytes_eq «name» s3
+        if b3
+        then ok (some syntax_types.SyntaxType.IntentToken)
+        else
+          let s4 ←
+            lift (Array.to_slice
+              (Array.make 7#usize [
+                80#u8, 65#u8, 83#u8, 83#u8, 75#u8, 69#u8, 89#u8
+                ]))
+          let b4 ← bset.bytes_eq «name» s4
+          if b4
+          then ok (some syntax_types.SyntaxType.Passkey)
+          else
+            let s5 ←
+              lift (Array.to_slice
+                (Array.make 16#usize [
+                  65#u8, 84#u8, 84#u8, 69#u8, 83#u8, 84#u8, 69#u8, 68#u8,
+                  95#u8, 80#u8, 65#u8, 83#u8, 83#u8, 75#u8, 69#u8, 89#u8
+                  ]))
+            let b5 ← bset.bytes_eq «name» s5
+            if b5
+            then ok (some syntax_types.SyntaxType.AttestedPasskey)
+            else
+              let s6 ←
+                lift (Array.to_slice
+                  (Array.make 7#usize [
+                    83#u8, 69#u8, 83#u8, 83#u8, 73#u8, 79#u8, 78#u8
+                    ]))
+              let b6 ← bset.bytes_eq «name» s6
+              if b6
+              then ok (some syntax_types.SyntaxType.Session)
+              else
+                let s7 ←
+                  lift (Array.to_slice
+                    (Array.make 13#usize [
+                      74#u8, 87#u8, 83#u8, 95#u8, 75#u8, 69#u8, 89#u8, 95#u8,
+                      69#u8, 83#u8, 50#u8, 53#u8, 54#u8
+                      ]))
+                let b7 ← bset.bytes_eq «name» s7
+                if b7
+                then ok (some syntax_types.SyntaxType.JwsKeyEs256)
+                else
+                  let s8 ←
+                    lift (Array.to_slice
+                      (Array.make 13#usize [
+                        74#u8, 87#u8, 83#u8, 95#u8, 75#u8, 69#u8, 89#u8, 95#u8,
+                        82#u8, 83#u8, 50#u8, 53#u8, 54#u8
+                        ]))
+                  let b8 ← bset.bytes_eq «name» s8
+                  if b8
+                  then ok (some syntax_types.SyntaxType.JwsKeyRs256)
+                  else
+                    let s9 ←
+                      lift (Array.to_slice
+                        (Array.make 13#usize [
+                          79#u8, 65#u8, 85#u8, 84#u8, 72#u8, 50#u8, 83#u8,
+                          69#u8, 83#u8, 83#u8, 73#u8, 79#u8, 78#u8
+                          ]))
+                    let b9 ← bset.bytes_eq «name» s9
+                    if b9
+                    then ok (some syntax_types.SyntaxType.Oauth2Session)
+                    else syntax_types.parse_part_3 «name»
+
+/-- [kanidm_kernel::syntax_types::parse_part_1]:
+    Source: 'prove/ports/kanidm/kernel/src/syntax_types.rs', lines 77:0-89:1
+    Visibility: public -/
+def syntax_types.parse_part_1
+  («name» : Slice Std.U8) : Result (Option syntax_types.SyntaxType) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 17#usize [
+        82#u8, 65#u8, 68#u8, 73#u8, 85#u8, 83#u8, 95#u8, 85#u8, 84#u8, 70#u8,
+        56#u8, 83#u8, 84#u8, 82#u8, 73#u8, 78#u8, 71#u8
+        ]))
+  let b ← bset.bytes_eq «name» s
+  if b
+  then ok (some syntax_types.SyntaxType.SecretUtf8String)
+  else
+    let s1 ←
+      lift (Array.to_slice
+        (Array.make 17#usize [
+          83#u8, 69#u8, 67#u8, 82#u8, 69#u8, 84#u8, 95#u8, 85#u8, 84#u8, 70#u8,
+          56#u8, 83#u8, 84#u8, 82#u8, 73#u8, 78#u8, 71#u8
+          ]))
+    let b1 ← bset.bytes_eq «name» s1
+    if b1
+    then ok (some syntax_types.SyntaxType.SecretUtf8String)
+    else
+      let s2 ←
+        lift (Array.to_slice
+          (Array.make 6#usize [ 83#u8, 83#u8, 72#u8, 75#u8, 69#u8, 89#u8 ]))
+      let b2 ← bset.bytes_eq «name» s2
+      if b2
+      then ok (some syntax_types.SyntaxType.SshKey)
+      else
+        let s3 ←
+          lift (Array.to_slice
+            (Array.make 23#usize [
+              83#u8, 69#u8, 67#u8, 85#u8, 82#u8, 73#u8, 84#u8, 89#u8, 95#u8,
+              80#u8, 82#u8, 73#u8, 78#u8, 67#u8, 73#u8, 80#u8, 65#u8, 76#u8,
+              95#u8, 78#u8, 65#u8, 77#u8, 69#u8
+              ]))
+        let b3 ← bset.bytes_eq «name» s3
+        if b3
+        then ok (some syntax_types.SyntaxType.SecurityPrincipalName)
+        else
+          let s4 ←
+            lift (Array.to_slice
+              (Array.make 6#usize [ 85#u8, 73#u8, 78#u8, 84#u8, 51#u8, 50#u8 ]))
+          let b4 ← bset.bytes_eq «name» s4
+          if b4
+          then ok (some syntax_types.SyntaxType.Uint32)
+          else
+            let s5 ←
+              lift (Array.to_slice
+                (Array.make 3#usize [ 67#u8, 73#u8, 68#u8 ]))
+            let b5 ← bset.bytes_eq «name» s5
+            if b5
+            then ok (some syntax_types.SyntaxType.Cid)
+            else
+              let s6 ←
+                lift (Array.to_slice
+                  (Array.make 10#usize [
+                    78#u8, 83#u8, 85#u8, 78#u8, 73#u8, 81#u8, 85#u8, 69#u8,
+                    73#u8, 68#u8
+                    ]))
+              let b6 ← bset.bytes_eq «name» s6
+              if b6
+              then ok (some syntax_types.SyntaxType.NsUniqueId)
+              else
+                let s7 ←
+                  lift (Array.to_slice
+                    (Array.make 8#usize [
+                      68#u8, 65#u8, 84#u8, 69#u8, 84#u8, 73#u8, 77#u8, 69#u8
+                      ]))
+                let b7 ← bset.bytes_eq «name» s7
+                if b7
+                then ok (some syntax_types.SyntaxType.DateTime)
+                else
+                  let s8 ←
+                    lift (Array.to_slice
+                      (Array.make 13#usize [
+                        69#u8, 77#u8, 65#u8, 73#u8, 76#u8, 95#u8, 65#u8, 68#u8,
+                        68#u8, 82#u8, 69#u8, 83#u8, 83#u8
+                        ]))
+                  let b8 ← bset.bytes_eq «name» s8
+                  if b8
+                  then ok (some syntax_types.SyntaxType.EmailAddress)
+                  else
+                    let s9 ←
+                      lift (Array.to_slice
+                        (Array.make 3#usize [ 85#u8, 82#u8, 76#u8 ]))
+                    let b9 ← bset.bytes_eq «name» s9
+                    if b9
+                    then ok (some syntax_types.SyntaxType.Url)
+                    else syntax_types.parse_part_2 «name»
+
+/-- [kanidm_kernel::syntax_types::parse_normalized]:
+    Source: 'prove/ports/kanidm/kernel/src/syntax_types.rs', lines 64:0-76:1
+    Visibility: public -/
+def syntax_types.parse_normalized
+  («name» : Slice Std.U8) : Result (Option syntax_types.SyntaxType) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        85#u8, 84#u8, 70#u8, 56#u8, 83#u8, 84#u8, 82#u8, 73#u8, 78#u8, 71#u8
+        ]))
+  let b ← bset.bytes_eq «name» s
+  if b
+  then ok (some syntax_types.SyntaxType.Utf8String)
+  else
+    let s1 ←
+      lift (Array.to_slice
+        (Array.make 22#usize [
+          85#u8, 84#u8, 70#u8, 56#u8, 83#u8, 84#u8, 82#u8, 73#u8, 78#u8, 71#u8,
+          95#u8, 73#u8, 78#u8, 83#u8, 69#u8, 78#u8, 83#u8, 73#u8, 84#u8, 73#u8,
+          86#u8, 69#u8
+          ]))
+    let b1 ← bset.bytes_eq «name» s1
+    if b1
+    then ok (some syntax_types.SyntaxType.Utf8StringInsensitive)
+    else
+      let s2 ←
+        lift (Array.to_slice
+          (Array.make 16#usize [
+            85#u8, 84#u8, 70#u8, 56#u8, 83#u8, 84#u8, 82#u8, 73#u8, 78#u8,
+            71#u8, 95#u8, 73#u8, 78#u8, 65#u8, 77#u8, 69#u8
+            ]))
+      let b2 ← bset.bytes_eq «name» s2
+      if b2
+      then ok (some syntax_types.SyntaxType.Utf8StringIname)
+      else
+        let s3 ←
+          lift (Array.to_slice
+            (Array.make 4#usize [ 85#u8, 85#u8, 73#u8, 68#u8 ]))
+        let b3 ← bset.bytes_eq «name» s3
+        if b3
+        then ok (some syntax_types.SyntaxType.Uuid)
+        else
+          let s4 ←
+            lift (Array.to_slice
+              (Array.make 7#usize [
+                66#u8, 79#u8, 79#u8, 76#u8, 69#u8, 65#u8, 78#u8
+                ]))
+          let b4 ← bset.bytes_eq «name» s4
+          if b4
+          then ok (some syntax_types.SyntaxType.Boolean)
+          else
+            let s5 ←
+              lift (Array.to_slice
+                (Array.make 9#usize [
+                  83#u8, 89#u8, 78#u8, 84#u8, 65#u8, 88#u8, 95#u8, 73#u8, 68#u8
+                  ]))
+            let b5 ← bset.bytes_eq «name» s5
+            if b5
+            then ok (some syntax_types.SyntaxType.SyntaxId)
+            else
+              let s6 ←
+                lift (Array.to_slice
+                  (Array.make 8#usize [
+                    73#u8, 78#u8, 68#u8, 69#u8, 88#u8, 95#u8, 73#u8, 68#u8
+                    ]))
+              let b6 ← bset.bytes_eq «name» s6
+              if b6
+              then ok (some syntax_types.SyntaxType.IndexId)
+              else
+                let s7 ←
+                  lift (Array.to_slice
+                    (Array.make 14#usize [
+                      82#u8, 69#u8, 70#u8, 69#u8, 82#u8, 69#u8, 78#u8, 67#u8,
+                      69#u8, 95#u8, 85#u8, 85#u8, 73#u8, 68#u8
+                      ]))
+                let b7 ← bset.bytes_eq «name» s7
+                if b7
+                then ok (some syntax_types.SyntaxType.ReferenceUuid)
+                else
+                  let s8 ←
+                    lift (Array.to_slice
+                      (Array.make 11#usize [
+                        74#u8, 83#u8, 79#u8, 78#u8, 95#u8, 70#u8, 73#u8, 76#u8,
+                        84#u8, 69#u8, 82#u8
+                        ]))
+                  let b8 ← bset.bytes_eq «name» s8
+                  if b8
+                  then ok (some syntax_types.SyntaxType.JsonFilter)
+                  else
+                    let s9 ←
+                      lift (Array.to_slice
+                        (Array.make 10#usize [
+                          67#u8, 82#u8, 69#u8, 68#u8, 69#u8, 78#u8, 84#u8,
+                          73#u8, 65#u8, 76#u8
+                          ]))
+                    let b9 ← bset.bytes_eq «name» s9
+                    if b9
+                    then ok (some syntax_types.SyntaxType.Credential)
+                    else syntax_types.parse_part_1 «name»
+
+/-- [kanidm_kernel::syntax_types::display]:
+    Source: 'prove/ports/kanidm/kernel/src/syntax_types.rs', lines 126:0-174:2
+    Visibility: public -/
+def syntax_types.display
+  («syntax» : syntax_types.SyntaxType) : Result (alloc.vec.Vec Std.U8) := do
+  match «syntax» with
+  | syntax_types.SyntaxType.Utf8String =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 10#usize [
+          85#u8, 84#u8, 70#u8, 56#u8, 83#u8, 84#u8, 82#u8, 73#u8, 78#u8, 71#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | syntax_types.SyntaxType.Utf8StringInsensitive =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 22#usize [
+          85#u8, 84#u8, 70#u8, 56#u8, 83#u8, 84#u8, 82#u8, 73#u8, 78#u8, 71#u8,
+          95#u8, 73#u8, 78#u8, 83#u8, 69#u8, 78#u8, 83#u8, 73#u8, 84#u8, 73#u8,
+          86#u8, 69#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | syntax_types.SyntaxType.Uuid =>
+    let s ←
+      lift (Array.to_slice (Array.make 4#usize [ 85#u8, 85#u8, 73#u8, 68#u8 ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | syntax_types.SyntaxType.Boolean =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 7#usize [
+          66#u8, 79#u8, 79#u8, 76#u8, 69#u8, 65#u8, 78#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | syntax_types.SyntaxType.SyntaxId =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 9#usize [
+          83#u8, 89#u8, 78#u8, 84#u8, 65#u8, 88#u8, 95#u8, 73#u8, 68#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | syntax_types.SyntaxType.IndexId =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 8#usize [
+          73#u8, 78#u8, 68#u8, 69#u8, 88#u8, 95#u8, 73#u8, 68#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | syntax_types.SyntaxType.ReferenceUuid =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 14#usize [
+          82#u8, 69#u8, 70#u8, 69#u8, 82#u8, 69#u8, 78#u8, 67#u8, 69#u8, 95#u8,
+          85#u8, 85#u8, 73#u8, 68#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | syntax_types.SyntaxType.JsonFilter =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 11#usize [
+          74#u8, 83#u8, 79#u8, 78#u8, 95#u8, 70#u8, 73#u8, 76#u8, 84#u8, 69#u8,
+          82#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | syntax_types.SyntaxType.Credential =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 10#usize [
+          67#u8, 82#u8, 69#u8, 68#u8, 69#u8, 78#u8, 84#u8, 73#u8, 65#u8, 76#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | syntax_types.SyntaxType.SecretUtf8String =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 17#usize [
+          83#u8, 69#u8, 67#u8, 82#u8, 69#u8, 84#u8, 95#u8, 85#u8, 84#u8, 70#u8,
+          56#u8, 83#u8, 84#u8, 82#u8, 73#u8, 78#u8, 71#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | syntax_types.SyntaxType.SshKey =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 6#usize [ 83#u8, 83#u8, 72#u8, 75#u8, 69#u8, 89#u8 ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | syntax_types.SyntaxType.SecurityPrincipalName =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 23#usize [
+          83#u8, 69#u8, 67#u8, 85#u8, 82#u8, 73#u8, 84#u8, 89#u8, 95#u8, 80#u8,
+          82#u8, 73#u8, 78#u8, 67#u8, 73#u8, 80#u8, 65#u8, 76#u8, 95#u8, 78#u8,
+          65#u8, 77#u8, 69#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | syntax_types.SyntaxType.Uint32 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 6#usize [ 85#u8, 73#u8, 78#u8, 84#u8, 51#u8, 50#u8 ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | syntax_types.SyntaxType.Cid =>
+    let s ←
+      lift (Array.to_slice (Array.make 3#usize [ 67#u8, 73#u8, 68#u8 ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | syntax_types.SyntaxType.Utf8StringIname =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 16#usize [
+          85#u8, 84#u8, 70#u8, 56#u8, 83#u8, 84#u8, 82#u8, 73#u8, 78#u8, 71#u8,
+          95#u8, 73#u8, 78#u8, 65#u8, 77#u8, 69#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | syntax_types.SyntaxType.NsUniqueId =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 10#usize [
+          78#u8, 83#u8, 85#u8, 78#u8, 73#u8, 81#u8, 85#u8, 69#u8, 73#u8, 68#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | syntax_types.SyntaxType.DateTime =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 8#usize [
+          68#u8, 65#u8, 84#u8, 69#u8, 84#u8, 73#u8, 77#u8, 69#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | syntax_types.SyntaxType.EmailAddress =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 13#usize [
+          69#u8, 77#u8, 65#u8, 73#u8, 76#u8, 95#u8, 65#u8, 68#u8, 68#u8, 82#u8,
+          69#u8, 83#u8, 83#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | syntax_types.SyntaxType.Url =>
+    let s ←
+      lift (Array.to_slice (Array.make 3#usize [ 85#u8, 82#u8, 76#u8 ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | syntax_types.SyntaxType.OauthScope =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 11#usize [
+          79#u8, 65#u8, 85#u8, 84#u8, 72#u8, 95#u8, 83#u8, 67#u8, 79#u8, 80#u8,
+          69#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | syntax_types.SyntaxType.OauthScopeMap =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 15#usize [
+          79#u8, 65#u8, 85#u8, 84#u8, 72#u8, 95#u8, 83#u8, 67#u8, 79#u8, 80#u8,
+          69#u8, 95#u8, 77#u8, 65#u8, 80#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | syntax_types.SyntaxType.PrivateBinary =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 14#usize [
+          80#u8, 82#u8, 73#u8, 86#u8, 65#u8, 84#u8, 69#u8, 95#u8, 66#u8, 73#u8,
+          78#u8, 65#u8, 82#u8, 89#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | syntax_types.SyntaxType.IntentToken =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 12#usize [
+          73#u8, 78#u8, 84#u8, 69#u8, 78#u8, 84#u8, 95#u8, 84#u8, 79#u8, 75#u8,
+          69#u8, 78#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | syntax_types.SyntaxType.Passkey =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 7#usize [
+          80#u8, 65#u8, 83#u8, 83#u8, 75#u8, 69#u8, 89#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | syntax_types.SyntaxType.AttestedPasskey =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 16#usize [
+          65#u8, 84#u8, 84#u8, 69#u8, 83#u8, 84#u8, 69#u8, 68#u8, 95#u8, 80#u8,
+          65#u8, 83#u8, 83#u8, 75#u8, 69#u8, 89#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | syntax_types.SyntaxType.Session =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 7#usize [
+          83#u8, 69#u8, 83#u8, 83#u8, 73#u8, 79#u8, 78#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | syntax_types.SyntaxType.JwsKeyEs256 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 13#usize [
+          74#u8, 87#u8, 83#u8, 95#u8, 75#u8, 69#u8, 89#u8, 95#u8, 69#u8, 83#u8,
+          50#u8, 53#u8, 54#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | syntax_types.SyntaxType.JwsKeyRs256 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 13#usize [
+          74#u8, 87#u8, 83#u8, 95#u8, 75#u8, 69#u8, 89#u8, 95#u8, 82#u8, 83#u8,
+          50#u8, 53#u8, 54#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | syntax_types.SyntaxType.Oauth2Session =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 13#usize [
+          79#u8, 65#u8, 85#u8, 84#u8, 72#u8, 50#u8, 83#u8, 69#u8, 83#u8, 83#u8,
+          73#u8, 79#u8, 78#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | syntax_types.SyntaxType.UiHint =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 6#usize [ 85#u8, 73#u8, 72#u8, 73#u8, 78#u8, 84#u8 ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | syntax_types.SyntaxType.TotpSecret =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 10#usize [
+          84#u8, 79#u8, 84#u8, 80#u8, 83#u8, 69#u8, 67#u8, 82#u8, 69#u8, 84#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | syntax_types.SyntaxType.ApiToken =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 8#usize [
+          65#u8, 80#u8, 73#u8, 84#u8, 79#u8, 75#u8, 69#u8, 78#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | syntax_types.SyntaxType.AuditLogString =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 16#usize [
+          65#u8, 85#u8, 68#u8, 73#u8, 84#u8, 95#u8, 76#u8, 79#u8, 71#u8, 95#u8,
+          83#u8, 84#u8, 82#u8, 73#u8, 78#u8, 71#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | syntax_types.SyntaxType.EcKeyPrivate =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 14#usize [
+          69#u8, 67#u8, 95#u8, 75#u8, 69#u8, 89#u8, 95#u8, 80#u8, 82#u8, 73#u8,
+          86#u8, 65#u8, 84#u8, 69#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | syntax_types.SyntaxType.Image =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 5#usize [ 73#u8, 77#u8, 65#u8, 71#u8, 69#u8 ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | syntax_types.SyntaxType.CredentialType =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 15#usize [
+          67#u8, 82#u8, 69#u8, 68#u8, 69#u8, 78#u8, 84#u8, 73#u8, 65#u8, 76#u8,
+          95#u8, 84#u8, 89#u8, 80#u8, 69#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | syntax_types.SyntaxType.WebauthnAttestationCaList =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 28#usize [
+          87#u8, 69#u8, 66#u8, 65#u8, 85#u8, 84#u8, 72#u8, 78#u8, 95#u8, 65#u8,
+          84#u8, 84#u8, 69#u8, 83#u8, 84#u8, 65#u8, 84#u8, 73#u8, 79#u8, 78#u8,
+          95#u8, 67#u8, 65#u8, 95#u8, 76#u8, 73#u8, 83#u8, 84#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | syntax_types.SyntaxType.OauthClaimMap =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 15#usize [
+          79#u8, 65#u8, 85#u8, 84#u8, 72#u8, 95#u8, 67#u8, 76#u8, 65#u8, 73#u8,
+          77#u8, 95#u8, 77#u8, 65#u8, 80#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | syntax_types.SyntaxType.KeyInternal =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 12#usize [
+          75#u8, 69#u8, 89#u8, 95#u8, 73#u8, 78#u8, 84#u8, 69#u8, 82#u8, 78#u8,
+          65#u8, 76#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | syntax_types.SyntaxType.HexString =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 10#usize [
+          72#u8, 69#u8, 88#u8, 95#u8, 83#u8, 84#u8, 82#u8, 73#u8, 78#u8, 71#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | syntax_types.SyntaxType.Certificate =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 11#usize [
+          67#u8, 69#u8, 82#u8, 84#u8, 73#u8, 70#u8, 73#u8, 67#u8, 65#u8, 84#u8,
+          69#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | syntax_types.SyntaxType.ApplicationPassword =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 20#usize [
+          65#u8, 80#u8, 80#u8, 76#u8, 73#u8, 67#u8, 65#u8, 84#u8, 73#u8, 79#u8,
+          78#u8, 95#u8, 80#u8, 65#u8, 83#u8, 83#u8, 87#u8, 79#u8, 82#u8, 68#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | syntax_types.SyntaxType.Json =>
+    let s ←
+      lift (Array.to_slice (Array.make 4#usize [ 74#u8, 83#u8, 79#u8, 78#u8 ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | syntax_types.SyntaxType.Message =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 7#usize [
+          77#u8, 69#u8, 83#u8, 83#u8, 65#u8, 71#u8, 69#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | syntax_types.SyntaxType.Sha256 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 6#usize [ 83#u8, 72#u8, 65#u8, 50#u8, 53#u8, 54#u8 ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | syntax_types.SyntaxType.Int64 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 5#usize [ 73#u8, 78#u8, 84#u8, 54#u8, 52#u8 ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | syntax_types.SyntaxType.Uint64 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 6#usize [ 85#u8, 73#u8, 78#u8, 84#u8, 54#u8, 52#u8 ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+
+/-- [kanidm_kernel::syntax_types::index_types]:
+    Source: 'prove/ports/kanidm/kernel/src/syntax_types.rs', lines 175:4-225:5
+    Visibility: public -/
+def syntax_types.index_types
+  («syntax» : syntax_types.SyntaxType) :
+  Result (alloc.vec.Vec syntax_types.IndexType)
+  := do
+  match «syntax» with
+  | syntax_types.SyntaxType.Utf8String =>
+    let out ←
+      alloc.vec.Vec.push (alloc.vec.Vec.new syntax_types.IndexType)
+        syntax_types.IndexType.Equality
+    alloc.vec.Vec.push out syntax_types.IndexType.Presence
+  | syntax_types.SyntaxType.Utf8StringInsensitive =>
+    let out ←
+      alloc.vec.Vec.push (alloc.vec.Vec.new syntax_types.IndexType)
+        syntax_types.IndexType.Equality
+    alloc.vec.Vec.push out syntax_types.IndexType.Presence
+  | syntax_types.SyntaxType.Uuid =>
+    let out ←
+      alloc.vec.Vec.push (alloc.vec.Vec.new syntax_types.IndexType)
+        syntax_types.IndexType.Equality
+    alloc.vec.Vec.push out syntax_types.IndexType.Presence
+  | syntax_types.SyntaxType.Boolean =>
+    alloc.vec.Vec.push (alloc.vec.Vec.new syntax_types.IndexType)
+      syntax_types.IndexType.Equality
+  | syntax_types.SyntaxType.SyntaxId =>
+    ok (alloc.vec.Vec.new syntax_types.IndexType)
+  | syntax_types.SyntaxType.IndexId =>
+    ok (alloc.vec.Vec.new syntax_types.IndexType)
+  | syntax_types.SyntaxType.ReferenceUuid =>
+    let out ←
+      alloc.vec.Vec.push (alloc.vec.Vec.new syntax_types.IndexType)
+        syntax_types.IndexType.Equality
+    alloc.vec.Vec.push out syntax_types.IndexType.Presence
+  | syntax_types.SyntaxType.JsonFilter =>
+    ok (alloc.vec.Vec.new syntax_types.IndexType)
+  | syntax_types.SyntaxType.Credential =>
+    alloc.vec.Vec.push (alloc.vec.Vec.new syntax_types.IndexType)
+      syntax_types.IndexType.Equality
+  | syntax_types.SyntaxType.SecretUtf8String =>
+    ok (alloc.vec.Vec.new syntax_types.IndexType)
+  | syntax_types.SyntaxType.SshKey =>
+    let out ←
+      alloc.vec.Vec.push (alloc.vec.Vec.new syntax_types.IndexType)
+        syntax_types.IndexType.Equality
+    alloc.vec.Vec.push out syntax_types.IndexType.Presence
+  | syntax_types.SyntaxType.SecurityPrincipalName =>
+    let out ←
+      alloc.vec.Vec.push (alloc.vec.Vec.new syntax_types.IndexType)
+        syntax_types.IndexType.Equality
+    let out1 ← alloc.vec.Vec.push out syntax_types.IndexType.Presence
+    alloc.vec.Vec.push out1 syntax_types.IndexType.SubString
+  | syntax_types.SyntaxType.Uint32 =>
+    let out ←
+      alloc.vec.Vec.push (alloc.vec.Vec.new syntax_types.IndexType)
+        syntax_types.IndexType.Equality
+    let out1 ← alloc.vec.Vec.push out syntax_types.IndexType.Presence
+    alloc.vec.Vec.push out1 syntax_types.IndexType.Ordering
+  | syntax_types.SyntaxType.Cid =>
+    let out ←
+      alloc.vec.Vec.push (alloc.vec.Vec.new syntax_types.IndexType)
+        syntax_types.IndexType.Equality
+    let out1 ← alloc.vec.Vec.push out syntax_types.IndexType.Presence
+    alloc.vec.Vec.push out1 syntax_types.IndexType.Ordering
+  | syntax_types.SyntaxType.Utf8StringIname =>
+    let out ←
+      alloc.vec.Vec.push (alloc.vec.Vec.new syntax_types.IndexType)
+        syntax_types.IndexType.Equality
+    let out1 ← alloc.vec.Vec.push out syntax_types.IndexType.Presence
+    alloc.vec.Vec.push out1 syntax_types.IndexType.SubString
+  | syntax_types.SyntaxType.NsUniqueId =>
+    let out ←
+      alloc.vec.Vec.push (alloc.vec.Vec.new syntax_types.IndexType)
+        syntax_types.IndexType.Equality
+    alloc.vec.Vec.push out syntax_types.IndexType.Presence
+  | syntax_types.SyntaxType.DateTime =>
+    let out ←
+      alloc.vec.Vec.push (alloc.vec.Vec.new syntax_types.IndexType)
+        syntax_types.IndexType.Equality
+    let out1 ← alloc.vec.Vec.push out syntax_types.IndexType.Presence
+    alloc.vec.Vec.push out1 syntax_types.IndexType.Ordering
+  | syntax_types.SyntaxType.EmailAddress =>
+    let out ←
+      alloc.vec.Vec.push (alloc.vec.Vec.new syntax_types.IndexType)
+        syntax_types.IndexType.Equality
+    alloc.vec.Vec.push out syntax_types.IndexType.SubString
+  | syntax_types.SyntaxType.Url =>
+    ok (alloc.vec.Vec.new syntax_types.IndexType)
+  | syntax_types.SyntaxType.OauthScope =>
+    ok (alloc.vec.Vec.new syntax_types.IndexType)
+  | syntax_types.SyntaxType.OauthScopeMap =>
+    alloc.vec.Vec.push (alloc.vec.Vec.new syntax_types.IndexType)
+      syntax_types.IndexType.Equality
+  | syntax_types.SyntaxType.PrivateBinary =>
+    ok (alloc.vec.Vec.new syntax_types.IndexType)
+  | syntax_types.SyntaxType.IntentToken =>
+    alloc.vec.Vec.push (alloc.vec.Vec.new syntax_types.IndexType)
+      syntax_types.IndexType.Equality
+  | syntax_types.SyntaxType.Passkey =>
+    alloc.vec.Vec.push (alloc.vec.Vec.new syntax_types.IndexType)
+      syntax_types.IndexType.Equality
+  | syntax_types.SyntaxType.AttestedPasskey =>
+    alloc.vec.Vec.push (alloc.vec.Vec.new syntax_types.IndexType)
+      syntax_types.IndexType.Equality
+  | syntax_types.SyntaxType.Session =>
+    alloc.vec.Vec.push (alloc.vec.Vec.new syntax_types.IndexType)
+      syntax_types.IndexType.Equality
+  | syntax_types.SyntaxType.JwsKeyEs256 =>
+    ok (alloc.vec.Vec.new syntax_types.IndexType)
+  | syntax_types.SyntaxType.JwsKeyRs256 =>
+    ok (alloc.vec.Vec.new syntax_types.IndexType)
+  | syntax_types.SyntaxType.Oauth2Session =>
+    alloc.vec.Vec.push (alloc.vec.Vec.new syntax_types.IndexType)
+      syntax_types.IndexType.Equality
+  | syntax_types.SyntaxType.UiHint =>
+    ok (alloc.vec.Vec.new syntax_types.IndexType)
+  | syntax_types.SyntaxType.TotpSecret =>
+    ok (alloc.vec.Vec.new syntax_types.IndexType)
+  | syntax_types.SyntaxType.ApiToken =>
+    alloc.vec.Vec.push (alloc.vec.Vec.new syntax_types.IndexType)
+      syntax_types.IndexType.Equality
+  | syntax_types.SyntaxType.AuditLogString =>
+    ok (alloc.vec.Vec.new syntax_types.IndexType)
+  | syntax_types.SyntaxType.EcKeyPrivate =>
+    ok (alloc.vec.Vec.new syntax_types.IndexType)
+  | syntax_types.SyntaxType.Image =>
+    ok (alloc.vec.Vec.new syntax_types.IndexType)
+  | syntax_types.SyntaxType.CredentialType =>
+    ok (alloc.vec.Vec.new syntax_types.IndexType)
+  | syntax_types.SyntaxType.WebauthnAttestationCaList =>
+    ok (alloc.vec.Vec.new syntax_types.IndexType)
+  | syntax_types.SyntaxType.OauthClaimMap =>
+    alloc.vec.Vec.push (alloc.vec.Vec.new syntax_types.IndexType)
+      syntax_types.IndexType.Equality
+  | syntax_types.SyntaxType.KeyInternal =>
+    ok (alloc.vec.Vec.new syntax_types.IndexType)
+  | syntax_types.SyntaxType.HexString =>
+    ok (alloc.vec.Vec.new syntax_types.IndexType)
+  | syntax_types.SyntaxType.Certificate =>
+    ok (alloc.vec.Vec.new syntax_types.IndexType)
+  | syntax_types.SyntaxType.ApplicationPassword =>
+    alloc.vec.Vec.push (alloc.vec.Vec.new syntax_types.IndexType)
+      syntax_types.IndexType.Equality
+  | syntax_types.SyntaxType.Json =>
+    ok (alloc.vec.Vec.new syntax_types.IndexType)
+  | syntax_types.SyntaxType.Message =>
+    ok (alloc.vec.Vec.new syntax_types.IndexType)
+  | syntax_types.SyntaxType.Sha256 =>
+    alloc.vec.Vec.push (alloc.vec.Vec.new syntax_types.IndexType)
+      syntax_types.IndexType.Equality
+  | syntax_types.SyntaxType.Int64 =>
+    let out ←
+      alloc.vec.Vec.push (alloc.vec.Vec.new syntax_types.IndexType)
+        syntax_types.IndexType.Equality
+    let out1 ← alloc.vec.Vec.push out syntax_types.IndexType.Presence
+    alloc.vec.Vec.push out1 syntax_types.IndexType.Ordering
+  | syntax_types.SyntaxType.Uint64 =>
+    let out ←
+      alloc.vec.Vec.push (alloc.vec.Vec.new syntax_types.IndexType)
+        syntax_types.IndexType.Equality
+    let out1 ← alloc.vec.Vec.push out syntax_types.IndexType.Presence
+    alloc.vec.Vec.push out1 syntax_types.IndexType.Ordering
+
+/-- [kanidm_kernel::value_observers::Oauth2Session]
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 9:0-9:62
+    Visibility: public -/
+structure value_observers.Oauth2Session where
+  rs_uuid : Std.U128
+  payload : Std.U64
+
+/-- [kanidm_kernel::value_observers::Value]
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 11:0-79:1
+    Visibility: public -/
+@[discriminant isize]
+inductive value_observers.Value where
+| Utf8 : Std.U64 → value_observers.Value
+| Iutf8 : Std.U64 → value_observers.Value
+| Iname : Std.U64 → value_observers.Value
+| Uuid : Std.U128 → value_observers.Value
+| Boolean : Bool → value_observers.Value
+| Syntax : Std.U64 → value_observers.Value
+| Index : Std.U64 → value_observers.Value
+| Refer : Std.U128 → value_observers.Value
+| JsonFilt : Std.U64 → value_observers.Value
+| Cred : Std.U64 → Std.U64 → value_observers.Value
+| SshKey : Std.U64 → Std.U64 → value_observers.Value
+| SecretValue : Std.U64 → value_observers.Value
+| Spn : Std.U64 → Std.U64 → value_observers.Value
+| Uint32 : Std.U32 → value_observers.Value
+| Int64 : Std.I64 → value_observers.Value
+| Uint64 : Std.U64 → value_observers.Value
+| Cid : Std.U64 → value_observers.Value
+| Nsuniqueid : Std.U64 → value_observers.Value
+| DateTime : Std.U64 → value_observers.Value
+| EmailAddress : Std.U64 → Bool → value_observers.Value
+| PhoneNumber : Std.U64 → Bool → value_observers.Value
+| Address : Std.U64 → value_observers.Value
+| Url : Std.U64 → value_observers.Value
+| OauthScope : Std.U64 → value_observers.Value
+| OauthScopeMap : Std.U128 → Std.U64 → value_observers.Value
+| PrivateBinary : Std.U64 → value_observers.Value
+| PublicBinary : Std.U64 → Std.U64 → value_observers.Value
+| RestrictedString : Std.U64 → value_observers.Value
+| IntentToken : Std.U64 → Std.U64 → value_observers.Value
+| Passkey : Std.U128 → Std.U64 → Std.U64 → value_observers.Value
+| AttestedPasskey : Std.U128 → Std.U64 → Std.U64 → value_observers.Value
+| Session : Std.U128 → Std.U64 → value_observers.Value
+| ApiToken : Std.U128 → Std.U64 → value_observers.Value
+| Oauth2Session :
+  Std.U128 →
+  value_observers.Oauth2Session →
+  value_observers.Value
+| JwsKeyEs256 : Std.U64 → value_observers.Value
+| JwsKeyRs256 : Std.U64 → value_observers.Value
+| UiHint : Std.U64 → value_observers.Value
+| TotpSecret : Std.U64 → Std.U64 → value_observers.Value
+| AuditLogString : Std.U64 → Std.U64 → value_observers.Value
+| Image : Std.U64 → value_observers.Value
+| CredentialType : Std.U64 → value_observers.Value
+| WebauthnAttestationCaList : Std.U64 → value_observers.Value
+| OauthClaimValue : Std.U64 → Std.U128 → Std.U64 → value_observers.Value
+| OauthClaimMap : Std.U64 → Std.U64 → value_observers.Value
+| KeyInternal :
+  Std.U64 →
+  Std.U64 →
+  Std.U64 →
+  Std.U64 →
+  Std.U64 →
+  Std.U64 →
+  value_observers.Value
+| HexString : Std.U64 → value_observers.Value
+| Certificate : Std.U64 → value_observers.Value
+| ApplicationPassword : Std.U64 → value_observers.Value
+| Json : Std.U64 → value_observers.Value
+| Sha256 : Std.U64 → value_observers.Value
+
+/-- [kanidm_kernel::value_observers::PartialValue]
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 81:0-130:1
+    Visibility: public -/
+@[discriminant isize]
+inductive value_observers.PartialValue where
+| Utf8 : Std.U64 → value_observers.PartialValue
+| Iutf8 : Std.U64 → value_observers.PartialValue
+| Iname : Std.U64 → value_observers.PartialValue
+| Uuid : Std.U128 → value_observers.PartialValue
+| Boolean : Bool → value_observers.PartialValue
+| Syntax : Std.U64 → value_observers.PartialValue
+| Index : Std.U64 → value_observers.PartialValue
+| Refer : Std.U128 → value_observers.PartialValue
+| JsonFilt : Std.U64 → value_observers.PartialValue
+| Cred : Std.U64 → value_observers.PartialValue
+| SshKey : Std.U64 → value_observers.PartialValue
+| SecretValue : value_observers.PartialValue
+| Spn : Std.U64 → Std.U64 → value_observers.PartialValue
+| Uint32 : Std.U32 → value_observers.PartialValue
+| Cid : Std.U64 → value_observers.PartialValue
+| Nsuniqueid : Std.U64 → value_observers.PartialValue
+| DateTime : Std.U64 → value_observers.PartialValue
+| EmailAddress : Std.U64 → value_observers.PartialValue
+| PhoneNumber : Std.U64 → value_observers.PartialValue
+| Address : Std.U64 → value_observers.PartialValue
+| Url : Std.U64 → value_observers.PartialValue
+| OauthScope : Std.U64 → value_observers.PartialValue
+| PrivateBinary : value_observers.PartialValue
+| PublicBinary : Std.U64 → value_observers.PartialValue
+| RestrictedString : Std.U64 → value_observers.PartialValue
+| IntentToken : Std.U64 → value_observers.PartialValue
+| UiHint : Std.U64 → value_observers.PartialValue
+| Passkey : Std.U128 → value_observers.PartialValue
+| AttestedPasskey : Std.U128 → value_observers.PartialValue
+| Image : Std.U64 → value_observers.PartialValue
+| CredentialType : Std.U64 → value_observers.PartialValue
+| OauthClaim : Std.U64 → Std.U128 → value_observers.PartialValue
+| OauthClaimValue :
+  Std.U64 →
+  Std.U128 →
+  Std.U64 →
+  value_observers.PartialValue
+| HexString : Std.U64 → value_observers.PartialValue
+| Json : value_observers.PartialValue
+| Sha256 : Std.U64 → value_observers.PartialValue
+| Int64 : Std.I64 → value_observers.PartialValue
+| Uint64 : Std.U64 → value_observers.PartialValue
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::is_utf8]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 132:4-134:5
+    Visibility: public -/
+def value_observers.Value.is_utf8
+  (self : value_observers.Value) : Result Bool := do
+  match self with
+  | value_observers.Value.Utf8 _ => ok true
+  | value_observers.Value.Iutf8 _ => ok false
+  | value_observers.Value.Iname _ => ok false
+  | value_observers.Value.Uuid _ => ok false
+  | value_observers.Value.Boolean _ => ok false
+  | value_observers.Value.Syntax _ => ok false
+  | value_observers.Value.Index _ => ok false
+  | value_observers.Value.Refer _ => ok false
+  | value_observers.Value.JsonFilt _ => ok false
+  | value_observers.Value.Cred _ _ => ok false
+  | value_observers.Value.SshKey _ _ => ok false
+  | value_observers.Value.SecretValue _ => ok false
+  | value_observers.Value.Spn _ _ => ok false
+  | value_observers.Value.Uint32 _ => ok false
+  | value_observers.Value.Int64 _ => ok false
+  | value_observers.Value.Uint64 _ => ok false
+  | value_observers.Value.Cid _ => ok false
+  | value_observers.Value.Nsuniqueid _ => ok false
+  | value_observers.Value.DateTime _ => ok false
+  | value_observers.Value.EmailAddress _ _ => ok false
+  | value_observers.Value.PhoneNumber _ _ => ok false
+  | value_observers.Value.Address _ => ok false
+  | value_observers.Value.Url _ => ok false
+  | value_observers.Value.OauthScope _ => ok false
+  | value_observers.Value.OauthScopeMap _ _ => ok false
+  | value_observers.Value.PrivateBinary _ => ok false
+  | value_observers.Value.PublicBinary _ _ => ok false
+  | value_observers.Value.RestrictedString _ => ok false
+  | value_observers.Value.IntentToken _ _ => ok false
+  | value_observers.Value.Passkey _ _ _ => ok false
+  | value_observers.Value.AttestedPasskey _ _ _ => ok false
+  | value_observers.Value.Session _ _ => ok false
+  | value_observers.Value.ApiToken _ _ => ok false
+  | value_observers.Value.Oauth2Session _ _ => ok false
+  | value_observers.Value.JwsKeyEs256 _ => ok false
+  | value_observers.Value.JwsKeyRs256 _ => ok false
+  | value_observers.Value.UiHint _ => ok false
+  | value_observers.Value.TotpSecret _ _ => ok false
+  | value_observers.Value.AuditLogString _ _ => ok false
+  | value_observers.Value.Image _ => ok false
+  | value_observers.Value.CredentialType _ => ok false
+  | value_observers.Value.WebauthnAttestationCaList _ => ok false
+  | value_observers.Value.OauthClaimValue _ _ _ => ok false
+  | value_observers.Value.OauthClaimMap _ _ => ok false
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok false
+  | value_observers.Value.HexString _ => ok false
+  | value_observers.Value.Certificate _ => ok false
+  | value_observers.Value.ApplicationPassword _ => ok false
+  | value_observers.Value.Json _ => ok false
+  | value_observers.Value.Sha256 _ => ok false
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::is_iutf8]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 135:4-137:5
+    Visibility: public -/
+def value_observers.Value.is_iutf8
+  (self : value_observers.Value) : Result Bool := do
+  match self with
+  | value_observers.Value.Utf8 _ => ok false
+  | value_observers.Value.Iutf8 _ => ok true
+  | value_observers.Value.Iname _ => ok false
+  | value_observers.Value.Uuid _ => ok false
+  | value_observers.Value.Boolean _ => ok false
+  | value_observers.Value.Syntax _ => ok false
+  | value_observers.Value.Index _ => ok false
+  | value_observers.Value.Refer _ => ok false
+  | value_observers.Value.JsonFilt _ => ok false
+  | value_observers.Value.Cred _ _ => ok false
+  | value_observers.Value.SshKey _ _ => ok false
+  | value_observers.Value.SecretValue _ => ok false
+  | value_observers.Value.Spn _ _ => ok false
+  | value_observers.Value.Uint32 _ => ok false
+  | value_observers.Value.Int64 _ => ok false
+  | value_observers.Value.Uint64 _ => ok false
+  | value_observers.Value.Cid _ => ok false
+  | value_observers.Value.Nsuniqueid _ => ok false
+  | value_observers.Value.DateTime _ => ok false
+  | value_observers.Value.EmailAddress _ _ => ok false
+  | value_observers.Value.PhoneNumber _ _ => ok false
+  | value_observers.Value.Address _ => ok false
+  | value_observers.Value.Url _ => ok false
+  | value_observers.Value.OauthScope _ => ok false
+  | value_observers.Value.OauthScopeMap _ _ => ok false
+  | value_observers.Value.PrivateBinary _ => ok false
+  | value_observers.Value.PublicBinary _ _ => ok false
+  | value_observers.Value.RestrictedString _ => ok false
+  | value_observers.Value.IntentToken _ _ => ok false
+  | value_observers.Value.Passkey _ _ _ => ok false
+  | value_observers.Value.AttestedPasskey _ _ _ => ok false
+  | value_observers.Value.Session _ _ => ok false
+  | value_observers.Value.ApiToken _ _ => ok false
+  | value_observers.Value.Oauth2Session _ _ => ok false
+  | value_observers.Value.JwsKeyEs256 _ => ok false
+  | value_observers.Value.JwsKeyRs256 _ => ok false
+  | value_observers.Value.UiHint _ => ok false
+  | value_observers.Value.TotpSecret _ _ => ok false
+  | value_observers.Value.AuditLogString _ _ => ok false
+  | value_observers.Value.Image _ => ok false
+  | value_observers.Value.CredentialType _ => ok false
+  | value_observers.Value.WebauthnAttestationCaList _ => ok false
+  | value_observers.Value.OauthClaimValue _ _ _ => ok false
+  | value_observers.Value.OauthClaimMap _ _ => ok false
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok false
+  | value_observers.Value.HexString _ => ok false
+  | value_observers.Value.Certificate _ => ok false
+  | value_observers.Value.ApplicationPassword _ => ok false
+  | value_observers.Value.Json _ => ok false
+  | value_observers.Value.Sha256 _ => ok false
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::is_insensitive_utf8]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 138:4-140:5
+    Visibility: public -/
+def value_observers.Value.is_insensitive_utf8
+  (self : value_observers.Value) : Result Bool := do
+  match self with
+  | value_observers.Value.Utf8 _ => ok false
+  | value_observers.Value.Iutf8 _ => ok true
+  | value_observers.Value.Iname _ => ok false
+  | value_observers.Value.Uuid _ => ok false
+  | value_observers.Value.Boolean _ => ok false
+  | value_observers.Value.Syntax _ => ok false
+  | value_observers.Value.Index _ => ok false
+  | value_observers.Value.Refer _ => ok false
+  | value_observers.Value.JsonFilt _ => ok false
+  | value_observers.Value.Cred _ _ => ok false
+  | value_observers.Value.SshKey _ _ => ok false
+  | value_observers.Value.SecretValue _ => ok false
+  | value_observers.Value.Spn _ _ => ok false
+  | value_observers.Value.Uint32 _ => ok false
+  | value_observers.Value.Int64 _ => ok false
+  | value_observers.Value.Uint64 _ => ok false
+  | value_observers.Value.Cid _ => ok false
+  | value_observers.Value.Nsuniqueid _ => ok false
+  | value_observers.Value.DateTime _ => ok false
+  | value_observers.Value.EmailAddress _ _ => ok false
+  | value_observers.Value.PhoneNumber _ _ => ok false
+  | value_observers.Value.Address _ => ok false
+  | value_observers.Value.Url _ => ok false
+  | value_observers.Value.OauthScope _ => ok false
+  | value_observers.Value.OauthScopeMap _ _ => ok false
+  | value_observers.Value.PrivateBinary _ => ok false
+  | value_observers.Value.PublicBinary _ _ => ok false
+  | value_observers.Value.RestrictedString _ => ok false
+  | value_observers.Value.IntentToken _ _ => ok false
+  | value_observers.Value.Passkey _ _ _ => ok false
+  | value_observers.Value.AttestedPasskey _ _ _ => ok false
+  | value_observers.Value.Session _ _ => ok false
+  | value_observers.Value.ApiToken _ _ => ok false
+  | value_observers.Value.Oauth2Session _ _ => ok false
+  | value_observers.Value.JwsKeyEs256 _ => ok false
+  | value_observers.Value.JwsKeyRs256 _ => ok false
+  | value_observers.Value.UiHint _ => ok false
+  | value_observers.Value.TotpSecret _ _ => ok false
+  | value_observers.Value.AuditLogString _ _ => ok false
+  | value_observers.Value.Image _ => ok false
+  | value_observers.Value.CredentialType _ => ok false
+  | value_observers.Value.WebauthnAttestationCaList _ => ok false
+  | value_observers.Value.OauthClaimValue _ _ _ => ok false
+  | value_observers.Value.OauthClaimMap _ _ => ok false
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok false
+  | value_observers.Value.HexString _ => ok false
+  | value_observers.Value.Certificate _ => ok false
+  | value_observers.Value.ApplicationPassword _ => ok false
+  | value_observers.Value.Json _ => ok false
+  | value_observers.Value.Sha256 _ => ok false
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::is_iname]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 141:4-143:5
+    Visibility: public -/
+def value_observers.Value.is_iname
+  (self : value_observers.Value) : Result Bool := do
+  match self with
+  | value_observers.Value.Utf8 _ => ok false
+  | value_observers.Value.Iutf8 _ => ok false
+  | value_observers.Value.Iname _ => ok true
+  | value_observers.Value.Uuid _ => ok false
+  | value_observers.Value.Boolean _ => ok false
+  | value_observers.Value.Syntax _ => ok false
+  | value_observers.Value.Index _ => ok false
+  | value_observers.Value.Refer _ => ok false
+  | value_observers.Value.JsonFilt _ => ok false
+  | value_observers.Value.Cred _ _ => ok false
+  | value_observers.Value.SshKey _ _ => ok false
+  | value_observers.Value.SecretValue _ => ok false
+  | value_observers.Value.Spn _ _ => ok false
+  | value_observers.Value.Uint32 _ => ok false
+  | value_observers.Value.Int64 _ => ok false
+  | value_observers.Value.Uint64 _ => ok false
+  | value_observers.Value.Cid _ => ok false
+  | value_observers.Value.Nsuniqueid _ => ok false
+  | value_observers.Value.DateTime _ => ok false
+  | value_observers.Value.EmailAddress _ _ => ok false
+  | value_observers.Value.PhoneNumber _ _ => ok false
+  | value_observers.Value.Address _ => ok false
+  | value_observers.Value.Url _ => ok false
+  | value_observers.Value.OauthScope _ => ok false
+  | value_observers.Value.OauthScopeMap _ _ => ok false
+  | value_observers.Value.PrivateBinary _ => ok false
+  | value_observers.Value.PublicBinary _ _ => ok false
+  | value_observers.Value.RestrictedString _ => ok false
+  | value_observers.Value.IntentToken _ _ => ok false
+  | value_observers.Value.Passkey _ _ _ => ok false
+  | value_observers.Value.AttestedPasskey _ _ _ => ok false
+  | value_observers.Value.Session _ _ => ok false
+  | value_observers.Value.ApiToken _ _ => ok false
+  | value_observers.Value.Oauth2Session _ _ => ok false
+  | value_observers.Value.JwsKeyEs256 _ => ok false
+  | value_observers.Value.JwsKeyRs256 _ => ok false
+  | value_observers.Value.UiHint _ => ok false
+  | value_observers.Value.TotpSecret _ _ => ok false
+  | value_observers.Value.AuditLogString _ _ => ok false
+  | value_observers.Value.Image _ => ok false
+  | value_observers.Value.CredentialType _ => ok false
+  | value_observers.Value.WebauthnAttestationCaList _ => ok false
+  | value_observers.Value.OauthClaimValue _ _ _ => ok false
+  | value_observers.Value.OauthClaimMap _ _ => ok false
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok false
+  | value_observers.Value.HexString _ => ok false
+  | value_observers.Value.Certificate _ => ok false
+  | value_observers.Value.ApplicationPassword _ => ok false
+  | value_observers.Value.Json _ => ok false
+  | value_observers.Value.Sha256 _ => ok false
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::is_uuid]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 144:4-146:5
+    Visibility: public -/
+def value_observers.Value.is_uuid
+  (self : value_observers.Value) : Result Bool := do
+  match self with
+  | value_observers.Value.Utf8 _ => ok false
+  | value_observers.Value.Iutf8 _ => ok false
+  | value_observers.Value.Iname _ => ok false
+  | value_observers.Value.Uuid _ => ok true
+  | value_observers.Value.Boolean _ => ok false
+  | value_observers.Value.Syntax _ => ok false
+  | value_observers.Value.Index _ => ok false
+  | value_observers.Value.Refer _ => ok false
+  | value_observers.Value.JsonFilt _ => ok false
+  | value_observers.Value.Cred _ _ => ok false
+  | value_observers.Value.SshKey _ _ => ok false
+  | value_observers.Value.SecretValue _ => ok false
+  | value_observers.Value.Spn _ _ => ok false
+  | value_observers.Value.Uint32 _ => ok false
+  | value_observers.Value.Int64 _ => ok false
+  | value_observers.Value.Uint64 _ => ok false
+  | value_observers.Value.Cid _ => ok false
+  | value_observers.Value.Nsuniqueid _ => ok false
+  | value_observers.Value.DateTime _ => ok false
+  | value_observers.Value.EmailAddress _ _ => ok false
+  | value_observers.Value.PhoneNumber _ _ => ok false
+  | value_observers.Value.Address _ => ok false
+  | value_observers.Value.Url _ => ok false
+  | value_observers.Value.OauthScope _ => ok false
+  | value_observers.Value.OauthScopeMap _ _ => ok false
+  | value_observers.Value.PrivateBinary _ => ok false
+  | value_observers.Value.PublicBinary _ _ => ok false
+  | value_observers.Value.RestrictedString _ => ok false
+  | value_observers.Value.IntentToken _ _ => ok false
+  | value_observers.Value.Passkey _ _ _ => ok false
+  | value_observers.Value.AttestedPasskey _ _ _ => ok false
+  | value_observers.Value.Session _ _ => ok false
+  | value_observers.Value.ApiToken _ _ => ok false
+  | value_observers.Value.Oauth2Session _ _ => ok false
+  | value_observers.Value.JwsKeyEs256 _ => ok false
+  | value_observers.Value.JwsKeyRs256 _ => ok false
+  | value_observers.Value.UiHint _ => ok false
+  | value_observers.Value.TotpSecret _ _ => ok false
+  | value_observers.Value.AuditLogString _ _ => ok false
+  | value_observers.Value.Image _ => ok false
+  | value_observers.Value.CredentialType _ => ok false
+  | value_observers.Value.WebauthnAttestationCaList _ => ok false
+  | value_observers.Value.OauthClaimValue _ _ _ => ok false
+  | value_observers.Value.OauthClaimMap _ _ => ok false
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok false
+  | value_observers.Value.HexString _ => ok false
+  | value_observers.Value.Certificate _ => ok false
+  | value_observers.Value.ApplicationPassword _ => ok false
+  | value_observers.Value.Json _ => ok false
+  | value_observers.Value.Sha256 _ => ok false
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::is_bool]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 147:4-149:5
+    Visibility: public -/
+def value_observers.Value.is_bool
+  (self : value_observers.Value) : Result Bool := do
+  match self with
+  | value_observers.Value.Utf8 _ => ok false
+  | value_observers.Value.Iutf8 _ => ok false
+  | value_observers.Value.Iname _ => ok false
+  | value_observers.Value.Uuid _ => ok false
+  | value_observers.Value.Boolean _ => ok true
+  | value_observers.Value.Syntax _ => ok false
+  | value_observers.Value.Index _ => ok false
+  | value_observers.Value.Refer _ => ok false
+  | value_observers.Value.JsonFilt _ => ok false
+  | value_observers.Value.Cred _ _ => ok false
+  | value_observers.Value.SshKey _ _ => ok false
+  | value_observers.Value.SecretValue _ => ok false
+  | value_observers.Value.Spn _ _ => ok false
+  | value_observers.Value.Uint32 _ => ok false
+  | value_observers.Value.Int64 _ => ok false
+  | value_observers.Value.Uint64 _ => ok false
+  | value_observers.Value.Cid _ => ok false
+  | value_observers.Value.Nsuniqueid _ => ok false
+  | value_observers.Value.DateTime _ => ok false
+  | value_observers.Value.EmailAddress _ _ => ok false
+  | value_observers.Value.PhoneNumber _ _ => ok false
+  | value_observers.Value.Address _ => ok false
+  | value_observers.Value.Url _ => ok false
+  | value_observers.Value.OauthScope _ => ok false
+  | value_observers.Value.OauthScopeMap _ _ => ok false
+  | value_observers.Value.PrivateBinary _ => ok false
+  | value_observers.Value.PublicBinary _ _ => ok false
+  | value_observers.Value.RestrictedString _ => ok false
+  | value_observers.Value.IntentToken _ _ => ok false
+  | value_observers.Value.Passkey _ _ _ => ok false
+  | value_observers.Value.AttestedPasskey _ _ _ => ok false
+  | value_observers.Value.Session _ _ => ok false
+  | value_observers.Value.ApiToken _ _ => ok false
+  | value_observers.Value.Oauth2Session _ _ => ok false
+  | value_observers.Value.JwsKeyEs256 _ => ok false
+  | value_observers.Value.JwsKeyRs256 _ => ok false
+  | value_observers.Value.UiHint _ => ok false
+  | value_observers.Value.TotpSecret _ _ => ok false
+  | value_observers.Value.AuditLogString _ _ => ok false
+  | value_observers.Value.Image _ => ok false
+  | value_observers.Value.CredentialType _ => ok false
+  | value_observers.Value.WebauthnAttestationCaList _ => ok false
+  | value_observers.Value.OauthClaimValue _ _ _ => ok false
+  | value_observers.Value.OauthClaimMap _ _ => ok false
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok false
+  | value_observers.Value.HexString _ => ok false
+  | value_observers.Value.Certificate _ => ok false
+  | value_observers.Value.ApplicationPassword _ => ok false
+  | value_observers.Value.Json _ => ok false
+  | value_observers.Value.Sha256 _ => ok false
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::is_syntax]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 150:4-152:5
+    Visibility: public -/
+def value_observers.Value.is_syntax
+  (self : value_observers.Value) : Result Bool := do
+  match self with
+  | value_observers.Value.Utf8 _ => ok false
+  | value_observers.Value.Iutf8 _ => ok false
+  | value_observers.Value.Iname _ => ok false
+  | value_observers.Value.Uuid _ => ok false
+  | value_observers.Value.Boolean _ => ok false
+  | value_observers.Value.Syntax _ => ok true
+  | value_observers.Value.Index _ => ok false
+  | value_observers.Value.Refer _ => ok false
+  | value_observers.Value.JsonFilt _ => ok false
+  | value_observers.Value.Cred _ _ => ok false
+  | value_observers.Value.SshKey _ _ => ok false
+  | value_observers.Value.SecretValue _ => ok false
+  | value_observers.Value.Spn _ _ => ok false
+  | value_observers.Value.Uint32 _ => ok false
+  | value_observers.Value.Int64 _ => ok false
+  | value_observers.Value.Uint64 _ => ok false
+  | value_observers.Value.Cid _ => ok false
+  | value_observers.Value.Nsuniqueid _ => ok false
+  | value_observers.Value.DateTime _ => ok false
+  | value_observers.Value.EmailAddress _ _ => ok false
+  | value_observers.Value.PhoneNumber _ _ => ok false
+  | value_observers.Value.Address _ => ok false
+  | value_observers.Value.Url _ => ok false
+  | value_observers.Value.OauthScope _ => ok false
+  | value_observers.Value.OauthScopeMap _ _ => ok false
+  | value_observers.Value.PrivateBinary _ => ok false
+  | value_observers.Value.PublicBinary _ _ => ok false
+  | value_observers.Value.RestrictedString _ => ok false
+  | value_observers.Value.IntentToken _ _ => ok false
+  | value_observers.Value.Passkey _ _ _ => ok false
+  | value_observers.Value.AttestedPasskey _ _ _ => ok false
+  | value_observers.Value.Session _ _ => ok false
+  | value_observers.Value.ApiToken _ _ => ok false
+  | value_observers.Value.Oauth2Session _ _ => ok false
+  | value_observers.Value.JwsKeyEs256 _ => ok false
+  | value_observers.Value.JwsKeyRs256 _ => ok false
+  | value_observers.Value.UiHint _ => ok false
+  | value_observers.Value.TotpSecret _ _ => ok false
+  | value_observers.Value.AuditLogString _ _ => ok false
+  | value_observers.Value.Image _ => ok false
+  | value_observers.Value.CredentialType _ => ok false
+  | value_observers.Value.WebauthnAttestationCaList _ => ok false
+  | value_observers.Value.OauthClaimValue _ _ _ => ok false
+  | value_observers.Value.OauthClaimMap _ _ => ok false
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok false
+  | value_observers.Value.HexString _ => ok false
+  | value_observers.Value.Certificate _ => ok false
+  | value_observers.Value.ApplicationPassword _ => ok false
+  | value_observers.Value.Json _ => ok false
+  | value_observers.Value.Sha256 _ => ok false
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::is_index]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 153:4-155:5
+    Visibility: public -/
+def value_observers.Value.is_index
+  (self : value_observers.Value) : Result Bool := do
+  match self with
+  | value_observers.Value.Utf8 _ => ok false
+  | value_observers.Value.Iutf8 _ => ok false
+  | value_observers.Value.Iname _ => ok false
+  | value_observers.Value.Uuid _ => ok false
+  | value_observers.Value.Boolean _ => ok false
+  | value_observers.Value.Syntax _ => ok false
+  | value_observers.Value.Index _ => ok true
+  | value_observers.Value.Refer _ => ok false
+  | value_observers.Value.JsonFilt _ => ok false
+  | value_observers.Value.Cred _ _ => ok false
+  | value_observers.Value.SshKey _ _ => ok false
+  | value_observers.Value.SecretValue _ => ok false
+  | value_observers.Value.Spn _ _ => ok false
+  | value_observers.Value.Uint32 _ => ok false
+  | value_observers.Value.Int64 _ => ok false
+  | value_observers.Value.Uint64 _ => ok false
+  | value_observers.Value.Cid _ => ok false
+  | value_observers.Value.Nsuniqueid _ => ok false
+  | value_observers.Value.DateTime _ => ok false
+  | value_observers.Value.EmailAddress _ _ => ok false
+  | value_observers.Value.PhoneNumber _ _ => ok false
+  | value_observers.Value.Address _ => ok false
+  | value_observers.Value.Url _ => ok false
+  | value_observers.Value.OauthScope _ => ok false
+  | value_observers.Value.OauthScopeMap _ _ => ok false
+  | value_observers.Value.PrivateBinary _ => ok false
+  | value_observers.Value.PublicBinary _ _ => ok false
+  | value_observers.Value.RestrictedString _ => ok false
+  | value_observers.Value.IntentToken _ _ => ok false
+  | value_observers.Value.Passkey _ _ _ => ok false
+  | value_observers.Value.AttestedPasskey _ _ _ => ok false
+  | value_observers.Value.Session _ _ => ok false
+  | value_observers.Value.ApiToken _ _ => ok false
+  | value_observers.Value.Oauth2Session _ _ => ok false
+  | value_observers.Value.JwsKeyEs256 _ => ok false
+  | value_observers.Value.JwsKeyRs256 _ => ok false
+  | value_observers.Value.UiHint _ => ok false
+  | value_observers.Value.TotpSecret _ _ => ok false
+  | value_observers.Value.AuditLogString _ _ => ok false
+  | value_observers.Value.Image _ => ok false
+  | value_observers.Value.CredentialType _ => ok false
+  | value_observers.Value.WebauthnAttestationCaList _ => ok false
+  | value_observers.Value.OauthClaimValue _ _ _ => ok false
+  | value_observers.Value.OauthClaimMap _ _ => ok false
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok false
+  | value_observers.Value.HexString _ => ok false
+  | value_observers.Value.Certificate _ => ok false
+  | value_observers.Value.ApplicationPassword _ => ok false
+  | value_observers.Value.Json _ => ok false
+  | value_observers.Value.Sha256 _ => ok false
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::is_refer]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 156:4-158:5
+    Visibility: public -/
+def value_observers.Value.is_refer
+  (self : value_observers.Value) : Result Bool := do
+  match self with
+  | value_observers.Value.Utf8 _ => ok false
+  | value_observers.Value.Iutf8 _ => ok false
+  | value_observers.Value.Iname _ => ok false
+  | value_observers.Value.Uuid _ => ok false
+  | value_observers.Value.Boolean _ => ok false
+  | value_observers.Value.Syntax _ => ok false
+  | value_observers.Value.Index _ => ok false
+  | value_observers.Value.Refer _ => ok true
+  | value_observers.Value.JsonFilt _ => ok false
+  | value_observers.Value.Cred _ _ => ok false
+  | value_observers.Value.SshKey _ _ => ok false
+  | value_observers.Value.SecretValue _ => ok false
+  | value_observers.Value.Spn _ _ => ok false
+  | value_observers.Value.Uint32 _ => ok false
+  | value_observers.Value.Int64 _ => ok false
+  | value_observers.Value.Uint64 _ => ok false
+  | value_observers.Value.Cid _ => ok false
+  | value_observers.Value.Nsuniqueid _ => ok false
+  | value_observers.Value.DateTime _ => ok false
+  | value_observers.Value.EmailAddress _ _ => ok false
+  | value_observers.Value.PhoneNumber _ _ => ok false
+  | value_observers.Value.Address _ => ok false
+  | value_observers.Value.Url _ => ok false
+  | value_observers.Value.OauthScope _ => ok false
+  | value_observers.Value.OauthScopeMap _ _ => ok false
+  | value_observers.Value.PrivateBinary _ => ok false
+  | value_observers.Value.PublicBinary _ _ => ok false
+  | value_observers.Value.RestrictedString _ => ok false
+  | value_observers.Value.IntentToken _ _ => ok false
+  | value_observers.Value.Passkey _ _ _ => ok false
+  | value_observers.Value.AttestedPasskey _ _ _ => ok false
+  | value_observers.Value.Session _ _ => ok false
+  | value_observers.Value.ApiToken _ _ => ok false
+  | value_observers.Value.Oauth2Session _ _ => ok false
+  | value_observers.Value.JwsKeyEs256 _ => ok false
+  | value_observers.Value.JwsKeyRs256 _ => ok false
+  | value_observers.Value.UiHint _ => ok false
+  | value_observers.Value.TotpSecret _ _ => ok false
+  | value_observers.Value.AuditLogString _ _ => ok false
+  | value_observers.Value.Image _ => ok false
+  | value_observers.Value.CredentialType _ => ok false
+  | value_observers.Value.WebauthnAttestationCaList _ => ok false
+  | value_observers.Value.OauthClaimValue _ _ _ => ok false
+  | value_observers.Value.OauthClaimMap _ _ => ok false
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok false
+  | value_observers.Value.HexString _ => ok false
+  | value_observers.Value.Certificate _ => ok false
+  | value_observers.Value.ApplicationPassword _ => ok false
+  | value_observers.Value.Json _ => ok false
+  | value_observers.Value.Sha256 _ => ok false
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::is_json_filter]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 159:4-161:5
+    Visibility: public -/
+def value_observers.Value.is_json_filter
+  (self : value_observers.Value) : Result Bool := do
+  match self with
+  | value_observers.Value.Utf8 _ => ok false
+  | value_observers.Value.Iutf8 _ => ok false
+  | value_observers.Value.Iname _ => ok false
+  | value_observers.Value.Uuid _ => ok false
+  | value_observers.Value.Boolean _ => ok false
+  | value_observers.Value.Syntax _ => ok false
+  | value_observers.Value.Index _ => ok false
+  | value_observers.Value.Refer _ => ok false
+  | value_observers.Value.JsonFilt _ => ok true
+  | value_observers.Value.Cred _ _ => ok false
+  | value_observers.Value.SshKey _ _ => ok false
+  | value_observers.Value.SecretValue _ => ok false
+  | value_observers.Value.Spn _ _ => ok false
+  | value_observers.Value.Uint32 _ => ok false
+  | value_observers.Value.Int64 _ => ok false
+  | value_observers.Value.Uint64 _ => ok false
+  | value_observers.Value.Cid _ => ok false
+  | value_observers.Value.Nsuniqueid _ => ok false
+  | value_observers.Value.DateTime _ => ok false
+  | value_observers.Value.EmailAddress _ _ => ok false
+  | value_observers.Value.PhoneNumber _ _ => ok false
+  | value_observers.Value.Address _ => ok false
+  | value_observers.Value.Url _ => ok false
+  | value_observers.Value.OauthScope _ => ok false
+  | value_observers.Value.OauthScopeMap _ _ => ok false
+  | value_observers.Value.PrivateBinary _ => ok false
+  | value_observers.Value.PublicBinary _ _ => ok false
+  | value_observers.Value.RestrictedString _ => ok false
+  | value_observers.Value.IntentToken _ _ => ok false
+  | value_observers.Value.Passkey _ _ _ => ok false
+  | value_observers.Value.AttestedPasskey _ _ _ => ok false
+  | value_observers.Value.Session _ _ => ok false
+  | value_observers.Value.ApiToken _ _ => ok false
+  | value_observers.Value.Oauth2Session _ _ => ok false
+  | value_observers.Value.JwsKeyEs256 _ => ok false
+  | value_observers.Value.JwsKeyRs256 _ => ok false
+  | value_observers.Value.UiHint _ => ok false
+  | value_observers.Value.TotpSecret _ _ => ok false
+  | value_observers.Value.AuditLogString _ _ => ok false
+  | value_observers.Value.Image _ => ok false
+  | value_observers.Value.CredentialType _ => ok false
+  | value_observers.Value.WebauthnAttestationCaList _ => ok false
+  | value_observers.Value.OauthClaimValue _ _ _ => ok false
+  | value_observers.Value.OauthClaimMap _ _ => ok false
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok false
+  | value_observers.Value.HexString _ => ok false
+  | value_observers.Value.Certificate _ => ok false
+  | value_observers.Value.ApplicationPassword _ => ok false
+  | value_observers.Value.Json _ => ok false
+  | value_observers.Value.Sha256 _ => ok false
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::is_credential]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 162:4-164:5
+    Visibility: public -/
+def value_observers.Value.is_credential
+  (self : value_observers.Value) : Result Bool := do
+  match self with
+  | value_observers.Value.Utf8 _ => ok false
+  | value_observers.Value.Iutf8 _ => ok false
+  | value_observers.Value.Iname _ => ok false
+  | value_observers.Value.Uuid _ => ok false
+  | value_observers.Value.Boolean _ => ok false
+  | value_observers.Value.Syntax _ => ok false
+  | value_observers.Value.Index _ => ok false
+  | value_observers.Value.Refer _ => ok false
+  | value_observers.Value.JsonFilt _ => ok false
+  | value_observers.Value.Cred _ _ => ok true
+  | value_observers.Value.SshKey _ _ => ok false
+  | value_observers.Value.SecretValue _ => ok false
+  | value_observers.Value.Spn _ _ => ok false
+  | value_observers.Value.Uint32 _ => ok false
+  | value_observers.Value.Int64 _ => ok false
+  | value_observers.Value.Uint64 _ => ok false
+  | value_observers.Value.Cid _ => ok false
+  | value_observers.Value.Nsuniqueid _ => ok false
+  | value_observers.Value.DateTime _ => ok false
+  | value_observers.Value.EmailAddress _ _ => ok false
+  | value_observers.Value.PhoneNumber _ _ => ok false
+  | value_observers.Value.Address _ => ok false
+  | value_observers.Value.Url _ => ok false
+  | value_observers.Value.OauthScope _ => ok false
+  | value_observers.Value.OauthScopeMap _ _ => ok false
+  | value_observers.Value.PrivateBinary _ => ok false
+  | value_observers.Value.PublicBinary _ _ => ok false
+  | value_observers.Value.RestrictedString _ => ok false
+  | value_observers.Value.IntentToken _ _ => ok false
+  | value_observers.Value.Passkey _ _ _ => ok false
+  | value_observers.Value.AttestedPasskey _ _ _ => ok false
+  | value_observers.Value.Session _ _ => ok false
+  | value_observers.Value.ApiToken _ _ => ok false
+  | value_observers.Value.Oauth2Session _ _ => ok false
+  | value_observers.Value.JwsKeyEs256 _ => ok false
+  | value_observers.Value.JwsKeyRs256 _ => ok false
+  | value_observers.Value.UiHint _ => ok false
+  | value_observers.Value.TotpSecret _ _ => ok false
+  | value_observers.Value.AuditLogString _ _ => ok false
+  | value_observers.Value.Image _ => ok false
+  | value_observers.Value.CredentialType _ => ok false
+  | value_observers.Value.WebauthnAttestationCaList _ => ok false
+  | value_observers.Value.OauthClaimValue _ _ _ => ok false
+  | value_observers.Value.OauthClaimMap _ _ => ok false
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok false
+  | value_observers.Value.HexString _ => ok false
+  | value_observers.Value.Certificate _ => ok false
+  | value_observers.Value.ApplicationPassword _ => ok false
+  | value_observers.Value.Json _ => ok false
+  | value_observers.Value.Sha256 _ => ok false
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::is_secret_string]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 165:4-167:5
+    Visibility: public -/
+def value_observers.Value.is_secret_string
+  (self : value_observers.Value) : Result Bool := do
+  match self with
+  | value_observers.Value.Utf8 _ => ok false
+  | value_observers.Value.Iutf8 _ => ok false
+  | value_observers.Value.Iname _ => ok false
+  | value_observers.Value.Uuid _ => ok false
+  | value_observers.Value.Boolean _ => ok false
+  | value_observers.Value.Syntax _ => ok false
+  | value_observers.Value.Index _ => ok false
+  | value_observers.Value.Refer _ => ok false
+  | value_observers.Value.JsonFilt _ => ok false
+  | value_observers.Value.Cred _ _ => ok false
+  | value_observers.Value.SshKey _ _ => ok false
+  | value_observers.Value.SecretValue _ => ok true
+  | value_observers.Value.Spn _ _ => ok false
+  | value_observers.Value.Uint32 _ => ok false
+  | value_observers.Value.Int64 _ => ok false
+  | value_observers.Value.Uint64 _ => ok false
+  | value_observers.Value.Cid _ => ok false
+  | value_observers.Value.Nsuniqueid _ => ok false
+  | value_observers.Value.DateTime _ => ok false
+  | value_observers.Value.EmailAddress _ _ => ok false
+  | value_observers.Value.PhoneNumber _ _ => ok false
+  | value_observers.Value.Address _ => ok false
+  | value_observers.Value.Url _ => ok false
+  | value_observers.Value.OauthScope _ => ok false
+  | value_observers.Value.OauthScopeMap _ _ => ok false
+  | value_observers.Value.PrivateBinary _ => ok false
+  | value_observers.Value.PublicBinary _ _ => ok false
+  | value_observers.Value.RestrictedString _ => ok false
+  | value_observers.Value.IntentToken _ _ => ok false
+  | value_observers.Value.Passkey _ _ _ => ok false
+  | value_observers.Value.AttestedPasskey _ _ _ => ok false
+  | value_observers.Value.Session _ _ => ok false
+  | value_observers.Value.ApiToken _ _ => ok false
+  | value_observers.Value.Oauth2Session _ _ => ok false
+  | value_observers.Value.JwsKeyEs256 _ => ok false
+  | value_observers.Value.JwsKeyRs256 _ => ok false
+  | value_observers.Value.UiHint _ => ok false
+  | value_observers.Value.TotpSecret _ _ => ok false
+  | value_observers.Value.AuditLogString _ _ => ok false
+  | value_observers.Value.Image _ => ok false
+  | value_observers.Value.CredentialType _ => ok false
+  | value_observers.Value.WebauthnAttestationCaList _ => ok false
+  | value_observers.Value.OauthClaimValue _ _ _ => ok false
+  | value_observers.Value.OauthClaimMap _ _ => ok false
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok false
+  | value_observers.Value.HexString _ => ok false
+  | value_observers.Value.Certificate _ => ok false
+  | value_observers.Value.ApplicationPassword _ => ok false
+  | value_observers.Value.Json _ => ok false
+  | value_observers.Value.Sha256 _ => ok false
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::is_sshkey]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 168:4-170:5
+    Visibility: public -/
+def value_observers.Value.is_sshkey
+  (self : value_observers.Value) : Result Bool := do
+  match self with
+  | value_observers.Value.Utf8 _ => ok false
+  | value_observers.Value.Iutf8 _ => ok false
+  | value_observers.Value.Iname _ => ok false
+  | value_observers.Value.Uuid _ => ok false
+  | value_observers.Value.Boolean _ => ok false
+  | value_observers.Value.Syntax _ => ok false
+  | value_observers.Value.Index _ => ok false
+  | value_observers.Value.Refer _ => ok false
+  | value_observers.Value.JsonFilt _ => ok false
+  | value_observers.Value.Cred _ _ => ok false
+  | value_observers.Value.SshKey _ _ => ok true
+  | value_observers.Value.SecretValue _ => ok false
+  | value_observers.Value.Spn _ _ => ok false
+  | value_observers.Value.Uint32 _ => ok false
+  | value_observers.Value.Int64 _ => ok false
+  | value_observers.Value.Uint64 _ => ok false
+  | value_observers.Value.Cid _ => ok false
+  | value_observers.Value.Nsuniqueid _ => ok false
+  | value_observers.Value.DateTime _ => ok false
+  | value_observers.Value.EmailAddress _ _ => ok false
+  | value_observers.Value.PhoneNumber _ _ => ok false
+  | value_observers.Value.Address _ => ok false
+  | value_observers.Value.Url _ => ok false
+  | value_observers.Value.OauthScope _ => ok false
+  | value_observers.Value.OauthScopeMap _ _ => ok false
+  | value_observers.Value.PrivateBinary _ => ok false
+  | value_observers.Value.PublicBinary _ _ => ok false
+  | value_observers.Value.RestrictedString _ => ok false
+  | value_observers.Value.IntentToken _ _ => ok false
+  | value_observers.Value.Passkey _ _ _ => ok false
+  | value_observers.Value.AttestedPasskey _ _ _ => ok false
+  | value_observers.Value.Session _ _ => ok false
+  | value_observers.Value.ApiToken _ _ => ok false
+  | value_observers.Value.Oauth2Session _ _ => ok false
+  | value_observers.Value.JwsKeyEs256 _ => ok false
+  | value_observers.Value.JwsKeyRs256 _ => ok false
+  | value_observers.Value.UiHint _ => ok false
+  | value_observers.Value.TotpSecret _ _ => ok false
+  | value_observers.Value.AuditLogString _ _ => ok false
+  | value_observers.Value.Image _ => ok false
+  | value_observers.Value.CredentialType _ => ok false
+  | value_observers.Value.WebauthnAttestationCaList _ => ok false
+  | value_observers.Value.OauthClaimValue _ _ _ => ok false
+  | value_observers.Value.OauthClaimMap _ _ => ok false
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok false
+  | value_observers.Value.HexString _ => ok false
+  | value_observers.Value.Certificate _ => ok false
+  | value_observers.Value.ApplicationPassword _ => ok false
+  | value_observers.Value.Json _ => ok false
+  | value_observers.Value.Sha256 _ => ok false
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::is_spn]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 171:4-173:5
+    Visibility: public -/
+def value_observers.Value.is_spn
+  (self : value_observers.Value) : Result Bool := do
+  match self with
+  | value_observers.Value.Utf8 _ => ok false
+  | value_observers.Value.Iutf8 _ => ok false
+  | value_observers.Value.Iname _ => ok false
+  | value_observers.Value.Uuid _ => ok false
+  | value_observers.Value.Boolean _ => ok false
+  | value_observers.Value.Syntax _ => ok false
+  | value_observers.Value.Index _ => ok false
+  | value_observers.Value.Refer _ => ok false
+  | value_observers.Value.JsonFilt _ => ok false
+  | value_observers.Value.Cred _ _ => ok false
+  | value_observers.Value.SshKey _ _ => ok false
+  | value_observers.Value.SecretValue _ => ok false
+  | value_observers.Value.Spn _ _ => ok true
+  | value_observers.Value.Uint32 _ => ok false
+  | value_observers.Value.Int64 _ => ok false
+  | value_observers.Value.Uint64 _ => ok false
+  | value_observers.Value.Cid _ => ok false
+  | value_observers.Value.Nsuniqueid _ => ok false
+  | value_observers.Value.DateTime _ => ok false
+  | value_observers.Value.EmailAddress _ _ => ok false
+  | value_observers.Value.PhoneNumber _ _ => ok false
+  | value_observers.Value.Address _ => ok false
+  | value_observers.Value.Url _ => ok false
+  | value_observers.Value.OauthScope _ => ok false
+  | value_observers.Value.OauthScopeMap _ _ => ok false
+  | value_observers.Value.PrivateBinary _ => ok false
+  | value_observers.Value.PublicBinary _ _ => ok false
+  | value_observers.Value.RestrictedString _ => ok false
+  | value_observers.Value.IntentToken _ _ => ok false
+  | value_observers.Value.Passkey _ _ _ => ok false
+  | value_observers.Value.AttestedPasskey _ _ _ => ok false
+  | value_observers.Value.Session _ _ => ok false
+  | value_observers.Value.ApiToken _ _ => ok false
+  | value_observers.Value.Oauth2Session _ _ => ok false
+  | value_observers.Value.JwsKeyEs256 _ => ok false
+  | value_observers.Value.JwsKeyRs256 _ => ok false
+  | value_observers.Value.UiHint _ => ok false
+  | value_observers.Value.TotpSecret _ _ => ok false
+  | value_observers.Value.AuditLogString _ _ => ok false
+  | value_observers.Value.Image _ => ok false
+  | value_observers.Value.CredentialType _ => ok false
+  | value_observers.Value.WebauthnAttestationCaList _ => ok false
+  | value_observers.Value.OauthClaimValue _ _ _ => ok false
+  | value_observers.Value.OauthClaimMap _ _ => ok false
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok false
+  | value_observers.Value.HexString _ => ok false
+  | value_observers.Value.Certificate _ => ok false
+  | value_observers.Value.ApplicationPassword _ => ok false
+  | value_observers.Value.Json _ => ok false
+  | value_observers.Value.Sha256 _ => ok false
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::is_uint32]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 174:4-176:5
+    Visibility: public -/
+def value_observers.Value.is_uint32
+  (self : value_observers.Value) : Result Bool := do
+  match self with
+  | value_observers.Value.Utf8 _ => ok false
+  | value_observers.Value.Iutf8 _ => ok false
+  | value_observers.Value.Iname _ => ok false
+  | value_observers.Value.Uuid _ => ok false
+  | value_observers.Value.Boolean _ => ok false
+  | value_observers.Value.Syntax _ => ok false
+  | value_observers.Value.Index _ => ok false
+  | value_observers.Value.Refer _ => ok false
+  | value_observers.Value.JsonFilt _ => ok false
+  | value_observers.Value.Cred _ _ => ok false
+  | value_observers.Value.SshKey _ _ => ok false
+  | value_observers.Value.SecretValue _ => ok false
+  | value_observers.Value.Spn _ _ => ok false
+  | value_observers.Value.Uint32 _ => ok true
+  | value_observers.Value.Int64 _ => ok false
+  | value_observers.Value.Uint64 _ => ok false
+  | value_observers.Value.Cid _ => ok false
+  | value_observers.Value.Nsuniqueid _ => ok false
+  | value_observers.Value.DateTime _ => ok false
+  | value_observers.Value.EmailAddress _ _ => ok false
+  | value_observers.Value.PhoneNumber _ _ => ok false
+  | value_observers.Value.Address _ => ok false
+  | value_observers.Value.Url _ => ok false
+  | value_observers.Value.OauthScope _ => ok false
+  | value_observers.Value.OauthScopeMap _ _ => ok false
+  | value_observers.Value.PrivateBinary _ => ok false
+  | value_observers.Value.PublicBinary _ _ => ok false
+  | value_observers.Value.RestrictedString _ => ok false
+  | value_observers.Value.IntentToken _ _ => ok false
+  | value_observers.Value.Passkey _ _ _ => ok false
+  | value_observers.Value.AttestedPasskey _ _ _ => ok false
+  | value_observers.Value.Session _ _ => ok false
+  | value_observers.Value.ApiToken _ _ => ok false
+  | value_observers.Value.Oauth2Session _ _ => ok false
+  | value_observers.Value.JwsKeyEs256 _ => ok false
+  | value_observers.Value.JwsKeyRs256 _ => ok false
+  | value_observers.Value.UiHint _ => ok false
+  | value_observers.Value.TotpSecret _ _ => ok false
+  | value_observers.Value.AuditLogString _ _ => ok false
+  | value_observers.Value.Image _ => ok false
+  | value_observers.Value.CredentialType _ => ok false
+  | value_observers.Value.WebauthnAttestationCaList _ => ok false
+  | value_observers.Value.OauthClaimValue _ _ _ => ok false
+  | value_observers.Value.OauthClaimMap _ _ => ok false
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok false
+  | value_observers.Value.HexString _ => ok false
+  | value_observers.Value.Certificate _ => ok false
+  | value_observers.Value.ApplicationPassword _ => ok false
+  | value_observers.Value.Json _ => ok false
+  | value_observers.Value.Sha256 _ => ok false
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::is_cid]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 177:4-179:5
+    Visibility: public -/
+def value_observers.Value.is_cid
+  (self : value_observers.Value) : Result Bool := do
+  match self with
+  | value_observers.Value.Utf8 _ => ok false
+  | value_observers.Value.Iutf8 _ => ok false
+  | value_observers.Value.Iname _ => ok false
+  | value_observers.Value.Uuid _ => ok false
+  | value_observers.Value.Boolean _ => ok false
+  | value_observers.Value.Syntax _ => ok false
+  | value_observers.Value.Index _ => ok false
+  | value_observers.Value.Refer _ => ok false
+  | value_observers.Value.JsonFilt _ => ok false
+  | value_observers.Value.Cred _ _ => ok false
+  | value_observers.Value.SshKey _ _ => ok false
+  | value_observers.Value.SecretValue _ => ok false
+  | value_observers.Value.Spn _ _ => ok false
+  | value_observers.Value.Uint32 _ => ok false
+  | value_observers.Value.Int64 _ => ok false
+  | value_observers.Value.Uint64 _ => ok false
+  | value_observers.Value.Cid _ => ok true
+  | value_observers.Value.Nsuniqueid _ => ok false
+  | value_observers.Value.DateTime _ => ok false
+  | value_observers.Value.EmailAddress _ _ => ok false
+  | value_observers.Value.PhoneNumber _ _ => ok false
+  | value_observers.Value.Address _ => ok false
+  | value_observers.Value.Url _ => ok false
+  | value_observers.Value.OauthScope _ => ok false
+  | value_observers.Value.OauthScopeMap _ _ => ok false
+  | value_observers.Value.PrivateBinary _ => ok false
+  | value_observers.Value.PublicBinary _ _ => ok false
+  | value_observers.Value.RestrictedString _ => ok false
+  | value_observers.Value.IntentToken _ _ => ok false
+  | value_observers.Value.Passkey _ _ _ => ok false
+  | value_observers.Value.AttestedPasskey _ _ _ => ok false
+  | value_observers.Value.Session _ _ => ok false
+  | value_observers.Value.ApiToken _ _ => ok false
+  | value_observers.Value.Oauth2Session _ _ => ok false
+  | value_observers.Value.JwsKeyEs256 _ => ok false
+  | value_observers.Value.JwsKeyRs256 _ => ok false
+  | value_observers.Value.UiHint _ => ok false
+  | value_observers.Value.TotpSecret _ _ => ok false
+  | value_observers.Value.AuditLogString _ _ => ok false
+  | value_observers.Value.Image _ => ok false
+  | value_observers.Value.CredentialType _ => ok false
+  | value_observers.Value.WebauthnAttestationCaList _ => ok false
+  | value_observers.Value.OauthClaimValue _ _ _ => ok false
+  | value_observers.Value.OauthClaimMap _ _ => ok false
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok false
+  | value_observers.Value.HexString _ => ok false
+  | value_observers.Value.Certificate _ => ok false
+  | value_observers.Value.ApplicationPassword _ => ok false
+  | value_observers.Value.Json _ => ok false
+  | value_observers.Value.Sha256 _ => ok false
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::is_nsuniqueid]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 180:4-182:5
+    Visibility: public -/
+def value_observers.Value.is_nsuniqueid
+  (self : value_observers.Value) : Result Bool := do
+  match self with
+  | value_observers.Value.Utf8 _ => ok false
+  | value_observers.Value.Iutf8 _ => ok false
+  | value_observers.Value.Iname _ => ok false
+  | value_observers.Value.Uuid _ => ok false
+  | value_observers.Value.Boolean _ => ok false
+  | value_observers.Value.Syntax _ => ok false
+  | value_observers.Value.Index _ => ok false
+  | value_observers.Value.Refer _ => ok false
+  | value_observers.Value.JsonFilt _ => ok false
+  | value_observers.Value.Cred _ _ => ok false
+  | value_observers.Value.SshKey _ _ => ok false
+  | value_observers.Value.SecretValue _ => ok false
+  | value_observers.Value.Spn _ _ => ok false
+  | value_observers.Value.Uint32 _ => ok false
+  | value_observers.Value.Int64 _ => ok false
+  | value_observers.Value.Uint64 _ => ok false
+  | value_observers.Value.Cid _ => ok false
+  | value_observers.Value.Nsuniqueid _ => ok true
+  | value_observers.Value.DateTime _ => ok false
+  | value_observers.Value.EmailAddress _ _ => ok false
+  | value_observers.Value.PhoneNumber _ _ => ok false
+  | value_observers.Value.Address _ => ok false
+  | value_observers.Value.Url _ => ok false
+  | value_observers.Value.OauthScope _ => ok false
+  | value_observers.Value.OauthScopeMap _ _ => ok false
+  | value_observers.Value.PrivateBinary _ => ok false
+  | value_observers.Value.PublicBinary _ _ => ok false
+  | value_observers.Value.RestrictedString _ => ok false
+  | value_observers.Value.IntentToken _ _ => ok false
+  | value_observers.Value.Passkey _ _ _ => ok false
+  | value_observers.Value.AttestedPasskey _ _ _ => ok false
+  | value_observers.Value.Session _ _ => ok false
+  | value_observers.Value.ApiToken _ _ => ok false
+  | value_observers.Value.Oauth2Session _ _ => ok false
+  | value_observers.Value.JwsKeyEs256 _ => ok false
+  | value_observers.Value.JwsKeyRs256 _ => ok false
+  | value_observers.Value.UiHint _ => ok false
+  | value_observers.Value.TotpSecret _ _ => ok false
+  | value_observers.Value.AuditLogString _ _ => ok false
+  | value_observers.Value.Image _ => ok false
+  | value_observers.Value.CredentialType _ => ok false
+  | value_observers.Value.WebauthnAttestationCaList _ => ok false
+  | value_observers.Value.OauthClaimValue _ _ _ => ok false
+  | value_observers.Value.OauthClaimMap _ _ => ok false
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok false
+  | value_observers.Value.HexString _ => ok false
+  | value_observers.Value.Certificate _ => ok false
+  | value_observers.Value.ApplicationPassword _ => ok false
+  | value_observers.Value.Json _ => ok false
+  | value_observers.Value.Sha256 _ => ok false
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::is_datetime]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 183:4-185:5
+    Visibility: public -/
+def value_observers.Value.is_datetime
+  (self : value_observers.Value) : Result Bool := do
+  match self with
+  | value_observers.Value.Utf8 _ => ok false
+  | value_observers.Value.Iutf8 _ => ok false
+  | value_observers.Value.Iname _ => ok false
+  | value_observers.Value.Uuid _ => ok false
+  | value_observers.Value.Boolean _ => ok false
+  | value_observers.Value.Syntax _ => ok false
+  | value_observers.Value.Index _ => ok false
+  | value_observers.Value.Refer _ => ok false
+  | value_observers.Value.JsonFilt _ => ok false
+  | value_observers.Value.Cred _ _ => ok false
+  | value_observers.Value.SshKey _ _ => ok false
+  | value_observers.Value.SecretValue _ => ok false
+  | value_observers.Value.Spn _ _ => ok false
+  | value_observers.Value.Uint32 _ => ok false
+  | value_observers.Value.Int64 _ => ok false
+  | value_observers.Value.Uint64 _ => ok false
+  | value_observers.Value.Cid _ => ok false
+  | value_observers.Value.Nsuniqueid _ => ok false
+  | value_observers.Value.DateTime _ => ok true
+  | value_observers.Value.EmailAddress _ _ => ok false
+  | value_observers.Value.PhoneNumber _ _ => ok false
+  | value_observers.Value.Address _ => ok false
+  | value_observers.Value.Url _ => ok false
+  | value_observers.Value.OauthScope _ => ok false
+  | value_observers.Value.OauthScopeMap _ _ => ok false
+  | value_observers.Value.PrivateBinary _ => ok false
+  | value_observers.Value.PublicBinary _ _ => ok false
+  | value_observers.Value.RestrictedString _ => ok false
+  | value_observers.Value.IntentToken _ _ => ok false
+  | value_observers.Value.Passkey _ _ _ => ok false
+  | value_observers.Value.AttestedPasskey _ _ _ => ok false
+  | value_observers.Value.Session _ _ => ok false
+  | value_observers.Value.ApiToken _ _ => ok false
+  | value_observers.Value.Oauth2Session _ _ => ok false
+  | value_observers.Value.JwsKeyEs256 _ => ok false
+  | value_observers.Value.JwsKeyRs256 _ => ok false
+  | value_observers.Value.UiHint _ => ok false
+  | value_observers.Value.TotpSecret _ _ => ok false
+  | value_observers.Value.AuditLogString _ _ => ok false
+  | value_observers.Value.Image _ => ok false
+  | value_observers.Value.CredentialType _ => ok false
+  | value_observers.Value.WebauthnAttestationCaList _ => ok false
+  | value_observers.Value.OauthClaimValue _ _ _ => ok false
+  | value_observers.Value.OauthClaimMap _ _ => ok false
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok false
+  | value_observers.Value.HexString _ => ok false
+  | value_observers.Value.Certificate _ => ok false
+  | value_observers.Value.ApplicationPassword _ => ok false
+  | value_observers.Value.Json _ => ok false
+  | value_observers.Value.Sha256 _ => ok false
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::is_email_address]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 186:4-188:5
+    Visibility: public -/
+def value_observers.Value.is_email_address
+  (self : value_observers.Value) : Result Bool := do
+  match self with
+  | value_observers.Value.Utf8 _ => ok false
+  | value_observers.Value.Iutf8 _ => ok false
+  | value_observers.Value.Iname _ => ok false
+  | value_observers.Value.Uuid _ => ok false
+  | value_observers.Value.Boolean _ => ok false
+  | value_observers.Value.Syntax _ => ok false
+  | value_observers.Value.Index _ => ok false
+  | value_observers.Value.Refer _ => ok false
+  | value_observers.Value.JsonFilt _ => ok false
+  | value_observers.Value.Cred _ _ => ok false
+  | value_observers.Value.SshKey _ _ => ok false
+  | value_observers.Value.SecretValue _ => ok false
+  | value_observers.Value.Spn _ _ => ok false
+  | value_observers.Value.Uint32 _ => ok false
+  | value_observers.Value.Int64 _ => ok false
+  | value_observers.Value.Uint64 _ => ok false
+  | value_observers.Value.Cid _ => ok false
+  | value_observers.Value.Nsuniqueid _ => ok false
+  | value_observers.Value.DateTime _ => ok false
+  | value_observers.Value.EmailAddress _ _ => ok true
+  | value_observers.Value.PhoneNumber _ _ => ok false
+  | value_observers.Value.Address _ => ok false
+  | value_observers.Value.Url _ => ok false
+  | value_observers.Value.OauthScope _ => ok false
+  | value_observers.Value.OauthScopeMap _ _ => ok false
+  | value_observers.Value.PrivateBinary _ => ok false
+  | value_observers.Value.PublicBinary _ _ => ok false
+  | value_observers.Value.RestrictedString _ => ok false
+  | value_observers.Value.IntentToken _ _ => ok false
+  | value_observers.Value.Passkey _ _ _ => ok false
+  | value_observers.Value.AttestedPasskey _ _ _ => ok false
+  | value_observers.Value.Session _ _ => ok false
+  | value_observers.Value.ApiToken _ _ => ok false
+  | value_observers.Value.Oauth2Session _ _ => ok false
+  | value_observers.Value.JwsKeyEs256 _ => ok false
+  | value_observers.Value.JwsKeyRs256 _ => ok false
+  | value_observers.Value.UiHint _ => ok false
+  | value_observers.Value.TotpSecret _ _ => ok false
+  | value_observers.Value.AuditLogString _ _ => ok false
+  | value_observers.Value.Image _ => ok false
+  | value_observers.Value.CredentialType _ => ok false
+  | value_observers.Value.WebauthnAttestationCaList _ => ok false
+  | value_observers.Value.OauthClaimValue _ _ _ => ok false
+  | value_observers.Value.OauthClaimMap _ _ => ok false
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok false
+  | value_observers.Value.HexString _ => ok false
+  | value_observers.Value.Certificate _ => ok false
+  | value_observers.Value.ApplicationPassword _ => ok false
+  | value_observers.Value.Json _ => ok false
+  | value_observers.Value.Sha256 _ => ok false
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::is_url]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 189:4-191:5
+    Visibility: public -/
+def value_observers.Value.is_url
+  (self : value_observers.Value) : Result Bool := do
+  match self with
+  | value_observers.Value.Utf8 _ => ok false
+  | value_observers.Value.Iutf8 _ => ok false
+  | value_observers.Value.Iname _ => ok false
+  | value_observers.Value.Uuid _ => ok false
+  | value_observers.Value.Boolean _ => ok false
+  | value_observers.Value.Syntax _ => ok false
+  | value_observers.Value.Index _ => ok false
+  | value_observers.Value.Refer _ => ok false
+  | value_observers.Value.JsonFilt _ => ok false
+  | value_observers.Value.Cred _ _ => ok false
+  | value_observers.Value.SshKey _ _ => ok false
+  | value_observers.Value.SecretValue _ => ok false
+  | value_observers.Value.Spn _ _ => ok false
+  | value_observers.Value.Uint32 _ => ok false
+  | value_observers.Value.Int64 _ => ok false
+  | value_observers.Value.Uint64 _ => ok false
+  | value_observers.Value.Cid _ => ok false
+  | value_observers.Value.Nsuniqueid _ => ok false
+  | value_observers.Value.DateTime _ => ok false
+  | value_observers.Value.EmailAddress _ _ => ok false
+  | value_observers.Value.PhoneNumber _ _ => ok false
+  | value_observers.Value.Address _ => ok false
+  | value_observers.Value.Url _ => ok true
+  | value_observers.Value.OauthScope _ => ok false
+  | value_observers.Value.OauthScopeMap _ _ => ok false
+  | value_observers.Value.PrivateBinary _ => ok false
+  | value_observers.Value.PublicBinary _ _ => ok false
+  | value_observers.Value.RestrictedString _ => ok false
+  | value_observers.Value.IntentToken _ _ => ok false
+  | value_observers.Value.Passkey _ _ _ => ok false
+  | value_observers.Value.AttestedPasskey _ _ _ => ok false
+  | value_observers.Value.Session _ _ => ok false
+  | value_observers.Value.ApiToken _ _ => ok false
+  | value_observers.Value.Oauth2Session _ _ => ok false
+  | value_observers.Value.JwsKeyEs256 _ => ok false
+  | value_observers.Value.JwsKeyRs256 _ => ok false
+  | value_observers.Value.UiHint _ => ok false
+  | value_observers.Value.TotpSecret _ _ => ok false
+  | value_observers.Value.AuditLogString _ _ => ok false
+  | value_observers.Value.Image _ => ok false
+  | value_observers.Value.CredentialType _ => ok false
+  | value_observers.Value.WebauthnAttestationCaList _ => ok false
+  | value_observers.Value.OauthClaimValue _ _ _ => ok false
+  | value_observers.Value.OauthClaimMap _ _ => ok false
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok false
+  | value_observers.Value.HexString _ => ok false
+  | value_observers.Value.Certificate _ => ok false
+  | value_observers.Value.ApplicationPassword _ => ok false
+  | value_observers.Value.Json _ => ok false
+  | value_observers.Value.Sha256 _ => ok false
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::is_oauthscope]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 192:4-194:5
+    Visibility: public -/
+def value_observers.Value.is_oauthscope
+  (self : value_observers.Value) : Result Bool := do
+  match self with
+  | value_observers.Value.Utf8 _ => ok false
+  | value_observers.Value.Iutf8 _ => ok false
+  | value_observers.Value.Iname _ => ok false
+  | value_observers.Value.Uuid _ => ok false
+  | value_observers.Value.Boolean _ => ok false
+  | value_observers.Value.Syntax _ => ok false
+  | value_observers.Value.Index _ => ok false
+  | value_observers.Value.Refer _ => ok false
+  | value_observers.Value.JsonFilt _ => ok false
+  | value_observers.Value.Cred _ _ => ok false
+  | value_observers.Value.SshKey _ _ => ok false
+  | value_observers.Value.SecretValue _ => ok false
+  | value_observers.Value.Spn _ _ => ok false
+  | value_observers.Value.Uint32 _ => ok false
+  | value_observers.Value.Int64 _ => ok false
+  | value_observers.Value.Uint64 _ => ok false
+  | value_observers.Value.Cid _ => ok false
+  | value_observers.Value.Nsuniqueid _ => ok false
+  | value_observers.Value.DateTime _ => ok false
+  | value_observers.Value.EmailAddress _ _ => ok false
+  | value_observers.Value.PhoneNumber _ _ => ok false
+  | value_observers.Value.Address _ => ok false
+  | value_observers.Value.Url _ => ok false
+  | value_observers.Value.OauthScope _ => ok true
+  | value_observers.Value.OauthScopeMap _ _ => ok false
+  | value_observers.Value.PrivateBinary _ => ok false
+  | value_observers.Value.PublicBinary _ _ => ok false
+  | value_observers.Value.RestrictedString _ => ok false
+  | value_observers.Value.IntentToken _ _ => ok false
+  | value_observers.Value.Passkey _ _ _ => ok false
+  | value_observers.Value.AttestedPasskey _ _ _ => ok false
+  | value_observers.Value.Session _ _ => ok false
+  | value_observers.Value.ApiToken _ _ => ok false
+  | value_observers.Value.Oauth2Session _ _ => ok false
+  | value_observers.Value.JwsKeyEs256 _ => ok false
+  | value_observers.Value.JwsKeyRs256 _ => ok false
+  | value_observers.Value.UiHint _ => ok false
+  | value_observers.Value.TotpSecret _ _ => ok false
+  | value_observers.Value.AuditLogString _ _ => ok false
+  | value_observers.Value.Image _ => ok false
+  | value_observers.Value.CredentialType _ => ok false
+  | value_observers.Value.WebauthnAttestationCaList _ => ok false
+  | value_observers.Value.OauthClaimValue _ _ _ => ok false
+  | value_observers.Value.OauthClaimMap _ _ => ok false
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok false
+  | value_observers.Value.HexString _ => ok false
+  | value_observers.Value.Certificate _ => ok false
+  | value_observers.Value.ApplicationPassword _ => ok false
+  | value_observers.Value.Json _ => ok false
+  | value_observers.Value.Sha256 _ => ok false
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::is_oauthscopemap]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 195:4-197:5
+    Visibility: public -/
+def value_observers.Value.is_oauthscopemap
+  (self : value_observers.Value) : Result Bool := do
+  match self with
+  | value_observers.Value.Utf8 _ => ok false
+  | value_observers.Value.Iutf8 _ => ok false
+  | value_observers.Value.Iname _ => ok false
+  | value_observers.Value.Uuid _ => ok false
+  | value_observers.Value.Boolean _ => ok false
+  | value_observers.Value.Syntax _ => ok false
+  | value_observers.Value.Index _ => ok false
+  | value_observers.Value.Refer _ => ok false
+  | value_observers.Value.JsonFilt _ => ok false
+  | value_observers.Value.Cred _ _ => ok false
+  | value_observers.Value.SshKey _ _ => ok false
+  | value_observers.Value.SecretValue _ => ok false
+  | value_observers.Value.Spn _ _ => ok false
+  | value_observers.Value.Uint32 _ => ok false
+  | value_observers.Value.Int64 _ => ok false
+  | value_observers.Value.Uint64 _ => ok false
+  | value_observers.Value.Cid _ => ok false
+  | value_observers.Value.Nsuniqueid _ => ok false
+  | value_observers.Value.DateTime _ => ok false
+  | value_observers.Value.EmailAddress _ _ => ok false
+  | value_observers.Value.PhoneNumber _ _ => ok false
+  | value_observers.Value.Address _ => ok false
+  | value_observers.Value.Url _ => ok false
+  | value_observers.Value.OauthScope _ => ok false
+  | value_observers.Value.OauthScopeMap _ _ => ok true
+  | value_observers.Value.PrivateBinary _ => ok false
+  | value_observers.Value.PublicBinary _ _ => ok false
+  | value_observers.Value.RestrictedString _ => ok false
+  | value_observers.Value.IntentToken _ _ => ok false
+  | value_observers.Value.Passkey _ _ _ => ok false
+  | value_observers.Value.AttestedPasskey _ _ _ => ok false
+  | value_observers.Value.Session _ _ => ok false
+  | value_observers.Value.ApiToken _ _ => ok false
+  | value_observers.Value.Oauth2Session _ _ => ok false
+  | value_observers.Value.JwsKeyEs256 _ => ok false
+  | value_observers.Value.JwsKeyRs256 _ => ok false
+  | value_observers.Value.UiHint _ => ok false
+  | value_observers.Value.TotpSecret _ _ => ok false
+  | value_observers.Value.AuditLogString _ _ => ok false
+  | value_observers.Value.Image _ => ok false
+  | value_observers.Value.CredentialType _ => ok false
+  | value_observers.Value.WebauthnAttestationCaList _ => ok false
+  | value_observers.Value.OauthClaimValue _ _ _ => ok false
+  | value_observers.Value.OauthClaimMap _ _ => ok false
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok false
+  | value_observers.Value.HexString _ => ok false
+  | value_observers.Value.Certificate _ => ok false
+  | value_observers.Value.ApplicationPassword _ => ok false
+  | value_observers.Value.Json _ => ok false
+  | value_observers.Value.Sha256 _ => ok false
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::is_privatebinary]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 198:4-200:5
+    Visibility: public -/
+def value_observers.Value.is_privatebinary
+  (self : value_observers.Value) : Result Bool := do
+  match self with
+  | value_observers.Value.Utf8 _ => ok false
+  | value_observers.Value.Iutf8 _ => ok false
+  | value_observers.Value.Iname _ => ok false
+  | value_observers.Value.Uuid _ => ok false
+  | value_observers.Value.Boolean _ => ok false
+  | value_observers.Value.Syntax _ => ok false
+  | value_observers.Value.Index _ => ok false
+  | value_observers.Value.Refer _ => ok false
+  | value_observers.Value.JsonFilt _ => ok false
+  | value_observers.Value.Cred _ _ => ok false
+  | value_observers.Value.SshKey _ _ => ok false
+  | value_observers.Value.SecretValue _ => ok false
+  | value_observers.Value.Spn _ _ => ok false
+  | value_observers.Value.Uint32 _ => ok false
+  | value_observers.Value.Int64 _ => ok false
+  | value_observers.Value.Uint64 _ => ok false
+  | value_observers.Value.Cid _ => ok false
+  | value_observers.Value.Nsuniqueid _ => ok false
+  | value_observers.Value.DateTime _ => ok false
+  | value_observers.Value.EmailAddress _ _ => ok false
+  | value_observers.Value.PhoneNumber _ _ => ok false
+  | value_observers.Value.Address _ => ok false
+  | value_observers.Value.Url _ => ok false
+  | value_observers.Value.OauthScope _ => ok false
+  | value_observers.Value.OauthScopeMap _ _ => ok false
+  | value_observers.Value.PrivateBinary _ => ok true
+  | value_observers.Value.PublicBinary _ _ => ok false
+  | value_observers.Value.RestrictedString _ => ok false
+  | value_observers.Value.IntentToken _ _ => ok false
+  | value_observers.Value.Passkey _ _ _ => ok false
+  | value_observers.Value.AttestedPasskey _ _ _ => ok false
+  | value_observers.Value.Session _ _ => ok false
+  | value_observers.Value.ApiToken _ _ => ok false
+  | value_observers.Value.Oauth2Session _ _ => ok false
+  | value_observers.Value.JwsKeyEs256 _ => ok false
+  | value_observers.Value.JwsKeyRs256 _ => ok false
+  | value_observers.Value.UiHint _ => ok false
+  | value_observers.Value.TotpSecret _ _ => ok false
+  | value_observers.Value.AuditLogString _ _ => ok false
+  | value_observers.Value.Image _ => ok false
+  | value_observers.Value.CredentialType _ => ok false
+  | value_observers.Value.WebauthnAttestationCaList _ => ok false
+  | value_observers.Value.OauthClaimValue _ _ _ => ok false
+  | value_observers.Value.OauthClaimMap _ _ => ok false
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok false
+  | value_observers.Value.HexString _ => ok false
+  | value_observers.Value.Certificate _ => ok false
+  | value_observers.Value.ApplicationPassword _ => ok false
+  | value_observers.Value.Json _ => ok false
+  | value_observers.Value.Sha256 _ => ok false
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::as_json_filter]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 201:4-206:5
+    Visibility: public -/
+def value_observers.Value.as_json_filter
+  (self : value_observers.Value) : Result (Option Std.U64) := do
+  match self with
+  | value_observers.Value.Utf8 _ => ok none
+  | value_observers.Value.Iutf8 _ => ok none
+  | value_observers.Value.Iname _ => ok none
+  | value_observers.Value.Uuid _ => ok none
+  | value_observers.Value.Boolean _ => ok none
+  | value_observers.Value.Syntax _ => ok none
+  | value_observers.Value.Index _ => ok none
+  | value_observers.Value.Refer _ => ok none
+  | value_observers.Value.JsonFilt f => ok (some f)
+  | value_observers.Value.Cred _ _ => ok none
+  | value_observers.Value.SshKey _ _ => ok none
+  | value_observers.Value.SecretValue _ => ok none
+  | value_observers.Value.Spn _ _ => ok none
+  | value_observers.Value.Uint32 _ => ok none
+  | value_observers.Value.Int64 _ => ok none
+  | value_observers.Value.Uint64 _ => ok none
+  | value_observers.Value.Cid _ => ok none
+  | value_observers.Value.Nsuniqueid _ => ok none
+  | value_observers.Value.DateTime _ => ok none
+  | value_observers.Value.EmailAddress _ _ => ok none
+  | value_observers.Value.PhoneNumber _ _ => ok none
+  | value_observers.Value.Address _ => ok none
+  | value_observers.Value.Url _ => ok none
+  | value_observers.Value.OauthScope _ => ok none
+  | value_observers.Value.OauthScopeMap _ _ => ok none
+  | value_observers.Value.PrivateBinary _ => ok none
+  | value_observers.Value.PublicBinary _ _ => ok none
+  | value_observers.Value.RestrictedString _ => ok none
+  | value_observers.Value.IntentToken _ _ => ok none
+  | value_observers.Value.Passkey _ _ _ => ok none
+  | value_observers.Value.AttestedPasskey _ _ _ => ok none
+  | value_observers.Value.Session _ _ => ok none
+  | value_observers.Value.ApiToken _ _ => ok none
+  | value_observers.Value.Oauth2Session _ _ => ok none
+  | value_observers.Value.JwsKeyEs256 _ => ok none
+  | value_observers.Value.JwsKeyRs256 _ => ok none
+  | value_observers.Value.UiHint _ => ok none
+  | value_observers.Value.TotpSecret _ _ => ok none
+  | value_observers.Value.AuditLogString _ _ => ok none
+  | value_observers.Value.Image _ => ok none
+  | value_observers.Value.CredentialType _ => ok none
+  | value_observers.Value.WebauthnAttestationCaList _ => ok none
+  | value_observers.Value.OauthClaimValue _ _ _ => ok none
+  | value_observers.Value.OauthClaimMap _ _ => ok none
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok none
+  | value_observers.Value.HexString _ => ok none
+  | value_observers.Value.Certificate _ => ok none
+  | value_observers.Value.ApplicationPassword _ => ok none
+  | value_observers.Value.Json _ => ok none
+  | value_observers.Value.Sha256 _ => ok none
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::to_credential]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 207:4-212:5
+    Visibility: public -/
+def value_observers.Value.to_credential
+  (self : value_observers.Value) : Result (Option Std.U64) := do
+  match self with
+  | value_observers.Value.Utf8 _ => ok none
+  | value_observers.Value.Iutf8 _ => ok none
+  | value_observers.Value.Iname _ => ok none
+  | value_observers.Value.Uuid _ => ok none
+  | value_observers.Value.Boolean _ => ok none
+  | value_observers.Value.Syntax _ => ok none
+  | value_observers.Value.Index _ => ok none
+  | value_observers.Value.Refer _ => ok none
+  | value_observers.Value.JsonFilt _ => ok none
+  | value_observers.Value.Cred _ cred => ok (some cred)
+  | value_observers.Value.SshKey _ _ => ok none
+  | value_observers.Value.SecretValue _ => ok none
+  | value_observers.Value.Spn _ _ => ok none
+  | value_observers.Value.Uint32 _ => ok none
+  | value_observers.Value.Int64 _ => ok none
+  | value_observers.Value.Uint64 _ => ok none
+  | value_observers.Value.Cid _ => ok none
+  | value_observers.Value.Nsuniqueid _ => ok none
+  | value_observers.Value.DateTime _ => ok none
+  | value_observers.Value.EmailAddress _ _ => ok none
+  | value_observers.Value.PhoneNumber _ _ => ok none
+  | value_observers.Value.Address _ => ok none
+  | value_observers.Value.Url _ => ok none
+  | value_observers.Value.OauthScope _ => ok none
+  | value_observers.Value.OauthScopeMap _ _ => ok none
+  | value_observers.Value.PrivateBinary _ => ok none
+  | value_observers.Value.PublicBinary _ _ => ok none
+  | value_observers.Value.RestrictedString _ => ok none
+  | value_observers.Value.IntentToken _ _ => ok none
+  | value_observers.Value.Passkey _ _ _ => ok none
+  | value_observers.Value.AttestedPasskey _ _ _ => ok none
+  | value_observers.Value.Session _ _ => ok none
+  | value_observers.Value.ApiToken _ _ => ok none
+  | value_observers.Value.Oauth2Session _ _ => ok none
+  | value_observers.Value.JwsKeyEs256 _ => ok none
+  | value_observers.Value.JwsKeyRs256 _ => ok none
+  | value_observers.Value.UiHint _ => ok none
+  | value_observers.Value.TotpSecret _ _ => ok none
+  | value_observers.Value.AuditLogString _ _ => ok none
+  | value_observers.Value.Image _ => ok none
+  | value_observers.Value.CredentialType _ => ok none
+  | value_observers.Value.WebauthnAttestationCaList _ => ok none
+  | value_observers.Value.OauthClaimValue _ _ _ => ok none
+  | value_observers.Value.OauthClaimMap _ _ => ok none
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok none
+  | value_observers.Value.HexString _ => ok none
+  | value_observers.Value.Certificate _ => ok none
+  | value_observers.Value.ApplicationPassword _ => ok none
+  | value_observers.Value.Json _ => ok none
+  | value_observers.Value.Sha256 _ => ok none
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::get_secret_str]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 213:4-218:5
+    Visibility: public -/
+def value_observers.Value.get_secret_str
+  (self : value_observers.Value) : Result (Option Std.U64) := do
+  match self with
+  | value_observers.Value.Utf8 _ => ok none
+  | value_observers.Value.Iutf8 _ => ok none
+  | value_observers.Value.Iname _ => ok none
+  | value_observers.Value.Uuid _ => ok none
+  | value_observers.Value.Boolean _ => ok none
+  | value_observers.Value.Syntax _ => ok none
+  | value_observers.Value.Index _ => ok none
+  | value_observers.Value.Refer _ => ok none
+  | value_observers.Value.JsonFilt _ => ok none
+  | value_observers.Value.Cred _ _ => ok none
+  | value_observers.Value.SshKey _ _ => ok none
+  | value_observers.Value.SecretValue c => ok (some c)
+  | value_observers.Value.Spn _ _ => ok none
+  | value_observers.Value.Uint32 _ => ok none
+  | value_observers.Value.Int64 _ => ok none
+  | value_observers.Value.Uint64 _ => ok none
+  | value_observers.Value.Cid _ => ok none
+  | value_observers.Value.Nsuniqueid _ => ok none
+  | value_observers.Value.DateTime _ => ok none
+  | value_observers.Value.EmailAddress _ _ => ok none
+  | value_observers.Value.PhoneNumber _ _ => ok none
+  | value_observers.Value.Address _ => ok none
+  | value_observers.Value.Url _ => ok none
+  | value_observers.Value.OauthScope _ => ok none
+  | value_observers.Value.OauthScopeMap _ _ => ok none
+  | value_observers.Value.PrivateBinary _ => ok none
+  | value_observers.Value.PublicBinary _ _ => ok none
+  | value_observers.Value.RestrictedString _ => ok none
+  | value_observers.Value.IntentToken _ _ => ok none
+  | value_observers.Value.Passkey _ _ _ => ok none
+  | value_observers.Value.AttestedPasskey _ _ _ => ok none
+  | value_observers.Value.Session _ _ => ok none
+  | value_observers.Value.ApiToken _ _ => ok none
+  | value_observers.Value.Oauth2Session _ _ => ok none
+  | value_observers.Value.JwsKeyEs256 _ => ok none
+  | value_observers.Value.JwsKeyRs256 _ => ok none
+  | value_observers.Value.UiHint _ => ok none
+  | value_observers.Value.TotpSecret _ _ => ok none
+  | value_observers.Value.AuditLogString _ _ => ok none
+  | value_observers.Value.Image _ => ok none
+  | value_observers.Value.CredentialType _ => ok none
+  | value_observers.Value.WebauthnAttestationCaList _ => ok none
+  | value_observers.Value.OauthClaimValue _ _ _ => ok none
+  | value_observers.Value.OauthClaimMap _ _ => ok none
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok none
+  | value_observers.Value.HexString _ => ok none
+  | value_observers.Value.Certificate _ => ok none
+  | value_observers.Value.ApplicationPassword _ => ok none
+  | value_observers.Value.Json _ => ok none
+  | value_observers.Value.Sha256 _ => ok none
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::to_privatebinary]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 219:4-224:5
+    Visibility: public -/
+def value_observers.Value.to_privatebinary
+  (self : value_observers.Value) : Result (Option Std.U64) := do
+  match self with
+  | value_observers.Value.Utf8 _ => ok none
+  | value_observers.Value.Iutf8 _ => ok none
+  | value_observers.Value.Iname _ => ok none
+  | value_observers.Value.Uuid _ => ok none
+  | value_observers.Value.Boolean _ => ok none
+  | value_observers.Value.Syntax _ => ok none
+  | value_observers.Value.Index _ => ok none
+  | value_observers.Value.Refer _ => ok none
+  | value_observers.Value.JsonFilt _ => ok none
+  | value_observers.Value.Cred _ _ => ok none
+  | value_observers.Value.SshKey _ _ => ok none
+  | value_observers.Value.SecretValue _ => ok none
+  | value_observers.Value.Spn _ _ => ok none
+  | value_observers.Value.Uint32 _ => ok none
+  | value_observers.Value.Int64 _ => ok none
+  | value_observers.Value.Uint64 _ => ok none
+  | value_observers.Value.Cid _ => ok none
+  | value_observers.Value.Nsuniqueid _ => ok none
+  | value_observers.Value.DateTime _ => ok none
+  | value_observers.Value.EmailAddress _ _ => ok none
+  | value_observers.Value.PhoneNumber _ _ => ok none
+  | value_observers.Value.Address _ => ok none
+  | value_observers.Value.Url _ => ok none
+  | value_observers.Value.OauthScope _ => ok none
+  | value_observers.Value.OauthScopeMap _ _ => ok none
+  | value_observers.Value.PrivateBinary c => ok (some c)
+  | value_observers.Value.PublicBinary _ _ => ok none
+  | value_observers.Value.RestrictedString _ => ok none
+  | value_observers.Value.IntentToken _ _ => ok none
+  | value_observers.Value.Passkey _ _ _ => ok none
+  | value_observers.Value.AttestedPasskey _ _ _ => ok none
+  | value_observers.Value.Session _ _ => ok none
+  | value_observers.Value.ApiToken _ _ => ok none
+  | value_observers.Value.Oauth2Session _ _ => ok none
+  | value_observers.Value.JwsKeyEs256 _ => ok none
+  | value_observers.Value.JwsKeyRs256 _ => ok none
+  | value_observers.Value.UiHint _ => ok none
+  | value_observers.Value.TotpSecret _ _ => ok none
+  | value_observers.Value.AuditLogString _ _ => ok none
+  | value_observers.Value.Image _ => ok none
+  | value_observers.Value.CredentialType _ => ok none
+  | value_observers.Value.WebauthnAttestationCaList _ => ok none
+  | value_observers.Value.OauthClaimValue _ _ _ => ok none
+  | value_observers.Value.OauthClaimMap _ _ => ok none
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok none
+  | value_observers.Value.HexString _ => ok none
+  | value_observers.Value.Certificate _ => ok none
+  | value_observers.Value.ApplicationPassword _ => ok none
+  | value_observers.Value.Json _ => ok none
+  | value_observers.Value.Sha256 _ => ok none
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::to_str]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 225:4-232:5
+    Visibility: public -/
+def value_observers.Value.to_str
+  (self : value_observers.Value) : Result (Option Std.U64) := do
+  match self with
+  | value_observers.Value.Utf8 s => ok (some s)
+  | value_observers.Value.Iutf8 s => ok (some s)
+  | value_observers.Value.Iname s => ok (some s)
+  | value_observers.Value.Uuid _ => ok none
+  | value_observers.Value.Boolean _ => ok none
+  | value_observers.Value.Syntax _ => ok none
+  | value_observers.Value.Index _ => ok none
+  | value_observers.Value.Refer _ => ok none
+  | value_observers.Value.JsonFilt _ => ok none
+  | value_observers.Value.Cred _ _ => ok none
+  | value_observers.Value.SshKey _ _ => ok none
+  | value_observers.Value.SecretValue _ => ok none
+  | value_observers.Value.Spn _ _ => ok none
+  | value_observers.Value.Uint32 _ => ok none
+  | value_observers.Value.Int64 _ => ok none
+  | value_observers.Value.Uint64 _ => ok none
+  | value_observers.Value.Cid _ => ok none
+  | value_observers.Value.Nsuniqueid _ => ok none
+  | value_observers.Value.DateTime _ => ok none
+  | value_observers.Value.EmailAddress _ _ => ok none
+  | value_observers.Value.PhoneNumber _ _ => ok none
+  | value_observers.Value.Address _ => ok none
+  | value_observers.Value.Url _ => ok none
+  | value_observers.Value.OauthScope _ => ok none
+  | value_observers.Value.OauthScopeMap _ _ => ok none
+  | value_observers.Value.PrivateBinary _ => ok none
+  | value_observers.Value.PublicBinary _ _ => ok none
+  | value_observers.Value.RestrictedString _ => ok none
+  | value_observers.Value.IntentToken _ _ => ok none
+  | value_observers.Value.Passkey _ _ _ => ok none
+  | value_observers.Value.AttestedPasskey _ _ _ => ok none
+  | value_observers.Value.Session _ _ => ok none
+  | value_observers.Value.ApiToken _ _ => ok none
+  | value_observers.Value.Oauth2Session _ _ => ok none
+  | value_observers.Value.JwsKeyEs256 _ => ok none
+  | value_observers.Value.JwsKeyRs256 _ => ok none
+  | value_observers.Value.UiHint _ => ok none
+  | value_observers.Value.TotpSecret _ _ => ok none
+  | value_observers.Value.AuditLogString _ _ => ok none
+  | value_observers.Value.Image _ => ok none
+  | value_observers.Value.CredentialType _ => ok none
+  | value_observers.Value.WebauthnAttestationCaList _ => ok none
+  | value_observers.Value.OauthClaimValue _ _ _ => ok none
+  | value_observers.Value.OauthClaimMap _ _ => ok none
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok none
+  | value_observers.Value.HexString _ => ok none
+  | value_observers.Value.Certificate _ => ok none
+  | value_observers.Value.ApplicationPassword _ => ok none
+  | value_observers.Value.Json _ => ok none
+  | value_observers.Value.Sha256 _ => ok none
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::to_url]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 233:4-238:5
+    Visibility: public -/
+def value_observers.Value.to_url
+  (self : value_observers.Value) : Result (Option Std.U64) := do
+  match self with
+  | value_observers.Value.Utf8 _ => ok none
+  | value_observers.Value.Iutf8 _ => ok none
+  | value_observers.Value.Iname _ => ok none
+  | value_observers.Value.Uuid _ => ok none
+  | value_observers.Value.Boolean _ => ok none
+  | value_observers.Value.Syntax _ => ok none
+  | value_observers.Value.Index _ => ok none
+  | value_observers.Value.Refer _ => ok none
+  | value_observers.Value.JsonFilt _ => ok none
+  | value_observers.Value.Cred _ _ => ok none
+  | value_observers.Value.SshKey _ _ => ok none
+  | value_observers.Value.SecretValue _ => ok none
+  | value_observers.Value.Spn _ _ => ok none
+  | value_observers.Value.Uint32 _ => ok none
+  | value_observers.Value.Int64 _ => ok none
+  | value_observers.Value.Uint64 _ => ok none
+  | value_observers.Value.Cid _ => ok none
+  | value_observers.Value.Nsuniqueid _ => ok none
+  | value_observers.Value.DateTime _ => ok none
+  | value_observers.Value.EmailAddress _ _ => ok none
+  | value_observers.Value.PhoneNumber _ _ => ok none
+  | value_observers.Value.Address _ => ok none
+  | value_observers.Value.Url u => ok (some u)
+  | value_observers.Value.OauthScope _ => ok none
+  | value_observers.Value.OauthScopeMap _ _ => ok none
+  | value_observers.Value.PrivateBinary _ => ok none
+  | value_observers.Value.PublicBinary _ _ => ok none
+  | value_observers.Value.RestrictedString _ => ok none
+  | value_observers.Value.IntentToken _ _ => ok none
+  | value_observers.Value.Passkey _ _ _ => ok none
+  | value_observers.Value.AttestedPasskey _ _ _ => ok none
+  | value_observers.Value.Session _ _ => ok none
+  | value_observers.Value.ApiToken _ _ => ok none
+  | value_observers.Value.Oauth2Session _ _ => ok none
+  | value_observers.Value.JwsKeyEs256 _ => ok none
+  | value_observers.Value.JwsKeyRs256 _ => ok none
+  | value_observers.Value.UiHint _ => ok none
+  | value_observers.Value.TotpSecret _ _ => ok none
+  | value_observers.Value.AuditLogString _ _ => ok none
+  | value_observers.Value.Image _ => ok none
+  | value_observers.Value.CredentialType _ => ok none
+  | value_observers.Value.WebauthnAttestationCaList _ => ok none
+  | value_observers.Value.OauthClaimValue _ _ _ => ok none
+  | value_observers.Value.OauthClaimMap _ _ => ok none
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok none
+  | value_observers.Value.HexString _ => ok none
+  | value_observers.Value.Certificate _ => ok none
+  | value_observers.Value.ApplicationPassword _ => ok none
+  | value_observers.Value.Json _ => ok none
+  | value_observers.Value.Sha256 _ => ok none
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::as_string]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 239:4-246:5
+    Visibility: public -/
+def value_observers.Value.as_string
+  (self : value_observers.Value) : Result (Option Std.U64) := do
+  match self with
+  | value_observers.Value.Utf8 s => ok (some s)
+  | value_observers.Value.Iutf8 s => ok (some s)
+  | value_observers.Value.Iname s => ok (some s)
+  | value_observers.Value.Uuid _ => ok none
+  | value_observers.Value.Boolean _ => ok none
+  | value_observers.Value.Syntax _ => ok none
+  | value_observers.Value.Index _ => ok none
+  | value_observers.Value.Refer _ => ok none
+  | value_observers.Value.JsonFilt _ => ok none
+  | value_observers.Value.Cred _ _ => ok none
+  | value_observers.Value.SshKey _ _ => ok none
+  | value_observers.Value.SecretValue _ => ok none
+  | value_observers.Value.Spn _ _ => ok none
+  | value_observers.Value.Uint32 _ => ok none
+  | value_observers.Value.Int64 _ => ok none
+  | value_observers.Value.Uint64 _ => ok none
+  | value_observers.Value.Cid _ => ok none
+  | value_observers.Value.Nsuniqueid _ => ok none
+  | value_observers.Value.DateTime _ => ok none
+  | value_observers.Value.EmailAddress _ _ => ok none
+  | value_observers.Value.PhoneNumber _ _ => ok none
+  | value_observers.Value.Address _ => ok none
+  | value_observers.Value.Url _ => ok none
+  | value_observers.Value.OauthScope _ => ok none
+  | value_observers.Value.OauthScopeMap _ _ => ok none
+  | value_observers.Value.PrivateBinary _ => ok none
+  | value_observers.Value.PublicBinary _ _ => ok none
+  | value_observers.Value.RestrictedString _ => ok none
+  | value_observers.Value.IntentToken _ _ => ok none
+  | value_observers.Value.Passkey _ _ _ => ok none
+  | value_observers.Value.AttestedPasskey _ _ _ => ok none
+  | value_observers.Value.Session _ _ => ok none
+  | value_observers.Value.ApiToken _ _ => ok none
+  | value_observers.Value.Oauth2Session _ _ => ok none
+  | value_observers.Value.JwsKeyEs256 _ => ok none
+  | value_observers.Value.JwsKeyRs256 _ => ok none
+  | value_observers.Value.UiHint _ => ok none
+  | value_observers.Value.TotpSecret _ _ => ok none
+  | value_observers.Value.AuditLogString _ _ => ok none
+  | value_observers.Value.Image _ => ok none
+  | value_observers.Value.CredentialType _ => ok none
+  | value_observers.Value.WebauthnAttestationCaList _ => ok none
+  | value_observers.Value.OauthClaimValue _ _ _ => ok none
+  | value_observers.Value.OauthClaimMap _ _ => ok none
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok none
+  | value_observers.Value.HexString _ => ok none
+  | value_observers.Value.Certificate _ => ok none
+  | value_observers.Value.ApplicationPassword _ => ok none
+  | value_observers.Value.Json _ => ok none
+  | value_observers.Value.Sha256 _ => ok none
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::to_ref_uuid]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 247:4-255:5
+    Visibility: public -/
+def value_observers.Value.to_ref_uuid
+  (self : value_observers.Value) : Result (Option Std.U128) := do
+  match self with
+  | value_observers.Value.Utf8 _ => ok none
+  | value_observers.Value.Iutf8 _ => ok none
+  | value_observers.Value.Iname _ => ok none
+  | value_observers.Value.Uuid _ => ok none
+  | value_observers.Value.Boolean _ => ok none
+  | value_observers.Value.Syntax _ => ok none
+  | value_observers.Value.Index _ => ok none
+  | value_observers.Value.Refer u => ok (some u)
+  | value_observers.Value.JsonFilt _ => ok none
+  | value_observers.Value.Cred _ _ => ok none
+  | value_observers.Value.SshKey _ _ => ok none
+  | value_observers.Value.SecretValue _ => ok none
+  | value_observers.Value.Spn _ _ => ok none
+  | value_observers.Value.Uint32 _ => ok none
+  | value_observers.Value.Int64 _ => ok none
+  | value_observers.Value.Uint64 _ => ok none
+  | value_observers.Value.Cid _ => ok none
+  | value_observers.Value.Nsuniqueid _ => ok none
+  | value_observers.Value.DateTime _ => ok none
+  | value_observers.Value.EmailAddress _ _ => ok none
+  | value_observers.Value.PhoneNumber _ _ => ok none
+  | value_observers.Value.Address _ => ok none
+  | value_observers.Value.Url _ => ok none
+  | value_observers.Value.OauthScope _ => ok none
+  | value_observers.Value.OauthScopeMap u _ => ok (some u)
+  | value_observers.Value.PrivateBinary _ => ok none
+  | value_observers.Value.PublicBinary _ _ => ok none
+  | value_observers.Value.RestrictedString _ => ok none
+  | value_observers.Value.IntentToken _ _ => ok none
+  | value_observers.Value.Passkey _ _ _ => ok none
+  | value_observers.Value.AttestedPasskey _ _ _ => ok none
+  | value_observers.Value.Session _ _ => ok none
+  | value_observers.Value.ApiToken _ _ => ok none
+  | value_observers.Value.Oauth2Session _ m => ok (some m.rs_uuid)
+  | value_observers.Value.JwsKeyEs256 _ => ok none
+  | value_observers.Value.JwsKeyRs256 _ => ok none
+  | value_observers.Value.UiHint _ => ok none
+  | value_observers.Value.TotpSecret _ _ => ok none
+  | value_observers.Value.AuditLogString _ _ => ok none
+  | value_observers.Value.Image _ => ok none
+  | value_observers.Value.CredentialType _ => ok none
+  | value_observers.Value.WebauthnAttestationCaList _ => ok none
+  | value_observers.Value.OauthClaimValue _ _ _ => ok none
+  | value_observers.Value.OauthClaimMap _ _ => ok none
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok none
+  | value_observers.Value.HexString _ => ok none
+  | value_observers.Value.Certificate _ => ok none
+  | value_observers.Value.ApplicationPassword _ => ok none
+  | value_observers.Value.Json _ => ok none
+  | value_observers.Value.Sha256 _ => ok none
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::to_uuid]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 256:4-261:5
+    Visibility: public -/
+def value_observers.Value.to_uuid
+  (self : value_observers.Value) : Result (Option Std.U128) := do
+  match self with
+  | value_observers.Value.Utf8 _ => ok none
+  | value_observers.Value.Iutf8 _ => ok none
+  | value_observers.Value.Iname _ => ok none
+  | value_observers.Value.Uuid u => ok (some u)
+  | value_observers.Value.Boolean _ => ok none
+  | value_observers.Value.Syntax _ => ok none
+  | value_observers.Value.Index _ => ok none
+  | value_observers.Value.Refer _ => ok none
+  | value_observers.Value.JsonFilt _ => ok none
+  | value_observers.Value.Cred _ _ => ok none
+  | value_observers.Value.SshKey _ _ => ok none
+  | value_observers.Value.SecretValue _ => ok none
+  | value_observers.Value.Spn _ _ => ok none
+  | value_observers.Value.Uint32 _ => ok none
+  | value_observers.Value.Int64 _ => ok none
+  | value_observers.Value.Uint64 _ => ok none
+  | value_observers.Value.Cid _ => ok none
+  | value_observers.Value.Nsuniqueid _ => ok none
+  | value_observers.Value.DateTime _ => ok none
+  | value_observers.Value.EmailAddress _ _ => ok none
+  | value_observers.Value.PhoneNumber _ _ => ok none
+  | value_observers.Value.Address _ => ok none
+  | value_observers.Value.Url _ => ok none
+  | value_observers.Value.OauthScope _ => ok none
+  | value_observers.Value.OauthScopeMap _ _ => ok none
+  | value_observers.Value.PrivateBinary _ => ok none
+  | value_observers.Value.PublicBinary _ _ => ok none
+  | value_observers.Value.RestrictedString _ => ok none
+  | value_observers.Value.IntentToken _ _ => ok none
+  | value_observers.Value.Passkey _ _ _ => ok none
+  | value_observers.Value.AttestedPasskey _ _ _ => ok none
+  | value_observers.Value.Session _ _ => ok none
+  | value_observers.Value.ApiToken _ _ => ok none
+  | value_observers.Value.Oauth2Session _ _ => ok none
+  | value_observers.Value.JwsKeyEs256 _ => ok none
+  | value_observers.Value.JwsKeyRs256 _ => ok none
+  | value_observers.Value.UiHint _ => ok none
+  | value_observers.Value.TotpSecret _ _ => ok none
+  | value_observers.Value.AuditLogString _ _ => ok none
+  | value_observers.Value.Image _ => ok none
+  | value_observers.Value.CredentialType _ => ok none
+  | value_observers.Value.WebauthnAttestationCaList _ => ok none
+  | value_observers.Value.OauthClaimValue _ _ _ => ok none
+  | value_observers.Value.OauthClaimMap _ _ => ok none
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok none
+  | value_observers.Value.HexString _ => ok none
+  | value_observers.Value.Certificate _ => ok none
+  | value_observers.Value.ApplicationPassword _ => ok none
+  | value_observers.Value.Json _ => ok none
+  | value_observers.Value.Sha256 _ => ok none
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::to_indextype]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 262:4-267:5
+    Visibility: public -/
+def value_observers.Value.to_indextype
+  (self : value_observers.Value) : Result (Option Std.U64) := do
+  match self with
+  | value_observers.Value.Utf8 _ => ok none
+  | value_observers.Value.Iutf8 _ => ok none
+  | value_observers.Value.Iname _ => ok none
+  | value_observers.Value.Uuid _ => ok none
+  | value_observers.Value.Boolean _ => ok none
+  | value_observers.Value.Syntax _ => ok none
+  | value_observers.Value.Index i => ok (some i)
+  | value_observers.Value.Refer _ => ok none
+  | value_observers.Value.JsonFilt _ => ok none
+  | value_observers.Value.Cred _ _ => ok none
+  | value_observers.Value.SshKey _ _ => ok none
+  | value_observers.Value.SecretValue _ => ok none
+  | value_observers.Value.Spn _ _ => ok none
+  | value_observers.Value.Uint32 _ => ok none
+  | value_observers.Value.Int64 _ => ok none
+  | value_observers.Value.Uint64 _ => ok none
+  | value_observers.Value.Cid _ => ok none
+  | value_observers.Value.Nsuniqueid _ => ok none
+  | value_observers.Value.DateTime _ => ok none
+  | value_observers.Value.EmailAddress _ _ => ok none
+  | value_observers.Value.PhoneNumber _ _ => ok none
+  | value_observers.Value.Address _ => ok none
+  | value_observers.Value.Url _ => ok none
+  | value_observers.Value.OauthScope _ => ok none
+  | value_observers.Value.OauthScopeMap _ _ => ok none
+  | value_observers.Value.PrivateBinary _ => ok none
+  | value_observers.Value.PublicBinary _ _ => ok none
+  | value_observers.Value.RestrictedString _ => ok none
+  | value_observers.Value.IntentToken _ _ => ok none
+  | value_observers.Value.Passkey _ _ _ => ok none
+  | value_observers.Value.AttestedPasskey _ _ _ => ok none
+  | value_observers.Value.Session _ _ => ok none
+  | value_observers.Value.ApiToken _ _ => ok none
+  | value_observers.Value.Oauth2Session _ _ => ok none
+  | value_observers.Value.JwsKeyEs256 _ => ok none
+  | value_observers.Value.JwsKeyRs256 _ => ok none
+  | value_observers.Value.UiHint _ => ok none
+  | value_observers.Value.TotpSecret _ _ => ok none
+  | value_observers.Value.AuditLogString _ _ => ok none
+  | value_observers.Value.Image _ => ok none
+  | value_observers.Value.CredentialType _ => ok none
+  | value_observers.Value.WebauthnAttestationCaList _ => ok none
+  | value_observers.Value.OauthClaimValue _ _ _ => ok none
+  | value_observers.Value.OauthClaimMap _ _ => ok none
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok none
+  | value_observers.Value.HexString _ => ok none
+  | value_observers.Value.Certificate _ => ok none
+  | value_observers.Value.ApplicationPassword _ => ok none
+  | value_observers.Value.Json _ => ok none
+  | value_observers.Value.Sha256 _ => ok none
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::to_syntaxtype]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 268:4-273:5
+    Visibility: public -/
+def value_observers.Value.to_syntaxtype
+  (self : value_observers.Value) : Result (Option Std.U64) := do
+  match self with
+  | value_observers.Value.Utf8 _ => ok none
+  | value_observers.Value.Iutf8 _ => ok none
+  | value_observers.Value.Iname _ => ok none
+  | value_observers.Value.Uuid _ => ok none
+  | value_observers.Value.Boolean _ => ok none
+  | value_observers.Value.Syntax s => ok (some s)
+  | value_observers.Value.Index _ => ok none
+  | value_observers.Value.Refer _ => ok none
+  | value_observers.Value.JsonFilt _ => ok none
+  | value_observers.Value.Cred _ _ => ok none
+  | value_observers.Value.SshKey _ _ => ok none
+  | value_observers.Value.SecretValue _ => ok none
+  | value_observers.Value.Spn _ _ => ok none
+  | value_observers.Value.Uint32 _ => ok none
+  | value_observers.Value.Int64 _ => ok none
+  | value_observers.Value.Uint64 _ => ok none
+  | value_observers.Value.Cid _ => ok none
+  | value_observers.Value.Nsuniqueid _ => ok none
+  | value_observers.Value.DateTime _ => ok none
+  | value_observers.Value.EmailAddress _ _ => ok none
+  | value_observers.Value.PhoneNumber _ _ => ok none
+  | value_observers.Value.Address _ => ok none
+  | value_observers.Value.Url _ => ok none
+  | value_observers.Value.OauthScope _ => ok none
+  | value_observers.Value.OauthScopeMap _ _ => ok none
+  | value_observers.Value.PrivateBinary _ => ok none
+  | value_observers.Value.PublicBinary _ _ => ok none
+  | value_observers.Value.RestrictedString _ => ok none
+  | value_observers.Value.IntentToken _ _ => ok none
+  | value_observers.Value.Passkey _ _ _ => ok none
+  | value_observers.Value.AttestedPasskey _ _ _ => ok none
+  | value_observers.Value.Session _ _ => ok none
+  | value_observers.Value.ApiToken _ _ => ok none
+  | value_observers.Value.Oauth2Session _ _ => ok none
+  | value_observers.Value.JwsKeyEs256 _ => ok none
+  | value_observers.Value.JwsKeyRs256 _ => ok none
+  | value_observers.Value.UiHint _ => ok none
+  | value_observers.Value.TotpSecret _ _ => ok none
+  | value_observers.Value.AuditLogString _ _ => ok none
+  | value_observers.Value.Image _ => ok none
+  | value_observers.Value.CredentialType _ => ok none
+  | value_observers.Value.WebauthnAttestationCaList _ => ok none
+  | value_observers.Value.OauthClaimValue _ _ _ => ok none
+  | value_observers.Value.OauthClaimMap _ _ => ok none
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok none
+  | value_observers.Value.HexString _ => ok none
+  | value_observers.Value.Certificate _ => ok none
+  | value_observers.Value.ApplicationPassword _ => ok none
+  | value_observers.Value.Json _ => ok none
+  | value_observers.Value.Sha256 _ => ok none
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::to_bool]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 274:4-280:5
+    Visibility: public -/
+def value_observers.Value.to_bool
+  (self : value_observers.Value) : Result (Option Bool) := do
+  match self with
+  | value_observers.Value.Utf8 _ => ok none
+  | value_observers.Value.Iutf8 _ => ok none
+  | value_observers.Value.Iname _ => ok none
+  | value_observers.Value.Uuid _ => ok none
+  | value_observers.Value.Boolean v => ok (some v)
+  | value_observers.Value.Syntax _ => ok none
+  | value_observers.Value.Index _ => ok none
+  | value_observers.Value.Refer _ => ok none
+  | value_observers.Value.JsonFilt _ => ok none
+  | value_observers.Value.Cred _ _ => ok none
+  | value_observers.Value.SshKey _ _ => ok none
+  | value_observers.Value.SecretValue _ => ok none
+  | value_observers.Value.Spn _ _ => ok none
+  | value_observers.Value.Uint32 _ => ok none
+  | value_observers.Value.Int64 _ => ok none
+  | value_observers.Value.Uint64 _ => ok none
+  | value_observers.Value.Cid _ => ok none
+  | value_observers.Value.Nsuniqueid _ => ok none
+  | value_observers.Value.DateTime _ => ok none
+  | value_observers.Value.EmailAddress _ _ => ok none
+  | value_observers.Value.PhoneNumber _ _ => ok none
+  | value_observers.Value.Address _ => ok none
+  | value_observers.Value.Url _ => ok none
+  | value_observers.Value.OauthScope _ => ok none
+  | value_observers.Value.OauthScopeMap _ _ => ok none
+  | value_observers.Value.PrivateBinary _ => ok none
+  | value_observers.Value.PublicBinary _ _ => ok none
+  | value_observers.Value.RestrictedString _ => ok none
+  | value_observers.Value.IntentToken _ _ => ok none
+  | value_observers.Value.Passkey _ _ _ => ok none
+  | value_observers.Value.AttestedPasskey _ _ _ => ok none
+  | value_observers.Value.Session _ _ => ok none
+  | value_observers.Value.ApiToken _ _ => ok none
+  | value_observers.Value.Oauth2Session _ _ => ok none
+  | value_observers.Value.JwsKeyEs256 _ => ok none
+  | value_observers.Value.JwsKeyRs256 _ => ok none
+  | value_observers.Value.UiHint _ => ok none
+  | value_observers.Value.TotpSecret _ _ => ok none
+  | value_observers.Value.AuditLogString _ _ => ok none
+  | value_observers.Value.Image _ => ok none
+  | value_observers.Value.CredentialType _ => ok none
+  | value_observers.Value.WebauthnAttestationCaList _ => ok none
+  | value_observers.Value.OauthClaimValue _ _ _ => ok none
+  | value_observers.Value.OauthClaimMap _ _ => ok none
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok none
+  | value_observers.Value.HexString _ => ok none
+  | value_observers.Value.Certificate _ => ok none
+  | value_observers.Value.ApplicationPassword _ => ok none
+  | value_observers.Value.Json _ => ok none
+  | value_observers.Value.Sha256 _ => ok none
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::to_uint32]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 281:4-286:5
+    Visibility: public -/
+def value_observers.Value.to_uint32
+  (self : value_observers.Value) : Result (Option Std.U32) := do
+  match self with
+  | value_observers.Value.Utf8 _ => ok none
+  | value_observers.Value.Iutf8 _ => ok none
+  | value_observers.Value.Iname _ => ok none
+  | value_observers.Value.Uuid _ => ok none
+  | value_observers.Value.Boolean _ => ok none
+  | value_observers.Value.Syntax _ => ok none
+  | value_observers.Value.Index _ => ok none
+  | value_observers.Value.Refer _ => ok none
+  | value_observers.Value.JsonFilt _ => ok none
+  | value_observers.Value.Cred _ _ => ok none
+  | value_observers.Value.SshKey _ _ => ok none
+  | value_observers.Value.SecretValue _ => ok none
+  | value_observers.Value.Spn _ _ => ok none
+  | value_observers.Value.Uint32 v => ok (some v)
+  | value_observers.Value.Int64 _ => ok none
+  | value_observers.Value.Uint64 _ => ok none
+  | value_observers.Value.Cid _ => ok none
+  | value_observers.Value.Nsuniqueid _ => ok none
+  | value_observers.Value.DateTime _ => ok none
+  | value_observers.Value.EmailAddress _ _ => ok none
+  | value_observers.Value.PhoneNumber _ _ => ok none
+  | value_observers.Value.Address _ => ok none
+  | value_observers.Value.Url _ => ok none
+  | value_observers.Value.OauthScope _ => ok none
+  | value_observers.Value.OauthScopeMap _ _ => ok none
+  | value_observers.Value.PrivateBinary _ => ok none
+  | value_observers.Value.PublicBinary _ _ => ok none
+  | value_observers.Value.RestrictedString _ => ok none
+  | value_observers.Value.IntentToken _ _ => ok none
+  | value_observers.Value.Passkey _ _ _ => ok none
+  | value_observers.Value.AttestedPasskey _ _ _ => ok none
+  | value_observers.Value.Session _ _ => ok none
+  | value_observers.Value.ApiToken _ _ => ok none
+  | value_observers.Value.Oauth2Session _ _ => ok none
+  | value_observers.Value.JwsKeyEs256 _ => ok none
+  | value_observers.Value.JwsKeyRs256 _ => ok none
+  | value_observers.Value.UiHint _ => ok none
+  | value_observers.Value.TotpSecret _ _ => ok none
+  | value_observers.Value.AuditLogString _ _ => ok none
+  | value_observers.Value.Image _ => ok none
+  | value_observers.Value.CredentialType _ => ok none
+  | value_observers.Value.WebauthnAttestationCaList _ => ok none
+  | value_observers.Value.OauthClaimValue _ _ _ => ok none
+  | value_observers.Value.OauthClaimMap _ _ => ok none
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok none
+  | value_observers.Value.HexString _ => ok none
+  | value_observers.Value.Certificate _ => ok none
+  | value_observers.Value.ApplicationPassword _ => ok none
+  | value_observers.Value.Json _ => ok none
+  | value_observers.Value.Sha256 _ => ok none
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::to_utf8]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 287:4-292:5
+    Visibility: public -/
+def value_observers.Value.to_utf8
+  (self : value_observers.Value) : Result (Option Std.U64) := do
+  match self with
+  | value_observers.Value.Utf8 s => ok (some s)
+  | value_observers.Value.Iutf8 _ => ok none
+  | value_observers.Value.Iname _ => ok none
+  | value_observers.Value.Uuid _ => ok none
+  | value_observers.Value.Boolean _ => ok none
+  | value_observers.Value.Syntax _ => ok none
+  | value_observers.Value.Index _ => ok none
+  | value_observers.Value.Refer _ => ok none
+  | value_observers.Value.JsonFilt _ => ok none
+  | value_observers.Value.Cred _ _ => ok none
+  | value_observers.Value.SshKey _ _ => ok none
+  | value_observers.Value.SecretValue _ => ok none
+  | value_observers.Value.Spn _ _ => ok none
+  | value_observers.Value.Uint32 _ => ok none
+  | value_observers.Value.Int64 _ => ok none
+  | value_observers.Value.Uint64 _ => ok none
+  | value_observers.Value.Cid _ => ok none
+  | value_observers.Value.Nsuniqueid _ => ok none
+  | value_observers.Value.DateTime _ => ok none
+  | value_observers.Value.EmailAddress _ _ => ok none
+  | value_observers.Value.PhoneNumber _ _ => ok none
+  | value_observers.Value.Address _ => ok none
+  | value_observers.Value.Url _ => ok none
+  | value_observers.Value.OauthScope _ => ok none
+  | value_observers.Value.OauthScopeMap _ _ => ok none
+  | value_observers.Value.PrivateBinary _ => ok none
+  | value_observers.Value.PublicBinary _ _ => ok none
+  | value_observers.Value.RestrictedString _ => ok none
+  | value_observers.Value.IntentToken _ _ => ok none
+  | value_observers.Value.Passkey _ _ _ => ok none
+  | value_observers.Value.AttestedPasskey _ _ _ => ok none
+  | value_observers.Value.Session _ _ => ok none
+  | value_observers.Value.ApiToken _ _ => ok none
+  | value_observers.Value.Oauth2Session _ _ => ok none
+  | value_observers.Value.JwsKeyEs256 _ => ok none
+  | value_observers.Value.JwsKeyRs256 _ => ok none
+  | value_observers.Value.UiHint _ => ok none
+  | value_observers.Value.TotpSecret _ _ => ok none
+  | value_observers.Value.AuditLogString _ _ => ok none
+  | value_observers.Value.Image _ => ok none
+  | value_observers.Value.CredentialType _ => ok none
+  | value_observers.Value.WebauthnAttestationCaList _ => ok none
+  | value_observers.Value.OauthClaimValue _ _ _ => ok none
+  | value_observers.Value.OauthClaimMap _ _ => ok none
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok none
+  | value_observers.Value.HexString _ => ok none
+  | value_observers.Value.Certificate _ => ok none
+  | value_observers.Value.ApplicationPassword _ => ok none
+  | value_observers.Value.Json _ => ok none
+  | value_observers.Value.Sha256 _ => ok none
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::to_iutf8]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 293:4-298:5
+    Visibility: public -/
+def value_observers.Value.to_iutf8
+  (self : value_observers.Value) : Result (Option Std.U64) := do
+  match self with
+  | value_observers.Value.Utf8 _ => ok none
+  | value_observers.Value.Iutf8 s => ok (some s)
+  | value_observers.Value.Iname _ => ok none
+  | value_observers.Value.Uuid _ => ok none
+  | value_observers.Value.Boolean _ => ok none
+  | value_observers.Value.Syntax _ => ok none
+  | value_observers.Value.Index _ => ok none
+  | value_observers.Value.Refer _ => ok none
+  | value_observers.Value.JsonFilt _ => ok none
+  | value_observers.Value.Cred _ _ => ok none
+  | value_observers.Value.SshKey _ _ => ok none
+  | value_observers.Value.SecretValue _ => ok none
+  | value_observers.Value.Spn _ _ => ok none
+  | value_observers.Value.Uint32 _ => ok none
+  | value_observers.Value.Int64 _ => ok none
+  | value_observers.Value.Uint64 _ => ok none
+  | value_observers.Value.Cid _ => ok none
+  | value_observers.Value.Nsuniqueid _ => ok none
+  | value_observers.Value.DateTime _ => ok none
+  | value_observers.Value.EmailAddress _ _ => ok none
+  | value_observers.Value.PhoneNumber _ _ => ok none
+  | value_observers.Value.Address _ => ok none
+  | value_observers.Value.Url _ => ok none
+  | value_observers.Value.OauthScope _ => ok none
+  | value_observers.Value.OauthScopeMap _ _ => ok none
+  | value_observers.Value.PrivateBinary _ => ok none
+  | value_observers.Value.PublicBinary _ _ => ok none
+  | value_observers.Value.RestrictedString _ => ok none
+  | value_observers.Value.IntentToken _ _ => ok none
+  | value_observers.Value.Passkey _ _ _ => ok none
+  | value_observers.Value.AttestedPasskey _ _ _ => ok none
+  | value_observers.Value.Session _ _ => ok none
+  | value_observers.Value.ApiToken _ _ => ok none
+  | value_observers.Value.Oauth2Session _ _ => ok none
+  | value_observers.Value.JwsKeyEs256 _ => ok none
+  | value_observers.Value.JwsKeyRs256 _ => ok none
+  | value_observers.Value.UiHint _ => ok none
+  | value_observers.Value.TotpSecret _ _ => ok none
+  | value_observers.Value.AuditLogString _ _ => ok none
+  | value_observers.Value.Image _ => ok none
+  | value_observers.Value.CredentialType _ => ok none
+  | value_observers.Value.WebauthnAttestationCaList _ => ok none
+  | value_observers.Value.OauthClaimValue _ _ _ => ok none
+  | value_observers.Value.OauthClaimMap _ _ => ok none
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok none
+  | value_observers.Value.HexString _ => ok none
+  | value_observers.Value.Certificate _ => ok none
+  | value_observers.Value.ApplicationPassword _ => ok none
+  | value_observers.Value.Json _ => ok none
+  | value_observers.Value.Sha256 _ => ok none
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::to_iname]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 299:4-304:5
+    Visibility: public -/
+def value_observers.Value.to_iname
+  (self : value_observers.Value) : Result (Option Std.U64) := do
+  match self with
+  | value_observers.Value.Utf8 _ => ok none
+  | value_observers.Value.Iutf8 _ => ok none
+  | value_observers.Value.Iname s => ok (some s)
+  | value_observers.Value.Uuid _ => ok none
+  | value_observers.Value.Boolean _ => ok none
+  | value_observers.Value.Syntax _ => ok none
+  | value_observers.Value.Index _ => ok none
+  | value_observers.Value.Refer _ => ok none
+  | value_observers.Value.JsonFilt _ => ok none
+  | value_observers.Value.Cred _ _ => ok none
+  | value_observers.Value.SshKey _ _ => ok none
+  | value_observers.Value.SecretValue _ => ok none
+  | value_observers.Value.Spn _ _ => ok none
+  | value_observers.Value.Uint32 _ => ok none
+  | value_observers.Value.Int64 _ => ok none
+  | value_observers.Value.Uint64 _ => ok none
+  | value_observers.Value.Cid _ => ok none
+  | value_observers.Value.Nsuniqueid _ => ok none
+  | value_observers.Value.DateTime _ => ok none
+  | value_observers.Value.EmailAddress _ _ => ok none
+  | value_observers.Value.PhoneNumber _ _ => ok none
+  | value_observers.Value.Address _ => ok none
+  | value_observers.Value.Url _ => ok none
+  | value_observers.Value.OauthScope _ => ok none
+  | value_observers.Value.OauthScopeMap _ _ => ok none
+  | value_observers.Value.PrivateBinary _ => ok none
+  | value_observers.Value.PublicBinary _ _ => ok none
+  | value_observers.Value.RestrictedString _ => ok none
+  | value_observers.Value.IntentToken _ _ => ok none
+  | value_observers.Value.Passkey _ _ _ => ok none
+  | value_observers.Value.AttestedPasskey _ _ _ => ok none
+  | value_observers.Value.Session _ _ => ok none
+  | value_observers.Value.ApiToken _ _ => ok none
+  | value_observers.Value.Oauth2Session _ _ => ok none
+  | value_observers.Value.JwsKeyEs256 _ => ok none
+  | value_observers.Value.JwsKeyRs256 _ => ok none
+  | value_observers.Value.UiHint _ => ok none
+  | value_observers.Value.TotpSecret _ _ => ok none
+  | value_observers.Value.AuditLogString _ _ => ok none
+  | value_observers.Value.Image _ => ok none
+  | value_observers.Value.CredentialType _ => ok none
+  | value_observers.Value.WebauthnAttestationCaList _ => ok none
+  | value_observers.Value.OauthClaimValue _ _ _ => ok none
+  | value_observers.Value.OauthClaimMap _ _ => ok none
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok none
+  | value_observers.Value.HexString _ => ok none
+  | value_observers.Value.Certificate _ => ok none
+  | value_observers.Value.ApplicationPassword _ => ok none
+  | value_observers.Value.Json _ => ok none
+  | value_observers.Value.Sha256 _ => ok none
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::to_jsonfilt]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 305:4-310:5
+    Visibility: public -/
+def value_observers.Value.to_jsonfilt
+  (self : value_observers.Value) : Result (Option Std.U64) := do
+  match self with
+  | value_observers.Value.Utf8 _ => ok none
+  | value_observers.Value.Iutf8 _ => ok none
+  | value_observers.Value.Iname _ => ok none
+  | value_observers.Value.Uuid _ => ok none
+  | value_observers.Value.Boolean _ => ok none
+  | value_observers.Value.Syntax _ => ok none
+  | value_observers.Value.Index _ => ok none
+  | value_observers.Value.Refer _ => ok none
+  | value_observers.Value.JsonFilt f => ok (some f)
+  | value_observers.Value.Cred _ _ => ok none
+  | value_observers.Value.SshKey _ _ => ok none
+  | value_observers.Value.SecretValue _ => ok none
+  | value_observers.Value.Spn _ _ => ok none
+  | value_observers.Value.Uint32 _ => ok none
+  | value_observers.Value.Int64 _ => ok none
+  | value_observers.Value.Uint64 _ => ok none
+  | value_observers.Value.Cid _ => ok none
+  | value_observers.Value.Nsuniqueid _ => ok none
+  | value_observers.Value.DateTime _ => ok none
+  | value_observers.Value.EmailAddress _ _ => ok none
+  | value_observers.Value.PhoneNumber _ _ => ok none
+  | value_observers.Value.Address _ => ok none
+  | value_observers.Value.Url _ => ok none
+  | value_observers.Value.OauthScope _ => ok none
+  | value_observers.Value.OauthScopeMap _ _ => ok none
+  | value_observers.Value.PrivateBinary _ => ok none
+  | value_observers.Value.PublicBinary _ _ => ok none
+  | value_observers.Value.RestrictedString _ => ok none
+  | value_observers.Value.IntentToken _ _ => ok none
+  | value_observers.Value.Passkey _ _ _ => ok none
+  | value_observers.Value.AttestedPasskey _ _ _ => ok none
+  | value_observers.Value.Session _ _ => ok none
+  | value_observers.Value.ApiToken _ _ => ok none
+  | value_observers.Value.Oauth2Session _ _ => ok none
+  | value_observers.Value.JwsKeyEs256 _ => ok none
+  | value_observers.Value.JwsKeyRs256 _ => ok none
+  | value_observers.Value.UiHint _ => ok none
+  | value_observers.Value.TotpSecret _ _ => ok none
+  | value_observers.Value.AuditLogString _ _ => ok none
+  | value_observers.Value.Image _ => ok none
+  | value_observers.Value.CredentialType _ => ok none
+  | value_observers.Value.WebauthnAttestationCaList _ => ok none
+  | value_observers.Value.OauthClaimValue _ _ _ => ok none
+  | value_observers.Value.OauthClaimMap _ _ => ok none
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok none
+  | value_observers.Value.HexString _ => ok none
+  | value_observers.Value.Certificate _ => ok none
+  | value_observers.Value.ApplicationPassword _ => ok none
+  | value_observers.Value.Json _ => ok none
+  | value_observers.Value.Sha256 _ => ok none
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::to_cred]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 311:4-316:5
+    Visibility: public -/
+def value_observers.Value.to_cred
+  (self : value_observers.Value) : Result (Option (Std.U64 × Std.U64)) := do
+  match self with
+  | value_observers.Value.Utf8 _ => ok none
+  | value_observers.Value.Iutf8 _ => ok none
+  | value_observers.Value.Iname _ => ok none
+  | value_observers.Value.Uuid _ => ok none
+  | value_observers.Value.Boolean _ => ok none
+  | value_observers.Value.Syntax _ => ok none
+  | value_observers.Value.Index _ => ok none
+  | value_observers.Value.Refer _ => ok none
+  | value_observers.Value.JsonFilt _ => ok none
+  | value_observers.Value.Cred tag c => ok (some (tag, c))
+  | value_observers.Value.SshKey _ _ => ok none
+  | value_observers.Value.SecretValue _ => ok none
+  | value_observers.Value.Spn _ _ => ok none
+  | value_observers.Value.Uint32 _ => ok none
+  | value_observers.Value.Int64 _ => ok none
+  | value_observers.Value.Uint64 _ => ok none
+  | value_observers.Value.Cid _ => ok none
+  | value_observers.Value.Nsuniqueid _ => ok none
+  | value_observers.Value.DateTime _ => ok none
+  | value_observers.Value.EmailAddress _ _ => ok none
+  | value_observers.Value.PhoneNumber _ _ => ok none
+  | value_observers.Value.Address _ => ok none
+  | value_observers.Value.Url _ => ok none
+  | value_observers.Value.OauthScope _ => ok none
+  | value_observers.Value.OauthScopeMap _ _ => ok none
+  | value_observers.Value.PrivateBinary _ => ok none
+  | value_observers.Value.PublicBinary _ _ => ok none
+  | value_observers.Value.RestrictedString _ => ok none
+  | value_observers.Value.IntentToken _ _ => ok none
+  | value_observers.Value.Passkey _ _ _ => ok none
+  | value_observers.Value.AttestedPasskey _ _ _ => ok none
+  | value_observers.Value.Session _ _ => ok none
+  | value_observers.Value.ApiToken _ _ => ok none
+  | value_observers.Value.Oauth2Session _ _ => ok none
+  | value_observers.Value.JwsKeyEs256 _ => ok none
+  | value_observers.Value.JwsKeyRs256 _ => ok none
+  | value_observers.Value.UiHint _ => ok none
+  | value_observers.Value.TotpSecret _ _ => ok none
+  | value_observers.Value.AuditLogString _ _ => ok none
+  | value_observers.Value.Image _ => ok none
+  | value_observers.Value.CredentialType _ => ok none
+  | value_observers.Value.WebauthnAttestationCaList _ => ok none
+  | value_observers.Value.OauthClaimValue _ _ _ => ok none
+  | value_observers.Value.OauthClaimMap _ _ => ok none
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok none
+  | value_observers.Value.HexString _ => ok none
+  | value_observers.Value.Certificate _ => ok none
+  | value_observers.Value.ApplicationPassword _ => ok none
+  | value_observers.Value.Json _ => ok none
+  | value_observers.Value.Sha256 _ => ok none
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::to_spn]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 317:4-322:5
+    Visibility: public -/
+def value_observers.Value.to_spn
+  (self : value_observers.Value) : Result (Option (Std.U64 × Std.U64)) := do
+  match self with
+  | value_observers.Value.Utf8 _ => ok none
+  | value_observers.Value.Iutf8 _ => ok none
+  | value_observers.Value.Iname _ => ok none
+  | value_observers.Value.Uuid _ => ok none
+  | value_observers.Value.Boolean _ => ok none
+  | value_observers.Value.Syntax _ => ok none
+  | value_observers.Value.Index _ => ok none
+  | value_observers.Value.Refer _ => ok none
+  | value_observers.Value.JsonFilt _ => ok none
+  | value_observers.Value.Cred _ _ => ok none
+  | value_observers.Value.SshKey _ _ => ok none
+  | value_observers.Value.SecretValue _ => ok none
+  | value_observers.Value.Spn n d => ok (some (n, d))
+  | value_observers.Value.Uint32 _ => ok none
+  | value_observers.Value.Int64 _ => ok none
+  | value_observers.Value.Uint64 _ => ok none
+  | value_observers.Value.Cid _ => ok none
+  | value_observers.Value.Nsuniqueid _ => ok none
+  | value_observers.Value.DateTime _ => ok none
+  | value_observers.Value.EmailAddress _ _ => ok none
+  | value_observers.Value.PhoneNumber _ _ => ok none
+  | value_observers.Value.Address _ => ok none
+  | value_observers.Value.Url _ => ok none
+  | value_observers.Value.OauthScope _ => ok none
+  | value_observers.Value.OauthScopeMap _ _ => ok none
+  | value_observers.Value.PrivateBinary _ => ok none
+  | value_observers.Value.PublicBinary _ _ => ok none
+  | value_observers.Value.RestrictedString _ => ok none
+  | value_observers.Value.IntentToken _ _ => ok none
+  | value_observers.Value.Passkey _ _ _ => ok none
+  | value_observers.Value.AttestedPasskey _ _ _ => ok none
+  | value_observers.Value.Session _ _ => ok none
+  | value_observers.Value.ApiToken _ _ => ok none
+  | value_observers.Value.Oauth2Session _ _ => ok none
+  | value_observers.Value.JwsKeyEs256 _ => ok none
+  | value_observers.Value.JwsKeyRs256 _ => ok none
+  | value_observers.Value.UiHint _ => ok none
+  | value_observers.Value.TotpSecret _ _ => ok none
+  | value_observers.Value.AuditLogString _ _ => ok none
+  | value_observers.Value.Image _ => ok none
+  | value_observers.Value.CredentialType _ => ok none
+  | value_observers.Value.WebauthnAttestationCaList _ => ok none
+  | value_observers.Value.OauthClaimValue _ _ _ => ok none
+  | value_observers.Value.OauthClaimMap _ _ => ok none
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok none
+  | value_observers.Value.HexString _ => ok none
+  | value_observers.Value.Certificate _ => ok none
+  | value_observers.Value.ApplicationPassword _ => ok none
+  | value_observers.Value.Json _ => ok none
+  | value_observers.Value.Sha256 _ => ok none
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::to_cid]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 323:4-328:5
+    Visibility: public -/
+def value_observers.Value.to_cid
+  (self : value_observers.Value) : Result (Option Std.U64) := do
+  match self with
+  | value_observers.Value.Utf8 _ => ok none
+  | value_observers.Value.Iutf8 _ => ok none
+  | value_observers.Value.Iname _ => ok none
+  | value_observers.Value.Uuid _ => ok none
+  | value_observers.Value.Boolean _ => ok none
+  | value_observers.Value.Syntax _ => ok none
+  | value_observers.Value.Index _ => ok none
+  | value_observers.Value.Refer _ => ok none
+  | value_observers.Value.JsonFilt _ => ok none
+  | value_observers.Value.Cred _ _ => ok none
+  | value_observers.Value.SshKey _ _ => ok none
+  | value_observers.Value.SecretValue _ => ok none
+  | value_observers.Value.Spn _ _ => ok none
+  | value_observers.Value.Uint32 _ => ok none
+  | value_observers.Value.Int64 _ => ok none
+  | value_observers.Value.Uint64 _ => ok none
+  | value_observers.Value.Cid s => ok (some s)
+  | value_observers.Value.Nsuniqueid _ => ok none
+  | value_observers.Value.DateTime _ => ok none
+  | value_observers.Value.EmailAddress _ _ => ok none
+  | value_observers.Value.PhoneNumber _ _ => ok none
+  | value_observers.Value.Address _ => ok none
+  | value_observers.Value.Url _ => ok none
+  | value_observers.Value.OauthScope _ => ok none
+  | value_observers.Value.OauthScopeMap _ _ => ok none
+  | value_observers.Value.PrivateBinary _ => ok none
+  | value_observers.Value.PublicBinary _ _ => ok none
+  | value_observers.Value.RestrictedString _ => ok none
+  | value_observers.Value.IntentToken _ _ => ok none
+  | value_observers.Value.Passkey _ _ _ => ok none
+  | value_observers.Value.AttestedPasskey _ _ _ => ok none
+  | value_observers.Value.Session _ _ => ok none
+  | value_observers.Value.ApiToken _ _ => ok none
+  | value_observers.Value.Oauth2Session _ _ => ok none
+  | value_observers.Value.JwsKeyEs256 _ => ok none
+  | value_observers.Value.JwsKeyRs256 _ => ok none
+  | value_observers.Value.UiHint _ => ok none
+  | value_observers.Value.TotpSecret _ _ => ok none
+  | value_observers.Value.AuditLogString _ _ => ok none
+  | value_observers.Value.Image _ => ok none
+  | value_observers.Value.CredentialType _ => ok none
+  | value_observers.Value.WebauthnAttestationCaList _ => ok none
+  | value_observers.Value.OauthClaimValue _ _ _ => ok none
+  | value_observers.Value.OauthClaimMap _ _ => ok none
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok none
+  | value_observers.Value.HexString _ => ok none
+  | value_observers.Value.Certificate _ => ok none
+  | value_observers.Value.ApplicationPassword _ => ok none
+  | value_observers.Value.Json _ => ok none
+  | value_observers.Value.Sha256 _ => ok none
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::to_nsuniqueid]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 329:4-334:5
+    Visibility: public -/
+def value_observers.Value.to_nsuniqueid
+  (self : value_observers.Value) : Result (Option Std.U64) := do
+  match self with
+  | value_observers.Value.Utf8 _ => ok none
+  | value_observers.Value.Iutf8 _ => ok none
+  | value_observers.Value.Iname _ => ok none
+  | value_observers.Value.Uuid _ => ok none
+  | value_observers.Value.Boolean _ => ok none
+  | value_observers.Value.Syntax _ => ok none
+  | value_observers.Value.Index _ => ok none
+  | value_observers.Value.Refer _ => ok none
+  | value_observers.Value.JsonFilt _ => ok none
+  | value_observers.Value.Cred _ _ => ok none
+  | value_observers.Value.SshKey _ _ => ok none
+  | value_observers.Value.SecretValue _ => ok none
+  | value_observers.Value.Spn _ _ => ok none
+  | value_observers.Value.Uint32 _ => ok none
+  | value_observers.Value.Int64 _ => ok none
+  | value_observers.Value.Uint64 _ => ok none
+  | value_observers.Value.Cid _ => ok none
+  | value_observers.Value.Nsuniqueid s => ok (some s)
+  | value_observers.Value.DateTime _ => ok none
+  | value_observers.Value.EmailAddress _ _ => ok none
+  | value_observers.Value.PhoneNumber _ _ => ok none
+  | value_observers.Value.Address _ => ok none
+  | value_observers.Value.Url _ => ok none
+  | value_observers.Value.OauthScope _ => ok none
+  | value_observers.Value.OauthScopeMap _ _ => ok none
+  | value_observers.Value.PrivateBinary _ => ok none
+  | value_observers.Value.PublicBinary _ _ => ok none
+  | value_observers.Value.RestrictedString _ => ok none
+  | value_observers.Value.IntentToken _ _ => ok none
+  | value_observers.Value.Passkey _ _ _ => ok none
+  | value_observers.Value.AttestedPasskey _ _ _ => ok none
+  | value_observers.Value.Session _ _ => ok none
+  | value_observers.Value.ApiToken _ _ => ok none
+  | value_observers.Value.Oauth2Session _ _ => ok none
+  | value_observers.Value.JwsKeyEs256 _ => ok none
+  | value_observers.Value.JwsKeyRs256 _ => ok none
+  | value_observers.Value.UiHint _ => ok none
+  | value_observers.Value.TotpSecret _ _ => ok none
+  | value_observers.Value.AuditLogString _ _ => ok none
+  | value_observers.Value.Image _ => ok none
+  | value_observers.Value.CredentialType _ => ok none
+  | value_observers.Value.WebauthnAttestationCaList _ => ok none
+  | value_observers.Value.OauthClaimValue _ _ _ => ok none
+  | value_observers.Value.OauthClaimMap _ _ => ok none
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok none
+  | value_observers.Value.HexString _ => ok none
+  | value_observers.Value.Certificate _ => ok none
+  | value_observers.Value.ApplicationPassword _ => ok none
+  | value_observers.Value.Json _ => ok none
+  | value_observers.Value.Sha256 _ => ok none
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::to_emailaddress]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 335:4-340:5
+    Visibility: public -/
+def value_observers.Value.to_emailaddress
+  (self : value_observers.Value) : Result (Option Std.U64) := do
+  match self with
+  | value_observers.Value.Utf8 _ => ok none
+  | value_observers.Value.Iutf8 _ => ok none
+  | value_observers.Value.Iname _ => ok none
+  | value_observers.Value.Uuid _ => ok none
+  | value_observers.Value.Boolean _ => ok none
+  | value_observers.Value.Syntax _ => ok none
+  | value_observers.Value.Index _ => ok none
+  | value_observers.Value.Refer _ => ok none
+  | value_observers.Value.JsonFilt _ => ok none
+  | value_observers.Value.Cred _ _ => ok none
+  | value_observers.Value.SshKey _ _ => ok none
+  | value_observers.Value.SecretValue _ => ok none
+  | value_observers.Value.Spn _ _ => ok none
+  | value_observers.Value.Uint32 _ => ok none
+  | value_observers.Value.Int64 _ => ok none
+  | value_observers.Value.Uint64 _ => ok none
+  | value_observers.Value.Cid _ => ok none
+  | value_observers.Value.Nsuniqueid _ => ok none
+  | value_observers.Value.DateTime _ => ok none
+  | value_observers.Value.EmailAddress s _ => ok (some s)
+  | value_observers.Value.PhoneNumber _ _ => ok none
+  | value_observers.Value.Address _ => ok none
+  | value_observers.Value.Url _ => ok none
+  | value_observers.Value.OauthScope _ => ok none
+  | value_observers.Value.OauthScopeMap _ _ => ok none
+  | value_observers.Value.PrivateBinary _ => ok none
+  | value_observers.Value.PublicBinary _ _ => ok none
+  | value_observers.Value.RestrictedString _ => ok none
+  | value_observers.Value.IntentToken _ _ => ok none
+  | value_observers.Value.Passkey _ _ _ => ok none
+  | value_observers.Value.AttestedPasskey _ _ _ => ok none
+  | value_observers.Value.Session _ _ => ok none
+  | value_observers.Value.ApiToken _ _ => ok none
+  | value_observers.Value.Oauth2Session _ _ => ok none
+  | value_observers.Value.JwsKeyEs256 _ => ok none
+  | value_observers.Value.JwsKeyRs256 _ => ok none
+  | value_observers.Value.UiHint _ => ok none
+  | value_observers.Value.TotpSecret _ _ => ok none
+  | value_observers.Value.AuditLogString _ _ => ok none
+  | value_observers.Value.Image _ => ok none
+  | value_observers.Value.CredentialType _ => ok none
+  | value_observers.Value.WebauthnAttestationCaList _ => ok none
+  | value_observers.Value.OauthClaimValue _ _ _ => ok none
+  | value_observers.Value.OauthClaimMap _ _ => ok none
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok none
+  | value_observers.Value.HexString _ => ok none
+  | value_observers.Value.Certificate _ => ok none
+  | value_observers.Value.ApplicationPassword _ => ok none
+  | value_observers.Value.Json _ => ok none
+  | value_observers.Value.Sha256 _ => ok none
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::to_oauthscope]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 341:4-346:5
+    Visibility: public -/
+def value_observers.Value.to_oauthscope
+  (self : value_observers.Value) : Result (Option Std.U64) := do
+  match self with
+  | value_observers.Value.Utf8 _ => ok none
+  | value_observers.Value.Iutf8 _ => ok none
+  | value_observers.Value.Iname _ => ok none
+  | value_observers.Value.Uuid _ => ok none
+  | value_observers.Value.Boolean _ => ok none
+  | value_observers.Value.Syntax _ => ok none
+  | value_observers.Value.Index _ => ok none
+  | value_observers.Value.Refer _ => ok none
+  | value_observers.Value.JsonFilt _ => ok none
+  | value_observers.Value.Cred _ _ => ok none
+  | value_observers.Value.SshKey _ _ => ok none
+  | value_observers.Value.SecretValue _ => ok none
+  | value_observers.Value.Spn _ _ => ok none
+  | value_observers.Value.Uint32 _ => ok none
+  | value_observers.Value.Int64 _ => ok none
+  | value_observers.Value.Uint64 _ => ok none
+  | value_observers.Value.Cid _ => ok none
+  | value_observers.Value.Nsuniqueid _ => ok none
+  | value_observers.Value.DateTime _ => ok none
+  | value_observers.Value.EmailAddress _ _ => ok none
+  | value_observers.Value.PhoneNumber _ _ => ok none
+  | value_observers.Value.Address _ => ok none
+  | value_observers.Value.Url _ => ok none
+  | value_observers.Value.OauthScope s => ok (some s)
+  | value_observers.Value.OauthScopeMap _ _ => ok none
+  | value_observers.Value.PrivateBinary _ => ok none
+  | value_observers.Value.PublicBinary _ _ => ok none
+  | value_observers.Value.RestrictedString _ => ok none
+  | value_observers.Value.IntentToken _ _ => ok none
+  | value_observers.Value.Passkey _ _ _ => ok none
+  | value_observers.Value.AttestedPasskey _ _ _ => ok none
+  | value_observers.Value.Session _ _ => ok none
+  | value_observers.Value.ApiToken _ _ => ok none
+  | value_observers.Value.Oauth2Session _ _ => ok none
+  | value_observers.Value.JwsKeyEs256 _ => ok none
+  | value_observers.Value.JwsKeyRs256 _ => ok none
+  | value_observers.Value.UiHint _ => ok none
+  | value_observers.Value.TotpSecret _ _ => ok none
+  | value_observers.Value.AuditLogString _ _ => ok none
+  | value_observers.Value.Image _ => ok none
+  | value_observers.Value.CredentialType _ => ok none
+  | value_observers.Value.WebauthnAttestationCaList _ => ok none
+  | value_observers.Value.OauthClaimValue _ _ _ => ok none
+  | value_observers.Value.OauthClaimMap _ _ => ok none
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok none
+  | value_observers.Value.HexString _ => ok none
+  | value_observers.Value.Certificate _ => ok none
+  | value_observers.Value.ApplicationPassword _ => ok none
+  | value_observers.Value.Json _ => ok none
+  | value_observers.Value.Sha256 _ => ok none
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::to_oauthscopemap]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 347:4-352:5
+    Visibility: public -/
+def value_observers.Value.to_oauthscopemap
+  (self : value_observers.Value) : Result (Option (Std.U128 × Std.U64)) := do
+  match self with
+  | value_observers.Value.Utf8 _ => ok none
+  | value_observers.Value.Iutf8 _ => ok none
+  | value_observers.Value.Iname _ => ok none
+  | value_observers.Value.Uuid _ => ok none
+  | value_observers.Value.Boolean _ => ok none
+  | value_observers.Value.Syntax _ => ok none
+  | value_observers.Value.Index _ => ok none
+  | value_observers.Value.Refer _ => ok none
+  | value_observers.Value.JsonFilt _ => ok none
+  | value_observers.Value.Cred _ _ => ok none
+  | value_observers.Value.SshKey _ _ => ok none
+  | value_observers.Value.SecretValue _ => ok none
+  | value_observers.Value.Spn _ _ => ok none
+  | value_observers.Value.Uint32 _ => ok none
+  | value_observers.Value.Int64 _ => ok none
+  | value_observers.Value.Uint64 _ => ok none
+  | value_observers.Value.Cid _ => ok none
+  | value_observers.Value.Nsuniqueid _ => ok none
+  | value_observers.Value.DateTime _ => ok none
+  | value_observers.Value.EmailAddress _ _ => ok none
+  | value_observers.Value.PhoneNumber _ _ => ok none
+  | value_observers.Value.Address _ => ok none
+  | value_observers.Value.Url _ => ok none
+  | value_observers.Value.OauthScope _ => ok none
+  | value_observers.Value.OauthScopeMap u m => ok (some (u, m))
+  | value_observers.Value.PrivateBinary _ => ok none
+  | value_observers.Value.PublicBinary _ _ => ok none
+  | value_observers.Value.RestrictedString _ => ok none
+  | value_observers.Value.IntentToken _ _ => ok none
+  | value_observers.Value.Passkey _ _ _ => ok none
+  | value_observers.Value.AttestedPasskey _ _ _ => ok none
+  | value_observers.Value.Session _ _ => ok none
+  | value_observers.Value.ApiToken _ _ => ok none
+  | value_observers.Value.Oauth2Session _ _ => ok none
+  | value_observers.Value.JwsKeyEs256 _ => ok none
+  | value_observers.Value.JwsKeyRs256 _ => ok none
+  | value_observers.Value.UiHint _ => ok none
+  | value_observers.Value.TotpSecret _ _ => ok none
+  | value_observers.Value.AuditLogString _ _ => ok none
+  | value_observers.Value.Image _ => ok none
+  | value_observers.Value.CredentialType _ => ok none
+  | value_observers.Value.WebauthnAttestationCaList _ => ok none
+  | value_observers.Value.OauthClaimValue _ _ _ => ok none
+  | value_observers.Value.OauthClaimMap _ _ => ok none
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok none
+  | value_observers.Value.HexString _ => ok none
+  | value_observers.Value.Certificate _ => ok none
+  | value_observers.Value.ApplicationPassword _ => ok none
+  | value_observers.Value.Json _ => ok none
+  | value_observers.Value.Sha256 _ => ok none
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::to_restrictedstring]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 353:4-358:5
+    Visibility: public -/
+def value_observers.Value.to_restrictedstring
+  (self : value_observers.Value) : Result (Option Std.U64) := do
+  match self with
+  | value_observers.Value.Utf8 _ => ok none
+  | value_observers.Value.Iutf8 _ => ok none
+  | value_observers.Value.Iname _ => ok none
+  | value_observers.Value.Uuid _ => ok none
+  | value_observers.Value.Boolean _ => ok none
+  | value_observers.Value.Syntax _ => ok none
+  | value_observers.Value.Index _ => ok none
+  | value_observers.Value.Refer _ => ok none
+  | value_observers.Value.JsonFilt _ => ok none
+  | value_observers.Value.Cred _ _ => ok none
+  | value_observers.Value.SshKey _ _ => ok none
+  | value_observers.Value.SecretValue _ => ok none
+  | value_observers.Value.Spn _ _ => ok none
+  | value_observers.Value.Uint32 _ => ok none
+  | value_observers.Value.Int64 _ => ok none
+  | value_observers.Value.Uint64 _ => ok none
+  | value_observers.Value.Cid _ => ok none
+  | value_observers.Value.Nsuniqueid _ => ok none
+  | value_observers.Value.DateTime _ => ok none
+  | value_observers.Value.EmailAddress _ _ => ok none
+  | value_observers.Value.PhoneNumber _ _ => ok none
+  | value_observers.Value.Address _ => ok none
+  | value_observers.Value.Url _ => ok none
+  | value_observers.Value.OauthScope _ => ok none
+  | value_observers.Value.OauthScopeMap _ _ => ok none
+  | value_observers.Value.PrivateBinary _ => ok none
+  | value_observers.Value.PublicBinary _ _ => ok none
+  | value_observers.Value.RestrictedString s => ok (some s)
+  | value_observers.Value.IntentToken _ _ => ok none
+  | value_observers.Value.Passkey _ _ _ => ok none
+  | value_observers.Value.AttestedPasskey _ _ _ => ok none
+  | value_observers.Value.Session _ _ => ok none
+  | value_observers.Value.ApiToken _ _ => ok none
+  | value_observers.Value.Oauth2Session _ _ => ok none
+  | value_observers.Value.JwsKeyEs256 _ => ok none
+  | value_observers.Value.JwsKeyRs256 _ => ok none
+  | value_observers.Value.UiHint _ => ok none
+  | value_observers.Value.TotpSecret _ _ => ok none
+  | value_observers.Value.AuditLogString _ _ => ok none
+  | value_observers.Value.Image _ => ok none
+  | value_observers.Value.CredentialType _ => ok none
+  | value_observers.Value.WebauthnAttestationCaList _ => ok none
+  | value_observers.Value.OauthClaimValue _ _ _ => ok none
+  | value_observers.Value.OauthClaimMap _ _ => ok none
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok none
+  | value_observers.Value.HexString _ => ok none
+  | value_observers.Value.Certificate _ => ok none
+  | value_observers.Value.ApplicationPassword _ => ok none
+  | value_observers.Value.Json _ => ok none
+  | value_observers.Value.Sha256 _ => ok none
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::to_phonenumber]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 359:4-364:5
+    Visibility: public -/
+def value_observers.Value.to_phonenumber
+  (self : value_observers.Value) : Result (Option Std.U64) := do
+  match self with
+  | value_observers.Value.Utf8 _ => ok none
+  | value_observers.Value.Iutf8 _ => ok none
+  | value_observers.Value.Iname _ => ok none
+  | value_observers.Value.Uuid _ => ok none
+  | value_observers.Value.Boolean _ => ok none
+  | value_observers.Value.Syntax _ => ok none
+  | value_observers.Value.Index _ => ok none
+  | value_observers.Value.Refer _ => ok none
+  | value_observers.Value.JsonFilt _ => ok none
+  | value_observers.Value.Cred _ _ => ok none
+  | value_observers.Value.SshKey _ _ => ok none
+  | value_observers.Value.SecretValue _ => ok none
+  | value_observers.Value.Spn _ _ => ok none
+  | value_observers.Value.Uint32 _ => ok none
+  | value_observers.Value.Int64 _ => ok none
+  | value_observers.Value.Uint64 _ => ok none
+  | value_observers.Value.Cid _ => ok none
+  | value_observers.Value.Nsuniqueid _ => ok none
+  | value_observers.Value.DateTime _ => ok none
+  | value_observers.Value.EmailAddress _ _ => ok none
+  | value_observers.Value.PhoneNumber p _ => ok (some p)
+  | value_observers.Value.Address _ => ok none
+  | value_observers.Value.Url _ => ok none
+  | value_observers.Value.OauthScope _ => ok none
+  | value_observers.Value.OauthScopeMap _ _ => ok none
+  | value_observers.Value.PrivateBinary _ => ok none
+  | value_observers.Value.PublicBinary _ _ => ok none
+  | value_observers.Value.RestrictedString _ => ok none
+  | value_observers.Value.IntentToken _ _ => ok none
+  | value_observers.Value.Passkey _ _ _ => ok none
+  | value_observers.Value.AttestedPasskey _ _ _ => ok none
+  | value_observers.Value.Session _ _ => ok none
+  | value_observers.Value.ApiToken _ _ => ok none
+  | value_observers.Value.Oauth2Session _ _ => ok none
+  | value_observers.Value.JwsKeyEs256 _ => ok none
+  | value_observers.Value.JwsKeyRs256 _ => ok none
+  | value_observers.Value.UiHint _ => ok none
+  | value_observers.Value.TotpSecret _ _ => ok none
+  | value_observers.Value.AuditLogString _ _ => ok none
+  | value_observers.Value.Image _ => ok none
+  | value_observers.Value.CredentialType _ => ok none
+  | value_observers.Value.WebauthnAttestationCaList _ => ok none
+  | value_observers.Value.OauthClaimValue _ _ _ => ok none
+  | value_observers.Value.OauthClaimMap _ _ => ok none
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok none
+  | value_observers.Value.HexString _ => ok none
+  | value_observers.Value.Certificate _ => ok none
+  | value_observers.Value.ApplicationPassword _ => ok none
+  | value_observers.Value.Json _ => ok none
+  | value_observers.Value.Sha256 _ => ok none
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::to_publicbinary]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 365:4-370:5
+    Visibility: public -/
+def value_observers.Value.to_publicbinary
+  (self : value_observers.Value) : Result (Option (Std.U64 × Std.U64)) := do
+  match self with
+  | value_observers.Value.Utf8 _ => ok none
+  | value_observers.Value.Iutf8 _ => ok none
+  | value_observers.Value.Iname _ => ok none
+  | value_observers.Value.Uuid _ => ok none
+  | value_observers.Value.Boolean _ => ok none
+  | value_observers.Value.Syntax _ => ok none
+  | value_observers.Value.Index _ => ok none
+  | value_observers.Value.Refer _ => ok none
+  | value_observers.Value.JsonFilt _ => ok none
+  | value_observers.Value.Cred _ _ => ok none
+  | value_observers.Value.SshKey _ _ => ok none
+  | value_observers.Value.SecretValue _ => ok none
+  | value_observers.Value.Spn _ _ => ok none
+  | value_observers.Value.Uint32 _ => ok none
+  | value_observers.Value.Int64 _ => ok none
+  | value_observers.Value.Uint64 _ => ok none
+  | value_observers.Value.Cid _ => ok none
+  | value_observers.Value.Nsuniqueid _ => ok none
+  | value_observers.Value.DateTime _ => ok none
+  | value_observers.Value.EmailAddress _ _ => ok none
+  | value_observers.Value.PhoneNumber _ _ => ok none
+  | value_observers.Value.Address _ => ok none
+  | value_observers.Value.Url _ => ok none
+  | value_observers.Value.OauthScope _ => ok none
+  | value_observers.Value.OauthScopeMap _ _ => ok none
+  | value_observers.Value.PrivateBinary _ => ok none
+  | value_observers.Value.PublicBinary t d => ok (some (t, d))
+  | value_observers.Value.RestrictedString _ => ok none
+  | value_observers.Value.IntentToken _ _ => ok none
+  | value_observers.Value.Passkey _ _ _ => ok none
+  | value_observers.Value.AttestedPasskey _ _ _ => ok none
+  | value_observers.Value.Session _ _ => ok none
+  | value_observers.Value.ApiToken _ _ => ok none
+  | value_observers.Value.Oauth2Session _ _ => ok none
+  | value_observers.Value.JwsKeyEs256 _ => ok none
+  | value_observers.Value.JwsKeyRs256 _ => ok none
+  | value_observers.Value.UiHint _ => ok none
+  | value_observers.Value.TotpSecret _ _ => ok none
+  | value_observers.Value.AuditLogString _ _ => ok none
+  | value_observers.Value.Image _ => ok none
+  | value_observers.Value.CredentialType _ => ok none
+  | value_observers.Value.WebauthnAttestationCaList _ => ok none
+  | value_observers.Value.OauthClaimValue _ _ _ => ok none
+  | value_observers.Value.OauthClaimMap _ _ => ok none
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok none
+  | value_observers.Value.HexString _ => ok none
+  | value_observers.Value.Certificate _ => ok none
+  | value_observers.Value.ApplicationPassword _ => ok none
+  | value_observers.Value.Json _ => ok none
+  | value_observers.Value.Sha256 _ => ok none
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::to_address]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 371:4-376:5
+    Visibility: public -/
+def value_observers.Value.to_address
+  (self : value_observers.Value) : Result (Option Std.U64) := do
+  match self with
+  | value_observers.Value.Utf8 _ => ok none
+  | value_observers.Value.Iutf8 _ => ok none
+  | value_observers.Value.Iname _ => ok none
+  | value_observers.Value.Uuid _ => ok none
+  | value_observers.Value.Boolean _ => ok none
+  | value_observers.Value.Syntax _ => ok none
+  | value_observers.Value.Index _ => ok none
+  | value_observers.Value.Refer _ => ok none
+  | value_observers.Value.JsonFilt _ => ok none
+  | value_observers.Value.Cred _ _ => ok none
+  | value_observers.Value.SshKey _ _ => ok none
+  | value_observers.Value.SecretValue _ => ok none
+  | value_observers.Value.Spn _ _ => ok none
+  | value_observers.Value.Uint32 _ => ok none
+  | value_observers.Value.Int64 _ => ok none
+  | value_observers.Value.Uint64 _ => ok none
+  | value_observers.Value.Cid _ => ok none
+  | value_observers.Value.Nsuniqueid _ => ok none
+  | value_observers.Value.DateTime _ => ok none
+  | value_observers.Value.EmailAddress _ _ => ok none
+  | value_observers.Value.PhoneNumber _ _ => ok none
+  | value_observers.Value.Address a => ok (some a)
+  | value_observers.Value.Url _ => ok none
+  | value_observers.Value.OauthScope _ => ok none
+  | value_observers.Value.OauthScopeMap _ _ => ok none
+  | value_observers.Value.PrivateBinary _ => ok none
+  | value_observers.Value.PublicBinary _ _ => ok none
+  | value_observers.Value.RestrictedString _ => ok none
+  | value_observers.Value.IntentToken _ _ => ok none
+  | value_observers.Value.Passkey _ _ _ => ok none
+  | value_observers.Value.AttestedPasskey _ _ _ => ok none
+  | value_observers.Value.Session _ _ => ok none
+  | value_observers.Value.ApiToken _ _ => ok none
+  | value_observers.Value.Oauth2Session _ _ => ok none
+  | value_observers.Value.JwsKeyEs256 _ => ok none
+  | value_observers.Value.JwsKeyRs256 _ => ok none
+  | value_observers.Value.UiHint _ => ok none
+  | value_observers.Value.TotpSecret _ _ => ok none
+  | value_observers.Value.AuditLogString _ _ => ok none
+  | value_observers.Value.Image _ => ok none
+  | value_observers.Value.CredentialType _ => ok none
+  | value_observers.Value.WebauthnAttestationCaList _ => ok none
+  | value_observers.Value.OauthClaimValue _ _ _ => ok none
+  | value_observers.Value.OauthClaimMap _ _ => ok none
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok none
+  | value_observers.Value.HexString _ => ok none
+  | value_observers.Value.Certificate _ => ok none
+  | value_observers.Value.ApplicationPassword _ => ok none
+  | value_observers.Value.Json _ => ok none
+  | value_observers.Value.Sha256 _ => ok none
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::to_intenttoken]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 377:4-382:5
+    Visibility: public -/
+def value_observers.Value.to_intenttoken
+  (self : value_observers.Value) : Result (Option (Std.U64 × Std.U64)) := do
+  match self with
+  | value_observers.Value.Utf8 _ => ok none
+  | value_observers.Value.Iutf8 _ => ok none
+  | value_observers.Value.Iname _ => ok none
+  | value_observers.Value.Uuid _ => ok none
+  | value_observers.Value.Boolean _ => ok none
+  | value_observers.Value.Syntax _ => ok none
+  | value_observers.Value.Index _ => ok none
+  | value_observers.Value.Refer _ => ok none
+  | value_observers.Value.JsonFilt _ => ok none
+  | value_observers.Value.Cred _ _ => ok none
+  | value_observers.Value.SshKey _ _ => ok none
+  | value_observers.Value.SecretValue _ => ok none
+  | value_observers.Value.Spn _ _ => ok none
+  | value_observers.Value.Uint32 _ => ok none
+  | value_observers.Value.Int64 _ => ok none
+  | value_observers.Value.Uint64 _ => ok none
+  | value_observers.Value.Cid _ => ok none
+  | value_observers.Value.Nsuniqueid _ => ok none
+  | value_observers.Value.DateTime _ => ok none
+  | value_observers.Value.EmailAddress _ _ => ok none
+  | value_observers.Value.PhoneNumber _ _ => ok none
+  | value_observers.Value.Address _ => ok none
+  | value_observers.Value.Url _ => ok none
+  | value_observers.Value.OauthScope _ => ok none
+  | value_observers.Value.OauthScopeMap _ _ => ok none
+  | value_observers.Value.PrivateBinary _ => ok none
+  | value_observers.Value.PublicBinary _ _ => ok none
+  | value_observers.Value.RestrictedString _ => ok none
+  | value_observers.Value.IntentToken u s => ok (some (u, s))
+  | value_observers.Value.Passkey _ _ _ => ok none
+  | value_observers.Value.AttestedPasskey _ _ _ => ok none
+  | value_observers.Value.Session _ _ => ok none
+  | value_observers.Value.ApiToken _ _ => ok none
+  | value_observers.Value.Oauth2Session _ _ => ok none
+  | value_observers.Value.JwsKeyEs256 _ => ok none
+  | value_observers.Value.JwsKeyRs256 _ => ok none
+  | value_observers.Value.UiHint _ => ok none
+  | value_observers.Value.TotpSecret _ _ => ok none
+  | value_observers.Value.AuditLogString _ _ => ok none
+  | value_observers.Value.Image _ => ok none
+  | value_observers.Value.CredentialType _ => ok none
+  | value_observers.Value.WebauthnAttestationCaList _ => ok none
+  | value_observers.Value.OauthClaimValue _ _ _ => ok none
+  | value_observers.Value.OauthClaimMap _ _ => ok none
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok none
+  | value_observers.Value.HexString _ => ok none
+  | value_observers.Value.Certificate _ => ok none
+  | value_observers.Value.ApplicationPassword _ => ok none
+  | value_observers.Value.Json _ => ok none
+  | value_observers.Value.Sha256 _ => ok none
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::to_session]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 383:4-388:5
+    Visibility: public -/
+def value_observers.Value.to_session
+  (self : value_observers.Value) : Result (Option (Std.U128 × Std.U64)) := do
+  match self with
+  | value_observers.Value.Utf8 _ => ok none
+  | value_observers.Value.Iutf8 _ => ok none
+  | value_observers.Value.Iname _ => ok none
+  | value_observers.Value.Uuid _ => ok none
+  | value_observers.Value.Boolean _ => ok none
+  | value_observers.Value.Syntax _ => ok none
+  | value_observers.Value.Index _ => ok none
+  | value_observers.Value.Refer _ => ok none
+  | value_observers.Value.JsonFilt _ => ok none
+  | value_observers.Value.Cred _ _ => ok none
+  | value_observers.Value.SshKey _ _ => ok none
+  | value_observers.Value.SecretValue _ => ok none
+  | value_observers.Value.Spn _ _ => ok none
+  | value_observers.Value.Uint32 _ => ok none
+  | value_observers.Value.Int64 _ => ok none
+  | value_observers.Value.Uint64 _ => ok none
+  | value_observers.Value.Cid _ => ok none
+  | value_observers.Value.Nsuniqueid _ => ok none
+  | value_observers.Value.DateTime _ => ok none
+  | value_observers.Value.EmailAddress _ _ => ok none
+  | value_observers.Value.PhoneNumber _ _ => ok none
+  | value_observers.Value.Address _ => ok none
+  | value_observers.Value.Url _ => ok none
+  | value_observers.Value.OauthScope _ => ok none
+  | value_observers.Value.OauthScopeMap _ _ => ok none
+  | value_observers.Value.PrivateBinary _ => ok none
+  | value_observers.Value.PublicBinary _ _ => ok none
+  | value_observers.Value.RestrictedString _ => ok none
+  | value_observers.Value.IntentToken _ _ => ok none
+  | value_observers.Value.Passkey _ _ _ => ok none
+  | value_observers.Value.AttestedPasskey _ _ _ => ok none
+  | value_observers.Value.Session u s => ok (some (u, s))
+  | value_observers.Value.ApiToken _ _ => ok none
+  | value_observers.Value.Oauth2Session _ _ => ok none
+  | value_observers.Value.JwsKeyEs256 _ => ok none
+  | value_observers.Value.JwsKeyRs256 _ => ok none
+  | value_observers.Value.UiHint _ => ok none
+  | value_observers.Value.TotpSecret _ _ => ok none
+  | value_observers.Value.AuditLogString _ _ => ok none
+  | value_observers.Value.Image _ => ok none
+  | value_observers.Value.CredentialType _ => ok none
+  | value_observers.Value.WebauthnAttestationCaList _ => ok none
+  | value_observers.Value.OauthClaimValue _ _ _ => ok none
+  | value_observers.Value.OauthClaimMap _ _ => ok none
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok none
+  | value_observers.Value.HexString _ => ok none
+  | value_observers.Value.Certificate _ => ok none
+  | value_observers.Value.ApplicationPassword _ => ok none
+  | value_observers.Value.Json _ => ok none
+  | value_observers.Value.Sha256 _ => ok none
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::migrate_iutf8_iname]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 389:4-394:5
+    Visibility: public -/
+def value_observers.Value.migrate_iutf8_iname
+  (self : value_observers.Value) : Result (Option value_observers.Value) := do
+  match self with
+  | value_observers.Value.Utf8 _ => ok none
+  | value_observers.Value.Iutf8 v => ok (some (value_observers.Value.Iname v))
+  | value_observers.Value.Iname _ => ok none
+  | value_observers.Value.Uuid _ => ok none
+  | value_observers.Value.Boolean _ => ok none
+  | value_observers.Value.Syntax _ => ok none
+  | value_observers.Value.Index _ => ok none
+  | value_observers.Value.Refer _ => ok none
+  | value_observers.Value.JsonFilt _ => ok none
+  | value_observers.Value.Cred _ _ => ok none
+  | value_observers.Value.SshKey _ _ => ok none
+  | value_observers.Value.SecretValue _ => ok none
+  | value_observers.Value.Spn _ _ => ok none
+  | value_observers.Value.Uint32 _ => ok none
+  | value_observers.Value.Int64 _ => ok none
+  | value_observers.Value.Uint64 _ => ok none
+  | value_observers.Value.Cid _ => ok none
+  | value_observers.Value.Nsuniqueid _ => ok none
+  | value_observers.Value.DateTime _ => ok none
+  | value_observers.Value.EmailAddress _ _ => ok none
+  | value_observers.Value.PhoneNumber _ _ => ok none
+  | value_observers.Value.Address _ => ok none
+  | value_observers.Value.Url _ => ok none
+  | value_observers.Value.OauthScope _ => ok none
+  | value_observers.Value.OauthScopeMap _ _ => ok none
+  | value_observers.Value.PrivateBinary _ => ok none
+  | value_observers.Value.PublicBinary _ _ => ok none
+  | value_observers.Value.RestrictedString _ => ok none
+  | value_observers.Value.IntentToken _ _ => ok none
+  | value_observers.Value.Passkey _ _ _ => ok none
+  | value_observers.Value.AttestedPasskey _ _ _ => ok none
+  | value_observers.Value.Session _ _ => ok none
+  | value_observers.Value.ApiToken _ _ => ok none
+  | value_observers.Value.Oauth2Session _ _ => ok none
+  | value_observers.Value.JwsKeyEs256 _ => ok none
+  | value_observers.Value.JwsKeyRs256 _ => ok none
+  | value_observers.Value.UiHint _ => ok none
+  | value_observers.Value.TotpSecret _ _ => ok none
+  | value_observers.Value.AuditLogString _ _ => ok none
+  | value_observers.Value.Image _ => ok none
+  | value_observers.Value.CredentialType _ => ok none
+  | value_observers.Value.WebauthnAttestationCaList _ => ok none
+  | value_observers.Value.OauthClaimValue _ _ _ => ok none
+  | value_observers.Value.OauthClaimMap _ _ => ok none
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok none
+  | value_observers.Value.HexString _ => ok none
+  | value_observers.Value.Certificate _ => ok none
+  | value_observers.Value.ApplicationPassword _ => ok none
+  | value_observers.Value.Json _ => ok none
+  | value_observers.Value.Sha256 _ => ok none
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::PartialValue}::is_utf8]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 397:4-399:5
+    Visibility: public -/
+def value_observers.PartialValue.is_utf8
+  (self : value_observers.PartialValue) : Result Bool := do
+  match self with
+  | value_observers.PartialValue.Utf8 _ => ok true
+  | value_observers.PartialValue.Iutf8 _ => ok false
+  | value_observers.PartialValue.Iname _ => ok false
+  | value_observers.PartialValue.Uuid _ => ok false
+  | value_observers.PartialValue.Boolean _ => ok false
+  | value_observers.PartialValue.Syntax _ => ok false
+  | value_observers.PartialValue.Index _ => ok false
+  | value_observers.PartialValue.Refer _ => ok false
+  | value_observers.PartialValue.JsonFilt _ => ok false
+  | value_observers.PartialValue.Cred _ => ok false
+  | value_observers.PartialValue.SshKey _ => ok false
+  | value_observers.PartialValue.SecretValue => ok false
+  | value_observers.PartialValue.Spn _ _ => ok false
+  | value_observers.PartialValue.Uint32 _ => ok false
+  | value_observers.PartialValue.Cid _ => ok false
+  | value_observers.PartialValue.Nsuniqueid _ => ok false
+  | value_observers.PartialValue.DateTime _ => ok false
+  | value_observers.PartialValue.EmailAddress _ => ok false
+  | value_observers.PartialValue.PhoneNumber _ => ok false
+  | value_observers.PartialValue.Address _ => ok false
+  | value_observers.PartialValue.Url _ => ok false
+  | value_observers.PartialValue.OauthScope _ => ok false
+  | value_observers.PartialValue.PrivateBinary => ok false
+  | value_observers.PartialValue.PublicBinary _ => ok false
+  | value_observers.PartialValue.RestrictedString _ => ok false
+  | value_observers.PartialValue.IntentToken _ => ok false
+  | value_observers.PartialValue.UiHint _ => ok false
+  | value_observers.PartialValue.Passkey _ => ok false
+  | value_observers.PartialValue.AttestedPasskey _ => ok false
+  | value_observers.PartialValue.Image _ => ok false
+  | value_observers.PartialValue.CredentialType _ => ok false
+  | value_observers.PartialValue.OauthClaim _ _ => ok false
+  | value_observers.PartialValue.OauthClaimValue _ _ _ => ok false
+  | value_observers.PartialValue.HexString _ => ok false
+  | value_observers.PartialValue.Json => ok false
+  | value_observers.PartialValue.Sha256 _ => ok false
+  | value_observers.PartialValue.Int64 _ => ok false
+  | value_observers.PartialValue.Uint64 _ => ok false
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::PartialValue}::is_iutf8]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 400:4-402:5
+    Visibility: public -/
+def value_observers.PartialValue.is_iutf8
+  (self : value_observers.PartialValue) : Result Bool := do
+  match self with
+  | value_observers.PartialValue.Utf8 _ => ok false
+  | value_observers.PartialValue.Iutf8 _ => ok true
+  | value_observers.PartialValue.Iname _ => ok false
+  | value_observers.PartialValue.Uuid _ => ok false
+  | value_observers.PartialValue.Boolean _ => ok false
+  | value_observers.PartialValue.Syntax _ => ok false
+  | value_observers.PartialValue.Index _ => ok false
+  | value_observers.PartialValue.Refer _ => ok false
+  | value_observers.PartialValue.JsonFilt _ => ok false
+  | value_observers.PartialValue.Cred _ => ok false
+  | value_observers.PartialValue.SshKey _ => ok false
+  | value_observers.PartialValue.SecretValue => ok false
+  | value_observers.PartialValue.Spn _ _ => ok false
+  | value_observers.PartialValue.Uint32 _ => ok false
+  | value_observers.PartialValue.Cid _ => ok false
+  | value_observers.PartialValue.Nsuniqueid _ => ok false
+  | value_observers.PartialValue.DateTime _ => ok false
+  | value_observers.PartialValue.EmailAddress _ => ok false
+  | value_observers.PartialValue.PhoneNumber _ => ok false
+  | value_observers.PartialValue.Address _ => ok false
+  | value_observers.PartialValue.Url _ => ok false
+  | value_observers.PartialValue.OauthScope _ => ok false
+  | value_observers.PartialValue.PrivateBinary => ok false
+  | value_observers.PartialValue.PublicBinary _ => ok false
+  | value_observers.PartialValue.RestrictedString _ => ok false
+  | value_observers.PartialValue.IntentToken _ => ok false
+  | value_observers.PartialValue.UiHint _ => ok false
+  | value_observers.PartialValue.Passkey _ => ok false
+  | value_observers.PartialValue.AttestedPasskey _ => ok false
+  | value_observers.PartialValue.Image _ => ok false
+  | value_observers.PartialValue.CredentialType _ => ok false
+  | value_observers.PartialValue.OauthClaim _ _ => ok false
+  | value_observers.PartialValue.OauthClaimValue _ _ _ => ok false
+  | value_observers.PartialValue.HexString _ => ok false
+  | value_observers.PartialValue.Json => ok false
+  | value_observers.PartialValue.Sha256 _ => ok false
+  | value_observers.PartialValue.Int64 _ => ok false
+  | value_observers.PartialValue.Uint64 _ => ok false
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::PartialValue}::is_iname]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 403:4-405:5
+    Visibility: public -/
+def value_observers.PartialValue.is_iname
+  (self : value_observers.PartialValue) : Result Bool := do
+  match self with
+  | value_observers.PartialValue.Utf8 _ => ok false
+  | value_observers.PartialValue.Iutf8 _ => ok false
+  | value_observers.PartialValue.Iname _ => ok true
+  | value_observers.PartialValue.Uuid _ => ok false
+  | value_observers.PartialValue.Boolean _ => ok false
+  | value_observers.PartialValue.Syntax _ => ok false
+  | value_observers.PartialValue.Index _ => ok false
+  | value_observers.PartialValue.Refer _ => ok false
+  | value_observers.PartialValue.JsonFilt _ => ok false
+  | value_observers.PartialValue.Cred _ => ok false
+  | value_observers.PartialValue.SshKey _ => ok false
+  | value_observers.PartialValue.SecretValue => ok false
+  | value_observers.PartialValue.Spn _ _ => ok false
+  | value_observers.PartialValue.Uint32 _ => ok false
+  | value_observers.PartialValue.Cid _ => ok false
+  | value_observers.PartialValue.Nsuniqueid _ => ok false
+  | value_observers.PartialValue.DateTime _ => ok false
+  | value_observers.PartialValue.EmailAddress _ => ok false
+  | value_observers.PartialValue.PhoneNumber _ => ok false
+  | value_observers.PartialValue.Address _ => ok false
+  | value_observers.PartialValue.Url _ => ok false
+  | value_observers.PartialValue.OauthScope _ => ok false
+  | value_observers.PartialValue.PrivateBinary => ok false
+  | value_observers.PartialValue.PublicBinary _ => ok false
+  | value_observers.PartialValue.RestrictedString _ => ok false
+  | value_observers.PartialValue.IntentToken _ => ok false
+  | value_observers.PartialValue.UiHint _ => ok false
+  | value_observers.PartialValue.Passkey _ => ok false
+  | value_observers.PartialValue.AttestedPasskey _ => ok false
+  | value_observers.PartialValue.Image _ => ok false
+  | value_observers.PartialValue.CredentialType _ => ok false
+  | value_observers.PartialValue.OauthClaim _ _ => ok false
+  | value_observers.PartialValue.OauthClaimValue _ _ _ => ok false
+  | value_observers.PartialValue.HexString _ => ok false
+  | value_observers.PartialValue.Json => ok false
+  | value_observers.PartialValue.Sha256 _ => ok false
+  | value_observers.PartialValue.Int64 _ => ok false
+  | value_observers.PartialValue.Uint64 _ => ok false
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::PartialValue}::is_bool]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 406:4-408:5
+    Visibility: public -/
+def value_observers.PartialValue.is_bool
+  (self : value_observers.PartialValue) : Result Bool := do
+  match self with
+  | value_observers.PartialValue.Utf8 _ => ok false
+  | value_observers.PartialValue.Iutf8 _ => ok false
+  | value_observers.PartialValue.Iname _ => ok false
+  | value_observers.PartialValue.Uuid _ => ok false
+  | value_observers.PartialValue.Boolean _ => ok true
+  | value_observers.PartialValue.Syntax _ => ok false
+  | value_observers.PartialValue.Index _ => ok false
+  | value_observers.PartialValue.Refer _ => ok false
+  | value_observers.PartialValue.JsonFilt _ => ok false
+  | value_observers.PartialValue.Cred _ => ok false
+  | value_observers.PartialValue.SshKey _ => ok false
+  | value_observers.PartialValue.SecretValue => ok false
+  | value_observers.PartialValue.Spn _ _ => ok false
+  | value_observers.PartialValue.Uint32 _ => ok false
+  | value_observers.PartialValue.Cid _ => ok false
+  | value_observers.PartialValue.Nsuniqueid _ => ok false
+  | value_observers.PartialValue.DateTime _ => ok false
+  | value_observers.PartialValue.EmailAddress _ => ok false
+  | value_observers.PartialValue.PhoneNumber _ => ok false
+  | value_observers.PartialValue.Address _ => ok false
+  | value_observers.PartialValue.Url _ => ok false
+  | value_observers.PartialValue.OauthScope _ => ok false
+  | value_observers.PartialValue.PrivateBinary => ok false
+  | value_observers.PartialValue.PublicBinary _ => ok false
+  | value_observers.PartialValue.RestrictedString _ => ok false
+  | value_observers.PartialValue.IntentToken _ => ok false
+  | value_observers.PartialValue.UiHint _ => ok false
+  | value_observers.PartialValue.Passkey _ => ok false
+  | value_observers.PartialValue.AttestedPasskey _ => ok false
+  | value_observers.PartialValue.Image _ => ok false
+  | value_observers.PartialValue.CredentialType _ => ok false
+  | value_observers.PartialValue.OauthClaim _ _ => ok false
+  | value_observers.PartialValue.OauthClaimValue _ _ _ => ok false
+  | value_observers.PartialValue.HexString _ => ok false
+  | value_observers.PartialValue.Json => ok false
+  | value_observers.PartialValue.Sha256 _ => ok false
+  | value_observers.PartialValue.Int64 _ => ok false
+  | value_observers.PartialValue.Uint64 _ => ok false
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::PartialValue}::is_uuid]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 409:4-411:5
+    Visibility: public -/
+def value_observers.PartialValue.is_uuid
+  (self : value_observers.PartialValue) : Result Bool := do
+  match self with
+  | value_observers.PartialValue.Utf8 _ => ok false
+  | value_observers.PartialValue.Iutf8 _ => ok false
+  | value_observers.PartialValue.Iname _ => ok false
+  | value_observers.PartialValue.Uuid _ => ok true
+  | value_observers.PartialValue.Boolean _ => ok false
+  | value_observers.PartialValue.Syntax _ => ok false
+  | value_observers.PartialValue.Index _ => ok false
+  | value_observers.PartialValue.Refer _ => ok false
+  | value_observers.PartialValue.JsonFilt _ => ok false
+  | value_observers.PartialValue.Cred _ => ok false
+  | value_observers.PartialValue.SshKey _ => ok false
+  | value_observers.PartialValue.SecretValue => ok false
+  | value_observers.PartialValue.Spn _ _ => ok false
+  | value_observers.PartialValue.Uint32 _ => ok false
+  | value_observers.PartialValue.Cid _ => ok false
+  | value_observers.PartialValue.Nsuniqueid _ => ok false
+  | value_observers.PartialValue.DateTime _ => ok false
+  | value_observers.PartialValue.EmailAddress _ => ok false
+  | value_observers.PartialValue.PhoneNumber _ => ok false
+  | value_observers.PartialValue.Address _ => ok false
+  | value_observers.PartialValue.Url _ => ok false
+  | value_observers.PartialValue.OauthScope _ => ok false
+  | value_observers.PartialValue.PrivateBinary => ok false
+  | value_observers.PartialValue.PublicBinary _ => ok false
+  | value_observers.PartialValue.RestrictedString _ => ok false
+  | value_observers.PartialValue.IntentToken _ => ok false
+  | value_observers.PartialValue.UiHint _ => ok false
+  | value_observers.PartialValue.Passkey _ => ok false
+  | value_observers.PartialValue.AttestedPasskey _ => ok false
+  | value_observers.PartialValue.Image _ => ok false
+  | value_observers.PartialValue.CredentialType _ => ok false
+  | value_observers.PartialValue.OauthClaim _ _ => ok false
+  | value_observers.PartialValue.OauthClaimValue _ _ _ => ok false
+  | value_observers.PartialValue.HexString _ => ok false
+  | value_observers.PartialValue.Json => ok false
+  | value_observers.PartialValue.Sha256 _ => ok false
+  | value_observers.PartialValue.Int64 _ => ok false
+  | value_observers.PartialValue.Uint64 _ => ok false
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::PartialValue}::is_refer]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 412:4-414:5
+    Visibility: public -/
+def value_observers.PartialValue.is_refer
+  (self : value_observers.PartialValue) : Result Bool := do
+  match self with
+  | value_observers.PartialValue.Utf8 _ => ok false
+  | value_observers.PartialValue.Iutf8 _ => ok false
+  | value_observers.PartialValue.Iname _ => ok false
+  | value_observers.PartialValue.Uuid _ => ok false
+  | value_observers.PartialValue.Boolean _ => ok false
+  | value_observers.PartialValue.Syntax _ => ok false
+  | value_observers.PartialValue.Index _ => ok false
+  | value_observers.PartialValue.Refer _ => ok true
+  | value_observers.PartialValue.JsonFilt _ => ok false
+  | value_observers.PartialValue.Cred _ => ok false
+  | value_observers.PartialValue.SshKey _ => ok false
+  | value_observers.PartialValue.SecretValue => ok false
+  | value_observers.PartialValue.Spn _ _ => ok false
+  | value_observers.PartialValue.Uint32 _ => ok false
+  | value_observers.PartialValue.Cid _ => ok false
+  | value_observers.PartialValue.Nsuniqueid _ => ok false
+  | value_observers.PartialValue.DateTime _ => ok false
+  | value_observers.PartialValue.EmailAddress _ => ok false
+  | value_observers.PartialValue.PhoneNumber _ => ok false
+  | value_observers.PartialValue.Address _ => ok false
+  | value_observers.PartialValue.Url _ => ok false
+  | value_observers.PartialValue.OauthScope _ => ok false
+  | value_observers.PartialValue.PrivateBinary => ok false
+  | value_observers.PartialValue.PublicBinary _ => ok false
+  | value_observers.PartialValue.RestrictedString _ => ok false
+  | value_observers.PartialValue.IntentToken _ => ok false
+  | value_observers.PartialValue.UiHint _ => ok false
+  | value_observers.PartialValue.Passkey _ => ok false
+  | value_observers.PartialValue.AttestedPasskey _ => ok false
+  | value_observers.PartialValue.Image _ => ok false
+  | value_observers.PartialValue.CredentialType _ => ok false
+  | value_observers.PartialValue.OauthClaim _ _ => ok false
+  | value_observers.PartialValue.OauthClaimValue _ _ _ => ok false
+  | value_observers.PartialValue.HexString _ => ok false
+  | value_observers.PartialValue.Json => ok false
+  | value_observers.PartialValue.Sha256 _ => ok false
+  | value_observers.PartialValue.Int64 _ => ok false
+  | value_observers.PartialValue.Uint64 _ => ok false
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::PartialValue}::is_index]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 415:4-417:5
+    Visibility: public -/
+def value_observers.PartialValue.is_index
+  (self : value_observers.PartialValue) : Result Bool := do
+  match self with
+  | value_observers.PartialValue.Utf8 _ => ok false
+  | value_observers.PartialValue.Iutf8 _ => ok false
+  | value_observers.PartialValue.Iname _ => ok false
+  | value_observers.PartialValue.Uuid _ => ok false
+  | value_observers.PartialValue.Boolean _ => ok false
+  | value_observers.PartialValue.Syntax _ => ok false
+  | value_observers.PartialValue.Index _ => ok true
+  | value_observers.PartialValue.Refer _ => ok false
+  | value_observers.PartialValue.JsonFilt _ => ok false
+  | value_observers.PartialValue.Cred _ => ok false
+  | value_observers.PartialValue.SshKey _ => ok false
+  | value_observers.PartialValue.SecretValue => ok false
+  | value_observers.PartialValue.Spn _ _ => ok false
+  | value_observers.PartialValue.Uint32 _ => ok false
+  | value_observers.PartialValue.Cid _ => ok false
+  | value_observers.PartialValue.Nsuniqueid _ => ok false
+  | value_observers.PartialValue.DateTime _ => ok false
+  | value_observers.PartialValue.EmailAddress _ => ok false
+  | value_observers.PartialValue.PhoneNumber _ => ok false
+  | value_observers.PartialValue.Address _ => ok false
+  | value_observers.PartialValue.Url _ => ok false
+  | value_observers.PartialValue.OauthScope _ => ok false
+  | value_observers.PartialValue.PrivateBinary => ok false
+  | value_observers.PartialValue.PublicBinary _ => ok false
+  | value_observers.PartialValue.RestrictedString _ => ok false
+  | value_observers.PartialValue.IntentToken _ => ok false
+  | value_observers.PartialValue.UiHint _ => ok false
+  | value_observers.PartialValue.Passkey _ => ok false
+  | value_observers.PartialValue.AttestedPasskey _ => ok false
+  | value_observers.PartialValue.Image _ => ok false
+  | value_observers.PartialValue.CredentialType _ => ok false
+  | value_observers.PartialValue.OauthClaim _ _ => ok false
+  | value_observers.PartialValue.OauthClaimValue _ _ _ => ok false
+  | value_observers.PartialValue.HexString _ => ok false
+  | value_observers.PartialValue.Json => ok false
+  | value_observers.PartialValue.Sha256 _ => ok false
+  | value_observers.PartialValue.Int64 _ => ok false
+  | value_observers.PartialValue.Uint64 _ => ok false
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::PartialValue}::is_syntax]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 418:4-420:5
+    Visibility: public -/
+def value_observers.PartialValue.is_syntax
+  (self : value_observers.PartialValue) : Result Bool := do
+  match self with
+  | value_observers.PartialValue.Utf8 _ => ok false
+  | value_observers.PartialValue.Iutf8 _ => ok false
+  | value_observers.PartialValue.Iname _ => ok false
+  | value_observers.PartialValue.Uuid _ => ok false
+  | value_observers.PartialValue.Boolean _ => ok false
+  | value_observers.PartialValue.Syntax _ => ok true
+  | value_observers.PartialValue.Index _ => ok false
+  | value_observers.PartialValue.Refer _ => ok false
+  | value_observers.PartialValue.JsonFilt _ => ok false
+  | value_observers.PartialValue.Cred _ => ok false
+  | value_observers.PartialValue.SshKey _ => ok false
+  | value_observers.PartialValue.SecretValue => ok false
+  | value_observers.PartialValue.Spn _ _ => ok false
+  | value_observers.PartialValue.Uint32 _ => ok false
+  | value_observers.PartialValue.Cid _ => ok false
+  | value_observers.PartialValue.Nsuniqueid _ => ok false
+  | value_observers.PartialValue.DateTime _ => ok false
+  | value_observers.PartialValue.EmailAddress _ => ok false
+  | value_observers.PartialValue.PhoneNumber _ => ok false
+  | value_observers.PartialValue.Address _ => ok false
+  | value_observers.PartialValue.Url _ => ok false
+  | value_observers.PartialValue.OauthScope _ => ok false
+  | value_observers.PartialValue.PrivateBinary => ok false
+  | value_observers.PartialValue.PublicBinary _ => ok false
+  | value_observers.PartialValue.RestrictedString _ => ok false
+  | value_observers.PartialValue.IntentToken _ => ok false
+  | value_observers.PartialValue.UiHint _ => ok false
+  | value_observers.PartialValue.Passkey _ => ok false
+  | value_observers.PartialValue.AttestedPasskey _ => ok false
+  | value_observers.PartialValue.Image _ => ok false
+  | value_observers.PartialValue.CredentialType _ => ok false
+  | value_observers.PartialValue.OauthClaim _ _ => ok false
+  | value_observers.PartialValue.OauthClaimValue _ _ _ => ok false
+  | value_observers.PartialValue.HexString _ => ok false
+  | value_observers.PartialValue.Json => ok false
+  | value_observers.PartialValue.Sha256 _ => ok false
+  | value_observers.PartialValue.Int64 _ => ok false
+  | value_observers.PartialValue.Uint64 _ => ok false
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::PartialValue}::is_json_filter]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 421:4-423:5
+    Visibility: public -/
+def value_observers.PartialValue.is_json_filter
+  (self : value_observers.PartialValue) : Result Bool := do
+  match self with
+  | value_observers.PartialValue.Utf8 _ => ok false
+  | value_observers.PartialValue.Iutf8 _ => ok false
+  | value_observers.PartialValue.Iname _ => ok false
+  | value_observers.PartialValue.Uuid _ => ok false
+  | value_observers.PartialValue.Boolean _ => ok false
+  | value_observers.PartialValue.Syntax _ => ok false
+  | value_observers.PartialValue.Index _ => ok false
+  | value_observers.PartialValue.Refer _ => ok false
+  | value_observers.PartialValue.JsonFilt _ => ok true
+  | value_observers.PartialValue.Cred _ => ok false
+  | value_observers.PartialValue.SshKey _ => ok false
+  | value_observers.PartialValue.SecretValue => ok false
+  | value_observers.PartialValue.Spn _ _ => ok false
+  | value_observers.PartialValue.Uint32 _ => ok false
+  | value_observers.PartialValue.Cid _ => ok false
+  | value_observers.PartialValue.Nsuniqueid _ => ok false
+  | value_observers.PartialValue.DateTime _ => ok false
+  | value_observers.PartialValue.EmailAddress _ => ok false
+  | value_observers.PartialValue.PhoneNumber _ => ok false
+  | value_observers.PartialValue.Address _ => ok false
+  | value_observers.PartialValue.Url _ => ok false
+  | value_observers.PartialValue.OauthScope _ => ok false
+  | value_observers.PartialValue.PrivateBinary => ok false
+  | value_observers.PartialValue.PublicBinary _ => ok false
+  | value_observers.PartialValue.RestrictedString _ => ok false
+  | value_observers.PartialValue.IntentToken _ => ok false
+  | value_observers.PartialValue.UiHint _ => ok false
+  | value_observers.PartialValue.Passkey _ => ok false
+  | value_observers.PartialValue.AttestedPasskey _ => ok false
+  | value_observers.PartialValue.Image _ => ok false
+  | value_observers.PartialValue.CredentialType _ => ok false
+  | value_observers.PartialValue.OauthClaim _ _ => ok false
+  | value_observers.PartialValue.OauthClaimValue _ _ _ => ok false
+  | value_observers.PartialValue.HexString _ => ok false
+  | value_observers.PartialValue.Json => ok false
+  | value_observers.PartialValue.Sha256 _ => ok false
+  | value_observers.PartialValue.Int64 _ => ok false
+  | value_observers.PartialValue.Uint64 _ => ok false
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::PartialValue}::is_credential]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 424:4-426:5
+    Visibility: public -/
+def value_observers.PartialValue.is_credential
+  (self : value_observers.PartialValue) : Result Bool := do
+  match self with
+  | value_observers.PartialValue.Utf8 _ => ok false
+  | value_observers.PartialValue.Iutf8 _ => ok false
+  | value_observers.PartialValue.Iname _ => ok false
+  | value_observers.PartialValue.Uuid _ => ok false
+  | value_observers.PartialValue.Boolean _ => ok false
+  | value_observers.PartialValue.Syntax _ => ok false
+  | value_observers.PartialValue.Index _ => ok false
+  | value_observers.PartialValue.Refer _ => ok false
+  | value_observers.PartialValue.JsonFilt _ => ok false
+  | value_observers.PartialValue.Cred _ => ok true
+  | value_observers.PartialValue.SshKey _ => ok false
+  | value_observers.PartialValue.SecretValue => ok false
+  | value_observers.PartialValue.Spn _ _ => ok false
+  | value_observers.PartialValue.Uint32 _ => ok false
+  | value_observers.PartialValue.Cid _ => ok false
+  | value_observers.PartialValue.Nsuniqueid _ => ok false
+  | value_observers.PartialValue.DateTime _ => ok false
+  | value_observers.PartialValue.EmailAddress _ => ok false
+  | value_observers.PartialValue.PhoneNumber _ => ok false
+  | value_observers.PartialValue.Address _ => ok false
+  | value_observers.PartialValue.Url _ => ok false
+  | value_observers.PartialValue.OauthScope _ => ok false
+  | value_observers.PartialValue.PrivateBinary => ok false
+  | value_observers.PartialValue.PublicBinary _ => ok false
+  | value_observers.PartialValue.RestrictedString _ => ok false
+  | value_observers.PartialValue.IntentToken _ => ok false
+  | value_observers.PartialValue.UiHint _ => ok false
+  | value_observers.PartialValue.Passkey _ => ok false
+  | value_observers.PartialValue.AttestedPasskey _ => ok false
+  | value_observers.PartialValue.Image _ => ok false
+  | value_observers.PartialValue.CredentialType _ => ok false
+  | value_observers.PartialValue.OauthClaim _ _ => ok false
+  | value_observers.PartialValue.OauthClaimValue _ _ _ => ok false
+  | value_observers.PartialValue.HexString _ => ok false
+  | value_observers.PartialValue.Json => ok false
+  | value_observers.PartialValue.Sha256 _ => ok false
+  | value_observers.PartialValue.Int64 _ => ok false
+  | value_observers.PartialValue.Uint64 _ => ok false
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::PartialValue}::is_secret_string]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 427:4-429:5
+    Visibility: public -/
+def value_observers.PartialValue.is_secret_string
+  (self : value_observers.PartialValue) : Result Bool := do
+  match self with
+  | value_observers.PartialValue.Utf8 _ => ok false
+  | value_observers.PartialValue.Iutf8 _ => ok false
+  | value_observers.PartialValue.Iname _ => ok false
+  | value_observers.PartialValue.Uuid _ => ok false
+  | value_observers.PartialValue.Boolean _ => ok false
+  | value_observers.PartialValue.Syntax _ => ok false
+  | value_observers.PartialValue.Index _ => ok false
+  | value_observers.PartialValue.Refer _ => ok false
+  | value_observers.PartialValue.JsonFilt _ => ok false
+  | value_observers.PartialValue.Cred _ => ok false
+  | value_observers.PartialValue.SshKey _ => ok false
+  | value_observers.PartialValue.SecretValue => ok true
+  | value_observers.PartialValue.Spn _ _ => ok false
+  | value_observers.PartialValue.Uint32 _ => ok false
+  | value_observers.PartialValue.Cid _ => ok false
+  | value_observers.PartialValue.Nsuniqueid _ => ok false
+  | value_observers.PartialValue.DateTime _ => ok false
+  | value_observers.PartialValue.EmailAddress _ => ok false
+  | value_observers.PartialValue.PhoneNumber _ => ok false
+  | value_observers.PartialValue.Address _ => ok false
+  | value_observers.PartialValue.Url _ => ok false
+  | value_observers.PartialValue.OauthScope _ => ok false
+  | value_observers.PartialValue.PrivateBinary => ok false
+  | value_observers.PartialValue.PublicBinary _ => ok false
+  | value_observers.PartialValue.RestrictedString _ => ok false
+  | value_observers.PartialValue.IntentToken _ => ok false
+  | value_observers.PartialValue.UiHint _ => ok false
+  | value_observers.PartialValue.Passkey _ => ok false
+  | value_observers.PartialValue.AttestedPasskey _ => ok false
+  | value_observers.PartialValue.Image _ => ok false
+  | value_observers.PartialValue.CredentialType _ => ok false
+  | value_observers.PartialValue.OauthClaim _ _ => ok false
+  | value_observers.PartialValue.OauthClaimValue _ _ _ => ok false
+  | value_observers.PartialValue.HexString _ => ok false
+  | value_observers.PartialValue.Json => ok false
+  | value_observers.PartialValue.Sha256 _ => ok false
+  | value_observers.PartialValue.Int64 _ => ok false
+  | value_observers.PartialValue.Uint64 _ => ok false
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::PartialValue}::is_sshkey]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 430:4-432:5
+    Visibility: public -/
+def value_observers.PartialValue.is_sshkey
+  (self : value_observers.PartialValue) : Result Bool := do
+  match self with
+  | value_observers.PartialValue.Utf8 _ => ok false
+  | value_observers.PartialValue.Iutf8 _ => ok false
+  | value_observers.PartialValue.Iname _ => ok false
+  | value_observers.PartialValue.Uuid _ => ok false
+  | value_observers.PartialValue.Boolean _ => ok false
+  | value_observers.PartialValue.Syntax _ => ok false
+  | value_observers.PartialValue.Index _ => ok false
+  | value_observers.PartialValue.Refer _ => ok false
+  | value_observers.PartialValue.JsonFilt _ => ok false
+  | value_observers.PartialValue.Cred _ => ok false
+  | value_observers.PartialValue.SshKey _ => ok true
+  | value_observers.PartialValue.SecretValue => ok false
+  | value_observers.PartialValue.Spn _ _ => ok false
+  | value_observers.PartialValue.Uint32 _ => ok false
+  | value_observers.PartialValue.Cid _ => ok false
+  | value_observers.PartialValue.Nsuniqueid _ => ok false
+  | value_observers.PartialValue.DateTime _ => ok false
+  | value_observers.PartialValue.EmailAddress _ => ok false
+  | value_observers.PartialValue.PhoneNumber _ => ok false
+  | value_observers.PartialValue.Address _ => ok false
+  | value_observers.PartialValue.Url _ => ok false
+  | value_observers.PartialValue.OauthScope _ => ok false
+  | value_observers.PartialValue.PrivateBinary => ok false
+  | value_observers.PartialValue.PublicBinary _ => ok false
+  | value_observers.PartialValue.RestrictedString _ => ok false
+  | value_observers.PartialValue.IntentToken _ => ok false
+  | value_observers.PartialValue.UiHint _ => ok false
+  | value_observers.PartialValue.Passkey _ => ok false
+  | value_observers.PartialValue.AttestedPasskey _ => ok false
+  | value_observers.PartialValue.Image _ => ok false
+  | value_observers.PartialValue.CredentialType _ => ok false
+  | value_observers.PartialValue.OauthClaim _ _ => ok false
+  | value_observers.PartialValue.OauthClaimValue _ _ _ => ok false
+  | value_observers.PartialValue.HexString _ => ok false
+  | value_observers.PartialValue.Json => ok false
+  | value_observers.PartialValue.Sha256 _ => ok false
+  | value_observers.PartialValue.Int64 _ => ok false
+  | value_observers.PartialValue.Uint64 _ => ok false
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::PartialValue}::is_spn]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 433:4-435:5
+    Visibility: public -/
+def value_observers.PartialValue.is_spn
+  (self : value_observers.PartialValue) : Result Bool := do
+  match self with
+  | value_observers.PartialValue.Utf8 _ => ok false
+  | value_observers.PartialValue.Iutf8 _ => ok false
+  | value_observers.PartialValue.Iname _ => ok false
+  | value_observers.PartialValue.Uuid _ => ok false
+  | value_observers.PartialValue.Boolean _ => ok false
+  | value_observers.PartialValue.Syntax _ => ok false
+  | value_observers.PartialValue.Index _ => ok false
+  | value_observers.PartialValue.Refer _ => ok false
+  | value_observers.PartialValue.JsonFilt _ => ok false
+  | value_observers.PartialValue.Cred _ => ok false
+  | value_observers.PartialValue.SshKey _ => ok false
+  | value_observers.PartialValue.SecretValue => ok false
+  | value_observers.PartialValue.Spn _ _ => ok true
+  | value_observers.PartialValue.Uint32 _ => ok false
+  | value_observers.PartialValue.Cid _ => ok false
+  | value_observers.PartialValue.Nsuniqueid _ => ok false
+  | value_observers.PartialValue.DateTime _ => ok false
+  | value_observers.PartialValue.EmailAddress _ => ok false
+  | value_observers.PartialValue.PhoneNumber _ => ok false
+  | value_observers.PartialValue.Address _ => ok false
+  | value_observers.PartialValue.Url _ => ok false
+  | value_observers.PartialValue.OauthScope _ => ok false
+  | value_observers.PartialValue.PrivateBinary => ok false
+  | value_observers.PartialValue.PublicBinary _ => ok false
+  | value_observers.PartialValue.RestrictedString _ => ok false
+  | value_observers.PartialValue.IntentToken _ => ok false
+  | value_observers.PartialValue.UiHint _ => ok false
+  | value_observers.PartialValue.Passkey _ => ok false
+  | value_observers.PartialValue.AttestedPasskey _ => ok false
+  | value_observers.PartialValue.Image _ => ok false
+  | value_observers.PartialValue.CredentialType _ => ok false
+  | value_observers.PartialValue.OauthClaim _ _ => ok false
+  | value_observers.PartialValue.OauthClaimValue _ _ _ => ok false
+  | value_observers.PartialValue.HexString _ => ok false
+  | value_observers.PartialValue.Json => ok false
+  | value_observers.PartialValue.Sha256 _ => ok false
+  | value_observers.PartialValue.Int64 _ => ok false
+  | value_observers.PartialValue.Uint64 _ => ok false
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::PartialValue}::is_uint32]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 436:4-438:5
+    Visibility: public -/
+def value_observers.PartialValue.is_uint32
+  (self : value_observers.PartialValue) : Result Bool := do
+  match self with
+  | value_observers.PartialValue.Utf8 _ => ok false
+  | value_observers.PartialValue.Iutf8 _ => ok false
+  | value_observers.PartialValue.Iname _ => ok false
+  | value_observers.PartialValue.Uuid _ => ok false
+  | value_observers.PartialValue.Boolean _ => ok false
+  | value_observers.PartialValue.Syntax _ => ok false
+  | value_observers.PartialValue.Index _ => ok false
+  | value_observers.PartialValue.Refer _ => ok false
+  | value_observers.PartialValue.JsonFilt _ => ok false
+  | value_observers.PartialValue.Cred _ => ok false
+  | value_observers.PartialValue.SshKey _ => ok false
+  | value_observers.PartialValue.SecretValue => ok false
+  | value_observers.PartialValue.Spn _ _ => ok false
+  | value_observers.PartialValue.Uint32 _ => ok true
+  | value_observers.PartialValue.Cid _ => ok false
+  | value_observers.PartialValue.Nsuniqueid _ => ok false
+  | value_observers.PartialValue.DateTime _ => ok false
+  | value_observers.PartialValue.EmailAddress _ => ok false
+  | value_observers.PartialValue.PhoneNumber _ => ok false
+  | value_observers.PartialValue.Address _ => ok false
+  | value_observers.PartialValue.Url _ => ok false
+  | value_observers.PartialValue.OauthScope _ => ok false
+  | value_observers.PartialValue.PrivateBinary => ok false
+  | value_observers.PartialValue.PublicBinary _ => ok false
+  | value_observers.PartialValue.RestrictedString _ => ok false
+  | value_observers.PartialValue.IntentToken _ => ok false
+  | value_observers.PartialValue.UiHint _ => ok false
+  | value_observers.PartialValue.Passkey _ => ok false
+  | value_observers.PartialValue.AttestedPasskey _ => ok false
+  | value_observers.PartialValue.Image _ => ok false
+  | value_observers.PartialValue.CredentialType _ => ok false
+  | value_observers.PartialValue.OauthClaim _ _ => ok false
+  | value_observers.PartialValue.OauthClaimValue _ _ _ => ok false
+  | value_observers.PartialValue.HexString _ => ok false
+  | value_observers.PartialValue.Json => ok false
+  | value_observers.PartialValue.Sha256 _ => ok false
+  | value_observers.PartialValue.Int64 _ => ok false
+  | value_observers.PartialValue.Uint64 _ => ok false
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::PartialValue}::is_cid]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 439:4-441:5
+    Visibility: public -/
+def value_observers.PartialValue.is_cid
+  (self : value_observers.PartialValue) : Result Bool := do
+  match self with
+  | value_observers.PartialValue.Utf8 _ => ok false
+  | value_observers.PartialValue.Iutf8 _ => ok false
+  | value_observers.PartialValue.Iname _ => ok false
+  | value_observers.PartialValue.Uuid _ => ok false
+  | value_observers.PartialValue.Boolean _ => ok false
+  | value_observers.PartialValue.Syntax _ => ok false
+  | value_observers.PartialValue.Index _ => ok false
+  | value_observers.PartialValue.Refer _ => ok false
+  | value_observers.PartialValue.JsonFilt _ => ok false
+  | value_observers.PartialValue.Cred _ => ok false
+  | value_observers.PartialValue.SshKey _ => ok false
+  | value_observers.PartialValue.SecretValue => ok false
+  | value_observers.PartialValue.Spn _ _ => ok false
+  | value_observers.PartialValue.Uint32 _ => ok false
+  | value_observers.PartialValue.Cid _ => ok true
+  | value_observers.PartialValue.Nsuniqueid _ => ok false
+  | value_observers.PartialValue.DateTime _ => ok false
+  | value_observers.PartialValue.EmailAddress _ => ok false
+  | value_observers.PartialValue.PhoneNumber _ => ok false
+  | value_observers.PartialValue.Address _ => ok false
+  | value_observers.PartialValue.Url _ => ok false
+  | value_observers.PartialValue.OauthScope _ => ok false
+  | value_observers.PartialValue.PrivateBinary => ok false
+  | value_observers.PartialValue.PublicBinary _ => ok false
+  | value_observers.PartialValue.RestrictedString _ => ok false
+  | value_observers.PartialValue.IntentToken _ => ok false
+  | value_observers.PartialValue.UiHint _ => ok false
+  | value_observers.PartialValue.Passkey _ => ok false
+  | value_observers.PartialValue.AttestedPasskey _ => ok false
+  | value_observers.PartialValue.Image _ => ok false
+  | value_observers.PartialValue.CredentialType _ => ok false
+  | value_observers.PartialValue.OauthClaim _ _ => ok false
+  | value_observers.PartialValue.OauthClaimValue _ _ _ => ok false
+  | value_observers.PartialValue.HexString _ => ok false
+  | value_observers.PartialValue.Json => ok false
+  | value_observers.PartialValue.Sha256 _ => ok false
+  | value_observers.PartialValue.Int64 _ => ok false
+  | value_observers.PartialValue.Uint64 _ => ok false
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::PartialValue}::is_nsuniqueid]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 442:4-444:5
+    Visibility: public -/
+def value_observers.PartialValue.is_nsuniqueid
+  (self : value_observers.PartialValue) : Result Bool := do
+  match self with
+  | value_observers.PartialValue.Utf8 _ => ok false
+  | value_observers.PartialValue.Iutf8 _ => ok false
+  | value_observers.PartialValue.Iname _ => ok false
+  | value_observers.PartialValue.Uuid _ => ok false
+  | value_observers.PartialValue.Boolean _ => ok false
+  | value_observers.PartialValue.Syntax _ => ok false
+  | value_observers.PartialValue.Index _ => ok false
+  | value_observers.PartialValue.Refer _ => ok false
+  | value_observers.PartialValue.JsonFilt _ => ok false
+  | value_observers.PartialValue.Cred _ => ok false
+  | value_observers.PartialValue.SshKey _ => ok false
+  | value_observers.PartialValue.SecretValue => ok false
+  | value_observers.PartialValue.Spn _ _ => ok false
+  | value_observers.PartialValue.Uint32 _ => ok false
+  | value_observers.PartialValue.Cid _ => ok false
+  | value_observers.PartialValue.Nsuniqueid _ => ok true
+  | value_observers.PartialValue.DateTime _ => ok false
+  | value_observers.PartialValue.EmailAddress _ => ok false
+  | value_observers.PartialValue.PhoneNumber _ => ok false
+  | value_observers.PartialValue.Address _ => ok false
+  | value_observers.PartialValue.Url _ => ok false
+  | value_observers.PartialValue.OauthScope _ => ok false
+  | value_observers.PartialValue.PrivateBinary => ok false
+  | value_observers.PartialValue.PublicBinary _ => ok false
+  | value_observers.PartialValue.RestrictedString _ => ok false
+  | value_observers.PartialValue.IntentToken _ => ok false
+  | value_observers.PartialValue.UiHint _ => ok false
+  | value_observers.PartialValue.Passkey _ => ok false
+  | value_observers.PartialValue.AttestedPasskey _ => ok false
+  | value_observers.PartialValue.Image _ => ok false
+  | value_observers.PartialValue.CredentialType _ => ok false
+  | value_observers.PartialValue.OauthClaim _ _ => ok false
+  | value_observers.PartialValue.OauthClaimValue _ _ _ => ok false
+  | value_observers.PartialValue.HexString _ => ok false
+  | value_observers.PartialValue.Json => ok false
+  | value_observers.PartialValue.Sha256 _ => ok false
+  | value_observers.PartialValue.Int64 _ => ok false
+  | value_observers.PartialValue.Uint64 _ => ok false
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::PartialValue}::is_datetime]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 445:4-447:5
+    Visibility: public -/
+def value_observers.PartialValue.is_datetime
+  (self : value_observers.PartialValue) : Result Bool := do
+  match self with
+  | value_observers.PartialValue.Utf8 _ => ok false
+  | value_observers.PartialValue.Iutf8 _ => ok false
+  | value_observers.PartialValue.Iname _ => ok false
+  | value_observers.PartialValue.Uuid _ => ok false
+  | value_observers.PartialValue.Boolean _ => ok false
+  | value_observers.PartialValue.Syntax _ => ok false
+  | value_observers.PartialValue.Index _ => ok false
+  | value_observers.PartialValue.Refer _ => ok false
+  | value_observers.PartialValue.JsonFilt _ => ok false
+  | value_observers.PartialValue.Cred _ => ok false
+  | value_observers.PartialValue.SshKey _ => ok false
+  | value_observers.PartialValue.SecretValue => ok false
+  | value_observers.PartialValue.Spn _ _ => ok false
+  | value_observers.PartialValue.Uint32 _ => ok false
+  | value_observers.PartialValue.Cid _ => ok false
+  | value_observers.PartialValue.Nsuniqueid _ => ok false
+  | value_observers.PartialValue.DateTime _ => ok true
+  | value_observers.PartialValue.EmailAddress _ => ok false
+  | value_observers.PartialValue.PhoneNumber _ => ok false
+  | value_observers.PartialValue.Address _ => ok false
+  | value_observers.PartialValue.Url _ => ok false
+  | value_observers.PartialValue.OauthScope _ => ok false
+  | value_observers.PartialValue.PrivateBinary => ok false
+  | value_observers.PartialValue.PublicBinary _ => ok false
+  | value_observers.PartialValue.RestrictedString _ => ok false
+  | value_observers.PartialValue.IntentToken _ => ok false
+  | value_observers.PartialValue.UiHint _ => ok false
+  | value_observers.PartialValue.Passkey _ => ok false
+  | value_observers.PartialValue.AttestedPasskey _ => ok false
+  | value_observers.PartialValue.Image _ => ok false
+  | value_observers.PartialValue.CredentialType _ => ok false
+  | value_observers.PartialValue.OauthClaim _ _ => ok false
+  | value_observers.PartialValue.OauthClaimValue _ _ _ => ok false
+  | value_observers.PartialValue.HexString _ => ok false
+  | value_observers.PartialValue.Json => ok false
+  | value_observers.PartialValue.Sha256 _ => ok false
+  | value_observers.PartialValue.Int64 _ => ok false
+  | value_observers.PartialValue.Uint64 _ => ok false
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::PartialValue}::is_email_address]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 448:4-450:5
+    Visibility: public -/
+def value_observers.PartialValue.is_email_address
+  (self : value_observers.PartialValue) : Result Bool := do
+  match self with
+  | value_observers.PartialValue.Utf8 _ => ok false
+  | value_observers.PartialValue.Iutf8 _ => ok false
+  | value_observers.PartialValue.Iname _ => ok false
+  | value_observers.PartialValue.Uuid _ => ok false
+  | value_observers.PartialValue.Boolean _ => ok false
+  | value_observers.PartialValue.Syntax _ => ok false
+  | value_observers.PartialValue.Index _ => ok false
+  | value_observers.PartialValue.Refer _ => ok false
+  | value_observers.PartialValue.JsonFilt _ => ok false
+  | value_observers.PartialValue.Cred _ => ok false
+  | value_observers.PartialValue.SshKey _ => ok false
+  | value_observers.PartialValue.SecretValue => ok false
+  | value_observers.PartialValue.Spn _ _ => ok false
+  | value_observers.PartialValue.Uint32 _ => ok false
+  | value_observers.PartialValue.Cid _ => ok false
+  | value_observers.PartialValue.Nsuniqueid _ => ok false
+  | value_observers.PartialValue.DateTime _ => ok false
+  | value_observers.PartialValue.EmailAddress _ => ok true
+  | value_observers.PartialValue.PhoneNumber _ => ok false
+  | value_observers.PartialValue.Address _ => ok false
+  | value_observers.PartialValue.Url _ => ok false
+  | value_observers.PartialValue.OauthScope _ => ok false
+  | value_observers.PartialValue.PrivateBinary => ok false
+  | value_observers.PartialValue.PublicBinary _ => ok false
+  | value_observers.PartialValue.RestrictedString _ => ok false
+  | value_observers.PartialValue.IntentToken _ => ok false
+  | value_observers.PartialValue.UiHint _ => ok false
+  | value_observers.PartialValue.Passkey _ => ok false
+  | value_observers.PartialValue.AttestedPasskey _ => ok false
+  | value_observers.PartialValue.Image _ => ok false
+  | value_observers.PartialValue.CredentialType _ => ok false
+  | value_observers.PartialValue.OauthClaim _ _ => ok false
+  | value_observers.PartialValue.OauthClaimValue _ _ _ => ok false
+  | value_observers.PartialValue.HexString _ => ok false
+  | value_observers.PartialValue.Json => ok false
+  | value_observers.PartialValue.Sha256 _ => ok false
+  | value_observers.PartialValue.Int64 _ => ok false
+  | value_observers.PartialValue.Uint64 _ => ok false
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::PartialValue}::is_url]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 451:4-453:5
+    Visibility: public -/
+def value_observers.PartialValue.is_url
+  (self : value_observers.PartialValue) : Result Bool := do
+  match self with
+  | value_observers.PartialValue.Utf8 _ => ok false
+  | value_observers.PartialValue.Iutf8 _ => ok false
+  | value_observers.PartialValue.Iname _ => ok false
+  | value_observers.PartialValue.Uuid _ => ok false
+  | value_observers.PartialValue.Boolean _ => ok false
+  | value_observers.PartialValue.Syntax _ => ok false
+  | value_observers.PartialValue.Index _ => ok false
+  | value_observers.PartialValue.Refer _ => ok false
+  | value_observers.PartialValue.JsonFilt _ => ok false
+  | value_observers.PartialValue.Cred _ => ok false
+  | value_observers.PartialValue.SshKey _ => ok false
+  | value_observers.PartialValue.SecretValue => ok false
+  | value_observers.PartialValue.Spn _ _ => ok false
+  | value_observers.PartialValue.Uint32 _ => ok false
+  | value_observers.PartialValue.Cid _ => ok false
+  | value_observers.PartialValue.Nsuniqueid _ => ok false
+  | value_observers.PartialValue.DateTime _ => ok false
+  | value_observers.PartialValue.EmailAddress _ => ok false
+  | value_observers.PartialValue.PhoneNumber _ => ok false
+  | value_observers.PartialValue.Address _ => ok false
+  | value_observers.PartialValue.Url _ => ok true
+  | value_observers.PartialValue.OauthScope _ => ok false
+  | value_observers.PartialValue.PrivateBinary => ok false
+  | value_observers.PartialValue.PublicBinary _ => ok false
+  | value_observers.PartialValue.RestrictedString _ => ok false
+  | value_observers.PartialValue.IntentToken _ => ok false
+  | value_observers.PartialValue.UiHint _ => ok false
+  | value_observers.PartialValue.Passkey _ => ok false
+  | value_observers.PartialValue.AttestedPasskey _ => ok false
+  | value_observers.PartialValue.Image _ => ok false
+  | value_observers.PartialValue.CredentialType _ => ok false
+  | value_observers.PartialValue.OauthClaim _ _ => ok false
+  | value_observers.PartialValue.OauthClaimValue _ _ _ => ok false
+  | value_observers.PartialValue.HexString _ => ok false
+  | value_observers.PartialValue.Json => ok false
+  | value_observers.PartialValue.Sha256 _ => ok false
+  | value_observers.PartialValue.Int64 _ => ok false
+  | value_observers.PartialValue.Uint64 _ => ok false
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::PartialValue}::is_oauthscope]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 454:4-456:5
+    Visibility: public -/
+def value_observers.PartialValue.is_oauthscope
+  (self : value_observers.PartialValue) : Result Bool := do
+  match self with
+  | value_observers.PartialValue.Utf8 _ => ok false
+  | value_observers.PartialValue.Iutf8 _ => ok false
+  | value_observers.PartialValue.Iname _ => ok false
+  | value_observers.PartialValue.Uuid _ => ok false
+  | value_observers.PartialValue.Boolean _ => ok false
+  | value_observers.PartialValue.Syntax _ => ok false
+  | value_observers.PartialValue.Index _ => ok false
+  | value_observers.PartialValue.Refer _ => ok false
+  | value_observers.PartialValue.JsonFilt _ => ok false
+  | value_observers.PartialValue.Cred _ => ok false
+  | value_observers.PartialValue.SshKey _ => ok false
+  | value_observers.PartialValue.SecretValue => ok false
+  | value_observers.PartialValue.Spn _ _ => ok false
+  | value_observers.PartialValue.Uint32 _ => ok false
+  | value_observers.PartialValue.Cid _ => ok false
+  | value_observers.PartialValue.Nsuniqueid _ => ok false
+  | value_observers.PartialValue.DateTime _ => ok false
+  | value_observers.PartialValue.EmailAddress _ => ok false
+  | value_observers.PartialValue.PhoneNumber _ => ok false
+  | value_observers.PartialValue.Address _ => ok false
+  | value_observers.PartialValue.Url _ => ok false
+  | value_observers.PartialValue.OauthScope _ => ok true
+  | value_observers.PartialValue.PrivateBinary => ok false
+  | value_observers.PartialValue.PublicBinary _ => ok false
+  | value_observers.PartialValue.RestrictedString _ => ok false
+  | value_observers.PartialValue.IntentToken _ => ok false
+  | value_observers.PartialValue.UiHint _ => ok false
+  | value_observers.PartialValue.Passkey _ => ok false
+  | value_observers.PartialValue.AttestedPasskey _ => ok false
+  | value_observers.PartialValue.Image _ => ok false
+  | value_observers.PartialValue.CredentialType _ => ok false
+  | value_observers.PartialValue.OauthClaim _ _ => ok false
+  | value_observers.PartialValue.OauthClaimValue _ _ _ => ok false
+  | value_observers.PartialValue.HexString _ => ok false
+  | value_observers.PartialValue.Json => ok false
+  | value_observers.PartialValue.Sha256 _ => ok false
+  | value_observers.PartialValue.Int64 _ => ok false
+  | value_observers.PartialValue.Uint64 _ => ok false
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::PartialValue}::is_privatebinary]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 457:4-459:5
+    Visibility: public -/
+def value_observers.PartialValue.is_privatebinary
+  (self : value_observers.PartialValue) : Result Bool := do
+  match self with
+  | value_observers.PartialValue.Utf8 _ => ok false
+  | value_observers.PartialValue.Iutf8 _ => ok false
+  | value_observers.PartialValue.Iname _ => ok false
+  | value_observers.PartialValue.Uuid _ => ok false
+  | value_observers.PartialValue.Boolean _ => ok false
+  | value_observers.PartialValue.Syntax _ => ok false
+  | value_observers.PartialValue.Index _ => ok false
+  | value_observers.PartialValue.Refer _ => ok false
+  | value_observers.PartialValue.JsonFilt _ => ok false
+  | value_observers.PartialValue.Cred _ => ok false
+  | value_observers.PartialValue.SshKey _ => ok false
+  | value_observers.PartialValue.SecretValue => ok false
+  | value_observers.PartialValue.Spn _ _ => ok false
+  | value_observers.PartialValue.Uint32 _ => ok false
+  | value_observers.PartialValue.Cid _ => ok false
+  | value_observers.PartialValue.Nsuniqueid _ => ok false
+  | value_observers.PartialValue.DateTime _ => ok false
+  | value_observers.PartialValue.EmailAddress _ => ok false
+  | value_observers.PartialValue.PhoneNumber _ => ok false
+  | value_observers.PartialValue.Address _ => ok false
+  | value_observers.PartialValue.Url _ => ok false
+  | value_observers.PartialValue.OauthScope _ => ok false
+  | value_observers.PartialValue.PrivateBinary => ok true
+  | value_observers.PartialValue.PublicBinary _ => ok false
+  | value_observers.PartialValue.RestrictedString _ => ok false
+  | value_observers.PartialValue.IntentToken _ => ok false
+  | value_observers.PartialValue.UiHint _ => ok false
+  | value_observers.PartialValue.Passkey _ => ok false
+  | value_observers.PartialValue.AttestedPasskey _ => ok false
+  | value_observers.PartialValue.Image _ => ok false
+  | value_observers.PartialValue.CredentialType _ => ok false
+  | value_observers.PartialValue.OauthClaim _ _ => ok false
+  | value_observers.PartialValue.OauthClaimValue _ _ _ => ok false
+  | value_observers.PartialValue.HexString _ => ok false
+  | value_observers.PartialValue.Json => ok false
+  | value_observers.PartialValue.Sha256 _ => ok false
+  | value_observers.PartialValue.Int64 _ => ok false
+  | value_observers.PartialValue.Uint64 _ => ok false
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::PartialValue}::to_str]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 460:4-467:5
+    Visibility: public -/
+def value_observers.PartialValue.to_str
+  (self : value_observers.PartialValue) : Result (Option Std.U64) := do
+  match self with
+  | value_observers.PartialValue.Utf8 s => ok (some s)
+  | value_observers.PartialValue.Iutf8 s => ok (some s)
+  | value_observers.PartialValue.Iname s => ok (some s)
+  | value_observers.PartialValue.Uuid _ => ok none
+  | value_observers.PartialValue.Boolean _ => ok none
+  | value_observers.PartialValue.Syntax _ => ok none
+  | value_observers.PartialValue.Index _ => ok none
+  | value_observers.PartialValue.Refer _ => ok none
+  | value_observers.PartialValue.JsonFilt _ => ok none
+  | value_observers.PartialValue.Cred _ => ok none
+  | value_observers.PartialValue.SshKey _ => ok none
+  | value_observers.PartialValue.SecretValue => ok none
+  | value_observers.PartialValue.Spn _ _ => ok none
+  | value_observers.PartialValue.Uint32 _ => ok none
+  | value_observers.PartialValue.Cid _ => ok none
+  | value_observers.PartialValue.Nsuniqueid _ => ok none
+  | value_observers.PartialValue.DateTime _ => ok none
+  | value_observers.PartialValue.EmailAddress _ => ok none
+  | value_observers.PartialValue.PhoneNumber _ => ok none
+  | value_observers.PartialValue.Address _ => ok none
+  | value_observers.PartialValue.Url _ => ok none
+  | value_observers.PartialValue.OauthScope _ => ok none
+  | value_observers.PartialValue.PrivateBinary => ok none
+  | value_observers.PartialValue.PublicBinary _ => ok none
+  | value_observers.PartialValue.RestrictedString _ => ok none
+  | value_observers.PartialValue.IntentToken _ => ok none
+  | value_observers.PartialValue.UiHint _ => ok none
+  | value_observers.PartialValue.Passkey _ => ok none
+  | value_observers.PartialValue.AttestedPasskey _ => ok none
+  | value_observers.PartialValue.Image _ => ok none
+  | value_observers.PartialValue.CredentialType _ => ok none
+  | value_observers.PartialValue.OauthClaim _ _ => ok none
+  | value_observers.PartialValue.OauthClaimValue _ _ _ => ok none
+  | value_observers.PartialValue.HexString _ => ok none
+  | value_observers.PartialValue.Json => ok none
+  | value_observers.PartialValue.Sha256 _ => ok none
+  | value_observers.PartialValue.Int64 _ => ok none
+  | value_observers.PartialValue.Uint64 _ => ok none
+
 end kanidm_kernel

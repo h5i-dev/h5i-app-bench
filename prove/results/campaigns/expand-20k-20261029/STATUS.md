@@ -1,23 +1,29 @@
 # 20k expansion status
 
-Updated UTC: 2026-10-29T16:19:32.084947+00:00
+Updated UTC: 2026-10-29T17:00:14.504548+00:00
 
-Accepted checkpoint: **10,800 pinned upstream executable lines / 425 properties**.
-Baseline: 10,098 / 405. Latest batch: Nora curation control flow, namespace,
-bypass/download and integrity decisions, **+292 lines / +8 properties**.
-Remaining to 20,000: **9,200 lines**. Goal is not complete.
+Accepted checkpoint: **12,174 pinned upstream executable lines / 577 properties**.
+Remaining to 20,000: **7,826 lines**. Goal is not complete.
+Latest accepted batch: Kanidm value observers/syntax metadata and OxiCloud
+entity/authorization/validation decisions, **+1,374 lines / +152 properties**.
+Nora curation was previously accepted and pushed at 8b02f18 (10,800 / 425).
 
-All six canonical project gates and exact extraction checks are fresh.
-Nora gate: results/project-checks/20261029T160557354150Z/nora.log
-(839 theorems in 32 modules; all 46 selected properties).
-Exact extraction: results/project-checks/20261029T161430572244Z/nora.log.
-Dashboard regenerated; all 13 accounting/reach/project-detail tests passed.
-Exact counts/check identities: accepted-checkpoint.json.
-Pinned differential evidence: differential-evidence.json and adjacent logs;
-81,900 chain configurations with download/integrity/namespace comparisons.
+All six canonical gates and exact extraction checks are fresh. Official dashboard
+regenerated; all 13 accounting/reach/project-detail tests passed afterwards.
+Kanidm: 1,699 theorems / 33 modules / all 116 selected properties.
+- check: results/project-checks/20261029T164658420681Z/kanidm.log
+- exact: results/project-checks/20261029T165643397624Z/kanidm.log
+OxiCloud: 979 theorems / 31 modules / all 99 selected properties.
+- check: results/project-checks/20261029T165009453648Z/oxicloud.log
+- exact: results/project-checks/20261029T165717512462Z/oxicloud.log
+Pinned differentials: 70,748,288 Kanidm observers + 100,146 metadata comparisons;
+71 OxiCloud tests. See differential-evidence.json and adjacent logs.
+Exact per-app counts/check identities: accepted-checkpoint.json.
 Accounting is TYPE-seeded extracted dependency reach, not upstream equivalence.
 
-Branch: prove-20k-expansion. Nora batch accepted; saving and pushing now.
-One active worker; no agents or extra AI/tmux sessions. Preserve unrelated edits.
-Next batch: Kanidm complete value observers and syntax metadata dispatch.
-Prepared under /tmp, not installed or counted yet. No blocker currently.
+Branch: prove-20k-expansion. Saving and pushing accepted batch now.
+Next: install prepared DAV/device persistence snapshots, six unconditional full
+reconstruction/observation properties and 93 methods. Preflight passed six tests
+and 3,072 records. Not counted until canonical gates and exact extraction pass.
+No external blocker. One worker; no agents or extra AI/tmux sessions.
+Preserve unrelated performance changes and root untracked directories.
