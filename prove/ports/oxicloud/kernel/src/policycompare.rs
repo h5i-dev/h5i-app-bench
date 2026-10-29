@@ -83,3 +83,26 @@ pub fn weaker_than(p: &Policies, default: &Policies, kind: DriveKind) -> Vec<Kno
     append_weaker(out,p,default,kind,Knob::RequirePublicLinkPassword)
 }
 
+/// Exact canonical policy-name classification; every other spelling is Other.
+pub fn knob_from_bytes(raw: &[u8]) -> Knob {
+    if crate::bytes::equal(raw,b"forbid_sharing") {return Knob::ForbidSharing;}
+    if crate::bytes::equal(raw,b"forbid_external_sharing") {return Knob::ForbidExternalSharing;}
+    if crate::bytes::equal(raw,b"forbid_public_links") {return Knob::ForbidPublicLinks;}
+    if crate::bytes::equal(raw,b"forbid_cross_drive_move") {return Knob::ForbidCrossDriveMove;}
+    if crate::bytes::equal(raw,b"forbid_owner_role_change") {return Knob::ForbidOwnerRoleChange;}
+    if crate::bytes::equal(raw,b"include_in_photo_index") {return Knob::IncludeInPhotoIndex;}
+    if crate::bytes::equal(raw,b"include_in_music_index") {return Knob::IncludeInMusicIndex;}
+    if crate::bytes::equal(raw,b"read_only") {return Knob::ReadOnly;}
+    if crate::bytes::equal(raw,b"max_public_link_days") {return Knob::MaxPublicLinkDays;}
+    if crate::bytes::equal(raw,b"require_public_link_password") {return Knob::RequirePublicLinkPassword;}
+    Knob::Other
+}
+pub fn knob_applies_to_kind_bytes(raw: &[u8], kind: DriveKind) -> bool {
+    knob_applies_to_kind(knob_from_bytes(raw),kind)
+}
+pub fn knob_strictness_bytes(raw: &[u8]) -> Strictness { knob_strictness(knob_from_bytes(raw)) }
+pub fn knob_value_bytes(p: &Policies, raw: &[u8]) -> KnobValue { knob_value(p,knob_from_bytes(raw)) }
+pub fn knob_bool_bytes(p: &Policies, raw: &[u8]) -> bool { knob_bool(p,knob_from_bytes(raw)) }
+pub fn at_least_as_strict_on_bytes(p: &Policies, other: &Policies, raw: &[u8]) -> bool {
+    at_least_as_strict_on(p,other,knob_from_bytes(raw))
+}

@@ -299,3 +299,11 @@ pub mod schema_tags;
 pub mod credential_commit;
 
 pub mod account_policy;
+
+pub mod entry_validation;
+
+pub mod value_observers;
+pub mod syntax_types;
+pub mod migration_defaults;
+
+pub mod acp_defaults;

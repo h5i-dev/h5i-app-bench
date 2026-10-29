@@ -165,3 +165,13 @@ pub fn from_user(user: &User) -> AuthExtension {
         iat_ms: None,
     }
 }
+
+/// Extraction entrypoint for the inherent delegation check.
+pub fn check_mint_ceiling(auth: &AuthExtension, requested: &[Vec<u8>]) -> Result<(), AppError> {
+    auth.enforce_mint_ceiling(requested)
+}
+
+/// Extraction entrypoint for the inherent repository ceiling.
+pub fn check_repo_ceiling(auth: &AuthExtension, requested: bool) -> Result<Option<Vec<u64>>, AppError> {
+    auth.mint_repo_ceiling(requested)
+}

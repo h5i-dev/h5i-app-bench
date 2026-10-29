@@ -163,3 +163,111 @@ complete behavioral equivalence of the entire upstream method. Differential
 reference copies the full original method unchanged and independently varies
 CA masks while comparing every scalar output field. Current test includes
 20,049 resolution cases, including empty input and policy/password boundaries.
+
+## Complete entry schema validation (2026-10-29)
+
+`entry_validation::validate` ports the complete `Entry<EntryValid, STATE>::validate`
+decision in `entry.rs` at the pinned revision. The formal property proves
+termination without a panic and the exact first error, including ordered error
+payloads, against a list model. It covers conflict exemption, class lookup,
+supplements, exclusions, required attributes, recycled relaxation, extensible
+objects, phantom rejection, permitted attributes, and AVA syntax/cardinality.
+
+The adapter interns class and attribute identifiers as `u16`; class IDs 0, 1,
+and 2 mean conflict, extensibleobject, and recycled. Map/set inputs must be
+unique and ordered consistently with the upstream iteration order. The formal
+Rust decision is proved for arbitrary lists; its correspondence with upstream
+maps uses that adapter invariant. `class_present` models attribute presence;
+`classes = None` models a missing or non-iutf8 class value. Attribute names and
+schema map keys remain separate, preserving corrupt-schema and missing-attribute
+error precedence. Intrinsic ValueSet validation is a supplied `valid` Boolean;
+this proof does not validate each concrete ValueSet implementation.
+
+The only arithmetic precondition bounds the total length of all constraint
+lists gathered from the entry's classes by `usize::MAX`. It imposes no schema
+validity or acceptance assumption. Vector emptiness uses `len() == 0`, avoiding
+an unsupported external `Vec::is_empty` in the extraction.
+
+The differential test runs the canonical Rust module against the verbatim
+pinned upstream method with map, name, clock-free schema, and ValueSet adapters:
+100,000 generated cases plus targeted checks for every error, error ordering,
+recycled/extensible behavior, and AVA boundaries.
+
+## Complete Value observers and SyntaxType metadata at f608c4f
+
+`value_observers` retains all 50 Value and 37 PartialValue variants and ports
+76 production predicates/getters plus the Iutf8-to-Iname migration. Theorems
+specify the exact tag test and returned payload for every variant, including
+the nested resource-server UUID selected by `to_ref_uuid`. This is separate
+from the restricted access-control Value representation. Strings, buffers,
+sets and other external payloads use stable injective u64 handles; UUIDs use
+u128, and boolean/integer scalars are exact. Getter borrows become copied
+handles; ownership, lifetimes, normalization, parsing, external type internals
+and cryptography are outside these observer proofs. No omitted variant is
+silently folded into a catch-all tag.
+
+`syntax_types` ports SyntaxType name dispatch, exact display bytes and ordered
+index lists. The caller supplies Unicode-uppercase UTF-8 bytes, matching the
+upstream `to_uppercase()` step before dispatch; Unicode normalization itself
+is an adapter, not a proved operation. The legacy RADIUS_UTF8STRING alias is
+retained, and IMAGE remains unrecognized by parsing although it has a display
+name. Display specifies successful Formatter output bytes, excluding sink
+failure. Index metadata retains exact ordered Eq/Pres/Sub lists.
+
+Each difftest directory contains a reproducible extractor from the immutable
+git object. The original selected method bodies remain unchanged in references;
+external observer payload types use Text/Payload adapters. Differential tests
+compare every variant across scalar/payload boundaries and random seeds
+(70,748,288 observer comparisons), and display/index/name/Unicode/random names
+(100,146 metadata comparisons). This evidence does not prove the adapters or
+whole-upstream equivalence; accounting remains pinned source dependency reach.
+
+The observer Boolean variant is renamed from upstream Bool to avoid shadowing
+Lean Bool inside generated inherent-method namespaces; the reference retains
+the original variant name. The syntax dispatch uses five ten-case helpers to
+keep generated Lean indentation bounded. These are structural adaptations.
+
+## Migration password security defaults at f608c4f
+
+`migration_defaults` ports all six versioned `e_system_config_v1` constructors
+(dl11, dl12, dl13, dl14, dl15, dl_1_12). The complete entry is represented by
+three class-presence fields, its UUID, description bytes and an extensional
+password set. No additional attributes or classes are representable. The
+initializer inserts every literal; dl15/dl_1_12 retain their shorter sentinel.
+
+Fixed literal Iutf8 normalization is precomputed as exact lowercase UTF-8 bytes,
+including the two non-ASCII words and escaped backslash. This is a fixed-data
+port, not a proof of arbitrary Unicode normalization. Shared owned chunks avoid
+unsupported nested constant slice borrows; their exact byte contents are
+specified independently in Lean. Duplicate normalized entries retain set
+semantics. Allocation failures and storage/migration I/O are outside the entry
+value model.
+
+The differential extractor retrieves each unchanged full initializer from its
+pinned git object. A minimal typed entry/map/value adapter preserves class, UUID,
+description and Unicode-lowercased password-set behavior. Seven release tests
+compare complete entries, all 637 distinct passwords per version, non-ASCII and
+case-fold boundaries, and the version-specific sentinel difference.
+
+### Complete built-in ACP default initializers
+
+The `acp_defaults` port reconstructs all fields of eleven selected built-in
+profiles in each of dl11, dl12, dl13, dl14, dl15, and dl_1_12 at the same pin.
+Twenty distinct records cover all 66 exact initializer spans. Identical full
+records share an owned constructor; differing historical records remain distinct.
+LazyLock initialization is represented by a fresh owned value. Static UTF-8
+strings use byte vectors; UUIDs use their exact u128 value. Attribute and class
+variants use the injective sorted u16 dictionaries in
+`difftest/acp_defaults/metadata.json`, including their pinned canonical strings.
+Receiver tags are 0=None, 1=Group, 2=EntryManager; groups retain every UUID.
+The target retains the complete filter tree in a lossless prefix encoding:
+Eq=0 followed by u16-LE byte length/string for attribute then value; And=1
+and Or=2 followed by u16-LE child count and child encodings; AndNot=3 plus
+child; SelfUuid=4. Empty bytes designate absent target. All selected targets
+are present. This is data construction, not filter evaluation or entry conversion.
+No persistence, global lazy state, allocation behavior or access-engine equivalence
+is claimed. Theorems establish unconditional success and the exact entire record,
+including every default empty permission list, against independent Lean models.
+Pinned differential tests compile all original initializer bodies unchanged with
+minimal enum/UUID/filter carriers and compare every represented field. The portable
+extractor rebuilds those bodies, dictionaries and reference projection from git.

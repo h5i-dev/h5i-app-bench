@@ -1,7 +1,7 @@
 # nora: what the kernel covers and where it differs
 
-Upstream: getnora-io/nora @ f864a9a, `nora-registry/src/`. The kernel covers
-977 lines of it (`difftest/count_loc.py`).
+Upstream: getnora-io/nora @ f864a9a, `nora-registry/src/`. The current verified source reach is recorded by the full-project checks and
+`harness/project_reach.py`; `difftest/count_loc.py` is a historical port inventory.
 
 ## Covered
 
@@ -83,3 +83,57 @@ reference test; OIDC repository ids render as the original name plus `/**`.
 The differential test compares the complete rendered report against verbatim
 pinned upstream bodies on 200,512 cases. Numeric ids are not a claim about
 arbitrary UTF-8 interning or display escaping; those stay at the boundary.
+
+## Circuit breaker state transitions
+
+`kernel/src/circuit_breaker.rs` ports `BreakerInner::{new,is_stale,grant_probe}`
+and `CircuitBreakerRegistry::{check,record_success,record_alive,record_failure,
+threshold_for,reset_timeout_for}` from the same immutable Nora revision.
+The theorems compare every state field and returned probe token with a pure
+model over unbounded natural numbers. They include disabled operation, absent
+clock values, stalled probe recovery, background token zero, stale generation
+fencing, and the deliberate preservation of Closed/Open failure counts on 4xx.
+
+The port is one already-selected registry's decision core. Registry map lookup,
+locking, allocation, metrics, logging, and configuration override lookup are
+adapter boundaries. The resolver receives the result of that lookup as an
+`Option`; no registry map correctness or concurrent interleaving is claimed.
+An Instant is represented by the seconds elapsed at the current invocation;
+a freshly written Instant is `Some(0)`. A clock adapter must advance ages
+between calls and supply the same elapsed-second observations as upstream.
+No clock arithmetic or wall-clock synchronization is proved. CircuitOpen's
+registry-string payload is supplied by the adapter; `None` represents rejection.
+The checked counter preconditions are `generation < u64::MAX` for a potentially
+new probe and `failures < u32::MAX` for a potentially incremented failure tally.
+These exclude counter overflow, rather than assuming a successful decision.
+
+From `prove/`, `python3 ports/nora/difftest/circuit_breaker/prepare.py
+results/upstream/nora.git` regenerates the production reference directly from
+the pinned git object. Its decision methods
+are unchanged; the test supplies a deterministic clock, lock/config/metric/log
+adapters, and removes the serde derive. `cargo test --manifest-path
+ports/nora/kernel/Cargo.toml --test circuit_breaker` compares all state fields
+and tokens in 921,600 boundary-case comparisons, including arbitrary unreachable
+states, missing timestamps, zero timeout, stale generations, and integer limits.
+This differential evidence and source reach do not constitute a proof of the
+adapters or equivalence of the complete concurrent upstream service.
+
+
+## Curation control flow at f864a9a
+
+`curation.rs` ports CurationEngine::evaluate_inner/evaluate/is_active and the
+check_download, namespace and integrity handler decisions. A request adapter
+supplies each deterministic ProxyFilter outcome for the same request, preserving
+order, filter name, rule and reason. Filter internals are not included in this
+batch. Text is represented by stable injective u64 handles (the bypass name uses
+the same handle space); the rule's `contains("integrity")` predicate is supplied
+with its handle. Header decoding failure/missing header is None, and decoded
+header/token equality is exact. Constant-time execution is outside the model.
+SHA-256, request construction, text/JSON/header rendering, logs, trait dispatch
+and metrics sinks are adapters. The proof retains the exact selected payload,
+attribution, audit flag, all three counter increments, effective telemetry label,
+and whether a 403 response is returned. Counter increments are represented as
+booleans/effects because each invocation increments a counter at most once.
+`verify_integrity_by_hash` requires the adapter to check the upstream debug assertion: the hash starts
+with `sha256:` and has byte length 71. This does not assert hexadecimal content. These source spans are dependency reach,
+not a proof of the crypto, formatting or individual ProxyFilter implementations.

@@ -148,6 +148,20 @@
         "kanidm_kernel.Properties.account_policy_fold_from_spec"
       ],
       "claim": "complete scalar projection only; attestation CA-list intersection result excluded"
+    },
+    {
+      "declaration": "kanidm_kernel.entry_validation.validate",
+      "upstream": {
+        "path": "server/lib/src/entry.rs",
+        "self_ty": "Entry<EntryValid, STATE>",
+        "name": "validate",
+        "start": 2026,
+        "end": 2271
+      },
+      "theorems": [
+        "kanidm_kernel.Properties.entry_validation_spec"
+      ],
+      "claim": "complete-result-within-representation-boundaries"
     }
   ],
   "upstream_revision": "f608c4fe14dfd8d5df8edeed470bf1fb92060abd",

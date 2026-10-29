@@ -1569,6 +1569,1633 @@ def acl.clear_role
   := do
   acl.clear_role_loop grants s r (alloc.vec.Vec.new model.Grant) 0#usize
 
+/-- [oxicloud_kernel::admin::Principal]
+    Source: 'prove/ports/oxicloud/kernel/src/admin.rs', lines 4:0-4:59
+    Visibility: public -/
+@[discriminant isize]
+inductive admin.Principal where
+| User : Std.U128 → admin.Principal
+| Group : Std.U128 → admin.Principal
+| Token : Std.U128 → admin.Principal
+
+/-- [oxicloud_kernel::admin::AuthzDenialVisibility]
+    Source: 'prove/ports/oxicloud/kernel/src/admin.rs', lines 6:0-6:50
+    Visibility: public -/
+@[discriminant isize]
+inductive admin.AuthzDenialVisibility where
+| Visible : admin.AuthzDenialVisibility
+| Hidden : admin.AuthzDenialVisibility
+
+/-- [oxicloud_kernel::admin::AdminDenial]
+    Source: 'prove/ports/oxicloud/kernel/src/admin.rs', lines 8:0-8:80
+    Visibility: public -/
+@[discriminant isize]
+inductive admin.AdminDenial where
+| Inactive : admin.AdminDenial
+| ExternalAccount : admin.AdminDenial
+| NotAdmin : admin.AdminDenial
+| UnsupportedSubject : admin.AdminDenial
+
+/-- [oxicloud_kernel::admin::AdminDecision]
+    Source: 'prove/ports/oxicloud/kernel/src/admin.rs', lines 9:0-9:55
+    Visibility: public -/
+@[discriminant isize]
+inductive admin.AdminDecision where
+| Allowed : admin.AdminDecision
+| Denied : admin.AdminDenial → admin.AdminDecision
+
+/-- [oxicloud_kernel::bytes::copy]: loop body 0:
+    Source: 'prove/ports/oxicloud/kernel/src/bytes.rs', lines 21:4-24:5
+    Visibility: public -/
+@[rust_loop_body]
+def bytes.copy_loop.body
+  (a : Slice Std.U8) (out : alloc.vec.Vec Std.U8) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Std.U8) × Std.Usize) (alloc.vec.Vec
+    Std.U8))
+  := do
+  let i1 := Slice.len a
+  if i < i1
+  then
+    let i2 ← Slice.index_usize a i
+    let out1 ← alloc.vec.Vec.push out i2
+    let i3 ← i + 1#usize
+    ok (cont (out1, i3))
+  else ok (done out)
+
+/-- [oxicloud_kernel::bytes::copy]: loop 0:
+    Source: 'prove/ports/oxicloud/kernel/src/bytes.rs', lines 21:4-24:5
+    Visibility: public -/
+@[rust_loop]
+def bytes.copy_loop
+  (a : Slice Std.U8) (out : alloc.vec.Vec Std.U8) (i : Std.Usize) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  loop
+    (fun (out1, i1) => bytes.copy_loop.body a out1 i1)
+    (out, i)
+
+/-- [oxicloud_kernel::bytes::copy]:
+    Source: 'prove/ports/oxicloud/kernel/src/bytes.rs', lines 18:0-26:1
+    Visibility: public -/
+@[reducible]
+def bytes.copy (a : Slice Std.U8) : Result (alloc.vec.Vec Std.U8) := do
+  bytes.copy_loop a (alloc.vec.Vec.new Std.U8) 0#usize
+
+/-- [oxicloud_kernel::admin::visibility_bytes]:
+    Source: 'prove/ports/oxicloud/kernel/src/admin.rs', lines 10:0-12:1
+    Visibility: public -/
+def admin.visibility_bytes
+  (v : admin.AuthzDenialVisibility) : Result (alloc.vec.Vec Std.U8) := do
+  match v with
+  | admin.AuthzDenialVisibility.Visible =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 7#usize [
+          118#u8, 105#u8, 115#u8, 105#u8, 98#u8, 108#u8, 101#u8
+          ]))
+    bytes.copy s
+  | admin.AuthzDenialVisibility.Hidden =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 6#usize [ 104#u8, 105#u8, 100#u8, 100#u8, 101#u8, 110#u8 ]))
+    bytes.copy s
+
+/-- [oxicloud_kernel::admin::denial_bytes]:
+    Source: 'prove/ports/oxicloud/kernel/src/admin.rs', lines 13:0-20:1
+    Visibility: public -/
+def admin.denial_bytes
+  (reason : admin.AdminDenial) : Result (alloc.vec.Vec Std.U8) := do
+  match reason with
+  | admin.AdminDenial.Inactive =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 8#usize [
+          105#u8, 110#u8, 97#u8, 99#u8, 116#u8, 105#u8, 118#u8, 101#u8
+          ]))
+    bytes.copy s
+  | admin.AdminDenial.ExternalAccount =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 16#usize [
+          101#u8, 120#u8, 116#u8, 101#u8, 114#u8, 110#u8, 97#u8, 108#u8, 95#u8,
+          97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8
+          ]))
+    bytes.copy s
+  | admin.AdminDenial.NotAdmin =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 9#usize [
+          110#u8, 111#u8, 116#u8, 95#u8, 97#u8, 100#u8, 109#u8, 105#u8, 110#u8
+          ]))
+    bytes.copy s
+  | admin.AdminDenial.UnsupportedSubject =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 19#usize [
+          117#u8, 110#u8, 115#u8, 117#u8, 112#u8, 112#u8, 111#u8, 114#u8,
+          116#u8, 101#u8, 100#u8, 95#u8, 115#u8, 117#u8, 98#u8, 106#u8, 101#u8,
+          99#u8, 116#u8
+          ]))
+    bytes.copy s
+
+/-- [oxicloud_kernel::userrole::UserRole]
+    Source: 'prove/ports/oxicloud/kernel/src/userrole.rs', lines 5:0-10:1
+    Visibility: public -/
+@[discriminant isize]
+inductive userrole.UserRole where
+| Owner : userrole.UserRole
+| Admin : userrole.UserRole
+| User : userrole.UserRole
+| Anonymous : userrole.UserRole
+
+/-- [oxicloud_kernel::userrole::rank]:
+    Source: 'prove/ports/oxicloud/kernel/src/userrole.rs', lines 45:0-52:1
+    Visibility: public -/
+def userrole.rank (role : userrole.UserRole) : Result Std.U8 := do
+  match role with
+  | userrole.UserRole.Owner => ok 3#u8
+  | userrole.UserRole.Admin => ok 2#u8
+  | userrole.UserRole.User => ok 1#u8
+  | userrole.UserRole.Anonymous => ok 0#u8
+
+/-- [oxicloud_kernel::userrole::at_least]:
+    Source: 'prove/ports/oxicloud/kernel/src/userrole.rs', lines 55:0-57:1
+    Visibility: public -/
+def userrole.at_least
+  (role : userrole.UserRole) (min : userrole.UserRole) : Result Bool := do
+  let i ← userrole.rank role
+  let i1 ← userrole.rank min
+  ok (i >= i1)
+
+/-- [oxicloud_kernel::admin::system_admin_denial_reason]:
+    Source: 'prove/ports/oxicloud/kernel/src/admin.rs', lines 21:0-31:1
+    Visibility: public -/
+def admin.system_admin_denial_reason
+  (subject : admin.Principal) (role : userrole.UserRole) (is_external : Bool)
+  (active : Bool) :
+  Result (Option admin.AdminDenial)
+  := do
+  match subject with
+  | admin.Principal.User _ =>
+    if active
+    then
+      if is_external
+      then ok (some admin.AdminDenial.ExternalAccount)
+      else
+        let b ← userrole.at_least role userrole.UserRole.Admin
+        if b
+        then ok none
+        else ok (some admin.AdminDenial.NotAdmin)
+    else ok (some admin.AdminDenial.Inactive)
+  | admin.Principal.Group _ => ok (some admin.AdminDenial.UnsupportedSubject)
+  | admin.Principal.Token _ => ok (some admin.AdminDenial.UnsupportedSubject)
+
+/-- [oxicloud_kernel::admin::require_system_admin]:
+    Source: 'prove/ports/oxicloud/kernel/src/admin.rs', lines 32:0-37:1
+    Visibility: public -/
+def admin.require_system_admin
+  (subject : admin.Principal) (role : userrole.UserRole) (is_external : Bool)
+  (active : Bool) :
+  Result admin.AdminDecision
+  := do
+  let o ← admin.system_admin_denial_reason subject role is_external active
+  match o with
+  | none => ok admin.AdminDecision.Allowed
+  | some reason => ok (admin.AdminDecision.Denied reason)
+
+/-- [oxicloud_kernel::authwire::subject_bytes]:
+    Source: 'prove/ports/oxicloud/kernel/src/authwire.rs', lines 6:0-12:1
+    Visibility: public -/
+def authwire.subject_bytes
+  (value : model.Subject) : Result (alloc.vec.Vec Std.U8) := do
+  match value with
+  | model.Subject.User _ =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 4#usize [ 117#u8, 115#u8, 101#u8, 114#u8 ]))
+    bytes.copy s
+  | model.Subject.Group _ =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 5#usize [ 103#u8, 114#u8, 111#u8, 117#u8, 112#u8 ]))
+    bytes.copy s
+  | model.Subject.Token _ =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 5#usize [ 116#u8, 111#u8, 107#u8, 101#u8, 110#u8 ]))
+    bytes.copy s
+
+/-- [oxicloud_kernel::bytes::equal]: loop body 0:
+    Source: 'prove/ports/oxicloud/kernel/src/bytes.rs', lines 8:4-15:1
+    Visibility: public -/
+@[rust_loop_body]
+def bytes.equal_loop.body
+  (a : Slice Std.U8) (b : Slice Std.U8) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := Slice.len a
+  if i < i1
+  then
+    let i2 ← Slice.index_usize a i
+    let i3 ← Slice.index_usize b i
+    if i2 != i3
+    then ok (done false)
+    else let i4 ← i + 1#usize
+         ok (cont i4)
+  else ok (done true)
+
+/-- [oxicloud_kernel::bytes::equal]: loop 0:
+    Source: 'prove/ports/oxicloud/kernel/src/bytes.rs', lines 8:4-15:1
+    Visibility: public -/
+@[rust_loop]
+def bytes.equal_loop
+  (a : Slice Std.U8) (b : Slice Std.U8) (i : Std.Usize) : Result Bool := do
+  loop
+    (fun i1 => bytes.equal_loop.body a b i1)
+    i
+
+/-- [oxicloud_kernel::bytes::equal]:
+    Source: 'prove/ports/oxicloud/kernel/src/bytes.rs', lines 3:0-15:1
+    Visibility: public -/
+def bytes.equal (a : Slice Std.U8) (b : Slice Std.U8) : Result Bool := do
+  let i := Slice.len a
+  let i1 := Slice.len b
+  if i != i1
+  then ok false
+  else bytes.equal_loop a b 0#usize
+
+/-- [oxicloud_kernel::authwire::subject_parse]:
+    Source: 'prove/ports/oxicloud/kernel/src/authwire.rs', lines 15:0-20:1
+    Visibility: public -/
+def authwire.subject_parse
+  (raw : Slice Std.U8) (id : Std.U64) : Result (Option model.Subject) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 4#usize [ 117#u8, 115#u8, 101#u8, 114#u8 ]))
+  let b ← bytes.equal raw s
+  if b
+  then ok (some (model.Subject.User id))
+  else
+    let s1 ←
+      lift (Array.to_slice
+        (Array.make 5#usize [ 103#u8, 114#u8, 111#u8, 117#u8, 112#u8 ]))
+    let b1 ← bytes.equal raw s1
+    if b1
+    then ok (some (model.Subject.Group id))
+    else
+      let s2 ←
+        lift (Array.to_slice
+          (Array.make 5#usize [ 116#u8, 111#u8, 107#u8, 101#u8, 110#u8 ]))
+      let b2 ← bytes.equal raw s2
+      if b2
+      then ok (some (model.Subject.Token id))
+      else ok none
+
+/-- [oxicloud_kernel::authwire::subject_id]:
+    Source: 'prove/ports/oxicloud/kernel/src/authwire.rs', lines 23:0-29:1
+    Visibility: public -/
+def authwire.subject_id (value : model.Subject) : Result Std.U64 := do
+  match value with
+  | model.Subject.User id => ok id
+  | model.Subject.Group id => ok id
+  | model.Subject.Token id => ok id
+
+/-- [oxicloud_kernel::authwire::resource_bytes]:
+    Source: 'prove/ports/oxicloud/kernel/src/authwire.rs', lines 32:0-41:1
+    Visibility: public -/
+def authwire.resource_bytes
+  (value : model.Resource) : Result (alloc.vec.Vec Std.U8) := do
+  match value with
+  | model.Resource.Folder _ =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 6#usize [ 102#u8, 111#u8, 108#u8, 100#u8, 101#u8, 114#u8 ]))
+    bytes.copy s
+  | model.Resource.File _ =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 4#usize [ 102#u8, 105#u8, 108#u8, 101#u8 ]))
+    bytes.copy s
+  | model.Resource.Drive _ =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 5#usize [ 100#u8, 114#u8, 105#u8, 118#u8, 101#u8 ]))
+    bytes.copy s
+  | model.Resource.Calendar _ =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 8#usize [
+          99#u8, 97#u8, 108#u8, 101#u8, 110#u8, 100#u8, 97#u8, 114#u8
+          ]))
+    bytes.copy s
+  | model.Resource.AddressBook _ =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 12#usize [
+          97#u8, 100#u8, 100#u8, 114#u8, 101#u8, 115#u8, 115#u8, 95#u8, 98#u8,
+          111#u8, 111#u8, 107#u8
+          ]))
+    bytes.copy s
+  | model.Resource.Playlist _ =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 8#usize [
+          112#u8, 108#u8, 97#u8, 121#u8, 108#u8, 105#u8, 115#u8, 116#u8
+          ]))
+    bytes.copy s
+
+/-- [oxicloud_kernel::authwire::resource_parse]:
+    Source: 'prove/ports/oxicloud/kernel/src/authwire.rs', lines 44:0-52:1
+    Visibility: public -/
+def authwire.resource_parse
+  (raw : Slice Std.U8) (id : Std.U64) : Result (Option model.Resource) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 6#usize [ 102#u8, 111#u8, 108#u8, 100#u8, 101#u8, 114#u8 ]))
+  let b ← bytes.equal raw s
+  if b
+  then ok (some (model.Resource.Folder id))
+  else
+    let s1 ←
+      lift (Array.to_slice
+        (Array.make 4#usize [ 102#u8, 105#u8, 108#u8, 101#u8 ]))
+    let b1 ← bytes.equal raw s1
+    if b1
+    then ok (some (model.Resource.File id))
+    else
+      let s2 ←
+        lift (Array.to_slice
+          (Array.make 5#usize [ 100#u8, 114#u8, 105#u8, 118#u8, 101#u8 ]))
+      let b2 ← bytes.equal raw s2
+      if b2
+      then ok (some (model.Resource.Drive id))
+      else
+        let s3 ←
+          lift (Array.to_slice
+            (Array.make 8#usize [
+              99#u8, 97#u8, 108#u8, 101#u8, 110#u8, 100#u8, 97#u8, 114#u8
+              ]))
+        let b3 ← bytes.equal raw s3
+        if b3
+        then ok (some (model.Resource.Calendar id))
+        else
+          let s4 ←
+            lift (Array.to_slice
+              (Array.make 12#usize [
+                97#u8, 100#u8, 100#u8, 114#u8, 101#u8, 115#u8, 115#u8, 95#u8,
+                98#u8, 111#u8, 111#u8, 107#u8
+                ]))
+          let b4 ← bytes.equal raw s4
+          if b4
+          then ok (some (model.Resource.AddressBook id))
+          else
+            let s5 ←
+              lift (Array.to_slice
+                (Array.make 8#usize [
+                  112#u8, 108#u8, 97#u8, 121#u8, 108#u8, 105#u8, 115#u8, 116#u8
+                  ]))
+            let b5 ← bytes.equal raw s5
+            if b5
+            then ok (some (model.Resource.Playlist id))
+            else ok none
+
+/-- [oxicloud_kernel::authwire::resource_id]:
+    Source: 'prove/ports/oxicloud/kernel/src/authwire.rs', lines 55:0-64:1
+    Visibility: public -/
+def authwire.resource_id (value : model.Resource) : Result Std.U64 := do
+  match value with
+  | model.Resource.Folder id => ok id
+  | model.Resource.File id => ok id
+  | model.Resource.Drive id => ok id
+  | model.Resource.Calendar id => ok id
+  | model.Resource.AddressBook id => ok id
+  | model.Resource.Playlist id => ok id
+
+/-- [oxicloud_kernel::authwire::permission_bytes]:
+    Source: 'prove/ports/oxicloud/kernel/src/authwire.rs', lines 67:0-77:1
+    Visibility: public -/
+def authwire.permission_bytes
+  (value : model.Permission) : Result (alloc.vec.Vec Std.U8) := do
+  match value with
+  | model.Permission.Read =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 4#usize [ 114#u8, 101#u8, 97#u8, 100#u8 ]))
+    bytes.copy s
+  | model.Permission.Create =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 6#usize [ 99#u8, 114#u8, 101#u8, 97#u8, 116#u8, 101#u8 ]))
+    bytes.copy s
+  | model.Permission.Share =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 5#usize [ 115#u8, 104#u8, 97#u8, 114#u8, 101#u8 ]))
+    bytes.copy s
+  | model.Permission.Comment =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 7#usize [
+          99#u8, 111#u8, 109#u8, 109#u8, 101#u8, 110#u8, 116#u8
+          ]))
+    bytes.copy s
+  | model.Permission.Delete =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 6#usize [ 100#u8, 101#u8, 108#u8, 101#u8, 116#u8, 101#u8 ]))
+    bytes.copy s
+  | model.Permission.Update =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 6#usize [ 117#u8, 112#u8, 100#u8, 97#u8, 116#u8, 101#u8 ]))
+    bytes.copy s
+  | model.Permission.Manage =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 6#usize [ 109#u8, 97#u8, 110#u8, 97#u8, 103#u8, 101#u8 ]))
+    bytes.copy s
+
+/-- [oxicloud_kernel::authwire::permission_parse]:
+    Source: 'prove/ports/oxicloud/kernel/src/authwire.rs', lines 80:0-89:1
+    Visibility: public -/
+def authwire.permission_parse
+  (raw : Slice Std.U8) : Result (Option model.Permission) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 4#usize [ 114#u8, 101#u8, 97#u8, 100#u8 ]))
+  let b ← bytes.equal raw s
+  if b
+  then ok (some model.Permission.Read)
+  else
+    let s1 ←
+      lift (Array.to_slice
+        (Array.make 6#usize [ 99#u8, 114#u8, 101#u8, 97#u8, 116#u8, 101#u8 ]))
+    let b1 ← bytes.equal raw s1
+    if b1
+    then ok (some model.Permission.Create)
+    else
+      let s2 ←
+        lift (Array.to_slice
+          (Array.make 5#usize [ 115#u8, 104#u8, 97#u8, 114#u8, 101#u8 ]))
+      let b2 ← bytes.equal raw s2
+      if b2
+      then ok (some model.Permission.Share)
+      else
+        let s3 ←
+          lift (Array.to_slice
+            (Array.make 7#usize [
+              99#u8, 111#u8, 109#u8, 109#u8, 101#u8, 110#u8, 116#u8
+              ]))
+        let b3 ← bytes.equal raw s3
+        if b3
+        then ok (some model.Permission.Comment)
+        else
+          let s4 ←
+            lift (Array.to_slice
+              (Array.make 6#usize [
+                100#u8, 101#u8, 108#u8, 101#u8, 116#u8, 101#u8
+                ]))
+          let b4 ← bytes.equal raw s4
+          if b4
+          then ok (some model.Permission.Delete)
+          else
+            let s5 ←
+              lift (Array.to_slice
+                (Array.make 6#usize [
+                  117#u8, 112#u8, 100#u8, 97#u8, 116#u8, 101#u8
+                  ]))
+            let b5 ← bytes.equal raw s5
+            if b5
+            then ok (some model.Permission.Update)
+            else
+              let s6 ←
+                lift (Array.to_slice
+                  (Array.make 6#usize [
+                    109#u8, 97#u8, 110#u8, 97#u8, 103#u8, 101#u8
+                    ]))
+              let b6 ← bytes.equal raw s6
+              if b6
+              then ok (some model.Permission.Manage)
+              else ok none
+
+/-- [oxicloud_kernel::authwire::permission_all]:
+    Source: 'prove/ports/oxicloud/kernel/src/authwire.rs', lines 92:0-102:1
+    Visibility: public -/
+def authwire.permission_all : Result (alloc.vec.Vec model.Permission) := do
+  let out ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new model.Permission)
+      model.Permission.Read
+  let out1 ← alloc.vec.Vec.push out model.Permission.Create
+  let out2 ← alloc.vec.Vec.push out1 model.Permission.Share
+  let out3 ← alloc.vec.Vec.push out2 model.Permission.Comment
+  let out4 ← alloc.vec.Vec.push out3 model.Permission.Delete
+  let out5 ← alloc.vec.Vec.push out4 model.Permission.Update
+  alloc.vec.Vec.push out5 model.Permission.Manage
+
+/-- [oxicloud_kernel::authwire::role_bytes]:
+    Source: 'prove/ports/oxicloud/kernel/src/authwire.rs', lines 105:0-113:1
+    Visibility: public -/
+def authwire.role_bytes
+  (value : model.Role) : Result (alloc.vec.Vec Std.U8) := do
+  match value with
+  | model.Role.Owner =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 5#usize [ 111#u8, 119#u8, 110#u8, 101#u8, 114#u8 ]))
+    bytes.copy s
+  | model.Role.Editor =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 6#usize [ 101#u8, 100#u8, 105#u8, 116#u8, 111#u8, 114#u8 ]))
+    bytes.copy s
+  | model.Role.Contributor =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 11#usize [
+          99#u8, 111#u8, 110#u8, 116#u8, 114#u8, 105#u8, 98#u8, 117#u8, 116#u8,
+          111#u8, 114#u8
+          ]))
+    bytes.copy s
+  | model.Role.Commenter =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 9#usize [
+          99#u8, 111#u8, 109#u8, 109#u8, 101#u8, 110#u8, 116#u8, 101#u8, 114#u8
+          ]))
+    bytes.copy s
+  | model.Role.Viewer =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 6#usize [ 118#u8, 105#u8, 101#u8, 119#u8, 101#u8, 114#u8 ]))
+    bytes.copy s
+
+/-- [oxicloud_kernel::authwire::role_parse]:
+    Source: 'prove/ports/oxicloud/kernel/src/authwire.rs', lines 116:0-123:1
+    Visibility: public -/
+def authwire.role_parse (raw : Slice Std.U8) : Result (Option model.Role) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 6#usize [ 118#u8, 105#u8, 101#u8, 119#u8, 101#u8, 114#u8 ]))
+  let b ← bytes.equal raw s
+  if b
+  then ok (some model.Role.Viewer)
+  else
+    let s1 ←
+      lift (Array.to_slice
+        (Array.make 9#usize [
+          99#u8, 111#u8, 109#u8, 109#u8, 101#u8, 110#u8, 116#u8, 101#u8, 114#u8
+          ]))
+    let b1 ← bytes.equal raw s1
+    if b1
+    then ok (some model.Role.Commenter)
+    else
+      let s2 ←
+        lift (Array.to_slice
+          (Array.make 11#usize [
+            99#u8, 111#u8, 110#u8, 116#u8, 114#u8, 105#u8, 98#u8, 117#u8,
+            116#u8, 111#u8, 114#u8
+            ]))
+      let b2 ← bytes.equal raw s2
+      if b2
+      then ok (some model.Role.Contributor)
+      else
+        let s3 ←
+          lift (Array.to_slice
+            (Array.make 6#usize [
+              101#u8, 100#u8, 105#u8, 116#u8, 111#u8, 114#u8
+              ]))
+        let b3 ← bytes.equal raw s3
+        if b3
+        then ok (some model.Role.Editor)
+        else
+          let s4 ←
+            lift (Array.to_slice
+              (Array.make 5#usize [ 111#u8, 119#u8, 110#u8, 101#u8, 114#u8 ]))
+          let b4 ← bytes.equal raw s4
+          if b4
+          then ok (some model.Role.Owner)
+          else ok none
+
+/-- [oxicloud_kernel::authwire::role_all]:
+    Source: 'prove/ports/oxicloud/kernel/src/authwire.rs', lines 126:0-134:1
+    Visibility: public -/
+def authwire.role_all : Result (alloc.vec.Vec model.Role) := do
+  let out ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new model.Role) model.Role.Viewer
+  let out1 ← alloc.vec.Vec.push out model.Role.Commenter
+  let out2 ← alloc.vec.Vec.push out1 model.Role.Contributor
+  let out3 ← alloc.vec.Vec.push out2 model.Role.Editor
+  alloc.vec.Vec.push out3 model.Role.Owner
+
+/-- [oxicloud_kernel::authwire::subject_user_id]:
+    Source: 'prove/ports/oxicloud/kernel/src/authwire.rs', lines 137:0-142:1
+    Visibility: public -/
+def authwire.subject_user_id
+  (value : model.Subject) : Result (Option Std.U64) := do
+  match value with
+  | model.Subject.User id => ok (some id)
+  | model.Subject.Group _ => ok none
+  | model.Subject.Token _ => ok none
+
+/-- [oxicloud_kernel::authwire::subject_token_id]:
+    Source: 'prove/ports/oxicloud/kernel/src/authwire.rs', lines 145:0-150:1
+    Visibility: public -/
+def authwire.subject_token_id
+  (value : model.Subject) : Result (Option Std.U64) := do
+  match value with
+  | model.Subject.User _ => ok none
+  | model.Subject.Group _ => ok none
+  | model.Subject.Token id => ok (some id)
+
+/-- [oxicloud_kernel::davstate::Email]
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 3:0-7:1
+    Visibility: public -/
+structure davstate.Email where
+  email : alloc.vec.Vec Std.U8
+  type : alloc.vec.Vec Std.U8
+  is_primary : Bool
+
+/-- [oxicloud_kernel::davstate::Phone]
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 8:0-12:1
+    Visibility: public -/
+structure davstate.Phone where
+  number : alloc.vec.Vec Std.U8
+  type : alloc.vec.Vec Std.U8
+  is_primary : Bool
+
+/-- [oxicloud_kernel::davstate::Address]
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 13:0-21:1
+    Visibility: public -/
+structure davstate.Address where
+  street : Option (alloc.vec.Vec Std.U8)
+  city : Option (alloc.vec.Vec Std.U8)
+  state : Option (alloc.vec.Vec Std.U8)
+  postal_code : Option (alloc.vec.Vec Std.U8)
+  country : Option (alloc.vec.Vec Std.U8)
+  type : alloc.vec.Vec Std.U8
+  is_primary : Bool
+
+/-- [oxicloud_kernel::davstate::DeviceCodeStatus]
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 23:0-32:1
+    Visibility: public -/
+@[discriminant isize]
+inductive davstate.DeviceCodeStatus where
+| Pending : davstate.DeviceCodeStatus
+| Authorized : davstate.DeviceCodeStatus
+| Denied : davstate.DeviceCodeStatus
+| Expired : davstate.DeviceCodeStatus
+
+/-- [oxicloud_kernel::davstate::TrashedItemType]
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 34:0-37:1
+    Visibility: public -/
+@[discriminant isize]
+inductive davstate.TrashedItemType where
+| File : davstate.TrashedItemType
+| Folder : davstate.TrashedItemType
+
+/-- [oxicloud_kernel::session::Timestamp]
+    Source: 'prove/ports/oxicloud/kernel/src/session.rs', lines 6:0-6:63
+    Visibility: public -/
+structure session.Timestamp where
+  seconds : Std.I64
+  nanoseconds : Std.U32
+
+/-- [oxicloud_kernel::davstate::AddressBook]
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 38:0-47:1
+    Visibility: public -/
+structure davstate.AddressBook where
+  id : Std.U128
+  «name» : alloc.vec.Vec Std.U8
+  owner_id : alloc.vec.Vec Std.U8
+  description : Option (alloc.vec.Vec Std.U8)
+  color : Option (alloc.vec.Vec Std.U8)
+  is_public : Bool
+  created_at : session.Timestamp
+  updated_at : session.Timestamp
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::AddressBook}::from_raw]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 49:4-69:5
+    Visibility: public -/
+def davstate.AddressBook.from_raw
+  (id : Std.U128) («name» : alloc.vec.Vec Std.U8)
+  (owner_id : alloc.vec.Vec Std.U8)
+  (description : Option (alloc.vec.Vec Std.U8))
+  (color : Option (alloc.vec.Vec Std.U8)) (is_public : Bool)
+  (created_at : session.Timestamp) (updated_at : session.Timestamp) :
+  Result davstate.AddressBook
+  := do
+  ok
+    {
+      id,
+      «name»,
+      owner_id,
+      description,
+      color,
+      is_public,
+      created_at,
+      updated_at
+    }
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::AddressBook}::id]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 70:4-70:40
+    Visibility: public -/
+def davstate.AddressBook.impl.id
+  (self : davstate.AddressBook) : Result Std.U128 := do
+  ok self.id
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::AddressBook}::name]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 71:4-71:49
+    Visibility: public -/
+def davstate.AddressBook.impl.name
+  (self : davstate.AddressBook) : Result (alloc.vec.Vec Std.U8) := do
+  ok self.name
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::AddressBook}::owner_id]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 72:4-72:57
+    Visibility: public -/
+def davstate.AddressBook.impl.owner_id
+  (self : davstate.AddressBook) : Result (alloc.vec.Vec Std.U8) := do
+  ok self.owner_id
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::AddressBook}::description]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 73:4-73:71
+    Visibility: public -/
+def davstate.AddressBook.impl.description
+  (self : davstate.AddressBook) : Result (Option (alloc.vec.Vec Std.U8)) := do
+  ok self.description
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::AddressBook}::color]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 74:4-74:59
+    Visibility: public -/
+def davstate.AddressBook.impl.color
+  (self : davstate.AddressBook) : Result (Option (alloc.vec.Vec Std.U8)) := do
+  ok self.color
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::AddressBook}::is_public]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 75:4-75:54
+    Visibility: public -/
+def davstate.AddressBook.impl.is_public
+  (self : davstate.AddressBook) : Result Bool := do
+  ok self.is_public
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::AddressBook}::created_at]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 76:4-76:61
+    Visibility: public -/
+def davstate.AddressBook.impl.created_at
+  (self : davstate.AddressBook) : Result session.Timestamp := do
+  ok self.created_at
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::AddressBook}::updated_at]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 77:4-77:61
+    Visibility: public -/
+def davstate.AddressBook.impl.updated_at
+  (self : davstate.AddressBook) : Result session.Timestamp := do
+  ok self.updated_at
+
+/-- [oxicloud_kernel::davstate::Contact]
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 79:0-100:1
+    Visibility: public -/
+structure davstate.Contact where
+  id : Std.U128
+  address_book_id : Std.U128
+  uid : alloc.vec.Vec Std.U8
+  full_name : Option (alloc.vec.Vec Std.U8)
+  first_name : Option (alloc.vec.Vec Std.U8)
+  last_name : Option (alloc.vec.Vec Std.U8)
+  nickname : Option (alloc.vec.Vec Std.U8)
+  email : alloc.vec.Vec davstate.Email
+  phone : alloc.vec.Vec davstate.Phone
+  address : alloc.vec.Vec davstate.Address
+  organization : Option (alloc.vec.Vec Std.U8)
+  title : Option (alloc.vec.Vec Std.U8)
+  notes : Option (alloc.vec.Vec Std.U8)
+  photo_url : Option (alloc.vec.Vec Std.U8)
+  birthday : Option Std.I32
+  anniversary : Option Std.I32
+  vcard : alloc.vec.Vec Std.U8
+  etag : alloc.vec.Vec Std.U8
+  created_at : session.Timestamp
+  updated_at : session.Timestamp
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::Contact}::from_raw]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 102:4-146:5
+    Visibility: public -/
+def davstate.Contact.from_raw
+  (id : Std.U128) (address_book_id : Std.U128) (uid : alloc.vec.Vec Std.U8)
+  (full_name : Option (alloc.vec.Vec Std.U8))
+  (first_name : Option (alloc.vec.Vec Std.U8))
+  (last_name : Option (alloc.vec.Vec Std.U8))
+  (nickname : Option (alloc.vec.Vec Std.U8))
+  (email : alloc.vec.Vec davstate.Email) (phone : alloc.vec.Vec davstate.Phone)
+  (address : alloc.vec.Vec davstate.Address)
+  (organization : Option (alloc.vec.Vec Std.U8))
+  (title : Option (alloc.vec.Vec Std.U8))
+  (notes : Option (alloc.vec.Vec Std.U8))
+  (photo_url : Option (alloc.vec.Vec Std.U8)) (birthday : Option Std.I32)
+  (anniversary : Option Std.I32) (vcard : alloc.vec.Vec Std.U8)
+  (etag : alloc.vec.Vec Std.U8) (created_at : session.Timestamp)
+  (updated_at : session.Timestamp) :
+  Result davstate.Contact
+  := do
+  ok
+    {
+      id,
+      address_book_id,
+      uid,
+      full_name,
+      first_name,
+      last_name,
+      nickname,
+      email,
+      phone,
+      address,
+      organization,
+      title,
+      notes,
+      photo_url,
+      birthday,
+      anniversary,
+      vcard,
+      etag,
+      created_at,
+      updated_at
+    }
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::Contact}::id]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 147:4-147:40
+    Visibility: public -/
+def davstate.Contact.impl.id (self : davstate.Contact) : Result Std.U128 := do
+  ok self.id
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::Contact}::address_book_id]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 148:4-148:66
+    Visibility: public -/
+def davstate.Contact.impl.address_book_id
+  (self : davstate.Contact) : Result Std.U128 := do
+  ok self.address_book_id
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::Contact}::uid]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 149:4-149:47
+    Visibility: public -/
+def davstate.Contact.impl.uid
+  (self : davstate.Contact) : Result (alloc.vec.Vec Std.U8) := do
+  ok self.uid
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::Contact}::full_name]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 150:4-150:67
+    Visibility: public -/
+def davstate.Contact.impl.full_name
+  (self : davstate.Contact) : Result (Option (alloc.vec.Vec Std.U8)) := do
+  ok self.full_name
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::Contact}::first_name]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 151:4-151:69
+    Visibility: public -/
+def davstate.Contact.impl.first_name
+  (self : davstate.Contact) : Result (Option (alloc.vec.Vec Std.U8)) := do
+  ok self.first_name
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::Contact}::last_name]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 152:4-152:67
+    Visibility: public -/
+def davstate.Contact.impl.last_name
+  (self : davstate.Contact) : Result (Option (alloc.vec.Vec Std.U8)) := do
+  ok self.last_name
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::Contact}::nickname]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 153:4-153:65
+    Visibility: public -/
+def davstate.Contact.impl.nickname
+  (self : davstate.Contact) : Result (Option (alloc.vec.Vec Std.U8)) := do
+  ok self.nickname
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::Contact}::email]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 154:4-154:54
+    Visibility: public -/
+def davstate.Contact.impl.email
+  (self : davstate.Contact) : Result (alloc.vec.Vec davstate.Email) := do
+  ok self.email
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::Contact}::phone]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 155:4-155:54
+    Visibility: public -/
+def davstate.Contact.impl.phone
+  (self : davstate.Contact) : Result (alloc.vec.Vec davstate.Phone) := do
+  ok self.phone
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::Contact}::address]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 156:4-156:60
+    Visibility: public -/
+def davstate.Contact.impl.address
+  (self : davstate.Contact) : Result (alloc.vec.Vec davstate.Address) := do
+  ok self.address
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::Contact}::organization]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 157:4-157:73
+    Visibility: public -/
+def davstate.Contact.impl.organization
+  (self : davstate.Contact) : Result (Option (alloc.vec.Vec Std.U8)) := do
+  ok self.organization
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::Contact}::title]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 158:4-158:59
+    Visibility: public -/
+def davstate.Contact.impl.title
+  (self : davstate.Contact) : Result (Option (alloc.vec.Vec Std.U8)) := do
+  ok self.title
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::Contact}::notes]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 159:4-159:59
+    Visibility: public -/
+def davstate.Contact.impl.notes
+  (self : davstate.Contact) : Result (Option (alloc.vec.Vec Std.U8)) := do
+  ok self.notes
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::Contact}::photo_url]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 160:4-160:67
+    Visibility: public -/
+def davstate.Contact.impl.photo_url
+  (self : davstate.Contact) : Result (Option (alloc.vec.Vec Std.U8)) := do
+  ok self.photo_url
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::Contact}::birthday]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 161:4-161:61
+    Visibility: public -/
+def davstate.Contact.impl.birthday
+  (self : davstate.Contact) : Result (Option Std.I32) := do
+  ok self.birthday
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::Contact}::anniversary]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 162:4-162:67
+    Visibility: public -/
+def davstate.Contact.impl.anniversary
+  (self : davstate.Contact) : Result (Option Std.I32) := do
+  ok self.anniversary
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::Contact}::vcard]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 163:4-163:51
+    Visibility: public -/
+def davstate.Contact.impl.vcard
+  (self : davstate.Contact) : Result (alloc.vec.Vec Std.U8) := do
+  ok self.vcard
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::Contact}::etag]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 164:4-164:49
+    Visibility: public -/
+def davstate.Contact.impl.etag
+  (self : davstate.Contact) : Result (alloc.vec.Vec Std.U8) := do
+  ok self.etag
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::Contact}::created_at]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 165:4-165:61
+    Visibility: public -/
+def davstate.Contact.impl.created_at
+  (self : davstate.Contact) : Result session.Timestamp := do
+  ok self.created_at
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::Contact}::updated_at]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 166:4-166:61
+    Visibility: public -/
+def davstate.Contact.impl.updated_at
+  (self : davstate.Contact) : Result session.Timestamp := do
+  ok self.updated_at
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::Contact}::into_email]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 167:4-167:59
+    Visibility: public -/
+def davstate.Contact.into_email
+  (self : davstate.Contact) : Result (alloc.vec.Vec davstate.Email) := do
+  ok self.email
+
+/-- [oxicloud_kernel::davstate::CalendarTodo]
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 169:0-231:1
+    Visibility: public -/
+structure davstate.CalendarTodo where
+  id : Std.U128
+  calendar_id : Std.U128
+  summary : Option (alloc.vec.Vec Std.U8)
+  description : Option (alloc.vec.Vec Std.U8)
+  location : Option (alloc.vec.Vec Std.U8)
+  status : Option (alloc.vec.Vec Std.U8)
+  percent_complete : Option Std.I16
+  priority : Option Std.I16
+  start_time : Option session.Timestamp
+  due_time : Option session.Timestamp
+  completed_at : Option session.Timestamp
+  all_day : Bool
+  rrule : Option (alloc.vec.Vec Std.U8)
+  recurrence_id : Option session.Timestamp
+  ical_uid : alloc.vec.Vec Std.U8
+  ical_data : alloc.vec.Vec Std.U8
+  created_at : session.Timestamp
+  updated_at : session.Timestamp
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::CalendarTodo}::with_id]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 233:4-272:5
+    Visibility: public -/
+def davstate.CalendarTodo.with_id
+  (id : Std.U128) (calendar_id : Std.U128)
+  (summary : Option (alloc.vec.Vec Std.U8))
+  (description : Option (alloc.vec.Vec Std.U8))
+  (location : Option (alloc.vec.Vec Std.U8))
+  (status : Option (alloc.vec.Vec Std.U8)) (percent_complete : Option Std.I16)
+  (priority : Option Std.I16) (start_time : Option session.Timestamp)
+  (due_time : Option session.Timestamp)
+  (completed_at : Option session.Timestamp) (all_day : Bool)
+  (rrule : Option (alloc.vec.Vec Std.U8)) (ical_uid : alloc.vec.Vec Std.U8)
+  (ical_data : alloc.vec.Vec Std.U8) (created_at : session.Timestamp)
+  (updated_at : session.Timestamp) :
+  Result davstate.CalendarTodo
+  := do
+  ok
+    {
+      id,
+      calendar_id,
+      summary,
+      description,
+      location,
+      status,
+      percent_complete,
+      priority,
+      start_time,
+      due_time,
+      completed_at,
+      all_day,
+      rrule,
+      recurrence_id := none,
+      ical_uid,
+      ical_data,
+      created_at,
+      updated_at
+    }
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::CalendarTodo}::id]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 273:4-273:40
+    Visibility: public -/
+def davstate.CalendarTodo.impl.id
+  (self : davstate.CalendarTodo) : Result Std.U128 := do
+  ok self.id
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::CalendarTodo}::calendar_id]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 274:4-274:58
+    Visibility: public -/
+def davstate.CalendarTodo.impl.calendar_id
+  (self : davstate.CalendarTodo) : Result Std.U128 := do
+  ok self.calendar_id
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::CalendarTodo}::summary]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 275:4-275:63
+    Visibility: public -/
+def davstate.CalendarTodo.impl.summary
+  (self : davstate.CalendarTodo) : Result (Option (alloc.vec.Vec Std.U8)) := do
+  ok self.summary
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::CalendarTodo}::description]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 276:4-276:71
+    Visibility: public -/
+def davstate.CalendarTodo.impl.description
+  (self : davstate.CalendarTodo) : Result (Option (alloc.vec.Vec Std.U8)) := do
+  ok self.description
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::CalendarTodo}::location]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 277:4-277:65
+    Visibility: public -/
+def davstate.CalendarTodo.impl.location
+  (self : davstate.CalendarTodo) : Result (Option (alloc.vec.Vec Std.U8)) := do
+  ok self.location
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::CalendarTodo}::status]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 278:4-278:61
+    Visibility: public -/
+def davstate.CalendarTodo.impl.status
+  (self : davstate.CalendarTodo) : Result (Option (alloc.vec.Vec Std.U8)) := do
+  ok self.status
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::CalendarTodo}::percent_complete]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 279:4-279:77
+    Visibility: public -/
+def davstate.CalendarTodo.impl.percent_complete
+  (self : davstate.CalendarTodo) : Result (Option Std.I16) := do
+  ok self.percent_complete
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::CalendarTodo}::priority]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 280:4-280:61
+    Visibility: public -/
+def davstate.CalendarTodo.impl.priority
+  (self : davstate.CalendarTodo) : Result (Option Std.I16) := do
+  ok self.priority
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::CalendarTodo}::start_time]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 281:4-281:71
+    Visibility: public -/
+def davstate.CalendarTodo.impl.start_time
+  (self : davstate.CalendarTodo) : Result (Option session.Timestamp) := do
+  ok self.start_time
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::CalendarTodo}::due_time]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 282:4-282:67
+    Visibility: public -/
+def davstate.CalendarTodo.impl.due_time
+  (self : davstate.CalendarTodo) : Result (Option session.Timestamp) := do
+  ok self.due_time
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::CalendarTodo}::completed_at]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 283:4-283:75
+    Visibility: public -/
+def davstate.CalendarTodo.impl.completed_at
+  (self : davstate.CalendarTodo) : Result (Option session.Timestamp) := do
+  ok self.completed_at
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::CalendarTodo}::all_day]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 284:4-284:50
+    Visibility: public -/
+def davstate.CalendarTodo.impl.all_day
+  (self : davstate.CalendarTodo) : Result Bool := do
+  ok self.all_day
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::CalendarTodo}::rrule]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 285:4-285:59
+    Visibility: public -/
+def davstate.CalendarTodo.impl.rrule
+  (self : davstate.CalendarTodo) : Result (Option (alloc.vec.Vec Std.U8)) := do
+  ok self.rrule
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::CalendarTodo}::recurrence_id]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 286:4-286:77
+    Visibility: public -/
+def davstate.CalendarTodo.impl.recurrence_id
+  (self : davstate.CalendarTodo) : Result (Option session.Timestamp) := do
+  ok self.recurrence_id
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::CalendarTodo}::ical_uid]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 287:4-287:57
+    Visibility: public -/
+def davstate.CalendarTodo.impl.ical_uid
+  (self : davstate.CalendarTodo) : Result (alloc.vec.Vec Std.U8) := do
+  ok self.ical_uid
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::CalendarTodo}::ical_data]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 288:4-288:59
+    Visibility: public -/
+def davstate.CalendarTodo.impl.ical_data
+  (self : davstate.CalendarTodo) : Result (alloc.vec.Vec Std.U8) := do
+  ok self.ical_data
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::CalendarTodo}::created_at]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 289:4-289:61
+    Visibility: public -/
+def davstate.CalendarTodo.impl.created_at
+  (self : davstate.CalendarTodo) : Result session.Timestamp := do
+  ok self.created_at
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::CalendarTodo}::updated_at]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 290:4-290:61
+    Visibility: public -/
+def davstate.CalendarTodo.impl.updated_at
+  (self : davstate.CalendarTodo) : Result session.Timestamp := do
+  ok self.updated_at
+
+/-- [oxicloud_kernel::davstate::AudioFileMetadata]
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 292:0-309:1
+    Visibility: public -/
+structure davstate.AudioFileMetadata where
+  file_id : Std.U128
+  title : Option (alloc.vec.Vec Std.U8)
+  artist : Option (alloc.vec.Vec Std.U8)
+  album : Option (alloc.vec.Vec Std.U8)
+  album_artist : Option (alloc.vec.Vec Std.U8)
+  genre : Option (alloc.vec.Vec Std.U8)
+  track_number : Option Std.I32
+  disc_number : Option Std.I32
+  year : Option Std.I32
+  duration_secs : Std.I32
+  bitrate : Option Std.I32
+  sample_rate : Option Std.I32
+  channels : Option Std.I16
+  format : Option (alloc.vec.Vec Std.U8)
+  created_at : session.Timestamp
+  updated_at : session.Timestamp
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::AudioFileMetadata}::with_all_fields]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 311:4-347:5
+    Visibility: public -/
+def davstate.AudioFileMetadata.with_all_fields
+  (file_id : Std.U128) (title : Option (alloc.vec.Vec Std.U8))
+  (artist : Option (alloc.vec.Vec Std.U8))
+  (album : Option (alloc.vec.Vec Std.U8))
+  (album_artist : Option (alloc.vec.Vec Std.U8))
+  (genre : Option (alloc.vec.Vec Std.U8)) (track_number : Option Std.I32)
+  (disc_number : Option Std.I32) (year : Option Std.I32)
+  (duration_secs : Std.I32) (bitrate : Option Std.I32)
+  (sample_rate : Option Std.I32) (channels : Option Std.I16)
+  (format : Option (alloc.vec.Vec Std.U8)) (created_at : session.Timestamp)
+  (updated_at : session.Timestamp) :
+  Result davstate.AudioFileMetadata
+  := do
+  ok
+    {
+      file_id,
+      title,
+      artist,
+      album,
+      album_artist,
+      genre,
+      track_number,
+      disc_number,
+      year,
+      duration_secs,
+      bitrate,
+      sample_rate,
+      channels,
+      format,
+      created_at,
+      updated_at
+    }
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::AudioFileMetadata}::file_id]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 348:4-348:50
+    Visibility: public -/
+def davstate.AudioFileMetadata.impl.file_id
+  (self : davstate.AudioFileMetadata) : Result Std.U128 := do
+  ok self.file_id
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::AudioFileMetadata}::title]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 349:4-349:59
+    Visibility: public -/
+def davstate.AudioFileMetadata.impl.title
+  (self : davstate.AudioFileMetadata) :
+  Result (Option (alloc.vec.Vec Std.U8))
+  := do
+  ok self.title
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::AudioFileMetadata}::artist]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 350:4-350:61
+    Visibility: public -/
+def davstate.AudioFileMetadata.impl.artist
+  (self : davstate.AudioFileMetadata) :
+  Result (Option (alloc.vec.Vec Std.U8))
+  := do
+  ok self.artist
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::AudioFileMetadata}::album]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 351:4-351:59
+    Visibility: public -/
+def davstate.AudioFileMetadata.impl.album
+  (self : davstate.AudioFileMetadata) :
+  Result (Option (alloc.vec.Vec Std.U8))
+  := do
+  ok self.album
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::AudioFileMetadata}::album_artist]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 352:4-352:73
+    Visibility: public -/
+def davstate.AudioFileMetadata.impl.album_artist
+  (self : davstate.AudioFileMetadata) :
+  Result (Option (alloc.vec.Vec Std.U8))
+  := do
+  ok self.album_artist
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::AudioFileMetadata}::genre]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 353:4-353:59
+    Visibility: public -/
+def davstate.AudioFileMetadata.impl.genre
+  (self : davstate.AudioFileMetadata) :
+  Result (Option (alloc.vec.Vec Std.U8))
+  := do
+  ok self.genre
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::AudioFileMetadata}::track_number]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 354:4-354:69
+    Visibility: public -/
+def davstate.AudioFileMetadata.impl.track_number
+  (self : davstate.AudioFileMetadata) : Result (Option Std.I32) := do
+  ok self.track_number
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::AudioFileMetadata}::disc_number]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 355:4-355:67
+    Visibility: public -/
+def davstate.AudioFileMetadata.impl.disc_number
+  (self : davstate.AudioFileMetadata) : Result (Option Std.I32) := do
+  ok self.disc_number
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::AudioFileMetadata}::year]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 356:4-356:53
+    Visibility: public -/
+def davstate.AudioFileMetadata.impl.year
+  (self : davstate.AudioFileMetadata) : Result (Option Std.I32) := do
+  ok self.year
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::AudioFileMetadata}::duration_secs]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 357:4-357:61
+    Visibility: public -/
+def davstate.AudioFileMetadata.impl.duration_secs
+  (self : davstate.AudioFileMetadata) : Result Std.I32 := do
+  ok self.duration_secs
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::AudioFileMetadata}::bitrate]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 358:4-358:59
+    Visibility: public -/
+def davstate.AudioFileMetadata.impl.bitrate
+  (self : davstate.AudioFileMetadata) : Result (Option Std.I32) := do
+  ok self.bitrate
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::AudioFileMetadata}::sample_rate]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 359:4-359:67
+    Visibility: public -/
+def davstate.AudioFileMetadata.impl.sample_rate
+  (self : davstate.AudioFileMetadata) : Result (Option Std.I32) := do
+  ok self.sample_rate
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::AudioFileMetadata}::channels]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 360:4-360:61
+    Visibility: public -/
+def davstate.AudioFileMetadata.impl.channels
+  (self : davstate.AudioFileMetadata) : Result (Option Std.I16) := do
+  ok self.channels
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::AudioFileMetadata}::format]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 361:4-361:61
+    Visibility: public -/
+def davstate.AudioFileMetadata.impl.format
+  (self : davstate.AudioFileMetadata) :
+  Result (Option (alloc.vec.Vec Std.U8))
+  := do
+  ok self.format
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::AudioFileMetadata}::created_at]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 362:4-362:61
+    Visibility: public -/
+def davstate.AudioFileMetadata.impl.created_at
+  (self : davstate.AudioFileMetadata) : Result session.Timestamp := do
+  ok self.created_at
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::AudioFileMetadata}::updated_at]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 363:4-363:61
+    Visibility: public -/
+def davstate.AudioFileMetadata.impl.updated_at
+  (self : davstate.AudioFileMetadata) : Result session.Timestamp := do
+  ok self.updated_at
+
+/-- [oxicloud_kernel::davstate::DeviceCode]
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 365:0-382:1
+    Visibility: public -/
+structure davstate.DeviceCode where
+  id : Std.U128
+  device_code : alloc.vec.Vec Std.U8
+  user_code : alloc.vec.Vec Std.U8
+  client_name : alloc.vec.Vec Std.U8
+  scopes : alloc.vec.Vec Std.U8
+  status : davstate.DeviceCodeStatus
+  user_id : Option Std.U128
+  access_token : Option (alloc.vec.Vec Std.U8)
+  refresh_token : Option (alloc.vec.Vec Std.U8)
+  verification_uri : alloc.vec.Vec Std.U8
+  verification_uri_complete : Option (alloc.vec.Vec Std.U8)
+  expires_at : session.Timestamp
+  poll_interval_secs : Std.I32
+  last_poll_at : Option session.Timestamp
+  created_at : session.Timestamp
+  authorized_at : Option session.Timestamp
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::DeviceCode}::from_raw]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 384:4-420:5
+    Visibility: public -/
+def davstate.DeviceCode.from_raw
+  (id : Std.U128) (device_code : alloc.vec.Vec Std.U8)
+  (user_code : alloc.vec.Vec Std.U8) (client_name : alloc.vec.Vec Std.U8)
+  (scopes : alloc.vec.Vec Std.U8) (status : davstate.DeviceCodeStatus)
+  (user_id : Option Std.U128) (access_token : Option (alloc.vec.Vec Std.U8))
+  (refresh_token : Option (alloc.vec.Vec Std.U8))
+  (verification_uri : alloc.vec.Vec Std.U8)
+  (verification_uri_complete : Option (alloc.vec.Vec Std.U8))
+  (expires_at : session.Timestamp) (poll_interval_secs : Std.I32)
+  (last_poll_at : Option session.Timestamp) (created_at : session.Timestamp)
+  (authorized_at : Option session.Timestamp) :
+  Result davstate.DeviceCode
+  := do
+  ok
+    {
+      id,
+      device_code,
+      user_code,
+      client_name,
+      scopes,
+      status,
+      user_id,
+      access_token,
+      refresh_token,
+      verification_uri,
+      verification_uri_complete,
+      expires_at,
+      poll_interval_secs,
+      last_poll_at,
+      created_at,
+      authorized_at
+    }
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::DeviceCode}::id]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 421:4-421:40
+    Visibility: public -/
+def davstate.DeviceCode.impl.id
+  (self : davstate.DeviceCode) : Result Std.U128 := do
+  ok self.id
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::DeviceCode}::device_code]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 422:4-422:63
+    Visibility: public -/
+def davstate.DeviceCode.impl.device_code
+  (self : davstate.DeviceCode) : Result (alloc.vec.Vec Std.U8) := do
+  ok self.device_code
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::DeviceCode}::user_code]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 423:4-423:59
+    Visibility: public -/
+def davstate.DeviceCode.impl.user_code
+  (self : davstate.DeviceCode) : Result (alloc.vec.Vec Std.U8) := do
+  ok self.user_code
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::DeviceCode}::client_name]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 424:4-424:63
+    Visibility: public -/
+def davstate.DeviceCode.impl.client_name
+  (self : davstate.DeviceCode) : Result (alloc.vec.Vec Std.U8) := do
+  ok self.client_name
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::DeviceCode}::scopes]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 425:4-425:53
+    Visibility: public -/
+def davstate.DeviceCode.impl.scopes
+  (self : davstate.DeviceCode) : Result (alloc.vec.Vec Std.U8) := do
+  ok self.scopes
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::DeviceCode}::status]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 426:4-426:60
+    Visibility: public -/
+def davstate.DeviceCode.impl.status
+  (self : davstate.DeviceCode) : Result davstate.DeviceCodeStatus := do
+  ok self.status
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::DeviceCode}::user_id]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 427:4-427:60
+    Visibility: public -/
+def davstate.DeviceCode.impl.user_id
+  (self : davstate.DeviceCode) : Result (Option Std.U128) := do
+  ok self.user_id
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::DeviceCode}::access_token]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 428:4-428:73
+    Visibility: public -/
+def davstate.DeviceCode.impl.access_token
+  (self : davstate.DeviceCode) : Result (Option (alloc.vec.Vec Std.U8)) := do
+  ok self.access_token
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::DeviceCode}::refresh_token]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 429:4-429:75
+    Visibility: public -/
+def davstate.DeviceCode.impl.refresh_token
+  (self : davstate.DeviceCode) : Result (Option (alloc.vec.Vec Std.U8)) := do
+  ok self.refresh_token
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::DeviceCode}::verification_uri]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 430:4-430:73
+    Visibility: public -/
+def davstate.DeviceCode.impl.verification_uri
+  (self : davstate.DeviceCode) : Result (alloc.vec.Vec Std.U8) := do
+  ok self.verification_uri
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::DeviceCode}::verification_uri_complete]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 431:4-431:99
+    Visibility: public -/
+def davstate.DeviceCode.impl.verification_uri_complete
+  (self : davstate.DeviceCode) : Result (Option (alloc.vec.Vec Std.U8)) := do
+  ok self.verification_uri_complete
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::DeviceCode}::expires_at]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 432:4-432:61
+    Visibility: public -/
+def davstate.DeviceCode.impl.expires_at
+  (self : davstate.DeviceCode) : Result session.Timestamp := do
+  ok self.expires_at
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::DeviceCode}::poll_interval_secs]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 433:4-433:71
+    Visibility: public -/
+def davstate.DeviceCode.impl.poll_interval_secs
+  (self : davstate.DeviceCode) : Result Std.I32 := do
+  ok self.poll_interval_secs
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::DeviceCode}::last_poll_at]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 434:4-434:75
+    Visibility: public -/
+def davstate.DeviceCode.impl.last_poll_at
+  (self : davstate.DeviceCode) : Result (Option session.Timestamp) := do
+  ok self.last_poll_at
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::DeviceCode}::created_at]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 435:4-435:61
+    Visibility: public -/
+def davstate.DeviceCode.impl.created_at
+  (self : davstate.DeviceCode) : Result session.Timestamp := do
+  ok self.created_at
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::DeviceCode}::authorized_at]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 436:4-436:77
+    Visibility: public -/
+def davstate.DeviceCode.impl.authorized_at
+  (self : davstate.DeviceCode) : Result (Option session.Timestamp) := do
+  ok self.authorized_at
+
+/-- [oxicloud_kernel::davstate::TrashedItem]
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 438:0-447:1
+    Visibility: public -/
+structure davstate.TrashedItem where
+  id : Std.U128
+  original_id : Std.U128
+  user_id : Std.U128
+  item_type : davstate.TrashedItemType
+  «name» : alloc.vec.Vec Std.U8
+  original_path : alloc.vec.Vec Std.U8
+  trashed_at : session.Timestamp
+  deletion_date : session.Timestamp
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::TrashedItem}::from_raw]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 449:4-469:5
+    Visibility: public -/
+def davstate.TrashedItem.from_raw
+  (id : Std.U128) (original_id : Std.U128) (user_id : Std.U128)
+  (item_type : davstate.TrashedItemType) («name» : alloc.vec.Vec Std.U8)
+  (original_path : alloc.vec.Vec Std.U8) (trashed_at : session.Timestamp)
+  (deletion_date : session.Timestamp) :
+  Result davstate.TrashedItem
+  := do
+  ok
+    {
+      id,
+      original_id,
+      user_id,
+      item_type,
+      «name»,
+      original_path,
+      trashed_at,
+      deletion_date
+    }
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::TrashedItem}::id]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 470:4-470:40
+    Visibility: public -/
+def davstate.TrashedItem.impl.id
+  (self : davstate.TrashedItem) : Result Std.U128 := do
+  ok self.id
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::TrashedItem}::original_id]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 471:4-471:58
+    Visibility: public -/
+def davstate.TrashedItem.impl.original_id
+  (self : davstate.TrashedItem) : Result Std.U128 := do
+  ok self.original_id
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::TrashedItem}::user_id]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 472:4-472:50
+    Visibility: public -/
+def davstate.TrashedItem.impl.user_id
+  (self : davstate.TrashedItem) : Result Std.U128 := do
+  ok self.user_id
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::TrashedItem}::item_type]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 473:4-473:67
+    Visibility: public -/
+def davstate.TrashedItem.impl.item_type
+  (self : davstate.TrashedItem) : Result davstate.TrashedItemType := do
+  ok self.item_type
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::TrashedItem}::name]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 474:4-474:49
+    Visibility: public -/
+def davstate.TrashedItem.impl.name
+  (self : davstate.TrashedItem) : Result (alloc.vec.Vec Std.U8) := do
+  ok self.name
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::TrashedItem}::original_path]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 475:4-475:67
+    Visibility: public -/
+def davstate.TrashedItem.impl.original_path
+  (self : davstate.TrashedItem) : Result (alloc.vec.Vec Std.U8) := do
+  ok self.original_path
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::TrashedItem}::trashed_at]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 476:4-476:61
+    Visibility: public -/
+def davstate.TrashedItem.impl.trashed_at
+  (self : davstate.TrashedItem) : Result session.Timestamp := do
+  ok self.trashed_at
+
+/-- [oxicloud_kernel::davstate::{oxicloud_kernel::davstate::TrashedItem}::deletion_date]:
+    Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 477:4-477:67
+    Visibility: public -/
+def davstate.TrashedItem.impl.deletion_date
+  (self : davstate.TrashedItem) : Result session.Timestamp := do
+  ok self.deletion_date
+
 /-- [oxicloud_kernel::drivepolicy::Policies]
     Source: 'prove/ports/oxicloud/kernel/src/drivepolicy.rs', lines 5:0-16:1
     Visibility: public -/
@@ -2824,6 +4451,420 @@ def grantapi.transition
   | grantapi.Request.RevokeGrant grant_id =>
     grantapi.revoke_grant db env caller grant_id
 
+/-- [oxicloud_kernel::liveauth::UserFlags]
+    Source: 'prove/ports/oxicloud/kernel/src/liveauth.rs', lines 4:0-9:1
+    Visibility: public -/
+structure liveauth.UserFlags where
+  role : userrole.UserRole
+  is_external : Bool
+  active : Bool
+  force_password_change : Bool
+
+/-- [oxicloud_kernel::liveauth::FlagsLookup]
+    Source: 'prove/ports/oxicloud/kernel/src/liveauth.rs', lines 11:0-11:64
+    Visibility: public -/
+@[discriminant isize]
+inductive liveauth.FlagsLookup where
+| Found : liveauth.UserFlags → liveauth.FlagsLookup
+| NotFound : liveauth.FlagsLookup
+| Unavailable : liveauth.FlagsLookup
+
+/-- [oxicloud_kernel::liveauth::LiveRole]
+    Source: 'prove/ports/oxicloud/kernel/src/liveauth.rs', lines 12:0-12:46
+    Visibility: public -/
+@[discriminant isize]
+inductive liveauth.LiveRole where
+| Active : alloc.vec.Vec Std.U8 → liveauth.LiveRole
+| Revoked : liveauth.LiveRole
+
+/-- [oxicloud_kernel::liveauth::InternalDenial]
+    Source: 'prove/ports/oxicloud/kernel/src/liveauth.rs', lines 13:0-13:47
+    Visibility: public -/
+@[discriminant isize]
+inductive liveauth.InternalDenial where
+| External : liveauth.InternalDenial
+| NoAccount : liveauth.InternalDenial
+
+/-- [oxicloud_kernel::liveauth::decide_internal_user]:
+    Source: 'prove/ports/oxicloud/kernel/src/liveauth.rs', lines 15:0-21:1
+    Visibility: public -/
+def liveauth.decide_internal_user
+  (flags : liveauth.FlagsLookup) (_caller_id : Std.U128) :
+  Result (core.result.Result Unit liveauth.InternalDenial)
+  := do
+  match flags with
+  | liveauth.FlagsLookup.Found f =>
+    if f.is_external
+    then ok (core.result.Result.Err liveauth.InternalDenial.External)
+    else ok (core.result.Result.Ok ())
+  | liveauth.FlagsLookup.NotFound =>
+    ok (core.result.Result.Err liveauth.InternalDenial.NoAccount)
+  | liveauth.FlagsLookup.Unavailable => ok (core.result.Result.Ok ())
+
+/-- [oxicloud_kernel::userrole::is_anonymous]:
+    Source: 'prove/ports/oxicloud/kernel/src/userrole.rs', lines 65:0-70:1
+    Visibility: public -/
+def userrole.is_anonymous (role : userrole.UserRole) : Result Bool := do
+  match role with
+  | userrole.UserRole.Owner => ok false
+  | userrole.UserRole.Admin => ok false
+  | userrole.UserRole.User => ok false
+  | userrole.UserRole.Anonymous => ok true
+
+/-- [oxicloud_kernel::userrole::from_stored]:
+    Source: 'prove/ports/oxicloud/kernel/src/userrole.rs', lines 23:0-33:1
+    Visibility: public -/
+def userrole.from_stored
+  (raw : Slice Std.U8) : Result (Option userrole.UserRole) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 5#usize [ 111#u8, 119#u8, 110#u8, 101#u8, 114#u8 ]))
+  let b ← bytes.equal raw s
+  if b
+  then ok (some userrole.UserRole.Owner)
+  else
+    let s1 ←
+      lift (Array.to_slice
+        (Array.make 5#usize [ 97#u8, 100#u8, 109#u8, 105#u8, 110#u8 ]))
+    let b1 ← bytes.equal raw s1
+    if b1
+    then ok (some userrole.UserRole.Admin)
+    else
+      let s2 ←
+        lift (Array.to_slice
+          (Array.make 4#usize [ 117#u8, 115#u8, 101#u8, 114#u8 ]))
+      let b2 ← bytes.equal raw s2
+      if b2
+      then ok (some userrole.UserRole.User)
+      else ok none
+
+/-- [oxicloud_kernel::userrole::from_session]:
+    Source: 'prove/ports/oxicloud/kernel/src/userrole.rs', lines 36:0-42:1
+    Visibility: public -/
+def userrole.from_session
+  (raw : Slice Std.U8) : Result (Option userrole.UserRole) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 9#usize [
+        97#u8, 110#u8, 111#u8, 110#u8, 121#u8, 109#u8, 111#u8, 117#u8, 115#u8
+        ]))
+  let b ← bytes.equal raw s
+  if b
+  then ok (some userrole.UserRole.Anonymous)
+  else userrole.from_stored raw
+
+/-- [oxicloud_kernel::userrole::as_bytes]:
+    Source: 'prove/ports/oxicloud/kernel/src/userrole.rs', lines 13:0-20:1
+    Visibility: public -/
+def userrole.as_bytes
+  (role : userrole.UserRole) : Result (alloc.vec.Vec Std.U8) := do
+  match role with
+  | userrole.UserRole.Owner =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 5#usize [ 111#u8, 119#u8, 110#u8, 101#u8, 114#u8 ]))
+    bytes.copy s
+  | userrole.UserRole.Admin =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 5#usize [ 97#u8, 100#u8, 109#u8, 105#u8, 110#u8 ]))
+    bytes.copy s
+  | userrole.UserRole.User =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 4#usize [ 117#u8, 115#u8, 101#u8, 114#u8 ]))
+    bytes.copy s
+  | userrole.UserRole.Anonymous =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 9#usize [
+          97#u8, 110#u8, 111#u8, 110#u8, 121#u8, 109#u8, 111#u8, 117#u8, 115#u8
+          ]))
+    bytes.copy s
+
+/-- [oxicloud_kernel::liveauth::anonymous_live_role]:
+    Source: 'prove/ports/oxicloud/kernel/src/liveauth.rs', lines 22:0-27:1
+    Visibility: public -/
+def liveauth.anonymous_live_role
+  (claim_role : Slice Std.U8) : Result (Option liveauth.LiveRole) := do
+  let o ← userrole.from_session claim_role
+  match o with
+  | none => ok none
+  | some role =>
+    let b ← userrole.is_anonymous role
+    if b
+    then
+      let v ← userrole.as_bytes role
+      ok (some (liveauth.LiveRole.Active v))
+    else ok none
+
+/-- [oxicloud_kernel::liveauth::decide_live_role]:
+    Source: 'prove/ports/oxicloud/kernel/src/liveauth.rs', lines 28:0-34:1
+    Visibility: public -/
+def liveauth.decide_live_role
+  (flags : liveauth.FlagsLookup) (_user_id : Std.U128)
+  (claim_role : Slice Std.U8) :
+  Result liveauth.LiveRole
+  := do
+  match flags with
+  | liveauth.FlagsLookup.Found f =>
+    if f.active
+    then let v ← userrole.as_bytes f.role
+         ok (liveauth.LiveRole.Active v)
+    else ok liveauth.LiveRole.Revoked
+  | liveauth.FlagsLookup.NotFound => ok liveauth.LiveRole.Revoked
+  | liveauth.FlagsLookup.Unavailable =>
+    let v ← bytes.copy claim_role
+    ok (liveauth.LiveRole.Active v)
+
+/-- [oxicloud_kernel::magiclink::MagicLinkResourceKind]
+    Source: 'prove/ports/oxicloud/kernel/src/magiclink.rs', lines 5:0-5:47
+    Visibility: public -/
+@[discriminant isize]
+inductive magiclink.MagicLinkResourceKind where
+| File : magiclink.MagicLinkResourceKind
+| Folder : magiclink.MagicLinkResourceKind
+
+/-- [oxicloud_kernel::magiclink::MagicLinkStatus]
+    Source: 'prove/ports/oxicloud/kernel/src/magiclink.rs', lines 7:0-7:51
+    Visibility: public -/
+@[discriminant isize]
+inductive magiclink.MagicLinkStatus where
+| Pending : magiclink.MagicLinkStatus
+| Used : magiclink.MagicLinkStatus
+| Expired : magiclink.MagicLinkStatus
+
+/-- [oxicloud_kernel::magiclink::resource_bytes]:
+    Source: 'prove/ports/oxicloud/kernel/src/magiclink.rs', lines 8:0-13:1
+    Visibility: public -/
+def magiclink.resource_bytes
+  (value : magiclink.MagicLinkResourceKind) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  match value with
+  | magiclink.MagicLinkResourceKind.File =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 4#usize [ 102#u8, 105#u8, 108#u8, 101#u8 ]))
+    bytes.copy s
+  | magiclink.MagicLinkResourceKind.Folder =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 6#usize [ 102#u8, 111#u8, 108#u8, 100#u8, 101#u8, 114#u8 ]))
+    bytes.copy s
+
+/-- [oxicloud_kernel::magiclink::resource_parse]:
+    Source: 'prove/ports/oxicloud/kernel/src/magiclink.rs', lines 14:0-18:1
+    Visibility: public -/
+def magiclink.resource_parse
+  (raw : Slice Std.U8) : Result (Option magiclink.MagicLinkResourceKind) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 4#usize [ 102#u8, 105#u8, 108#u8, 101#u8 ]))
+  let b ← bytes.equal raw s
+  if b
+  then ok (some magiclink.MagicLinkResourceKind.File)
+  else
+    let s1 ←
+      lift (Array.to_slice
+        (Array.make 6#usize [ 102#u8, 111#u8, 108#u8, 100#u8, 101#u8, 114#u8 ]))
+    let b1 ← bytes.equal raw s1
+    if b1
+    then ok (some magiclink.MagicLinkResourceKind.Folder)
+    else ok none
+
+/-- [oxicloud_kernel::magiclink::status_bytes]:
+    Source: 'prove/ports/oxicloud/kernel/src/magiclink.rs', lines 19:0-25:1
+    Visibility: public -/
+def magiclink.status_bytes
+  (value : magiclink.MagicLinkStatus) : Result (alloc.vec.Vec Std.U8) := do
+  match value with
+  | magiclink.MagicLinkStatus.Pending =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 7#usize [
+          112#u8, 101#u8, 110#u8, 100#u8, 105#u8, 110#u8, 103#u8
+          ]))
+    bytes.copy s
+  | magiclink.MagicLinkStatus.Used =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 4#usize [ 117#u8, 115#u8, 101#u8, 100#u8 ]))
+    bytes.copy s
+  | magiclink.MagicLinkStatus.Expired =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 7#usize [
+          101#u8, 120#u8, 112#u8, 105#u8, 114#u8, 101#u8, 100#u8
+          ]))
+    bytes.copy s
+
+/-- [oxicloud_kernel::magiclink::status_parse]:
+    Source: 'prove/ports/oxicloud/kernel/src/magiclink.rs', lines 26:0-31:1
+    Visibility: public -/
+def magiclink.status_parse
+  (raw : Slice Std.U8) : Result (Option magiclink.MagicLinkStatus) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 7#usize [
+        112#u8, 101#u8, 110#u8, 100#u8, 105#u8, 110#u8, 103#u8
+        ]))
+  let b ← bytes.equal raw s
+  if b
+  then ok (some magiclink.MagicLinkStatus.Pending)
+  else
+    let s1 ←
+      lift (Array.to_slice
+        (Array.make 4#usize [ 117#u8, 115#u8, 101#u8, 100#u8 ]))
+    let b1 ← bytes.equal raw s1
+    if b1
+    then ok (some magiclink.MagicLinkStatus.Used)
+    else
+      let s2 ←
+        lift (Array.to_slice
+          (Array.make 7#usize [
+            101#u8, 120#u8, 112#u8, 105#u8, 114#u8, 101#u8, 100#u8
+            ]))
+      let b2 ← bytes.equal raw s2
+      if b2
+      then ok (some magiclink.MagicLinkStatus.Expired)
+      else ok none
+
+/-- [oxicloud_kernel::magiclink::MagicLinkToken]
+    Source: 'prove/ports/oxicloud/kernel/src/magiclink.rs', lines 32:0-43:1
+    Visibility: public -/
+structure magiclink.MagicLinkToken where
+  id : Std.U128
+  token : alloc.vec.Vec Std.U8
+  user_id : Std.U128
+  status : magiclink.MagicLinkStatus
+  issued_at : session.Timestamp
+  expires_at : session.Timestamp
+  used_at : Option session.Timestamp
+  resource_kind : Option magiclink.MagicLinkResourceKind
+  resource_id : Option Std.U128
+  request_challenge : Option (alloc.vec.Vec Std.U8)
+
+/-- [oxicloud_kernel::magiclink::from_raw]:
+    Source: 'prove/ports/oxicloud/kernel/src/magiclink.rs', lines 44:0-46:1
+    Visibility: public -/
+def magiclink.from_raw
+  (id : Std.U128) (token : alloc.vec.Vec Std.U8) (user_id : Std.U128)
+  (status : magiclink.MagicLinkStatus) (issued_at : session.Timestamp)
+  (expires_at : session.Timestamp) (used_at : Option session.Timestamp)
+  (resource_kind : Option magiclink.MagicLinkResourceKind)
+  (resource_id : Option Std.U128)
+  (request_challenge : Option (alloc.vec.Vec Std.U8)) :
+  Result magiclink.MagicLinkToken
+  := do
+  ok
+    {
+      id,
+      token,
+      user_id,
+      status,
+      issued_at,
+      expires_at,
+      used_at,
+      resource_kind,
+      resource_id,
+      request_challenge
+    }
+
+/-- [oxicloud_kernel::magiclink::id]:
+    Source: 'prove/ports/oxicloud/kernel/src/magiclink.rs', lines 47:0-47:46
+    Visibility: public -/
+def magiclink.id (s : magiclink.MagicLinkToken) : Result Std.U128 := do
+  ok s.id
+
+/-- [oxicloud_kernel::magiclink::token]:
+    Source: 'prove/ports/oxicloud/kernel/src/magiclink.rs', lines 48:0-48:57
+    Visibility: public -/
+def magiclink.token
+  (s : magiclink.MagicLinkToken) : Result (alloc.vec.Vec Std.U8) := do
+  ok s.token
+
+/-- [oxicloud_kernel::magiclink::user_id]:
+    Source: 'prove/ports/oxicloud/kernel/src/magiclink.rs', lines 49:0-49:56
+    Visibility: public -/
+def magiclink.user_id (s : magiclink.MagicLinkToken) : Result Std.U128 := do
+  ok s.user_id
+
+/-- [oxicloud_kernel::magiclink::status]:
+    Source: 'prove/ports/oxicloud/kernel/src/magiclink.rs', lines 50:0-50:65
+    Visibility: public -/
+def magiclink.status
+  (s : magiclink.MagicLinkToken) : Result magiclink.MagicLinkStatus := do
+  ok s.status
+
+/-- [oxicloud_kernel::magiclink::issued_at]:
+    Source: 'prove/ports/oxicloud/kernel/src/magiclink.rs', lines 51:0-51:65
+    Visibility: public -/
+def magiclink.issued_at
+  (s : magiclink.MagicLinkToken) : Result session.Timestamp := do
+  ok s.issued_at
+
+/-- [oxicloud_kernel::magiclink::expires_at]:
+    Source: 'prove/ports/oxicloud/kernel/src/magiclink.rs', lines 52:0-52:67
+    Visibility: public -/
+def magiclink.expires_at
+  (s : magiclink.MagicLinkToken) : Result session.Timestamp := do
+  ok s.expires_at
+
+/-- [oxicloud_kernel::magiclink::used_at]:
+    Source: 'prove/ports/oxicloud/kernel/src/magiclink.rs', lines 53:0-53:69
+    Visibility: public -/
+def magiclink.used_at
+  (s : magiclink.MagicLinkToken) : Result (Option session.Timestamp) := do
+  ok s.used_at
+
+/-- [oxicloud_kernel::magiclink::resource_kind]:
+    Source: 'prove/ports/oxicloud/kernel/src/magiclink.rs', lines 54:0-54:93
+    Visibility: public -/
+def magiclink.resource_kind
+  (s : magiclink.MagicLinkToken) :
+  Result (Option magiclink.MagicLinkResourceKind)
+  := do
+  ok s.resource_kind
+
+/-- [oxicloud_kernel::magiclink::resource_id]:
+    Source: 'prove/ports/oxicloud/kernel/src/magiclink.rs', lines 55:0-55:72
+    Visibility: public -/
+def magiclink.resource_id
+  (s : magiclink.MagicLinkToken) : Result (Option Std.U128) := do
+  ok s.resource_id
+
+/-- [oxicloud_kernel::magiclink::request_challenge]:
+    Source: 'prove/ports/oxicloud/kernel/src/magiclink.rs', lines 56:0-56:89
+    Visibility: public -/
+def magiclink.request_challenge
+  (s : magiclink.MagicLinkToken) : Result (Option (alloc.vec.Vec Std.U8)) := do
+  ok s.request_challenge
+
+/-- [oxicloud_kernel::magiclink::is_expired]:
+    Source: 'prove/ports/oxicloud/kernel/src/magiclink.rs', lines 58:0-61:1
+    Visibility: public -/
+def magiclink.is_expired
+  (s : magiclink.MagicLinkToken) (now : session.Timestamp) : Result Bool := do
+  if now.seconds > s.expires_at.seconds
+  then ok true
+  else
+    if now.seconds = s.expires_at.seconds
+    then ok (now.nanoseconds > s.expires_at.nanoseconds)
+    else ok false
+
+/-- [oxicloud_kernel::magiclink::is_redeemable]:
+    Source: 'prove/ports/oxicloud/kernel/src/magiclink.rs', lines 62:0-67:1
+    Visibility: public -/
+def magiclink.is_redeemable
+  (s : magiclink.MagicLinkToken) (now : session.Timestamp) : Result Bool := do
+  match s.status with
+  | magiclink.MagicLinkStatus.Pending =>
+    let b ← magiclink.is_expired s now
+    ok (¬ b)
+  | magiclink.MagicLinkStatus.Used => ok false
+  | magiclink.MagicLinkStatus.Expired => ok false
+
 /-- [oxicloud_kernel::policycompare::Knob]
     Source: 'prove/ports/oxicloud/kernel/src/policycompare.rs', lines 4:0-8:1
     Visibility: public -/
@@ -3075,5 +5116,1507 @@ def policycompare.weaker_than
       policycompare.Knob.MaxPublicLinkDays
   policycompare.append_weaker out8 p default kind
     policycompare.Knob.RequirePublicLinkPassword
+
+/-- [oxicloud_kernel::policycompare::knob_from_bytes]:
+    Source: 'prove/ports/oxicloud/kernel/src/policycompare.rs', lines 87:0-99:1
+    Visibility: public -/
+def policycompare.knob_from_bytes
+  (raw : Slice Std.U8) : Result policycompare.Knob := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 14#usize [
+        102#u8, 111#u8, 114#u8, 98#u8, 105#u8, 100#u8, 95#u8, 115#u8, 104#u8,
+        97#u8, 114#u8, 105#u8, 110#u8, 103#u8
+        ]))
+  let b ← bytes.equal raw s
+  if b
+  then ok policycompare.Knob.ForbidSharing
+  else
+    let s1 ←
+      lift (Array.to_slice
+        (Array.make 23#usize [
+          102#u8, 111#u8, 114#u8, 98#u8, 105#u8, 100#u8, 95#u8, 101#u8, 120#u8,
+          116#u8, 101#u8, 114#u8, 110#u8, 97#u8, 108#u8, 95#u8, 115#u8, 104#u8,
+          97#u8, 114#u8, 105#u8, 110#u8, 103#u8
+          ]))
+    let b1 ← bytes.equal raw s1
+    if b1
+    then ok policycompare.Knob.ForbidExternalSharing
+    else
+      let s2 ←
+        lift (Array.to_slice
+          (Array.make 19#usize [
+            102#u8, 111#u8, 114#u8, 98#u8, 105#u8, 100#u8, 95#u8, 112#u8,
+            117#u8, 98#u8, 108#u8, 105#u8, 99#u8, 95#u8, 108#u8, 105#u8,
+            110#u8, 107#u8, 115#u8
+            ]))
+      let b2 ← bytes.equal raw s2
+      if b2
+      then ok policycompare.Knob.ForbidPublicLinks
+      else
+        let s3 ←
+          lift (Array.to_slice
+            (Array.make 23#usize [
+              102#u8, 111#u8, 114#u8, 98#u8, 105#u8, 100#u8, 95#u8, 99#u8,
+              114#u8, 111#u8, 115#u8, 115#u8, 95#u8, 100#u8, 114#u8, 105#u8,
+              118#u8, 101#u8, 95#u8, 109#u8, 111#u8, 118#u8, 101#u8
+              ]))
+        let b3 ← bytes.equal raw s3
+        if b3
+        then ok policycompare.Knob.ForbidCrossDriveMove
+        else
+          let s4 ←
+            lift (Array.to_slice
+              (Array.make 24#usize [
+                102#u8, 111#u8, 114#u8, 98#u8, 105#u8, 100#u8, 95#u8, 111#u8,
+                119#u8, 110#u8, 101#u8, 114#u8, 95#u8, 114#u8, 111#u8, 108#u8,
+                101#u8, 95#u8, 99#u8, 104#u8, 97#u8, 110#u8, 103#u8, 101#u8
+                ]))
+          let b4 ← bytes.equal raw s4
+          if b4
+          then ok policycompare.Knob.ForbidOwnerRoleChange
+          else
+            let s5 ←
+              lift (Array.to_slice
+                (Array.make 22#usize [
+                  105#u8, 110#u8, 99#u8, 108#u8, 117#u8, 100#u8, 101#u8, 95#u8,
+                  105#u8, 110#u8, 95#u8, 112#u8, 104#u8, 111#u8, 116#u8,
+                  111#u8, 95#u8, 105#u8, 110#u8, 100#u8, 101#u8, 120#u8
+                  ]))
+            let b5 ← bytes.equal raw s5
+            if b5
+            then ok policycompare.Knob.IncludeInPhotoIndex
+            else
+              let s6 ←
+                lift (Array.to_slice
+                  (Array.make 22#usize [
+                    105#u8, 110#u8, 99#u8, 108#u8, 117#u8, 100#u8, 101#u8,
+                    95#u8, 105#u8, 110#u8, 95#u8, 109#u8, 117#u8, 115#u8,
+                    105#u8, 99#u8, 95#u8, 105#u8, 110#u8, 100#u8, 101#u8,
+                    120#u8
+                    ]))
+              let b6 ← bytes.equal raw s6
+              if b6
+              then ok policycompare.Knob.IncludeInMusicIndex
+              else
+                let s7 ←
+                  lift (Array.to_slice
+                    (Array.make 9#usize [
+                      114#u8, 101#u8, 97#u8, 100#u8, 95#u8, 111#u8, 110#u8,
+                      108#u8, 121#u8
+                      ]))
+                let b7 ← bytes.equal raw s7
+                if b7
+                then ok policycompare.Knob.ReadOnly
+                else
+                  let s8 ←
+                    lift (Array.to_slice
+                      (Array.make 20#usize [
+                        109#u8, 97#u8, 120#u8, 95#u8, 112#u8, 117#u8, 98#u8,
+                        108#u8, 105#u8, 99#u8, 95#u8, 108#u8, 105#u8, 110#u8,
+                        107#u8, 95#u8, 100#u8, 97#u8, 121#u8, 115#u8
+                        ]))
+                  let b8 ← bytes.equal raw s8
+                  if b8
+                  then ok policycompare.Knob.MaxPublicLinkDays
+                  else
+                    let s9 ←
+                      lift (Array.to_slice
+                        (Array.make 28#usize [
+                          114#u8, 101#u8, 113#u8, 117#u8, 105#u8, 114#u8,
+                          101#u8, 95#u8, 112#u8, 117#u8, 98#u8, 108#u8, 105#u8,
+                          99#u8, 95#u8, 108#u8, 105#u8, 110#u8, 107#u8, 95#u8,
+                          112#u8, 97#u8, 115#u8, 115#u8, 119#u8, 111#u8,
+                          114#u8, 100#u8
+                          ]))
+                    let b9 ← bytes.equal raw s9
+                    if b9
+                    then ok policycompare.Knob.RequirePublicLinkPassword
+                    else ok policycompare.Knob.Other
+
+/-- [oxicloud_kernel::policycompare::knob_applies_to_kind_bytes]:
+    Source: 'prove/ports/oxicloud/kernel/src/policycompare.rs', lines 100:0-102:1
+    Visibility: public -/
+def policycompare.knob_applies_to_kind_bytes
+  (raw : Slice Std.U8) (kind : model.DriveKind) : Result Bool := do
+  let k ← policycompare.knob_from_bytes raw
+  policycompare.knob_applies_to_kind k kind
+
+/-- [oxicloud_kernel::policycompare::knob_strictness_bytes]:
+    Source: 'prove/ports/oxicloud/kernel/src/policycompare.rs', lines 103:0-103:96
+    Visibility: public -/
+def policycompare.knob_strictness_bytes
+  (raw : Slice Std.U8) : Result policycompare.Strictness := do
+  let k ← policycompare.knob_from_bytes raw
+  policycompare.knob_strictness k
+
+/-- [oxicloud_kernel::policycompare::knob_value_bytes]:
+    Source: 'prove/ports/oxicloud/kernel/src/policycompare.rs', lines 104:0-104:101
+    Visibility: public -/
+def policycompare.knob_value_bytes
+  (p : drivepolicy.Policies) (raw : Slice Std.U8) :
+  Result policycompare.KnobValue
+  := do
+  let k ← policycompare.knob_from_bytes raw
+  policycompare.knob_value p k
+
+/-- [oxicloud_kernel::policycompare::knob_bool_bytes]:
+    Source: 'prove/ports/oxicloud/kernel/src/policycompare.rs', lines 105:0-105:94
+    Visibility: public -/
+def policycompare.knob_bool_bytes
+  (p : drivepolicy.Policies) (raw : Slice Std.U8) : Result Bool := do
+  let k ← policycompare.knob_from_bytes raw
+  policycompare.knob_bool p k
+
+/-- [oxicloud_kernel::policycompare::at_least_as_strict_on_bytes]:
+    Source: 'prove/ports/oxicloud/kernel/src/policycompare.rs', lines 106:0-108:1
+    Visibility: public -/
+def policycompare.at_least_as_strict_on_bytes
+  (p : drivepolicy.Policies) (other : drivepolicy.Policies)
+  (raw : Slice Std.U8) :
+  Result Bool
+  := do
+  let k ← policycompare.knob_from_bytes raw
+  policycompare.at_least_as_strict_on p other k
+
+/-- [oxicloud_kernel::policydefaults::KeyRejection]
+    Source: 'prove/ports/oxicloud/kernel/src/policydefaults.rs', lines 4:0-4:64
+    Visibility: public -/
+@[discriminant isize]
+inductive policydefaults.KeyRejection where
+| NotDefaultable : policydefaults.KeyRejection
+| Unknown : policydefaults.KeyRejection
+| NotApplicable : policydefaults.KeyRejection
+
+/-- [oxicloud_kernel::policydefaults::Validation]
+    Source: 'prove/ports/oxicloud/kernel/src/policydefaults.rs', lines 5:0-5:71
+    Visibility: public -/
+@[discriminant isize]
+inductive policydefaults.Validation where
+| Valid : policydefaults.Validation
+| NotObject : policydefaults.Validation
+| Rejected :
+  Std.Usize →
+  policydefaults.KeyRejection →
+  policydefaults.Validation
+
+/-- [oxicloud_kernel::policydefaults::reject_knob]:
+    Source: 'prove/ports/oxicloud/kernel/src/policydefaults.rs', lines 7:0-20:1
+    Visibility: public -/
+def policydefaults.reject_knob
+  (knob : policycompare.Knob) (kind : model.DriveKind) :
+  Result (Option policydefaults.KeyRejection)
+  := do
+  match knob with
+  | policycompare.Knob.ForbidSharing =>
+    let b ←
+      policycompare.knob_applies_to_kind policycompare.Knob.ForbidSharing kind
+    if b
+    then ok none
+    else ok (some policydefaults.KeyRejection.NotApplicable)
+  | policycompare.Knob.ForbidExternalSharing =>
+    let b ←
+      policycompare.knob_applies_to_kind
+        policycompare.Knob.ForbidExternalSharing kind
+    if b
+    then ok none
+    else ok (some policydefaults.KeyRejection.NotApplicable)
+  | policycompare.Knob.ForbidPublicLinks =>
+    let b ←
+      policycompare.knob_applies_to_kind policycompare.Knob.ForbidPublicLinks
+        kind
+    if b
+    then ok none
+    else ok (some policydefaults.KeyRejection.NotApplicable)
+  | policycompare.Knob.ForbidCrossDriveMove =>
+    let b ←
+      policycompare.knob_applies_to_kind
+        policycompare.Knob.ForbidCrossDriveMove kind
+    if b
+    then ok none
+    else ok (some policydefaults.KeyRejection.NotApplicable)
+  | policycompare.Knob.ForbidOwnerRoleChange =>
+    let b ←
+      policycompare.knob_applies_to_kind
+        policycompare.Knob.ForbidOwnerRoleChange kind
+    if b
+    then ok none
+    else ok (some policydefaults.KeyRejection.NotApplicable)
+  | policycompare.Knob.IncludeInPhotoIndex =>
+    let b ←
+      policycompare.knob_applies_to_kind policycompare.Knob.IncludeInPhotoIndex
+        kind
+    if b
+    then ok none
+    else ok (some policydefaults.KeyRejection.NotApplicable)
+  | policycompare.Knob.IncludeInMusicIndex =>
+    let b ←
+      policycompare.knob_applies_to_kind policycompare.Knob.IncludeInMusicIndex
+        kind
+    if b
+    then ok none
+    else ok (some policydefaults.KeyRejection.NotApplicable)
+  | policycompare.Knob.ReadOnly =>
+    ok (some policydefaults.KeyRejection.NotDefaultable)
+  | policycompare.Knob.MaxPublicLinkDays =>
+    let b ←
+      policycompare.knob_applies_to_kind policycompare.Knob.MaxPublicLinkDays
+        kind
+    if b
+    then ok none
+    else ok (some policydefaults.KeyRejection.NotApplicable)
+  | policycompare.Knob.RequirePublicLinkPassword =>
+    let b ←
+      policycompare.knob_applies_to_kind
+        policycompare.Knob.RequirePublicLinkPassword kind
+    if b
+    then ok none
+    else ok (some policydefaults.KeyRejection.NotApplicable)
+  | policycompare.Knob.Other => ok (some policydefaults.KeyRejection.Unknown)
+
+/-- [oxicloud_kernel::policydefaults::reject_key]:
+    Source: 'prove/ports/oxicloud/kernel/src/policydefaults.rs', lines 21:0-23:1
+    Visibility: public -/
+def policydefaults.reject_key
+  (raw : Slice Std.U8) (kind : model.DriveKind) :
+  Result (Option policydefaults.KeyRejection)
+  := do
+  let k ← policycompare.knob_from_bytes raw
+  policydefaults.reject_knob k kind
+
+/-- [oxicloud_kernel::policydefaults::validate]: loop body 0:
+    Source: 'prove/ports/oxicloud/kernel/src/policydefaults.rs', lines 29:4-37:1
+    Visibility: public -/
+@[rust_loop_body]
+def policydefaults.validate_loop.body
+  (kind : model.DriveKind) (keys : Slice (alloc.vec.Vec Std.U8))
+  (i : Std.Usize) :
+  Result (ControlFlow Std.Usize policydefaults.Validation)
+  := do
+  let i1 := Slice.len keys
+  if i < i1
+  then
+    let v ← Slice.index_usize keys i
+    let s := alloc.vec.Vec.deref v
+    let o ← policydefaults.reject_key s kind
+    match o with
+    | none => let i2 ← i + 1#usize
+              ok (cont i2)
+    | some reason => ok (done (policydefaults.Validation.Rejected i reason))
+  else ok (done policydefaults.Validation.Valid)
+
+/-- [oxicloud_kernel::policydefaults::validate]: loop 0:
+    Source: 'prove/ports/oxicloud/kernel/src/policydefaults.rs', lines 29:4-37:1
+    Visibility: public -/
+@[rust_loop]
+def policydefaults.validate_loop
+  (kind : model.DriveKind) (keys : Slice (alloc.vec.Vec Std.U8))
+  (i : Std.Usize) :
+  Result policydefaults.Validation
+  := do
+  loop
+    (fun i1 => policydefaults.validate_loop.body kind keys i1)
+    i
+
+/-- [oxicloud_kernel::policydefaults::validate]:
+    Source: 'prove/ports/oxicloud/kernel/src/policydefaults.rs', lines 26:0-37:1
+    Visibility: public -/
+def policydefaults.validate
+  (kind : model.DriveKind) (is_object : Bool)
+  (keys : Slice (alloc.vec.Vec Std.U8)) :
+  Result policydefaults.Validation
+  := do
+  if is_object
+  then policydefaults.validate_loop kind keys 0#usize
+  else ok policydefaults.Validation.NotObject
+
+/-- [oxicloud_kernel::session::SessionOrigin]
+    Source: 'prove/ports/oxicloud/kernel/src/session.rs', lines 9:0-9:77
+    Visibility: public -/
+@[discriminant isize]
+inductive session.SessionOrigin where
+| Password : session.SessionOrigin
+| Opaque : session.SessionOrigin
+| MagicLink : session.SessionOrigin
+| Oidc : session.SessionOrigin
+| Device : session.SessionOrigin
+| Unknown : session.SessionOrigin
+
+/-- [oxicloud_kernel::session::origin_bytes]:
+    Source: 'prove/ports/oxicloud/kernel/src/session.rs', lines 12:0-21:1
+    Visibility: public -/
+def session.origin_bytes
+  (origin : session.SessionOrigin) : Result (alloc.vec.Vec Std.U8) := do
+  match origin with
+  | session.SessionOrigin.Password =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 8#usize [
+          112#u8, 97#u8, 115#u8, 115#u8, 119#u8, 111#u8, 114#u8, 100#u8
+          ]))
+    bytes.copy s
+  | session.SessionOrigin.Opaque =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 6#usize [ 111#u8, 112#u8, 97#u8, 113#u8, 117#u8, 101#u8 ]))
+    bytes.copy s
+  | session.SessionOrigin.MagicLink =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 10#usize [
+          109#u8, 97#u8, 103#u8, 105#u8, 99#u8, 95#u8, 108#u8, 105#u8, 110#u8,
+          107#u8
+          ]))
+    bytes.copy s
+  | session.SessionOrigin.Oidc =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 4#usize [ 111#u8, 105#u8, 100#u8, 99#u8 ]))
+    bytes.copy s
+  | session.SessionOrigin.Device =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 6#usize [ 100#u8, 101#u8, 118#u8, 105#u8, 99#u8, 101#u8 ]))
+    bytes.copy s
+  | session.SessionOrigin.Unknown =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 7#usize [
+          117#u8, 110#u8, 107#u8, 110#u8, 111#u8, 119#u8, 110#u8
+          ]))
+    bytes.copy s
+
+/-- [oxicloud_kernel::session::origin_from_wire]:
+    Source: 'prove/ports/oxicloud/kernel/src/session.rs', lines 23:0-30:1
+    Visibility: public -/
+def session.origin_from_wire
+  (raw : Slice Std.U8) : Result session.SessionOrigin := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 8#usize [
+        112#u8, 97#u8, 115#u8, 115#u8, 119#u8, 111#u8, 114#u8, 100#u8
+        ]))
+  let b ← bytes.equal raw s
+  if b
+  then ok session.SessionOrigin.Password
+  else
+    let s1 ←
+      lift (Array.to_slice
+        (Array.make 6#usize [ 111#u8, 112#u8, 97#u8, 113#u8, 117#u8, 101#u8 ]))
+    let b1 ← bytes.equal raw s1
+    if b1
+    then ok session.SessionOrigin.Opaque
+    else
+      let s2 ←
+        lift (Array.to_slice
+          (Array.make 10#usize [
+            109#u8, 97#u8, 103#u8, 105#u8, 99#u8, 95#u8, 108#u8, 105#u8,
+            110#u8, 107#u8
+            ]))
+      let b2 ← bytes.equal raw s2
+      if b2
+      then ok session.SessionOrigin.MagicLink
+      else
+        let s3 ←
+          lift (Array.to_slice
+            (Array.make 4#usize [ 111#u8, 105#u8, 100#u8, 99#u8 ]))
+        let b3 ← bytes.equal raw s3
+        if b3
+        then ok session.SessionOrigin.Oidc
+        else
+          let s4 ←
+            lift (Array.to_slice
+              (Array.make 6#usize [
+                100#u8, 101#u8, 118#u8, 105#u8, 99#u8, 101#u8
+                ]))
+          let b4 ← bytes.equal raw s4
+          if b4
+          then ok session.SessionOrigin.Device
+          else ok session.SessionOrigin.Unknown
+
+/-- [oxicloud_kernel::session::Session]
+    Source: 'prove/ports/oxicloud/kernel/src/session.rs', lines 32:0-47:1
+    Visibility: public -/
+structure session.Session where
+  id : Std.U128
+  user_id : Std.U128
+  refresh_token : alloc.vec.Vec Std.U8
+  expires_at : session.Timestamp
+  ip_address : Option (alloc.vec.Vec Std.U8)
+  user_agent : Option (alloc.vec.Vec Std.U8)
+  created_at : session.Timestamp
+  revoked : Bool
+  family_id : Std.U128
+  oidc_id_token : Option (alloc.vec.Vec Std.U8)
+  oidc_sid : Option (alloc.vec.Vec Std.U8)
+  dpop_jkt : Option (alloc.vec.Vec Std.U8)
+  origin : session.SessionOrigin
+  last_seen_at : session.Timestamp
+
+/-- [oxicloud_kernel::session::from_raw]:
+    Source: 'prove/ports/oxicloud/kernel/src/session.rs', lines 50:0-67:1
+    Visibility: public -/
+def session.from_raw
+  (id : Std.U128) (user_id : Std.U128) (refresh_token : alloc.vec.Vec Std.U8)
+  (expires_at : session.Timestamp) (ip_address : Option (alloc.vec.Vec Std.U8))
+  (user_agent : Option (alloc.vec.Vec Std.U8)) (created_at : session.Timestamp)
+  (revoked : Bool) (family_id : Std.U128)
+  (oidc_id_token : Option (alloc.vec.Vec Std.U8))
+  (oidc_sid : Option (alloc.vec.Vec Std.U8))
+  (dpop_jkt : Option (alloc.vec.Vec Std.U8)) (origin : session.SessionOrigin)
+  (last_seen_at : session.Timestamp) :
+  Result session.Session
+  := do
+  ok
+    {
+      id,
+      user_id,
+      refresh_token,
+      expires_at,
+      ip_address,
+      user_agent,
+      created_at,
+      revoked,
+      family_id,
+      oidc_id_token,
+      oidc_sid,
+      dpop_jkt,
+      origin,
+      last_seen_at
+    }
+
+/-- [oxicloud_kernel::session::with_dpop_jkt]:
+    Source: 'prove/ports/oxicloud/kernel/src/session.rs', lines 70:0-74:1
+    Visibility: public -/
+def session.with_dpop_jkt
+  (s : session.Session) (jkt : alloc.vec.Vec Std.U8) :
+  Result session.Session
+  := do
+  match s.dpop_jkt with
+  | none => ok { s with dpop_jkt := (some jkt) }
+  | some _ => fail panic
+
+/-- [oxicloud_kernel::session::with_oidc_id_token]:
+    Source: 'prove/ports/oxicloud/kernel/src/session.rs', lines 76:0-79:1
+    Visibility: public -/
+def session.with_oidc_id_token
+  (s : session.Session) (token : alloc.vec.Vec Std.U8) :
+  Result session.Session
+  := do
+  ok { s with oidc_id_token := (some token) }
+
+/-- [oxicloud_kernel::session::with_oidc_sid]:
+    Source: 'prove/ports/oxicloud/kernel/src/session.rs', lines 81:0-84:1
+    Visibility: public -/
+def session.with_oidc_sid
+  (s : session.Session) (sid : alloc.vec.Vec Std.U8) :
+  Result session.Session
+  := do
+  ok { s with oidc_sid := (some sid) }
+
+/-- [oxicloud_kernel::session::revoke]:
+    Source: 'prove/ports/oxicloud/kernel/src/session.rs', lines 86:0-86:52
+    Visibility: public -/
+def session.revoke (s : session.Session) : Result session.Session := do
+  ok { s with revoked := true }
+
+/-- [oxicloud_kernel::session::id]:
+    Source: 'prove/ports/oxicloud/kernel/src/session.rs', lines 89:0-89:39
+    Visibility: public -/
+def session.id (s : session.Session) : Result Std.U128 := do
+  ok s.id
+
+/-- [oxicloud_kernel::session::user_id]:
+    Source: 'prove/ports/oxicloud/kernel/src/session.rs', lines 92:0-92:49
+    Visibility: public -/
+def session.user_id (s : session.Session) : Result Std.U128 := do
+  ok s.user_id
+
+/-- [oxicloud_kernel::session::refresh_token]:
+    Source: 'prove/ports/oxicloud/kernel/src/session.rs', lines 95:0-95:66
+    Visibility: public -/
+def session.refresh_token
+  (s : session.Session) : Result (alloc.vec.Vec Std.U8) := do
+  ok s.refresh_token
+
+/-- [oxicloud_kernel::session::expires_at]:
+    Source: 'prove/ports/oxicloud/kernel/src/session.rs', lines 98:0-98:60
+    Visibility: public -/
+def session.expires_at (s : session.Session) : Result session.Timestamp := do
+  ok s.expires_at
+
+/-- [oxicloud_kernel::session::ip_address]:
+    Source: 'prove/ports/oxicloud/kernel/src/session.rs', lines 101:0-101:68
+    Visibility: public -/
+def session.ip_address
+  (s : session.Session) : Result (Option (alloc.vec.Vec Std.U8)) := do
+  ok s.ip_address
+
+/-- [oxicloud_kernel::session::user_agent]:
+    Source: 'prove/ports/oxicloud/kernel/src/session.rs', lines 104:0-104:68
+    Visibility: public -/
+def session.user_agent
+  (s : session.Session) : Result (Option (alloc.vec.Vec Std.U8)) := do
+  ok s.user_agent
+
+/-- [oxicloud_kernel::session::created_at]:
+    Source: 'prove/ports/oxicloud/kernel/src/session.rs', lines 107:0-107:60
+    Visibility: public -/
+def session.created_at (s : session.Session) : Result session.Timestamp := do
+  ok s.created_at
+
+/-- [oxicloud_kernel::session::is_revoked]:
+    Source: 'prove/ports/oxicloud/kernel/src/session.rs', lines 110:0-110:52
+    Visibility: public -/
+def session.is_revoked (s : session.Session) : Result Bool := do
+  ok s.revoked
+
+/-- [oxicloud_kernel::session::family_id]:
+    Source: 'prove/ports/oxicloud/kernel/src/session.rs', lines 113:0-113:53
+    Visibility: public -/
+def session.family_id (s : session.Session) : Result Std.U128 := do
+  ok s.family_id
+
+/-- [oxicloud_kernel::session::oidc_id_token]:
+    Source: 'prove/ports/oxicloud/kernel/src/session.rs', lines 116:0-116:74
+    Visibility: public -/
+def session.oidc_id_token
+  (s : session.Session) : Result (Option (alloc.vec.Vec Std.U8)) := do
+  ok s.oidc_id_token
+
+/-- [oxicloud_kernel::session::oidc_sid]:
+    Source: 'prove/ports/oxicloud/kernel/src/session.rs', lines 119:0-119:64
+    Visibility: public -/
+def session.oidc_sid
+  (s : session.Session) : Result (Option (alloc.vec.Vec Std.U8)) := do
+  ok s.oidc_sid
+
+/-- [oxicloud_kernel::session::dpop_jkt]:
+    Source: 'prove/ports/oxicloud/kernel/src/session.rs', lines 122:0-122:64
+    Visibility: public -/
+def session.dpop_jkt
+  (s : session.Session) : Result (Option (alloc.vec.Vec Std.U8)) := do
+  ok s.dpop_jkt
+
+/-- [oxicloud_kernel::session::origin]:
+    Source: 'prove/ports/oxicloud/kernel/src/session.rs', lines 125:0-125:56
+    Visibility: public -/
+def session.origin (s : session.Session) : Result session.SessionOrigin := do
+  ok s.origin
+
+/-- [oxicloud_kernel::session::last_seen_at]:
+    Source: 'prove/ports/oxicloud/kernel/src/session.rs', lines 128:0-128:64
+    Visibility: public -/
+def session.last_seen_at (s : session.Session) : Result session.Timestamp := do
+  ok s.last_seen_at
+
+/-- [oxicloud_kernel::share::ShareItemType]
+    Source: 'prove/ports/oxicloud/kernel/src/share.rs', lines 3:0-3:39
+    Visibility: public -/
+@[discriminant isize]
+inductive share.ShareItemType where
+| File : share.ShareItemType
+| Folder : share.ShareItemType
+
+/-- [oxicloud_kernel::share::Share]
+    Source: 'prove/ports/oxicloud/kernel/src/share.rs', lines 5:0-16:1
+    Visibility: public -/
+structure share.Share where
+  id : Std.U128
+  item_id : alloc.vec.Vec Std.U8
+  item_name : Option (alloc.vec.Vec Std.U8)
+  item_type : share.ShareItemType
+  token : alloc.vec.Vec Std.U8
+  password_hash : Option (alloc.vec.Vec Std.U8)
+  expires_at : Option Std.U64
+  created_at : Std.U64
+  created_by : Std.U128
+  access_count : Std.U64
+
+/-- [oxicloud_kernel::share::from_raw]:
+    Source: 'prove/ports/oxicloud/kernel/src/share.rs', lines 19:0-32:1
+    Visibility: public -/
+def share.from_raw
+  (id : Std.U128) (item_id : alloc.vec.Vec Std.U8)
+  (item_name : Option (alloc.vec.Vec Std.U8)) (item_type : share.ShareItemType)
+  (token : alloc.vec.Vec Std.U8)
+  (password_hash : Option (alloc.vec.Vec Std.U8)) (expires_at : Option Std.U64)
+  (created_at : Std.U64) (created_by : Std.U128) (access_count : Std.U64) :
+  Result share.Share
+  := do
+  ok
+    {
+      id,
+      item_id,
+      item_name,
+      item_type,
+      token,
+      password_hash,
+      expires_at,
+      created_at,
+      created_by,
+      access_count
+    }
+
+/-- [oxicloud_kernel::share::with_password]:
+    Source: 'prove/ports/oxicloud/kernel/src/share.rs', lines 34:0-37:1
+    Visibility: public -/
+def share.with_password
+  (s : share.Share) (hash : Option (alloc.vec.Vec Std.U8)) :
+  Result share.Share
+  := do
+  ok { s with password_hash := hash }
+
+/-- [oxicloud_kernel::share::with_token]:
+    Source: 'prove/ports/oxicloud/kernel/src/share.rs', lines 39:0-42:1
+    Visibility: public -/
+def share.with_token
+  (s : share.Share) (token : alloc.vec.Vec Std.U8) : Result share.Share := do
+  ok { s with token }
+
+/-- [oxicloud_kernel::share::increment_access_count]:
+    Source: 'prove/ports/oxicloud/kernel/src/share.rs', lines 44:0-47:1
+    Visibility: public -/
+def share.increment_access_count (s : share.Share) : Result share.Share := do
+  let i ← s.access_count + 1#u64
+  ok { s with access_count := i }
+
+/-- [oxicloud_kernel::share::has_password]:
+    Source: 'prove/ports/oxicloud/kernel/src/share.rs', lines 49:0-51:1
+    Visibility: public -/
+def share.has_password (s : share.Share) : Result Bool := do
+  match s.password_hash with
+  | none => ok false
+  | some _ => ok true
+
+/-- [oxicloud_kernel::share::id]:
+    Source: 'prove/ports/oxicloud/kernel/src/share.rs', lines 54:0-54:37
+    Visibility: public -/
+def share.id (s : share.Share) : Result Std.U128 := do
+  ok s.id
+
+/-- [oxicloud_kernel::share::item_id]:
+    Source: 'prove/ports/oxicloud/kernel/src/share.rs', lines 57:0-57:52
+    Visibility: public -/
+def share.item_id (s : share.Share) : Result (alloc.vec.Vec Std.U8) := do
+  ok s.item_id
+
+/-- [oxicloud_kernel::share::item_name]:
+    Source: 'prove/ports/oxicloud/kernel/src/share.rs', lines 60:0-60:64
+    Visibility: public -/
+def share.item_name
+  (s : share.Share) : Result (Option (alloc.vec.Vec Std.U8)) := do
+  ok s.item_name
+
+/-- [oxicloud_kernel::share::item_type]:
+    Source: 'prove/ports/oxicloud/kernel/src/share.rs', lines 63:0-63:62
+    Visibility: public -/
+def share.item_type (s : share.Share) : Result share.ShareItemType := do
+  ok s.item_type
+
+/-- [oxicloud_kernel::share::token]:
+    Source: 'prove/ports/oxicloud/kernel/src/share.rs', lines 66:0-66:48
+    Visibility: public -/
+def share.token (s : share.Share) : Result (alloc.vec.Vec Std.U8) := do
+  ok s.token
+
+/-- [oxicloud_kernel::share::password_hash]:
+    Source: 'prove/ports/oxicloud/kernel/src/share.rs', lines 69:0-69:72
+    Visibility: public -/
+def share.password_hash
+  (s : share.Share) : Result (Option (alloc.vec.Vec Std.U8)) := do
+  ok s.password_hash
+
+/-- [oxicloud_kernel::share::expires_at]:
+    Source: 'prove/ports/oxicloud/kernel/src/share.rs', lines 72:0-72:60
+    Visibility: public -/
+def share.expires_at (s : share.Share) : Result (Option Std.U64) := do
+  ok s.expires_at
+
+/-- [oxicloud_kernel::share::created_at]:
+    Source: 'prove/ports/oxicloud/kernel/src/share.rs', lines 75:0-75:52
+    Visibility: public -/
+def share.created_at (s : share.Share) : Result Std.U64 := do
+  ok s.created_at
+
+/-- [oxicloud_kernel::share::created_by]:
+    Source: 'prove/ports/oxicloud/kernel/src/share.rs', lines 78:0-78:53
+    Visibility: public -/
+def share.created_by (s : share.Share) : Result Std.U128 := do
+  ok s.created_by
+
+/-- [oxicloud_kernel::share::access_count]:
+    Source: 'prove/ports/oxicloud/kernel/src/share.rs', lines 81:0-81:56
+    Visibility: public -/
+def share.access_count (s : share.Share) : Result Std.U64 := do
+  ok s.access_count
+
+/-- [oxicloud_kernel::subjectgroup::MAX_NAME_LEN]
+    Source: 'prove/ports/oxicloud/kernel/src/subjectgroup.rs', lines 5:0-5:31 -/
+@[global_simps, irreducible]
+def subjectgroup.MAX_NAME_LEN : Std.Usize := 64#usize
+
+/-- [oxicloud_kernel::subjectgroup::SubjectGroup]
+    Source: 'prove/ports/oxicloud/kernel/src/subjectgroup.rs', lines 6:0-13:1
+    Visibility: public -/
+structure subjectgroup.SubjectGroup where
+  id : Std.U128
+  «name» : alloc.vec.Vec Std.U8
+  description : Option (alloc.vec.Vec Std.U8)
+  is_virtual : Bool
+  created_at : session.Timestamp
+  updated_at : session.Timestamp
+
+/-- [oxicloud_kernel::subjectgroup::NameError]
+    Source: 'prove/ports/oxicloud/kernel/src/subjectgroup.rs', lines 17:0-17:69
+    Visibility: public -/
+@[discriminant isize]
+inductive subjectgroup.NameError where
+| Empty : subjectgroup.NameError
+| TooLong : subjectgroup.NameError
+| InvalidStart : subjectgroup.NameError
+| InvalidCharacter : subjectgroup.NameError
+
+/-- [oxicloud_kernel::subjectgroup::alphanumeric]:
+    Source: 'prove/ports/oxicloud/kernel/src/subjectgroup.rs', lines 18:0-20:1 -/
+def subjectgroup.alphanumeric (b : Std.U8) : Result Bool := do
+  if b >= 97#u8
+  then
+    if b <= 122#u8
+    then ok true
+    else
+      if b >= 65#u8
+      then
+        if b <= 90#u8
+        then ok true
+        else if b >= 48#u8
+             then ok (b <= 57#u8)
+             else ok false
+      else if b >= 48#u8
+           then ok (b <= 57#u8)
+           else ok false
+  else
+    if b >= 65#u8
+    then
+      if b <= 90#u8
+      then ok true
+      else if b >= 48#u8
+           then ok (b <= 57#u8)
+           else ok false
+    else if b >= 48#u8
+         then ok (b <= 57#u8)
+         else ok false
+
+/-- [oxicloud_kernel::subjectgroup::name_byte]:
+    Source: 'prove/ports/oxicloud/kernel/src/subjectgroup.rs', lines 21:0-23:1 -/
+def subjectgroup.name_byte (b : Std.U8) : Result Bool := do
+  let b1 ← subjectgroup.alphanumeric b
+  if b1
+  then ok true
+  else
+    if b = 46#u8
+    then ok true
+    else if b = 45#u8
+         then ok true
+         else ok (b = 95#u8)
+
+/-- [oxicloud_kernel::subjectgroup::all_name]: loop body 0:
+    Source: 'prove/ports/oxicloud/kernel/src/subjectgroup.rs', lines 26:4-31:1 -/
+@[rust_loop_body]
+def subjectgroup.all_name_loop.body
+  (raw : Slice Std.U8) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := Slice.len raw
+  if i < i1
+  then
+    let i2 ← Slice.index_usize raw i
+    let b ← subjectgroup.name_byte i2
+    if b
+    then let i3 ← i + 1#usize
+         ok (cont i3)
+    else ok (done false)
+  else ok (done true)
+
+/-- [oxicloud_kernel::subjectgroup::all_name]: loop 0:
+    Source: 'prove/ports/oxicloud/kernel/src/subjectgroup.rs', lines 26:4-31:1 -/
+@[rust_loop]
+def subjectgroup.all_name_loop
+  (raw : Slice Std.U8) (i : Std.Usize) : Result Bool := do
+  loop
+    (fun i1 => subjectgroup.all_name_loop.body raw i1)
+    i
+
+/-- [oxicloud_kernel::subjectgroup::all_name]:
+    Source: 'prove/ports/oxicloud/kernel/src/subjectgroup.rs', lines 24:0-31:1 -/
+@[reducible]
+def subjectgroup.all_name (raw : Slice Std.U8) : Result Bool := do
+  subjectgroup.all_name_loop raw 0#usize
+
+/-- [oxicloud_kernel::subjectgroup::validate_name]:
+    Source: 'prove/ports/oxicloud/kernel/src/subjectgroup.rs', lines 33:0-39:1
+    Visibility: public -/
+def subjectgroup.validate_name
+  (raw : Slice Std.U8) :
+  Result (core.result.Result Unit subjectgroup.NameError)
+  := do
+  let i := Slice.len raw
+  if i = 0#usize
+  then ok (core.result.Result.Err subjectgroup.NameError.Empty)
+  else
+    let i1 := Slice.len raw
+    if i1 > subjectgroup.MAX_NAME_LEN
+    then ok (core.result.Result.Err subjectgroup.NameError.TooLong)
+    else
+      let i2 ← Slice.index_usize raw 0#usize
+      let b ← subjectgroup.alphanumeric i2
+      if b
+      then
+        let b1 ← subjectgroup.all_name raw
+        if b1
+        then ok (core.result.Result.Ok ())
+        else
+          ok (core.result.Result.Err subjectgroup.NameError.InvalidCharacter)
+      else ok (core.result.Result.Err subjectgroup.NameError.InvalidStart)
+
+/-- [oxicloud_kernel::subjectgroup::is_immutable]:
+    Source: 'prove/ports/oxicloud/kernel/src/subjectgroup.rs', lines 40:0-40:70
+    Visibility: public -/
+def subjectgroup.is_immutable
+  (group : subjectgroup.SubjectGroup) : Result Bool := do
+  ok group.is_virtual
+
+/-- [oxicloud_kernel::userrole::outranks]:
+    Source: 'prove/ports/oxicloud/kernel/src/userrole.rs', lines 60:0-62:1
+    Visibility: public -/
+def userrole.outranks
+  (role : userrole.UserRole) (target : userrole.UserRole) : Result Bool := do
+  let i ← userrole.rank role
+  let i1 ← userrole.rank target
+  ok (i > i1)
+
+/-- [oxicloud_kernel::userrole::str_at_least]:
+    Source: 'prove/ports/oxicloud/kernel/src/userrole.rs', lines 73:0-78:1
+    Visibility: public -/
+def userrole.str_at_least
+  (raw : Slice Std.U8) (min : userrole.UserRole) : Result Bool := do
+  let o ← userrole.from_session raw
+  match o with
+  | none => ok false
+  | some role => userrole.at_least role min
+
+/-- [oxicloud_kernel::userrole::is_privileged]:
+    Source: 'prove/ports/oxicloud/kernel/src/userrole.rs', lines 81:0-83:1
+    Visibility: public -/
+def userrole.is_privileged (role : userrole.UserRole) : Result Bool := do
+  let i ← userrole.rank role
+  let i1 ← userrole.rank userrole.UserRole.User
+  ok (i > i1)
+
+/-- [oxicloud_kernel::userstate::FederationKind]
+    Source: 'prove/ports/oxicloud/kernel/src/userstate.rs', lines 4:0-4:48
+    Visibility: public -/
+@[discriminant isize]
+inductive userstate.FederationKind where
+| MagicLink : userstate.FederationKind
+| Ocm : userstate.FederationKind
+| Oidc : userstate.FederationKind
+
+/-- [oxicloud_kernel::userstate::federation_bytes]:
+    Source: 'prove/ports/oxicloud/kernel/src/userstate.rs', lines 5:0-11:1
+    Visibility: public -/
+def userstate.federation_bytes
+  (kind : userstate.FederationKind) : Result (alloc.vec.Vec Std.U8) := do
+  match kind with
+  | userstate.FederationKind.MagicLink =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 10#usize [
+          109#u8, 97#u8, 103#u8, 105#u8, 99#u8, 95#u8, 108#u8, 105#u8, 110#u8,
+          107#u8
+          ]))
+    bytes.copy s
+  | userstate.FederationKind.Ocm =>
+    let s ←
+      lift (Array.to_slice (Array.make 3#usize [ 111#u8, 99#u8, 109#u8 ]))
+    bytes.copy s
+  | userstate.FederationKind.Oidc =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 4#usize [ 111#u8, 105#u8, 100#u8, 99#u8 ]))
+    bytes.copy s
+
+/-- [oxicloud_kernel::userstate::federation_parse]:
+    Source: 'prove/ports/oxicloud/kernel/src/userstate.rs', lines 12:0-17:1
+    Visibility: public -/
+def userstate.federation_parse
+  (raw : Slice Std.U8) : Result (Option userstate.FederationKind) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        109#u8, 97#u8, 103#u8, 105#u8, 99#u8, 95#u8, 108#u8, 105#u8, 110#u8,
+        107#u8
+        ]))
+  let b ← bytes.equal raw s
+  if b
+  then ok (some userstate.FederationKind.MagicLink)
+  else
+    let s1 ←
+      lift (Array.to_slice (Array.make 3#usize [ 111#u8, 99#u8, 109#u8 ]))
+    let b1 ← bytes.equal raw s1
+    if b1
+    then ok (some userstate.FederationKind.Ocm)
+    else
+      let s2 ←
+        lift (Array.to_slice
+          (Array.make 4#usize [ 111#u8, 105#u8, 100#u8, 99#u8 ]))
+      let b2 ← bytes.equal raw s2
+      if b2
+      then ok (some userstate.FederationKind.Oidc)
+      else ok none
+
+/-- [oxicloud_kernel::userstate::User]
+    Source: 'prove/ports/oxicloud/kernel/src/userstate.rs', lines 18:0-41:1
+    Visibility: public -/
+structure userstate.User where
+  id : Std.U128
+  username : Option (alloc.vec.Vec Std.U8)
+  email : alloc.vec.Vec Std.U8
+  password_hash : Option (alloc.vec.Vec Std.U8)
+  role : userrole.UserRole
+  storage_quota_bytes : Std.I64
+  storage_used_bytes : Std.I64
+  created_at : session.Timestamp
+  updated_at : session.Timestamp
+  last_login_at : Option session.Timestamp
+  active : Bool
+  federation_kind : Option userstate.FederationKind
+  federation_issuer : Option (alloc.vec.Vec Std.U8)
+  federation_subject : Option (alloc.vec.Vec Std.U8)
+  image : Option (alloc.vec.Vec Std.U8)
+  is_external : Bool
+  given_name : Option (alloc.vec.Vec Std.U8)
+  family_name : Option (alloc.vec.Vec Std.U8)
+  email_verified_at : Option session.Timestamp
+  preferred_locale : Option (alloc.vec.Vec Std.U8)
+  notify_on_share : Bool
+  ui_preferences : alloc.vec.Vec Std.U8
+
+/-- [oxicloud_kernel::userstate::UserParts]
+    Source: 'prove/ports/oxicloud/kernel/src/userstate.rs', lines 42:0-65:1
+    Visibility: public -/
+structure userstate.UserParts where
+  id : Std.U128
+  username : Option (alloc.vec.Vec Std.U8)
+  email : alloc.vec.Vec Std.U8
+  password_hash : Option (alloc.vec.Vec Std.U8)
+  role : userrole.UserRole
+  storage_quota_bytes : Std.I64
+  storage_used_bytes : Std.I64
+  created_at : session.Timestamp
+  updated_at : session.Timestamp
+  last_login_at : Option session.Timestamp
+  active : Bool
+  federation_kind : Option userstate.FederationKind
+  federation_issuer : Option (alloc.vec.Vec Std.U8)
+  federation_subject : Option (alloc.vec.Vec Std.U8)
+  image : Option (alloc.vec.Vec Std.U8)
+  is_external : Bool
+  given_name : Option (alloc.vec.Vec Std.U8)
+  family_name : Option (alloc.vec.Vec Std.U8)
+  email_verified_at : Option session.Timestamp
+  preferred_locale : Option (alloc.vec.Vec Std.U8)
+  notify_on_share : Bool
+  ui_preferences : alloc.vec.Vec Std.U8
+
+/-- [oxicloud_kernel::userstate::from_data_full]:
+    Source: 'prove/ports/oxicloud/kernel/src/userstate.rs', lines 66:0-68:1
+    Visibility: public -/
+def userstate.from_data_full
+  (id : Std.U128) (username : Option (alloc.vec.Vec Std.U8))
+  (email : alloc.vec.Vec Std.U8)
+  (password_hash : Option (alloc.vec.Vec Std.U8)) (role : userrole.UserRole)
+  (storage_quota_bytes : Std.I64) (storage_used_bytes : Std.I64)
+  (created_at : session.Timestamp) (updated_at : session.Timestamp)
+  (last_login_at : Option session.Timestamp) (active : Bool)
+  (federation_kind : Option userstate.FederationKind)
+  (federation_issuer : Option (alloc.vec.Vec Std.U8))
+  (federation_subject : Option (alloc.vec.Vec Std.U8))
+  (image : Option (alloc.vec.Vec Std.U8)) (is_external : Bool)
+  (given_name : Option (alloc.vec.Vec Std.U8))
+  (family_name : Option (alloc.vec.Vec Std.U8))
+  (email_verified_at : Option session.Timestamp)
+  (preferred_locale : Option (alloc.vec.Vec Std.U8)) (notify_on_share : Bool)
+  (ui_preferences : alloc.vec.Vec Std.U8) :
+  Result userstate.User
+  := do
+  ok
+    {
+      id,
+      username,
+      email,
+      password_hash,
+      role,
+      storage_quota_bytes,
+      storage_used_bytes,
+      created_at,
+      updated_at,
+      last_login_at,
+      active,
+      federation_kind,
+      federation_issuer,
+      federation_subject,
+      image,
+      is_external,
+      given_name,
+      family_name,
+      email_verified_at,
+      preferred_locale,
+      notify_on_share,
+      ui_preferences
+    }
+
+/-- [oxicloud_kernel::userstate::from_data]:
+    Source: 'prove/ports/oxicloud/kernel/src/userstate.rs', lines 69:0-71:1
+    Visibility: public -/
+def userstate.from_data
+  (id : Std.U128) (username : Option (alloc.vec.Vec Std.U8))
+  (email : alloc.vec.Vec Std.U8)
+  (password_hash : Option (alloc.vec.Vec Std.U8)) (role : userrole.UserRole)
+  (storage_quota_bytes : Std.I64) (storage_used_bytes : Std.I64)
+  (created_at : session.Timestamp) (updated_at : session.Timestamp)
+  (last_login_at : Option session.Timestamp) (active : Bool) :
+  Result userstate.User
+  := do
+  let s ← lift (Array.to_slice (Array.make 2#usize [ 123#u8, 125#u8 ]))
+  let v ← bytes.copy s
+  ok
+    {
+      id,
+      username,
+      email,
+      password_hash,
+      role,
+      storage_quota_bytes,
+      storage_used_bytes,
+      created_at,
+      updated_at,
+      last_login_at,
+      active,
+      federation_kind := none,
+      federation_issuer := none,
+      federation_subject := none,
+      image := none,
+      is_external := false,
+      given_name := none,
+      family_name := none,
+      email_verified_at := none,
+      preferred_locale := none,
+      notify_on_share := true,
+      ui_preferences := v
+    }
+
+/-- [oxicloud_kernel::userstate::into_parts]:
+    Source: 'prove/ports/oxicloud/kernel/src/userstate.rs', lines 72:0-74:1
+    Visibility: public -/
+def userstate.into_parts
+  (s : userstate.User) : Result userstate.UserParts := do
+  ok
+    {
+      id := s.id,
+      username := s.username,
+      email := s.email,
+      password_hash := s.password_hash,
+      role := s.role,
+      storage_quota_bytes := s.storage_quota_bytes,
+      storage_used_bytes := s.storage_used_bytes,
+      created_at := s.created_at,
+      updated_at := s.updated_at,
+      last_login_at := s.last_login_at,
+      active := s.active,
+      federation_kind := s.federation_kind,
+      federation_issuer := s.federation_issuer,
+      federation_subject := s.federation_subject,
+      image := s.image,
+      is_external := s.is_external,
+      given_name := s.given_name,
+      family_name := s.family_name,
+      email_verified_at := s.email_verified_at,
+      preferred_locale := s.preferred_locale,
+      notify_on_share := s.notify_on_share,
+      ui_preferences := s.ui_preferences
+    }
+
+/-- [oxicloud_kernel::userstate::id]:
+    Source: 'prove/ports/oxicloud/kernel/src/userstate.rs', lines 75:0-75:36
+    Visibility: public -/
+def userstate.id (s : userstate.User) : Result Std.U128 := do
+  ok s.id
+
+/-- [oxicloud_kernel::userstate::username]:
+    Source: 'prove/ports/oxicloud/kernel/src/userstate.rs', lines 76:0-76:61
+    Visibility: public -/
+def userstate.username
+  (s : userstate.User) : Result (Option (alloc.vec.Vec Std.U8)) := do
+  ok s.username
+
+/-- [oxicloud_kernel::userstate::email]:
+    Source: 'prove/ports/oxicloud/kernel/src/userstate.rs', lines 77:0-77:47
+    Visibility: public -/
+def userstate.email (s : userstate.User) : Result (alloc.vec.Vec Std.U8) := do
+  ok s.email
+
+/-- [oxicloud_kernel::userstate::password_hash]:
+    Source: 'prove/ports/oxicloud/kernel/src/userstate.rs', lines 78:0-78:71
+    Visibility: public -/
+def userstate.password_hash
+  (s : userstate.User) : Result (Option (alloc.vec.Vec Std.U8)) := do
+  ok s.password_hash
+
+/-- [oxicloud_kernel::userstate::role]:
+    Source: 'prove/ports/oxicloud/kernel/src/userstate.rs', lines 79:0-79:44
+    Visibility: public -/
+def userstate.role (s : userstate.User) : Result userrole.UserRole := do
+  ok s.role
+
+/-- [oxicloud_kernel::userstate::storage_quota_bytes]:
+    Source: 'prove/ports/oxicloud/kernel/src/userstate.rs', lines 80:0-80:69
+    Visibility: public -/
+def userstate.storage_quota_bytes (s : userstate.User) : Result Std.I64 := do
+  ok s.storage_quota_bytes
+
+/-- [oxicloud_kernel::userstate::storage_used_bytes]:
+    Source: 'prove/ports/oxicloud/kernel/src/userstate.rs', lines 81:0-81:67
+    Visibility: public -/
+def userstate.storage_used_bytes (s : userstate.User) : Result Std.I64 := do
+  ok s.storage_used_bytes
+
+/-- [oxicloud_kernel::userstate::created_at]:
+    Source: 'prove/ports/oxicloud/kernel/src/userstate.rs', lines 82:0-82:57
+    Visibility: public -/
+def userstate.created_at (s : userstate.User) : Result session.Timestamp := do
+  ok s.created_at
+
+/-- [oxicloud_kernel::userstate::updated_at]:
+    Source: 'prove/ports/oxicloud/kernel/src/userstate.rs', lines 83:0-83:57
+    Visibility: public -/
+def userstate.updated_at (s : userstate.User) : Result session.Timestamp := do
+  ok s.updated_at
+
+/-- [oxicloud_kernel::userstate::last_login_at]:
+    Source: 'prove/ports/oxicloud/kernel/src/userstate.rs', lines 84:0-84:71
+    Visibility: public -/
+def userstate.last_login_at
+  (s : userstate.User) : Result (Option session.Timestamp) := do
+  ok s.last_login_at
+
+/-- [oxicloud_kernel::userstate::is_active]:
+    Source: 'prove/ports/oxicloud/kernel/src/userstate.rs', lines 85:0-85:47
+    Visibility: public -/
+def userstate.is_active (s : userstate.User) : Result Bool := do
+  ok s.active
+
+/-- [oxicloud_kernel::userstate::federation_kind]:
+    Source: 'prove/ports/oxicloud/kernel/src/userstate.rs', lines 86:0-86:80
+    Visibility: public -/
+def userstate.federation_kind
+  (s : userstate.User) : Result (Option userstate.FederationKind) := do
+  ok s.federation_kind
+
+/-- [oxicloud_kernel::userstate::federation_issuer]:
+    Source: 'prove/ports/oxicloud/kernel/src/userstate.rs', lines 87:0-87:79
+    Visibility: public -/
+def userstate.federation_issuer
+  (s : userstate.User) : Result (Option (alloc.vec.Vec Std.U8)) := do
+  ok s.federation_issuer
+
+/-- [oxicloud_kernel::userstate::federation_subject]:
+    Source: 'prove/ports/oxicloud/kernel/src/userstate.rs', lines 88:0-88:81
+    Visibility: public -/
+def userstate.federation_subject
+  (s : userstate.User) : Result (Option (alloc.vec.Vec Std.U8)) := do
+  ok s.federation_subject
+
+/-- [oxicloud_kernel::userstate::image]:
+    Source: 'prove/ports/oxicloud/kernel/src/userstate.rs', lines 89:0-89:55
+    Visibility: public -/
+def userstate.image
+  (s : userstate.User) : Result (Option (alloc.vec.Vec Std.U8)) := do
+  ok s.image
+
+/-- [oxicloud_kernel::userstate::is_external]:
+    Source: 'prove/ports/oxicloud/kernel/src/userstate.rs', lines 90:0-90:54
+    Visibility: public -/
+def userstate.is_external (s : userstate.User) : Result Bool := do
+  ok s.is_external
+
+/-- [oxicloud_kernel::userstate::given_name]:
+    Source: 'prove/ports/oxicloud/kernel/src/userstate.rs', lines 91:0-91:65
+    Visibility: public -/
+def userstate.given_name
+  (s : userstate.User) : Result (Option (alloc.vec.Vec Std.U8)) := do
+  ok s.given_name
+
+/-- [oxicloud_kernel::userstate::family_name]:
+    Source: 'prove/ports/oxicloud/kernel/src/userstate.rs', lines 92:0-92:67
+    Visibility: public -/
+def userstate.family_name
+  (s : userstate.User) : Result (Option (alloc.vec.Vec Std.U8)) := do
+  ok s.family_name
+
+/-- [oxicloud_kernel::userstate::email_verified_at]:
+    Source: 'prove/ports/oxicloud/kernel/src/userstate.rs', lines 93:0-93:79
+    Visibility: public -/
+def userstate.email_verified_at
+  (s : userstate.User) : Result (Option session.Timestamp) := do
+  ok s.email_verified_at
+
+/-- [oxicloud_kernel::userstate::preferred_locale]:
+    Source: 'prove/ports/oxicloud/kernel/src/userstate.rs', lines 94:0-94:77
+    Visibility: public -/
+def userstate.preferred_locale
+  (s : userstate.User) : Result (Option (alloc.vec.Vec Std.U8)) := do
+  ok s.preferred_locale
+
+/-- [oxicloud_kernel::userstate::notify_on_share]:
+    Source: 'prove/ports/oxicloud/kernel/src/userstate.rs', lines 95:0-95:62
+    Visibility: public -/
+def userstate.notify_on_share (s : userstate.User) : Result Bool := do
+  ok s.notify_on_share
+
+/-- [oxicloud_kernel::userstate::ui_preferences]:
+    Source: 'prove/ports/oxicloud/kernel/src/userstate.rs', lines 96:0-96:65
+    Visibility: public -/
+def userstate.ui_preferences
+  (s : userstate.User) : Result (alloc.vec.Vec Std.U8) := do
+  ok s.ui_preferences
+
+/-- [oxicloud_kernel::userstate::has_password]:
+    Source: 'prove/ports/oxicloud/kernel/src/userstate.rs', lines 97:0-99:1
+    Visibility: public -/
+def userstate.has_password (s : userstate.User) : Result Bool := do
+  match s.password_hash with
+  | none => ok false
+  | some _ => ok true
+
+/-- [oxicloud_kernel::userstate::is_oidc_user]:
+    Source: 'prove/ports/oxicloud/kernel/src/userstate.rs', lines 100:0-102:1
+    Visibility: public -/
+def userstate.is_oidc_user (s : userstate.User) : Result Bool := do
+  match s.federation_issuer with
+  | none => ok false
+  | some _ => ok true
+
+/-- [oxicloud_kernel::userstate::has_login_credential]:
+    Source: 'prove/ports/oxicloud/kernel/src/userstate.rs', lines 103:0-105:1
+    Visibility: public -/
+def userstate.has_login_credential (s : userstate.User) : Result Bool := do
+  let b ← userstate.has_password s
+  if b
+  then ok true
+  else match s.federation_subject with
+       | none => ok false
+       | some _ => ok true
+
+/-- [oxicloud_kernel::userstate::is_email_verified]:
+    Source: 'prove/ports/oxicloud/kernel/src/userstate.rs', lines 106:0-108:1
+    Visibility: public -/
+def userstate.is_email_verified (s : userstate.User) : Result Bool := do
+  match s.email_verified_at with
+  | none => ok false
+  | some _ => ok true
+
+/-- [oxicloud_kernel::validation::EmailReason]
+    Source: 'prove/ports/oxicloud/kernel/src/validation.rs', lines 5:0-5:75
+    Visibility: public -/
+@[discriminant isize]
+inductive validation.EmailReason where
+| Unverified : validation.EmailReason
+| UnverifiedFlagOff : validation.EmailReason
+| ClaimAbsentRequired : validation.EmailReason
+
+/-- [oxicloud_kernel::validation::EmailDecision]
+    Source: 'prove/ports/oxicloud/kernel/src/validation.rs', lines 6:0-6:78
+    Visibility: public -/
+structure validation.EmailDecision where
+  reject : Bool
+  reason : Option validation.EmailReason
+
+/-- [oxicloud_kernel::validation::classify_email_verification]:
+    Source: 'prove/ports/oxicloud/kernel/src/validation.rs', lines 9:0-23:1
+    Visibility: public -/
+def validation.classify_email_verification
+  (claim : Option Bool) (must_verify : Bool) :
+  Result validation.EmailDecision
+  := do
+  match claim with
+  | none =>
+    if must_verify
+    then
+      ok
+        {
+          reject := true,
+          reason := (some validation.EmailReason.ClaimAbsentRequired)
+        }
+    else ok { reject := false, reason := none }
+  | some b =>
+    if b
+    then ok { reject := false, reason := none }
+    else
+      if must_verify
+      then
+        ok
+          { reject := true, reason := (some validation.EmailReason.Unverified)
+          }
+      else
+        ok
+          {
+            reject := false,
+            reason := (some validation.EmailReason.UnverifiedFlagOff)
+          }
+
+/-- [oxicloud_kernel::validation::storage_byte]:
+    Source: 'prove/ports/oxicloud/kernel/src/validation.rs', lines 25:0-27:1 -/
+def validation.storage_byte (b : Std.U8) : Result Bool := do
+  if b >= 97#u8
+  then
+    if b <= 122#u8
+    then ok true
+    else
+      if b >= 48#u8
+      then
+        if b <= 57#u8
+        then ok true
+        else if b = 95#u8
+             then ok true
+             else ok (b = 45#u8)
+      else if b = 95#u8
+           then ok true
+           else ok (b = 45#u8)
+  else
+    if b >= 48#u8
+    then
+      if b <= 57#u8
+      then ok true
+      else if b = 95#u8
+           then ok true
+           else ok (b = 45#u8)
+    else if b = 95#u8
+         then ok true
+         else ok (b = 45#u8)
+
+/-- [oxicloud_kernel::validation::base64url_byte]:
+    Source: 'prove/ports/oxicloud/kernel/src/validation.rs', lines 28:0-30:1 -/
+def validation.base64url_byte (b : Std.U8) : Result Bool := do
+  let b1 ← validation.storage_byte b
+  if b1
+  then ok true
+  else if b >= 65#u8
+       then ok (b <= 90#u8)
+       else ok false
+
+/-- [oxicloud_kernel::validation::all_storage]: loop body 0:
+    Source: 'prove/ports/oxicloud/kernel/src/validation.rs', lines 33:4-38:1 -/
+@[rust_loop_body]
+def validation.all_storage_loop.body
+  (raw : Slice Std.U8) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := Slice.len raw
+  if i < i1
+  then
+    let i2 ← Slice.index_usize raw i
+    let b ← validation.storage_byte i2
+    if b
+    then let i3 ← i + 1#usize
+         ok (cont i3)
+    else ok (done false)
+  else ok (done true)
+
+/-- [oxicloud_kernel::validation::all_storage]: loop 0:
+    Source: 'prove/ports/oxicloud/kernel/src/validation.rs', lines 33:4-38:1 -/
+@[rust_loop]
+def validation.all_storage_loop
+  (raw : Slice Std.U8) (i : Std.Usize) : Result Bool := do
+  loop
+    (fun i1 => validation.all_storage_loop.body raw i1)
+    i
+
+/-- [oxicloud_kernel::validation::all_storage]:
+    Source: 'prove/ports/oxicloud/kernel/src/validation.rs', lines 31:0-38:1 -/
+@[reducible]
+def validation.all_storage (raw : Slice Std.U8) : Result Bool := do
+  validation.all_storage_loop raw 0#usize
+
+/-- [oxicloud_kernel::validation::all_base64url]: loop body 0:
+    Source: 'prove/ports/oxicloud/kernel/src/validation.rs', lines 41:4-46:1 -/
+@[rust_loop_body]
+def validation.all_base64url_loop.body
+  (raw : Slice Std.U8) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := Slice.len raw
+  if i < i1
+  then
+    let i2 ← Slice.index_usize raw i
+    let b ← validation.base64url_byte i2
+    if b
+    then let i3 ← i + 1#usize
+         ok (cont i3)
+    else ok (done false)
+  else ok (done true)
+
+/-- [oxicloud_kernel::validation::all_base64url]: loop 0:
+    Source: 'prove/ports/oxicloud/kernel/src/validation.rs', lines 41:4-46:1 -/
+@[rust_loop]
+def validation.all_base64url_loop
+  (raw : Slice Std.U8) (i : Std.Usize) : Result Bool := do
+  loop
+    (fun i1 => validation.all_base64url_loop.body raw i1)
+    i
+
+/-- [oxicloud_kernel::validation::all_base64url]:
+    Source: 'prove/ports/oxicloud/kernel/src/validation.rs', lines 39:0-46:1 -/
+@[reducible]
+def validation.all_base64url (raw : Slice Std.U8) : Result Bool := do
+  validation.all_base64url_loop raw 0#usize
+
+/-- [oxicloud_kernel::validation::is_valid_entry_name]:
+    Source: 'prove/ports/oxicloud/kernel/src/validation.rs', lines 49:0-52:1
+    Visibility: public -/
+def validation.is_valid_entry_name (raw : Slice Std.U8) : Result Bool := do
+  let i := Slice.len raw
+  if i < 1#usize
+  then ok false
+  else
+    let i1 := Slice.len raw
+    if i1 > 32#usize
+    then ok false
+    else validation.all_storage raw
+
+/-- [oxicloud_kernel::validation::JktError]
+    Source: 'prove/ports/oxicloud/kernel/src/validation.rs', lines 54:0-54:46
+    Visibility: public -/
+@[discriminant isize]
+inductive validation.JktError where
+| WrongLength : validation.JktError
+| BadAlphabet : validation.JktError
+
+/-- [oxicloud_kernel::validation::validate_dpop_jkt]:
+    Source: 'prove/ports/oxicloud/kernel/src/validation.rs', lines 56:0-60:1
+    Visibility: public -/
+def validation.validate_dpop_jkt
+  (raw : Slice Std.U8) :
+  Result (core.result.Result (alloc.vec.Vec Std.U8) validation.JktError)
+  := do
+  let i := Slice.len raw
+  if i != 43#usize
+  then ok (core.result.Result.Err validation.JktError.WrongLength)
+  else
+    let b ← validation.all_base64url raw
+    if b
+    then let v ← bytes.copy raw
+         ok (core.result.Result.Ok v)
+    else ok (core.result.Result.Err validation.JktError.BadAlphabet)
 
 end oxicloud_kernel

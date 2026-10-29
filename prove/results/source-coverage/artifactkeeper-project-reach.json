@@ -1,6 +1,6 @@
 {
   "upstream_revision": "7c42891cd64f144df6197b8801c9cca4f0e0f5a7",
-  "mapping_sha256": "2bce3f418015b8c4218c522f05bd56c65a7846b04a860d8d34cfc2d12b02b8c2",
+  "mapping_sha256": "49d6b829176b5a963f294d98350a92ad9724d9273563998bbf3af0ddc8b5375b",
   "lines": {
     "backend/src/api/handlers/permissions.rs": [
       20,
@@ -113,6 +113,39 @@
       203,
       204,
       205,
+      219,
+      220,
+      221,
+      222,
+      223,
+      224,
+      225,
+      226,
+      227,
+      228,
+      229,
+      230,
+      231,
+      232,
+      252,
+      253,
+      254,
+      255,
+      256,
+      257,
+      258,
+      259,
+      260,
+      261,
+      262,
+      263,
+      264,
+      265,
+      266,
+      267,
+      268,
+      269,
+      270,
       287,
       288,
       289,
@@ -1457,6 +1490,35 @@
       268
     ],
     "backend/src/services/token_service.rs": [
+      113,
+      114,
+      115,
+      116,
+      117,
+      118,
+      119,
+      120,
+      121,
+      122,
+      123,
+      174,
+      175,
+      176,
+      177,
+      178,
+      179,
+      180,
+      181,
+      182,
+      183,
+      184,
+      185,
+      186,
+      187,
+      188,
+      189,
+      190,
+      191,
       219,
       223,
       224,
@@ -1533,8 +1595,131 @@
       255
     ]
   },
-  "upstream_reached": 1504,
+  "upstream_reached": 1566,
   "properties": [
+    {
+      "name": "artifactkeeper_kernel.Properties.scope_validation_spec",
+      "generated_dependencies": [
+        "strs.bytes_eq",
+        "strs.bytes_eq_loop",
+        "strs.bytes_eq_loop.body",
+        "token_scope.is_allowed_scope",
+        "token_scope.validate_scopes_pure",
+        "token_scope.validate_scopes_pure_loop",
+        "token_scope.validate_scopes_pure_loop.body"
+      ],
+      "items": [
+        {
+          "declaration": "token_scope.validate_scopes_pure",
+          "file": "backend/src/services/token_service.rs",
+          "self_ty": "",
+          "name": "validate_scopes_pure",
+          "kind": "fn",
+          "start": 111,
+          "end": 123,
+          "sha256": "c5179c7a533aaeef695b4fd06511a395602617b312c271cccd6f183038c57d5a"
+        }
+      ]
+    },
+    {
+      "name": "artifactkeeper_kernel.Properties.scope_admin_validation_spec",
+      "generated_dependencies": [
+        "strs.bytes_eq",
+        "strs.bytes_eq_loop",
+        "strs.bytes_eq_loop.body",
+        "token_scope.enforce_admin_only_scopes",
+        "token_scope.enforce_admin_only_scopes_loop",
+        "token_scope.enforce_admin_only_scopes_loop.body",
+        "token_scope.is_admin_only_scope"
+      ],
+      "items": [
+        {
+          "declaration": "token_scope.enforce_admin_only_scopes",
+          "file": "backend/src/services/token_service.rs",
+          "self_ty": "",
+          "name": "enforce_admin_only_scopes",
+          "kind": "fn",
+          "start": 167,
+          "end": 191,
+          "sha256": "1c3e80233635ea791921380e23f60fa6c450123d5cfbf1cfdab2d97a96a8d568"
+        }
+      ]
+    },
+    {
+      "name": "artifactkeeper_kernel.Properties.scope_mint_spec",
+      "generated_dependencies": [
+        "strs.any_eq",
+        "strs.any_eq_loop",
+        "strs.any_eq_loop.body",
+        "strs.bytes_eq",
+        "strs.bytes_eq_loop",
+        "strs.bytes_eq_loop.body",
+        "strs.find_byte",
+        "strs.find_byte_loop",
+        "strs.find_byte_loop.body",
+        "strs.split_once",
+        "strs.sub",
+        "strs.sub_loop",
+        "strs.sub_loop.body",
+        "token_scope.AuthExtension.enforce_mint_ceiling",
+        "token_scope.AuthExtension.enforce_mint_ceiling_loop",
+        "token_scope.AuthExtension.enforce_mint_ceiling_loop.body",
+        "token_scope.AuthExtension.has_scope",
+        "token_scope.check_mint_ceiling",
+        "token_scope.scopes_grant_access"
+      ],
+      "items": [
+        {
+          "declaration": "token_scope.AuthExtension.enforce_mint_ceiling",
+          "file": "backend/src/api/middleware/auth.rs",
+          "self_ty": "AuthExtension",
+          "name": "enforce_mint_ceiling",
+          "kind": "method",
+          "start": 219,
+          "end": 232,
+          "sha256": "24b2673db168f5907705a51ab06902d8ca78fb7c9f03ffe61129e203c471a798"
+        },
+        {
+          "declaration": "token_scope.AuthExtension.has_scope",
+          "file": "backend/src/api/middleware/auth.rs",
+          "self_ty": "AuthExtension",
+          "name": "has_scope",
+          "kind": "method",
+          "start": 118,
+          "end": 137,
+          "sha256": "3aa630d68458225b6402f7553f0efebd1ebfcb18e5f06d031682d5139ea3bb08"
+        },
+        {
+          "declaration": "token_scope.scopes_grant_access",
+          "file": "backend/src/services/token_service.rs",
+          "self_ty": "",
+          "name": "scopes_grant_access",
+          "kind": "fn",
+          "start": 203,
+          "end": 233,
+          "sha256": "1cebc406cf620de3d5a1bb062a96ca6587772301433517fd807745be8b1549fc"
+        }
+      ]
+    },
+    {
+      "name": "artifactkeeper_kernel.Properties.scope_repo_mint_spec",
+      "generated_dependencies": [
+        "token_scope.AuthExtension.mint_repo_ceiling",
+        "token_scope.check_repo_ceiling"
+      ],
+      "items": [
+        {
+          "declaration": "token_scope.AuthExtension.mint_repo_ceiling",
+          "file": "backend/src/api/middleware/auth.rs",
+          "self_ty": "AuthExtension",
+          "name": "mint_repo_ceiling",
+          "kind": "method",
+          "start": 252,
+          "end": 270,
+          "sha256": "fa5c7a2f4d2a1483e3f1bcefcc7ec920c328d1fbc27d5cf78cb015442008f002"
+        }
+      ]
+    },
     {
       "name": "artifactkeeper_kernel.Properties.anonymous_never_mutates",
       "generated_dependencies": [

@@ -61,14 +61,6 @@ axiom core.option.Option.Insts.CoreCmpPartialEqOption.eq
   {T : Type} (cmpPartialEqInst : core.cmp.PartialEq T T) :
   Option T → Option T → Result Bool
 
-/-- [alloc::vec::{alloc::vec::Vec<T>}::is_empty]:
-    Source: '/rustc/library/alloc/src/vec/mod.rs', lines 3160:4-3160:40
-    Name pattern: [alloc::vec::{alloc::vec::Vec<@T>}::is_empty]
-    Visibility: public -/
-@[rust_fun "alloc::vec::{alloc::vec::Vec<@T>}::is_empty"]
-axiom alloc.vec.Vec.is_empty
-  {T : Type} (A : Type) : alloc.vec.Vec T → Result Bool
-
 /-- [kanidm_kernel::entry_validation::Attribute]
     Source: 'prove/results/kanidm-coverage/entry-project/kernel/src/entry_validation.rs', lines 6:0-6:80
     Visibility: public -/
@@ -1475,33 +1467,33 @@ def entry_validation.validate
         let extensible ← entry_validation.contains s2 1#u16
         let s3 := alloc.vec.Vec.deref names
         let invalid ← entry_validation.invalid_classes classes s3
-        let b1 ← alloc.vec.Vec.is_empty Global invalid
-        if b1
+        let i := alloc.vec.Vec.len invalid
+        if i = 0#usize
         then
           let s4 := alloc.vec.Vec.deref names
           let supplements ← entry_validation.constraints classes s4 0#u8
-          let b2 ← alloc.vec.Vec.is_empty Global supplements
-          if b2
+          let i1 := alloc.vec.Vec.len supplements
+          if i1 = 0#usize
           then
             let s5 := alloc.vec.Vec.deref names
             let v ← entry_validation.constraints classes s5 1#u8
             let s6 := alloc.vec.Vec.deref v
             let s7 := alloc.vec.Vec.deref names
             let excluded ← entry_validation.overlap s6 s7
-            let b3 ← alloc.vec.Vec.is_empty Global excluded
-            if b3
+            let i2 := alloc.vec.Vec.len excluded
+            if i2 = 0#usize
             then
               let s8 := alloc.vec.Vec.deref names
               let must ← entry_validation.constraints classes s8 2#u8
               let s9 := alloc.vec.Vec.deref must
-              let b4 ← entry_validation.schema_complete attrs s9
-              if b4
+              let b1 ← entry_validation.schema_complete attrs s9
+              if b1
               then
                 let s10 := alloc.vec.Vec.deref must
                 let missing ←
                   entry_validation.missing_attributes entry attrs s10
-                let b5 ← alloc.vec.Vec.is_empty Global missing
-                if b5
+                let i3 := alloc.vec.Vec.len missing
+                if i3 = 0#usize
                 then
                   if extensible
                   then
@@ -1511,8 +1503,8 @@ def entry_validation.validate
                     let s11 := alloc.vec.Vec.deref names
                     let may ← entry_validation.constraints classes s11 3#u8
                     let s12 := alloc.vec.Vec.deref may
-                    let b6 ← entry_validation.schema_complete attrs s12
-                    if b6
+                    let b2 ← entry_validation.schema_complete attrs s12
+                    if b2
                     then
                       let s13 := alloc.vec.Vec.deref may
                       entry_validation.validate_attributes entry attrs s13
@@ -1532,8 +1524,8 @@ def entry_validation.validate
                       let s11 := alloc.vec.Vec.deref names
                       let may ← entry_validation.constraints classes s11 3#u8
                       let s12 := alloc.vec.Vec.deref may
-                      let b6 ← entry_validation.schema_complete attrs s12
-                      if b6
+                      let b2 ← entry_validation.schema_complete attrs s12
+                      if b2
                       then
                         let s13 := alloc.vec.Vec.deref may
                         entry_validation.validate_attributes entry attrs s13
@@ -1552,8 +1544,8 @@ def entry_validation.validate
             let s5 := alloc.vec.Vec.deref supplements
             let s6 := alloc.vec.Vec.deref names
             let v ← entry_validation.overlap s5 s6
-            let b3 ← alloc.vec.Vec.is_empty Global v
-            if b3
+            let i2 := alloc.vec.Vec.len v
+            if i2 = 0#usize
             then
               ok (core.result.Result.Err
                 (entry_validation.Error.SupplementsNotSatisfied supplements))
@@ -1563,20 +1555,20 @@ def entry_validation.validate
               let s8 := alloc.vec.Vec.deref v1
               let s9 := alloc.vec.Vec.deref names
               let excluded ← entry_validation.overlap s8 s9
-              let b4 ← alloc.vec.Vec.is_empty Global excluded
-              if b4
+              let i3 := alloc.vec.Vec.len excluded
+              if i3 = 0#usize
               then
                 let s10 := alloc.vec.Vec.deref names
                 let must ← entry_validation.constraints classes s10 2#u8
                 let s11 := alloc.vec.Vec.deref must
-                let b5 ← entry_validation.schema_complete attrs s11
-                if b5
+                let b1 ← entry_validation.schema_complete attrs s11
+                if b1
                 then
                   let s12 := alloc.vec.Vec.deref must
                   let missing ←
                     entry_validation.missing_attributes entry attrs s12
-                  let b6 ← alloc.vec.Vec.is_empty Global missing
-                  if b6
+                  let i4 := alloc.vec.Vec.len missing
+                  if i4 = 0#usize
                   then
                     if extensible
                     then
@@ -1587,8 +1579,8 @@ def entry_validation.validate
                       let s13 := alloc.vec.Vec.deref names
                       let may ← entry_validation.constraints classes s13 3#u8
                       let s14 := alloc.vec.Vec.deref may
-                      let b7 ← entry_validation.schema_complete attrs s14
-                      if b7
+                      let b2 ← entry_validation.schema_complete attrs s14
+                      if b2
                       then
                         let s15 := alloc.vec.Vec.deref may
                         entry_validation.validate_attributes entry attrs s15
@@ -1610,8 +1602,8 @@ def entry_validation.validate
                         let may ←
                           entry_validation.constraints classes s13 3#u8
                         let s14 := alloc.vec.Vec.deref may
-                        let b7 ← entry_validation.schema_complete attrs s14
-                        if b7
+                        let b2 ← entry_validation.schema_complete attrs s14
+                        if b2
                         then
                           let s15 := alloc.vec.Vec.deref may
                           entry_validation.validate_attributes entry attrs s15

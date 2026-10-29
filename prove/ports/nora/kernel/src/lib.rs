@@ -467,3 +467,7 @@ pub fn transition(provider: &OidcProvider, claims: &Claims, req: &Request) -> Re
 }
 
 pub mod permission_import;
+
+pub mod circuit_breaker;
+
+pub mod curation;

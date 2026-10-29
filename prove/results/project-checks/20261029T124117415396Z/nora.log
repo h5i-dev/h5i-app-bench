@@ -1,0 +1,326 @@
+
+$ lake build
+⚠ [146/242] Replayed Aeneas.Std.WP
+warning: Aeneas/Std/WP.lean:756:4: 'simp -failIfUnchanged only' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Aeneas/Std/WP.lean:761:4: 'simp -failIfUnchanged only' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Aeneas/Std/WP.lean:896:11: 'cases i' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Aeneas/Std/WP.lean:896:23: 'simp' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Aeneas/Std/WP.lean:927:19: 'simp at hspec' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+⚠ [1264/1400] Replayed Aeneas.Std.Core.Core
+warning: Aeneas/Std/Core/Core.lean:38:4: The namespace 'core' is duplicated in the declaration 'Aeneas.Std.core.core.clone.CloneGlobal'
+
+Note: This linter can be disabled with `set_option linter.dupNamespace false`
+warning: Aeneas/Std/Core/Core.lean:59:4: The namespace 'core' is duplicated in the declaration 'Aeneas.Std.core.core.clone.CloneBox'
+
+Note: This linter can be disabled with `set_option linter.dupNamespace false`
+warning: Aeneas/Std/Core/Core.lean:68:4: The namespace 'core' is duplicated in the declaration 'Aeneas.Std.core.core.marker.CopyBool'
+
+Note: This linter can be disabled with `set_option linter.dupNamespace false`
+✔ [1731/1762] Built Verified.PermissionImport (7.4s)
+✔ [1732/1762] Built Spec (7.4s)
+✔ [1733/1762] Built Verified.CircuitBreaker (13s)
+ℹ [1734/1762] Built Verified.Derived (22s)
+info: Verified/Derived.lean:6:0: h5i_derive_all: no eq spec for nora_kernel.net.IpAddr; derive it by hand
+info: Verified/Derived.lean:6:0: h5i_derive_all: no eq spec for nora_kernel.validation.ValidationError; derive it by hand
+info: Verified/Derived.lean:6:0: h5i_derive_all: no clone spec for nora_kernel.tokens.TokenFile; derive it by hand
+info: Verified/Derived.lean:6:0: h5i_derive_all: no clone spec for nora_kernel.tokens.TokenStore; derive it by hand
+✔ [1735/1762] Built Verified.NoraAuditNeverDenies (10s)
+✔ [1736/1762] Built Verified.NoraLifetime (11s)
+⚠ [1737/1762] Built Verified.NoraProviderCeiling (12s)
+warning: Verified/NoraProviderCeiling.lean:15:2: 'subst_vars' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/NoraProviderCeiling.lean:78:27: This simp argument is unused:
+  Prod.fst
+
+Hint: Omit it from the simp argument list.
+  simp only [Prod.f̵st̵,̵ ̵P̵r̵o̵d̵.̵s̵nd, UScalar.ofNatCore_val_eq] at *
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/NoraProviderCeiling.lean:78:37: This simp argument is unused:
+  Prod.snd
+
+Hint: Omit it from the simp argument list.
+  simp only [Prod.fst, P̵r̵o̵d̵.̵s̵n̵d̵,̵ ̵UScalar.ofNatCore_val_eq] at *
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/NoraProviderCeiling.lean:78:47: This simp argument is unused:
+  UScalar.ofNatCore_val_eq
+
+Hint: Omit it from the simp argument list.
+  simp only [Prod.fst, Prod.snd,̵ ̵U̵S̵c̵a̵l̵a̵r̵.̵o̵f̵N̵a̵t̵C̵o̵r̵e̵_̵v̵a̵l̵_̵e̵q̵] at *
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/NoraProviderCeiling.lean:180:2: 'all_goals try dsimp only at h' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+✔ [1738/1762] Built Verified.NoraRevoke (12s)
+✔ [1739/1762] Built Verified.NoraSegmentGlob (13s)
+✔ [1740/1762] Built Verified.NoraTokenUnexpired (13s)
+✔ [1741/1762] Built Verified.NoraCidr (14s)
+✔ [1742/1762] Built Verified.NoraReadOnly (14s)
+✔ [1743/1762] Built Verified.NoraUntrustedPeer (14s)
+⚠ [1744/1762] Built Verified.NoraRuleNarrows (14s)
+warning: Verified/NoraRuleNarrows.lean:15:2: 'subst_vars' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/NoraRuleNarrows.lean:78:27: This simp argument is unused:
+  Prod.fst
+
+Hint: Omit it from the simp argument list.
+  simp only [Prod.f̵st̵,̵ ̵P̵r̵o̵d̵.̵s̵nd, UScalar.ofNatCore_val_eq] at *
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/NoraRuleNarrows.lean:78:37: This simp argument is unused:
+  Prod.snd
+
+Hint: Omit it from the simp argument list.
+  simp only [Prod.fst, P̵r̵o̵d̵.̵s̵n̵d̵,̵ ̵UScalar.ofNatCore_val_eq] at *
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/NoraRuleNarrows.lean:78:47: This simp argument is unused:
+  UScalar.ofNatCore_val_eq
+
+Hint: Omit it from the simp argument list.
+  simp only [Prod.fst, Prod.snd,̵ ̵U̵S̵c̵a̵l̵a̵r̵.̵o̵f̵N̵a̵t̵C̵o̵r̵e̵_̵v̵a̵l̵_̵e̵q̵] at *
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/NoraRuleNarrows.lean:180:2: 'all_goals try dsimp only at h' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+✔ [1745/1762] Built Verified.NoraLockout (16s)
+✔ [1746/1762] Built Verified.NoraCatalogTokenPages (17s)
+✔ [1747/1762] Built Verified.NoraRevokeAll (17s)
+✔ [1748/1762] Built Verified.NoraDigest (17s)
+⚠ [1749/1762] Built Verified.NoraReference (18s)
+warning: Verified/NoraReference.lean:219:2: 'all_goals try simp_all [WP.spec_ok, UScalar.le_equiv, UScalar.lt_equiv]' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/NoraReference.lean:228:2: 'all_goals simp_all' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/NoraReference.lean:228:12: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: Verified/NoraReference.lean:277:45: This simp argument is unused:
+  hx
+
+Hint: Omit it from the simp argument list.
+  simp [nats,̵ ̵h̵x̵]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+✔ [1750/1762] Built Verified.NoraDockerName (18s)
+✔ [1751/1762] Built Verified.NoraStorageKey (21s)
+✔ [1752/1762] Built Verified.NoraAdminPath (22s)
+⚠ [1753/1762] Built Verified.NoraGlobMatch (25s)
+warning: Verified/NoraGlobMatch.lean:44:4: try 'simp' instead of 'simpa'
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+warning: Verified/NoraGlobMatch.lean:42:15: This simp argument is unused:
+  WP.spec_ok
+
+Hint: Omit it from the simp argument list.
+  simp only [W̵P̵.̵s̵p̵e̵c̵_̵o̵k̵,̵ ̵lit_star, nats, hx, List.map_cons, List.map_nil,
+  ̵  ̵ ̵ ̵ ̵ ̵List.getElem_cons_zero,
+  ̲  ̲ ̲ ̲ ̲ ̲List.cons.injEq, and_true, u8_eq_iff] at *
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/NoraGlobMatch.lean:59:15: This simp argument is unused:
+  bind_tc_ite
+
+Hint: Omit it from the simp argument list.
+  simp only [̵b̵i̵n̵d̵_̵t̵c̵_̵i̵t̵e̵,̵ ̵b̵i̵n̵d̵_̵i̵t̵e̵]̵[̲b̲i̲n̲d̲_̲i̲t̲e̲]̲
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/NoraGlobMatch.lean:68:19: This simp argument is unused:
+  WP.spec_ok
+
+Hint: Omit it from the simp argument list.
+  simp only [W̵P̵.̵s̵p̵e̵c̵_̵o̵k̵,̵ ̵Bool.false_eq, decide_eq_false_iff_not, List.cons_prefix_cons]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/NoraGlobMatch.lean:143:81: This simp argument is unused:
+  vec_new_val
+
+Hint: Omit it from the simp argument list.
+  simp ̵[̵v̵e̵c̵_̵n̵e̵w̵_̵v̵a̵l̵]̵
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/NoraGlobMatch.lean:151:48: This simp argument is unused:
+  vec_new_val
+
+Hint: Omit it from the simp argument list.
+  simp_all [FoldStep2, splitStep,̵ ̵v̵e̵c̵_̵n̵e̵w̵_̵v̵a̵l̵]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/NoraGlobMatch.lean:200:30: This simp argument is unused:
+  Nat.mul_one
+
+Hint: Omit it from the simp argument list.
+  simp only [List.find?_cons,̵ ̵N̵a̵t̵.̵m̵u̵l̵_̵o̵n̵e̵]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/NoraGlobMatch.lean:247:59: This simp argument is unused:
+  forall_eq
+
+Hint: Omit it from the simp argument list.
+  simp only [Option.map_some, Option.mem_some_iff,̵ ̵f̵o̵r̵a̵l̵l̵_̵e̵q̵]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/NoraGlobMatch.lean:276:39: This simp argument is unused:
+  Nat.add_comm
+
+Hint: Omit it from the simp argument list.
+  simp only [← nats_drop, nats_prefix,̵ ̵N̵a̵t̵.̵a̵d̵d̵_̵c̵o̵m̵m̵]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/NoraGlobMatch.lean:284:76: This simp argument is unused:
+  List.take_length
+
+Hint: Omit it from the simp argument list.
+  simp only [List.length_drop, hlen, le_refl, true_and, List.drop_drop, hp,̵ ̵L̵i̵s̵t̵.̵t̵a̵k̵e̵_̵l̵e̵n̵g̵t̵h̵]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/NoraGlobMatch.lean:328:12: 'step*' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/NoraGlobMatch.lean:340:12: 'all_goals simp only [if_neg hpreN]' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/NoraGlobMatch.lean:363:14: 'step*' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/NoraGlobMatch.lean:396:14: 'step*' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/NoraGlobMatch.lean:407:8: 'step*' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/NoraGlobMatch.lean:340:22: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+✔ [1754/1762] Built Verified.NoraTotal (26s)
+⚠ [1755/1762] Built Verified.NoraMiddlewareSupport (33s)
+warning: Verified/NoraMiddlewareSupport.lean:235:4: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+✔ [1756/1762] Built Verified.NoraFailureRecorded (42s)
+⚠ [1757/1762] Built Verified.NoraFailuresCleared (62s)
+warning: Verified/NoraFailuresCleared.lean:206:6: 'cases_type Prod' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/NoraFailuresCleared.lean:206:6: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+⚠ [1758/1762] Built Verified.NoraWritesNeedWriteRole (74s)
+warning: Verified/NoraWritesNeedWriteRole.lean:284:63: This simp argument is unused:
+  hm
+
+Hint: Omit it from the simp argument list.
+  simp [h̵m̵,̵ ̵isWriteMethod]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/NoraWritesNeedWriteRole.lean:285:60: This simp argument is unused:
+  hm
+
+Hint: Omit it from the simp argument list.
+  simp [h̵m̵,̵ ̵isWriteMethod]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/NoraWritesNeedWriteRole.lean:294:63: This simp argument is unused:
+  hm
+
+Hint: Omit it from the simp argument list.
+  simp [h̵m̵,̵ ̵isWriteMethod]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/NoraWritesNeedWriteRole.lean:295:60: This simp argument is unused:
+  hm
+
+Hint: Omit it from the simp argument list.
+  simp [h̵m̵,̵ ̵isWriteMethod]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+⚠ [1759/1762] Built Verified.NoraNoCredentials (82s)
+warning: Verified/NoraNoCredentials.lean:85:27: This simp argument is unused:
+  Prod.mk.injEq
+
+Hint: Omit it from the simp argument list.
+  simp only [̵P̵r̵o̵d̵.̵m̵k̵.̵i̵n̵j̵E̵q̵,̵ ̵m̵i̵d̵d̵l̵e̵w̵a̵r̵e̵.̵O̵u̵t̵c̵o̵m̵e̵.̵N̵e̵x̵t̵.̵i̵n̵j̵E̵q̵,̵[̲m̲i̲d̲d̲l̲e̲w̲a̲r̲e̲.̲O̲u̲t̲c̲o̲m̲e̲.̲N̲e̲x̲t̲.̲i̲n̲j̲E̲q̲,̲ reduceCtorEq] at h
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/NoraNoCredentials.lean:85:73: This simp argument is unused:
+  reduceCtorEq
+
+Hint: Omit it from the simp argument list.
+  simp only [Prod.mk.injEq, middleware.Outcome.Next.injEq,̵ ̵r̵e̵d̵u̵c̵e̵C̵t̵o̵r̵E̵q̵] at h
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/NoraNoCredentials.lean:77:2: 'all_goals try simp only [hn] at h' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/NoraNoCredentials.lean:83:4: 'all_goals try simp only [hn] at h' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+✔ [1760/1762] Built Verified.NoraMiddlewareTotal (326s)
+⚠ [1761/1762] Built Properties (10s)
+warning: Properties.lean:65:69: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: Properties.lean:80:59: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: Properties.lean:85:67: 'assumption' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Properties.lean:85:67: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: Properties.lean:186:72: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: Properties.lean:191:72: 'assumption' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Properties.lean:191:72: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: Properties.lean:217:61: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: Properties.lean:222:62: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: Properties.lean:227:55: 'assumption' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Properties.lean:227:55: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: Properties.lean:232:59: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+Build completed successfully (1762 jobs).
+
+note: solutions.nora-digest.Solution is not built by `lake build`, so its theorems are not gated
+note: solutions.nora-lifetime.Solution is not built by `lake build`, so its theorems are not gated
+note: solutions.nora-no-credentials.Solution is not built by `lake build`, so its theorems are not gated
+note: solutions.nora-provider-ceiling.Solution is not built by `lake build`, so its theorems are not gated
+note: solutions.nora-reference.Solution is not built by `lake build`, so its theorems are not gated
+note: solutions.nora-revoke-all.Solution is not built by `lake build`, so its theorems are not gated
+note: solutions.nora-revoke.Solution is not built by `lake build`, so its theorems are not gated
+note: solutions.nora-rule-narrows.Solution is not built by `lake build`, so its theorems are not gated
+$ lake env lean /home/ht2673/Dev/h5i-app-bench/prove/ports/nora/proofs/.lake/h5i/Gate.lean
+gate: 793 theorems in 31 modules checked against propext, Classical.choice, Quot.sound
+
+ports/nora: proofs ok

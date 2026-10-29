@@ -1,3 +1,17 @@
+import Verified.OxicloudDavState
+import Verified.OxicloudUserRole
+import Verified.OxicloudAuthWire
+import Verified.OxicloudBytes
+import Verified.OxicloudSession
+import Verified.OxicloudValidation
+import Verified.OxicloudShare
+import Verified.OxicloudSubjectGroup
+import Verified.OxicloudMagicLink
+import Verified.OxicloudUserState
+import Verified.OxicloudAdmin
+import Verified.OxicloudLiveAuth
+import Verified.OxicloudPolicyDefaults
+import Verified.OxicloudPolicyMetadata
 import Verified.OxicloudDrivePolicy
 import Verified.OxicloudPolicyCompare
 import Verified.OxicloudCheckTotal
@@ -178,5 +192,649 @@ theorem policy_weaker_ok (p d : drivepolicy.Policies) (kind : model.DriveKind)
     (r : alloc.vec.Vec policycompare.Knob) (h : policycompare.weaker_than p d kind = ok r) :
     r.val = PolicyWeakerList p d kind := by
   exact oxicloud_kernel.Verified.OxicloudPolicyCompare.weaker_ok p d kind r h
+
+
+theorem role_wire_canonical (r : userrole.UserRole) (out : alloc.vec.Vec U8)
+    (h : userrole.as_bytes r = ok out) : out.val = SpecKernel.RoleWire r :=
+  Verified.OxicloudUserRole.as_bytes_ok r out h
+
+/-- Stored accounts recognize precisely owner, admin, and user. -/
+
+theorem stored_roles_canonical (raw : Slice U8) (o : Option userrole.UserRole)
+    (h : userrole.from_stored raw = ok o) (r : userrole.UserRole) :
+    (o = some r ↔ SpecKernel.StoredRole raw.val r) :=
+  Verified.OxicloudUserRole.stored_ok raw o h r
+
+/-- Sessions recognize precisely the four canonical role spellings. -/
+
+theorem session_roles_canonical (raw : Slice U8) (o : Option userrole.UserRole)
+    (h : userrole.from_session raw = ok o) (r : userrole.UserRole) :
+    (o = some r ↔ SpecKernel.SessionRole raw.val r) :=
+  Verified.OxicloudUserRole.session_ok raw o h r
+
+/-- A role meets a minimum exactly when its policy level is sufficient. -/
+
+theorem role_requirement_order (r min : userrole.UserRole) (b : Bool)
+    (h : userrole.at_least r min = ok b) :
+    (b = true ↔ SpecKernel.RoleLevel min ≤ SpecKernel.RoleLevel r) :=
+  Verified.OxicloudUserRole.at_least_ok r min b h
+
+/-- Strict privilege comparisons exclude peers and lower roles. -/
+
+theorem role_strict_order (r target : userrole.UserRole) (b : Bool)
+    (h : userrole.outranks r target = ok b) :
+    (b = true ↔ SpecKernel.RoleLevel target < SpecKernel.RoleLevel r) :=
+  Verified.OxicloudUserRole.outranks_ok r target b h
+
+/-- Only the anonymous role has the anonymous flag. -/
+
+theorem anonymous_role_exact (r : userrole.UserRole) (b : Bool)
+    (h : userrole.is_anonymous r = ok b) : (b = true ↔ r = .Anonymous) :=
+  Verified.OxicloudUserRole.anonymous_ok r b h
+
+/-- The privileged flag selects administrators and owners. -/
+
+theorem privileged_roles_exact (r : userrole.UserRole) (b : Bool)
+    (h : userrole.is_privileged r = ok b) : (b = true ↔ r = .Admin ∨ r = .Owner) :=
+  Verified.OxicloudUserRole.privileged_ok r b h
+
+/-- Wire roles meet requirements only through a recognized spelling and sufficient privilege. -/
+
+theorem session_role_requirement (raw : Slice U8) (min : userrole.UserRole) (b : Bool)
+    (h : userrole.str_at_least raw min = ok b) : (b = true ↔ SpecKernel.MeetsRole raw.val min) :=
+  Verified.OxicloudUserRole.str_at_least_ok raw min b h
+
+
+/-- Authorization subjects use their canonical database discriminator. -/
+
+theorem auth_subject_wire (value : model.Subject) (out : alloc.vec.Vec U8)
+    (h : authwire.subject_bytes value = ok out) : out.val = SpecKernel.SubjectWire value :=
+  Verified.OxicloudAuthWire.subject_bytes_ok value out h
+
+/-- Parsing cannot change the subject namespace or identifier. -/
+
+theorem auth_subject_parse (raw : Slice U8) (id : U64) (o : Option model.Subject)
+    (h : authwire.subject_parse raw id = ok o) (value : model.Subject) :
+    (o = some value ↔ raw.val = SpecKernel.SubjectWire value ∧ id = SpecKernel.SubjectId value) :=
+  Verified.OxicloudAuthWire.subject_parse_ok raw id o h value
+
+/-- The projected subject identifier is preserved exactly. -/
+
+theorem auth_subject_id (value : model.Subject) :
+    authwire.subject_id value = ok (SpecKernel.SubjectId value) :=
+  Verified.OxicloudAuthWire.subject_id_ok value
+
+/-- Authorization resources use their canonical database discriminator. -/
+
+theorem auth_resource_wire (value : model.Resource) (out : alloc.vec.Vec U8)
+    (h : authwire.resource_bytes value = ok out) : out.val = SpecKernel.ResourceWire value :=
+  Verified.OxicloudAuthWire.resource_bytes_ok value out h
+
+/-- Parsing cannot change the resource namespace or identifier. -/
+
+theorem auth_resource_parse (raw : Slice U8) (id : U64) (o : Option model.Resource)
+    (h : authwire.resource_parse raw id = ok o) (value : model.Resource) :
+    (o = some value ↔ raw.val = SpecKernel.ResourceWire value ∧ id = SpecKernel.ResourceId value) :=
+  Verified.OxicloudAuthWire.resource_parse_ok raw id o h value
+
+/-- The projected resource identifier is preserved exactly. -/
+
+theorem auth_resource_id (value : model.Resource) :
+    authwire.resource_id value = ok (SpecKernel.ResourceId value) :=
+  Verified.OxicloudAuthWire.resource_id_ok value
+
+/-- Authorization permissions use their canonical database discriminator. -/
+
+theorem auth_permission_wire (value : model.Permission) (out : alloc.vec.Vec U8)
+    (h : authwire.permission_bytes value = ok out) : out.val = SpecKernel.PermissionWire value :=
+  Verified.OxicloudAuthWire.permission_bytes_ok value out h
+
+/-- Parsing cannot change the permission namespace. -/
+
+theorem auth_permission_parse (raw : Slice U8) (o : Option model.Permission)
+    (h : authwire.permission_parse raw = ok o) (value : model.Permission) :
+    (o = some value ↔ raw.val = SpecKernel.PermissionWire value) :=
+  Verified.OxicloudAuthWire.permission_parse_ok raw o h value
+
+/-- The query enumeration is complete and has the stable order. -/
+
+theorem auth_permission_all (out : alloc.vec.Vec model.Permission)
+    (h : authwire.permission_all = ok out) : out.val = SpecKernel.PermissionOrder :=
+  Verified.OxicloudAuthWire.permission_all_ok out h
+
+/-- Authorization roles use their canonical database discriminator. -/
+
+theorem auth_role_wire (value : model.Role) (out : alloc.vec.Vec U8)
+    (h : authwire.role_bytes value = ok out) : out.val = SpecKernel.GrantRoleWire value :=
+  Verified.OxicloudAuthWire.role_bytes_ok value out h
+
+/-- Parsing cannot change the role namespace. -/
+
+theorem auth_role_parse (raw : Slice U8) (o : Option model.Role)
+    (h : authwire.role_parse raw = ok o) (value : model.Role) :
+    (o = some value ↔ raw.val = SpecKernel.GrantRoleWire value) :=
+  Verified.OxicloudAuthWire.role_parse_ok raw o h value
+
+/-- The query enumeration is complete and has the stable order. -/
+
+theorem auth_role_all (out : alloc.vec.Vec model.Role)
+    (h : authwire.role_all = ok out) : out.val = SpecKernel.RoleOrder :=
+  Verified.OxicloudAuthWire.role_all_ok out h
+
+/-- Group and link identities cannot be used as user-row identities. -/
+
+theorem auth_user_identity (s : model.Subject) (id : U64) :
+    authwire.subject_user_id s = ok (some id) ↔ s = .User id :=
+  Verified.OxicloudAuthWire.user_identity s id
+
+/-- Users and groups cannot be used as share-token identities. -/
+
+theorem auth_token_identity (s : model.Subject) (id : U64) :
+    authwire.subject_token_id s = ok (some id) ↔ s = .Token id :=
+  Verified.OxicloudAuthWire.token_identity s id
+
+
+/-- Explicit policy choices take precedence; missing choices inherit defaults. -/
+
+theorem session_origin_wire (o : session.SessionOrigin) (out : alloc.vec.Vec U8)
+    (h : session.origin_bytes o = ok out) : out.val = SpecKernel.OriginWire o :=
+  Verified.OxicloudSession.origin_bytes_ok o out h
+
+/-- Known origins are accepted only with their exact spelling. -/
+
+theorem session_origin_parse (raw : Slice U8) (o : session.SessionOrigin)
+    (h : session.origin_from_wire raw = ok o) : SpecKernel.OriginDecoded raw.val o :=
+  Verified.OxicloudSession.origin_parse_ok raw o h
+
+/-- Restoring a session preserves all identity, binding, revocation, and lifetime observations. -/
+
+theorem session_restoration_readback (snapshot r : session.Session)
+    (h : session.from_raw snapshot.id snapshot.user_id snapshot.refresh_token snapshot.expires_at snapshot.ip_address snapshot.user_agent snapshot.created_at snapshot.revoked snapshot.family_id snapshot.oidc_id_token snapshot.oidc_sid snapshot.dpop_jkt snapshot.origin snapshot.last_seen_at = ok r) :
+    session.id r = ok snapshot.id ∧
+    session.user_id r = ok snapshot.user_id ∧
+    session.refresh_token r = ok snapshot.refresh_token ∧
+    session.expires_at r = ok snapshot.expires_at ∧
+    session.ip_address r = ok snapshot.ip_address ∧
+    session.user_agent r = ok snapshot.user_agent ∧
+    session.created_at r = ok snapshot.created_at ∧
+    session.is_revoked r = ok snapshot.revoked ∧
+    session.family_id r = ok snapshot.family_id ∧
+    session.oidc_id_token r = ok snapshot.oidc_id_token ∧
+    session.oidc_sid r = ok snapshot.oidc_sid ∧
+    session.dpop_jkt r = ok snapshot.dpop_jkt ∧
+    session.origin r = ok snapshot.origin ∧
+    session.last_seen_at r = ok snapshot.last_seen_at :=
+  Verified.OxicloudSession.restored_readback snapshot r h
+
+/-- Revocation preserves security metadata and remains revoked when repeated. -/
+
+theorem session_revocation_frame (s r : session.Session) (h : session.revoke s = ok r) :
+    SpecKernel.SessionRevoked s r ∧ session.revoke r = ok r :=
+  Verified.OxicloudSession.revoke_ok s r h
+
+/-- Binding requires an unbound session and preserves all other security fields. -/
+
+theorem session_binding_frame (s r : session.Session) (key : alloc.vec.Vec U8)
+    (h : session.with_dpop_jkt s key = ok r) : SpecKernel.SessionBound s key r :=
+  Verified.OxicloudSession.bind_ok s r key h
+
+/-- An existing key binding cannot be overwritten. -/
+
+theorem session_binding_immutable (s : session.Session) (key : alloc.vec.Vec U8)
+    (h : s.dpop_jkt ≠ none) : session.with_dpop_jkt s key = fail .panic :=
+  Verified.OxicloudSession.no_rebind s key h
+
+/-- Updating logout metadata preserves identity, revocation, lifetime, and key binding. -/
+
+theorem session_oidc_token_frame (s r : session.Session) (token : alloc.vec.Vec U8)
+    (h : session.with_oidc_id_token s token = ok r) : SpecKernel.SessionTokenAttached s token r :=
+  Verified.OxicloudSession.token_attach_ok s r token h
+
+/-- Updating OIDC session metadata preserves the other security fields. -/
+
+theorem session_oidc_sid_frame (s r : session.Session) (sid : alloc.vec.Vec U8)
+    (h : session.with_oidc_sid s sid = ok r) : SpecKernel.SessionSidAttached s sid r :=
+  Verified.OxicloudSession.sid_attach_ok s r sid h
+
+
+
+/-- Required email verification accepts only an explicit true claim and preserves audit distinctions. -/
+
+theorem verified_email_policy (claim : Option Bool) (required : Bool) (d : validation.EmailDecision)
+    (h : validation.classify_email_verification claim required = ok d) :
+    SpecKernel.VerifiedEmailDecision claim required d :=
+  Verified.OxicloudValidation.email_ok claim required d h
+
+/-- Storage selectors enforce their bounded lowercase ASCII namespace. -/
+
+theorem storage_selector_validation (raw : Slice U8) (r : Bool)
+    (h : validation.is_valid_entry_name raw = ok r) :
+    (r = true ↔ SpecKernel.ValidStorageName raw.val) :=
+  Verified.OxicloudValidation.storage_name_ok raw r h
+
+/-- Login thumbprint validation preserves valid input and rejects malformed length or alphabet. -/
+
+theorem login_thumbprint_validation (raw : Slice U8)
+    (r : core.result.Result (alloc.vec.Vec U8) validation.JktError)
+    (h : validation.validate_dpop_jkt raw = ok r) : SpecKernel.JktDecision raw.val r :=
+  Verified.OxicloudValidation.jkt_ok raw r h
+
+
+
+/-- Share restoration retains the complete target, creator, credential, lifetime, and accounting snapshot. -/
+
+theorem share_restoration_readback (snapshot r : share.Share)
+    (h : share.from_raw snapshot.id snapshot.item_id snapshot.item_name snapshot.item_type snapshot.token snapshot.password_hash snapshot.expires_at snapshot.created_at snapshot.created_by snapshot.access_count = ok r) :
+    share.id r = ok snapshot.id ∧
+    share.item_id r = ok snapshot.item_id ∧
+    share.item_name r = ok snapshot.item_name ∧
+    share.item_type r = ok snapshot.item_type ∧
+    share.token r = ok snapshot.token ∧
+    share.password_hash r = ok snapshot.password_hash ∧
+    share.expires_at r = ok snapshot.expires_at ∧
+    share.created_at r = ok snapshot.created_at ∧
+    share.created_by r = ok snapshot.created_by ∧
+    share.access_count r = ok snapshot.access_count :=
+  Verified.OxicloudShare.restored_readback snapshot r h
+
+/-- Changing password protection preserves the share token, target, creator, and expiry. -/
+
+theorem share_password_frame (s r : share.Share) (hash : Option (alloc.vec.Vec U8))
+    (h : share.with_password s hash = ok r) : SpecKernel.SharePasswordChanged s hash r :=
+  Verified.OxicloudShare.password_change_ok s r hash h
+
+/-- Token changes preserve the password requirement, target, creator, and expiry. -/
+
+theorem share_token_frame (s r : share.Share) (token : alloc.vec.Vec U8)
+    (h : share.with_token s token = ok r) : SpecKernel.ShareTokenChanged s token r :=
+  Verified.OxicloudShare.token_change_ok s r token h
+
+/-- A stored hash determines whether password verification is required. -/
+
+theorem share_password_required (s : share.Share) (r : Bool) (h : share.has_password s = ok r) :
+    (r = true ↔ ∃ hash, s.password_hash = some hash) ∧ (r = false ↔ s.password_hash = none) :=
+  Verified.OxicloudShare.password_required s r h
+
+/-- Successful access accounting cannot wrap or change authorization fields. -/
+
+theorem share_access_accounting (s r : share.Share) (h : share.increment_access_count s = ok r) :
+    SpecKernel.ShareAccessCounted s r :=
+  Verified.OxicloudShare.access_count_ok s r h
+
+/-- Every accepted group name belongs to the bounded ASCII principal namespace. -/
+
+theorem subject_group_namespace (raw : Slice U8)
+    (r : core.result.Result Unit subjectgroup.NameError)
+    (h : subjectgroup.validate_name raw = ok r) :
+    (r = .Ok () ↔ SpecKernel.ValidGroupName raw.val) :=
+  Verified.OxicloudSubjectGroup.validation_exact raw r h
+
+/-- Rejection reasons distinguish length, initial-byte, and subsequent alphabet constraints. -/
+
+theorem subject_group_validation_reasons (raw : Slice U8)
+    (r : core.result.Result Unit subjectgroup.NameError)
+    (h : subjectgroup.validate_name raw = ok r) : SpecKernel.GroupNameDecision raw.val r :=
+  Verified.OxicloudSubjectGroup.validation_ok raw r h
+
+/-- Virtual groups are immutable regardless of their name, description, or timestamps. -/
+
+theorem virtual_group_mutation_policy (group : subjectgroup.SubjectGroup) (r : Bool)
+    (h : subjectgroup.is_immutable group = ok r) :
+    (r = true ↔ group.is_virtual = true) :=
+  Verified.OxicloudSubjectGroup.immutability_ok group r h
+
+/-- Resource tokens use the exact canonical file and folder namespace. -/
+
+theorem magic_resource_wire (value : magiclink.MagicLinkResourceKind) (out : alloc.vec.Vec U8)
+    (h : magiclink.resource_bytes value = ok out) : out.val = SpecKernel.MagicResourceWire value :=
+  Verified.OxicloudMagicLink.resource_bytes_ok value out h
+
+/-- Unknown resource names cannot be interpreted as valid targets. -/
+
+theorem magic_resource_parse (raw : Slice U8) (o : Option magiclink.MagicLinkResourceKind)
+    (h : magiclink.resource_parse raw = ok o) (value : magiclink.MagicLinkResourceKind) :
+    (o = some value ↔ raw.val = SpecKernel.MagicResourceWire value) :=
+  Verified.OxicloudMagicLink.resource_parse_ok raw o h value
+
+/-- Lifecycle states have distinct canonical wire names. -/
+
+theorem magic_status_wire (value : magiclink.MagicLinkStatus) (out : alloc.vec.Vec U8)
+    (h : magiclink.status_bytes value = ok out) : out.val = SpecKernel.MagicStatusWire value :=
+  Verified.OxicloudMagicLink.status_bytes_ok value out h
+
+/-- Only recognized lifecycle names can restore a token state. -/
+
+theorem magic_status_parse (raw : Slice U8) (o : Option magiclink.MagicLinkStatus)
+    (h : magiclink.status_parse raw = ok o) (value : magiclink.MagicLinkStatus) :
+    (o = some value ↔ raw.val = SpecKernel.MagicStatusWire value) :=
+  Verified.OxicloudMagicLink.status_parse_ok raw o h value
+
+/-- Restoration preserves identity, target, browser challenge, and lifecycle evidence. -/
+
+theorem magic_restoration_readback (snapshot r : magiclink.MagicLinkToken)
+    (h : magiclink.from_raw snapshot.id snapshot.token snapshot.user_id snapshot.status snapshot.issued_at snapshot.expires_at snapshot.used_at snapshot.resource_kind snapshot.resource_id snapshot.request_challenge = ok r) :
+    magiclink.id r = ok snapshot.id ∧
+    magiclink.token r = ok snapshot.token ∧
+    magiclink.user_id r = ok snapshot.user_id ∧
+    magiclink.status r = ok snapshot.status ∧
+    magiclink.issued_at r = ok snapshot.issued_at ∧
+    magiclink.expires_at r = ok snapshot.expires_at ∧
+    magiclink.used_at r = ok snapshot.used_at ∧
+    magiclink.resource_kind r = ok snapshot.resource_kind ∧
+    magiclink.resource_id r = ok snapshot.resource_id ∧
+    magiclink.request_challenge r = ok snapshot.request_challenge :=
+  Verified.OxicloudMagicLink.restored_readback snapshot r h
+
+/-- A token expires strictly after its deadline, with nanosecond precision. -/
+
+theorem magic_expiry_rule (s : magiclink.MagicLinkToken) (now : session.Timestamp) (r : Bool)
+    (h : magiclink.is_expired s now = ok r) : (r = true ↔ SpecKernel.TimestampPast now s.expires_at) :=
+  Verified.OxicloudMagicLink.expired_ok s now r h
+
+/-- Redemption requires Pending status and a time at or before expiry. -/
+
+theorem magic_redemption_rule (s : magiclink.MagicLinkToken) (now : session.Timestamp) (r : Bool)
+    (h : magiclink.is_redeemable s now = ok r) : (r = true ↔ SpecKernel.MagicLinkRedeemable s now) :=
+  Verified.OxicloudMagicLink.redeemable_ok s now r h
+
+/-- Federation names are canonical and distinguish the three trust chains. -/
+
+theorem account_federation_wire (value : userstate.FederationKind) (out : alloc.vec.Vec U8)
+    (h : userstate.federation_bytes value = ok out) : out.val = SpecKernel.FederationWire value :=
+  Verified.OxicloudUserState.federation_bytes_ok value out h
+
+/-- Unrecognized federation names cannot select a trust chain. -/
+
+theorem account_federation_parse (raw : Slice U8) (o : Option userstate.FederationKind)
+    (h : userstate.federation_parse raw = ok o) (value : userstate.FederationKind) :
+    (o = some value ↔ raw.val = SpecKernel.FederationWire value) :=
+  Verified.OxicloudUserState.federation_parse_ok raw o h value
+
+/-- Account hydration retains identity, role, credentials, verification, and profile state. -/
+
+theorem account_restoration_readback (snapshot r : userstate.User)
+    (h : userstate.from_data_full snapshot.id snapshot.username snapshot.email snapshot.password_hash snapshot.role snapshot.storage_quota_bytes snapshot.storage_used_bytes snapshot.created_at snapshot.updated_at snapshot.last_login_at snapshot.active snapshot.federation_kind snapshot.federation_issuer snapshot.federation_subject snapshot.image snapshot.is_external snapshot.given_name snapshot.family_name snapshot.email_verified_at snapshot.preferred_locale snapshot.notify_on_share snapshot.ui_preferences = ok r) :
+    userstate.id r = ok snapshot.id ∧
+    userstate.username r = ok snapshot.username ∧
+    userstate.email r = ok snapshot.email ∧
+    userstate.password_hash r = ok snapshot.password_hash ∧
+    userstate.role r = ok snapshot.role ∧
+    userstate.storage_quota_bytes r = ok snapshot.storage_quota_bytes ∧
+    userstate.storage_used_bytes r = ok snapshot.storage_used_bytes ∧
+    userstate.created_at r = ok snapshot.created_at ∧
+    userstate.updated_at r = ok snapshot.updated_at ∧
+    userstate.last_login_at r = ok snapshot.last_login_at ∧
+    userstate.is_active r = ok snapshot.active ∧
+    userstate.federation_kind r = ok snapshot.federation_kind ∧
+    userstate.federation_issuer r = ok snapshot.federation_issuer ∧
+    userstate.federation_subject r = ok snapshot.federation_subject ∧
+    userstate.image r = ok snapshot.image ∧
+    userstate.is_external r = ok snapshot.is_external ∧
+    userstate.given_name r = ok snapshot.given_name ∧
+    userstate.family_name r = ok snapshot.family_name ∧
+    userstate.email_verified_at r = ok snapshot.email_verified_at ∧
+    userstate.preferred_locale r = ok snapshot.preferred_locale ∧
+    userstate.notify_on_share r = ok snapshot.notify_on_share ∧
+    userstate.ui_preferences r = ok snapshot.ui_preferences :=
+  Verified.OxicloudUserState.restored_readback snapshot r h
+
+/-- Minimal hydration preserves supplied state and defaults to internal with no federation or email verification evidence. -/
+
+theorem account_minimal_restoration (snapshot r : userstate.User)
+    (h : userstate.from_data snapshot.id snapshot.username snapshot.email snapshot.password_hash snapshot.role snapshot.storage_quota_bytes snapshot.storage_used_bytes snapshot.created_at snapshot.updated_at snapshot.last_login_at snapshot.active = ok r) :
+    SpecKernel.MinimalAccountRestored snapshot r :=
+  Verified.OxicloudUserState.minimal_restored snapshot r h
+
+/-- Owned decomposition cannot drop or change authorization and credential fields. -/
+
+theorem account_decomposition_preserves_state (s : userstate.User) (p : userstate.UserParts)
+    (h : userstate.into_parts s = ok p) : SpecKernel.AccountPartsPreserved s p :=
+  Verified.OxicloudUserState.parts_preserved s p h
+
+/-- A configured password is identified by presence, including a present empty value. -/
+
+theorem account_password_presence (s : userstate.User) (r : Bool)
+    (h : userstate.has_password s = ok r) : (r = true ↔ ∃ value, s.password_hash = some value) :=
+  Verified.OxicloudUserState.password_presence s r h
+
+/-- Issuer presence is independent of password and subject presence. -/
+
+theorem account_issuer_presence (s : userstate.User) (r : Bool)
+    (h : userstate.is_oidc_user s = ok r) : (r = true ↔ ∃ value, s.federation_issuer = some value) :=
+  Verified.OxicloudUserState.issuer_presence s r h
+
+/-- Email verification requires a stored verification timestamp. -/
+
+theorem account_email_verified (s : userstate.User) (r : Bool)
+    (h : userstate.is_email_verified s = ok r) : (r = true ↔ ∃ value, s.email_verified_at = some value) :=
+  Verified.OxicloudUserState.email_verified s r h
+
+/-- The non-magic-link credential signal requires a password hash or a federation subject. -/
+
+theorem account_login_credential (s : userstate.User) (r : Bool)
+    (h : userstate.has_login_credential s = ok r) : (r = true ↔ SpecKernel.AccountLoginCredential s) :=
+  Verified.OxicloudUserState.credential_presence s r h
+
+/-- Authorization denial visibility labels remain stable. -/
+
+theorem admin_visibility_wire (value : admin.AuthzDenialVisibility) (out : alloc.vec.Vec U8)
+    (h : admin.visibility_bytes value = ok out) : out.val = SpecKernel.AdminVisibilityWire value :=
+  Verified.OxicloudAdmin.visibility_bytes_ok value out h
+
+/-- Administrator denial labels retain their exact audit spelling. -/
+
+theorem admin_denial_wire (value : admin.AdminDenial) (out : alloc.vec.Vec U8)
+    (h : admin.denial_bytes value = ok out) : out.val = SpecKernel.AdminDenialWire value :=
+  Verified.OxicloudAdmin.denial_bytes_ok value out h
+
+/-- Administrator denials identify the failed precondition in the prescribed order. -/
+
+theorem admin_denial_conditions (subject : admin.Principal) (role : userrole.UserRole)
+    (is_external active : Bool) (r : Option admin.AdminDenial)
+    (h : admin.system_admin_denial_reason subject role is_external active = ok r) :
+    (r = none ↔ SpecKernel.SystemAdminAllowed subject role is_external active) ∧
+    (∀ reason, r = some reason → SpecKernel.SystemAdminDenial subject role is_external active reason) :=
+  Verified.OxicloudAdmin.reason_decision_ok subject role is_external active r h
+
+/-- Only live internal users of administrator or owner rank can administer the deployment. -/
+
+theorem system_administrator_policy (subject : admin.Principal) (role : userrole.UserRole)
+    (is_external active : Bool) (r : admin.AdminDecision)
+    (h : admin.require_system_admin subject role is_external active = ok r) :
+    (r = .Allowed ↔ SpecKernel.SystemAdminAllowed subject role is_external active) ∧
+    (∀ reason, r = .Denied reason → SpecKernel.SystemAdminDenial subject role is_external active reason) :=
+  Verified.OxicloudAdmin.required_admin_ok subject role is_external active r h
+
+
+/-- The internal-account restriction classifies external and absent accounts. -/
+
+theorem internal_account_policy (flags : liveauth.FlagsLookup) (id : U128)
+    (r : core.result.Result Unit liveauth.InternalDenial)
+    (h : liveauth.decide_internal_user flags id = ok r) :
+    (r = .Ok () ↔ SpecKernel.InternalAccountAllowed flags) ∧
+    (∀ reason, r = .Err reason → SpecKernel.InternalAccountDenied flags reason) := by
+  exact oxicloud_kernel.Verified.OxicloudLiveAuth.internal_ok flags id r h
+
+/-- Current active accounts supply the current role; inactive and missing accounts revoke. -/
+
+theorem live_account_role_policy (flags : liveauth.FlagsLookup) (id : U128) (claim : Slice U8)
+    (r : liveauth.LiveRole) (h : liveauth.decide_live_role flags id claim = ok r) :
+    SpecKernel.LiveAccountRole flags claim.val r := by
+  exact oxicloud_kernel.Verified.OxicloudLiveAuth.live_role_ok flags id claim r h
+
+/-- Only the canonical anonymous session claim can bypass the account lookup. -/
+
+theorem anonymous_role_lookup_bypass (claim : Slice U8) (r : Option liveauth.LiveRole)
+    (h : liveauth.anonymous_live_role claim = ok r) : SpecKernel.AnonymousLiveRole claim.val r := by
+  exact oxicloud_kernel.Verified.OxicloudLiveAuth.anonymous_ok claim r h
+
+
+theorem policy_knob_name_partition (raw : Slice U8) (knob : policycompare.Knob)
+    (h : policycompare.knob_from_bytes raw = ok knob) : SpecKernel.PolicyKnobParsed raw.val knob := by
+  apply Verified.OxicloudPolicyMetadata.parsed_ok <;> assumption
+
+
+theorem policy_knob_applicability (raw : Slice U8) (kind : model.DriveKind) (r : Bool)
+    (h : policycompare.knob_applies_to_kind_bytes raw kind = ok r) :
+    ∃ k, SpecKernel.PolicyKnobParsed raw.val k ∧ (r = true ↔ SpecKernel.PolicyApplies k kind) := by
+  apply Verified.OxicloudPolicyMetadata.applies_bytes_ok <;> assumption
+
+
+theorem policy_knob_strictness (raw : Slice U8)  (r : policycompare.Strictness)
+    (h : policycompare.knob_strictness_bytes raw = ok r) :
+    ∃ k, SpecKernel.PolicyKnobParsed raw.val k ∧ SpecKernel.PolicyStrictness k r := by
+  apply Verified.OxicloudPolicyMetadata.strictness_bytes_ok <;> assumption
+
+
+theorem policy_knob_value (raw : Slice U8) (p : drivepolicy.Policies) (r : policycompare.KnobValue)
+    (h : policycompare.knob_value_bytes p raw = ok r) :
+    ∃ k, SpecKernel.PolicyKnobParsed raw.val k ∧ SpecKernel.PolicyValue p k r := by
+  apply Verified.OxicloudPolicyMetadata.value_bytes_ok <;> assumption
+
+
+theorem policy_knob_boolean (raw : Slice U8) (p : drivepolicy.Policies) (r : Bool)
+    (h : policycompare.knob_bool_bytes p raw = ok r) :
+    ∃ k, SpecKernel.PolicyKnobParsed raw.val k ∧ r = SpecKernel.PolicyBit p k := by
+  apply Verified.OxicloudPolicyMetadata.bool_bytes_ok <;> assumption
+
+
+theorem policy_refinement_decision (raw : Slice U8) (p q : drivepolicy.Policies) (r : Bool)
+    (h : policycompare.at_least_as_strict_on_bytes p q raw = ok r) :
+    ∃ k, SpecKernel.PolicyKnobParsed raw.val k ∧ (r = true ↔ SpecKernel.PolicyRefines p q k) := by
+  apply Verified.OxicloudPolicyMetadata.refinement_bytes_ok <;> assumption
+
+
+theorem default_knob_eligibility (knob : policycompare.Knob) (kind : model.DriveKind)
+    (r : Option policydefaults.KeyRejection) (h : policydefaults.reject_knob knob kind = ok r) :
+    (r = none ↔ SpecKernel.DefaultKnobAllowed knob kind) ∧
+    (∀ reason, r = some reason → SpecKernel.DefaultKnobRejection knob kind reason) := by
+  apply Verified.OxicloudPolicyDefaults.knob_ok <;> assumption
+
+
+theorem default_input_first_rejection (kind : model.DriveKind) (isObject : Bool)
+    (keys : Slice (alloc.vec.Vec U8)) (r : policydefaults.Validation)
+    (h : policydefaults.validate kind isObject keys = ok r) :
+    SpecKernel.DefaultsValidation kind isObject keys.val r := by
+  apply Verified.OxicloudPolicyDefaults.validation_ok <;> assumption
+
+
+theorem default_input_validation (kind : model.DriveKind) (isObject : Bool)
+    (keys : Slice (alloc.vec.Vec U8)) (r : policydefaults.Validation)
+    (h : policydefaults.validate kind isObject keys = ok r) :
+    (r = .Valid ↔ isObject = true ∧ ∀ raw ∈ keys.val, SpecKernel.DefaultKeyAllowed raw.val kind) := by
+  apply Verified.OxicloudPolicyDefaults.validation_exact <;> assumption
+
+
+
+theorem addressbook_restoration (snapshot : davstate.AddressBook) :
+    (davstate.AddressBook.from_raw snapshot.id snapshot.name snapshot.owner_id snapshot.description snapshot.color snapshot.is_public snapshot.created_at snapshot.updated_at = ok (snapshot)) ∧
+    davstate.AddressBook.impl.id (snapshot) = ok snapshot.id ∧
+    davstate.AddressBook.impl.name (snapshot) = ok snapshot.name ∧
+    davstate.AddressBook.impl.owner_id (snapshot) = ok snapshot.owner_id ∧
+    davstate.AddressBook.impl.description (snapshot) = ok snapshot.description ∧
+    davstate.AddressBook.impl.color (snapshot) = ok snapshot.color ∧
+    davstate.AddressBook.impl.is_public (snapshot) = ok snapshot.is_public ∧
+    davstate.AddressBook.impl.created_at (snapshot) = ok snapshot.created_at ∧
+    davstate.AddressBook.impl.updated_at (snapshot) = ok snapshot.updated_at := by
+  exact Verified.OxicloudDavState.addressbook_restoration snapshot
+
+theorem contact_restoration (snapshot : davstate.Contact) :
+    (davstate.Contact.from_raw snapshot.id snapshot.address_book_id snapshot.uid snapshot.full_name snapshot.first_name snapshot.last_name snapshot.nickname snapshot.email snapshot.phone snapshot.address snapshot.organization snapshot.title snapshot.notes snapshot.photo_url snapshot.birthday snapshot.anniversary snapshot.vcard snapshot.etag snapshot.created_at snapshot.updated_at = ok (snapshot)) ∧
+    davstate.Contact.impl.id (snapshot) = ok snapshot.id ∧
+    davstate.Contact.impl.address_book_id (snapshot) = ok snapshot.address_book_id ∧
+    davstate.Contact.impl.uid (snapshot) = ok snapshot.uid ∧
+    davstate.Contact.impl.full_name (snapshot) = ok snapshot.full_name ∧
+    davstate.Contact.impl.first_name (snapshot) = ok snapshot.first_name ∧
+    davstate.Contact.impl.last_name (snapshot) = ok snapshot.last_name ∧
+    davstate.Contact.impl.nickname (snapshot) = ok snapshot.nickname ∧
+    davstate.Contact.impl.email (snapshot) = ok snapshot.email ∧
+    davstate.Contact.impl.phone (snapshot) = ok snapshot.phone ∧
+    davstate.Contact.impl.address (snapshot) = ok snapshot.address ∧
+    davstate.Contact.impl.organization (snapshot) = ok snapshot.organization ∧
+    davstate.Contact.impl.title (snapshot) = ok snapshot.title ∧
+    davstate.Contact.impl.notes (snapshot) = ok snapshot.notes ∧
+    davstate.Contact.impl.photo_url (snapshot) = ok snapshot.photo_url ∧
+    davstate.Contact.impl.birthday (snapshot) = ok snapshot.birthday ∧
+    davstate.Contact.impl.anniversary (snapshot) = ok snapshot.anniversary ∧
+    davstate.Contact.impl.vcard (snapshot) = ok snapshot.vcard ∧
+    davstate.Contact.impl.etag (snapshot) = ok snapshot.etag ∧
+    davstate.Contact.impl.created_at (snapshot) = ok snapshot.created_at ∧
+    davstate.Contact.impl.updated_at (snapshot) = ok snapshot.updated_at ∧
+    davstate.Contact.into_email (snapshot) = ok snapshot.email := by
+  exact Verified.OxicloudDavState.contact_restoration snapshot
+
+theorem calendartodo_restoration (snapshot : davstate.CalendarTodo) :
+    (davstate.CalendarTodo.with_id snapshot.id snapshot.calendar_id snapshot.summary snapshot.description snapshot.location snapshot.status snapshot.percent_complete snapshot.priority snapshot.start_time snapshot.due_time snapshot.completed_at snapshot.all_day snapshot.rrule snapshot.ical_uid snapshot.ical_data snapshot.created_at snapshot.updated_at = ok ({snapshot with recurrence_id := none})) ∧
+    davstate.CalendarTodo.impl.id ({snapshot with recurrence_id := none}) = ok snapshot.id ∧
+    davstate.CalendarTodo.impl.calendar_id ({snapshot with recurrence_id := none}) = ok snapshot.calendar_id ∧
+    davstate.CalendarTodo.impl.summary ({snapshot with recurrence_id := none}) = ok snapshot.summary ∧
+    davstate.CalendarTodo.impl.description ({snapshot with recurrence_id := none}) = ok snapshot.description ∧
+    davstate.CalendarTodo.impl.location ({snapshot with recurrence_id := none}) = ok snapshot.location ∧
+    davstate.CalendarTodo.impl.status ({snapshot with recurrence_id := none}) = ok snapshot.status ∧
+    davstate.CalendarTodo.impl.percent_complete ({snapshot with recurrence_id := none}) = ok snapshot.percent_complete ∧
+    davstate.CalendarTodo.impl.priority ({snapshot with recurrence_id := none}) = ok snapshot.priority ∧
+    davstate.CalendarTodo.impl.start_time ({snapshot with recurrence_id := none}) = ok snapshot.start_time ∧
+    davstate.CalendarTodo.impl.due_time ({snapshot with recurrence_id := none}) = ok snapshot.due_time ∧
+    davstate.CalendarTodo.impl.completed_at ({snapshot with recurrence_id := none}) = ok snapshot.completed_at ∧
+    davstate.CalendarTodo.impl.all_day ({snapshot with recurrence_id := none}) = ok snapshot.all_day ∧
+    davstate.CalendarTodo.impl.rrule ({snapshot with recurrence_id := none}) = ok snapshot.rrule ∧
+    davstate.CalendarTodo.impl.recurrence_id ({snapshot with recurrence_id := none}) = ok none ∧
+    davstate.CalendarTodo.impl.ical_uid ({snapshot with recurrence_id := none}) = ok snapshot.ical_uid ∧
+    davstate.CalendarTodo.impl.ical_data ({snapshot with recurrence_id := none}) = ok snapshot.ical_data ∧
+    davstate.CalendarTodo.impl.created_at ({snapshot with recurrence_id := none}) = ok snapshot.created_at ∧
+    davstate.CalendarTodo.impl.updated_at ({snapshot with recurrence_id := none}) = ok snapshot.updated_at := by
+  exact Verified.OxicloudDavState.calendartodo_restoration snapshot
+
+theorem audiofilemetadata_restoration (snapshot : davstate.AudioFileMetadata) :
+    (davstate.AudioFileMetadata.with_all_fields snapshot.file_id snapshot.title snapshot.artist snapshot.album snapshot.album_artist snapshot.genre snapshot.track_number snapshot.disc_number snapshot.year snapshot.duration_secs snapshot.bitrate snapshot.sample_rate snapshot.channels snapshot.format snapshot.created_at snapshot.updated_at = ok (snapshot)) ∧
+    davstate.AudioFileMetadata.impl.file_id (snapshot) = ok snapshot.file_id ∧
+    davstate.AudioFileMetadata.impl.title (snapshot) = ok snapshot.title ∧
+    davstate.AudioFileMetadata.impl.artist (snapshot) = ok snapshot.artist ∧
+    davstate.AudioFileMetadata.impl.album (snapshot) = ok snapshot.album ∧
+    davstate.AudioFileMetadata.impl.album_artist (snapshot) = ok snapshot.album_artist ∧
+    davstate.AudioFileMetadata.impl.genre (snapshot) = ok snapshot.genre ∧
+    davstate.AudioFileMetadata.impl.track_number (snapshot) = ok snapshot.track_number ∧
+    davstate.AudioFileMetadata.impl.disc_number (snapshot) = ok snapshot.disc_number ∧
+    davstate.AudioFileMetadata.impl.year (snapshot) = ok snapshot.year ∧
+    davstate.AudioFileMetadata.impl.duration_secs (snapshot) = ok snapshot.duration_secs ∧
+    davstate.AudioFileMetadata.impl.bitrate (snapshot) = ok snapshot.bitrate ∧
+    davstate.AudioFileMetadata.impl.sample_rate (snapshot) = ok snapshot.sample_rate ∧
+    davstate.AudioFileMetadata.impl.channels (snapshot) = ok snapshot.channels ∧
+    davstate.AudioFileMetadata.impl.format (snapshot) = ok snapshot.format ∧
+    davstate.AudioFileMetadata.impl.created_at (snapshot) = ok snapshot.created_at ∧
+    davstate.AudioFileMetadata.impl.updated_at (snapshot) = ok snapshot.updated_at := by
+  exact Verified.OxicloudDavState.audiofilemetadata_restoration snapshot
+
+theorem devicecode_restoration (snapshot : davstate.DeviceCode) :
+    (davstate.DeviceCode.from_raw snapshot.id snapshot.device_code snapshot.user_code snapshot.client_name snapshot.scopes snapshot.status snapshot.user_id snapshot.access_token snapshot.refresh_token snapshot.verification_uri snapshot.verification_uri_complete snapshot.expires_at snapshot.poll_interval_secs snapshot.last_poll_at snapshot.created_at snapshot.authorized_at = ok (snapshot)) ∧
+    davstate.DeviceCode.impl.id (snapshot) = ok snapshot.id ∧
+    davstate.DeviceCode.impl.device_code (snapshot) = ok snapshot.device_code ∧
+    davstate.DeviceCode.impl.user_code (snapshot) = ok snapshot.user_code ∧
+    davstate.DeviceCode.impl.client_name (snapshot) = ok snapshot.client_name ∧
+    davstate.DeviceCode.impl.scopes (snapshot) = ok snapshot.scopes ∧
+    davstate.DeviceCode.impl.status (snapshot) = ok snapshot.status ∧
+    davstate.DeviceCode.impl.user_id (snapshot) = ok snapshot.user_id ∧
+    davstate.DeviceCode.impl.access_token (snapshot) = ok snapshot.access_token ∧
+    davstate.DeviceCode.impl.refresh_token (snapshot) = ok snapshot.refresh_token ∧
+    davstate.DeviceCode.impl.verification_uri (snapshot) = ok snapshot.verification_uri ∧
+    davstate.DeviceCode.impl.verification_uri_complete (snapshot) = ok snapshot.verification_uri_complete ∧
+    davstate.DeviceCode.impl.expires_at (snapshot) = ok snapshot.expires_at ∧
+    davstate.DeviceCode.impl.poll_interval_secs (snapshot) = ok snapshot.poll_interval_secs ∧
+    davstate.DeviceCode.impl.last_poll_at (snapshot) = ok snapshot.last_poll_at ∧
+    davstate.DeviceCode.impl.created_at (snapshot) = ok snapshot.created_at ∧
+    davstate.DeviceCode.impl.authorized_at (snapshot) = ok snapshot.authorized_at := by
+  exact Verified.OxicloudDavState.devicecode_restoration snapshot
+
+theorem trasheditem_restoration (snapshot : davstate.TrashedItem) :
+    (davstate.TrashedItem.from_raw snapshot.id snapshot.original_id snapshot.user_id snapshot.item_type snapshot.name snapshot.original_path snapshot.trashed_at snapshot.deletion_date = ok (snapshot)) ∧
+    davstate.TrashedItem.impl.id (snapshot) = ok snapshot.id ∧
+    davstate.TrashedItem.impl.original_id (snapshot) = ok snapshot.original_id ∧
+    davstate.TrashedItem.impl.user_id (snapshot) = ok snapshot.user_id ∧
+    davstate.TrashedItem.impl.item_type (snapshot) = ok snapshot.item_type ∧
+    davstate.TrashedItem.impl.name (snapshot) = ok snapshot.name ∧
+    davstate.TrashedItem.impl.original_path (snapshot) = ok snapshot.original_path ∧
+    davstate.TrashedItem.impl.trashed_at (snapshot) = ok snapshot.trashed_at ∧
+    davstate.TrashedItem.impl.deletion_date (snapshot) = ok snapshot.deletion_date := by
+  exact Verified.OxicloudDavState.trasheditem_restoration snapshot
 
 end oxicloud_kernel.Properties

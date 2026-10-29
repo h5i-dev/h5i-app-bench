@@ -7463,6 +7463,1587 @@ def account_policy.fold_from
   let acc1 ← account_policy.fold_from_loop policies acc 0#usize
   account_policy.finalize acc1
 
+/-- [kanidm_kernel::acp_defaults::Profile]
+    Source: 'prove/ports/kanidm/kernel/src/acp_defaults.rs', lines 3:0-19:1
+    Visibility: public -/
+structure acp_defaults.Profile where
+  classes : alloc.vec.Vec Std.U16
+  «name» : alloc.vec.Vec Std.U8
+  uuid : Std.U128
+  description : alloc.vec.Vec Std.U8
+  receiver : Std.U8
+  groups : alloc.vec.Vec Std.U128
+  target : alloc.vec.Vec Std.U8
+  search_attrs : alloc.vec.Vec Std.U16
+  modify_present_attrs : alloc.vec.Vec Std.U16
+  modify_removed_attrs : alloc.vec.Vec Std.U16
+  modify_classes : alloc.vec.Vec Std.U16
+  modify_present_classes : alloc.vec.Vec Std.U16
+  modify_remove_classes : alloc.vec.Vec Std.U16
+  create_classes : alloc.vec.Vec Std.U16
+  create_attrs : alloc.vec.Vec Std.U16
+
+/-- [kanidm_kernel::acp_defaults::dl11_oauth2_manage]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_defaults.rs', lines 22:0-40:1
+    Visibility: public -/
+def acp_defaults.dl11_oauth2_manage : Result acp_defaults.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 6#usize [ 15#u16, 3#u16, 0#u16, 1#u16, 2#u16, 4#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 21#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 111#u8,
+        97#u8, 117#u8, 116#u8, 104#u8, 50#u8, 95#u8, 109#u8, 97#u8, 110#u8,
+        97#u8, 103#u8, 101#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 69#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 109#u8, 97#u8, 110#u8,
+        97#u8, 103#u8, 105#u8, 110#u8, 103#u8, 32#u8, 79#u8, 65#u8, 117#u8,
+        116#u8, 104#u8, 50#u8, 32#u8, 114#u8, 101#u8, 115#u8, 111#u8, 117#u8,
+        114#u8, 99#u8, 101#u8, 32#u8, 115#u8, 101#u8, 114#u8, 118#u8, 101#u8,
+        114#u8, 32#u8, 105#u8, 110#u8, 116#u8, 101#u8, 103#u8, 114#u8, 97#u8,
+        116#u8, 105#u8, 111#u8, 110#u8, 115#u8, 46#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 39#u128 ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 76#usize [
+        1#u8, 2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 22#u8, 0#u8, 111#u8, 97#u8, 117#u8, 116#u8, 104#u8, 50#u8,
+        95#u8, 114#u8, 101#u8, 115#u8, 111#u8, 117#u8, 114#u8, 99#u8, 101#u8,
+        95#u8, 115#u8, 101#u8, 114#u8, 118#u8, 101#u8, 114#u8, 3#u8, 2#u8,
+        2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8,
+        8#u8, 0#u8, 114#u8, 101#u8, 99#u8, 121#u8, 99#u8, 108#u8, 101#u8,
+        100#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 9#u8,
+        0#u8, 116#u8, 111#u8, 109#u8, 98#u8, 115#u8, 116#u8, 111#u8, 110#u8,
+        101#u8
+        ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 20#usize [
+        16#u16, 19#u16, 20#u16, 49#u16, 68#u16, 63#u16, 59#u16, 60#u16, 61#u16,
+        62#u16, 56#u16, 50#u16, 53#u16, 54#u16, 51#u16, 57#u16, 31#u16, 64#u16,
+        52#u16, 36#u16
+        ])
+  let v6 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 17#usize [
+        19#u16, 20#u16, 49#u16, 59#u16, 60#u16, 62#u16, 61#u16, 50#u16, 53#u16,
+        54#u16, 51#u16, 57#u16, 31#u16, 64#u16, 52#u16, 34#u16, 35#u16
+        ])
+  let v7 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 19#usize [
+        19#u16, 20#u16, 49#u16, 63#u16, 59#u16, 60#u16, 61#u16, 62#u16, 56#u16,
+        50#u16, 53#u16, 54#u16, 51#u16, 57#u16, 31#u16, 64#u16, 52#u16, 34#u16,
+        35#u16
+        ])
+  let v8 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v9 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 5#usize [ 15#u16, 5#u16, 12#u16, 13#u16, 14#u16 ])
+  let v10 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 17#usize [
+        16#u16, 19#u16, 49#u16, 20#u16, 58#u16, 59#u16, 60#u16, 62#u16, 61#u16,
+        50#u16, 53#u16, 54#u16, 51#u16, 57#u16, 31#u16, 64#u16, 52#u16
+        ])
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933493#u128,
+      description := v2,
+      receiver := 1#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v7,
+      modify_classes := v8,
+      modify_present_classes := v8,
+      modify_remove_classes := v8,
+      create_classes := v9,
+      create_attrs := v10
+    }
+
+/-- [kanidm_kernel::acp_defaults::dl11_acp_manage_v1]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_defaults.rs', lines 43:0-61:1
+    Visibility: public -/
+def acp_defaults.dl11_acp_manage_v1 : Result acp_defaults.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 6#usize [ 15#u16, 3#u16, 0#u16, 1#u16, 2#u16, 4#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 18#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 97#u8,
+        99#u8, 112#u8, 95#u8, 109#u8, 97#u8, 110#u8, 97#u8, 103#u8, 101#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 51#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 97#u8, 99#u8, 99#u8,
+        101#u8, 115#u8, 115#u8, 32#u8, 112#u8, 114#u8, 111#u8, 102#u8, 105#u8,
+        108#u8, 101#u8, 115#u8, 32#u8, 109#u8, 97#u8, 110#u8, 97#u8, 103#u8,
+        101#u8, 109#u8, 101#u8, 110#u8, 116#u8, 46#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 17#u128 ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 76#usize [
+        1#u8, 2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 22#u8, 0#u8, 97#u8, 99#u8, 99#u8, 101#u8, 115#u8, 115#u8,
+        95#u8, 99#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8, 108#u8, 95#u8,
+        112#u8, 114#u8, 111#u8, 102#u8, 105#u8, 108#u8, 101#u8, 3#u8, 2#u8,
+        2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8,
+        8#u8, 0#u8, 114#u8, 101#u8, 99#u8, 121#u8, 99#u8, 108#u8, 101#u8,
+        100#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 9#u8,
+        0#u8, 116#u8, 111#u8, 109#u8, 98#u8, 115#u8, 116#u8, 111#u8, 110#u8,
+        101#u8
+        ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 12#usize [
+        16#u16, 49#u16, 19#u16, 4#u16, 8#u16, 10#u16, 9#u16, 7#u16, 6#u16,
+        5#u16, 3#u16, 2#u16
+        ])
+  let v6 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 5#usize [ 3#u16, 4#u16, 2#u16, 0#u16, 1#u16 ])
+  let v7 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933465#u128,
+      description := v2,
+      receiver := 1#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v5,
+      modify_removed_attrs := v5,
+      modify_classes := v6,
+      modify_present_classes := v7,
+      modify_remove_classes := v7,
+      create_classes := v6,
+      create_attrs := v5
+    }
+
+/-- [kanidm_kernel::acp_defaults::dl11_application_manage_dl8]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_defaults.rs', lines 64:0-82:1
+    Visibility: public -/
+def acp_defaults.dl11_application_manage_dl8
+  : Result acp_defaults.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 6#usize [ 15#u16, 3#u16, 0#u16, 1#u16, 2#u16, 4#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 26#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 97#u8,
+        112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8, 105#u8, 111#u8,
+        110#u8, 95#u8, 109#u8, 97#u8, 110#u8, 97#u8, 103#u8, 101#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 75#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 99#u8, 114#u8, 101#u8,
+        97#u8, 116#u8, 105#u8, 110#u8, 103#u8, 32#u8, 97#u8, 110#u8, 100#u8,
+        32#u8, 100#u8, 101#u8, 108#u8, 101#u8, 116#u8, 105#u8, 110#u8, 103#u8,
+        32#u8, 97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8,
+        105#u8, 111#u8, 110#u8, 115#u8, 32#u8, 105#u8, 110#u8, 32#u8, 116#u8,
+        104#u8, 101#u8, 32#u8, 100#u8, 105#u8, 114#u8, 101#u8, 99#u8, 116#u8,
+        111#u8, 114#u8, 121#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 80#u128 ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 65#usize [
+        1#u8, 2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 11#u8, 0#u8, 97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8,
+        97#u8, 116#u8, 105#u8, 111#u8, 110#u8, 3#u8, 2#u8, 2#u8, 0#u8, 0#u8,
+        5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 8#u8, 0#u8, 114#u8,
+        101#u8, 99#u8, 121#u8, 99#u8, 108#u8, 101#u8, 100#u8, 0#u8, 5#u8, 0#u8,
+        99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 9#u8, 0#u8, 116#u8, 111#u8,
+        109#u8, 98#u8, 115#u8, 116#u8, 111#u8, 110#u8, 101#u8
+        ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 11#usize [
+        16#u16, 80#u16, 49#u16, 19#u16, 20#u16, 43#u16, 78#u16, 12#u16, 79#u16,
+        41#u16, 29#u16
+        ])
+  let v6 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 8#usize [
+        49#u16, 19#u16, 20#u16, 43#u16, 78#u16, 12#u16, 41#u16, 29#u16
+        ])
+  let v7 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 9#usize [
+        49#u16, 19#u16, 20#u16, 43#u16, 78#u16, 12#u16, 79#u16, 41#u16, 29#u16
+        ])
+  let v8 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v9 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 4#usize [ 15#u16, 5#u16, 17#u16, 7#u16 ])
+  let v10 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 8#usize [
+        16#u16, 80#u16, 49#u16, 19#u16, 20#u16, 43#u16, 41#u16, 29#u16
+        ])
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933555#u128,
+      description := v2,
+      receiver := 1#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v7,
+      modify_classes := v8,
+      modify_present_classes := v8,
+      modify_remove_classes := v8,
+      create_classes := v9,
+      create_attrs := v10
+    }
+
+/-- [kanidm_kernel::acp_defaults::dl11_domain_admin_dl9]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_defaults.rs', lines 85:0-103:1
+    Visibility: public -/
+def acp_defaults.dl11_domain_admin_dl9 : Result acp_defaults.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 4#usize [ 15#u16, 3#u16, 2#u16, 4#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 20#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 100#u8,
+        111#u8, 109#u8, 97#u8, 105#u8, 110#u8, 95#u8, 97#u8, 100#u8, 109#u8,
+        105#u8, 110#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 67#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 103#u8, 114#u8, 97#u8,
+        110#u8, 116#u8, 105#u8, 110#u8, 103#u8, 32#u8, 100#u8, 111#u8, 109#u8,
+        97#u8, 105#u8, 110#u8, 32#u8, 105#u8, 110#u8, 102#u8, 111#u8, 32#u8,
+        97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 105#u8, 115#u8, 116#u8, 114#u8,
+        97#u8, 116#u8, 105#u8, 111#u8, 110#u8, 32#u8, 108#u8, 111#u8, 99#u8,
+        97#u8, 108#u8, 108#u8, 121#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 32#u128 ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 89#usize [
+        1#u8, 2#u8, 0#u8, 0#u8, 4#u8, 0#u8, 117#u8, 117#u8, 105#u8, 100#u8,
+        36#u8, 0#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8,
+        45#u8, 48#u8, 48#u8, 48#u8, 48#u8, 45#u8, 48#u8, 48#u8, 48#u8, 48#u8,
+        45#u8, 48#u8, 48#u8, 48#u8, 48#u8, 45#u8, 102#u8, 102#u8, 102#u8,
+        102#u8, 102#u8, 102#u8, 48#u8, 48#u8, 48#u8, 48#u8, 50#u8, 53#u8, 3#u8,
+        2#u8, 2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 8#u8, 0#u8, 114#u8, 101#u8, 99#u8, 121#u8, 99#u8, 108#u8,
+        101#u8, 100#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8,
+        9#u8, 0#u8, 116#u8, 111#u8, 109#u8, 98#u8, 115#u8, 116#u8, 111#u8,
+        110#u8, 101#u8
+        ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 14#usize [
+        16#u16, 49#u16, 80#u16, 22#u16, 23#u16, 25#u16, 24#u16, 38#u16, 26#u16,
+        27#u16, 36#u16, 37#u16, 81#u16, 31#u16
+        ])
+  let v6 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 9#usize [
+        23#u16, 24#u16, 38#u16, 26#u16, 22#u16, 37#u16, 34#u16, 35#u16, 31#u16
+        ])
+  let v7 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 9#usize [
+        23#u16, 26#u16, 24#u16, 38#u16, 22#u16, 37#u16, 34#u16, 35#u16, 31#u16
+        ])
+  let v8 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933478#u128,
+      description := v2,
+      receiver := 1#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v7,
+      modify_classes := v8,
+      modify_present_classes := v8,
+      modify_remove_classes := v8,
+      create_classes := v8,
+      create_attrs := v8
+    }
+
+/-- [kanidm_kernel::acp_defaults::dl11_service_account_entry_manager_v1]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_defaults.rs', lines 106:0-124:1
+    Visibility: public -/
+def acp_defaults.dl11_service_account_entry_manager_v1
+  : Result acp_defaults.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 4#usize [ 15#u16, 3#u16, 2#u16, 4#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 37#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 115#u8,
+        101#u8, 114#u8, 118#u8, 105#u8, 99#u8, 101#u8, 95#u8, 97#u8, 99#u8,
+        99#u8, 111#u8, 117#u8, 110#u8, 116#u8, 95#u8, 101#u8, 110#u8, 116#u8,
+        114#u8, 121#u8, 95#u8, 109#u8, 97#u8, 110#u8, 97#u8, 103#u8, 101#u8,
+        114#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 74#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 97#u8, 108#u8, 108#u8,
+        111#u8, 119#u8, 105#u8, 110#u8, 103#u8, 32#u8, 101#u8, 110#u8, 116#u8,
+        114#u8, 121#u8, 32#u8, 109#u8, 97#u8, 110#u8, 97#u8, 103#u8, 101#u8,
+        114#u8, 115#u8, 32#u8, 116#u8, 111#u8, 32#u8, 109#u8, 111#u8, 100#u8,
+        105#u8, 102#u8, 121#u8, 32#u8, 115#u8, 101#u8, 114#u8, 118#u8, 105#u8,
+        99#u8, 101#u8, 32#u8, 97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8,
+        116#u8, 115#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U128)
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 86#usize [
+        1#u8, 3#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 7#u8, 0#u8, 97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8,
+        116#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 15#u8,
+        0#u8, 115#u8, 101#u8, 114#u8, 118#u8, 105#u8, 99#u8, 101#u8, 95#u8,
+        97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8, 3#u8, 2#u8, 2#u8,
+        0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 8#u8,
+        0#u8, 114#u8, 101#u8, 99#u8, 121#u8, 99#u8, 108#u8, 101#u8, 100#u8,
+        0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 9#u8, 0#u8,
+        116#u8, 111#u8, 109#u8, 98#u8, 115#u8, 116#u8, 111#u8, 110#u8, 101#u8
+        ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 16#usize [
+        16#u16, 49#u16, 68#u16, 80#u16, 29#u16, 20#u16, 69#u16, 30#u16, 42#u16,
+        78#u16, 65#u16, 66#u16, 0#u16, 1#u16, 12#u16, 79#u16
+        ])
+  let v6 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 6#usize [ 20#u16, 69#u16, 66#u16, 0#u16, 1#u16, 12#u16 ])
+  let v7 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 9#usize [
+        20#u16, 69#u16, 66#u16, 78#u16, 65#u16, 0#u16, 1#u16, 12#u16, 79#u16
+        ])
+  let v8 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933537#u128,
+      description := v2,
+      receiver := 2#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v7,
+      modify_classes := v8,
+      modify_present_classes := v8,
+      modify_remove_classes := v8,
+      create_classes := v8,
+      create_attrs := v8
+    }
+
+/-- [kanidm_kernel::acp_defaults::dl11_schema_write_attrs_v1]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_defaults.rs', lines 127:0-145:1
+    Visibility: public -/
+def acp_defaults.dl11_schema_write_attrs_v1 : Result acp_defaults.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 5#usize [ 15#u16, 3#u16, 0#u16, 2#u16, 4#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 26#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 115#u8,
+        99#u8, 104#u8, 101#u8, 109#u8, 97#u8, 95#u8, 119#u8, 114#u8, 105#u8,
+        116#u8, 101#u8, 95#u8, 97#u8, 116#u8, 116#u8, 114#u8, 115#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 56#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 109#u8, 97#u8, 110#u8,
+        97#u8, 103#u8, 101#u8, 109#u8, 101#u8, 110#u8, 116#u8, 32#u8, 111#u8,
+        102#u8, 32#u8, 115#u8, 99#u8, 104#u8, 101#u8, 109#u8, 97#u8, 32#u8,
+        97#u8, 116#u8, 116#u8, 114#u8, 105#u8, 98#u8, 117#u8, 116#u8, 101#u8,
+        115#u8, 46#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 16#u128 ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 67#usize [
+        1#u8, 2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 13#u8, 0#u8, 97#u8, 116#u8, 116#u8, 114#u8, 105#u8, 98#u8,
+        117#u8, 116#u8, 101#u8, 116#u8, 121#u8, 112#u8, 101#u8, 3#u8, 2#u8,
+        2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8,
+        8#u8, 0#u8, 114#u8, 101#u8, 99#u8, 121#u8, 99#u8, 108#u8, 101#u8,
+        100#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 9#u8,
+        0#u8, 116#u8, 111#u8, 109#u8, 98#u8, 115#u8, 116#u8, 111#u8, 110#u8,
+        101#u8
+        ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 8#usize [
+        16#u16, 19#u16, 32#u16, 77#u16, 47#u16, 13#u16, 74#u16, 80#u16
+        ])
+  let v6 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 5#usize [ 19#u16, 32#u16, 77#u16, 47#u16, 74#u16 ])
+  let v7 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v8 ← alloc.vec.FromVecArray.from (Array.make 2#usize [ 15#u16, 8#u16 ])
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933464#u128,
+      description := v2,
+      receiver := 1#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v6,
+      modify_classes := v7,
+      modify_present_classes := v7,
+      modify_remove_classes := v7,
+      create_classes := v8,
+      create_attrs := v5
+    }
+
+/-- [kanidm_kernel::acp_defaults::dl11_group_manage_dl9]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_defaults.rs', lines 148:0-166:1
+    Visibility: public -/
+def acp_defaults.dl11_group_manage_dl9 : Result acp_defaults.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 6#usize [ 15#u16, 3#u16, 0#u16, 1#u16, 2#u16, 4#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 20#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 103#u8,
+        114#u8, 111#u8, 117#u8, 112#u8, 95#u8, 109#u8, 97#u8, 110#u8, 97#u8,
+        103#u8, 101#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 69#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 99#u8, 114#u8, 101#u8,
+        97#u8, 116#u8, 105#u8, 110#u8, 103#u8, 32#u8, 97#u8, 110#u8, 100#u8,
+        32#u8, 100#u8, 101#u8, 108#u8, 101#u8, 116#u8, 105#u8, 110#u8, 103#u8,
+        32#u8, 103#u8, 114#u8, 111#u8, 117#u8, 112#u8, 115#u8, 32#u8, 105#u8,
+        110#u8, 32#u8, 116#u8, 104#u8, 101#u8, 32#u8, 100#u8, 105#u8, 114#u8,
+        101#u8, 99#u8, 116#u8, 111#u8, 114#u8, 121#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 21#u128 ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 108#usize [
+        1#u8, 2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 5#u8, 0#u8, 103#u8, 114#u8, 111#u8, 117#u8, 112#u8, 3#u8, 2#u8,
+        3#u8, 0#u8, 0#u8, 8#u8, 0#u8, 109#u8, 101#u8, 109#u8, 98#u8, 101#u8,
+        114#u8, 111#u8, 102#u8, 36#u8, 0#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8,
+        48#u8, 48#u8, 48#u8, 45#u8, 48#u8, 48#u8, 48#u8, 48#u8, 45#u8, 48#u8,
+        48#u8, 48#u8, 48#u8, 45#u8, 48#u8, 48#u8, 48#u8, 48#u8, 45#u8, 48#u8,
+        48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 49#u8, 48#u8, 48#u8,
+        48#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 8#u8,
+        0#u8, 114#u8, 101#u8, 99#u8, 121#u8, 99#u8, 108#u8, 101#u8, 100#u8,
+        0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 9#u8, 0#u8,
+        116#u8, 111#u8, 109#u8, 98#u8, 115#u8, 116#u8, 111#u8, 110#u8, 101#u8
+        ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 10#usize [
+        16#u16, 49#u16, 80#u16, 68#u16, 80#u16, 19#u16, 43#u16, 45#u16, 28#u16,
+        29#u16
+        ])
+  let v6 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 5#usize [ 49#u16, 19#u16, 43#u16, 45#u16, 29#u16 ])
+  let v7 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v8 ←
+    alloc.vec.FromVecArray.from (Array.make 2#usize [ 15#u16, 11#u16 ])
+  let v9 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 7#usize [
+        16#u16, 49#u16, 80#u16, 19#u16, 43#u16, 45#u16, 29#u16
+        ])
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933474#u128,
+      description := v2,
+      receiver := 1#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v6,
+      modify_classes := v7,
+      modify_present_classes := v7,
+      modify_remove_classes := v7,
+      create_classes := v8,
+      create_attrs := v9
+    }
+
+/-- [kanidm_kernel::acp_defaults::dl11_group_account_policy_manage_dl8]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_defaults.rs', lines 169:0-187:1
+    Visibility: public -/
+def acp_defaults.dl11_group_account_policy_manage_dl8
+  : Result acp_defaults.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 4#usize [ 15#u16, 3#u16, 2#u16, 4#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 35#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 103#u8,
+        114#u8, 111#u8, 117#u8, 112#u8, 95#u8, 97#u8, 99#u8, 99#u8, 111#u8,
+        117#u8, 110#u8, 116#u8, 95#u8, 112#u8, 111#u8, 108#u8, 105#u8, 99#u8,
+        121#u8, 95#u8, 109#u8, 97#u8, 110#u8, 97#u8, 103#u8, 101#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 62#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 109#u8, 97#u8, 110#u8,
+        97#u8, 103#u8, 101#u8, 109#u8, 101#u8, 110#u8, 116#u8, 32#u8, 111#u8,
+        102#u8, 32#u8, 97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8,
+        32#u8, 112#u8, 111#u8, 108#u8, 105#u8, 99#u8, 121#u8, 32#u8, 111#u8,
+        110#u8, 32#u8, 103#u8, 114#u8, 111#u8, 117#u8, 112#u8, 115#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 71#u128 ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 59#usize [
+        1#u8, 2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 5#u8, 0#u8, 103#u8, 114#u8, 111#u8, 117#u8, 112#u8, 3#u8, 2#u8,
+        2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8,
+        8#u8, 0#u8, 114#u8, 101#u8, 99#u8, 121#u8, 99#u8, 108#u8, 101#u8,
+        100#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 9#u8,
+        0#u8, 116#u8, 111#u8, 109#u8, 98#u8, 115#u8, 116#u8, 111#u8, 110#u8,
+        101#u8
+        ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 11#usize [
+        16#u16, 49#u16, 80#u16, 15#u16, 14#u16, 18#u16, 67#u16, 82#u16, 40#u16,
+        39#u16, 11#u16
+        ])
+  let v6 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 9#usize [
+        16#u16, 15#u16, 14#u16, 18#u16, 67#u16, 82#u16, 40#u16, 39#u16, 11#u16
+        ])
+  let v7 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 6#u16 ])
+  let v8 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933513#u128,
+      description := v2,
+      receiver := 1#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v6,
+      modify_classes := v7,
+      modify_present_classes := v8,
+      modify_remove_classes := v8,
+      create_classes := v8,
+      create_attrs := v8
+    }
+
+/-- [kanidm_kernel::acp_defaults::dl11_schema_write_classes_v1]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_defaults.rs', lines 190:0-208:1
+    Visibility: public -/
+def acp_defaults.dl11_schema_write_classes_v1
+  : Result acp_defaults.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 5#usize [ 15#u16, 3#u16, 0#u16, 2#u16, 4#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 28#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 115#u8,
+        99#u8, 104#u8, 101#u8, 109#u8, 97#u8, 95#u8, 119#u8, 114#u8, 105#u8,
+        116#u8, 101#u8, 95#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 101#u8,
+        115#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 53#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 109#u8, 97#u8, 110#u8,
+        97#u8, 103#u8, 101#u8, 109#u8, 101#u8, 110#u8, 116#u8, 32#u8, 111#u8,
+        102#u8, 32#u8, 115#u8, 99#u8, 104#u8, 101#u8, 109#u8, 97#u8, 32#u8,
+        99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 101#u8, 115#u8, 46#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 16#u128 ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 63#usize [
+        1#u8, 2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 9#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 116#u8,
+        121#u8, 112#u8, 101#u8, 3#u8, 2#u8, 2#u8, 0#u8, 0#u8, 5#u8, 0#u8,
+        99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 8#u8, 0#u8, 114#u8, 101#u8,
+        99#u8, 121#u8, 99#u8, 108#u8, 101#u8, 100#u8, 0#u8, 5#u8, 0#u8, 99#u8,
+        108#u8, 97#u8, 115#u8, 115#u8, 9#u8, 0#u8, 116#u8, 111#u8, 109#u8,
+        98#u8, 115#u8, 116#u8, 111#u8, 110#u8, 101#u8
+        ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 8#usize [
+        16#u16, 17#u16, 19#u16, 75#u16, 44#u16, 76#u16, 48#u16, 80#u16
+        ])
+  let v6 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 4#usize [ 49#u16, 19#u16, 44#u16, 48#u16 ])
+  let v7 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 4#usize [ 16#u16, 19#u16, 44#u16, 48#u16 ])
+  let v8 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v9 ←
+    alloc.vec.FromVecArray.from (Array.make 2#usize [ 15#u16, 10#u16 ])
+  let v10 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 6#usize [ 16#u16, 17#u16, 19#u16, 44#u16, 48#u16, 80#u16 ])
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933472#u128,
+      description := v2,
+      receiver := 1#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v7,
+      modify_classes := v8,
+      modify_present_classes := v8,
+      modify_remove_classes := v8,
+      create_classes := v9,
+      create_attrs := v10
+    }
+
+/-- [kanidm_kernel::acp_defaults::dl11_application_entry_manager_dl8]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_defaults.rs', lines 211:0-229:1
+    Visibility: public -/
+def acp_defaults.dl11_application_entry_manager_dl8
+  : Result acp_defaults.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 4#usize [ 15#u16, 3#u16, 2#u16, 4#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 33#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 97#u8,
+        112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8, 105#u8, 111#u8,
+        110#u8, 95#u8, 101#u8, 110#u8, 116#u8, 114#u8, 121#u8, 95#u8, 109#u8,
+        97#u8, 110#u8, 97#u8, 103#u8, 101#u8, 114#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 77#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 97#u8, 108#u8, 108#u8,
+        111#u8, 119#u8, 105#u8, 110#u8, 103#u8, 32#u8, 69#u8, 110#u8, 116#u8,
+        114#u8, 121#u8, 77#u8, 97#u8, 110#u8, 97#u8, 103#u8, 101#u8, 114#u8,
+        32#u8, 116#u8, 111#u8, 32#u8, 114#u8, 101#u8, 97#u8, 100#u8, 32#u8,
+        97#u8, 110#u8, 100#u8, 32#u8, 109#u8, 111#u8, 100#u8, 105#u8, 102#u8,
+        121#u8, 32#u8, 97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8,
+        116#u8, 105#u8, 111#u8, 110#u8, 115#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U128)
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 65#usize [
+        1#u8, 2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 11#u8, 0#u8, 97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8,
+        97#u8, 116#u8, 105#u8, 111#u8, 110#u8, 3#u8, 2#u8, 2#u8, 0#u8, 0#u8,
+        5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 8#u8, 0#u8, 114#u8,
+        101#u8, 99#u8, 121#u8, 99#u8, 108#u8, 101#u8, 100#u8, 0#u8, 5#u8, 0#u8,
+        99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 9#u8, 0#u8, 116#u8, 111#u8,
+        109#u8, 98#u8, 115#u8, 116#u8, 111#u8, 110#u8, 101#u8
+        ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 11#usize [
+        16#u16, 80#u16, 49#u16, 20#u16, 43#u16, 78#u16, 12#u16, 79#u16, 19#u16,
+        41#u16, 29#u16
+        ])
+  let v6 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 7#usize [
+        49#u16, 19#u16, 20#u16, 43#u16, 78#u16, 12#u16, 41#u16
+        ])
+  let v7 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 8#usize [
+        49#u16, 19#u16, 20#u16, 43#u16, 78#u16, 12#u16, 79#u16, 41#u16
+        ])
+  let v8 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933554#u128,
+      description := v2,
+      receiver := 2#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v7,
+      modify_classes := v8,
+      modify_present_classes := v8,
+      modify_remove_classes := v8,
+      create_classes := v8,
+      create_attrs := v8
+    }
+
+/-- [kanidm_kernel::acp_defaults::dl11_sync_account_manage_v1]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_defaults.rs', lines 232:0-250:1
+    Visibility: public -/
+def acp_defaults.dl11_sync_account_manage_v1
+  : Result acp_defaults.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 6#usize [ 15#u16, 3#u16, 0#u16, 1#u16, 2#u16, 4#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 27#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 115#u8,
+        121#u8, 110#u8, 99#u8, 95#u8, 97#u8, 99#u8, 99#u8, 111#u8, 117#u8,
+        110#u8, 116#u8, 95#u8, 109#u8, 97#u8, 110#u8, 97#u8, 103#u8, 101#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 75#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 109#u8, 97#u8, 110#u8,
+        97#u8, 103#u8, 105#u8, 110#u8, 103#u8, 32#u8, 73#u8, 68#u8, 77#u8,
+        32#u8, 115#u8, 121#u8, 110#u8, 99#u8, 104#u8, 114#u8, 111#u8, 110#u8,
+        105#u8, 115#u8, 97#u8, 116#u8, 105#u8, 111#u8, 110#u8, 32#u8, 97#u8,
+        99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8, 115#u8, 32#u8, 47#u8,
+        32#u8, 99#u8, 111#u8, 110#u8, 110#u8, 101#u8, 99#u8, 116#u8, 105#u8,
+        111#u8, 110#u8, 115#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 32#u128 ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 66#usize [
+        1#u8, 2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 12#u8, 0#u8, 115#u8, 121#u8, 110#u8, 99#u8, 95#u8, 97#u8,
+        99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8, 3#u8, 2#u8, 2#u8, 0#u8,
+        0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 8#u8, 0#u8,
+        114#u8, 101#u8, 99#u8, 121#u8, 99#u8, 108#u8, 101#u8, 100#u8, 0#u8,
+        5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 9#u8, 0#u8, 116#u8,
+        111#u8, 109#u8, 98#u8, 115#u8, 116#u8, 111#u8, 110#u8, 101#u8
+        ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 9#usize [
+        16#u16, 80#u16, 49#u16, 19#u16, 33#u16, 72#u16, 71#u16, 73#u16, 70#u16
+        ])
+  let v6 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 5#usize [ 49#u16, 19#u16, 72#u16, 71#u16, 73#u16 ])
+  let v7 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 7#usize [
+        49#u16, 19#u16, 33#u16, 72#u16, 71#u16, 70#u16, 73#u16
+        ])
+  let v8 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v9 ←
+    alloc.vec.FromVecArray.from (Array.make 2#usize [ 15#u16, 18#u16 ])
+  let v10 ←
+    alloc.vec.FromVecArray.from (Array.make 3#usize [ 16#u16, 49#u16, 19#u16 ])
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933541#u128,
+      description := v2,
+      receiver := 1#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v7,
+      modify_classes := v8,
+      modify_present_classes := v8,
+      modify_remove_classes := v8,
+      create_classes := v9,
+      create_attrs := v10
+    }
+
+/-- [kanidm_kernel::acp_defaults::dl12_service_account_entry_manager_v1]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_defaults.rs', lines 253:0-271:1
+    Visibility: public -/
+def acp_defaults.dl12_service_account_entry_manager_v1
+  : Result acp_defaults.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 4#usize [ 15#u16, 3#u16, 2#u16, 4#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 37#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 115#u8,
+        101#u8, 114#u8, 118#u8, 105#u8, 99#u8, 101#u8, 95#u8, 97#u8, 99#u8,
+        99#u8, 111#u8, 117#u8, 110#u8, 116#u8, 95#u8, 101#u8, 110#u8, 116#u8,
+        114#u8, 121#u8, 95#u8, 109#u8, 97#u8, 110#u8, 97#u8, 103#u8, 101#u8,
+        114#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 74#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 97#u8, 108#u8, 108#u8,
+        111#u8, 119#u8, 105#u8, 110#u8, 103#u8, 32#u8, 101#u8, 110#u8, 116#u8,
+        114#u8, 121#u8, 32#u8, 109#u8, 97#u8, 110#u8, 97#u8, 103#u8, 101#u8,
+        114#u8, 115#u8, 32#u8, 116#u8, 111#u8, 32#u8, 109#u8, 111#u8, 100#u8,
+        105#u8, 102#u8, 121#u8, 32#u8, 115#u8, 101#u8, 114#u8, 118#u8, 105#u8,
+        99#u8, 101#u8, 32#u8, 97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8,
+        116#u8, 115#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U128)
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 86#usize [
+        1#u8, 3#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 7#u8, 0#u8, 97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8,
+        116#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 15#u8,
+        0#u8, 115#u8, 101#u8, 114#u8, 118#u8, 105#u8, 99#u8, 101#u8, 95#u8,
+        97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8, 3#u8, 2#u8, 2#u8,
+        0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 8#u8,
+        0#u8, 114#u8, 101#u8, 99#u8, 121#u8, 99#u8, 108#u8, 101#u8, 100#u8,
+        0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 9#u8, 0#u8,
+        116#u8, 111#u8, 109#u8, 98#u8, 115#u8, 116#u8, 111#u8, 110#u8, 101#u8
+        ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 17#usize [
+        16#u16, 49#u16, 68#u16, 80#u16, 29#u16, 20#u16, 69#u16, 30#u16, 42#u16,
+        78#u16, 65#u16, 66#u16, 0#u16, 1#u16, 12#u16, 79#u16, 43#u16
+        ])
+  let v6 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 6#usize [ 20#u16, 69#u16, 66#u16, 0#u16, 1#u16, 12#u16 ])
+  let v7 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 9#usize [
+        20#u16, 69#u16, 66#u16, 78#u16, 65#u16, 0#u16, 1#u16, 12#u16, 79#u16
+        ])
+  let v8 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933537#u128,
+      description := v2,
+      receiver := 2#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v7,
+      modify_classes := v8,
+      modify_present_classes := v8,
+      modify_remove_classes := v8,
+      create_classes := v8,
+      create_attrs := v8
+    }
+
+/-- [kanidm_kernel::acp_defaults::dl12_group_manage_dl9]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_defaults.rs', lines 274:0-292:1
+    Visibility: public -/
+def acp_defaults.dl12_group_manage_dl9 : Result acp_defaults.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 6#usize [ 15#u16, 3#u16, 0#u16, 1#u16, 2#u16, 4#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 20#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 103#u8,
+        114#u8, 111#u8, 117#u8, 112#u8, 95#u8, 109#u8, 97#u8, 110#u8, 97#u8,
+        103#u8, 101#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 69#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 99#u8, 114#u8, 101#u8,
+        97#u8, 116#u8, 105#u8, 110#u8, 103#u8, 32#u8, 97#u8, 110#u8, 100#u8,
+        32#u8, 100#u8, 101#u8, 108#u8, 101#u8, 116#u8, 105#u8, 110#u8, 103#u8,
+        32#u8, 103#u8, 114#u8, 111#u8, 117#u8, 112#u8, 115#u8, 32#u8, 105#u8,
+        110#u8, 32#u8, 116#u8, 104#u8, 101#u8, 32#u8, 100#u8, 105#u8, 114#u8,
+        101#u8, 99#u8, 116#u8, 111#u8, 114#u8, 121#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 21#u128 ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 108#usize [
+        1#u8, 2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 5#u8, 0#u8, 103#u8, 114#u8, 111#u8, 117#u8, 112#u8, 3#u8, 2#u8,
+        3#u8, 0#u8, 0#u8, 8#u8, 0#u8, 109#u8, 101#u8, 109#u8, 98#u8, 101#u8,
+        114#u8, 111#u8, 102#u8, 36#u8, 0#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8,
+        48#u8, 48#u8, 48#u8, 45#u8, 48#u8, 48#u8, 48#u8, 48#u8, 45#u8, 48#u8,
+        48#u8, 48#u8, 48#u8, 45#u8, 48#u8, 48#u8, 48#u8, 48#u8, 45#u8, 48#u8,
+        48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 49#u8, 48#u8, 48#u8,
+        48#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 8#u8,
+        0#u8, 114#u8, 101#u8, 99#u8, 121#u8, 99#u8, 108#u8, 101#u8, 100#u8,
+        0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 9#u8, 0#u8,
+        116#u8, 111#u8, 109#u8, 98#u8, 115#u8, 116#u8, 111#u8, 110#u8, 101#u8
+        ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 11#usize [
+        16#u16, 49#u16, 80#u16, 68#u16, 80#u16, 19#u16, 43#u16, 45#u16, 46#u16,
+        28#u16, 29#u16
+        ])
+  let v6 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 5#usize [ 49#u16, 19#u16, 43#u16, 45#u16, 29#u16 ])
+  let v7 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v8 ←
+    alloc.vec.FromVecArray.from (Array.make 2#usize [ 15#u16, 11#u16 ])
+  let v9 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 7#usize [
+        16#u16, 49#u16, 80#u16, 19#u16, 43#u16, 45#u16, 29#u16
+        ])
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933474#u128,
+      description := v2,
+      receiver := 1#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v6,
+      modify_classes := v7,
+      modify_present_classes := v7,
+      modify_remove_classes := v7,
+      create_classes := v8,
+      create_attrs := v9
+    }
+
+/-- [kanidm_kernel::acp_defaults::dl13_oauth2_manage]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_defaults.rs', lines 295:0-313:1
+    Visibility: public -/
+def acp_defaults.dl13_oauth2_manage : Result acp_defaults.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 6#usize [ 15#u16, 3#u16, 0#u16, 1#u16, 2#u16, 4#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 21#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 111#u8,
+        97#u8, 117#u8, 116#u8, 104#u8, 50#u8, 95#u8, 109#u8, 97#u8, 110#u8,
+        97#u8, 103#u8, 101#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 69#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 109#u8, 97#u8, 110#u8,
+        97#u8, 103#u8, 105#u8, 110#u8, 103#u8, 32#u8, 79#u8, 65#u8, 117#u8,
+        116#u8, 104#u8, 50#u8, 32#u8, 114#u8, 101#u8, 115#u8, 111#u8, 117#u8,
+        114#u8, 99#u8, 101#u8, 32#u8, 115#u8, 101#u8, 114#u8, 118#u8, 101#u8,
+        114#u8, 32#u8, 105#u8, 110#u8, 116#u8, 101#u8, 103#u8, 114#u8, 97#u8,
+        116#u8, 105#u8, 111#u8, 110#u8, 115#u8, 46#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 39#u128 ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 76#usize [
+        1#u8, 2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 22#u8, 0#u8, 111#u8, 97#u8, 117#u8, 116#u8, 104#u8, 50#u8,
+        95#u8, 114#u8, 101#u8, 115#u8, 111#u8, 117#u8, 114#u8, 99#u8, 101#u8,
+        95#u8, 115#u8, 101#u8, 114#u8, 118#u8, 101#u8, 114#u8, 3#u8, 2#u8,
+        2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8,
+        8#u8, 0#u8, 114#u8, 101#u8, 99#u8, 121#u8, 99#u8, 108#u8, 101#u8,
+        100#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 9#u8,
+        0#u8, 116#u8, 111#u8, 109#u8, 98#u8, 115#u8, 116#u8, 111#u8, 110#u8,
+        101#u8
+        ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 21#usize [
+        16#u16, 19#u16, 20#u16, 49#u16, 80#u16, 68#u16, 63#u16, 59#u16, 60#u16,
+        61#u16, 62#u16, 56#u16, 50#u16, 53#u16, 54#u16, 51#u16, 57#u16, 31#u16,
+        64#u16, 52#u16, 36#u16
+        ])
+  let v6 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 17#usize [
+        19#u16, 20#u16, 49#u16, 59#u16, 60#u16, 62#u16, 61#u16, 50#u16, 53#u16,
+        54#u16, 51#u16, 57#u16, 31#u16, 64#u16, 52#u16, 34#u16, 35#u16
+        ])
+  let v7 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 19#usize [
+        19#u16, 20#u16, 49#u16, 63#u16, 59#u16, 60#u16, 61#u16, 62#u16, 56#u16,
+        50#u16, 53#u16, 54#u16, 51#u16, 57#u16, 31#u16, 64#u16, 52#u16, 34#u16,
+        35#u16
+        ])
+  let v8 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v9 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 5#usize [ 15#u16, 5#u16, 12#u16, 13#u16, 14#u16 ])
+  let v10 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 17#usize [
+        16#u16, 19#u16, 49#u16, 20#u16, 58#u16, 59#u16, 60#u16, 62#u16, 61#u16,
+        50#u16, 53#u16, 54#u16, 51#u16, 57#u16, 31#u16, 64#u16, 52#u16
+        ])
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933493#u128,
+      description := v2,
+      receiver := 1#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v7,
+      modify_classes := v8,
+      modify_present_classes := v8,
+      modify_remove_classes := v8,
+      create_classes := v9,
+      create_attrs := v10
+    }
+
+/-- [kanidm_kernel::acp_defaults::dl13_acp_manage_v1]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_defaults.rs', lines 316:0-334:1
+    Visibility: public -/
+def acp_defaults.dl13_acp_manage_v1 : Result acp_defaults.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 6#usize [ 15#u16, 3#u16, 0#u16, 1#u16, 2#u16, 4#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 18#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 97#u8,
+        99#u8, 112#u8, 95#u8, 109#u8, 97#u8, 110#u8, 97#u8, 103#u8, 101#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 51#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 97#u8, 99#u8, 99#u8,
+        101#u8, 115#u8, 115#u8, 32#u8, 112#u8, 114#u8, 111#u8, 102#u8, 105#u8,
+        108#u8, 101#u8, 115#u8, 32#u8, 109#u8, 97#u8, 110#u8, 97#u8, 103#u8,
+        101#u8, 109#u8, 101#u8, 110#u8, 116#u8, 46#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 17#u128 ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 76#usize [
+        1#u8, 2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 22#u8, 0#u8, 97#u8, 99#u8, 99#u8, 101#u8, 115#u8, 115#u8,
+        95#u8, 99#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8, 108#u8, 95#u8,
+        112#u8, 114#u8, 111#u8, 102#u8, 105#u8, 108#u8, 101#u8, 3#u8, 2#u8,
+        2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8,
+        8#u8, 0#u8, 114#u8, 101#u8, 99#u8, 121#u8, 99#u8, 108#u8, 101#u8,
+        100#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 9#u8,
+        0#u8, 116#u8, 111#u8, 109#u8, 98#u8, 115#u8, 116#u8, 111#u8, 110#u8,
+        101#u8
+        ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 13#usize [
+        16#u16, 49#u16, 80#u16, 19#u16, 4#u16, 8#u16, 10#u16, 9#u16, 7#u16,
+        6#u16, 5#u16, 3#u16, 2#u16
+        ])
+  let v6 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 12#usize [
+        16#u16, 49#u16, 19#u16, 4#u16, 8#u16, 10#u16, 9#u16, 7#u16, 6#u16,
+        5#u16, 3#u16, 2#u16
+        ])
+  let v7 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 5#usize [ 3#u16, 4#u16, 2#u16, 0#u16, 1#u16 ])
+  let v8 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933465#u128,
+      description := v2,
+      receiver := 1#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v6,
+      modify_classes := v7,
+      modify_present_classes := v8,
+      modify_remove_classes := v8,
+      create_classes := v7,
+      create_attrs := v6
+    }
+
+/-- [kanidm_kernel::acp_defaults::dl13_application_manage_dl8]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_defaults.rs', lines 337:0-355:1
+    Visibility: public -/
+def acp_defaults.dl13_application_manage_dl8
+  : Result acp_defaults.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 6#usize [ 15#u16, 3#u16, 0#u16, 1#u16, 2#u16, 4#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 26#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 97#u8,
+        112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8, 105#u8, 111#u8,
+        110#u8, 95#u8, 109#u8, 97#u8, 110#u8, 97#u8, 103#u8, 101#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 75#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 99#u8, 114#u8, 101#u8,
+        97#u8, 116#u8, 105#u8, 110#u8, 103#u8, 32#u8, 97#u8, 110#u8, 100#u8,
+        32#u8, 100#u8, 101#u8, 108#u8, 101#u8, 116#u8, 105#u8, 110#u8, 103#u8,
+        32#u8, 97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8,
+        105#u8, 111#u8, 110#u8, 115#u8, 32#u8, 105#u8, 110#u8, 32#u8, 116#u8,
+        104#u8, 101#u8, 32#u8, 100#u8, 105#u8, 114#u8, 101#u8, 99#u8, 116#u8,
+        111#u8, 114#u8, 121#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 80#u128 ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 65#usize [
+        1#u8, 2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 11#u8, 0#u8, 97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8,
+        97#u8, 116#u8, 105#u8, 111#u8, 110#u8, 3#u8, 2#u8, 2#u8, 0#u8, 0#u8,
+        5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 8#u8, 0#u8, 114#u8,
+        101#u8, 99#u8, 121#u8, 99#u8, 108#u8, 101#u8, 100#u8, 0#u8, 5#u8, 0#u8,
+        99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 9#u8, 0#u8, 116#u8, 111#u8,
+        109#u8, 98#u8, 115#u8, 116#u8, 111#u8, 110#u8, 101#u8
+        ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 12#usize [
+        16#u16, 80#u16, 49#u16, 68#u16, 19#u16, 20#u16, 43#u16, 78#u16, 12#u16,
+        79#u16, 41#u16, 29#u16
+        ])
+  let v6 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 8#usize [
+        49#u16, 19#u16, 20#u16, 43#u16, 78#u16, 12#u16, 41#u16, 29#u16
+        ])
+  let v7 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 9#usize [
+        49#u16, 19#u16, 20#u16, 43#u16, 78#u16, 12#u16, 79#u16, 41#u16, 29#u16
+        ])
+  let v8 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v9 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 4#usize [ 15#u16, 5#u16, 17#u16, 7#u16 ])
+  let v10 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 8#usize [
+        16#u16, 80#u16, 49#u16, 19#u16, 20#u16, 43#u16, 41#u16, 29#u16
+        ])
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933555#u128,
+      description := v2,
+      receiver := 1#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v7,
+      modify_classes := v8,
+      modify_present_classes := v8,
+      modify_remove_classes := v8,
+      create_classes := v9,
+      create_attrs := v10
+    }
+
+/-- [kanidm_kernel::acp_defaults::dl13_application_entry_manager_dl8]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_defaults.rs', lines 358:0-376:1
+    Visibility: public -/
+def acp_defaults.dl13_application_entry_manager_dl8
+  : Result acp_defaults.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 4#usize [ 15#u16, 3#u16, 2#u16, 4#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 33#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 97#u8,
+        112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8, 105#u8, 111#u8,
+        110#u8, 95#u8, 101#u8, 110#u8, 116#u8, 114#u8, 121#u8, 95#u8, 109#u8,
+        97#u8, 110#u8, 97#u8, 103#u8, 101#u8, 114#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 77#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 97#u8, 108#u8, 108#u8,
+        111#u8, 119#u8, 105#u8, 110#u8, 103#u8, 32#u8, 69#u8, 110#u8, 116#u8,
+        114#u8, 121#u8, 77#u8, 97#u8, 110#u8, 97#u8, 103#u8, 101#u8, 114#u8,
+        32#u8, 116#u8, 111#u8, 32#u8, 114#u8, 101#u8, 97#u8, 100#u8, 32#u8,
+        97#u8, 110#u8, 100#u8, 32#u8, 109#u8, 111#u8, 100#u8, 105#u8, 102#u8,
+        121#u8, 32#u8, 97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8,
+        116#u8, 105#u8, 111#u8, 110#u8, 115#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U128)
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 65#usize [
+        1#u8, 2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 11#u8, 0#u8, 97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8,
+        97#u8, 116#u8, 105#u8, 111#u8, 110#u8, 3#u8, 2#u8, 2#u8, 0#u8, 0#u8,
+        5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 8#u8, 0#u8, 114#u8,
+        101#u8, 99#u8, 121#u8, 99#u8, 108#u8, 101#u8, 100#u8, 0#u8, 5#u8, 0#u8,
+        99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 9#u8, 0#u8, 116#u8, 111#u8,
+        109#u8, 98#u8, 115#u8, 116#u8, 111#u8, 110#u8, 101#u8
+        ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 12#usize [
+        16#u16, 80#u16, 49#u16, 68#u16, 20#u16, 43#u16, 78#u16, 12#u16, 79#u16,
+        19#u16, 41#u16, 29#u16
+        ])
+  let v6 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 7#usize [
+        49#u16, 19#u16, 20#u16, 43#u16, 78#u16, 12#u16, 41#u16
+        ])
+  let v7 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 8#usize [
+        49#u16, 19#u16, 20#u16, 43#u16, 78#u16, 12#u16, 79#u16, 41#u16
+        ])
+  let v8 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933554#u128,
+      description := v2,
+      receiver := 2#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v7,
+      modify_classes := v8,
+      modify_present_classes := v8,
+      modify_remove_classes := v8,
+      create_classes := v8,
+      create_attrs := v8
+    }
+
+/-- [kanidm_kernel::acp_defaults::dl13_sync_account_manage_v1]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_defaults.rs', lines 379:0-397:1
+    Visibility: public -/
+def acp_defaults.dl13_sync_account_manage_v1
+  : Result acp_defaults.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 6#usize [ 15#u16, 3#u16, 0#u16, 1#u16, 2#u16, 4#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 27#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 115#u8,
+        121#u8, 110#u8, 99#u8, 95#u8, 97#u8, 99#u8, 99#u8, 111#u8, 117#u8,
+        110#u8, 116#u8, 95#u8, 109#u8, 97#u8, 110#u8, 97#u8, 103#u8, 101#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 75#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 109#u8, 97#u8, 110#u8,
+        97#u8, 103#u8, 105#u8, 110#u8, 103#u8, 32#u8, 73#u8, 68#u8, 77#u8,
+        32#u8, 115#u8, 121#u8, 110#u8, 99#u8, 104#u8, 114#u8, 111#u8, 110#u8,
+        105#u8, 115#u8, 97#u8, 116#u8, 105#u8, 111#u8, 110#u8, 32#u8, 97#u8,
+        99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8, 115#u8, 32#u8, 47#u8,
+        32#u8, 99#u8, 111#u8, 110#u8, 110#u8, 101#u8, 99#u8, 116#u8, 105#u8,
+        111#u8, 110#u8, 115#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 32#u128 ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 66#usize [
+        1#u8, 2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 12#u8, 0#u8, 115#u8, 121#u8, 110#u8, 99#u8, 95#u8, 97#u8,
+        99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8, 3#u8, 2#u8, 2#u8, 0#u8,
+        0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 8#u8, 0#u8,
+        114#u8, 101#u8, 99#u8, 121#u8, 99#u8, 108#u8, 101#u8, 100#u8, 0#u8,
+        5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 9#u8, 0#u8, 116#u8,
+        111#u8, 109#u8, 98#u8, 115#u8, 116#u8, 111#u8, 110#u8, 101#u8
+        ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 9#usize [
+        16#u16, 49#u16, 80#u16, 19#u16, 33#u16, 72#u16, 71#u16, 73#u16, 70#u16
+        ])
+  let v6 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 5#usize [ 49#u16, 19#u16, 72#u16, 71#u16, 73#u16 ])
+  let v7 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 7#usize [
+        49#u16, 19#u16, 33#u16, 72#u16, 71#u16, 70#u16, 73#u16
+        ])
+  let v8 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v9 ←
+    alloc.vec.FromVecArray.from (Array.make 2#usize [ 15#u16, 18#u16 ])
+  let v10 ←
+    alloc.vec.FromVecArray.from (Array.make 3#usize [ 16#u16, 49#u16, 19#u16 ])
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933541#u128,
+      description := v2,
+      receiver := 1#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v7,
+      modify_classes := v8,
+      modify_present_classes := v8,
+      modify_remove_classes := v8,
+      create_classes := v9,
+      create_attrs := v10
+    }
+
+/-- [kanidm_kernel::acp_defaults::dl14_oauth2_manage]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_defaults.rs', lines 400:0-418:1
+    Visibility: public -/
+def acp_defaults.dl14_oauth2_manage : Result acp_defaults.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 6#usize [ 15#u16, 3#u16, 0#u16, 1#u16, 2#u16, 4#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 21#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 111#u8,
+        97#u8, 117#u8, 116#u8, 104#u8, 50#u8, 95#u8, 109#u8, 97#u8, 110#u8,
+        97#u8, 103#u8, 101#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 69#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 109#u8, 97#u8, 110#u8,
+        97#u8, 103#u8, 105#u8, 110#u8, 103#u8, 32#u8, 79#u8, 65#u8, 117#u8,
+        116#u8, 104#u8, 50#u8, 32#u8, 114#u8, 101#u8, 115#u8, 111#u8, 117#u8,
+        114#u8, 99#u8, 101#u8, 32#u8, 115#u8, 101#u8, 114#u8, 118#u8, 101#u8,
+        114#u8, 32#u8, 105#u8, 110#u8, 116#u8, 101#u8, 103#u8, 114#u8, 97#u8,
+        116#u8, 105#u8, 111#u8, 110#u8, 115#u8, 46#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 39#u128 ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 76#usize [
+        1#u8, 2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 22#u8, 0#u8, 111#u8, 97#u8, 117#u8, 116#u8, 104#u8, 50#u8,
+        95#u8, 114#u8, 101#u8, 115#u8, 111#u8, 117#u8, 114#u8, 99#u8, 101#u8,
+        95#u8, 115#u8, 101#u8, 114#u8, 118#u8, 101#u8, 114#u8, 3#u8, 2#u8,
+        2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8,
+        8#u8, 0#u8, 114#u8, 101#u8, 99#u8, 121#u8, 99#u8, 108#u8, 101#u8,
+        100#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 9#u8,
+        0#u8, 116#u8, 111#u8, 109#u8, 98#u8, 115#u8, 116#u8, 111#u8, 110#u8,
+        101#u8
+        ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 22#usize [
+        16#u16, 19#u16, 20#u16, 49#u16, 80#u16, 68#u16, 63#u16, 59#u16, 60#u16,
+        61#u16, 62#u16, 56#u16, 50#u16, 53#u16, 54#u16, 55#u16, 51#u16, 57#u16,
+        31#u16, 64#u16, 52#u16, 36#u16
+        ])
+  let v6 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 18#usize [
+        19#u16, 20#u16, 49#u16, 59#u16, 60#u16, 62#u16, 61#u16, 50#u16, 53#u16,
+        54#u16, 55#u16, 51#u16, 57#u16, 31#u16, 64#u16, 52#u16, 34#u16, 35#u16
+        ])
+  let v7 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 20#usize [
+        19#u16, 20#u16, 49#u16, 63#u16, 59#u16, 60#u16, 61#u16, 62#u16, 56#u16,
+        50#u16, 53#u16, 54#u16, 55#u16, 51#u16, 57#u16, 31#u16, 64#u16, 52#u16,
+        34#u16, 35#u16
+        ])
+  let v8 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v9 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 5#usize [ 15#u16, 5#u16, 12#u16, 13#u16, 14#u16 ])
+  let v10 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 18#usize [
+        16#u16, 19#u16, 49#u16, 20#u16, 58#u16, 59#u16, 60#u16, 62#u16, 61#u16,
+        50#u16, 53#u16, 54#u16, 55#u16, 51#u16, 57#u16, 31#u16, 64#u16, 52#u16
+        ])
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933493#u128,
+      description := v2,
+      receiver := 1#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v7,
+      modify_classes := v8,
+      modify_present_classes := v8,
+      modify_remove_classes := v8,
+      create_classes := v9,
+      create_attrs := v10
+    }
+
+/-- [kanidm_kernel::acp_defaults::dl14_domain_admin_dl9]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_defaults.rs', lines 421:0-439:1
+    Visibility: public -/
+def acp_defaults.dl14_domain_admin_dl9 : Result acp_defaults.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 4#usize [ 15#u16, 3#u16, 2#u16, 4#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 20#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 100#u8,
+        111#u8, 109#u8, 97#u8, 105#u8, 110#u8, 95#u8, 97#u8, 100#u8, 109#u8,
+        105#u8, 110#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 67#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 103#u8, 114#u8, 97#u8,
+        110#u8, 116#u8, 105#u8, 110#u8, 103#u8, 32#u8, 100#u8, 111#u8, 109#u8,
+        97#u8, 105#u8, 110#u8, 32#u8, 105#u8, 110#u8, 102#u8, 111#u8, 32#u8,
+        97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 105#u8, 115#u8, 116#u8, 114#u8,
+        97#u8, 116#u8, 105#u8, 111#u8, 110#u8, 32#u8, 108#u8, 111#u8, 99#u8,
+        97#u8, 108#u8, 108#u8, 121#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 32#u128 ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 89#usize [
+        1#u8, 2#u8, 0#u8, 0#u8, 4#u8, 0#u8, 117#u8, 117#u8, 105#u8, 100#u8,
+        36#u8, 0#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8,
+        45#u8, 48#u8, 48#u8, 48#u8, 48#u8, 45#u8, 48#u8, 48#u8, 48#u8, 48#u8,
+        45#u8, 48#u8, 48#u8, 48#u8, 48#u8, 45#u8, 102#u8, 102#u8, 102#u8,
+        102#u8, 102#u8, 102#u8, 48#u8, 48#u8, 48#u8, 48#u8, 50#u8, 53#u8, 3#u8,
+        2#u8, 2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 8#u8, 0#u8, 114#u8, 101#u8, 99#u8, 121#u8, 99#u8, 108#u8,
+        101#u8, 100#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8,
+        9#u8, 0#u8, 116#u8, 111#u8, 109#u8, 98#u8, 115#u8, 116#u8, 111#u8,
+        110#u8, 101#u8
+        ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 15#usize [
+        16#u16, 49#u16, 80#u16, 22#u16, 21#u16, 23#u16, 25#u16, 24#u16, 38#u16,
+        26#u16, 27#u16, 36#u16, 37#u16, 81#u16, 31#u16
+        ])
+  let v6 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 10#usize [
+        23#u16, 24#u16, 38#u16, 26#u16, 22#u16, 21#u16, 37#u16, 34#u16, 35#u16,
+        31#u16
+        ])
+  let v7 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 10#usize [
+        23#u16, 26#u16, 24#u16, 38#u16, 22#u16, 21#u16, 37#u16, 34#u16, 35#u16,
+        31#u16
+        ])
+  let v8 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933478#u128,
+      description := v2,
+      receiver := 1#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v7,
+      modify_classes := v8,
+      modify_present_classes := v8,
+      modify_remove_classes := v8,
+      create_classes := v8,
+      create_attrs := v8
+    }
+
 /-- [kanidm_kernel::credential_commit::Policy]
     Source: 'prove/ports/kanidm/kernel/src/credential_commit.rs', lines 5:0-5:94
     Visibility: public -/
@@ -7624,6 +9205,6340 @@ def credential_commit.can_commit
         attestation_unsatisfiable,
         no_valid_credentials := false
       }
+
+/-- [kanidm_kernel::entry_validation::Attribute]
+    Source: 'prove/ports/kanidm/kernel/src/entry_validation.rs', lines 6:0-11:1
+    Visibility: public -/
+structure entry_validation.Attribute where
+  key : Std.U16
+  count : Std.Usize
+  «syntax» : Std.U16
+  valid : Bool
+
+/-- [kanidm_kernel::entry_validation::AttributeSchema]
+    Source: 'prove/ports/kanidm/kernel/src/entry_validation.rs', lines 13:0-19:1
+    Visibility: public -/
+structure entry_validation.AttributeSchema where
+  key : Std.U16
+  «name» : Std.U16
+  phantom : Bool
+  multi : Bool
+  «syntax» : Std.U16
+
+/-- [kanidm_kernel::entry_validation::ClassSchema]
+    Source: 'prove/ports/kanidm/kernel/src/entry_validation.rs', lines 21:0-31:1
+    Visibility: public -/
+structure entry_validation.ClassSchema where
+  key : Std.U16
+  systemmust : alloc.vec.Vec Std.U16
+  must : alloc.vec.Vec Std.U16
+  systemmay : alloc.vec.Vec Std.U16
+  may : alloc.vec.Vec Std.U16
+  systemsupplements : alloc.vec.Vec Std.U16
+  supplements : alloc.vec.Vec Std.U16
+  systemexcludes : alloc.vec.Vec Std.U16
+  excludes : alloc.vec.Vec Std.U16
+
+/-- [kanidm_kernel::entry_validation::Entry]
+    Source: 'prove/ports/kanidm/kernel/src/entry_validation.rs', lines 33:0-37:1
+    Visibility: public -/
+structure entry_validation.Entry where
+  class_present : Bool
+  classes : Option (alloc.vec.Vec Std.U16)
+  attrs : alloc.vec.Vec entry_validation.Attribute
+
+/-- [kanidm_kernel::entry_validation::Error]
+    Source: 'prove/ports/kanidm/kernel/src/entry_validation.rs', lines 39:0-50:1
+    Visibility: public -/
+@[discriminant isize]
+inductive entry_validation.Error where
+| NoClassFound : entry_validation.Error
+| InvalidClass : alloc.vec.Vec Std.U16 → entry_validation.Error
+| SupplementsNotSatisfied : alloc.vec.Vec Std.U16 → entry_validation.Error
+| ExcludesNotSatisfied : alloc.vec.Vec Std.U16 → entry_validation.Error
+| Corrupted : entry_validation.Error
+| MissingMustAttribute : alloc.vec.Vec Std.U16 → entry_validation.Error
+| PhantomAttribute : Std.U16 → entry_validation.Error
+| InvalidAttribute : Std.U16 → entry_validation.Error
+| InvalidAttributeSyntax : Std.U16 → entry_validation.Error
+| AttributeNotValidForClass : Std.U16 → entry_validation.Error
+
+/-- [kanidm_kernel::entry_validation::contains]: loop body 0:
+    Source: 'prove/ports/kanidm/kernel/src/entry_validation.rs', lines 53:4-60:1
+    Visibility: public -/
+@[rust_loop_body]
+def entry_validation.contains_loop.body
+  (xs : Slice Std.U16) (key : Std.U16) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := Slice.len xs
+  if i < i1
+  then
+    let i2 ← Slice.index_usize xs i
+    if i2 = key
+    then ok (done true)
+    else let i3 ← i + 1#usize
+         ok (cont i3)
+  else ok (done false)
+
+/-- [kanidm_kernel::entry_validation::contains]: loop 0:
+    Source: 'prove/ports/kanidm/kernel/src/entry_validation.rs', lines 53:4-60:1
+    Visibility: public -/
+@[rust_loop]
+def entry_validation.contains_loop
+  (xs : Slice Std.U16) (key : Std.U16) (i : Std.Usize) : Result Bool := do
+  loop
+    (fun i1 => entry_validation.contains_loop.body xs key i1)
+    i
+
+/-- [kanidm_kernel::entry_validation::contains]:
+    Source: 'prove/ports/kanidm/kernel/src/entry_validation.rs', lines 51:0-60:1
+    Visibility: public -/
+@[reducible]
+def entry_validation.contains
+  (xs : Slice Std.U16) (key : Std.U16) : Result Bool := do
+  entry_validation.contains_loop xs key 0#usize
+
+/-- [kanidm_kernel::entry_validation::class_index]: loop body 0:
+    Source: 'prove/ports/kanidm/kernel/src/entry_validation.rs', lines 63:4-70:1
+    Visibility: public -/
+@[rust_loop_body]
+def entry_validation.class_index_loop.body
+  (xs : Slice entry_validation.ClassSchema) (key : Std.U16) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize (Option Std.Usize))
+  := do
+  let i1 := Slice.len xs
+  if i < i1
+  then
+    let cs ← Slice.index_usize xs i
+    if cs.key = key
+    then ok (done (some i))
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else ok (done none)
+
+/-- [kanidm_kernel::entry_validation::class_index]: loop 0:
+    Source: 'prove/ports/kanidm/kernel/src/entry_validation.rs', lines 63:4-70:1
+    Visibility: public -/
+@[rust_loop]
+def entry_validation.class_index_loop
+  (xs : Slice entry_validation.ClassSchema) (key : Std.U16) (i : Std.Usize) :
+  Result (Option Std.Usize)
+  := do
+  loop
+    (fun i1 => entry_validation.class_index_loop.body xs key i1)
+    i
+
+/-- [kanidm_kernel::entry_validation::class_index]:
+    Source: 'prove/ports/kanidm/kernel/src/entry_validation.rs', lines 61:0-70:1
+    Visibility: public -/
+@[reducible]
+def entry_validation.class_index
+  (xs : Slice entry_validation.ClassSchema) (key : Std.U16) :
+  Result (Option Std.Usize)
+  := do
+  entry_validation.class_index_loop xs key 0#usize
+
+/-- [kanidm_kernel::entry_validation::attribute_index]: loop body 0:
+    Source: 'prove/ports/kanidm/kernel/src/entry_validation.rs', lines 73:4-80:1
+    Visibility: public -/
+@[rust_loop_body]
+def entry_validation.attribute_index_loop.body
+  (xs : Slice entry_validation.AttributeSchema) (key : Std.U16) (i : Std.Usize)
+  :
+  Result (ControlFlow Std.Usize (Option Std.Usize))
+  := do
+  let i1 := Slice.len xs
+  if i < i1
+  then
+    let «as» ← Slice.index_usize xs i
+    if «as».key = key
+    then ok (done (some i))
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else ok (done none)
+
+/-- [kanidm_kernel::entry_validation::attribute_index]: loop 0:
+    Source: 'prove/ports/kanidm/kernel/src/entry_validation.rs', lines 73:4-80:1
+    Visibility: public -/
+@[rust_loop]
+def entry_validation.attribute_index_loop
+  (xs : Slice entry_validation.AttributeSchema) (key : Std.U16) (i : Std.Usize)
+  :
+  Result (Option Std.Usize)
+  := do
+  loop
+    (fun i1 => entry_validation.attribute_index_loop.body xs key i1)
+    i
+
+/-- [kanidm_kernel::entry_validation::attribute_index]:
+    Source: 'prove/ports/kanidm/kernel/src/entry_validation.rs', lines 71:0-80:1
+    Visibility: public -/
+@[reducible]
+def entry_validation.attribute_index
+  (xs : Slice entry_validation.AttributeSchema) (key : Std.U16) :
+  Result (Option Std.Usize)
+  := do
+  entry_validation.attribute_index_loop xs key 0#usize
+
+/-- [kanidm_kernel::entry_validation::present]: loop body 0:
+    Source: 'prove/ports/kanidm/kernel/src/entry_validation.rs', lines 83:4-90:1
+    Visibility: public -/
+@[rust_loop_body]
+def entry_validation.present_loop.body
+  (xs : Slice entry_validation.Attribute) (key : Std.U16) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := Slice.len xs
+  if i < i1
+  then
+    let a ← Slice.index_usize xs i
+    if a.key = key
+    then ok (done true)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else ok (done false)
+
+/-- [kanidm_kernel::entry_validation::present]: loop 0:
+    Source: 'prove/ports/kanidm/kernel/src/entry_validation.rs', lines 83:4-90:1
+    Visibility: public -/
+@[rust_loop]
+def entry_validation.present_loop
+  (xs : Slice entry_validation.Attribute) (key : Std.U16) (i : Std.Usize) :
+  Result Bool
+  := do
+  loop
+    (fun i1 => entry_validation.present_loop.body xs key i1)
+    i
+
+/-- [kanidm_kernel::entry_validation::present]:
+    Source: 'prove/ports/kanidm/kernel/src/entry_validation.rs', lines 81:0-90:1
+    Visibility: public -/
+@[reducible]
+def entry_validation.present
+  (xs : Slice entry_validation.Attribute) (key : Std.U16) : Result Bool := do
+  entry_validation.present_loop xs key 0#usize
+
+/-- [kanidm_kernel::entry_validation::append]: loop body 0:
+    Source: 'prove/ports/kanidm/kernel/src/entry_validation.rs', lines 93:4-96:5 -/
+@[rust_loop_body]
+def entry_validation.append_loop.body
+  (xs : Slice Std.U16) (out : alloc.vec.Vec Std.U16) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Std.U16) × Std.Usize) (alloc.vec.Vec
+    Std.U16))
+  := do
+  let i1 := Slice.len xs
+  if i < i1
+  then
+    let i2 ← Slice.index_usize xs i
+    let out1 ← alloc.vec.Vec.push out i2
+    let i3 ← i + 1#usize
+    ok (cont (out1, i3))
+  else ok (done out)
+
+/-- [kanidm_kernel::entry_validation::append]: loop 0:
+    Source: 'prove/ports/kanidm/kernel/src/entry_validation.rs', lines 93:4-96:5 -/
+@[rust_loop]
+def entry_validation.append_loop
+  (out : alloc.vec.Vec Std.U16) (xs : Slice Std.U16) (i : Std.Usize) :
+  Result (alloc.vec.Vec Std.U16)
+  := do
+  loop
+    (fun (out1, i1) => entry_validation.append_loop.body xs out1 i1)
+    (out, i)
+
+/-- [kanidm_kernel::entry_validation::append]:
+    Source: 'prove/ports/kanidm/kernel/src/entry_validation.rs', lines 91:0-97:1 -/
+@[reducible]
+def entry_validation.append
+  (out : alloc.vec.Vec Std.U16) (xs : Slice Std.U16) :
+  Result (alloc.vec.Vec Std.U16)
+  := do
+  entry_validation.append_loop out xs 0#usize
+
+/-- [kanidm_kernel::entry_validation::class_constraints]:
+    Source: 'prove/ports/kanidm/kernel/src/entry_validation.rs', lines 98:0-115:1 -/
+def entry_validation.class_constraints
+  (c : entry_validation.ClassSchema) (kind : Std.U8) :
+  Result (alloc.vec.Vec Std.U16)
+  := do
+  if kind = 0#u8
+  then
+    let s := alloc.vec.Vec.deref c.systemsupplements
+    let out ← entry_validation.append (alloc.vec.Vec.new Std.U16) s
+    let s1 := alloc.vec.Vec.deref c.supplements
+    entry_validation.append out s1
+  else
+    if kind = 1#u8
+    then
+      let s := alloc.vec.Vec.deref c.systemexcludes
+      let out ← entry_validation.append (alloc.vec.Vec.new Std.U16) s
+      let s1 := alloc.vec.Vec.deref c.excludes
+      entry_validation.append out s1
+    else
+      let s := alloc.vec.Vec.deref c.systemmust
+      let out ← entry_validation.append (alloc.vec.Vec.new Std.U16) s
+      let s1 := alloc.vec.Vec.deref c.must
+      let out1 ← entry_validation.append out s1
+      if kind = 3#u8
+      then
+        let s2 := alloc.vec.Vec.deref c.systemmay
+        let out2 ← entry_validation.append out1 s2
+        let s3 := alloc.vec.Vec.deref c.may
+        entry_validation.append out2 s3
+      else ok out1
+
+/-- [kanidm_kernel::entry_validation::constraints]: loop body 0:
+    Source: 'prove/ports/kanidm/kernel/src/entry_validation.rs', lines 120:4-126:5
+    Visibility: public -/
+@[rust_loop_body]
+def entry_validation.constraints_loop.body
+  (classes : Slice entry_validation.ClassSchema) (names : Slice Std.U16)
+  (kind : Std.U8) (out : alloc.vec.Vec Std.U16) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Std.U16) × Std.Usize) (alloc.vec.Vec
+    Std.U16))
+  := do
+  let i1 := Slice.len names
+  if i < i1
+  then
+    let i2 ← Slice.index_usize names i
+    let o ← entry_validation.class_index classes i2
+    let out1 ←
+      match o with
+      | none => ok out
+      | some j =>
+        do
+        let cs ← Slice.index_usize classes j
+        let one ← entry_validation.class_constraints cs kind
+        let s := alloc.vec.Vec.deref one
+        entry_validation.append out s
+    let i3 ← i + 1#usize
+    ok (cont (out1, i3))
+  else ok (done out)
+
+/-- [kanidm_kernel::entry_validation::constraints]: loop 0:
+    Source: 'prove/ports/kanidm/kernel/src/entry_validation.rs', lines 120:4-126:5
+    Visibility: public -/
+@[rust_loop]
+def entry_validation.constraints_loop
+  (classes : Slice entry_validation.ClassSchema) (names : Slice Std.U16)
+  (kind : Std.U8) (out : alloc.vec.Vec Std.U16) (i : Std.Usize) :
+  Result (alloc.vec.Vec Std.U16)
+  := do
+  loop
+    (fun (out1, i1) => entry_validation.constraints_loop.body classes names
+      kind out1 i1)
+    (out, i)
+
+/-- [kanidm_kernel::entry_validation::constraints]:
+    Source: 'prove/ports/kanidm/kernel/src/entry_validation.rs', lines 117:0-128:1
+    Visibility: public -/
+@[reducible]
+def entry_validation.constraints
+  (classes : Slice entry_validation.ClassSchema) (names : Slice Std.U16)
+  (kind : Std.U8) :
+  Result (alloc.vec.Vec Std.U16)
+  := do
+  entry_validation.constraints_loop classes names kind (alloc.vec.Vec.new
+    Std.U16) 0#usize
+
+/-- [kanidm_kernel::entry_validation::invalid_classes]: loop body 0:
+    Source: 'prove/ports/kanidm/kernel/src/entry_validation.rs', lines 132:4-137:5
+    Visibility: public -/
+@[rust_loop_body]
+def entry_validation.invalid_classes_loop.body
+  (classes : Slice entry_validation.ClassSchema) (names : Slice Std.U16)
+  (out : alloc.vec.Vec Std.U16) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Std.U16) × Std.Usize) (alloc.vec.Vec
+    Std.U16))
+  := do
+  let i1 := Slice.len names
+  if i < i1
+  then
+    let i2 ← Slice.index_usize names i
+    let o ← entry_validation.class_index classes i2
+    let b := core.option.Option.is_none o
+    let out1 ← if b
+                 then alloc.vec.Vec.push out i2
+                 else ok out
+    let i3 ← i + 1#usize
+    ok (cont (out1, i3))
+  else ok (done out)
+
+/-- [kanidm_kernel::entry_validation::invalid_classes]: loop 0:
+    Source: 'prove/ports/kanidm/kernel/src/entry_validation.rs', lines 132:4-137:5
+    Visibility: public -/
+@[rust_loop]
+def entry_validation.invalid_classes_loop
+  (classes : Slice entry_validation.ClassSchema) (names : Slice Std.U16)
+  (out : alloc.vec.Vec Std.U16) (i : Std.Usize) :
+  Result (alloc.vec.Vec Std.U16)
+  := do
+  loop
+    (fun (out1, i1) => entry_validation.invalid_classes_loop.body classes names
+      out1 i1)
+    (out, i)
+
+/-- [kanidm_kernel::entry_validation::invalid_classes]:
+    Source: 'prove/ports/kanidm/kernel/src/entry_validation.rs', lines 129:0-139:1
+    Visibility: public -/
+@[reducible]
+def entry_validation.invalid_classes
+  (classes : Slice entry_validation.ClassSchema) (names : Slice Std.U16) :
+  Result (alloc.vec.Vec Std.U16)
+  := do
+  entry_validation.invalid_classes_loop classes names (alloc.vec.Vec.new
+    Std.U16) 0#usize
+
+/-- [kanidm_kernel::entry_validation::overlap]: loop body 0:
+    Source: 'prove/ports/kanidm/kernel/src/entry_validation.rs', lines 143:4-148:5
+    Visibility: public -/
+@[rust_loop_body]
+def entry_validation.overlap_loop.body
+  (xs : Slice Std.U16) (ys : Slice Std.U16) (out : alloc.vec.Vec Std.U16)
+  (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Std.U16) × Std.Usize) (alloc.vec.Vec
+    Std.U16))
+  := do
+  let i1 := Slice.len xs
+  if i < i1
+  then
+    let i2 ← Slice.index_usize xs i
+    let b ← entry_validation.contains ys i2
+    let out1 ← if b
+                 then alloc.vec.Vec.push out i2
+                 else ok out
+    let i3 ← i + 1#usize
+    ok (cont (out1, i3))
+  else ok (done out)
+
+/-- [kanidm_kernel::entry_validation::overlap]: loop 0:
+    Source: 'prove/ports/kanidm/kernel/src/entry_validation.rs', lines 143:4-148:5
+    Visibility: public -/
+@[rust_loop]
+def entry_validation.overlap_loop
+  (xs : Slice Std.U16) (ys : Slice Std.U16) (out : alloc.vec.Vec Std.U16)
+  (i : Std.Usize) :
+  Result (alloc.vec.Vec Std.U16)
+  := do
+  loop
+    (fun (out1, i1) => entry_validation.overlap_loop.body xs ys out1 i1)
+    (out, i)
+
+/-- [kanidm_kernel::entry_validation::overlap]:
+    Source: 'prove/ports/kanidm/kernel/src/entry_validation.rs', lines 140:0-150:1
+    Visibility: public -/
+@[reducible]
+def entry_validation.overlap
+  (xs : Slice Std.U16) (ys : Slice Std.U16) :
+  Result (alloc.vec.Vec Std.U16)
+  := do
+  entry_validation.overlap_loop xs ys (alloc.vec.Vec.new Std.U16) 0#usize
+
+/-- [kanidm_kernel::entry_validation::schema_complete]: loop body 0:
+    Source: 'prove/ports/kanidm/kernel/src/entry_validation.rs', lines 153:4-160:1
+    Visibility: public -/
+@[rust_loop_body]
+def entry_validation.schema_complete_loop.body
+  (attrs : Slice entry_validation.AttributeSchema) (names : Slice Std.U16)
+  (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := Slice.len names
+  if i < i1
+  then
+    let i2 ← Slice.index_usize names i
+    let o ← entry_validation.attribute_index attrs i2
+    let b := core.option.Option.is_none o
+    if b
+    then ok (done false)
+    else let i3 ← i + 1#usize
+         ok (cont i3)
+  else ok (done true)
+
+/-- [kanidm_kernel::entry_validation::schema_complete]: loop 0:
+    Source: 'prove/ports/kanidm/kernel/src/entry_validation.rs', lines 153:4-160:1
+    Visibility: public -/
+@[rust_loop]
+def entry_validation.schema_complete_loop
+  (attrs : Slice entry_validation.AttributeSchema) (names : Slice Std.U16)
+  (i : Std.Usize) :
+  Result Bool
+  := do
+  loop
+    (fun i1 => entry_validation.schema_complete_loop.body attrs names i1)
+    i
+
+/-- [kanidm_kernel::entry_validation::schema_complete]:
+    Source: 'prove/ports/kanidm/kernel/src/entry_validation.rs', lines 151:0-160:1
+    Visibility: public -/
+@[reducible]
+def entry_validation.schema_complete
+  (attrs : Slice entry_validation.AttributeSchema) (names : Slice Std.U16) :
+  Result Bool
+  := do
+  entry_validation.schema_complete_loop attrs names 0#usize
+
+/-- [kanidm_kernel::entry_validation::missing_attributes]: loop body 0:
+    Source: 'prove/ports/kanidm/kernel/src/entry_validation.rs', lines 164:4-171:5
+    Visibility: public -/
+@[rust_loop_body]
+def entry_validation.missing_attributes_loop.body
+  (attrs : Slice entry_validation.AttributeSchema) (must : Slice Std.U16)
+  (entry : entry_validation.Entry) (out : alloc.vec.Vec Std.U16)
+  (i : Std.Usize) :
+  Result (ControlFlow (entry_validation.Entry × (alloc.vec.Vec Std.U16) ×
+    Std.Usize) (alloc.vec.Vec Std.U16))
+  := do
+  let i1 := Slice.len must
+  if i < i1
+  then
+    let i2 ← Slice.index_usize must i
+    let o ← entry_validation.attribute_index attrs i2
+    let (entry1, out1) ←
+      match o with
+      | none => ok (entry, out)
+      | some j =>
+        do
+        let s := alloc.vec.Vec.deref entry.attrs
+        let «as» ← Slice.index_usize attrs j
+        let b ← entry_validation.present s «as».name
+        let v ← if b
+                  then ok out
+                  else alloc.vec.Vec.push out «as».name
+        ok (entry, v)
+    let i3 ← i + 1#usize
+    ok (cont (entry1, out1, i3))
+  else ok (done out)
+
+/-- [kanidm_kernel::entry_validation::missing_attributes]: loop 0:
+    Source: 'prove/ports/kanidm/kernel/src/entry_validation.rs', lines 164:4-171:5
+    Visibility: public -/
+@[rust_loop]
+def entry_validation.missing_attributes_loop
+  (entry : entry_validation.Entry)
+  (attrs : Slice entry_validation.AttributeSchema) (must : Slice Std.U16)
+  (out : alloc.vec.Vec Std.U16) (i : Std.Usize) :
+  Result (alloc.vec.Vec Std.U16)
+  := do
+  loop
+    (fun (entry1, out1, i1) => entry_validation.missing_attributes_loop.body
+      attrs must entry1 out1 i1)
+    (entry, out, i)
+
+/-- [kanidm_kernel::entry_validation::missing_attributes]:
+    Source: 'prove/ports/kanidm/kernel/src/entry_validation.rs', lines 161:0-173:1
+    Visibility: public -/
+@[reducible]
+def entry_validation.missing_attributes
+  (entry : entry_validation.Entry)
+  (attrs : Slice entry_validation.AttributeSchema) (must : Slice Std.U16) :
+  Result (alloc.vec.Vec Std.U16)
+  := do
+  entry_validation.missing_attributes_loop entry attrs must (alloc.vec.Vec.new
+    Std.U16) 0#usize
+
+/-- [kanidm_kernel::schema_tags::ava_accepts]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_tags.rs', lines 174:0-177:1
+    Visibility: public -/
+def schema_tags.ava_accepts
+  (multivalue : Bool) (count : Std.Usize) (expected_syntax : Std.U16)
+  (actual_syntax : Std.U16) (valid : Bool) :
+  Result Bool
+  := do
+  if multivalue
+  then if expected_syntax = actual_syntax
+       then ok valid
+       else ok false
+  else
+    if count > 1#usize
+    then ok false
+    else if expected_syntax = actual_syntax
+         then ok valid
+         else ok false
+
+/-- [kanidm_kernel::entry_validation::validate_attribute]:
+    Source: 'prove/ports/kanidm/kernel/src/entry_validation.rs', lines 174:0-201:1
+    Visibility: public -/
+def entry_validation.validate_attribute
+  (ava : entry_validation.Attribute)
+  (attrs : Slice entry_validation.AttributeSchema) (may : Slice Std.U16)
+  (extensible : Bool) :
+  Result (core.result.Result Unit entry_validation.Error)
+  := do
+  if extensible
+  then
+    let o ← entry_validation.attribute_index attrs ava.key
+    match o with
+    | none =>
+      ok (core.result.Result.Err (entry_validation.Error.InvalidAttribute
+        ava.key))
+    | some j =>
+      let a ← Slice.index_usize attrs j
+      if a.phantom
+      then
+        ok (core.result.Result.Err (entry_validation.Error.PhantomAttribute
+          ava.key))
+      else
+        let b ←
+          schema_tags.ava_accepts a.multi ava.count a.syntax ava.syntax
+            ava.valid
+        if b
+        then ok (core.result.Result.Ok ())
+        else
+          ok (core.result.Result.Err
+            (entry_validation.Error.InvalidAttributeSyntax ava.key))
+  else
+    let b ← entry_validation.contains may ava.key
+    if b
+    then
+      let o ← entry_validation.attribute_index attrs ava.key
+      match o with
+      | none => ok (core.result.Result.Err entry_validation.Error.Corrupted)
+      | some j =>
+        let a ← Slice.index_usize attrs j
+        let b1 ←
+          schema_tags.ava_accepts a.multi ava.count a.syntax ava.syntax
+            ava.valid
+        if b1
+        then ok (core.result.Result.Ok ())
+        else
+          ok (core.result.Result.Err
+            (entry_validation.Error.InvalidAttributeSyntax ava.key))
+    else
+      ok (core.result.Result.Err
+        (entry_validation.Error.AttributeNotValidForClass ava.key))
+
+/-- [kanidm_kernel::entry_validation::validate_attributes]: loop body 0:
+    Source: 'prove/ports/kanidm/kernel/src/entry_validation.rs', lines 209:4-214:1
+    Visibility: public -/
+@[rust_loop_body]
+def entry_validation.validate_attributes_loop.body
+  (entry : entry_validation.Entry)
+  (attrs : Slice entry_validation.AttributeSchema) (may : Slice Std.U16)
+  (extensible : Bool) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize (core.result.Result Unit
+    entry_validation.Error))
+  := do
+  let i1 := alloc.vec.Vec.len entry.attrs
+  if i < i1
+  then
+    let a ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+        entry_validation.Attribute) entry.attrs i
+    let r ← entry_validation.validate_attribute a attrs may extensible
+    let cf ← core.result.Result.Insts.CoreOpsTry.branch r
+    match cf with
+    | core.ops.control_flow.ControlFlow.Continue _ =>
+      let i2 ← i + 1#usize
+      ok (cont i2)
+    | core.ops.control_flow.ControlFlow.Break residual =>
+      let r1 ←
+        core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual
+          Unit (core.convert.FromSame entry_validation.Error) residual
+      ok (done r1)
+  else ok (done (core.result.Result.Ok ()))
+
+/-- [kanidm_kernel::entry_validation::validate_attributes]: loop 0:
+    Source: 'prove/ports/kanidm/kernel/src/entry_validation.rs', lines 209:4-214:1
+    Visibility: public -/
+@[rust_loop]
+def entry_validation.validate_attributes_loop
+  (entry : entry_validation.Entry)
+  (attrs : Slice entry_validation.AttributeSchema) (may : Slice Std.U16)
+  (extensible : Bool) (i : Std.Usize) :
+  Result (core.result.Result Unit entry_validation.Error)
+  := do
+  loop
+    (fun i1 => entry_validation.validate_attributes_loop.body entry attrs may
+      extensible i1)
+    i
+
+/-- [kanidm_kernel::entry_validation::validate_attributes]:
+    Source: 'prove/ports/kanidm/kernel/src/entry_validation.rs', lines 202:0-214:1
+    Visibility: public -/
+@[reducible]
+def entry_validation.validate_attributes
+  (entry : entry_validation.Entry)
+  (attrs : Slice entry_validation.AttributeSchema) (may : Slice Std.U16)
+  (extensible : Bool) :
+  Result (core.result.Result Unit entry_validation.Error)
+  := do
+  entry_validation.validate_attributes_loop entry attrs may extensible 0#usize
+
+/-- [kanidm_kernel::entry_validation::validate]:
+    Source: 'prove/ports/kanidm/kernel/src/entry_validation.rs', lines 215:0-265:1
+    Visibility: public -/
+def entry_validation.validate
+  (entry : entry_validation.Entry)
+  (classes : Slice entry_validation.ClassSchema)
+  (attrs : Slice entry_validation.AttributeSchema) :
+  Result (core.result.Result Unit entry_validation.Error)
+  := do
+  if entry.class_present
+  then
+    match entry.classes with
+    | none => ok (core.result.Result.Err entry_validation.Error.NoClassFound)
+    | some names =>
+      let s := alloc.vec.Vec.deref names
+      let b ← entry_validation.contains s 0#u16
+      if b
+      then ok (core.result.Result.Ok ())
+      else
+        let s1 := alloc.vec.Vec.deref names
+        let recycled ← entry_validation.contains s1 2#u16
+        let s2 := alloc.vec.Vec.deref names
+        let extensible ← entry_validation.contains s2 1#u16
+        let s3 := alloc.vec.Vec.deref names
+        let invalid ← entry_validation.invalid_classes classes s3
+        let i := alloc.vec.Vec.len invalid
+        if i = 0#usize
+        then
+          let s4 := alloc.vec.Vec.deref names
+          let supplements ← entry_validation.constraints classes s4 0#u8
+          let i1 := alloc.vec.Vec.len supplements
+          if i1 = 0#usize
+          then
+            let s5 := alloc.vec.Vec.deref names
+            let v ← entry_validation.constraints classes s5 1#u8
+            let s6 := alloc.vec.Vec.deref v
+            let s7 := alloc.vec.Vec.deref names
+            let excluded ← entry_validation.overlap s6 s7
+            let i2 := alloc.vec.Vec.len excluded
+            if i2 = 0#usize
+            then
+              let s8 := alloc.vec.Vec.deref names
+              let must ← entry_validation.constraints classes s8 2#u8
+              let s9 := alloc.vec.Vec.deref must
+              let b1 ← entry_validation.schema_complete attrs s9
+              if b1
+              then
+                let s10 := alloc.vec.Vec.deref must
+                let missing ←
+                  entry_validation.missing_attributes entry attrs s10
+                let i3 := alloc.vec.Vec.len missing
+                if i3 = 0#usize
+                then
+                  if extensible
+                  then
+                    let s11 ← lift (Array.to_slice (Std.Array.empty Std.U16))
+                    entry_validation.validate_attributes entry attrs s11 true
+                  else
+                    let s11 := alloc.vec.Vec.deref names
+                    let may ← entry_validation.constraints classes s11 3#u8
+                    let s12 := alloc.vec.Vec.deref may
+                    let b2 ← entry_validation.schema_complete attrs s12
+                    if b2
+                    then
+                      let s13 := alloc.vec.Vec.deref may
+                      entry_validation.validate_attributes entry attrs s13
+                        false
+                    else
+                      ok (core.result.Result.Err
+                        entry_validation.Error.Corrupted)
+                else
+                  if recycled
+                  then
+                    if extensible
+                    then
+                      let s11 ←
+                        lift (Array.to_slice (Std.Array.empty Std.U16))
+                      entry_validation.validate_attributes entry attrs s11 true
+                    else
+                      let s11 := alloc.vec.Vec.deref names
+                      let may ← entry_validation.constraints classes s11 3#u8
+                      let s12 := alloc.vec.Vec.deref may
+                      let b2 ← entry_validation.schema_complete attrs s12
+                      if b2
+                      then
+                        let s13 := alloc.vec.Vec.deref may
+                        entry_validation.validate_attributes entry attrs s13
+                          false
+                      else
+                        ok (core.result.Result.Err
+                          entry_validation.Error.Corrupted)
+                  else
+                    ok (core.result.Result.Err
+                      (entry_validation.Error.MissingMustAttribute missing))
+              else ok (core.result.Result.Err entry_validation.Error.Corrupted)
+            else
+              ok (core.result.Result.Err
+                (entry_validation.Error.ExcludesNotSatisfied excluded))
+          else
+            let s5 := alloc.vec.Vec.deref supplements
+            let s6 := alloc.vec.Vec.deref names
+            let v ← entry_validation.overlap s5 s6
+            let i2 := alloc.vec.Vec.len v
+            if i2 = 0#usize
+            then
+              ok (core.result.Result.Err
+                (entry_validation.Error.SupplementsNotSatisfied supplements))
+            else
+              let s7 := alloc.vec.Vec.deref names
+              let v1 ← entry_validation.constraints classes s7 1#u8
+              let s8 := alloc.vec.Vec.deref v1
+              let s9 := alloc.vec.Vec.deref names
+              let excluded ← entry_validation.overlap s8 s9
+              let i3 := alloc.vec.Vec.len excluded
+              if i3 = 0#usize
+              then
+                let s10 := alloc.vec.Vec.deref names
+                let must ← entry_validation.constraints classes s10 2#u8
+                let s11 := alloc.vec.Vec.deref must
+                let b1 ← entry_validation.schema_complete attrs s11
+                if b1
+                then
+                  let s12 := alloc.vec.Vec.deref must
+                  let missing ←
+                    entry_validation.missing_attributes entry attrs s12
+                  let i4 := alloc.vec.Vec.len missing
+                  if i4 = 0#usize
+                  then
+                    if extensible
+                    then
+                      let s13 ←
+                        lift (Array.to_slice (Std.Array.empty Std.U16))
+                      entry_validation.validate_attributes entry attrs s13 true
+                    else
+                      let s13 := alloc.vec.Vec.deref names
+                      let may ← entry_validation.constraints classes s13 3#u8
+                      let s14 := alloc.vec.Vec.deref may
+                      let b2 ← entry_validation.schema_complete attrs s14
+                      if b2
+                      then
+                        let s15 := alloc.vec.Vec.deref may
+                        entry_validation.validate_attributes entry attrs s15
+                          false
+                      else
+                        ok (core.result.Result.Err
+                          entry_validation.Error.Corrupted)
+                  else
+                    if recycled
+                    then
+                      if extensible
+                      then
+                        let s13 ←
+                          lift (Array.to_slice (Std.Array.empty Std.U16))
+                        entry_validation.validate_attributes entry attrs s13
+                          true
+                      else
+                        let s13 := alloc.vec.Vec.deref names
+                        let may ←
+                          entry_validation.constraints classes s13 3#u8
+                        let s14 := alloc.vec.Vec.deref may
+                        let b2 ← entry_validation.schema_complete attrs s14
+                        if b2
+                        then
+                          let s15 := alloc.vec.Vec.deref may
+                          entry_validation.validate_attributes entry attrs s15
+                            false
+                        else
+                          ok (core.result.Result.Err
+                            entry_validation.Error.Corrupted)
+                    else
+                      ok (core.result.Result.Err
+                        (entry_validation.Error.MissingMustAttribute missing))
+                else
+                  ok (core.result.Result.Err entry_validation.Error.Corrupted)
+              else
+                ok (core.result.Result.Err
+                  (entry_validation.Error.ExcludesNotSatisfied excluded))
+        else
+          ok (core.result.Result.Err (entry_validation.Error.InvalidClass
+            invalid))
+  else ok (core.result.Result.Err entry_validation.Error.NoClassFound)
+
+/-- [kanidm_kernel::migration_defaults::SystemConfig]
+    Source: 'prove/ports/kanidm/kernel/src/migration_defaults.rs', lines 5:0-9:1
+    Visibility: public -/
+structure migration_defaults.SystemConfig where
+  object : Bool
+  system_config : Bool
+  system : Bool
+  uuid : Std.U128
+  description : alloc.vec.Vec Std.U8
+  badlist_password : alloc.vec.Vec (alloc.vec.Vec Std.U8)
+
+/-- [kanidm_kernel::migration_defaults::table_part_0]:
+    Source: 'prove/ports/kanidm/kernel/src/migration_defaults.rs', lines 10:0-37:1
+    Visibility: public -/
+def migration_defaults.table_part_0
+  : Result (alloc.vec.Vec (alloc.vec.Vec Std.U8)) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        49#u8, 48#u8, 48#u8, 112#u8, 114#u8, 101#u8, 116#u8, 101#u8, 97#u8,
+        109#u8, 97#u8, 114#u8, 101#u8
+        ]))
+  let v ← alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  let out ← alloc.vec.Vec.push (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) v
+  let s1 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        49#u8, 52#u8, 100#u8, 101#u8, 102#u8, 101#u8, 98#u8, 114#u8, 101#u8,
+        114#u8, 111#u8
+        ]))
+  let v1 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s1
+  let out1 ← alloc.vec.Vec.push out v1
+  let s2 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        49#u8, 108#u8, 105#u8, 102#u8, 101#u8, 49#u8, 108#u8, 111#u8, 118#u8,
+        101#u8
+        ]))
+  let v2 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s2
+  let out2 ← alloc.vec.Vec.push out1 v2
+  let s3 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        49#u8, 108#u8, 105#u8, 102#u8, 101#u8, 50#u8, 108#u8, 105#u8, 118#u8,
+        101#u8
+        ]))
+  let v3 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s3
+  let out3 ← alloc.vec.Vec.push out2 v3
+  let s4 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        49#u8, 108#u8, 111#u8, 118#u8, 101#u8, 49#u8, 108#u8, 105#u8, 102#u8,
+        101#u8
+        ]))
+  let v4 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s4
+  let out4 ← alloc.vec.Vec.push out3 v4
+  let s5 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        49#u8, 108#u8, 111#u8, 118#u8, 101#u8, 52#u8, 108#u8, 105#u8, 102#u8,
+        101#u8
+        ]))
+  let v5 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s5
+  let out5 ← alloc.vec.Vec.push out4 v5
+  let s6 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        50#u8, 49#u8, 50#u8, 50#u8, 50#u8, 52#u8, 50#u8, 51#u8, 54#u8, 50#u8,
+        52#u8, 56#u8
+        ]))
+  let v6 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s6
+  let out6 ← alloc.vec.Vec.push out5 v6
+  let s7 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        50#u8, 56#u8, 49#u8, 51#u8, 51#u8, 48#u8, 56#u8, 48#u8, 48#u8, 52#u8
+        ]))
+  let v7 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s7
+  let out7 ← alloc.vec.Vec.push out6 v7
+  let s8 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        50#u8, 102#u8, 97#u8, 115#u8, 116#u8, 50#u8, 102#u8, 117#u8, 114#u8,
+        105#u8, 111#u8, 117#u8, 115#u8
+        ]))
+  let v8 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s8
+  let out8 ← alloc.vec.Vec.push out7 v8
+  let s9 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        50#u8, 103#u8, 101#u8, 116#u8, 104#u8, 101#u8, 114#u8, 52#u8, 101#u8,
+        118#u8, 101#u8, 114#u8
+        ]))
+  let v9 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s9
+  let out9 ← alloc.vec.Vec.push out8 v9
+  let s10 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        50#u8, 112#u8, 97#u8, 99#u8, 115#u8, 104#u8, 97#u8, 107#u8, 117#u8,
+        114#u8
+        ]))
+  let v10 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s10
+  let out10 ← alloc.vec.Vec.push out9 v10
+  let s11 ←
+    lift (Array.to_slice
+      (Array.make 15#usize [
+        51#u8, 48#u8, 115#u8, 101#u8, 99#u8, 111#u8, 110#u8, 100#u8, 115#u8,
+        116#u8, 111#u8, 109#u8, 97#u8, 114#u8, 115#u8
+        ]))
+  let v11 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s11
+  let out11 ← alloc.vec.Vec.push out10 v11
+  let s12 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        51#u8, 100#u8, 111#u8, 111#u8, 114#u8, 115#u8, 100#u8, 111#u8, 119#u8,
+        110#u8
+        ]))
+  let v12 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s12
+  let out12 ← alloc.vec.Vec.push out11 v12
+  let s13 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        54#u8, 99#u8, 121#u8, 99#u8, 108#u8, 101#u8, 109#u8, 105#u8, 110#u8,
+        100#u8
+        ]))
+  let v13 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s13
+  let out13 ← alloc.vec.Vec.push out12 v13
+  let s14 ←
+    lift (Array.to_slice
+      (Array.make 17#usize [
+        60#u8, 100#u8, 105#u8, 118#u8, 62#u8, 60#u8, 101#u8, 109#u8, 98#u8,
+        101#u8, 100#u8, 32#u8, 115#u8, 114#u8, 99#u8, 61#u8, 92#u8
+        ]))
+  let v14 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s14
+  let out14 ← alloc.vec.Vec.push out13 v14
+  let s15 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        64#u8, 104#u8, 111#u8, 116#u8, 109#u8, 97#u8, 105#u8, 108#u8, 46#u8,
+        99#u8, 111#u8, 109#u8
+        ]))
+  let v15 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s15
+  let out15 ← alloc.vec.Vec.push out14 v15
+  let s16 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        64#u8, 121#u8, 97#u8, 104#u8, 111#u8, 111#u8, 46#u8, 99#u8, 111#u8,
+        109#u8
+        ]))
+  let v16 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s16
+  let out16 ← alloc.vec.Vec.push out15 v16
+  let s17 ←
+    lift (Array.to_slice
+      (Array.make 39#usize [
+        108#u8, 101#u8, 116#u8, 115#u8, 32#u8, 121#u8, 111#u8, 117#u8, 32#u8,
+        117#u8, 112#u8, 100#u8, 97#u8, 116#u8, 101#u8, 32#u8, 121#u8, 111#u8,
+        117#u8, 114#u8, 32#u8, 102#u8, 117#u8, 110#u8, 110#u8, 111#u8, 116#u8,
+        101#u8, 115#u8, 32#u8, 97#u8, 110#u8, 100#u8, 32#u8, 109#u8, 111#u8,
+        114#u8, 101#u8, 33#u8
+        ]))
+  let v17 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s17
+  let out17 ← alloc.vec.Vec.push out16 v17
+  let s18 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        116#u8, 101#u8, 113#u8, 117#u8, 105#u8, 101#u8, 114#u8, 111#u8, 109#u8,
+        117#u8, 99#u8, 104#u8, 111#u8
+        ]))
+  let v18 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s18
+  let out18 ← alloc.vec.Vec.push out17 v18
+  let s19 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        116#u8, 101#u8, 120#u8, 116#u8, 32#u8, 111#u8, 110#u8, 108#u8, 121#u8,
+        32#u8, 97#u8, 100#u8
+        ]))
+  let v19 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s19
+  let out19 ← alloc.vec.Vec.push out18 v19
+  let s20 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        97#u8, 98#u8, 114#u8, 101#u8, 116#u8, 101#u8, 115#u8, 101#u8, 115#u8,
+        97#u8, 109#u8, 111#u8
+        ]))
+  let v20 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s20
+  let out20 ← alloc.vec.Vec.push out19 v20
+  let s21 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 105#u8, 115#u8, 116#u8, 114#u8,
+        97#u8, 100#u8, 111#u8, 114#u8
+        ]))
+  let v21 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s21
+  let out21 ← alloc.vec.Vec.push out20 v21
+  let s22 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        97#u8, 101#u8, 114#u8, 111#u8, 112#u8, 111#u8, 115#u8, 116#u8, 97#u8,
+        108#u8, 101#u8
+        ]))
+  let v22 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s22
+  let out22 ← alloc.vec.Vec.push out21 v22
+  let s23 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        97#u8, 107#u8, 105#u8, 110#u8, 107#u8, 97#u8, 108#u8, 97#u8, 110#u8,
+        103#u8
+        ]))
+  let v23 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s23
+  alloc.vec.Vec.push out22 v23
+
+/-- [kanidm_kernel::migration_defaults::table_part_1]:
+    Source: 'prove/ports/kanidm/kernel/src/migration_defaults.rs', lines 38:0-65:1
+    Visibility: public -/
+def migration_defaults.table_part_1
+  : Result (alloc.vec.Vec (alloc.vec.Vec Std.U8)) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        97#u8, 107#u8, 117#u8, 99#u8, 105#u8, 110#u8, 116#u8, 97#u8, 107#u8,
+        97#u8, 109#u8, 117#u8
+        ]))
+  let v ← alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  let out ← alloc.vec.Vec.push (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) v
+  let s1 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        97#u8, 107#u8, 117#u8, 115#u8, 97#u8, 121#u8, 97#u8, 110#u8, 103#u8,
+        107#u8, 97#u8, 109#u8, 117#u8
+        ]))
+  let v1 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s1
+  let out1 ← alloc.vec.Vec.push out v1
+  let s2 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        97#u8, 108#u8, 102#u8, 97#u8, 121#u8, 111#u8, 109#u8, 101#u8, 103#u8,
+        97#u8
+        ]))
+  let v2 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s2
+  let out2 ← alloc.vec.Vec.push out1 v2
+  let s3 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        97#u8, 108#u8, 104#u8, 97#u8, 109#u8, 100#u8, 117#u8, 108#u8, 105#u8,
+        108#u8, 108#u8, 97#u8, 104#u8
+        ]))
+  let v3 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s3
+  let out3 ← alloc.vec.Vec.push out2 v3
+  let s4 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        97#u8, 108#u8, 108#u8, 97#u8, 98#u8, 111#u8, 117#u8, 116#u8, 109#u8,
+        101#u8
+        ]))
+  let v4 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s4
+  let out4 ← alloc.vec.Vec.push out3 v4
+  let s5 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        97#u8, 108#u8, 108#u8, 97#u8, 104#u8, 117#u8, 97#u8, 107#u8, 98#u8,
+        97#u8, 114#u8
+        ]))
+  let v5 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s5
+  let out5 ← alloc.vec.Vec.push out4 v5
+  let s6 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        97#u8, 108#u8, 108#u8, 101#u8, 121#u8, 101#u8, 115#u8, 111#u8, 110#u8,
+        109#u8, 101#u8
+        ]))
+  let v6 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s6
+  let out6 ← alloc.vec.Vec.push out5 v6
+  let s7 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        97#u8, 108#u8, 113#u8, 117#u8, 105#u8, 109#u8, 105#u8, 115#u8, 116#u8,
+        97#u8
+        ]))
+  let v7 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s7
+  let out7 ← alloc.vec.Vec.push out6 v7
+  let s8 ←
+    lift (Array.to_slice
+      (Array.make 16#usize [
+        97#u8, 108#u8, 119#u8, 97#u8, 121#u8, 115#u8, 97#u8, 110#u8, 100#u8,
+        102#u8, 111#u8, 114#u8, 101#u8, 118#u8, 101#u8, 114#u8
+        ]))
+  let v8 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s8
+  let out8 ← alloc.vec.Vec.push out7 v8
+  let s9 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        97#u8, 109#u8, 97#u8, 114#u8, 116#u8, 101#u8, 100#u8, 117#u8, 101#u8,
+        108#u8, 101#u8
+        ]))
+  let v9 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s9
+  let out9 ← alloc.vec.Vec.push out8 v9
+  let s10 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        97#u8, 109#u8, 105#u8, 103#u8, 97#u8, 115#u8, 52#u8, 101#u8, 118#u8,
+        101#u8, 114#u8
+        ]))
+  let v10 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s10
+  let out10 ← alloc.vec.Vec.push out9 v10
+  let s11 ←
+    lift (Array.to_slice
+      (Array.make 16#usize [
+        97#u8, 109#u8, 105#u8, 103#u8, 97#u8, 115#u8, 112#u8, 111#u8, 114#u8,
+        115#u8, 105#u8, 101#u8, 109#u8, 112#u8, 114#u8, 101#u8
+        ]))
+  let v11 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s11
+  let out11 ← alloc.vec.Vec.push out10 v11
+  let s12 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        97#u8, 109#u8, 105#u8, 103#u8, 97#u8, 115#u8, 120#u8, 49#u8, 48#u8,
+        48#u8, 112#u8, 114#u8, 101#u8
+        ]))
+  let v12 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s12
+  let out12 ← alloc.vec.Vec.push out11 v12
+  let s13 ←
+    lift (Array.to_slice
+      (Array.make 14#usize [
+        97#u8, 109#u8, 105#u8, 103#u8, 97#u8, 115#u8, 120#u8, 115#u8, 105#u8,
+        101#u8, 109#u8, 112#u8, 114#u8, 101#u8
+        ]))
+  let v13 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s13
+  let out13 ← alloc.vec.Vec.push out12 v13
+  let s14 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        97#u8, 109#u8, 111#u8, 97#u8, 109#u8, 105#u8, 102#u8, 97#u8, 109#u8,
+        105#u8, 108#u8, 105#u8, 97#u8
+        ]))
+  let v14 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s14
+  let out14 ← alloc.vec.Vec.push out13 v14
+  let s15 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        97#u8, 109#u8, 111#u8, 114#u8, 100#u8, 101#u8, 108#u8, 98#u8, 117#u8,
+        101#u8, 110#u8, 111#u8
+        ]))
+  let v15 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s15
+  let out15 ← alloc.vec.Vec.push out14 v15
+  let s16 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        97#u8, 109#u8, 111#u8, 114#u8, 100#u8, 101#u8, 109#u8, 105#u8, 118#u8,
+        105#u8, 100#u8, 97#u8
+        ]))
+  let v16 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s16
+  let out16 ← alloc.vec.Vec.push out15 v16
+  let s17 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        97#u8, 109#u8, 111#u8, 114#u8, 101#u8, 115#u8, 112#u8, 101#u8, 114#u8,
+        114#u8, 111#u8, 115#u8
+        ]))
+  let v17 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s17
+  let out17 ← alloc.vec.Vec.push out16 v17
+  let s18 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        97#u8, 109#u8, 111#u8, 114#u8, 101#u8, 116#u8, 101#u8, 114#u8, 110#u8,
+        111#u8
+        ]))
+  let v18 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s18
+  let out18 ← alloc.vec.Vec.push out17 v18
+  let s19 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        97#u8, 109#u8, 111#u8, 114#u8, 105#u8, 109#u8, 112#u8, 111#u8, 115#u8,
+        105#u8, 98#u8, 108#u8, 101#u8
+        ]))
+  let v19 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s19
+  let out19 ← alloc.vec.Vec.push out18 v19
+  let s20 ←
+    lift (Array.to_slice
+      (Array.make 14#usize [
+        97#u8, 109#u8, 111#u8, 114#u8, 112#u8, 111#u8, 114#u8, 115#u8, 105#u8,
+        101#u8, 109#u8, 112#u8, 114#u8, 101#u8
+        ]))
+  let v20 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s20
+  let out20 ← alloc.vec.Vec.push out19 v20
+  let s21 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        97#u8, 109#u8, 111#u8, 114#u8, 112#u8, 114#u8, 111#u8, 104#u8, 105#u8,
+        98#u8, 105#u8, 100#u8, 111#u8
+        ]))
+  let v21 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s21
+  let out21 ← alloc.vec.Vec.push out20 v21
+  let s22 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        97#u8, 109#u8, 111#u8, 114#u8, 118#u8, 101#u8, 114#u8, 100#u8, 97#u8,
+        100#u8, 101#u8, 114#u8, 111#u8
+        ]))
+  let v22 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s22
+  let out22 ← alloc.vec.Vec.push out21 v22
+  let s23 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        97#u8, 109#u8, 111#u8, 116#u8, 101#u8, 109#u8, 117#u8, 105#u8, 116#u8,
+        111#u8
+        ]))
+  let v23 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s23
+  alloc.vec.Vec.push out22 v23
+
+/-- [kanidm_kernel::migration_defaults::table_part_2]:
+    Source: 'prove/ports/kanidm/kernel/src/migration_defaults.rs', lines 66:0-93:1
+    Visibility: public -/
+def migration_defaults.table_part_2
+  : Result (alloc.vec.Vec (alloc.vec.Vec Std.U8)) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        97#u8, 110#u8, 97#u8, 114#u8, 97#u8, 110#u8, 106#u8, 97#u8, 100#u8,
+        111#u8
+        ]))
+  let v ← alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  let out ← alloc.vec.Vec.push (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) v
+  let s1 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        97#u8, 110#u8, 103#u8, 101#u8, 108#u8, 100#u8, 101#u8, 97#u8, 109#u8,
+        111#u8, 114#u8
+        ]))
+  let v1 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s1
+  let out1 ← alloc.vec.Vec.push out v1
+  let s2 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        97#u8, 110#u8, 103#u8, 101#u8, 108#u8, 108#u8, 111#u8, 99#u8, 115#u8,
+        105#u8, 110#u8
+        ]))
+  let v2 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s2
+  let out2 ← alloc.vec.Vec.push out1 v2
+  let s3 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        97#u8, 110#u8, 103#u8, 101#u8, 108#u8, 111#u8, 102#u8, 100#u8, 101#u8,
+        97#u8, 116#u8, 104#u8
+        ]))
+  let v3 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s3
+  let out3 ← alloc.vec.Vec.push out2 v3
+  let s4 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        97#u8, 110#u8, 103#u8, 103#u8, 97#u8, 110#u8, 100#u8, 97#u8, 107#u8,
+        111#u8
+        ]))
+  let v4 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s4
+  let out4 ← alloc.vec.Vec.push out3 v4
+  let s5 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        97#u8, 110#u8, 105#u8, 118#u8, 101#u8, 114#u8, 115#u8, 97#u8, 114#u8,
+        105#u8, 111#u8
+        ]))
+  let v5 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s5
+  let out5 ← alloc.vec.Vec.push out4 v5
+  let s6 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        97#u8, 112#u8, 97#u8, 105#u8, 120#u8, 111#u8, 110#u8, 97#u8, 100#u8,
+        97#u8
+        ]))
+  let v6 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s6
+  let out6 ← alloc.vec.Vec.push out5 v6
+  let s7 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        97#u8, 112#u8, 111#u8, 99#u8, 97#u8, 108#u8, 105#u8, 112#u8, 115#u8,
+        97#u8
+        ]))
+  let v7 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s7
+  let out7 ← alloc.vec.Vec.push out6 v7
+  let s8 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        97#u8, 112#u8, 111#u8, 99#u8, 97#u8, 108#u8, 105#u8, 112#u8, 115#u8,
+        101#u8
+        ]))
+  let v8 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s8
+  let out8 ← alloc.vec.Vec.push out7 v8
+  let s9 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        97#u8, 112#u8, 111#u8, 99#u8, 97#u8, 108#u8, 105#u8, 112#u8, 115#u8,
+        105#u8, 115#u8
+        ]))
+  let v9 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s9
+  let out9 ← alloc.vec.Vec.push out8 v9
+  let s10 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        97#u8, 112#u8, 111#u8, 108#u8, 105#u8, 110#u8, 97#u8, 114#u8, 105#u8,
+        111#u8
+        ]))
+  let v10 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s10
+  let out10 ← alloc.vec.Vec.push out9 v10
+  let s11 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        97#u8, 114#u8, 113#u8, 117#u8, 105#u8, 116#u8, 101#u8, 99#u8, 116#u8,
+        117#u8, 114#u8, 97#u8
+        ]))
+  let v11 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s11
+  let out11 ← alloc.vec.Vec.push out10 v11
+  let s12 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        97#u8, 114#u8, 114#u8, 111#u8, 108#u8, 108#u8, 97#u8, 100#u8, 111#u8,
+        114#u8, 97#u8
+        ]))
+  let v12 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s12
+  let out12 ← alloc.vec.Vec.push out11 v12
+  let s13 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        97#u8, 115#u8, 105#u8, 101#u8, 115#u8, 108#u8, 97#u8, 118#u8, 105#u8,
+        100#u8, 97#u8
+        ]))
+  let v13 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s13
+  let out13 ← alloc.vec.Vec.push out12 v13
+  let s14 ←
+    lift (Array.to_slice
+      (Array.make 15#usize [
+        97#u8, 115#u8, 115#u8, 97#u8, 108#u8, 97#u8, 109#u8, 117#u8, 97#u8,
+        108#u8, 97#u8, 105#u8, 107#u8, 117#u8, 109#u8
+        ]))
+  let v14 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s14
+  let out14 ← alloc.vec.Vec.push out13 v14
+  let s15 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        97#u8, 117#u8, 120#u8, 105#u8, 108#u8, 105#u8, 97#u8, 100#u8, 111#u8,
+        114#u8, 97#u8
+        ]))
+  let v15 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s15
+  let out15 ← alloc.vec.Vec.push out14 v15
+  let s16 ←
+    lift (Array.to_slice
+      (Array.make 16#usize [
+        97#u8, 118#u8, 101#u8, 110#u8, 103#u8, 101#u8, 100#u8, 115#u8, 101#u8,
+        118#u8, 101#u8, 110#u8, 102#u8, 111#u8, 108#u8, 100#u8
+        ]))
+  let v16 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s16
+  let out16 ← alloc.vec.Vec.push out15 v16
+  let s17 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        97#u8, 121#u8, 97#u8, 109#u8, 103#u8, 111#u8, 114#u8, 101#u8, 110#u8,
+        103#u8
+        ]))
+  let v17 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s17
+  let out17 ← alloc.vec.Vec.push out16 v17
+  let s18 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        98#u8, 97#u8, 98#u8, 97#u8, 115#u8, 111#u8, 110#u8, 105#u8, 99#u8,
+        111#u8, 115#u8
+        ]))
+  let v18 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s18
+  let out18 ← alloc.vec.Vec.push out17 v18
+  let s19 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        98#u8, 97#u8, 108#u8, 108#u8, 97#u8, 52#u8, 108#u8, 105#u8, 102#u8,
+        101#u8
+        ]))
+  let v19 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s19
+  let out19 ← alloc.vec.Vec.push out18 v19
+  let s20 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        98#u8, 97#u8, 114#u8, 114#u8, 105#u8, 111#u8, 102#u8, 105#u8, 110#u8,
+        111#u8
+        ]))
+  let v20 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s20
+  let out20 ← alloc.vec.Vec.push out19 v20
+  let s21 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        98#u8, 98#u8, 97#u8, 108#u8, 108#u8, 52#u8, 108#u8, 105#u8, 102#u8,
+        101#u8
+        ]))
+  let v21 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s21
+  let out21 ← alloc.vec.Vec.push out20 v21
+  let s22 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        98#u8, 101#u8, 98#u8, 105#u8, 116#u8, 97#u8, 108#u8, 105#u8, 110#u8,
+        100#u8, 97#u8
+        ]))
+  let v22 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s22
+  let out22 ← alloc.vec.Vec.push out21 v22
+  let s23 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        98#u8, 101#u8, 108#u8, 108#u8, 105#u8, 115#u8, 115#u8, 105#u8, 109#u8,
+        97#u8
+        ]))
+  let v23 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s23
+  alloc.vec.Vec.push out22 v23
+
+/-- [kanidm_kernel::migration_defaults::table_part_3]:
+    Source: 'prove/ports/kanidm/kernel/src/migration_defaults.rs', lines 94:0-121:1
+    Visibility: public -/
+def migration_defaults.table_part_3
+  : Result (alloc.vec.Vec (alloc.vec.Vec Std.U8)) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        98#u8, 101#u8, 110#u8, 100#u8, 105#u8, 99#u8, 105#u8, 111#u8, 110#u8,
+        101#u8, 115#u8
+        ]))
+  let v ← alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  let out ← alloc.vec.Vec.push (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) v
+  let s1 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        98#u8, 101#u8, 110#u8, 102#u8, 105#u8, 113#u8, 117#u8, 105#u8, 115#u8,
+        116#u8, 97#u8
+        ]))
+  let v1 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s1
+  let out1 ← alloc.vec.Vec.push out v1
+  let s2 ←
+    lift (Array.to_slice
+      (Array.make 16#usize [
+        98#u8, 101#u8, 115#u8, 116#u8, 102#u8, 114#u8, 105#u8, 101#u8, 110#u8,
+        100#u8, 115#u8, 52#u8, 101#u8, 118#u8, 101#u8, 114#u8
+        ]))
+  let v2 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s2
+  let out2 ← alloc.vec.Vec.push out1 v2
+  let s3 ←
+    lift (Array.to_slice
+      (Array.make 18#usize [
+        98#u8, 101#u8, 115#u8, 116#u8, 102#u8, 114#u8, 105#u8, 101#u8, 110#u8,
+        100#u8, 115#u8, 102#u8, 111#u8, 114#u8, 101#u8, 118#u8, 101#u8, 114#u8
+        ]))
+  let v3 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s3
+  let out3 ← alloc.vec.Vec.push out2 v3
+  let s4 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        98#u8, 105#u8, 101#u8, 110#u8, 118#u8, 101#u8, 110#u8, 105#u8, 100#u8,
+        111#u8
+        ]))
+  let v4 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s4
+  let out4 ← alloc.vec.Vec.push out3 v4
+  let s5 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        98#u8, 105#u8, 108#u8, 108#u8, 97#u8, 110#u8, 100#u8, 98#u8, 101#u8,
+        110#u8
+        ]))
+  let v5 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s5
+  let out5 ← alloc.vec.Vec.push out4 v5
+  let s6 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        98#u8, 108#u8, 97#u8, 99#u8, 107#u8, 97#u8, 110#u8, 100#u8, 119#u8,
+        104#u8, 105#u8, 116#u8, 101#u8
+        ]))
+  let v6 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s6
+  let out6 ← alloc.vec.Vec.push out5 v6
+  let s7 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        98#u8, 108#u8, 97#u8, 99#u8, 107#u8, 101#u8, 121#u8, 101#u8, 100#u8,
+        112#u8, 101#u8, 97#u8, 115#u8
+        ]))
+  let v7 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s7
+  let out7 ← alloc.vec.Vec.push out6 v7
+  let s8 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        98#u8, 111#u8, 98#u8, 101#u8, 115#u8, 112#u8, 111#u8, 110#u8, 106#u8,
+        97#u8
+        ]))
+  let v8 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s8
+  let out8 ← alloc.vec.Vec.push out7 v8
+  let s9 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        98#u8, 111#u8, 98#u8, 116#u8, 104#u8, 101#u8, 98#u8, 117#u8, 105#u8,
+        108#u8, 100#u8, 101#u8, 114#u8
+        ]))
+  let v9 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s9
+  let out9 ← alloc.vec.Vec.push out8 v9
+  let s10 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        98#u8, 111#u8, 109#u8, 98#u8, 111#u8, 110#u8, 99#u8, 105#u8, 116#u8,
+        111#u8
+        ]))
+  let v10 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s10
+  let out10 ← alloc.vec.Vec.push out9 v10
+  let s11 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        98#u8, 111#u8, 114#u8, 114#u8, 101#u8, 103#u8, 117#u8, 105#u8, 116#u8,
+        111#u8
+        ]))
+  let v11 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s11
+  let out11 ← alloc.vec.Vec.push out10 v11
+  let s12 ←
+    lift (Array.to_slice
+      (Array.make 15#usize [
+        98#u8, 111#u8, 121#u8, 115#u8, 111#u8, 118#u8, 101#u8, 114#u8, 102#u8,
+        108#u8, 111#u8, 119#u8, 101#u8, 114#u8, 115#u8
+        ]))
+  let v12 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s12
+  let out12 ← alloc.vec.Vec.push out11 v12
+  let s13 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        98#u8, 114#u8, 105#u8, 110#u8, 103#u8, 109#u8, 101#u8, 116#u8, 111#u8,
+        108#u8, 105#u8, 102#u8, 101#u8
+        ]))
+  let v13 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s13
+  let out13 ← alloc.vec.Vec.push out12 v13
+  let s14 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        98#u8, 117#u8, 115#u8, 116#u8, 105#u8, 116#u8, 98#u8, 97#u8, 98#u8,
+        121#u8
+        ]))
+  let v14 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s14
+  let out14 ← alloc.vec.Vec.push out13 v14
+  let s15 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        99#u8, 97#u8, 99#u8, 104#u8, 111#u8, 114#u8, 114#u8, 105#u8, 116#u8,
+        97#u8
+        ]))
+  let v15 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s15
+  let out15 ← alloc.vec.Vec.push out14 v15
+  let s16 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        99#u8, 97#u8, 99#u8, 104#u8, 111#u8, 114#u8, 114#u8, 105#u8, 116#u8,
+        111#u8
+        ]))
+  let v16 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s16
+  let out16 ← alloc.vec.Vec.push out15 v16
+  let s17 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        99#u8, 97#u8, 102#u8, 101#u8, 116#u8, 97#u8, 99#u8, 117#u8, 98#u8,
+        97#u8
+        ]))
+  let v17 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s17
+  let out17 ← alloc.vec.Vec.push out16 v17
+  let s18 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        99#u8, 97#u8, 108#u8, 99#u8, 117#u8, 108#u8, 97#u8, 100#u8, 111#u8,
+        114#u8, 97#u8
+        ]))
+  let v18 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s18
+  let out18 ← alloc.vec.Vec.push out17 v18
+  let s19 ←
+    lift (Array.to_slice
+      (Array.make 15#usize [
+        99#u8, 97#u8, 108#u8, 105#u8, 102#u8, 111#u8, 114#u8, 110#u8, 105#u8,
+        99#u8, 97#u8, 116#u8, 105#u8, 111#u8, 110#u8
+        ]))
+  let v19 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s19
+  let out19 ← alloc.vec.Vec.push out18 v19
+  let s20 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        99#u8, 97#u8, 109#u8, 105#u8, 108#u8, 111#u8, 116#u8, 101#u8, 97#u8,
+        109#u8, 111#u8
+        ]))
+  let v20 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s20
+  let out20 ← alloc.vec.Vec.push out19 v20
+  let s21 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        99#u8, 97#u8, 110#u8, 100#u8, 121#u8, 108#u8, 97#u8, 110#u8, 100#u8,
+        49#u8
+        ]))
+  let v21 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s21
+  let out21 ← alloc.vec.Vec.push out20 v21
+  let s22 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        99#u8, 97#u8, 110#u8, 100#u8, 121#u8, 115#u8, 104#u8, 111#u8, 112#u8,
+        49#u8
+        ]))
+  let v22 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s22
+  let out22 ← alloc.vec.Vec.push out21 v22
+  let s23 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        99#u8, 97#u8, 110#u8, 116#u8, 116#u8, 111#u8, 117#u8, 99#u8, 104#u8,
+        116#u8, 104#u8, 105#u8, 115#u8
+        ]))
+  let v23 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s23
+  alloc.vec.Vec.push out22 v23
+
+/-- [kanidm_kernel::migration_defaults::table_part_4]:
+    Source: 'prove/ports/kanidm/kernel/src/migration_defaults.rs', lines 122:0-149:1
+    Visibility: public -/
+def migration_defaults.table_part_4
+  : Result (alloc.vec.Vec (alloc.vec.Vec Std.U8)) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        99#u8, 97#u8, 112#u8, 101#u8, 114#u8, 117#u8, 99#u8, 105#u8, 116#u8,
+        97#u8
+        ]))
+  let v ← alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  let out ← alloc.vec.Vec.push (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) v
+  let s1 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        99#u8, 97#u8, 112#u8, 114#u8, 105#u8, 99#u8, 104#u8, 111#u8, 115#u8,
+        97#u8
+        ]))
+  let v1 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s1
+  let out1 ← alloc.vec.Vec.push out v1
+  let s2 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        99#u8, 97#u8, 114#u8, 97#u8, 100#u8, 101#u8, 112#u8, 101#u8, 114#u8,
+        114#u8, 111#u8
+        ]))
+  let v2 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s2
+  let out2 ← alloc.vec.Vec.push out1 v2
+  let s3 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        99#u8, 97#u8, 114#u8, 97#u8, 110#u8, 103#u8, 117#u8, 101#u8, 106#u8,
+        111#u8
+        ]))
+  let v3 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s3
+  let out3 ← alloc.vec.Vec.push out2 v3
+  let s4 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        99#u8, 97#u8, 114#u8, 105#u8, 99#u8, 97#u8, 116#u8, 117#u8, 114#u8,
+        97#u8
+        ]))
+  let v4 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s4
+  let out4 ← alloc.vec.Vec.push out3 v4
+  let s5 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        99#u8, 97#u8, 114#u8, 105#u8, 116#u8, 97#u8, 100#u8, 101#u8, 97#u8,
+        110#u8, 103#u8, 101#u8, 108#u8
+        ]))
+  let v5 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s5
+  let out5 ← alloc.vec.Vec.push out4 v5
+  let s6 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        99#u8, 97#u8, 114#u8, 116#u8, 101#u8, 108#u8, 100#u8, 101#u8, 115#u8,
+        97#u8, 110#u8, 116#u8, 97#u8
+        ]))
+  let v6 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s6
+  let out6 ← alloc.vec.Vec.push out5 v6
+  let s7 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        99#u8, 97#u8, 115#u8, 116#u8, 114#u8, 97#u8, 118#u8, 101#u8, 116#u8,
+        101#u8
+        ]))
+  let v7 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s7
+  let out7 ← alloc.vec.Vec.push out6 v7
+  let s8 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        99#u8, 97#u8, 116#u8, 105#u8, 110#u8, 116#u8, 104#u8, 101#u8, 104#u8,
+        97#u8, 116#u8
+        ]))
+  let v8 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s8
+  let out8 ← alloc.vec.Vec.push out7 v8
+  let s9 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        99#u8, 97#u8, 116#u8, 115#u8, 97#u8, 110#u8, 100#u8, 100#u8, 111#u8,
+        103#u8, 115#u8
+        ]))
+  let v9 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s9
+  let out9 ← alloc.vec.Vec.push out8 v9
+  let s10 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        99#u8, 101#u8, 108#u8, 116#u8, 105#u8, 99#u8, 102#u8, 99#u8, 49#u8,
+        56#u8, 56#u8, 56#u8
+        ]))
+  let v10 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s10
+  let out10 ← alloc.vec.Vec.push out9 v10
+  let s11 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        99#u8, 101#u8, 110#u8, 105#u8, 99#u8, 105#u8, 101#u8, 110#u8, 116#u8,
+        97#u8
+        ]))
+  let v11 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s11
+  let out11 ← alloc.vec.Vec.push out10 v11
+  let s12 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        99#u8, 104#u8, 97#u8, 112#u8, 97#u8, 114#u8, 114#u8, 105#u8, 116#u8,
+        97#u8
+        ]))
+  let v12 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s12
+  let out12 ← alloc.vec.Vec.push out11 v12
+  let s13 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        99#u8, 104#u8, 97#u8, 112#u8, 97#u8, 114#u8, 114#u8, 105#u8, 116#u8,
+        111#u8
+        ]))
+  let v13 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s13
+  let out13 ← alloc.vec.Vec.push out12 v13
+  let s14 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        99#u8, 104#u8, 97#u8, 114#u8, 111#u8, 108#u8, 97#u8, 115#u8, 116#u8,
+        114#u8, 97#u8
+        ]))
+  let v14 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s14
+  let out14 ← alloc.vec.Vec.push out13 v14
+  let s15 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        99#u8, 104#u8, 105#u8, 99#u8, 97#u8, 102#u8, 114#u8, 101#u8, 115#u8,
+        97#u8
+        ]))
+  let v15 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s15
+  let out15 ← alloc.vec.Vec.push out14 v15
+  let s16 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        99#u8, 104#u8, 105#u8, 107#u8, 105#u8, 115#u8, 116#u8, 114#u8, 105#u8,
+        107#u8, 105#u8, 115#u8
+        ]))
+  let v16 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s16
+  let out16 ← alloc.vec.Vec.push out15 v16
+  let s17 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        99#u8, 104#u8, 105#u8, 108#u8, 105#u8, 110#u8, 100#u8, 114#u8, 105#u8,
+        110#u8, 97#u8
+        ]))
+  let v17 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s17
+  let out17 ← alloc.vec.Vec.push out16 v17
+  let s18 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        99#u8, 104#u8, 105#u8, 110#u8, 103#u8, 97#u8, 116#u8, 117#u8, 109#u8,
+        97#u8, 100#u8, 114#u8, 101#u8
+        ]))
+  let v18 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s18
+  let out18 ← alloc.vec.Vec.push out17 v18
+  let s19 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        99#u8, 104#u8, 105#u8, 113#u8, 117#u8, 105#u8, 116#u8, 105#u8, 116#u8,
+        97#u8, 115#u8
+        ]))
+  let v19 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s19
+  let out19 ← alloc.vec.Vec.push out18 v19
+  let s20 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        99#u8, 104#u8, 111#u8, 99#u8, 111#u8, 104#u8, 111#u8, 108#u8, 105#u8,
+        99#u8
+        ]))
+  let v20 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s20
+  let out20 ← alloc.vec.Vec.push out19 v20
+  let s21 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        99#u8, 104#u8, 114#u8, 105#u8, 115#u8, 32#u8, 98#u8, 114#u8, 111#u8,
+        119#u8, 110#u8
+        ]))
+  let v21 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s21
+  let out21 ← alloc.vec.Vec.push out20 v21
+  let s22 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        99#u8, 104#u8, 117#u8, 112#u8, 97#u8, 99#u8, 104#u8, 117#u8, 112#u8,
+        115#u8
+        ]))
+  let v22 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s22
+  let out22 ← alloc.vec.Vec.push out21 v22
+  let s23 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        99#u8, 105#u8, 110#u8, 116#u8, 97#u8, 115#u8, 101#u8, 106#u8, 97#u8,
+        116#u8, 105#u8
+        ]))
+  let v23 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s23
+  alloc.vec.Vec.push out22 v23
+
+/-- [kanidm_kernel::migration_defaults::table_part_5]:
+    Source: 'prove/ports/kanidm/kernel/src/migration_defaults.rs', lines 150:0-177:1
+    Visibility: public -/
+def migration_defaults.table_part_5
+  : Result (alloc.vec.Vec (alloc.vec.Vec Std.U8)) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 111#u8, 102#u8, 50#u8, 48#u8,
+        48#u8, 52#u8
+        ]))
+  let v ← alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  let out ← alloc.vec.Vec.push (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) v
+  let s1 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 111#u8, 102#u8, 50#u8, 48#u8,
+        48#u8, 53#u8
+        ]))
+  let v1 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s1
+  let out1 ← alloc.vec.Vec.push out v1
+  let s2 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 111#u8, 102#u8, 50#u8, 48#u8,
+        48#u8, 54#u8
+        ]))
+  let v2 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s2
+  let out2 ← alloc.vec.Vec.push out1 v2
+  let s3 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 111#u8, 102#u8, 50#u8, 48#u8,
+        48#u8, 55#u8
+        ]))
+  let v3 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s3
+  let out3 ← alloc.vec.Vec.push out2 v3
+  let s4 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 111#u8, 102#u8, 50#u8, 48#u8,
+        48#u8, 56#u8
+        ]))
+  let v4 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s4
+  let out4 ← alloc.vec.Vec.push out3 v4
+  let s5 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 111#u8, 102#u8, 50#u8, 48#u8,
+        48#u8, 57#u8
+        ]))
+  let v5 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s5
+  let out5 ← alloc.vec.Vec.push out4 v5
+  let s6 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 111#u8, 102#u8, 50#u8, 48#u8,
+        49#u8, 48#u8
+        ]))
+  let v6 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s6
+  let out6 ← alloc.vec.Vec.push out5 v6
+  let s7 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 111#u8, 102#u8, 50#u8, 48#u8,
+        49#u8, 49#u8
+        ]))
+  let v7 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s7
+  let out7 ← alloc.vec.Vec.push out6 v7
+  let s8 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 111#u8, 102#u8, 50#u8, 48#u8,
+        49#u8, 50#u8
+        ]))
+  let v8 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s8
+  let out8 ← alloc.vec.Vec.push out7 v8
+  let s9 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        99#u8, 111#u8, 109#u8, 112#u8, 117#u8, 116#u8, 97#u8, 99#u8, 105#u8,
+        111#u8, 110#u8
+        ]))
+  let v9 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s9
+  let out9 ← alloc.vec.Vec.push out8 v9
+  let s10 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        99#u8, 111#u8, 109#u8, 117#u8, 110#u8, 105#u8, 99#u8, 97#u8, 99#u8,
+        105#u8, 111#u8, 110#u8
+        ]))
+  let v10 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s10
+  let out10 ← alloc.vec.Vec.push out9 v10
+  let s11 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        99#u8, 111#u8, 110#u8, 102#u8, 105#u8, 100#u8, 101#u8, 110#u8, 99#u8,
+        105#u8, 97#u8, 108#u8
+        ]))
+  let v11 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s11
+  let out11 ← alloc.vec.Vec.push out10 v11
+  let s12 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        99#u8, 111#u8, 110#u8, 116#u8, 97#u8, 98#u8, 105#u8, 108#u8, 105#u8,
+        100#u8, 97#u8, 100#u8
+        ]))
+  let v12 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s12
+  let out12 ← alloc.vec.Vec.push out11 v12
+  let s13 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        99#u8, 111#u8, 111#u8, 107#u8, 105#u8, 101#u8, 115#u8, 110#u8, 99#u8,
+        114#u8, 101#u8, 97#u8, 109#u8
+        ]))
+  let v13 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s13
+  let out13 ← alloc.vec.Vec.push out12 v13
+  let s14 ←
+    lift (Array.to_slice
+      (Array.make 14#usize [
+        99#u8, 111#u8, 114#u8, 97#u8, 122#u8, 111#u8, 110#u8, 100#u8, 101#u8,
+        109#u8, 101#u8, 108#u8, 111#u8, 110#u8
+        ]))
+  let v14 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s14
+  let out14 ← alloc.vec.Vec.push out13 v14
+  let s15 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        99#u8, 111#u8, 115#u8, 105#u8, 116#u8, 97#u8, 114#u8, 105#u8, 99#u8,
+        97#u8
+        ]))
+  let v15 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s15
+  let out15 ← alloc.vec.Vec.push out14 v15
+  let s16 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        99#u8, 114#u8, 97#u8, 100#u8, 108#u8, 101#u8, 111#u8, 102#u8, 102#u8,
+        105#u8, 108#u8, 116#u8, 104#u8
+        ]))
+  let v16 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s16
+  let out16 ← alloc.vec.Vec.push out15 v16
+  let s17 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        99#u8, 114#u8, 97#u8, 122#u8, 121#u8, 115#u8, 101#u8, 120#u8, 121#u8,
+        99#u8, 111#u8, 111#u8, 108#u8
+        ]))
+  let v17 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s17
+  let out17 ← alloc.vec.Vec.push out16 v17
+  let s18 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        99#u8, 114#u8, 101#u8, 112#u8, 117#u8, 115#u8, 99#u8, 117#u8, 108#u8,
+        111#u8
+        ]))
+  let v18 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s18
+  let out18 ← alloc.vec.Vec.push out17 v18
+  let s19 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        99#u8, 114#u8, 105#u8, 115#u8, 111#u8, 115#u8, 116#u8, 111#u8, 109#u8,
+        111#u8
+        ]))
+  let v19 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s19
+  let out19 ← alloc.vec.Vec.push out18 v19
+  let s20 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        99#u8, 114#u8, 105#u8, 115#u8, 116#u8, 111#u8, 109#u8, 101#u8, 97#u8,
+        109#u8, 97#u8
+        ]))
+  let v20 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s20
+  let out20 ← alloc.vec.Vec.push out19 v20
+  let s21 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        99#u8, 114#u8, 105#u8, 115#u8, 116#u8, 111#u8, 116#u8, 101#u8, 97#u8,
+        109#u8, 97#u8
+        ]))
+  let v21 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s21
+  let out21 ← alloc.vec.Vec.push out20 v21
+  let s22 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        99#u8, 114#u8, 105#u8, 115#u8, 116#u8, 111#u8, 116#u8, 101#u8, 97#u8,
+        109#u8, 111#u8
+        ]))
+  let v22 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s22
+  let out22 ← alloc.vec.Vec.push out21 v22
+  let s23 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        99#u8, 114#u8, 105#u8, 115#u8, 116#u8, 111#u8, 118#u8, 105#u8, 118#u8,
+        101#u8
+        ]))
+  let v23 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s23
+  alloc.vec.Vec.push out22 v23
+
+/-- [kanidm_kernel::migration_defaults::table_part_6]:
+    Source: 'prove/ports/kanidm/kernel/src/migration_defaults.rs', lines 178:0-205:1
+    Visibility: public -/
+def migration_defaults.table_part_6
+  : Result (alloc.vec.Vec (alloc.vec.Vec Std.U8)) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        99#u8, 117#u8, 97#u8, 108#u8, 113#u8, 117#u8, 105#u8, 101#u8, 114#u8,
+        97#u8
+        ]))
+  let v ← alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  let out ← alloc.vec.Vec.push (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) v
+  let s1 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        99#u8, 117#u8, 97#u8, 108#u8, 113#u8, 117#u8, 105#u8, 101#u8, 114#u8,
+        99#u8, 111#u8, 115#u8, 97#u8
+        ]))
+  let v1 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s1
+  let out1 ← alloc.vec.Vec.push out v1
+  let s2 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        99#u8, 117#u8, 99#u8, 104#u8, 117#u8, 114#u8, 114#u8, 117#u8, 109#u8,
+        105#u8, 110#u8
+        ]))
+  let v2 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s2
+  let out2 ← alloc.vec.Vec.push out1 v2
+  let s3 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        99#u8, 121#u8, 109#u8, 114#u8, 117#u8, 97#u8, 109#u8, 98#u8, 121#u8,
+        116#u8, 104#u8
+        ]))
+  let v3 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s3
+  let out3 ← alloc.vec.Vec.push out2 v3
+  let s4 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        100#u8, 97#u8, 100#u8, 100#u8, 121#u8, 115#u8, 108#u8, 105#u8, 108#u8,
+        103#u8, 105#u8, 114#u8, 108#u8
+        ]))
+  let v4 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s4
+  let out4 ← alloc.vec.Vec.push out3 v4
+  let s5 ←
+    lift (Array.to_slice
+      (Array.make 16#usize [
+        100#u8, 97#u8, 100#u8, 100#u8, 121#u8, 115#u8, 108#u8, 105#u8, 116#u8,
+        116#u8, 108#u8, 101#u8, 103#u8, 105#u8, 114#u8, 108#u8
+        ]))
+  let v5 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s5
+  let out5 ← alloc.vec.Vec.push out4 v5
+  let s6 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        100#u8, 97#u8, 110#u8, 105#u8, 116#u8, 121#u8, 107#u8, 97#u8, 110#u8,
+        101#u8
+        ]))
+  let v6 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s6
+  let out6 ← alloc.vec.Vec.push out5 v6
+  let s7 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        100#u8, 97#u8, 118#u8, 101#u8, 121#u8, 104#u8, 97#u8, 118#u8, 111#u8,
+        107#u8
+        ]))
+  let v7 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s7
+  let out7 ← alloc.vec.Vec.push out6 v7
+  let s8 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        100#u8, 99#u8, 115#u8, 104#u8, 111#u8, 101#u8, 99#u8, 111#u8, 117#u8,
+        115#u8, 97#u8
+        ]))
+  let v8 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s8
+  let out8 ← alloc.vec.Vec.push out7 v8
+  let s9 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        100#u8, 101#u8, 112#u8, 111#u8, 114#u8, 116#u8, 105#u8, 118#u8, 111#u8,
+        99#u8, 97#u8, 108#u8, 105#u8
+        ]))
+  let v9 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s9
+  let out9 ← alloc.vec.Vec.push out8 v9
+  let s10 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        100#u8, 101#u8, 112#u8, 114#u8, 101#u8, 100#u8, 97#u8, 100#u8, 111#u8,
+        114#u8
+        ]))
+  let v10 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s10
+  let out10 ← alloc.vec.Vec.push out9 v10
+  let s11 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        100#u8, 101#u8, 115#u8, 105#u8, 100#u8, 101#u8, 114#u8, 97#u8, 116#u8,
+        97#u8
+        ]))
+  let v11 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s11
+  let out11 ← alloc.vec.Vec.push out10 v11
+  let s12 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        100#u8, 103#u8, 101#u8, 110#u8, 101#u8, 114#u8, 97#u8, 116#u8, 105#u8,
+        111#u8, 110#u8, 120#u8
+        ]))
+  let v12 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s12
+  let out12 ← alloc.vec.Vec.push out11 v12
+  let s13 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        100#u8, 105#u8, 109#u8, 109#u8, 117#u8, 98#u8, 111#u8, 114#u8, 103#u8,
+        105#u8, 114#u8
+        ]))
+  let v13 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s13
+  let out13 ← alloc.vec.Vec.push out12 v13
+  let s14 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        100#u8, 105#u8, 111#u8, 115#u8, 101#u8, 115#u8, 98#u8, 117#u8, 101#u8,
+        110#u8, 111#u8
+        ]))
+  let v14 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s14
+  let out14 ← alloc.vec.Vec.push out13 v14
+  let s15 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        100#u8, 105#u8, 111#u8, 115#u8, 116#u8, 101#u8, 98#u8, 101#u8, 110#u8,
+        100#u8, 105#u8, 103#u8, 97#u8
+        ]))
+  let v15 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s15
+  let out15 ← alloc.vec.Vec.push out14 v15
+  let s16 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        100#u8, 105#u8, 118#u8, 97#u8, 108#u8, 105#u8, 99#u8, 105#u8, 111#u8,
+        117#u8, 115#u8
+        ]))
+  let v16 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s16
+  let out16 ← alloc.vec.Vec.push out15 v16
+  let s17 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        100#u8, 111#u8, 108#u8, 99#u8, 101#u8, 103#u8, 97#u8, 98#u8, 98#u8,
+        97#u8, 110#u8, 97#u8
+        ]))
+  let v17 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s17
+  let out17 ← alloc.vec.Vec.push out16 v17
+  let s18 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        100#u8, 114#u8, 97#u8, 99#u8, 111#u8, 109#u8, 97#u8, 108#u8, 102#u8,
+        111#u8, 121#u8
+        ]))
+  let v18 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s18
+  let out18 ← alloc.vec.Vec.push out17 v18
+  let s19 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        100#u8, 114#u8, 97#u8, 103#u8, 111#u8, 115#u8, 116#u8, 101#u8, 97#u8,
+        109#u8, 101#u8, 97#u8
+        ]))
+  let v19 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s19
+  let out19 ← alloc.vec.Vec.push out18 v19
+  let s20 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        101#u8, 97#u8, 116#u8, 109#u8, 121#u8, 115#u8, 104#u8, 111#u8, 114#u8,
+        116#u8, 115#u8
+        ]))
+  let v20 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s20
+  let out20 ← alloc.vec.Vec.push out19 v20
+  let s21 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        101#u8, 99#u8, 117#u8, 97#u8, 116#u8, 111#u8, 114#u8, 105#u8, 97#u8,
+        110#u8, 97#u8
+        ]))
+  let v21 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s21
+  let out21 ← alloc.vec.Vec.push out20 v21
+  let s22 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        101#u8, 108#u8, 97#u8, 109#u8, 111#u8, 114#u8, 97#u8, 112#u8, 101#u8,
+        115#u8, 116#u8, 97#u8
+        ]))
+  let v22 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s22
+  let out22 ← alloc.vec.Vec.push out21 v22
+  let s23 ←
+    lift (Array.to_slice
+      (Array.make 14#usize [
+        101#u8, 108#u8, 97#u8, 109#u8, 111#u8, 114#u8, 100#u8, 101#u8, 109#u8,
+        105#u8, 118#u8, 105#u8, 100#u8, 97#u8
+        ]))
+  let v23 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s23
+  alloc.vec.Vec.push out22 v23
+
+/-- [kanidm_kernel::migration_defaults::table_part_7]:
+    Source: 'prove/ports/kanidm/kernel/src/migration_defaults.rs', lines 206:0-233:1
+    Visibility: public -/
+def migration_defaults.table_part_7
+  : Result (alloc.vec.Vec (alloc.vec.Vec Std.U8)) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        101#u8, 108#u8, 97#u8, 109#u8, 111#u8, 114#u8, 100#u8, 117#u8, 101#u8,
+        108#u8, 101#u8
+        ]))
+  let v ← alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  let out ← alloc.vec.Vec.push (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) v
+  let s1 ←
+    lift (Array.to_slice
+      (Array.make 14#usize [
+        101#u8, 108#u8, 97#u8, 109#u8, 111#u8, 114#u8, 110#u8, 111#u8, 101#u8,
+        120#u8, 105#u8, 115#u8, 116#u8, 101#u8
+        ]))
+  let v1 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s1
+  let out1 ← alloc.vec.Vec.push out v1
+  let s2 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        101#u8, 109#u8, 112#u8, 101#u8, 114#u8, 97#u8, 116#u8, 114#u8, 105#u8,
+        122#u8
+        ]))
+  let v2 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s2
+  let out2 ← alloc.vec.Vec.push out1 v2
+  let s3 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        101#u8, 110#u8, 99#u8, 97#u8, 110#u8, 116#u8, 97#u8, 100#u8, 105#u8,
+        97#u8
+        ]))
+  let v3 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s3
+  let out3 ← alloc.vec.Vec.push out2 v3
+  let s4 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        101#u8, 110#u8, 102#u8, 101#u8, 114#u8, 109#u8, 97#u8, 103#u8, 101#u8,
+        109#u8
+        ]))
+  let v4 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s4
+  let out4 ← alloc.vec.Vec.push out3 v4
+  let s5 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        101#u8, 110#u8, 102#u8, 101#u8, 114#u8, 109#u8, 101#u8, 114#u8, 105#u8,
+        97#u8
+        ]))
+  let v5 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s5
+  let out5 ← alloc.vec.Vec.push out4 v5
+  let s6 ←
+    lift (Array.to_slice
+      (Array.make 18#usize [
+        101#u8, 114#u8, 101#u8, 115#u8, 101#u8, 108#u8, 97#u8, 109#u8, 111#u8,
+        114#u8, 100#u8, 101#u8, 109#u8, 105#u8, 118#u8, 105#u8, 100#u8, 97#u8
+        ]))
+  let v6 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s6
+  let out6 ← alloc.vec.Vec.push out5 v6
+  let s7 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        101#u8, 114#u8, 101#u8, 115#u8, 108#u8, 111#u8, 109#u8, 97#u8, 120#u8,
+        105#u8, 109#u8, 111#u8
+        ]))
+  let v7 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s7
+  let out7 ← alloc.vec.Vec.push out6 v7
+  let s8 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        101#u8, 114#u8, 101#u8, 115#u8, 108#u8, 111#u8, 109#u8, 101#u8, 106#u8,
+        111#u8, 114#u8
+        ]))
+  let v8 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s8
+  let out8 ← alloc.vec.Vec.push out7 v8
+  let s9 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        101#u8, 114#u8, 101#u8, 115#u8, 109#u8, 105#u8, 97#u8, 109#u8, 111#u8,
+        114#u8
+        ]))
+  let v9 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s9
+  let out9 ← alloc.vec.Vec.push out8 v9
+  let s10 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        101#u8, 114#u8, 101#u8, 115#u8, 109#u8, 105#u8, 118#u8, 105#u8, 100#u8,
+        97#u8
+        ]))
+  let v10 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s10
+  let out10 ← alloc.vec.Vec.push out9 v10
+  let s11 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        101#u8, 115#u8, 99#u8, 114#u8, 105#u8, 116#u8, 111#u8, 114#u8, 105#u8,
+        111#u8
+        ]))
+  let v11 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s11
+  let out11 ← alloc.vec.Vec.push out10 v11
+  let s12 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        101#u8, 115#u8, 112#u8, 105#u8, 114#u8, 105#u8, 116#u8, 117#u8, 115#u8,
+        97#u8, 110#u8, 116#u8, 111#u8
+        ]))
+  let v12 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s12
+  let out12 ← alloc.vec.Vec.push out11 v12
+  let s13 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        101#u8, 115#u8, 116#u8, 97#u8, 100#u8, 111#u8, 115#u8, 117#u8, 110#u8,
+        105#u8, 100#u8, 111#u8, 115#u8
+        ]))
+  let v13 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s13
+  let out13 ← alloc.vec.Vec.push out12 v13
+  let s14 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        101#u8, 115#u8, 116#u8, 114#u8, 101#u8, 108#u8, 105#u8, 110#u8, 104#u8,
+        97#u8
+        ]))
+  let v14 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s14
+  let out14 ← alloc.vec.Vec.push out13 v14
+  let s15 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        101#u8, 115#u8, 116#u8, 117#u8, 100#u8, 105#u8, 97#u8, 110#u8, 116#u8,
+        101#u8
+        ]))
+  let v15 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s15
+  let out15 ← alloc.vec.Vec.push out14 v15
+  let s16 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        101#u8, 119#u8, 97#u8, 110#u8, 107#u8, 111#u8, 115#u8, 97#u8, 121#u8,
+        111#u8
+        ]))
+  let v16 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s16
+  let out16 ← alloc.vec.Vec.push out15 v16
+  let s17 ←
+    lift (Array.to_slice
+      (Array.make 14#usize [
+        101#u8, 120#u8, 116#u8, 114#u8, 97#u8, 116#u8, 101#u8, 114#u8, 114#u8,
+        101#u8, 115#u8, 116#u8, 114#u8, 101#u8
+        ]))
+  let v17 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s17
+  let out17 ← alloc.vec.Vec.push out16 v17
+  let s18 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        101#u8, 121#u8, 101#u8, 115#u8, 104#u8, 105#u8, 101#u8, 108#u8, 100#u8,
+        50#u8, 49#u8
+        ]))
+  let v18 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s18
+  let out18 ← alloc.vec.Vec.push out17 v18
+  let s19 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        102#u8, 97#u8, 100#u8, 101#u8, 116#u8, 111#u8, 98#u8, 108#u8, 97#u8,
+        99#u8, 107#u8
+        ]))
+  let v19 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s19
+  let out19 ← alloc.vec.Vec.push out18 v19
+  let s20 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        102#u8, 101#u8, 114#u8, 103#u8, 97#u8, 108#u8, 105#u8, 99#u8, 105#u8,
+        111#u8, 117#u8, 115#u8
+        ]))
+  let v20 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s20
+  let out20 ← alloc.vec.Vec.push out19 v20
+  let s21 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        102#u8, 105#u8, 103#u8, 117#u8, 101#u8, 105#u8, 114#u8, 101#u8, 100#u8,
+        111#u8
+        ]))
+  let v21 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s21
+  let out21 ← alloc.vec.Vec.push out20 v21
+  let s22 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        102#u8, 105#u8, 108#u8, 97#u8, 100#u8, 101#u8, 108#u8, 102#u8, 105#u8,
+        97#u8
+        ]))
+  let v22 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s22
+  let out22 ← alloc.vec.Vec.push out21 v22
+  let s23 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        102#u8, 105#u8, 110#u8, 105#u8, 115#u8, 116#u8, 101#u8, 114#u8, 114#u8,
+        97#u8
+        ]))
+  let v23 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s23
+  alloc.vec.Vec.push out22 v23
+
+/-- [kanidm_kernel::migration_defaults::table_part_8]:
+    Source: 'prove/ports/kanidm/kernel/src/migration_defaults.rs', lines 234:0-261:1
+    Visibility: public -/
+def migration_defaults.table_part_8
+  : Result (alloc.vec.Vec (alloc.vec.Vec Std.U8)) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        102#u8, 105#u8, 115#u8, 104#u8, 97#u8, 110#u8, 100#u8, 99#u8, 104#u8,
+        105#u8, 112#u8, 115#u8
+        ]))
+  let v ← alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  let out ← alloc.vec.Vec.push (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) v
+  let s1 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        102#u8, 108#u8, 111#u8, 114#u8, 100#u8, 101#u8, 108#u8, 105#u8, 122#u8,
+        97#u8
+        ]))
+  let v1 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s1
+  let out1 ← alloc.vec.Vec.push out v1
+  let s2 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        102#u8, 108#u8, 111#u8, 114#u8, 100#u8, 101#u8, 108#u8, 111#u8, 116#u8,
+        111#u8
+        ]))
+  let v2 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s2
+  let out2 ← alloc.vec.Vec.push out1 v2
+  let s3 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        102#u8, 108#u8, 111#u8, 114#u8, 105#u8, 99#u8, 105#u8, 101#u8, 110#u8,
+        116#u8, 97#u8
+        ]))
+  let v3 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s3
+  let out3 ← alloc.vec.Vec.push out2 v3
+  let s4 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        102#u8, 108#u8, 111#u8, 114#u8, 105#u8, 110#u8, 115#u8, 97#u8, 108#u8,
+        97#u8, 109#u8
+        ]))
+  let v4 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s4
+  let out4 ← alloc.vec.Vec.push out3 v4
+  let s5 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        102#u8, 108#u8, 111#u8, 114#u8, 105#u8, 112#u8, 111#u8, 110#u8, 100#u8,
+        105#u8, 97#u8
+        ]))
+  let v5 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s5
+  let out5 ← alloc.vec.Vec.push out4 v5
+  let s6 ←
+    lift (Array.to_slice
+      (Array.make 14#usize [
+        102#u8, 111#u8, 114#u8, 101#u8, 118#u8, 101#u8, 114#u8, 97#u8, 110#u8,
+        100#u8, 101#u8, 118#u8, 101#u8, 114#u8
+        ]))
+  let v6 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s6
+  let out6 ← alloc.vec.Vec.push out5 v6
+  let s7 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        102#u8, 114#u8, 97#u8, 110#u8, 103#u8, 105#u8, 112#u8, 97#u8, 110#u8,
+        105#u8
+        ]))
+  let v7 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s7
+  let out7 ← alloc.vec.Vec.push out6 v7
+  let s8 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        102#u8, 114#u8, 101#u8, 101#u8, 50#u8, 114#u8, 104#u8, 121#u8, 109#u8,
+        101#u8
+        ]))
+  let v8 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s8
+  let out8 ← alloc.vec.Vec.push out7 v8
+  let s9 ←
+    lift (Array.to_slice
+      (Array.make 14#usize [
+        102#u8, 114#u8, 101#u8, 115#u8, 97#u8, 115#u8, 99#u8, 111#u8, 110#u8,
+        99#u8, 114#u8, 101#u8, 109#u8, 97#u8
+        ]))
+  let v9 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s9
+  let out9 ← alloc.vec.Vec.push out8 v9
+  let s10 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        102#u8, 114#u8, 111#u8, 111#u8, 116#u8, 108#u8, 111#u8, 111#u8, 112#u8,
+        115#u8
+        ]))
+  let v10 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s10
+  let out10 ← alloc.vec.Vec.push out9 v10
+  let s11 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        102#u8, 117#u8, 99#u8, 107#u8, 101#u8, 118#u8, 101#u8, 114#u8, 121#u8,
+        49#u8
+        ]))
+  let v11 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s11
+  let out11 ← alloc.vec.Vec.push out10 v11
+  let s12 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        102#u8, 117#u8, 99#u8, 107#u8, 116#u8, 104#u8, 101#u8, 112#u8, 111#u8,
+        112#u8, 101#u8
+        ]))
+  let v12 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s12
+  let out12 ← alloc.vec.Vec.push out11 v12
+  let s13 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        102#u8, 117#u8, 110#u8, 105#u8, 110#u8, 116#u8, 104#u8, 101#u8, 115#u8,
+        117#u8, 110#u8
+        ]))
+  let v13 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s13
+  let out13 ← alloc.vec.Vec.push out12 v13
+  let s14 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        102#u8, 117#u8, 110#u8, 107#u8, 121#u8, 109#u8, 117#u8, 110#u8, 107#u8,
+        121#u8
+        ]))
+  let v14 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s14
+  let out14 ← alloc.vec.Vec.push out13 v14
+  let s15 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        102#u8, 117#u8, 115#u8, 104#u8, 105#u8, 103#u8, 105#u8, 121#u8, 117#u8,
+        103#u8, 105#u8
+        ]))
+  let v15 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s15
+  let out15 ← alloc.vec.Vec.push out14 v15
+  let s16 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        102#u8, 117#u8, 115#u8, 104#u8, 105#u8, 103#u8, 105#u8, 121#u8, 117#u8,
+        117#u8, 103#u8, 105#u8
+        ]))
+  let v16 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s16
+  let out16 ← alloc.vec.Vec.push out15 v16
+  let s17 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        103#u8, 97#u8, 115#u8, 116#u8, 114#u8, 111#u8, 110#u8, 111#u8, 109#u8,
+        105#u8, 97#u8
+        ]))
+  let v17 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s17
+  let out17 ← alloc.vec.Vec.push out16 v17
+  let s18 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        103#u8, 97#u8, 116#u8, 105#u8, 116#u8, 111#u8, 108#u8, 105#u8, 110#u8,
+        100#u8, 111#u8
+        ]))
+  let v18 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s18
+  let out18 ← alloc.vec.Vec.push out17 v18
+  let s19 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        103#u8, 101#u8, 97#u8, 114#u8, 115#u8, 111#u8, 102#u8, 119#u8, 97#u8,
+        114#u8
+        ]))
+  let v19 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s19
+  let out19 ← alloc.vec.Vec.push out18 v19
+  let s20 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        103#u8, 101#u8, 116#u8, 116#u8, 104#u8, 101#u8, 114#u8, 101#u8, 102#u8,
+        97#u8, 115#u8, 116#u8
+        ]))
+  let v20 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s20
+  let out20 ← alloc.vec.Vec.push out19 v20
+  let s21 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        103#u8, 105#u8, 114#u8, 108#u8, 121#u8, 103#u8, 105#u8, 114#u8, 108#u8,
+        49#u8
+        ]))
+  let v21 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s21
+  let out21 ← alloc.vec.Vec.push out20 v21
+  let s22 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        103#u8, 108#u8, 111#u8, 114#u8, 121#u8, 116#u8, 111#u8, 103#u8, 111#u8,
+        100#u8
+        ]))
+  let v22 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s22
+  let out22 ← alloc.vec.Vec.push out21 v22
+  let s23 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        103#u8, 111#u8, 100#u8, 115#u8, 99#u8, 104#u8, 105#u8, 108#u8, 100#u8,
+        49#u8
+        ]))
+  let v23 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s23
+  alloc.vec.Vec.push out22 v23
+
+/-- [kanidm_kernel::migration_defaults::table_part_9]:
+    Source: 'prove/ports/kanidm/kernel/src/migration_defaults.rs', lines 262:0-289:1
+    Visibility: public -/
+def migration_defaults.table_part_9
+  : Result (alloc.vec.Vec (alloc.vec.Vec Std.U8)) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 14#usize [
+        103#u8, 111#u8, 102#u8, 117#u8, 99#u8, 107#u8, 121#u8, 111#u8, 117#u8,
+        114#u8, 115#u8, 101#u8, 108#u8, 102#u8
+        ]))
+  let v ← alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  let out ← alloc.vec.Vec.push (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) v
+  let s1 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        103#u8, 111#u8, 111#u8, 100#u8, 121#u8, 50#u8, 115#u8, 104#u8, 111#u8,
+        101#u8, 115#u8
+        ]))
+  let v1 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s1
+  let out1 ← alloc.vec.Vec.push out v1
+  let s2 ←
+    lift (Array.to_slice
+      (Array.make 14#usize [
+        103#u8, 114#u8, 97#u8, 110#u8, 100#u8, 116#u8, 104#u8, 101#u8, 102#u8,
+        116#u8, 97#u8, 117#u8, 116#u8, 111#u8
+        ]))
+  let v2 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s2
+  let out2 ← alloc.vec.Vec.push out1 v2
+  let s3 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        103#u8, 114#u8, 101#u8, 110#u8, 111#u8, 117#u8, 105#u8, 108#u8, 108#u8,
+        101#u8
+        ]))
+  let v3 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s3
+  let out3 ← alloc.vec.Vec.push out2 v3
+  let s4 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        103#u8, 114#u8, 121#u8, 102#u8, 102#u8, 105#u8, 110#u8, 100#u8, 111#u8,
+        114#u8
+        ]))
+  let v4 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s4
+  let out4 ← alloc.vec.Vec.push out3 v4
+  let s5 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        103#u8, 117#u8, 109#u8, 109#u8, 121#u8, 98#u8, 101#u8, 97#u8, 114#u8,
+        49#u8
+        ]))
+  let v5 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s5
+  let out5 ← alloc.vec.Vec.push out4 v5
+  let s6 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        103#u8, 117#u8, 110#u8, 115#u8, 97#u8, 110#u8, 100#u8, 114#u8, 111#u8,
+        115#u8, 101#u8, 115#u8
+        ]))
+  let v6 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s6
+  let out6 ← alloc.vec.Vec.push out5 v6
+  let s7 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        103#u8, 117#u8, 110#u8, 115#u8, 110#u8, 114#u8, 111#u8, 115#u8, 101#u8,
+        115#u8
+        ]))
+  let v7 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s7
+  let out7 ← alloc.vec.Vec.push out6 v7
+  let s8 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        104#u8, 97#u8, 98#u8, 98#u8, 111#u8, 104#u8, 111#u8, 116#u8, 101#u8,
+        108#u8
+        ]))
+  let v8 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s8
+  let out8 ← alloc.vec.Vec.push out7 v8
+  let s9 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        104#u8, 97#u8, 107#u8, 117#u8, 110#u8, 97#u8, 109#u8, 97#u8, 116#u8,
+        97#u8, 116#u8, 97#u8
+        ]))
+  let v9 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s9
+  let out9 ← alloc.vec.Vec.push out8 v9
+  let s10 ←
+    lift (Array.to_slice
+      (Array.make 14#usize [
+        104#u8, 97#u8, 110#u8, 110#u8, 97#u8, 104#u8, 32#u8, 109#u8, 111#u8,
+        110#u8, 116#u8, 97#u8, 110#u8, 97#u8
+        ]))
+  let v10 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s10
+  let out10 ← alloc.vec.Vec.push out9 v10
+  let s11 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        104#u8, 97#u8, 112#u8, 112#u8, 121#u8, 103#u8, 111#u8, 108#u8, 117#u8,
+        99#u8, 107#u8, 121#u8
+        ]))
+  let v11 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s11
+  let out11 ← alloc.vec.Vec.push out10 v11
+  let s12 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        104#u8, 97#u8, 114#u8, 114#u8, 121#u8, 32#u8, 112#u8, 111#u8, 116#u8,
+        116#u8, 101#u8, 114#u8
+        ]))
+  let v12 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s12
+  let out12 ← alloc.vec.Vec.push out11 v12
+  let s13 ←
+    lift (Array.to_slice
+      (Array.make 14#usize [
+        104#u8, 97#u8, 116#u8, 101#u8, 105#u8, 116#u8, 111#u8, 114#u8, 108#u8,
+        111#u8, 118#u8, 101#u8, 105#u8, 116#u8
+        ]))
+  let v13 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s13
+  let out13 ← alloc.vec.Vec.push out12 v13
+  let s14 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        104#u8, 97#u8, 118#u8, 101#u8, 97#u8, 110#u8, 105#u8, 99#u8, 101#u8,
+        100#u8, 97#u8, 121#u8
+        ]))
+  let v14 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s14
+  let out14 ← alloc.vec.Vec.push out13 v14
+  let s15 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        104#u8, 101#u8, 108#u8, 108#u8, 111#u8, 32#u8, 107#u8, 105#u8, 116#u8,
+        116#u8, 121#u8
+        ]))
+  let v15 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s15
+  let out15 ← alloc.vec.Vec.push out14 v15
+  let s16 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        104#u8, 105#u8, 110#u8, 100#u8, 105#u8, 107#u8, 111#u8, 97#u8, 108#u8,
+        97#u8, 109#u8
+        ]))
+  let v16 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s16
+  let out16 ← alloc.vec.Vec.push out15 v16
+  let s17 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        104#u8, 105#u8, 112#u8, 111#u8, 112#u8, 111#u8, 116#u8, 97#u8, 109#u8,
+        111#u8
+        ]))
+  let v17 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s17
+  let out17 ← alloc.vec.Vec.push out16 v17
+  let s18 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        104#u8, 111#u8, 99#u8, 117#u8, 115#u8, 112#u8, 111#u8, 99#u8, 117#u8,
+        115#u8
+        ]))
+  let v18 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s18
+  let out18 ← alloc.vec.Vec.push out17 v18
+  let s19 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        104#u8, 111#u8, 108#u8, 97#u8, 97#u8, 116#u8, 111#u8, 100#u8, 111#u8,
+        115#u8
+        ]))
+  let v19 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s19
+  let out19 ← alloc.vec.Vec.push out18 v19
+  let s20 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        104#u8, 111#u8, 108#u8, 97#u8, 99#u8, 111#u8, 109#u8, 111#u8, 101#u8,
+        115#u8, 116#u8, 97#u8, 115#u8
+        ]))
+  let v20 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s20
+  let out20 ← alloc.vec.Vec.push out19 v20
+  let s21 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        104#u8, 111#u8, 108#u8, 97#u8, 113#u8, 117#u8, 101#u8, 116#u8, 97#u8,
+        108#u8
+        ]))
+  let v21 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s21
+  let out21 ← alloc.vec.Vec.push out20 v21
+  let s22 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        104#u8, 111#u8, 108#u8, 108#u8, 97#u8, 98#u8, 97#u8, 99#u8, 107#u8,
+        49#u8
+        ]))
+  let v22 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s22
+  let out22 ← alloc.vec.Vec.push out21 v22
+  let s23 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        104#u8, 111#u8, 109#u8, 101#u8, 97#u8, 110#u8, 100#u8, 97#u8, 119#u8,
+        97#u8, 121#u8
+        ]))
+  let v23 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s23
+  alloc.vec.Vec.push out22 v23
+
+/-- [kanidm_kernel::migration_defaults::table_part_10]:
+    Source: 'prove/ports/kanidm/kernel/src/migration_defaults.rs', lines 290:0-317:1
+    Visibility: public -/
+def migration_defaults.table_part_10
+  : Result (alloc.vec.Vec (alloc.vec.Vec Std.U8)) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        104#u8, 111#u8, 109#u8, 101#u8, 115#u8, 119#u8, 101#u8, 101#u8, 116#u8,
+        104#u8, 111#u8, 109#u8, 101#u8
+        ]))
+  let v ← alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  let out ← alloc.vec.Vec.push (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) v
+  let s1 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        104#u8, 111#u8, 111#u8, 98#u8, 97#u8, 115#u8, 116#u8, 97#u8, 110#u8,
+        107#u8
+        ]))
+  let v1 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s1
+  let out1 ← alloc.vec.Vec.push out v1
+  let s2 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        104#u8, 111#u8, 116#u8, 97#u8, 110#u8, 100#u8, 115#u8, 101#u8, 120#u8,
+        121#u8
+        ]))
+  let v2 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s2
+  let out2 ← alloc.vec.Vec.push out1 v2
+  let s3 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        104#u8, 111#u8, 116#u8, 109#u8, 97#u8, 105#u8, 108#u8, 46#u8, 99#u8,
+        111#u8, 109#u8
+        ]))
+  let v3 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s3
+  let out3 ← alloc.vec.Vec.push out2 v3
+  let s4 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        104#u8, 111#u8, 116#u8, 109#u8, 97#u8, 105#u8, 108#u8, 49#u8, 50#u8,
+        51#u8
+        ]))
+  let v4 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s4
+  let out4 ← alloc.vec.Vec.push out3 v4
+  let s5 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        104#u8, 117#u8, 103#u8, 115#u8, 97#u8, 110#u8, 100#u8, 107#u8, 105#u8,
+        115#u8, 115#u8, 101#u8, 115#u8
+        ]))
+  let v5 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s5
+  let out5 ← alloc.vec.Vec.push out4 v5
+  let s6 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        104#u8, 117#u8, 103#u8, 115#u8, 110#u8, 107#u8, 105#u8, 115#u8, 115#u8,
+        101#u8, 115#u8
+        ]))
+  let v6 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s6
+  let out6 ← alloc.vec.Vec.push out5 v6
+  let s7 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        104#u8, 117#u8, 110#u8, 110#u8, 105#u8, 98#u8, 117#u8, 110#u8, 110#u8,
+        105#u8
+        ]))
+  let v7 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s7
+  let out7 ← alloc.vec.Vec.push out6 v7
+  let s8 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        104#u8, 117#u8, 110#u8, 116#u8, 101#u8, 114#u8, 120#u8, 104#u8, 117#u8,
+        110#u8, 116#u8, 101#u8, 114#u8
+        ]))
+  let v8 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s8
+  let out8 ← alloc.vec.Vec.push out7 v8
+  let s9 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        105#u8, 32#u8, 108#u8, 111#u8, 118#u8, 101#u8, 32#u8, 121#u8, 111#u8,
+        117#u8
+        ]))
+  let v9 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s9
+  let out9 ← alloc.vec.Vec.push out8 v9
+  let s10 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        105#u8, 46#u8, 108#u8, 111#u8, 118#u8, 101#u8, 46#u8, 121#u8, 111#u8,
+        117#u8
+        ]))
+  let v10 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s10
+  let out10 ← alloc.vec.Vec.push out9 v10
+  let s11 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        105#u8, 95#u8, 108#u8, 111#u8, 118#u8, 101#u8, 95#u8, 121#u8, 111#u8,
+        117#u8
+        ]))
+  let v11 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s11
+  let out11 ← alloc.vec.Vec.push out10 v11
+  let s12 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        105#u8, 97#u8, 109#u8, 119#u8, 104#u8, 97#u8, 116#u8, 105#u8, 97#u8,
+        109#u8
+        ]))
+  let v12 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s12
+  let out12 ← alloc.vec.Vec.push out11 v12
+  let s13 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        105#u8, 99#u8, 104#u8, 108#u8, 105#u8, 101#u8, 98#u8, 101#u8, 100#u8,
+        105#u8, 99#u8, 104#u8
+        ]))
+  let v13 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s13
+  let out13 ← alloc.vec.Vec.push out12 v13
+  let s14 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        105#u8, 100#u8, 111#u8, 110#u8, 116#u8, 108#u8, 111#u8, 118#u8, 101#u8,
+        121#u8, 111#u8, 117#u8
+        ]))
+  let v14 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s14
+  let out14 ← alloc.vec.Vec.push out13 v14
+  let s15 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        105#u8, 104#u8, 97#u8, 116#u8, 101#u8, 108#u8, 105#u8, 102#u8, 101#u8,
+        49#u8
+        ]))
+  let v15 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s15
+  let out15 ← alloc.vec.Vec.push out14 v15
+  let s16 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        105#u8, 104#u8, 97#u8, 116#u8, 101#u8, 109#u8, 121#u8, 108#u8, 105#u8,
+        102#u8, 101#u8
+        ]))
+  let v16 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s16
+  let out16 ← alloc.vec.Vec.push out15 v16
+  let s17 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        105#u8, 104#u8, 97#u8, 118#u8, 101#u8, 51#u8, 107#u8, 105#u8, 100#u8,
+        115#u8
+        ]))
+  let v17 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s17
+  let out17 ← alloc.vec.Vec.push out16 v17
+  let s18 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        105#u8, 104#u8, 101#u8, 97#u8, 114#u8, 116#u8, 121#u8, 111#u8, 117#u8,
+        33#u8
+        ]))
+  let v18 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s18
+  let out18 ← alloc.vec.Vec.push out17 v18
+  let s19 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        105#u8, 104#u8, 101#u8, 97#u8, 114#u8, 116#u8, 121#u8, 111#u8, 117#u8,
+        49#u8
+        ]))
+  let v19 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s19
+  let out19 ← alloc.vec.Vec.push out18 v19
+  let s20 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        105#u8, 104#u8, 101#u8, 97#u8, 114#u8, 116#u8, 121#u8, 111#u8, 117#u8,
+        50#u8
+        ]))
+  let v20 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s20
+  let out20 ← alloc.vec.Vec.push out19 v20
+  let s21 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        105#u8, 107#u8, 97#u8, 119#u8, 108#u8, 97#u8, 109#u8, 97#u8, 110#u8,
+        103#u8
+        ]))
+  let v21 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s21
+  let out21 ← alloc.vec.Vec.push out20 v21
+  let s22 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        105#u8, 107#u8, 104#u8, 111#u8, 117#u8, 118#u8, 97#u8, 110#u8, 106#u8,
+        111#u8, 117#u8
+        ]))
+  let v22 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s22
+  let out22 ← alloc.vec.Vec.push out21 v22
+  let s23 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        105#u8, 108#u8, 108#u8, 110#u8, 101#u8, 118#u8, 101#u8, 114#u8, 116#u8,
+        101#u8, 108#u8, 108#u8
+        ]))
+  let v23 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s23
+  alloc.vec.Vec.push out22 v23
+
+/-- [kanidm_kernel::migration_defaults::table_part_11]:
+    Source: 'prove/ports/kanidm/kernel/src/migration_defaults.rs', lines 318:0-345:1
+    Visibility: public -/
+def migration_defaults.table_part_11
+  : Result (alloc.vec.Vec (alloc.vec.Vec Std.U8)) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        105#u8, 108#u8, 111#u8, 118#u8, 101#u8, 50#u8, 100#u8, 97#u8, 110#u8,
+        99#u8, 101#u8
+        ]))
+  let v ← alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  let out ← alloc.vec.Vec.push (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) v
+  let s1 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        105#u8, 108#u8, 111#u8, 118#u8, 101#u8, 98#u8, 111#u8, 121#u8, 115#u8,
+        33#u8
+        ]))
+  let v1 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s1
+  let out1 ← alloc.vec.Vec.push out v1
+  let s2 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        105#u8, 108#u8, 111#u8, 118#u8, 101#u8, 98#u8, 111#u8, 121#u8, 115#u8,
+        49#u8
+        ]))
+  let v2 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s2
+  let out2 ← alloc.vec.Vec.push out1 v2
+  let s3 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        105#u8, 108#u8, 111#u8, 118#u8, 101#u8, 98#u8, 111#u8, 121#u8, 115#u8,
+        50#u8
+        ]))
+  let v3 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s3
+  let out3 ← alloc.vec.Vec.push out2 v3
+  let s4 ←
+    lift (Array.to_slice
+      (Array.make 15#usize [
+        105#u8, 108#u8, 111#u8, 118#u8, 101#u8, 99#u8, 104#u8, 114#u8, 105#u8,
+        115#u8, 98#u8, 114#u8, 111#u8, 119#u8, 110#u8
+        ]))
+  let v4 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s4
+  let out4 ← alloc.vec.Vec.push out3 v4
+  let s5 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        105#u8, 108#u8, 111#u8, 118#u8, 101#u8, 99#u8, 111#u8, 100#u8, 121#u8,
+        49#u8
+        ]))
+  let v5 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s5
+  let out5 ← alloc.vec.Vec.push out4 v5
+  let s6 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        105#u8, 108#u8, 111#u8, 118#u8, 101#u8, 100#u8, 111#u8, 103#u8, 115#u8,
+        49#u8
+        ]))
+  let v6 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s6
+  let out6 ← alloc.vec.Vec.push out5 v6
+  let s7 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        105#u8, 108#u8, 111#u8, 118#u8, 101#u8, 106#u8, 97#u8, 107#u8, 101#u8,
+        49#u8
+        ]))
+  let v7 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s7
+  let out7 ← alloc.vec.Vec.push out6 v7
+  let s8 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        105#u8, 108#u8, 111#u8, 118#u8, 101#u8, 106#u8, 111#u8, 115#u8, 101#u8,
+        49#u8
+        ]))
+  let v8 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s8
+  let out8 ← alloc.vec.Vec.push out7 v8
+  let s9 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        105#u8, 108#u8, 111#u8, 118#u8, 101#u8, 106#u8, 111#u8, 115#u8, 104#u8,
+        33#u8
+        ]))
+  let v9 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s9
+  let out9 ← alloc.vec.Vec.push out8 v9
+  let s10 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        105#u8, 108#u8, 111#u8, 118#u8, 101#u8, 106#u8, 111#u8, 115#u8, 104#u8,
+        49#u8
+        ]))
+  let v10 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s10
+  let out10 ← alloc.vec.Vec.push out9 v10
+  let s11 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        105#u8, 108#u8, 111#u8, 118#u8, 101#u8, 107#u8, 121#u8, 108#u8, 101#u8,
+        49#u8
+        ]))
+  let v11 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s11
+  let out11 ← alloc.vec.Vec.push out10 v11
+  let s12 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        105#u8, 108#u8, 111#u8, 118#u8, 101#u8, 109#u8, 105#u8, 107#u8, 101#u8,
+        33#u8
+        ]))
+  let v12 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s12
+  let out12 ← alloc.vec.Vec.push out11 v12
+  let s13 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        105#u8, 108#u8, 111#u8, 118#u8, 101#u8, 109#u8, 121#u8, 98#u8, 111#u8,
+        111#u8
+        ]))
+  let v13 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s13
+  let out13 ← alloc.vec.Vec.push out12 v13
+  let s14 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        105#u8, 108#u8, 111#u8, 118#u8, 101#u8, 109#u8, 121#u8, 99#u8, 97#u8,
+        116#u8
+        ]))
+  let v14 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s14
+  let out14 ← alloc.vec.Vec.push out13 v14
+  let s15 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        105#u8, 108#u8, 111#u8, 118#u8, 101#u8, 109#u8, 121#u8, 100#u8, 97#u8,
+        100#u8
+        ]))
+  let v15 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s15
+  let out15 ← alloc.vec.Vec.push out14 v15
+  let s16 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        105#u8, 108#u8, 111#u8, 118#u8, 101#u8, 109#u8, 121#u8, 100#u8, 97#u8,
+        100#u8, 100#u8, 121#u8
+        ]))
+  let v16 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s16
+  let out16 ← alloc.vec.Vec.push out15 v16
+  let s17 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        105#u8, 108#u8, 111#u8, 118#u8, 101#u8, 109#u8, 121#u8, 100#u8, 111#u8,
+        103#u8
+        ]))
+  let v17 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s17
+  let out17 ← alloc.vec.Vec.push out16 v17
+  let s18 ←
+    lift (Array.to_slice
+      (Array.make 14#usize [
+        105#u8, 108#u8, 111#u8, 118#u8, 101#u8, 109#u8, 121#u8, 102#u8, 114#u8,
+        105#u8, 101#u8, 110#u8, 100#u8, 115#u8
+        ]))
+  let v18 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s18
+  let out18 ← alloc.vec.Vec.push out17 v18
+  let s19 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        105#u8, 108#u8, 111#u8, 118#u8, 101#u8, 109#u8, 121#u8, 109#u8, 111#u8,
+        109#u8
+        ]))
+  let v19 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s19
+  let out19 ← alloc.vec.Vec.push out18 v19
+  let s20 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        105#u8, 108#u8, 111#u8, 118#u8, 101#u8, 109#u8, 121#u8, 109#u8, 111#u8,
+        109#u8, 109#u8, 121#u8
+        ]))
+  let v20 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s20
+  let out20 ← alloc.vec.Vec.push out19 v20
+  let s21 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        105#u8, 108#u8, 111#u8, 118#u8, 101#u8, 109#u8, 121#u8, 109#u8, 117#u8,
+        109#u8
+        ]))
+  let v21 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s21
+  let out21 ← alloc.vec.Vec.push out20 v21
+  let s22 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        105#u8, 108#u8, 111#u8, 118#u8, 101#u8, 109#u8, 121#u8, 109#u8, 117#u8,
+        109#u8, 109#u8, 121#u8
+        ]))
+  let v22 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s22
+  let out22 ← alloc.vec.Vec.push out21 v22
+  let s23 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        105#u8, 108#u8, 111#u8, 118#u8, 101#u8, 109#u8, 121#u8, 115#u8, 105#u8,
+        115#u8, 116#u8, 101#u8, 114#u8
+        ]))
+  let v23 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s23
+  alloc.vec.Vec.push out22 v23
+
+/-- [kanidm_kernel::migration_defaults::table_part_12]:
+    Source: 'prove/ports/kanidm/kernel/src/migration_defaults.rs', lines 346:0-373:1
+    Visibility: public -/
+def migration_defaults.table_part_12
+  : Result (alloc.vec.Vec (alloc.vec.Vec Std.U8)) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        105#u8, 108#u8, 111#u8, 118#u8, 101#u8, 109#u8, 121#u8, 115#u8, 111#u8,
+        110#u8
+        ]))
+  let v ← alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  let out ← alloc.vec.Vec.push (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) v
+  let s1 ←
+    lift (Array.to_slice
+      (Array.make 14#usize [
+        105#u8, 108#u8, 111#u8, 118#u8, 101#u8, 110#u8, 105#u8, 99#u8, 107#u8,
+        106#u8, 111#u8, 110#u8, 97#u8, 115#u8
+        ]))
+  let v1 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s1
+  let out1 ← alloc.vec.Vec.push out v1
+  let s2 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        105#u8, 108#u8, 111#u8, 118#u8, 101#u8, 110#u8, 111#u8, 111#u8, 110#u8,
+        101#u8
+        ]))
+  let v2 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s2
+  let out2 ← alloc.vec.Vec.push out1 v2
+  let s3 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        105#u8, 108#u8, 111#u8, 118#u8, 101#u8, 112#u8, 105#u8, 110#u8, 107#u8,
+        49#u8
+        ]))
+  let v3 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s3
+  let out3 ← alloc.vec.Vec.push out2 v3
+  let s4 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        105#u8, 108#u8, 111#u8, 118#u8, 101#u8, 114#u8, 121#u8, 97#u8, 110#u8,
+        33#u8
+        ]))
+  let v4 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s4
+  let out4 ← alloc.vec.Vec.push out3 v4
+  let s5 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        105#u8, 108#u8, 111#u8, 118#u8, 101#u8, 114#u8, 121#u8, 97#u8, 110#u8,
+        49#u8
+        ]))
+  let v5 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s5
+  let out5 ← alloc.vec.Vec.push out4 v5
+  let s6 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        105#u8, 108#u8, 111#u8, 118#u8, 101#u8, 115#u8, 111#u8, 109#u8, 101#u8,
+        49#u8
+        ]))
+  let v6 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s6
+  let out6 ← alloc.vec.Vec.push out5 v6
+  let s7 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        105#u8, 108#u8, 111#u8, 118#u8, 101#u8, 116#u8, 104#u8, 101#u8, 108#u8,
+        111#u8, 114#u8, 100#u8
+        ]))
+  let v7 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s7
+  let out7 ← alloc.vec.Vec.push out6 v7
+  let s8 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        105#u8, 108#u8, 111#u8, 118#u8, 101#u8, 116#u8, 104#u8, 105#u8, 115#u8,
+        103#u8, 97#u8, 109#u8, 101#u8
+        ]))
+  let v8 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s8
+  let out8 ← alloc.vec.Vec.push out7 v8
+  let s9 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        105#u8, 108#u8, 111#u8, 118#u8, 101#u8, 116#u8, 111#u8, 100#u8, 97#u8,
+        110#u8, 99#u8, 101#u8
+        ]))
+  let v9 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s9
+  let out9 ← alloc.vec.Vec.push out8 v9
+  let s10 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        105#u8, 108#u8, 111#u8, 118#u8, 101#u8, 117#u8, 115#u8, 111#u8, 109#u8,
+        117#u8, 99#u8, 104#u8
+        ]))
+  let v10 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s10
+  let out10 ← alloc.vec.Vec.push out9 v10
+  let s11 ←
+    lift (Array.to_slice
+      (Array.make 14#usize [
+        105#u8, 108#u8, 111#u8, 118#u8, 101#u8, 121#u8, 111#u8, 117#u8, 115#u8,
+        111#u8, 109#u8, 117#u8, 99#u8, 104#u8
+        ]))
+  let v11 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s11
+  let out11 ← alloc.vec.Vec.push out10 v11
+  let s12 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        105#u8, 108#u8, 111#u8, 118#u8, 101#u8, 122#u8, 97#u8, 99#u8, 101#u8,
+        102#u8, 114#u8, 111#u8, 110#u8
+        ]))
+  let v12 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s12
+  let out12 ← alloc.vec.Vec.push out11 v12
+  let s13 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        105#u8, 108#u8, 117#u8, 118#u8, 50#u8, 100#u8, 97#u8, 110#u8, 99#u8,
+        101#u8
+        ]))
+  let v13 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s13
+  let out13 ← alloc.vec.Vec.push out12 v13
+  let s14 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        105#u8, 108#u8, 117#u8, 118#u8, 117#u8, 52#u8, 101#u8, 118#u8, 101#u8,
+        114#u8
+        ]))
+  let v14 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s14
+  let out14 ← alloc.vec.Vec.push out13 v14
+  let s15 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        105#u8, 109#u8, 112#u8, 114#u8, 105#u8, 109#u8, 97#u8, 110#u8, 116#u8,
+        97#u8
+        ]))
+  let v15 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s15
+  let out15 ← alloc.vec.Vec.push out14 v15
+  let s16 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        105#u8, 109#u8, 116#u8, 104#u8, 101#u8, 98#u8, 101#u8, 115#u8, 116#u8,
+        49#u8
+        ]))
+  let v16 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s16
+  let out16 ← alloc.vec.Vec.push out15 v16
+  let s17 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        105#u8, 110#u8, 97#u8, 108#u8, 99#u8, 97#u8, 110#u8, 122#u8, 97#u8,
+        98#u8, 108#u8, 101#u8
+        ]))
+  let v17 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s17
+  let out17 ← alloc.vec.Vec.push out16 v17
+  let s18 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        105#u8, 110#u8, 100#u8, 114#u8, 97#u8, 103#u8, 111#u8, 115#u8, 116#u8,
+        105#u8, 116#u8, 97#u8
+        ]))
+  let v18 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s18
+  let out18 ← alloc.vec.Vec.push out17 v18
+  let s19 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        105#u8, 110#u8, 102#u8, 114#u8, 97#u8, 109#u8, 117#u8, 110#u8, 100#u8,
+        111#u8
+        ]))
+  let v19 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s19
+  let out19 ← alloc.vec.Vec.push out18 v19
+  let s20 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        105#u8, 110#u8, 103#u8, 108#u8, 97#u8, 116#u8, 101#u8, 114#u8, 114#u8,
+        97#u8
+        ]))
+  let v20 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s20
+  let out20 ← alloc.vec.Vec.push out19 v20
+  let s21 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        105#u8, 110#u8, 103#u8, 111#u8, 100#u8, 105#u8, 116#u8, 114#u8, 117#u8,
+        115#u8, 116#u8
+        ]))
+  let v21 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s21
+  let out21 ← alloc.vec.Vec.push out20 v21
+  let s22 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        105#u8, 110#u8, 109#u8, 97#u8, 99#u8, 117#u8, 108#u8, 97#u8, 100#u8,
+        97#u8
+        ]))
+  let v22 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s22
+  let out22 ← alloc.vec.Vec.push out21 v22
+  let s23 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        105#u8, 110#u8, 111#u8, 108#u8, 118#u8, 105#u8, 100#u8, 97#u8, 98#u8,
+        108#u8, 101#u8
+        ]))
+  let v23 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s23
+  alloc.vec.Vec.push out22 v23
+
+/-- [kanidm_kernel::migration_defaults::table_part_13]:
+    Source: 'prove/ports/kanidm/kernel/src/migration_defaults.rs', lines 374:0-401:1
+    Visibility: public -/
+def migration_defaults.table_part_13
+  : Result (alloc.vec.Vec (alloc.vec.Vec Std.U8)) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 16#usize [
+        105#u8, 110#u8, 115#u8, 97#u8, 110#u8, 101#u8, 99#u8, 108#u8, 111#u8,
+        119#u8, 110#u8, 112#u8, 111#u8, 115#u8, 115#u8, 101#u8
+        ]))
+  let v ← alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  let out ← alloc.vec.Vec.push (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) v
+  let s1 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        105#u8, 110#u8, 115#u8, 112#u8, 105#u8, 114#u8, 97#u8, 99#u8, 105#u8,
+        111#u8, 110#u8
+        ]))
+  let v1 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s1
+  let out1 ← alloc.vec.Vec.push out v1
+  let s2 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        105#u8, 110#u8, 116#u8, 101#u8, 108#u8, 105#u8, 103#u8, 101#u8, 110#u8,
+        99#u8, 105#u8, 97#u8
+        ]))
+  let v2 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s2
+  let out2 ← alloc.vec.Vec.push out1 v2
+  let s3 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        105#u8, 110#u8, 116#u8, 101#u8, 108#u8, 105#u8, 103#u8, 101#u8, 110#u8,
+        116#u8, 101#u8
+        ]))
+  let v3 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s3
+  let out3 ← alloc.vec.Vec.push out2 v3
+  let s4 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        105#u8, 110#u8, 118#u8, 117#u8, 52#u8, 117#u8, 114#u8, 97#u8, 113#u8,
+        116#u8
+        ]))
+  let v4 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s4
+  let out4 ← alloc.vec.Vec.push out3 v4
+  let s5 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        105#u8, 111#u8, 114#u8, 105#u8, 121#u8, 97#u8, 103#u8, 97#u8, 109#u8,
+        105#u8
+        ]))
+  let v5 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s5
+  let out5 ← alloc.vec.Vec.push out4 v5
+  let s6 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        105#u8, 116#u8, 115#u8, 97#u8, 108#u8, 108#u8, 97#u8, 98#u8, 111#u8,
+        117#u8, 116#u8, 109#u8, 101#u8
+        ]))
+  let v6 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s6
+  let out6 ← alloc.vec.Vec.push out5 v6
+  let s7 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        105#u8, 117#u8, 98#u8, 105#u8, 114#u8, 101#u8, 97#u8, 109#u8, 101#u8,
+        97#u8
+        ]))
+  let v7 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s7
+  let out7 ← alloc.vec.Vec.push out6 v7
+  let s8 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        105#u8, 119#u8, 105#u8, 108#u8, 108#u8, 115#u8, 117#u8, 114#u8, 118#u8,
+        105#u8, 118#u8, 101#u8
+        ]))
+  let v8 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s8
+  let out8 ← alloc.vec.Vec.push out7 v8
+  let s9 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        106#u8, 97#u8, 98#u8, 98#u8, 97#u8, 119#u8, 111#u8, 99#u8, 107#u8,
+        101#u8, 101#u8, 122#u8
+        ]))
+  let v9 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s9
+  let out9 ← alloc.vec.Vec.push out8 v9
+  let s10 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        106#u8, 97#u8, 99#u8, 107#u8, 97#u8, 110#u8, 100#u8, 106#u8, 105#u8,
+        108#u8, 108#u8
+        ]))
+  let v10 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s10
+  let out10 ← alloc.vec.Vec.push out9 v10
+  let s11 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        106#u8, 97#u8, 109#u8, 105#u8, 114#u8, 111#u8, 113#u8, 117#u8, 97#u8,
+        105#u8
+        ]))
+  let v11 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s11
+  let out11 ← alloc.vec.Vec.push out10 v11
+  let s12 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        106#u8, 101#u8, 110#u8, 115#u8, 101#u8, 110#u8, 97#u8, 99#u8, 107#u8,
+        108#u8, 101#u8, 115#u8
+        ]))
+  let v12 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s12
+  let out12 ← alloc.vec.Vec.push out11 v12
+  let s13 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        106#u8, 101#u8, 115#u8, 117#u8, 115#u8, 101#u8, 115#u8, 97#u8, 109#u8,
+        111#u8, 114#u8
+        ]))
+  let v13 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s13
+  let out13 ← alloc.vec.Vec.push out12 v13
+  let s14 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        106#u8, 105#u8, 103#u8, 103#u8, 108#u8, 121#u8, 112#u8, 117#u8, 102#u8,
+        102#u8
+        ]))
+  let v14 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s14
+  let out14 ← alloc.vec.Vec.push out13 v14
+  let s15 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        106#u8, 111#u8, 101#u8, 121#u8, 106#u8, 111#u8, 114#u8, 100#u8, 105#u8,
+        115#u8, 111#u8, 110#u8
+        ]))
+  let v15 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s15
+  let out15 ← alloc.vec.Vec.push out14 v15
+  let s16 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        106#u8, 111#u8, 103#u8, 97#u8, 98#u8, 111#u8, 110#u8, 105#u8, 116#u8,
+        111#u8
+        ]))
+  let v16 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s16
+  let out16 ← alloc.vec.Vec.push out15 v16
+  let s17 ←
+    lift (Array.to_slice
+      (Array.make 14#usize [
+        106#u8, 111#u8, 110#u8, 97#u8, 115#u8, 32#u8, 98#u8, 114#u8, 111#u8,
+        116#u8, 104#u8, 101#u8, 114#u8, 115#u8
+        ]))
+  let v17 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s17
+  let out17 ← alloc.vec.Vec.push out16 v17
+  let s18 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        106#u8, 111#u8, 115#u8, 104#u8, 103#u8, 114#u8, 111#u8, 98#u8, 97#u8,
+        110#u8
+        ]))
+  let v18 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s18
+  let out18 ← alloc.vec.Vec.push out17 v18
+  let s19 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        106#u8, 117#u8, 103#u8, 103#u8, 97#u8, 108#u8, 101#u8, 116#u8, 116#u8,
+        101#u8
+        ]))
+  let v19 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s19
+  let out19 ← alloc.vec.Vec.push out18 v19
+  let s20 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        107#u8, 97#u8, 103#u8, 97#u8, 110#u8, 100#u8, 97#u8, 104#u8, 97#u8,
+        110#u8
+        ]))
+  let v20 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s20
+  let out20 ← alloc.vec.Vec.push out19 v20
+  let s21 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        107#u8, 97#u8, 108#u8, 101#u8, 105#u8, 100#u8, 111#u8, 115#u8, 116#u8,
+        97#u8, 114#u8
+        ]))
+  let v21 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s21
+  let out21 ← alloc.vec.Vec.push out20 v21
+  let s22 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        107#u8, 101#u8, 101#u8, 112#u8, 105#u8, 116#u8, 114#u8, 101#u8, 97#u8,
+        108#u8
+        ]))
+  let v22 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s22
+  let out22 ← alloc.vec.Vec.push out21 v22
+  let s23 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        107#u8, 101#u8, 116#u8, 101#u8, 105#u8, 109#u8, 112#u8, 111#u8, 114#u8,
+        116#u8, 97#u8
+        ]))
+  let v23 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s23
+  alloc.vec.Vec.push out22 v23
+
+/-- [kanidm_kernel::migration_defaults::table_part_14]:
+    Source: 'prove/ports/kanidm/kernel/src/migration_defaults.rs', lines 402:0-429:1
+    Visibility: public -/
+def migration_defaults.table_part_14
+  : Result (alloc.vec.Vec (alloc.vec.Vec Std.U8)) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        107#u8, 105#u8, 108#u8, 111#u8, 109#u8, 101#u8, 116#u8, 114#u8, 111#u8,
+        115#u8
+        ]))
+  let v ← alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  let out ← alloc.vec.Vec.push (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) v
+  let s1 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        107#u8, 105#u8, 109#u8, 115#u8, 97#u8, 109#u8, 115#u8, 111#u8, 111#u8,
+        110#u8
+        ]))
+  let v1 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s1
+  let out1 ← alloc.vec.Vec.push out v1
+  let s2 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        107#u8, 105#u8, 110#u8, 103#u8, 111#u8, 102#u8, 107#u8, 105#u8, 110#u8,
+        103#u8, 115#u8
+        ]))
+  let v2 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s2
+  let out2 ← alloc.vec.Vec.push out1 v2
+  let s3 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        107#u8, 109#u8, 122#u8, 119#u8, 97#u8, 56#u8, 97#u8, 119#u8, 97#u8,
+        97#u8
+        ]))
+  let v3 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s3
+  let out3 ← alloc.vec.Vec.push out2 v3
+  let s4 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        107#u8, 117#u8, 109#u8, 98#u8, 105#u8, 97#u8, 107#u8, 105#u8, 110#u8,
+        103#u8, 115#u8
+        ]))
+  let v4 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s4
+  let out4 ← alloc.vec.Vec.push out3 v4
+  let s5 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        107#u8, 117#u8, 118#u8, 104#u8, 108#u8, 117#u8, 98#u8, 107#u8, 111#u8,
+        106#u8
+        ]))
+  let v5 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s5
+  let out5 ← alloc.vec.Vec.push out4 v5
+  let s6 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        108#u8, 97#u8, 99#u8, 114#u8, 97#u8, 109#u8, 105#u8, 111#u8, 97#u8,
+        114#u8, 97#u8
+        ]))
+  let v6 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s6
+  let out6 ← alloc.vec.Vec.push out5 v6
+  let s7 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        108#u8, 97#u8, 99#u8, 117#u8, 110#u8, 97#u8, 99#u8, 111#u8, 105#u8,
+        108#u8
+        ]))
+  let v7 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s7
+  let out7 ← alloc.vec.Vec.push out6 v7
+  let s8 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        108#u8, 97#u8, 102#u8, 102#u8, 121#u8, 116#u8, 97#u8, 102#u8, 102#u8,
+        121#u8
+        ]))
+  let v8 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s8
+  let out8 ← alloc.vec.Vec.push out7 v8
+  let s9 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        108#u8, 97#u8, 109#u8, 97#u8, 114#u8, 97#u8, 118#u8, 105#u8, 108#u8,
+        108#u8, 97#u8
+        ]))
+  let v9 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s9
+  let out9 ← alloc.vec.Vec.push out8 v9
+  let s10 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        108#u8, 97#u8, 109#u8, 97#u8, 115#u8, 104#u8, 101#u8, 114#u8, 109#u8,
+        111#u8, 115#u8, 97#u8
+        ]))
+  let v10 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s10
+  let out10 ← alloc.vec.Vec.push out9 v10
+  let s11 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        108#u8, 97#u8, 112#u8, 114#u8, 105#u8, 110#u8, 99#u8, 101#u8, 115#u8,
+        105#u8, 116#u8, 97#u8
+        ]))
+  let v11 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s11
+  let out11 ← alloc.vec.Vec.push out10 v11
+  let s12 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        108#u8, 97#u8, 114#u8, 99#u8, 101#u8, 110#u8, 99#u8, 105#u8, 101#u8,
+        108#u8
+        ]))
+  let v12 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s12
+  let out12 ← alloc.vec.Vec.push out11 v12
+  let s13 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        108#u8, 97#u8, 115#u8, 100#u8, 105#u8, 118#u8, 105#u8, 110#u8, 97#u8,
+        115#u8
+        ]))
+  let v13 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s13
+  let out13 ← alloc.vec.Vec.push out12 v13
+  let s14 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        108#u8, 97#u8, 118#u8, 105#u8, 100#u8, 97#u8, 101#u8, 115#u8, 98#u8,
+        101#u8, 108#u8, 108#u8, 97#u8
+        ]))
+  let v14 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s14
+  let out14 ← alloc.vec.Vec.push out13 v14
+  let s15 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        108#u8, 97#u8, 118#u8, 105#u8, 100#u8, 97#u8, 108#u8, 111#u8, 99#u8,
+        97#u8
+        ]))
+  let v15 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s15
+  let out15 ← alloc.vec.Vec.push out14 v15
+  let s16 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        108#u8, 101#u8, 101#u8, 100#u8, 111#u8, 110#u8, 103#u8, 119#u8, 111#u8,
+        111#u8, 107#u8
+        ]))
+  let v16 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s16
+  let out16 ← alloc.vec.Vec.push out15 v16
+  let s17 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        108#u8, 101#u8, 111#u8, 116#u8, 104#u8, 101#u8, 108#u8, 105#u8, 111#u8,
+        110#u8
+        ]))
+  let v17 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s17
+  let out17 ← alloc.vec.Vec.push out16 v17
+  let s18 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        108#u8, 105#u8, 99#u8, 101#u8, 110#u8, 99#u8, 105#u8, 97#u8, 100#u8,
+        97#u8
+        ]))
+  let v18 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s18
+  let out18 ← alloc.vec.Vec.push out17 v18
+  let s19 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        108#u8, 105#u8, 102#u8, 101#u8, 103#u8, 111#u8, 101#u8, 115#u8, 111#u8,
+        110#u8
+        ]))
+  let v19 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s19
+  let out19 ← alloc.vec.Vec.push out18 v19
+  let s20 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        108#u8, 105#u8, 102#u8, 101#u8, 115#u8, 97#u8, 98#u8, 105#u8, 116#u8,
+        99#u8, 104#u8
+        ]))
+  let v20 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s20
+  let out20 ← alloc.vec.Vec.push out19 v20
+  let s21 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        108#u8, 105#u8, 110#u8, 107#u8, 105#u8, 110#u8, 32#u8, 112#u8, 97#u8,
+        114#u8, 107#u8
+        ]))
+  let v21 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s21
+  let out21 ← alloc.vec.Vec.push out20 v21
+  let s22 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        108#u8, 105#u8, 112#u8, 103#u8, 108#u8, 111#u8, 115#u8, 115#u8, 49#u8,
+        50#u8
+        ]))
+  let v22 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s22
+  let out22 ← alloc.vec.Vec.push out21 v22
+  let s23 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        108#u8, 105#u8, 116#u8, 101#u8, 114#u8, 97#u8, 116#u8, 117#u8, 114#u8,
+        97#u8
+        ]))
+  let v23 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s23
+  alloc.vec.Vec.push out22 v23
+
+/-- [kanidm_kernel::migration_defaults::table_part_15]:
+    Source: 'prove/ports/kanidm/kernel/src/migration_defaults.rs', lines 430:0-457:1
+    Visibility: public -/
+def migration_defaults.table_part_15
+  : Result (alloc.vec.Vec (alloc.vec.Vec Std.U8)) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        108#u8, 105#u8, 118#u8, 101#u8, 108#u8, 97#u8, 117#u8, 103#u8, 104#u8,
+        108#u8, 111#u8, 118#u8, 101#u8
+        ]))
+  let v ← alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  let out ← alloc.vec.Vec.push (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) v
+  let s1 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        108#u8, 105#u8, 118#u8, 101#u8, 108#u8, 111#u8, 118#u8, 101#u8, 108#u8,
+        97#u8, 117#u8, 103#u8, 104#u8
+        ]))
+  let v1 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s1
+  let out1 ← alloc.vec.Vec.push out v1
+  let s2 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        108#u8, 105#u8, 118#u8, 101#u8, 121#u8, 111#u8, 117#u8, 114#u8, 108#u8,
+        105#u8, 102#u8, 101#u8
+        ]))
+  let v2 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s2
+  let out2 ← alloc.vec.Vec.push out1 v2
+  let s3 ←
+    lift (Array.to_slice
+      (Array.make 14#usize [
+        108#u8, 111#u8, 114#u8, 100#u8, 111#u8, 102#u8, 116#u8, 104#u8, 101#u8,
+        114#u8, 105#u8, 110#u8, 103#u8, 115#u8
+        ]))
+  let v3 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s3
+  let out3 ← alloc.vec.Vec.push out2 v3
+  let s4 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        108#u8, 111#u8, 115#u8, 101#u8, 114#u8, 102#u8, 97#u8, 99#u8, 101#u8,
+        49#u8
+        ]))
+  let v4 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s4
+  let out4 ← alloc.vec.Vec.push out3 v4
+  let s5 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        108#u8, 111#u8, 115#u8, 109#u8, 101#u8, 106#u8, 111#u8, 114#u8, 101#u8,
+        115#u8
+        ]))
+  let v5 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s5
+  let out5 ← alloc.vec.Vec.push out4 v5
+  let s6 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        108#u8, 111#u8, 116#u8, 115#u8, 111#u8, 102#u8, 108#u8, 111#u8, 118#u8,
+        101#u8
+        ]))
+  let v6 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s6
+  let out6 ← alloc.vec.Vec.push out5 v6
+  let s7 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        108#u8, 111#u8, 118#u8, 101#u8, 97#u8, 110#u8, 100#u8, 104#u8, 97#u8,
+        116#u8, 101#u8
+        ]))
+  let v7 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s7
+  let out7 ← alloc.vec.Vec.push out6 v7
+  let s8 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        108#u8, 111#u8, 118#u8, 101#u8, 97#u8, 110#u8, 100#u8, 112#u8, 101#u8,
+        97#u8, 99#u8, 101#u8
+        ]))
+  let v8 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s8
+  let out8 ← alloc.vec.Vec.push out7 v8
+  let s9 ←
+    lift (Array.to_slice
+      (Array.make 14#usize [
+        108#u8, 111#u8, 118#u8, 101#u8, 105#u8, 115#u8, 105#u8, 110#u8, 116#u8,
+        104#u8, 101#u8, 97#u8, 105#u8, 114#u8
+        ]))
+  let v9 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s9
+  let out9 ← alloc.vec.Vec.push out8 v9
+  let s10 ←
+    lift (Array.to_slice
+      (Array.make 14#usize [
+        108#u8, 111#u8, 118#u8, 101#u8, 109#u8, 101#u8, 111#u8, 114#u8, 104#u8,
+        97#u8, 116#u8, 101#u8, 109#u8, 101#u8
+        ]))
+  let v10 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s10
+  let out10 ← alloc.vec.Vec.push out9 v10
+  let s11 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        108#u8, 111#u8, 118#u8, 101#u8, 110#u8, 107#u8, 114#u8, 97#u8, 110#u8,
+        100#u8, 115#u8
+        ]))
+  let v11 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s11
+  let out11 ← alloc.vec.Vec.push out10 v11
+  let s12 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        108#u8, 111#u8, 118#u8, 101#u8, 111#u8, 102#u8, 109#u8, 121#u8, 108#u8,
+        105#u8, 102#u8, 101#u8
+        ]))
+  let v12 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s12
+  let out12 ← alloc.vec.Vec.push out11 v12
+  let s13 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        108#u8, 111#u8, 118#u8, 101#u8, 111#u8, 114#u8, 104#u8, 97#u8, 116#u8,
+        101#u8
+        ]))
+  let v13 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s13
+  let out13 ← alloc.vec.Vec.push out12 v13
+  let s14 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        108#u8, 111#u8, 118#u8, 101#u8, 116#u8, 111#u8, 108#u8, 111#u8, 118#u8,
+        101#u8
+        ]))
+  let v14 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s14
+  let out14 ← alloc.vec.Vec.push out13 v14
+  let s15 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        108#u8, 111#u8, 118#u8, 101#u8, 117#u8, 52#u8, 101#u8, 118#u8, 101#u8,
+        114#u8
+        ]))
+  let v15 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s15
+  let out15 ← alloc.vec.Vec.push out14 v15
+  let s16 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        108#u8, 111#u8, 118#u8, 101#u8, 121#u8, 100#u8, 111#u8, 118#u8, 101#u8,
+        121#u8
+        ]))
+  let v16 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s16
+  let out16 ← alloc.vec.Vec.push out15 v16
+  let s17 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        108#u8, 111#u8, 118#u8, 101#u8, 121#u8, 111#u8, 117#u8, 115#u8, 111#u8,
+        109#u8, 117#u8, 99#u8, 104#u8
+        ]))
+  let v17 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s17
+  let out17 ← alloc.vec.Vec.push out16 v17
+  let s18 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        108#u8, 117#u8, 99#u8, 105#u8, 101#u8, 114#u8, 110#u8, 97#u8, 103#u8,
+        97#u8
+        ]))
+  let v18 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s18
+  let out18 ← alloc.vec.Vec.push out17 v18
+  let s19 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        108#u8, 117#u8, 118#u8, 109#u8, 101#u8, 52#u8, 101#u8, 118#u8, 101#u8,
+        114#u8
+        ]))
+  let v19 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s19
+  let out19 ← alloc.vec.Vec.push out18 v19
+  let s20 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        108#u8, 117#u8, 122#u8, 118#u8, 105#u8, 109#u8, 105#u8, 110#u8, 100#u8,
+        97#u8
+        ]))
+  let v20 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s20
+  let out20 ← alloc.vec.Vec.push out19 v20
+  let s21 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        109#u8, 97#u8, 99#u8, 104#u8, 117#u8, 112#u8, 105#u8, 99#u8, 104#u8,
+        117#u8
+        ]))
+  let v21 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s21
+  let out21 ← alloc.vec.Vec.push out20 v21
+  let s22 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        109#u8, 97#u8, 100#u8, 97#u8, 108#u8, 105#u8, 110#u8, 117#u8, 116#u8,
+        122#u8, 97#u8
+        ]))
+  let v22 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s22
+  let out22 ← alloc.vec.Vec.push out21 v22
+  let s23 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        109#u8, 97#u8, 104#u8, 97#u8, 108#u8, 32#u8, 107#u8, 105#u8, 116#u8,
+        97#u8
+        ]))
+  let v23 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s23
+  alloc.vec.Vec.push out22 v23
+
+/-- [kanidm_kernel::migration_defaults::table_part_16]:
+    Source: 'prove/ports/kanidm/kernel/src/migration_defaults.rs', lines 458:0-485:1
+    Visibility: public -/
+def migration_defaults.table_part_16
+  : Result (alloc.vec.Vec (alloc.vec.Vec Std.U8)) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        109#u8, 97#u8, 104#u8, 97#u8, 108#u8, 107#u8, 111#u8, 107#u8, 97#u8,
+        121#u8, 111#u8
+        ]))
+  let v ← alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  let out ← alloc.vec.Vec.push (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) v
+  let s1 ←
+    lift (Array.to_slice
+      (Array.make 16#usize [
+        109#u8, 97#u8, 104#u8, 97#u8, 108#u8, 110#u8, 97#u8, 109#u8, 97#u8,
+        104#u8, 97#u8, 108#u8, 107#u8, 105#u8, 116#u8, 97#u8
+        ]))
+  let v1 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s1
+  let out1 ← alloc.vec.Vec.push out v1
+  let s2 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        109#u8, 97#u8, 107#u8, 101#u8, 100#u8, 111#u8, 110#u8, 105#u8, 106#u8,
+        97#u8
+        ]))
+  let v2 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s2
+  let out2 ← alloc.vec.Vec.push out1 v2
+  let s3 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        109#u8, 97#u8, 109#u8, 105#u8, 99#u8, 104#u8, 117#u8, 108#u8, 97#u8,
+        49#u8
+        ]))
+  let v3 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s3
+  let out3 ← alloc.vec.Vec.push out2 v3
+  let s4 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        109#u8, 97#u8, 112#u8, 97#u8, 103#u8, 109#u8, 97#u8, 104#u8, 97#u8,
+        108#u8
+        ]))
+  let v4 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s4
+  let out4 ← alloc.vec.Vec.push out3 v4
+  let s5 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        109#u8, 97#u8, 114#u8, 97#u8, 118#u8, 105#u8, 108#u8, 108#u8, 111#u8,
+        115#u8, 97#u8
+        ]))
+  let v5 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s5
+  let out5 ← alloc.vec.Vec.push out4 v5
+  let s6 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        109#u8, 97#u8, 114#u8, 97#u8, 118#u8, 105#u8, 108#u8, 108#u8, 111#u8,
+        115#u8, 111#u8
+        ]))
+  let v6 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s6
+  let out6 ← alloc.vec.Vec.push out5 v6
+  let s7 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        109#u8, 97#u8, 114#u8, 100#u8, 101#u8, 99#u8, 111#u8, 112#u8, 97#u8,
+        115#u8
+        ]))
+  let v7 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s7
+  let out7 ← alloc.vec.Vec.push out6 v7
+  let s8 ←
+    lift (Array.to_slice
+      (Array.make 14#usize [
+        109#u8, 97#u8, 114#u8, 105#u8, 97#u8, 100#u8, 101#u8, 108#u8, 99#u8,
+        97#u8, 114#u8, 109#u8, 101#u8, 110#u8
+        ]))
+  let v8 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s8
+  let out8 ← alloc.vec.Vec.push out7 v8
+  let s9 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        109#u8, 97#u8, 116#u8, 114#u8, 105#u8, 109#u8, 111#u8, 110#u8, 105#u8,
+        111#u8
+        ]))
+  let v9 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s9
+  let out9 ← alloc.vec.Vec.push out8 v9
+  let s10 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        109#u8, 101#u8, 97#u8, 109#u8, 111#u8, 109#u8, 117#u8, 99#u8, 104#u8,
+        111#u8
+        ]))
+  let v10 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s10
+  let out10 ← alloc.vec.Vec.push out9 v10
+  let s11 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        109#u8, 101#u8, 106#u8, 111#u8, 114#u8, 101#u8, 115#u8, 97#u8, 109#u8,
+        105#u8, 103#u8, 97#u8, 115#u8
+        ]))
+  let v11 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s11
+  let out11 ← alloc.vec.Vec.push out10 v11
+  let s12 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        109#u8, 101#u8, 109#u8, 121#u8, 115#u8, 101#u8, 108#u8, 102#u8, 97#u8,
+        110#u8, 100#u8, 105#u8
+        ]))
+  let v12 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s12
+  let out12 ← alloc.vec.Vec.push out11 v12
+  let s13 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        109#u8, 101#u8, 110#u8, 101#u8, 107#u8, 101#u8, 116#u8, 101#u8, 104#u8,
+        101#u8
+        ]))
+  let v13 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s13
+  let out13 ← alloc.vec.Vec.push out12 v13
+  let s14 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        109#u8, 101#u8, 113#u8, 117#u8, 105#u8, 101#u8, 114#u8, 111#u8, 109#u8,
+        117#u8, 99#u8, 104#u8, 111#u8
+        ]))
+  let v14 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s14
+  let out14 ← alloc.vec.Vec.push out13 v14
+  let s15 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        109#u8, 101#u8, 114#u8, 99#u8, 97#u8, 100#u8, 111#u8, 116#u8, 101#u8,
+        99#u8, 110#u8, 105#u8, 97#u8
+        ]))
+  let v15 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s15
+  let out15 ← alloc.vec.Vec.push out14 v15
+  let s16 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        109#u8, 101#u8, 116#u8, 97#u8, 109#u8, 111#u8, 114#u8, 102#u8, 111#u8,
+        115#u8, 105#u8, 115#u8
+        ]))
+  let v16 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s16
+  let out16 ← alloc.vec.Vec.push out15 v16
+  let s17 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        109#u8, 105#u8, 97#u8, 109#u8, 111#u8, 114#u8, 101#u8, 114#u8, 101#u8,
+        115#u8, 116#u8, 117#u8
+        ]))
+  let v17 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s17
+  let out17 ← alloc.vec.Vec.push out16 v17
+  let s18 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        109#u8, 105#u8, 97#u8, 109#u8, 111#u8, 114#u8, 116#u8, 101#u8, 97#u8,
+        109#u8, 111#u8
+        ]))
+  let v18 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s18
+  let out18 ← alloc.vec.Vec.push out17 v18
+  let s19 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        109#u8, 105#u8, 107#u8, 101#u8, 115#u8, 104#u8, 105#u8, 110#u8, 111#u8,
+        100#u8, 97#u8
+        ]))
+  let v19 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s19
+  let out19 ← alloc.vec.Vec.push out18 v19
+  let s20 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        109#u8, 105#u8, 108#u8, 97#u8, 103#u8, 114#u8, 105#u8, 116#u8, 111#u8,
+        115#u8
+        ]))
+  let v20 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s20
+  let out20 ← alloc.vec.Vec.push out19 v20
+  let s21 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        109#u8, 105#u8, 108#u8, 108#u8, 111#u8, 110#u8, 97#u8, 114#u8, 105#u8,
+        111#u8, 115#u8
+        ]))
+  let v21 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s21
+  let out21 ← alloc.vec.Vec.push out20 v21
+  let s22 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        109#u8, 105#u8, 109#u8, 97#u8, 109#u8, 97#u8, 109#u8, 101#u8, 109#u8,
+        105#u8, 109#u8, 97#u8
+        ]))
+  let v22 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s22
+  let out22 ← alloc.vec.Vec.push out21 v22
+  let s23 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        109#u8, 105#u8, 109#u8, 101#u8, 106#u8, 111#u8, 114#u8, 97#u8, 109#u8,
+        105#u8, 103#u8, 97#u8
+        ]))
+  let v23 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s23
+  alloc.vec.Vec.push out22 v23
+
+/-- [kanidm_kernel::migration_defaults::table_part_17]:
+    Source: 'prove/ports/kanidm/kernel/src/migration_defaults.rs', lines 486:0-513:1
+    Visibility: public -/
+def migration_defaults.table_part_17
+  : Result (alloc.vec.Vec (alloc.vec.Vec Std.U8)) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        109#u8, 105#u8, 114#u8, 109#u8, 111#u8, 100#u8, 101#u8, 112#u8, 111#u8,
+        110#u8
+        ]))
+  let v ← alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  let out ← alloc.vec.Vec.push (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) v
+  let s1 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        109#u8, 105#u8, 115#u8, 51#u8, 97#u8, 109#u8, 111#u8, 114#u8, 101#u8,
+        115#u8
+        ]))
+  let v1 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s1
+  let out1 ← alloc.vec.Vec.push out v1
+  let s2 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        109#u8, 105#u8, 115#u8, 100#u8, 111#u8, 115#u8, 97#u8, 109#u8, 111#u8,
+        114#u8, 101#u8, 115#u8
+        ]))
+  let v2 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s2
+  let out2 ← alloc.vec.Vec.push out1 v2
+  let s3 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        109#u8, 105#u8, 115#u8, 101#u8, 114#u8, 105#u8, 99#u8, 111#u8, 114#u8,
+        100#u8, 105#u8, 97#u8
+        ]))
+  let v3 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s3
+  let out3 ← alloc.vec.Vec.push out2 v3
+  let s4 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        109#u8, 105#u8, 115#u8, 115#u8, 116#u8, 104#u8, 97#u8, 110#u8, 103#u8,
+        49#u8
+        ]))
+  let v4 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s4
+  let out4 ← alloc.vec.Vec.push out3 v4
+  let s5 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        109#u8, 105#u8, 117#u8, 110#u8, 105#u8, 99#u8, 111#u8, 97#u8, 109#u8,
+        111#u8, 114#u8
+        ]))
+  let v5 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s5
+  let out5 ← alloc.vec.Vec.push out4 v5
+  let s6 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        109#u8, 105#u8, 118#u8, 105#u8, 100#u8, 97#u8, 101#u8, 114#u8, 101#u8,
+        115#u8, 116#u8, 117#u8
+        ]))
+  let v6 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s6
+  let out6 ← alloc.vec.Vec.push out5 v6
+  let s7 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        109#u8, 105#u8, 118#u8, 105#u8, 100#u8, 97#u8, 108#u8, 111#u8, 99#u8,
+        97#u8
+        ]))
+  let v7 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s7
+  let out7 ← alloc.vec.Vec.push out6 v7
+  let s8 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        109#u8, 111#u8, 109#u8, 109#u8, 97#u8, 115#u8, 103#u8, 105#u8, 114#u8,
+        108#u8
+        ]))
+  let v8 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s8
+  let out8 ← alloc.vec.Vec.push out7 v8
+  let s9 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        109#u8, 111#u8, 109#u8, 109#u8, 121#u8, 97#u8, 110#u8, 100#u8, 100#u8,
+        97#u8, 100#u8, 100#u8, 121#u8
+        ]))
+  let v9 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s9
+  let out9 ← alloc.vec.Vec.push out8 v9
+  let s10 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        109#u8, 111#u8, 110#u8, 115#u8, 101#u8, 114#u8, 114#u8, 97#u8, 116#u8,
+        104#u8
+        ]))
+  let v10 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s10
+  let out10 ← alloc.vec.Vec.push out9 v10
+  let s11 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        109#u8, 111#u8, 114#u8, 101#u8, 116#u8, 104#u8, 97#u8, 110#u8, 119#u8,
+        111#u8, 114#u8, 100#u8, 115#u8
+        ]))
+  let v11 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s11
+  let out11 ← alloc.vec.Vec.push out10 v11
+  let s12 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        109#u8, 111#u8, 115#u8, 99#u8, 114#u8, 97#u8, 99#u8, 105#u8, 117#u8,
+        110#u8
+        ]))
+  let v12 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s12
+  let out12 ← alloc.vec.Vec.push out11 v12
+  let s13 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        109#u8, 111#u8, 117#u8, 108#u8, 105#u8, 110#u8, 114#u8, 111#u8, 117#u8,
+        103#u8, 101#u8
+        ]))
+  let v13 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s13
+  let out13 ← alloc.vec.Vec.push out12 v13
+  let s14 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        109#u8, 115#u8, 110#u8, 104#u8, 111#u8, 116#u8, 109#u8, 97#u8, 105#u8,
+        108#u8
+        ]))
+  let v14 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s14
+  let out14 ← alloc.vec.Vec.push out13 v14
+  let s15 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        109#u8, 117#u8, 105#u8, 101#u8, 115#u8, 116#u8, 101#u8, 97#u8, 117#u8,
+        97#u8
+        ]))
+  let v15 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s15
+  let out15 ← alloc.vec.Vec.push out14 v15
+  let s16 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        109#u8, 117#u8, 109#u8, 109#u8, 121#u8, 97#u8, 110#u8, 100#u8, 100#u8,
+        97#u8, 100#u8, 100#u8, 121#u8
+        ]))
+  let v16 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s16
+  let out16 ← alloc.vec.Vec.push out15 v16
+  let s17 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        109#u8, 117#u8, 109#u8, 109#u8, 121#u8, 115#u8, 103#u8, 105#u8, 114#u8,
+        108#u8
+        ]))
+  let v17 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s17
+  let out17 ← alloc.vec.Vec.push out16 v17
+  let s18 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        109#u8, 117#u8, 115#u8, 105#u8, 99#u8, 105#u8, 115#u8, 108#u8, 105#u8,
+        102#u8, 101#u8
+        ]))
+  let v18 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s18
+  let out18 ← alloc.vec.Vec.push out17 v18
+  let s19 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        109#u8, 117#u8, 115#u8, 105#u8, 99#u8, 105#u8, 115#u8, 109#u8, 121#u8,
+        108#u8, 105#u8, 102#u8, 101#u8
+        ]))
+  let v19 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s19
+  let out19 ← alloc.vec.Vec.push out18 v19
+  let s20 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        109#u8, 117#u8, 116#u8, 104#u8, 97#u8, 102#u8, 117#u8, 99#u8, 107#u8,
+        97#u8
+        ]))
+  let v20 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s20
+  let out20 ← alloc.vec.Vec.push out19 v20
+  let s21 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        109#u8, 117#u8, 195#u8, 177#u8, 101#u8, 113#u8, 117#u8, 105#u8, 116#u8,
+        97#u8
+        ]))
+  let v21 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s21
+  let out21 ← alloc.vec.Vec.push out20 v21
+  let s22 ←
+    lift (Array.to_slice
+      (Array.make 17#usize [
+        109#u8, 121#u8, 99#u8, 104#u8, 101#u8, 109#u8, 105#u8, 99#u8, 97#u8,
+        108#u8, 114#u8, 111#u8, 109#u8, 97#u8, 110#u8, 99#u8, 101#u8
+        ]))
+  let v22 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s22
+  let out22 ← alloc.vec.Vec.push out21 v22
+  let s23 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        109#u8, 121#u8, 108#u8, 105#u8, 116#u8, 116#u8, 108#u8, 101#u8, 112#u8,
+        111#u8, 110#u8, 121#u8
+        ]))
+  let v23 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s23
+  alloc.vec.Vec.push out22 v23
+
+/-- [kanidm_kernel::migration_defaults::table_part_18]:
+    Source: 'prove/ports/kanidm/kernel/src/migration_defaults.rs', lines 514:0-541:1
+    Visibility: public -/
+def migration_defaults.table_part_18
+  : Result (alloc.vec.Vec (alloc.vec.Vec Std.U8)) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        109#u8, 121#u8, 111#u8, 110#u8, 108#u8, 121#u8, 108#u8, 111#u8, 118#u8,
+        101#u8
+        ]))
+  let v ← alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  let out ← alloc.vec.Vec.push (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) v
+  let s1 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        109#u8, 121#u8, 115#u8, 108#u8, 105#u8, 100#u8, 101#u8, 115#u8, 104#u8,
+        111#u8, 119#u8
+        ]))
+  let v1 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s1
+  let out1 ← alloc.vec.Vec.push out v1
+  let s2 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        109#u8, 121#u8, 115#u8, 112#u8, 97#u8, 99#u8, 101#u8, 46#u8, 99#u8,
+        111#u8, 109#u8
+        ]))
+  let v2 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s2
+  let out2 ← alloc.vec.Vec.push out1 v2
+  let s3 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        110#u8, 97#u8, 98#u8, 117#u8, 99#u8, 111#u8, 100#u8, 111#u8, 110#u8,
+        111#u8, 115#u8, 111#u8, 114#u8
+        ]))
+  let v3 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s3
+  let out3 ← alloc.vec.Vec.push out2 v3
+  let s4 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        110#u8, 97#u8, 115#u8, 99#u8, 105#u8, 109#u8, 101#u8, 110#u8, 116#u8,
+        111#u8
+        ]))
+  let v4 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s4
+  let out4 ← alloc.vec.Vec.push out3 v4
+  let s5 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        110#u8, 97#u8, 115#u8, 105#u8, 103#u8, 111#u8, 114#u8, 101#u8, 110#u8,
+        103#u8
+        ]))
+  let v5 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s5
+  let out5 ← alloc.vec.Vec.push out4 v5
+  let s6 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        110#u8, 101#u8, 98#u8, 117#u8, 110#u8, 97#u8, 116#u8, 105#u8, 99#u8,
+        97#u8
+        ]))
+  let v6 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s6
+  let out6 ← alloc.vec.Vec.push out5 v6
+  let s7 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        110#u8, 101#u8, 112#u8, 111#u8, 109#u8, 117#u8, 99#u8, 101#u8, 110#u8,
+        111#u8
+        ]))
+  let v7 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s7
+  let out7 ← alloc.vec.Vec.push out6 v7
+  let s8 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        110#u8, 101#u8, 118#u8, 101#u8, 114#u8, 115#u8, 97#u8, 121#u8, 110#u8,
+        101#u8, 118#u8, 101#u8, 114#u8
+        ]))
+  let v8 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s8
+  let out8 ← alloc.vec.Vec.push out7 v8
+  let s9 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        110#u8, 105#u8, 99#u8, 107#u8, 32#u8, 106#u8, 111#u8, 110#u8, 97#u8,
+        115#u8
+        ]))
+  let v9 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s9
+  let out9 ← alloc.vec.Vec.push out8 v9
+  let s10 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        110#u8, 105#u8, 99#u8, 107#u8, 106#u8, 111#u8, 110#u8, 97#u8, 115#u8,
+        49#u8
+        ]))
+  let v10 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s10
+  let out10 ← alloc.vec.Vec.push out9 v10
+  let s11 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        110#u8, 105#u8, 115#u8, 116#u8, 101#u8, 108#u8, 114#u8, 111#u8, 111#u8,
+        121#u8
+        ]))
+  let v11 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s11
+  let out11 ← alloc.vec.Vec.push out10 v11
+  let s12 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        110#u8, 111#u8, 109#u8, 101#u8, 97#u8, 99#u8, 117#u8, 101#u8, 114#u8,
+        100#u8, 111#u8
+        ]))
+  let v12 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s12
+  let out12 ← alloc.vec.Vec.push out11 v12
+  let s13 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        110#u8, 111#u8, 109#u8, 101#u8, 111#u8, 108#u8, 118#u8, 105#u8, 100#u8,
+        101#u8, 115#u8
+        ]))
+  let v13 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s13
+  let out13 ← alloc.vec.Vec.push out12 v13
+  let s14 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        110#u8, 111#u8, 115#u8, 101#u8, 113#u8, 117#u8, 101#u8, 112#u8, 111#u8,
+        110#u8, 101#u8, 114#u8
+        ]))
+  let v14 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s14
+  let out14 ← alloc.vec.Vec.push out13 v14
+  let s15 ←
+    lift (Array.to_slice
+      (Array.make 15#usize [
+        110#u8, 117#u8, 110#u8, 99#u8, 97#u8, 116#u8, 101#u8, 111#u8, 108#u8,
+        118#u8, 105#u8, 100#u8, 97#u8, 114#u8, 101#u8
+        ]))
+  let v15 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s15
+  let out15 ← alloc.vec.Vec.push out14 v15
+  let s16 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        110#u8, 121#u8, 109#u8, 112#u8, 104#u8, 101#u8, 116#u8, 97#u8, 109#u8,
+        105#u8, 110#u8, 101#u8
+        ]))
+  let v16 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s16
+  let out16 ← alloc.vec.Vec.push out15 v16
+  let s17 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        111#u8, 100#u8, 111#u8, 110#u8, 116#u8, 111#u8, 108#u8, 111#u8, 103#u8,
+        105#u8, 97#u8
+        ]))
+  let v17 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s17
+  let out17 ← alloc.vec.Vec.push out16 v17
+  let s18 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        111#u8, 106#u8, 111#u8, 115#u8, 118#u8, 101#u8, 114#u8, 100#u8, 101#u8,
+        115#u8
+        ]))
+  let v18 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s18
+  let out18 ← alloc.vec.Vec.push out17 v18
+  let s19 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        111#u8, 110#u8, 101#u8, 97#u8, 110#u8, 100#u8, 111#u8, 110#u8, 108#u8,
+        121#u8
+        ]))
+  let v19 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s19
+  let out19 ← alloc.vec.Vec.push out18 v19
+  let s20 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        111#u8, 110#u8, 101#u8, 111#u8, 102#u8, 97#u8, 107#u8, 105#u8, 110#u8,
+        100#u8
+        ]))
+  let v20 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s20
+  let out20 ← alloc.vec.Vec.push out19 v20
+  let s21 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        111#u8, 110#u8, 101#u8, 116#u8, 114#u8, 101#u8, 101#u8, 104#u8, 105#u8,
+        108#u8, 108#u8
+        ]))
+  let v21 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s21
+  let out21 ← alloc.vec.Vec.push out20 v21
+  let s22 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        111#u8, 110#u8, 111#u8, 109#u8, 97#u8, 116#u8, 111#u8, 112#u8, 111#u8,
+        101#u8, 105#u8, 97#u8
+        ]))
+  let v22 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s22
+  let out22 ← alloc.vec.Vec.push out21 v22
+  let s23 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        111#u8, 115#u8, 105#u8, 116#u8, 111#u8, 108#u8, 105#u8, 110#u8, 100#u8,
+        111#u8
+        ]))
+  let v23 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s23
+  alloc.vec.Vec.push out22 v23
+
+/-- [kanidm_kernel::migration_defaults::table_part_19]:
+    Source: 'prove/ports/kanidm/kernel/src/migration_defaults.rs', lines 542:0-569:1
+    Visibility: public -/
+def migration_defaults.table_part_19
+  : Result (alloc.vec.Vec (alloc.vec.Vec Std.U8)) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        111#u8, 115#u8, 105#u8, 116#u8, 111#u8, 112#u8, 97#u8, 110#u8, 100#u8,
+        97#u8
+        ]))
+  let v ← alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  let out ← alloc.vec.Vec.push (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) v
+  let s1 ←
+    lift (Array.to_slice
+      (Array.make 15#usize [
+        112#u8, 97#u8, 100#u8, 114#u8, 105#u8, 110#u8, 111#u8, 115#u8, 109#u8,
+        97#u8, 103#u8, 105#u8, 99#u8, 111#u8, 115#u8
+        ]))
+  let v1 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s1
+  let out1 ← alloc.vec.Vec.push out v1
+  let s2 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        112#u8, 97#u8, 105#u8, 110#u8, 105#u8, 115#u8, 108#u8, 111#u8, 118#u8,
+        101#u8
+        ]))
+  let v2 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s2
+  let out2 ← alloc.vec.Vec.push out1 v2
+  let s3 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        112#u8, 97#u8, 110#u8, 100#u8, 97#u8, 108#u8, 97#u8, 110#u8, 100#u8,
+        105#u8, 97#u8
+        ]))
+  let v3 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s3
+  let out3 ← alloc.vec.Vec.push out2 v3
+  let s4 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        112#u8, 97#u8, 110#u8, 103#u8, 97#u8, 110#u8, 105#u8, 98#u8, 97#u8,
+        110#u8
+        ]))
+  let v4 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s4
+  let out4 ← alloc.vec.Vec.push out3 v4
+  let s5 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        112#u8, 97#u8, 110#u8, 103#u8, 105#u8, 108#u8, 105#u8, 110#u8, 97#u8,
+        110#u8
+        ]))
+  let v5 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s5
+  let out5 ← alloc.vec.Vec.push out4 v5
+  let s6 ←
+    lift (Array.to_slice
+      (Array.make 15#usize [
+        112#u8, 97#u8, 110#u8, 105#u8, 99#u8, 97#u8, 116#u8, 116#u8, 104#u8,
+        101#u8, 100#u8, 105#u8, 115#u8, 99#u8, 111#u8
+        ]))
+  let v6 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s6
+  let out6 ← alloc.vec.Vec.push out5 v6
+  let s7 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        112#u8, 97#u8, 110#u8, 116#u8, 101#u8, 108#u8, 105#u8, 109#u8, 111#u8,
+        110#u8
+        ]))
+  let v7 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s7
+  let out7 ← alloc.vec.Vec.push out6 v7
+  let s8 ←
+    lift (Array.to_slice
+      (Array.make 14#usize [
+        112#u8, 97#u8, 114#u8, 97#u8, 108#u8, 101#u8, 108#u8, 101#u8, 112#u8,
+        105#u8, 112#u8, 101#u8, 100#u8, 111#u8
+        ]))
+  let v8 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s8
+  let out8 ← alloc.vec.Vec.push out7 v8
+  let s9 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        112#u8, 97#u8, 114#u8, 97#u8, 108#u8, 101#u8, 108#u8, 105#u8, 112#u8,
+        105#u8, 112#u8, 101#u8, 100#u8
+        ]))
+  let v9 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s9
+  let out9 ← alloc.vec.Vec.push out8 v9
+  let s10 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        112#u8, 97#u8, 114#u8, 97#u8, 115#u8, 105#u8, 101#u8, 109#u8, 112#u8,
+        114#u8, 101#u8
+        ]))
+  let v10 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s10
+  let out10 ← alloc.vec.Vec.push out9 v10
+  let s11 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        112#u8, 97#u8, 115#u8, 97#u8, 119#u8, 97#u8, 121#u8, 97#u8, 107#u8,
+        111#u8
+        ]))
+  let v11 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s11
+  let out11 ← alloc.vec.Vec.push out10 v11
+  let s12 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        112#u8, 97#u8, 115#u8, 111#u8, 100#u8, 101#u8, 98#u8, 108#u8, 97#u8,
+        115#u8
+        ]))
+  let v12 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s12
+  let out12 ← alloc.vec.Vec.push out11 v12
+  let s13 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        112#u8, 101#u8, 97#u8, 99#u8, 101#u8, 38#u8, 108#u8, 111#u8, 118#u8,
+        101#u8
+        ]))
+  let v13 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s13
+  let out13 ← alloc.vec.Vec.push out12 v13
+  let s14 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        112#u8, 101#u8, 97#u8, 99#u8, 101#u8, 97#u8, 110#u8, 100#u8, 108#u8,
+        111#u8, 118#u8, 101#u8
+        ]))
+  let v14 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s14
+  let out14 ← alloc.vec.Vec.push out13 v14
+  let s15 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        112#u8, 101#u8, 114#u8, 105#u8, 119#u8, 105#u8, 110#u8, 107#u8, 108#u8,
+        101#u8
+        ]))
+  let v15 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s15
+  let out15 ← alloc.vec.Vec.push out14 v15
+  let s16 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        112#u8, 101#u8, 116#u8, 101#u8, 119#u8, 101#u8, 110#u8, 116#u8, 122#u8,
+        49#u8
+        ]))
+  let v16 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s16
+  let out16 ← alloc.vec.Vec.push out15 v16
+  let s17 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        112#u8, 105#u8, 109#u8, 112#u8, 109#u8, 121#u8, 114#u8, 105#u8, 100#u8,
+        101#u8
+        ]))
+  let v17 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s17
+  let out17 ← alloc.vec.Vec.push out16 v17
+  let s18 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        112#u8, 105#u8, 110#u8, 107#u8, 97#u8, 104#u8, 111#u8, 108#u8, 105#u8,
+        99#u8
+        ]))
+  let v18 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s18
+  let out18 ← alloc.vec.Vec.push out17 v18
+  let s19 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        112#u8, 105#u8, 110#u8, 107#u8, 97#u8, 110#u8, 100#u8, 98#u8, 108#u8,
+        117#u8, 101#u8
+        ]))
+  let v19 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s19
+  let out19 ← alloc.vec.Vec.push out18 v19
+  let s20 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        112#u8, 108#u8, 97#u8, 121#u8, 97#u8, 52#u8, 108#u8, 105#u8, 102#u8,
+        101#u8
+        ]))
+  let v20 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s20
+  let out20 ← alloc.vec.Vec.push out19 v20
+  let s21 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        112#u8, 111#u8, 108#u8, 105#u8, 99#u8, 97#u8, 114#u8, 112#u8, 105#u8,
+        111#u8
+        ]))
+  let v21 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s21
+  let out21 ← alloc.vec.Vec.push out20 v21
+  let s22 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        112#u8, 111#u8, 108#u8, 105#u8, 116#u8, 101#u8, 99#u8, 110#u8, 105#u8,
+        99#u8, 111#u8
+        ]))
+  let v22 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s22
+  let out22 ← alloc.vec.Vec.push out21 v22
+  let s23 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        112#u8, 114#u8, 97#u8, 105#u8, 115#u8, 101#u8, 116#u8, 104#u8, 101#u8,
+        108#u8, 111#u8, 114#u8, 100#u8
+        ]))
+  let v23 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s23
+  alloc.vec.Vec.push out22 v23
+
+/-- [kanidm_kernel::migration_defaults::table_part_20]:
+    Source: 'prove/ports/kanidm/kernel/src/migration_defaults.rs', lines 570:0-597:1
+    Visibility: public -/
+def migration_defaults.table_part_20
+  : Result (alloc.vec.Vec (alloc.vec.Vec Std.U8)) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        112#u8, 114#u8, 101#u8, 116#u8, 116#u8, 121#u8, 105#u8, 110#u8, 112#u8,
+        105#u8, 110#u8, 107#u8
+        ]))
+  let v ← alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  let out ← alloc.vec.Vec.push (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) v
+  let s1 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        112#u8, 114#u8, 111#u8, 115#u8, 116#u8, 105#u8, 116#u8, 117#u8, 116#u8,
+        97#u8
+        ]))
+  let v1 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s1
+  let out1 ← alloc.vec.Vec.push out v1
+  let s2 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        112#u8, 115#u8, 105#u8, 99#u8, 111#u8, 108#u8, 111#u8, 103#u8, 105#u8,
+        97#u8
+        ]))
+  let v2 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s2
+  let out2 ← alloc.vec.Vec.push out1 v2
+  let s3 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        112#u8, 115#u8, 105#u8, 104#u8, 111#u8, 108#u8, 111#u8, 103#u8, 105#u8,
+        101#u8
+        ]))
+  let v3 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s3
+  let out3 ← alloc.vec.Vec.push out2 v3
+  let s4 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        112#u8, 117#u8, 99#u8, 99#u8, 97#u8, 121#u8, 103#u8, 97#u8, 114#u8,
+        117#u8
+        ]))
+  let v4 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s4
+  let out4 ← alloc.vec.Vec.push out3 v4
+  let s5 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        112#u8, 117#u8, 110#u8, 107#u8, 110#u8, 111#u8, 116#u8, 100#u8, 101#u8,
+        97#u8, 100#u8
+        ]))
+  let v5 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s5
+  let out5 ← alloc.vec.Vec.push out4 v5
+  let s6 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        112#u8, 117#u8, 115#u8, 115#u8, 105#u8, 110#u8, 98#u8, 111#u8, 111#u8,
+        116#u8, 115#u8
+        ]))
+  let v6 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s6
+  let out6 ← alloc.vec.Vec.push out5 v6
+  let s7 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        113#u8, 117#u8, 101#u8, 116#u8, 101#u8, 105#u8, 109#u8, 112#u8, 111#u8,
+        114#u8, 116#u8, 97#u8
+        ]))
+  let v7 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s7
+  let out7 ← alloc.vec.Vec.push out6 v7
+  let s8 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        113#u8, 117#u8, 101#u8, 116#u8, 122#u8, 97#u8, 108#u8, 99#u8, 111#u8,
+        97#u8, 116#u8, 108#u8
+        ]))
+  let v8 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s8
+  let out8 ← alloc.vec.Vec.push out7 v8
+  let s9 ←
+    lift (Array.to_slice
+      (Array.make 26#usize [
+        113#u8, 119#u8, 101#u8, 114#u8, 116#u8, 121#u8, 117#u8, 105#u8, 111#u8,
+        112#u8, 97#u8, 115#u8, 100#u8, 102#u8, 103#u8, 104#u8, 106#u8, 107#u8,
+        108#u8, 122#u8, 120#u8, 99#u8, 118#u8, 98#u8, 110#u8, 109#u8
+        ]))
+  let v9 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s9
+  let out9 ← alloc.vec.Vec.push out8 v9
+  let s10 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        114#u8, 101#u8, 99#u8, 117#u8, 101#u8, 114#u8, 100#u8, 97#u8, 109#u8,
+        101#u8
+        ]))
+  let v10 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s10
+  let out10 ← alloc.vec.Vec.push out9 v10
+  let s11 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        114#u8, 101#u8, 115#u8, 105#u8, 115#u8, 116#u8, 101#u8, 110#u8, 99#u8,
+        105#u8, 97#u8
+        ]))
+  let v11 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s11
+  let out11 ← alloc.vec.Vec.push out10 v11
+  let s12 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        114#u8, 101#u8, 115#u8, 116#u8, 105#u8, 110#u8, 112#u8, 101#u8, 97#u8,
+        99#u8, 101#u8
+        ]))
+  let v12 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s12
+  let out12 ← alloc.vec.Vec.push out11 v12
+  let s13 ←
+    lift (Array.to_slice
+      (Array.make 14#usize [
+        114#u8, 101#u8, 121#u8, 109#u8, 105#u8, 115#u8, 116#u8, 101#u8, 114#u8,
+        105#u8, 111#u8, 54#u8, 49#u8, 57#u8
+        ]))
+  let v13 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s13
+  let out13 ← alloc.vec.Vec.push out12 v13
+  let s14 ←
+    lift (Array.to_slice
+      (Array.make 14#usize [
+        114#u8, 101#u8, 121#u8, 109#u8, 121#u8, 115#u8, 116#u8, 101#u8, 114#u8,
+        105#u8, 111#u8, 54#u8, 49#u8, 57#u8
+        ]))
+  let v14 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s14
+  let out14 ← alloc.vec.Vec.push out13 v14
+  let s15 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        114#u8, 105#u8, 99#u8, 97#u8, 114#u8, 100#u8, 111#u8, 97#u8, 114#u8,
+        106#u8, 111#u8, 110#u8, 97#u8
+        ]))
+  let v15 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s15
+  let out15 ← alloc.vec.Vec.push out14 v15
+  let s16 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        114#u8, 111#u8, 109#u8, 101#u8, 111#u8, 121#u8, 106#u8, 117#u8, 108#u8,
+        105#u8, 101#u8, 116#u8, 97#u8
+        ]))
+  let v16 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s16
+  let out16 ← alloc.vec.Vec.push out15 v16
+  let s17 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        114#u8, 111#u8, 115#u8, 101#u8, 115#u8, 97#u8, 114#u8, 101#u8, 114#u8,
+        101#u8, 100#u8
+        ]))
+  let v17 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s17
+  let out17 ← alloc.vec.Vec.push out16 v17
+  let s18 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        114#u8, 111#u8, 115#u8, 105#u8, 116#u8, 97#u8, 102#u8, 114#u8, 101#u8,
+        115#u8, 105#u8, 116#u8, 97#u8
+        ]))
+  let v18 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s18
+  let out18 ← alloc.vec.Vec.push out17 v18
+  let s19 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        114#u8, 117#u8, 112#u8, 101#u8, 114#u8, 116#u8, 103#u8, 114#u8, 105#u8,
+        110#u8, 116#u8
+        ]))
+  let v19 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s19
+  let out19 ← alloc.vec.Vec.push out18 v19
+  let s20 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        114#u8, 121#u8, 97#u8, 110#u8, 115#u8, 104#u8, 101#u8, 99#u8, 107#u8,
+        108#u8, 101#u8, 114#u8
+        ]))
+  let v20 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s20
+  let out20 ← alloc.vec.Vec.push out19 v20
+  let s21 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        114#u8, 121#u8, 111#u8, 109#u8, 97#u8, 101#u8, 99#u8, 104#u8, 105#u8,
+        122#u8, 101#u8, 110#u8
+        ]))
+  let v21 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s21
+  let out21 ← alloc.vec.Vec.push out20 v21
+  let s22 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        115#u8, 97#u8, 109#u8, 112#u8, 97#u8, 103#u8, 117#u8, 105#u8, 116#u8,
+        97#u8
+        ]))
+  let v22 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s22
+  let out22 ← alloc.vec.Vec.push out21 v22
+  let s23 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        115#u8, 97#u8, 110#u8, 103#u8, 114#u8, 101#u8, 97#u8, 122#u8, 117#u8,
+        108#u8
+        ]))
+  let v23 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s23
+  alloc.vec.Vec.push out22 v23
+
+/-- [kanidm_kernel::migration_defaults::table_part_21]:
+    Source: 'prove/ports/kanidm/kernel/src/migration_defaults.rs', lines 598:0-625:1
+    Visibility: public -/
+def migration_defaults.table_part_21
+  : Result (alloc.vec.Vec (alloc.vec.Vec Std.U8)) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        115#u8, 97#u8, 114#u8, 97#u8, 110#u8, 103#u8, 104#u8, 101#u8, 121#u8,
+        111#u8
+        ]))
+  let v ← alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  let out ← alloc.vec.Vec.push (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) v
+  let s1 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        115#u8, 97#u8, 115#u8, 115#u8, 121#u8, 103#u8, 105#u8, 114#u8, 108#u8,
+        49#u8
+        ]))
+  let v1 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s1
+  let out1 ← alloc.vec.Vec.push out v1
+  let s2 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        115#u8, 97#u8, 115#u8, 117#u8, 107#u8, 101#u8, 117#u8, 99#u8, 104#u8,
+        105#u8, 104#u8, 97#u8
+        ]))
+  let v2 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s2
+  let out2 ← alloc.vec.Vec.push out1 v2
+  let s3 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        115#u8, 99#u8, 104#u8, 111#u8, 107#u8, 111#u8, 108#u8, 97#u8, 100#u8,
+        101#u8
+        ]))
+  let v3 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s3
+  let out3 ← alloc.vec.Vec.push out2 v3
+  let s4 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        115#u8, 101#u8, 98#u8, 97#u8, 115#u8, 116#u8, 101#u8, 97#u8, 109#u8,
+        111#u8
+        ]))
+  let v4 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s4
+  let out4 ← alloc.vec.Vec.push out3 v4
+  let s5 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        115#u8, 101#u8, 99#u8, 116#u8, 117#u8, 109#u8, 115#u8, 101#u8, 109#u8,
+        112#u8, 114#u8, 97#u8
+        ]))
+  let v5 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s5
+  let out5 ← alloc.vec.Vec.push out4 v5
+  let s6 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        115#u8, 101#u8, 109#u8, 101#u8, 111#u8, 108#u8, 118#u8, 105#u8, 100#u8,
+        111#u8
+        ]))
+  let v6 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s6
+  let out6 ← alloc.vec.Vec.push out5 v6
+  let s7 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        115#u8, 101#u8, 110#u8, 105#u8, 115#u8, 101#u8, 118#u8, 105#u8, 121#u8,
+        111#u8, 114#u8, 117#u8, 109#u8
+        ]))
+  let v7 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s7
+  let out7 ← alloc.vec.Vec.push out6 v7
+  let s8 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        115#u8, 101#u8, 110#u8, 116#u8, 105#u8, 109#u8, 105#u8, 101#u8, 110#u8,
+        116#u8, 111#u8
+        ]))
+  let v8 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s8
+  let out8 ← alloc.vec.Vec.push out7 v8
+  let s9 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        115#u8, 101#u8, 115#u8, 115#u8, 104#u8, 111#u8, 109#u8, 97#u8, 114#u8,
+        117#u8
+        ]))
+  let v9 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s9
+  let out9 ← alloc.vec.Vec.push out8 v9
+  let s10 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        115#u8, 101#u8, 115#u8, 115#u8, 104#u8, 111#u8, 117#u8, 109#u8, 97#u8,
+        114#u8, 117#u8
+        ]))
+  let v10 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s10
+  let out10 ← alloc.vec.Vec.push out9 v10
+  let s11 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        115#u8, 101#u8, 120#u8, 97#u8, 110#u8, 100#u8, 116#u8, 104#u8, 101#u8,
+        99#u8, 105#u8, 116#u8, 121#u8
+        ]))
+  let v11 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s11
+  let out11 ← alloc.vec.Vec.push out10 v11
+  let s12 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        115#u8, 101#u8, 120#u8, 111#u8, 110#u8, 116#u8, 104#u8, 101#u8, 98#u8,
+        101#u8, 97#u8, 99#u8, 104#u8
+        ]))
+  let v12 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s12
+  let out12 ← alloc.vec.Vec.push out11 v12
+  let s13 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        115#u8, 101#u8, 120#u8, 121#u8, 109#u8, 111#u8, 109#u8, 109#u8, 97#u8,
+        49#u8
+        ]))
+  let v13 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s13
+  let out13 ← alloc.vec.Vec.push out12 v13
+  let s14 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        115#u8, 101#u8, 120#u8, 121#u8, 116#u8, 104#u8, 97#u8, 110#u8, 103#u8,
+        49#u8
+        ]))
+  let v14 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s14
+  let out14 ← alloc.vec.Vec.push out13 v14
+  let s15 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        115#u8, 101#u8, 120#u8, 121#u8, 116#u8, 104#u8, 105#u8, 110#u8, 103#u8,
+        49#u8
+        ]))
+  let v15 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s15
+  let out15 ← alloc.vec.Vec.push out14 v15
+  let s16 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        115#u8, 104#u8, 97#u8, 103#u8, 103#u8, 121#u8, 50#u8, 100#u8, 111#u8,
+        112#u8, 101#u8
+        ]))
+  let v16 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s16
+  let out16 ← alloc.vec.Vec.push out15 v16
+  let s17 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        115#u8, 104#u8, 105#u8, 112#u8, 112#u8, 117#u8, 117#u8, 100#u8, 101#u8,
+        110#u8
+        ]))
+  let v17 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s17
+  let out17 ← alloc.vec.Vec.push out16 v17
+  let s18 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        115#u8, 104#u8, 111#u8, 112#u8, 97#u8, 104#u8, 111#u8, 108#u8, 105#u8,
+        99#u8
+        ]))
+  let v18 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s18
+  let out18 ← alloc.vec.Vec.push out17 v18
+  let s19 ←
+    lift (Array.to_slice
+      (Array.make 14#usize [
+        115#u8, 104#u8, 111#u8, 119#u8, 109#u8, 101#u8, 116#u8, 104#u8, 101#u8,
+        109#u8, 111#u8, 110#u8, 101#u8, 121#u8
+        ]))
+  let v19 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s19
+  let out19 ← alloc.vec.Vec.push out18 v19
+  let s20 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        115#u8, 105#u8, 101#u8, 109#u8, 112#u8, 114#u8, 101#u8, 106#u8, 117#u8,
+        110#u8, 116#u8, 111#u8, 115#u8
+        ]))
+  let v20 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s20
+  let out20 ← alloc.vec.Vec.push out19 v20
+  let s21 ←
+    lift (Array.to_slice
+      (Array.make 14#usize [
+        115#u8, 105#u8, 101#u8, 109#u8, 112#u8, 114#u8, 101#u8, 116#u8, 101#u8,
+        97#u8, 109#u8, 97#u8, 114#u8, 101#u8
+        ]))
+  let v21 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s21
+  let out21 ← alloc.vec.Vec.push out20 v21
+  let s22 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        115#u8, 105#u8, 109#u8, 97#u8, 110#u8, 106#u8, 117#u8, 110#u8, 116#u8,
+        97#u8, 107#u8
+        ]))
+  let v22 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s22
+  let out22 ← alloc.vec.Vec.push out21 v22
+  let s23 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        115#u8, 105#u8, 109#u8, 112#u8, 108#u8, 101#u8, 109#u8, 101#u8, 110#u8,
+        116#u8, 101#u8, 121#u8, 111#u8
+        ]))
+  let v23 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s23
+  alloc.vec.Vec.push out22 v23
+
+/-- [kanidm_kernel::migration_defaults::table_part_22]:
+    Source: 'prove/ports/kanidm/kernel/src/migration_defaults.rs', lines 626:0-653:1
+    Visibility: public -/
+def migration_defaults.table_part_22
+  : Result (alloc.vec.Vec (alloc.vec.Vec Std.U8)) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        115#u8, 105#u8, 110#u8, 116#u8, 101#u8, 114#u8, 107#u8, 108#u8, 97#u8,
+        97#u8, 115#u8
+        ]))
+  let v ← alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  let out ← alloc.vec.Vec.push (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) v
+  let s1 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        115#u8, 107#u8, 56#u8, 101#u8, 114#u8, 52#u8, 108#u8, 105#u8, 102#u8,
+        101#u8
+        ]))
+  let v1 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s1
+  let out1 ← alloc.vec.Vec.push out v1
+  let s2 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        115#u8, 107#u8, 97#u8, 116#u8, 101#u8, 111#u8, 114#u8, 100#u8, 105#u8,
+        101#u8
+        ]))
+  let v2 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s2
+  let out2 ← alloc.vec.Vec.push out1 v2
+  let s3 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        115#u8, 111#u8, 108#u8, 111#u8, 112#u8, 97#u8, 114#u8, 97#u8, 109#u8,
+        105#u8
+        ]))
+  let v3 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s3
+  let out3 ← alloc.vec.Vec.push out2 v3
+  let s4 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        115#u8, 111#u8, 108#u8, 111#u8, 112#u8, 97#u8, 114#u8, 97#u8, 116#u8,
+        105#u8
+        ]))
+  let v4 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s4
+  let out4 ← alloc.vec.Vec.push out3 v4
+  let s5 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        115#u8, 111#u8, 109#u8, 111#u8, 115#u8, 116#u8, 117#u8, 121#u8, 121#u8,
+        111#u8
+        ]))
+  let v5 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s5
+  let out5 ← alloc.vec.Vec.push out4 v5
+  let s6 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        115#u8, 111#u8, 117#u8, 108#u8, 106#u8, 97#u8, 98#u8, 111#u8, 121#u8,
+        49#u8
+        ]))
+  let v6 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s6
+  let out6 ← alloc.vec.Vec.push out5 v6
+  let s7 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        115#u8, 111#u8, 117#u8, 108#u8, 106#u8, 97#u8, 103#u8, 105#u8, 114#u8,
+        108#u8
+        ]))
+  let v7 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s7
+  let out7 ← alloc.vec.Vec.push out6 v7
+  let s8 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        115#u8, 111#u8, 117#u8, 108#u8, 106#u8, 97#u8, 103#u8, 117#u8, 114#u8,
+        108#u8
+        ]))
+  let v8 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s8
+  let out8 ← alloc.vec.Vec.push out7 v8
+  let s9 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        115#u8, 111#u8, 121#u8, 101#u8, 108#u8, 109#u8, 101#u8, 106#u8, 111#u8,
+        114#u8
+        ]))
+  let v9 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s9
+  let out9 ← alloc.vec.Vec.push out8 v9
+  let s10 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        115#u8, 111#u8, 121#u8, 108#u8, 97#u8, 109#u8, 101#u8, 106#u8, 111#u8,
+        114#u8
+        ]))
+  let v10 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s10
+  let out10 ← alloc.vec.Vec.push out9 v10
+  let s11 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        115#u8, 111#u8, 121#u8, 108#u8, 111#u8, 109#u8, 97#u8, 120#u8, 105#u8,
+        109#u8, 111#u8
+        ]))
+  let v11 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s11
+  let out11 ← alloc.vec.Vec.push out10 v11
+  let s12 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        115#u8, 111#u8, 121#u8, 108#u8, 111#u8, 109#u8, 101#u8, 106#u8, 111#u8,
+        114#u8
+        ]))
+  let v12 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s12
+  let out12 ← alloc.vec.Vec.push out11 v12
+  let s13 ←
+    lift (Array.to_slice
+      (Array.make 20#usize [
+        115#u8, 112#u8, 111#u8, 110#u8, 103#u8, 101#u8, 98#u8, 111#u8, 98#u8,
+        115#u8, 113#u8, 117#u8, 97#u8, 114#u8, 101#u8, 112#u8, 97#u8, 110#u8,
+        116#u8, 115#u8
+        ]))
+  let v13 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s13
+  let out13 ← alloc.vec.Vec.push out12 v13
+  let s14 ←
+    lift (Array.to_slice
+      (Array.make 15#usize [
+        115#u8, 116#u8, 101#u8, 97#u8, 117#u8, 97#u8, 98#u8, 117#u8, 99#u8,
+        117#u8, 114#u8, 101#u8, 115#u8, 116#u8, 105#u8
+        ]))
+  let v14 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s14
+  let out14 ← alloc.vec.Vec.push out13 v14
+  let s15 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        115#u8, 117#u8, 97#u8, 110#u8, 107#u8, 117#u8, 108#u8, 97#u8, 114#u8,
+        98#u8
+        ]))
+  let v15 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s15
+  let out15 ← alloc.vec.Vec.push out14 v15
+  let s16 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        115#u8, 117#u8, 98#u8, 104#u8, 97#u8, 110#u8, 97#u8, 108#u8, 108#u8,
+        97#u8, 104#u8
+        ]))
+  let v16 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s16
+  let out16 ← alloc.vec.Vec.push out15 v16
+  let s17 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        115#u8, 117#u8, 103#u8, 97#u8, 114#u8, 97#u8, 110#u8, 100#u8, 115#u8,
+        112#u8, 105#u8, 99#u8, 101#u8
+        ]))
+  let v17 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s17
+  let out17 ← alloc.vec.Vec.push out16 v17
+  let s18 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        115#u8, 117#u8, 103#u8, 97#u8, 114#u8, 110#u8, 115#u8, 112#u8, 105#u8,
+        99#u8, 101#u8
+        ]))
+  let v18 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s18
+  let out18 ← alloc.vec.Vec.push out17 v18
+  let s19 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        115#u8, 117#u8, 112#u8, 101#u8, 114#u8, 99#u8, 104#u8, 105#u8, 99#u8,
+        97#u8
+        ]))
+  let v19 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s19
+  let out19 ← alloc.vec.Vec.push out18 v19
+  let s20 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        115#u8, 117#u8, 112#u8, 101#u8, 114#u8, 105#u8, 110#u8, 103#u8, 103#u8,
+        111#u8
+        ]))
+  let v20 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s20
+  let out20 ← alloc.vec.Vec.push out19 v20
+  let s21 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        115#u8, 117#u8, 112#u8, 101#u8, 114#u8, 112#u8, 111#u8, 100#u8, 101#u8,
+        114#u8, 111#u8, 115#u8, 97#u8
+        ]))
+  let v21 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s21
+  let out21 ← alloc.vec.Vec.push out20 v21
+  let s22 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        115#u8, 117#u8, 112#u8, 108#u8, 97#u8, 100#u8, 105#u8, 116#u8, 97#u8,
+        104#u8
+        ]))
+  let v22 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s22
+  let out22 ← alloc.vec.Vec.push out21 v22
+  let s23 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        116#u8, 97#u8, 109#u8, 97#u8, 103#u8, 111#u8, 116#u8, 99#u8, 104#u8,
+        105#u8
+        ]))
+  let v23 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s23
+  alloc.vec.Vec.push out22 v23
+
+/-- [kanidm_kernel::migration_defaults::table_part_23]:
+    Source: 'prove/ports/kanidm/kernel/src/migration_defaults.rs', lines 654:0-681:1
+    Visibility: public -/
+def migration_defaults.table_part_23
+  : Result (alloc.vec.Vec (alloc.vec.Vec Std.U8)) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        116#u8, 97#u8, 117#u8, 103#u8, 97#u8, 109#u8, 109#u8, 97#u8, 112#u8,
+        104#u8, 105#u8
+        ]))
+  let v ← alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  let out ← alloc.vec.Vec.push (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) v
+  let s1 ←
+    lift (Array.to_slice
+      (Array.make 17#usize [
+        116#u8, 101#u8, 97#u8, 109#u8, 97#u8, 114#u8, 101#u8, 112#u8, 111#u8,
+        114#u8, 115#u8, 105#u8, 101#u8, 109#u8, 112#u8, 114#u8, 101#u8
+        ]))
+  let v1 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s1
+  let out1 ← alloc.vec.Vec.push out v1
+  let s2 ←
+    lift (Array.to_slice
+      (Array.make 14#usize [
+        116#u8, 101#u8, 97#u8, 109#u8, 97#u8, 114#u8, 101#u8, 115#u8, 105#u8,
+        101#u8, 109#u8, 112#u8, 114#u8, 101#u8
+        ]))
+  let v2 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s2
+  let out2 ← alloc.vec.Vec.push out1 v2
+  let s3 ←
+    lift (Array.to_slice
+      (Array.make 14#usize [
+        116#u8, 101#u8, 97#u8, 109#u8, 97#u8, 114#u8, 101#u8, 120#u8, 49#u8,
+        48#u8, 48#u8, 112#u8, 114#u8, 101#u8
+        ]))
+  let v3 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s3
+  let out3 ← alloc.vec.Vec.push out2 v3
+  let s4 ←
+    lift (Array.to_slice
+      (Array.make 15#usize [
+        116#u8, 101#u8, 97#u8, 109#u8, 97#u8, 114#u8, 101#u8, 120#u8, 115#u8,
+        105#u8, 101#u8, 109#u8, 112#u8, 114#u8, 101#u8
+        ]))
+  let v4 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s4
+  let out4 ← alloc.vec.Vec.push out3 v4
+  let s5 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        116#u8, 101#u8, 97#u8, 109#u8, 111#u8, 98#u8, 101#u8, 98#u8, 105#u8,
+        116#u8, 111#u8
+        ]))
+  let v5 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s5
+  let out5 ← alloc.vec.Vec.push out4 v5
+  let s6 ←
+    lift (Array.to_slice
+      (Array.make 14#usize [
+        116#u8, 101#u8, 97#u8, 109#u8, 111#u8, 100#u8, 101#u8, 109#u8, 97#u8,
+        115#u8, 105#u8, 97#u8, 100#u8, 111#u8
+        ]))
+  let v6 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s6
+  let out6 ← alloc.vec.Vec.push out5 v6
+  let s7 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        116#u8, 101#u8, 97#u8, 109#u8, 111#u8, 103#u8, 111#u8, 114#u8, 100#u8,
+        111#u8
+        ]))
+  let v7 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s7
+  let out7 ← alloc.vec.Vec.push out6 v7
+  let s8 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        116#u8, 101#u8, 97#u8, 109#u8, 111#u8, 109#u8, 105#u8, 97#u8, 109#u8,
+        111#u8, 114#u8
+        ]))
+  let v8 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s8
+  let out8 ← alloc.vec.Vec.push out7 v8
+  let s9 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        116#u8, 101#u8, 97#u8, 109#u8, 111#u8, 109#u8, 105#u8, 98#u8, 101#u8,
+        98#u8, 101#u8
+        ]))
+  let v9 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s9
+  let out9 ← alloc.vec.Vec.push out8 v9
+  let s10 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        116#u8, 101#u8, 97#u8, 109#u8, 111#u8, 109#u8, 105#u8, 118#u8, 105#u8,
+        100#u8, 97#u8
+        ]))
+  let v10 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s10
+  let out10 ← alloc.vec.Vec.push out9 v10
+  let s11 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        116#u8, 101#u8, 97#u8, 109#u8, 111#u8, 115#u8, 111#u8, 108#u8, 111#u8,
+        97#u8, 116#u8, 105#u8
+        ]))
+  let v11 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s11
+  let out11 ← alloc.vec.Vec.push out10 v11
+  let s12 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        116#u8, 101#u8, 97#u8, 109#u8, 111#u8, 116#u8, 97#u8, 110#u8, 116#u8,
+        111#u8
+        ]))
+  let v12 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s12
+  let out12 ← alloc.vec.Vec.push out11 v12
+  let s13 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        116#u8, 101#u8, 97#u8, 109#u8, 111#u8, 120#u8, 49#u8, 48#u8, 48#u8,
+        112#u8, 114#u8, 101#u8
+        ]))
+  let v13 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s13
+  let out13 ← alloc.vec.Vec.push out12 v13
+  let s14 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        116#u8, 101#u8, 99#u8, 110#u8, 111#u8, 108#u8, 111#u8, 103#u8, 105#u8,
+        97#u8
+        ]))
+  let v14 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s14
+  let out14 ← alloc.vec.Vec.push out13 v14
+  let s15 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        116#u8, 101#u8, 101#u8, 120#u8, 116#u8, 114#u8, 97#u8, 195#u8, 177#u8,
+        111#u8
+        ]))
+  let v15 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s15
+  let out15 ← alloc.vec.Vec.push out14 v15
+  let s16 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        116#u8, 101#u8, 105#u8, 117#u8, 98#u8, 101#u8, 115#u8, 99#u8, 109#u8,
+        117#u8, 108#u8, 116#u8
+        ]))
+  let v16 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s16
+  let out16 ← alloc.vec.Vec.push out15 v16
+  let s17 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        116#u8, 101#u8, 107#u8, 101#u8, 108#u8, 111#u8, 109#u8, 117#u8, 99#u8,
+        104#u8, 111#u8
+        ]))
+  let v17 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s17
+  let out17 ← alloc.vec.Vec.push out16 v17
+  let s18 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        116#u8, 101#u8, 107#u8, 101#u8, 108#u8, 111#u8, 109#u8, 117#u8, 120#u8,
+        111#u8
+        ]))
+  let v18 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s18
+  let out18 ← alloc.vec.Vec.push out17 v18
+  let s19 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        116#u8, 101#u8, 107#u8, 105#u8, 101#u8, 114#u8, 111#u8, 109#u8, 117#u8,
+        99#u8, 104#u8, 111#u8
+        ]))
+  let v19 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s19
+  let out19 ← alloc.vec.Vec.push out18 v19
+  let s20 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        116#u8, 101#u8, 107#u8, 105#u8, 101#u8, 114#u8, 111#u8, 109#u8, 117#u8,
+        120#u8, 111#u8
+        ]))
+  let v20 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s20
+  let out20 ← alloc.vec.Vec.push out19 v20
+  let s21 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        116#u8, 101#u8, 108#u8, 101#u8, 99#u8, 111#u8, 109#u8, 97#u8, 110#u8,
+        100#u8, 97#u8
+        ]))
+  let v21 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s21
+  let out21 ← alloc.vec.Vec.push out20 v21
+  let s22 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        116#u8, 101#u8, 108#u8, 101#u8, 116#u8, 117#u8, 98#u8, 98#u8, 105#u8,
+        101#u8, 115#u8
+        ]))
+  let v22 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s22
+  let out22 ← alloc.vec.Vec.push out21 v22
+  let s23 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        116#u8, 101#u8, 110#u8, 101#u8, 99#u8, 101#u8, 115#u8, 105#u8, 116#u8,
+        111#u8
+        ]))
+  let v23 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s23
+  alloc.vec.Vec.push out22 v23
+
+/-- [kanidm_kernel::migration_defaults::table_part_24]:
+    Source: 'prove/ports/kanidm/kernel/src/migration_defaults.rs', lines 682:0-709:1
+    Visibility: public -/
+def migration_defaults.table_part_24
+  : Result (alloc.vec.Vec (alloc.vec.Vec Std.U8)) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        116#u8, 101#u8, 110#u8, 103#u8, 111#u8, 117#u8, 110#u8, 97#u8, 109#u8,
+        111#u8, 114#u8
+        ]))
+  let v ← alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  let out ← alloc.vec.Vec.push (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) v
+  let s1 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        116#u8, 101#u8, 111#u8, 108#u8, 118#u8, 105#u8, 100#u8, 97#u8, 114#u8,
+        101#u8
+        ]))
+  let v1 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s1
+  let out1 ← alloc.vec.Vec.push out v1
+  let s2 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        116#u8, 101#u8, 113#u8, 117#u8, 105#u8, 101#u8, 114#u8, 111#u8, 109#u8,
+        117#u8, 99#u8, 104#u8, 111#u8
+        ]))
+  let v2 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s2
+  let out2 ← alloc.vec.Vec.push out1 v2
+  let s3 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        116#u8, 101#u8, 113#u8, 117#u8, 105#u8, 101#u8, 114#u8, 111#u8, 109#u8,
+        117#u8, 120#u8, 111#u8
+        ]))
+  let v3 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s3
+  let out3 ← alloc.vec.Vec.push out2 v3
+  let s4 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        116#u8, 101#u8, 115#u8, 105#u8, 103#u8, 111#u8, 97#u8, 109#u8, 97#u8,
+        110#u8, 100#u8, 111#u8
+        ]))
+  let v4 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s4
+  let out4 ← alloc.vec.Vec.push out3 v4
+  let s5 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        116#u8, 104#u8, 97#u8, 105#u8, 116#u8, 97#u8, 110#u8, 105#u8, 117#u8,
+        109#u8
+        ]))
+  let v5 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s5
+  let out5 ← alloc.vec.Vec.push out4 v5
+  let s6 ←
+    lift (Array.to_slice
+      (Array.make 14#usize [
+        116#u8, 104#u8, 101#u8, 98#u8, 108#u8, 97#u8, 99#u8, 107#u8, 112#u8,
+        97#u8, 114#u8, 97#u8, 100#u8, 101#u8
+        ]))
+  let v6 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s6
+  let out6 ← alloc.vec.Vec.push out5 v6
+  let s7 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        116#u8, 104#u8, 101#u8, 111#u8, 110#u8, 101#u8, 97#u8, 110#u8, 100#u8,
+        111#u8, 110#u8, 108#u8, 121#u8
+        ]))
+  let v7 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s7
+  let out7 ← alloc.vec.Vec.push out6 v7
+  let s8 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        116#u8, 104#u8, 101#u8, 118#u8, 101#u8, 114#u8, 111#u8, 110#u8, 105#u8,
+        99#u8, 97#u8, 115#u8
+        ]))
+  let v8 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s8
+  let out8 ← alloc.vec.Vec.push out7 v8
+  let s9 ←
+    lift (Array.to_slice
+      (Array.make 16#usize [
+        116#u8, 104#u8, 105#u8, 115#u8, 105#u8, 115#u8, 109#u8, 121#u8, 112#u8,
+        97#u8, 115#u8, 115#u8, 119#u8, 111#u8, 114#u8, 100#u8
+        ]))
+  let v9 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s9
+  let out9 ← alloc.vec.Vec.push out8 v9
+  let s10 ←
+    lift (Array.to_slice
+      (Array.make 14#usize [
+        116#u8, 104#u8, 114#u8, 101#u8, 101#u8, 100#u8, 97#u8, 121#u8, 115#u8,
+        103#u8, 114#u8, 97#u8, 99#u8, 101#u8
+        ]))
+  let v10 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s10
+  let out10 ← alloc.vec.Vec.push out9 v10
+  let s11 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        116#u8, 105#u8, 109#u8, 98#u8, 105#u8, 114#u8, 105#u8, 99#u8, 104#u8,
+        101#u8
+        ]))
+  let v11 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s11
+  let out11 ← alloc.vec.Vec.push out10 v11
+  let s12 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        116#u8, 105#u8, 110#u8, 107#u8, 121#u8, 119#u8, 105#u8, 110#u8, 107#u8,
+        121#u8
+        ]))
+  let v12 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s12
+  let out12 ← alloc.vec.Vec.push out11 v12
+  let s13 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        116#u8, 105#u8, 116#u8, 111#u8, 101#u8, 108#u8, 98#u8, 97#u8, 109#u8,
+        98#u8, 105#u8, 110#u8, 111#u8
+        ]))
+  let v13 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s13
+  let out13 ← alloc.vec.Vec.push out12 v13
+  let s14 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        116#u8, 105#u8, 118#u8, 111#u8, 103#u8, 108#u8, 105#u8, 111#u8, 98#u8,
+        101#u8, 110#u8, 101#u8
+        ]))
+  let v14 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s14
+  let out14 ← alloc.vec.Vec.push out13 v14
+  let s15 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        116#u8, 111#u8, 100#u8, 97#u8, 108#u8, 97#u8, 118#u8, 105#u8, 100#u8,
+        97#u8
+        ]))
+  let v15 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s15
+  let out15 ← alloc.vec.Vec.push out14 v15
+  let s16 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        116#u8, 111#u8, 100#u8, 111#u8, 99#u8, 97#u8, 109#u8, 98#u8, 105#u8,
+        111#u8
+        ]))
+  let v16 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s16
+  let out16 ← alloc.vec.Vec.push out15 v16
+  let s17 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        116#u8, 111#u8, 100#u8, 111#u8, 112#u8, 111#u8, 100#u8, 101#u8, 114#u8,
+        111#u8, 115#u8, 111#u8
+        ]))
+  let v17 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s17
+  let out17 ← alloc.vec.Vec.push out16 v17
+  let s18 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        116#u8, 111#u8, 104#u8, 111#u8, 115#u8, 104#u8, 105#u8, 110#u8, 107#u8,
+        105#u8
+        ]))
+  let v18 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s18
+  let out18 ← alloc.vec.Vec.push out17 v18
+  let s19 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        116#u8, 111#u8, 107#u8, 105#u8, 111#u8, 32#u8, 104#u8, 111#u8, 116#u8,
+        101#u8, 108#u8
+        ]))
+  let v19 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s19
+  let out19 ← alloc.vec.Vec.push out18 v19
+  let s20 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        116#u8, 111#u8, 109#u8, 97#u8, 110#u8, 100#u8, 106#u8, 101#u8, 114#u8,
+        114#u8, 121#u8
+        ]))
+  let v20 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s20
+  let out20 ← alloc.vec.Vec.push out19 v20
+  let s21 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        116#u8, 111#u8, 109#u8, 119#u8, 101#u8, 108#u8, 108#u8, 105#u8, 110#u8,
+        103#u8
+        ]))
+  let v21 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s21
+  let out21 ← alloc.vec.Vec.push out20 v21
+  let s22 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        116#u8, 114#u8, 97#u8, 110#u8, 100#u8, 97#u8, 102#u8, 105#u8, 114#u8,
+        105#u8
+        ]))
+  let v22 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s22
+  let out22 ← alloc.vec.Vec.push out21 v22
+  let s23 ←
+    lift (Array.to_slice
+      (Array.make 14#usize [
+        116#u8, 114#u8, 105#u8, 110#u8, 99#u8, 104#u8, 101#u8, 114#u8, 97#u8,
+        110#u8, 111#u8, 114#u8, 116#u8, 101#u8
+        ]))
+  let v23 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s23
+  alloc.vec.Vec.push out22 v23
+
+/-- [kanidm_kernel::migration_defaults::table_part_25]:
+    Source: 'prove/ports/kanidm/kernel/src/migration_defaults.rs', lines 710:0-737:1
+    Visibility: public -/
+def migration_defaults.table_part_25
+  : Result (alloc.vec.Vec (alloc.vec.Vec Std.U8)) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        116#u8, 114#u8, 105#u8, 115#u8, 107#u8, 101#u8, 108#u8, 105#u8, 111#u8,
+        110#u8
+        ]))
+  let v ← alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  let out ← alloc.vec.Vec.push (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) v
+  let s1 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        116#u8, 117#u8, 101#u8, 114#u8, 101#u8, 115#u8, 109#u8, 105#u8, 97#u8,
+        109#u8, 111#u8, 114#u8
+        ]))
+  let v1 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s1
+  let out1 ← alloc.vec.Vec.push out v1
+  let s2 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        116#u8, 117#u8, 101#u8, 114#u8, 101#u8, 115#u8, 109#u8, 105#u8, 118#u8,
+        105#u8, 100#u8, 97#u8
+        ]))
+  let v2 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s2
+  let out2 ← alloc.vec.Vec.push out1 v2
+  let s3 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        116#u8, 117#u8, 109#u8, 97#u8, 109#u8, 97#u8, 99#u8, 97#u8, 108#u8,
+        97#u8, 116#u8, 97#u8
+        ]))
+  let v3 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s3
+  let out3 ← alloc.vec.Vec.push out2 v3
+  let s4 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        116#u8, 117#u8, 116#u8, 116#u8, 105#u8, 102#u8, 114#u8, 117#u8, 116#u8,
+        116#u8, 105#u8
+        ]))
+  let v4 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s4
+  let out4 ← alloc.vec.Vec.push out3 v4
+  let s5 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        116#u8, 117#u8, 121#u8, 121#u8, 111#u8, 120#u8, 49#u8, 48#u8, 48#u8,
+        112#u8, 114#u8, 101#u8
+        ]))
+  let v5 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s5
+  let out5 ← alloc.vec.Vec.push out4 v5
+  let s6 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        117#u8, 99#u8, 104#u8, 105#u8, 104#u8, 97#u8, 115#u8, 97#u8, 115#u8,
+        117#u8, 107#u8, 101#u8
+        ]))
+  let v6 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s6
+  let out6 ← alloc.vec.Vec.push out5 v6
+  let s7 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        117#u8, 110#u8, 100#u8, 101#u8, 114#u8, 109#u8, 121#u8, 115#u8, 107#u8,
+        105#u8, 110#u8
+        ]))
+  let v7 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s7
+  let out7 ← alloc.vec.Vec.push out6 v7
+  let s8 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        117#u8, 110#u8, 102#u8, 111#u8, 114#u8, 103#u8, 101#u8, 116#u8, 97#u8,
+        98#u8, 108#u8, 101#u8
+        ]))
+  let v8 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s8
+  let out8 ← alloc.vec.Vec.push out7 v8
+  let s9 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        117#u8, 110#u8, 111#u8, 100#u8, 111#u8, 115#u8, 116#u8, 114#u8, 101#u8,
+        115#u8
+        ]))
+  let v9 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s9
+  let out9 ← alloc.vec.Vec.push out8 v9
+  let s10 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        118#u8, 97#u8, 99#u8, 97#u8, 99#u8, 105#u8, 111#u8, 110#u8, 101#u8,
+        115#u8
+        ]))
+  let v10 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s10
+  let out10 ← alloc.vec.Vec.push out9 v10
+  let s11 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        118#u8, 97#u8, 108#u8, 100#u8, 101#u8, 114#u8, 114#u8, 97#u8, 109#u8,
+        97#u8
+        ]))
+  let v11 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s11
+  let out11 ← alloc.vec.Vec.push out10 v11
+  let s12 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        118#u8, 97#u8, 116#u8, 111#u8, 115#u8, 108#u8, 111#u8, 99#u8, 111#u8,
+        115#u8
+        ]))
+  let v12 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s12
+  let out12 ← alloc.vec.Vec.push out11 v12
+  let s13 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        118#u8, 101#u8, 114#u8, 106#u8, 97#u8, 97#u8, 114#u8, 100#u8, 97#u8,
+        103#u8
+        ]))
+  let v13 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s13
+  let out13 ← alloc.vec.Vec.push out12 v13
+  let s14 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        118#u8, 101#u8, 116#u8, 101#u8, 97#u8, 108#u8, 97#u8, 109#u8, 105#u8,
+        101#u8, 114#u8, 100#u8, 97#u8
+        ]))
+  let v14 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s14
+  let out14 ← alloc.vec.Vec.push out13 v14
+  let s15 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        118#u8, 101#u8, 116#u8, 101#u8, 114#u8, 105#u8, 110#u8, 97#u8, 114#u8,
+        105#u8, 97#u8
+        ]))
+  let v15 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s15
+  let out15 ← alloc.vec.Vec.push out14 v15
+  let s16 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        118#u8, 105#u8, 108#u8, 108#u8, 97#u8, 99#u8, 111#u8, 114#u8, 116#u8,
+        97#u8
+        ]))
+  let v16 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s16
+  let out16 ← alloc.vec.Vec.push out15 v16
+  let s17 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        118#u8, 105#u8, 118#u8, 97#u8, 101#u8, 108#u8, 114#u8, 111#u8, 99#u8,
+        107#u8
+        ]))
+  let v17 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s17
+  let out17 ← alloc.vec.Vec.push out16 v17
+  let s18 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        118#u8, 105#u8, 118#u8, 97#u8, 108#u8, 97#u8, 114#u8, 97#u8, 122#u8,
+        97#u8
+        ]))
+  let v18 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s18
+  let out18 ← alloc.vec.Vec.push out17 v18
+  let s19 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        118#u8, 105#u8, 118#u8, 97#u8, 108#u8, 97#u8, 118#u8, 105#u8, 100#u8,
+        97#u8
+        ]))
+  let v19 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s19
+  let out19 ← alloc.vec.Vec.push out18 v19
+  let s20 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        118#u8, 105#u8, 118#u8, 101#u8, 108#u8, 97#u8, 118#u8, 105#u8, 100#u8,
+        97#u8
+        ]))
+  let v20 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s20
+  let out20 ← alloc.vec.Vec.push out19 v20
+  let s21 ←
+    lift (Array.to_slice
+      (Array.make 16#usize [
+        119#u8, 101#u8, 98#u8, 101#u8, 108#u8, 111#u8, 110#u8, 103#u8, 116#u8,
+        111#u8, 103#u8, 101#u8, 116#u8, 104#u8, 101#u8, 114#u8
+        ]))
+  let v21 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s21
+  let out21 ← alloc.vec.Vec.push out20 v21
+  let s22 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        119#u8, 101#u8, 101#u8, 122#u8, 121#u8, 102#u8, 98#u8, 97#u8, 98#u8,
+        121#u8
+        ]))
+  let v22 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s22
+  let out22 ← alloc.vec.Vec.push out21 v22
+  let s23 ←
+    lift (Array.to_slice
+      (Array.make 15#usize [
+        119#u8, 101#u8, 108#u8, 99#u8, 111#u8, 109#u8, 101#u8, 116#u8, 111#u8,
+        109#u8, 121#u8, 108#u8, 105#u8, 102#u8, 101#u8
+        ]))
+  let v23 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s23
+  alloc.vec.Vec.push out22 v23
+
+/-- [kanidm_kernel::migration_defaults::table_part_26]:
+    Source: 'prove/ports/kanidm/kernel/src/migration_defaults.rs', lines 738:0-753:1
+    Visibility: public -/
+def migration_defaults.table_part_26
+  : Result (alloc.vec.Vec (alloc.vec.Vec Std.U8)) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 14#usize [
+        119#u8, 104#u8, 101#u8, 114#u8, 101#u8, 105#u8, 115#u8, 116#u8, 104#u8,
+        101#u8, 108#u8, 111#u8, 118#u8, 101#u8
+        ]))
+  let v ← alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  let out ← alloc.vec.Vec.push (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) v
+  let s1 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        119#u8, 105#u8, 110#u8, 110#u8, 105#u8, 101#u8, 116#u8, 104#u8, 101#u8,
+        112#u8, 111#u8, 111#u8, 104#u8
+        ]))
+  let v1 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s1
+  let out1 ← alloc.vec.Vec.push out v1
+  let s2 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        119#u8, 105#u8, 112#u8, 101#u8, 109#u8, 101#u8, 100#u8, 111#u8, 119#u8,
+        110#u8
+        ]))
+  let v2 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s2
+  let out2 ← alloc.vec.Vec.push out1 v2
+  let s3 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        119#u8, 105#u8, 115#u8, 105#u8, 110#u8, 121#u8, 97#u8, 110#u8, 100#u8,
+        101#u8, 108#u8
+        ]))
+  let v3 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s3
+  let out3 ← alloc.vec.Vec.push out2 v3
+  let s4 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        119#u8, 105#u8, 115#u8, 105#u8, 110#u8, 121#u8, 121#u8, 97#u8, 110#u8,
+        100#u8, 101#u8, 108#u8
+        ]))
+  let v4 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s4
+  let out4 ← alloc.vec.Vec.push out3 v4
+  let s5 ←
+    lift (Array.to_slice
+      (Array.make 15#usize [
+        119#u8, 111#u8, 114#u8, 108#u8, 100#u8, 111#u8, 102#u8, 119#u8, 97#u8,
+        114#u8, 99#u8, 114#u8, 97#u8, 102#u8, 116#u8
+        ]))
+  let v5 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s5
+  let out5 ← alloc.vec.Vec.push out4 v5
+  let s6 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        121#u8, 111#u8, 115#u8, 111#u8, 121#u8, 101#u8, 108#u8, 109#u8, 101#u8,
+        106#u8, 111#u8, 114#u8
+        ]))
+  let v6 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s6
+  let out6 ← alloc.vec.Vec.push out5 v6
+  let s7 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        121#u8, 111#u8, 115#u8, 111#u8, 121#u8, 108#u8, 97#u8, 109#u8, 101#u8,
+        106#u8, 111#u8, 114#u8
+        ]))
+  let v7 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s7
+  let out7 ← alloc.vec.Vec.push out6 v7
+  let s8 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        121#u8, 111#u8, 117#u8, 99#u8, 97#u8, 110#u8, 116#u8, 115#u8, 101#u8,
+        101#u8, 109#u8, 101#u8
+        ]))
+  let v8 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s8
+  let out8 ← alloc.vec.Vec.push out7 v8
+  let s9 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        121#u8, 111#u8, 117#u8, 103#u8, 111#u8, 116#u8, 115#u8, 101#u8, 114#u8,
+        118#u8, 101#u8, 100#u8
+        ]))
+  let v9 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s9
+  let out9 ← alloc.vec.Vec.push out8 v9
+  let s10 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        121#u8, 117#u8, 121#u8, 117#u8, 104#u8, 97#u8, 107#u8, 117#u8, 115#u8,
+        104#u8, 111#u8
+        ]))
+  let v10 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s10
+  let out10 ← alloc.vec.Vec.push out9 v10
+  let s11 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        122#u8, 111#u8, 110#u8, 110#u8, 101#u8, 98#u8, 108#u8, 111#u8, 101#u8,
+        109#u8
+        ]))
+  let v11 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s11
+  alloc.vec.Vec.push out10 v11
+
+/-- [kanidm_kernel::migration_defaults::initialize]:
+    Source: 'prove/ports/kanidm/kernel/src/migration_defaults.rs', lines 754:0-813:1
+    Visibility: public -/
+def migration_defaults.initialize
+  (second : Slice Std.U8) : Result migration_defaults.SystemConfig := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 19#usize [
+        98#u8, 97#u8, 100#u8, 64#u8, 110#u8, 111#u8, 51#u8, 105#u8, 98#u8,
+        116#u8, 121#u8, 113#u8, 104#u8, 117#u8, 36#u8, 108#u8, 105#u8, 115#u8,
+        116#u8
+        ]))
+  let passwords ← bset.insert (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) s
+  let passwords1 ← bset.insert passwords second
+  let part ← migration_defaults.table_part_0
+  let s1 := alloc.vec.Vec.deref part
+  let passwords2 ← bset.extend passwords1 s1
+  let part1 ← migration_defaults.table_part_1
+  let s2 := alloc.vec.Vec.deref part1
+  let passwords3 ← bset.extend passwords2 s2
+  let part2 ← migration_defaults.table_part_2
+  let s3 := alloc.vec.Vec.deref part2
+  let passwords4 ← bset.extend passwords3 s3
+  let part3 ← migration_defaults.table_part_3
+  let s4 := alloc.vec.Vec.deref part3
+  let passwords5 ← bset.extend passwords4 s4
+  let part4 ← migration_defaults.table_part_4
+  let s5 := alloc.vec.Vec.deref part4
+  let passwords6 ← bset.extend passwords5 s5
+  let part5 ← migration_defaults.table_part_5
+  let s6 := alloc.vec.Vec.deref part5
+  let passwords7 ← bset.extend passwords6 s6
+  let part6 ← migration_defaults.table_part_6
+  let s7 := alloc.vec.Vec.deref part6
+  let passwords8 ← bset.extend passwords7 s7
+  let part7 ← migration_defaults.table_part_7
+  let s8 := alloc.vec.Vec.deref part7
+  let passwords9 ← bset.extend passwords8 s8
+  let part8 ← migration_defaults.table_part_8
+  let s9 := alloc.vec.Vec.deref part8
+  let passwords10 ← bset.extend passwords9 s9
+  let part9 ← migration_defaults.table_part_9
+  let s10 := alloc.vec.Vec.deref part9
+  let passwords11 ← bset.extend passwords10 s10
+  let part10 ← migration_defaults.table_part_10
+  let s11 := alloc.vec.Vec.deref part10
+  let passwords12 ← bset.extend passwords11 s11
+  let part11 ← migration_defaults.table_part_11
+  let s12 := alloc.vec.Vec.deref part11
+  let passwords13 ← bset.extend passwords12 s12
+  let part12 ← migration_defaults.table_part_12
+  let s13 := alloc.vec.Vec.deref part12
+  let passwords14 ← bset.extend passwords13 s13
+  let part13 ← migration_defaults.table_part_13
+  let s14 := alloc.vec.Vec.deref part13
+  let passwords15 ← bset.extend passwords14 s14
+  let part14 ← migration_defaults.table_part_14
+  let s15 := alloc.vec.Vec.deref part14
+  let passwords16 ← bset.extend passwords15 s15
+  let part15 ← migration_defaults.table_part_15
+  let s16 := alloc.vec.Vec.deref part15
+  let passwords17 ← bset.extend passwords16 s16
+  let part16 ← migration_defaults.table_part_16
+  let s17 := alloc.vec.Vec.deref part16
+  let passwords18 ← bset.extend passwords17 s17
+  let part17 ← migration_defaults.table_part_17
+  let s18 := alloc.vec.Vec.deref part17
+  let passwords19 ← bset.extend passwords18 s18
+  let part18 ← migration_defaults.table_part_18
+  let s19 := alloc.vec.Vec.deref part18
+  let passwords20 ← bset.extend passwords19 s19
+  let part19 ← migration_defaults.table_part_19
+  let s20 := alloc.vec.Vec.deref part19
+  let passwords21 ← bset.extend passwords20 s20
+  let part20 ← migration_defaults.table_part_20
+  let s21 := alloc.vec.Vec.deref part20
+  let passwords22 ← bset.extend passwords21 s21
+  let part21 ← migration_defaults.table_part_21
+  let s22 := alloc.vec.Vec.deref part21
+  let passwords23 ← bset.extend passwords22 s22
+  let part22 ← migration_defaults.table_part_22
+  let s23 := alloc.vec.Vec.deref part22
+  let passwords24 ← bset.extend passwords23 s23
+  let part23 ← migration_defaults.table_part_23
+  let s24 := alloc.vec.Vec.deref part23
+  let passwords25 ← bset.extend passwords24 s24
+  let part24 ← migration_defaults.table_part_24
+  let s25 := alloc.vec.Vec.deref part24
+  let passwords26 ← bset.extend passwords25 s25
+  let part25 ← migration_defaults.table_part_25
+  let s26 := alloc.vec.Vec.deref part25
+  let passwords27 ← bset.extend passwords26 s26
+  let part26 ← migration_defaults.table_part_26
+  let s27 := alloc.vec.Vec.deref part26
+  let passwords28 ← bset.extend passwords27 s27
+  let s28 ←
+    lift (Array.to_slice
+      (Array.make 42#usize [
+        83#u8, 121#u8, 115#u8, 116#u8, 101#u8, 109#u8, 32#u8, 40#u8, 114#u8,
+        101#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8, 101#u8, 100#u8,
+        41#u8, 32#u8, 99#u8, 111#u8, 110#u8, 102#u8, 105#u8, 103#u8, 117#u8,
+        114#u8, 97#u8, 116#u8, 105#u8, 111#u8, 110#u8, 32#u8, 111#u8, 112#u8,
+        116#u8, 105#u8, 111#u8, 110#u8, 115#u8, 46#u8
+        ]))
+  let v ← alloc.slice.Slice.to_vec core.clone.CloneU8 s28
+  ok
+    {
+      object := true,
+      system_config := true,
+      system := true,
+      uuid := 281474959933479#u128,
+      description := v,
+      badlist_password := passwords28
+    }
+
+/-- [kanidm_kernel::migration_defaults::dl11]:
+    Source: 'prove/ports/kanidm/kernel/src/migration_defaults.rs', lines 814:0-814:337
+    Visibility: public -/
+def migration_defaults.dl11 : Result migration_defaults.SystemConfig := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 77#usize [
+        100#u8, 101#u8, 109#u8, 111#u8, 95#u8, 98#u8, 97#u8, 100#u8, 108#u8,
+        105#u8, 115#u8, 116#u8, 95#u8, 115#u8, 104#u8, 111#u8, 104#u8, 102#u8,
+        105#u8, 101#u8, 51#u8, 97#u8, 101#u8, 99#u8, 105#u8, 50#u8, 111#u8,
+        111#u8, 98#u8, 117#u8, 114#u8, 48#u8, 97#u8, 114#u8, 117#u8, 57#u8,
+        117#u8, 117#u8, 115#u8, 104#u8, 97#u8, 104#u8, 54#u8, 101#u8, 105#u8,
+        112#u8, 105#u8, 50#u8, 119#u8, 111#u8, 104#u8, 52#u8, 104#u8, 111#u8,
+        104#u8, 110#u8, 103#u8, 111#u8, 105#u8, 103#u8, 104#u8, 97#u8, 105#u8,
+        114#u8, 117#u8, 101#u8, 112#u8, 105#u8, 101#u8, 110#u8, 51#u8, 111#u8,
+        110#u8, 103#u8, 111#u8, 111#u8, 49#u8
+        ]))
+  migration_defaults.initialize s
+
+/-- [kanidm_kernel::migration_defaults::dl12]:
+    Source: 'prove/ports/kanidm/kernel/src/migration_defaults.rs', lines 815:0-815:337
+    Visibility: public -/
+def migration_defaults.dl12 : Result migration_defaults.SystemConfig := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 77#usize [
+        100#u8, 101#u8, 109#u8, 111#u8, 95#u8, 98#u8, 97#u8, 100#u8, 108#u8,
+        105#u8, 115#u8, 116#u8, 95#u8, 115#u8, 104#u8, 111#u8, 104#u8, 102#u8,
+        105#u8, 101#u8, 51#u8, 97#u8, 101#u8, 99#u8, 105#u8, 50#u8, 111#u8,
+        111#u8, 98#u8, 117#u8, 114#u8, 48#u8, 97#u8, 114#u8, 117#u8, 57#u8,
+        117#u8, 117#u8, 115#u8, 104#u8, 97#u8, 104#u8, 54#u8, 101#u8, 105#u8,
+        112#u8, 105#u8, 50#u8, 119#u8, 111#u8, 104#u8, 52#u8, 104#u8, 111#u8,
+        104#u8, 110#u8, 103#u8, 111#u8, 105#u8, 103#u8, 104#u8, 97#u8, 105#u8,
+        114#u8, 117#u8, 101#u8, 112#u8, 105#u8, 101#u8, 110#u8, 51#u8, 111#u8,
+        110#u8, 103#u8, 111#u8, 111#u8, 49#u8
+        ]))
+  migration_defaults.initialize s
+
+/-- [kanidm_kernel::migration_defaults::dl13]:
+    Source: 'prove/ports/kanidm/kernel/src/migration_defaults.rs', lines 816:0-816:337
+    Visibility: public -/
+def migration_defaults.dl13 : Result migration_defaults.SystemConfig := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 77#usize [
+        100#u8, 101#u8, 109#u8, 111#u8, 95#u8, 98#u8, 97#u8, 100#u8, 108#u8,
+        105#u8, 115#u8, 116#u8, 95#u8, 115#u8, 104#u8, 111#u8, 104#u8, 102#u8,
+        105#u8, 101#u8, 51#u8, 97#u8, 101#u8, 99#u8, 105#u8, 50#u8, 111#u8,
+        111#u8, 98#u8, 117#u8, 114#u8, 48#u8, 97#u8, 114#u8, 117#u8, 57#u8,
+        117#u8, 117#u8, 115#u8, 104#u8, 97#u8, 104#u8, 54#u8, 101#u8, 105#u8,
+        112#u8, 105#u8, 50#u8, 119#u8, 111#u8, 104#u8, 52#u8, 104#u8, 111#u8,
+        104#u8, 110#u8, 103#u8, 111#u8, 105#u8, 103#u8, 104#u8, 97#u8, 105#u8,
+        114#u8, 117#u8, 101#u8, 112#u8, 105#u8, 101#u8, 110#u8, 51#u8, 111#u8,
+        110#u8, 103#u8, 111#u8, 111#u8, 49#u8
+        ]))
+  migration_defaults.initialize s
+
+/-- [kanidm_kernel::migration_defaults::dl14]:
+    Source: 'prove/ports/kanidm/kernel/src/migration_defaults.rs', lines 817:0-817:337
+    Visibility: public -/
+def migration_defaults.dl14 : Result migration_defaults.SystemConfig := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 77#usize [
+        100#u8, 101#u8, 109#u8, 111#u8, 95#u8, 98#u8, 97#u8, 100#u8, 108#u8,
+        105#u8, 115#u8, 116#u8, 95#u8, 115#u8, 104#u8, 111#u8, 104#u8, 102#u8,
+        105#u8, 101#u8, 51#u8, 97#u8, 101#u8, 99#u8, 105#u8, 50#u8, 111#u8,
+        111#u8, 98#u8, 117#u8, 114#u8, 48#u8, 97#u8, 114#u8, 117#u8, 57#u8,
+        117#u8, 117#u8, 115#u8, 104#u8, 97#u8, 104#u8, 54#u8, 101#u8, 105#u8,
+        112#u8, 105#u8, 50#u8, 119#u8, 111#u8, 104#u8, 52#u8, 104#u8, 111#u8,
+        104#u8, 110#u8, 103#u8, 111#u8, 105#u8, 103#u8, 104#u8, 97#u8, 105#u8,
+        114#u8, 117#u8, 101#u8, 112#u8, 105#u8, 101#u8, 110#u8, 51#u8, 111#u8,
+        110#u8, 103#u8, 111#u8, 111#u8, 49#u8
+        ]))
+  migration_defaults.initialize s
+
+/-- [kanidm_kernel::migration_defaults::dl15]:
+    Source: 'prove/ports/kanidm/kernel/src/migration_defaults.rs', lines 818:0-818:287
+    Visibility: public -/
+def migration_defaults.dl15 : Result migration_defaults.SystemConfig := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 64#usize [
+        100#u8, 101#u8, 109#u8, 111#u8, 95#u8, 98#u8, 97#u8, 100#u8, 108#u8,
+        105#u8, 115#u8, 116#u8, 95#u8, 115#u8, 104#u8, 111#u8, 104#u8, 102#u8,
+        105#u8, 101#u8, 51#u8, 97#u8, 101#u8, 99#u8, 105#u8, 50#u8, 111#u8,
+        111#u8, 98#u8, 117#u8, 114#u8, 48#u8, 97#u8, 114#u8, 117#u8, 57#u8,
+        117#u8, 117#u8, 115#u8, 104#u8, 97#u8, 104#u8, 54#u8, 101#u8, 105#u8,
+        112#u8, 105#u8, 50#u8, 119#u8, 111#u8, 104#u8, 52#u8, 104#u8, 111#u8,
+        104#u8, 110#u8, 103#u8, 111#u8, 105#u8, 103#u8, 104#u8, 97#u8, 105#u8,
+        114#u8
+        ]))
+  migration_defaults.initialize s
+
+/-- [kanidm_kernel::migration_defaults::dl_1_12]:
+    Source: 'prove/ports/kanidm/kernel/src/migration_defaults.rs', lines 819:0-819:290
+    Visibility: public -/
+def migration_defaults.dl_1_12 : Result migration_defaults.SystemConfig := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 64#usize [
+        100#u8, 101#u8, 109#u8, 111#u8, 95#u8, 98#u8, 97#u8, 100#u8, 108#u8,
+        105#u8, 115#u8, 116#u8, 95#u8, 115#u8, 104#u8, 111#u8, 104#u8, 102#u8,
+        105#u8, 101#u8, 51#u8, 97#u8, 101#u8, 99#u8, 105#u8, 50#u8, 111#u8,
+        111#u8, 98#u8, 117#u8, 114#u8, 48#u8, 97#u8, 114#u8, 117#u8, 57#u8,
+        117#u8, 117#u8, 115#u8, 104#u8, 97#u8, 104#u8, 54#u8, 101#u8, 105#u8,
+        112#u8, 105#u8, 50#u8, 119#u8, 111#u8, 104#u8, 52#u8, 104#u8, 111#u8,
+        104#u8, 110#u8, 103#u8, 111#u8, 105#u8, 103#u8, 104#u8, 97#u8, 105#u8,
+        114#u8
+        ]))
+  migration_defaults.initialize s
 
 /-- [kanidm_kernel::schema_tags::Syntax]
     Source: 'prove/ports/kanidm/kernel/src/schema_tags.rs', lines 5:0-53:1
@@ -7804,25 +15719,6 @@ def schema_tags.value_accepts
     | schema_tags.Syntax.Int64 => ok (tag = 14#u16)
     | schema_tags.Syntax.Uint64 => ok (tag = 15#u16)
   else ok false
-
-/-- [kanidm_kernel::schema_tags::ava_accepts]:
-    Source: 'prove/ports/kanidm/kernel/src/schema_tags.rs', lines 174:0-177:1
-    Visibility: public -/
-def schema_tags.ava_accepts
-  (multivalue : Bool) (count : Std.Usize) (expected_syntax : Std.U16)
-  (actual_syntax : Std.U16) (valid : Bool) :
-  Result Bool
-  := do
-  if multivalue
-  then if expected_syntax = actual_syntax
-       then ok valid
-       else ok false
-  else
-    if count > 1#usize
-    then ok false
-    else if expected_syntax = actual_syntax
-         then ok valid
-         else ok false
 
 /-- [kanidm_kernel::softlock::Time]
     Source: 'prove/ports/kanidm/kernel/src/softlock.rs', lines 4:0-4:49
@@ -8032,5 +15928,5223 @@ def softlock.record_failure
     let i ← count + 1#usize
     let s ← softlock.failure_next_state lock.policy i ct
     ok { lock with state := s }
+
+/-- [kanidm_kernel::syntax_types::SyntaxType]
+    Source: 'prove/ports/kanidm/kernel/src/syntax_types.rs', lines 8:0-56:1
+    Visibility: public -/
+@[discriminant isize]
+inductive syntax_types.SyntaxType where
+| Utf8String : syntax_types.SyntaxType
+| Utf8StringInsensitive : syntax_types.SyntaxType
+| Uuid : syntax_types.SyntaxType
+| Boolean : syntax_types.SyntaxType
+| SyntaxId : syntax_types.SyntaxType
+| IndexId : syntax_types.SyntaxType
+| ReferenceUuid : syntax_types.SyntaxType
+| JsonFilter : syntax_types.SyntaxType
+| Credential : syntax_types.SyntaxType
+| SecretUtf8String : syntax_types.SyntaxType
+| SshKey : syntax_types.SyntaxType
+| SecurityPrincipalName : syntax_types.SyntaxType
+| Uint32 : syntax_types.SyntaxType
+| Cid : syntax_types.SyntaxType
+| Utf8StringIname : syntax_types.SyntaxType
+| NsUniqueId : syntax_types.SyntaxType
+| DateTime : syntax_types.SyntaxType
+| EmailAddress : syntax_types.SyntaxType
+| Url : syntax_types.SyntaxType
+| OauthScope : syntax_types.SyntaxType
+| OauthScopeMap : syntax_types.SyntaxType
+| PrivateBinary : syntax_types.SyntaxType
+| IntentToken : syntax_types.SyntaxType
+| Passkey : syntax_types.SyntaxType
+| AttestedPasskey : syntax_types.SyntaxType
+| Session : syntax_types.SyntaxType
+| JwsKeyEs256 : syntax_types.SyntaxType
+| JwsKeyRs256 : syntax_types.SyntaxType
+| Oauth2Session : syntax_types.SyntaxType
+| UiHint : syntax_types.SyntaxType
+| TotpSecret : syntax_types.SyntaxType
+| ApiToken : syntax_types.SyntaxType
+| AuditLogString : syntax_types.SyntaxType
+| EcKeyPrivate : syntax_types.SyntaxType
+| Image : syntax_types.SyntaxType
+| CredentialType : syntax_types.SyntaxType
+| WebauthnAttestationCaList : syntax_types.SyntaxType
+| OauthClaimMap : syntax_types.SyntaxType
+| KeyInternal : syntax_types.SyntaxType
+| HexString : syntax_types.SyntaxType
+| Certificate : syntax_types.SyntaxType
+| ApplicationPassword : syntax_types.SyntaxType
+| Json : syntax_types.SyntaxType
+| Message : syntax_types.SyntaxType
+| Sha256 : syntax_types.SyntaxType
+| Int64 : syntax_types.SyntaxType
+| Uint64 : syntax_types.SyntaxType
+
+/-- [kanidm_kernel::syntax_types::IndexType]
+    Source: 'prove/ports/kanidm/kernel/src/syntax_types.rs', lines 58:0-63:1
+    Visibility: public -/
+@[discriminant isize]
+inductive syntax_types.IndexType where
+| Equality : syntax_types.IndexType
+| Presence : syntax_types.IndexType
+| SubString : syntax_types.IndexType
+| Ordering : syntax_types.IndexType
+
+/-- [kanidm_kernel::syntax_types::parse_part_4]:
+    Source: 'prove/ports/kanidm/kernel/src/syntax_types.rs', lines 116:0-125:1
+    Visibility: public -/
+def syntax_types.parse_part_4
+  («name» : Slice Std.U8) : Result (Option syntax_types.SyntaxType) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        67#u8, 69#u8, 82#u8, 84#u8, 73#u8, 70#u8, 73#u8, 67#u8, 65#u8, 84#u8,
+        69#u8
+        ]))
+  let b ← bset.bytes_eq «name» s
+  if b
+  then ok (some syntax_types.SyntaxType.Certificate)
+  else
+    let s1 ←
+      lift (Array.to_slice
+        (Array.make 20#usize [
+          65#u8, 80#u8, 80#u8, 76#u8, 73#u8, 67#u8, 65#u8, 84#u8, 73#u8, 79#u8,
+          78#u8, 95#u8, 80#u8, 65#u8, 83#u8, 83#u8, 87#u8, 79#u8, 82#u8, 68#u8
+          ]))
+    let b1 ← bset.bytes_eq «name» s1
+    if b1
+    then ok (some syntax_types.SyntaxType.ApplicationPassword)
+    else
+      let s2 ←
+        lift (Array.to_slice
+          (Array.make 4#usize [ 74#u8, 83#u8, 79#u8, 78#u8 ]))
+      let b2 ← bset.bytes_eq «name» s2
+      if b2
+      then ok (some syntax_types.SyntaxType.Json)
+      else
+        let s3 ←
+          lift (Array.to_slice
+            (Array.make 7#usize [
+              77#u8, 69#u8, 83#u8, 83#u8, 65#u8, 71#u8, 69#u8
+              ]))
+        let b3 ← bset.bytes_eq «name» s3
+        if b3
+        then ok (some syntax_types.SyntaxType.Message)
+        else
+          let s4 ←
+            lift (Array.to_slice
+              (Array.make 6#usize [ 83#u8, 72#u8, 65#u8, 50#u8, 53#u8, 54#u8 ]))
+          let b4 ← bset.bytes_eq «name» s4
+          if b4
+          then ok (some syntax_types.SyntaxType.Sha256)
+          else
+            let s5 ←
+              lift (Array.to_slice
+                (Array.make 5#usize [ 73#u8, 78#u8, 84#u8, 54#u8, 52#u8 ]))
+            let b5 ← bset.bytes_eq «name» s5
+            if b5
+            then ok (some syntax_types.SyntaxType.Int64)
+            else
+              let s6 ←
+                lift (Array.to_slice
+                  (Array.make 6#usize [
+                    85#u8, 73#u8, 78#u8, 84#u8, 54#u8, 52#u8
+                    ]))
+              let b6 ← bset.bytes_eq «name» s6
+              if b6
+              then ok (some syntax_types.SyntaxType.Uint64)
+              else ok none
+
+/-- [kanidm_kernel::syntax_types::parse_part_3]:
+    Source: 'prove/ports/kanidm/kernel/src/syntax_types.rs', lines 103:0-115:1
+    Visibility: public -/
+def syntax_types.parse_part_3
+  («name» : Slice Std.U8) : Result (Option syntax_types.SyntaxType) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 6#usize [ 85#u8, 73#u8, 72#u8, 73#u8, 78#u8, 84#u8 ]))
+  let b ← bset.bytes_eq «name» s
+  if b
+  then ok (some syntax_types.SyntaxType.UiHint)
+  else
+    let s1 ←
+      lift (Array.to_slice
+        (Array.make 10#usize [
+          84#u8, 79#u8, 84#u8, 80#u8, 83#u8, 69#u8, 67#u8, 82#u8, 69#u8, 84#u8
+          ]))
+    let b1 ← bset.bytes_eq «name» s1
+    if b1
+    then ok (some syntax_types.SyntaxType.TotpSecret)
+    else
+      let s2 ←
+        lift (Array.to_slice
+          (Array.make 8#usize [
+            65#u8, 80#u8, 73#u8, 84#u8, 79#u8, 75#u8, 69#u8, 78#u8
+            ]))
+      let b2 ← bset.bytes_eq «name» s2
+      if b2
+      then ok (some syntax_types.SyntaxType.ApiToken)
+      else
+        let s3 ←
+          lift (Array.to_slice
+            (Array.make 16#usize [
+              65#u8, 85#u8, 68#u8, 73#u8, 84#u8, 95#u8, 76#u8, 79#u8, 71#u8,
+              95#u8, 83#u8, 84#u8, 82#u8, 73#u8, 78#u8, 71#u8
+              ]))
+        let b3 ← bset.bytes_eq «name» s3
+        if b3
+        then ok (some syntax_types.SyntaxType.AuditLogString)
+        else
+          let s4 ←
+            lift (Array.to_slice
+              (Array.make 14#usize [
+                69#u8, 67#u8, 95#u8, 75#u8, 69#u8, 89#u8, 95#u8, 80#u8, 82#u8,
+                73#u8, 86#u8, 65#u8, 84#u8, 69#u8
+                ]))
+          let b4 ← bset.bytes_eq «name» s4
+          if b4
+          then ok (some syntax_types.SyntaxType.EcKeyPrivate)
+          else
+            let s5 ←
+              lift (Array.to_slice
+                (Array.make 15#usize [
+                  67#u8, 82#u8, 69#u8, 68#u8, 69#u8, 78#u8, 84#u8, 73#u8,
+                  65#u8, 76#u8, 95#u8, 84#u8, 89#u8, 80#u8, 69#u8
+                  ]))
+            let b5 ← bset.bytes_eq «name» s5
+            if b5
+            then ok (some syntax_types.SyntaxType.CredentialType)
+            else
+              let s6 ←
+                lift (Array.to_slice
+                  (Array.make 28#usize [
+                    87#u8, 69#u8, 66#u8, 65#u8, 85#u8, 84#u8, 72#u8, 78#u8,
+                    95#u8, 65#u8, 84#u8, 84#u8, 69#u8, 83#u8, 84#u8, 65#u8,
+                    84#u8, 73#u8, 79#u8, 78#u8, 95#u8, 67#u8, 65#u8, 95#u8,
+                    76#u8, 73#u8, 83#u8, 84#u8
+                    ]))
+              let b6 ← bset.bytes_eq «name» s6
+              if b6
+              then ok (some syntax_types.SyntaxType.WebauthnAttestationCaList)
+              else
+                let s7 ←
+                  lift (Array.to_slice
+                    (Array.make 15#usize [
+                      79#u8, 65#u8, 85#u8, 84#u8, 72#u8, 95#u8, 67#u8, 76#u8,
+                      65#u8, 73#u8, 77#u8, 95#u8, 77#u8, 65#u8, 80#u8
+                      ]))
+                let b7 ← bset.bytes_eq «name» s7
+                if b7
+                then ok (some syntax_types.SyntaxType.OauthClaimMap)
+                else
+                  let s8 ←
+                    lift (Array.to_slice
+                      (Array.make 12#usize [
+                        75#u8, 69#u8, 89#u8, 95#u8, 73#u8, 78#u8, 84#u8, 69#u8,
+                        82#u8, 78#u8, 65#u8, 76#u8
+                        ]))
+                  let b8 ← bset.bytes_eq «name» s8
+                  if b8
+                  then ok (some syntax_types.SyntaxType.KeyInternal)
+                  else
+                    let s9 ←
+                      lift (Array.to_slice
+                        (Array.make 10#usize [
+                          72#u8, 69#u8, 88#u8, 95#u8, 83#u8, 84#u8, 82#u8,
+                          73#u8, 78#u8, 71#u8
+                          ]))
+                    let b9 ← bset.bytes_eq «name» s9
+                    if b9
+                    then ok (some syntax_types.SyntaxType.HexString)
+                    else syntax_types.parse_part_4 «name»
+
+/-- [kanidm_kernel::syntax_types::parse_part_2]:
+    Source: 'prove/ports/kanidm/kernel/src/syntax_types.rs', lines 90:0-102:1
+    Visibility: public -/
+def syntax_types.parse_part_2
+  («name» : Slice Std.U8) : Result (Option syntax_types.SyntaxType) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        79#u8, 65#u8, 85#u8, 84#u8, 72#u8, 95#u8, 83#u8, 67#u8, 79#u8, 80#u8,
+        69#u8
+        ]))
+  let b ← bset.bytes_eq «name» s
+  if b
+  then ok (some syntax_types.SyntaxType.OauthScope)
+  else
+    let s1 ←
+      lift (Array.to_slice
+        (Array.make 15#usize [
+          79#u8, 65#u8, 85#u8, 84#u8, 72#u8, 95#u8, 83#u8, 67#u8, 79#u8, 80#u8,
+          69#u8, 95#u8, 77#u8, 65#u8, 80#u8
+          ]))
+    let b1 ← bset.bytes_eq «name» s1
+    if b1
+    then ok (some syntax_types.SyntaxType.OauthScopeMap)
+    else
+      let s2 ←
+        lift (Array.to_slice
+          (Array.make 14#usize [
+            80#u8, 82#u8, 73#u8, 86#u8, 65#u8, 84#u8, 69#u8, 95#u8, 66#u8,
+            73#u8, 78#u8, 65#u8, 82#u8, 89#u8
+            ]))
+      let b2 ← bset.bytes_eq «name» s2
+      if b2
+      then ok (some syntax_types.SyntaxType.PrivateBinary)
+      else
+        let s3 ←
+          lift (Array.to_slice
+            (Array.make 12#usize [
+              73#u8, 78#u8, 84#u8, 69#u8, 78#u8, 84#u8, 95#u8, 84#u8, 79#u8,
+              75#u8, 69#u8, 78#u8
+              ]))
+        let b3 ← bset.bytes_eq «name» s3
+        if b3
+        then ok (some syntax_types.SyntaxType.IntentToken)
+        else
+          let s4 ←
+            lift (Array.to_slice
+              (Array.make 7#usize [
+                80#u8, 65#u8, 83#u8, 83#u8, 75#u8, 69#u8, 89#u8
+                ]))
+          let b4 ← bset.bytes_eq «name» s4
+          if b4
+          then ok (some syntax_types.SyntaxType.Passkey)
+          else
+            let s5 ←
+              lift (Array.to_slice
+                (Array.make 16#usize [
+                  65#u8, 84#u8, 84#u8, 69#u8, 83#u8, 84#u8, 69#u8, 68#u8,
+                  95#u8, 80#u8, 65#u8, 83#u8, 83#u8, 75#u8, 69#u8, 89#u8
+                  ]))
+            let b5 ← bset.bytes_eq «name» s5
+            if b5
+            then ok (some syntax_types.SyntaxType.AttestedPasskey)
+            else
+              let s6 ←
+                lift (Array.to_slice
+                  (Array.make 7#usize [
+                    83#u8, 69#u8, 83#u8, 83#u8, 73#u8, 79#u8, 78#u8
+                    ]))
+              let b6 ← bset.bytes_eq «name» s6
+              if b6
+              then ok (some syntax_types.SyntaxType.Session)
+              else
+                let s7 ←
+                  lift (Array.to_slice
+                    (Array.make 13#usize [
+                      74#u8, 87#u8, 83#u8, 95#u8, 75#u8, 69#u8, 89#u8, 95#u8,
+                      69#u8, 83#u8, 50#u8, 53#u8, 54#u8
+                      ]))
+                let b7 ← bset.bytes_eq «name» s7
+                if b7
+                then ok (some syntax_types.SyntaxType.JwsKeyEs256)
+                else
+                  let s8 ←
+                    lift (Array.to_slice
+                      (Array.make 13#usize [
+                        74#u8, 87#u8, 83#u8, 95#u8, 75#u8, 69#u8, 89#u8, 95#u8,
+                        82#u8, 83#u8, 50#u8, 53#u8, 54#u8
+                        ]))
+                  let b8 ← bset.bytes_eq «name» s8
+                  if b8
+                  then ok (some syntax_types.SyntaxType.JwsKeyRs256)
+                  else
+                    let s9 ←
+                      lift (Array.to_slice
+                        (Array.make 13#usize [
+                          79#u8, 65#u8, 85#u8, 84#u8, 72#u8, 50#u8, 83#u8,
+                          69#u8, 83#u8, 83#u8, 73#u8, 79#u8, 78#u8
+                          ]))
+                    let b9 ← bset.bytes_eq «name» s9
+                    if b9
+                    then ok (some syntax_types.SyntaxType.Oauth2Session)
+                    else syntax_types.parse_part_3 «name»
+
+/-- [kanidm_kernel::syntax_types::parse_part_1]:
+    Source: 'prove/ports/kanidm/kernel/src/syntax_types.rs', lines 77:0-89:1
+    Visibility: public -/
+def syntax_types.parse_part_1
+  («name» : Slice Std.U8) : Result (Option syntax_types.SyntaxType) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 17#usize [
+        82#u8, 65#u8, 68#u8, 73#u8, 85#u8, 83#u8, 95#u8, 85#u8, 84#u8, 70#u8,
+        56#u8, 83#u8, 84#u8, 82#u8, 73#u8, 78#u8, 71#u8
+        ]))
+  let b ← bset.bytes_eq «name» s
+  if b
+  then ok (some syntax_types.SyntaxType.SecretUtf8String)
+  else
+    let s1 ←
+      lift (Array.to_slice
+        (Array.make 17#usize [
+          83#u8, 69#u8, 67#u8, 82#u8, 69#u8, 84#u8, 95#u8, 85#u8, 84#u8, 70#u8,
+          56#u8, 83#u8, 84#u8, 82#u8, 73#u8, 78#u8, 71#u8
+          ]))
+    let b1 ← bset.bytes_eq «name» s1
+    if b1
+    then ok (some syntax_types.SyntaxType.SecretUtf8String)
+    else
+      let s2 ←
+        lift (Array.to_slice
+          (Array.make 6#usize [ 83#u8, 83#u8, 72#u8, 75#u8, 69#u8, 89#u8 ]))
+      let b2 ← bset.bytes_eq «name» s2
+      if b2
+      then ok (some syntax_types.SyntaxType.SshKey)
+      else
+        let s3 ←
+          lift (Array.to_slice
+            (Array.make 23#usize [
+              83#u8, 69#u8, 67#u8, 85#u8, 82#u8, 73#u8, 84#u8, 89#u8, 95#u8,
+              80#u8, 82#u8, 73#u8, 78#u8, 67#u8, 73#u8, 80#u8, 65#u8, 76#u8,
+              95#u8, 78#u8, 65#u8, 77#u8, 69#u8
+              ]))
+        let b3 ← bset.bytes_eq «name» s3
+        if b3
+        then ok (some syntax_types.SyntaxType.SecurityPrincipalName)
+        else
+          let s4 ←
+            lift (Array.to_slice
+              (Array.make 6#usize [ 85#u8, 73#u8, 78#u8, 84#u8, 51#u8, 50#u8 ]))
+          let b4 ← bset.bytes_eq «name» s4
+          if b4
+          then ok (some syntax_types.SyntaxType.Uint32)
+          else
+            let s5 ←
+              lift (Array.to_slice
+                (Array.make 3#usize [ 67#u8, 73#u8, 68#u8 ]))
+            let b5 ← bset.bytes_eq «name» s5
+            if b5
+            then ok (some syntax_types.SyntaxType.Cid)
+            else
+              let s6 ←
+                lift (Array.to_slice
+                  (Array.make 10#usize [
+                    78#u8, 83#u8, 85#u8, 78#u8, 73#u8, 81#u8, 85#u8, 69#u8,
+                    73#u8, 68#u8
+                    ]))
+              let b6 ← bset.bytes_eq «name» s6
+              if b6
+              then ok (some syntax_types.SyntaxType.NsUniqueId)
+              else
+                let s7 ←
+                  lift (Array.to_slice
+                    (Array.make 8#usize [
+                      68#u8, 65#u8, 84#u8, 69#u8, 84#u8, 73#u8, 77#u8, 69#u8
+                      ]))
+                let b7 ← bset.bytes_eq «name» s7
+                if b7
+                then ok (some syntax_types.SyntaxType.DateTime)
+                else
+                  let s8 ←
+                    lift (Array.to_slice
+                      (Array.make 13#usize [
+                        69#u8, 77#u8, 65#u8, 73#u8, 76#u8, 95#u8, 65#u8, 68#u8,
+                        68#u8, 82#u8, 69#u8, 83#u8, 83#u8
+                        ]))
+                  let b8 ← bset.bytes_eq «name» s8
+                  if b8
+                  then ok (some syntax_types.SyntaxType.EmailAddress)
+                  else
+                    let s9 ←
+                      lift (Array.to_slice
+                        (Array.make 3#usize [ 85#u8, 82#u8, 76#u8 ]))
+                    let b9 ← bset.bytes_eq «name» s9
+                    if b9
+                    then ok (some syntax_types.SyntaxType.Url)
+                    else syntax_types.parse_part_2 «name»
+
+/-- [kanidm_kernel::syntax_types::parse_normalized]:
+    Source: 'prove/ports/kanidm/kernel/src/syntax_types.rs', lines 64:0-76:1
+    Visibility: public -/
+def syntax_types.parse_normalized
+  («name» : Slice Std.U8) : Result (Option syntax_types.SyntaxType) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        85#u8, 84#u8, 70#u8, 56#u8, 83#u8, 84#u8, 82#u8, 73#u8, 78#u8, 71#u8
+        ]))
+  let b ← bset.bytes_eq «name» s
+  if b
+  then ok (some syntax_types.SyntaxType.Utf8String)
+  else
+    let s1 ←
+      lift (Array.to_slice
+        (Array.make 22#usize [
+          85#u8, 84#u8, 70#u8, 56#u8, 83#u8, 84#u8, 82#u8, 73#u8, 78#u8, 71#u8,
+          95#u8, 73#u8, 78#u8, 83#u8, 69#u8, 78#u8, 83#u8, 73#u8, 84#u8, 73#u8,
+          86#u8, 69#u8
+          ]))
+    let b1 ← bset.bytes_eq «name» s1
+    if b1
+    then ok (some syntax_types.SyntaxType.Utf8StringInsensitive)
+    else
+      let s2 ←
+        lift (Array.to_slice
+          (Array.make 16#usize [
+            85#u8, 84#u8, 70#u8, 56#u8, 83#u8, 84#u8, 82#u8, 73#u8, 78#u8,
+            71#u8, 95#u8, 73#u8, 78#u8, 65#u8, 77#u8, 69#u8
+            ]))
+      let b2 ← bset.bytes_eq «name» s2
+      if b2
+      then ok (some syntax_types.SyntaxType.Utf8StringIname)
+      else
+        let s3 ←
+          lift (Array.to_slice
+            (Array.make 4#usize [ 85#u8, 85#u8, 73#u8, 68#u8 ]))
+        let b3 ← bset.bytes_eq «name» s3
+        if b3
+        then ok (some syntax_types.SyntaxType.Uuid)
+        else
+          let s4 ←
+            lift (Array.to_slice
+              (Array.make 7#usize [
+                66#u8, 79#u8, 79#u8, 76#u8, 69#u8, 65#u8, 78#u8
+                ]))
+          let b4 ← bset.bytes_eq «name» s4
+          if b4
+          then ok (some syntax_types.SyntaxType.Boolean)
+          else
+            let s5 ←
+              lift (Array.to_slice
+                (Array.make 9#usize [
+                  83#u8, 89#u8, 78#u8, 84#u8, 65#u8, 88#u8, 95#u8, 73#u8, 68#u8
+                  ]))
+            let b5 ← bset.bytes_eq «name» s5
+            if b5
+            then ok (some syntax_types.SyntaxType.SyntaxId)
+            else
+              let s6 ←
+                lift (Array.to_slice
+                  (Array.make 8#usize [
+                    73#u8, 78#u8, 68#u8, 69#u8, 88#u8, 95#u8, 73#u8, 68#u8
+                    ]))
+              let b6 ← bset.bytes_eq «name» s6
+              if b6
+              then ok (some syntax_types.SyntaxType.IndexId)
+              else
+                let s7 ←
+                  lift (Array.to_slice
+                    (Array.make 14#usize [
+                      82#u8, 69#u8, 70#u8, 69#u8, 82#u8, 69#u8, 78#u8, 67#u8,
+                      69#u8, 95#u8, 85#u8, 85#u8, 73#u8, 68#u8
+                      ]))
+                let b7 ← bset.bytes_eq «name» s7
+                if b7
+                then ok (some syntax_types.SyntaxType.ReferenceUuid)
+                else
+                  let s8 ←
+                    lift (Array.to_slice
+                      (Array.make 11#usize [
+                        74#u8, 83#u8, 79#u8, 78#u8, 95#u8, 70#u8, 73#u8, 76#u8,
+                        84#u8, 69#u8, 82#u8
+                        ]))
+                  let b8 ← bset.bytes_eq «name» s8
+                  if b8
+                  then ok (some syntax_types.SyntaxType.JsonFilter)
+                  else
+                    let s9 ←
+                      lift (Array.to_slice
+                        (Array.make 10#usize [
+                          67#u8, 82#u8, 69#u8, 68#u8, 69#u8, 78#u8, 84#u8,
+                          73#u8, 65#u8, 76#u8
+                          ]))
+                    let b9 ← bset.bytes_eq «name» s9
+                    if b9
+                    then ok (some syntax_types.SyntaxType.Credential)
+                    else syntax_types.parse_part_1 «name»
+
+/-- [kanidm_kernel::syntax_types::display]:
+    Source: 'prove/ports/kanidm/kernel/src/syntax_types.rs', lines 126:0-174:2
+    Visibility: public -/
+def syntax_types.display
+  («syntax» : syntax_types.SyntaxType) : Result (alloc.vec.Vec Std.U8) := do
+  match «syntax» with
+  | syntax_types.SyntaxType.Utf8String =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 10#usize [
+          85#u8, 84#u8, 70#u8, 56#u8, 83#u8, 84#u8, 82#u8, 73#u8, 78#u8, 71#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | syntax_types.SyntaxType.Utf8StringInsensitive =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 22#usize [
+          85#u8, 84#u8, 70#u8, 56#u8, 83#u8, 84#u8, 82#u8, 73#u8, 78#u8, 71#u8,
+          95#u8, 73#u8, 78#u8, 83#u8, 69#u8, 78#u8, 83#u8, 73#u8, 84#u8, 73#u8,
+          86#u8, 69#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | syntax_types.SyntaxType.Uuid =>
+    let s ←
+      lift (Array.to_slice (Array.make 4#usize [ 85#u8, 85#u8, 73#u8, 68#u8 ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | syntax_types.SyntaxType.Boolean =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 7#usize [
+          66#u8, 79#u8, 79#u8, 76#u8, 69#u8, 65#u8, 78#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | syntax_types.SyntaxType.SyntaxId =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 9#usize [
+          83#u8, 89#u8, 78#u8, 84#u8, 65#u8, 88#u8, 95#u8, 73#u8, 68#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | syntax_types.SyntaxType.IndexId =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 8#usize [
+          73#u8, 78#u8, 68#u8, 69#u8, 88#u8, 95#u8, 73#u8, 68#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | syntax_types.SyntaxType.ReferenceUuid =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 14#usize [
+          82#u8, 69#u8, 70#u8, 69#u8, 82#u8, 69#u8, 78#u8, 67#u8, 69#u8, 95#u8,
+          85#u8, 85#u8, 73#u8, 68#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | syntax_types.SyntaxType.JsonFilter =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 11#usize [
+          74#u8, 83#u8, 79#u8, 78#u8, 95#u8, 70#u8, 73#u8, 76#u8, 84#u8, 69#u8,
+          82#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | syntax_types.SyntaxType.Credential =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 10#usize [
+          67#u8, 82#u8, 69#u8, 68#u8, 69#u8, 78#u8, 84#u8, 73#u8, 65#u8, 76#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | syntax_types.SyntaxType.SecretUtf8String =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 17#usize [
+          83#u8, 69#u8, 67#u8, 82#u8, 69#u8, 84#u8, 95#u8, 85#u8, 84#u8, 70#u8,
+          56#u8, 83#u8, 84#u8, 82#u8, 73#u8, 78#u8, 71#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | syntax_types.SyntaxType.SshKey =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 6#usize [ 83#u8, 83#u8, 72#u8, 75#u8, 69#u8, 89#u8 ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | syntax_types.SyntaxType.SecurityPrincipalName =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 23#usize [
+          83#u8, 69#u8, 67#u8, 85#u8, 82#u8, 73#u8, 84#u8, 89#u8, 95#u8, 80#u8,
+          82#u8, 73#u8, 78#u8, 67#u8, 73#u8, 80#u8, 65#u8, 76#u8, 95#u8, 78#u8,
+          65#u8, 77#u8, 69#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | syntax_types.SyntaxType.Uint32 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 6#usize [ 85#u8, 73#u8, 78#u8, 84#u8, 51#u8, 50#u8 ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | syntax_types.SyntaxType.Cid =>
+    let s ←
+      lift (Array.to_slice (Array.make 3#usize [ 67#u8, 73#u8, 68#u8 ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | syntax_types.SyntaxType.Utf8StringIname =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 16#usize [
+          85#u8, 84#u8, 70#u8, 56#u8, 83#u8, 84#u8, 82#u8, 73#u8, 78#u8, 71#u8,
+          95#u8, 73#u8, 78#u8, 65#u8, 77#u8, 69#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | syntax_types.SyntaxType.NsUniqueId =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 10#usize [
+          78#u8, 83#u8, 85#u8, 78#u8, 73#u8, 81#u8, 85#u8, 69#u8, 73#u8, 68#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | syntax_types.SyntaxType.DateTime =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 8#usize [
+          68#u8, 65#u8, 84#u8, 69#u8, 84#u8, 73#u8, 77#u8, 69#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | syntax_types.SyntaxType.EmailAddress =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 13#usize [
+          69#u8, 77#u8, 65#u8, 73#u8, 76#u8, 95#u8, 65#u8, 68#u8, 68#u8, 82#u8,
+          69#u8, 83#u8, 83#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | syntax_types.SyntaxType.Url =>
+    let s ←
+      lift (Array.to_slice (Array.make 3#usize [ 85#u8, 82#u8, 76#u8 ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | syntax_types.SyntaxType.OauthScope =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 11#usize [
+          79#u8, 65#u8, 85#u8, 84#u8, 72#u8, 95#u8, 83#u8, 67#u8, 79#u8, 80#u8,
+          69#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | syntax_types.SyntaxType.OauthScopeMap =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 15#usize [
+          79#u8, 65#u8, 85#u8, 84#u8, 72#u8, 95#u8, 83#u8, 67#u8, 79#u8, 80#u8,
+          69#u8, 95#u8, 77#u8, 65#u8, 80#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | syntax_types.SyntaxType.PrivateBinary =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 14#usize [
+          80#u8, 82#u8, 73#u8, 86#u8, 65#u8, 84#u8, 69#u8, 95#u8, 66#u8, 73#u8,
+          78#u8, 65#u8, 82#u8, 89#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | syntax_types.SyntaxType.IntentToken =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 12#usize [
+          73#u8, 78#u8, 84#u8, 69#u8, 78#u8, 84#u8, 95#u8, 84#u8, 79#u8, 75#u8,
+          69#u8, 78#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | syntax_types.SyntaxType.Passkey =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 7#usize [
+          80#u8, 65#u8, 83#u8, 83#u8, 75#u8, 69#u8, 89#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | syntax_types.SyntaxType.AttestedPasskey =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 16#usize [
+          65#u8, 84#u8, 84#u8, 69#u8, 83#u8, 84#u8, 69#u8, 68#u8, 95#u8, 80#u8,
+          65#u8, 83#u8, 83#u8, 75#u8, 69#u8, 89#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | syntax_types.SyntaxType.Session =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 7#usize [
+          83#u8, 69#u8, 83#u8, 83#u8, 73#u8, 79#u8, 78#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | syntax_types.SyntaxType.JwsKeyEs256 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 13#usize [
+          74#u8, 87#u8, 83#u8, 95#u8, 75#u8, 69#u8, 89#u8, 95#u8, 69#u8, 83#u8,
+          50#u8, 53#u8, 54#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | syntax_types.SyntaxType.JwsKeyRs256 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 13#usize [
+          74#u8, 87#u8, 83#u8, 95#u8, 75#u8, 69#u8, 89#u8, 95#u8, 82#u8, 83#u8,
+          50#u8, 53#u8, 54#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | syntax_types.SyntaxType.Oauth2Session =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 13#usize [
+          79#u8, 65#u8, 85#u8, 84#u8, 72#u8, 50#u8, 83#u8, 69#u8, 83#u8, 83#u8,
+          73#u8, 79#u8, 78#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | syntax_types.SyntaxType.UiHint =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 6#usize [ 85#u8, 73#u8, 72#u8, 73#u8, 78#u8, 84#u8 ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | syntax_types.SyntaxType.TotpSecret =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 10#usize [
+          84#u8, 79#u8, 84#u8, 80#u8, 83#u8, 69#u8, 67#u8, 82#u8, 69#u8, 84#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | syntax_types.SyntaxType.ApiToken =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 8#usize [
+          65#u8, 80#u8, 73#u8, 84#u8, 79#u8, 75#u8, 69#u8, 78#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | syntax_types.SyntaxType.AuditLogString =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 16#usize [
+          65#u8, 85#u8, 68#u8, 73#u8, 84#u8, 95#u8, 76#u8, 79#u8, 71#u8, 95#u8,
+          83#u8, 84#u8, 82#u8, 73#u8, 78#u8, 71#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | syntax_types.SyntaxType.EcKeyPrivate =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 14#usize [
+          69#u8, 67#u8, 95#u8, 75#u8, 69#u8, 89#u8, 95#u8, 80#u8, 82#u8, 73#u8,
+          86#u8, 65#u8, 84#u8, 69#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | syntax_types.SyntaxType.Image =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 5#usize [ 73#u8, 77#u8, 65#u8, 71#u8, 69#u8 ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | syntax_types.SyntaxType.CredentialType =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 15#usize [
+          67#u8, 82#u8, 69#u8, 68#u8, 69#u8, 78#u8, 84#u8, 73#u8, 65#u8, 76#u8,
+          95#u8, 84#u8, 89#u8, 80#u8, 69#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | syntax_types.SyntaxType.WebauthnAttestationCaList =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 28#usize [
+          87#u8, 69#u8, 66#u8, 65#u8, 85#u8, 84#u8, 72#u8, 78#u8, 95#u8, 65#u8,
+          84#u8, 84#u8, 69#u8, 83#u8, 84#u8, 65#u8, 84#u8, 73#u8, 79#u8, 78#u8,
+          95#u8, 67#u8, 65#u8, 95#u8, 76#u8, 73#u8, 83#u8, 84#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | syntax_types.SyntaxType.OauthClaimMap =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 15#usize [
+          79#u8, 65#u8, 85#u8, 84#u8, 72#u8, 95#u8, 67#u8, 76#u8, 65#u8, 73#u8,
+          77#u8, 95#u8, 77#u8, 65#u8, 80#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | syntax_types.SyntaxType.KeyInternal =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 12#usize [
+          75#u8, 69#u8, 89#u8, 95#u8, 73#u8, 78#u8, 84#u8, 69#u8, 82#u8, 78#u8,
+          65#u8, 76#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | syntax_types.SyntaxType.HexString =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 10#usize [
+          72#u8, 69#u8, 88#u8, 95#u8, 83#u8, 84#u8, 82#u8, 73#u8, 78#u8, 71#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | syntax_types.SyntaxType.Certificate =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 11#usize [
+          67#u8, 69#u8, 82#u8, 84#u8, 73#u8, 70#u8, 73#u8, 67#u8, 65#u8, 84#u8,
+          69#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | syntax_types.SyntaxType.ApplicationPassword =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 20#usize [
+          65#u8, 80#u8, 80#u8, 76#u8, 73#u8, 67#u8, 65#u8, 84#u8, 73#u8, 79#u8,
+          78#u8, 95#u8, 80#u8, 65#u8, 83#u8, 83#u8, 87#u8, 79#u8, 82#u8, 68#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | syntax_types.SyntaxType.Json =>
+    let s ←
+      lift (Array.to_slice (Array.make 4#usize [ 74#u8, 83#u8, 79#u8, 78#u8 ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | syntax_types.SyntaxType.Message =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 7#usize [
+          77#u8, 69#u8, 83#u8, 83#u8, 65#u8, 71#u8, 69#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | syntax_types.SyntaxType.Sha256 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 6#usize [ 83#u8, 72#u8, 65#u8, 50#u8, 53#u8, 54#u8 ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | syntax_types.SyntaxType.Int64 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 5#usize [ 73#u8, 78#u8, 84#u8, 54#u8, 52#u8 ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | syntax_types.SyntaxType.Uint64 =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 6#usize [ 85#u8, 73#u8, 78#u8, 84#u8, 54#u8, 52#u8 ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+
+/-- [kanidm_kernel::syntax_types::index_types]:
+    Source: 'prove/ports/kanidm/kernel/src/syntax_types.rs', lines 175:4-225:5
+    Visibility: public -/
+def syntax_types.index_types
+  («syntax» : syntax_types.SyntaxType) :
+  Result (alloc.vec.Vec syntax_types.IndexType)
+  := do
+  match «syntax» with
+  | syntax_types.SyntaxType.Utf8String =>
+    let out ←
+      alloc.vec.Vec.push (alloc.vec.Vec.new syntax_types.IndexType)
+        syntax_types.IndexType.Equality
+    alloc.vec.Vec.push out syntax_types.IndexType.Presence
+  | syntax_types.SyntaxType.Utf8StringInsensitive =>
+    let out ←
+      alloc.vec.Vec.push (alloc.vec.Vec.new syntax_types.IndexType)
+        syntax_types.IndexType.Equality
+    alloc.vec.Vec.push out syntax_types.IndexType.Presence
+  | syntax_types.SyntaxType.Uuid =>
+    let out ←
+      alloc.vec.Vec.push (alloc.vec.Vec.new syntax_types.IndexType)
+        syntax_types.IndexType.Equality
+    alloc.vec.Vec.push out syntax_types.IndexType.Presence
+  | syntax_types.SyntaxType.Boolean =>
+    alloc.vec.Vec.push (alloc.vec.Vec.new syntax_types.IndexType)
+      syntax_types.IndexType.Equality
+  | syntax_types.SyntaxType.SyntaxId =>
+    ok (alloc.vec.Vec.new syntax_types.IndexType)
+  | syntax_types.SyntaxType.IndexId =>
+    ok (alloc.vec.Vec.new syntax_types.IndexType)
+  | syntax_types.SyntaxType.ReferenceUuid =>
+    let out ←
+      alloc.vec.Vec.push (alloc.vec.Vec.new syntax_types.IndexType)
+        syntax_types.IndexType.Equality
+    alloc.vec.Vec.push out syntax_types.IndexType.Presence
+  | syntax_types.SyntaxType.JsonFilter =>
+    ok (alloc.vec.Vec.new syntax_types.IndexType)
+  | syntax_types.SyntaxType.Credential =>
+    alloc.vec.Vec.push (alloc.vec.Vec.new syntax_types.IndexType)
+      syntax_types.IndexType.Equality
+  | syntax_types.SyntaxType.SecretUtf8String =>
+    ok (alloc.vec.Vec.new syntax_types.IndexType)
+  | syntax_types.SyntaxType.SshKey =>
+    let out ←
+      alloc.vec.Vec.push (alloc.vec.Vec.new syntax_types.IndexType)
+        syntax_types.IndexType.Equality
+    alloc.vec.Vec.push out syntax_types.IndexType.Presence
+  | syntax_types.SyntaxType.SecurityPrincipalName =>
+    let out ←
+      alloc.vec.Vec.push (alloc.vec.Vec.new syntax_types.IndexType)
+        syntax_types.IndexType.Equality
+    let out1 ← alloc.vec.Vec.push out syntax_types.IndexType.Presence
+    alloc.vec.Vec.push out1 syntax_types.IndexType.SubString
+  | syntax_types.SyntaxType.Uint32 =>
+    let out ←
+      alloc.vec.Vec.push (alloc.vec.Vec.new syntax_types.IndexType)
+        syntax_types.IndexType.Equality
+    let out1 ← alloc.vec.Vec.push out syntax_types.IndexType.Presence
+    alloc.vec.Vec.push out1 syntax_types.IndexType.Ordering
+  | syntax_types.SyntaxType.Cid =>
+    let out ←
+      alloc.vec.Vec.push (alloc.vec.Vec.new syntax_types.IndexType)
+        syntax_types.IndexType.Equality
+    let out1 ← alloc.vec.Vec.push out syntax_types.IndexType.Presence
+    alloc.vec.Vec.push out1 syntax_types.IndexType.Ordering
+  | syntax_types.SyntaxType.Utf8StringIname =>
+    let out ←
+      alloc.vec.Vec.push (alloc.vec.Vec.new syntax_types.IndexType)
+        syntax_types.IndexType.Equality
+    let out1 ← alloc.vec.Vec.push out syntax_types.IndexType.Presence
+    alloc.vec.Vec.push out1 syntax_types.IndexType.SubString
+  | syntax_types.SyntaxType.NsUniqueId =>
+    let out ←
+      alloc.vec.Vec.push (alloc.vec.Vec.new syntax_types.IndexType)
+        syntax_types.IndexType.Equality
+    alloc.vec.Vec.push out syntax_types.IndexType.Presence
+  | syntax_types.SyntaxType.DateTime =>
+    let out ←
+      alloc.vec.Vec.push (alloc.vec.Vec.new syntax_types.IndexType)
+        syntax_types.IndexType.Equality
+    let out1 ← alloc.vec.Vec.push out syntax_types.IndexType.Presence
+    alloc.vec.Vec.push out1 syntax_types.IndexType.Ordering
+  | syntax_types.SyntaxType.EmailAddress =>
+    let out ←
+      alloc.vec.Vec.push (alloc.vec.Vec.new syntax_types.IndexType)
+        syntax_types.IndexType.Equality
+    alloc.vec.Vec.push out syntax_types.IndexType.SubString
+  | syntax_types.SyntaxType.Url =>
+    ok (alloc.vec.Vec.new syntax_types.IndexType)
+  | syntax_types.SyntaxType.OauthScope =>
+    ok (alloc.vec.Vec.new syntax_types.IndexType)
+  | syntax_types.SyntaxType.OauthScopeMap =>
+    alloc.vec.Vec.push (alloc.vec.Vec.new syntax_types.IndexType)
+      syntax_types.IndexType.Equality
+  | syntax_types.SyntaxType.PrivateBinary =>
+    ok (alloc.vec.Vec.new syntax_types.IndexType)
+  | syntax_types.SyntaxType.IntentToken =>
+    alloc.vec.Vec.push (alloc.vec.Vec.new syntax_types.IndexType)
+      syntax_types.IndexType.Equality
+  | syntax_types.SyntaxType.Passkey =>
+    alloc.vec.Vec.push (alloc.vec.Vec.new syntax_types.IndexType)
+      syntax_types.IndexType.Equality
+  | syntax_types.SyntaxType.AttestedPasskey =>
+    alloc.vec.Vec.push (alloc.vec.Vec.new syntax_types.IndexType)
+      syntax_types.IndexType.Equality
+  | syntax_types.SyntaxType.Session =>
+    alloc.vec.Vec.push (alloc.vec.Vec.new syntax_types.IndexType)
+      syntax_types.IndexType.Equality
+  | syntax_types.SyntaxType.JwsKeyEs256 =>
+    ok (alloc.vec.Vec.new syntax_types.IndexType)
+  | syntax_types.SyntaxType.JwsKeyRs256 =>
+    ok (alloc.vec.Vec.new syntax_types.IndexType)
+  | syntax_types.SyntaxType.Oauth2Session =>
+    alloc.vec.Vec.push (alloc.vec.Vec.new syntax_types.IndexType)
+      syntax_types.IndexType.Equality
+  | syntax_types.SyntaxType.UiHint =>
+    ok (alloc.vec.Vec.new syntax_types.IndexType)
+  | syntax_types.SyntaxType.TotpSecret =>
+    ok (alloc.vec.Vec.new syntax_types.IndexType)
+  | syntax_types.SyntaxType.ApiToken =>
+    alloc.vec.Vec.push (alloc.vec.Vec.new syntax_types.IndexType)
+      syntax_types.IndexType.Equality
+  | syntax_types.SyntaxType.AuditLogString =>
+    ok (alloc.vec.Vec.new syntax_types.IndexType)
+  | syntax_types.SyntaxType.EcKeyPrivate =>
+    ok (alloc.vec.Vec.new syntax_types.IndexType)
+  | syntax_types.SyntaxType.Image =>
+    ok (alloc.vec.Vec.new syntax_types.IndexType)
+  | syntax_types.SyntaxType.CredentialType =>
+    ok (alloc.vec.Vec.new syntax_types.IndexType)
+  | syntax_types.SyntaxType.WebauthnAttestationCaList =>
+    ok (alloc.vec.Vec.new syntax_types.IndexType)
+  | syntax_types.SyntaxType.OauthClaimMap =>
+    alloc.vec.Vec.push (alloc.vec.Vec.new syntax_types.IndexType)
+      syntax_types.IndexType.Equality
+  | syntax_types.SyntaxType.KeyInternal =>
+    ok (alloc.vec.Vec.new syntax_types.IndexType)
+  | syntax_types.SyntaxType.HexString =>
+    ok (alloc.vec.Vec.new syntax_types.IndexType)
+  | syntax_types.SyntaxType.Certificate =>
+    ok (alloc.vec.Vec.new syntax_types.IndexType)
+  | syntax_types.SyntaxType.ApplicationPassword =>
+    alloc.vec.Vec.push (alloc.vec.Vec.new syntax_types.IndexType)
+      syntax_types.IndexType.Equality
+  | syntax_types.SyntaxType.Json =>
+    ok (alloc.vec.Vec.new syntax_types.IndexType)
+  | syntax_types.SyntaxType.Message =>
+    ok (alloc.vec.Vec.new syntax_types.IndexType)
+  | syntax_types.SyntaxType.Sha256 =>
+    alloc.vec.Vec.push (alloc.vec.Vec.new syntax_types.IndexType)
+      syntax_types.IndexType.Equality
+  | syntax_types.SyntaxType.Int64 =>
+    let out ←
+      alloc.vec.Vec.push (alloc.vec.Vec.new syntax_types.IndexType)
+        syntax_types.IndexType.Equality
+    let out1 ← alloc.vec.Vec.push out syntax_types.IndexType.Presence
+    alloc.vec.Vec.push out1 syntax_types.IndexType.Ordering
+  | syntax_types.SyntaxType.Uint64 =>
+    let out ←
+      alloc.vec.Vec.push (alloc.vec.Vec.new syntax_types.IndexType)
+        syntax_types.IndexType.Equality
+    let out1 ← alloc.vec.Vec.push out syntax_types.IndexType.Presence
+    alloc.vec.Vec.push out1 syntax_types.IndexType.Ordering
+
+/-- [kanidm_kernel::value_observers::Oauth2Session]
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 9:0-9:62
+    Visibility: public -/
+structure value_observers.Oauth2Session where
+  rs_uuid : Std.U128
+  payload : Std.U64
+
+/-- [kanidm_kernel::value_observers::Value]
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 11:0-79:1
+    Visibility: public -/
+@[discriminant isize]
+inductive value_observers.Value where
+| Utf8 : Std.U64 → value_observers.Value
+| Iutf8 : Std.U64 → value_observers.Value
+| Iname : Std.U64 → value_observers.Value
+| Uuid : Std.U128 → value_observers.Value
+| Boolean : Bool → value_observers.Value
+| Syntax : Std.U64 → value_observers.Value
+| Index : Std.U64 → value_observers.Value
+| Refer : Std.U128 → value_observers.Value
+| JsonFilt : Std.U64 → value_observers.Value
+| Cred : Std.U64 → Std.U64 → value_observers.Value
+| SshKey : Std.U64 → Std.U64 → value_observers.Value
+| SecretValue : Std.U64 → value_observers.Value
+| Spn : Std.U64 → Std.U64 → value_observers.Value
+| Uint32 : Std.U32 → value_observers.Value
+| Int64 : Std.I64 → value_observers.Value
+| Uint64 : Std.U64 → value_observers.Value
+| Cid : Std.U64 → value_observers.Value
+| Nsuniqueid : Std.U64 → value_observers.Value
+| DateTime : Std.U64 → value_observers.Value
+| EmailAddress : Std.U64 → Bool → value_observers.Value
+| PhoneNumber : Std.U64 → Bool → value_observers.Value
+| Address : Std.U64 → value_observers.Value
+| Url : Std.U64 → value_observers.Value
+| OauthScope : Std.U64 → value_observers.Value
+| OauthScopeMap : Std.U128 → Std.U64 → value_observers.Value
+| PrivateBinary : Std.U64 → value_observers.Value
+| PublicBinary : Std.U64 → Std.U64 → value_observers.Value
+| RestrictedString : Std.U64 → value_observers.Value
+| IntentToken : Std.U64 → Std.U64 → value_observers.Value
+| Passkey : Std.U128 → Std.U64 → Std.U64 → value_observers.Value
+| AttestedPasskey : Std.U128 → Std.U64 → Std.U64 → value_observers.Value
+| Session : Std.U128 → Std.U64 → value_observers.Value
+| ApiToken : Std.U128 → Std.U64 → value_observers.Value
+| Oauth2Session :
+  Std.U128 →
+  value_observers.Oauth2Session →
+  value_observers.Value
+| JwsKeyEs256 : Std.U64 → value_observers.Value
+| JwsKeyRs256 : Std.U64 → value_observers.Value
+| UiHint : Std.U64 → value_observers.Value
+| TotpSecret : Std.U64 → Std.U64 → value_observers.Value
+| AuditLogString : Std.U64 → Std.U64 → value_observers.Value
+| Image : Std.U64 → value_observers.Value
+| CredentialType : Std.U64 → value_observers.Value
+| WebauthnAttestationCaList : Std.U64 → value_observers.Value
+| OauthClaimValue : Std.U64 → Std.U128 → Std.U64 → value_observers.Value
+| OauthClaimMap : Std.U64 → Std.U64 → value_observers.Value
+| KeyInternal :
+  Std.U64 →
+  Std.U64 →
+  Std.U64 →
+  Std.U64 →
+  Std.U64 →
+  Std.U64 →
+  value_observers.Value
+| HexString : Std.U64 → value_observers.Value
+| Certificate : Std.U64 → value_observers.Value
+| ApplicationPassword : Std.U64 → value_observers.Value
+| Json : Std.U64 → value_observers.Value
+| Sha256 : Std.U64 → value_observers.Value
+
+/-- [kanidm_kernel::value_observers::PartialValue]
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 81:0-130:1
+    Visibility: public -/
+@[discriminant isize]
+inductive value_observers.PartialValue where
+| Utf8 : Std.U64 → value_observers.PartialValue
+| Iutf8 : Std.U64 → value_observers.PartialValue
+| Iname : Std.U64 → value_observers.PartialValue
+| Uuid : Std.U128 → value_observers.PartialValue
+| Boolean : Bool → value_observers.PartialValue
+| Syntax : Std.U64 → value_observers.PartialValue
+| Index : Std.U64 → value_observers.PartialValue
+| Refer : Std.U128 → value_observers.PartialValue
+| JsonFilt : Std.U64 → value_observers.PartialValue
+| Cred : Std.U64 → value_observers.PartialValue
+| SshKey : Std.U64 → value_observers.PartialValue
+| SecretValue : value_observers.PartialValue
+| Spn : Std.U64 → Std.U64 → value_observers.PartialValue
+| Uint32 : Std.U32 → value_observers.PartialValue
+| Cid : Std.U64 → value_observers.PartialValue
+| Nsuniqueid : Std.U64 → value_observers.PartialValue
+| DateTime : Std.U64 → value_observers.PartialValue
+| EmailAddress : Std.U64 → value_observers.PartialValue
+| PhoneNumber : Std.U64 → value_observers.PartialValue
+| Address : Std.U64 → value_observers.PartialValue
+| Url : Std.U64 → value_observers.PartialValue
+| OauthScope : Std.U64 → value_observers.PartialValue
+| PrivateBinary : value_observers.PartialValue
+| PublicBinary : Std.U64 → value_observers.PartialValue
+| RestrictedString : Std.U64 → value_observers.PartialValue
+| IntentToken : Std.U64 → value_observers.PartialValue
+| UiHint : Std.U64 → value_observers.PartialValue
+| Passkey : Std.U128 → value_observers.PartialValue
+| AttestedPasskey : Std.U128 → value_observers.PartialValue
+| Image : Std.U64 → value_observers.PartialValue
+| CredentialType : Std.U64 → value_observers.PartialValue
+| OauthClaim : Std.U64 → Std.U128 → value_observers.PartialValue
+| OauthClaimValue :
+  Std.U64 →
+  Std.U128 →
+  Std.U64 →
+  value_observers.PartialValue
+| HexString : Std.U64 → value_observers.PartialValue
+| Json : value_observers.PartialValue
+| Sha256 : Std.U64 → value_observers.PartialValue
+| Int64 : Std.I64 → value_observers.PartialValue
+| Uint64 : Std.U64 → value_observers.PartialValue
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::is_utf8]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 132:4-134:5
+    Visibility: public -/
+def value_observers.Value.is_utf8
+  (self : value_observers.Value) : Result Bool := do
+  match self with
+  | value_observers.Value.Utf8 _ => ok true
+  | value_observers.Value.Iutf8 _ => ok false
+  | value_observers.Value.Iname _ => ok false
+  | value_observers.Value.Uuid _ => ok false
+  | value_observers.Value.Boolean _ => ok false
+  | value_observers.Value.Syntax _ => ok false
+  | value_observers.Value.Index _ => ok false
+  | value_observers.Value.Refer _ => ok false
+  | value_observers.Value.JsonFilt _ => ok false
+  | value_observers.Value.Cred _ _ => ok false
+  | value_observers.Value.SshKey _ _ => ok false
+  | value_observers.Value.SecretValue _ => ok false
+  | value_observers.Value.Spn _ _ => ok false
+  | value_observers.Value.Uint32 _ => ok false
+  | value_observers.Value.Int64 _ => ok false
+  | value_observers.Value.Uint64 _ => ok false
+  | value_observers.Value.Cid _ => ok false
+  | value_observers.Value.Nsuniqueid _ => ok false
+  | value_observers.Value.DateTime _ => ok false
+  | value_observers.Value.EmailAddress _ _ => ok false
+  | value_observers.Value.PhoneNumber _ _ => ok false
+  | value_observers.Value.Address _ => ok false
+  | value_observers.Value.Url _ => ok false
+  | value_observers.Value.OauthScope _ => ok false
+  | value_observers.Value.OauthScopeMap _ _ => ok false
+  | value_observers.Value.PrivateBinary _ => ok false
+  | value_observers.Value.PublicBinary _ _ => ok false
+  | value_observers.Value.RestrictedString _ => ok false
+  | value_observers.Value.IntentToken _ _ => ok false
+  | value_observers.Value.Passkey _ _ _ => ok false
+  | value_observers.Value.AttestedPasskey _ _ _ => ok false
+  | value_observers.Value.Session _ _ => ok false
+  | value_observers.Value.ApiToken _ _ => ok false
+  | value_observers.Value.Oauth2Session _ _ => ok false
+  | value_observers.Value.JwsKeyEs256 _ => ok false
+  | value_observers.Value.JwsKeyRs256 _ => ok false
+  | value_observers.Value.UiHint _ => ok false
+  | value_observers.Value.TotpSecret _ _ => ok false
+  | value_observers.Value.AuditLogString _ _ => ok false
+  | value_observers.Value.Image _ => ok false
+  | value_observers.Value.CredentialType _ => ok false
+  | value_observers.Value.WebauthnAttestationCaList _ => ok false
+  | value_observers.Value.OauthClaimValue _ _ _ => ok false
+  | value_observers.Value.OauthClaimMap _ _ => ok false
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok false
+  | value_observers.Value.HexString _ => ok false
+  | value_observers.Value.Certificate _ => ok false
+  | value_observers.Value.ApplicationPassword _ => ok false
+  | value_observers.Value.Json _ => ok false
+  | value_observers.Value.Sha256 _ => ok false
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::is_iutf8]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 135:4-137:5
+    Visibility: public -/
+def value_observers.Value.is_iutf8
+  (self : value_observers.Value) : Result Bool := do
+  match self with
+  | value_observers.Value.Utf8 _ => ok false
+  | value_observers.Value.Iutf8 _ => ok true
+  | value_observers.Value.Iname _ => ok false
+  | value_observers.Value.Uuid _ => ok false
+  | value_observers.Value.Boolean _ => ok false
+  | value_observers.Value.Syntax _ => ok false
+  | value_observers.Value.Index _ => ok false
+  | value_observers.Value.Refer _ => ok false
+  | value_observers.Value.JsonFilt _ => ok false
+  | value_observers.Value.Cred _ _ => ok false
+  | value_observers.Value.SshKey _ _ => ok false
+  | value_observers.Value.SecretValue _ => ok false
+  | value_observers.Value.Spn _ _ => ok false
+  | value_observers.Value.Uint32 _ => ok false
+  | value_observers.Value.Int64 _ => ok false
+  | value_observers.Value.Uint64 _ => ok false
+  | value_observers.Value.Cid _ => ok false
+  | value_observers.Value.Nsuniqueid _ => ok false
+  | value_observers.Value.DateTime _ => ok false
+  | value_observers.Value.EmailAddress _ _ => ok false
+  | value_observers.Value.PhoneNumber _ _ => ok false
+  | value_observers.Value.Address _ => ok false
+  | value_observers.Value.Url _ => ok false
+  | value_observers.Value.OauthScope _ => ok false
+  | value_observers.Value.OauthScopeMap _ _ => ok false
+  | value_observers.Value.PrivateBinary _ => ok false
+  | value_observers.Value.PublicBinary _ _ => ok false
+  | value_observers.Value.RestrictedString _ => ok false
+  | value_observers.Value.IntentToken _ _ => ok false
+  | value_observers.Value.Passkey _ _ _ => ok false
+  | value_observers.Value.AttestedPasskey _ _ _ => ok false
+  | value_observers.Value.Session _ _ => ok false
+  | value_observers.Value.ApiToken _ _ => ok false
+  | value_observers.Value.Oauth2Session _ _ => ok false
+  | value_observers.Value.JwsKeyEs256 _ => ok false
+  | value_observers.Value.JwsKeyRs256 _ => ok false
+  | value_observers.Value.UiHint _ => ok false
+  | value_observers.Value.TotpSecret _ _ => ok false
+  | value_observers.Value.AuditLogString _ _ => ok false
+  | value_observers.Value.Image _ => ok false
+  | value_observers.Value.CredentialType _ => ok false
+  | value_observers.Value.WebauthnAttestationCaList _ => ok false
+  | value_observers.Value.OauthClaimValue _ _ _ => ok false
+  | value_observers.Value.OauthClaimMap _ _ => ok false
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok false
+  | value_observers.Value.HexString _ => ok false
+  | value_observers.Value.Certificate _ => ok false
+  | value_observers.Value.ApplicationPassword _ => ok false
+  | value_observers.Value.Json _ => ok false
+  | value_observers.Value.Sha256 _ => ok false
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::is_insensitive_utf8]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 138:4-140:5
+    Visibility: public -/
+def value_observers.Value.is_insensitive_utf8
+  (self : value_observers.Value) : Result Bool := do
+  match self with
+  | value_observers.Value.Utf8 _ => ok false
+  | value_observers.Value.Iutf8 _ => ok true
+  | value_observers.Value.Iname _ => ok false
+  | value_observers.Value.Uuid _ => ok false
+  | value_observers.Value.Boolean _ => ok false
+  | value_observers.Value.Syntax _ => ok false
+  | value_observers.Value.Index _ => ok false
+  | value_observers.Value.Refer _ => ok false
+  | value_observers.Value.JsonFilt _ => ok false
+  | value_observers.Value.Cred _ _ => ok false
+  | value_observers.Value.SshKey _ _ => ok false
+  | value_observers.Value.SecretValue _ => ok false
+  | value_observers.Value.Spn _ _ => ok false
+  | value_observers.Value.Uint32 _ => ok false
+  | value_observers.Value.Int64 _ => ok false
+  | value_observers.Value.Uint64 _ => ok false
+  | value_observers.Value.Cid _ => ok false
+  | value_observers.Value.Nsuniqueid _ => ok false
+  | value_observers.Value.DateTime _ => ok false
+  | value_observers.Value.EmailAddress _ _ => ok false
+  | value_observers.Value.PhoneNumber _ _ => ok false
+  | value_observers.Value.Address _ => ok false
+  | value_observers.Value.Url _ => ok false
+  | value_observers.Value.OauthScope _ => ok false
+  | value_observers.Value.OauthScopeMap _ _ => ok false
+  | value_observers.Value.PrivateBinary _ => ok false
+  | value_observers.Value.PublicBinary _ _ => ok false
+  | value_observers.Value.RestrictedString _ => ok false
+  | value_observers.Value.IntentToken _ _ => ok false
+  | value_observers.Value.Passkey _ _ _ => ok false
+  | value_observers.Value.AttestedPasskey _ _ _ => ok false
+  | value_observers.Value.Session _ _ => ok false
+  | value_observers.Value.ApiToken _ _ => ok false
+  | value_observers.Value.Oauth2Session _ _ => ok false
+  | value_observers.Value.JwsKeyEs256 _ => ok false
+  | value_observers.Value.JwsKeyRs256 _ => ok false
+  | value_observers.Value.UiHint _ => ok false
+  | value_observers.Value.TotpSecret _ _ => ok false
+  | value_observers.Value.AuditLogString _ _ => ok false
+  | value_observers.Value.Image _ => ok false
+  | value_observers.Value.CredentialType _ => ok false
+  | value_observers.Value.WebauthnAttestationCaList _ => ok false
+  | value_observers.Value.OauthClaimValue _ _ _ => ok false
+  | value_observers.Value.OauthClaimMap _ _ => ok false
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok false
+  | value_observers.Value.HexString _ => ok false
+  | value_observers.Value.Certificate _ => ok false
+  | value_observers.Value.ApplicationPassword _ => ok false
+  | value_observers.Value.Json _ => ok false
+  | value_observers.Value.Sha256 _ => ok false
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::is_iname]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 141:4-143:5
+    Visibility: public -/
+def value_observers.Value.is_iname
+  (self : value_observers.Value) : Result Bool := do
+  match self with
+  | value_observers.Value.Utf8 _ => ok false
+  | value_observers.Value.Iutf8 _ => ok false
+  | value_observers.Value.Iname _ => ok true
+  | value_observers.Value.Uuid _ => ok false
+  | value_observers.Value.Boolean _ => ok false
+  | value_observers.Value.Syntax _ => ok false
+  | value_observers.Value.Index _ => ok false
+  | value_observers.Value.Refer _ => ok false
+  | value_observers.Value.JsonFilt _ => ok false
+  | value_observers.Value.Cred _ _ => ok false
+  | value_observers.Value.SshKey _ _ => ok false
+  | value_observers.Value.SecretValue _ => ok false
+  | value_observers.Value.Spn _ _ => ok false
+  | value_observers.Value.Uint32 _ => ok false
+  | value_observers.Value.Int64 _ => ok false
+  | value_observers.Value.Uint64 _ => ok false
+  | value_observers.Value.Cid _ => ok false
+  | value_observers.Value.Nsuniqueid _ => ok false
+  | value_observers.Value.DateTime _ => ok false
+  | value_observers.Value.EmailAddress _ _ => ok false
+  | value_observers.Value.PhoneNumber _ _ => ok false
+  | value_observers.Value.Address _ => ok false
+  | value_observers.Value.Url _ => ok false
+  | value_observers.Value.OauthScope _ => ok false
+  | value_observers.Value.OauthScopeMap _ _ => ok false
+  | value_observers.Value.PrivateBinary _ => ok false
+  | value_observers.Value.PublicBinary _ _ => ok false
+  | value_observers.Value.RestrictedString _ => ok false
+  | value_observers.Value.IntentToken _ _ => ok false
+  | value_observers.Value.Passkey _ _ _ => ok false
+  | value_observers.Value.AttestedPasskey _ _ _ => ok false
+  | value_observers.Value.Session _ _ => ok false
+  | value_observers.Value.ApiToken _ _ => ok false
+  | value_observers.Value.Oauth2Session _ _ => ok false
+  | value_observers.Value.JwsKeyEs256 _ => ok false
+  | value_observers.Value.JwsKeyRs256 _ => ok false
+  | value_observers.Value.UiHint _ => ok false
+  | value_observers.Value.TotpSecret _ _ => ok false
+  | value_observers.Value.AuditLogString _ _ => ok false
+  | value_observers.Value.Image _ => ok false
+  | value_observers.Value.CredentialType _ => ok false
+  | value_observers.Value.WebauthnAttestationCaList _ => ok false
+  | value_observers.Value.OauthClaimValue _ _ _ => ok false
+  | value_observers.Value.OauthClaimMap _ _ => ok false
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok false
+  | value_observers.Value.HexString _ => ok false
+  | value_observers.Value.Certificate _ => ok false
+  | value_observers.Value.ApplicationPassword _ => ok false
+  | value_observers.Value.Json _ => ok false
+  | value_observers.Value.Sha256 _ => ok false
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::is_uuid]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 144:4-146:5
+    Visibility: public -/
+def value_observers.Value.is_uuid
+  (self : value_observers.Value) : Result Bool := do
+  match self with
+  | value_observers.Value.Utf8 _ => ok false
+  | value_observers.Value.Iutf8 _ => ok false
+  | value_observers.Value.Iname _ => ok false
+  | value_observers.Value.Uuid _ => ok true
+  | value_observers.Value.Boolean _ => ok false
+  | value_observers.Value.Syntax _ => ok false
+  | value_observers.Value.Index _ => ok false
+  | value_observers.Value.Refer _ => ok false
+  | value_observers.Value.JsonFilt _ => ok false
+  | value_observers.Value.Cred _ _ => ok false
+  | value_observers.Value.SshKey _ _ => ok false
+  | value_observers.Value.SecretValue _ => ok false
+  | value_observers.Value.Spn _ _ => ok false
+  | value_observers.Value.Uint32 _ => ok false
+  | value_observers.Value.Int64 _ => ok false
+  | value_observers.Value.Uint64 _ => ok false
+  | value_observers.Value.Cid _ => ok false
+  | value_observers.Value.Nsuniqueid _ => ok false
+  | value_observers.Value.DateTime _ => ok false
+  | value_observers.Value.EmailAddress _ _ => ok false
+  | value_observers.Value.PhoneNumber _ _ => ok false
+  | value_observers.Value.Address _ => ok false
+  | value_observers.Value.Url _ => ok false
+  | value_observers.Value.OauthScope _ => ok false
+  | value_observers.Value.OauthScopeMap _ _ => ok false
+  | value_observers.Value.PrivateBinary _ => ok false
+  | value_observers.Value.PublicBinary _ _ => ok false
+  | value_observers.Value.RestrictedString _ => ok false
+  | value_observers.Value.IntentToken _ _ => ok false
+  | value_observers.Value.Passkey _ _ _ => ok false
+  | value_observers.Value.AttestedPasskey _ _ _ => ok false
+  | value_observers.Value.Session _ _ => ok false
+  | value_observers.Value.ApiToken _ _ => ok false
+  | value_observers.Value.Oauth2Session _ _ => ok false
+  | value_observers.Value.JwsKeyEs256 _ => ok false
+  | value_observers.Value.JwsKeyRs256 _ => ok false
+  | value_observers.Value.UiHint _ => ok false
+  | value_observers.Value.TotpSecret _ _ => ok false
+  | value_observers.Value.AuditLogString _ _ => ok false
+  | value_observers.Value.Image _ => ok false
+  | value_observers.Value.CredentialType _ => ok false
+  | value_observers.Value.WebauthnAttestationCaList _ => ok false
+  | value_observers.Value.OauthClaimValue _ _ _ => ok false
+  | value_observers.Value.OauthClaimMap _ _ => ok false
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok false
+  | value_observers.Value.HexString _ => ok false
+  | value_observers.Value.Certificate _ => ok false
+  | value_observers.Value.ApplicationPassword _ => ok false
+  | value_observers.Value.Json _ => ok false
+  | value_observers.Value.Sha256 _ => ok false
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::is_bool]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 147:4-149:5
+    Visibility: public -/
+def value_observers.Value.is_bool
+  (self : value_observers.Value) : Result Bool := do
+  match self with
+  | value_observers.Value.Utf8 _ => ok false
+  | value_observers.Value.Iutf8 _ => ok false
+  | value_observers.Value.Iname _ => ok false
+  | value_observers.Value.Uuid _ => ok false
+  | value_observers.Value.Boolean _ => ok true
+  | value_observers.Value.Syntax _ => ok false
+  | value_observers.Value.Index _ => ok false
+  | value_observers.Value.Refer _ => ok false
+  | value_observers.Value.JsonFilt _ => ok false
+  | value_observers.Value.Cred _ _ => ok false
+  | value_observers.Value.SshKey _ _ => ok false
+  | value_observers.Value.SecretValue _ => ok false
+  | value_observers.Value.Spn _ _ => ok false
+  | value_observers.Value.Uint32 _ => ok false
+  | value_observers.Value.Int64 _ => ok false
+  | value_observers.Value.Uint64 _ => ok false
+  | value_observers.Value.Cid _ => ok false
+  | value_observers.Value.Nsuniqueid _ => ok false
+  | value_observers.Value.DateTime _ => ok false
+  | value_observers.Value.EmailAddress _ _ => ok false
+  | value_observers.Value.PhoneNumber _ _ => ok false
+  | value_observers.Value.Address _ => ok false
+  | value_observers.Value.Url _ => ok false
+  | value_observers.Value.OauthScope _ => ok false
+  | value_observers.Value.OauthScopeMap _ _ => ok false
+  | value_observers.Value.PrivateBinary _ => ok false
+  | value_observers.Value.PublicBinary _ _ => ok false
+  | value_observers.Value.RestrictedString _ => ok false
+  | value_observers.Value.IntentToken _ _ => ok false
+  | value_observers.Value.Passkey _ _ _ => ok false
+  | value_observers.Value.AttestedPasskey _ _ _ => ok false
+  | value_observers.Value.Session _ _ => ok false
+  | value_observers.Value.ApiToken _ _ => ok false
+  | value_observers.Value.Oauth2Session _ _ => ok false
+  | value_observers.Value.JwsKeyEs256 _ => ok false
+  | value_observers.Value.JwsKeyRs256 _ => ok false
+  | value_observers.Value.UiHint _ => ok false
+  | value_observers.Value.TotpSecret _ _ => ok false
+  | value_observers.Value.AuditLogString _ _ => ok false
+  | value_observers.Value.Image _ => ok false
+  | value_observers.Value.CredentialType _ => ok false
+  | value_observers.Value.WebauthnAttestationCaList _ => ok false
+  | value_observers.Value.OauthClaimValue _ _ _ => ok false
+  | value_observers.Value.OauthClaimMap _ _ => ok false
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok false
+  | value_observers.Value.HexString _ => ok false
+  | value_observers.Value.Certificate _ => ok false
+  | value_observers.Value.ApplicationPassword _ => ok false
+  | value_observers.Value.Json _ => ok false
+  | value_observers.Value.Sha256 _ => ok false
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::is_syntax]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 150:4-152:5
+    Visibility: public -/
+def value_observers.Value.is_syntax
+  (self : value_observers.Value) : Result Bool := do
+  match self with
+  | value_observers.Value.Utf8 _ => ok false
+  | value_observers.Value.Iutf8 _ => ok false
+  | value_observers.Value.Iname _ => ok false
+  | value_observers.Value.Uuid _ => ok false
+  | value_observers.Value.Boolean _ => ok false
+  | value_observers.Value.Syntax _ => ok true
+  | value_observers.Value.Index _ => ok false
+  | value_observers.Value.Refer _ => ok false
+  | value_observers.Value.JsonFilt _ => ok false
+  | value_observers.Value.Cred _ _ => ok false
+  | value_observers.Value.SshKey _ _ => ok false
+  | value_observers.Value.SecretValue _ => ok false
+  | value_observers.Value.Spn _ _ => ok false
+  | value_observers.Value.Uint32 _ => ok false
+  | value_observers.Value.Int64 _ => ok false
+  | value_observers.Value.Uint64 _ => ok false
+  | value_observers.Value.Cid _ => ok false
+  | value_observers.Value.Nsuniqueid _ => ok false
+  | value_observers.Value.DateTime _ => ok false
+  | value_observers.Value.EmailAddress _ _ => ok false
+  | value_observers.Value.PhoneNumber _ _ => ok false
+  | value_observers.Value.Address _ => ok false
+  | value_observers.Value.Url _ => ok false
+  | value_observers.Value.OauthScope _ => ok false
+  | value_observers.Value.OauthScopeMap _ _ => ok false
+  | value_observers.Value.PrivateBinary _ => ok false
+  | value_observers.Value.PublicBinary _ _ => ok false
+  | value_observers.Value.RestrictedString _ => ok false
+  | value_observers.Value.IntentToken _ _ => ok false
+  | value_observers.Value.Passkey _ _ _ => ok false
+  | value_observers.Value.AttestedPasskey _ _ _ => ok false
+  | value_observers.Value.Session _ _ => ok false
+  | value_observers.Value.ApiToken _ _ => ok false
+  | value_observers.Value.Oauth2Session _ _ => ok false
+  | value_observers.Value.JwsKeyEs256 _ => ok false
+  | value_observers.Value.JwsKeyRs256 _ => ok false
+  | value_observers.Value.UiHint _ => ok false
+  | value_observers.Value.TotpSecret _ _ => ok false
+  | value_observers.Value.AuditLogString _ _ => ok false
+  | value_observers.Value.Image _ => ok false
+  | value_observers.Value.CredentialType _ => ok false
+  | value_observers.Value.WebauthnAttestationCaList _ => ok false
+  | value_observers.Value.OauthClaimValue _ _ _ => ok false
+  | value_observers.Value.OauthClaimMap _ _ => ok false
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok false
+  | value_observers.Value.HexString _ => ok false
+  | value_observers.Value.Certificate _ => ok false
+  | value_observers.Value.ApplicationPassword _ => ok false
+  | value_observers.Value.Json _ => ok false
+  | value_observers.Value.Sha256 _ => ok false
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::is_index]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 153:4-155:5
+    Visibility: public -/
+def value_observers.Value.is_index
+  (self : value_observers.Value) : Result Bool := do
+  match self with
+  | value_observers.Value.Utf8 _ => ok false
+  | value_observers.Value.Iutf8 _ => ok false
+  | value_observers.Value.Iname _ => ok false
+  | value_observers.Value.Uuid _ => ok false
+  | value_observers.Value.Boolean _ => ok false
+  | value_observers.Value.Syntax _ => ok false
+  | value_observers.Value.Index _ => ok true
+  | value_observers.Value.Refer _ => ok false
+  | value_observers.Value.JsonFilt _ => ok false
+  | value_observers.Value.Cred _ _ => ok false
+  | value_observers.Value.SshKey _ _ => ok false
+  | value_observers.Value.SecretValue _ => ok false
+  | value_observers.Value.Spn _ _ => ok false
+  | value_observers.Value.Uint32 _ => ok false
+  | value_observers.Value.Int64 _ => ok false
+  | value_observers.Value.Uint64 _ => ok false
+  | value_observers.Value.Cid _ => ok false
+  | value_observers.Value.Nsuniqueid _ => ok false
+  | value_observers.Value.DateTime _ => ok false
+  | value_observers.Value.EmailAddress _ _ => ok false
+  | value_observers.Value.PhoneNumber _ _ => ok false
+  | value_observers.Value.Address _ => ok false
+  | value_observers.Value.Url _ => ok false
+  | value_observers.Value.OauthScope _ => ok false
+  | value_observers.Value.OauthScopeMap _ _ => ok false
+  | value_observers.Value.PrivateBinary _ => ok false
+  | value_observers.Value.PublicBinary _ _ => ok false
+  | value_observers.Value.RestrictedString _ => ok false
+  | value_observers.Value.IntentToken _ _ => ok false
+  | value_observers.Value.Passkey _ _ _ => ok false
+  | value_observers.Value.AttestedPasskey _ _ _ => ok false
+  | value_observers.Value.Session _ _ => ok false
+  | value_observers.Value.ApiToken _ _ => ok false
+  | value_observers.Value.Oauth2Session _ _ => ok false
+  | value_observers.Value.JwsKeyEs256 _ => ok false
+  | value_observers.Value.JwsKeyRs256 _ => ok false
+  | value_observers.Value.UiHint _ => ok false
+  | value_observers.Value.TotpSecret _ _ => ok false
+  | value_observers.Value.AuditLogString _ _ => ok false
+  | value_observers.Value.Image _ => ok false
+  | value_observers.Value.CredentialType _ => ok false
+  | value_observers.Value.WebauthnAttestationCaList _ => ok false
+  | value_observers.Value.OauthClaimValue _ _ _ => ok false
+  | value_observers.Value.OauthClaimMap _ _ => ok false
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok false
+  | value_observers.Value.HexString _ => ok false
+  | value_observers.Value.Certificate _ => ok false
+  | value_observers.Value.ApplicationPassword _ => ok false
+  | value_observers.Value.Json _ => ok false
+  | value_observers.Value.Sha256 _ => ok false
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::is_refer]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 156:4-158:5
+    Visibility: public -/
+def value_observers.Value.is_refer
+  (self : value_observers.Value) : Result Bool := do
+  match self with
+  | value_observers.Value.Utf8 _ => ok false
+  | value_observers.Value.Iutf8 _ => ok false
+  | value_observers.Value.Iname _ => ok false
+  | value_observers.Value.Uuid _ => ok false
+  | value_observers.Value.Boolean _ => ok false
+  | value_observers.Value.Syntax _ => ok false
+  | value_observers.Value.Index _ => ok false
+  | value_observers.Value.Refer _ => ok true
+  | value_observers.Value.JsonFilt _ => ok false
+  | value_observers.Value.Cred _ _ => ok false
+  | value_observers.Value.SshKey _ _ => ok false
+  | value_observers.Value.SecretValue _ => ok false
+  | value_observers.Value.Spn _ _ => ok false
+  | value_observers.Value.Uint32 _ => ok false
+  | value_observers.Value.Int64 _ => ok false
+  | value_observers.Value.Uint64 _ => ok false
+  | value_observers.Value.Cid _ => ok false
+  | value_observers.Value.Nsuniqueid _ => ok false
+  | value_observers.Value.DateTime _ => ok false
+  | value_observers.Value.EmailAddress _ _ => ok false
+  | value_observers.Value.PhoneNumber _ _ => ok false
+  | value_observers.Value.Address _ => ok false
+  | value_observers.Value.Url _ => ok false
+  | value_observers.Value.OauthScope _ => ok false
+  | value_observers.Value.OauthScopeMap _ _ => ok false
+  | value_observers.Value.PrivateBinary _ => ok false
+  | value_observers.Value.PublicBinary _ _ => ok false
+  | value_observers.Value.RestrictedString _ => ok false
+  | value_observers.Value.IntentToken _ _ => ok false
+  | value_observers.Value.Passkey _ _ _ => ok false
+  | value_observers.Value.AttestedPasskey _ _ _ => ok false
+  | value_observers.Value.Session _ _ => ok false
+  | value_observers.Value.ApiToken _ _ => ok false
+  | value_observers.Value.Oauth2Session _ _ => ok false
+  | value_observers.Value.JwsKeyEs256 _ => ok false
+  | value_observers.Value.JwsKeyRs256 _ => ok false
+  | value_observers.Value.UiHint _ => ok false
+  | value_observers.Value.TotpSecret _ _ => ok false
+  | value_observers.Value.AuditLogString _ _ => ok false
+  | value_observers.Value.Image _ => ok false
+  | value_observers.Value.CredentialType _ => ok false
+  | value_observers.Value.WebauthnAttestationCaList _ => ok false
+  | value_observers.Value.OauthClaimValue _ _ _ => ok false
+  | value_observers.Value.OauthClaimMap _ _ => ok false
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok false
+  | value_observers.Value.HexString _ => ok false
+  | value_observers.Value.Certificate _ => ok false
+  | value_observers.Value.ApplicationPassword _ => ok false
+  | value_observers.Value.Json _ => ok false
+  | value_observers.Value.Sha256 _ => ok false
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::is_json_filter]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 159:4-161:5
+    Visibility: public -/
+def value_observers.Value.is_json_filter
+  (self : value_observers.Value) : Result Bool := do
+  match self with
+  | value_observers.Value.Utf8 _ => ok false
+  | value_observers.Value.Iutf8 _ => ok false
+  | value_observers.Value.Iname _ => ok false
+  | value_observers.Value.Uuid _ => ok false
+  | value_observers.Value.Boolean _ => ok false
+  | value_observers.Value.Syntax _ => ok false
+  | value_observers.Value.Index _ => ok false
+  | value_observers.Value.Refer _ => ok false
+  | value_observers.Value.JsonFilt _ => ok true
+  | value_observers.Value.Cred _ _ => ok false
+  | value_observers.Value.SshKey _ _ => ok false
+  | value_observers.Value.SecretValue _ => ok false
+  | value_observers.Value.Spn _ _ => ok false
+  | value_observers.Value.Uint32 _ => ok false
+  | value_observers.Value.Int64 _ => ok false
+  | value_observers.Value.Uint64 _ => ok false
+  | value_observers.Value.Cid _ => ok false
+  | value_observers.Value.Nsuniqueid _ => ok false
+  | value_observers.Value.DateTime _ => ok false
+  | value_observers.Value.EmailAddress _ _ => ok false
+  | value_observers.Value.PhoneNumber _ _ => ok false
+  | value_observers.Value.Address _ => ok false
+  | value_observers.Value.Url _ => ok false
+  | value_observers.Value.OauthScope _ => ok false
+  | value_observers.Value.OauthScopeMap _ _ => ok false
+  | value_observers.Value.PrivateBinary _ => ok false
+  | value_observers.Value.PublicBinary _ _ => ok false
+  | value_observers.Value.RestrictedString _ => ok false
+  | value_observers.Value.IntentToken _ _ => ok false
+  | value_observers.Value.Passkey _ _ _ => ok false
+  | value_observers.Value.AttestedPasskey _ _ _ => ok false
+  | value_observers.Value.Session _ _ => ok false
+  | value_observers.Value.ApiToken _ _ => ok false
+  | value_observers.Value.Oauth2Session _ _ => ok false
+  | value_observers.Value.JwsKeyEs256 _ => ok false
+  | value_observers.Value.JwsKeyRs256 _ => ok false
+  | value_observers.Value.UiHint _ => ok false
+  | value_observers.Value.TotpSecret _ _ => ok false
+  | value_observers.Value.AuditLogString _ _ => ok false
+  | value_observers.Value.Image _ => ok false
+  | value_observers.Value.CredentialType _ => ok false
+  | value_observers.Value.WebauthnAttestationCaList _ => ok false
+  | value_observers.Value.OauthClaimValue _ _ _ => ok false
+  | value_observers.Value.OauthClaimMap _ _ => ok false
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok false
+  | value_observers.Value.HexString _ => ok false
+  | value_observers.Value.Certificate _ => ok false
+  | value_observers.Value.ApplicationPassword _ => ok false
+  | value_observers.Value.Json _ => ok false
+  | value_observers.Value.Sha256 _ => ok false
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::is_credential]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 162:4-164:5
+    Visibility: public -/
+def value_observers.Value.is_credential
+  (self : value_observers.Value) : Result Bool := do
+  match self with
+  | value_observers.Value.Utf8 _ => ok false
+  | value_observers.Value.Iutf8 _ => ok false
+  | value_observers.Value.Iname _ => ok false
+  | value_observers.Value.Uuid _ => ok false
+  | value_observers.Value.Boolean _ => ok false
+  | value_observers.Value.Syntax _ => ok false
+  | value_observers.Value.Index _ => ok false
+  | value_observers.Value.Refer _ => ok false
+  | value_observers.Value.JsonFilt _ => ok false
+  | value_observers.Value.Cred _ _ => ok true
+  | value_observers.Value.SshKey _ _ => ok false
+  | value_observers.Value.SecretValue _ => ok false
+  | value_observers.Value.Spn _ _ => ok false
+  | value_observers.Value.Uint32 _ => ok false
+  | value_observers.Value.Int64 _ => ok false
+  | value_observers.Value.Uint64 _ => ok false
+  | value_observers.Value.Cid _ => ok false
+  | value_observers.Value.Nsuniqueid _ => ok false
+  | value_observers.Value.DateTime _ => ok false
+  | value_observers.Value.EmailAddress _ _ => ok false
+  | value_observers.Value.PhoneNumber _ _ => ok false
+  | value_observers.Value.Address _ => ok false
+  | value_observers.Value.Url _ => ok false
+  | value_observers.Value.OauthScope _ => ok false
+  | value_observers.Value.OauthScopeMap _ _ => ok false
+  | value_observers.Value.PrivateBinary _ => ok false
+  | value_observers.Value.PublicBinary _ _ => ok false
+  | value_observers.Value.RestrictedString _ => ok false
+  | value_observers.Value.IntentToken _ _ => ok false
+  | value_observers.Value.Passkey _ _ _ => ok false
+  | value_observers.Value.AttestedPasskey _ _ _ => ok false
+  | value_observers.Value.Session _ _ => ok false
+  | value_observers.Value.ApiToken _ _ => ok false
+  | value_observers.Value.Oauth2Session _ _ => ok false
+  | value_observers.Value.JwsKeyEs256 _ => ok false
+  | value_observers.Value.JwsKeyRs256 _ => ok false
+  | value_observers.Value.UiHint _ => ok false
+  | value_observers.Value.TotpSecret _ _ => ok false
+  | value_observers.Value.AuditLogString _ _ => ok false
+  | value_observers.Value.Image _ => ok false
+  | value_observers.Value.CredentialType _ => ok false
+  | value_observers.Value.WebauthnAttestationCaList _ => ok false
+  | value_observers.Value.OauthClaimValue _ _ _ => ok false
+  | value_observers.Value.OauthClaimMap _ _ => ok false
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok false
+  | value_observers.Value.HexString _ => ok false
+  | value_observers.Value.Certificate _ => ok false
+  | value_observers.Value.ApplicationPassword _ => ok false
+  | value_observers.Value.Json _ => ok false
+  | value_observers.Value.Sha256 _ => ok false
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::is_secret_string]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 165:4-167:5
+    Visibility: public -/
+def value_observers.Value.is_secret_string
+  (self : value_observers.Value) : Result Bool := do
+  match self with
+  | value_observers.Value.Utf8 _ => ok false
+  | value_observers.Value.Iutf8 _ => ok false
+  | value_observers.Value.Iname _ => ok false
+  | value_observers.Value.Uuid _ => ok false
+  | value_observers.Value.Boolean _ => ok false
+  | value_observers.Value.Syntax _ => ok false
+  | value_observers.Value.Index _ => ok false
+  | value_observers.Value.Refer _ => ok false
+  | value_observers.Value.JsonFilt _ => ok false
+  | value_observers.Value.Cred _ _ => ok false
+  | value_observers.Value.SshKey _ _ => ok false
+  | value_observers.Value.SecretValue _ => ok true
+  | value_observers.Value.Spn _ _ => ok false
+  | value_observers.Value.Uint32 _ => ok false
+  | value_observers.Value.Int64 _ => ok false
+  | value_observers.Value.Uint64 _ => ok false
+  | value_observers.Value.Cid _ => ok false
+  | value_observers.Value.Nsuniqueid _ => ok false
+  | value_observers.Value.DateTime _ => ok false
+  | value_observers.Value.EmailAddress _ _ => ok false
+  | value_observers.Value.PhoneNumber _ _ => ok false
+  | value_observers.Value.Address _ => ok false
+  | value_observers.Value.Url _ => ok false
+  | value_observers.Value.OauthScope _ => ok false
+  | value_observers.Value.OauthScopeMap _ _ => ok false
+  | value_observers.Value.PrivateBinary _ => ok false
+  | value_observers.Value.PublicBinary _ _ => ok false
+  | value_observers.Value.RestrictedString _ => ok false
+  | value_observers.Value.IntentToken _ _ => ok false
+  | value_observers.Value.Passkey _ _ _ => ok false
+  | value_observers.Value.AttestedPasskey _ _ _ => ok false
+  | value_observers.Value.Session _ _ => ok false
+  | value_observers.Value.ApiToken _ _ => ok false
+  | value_observers.Value.Oauth2Session _ _ => ok false
+  | value_observers.Value.JwsKeyEs256 _ => ok false
+  | value_observers.Value.JwsKeyRs256 _ => ok false
+  | value_observers.Value.UiHint _ => ok false
+  | value_observers.Value.TotpSecret _ _ => ok false
+  | value_observers.Value.AuditLogString _ _ => ok false
+  | value_observers.Value.Image _ => ok false
+  | value_observers.Value.CredentialType _ => ok false
+  | value_observers.Value.WebauthnAttestationCaList _ => ok false
+  | value_observers.Value.OauthClaimValue _ _ _ => ok false
+  | value_observers.Value.OauthClaimMap _ _ => ok false
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok false
+  | value_observers.Value.HexString _ => ok false
+  | value_observers.Value.Certificate _ => ok false
+  | value_observers.Value.ApplicationPassword _ => ok false
+  | value_observers.Value.Json _ => ok false
+  | value_observers.Value.Sha256 _ => ok false
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::is_sshkey]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 168:4-170:5
+    Visibility: public -/
+def value_observers.Value.is_sshkey
+  (self : value_observers.Value) : Result Bool := do
+  match self with
+  | value_observers.Value.Utf8 _ => ok false
+  | value_observers.Value.Iutf8 _ => ok false
+  | value_observers.Value.Iname _ => ok false
+  | value_observers.Value.Uuid _ => ok false
+  | value_observers.Value.Boolean _ => ok false
+  | value_observers.Value.Syntax _ => ok false
+  | value_observers.Value.Index _ => ok false
+  | value_observers.Value.Refer _ => ok false
+  | value_observers.Value.JsonFilt _ => ok false
+  | value_observers.Value.Cred _ _ => ok false
+  | value_observers.Value.SshKey _ _ => ok true
+  | value_observers.Value.SecretValue _ => ok false
+  | value_observers.Value.Spn _ _ => ok false
+  | value_observers.Value.Uint32 _ => ok false
+  | value_observers.Value.Int64 _ => ok false
+  | value_observers.Value.Uint64 _ => ok false
+  | value_observers.Value.Cid _ => ok false
+  | value_observers.Value.Nsuniqueid _ => ok false
+  | value_observers.Value.DateTime _ => ok false
+  | value_observers.Value.EmailAddress _ _ => ok false
+  | value_observers.Value.PhoneNumber _ _ => ok false
+  | value_observers.Value.Address _ => ok false
+  | value_observers.Value.Url _ => ok false
+  | value_observers.Value.OauthScope _ => ok false
+  | value_observers.Value.OauthScopeMap _ _ => ok false
+  | value_observers.Value.PrivateBinary _ => ok false
+  | value_observers.Value.PublicBinary _ _ => ok false
+  | value_observers.Value.RestrictedString _ => ok false
+  | value_observers.Value.IntentToken _ _ => ok false
+  | value_observers.Value.Passkey _ _ _ => ok false
+  | value_observers.Value.AttestedPasskey _ _ _ => ok false
+  | value_observers.Value.Session _ _ => ok false
+  | value_observers.Value.ApiToken _ _ => ok false
+  | value_observers.Value.Oauth2Session _ _ => ok false
+  | value_observers.Value.JwsKeyEs256 _ => ok false
+  | value_observers.Value.JwsKeyRs256 _ => ok false
+  | value_observers.Value.UiHint _ => ok false
+  | value_observers.Value.TotpSecret _ _ => ok false
+  | value_observers.Value.AuditLogString _ _ => ok false
+  | value_observers.Value.Image _ => ok false
+  | value_observers.Value.CredentialType _ => ok false
+  | value_observers.Value.WebauthnAttestationCaList _ => ok false
+  | value_observers.Value.OauthClaimValue _ _ _ => ok false
+  | value_observers.Value.OauthClaimMap _ _ => ok false
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok false
+  | value_observers.Value.HexString _ => ok false
+  | value_observers.Value.Certificate _ => ok false
+  | value_observers.Value.ApplicationPassword _ => ok false
+  | value_observers.Value.Json _ => ok false
+  | value_observers.Value.Sha256 _ => ok false
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::is_spn]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 171:4-173:5
+    Visibility: public -/
+def value_observers.Value.is_spn
+  (self : value_observers.Value) : Result Bool := do
+  match self with
+  | value_observers.Value.Utf8 _ => ok false
+  | value_observers.Value.Iutf8 _ => ok false
+  | value_observers.Value.Iname _ => ok false
+  | value_observers.Value.Uuid _ => ok false
+  | value_observers.Value.Boolean _ => ok false
+  | value_observers.Value.Syntax _ => ok false
+  | value_observers.Value.Index _ => ok false
+  | value_observers.Value.Refer _ => ok false
+  | value_observers.Value.JsonFilt _ => ok false
+  | value_observers.Value.Cred _ _ => ok false
+  | value_observers.Value.SshKey _ _ => ok false
+  | value_observers.Value.SecretValue _ => ok false
+  | value_observers.Value.Spn _ _ => ok true
+  | value_observers.Value.Uint32 _ => ok false
+  | value_observers.Value.Int64 _ => ok false
+  | value_observers.Value.Uint64 _ => ok false
+  | value_observers.Value.Cid _ => ok false
+  | value_observers.Value.Nsuniqueid _ => ok false
+  | value_observers.Value.DateTime _ => ok false
+  | value_observers.Value.EmailAddress _ _ => ok false
+  | value_observers.Value.PhoneNumber _ _ => ok false
+  | value_observers.Value.Address _ => ok false
+  | value_observers.Value.Url _ => ok false
+  | value_observers.Value.OauthScope _ => ok false
+  | value_observers.Value.OauthScopeMap _ _ => ok false
+  | value_observers.Value.PrivateBinary _ => ok false
+  | value_observers.Value.PublicBinary _ _ => ok false
+  | value_observers.Value.RestrictedString _ => ok false
+  | value_observers.Value.IntentToken _ _ => ok false
+  | value_observers.Value.Passkey _ _ _ => ok false
+  | value_observers.Value.AttestedPasskey _ _ _ => ok false
+  | value_observers.Value.Session _ _ => ok false
+  | value_observers.Value.ApiToken _ _ => ok false
+  | value_observers.Value.Oauth2Session _ _ => ok false
+  | value_observers.Value.JwsKeyEs256 _ => ok false
+  | value_observers.Value.JwsKeyRs256 _ => ok false
+  | value_observers.Value.UiHint _ => ok false
+  | value_observers.Value.TotpSecret _ _ => ok false
+  | value_observers.Value.AuditLogString _ _ => ok false
+  | value_observers.Value.Image _ => ok false
+  | value_observers.Value.CredentialType _ => ok false
+  | value_observers.Value.WebauthnAttestationCaList _ => ok false
+  | value_observers.Value.OauthClaimValue _ _ _ => ok false
+  | value_observers.Value.OauthClaimMap _ _ => ok false
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok false
+  | value_observers.Value.HexString _ => ok false
+  | value_observers.Value.Certificate _ => ok false
+  | value_observers.Value.ApplicationPassword _ => ok false
+  | value_observers.Value.Json _ => ok false
+  | value_observers.Value.Sha256 _ => ok false
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::is_uint32]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 174:4-176:5
+    Visibility: public -/
+def value_observers.Value.is_uint32
+  (self : value_observers.Value) : Result Bool := do
+  match self with
+  | value_observers.Value.Utf8 _ => ok false
+  | value_observers.Value.Iutf8 _ => ok false
+  | value_observers.Value.Iname _ => ok false
+  | value_observers.Value.Uuid _ => ok false
+  | value_observers.Value.Boolean _ => ok false
+  | value_observers.Value.Syntax _ => ok false
+  | value_observers.Value.Index _ => ok false
+  | value_observers.Value.Refer _ => ok false
+  | value_observers.Value.JsonFilt _ => ok false
+  | value_observers.Value.Cred _ _ => ok false
+  | value_observers.Value.SshKey _ _ => ok false
+  | value_observers.Value.SecretValue _ => ok false
+  | value_observers.Value.Spn _ _ => ok false
+  | value_observers.Value.Uint32 _ => ok true
+  | value_observers.Value.Int64 _ => ok false
+  | value_observers.Value.Uint64 _ => ok false
+  | value_observers.Value.Cid _ => ok false
+  | value_observers.Value.Nsuniqueid _ => ok false
+  | value_observers.Value.DateTime _ => ok false
+  | value_observers.Value.EmailAddress _ _ => ok false
+  | value_observers.Value.PhoneNumber _ _ => ok false
+  | value_observers.Value.Address _ => ok false
+  | value_observers.Value.Url _ => ok false
+  | value_observers.Value.OauthScope _ => ok false
+  | value_observers.Value.OauthScopeMap _ _ => ok false
+  | value_observers.Value.PrivateBinary _ => ok false
+  | value_observers.Value.PublicBinary _ _ => ok false
+  | value_observers.Value.RestrictedString _ => ok false
+  | value_observers.Value.IntentToken _ _ => ok false
+  | value_observers.Value.Passkey _ _ _ => ok false
+  | value_observers.Value.AttestedPasskey _ _ _ => ok false
+  | value_observers.Value.Session _ _ => ok false
+  | value_observers.Value.ApiToken _ _ => ok false
+  | value_observers.Value.Oauth2Session _ _ => ok false
+  | value_observers.Value.JwsKeyEs256 _ => ok false
+  | value_observers.Value.JwsKeyRs256 _ => ok false
+  | value_observers.Value.UiHint _ => ok false
+  | value_observers.Value.TotpSecret _ _ => ok false
+  | value_observers.Value.AuditLogString _ _ => ok false
+  | value_observers.Value.Image _ => ok false
+  | value_observers.Value.CredentialType _ => ok false
+  | value_observers.Value.WebauthnAttestationCaList _ => ok false
+  | value_observers.Value.OauthClaimValue _ _ _ => ok false
+  | value_observers.Value.OauthClaimMap _ _ => ok false
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok false
+  | value_observers.Value.HexString _ => ok false
+  | value_observers.Value.Certificate _ => ok false
+  | value_observers.Value.ApplicationPassword _ => ok false
+  | value_observers.Value.Json _ => ok false
+  | value_observers.Value.Sha256 _ => ok false
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::is_cid]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 177:4-179:5
+    Visibility: public -/
+def value_observers.Value.is_cid
+  (self : value_observers.Value) : Result Bool := do
+  match self with
+  | value_observers.Value.Utf8 _ => ok false
+  | value_observers.Value.Iutf8 _ => ok false
+  | value_observers.Value.Iname _ => ok false
+  | value_observers.Value.Uuid _ => ok false
+  | value_observers.Value.Boolean _ => ok false
+  | value_observers.Value.Syntax _ => ok false
+  | value_observers.Value.Index _ => ok false
+  | value_observers.Value.Refer _ => ok false
+  | value_observers.Value.JsonFilt _ => ok false
+  | value_observers.Value.Cred _ _ => ok false
+  | value_observers.Value.SshKey _ _ => ok false
+  | value_observers.Value.SecretValue _ => ok false
+  | value_observers.Value.Spn _ _ => ok false
+  | value_observers.Value.Uint32 _ => ok false
+  | value_observers.Value.Int64 _ => ok false
+  | value_observers.Value.Uint64 _ => ok false
+  | value_observers.Value.Cid _ => ok true
+  | value_observers.Value.Nsuniqueid _ => ok false
+  | value_observers.Value.DateTime _ => ok false
+  | value_observers.Value.EmailAddress _ _ => ok false
+  | value_observers.Value.PhoneNumber _ _ => ok false
+  | value_observers.Value.Address _ => ok false
+  | value_observers.Value.Url _ => ok false
+  | value_observers.Value.OauthScope _ => ok false
+  | value_observers.Value.OauthScopeMap _ _ => ok false
+  | value_observers.Value.PrivateBinary _ => ok false
+  | value_observers.Value.PublicBinary _ _ => ok false
+  | value_observers.Value.RestrictedString _ => ok false
+  | value_observers.Value.IntentToken _ _ => ok false
+  | value_observers.Value.Passkey _ _ _ => ok false
+  | value_observers.Value.AttestedPasskey _ _ _ => ok false
+  | value_observers.Value.Session _ _ => ok false
+  | value_observers.Value.ApiToken _ _ => ok false
+  | value_observers.Value.Oauth2Session _ _ => ok false
+  | value_observers.Value.JwsKeyEs256 _ => ok false
+  | value_observers.Value.JwsKeyRs256 _ => ok false
+  | value_observers.Value.UiHint _ => ok false
+  | value_observers.Value.TotpSecret _ _ => ok false
+  | value_observers.Value.AuditLogString _ _ => ok false
+  | value_observers.Value.Image _ => ok false
+  | value_observers.Value.CredentialType _ => ok false
+  | value_observers.Value.WebauthnAttestationCaList _ => ok false
+  | value_observers.Value.OauthClaimValue _ _ _ => ok false
+  | value_observers.Value.OauthClaimMap _ _ => ok false
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok false
+  | value_observers.Value.HexString _ => ok false
+  | value_observers.Value.Certificate _ => ok false
+  | value_observers.Value.ApplicationPassword _ => ok false
+  | value_observers.Value.Json _ => ok false
+  | value_observers.Value.Sha256 _ => ok false
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::is_nsuniqueid]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 180:4-182:5
+    Visibility: public -/
+def value_observers.Value.is_nsuniqueid
+  (self : value_observers.Value) : Result Bool := do
+  match self with
+  | value_observers.Value.Utf8 _ => ok false
+  | value_observers.Value.Iutf8 _ => ok false
+  | value_observers.Value.Iname _ => ok false
+  | value_observers.Value.Uuid _ => ok false
+  | value_observers.Value.Boolean _ => ok false
+  | value_observers.Value.Syntax _ => ok false
+  | value_observers.Value.Index _ => ok false
+  | value_observers.Value.Refer _ => ok false
+  | value_observers.Value.JsonFilt _ => ok false
+  | value_observers.Value.Cred _ _ => ok false
+  | value_observers.Value.SshKey _ _ => ok false
+  | value_observers.Value.SecretValue _ => ok false
+  | value_observers.Value.Spn _ _ => ok false
+  | value_observers.Value.Uint32 _ => ok false
+  | value_observers.Value.Int64 _ => ok false
+  | value_observers.Value.Uint64 _ => ok false
+  | value_observers.Value.Cid _ => ok false
+  | value_observers.Value.Nsuniqueid _ => ok true
+  | value_observers.Value.DateTime _ => ok false
+  | value_observers.Value.EmailAddress _ _ => ok false
+  | value_observers.Value.PhoneNumber _ _ => ok false
+  | value_observers.Value.Address _ => ok false
+  | value_observers.Value.Url _ => ok false
+  | value_observers.Value.OauthScope _ => ok false
+  | value_observers.Value.OauthScopeMap _ _ => ok false
+  | value_observers.Value.PrivateBinary _ => ok false
+  | value_observers.Value.PublicBinary _ _ => ok false
+  | value_observers.Value.RestrictedString _ => ok false
+  | value_observers.Value.IntentToken _ _ => ok false
+  | value_observers.Value.Passkey _ _ _ => ok false
+  | value_observers.Value.AttestedPasskey _ _ _ => ok false
+  | value_observers.Value.Session _ _ => ok false
+  | value_observers.Value.ApiToken _ _ => ok false
+  | value_observers.Value.Oauth2Session _ _ => ok false
+  | value_observers.Value.JwsKeyEs256 _ => ok false
+  | value_observers.Value.JwsKeyRs256 _ => ok false
+  | value_observers.Value.UiHint _ => ok false
+  | value_observers.Value.TotpSecret _ _ => ok false
+  | value_observers.Value.AuditLogString _ _ => ok false
+  | value_observers.Value.Image _ => ok false
+  | value_observers.Value.CredentialType _ => ok false
+  | value_observers.Value.WebauthnAttestationCaList _ => ok false
+  | value_observers.Value.OauthClaimValue _ _ _ => ok false
+  | value_observers.Value.OauthClaimMap _ _ => ok false
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok false
+  | value_observers.Value.HexString _ => ok false
+  | value_observers.Value.Certificate _ => ok false
+  | value_observers.Value.ApplicationPassword _ => ok false
+  | value_observers.Value.Json _ => ok false
+  | value_observers.Value.Sha256 _ => ok false
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::is_datetime]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 183:4-185:5
+    Visibility: public -/
+def value_observers.Value.is_datetime
+  (self : value_observers.Value) : Result Bool := do
+  match self with
+  | value_observers.Value.Utf8 _ => ok false
+  | value_observers.Value.Iutf8 _ => ok false
+  | value_observers.Value.Iname _ => ok false
+  | value_observers.Value.Uuid _ => ok false
+  | value_observers.Value.Boolean _ => ok false
+  | value_observers.Value.Syntax _ => ok false
+  | value_observers.Value.Index _ => ok false
+  | value_observers.Value.Refer _ => ok false
+  | value_observers.Value.JsonFilt _ => ok false
+  | value_observers.Value.Cred _ _ => ok false
+  | value_observers.Value.SshKey _ _ => ok false
+  | value_observers.Value.SecretValue _ => ok false
+  | value_observers.Value.Spn _ _ => ok false
+  | value_observers.Value.Uint32 _ => ok false
+  | value_observers.Value.Int64 _ => ok false
+  | value_observers.Value.Uint64 _ => ok false
+  | value_observers.Value.Cid _ => ok false
+  | value_observers.Value.Nsuniqueid _ => ok false
+  | value_observers.Value.DateTime _ => ok true
+  | value_observers.Value.EmailAddress _ _ => ok false
+  | value_observers.Value.PhoneNumber _ _ => ok false
+  | value_observers.Value.Address _ => ok false
+  | value_observers.Value.Url _ => ok false
+  | value_observers.Value.OauthScope _ => ok false
+  | value_observers.Value.OauthScopeMap _ _ => ok false
+  | value_observers.Value.PrivateBinary _ => ok false
+  | value_observers.Value.PublicBinary _ _ => ok false
+  | value_observers.Value.RestrictedString _ => ok false
+  | value_observers.Value.IntentToken _ _ => ok false
+  | value_observers.Value.Passkey _ _ _ => ok false
+  | value_observers.Value.AttestedPasskey _ _ _ => ok false
+  | value_observers.Value.Session _ _ => ok false
+  | value_observers.Value.ApiToken _ _ => ok false
+  | value_observers.Value.Oauth2Session _ _ => ok false
+  | value_observers.Value.JwsKeyEs256 _ => ok false
+  | value_observers.Value.JwsKeyRs256 _ => ok false
+  | value_observers.Value.UiHint _ => ok false
+  | value_observers.Value.TotpSecret _ _ => ok false
+  | value_observers.Value.AuditLogString _ _ => ok false
+  | value_observers.Value.Image _ => ok false
+  | value_observers.Value.CredentialType _ => ok false
+  | value_observers.Value.WebauthnAttestationCaList _ => ok false
+  | value_observers.Value.OauthClaimValue _ _ _ => ok false
+  | value_observers.Value.OauthClaimMap _ _ => ok false
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok false
+  | value_observers.Value.HexString _ => ok false
+  | value_observers.Value.Certificate _ => ok false
+  | value_observers.Value.ApplicationPassword _ => ok false
+  | value_observers.Value.Json _ => ok false
+  | value_observers.Value.Sha256 _ => ok false
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::is_email_address]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 186:4-188:5
+    Visibility: public -/
+def value_observers.Value.is_email_address
+  (self : value_observers.Value) : Result Bool := do
+  match self with
+  | value_observers.Value.Utf8 _ => ok false
+  | value_observers.Value.Iutf8 _ => ok false
+  | value_observers.Value.Iname _ => ok false
+  | value_observers.Value.Uuid _ => ok false
+  | value_observers.Value.Boolean _ => ok false
+  | value_observers.Value.Syntax _ => ok false
+  | value_observers.Value.Index _ => ok false
+  | value_observers.Value.Refer _ => ok false
+  | value_observers.Value.JsonFilt _ => ok false
+  | value_observers.Value.Cred _ _ => ok false
+  | value_observers.Value.SshKey _ _ => ok false
+  | value_observers.Value.SecretValue _ => ok false
+  | value_observers.Value.Spn _ _ => ok false
+  | value_observers.Value.Uint32 _ => ok false
+  | value_observers.Value.Int64 _ => ok false
+  | value_observers.Value.Uint64 _ => ok false
+  | value_observers.Value.Cid _ => ok false
+  | value_observers.Value.Nsuniqueid _ => ok false
+  | value_observers.Value.DateTime _ => ok false
+  | value_observers.Value.EmailAddress _ _ => ok true
+  | value_observers.Value.PhoneNumber _ _ => ok false
+  | value_observers.Value.Address _ => ok false
+  | value_observers.Value.Url _ => ok false
+  | value_observers.Value.OauthScope _ => ok false
+  | value_observers.Value.OauthScopeMap _ _ => ok false
+  | value_observers.Value.PrivateBinary _ => ok false
+  | value_observers.Value.PublicBinary _ _ => ok false
+  | value_observers.Value.RestrictedString _ => ok false
+  | value_observers.Value.IntentToken _ _ => ok false
+  | value_observers.Value.Passkey _ _ _ => ok false
+  | value_observers.Value.AttestedPasskey _ _ _ => ok false
+  | value_observers.Value.Session _ _ => ok false
+  | value_observers.Value.ApiToken _ _ => ok false
+  | value_observers.Value.Oauth2Session _ _ => ok false
+  | value_observers.Value.JwsKeyEs256 _ => ok false
+  | value_observers.Value.JwsKeyRs256 _ => ok false
+  | value_observers.Value.UiHint _ => ok false
+  | value_observers.Value.TotpSecret _ _ => ok false
+  | value_observers.Value.AuditLogString _ _ => ok false
+  | value_observers.Value.Image _ => ok false
+  | value_observers.Value.CredentialType _ => ok false
+  | value_observers.Value.WebauthnAttestationCaList _ => ok false
+  | value_observers.Value.OauthClaimValue _ _ _ => ok false
+  | value_observers.Value.OauthClaimMap _ _ => ok false
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok false
+  | value_observers.Value.HexString _ => ok false
+  | value_observers.Value.Certificate _ => ok false
+  | value_observers.Value.ApplicationPassword _ => ok false
+  | value_observers.Value.Json _ => ok false
+  | value_observers.Value.Sha256 _ => ok false
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::is_url]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 189:4-191:5
+    Visibility: public -/
+def value_observers.Value.is_url
+  (self : value_observers.Value) : Result Bool := do
+  match self with
+  | value_observers.Value.Utf8 _ => ok false
+  | value_observers.Value.Iutf8 _ => ok false
+  | value_observers.Value.Iname _ => ok false
+  | value_observers.Value.Uuid _ => ok false
+  | value_observers.Value.Boolean _ => ok false
+  | value_observers.Value.Syntax _ => ok false
+  | value_observers.Value.Index _ => ok false
+  | value_observers.Value.Refer _ => ok false
+  | value_observers.Value.JsonFilt _ => ok false
+  | value_observers.Value.Cred _ _ => ok false
+  | value_observers.Value.SshKey _ _ => ok false
+  | value_observers.Value.SecretValue _ => ok false
+  | value_observers.Value.Spn _ _ => ok false
+  | value_observers.Value.Uint32 _ => ok false
+  | value_observers.Value.Int64 _ => ok false
+  | value_observers.Value.Uint64 _ => ok false
+  | value_observers.Value.Cid _ => ok false
+  | value_observers.Value.Nsuniqueid _ => ok false
+  | value_observers.Value.DateTime _ => ok false
+  | value_observers.Value.EmailAddress _ _ => ok false
+  | value_observers.Value.PhoneNumber _ _ => ok false
+  | value_observers.Value.Address _ => ok false
+  | value_observers.Value.Url _ => ok true
+  | value_observers.Value.OauthScope _ => ok false
+  | value_observers.Value.OauthScopeMap _ _ => ok false
+  | value_observers.Value.PrivateBinary _ => ok false
+  | value_observers.Value.PublicBinary _ _ => ok false
+  | value_observers.Value.RestrictedString _ => ok false
+  | value_observers.Value.IntentToken _ _ => ok false
+  | value_observers.Value.Passkey _ _ _ => ok false
+  | value_observers.Value.AttestedPasskey _ _ _ => ok false
+  | value_observers.Value.Session _ _ => ok false
+  | value_observers.Value.ApiToken _ _ => ok false
+  | value_observers.Value.Oauth2Session _ _ => ok false
+  | value_observers.Value.JwsKeyEs256 _ => ok false
+  | value_observers.Value.JwsKeyRs256 _ => ok false
+  | value_observers.Value.UiHint _ => ok false
+  | value_observers.Value.TotpSecret _ _ => ok false
+  | value_observers.Value.AuditLogString _ _ => ok false
+  | value_observers.Value.Image _ => ok false
+  | value_observers.Value.CredentialType _ => ok false
+  | value_observers.Value.WebauthnAttestationCaList _ => ok false
+  | value_observers.Value.OauthClaimValue _ _ _ => ok false
+  | value_observers.Value.OauthClaimMap _ _ => ok false
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok false
+  | value_observers.Value.HexString _ => ok false
+  | value_observers.Value.Certificate _ => ok false
+  | value_observers.Value.ApplicationPassword _ => ok false
+  | value_observers.Value.Json _ => ok false
+  | value_observers.Value.Sha256 _ => ok false
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::is_oauthscope]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 192:4-194:5
+    Visibility: public -/
+def value_observers.Value.is_oauthscope
+  (self : value_observers.Value) : Result Bool := do
+  match self with
+  | value_observers.Value.Utf8 _ => ok false
+  | value_observers.Value.Iutf8 _ => ok false
+  | value_observers.Value.Iname _ => ok false
+  | value_observers.Value.Uuid _ => ok false
+  | value_observers.Value.Boolean _ => ok false
+  | value_observers.Value.Syntax _ => ok false
+  | value_observers.Value.Index _ => ok false
+  | value_observers.Value.Refer _ => ok false
+  | value_observers.Value.JsonFilt _ => ok false
+  | value_observers.Value.Cred _ _ => ok false
+  | value_observers.Value.SshKey _ _ => ok false
+  | value_observers.Value.SecretValue _ => ok false
+  | value_observers.Value.Spn _ _ => ok false
+  | value_observers.Value.Uint32 _ => ok false
+  | value_observers.Value.Int64 _ => ok false
+  | value_observers.Value.Uint64 _ => ok false
+  | value_observers.Value.Cid _ => ok false
+  | value_observers.Value.Nsuniqueid _ => ok false
+  | value_observers.Value.DateTime _ => ok false
+  | value_observers.Value.EmailAddress _ _ => ok false
+  | value_observers.Value.PhoneNumber _ _ => ok false
+  | value_observers.Value.Address _ => ok false
+  | value_observers.Value.Url _ => ok false
+  | value_observers.Value.OauthScope _ => ok true
+  | value_observers.Value.OauthScopeMap _ _ => ok false
+  | value_observers.Value.PrivateBinary _ => ok false
+  | value_observers.Value.PublicBinary _ _ => ok false
+  | value_observers.Value.RestrictedString _ => ok false
+  | value_observers.Value.IntentToken _ _ => ok false
+  | value_observers.Value.Passkey _ _ _ => ok false
+  | value_observers.Value.AttestedPasskey _ _ _ => ok false
+  | value_observers.Value.Session _ _ => ok false
+  | value_observers.Value.ApiToken _ _ => ok false
+  | value_observers.Value.Oauth2Session _ _ => ok false
+  | value_observers.Value.JwsKeyEs256 _ => ok false
+  | value_observers.Value.JwsKeyRs256 _ => ok false
+  | value_observers.Value.UiHint _ => ok false
+  | value_observers.Value.TotpSecret _ _ => ok false
+  | value_observers.Value.AuditLogString _ _ => ok false
+  | value_observers.Value.Image _ => ok false
+  | value_observers.Value.CredentialType _ => ok false
+  | value_observers.Value.WebauthnAttestationCaList _ => ok false
+  | value_observers.Value.OauthClaimValue _ _ _ => ok false
+  | value_observers.Value.OauthClaimMap _ _ => ok false
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok false
+  | value_observers.Value.HexString _ => ok false
+  | value_observers.Value.Certificate _ => ok false
+  | value_observers.Value.ApplicationPassword _ => ok false
+  | value_observers.Value.Json _ => ok false
+  | value_observers.Value.Sha256 _ => ok false
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::is_oauthscopemap]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 195:4-197:5
+    Visibility: public -/
+def value_observers.Value.is_oauthscopemap
+  (self : value_observers.Value) : Result Bool := do
+  match self with
+  | value_observers.Value.Utf8 _ => ok false
+  | value_observers.Value.Iutf8 _ => ok false
+  | value_observers.Value.Iname _ => ok false
+  | value_observers.Value.Uuid _ => ok false
+  | value_observers.Value.Boolean _ => ok false
+  | value_observers.Value.Syntax _ => ok false
+  | value_observers.Value.Index _ => ok false
+  | value_observers.Value.Refer _ => ok false
+  | value_observers.Value.JsonFilt _ => ok false
+  | value_observers.Value.Cred _ _ => ok false
+  | value_observers.Value.SshKey _ _ => ok false
+  | value_observers.Value.SecretValue _ => ok false
+  | value_observers.Value.Spn _ _ => ok false
+  | value_observers.Value.Uint32 _ => ok false
+  | value_observers.Value.Int64 _ => ok false
+  | value_observers.Value.Uint64 _ => ok false
+  | value_observers.Value.Cid _ => ok false
+  | value_observers.Value.Nsuniqueid _ => ok false
+  | value_observers.Value.DateTime _ => ok false
+  | value_observers.Value.EmailAddress _ _ => ok false
+  | value_observers.Value.PhoneNumber _ _ => ok false
+  | value_observers.Value.Address _ => ok false
+  | value_observers.Value.Url _ => ok false
+  | value_observers.Value.OauthScope _ => ok false
+  | value_observers.Value.OauthScopeMap _ _ => ok true
+  | value_observers.Value.PrivateBinary _ => ok false
+  | value_observers.Value.PublicBinary _ _ => ok false
+  | value_observers.Value.RestrictedString _ => ok false
+  | value_observers.Value.IntentToken _ _ => ok false
+  | value_observers.Value.Passkey _ _ _ => ok false
+  | value_observers.Value.AttestedPasskey _ _ _ => ok false
+  | value_observers.Value.Session _ _ => ok false
+  | value_observers.Value.ApiToken _ _ => ok false
+  | value_observers.Value.Oauth2Session _ _ => ok false
+  | value_observers.Value.JwsKeyEs256 _ => ok false
+  | value_observers.Value.JwsKeyRs256 _ => ok false
+  | value_observers.Value.UiHint _ => ok false
+  | value_observers.Value.TotpSecret _ _ => ok false
+  | value_observers.Value.AuditLogString _ _ => ok false
+  | value_observers.Value.Image _ => ok false
+  | value_observers.Value.CredentialType _ => ok false
+  | value_observers.Value.WebauthnAttestationCaList _ => ok false
+  | value_observers.Value.OauthClaimValue _ _ _ => ok false
+  | value_observers.Value.OauthClaimMap _ _ => ok false
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok false
+  | value_observers.Value.HexString _ => ok false
+  | value_observers.Value.Certificate _ => ok false
+  | value_observers.Value.ApplicationPassword _ => ok false
+  | value_observers.Value.Json _ => ok false
+  | value_observers.Value.Sha256 _ => ok false
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::is_privatebinary]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 198:4-200:5
+    Visibility: public -/
+def value_observers.Value.is_privatebinary
+  (self : value_observers.Value) : Result Bool := do
+  match self with
+  | value_observers.Value.Utf8 _ => ok false
+  | value_observers.Value.Iutf8 _ => ok false
+  | value_observers.Value.Iname _ => ok false
+  | value_observers.Value.Uuid _ => ok false
+  | value_observers.Value.Boolean _ => ok false
+  | value_observers.Value.Syntax _ => ok false
+  | value_observers.Value.Index _ => ok false
+  | value_observers.Value.Refer _ => ok false
+  | value_observers.Value.JsonFilt _ => ok false
+  | value_observers.Value.Cred _ _ => ok false
+  | value_observers.Value.SshKey _ _ => ok false
+  | value_observers.Value.SecretValue _ => ok false
+  | value_observers.Value.Spn _ _ => ok false
+  | value_observers.Value.Uint32 _ => ok false
+  | value_observers.Value.Int64 _ => ok false
+  | value_observers.Value.Uint64 _ => ok false
+  | value_observers.Value.Cid _ => ok false
+  | value_observers.Value.Nsuniqueid _ => ok false
+  | value_observers.Value.DateTime _ => ok false
+  | value_observers.Value.EmailAddress _ _ => ok false
+  | value_observers.Value.PhoneNumber _ _ => ok false
+  | value_observers.Value.Address _ => ok false
+  | value_observers.Value.Url _ => ok false
+  | value_observers.Value.OauthScope _ => ok false
+  | value_observers.Value.OauthScopeMap _ _ => ok false
+  | value_observers.Value.PrivateBinary _ => ok true
+  | value_observers.Value.PublicBinary _ _ => ok false
+  | value_observers.Value.RestrictedString _ => ok false
+  | value_observers.Value.IntentToken _ _ => ok false
+  | value_observers.Value.Passkey _ _ _ => ok false
+  | value_observers.Value.AttestedPasskey _ _ _ => ok false
+  | value_observers.Value.Session _ _ => ok false
+  | value_observers.Value.ApiToken _ _ => ok false
+  | value_observers.Value.Oauth2Session _ _ => ok false
+  | value_observers.Value.JwsKeyEs256 _ => ok false
+  | value_observers.Value.JwsKeyRs256 _ => ok false
+  | value_observers.Value.UiHint _ => ok false
+  | value_observers.Value.TotpSecret _ _ => ok false
+  | value_observers.Value.AuditLogString _ _ => ok false
+  | value_observers.Value.Image _ => ok false
+  | value_observers.Value.CredentialType _ => ok false
+  | value_observers.Value.WebauthnAttestationCaList _ => ok false
+  | value_observers.Value.OauthClaimValue _ _ _ => ok false
+  | value_observers.Value.OauthClaimMap _ _ => ok false
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok false
+  | value_observers.Value.HexString _ => ok false
+  | value_observers.Value.Certificate _ => ok false
+  | value_observers.Value.ApplicationPassword _ => ok false
+  | value_observers.Value.Json _ => ok false
+  | value_observers.Value.Sha256 _ => ok false
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::as_json_filter]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 201:4-206:5
+    Visibility: public -/
+def value_observers.Value.as_json_filter
+  (self : value_observers.Value) : Result (Option Std.U64) := do
+  match self with
+  | value_observers.Value.Utf8 _ => ok none
+  | value_observers.Value.Iutf8 _ => ok none
+  | value_observers.Value.Iname _ => ok none
+  | value_observers.Value.Uuid _ => ok none
+  | value_observers.Value.Boolean _ => ok none
+  | value_observers.Value.Syntax _ => ok none
+  | value_observers.Value.Index _ => ok none
+  | value_observers.Value.Refer _ => ok none
+  | value_observers.Value.JsonFilt f => ok (some f)
+  | value_observers.Value.Cred _ _ => ok none
+  | value_observers.Value.SshKey _ _ => ok none
+  | value_observers.Value.SecretValue _ => ok none
+  | value_observers.Value.Spn _ _ => ok none
+  | value_observers.Value.Uint32 _ => ok none
+  | value_observers.Value.Int64 _ => ok none
+  | value_observers.Value.Uint64 _ => ok none
+  | value_observers.Value.Cid _ => ok none
+  | value_observers.Value.Nsuniqueid _ => ok none
+  | value_observers.Value.DateTime _ => ok none
+  | value_observers.Value.EmailAddress _ _ => ok none
+  | value_observers.Value.PhoneNumber _ _ => ok none
+  | value_observers.Value.Address _ => ok none
+  | value_observers.Value.Url _ => ok none
+  | value_observers.Value.OauthScope _ => ok none
+  | value_observers.Value.OauthScopeMap _ _ => ok none
+  | value_observers.Value.PrivateBinary _ => ok none
+  | value_observers.Value.PublicBinary _ _ => ok none
+  | value_observers.Value.RestrictedString _ => ok none
+  | value_observers.Value.IntentToken _ _ => ok none
+  | value_observers.Value.Passkey _ _ _ => ok none
+  | value_observers.Value.AttestedPasskey _ _ _ => ok none
+  | value_observers.Value.Session _ _ => ok none
+  | value_observers.Value.ApiToken _ _ => ok none
+  | value_observers.Value.Oauth2Session _ _ => ok none
+  | value_observers.Value.JwsKeyEs256 _ => ok none
+  | value_observers.Value.JwsKeyRs256 _ => ok none
+  | value_observers.Value.UiHint _ => ok none
+  | value_observers.Value.TotpSecret _ _ => ok none
+  | value_observers.Value.AuditLogString _ _ => ok none
+  | value_observers.Value.Image _ => ok none
+  | value_observers.Value.CredentialType _ => ok none
+  | value_observers.Value.WebauthnAttestationCaList _ => ok none
+  | value_observers.Value.OauthClaimValue _ _ _ => ok none
+  | value_observers.Value.OauthClaimMap _ _ => ok none
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok none
+  | value_observers.Value.HexString _ => ok none
+  | value_observers.Value.Certificate _ => ok none
+  | value_observers.Value.ApplicationPassword _ => ok none
+  | value_observers.Value.Json _ => ok none
+  | value_observers.Value.Sha256 _ => ok none
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::to_credential]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 207:4-212:5
+    Visibility: public -/
+def value_observers.Value.to_credential
+  (self : value_observers.Value) : Result (Option Std.U64) := do
+  match self with
+  | value_observers.Value.Utf8 _ => ok none
+  | value_observers.Value.Iutf8 _ => ok none
+  | value_observers.Value.Iname _ => ok none
+  | value_observers.Value.Uuid _ => ok none
+  | value_observers.Value.Boolean _ => ok none
+  | value_observers.Value.Syntax _ => ok none
+  | value_observers.Value.Index _ => ok none
+  | value_observers.Value.Refer _ => ok none
+  | value_observers.Value.JsonFilt _ => ok none
+  | value_observers.Value.Cred _ cred => ok (some cred)
+  | value_observers.Value.SshKey _ _ => ok none
+  | value_observers.Value.SecretValue _ => ok none
+  | value_observers.Value.Spn _ _ => ok none
+  | value_observers.Value.Uint32 _ => ok none
+  | value_observers.Value.Int64 _ => ok none
+  | value_observers.Value.Uint64 _ => ok none
+  | value_observers.Value.Cid _ => ok none
+  | value_observers.Value.Nsuniqueid _ => ok none
+  | value_observers.Value.DateTime _ => ok none
+  | value_observers.Value.EmailAddress _ _ => ok none
+  | value_observers.Value.PhoneNumber _ _ => ok none
+  | value_observers.Value.Address _ => ok none
+  | value_observers.Value.Url _ => ok none
+  | value_observers.Value.OauthScope _ => ok none
+  | value_observers.Value.OauthScopeMap _ _ => ok none
+  | value_observers.Value.PrivateBinary _ => ok none
+  | value_observers.Value.PublicBinary _ _ => ok none
+  | value_observers.Value.RestrictedString _ => ok none
+  | value_observers.Value.IntentToken _ _ => ok none
+  | value_observers.Value.Passkey _ _ _ => ok none
+  | value_observers.Value.AttestedPasskey _ _ _ => ok none
+  | value_observers.Value.Session _ _ => ok none
+  | value_observers.Value.ApiToken _ _ => ok none
+  | value_observers.Value.Oauth2Session _ _ => ok none
+  | value_observers.Value.JwsKeyEs256 _ => ok none
+  | value_observers.Value.JwsKeyRs256 _ => ok none
+  | value_observers.Value.UiHint _ => ok none
+  | value_observers.Value.TotpSecret _ _ => ok none
+  | value_observers.Value.AuditLogString _ _ => ok none
+  | value_observers.Value.Image _ => ok none
+  | value_observers.Value.CredentialType _ => ok none
+  | value_observers.Value.WebauthnAttestationCaList _ => ok none
+  | value_observers.Value.OauthClaimValue _ _ _ => ok none
+  | value_observers.Value.OauthClaimMap _ _ => ok none
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok none
+  | value_observers.Value.HexString _ => ok none
+  | value_observers.Value.Certificate _ => ok none
+  | value_observers.Value.ApplicationPassword _ => ok none
+  | value_observers.Value.Json _ => ok none
+  | value_observers.Value.Sha256 _ => ok none
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::get_secret_str]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 213:4-218:5
+    Visibility: public -/
+def value_observers.Value.get_secret_str
+  (self : value_observers.Value) : Result (Option Std.U64) := do
+  match self with
+  | value_observers.Value.Utf8 _ => ok none
+  | value_observers.Value.Iutf8 _ => ok none
+  | value_observers.Value.Iname _ => ok none
+  | value_observers.Value.Uuid _ => ok none
+  | value_observers.Value.Boolean _ => ok none
+  | value_observers.Value.Syntax _ => ok none
+  | value_observers.Value.Index _ => ok none
+  | value_observers.Value.Refer _ => ok none
+  | value_observers.Value.JsonFilt _ => ok none
+  | value_observers.Value.Cred _ _ => ok none
+  | value_observers.Value.SshKey _ _ => ok none
+  | value_observers.Value.SecretValue c => ok (some c)
+  | value_observers.Value.Spn _ _ => ok none
+  | value_observers.Value.Uint32 _ => ok none
+  | value_observers.Value.Int64 _ => ok none
+  | value_observers.Value.Uint64 _ => ok none
+  | value_observers.Value.Cid _ => ok none
+  | value_observers.Value.Nsuniqueid _ => ok none
+  | value_observers.Value.DateTime _ => ok none
+  | value_observers.Value.EmailAddress _ _ => ok none
+  | value_observers.Value.PhoneNumber _ _ => ok none
+  | value_observers.Value.Address _ => ok none
+  | value_observers.Value.Url _ => ok none
+  | value_observers.Value.OauthScope _ => ok none
+  | value_observers.Value.OauthScopeMap _ _ => ok none
+  | value_observers.Value.PrivateBinary _ => ok none
+  | value_observers.Value.PublicBinary _ _ => ok none
+  | value_observers.Value.RestrictedString _ => ok none
+  | value_observers.Value.IntentToken _ _ => ok none
+  | value_observers.Value.Passkey _ _ _ => ok none
+  | value_observers.Value.AttestedPasskey _ _ _ => ok none
+  | value_observers.Value.Session _ _ => ok none
+  | value_observers.Value.ApiToken _ _ => ok none
+  | value_observers.Value.Oauth2Session _ _ => ok none
+  | value_observers.Value.JwsKeyEs256 _ => ok none
+  | value_observers.Value.JwsKeyRs256 _ => ok none
+  | value_observers.Value.UiHint _ => ok none
+  | value_observers.Value.TotpSecret _ _ => ok none
+  | value_observers.Value.AuditLogString _ _ => ok none
+  | value_observers.Value.Image _ => ok none
+  | value_observers.Value.CredentialType _ => ok none
+  | value_observers.Value.WebauthnAttestationCaList _ => ok none
+  | value_observers.Value.OauthClaimValue _ _ _ => ok none
+  | value_observers.Value.OauthClaimMap _ _ => ok none
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok none
+  | value_observers.Value.HexString _ => ok none
+  | value_observers.Value.Certificate _ => ok none
+  | value_observers.Value.ApplicationPassword _ => ok none
+  | value_observers.Value.Json _ => ok none
+  | value_observers.Value.Sha256 _ => ok none
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::to_privatebinary]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 219:4-224:5
+    Visibility: public -/
+def value_observers.Value.to_privatebinary
+  (self : value_observers.Value) : Result (Option Std.U64) := do
+  match self with
+  | value_observers.Value.Utf8 _ => ok none
+  | value_observers.Value.Iutf8 _ => ok none
+  | value_observers.Value.Iname _ => ok none
+  | value_observers.Value.Uuid _ => ok none
+  | value_observers.Value.Boolean _ => ok none
+  | value_observers.Value.Syntax _ => ok none
+  | value_observers.Value.Index _ => ok none
+  | value_observers.Value.Refer _ => ok none
+  | value_observers.Value.JsonFilt _ => ok none
+  | value_observers.Value.Cred _ _ => ok none
+  | value_observers.Value.SshKey _ _ => ok none
+  | value_observers.Value.SecretValue _ => ok none
+  | value_observers.Value.Spn _ _ => ok none
+  | value_observers.Value.Uint32 _ => ok none
+  | value_observers.Value.Int64 _ => ok none
+  | value_observers.Value.Uint64 _ => ok none
+  | value_observers.Value.Cid _ => ok none
+  | value_observers.Value.Nsuniqueid _ => ok none
+  | value_observers.Value.DateTime _ => ok none
+  | value_observers.Value.EmailAddress _ _ => ok none
+  | value_observers.Value.PhoneNumber _ _ => ok none
+  | value_observers.Value.Address _ => ok none
+  | value_observers.Value.Url _ => ok none
+  | value_observers.Value.OauthScope _ => ok none
+  | value_observers.Value.OauthScopeMap _ _ => ok none
+  | value_observers.Value.PrivateBinary c => ok (some c)
+  | value_observers.Value.PublicBinary _ _ => ok none
+  | value_observers.Value.RestrictedString _ => ok none
+  | value_observers.Value.IntentToken _ _ => ok none
+  | value_observers.Value.Passkey _ _ _ => ok none
+  | value_observers.Value.AttestedPasskey _ _ _ => ok none
+  | value_observers.Value.Session _ _ => ok none
+  | value_observers.Value.ApiToken _ _ => ok none
+  | value_observers.Value.Oauth2Session _ _ => ok none
+  | value_observers.Value.JwsKeyEs256 _ => ok none
+  | value_observers.Value.JwsKeyRs256 _ => ok none
+  | value_observers.Value.UiHint _ => ok none
+  | value_observers.Value.TotpSecret _ _ => ok none
+  | value_observers.Value.AuditLogString _ _ => ok none
+  | value_observers.Value.Image _ => ok none
+  | value_observers.Value.CredentialType _ => ok none
+  | value_observers.Value.WebauthnAttestationCaList _ => ok none
+  | value_observers.Value.OauthClaimValue _ _ _ => ok none
+  | value_observers.Value.OauthClaimMap _ _ => ok none
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok none
+  | value_observers.Value.HexString _ => ok none
+  | value_observers.Value.Certificate _ => ok none
+  | value_observers.Value.ApplicationPassword _ => ok none
+  | value_observers.Value.Json _ => ok none
+  | value_observers.Value.Sha256 _ => ok none
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::to_str]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 225:4-232:5
+    Visibility: public -/
+def value_observers.Value.to_str
+  (self : value_observers.Value) : Result (Option Std.U64) := do
+  match self with
+  | value_observers.Value.Utf8 s => ok (some s)
+  | value_observers.Value.Iutf8 s => ok (some s)
+  | value_observers.Value.Iname s => ok (some s)
+  | value_observers.Value.Uuid _ => ok none
+  | value_observers.Value.Boolean _ => ok none
+  | value_observers.Value.Syntax _ => ok none
+  | value_observers.Value.Index _ => ok none
+  | value_observers.Value.Refer _ => ok none
+  | value_observers.Value.JsonFilt _ => ok none
+  | value_observers.Value.Cred _ _ => ok none
+  | value_observers.Value.SshKey _ _ => ok none
+  | value_observers.Value.SecretValue _ => ok none
+  | value_observers.Value.Spn _ _ => ok none
+  | value_observers.Value.Uint32 _ => ok none
+  | value_observers.Value.Int64 _ => ok none
+  | value_observers.Value.Uint64 _ => ok none
+  | value_observers.Value.Cid _ => ok none
+  | value_observers.Value.Nsuniqueid _ => ok none
+  | value_observers.Value.DateTime _ => ok none
+  | value_observers.Value.EmailAddress _ _ => ok none
+  | value_observers.Value.PhoneNumber _ _ => ok none
+  | value_observers.Value.Address _ => ok none
+  | value_observers.Value.Url _ => ok none
+  | value_observers.Value.OauthScope _ => ok none
+  | value_observers.Value.OauthScopeMap _ _ => ok none
+  | value_observers.Value.PrivateBinary _ => ok none
+  | value_observers.Value.PublicBinary _ _ => ok none
+  | value_observers.Value.RestrictedString _ => ok none
+  | value_observers.Value.IntentToken _ _ => ok none
+  | value_observers.Value.Passkey _ _ _ => ok none
+  | value_observers.Value.AttestedPasskey _ _ _ => ok none
+  | value_observers.Value.Session _ _ => ok none
+  | value_observers.Value.ApiToken _ _ => ok none
+  | value_observers.Value.Oauth2Session _ _ => ok none
+  | value_observers.Value.JwsKeyEs256 _ => ok none
+  | value_observers.Value.JwsKeyRs256 _ => ok none
+  | value_observers.Value.UiHint _ => ok none
+  | value_observers.Value.TotpSecret _ _ => ok none
+  | value_observers.Value.AuditLogString _ _ => ok none
+  | value_observers.Value.Image _ => ok none
+  | value_observers.Value.CredentialType _ => ok none
+  | value_observers.Value.WebauthnAttestationCaList _ => ok none
+  | value_observers.Value.OauthClaimValue _ _ _ => ok none
+  | value_observers.Value.OauthClaimMap _ _ => ok none
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok none
+  | value_observers.Value.HexString _ => ok none
+  | value_observers.Value.Certificate _ => ok none
+  | value_observers.Value.ApplicationPassword _ => ok none
+  | value_observers.Value.Json _ => ok none
+  | value_observers.Value.Sha256 _ => ok none
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::to_url]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 233:4-238:5
+    Visibility: public -/
+def value_observers.Value.to_url
+  (self : value_observers.Value) : Result (Option Std.U64) := do
+  match self with
+  | value_observers.Value.Utf8 _ => ok none
+  | value_observers.Value.Iutf8 _ => ok none
+  | value_observers.Value.Iname _ => ok none
+  | value_observers.Value.Uuid _ => ok none
+  | value_observers.Value.Boolean _ => ok none
+  | value_observers.Value.Syntax _ => ok none
+  | value_observers.Value.Index _ => ok none
+  | value_observers.Value.Refer _ => ok none
+  | value_observers.Value.JsonFilt _ => ok none
+  | value_observers.Value.Cred _ _ => ok none
+  | value_observers.Value.SshKey _ _ => ok none
+  | value_observers.Value.SecretValue _ => ok none
+  | value_observers.Value.Spn _ _ => ok none
+  | value_observers.Value.Uint32 _ => ok none
+  | value_observers.Value.Int64 _ => ok none
+  | value_observers.Value.Uint64 _ => ok none
+  | value_observers.Value.Cid _ => ok none
+  | value_observers.Value.Nsuniqueid _ => ok none
+  | value_observers.Value.DateTime _ => ok none
+  | value_observers.Value.EmailAddress _ _ => ok none
+  | value_observers.Value.PhoneNumber _ _ => ok none
+  | value_observers.Value.Address _ => ok none
+  | value_observers.Value.Url u => ok (some u)
+  | value_observers.Value.OauthScope _ => ok none
+  | value_observers.Value.OauthScopeMap _ _ => ok none
+  | value_observers.Value.PrivateBinary _ => ok none
+  | value_observers.Value.PublicBinary _ _ => ok none
+  | value_observers.Value.RestrictedString _ => ok none
+  | value_observers.Value.IntentToken _ _ => ok none
+  | value_observers.Value.Passkey _ _ _ => ok none
+  | value_observers.Value.AttestedPasskey _ _ _ => ok none
+  | value_observers.Value.Session _ _ => ok none
+  | value_observers.Value.ApiToken _ _ => ok none
+  | value_observers.Value.Oauth2Session _ _ => ok none
+  | value_observers.Value.JwsKeyEs256 _ => ok none
+  | value_observers.Value.JwsKeyRs256 _ => ok none
+  | value_observers.Value.UiHint _ => ok none
+  | value_observers.Value.TotpSecret _ _ => ok none
+  | value_observers.Value.AuditLogString _ _ => ok none
+  | value_observers.Value.Image _ => ok none
+  | value_observers.Value.CredentialType _ => ok none
+  | value_observers.Value.WebauthnAttestationCaList _ => ok none
+  | value_observers.Value.OauthClaimValue _ _ _ => ok none
+  | value_observers.Value.OauthClaimMap _ _ => ok none
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok none
+  | value_observers.Value.HexString _ => ok none
+  | value_observers.Value.Certificate _ => ok none
+  | value_observers.Value.ApplicationPassword _ => ok none
+  | value_observers.Value.Json _ => ok none
+  | value_observers.Value.Sha256 _ => ok none
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::as_string]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 239:4-246:5
+    Visibility: public -/
+def value_observers.Value.as_string
+  (self : value_observers.Value) : Result (Option Std.U64) := do
+  match self with
+  | value_observers.Value.Utf8 s => ok (some s)
+  | value_observers.Value.Iutf8 s => ok (some s)
+  | value_observers.Value.Iname s => ok (some s)
+  | value_observers.Value.Uuid _ => ok none
+  | value_observers.Value.Boolean _ => ok none
+  | value_observers.Value.Syntax _ => ok none
+  | value_observers.Value.Index _ => ok none
+  | value_observers.Value.Refer _ => ok none
+  | value_observers.Value.JsonFilt _ => ok none
+  | value_observers.Value.Cred _ _ => ok none
+  | value_observers.Value.SshKey _ _ => ok none
+  | value_observers.Value.SecretValue _ => ok none
+  | value_observers.Value.Spn _ _ => ok none
+  | value_observers.Value.Uint32 _ => ok none
+  | value_observers.Value.Int64 _ => ok none
+  | value_observers.Value.Uint64 _ => ok none
+  | value_observers.Value.Cid _ => ok none
+  | value_observers.Value.Nsuniqueid _ => ok none
+  | value_observers.Value.DateTime _ => ok none
+  | value_observers.Value.EmailAddress _ _ => ok none
+  | value_observers.Value.PhoneNumber _ _ => ok none
+  | value_observers.Value.Address _ => ok none
+  | value_observers.Value.Url _ => ok none
+  | value_observers.Value.OauthScope _ => ok none
+  | value_observers.Value.OauthScopeMap _ _ => ok none
+  | value_observers.Value.PrivateBinary _ => ok none
+  | value_observers.Value.PublicBinary _ _ => ok none
+  | value_observers.Value.RestrictedString _ => ok none
+  | value_observers.Value.IntentToken _ _ => ok none
+  | value_observers.Value.Passkey _ _ _ => ok none
+  | value_observers.Value.AttestedPasskey _ _ _ => ok none
+  | value_observers.Value.Session _ _ => ok none
+  | value_observers.Value.ApiToken _ _ => ok none
+  | value_observers.Value.Oauth2Session _ _ => ok none
+  | value_observers.Value.JwsKeyEs256 _ => ok none
+  | value_observers.Value.JwsKeyRs256 _ => ok none
+  | value_observers.Value.UiHint _ => ok none
+  | value_observers.Value.TotpSecret _ _ => ok none
+  | value_observers.Value.AuditLogString _ _ => ok none
+  | value_observers.Value.Image _ => ok none
+  | value_observers.Value.CredentialType _ => ok none
+  | value_observers.Value.WebauthnAttestationCaList _ => ok none
+  | value_observers.Value.OauthClaimValue _ _ _ => ok none
+  | value_observers.Value.OauthClaimMap _ _ => ok none
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok none
+  | value_observers.Value.HexString _ => ok none
+  | value_observers.Value.Certificate _ => ok none
+  | value_observers.Value.ApplicationPassword _ => ok none
+  | value_observers.Value.Json _ => ok none
+  | value_observers.Value.Sha256 _ => ok none
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::to_ref_uuid]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 247:4-255:5
+    Visibility: public -/
+def value_observers.Value.to_ref_uuid
+  (self : value_observers.Value) : Result (Option Std.U128) := do
+  match self with
+  | value_observers.Value.Utf8 _ => ok none
+  | value_observers.Value.Iutf8 _ => ok none
+  | value_observers.Value.Iname _ => ok none
+  | value_observers.Value.Uuid _ => ok none
+  | value_observers.Value.Boolean _ => ok none
+  | value_observers.Value.Syntax _ => ok none
+  | value_observers.Value.Index _ => ok none
+  | value_observers.Value.Refer u => ok (some u)
+  | value_observers.Value.JsonFilt _ => ok none
+  | value_observers.Value.Cred _ _ => ok none
+  | value_observers.Value.SshKey _ _ => ok none
+  | value_observers.Value.SecretValue _ => ok none
+  | value_observers.Value.Spn _ _ => ok none
+  | value_observers.Value.Uint32 _ => ok none
+  | value_observers.Value.Int64 _ => ok none
+  | value_observers.Value.Uint64 _ => ok none
+  | value_observers.Value.Cid _ => ok none
+  | value_observers.Value.Nsuniqueid _ => ok none
+  | value_observers.Value.DateTime _ => ok none
+  | value_observers.Value.EmailAddress _ _ => ok none
+  | value_observers.Value.PhoneNumber _ _ => ok none
+  | value_observers.Value.Address _ => ok none
+  | value_observers.Value.Url _ => ok none
+  | value_observers.Value.OauthScope _ => ok none
+  | value_observers.Value.OauthScopeMap u _ => ok (some u)
+  | value_observers.Value.PrivateBinary _ => ok none
+  | value_observers.Value.PublicBinary _ _ => ok none
+  | value_observers.Value.RestrictedString _ => ok none
+  | value_observers.Value.IntentToken _ _ => ok none
+  | value_observers.Value.Passkey _ _ _ => ok none
+  | value_observers.Value.AttestedPasskey _ _ _ => ok none
+  | value_observers.Value.Session _ _ => ok none
+  | value_observers.Value.ApiToken _ _ => ok none
+  | value_observers.Value.Oauth2Session _ m => ok (some m.rs_uuid)
+  | value_observers.Value.JwsKeyEs256 _ => ok none
+  | value_observers.Value.JwsKeyRs256 _ => ok none
+  | value_observers.Value.UiHint _ => ok none
+  | value_observers.Value.TotpSecret _ _ => ok none
+  | value_observers.Value.AuditLogString _ _ => ok none
+  | value_observers.Value.Image _ => ok none
+  | value_observers.Value.CredentialType _ => ok none
+  | value_observers.Value.WebauthnAttestationCaList _ => ok none
+  | value_observers.Value.OauthClaimValue _ _ _ => ok none
+  | value_observers.Value.OauthClaimMap _ _ => ok none
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok none
+  | value_observers.Value.HexString _ => ok none
+  | value_observers.Value.Certificate _ => ok none
+  | value_observers.Value.ApplicationPassword _ => ok none
+  | value_observers.Value.Json _ => ok none
+  | value_observers.Value.Sha256 _ => ok none
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::to_uuid]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 256:4-261:5
+    Visibility: public -/
+def value_observers.Value.to_uuid
+  (self : value_observers.Value) : Result (Option Std.U128) := do
+  match self with
+  | value_observers.Value.Utf8 _ => ok none
+  | value_observers.Value.Iutf8 _ => ok none
+  | value_observers.Value.Iname _ => ok none
+  | value_observers.Value.Uuid u => ok (some u)
+  | value_observers.Value.Boolean _ => ok none
+  | value_observers.Value.Syntax _ => ok none
+  | value_observers.Value.Index _ => ok none
+  | value_observers.Value.Refer _ => ok none
+  | value_observers.Value.JsonFilt _ => ok none
+  | value_observers.Value.Cred _ _ => ok none
+  | value_observers.Value.SshKey _ _ => ok none
+  | value_observers.Value.SecretValue _ => ok none
+  | value_observers.Value.Spn _ _ => ok none
+  | value_observers.Value.Uint32 _ => ok none
+  | value_observers.Value.Int64 _ => ok none
+  | value_observers.Value.Uint64 _ => ok none
+  | value_observers.Value.Cid _ => ok none
+  | value_observers.Value.Nsuniqueid _ => ok none
+  | value_observers.Value.DateTime _ => ok none
+  | value_observers.Value.EmailAddress _ _ => ok none
+  | value_observers.Value.PhoneNumber _ _ => ok none
+  | value_observers.Value.Address _ => ok none
+  | value_observers.Value.Url _ => ok none
+  | value_observers.Value.OauthScope _ => ok none
+  | value_observers.Value.OauthScopeMap _ _ => ok none
+  | value_observers.Value.PrivateBinary _ => ok none
+  | value_observers.Value.PublicBinary _ _ => ok none
+  | value_observers.Value.RestrictedString _ => ok none
+  | value_observers.Value.IntentToken _ _ => ok none
+  | value_observers.Value.Passkey _ _ _ => ok none
+  | value_observers.Value.AttestedPasskey _ _ _ => ok none
+  | value_observers.Value.Session _ _ => ok none
+  | value_observers.Value.ApiToken _ _ => ok none
+  | value_observers.Value.Oauth2Session _ _ => ok none
+  | value_observers.Value.JwsKeyEs256 _ => ok none
+  | value_observers.Value.JwsKeyRs256 _ => ok none
+  | value_observers.Value.UiHint _ => ok none
+  | value_observers.Value.TotpSecret _ _ => ok none
+  | value_observers.Value.AuditLogString _ _ => ok none
+  | value_observers.Value.Image _ => ok none
+  | value_observers.Value.CredentialType _ => ok none
+  | value_observers.Value.WebauthnAttestationCaList _ => ok none
+  | value_observers.Value.OauthClaimValue _ _ _ => ok none
+  | value_observers.Value.OauthClaimMap _ _ => ok none
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok none
+  | value_observers.Value.HexString _ => ok none
+  | value_observers.Value.Certificate _ => ok none
+  | value_observers.Value.ApplicationPassword _ => ok none
+  | value_observers.Value.Json _ => ok none
+  | value_observers.Value.Sha256 _ => ok none
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::to_indextype]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 262:4-267:5
+    Visibility: public -/
+def value_observers.Value.to_indextype
+  (self : value_observers.Value) : Result (Option Std.U64) := do
+  match self with
+  | value_observers.Value.Utf8 _ => ok none
+  | value_observers.Value.Iutf8 _ => ok none
+  | value_observers.Value.Iname _ => ok none
+  | value_observers.Value.Uuid _ => ok none
+  | value_observers.Value.Boolean _ => ok none
+  | value_observers.Value.Syntax _ => ok none
+  | value_observers.Value.Index i => ok (some i)
+  | value_observers.Value.Refer _ => ok none
+  | value_observers.Value.JsonFilt _ => ok none
+  | value_observers.Value.Cred _ _ => ok none
+  | value_observers.Value.SshKey _ _ => ok none
+  | value_observers.Value.SecretValue _ => ok none
+  | value_observers.Value.Spn _ _ => ok none
+  | value_observers.Value.Uint32 _ => ok none
+  | value_observers.Value.Int64 _ => ok none
+  | value_observers.Value.Uint64 _ => ok none
+  | value_observers.Value.Cid _ => ok none
+  | value_observers.Value.Nsuniqueid _ => ok none
+  | value_observers.Value.DateTime _ => ok none
+  | value_observers.Value.EmailAddress _ _ => ok none
+  | value_observers.Value.PhoneNumber _ _ => ok none
+  | value_observers.Value.Address _ => ok none
+  | value_observers.Value.Url _ => ok none
+  | value_observers.Value.OauthScope _ => ok none
+  | value_observers.Value.OauthScopeMap _ _ => ok none
+  | value_observers.Value.PrivateBinary _ => ok none
+  | value_observers.Value.PublicBinary _ _ => ok none
+  | value_observers.Value.RestrictedString _ => ok none
+  | value_observers.Value.IntentToken _ _ => ok none
+  | value_observers.Value.Passkey _ _ _ => ok none
+  | value_observers.Value.AttestedPasskey _ _ _ => ok none
+  | value_observers.Value.Session _ _ => ok none
+  | value_observers.Value.ApiToken _ _ => ok none
+  | value_observers.Value.Oauth2Session _ _ => ok none
+  | value_observers.Value.JwsKeyEs256 _ => ok none
+  | value_observers.Value.JwsKeyRs256 _ => ok none
+  | value_observers.Value.UiHint _ => ok none
+  | value_observers.Value.TotpSecret _ _ => ok none
+  | value_observers.Value.AuditLogString _ _ => ok none
+  | value_observers.Value.Image _ => ok none
+  | value_observers.Value.CredentialType _ => ok none
+  | value_observers.Value.WebauthnAttestationCaList _ => ok none
+  | value_observers.Value.OauthClaimValue _ _ _ => ok none
+  | value_observers.Value.OauthClaimMap _ _ => ok none
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok none
+  | value_observers.Value.HexString _ => ok none
+  | value_observers.Value.Certificate _ => ok none
+  | value_observers.Value.ApplicationPassword _ => ok none
+  | value_observers.Value.Json _ => ok none
+  | value_observers.Value.Sha256 _ => ok none
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::to_syntaxtype]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 268:4-273:5
+    Visibility: public -/
+def value_observers.Value.to_syntaxtype
+  (self : value_observers.Value) : Result (Option Std.U64) := do
+  match self with
+  | value_observers.Value.Utf8 _ => ok none
+  | value_observers.Value.Iutf8 _ => ok none
+  | value_observers.Value.Iname _ => ok none
+  | value_observers.Value.Uuid _ => ok none
+  | value_observers.Value.Boolean _ => ok none
+  | value_observers.Value.Syntax s => ok (some s)
+  | value_observers.Value.Index _ => ok none
+  | value_observers.Value.Refer _ => ok none
+  | value_observers.Value.JsonFilt _ => ok none
+  | value_observers.Value.Cred _ _ => ok none
+  | value_observers.Value.SshKey _ _ => ok none
+  | value_observers.Value.SecretValue _ => ok none
+  | value_observers.Value.Spn _ _ => ok none
+  | value_observers.Value.Uint32 _ => ok none
+  | value_observers.Value.Int64 _ => ok none
+  | value_observers.Value.Uint64 _ => ok none
+  | value_observers.Value.Cid _ => ok none
+  | value_observers.Value.Nsuniqueid _ => ok none
+  | value_observers.Value.DateTime _ => ok none
+  | value_observers.Value.EmailAddress _ _ => ok none
+  | value_observers.Value.PhoneNumber _ _ => ok none
+  | value_observers.Value.Address _ => ok none
+  | value_observers.Value.Url _ => ok none
+  | value_observers.Value.OauthScope _ => ok none
+  | value_observers.Value.OauthScopeMap _ _ => ok none
+  | value_observers.Value.PrivateBinary _ => ok none
+  | value_observers.Value.PublicBinary _ _ => ok none
+  | value_observers.Value.RestrictedString _ => ok none
+  | value_observers.Value.IntentToken _ _ => ok none
+  | value_observers.Value.Passkey _ _ _ => ok none
+  | value_observers.Value.AttestedPasskey _ _ _ => ok none
+  | value_observers.Value.Session _ _ => ok none
+  | value_observers.Value.ApiToken _ _ => ok none
+  | value_observers.Value.Oauth2Session _ _ => ok none
+  | value_observers.Value.JwsKeyEs256 _ => ok none
+  | value_observers.Value.JwsKeyRs256 _ => ok none
+  | value_observers.Value.UiHint _ => ok none
+  | value_observers.Value.TotpSecret _ _ => ok none
+  | value_observers.Value.AuditLogString _ _ => ok none
+  | value_observers.Value.Image _ => ok none
+  | value_observers.Value.CredentialType _ => ok none
+  | value_observers.Value.WebauthnAttestationCaList _ => ok none
+  | value_observers.Value.OauthClaimValue _ _ _ => ok none
+  | value_observers.Value.OauthClaimMap _ _ => ok none
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok none
+  | value_observers.Value.HexString _ => ok none
+  | value_observers.Value.Certificate _ => ok none
+  | value_observers.Value.ApplicationPassword _ => ok none
+  | value_observers.Value.Json _ => ok none
+  | value_observers.Value.Sha256 _ => ok none
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::to_bool]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 274:4-280:5
+    Visibility: public -/
+def value_observers.Value.to_bool
+  (self : value_observers.Value) : Result (Option Bool) := do
+  match self with
+  | value_observers.Value.Utf8 _ => ok none
+  | value_observers.Value.Iutf8 _ => ok none
+  | value_observers.Value.Iname _ => ok none
+  | value_observers.Value.Uuid _ => ok none
+  | value_observers.Value.Boolean v => ok (some v)
+  | value_observers.Value.Syntax _ => ok none
+  | value_observers.Value.Index _ => ok none
+  | value_observers.Value.Refer _ => ok none
+  | value_observers.Value.JsonFilt _ => ok none
+  | value_observers.Value.Cred _ _ => ok none
+  | value_observers.Value.SshKey _ _ => ok none
+  | value_observers.Value.SecretValue _ => ok none
+  | value_observers.Value.Spn _ _ => ok none
+  | value_observers.Value.Uint32 _ => ok none
+  | value_observers.Value.Int64 _ => ok none
+  | value_observers.Value.Uint64 _ => ok none
+  | value_observers.Value.Cid _ => ok none
+  | value_observers.Value.Nsuniqueid _ => ok none
+  | value_observers.Value.DateTime _ => ok none
+  | value_observers.Value.EmailAddress _ _ => ok none
+  | value_observers.Value.PhoneNumber _ _ => ok none
+  | value_observers.Value.Address _ => ok none
+  | value_observers.Value.Url _ => ok none
+  | value_observers.Value.OauthScope _ => ok none
+  | value_observers.Value.OauthScopeMap _ _ => ok none
+  | value_observers.Value.PrivateBinary _ => ok none
+  | value_observers.Value.PublicBinary _ _ => ok none
+  | value_observers.Value.RestrictedString _ => ok none
+  | value_observers.Value.IntentToken _ _ => ok none
+  | value_observers.Value.Passkey _ _ _ => ok none
+  | value_observers.Value.AttestedPasskey _ _ _ => ok none
+  | value_observers.Value.Session _ _ => ok none
+  | value_observers.Value.ApiToken _ _ => ok none
+  | value_observers.Value.Oauth2Session _ _ => ok none
+  | value_observers.Value.JwsKeyEs256 _ => ok none
+  | value_observers.Value.JwsKeyRs256 _ => ok none
+  | value_observers.Value.UiHint _ => ok none
+  | value_observers.Value.TotpSecret _ _ => ok none
+  | value_observers.Value.AuditLogString _ _ => ok none
+  | value_observers.Value.Image _ => ok none
+  | value_observers.Value.CredentialType _ => ok none
+  | value_observers.Value.WebauthnAttestationCaList _ => ok none
+  | value_observers.Value.OauthClaimValue _ _ _ => ok none
+  | value_observers.Value.OauthClaimMap _ _ => ok none
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok none
+  | value_observers.Value.HexString _ => ok none
+  | value_observers.Value.Certificate _ => ok none
+  | value_observers.Value.ApplicationPassword _ => ok none
+  | value_observers.Value.Json _ => ok none
+  | value_observers.Value.Sha256 _ => ok none
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::to_uint32]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 281:4-286:5
+    Visibility: public -/
+def value_observers.Value.to_uint32
+  (self : value_observers.Value) : Result (Option Std.U32) := do
+  match self with
+  | value_observers.Value.Utf8 _ => ok none
+  | value_observers.Value.Iutf8 _ => ok none
+  | value_observers.Value.Iname _ => ok none
+  | value_observers.Value.Uuid _ => ok none
+  | value_observers.Value.Boolean _ => ok none
+  | value_observers.Value.Syntax _ => ok none
+  | value_observers.Value.Index _ => ok none
+  | value_observers.Value.Refer _ => ok none
+  | value_observers.Value.JsonFilt _ => ok none
+  | value_observers.Value.Cred _ _ => ok none
+  | value_observers.Value.SshKey _ _ => ok none
+  | value_observers.Value.SecretValue _ => ok none
+  | value_observers.Value.Spn _ _ => ok none
+  | value_observers.Value.Uint32 v => ok (some v)
+  | value_observers.Value.Int64 _ => ok none
+  | value_observers.Value.Uint64 _ => ok none
+  | value_observers.Value.Cid _ => ok none
+  | value_observers.Value.Nsuniqueid _ => ok none
+  | value_observers.Value.DateTime _ => ok none
+  | value_observers.Value.EmailAddress _ _ => ok none
+  | value_observers.Value.PhoneNumber _ _ => ok none
+  | value_observers.Value.Address _ => ok none
+  | value_observers.Value.Url _ => ok none
+  | value_observers.Value.OauthScope _ => ok none
+  | value_observers.Value.OauthScopeMap _ _ => ok none
+  | value_observers.Value.PrivateBinary _ => ok none
+  | value_observers.Value.PublicBinary _ _ => ok none
+  | value_observers.Value.RestrictedString _ => ok none
+  | value_observers.Value.IntentToken _ _ => ok none
+  | value_observers.Value.Passkey _ _ _ => ok none
+  | value_observers.Value.AttestedPasskey _ _ _ => ok none
+  | value_observers.Value.Session _ _ => ok none
+  | value_observers.Value.ApiToken _ _ => ok none
+  | value_observers.Value.Oauth2Session _ _ => ok none
+  | value_observers.Value.JwsKeyEs256 _ => ok none
+  | value_observers.Value.JwsKeyRs256 _ => ok none
+  | value_observers.Value.UiHint _ => ok none
+  | value_observers.Value.TotpSecret _ _ => ok none
+  | value_observers.Value.AuditLogString _ _ => ok none
+  | value_observers.Value.Image _ => ok none
+  | value_observers.Value.CredentialType _ => ok none
+  | value_observers.Value.WebauthnAttestationCaList _ => ok none
+  | value_observers.Value.OauthClaimValue _ _ _ => ok none
+  | value_observers.Value.OauthClaimMap _ _ => ok none
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok none
+  | value_observers.Value.HexString _ => ok none
+  | value_observers.Value.Certificate _ => ok none
+  | value_observers.Value.ApplicationPassword _ => ok none
+  | value_observers.Value.Json _ => ok none
+  | value_observers.Value.Sha256 _ => ok none
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::to_utf8]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 287:4-292:5
+    Visibility: public -/
+def value_observers.Value.to_utf8
+  (self : value_observers.Value) : Result (Option Std.U64) := do
+  match self with
+  | value_observers.Value.Utf8 s => ok (some s)
+  | value_observers.Value.Iutf8 _ => ok none
+  | value_observers.Value.Iname _ => ok none
+  | value_observers.Value.Uuid _ => ok none
+  | value_observers.Value.Boolean _ => ok none
+  | value_observers.Value.Syntax _ => ok none
+  | value_observers.Value.Index _ => ok none
+  | value_observers.Value.Refer _ => ok none
+  | value_observers.Value.JsonFilt _ => ok none
+  | value_observers.Value.Cred _ _ => ok none
+  | value_observers.Value.SshKey _ _ => ok none
+  | value_observers.Value.SecretValue _ => ok none
+  | value_observers.Value.Spn _ _ => ok none
+  | value_observers.Value.Uint32 _ => ok none
+  | value_observers.Value.Int64 _ => ok none
+  | value_observers.Value.Uint64 _ => ok none
+  | value_observers.Value.Cid _ => ok none
+  | value_observers.Value.Nsuniqueid _ => ok none
+  | value_observers.Value.DateTime _ => ok none
+  | value_observers.Value.EmailAddress _ _ => ok none
+  | value_observers.Value.PhoneNumber _ _ => ok none
+  | value_observers.Value.Address _ => ok none
+  | value_observers.Value.Url _ => ok none
+  | value_observers.Value.OauthScope _ => ok none
+  | value_observers.Value.OauthScopeMap _ _ => ok none
+  | value_observers.Value.PrivateBinary _ => ok none
+  | value_observers.Value.PublicBinary _ _ => ok none
+  | value_observers.Value.RestrictedString _ => ok none
+  | value_observers.Value.IntentToken _ _ => ok none
+  | value_observers.Value.Passkey _ _ _ => ok none
+  | value_observers.Value.AttestedPasskey _ _ _ => ok none
+  | value_observers.Value.Session _ _ => ok none
+  | value_observers.Value.ApiToken _ _ => ok none
+  | value_observers.Value.Oauth2Session _ _ => ok none
+  | value_observers.Value.JwsKeyEs256 _ => ok none
+  | value_observers.Value.JwsKeyRs256 _ => ok none
+  | value_observers.Value.UiHint _ => ok none
+  | value_observers.Value.TotpSecret _ _ => ok none
+  | value_observers.Value.AuditLogString _ _ => ok none
+  | value_observers.Value.Image _ => ok none
+  | value_observers.Value.CredentialType _ => ok none
+  | value_observers.Value.WebauthnAttestationCaList _ => ok none
+  | value_observers.Value.OauthClaimValue _ _ _ => ok none
+  | value_observers.Value.OauthClaimMap _ _ => ok none
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok none
+  | value_observers.Value.HexString _ => ok none
+  | value_observers.Value.Certificate _ => ok none
+  | value_observers.Value.ApplicationPassword _ => ok none
+  | value_observers.Value.Json _ => ok none
+  | value_observers.Value.Sha256 _ => ok none
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::to_iutf8]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 293:4-298:5
+    Visibility: public -/
+def value_observers.Value.to_iutf8
+  (self : value_observers.Value) : Result (Option Std.U64) := do
+  match self with
+  | value_observers.Value.Utf8 _ => ok none
+  | value_observers.Value.Iutf8 s => ok (some s)
+  | value_observers.Value.Iname _ => ok none
+  | value_observers.Value.Uuid _ => ok none
+  | value_observers.Value.Boolean _ => ok none
+  | value_observers.Value.Syntax _ => ok none
+  | value_observers.Value.Index _ => ok none
+  | value_observers.Value.Refer _ => ok none
+  | value_observers.Value.JsonFilt _ => ok none
+  | value_observers.Value.Cred _ _ => ok none
+  | value_observers.Value.SshKey _ _ => ok none
+  | value_observers.Value.SecretValue _ => ok none
+  | value_observers.Value.Spn _ _ => ok none
+  | value_observers.Value.Uint32 _ => ok none
+  | value_observers.Value.Int64 _ => ok none
+  | value_observers.Value.Uint64 _ => ok none
+  | value_observers.Value.Cid _ => ok none
+  | value_observers.Value.Nsuniqueid _ => ok none
+  | value_observers.Value.DateTime _ => ok none
+  | value_observers.Value.EmailAddress _ _ => ok none
+  | value_observers.Value.PhoneNumber _ _ => ok none
+  | value_observers.Value.Address _ => ok none
+  | value_observers.Value.Url _ => ok none
+  | value_observers.Value.OauthScope _ => ok none
+  | value_observers.Value.OauthScopeMap _ _ => ok none
+  | value_observers.Value.PrivateBinary _ => ok none
+  | value_observers.Value.PublicBinary _ _ => ok none
+  | value_observers.Value.RestrictedString _ => ok none
+  | value_observers.Value.IntentToken _ _ => ok none
+  | value_observers.Value.Passkey _ _ _ => ok none
+  | value_observers.Value.AttestedPasskey _ _ _ => ok none
+  | value_observers.Value.Session _ _ => ok none
+  | value_observers.Value.ApiToken _ _ => ok none
+  | value_observers.Value.Oauth2Session _ _ => ok none
+  | value_observers.Value.JwsKeyEs256 _ => ok none
+  | value_observers.Value.JwsKeyRs256 _ => ok none
+  | value_observers.Value.UiHint _ => ok none
+  | value_observers.Value.TotpSecret _ _ => ok none
+  | value_observers.Value.AuditLogString _ _ => ok none
+  | value_observers.Value.Image _ => ok none
+  | value_observers.Value.CredentialType _ => ok none
+  | value_observers.Value.WebauthnAttestationCaList _ => ok none
+  | value_observers.Value.OauthClaimValue _ _ _ => ok none
+  | value_observers.Value.OauthClaimMap _ _ => ok none
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok none
+  | value_observers.Value.HexString _ => ok none
+  | value_observers.Value.Certificate _ => ok none
+  | value_observers.Value.ApplicationPassword _ => ok none
+  | value_observers.Value.Json _ => ok none
+  | value_observers.Value.Sha256 _ => ok none
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::to_iname]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 299:4-304:5
+    Visibility: public -/
+def value_observers.Value.to_iname
+  (self : value_observers.Value) : Result (Option Std.U64) := do
+  match self with
+  | value_observers.Value.Utf8 _ => ok none
+  | value_observers.Value.Iutf8 _ => ok none
+  | value_observers.Value.Iname s => ok (some s)
+  | value_observers.Value.Uuid _ => ok none
+  | value_observers.Value.Boolean _ => ok none
+  | value_observers.Value.Syntax _ => ok none
+  | value_observers.Value.Index _ => ok none
+  | value_observers.Value.Refer _ => ok none
+  | value_observers.Value.JsonFilt _ => ok none
+  | value_observers.Value.Cred _ _ => ok none
+  | value_observers.Value.SshKey _ _ => ok none
+  | value_observers.Value.SecretValue _ => ok none
+  | value_observers.Value.Spn _ _ => ok none
+  | value_observers.Value.Uint32 _ => ok none
+  | value_observers.Value.Int64 _ => ok none
+  | value_observers.Value.Uint64 _ => ok none
+  | value_observers.Value.Cid _ => ok none
+  | value_observers.Value.Nsuniqueid _ => ok none
+  | value_observers.Value.DateTime _ => ok none
+  | value_observers.Value.EmailAddress _ _ => ok none
+  | value_observers.Value.PhoneNumber _ _ => ok none
+  | value_observers.Value.Address _ => ok none
+  | value_observers.Value.Url _ => ok none
+  | value_observers.Value.OauthScope _ => ok none
+  | value_observers.Value.OauthScopeMap _ _ => ok none
+  | value_observers.Value.PrivateBinary _ => ok none
+  | value_observers.Value.PublicBinary _ _ => ok none
+  | value_observers.Value.RestrictedString _ => ok none
+  | value_observers.Value.IntentToken _ _ => ok none
+  | value_observers.Value.Passkey _ _ _ => ok none
+  | value_observers.Value.AttestedPasskey _ _ _ => ok none
+  | value_observers.Value.Session _ _ => ok none
+  | value_observers.Value.ApiToken _ _ => ok none
+  | value_observers.Value.Oauth2Session _ _ => ok none
+  | value_observers.Value.JwsKeyEs256 _ => ok none
+  | value_observers.Value.JwsKeyRs256 _ => ok none
+  | value_observers.Value.UiHint _ => ok none
+  | value_observers.Value.TotpSecret _ _ => ok none
+  | value_observers.Value.AuditLogString _ _ => ok none
+  | value_observers.Value.Image _ => ok none
+  | value_observers.Value.CredentialType _ => ok none
+  | value_observers.Value.WebauthnAttestationCaList _ => ok none
+  | value_observers.Value.OauthClaimValue _ _ _ => ok none
+  | value_observers.Value.OauthClaimMap _ _ => ok none
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok none
+  | value_observers.Value.HexString _ => ok none
+  | value_observers.Value.Certificate _ => ok none
+  | value_observers.Value.ApplicationPassword _ => ok none
+  | value_observers.Value.Json _ => ok none
+  | value_observers.Value.Sha256 _ => ok none
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::to_jsonfilt]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 305:4-310:5
+    Visibility: public -/
+def value_observers.Value.to_jsonfilt
+  (self : value_observers.Value) : Result (Option Std.U64) := do
+  match self with
+  | value_observers.Value.Utf8 _ => ok none
+  | value_observers.Value.Iutf8 _ => ok none
+  | value_observers.Value.Iname _ => ok none
+  | value_observers.Value.Uuid _ => ok none
+  | value_observers.Value.Boolean _ => ok none
+  | value_observers.Value.Syntax _ => ok none
+  | value_observers.Value.Index _ => ok none
+  | value_observers.Value.Refer _ => ok none
+  | value_observers.Value.JsonFilt f => ok (some f)
+  | value_observers.Value.Cred _ _ => ok none
+  | value_observers.Value.SshKey _ _ => ok none
+  | value_observers.Value.SecretValue _ => ok none
+  | value_observers.Value.Spn _ _ => ok none
+  | value_observers.Value.Uint32 _ => ok none
+  | value_observers.Value.Int64 _ => ok none
+  | value_observers.Value.Uint64 _ => ok none
+  | value_observers.Value.Cid _ => ok none
+  | value_observers.Value.Nsuniqueid _ => ok none
+  | value_observers.Value.DateTime _ => ok none
+  | value_observers.Value.EmailAddress _ _ => ok none
+  | value_observers.Value.PhoneNumber _ _ => ok none
+  | value_observers.Value.Address _ => ok none
+  | value_observers.Value.Url _ => ok none
+  | value_observers.Value.OauthScope _ => ok none
+  | value_observers.Value.OauthScopeMap _ _ => ok none
+  | value_observers.Value.PrivateBinary _ => ok none
+  | value_observers.Value.PublicBinary _ _ => ok none
+  | value_observers.Value.RestrictedString _ => ok none
+  | value_observers.Value.IntentToken _ _ => ok none
+  | value_observers.Value.Passkey _ _ _ => ok none
+  | value_observers.Value.AttestedPasskey _ _ _ => ok none
+  | value_observers.Value.Session _ _ => ok none
+  | value_observers.Value.ApiToken _ _ => ok none
+  | value_observers.Value.Oauth2Session _ _ => ok none
+  | value_observers.Value.JwsKeyEs256 _ => ok none
+  | value_observers.Value.JwsKeyRs256 _ => ok none
+  | value_observers.Value.UiHint _ => ok none
+  | value_observers.Value.TotpSecret _ _ => ok none
+  | value_observers.Value.AuditLogString _ _ => ok none
+  | value_observers.Value.Image _ => ok none
+  | value_observers.Value.CredentialType _ => ok none
+  | value_observers.Value.WebauthnAttestationCaList _ => ok none
+  | value_observers.Value.OauthClaimValue _ _ _ => ok none
+  | value_observers.Value.OauthClaimMap _ _ => ok none
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok none
+  | value_observers.Value.HexString _ => ok none
+  | value_observers.Value.Certificate _ => ok none
+  | value_observers.Value.ApplicationPassword _ => ok none
+  | value_observers.Value.Json _ => ok none
+  | value_observers.Value.Sha256 _ => ok none
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::to_cred]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 311:4-316:5
+    Visibility: public -/
+def value_observers.Value.to_cred
+  (self : value_observers.Value) : Result (Option (Std.U64 × Std.U64)) := do
+  match self with
+  | value_observers.Value.Utf8 _ => ok none
+  | value_observers.Value.Iutf8 _ => ok none
+  | value_observers.Value.Iname _ => ok none
+  | value_observers.Value.Uuid _ => ok none
+  | value_observers.Value.Boolean _ => ok none
+  | value_observers.Value.Syntax _ => ok none
+  | value_observers.Value.Index _ => ok none
+  | value_observers.Value.Refer _ => ok none
+  | value_observers.Value.JsonFilt _ => ok none
+  | value_observers.Value.Cred tag c => ok (some (tag, c))
+  | value_observers.Value.SshKey _ _ => ok none
+  | value_observers.Value.SecretValue _ => ok none
+  | value_observers.Value.Spn _ _ => ok none
+  | value_observers.Value.Uint32 _ => ok none
+  | value_observers.Value.Int64 _ => ok none
+  | value_observers.Value.Uint64 _ => ok none
+  | value_observers.Value.Cid _ => ok none
+  | value_observers.Value.Nsuniqueid _ => ok none
+  | value_observers.Value.DateTime _ => ok none
+  | value_observers.Value.EmailAddress _ _ => ok none
+  | value_observers.Value.PhoneNumber _ _ => ok none
+  | value_observers.Value.Address _ => ok none
+  | value_observers.Value.Url _ => ok none
+  | value_observers.Value.OauthScope _ => ok none
+  | value_observers.Value.OauthScopeMap _ _ => ok none
+  | value_observers.Value.PrivateBinary _ => ok none
+  | value_observers.Value.PublicBinary _ _ => ok none
+  | value_observers.Value.RestrictedString _ => ok none
+  | value_observers.Value.IntentToken _ _ => ok none
+  | value_observers.Value.Passkey _ _ _ => ok none
+  | value_observers.Value.AttestedPasskey _ _ _ => ok none
+  | value_observers.Value.Session _ _ => ok none
+  | value_observers.Value.ApiToken _ _ => ok none
+  | value_observers.Value.Oauth2Session _ _ => ok none
+  | value_observers.Value.JwsKeyEs256 _ => ok none
+  | value_observers.Value.JwsKeyRs256 _ => ok none
+  | value_observers.Value.UiHint _ => ok none
+  | value_observers.Value.TotpSecret _ _ => ok none
+  | value_observers.Value.AuditLogString _ _ => ok none
+  | value_observers.Value.Image _ => ok none
+  | value_observers.Value.CredentialType _ => ok none
+  | value_observers.Value.WebauthnAttestationCaList _ => ok none
+  | value_observers.Value.OauthClaimValue _ _ _ => ok none
+  | value_observers.Value.OauthClaimMap _ _ => ok none
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok none
+  | value_observers.Value.HexString _ => ok none
+  | value_observers.Value.Certificate _ => ok none
+  | value_observers.Value.ApplicationPassword _ => ok none
+  | value_observers.Value.Json _ => ok none
+  | value_observers.Value.Sha256 _ => ok none
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::to_spn]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 317:4-322:5
+    Visibility: public -/
+def value_observers.Value.to_spn
+  (self : value_observers.Value) : Result (Option (Std.U64 × Std.U64)) := do
+  match self with
+  | value_observers.Value.Utf8 _ => ok none
+  | value_observers.Value.Iutf8 _ => ok none
+  | value_observers.Value.Iname _ => ok none
+  | value_observers.Value.Uuid _ => ok none
+  | value_observers.Value.Boolean _ => ok none
+  | value_observers.Value.Syntax _ => ok none
+  | value_observers.Value.Index _ => ok none
+  | value_observers.Value.Refer _ => ok none
+  | value_observers.Value.JsonFilt _ => ok none
+  | value_observers.Value.Cred _ _ => ok none
+  | value_observers.Value.SshKey _ _ => ok none
+  | value_observers.Value.SecretValue _ => ok none
+  | value_observers.Value.Spn n d => ok (some (n, d))
+  | value_observers.Value.Uint32 _ => ok none
+  | value_observers.Value.Int64 _ => ok none
+  | value_observers.Value.Uint64 _ => ok none
+  | value_observers.Value.Cid _ => ok none
+  | value_observers.Value.Nsuniqueid _ => ok none
+  | value_observers.Value.DateTime _ => ok none
+  | value_observers.Value.EmailAddress _ _ => ok none
+  | value_observers.Value.PhoneNumber _ _ => ok none
+  | value_observers.Value.Address _ => ok none
+  | value_observers.Value.Url _ => ok none
+  | value_observers.Value.OauthScope _ => ok none
+  | value_observers.Value.OauthScopeMap _ _ => ok none
+  | value_observers.Value.PrivateBinary _ => ok none
+  | value_observers.Value.PublicBinary _ _ => ok none
+  | value_observers.Value.RestrictedString _ => ok none
+  | value_observers.Value.IntentToken _ _ => ok none
+  | value_observers.Value.Passkey _ _ _ => ok none
+  | value_observers.Value.AttestedPasskey _ _ _ => ok none
+  | value_observers.Value.Session _ _ => ok none
+  | value_observers.Value.ApiToken _ _ => ok none
+  | value_observers.Value.Oauth2Session _ _ => ok none
+  | value_observers.Value.JwsKeyEs256 _ => ok none
+  | value_observers.Value.JwsKeyRs256 _ => ok none
+  | value_observers.Value.UiHint _ => ok none
+  | value_observers.Value.TotpSecret _ _ => ok none
+  | value_observers.Value.AuditLogString _ _ => ok none
+  | value_observers.Value.Image _ => ok none
+  | value_observers.Value.CredentialType _ => ok none
+  | value_observers.Value.WebauthnAttestationCaList _ => ok none
+  | value_observers.Value.OauthClaimValue _ _ _ => ok none
+  | value_observers.Value.OauthClaimMap _ _ => ok none
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok none
+  | value_observers.Value.HexString _ => ok none
+  | value_observers.Value.Certificate _ => ok none
+  | value_observers.Value.ApplicationPassword _ => ok none
+  | value_observers.Value.Json _ => ok none
+  | value_observers.Value.Sha256 _ => ok none
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::to_cid]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 323:4-328:5
+    Visibility: public -/
+def value_observers.Value.to_cid
+  (self : value_observers.Value) : Result (Option Std.U64) := do
+  match self with
+  | value_observers.Value.Utf8 _ => ok none
+  | value_observers.Value.Iutf8 _ => ok none
+  | value_observers.Value.Iname _ => ok none
+  | value_observers.Value.Uuid _ => ok none
+  | value_observers.Value.Boolean _ => ok none
+  | value_observers.Value.Syntax _ => ok none
+  | value_observers.Value.Index _ => ok none
+  | value_observers.Value.Refer _ => ok none
+  | value_observers.Value.JsonFilt _ => ok none
+  | value_observers.Value.Cred _ _ => ok none
+  | value_observers.Value.SshKey _ _ => ok none
+  | value_observers.Value.SecretValue _ => ok none
+  | value_observers.Value.Spn _ _ => ok none
+  | value_observers.Value.Uint32 _ => ok none
+  | value_observers.Value.Int64 _ => ok none
+  | value_observers.Value.Uint64 _ => ok none
+  | value_observers.Value.Cid s => ok (some s)
+  | value_observers.Value.Nsuniqueid _ => ok none
+  | value_observers.Value.DateTime _ => ok none
+  | value_observers.Value.EmailAddress _ _ => ok none
+  | value_observers.Value.PhoneNumber _ _ => ok none
+  | value_observers.Value.Address _ => ok none
+  | value_observers.Value.Url _ => ok none
+  | value_observers.Value.OauthScope _ => ok none
+  | value_observers.Value.OauthScopeMap _ _ => ok none
+  | value_observers.Value.PrivateBinary _ => ok none
+  | value_observers.Value.PublicBinary _ _ => ok none
+  | value_observers.Value.RestrictedString _ => ok none
+  | value_observers.Value.IntentToken _ _ => ok none
+  | value_observers.Value.Passkey _ _ _ => ok none
+  | value_observers.Value.AttestedPasskey _ _ _ => ok none
+  | value_observers.Value.Session _ _ => ok none
+  | value_observers.Value.ApiToken _ _ => ok none
+  | value_observers.Value.Oauth2Session _ _ => ok none
+  | value_observers.Value.JwsKeyEs256 _ => ok none
+  | value_observers.Value.JwsKeyRs256 _ => ok none
+  | value_observers.Value.UiHint _ => ok none
+  | value_observers.Value.TotpSecret _ _ => ok none
+  | value_observers.Value.AuditLogString _ _ => ok none
+  | value_observers.Value.Image _ => ok none
+  | value_observers.Value.CredentialType _ => ok none
+  | value_observers.Value.WebauthnAttestationCaList _ => ok none
+  | value_observers.Value.OauthClaimValue _ _ _ => ok none
+  | value_observers.Value.OauthClaimMap _ _ => ok none
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok none
+  | value_observers.Value.HexString _ => ok none
+  | value_observers.Value.Certificate _ => ok none
+  | value_observers.Value.ApplicationPassword _ => ok none
+  | value_observers.Value.Json _ => ok none
+  | value_observers.Value.Sha256 _ => ok none
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::to_nsuniqueid]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 329:4-334:5
+    Visibility: public -/
+def value_observers.Value.to_nsuniqueid
+  (self : value_observers.Value) : Result (Option Std.U64) := do
+  match self with
+  | value_observers.Value.Utf8 _ => ok none
+  | value_observers.Value.Iutf8 _ => ok none
+  | value_observers.Value.Iname _ => ok none
+  | value_observers.Value.Uuid _ => ok none
+  | value_observers.Value.Boolean _ => ok none
+  | value_observers.Value.Syntax _ => ok none
+  | value_observers.Value.Index _ => ok none
+  | value_observers.Value.Refer _ => ok none
+  | value_observers.Value.JsonFilt _ => ok none
+  | value_observers.Value.Cred _ _ => ok none
+  | value_observers.Value.SshKey _ _ => ok none
+  | value_observers.Value.SecretValue _ => ok none
+  | value_observers.Value.Spn _ _ => ok none
+  | value_observers.Value.Uint32 _ => ok none
+  | value_observers.Value.Int64 _ => ok none
+  | value_observers.Value.Uint64 _ => ok none
+  | value_observers.Value.Cid _ => ok none
+  | value_observers.Value.Nsuniqueid s => ok (some s)
+  | value_observers.Value.DateTime _ => ok none
+  | value_observers.Value.EmailAddress _ _ => ok none
+  | value_observers.Value.PhoneNumber _ _ => ok none
+  | value_observers.Value.Address _ => ok none
+  | value_observers.Value.Url _ => ok none
+  | value_observers.Value.OauthScope _ => ok none
+  | value_observers.Value.OauthScopeMap _ _ => ok none
+  | value_observers.Value.PrivateBinary _ => ok none
+  | value_observers.Value.PublicBinary _ _ => ok none
+  | value_observers.Value.RestrictedString _ => ok none
+  | value_observers.Value.IntentToken _ _ => ok none
+  | value_observers.Value.Passkey _ _ _ => ok none
+  | value_observers.Value.AttestedPasskey _ _ _ => ok none
+  | value_observers.Value.Session _ _ => ok none
+  | value_observers.Value.ApiToken _ _ => ok none
+  | value_observers.Value.Oauth2Session _ _ => ok none
+  | value_observers.Value.JwsKeyEs256 _ => ok none
+  | value_observers.Value.JwsKeyRs256 _ => ok none
+  | value_observers.Value.UiHint _ => ok none
+  | value_observers.Value.TotpSecret _ _ => ok none
+  | value_observers.Value.AuditLogString _ _ => ok none
+  | value_observers.Value.Image _ => ok none
+  | value_observers.Value.CredentialType _ => ok none
+  | value_observers.Value.WebauthnAttestationCaList _ => ok none
+  | value_observers.Value.OauthClaimValue _ _ _ => ok none
+  | value_observers.Value.OauthClaimMap _ _ => ok none
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok none
+  | value_observers.Value.HexString _ => ok none
+  | value_observers.Value.Certificate _ => ok none
+  | value_observers.Value.ApplicationPassword _ => ok none
+  | value_observers.Value.Json _ => ok none
+  | value_observers.Value.Sha256 _ => ok none
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::to_emailaddress]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 335:4-340:5
+    Visibility: public -/
+def value_observers.Value.to_emailaddress
+  (self : value_observers.Value) : Result (Option Std.U64) := do
+  match self with
+  | value_observers.Value.Utf8 _ => ok none
+  | value_observers.Value.Iutf8 _ => ok none
+  | value_observers.Value.Iname _ => ok none
+  | value_observers.Value.Uuid _ => ok none
+  | value_observers.Value.Boolean _ => ok none
+  | value_observers.Value.Syntax _ => ok none
+  | value_observers.Value.Index _ => ok none
+  | value_observers.Value.Refer _ => ok none
+  | value_observers.Value.JsonFilt _ => ok none
+  | value_observers.Value.Cred _ _ => ok none
+  | value_observers.Value.SshKey _ _ => ok none
+  | value_observers.Value.SecretValue _ => ok none
+  | value_observers.Value.Spn _ _ => ok none
+  | value_observers.Value.Uint32 _ => ok none
+  | value_observers.Value.Int64 _ => ok none
+  | value_observers.Value.Uint64 _ => ok none
+  | value_observers.Value.Cid _ => ok none
+  | value_observers.Value.Nsuniqueid _ => ok none
+  | value_observers.Value.DateTime _ => ok none
+  | value_observers.Value.EmailAddress s _ => ok (some s)
+  | value_observers.Value.PhoneNumber _ _ => ok none
+  | value_observers.Value.Address _ => ok none
+  | value_observers.Value.Url _ => ok none
+  | value_observers.Value.OauthScope _ => ok none
+  | value_observers.Value.OauthScopeMap _ _ => ok none
+  | value_observers.Value.PrivateBinary _ => ok none
+  | value_observers.Value.PublicBinary _ _ => ok none
+  | value_observers.Value.RestrictedString _ => ok none
+  | value_observers.Value.IntentToken _ _ => ok none
+  | value_observers.Value.Passkey _ _ _ => ok none
+  | value_observers.Value.AttestedPasskey _ _ _ => ok none
+  | value_observers.Value.Session _ _ => ok none
+  | value_observers.Value.ApiToken _ _ => ok none
+  | value_observers.Value.Oauth2Session _ _ => ok none
+  | value_observers.Value.JwsKeyEs256 _ => ok none
+  | value_observers.Value.JwsKeyRs256 _ => ok none
+  | value_observers.Value.UiHint _ => ok none
+  | value_observers.Value.TotpSecret _ _ => ok none
+  | value_observers.Value.AuditLogString _ _ => ok none
+  | value_observers.Value.Image _ => ok none
+  | value_observers.Value.CredentialType _ => ok none
+  | value_observers.Value.WebauthnAttestationCaList _ => ok none
+  | value_observers.Value.OauthClaimValue _ _ _ => ok none
+  | value_observers.Value.OauthClaimMap _ _ => ok none
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok none
+  | value_observers.Value.HexString _ => ok none
+  | value_observers.Value.Certificate _ => ok none
+  | value_observers.Value.ApplicationPassword _ => ok none
+  | value_observers.Value.Json _ => ok none
+  | value_observers.Value.Sha256 _ => ok none
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::to_oauthscope]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 341:4-346:5
+    Visibility: public -/
+def value_observers.Value.to_oauthscope
+  (self : value_observers.Value) : Result (Option Std.U64) := do
+  match self with
+  | value_observers.Value.Utf8 _ => ok none
+  | value_observers.Value.Iutf8 _ => ok none
+  | value_observers.Value.Iname _ => ok none
+  | value_observers.Value.Uuid _ => ok none
+  | value_observers.Value.Boolean _ => ok none
+  | value_observers.Value.Syntax _ => ok none
+  | value_observers.Value.Index _ => ok none
+  | value_observers.Value.Refer _ => ok none
+  | value_observers.Value.JsonFilt _ => ok none
+  | value_observers.Value.Cred _ _ => ok none
+  | value_observers.Value.SshKey _ _ => ok none
+  | value_observers.Value.SecretValue _ => ok none
+  | value_observers.Value.Spn _ _ => ok none
+  | value_observers.Value.Uint32 _ => ok none
+  | value_observers.Value.Int64 _ => ok none
+  | value_observers.Value.Uint64 _ => ok none
+  | value_observers.Value.Cid _ => ok none
+  | value_observers.Value.Nsuniqueid _ => ok none
+  | value_observers.Value.DateTime _ => ok none
+  | value_observers.Value.EmailAddress _ _ => ok none
+  | value_observers.Value.PhoneNumber _ _ => ok none
+  | value_observers.Value.Address _ => ok none
+  | value_observers.Value.Url _ => ok none
+  | value_observers.Value.OauthScope s => ok (some s)
+  | value_observers.Value.OauthScopeMap _ _ => ok none
+  | value_observers.Value.PrivateBinary _ => ok none
+  | value_observers.Value.PublicBinary _ _ => ok none
+  | value_observers.Value.RestrictedString _ => ok none
+  | value_observers.Value.IntentToken _ _ => ok none
+  | value_observers.Value.Passkey _ _ _ => ok none
+  | value_observers.Value.AttestedPasskey _ _ _ => ok none
+  | value_observers.Value.Session _ _ => ok none
+  | value_observers.Value.ApiToken _ _ => ok none
+  | value_observers.Value.Oauth2Session _ _ => ok none
+  | value_observers.Value.JwsKeyEs256 _ => ok none
+  | value_observers.Value.JwsKeyRs256 _ => ok none
+  | value_observers.Value.UiHint _ => ok none
+  | value_observers.Value.TotpSecret _ _ => ok none
+  | value_observers.Value.AuditLogString _ _ => ok none
+  | value_observers.Value.Image _ => ok none
+  | value_observers.Value.CredentialType _ => ok none
+  | value_observers.Value.WebauthnAttestationCaList _ => ok none
+  | value_observers.Value.OauthClaimValue _ _ _ => ok none
+  | value_observers.Value.OauthClaimMap _ _ => ok none
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok none
+  | value_observers.Value.HexString _ => ok none
+  | value_observers.Value.Certificate _ => ok none
+  | value_observers.Value.ApplicationPassword _ => ok none
+  | value_observers.Value.Json _ => ok none
+  | value_observers.Value.Sha256 _ => ok none
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::to_oauthscopemap]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 347:4-352:5
+    Visibility: public -/
+def value_observers.Value.to_oauthscopemap
+  (self : value_observers.Value) : Result (Option (Std.U128 × Std.U64)) := do
+  match self with
+  | value_observers.Value.Utf8 _ => ok none
+  | value_observers.Value.Iutf8 _ => ok none
+  | value_observers.Value.Iname _ => ok none
+  | value_observers.Value.Uuid _ => ok none
+  | value_observers.Value.Boolean _ => ok none
+  | value_observers.Value.Syntax _ => ok none
+  | value_observers.Value.Index _ => ok none
+  | value_observers.Value.Refer _ => ok none
+  | value_observers.Value.JsonFilt _ => ok none
+  | value_observers.Value.Cred _ _ => ok none
+  | value_observers.Value.SshKey _ _ => ok none
+  | value_observers.Value.SecretValue _ => ok none
+  | value_observers.Value.Spn _ _ => ok none
+  | value_observers.Value.Uint32 _ => ok none
+  | value_observers.Value.Int64 _ => ok none
+  | value_observers.Value.Uint64 _ => ok none
+  | value_observers.Value.Cid _ => ok none
+  | value_observers.Value.Nsuniqueid _ => ok none
+  | value_observers.Value.DateTime _ => ok none
+  | value_observers.Value.EmailAddress _ _ => ok none
+  | value_observers.Value.PhoneNumber _ _ => ok none
+  | value_observers.Value.Address _ => ok none
+  | value_observers.Value.Url _ => ok none
+  | value_observers.Value.OauthScope _ => ok none
+  | value_observers.Value.OauthScopeMap u m => ok (some (u, m))
+  | value_observers.Value.PrivateBinary _ => ok none
+  | value_observers.Value.PublicBinary _ _ => ok none
+  | value_observers.Value.RestrictedString _ => ok none
+  | value_observers.Value.IntentToken _ _ => ok none
+  | value_observers.Value.Passkey _ _ _ => ok none
+  | value_observers.Value.AttestedPasskey _ _ _ => ok none
+  | value_observers.Value.Session _ _ => ok none
+  | value_observers.Value.ApiToken _ _ => ok none
+  | value_observers.Value.Oauth2Session _ _ => ok none
+  | value_observers.Value.JwsKeyEs256 _ => ok none
+  | value_observers.Value.JwsKeyRs256 _ => ok none
+  | value_observers.Value.UiHint _ => ok none
+  | value_observers.Value.TotpSecret _ _ => ok none
+  | value_observers.Value.AuditLogString _ _ => ok none
+  | value_observers.Value.Image _ => ok none
+  | value_observers.Value.CredentialType _ => ok none
+  | value_observers.Value.WebauthnAttestationCaList _ => ok none
+  | value_observers.Value.OauthClaimValue _ _ _ => ok none
+  | value_observers.Value.OauthClaimMap _ _ => ok none
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok none
+  | value_observers.Value.HexString _ => ok none
+  | value_observers.Value.Certificate _ => ok none
+  | value_observers.Value.ApplicationPassword _ => ok none
+  | value_observers.Value.Json _ => ok none
+  | value_observers.Value.Sha256 _ => ok none
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::to_restrictedstring]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 353:4-358:5
+    Visibility: public -/
+def value_observers.Value.to_restrictedstring
+  (self : value_observers.Value) : Result (Option Std.U64) := do
+  match self with
+  | value_observers.Value.Utf8 _ => ok none
+  | value_observers.Value.Iutf8 _ => ok none
+  | value_observers.Value.Iname _ => ok none
+  | value_observers.Value.Uuid _ => ok none
+  | value_observers.Value.Boolean _ => ok none
+  | value_observers.Value.Syntax _ => ok none
+  | value_observers.Value.Index _ => ok none
+  | value_observers.Value.Refer _ => ok none
+  | value_observers.Value.JsonFilt _ => ok none
+  | value_observers.Value.Cred _ _ => ok none
+  | value_observers.Value.SshKey _ _ => ok none
+  | value_observers.Value.SecretValue _ => ok none
+  | value_observers.Value.Spn _ _ => ok none
+  | value_observers.Value.Uint32 _ => ok none
+  | value_observers.Value.Int64 _ => ok none
+  | value_observers.Value.Uint64 _ => ok none
+  | value_observers.Value.Cid _ => ok none
+  | value_observers.Value.Nsuniqueid _ => ok none
+  | value_observers.Value.DateTime _ => ok none
+  | value_observers.Value.EmailAddress _ _ => ok none
+  | value_observers.Value.PhoneNumber _ _ => ok none
+  | value_observers.Value.Address _ => ok none
+  | value_observers.Value.Url _ => ok none
+  | value_observers.Value.OauthScope _ => ok none
+  | value_observers.Value.OauthScopeMap _ _ => ok none
+  | value_observers.Value.PrivateBinary _ => ok none
+  | value_observers.Value.PublicBinary _ _ => ok none
+  | value_observers.Value.RestrictedString s => ok (some s)
+  | value_observers.Value.IntentToken _ _ => ok none
+  | value_observers.Value.Passkey _ _ _ => ok none
+  | value_observers.Value.AttestedPasskey _ _ _ => ok none
+  | value_observers.Value.Session _ _ => ok none
+  | value_observers.Value.ApiToken _ _ => ok none
+  | value_observers.Value.Oauth2Session _ _ => ok none
+  | value_observers.Value.JwsKeyEs256 _ => ok none
+  | value_observers.Value.JwsKeyRs256 _ => ok none
+  | value_observers.Value.UiHint _ => ok none
+  | value_observers.Value.TotpSecret _ _ => ok none
+  | value_observers.Value.AuditLogString _ _ => ok none
+  | value_observers.Value.Image _ => ok none
+  | value_observers.Value.CredentialType _ => ok none
+  | value_observers.Value.WebauthnAttestationCaList _ => ok none
+  | value_observers.Value.OauthClaimValue _ _ _ => ok none
+  | value_observers.Value.OauthClaimMap _ _ => ok none
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok none
+  | value_observers.Value.HexString _ => ok none
+  | value_observers.Value.Certificate _ => ok none
+  | value_observers.Value.ApplicationPassword _ => ok none
+  | value_observers.Value.Json _ => ok none
+  | value_observers.Value.Sha256 _ => ok none
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::to_phonenumber]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 359:4-364:5
+    Visibility: public -/
+def value_observers.Value.to_phonenumber
+  (self : value_observers.Value) : Result (Option Std.U64) := do
+  match self with
+  | value_observers.Value.Utf8 _ => ok none
+  | value_observers.Value.Iutf8 _ => ok none
+  | value_observers.Value.Iname _ => ok none
+  | value_observers.Value.Uuid _ => ok none
+  | value_observers.Value.Boolean _ => ok none
+  | value_observers.Value.Syntax _ => ok none
+  | value_observers.Value.Index _ => ok none
+  | value_observers.Value.Refer _ => ok none
+  | value_observers.Value.JsonFilt _ => ok none
+  | value_observers.Value.Cred _ _ => ok none
+  | value_observers.Value.SshKey _ _ => ok none
+  | value_observers.Value.SecretValue _ => ok none
+  | value_observers.Value.Spn _ _ => ok none
+  | value_observers.Value.Uint32 _ => ok none
+  | value_observers.Value.Int64 _ => ok none
+  | value_observers.Value.Uint64 _ => ok none
+  | value_observers.Value.Cid _ => ok none
+  | value_observers.Value.Nsuniqueid _ => ok none
+  | value_observers.Value.DateTime _ => ok none
+  | value_observers.Value.EmailAddress _ _ => ok none
+  | value_observers.Value.PhoneNumber p _ => ok (some p)
+  | value_observers.Value.Address _ => ok none
+  | value_observers.Value.Url _ => ok none
+  | value_observers.Value.OauthScope _ => ok none
+  | value_observers.Value.OauthScopeMap _ _ => ok none
+  | value_observers.Value.PrivateBinary _ => ok none
+  | value_observers.Value.PublicBinary _ _ => ok none
+  | value_observers.Value.RestrictedString _ => ok none
+  | value_observers.Value.IntentToken _ _ => ok none
+  | value_observers.Value.Passkey _ _ _ => ok none
+  | value_observers.Value.AttestedPasskey _ _ _ => ok none
+  | value_observers.Value.Session _ _ => ok none
+  | value_observers.Value.ApiToken _ _ => ok none
+  | value_observers.Value.Oauth2Session _ _ => ok none
+  | value_observers.Value.JwsKeyEs256 _ => ok none
+  | value_observers.Value.JwsKeyRs256 _ => ok none
+  | value_observers.Value.UiHint _ => ok none
+  | value_observers.Value.TotpSecret _ _ => ok none
+  | value_observers.Value.AuditLogString _ _ => ok none
+  | value_observers.Value.Image _ => ok none
+  | value_observers.Value.CredentialType _ => ok none
+  | value_observers.Value.WebauthnAttestationCaList _ => ok none
+  | value_observers.Value.OauthClaimValue _ _ _ => ok none
+  | value_observers.Value.OauthClaimMap _ _ => ok none
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok none
+  | value_observers.Value.HexString _ => ok none
+  | value_observers.Value.Certificate _ => ok none
+  | value_observers.Value.ApplicationPassword _ => ok none
+  | value_observers.Value.Json _ => ok none
+  | value_observers.Value.Sha256 _ => ok none
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::to_publicbinary]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 365:4-370:5
+    Visibility: public -/
+def value_observers.Value.to_publicbinary
+  (self : value_observers.Value) : Result (Option (Std.U64 × Std.U64)) := do
+  match self with
+  | value_observers.Value.Utf8 _ => ok none
+  | value_observers.Value.Iutf8 _ => ok none
+  | value_observers.Value.Iname _ => ok none
+  | value_observers.Value.Uuid _ => ok none
+  | value_observers.Value.Boolean _ => ok none
+  | value_observers.Value.Syntax _ => ok none
+  | value_observers.Value.Index _ => ok none
+  | value_observers.Value.Refer _ => ok none
+  | value_observers.Value.JsonFilt _ => ok none
+  | value_observers.Value.Cred _ _ => ok none
+  | value_observers.Value.SshKey _ _ => ok none
+  | value_observers.Value.SecretValue _ => ok none
+  | value_observers.Value.Spn _ _ => ok none
+  | value_observers.Value.Uint32 _ => ok none
+  | value_observers.Value.Int64 _ => ok none
+  | value_observers.Value.Uint64 _ => ok none
+  | value_observers.Value.Cid _ => ok none
+  | value_observers.Value.Nsuniqueid _ => ok none
+  | value_observers.Value.DateTime _ => ok none
+  | value_observers.Value.EmailAddress _ _ => ok none
+  | value_observers.Value.PhoneNumber _ _ => ok none
+  | value_observers.Value.Address _ => ok none
+  | value_observers.Value.Url _ => ok none
+  | value_observers.Value.OauthScope _ => ok none
+  | value_observers.Value.OauthScopeMap _ _ => ok none
+  | value_observers.Value.PrivateBinary _ => ok none
+  | value_observers.Value.PublicBinary t d => ok (some (t, d))
+  | value_observers.Value.RestrictedString _ => ok none
+  | value_observers.Value.IntentToken _ _ => ok none
+  | value_observers.Value.Passkey _ _ _ => ok none
+  | value_observers.Value.AttestedPasskey _ _ _ => ok none
+  | value_observers.Value.Session _ _ => ok none
+  | value_observers.Value.ApiToken _ _ => ok none
+  | value_observers.Value.Oauth2Session _ _ => ok none
+  | value_observers.Value.JwsKeyEs256 _ => ok none
+  | value_observers.Value.JwsKeyRs256 _ => ok none
+  | value_observers.Value.UiHint _ => ok none
+  | value_observers.Value.TotpSecret _ _ => ok none
+  | value_observers.Value.AuditLogString _ _ => ok none
+  | value_observers.Value.Image _ => ok none
+  | value_observers.Value.CredentialType _ => ok none
+  | value_observers.Value.WebauthnAttestationCaList _ => ok none
+  | value_observers.Value.OauthClaimValue _ _ _ => ok none
+  | value_observers.Value.OauthClaimMap _ _ => ok none
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok none
+  | value_observers.Value.HexString _ => ok none
+  | value_observers.Value.Certificate _ => ok none
+  | value_observers.Value.ApplicationPassword _ => ok none
+  | value_observers.Value.Json _ => ok none
+  | value_observers.Value.Sha256 _ => ok none
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::to_address]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 371:4-376:5
+    Visibility: public -/
+def value_observers.Value.to_address
+  (self : value_observers.Value) : Result (Option Std.U64) := do
+  match self with
+  | value_observers.Value.Utf8 _ => ok none
+  | value_observers.Value.Iutf8 _ => ok none
+  | value_observers.Value.Iname _ => ok none
+  | value_observers.Value.Uuid _ => ok none
+  | value_observers.Value.Boolean _ => ok none
+  | value_observers.Value.Syntax _ => ok none
+  | value_observers.Value.Index _ => ok none
+  | value_observers.Value.Refer _ => ok none
+  | value_observers.Value.JsonFilt _ => ok none
+  | value_observers.Value.Cred _ _ => ok none
+  | value_observers.Value.SshKey _ _ => ok none
+  | value_observers.Value.SecretValue _ => ok none
+  | value_observers.Value.Spn _ _ => ok none
+  | value_observers.Value.Uint32 _ => ok none
+  | value_observers.Value.Int64 _ => ok none
+  | value_observers.Value.Uint64 _ => ok none
+  | value_observers.Value.Cid _ => ok none
+  | value_observers.Value.Nsuniqueid _ => ok none
+  | value_observers.Value.DateTime _ => ok none
+  | value_observers.Value.EmailAddress _ _ => ok none
+  | value_observers.Value.PhoneNumber _ _ => ok none
+  | value_observers.Value.Address a => ok (some a)
+  | value_observers.Value.Url _ => ok none
+  | value_observers.Value.OauthScope _ => ok none
+  | value_observers.Value.OauthScopeMap _ _ => ok none
+  | value_observers.Value.PrivateBinary _ => ok none
+  | value_observers.Value.PublicBinary _ _ => ok none
+  | value_observers.Value.RestrictedString _ => ok none
+  | value_observers.Value.IntentToken _ _ => ok none
+  | value_observers.Value.Passkey _ _ _ => ok none
+  | value_observers.Value.AttestedPasskey _ _ _ => ok none
+  | value_observers.Value.Session _ _ => ok none
+  | value_observers.Value.ApiToken _ _ => ok none
+  | value_observers.Value.Oauth2Session _ _ => ok none
+  | value_observers.Value.JwsKeyEs256 _ => ok none
+  | value_observers.Value.JwsKeyRs256 _ => ok none
+  | value_observers.Value.UiHint _ => ok none
+  | value_observers.Value.TotpSecret _ _ => ok none
+  | value_observers.Value.AuditLogString _ _ => ok none
+  | value_observers.Value.Image _ => ok none
+  | value_observers.Value.CredentialType _ => ok none
+  | value_observers.Value.WebauthnAttestationCaList _ => ok none
+  | value_observers.Value.OauthClaimValue _ _ _ => ok none
+  | value_observers.Value.OauthClaimMap _ _ => ok none
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok none
+  | value_observers.Value.HexString _ => ok none
+  | value_observers.Value.Certificate _ => ok none
+  | value_observers.Value.ApplicationPassword _ => ok none
+  | value_observers.Value.Json _ => ok none
+  | value_observers.Value.Sha256 _ => ok none
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::to_intenttoken]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 377:4-382:5
+    Visibility: public -/
+def value_observers.Value.to_intenttoken
+  (self : value_observers.Value) : Result (Option (Std.U64 × Std.U64)) := do
+  match self with
+  | value_observers.Value.Utf8 _ => ok none
+  | value_observers.Value.Iutf8 _ => ok none
+  | value_observers.Value.Iname _ => ok none
+  | value_observers.Value.Uuid _ => ok none
+  | value_observers.Value.Boolean _ => ok none
+  | value_observers.Value.Syntax _ => ok none
+  | value_observers.Value.Index _ => ok none
+  | value_observers.Value.Refer _ => ok none
+  | value_observers.Value.JsonFilt _ => ok none
+  | value_observers.Value.Cred _ _ => ok none
+  | value_observers.Value.SshKey _ _ => ok none
+  | value_observers.Value.SecretValue _ => ok none
+  | value_observers.Value.Spn _ _ => ok none
+  | value_observers.Value.Uint32 _ => ok none
+  | value_observers.Value.Int64 _ => ok none
+  | value_observers.Value.Uint64 _ => ok none
+  | value_observers.Value.Cid _ => ok none
+  | value_observers.Value.Nsuniqueid _ => ok none
+  | value_observers.Value.DateTime _ => ok none
+  | value_observers.Value.EmailAddress _ _ => ok none
+  | value_observers.Value.PhoneNumber _ _ => ok none
+  | value_observers.Value.Address _ => ok none
+  | value_observers.Value.Url _ => ok none
+  | value_observers.Value.OauthScope _ => ok none
+  | value_observers.Value.OauthScopeMap _ _ => ok none
+  | value_observers.Value.PrivateBinary _ => ok none
+  | value_observers.Value.PublicBinary _ _ => ok none
+  | value_observers.Value.RestrictedString _ => ok none
+  | value_observers.Value.IntentToken u s => ok (some (u, s))
+  | value_observers.Value.Passkey _ _ _ => ok none
+  | value_observers.Value.AttestedPasskey _ _ _ => ok none
+  | value_observers.Value.Session _ _ => ok none
+  | value_observers.Value.ApiToken _ _ => ok none
+  | value_observers.Value.Oauth2Session _ _ => ok none
+  | value_observers.Value.JwsKeyEs256 _ => ok none
+  | value_observers.Value.JwsKeyRs256 _ => ok none
+  | value_observers.Value.UiHint _ => ok none
+  | value_observers.Value.TotpSecret _ _ => ok none
+  | value_observers.Value.AuditLogString _ _ => ok none
+  | value_observers.Value.Image _ => ok none
+  | value_observers.Value.CredentialType _ => ok none
+  | value_observers.Value.WebauthnAttestationCaList _ => ok none
+  | value_observers.Value.OauthClaimValue _ _ _ => ok none
+  | value_observers.Value.OauthClaimMap _ _ => ok none
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok none
+  | value_observers.Value.HexString _ => ok none
+  | value_observers.Value.Certificate _ => ok none
+  | value_observers.Value.ApplicationPassword _ => ok none
+  | value_observers.Value.Json _ => ok none
+  | value_observers.Value.Sha256 _ => ok none
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::to_session]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 383:4-388:5
+    Visibility: public -/
+def value_observers.Value.to_session
+  (self : value_observers.Value) : Result (Option (Std.U128 × Std.U64)) := do
+  match self with
+  | value_observers.Value.Utf8 _ => ok none
+  | value_observers.Value.Iutf8 _ => ok none
+  | value_observers.Value.Iname _ => ok none
+  | value_observers.Value.Uuid _ => ok none
+  | value_observers.Value.Boolean _ => ok none
+  | value_observers.Value.Syntax _ => ok none
+  | value_observers.Value.Index _ => ok none
+  | value_observers.Value.Refer _ => ok none
+  | value_observers.Value.JsonFilt _ => ok none
+  | value_observers.Value.Cred _ _ => ok none
+  | value_observers.Value.SshKey _ _ => ok none
+  | value_observers.Value.SecretValue _ => ok none
+  | value_observers.Value.Spn _ _ => ok none
+  | value_observers.Value.Uint32 _ => ok none
+  | value_observers.Value.Int64 _ => ok none
+  | value_observers.Value.Uint64 _ => ok none
+  | value_observers.Value.Cid _ => ok none
+  | value_observers.Value.Nsuniqueid _ => ok none
+  | value_observers.Value.DateTime _ => ok none
+  | value_observers.Value.EmailAddress _ _ => ok none
+  | value_observers.Value.PhoneNumber _ _ => ok none
+  | value_observers.Value.Address _ => ok none
+  | value_observers.Value.Url _ => ok none
+  | value_observers.Value.OauthScope _ => ok none
+  | value_observers.Value.OauthScopeMap _ _ => ok none
+  | value_observers.Value.PrivateBinary _ => ok none
+  | value_observers.Value.PublicBinary _ _ => ok none
+  | value_observers.Value.RestrictedString _ => ok none
+  | value_observers.Value.IntentToken _ _ => ok none
+  | value_observers.Value.Passkey _ _ _ => ok none
+  | value_observers.Value.AttestedPasskey _ _ _ => ok none
+  | value_observers.Value.Session u s => ok (some (u, s))
+  | value_observers.Value.ApiToken _ _ => ok none
+  | value_observers.Value.Oauth2Session _ _ => ok none
+  | value_observers.Value.JwsKeyEs256 _ => ok none
+  | value_observers.Value.JwsKeyRs256 _ => ok none
+  | value_observers.Value.UiHint _ => ok none
+  | value_observers.Value.TotpSecret _ _ => ok none
+  | value_observers.Value.AuditLogString _ _ => ok none
+  | value_observers.Value.Image _ => ok none
+  | value_observers.Value.CredentialType _ => ok none
+  | value_observers.Value.WebauthnAttestationCaList _ => ok none
+  | value_observers.Value.OauthClaimValue _ _ _ => ok none
+  | value_observers.Value.OauthClaimMap _ _ => ok none
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok none
+  | value_observers.Value.HexString _ => ok none
+  | value_observers.Value.Certificate _ => ok none
+  | value_observers.Value.ApplicationPassword _ => ok none
+  | value_observers.Value.Json _ => ok none
+  | value_observers.Value.Sha256 _ => ok none
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::Value}::migrate_iutf8_iname]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 389:4-394:5
+    Visibility: public -/
+def value_observers.Value.migrate_iutf8_iname
+  (self : value_observers.Value) : Result (Option value_observers.Value) := do
+  match self with
+  | value_observers.Value.Utf8 _ => ok none
+  | value_observers.Value.Iutf8 v => ok (some (value_observers.Value.Iname v))
+  | value_observers.Value.Iname _ => ok none
+  | value_observers.Value.Uuid _ => ok none
+  | value_observers.Value.Boolean _ => ok none
+  | value_observers.Value.Syntax _ => ok none
+  | value_observers.Value.Index _ => ok none
+  | value_observers.Value.Refer _ => ok none
+  | value_observers.Value.JsonFilt _ => ok none
+  | value_observers.Value.Cred _ _ => ok none
+  | value_observers.Value.SshKey _ _ => ok none
+  | value_observers.Value.SecretValue _ => ok none
+  | value_observers.Value.Spn _ _ => ok none
+  | value_observers.Value.Uint32 _ => ok none
+  | value_observers.Value.Int64 _ => ok none
+  | value_observers.Value.Uint64 _ => ok none
+  | value_observers.Value.Cid _ => ok none
+  | value_observers.Value.Nsuniqueid _ => ok none
+  | value_observers.Value.DateTime _ => ok none
+  | value_observers.Value.EmailAddress _ _ => ok none
+  | value_observers.Value.PhoneNumber _ _ => ok none
+  | value_observers.Value.Address _ => ok none
+  | value_observers.Value.Url _ => ok none
+  | value_observers.Value.OauthScope _ => ok none
+  | value_observers.Value.OauthScopeMap _ _ => ok none
+  | value_observers.Value.PrivateBinary _ => ok none
+  | value_observers.Value.PublicBinary _ _ => ok none
+  | value_observers.Value.RestrictedString _ => ok none
+  | value_observers.Value.IntentToken _ _ => ok none
+  | value_observers.Value.Passkey _ _ _ => ok none
+  | value_observers.Value.AttestedPasskey _ _ _ => ok none
+  | value_observers.Value.Session _ _ => ok none
+  | value_observers.Value.ApiToken _ _ => ok none
+  | value_observers.Value.Oauth2Session _ _ => ok none
+  | value_observers.Value.JwsKeyEs256 _ => ok none
+  | value_observers.Value.JwsKeyRs256 _ => ok none
+  | value_observers.Value.UiHint _ => ok none
+  | value_observers.Value.TotpSecret _ _ => ok none
+  | value_observers.Value.AuditLogString _ _ => ok none
+  | value_observers.Value.Image _ => ok none
+  | value_observers.Value.CredentialType _ => ok none
+  | value_observers.Value.WebauthnAttestationCaList _ => ok none
+  | value_observers.Value.OauthClaimValue _ _ _ => ok none
+  | value_observers.Value.OauthClaimMap _ _ => ok none
+  | value_observers.Value.KeyInternal _ _ _ _ _ _ => ok none
+  | value_observers.Value.HexString _ => ok none
+  | value_observers.Value.Certificate _ => ok none
+  | value_observers.Value.ApplicationPassword _ => ok none
+  | value_observers.Value.Json _ => ok none
+  | value_observers.Value.Sha256 _ => ok none
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::PartialValue}::is_utf8]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 397:4-399:5
+    Visibility: public -/
+def value_observers.PartialValue.is_utf8
+  (self : value_observers.PartialValue) : Result Bool := do
+  match self with
+  | value_observers.PartialValue.Utf8 _ => ok true
+  | value_observers.PartialValue.Iutf8 _ => ok false
+  | value_observers.PartialValue.Iname _ => ok false
+  | value_observers.PartialValue.Uuid _ => ok false
+  | value_observers.PartialValue.Boolean _ => ok false
+  | value_observers.PartialValue.Syntax _ => ok false
+  | value_observers.PartialValue.Index _ => ok false
+  | value_observers.PartialValue.Refer _ => ok false
+  | value_observers.PartialValue.JsonFilt _ => ok false
+  | value_observers.PartialValue.Cred _ => ok false
+  | value_observers.PartialValue.SshKey _ => ok false
+  | value_observers.PartialValue.SecretValue => ok false
+  | value_observers.PartialValue.Spn _ _ => ok false
+  | value_observers.PartialValue.Uint32 _ => ok false
+  | value_observers.PartialValue.Cid _ => ok false
+  | value_observers.PartialValue.Nsuniqueid _ => ok false
+  | value_observers.PartialValue.DateTime _ => ok false
+  | value_observers.PartialValue.EmailAddress _ => ok false
+  | value_observers.PartialValue.PhoneNumber _ => ok false
+  | value_observers.PartialValue.Address _ => ok false
+  | value_observers.PartialValue.Url _ => ok false
+  | value_observers.PartialValue.OauthScope _ => ok false
+  | value_observers.PartialValue.PrivateBinary => ok false
+  | value_observers.PartialValue.PublicBinary _ => ok false
+  | value_observers.PartialValue.RestrictedString _ => ok false
+  | value_observers.PartialValue.IntentToken _ => ok false
+  | value_observers.PartialValue.UiHint _ => ok false
+  | value_observers.PartialValue.Passkey _ => ok false
+  | value_observers.PartialValue.AttestedPasskey _ => ok false
+  | value_observers.PartialValue.Image _ => ok false
+  | value_observers.PartialValue.CredentialType _ => ok false
+  | value_observers.PartialValue.OauthClaim _ _ => ok false
+  | value_observers.PartialValue.OauthClaimValue _ _ _ => ok false
+  | value_observers.PartialValue.HexString _ => ok false
+  | value_observers.PartialValue.Json => ok false
+  | value_observers.PartialValue.Sha256 _ => ok false
+  | value_observers.PartialValue.Int64 _ => ok false
+  | value_observers.PartialValue.Uint64 _ => ok false
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::PartialValue}::is_iutf8]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 400:4-402:5
+    Visibility: public -/
+def value_observers.PartialValue.is_iutf8
+  (self : value_observers.PartialValue) : Result Bool := do
+  match self with
+  | value_observers.PartialValue.Utf8 _ => ok false
+  | value_observers.PartialValue.Iutf8 _ => ok true
+  | value_observers.PartialValue.Iname _ => ok false
+  | value_observers.PartialValue.Uuid _ => ok false
+  | value_observers.PartialValue.Boolean _ => ok false
+  | value_observers.PartialValue.Syntax _ => ok false
+  | value_observers.PartialValue.Index _ => ok false
+  | value_observers.PartialValue.Refer _ => ok false
+  | value_observers.PartialValue.JsonFilt _ => ok false
+  | value_observers.PartialValue.Cred _ => ok false
+  | value_observers.PartialValue.SshKey _ => ok false
+  | value_observers.PartialValue.SecretValue => ok false
+  | value_observers.PartialValue.Spn _ _ => ok false
+  | value_observers.PartialValue.Uint32 _ => ok false
+  | value_observers.PartialValue.Cid _ => ok false
+  | value_observers.PartialValue.Nsuniqueid _ => ok false
+  | value_observers.PartialValue.DateTime _ => ok false
+  | value_observers.PartialValue.EmailAddress _ => ok false
+  | value_observers.PartialValue.PhoneNumber _ => ok false
+  | value_observers.PartialValue.Address _ => ok false
+  | value_observers.PartialValue.Url _ => ok false
+  | value_observers.PartialValue.OauthScope _ => ok false
+  | value_observers.PartialValue.PrivateBinary => ok false
+  | value_observers.PartialValue.PublicBinary _ => ok false
+  | value_observers.PartialValue.RestrictedString _ => ok false
+  | value_observers.PartialValue.IntentToken _ => ok false
+  | value_observers.PartialValue.UiHint _ => ok false
+  | value_observers.PartialValue.Passkey _ => ok false
+  | value_observers.PartialValue.AttestedPasskey _ => ok false
+  | value_observers.PartialValue.Image _ => ok false
+  | value_observers.PartialValue.CredentialType _ => ok false
+  | value_observers.PartialValue.OauthClaim _ _ => ok false
+  | value_observers.PartialValue.OauthClaimValue _ _ _ => ok false
+  | value_observers.PartialValue.HexString _ => ok false
+  | value_observers.PartialValue.Json => ok false
+  | value_observers.PartialValue.Sha256 _ => ok false
+  | value_observers.PartialValue.Int64 _ => ok false
+  | value_observers.PartialValue.Uint64 _ => ok false
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::PartialValue}::is_iname]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 403:4-405:5
+    Visibility: public -/
+def value_observers.PartialValue.is_iname
+  (self : value_observers.PartialValue) : Result Bool := do
+  match self with
+  | value_observers.PartialValue.Utf8 _ => ok false
+  | value_observers.PartialValue.Iutf8 _ => ok false
+  | value_observers.PartialValue.Iname _ => ok true
+  | value_observers.PartialValue.Uuid _ => ok false
+  | value_observers.PartialValue.Boolean _ => ok false
+  | value_observers.PartialValue.Syntax _ => ok false
+  | value_observers.PartialValue.Index _ => ok false
+  | value_observers.PartialValue.Refer _ => ok false
+  | value_observers.PartialValue.JsonFilt _ => ok false
+  | value_observers.PartialValue.Cred _ => ok false
+  | value_observers.PartialValue.SshKey _ => ok false
+  | value_observers.PartialValue.SecretValue => ok false
+  | value_observers.PartialValue.Spn _ _ => ok false
+  | value_observers.PartialValue.Uint32 _ => ok false
+  | value_observers.PartialValue.Cid _ => ok false
+  | value_observers.PartialValue.Nsuniqueid _ => ok false
+  | value_observers.PartialValue.DateTime _ => ok false
+  | value_observers.PartialValue.EmailAddress _ => ok false
+  | value_observers.PartialValue.PhoneNumber _ => ok false
+  | value_observers.PartialValue.Address _ => ok false
+  | value_observers.PartialValue.Url _ => ok false
+  | value_observers.PartialValue.OauthScope _ => ok false
+  | value_observers.PartialValue.PrivateBinary => ok false
+  | value_observers.PartialValue.PublicBinary _ => ok false
+  | value_observers.PartialValue.RestrictedString _ => ok false
+  | value_observers.PartialValue.IntentToken _ => ok false
+  | value_observers.PartialValue.UiHint _ => ok false
+  | value_observers.PartialValue.Passkey _ => ok false
+  | value_observers.PartialValue.AttestedPasskey _ => ok false
+  | value_observers.PartialValue.Image _ => ok false
+  | value_observers.PartialValue.CredentialType _ => ok false
+  | value_observers.PartialValue.OauthClaim _ _ => ok false
+  | value_observers.PartialValue.OauthClaimValue _ _ _ => ok false
+  | value_observers.PartialValue.HexString _ => ok false
+  | value_observers.PartialValue.Json => ok false
+  | value_observers.PartialValue.Sha256 _ => ok false
+  | value_observers.PartialValue.Int64 _ => ok false
+  | value_observers.PartialValue.Uint64 _ => ok false
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::PartialValue}::is_bool]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 406:4-408:5
+    Visibility: public -/
+def value_observers.PartialValue.is_bool
+  (self : value_observers.PartialValue) : Result Bool := do
+  match self with
+  | value_observers.PartialValue.Utf8 _ => ok false
+  | value_observers.PartialValue.Iutf8 _ => ok false
+  | value_observers.PartialValue.Iname _ => ok false
+  | value_observers.PartialValue.Uuid _ => ok false
+  | value_observers.PartialValue.Boolean _ => ok true
+  | value_observers.PartialValue.Syntax _ => ok false
+  | value_observers.PartialValue.Index _ => ok false
+  | value_observers.PartialValue.Refer _ => ok false
+  | value_observers.PartialValue.JsonFilt _ => ok false
+  | value_observers.PartialValue.Cred _ => ok false
+  | value_observers.PartialValue.SshKey _ => ok false
+  | value_observers.PartialValue.SecretValue => ok false
+  | value_observers.PartialValue.Spn _ _ => ok false
+  | value_observers.PartialValue.Uint32 _ => ok false
+  | value_observers.PartialValue.Cid _ => ok false
+  | value_observers.PartialValue.Nsuniqueid _ => ok false
+  | value_observers.PartialValue.DateTime _ => ok false
+  | value_observers.PartialValue.EmailAddress _ => ok false
+  | value_observers.PartialValue.PhoneNumber _ => ok false
+  | value_observers.PartialValue.Address _ => ok false
+  | value_observers.PartialValue.Url _ => ok false
+  | value_observers.PartialValue.OauthScope _ => ok false
+  | value_observers.PartialValue.PrivateBinary => ok false
+  | value_observers.PartialValue.PublicBinary _ => ok false
+  | value_observers.PartialValue.RestrictedString _ => ok false
+  | value_observers.PartialValue.IntentToken _ => ok false
+  | value_observers.PartialValue.UiHint _ => ok false
+  | value_observers.PartialValue.Passkey _ => ok false
+  | value_observers.PartialValue.AttestedPasskey _ => ok false
+  | value_observers.PartialValue.Image _ => ok false
+  | value_observers.PartialValue.CredentialType _ => ok false
+  | value_observers.PartialValue.OauthClaim _ _ => ok false
+  | value_observers.PartialValue.OauthClaimValue _ _ _ => ok false
+  | value_observers.PartialValue.HexString _ => ok false
+  | value_observers.PartialValue.Json => ok false
+  | value_observers.PartialValue.Sha256 _ => ok false
+  | value_observers.PartialValue.Int64 _ => ok false
+  | value_observers.PartialValue.Uint64 _ => ok false
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::PartialValue}::is_uuid]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 409:4-411:5
+    Visibility: public -/
+def value_observers.PartialValue.is_uuid
+  (self : value_observers.PartialValue) : Result Bool := do
+  match self with
+  | value_observers.PartialValue.Utf8 _ => ok false
+  | value_observers.PartialValue.Iutf8 _ => ok false
+  | value_observers.PartialValue.Iname _ => ok false
+  | value_observers.PartialValue.Uuid _ => ok true
+  | value_observers.PartialValue.Boolean _ => ok false
+  | value_observers.PartialValue.Syntax _ => ok false
+  | value_observers.PartialValue.Index _ => ok false
+  | value_observers.PartialValue.Refer _ => ok false
+  | value_observers.PartialValue.JsonFilt _ => ok false
+  | value_observers.PartialValue.Cred _ => ok false
+  | value_observers.PartialValue.SshKey _ => ok false
+  | value_observers.PartialValue.SecretValue => ok false
+  | value_observers.PartialValue.Spn _ _ => ok false
+  | value_observers.PartialValue.Uint32 _ => ok false
+  | value_observers.PartialValue.Cid _ => ok false
+  | value_observers.PartialValue.Nsuniqueid _ => ok false
+  | value_observers.PartialValue.DateTime _ => ok false
+  | value_observers.PartialValue.EmailAddress _ => ok false
+  | value_observers.PartialValue.PhoneNumber _ => ok false
+  | value_observers.PartialValue.Address _ => ok false
+  | value_observers.PartialValue.Url _ => ok false
+  | value_observers.PartialValue.OauthScope _ => ok false
+  | value_observers.PartialValue.PrivateBinary => ok false
+  | value_observers.PartialValue.PublicBinary _ => ok false
+  | value_observers.PartialValue.RestrictedString _ => ok false
+  | value_observers.PartialValue.IntentToken _ => ok false
+  | value_observers.PartialValue.UiHint _ => ok false
+  | value_observers.PartialValue.Passkey _ => ok false
+  | value_observers.PartialValue.AttestedPasskey _ => ok false
+  | value_observers.PartialValue.Image _ => ok false
+  | value_observers.PartialValue.CredentialType _ => ok false
+  | value_observers.PartialValue.OauthClaim _ _ => ok false
+  | value_observers.PartialValue.OauthClaimValue _ _ _ => ok false
+  | value_observers.PartialValue.HexString _ => ok false
+  | value_observers.PartialValue.Json => ok false
+  | value_observers.PartialValue.Sha256 _ => ok false
+  | value_observers.PartialValue.Int64 _ => ok false
+  | value_observers.PartialValue.Uint64 _ => ok false
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::PartialValue}::is_refer]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 412:4-414:5
+    Visibility: public -/
+def value_observers.PartialValue.is_refer
+  (self : value_observers.PartialValue) : Result Bool := do
+  match self with
+  | value_observers.PartialValue.Utf8 _ => ok false
+  | value_observers.PartialValue.Iutf8 _ => ok false
+  | value_observers.PartialValue.Iname _ => ok false
+  | value_observers.PartialValue.Uuid _ => ok false
+  | value_observers.PartialValue.Boolean _ => ok false
+  | value_observers.PartialValue.Syntax _ => ok false
+  | value_observers.PartialValue.Index _ => ok false
+  | value_observers.PartialValue.Refer _ => ok true
+  | value_observers.PartialValue.JsonFilt _ => ok false
+  | value_observers.PartialValue.Cred _ => ok false
+  | value_observers.PartialValue.SshKey _ => ok false
+  | value_observers.PartialValue.SecretValue => ok false
+  | value_observers.PartialValue.Spn _ _ => ok false
+  | value_observers.PartialValue.Uint32 _ => ok false
+  | value_observers.PartialValue.Cid _ => ok false
+  | value_observers.PartialValue.Nsuniqueid _ => ok false
+  | value_observers.PartialValue.DateTime _ => ok false
+  | value_observers.PartialValue.EmailAddress _ => ok false
+  | value_observers.PartialValue.PhoneNumber _ => ok false
+  | value_observers.PartialValue.Address _ => ok false
+  | value_observers.PartialValue.Url _ => ok false
+  | value_observers.PartialValue.OauthScope _ => ok false
+  | value_observers.PartialValue.PrivateBinary => ok false
+  | value_observers.PartialValue.PublicBinary _ => ok false
+  | value_observers.PartialValue.RestrictedString _ => ok false
+  | value_observers.PartialValue.IntentToken _ => ok false
+  | value_observers.PartialValue.UiHint _ => ok false
+  | value_observers.PartialValue.Passkey _ => ok false
+  | value_observers.PartialValue.AttestedPasskey _ => ok false
+  | value_observers.PartialValue.Image _ => ok false
+  | value_observers.PartialValue.CredentialType _ => ok false
+  | value_observers.PartialValue.OauthClaim _ _ => ok false
+  | value_observers.PartialValue.OauthClaimValue _ _ _ => ok false
+  | value_observers.PartialValue.HexString _ => ok false
+  | value_observers.PartialValue.Json => ok false
+  | value_observers.PartialValue.Sha256 _ => ok false
+  | value_observers.PartialValue.Int64 _ => ok false
+  | value_observers.PartialValue.Uint64 _ => ok false
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::PartialValue}::is_index]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 415:4-417:5
+    Visibility: public -/
+def value_observers.PartialValue.is_index
+  (self : value_observers.PartialValue) : Result Bool := do
+  match self with
+  | value_observers.PartialValue.Utf8 _ => ok false
+  | value_observers.PartialValue.Iutf8 _ => ok false
+  | value_observers.PartialValue.Iname _ => ok false
+  | value_observers.PartialValue.Uuid _ => ok false
+  | value_observers.PartialValue.Boolean _ => ok false
+  | value_observers.PartialValue.Syntax _ => ok false
+  | value_observers.PartialValue.Index _ => ok true
+  | value_observers.PartialValue.Refer _ => ok false
+  | value_observers.PartialValue.JsonFilt _ => ok false
+  | value_observers.PartialValue.Cred _ => ok false
+  | value_observers.PartialValue.SshKey _ => ok false
+  | value_observers.PartialValue.SecretValue => ok false
+  | value_observers.PartialValue.Spn _ _ => ok false
+  | value_observers.PartialValue.Uint32 _ => ok false
+  | value_observers.PartialValue.Cid _ => ok false
+  | value_observers.PartialValue.Nsuniqueid _ => ok false
+  | value_observers.PartialValue.DateTime _ => ok false
+  | value_observers.PartialValue.EmailAddress _ => ok false
+  | value_observers.PartialValue.PhoneNumber _ => ok false
+  | value_observers.PartialValue.Address _ => ok false
+  | value_observers.PartialValue.Url _ => ok false
+  | value_observers.PartialValue.OauthScope _ => ok false
+  | value_observers.PartialValue.PrivateBinary => ok false
+  | value_observers.PartialValue.PublicBinary _ => ok false
+  | value_observers.PartialValue.RestrictedString _ => ok false
+  | value_observers.PartialValue.IntentToken _ => ok false
+  | value_observers.PartialValue.UiHint _ => ok false
+  | value_observers.PartialValue.Passkey _ => ok false
+  | value_observers.PartialValue.AttestedPasskey _ => ok false
+  | value_observers.PartialValue.Image _ => ok false
+  | value_observers.PartialValue.CredentialType _ => ok false
+  | value_observers.PartialValue.OauthClaim _ _ => ok false
+  | value_observers.PartialValue.OauthClaimValue _ _ _ => ok false
+  | value_observers.PartialValue.HexString _ => ok false
+  | value_observers.PartialValue.Json => ok false
+  | value_observers.PartialValue.Sha256 _ => ok false
+  | value_observers.PartialValue.Int64 _ => ok false
+  | value_observers.PartialValue.Uint64 _ => ok false
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::PartialValue}::is_syntax]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 418:4-420:5
+    Visibility: public -/
+def value_observers.PartialValue.is_syntax
+  (self : value_observers.PartialValue) : Result Bool := do
+  match self with
+  | value_observers.PartialValue.Utf8 _ => ok false
+  | value_observers.PartialValue.Iutf8 _ => ok false
+  | value_observers.PartialValue.Iname _ => ok false
+  | value_observers.PartialValue.Uuid _ => ok false
+  | value_observers.PartialValue.Boolean _ => ok false
+  | value_observers.PartialValue.Syntax _ => ok true
+  | value_observers.PartialValue.Index _ => ok false
+  | value_observers.PartialValue.Refer _ => ok false
+  | value_observers.PartialValue.JsonFilt _ => ok false
+  | value_observers.PartialValue.Cred _ => ok false
+  | value_observers.PartialValue.SshKey _ => ok false
+  | value_observers.PartialValue.SecretValue => ok false
+  | value_observers.PartialValue.Spn _ _ => ok false
+  | value_observers.PartialValue.Uint32 _ => ok false
+  | value_observers.PartialValue.Cid _ => ok false
+  | value_observers.PartialValue.Nsuniqueid _ => ok false
+  | value_observers.PartialValue.DateTime _ => ok false
+  | value_observers.PartialValue.EmailAddress _ => ok false
+  | value_observers.PartialValue.PhoneNumber _ => ok false
+  | value_observers.PartialValue.Address _ => ok false
+  | value_observers.PartialValue.Url _ => ok false
+  | value_observers.PartialValue.OauthScope _ => ok false
+  | value_observers.PartialValue.PrivateBinary => ok false
+  | value_observers.PartialValue.PublicBinary _ => ok false
+  | value_observers.PartialValue.RestrictedString _ => ok false
+  | value_observers.PartialValue.IntentToken _ => ok false
+  | value_observers.PartialValue.UiHint _ => ok false
+  | value_observers.PartialValue.Passkey _ => ok false
+  | value_observers.PartialValue.AttestedPasskey _ => ok false
+  | value_observers.PartialValue.Image _ => ok false
+  | value_observers.PartialValue.CredentialType _ => ok false
+  | value_observers.PartialValue.OauthClaim _ _ => ok false
+  | value_observers.PartialValue.OauthClaimValue _ _ _ => ok false
+  | value_observers.PartialValue.HexString _ => ok false
+  | value_observers.PartialValue.Json => ok false
+  | value_observers.PartialValue.Sha256 _ => ok false
+  | value_observers.PartialValue.Int64 _ => ok false
+  | value_observers.PartialValue.Uint64 _ => ok false
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::PartialValue}::is_json_filter]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 421:4-423:5
+    Visibility: public -/
+def value_observers.PartialValue.is_json_filter
+  (self : value_observers.PartialValue) : Result Bool := do
+  match self with
+  | value_observers.PartialValue.Utf8 _ => ok false
+  | value_observers.PartialValue.Iutf8 _ => ok false
+  | value_observers.PartialValue.Iname _ => ok false
+  | value_observers.PartialValue.Uuid _ => ok false
+  | value_observers.PartialValue.Boolean _ => ok false
+  | value_observers.PartialValue.Syntax _ => ok false
+  | value_observers.PartialValue.Index _ => ok false
+  | value_observers.PartialValue.Refer _ => ok false
+  | value_observers.PartialValue.JsonFilt _ => ok true
+  | value_observers.PartialValue.Cred _ => ok false
+  | value_observers.PartialValue.SshKey _ => ok false
+  | value_observers.PartialValue.SecretValue => ok false
+  | value_observers.PartialValue.Spn _ _ => ok false
+  | value_observers.PartialValue.Uint32 _ => ok false
+  | value_observers.PartialValue.Cid _ => ok false
+  | value_observers.PartialValue.Nsuniqueid _ => ok false
+  | value_observers.PartialValue.DateTime _ => ok false
+  | value_observers.PartialValue.EmailAddress _ => ok false
+  | value_observers.PartialValue.PhoneNumber _ => ok false
+  | value_observers.PartialValue.Address _ => ok false
+  | value_observers.PartialValue.Url _ => ok false
+  | value_observers.PartialValue.OauthScope _ => ok false
+  | value_observers.PartialValue.PrivateBinary => ok false
+  | value_observers.PartialValue.PublicBinary _ => ok false
+  | value_observers.PartialValue.RestrictedString _ => ok false
+  | value_observers.PartialValue.IntentToken _ => ok false
+  | value_observers.PartialValue.UiHint _ => ok false
+  | value_observers.PartialValue.Passkey _ => ok false
+  | value_observers.PartialValue.AttestedPasskey _ => ok false
+  | value_observers.PartialValue.Image _ => ok false
+  | value_observers.PartialValue.CredentialType _ => ok false
+  | value_observers.PartialValue.OauthClaim _ _ => ok false
+  | value_observers.PartialValue.OauthClaimValue _ _ _ => ok false
+  | value_observers.PartialValue.HexString _ => ok false
+  | value_observers.PartialValue.Json => ok false
+  | value_observers.PartialValue.Sha256 _ => ok false
+  | value_observers.PartialValue.Int64 _ => ok false
+  | value_observers.PartialValue.Uint64 _ => ok false
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::PartialValue}::is_credential]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 424:4-426:5
+    Visibility: public -/
+def value_observers.PartialValue.is_credential
+  (self : value_observers.PartialValue) : Result Bool := do
+  match self with
+  | value_observers.PartialValue.Utf8 _ => ok false
+  | value_observers.PartialValue.Iutf8 _ => ok false
+  | value_observers.PartialValue.Iname _ => ok false
+  | value_observers.PartialValue.Uuid _ => ok false
+  | value_observers.PartialValue.Boolean _ => ok false
+  | value_observers.PartialValue.Syntax _ => ok false
+  | value_observers.PartialValue.Index _ => ok false
+  | value_observers.PartialValue.Refer _ => ok false
+  | value_observers.PartialValue.JsonFilt _ => ok false
+  | value_observers.PartialValue.Cred _ => ok true
+  | value_observers.PartialValue.SshKey _ => ok false
+  | value_observers.PartialValue.SecretValue => ok false
+  | value_observers.PartialValue.Spn _ _ => ok false
+  | value_observers.PartialValue.Uint32 _ => ok false
+  | value_observers.PartialValue.Cid _ => ok false
+  | value_observers.PartialValue.Nsuniqueid _ => ok false
+  | value_observers.PartialValue.DateTime _ => ok false
+  | value_observers.PartialValue.EmailAddress _ => ok false
+  | value_observers.PartialValue.PhoneNumber _ => ok false
+  | value_observers.PartialValue.Address _ => ok false
+  | value_observers.PartialValue.Url _ => ok false
+  | value_observers.PartialValue.OauthScope _ => ok false
+  | value_observers.PartialValue.PrivateBinary => ok false
+  | value_observers.PartialValue.PublicBinary _ => ok false
+  | value_observers.PartialValue.RestrictedString _ => ok false
+  | value_observers.PartialValue.IntentToken _ => ok false
+  | value_observers.PartialValue.UiHint _ => ok false
+  | value_observers.PartialValue.Passkey _ => ok false
+  | value_observers.PartialValue.AttestedPasskey _ => ok false
+  | value_observers.PartialValue.Image _ => ok false
+  | value_observers.PartialValue.CredentialType _ => ok false
+  | value_observers.PartialValue.OauthClaim _ _ => ok false
+  | value_observers.PartialValue.OauthClaimValue _ _ _ => ok false
+  | value_observers.PartialValue.HexString _ => ok false
+  | value_observers.PartialValue.Json => ok false
+  | value_observers.PartialValue.Sha256 _ => ok false
+  | value_observers.PartialValue.Int64 _ => ok false
+  | value_observers.PartialValue.Uint64 _ => ok false
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::PartialValue}::is_secret_string]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 427:4-429:5
+    Visibility: public -/
+def value_observers.PartialValue.is_secret_string
+  (self : value_observers.PartialValue) : Result Bool := do
+  match self with
+  | value_observers.PartialValue.Utf8 _ => ok false
+  | value_observers.PartialValue.Iutf8 _ => ok false
+  | value_observers.PartialValue.Iname _ => ok false
+  | value_observers.PartialValue.Uuid _ => ok false
+  | value_observers.PartialValue.Boolean _ => ok false
+  | value_observers.PartialValue.Syntax _ => ok false
+  | value_observers.PartialValue.Index _ => ok false
+  | value_observers.PartialValue.Refer _ => ok false
+  | value_observers.PartialValue.JsonFilt _ => ok false
+  | value_observers.PartialValue.Cred _ => ok false
+  | value_observers.PartialValue.SshKey _ => ok false
+  | value_observers.PartialValue.SecretValue => ok true
+  | value_observers.PartialValue.Spn _ _ => ok false
+  | value_observers.PartialValue.Uint32 _ => ok false
+  | value_observers.PartialValue.Cid _ => ok false
+  | value_observers.PartialValue.Nsuniqueid _ => ok false
+  | value_observers.PartialValue.DateTime _ => ok false
+  | value_observers.PartialValue.EmailAddress _ => ok false
+  | value_observers.PartialValue.PhoneNumber _ => ok false
+  | value_observers.PartialValue.Address _ => ok false
+  | value_observers.PartialValue.Url _ => ok false
+  | value_observers.PartialValue.OauthScope _ => ok false
+  | value_observers.PartialValue.PrivateBinary => ok false
+  | value_observers.PartialValue.PublicBinary _ => ok false
+  | value_observers.PartialValue.RestrictedString _ => ok false
+  | value_observers.PartialValue.IntentToken _ => ok false
+  | value_observers.PartialValue.UiHint _ => ok false
+  | value_observers.PartialValue.Passkey _ => ok false
+  | value_observers.PartialValue.AttestedPasskey _ => ok false
+  | value_observers.PartialValue.Image _ => ok false
+  | value_observers.PartialValue.CredentialType _ => ok false
+  | value_observers.PartialValue.OauthClaim _ _ => ok false
+  | value_observers.PartialValue.OauthClaimValue _ _ _ => ok false
+  | value_observers.PartialValue.HexString _ => ok false
+  | value_observers.PartialValue.Json => ok false
+  | value_observers.PartialValue.Sha256 _ => ok false
+  | value_observers.PartialValue.Int64 _ => ok false
+  | value_observers.PartialValue.Uint64 _ => ok false
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::PartialValue}::is_sshkey]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 430:4-432:5
+    Visibility: public -/
+def value_observers.PartialValue.is_sshkey
+  (self : value_observers.PartialValue) : Result Bool := do
+  match self with
+  | value_observers.PartialValue.Utf8 _ => ok false
+  | value_observers.PartialValue.Iutf8 _ => ok false
+  | value_observers.PartialValue.Iname _ => ok false
+  | value_observers.PartialValue.Uuid _ => ok false
+  | value_observers.PartialValue.Boolean _ => ok false
+  | value_observers.PartialValue.Syntax _ => ok false
+  | value_observers.PartialValue.Index _ => ok false
+  | value_observers.PartialValue.Refer _ => ok false
+  | value_observers.PartialValue.JsonFilt _ => ok false
+  | value_observers.PartialValue.Cred _ => ok false
+  | value_observers.PartialValue.SshKey _ => ok true
+  | value_observers.PartialValue.SecretValue => ok false
+  | value_observers.PartialValue.Spn _ _ => ok false
+  | value_observers.PartialValue.Uint32 _ => ok false
+  | value_observers.PartialValue.Cid _ => ok false
+  | value_observers.PartialValue.Nsuniqueid _ => ok false
+  | value_observers.PartialValue.DateTime _ => ok false
+  | value_observers.PartialValue.EmailAddress _ => ok false
+  | value_observers.PartialValue.PhoneNumber _ => ok false
+  | value_observers.PartialValue.Address _ => ok false
+  | value_observers.PartialValue.Url _ => ok false
+  | value_observers.PartialValue.OauthScope _ => ok false
+  | value_observers.PartialValue.PrivateBinary => ok false
+  | value_observers.PartialValue.PublicBinary _ => ok false
+  | value_observers.PartialValue.RestrictedString _ => ok false
+  | value_observers.PartialValue.IntentToken _ => ok false
+  | value_observers.PartialValue.UiHint _ => ok false
+  | value_observers.PartialValue.Passkey _ => ok false
+  | value_observers.PartialValue.AttestedPasskey _ => ok false
+  | value_observers.PartialValue.Image _ => ok false
+  | value_observers.PartialValue.CredentialType _ => ok false
+  | value_observers.PartialValue.OauthClaim _ _ => ok false
+  | value_observers.PartialValue.OauthClaimValue _ _ _ => ok false
+  | value_observers.PartialValue.HexString _ => ok false
+  | value_observers.PartialValue.Json => ok false
+  | value_observers.PartialValue.Sha256 _ => ok false
+  | value_observers.PartialValue.Int64 _ => ok false
+  | value_observers.PartialValue.Uint64 _ => ok false
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::PartialValue}::is_spn]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 433:4-435:5
+    Visibility: public -/
+def value_observers.PartialValue.is_spn
+  (self : value_observers.PartialValue) : Result Bool := do
+  match self with
+  | value_observers.PartialValue.Utf8 _ => ok false
+  | value_observers.PartialValue.Iutf8 _ => ok false
+  | value_observers.PartialValue.Iname _ => ok false
+  | value_observers.PartialValue.Uuid _ => ok false
+  | value_observers.PartialValue.Boolean _ => ok false
+  | value_observers.PartialValue.Syntax _ => ok false
+  | value_observers.PartialValue.Index _ => ok false
+  | value_observers.PartialValue.Refer _ => ok false
+  | value_observers.PartialValue.JsonFilt _ => ok false
+  | value_observers.PartialValue.Cred _ => ok false
+  | value_observers.PartialValue.SshKey _ => ok false
+  | value_observers.PartialValue.SecretValue => ok false
+  | value_observers.PartialValue.Spn _ _ => ok true
+  | value_observers.PartialValue.Uint32 _ => ok false
+  | value_observers.PartialValue.Cid _ => ok false
+  | value_observers.PartialValue.Nsuniqueid _ => ok false
+  | value_observers.PartialValue.DateTime _ => ok false
+  | value_observers.PartialValue.EmailAddress _ => ok false
+  | value_observers.PartialValue.PhoneNumber _ => ok false
+  | value_observers.PartialValue.Address _ => ok false
+  | value_observers.PartialValue.Url _ => ok false
+  | value_observers.PartialValue.OauthScope _ => ok false
+  | value_observers.PartialValue.PrivateBinary => ok false
+  | value_observers.PartialValue.PublicBinary _ => ok false
+  | value_observers.PartialValue.RestrictedString _ => ok false
+  | value_observers.PartialValue.IntentToken _ => ok false
+  | value_observers.PartialValue.UiHint _ => ok false
+  | value_observers.PartialValue.Passkey _ => ok false
+  | value_observers.PartialValue.AttestedPasskey _ => ok false
+  | value_observers.PartialValue.Image _ => ok false
+  | value_observers.PartialValue.CredentialType _ => ok false
+  | value_observers.PartialValue.OauthClaim _ _ => ok false
+  | value_observers.PartialValue.OauthClaimValue _ _ _ => ok false
+  | value_observers.PartialValue.HexString _ => ok false
+  | value_observers.PartialValue.Json => ok false
+  | value_observers.PartialValue.Sha256 _ => ok false
+  | value_observers.PartialValue.Int64 _ => ok false
+  | value_observers.PartialValue.Uint64 _ => ok false
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::PartialValue}::is_uint32]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 436:4-438:5
+    Visibility: public -/
+def value_observers.PartialValue.is_uint32
+  (self : value_observers.PartialValue) : Result Bool := do
+  match self with
+  | value_observers.PartialValue.Utf8 _ => ok false
+  | value_observers.PartialValue.Iutf8 _ => ok false
+  | value_observers.PartialValue.Iname _ => ok false
+  | value_observers.PartialValue.Uuid _ => ok false
+  | value_observers.PartialValue.Boolean _ => ok false
+  | value_observers.PartialValue.Syntax _ => ok false
+  | value_observers.PartialValue.Index _ => ok false
+  | value_observers.PartialValue.Refer _ => ok false
+  | value_observers.PartialValue.JsonFilt _ => ok false
+  | value_observers.PartialValue.Cred _ => ok false
+  | value_observers.PartialValue.SshKey _ => ok false
+  | value_observers.PartialValue.SecretValue => ok false
+  | value_observers.PartialValue.Spn _ _ => ok false
+  | value_observers.PartialValue.Uint32 _ => ok true
+  | value_observers.PartialValue.Cid _ => ok false
+  | value_observers.PartialValue.Nsuniqueid _ => ok false
+  | value_observers.PartialValue.DateTime _ => ok false
+  | value_observers.PartialValue.EmailAddress _ => ok false
+  | value_observers.PartialValue.PhoneNumber _ => ok false
+  | value_observers.PartialValue.Address _ => ok false
+  | value_observers.PartialValue.Url _ => ok false
+  | value_observers.PartialValue.OauthScope _ => ok false
+  | value_observers.PartialValue.PrivateBinary => ok false
+  | value_observers.PartialValue.PublicBinary _ => ok false
+  | value_observers.PartialValue.RestrictedString _ => ok false
+  | value_observers.PartialValue.IntentToken _ => ok false
+  | value_observers.PartialValue.UiHint _ => ok false
+  | value_observers.PartialValue.Passkey _ => ok false
+  | value_observers.PartialValue.AttestedPasskey _ => ok false
+  | value_observers.PartialValue.Image _ => ok false
+  | value_observers.PartialValue.CredentialType _ => ok false
+  | value_observers.PartialValue.OauthClaim _ _ => ok false
+  | value_observers.PartialValue.OauthClaimValue _ _ _ => ok false
+  | value_observers.PartialValue.HexString _ => ok false
+  | value_observers.PartialValue.Json => ok false
+  | value_observers.PartialValue.Sha256 _ => ok false
+  | value_observers.PartialValue.Int64 _ => ok false
+  | value_observers.PartialValue.Uint64 _ => ok false
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::PartialValue}::is_cid]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 439:4-441:5
+    Visibility: public -/
+def value_observers.PartialValue.is_cid
+  (self : value_observers.PartialValue) : Result Bool := do
+  match self with
+  | value_observers.PartialValue.Utf8 _ => ok false
+  | value_observers.PartialValue.Iutf8 _ => ok false
+  | value_observers.PartialValue.Iname _ => ok false
+  | value_observers.PartialValue.Uuid _ => ok false
+  | value_observers.PartialValue.Boolean _ => ok false
+  | value_observers.PartialValue.Syntax _ => ok false
+  | value_observers.PartialValue.Index _ => ok false
+  | value_observers.PartialValue.Refer _ => ok false
+  | value_observers.PartialValue.JsonFilt _ => ok false
+  | value_observers.PartialValue.Cred _ => ok false
+  | value_observers.PartialValue.SshKey _ => ok false
+  | value_observers.PartialValue.SecretValue => ok false
+  | value_observers.PartialValue.Spn _ _ => ok false
+  | value_observers.PartialValue.Uint32 _ => ok false
+  | value_observers.PartialValue.Cid _ => ok true
+  | value_observers.PartialValue.Nsuniqueid _ => ok false
+  | value_observers.PartialValue.DateTime _ => ok false
+  | value_observers.PartialValue.EmailAddress _ => ok false
+  | value_observers.PartialValue.PhoneNumber _ => ok false
+  | value_observers.PartialValue.Address _ => ok false
+  | value_observers.PartialValue.Url _ => ok false
+  | value_observers.PartialValue.OauthScope _ => ok false
+  | value_observers.PartialValue.PrivateBinary => ok false
+  | value_observers.PartialValue.PublicBinary _ => ok false
+  | value_observers.PartialValue.RestrictedString _ => ok false
+  | value_observers.PartialValue.IntentToken _ => ok false
+  | value_observers.PartialValue.UiHint _ => ok false
+  | value_observers.PartialValue.Passkey _ => ok false
+  | value_observers.PartialValue.AttestedPasskey _ => ok false
+  | value_observers.PartialValue.Image _ => ok false
+  | value_observers.PartialValue.CredentialType _ => ok false
+  | value_observers.PartialValue.OauthClaim _ _ => ok false
+  | value_observers.PartialValue.OauthClaimValue _ _ _ => ok false
+  | value_observers.PartialValue.HexString _ => ok false
+  | value_observers.PartialValue.Json => ok false
+  | value_observers.PartialValue.Sha256 _ => ok false
+  | value_observers.PartialValue.Int64 _ => ok false
+  | value_observers.PartialValue.Uint64 _ => ok false
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::PartialValue}::is_nsuniqueid]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 442:4-444:5
+    Visibility: public -/
+def value_observers.PartialValue.is_nsuniqueid
+  (self : value_observers.PartialValue) : Result Bool := do
+  match self with
+  | value_observers.PartialValue.Utf8 _ => ok false
+  | value_observers.PartialValue.Iutf8 _ => ok false
+  | value_observers.PartialValue.Iname _ => ok false
+  | value_observers.PartialValue.Uuid _ => ok false
+  | value_observers.PartialValue.Boolean _ => ok false
+  | value_observers.PartialValue.Syntax _ => ok false
+  | value_observers.PartialValue.Index _ => ok false
+  | value_observers.PartialValue.Refer _ => ok false
+  | value_observers.PartialValue.JsonFilt _ => ok false
+  | value_observers.PartialValue.Cred _ => ok false
+  | value_observers.PartialValue.SshKey _ => ok false
+  | value_observers.PartialValue.SecretValue => ok false
+  | value_observers.PartialValue.Spn _ _ => ok false
+  | value_observers.PartialValue.Uint32 _ => ok false
+  | value_observers.PartialValue.Cid _ => ok false
+  | value_observers.PartialValue.Nsuniqueid _ => ok true
+  | value_observers.PartialValue.DateTime _ => ok false
+  | value_observers.PartialValue.EmailAddress _ => ok false
+  | value_observers.PartialValue.PhoneNumber _ => ok false
+  | value_observers.PartialValue.Address _ => ok false
+  | value_observers.PartialValue.Url _ => ok false
+  | value_observers.PartialValue.OauthScope _ => ok false
+  | value_observers.PartialValue.PrivateBinary => ok false
+  | value_observers.PartialValue.PublicBinary _ => ok false
+  | value_observers.PartialValue.RestrictedString _ => ok false
+  | value_observers.PartialValue.IntentToken _ => ok false
+  | value_observers.PartialValue.UiHint _ => ok false
+  | value_observers.PartialValue.Passkey _ => ok false
+  | value_observers.PartialValue.AttestedPasskey _ => ok false
+  | value_observers.PartialValue.Image _ => ok false
+  | value_observers.PartialValue.CredentialType _ => ok false
+  | value_observers.PartialValue.OauthClaim _ _ => ok false
+  | value_observers.PartialValue.OauthClaimValue _ _ _ => ok false
+  | value_observers.PartialValue.HexString _ => ok false
+  | value_observers.PartialValue.Json => ok false
+  | value_observers.PartialValue.Sha256 _ => ok false
+  | value_observers.PartialValue.Int64 _ => ok false
+  | value_observers.PartialValue.Uint64 _ => ok false
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::PartialValue}::is_datetime]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 445:4-447:5
+    Visibility: public -/
+def value_observers.PartialValue.is_datetime
+  (self : value_observers.PartialValue) : Result Bool := do
+  match self with
+  | value_observers.PartialValue.Utf8 _ => ok false
+  | value_observers.PartialValue.Iutf8 _ => ok false
+  | value_observers.PartialValue.Iname _ => ok false
+  | value_observers.PartialValue.Uuid _ => ok false
+  | value_observers.PartialValue.Boolean _ => ok false
+  | value_observers.PartialValue.Syntax _ => ok false
+  | value_observers.PartialValue.Index _ => ok false
+  | value_observers.PartialValue.Refer _ => ok false
+  | value_observers.PartialValue.JsonFilt _ => ok false
+  | value_observers.PartialValue.Cred _ => ok false
+  | value_observers.PartialValue.SshKey _ => ok false
+  | value_observers.PartialValue.SecretValue => ok false
+  | value_observers.PartialValue.Spn _ _ => ok false
+  | value_observers.PartialValue.Uint32 _ => ok false
+  | value_observers.PartialValue.Cid _ => ok false
+  | value_observers.PartialValue.Nsuniqueid _ => ok false
+  | value_observers.PartialValue.DateTime _ => ok true
+  | value_observers.PartialValue.EmailAddress _ => ok false
+  | value_observers.PartialValue.PhoneNumber _ => ok false
+  | value_observers.PartialValue.Address _ => ok false
+  | value_observers.PartialValue.Url _ => ok false
+  | value_observers.PartialValue.OauthScope _ => ok false
+  | value_observers.PartialValue.PrivateBinary => ok false
+  | value_observers.PartialValue.PublicBinary _ => ok false
+  | value_observers.PartialValue.RestrictedString _ => ok false
+  | value_observers.PartialValue.IntentToken _ => ok false
+  | value_observers.PartialValue.UiHint _ => ok false
+  | value_observers.PartialValue.Passkey _ => ok false
+  | value_observers.PartialValue.AttestedPasskey _ => ok false
+  | value_observers.PartialValue.Image _ => ok false
+  | value_observers.PartialValue.CredentialType _ => ok false
+  | value_observers.PartialValue.OauthClaim _ _ => ok false
+  | value_observers.PartialValue.OauthClaimValue _ _ _ => ok false
+  | value_observers.PartialValue.HexString _ => ok false
+  | value_observers.PartialValue.Json => ok false
+  | value_observers.PartialValue.Sha256 _ => ok false
+  | value_observers.PartialValue.Int64 _ => ok false
+  | value_observers.PartialValue.Uint64 _ => ok false
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::PartialValue}::is_email_address]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 448:4-450:5
+    Visibility: public -/
+def value_observers.PartialValue.is_email_address
+  (self : value_observers.PartialValue) : Result Bool := do
+  match self with
+  | value_observers.PartialValue.Utf8 _ => ok false
+  | value_observers.PartialValue.Iutf8 _ => ok false
+  | value_observers.PartialValue.Iname _ => ok false
+  | value_observers.PartialValue.Uuid _ => ok false
+  | value_observers.PartialValue.Boolean _ => ok false
+  | value_observers.PartialValue.Syntax _ => ok false
+  | value_observers.PartialValue.Index _ => ok false
+  | value_observers.PartialValue.Refer _ => ok false
+  | value_observers.PartialValue.JsonFilt _ => ok false
+  | value_observers.PartialValue.Cred _ => ok false
+  | value_observers.PartialValue.SshKey _ => ok false
+  | value_observers.PartialValue.SecretValue => ok false
+  | value_observers.PartialValue.Spn _ _ => ok false
+  | value_observers.PartialValue.Uint32 _ => ok false
+  | value_observers.PartialValue.Cid _ => ok false
+  | value_observers.PartialValue.Nsuniqueid _ => ok false
+  | value_observers.PartialValue.DateTime _ => ok false
+  | value_observers.PartialValue.EmailAddress _ => ok true
+  | value_observers.PartialValue.PhoneNumber _ => ok false
+  | value_observers.PartialValue.Address _ => ok false
+  | value_observers.PartialValue.Url _ => ok false
+  | value_observers.PartialValue.OauthScope _ => ok false
+  | value_observers.PartialValue.PrivateBinary => ok false
+  | value_observers.PartialValue.PublicBinary _ => ok false
+  | value_observers.PartialValue.RestrictedString _ => ok false
+  | value_observers.PartialValue.IntentToken _ => ok false
+  | value_observers.PartialValue.UiHint _ => ok false
+  | value_observers.PartialValue.Passkey _ => ok false
+  | value_observers.PartialValue.AttestedPasskey _ => ok false
+  | value_observers.PartialValue.Image _ => ok false
+  | value_observers.PartialValue.CredentialType _ => ok false
+  | value_observers.PartialValue.OauthClaim _ _ => ok false
+  | value_observers.PartialValue.OauthClaimValue _ _ _ => ok false
+  | value_observers.PartialValue.HexString _ => ok false
+  | value_observers.PartialValue.Json => ok false
+  | value_observers.PartialValue.Sha256 _ => ok false
+  | value_observers.PartialValue.Int64 _ => ok false
+  | value_observers.PartialValue.Uint64 _ => ok false
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::PartialValue}::is_url]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 451:4-453:5
+    Visibility: public -/
+def value_observers.PartialValue.is_url
+  (self : value_observers.PartialValue) : Result Bool := do
+  match self with
+  | value_observers.PartialValue.Utf8 _ => ok false
+  | value_observers.PartialValue.Iutf8 _ => ok false
+  | value_observers.PartialValue.Iname _ => ok false
+  | value_observers.PartialValue.Uuid _ => ok false
+  | value_observers.PartialValue.Boolean _ => ok false
+  | value_observers.PartialValue.Syntax _ => ok false
+  | value_observers.PartialValue.Index _ => ok false
+  | value_observers.PartialValue.Refer _ => ok false
+  | value_observers.PartialValue.JsonFilt _ => ok false
+  | value_observers.PartialValue.Cred _ => ok false
+  | value_observers.PartialValue.SshKey _ => ok false
+  | value_observers.PartialValue.SecretValue => ok false
+  | value_observers.PartialValue.Spn _ _ => ok false
+  | value_observers.PartialValue.Uint32 _ => ok false
+  | value_observers.PartialValue.Cid _ => ok false
+  | value_observers.PartialValue.Nsuniqueid _ => ok false
+  | value_observers.PartialValue.DateTime _ => ok false
+  | value_observers.PartialValue.EmailAddress _ => ok false
+  | value_observers.PartialValue.PhoneNumber _ => ok false
+  | value_observers.PartialValue.Address _ => ok false
+  | value_observers.PartialValue.Url _ => ok true
+  | value_observers.PartialValue.OauthScope _ => ok false
+  | value_observers.PartialValue.PrivateBinary => ok false
+  | value_observers.PartialValue.PublicBinary _ => ok false
+  | value_observers.PartialValue.RestrictedString _ => ok false
+  | value_observers.PartialValue.IntentToken _ => ok false
+  | value_observers.PartialValue.UiHint _ => ok false
+  | value_observers.PartialValue.Passkey _ => ok false
+  | value_observers.PartialValue.AttestedPasskey _ => ok false
+  | value_observers.PartialValue.Image _ => ok false
+  | value_observers.PartialValue.CredentialType _ => ok false
+  | value_observers.PartialValue.OauthClaim _ _ => ok false
+  | value_observers.PartialValue.OauthClaimValue _ _ _ => ok false
+  | value_observers.PartialValue.HexString _ => ok false
+  | value_observers.PartialValue.Json => ok false
+  | value_observers.PartialValue.Sha256 _ => ok false
+  | value_observers.PartialValue.Int64 _ => ok false
+  | value_observers.PartialValue.Uint64 _ => ok false
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::PartialValue}::is_oauthscope]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 454:4-456:5
+    Visibility: public -/
+def value_observers.PartialValue.is_oauthscope
+  (self : value_observers.PartialValue) : Result Bool := do
+  match self with
+  | value_observers.PartialValue.Utf8 _ => ok false
+  | value_observers.PartialValue.Iutf8 _ => ok false
+  | value_observers.PartialValue.Iname _ => ok false
+  | value_observers.PartialValue.Uuid _ => ok false
+  | value_observers.PartialValue.Boolean _ => ok false
+  | value_observers.PartialValue.Syntax _ => ok false
+  | value_observers.PartialValue.Index _ => ok false
+  | value_observers.PartialValue.Refer _ => ok false
+  | value_observers.PartialValue.JsonFilt _ => ok false
+  | value_observers.PartialValue.Cred _ => ok false
+  | value_observers.PartialValue.SshKey _ => ok false
+  | value_observers.PartialValue.SecretValue => ok false
+  | value_observers.PartialValue.Spn _ _ => ok false
+  | value_observers.PartialValue.Uint32 _ => ok false
+  | value_observers.PartialValue.Cid _ => ok false
+  | value_observers.PartialValue.Nsuniqueid _ => ok false
+  | value_observers.PartialValue.DateTime _ => ok false
+  | value_observers.PartialValue.EmailAddress _ => ok false
+  | value_observers.PartialValue.PhoneNumber _ => ok false
+  | value_observers.PartialValue.Address _ => ok false
+  | value_observers.PartialValue.Url _ => ok false
+  | value_observers.PartialValue.OauthScope _ => ok true
+  | value_observers.PartialValue.PrivateBinary => ok false
+  | value_observers.PartialValue.PublicBinary _ => ok false
+  | value_observers.PartialValue.RestrictedString _ => ok false
+  | value_observers.PartialValue.IntentToken _ => ok false
+  | value_observers.PartialValue.UiHint _ => ok false
+  | value_observers.PartialValue.Passkey _ => ok false
+  | value_observers.PartialValue.AttestedPasskey _ => ok false
+  | value_observers.PartialValue.Image _ => ok false
+  | value_observers.PartialValue.CredentialType _ => ok false
+  | value_observers.PartialValue.OauthClaim _ _ => ok false
+  | value_observers.PartialValue.OauthClaimValue _ _ _ => ok false
+  | value_observers.PartialValue.HexString _ => ok false
+  | value_observers.PartialValue.Json => ok false
+  | value_observers.PartialValue.Sha256 _ => ok false
+  | value_observers.PartialValue.Int64 _ => ok false
+  | value_observers.PartialValue.Uint64 _ => ok false
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::PartialValue}::is_privatebinary]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 457:4-459:5
+    Visibility: public -/
+def value_observers.PartialValue.is_privatebinary
+  (self : value_observers.PartialValue) : Result Bool := do
+  match self with
+  | value_observers.PartialValue.Utf8 _ => ok false
+  | value_observers.PartialValue.Iutf8 _ => ok false
+  | value_observers.PartialValue.Iname _ => ok false
+  | value_observers.PartialValue.Uuid _ => ok false
+  | value_observers.PartialValue.Boolean _ => ok false
+  | value_observers.PartialValue.Syntax _ => ok false
+  | value_observers.PartialValue.Index _ => ok false
+  | value_observers.PartialValue.Refer _ => ok false
+  | value_observers.PartialValue.JsonFilt _ => ok false
+  | value_observers.PartialValue.Cred _ => ok false
+  | value_observers.PartialValue.SshKey _ => ok false
+  | value_observers.PartialValue.SecretValue => ok false
+  | value_observers.PartialValue.Spn _ _ => ok false
+  | value_observers.PartialValue.Uint32 _ => ok false
+  | value_observers.PartialValue.Cid _ => ok false
+  | value_observers.PartialValue.Nsuniqueid _ => ok false
+  | value_observers.PartialValue.DateTime _ => ok false
+  | value_observers.PartialValue.EmailAddress _ => ok false
+  | value_observers.PartialValue.PhoneNumber _ => ok false
+  | value_observers.PartialValue.Address _ => ok false
+  | value_observers.PartialValue.Url _ => ok false
+  | value_observers.PartialValue.OauthScope _ => ok false
+  | value_observers.PartialValue.PrivateBinary => ok true
+  | value_observers.PartialValue.PublicBinary _ => ok false
+  | value_observers.PartialValue.RestrictedString _ => ok false
+  | value_observers.PartialValue.IntentToken _ => ok false
+  | value_observers.PartialValue.UiHint _ => ok false
+  | value_observers.PartialValue.Passkey _ => ok false
+  | value_observers.PartialValue.AttestedPasskey _ => ok false
+  | value_observers.PartialValue.Image _ => ok false
+  | value_observers.PartialValue.CredentialType _ => ok false
+  | value_observers.PartialValue.OauthClaim _ _ => ok false
+  | value_observers.PartialValue.OauthClaimValue _ _ _ => ok false
+  | value_observers.PartialValue.HexString _ => ok false
+  | value_observers.PartialValue.Json => ok false
+  | value_observers.PartialValue.Sha256 _ => ok false
+  | value_observers.PartialValue.Int64 _ => ok false
+  | value_observers.PartialValue.Uint64 _ => ok false
+
+/-- [kanidm_kernel::value_observers::{kanidm_kernel::value_observers::PartialValue}::to_str]:
+    Source: 'prove/ports/kanidm/kernel/src/value_observers.rs', lines 460:4-467:5
+    Visibility: public -/
+def value_observers.PartialValue.to_str
+  (self : value_observers.PartialValue) : Result (Option Std.U64) := do
+  match self with
+  | value_observers.PartialValue.Utf8 s => ok (some s)
+  | value_observers.PartialValue.Iutf8 s => ok (some s)
+  | value_observers.PartialValue.Iname s => ok (some s)
+  | value_observers.PartialValue.Uuid _ => ok none
+  | value_observers.PartialValue.Boolean _ => ok none
+  | value_observers.PartialValue.Syntax _ => ok none
+  | value_observers.PartialValue.Index _ => ok none
+  | value_observers.PartialValue.Refer _ => ok none
+  | value_observers.PartialValue.JsonFilt _ => ok none
+  | value_observers.PartialValue.Cred _ => ok none
+  | value_observers.PartialValue.SshKey _ => ok none
+  | value_observers.PartialValue.SecretValue => ok none
+  | value_observers.PartialValue.Spn _ _ => ok none
+  | value_observers.PartialValue.Uint32 _ => ok none
+  | value_observers.PartialValue.Cid _ => ok none
+  | value_observers.PartialValue.Nsuniqueid _ => ok none
+  | value_observers.PartialValue.DateTime _ => ok none
+  | value_observers.PartialValue.EmailAddress _ => ok none
+  | value_observers.PartialValue.PhoneNumber _ => ok none
+  | value_observers.PartialValue.Address _ => ok none
+  | value_observers.PartialValue.Url _ => ok none
+  | value_observers.PartialValue.OauthScope _ => ok none
+  | value_observers.PartialValue.PrivateBinary => ok none
+  | value_observers.PartialValue.PublicBinary _ => ok none
+  | value_observers.PartialValue.RestrictedString _ => ok none
+  | value_observers.PartialValue.IntentToken _ => ok none
+  | value_observers.PartialValue.UiHint _ => ok none
+  | value_observers.PartialValue.Passkey _ => ok none
+  | value_observers.PartialValue.AttestedPasskey _ => ok none
+  | value_observers.PartialValue.Image _ => ok none
+  | value_observers.PartialValue.CredentialType _ => ok none
+  | value_observers.PartialValue.OauthClaim _ _ => ok none
+  | value_observers.PartialValue.OauthClaimValue _ _ _ => ok none
+  | value_observers.PartialValue.HexString _ => ok none
+  | value_observers.PartialValue.Json => ok none
+  | value_observers.PartialValue.Sha256 _ => ok none
+  | value_observers.PartialValue.Int64 _ => ok none
+  | value_observers.PartialValue.Uint64 _ => ok none
 
 end kanidm_kernel

@@ -1,0 +1,12 @@
+{
+  "revision": "8c0dd334cf065ad11f60f9be24e2aafd5dda7550",
+  "source_sha256": {
+    "src/domain/entities/trashed_item.rs": "6d2823db6d1462c5ce1b55e53769483cbb03163945e8cb40d8c0e0c7e3028aec",
+    "src/domain/entities/contact.rs": "e2e6c2c28e633283cc00f9481b24fcf719dab4709bdd105b44950bf1b83aef50",
+    "src/domain/entities/device_code.rs": "c2d3ef34b77bd552fe2cb701937940ff808e62c4b2a2850734abdf9e23e842e0",
+    "src/domain/entities/playlist.rs": "5d021038569d5f430df5a2a68d02e19988a4a82f30c174074c253a286360ef64",
+    "src/domain/entities/calendar_todo.rs": "d01d885fe73d4bf609b37f7fb832a7f1039f6770b40df22c3a4f735d77dd2001"
+  },
+  "reference_sha256": "70979d67320de8d59e6593967a0fb678141632c9ab8f6bca0684572da585abd3",
+  "boundary": "Exact selected constructor/getter bodies and complete product fields in minimal carriers; actual uuid/chrono semantics retained. Parser/random/clock methods excluded."
+}

@@ -1,0 +1,87 @@
+{
+  "kanidm": {
+    "command": "cargo test --manifest-path prove/ports/kanidm/kernel/Cargo.toml --test entry_validation -- --nocapture",
+    "passed": true,
+    "random_cases": 100000,
+    "directed_cases": "all error categories and precedence; AVA/schema boundaries",
+    "reference_identity": "prove/ports/kanidm/difftest/entry_validation/identity.json",
+    "log": "kanidm-entry-differential.log"
+  },
+  "nora": {
+    "command": "cargo test --manifest-path prove/ports/nora/kernel/Cargo.toml --test circuit_breaker",
+    "passed": true,
+    "boundary_cases": 921600,
+    "reference_identity": "prove/ports/nora/difftest/circuit_breaker/identity.json",
+    "log": "nora-circuit-differential.log"
+  },
+  "artifactkeeper": {
+    "command": "cargo test --release --manifest-path prove/ports/artifactkeeper/difftest/Cargo.toml scope -- --nocapture; cargo test --release --manifest-path prove/ports/artifactkeeper/difftest/Cargo.toml auth_extension_agrees -- --nocapture",
+    "passed": true,
+    "directed_comparisons": 36300,
+    "random_scope_cases": 1000000,
+    "random_auth_extension_cases": 500000,
+    "upstream_revision": "7c42891cd64f144df6197b8801c9cca4f0e0f5a7",
+    "reference_extractor": "prove/ports/artifactkeeper/difftest/extract_upstream.py",
+    "reference_files": {
+      "prove/ports/artifactkeeper/difftest/src/upstream/api/middleware/auth.rs": "0a2593e3e8215974ab9aff0b1e711894fe19fb091599c22cca41b0d34e40ba7c",
+      "prove/ports/artifactkeeper/difftest/src/upstream/services/token_service.rs": "4f2e7597fce438698903e98563b2564a4d0ef2057e5221c0f326c196b38d208b"
+    },
+    "log": "artifactkeeper-scope-differential.log"
+  },
+  "nora_curation": {
+    "command": "cargo test --release --manifest-path prove/ports/nora/kernel/Cargo.toml --test curation -- --nocapture",
+    "passed": true,
+    "chain_configurations": 81900,
+    "per_configuration": "exact decision payload, attribution, audit/counter effects; 18 bypass-header download comparisons, two integrity handlers, three namespace decisions",
+    "reference_identity": "prove/ports/nora/difftest/curation/identity.json",
+    "log": "nora-curation-differential.log"
+  },
+  "kanidm_value_observers": {
+    "command": "cargo test --release --manifest-path prove/ports/kanidm/kernel/Cargo.toml --test value_observers --test syntax_types -- --nocapture",
+    "passed": true,
+    "observer_comparisons": 70748288,
+    "metadata_comparisons": 100146,
+    "reference_identities": [
+      "prove/ports/kanidm/difftest/value_observers/identity.json",
+      "prove/ports/kanidm/difftest/syntax_types/identity.json"
+    ],
+    "log": "kanidm-observers-differential.log"
+  },
+  "oxicloud_entities": {
+    "command": "cargo test --release --manifest-path prove/ports/oxicloud/entity-difftest/Cargo.toml -- --nocapture",
+    "passed": true,
+    "tests": 71,
+    "reference_identity": "prove/ports/oxicloud/entity-difftest/reference/identity.json",
+    "log": "oxicloud-entities-differential.log"
+  },
+  "oxicloud_dav": {
+    "log": "oxicloud-dav-differential.log",
+    "tests": 6,
+    "records": 3072,
+    "pin": "8c0dd334cf065ad11f60f9be24e2aafd5dda7550",
+    "reference": "prove/ports/oxicloud/dav-difftest/identity.json"
+  },
+  "kanidm_migration_defaults": {
+    "passed": true,
+    "tests": 7,
+    "versions": 6,
+    "unique_passwords_per_version": 637,
+    "reference_identity": "prove/ports/kanidm/difftest/migration_defaults/identity.json",
+    "log": "kanidm-defaults-differential.log",
+    "command": "CARGO_TARGET_DIR=/tmp/prove-kanidm-defaults-target cargo test --release --manifest-path prove/ports/kanidm/kernel/Cargo.toml --test migration_defaults -- --nocapture"
+  },
+  "kanidm_acp_defaults": {
+    "passed": true,
+    "tests": 1,
+    "versions": 6,
+    "original_initializers": 66,
+    "distinct_records": 20,
+    "fields_per_record": 15,
+    "upstream_revision": "f608c4fe14dfd8d5df8edeed470bf1fb92060abd",
+    "reference_extractor": "prove/ports/kanidm/difftest/acp_defaults/extract_upstream.py",
+    "reference_metadata": "prove/ports/kanidm/difftest/acp_defaults/metadata.json",
+    "reference_regenerated_identical": true,
+    "log": "kanidm-acp-differential.log",
+    "command": "CARGO_TARGET_DIR=/tmp/prove-kanidm-acp-target cargo test --release --manifest-path prove/ports/kanidm/kernel/Cargo.toml --test acp_defaults -- --nocapture"
+  }
+}
