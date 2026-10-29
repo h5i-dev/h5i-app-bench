@@ -231,6 +231,375 @@ def circuit_breaker.reset_timeout
   | none => ok default
   | some x => ok x
 
+/-- [nora_kernel::curation::Mode]
+    Source: 'prove/ports/nora/kernel/src/curation.rs', lines 8:0-8:37
+    Visibility: public -/
+@[discriminant isize]
+inductive curation.Mode where
+| Off : curation.Mode
+| Audit : curation.Mode
+| Enforce : curation.Mode
+
+/-- [nora_kernel::curation::Decision]
+    Source: 'prove/ports/nora/kernel/src/curation.rs', lines 10:0-10:89
+    Visibility: public -/
+@[discriminant isize]
+inductive curation.Decision where
+| Allow : curation.Decision
+| Block : Std.U64 → Std.U64 → Bool → curation.Decision
+| Skip : curation.Decision
+
+/-- [nora_kernel::curation::Filter]
+    Source: 'prove/ports/nora/kernel/src/curation.rs', lines 12:0-12:59
+    Visibility: public -/
+structure curation.Filter where
+  «name» : Std.U64
+  decision : curation.Decision
+
+/-- [nora_kernel::curation::Effect]
+    Source: 'prove/ports/nora/kernel/src/curation.rs', lines 14:0-14:42
+    Visibility: public -/
+@[discriminant isize]
+inductive curation.Effect where
+| None : curation.Effect
+| Allowed : curation.Effect
+| Blocked : curation.Effect
+
+/-- [nora_kernel::curation::Evaluation]
+    Source: 'prove/ports/nora/kernel/src/curation.rs', lines 16:0-22:1
+    Visibility: public -/
+structure curation.Evaluation where
+  decision : curation.Decision
+  decided_by : Option Std.U64
+  audited : Bool
+  effect : curation.Effect
+  without_integrity : Bool
+
+/-- [nora_kernel::curation::is_active]:
+    Source: 'prove/ports/nora/kernel/src/curation.rs', lines 23:0-23:67
+    Visibility: public -/
+def curation.is_active (mode : curation.Mode) : Result Bool := do
+  let b ←
+    match mode with
+    | curation.Mode.Off => ok true
+    | curation.Mode.Audit => ok false
+    | curation.Mode.Enforce => ok false
+  ok (¬ b)
+
+/-- [nora_kernel::curation::evaluate_chain]: loop body 0:
+    Source: 'prove/ports/nora/kernel/src/curation.rs', lines 26:4-43:1
+    Visibility: public -/
+@[rust_loop_body]
+def curation.evaluate_chain_loop.body
+  (mode : curation.Mode) (filters : Slice curation.Filter) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize (curation.Decision × (Option Std.U64) × Bool
+    × curation.Effect))
+  := do
+  let i1 := Slice.len filters
+  if i < i1
+  then
+    let filter ← Slice.index_usize filters i
+    match filter.decision with
+    | curation.Decision.Allow =>
+      ok (done (curation.Decision.Allow, some filter.name, false,
+        curation.Effect.Allowed))
+    | curation.Decision.Block _ _ _ =>
+      let audited ←
+        match mode with
+        | curation.Mode.Off => ok false
+        | curation.Mode.Audit => ok true
+        | curation.Mode.Enforce => ok false
+      if audited
+      then
+        ok (done (filter.decision, some filter.name, true,
+          curation.Effect.Allowed))
+      else
+        ok (done (filter.decision, some filter.name, false,
+          curation.Effect.Blocked))
+    | curation.Decision.Skip => let i2 ← i + 1#usize
+                                ok (cont i2)
+  else
+    ok (done (curation.Decision.Allow, none, false, curation.Effect.Allowed))
+
+/-- [nora_kernel::curation::evaluate_chain]: loop 0:
+    Source: 'prove/ports/nora/kernel/src/curation.rs', lines 26:4-43:1
+    Visibility: public -/
+@[rust_loop]
+def curation.evaluate_chain_loop
+  (mode : curation.Mode) (filters : Slice curation.Filter) (i : Std.Usize) :
+  Result (curation.Decision × (Option Std.U64) × Bool × curation.Effect)
+  := do
+  loop
+    (fun i1 => curation.evaluate_chain_loop.body mode filters i1)
+    i
+
+/-- [nora_kernel::curation::evaluate_chain]:
+    Source: 'prove/ports/nora/kernel/src/curation.rs', lines 24:0-43:1
+    Visibility: public -/
+def curation.evaluate_chain
+  (mode : curation.Mode) (filters : Slice curation.Filter) :
+  Result curation.Evaluation
+  := do
+  let (d, o, b, e) ← curation.evaluate_chain_loop mode filters 0#usize
+  ok
+    {
+      decision := d,
+      decided_by := o,
+      audited := b,
+      effect := e,
+      without_integrity := false
+    }
+
+/-- [nora_kernel::curation::evaluate_inner]:
+    Source: 'prove/ports/nora/kernel/src/curation.rs', lines 44:0-63:1
+    Visibility: public -/
+def curation.evaluate_inner
+  (mode : curation.Mode) («namespace» : Option curation.Filter)
+  (filters : Slice curation.Filter) (bypass : Bool) (integrity_present : Bool)
+  (bypass_name : Std.U64) :
+  Result curation.Evaluation
+  := do
+  match «namespace» with
+  | none =>
+    let b ←
+      match mode with
+      | curation.Mode.Off => ok true
+      | curation.Mode.Audit => ok false
+      | curation.Mode.Enforce => ok false
+    if b
+    then
+      ok
+        {
+          decision := curation.Decision.Allow,
+          decided_by := none,
+          audited := false,
+          effect := curation.Effect.None,
+          without_integrity := false
+        }
+    else
+      if bypass
+      then
+        ok
+          {
+            decision := curation.Decision.Allow,
+            decided_by := (some bypass_name),
+            audited := false,
+            effect := curation.Effect.Allowed,
+            without_integrity := false
+          }
+      else
+        let result ← curation.evaluate_chain mode filters
+        ok { result with without_integrity := (¬ integrity_present) }
+  | some ns =>
+    match ns.decision with
+    | curation.Decision.Allow =>
+      let b ←
+        match mode with
+        | curation.Mode.Off => ok true
+        | curation.Mode.Audit => ok false
+        | curation.Mode.Enforce => ok false
+      if b
+      then
+        ok
+          {
+            decision := curation.Decision.Allow,
+            decided_by := none,
+            audited := false,
+            effect := curation.Effect.None,
+            without_integrity := false
+          }
+      else
+        if bypass
+        then
+          ok
+            {
+              decision := curation.Decision.Allow,
+              decided_by := (some bypass_name),
+              audited := false,
+              effect := curation.Effect.Allowed,
+              without_integrity := false
+            }
+        else
+          let result ← curation.evaluate_chain mode filters
+          ok { result with without_integrity := (¬ integrity_present) }
+    | curation.Decision.Block _ _ _ =>
+      ok
+        {
+          decision := ns.decision,
+          decided_by := (some ns.name),
+          audited := false,
+          effect := curation.Effect.Blocked,
+          without_integrity := false
+        }
+    | curation.Decision.Skip =>
+      let b ←
+        match mode with
+        | curation.Mode.Off => ok true
+        | curation.Mode.Audit => ok false
+        | curation.Mode.Enforce => ok false
+      if b
+      then
+        ok
+          {
+            decision := curation.Decision.Allow,
+            decided_by := none,
+            audited := false,
+            effect := curation.Effect.None,
+            without_integrity := false
+          }
+      else
+        if bypass
+        then
+          ok
+            {
+              decision := curation.Decision.Allow,
+              decided_by := (some bypass_name),
+              audited := false,
+              effect := curation.Effect.Allowed,
+              without_integrity := false
+            }
+        else
+          let result ← curation.evaluate_chain mode filters
+          ok { result with without_integrity := (¬ integrity_present) }
+
+/-- [nora_kernel::curation::evaluate]:
+    Source: 'prove/ports/nora/kernel/src/curation.rs', lines 65:0-74:1
+    Visibility: public -/
+def curation.evaluate
+  (mode : curation.Mode) («namespace» : Option curation.Filter)
+  (filters : Slice curation.Filter) (bypass : Bool) (integrity_present : Bool)
+  (bypass_name : Std.U64) :
+  Result (curation.Evaluation × Std.U8)
+  := do
+  let result ←
+    curation.evaluate_inner mode «namespace» filters bypass integrity_present
+      bypass_name
+  match result.decision with
+  | curation.Decision.Allow => ok (result, 0#u8)
+  | curation.Decision.Block _ _ _ =>
+    if result.audited
+    then ok (result, 1#u8)
+    else ok (result, 2#u8)
+  | curation.Decision.Skip => ok (result, 3#u8)
+
+/-- [nora_kernel::curation::download_response]:
+    Source: 'prove/ports/nora/kernel/src/curation.rs', lines 76:0-81:1
+    Visibility: public -/
+def curation.download_response
+  (result : curation.Evaluation) : Result (Option (Std.U64 × Std.U64)) := do
+  match result.decision with
+  | curation.Decision.Allow => ok none
+  | curation.Decision.Block rule reason _ =>
+    if result.audited
+    then ok none
+    else ok (some (rule, reason))
+  | curation.Decision.Skip => ok none
+
+/-- [nora_kernel::curation::check_namespace_isolation]:
+    Source: 'prove/ports/nora/kernel/src/curation.rs', lines 82:0-89:1
+    Visibility: public -/
+def curation.check_namespace_isolation
+  («namespace» : Option curation.Filter) :
+  Result ((Option (Std.U64 × Std.U64)) × curation.Effect)
+  := do
+  match «namespace» with
+  | none => ok (none, curation.Effect.None)
+  | some ns =>
+    match ns.decision with
+    | curation.Decision.Allow => ok (none, curation.Effect.None)
+    | curation.Decision.Block rule reason _ =>
+      ok (some (rule, reason), curation.Effect.Blocked)
+    | curation.Decision.Skip => ok (none, curation.Effect.None)
+
+/-- [nora_kernel::curation::is_internal_namespace]:
+    Source: 'prove/ports/nora/kernel/src/curation.rs', lines 90:0-92:1
+    Visibility: public -/
+def curation.is_internal_namespace
+  («namespace» : Option curation.Filter) : Result Bool := do
+  match «namespace» with
+  | none => ok false
+  | some ns =>
+    match ns.decision with
+    | curation.Decision.Allow => ok false
+    | curation.Decision.Block _ _ _ => ok true
+    | curation.Decision.Skip => ok false
+
+/-- [nora_kernel::curation::namespace_filter_active]:
+    Source: 'prove/ports/nora/kernel/src/curation.rs', lines 93:0-93:89
+    Visibility: public -/
+def curation.namespace_filter_active
+  («namespace» : Option curation.Filter) : Result Bool := do
+  ok (core.option.Option.is_some «namespace»)
+
+/-- [nora_kernel::curation::integrity_response]:
+    Source: 'prove/ports/nora/kernel/src/curation.rs', lines 96:0-104:1
+    Visibility: public -/
+def curation.integrity_response
+  (result : curation.Evaluation) : Result (Option (Std.U64 × Std.U64)) := do
+  match result.decision with
+  | curation.Decision.Allow => ok none
+  | curation.Decision.Block rule reason integrity_rule =>
+    if integrity_rule
+    then if result.audited
+         then ok none
+         else ok (some (rule, reason))
+    else ok none
+  | curation.Decision.Skip => ok none
+
+/-- [nora_kernel::curation::check_download]:
+    Source: 'prove/ports/nora/kernel/src/curation.rs', lines 108:0-117:1
+    Visibility: public -/
+def curation.check_download
+  (mode : curation.Mode) («namespace» : Option curation.Filter)
+  (filters : Slice curation.Filter) (configured_token : Option Std.U64)
+  (header_token : Option Std.U64) (bypass_name : Std.U64) :
+  Result (Option (Std.U64 × Std.U64))
+  := do
+  let bypass ←
+    match configured_token with
+    | none => ok false
+    | some token =>
+      match header_token with
+      | none => ok false
+      | some header => ok (header = token)
+  let (result, _) ←
+    curation.evaluate mode «namespace» filters bypass false bypass_name
+  curation.download_response result
+
+/-- [nora_kernel::curation::verify_integrity]:
+    Source: 'prove/ports/nora/kernel/src/curation.rs', lines 120:0-125:1
+    Visibility: public -/
+def curation.verify_integrity
+  (mode : curation.Mode) («namespace» : Option curation.Filter)
+  (filters : Slice curation.Filter) (bypass_name : Std.U64) :
+  Result (Option (Std.U64 × Std.U64))
+  := do
+  let b ← curation.is_active mode
+  if b
+  then
+    let (result, _) ←
+      curation.evaluate mode «namespace» filters false true bypass_name
+    curation.integrity_response result
+  else ok none
+
+/-- [nora_kernel::curation::verify_integrity_by_hash]:
+    Source: 'prove/ports/nora/kernel/src/curation.rs', lines 127:0-133:1
+    Visibility: public -/
+def curation.verify_integrity_by_hash
+  (mode : curation.Mode) («namespace» : Option curation.Filter)
+  (filters : Slice curation.Filter) (bypass_name : Std.U64) (hash_valid : Bool)
+  :
+  Result (Option (Std.U64 × Std.U64))
+  := do
+  massert hash_valid
+  let b ← curation.is_active mode
+  if b
+  then
+    let (result, _) ←
+      curation.evaluate mode «namespace» filters false true bypass_name
+    curation.integrity_response result
+  else ok none
+
 /-- [nora_kernel::Role]
     Source: 'prove/ports/nora/kernel/src/lib.rs', lines 15:0-19:1
     Visibility: public -/

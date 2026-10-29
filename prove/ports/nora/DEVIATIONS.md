@@ -117,3 +117,23 @@ and tokens in 921,600 boundary-case comparisons, including arbitrary unreachable
 states, missing timestamps, zero timeout, stale generations, and integer limits.
 This differential evidence and source reach do not constitute a proof of the
 adapters or equivalence of the complete concurrent upstream service.
+
+
+## Curation control flow at f864a9a
+
+`curation.rs` ports CurationEngine::evaluate_inner/evaluate/is_active and the
+check_download, namespace and integrity handler decisions. A request adapter
+supplies each deterministic ProxyFilter outcome for the same request, preserving
+order, filter name, rule and reason. Filter internals are not included in this
+batch. Text is represented by stable injective u64 handles (the bypass name uses
+the same handle space); the rule's `contains("integrity")` predicate is supplied
+with its handle. Header decoding failure/missing header is None, and decoded
+header/token equality is exact. Constant-time execution is outside the model.
+SHA-256, request construction, text/JSON/header rendering, logs, trait dispatch
+and metrics sinks are adapters. The proof retains the exact selected payload,
+attribution, audit flag, all three counter increments, effective telemetry label,
+and whether a 403 response is returned. Counter increments are represented as
+booleans/effects because each invocation increments a counter at most once.
+`verify_integrity_by_hash` requires the adapter to check the upstream debug assertion: the hash starts
+with `sha256:` and has byte length 71. This does not assert hexadecimal content. These source spans are dependency reach,
+not a proof of the crypto, formatting or individual ProxyFilter implementations.

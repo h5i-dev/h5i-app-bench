@@ -27,5 +27,13 @@
       "prove/ports/artifactkeeper/difftest/src/upstream/services/token_service.rs": "4f2e7597fce438698903e98563b2564a4d0ef2057e5221c0f326c196b38d208b"
     },
     "log": "artifactkeeper-scope-differential.log"
+  },
+  "nora_curation": {
+    "command": "cargo test --release --manifest-path prove/ports/nora/kernel/Cargo.toml --test curation -- --nocapture",
+    "passed": true,
+    "chain_configurations": 81900,
+    "per_configuration": "exact decision payload, attribution, audit/counter effects; 18 bypass-header download comparisons, two integrity handlers, three namespace decisions",
+    "reference_identity": "prove/ports/nora/difftest/curation/identity.json",
+    "log": "nora-curation-differential.log"
   }
 }

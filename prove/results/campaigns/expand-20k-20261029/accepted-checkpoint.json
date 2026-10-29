@@ -1,16 +1,16 @@
 {
-  "recorded_at": "2026-10-29T13:12:49.721451+00:00",
+  "recorded_at": "2026-10-29T16:19:32.084947+00:00",
   "branch": "prove-20k-expansion",
   "baseline": {
     "lines": 10098,
     "properties": 405
   },
   "accepted": {
-    "lines": 10508,
-    "properties": 417
+    "lines": 10800,
+    "properties": 425
   },
   "target_lines": 20000,
-  "remaining_lines": 9492,
+  "remaining_lines": 9200,
   "apps": {
     "artifactkeeper": {
       "lines": 1566,
@@ -21,8 +21,8 @@
       "properties": 37
     },
     "nora": {
-      "lines": 1175,
-      "properties": 38
+      "lines": 1467,
+      "properties": 46
     },
     "oxicloud": {
       "lines": 947,
@@ -43,8 +43,8 @@
       "extract": "20261029T124803236760Z"
     },
     "nora": {
-      "check": "20261029T124117415396Z",
-      "extract": "20261029T124330865255Z"
+      "check": "20261029T160557354150Z",
+      "extract": "20261029T161430572244Z"
     },
     "artifactkeeper": {
       "check": "20261029T130614832449Z",

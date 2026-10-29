@@ -1,25 +1,23 @@
 # 20k expansion status
 
-Updated UTC: 2026-10-29T13:12:49.721451+00:00
+Updated UTC: 2026-10-29T16:19:32.084947+00:00
 
-Accepted checkpoint: **10,508 pinned upstream executable lines / 417 properties**.
-Baseline: 10,098 / 405. Latest batch: ArtifactKeeper scope validation/admin-only
-minting and action/repository delegation ceilings, +62 lines / +4 properties.
-Remaining to 20,000: **9,492 lines**. Goal is not complete.
+Accepted checkpoint: **10,800 pinned upstream executable lines / 425 properties**.
+Baseline: 10,098 / 405. Latest batch: Nora curation control flow, namespace,
+bypass/download and integrity decisions, **+292 lines / +8 properties**.
+Remaining to 20,000: **9,200 lines**. Goal is not complete.
 
 All six canonical project gates and exact extraction checks are fresh.
-ArtifactKeeper gate: results/project-checks/20261029T130614832449Z/artifactkeeper.log
-(784 theorems in 23 modules; all 31 selected properties).
-Exact extraction: results/project-checks/20261029T130949735809Z/artifactkeeper.log.
+Nora gate: results/project-checks/20261029T160557354150Z/nora.log
+(839 theorems in 32 modules; all 46 selected properties).
+Exact extraction: results/project-checks/20261029T161430572244Z/nora.log.
 Dashboard regenerated; all 13 accounting/reach/project-detail tests passed.
 Exact counts/check identities: accepted-checkpoint.json.
-Pinned differential evidence: differential-evidence.json and adjacent logs.
+Pinned differential evidence: differential-evidence.json and adjacent logs;
+81,900 chain configurations with download/integrity/namespace comparisons.
+Accounting is TYPE-seeded extracted dependency reach, not upstream equivalence.
 
-Branch: prove-20k-expansion. Latest accepted batch is being committed/pushed.
+Branch: prove-20k-expansion. Nora batch accepted; saving and pushing now.
 One active worker; no agents or extra AI/tmux sessions. Preserve unrelated edits.
-
-Next substantive batch: Nora curation chain and download/integrity decisions.
-Draft port, proofs and pinned differential harness are prepared under /tmp/prove-curation*.
-The chain draft passes 81,900 pinned-reference comparisons. No Nora source reach
-has been claimed from that pending work. Move into the port, extract, finish
-semantic proofs and full checks before publishing any additional count.
+Next batch: Kanidm complete value observers and syntax metadata dispatch.
+Prepared under /tmp, not installed or counted yet. No blocker currently.

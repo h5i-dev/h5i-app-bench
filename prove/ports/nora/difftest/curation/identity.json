@@ -1,0 +1,28 @@
+{
+  "upstream_revision": "f864a9a95e8669b00202c18b0b774ab0fc2e56cc",
+  "file": "nora-registry/src/curation.rs",
+  "file_sha256": "a19fba414b78704a136e383d811cbd12290f39870d851a55958b02b32cab17cb",
+  "selected_headers": [
+    "pub struct FilterRequest\\b",
+    "pub enum Decision\\b",
+    "pub trait ProxyFilter\\b",
+    "pub struct EvaluationResult\\b",
+    "pub struct CurationEngine\\b",
+    "impl CurationEngine\\b",
+    "pub struct CurationMetrics\\b",
+    "impl CurationMetrics\\b",
+    "pub fn check_download\\b",
+    "pub fn check_namespace_isolation\\b",
+    "pub fn is_internal_namespace\\b",
+    "pub fn namespace_filter_active\\b",
+    "pub fn verify_integrity\\b",
+    "pub fn verify_integrity_by_hash\\b"
+  ],
+  "reference_sha256": "b73bccb503f4a3dc9dc4e79cf4e2b14265fe96810b4047c6a81c67c15aa4f14e",
+  "adapters": [
+    "imports and derive attributes",
+    "synthetic filters return supplied decisions and static names",
+    "test crate supplies config, registry, logging and Prometheus sink",
+    "header parsing success/failure, exact text equality, response payload rendering and deterministic hash adapter; crypto is outside this decision test"
+  ]
+}

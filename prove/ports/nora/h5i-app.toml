@@ -1,10 +1,19 @@
 # Standard h5i-app project. Keep every selected theorem in the final gate.
 [extract]
 crate = "kernel"
-start-from = ["transition","validation","middleware::auth_middleware","tokens::revoke_token","tokens::revoke_all_for_user","permission_import::map_to_proposal","circuit_breaker::check","circuit_breaker::record_success","circuit_breaker::record_alive","circuit_breaker::record_failure","circuit_breaker::new","circuit_breaker::threshold","circuit_breaker::reset_timeout"]
+start-from = ["curation::evaluate","curation::is_active","curation::check_download","curation::verify_integrity","curation::verify_integrity_by_hash","curation::check_namespace_isolation","curation::is_internal_namespace","curation::namespace_filter_active","transition","validation","middleware::auth_middleware","tokens::revoke_token","tokens::revoke_all_for_user","permission_import::map_to_proposal","circuit_breaker::check","circuit_breaker::record_success","circuit_breaker::record_alive","circuit_breaker::record_failure","circuit_breaker::new","circuit_breaker::threshold","circuit_breaker::reset_timeout"]
 
 [check]
 theorems = [
+  "nora_kernel.Properties.curation_evaluate_spec",
+  "nora_kernel.Properties.curation_download_spec",
+  "nora_kernel.Properties.curation_integrity_spec",
+  "nora_kernel.Properties.curation_integrity_hash_spec",
+  "nora_kernel.Properties.curation_namespace_spec",
+  "nora_kernel.Properties.curation_internal_spec",
+  "nora_kernel.Properties.curation_namespace_active_spec",
+  "nora_kernel.Properties.curation_active_spec",
+
   "nora_kernel.Properties.read_only_cannot_write",
   "nora_kernel.Properties.provider_ceiling",
   "nora_kernel.Properties.rule_narrows",

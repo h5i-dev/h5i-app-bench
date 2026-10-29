@@ -1,3 +1,4 @@
+import Verified.Curation
 import Verified.CircuitBreaker
 import Verified.PermissionImport
 import Verified.NoraProviderCeiling
@@ -320,5 +321,52 @@ theorem circuit_breaker_reset_spec (fallback : U64) (overrideValue : Option U64)
     circuit_breaker.reset_timeout fallback overrideValue ⦃ r =>
       r.val = (overrideValue.map (·.val)).getD fallback.val ⦄ := by
   exact Verified.CircuitBreaker.reset_spec fallback overrideValue
+
+
+/-- Complete curation output: namespace precedence, first decisive filter, audit and metrics. -/
+theorem curation_evaluate_spec (mode : curation.Mode) (ns : Option curation.Filter)
+    (filters : Slice curation.Filter) (bypass integrity : Bool) (bypassName : U64) :
+    curation.evaluate mode ns filters bypass integrity bypassName ⦃ r =>
+      let expected := Verified.Curation.inner mode ns filters.val bypass integrity bypassName
+      r = (expected, Verified.Curation.label expected) ⦄ :=
+  Verified.Curation.evaluate_spec mode ns filters bypass integrity bypassName
+
+theorem curation_download_spec (mode : curation.Mode) (ns : Option curation.Filter)
+    (filters : Slice curation.Filter) (configured header : Option U64) (bypassName : U64) :
+    curation.check_download mode ns filters configured header bypassName ⦃ r =>
+      r = Verified.Curation.response (Verified.Curation.inner mode ns filters.val
+        (Verified.Curation.tokenMatches configured header) false bypassName) ⦄ :=
+  Verified.Curation.download_spec mode ns filters configured header bypassName
+
+theorem curation_integrity_spec (mode : curation.Mode) (ns : Option curation.Filter)
+    (filters : Slice curation.Filter) (bypassName : U64) :
+    curation.verify_integrity mode ns filters bypassName ⦃ r =>
+      r = Verified.Curation.integrityModel mode ns filters.val bypassName ⦄ :=
+  Verified.Curation.verify_spec mode ns filters bypassName
+
+theorem curation_integrity_hash_spec (mode : curation.Mode) (ns : Option curation.Filter)
+    (filters : Slice curation.Filter) (bypassName : U64) (valid : Bool) (hv : valid = true) :
+    curation.verify_integrity_by_hash mode ns filters bypassName valid ⦃ r =>
+      r = Verified.Curation.integrityModel mode ns filters.val bypassName ⦄ :=
+  Verified.Curation.verify_hash_spec mode ns filters bypassName valid hv
+
+theorem curation_namespace_spec (ns : Option curation.Filter) :
+    curation.check_namespace_isolation ns ⦃ r =>
+      r = match Verified.Curation.namespaceBlock ns with
+      | some e => (Verified.Curation.response e, curation.Effect.Blocked)
+      | none => (none, curation.Effect.None) ⦄ :=
+  Verified.Curation.namespace_spec ns
+
+theorem curation_internal_spec (ns : Option curation.Filter) :
+    curation.is_internal_namespace ns ⦃ r => r = (Verified.Curation.namespaceBlock ns).isSome ⦄ :=
+  Verified.Curation.internal_spec ns
+
+theorem curation_namespace_active_spec (ns : Option curation.Filter) :
+    curation.namespace_filter_active ns ⦃ r => r = ns.isSome ⦄ :=
+  Verified.Curation.namespace_active_spec ns
+
+theorem curation_active_spec (mode : curation.Mode) :
+    curation.is_active mode ⦃ r => r = !Verified.Curation.isOff mode ⦄ :=
+  Verified.Curation.active_spec mode
 
 end nora_kernel.Properties
