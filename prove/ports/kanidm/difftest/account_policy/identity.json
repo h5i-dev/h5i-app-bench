@@ -1,0 +1,6 @@
+{
+  "pin": "f608c4fe14dfd8d5df8edeed470bf1fb92060abd",
+  "source_sha256": "ffb79356f44a1fab39a1b18ddbf9d2d73aaec82009a6aee2ab48aafae2b9a695",
+  "method_sha256": "4e9bd7e8fc45577669db4a2da3102b4b49c362b65241519ba71e287ac9c1f989",
+  "claim": "complete scalar projection, excludes attestation CA payload result"
+}

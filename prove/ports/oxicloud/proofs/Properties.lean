@@ -1,3 +1,4 @@
+import Verified.OxicloudCheckTotal
 import Verified.OxicloudMigrationReadonly
 import Verified.OxicloudDriveReadOnly
 import Verified.OxicloudExpiredGrants
@@ -54,7 +55,7 @@ user, the internal group and every group it reaches; with `Usize.max - 1`
 groups that is more IDs than a `Vec` holds, a table no database can store. -/
 theorem check_total (db : model.Db) (ro : Bool) (now : I64) (s : model.Subject) (p : model.Permission)
     (r : model.Resource) (hm : db.memberships.length + 2 ≤ Usize.max) : ∃ b, acl.check db ro now s p r = ok b := by
-  sorry
+  apply oxicloud_kernel.Verified.OxicloudCheckTotal.check_total <;> assumption
 
 /-! ## The grant endpoints -/
 

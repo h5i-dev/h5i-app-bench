@@ -7,6 +7,7 @@ import subprocess
 import tomllib
 from datetime import datetime, timezone
 from pathlib import Path
+from project_reach import project_files
 
 ROOT = Path(__file__).resolve().parent.parent
 APPS = ("nora", "artifactkeeper", "kanidm", "rustfs", "tuwunel", "oxicloud")
@@ -22,10 +23,7 @@ def main():
     rows = []
     for app in args.app:
         base = ROOT / "ports" / app
-        files = [base / "h5i-app.toml", *base.glob("kernel/src/**/*.rs"),
-                 *base.glob("proofs/**/*.lean"), base / "proofs/lean-toolchain",
-                 base / "proofs/lake-manifest.json", base / "proofs/lakefile.lean"]
-        files = sorted(p for p in files if ".lake" not in p.parts)
+        files = project_files(base)
         command = ["h5i", "app", "extract", "--check"] if args.action == "extract-check" else ["h5i", "app", args.action]
         command.append(str(base.relative_to(ROOT)))
         row = {"app": app, "command": command,
@@ -38,7 +36,12 @@ def main():
         row.update(exit_code=process.returncode, passed=process.returncode == 0,
                    finished_at=datetime.now(timezone.utc).isoformat(),
                    log=str(log.relative_to(ROOT)))
-        if row["passed"] and args.action == "check":
+        after = {str(p.relative_to(ROOT)): hashlib.sha256(p.read_bytes()).hexdigest()
+                 for p in project_files(base)}
+        row["inputs_unchanged"] = after == row["source_sha256"]
+        if not row["inputs_unchanged"]:
+            row.update(passed=False, source_changed_during_check=True)
+        if row["passed"] and args.action in ("check", "prove"):
             gate = re.search(r"gate: (\d+) theorems in (\d+) modules checked", log.read_text())
             if gate:
                 row.update(gated_theorems=tomllib.loads((base / "h5i-app.toml").read_text())["check"]["theorems"],

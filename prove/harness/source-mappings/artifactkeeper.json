@@ -1,0 +1,930 @@
+{
+  "upstream_revision": "7c42891cd64f144df6197b8801c9cca4f0e0f5a7",
+  "meaning": "Exact qualified item attribution; SQL, framework and trusted-input abstractions remain as documented in DEVIATIONS.md. Reach is not complete equivalence. Unmapped helpers and ambiguous conversion implementations excluded.",
+  "declarations": {
+    "AccessScope.grants": [
+      {
+        "file": "backend/src/models/access_scope.rs",
+        "self_ty": "AccessScope",
+        "name": "grants",
+        "kind": "method",
+        "start": 46,
+        "end": 56,
+        "sha256": "0a21c517601557ba389229e74cbb1e33e824b94ea1f4c3a346a049e29152ae50"
+      }
+    ],
+    "Claims.effective_iat_ms": [
+      {
+        "file": "backend/src/services/auth_service.rs",
+        "self_ty": "Claims",
+        "name": "effective_iat_ms",
+        "kind": "method",
+        "start": 216,
+        "end": 224,
+        "sha256": "034d7653ae5b527adb4555eb37678781eaeadbea0d14bef54fa3845fb1bdd2cf"
+      }
+    ],
+    "Visibility.allows_anonymous_read": [
+      {
+        "file": "backend/src/models/repository.rs",
+        "self_ty": "RepositoryVisibility",
+        "name": "allows_anonymous_read",
+        "kind": "method",
+        "start": 392,
+        "end": 399,
+        "sha256": "7dbe151192a4de0be7e9520685ea577efeb51f96f2fc07120c54d8bc9aa10362"
+      }
+    ],
+    "Visibility.allows_authenticated_read": [
+      {
+        "file": "backend/src/models/repository.rs",
+        "self_ty": "RepositoryVisibility",
+        "name": "allows_authenticated_read",
+        "kind": "method",
+        "start": 401,
+        "end": 409,
+        "sha256": "f264aabbfa3cbcbf79e640299f47906b706bd17dddb6163559d22c501c265a70"
+      }
+    ],
+    "handlers.create_permission": [
+      {
+        "file": "backend/src/api/handlers/permissions.rs",
+        "self_ty": "",
+        "name": "create_permission",
+        "kind": "fn",
+        "start": 333,
+        "end": 458,
+        "sha256": "40795a17d9a2c218d01679ec7cfa5ba0d0035de1751bd009f83459fba84761f2"
+      }
+    ],
+    "handlers.require_auth": [
+      {
+        "file": "backend/src/api/handlers/permissions.rs",
+        "self_ty": "",
+        "name": "require_auth",
+        "kind": "fn",
+        "start": 19,
+        "end": 22,
+        "sha256": "9d2cb620abfb7989af7635403637b1d9def4e6bf0c1aa3189890e726bd18f97b"
+      }
+    ],
+    "handlers.require_auth_basic": [
+      {
+        "file": "backend/src/api/middleware/auth.rs",
+        "self_ty": "",
+        "name": "require_auth_basic",
+        "kind": "fn",
+        "start": 368,
+        "end": 384,
+        "sha256": "a9b9d4a95b8aaa2a53759e2e5143f2494ea581ff1fb7bf10d96ac1d294732f40"
+      }
+    ],
+    "handlers.require_auth_basic_scope": [
+      {
+        "file": "backend/src/api/middleware/auth.rs",
+        "self_ty": "",
+        "name": "require_auth_basic_scope",
+        "kind": "fn",
+        "start": 386,
+        "end": 413,
+        "sha256": "e0ffa4b331c994f9b1828538905c20baaf6af8c815fc7c9085f447b33e4cdd4b"
+      }
+    ],
+    "handlers.require_scope_response": [
+      {
+        "file": "backend/src/api/middleware/auth.rs",
+        "self_ty": "",
+        "name": "require_scope_response",
+        "kind": "fn",
+        "start": 415,
+        "end": 436,
+        "sha256": "489d31ed57cf0bf60da65bf385798972176aeec05d30de42b256c0da5ec53c1b"
+      }
+    ],
+    "handlers.validate_anonymous_rule": [
+      {
+        "file": "backend/src/api/handlers/permissions.rs",
+        "self_ty": "",
+        "name": "validate_anonymous_rule",
+        "kind": "fn",
+        "start": 307,
+        "end": 331,
+        "sha256": "9effcc2a99fa63c2f672866eac643d59b466d457687a715e86a54bc0406d5506"
+      }
+    ],
+    "http.credential_is_session_cookie": [
+      {
+        "file": "backend/src/api/middleware/auth.rs",
+        "self_ty": "",
+        "name": "credential_is_session_cookie",
+        "kind": "fn",
+        "start": 603,
+        "end": 618,
+        "sha256": "c0a9a936aed13d40a1411b674a59b1deff6c63c9faf0af569ae0f0cbd0c27b1b"
+      }
+    ],
+    "http.declares_same_origin": [
+      {
+        "file": "backend/src/api/middleware/auth.rs",
+        "self_ty": "",
+        "name": "declares_same_origin",
+        "kind": "fn",
+        "start": 691,
+        "end": 724,
+        "sha256": "90b0489f07be112894f595372a69ff2053e91f83d6b757695a7c5a0b8ed8f00d"
+      }
+    ],
+    "http.extract_nuget_push_api_key": [
+      {
+        "file": "backend/src/api/middleware/auth.rs",
+        "self_ty": "",
+        "name": "extract_nuget_push_api_key",
+        "kind": "fn",
+        "start": 1872,
+        "end": 1894,
+        "sha256": "f151c2d7992276d87d6c9de186cc887abc898519f2f0a38dce24da85d071b75e"
+      }
+    ],
+    "http.extract_token": [
+      {
+        "file": "backend/src/api/middleware/auth.rs",
+        "self_ty": "",
+        "name": "extract_token",
+        "kind": "fn",
+        "start": 557,
+        "end": 587,
+        "sha256": "9a02ce70aeb29cb96d2aaf8853f455b360441617f71557a6eeba19127bfb164b"
+      }
+    ],
+    "http.extract_token_from_auth_header": [
+      {
+        "file": "backend/src/api/middleware/auth.rs",
+        "self_ty": "",
+        "name": "extract_token_from_auth_header",
+        "kind": "fn",
+        "start": 522,
+        "end": 555,
+        "sha256": "487becbcf8669f52ed5a6fd0472847061c36c3fe2bf1fd4babaddc5f5242a1de"
+      }
+    ],
+    "http.extract_visibility_token": [
+      {
+        "file": "backend/src/api/middleware/auth.rs",
+        "self_ty": "",
+        "name": "extract_visibility_token",
+        "kind": "fn",
+        "start": 1896,
+        "end": 1913,
+        "sha256": "17bd45cbd6dc20e966f72a0bae48f2ac9fcbe874170d7e68edcacdc1c1479069"
+      }
+    ],
+    "http.has_header_credential": [
+      {
+        "file": "backend/src/api/middleware/auth.rs",
+        "self_ty": "",
+        "name": "has_header_credential",
+        "kind": "fn",
+        "start": 620,
+        "end": 628,
+        "sha256": "fa494cbba3a75561c35a8482dcdb6c89d81f059e504e46320e6b4bdd78e0cef6"
+      }
+    ],
+    "http.is_browser_request": [
+      {
+        "file": "backend/src/api/middleware/auth.rs",
+        "self_ty": "",
+        "name": "is_browser_request",
+        "kind": "fn",
+        "start": 2065,
+        "end": 2092,
+        "sha256": "7c79abed41403693a4ce4061523d04b7e9b14236266c2b33dd8066473a69ddc6"
+      }
+    ],
+    "http.is_state_changing_method": [
+      {
+        "file": "backend/src/api/middleware/auth.rs",
+        "self_ty": "",
+        "name": "is_state_changing_method",
+        "kind": "fn",
+        "start": 646,
+        "end": 653,
+        "sha256": "1be21bab57bea02b353dc6fceca43abaa5b84e993ba4548f3ee18da42d9b002c"
+      }
+    ],
+    "http.session_cookie_token": [
+      {
+        "file": "backend/src/api/middleware/auth.rs",
+        "self_ty": "",
+        "name": "session_cookie_token",
+        "kind": "fn",
+        "start": 589,
+        "end": 601,
+        "sha256": "0e8ab8aefbf8317e201d2a380aef584b75921496ad18f5fa3cc37d0c7b99e932"
+      }
+    ],
+    "http.violates_csrf_contract": [
+      {
+        "file": "backend/src/api/middleware/auth.rs",
+        "self_ty": "",
+        "name": "violates_csrf_contract",
+        "kind": "fn",
+        "start": 655,
+        "end": 689,
+        "sha256": "625bf6e73430274eacd6a8caa5eba3f5657930dfa3d4ee1e76347a03098313d3"
+      }
+    ],
+    "middleware.admin_middleware": [
+      {
+        "file": "backend/src/api/middleware/auth.rs",
+        "self_ty": "",
+        "name": "admin_middleware",
+        "kind": "fn",
+        "start": 1571,
+        "end": 1660,
+        "sha256": "068aa5964edb8515ccd137cf50168840ae89e786095d5f703063e01e61cfe7db"
+      }
+    ],
+    "middleware.auth_middleware": [
+      {
+        "file": "backend/src/api/middleware/auth.rs",
+        "self_ty": "",
+        "name": "auth_middleware",
+        "kind": "fn",
+        "start": 841,
+        "end": 1046,
+        "sha256": "edd8957ef2afb6e3133907a420f7b17875d7088e36647ac04d03cb1d480a914f"
+      }
+    ],
+    "middleware.csrf_guard": [
+      {
+        "file": "backend/src/api/middleware/auth.rs",
+        "self_ty": "",
+        "name": "csrf_guard",
+        "kind": "fn",
+        "start": 741,
+        "end": 748,
+        "sha256": "4f0fda48f0d2e4d11f6e82fcc27347918f28c887797d34e6bf417fd55cee0ee5"
+      }
+    ],
+    "middleware.guest_access_guard": [
+      {
+        "file": "backend/src/api/middleware/guest_access.rs",
+        "self_ty": "",
+        "name": "guest_access_guard",
+        "kind": "fn",
+        "start": 209,
+        "end": 267,
+        "sha256": "8aed8f8c0bbe266a3f031d852c190666cb9c37d78c725bf665124d38a8f4e565"
+      }
+    ],
+    "middleware.optional_auth_middleware": [
+      {
+        "file": "backend/src/api/middleware/auth.rs",
+        "self_ty": "",
+        "name": "optional_auth_middleware",
+        "kind": "fn",
+        "start": 1491,
+        "end": 1569,
+        "sha256": "9ad52fe22305d893bff3d4a11761bac3ba5421e25de2d46cf92d7a1e5eb66623"
+      }
+    ],
+    "middleware.repo_visibility_middleware": [
+      {
+        "file": "backend/src/api/middleware/auth.rs",
+        "self_ty": "",
+        "name": "repo_visibility_middleware",
+        "kind": "fn",
+        "start": 2258,
+        "end": 2973,
+        "sha256": "fd6e478c6bcffaaedfdda1d699610b2b40385905db6bc70012f2a2c60f69fa51"
+      }
+    ],
+    "net.CidrRange.contains": [
+      {
+        "file": "backend/src/api/middleware/rate_limit.rs",
+        "self_ty": "CidrRange",
+        "name": "contains",
+        "kind": "method",
+        "start": 64,
+        "end": 95,
+        "sha256": "166e8bdd5ff3bde1f244b32fec46b27e15bd308e8c10e2cc53882d3780571d5e"
+      }
+    ],
+    "net.CidrRange.parse": [
+      {
+        "file": "backend/src/api/middleware/rate_limit.rs",
+        "self_ty": "CidrRange",
+        "name": "parse",
+        "kind": "method",
+        "start": 37,
+        "end": 62,
+        "sha256": "967bdbfbf541b255729e9d9fabfcfa8d8610f40a21965317405654323317cbbf"
+      }
+    ],
+    "net.first_xff_token_in": [
+      {
+        "file": "backend/src/api/middleware/rate_limit.rs",
+        "self_ty": "",
+        "name": "first_xff_token_in",
+        "kind": "fn",
+        "start": 890,
+        "end": 905,
+        "sha256": "511ca079972fb989627074ed6903fd6d9a1e48bbe3a1bba924b4c29fce8e19f7"
+      }
+    ],
+    "net.normalize_xff_token": [
+      {
+        "file": "backend/src/api/middleware/rate_limit.rs",
+        "self_ty": "",
+        "name": "normalize_xff_token",
+        "kind": "fn",
+        "start": 907,
+        "end": 964,
+        "sha256": "3f90fa9df99417f474fdfb03f24c7d76ca7e70a7113bd1ca0424c56ae98c9056"
+      }
+    ],
+    "net.resolve_client_ip_addr": [
+      {
+        "file": "backend/src/api/middleware/rate_limit.rs",
+        "self_ty": "",
+        "name": "resolve_client_ip_addr",
+        "kind": "fn",
+        "start": 1045,
+        "end": 1087,
+        "sha256": "c71247996b902e42ccdd81615b637e6afb2fd52066622fb860223f8713326263"
+      }
+    ],
+    "net.rightmost_untrusted_xff_token": [
+      {
+        "file": "backend/src/api/middleware/rate_limit.rs",
+        "self_ty": "",
+        "name": "rightmost_untrusted_xff_token",
+        "kind": "fn",
+        "start": 966,
+        "end": 997,
+        "sha256": "b19dd3e18a04e13fb3ad6b67478dd3f62d575be9648104cb1bf535cc2a56ccc2"
+      }
+    ],
+    "paths.action_for_method": [
+      {
+        "file": "backend/src/api/middleware/auth.rs",
+        "self_ty": "",
+        "name": "action_for_method",
+        "kind": "fn",
+        "start": 2195,
+        "end": 2206,
+        "sha256": "91e9f9614fa8c318a03818521ec7b3870ec11efc404c3a871be57cda6f5ce71e"
+      }
+    ],
+    "paths.authenticated_read_satisfies_acl": [
+      {
+        "file": "backend/src/api/middleware/auth.rs",
+        "self_ty": "",
+        "name": "authenticated_read_satisfies_acl",
+        "kind": "fn",
+        "start": 2232,
+        "end": 2256,
+        "sha256": "9645c57c2855682517265b636d410fd3e9c37851b38afc87ef2746b13d785f29"
+      }
+    ],
+    "paths.extract_conda_url_token": [
+      {
+        "file": "backend/src/api/middleware/auth.rs",
+        "self_ty": "",
+        "name": "extract_conda_url_token",
+        "kind": "fn",
+        "start": 1805,
+        "end": 1836,
+        "sha256": "ee68064afa10116bc7efd77612570481895fafeec1b47de3b5310df35e26d582"
+      }
+    ],
+    "paths.extract_repo_key": [
+      {
+        "file": "backend/src/api/middleware/auth.rs",
+        "self_ty": "",
+        "name": "extract_repo_key",
+        "kind": "fn",
+        "start": 1724,
+        "end": 1803,
+        "sha256": "9cf45f1000c7a3250a7ecd4450eb1ae9b843dd0921aca54518f4834c2a5787f7"
+      }
+    ],
+    "paths.extract_ticket_from_query": [
+      {
+        "file": "backend/src/api/middleware/auth.rs",
+        "self_ty": "",
+        "name": "extract_ticket_from_query",
+        "kind": "fn",
+        "start": 1284,
+        "end": 1333,
+        "sha256": "f8947e7a00aea51ec4960ec64614b24c2c5a20bda0b6db0096d2acc4608a3661"
+      }
+    ],
+    "paths.is_allowlisted": [
+      {
+        "file": "backend/src/api/middleware/guest_access.rs",
+        "self_ty": "",
+        "name": "is_allowlisted",
+        "kind": "fn",
+        "start": 91,
+        "end": 124,
+        "sha256": "9adcec51a32c606df87f004f00009834db9fe6d0e961daa8b64097dc37ae287c"
+      }
+    ],
+    "paths.is_anonymous_readable_format_post": [
+      {
+        "file": "backend/src/api/middleware/auth.rs",
+        "self_ty": "",
+        "name": "is_anonymous_readable_format_post",
+        "kind": "fn",
+        "start": 2048,
+        "end": 2063,
+        "sha256": "bbbc89c4a1fb75437b9195a09e3c04a9b189d03941130e45a55bf9664c0514ea"
+      }
+    ],
+    "paths.is_non_mutating_format_post": [
+      {
+        "file": "backend/src/api/middleware/auth.rs",
+        "self_ty": "",
+        "name": "is_non_mutating_format_post",
+        "kind": "fn",
+        "start": 1941,
+        "end": 2012,
+        "sha256": "4f9134b0df1f52f818505f1bbbbd5647222d5d086c21188e633de6eee7f9784c"
+      }
+    ],
+    "paths.is_nuget_push_path": [
+      {
+        "file": "backend/src/api/middleware/auth.rs",
+        "self_ty": "",
+        "name": "is_nuget_push_path",
+        "kind": "fn",
+        "start": 1838,
+        "end": 1870,
+        "sha256": "bc5f67c5213e1f4f9b80157af2a712dfb455c86b3bb892d24a92649a0061d4bf"
+      }
+    ],
+    "paths.is_oci_v2_path": [
+      {
+        "file": "backend/src/api/middleware/oci_errors.rs",
+        "self_ty": "",
+        "name": "is_oci_v2_path",
+        "kind": "fn",
+        "start": 39,
+        "end": 43,
+        "sha256": "f28417e10cdee9b844e44cd21e51a9e273b7be3232005e6cf9cad6adb1879d3a"
+      }
+    ],
+    "paths.is_pypi_xmlrpc_tail": [
+      {
+        "file": "backend/src/api/middleware/auth.rs",
+        "self_ty": "",
+        "name": "is_pypi_xmlrpc_tail",
+        "kind": "fn",
+        "start": 2014,
+        "end": 2046,
+        "sha256": "306ac77ed0327f02faf811f6f12e754c5aeec74a8bee9aec8b40d82025a25225"
+      }
+    ],
+    "paths.is_write_method": [
+      {
+        "file": "backend/src/api/middleware/auth.rs",
+        "self_ty": "",
+        "name": "is_write_method",
+        "kind": "fn",
+        "start": 1931,
+        "end": 1939,
+        "sha256": "140b4de5f67aacdb721347b8ee34d7c6e35cc9d8b0c8483d8403dce1f8fc5ef4"
+      }
+    ],
+    "paths.path_exempt_from_password_change": [
+      {
+        "file": "backend/src/api/middleware/auth.rs",
+        "self_ty": "",
+        "name": "path_exempt_from_password_change",
+        "kind": "fn",
+        "start": 779,
+        "end": 808,
+        "sha256": "2c1292b816fc07d9817154300bdc6cad821919151d49ced0e7cdb006a77b5505"
+      }
+    ],
+    "paths.percent_decode_path_segment": [
+      {
+        "file": "backend/src/api/middleware/auth.rs",
+        "self_ty": "",
+        "name": "percent_decode_path_segment",
+        "kind": "fn",
+        "start": 1689,
+        "end": 1722,
+        "sha256": "7db45a8e1bba51ec69888357378b24a38bbb067b82dabf473baf458252706d98"
+      }
+    ],
+    "paths.percent_hex_val": [
+      {
+        "file": "backend/src/api/middleware/auth.rs",
+        "self_ty": "",
+        "name": "percent_hex_val",
+        "kind": "fn",
+        "start": 1679,
+        "end": 1687,
+        "sha256": "84e8e35752929800285bdd2238817cf9c9a9296e6dc9141c5467cc51748983a4"
+      }
+    ],
+    "paths.public_read_satisfies_acl": [
+      {
+        "file": "backend/src/api/middleware/auth.rs",
+        "self_ty": "",
+        "name": "public_read_satisfies_acl",
+        "kind": "fn",
+        "start": 2208,
+        "end": 2230,
+        "sha256": "eefa78c9c8fc9821d90b15aec9483d3c80cc8d3fc09077a9052ab123fcd9fa51"
+      }
+    ],
+    "paths.should_allow_repo_access": [
+      {
+        "file": "backend/src/api/middleware/auth.rs",
+        "self_ty": "",
+        "name": "should_allow_repo_access",
+        "kind": "fn",
+        "start": 1915,
+        "end": 1929,
+        "sha256": "f250d75af43bff40d0e8391461a9fc4090873846b4cb136f99e4515a9ad30646"
+      }
+    ],
+    "paths.ticket_method_allowed": [
+      {
+        "file": "backend/src/api/middleware/auth.rs",
+        "self_ty": "",
+        "name": "ticket_method_allowed",
+        "kind": "fn",
+        "start": 1335,
+        "end": 1345,
+        "sha256": "ca4adfa55a46f8f5629d8ba39ef201faf1db2ae5522860f20f8ba61b94b42da5"
+      }
+    ],
+    "paths.ticket_path_allowed": [
+      {
+        "file": "backend/src/api/middleware/auth.rs",
+        "self_ty": "",
+        "name": "ticket_path_allowed",
+        "kind": "fn",
+        "start": 1347,
+        "end": 1360,
+        "sha256": "c5e1b128df8d44592db81c488d842808818fd51d23132f3497ac7565069bd027"
+      }
+    ],
+    "permission.check_anonymous_repository_action": [
+      {
+        "file": "backend/src/services/permission_service.rs",
+        "self_ty": "PermissionService",
+        "name": "check_anonymous_repository_action",
+        "kind": "method",
+        "start": 365,
+        "end": 418,
+        "sha256": "fbf13ec442fdb17dff9232415c69ecfad82a4c87e03f9a893f780c71d943072d"
+      }
+    ],
+    "permission.check_permission": [
+      {
+        "file": "backend/src/services/permission_service.rs",
+        "self_ty": "PermissionService",
+        "name": "check_permission",
+        "kind": "method",
+        "start": 246,
+        "end": 268,
+        "sha256": "add17c58dae700f794d559bcf8b7aafd49b6db9f597d46c373c731fb60f90128"
+      }
+    ],
+    "permission.check_repository_action": [
+      {
+        "file": "backend/src/services/permission_service.rs",
+        "self_ty": "PermissionService",
+        "name": "check_repository_action",
+        "kind": "method",
+        "start": 270,
+        "end": 363,
+        "sha256": "7cfafb147d654e9548ca9012a961fa003f26bce7e12c8c1c6e4845adf868debc"
+      }
+    ],
+    "permission.has_any_rules_for_target": [
+      {
+        "file": "backend/src/services/permission_service.rs",
+        "self_ty": "PermissionService",
+        "name": "has_any_rules_for_target",
+        "kind": "method",
+        "start": 420,
+        "end": 511,
+        "sha256": "21a38635a2753e99c5b955ca538894356a6fc17dc0f0b2df59974e694f87e3bf"
+      }
+    ],
+    "permission.query_actions": [
+      {
+        "file": "backend/src/services/permission_service.rs",
+        "self_ty": "PermissionService",
+        "name": "query_actions",
+        "kind": "method",
+        "start": 660,
+        "end": 709,
+        "sha256": "9cfdfbcead39aeaa1b231b4be4ebe1b3c3bfc71c714386d7ff52c53c19840b59"
+      }
+    ],
+    "permission.validate_conditions": [
+      {
+        "file": "backend/src/services/permission_service.rs",
+        "self_ty": "PermissionConditions",
+        "name": "validate",
+        "kind": "method",
+        "start": 74,
+        "end": 90,
+        "sha256": "1197fb91fe618877436203ef4ad3967d357f33a2d6ff1b82c2eff7485e2963bb"
+      }
+    ],
+    "permission.validate_principal": [
+      {
+        "file": "backend/src/services/permission_service.rs",
+        "self_ty": "PermissionService",
+        "name": "validate_principal",
+        "kind": "method",
+        "start": 532,
+        "end": 575,
+        "sha256": "65090ac39297f2ace3bc9e7fdbf8f49c6806d96d374534ec5f546bb3847c9d2a"
+      }
+    ],
+    "resolve.classify_token_validation_err": [
+      {
+        "file": "backend/src/api/middleware/auth.rs",
+        "self_ty": "",
+        "name": "classify_token_validation_err",
+        "kind": "fn",
+        "start": 1068,
+        "end": 1086,
+        "sha256": "da529b821d893ee7b46318431e88a95ab4683b6871adc6cfb2515a7aac17f4a1"
+      }
+    ],
+    "resolve.decode_basic_credentials": [
+      {
+        "file": "backend/src/api/middleware/auth.rs",
+        "self_ty": "",
+        "name": "decode_basic_credentials",
+        "kind": "fn",
+        "start": 766,
+        "end": 777,
+        "sha256": "22d7873319d62b5e65936a3751b8207ae4a9707f8bb5fc677c6971ffd0a0f591"
+      }
+    ],
+    "resolve.principal_must_change_password": [
+      {
+        "file": "backend/src/api/middleware/auth.rs",
+        "self_ty": "",
+        "name": "principal_must_change_password",
+        "kind": "fn",
+        "start": 821,
+        "end": 839,
+        "sha256": "9eb4944707c288a4beb87056147da26610189315c99e7de34c45998a446d891d"
+      }
+    ],
+    "resolve.try_resolve_auth_outcome": [
+      {
+        "file": "backend/src/api/middleware/auth.rs",
+        "self_ty": "",
+        "name": "try_resolve_auth_outcome",
+        "kind": "fn",
+        "start": 1151,
+        "end": 1278,
+        "sha256": "30a021825adcd4e85b6b4f5c12841e0918a4d1a3344477deb82e52a203b508ec"
+      }
+    ],
+    "resolve.try_resolve_ticket_auth": [
+      {
+        "file": "backend/src/api/middleware/auth.rs",
+        "self_ty": "",
+        "name": "try_resolve_ticket_auth",
+        "kind": "fn",
+        "start": 1362,
+        "end": 1454,
+        "sha256": "57b2b04a5852e566e51bd568a1515a77434b7f2418f7c88e1a098cec550b7ec4"
+      }
+    ],
+    "resolve.validate_api_token_with_scopes": [
+      {
+        "file": "backend/src/api/middleware/auth.rs",
+        "self_ty": "",
+        "name": "validate_api_token_with_scopes",
+        "kind": "fn",
+        "start": 1088,
+        "end": 1114,
+        "sha256": "88ca25520562907fbf158dadb086ac33e2f62e8cce3e0bc206b49ebee237f272"
+      }
+    ],
+    "resolve.validate_download_ticket": [
+      {
+        "file": "backend/src/services/auth_config_service.rs",
+        "self_ty": "AuthConfigService",
+        "name": "validate_download_ticket",
+        "kind": "method",
+        "start": 2105,
+        "end": 2123,
+        "sha256": "97f0c5140b96c14f787ad10ad9cc06720c2afc698309e0e8497f6b5ae3cb012f"
+      }
+    ],
+    "token_expiry.default_policy": [
+      {
+        "file": "backend/src/services/token_expiry_policy.rs",
+        "self_ty": "ApiTokenExpiryPolicy",
+        "name": "default",
+        "kind": "method",
+        "start": 84,
+        "end": 92,
+        "sha256": "6e9182a3b2d917b5503cbac41e73cfbe44f0b9849006d0d500b810be304a3c36"
+      }
+    ],
+    "token_expiry.resolve_expiry": [
+      {
+        "file": "backend/src/services/token_expiry_policy.rs",
+        "self_ty": "",
+        "name": "resolve_expiry",
+        "kind": "fn",
+        "start": 230,
+        "end": 268,
+        "sha256": "93db93ca4a946157aee48c434c3ffdfd938f9ae2a1c6333969d100d7342d13ce"
+      }
+    ],
+    "token_expiry.validate": [
+      {
+        "file": "backend/src/services/token_expiry_policy.rs",
+        "self_ty": "ApiTokenExpiryPolicy",
+        "name": "validate",
+        "kind": "method",
+        "start": 96,
+        "end": 130,
+        "sha256": "9b9b8aa7f4dcb652632beba66363817b39f69027abcabb2be98015fbaba21f1f"
+      }
+    ],
+    "token_scope.AuthExtension.access_scope": [
+      {
+        "file": "backend/src/api/middleware/auth.rs",
+        "self_ty": "AuthExtension",
+        "name": "access_scope",
+        "kind": "method",
+        "start": 139,
+        "end": 148,
+        "sha256": "37c5b345b3d75f74445256789e4ee3b4e09b4e532a2c697b9f6c7c4e05d54555"
+      }
+    ],
+    "token_scope.AuthExtension.can_access_repo": [
+      {
+        "file": "backend/src/api/middleware/auth.rs",
+        "self_ty": "AuthExtension",
+        "name": "can_access_repo",
+        "kind": "method",
+        "start": 150,
+        "end": 193,
+        "sha256": "9686d1222608d5985b8acfb32067a622ac430b085c19d4be5906e488f77d13e5"
+      }
+    ],
+    "token_scope.AuthExtension.has_scope": [
+      {
+        "file": "backend/src/api/middleware/auth.rs",
+        "self_ty": "AuthExtension",
+        "name": "has_scope",
+        "kind": "method",
+        "start": 118,
+        "end": 137,
+        "sha256": "3aa630d68458225b6402f7553f0efebd1ebfcb18e5f06d031682d5139ea3bb08"
+      }
+    ],
+    "token_scope.AuthExtension.require_admin": [
+      {
+        "file": "backend/src/api/middleware/auth.rs",
+        "self_ty": "AuthExtension",
+        "name": "require_admin",
+        "kind": "method",
+        "start": 292,
+        "end": 299,
+        "sha256": "e592ada73e141c79308ed6c16bfc492fbc47bd26807b7005ed284a7c09e429e7"
+      }
+    ],
+    "token_scope.AuthExtension.require_scope": [
+      {
+        "file": "backend/src/api/middleware/auth.rs",
+        "self_ty": "AuthExtension",
+        "name": "require_scope",
+        "kind": "method",
+        "start": 195,
+        "end": 205,
+        "sha256": "354718b1449e739cbe8ab967ee7954f9855b3ca12c9f5e55e1e6c209d2d17ef9"
+      }
+    ],
+    "token_scope.AuthExtension.with_scope_gated_admin": [
+      {
+        "file": "backend/src/api/middleware/auth.rs",
+        "self_ty": "AuthExtension",
+        "name": "with_scope_gated_admin",
+        "kind": "method",
+        "start": 272,
+        "end": 290,
+        "sha256": "f34bf88bc44f8b616b369d56110260ad49f7e154d2943e6ef0dfd960c09752f7"
+      }
+    ],
+    "token_scope.enforce_admin_only_scopes": [
+      {
+        "file": "backend/src/services/token_service.rs",
+        "self_ty": "",
+        "name": "enforce_admin_only_scopes",
+        "kind": "fn",
+        "start": 167,
+        "end": 191,
+        "sha256": "1c3e80233635ea791921380e23f60fa6c450123d5cfbf1cfdab2d97a96a8d568"
+      }
+    ],
+    "token_scope.scopes_grant_access": [
+      {
+        "file": "backend/src/services/token_service.rs",
+        "self_ty": "",
+        "name": "scopes_grant_access",
+        "kind": "fn",
+        "start": 203,
+        "end": 233,
+        "sha256": "1cebc406cf620de3d5a1bb062a96ca6587772301433517fd807745be8b1549fc"
+      }
+    ],
+    "token_scope.validate_scopes_pure": [
+      {
+        "file": "backend/src/services/token_service.rs",
+        "self_ty": "",
+        "name": "validate_scopes_pure",
+        "kind": "fn",
+        "start": 111,
+        "end": 123,
+        "sha256": "c5179c7a533aaeef695b4fd06511a395602617b312c271cccd6f183038c57d5a"
+      }
+    ],
+    "totp_policy.check_policy_activation": [
+      {
+        "file": "backend/src/services/totp_policy.rs",
+        "self_ty": "",
+        "name": "check_policy_activation",
+        "kind": "fn",
+        "start": 210,
+        "end": 241,
+        "sha256": "c786f28401d95fe9d0def4ff9a623e9013f04f8ea1e6d5092abe41a08b7ab883"
+      }
+    ],
+    "totp_policy.is_enforcing": [
+      {
+        "file": "backend/src/services/totp_policy.rs",
+        "self_ty": "TotpPolicy",
+        "name": "is_enforcing",
+        "kind": "method",
+        "start": 94,
+        "end": 97,
+        "sha256": "b4d21213bb6a6304cdd40baea4aa961120da3c8cef84c5a2334655e951ed0615"
+      }
+    ],
+    "totp_policy.is_tightening": [
+      {
+        "file": "backend/src/services/totp_policy.rs",
+        "self_ty": "",
+        "name": "is_tightening",
+        "kind": "fn",
+        "start": 243,
+        "end": 247,
+        "sha256": "f603b4c89b29717bacc590b5fcaf1c4f7305107908cd4fa63470a1c73c3f2d2c"
+      }
+    ],
+    "totp_policy.policy_requires_totp": [
+      {
+        "file": "backend/src/services/totp_policy.rs",
+        "self_ty": "",
+        "name": "policy_requires_totp",
+        "kind": "fn",
+        "start": 168,
+        "end": 181,
+        "sha256": "16ffc913cfe1a84f234de467780e0241f475c3b6d5cc17d4d066e92472222f66"
+      }
+    ],
+    "totp_policy.strictness": [
+      {
+        "file": "backend/src/services/totp_policy.rs",
+        "self_ty": "",
+        "name": "strictness",
+        "kind": "fn",
+        "start": 249,
+        "end": 255,
+        "sha256": "915a284715f60ffcb9b783c0b78c516abcd7176ab96cea8e77b68f65254059fc"
+      }
+    ],
+    "totp_policy.totp_login_requirement": [
+      {
+        "file": "backend/src/services/totp_policy.rs",
+        "self_ty": "",
+        "name": "totp_login_requirement",
+        "kind": "fn",
+        "start": 136,
+        "end": 166,
+        "sha256": "b596b31673c565b5b9caa148e397585db2181073228e2f901a939db91d08d836"
+      }
+    ]
+  }
+}

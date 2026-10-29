@@ -47,6 +47,24 @@ is the final project-wide, sorry-free gate; per-task certification is partial
 progress, not a substitute for that gate. Build dependencies are pinned git
 dependencies, not application sources borrowed from another checkout.
 
+Canonical project properties can extend beyond the original 101 tasks.
+`harness/project_reach.py` includes them only after the latest standard project
+gate succeeds and its complete recorded input hashes and theorem list match
+the current project. A later failed gate or an added input invalidates reuse.
+The gate runner also rejects inputs changed during execution. Historical
+benchmark task/model results and `benchmark_upstream_reached` remain separate.
+
+The canonical numerator follows qualified extracted references from theorem
+types, then extracted function dependencies. Proof bodies do not seed reach;
+ambiguous suffixes and untyped receiver-method guesses are excluded. Explicit
+`harness/source-mappings/<app>.json` entries identify upstream file, enclosing
+type, item, physical span, full revision and span hash. The scanner checks those
+against pinned Git objects and deduplicates executable line identities. The
+evidence is written to `results/source-coverage/<app>-project-reach.json`.
+Canonical reach replaces an application's historical numerator; the two are
+never summed. Applications without an audited canonical mapping retain their
+historical benchmark measure, so a mixed aggregate is not an equivalence claim.
+
 ## Rewrites and equivalence
 
 Preserve the upstream revision, source mapping and `DEVIATIONS.md` for each

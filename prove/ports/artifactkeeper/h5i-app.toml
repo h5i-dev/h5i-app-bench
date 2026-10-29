@@ -1,7 +1,7 @@
 # Standard h5i-app project. Keep every selected theorem in the final gate.
 [extract]
 crate = "kernel"
-start-from = ["middleware::repo_visibility_middleware","middleware::auth_middleware","middleware::optional_auth_middleware","middleware::admin_middleware","middleware::guest_access_guard","handlers::create_permission","handlers::require_auth_basic_scope","handlers::require_scope_response","net::resolve_client_ip_addr","token_scope::validate_scopes_pure","token_scope::enforce_admin_only_scopes","net::CidrRange::contains"]
+start-from = ["migration_safety::mask_sql","migration_safety::classify","totp_policy::is_enforcing","totp_policy::policy_requires_totp","totp_policy::check_policy_activation","token_expiry::default_policy","token_expiry::validate","token_expiry::resolve_expiry","middleware::repo_visibility_middleware","middleware::auth_middleware","middleware::optional_auth_middleware","middleware::admin_middleware","middleware::guest_access_guard","handlers::create_permission","handlers::require_auth_basic_scope","handlers::require_scope_response","net::resolve_client_ip_addr","token_scope::validate_scopes_pure","token_scope::enforce_admin_only_scopes","net::CidrRange::contains"]
 
 [check]
 theorems = [
@@ -22,4 +22,14 @@ theorems = [
   "artifactkeeper_kernel.Properties.only_admin_creates_rules",
   "artifactkeeper_kernel.Properties.anonymous_rule_read_only",
   "artifactkeeper_kernel.Properties.scopes_grant_access_spec",
+  "artifactkeeper_kernel.Properties.token_expiry_default_valid",
+  "artifactkeeper_kernel.Properties.token_expiry_validation_iff",
+  "artifactkeeper_kernel.Properties.token_expiry_resolution_spec",
+  "artifactkeeper_kernel.Properties.token_expiry_accepted_request_bounded",
+  "artifactkeeper_kernel.Properties.totp_login_spec",
+  "artifactkeeper_kernel.Properties.totp_disabling_spec",
+  "artifactkeeper_kernel.Properties.totp_activation_spec",
+  "artifactkeeper_kernel.Properties.totp_enforcing_spec",
+  "artifactkeeper_kernel.Properties.totp_relaxation_allowed",
+  "artifactkeeper_kernel.Properties.totp_enrolled_challenged",
 ]

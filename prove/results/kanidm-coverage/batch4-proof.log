@@ -1,0 +1,68 @@
+Verified/AccountPolicy.lean:38:49: warning: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+Verified/AccountPolicy.lean:40:49: warning: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+Verified/AccountPolicy.lean:61:31: warning: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+Verified/AccountPolicy.lean:73:17: warning: This simp argument is unused:
+  min_le_left
+
+Hint: Omit it from the simp argument list.
+  simp [combine, min_le_l̵e̵f̵t̵,̵ ̵m̵i̵n̵_̵l̵e̵_̵right, le_max_left, le_max_right]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+Verified/AccountPolicy.lean:73:30: warning: This simp argument is unused:
+  min_le_right
+
+Hint: Omit it from the simp argument list.
+  simp [combine, min_le_left, m̵i̵n̵_̵l̵e̵_̵r̵i̵g̵h̵t̵,̵ ̵le_max_left, le_max_right]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+Verified/AccountPolicy.lean:73:44: warning: This simp argument is unused:
+  le_max_left
+
+Hint: Omit it from the simp argument list.
+  simp [combine, min_le_left, min_le_right, le_max_l̵e̵f̵t̵,̵ ̵l̵e̵_̵m̵a̵x̵_̵right]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+Verified/AccountPolicy.lean:73:57: warning: This simp argument is unused:
+  le_max_right
+
+Hint: Omit it from the simp argument list.
+  simp [combine, min_le_left, min_le_right, le_max_left,̵ ̵l̵e̵_̵m̵a̵x̵_̵r̵i̵g̵h̵t̵]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+Verified/AccountPolicy.lean:80:94: warning: This simp argument is unused:
+  conjunction
+
+Hint: Omit it from the simp argument list.
+  simp_all ̵[̵c̵o̵n̵j̵u̵n̵c̵t̵i̵o̵n̵]̵
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+Verified/AccountPolicy.lean:108:6: warning: 'all_goals (try simp_all)' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+Verified/AccountPolicy.lean:109:6: warning: 'all_goals (try scalar_tac)' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+Verified/AccountPolicy.lean:113:6: warning: 'all_goals (try simp_all)' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+Verified/AccountPolicy.lean:114:6: warning: 'all_goals (try scalar_tac)' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+Verified/AccountPolicy.lean:108:16: warning: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+Verified/AccountPolicy.lean:109:16: warning: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+Verified/AccountPolicy.lean:113:16: warning: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+Verified/AccountPolicy.lean:114:16: warning: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`

@@ -1,0 +1,5 @@
+[extract]
+crate = "kernel"
+start-from = ["entry_validation"]
+[check]
+theorems = ["kanidm_kernel.Verified.EntryValidation.validate_spec"]

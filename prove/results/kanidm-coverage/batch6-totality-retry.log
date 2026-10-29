@@ -1,0 +1,39 @@
+⚠ [146/151] Replayed Aeneas.Std.WP
+warning: Aeneas/Std/WP.lean:756:4: 'simp -failIfUnchanged only' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Aeneas/Std/WP.lean:761:4: 'simp -failIfUnchanged only' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Aeneas/Std/WP.lean:896:11: 'cases i' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Aeneas/Std/WP.lean:896:23: 'simp' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Aeneas/Std/WP.lean:927:19: 'simp at hspec' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+⚠ [1264/1374] Replayed Aeneas.Std.Core.Core
+warning: Aeneas/Std/Core/Core.lean:38:4: The namespace 'core' is duplicated in the declaration 'Aeneas.Std.core.core.clone.CloneGlobal'
+
+Note: This linter can be disabled with `set_option linter.dupNamespace false`
+warning: Aeneas/Std/Core/Core.lean:59:4: The namespace 'core' is duplicated in the declaration 'Aeneas.Std.core.core.clone.CloneBox'
+
+Note: This linter can be disabled with `set_option linter.dupNamespace false`
+warning: Aeneas/Std/Core/Core.lean:68:4: The namespace 'core' is duplicated in the declaration 'Aeneas.Std.core.core.marker.CopyBool'
+
+Note: This linter can be disabled with `set_option linter.dupNamespace false`
+ℹ [1732/1733] Replayed Verified.EffectivePermissionSupport
+info: Verified/EffectivePermissionSupport.lean:15:0: h5i_derive_all: no eq spec for kanidm_kernel.account_policy.Resolved; derive it by hand
+info: Verified/EffectivePermissionSupport.lean:15:0: h5i_derive_all: no eq spec for kanidm_kernel.softlock.Policy; derive it by hand
+info: Verified/EffectivePermissionSupport.lean:15:0: h5i_derive_all: no eq spec for kanidm_kernel.credential_commit.Decision; derive it by hand
+info: Verified/EffectivePermissionSupport.lean:15:0: h5i_derive_all: no eq spec for kanidm_kernel.softlock.State; derive it by hand
+info: Verified/EffectivePermissionSupport.lean:15:0: h5i_derive_all: no eq spec for kanidm_kernel.account_policy.Policy; derive it by hand
+info: Verified/EffectivePermissionSupport.lean:15:0: h5i_derive_all: no eq spec for kanidm_kernel.softlock.SoftLock; derive it by hand
+✖ [1733/1733] Building Verified.RecoveredEffectivePermissionCheckTotal (316s)
+trace: .> LEAN_PATH=/dev/shm/h5i-cache/lake/leanprover-lean4-v4.31.0-dc4cdc4e98604e9b/packages/Cli/.lake/build/lib/lean:/dev/shm/h5i-cache/lake/leanprover-lean4-v4.31.0-dc4cdc4e98604e9b/packages/batteries/.lake/build/lib/lean:/dev/shm/h5i-cache/lake/leanprover-lean4-v4.31.0-dc4cdc4e98604e9b/packages/Qq/.lake/build/lib/lean:/dev/shm/h5i-cache/lake/leanprover-lean4-v4.31.0-dc4cdc4e98604e9b/packages/aesop/.lake/build/lib/lean:/dev/shm/h5i-cache/lake/leanprover-lean4-v4.31.0-dc4cdc4e98604e9b/packages/proofwidgets/.lake/build/lib/lean:/dev/shm/h5i-cache/lake/leanprover-lean4-v4.31.0-dc4cdc4e98604e9b/packages/importGraph/.lake/build/lib/lean:/dev/shm/h5i-cache/lake/leanprover-lean4-v4.31.0-dc4cdc4e98604e9b/packages/LeanSearchClient/.lake/build/lib/lean:/dev/shm/h5i-cache/lake/leanprover-lean4-v4.31.0-dc4cdc4e98604e9b/packages/plausible/.lake/build/lib/lean:/dev/shm/h5i-cache/lake/leanprover-lean4-v4.31.0-dc4cdc4e98604e9b/packages/mathlib/.lake/build/lib/lean:/dev/shm/h5i-cache/lake/leanprover-lean4-v4.31.0-dc4cdc4e98604e9b/packages/aeneas/backends/lean/.lake/build/lib/lean:/dev/shm/h5i-cache/lake/leanprover-lean4-v4.31.0-dc4cdc4e98604e9b/packages/h5i_app_lib/crates/h5i-app-core/proofs/.lake/build/lib/lean:/home/ht2673/Dev/h5i-app-bench/prove/ports/kanidm/proofs/.lake/build/lib/lean /home/ht2673/.elan/toolchains/leanprover--lean4---v4.31.0/bin/lean /home/ht2673/Dev/h5i-app-bench/prove/ports/kanidm/proofs/Verified/RecoveredEffectivePermissionCheckTotal.lean -o /home/ht2673/Dev/h5i-app-bench/prove/ports/kanidm/proofs/.lake/build/lib/lean/Verified/RecoveredEffectivePermissionCheckTotal.olean -i /home/ht2673/Dev/h5i-app-bench/prove/ports/kanidm/proofs/.lake/build/lib/lean/Verified/RecoveredEffectivePermissionCheckTotal.ilean -c /home/ht2673/Dev/h5i-app-bench/prove/ports/kanidm/proofs/.lake/build/ir/Verified/RecoveredEffectivePermissionCheckTotal.c --setup /home/ht2673/Dev/h5i-app-bench/prove/ports/kanidm/proofs/.lake/build/ir/Verified/RecoveredEffectivePermissionCheckTotal.setup.json --json
+error: Lean exited with code 143
+Some required targets logged failures:
+- Verified.RecoveredEffectivePermissionCheckTotal
+error: build failed

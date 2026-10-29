@@ -1,0 +1,29 @@
+$ charon cargo --preset=aeneas --start-from kanidm_kernel::entry_validation --dest-file /tmp/.tmpG6gSS7/kanidm_kernel.llbc
+   Compiling kanidm-kernel v0.1.0 (/home/ht2673/Dev/h5i-app-bench/prove/results/kanidm-coverage/entry-project/kernel)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.54s
+$ aeneas -backend lean /tmp/.tmpG6gSS7/kanidm_kernel.llbc -dest /home/ht2673/Dev/h5i-app-bench/prove/results/kanidm-coverage/entry-project/proofs/generated
+[[92mInfo[39m ] Imported: /tmp/.tmpG6gSS7/kanidm_kernel.llbc
+[?25lApplied prepasses:  [--------------------------------------------------]  0/88 ⠋Applied prepasses:  [--------------------------------------------------]  1/88 ⠋Applied prepasses:  [###########---------------------------------------] 20/88 ⠙[[91mError[39m] Returns inside of nested loops are not supported yet
+Source: 'src/entry_validation.rs', lines 35:0-70:1
+[[91mError[39m] Ignoring the body of 'kanidm_kernel::entry_validation::validate' because of previous error
+Source: 'src/entry_validation.rs', lines 35:0-70:1
+Applied prepasses:  [##############------------------------------------] 26/88 ⠙Applied prepasses:  [#########################-------------------------] 44/88 ⠙Applied prepasses:  [##################################################] 88/88 ✔️
+[?25h[?25lTranslated globals:  [---------------------------------------------------] 0/0 ⠋Translated globals:  [---------------------------------------------------] 0/0 ✔️
+[?25h[?25lTranslated opaque functions:  [----------------------------------------]  0/30 ⠋Translated opaque functions:  [#---------------------------------------]  1/30 ⠋Translated opaque functions:  [########################################] 30/30 ⠋Translated opaque functions:  [########################################] 30/30 ✔️
+[?25h[?25lTranslated transparent functions:  [-----------------------------------]  0/27 ⠋Translated transparent functions:  [#----------------------------------]  1/27 ⠙Translated transparent functions:  [###########------------------------]  9/27 ⠙Translated transparent functions:  [############-----------------------] 10/27 ⠹Translated transparent functions:  [##############---------------------] 11/27 ⠹Translated transparent functions:  [##################-----------------] 14/27 ⠸Translated transparent functions:  [###################----------------] 15/27 ⠼Translated transparent functions:  [#########################----------] 20/27 ⠼[[91mError[39m] Could not match the contexts
+Source: 'src/entry_validation.rs', lines 31:3-31:69
+[[93mWarn[39m ] Could not translate the body of function 'kanidm_kernel::entry_validation::constraints because of previous error
+Name pattern: 'kanidm_kernel::entry_validation::constraints'
+Definition span: 'src/entry_validation.rs', lines 25:0-34:1
+Source: 'src/entry_validation.rs', lines 31:3-31:69
+Compiler source: interp/Interp.ml, line 617
+
+Translated transparent functions:  [###########################--------] 21/27 ⠴Translated transparent functions:  [############################-------] 22/27 ⠦Translated transparent functions:  [#############################------] 23/27 ⠧Translated transparent functions:  [###############################----] 24/27 ⠧Translated transparent functions:  [################################---] 25/27 ⠇Translated transparent functions:  [#################################--] 26/27 ⠏Translated transparent functions:  [###################################] 27/27 ⠋Translated transparent functions:  [###################################] 27/27 ✔️
+[?25h[?25lTranslated trait declarations:  [--------------------------------------]  0/13 ⠋Translated trait declarations:  [#################---------------------]  6/13 ✔️
+[?25h[?25lTranslated trait impls:  [---------------------------------------------]  0/49 ⠋Translated trait impls:  [#################################------------] 36/49 ✔️
+[?25h[?25lPost-processed translated opaque functions:  [-------------------------]  0/30 ⠋Post-processed translated opaque functions:  [-------------------------]  1/30 ⠙Post-processed translated opaque functions:  [#########################] 30/30 ✔️
+[?25h[?25lPost-processed translated transparent functions:  [--------------------]  0/27 ⠋Post-processed translated transparent functions:  [--------------------]  1/27 ⠙Post-processed translated transparent functions:  [########------------] 11/27 ⠙Post-processed translated transparent functions:  [##########----------] 14/27 ⠹Post-processed translated transparent functions:  [#############-------] 18/27 ⠹Post-processed translated transparent functions:  [##############------] 19/27 ⠹Post-processed translated transparent functions:  [##################--] 25/27 ⠸Post-processed translated transparent functions:  [###################-] 26/27 ⠸Post-processed translated transparent functions:  [####################] 27/27 ⠼Post-processed translated transparent functions:  [####################] 27/27 ✔️
+[?25h[[92mInfo[39m ] Generated the partial file (because of 3 errors, including 3 unique errors): /home/ht2673/Dev/h5i-app-bench/prove/results/kanidm-coverage/entry-project/proofs/generated/KanidmKernel.lean
+[[93mWarn[39m ] The crate contains extracted external, unknown definitions: we advise using the option -split-files to allow manually providing these definitions in separate files.
+[[92mInfo[39m ] Total execution time: 5.100278 seconds
+Error: `aeneas -backend lean /tmp/.tmpG6gSS7/kanidm_kernel.llbc -dest /home/ht2673/Dev/h5i-app-bench/prove/results/kanidm-coverage/entry-project/proofs/generated` failed

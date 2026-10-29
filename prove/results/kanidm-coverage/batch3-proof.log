@@ -1,0 +1,12 @@
+Verified/CredentialCommit.lean:33:107: warning: 'rfl' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+Verified/CredentialCommit.lean:35:107: warning: 'rfl' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+Verified/CredentialCommit.lean:33:107: warning: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+Verified/CredentialCommit.lean:35:107: warning: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`

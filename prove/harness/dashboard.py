@@ -573,18 +573,15 @@ def refresh_project_checks(index):
     Timed benchmark tasks remain separate; project properties do not create
     model runs or add a second copy of an existing benchmark property.
     """
-    latest = {}
-    for path in sorted((ROOT / "results/project-checks").glob("*/summary.json")):
-        for row in json.loads(path.read_text()):
-            if "check" in row.get("command", []):
-                latest[row["app"]] = row
+    from project_reach import fresh_gate, measure
     index["gates"] = gates()
     for app, info in index["apps"].items():
-        for key in ("specs", "accepted", "spec_loc", "proof_loc"):
+        for key in ("specs", "accepted", "spec_loc", "proof_loc", "upstream_reached"):
             info.setdefault("benchmark_" + key, info[key])
             info[key] = info["benchmark_" + key]
         info.pop("project_properties", None)
-        row = latest.get(app, {})
+        info.pop("project_reach", None)
+        row = fresh_gate(app, root=ROOT) or {}
         names = row.get("gated_theorems", [])
         hashes = row.get("source_sha256", {})
         if not (row.get("passed") and names and hashes):
@@ -601,6 +598,26 @@ def refresh_project_checks(index):
                                       "checked_modules": row.get("checked_modules"),
                                       "when": row["finished_at"][:10], "log": row["log"],
                                       "source": f"{REPO}/ports/{app}/proofs/Properties.lean"}
+        # Recompute against pinned objects and exact qualified mappings. This
+        # replaces the app's numerator, rather than adding overlapping task
+        # and project counts. Historical task/model metrics remain intact.
+        mapping = ROOT / "harness/source-mappings" / f"{app}.json"
+        if mapping.exists():
+            try:
+                reach = measure(app, names, root=ROOT)
+            except (OSError, ValueError, subprocess.CalledProcessError) as error:
+                info["project_reach"] = {"status": "unavailable", "reason": str(error)}
+            else:
+                evidence = ROOT / "results/source-coverage" / f"{app}-project-reach.json"
+                evidence.parent.mkdir(parents=True, exist_ok=True)
+                evidence.write_text(json.dumps(reach, indent=2) + "\n")
+                info["upstream_reached"] = reach["upstream_reached"]
+                info["project_reach"] = {"status": "source_matched", "properties": len(names),
+                                         "upstream_reached": reach["upstream_reached"],
+                                         "upstream_revision": reach["upstream_revision"],
+                                         "mapping_sha256": reach["mapping_sha256"],
+                                         "evidence": str(evidence.relative_to(ROOT)),
+                                         "meaning": reach["meaning"]}
         if len(names) >= info["benchmark_specs"]:
             info.update(specs=len(names), accepted=len(names),
                         spec_loc=sum(lean_lines(f) for f in (port / "proofs").glob("Spec*.lean")),
@@ -609,7 +626,8 @@ def refresh_project_checks(index):
     stats = index["stats"]
     stats["benchmark_properties"] = len(index["tasks"])
     stats["benchmark_accepted"] = sum(t["status"] == "accepted" for t in index["tasks"])
-    for total, key in (("properties", "specs"), ("accepted", "accepted"), ("proof_loc", "proof_loc")):
+    for total, key in (("properties", "specs"), ("accepted", "accepted"), ("proof_loc", "proof_loc"),
+                       ("upstream_reached", "upstream_reached")):
         stats[total] = sum(a[key] for a in index["apps"].values())
 
 

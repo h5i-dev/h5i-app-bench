@@ -1,7 +1,7 @@
 # Standard h5i-app project. Keep every selected theorem in the final gate.
 [extract]
 crate = "kernel"
-start-from = ["access"]
+start-from = ["access", "softlock", "schema_tags", "credential_commit", "account_policy"]
 
 [check]
 theorems = [
@@ -23,4 +23,22 @@ theorems = [
   "kanidm_kernel.Properties.match_eq_spec",
   "kanidm_kernel.Properties.str_contains_spec",
   "kanidm_kernel.Properties.effective_permission_check_total",
+  "kanidm_kernel.Properties.soft_lock_apply_time_step_spec",
+  "kanidm_kernel.Properties.soft_lock_is_valid_spec",
+  "kanidm_kernel.Properties.soft_lock_new_spec",
+  "kanidm_kernel.Properties.soft_lock_password_lockout",
+  "kanidm_kernel.Properties.soft_lock_totp_lockout",
+  "kanidm_kernel.Properties.soft_lock_webauthn_failure",
+  "kanidm_kernel.Properties.soft_lock_unrestricted_failure",
+  "kanidm_kernel.Properties.soft_lock_failure_records_count",
+  "kanidm_kernel.Properties.soft_lock_record_failure_spec",
+  "kanidm_kernel.Properties.schema_tags_partial_accepts_spec",
+  "kanidm_kernel.Properties.schema_tags_value_accepts_spec",
+  "kanidm_kernel.Properties.schema_tags_ava_accepts_spec",
+  "kanidm_kernel.Properties.credential_commit_can_commit_spec",
+  "kanidm_kernel.Properties.credential_commit_invalid_denied",
+  "kanidm_kernel.Properties.account_policy_option_max_spec",
+  "kanidm_kernel.Properties.account_policy_combine_spec",
+  "kanidm_kernel.Properties.account_policy_finalize_spec",
+  "kanidm_kernel.Properties.account_policy_fold_from_spec",
 ]

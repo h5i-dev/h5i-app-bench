@@ -1,7 +1,7 @@
 # Standard h5i-app project. Keep every selected theorem in the final gate.
 [extract]
 crate = "kernel"
-start-from = ["transition"]
+start-from = ["transition", "proxy_policy::proxy_for", "proxy_policy::parse"]
 
 [check]
 theorems = [

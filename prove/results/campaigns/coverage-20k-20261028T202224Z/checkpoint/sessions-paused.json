@@ -1,0 +1,34 @@
+{
+  "when": "2026-10-28T22:56:27.490204-04:00",
+  "sessions": [
+    {
+      "session": "prove-20k-main",
+      "pane_pid": 1585157,
+      "suspended_helpers": [
+        1586066
+      ],
+      "terminated_incomplete_jobs": [
+        1803623,
+        1803484,
+        1803477,
+        1794603,
+        1794270,
+        1794264,
+        1787341,
+        1784298,
+        1784183,
+        1784182,
+        1784177
+      ]
+    },
+    {
+      "session": "prove-20k-kanidm",
+      "pane_pid": 1585179,
+      "suspended_helpers": [
+        1586473
+      ],
+      "terminated_incomplete_jobs": []
+    }
+  ],
+  "reason": "User requested checkpoint and stop; remote context compaction blocked graceful checkpoint. Source files preserved, in-progress jobs terminated and not counted. Codex TUIs suspended reversibly in tmux. Resume requires SIGCONT to saved root/helper PIDs."
+}

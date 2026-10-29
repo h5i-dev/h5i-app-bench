@@ -137,3 +137,25 @@ RustFS `get_object_version_covers_get_object` also passed independent
 certification (45/103 accepted candidates). At the user's request, one parallel
 proof agent is developing Tuwunel candidates in a separate solutions directory;
 canonical integration and independent certification remain centrally managed.
+
+## Coverage expansion campaign (2026-10-28)
+
+The 20,000-line objective is active. The historical task set remains 101 tasks
+(99 accepted); project properties and their source reach are measured separately.
+An initial audit found 268 source-matched RustFS project properties reaching
+1,986 deduplicated pinned source code lines, replacing the old 404-line task-only
+numerator. That preliminary aggregate was 9,266; stricter gate snapshots now
+also include Cargo build configuration, so these project results require new
+standard gates before the next dashboard refresh.
+
+New Artifact Keeper token-expiry and TOTP policy ports have ten isolated Lean
+proofs and passing pinned-body differential tests (694,688 token cases;279
+exhaustive TOTP comparisons). Its complete 27-property project gate is running.
+Nora's permission-import mapper has passed 200,512 complete-report differential
+comparisons; extraction and report invariants are in progress. Kanidm's separate
+worker owns additional softlock/schema/credential/account-policy batches.
+Candidate reach and isolated proofs are not counted as passing project gates.
+
+Durable coordination and validation evidence are under
+`results/campaigns/coverage-20k-20261028T202224Z/`. The checked aggregate has not
+established the 20,000-line milestone.

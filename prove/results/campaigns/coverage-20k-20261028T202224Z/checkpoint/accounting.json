@@ -1,0 +1,42 @@
+{
+  "recorded_at": "2026-10-28T22:55:41.082925-04:00",
+  "target": 20000,
+  "baseline": 7684,
+  "reported_upstream_reached": 9296,
+  "current_source_matched_lines": 2751,
+  "historical_benchmark_lines": 6545,
+  "apps": {
+    "artifactkeeper": {
+      "upstream_reached": 1319,
+      "basis": "historical_benchmark_snapshot",
+      "gate_finished_at": null
+    },
+    "kanidm": {
+      "upstream_reached": 2458,
+      "basis": "historical_benchmark_snapshot",
+      "gate_finished_at": null
+    },
+    "nora": {
+      "upstream_reached": 902,
+      "basis": "historical_benchmark_snapshot",
+      "gate_finished_at": null
+    },
+    "oxicloud": {
+      "upstream_reached": 751,
+      "basis": "current_source_matched_project_gate",
+      "gate_finished_at": "2026-10-29T02:37:09.500971+00:00"
+    },
+    "rustfs": {
+      "upstream_reached": 2000,
+      "basis": "current_source_matched_project_gate",
+      "gate_finished_at": "2026-10-28T21:39:02.006601+00:00"
+    },
+    "tuwunel": {
+      "upstream_reached": 1866,
+      "basis": "historical_benchmark_snapshot",
+      "gate_finished_at": null
+    }
+  },
+  "meaning": "Dependency reach in pinned upstream code; not complete behavioral equivalence. Historical benchmark lines do not certify modified working trees. Pending work excluded.",
+  "checks": "7 project_reach unit tests passed; fresh RustFS/Oxi gates validated; independent recount equals dashboard."
+}

@@ -1,0 +1,19 @@
+   Compiling kanidm-kernel v0.1.0 (/home/ht2673/Dev/h5i-app-bench/prove/ports/kanidm/kernel)
+warning: unused import: `std::fmt`
+ --> tests/../../difftest/schema/reference.rs:3:5
+  |
+3 | use std::fmt;
+  |     ^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: `kanidm-kernel` (test "schema_tags") generated 1 warning (run `cargo fix --test "schema_tags" -p kanidm-kernel` to apply 1 suggestion)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.26s
+     Running tests/schema_tags.rs (prove/ports/kanidm/kernel/target/debug/deps/schema_tags-6ffc1e7cca6e630c)
+
+running 1 test
+41830 exhaustive schema-dispatch comparisons
+test exhaustive_schema_dispatch ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+

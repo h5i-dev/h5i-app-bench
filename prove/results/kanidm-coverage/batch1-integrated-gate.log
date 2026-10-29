@@ -1,0 +1,323 @@
+
+[earlier output omitted]
+estCreatesSignups (19s)
+✔ [1742/1752] Built Verified.RecoveredDeleteProtected (21s)
+✔ [1743/1752] Built Verified.RecoveredCreateProtected (22s)
+✔ [1744/1752] Built Verified.KanidmDeleteProtected (22s)
+✔ [1745/1752] Built Verified.RecoveredProtectedClassNeverAdded (23s)
+⚠ [1746/1752] Built Verified.RecoveredSyncObjectConstrained (24s)
+warning: Verified/RecoveredSyncObjectConstrained.lean:60:6: 'all_goals scalar_tac' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/RecoveredSyncObjectConstrained.lean:60:16: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: Verified/RecoveredSyncObjectConstrained.lean:76:4: 'all_goals refine ⟨by scalar_tac, ?_⟩ <;> trivial' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/RecoveredSyncObjectConstrained.lean:76:14: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: Verified/RecoveredSyncObjectConstrained.lean:86:6: 'skip' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/RecoveredSyncObjectConstrained.lean:86:6: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: Verified/RecoveredSyncObjectConstrained.lean:214:18: This simp argument is unused:
+  hv
+
+Hint: Omit it from the simp argument list.
+  simp ̵[̵h̵v̵]̵
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/RecoveredSyncObjectConstrained.lean:216:28: This simp argument is unused:
+  hv
+
+Hint: Omit it from the simp argument list.
+  simp only [h̵v,̵ ̵v̵alueset.as_iutf8_set, bind_tc_ok, bind_ok, WP.spec_ok]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/RecoveredSyncObjectConstrained.lean:216:55: This simp argument is unused:
+  bind_tc_ok
+
+Hint: Omit it from the simp argument list.
+  simp only [hv, valueset.as_iutf8_set, b̵i̵n̵d̵_̵t̵c̵_̵o̵k̵,̵ ̵bind_ok, WP.spec_ok]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/RecoveredSyncObjectConstrained.lean:217:4: 'all_goals try rfl' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/RecoveredSyncObjectConstrained.lean:286:14: This simp argument is unused:
+  classes
+
+Hint: Omit it from the simp argument list.
+  simp_all [c̵l̵a̵s̵s̵e̵s̵,̵ ̵ha, vec_deref_val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/RecoveredSyncObjectConstrained.lean:286:23: This simp argument is unused:
+  ha
+
+Hint: Omit it from the simp argument list.
+  simp_all [classes, h̵a̵,̵ ̵vec_deref_val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/RecoveredSyncObjectConstrained.lean:342:59: This simp argument is unused:
+  bind_tc_ok
+
+Hint: Omit it from the simp argument list.
+  simp only [modify_acc.modify_migration_attrs, hu, hprot, bind_t̵c̵_̵ok, b̵i̵n̵d̵_̵o̵k̵,̵ ̵uncurry] at h
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/RecoveredSyncObjectConstrained.lean:345:40: This simp argument is unused:
+  bind_tc_ok
+
+Hint: Omit it from the simp argument list.
+  simp only [hc, b̵i̵n̵d̵_̵t̵c̵_̵o̵k̵,̵ ̵bind_ok, uncurry] at h
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/RecoveredSyncObjectConstrained.lean:355:32: This simp argument is unused:
+  reduceIte
+
+Hint: Omit it from the simp argument list.
+  simp only [uncurry,̵ ̵r̵e̵d̵u̵c̵e̵I̵t̵e̵] at hx
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/RecoveredSyncObjectConstrained.lean:361:34: This simp argument is unused:
+  Prod.fst
+
+Hint: Omit it from the simp argument list.
+  simp only [reduceIte, P̵r̵o̵d̵.̵f̵s̵t̵,̵ ̵Prod.snd] at h
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/RecoveredSyncObjectConstrained.lean:361:44: This simp argument is unused:
+  Prod.snd
+
+Hint: Omit it from the simp argument list.
+  simp only [reduceIte, Prod.fst,̵ ̵P̵r̵o̵d̵.̵s̵n̵d̵] at h
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/RecoveredSyncObjectConstrained.lean:370:35: This simp argument is unused:
+  hn
+
+Hint: Omit it from the simp argument list.
+  simp only [bne_iff_ne, h̵n̵,̵ ̵if_true] at h
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/RecoveredSyncObjectConstrained.lean:370:39: This simp argument is unused:
+  if_true
+
+Hint: Omit it from the simp argument list.
+  simp only [bne_iff_ne, hn,̵ ̵i̵f̵_̵t̵r̵u̵e̵] at h
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/RecoveredSyncObjectConstrained.lean:350:2: 'all_goals try simp only [uncurry, reduceIte] at h' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/RecoveredSyncObjectConstrained.lean:402:29: This simp argument is unused:
+  presAttr
+
+Hint: Omit it from the simp argument list.
+  simp only [p̵r̵e̵s̵A̵t̵t̵r̵,̵ ̵vec_deref_val] at hout1
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/RecoveredSyncObjectConstrained.lean:402:39: This simp argument is unused:
+  vec_deref_val
+
+Hint: Omit it from the simp argument list.
+  simp only [presAttr,̵ ̵v̵e̵c̵_̵d̵e̵r̵e̵f̵_̵v̵a̵l̵] at hout1
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+⚠ [1747/1752] Built Verified.RecoveredSearchAttrsGranted (32s)
+info: Verified/RecoveredSearchAttrsGranted.lean:7:0: h5i_derive_all: no eq spec for kanidm_kernel.softlock.Policy; derive it by hand
+info: Verified/RecoveredSearchAttrsGranted.lean:7:0: h5i_derive_all: no eq spec for kanidm_kernel.softlock.State; derive it by hand
+info: Verified/RecoveredSearchAttrsGranted.lean:7:0: h5i_derive_all: no eq spec for kanidm_kernel.softlock.SoftLock; derive it by hand
+warning: Verified/RecoveredSearchAttrsGranted.lean:210:36: This simp argument is unused:
+  hlit
+
+Hint: Omit it from the simp argument list.
+  simp_all [refers, h̵l̵i̵t̵,̵ ̵nats, moList, alloc.vec.Vec.deref, alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+⚠ [1748/1752] Built Verified.RecoveredModifyNeedsProfile (37s)
+warning: Verified/RecoveredModifyNeedsProfile.lean:90:4: 'all_goals scalar_tac' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/RecoveredModifyNeedsProfile.lean:90:14: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: Verified/RecoveredModifyNeedsProfile.lean:193:39: This simp argument is unused:
+  vec_new_val
+
+Hint: Omit it from the simp argument list.
+  simp [names,̵ ̵v̵e̵c̵_̵n̵e̵w̵_̵v̵a̵l̵]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/RecoveredModifyNeedsProfile.lean:325:17: This simp argument is unused:
+  Applies
+
+Hint: Omit it from the simp argument list.
+  simp only [A̵p̵p̵l̵i̵e̵s̵,̵ ̵ReceiverHolds, hc]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/RecoveredModifyNeedsProfile.lean:358:32: This simp argument is unused:
+  vec_new_val
+
+Hint: Omit it from the simp argument list.
+  simp ̵[̵v̵e̵c̵_̵n̵e̵w̵_̵v̵a̵l̵]̵
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/RecoveredModifyNeedsProfile.lean:387:33: This simp argument is unused:
+  vec_new_val
+
+Hint: Omit it from the simp argument list.
+  simp ̵[̵v̵e̵c̵_̵n̵e̵w̵_̵v̵a̵l̵]̵
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/RecoveredModifyNeedsProfile.lean:467:27: This simp argument is unused:
+  bind_tc_ok
+
+Hint: Omit it from the simp argument list.
+  simp only [hs, b̵i̵n̵d̵_̵t̵c̵_̵o̵k̵,̵ ̵bind_ok] at h
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/RecoveredModifyNeedsProfile.lean:468:2: 'all_goals try dsimp only at h' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/RecoveredModifyNeedsProfile.lean:510:2: 'all_goals try contradiction' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+✔ [1749/1752] Built Verified.RecoveredProtectedDenyOverridesModify (51s)
+⚠ [1750/1752] Built Verified.RecoveredProtectedDenyOverridesCreate (58s)
+warning: Verified/RecoveredProtectedDenyOverridesCreate.lean:84:16: 'scalar_tac' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/RecoveredProtectedDenyOverridesCreate.lean:84:16: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: Verified/RecoveredProtectedDenyOverridesCreate.lean:89:16: 'scalar_tac' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/RecoveredProtectedDenyOverridesCreate.lean:89:16: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: Verified/RecoveredProtectedDenyOverridesCreate.lean:108:20: 'scalar_tac' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/RecoveredProtectedDenyOverridesCreate.lean:108:20: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: Verified/RecoveredProtectedDenyOverridesCreate.lean:274:12: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: Verified/RecoveredProtectedDenyOverridesCreate.lean:274:25: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: Verified/RecoveredProtectedDenyOverridesCreate.lean:280:29: 'scalar_tac' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/RecoveredProtectedDenyOverridesCreate.lean:280:29: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: Verified/RecoveredProtectedDenyOverridesCreate.lean:280:12: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: Verified/RecoveredProtectedDenyOverridesCreate.lean:286:12: 'scalar_tac' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/RecoveredProtectedDenyOverridesCreate.lean:286:12: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: Verified/RecoveredProtectedDenyOverridesCreate.lean:305:16: 'simp_all' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/RecoveredProtectedDenyOverridesCreate.lean:305:29: 'scalar_tac' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/RecoveredProtectedDenyOverridesCreate.lean:305:16: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: Verified/RecoveredProtectedDenyOverridesCreate.lean:305:29: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: Verified/RecoveredProtectedDenyOverridesCreate.lean:334:30: This simp argument is unused:
+  Prod.fst
+
+Hint: Omit it from the simp argument list.
+  simp only [Prod.f̵st̵,̵ ̵P̵r̵o̵d̵.̵s̵nd, alloc.vec.Vec.new, alloc.vec.Vec.from_val,
+            List.length_nil] at *
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/RecoveredProtectedDenyOverridesCreate.lean:334:40: This simp argument is unused:
+  Prod.snd
+
+Hint: Omit it from the simp argument list.
+  simp only [Prod.fst, P̵r̵o̵d̵.̵s̵n̵d̵,̵ ̵alloc.vec.Vec.new, alloc.vec.Vec.from_val,
+            List.length_nil] at *
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/RecoveredProtectedDenyOverridesCreate.lean:347:34: This simp argument is unused:
+  Prod.fst
+
+Hint: Omit it from the simp argument list.
+  simp only [Prod.f̵st̵,̵ ̵P̵r̵o̵d̵.̵s̵nd, alloc.vec.Vec.new, alloc.vec.Vec.from_val,
+                List.length_nil] at *
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/RecoveredProtectedDenyOverridesCreate.lean:347:44: This simp argument is unused:
+  Prod.snd
+
+Hint: Omit it from the simp argument list.
+  simp only [Prod.fst, P̵r̵o̵d̵.̵s̵n̵d̵,̵ ̵alloc.vec.Vec.new, alloc.vec.Vec.from_val,
+                List.length_nil] at *
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/RecoveredProtectedDenyOverridesCreate.lean:323:18: 'scalar_tac' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/RecoveredProtectedDenyOverridesCreate.lean:328:20: 'scalar_tac' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/RecoveredProtectedDenyOverridesCreate.lean:340:24: 'scalar_tac' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/RecoveredProtectedDenyOverridesCreate.lean:344:26: 'scalar_tac' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/RecoveredProtectedDenyOverridesCreate.lean:323:18: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: Verified/RecoveredProtectedDenyOverridesCreate.lean:328:20: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: Verified/RecoveredProtectedDenyOverridesCreate.lean:340:24: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: Verified/RecoveredProtectedDenyOverridesCreate.lean:344:26: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: Verified/RecoveredProtectedDenyOverridesCreate.lean:357:16: 'simp_all' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/RecoveredProtectedDenyOverridesCreate.lean:357:29: 'scalar_tac' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/RecoveredProtectedDenyOverridesCreate.lean:357:16: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: Verified/RecoveredProtectedDenyOverridesCreate.lean:357:29: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: Verified/RecoveredProtectedDenyOverridesCreate.lean:393:52: This simp argument is unused:
+  bind_tc_ok
+
+Hint: Omit it from the simp argument list.
+  simp only [create_acc.apply_create_access, h, b̵i̵n̵d̵_̵t̵c̵_̵o̵k̵,̵create_acc.message_queue,
+          create_acc.create_filter_entry, hr]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+Some required targets logged failures:
+- Verified.SoftLock
+error: build failed
+
+Error: `lake build` failed

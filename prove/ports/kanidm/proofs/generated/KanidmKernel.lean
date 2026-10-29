@@ -17,10 +17,53 @@ set_option maxHeartbeats 1000000
 /- You can set the `maxRecDepth` value with the `-max-recdepth` CLI option -/
 set_option maxRecDepth 2048
 
+/- You can remove the following line by using the CLI option `-all-computable`: -/
+noncomputable section
+
 namespace kanidm_kernel
 
+/-- [core::fmt::{core::fmt::Formatter<'a>}::debug_tuple_field2_finish]:
+    Source: '/rustc/library/core/src/fmt/mod.rs', lines 2627:4-2632:15
+    Name pattern: [core::fmt::{core::fmt::Formatter<'a>}::debug_tuple_field2_finish]
+    Visibility: public -/
+@[rust_fun "core::fmt::{core::fmt::Formatter<'a>}::debug_tuple_field2_finish"]
+axiom core.fmt.Formatter.debug_tuple_field2_finish
+  :
+  core.fmt.Formatter → Str → Dyn (fun _dyn => core.fmt.Debug _dyn) → Dyn
+    (fun _dyn => core.fmt.Debug _dyn) → Result ((core.result.Result Unit
+    core.fmt.Error) × core.fmt.Formatter)
+
+/-- [core::option::{impl core::fmt::Debug for core::option::Option<T>}::fmt]:
+    Source: '/rustc/library/core/src/option.rs', lines 592:15-592:20
+    Name pattern: [core::option::{core::fmt::Debug<core::option::Option<@T>>}::fmt]
+    Visibility: public -/
+@[rust_fun "core::option::{core::fmt::Debug<core::option::Option<@T>>}::fmt"]
+axiom core.option.Option.Insts.CoreFmtDebug.fmt
+  {T : Type} (fmtDebugInst : core.fmt.Debug T) :
+  Option T → core.fmt.Formatter → Result ((core.result.Result Unit
+    core.fmt.Error) × core.fmt.Formatter)
+
+/-- Trait implementation: [core::option::{impl core::fmt::Debug for core::option::Option<T>}]
+    Source: '/rustc/library/core/src/option.rs', lines 592:15-592:20
+    Name pattern: [core::fmt::Debug<core::option::Option<@T>>] -/
+@[reducible, rust_trait_impl "core::fmt::Debug<core::option::Option<@T>>"]
+def core.option.Option.Insts.CoreFmtDebug {T : Type} (fmtDebugInst :
+  core.fmt.Debug T) : core.fmt.Debug (Option T) := {
+  fmt := core.option.Option.Insts.CoreFmtDebug.fmt fmtDebugInst
+}
+
+/-- [core::option::{impl core::cmp::PartialEq<core::option::Option<T>> for core::option::Option<T>}::eq]:
+    Source: '/rustc/library/core/src/option.rs', lines 2441:4-2441:38
+    Name pattern: [core::option::{core::cmp::PartialEq<core::option::Option<@T>, core::option::Option<@T>>}::eq]
+    Visibility: public -/
+@[rust_fun
+  "core::option::{core::cmp::PartialEq<core::option::Option<@T>, core::option::Option<@T>>}::eq"]
+axiom core.option.Option.Insts.CoreCmpPartialEqOption.eq
+  {T : Type} (cmpPartialEqInst : core.cmp.PartialEq T T) :
+  Option T → Option T → Result Bool
+
 /-- [kanidm_kernel::PartialValue]
-    Source: 'ports/kanidm/kernel/src/lib.rs', lines 43:0-50:1
+    Source: 'prove/ports/kanidm/kernel/src/lib.rs', lines 44:0-51:1
     Visibility: public -/
 @[discriminant isize]
 inductive PartialValue where
@@ -32,7 +75,7 @@ inductive PartialValue where
 | Uint32 : Std.U32 → PartialValue
 
 /-- [kanidm_kernel::FilterResolved]
-    Source: 'ports/kanidm/kernel/src/lib.rs', lines 143:0-155:1
+    Source: 'prove/ports/kanidm/kernel/src/lib.rs', lines 144:0-156:1
     Visibility: public -/
 @[discriminant isize]
 inductive FilterResolved where
@@ -49,14 +92,14 @@ inductive FilterResolved where
 | AndNot : FilterResolved → FilterResolved
 
 /-- [kanidm_kernel::profiles::AccessControlTargetCondition]
-    Source: 'ports/kanidm/kernel/src/profiles.rs', lines 27:0-29:1
+    Source: 'prove/ports/kanidm/kernel/src/profiles.rs', lines 27:0-29:1
     Visibility: public -/
 @[discriminant isize]
 inductive profiles.AccessControlTargetCondition where
 | Scope : FilterResolved → profiles.AccessControlTargetCondition
 
 /-- [kanidm_kernel::FilterComp]
-    Source: 'ports/kanidm/kernel/src/lib.rs', lines 125:0-138:1
+    Source: 'prove/ports/kanidm/kernel/src/lib.rs', lines 126:0-139:1
     Visibility: public -/
 @[discriminant isize]
 inductive FilterComp where
@@ -74,7 +117,7 @@ inductive FilterComp where
 | Invalid : alloc.vec.Vec Std.U8 → FilterComp
 
 /-- [kanidm_kernel::profiles::AccessControlTarget]
-    Source: 'ports/kanidm/kernel/src/profiles.rs', lines 21:0-24:1
+    Source: 'prove/ports/kanidm/kernel/src/profiles.rs', lines 21:0-24:1
     Visibility: public -/
 @[discriminant isize]
 inductive profiles.AccessControlTarget where
@@ -82,7 +125,7 @@ inductive profiles.AccessControlTarget where
 | Scope : FilterComp → profiles.AccessControlTarget
 
 /-- [kanidm_kernel::profiles::AccessControlReceiverCondition]
-    Source: 'ports/kanidm/kernel/src/profiles.rs', lines 15:0-18:1
+    Source: 'prove/ports/kanidm/kernel/src/profiles.rs', lines 15:0-18:1
     Visibility: public -/
 @[discriminant isize]
 inductive profiles.AccessControlReceiverCondition where
@@ -90,7 +133,7 @@ inductive profiles.AccessControlReceiverCondition where
 | EntryManager : profiles.AccessControlReceiverCondition
 
 /-- [kanidm_kernel::profiles::AccessControlReceiver]
-    Source: 'ports/kanidm/kernel/src/profiles.rs', lines 7:0-11:1
+    Source: 'prove/ports/kanidm/kernel/src/profiles.rs', lines 7:0-11:1
     Visibility: public -/
 @[discriminant isize]
 inductive profiles.AccessControlReceiver where
@@ -99,7 +142,7 @@ inductive profiles.AccessControlReceiver where
 | EntryManager : profiles.AccessControlReceiver
 
 /-- [kanidm_kernel::AccessScope]
-    Source: 'ports/kanidm/kernel/src/lib.rs', lines 109:0-113:1
+    Source: 'prove/ports/kanidm/kernel/src/lib.rs', lines 110:0-114:1
     Visibility: public -/
 @[discriminant isize]
 inductive AccessScope where
@@ -108,7 +151,7 @@ inductive AccessScope where
 | Synchronise : AccessScope
 
 /-- [kanidm_kernel::ValueSet]
-    Source: 'ports/kanidm/kernel/src/lib.rs', lines 58:0-66:1
+    Source: 'prove/ports/kanidm/kernel/src/lib.rs', lines 59:0-67:1
     Visibility: public -/
 @[discriminant isize]
 inductive ValueSet where
@@ -121,27 +164,27 @@ inductive ValueSet where
 | OauthScopeMap : alloc.vec.Vec Std.U128 → ValueSet
 
 /-- [kanidm_kernel::Ava]
-    Source: 'ports/kanidm/kernel/src/lib.rs', lines 70:0-73:1
+    Source: 'prove/ports/kanidm/kernel/src/lib.rs', lines 71:0-74:1
     Visibility: public -/
 structure Ava where
   attr : alloc.vec.Vec Std.U8
   vs : ValueSet
 
 /-- [kanidm_kernel::Entry]
-    Source: 'ports/kanidm/kernel/src/lib.rs', lines 79:0-82:1
+    Source: 'prove/ports/kanidm/kernel/src/lib.rs', lines 80:0-83:1
     Visibility: public -/
 structure Entry where
   uuid : Std.U128
   attrs : alloc.vec.Vec Ava
 
 /-- [kanidm_kernel::IdentUser]
-    Source: 'ports/kanidm/kernel/src/lib.rs', lines 95:0-97:1
+    Source: 'prove/ports/kanidm/kernel/src/lib.rs', lines 96:0-98:1
     Visibility: public -/
 structure IdentUser where
   entry : Entry
 
 /-- [kanidm_kernel::InternalRole]
-    Source: 'ports/kanidm/kernel/src/lib.rs', lines 86:0-91:1
+    Source: 'prove/ports/kanidm/kernel/src/lib.rs', lines 87:0-92:1
     Visibility: public -/
 @[discriminant isize]
 inductive InternalRole where
@@ -151,7 +194,7 @@ inductive InternalRole where
 | MessageQueue : InternalRole
 
 /-- [kanidm_kernel::IdentType]
-    Source: 'ports/kanidm/kernel/src/lib.rs', lines 101:0-105:1
+    Source: 'prove/ports/kanidm/kernel/src/lib.rs', lines 102:0-106:1
     Visibility: public -/
 @[discriminant isize]
 inductive IdentType where
@@ -160,14 +203,14 @@ inductive IdentType where
 | Internal : InternalRole → IdentType
 
 /-- [kanidm_kernel::Identity]
-    Source: 'ports/kanidm/kernel/src/lib.rs', lines 118:0-121:1
+    Source: 'prove/ports/kanidm/kernel/src/lib.rs', lines 119:0-122:1
     Visibility: public -/
 structure Identity where
   origin : IdentType
   scope : AccessScope
 
 /-- [kanidm_kernel::{impl core::clone::Clone for kanidm_kernel::PartialValue}::clone]:
-    Source: 'ports/kanidm/kernel/src/lib.rs', lines 42:9-42:14
+    Source: 'prove/ports/kanidm/kernel/src/lib.rs', lines 43:9-43:14
     Visibility: public -/
 def PartialValue.Insts.CoreCloneClone.clone
   (self : PartialValue) : Result PartialValue := do
@@ -192,30 +235,30 @@ def PartialValue.Insts.CoreCloneClone.clone
     ok (PartialValue.Uint32 i)
 
 /-- [kanidm_kernel::UUID_INTERNAL_MESSAGE_QUEUE]
-    Source: 'ports/kanidm/kernel/src/lib.rs', lines 36:0-36:61
+    Source: 'prove/ports/kanidm/kernel/src/lib.rs', lines 37:0-37:61
     Visibility: public -/
 @[global_simps, irreducible]
 def UUID_INTERNAL_MESSAGE_QUEUE : Std.U128 := 281474959933573#u128
 
 /-- [kanidm_kernel::UUID_INTERNAL_ACCOUNT_REQUEST]
-    Source: 'ports/kanidm/kernel/src/lib.rs', lines 34:0-34:63
+    Source: 'prove/ports/kanidm/kernel/src/lib.rs', lines 35:0-35:63
     Visibility: public -/
 @[global_simps, irreducible]
 def UUID_INTERNAL_ACCOUNT_REQUEST : Std.U128 := 281474959933572#u128
 
 /-- [kanidm_kernel::UUID_INTERNAL_MIGRATION]
-    Source: 'ports/kanidm/kernel/src/lib.rs', lines 32:0-32:57
+    Source: 'prove/ports/kanidm/kernel/src/lib.rs', lines 33:0-33:57
     Visibility: public -/
 @[global_simps, irreducible]
 def UUID_INTERNAL_MIGRATION : Std.U128 := 281474959933570#u128
 
 /-- [kanidm_kernel::UUID_SYSTEM]
-    Source: 'ports/kanidm/kernel/src/lib.rs', lines 30:0-30:45
+    Source: 'prove/ports/kanidm/kernel/src/lib.rs', lines 31:0-31:45
     Visibility: public -/
 @[global_simps, irreducible] def UUID_SYSTEM : Std.U128 := 281474959933440#u128
 
 /-- [kanidm_kernel::identity_impl::role_get_uuid]:
-    Source: 'ports/kanidm/kernel/src/identity_impl.rs', lines 9:0-16:1
+    Source: 'prove/ports/kanidm/kernel/src/identity_impl.rs', lines 9:0-16:1
     Visibility: public -/
 def identity_impl.role_get_uuid (role : InternalRole) : Result Std.U128 := do
   match role with
@@ -225,7 +268,7 @@ def identity_impl.role_get_uuid (role : InternalRole) : Result Std.U128 := do
   | InternalRole.MessageQueue => ok UUID_INTERNAL_MESSAGE_QUEUE
 
 /-- [kanidm_kernel::identity_impl::get_uuid]:
-    Source: 'ports/kanidm/kernel/src/identity_impl.rs', lines 24:0-30:1
+    Source: 'prove/ports/kanidm/kernel/src/identity_impl.rs', lines 24:0-30:1
     Visibility: public -/
 def identity_impl.get_uuid (ident : Identity) : Result Std.U128 := do
   match ident.origin with
@@ -236,7 +279,7 @@ def identity_impl.get_uuid (ident : Identity) : Result Std.U128 := do
 mutual
 
 /-- [kanidm_kernel::filter_impl::resolve_no_idx]:
-    Source: 'ports/kanidm/kernel/src/filter_impl.rs', lines 14:0-44:1
+    Source: 'prove/ports/kanidm/kernel/src/filter_impl.rs', lines 14:0-44:1
     Visibility: public -/
 def filter_impl.resolve_no_idx
   (fc : FilterComp) (ev : Identity) : Result (Option FilterResolved) := do
@@ -303,7 +346,7 @@ def filter_impl.resolve_no_idx
 partial_fixpoint
 
 /-- [kanidm_kernel::filter_impl::resolve_no_idx_list]:
-    Source: 'ports/kanidm/kernel/src/filter_impl.rs', lines 48:0-65:1
+    Source: 'prove/ports/kanidm/kernel/src/filter_impl.rs', lines 48:0-65:1
     Visibility: public -/
 def filter_impl.resolve_no_idx_list
   (vs : alloc.vec.Vec FilterComp) (ev : Identity) (i : Std.Usize)
@@ -329,14 +372,14 @@ partial_fixpoint
 end
 
 /-- [kanidm_kernel::filter_impl::resolve]:
-    Source: 'ports/kanidm/kernel/src/filter_impl.rs', lines 9:0-11:1
+    Source: 'prove/ports/kanidm/kernel/src/filter_impl.rs', lines 9:0-11:1
     Visibility: public -/
 def filter_impl.resolve
   (filter : FilterComp) (ev : Identity) : Result (Option FilterResolved) := do
   filter_impl.resolve_no_idx filter ev
 
 /-- [kanidm_kernel::bset::contains_uuid]: loop body 0:
-    Source: 'ports/kanidm/kernel/src/bset.rs', lines 102:4-109:1
+    Source: 'prove/ports/kanidm/kernel/src/bset.rs', lines 102:4-109:1
     Visibility: public -/
 @[rust_loop_body]
 def bset.contains_uuid_loop.body
@@ -354,7 +397,7 @@ def bset.contains_uuid_loop.body
   else ok (done false)
 
 /-- [kanidm_kernel::bset::contains_uuid]: loop 0:
-    Source: 'ports/kanidm/kernel/src/bset.rs', lines 102:4-109:1
+    Source: 'prove/ports/kanidm/kernel/src/bset.rs', lines 102:4-109:1
     Visibility: public -/
 @[rust_loop]
 def bset.contains_uuid_loop
@@ -364,7 +407,7 @@ def bset.contains_uuid_loop
     i
 
 /-- [kanidm_kernel::bset::contains_uuid]:
-    Source: 'ports/kanidm/kernel/src/bset.rs', lines 100:0-109:1
+    Source: 'prove/ports/kanidm/kernel/src/bset.rs', lines 100:0-109:1
     Visibility: public -/
 @[reducible]
 def bset.contains_uuid
@@ -372,7 +415,7 @@ def bset.contains_uuid
   bset.contains_uuid_loop set u 0#usize
 
 /-- [kanidm_kernel::bset::intersects_uuid]: loop body 0:
-    Source: 'ports/kanidm/kernel/src/bset.rs', lines 114:4-121:1
+    Source: 'prove/ports/kanidm/kernel/src/bset.rs', lines 114:4-121:1
     Visibility: public -/
 @[rust_loop_body]
 def bset.intersects_uuid_loop.body
@@ -391,7 +434,7 @@ def bset.intersects_uuid_loop.body
   else ok (done false)
 
 /-- [kanidm_kernel::bset::intersects_uuid]: loop 0:
-    Source: 'ports/kanidm/kernel/src/bset.rs', lines 114:4-121:1
+    Source: 'prove/ports/kanidm/kernel/src/bset.rs', lines 114:4-121:1
     Visibility: public -/
 @[rust_loop]
 def bset.intersects_uuid_loop
@@ -401,7 +444,7 @@ def bset.intersects_uuid_loop
     i
 
 /-- [kanidm_kernel::bset::intersects_uuid]:
-    Source: 'ports/kanidm/kernel/src/bset.rs', lines 112:0-121:1
+    Source: 'prove/ports/kanidm/kernel/src/bset.rs', lines 112:0-121:1
     Visibility: public -/
 @[reducible]
 def bset.intersects_uuid
@@ -409,7 +452,7 @@ def bset.intersects_uuid
   bset.intersects_uuid_loop a b 0#usize
 
 /-- [kanidm_kernel::access::resolve_access_conditions]:
-    Source: 'ports/kanidm/kernel/src/access.rs', lines 25:0-58:1
+    Source: 'prove/ports/kanidm/kernel/src/access.rs', lines 25:0-58:1
     Visibility: public -/
 def access.resolve_access_conditions
   (ident : Identity) (ident_memberof : Option (alloc.vec.Vec Std.U128))
@@ -452,7 +495,7 @@ def access.resolve_access_conditions
           profiles.AccessControlTargetCondition.Scope f))
 
 /-- [kanidm_kernel::profiles::AccessControlSearchResolved]
-    Source: 'ports/kanidm/kernel/src/profiles.rs', lines 45:0-49:1
+    Source: 'prove/ports/kanidm/kernel/src/profiles.rs', lines 45:0-49:1
     Visibility: public -/
 structure profiles.AccessControlSearchResolved where
   attrs : alloc.vec.Vec (alloc.vec.Vec Std.U8)
@@ -460,21 +503,21 @@ structure profiles.AccessControlSearchResolved where
   target_condition : profiles.AccessControlTargetCondition
 
 /-- [kanidm_kernel::profiles::AccessControlProfile]
-    Source: 'ports/kanidm/kernel/src/profiles.rs', lines 32:0-35:1
+    Source: 'prove/ports/kanidm/kernel/src/profiles.rs', lines 32:0-35:1
     Visibility: public -/
 structure profiles.AccessControlProfile where
   receiver : profiles.AccessControlReceiver
   target : profiles.AccessControlTarget
 
 /-- [kanidm_kernel::profiles::AccessControlSearch]
-    Source: 'ports/kanidm/kernel/src/profiles.rs', lines 38:0-41:1
+    Source: 'prove/ports/kanidm/kernel/src/profiles.rs', lines 38:0-41:1
     Visibility: public -/
 structure profiles.AccessControlSearch where
   acp : profiles.AccessControlProfile
   attrs : alloc.vec.Vec (alloc.vec.Vec Std.U8)
 
 /-- [kanidm_kernel::profiles::AccessControlModify]
-    Source: 'ports/kanidm/kernel/src/profiles.rs', lines 78:0-84:1
+    Source: 'prove/ports/kanidm/kernel/src/profiles.rs', lines 78:0-84:1
     Visibility: public -/
 structure profiles.AccessControlModify where
   acp : profiles.AccessControlProfile
@@ -484,7 +527,7 @@ structure profiles.AccessControlModify where
   rem_classes : alloc.vec.Vec (alloc.vec.Vec Std.U8)
 
 /-- [kanidm_kernel::profiles::AccessControlCreate]
-    Source: 'ports/kanidm/kernel/src/profiles.rs', lines 63:0-67:1
+    Source: 'prove/ports/kanidm/kernel/src/profiles.rs', lines 63:0-67:1
     Visibility: public -/
 structure profiles.AccessControlCreate where
   acp : profiles.AccessControlProfile
@@ -492,20 +535,20 @@ structure profiles.AccessControlCreate where
   attrs : alloc.vec.Vec (alloc.vec.Vec Std.U8)
 
 /-- [kanidm_kernel::profiles::AccessControlDelete]
-    Source: 'ports/kanidm/kernel/src/profiles.rs', lines 52:0-54:1
+    Source: 'prove/ports/kanidm/kernel/src/profiles.rs', lines 52:0-54:1
     Visibility: public -/
 structure profiles.AccessControlDelete where
   acp : profiles.AccessControlProfile
 
 /-- [kanidm_kernel::SyncAgreement]
-    Source: 'ports/kanidm/kernel/src/lib.rs', lines 246:0-249:1
+    Source: 'prove/ports/kanidm/kernel/src/lib.rs', lines 247:0-250:1
     Visibility: public -/
 structure SyncAgreement where
   uuid : Std.U128
   attrs : alloc.vec.Vec (alloc.vec.Vec Std.U8)
 
 /-- [kanidm_kernel::AccessControlsInner]
-    Source: 'ports/kanidm/kernel/src/lib.rs', lines 252:0-258:1
+    Source: 'prove/ports/kanidm/kernel/src/lib.rs', lines 253:0-259:1
     Visibility: public -/
 structure AccessControlsInner where
   acps_search : alloc.vec.Vec profiles.AccessControlSearch
@@ -515,7 +558,7 @@ structure AccessControlsInner where
   sync_agreements : alloc.vec.Vec SyncAgreement
 
 /-- [kanidm_kernel::valueset::as_refer_set]:
-    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 295:0-300:1
+    Source: 'prove/ports/kanidm/kernel/src/valueset.rs', lines 295:0-300:1
     Visibility: public -/
 def valueset.as_refer_set
   (vs : ValueSet) : Result (Option (alloc.vec.Vec Std.U128)) := do
@@ -529,7 +572,7 @@ def valueset.as_refer_set
   | ValueSet.OauthScopeMap _ => ok none
 
 /-- [kanidm_kernel::bset::bytes_eq]: loop body 0:
-    Source: 'ports/kanidm/kernel/src/bset.rs', lines 10:4-17:1
+    Source: 'prove/ports/kanidm/kernel/src/bset.rs', lines 10:4-17:1
     Visibility: public -/
 @[rust_loop_body]
 def bset.bytes_eq_loop.body
@@ -548,7 +591,7 @@ def bset.bytes_eq_loop.body
   else ok (done true)
 
 /-- [kanidm_kernel::bset::bytes_eq]: loop 0:
-    Source: 'ports/kanidm/kernel/src/bset.rs', lines 10:4-17:1
+    Source: 'prove/ports/kanidm/kernel/src/bset.rs', lines 10:4-17:1
     Visibility: public -/
 @[rust_loop]
 def bset.bytes_eq_loop
@@ -558,7 +601,7 @@ def bset.bytes_eq_loop
     i
 
 /-- [kanidm_kernel::bset::bytes_eq]:
-    Source: 'ports/kanidm/kernel/src/bset.rs', lines 5:0-17:1
+    Source: 'prove/ports/kanidm/kernel/src/bset.rs', lines 5:0-17:1
     Visibility: public -/
 def bset.bytes_eq (a : Slice Std.U8) (b : Slice Std.U8) : Result Bool := do
   let i := Slice.len a
@@ -568,7 +611,7 @@ def bset.bytes_eq (a : Slice Std.U8) (b : Slice Std.U8) : Result Bool := do
   else bset.bytes_eq_loop a b 0#usize
 
 /-- [kanidm_kernel::entry_impl::get_ava_set]: loop body 0:
-    Source: 'ports/kanidm/kernel/src/entry_impl.rs', lines 13:4-20:1
+    Source: 'prove/ports/kanidm/kernel/src/entry_impl.rs', lines 13:4-20:1
     Visibility: public -/
 @[rust_loop_body]
 def entry_impl.get_ava_set_loop.body
@@ -589,7 +632,7 @@ def entry_impl.get_ava_set_loop.body
   else ok (done none)
 
 /-- [kanidm_kernel::entry_impl::get_ava_set]: loop 0:
-    Source: 'ports/kanidm/kernel/src/entry_impl.rs', lines 13:4-20:1
+    Source: 'prove/ports/kanidm/kernel/src/entry_impl.rs', lines 13:4-20:1
     Visibility: public -/
 @[rust_loop]
 def entry_impl.get_ava_set_loop
@@ -601,7 +644,7 @@ def entry_impl.get_ava_set_loop
     i
 
 /-- [kanidm_kernel::entry_impl::get_ava_set]:
-    Source: 'ports/kanidm/kernel/src/entry_impl.rs', lines 11:0-20:1
+    Source: 'prove/ports/kanidm/kernel/src/entry_impl.rs', lines 11:0-20:1
     Visibility: public -/
 @[reducible]
 def entry_impl.get_ava_set
@@ -609,7 +652,7 @@ def entry_impl.get_ava_set
   entry_impl.get_ava_set_loop e attr 0#usize
 
 /-- [kanidm_kernel::entry_impl::get_ava_refer]:
-    Source: 'ports/kanidm/kernel/src/entry_impl.rs', lines 23:0-28:1
+    Source: 'prove/ports/kanidm/kernel/src/entry_impl.rs', lines 23:0-28:1
     Visibility: public -/
 def entry_impl.get_ava_refer
   (e : Entry) (attr : Slice Std.U8) :
@@ -621,7 +664,7 @@ def entry_impl.get_ava_refer
   | some vs => valueset.as_refer_set vs
 
 /-- [kanidm_kernel::identity_impl::get_memberof]:
-    Source: 'ports/kanidm/kernel/src/identity_impl.rs', lines 33:0-38:1
+    Source: 'prove/ports/kanidm/kernel/src/identity_impl.rs', lines 33:0-38:1
     Visibility: public -/
 def identity_impl.get_memberof
   (ident : Identity) : Result (Option (alloc.vec.Vec Std.U128)) := do
@@ -637,7 +680,7 @@ def identity_impl.get_memberof
   | IdentType.Internal _ => ok none
 
 /-- [kanidm_kernel::bset::contains]: loop body 0:
-    Source: 'ports/kanidm/kernel/src/bset.rs', lines 22:4-29:1
+    Source: 'prove/ports/kanidm/kernel/src/bset.rs', lines 22:4-29:1
     Visibility: public -/
 @[rust_loop_body]
 def bset.contains_loop.body
@@ -657,7 +700,7 @@ def bset.contains_loop.body
   else ok (done false)
 
 /-- [kanidm_kernel::bset::contains]: loop 0:
-    Source: 'ports/kanidm/kernel/src/bset.rs', lines 22:4-29:1
+    Source: 'prove/ports/kanidm/kernel/src/bset.rs', lines 22:4-29:1
     Visibility: public -/
 @[rust_loop]
 def bset.contains_loop
@@ -669,7 +712,7 @@ def bset.contains_loop
     i
 
 /-- [kanidm_kernel::bset::contains]:
-    Source: 'ports/kanidm/kernel/src/bset.rs', lines 20:0-29:1
+    Source: 'prove/ports/kanidm/kernel/src/bset.rs', lines 20:0-29:1
     Visibility: public -/
 @[reducible]
 def bset.contains
@@ -677,7 +720,7 @@ def bset.contains
   bset.contains_loop set x 0#usize
 
 /-- [kanidm_kernel::bset::is_disjoint]: loop body 0:
-    Source: 'ports/kanidm/kernel/src/bset.rs', lines 62:4-69:1
+    Source: 'prove/ports/kanidm/kernel/src/bset.rs', lines 62:4-69:1
     Visibility: public -/
 @[rust_loop_body]
 def bset.is_disjoint_loop.body
@@ -698,7 +741,7 @@ def bset.is_disjoint_loop.body
   else ok (done true)
 
 /-- [kanidm_kernel::bset::is_disjoint]: loop 0:
-    Source: 'ports/kanidm/kernel/src/bset.rs', lines 62:4-69:1
+    Source: 'prove/ports/kanidm/kernel/src/bset.rs', lines 62:4-69:1
     Visibility: public -/
 @[rust_loop]
 def bset.is_disjoint_loop
@@ -711,7 +754,7 @@ def bset.is_disjoint_loop
     i
 
 /-- [kanidm_kernel::bset::is_disjoint]:
-    Source: 'ports/kanidm/kernel/src/bset.rs', lines 60:0-69:1
+    Source: 'prove/ports/kanidm/kernel/src/bset.rs', lines 60:0-69:1
     Visibility: public -/
 @[reducible]
 def bset.is_disjoint
@@ -721,7 +764,7 @@ def bset.is_disjoint
   bset.is_disjoint_loop a b 0#usize
 
 /-- [kanidm_kernel::access::search_related_acp]: loop body 0:
-    Source: 'ports/kanidm/kernel/src/access.rs', lines 72:4-93:5
+    Source: 'prove/ports/kanidm/kernel/src/access.rs', lines 72:4-93:5
     Visibility: public -/
 @[rust_loop_body]
 def access.search_related_acp_loop.body
@@ -776,7 +819,7 @@ def access.search_related_acp_loop.body
   else ok (done related_acp)
 
 /-- [kanidm_kernel::access::search_related_acp]: loop 0:
-    Source: 'ports/kanidm/kernel/src/access.rs', lines 72:4-93:5
+    Source: 'prove/ports/kanidm/kernel/src/access.rs', lines 72:4-93:5
     Visibility: public -/
 @[rust_loop]
 def access.search_related_acp_loop
@@ -793,7 +836,7 @@ def access.search_related_acp_loop
     (attrs, related_acp, i)
 
 /-- [kanidm_kernel::access::search_related_acp]:
-    Source: 'ports/kanidm/kernel/src/access.rs', lines 62:0-95:1
+    Source: 'prove/ports/kanidm/kernel/src/access.rs', lines 62:0-95:1
     Visibility: public -/
 def access.search_related_acp
   (ctl : AccessControlsInner) (ident : Identity)
@@ -805,14 +848,14 @@ def access.search_related_acp
     (alloc.vec.Vec.new profiles.AccessControlSearchResolved) 0#usize
 
 /-- [kanidm_kernel::OperationError]
-    Source: 'ports/kanidm/kernel/src/lib.rs', lines 169:0-171:1
+    Source: 'prove/ports/kanidm/kernel/src/lib.rs', lines 170:0-172:1
     Visibility: public -/
 @[discriminant isize]
 inductive OperationError where
 | InvalidState : OperationError
 
 /-- [kanidm_kernel::bset::insert]:
-    Source: 'ports/kanidm/kernel/src/bset.rs', lines 32:0-36:1
+    Source: 'prove/ports/kanidm/kernel/src/bset.rs', lines 32:0-36:1
     Visibility: public -/
 def bset.insert
   (set : alloc.vec.Vec (alloc.vec.Vec Std.U8)) (x : Slice Std.U8) :
@@ -829,7 +872,7 @@ def bset.insert
 mutual
 
 /-- [kanidm_kernel::filter_impl::fc_get_attr_set]:
-    Source: 'ports/kanidm/kernel/src/filter_impl.rs', lines 75:0-94:1
+    Source: 'prove/ports/kanidm/kernel/src/filter_impl.rs', lines 75:0-94:1
     Visibility: public -/
 def filter_impl.fc_get_attr_set
   (fc : FilterComp) (r_set : alloc.vec.Vec (alloc.vec.Vec Std.U8)) :
@@ -870,7 +913,7 @@ def filter_impl.fc_get_attr_set
 partial_fixpoint
 
 /-- [kanidm_kernel::filter_impl::fc_get_attr_set_list]:
-    Source: 'ports/kanidm/kernel/src/filter_impl.rs', lines 97:0-102:1
+    Source: 'prove/ports/kanidm/kernel/src/filter_impl.rs', lines 97:0-102:1
     Visibility: public -/
 def filter_impl.fc_get_attr_set_list
   (vs : alloc.vec.Vec FilterComp)
@@ -892,14 +935,14 @@ partial_fixpoint
 end
 
 /-- [kanidm_kernel::filter_impl::get_attr_set]:
-    Source: 'ports/kanidm/kernel/src/filter_impl.rs', lines 68:0-72:1
+    Source: 'prove/ports/kanidm/kernel/src/filter_impl.rs', lines 68:0-72:1
     Visibility: public -/
 def filter_impl.get_attr_set
   (filter : FilterComp) : Result (alloc.vec.Vec (alloc.vec.Vec Std.U8)) := do
   filter_impl.fc_get_attr_set filter (alloc.vec.Vec.new (alloc.vec.Vec Std.U8))
 
 /-- [kanidm_kernel::valueset::as_iutf8_set]:
-    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 287:0-292:1
+    Source: 'prove/ports/kanidm/kernel/src/valueset.rs', lines 287:0-292:1
     Visibility: public -/
 def valueset.as_iutf8_set
   (vs : ValueSet) :
@@ -915,7 +958,7 @@ def valueset.as_iutf8_set
   | ValueSet.OauthScopeMap _ => ok none
 
 /-- [kanidm_kernel::entry_impl::get_ava_as_iutf8]:
-    Source: 'ports/kanidm/kernel/src/entry_impl.rs', lines 31:0-36:1
+    Source: 'prove/ports/kanidm/kernel/src/entry_impl.rs', lines 31:0-36:1
     Visibility: public -/
 def entry_impl.get_ava_as_iutf8
   (e : Entry) (attr : Slice Std.U8) :
@@ -927,7 +970,7 @@ def entry_impl.get_ava_as_iutf8
   | some vs => valueset.as_iutf8_set vs
 
 /-- [kanidm_kernel::entry_impl::class_contains]:
-    Source: 'ports/kanidm/kernel/src/entry_impl.rs', lines 74:0-79:1
+    Source: 'prove/ports/kanidm/kernel/src/entry_impl.rs', lines 74:0-79:1
     Visibility: public -/
 def entry_impl.class_contains
   (e : Entry) («class» : Slice Std.U8) : Result Bool := do
@@ -941,7 +984,7 @@ def entry_impl.class_contains
                 bset.contains s1 «class»
 
 /-- [kanidm_kernel::search_acc::is_sync_account_user]:
-    Source: 'ports/kanidm/kernel/src/search_acc.rs', lines 281:0-286:1
+    Source: 'prove/ports/kanidm/kernel/src/search_acc.rs', lines 281:0-286:1
     Visibility: public -/
 def search_acc.is_sync_account_user (e : Entry) : Result Bool := do
   let s ←
@@ -962,7 +1005,7 @@ def search_acc.is_sync_account_user (e : Entry) : Result Bool := do
   else ok false
 
 /-- [kanidm_kernel::AccessSrchResult]
-    Source: 'ports/kanidm/kernel/src/lib.rs', lines 218:0-223:1
+    Source: 'prove/ports/kanidm/kernel/src/lib.rs', lines 219:0-224:1
     Visibility: public -/
 @[discriminant isize]
 inductive AccessSrchResult where
@@ -972,7 +1015,7 @@ inductive AccessSrchResult where
 | Allow : alloc.vec.Vec (alloc.vec.Vec Std.U8) → AccessSrchResult
 
 /-- [kanidm_kernel::valueset::to_refer_single]:
-    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 303:0-314:1
+    Source: 'prove/ports/kanidm/kernel/src/valueset.rs', lines 303:0-314:1
     Visibility: public -/
 def valueset.to_refer_single (vs : ValueSet) : Result (Option Std.U128) := do
   match vs with
@@ -993,7 +1036,7 @@ def valueset.to_refer_single (vs : ValueSet) : Result (Option Std.U128) := do
   | ValueSet.OauthScopeMap _ => ok none
 
 /-- [kanidm_kernel::entry_impl::get_ava_single_refer]:
-    Source: 'ports/kanidm/kernel/src/entry_impl.rs', lines 39:0-44:1
+    Source: 'prove/ports/kanidm/kernel/src/entry_impl.rs', lines 39:0-44:1
     Visibility: public -/
 def entry_impl.get_ava_single_refer
   (e : Entry) (attr : Slice Std.U8) : Result (Option Std.U128) := do
@@ -1003,7 +1046,7 @@ def entry_impl.get_ava_single_refer
   | some vs => valueset.to_refer_single vs
 
 /-- [kanidm_kernel::search_acc::search_sync_account_filter_entry]:
-    Source: 'ports/kanidm/kernel/src/search_acc.rs', lines 289:0-320:1
+    Source: 'prove/ports/kanidm/kernel/src/search_acc.rs', lines 289:0-320:1
     Visibility: public -/
 def search_acc.search_sync_account_filter_entry
   (ident : Identity) (entry : Entry) : Result AccessSrchResult := do
@@ -1059,7 +1102,7 @@ def search_acc.search_sync_account_filter_entry
   | IdentType.Internal _ => ok AccessSrchResult.Ignore
 
 /-- [kanidm_kernel::search_acc::linked_group_member]:
-    Source: 'ports/kanidm/kernel/src/search_acc.rs', lines 205:0-213:1
+    Source: 'prove/ports/kanidm/kernel/src/search_acc.rs', lines 205:0-213:1
     Visibility: public -/
 def search_acc.linked_group_member
   (group : Option Std.U128) (mo : Option (alloc.vec.Vec Std.U128)) :
@@ -1074,13 +1117,13 @@ def search_acc.linked_group_member
                 bset.contains_uuid s group_uuid
 
 /-- [kanidm_kernel::UUID_ANONYMOUS]
-    Source: 'ports/kanidm/kernel/src/lib.rs', lines 38:0-38:48
+    Source: 'prove/ports/kanidm/kernel/src/lib.rs', lines 39:0-39:48
     Visibility: public -/
 @[global_simps, irreducible]
 def UUID_ANONYMOUS : Std.U128 := 281474976710655#u128
 
 /-- [kanidm_kernel::search_acc::search_applications_filter_entry]:
-    Source: 'ports/kanidm/kernel/src/search_acc.rs', lines 252:0-277:1
+    Source: 'prove/ports/kanidm/kernel/src/search_acc.rs', lines 252:0-277:1
     Visibility: public -/
 def search_acc.search_applications_filter_entry
   (ident : Identity) (entry : Entry) : Result AccessSrchResult := do
@@ -1144,7 +1187,7 @@ def search_acc.search_applications_filter_entry
   | IdentType.Internal _ => ok AccessSrchResult.Ignore
 
 /-- [kanidm_kernel::search_acc::scope_member]:
-    Source: 'ports/kanidm/kernel/src/search_acc.rs', lines 194:0-202:1
+    Source: 'prove/ports/kanidm/kernel/src/search_acc.rs', lines 194:0-202:1
     Visibility: public -/
 def search_acc.scope_member
   (maps : Option (alloc.vec.Vec Std.U128))
@@ -1162,7 +1205,7 @@ def search_acc.scope_member
       bset.intersects_uuid s s1
 
 /-- [kanidm_kernel::valueset::as_oauthscopemap]:
-    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 331:0-336:1
+    Source: 'prove/ports/kanidm/kernel/src/valueset.rs', lines 331:0-336:1
     Visibility: public -/
 def valueset.as_oauthscopemap
   (vs : ValueSet) : Result (Option (alloc.vec.Vec Std.U128)) := do
@@ -1176,7 +1219,7 @@ def valueset.as_oauthscopemap
   | ValueSet.OauthScopeMap keys => ok (some keys)
 
 /-- [kanidm_kernel::entry_impl::get_ava_as_oauthscopemaps]:
-    Source: 'ports/kanidm/kernel/src/entry_impl.rs', lines 47:0-52:1
+    Source: 'prove/ports/kanidm/kernel/src/entry_impl.rs', lines 47:0-52:1
     Visibility: public -/
 def entry_impl.get_ava_as_oauthscopemaps
   (e : Entry) (attr : Slice Std.U8) :
@@ -1188,7 +1231,7 @@ def entry_impl.get_ava_as_oauthscopemaps
   | some vs => valueset.as_oauthscopemap vs
 
 /-- [kanidm_kernel::search_acc::search_oauth2_filter_entry]:
-    Source: 'ports/kanidm/kernel/src/search_acc.rs', lines 223:0-249:1
+    Source: 'prove/ports/kanidm/kernel/src/search_acc.rs', lines 223:0-249:1
     Visibility: public -/
 def search_acc.search_oauth2_filter_entry
   (ident : Identity) (entry : Entry) : Result AccessSrchResult := do
@@ -1258,7 +1301,7 @@ def search_acc.search_oauth2_filter_entry
   | IdentType.Internal _ => ok AccessSrchResult.Ignore
 
 /-- [kanidm_kernel::migration::migration_entry_classes]:
-    Source: 'ports/kanidm/kernel/src/migration.rs', lines 6:0-21:1
+    Source: 'prove/ports/kanidm/kernel/src/migration.rs', lines 6:0-21:1
     Visibility: public -/
 def migration.migration_entry_classes (c : Slice Std.U8) : Result Bool := do
   let s ←
@@ -1400,7 +1443,7 @@ def migration.migration_entry_classes (c : Slice Std.U8) : Result Bool := do
                             bset.bytes_eq c s13
 
 /-- [kanidm_kernel::migration::subset_migration_entry]: loop body 0:
-    Source: 'ports/kanidm/kernel/src/migration.rs', lines 51:4-58:1
+    Source: 'prove/ports/kanidm/kernel/src/migration.rs', lines 51:4-58:1
     Visibility: public -/
 @[rust_loop_body]
 def migration.subset_migration_entry_loop.body
@@ -1420,7 +1463,7 @@ def migration.subset_migration_entry_loop.body
   else ok (done true)
 
 /-- [kanidm_kernel::migration::subset_migration_entry]: loop 0:
-    Source: 'ports/kanidm/kernel/src/migration.rs', lines 51:4-58:1
+    Source: 'prove/ports/kanidm/kernel/src/migration.rs', lines 51:4-58:1
     Visibility: public -/
 @[rust_loop]
 def migration.subset_migration_entry_loop
@@ -1430,7 +1473,7 @@ def migration.subset_migration_entry_loop
     i
 
 /-- [kanidm_kernel::migration::subset_migration_entry]:
-    Source: 'ports/kanidm/kernel/src/migration.rs', lines 49:0-58:1
+    Source: 'prove/ports/kanidm/kernel/src/migration.rs', lines 49:0-58:1
     Visibility: public -/
 @[reducible]
 def migration.subset_migration_entry
@@ -1438,7 +1481,7 @@ def migration.subset_migration_entry
   migration.subset_migration_entry_loop classes 0#usize
 
 /-- [kanidm_kernel::migration::migration_ignore_classes]:
-    Source: 'ports/kanidm/kernel/src/migration.rs', lines 24:0-32:1
+    Source: 'prove/ports/kanidm/kernel/src/migration.rs', lines 24:0-32:1
     Visibility: public -/
 def migration.migration_ignore_classes (c : Slice Std.U8) : Result Bool := do
   let s ←
@@ -1516,7 +1559,7 @@ def migration.migration_ignore_classes (c : Slice Std.U8) : Result Bool := do
               bset.bytes_eq c s6
 
 /-- [kanidm_kernel::migration::sub_migration_ignore]: loop body 0:
-    Source: 'ports/kanidm/kernel/src/migration.rs', lines 38:4-44:5
+    Source: 'prove/ports/kanidm/kernel/src/migration.rs', lines 38:4-44:5
     Visibility: public -/
 @[rust_loop_body]
 def migration.sub_migration_ignore_loop.body
@@ -1542,7 +1585,7 @@ def migration.sub_migration_ignore_loop.body
   else ok (done out)
 
 /-- [kanidm_kernel::migration::sub_migration_ignore]: loop 0:
-    Source: 'ports/kanidm/kernel/src/migration.rs', lines 38:4-44:5
+    Source: 'prove/ports/kanidm/kernel/src/migration.rs', lines 38:4-44:5
     Visibility: public -/
 @[rust_loop]
 def migration.sub_migration_ignore_loop
@@ -1556,7 +1599,7 @@ def migration.sub_migration_ignore_loop
     (out, i)
 
 /-- [kanidm_kernel::migration::sub_migration_ignore]:
-    Source: 'ports/kanidm/kernel/src/migration.rs', lines 35:0-46:1
+    Source: 'prove/ports/kanidm/kernel/src/migration.rs', lines 35:0-46:1
     Visibility: public -/
 @[reducible]
 def migration.sub_migration_ignore
@@ -1567,7 +1610,7 @@ def migration.sub_migration_ignore
     Std.U8)) 0#usize
 
 /-- [kanidm_kernel::search_acc::valid_migration_class]:
-    Source: 'ports/kanidm/kernel/src/search_acc.rs', lines 186:0-191:1
+    Source: 'prove/ports/kanidm/kernel/src/search_acc.rs', lines 186:0-191:1
     Visibility: public -/
 def search_acc.valid_migration_class (entry : Entry) : Result Bool := do
   let s ←
@@ -1583,7 +1626,7 @@ def search_acc.valid_migration_class (entry : Entry) : Result Bool := do
     migration.subset_migration_entry s2
 
 /-- [kanidm_kernel::bset::extend]: loop body 0:
-    Source: 'ports/kanidm/kernel/src/bset.rs', lines 41:4-44:5
+    Source: 'prove/ports/kanidm/kernel/src/bset.rs', lines 41:4-44:5
     Visibility: public -/
 @[rust_loop_body]
 def bset.extend_loop.body
@@ -1603,7 +1646,7 @@ def bset.extend_loop.body
   else ok (done set)
 
 /-- [kanidm_kernel::bset::extend]: loop 0:
-    Source: 'ports/kanidm/kernel/src/bset.rs', lines 41:4-44:5
+    Source: 'prove/ports/kanidm/kernel/src/bset.rs', lines 41:4-44:5
     Visibility: public -/
 @[rust_loop]
 def bset.extend_loop
@@ -1616,7 +1659,7 @@ def bset.extend_loop
     (set, i)
 
 /-- [kanidm_kernel::bset::extend]:
-    Source: 'ports/kanidm/kernel/src/bset.rs', lines 39:0-45:1
+    Source: 'prove/ports/kanidm/kernel/src/bset.rs', lines 39:0-45:1
     Visibility: public -/
 @[reducible]
 def bset.extend
@@ -1627,7 +1670,7 @@ def bset.extend
   bset.extend_loop set xs 0#usize
 
 /-- [kanidm_kernel::search_acc::extend_if]:
-    Source: 'ports/kanidm/kernel/src/search_acc.rs', lines 216:0-220:1
+    Source: 'prove/ports/kanidm/kernel/src/search_acc.rs', lines 216:0-220:1
     Visibility: public -/
 def search_acc.extend_if
   (set : alloc.vec.Vec (alloc.vec.Vec Std.U8)) (ok1 : Bool)
@@ -1639,7 +1682,7 @@ def search_acc.extend_if
   else ok set
 
 /-- [kanidm_kernel::valueset::any_less_u32]: loop body 0:
-    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 146:4-153:1 -/
+    Source: 'prove/ports/kanidm/kernel/src/valueset.rs', lines 146:4-153:1 -/
 @[rust_loop_body]
 def valueset.any_less_u32_loop.body
   (set : Slice Std.U32) (u : Std.U32) (i : Std.Usize) :
@@ -1656,7 +1699,7 @@ def valueset.any_less_u32_loop.body
   else ok (done false)
 
 /-- [kanidm_kernel::valueset::any_less_u32]: loop 0:
-    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 146:4-153:1 -/
+    Source: 'prove/ports/kanidm/kernel/src/valueset.rs', lines 146:4-153:1 -/
 @[rust_loop]
 def valueset.any_less_u32_loop
   (set : Slice Std.U32) (u : Std.U32) (i : Std.Usize) : Result Bool := do
@@ -1665,14 +1708,14 @@ def valueset.any_less_u32_loop
     i
 
 /-- [kanidm_kernel::valueset::any_less_u32]:
-    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 144:0-153:1 -/
+    Source: 'prove/ports/kanidm/kernel/src/valueset.rs', lines 144:0-153:1 -/
 @[reducible]
 def valueset.any_less_u32
   (set : Slice Std.U32) (u : Std.U32) : Result Bool := do
   valueset.any_less_u32_loop set u 0#usize
 
 /-- [kanidm_kernel::valueset::any_less_uuid]: loop body 0:
-    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 135:4-142:1 -/
+    Source: 'prove/ports/kanidm/kernel/src/valueset.rs', lines 135:4-142:1 -/
 @[rust_loop_body]
 def valueset.any_less_uuid_loop.body
   (set : Slice Std.U128) (u : Std.U128) (i : Std.Usize) :
@@ -1689,7 +1732,7 @@ def valueset.any_less_uuid_loop.body
   else ok (done false)
 
 /-- [kanidm_kernel::valueset::any_less_uuid]: loop 0:
-    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 135:4-142:1 -/
+    Source: 'prove/ports/kanidm/kernel/src/valueset.rs', lines 135:4-142:1 -/
 @[rust_loop]
 def valueset.any_less_uuid_loop
   (set : Slice Std.U128) (u : Std.U128) (i : Std.Usize) : Result Bool := do
@@ -1698,14 +1741,14 @@ def valueset.any_less_uuid_loop
     i
 
 /-- [kanidm_kernel::valueset::any_less_uuid]:
-    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 133:0-142:1 -/
+    Source: 'prove/ports/kanidm/kernel/src/valueset.rs', lines 133:0-142:1 -/
 @[reducible]
 def valueset.any_less_uuid
   (set : Slice Std.U128) (u : Std.U128) : Result Bool := do
   valueset.any_less_uuid_loop set u 0#usize
 
 /-- [kanidm_kernel::valueset::vs_lessthan]:
-    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 268:0-284:1
+    Source: 'prove/ports/kanidm/kernel/src/valueset.rs', lines 268:0-284:1
     Visibility: public -/
 def valueset.vs_lessthan
   (vs : ValueSet) (pv : PartialValue) : Result Bool := do
@@ -1746,7 +1789,7 @@ def valueset.vs_lessthan
   | ValueSet.OauthScopeMap _ => ok false
 
 /-- [kanidm_kernel::entry_impl::attribute_lessthan]:
-    Source: 'ports/kanidm/kernel/src/entry_impl.rs', lines 122:0-127:1
+    Source: 'prove/ports/kanidm/kernel/src/entry_impl.rs', lines 122:0-127:1
     Visibility: public -/
 def entry_impl.attribute_lessthan
   (e : Entry) (attr : Slice Std.U8) (subvalue : PartialValue) :
@@ -1758,7 +1801,7 @@ def entry_impl.attribute_lessthan
   | some vset => valueset.vs_lessthan vset subvalue
 
 /-- [kanidm_kernel::valueset::to_lowercase]: loop body 0:
-    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 55:4-63:5
+    Source: 'prove/ports/kanidm/kernel/src/valueset.rs', lines 55:4-63:5
     Visibility: public -/
 @[rust_loop_body]
 def valueset.to_lowercase_loop.body
@@ -1784,7 +1827,7 @@ def valueset.to_lowercase_loop.body
   else ok (done out)
 
 /-- [kanidm_kernel::valueset::to_lowercase]: loop 0:
-    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 55:4-63:5
+    Source: 'prove/ports/kanidm/kernel/src/valueset.rs', lines 55:4-63:5
     Visibility: public -/
 @[rust_loop]
 def valueset.to_lowercase_loop
@@ -1796,7 +1839,7 @@ def valueset.to_lowercase_loop
     (out, i)
 
 /-- [kanidm_kernel::valueset::to_lowercase]:
-    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 52:0-65:1
+    Source: 'prove/ports/kanidm/kernel/src/valueset.rs', lines 52:0-65:1
     Visibility: public -/
 @[reducible]
 def valueset.to_lowercase
@@ -1804,7 +1847,7 @@ def valueset.to_lowercase
   valueset.to_lowercase_loop s (alloc.vec.Vec.new Std.U8) 0#usize
 
 /-- [kanidm_kernel::valueset::starts_at]: loop body 0:
-    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 26:4-33:1 -/
+    Source: 'prove/ports/kanidm/kernel/src/valueset.rs', lines 26:4-33:1 -/
 @[rust_loop_body]
 def valueset.starts_at_loop.body
   (hay : Slice Std.U8) («at» : Std.Usize) (needle : Slice Std.U8)
@@ -1824,7 +1867,7 @@ def valueset.starts_at_loop.body
   else ok (done true)
 
 /-- [kanidm_kernel::valueset::starts_at]: loop 0:
-    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 26:4-33:1 -/
+    Source: 'prove/ports/kanidm/kernel/src/valueset.rs', lines 26:4-33:1 -/
 @[rust_loop]
 def valueset.starts_at_loop
   (hay : Slice Std.U8) («at» : Std.Usize) (needle : Slice Std.U8)
@@ -1836,7 +1879,7 @@ def valueset.starts_at_loop
     j
 
 /-- [kanidm_kernel::valueset::starts_at]:
-    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 24:0-33:1 -/
+    Source: 'prove/ports/kanidm/kernel/src/valueset.rs', lines 24:0-33:1 -/
 @[reducible]
 def valueset.starts_at
   (hay : Slice Std.U8) («at» : Std.Usize) (needle : Slice Std.U8) :
@@ -1845,7 +1888,7 @@ def valueset.starts_at
   valueset.starts_at_loop hay «at» needle 0#usize
 
 /-- [kanidm_kernel::valueset::str_ends_with]:
-    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 44:0-49:1
+    Source: 'prove/ports/kanidm/kernel/src/valueset.rs', lines 44:0-49:1
     Visibility: public -/
 def valueset.str_ends_with
   (hay : Slice Std.U8) (needle : Slice Std.U8) : Result Bool := do
@@ -1860,7 +1903,7 @@ def valueset.str_ends_with
     valueset.starts_at hay i4 needle
 
 /-- [kanidm_kernel::valueset::any_ends_with_lower]: loop body 0:
-    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 124:4-131:1 -/
+    Source: 'prove/ports/kanidm/kernel/src/valueset.rs', lines 124:4-131:1 -/
 @[rust_loop_body]
 def valueset.any_ends_with_lower_loop.body
   (set : Slice (alloc.vec.Vec Std.U8)) (s2_lower : Slice Std.U8)
@@ -1882,7 +1925,7 @@ def valueset.any_ends_with_lower_loop.body
   else ok (done false)
 
 /-- [kanidm_kernel::valueset::any_ends_with_lower]: loop 0:
-    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 124:4-131:1 -/
+    Source: 'prove/ports/kanidm/kernel/src/valueset.rs', lines 124:4-131:1 -/
 @[rust_loop]
 def valueset.any_ends_with_lower_loop
   (set : Slice (alloc.vec.Vec Std.U8)) (s2_lower : Slice Std.U8)
@@ -1894,7 +1937,7 @@ def valueset.any_ends_with_lower_loop
     i
 
 /-- [kanidm_kernel::valueset::any_ends_with_lower]:
-    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 122:0-131:1 -/
+    Source: 'prove/ports/kanidm/kernel/src/valueset.rs', lines 122:0-131:1 -/
 @[reducible]
 def valueset.any_ends_with_lower
   (set : Slice (alloc.vec.Vec Std.U8)) (s2_lower : Slice Std.U8) :
@@ -1903,7 +1946,7 @@ def valueset.any_ends_with_lower
   valueset.any_ends_with_lower_loop set s2_lower 0#usize
 
 /-- [kanidm_kernel::valueset::any_ends_with]: loop body 0:
-    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 91:4-98:1 -/
+    Source: 'prove/ports/kanidm/kernel/src/valueset.rs', lines 91:4-98:1 -/
 @[rust_loop_body]
 def valueset.any_ends_with_loop.body
   (set : Slice (alloc.vec.Vec Std.U8)) (s2 : Slice Std.U8) (i : Std.Usize) :
@@ -1922,7 +1965,7 @@ def valueset.any_ends_with_loop.body
   else ok (done false)
 
 /-- [kanidm_kernel::valueset::any_ends_with]: loop 0:
-    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 91:4-98:1 -/
+    Source: 'prove/ports/kanidm/kernel/src/valueset.rs', lines 91:4-98:1 -/
 @[rust_loop]
 def valueset.any_ends_with_loop
   (set : Slice (alloc.vec.Vec Std.U8)) (s2 : Slice Std.U8) (i : Std.Usize) :
@@ -1933,14 +1976,14 @@ def valueset.any_ends_with_loop
     i
 
 /-- [kanidm_kernel::valueset::any_ends_with]:
-    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 89:0-98:1 -/
+    Source: 'prove/ports/kanidm/kernel/src/valueset.rs', lines 89:0-98:1 -/
 @[reducible]
 def valueset.any_ends_with
   (set : Slice (alloc.vec.Vec Std.U8)) (s2 : Slice Std.U8) : Result Bool := do
   valueset.any_ends_with_loop set s2 0#usize
 
 /-- [kanidm_kernel::valueset::vs_endswith]:
-    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 246:0-265:1
+    Source: 'prove/ports/kanidm/kernel/src/valueset.rs', lines 246:0-265:1
     Visibility: public -/
 def valueset.vs_endswith
   (vs : ValueSet) (pv : PartialValue) : Result Bool := do
@@ -1986,7 +2029,7 @@ def valueset.vs_endswith
   | ValueSet.OauthScopeMap _ => ok false
 
 /-- [kanidm_kernel::entry_impl::attribute_endswith]:
-    Source: 'ports/kanidm/kernel/src/entry_impl.rs', lines 114:0-119:1
+    Source: 'prove/ports/kanidm/kernel/src/entry_impl.rs', lines 114:0-119:1
     Visibility: public -/
 def entry_impl.attribute_endswith
   (e : Entry) (attr : Slice Std.U8) (subvalue : PartialValue) :
@@ -1998,7 +2041,7 @@ def entry_impl.attribute_endswith
   | some vset => valueset.vs_endswith vset subvalue
 
 /-- [kanidm_kernel::valueset::str_starts_with]:
-    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 36:0-41:1
+    Source: 'prove/ports/kanidm/kernel/src/valueset.rs', lines 36:0-41:1
     Visibility: public -/
 def valueset.str_starts_with
   (hay : Slice Std.U8) (needle : Slice Std.U8) : Result Bool := do
@@ -2009,7 +2052,7 @@ def valueset.str_starts_with
   else valueset.starts_at hay 0#usize needle
 
 /-- [kanidm_kernel::valueset::any_starts_with_lower]: loop body 0:
-    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 113:4-120:1 -/
+    Source: 'prove/ports/kanidm/kernel/src/valueset.rs', lines 113:4-120:1 -/
 @[rust_loop_body]
 def valueset.any_starts_with_lower_loop.body
   (set : Slice (alloc.vec.Vec Std.U8)) (s2_lower : Slice Std.U8)
@@ -2031,7 +2074,7 @@ def valueset.any_starts_with_lower_loop.body
   else ok (done false)
 
 /-- [kanidm_kernel::valueset::any_starts_with_lower]: loop 0:
-    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 113:4-120:1 -/
+    Source: 'prove/ports/kanidm/kernel/src/valueset.rs', lines 113:4-120:1 -/
 @[rust_loop]
 def valueset.any_starts_with_lower_loop
   (set : Slice (alloc.vec.Vec Std.U8)) (s2_lower : Slice Std.U8)
@@ -2043,7 +2086,7 @@ def valueset.any_starts_with_lower_loop
     i
 
 /-- [kanidm_kernel::valueset::any_starts_with_lower]:
-    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 111:0-120:1 -/
+    Source: 'prove/ports/kanidm/kernel/src/valueset.rs', lines 111:0-120:1 -/
 @[reducible]
 def valueset.any_starts_with_lower
   (set : Slice (alloc.vec.Vec Std.U8)) (s2_lower : Slice Std.U8) :
@@ -2052,7 +2095,7 @@ def valueset.any_starts_with_lower
   valueset.any_starts_with_lower_loop set s2_lower 0#usize
 
 /-- [kanidm_kernel::valueset::any_starts_with]: loop body 0:
-    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 80:4-87:1 -/
+    Source: 'prove/ports/kanidm/kernel/src/valueset.rs', lines 80:4-87:1 -/
 @[rust_loop_body]
 def valueset.any_starts_with_loop.body
   (set : Slice (alloc.vec.Vec Std.U8)) (s2 : Slice Std.U8) (i : Std.Usize) :
@@ -2071,7 +2114,7 @@ def valueset.any_starts_with_loop.body
   else ok (done false)
 
 /-- [kanidm_kernel::valueset::any_starts_with]: loop 0:
-    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 80:4-87:1 -/
+    Source: 'prove/ports/kanidm/kernel/src/valueset.rs', lines 80:4-87:1 -/
 @[rust_loop]
 def valueset.any_starts_with_loop
   (set : Slice (alloc.vec.Vec Std.U8)) (s2 : Slice Std.U8) (i : Std.Usize) :
@@ -2082,14 +2125,14 @@ def valueset.any_starts_with_loop
     i
 
 /-- [kanidm_kernel::valueset::any_starts_with]:
-    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 78:0-87:1 -/
+    Source: 'prove/ports/kanidm/kernel/src/valueset.rs', lines 78:0-87:1 -/
 @[reducible]
 def valueset.any_starts_with
   (set : Slice (alloc.vec.Vec Std.U8)) (s2 : Slice Std.U8) : Result Bool := do
   valueset.any_starts_with_loop set s2 0#usize
 
 /-- [kanidm_kernel::valueset::vs_startswith]:
-    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 224:0-243:1
+    Source: 'prove/ports/kanidm/kernel/src/valueset.rs', lines 224:0-243:1
     Visibility: public -/
 def valueset.vs_startswith
   (vs : ValueSet) (pv : PartialValue) : Result Bool := do
@@ -2135,7 +2178,7 @@ def valueset.vs_startswith
   | ValueSet.OauthScopeMap _ => ok false
 
 /-- [kanidm_kernel::entry_impl::attribute_startswith]:
-    Source: 'ports/kanidm/kernel/src/entry_impl.rs', lines 106:0-111:1
+    Source: 'prove/ports/kanidm/kernel/src/entry_impl.rs', lines 106:0-111:1
     Visibility: public -/
 def entry_impl.attribute_startswith
   (e : Entry) (attr : Slice Std.U8) (subvalue : PartialValue) :
@@ -2147,7 +2190,7 @@ def entry_impl.attribute_startswith
   | some vset => valueset.vs_startswith vset subvalue
 
 /-- [kanidm_kernel::valueset::str_contains]: loop body 0:
-    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 15:4-22:1
+    Source: 'prove/ports/kanidm/kernel/src/valueset.rs', lines 15:4-22:1
     Visibility: public -/
 @[rust_loop_body]
 def valueset.str_contains_loop.body
@@ -2165,7 +2208,7 @@ def valueset.str_contains_loop.body
   else ok (done false)
 
 /-- [kanidm_kernel::valueset::str_contains]: loop 0:
-    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 15:4-22:1
+    Source: 'prove/ports/kanidm/kernel/src/valueset.rs', lines 15:4-22:1
     Visibility: public -/
 @[rust_loop]
 def valueset.str_contains_loop
@@ -2178,7 +2221,7 @@ def valueset.str_contains_loop
     i
 
 /-- [kanidm_kernel::valueset::str_contains]:
-    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 9:0-22:1
+    Source: 'prove/ports/kanidm/kernel/src/valueset.rs', lines 9:0-22:1
     Visibility: public -/
 def valueset.str_contains
   (hay : Slice Std.U8) (needle : Slice Std.U8) : Result Bool := do
@@ -2193,7 +2236,7 @@ def valueset.str_contains
     valueset.str_contains_loop hay needle last 0#usize
 
 /-- [kanidm_kernel::valueset::any_contains_lower]: loop body 0:
-    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 102:4-109:1 -/
+    Source: 'prove/ports/kanidm/kernel/src/valueset.rs', lines 102:4-109:1 -/
 @[rust_loop_body]
 def valueset.any_contains_lower_loop.body
   (set : Slice (alloc.vec.Vec Std.U8)) (s2_lower : Slice Std.U8)
@@ -2215,7 +2258,7 @@ def valueset.any_contains_lower_loop.body
   else ok (done false)
 
 /-- [kanidm_kernel::valueset::any_contains_lower]: loop 0:
-    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 102:4-109:1 -/
+    Source: 'prove/ports/kanidm/kernel/src/valueset.rs', lines 102:4-109:1 -/
 @[rust_loop]
 def valueset.any_contains_lower_loop
   (set : Slice (alloc.vec.Vec Std.U8)) (s2_lower : Slice Std.U8)
@@ -2227,7 +2270,7 @@ def valueset.any_contains_lower_loop
     i
 
 /-- [kanidm_kernel::valueset::any_contains_lower]:
-    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 100:0-109:1 -/
+    Source: 'prove/ports/kanidm/kernel/src/valueset.rs', lines 100:0-109:1 -/
 @[reducible]
 def valueset.any_contains_lower
   (set : Slice (alloc.vec.Vec Std.U8)) (s2_lower : Slice Std.U8) :
@@ -2236,7 +2279,7 @@ def valueset.any_contains_lower
   valueset.any_contains_lower_loop set s2_lower 0#usize
 
 /-- [kanidm_kernel::valueset::any_contains]: loop body 0:
-    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 69:4-76:1 -/
+    Source: 'prove/ports/kanidm/kernel/src/valueset.rs', lines 69:4-76:1 -/
 @[rust_loop_body]
 def valueset.any_contains_loop.body
   (set : Slice (alloc.vec.Vec Std.U8)) (s2 : Slice Std.U8) (i : Std.Usize) :
@@ -2255,7 +2298,7 @@ def valueset.any_contains_loop.body
   else ok (done false)
 
 /-- [kanidm_kernel::valueset::any_contains]: loop 0:
-    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 69:4-76:1 -/
+    Source: 'prove/ports/kanidm/kernel/src/valueset.rs', lines 69:4-76:1 -/
 @[rust_loop]
 def valueset.any_contains_loop
   (set : Slice (alloc.vec.Vec Std.U8)) (s2 : Slice Std.U8) (i : Std.Usize) :
@@ -2266,14 +2309,14 @@ def valueset.any_contains_loop
     i
 
 /-- [kanidm_kernel::valueset::any_contains]:
-    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 67:0-76:1 -/
+    Source: 'prove/ports/kanidm/kernel/src/valueset.rs', lines 67:0-76:1 -/
 @[reducible]
 def valueset.any_contains
   (set : Slice (alloc.vec.Vec Std.U8)) (s2 : Slice Std.U8) : Result Bool := do
   valueset.any_contains_loop set s2 0#usize
 
 /-- [kanidm_kernel::valueset::vs_substring]:
-    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 202:0-221:1
+    Source: 'prove/ports/kanidm/kernel/src/valueset.rs', lines 202:0-221:1
     Visibility: public -/
 def valueset.vs_substring
   (vs : ValueSet) (pv : PartialValue) : Result Bool := do
@@ -2319,7 +2362,7 @@ def valueset.vs_substring
   | ValueSet.OauthScopeMap _ => ok false
 
 /-- [kanidm_kernel::entry_impl::attribute_substring]:
-    Source: 'ports/kanidm/kernel/src/entry_impl.rs', lines 98:0-103:1
+    Source: 'prove/ports/kanidm/kernel/src/entry_impl.rs', lines 98:0-103:1
     Visibility: public -/
 def entry_impl.attribute_substring
   (e : Entry) (attr : Slice Std.U8) (subvalue : PartialValue) :
@@ -2331,7 +2374,7 @@ def entry_impl.attribute_substring
   | some vset => valueset.vs_substring vset subvalue
 
 /-- [kanidm_kernel::valueset::contains_u32]: loop body 0:
-    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 157:4-164:1 -/
+    Source: 'prove/ports/kanidm/kernel/src/valueset.rs', lines 157:4-164:1 -/
 @[rust_loop_body]
 def valueset.contains_u32_loop.body
   (set : Slice Std.U32) (u : Std.U32) (i : Std.Usize) :
@@ -2348,7 +2391,7 @@ def valueset.contains_u32_loop.body
   else ok (done false)
 
 /-- [kanidm_kernel::valueset::contains_u32]: loop 0:
-    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 157:4-164:1 -/
+    Source: 'prove/ports/kanidm/kernel/src/valueset.rs', lines 157:4-164:1 -/
 @[rust_loop]
 def valueset.contains_u32_loop
   (set : Slice Std.U32) (u : Std.U32) (i : Std.Usize) : Result Bool := do
@@ -2357,14 +2400,14 @@ def valueset.contains_u32_loop
     i
 
 /-- [kanidm_kernel::valueset::contains_u32]:
-    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 155:0-164:1 -/
+    Source: 'prove/ports/kanidm/kernel/src/valueset.rs', lines 155:0-164:1 -/
 @[reducible]
 def valueset.contains_u32
   (set : Slice Std.U32) (u : Std.U32) : Result Bool := do
   valueset.contains_u32_loop set u 0#usize
 
 /-- [kanidm_kernel::valueset::vs_contains]:
-    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 167:0-199:1
+    Source: 'prove/ports/kanidm/kernel/src/valueset.rs', lines 167:0-199:1
     Visibility: public -/
 def valueset.vs_contains
   (vs : ValueSet) (pv : PartialValue) : Result Bool := do
@@ -2444,7 +2487,7 @@ def valueset.vs_contains
     | PartialValue.Uint32 _ => ok false
 
 /-- [kanidm_kernel::entry_impl::attribute_equality]:
-    Source: 'ports/kanidm/kernel/src/entry_impl.rs', lines 90:0-95:1
+    Source: 'prove/ports/kanidm/kernel/src/entry_impl.rs', lines 90:0-95:1
     Visibility: public -/
 def entry_impl.attribute_equality
   (e : Entry) (attr : Slice Std.U8) (value : PartialValue) : Result Bool := do
@@ -2454,7 +2497,7 @@ def entry_impl.attribute_equality
   | some v_list => valueset.vs_contains v_list value
 
 /-- [kanidm_kernel::entry_impl::attribute_pres]:
-    Source: 'ports/kanidm/kernel/src/entry_impl.rs', lines 82:0-87:1
+    Source: 'prove/ports/kanidm/kernel/src/entry_impl.rs', lines 82:0-87:1
     Visibility: public -/
 def entry_impl.attribute_pres
   (e : Entry) (attr : Slice Std.U8) : Result Bool := do
@@ -2466,7 +2509,7 @@ def entry_impl.attribute_pres
 mutual
 
 /-- [kanidm_kernel::entry_impl::entry_match_no_index_inner]:
-    Source: 'ports/kanidm/kernel/src/entry_impl.rs', lines 135:0-151:1
+    Source: 'prove/ports/kanidm/kernel/src/entry_impl.rs', lines 135:0-151:1
     Visibility: public -/
 def entry_impl.entry_match_no_index_inner
   (e : Entry) (filter : FilterResolved) : Result Bool := do
@@ -2499,7 +2542,7 @@ def entry_impl.entry_match_no_index_inner
 partial_fixpoint
 
 /-- [kanidm_kernel::entry_impl::match_any]:
-    Source: 'ports/kanidm/kernel/src/entry_impl.rs', lines 154:0-162:1
+    Source: 'prove/ports/kanidm/kernel/src/entry_impl.rs', lines 154:0-162:1
     Visibility: public -/
 def entry_impl.match_any
   (e : Entry) (l : alloc.vec.Vec FilterResolved) (i : Std.Usize) :
@@ -2520,7 +2563,7 @@ def entry_impl.match_any
 partial_fixpoint
 
 /-- [kanidm_kernel::entry_impl::match_all]:
-    Source: 'ports/kanidm/kernel/src/entry_impl.rs', lines 165:0-173:1
+    Source: 'prove/ports/kanidm/kernel/src/entry_impl.rs', lines 165:0-173:1
     Visibility: public -/
 def entry_impl.match_all
   (e : Entry) (l : alloc.vec.Vec FilterResolved) (i : Std.Usize) :
@@ -2543,14 +2586,14 @@ partial_fixpoint
 end
 
 /-- [kanidm_kernel::entry_impl::entry_match_no_index]:
-    Source: 'ports/kanidm/kernel/src/entry_impl.rs', lines 130:0-132:1
+    Source: 'prove/ports/kanidm/kernel/src/entry_impl.rs', lines 130:0-132:1
     Visibility: public -/
 def entry_impl.entry_match_no_index
   (e : Entry) (filter : FilterResolved) : Result Bool := do
   entry_impl.entry_match_no_index_inner e filter
 
 /-- [kanidm_kernel::search_acc::target_applies]:
-    Source: 'ports/kanidm/kernel/src/search_acc.rs', lines 111:0-115:1
+    Source: 'prove/ports/kanidm/kernel/src/search_acc.rs', lines 111:0-115:1
     Visibility: public -/
 def search_acc.target_applies
   (target_condition : profiles.AccessControlTargetCondition) (entry : Entry) :
@@ -2560,7 +2603,7 @@ def search_acc.target_applies
   entry_impl.entry_match_no_index entry f_res
 
 /-- [kanidm_kernel::search_acc::receiver_applies]:
-    Source: 'ports/kanidm/kernel/src/search_acc.rs', lines 73:0-94:1
+    Source: 'prove/ports/kanidm/kernel/src/search_acc.rs', lines 73:0-94:1
     Visibility: public -/
 def search_acc.receiver_applies
   (receiver_condition : profiles.AccessControlReceiverCondition)
@@ -2595,7 +2638,7 @@ def search_acc.receiver_applies
       else ok user_check
 
 /-- [kanidm_kernel::search_acc::acp_applies]:
-    Source: 'ports/kanidm/kernel/src/search_acc.rs', lines 97:0-108:1
+    Source: 'prove/ports/kanidm/kernel/src/search_acc.rs', lines 97:0-108:1
     Visibility: public -/
 def search_acc.acp_applies
   (receiver_condition : profiles.AccessControlReceiverCondition)
@@ -2612,7 +2655,7 @@ def search_acc.acp_applies
   else ok false
 
 /-- [kanidm_kernel::search_acc::search_allowed_attrs]: loop body 0:
-    Source: 'ports/kanidm/kernel/src/search_acc.rs', lines 174:4-180:5
+    Source: 'prove/ports/kanidm/kernel/src/search_acc.rs', lines 174:4-180:5
     Visibility: public -/
 @[rust_loop_body]
 def search_acc.search_allowed_attrs_loop.body
@@ -2637,7 +2680,7 @@ def search_acc.search_allowed_attrs_loop.body
   else ok (done allowed_attrs)
 
 /-- [kanidm_kernel::search_acc::search_allowed_attrs]: loop 0:
-    Source: 'ports/kanidm/kernel/src/search_acc.rs', lines 174:4-180:5
+    Source: 'prove/ports/kanidm/kernel/src/search_acc.rs', lines 174:4-180:5
     Visibility: public -/
 @[rust_loop]
 def search_acc.search_allowed_attrs_loop
@@ -2653,7 +2696,7 @@ def search_acc.search_allowed_attrs_loop
     (allowed_attrs, i)
 
 /-- [kanidm_kernel::search_acc::search_allowed_attrs]:
-    Source: 'ports/kanidm/kernel/src/search_acc.rs', lines 166:0-182:1
+    Source: 'prove/ports/kanidm/kernel/src/search_acc.rs', lines 166:0-182:1
     Visibility: public -/
 @[reducible]
 def search_acc.search_allowed_attrs
@@ -2666,13 +2709,13 @@ def search_acc.search_allowed_attrs
     entry (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) 0#usize
 
 /-- [kanidm_kernel::identity_impl::access_scope]:
-    Source: 'ports/kanidm/kernel/src/identity_impl.rs', lines 19:0-21:1
+    Source: 'prove/ports/kanidm/kernel/src/identity_impl.rs', lines 19:0-21:1
     Visibility: public -/
 def identity_impl.access_scope (ident : Identity) : Result AccessScope := do
   ok ident.scope
 
 /-- [kanidm_kernel::search_acc::search_filter_entry]:
-    Source: 'ports/kanidm/kernel/src/search_acc.rs', lines 118:0-163:1
+    Source: 'prove/ports/kanidm/kernel/src/search_acc.rs', lines 118:0-163:1
     Visibility: public -/
 def search_acc.search_filter_entry
   (ident : Identity) (related_acp : Slice profiles.AccessControlSearchResolved)
@@ -2720,7 +2763,7 @@ def search_acc.search_filter_entry
     | InternalRole.MessageQueue => ok AccessSrchResult.Deny
 
 /-- [kanidm_kernel::search_acc::SearchResult]
-    Source: 'ports/kanidm/kernel/src/search_acc.rs', lines 14:0-18:1
+    Source: 'prove/ports/kanidm/kernel/src/search_acc.rs', lines 14:0-18:1
     Visibility: public -/
 @[discriminant isize]
 inductive search_acc.SearchResult where
@@ -2729,7 +2772,7 @@ inductive search_acc.SearchResult where
 | Allow : alloc.vec.Vec (alloc.vec.Vec Std.U8) → search_acc.SearchResult
 
 /-- [kanidm_kernel::bset::intersection]: loop body 0:
-    Source: 'ports/kanidm/kernel/src/bset.rs', lines 75:4-81:5
+    Source: 'prove/ports/kanidm/kernel/src/bset.rs', lines 75:4-81:5
     Visibility: public -/
 @[rust_loop_body]
 def bset.intersection_loop.body
@@ -2755,7 +2798,7 @@ def bset.intersection_loop.body
   else ok (done out)
 
 /-- [kanidm_kernel::bset::intersection]: loop 0:
-    Source: 'ports/kanidm/kernel/src/bset.rs', lines 75:4-81:5
+    Source: 'prove/ports/kanidm/kernel/src/bset.rs', lines 75:4-81:5
     Visibility: public -/
 @[rust_loop]
 def bset.intersection_loop
@@ -2768,7 +2811,7 @@ def bset.intersection_loop
     (out, i)
 
 /-- [kanidm_kernel::bset::intersection]:
-    Source: 'ports/kanidm/kernel/src/bset.rs', lines 72:0-83:1
+    Source: 'prove/ports/kanidm/kernel/src/bset.rs', lines 72:0-83:1
     Visibility: public -/
 @[reducible]
 def bset.intersection
@@ -2778,7 +2821,7 @@ def bset.intersection
   bset.intersection_loop a b (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) 0#usize
 
 /-- [kanidm_kernel::search_acc::apply_search_access]:
-    Source: 'ports/kanidm/kernel/src/search_acc.rs', lines 21:0-68:1
+    Source: 'prove/ports/kanidm/kernel/src/search_acc.rs', lines 21:0-68:1
     Visibility: public -/
 def search_acc.apply_search_access
   (ident : Identity) (related_acp : Slice profiles.AccessControlSearchResolved)
@@ -2848,7 +2891,7 @@ def search_acc.apply_search_access
       else ok (search_acc.SearchResult.Allow allow3)
 
 /-- [kanidm_kernel::{impl core::clone::Clone for kanidm_kernel::ValueSet}::clone]:
-    Source: 'ports/kanidm/kernel/src/lib.rs', lines 57:9-57:14
+    Source: 'prove/ports/kanidm/kernel/src/lib.rs', lines 58:9-58:14
     Visibility: public -/
 def ValueSet.Insts.CoreCloneClone.clone
   (self : ValueSet) : Result ValueSet := do
@@ -2882,7 +2925,7 @@ def ValueSet.Insts.CoreCloneClone.clone
     ok (ValueSet.OauthScopeMap v)
 
 /-- [kanidm_kernel::{impl core::clone::Clone for kanidm_kernel::Ava}::clone]:
-    Source: 'ports/kanidm/kernel/src/lib.rs', lines 69:9-69:14
+    Source: 'prove/ports/kanidm/kernel/src/lib.rs', lines 70:9-70:14
     Visibility: public -/
 def Ava.Insts.CoreCloneClone.clone (self : Ava) : Result Ava := do
   let v ← alloc.vec.CloneVec.clone core.clone.CloneU8 self.attr
@@ -2890,14 +2933,14 @@ def Ava.Insts.CoreCloneClone.clone (self : Ava) : Result Ava := do
   ok { attr := v, vs }
 
 /-- Trait implementation: [kanidm_kernel::{impl core::clone::Clone for kanidm_kernel::Ava}]
-    Source: 'ports/kanidm/kernel/src/lib.rs', lines 69:9-69:14 -/
+    Source: 'prove/ports/kanidm/kernel/src/lib.rs', lines 70:9-70:14 -/
 @[reducible]
 def Ava.Insts.CoreCloneClone : core.clone.Clone Ava := {
   clone := Ava.Insts.CoreCloneClone.clone
 }
 
 /-- [kanidm_kernel::{impl core::clone::Clone for kanidm_kernel::Entry}::clone]:
-    Source: 'ports/kanidm/kernel/src/lib.rs', lines 78:9-78:14
+    Source: 'prove/ports/kanidm/kernel/src/lib.rs', lines 79:9-79:14
     Visibility: public -/
 def Entry.Insts.CoreCloneClone.clone (self : Entry) : Result Entry := do
   let i ← lift (core.clone.impls.CloneU128.clone self.uuid)
@@ -2905,7 +2948,7 @@ def Entry.Insts.CoreCloneClone.clone (self : Entry) : Result Entry := do
   ok { uuid := i, attrs := v }
 
 /-- [kanidm_kernel::bset::is_subset]: loop body 0:
-    Source: 'ports/kanidm/kernel/src/bset.rs', lines 50:4-57:1
+    Source: 'prove/ports/kanidm/kernel/src/bset.rs', lines 50:4-57:1
     Visibility: public -/
 @[rust_loop_body]
 def bset.is_subset_loop.body
@@ -2926,7 +2969,7 @@ def bset.is_subset_loop.body
   else ok (done true)
 
 /-- [kanidm_kernel::bset::is_subset]: loop 0:
-    Source: 'ports/kanidm/kernel/src/bset.rs', lines 50:4-57:1
+    Source: 'prove/ports/kanidm/kernel/src/bset.rs', lines 50:4-57:1
     Visibility: public -/
 @[rust_loop]
 def bset.is_subset_loop
@@ -2939,7 +2982,7 @@ def bset.is_subset_loop
     i
 
 /-- [kanidm_kernel::bset::is_subset]:
-    Source: 'ports/kanidm/kernel/src/bset.rs', lines 48:0-57:1
+    Source: 'prove/ports/kanidm/kernel/src/bset.rs', lines 48:0-57:1
     Visibility: public -/
 @[reducible]
 def bset.is_subset
@@ -2949,7 +2992,7 @@ def bset.is_subset
   bset.is_subset_loop a b 0#usize
 
 /-- [kanidm_kernel::access::filter_entries_loop]: loop body 0:
-    Source: 'ports/kanidm/kernel/src/access.rs', lines 128:4-140:5
+    Source: 'prove/ports/kanidm/kernel/src/access.rs', lines 128:4-140:5
     Visibility: public -/
 @[rust_loop_body]
 def access.filter_entries_loop_loop.body
@@ -2981,7 +3024,7 @@ def access.filter_entries_loop_loop.body
   else ok (done allowed_entries)
 
 /-- [kanidm_kernel::access::filter_entries_loop]: loop 0:
-    Source: 'ports/kanidm/kernel/src/access.rs', lines 128:4-140:5
+    Source: 'prove/ports/kanidm/kernel/src/access.rs', lines 128:4-140:5
     Visibility: public -/
 @[rust_loop]
 def access.filter_entries_loop_loop
@@ -2996,7 +3039,7 @@ def access.filter_entries_loop_loop
     (allowed_entries, i)
 
 /-- [kanidm_kernel::access::filter_entries_loop]:
-    Source: 'ports/kanidm/kernel/src/access.rs', lines 120:0-142:1
+    Source: 'prove/ports/kanidm/kernel/src/access.rs', lines 120:0-142:1
     Visibility: public -/
 @[reducible]
 def access.filter_entries_loop
@@ -3008,7 +3051,7 @@ def access.filter_entries_loop
     (alloc.vec.Vec.new Entry) 0#usize
 
 /-- [kanidm_kernel::access::filter_entries]:
-    Source: 'ports/kanidm/kernel/src/access.rs', lines 98:0-117:1
+    Source: 'prove/ports/kanidm/kernel/src/access.rs', lines 98:0-117:1
     Visibility: public -/
 def access.filter_entries
   (ctl : AccessControlsInner) (ident : Identity) (filter_orig : FilterComp)
@@ -3027,7 +3070,7 @@ def access.filter_entries
     ok (core.result.Result.Ok v)
 
 /-- [kanidm_kernel::SearchEvent]
-    Source: 'ports/kanidm/kernel/src/lib.rs', lines 261:0-266:1
+    Source: 'prove/ports/kanidm/kernel/src/lib.rs', lines 262:0-267:1
     Visibility: public -/
 structure SearchEvent where
   ident : Identity
@@ -3036,7 +3079,7 @@ structure SearchEvent where
   effective_access_check : Bool
 
 /-- [kanidm_kernel::access::search_filter_entries]:
-    Source: 'ports/kanidm/kernel/src/access.rs', lines 145:0-151:1
+    Source: 'prove/ports/kanidm/kernel/src/access.rs', lines 145:0-151:1
     Visibility: public -/
 def access.search_filter_entries
   (ctl : AccessControlsInner) (se : SearchEvent) (entries : Slice Entry) :
@@ -3045,7 +3088,7 @@ def access.search_filter_entries
   access.filter_entries ctl se.ident se.filter_orig entries
 
 /-- [kanidm_kernel::profiles::ModifyGrants]
-    Source: 'ports/kanidm/kernel/src/profiles.rs', lines 89:0-94:1
+    Source: 'prove/ports/kanidm/kernel/src/profiles.rs', lines 89:0-94:1
     Visibility: public -/
 structure profiles.ModifyGrants where
   presattrs : alloc.vec.Vec (alloc.vec.Vec Std.U8)
@@ -3054,7 +3097,7 @@ structure profiles.ModifyGrants where
   rem_classes : alloc.vec.Vec (alloc.vec.Vec Std.U8)
 
 /-- [kanidm_kernel::profiles::AccessControlModifyResolved]
-    Source: 'ports/kanidm/kernel/src/profiles.rs', lines 97:0-101:1
+    Source: 'prove/ports/kanidm/kernel/src/profiles.rs', lines 97:0-101:1
     Visibility: public -/
 structure profiles.AccessControlModifyResolved where
   acp : profiles.ModifyGrants
@@ -3062,14 +3105,14 @@ structure profiles.AccessControlModifyResolved where
   target_condition : profiles.AccessControlTargetCondition
 
 /-- [kanidm_kernel::profiles::AccessControlDeleteResolved]
-    Source: 'ports/kanidm/kernel/src/profiles.rs', lines 57:0-60:1
+    Source: 'prove/ports/kanidm/kernel/src/profiles.rs', lines 57:0-60:1
     Visibility: public -/
 structure profiles.AccessControlDeleteResolved where
   receiver_condition : profiles.AccessControlReceiverCondition
   target_condition : profiles.AccessControlTargetCondition
 
 /-- [kanidm_kernel::AccessClass]
-    Source: 'ports/kanidm/kernel/src/lib.rs', lines 183:0-187:1
+    Source: 'prove/ports/kanidm/kernel/src/lib.rs', lines 184:0-188:1
     Visibility: public -/
 @[discriminant isize]
 inductive AccessClass where
@@ -3078,7 +3121,7 @@ inductive AccessClass where
 | Allow : alloc.vec.Vec (alloc.vec.Vec Std.U8) → AccessClass
 
 /-- [kanidm_kernel::Access]
-    Source: 'ports/kanidm/kernel/src/lib.rs', lines 175:0-179:1
+    Source: 'prove/ports/kanidm/kernel/src/lib.rs', lines 176:0-180:1
     Visibility: public -/
 @[discriminant isize]
 inductive Access where
@@ -3087,7 +3130,7 @@ inductive Access where
 | Allow : alloc.vec.Vec (alloc.vec.Vec Std.U8) → Access
 
 /-- [kanidm_kernel::AccessEffectivePermission]
-    Source: 'ports/kanidm/kernel/src/lib.rs', lines 191:0-200:1
+    Source: 'prove/ports/kanidm/kernel/src/lib.rs', lines 192:0-201:1
     Visibility: public -/
 structure AccessEffectivePermission where
   ident : Std.U128
@@ -3100,7 +3143,7 @@ structure AccessEffectivePermission where
   modify_rem_class : AccessClass
 
 /-- [kanidm_kernel::EntryReduced]
-    Source: 'ports/kanidm/kernel/src/lib.rs', lines 204:0-208:1
+    Source: 'prove/ports/kanidm/kernel/src/lib.rs', lines 205:0-209:1
     Visibility: public -/
 structure EntryReduced where
   uuid : Std.U128
@@ -3108,7 +3151,7 @@ structure EntryReduced where
   effective_access : Option AccessEffectivePermission
 
 /-- [kanidm_kernel::access::delete_related_acp]: loop body 0:
-    Source: 'ports/kanidm/kernel/src/access.rs', lines 614:4-623:5
+    Source: 'prove/ports/kanidm/kernel/src/access.rs', lines 614:4-623:5
     Visibility: public -/
 @[rust_loop_body]
 def access.delete_related_acp_loop.body
@@ -3142,7 +3185,7 @@ def access.delete_related_acp_loop.body
   else ok (done related_acp)
 
 /-- [kanidm_kernel::access::delete_related_acp]: loop 0:
-    Source: 'ports/kanidm/kernel/src/access.rs', lines 614:4-623:5
+    Source: 'prove/ports/kanidm/kernel/src/access.rs', lines 614:4-623:5
     Visibility: public -/
 @[rust_loop]
 def access.delete_related_acp_loop
@@ -3159,7 +3202,7 @@ def access.delete_related_acp_loop
     (related_acp, i)
 
 /-- [kanidm_kernel::access::delete_related_acp]:
-    Source: 'ports/kanidm/kernel/src/access.rs', lines 608:0-625:1
+    Source: 'prove/ports/kanidm/kernel/src/access.rs', lines 608:0-625:1
     Visibility: public -/
 def access.delete_related_acp
   (ctl : AccessControlsInner) (ident : Identity) :
@@ -3170,7 +3213,7 @@ def access.delete_related_acp
     (alloc.vec.Vec.new profiles.AccessControlDeleteResolved) 0#usize
 
 /-- [kanidm_kernel::access::modify_related_acp]: loop body 0:
-    Source: 'ports/kanidm/kernel/src/access.rs', lines 255:4-273:5
+    Source: 'prove/ports/kanidm/kernel/src/access.rs', lines 255:4-273:5
     Visibility: public -/
 @[rust_loop_body]
 def access.modify_related_acp_loop.body
@@ -3226,7 +3269,7 @@ def access.modify_related_acp_loop.body
   else ok (done related_acp)
 
 /-- [kanidm_kernel::access::modify_related_acp]: loop 0:
-    Source: 'ports/kanidm/kernel/src/access.rs', lines 255:4-273:5
+    Source: 'prove/ports/kanidm/kernel/src/access.rs', lines 255:4-273:5
     Visibility: public -/
 @[rust_loop]
 def access.modify_related_acp_loop
@@ -3243,7 +3286,7 @@ def access.modify_related_acp_loop
     (related_acp, i)
 
 /-- [kanidm_kernel::access::modify_related_acp]:
-    Source: 'ports/kanidm/kernel/src/access.rs', lines 249:0-275:1
+    Source: 'prove/ports/kanidm/kernel/src/access.rs', lines 249:0-275:1
     Visibility: public -/
 def access.modify_related_acp
   (ctl : AccessControlsInner) (ident : Identity) :
@@ -3254,7 +3297,7 @@ def access.modify_related_acp
     (alloc.vec.Vec.new profiles.AccessControlModifyResolved) 0#usize
 
 /-- [kanidm_kernel::entry_impl::reduce_attributes]: loop body 0:
-    Source: 'ports/kanidm/kernel/src/entry_impl.rs', lines 183:4-189:5
+    Source: 'prove/ports/kanidm/kernel/src/entry_impl.rs', lines 183:4-189:5
     Visibility: public -/
 @[rust_loop_body]
 def entry_impl.reduce_attributes_loop.body
@@ -3279,7 +3322,7 @@ def entry_impl.reduce_attributes_loop.body
   else ok (done (e.uuid, f_attrs))
 
 /-- [kanidm_kernel::entry_impl::reduce_attributes]: loop 0:
-    Source: 'ports/kanidm/kernel/src/entry_impl.rs', lines 183:4-189:5
+    Source: 'prove/ports/kanidm/kernel/src/entry_impl.rs', lines 183:4-189:5
     Visibility: public -/
 @[rust_loop]
 def entry_impl.reduce_attributes_loop
@@ -3293,7 +3336,7 @@ def entry_impl.reduce_attributes_loop
     (f_attrs, i)
 
 /-- [kanidm_kernel::entry_impl::reduce_attributes]:
-    Source: 'ports/kanidm/kernel/src/entry_impl.rs', lines 176:0-191:1
+    Source: 'prove/ports/kanidm/kernel/src/entry_impl.rs', lines 176:0-191:1
     Visibility: public -/
 def entry_impl.reduce_attributes
   (e : Entry) (allowed_attrs : Slice (alloc.vec.Vec Std.U8))
@@ -3306,7 +3349,7 @@ def entry_impl.reduce_attributes
   ok { uuid := i, attrs := f_attrs, effective_access }
 
 /-- [kanidm_kernel::protected::protected_mod_rem_entry_classes]:
-    Source: 'ports/kanidm/kernel/src/protected.rs', lines 41:0-49:1
+    Source: 'prove/ports/kanidm/kernel/src/protected.rs', lines 41:0-49:1
     Visibility: public -/
 def protected.protected_mod_rem_entry_classes
   (c : Slice Std.U8) : Result Bool := do
@@ -3375,7 +3418,7 @@ def protected.protected_mod_rem_entry_classes
               bset.bytes_eq c s6
 
 /-- [kanidm_kernel::protected::remove_protected_mod_rem]: loop body 0:
-    Source: 'ports/kanidm/kernel/src/protected.rs', lines 110:4-116:5
+    Source: 'prove/ports/kanidm/kernel/src/protected.rs', lines 110:4-116:5
     Visibility: public -/
 @[rust_loop_body]
 def protected.remove_protected_mod_rem_loop.body
@@ -3399,7 +3442,7 @@ def protected.remove_protected_mod_rem_loop.body
   else ok (done out)
 
 /-- [kanidm_kernel::protected::remove_protected_mod_rem]: loop 0:
-    Source: 'ports/kanidm/kernel/src/protected.rs', lines 110:4-116:5
+    Source: 'prove/ports/kanidm/kernel/src/protected.rs', lines 110:4-116:5
     Visibility: public -/
 @[rust_loop]
 def protected.remove_protected_mod_rem_loop
@@ -3413,7 +3456,7 @@ def protected.remove_protected_mod_rem_loop
     (out, i)
 
 /-- [kanidm_kernel::protected::remove_protected_mod_rem]:
-    Source: 'ports/kanidm/kernel/src/protected.rs', lines 107:0-118:1
+    Source: 'prove/ports/kanidm/kernel/src/protected.rs', lines 107:0-118:1
     Visibility: public -/
 @[reducible]
 def protected.remove_protected_mod_rem
@@ -3424,7 +3467,7 @@ def protected.remove_protected_mod_rem
     Std.U8)) 0#usize
 
 /-- [kanidm_kernel::protected::protected_mod_pres_entry_classes]:
-    Source: 'ports/kanidm/kernel/src/protected.rs', lines 29:0-38:1
+    Source: 'prove/ports/kanidm/kernel/src/protected.rs', lines 29:0-38:1
     Visibility: public -/
 def protected.protected_mod_pres_entry_classes
   (c : Slice Std.U8) : Result Bool := do
@@ -3503,7 +3546,7 @@ def protected.protected_mod_pres_entry_classes
                 bset.bytes_eq c s7
 
 /-- [kanidm_kernel::protected::remove_protected_mod_pres]: loop body 0:
-    Source: 'ports/kanidm/kernel/src/protected.rs', lines 96:4-102:5
+    Source: 'prove/ports/kanidm/kernel/src/protected.rs', lines 96:4-102:5
     Visibility: public -/
 @[rust_loop_body]
 def protected.remove_protected_mod_pres_loop.body
@@ -3527,7 +3570,7 @@ def protected.remove_protected_mod_pres_loop.body
   else ok (done out)
 
 /-- [kanidm_kernel::protected::remove_protected_mod_pres]: loop 0:
-    Source: 'ports/kanidm/kernel/src/protected.rs', lines 96:4-102:5
+    Source: 'prove/ports/kanidm/kernel/src/protected.rs', lines 96:4-102:5
     Visibility: public -/
 @[rust_loop]
 def protected.remove_protected_mod_pres_loop
@@ -3541,7 +3584,7 @@ def protected.remove_protected_mod_pres_loop
     (out, i)
 
 /-- [kanidm_kernel::protected::remove_protected_mod_pres]:
-    Source: 'ports/kanidm/kernel/src/protected.rs', lines 93:0-104:1
+    Source: 'prove/ports/kanidm/kernel/src/protected.rs', lines 93:0-104:1
     Visibility: public -/
 @[reducible]
 def protected.remove_protected_mod_pres
@@ -3552,15 +3595,520 @@ def protected.remove_protected_mod_pres
     (alloc.vec.Vec Std.U8)) 0#usize
 
 /-- [kanidm_kernel::migration::ins]:
-    Source: 'ports/kanidm/kernel/src/migration.rs', lines 60:0-62:1 -/
+    Source: 'prove/ports/kanidm/kernel/src/migration.rs', lines 60:0-62:1 -/
 def migration.ins
   (set : alloc.vec.Vec (alloc.vec.Vec Std.U8)) (a : Slice Std.U8) :
   Result (alloc.vec.Vec (alloc.vec.Vec Std.U8))
   := do
   bset.insert set a
 
+/-- [kanidm_kernel::migration::add_oauth2_resource_server]:
+    Source: 'prove/ports/kanidm/kernel/src/migration.rs', lines 150:0-170:1 -/
+def migration.add_oauth2_resource_server
+  (classes : Slice (alloc.vec.Vec Std.U8))
+  (allow_attrs : alloc.vec.Vec (alloc.vec.Vec Std.U8))
+  (allow_cls : alloc.vec.Vec (alloc.vec.Vec Std.U8)) :
+  Result ((alloc.vec.Vec (alloc.vec.Vec Std.U8)) × (alloc.vec.Vec
+    (alloc.vec.Vec Std.U8)))
+  := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 22#usize [
+        111#u8, 97#u8, 117#u8, 116#u8, 104#u8, 50#u8, 95#u8, 114#u8, 101#u8,
+        115#u8, 111#u8, 117#u8, 114#u8, 99#u8, 101#u8, 95#u8, 115#u8, 101#u8,
+        114#u8, 118#u8, 101#u8, 114#u8
+        ]))
+  let b ← bset.contains classes s
+  if b
+  then
+    let s1 ←
+      lift (Array.to_slice
+        (Array.make 7#usize [
+          97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8
+          ]))
+    let allow_cls1 ←
+      migration.ins (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) s1
+    let s2 ←
+      lift (Array.to_slice
+        (Array.make 22#usize [
+          111#u8, 97#u8, 117#u8, 116#u8, 104#u8, 50#u8, 95#u8, 114#u8, 101#u8,
+          115#u8, 111#u8, 117#u8, 114#u8, 99#u8, 101#u8, 95#u8, 115#u8, 101#u8,
+          114#u8, 118#u8, 101#u8, 114#u8
+          ]))
+    let allow_cls2 ← migration.ins allow_cls1 s2
+    let s3 ←
+      lift (Array.to_slice
+        (Array.make 28#usize [
+          111#u8, 97#u8, 117#u8, 116#u8, 104#u8, 50#u8, 95#u8, 114#u8, 101#u8,
+          115#u8, 111#u8, 117#u8, 114#u8, 99#u8, 101#u8, 95#u8, 115#u8, 101#u8,
+          114#u8, 118#u8, 101#u8, 114#u8, 95#u8, 98#u8, 97#u8, 115#u8, 105#u8,
+          99#u8
+          ]))
+    let allow_cls3 ← migration.ins allow_cls2 s3
+    let s4 ←
+      lift (Array.to_slice
+        (Array.make 29#usize [
+          111#u8, 97#u8, 117#u8, 116#u8, 104#u8, 50#u8, 95#u8, 114#u8, 101#u8,
+          115#u8, 111#u8, 117#u8, 114#u8, 99#u8, 101#u8, 95#u8, 115#u8, 101#u8,
+          114#u8, 118#u8, 101#u8, 114#u8, 95#u8, 112#u8, 117#u8, 98#u8, 108#u8,
+          105#u8, 99#u8
+          ]))
+    let allow_cls4 ← migration.ins allow_cls3 s4
+    let s5 ←
+      lift (Array.to_slice
+        (Array.make 4#usize [ 110#u8, 97#u8, 109#u8, 101#u8 ]))
+    let allow_attrs1 ← migration.ins allow_attrs s5
+    let s6 ←
+      lift (Array.to_slice
+        (Array.make 11#usize [
+          100#u8, 105#u8, 115#u8, 112#u8, 108#u8, 97#u8, 121#u8, 110#u8, 97#u8,
+          109#u8, 101#u8
+          ]))
+    let allow_attrs2 ← migration.ins allow_attrs1 s6
+    let s7 ←
+      lift (Array.to_slice
+        (Array.make 11#usize [
+          100#u8, 101#u8, 115#u8, 99#u8, 114#u8, 105#u8, 112#u8, 116#u8,
+          105#u8, 111#u8, 110#u8
+          ]))
+    let allow_attrs3 ← migration.ins allow_attrs2 s7
+    let s8 ←
+      lift (Array.to_slice
+        (Array.make 19#usize [
+          111#u8, 97#u8, 117#u8, 116#u8, 104#u8, 50#u8, 95#u8, 114#u8, 115#u8,
+          95#u8, 115#u8, 99#u8, 111#u8, 112#u8, 101#u8, 95#u8, 109#u8, 97#u8,
+          112#u8
+          ]))
+    let allow_attrs4 ← migration.ins allow_attrs3 s8
+    let s9 ←
+      lift (Array.to_slice
+        (Array.make 23#usize [
+          111#u8, 97#u8, 117#u8, 116#u8, 104#u8, 50#u8, 95#u8, 114#u8, 115#u8,
+          95#u8, 115#u8, 117#u8, 112#u8, 95#u8, 115#u8, 99#u8, 111#u8, 112#u8,
+          101#u8, 95#u8, 109#u8, 97#u8, 112#u8
+          ]))
+    let allow_attrs5 ← migration.ins allow_attrs4 s9
+    let s10 ←
+      lift (Array.to_slice
+        (Array.make 31#usize [
+          111#u8, 97#u8, 117#u8, 116#u8, 104#u8, 50#u8, 95#u8, 106#u8, 119#u8,
+          116#u8, 95#u8, 108#u8, 101#u8, 103#u8, 97#u8, 99#u8, 121#u8, 95#u8,
+          99#u8, 114#u8, 121#u8, 112#u8, 116#u8, 111#u8, 95#u8, 101#u8, 110#u8,
+          97#u8, 98#u8, 108#u8, 101#u8
+          ]))
+    let allow_attrs6 ← migration.ins allow_attrs5 s10
+    let s11 ←
+      lift (Array.to_slice
+        (Array.make 28#usize [
+          111#u8, 97#u8, 117#u8, 116#u8, 104#u8, 50#u8, 95#u8, 112#u8, 114#u8,
+          101#u8, 102#u8, 101#u8, 114#u8, 95#u8, 115#u8, 104#u8, 111#u8,
+          114#u8, 116#u8, 95#u8, 117#u8, 115#u8, 101#u8, 114#u8, 110#u8, 97#u8,
+          109#u8, 101#u8
+          ]))
+    let allow_attrs7 ← migration.ins allow_attrs6 s11
+    let s12 ←
+      lift (Array.to_slice
+        (Array.make 19#usize [
+          111#u8, 97#u8, 117#u8, 116#u8, 104#u8, 50#u8, 95#u8, 114#u8, 115#u8,
+          95#u8, 99#u8, 108#u8, 97#u8, 105#u8, 109#u8, 95#u8, 109#u8, 97#u8,
+          112#u8
+          ]))
+    let allow_attrs8 ← migration.ins allow_attrs7 s12
+    let s13 ←
+      lift (Array.to_slice
+        (Array.make 16#usize [
+          111#u8, 97#u8, 117#u8, 116#u8, 104#u8, 50#u8, 95#u8, 114#u8, 115#u8,
+          95#u8, 111#u8, 114#u8, 105#u8, 103#u8, 105#u8, 110#u8
+          ]))
+    let allow_attrs9 ← migration.ins allow_attrs8 s13
+    let s14 ←
+      lift (Array.to_slice
+        (Array.make 24#usize [
+          111#u8, 97#u8, 117#u8, 116#u8, 104#u8, 50#u8, 95#u8, 114#u8, 115#u8,
+          95#u8, 111#u8, 114#u8, 105#u8, 103#u8, 105#u8, 110#u8, 95#u8, 108#u8,
+          97#u8, 110#u8, 100#u8, 105#u8, 110#u8, 103#u8
+          ]))
+    let allow_attrs10 ← migration.ins allow_attrs9 s14
+    let s15 ←
+      lift (Array.to_slice
+        (Array.make 28#usize [
+          111#u8, 97#u8, 117#u8, 116#u8, 104#u8, 50#u8, 95#u8, 99#u8, 111#u8,
+          110#u8, 115#u8, 101#u8, 110#u8, 116#u8, 95#u8, 112#u8, 114#u8,
+          111#u8, 109#u8, 112#u8, 116#u8, 95#u8, 101#u8, 110#u8, 97#u8, 98#u8,
+          108#u8, 101#u8
+          ]))
+    let allow_attrs11 ← migration.ins allow_attrs10 s15
+    let s16 ←
+      lift (Array.to_slice
+        (Array.make 16#usize [
+          101#u8, 110#u8, 116#u8, 114#u8, 121#u8, 95#u8, 109#u8, 97#u8, 110#u8,
+          97#u8, 103#u8, 101#u8, 100#u8, 95#u8, 98#u8, 121#u8
+          ]))
+    let allow_attrs12 ← migration.ins allow_attrs11 s16
+    ok (allow_attrs12, allow_cls4)
+  else ok (allow_attrs, allow_cls)
+
+/-- [kanidm_kernel::migration::add_account_policy]:
+    Source: 'prove/ports/kanidm/kernel/src/migration.rs', lines 137:0-148:1 -/
+def migration.add_account_policy
+  (classes : Slice (alloc.vec.Vec Std.U8))
+  (allow_attrs : alloc.vec.Vec (alloc.vec.Vec Std.U8))
+  (allow_cls : alloc.vec.Vec (alloc.vec.Vec Std.U8)) :
+  Result ((alloc.vec.Vec (alloc.vec.Vec Std.U8)) × (alloc.vec.Vec
+    (alloc.vec.Vec Std.U8)))
+  := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 14#usize [
+        97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8, 95#u8, 112#u8,
+        111#u8, 108#u8, 105#u8, 99#u8, 121#u8
+        ]))
+  let b ← bset.contains classes s
+  if b
+  then
+    let s1 ←
+      lift (Array.to_slice
+        (Array.make 18#usize [
+          97#u8, 117#u8, 116#u8, 104#u8, 115#u8, 101#u8, 115#u8, 115#u8,
+          105#u8, 111#u8, 110#u8, 95#u8, 101#u8, 120#u8, 112#u8, 105#u8,
+          114#u8, 121#u8
+          ]))
+    let allow_attrs1 ← migration.ins allow_attrs s1
+    let s2 ←
+      lift (Array.to_slice
+        (Array.make 28#usize [
+          97#u8, 117#u8, 116#u8, 104#u8, 95#u8, 112#u8, 97#u8, 115#u8, 115#u8,
+          119#u8, 111#u8, 114#u8, 100#u8, 95#u8, 109#u8, 105#u8, 110#u8,
+          105#u8, 109#u8, 117#u8, 109#u8, 95#u8, 108#u8, 101#u8, 110#u8,
+          103#u8, 116#u8, 104#u8
+          ]))
+    let allow_attrs2 ← migration.ins allow_attrs1 s2
+    let s3 ←
+      lift (Array.to_slice
+        (Array.make 23#usize [
+          99#u8, 114#u8, 101#u8, 100#u8, 101#u8, 110#u8, 116#u8, 105#u8, 97#u8,
+          108#u8, 95#u8, 116#u8, 121#u8, 112#u8, 101#u8, 95#u8, 109#u8, 105#u8,
+          110#u8, 105#u8, 109#u8, 117#u8, 109#u8
+          ]))
+    let allow_attrs3 ← migration.ins allow_attrs2 s3
+    let s4 ←
+      lift (Array.to_slice
+        (Array.make 16#usize [
+          112#u8, 114#u8, 105#u8, 118#u8, 105#u8, 108#u8, 101#u8, 103#u8,
+          101#u8, 95#u8, 101#u8, 120#u8, 112#u8, 105#u8, 114#u8, 121#u8
+          ]))
+    let allow_attrs4 ← migration.ins allow_attrs3 s4
+    let s5 ←
+      lift (Array.to_slice
+        (Array.make 28#usize [
+          119#u8, 101#u8, 98#u8, 97#u8, 117#u8, 116#u8, 104#u8, 110#u8, 95#u8,
+          97#u8, 116#u8, 116#u8, 101#u8, 115#u8, 116#u8, 97#u8, 116#u8, 105#u8,
+          111#u8, 110#u8, 95#u8, 99#u8, 97#u8, 95#u8, 108#u8, 105#u8, 115#u8,
+          116#u8
+          ]))
+    let allow_attrs5 ← migration.ins allow_attrs4 s5
+    let s6 ←
+      lift (Array.to_slice
+        (Array.make 24#usize [
+          108#u8, 105#u8, 109#u8, 105#u8, 116#u8, 95#u8, 115#u8, 101#u8, 97#u8,
+          114#u8, 99#u8, 104#u8, 95#u8, 109#u8, 97#u8, 120#u8, 95#u8, 114#u8,
+          101#u8, 115#u8, 117#u8, 108#u8, 116#u8, 115#u8
+          ]))
+    let allow_attrs6 ← migration.ins allow_attrs5 s6
+    let s7 ←
+      lift (Array.to_slice
+        (Array.make 28#usize [
+          108#u8, 105#u8, 109#u8, 105#u8, 116#u8, 95#u8, 115#u8, 101#u8, 97#u8,
+          114#u8, 99#u8, 104#u8, 95#u8, 109#u8, 97#u8, 120#u8, 95#u8, 102#u8,
+          105#u8, 108#u8, 116#u8, 101#u8, 114#u8, 95#u8, 116#u8, 101#u8,
+          115#u8, 116#u8
+          ]))
+    let allow_attrs7 ← migration.ins allow_attrs6 s7
+    let s8 ←
+      lift (Array.to_slice
+        (Array.make 27#usize [
+          97#u8, 108#u8, 108#u8, 111#u8, 119#u8, 95#u8, 112#u8, 114#u8, 105#u8,
+          109#u8, 97#u8, 114#u8, 121#u8, 95#u8, 99#u8, 114#u8, 101#u8, 100#u8,
+          95#u8, 102#u8, 97#u8, 108#u8, 108#u8, 98#u8, 97#u8, 99#u8, 107#u8
+          ]))
+    let allow_attrs8 ← migration.ins allow_attrs7 s8
+    ok (allow_attrs8, allow_cls)
+  else ok (allow_attrs, allow_cls)
+
+/-- [kanidm_kernel::migration::add_service_account]:
+    Source: 'prove/ports/kanidm/kernel/src/migration.rs', lines 123:0-135:1 -/
+def migration.add_service_account
+  (classes : Slice (alloc.vec.Vec Std.U8))
+  (allow_attrs : alloc.vec.Vec (alloc.vec.Vec Std.U8))
+  (allow_cls : alloc.vec.Vec (alloc.vec.Vec Std.U8)) :
+  Result ((alloc.vec.Vec (alloc.vec.Vec Std.U8)) × (alloc.vec.Vec
+    (alloc.vec.Vec Std.U8)))
+  := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 15#usize [
+        115#u8, 101#u8, 114#u8, 118#u8, 105#u8, 99#u8, 101#u8, 95#u8, 97#u8,
+        99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8
+        ]))
+  let b ← bset.contains classes s
+  if b
+  then
+    let s1 ←
+      lift (Array.to_slice
+        (Array.make 7#usize [
+          97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8
+          ]))
+    let allow_cls1 ←
+      migration.ins (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) s1
+    let s2 ←
+      lift (Array.to_slice
+        (Array.make 15#usize [
+          115#u8, 101#u8, 114#u8, 118#u8, 105#u8, 99#u8, 101#u8, 95#u8, 97#u8,
+          99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8
+          ]))
+    let allow_cls2 ← migration.ins allow_cls1 s2
+    let s3 ←
+      lift (Array.to_slice
+        (Array.make 4#usize [ 110#u8, 97#u8, 109#u8, 101#u8 ]))
+    let allow_attrs1 ← migration.ins allow_attrs s3
+    let s4 ←
+      lift (Array.to_slice
+        (Array.make 11#usize [
+          100#u8, 105#u8, 115#u8, 112#u8, 108#u8, 97#u8, 121#u8, 110#u8, 97#u8,
+          109#u8, 101#u8
+          ]))
+    let allow_attrs2 ← migration.ins allow_attrs1 s4
+    let s5 ←
+      lift (Array.to_slice
+        (Array.make 4#usize [ 109#u8, 97#u8, 105#u8, 108#u8 ]))
+    let allow_attrs3 ← migration.ins allow_attrs2 s5
+    let s6 ←
+      lift (Array.to_slice
+        (Array.make 13#usize [
+          115#u8, 115#u8, 104#u8, 95#u8, 112#u8, 117#u8, 98#u8, 108#u8, 105#u8,
+          99#u8, 107#u8, 101#u8, 121#u8
+          ]))
+    let allow_attrs4 ← migration.ins allow_attrs3 s6
+    let s7 ←
+      lift (Array.to_slice
+        (Array.make 11#usize [
+          100#u8, 101#u8, 115#u8, 99#u8, 114#u8, 105#u8, 112#u8, 116#u8,
+          105#u8, 111#u8, 110#u8
+          ]))
+    let allow_attrs5 ← migration.ins allow_attrs4 s7
+    let s8 ←
+      lift (Array.to_slice
+        (Array.make 16#usize [
+          101#u8, 110#u8, 116#u8, 114#u8, 121#u8, 95#u8, 109#u8, 97#u8, 110#u8,
+          97#u8, 103#u8, 101#u8, 100#u8, 95#u8, 98#u8, 121#u8
+          ]))
+    let allow_attrs6 ← migration.ins allow_attrs5 s8
+    ok (allow_attrs6, allow_cls2)
+  else ok (allow_attrs, allow_cls)
+
+/-- [kanidm_kernel::migration::add_person]:
+    Source: 'prove/ports/kanidm/kernel/src/migration.rs', lines 106:0-121:1 -/
+def migration.add_person
+  (classes : Slice (alloc.vec.Vec Std.U8))
+  (allow_attrs : alloc.vec.Vec (alloc.vec.Vec Std.U8))
+  (allow_cls : alloc.vec.Vec (alloc.vec.Vec Std.U8)) :
+  Result ((alloc.vec.Vec (alloc.vec.Vec Std.U8)) × (alloc.vec.Vec
+    (alloc.vec.Vec Std.U8)))
+  := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 6#usize [ 112#u8, 101#u8, 114#u8, 115#u8, 111#u8, 110#u8 ]))
+  let b ← bset.contains classes s
+  if b
+  then
+    let s1 ←
+      lift (Array.to_slice
+        (Array.make 6#usize [ 112#u8, 101#u8, 114#u8, 115#u8, 111#u8, 110#u8 ]))
+    let allow_cls1 ←
+      migration.ins (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) s1
+    let s2 ←
+      lift (Array.to_slice
+        (Array.make 7#usize [
+          97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8
+          ]))
+    let allow_cls2 ← migration.ins allow_cls1 s2
+    let s3 ←
+      lift (Array.to_slice
+        (Array.make 12#usize [
+          112#u8, 111#u8, 115#u8, 105#u8, 120#u8, 97#u8, 99#u8, 99#u8, 111#u8,
+          117#u8, 110#u8, 116#u8
+          ]))
+    let allow_cls3 ← migration.ins allow_cls2 s3
+    let s4 ←
+      lift (Array.to_slice
+        (Array.make 4#usize [ 110#u8, 97#u8, 109#u8, 101#u8 ]))
+    let allow_attrs1 ← migration.ins allow_attrs s4
+    let s5 ←
+      lift (Array.to_slice
+        (Array.make 11#usize [
+          100#u8, 105#u8, 115#u8, 112#u8, 108#u8, 97#u8, 121#u8, 110#u8, 97#u8,
+          109#u8, 101#u8
+          ]))
+    let allow_attrs2 ← migration.ins allow_attrs1 s5
+    let s6 ←
+      lift (Array.to_slice
+        (Array.make 9#usize [
+          108#u8, 101#u8, 103#u8, 97#u8, 108#u8, 110#u8, 97#u8, 109#u8, 101#u8
+          ]))
+    let allow_attrs3 ← migration.ins allow_attrs2 s6
+    let s7 ←
+      lift (Array.to_slice
+        (Array.make 4#usize [ 109#u8, 97#u8, 105#u8, 108#u8 ]))
+    let allow_attrs4 ← migration.ins allow_attrs3 s7
+    let s8 ←
+      lift (Array.to_slice
+        (Array.make 13#usize [
+          115#u8, 115#u8, 104#u8, 95#u8, 112#u8, 117#u8, 98#u8, 108#u8, 105#u8,
+          99#u8, 107#u8, 101#u8, 121#u8
+          ]))
+    let allow_attrs5 ← migration.ins allow_attrs4 s8
+    let s9 ←
+      lift (Array.to_slice
+        (Array.make 11#usize [
+          100#u8, 101#u8, 115#u8, 99#u8, 114#u8, 105#u8, 112#u8, 116#u8,
+          105#u8, 111#u8, 110#u8
+          ]))
+    let allow_attrs6 ← migration.ins allow_attrs5 s9
+    let s10 ←
+      lift (Array.to_slice
+        (Array.make 10#usize [
+          108#u8, 111#u8, 103#u8, 105#u8, 110#u8, 115#u8, 104#u8, 101#u8,
+          108#u8, 108#u8
+          ]))
+    let allow_attrs7 ← migration.ins allow_attrs6 s10
+    let s11 ←
+      lift (Array.to_slice
+        (Array.make 9#usize [
+          103#u8, 105#u8, 100#u8, 110#u8, 117#u8, 109#u8, 98#u8, 101#u8, 114#u8
+          ]))
+    let allow_attrs8 ← migration.ins allow_attrs7 s11
+    ok (allow_attrs8, allow_cls3)
+  else ok (allow_attrs, allow_cls)
+
+/-- [kanidm_kernel::migration::add_group]:
+    Source: 'prove/ports/kanidm/kernel/src/migration.rs', lines 92:0-104:1 -/
+def migration.add_group
+  (classes : Slice (alloc.vec.Vec Std.U8))
+  (allow_attrs : alloc.vec.Vec (alloc.vec.Vec Std.U8))
+  (allow_cls : alloc.vec.Vec (alloc.vec.Vec Std.U8)) :
+  Result ((alloc.vec.Vec (alloc.vec.Vec Std.U8)) × (alloc.vec.Vec
+    (alloc.vec.Vec Std.U8)))
+  := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 5#usize [ 103#u8, 114#u8, 111#u8, 117#u8, 112#u8 ]))
+  let b ← bset.contains classes s
+  if b
+  then
+    let s1 ←
+      lift (Array.to_slice
+        (Array.make 5#usize [ 103#u8, 114#u8, 111#u8, 117#u8, 112#u8 ]))
+    let allow_cls1 ←
+      migration.ins (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) s1
+    let s2 ←
+      lift (Array.to_slice
+        (Array.make 14#usize [
+          97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8, 95#u8, 112#u8,
+          111#u8, 108#u8, 105#u8, 99#u8, 121#u8
+          ]))
+    let allow_cls2 ← migration.ins allow_cls1 s2
+    let s3 ←
+      lift (Array.to_slice
+        (Array.make 10#usize [
+          112#u8, 111#u8, 115#u8, 105#u8, 120#u8, 103#u8, 114#u8, 111#u8,
+          117#u8, 112#u8
+          ]))
+    let allow_cls3 ← migration.ins allow_cls2 s3
+    let s4 ←
+      lift (Array.to_slice
+        (Array.make 6#usize [ 109#u8, 101#u8, 109#u8, 98#u8, 101#u8, 114#u8 ]))
+    let allow_attrs1 ← migration.ins allow_attrs s4
+    let s5 ←
+      lift (Array.to_slice
+        (Array.make 4#usize [ 110#u8, 97#u8, 109#u8, 101#u8 ]))
+    let allow_attrs2 ← migration.ins allow_attrs1 s5
+    let s6 ←
+      lift (Array.to_slice
+        (Array.make 11#usize [
+          100#u8, 101#u8, 115#u8, 99#u8, 114#u8, 105#u8, 112#u8, 116#u8,
+          105#u8, 111#u8, 110#u8
+          ]))
+    let allow_attrs3 ← migration.ins allow_attrs2 s6
+    let s7 ←
+      lift (Array.to_slice
+        (Array.make 16#usize [
+          101#u8, 110#u8, 116#u8, 114#u8, 121#u8, 95#u8, 109#u8, 97#u8, 110#u8,
+          97#u8, 103#u8, 101#u8, 100#u8, 95#u8, 98#u8, 121#u8
+          ]))
+    let allow_attrs4 ← migration.ins allow_attrs3 s7
+    let s8 ←
+      lift (Array.to_slice
+        (Array.make 9#usize [
+          103#u8, 105#u8, 100#u8, 110#u8, 117#u8, 109#u8, 98#u8, 101#u8, 114#u8
+          ]))
+    let allow_attrs5 ← migration.ins allow_attrs4 s8
+    ok (allow_attrs5, allow_cls3)
+  else ok (allow_attrs, allow_cls)
+
+/-- [kanidm_kernel::migration::add_domain_info]:
+    Source: 'prove/ports/kanidm/kernel/src/migration.rs', lines 83:0-90:1 -/
+def migration.add_domain_info
+  (classes : Slice (alloc.vec.Vec Std.U8))
+  (allow_attrs : alloc.vec.Vec (alloc.vec.Vec Std.U8))
+  (allow_cls : alloc.vec.Vec (alloc.vec.Vec Std.U8)) :
+  Result ((alloc.vec.Vec (alloc.vec.Vec Std.U8)) × (alloc.vec.Vec
+    (alloc.vec.Vec Std.U8)))
+  := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        100#u8, 111#u8, 109#u8, 97#u8, 105#u8, 110#u8, 95#u8, 105#u8, 110#u8,
+        102#u8, 111#u8
+        ]))
+  let b ← bset.contains classes s
+  if b
+  then
+    let s1 ←
+      lift (Array.to_slice
+        (Array.make 18#usize [
+          100#u8, 111#u8, 109#u8, 97#u8, 105#u8, 110#u8, 95#u8, 108#u8, 100#u8,
+          97#u8, 112#u8, 95#u8, 98#u8, 97#u8, 115#u8, 101#u8, 100#u8, 110#u8
+          ]))
+    let allow_attrs1 ← migration.ins allow_attrs s1
+    let s2 ←
+      lift (Array.to_slice
+        (Array.make 24#usize [
+          108#u8, 100#u8, 97#u8, 112#u8, 95#u8, 109#u8, 97#u8, 120#u8, 95#u8,
+          113#u8, 117#u8, 101#u8, 114#u8, 121#u8, 97#u8, 98#u8, 108#u8, 101#u8,
+          95#u8, 97#u8, 116#u8, 116#u8, 114#u8, 115#u8
+          ]))
+    let allow_attrs2 ← migration.ins allow_attrs1 s2
+    let s3 ←
+      lift (Array.to_slice
+        (Array.make 23#usize [
+          108#u8, 100#u8, 97#u8, 112#u8, 95#u8, 97#u8, 108#u8, 108#u8, 111#u8,
+          119#u8, 95#u8, 117#u8, 110#u8, 105#u8, 120#u8, 95#u8, 112#u8, 119#u8,
+          95#u8, 98#u8, 105#u8, 110#u8, 100#u8
+          ]))
+    let allow_attrs3 ← migration.ins allow_attrs2 s3
+    let s4 ←
+      lift (Array.to_slice
+        (Array.make 19#usize [
+          100#u8, 111#u8, 109#u8, 97#u8, 105#u8, 110#u8, 95#u8, 100#u8, 105#u8,
+          115#u8, 112#u8, 108#u8, 97#u8, 121#u8, 95#u8, 110#u8, 97#u8, 109#u8,
+          101#u8
+          ]))
+    let allow_attrs4 ← migration.ins allow_attrs3 s4
+    ok (allow_attrs4, allow_cls)
+  else ok (allow_attrs, allow_cls)
+
 /-- [kanidm_kernel::migration::migration_entry_attrs]:
-    Source: 'ports/kanidm/kernel/src/migration.rs', lines 65:0-151:1
+    Source: 'prove/ports/kanidm/kernel/src/migration.rs', lines 65:0-80:1
     Visibility: public -/
 def migration.migration_entry_attrs
   (classes : Slice (alloc.vec.Vec Std.U8)) :
@@ -3576,471 +4124,21 @@ def migration.migration_entry_attrs
     lift (Array.to_slice
       (Array.make 4#usize [ 117#u8, 117#u8, 105#u8, 100#u8 ]))
   let allow_attrs1 ← migration.ins allow_attrs s1
-  let s2 ←
-    lift (Array.to_slice
-      (Array.make 11#usize [
-        100#u8, 111#u8, 109#u8, 97#u8, 105#u8, 110#u8, 95#u8, 105#u8, 110#u8,
-        102#u8, 111#u8
-        ]))
-  let b ← bset.contains classes s2
-  let allow_attrs2 ←
-    if b
-    then
-      do
-      let s3 ←
-        lift (Array.to_slice
-          (Array.make 18#usize [
-            100#u8, 111#u8, 109#u8, 97#u8, 105#u8, 110#u8, 95#u8, 108#u8,
-            100#u8, 97#u8, 112#u8, 95#u8, 98#u8, 97#u8, 115#u8, 101#u8, 100#u8,
-            110#u8
-            ]))
-      let allow_attrs3 ← migration.ins allow_attrs1 s3
-      let s4 ←
-        lift (Array.to_slice
-          (Array.make 24#usize [
-            108#u8, 100#u8, 97#u8, 112#u8, 95#u8, 109#u8, 97#u8, 120#u8, 95#u8,
-            113#u8, 117#u8, 101#u8, 114#u8, 121#u8, 97#u8, 98#u8, 108#u8,
-            101#u8, 95#u8, 97#u8, 116#u8, 116#u8, 114#u8, 115#u8
-            ]))
-      let allow_attrs4 ← migration.ins allow_attrs3 s4
-      let s5 ←
-        lift (Array.to_slice
-          (Array.make 23#usize [
-            108#u8, 100#u8, 97#u8, 112#u8, 95#u8, 97#u8, 108#u8, 108#u8,
-            111#u8, 119#u8, 95#u8, 117#u8, 110#u8, 105#u8, 120#u8, 95#u8,
-            112#u8, 119#u8, 95#u8, 98#u8, 105#u8, 110#u8, 100#u8
-            ]))
-      let allow_attrs5 ← migration.ins allow_attrs4 s5
-      let s6 ←
-        lift (Array.to_slice
-          (Array.make 19#usize [
-            100#u8, 111#u8, 109#u8, 97#u8, 105#u8, 110#u8, 95#u8, 100#u8,
-            105#u8, 115#u8, 112#u8, 108#u8, 97#u8, 121#u8, 95#u8, 110#u8,
-            97#u8, 109#u8, 101#u8
-            ]))
-      migration.ins allow_attrs5 s6
-    else ok allow_attrs1
-  let s3 ←
-    lift (Array.to_slice
-      (Array.make 5#usize [ 103#u8, 114#u8, 111#u8, 117#u8, 112#u8 ]))
-  let b1 ← bset.contains classes s3
-  let (allow_attrs3, allow_cls) ←
-    if b1
-    then
-      do
-      let s4 ←
-        lift (Array.to_slice
-          (Array.make 5#usize [ 103#u8, 114#u8, 111#u8, 117#u8, 112#u8 ]))
-      let allow_cls1 ←
-        migration.ins (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) s4
-      let s5 ←
-        lift (Array.to_slice
-          (Array.make 14#usize [
-            97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8, 95#u8, 112#u8,
-            111#u8, 108#u8, 105#u8, 99#u8, 121#u8
-            ]))
-      let allow_cls2 ← migration.ins allow_cls1 s5
-      let s6 ←
-        lift (Array.to_slice
-          (Array.make 10#usize [
-            112#u8, 111#u8, 115#u8, 105#u8, 120#u8, 103#u8, 114#u8, 111#u8,
-            117#u8, 112#u8
-            ]))
-      let allow_cls3 ← migration.ins allow_cls2 s6
-      let s7 ←
-        lift (Array.to_slice
-          (Array.make 6#usize [
-            109#u8, 101#u8, 109#u8, 98#u8, 101#u8, 114#u8
-            ]))
-      let allow_attrs4 ← migration.ins allow_attrs2 s7
-      let s8 ←
-        lift (Array.to_slice
-          (Array.make 4#usize [ 110#u8, 97#u8, 109#u8, 101#u8 ]))
-      let allow_attrs5 ← migration.ins allow_attrs4 s8
-      let s9 ←
-        lift (Array.to_slice
-          (Array.make 11#usize [
-            100#u8, 101#u8, 115#u8, 99#u8, 114#u8, 105#u8, 112#u8, 116#u8,
-            105#u8, 111#u8, 110#u8
-            ]))
-      let allow_attrs6 ← migration.ins allow_attrs5 s9
-      let s10 ←
-        lift (Array.to_slice
-          (Array.make 16#usize [
-            101#u8, 110#u8, 116#u8, 114#u8, 121#u8, 95#u8, 109#u8, 97#u8,
-            110#u8, 97#u8, 103#u8, 101#u8, 100#u8, 95#u8, 98#u8, 121#u8
-            ]))
-      let allow_attrs7 ← migration.ins allow_attrs6 s10
-      let s11 ←
-        lift (Array.to_slice
-          (Array.make 9#usize [
-            103#u8, 105#u8, 100#u8, 110#u8, 117#u8, 109#u8, 98#u8, 101#u8,
-            114#u8
-            ]))
-      let allow_attrs8 ← migration.ins allow_attrs7 s11
-      ok (allow_attrs8, allow_cls3)
-    else ok (allow_attrs2, alloc.vec.Vec.new (alloc.vec.Vec Std.U8))
-  let s4 ←
-    lift (Array.to_slice
-      (Array.make 6#usize [ 112#u8, 101#u8, 114#u8, 115#u8, 111#u8, 110#u8 ]))
-  let b2 ← bset.contains classes s4
-  let (allow_attrs4, allow_cls1) ←
-    if b2
-    then
-      do
-      let s5 ←
-        lift (Array.to_slice
-          (Array.make 6#usize [
-            112#u8, 101#u8, 114#u8, 115#u8, 111#u8, 110#u8
-            ]))
-      let allow_cls2 ←
-        migration.ins (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) s5
-      let s6 ←
-        lift (Array.to_slice
-          (Array.make 7#usize [
-            97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8
-            ]))
-      let allow_cls3 ← migration.ins allow_cls2 s6
-      let s7 ←
-        lift (Array.to_slice
-          (Array.make 12#usize [
-            112#u8, 111#u8, 115#u8, 105#u8, 120#u8, 97#u8, 99#u8, 99#u8,
-            111#u8, 117#u8, 110#u8, 116#u8
-            ]))
-      let allow_cls4 ← migration.ins allow_cls3 s7
-      let s8 ←
-        lift (Array.to_slice
-          (Array.make 4#usize [ 110#u8, 97#u8, 109#u8, 101#u8 ]))
-      let allow_attrs5 ← migration.ins allow_attrs3 s8
-      let s9 ←
-        lift (Array.to_slice
-          (Array.make 11#usize [
-            100#u8, 105#u8, 115#u8, 112#u8, 108#u8, 97#u8, 121#u8, 110#u8,
-            97#u8, 109#u8, 101#u8
-            ]))
-      let allow_attrs6 ← migration.ins allow_attrs5 s9
-      let s10 ←
-        lift (Array.to_slice
-          (Array.make 9#usize [
-            108#u8, 101#u8, 103#u8, 97#u8, 108#u8, 110#u8, 97#u8, 109#u8,
-            101#u8
-            ]))
-      let allow_attrs7 ← migration.ins allow_attrs6 s10
-      let s11 ←
-        lift (Array.to_slice
-          (Array.make 4#usize [ 109#u8, 97#u8, 105#u8, 108#u8 ]))
-      let allow_attrs8 ← migration.ins allow_attrs7 s11
-      let s12 ←
-        lift (Array.to_slice
-          (Array.make 13#usize [
-            115#u8, 115#u8, 104#u8, 95#u8, 112#u8, 117#u8, 98#u8, 108#u8,
-            105#u8, 99#u8, 107#u8, 101#u8, 121#u8
-            ]))
-      let allow_attrs9 ← migration.ins allow_attrs8 s12
-      let s13 ←
-        lift (Array.to_slice
-          (Array.make 11#usize [
-            100#u8, 101#u8, 115#u8, 99#u8, 114#u8, 105#u8, 112#u8, 116#u8,
-            105#u8, 111#u8, 110#u8
-            ]))
-      let allow_attrs10 ← migration.ins allow_attrs9 s13
-      let s14 ←
-        lift (Array.to_slice
-          (Array.make 10#usize [
-            108#u8, 111#u8, 103#u8, 105#u8, 110#u8, 115#u8, 104#u8, 101#u8,
-            108#u8, 108#u8
-            ]))
-      let allow_attrs11 ← migration.ins allow_attrs10 s14
-      let s15 ←
-        lift (Array.to_slice
-          (Array.make 9#usize [
-            103#u8, 105#u8, 100#u8, 110#u8, 117#u8, 109#u8, 98#u8, 101#u8,
-            114#u8
-            ]))
-      let allow_attrs12 ← migration.ins allow_attrs11 s15
-      ok (allow_attrs12, allow_cls4)
-    else ok (allow_attrs3, allow_cls)
-  let s5 ←
-    lift (Array.to_slice
-      (Array.make 15#usize [
-        115#u8, 101#u8, 114#u8, 118#u8, 105#u8, 99#u8, 101#u8, 95#u8, 97#u8,
-        99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8
-        ]))
-  let b3 ← bset.contains classes s5
-  let (allow_attrs5, allow_cls2) ←
-    if b3
-    then
-      do
-      let s6 ←
-        lift (Array.to_slice
-          (Array.make 7#usize [
-            97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8
-            ]))
-      let allow_cls3 ←
-        migration.ins (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) s6
-      let s7 ←
-        lift (Array.to_slice
-          (Array.make 15#usize [
-            115#u8, 101#u8, 114#u8, 118#u8, 105#u8, 99#u8, 101#u8, 95#u8,
-            97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8
-            ]))
-      let allow_cls4 ← migration.ins allow_cls3 s7
-      let s8 ←
-        lift (Array.to_slice
-          (Array.make 4#usize [ 110#u8, 97#u8, 109#u8, 101#u8 ]))
-      let allow_attrs6 ← migration.ins allow_attrs4 s8
-      let s9 ←
-        lift (Array.to_slice
-          (Array.make 11#usize [
-            100#u8, 105#u8, 115#u8, 112#u8, 108#u8, 97#u8, 121#u8, 110#u8,
-            97#u8, 109#u8, 101#u8
-            ]))
-      let allow_attrs7 ← migration.ins allow_attrs6 s9
-      let s10 ←
-        lift (Array.to_slice
-          (Array.make 4#usize [ 109#u8, 97#u8, 105#u8, 108#u8 ]))
-      let allow_attrs8 ← migration.ins allow_attrs7 s10
-      let s11 ←
-        lift (Array.to_slice
-          (Array.make 13#usize [
-            115#u8, 115#u8, 104#u8, 95#u8, 112#u8, 117#u8, 98#u8, 108#u8,
-            105#u8, 99#u8, 107#u8, 101#u8, 121#u8
-            ]))
-      let allow_attrs9 ← migration.ins allow_attrs8 s11
-      let s12 ←
-        lift (Array.to_slice
-          (Array.make 11#usize [
-            100#u8, 101#u8, 115#u8, 99#u8, 114#u8, 105#u8, 112#u8, 116#u8,
-            105#u8, 111#u8, 110#u8
-            ]))
-      let allow_attrs10 ← migration.ins allow_attrs9 s12
-      let s13 ←
-        lift (Array.to_slice
-          (Array.make 16#usize [
-            101#u8, 110#u8, 116#u8, 114#u8, 121#u8, 95#u8, 109#u8, 97#u8,
-            110#u8, 97#u8, 103#u8, 101#u8, 100#u8, 95#u8, 98#u8, 121#u8
-            ]))
-      let allow_attrs11 ← migration.ins allow_attrs10 s13
-      ok (allow_attrs11, allow_cls4)
-    else ok (allow_attrs4, allow_cls1)
-  let s6 ←
-    lift (Array.to_slice
-      (Array.make 14#usize [
-        97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8, 95#u8, 112#u8,
-        111#u8, 108#u8, 105#u8, 99#u8, 121#u8
-        ]))
-  let b4 ← bset.contains classes s6
-  let allow_attrs6 ←
-    if b4
-    then
-      do
-      let s7 ←
-        lift (Array.to_slice
-          (Array.make 18#usize [
-            97#u8, 117#u8, 116#u8, 104#u8, 115#u8, 101#u8, 115#u8, 115#u8,
-            105#u8, 111#u8, 110#u8, 95#u8, 101#u8, 120#u8, 112#u8, 105#u8,
-            114#u8, 121#u8
-            ]))
-      let allow_attrs7 ← migration.ins allow_attrs5 s7
-      let s8 ←
-        lift (Array.to_slice
-          (Array.make 28#usize [
-            97#u8, 117#u8, 116#u8, 104#u8, 95#u8, 112#u8, 97#u8, 115#u8,
-            115#u8, 119#u8, 111#u8, 114#u8, 100#u8, 95#u8, 109#u8, 105#u8,
-            110#u8, 105#u8, 109#u8, 117#u8, 109#u8, 95#u8, 108#u8, 101#u8,
-            110#u8, 103#u8, 116#u8, 104#u8
-            ]))
-      let allow_attrs8 ← migration.ins allow_attrs7 s8
-      let s9 ←
-        lift (Array.to_slice
-          (Array.make 23#usize [
-            99#u8, 114#u8, 101#u8, 100#u8, 101#u8, 110#u8, 116#u8, 105#u8,
-            97#u8, 108#u8, 95#u8, 116#u8, 121#u8, 112#u8, 101#u8, 95#u8,
-            109#u8, 105#u8, 110#u8, 105#u8, 109#u8, 117#u8, 109#u8
-            ]))
-      let allow_attrs9 ← migration.ins allow_attrs8 s9
-      let s10 ←
-        lift (Array.to_slice
-          (Array.make 16#usize [
-            112#u8, 114#u8, 105#u8, 118#u8, 105#u8, 108#u8, 101#u8, 103#u8,
-            101#u8, 95#u8, 101#u8, 120#u8, 112#u8, 105#u8, 114#u8, 121#u8
-            ]))
-      let allow_attrs10 ← migration.ins allow_attrs9 s10
-      let s11 ←
-        lift (Array.to_slice
-          (Array.make 28#usize [
-            119#u8, 101#u8, 98#u8, 97#u8, 117#u8, 116#u8, 104#u8, 110#u8,
-            95#u8, 97#u8, 116#u8, 116#u8, 101#u8, 115#u8, 116#u8, 97#u8,
-            116#u8, 105#u8, 111#u8, 110#u8, 95#u8, 99#u8, 97#u8, 95#u8, 108#u8,
-            105#u8, 115#u8, 116#u8
-            ]))
-      let allow_attrs11 ← migration.ins allow_attrs10 s11
-      let s12 ←
-        lift (Array.to_slice
-          (Array.make 24#usize [
-            108#u8, 105#u8, 109#u8, 105#u8, 116#u8, 95#u8, 115#u8, 101#u8,
-            97#u8, 114#u8, 99#u8, 104#u8, 95#u8, 109#u8, 97#u8, 120#u8, 95#u8,
-            114#u8, 101#u8, 115#u8, 117#u8, 108#u8, 116#u8, 115#u8
-            ]))
-      let allow_attrs12 ← migration.ins allow_attrs11 s12
-      let s13 ←
-        lift (Array.to_slice
-          (Array.make 28#usize [
-            108#u8, 105#u8, 109#u8, 105#u8, 116#u8, 95#u8, 115#u8, 101#u8,
-            97#u8, 114#u8, 99#u8, 104#u8, 95#u8, 109#u8, 97#u8, 120#u8, 95#u8,
-            102#u8, 105#u8, 108#u8, 116#u8, 101#u8, 114#u8, 95#u8, 116#u8,
-            101#u8, 115#u8, 116#u8
-            ]))
-      let allow_attrs13 ← migration.ins allow_attrs12 s13
-      let s14 ←
-        lift (Array.to_slice
-          (Array.make 27#usize [
-            97#u8, 108#u8, 108#u8, 111#u8, 119#u8, 95#u8, 112#u8, 114#u8,
-            105#u8, 109#u8, 97#u8, 114#u8, 121#u8, 95#u8, 99#u8, 114#u8,
-            101#u8, 100#u8, 95#u8, 102#u8, 97#u8, 108#u8, 108#u8, 98#u8, 97#u8,
-            99#u8, 107#u8
-            ]))
-      migration.ins allow_attrs13 s14
-    else ok allow_attrs5
-  let s7 ←
-    lift (Array.to_slice
-      (Array.make 22#usize [
-        111#u8, 97#u8, 117#u8, 116#u8, 104#u8, 50#u8, 95#u8, 114#u8, 101#u8,
-        115#u8, 111#u8, 117#u8, 114#u8, 99#u8, 101#u8, 95#u8, 115#u8, 101#u8,
-        114#u8, 118#u8, 101#u8, 114#u8
-        ]))
-  let b5 ← bset.contains classes s7
-  if b5
-  then
-    let s8 ←
-      lift (Array.to_slice
-        (Array.make 7#usize [
-          97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8
-          ]))
-    let allow_cls3 ←
-      migration.ins (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) s8
-    let s9 ←
-      lift (Array.to_slice
-        (Array.make 22#usize [
-          111#u8, 97#u8, 117#u8, 116#u8, 104#u8, 50#u8, 95#u8, 114#u8, 101#u8,
-          115#u8, 111#u8, 117#u8, 114#u8, 99#u8, 101#u8, 95#u8, 115#u8, 101#u8,
-          114#u8, 118#u8, 101#u8, 114#u8
-          ]))
-    let allow_cls4 ← migration.ins allow_cls3 s9
-    let s10 ←
-      lift (Array.to_slice
-        (Array.make 28#usize [
-          111#u8, 97#u8, 117#u8, 116#u8, 104#u8, 50#u8, 95#u8, 114#u8, 101#u8,
-          115#u8, 111#u8, 117#u8, 114#u8, 99#u8, 101#u8, 95#u8, 115#u8, 101#u8,
-          114#u8, 118#u8, 101#u8, 114#u8, 95#u8, 98#u8, 97#u8, 115#u8, 105#u8,
-          99#u8
-          ]))
-    let allow_cls5 ← migration.ins allow_cls4 s10
-    let s11 ←
-      lift (Array.to_slice
-        (Array.make 29#usize [
-          111#u8, 97#u8, 117#u8, 116#u8, 104#u8, 50#u8, 95#u8, 114#u8, 101#u8,
-          115#u8, 111#u8, 117#u8, 114#u8, 99#u8, 101#u8, 95#u8, 115#u8, 101#u8,
-          114#u8, 118#u8, 101#u8, 114#u8, 95#u8, 112#u8, 117#u8, 98#u8, 108#u8,
-          105#u8, 99#u8
-          ]))
-    let allow_cls6 ← migration.ins allow_cls5 s11
-    let s12 ←
-      lift (Array.to_slice
-        (Array.make 4#usize [ 110#u8, 97#u8, 109#u8, 101#u8 ]))
-    let allow_attrs7 ← migration.ins allow_attrs6 s12
-    let s13 ←
-      lift (Array.to_slice
-        (Array.make 11#usize [
-          100#u8, 105#u8, 115#u8, 112#u8, 108#u8, 97#u8, 121#u8, 110#u8, 97#u8,
-          109#u8, 101#u8
-          ]))
-    let allow_attrs8 ← migration.ins allow_attrs7 s13
-    let s14 ←
-      lift (Array.to_slice
-        (Array.make 11#usize [
-          100#u8, 101#u8, 115#u8, 99#u8, 114#u8, 105#u8, 112#u8, 116#u8,
-          105#u8, 111#u8, 110#u8
-          ]))
-    let allow_attrs9 ← migration.ins allow_attrs8 s14
-    let s15 ←
-      lift (Array.to_slice
-        (Array.make 19#usize [
-          111#u8, 97#u8, 117#u8, 116#u8, 104#u8, 50#u8, 95#u8, 114#u8, 115#u8,
-          95#u8, 115#u8, 99#u8, 111#u8, 112#u8, 101#u8, 95#u8, 109#u8, 97#u8,
-          112#u8
-          ]))
-    let allow_attrs10 ← migration.ins allow_attrs9 s15
-    let s16 ←
-      lift (Array.to_slice
-        (Array.make 23#usize [
-          111#u8, 97#u8, 117#u8, 116#u8, 104#u8, 50#u8, 95#u8, 114#u8, 115#u8,
-          95#u8, 115#u8, 117#u8, 112#u8, 95#u8, 115#u8, 99#u8, 111#u8, 112#u8,
-          101#u8, 95#u8, 109#u8, 97#u8, 112#u8
-          ]))
-    let allow_attrs11 ← migration.ins allow_attrs10 s16
-    let s17 ←
-      lift (Array.to_slice
-        (Array.make 31#usize [
-          111#u8, 97#u8, 117#u8, 116#u8, 104#u8, 50#u8, 95#u8, 106#u8, 119#u8,
-          116#u8, 95#u8, 108#u8, 101#u8, 103#u8, 97#u8, 99#u8, 121#u8, 95#u8,
-          99#u8, 114#u8, 121#u8, 112#u8, 116#u8, 111#u8, 95#u8, 101#u8, 110#u8,
-          97#u8, 98#u8, 108#u8, 101#u8
-          ]))
-    let allow_attrs12 ← migration.ins allow_attrs11 s17
-    let s18 ←
-      lift (Array.to_slice
-        (Array.make 28#usize [
-          111#u8, 97#u8, 117#u8, 116#u8, 104#u8, 50#u8, 95#u8, 112#u8, 114#u8,
-          101#u8, 102#u8, 101#u8, 114#u8, 95#u8, 115#u8, 104#u8, 111#u8,
-          114#u8, 116#u8, 95#u8, 117#u8, 115#u8, 101#u8, 114#u8, 110#u8, 97#u8,
-          109#u8, 101#u8
-          ]))
-    let allow_attrs13 ← migration.ins allow_attrs12 s18
-    let s19 ←
-      lift (Array.to_slice
-        (Array.make 19#usize [
-          111#u8, 97#u8, 117#u8, 116#u8, 104#u8, 50#u8, 95#u8, 114#u8, 115#u8,
-          95#u8, 99#u8, 108#u8, 97#u8, 105#u8, 109#u8, 95#u8, 109#u8, 97#u8,
-          112#u8
-          ]))
-    let allow_attrs14 ← migration.ins allow_attrs13 s19
-    let s20 ←
-      lift (Array.to_slice
-        (Array.make 16#usize [
-          111#u8, 97#u8, 117#u8, 116#u8, 104#u8, 50#u8, 95#u8, 114#u8, 115#u8,
-          95#u8, 111#u8, 114#u8, 105#u8, 103#u8, 105#u8, 110#u8
-          ]))
-    let allow_attrs15 ← migration.ins allow_attrs14 s20
-    let s21 ←
-      lift (Array.to_slice
-        (Array.make 24#usize [
-          111#u8, 97#u8, 117#u8, 116#u8, 104#u8, 50#u8, 95#u8, 114#u8, 115#u8,
-          95#u8, 111#u8, 114#u8, 105#u8, 103#u8, 105#u8, 110#u8, 95#u8, 108#u8,
-          97#u8, 110#u8, 100#u8, 105#u8, 110#u8, 103#u8
-          ]))
-    let allow_attrs16 ← migration.ins allow_attrs15 s21
-    let s22 ←
-      lift (Array.to_slice
-        (Array.make 28#usize [
-          111#u8, 97#u8, 117#u8, 116#u8, 104#u8, 50#u8, 95#u8, 99#u8, 111#u8,
-          110#u8, 115#u8, 101#u8, 110#u8, 116#u8, 95#u8, 112#u8, 114#u8,
-          111#u8, 109#u8, 112#u8, 116#u8, 95#u8, 101#u8, 110#u8, 97#u8, 98#u8,
-          108#u8, 101#u8
-          ]))
-    let allow_attrs17 ← migration.ins allow_attrs16 s22
-    let s23 ←
-      lift (Array.to_slice
-        (Array.make 16#usize [
-          101#u8, 110#u8, 116#u8, 114#u8, 121#u8, 95#u8, 109#u8, 97#u8, 110#u8,
-          97#u8, 103#u8, 101#u8, 100#u8, 95#u8, 98#u8, 121#u8
-          ]))
-    let allow_attrs18 ← migration.ins allow_attrs17 s23
-    ok (allow_attrs18, allow_cls6)
-  else ok (allow_attrs6, allow_cls2)
+  let (allow_attrs2, allow_cls) ←
+    migration.add_domain_info classes allow_attrs1 (alloc.vec.Vec.new
+      (alloc.vec.Vec Std.U8))
+  let (allow_attrs3, allow_cls1) ←
+    migration.add_group classes allow_attrs2 allow_cls
+  let (allow_attrs4, allow_cls2) ←
+    migration.add_person classes allow_attrs3 allow_cls1
+  let (allow_attrs5, allow_cls3) ←
+    migration.add_service_account classes allow_attrs4 allow_cls2
+  let (allow_attrs6, allow_cls4) ←
+    migration.add_account_policy classes allow_attrs5 allow_cls3
+  migration.add_oauth2_resource_server classes allow_attrs6 allow_cls4
 
 /-- [kanidm_kernel::AccessModResult]
-    Source: 'ports/kanidm/kernel/src/lib.rs', lines 226:0-241:1
+    Source: 'prove/ports/kanidm/kernel/src/lib.rs', lines 227:0-242:1
     Visibility: public -/
 @[discriminant isize]
 inductive AccessModResult where
@@ -4060,7 +4158,7 @@ inductive AccessModResult where
   AccessModResult
 
 /-- [kanidm_kernel::modify_acc::modify_migration_attrs]:
-    Source: 'ports/kanidm/kernel/src/modify_acc.rs', lines 415:0-446:1
+    Source: 'prove/ports/kanidm/kernel/src/modify_acc.rs', lines 415:0-446:1
     Visibility: public -/
 def modify_acc.modify_migration_attrs
   (ident : Identity) (entry : Entry) : Result AccessModResult := do
@@ -4106,7 +4204,7 @@ def modify_acc.modify_migration_attrs
     | InternalRole.MessageQueue => ok AccessModResult.Ignore
 
 /-- [kanidm_kernel::protected::protected_mod_entry_classes]:
-    Source: 'ports/kanidm/kernel/src/protected.rs', lines 18:0-26:1
+    Source: 'prove/ports/kanidm/kernel/src/protected.rs', lines 18:0-26:1
     Visibility: public -/
 def protected.protected_mod_entry_classes
   (c : Slice Std.U8) : Result Bool := do
@@ -4175,7 +4273,7 @@ def protected.protected_mod_entry_classes
               bset.bytes_eq c s6
 
 /-- [kanidm_kernel::protected::disjoint_protected_mod_entry_classes]: loop body 0:
-    Source: 'ports/kanidm/kernel/src/protected.rs', lines 71:4-78:1
+    Source: 'prove/ports/kanidm/kernel/src/protected.rs', lines 71:4-78:1
     Visibility: public -/
 @[rust_loop_body]
 def protected.disjoint_protected_mod_entry_classes_loop.body
@@ -4195,7 +4293,7 @@ def protected.disjoint_protected_mod_entry_classes_loop.body
   else ok (done true)
 
 /-- [kanidm_kernel::protected::disjoint_protected_mod_entry_classes]: loop 0:
-    Source: 'ports/kanidm/kernel/src/protected.rs', lines 71:4-78:1
+    Source: 'prove/ports/kanidm/kernel/src/protected.rs', lines 71:4-78:1
     Visibility: public -/
 @[rust_loop]
 def protected.disjoint_protected_mod_entry_classes_loop
@@ -4206,7 +4304,7 @@ def protected.disjoint_protected_mod_entry_classes_loop
     i
 
 /-- [kanidm_kernel::protected::disjoint_protected_mod_entry_classes]:
-    Source: 'ports/kanidm/kernel/src/protected.rs', lines 69:0-78:1
+    Source: 'prove/ports/kanidm/kernel/src/protected.rs', lines 69:0-78:1
     Visibility: public -/
 @[reducible]
 def protected.disjoint_protected_mod_entry_classes
@@ -4214,7 +4312,7 @@ def protected.disjoint_protected_mod_entry_classes
   protected.disjoint_protected_mod_entry_classes_loop classes 0#usize
 
 /-- [kanidm_kernel::protected::locked_entry_classes]:
-    Source: 'ports/kanidm/kernel/src/protected.rs', lines 52:0-54:1
+    Source: 'prove/ports/kanidm/kernel/src/protected.rs', lines 52:0-54:1
     Visibility: public -/
 def protected.locked_entry_classes (c : Slice Std.U8) : Result Bool := do
   let s ←
@@ -4225,7 +4323,7 @@ def protected.locked_entry_classes (c : Slice Std.U8) : Result Bool := do
   bset.bytes_eq c s
 
 /-- [kanidm_kernel::protected::disjoint_locked_entry_classes]: loop body 0:
-    Source: 'ports/kanidm/kernel/src/protected.rs', lines 83:4-90:1
+    Source: 'prove/ports/kanidm/kernel/src/protected.rs', lines 83:4-90:1
     Visibility: public -/
 @[rust_loop_body]
 def protected.disjoint_locked_entry_classes_loop.body
@@ -4245,7 +4343,7 @@ def protected.disjoint_locked_entry_classes_loop.body
   else ok (done true)
 
 /-- [kanidm_kernel::protected::disjoint_locked_entry_classes]: loop 0:
-    Source: 'ports/kanidm/kernel/src/protected.rs', lines 83:4-90:1
+    Source: 'prove/ports/kanidm/kernel/src/protected.rs', lines 83:4-90:1
     Visibility: public -/
 @[rust_loop]
 def protected.disjoint_locked_entry_classes_loop
@@ -4255,7 +4353,7 @@ def protected.disjoint_locked_entry_classes_loop
     i
 
 /-- [kanidm_kernel::protected::disjoint_locked_entry_classes]:
-    Source: 'ports/kanidm/kernel/src/protected.rs', lines 81:0-90:1
+    Source: 'prove/ports/kanidm/kernel/src/protected.rs', lines 81:0-90:1
     Visibility: public -/
 @[reducible]
 def protected.disjoint_locked_entry_classes
@@ -4263,7 +4361,7 @@ def protected.disjoint_locked_entry_classes
   protected.disjoint_locked_entry_classes_loop classes 0#usize
 
 /-- [kanidm_kernel::modify_acc::modify_protected_entry_attrs]:
-    Source: 'ports/kanidm/kernel/src/modify_acc.rs', lines 325:0-412:1
+    Source: 'prove/ports/kanidm/kernel/src/modify_acc.rs', lines 325:0-412:1
     Visibility: public -/
 def modify_acc.modify_protected_entry_attrs
   (classes : Slice (alloc.vec.Vec Std.U8)) : Result AccessModResult := do
@@ -4642,7 +4740,7 @@ def modify_acc.modify_protected_entry_attrs
   else ok AccessModResult.Deny
 
 /-- [kanidm_kernel::modify_acc::modify_protected_attrs]:
-    Source: 'ports/kanidm/kernel/src/modify_acc.rs', lines 298:0-322:1
+    Source: 'prove/ports/kanidm/kernel/src/modify_acc.rs', lines 298:0-322:1
     Visibility: public -/
 def modify_acc.modify_protected_attrs
   (ident : Identity) (entry : Entry) : Result AccessModResult := do
@@ -4733,7 +4831,7 @@ def modify_acc.modify_protected_attrs
           modify_acc.modify_protected_entry_attrs s1
 
 /-- [kanidm_kernel::modify_acc::sync_agreement_get]: loop body 0:
-    Source: 'ports/kanidm/kernel/src/modify_acc.rs', lines 239:4-246:1
+    Source: 'prove/ports/kanidm/kernel/src/modify_acc.rs', lines 239:4-246:1
     Visibility: public -/
 @[rust_loop_body]
 def modify_acc.sync_agreement_get_loop.body
@@ -4753,7 +4851,7 @@ def modify_acc.sync_agreement_get_loop.body
   else ok (done none)
 
 /-- [kanidm_kernel::modify_acc::sync_agreement_get]: loop 0:
-    Source: 'ports/kanidm/kernel/src/modify_acc.rs', lines 239:4-246:1
+    Source: 'prove/ports/kanidm/kernel/src/modify_acc.rs', lines 239:4-246:1
     Visibility: public -/
 @[rust_loop]
 def modify_acc.sync_agreement_get_loop
@@ -4767,7 +4865,7 @@ def modify_acc.sync_agreement_get_loop
     i
 
 /-- [kanidm_kernel::modify_acc::sync_agreement_get]:
-    Source: 'ports/kanidm/kernel/src/modify_acc.rs', lines 237:0-246:1
+    Source: 'prove/ports/kanidm/kernel/src/modify_acc.rs', lines 237:0-246:1
     Visibility: public -/
 @[reducible]
 def modify_acc.sync_agreement_get
@@ -4777,7 +4875,7 @@ def modify_acc.sync_agreement_get
   modify_acc.sync_agreement_get_loop sync_agreements sync_uuid 0#usize
 
 /-- [kanidm_kernel::modify_acc::extend_sync_yield_authority]:
-    Source: 'ports/kanidm/kernel/src/modify_acc.rs', lines 257:0-262:1
+    Source: 'prove/ports/kanidm/kernel/src/modify_acc.rs', lines 257:0-262:1
     Visibility: public -/
 def modify_acc.extend_sync_yield_authority
   (set : alloc.vec.Vec (alloc.vec.Vec Std.U8))
@@ -4792,7 +4890,7 @@ def modify_acc.extend_sync_yield_authority
     bset.extend set s
 
 /-- [kanidm_kernel::modify_acc::class_set_contains]:
-    Source: 'ports/kanidm/kernel/src/modify_acc.rs', lines 249:0-254:1
+    Source: 'prove/ports/kanidm/kernel/src/modify_acc.rs', lines 249:0-254:1
     Visibility: public -/
 def modify_acc.class_set_contains
   (entry : Entry) (pv : PartialValue) : Result Bool := do
@@ -4805,7 +4903,7 @@ def modify_acc.class_set_contains
   | some classes => valueset.vs_contains classes pv
 
 /-- [kanidm_kernel::modify_acc::modify_sync_constrain]:
-    Source: 'ports/kanidm/kernel/src/modify_acc.rs', lines 265:0-295:1
+    Source: 'prove/ports/kanidm/kernel/src/modify_acc.rs', lines 265:0-295:1
     Visibility: public -/
 def modify_acc.modify_sync_constrain
   (ident : Identity) (entry : Entry) (sync_agreements : Slice SyncAgreement) :
@@ -4876,7 +4974,7 @@ def modify_acc.modify_sync_constrain
   | IdentType.Internal _ => ok AccessModResult.Ignore
 
 /-- [kanidm_kernel::modify_acc::modify_pres_test]: loop body 0:
-    Source: 'ports/kanidm/kernel/src/modify_acc.rs', lines 225:4-231:5
+    Source: 'prove/ports/kanidm/kernel/src/modify_acc.rs', lines 225:4-231:5
     Visibility: public -/
 @[rust_loop_body]
 def modify_acc.modify_pres_test_loop.body
@@ -4909,7 +5007,7 @@ def modify_acc.modify_pres_test_loop.body
   else ok (done (pres_attr, rem_attr, pres_class, rem_class))
 
 /-- [kanidm_kernel::modify_acc::modify_pres_test]: loop 0:
-    Source: 'ports/kanidm/kernel/src/modify_acc.rs', lines 225:4-231:5
+    Source: 'prove/ports/kanidm/kernel/src/modify_acc.rs', lines 225:4-231:5
     Visibility: public -/
 @[rust_loop]
 def modify_acc.modify_pres_test_loop
@@ -4929,7 +5027,7 @@ def modify_acc.modify_pres_test_loop
     (pres_attr, rem_attr, pres_class, rem_class, i)
 
 /-- [kanidm_kernel::modify_acc::modify_pres_test]:
-    Source: 'ports/kanidm/kernel/src/modify_acc.rs', lines 219:0-234:1
+    Source: 'prove/ports/kanidm/kernel/src/modify_acc.rs', lines 219:0-234:1
     Visibility: public -/
 def modify_acc.modify_pres_test
   (scoped_acp : Slice profiles.ModifyGrants) : Result AccessModResult := do
@@ -4941,7 +5039,7 @@ def modify_acc.modify_pres_test
   ok (AccessModResult.Allow pres_attr rem_attr pres_class rem_class)
 
 /-- [kanidm_kernel::AccessBasicResult]
-    Source: 'ports/kanidm/kernel/src/lib.rs', lines 211:0-215:1
+    Source: 'prove/ports/kanidm/kernel/src/lib.rs', lines 212:0-216:1
     Visibility: public -/
 @[discriminant isize]
 inductive AccessBasicResult where
@@ -4950,7 +5048,7 @@ inductive AccessBasicResult where
 | Ignore : AccessBasicResult
 
 /-- [kanidm_kernel::modify_acc::modify_ident_test]:
-    Source: 'ports/kanidm/kernel/src/modify_acc.rs', lines 191:0-216:1
+    Source: 'prove/ports/kanidm/kernel/src/modify_acc.rs', lines 191:0-216:1
     Visibility: public -/
 def modify_acc.modify_ident_test
   (ident : Identity) : Result AccessBasicResult := do
@@ -4970,7 +5068,7 @@ def modify_acc.modify_ident_test
     | InternalRole.MessageQueue => ok AccessBasicResult.Deny
 
 /-- [kanidm_kernel::profiles::{impl core::clone::Clone for kanidm_kernel::profiles::ModifyGrants}::clone]:
-    Source: 'ports/kanidm/kernel/src/profiles.rs', lines 88:9-88:14
+    Source: 'prove/ports/kanidm/kernel/src/profiles.rs', lines 88:9-88:14
     Visibility: public -/
 def profiles.ModifyGrants.Insts.CoreCloneClone.clone
   (self : profiles.ModifyGrants) : Result profiles.ModifyGrants := do
@@ -4989,7 +5087,7 @@ def profiles.ModifyGrants.Insts.CoreCloneClone.clone
   ok { presattrs := v, remattrs := v1, pres_classes := v2, rem_classes := v3 }
 
 /-- [kanidm_kernel::modify_acc::push_if]:
-    Source: 'ports/kanidm/kernel/src/modify_acc.rs', lines 184:0-188:1
+    Source: 'prove/ports/kanidm/kernel/src/modify_acc.rs', lines 184:0-188:1
     Visibility: public -/
 def modify_acc.push_if
   (scoped_acp : alloc.vec.Vec profiles.ModifyGrants) (ok1 : Bool)
@@ -5003,7 +5101,7 @@ def modify_acc.push_if
   else ok scoped_acp
 
 /-- [kanidm_kernel::modify_acc::modify_scoped_acp]: loop body 0:
-    Source: 'ports/kanidm/kernel/src/modify_acc.rs', lines 174:4-179:5
+    Source: 'prove/ports/kanidm/kernel/src/modify_acc.rs', lines 174:4-179:5
     Visibility: public -/
 @[rust_loop_body]
 def modify_acc.modify_scoped_acp_loop.body
@@ -5027,7 +5125,7 @@ def modify_acc.modify_scoped_acp_loop.body
   else ok (done scoped_acp)
 
 /-- [kanidm_kernel::modify_acc::modify_scoped_acp]: loop 0:
-    Source: 'ports/kanidm/kernel/src/modify_acc.rs', lines 174:4-179:5
+    Source: 'prove/ports/kanidm/kernel/src/modify_acc.rs', lines 174:4-179:5
     Visibility: public -/
 @[rust_loop]
 def modify_acc.modify_scoped_acp_loop
@@ -5043,7 +5141,7 @@ def modify_acc.modify_scoped_acp_loop
     (scoped_acp, i)
 
 /-- [kanidm_kernel::modify_acc::modify_scoped_acp]:
-    Source: 'ports/kanidm/kernel/src/modify_acc.rs', lines 166:0-181:1
+    Source: 'prove/ports/kanidm/kernel/src/modify_acc.rs', lines 166:0-181:1
     Visibility: public -/
 @[reducible]
 def modify_acc.modify_scoped_acp
@@ -5056,7 +5154,7 @@ def modify_acc.modify_scoped_acp
     (alloc.vec.Vec.new profiles.ModifyGrants) 0#usize
 
 /-- [kanidm_kernel::modify_acc::ModifyResult]
-    Source: 'ports/kanidm/kernel/src/modify_acc.rs', lines 20:0-29:1
+    Source: 'prove/ports/kanidm/kernel/src/modify_acc.rs', lines 20:0-29:1
     Visibility: public -/
 @[discriminant isize]
 inductive modify_acc.ModifyResult where
@@ -5070,7 +5168,7 @@ inductive modify_acc.ModifyResult where
   modify_acc.ModifyResult
 
 /-- [kanidm_kernel::modify_acc::apply_modify_access]:
-    Source: 'ports/kanidm/kernel/src/modify_acc.rs', lines 32:0-162:1
+    Source: 'prove/ports/kanidm/kernel/src/modify_acc.rs', lines 32:0-162:1
     Visibility: public -/
 def modify_acc.apply_modify_access
   (ident : Identity) (related_acp : Slice profiles.AccessControlModifyResolved)
@@ -5252,7 +5350,7 @@ def modify_acc.apply_modify_access
         allowed_pres_cls1 allowed_rem_cls1)
 
 /-- [kanidm_kernel::protected::protected_entry_classes]:
-    Source: 'ports/kanidm/kernel/src/protected.rs', lines 5:0-14:1
+    Source: 'prove/ports/kanidm/kernel/src/protected.rs', lines 5:0-14:1
     Visibility: public -/
 def protected.protected_entry_classes (c : Slice Std.U8) : Result Bool := do
   let s ←
@@ -5330,7 +5428,7 @@ def protected.protected_entry_classes (c : Slice Std.U8) : Result Bool := do
                 bset.bytes_eq c s7
 
 /-- [kanidm_kernel::protected::disjoint_protected_entry_classes]: loop body 0:
-    Source: 'ports/kanidm/kernel/src/protected.rs', lines 59:4-66:1
+    Source: 'prove/ports/kanidm/kernel/src/protected.rs', lines 59:4-66:1
     Visibility: public -/
 @[rust_loop_body]
 def protected.disjoint_protected_entry_classes_loop.body
@@ -5350,7 +5448,7 @@ def protected.disjoint_protected_entry_classes_loop.body
   else ok (done true)
 
 /-- [kanidm_kernel::protected::disjoint_protected_entry_classes]: loop 0:
-    Source: 'ports/kanidm/kernel/src/protected.rs', lines 59:4-66:1
+    Source: 'prove/ports/kanidm/kernel/src/protected.rs', lines 59:4-66:1
     Visibility: public -/
 @[rust_loop]
 def protected.disjoint_protected_entry_classes_loop
@@ -5360,7 +5458,7 @@ def protected.disjoint_protected_entry_classes_loop
     i
 
 /-- [kanidm_kernel::protected::disjoint_protected_entry_classes]:
-    Source: 'ports/kanidm/kernel/src/protected.rs', lines 57:0-66:1
+    Source: 'prove/ports/kanidm/kernel/src/protected.rs', lines 57:0-66:1
     Visibility: public -/
 @[reducible]
 def protected.disjoint_protected_entry_classes
@@ -5368,7 +5466,7 @@ def protected.disjoint_protected_entry_classes
   protected.disjoint_protected_entry_classes_loop classes 0#usize
 
 /-- [kanidm_kernel::delete_acc::IResult]
-    Source: 'ports/kanidm/kernel/src/delete_acc.rs', lines 17:0-21:1
+    Source: 'prove/ports/kanidm/kernel/src/delete_acc.rs', lines 17:0-21:1
     Visibility: public -/
 @[discriminant isize]
 inductive delete_acc.IResult where
@@ -5377,7 +5475,7 @@ inductive delete_acc.IResult where
 | Ignore : delete_acc.IResult
 
 /-- [kanidm_kernel::delete_acc::protected_filter_entry]:
-    Source: 'ports/kanidm/kernel/src/delete_acc.rs', lines 110:0-136:1
+    Source: 'prove/ports/kanidm/kernel/src/delete_acc.rs', lines 110:0-136:1
     Visibility: public -/
 def delete_acc.protected_filter_entry
   (ident : Identity) (entry : Entry) : Result delete_acc.IResult := do
@@ -5422,7 +5520,7 @@ def delete_acc.protected_filter_entry
     | InternalRole.MessageQueue => ok delete_acc.IResult.Deny
 
 /-- [kanidm_kernel::delete_acc::delete_any_acp]: loop body 0:
-    Source: 'ports/kanidm/kernel/src/delete_acc.rs', lines 99:4-107:1
+    Source: 'prove/ports/kanidm/kernel/src/delete_acc.rs', lines 99:4-107:1
     Visibility: public -/
 @[rust_loop_body]
 def delete_acc.delete_any_acp_loop.body
@@ -5445,7 +5543,7 @@ def delete_acc.delete_any_acp_loop.body
   else ok (done false)
 
 /-- [kanidm_kernel::delete_acc::delete_any_acp]: loop 0:
-    Source: 'ports/kanidm/kernel/src/delete_acc.rs', lines 99:4-107:1
+    Source: 'prove/ports/kanidm/kernel/src/delete_acc.rs', lines 99:4-107:1
     Visibility: public -/
 @[rust_loop]
 def delete_acc.delete_any_acp_loop
@@ -5460,7 +5558,7 @@ def delete_acc.delete_any_acp_loop
     i
 
 /-- [kanidm_kernel::delete_acc::delete_any_acp]:
-    Source: 'ports/kanidm/kernel/src/delete_acc.rs', lines 92:0-107:1
+    Source: 'prove/ports/kanidm/kernel/src/delete_acc.rs', lines 92:0-107:1
     Visibility: public -/
 @[reducible]
 def delete_acc.delete_any_acp
@@ -5473,7 +5571,7 @@ def delete_acc.delete_any_acp
     0#usize
 
 /-- [kanidm_kernel::delete_acc::delete_filter_entry]:
-    Source: 'ports/kanidm/kernel/src/delete_acc.rs', lines 52:0-89:1
+    Source: 'prove/ports/kanidm/kernel/src/delete_acc.rs', lines 52:0-89:1
     Visibility: public -/
 def delete_acc.delete_filter_entry
   (ident : Identity) (related_acp : Slice profiles.AccessControlDeleteResolved)
@@ -5507,7 +5605,7 @@ def delete_acc.delete_filter_entry
     | InternalRole.MessageQueue => ok delete_acc.IResult.Deny
 
 /-- [kanidm_kernel::delete_acc::DeleteResult]
-    Source: 'ports/kanidm/kernel/src/delete_acc.rs', lines 11:0-14:1
+    Source: 'prove/ports/kanidm/kernel/src/delete_acc.rs', lines 11:0-14:1
     Visibility: public -/
 @[discriminant isize]
 inductive delete_acc.DeleteResult where
@@ -5515,7 +5613,7 @@ inductive delete_acc.DeleteResult where
 | Grant : delete_acc.DeleteResult
 
 /-- [kanidm_kernel::delete_acc::apply_delete_access]:
-    Source: 'ports/kanidm/kernel/src/delete_acc.rs', lines 24:0-49:1
+    Source: 'prove/ports/kanidm/kernel/src/delete_acc.rs', lines 24:0-49:1
     Visibility: public -/
 def delete_acc.apply_delete_access
   (ident : Identity) (related_acp : Slice profiles.AccessControlDeleteResolved)
@@ -5542,7 +5640,7 @@ def delete_acc.apply_delete_access
     else ok delete_acc.DeleteResult.Deny
 
 /-- [kanidm_kernel::access::entry_effective_permission_check]:
-    Source: 'ports/kanidm/kernel/src/access.rs', lines 686:0-732:1
+    Source: 'prove/ports/kanidm/kernel/src/access.rs', lines 686:0-732:1
     Visibility: public -/
 def access.entry_effective_permission_check
   (ident : Identity) (entry : Entry)
@@ -5590,7 +5688,7 @@ def access.entry_effective_permission_check
     }
 
 /-- [kanidm_kernel::access::reduce_entries_loop]: loop body 0:
-    Source: 'ports/kanidm/kernel/src/access.rs', lines 212:4-244:5
+    Source: 'prove/ports/kanidm/kernel/src/access.rs', lines 212:4-244:5
     Visibility: public -/
 @[rust_loop_body]
 def access.reduce_entries_loop_loop.body
@@ -5644,7 +5742,7 @@ def access.reduce_entries_loop_loop.body
   else ok (done allowed_entries)
 
 /-- [kanidm_kernel::access::reduce_entries_loop]: loop 0:
-    Source: 'ports/kanidm/kernel/src/access.rs', lines 212:4-244:5
+    Source: 'prove/ports/kanidm/kernel/src/access.rs', lines 212:4-244:5
     Visibility: public -/
 @[rust_loop]
 def access.reduce_entries_loop_loop
@@ -5664,7 +5762,7 @@ def access.reduce_entries_loop_loop
     (ctl, se, allowed_entries, i)
 
 /-- [kanidm_kernel::access::reduce_entries_loop]:
-    Source: 'ports/kanidm/kernel/src/access.rs', lines 202:0-246:1
+    Source: 'prove/ports/kanidm/kernel/src/access.rs', lines 202:0-246:1
     Visibility: public -/
 @[reducible]
 def access.reduce_entries_loop
@@ -5679,7 +5777,7 @@ def access.reduce_entries_loop
     delete_related_acp entries (alloc.vec.Vec.new EntryReduced) 0#usize
 
 /-- [kanidm_kernel::access::search_filter_entry_attributes]:
-    Source: 'ports/kanidm/kernel/src/access.rs', lines 155:0-198:1
+    Source: 'prove/ports/kanidm/kernel/src/access.rs', lines 155:0-198:1
     Visibility: public -/
 def access.search_filter_entry_attributes
   (ctl : AccessControlsInner) (se : SearchEvent) (entries : Slice Entry) :
@@ -5716,7 +5814,7 @@ def access.search_filter_entry_attributes
     ok (core.result.Result.Err OperationError.InvalidState)
 
 /-- [kanidm_kernel::Modify]
-    Source: 'ports/kanidm/kernel/src/lib.rs', lines 159:0-165:1
+    Source: 'prove/ports/kanidm/kernel/src/lib.rs', lines 160:0-166:1
     Visibility: public -/
 @[discriminant isize]
 inductive Modify where
@@ -5727,14 +5825,14 @@ inductive Modify where
 | Set : alloc.vec.Vec Std.U8 → ValueSet → Modify
 
 /-- [kanidm_kernel::ModifyEvent]
-    Source: 'ports/kanidm/kernel/src/lib.rs', lines 269:0-272:1
+    Source: 'prove/ports/kanidm/kernel/src/lib.rs', lines 270:0-273:1
     Visibility: public -/
 structure ModifyEvent where
   ident : Identity
   modlist : alloc.vec.Vec Modify
 
 /-- [kanidm_kernel::valueset::to_str]:
-    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 339:0-346:1
+    Source: 'prove/ports/kanidm/kernel/src/valueset.rs', lines 339:0-346:1
     Visibility: public -/
 def valueset.to_str
   (v : PartialValue) : Result (Option (alloc.vec.Vec Std.U8)) := do
@@ -5747,7 +5845,7 @@ def valueset.to_str
   | PartialValue.Uint32 _ => ok none
 
 /-- [kanidm_kernel::bset::difference]: loop body 0:
-    Source: 'ports/kanidm/kernel/src/bset.rs', lines 89:4-95:5
+    Source: 'prove/ports/kanidm/kernel/src/bset.rs', lines 89:4-95:5
     Visibility: public -/
 @[rust_loop_body]
 def bset.difference_loop.body
@@ -5773,7 +5871,7 @@ def bset.difference_loop.body
   else ok (done out)
 
 /-- [kanidm_kernel::bset::difference]: loop 0:
-    Source: 'ports/kanidm/kernel/src/bset.rs', lines 89:4-95:5
+    Source: 'prove/ports/kanidm/kernel/src/bset.rs', lines 89:4-95:5
     Visibility: public -/
 @[rust_loop]
 def bset.difference_loop
@@ -5786,7 +5884,7 @@ def bset.difference_loop
     (out, i)
 
 /-- [kanidm_kernel::bset::difference]:
-    Source: 'ports/kanidm/kernel/src/bset.rs', lines 86:0-97:1
+    Source: 'prove/ports/kanidm/kernel/src/bset.rs', lines 86:0-97:1
     Visibility: public -/
 @[reducible]
 def bset.difference
@@ -5796,7 +5894,7 @@ def bset.difference
   bset.difference_loop a b (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) 0#usize
 
 /-- [kanidm_kernel::access::modify_class_change]:
-    Source: 'ports/kanidm/kernel/src/access.rs', lines 406:0-448:1
+    Source: 'prove/ports/kanidm/kernel/src/access.rs', lines 406:0-448:1
     Visibility: public -/
 def access.modify_class_change
   (entry : Entry) (m : Modify) :
@@ -5877,7 +5975,7 @@ def access.modify_class_change
         (alloc.vec.Vec Std.U8)))
 
 /-- [kanidm_kernel::access::requested_classes]: loop body 0:
-    Source: 'ports/kanidm/kernel/src/access.rs', lines 456:4-467:1
+    Source: 'prove/ports/kanidm/kernel/src/access.rs', lines 456:4-467:1
     Visibility: public -/
 @[rust_loop_body]
 def access.requested_classes_loop.body
@@ -5907,7 +6005,7 @@ def access.requested_classes_loop.body
   else ok (done (some (requested_pres_classes, requested_rem_classes)))
 
 /-- [kanidm_kernel::access::requested_classes]: loop 0:
-    Source: 'ports/kanidm/kernel/src/access.rs', lines 456:4-467:1
+    Source: 'prove/ports/kanidm/kernel/src/access.rs', lines 456:4-467:1
     Visibility: public -/
 @[rust_loop]
 def access.requested_classes_loop
@@ -5925,7 +6023,7 @@ def access.requested_classes_loop
     (requested_pres_classes, requested_rem_classes, i)
 
 /-- [kanidm_kernel::access::requested_classes]:
-    Source: 'ports/kanidm/kernel/src/access.rs', lines 452:0-467:1
+    Source: 'prove/ports/kanidm/kernel/src/access.rs', lines 452:0-467:1
     Visibility: public -/
 @[reducible]
 def access.requested_classes
@@ -5937,7 +6035,7 @@ def access.requested_classes
     Std.U8)) (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) 0#usize
 
 /-- [kanidm_kernel::access::requested_rem]: loop body 0:
-    Source: 'ports/kanidm/kernel/src/access.rs', lines 393:4-399:5
+    Source: 'prove/ports/kanidm/kernel/src/access.rs', lines 393:4-399:5
     Visibility: public -/
 @[rust_loop_body]
 def access.requested_rem_loop.body
@@ -5965,7 +6063,7 @@ def access.requested_rem_loop.body
   else ok (done out)
 
 /-- [kanidm_kernel::access::requested_rem]: loop 0:
-    Source: 'ports/kanidm/kernel/src/access.rs', lines 393:4-399:5
+    Source: 'prove/ports/kanidm/kernel/src/access.rs', lines 393:4-399:5
     Visibility: public -/
 @[rust_loop]
 def access.requested_rem_loop
@@ -5978,7 +6076,7 @@ def access.requested_rem_loop
     (out, i)
 
 /-- [kanidm_kernel::access::requested_rem]:
-    Source: 'ports/kanidm/kernel/src/access.rs', lines 390:0-401:1
+    Source: 'prove/ports/kanidm/kernel/src/access.rs', lines 390:0-401:1
     Visibility: public -/
 @[reducible]
 def access.requested_rem
@@ -5989,7 +6087,7 @@ def access.requested_rem
     0#usize
 
 /-- [kanidm_kernel::access::requested_pres]: loop body 0:
-    Source: 'ports/kanidm/kernel/src/access.rs', lines 379:4-385:5
+    Source: 'prove/ports/kanidm/kernel/src/access.rs', lines 379:4-385:5
     Visibility: public -/
 @[rust_loop_body]
 def access.requested_pres_loop.body
@@ -6017,7 +6115,7 @@ def access.requested_pres_loop.body
   else ok (done out)
 
 /-- [kanidm_kernel::access::requested_pres]: loop 0:
-    Source: 'ports/kanidm/kernel/src/access.rs', lines 379:4-385:5
+    Source: 'prove/ports/kanidm/kernel/src/access.rs', lines 379:4-385:5
     Visibility: public -/
 @[rust_loop]
 def access.requested_pres_loop
@@ -6030,7 +6128,7 @@ def access.requested_pres_loop
     (out, i)
 
 /-- [kanidm_kernel::access::requested_pres]:
-    Source: 'ports/kanidm/kernel/src/access.rs', lines 376:0-387:1
+    Source: 'prove/ports/kanidm/kernel/src/access.rs', lines 376:0-387:1
     Visibility: public -/
 @[reducible]
 def access.requested_pres
@@ -6041,7 +6139,7 @@ def access.requested_pres
     0#usize
 
 /-- [kanidm_kernel::access::is_purge_class]:
-    Source: 'ports/kanidm/kernel/src/access.rs', lines 356:0-361:1
+    Source: 'prove/ports/kanidm/kernel/src/access.rs', lines 356:0-361:1
     Visibility: public -/
 def access.is_purge_class (m : Modify) : Result Bool := do
   match m with
@@ -6057,7 +6155,7 @@ def access.is_purge_class (m : Modify) : Result Bool := do
   | Modify.Set _ _ => ok false
 
 /-- [kanidm_kernel::access::modlist_purges_class]: loop body 0:
-    Source: 'ports/kanidm/kernel/src/access.rs', lines 366:4-373:1
+    Source: 'prove/ports/kanidm/kernel/src/access.rs', lines 366:4-373:1
     Visibility: public -/
 @[rust_loop_body]
 def access.modlist_purges_class_loop.body
@@ -6076,7 +6174,7 @@ def access.modlist_purges_class_loop.body
   else ok (done false)
 
 /-- [kanidm_kernel::access::modlist_purges_class]: loop 0:
-    Source: 'ports/kanidm/kernel/src/access.rs', lines 366:4-373:1
+    Source: 'prove/ports/kanidm/kernel/src/access.rs', lines 366:4-373:1
     Visibility: public -/
 @[rust_loop]
 def access.modlist_purges_class_loop
@@ -6086,14 +6184,14 @@ def access.modlist_purges_class_loop
     i
 
 /-- [kanidm_kernel::access::modlist_purges_class]:
-    Source: 'ports/kanidm/kernel/src/access.rs', lines 364:0-373:1
+    Source: 'prove/ports/kanidm/kernel/src/access.rs', lines 364:0-373:1
     Visibility: public -/
 @[reducible]
 def access.modlist_purges_class (modlist : Slice Modify) : Result Bool := do
   access.modlist_purges_class_loop modlist 0#usize
 
 /-- [kanidm_kernel::access::modify_allow_operation_per_entry]:
-    Source: 'ports/kanidm/kernel/src/access.rs', lines 470:0-526:1
+    Source: 'prove/ports/kanidm/kernel/src/access.rs', lines 470:0-526:1
     Visibility: public -/
 def access.modify_allow_operation_per_entry
   (ctl : AccessControlsInner) (ident : Identity)
@@ -6182,7 +6280,7 @@ def access.modify_allow_operation_per_entry
           else ok false
 
 /-- [kanidm_kernel::access::modify_all_entries]: loop body 0:
-    Source: 'ports/kanidm/kernel/src/access.rs', lines 299:4-306:1
+    Source: 'prove/ports/kanidm/kernel/src/access.rs', lines 299:4-306:1
     Visibility: public -/
 @[rust_loop_body]
 def access.modify_all_entries_loop.body
@@ -6204,7 +6302,7 @@ def access.modify_all_entries_loop.body
   else ok (done true)
 
 /-- [kanidm_kernel::access::modify_all_entries]: loop 0:
-    Source: 'ports/kanidm/kernel/src/access.rs', lines 299:4-306:1
+    Source: 'prove/ports/kanidm/kernel/src/access.rs', lines 299:4-306:1
     Visibility: public -/
 @[rust_loop]
 def access.modify_all_entries_loop
@@ -6219,7 +6317,7 @@ def access.modify_all_entries_loop
     i
 
 /-- [kanidm_kernel::access::modify_all_entries]:
-    Source: 'ports/kanidm/kernel/src/access.rs', lines 291:0-306:1
+    Source: 'prove/ports/kanidm/kernel/src/access.rs', lines 291:0-306:1
     Visibility: public -/
 @[reducible]
 def access.modify_all_entries
@@ -6231,7 +6329,7 @@ def access.modify_all_entries
   access.modify_all_entries_loop ctl ident related_acp entries modlist 0#usize
 
 /-- [kanidm_kernel::access::modify_allow_operation]:
-    Source: 'ports/kanidm/kernel/src/access.rs', lines 278:0-288:1
+    Source: 'prove/ports/kanidm/kernel/src/access.rs', lines 278:0-288:1
     Visibility: public -/
 def access.modify_allow_operation
   (ctl : AccessControlsInner) (me : ModifyEvent) (entries : Slice Entry) :
@@ -6244,21 +6342,21 @@ def access.modify_allow_operation
   ok (core.result.Result.Ok b)
 
 /-- [kanidm_kernel::ModSetEntry]
-    Source: 'ports/kanidm/kernel/src/lib.rs', lines 275:0-278:1
+    Source: 'prove/ports/kanidm/kernel/src/lib.rs', lines 276:0-279:1
     Visibility: public -/
 structure ModSetEntry where
   uuid : Std.U128
   modlist : alloc.vec.Vec Modify
 
 /-- [kanidm_kernel::BatchModifyEvent]
-    Source: 'ports/kanidm/kernel/src/lib.rs', lines 281:0-284:1
+    Source: 'prove/ports/kanidm/kernel/src/lib.rs', lines 282:0-285:1
     Visibility: public -/
 structure BatchModifyEvent where
   ident : Identity
   modset : alloc.vec.Vec ModSetEntry
 
 /-- [kanidm_kernel::access::modset_get]: loop body 0:
-    Source: 'ports/kanidm/kernel/src/access.rs', lines 311:4-318:1
+    Source: 'prove/ports/kanidm/kernel/src/access.rs', lines 311:4-318:1
     Visibility: public -/
 @[rust_loop_body]
 def access.modset_get_loop.body
@@ -6278,7 +6376,7 @@ def access.modset_get_loop.body
   else ok (done none)
 
 /-- [kanidm_kernel::access::modset_get]: loop 0:
-    Source: 'ports/kanidm/kernel/src/access.rs', lines 311:4-318:1
+    Source: 'prove/ports/kanidm/kernel/src/access.rs', lines 311:4-318:1
     Visibility: public -/
 @[rust_loop]
 def access.modset_get_loop
@@ -6290,7 +6388,7 @@ def access.modset_get_loop
     i
 
 /-- [kanidm_kernel::access::modset_get]:
-    Source: 'ports/kanidm/kernel/src/access.rs', lines 309:0-318:1
+    Source: 'prove/ports/kanidm/kernel/src/access.rs', lines 309:0-318:1
     Visibility: public -/
 @[reducible]
 def access.modset_get
@@ -6300,7 +6398,7 @@ def access.modset_get
   access.modset_get_loop me uuid 0#usize
 
 /-- [kanidm_kernel::access::batch_modify_all_entries]: loop body 0:
-    Source: 'ports/kanidm/kernel/src/access.rs', lines 339:4-353:1
+    Source: 'prove/ports/kanidm/kernel/src/access.rs', lines 339:4-353:1
     Visibility: public -/
 @[rust_loop_body]
 def access.batch_modify_all_entries_loop.body
@@ -6330,7 +6428,7 @@ def access.batch_modify_all_entries_loop.body
   else ok (done true)
 
 /-- [kanidm_kernel::access::batch_modify_all_entries]: loop 0:
-    Source: 'ports/kanidm/kernel/src/access.rs', lines 339:4-353:1
+    Source: 'prove/ports/kanidm/kernel/src/access.rs', lines 339:4-353:1
     Visibility: public -/
 @[rust_loop]
 def access.batch_modify_all_entries_loop
@@ -6345,7 +6443,7 @@ def access.batch_modify_all_entries_loop
     (me, i)
 
 /-- [kanidm_kernel::access::batch_modify_all_entries]:
-    Source: 'ports/kanidm/kernel/src/access.rs', lines 332:0-353:1
+    Source: 'prove/ports/kanidm/kernel/src/access.rs', lines 332:0-353:1
     Visibility: public -/
 @[reducible]
 def access.batch_modify_all_entries
@@ -6357,7 +6455,7 @@ def access.batch_modify_all_entries
   access.batch_modify_all_entries_loop ctl me related_acp entries 0#usize
 
 /-- [kanidm_kernel::access::batch_modify_allow_operation]:
-    Source: 'ports/kanidm/kernel/src/access.rs', lines 321:0-329:1
+    Source: 'prove/ports/kanidm/kernel/src/access.rs', lines 321:0-329:1
     Visibility: public -/
 def access.batch_modify_allow_operation
   (ctl : AccessControlsInner) (me : BatchModifyEvent) (entries : Slice Entry) :
@@ -6369,7 +6467,7 @@ def access.batch_modify_allow_operation
   ok (core.result.Result.Ok b)
 
 /-- [kanidm_kernel::profiles::AccessControlCreateResolved]
-    Source: 'ports/kanidm/kernel/src/profiles.rs', lines 70:0-75:1
+    Source: 'prove/ports/kanidm/kernel/src/profiles.rs', lines 70:0-75:1
     Visibility: public -/
 structure profiles.AccessControlCreateResolved where
   classes : alloc.vec.Vec (alloc.vec.Vec Std.U8)
@@ -6378,7 +6476,7 @@ structure profiles.AccessControlCreateResolved where
   target_condition : profiles.AccessControlTargetCondition
 
 /-- [kanidm_kernel::access::create_related_acp]: loop body 0:
-    Source: 'ports/kanidm/kernel/src/access.rs', lines 536:4-550:5
+    Source: 'prove/ports/kanidm/kernel/src/access.rs', lines 536:4-550:5
     Visibility: public -/
 @[rust_loop_body]
 def access.create_related_acp_loop.body
@@ -6419,7 +6517,7 @@ def access.create_related_acp_loop.body
   else ok (done related_acp)
 
 /-- [kanidm_kernel::access::create_related_acp]: loop 0:
-    Source: 'ports/kanidm/kernel/src/access.rs', lines 536:4-550:5
+    Source: 'prove/ports/kanidm/kernel/src/access.rs', lines 536:4-550:5
     Visibility: public -/
 @[rust_loop]
 def access.create_related_acp_loop
@@ -6436,7 +6534,7 @@ def access.create_related_acp_loop
     (related_acp, i)
 
 /-- [kanidm_kernel::access::create_related_acp]:
-    Source: 'ports/kanidm/kernel/src/access.rs', lines 530:0-552:1
+    Source: 'prove/ports/kanidm/kernel/src/access.rs', lines 530:0-552:1
     Visibility: public -/
 def access.create_related_acp
   (ctl : AccessControlsInner) (ident : Identity) :
@@ -6447,13 +6545,13 @@ def access.create_related_acp
     (alloc.vec.Vec.new profiles.AccessControlCreateResolved) 0#usize
 
 /-- [kanidm_kernel::CreateEvent]
-    Source: 'ports/kanidm/kernel/src/lib.rs', lines 287:0-289:1
+    Source: 'prove/ports/kanidm/kernel/src/lib.rs', lines 288:0-290:1
     Visibility: public -/
 structure CreateEvent where
   ident : Identity
 
 /-- [kanidm_kernel::entry_impl::get_ava_names]: loop body 0:
-    Source: 'ports/kanidm/kernel/src/entry_impl.rs', lines 58:4-61:5
+    Source: 'prove/ports/kanidm/kernel/src/entry_impl.rs', lines 58:4-61:5
     Visibility: public -/
 @[rust_loop_body]
 def entry_impl.get_ava_names_loop.body
@@ -6473,7 +6571,7 @@ def entry_impl.get_ava_names_loop.body
   else ok (done out)
 
 /-- [kanidm_kernel::entry_impl::get_ava_names]: loop 0:
-    Source: 'ports/kanidm/kernel/src/entry_impl.rs', lines 58:4-61:5
+    Source: 'prove/ports/kanidm/kernel/src/entry_impl.rs', lines 58:4-61:5
     Visibility: public -/
 @[rust_loop]
 def entry_impl.get_ava_names_loop
@@ -6485,7 +6583,7 @@ def entry_impl.get_ava_names_loop
     (out, i)
 
 /-- [kanidm_kernel::entry_impl::get_ava_names]:
-    Source: 'ports/kanidm/kernel/src/entry_impl.rs', lines 55:0-63:1
+    Source: 'prove/ports/kanidm/kernel/src/entry_impl.rs', lines 55:0-63:1
     Visibility: public -/
 @[reducible]
 def entry_impl.get_ava_names
@@ -6494,7 +6592,7 @@ def entry_impl.get_ava_names
     0#usize
 
 /-- [kanidm_kernel::create_acc::IResult]
-    Source: 'ports/kanidm/kernel/src/create_acc.rs', lines 20:0-25:1
+    Source: 'prove/ports/kanidm/kernel/src/create_acc.rs', lines 20:0-25:1
     Visibility: public -/
 @[discriminant isize]
 inductive create_acc.IResult where
@@ -6507,7 +6605,7 @@ inductive create_acc.IResult where
   create_acc.IResult
 
 /-- [kanidm_kernel::create_acc::message_queue]:
-    Source: 'ports/kanidm/kernel/src/create_acc.rs', lines 270:0-296:1
+    Source: 'prove/ports/kanidm/kernel/src/create_acc.rs', lines 270:0-296:1
     Visibility: public -/
 def create_acc.message_queue
   (ident : Identity) (entry : Entry) : Result create_acc.IResult := do
@@ -6588,7 +6686,7 @@ def create_acc.message_queue
         else ok create_acc.IResult.Deny
 
 /-- [kanidm_kernel::create_acc::migration_filter_entry]:
-    Source: 'ports/kanidm/kernel/src/create_acc.rs', lines 244:0-267:1
+    Source: 'prove/ports/kanidm/kernel/src/create_acc.rs', lines 244:0-267:1
     Visibility: public -/
 def create_acc.migration_filter_entry
   (ident : Identity) (entry : Entry) : Result create_acc.IResult := do
@@ -6623,7 +6721,7 @@ def create_acc.migration_filter_entry
     | InternalRole.MessageQueue => ok create_acc.IResult.Ignore
 
 /-- [kanidm_kernel::valueset::to_uuid_single]:
-    Source: 'ports/kanidm/kernel/src/valueset.rs', lines 317:0-328:1
+    Source: 'prove/ports/kanidm/kernel/src/valueset.rs', lines 317:0-328:1
     Visibility: public -/
 def valueset.to_uuid_single (vs : ValueSet) : Result (Option Std.U128) := do
   match vs with
@@ -6644,7 +6742,7 @@ def valueset.to_uuid_single (vs : ValueSet) : Result (Option Std.U128) := do
   | ValueSet.OauthScopeMap _ => ok none
 
 /-- [kanidm_kernel::entry_impl::get_uuid_init]:
-    Source: 'ports/kanidm/kernel/src/entry_impl.rs', lines 66:0-71:1
+    Source: 'prove/ports/kanidm/kernel/src/entry_impl.rs', lines 66:0-71:1
     Visibility: public -/
 def entry_impl.get_uuid_init (e : Entry) : Result (Option Std.U128) := do
   let s ←
@@ -6656,7 +6754,7 @@ def entry_impl.get_uuid_init (e : Entry) : Result (Option Std.U128) := do
   | some vs => valueset.to_uuid_single vs
 
 /-- [kanidm_kernel::create_acc::protected_filter_entry]:
-    Source: 'ports/kanidm/kernel/src/create_acc.rs', lines 208:0-241:1
+    Source: 'prove/ports/kanidm/kernel/src/create_acc.rs', lines 208:0-241:1
     Visibility: public -/
 def create_acc.protected_filter_entry
   (ident : Identity) (entry : Entry) : Result create_acc.IResult := do
@@ -6733,7 +6831,7 @@ def create_acc.protected_filter_entry
     | InternalRole.MessageQueue => ok create_acc.IResult.Ignore
 
 /-- [kanidm_kernel::create_acc::create_acp_allows]:
-    Source: 'ports/kanidm/kernel/src/create_acc.rs', lines 175:0-205:1
+    Source: 'prove/ports/kanidm/kernel/src/create_acc.rs', lines 175:0-205:1
     Visibility: public -/
 def create_acc.create_acp_allows
   (accr : profiles.AccessControlCreateResolved) (entry : Entry)
@@ -6760,7 +6858,7 @@ def create_acc.create_acp_allows
   | profiles.AccessControlReceiverCondition.EntryManager => ok false
 
 /-- [kanidm_kernel::create_acc::create_any_acp]: loop body 0:
-    Source: 'ports/kanidm/kernel/src/create_acc.rs', lines 165:4-172:1
+    Source: 'prove/ports/kanidm/kernel/src/create_acc.rs', lines 165:4-172:1
     Visibility: public -/
 @[rust_loop_body]
 def create_acc.create_any_acp_loop.body
@@ -6782,7 +6880,7 @@ def create_acc.create_any_acp_loop.body
   else ok (done false)
 
 /-- [kanidm_kernel::create_acc::create_any_acp]: loop 0:
-    Source: 'ports/kanidm/kernel/src/create_acc.rs', lines 165:4-172:1
+    Source: 'prove/ports/kanidm/kernel/src/create_acc.rs', lines 165:4-172:1
     Visibility: public -/
 @[rust_loop]
 def create_acc.create_any_acp_loop
@@ -6797,7 +6895,7 @@ def create_acc.create_any_acp_loop
     i
 
 /-- [kanidm_kernel::create_acc::create_any_acp]:
-    Source: 'ports/kanidm/kernel/src/create_acc.rs', lines 158:0-172:1
+    Source: 'prove/ports/kanidm/kernel/src/create_acc.rs', lines 158:0-172:1
     Visibility: public -/
 @[reducible]
 def create_acc.create_any_acp
@@ -6810,7 +6908,7 @@ def create_acc.create_any_acp
     0#usize
 
 /-- [kanidm_kernel::create_acc::create_filter_entry]:
-    Source: 'ports/kanidm/kernel/src/create_acc.rs', lines 100:0-155:1
+    Source: 'prove/ports/kanidm/kernel/src/create_acc.rs', lines 100:0-155:1
     Visibility: public -/
 def create_acc.create_filter_entry
   (ident : Identity) (related_acp : Slice profiles.AccessControlCreateResolved)
@@ -6891,7 +6989,7 @@ def create_acc.create_filter_entry
     | InternalRole.MessageQueue => ok create_acc.IResult.Ignore
 
 /-- [kanidm_kernel::create_acc::CreateResult]
-    Source: 'ports/kanidm/kernel/src/create_acc.rs', lines 13:0-17:1
+    Source: 'prove/ports/kanidm/kernel/src/create_acc.rs', lines 13:0-17:1
     Visibility: public -/
 @[discriminant isize]
 inductive create_acc.CreateResult where
@@ -6903,7 +7001,7 @@ inductive create_acc.CreateResult where
   create_acc.CreateResult
 
 /-- [kanidm_kernel::create_acc::apply_create_access]:
-    Source: 'ports/kanidm/kernel/src/create_acc.rs', lines 28:0-97:1
+    Source: 'prove/ports/kanidm/kernel/src/create_acc.rs', lines 28:0-97:1
     Visibility: public -/
 def create_acc.apply_create_access
   (ident : Identity) (related_acp : Slice profiles.AccessControlCreateResolved)
@@ -6998,7 +7096,7 @@ def create_acc.apply_create_access
       ok (create_acc.CreateResult.Allow allowed_pres allowed_pres_cls1)
 
 /-- [kanidm_kernel::access::create_allow_entry]:
-    Source: 'ports/kanidm/kernel/src/access.rs', lines 579:0-605:1
+    Source: 'prove/ports/kanidm/kernel/src/access.rs', lines 579:0-605:1
     Visibility: public -/
 def access.create_allow_entry
   (ident : Identity) (related_acp : Slice profiles.AccessControlCreateResolved)
@@ -7032,7 +7130,7 @@ def access.create_allow_entry
       else ok false
 
 /-- [kanidm_kernel::access::create_all_entries]: loop body 0:
-    Source: 'ports/kanidm/kernel/src/access.rs', lines 569:4-576:1
+    Source: 'prove/ports/kanidm/kernel/src/access.rs', lines 569:4-576:1
     Visibility: public -/
 @[rust_loop_body]
 def access.create_all_entries_loop.body
@@ -7052,7 +7150,7 @@ def access.create_all_entries_loop.body
   else ok (done true)
 
 /-- [kanidm_kernel::access::create_all_entries]: loop 0:
-    Source: 'ports/kanidm/kernel/src/access.rs', lines 569:4-576:1
+    Source: 'prove/ports/kanidm/kernel/src/access.rs', lines 569:4-576:1
     Visibility: public -/
 @[rust_loop]
 def access.create_all_entries_loop
@@ -7066,7 +7164,7 @@ def access.create_all_entries_loop
     i
 
 /-- [kanidm_kernel::access::create_all_entries]:
-    Source: 'ports/kanidm/kernel/src/access.rs', lines 567:0-576:1
+    Source: 'prove/ports/kanidm/kernel/src/access.rs', lines 567:0-576:1
     Visibility: public -/
 @[reducible]
 def access.create_all_entries
@@ -7077,7 +7175,7 @@ def access.create_all_entries
   access.create_all_entries_loop ident related_acp entries 0#usize
 
 /-- [kanidm_kernel::access::create_allow_operation]:
-    Source: 'ports/kanidm/kernel/src/access.rs', lines 555:0-564:1
+    Source: 'prove/ports/kanidm/kernel/src/access.rs', lines 555:0-564:1
     Visibility: public -/
 def access.create_allow_operation
   (ctl : AccessControlsInner) (ce : CreateEvent) (entries : Slice Entry) :
@@ -7089,13 +7187,13 @@ def access.create_allow_operation
   ok (core.result.Result.Ok b)
 
 /-- [kanidm_kernel::DeleteEvent]
-    Source: 'ports/kanidm/kernel/src/lib.rs', lines 292:0-294:1
+    Source: 'prove/ports/kanidm/kernel/src/lib.rs', lines 293:0-295:1
     Visibility: public -/
 structure DeleteEvent where
   ident : Identity
 
 /-- [kanidm_kernel::access::delete_all_entries]: loop body 0:
-    Source: 'ports/kanidm/kernel/src/access.rs', lines 642:4-650:1
+    Source: 'prove/ports/kanidm/kernel/src/access.rs', lines 642:4-650:1
     Visibility: public -/
 @[rust_loop_body]
 def access.delete_all_entries_loop.body
@@ -7115,7 +7213,7 @@ def access.delete_all_entries_loop.body
   else ok (done true)
 
 /-- [kanidm_kernel::access::delete_all_entries]: loop 0:
-    Source: 'ports/kanidm/kernel/src/access.rs', lines 642:4-650:1
+    Source: 'prove/ports/kanidm/kernel/src/access.rs', lines 642:4-650:1
     Visibility: public -/
 @[rust_loop]
 def access.delete_all_entries_loop
@@ -7129,7 +7227,7 @@ def access.delete_all_entries_loop
     i
 
 /-- [kanidm_kernel::access::delete_all_entries]:
-    Source: 'ports/kanidm/kernel/src/access.rs', lines 640:0-650:1
+    Source: 'prove/ports/kanidm/kernel/src/access.rs', lines 640:0-650:1
     Visibility: public -/
 @[reducible]
 def access.delete_all_entries
@@ -7140,7 +7238,7 @@ def access.delete_all_entries
   access.delete_all_entries_loop ident related_acp entries 0#usize
 
 /-- [kanidm_kernel::access::delete_allow_operation]:
-    Source: 'ports/kanidm/kernel/src/access.rs', lines 628:0-637:1
+    Source: 'prove/ports/kanidm/kernel/src/access.rs', lines 628:0-637:1
     Visibility: public -/
 def access.delete_allow_operation
   (ctl : AccessControlsInner) (de : DeleteEvent) (entries : Slice Entry) :
@@ -7152,7 +7250,7 @@ def access.delete_allow_operation
   ok (core.result.Result.Ok b)
 
 /-- [kanidm_kernel::access::effective_permission_check]: loop body 0:
-    Source: 'ports/kanidm/kernel/src/access.rs', lines 670:4-680:5
+    Source: 'prove/ports/kanidm/kernel/src/access.rs', lines 670:4-680:5
     Visibility: public -/
 @[rust_loop_body]
 def access.effective_permission_check_loop.body
@@ -7181,7 +7279,7 @@ def access.effective_permission_check_loop.body
   else ok (done effective_permissions)
 
 /-- [kanidm_kernel::access::effective_permission_check]: loop 0:
-    Source: 'ports/kanidm/kernel/src/access.rs', lines 670:4-680:5
+    Source: 'prove/ports/kanidm/kernel/src/access.rs', lines 670:4-680:5
     Visibility: public -/
 @[rust_loop]
 def access.effective_permission_check_loop
@@ -7202,7 +7300,7 @@ def access.effective_permission_check_loop
     (effective_permissions, i)
 
 /-- [kanidm_kernel::access::effective_permission_check]:
-    Source: 'ports/kanidm/kernel/src/access.rs', lines 653:0-683:1
+    Source: 'prove/ports/kanidm/kernel/src/access.rs', lines 653:0-683:1
     Visibility: public -/
 def access.effective_permission_check
   (ctl : AccessControlsInner) (ident : Identity)
@@ -7219,5 +7317,1783 @@ def access.effective_permission_check
       modify_related_acp delete_related_acp ctl.sync_agreements
       (alloc.vec.Vec.new AccessEffectivePermission) 0#usize
   ok (core.result.Result.Ok effective_permissions)
+
+/-- [kanidm_kernel::account_policy::Policy]
+    Source: 'prove/ports/kanidm/kernel/src/account_policy.rs', lines 4:0-12:1
+    Visibility: public -/
+structure account_policy.Policy where
+  privilege_expiry : Std.U32
+  authsession_expiry : Std.U32
+  pw_min_length : Std.U32
+  credential_policy : Std.U16
+  limit_search_max_filter_test : Option Std.U64
+  limit_search_max_results : Option Std.U64
+  allow_primary_cred_fallback : Option Bool
+
+/-- [kanidm_kernel::account_policy::{impl core::clone::Clone for kanidm_kernel::account_policy::Policy}::clone]:
+    Source: 'prove/ports/kanidm/kernel/src/account_policy.rs', lines 3:9-3:14
+    Visibility: public -/
+def account_policy.Policy.Insts.CoreCloneClone.clone
+  (self : account_policy.Policy) : Result account_policy.Policy := do
+  ok self
+
+/-- Trait implementation: [kanidm_kernel::account_policy::{impl core::clone::Clone for kanidm_kernel::account_policy::Policy}]
+    Source: 'prove/ports/kanidm/kernel/src/account_policy.rs', lines 3:9-3:14 -/
+@[reducible]
+def account_policy.Policy.Insts.CoreCloneClone : core.clone.Clone
+  account_policy.Policy := {
+  clone := account_policy.Policy.Insts.CoreCloneClone.clone
+}
+
+/-- Trait implementation: [kanidm_kernel::account_policy::{impl core::marker::Copy for kanidm_kernel::account_policy::Policy}]
+    Source: 'prove/ports/kanidm/kernel/src/account_policy.rs', lines 3:16-3:20 -/
+@[reducible]
+def account_policy.Policy.Insts.CoreMarkerCopy : core.marker.Copy
+  account_policy.Policy := {
+  cloneInst := account_policy.Policy.Insts.CoreCloneClone
+}
+
+/-- [kanidm_kernel::account_policy::{impl core::fmt::Debug for kanidm_kernel::account_policy::Policy}::fmt]:
+    Source: 'prove/ports/kanidm/kernel/src/account_policy.rs', lines 3:22-3:27
+    Visibility: public -/
+def account_policy.Policy.Insts.CoreFmtDebug.fmt
+  (self : account_policy.Policy) (f : core.fmt.Formatter) :
+  Result ((core.result.Result Unit core.fmt.Error) × core.fmt.Formatter)
+  := do
+  let dyn := Dyn.mk _ core.fmt.DebugU32 self.privilege_expiry
+  let dyn1 := Dyn.mk _ core.fmt.DebugU32 self.authsession_expiry
+  let dyn2 := Dyn.mk _ core.fmt.DebugU32 self.pw_min_length
+  let dyn3 := Dyn.mk _ core.fmt.DebugU16 self.credential_policy
+  let dyn4 :=
+    Dyn.mk _ (core.option.Option.Insts.CoreFmtDebug core.fmt.DebugU64)
+      self.limit_search_max_filter_test
+  let dyn5 :=
+    Dyn.mk _ (core.option.Option.Insts.CoreFmtDebug core.fmt.DebugU64)
+      self.limit_search_max_results
+  let dyn6 :=
+    Dyn.mk _ (core.fmt.DebugShared (core.option.Option.Insts.CoreFmtDebug
+      core.fmt.DebugBool)) self.allow_primary_cred_fallback
+  let values :=
+    Array.to_slice
+      (Array.make 7#usize [ dyn, dyn1, dyn2, dyn3, dyn4, dyn5, dyn6 ])
+  let s ←
+    lift (Array.to_slice
+      (Array.make 7#usize [
+        toStr "privilege_expiry", toStr "authsession_expiry", toStr
+        "pw_min_length", toStr "credential_policy", toStr
+        "limit_search_max_filter_test", toStr "limit_search_max_results", toStr
+        "allow_primary_cred_fallback"
+        ]))
+  core.fmt.Formatter.debug_struct_fields_finish f (toStr "Policy") s values
+
+/-- Trait implementation: [kanidm_kernel::account_policy::{impl core::fmt::Debug for kanidm_kernel::account_policy::Policy}]
+    Source: 'prove/ports/kanidm/kernel/src/account_policy.rs', lines 3:22-3:27 -/
+@[reducible]
+def account_policy.Policy.Insts.CoreFmtDebug : core.fmt.Debug
+  account_policy.Policy := {
+  fmt := account_policy.Policy.Insts.CoreFmtDebug.fmt
+}
+
+/-- Trait implementation: [kanidm_kernel::account_policy::{impl core::marker::StructuralPartialEq for kanidm_kernel::account_policy::Policy}]
+    Source: 'prove/ports/kanidm/kernel/src/account_policy.rs', lines 3:29-3:38 -/
+@[reducible]
+def account_policy.Policy.Insts.CoreMarkerStructuralPartialEq :
+  core.marker.StructuralPartialEq account_policy.Policy := {
+}
+
+/-- [kanidm_kernel::account_policy::{impl core::cmp::PartialEq<kanidm_kernel::account_policy::Policy> for kanidm_kernel::account_policy::Policy}::eq]:
+    Source: 'prove/ports/kanidm/kernel/src/account_policy.rs', lines 3:29-3:38
+    Visibility: public -/
+def account_policy.Policy.Insts.CoreCmpPartialEqPolicy.eq
+  (self : account_policy.Policy) (other : account_policy.Policy) :
+  Result Bool
+  := do
+  if self.privilege_expiry = other.privilege_expiry
+  then
+    if self.authsession_expiry = other.authsession_expiry
+    then
+      if self.pw_min_length = other.pw_min_length
+      then
+        if self.credential_policy = other.credential_policy
+        then
+          let b ←
+            core.option.Option.Insts.CoreCmpPartialEqOption.eq
+              core.cmp.PartialEqU64 self.limit_search_max_filter_test
+              other.limit_search_max_filter_test
+          if b
+          then
+            let b1 ←
+              core.option.Option.Insts.CoreCmpPartialEqOption.eq
+                core.cmp.PartialEqU64 self.limit_search_max_results
+                other.limit_search_max_results
+            if b1
+            then
+              core.option.Option.Insts.CoreCmpPartialEqOption.eq
+                core.cmp.PartialEqBool self.allow_primary_cred_fallback
+                other.allow_primary_cred_fallback
+            else ok false
+          else ok false
+        else ok false
+      else ok false
+    else ok false
+  else ok false
+
+/-- Trait implementation: [kanidm_kernel::account_policy::{impl core::cmp::PartialEq<kanidm_kernel::account_policy::Policy> for kanidm_kernel::account_policy::Policy}]
+    Source: 'prove/ports/kanidm/kernel/src/account_policy.rs', lines 3:29-3:38 -/
+@[reducible]
+def account_policy.Policy.Insts.CoreCmpPartialEqPolicy : core.cmp.PartialEq
+  account_policy.Policy account_policy.Policy := {
+  eq := account_policy.Policy.Insts.CoreCmpPartialEqPolicy.eq
+}
+
+/-- [kanidm_kernel::account_policy::{impl core::cmp::Eq for kanidm_kernel::account_policy::Policy}::assert_fields_are_eq]:
+    Source: 'prove/ports/kanidm/kernel/src/account_policy.rs', lines 3:40-3:42
+    Visibility: public -/
+def account_policy.Policy.Insts.CoreCmpEq.assert_fields_are_eq
+  (self : account_policy.Policy) : Result Unit := do
+  ok ()
+
+/-- Trait implementation: [kanidm_kernel::account_policy::{impl core::cmp::Eq for kanidm_kernel::account_policy::Policy}]
+    Source: 'prove/ports/kanidm/kernel/src/account_policy.rs', lines 3:40-3:42 -/
+@[reducible]
+def account_policy.Policy.Insts.CoreCmpEq : core.cmp.Eq account_policy.Policy
+  := {
+  partialEqInst := account_policy.Policy.Insts.CoreCmpPartialEqPolicy
+  assert_fields_are_eq :=
+    account_policy.Policy.Insts.CoreCmpEq.assert_fields_are_eq
+}
+
+/-- [kanidm_kernel::account_policy::Resolved]
+    Source: 'prove/ports/kanidm/kernel/src/account_policy.rs', lines 14:0-17:1
+    Visibility: public -/
+structure account_policy.Resolved where
+  policy : account_policy.Policy
+  pw_max_length : Std.U32
+
+/-- [kanidm_kernel::account_policy::{impl core::clone::Clone for kanidm_kernel::account_policy::Resolved}::clone]:
+    Source: 'prove/ports/kanidm/kernel/src/account_policy.rs', lines 13:9-13:14
+    Visibility: public -/
+def account_policy.Resolved.Insts.CoreCloneClone.clone
+  (self : account_policy.Resolved) : Result account_policy.Resolved := do
+  ok self
+
+/-- Trait implementation: [kanidm_kernel::account_policy::{impl core::clone::Clone for kanidm_kernel::account_policy::Resolved}]
+    Source: 'prove/ports/kanidm/kernel/src/account_policy.rs', lines 13:9-13:14 -/
+@[reducible]
+def account_policy.Resolved.Insts.CoreCloneClone : core.clone.Clone
+  account_policy.Resolved := {
+  clone := account_policy.Resolved.Insts.CoreCloneClone.clone
+}
+
+/-- Trait implementation: [kanidm_kernel::account_policy::{impl core::marker::Copy for kanidm_kernel::account_policy::Resolved}]
+    Source: 'prove/ports/kanidm/kernel/src/account_policy.rs', lines 13:16-13:20 -/
+@[reducible]
+def account_policy.Resolved.Insts.CoreMarkerCopy : core.marker.Copy
+  account_policy.Resolved := {
+  cloneInst := account_policy.Resolved.Insts.CoreCloneClone
+}
+
+/-- [kanidm_kernel::account_policy::{impl core::fmt::Debug for kanidm_kernel::account_policy::Resolved}::fmt]:
+    Source: 'prove/ports/kanidm/kernel/src/account_policy.rs', lines 13:22-13:27
+    Visibility: public -/
+def account_policy.Resolved.Insts.CoreFmtDebug.fmt
+  (self : account_policy.Resolved) (f : core.fmt.Formatter) :
+  Result ((core.result.Result Unit core.fmt.Error) × core.fmt.Formatter)
+  := do
+  let dyn := Dyn.mk _ account_policy.Policy.Insts.CoreFmtDebug self.policy
+  let dyn1 :=
+    Dyn.mk _ (core.fmt.DebugShared core.fmt.DebugU32) self.pw_max_length
+  core.fmt.Formatter.debug_struct_field2_finish f (toStr "Resolved") (toStr
+    "policy") dyn (toStr "pw_max_length") dyn1
+
+/-- Trait implementation: [kanidm_kernel::account_policy::{impl core::fmt::Debug for kanidm_kernel::account_policy::Resolved}]
+    Source: 'prove/ports/kanidm/kernel/src/account_policy.rs', lines 13:22-13:27 -/
+@[reducible]
+def account_policy.Resolved.Insts.CoreFmtDebug : core.fmt.Debug
+  account_policy.Resolved := {
+  fmt := account_policy.Resolved.Insts.CoreFmtDebug.fmt
+}
+
+/-- Trait implementation: [kanidm_kernel::account_policy::{impl core::marker::StructuralPartialEq for kanidm_kernel::account_policy::Resolved}]
+    Source: 'prove/ports/kanidm/kernel/src/account_policy.rs', lines 13:29-13:38 -/
+@[reducible]
+def account_policy.Resolved.Insts.CoreMarkerStructuralPartialEq :
+  core.marker.StructuralPartialEq account_policy.Resolved := {
+}
+
+/-- [kanidm_kernel::account_policy::{impl core::cmp::PartialEq<kanidm_kernel::account_policy::Resolved> for kanidm_kernel::account_policy::Resolved}::eq]:
+    Source: 'prove/ports/kanidm/kernel/src/account_policy.rs', lines 13:29-13:38
+    Visibility: public -/
+def account_policy.Resolved.Insts.CoreCmpPartialEqResolved.eq
+  (self : account_policy.Resolved) (other : account_policy.Resolved) :
+  Result Bool
+  := do
+  if self.pw_max_length = other.pw_max_length
+  then
+    account_policy.Policy.Insts.CoreCmpPartialEqPolicy.eq self.policy
+      other.policy
+  else ok false
+
+/-- Trait implementation: [kanidm_kernel::account_policy::{impl core::cmp::PartialEq<kanidm_kernel::account_policy::Resolved> for kanidm_kernel::account_policy::Resolved}]
+    Source: 'prove/ports/kanidm/kernel/src/account_policy.rs', lines 13:29-13:38 -/
+@[reducible]
+def account_policy.Resolved.Insts.CoreCmpPartialEqResolved : core.cmp.PartialEq
+  account_policy.Resolved account_policy.Resolved := {
+  eq := account_policy.Resolved.Insts.CoreCmpPartialEqResolved.eq
+}
+
+/-- [kanidm_kernel::account_policy::{impl core::cmp::Eq for kanidm_kernel::account_policy::Resolved}::assert_fields_are_eq]:
+    Source: 'prove/ports/kanidm/kernel/src/account_policy.rs', lines 13:40-13:42
+    Visibility: public -/
+def account_policy.Resolved.Insts.CoreCmpEq.assert_fields_are_eq
+  (self : account_policy.Resolved) : Result Unit := do
+  ok ()
+
+/-- Trait implementation: [kanidm_kernel::account_policy::{impl core::cmp::Eq for kanidm_kernel::account_policy::Resolved}]
+    Source: 'prove/ports/kanidm/kernel/src/account_policy.rs', lines 13:40-13:42 -/
+@[reducible]
+def account_policy.Resolved.Insts.CoreCmpEq : core.cmp.Eq
+  account_policy.Resolved := {
+  partialEqInst := account_policy.Resolved.Insts.CoreCmpPartialEqResolved
+  assert_fields_are_eq :=
+    account_policy.Resolved.Insts.CoreCmpEq.assert_fields_are_eq
+}
+
+/-- [kanidm_kernel::account_policy::initial]:
+    Source: 'prove/ports/kanidm/kernel/src/account_policy.rs', lines 18:0-23:1
+    Visibility: public -/
+def account_policy.initial : Result account_policy.Policy := do
+  ok
+    {
+      privilege_expiry := 3600#u32,
+      authsession_expiry := core.num.U32.MAX,
+      pw_min_length := 10#u32,
+      credential_policy := 0#u16,
+      limit_search_max_filter_test := none,
+      limit_search_max_results := none,
+      allow_primary_cred_fallback := none
+    }
+
+/-- [kanidm_kernel::account_policy::option_max]:
+    Source: 'prove/ports/kanidm/kernel/src/account_policy.rs', lines 24:0-27:1
+    Visibility: public -/
+def account_policy.option_max
+  (acc : Option Std.U64) (pol : Option Std.U64) : Result (Option Std.U64) := do
+  match pol with
+  | none => ok acc
+  | some p =>
+    match acc with
+    | none => ok pol
+    | some a => if p > a
+                then ok pol
+                else ok acc
+
+/-- [kanidm_kernel::account_policy::combine]:
+    Source: 'prove/ports/kanidm/kernel/src/account_policy.rs', lines 28:0-41:1
+    Visibility: public -/
+def account_policy.combine
+  (acc : account_policy.Policy) (pol : account_policy.Policy) :
+  Result account_policy.Policy
+  := do
+  let i ←
+    if pol.privilege_expiry < acc.privilege_expiry
+    then ok pol.privilege_expiry
+    else ok acc.privilege_expiry
+  let i1 ←
+    if pol.authsession_expiry < acc.authsession_expiry
+    then ok pol.authsession_expiry
+    else ok acc.authsession_expiry
+  let i2 ←
+    if pol.pw_min_length > acc.pw_min_length
+    then ok pol.pw_min_length
+    else ok acc.pw_min_length
+  let i3 ←
+    if pol.credential_policy > acc.credential_policy
+    then ok pol.credential_policy
+    else ok acc.credential_policy
+  let o ←
+    account_policy.option_max acc.limit_search_max_filter_test
+      pol.limit_search_max_filter_test
+  let o1 ←
+    account_policy.option_max acc.limit_search_max_results
+      pol.limit_search_max_results
+  match pol.allow_primary_cred_fallback with
+  | none =>
+    ok
+      {
+        acc
+          with
+          privilege_expiry := i,
+          authsession_expiry := i1,
+          pw_min_length := i2,
+          credential_policy := i3,
+          limit_search_max_filter_test := o,
+          limit_search_max_results := o1
+      }
+  | some p =>
+    match acc.allow_primary_cred_fallback with
+    | none =>
+      ok
+        {
+          privilege_expiry := i,
+          authsession_expiry := i1,
+          pw_min_length := i2,
+          credential_policy := i3,
+          limit_search_max_filter_test := o,
+          limit_search_max_results := o1,
+          allow_primary_cred_fallback := pol.allow_primary_cred_fallback
+        }
+    | some _ =>
+      if p
+      then
+        ok
+          {
+            privilege_expiry := i,
+            authsession_expiry := i1,
+            pw_min_length := i2,
+            credential_policy := i3,
+            limit_search_max_filter_test := o,
+            limit_search_max_results := o1,
+            allow_primary_cred_fallback := acc.allow_primary_cred_fallback
+          }
+      else
+        ok
+          {
+            privilege_expiry := i,
+            authsession_expiry := i1,
+            pw_min_length := i2,
+            credential_policy := i3,
+            limit_search_max_filter_test := o,
+            limit_search_max_results := o1,
+            allow_primary_cred_fallback := pol.allow_primary_cred_fallback
+          }
+
+/-- [kanidm_kernel::account_policy::finalize]:
+    Source: 'prove/ports/kanidm/kernel/src/account_policy.rs', lines 42:0-48:1
+    Visibility: public -/
+def account_policy.finalize
+  (acc : account_policy.Policy) : Result account_policy.Resolved := do
+  if acc.credential_policy < 10#u16
+  then
+    if acc.pw_min_length < 15#u32
+    then
+      ok
+        {
+          policy := { acc with pw_min_length := 15#u32 },
+          pw_max_length := 128#u32
+        }
+    else ok { policy := acc, pw_max_length := 128#u32 }
+  else ok { policy := acc, pw_max_length := 128#u32 }
+
+/-- [kanidm_kernel::account_policy::fold_from]: loop body 0:
+    Source: 'prove/ports/kanidm/kernel/src/account_policy.rs', lines 52:4-55:5
+    Visibility: public -/
+@[rust_loop_body]
+def account_policy.fold_from_loop.body
+  (policies : Slice account_policy.Policy) (acc : account_policy.Policy)
+  (i : Std.Usize) :
+  Result (ControlFlow (account_policy.Policy × Std.Usize)
+    account_policy.Policy)
+  := do
+  let i1 := Slice.len policies
+  if i < i1
+  then
+    let p ← Slice.index_usize policies i
+    let acc1 ← account_policy.combine acc p
+    let i2 ← i + 1#usize
+    ok (cont (acc1, i2))
+  else ok (done acc)
+
+/-- [kanidm_kernel::account_policy::fold_from]: loop 0:
+    Source: 'prove/ports/kanidm/kernel/src/account_policy.rs', lines 52:4-55:5
+    Visibility: public -/
+@[rust_loop]
+def account_policy.fold_from_loop
+  (policies : Slice account_policy.Policy) (acc : account_policy.Policy)
+  (i : Std.Usize) :
+  Result account_policy.Policy
+  := do
+  loop
+    (fun (acc1, i1) => account_policy.fold_from_loop.body policies acc1 i1)
+    (acc, i)
+
+/-- [kanidm_kernel::account_policy::fold_from]:
+    Source: 'prove/ports/kanidm/kernel/src/account_policy.rs', lines 49:0-57:1
+    Visibility: public -/
+def account_policy.fold_from
+  (policies : Slice account_policy.Policy) :
+  Result account_policy.Resolved
+  := do
+  let acc ← account_policy.initial
+  let acc1 ← account_policy.fold_from_loop policies acc 0#usize
+  account_policy.finalize acc1
+
+/-- [kanidm_kernel::credential_commit::Policy]
+    Source: 'prove/ports/kanidm/kernel/src/credential_commit.rs', lines 5:0-5:94
+    Visibility: public -/
+@[discriminant isize]
+inductive credential_commit.Policy where
+| Any : credential_commit.Policy
+| External : credential_commit.Policy
+| Mfa : credential_commit.Policy
+| Passkey : credential_commit.Policy
+| AttestedPasskey : credential_commit.Policy
+| AttestedResidentkey : credential_commit.Policy
+| Invalid : credential_commit.Policy
+
+/-- [kanidm_kernel::credential_commit::{impl core::clone::Clone for kanidm_kernel::credential_commit::Policy}::clone]:
+    Source: 'prove/ports/kanidm/kernel/src/credential_commit.rs', lines 4:9-4:14
+    Visibility: public -/
+def credential_commit.Policy.Insts.CoreCloneClone.clone
+  (self : credential_commit.Policy) : Result credential_commit.Policy := do
+  ok self
+
+/-- Trait implementation: [kanidm_kernel::credential_commit::{impl core::clone::Clone for kanidm_kernel::credential_commit::Policy}]
+    Source: 'prove/ports/kanidm/kernel/src/credential_commit.rs', lines 4:9-4:14 -/
+@[reducible]
+def credential_commit.Policy.Insts.CoreCloneClone : core.clone.Clone
+  credential_commit.Policy := {
+  clone := credential_commit.Policy.Insts.CoreCloneClone.clone
+}
+
+/-- Trait implementation: [kanidm_kernel::credential_commit::{impl core::marker::Copy for kanidm_kernel::credential_commit::Policy}]
+    Source: 'prove/ports/kanidm/kernel/src/credential_commit.rs', lines 4:16-4:20 -/
+@[reducible]
+def credential_commit.Policy.Insts.CoreMarkerCopy : core.marker.Copy
+  credential_commit.Policy := {
+  cloneInst := credential_commit.Policy.Insts.CoreCloneClone
+}
+
+/-- [kanidm_kernel::credential_commit::{impl core::fmt::Debug for kanidm_kernel::credential_commit::Policy}::fmt]:
+    Source: 'prove/ports/kanidm/kernel/src/credential_commit.rs', lines 4:22-4:27
+    Visibility: public -/
+def credential_commit.Policy.Insts.CoreFmtDebug.fmt
+  (self : credential_commit.Policy) (f : core.fmt.Formatter) :
+  Result ((core.result.Result Unit core.fmt.Error) × core.fmt.Formatter)
+  := do
+  match self with
+  | credential_commit.Policy.Any =>
+    core.fmt.Formatter.write_str f (toStr "Any")
+  | credential_commit.Policy.External =>
+    core.fmt.Formatter.write_str f (toStr "External")
+  | credential_commit.Policy.Mfa =>
+    core.fmt.Formatter.write_str f (toStr "Mfa")
+  | credential_commit.Policy.Passkey =>
+    core.fmt.Formatter.write_str f (toStr "Passkey")
+  | credential_commit.Policy.AttestedPasskey =>
+    core.fmt.Formatter.write_str f (toStr "AttestedPasskey")
+  | credential_commit.Policy.AttestedResidentkey =>
+    core.fmt.Formatter.write_str f (toStr "AttestedResidentkey")
+  | credential_commit.Policy.Invalid =>
+    core.fmt.Formatter.write_str f (toStr "Invalid")
+
+/-- Trait implementation: [kanidm_kernel::credential_commit::{impl core::fmt::Debug for kanidm_kernel::credential_commit::Policy}]
+    Source: 'prove/ports/kanidm/kernel/src/credential_commit.rs', lines 4:22-4:27 -/
+@[reducible]
+def credential_commit.Policy.Insts.CoreFmtDebug : core.fmt.Debug
+  credential_commit.Policy := {
+  fmt := credential_commit.Policy.Insts.CoreFmtDebug.fmt
+}
+
+/-- Trait implementation: [kanidm_kernel::credential_commit::{impl core::marker::StructuralPartialEq for kanidm_kernel::credential_commit::Policy}]
+    Source: 'prove/ports/kanidm/kernel/src/credential_commit.rs', lines 4:29-4:38 -/
+@[reducible]
+def credential_commit.Policy.Insts.CoreMarkerStructuralPartialEq :
+  core.marker.StructuralPartialEq credential_commit.Policy := {
+}
+
+/-- [kanidm_kernel::credential_commit::{impl core::cmp::PartialEq<kanidm_kernel::credential_commit::Policy> for kanidm_kernel::credential_commit::Policy}::eq]:
+    Source: 'prove/ports/kanidm/kernel/src/credential_commit.rs', lines 4:29-4:38
+    Visibility: public -/
+def credential_commit.Policy.Insts.CoreCmpPartialEqPolicy.eq
+  (self : credential_commit.Policy) (other : credential_commit.Policy) :
+  Result Bool
+  := do
+  let self1 := read_discriminant self
+  let other1 := read_discriminant other
+  ok (self1 = other1)
+
+/-- Trait implementation: [kanidm_kernel::credential_commit::{impl core::cmp::PartialEq<kanidm_kernel::credential_commit::Policy> for kanidm_kernel::credential_commit::Policy}]
+    Source: 'prove/ports/kanidm/kernel/src/credential_commit.rs', lines 4:29-4:38 -/
+@[reducible]
+def credential_commit.Policy.Insts.CoreCmpPartialEqPolicy : core.cmp.PartialEq
+  credential_commit.Policy credential_commit.Policy := {
+  eq := credential_commit.Policy.Insts.CoreCmpPartialEqPolicy.eq
+}
+
+/-- Trait implementation: [kanidm_kernel::credential_commit::{impl core::cmp::Eq for kanidm_kernel::credential_commit::Policy}]
+    Source: 'prove/ports/kanidm/kernel/src/credential_commit.rs', lines 4:40-4:42 -/
+@[reducible]
+impl_def credential_commit.Policy.Insts.CoreCmpEq : core.cmp.Eq
+  credential_commit.Policy := {
+  partialEqInst := credential_commit.Policy.Insts.CoreCmpPartialEqPolicy
+  assert_fields_are_eq := core.cmp.Eq.assert_fields_are_eq.default
+    credential_commit.Policy.Insts.CoreCmpEq
+}
+
+/-- [kanidm_kernel::credential_commit::Warning]
+    Source: 'prove/ports/kanidm/kernel/src/credential_commit.rs', lines 7:0-7:118
+    Visibility: public -/
+@[discriminant isize]
+inductive credential_commit.Warning where
+| MfaRequired : credential_commit.Warning
+| PasskeyRequired : credential_commit.Warning
+| AttestedPasskeyRequired : credential_commit.Warning
+| AttestedResidentKeyRequired : credential_commit.Warning
+| Unsatisfiable : credential_commit.Warning
+
+/-- [kanidm_kernel::credential_commit::{impl core::clone::Clone for kanidm_kernel::credential_commit::Warning}::clone]:
+    Source: 'prove/ports/kanidm/kernel/src/credential_commit.rs', lines 6:9-6:14
+    Visibility: public -/
+def credential_commit.Warning.Insts.CoreCloneClone.clone
+  (self : credential_commit.Warning) : Result credential_commit.Warning := do
+  ok self
+
+/-- Trait implementation: [kanidm_kernel::credential_commit::{impl core::clone::Clone for kanidm_kernel::credential_commit::Warning}]
+    Source: 'prove/ports/kanidm/kernel/src/credential_commit.rs', lines 6:9-6:14 -/
+@[reducible]
+def credential_commit.Warning.Insts.CoreCloneClone : core.clone.Clone
+  credential_commit.Warning := {
+  clone := credential_commit.Warning.Insts.CoreCloneClone.clone
+}
+
+/-- Trait implementation: [kanidm_kernel::credential_commit::{impl core::marker::Copy for kanidm_kernel::credential_commit::Warning}]
+    Source: 'prove/ports/kanidm/kernel/src/credential_commit.rs', lines 6:16-6:20 -/
+@[reducible]
+def credential_commit.Warning.Insts.CoreMarkerCopy : core.marker.Copy
+  credential_commit.Warning := {
+  cloneInst := credential_commit.Warning.Insts.CoreCloneClone
+}
+
+/-- [kanidm_kernel::credential_commit::{impl core::fmt::Debug for kanidm_kernel::credential_commit::Warning}::fmt]:
+    Source: 'prove/ports/kanidm/kernel/src/credential_commit.rs', lines 6:22-6:27
+    Visibility: public -/
+def credential_commit.Warning.Insts.CoreFmtDebug.fmt
+  (self : credential_commit.Warning) (f : core.fmt.Formatter) :
+  Result ((core.result.Result Unit core.fmt.Error) × core.fmt.Formatter)
+  := do
+  match self with
+  | credential_commit.Warning.MfaRequired =>
+    core.fmt.Formatter.write_str f (toStr "MfaRequired")
+  | credential_commit.Warning.PasskeyRequired =>
+    core.fmt.Formatter.write_str f (toStr "PasskeyRequired")
+  | credential_commit.Warning.AttestedPasskeyRequired =>
+    core.fmt.Formatter.write_str f (toStr "AttestedPasskeyRequired")
+  | credential_commit.Warning.AttestedResidentKeyRequired =>
+    core.fmt.Formatter.write_str f (toStr "AttestedResidentKeyRequired")
+  | credential_commit.Warning.Unsatisfiable =>
+    core.fmt.Formatter.write_str f (toStr "Unsatisfiable")
+
+/-- Trait implementation: [kanidm_kernel::credential_commit::{impl core::fmt::Debug for kanidm_kernel::credential_commit::Warning}]
+    Source: 'prove/ports/kanidm/kernel/src/credential_commit.rs', lines 6:22-6:27 -/
+@[reducible]
+def credential_commit.Warning.Insts.CoreFmtDebug : core.fmt.Debug
+  credential_commit.Warning := {
+  fmt := credential_commit.Warning.Insts.CoreFmtDebug.fmt
+}
+
+/-- Trait implementation: [kanidm_kernel::credential_commit::{impl core::marker::StructuralPartialEq for kanidm_kernel::credential_commit::Warning}]
+    Source: 'prove/ports/kanidm/kernel/src/credential_commit.rs', lines 6:29-6:38 -/
+@[reducible]
+def credential_commit.Warning.Insts.CoreMarkerStructuralPartialEq :
+  core.marker.StructuralPartialEq credential_commit.Warning := {
+}
+
+/-- [kanidm_kernel::credential_commit::{impl core::cmp::PartialEq<kanidm_kernel::credential_commit::Warning> for kanidm_kernel::credential_commit::Warning}::eq]:
+    Source: 'prove/ports/kanidm/kernel/src/credential_commit.rs', lines 6:29-6:38
+    Visibility: public -/
+def credential_commit.Warning.Insts.CoreCmpPartialEqWarning.eq
+  (self : credential_commit.Warning) (other : credential_commit.Warning) :
+  Result Bool
+  := do
+  let self1 := read_discriminant self
+  let other1 := read_discriminant other
+  ok (self1 = other1)
+
+/-- Trait implementation: [kanidm_kernel::credential_commit::{impl core::cmp::PartialEq<kanidm_kernel::credential_commit::Warning> for kanidm_kernel::credential_commit::Warning}]
+    Source: 'prove/ports/kanidm/kernel/src/credential_commit.rs', lines 6:29-6:38 -/
+@[reducible]
+def credential_commit.Warning.Insts.CoreCmpPartialEqWarning :
+  core.cmp.PartialEq credential_commit.Warning credential_commit.Warning := {
+  eq := credential_commit.Warning.Insts.CoreCmpPartialEqWarning.eq
+}
+
+/-- Trait implementation: [kanidm_kernel::credential_commit::{impl core::cmp::Eq for kanidm_kernel::credential_commit::Warning}]
+    Source: 'prove/ports/kanidm/kernel/src/credential_commit.rs', lines 6:40-6:42 -/
+@[reducible]
+impl_def credential_commit.Warning.Insts.CoreCmpEq : core.cmp.Eq
+  credential_commit.Warning := {
+  partialEqInst := credential_commit.Warning.Insts.CoreCmpPartialEqWarning
+  assert_fields_are_eq := core.cmp.Eq.assert_fields_are_eq.default
+    credential_commit.Warning.Insts.CoreCmpEq
+}
+
+/-- [kanidm_kernel::credential_commit::Decision]
+    Source: 'prove/ports/kanidm/kernel/src/credential_commit.rs', lines 9:0-9:150
+    Visibility: public -/
+structure credential_commit.Decision where
+  can_commit : Bool
+  policy_warning : Option credential_commit.Warning
+  attestation_unsatisfiable : Bool
+  no_valid_credentials : Bool
+
+/-- [kanidm_kernel::credential_commit::{impl core::clone::Clone for kanidm_kernel::credential_commit::Decision}::clone]:
+    Source: 'prove/ports/kanidm/kernel/src/credential_commit.rs', lines 8:9-8:14
+    Visibility: public -/
+def credential_commit.Decision.Insts.CoreCloneClone.clone
+  (self : credential_commit.Decision) : Result credential_commit.Decision := do
+  ok self
+
+/-- Trait implementation: [kanidm_kernel::credential_commit::{impl core::clone::Clone for kanidm_kernel::credential_commit::Decision}]
+    Source: 'prove/ports/kanidm/kernel/src/credential_commit.rs', lines 8:9-8:14 -/
+@[reducible]
+def credential_commit.Decision.Insts.CoreCloneClone : core.clone.Clone
+  credential_commit.Decision := {
+  clone := credential_commit.Decision.Insts.CoreCloneClone.clone
+}
+
+/-- Trait implementation: [kanidm_kernel::credential_commit::{impl core::marker::Copy for kanidm_kernel::credential_commit::Decision}]
+    Source: 'prove/ports/kanidm/kernel/src/credential_commit.rs', lines 8:16-8:20 -/
+@[reducible]
+def credential_commit.Decision.Insts.CoreMarkerCopy : core.marker.Copy
+  credential_commit.Decision := {
+  cloneInst := credential_commit.Decision.Insts.CoreCloneClone
+}
+
+/-- [kanidm_kernel::credential_commit::{impl core::fmt::Debug for kanidm_kernel::credential_commit::Decision}::fmt]:
+    Source: 'prove/ports/kanidm/kernel/src/credential_commit.rs', lines 8:22-8:27
+    Visibility: public -/
+def credential_commit.Decision.Insts.CoreFmtDebug.fmt
+  (self : credential_commit.Decision) (f : core.fmt.Formatter) :
+  Result ((core.result.Result Unit core.fmt.Error) × core.fmt.Formatter)
+  := do
+  let dyn := Dyn.mk _ core.fmt.DebugBool self.can_commit
+  let dyn1 :=
+    Dyn.mk _ (core.option.Option.Insts.CoreFmtDebug
+      credential_commit.Warning.Insts.CoreFmtDebug) self.policy_warning
+  let dyn2 := Dyn.mk _ core.fmt.DebugBool self.attestation_unsatisfiable
+  let dyn3 :=
+    Dyn.mk _ (core.fmt.DebugShared core.fmt.DebugBool)
+      self.no_valid_credentials
+  core.fmt.Formatter.debug_struct_field4_finish f (toStr "Decision") (toStr
+    "can_commit") dyn (toStr "policy_warning") dyn1 (toStr
+    "attestation_unsatisfiable") dyn2 (toStr "no_valid_credentials") dyn3
+
+/-- Trait implementation: [kanidm_kernel::credential_commit::{impl core::fmt::Debug for kanidm_kernel::credential_commit::Decision}]
+    Source: 'prove/ports/kanidm/kernel/src/credential_commit.rs', lines 8:22-8:27 -/
+@[reducible]
+def credential_commit.Decision.Insts.CoreFmtDebug : core.fmt.Debug
+  credential_commit.Decision := {
+  fmt := credential_commit.Decision.Insts.CoreFmtDebug.fmt
+}
+
+/-- Trait implementation: [kanidm_kernel::credential_commit::{impl core::marker::StructuralPartialEq for kanidm_kernel::credential_commit::Decision}]
+    Source: 'prove/ports/kanidm/kernel/src/credential_commit.rs', lines 8:29-8:38 -/
+@[reducible]
+def credential_commit.Decision.Insts.CoreMarkerStructuralPartialEq :
+  core.marker.StructuralPartialEq credential_commit.Decision := {
+}
+
+/-- [kanidm_kernel::credential_commit::{impl core::cmp::PartialEq<kanidm_kernel::credential_commit::Decision> for kanidm_kernel::credential_commit::Decision}::eq]:
+    Source: 'prove/ports/kanidm/kernel/src/credential_commit.rs', lines 8:29-8:38
+    Visibility: public -/
+def credential_commit.Decision.Insts.CoreCmpPartialEqDecision.eq
+  (self : credential_commit.Decision) (other : credential_commit.Decision) :
+  Result Bool
+  := do
+  if self.can_commit = other.can_commit
+  then
+    if self.attestation_unsatisfiable = other.attestation_unsatisfiable
+    then
+      if self.no_valid_credentials = other.no_valid_credentials
+      then
+        core.option.Option.Insts.CoreCmpPartialEqOption.eq
+          credential_commit.Warning.Insts.CoreCmpPartialEqWarning
+          self.policy_warning other.policy_warning
+      else ok false
+    else ok false
+  else ok false
+
+/-- Trait implementation: [kanidm_kernel::credential_commit::{impl core::cmp::PartialEq<kanidm_kernel::credential_commit::Decision> for kanidm_kernel::credential_commit::Decision}]
+    Source: 'prove/ports/kanidm/kernel/src/credential_commit.rs', lines 8:29-8:38 -/
+@[reducible]
+def credential_commit.Decision.Insts.CoreCmpPartialEqDecision :
+  core.cmp.PartialEq credential_commit.Decision credential_commit.Decision := {
+  eq := credential_commit.Decision.Insts.CoreCmpPartialEqDecision.eq
+}
+
+/-- [kanidm_kernel::credential_commit::{impl core::cmp::Eq for kanidm_kernel::credential_commit::Decision}::assert_fields_are_eq]:
+    Source: 'prove/ports/kanidm/kernel/src/credential_commit.rs', lines 8:40-8:42
+    Visibility: public -/
+def credential_commit.Decision.Insts.CoreCmpEq.assert_fields_are_eq
+  (self : credential_commit.Decision) : Result Unit := do
+  ok ()
+
+/-- Trait implementation: [kanidm_kernel::credential_commit::{impl core::cmp::Eq for kanidm_kernel::credential_commit::Decision}]
+    Source: 'prove/ports/kanidm/kernel/src/credential_commit.rs', lines 8:40-8:42 -/
+@[reducible]
+def credential_commit.Decision.Insts.CoreCmpEq : core.cmp.Eq
+  credential_commit.Decision := {
+  partialEqInst := credential_commit.Decision.Insts.CoreCmpPartialEqDecision
+  assert_fields_are_eq :=
+    credential_commit.Decision.Insts.CoreCmpEq.assert_fields_are_eq
+}
+
+/-- [kanidm_kernel::credential_commit::can_commit]:
+    Source: 'prove/ports/kanidm/kernel/src/credential_commit.rs', lines 10:0-31:1
+    Visibility: public -/
+def credential_commit.can_commit
+  (policy : credential_commit.Policy) (primary : Option Bool) (passkeys : Bool)
+  (attested_passkeys : Bool) (ca_empty : Option Bool) :
+  Result credential_commit.Decision
+  := do
+  let (primary1, passkeys1, attested_passkeys1, can_commit, warning) ←
+    match policy with
+    | credential_commit.Policy.Any =>
+      ok (primary, passkeys, attested_passkeys, true, none)
+    | credential_commit.Policy.External =>
+      do
+      let b ← match primary with
+                | none => ok false
+                | some mfa => ok (¬ mfa)
+      let (b1, o) ←
+        if b
+        then ok (false, some credential_commit.Warning.MfaRequired)
+        else ok (true, none)
+      ok (primary, passkeys, attested_passkeys, b1, o)
+    | credential_commit.Policy.Mfa =>
+      do
+      let b ← match primary with
+                | none => ok false
+                | some mfa => ok (¬ mfa)
+      let (b1, o) ←
+        if b
+        then ok (false, some credential_commit.Warning.MfaRequired)
+        else ok (true, none)
+      ok (primary, passkeys, attested_passkeys, b1, o)
+    | credential_commit.Policy.Passkey =>
+      do
+      let b := core.option.Option.is_some primary
+      let (b1, o) ←
+        if b
+        then ok (false, some credential_commit.Warning.PasskeyRequired)
+        else ok (true, none)
+      ok (primary, passkeys, attested_passkeys, b1, o)
+    | credential_commit.Policy.AttestedPasskey =>
+      do
+      let (b, o) ←
+        if passkeys
+        then ok (false, some credential_commit.Warning.AttestedPasskeyRequired)
+        else
+          let b1 := core.option.Option.is_some primary
+          if b1
+          then
+            ok (false, some credential_commit.Warning.AttestedPasskeyRequired)
+          else ok (true, none)
+      ok (primary, passkeys, attested_passkeys, b, o)
+    | credential_commit.Policy.AttestedResidentkey =>
+      do
+      let (b, b1, o) ←
+        if attested_passkeys
+        then
+          ok (passkeys, false, some
+            credential_commit.Warning.AttestedResidentKeyRequired)
+        else
+          do
+          let (b2, o1) ←
+            if passkeys
+            then
+              ok (false, some
+                credential_commit.Warning.AttestedResidentKeyRequired)
+            else
+              let b3 := core.option.Option.is_some primary
+              if b3
+              then
+                ok (false, some
+                  credential_commit.Warning.AttestedResidentKeyRequired)
+              else ok (true, none)
+          ok (passkeys, b2, o1)
+      ok (primary, b, attested_passkeys, b1, o)
+    | credential_commit.Policy.Invalid =>
+      ok (primary, passkeys, attested_passkeys, false, some
+        credential_commit.Warning.Unsatisfiable)
+  let attestation_unsatisfiable ←
+    lift (core.option.Option.unwrap_or ca_empty false)
+  if can_commit
+  then
+    if attested_passkeys1
+    then
+      ok
+        {
+          can_commit := true,
+          policy_warning := warning,
+          attestation_unsatisfiable,
+          no_valid_credentials := false
+        }
+    else
+      if passkeys1
+      then
+        ok
+          {
+            can_commit := true,
+            policy_warning := warning,
+            attestation_unsatisfiable,
+            no_valid_credentials := false
+          }
+      else
+        let b := core.option.Option.is_none primary1
+        if b
+        then
+          ok
+            {
+              can_commit := false,
+              policy_warning := warning,
+              attestation_unsatisfiable,
+              no_valid_credentials := true
+            }
+        else
+          ok
+            {
+              can_commit := true,
+              policy_warning := warning,
+              attestation_unsatisfiable,
+              no_valid_credentials := false
+            }
+  else
+    ok
+      {
+        can_commit := false,
+        policy_warning := warning,
+        attestation_unsatisfiable,
+        no_valid_credentials := false
+      }
+
+/-- [kanidm_kernel::schema_tags::Syntax]
+    Source: 'prove/ports/kanidm/kernel/src/schema_tags.rs', lines 5:0-53:1
+    Visibility: public -/
+@[discriminant isize]
+inductive schema_tags.Syntax where
+| Utf8String : schema_tags.Syntax
+| Utf8StringInsensitive : schema_tags.Syntax
+| Uuid : schema_tags.Syntax
+| Boolean : schema_tags.Syntax
+| SyntaxId : schema_tags.Syntax
+| IndexId : schema_tags.Syntax
+| ReferenceUuid : schema_tags.Syntax
+| JsonFilter : schema_tags.Syntax
+| Credential : schema_tags.Syntax
+| SecretUtf8String : schema_tags.Syntax
+| SshKey : schema_tags.Syntax
+| SecurityPrincipalName : schema_tags.Syntax
+| Uint32 : schema_tags.Syntax
+| Cid : schema_tags.Syntax
+| Utf8StringIname : schema_tags.Syntax
+| NsUniqueId : schema_tags.Syntax
+| DateTime : schema_tags.Syntax
+| EmailAddress : schema_tags.Syntax
+| Url : schema_tags.Syntax
+| OauthScope : schema_tags.Syntax
+| OauthScopeMap : schema_tags.Syntax
+| PrivateBinary : schema_tags.Syntax
+| IntentToken : schema_tags.Syntax
+| Passkey : schema_tags.Syntax
+| AttestedPasskey : schema_tags.Syntax
+| Session : schema_tags.Syntax
+| JwsKeyEs256 : schema_tags.Syntax
+| JwsKeyRs256 : schema_tags.Syntax
+| Oauth2Session : schema_tags.Syntax
+| UiHint : schema_tags.Syntax
+| TotpSecret : schema_tags.Syntax
+| ApiToken : schema_tags.Syntax
+| AuditLogString : schema_tags.Syntax
+| EcKeyPrivate : schema_tags.Syntax
+| Image : schema_tags.Syntax
+| CredentialType : schema_tags.Syntax
+| WebauthnAttestationCaList : schema_tags.Syntax
+| OauthClaimMap : schema_tags.Syntax
+| KeyInternal : schema_tags.Syntax
+| HexString : schema_tags.Syntax
+| Certificate : schema_tags.Syntax
+| ApplicationPassword : schema_tags.Syntax
+| Json : schema_tags.Syntax
+| Message : schema_tags.Syntax
+| Sha256 : schema_tags.Syntax
+| Int64 : schema_tags.Syntax
+| Uint64 : schema_tags.Syntax
+
+/-- [kanidm_kernel::schema_tags::{impl core::clone::Clone for kanidm_kernel::schema_tags::Syntax}::clone]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_tags.rs', lines 4:9-4:14
+    Visibility: public -/
+def schema_tags.Syntax.Insts.CoreCloneClone.clone
+  (self : schema_tags.Syntax) : Result schema_tags.Syntax := do
+  ok self
+
+/-- Trait implementation: [kanidm_kernel::schema_tags::{impl core::clone::Clone for kanidm_kernel::schema_tags::Syntax}]
+    Source: 'prove/ports/kanidm/kernel/src/schema_tags.rs', lines 4:9-4:14 -/
+@[reducible]
+def schema_tags.Syntax.Insts.CoreCloneClone : core.clone.Clone
+  schema_tags.Syntax := {
+  clone := schema_tags.Syntax.Insts.CoreCloneClone.clone
+}
+
+/-- Trait implementation: [kanidm_kernel::schema_tags::{impl core::marker::Copy for kanidm_kernel::schema_tags::Syntax}]
+    Source: 'prove/ports/kanidm/kernel/src/schema_tags.rs', lines 4:16-4:20 -/
+@[reducible]
+def schema_tags.Syntax.Insts.CoreMarkerCopy : core.marker.Copy
+  schema_tags.Syntax := {
+  cloneInst := schema_tags.Syntax.Insts.CoreCloneClone
+}
+
+/-- [kanidm_kernel::schema_tags::{impl core::fmt::Debug for kanidm_kernel::schema_tags::Syntax}::fmt]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_tags.rs', lines 4:22-4:27
+    Visibility: public -/
+def schema_tags.Syntax.Insts.CoreFmtDebug.fmt
+  (self : schema_tags.Syntax) (f : core.fmt.Formatter) :
+  Result ((core.result.Result Unit core.fmt.Error) × core.fmt.Formatter)
+  := do
+  match self with
+  | schema_tags.Syntax.Utf8String =>
+    core.fmt.Formatter.write_str f (toStr "Utf8String")
+  | schema_tags.Syntax.Utf8StringInsensitive =>
+    core.fmt.Formatter.write_str f (toStr "Utf8StringInsensitive")
+  | schema_tags.Syntax.Uuid => core.fmt.Formatter.write_str f (toStr "Uuid")
+  | schema_tags.Syntax.Boolean =>
+    core.fmt.Formatter.write_str f (toStr "Boolean")
+  | schema_tags.Syntax.SyntaxId =>
+    core.fmt.Formatter.write_str f (toStr "SyntaxId")
+  | schema_tags.Syntax.IndexId =>
+    core.fmt.Formatter.write_str f (toStr "IndexId")
+  | schema_tags.Syntax.ReferenceUuid =>
+    core.fmt.Formatter.write_str f (toStr "ReferenceUuid")
+  | schema_tags.Syntax.JsonFilter =>
+    core.fmt.Formatter.write_str f (toStr "JsonFilter")
+  | schema_tags.Syntax.Credential =>
+    core.fmt.Formatter.write_str f (toStr "Credential")
+  | schema_tags.Syntax.SecretUtf8String =>
+    core.fmt.Formatter.write_str f (toStr "SecretUtf8String")
+  | schema_tags.Syntax.SshKey =>
+    core.fmt.Formatter.write_str f (toStr "SshKey")
+  | schema_tags.Syntax.SecurityPrincipalName =>
+    core.fmt.Formatter.write_str f (toStr "SecurityPrincipalName")
+  | schema_tags.Syntax.Uint32 =>
+    core.fmt.Formatter.write_str f (toStr "Uint32")
+  | schema_tags.Syntax.Cid => core.fmt.Formatter.write_str f (toStr "Cid")
+  | schema_tags.Syntax.Utf8StringIname =>
+    core.fmt.Formatter.write_str f (toStr "Utf8StringIname")
+  | schema_tags.Syntax.NsUniqueId =>
+    core.fmt.Formatter.write_str f (toStr "NsUniqueId")
+  | schema_tags.Syntax.DateTime =>
+    core.fmt.Formatter.write_str f (toStr "DateTime")
+  | schema_tags.Syntax.EmailAddress =>
+    core.fmt.Formatter.write_str f (toStr "EmailAddress")
+  | schema_tags.Syntax.Url => core.fmt.Formatter.write_str f (toStr "Url")
+  | schema_tags.Syntax.OauthScope =>
+    core.fmt.Formatter.write_str f (toStr "OauthScope")
+  | schema_tags.Syntax.OauthScopeMap =>
+    core.fmt.Formatter.write_str f (toStr "OauthScopeMap")
+  | schema_tags.Syntax.PrivateBinary =>
+    core.fmt.Formatter.write_str f (toStr "PrivateBinary")
+  | schema_tags.Syntax.IntentToken =>
+    core.fmt.Formatter.write_str f (toStr "IntentToken")
+  | schema_tags.Syntax.Passkey =>
+    core.fmt.Formatter.write_str f (toStr "Passkey")
+  | schema_tags.Syntax.AttestedPasskey =>
+    core.fmt.Formatter.write_str f (toStr "AttestedPasskey")
+  | schema_tags.Syntax.Session =>
+    core.fmt.Formatter.write_str f (toStr "Session")
+  | schema_tags.Syntax.JwsKeyEs256 =>
+    core.fmt.Formatter.write_str f (toStr "JwsKeyEs256")
+  | schema_tags.Syntax.JwsKeyRs256 =>
+    core.fmt.Formatter.write_str f (toStr "JwsKeyRs256")
+  | schema_tags.Syntax.Oauth2Session =>
+    core.fmt.Formatter.write_str f (toStr "Oauth2Session")
+  | schema_tags.Syntax.UiHint =>
+    core.fmt.Formatter.write_str f (toStr "UiHint")
+  | schema_tags.Syntax.TotpSecret =>
+    core.fmt.Formatter.write_str f (toStr "TotpSecret")
+  | schema_tags.Syntax.ApiToken =>
+    core.fmt.Formatter.write_str f (toStr "ApiToken")
+  | schema_tags.Syntax.AuditLogString =>
+    core.fmt.Formatter.write_str f (toStr "AuditLogString")
+  | schema_tags.Syntax.EcKeyPrivate =>
+    core.fmt.Formatter.write_str f (toStr "EcKeyPrivate")
+  | schema_tags.Syntax.Image => core.fmt.Formatter.write_str f (toStr "Image")
+  | schema_tags.Syntax.CredentialType =>
+    core.fmt.Formatter.write_str f (toStr "CredentialType")
+  | schema_tags.Syntax.WebauthnAttestationCaList =>
+    core.fmt.Formatter.write_str f (toStr "WebauthnAttestationCaList")
+  | schema_tags.Syntax.OauthClaimMap =>
+    core.fmt.Formatter.write_str f (toStr "OauthClaimMap")
+  | schema_tags.Syntax.KeyInternal =>
+    core.fmt.Formatter.write_str f (toStr "KeyInternal")
+  | schema_tags.Syntax.HexString =>
+    core.fmt.Formatter.write_str f (toStr "HexString")
+  | schema_tags.Syntax.Certificate =>
+    core.fmt.Formatter.write_str f (toStr "Certificate")
+  | schema_tags.Syntax.ApplicationPassword =>
+    core.fmt.Formatter.write_str f (toStr "ApplicationPassword")
+  | schema_tags.Syntax.Json => core.fmt.Formatter.write_str f (toStr "Json")
+  | schema_tags.Syntax.Message =>
+    core.fmt.Formatter.write_str f (toStr "Message")
+  | schema_tags.Syntax.Sha256 =>
+    core.fmt.Formatter.write_str f (toStr "Sha256")
+  | schema_tags.Syntax.Int64 => core.fmt.Formatter.write_str f (toStr "Int64")
+  | schema_tags.Syntax.Uint64 =>
+    core.fmt.Formatter.write_str f (toStr "Uint64")
+
+/-- Trait implementation: [kanidm_kernel::schema_tags::{impl core::fmt::Debug for kanidm_kernel::schema_tags::Syntax}]
+    Source: 'prove/ports/kanidm/kernel/src/schema_tags.rs', lines 4:22-4:27 -/
+@[reducible]
+def schema_tags.Syntax.Insts.CoreFmtDebug : core.fmt.Debug schema_tags.Syntax
+  := {
+  fmt := schema_tags.Syntax.Insts.CoreFmtDebug.fmt
+}
+
+/-- [kanidm_kernel::schema_tags::partial_accepts]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_tags.rs', lines 54:0-117:1
+    Visibility: public -/
+def schema_tags.partial_accepts
+  («syntax» : schema_tags.Syntax) (tag : Std.U16) : Result Bool := do
+  match «syntax» with
+  | schema_tags.Syntax.Utf8String => ok (tag = 7#u16)
+  | schema_tags.Syntax.Utf8StringInsensitive => ok (tag = 5#u16)
+  | schema_tags.Syntax.Uuid => ok (tag = 3#u16)
+  | schema_tags.Syntax.Boolean => ok (tag = 0#u16)
+  | schema_tags.Syntax.SyntaxId => ok (tag = 1#u16)
+  | schema_tags.Syntax.IndexId => ok (tag = 2#u16)
+  | schema_tags.Syntax.ReferenceUuid => ok (tag = 4#u16)
+  | schema_tags.Syntax.JsonFilter => ok (tag = 8#u16)
+  | schema_tags.Syntax.Credential => ok (tag = 9#u16)
+  | schema_tags.Syntax.SecretUtf8String => ok (tag = 10#u16)
+  | schema_tags.Syntax.SshKey => ok (tag = 11#u16)
+  | schema_tags.Syntax.SecurityPrincipalName => ok (tag = 12#u16)
+  | schema_tags.Syntax.Uint32 => ok (tag = 13#u16)
+  | schema_tags.Syntax.Cid => ok (tag = 16#u16)
+  | schema_tags.Syntax.Utf8StringIname => ok (tag = 6#u16)
+  | schema_tags.Syntax.NsUniqueId => ok (tag = 17#u16)
+  | schema_tags.Syntax.DateTime => ok (tag = 18#u16)
+  | schema_tags.Syntax.EmailAddress => ok (tag = 19#u16)
+  | schema_tags.Syntax.Url => ok (tag = 20#u16)
+  | schema_tags.Syntax.OauthScope => ok (tag = 21#u16)
+  | schema_tags.Syntax.OauthScopeMap => ok (tag = 4#u16)
+  | schema_tags.Syntax.PrivateBinary => ok (tag = 24#u16)
+  | schema_tags.Syntax.IntentToken => ok (tag = 25#u16)
+  | schema_tags.Syntax.Passkey => ok (tag = 26#u16)
+  | schema_tags.Syntax.AttestedPasskey => ok (tag = 27#u16)
+  | schema_tags.Syntax.Session => ok (tag = 4#u16)
+  | schema_tags.Syntax.JwsKeyEs256 => ok (tag = 5#u16)
+  | schema_tags.Syntax.JwsKeyRs256 => ok (tag = 5#u16)
+  | schema_tags.Syntax.Oauth2Session => ok (tag = 4#u16)
+  | schema_tags.Syntax.UiHint => ok (tag = 28#u16)
+  | schema_tags.Syntax.TotpSecret => ok (tag = 7#u16)
+  | schema_tags.Syntax.ApiToken => ok (tag = 4#u16)
+  | schema_tags.Syntax.AuditLogString => ok (tag = 7#u16)
+  | schema_tags.Syntax.EcKeyPrivate => ok (tag = 10#u16)
+  | schema_tags.Syntax.Image => ok (tag = 7#u16)
+  | schema_tags.Syntax.CredentialType => ok (tag = 29#u16)
+  | schema_tags.Syntax.WebauthnAttestationCaList => ok false
+  | schema_tags.Syntax.OauthClaimMap =>
+    if tag = 5#u16
+    then ok true
+    else
+      if tag = 4#u16
+      then ok true
+      else if tag = 22#u16
+           then ok true
+           else ok (tag = 23#u16)
+  | schema_tags.Syntax.KeyInternal => ok (tag = 30#u16)
+  | schema_tags.Syntax.HexString => ok (tag = 30#u16)
+  | schema_tags.Syntax.Certificate => ok (tag = 30#u16)
+  | schema_tags.Syntax.ApplicationPassword =>
+    if tag = 3#u16
+    then ok true
+    else ok (tag = 4#u16)
+  | schema_tags.Syntax.Json => ok false
+  | schema_tags.Syntax.Message => ok false
+  | schema_tags.Syntax.Sha256 => ok (tag = 31#u16)
+  | schema_tags.Syntax.Int64 => ok (tag = 14#u16)
+  | schema_tags.Syntax.Uint64 => ok (tag = 15#u16)
+
+/-- [kanidm_kernel::schema_tags::value_accepts]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_tags.rs', lines 118:0-173:1
+    Visibility: public -/
+def schema_tags.value_accepts
+  («syntax» : schema_tags.Syntax) (tag : Std.U16) (valid : Bool) :
+  Result Bool
+  := do
+  if valid
+  then
+    match «syntax» with
+    | schema_tags.Syntax.Utf8String => ok (tag = 7#u16)
+    | schema_tags.Syntax.Utf8StringInsensitive => ok (tag = 5#u16)
+    | schema_tags.Syntax.Uuid => ok (tag = 3#u16)
+    | schema_tags.Syntax.Boolean => ok (tag = 0#u16)
+    | schema_tags.Syntax.SyntaxId => ok (tag = 1#u16)
+    | schema_tags.Syntax.IndexId => ok (tag = 2#u16)
+    | schema_tags.Syntax.ReferenceUuid => ok (tag = 4#u16)
+    | schema_tags.Syntax.JsonFilter => ok (tag = 8#u16)
+    | schema_tags.Syntax.Credential => ok (tag = 9#u16)
+    | schema_tags.Syntax.SecretUtf8String => ok (tag = 10#u16)
+    | schema_tags.Syntax.SshKey => ok (tag = 11#u16)
+    | schema_tags.Syntax.SecurityPrincipalName => ok (tag = 12#u16)
+    | schema_tags.Syntax.Uint32 => ok (tag = 13#u16)
+    | schema_tags.Syntax.Cid => ok (tag = 16#u16)
+    | schema_tags.Syntax.Utf8StringIname => ok (tag = 6#u16)
+    | schema_tags.Syntax.NsUniqueId => ok (tag = 17#u16)
+    | schema_tags.Syntax.DateTime => ok (tag = 18#u16)
+    | schema_tags.Syntax.EmailAddress => ok (tag = 19#u16)
+    | schema_tags.Syntax.Url => ok (tag = 20#u16)
+    | schema_tags.Syntax.OauthScope => ok (tag = 21#u16)
+    | schema_tags.Syntax.OauthScopeMap => ok (tag = 22#u16)
+    | schema_tags.Syntax.PrivateBinary => ok (tag = 25#u16)
+    | schema_tags.Syntax.IntentToken => ok (tag = 26#u16)
+    | schema_tags.Syntax.Passkey => ok (tag = 27#u16)
+    | schema_tags.Syntax.AttestedPasskey => ok (tag = 28#u16)
+    | schema_tags.Syntax.Session => ok (tag = 29#u16)
+    | schema_tags.Syntax.JwsKeyEs256 => ok (tag = 32#u16)
+    | schema_tags.Syntax.JwsKeyRs256 => ok (tag = 33#u16)
+    | schema_tags.Syntax.Oauth2Session => ok (tag = 31#u16)
+    | schema_tags.Syntax.UiHint => ok (tag = 34#u16)
+    | schema_tags.Syntax.TotpSecret => ok (tag = 35#u16)
+    | schema_tags.Syntax.ApiToken => ok (tag = 30#u16)
+    | schema_tags.Syntax.AuditLogString => ok (tag = 7#u16)
+    | schema_tags.Syntax.EcKeyPrivate => ok (tag = 10#u16)
+    | schema_tags.Syntax.Image => ok (tag = 36#u16)
+    | schema_tags.Syntax.CredentialType => ok (tag = 37#u16)
+    | schema_tags.Syntax.WebauthnAttestationCaList => ok (tag = 38#u16)
+    | schema_tags.Syntax.OauthClaimMap =>
+      if tag = 23#u16
+      then ok true
+      else ok (tag = 24#u16)
+    | schema_tags.Syntax.KeyInternal => ok (tag = 39#u16)
+    | schema_tags.Syntax.HexString => ok (tag = 40#u16)
+    | schema_tags.Syntax.Certificate => ok (tag = 41#u16)
+    | schema_tags.Syntax.ApplicationPassword => ok (tag = 42#u16)
+    | schema_tags.Syntax.Json => ok (tag = 43#u16)
+    | schema_tags.Syntax.Message => ok false
+    | schema_tags.Syntax.Sha256 => ok (tag = 44#u16)
+    | schema_tags.Syntax.Int64 => ok (tag = 14#u16)
+    | schema_tags.Syntax.Uint64 => ok (tag = 15#u16)
+  else ok false
+
+/-- [kanidm_kernel::schema_tags::ava_accepts]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_tags.rs', lines 174:0-177:1
+    Visibility: public -/
+def schema_tags.ava_accepts
+  (multivalue : Bool) (count : Std.Usize) (expected_syntax : Std.U16)
+  (actual_syntax : Std.U16) (valid : Bool) :
+  Result Bool
+  := do
+  if multivalue
+  then if expected_syntax = actual_syntax
+       then ok valid
+       else ok false
+  else
+    if count > 1#usize
+    then ok false
+    else if expected_syntax = actual_syntax
+         then ok valid
+         else ok false
+
+/-- [kanidm_kernel::softlock::Time]
+    Source: 'prove/ports/kanidm/kernel/src/softlock.rs', lines 4:0-4:49
+    Visibility: public -/
+structure softlock.Time where
+  secs : Std.U64
+  nanos : Std.U32
+
+/-- [kanidm_kernel::softlock::{impl core::clone::Clone for kanidm_kernel::softlock::Time}::clone]:
+    Source: 'prove/ports/kanidm/kernel/src/softlock.rs', lines 3:9-3:14
+    Visibility: public -/
+def softlock.Time.Insts.CoreCloneClone.clone
+  (self : softlock.Time) : Result softlock.Time := do
+  ok self
+
+/-- Trait implementation: [kanidm_kernel::softlock::{impl core::clone::Clone for kanidm_kernel::softlock::Time}]
+    Source: 'prove/ports/kanidm/kernel/src/softlock.rs', lines 3:9-3:14 -/
+@[reducible]
+def softlock.Time.Insts.CoreCloneClone : core.clone.Clone softlock.Time := {
+  clone := softlock.Time.Insts.CoreCloneClone.clone
+}
+
+/-- Trait implementation: [kanidm_kernel::softlock::{impl core::marker::Copy for kanidm_kernel::softlock::Time}]
+    Source: 'prove/ports/kanidm/kernel/src/softlock.rs', lines 3:16-3:20 -/
+@[reducible]
+def softlock.Time.Insts.CoreMarkerCopy : core.marker.Copy softlock.Time := {
+  cloneInst := softlock.Time.Insts.CoreCloneClone
+}
+
+/-- [kanidm_kernel::softlock::{impl core::fmt::Debug for kanidm_kernel::softlock::Time}::fmt]:
+    Source: 'prove/ports/kanidm/kernel/src/softlock.rs', lines 3:22-3:27
+    Visibility: public -/
+def softlock.Time.Insts.CoreFmtDebug.fmt
+  (self : softlock.Time) (f : core.fmt.Formatter) :
+  Result ((core.result.Result Unit core.fmt.Error) × core.fmt.Formatter)
+  := do
+  let dyn := Dyn.mk _ core.fmt.DebugU64 self.secs
+  let dyn1 := Dyn.mk _ (core.fmt.DebugShared core.fmt.DebugU32) self.nanos
+  core.fmt.Formatter.debug_struct_field2_finish f (toStr "Time") (toStr "secs")
+    dyn (toStr "nanos") dyn1
+
+/-- Trait implementation: [kanidm_kernel::softlock::{impl core::fmt::Debug for kanidm_kernel::softlock::Time}]
+    Source: 'prove/ports/kanidm/kernel/src/softlock.rs', lines 3:22-3:27 -/
+@[reducible]
+def softlock.Time.Insts.CoreFmtDebug : core.fmt.Debug softlock.Time := {
+  fmt := softlock.Time.Insts.CoreFmtDebug.fmt
+}
+
+/-- Trait implementation: [kanidm_kernel::softlock::{impl core::marker::StructuralPartialEq for kanidm_kernel::softlock::Time}]
+    Source: 'prove/ports/kanidm/kernel/src/softlock.rs', lines 3:29-3:38 -/
+@[reducible]
+def softlock.Time.Insts.CoreMarkerStructuralPartialEq :
+  core.marker.StructuralPartialEq softlock.Time := {
+}
+
+/-- [kanidm_kernel::softlock::{impl core::cmp::PartialEq<kanidm_kernel::softlock::Time> for kanidm_kernel::softlock::Time}::eq]:
+    Source: 'prove/ports/kanidm/kernel/src/softlock.rs', lines 3:29-3:38
+    Visibility: public -/
+def softlock.Time.Insts.CoreCmpPartialEqTime.eq
+  (self : softlock.Time) (other : softlock.Time) : Result Bool := do
+  if self.secs = other.secs
+  then ok (self.nanos = other.nanos)
+  else ok false
+
+/-- Trait implementation: [kanidm_kernel::softlock::{impl core::cmp::PartialEq<kanidm_kernel::softlock::Time> for kanidm_kernel::softlock::Time}]
+    Source: 'prove/ports/kanidm/kernel/src/softlock.rs', lines 3:29-3:38 -/
+@[reducible]
+def softlock.Time.Insts.CoreCmpPartialEqTime : core.cmp.PartialEq softlock.Time
+  softlock.Time := {
+  eq := softlock.Time.Insts.CoreCmpPartialEqTime.eq
+}
+
+/-- [kanidm_kernel::softlock::{impl core::cmp::Eq for kanidm_kernel::softlock::Time}::assert_fields_are_eq]:
+    Source: 'prove/ports/kanidm/kernel/src/softlock.rs', lines 3:40-3:42
+    Visibility: public -/
+def softlock.Time.Insts.CoreCmpEq.assert_fields_are_eq
+  (self : softlock.Time) : Result Unit := do
+  ok ()
+
+/-- Trait implementation: [kanidm_kernel::softlock::{impl core::cmp::Eq for kanidm_kernel::softlock::Time}]
+    Source: 'prove/ports/kanidm/kernel/src/softlock.rs', lines 3:40-3:42 -/
+@[reducible]
+def softlock.Time.Insts.CoreCmpEq : core.cmp.Eq softlock.Time := {
+  partialEqInst := softlock.Time.Insts.CoreCmpPartialEqTime
+  assert_fields_are_eq := softlock.Time.Insts.CoreCmpEq.assert_fields_are_eq
+}
+
+/-- [kanidm_kernel::softlock::Policy]
+    Source: 'prove/ports/kanidm/kernel/src/softlock.rs', lines 6:0-6:63
+    Visibility: public -/
+@[discriminant isize]
+inductive softlock.Policy where
+| Password : softlock.Policy
+| Totp : Std.U64 → softlock.Policy
+| Webauthn : softlock.Policy
+| Unrestricted : softlock.Policy
+
+/-- [kanidm_kernel::softlock::{impl core::clone::Clone for kanidm_kernel::softlock::Policy}::clone]:
+    Source: 'prove/ports/kanidm/kernel/src/softlock.rs', lines 5:9-5:14
+    Visibility: public -/
+def softlock.Policy.Insts.CoreCloneClone.clone
+  (self : softlock.Policy) : Result softlock.Policy := do
+  ok self
+
+/-- Trait implementation: [kanidm_kernel::softlock::{impl core::clone::Clone for kanidm_kernel::softlock::Policy}]
+    Source: 'prove/ports/kanidm/kernel/src/softlock.rs', lines 5:9-5:14 -/
+@[reducible]
+def softlock.Policy.Insts.CoreCloneClone : core.clone.Clone softlock.Policy
+  := {
+  clone := softlock.Policy.Insts.CoreCloneClone.clone
+}
+
+/-- Trait implementation: [kanidm_kernel::softlock::{impl core::marker::Copy for kanidm_kernel::softlock::Policy}]
+    Source: 'prove/ports/kanidm/kernel/src/softlock.rs', lines 5:16-5:20 -/
+@[reducible]
+def softlock.Policy.Insts.CoreMarkerCopy : core.marker.Copy softlock.Policy
+  := {
+  cloneInst := softlock.Policy.Insts.CoreCloneClone
+}
+
+/-- [kanidm_kernel::softlock::{impl core::fmt::Debug for kanidm_kernel::softlock::Policy}::fmt]:
+    Source: 'prove/ports/kanidm/kernel/src/softlock.rs', lines 5:22-5:27
+    Visibility: public -/
+def softlock.Policy.Insts.CoreFmtDebug.fmt
+  (self : softlock.Policy) (f : core.fmt.Formatter) :
+  Result ((core.result.Result Unit core.fmt.Error) × core.fmt.Formatter)
+  := do
+  match self with
+  | softlock.Policy.Password =>
+    core.fmt.Formatter.write_str f (toStr "Password")
+  | softlock.Policy.Totp __self_0 =>
+    let __self_01 := Dyn.mk _ (core.fmt.DebugShared core.fmt.DebugU64) __self_0
+    core.fmt.Formatter.debug_tuple_field1_finish f (toStr "Totp") __self_01
+  | softlock.Policy.Webauthn =>
+    core.fmt.Formatter.write_str f (toStr "Webauthn")
+  | softlock.Policy.Unrestricted =>
+    core.fmt.Formatter.write_str f (toStr "Unrestricted")
+
+/-- Trait implementation: [kanidm_kernel::softlock::{impl core::fmt::Debug for kanidm_kernel::softlock::Policy}]
+    Source: 'prove/ports/kanidm/kernel/src/softlock.rs', lines 5:22-5:27 -/
+@[reducible]
+def softlock.Policy.Insts.CoreFmtDebug : core.fmt.Debug softlock.Policy := {
+  fmt := softlock.Policy.Insts.CoreFmtDebug.fmt
+}
+
+/-- Trait implementation: [kanidm_kernel::softlock::{impl core::marker::StructuralPartialEq for kanidm_kernel::softlock::Policy}]
+    Source: 'prove/ports/kanidm/kernel/src/softlock.rs', lines 5:29-5:38 -/
+@[reducible]
+def softlock.Policy.Insts.CoreMarkerStructuralPartialEq :
+  core.marker.StructuralPartialEq softlock.Policy := {
+}
+
+/-- [kanidm_kernel::softlock::{impl core::cmp::PartialEq<kanidm_kernel::softlock::Policy> for kanidm_kernel::softlock::Policy}::eq]:
+    Source: 'prove/ports/kanidm/kernel/src/softlock.rs', lines 5:29-5:38
+    Visibility: public -/
+def softlock.Policy.Insts.CoreCmpPartialEqPolicy.eq
+  (self : softlock.Policy) (other : softlock.Policy) : Result Bool := do
+  let self1 := read_discriminant self
+  let other1 := read_discriminant other
+  if self1 = other1
+  then
+    match self with
+    | softlock.Policy.Password => ok true
+    | softlock.Policy.Totp __self_0 =>
+      match other with
+      | softlock.Policy.Password => ok true
+      | softlock.Policy.Totp __arg1_0 =>
+        lift (core.cmp.impls.PartialEqU64.eq __self_0 __arg1_0)
+      | softlock.Policy.Webauthn => ok true
+      | softlock.Policy.Unrestricted => ok true
+    | softlock.Policy.Webauthn => ok true
+    | softlock.Policy.Unrestricted => ok true
+  else ok false
+
+/-- Trait implementation: [kanidm_kernel::softlock::{impl core::cmp::PartialEq<kanidm_kernel::softlock::Policy> for kanidm_kernel::softlock::Policy}]
+    Source: 'prove/ports/kanidm/kernel/src/softlock.rs', lines 5:29-5:38 -/
+@[reducible]
+def softlock.Policy.Insts.CoreCmpPartialEqPolicy : core.cmp.PartialEq
+  softlock.Policy softlock.Policy := {
+  eq := softlock.Policy.Insts.CoreCmpPartialEqPolicy.eq
+}
+
+/-- [kanidm_kernel::softlock::{impl core::cmp::Eq for kanidm_kernel::softlock::Policy}::assert_fields_are_eq]:
+    Source: 'prove/ports/kanidm/kernel/src/softlock.rs', lines 5:40-5:42
+    Visibility: public -/
+def softlock.Policy.Insts.CoreCmpEq.assert_fields_are_eq
+  (self : softlock.Policy) : Result Unit := do
+  ok ()
+
+/-- Trait implementation: [kanidm_kernel::softlock::{impl core::cmp::Eq for kanidm_kernel::softlock::Policy}]
+    Source: 'prove/ports/kanidm/kernel/src/softlock.rs', lines 5:40-5:42 -/
+@[reducible]
+def softlock.Policy.Insts.CoreCmpEq : core.cmp.Eq softlock.Policy := {
+  partialEqInst := softlock.Policy.Insts.CoreCmpPartialEqPolicy
+  assert_fields_are_eq := softlock.Policy.Insts.CoreCmpEq.assert_fields_are_eq
+}
+
+/-- [kanidm_kernel::softlock::State]
+    Source: 'prove/ports/kanidm/kernel/src/softlock.rs', lines 8:0-12:1
+    Visibility: public -/
+@[discriminant isize]
+inductive softlock.State where
+| Init : softlock.State
+| Locked : Std.Usize → softlock.Time → softlock.Time → softlock.State
+| Unlocked : Std.Usize → softlock.Time → softlock.State
+
+/-- [kanidm_kernel::softlock::{impl core::clone::Clone for kanidm_kernel::softlock::State}::clone]:
+    Source: 'prove/ports/kanidm/kernel/src/softlock.rs', lines 7:9-7:14
+    Visibility: public -/
+def softlock.State.Insts.CoreCloneClone.clone
+  (self : softlock.State) : Result softlock.State := do
+  ok self
+
+/-- Trait implementation: [kanidm_kernel::softlock::{impl core::clone::Clone for kanidm_kernel::softlock::State}]
+    Source: 'prove/ports/kanidm/kernel/src/softlock.rs', lines 7:9-7:14 -/
+@[reducible]
+def softlock.State.Insts.CoreCloneClone : core.clone.Clone softlock.State := {
+  clone := softlock.State.Insts.CoreCloneClone.clone
+}
+
+/-- Trait implementation: [kanidm_kernel::softlock::{impl core::marker::Copy for kanidm_kernel::softlock::State}]
+    Source: 'prove/ports/kanidm/kernel/src/softlock.rs', lines 7:16-7:20 -/
+@[reducible]
+def softlock.State.Insts.CoreMarkerCopy : core.marker.Copy softlock.State := {
+  cloneInst := softlock.State.Insts.CoreCloneClone
+}
+
+/-- [kanidm_kernel::softlock::{impl core::fmt::Debug for kanidm_kernel::softlock::State}::fmt]:
+    Source: 'prove/ports/kanidm/kernel/src/softlock.rs', lines 7:22-7:27
+    Visibility: public -/
+def softlock.State.Insts.CoreFmtDebug.fmt
+  (self : softlock.State) (f : core.fmt.Formatter) :
+  Result ((core.result.Result Unit core.fmt.Error) × core.fmt.Formatter)
+  := do
+  match self with
+  | softlock.State.Init => core.fmt.Formatter.write_str f (toStr "Init")
+  | softlock.State.Locked __self_0 __self_1 __self_2 =>
+    let __self_01 := Dyn.mk _ core.fmt.DebugUsize __self_0
+    let __self_11 := Dyn.mk _ softlock.Time.Insts.CoreFmtDebug __self_1
+    let __self_21 :=
+      Dyn.mk _ (core.fmt.DebugShared softlock.Time.Insts.CoreFmtDebug) __self_2
+    core.fmt.Formatter.debug_struct_field3_finish f (toStr "Locked") (toStr
+      "count") __self_01 (toStr "reset_at") __self_11 (toStr "unlock_at")
+      __self_21
+  | softlock.State.Unlocked __self_0 __self_1 =>
+    let __self_01 := Dyn.mk _ core.fmt.DebugUsize __self_0
+    let __self_11 :=
+      Dyn.mk _ (core.fmt.DebugShared softlock.Time.Insts.CoreFmtDebug) __self_1
+    core.fmt.Formatter.debug_tuple_field2_finish f (toStr "Unlocked") __self_01
+      __self_11
+
+/-- Trait implementation: [kanidm_kernel::softlock::{impl core::fmt::Debug for kanidm_kernel::softlock::State}]
+    Source: 'prove/ports/kanidm/kernel/src/softlock.rs', lines 7:22-7:27 -/
+@[reducible]
+def softlock.State.Insts.CoreFmtDebug : core.fmt.Debug softlock.State := {
+  fmt := softlock.State.Insts.CoreFmtDebug.fmt
+}
+
+/-- Trait implementation: [kanidm_kernel::softlock::{impl core::marker::StructuralPartialEq for kanidm_kernel::softlock::State}]
+    Source: 'prove/ports/kanidm/kernel/src/softlock.rs', lines 7:29-7:38 -/
+@[reducible]
+def softlock.State.Insts.CoreMarkerStructuralPartialEq :
+  core.marker.StructuralPartialEq softlock.State := {
+}
+
+/-- [kanidm_kernel::softlock::{impl core::cmp::PartialEq<kanidm_kernel::softlock::State> for kanidm_kernel::softlock::State}::eq]:
+    Source: 'prove/ports/kanidm/kernel/src/softlock.rs', lines 7:29-7:38
+    Visibility: public -/
+def softlock.State.Insts.CoreCmpPartialEqState.eq
+  (self : softlock.State) (other : softlock.State) : Result Bool := do
+  let self1 := read_discriminant self
+  let other1 := read_discriminant other
+  if self1 = other1
+  then
+    match self with
+    | softlock.State.Init => ok true
+    | softlock.State.Locked __self_0 __self_1 __self_2 =>
+      match other with
+      | softlock.State.Init => ok true
+      | softlock.State.Locked __arg1_0 __arg1_1 __arg1_2 =>
+        let b ← lift (core.cmp.impls.PartialEqUsize.eq __self_0 __arg1_0)
+        if b
+        then
+          let b1 ←
+            softlock.Time.Insts.CoreCmpPartialEqTime.eq __self_1 __arg1_1
+          if b1
+          then softlock.Time.Insts.CoreCmpPartialEqTime.eq __self_2 __arg1_2
+          else ok false
+        else ok false
+      | softlock.State.Unlocked _ _ => ok true
+    | softlock.State.Unlocked __self_0 __self_1 =>
+      match other with
+      | softlock.State.Init => ok true
+      | softlock.State.Locked _ _ _ => ok true
+      | softlock.State.Unlocked __arg1_0 __arg1_1 =>
+        let b ← lift (core.cmp.impls.PartialEqUsize.eq __self_0 __arg1_0)
+        if b
+        then softlock.Time.Insts.CoreCmpPartialEqTime.eq __self_1 __arg1_1
+        else ok false
+  else ok false
+
+/-- Trait implementation: [kanidm_kernel::softlock::{impl core::cmp::PartialEq<kanidm_kernel::softlock::State> for kanidm_kernel::softlock::State}]
+    Source: 'prove/ports/kanidm/kernel/src/softlock.rs', lines 7:29-7:38 -/
+@[reducible]
+def softlock.State.Insts.CoreCmpPartialEqState : core.cmp.PartialEq
+  softlock.State softlock.State := {
+  eq := softlock.State.Insts.CoreCmpPartialEqState.eq
+}
+
+/-- [kanidm_kernel::softlock::{impl core::cmp::Eq for kanidm_kernel::softlock::State}::assert_fields_are_eq]:
+    Source: 'prove/ports/kanidm/kernel/src/softlock.rs', lines 7:40-7:42
+    Visibility: public -/
+def softlock.State.Insts.CoreCmpEq.assert_fields_are_eq
+  (self : softlock.State) : Result Unit := do
+  ok ()
+
+/-- Trait implementation: [kanidm_kernel::softlock::{impl core::cmp::Eq for kanidm_kernel::softlock::State}]
+    Source: 'prove/ports/kanidm/kernel/src/softlock.rs', lines 7:40-7:42 -/
+@[reducible]
+def softlock.State.Insts.CoreCmpEq : core.cmp.Eq softlock.State := {
+  partialEqInst := softlock.State.Insts.CoreCmpPartialEqState
+  assert_fields_are_eq := softlock.State.Insts.CoreCmpEq.assert_fields_are_eq
+}
+
+/-- [kanidm_kernel::softlock::SoftLock]
+    Source: 'prove/ports/kanidm/kernel/src/softlock.rs', lines 14:0-14:86
+    Visibility: public -/
+structure softlock.SoftLock where
+  state : softlock.State
+  policy : softlock.Policy
+  last_expire_at : softlock.Time
+
+/-- [kanidm_kernel::softlock::{impl core::clone::Clone for kanidm_kernel::softlock::SoftLock}::clone]:
+    Source: 'prove/ports/kanidm/kernel/src/softlock.rs', lines 13:9-13:14
+    Visibility: public -/
+def softlock.SoftLock.Insts.CoreCloneClone.clone
+  (self : softlock.SoftLock) : Result softlock.SoftLock := do
+  ok self
+
+/-- Trait implementation: [kanidm_kernel::softlock::{impl core::clone::Clone for kanidm_kernel::softlock::SoftLock}]
+    Source: 'prove/ports/kanidm/kernel/src/softlock.rs', lines 13:9-13:14 -/
+@[reducible]
+def softlock.SoftLock.Insts.CoreCloneClone : core.clone.Clone softlock.SoftLock
+  := {
+  clone := softlock.SoftLock.Insts.CoreCloneClone.clone
+}
+
+/-- Trait implementation: [kanidm_kernel::softlock::{impl core::marker::Copy for kanidm_kernel::softlock::SoftLock}]
+    Source: 'prove/ports/kanidm/kernel/src/softlock.rs', lines 13:16-13:20 -/
+@[reducible]
+def softlock.SoftLock.Insts.CoreMarkerCopy : core.marker.Copy softlock.SoftLock
+  := {
+  cloneInst := softlock.SoftLock.Insts.CoreCloneClone
+}
+
+/-- [kanidm_kernel::softlock::{impl core::fmt::Debug for kanidm_kernel::softlock::SoftLock}::fmt]:
+    Source: 'prove/ports/kanidm/kernel/src/softlock.rs', lines 13:22-13:27
+    Visibility: public -/
+def softlock.SoftLock.Insts.CoreFmtDebug.fmt
+  (self : softlock.SoftLock) (f : core.fmt.Formatter) :
+  Result ((core.result.Result Unit core.fmt.Error) × core.fmt.Formatter)
+  := do
+  let dyn := Dyn.mk _ softlock.State.Insts.CoreFmtDebug self.state
+  let dyn1 := Dyn.mk _ softlock.Policy.Insts.CoreFmtDebug self.policy
+  let dyn2 :=
+    Dyn.mk _ (core.fmt.DebugShared softlock.Time.Insts.CoreFmtDebug)
+      self.last_expire_at
+  core.fmt.Formatter.debug_struct_field3_finish f (toStr "SoftLock") (toStr
+    "state") dyn (toStr "policy") dyn1 (toStr "last_expire_at") dyn2
+
+/-- Trait implementation: [kanidm_kernel::softlock::{impl core::fmt::Debug for kanidm_kernel::softlock::SoftLock}]
+    Source: 'prove/ports/kanidm/kernel/src/softlock.rs', lines 13:22-13:27 -/
+@[reducible]
+def softlock.SoftLock.Insts.CoreFmtDebug : core.fmt.Debug softlock.SoftLock
+  := {
+  fmt := softlock.SoftLock.Insts.CoreFmtDebug.fmt
+}
+
+/-- Trait implementation: [kanidm_kernel::softlock::{impl core::marker::StructuralPartialEq for kanidm_kernel::softlock::SoftLock}]
+    Source: 'prove/ports/kanidm/kernel/src/softlock.rs', lines 13:29-13:38 -/
+@[reducible]
+def softlock.SoftLock.Insts.CoreMarkerStructuralPartialEq :
+  core.marker.StructuralPartialEq softlock.SoftLock := {
+}
+
+/-- [kanidm_kernel::softlock::{impl core::cmp::PartialEq<kanidm_kernel::softlock::SoftLock> for kanidm_kernel::softlock::SoftLock}::eq]:
+    Source: 'prove/ports/kanidm/kernel/src/softlock.rs', lines 13:29-13:38
+    Visibility: public -/
+def softlock.SoftLock.Insts.CoreCmpPartialEqSoftLock.eq
+  (self : softlock.SoftLock) (other : softlock.SoftLock) : Result Bool := do
+  let b ←
+    softlock.State.Insts.CoreCmpPartialEqState.eq self.state other.state
+  if b
+  then
+    let b1 ←
+      softlock.Policy.Insts.CoreCmpPartialEqPolicy.eq self.policy other.policy
+    if b1
+    then
+      softlock.Time.Insts.CoreCmpPartialEqTime.eq self.last_expire_at
+        other.last_expire_at
+    else ok false
+  else ok false
+
+/-- Trait implementation: [kanidm_kernel::softlock::{impl core::cmp::PartialEq<kanidm_kernel::softlock::SoftLock> for kanidm_kernel::softlock::SoftLock}]
+    Source: 'prove/ports/kanidm/kernel/src/softlock.rs', lines 13:29-13:38 -/
+@[reducible]
+def softlock.SoftLock.Insts.CoreCmpPartialEqSoftLock : core.cmp.PartialEq
+  softlock.SoftLock softlock.SoftLock := {
+  eq := softlock.SoftLock.Insts.CoreCmpPartialEqSoftLock.eq
+}
+
+/-- [kanidm_kernel::softlock::{impl core::cmp::Eq for kanidm_kernel::softlock::SoftLock}::assert_fields_are_eq]:
+    Source: 'prove/ports/kanidm/kernel/src/softlock.rs', lines 13:40-13:42
+    Visibility: public -/
+def softlock.SoftLock.Insts.CoreCmpEq.assert_fields_are_eq
+  (self : softlock.SoftLock) : Result Unit := do
+  ok ()
+
+/-- Trait implementation: [kanidm_kernel::softlock::{impl core::cmp::Eq for kanidm_kernel::softlock::SoftLock}]
+    Source: 'prove/ports/kanidm/kernel/src/softlock.rs', lines 13:40-13:42 -/
+@[reducible]
+def softlock.SoftLock.Insts.CoreCmpEq : core.cmp.Eq softlock.SoftLock := {
+  partialEqInst := softlock.SoftLock.Insts.CoreCmpPartialEqSoftLock
+  assert_fields_are_eq :=
+    softlock.SoftLock.Insts.CoreCmpEq.assert_fields_are_eq
+}
+
+/-- [kanidm_kernel::softlock::after]:
+    Source: 'prove/ports/kanidm/kernel/src/softlock.rs', lines 16:0-18:1
+    Visibility: public -/
+def softlock.after (a : softlock.Time) (b : softlock.Time) : Result Bool := do
+  if a.secs > b.secs
+  then ok true
+  else if a.secs = b.secs
+       then ok (a.nanos > b.nanos)
+       else ok false
+
+/-- [kanidm_kernel::softlock::same_time]:
+    Source: 'prove/ports/kanidm/kernel/src/softlock.rs', lines 19:0-19:85
+    Visibility: public -/
+def softlock.same_time
+  (a : softlock.Time) (b : softlock.Time) : Result Bool := do
+  if a.secs = b.secs
+  then ok (a.nanos = b.nanos)
+  else ok false
+
+/-- [kanidm_kernel::softlock::plus_seconds]:
+    Source: 'prove/ports/kanidm/kernel/src/softlock.rs', lines 20:0-22:1
+    Visibility: public -/
+def softlock.plus_seconds
+  (t : softlock.Time) (seconds : Std.U64) : Result softlock.Time := do
+  let i ← t.secs + seconds
+  ok { t with secs := i }
+
+/-- [kanidm_kernel::softlock::failure_next_state]:
+    Source: 'prove/ports/kanidm/kernel/src/softlock.rs', lines 23:0-49:1
+    Visibility: public -/
+def softlock.failure_next_state
+  (policy : softlock.Policy) (count : Std.Usize) (ct : softlock.Time) :
+  Result softlock.State
+  := do
+  match policy with
+  | softlock.Policy.Password =>
+    let next_day_end ← ct.secs + 86400#u64
+    let rem ← next_day_end % 86400#u64
+    let i ← next_day_end - rem
+    if count < 3#usize
+    then
+      let unlock_at ← softlock.plus_seconds ct 1#u64
+      ok (softlock.State.Locked count { secs := i, nanos := 0#u32 } unlock_at)
+    else
+      if count < 9#usize
+      then
+        let unlock_at ← softlock.plus_seconds ct 3#u64
+        ok (softlock.State.Locked count { secs := i, nanos := 0#u32 }
+          unlock_at)
+      else
+        if count < 25#usize
+        then
+          let unlock_at ← softlock.plus_seconds ct 5#u64
+          ok (softlock.State.Locked count { secs := i, nanos := 0#u32 }
+            unlock_at)
+        else
+          if count < 100#usize
+          then
+            let unlock_at ← softlock.plus_seconds ct 10#u64
+            ok (softlock.State.Locked count { secs := i, nanos := 0#u32 }
+              unlock_at)
+          else
+            ok (softlock.State.Locked count { secs := i, nanos := 0#u32 }
+              { secs := i, nanos := 0#u32 })
+  | softlock.Policy.Totp step =>
+    let next_window_end ← ct.secs + step
+    let rem ← next_window_end % step
+    let i ← next_window_end - rem
+    if count >= 3#usize
+    then
+      ok (softlock.State.Locked count { secs := i, nanos := 0#u32 }
+        { secs := i, nanos := 0#u32 })
+    else
+      let unlock_at ← softlock.plus_seconds ct 1#u64
+      ok (softlock.State.Locked count { secs := i, nanos := 0#u32 } unlock_at)
+  | softlock.Policy.Webauthn =>
+    let next ← softlock.plus_seconds ct 1#u64
+    ok (softlock.State.Locked count next next)
+  | softlock.Policy.Unrestricted => ok softlock.State.Init
+
+/-- [kanidm_kernel::softlock::new]:
+    Source: 'prove/ports/kanidm/kernel/src/softlock.rs', lines 50:0-52:1
+    Visibility: public -/
+def softlock.new (policy : softlock.Policy) : Result softlock.SoftLock := do
+  ok
+    {
+      state := softlock.State.Init,
+      policy,
+      last_expire_at := { secs := 0#u64, nanos := 0#u32 }
+    }
+
+/-- [kanidm_kernel::softlock::apply_time_step]:
+    Source: 'prove/ports/kanidm/kernel/src/softlock.rs', lines 53:0-73:1
+    Visibility: public -/
+def softlock.apply_time_step
+  (lock : softlock.SoftLock) (ct : softlock.Time)
+  (expire_at : Option softlock.Time) :
+  Result softlock.SoftLock
+  := do
+  match lock.state with
+  | softlock.State.Init => ok lock
+  | softlock.State.Locked count reset_at unlock_at =>
+    let (t, reset_at1) ←
+      match expire_at with
+      | none => ok (lock.last_expire_at, reset_at)
+      | some expiry =>
+        do
+        let b ← softlock.same_time lock.last_expire_at expiry
+        if b
+        then ok (lock.last_expire_at, reset_at)
+        else
+          let b1 ← softlock.after reset_at expiry
+          let t1 ← if b1
+                     then ok expiry
+                     else ok reset_at
+          ok (expiry, t1)
+    let b ← softlock.after ct reset_at1
+    if b
+    then ok { lock with state := softlock.State.Init, last_expire_at := t }
+    else
+      let b1 ← softlock.after ct unlock_at
+      if b1
+      then
+        ok
+          {
+            lock
+              with
+              state := (softlock.State.Unlocked count reset_at1),
+              last_expire_at := t
+          }
+      else
+        ok
+          {
+            lock
+              with
+              state := (softlock.State.Locked count reset_at1 unlock_at),
+              last_expire_at := t
+          }
+  | softlock.State.Unlocked _ reset_at =>
+    let b ← softlock.after ct reset_at
+    if b
+    then ok { lock with state := softlock.State.Init }
+    else ok lock
+
+/-- [kanidm_kernel::softlock::is_valid]:
+    Source: 'prove/ports/kanidm/kernel/src/softlock.rs', lines 74:0-76:1
+    Visibility: public -/
+def softlock.is_valid (lock : softlock.SoftLock) : Result Bool := do
+  let b ←
+    match lock.state with
+    | softlock.State.Init => ok false
+    | softlock.State.Locked _ _ _ => ok true
+    | softlock.State.Unlocked _ _ => ok false
+  ok (¬ b)
+
+/-- [kanidm_kernel::softlock::record_failure]:
+    Source: 'prove/ports/kanidm/kernel/src/softlock.rs', lines 77:0-84:1
+    Visibility: public -/
+def softlock.record_failure
+  (lock : softlock.SoftLock) (ct : softlock.Time) :
+  Result softlock.SoftLock
+  := do
+  match lock.state with
+  | softlock.State.Init =>
+    let s ← softlock.failure_next_state lock.policy 1#usize ct
+    ok { lock with state := s }
+  | softlock.State.Locked count _ _ =>
+    let i ← count + 1#usize
+    let s ← softlock.failure_next_state lock.policy i ct
+    ok { lock with state := s }
+  | softlock.State.Unlocked count _ =>
+    let i ← count + 1#usize
+    let s ← softlock.failure_next_state lock.policy i ct
+    ok { lock with state := s }
 
 end kanidm_kernel

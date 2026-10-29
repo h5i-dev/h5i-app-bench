@@ -1,0 +1,148 @@
+⚠ [146/167] Replayed Aeneas.Std.WP
+warning: Aeneas/Std/WP.lean:756:4: 'simp -failIfUnchanged only' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Aeneas/Std/WP.lean:761:4: 'simp -failIfUnchanged only' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Aeneas/Std/WP.lean:896:11: 'cases i' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Aeneas/Std/WP.lean:896:23: 'simp' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Aeneas/Std/WP.lean:927:19: 'simp at hspec' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+⚠ [1264/1338] Replayed Aeneas.Std.Core.Core
+warning: Aeneas/Std/Core/Core.lean:38:4: The namespace 'core' is duplicated in the declaration 'Aeneas.Std.core.core.clone.CloneGlobal'
+
+Note: This linter can be disabled with `set_option linter.dupNamespace false`
+warning: Aeneas/Std/Core/Core.lean:59:4: The namespace 'core' is duplicated in the declaration 'Aeneas.Std.core.core.clone.CloneBox'
+
+Note: This linter can be disabled with `set_option linter.dupNamespace false`
+warning: Aeneas/Std/Core/Core.lean:68:4: The namespace 'core' is duplicated in the declaration 'Aeneas.Std.core.core.marker.CopyBool'
+
+Note: This linter can be disabled with `set_option linter.dupNamespace false`
+⚠ [1731/1734] Built Verified.SoftLock (37s)
+warning: Verified/SoftLock.lean:37:14: Variable name `count` is not explicitly referenced.
+
+The binding can be removed (if unused) or named `_` (if used implicitly).
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Verified/SoftLock.lean:128:15: This simp argument is unused:
+  eq_self_iff_true
+
+Hint: Omit it from the simp argument list.
+  simp only [̵e̵q̵_̵s̵e̵l̵f̵_̵i̵f̵f̵_̵t̵r̵u̵e̵,̵ ̵t̵r̵u̵e̵_̵a̵n̵d̵]̵[̲t̲r̲u̲e̲_̲a̲n̲d̲]̲
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+⚠ [1732/1734] Built Verified.SchemaTags (39s)
+warning: Verified/SchemaTags.lean:55:75: This simp argument is unused:
+  Bool.or_comm
+
+Hint: Omit it from the simp argument list.
+  simp [schema_tags.partial_accepts, partial_acceptsAllowed, Bool.or_c̵o̵m̵m̵,̵ ̵B̵o̵o̵l.̵o̵r̵_̵l̵eft_comm]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/SchemaTags.lean:108:87: This simp argument is unused:
+  Bool.or_comm
+
+Hint: Omit it from the simp argument list.
+  simp [schema_tags.value_accepts, value_acceptsAllowed,
+  ̲  ̲ ̲ ̲B̵o̵o̵l̵.̵o̵r̵_̵c̵o̵m̵m̵,̵ ̵Bool.or_left_comm]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/SchemaTags.lean:108:101: This simp argument is unused:
+  Bool.or_left_comm
+
+Hint: Omit it from the simp argument list.
+  simp [schema_tags.value_accepts, value_acceptsAllowed, Bool.or_comm,̵ ̵B̵o̵o̵l̵.̵o̵r̵_̵l̵e̵f̵t̵_̵c̵o̵m̵m̵]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/SchemaTags.lean:108:120: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+⚠ [1733/1734] Built Verified.AccountPolicy (41s)
+warning: Verified/AccountPolicy.lean:38:49: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: Verified/AccountPolicy.lean:40:49: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: Verified/AccountPolicy.lean:61:31: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: Verified/AccountPolicy.lean:73:17: This simp argument is unused:
+  min_le_left
+
+Hint: Omit it from the simp argument list.
+  simp [combine, min_le_l̵e̵f̵t̵,̵ ̵m̵i̵n̵_̵l̵e̵_̵right, le_max_left, le_max_right]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/AccountPolicy.lean:73:30: This simp argument is unused:
+  min_le_right
+
+Hint: Omit it from the simp argument list.
+  simp [combine, min_le_left, m̵i̵n̵_̵l̵e̵_̵r̵i̵g̵h̵t̵,̵ ̵le_max_left, le_max_right]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/AccountPolicy.lean:73:44: This simp argument is unused:
+  le_max_left
+
+Hint: Omit it from the simp argument list.
+  simp [combine, min_le_left, min_le_right, le_max_l̵e̵f̵t̵,̵ ̵l̵e̵_̵m̵a̵x̵_̵right]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/AccountPolicy.lean:73:57: This simp argument is unused:
+  le_max_right
+
+Hint: Omit it from the simp argument list.
+  simp [combine, min_le_left, min_le_right, le_max_left,̵ ̵l̵e̵_̵m̵a̵x̵_̵r̵i̵g̵h̵t̵]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/AccountPolicy.lean:80:94: This simp argument is unused:
+  conjunction
+
+Hint: Omit it from the simp argument list.
+  simp_all ̵[̵c̵o̵n̵j̵u̵n̵c̵t̵i̵o̵n̵]̵
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/AccountPolicy.lean:108:6: 'all_goals (try simp_all)' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/AccountPolicy.lean:109:6: 'all_goals (try scalar_tac)' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/AccountPolicy.lean:113:6: 'all_goals (try simp_all)' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/AccountPolicy.lean:114:6: 'all_goals (try scalar_tac)' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/AccountPolicy.lean:108:16: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: Verified/AccountPolicy.lean:109:16: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: Verified/AccountPolicy.lean:113:16: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: Verified/AccountPolicy.lean:114:16: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+⚠ [1734/1734] Built Verified.CredentialCommit (45s)
+warning: Verified/CredentialCommit.lean:33:107: 'rfl' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/CredentialCommit.lean:35:107: 'rfl' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/CredentialCommit.lean:33:107: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: Verified/CredentialCommit.lean:35:107: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+Build completed successfully (1734 jobs).

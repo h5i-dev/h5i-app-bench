@@ -465,3 +465,5 @@ pub fn transition(provider: &OidcProvider, claims: &Claims, req: &Request) -> Re
     }
     Ok(Reply::Allowed)
 }
+
+pub mod permission_import;

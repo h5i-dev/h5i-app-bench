@@ -18,6 +18,7 @@ pub mod modify_acc;
 pub mod profiles;
 pub mod protected;
 pub mod search_acc;
+pub mod softlock;
 pub mod valueset;
 
 /// `uuid::Uuid`; its `Ord` is the big-endian byte order, which is `u128`'s.
@@ -292,3 +293,9 @@ pub struct CreateEvent {
 pub struct DeleteEvent {
     pub ident: Identity,
 }
+
+pub mod schema_tags;
+
+pub mod credential_commit;
+
+pub mod account_policy;
