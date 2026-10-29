@@ -1,3 +1,4 @@
+import Verified.TokenScope
 import Verified.TotpPolicy
 import Verified.TokenExpiry
 import Verified.ArtifactkeeperAnonymousNeverMutates
@@ -247,5 +248,30 @@ theorem totp_enrolled_challenged (p : totp_policy.TotpPolicy) (s : totp_policy.T
     (h : s.totp_enabled = true) :
     totp_policy.totp_login_requirement p s = ok .ChallengeExisting :=
   Verified.TotpPolicy.enrolled_challenged p s h
+
+end artifactkeeper_kernel.Properties
+
+namespace artifactkeeper_kernel.Properties
+
+/-- Full scope-list validation returns the first offending value. -/
+theorem scope_validation_spec (scopes : Slice (alloc.vec.Vec U8)) :
+    token_scope.validate_scopes_pure scopes = ok (Verified.TokenScope.validation scopes.val) :=
+  Verified.TokenScope.validation_spec scopes
+
+/-- Full admin-only scope check, including the admin bypass. -/
+theorem scope_admin_validation_spec (scopes : Slice (alloc.vec.Vec U8)) (admin : Bool) :
+    token_scope.enforce_admin_only_scopes scopes admin =
+      ok (Verified.TokenScope.adminValidation scopes.val admin) :=
+  Verified.TokenScope.admin_validation_spec scopes admin
+
+/-- Delegated actions are bounded by the credential's effective scopes. -/
+theorem scope_mint_spec (e : AuthExtension) (requested : Slice (alloc.vec.Vec U8)) :
+    token_scope.check_mint_ceiling e requested = ok (Verified.TokenScope.mint e requested.val) :=
+  Verified.TokenScope.mint_spec e requested
+
+/-- Repository restrictions are inherited for admin and non-admin credentials. -/
+theorem scope_repo_mint_spec (e : AuthExtension) (requested : Bool) :
+    token_scope.check_repo_ceiling e requested = ok (Verified.TokenScope.repoMint e requested) :=
+  Verified.TokenScope.repo_mint_spec e requested
 
 end artifactkeeper_kernel.Properties

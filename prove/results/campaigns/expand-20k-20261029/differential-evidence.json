@@ -13,5 +13,19 @@
     "boundary_cases": 921600,
     "reference_identity": "prove/ports/nora/difftest/circuit_breaker/identity.json",
     "log": "nora-circuit-differential.log"
+  },
+  "artifactkeeper": {
+    "command": "cargo test --release --manifest-path prove/ports/artifactkeeper/difftest/Cargo.toml scope -- --nocapture; cargo test --release --manifest-path prove/ports/artifactkeeper/difftest/Cargo.toml auth_extension_agrees -- --nocapture",
+    "passed": true,
+    "directed_comparisons": 36300,
+    "random_scope_cases": 1000000,
+    "random_auth_extension_cases": 500000,
+    "upstream_revision": "7c42891cd64f144df6197b8801c9cca4f0e0f5a7",
+    "reference_extractor": "prove/ports/artifactkeeper/difftest/extract_upstream.py",
+    "reference_files": {
+      "prove/ports/artifactkeeper/difftest/src/upstream/api/middleware/auth.rs": "0a2593e3e8215974ab9aff0b1e711894fe19fb091599c22cca41b0d34e40ba7c",
+      "prove/ports/artifactkeeper/difftest/src/upstream/services/token_service.rs": "4f2e7597fce438698903e98563b2564a4d0ef2057e5221c0f326c196b38d208b"
+    },
+    "log": "artifactkeeper-scope-differential.log"
   }
 }

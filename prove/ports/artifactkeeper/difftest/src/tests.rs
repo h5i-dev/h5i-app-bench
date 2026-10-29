@@ -585,3 +585,56 @@ fn create_permission_agrees() {
     println!("{h:#?}");
     assert_eq!(h.len(), 6, "{h:#?}");
 }
+
+/// Ordered errors and delegation boundaries, including every scope pair.
+#[test]
+fn scope_mint_boundaries_agree() {
+    use crate::services::token_service as ts;
+    let names = ["", "bad-a", "bad-b", "read", "write", "read:artifacts", "write:artifacts",
+        "delete:artifacts", "promote:artifacts", "read:repositories", "write:repositories",
+        "delete:repositories", "read:users", "write:users", "trigger:sync", "write:findings",
+        "admin", "*", ":x", "write:", "Admin", "λ"];
+    let mut rng = Rng(49831);
+    let mut comparisons = 0;
+    for a in names { for bname in names {
+        let scopes = vec![a.to_owned(), bname.to_owned()];
+        let ks: Vec<_> = scopes.iter().map(|s| b(s)).collect();
+        let got = k::token_scope::validate_scopes_pure(&ks);
+        let want = ts::validate_scopes_pure(&scopes);
+        assert_eq!(got.is_ok(), want.is_ok());
+        if let (Err(value), Err(message)) = (got, want) {
+            assert!(message.starts_with(&format!("Invalid scope: '{}'.", String::from_utf8(value).unwrap())));
+        }
+        comparisons += 1;
+        for admin in [false, true] {
+            let got = k::token_scope::enforce_admin_only_scopes(&ks, admin);
+            let want = ts::enforce_admin_only_scopes(&scopes, admin);
+            assert_eq!(got.is_ok(), want.is_ok());
+            if let (Err(value), Err(message)) = (got, want) {
+                assert!(message.starts_with(&format!("Scope '{}'", String::from_utf8(value).unwrap())));
+            }
+            comparisons += 1;
+            for held in [None, Some(vec![]), Some(vec![b(a)]), Some(ks.clone())] {
+                for restriction in [k::AccessScope::Admin, k::AccessScope::Restricted(vec![]),
+                    k::AccessScope::Restricted(vec![1, 2])] {
+                    let mut e = random_ext(&mut rng);
+                    e.is_admin = admin;
+                    e.scopes = held.clone();
+                    e.allowed_repo_ids = restriction;
+                    let u = ext_back(&e);
+                    assert_eq!(e.enforce_mint_ceiling(&ks).is_ok(), u.enforce_mint_ceiling(&scopes).is_ok());
+                    comparisons += 1;
+                    for requested in [false, true] {
+                        let got = e.mint_repo_ceiling(requested);
+                        let want = u.mint_repo_ceiling(requested).map(|o| o.map(|v|
+                            v.iter().map(|x| x.as_u128() as u64).collect::<Vec<_>>()));
+                        assert_eq!(got.is_ok(), want.is_ok());
+                        assert_eq!(got.ok(), want.ok());
+                        comparisons += 1;
+                    }
+                }
+            }
+        }
+    }}
+    println!("scope/mint directed comparisons: {comparisons}");
+}

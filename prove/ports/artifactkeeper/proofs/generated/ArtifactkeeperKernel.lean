@@ -10106,6 +10106,112 @@ def token_scope.enforce_admin_only_scopes
   then ok (core.result.Result.Ok ())
   else token_scope.enforce_admin_only_scopes_loop scopes 0#usize
 
+/-- [artifactkeeper_kernel::token_scope::{artifactkeeper_kernel::AuthExtension}::enforce_mint_ceiling]: loop body 0:
+    Source: 'prove/ports/artifactkeeper/kernel/src/token_scope.rs', lines 99:8-106:5
+    Visibility: public -/
+@[rust_loop_body]
+def token_scope.AuthExtension.enforce_mint_ceiling_loop.body
+  (i : Std.U64) (v : alloc.vec.Vec Std.U8) (v1 : alloc.vec.Vec Std.U8)
+  (b : Bool) (b1 : Bool) (b2 : Bool)
+  (o : Option (alloc.vec.Vec (alloc.vec.Vec Std.U8))) («as» : AccessScope)
+  (o1 : Option Std.I64) (requested : Slice (alloc.vec.Vec Std.U8))
+  (i1 : Std.Usize) :
+  Result (ControlFlow Std.Usize (core.result.Result Unit AppError))
+  := do
+  let i2 := Slice.len requested
+  if i1 < i2
+  then
+    let v2 ← Slice.index_usize requested i1
+    let s := alloc.vec.Vec.deref v2
+    let b3 ←
+      token_scope.AuthExtension.has_scope
+        {
+          user_id := i,
+          username := v,
+          email := v1,
+          is_admin := b,
+          is_api_token := b1,
+          is_service_account := b2,
+          scopes := o,
+          allowed_repo_ids := «as»,
+          iat_ms := o1
+        } s
+    if b3
+    then let i3 ← i1 + 1#usize
+         ok (cont i3)
+    else ok (done (core.result.Result.Err AppError.Authorization))
+  else ok (done (core.result.Result.Ok ()))
+
+/-- [artifactkeeper_kernel::token_scope::{artifactkeeper_kernel::AuthExtension}::enforce_mint_ceiling]: loop 0:
+    Source: 'prove/ports/artifactkeeper/kernel/src/token_scope.rs', lines 99:8-106:5
+    Visibility: public -/
+@[rust_loop]
+def token_scope.AuthExtension.enforce_mint_ceiling_loop
+  (i : Std.U64) (v : alloc.vec.Vec Std.U8) (v1 : alloc.vec.Vec Std.U8)
+  (b : Bool) (b1 : Bool) (b2 : Bool)
+  (o : Option (alloc.vec.Vec (alloc.vec.Vec Std.U8))) («as» : AccessScope)
+  (o1 : Option Std.I64) (requested : Slice (alloc.vec.Vec Std.U8))
+  (i1 : Std.Usize) :
+  Result (core.result.Result Unit AppError)
+  := do
+  loop
+    (fun i2 => token_scope.AuthExtension.enforce_mint_ceiling_loop.body i v v1
+      b b1 b2 o «as» o1 requested i2)
+    i1
+
+/-- [artifactkeeper_kernel::token_scope::{artifactkeeper_kernel::AuthExtension}::enforce_mint_ceiling]:
+    Source: 'prove/ports/artifactkeeper/kernel/src/token_scope.rs', lines 94:4-106:5
+    Visibility: public -/
+def token_scope.AuthExtension.enforce_mint_ceiling
+  (self : AuthExtension) (requested : Slice (alloc.vec.Vec Std.U8)) :
+  Result (core.result.Result Unit AppError)
+  := do
+  if self.is_admin
+  then ok (core.result.Result.Ok ())
+  else
+    token_scope.AuthExtension.enforce_mint_ceiling_loop self.user_id
+      self.username self.email self.is_admin self.is_api_token
+      self.is_service_account self.scopes self.allowed_repo_ids self.iat_ms
+      requested 0#usize
+
+/-- [artifactkeeper_kernel::token_scope::{artifactkeeper_kernel::AuthExtension}::mint_repo_ceiling]:
+    Source: 'prove/ports/artifactkeeper/kernel/src/token_scope.rs', lines 108:4-121:5
+    Visibility: public -/
+def token_scope.AuthExtension.mint_repo_ceiling
+  (self : AuthExtension) (requests_restriction : Bool) :
+  Result (core.result.Result (Option (alloc.vec.Vec Std.U64)) AppError)
+  := do
+  match self.allowed_repo_ids with
+  | AccessScope.Admin => ok (core.result.Result.Ok none)
+  | AccessScope.Restricted ids =>
+    if requests_restriction
+    then ok (core.result.Result.Err AppError.Authorization)
+    else
+      let i := alloc.vec.Vec.len ids
+      if i = 0#usize
+      then ok (core.result.Result.Err AppError.Authorization)
+      else
+        let v ← alloc.vec.CloneVec.clone core.clone.CloneU64 ids
+        ok (core.result.Result.Ok (some v))
+
+/-- [artifactkeeper_kernel::token_scope::check_mint_ceiling]:
+    Source: 'prove/ports/artifactkeeper/kernel/src/token_scope.rs', lines 170:0-172:1
+    Visibility: public -/
+def token_scope.check_mint_ceiling
+  (auth : AuthExtension) (requested : Slice (alloc.vec.Vec Std.U8)) :
+  Result (core.result.Result Unit AppError)
+  := do
+  token_scope.AuthExtension.enforce_mint_ceiling auth requested
+
+/-- [artifactkeeper_kernel::token_scope::check_repo_ceiling]:
+    Source: 'prove/ports/artifactkeeper/kernel/src/token_scope.rs', lines 175:0-177:1
+    Visibility: public -/
+def token_scope.check_repo_ceiling
+  (auth : AuthExtension) (requested : Bool) :
+  Result (core.result.Result (Option (alloc.vec.Vec Std.U64)) AppError)
+  := do
+  token_scope.AuthExtension.mint_repo_ceiling auth requested
+
 /-- [artifactkeeper_kernel::totp_policy::TotpPolicy]
     Source: 'prove/ports/artifactkeeper/kernel/src/totp_policy.rs', lines 4:0-4:67
     Visibility: public -/

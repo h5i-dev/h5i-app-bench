@@ -925,6 +925,28 @@
         "end": 166,
         "sha256": "b596b31673c565b5b9caa148e397585db2181073228e2f901a939db91d08d836"
       }
+    ],
+    "token_scope.AuthExtension.enforce_mint_ceiling": [
+      {
+        "file": "backend/src/api/middleware/auth.rs",
+        "self_ty": "AuthExtension",
+        "name": "enforce_mint_ceiling",
+        "kind": "method",
+        "start": 219,
+        "end": 232,
+        "sha256": "24b2673db168f5907705a51ab06902d8ca78fb7c9f03ffe61129e203c471a798"
+      }
+    ],
+    "token_scope.AuthExtension.mint_repo_ceiling": [
+      {
+        "file": "backend/src/api/middleware/auth.rs",
+        "self_ty": "AuthExtension",
+        "name": "mint_repo_ceiling",
+        "kind": "method",
+        "start": 252,
+        "end": 270,
+        "sha256": "fa5c7a2f4d2a1483e3f1bcefcc7ec920c328d1fbc27d5cf78cb015442008f002"
+      }
     ]
   }
 }
