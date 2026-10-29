@@ -87,8 +87,9 @@
           </table>
         </div>
         <dl class="defs">
-          <div><dt>Specs accepted</dt><dd>Per application, the larger of the benchmark task set and the source-matched project gate set; the two sets are not added together. Project properties pass <code>h5i app check</code>; benchmark proofs are re-checked in a clean workspace. Only <code>propext</code>, <code>Classical.choice</code> and <code>Quot.sound</code> are allowed.</dd></div>
+          <div><dt>Specs accepted</dt><dd>Per application, the larger of the benchmark task set and the source-matched project gate set; the two sets are not added together. Project properties pass <code>h5i app check</code>; benchmark proofs were checked in their original task workspaces. Only <code>propext</code>, <code>Classical.choice</code> and <code>Quot.sound</code> are allowed.</dd></div>
           <div><dt>Of security kernel</dt><dd>Reached lines over the kernel-eligible lines whose module or name is about authentication, authorization, tokens, credentials, sessions, validation or visibility. Keyword-based; every selected spec is a security property.</dd></div>
+          <div><dt>Source freshness</dt><dd>Current gated source reach requires a complete gate and reproducible extraction matching all current inputs. Each app row labels its evidence basis. Historical benchmark reach describes the original task snapshots and does not verify changed project trees. Source lines are deduplicated within each pinned repository; current and historical totals are separate, overlapping measures.</dd></div>
           <div><dt>Of kernel ceiling</dt><dd>Upstream lines in functions that accepted theorems are about, over the module's kernel ceiling: the lines that could be a kernel at all (pure, synchronous, no I/O, clock, randomness or locks, transitively). A static estimate; see <code>harness/kernel_ceiling.py</code>.</dd></div>
           <div><dt>Gate</dt><dd><code>h5i app check</code>. Passes once every spec is proved.</dd></div>
         </dl>

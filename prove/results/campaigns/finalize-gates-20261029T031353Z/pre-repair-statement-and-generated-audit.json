@@ -1,0 +1,45 @@
+{
+  "artifactkeeper": {
+    "configured_targets": 27,
+    "all_configured_public_types_unchanged": true,
+    "generated_files_unchanged": {
+      "prove/ports/artifactkeeper/proofs/generated/ArtifactkeeperKernel.lean": "c6a154aa64f9adc21ad0814bc959f4cd23007aca7fc0861179969490091d940a"
+    }
+  },
+  "kanidm": {
+    "configured_targets": 36,
+    "all_configured_public_types_unchanged": true,
+    "generated_files_unchanged": {
+      "prove/ports/kanidm/proofs/generated/KanidmKernel.lean": "d942788192cb093ce1b247d5828444d631f5f3fd4b935696c3fba66a6d037376"
+    }
+  },
+  "nora": {
+    "configured_targets": 31,
+    "all_configured_public_types_unchanged": true,
+    "generated_files_unchanged": {
+      "prove/ports/nora/proofs/generated/NoraKernel.lean": "e10dc5a7cb1c72a69675ac7c686e710e94b23c8f35f80944ed2e0b873c8089b2"
+    },
+    "middleware_total_type_unchanged": true
+  },
+  "rustfs": {
+    "configured_targets": 268,
+    "all_configured_public_types_unchanged": true,
+    "generated_files_unchanged": {
+      "prove/ports/rustfs/proofs/generated/RustfsKernel.lean": "ae4efb8bf1ac8056507e5b024d884bd8fb09bdfce7e2b498fa9930472926cc95"
+    }
+  },
+  "oxicloud": {
+    "configured_targets": 11,
+    "all_configured_public_types_unchanged": true,
+    "generated_files_unchanged": {
+      "prove/ports/oxicloud/proofs/generated/OxicloudKernel.lean": "100cb237259689f1beedc7ca7666f77389e453bcfa326ac26cd58187b7293b06"
+    }
+  },
+  "tuwunel": {
+    "configured_targets": 17,
+    "all_configured_public_types_unchanged": true,
+    "generated_files_unchanged": {
+      "prove/ports/tuwunel/proofs/generated/TuwunelKernel.lean": "e1b361bc527ef97bc7c39f89a223e7970d690f66296ff5c2a4f0bbaaff0d1042"
+    }
+  }
+}

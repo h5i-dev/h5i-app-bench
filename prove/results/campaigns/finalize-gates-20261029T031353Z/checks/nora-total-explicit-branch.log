@@ -1,0 +1,35 @@
+⚠ [146/248] Replayed Aeneas.Std.WP
+warning: Aeneas/Std/WP.lean:756:4: 'simp -failIfUnchanged only' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Aeneas/Std/WP.lean:761:4: 'simp -failIfUnchanged only' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Aeneas/Std/WP.lean:896:11: 'cases i' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Aeneas/Std/WP.lean:896:23: 'simp' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Aeneas/Std/WP.lean:927:19: 'simp at hspec' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+⚠ [1264/1290] Replayed Aeneas.Std.Core.Core
+warning: Aeneas/Std/Core/Core.lean:38:4: The namespace 'core' is duplicated in the declaration 'Aeneas.Std.core.core.clone.CloneGlobal'
+
+Note: This linter can be disabled with `set_option linter.dupNamespace false`
+warning: Aeneas/Std/Core/Core.lean:59:4: The namespace 'core' is duplicated in the declaration 'Aeneas.Std.core.core.clone.CloneBox'
+
+Note: This linter can be disabled with `set_option linter.dupNamespace false`
+warning: Aeneas/Std/Core/Core.lean:68:4: The namespace 'core' is duplicated in the declaration 'Aeneas.Std.core.core.marker.CopyBool'
+
+Note: This linter can be disabled with `set_option linter.dupNamespace false`
+ℹ [1732/1734] Replayed Verified.Derived
+info: Verified/Derived.lean:6:0: h5i_derive_all: no eq spec for nora_kernel.net.IpAddr; derive it by hand
+info: Verified/Derived.lean:6:0: h5i_derive_all: no eq spec for nora_kernel.validation.ValidationError; derive it by hand
+info: Verified/Derived.lean:6:0: h5i_derive_all: no clone spec for nora_kernel.tokens.TokenFile; derive it by hand
+info: Verified/Derived.lean:6:0: h5i_derive_all: no clone spec for nora_kernel.tokens.TokenStore; derive it by hand
+⚠ [1733/1734] Replayed Verified.NoraMiddlewareSupport
+warning: Verified/NoraMiddlewareSupport.lean:235:4: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`

@@ -11,3 +11,9 @@ Both sessions used this same branch, so their changes are combined in this check
 Accounting verification: seven project-reach unit tests and the statement check passed. Full project verification remains WIP.
 
 The saved [checkpoint](../results/campaigns/coverage-20k-20261028T202224Z/checkpoint/README.md) contains the per-app accounting, fresh gates, source-line sets, mappings, and source hashes. [Main status](../results/campaigns/coverage-20k-20261028T202224Z/MAIN_STATUS.md) and [Kanidm status](../results/campaigns/coverage-20k-20261028T202224Z/KANIDM_STATUS.md) preserve detailed work notes; earlier counts there are historical snapshots.
+
+## Existing-gate finalization follow-up (2026-10-29)
+
+ArtifactKeeper's current27-target gate now passes after the existing SQL scanner's unsupported library calls were represented explicitly and Lean was regenerated. Current source-matched mapped reach is **4,255** (AK1,504; RustFS2,000; OxiCloud751). Historical fallback for unresolved Kanidm/Nora/Tuwunel is **5,226**; the mixed compatibility total is **9,481**, up185 from9,296. Full historical benchmark reach remains7,684 with99/101 accepted task/model results. Current and full historical totals overlap and must not be added.
+
+Whole-project verification remains incomplete. Nora middleware_total, Kanidm EffectivePermissionCheckTotal/staged EntryValidation, and Tuwunel quartic transition_total have concrete unresolved proof blockers. Optional SQL scanner top-level proof remains WIP despite compiled segment lemmas. All six current extractions pass; extraction alone is not proof coverage. See the [final audit](../results/campaigns/finalize-gates-20261029T031353Z/FINAL.md) for exact hashes, pinned line sets, gate evidence, diagnostics and remaining work.

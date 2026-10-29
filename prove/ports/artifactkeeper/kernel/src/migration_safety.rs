@@ -130,11 +130,19 @@ pub fn contains_call(stmt: &[u8], from: usize, name: &[u8]) -> bool {
 }
 pub fn classify(stmt: &[u8]) -> Vec<Finding> {
     let mut out = Vec::new();
-    for opener in [b"CREATE INDEX".as_slice(), b"CREATE UNIQUE INDEX".as_slice()] {
+    // Ordered dispatch keeps the scanner independent of opaque array iterators.
+    let mut opener_index = 0;
+    while opener_index < 2 {
+        let opener: &[u8] = if opener_index == 0 { b"CREATE INDEX" } else { b"CREATE UNIQUE INDEX" };
+        opener_index += 1;
         let mut from = 0;
         while let Some((s,e)) = find_phrase(stmt,opener,from) {
             from = e;
-            if find_phrase(stmt,b"CONCURRENTLY",e).map(|p|p.0) == Some(skip_ws(stmt,e)) { continue; }
+            let concurrently = match find_phrase(stmt,b"CONCURRENTLY",e) {
+                Some((start, _)) => start == skip_ws(stmt,e),
+                None => false,
+            };
+            if concurrently { continue; }
             if let Some((_,on_end)) = find_phrase(stmt,b"ON",e) {
                 if let Some(table) = identifier_after(stmt,on_end) { out.push(Finding{kind:Kind::BlockingIndex,table,at:s}); }
             }
@@ -167,7 +175,10 @@ pub fn classify(stmt: &[u8]) -> Vec<Finding> {
     }
     let bounded = find_phrase(stmt,b"LIMIT",0).is_some() || find_phrase(stmt,b"LOOP",0).is_some();
     if !bounded {
-        for opener in [b"UPDATE".as_slice(),b"DELETE FROM".as_slice()] {
+        let mut opener_index = 0;
+        while opener_index < 2 {
+            let opener: &[u8] = if opener_index == 0 { b"UPDATE" } else { b"DELETE FROM" };
+            opener_index += 1;
             let mut from = 0;
             while let Some((s,e)) = find_phrase(stmt,opener,from) {
                 from = e;
@@ -175,7 +186,15 @@ pub fn classify(stmt: &[u8]) -> Vec<Finding> {
             }
         }
     }
-    for opener in [b"CLUSTER".as_slice(),b"VACUUM FULL".as_slice(),b"REINDEX TABLE".as_slice(),b"REINDEX INDEX".as_slice()] {
+    let mut opener_index = 0;
+    while opener_index < 4 {
+        let opener: &[u8] = match opener_index {
+            0 => b"CLUSTER",
+            1 => b"VACUUM FULL",
+            2 => b"REINDEX TABLE",
+            _ => b"REINDEX INDEX",
+        };
+        opener_index += 1;
         let mut from = 0;
         while let Some((s,e)) = find_phrase(stmt,opener,from) {
             from = e;

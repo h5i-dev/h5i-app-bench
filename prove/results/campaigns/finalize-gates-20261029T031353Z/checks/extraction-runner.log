@@ -1,0 +1,8 @@
+artifactkeeper: running h5i app extract --check ports/artifactkeeper
+artifactkeeper: passed; results/project-checks/20261029T031744205585Z/artifactkeeper.log
+nora: running h5i app extract --check ports/nora
+nora: passed; results/project-checks/20261029T031744205585Z/nora.log
+kanidm: running h5i app extract --check ports/kanidm
+kanidm: passed; results/project-checks/20261029T031744205585Z/kanidm.log
+tuwunel: running h5i app extract --check ports/tuwunel
+tuwunel: passed; results/project-checks/20261029T031744205585Z/tuwunel.log

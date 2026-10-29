@@ -1,0 +1,2 @@
+nora: running h5i app extract --check ports/nora
+nora: passed; results/project-checks/20261029T034442127760Z/nora.log

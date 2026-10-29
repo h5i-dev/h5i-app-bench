@@ -1,0 +1,128 @@
+$ charon cargo --preset=aeneas --start-from oxicloud_kernel::grantapi::transition --dest-file /tmp/.tmpOrKHh1/oxicloud_kernel.llbc
+   Compiling oxicloud-kernel v0.1.0 (/home/ht2673/Dev/h5i-app-bench/prove/ports/oxicloud/kernel)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.93s
+$ aeneas -backend lean /tmp/.tmpOrKHh1/oxicloud_kernel.llbc -dest /tmp/.tmp14GcBe/generated
+[Info ] Imported: /tmp/.tmpOrKHh1/oxicloud_kernel.llbc
+
+
+
+
+
+
+
+
+
+
+Applied prepasses:  completed 114/114
+
+Translated globals:  completed 2/2
+
+Translated opaque functions:  completed 23/23
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Translated transparent functions:  completed 69/69
+
+Translated trait declarations:  completed  4/16
+
+Translated trait impls:  completed 13/29
+
+
+Post-processed translated opaque functions:  completed 23/23
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Post-processed translated transparent functions:  completed 69/69
+
+[Info ] Generated: /tmp/.tmp14GcBe/generated/OxicloudKernel.lean
+[Warn ] The crate contains extracted external, unknown definitions: we advise using the option -split-files to allow manually providing these definitions in separate files.
+[Info ] Total execution time: 7.354079 seconds
+extracted oxicloud-kernel to /tmp/.tmp14GcBe/generated/OxicloudKernel.lean
+ports/oxicloud: extraction is up to date

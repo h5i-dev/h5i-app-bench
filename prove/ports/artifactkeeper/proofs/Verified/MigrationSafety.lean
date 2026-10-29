@@ -13,6 +13,21 @@ lemma push_length {α} (v w : alloc.vec.Vec α) (x : α)
   h5i_invert h
   simp
 
+-- Collect length facts without unfolding vector allocation in every branch.
+open Lean Elab Tactic Meta in
+elab "push_facts" : tactic => withMainContext do
+  for d in ← getLCtx do
+    if d.isImplementationDetail then continue
+    let t ← instantiateMVars d.type
+    unless t.isAppOfArity ``Eq 3 do continue
+    unless t.getAppArgs[1]!.isAppOfArity ``alloc.vec.Vec.push 3 do continue
+    discard <| observing? <| (← getMainGoal).withContext do
+      let pf ← mkAppOptM ``push_length #[none, none, none, none, some d.toExpr]
+      let ty ← inferType pf
+      let g ← getMainGoal
+      let (_, g') ← (← g.assert ((← getLCtx).getUnusedName `push_len) ty pf).intro1P
+      replaceMainGoal [g']
+
 /-- Mask output length always tracks its consumed byte offset. -/
 def aligned (n start : Usize) (v : alloc.vec.Vec U8) (i : Usize) : Prop :=
   v.val.length = i.val ∧ start.val ≤ i.val ∧ i.val ≤ n.val
@@ -31,15 +46,11 @@ lemma segment0 (b : Slice U8) (n start : Usize) (v : alloc.vec.Vec U8)
   h5i_invert hr
   all_goals simp only [aligned] at *
   all_goals
-    repeat' (match_goal with
-      | h : alloc.vec.Vec.push ?v ?x = ok ?w ⊢ _ =>
-        have hp := push_length v w x h
-        clear h
-      )
+    push_facts
     h5i_ok_facts
     simp_all only [UScalar.ofNatCore_val_eq]
     try scalar_tac
-    omega
+    all_goals omega
 
 lemma segment1 (b : Slice U8) (n start : Usize) (v : alloc.vec.Vec U8)
     (i : Usize) (depth : U32) (out : alloc.vec.Vec U8 × Usize)
@@ -55,15 +66,11 @@ lemma segment1 (b : Slice U8) (n start : Usize) (v : alloc.vec.Vec U8)
   h5i_invert hr
   all_goals simp only [aligned] at *
   all_goals
-    repeat' (match_goal with
-      | h : alloc.vec.Vec.push ?v ?x = ok ?w ⊢ _ =>
-        have hp := push_length v w x h
-        clear h
-      )
+    push_facts
     h5i_ok_facts
     simp_all only [UScalar.ofNatCore_val_eq]
     try scalar_tac
-    omega
+    all_goals omega
 
 lemma segment2 (b : Slice U8) (n start : Usize) (v : alloc.vec.Vec U8)
     (i : Usize)  (out : alloc.vec.Vec U8 × Usize)
@@ -79,15 +86,11 @@ lemma segment2 (b : Slice U8) (n start : Usize) (v : alloc.vec.Vec U8)
   h5i_invert hr
   all_goals simp only [aligned] at *
   all_goals
-    repeat' (match_goal with
-      | h : alloc.vec.Vec.push ?v ?x = ok ?w ⊢ _ =>
-        have hp := push_length v w x h
-        clear h
-      )
+    push_facts
     h5i_ok_facts
     simp_all only [UScalar.ofNatCore_val_eq]
     try scalar_tac
-    omega
+    all_goals omega
 
 lemma segment3 (b : Slice U8) (n start : Usize) (v : alloc.vec.Vec U8)
     (i : Usize)  (out : alloc.vec.Vec U8 × Usize)
@@ -103,15 +106,11 @@ lemma segment3 (b : Slice U8) (n start : Usize) (v : alloc.vec.Vec U8)
   h5i_invert hr
   all_goals simp only [aligned] at *
   all_goals
-    repeat' (match_goal with
-      | h : alloc.vec.Vec.push ?v ?x = ok ?w ⊢ _ =>
-        have hp := push_length v w x h
-        clear h
-      )
+    push_facts
     h5i_ok_facts
     simp_all only [UScalar.ofNatCore_val_eq]
     try scalar_tac
-    omega
+    all_goals omega
 
 lemma segment4 (b : Slice U8) (n start : Usize) (v : alloc.vec.Vec U8)
     (i : Usize) (depth : U32) (out : alloc.vec.Vec U8 × Usize)
@@ -127,15 +126,11 @@ lemma segment4 (b : Slice U8) (n start : Usize) (v : alloc.vec.Vec U8)
   h5i_invert hr
   all_goals simp only [aligned] at *
   all_goals
-    repeat' (match_goal with
-      | h : alloc.vec.Vec.push ?v ?x = ok ?w ⊢ _ =>
-        have hp := push_length v w x h
-        clear h
-      )
+    push_facts
     h5i_ok_facts
     simp_all only [UScalar.ofNatCore_val_eq]
     try scalar_tac
-    omega
+    all_goals omega
 
 lemma segment5 (b : Slice U8) (n start : Usize) (v : alloc.vec.Vec U8)
     (i : Usize)  (out : alloc.vec.Vec U8 × Usize)
@@ -151,15 +146,11 @@ lemma segment5 (b : Slice U8) (n start : Usize) (v : alloc.vec.Vec U8)
   h5i_invert hr
   all_goals simp only [aligned] at *
   all_goals
-    repeat' (match_goal with
-      | h : alloc.vec.Vec.push ?v ?x = ok ?w ⊢ _ =>
-        have hp := push_length v w x h
-        clear h
-      )
+    push_facts
     h5i_ok_facts
     simp_all only [UScalar.ofNatCore_val_eq]
     try scalar_tac
-    omega
+    all_goals omega
 
 lemma segment6 (b : Slice U8) (n start : Usize) (v : alloc.vec.Vec U8)
     (i : Usize)  (out : alloc.vec.Vec U8 × Usize)
@@ -175,13 +166,9 @@ lemma segment6 (b : Slice U8) (n start : Usize) (v : alloc.vec.Vec U8)
   h5i_invert hr
   all_goals simp only [aligned] at *
   all_goals
-    repeat' (match_goal with
-      | h : alloc.vec.Vec.push ?v ?x = ok ?w ⊢ _ =>
-        have hp := push_length v w x h
-        clear h
-      )
+    push_facts
     h5i_ok_facts
     simp_all only [UScalar.ofNatCore_val_eq]
     try scalar_tac
-    omega
+    all_goals omega
 

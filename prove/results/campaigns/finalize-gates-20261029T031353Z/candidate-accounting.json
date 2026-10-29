@@ -1,0 +1,32 @@
+{
+  "artifactkeeper": {
+    "targets": 27,
+    "candidate_lines": 1504,
+    "upstream_revision": "7c42891cd64f144df6197b8801c9cca4f0e0f5a7"
+  },
+  "nora": {
+    "targets": 31,
+    "candidate_lines": 987,
+    "upstream_revision": "f864a9a95e8669b00202c18b0b774ab0fc2e56cc"
+  },
+  "kanidm": {
+    "targets": 36,
+    "candidate_lines": 420,
+    "upstream_revision": "f608c4fe14dfd8d5df8edeed470bf1fb92060abd"
+  },
+  "rustfs": {
+    "targets": 268,
+    "candidate_lines": 2000,
+    "upstream_revision": "e870a6d25bbf02323b7841b0c5e2230a56551970"
+  },
+  "oxicloud": {
+    "targets": 11,
+    "candidate_lines": 751,
+    "upstream_revision": "8c0dd334cf065ad11f60f9be24e2aafd5dda7550"
+  },
+  "tuwunel": {
+    "targets": 17,
+    "candidate_lines": null,
+    "reason": "no exact project source mapping"
+  }
+}

@@ -1,0 +1,76 @@
+{
+  "checkpoint": "f0a078a328f952b6ebf2668890127f89e4116054",
+  "unchanged_top_level_history": {
+    "columns": true,
+    "equivalence": true,
+    "performance": true,
+    "proofs": true,
+    "tasks": true,
+    "time_limit_min": true
+  },
+  "apps": {
+    "artifactkeeper": {
+      "benchmark_fields_unchanged": true,
+      "benchmark_upstream_reached": 1319,
+      "current_source_matched_lines": 1504,
+      "coverage_basis": "current_source_matched_project_gate"
+    },
+    "kanidm": {
+      "benchmark_fields_unchanged": true,
+      "benchmark_upstream_reached": 2458,
+      "current_source_matched_lines": 0,
+      "coverage_basis": "historical_benchmark_snapshot"
+    },
+    "nora": {
+      "benchmark_fields_unchanged": true,
+      "benchmark_upstream_reached": 902,
+      "current_source_matched_lines": 0,
+      "coverage_basis": "historical_benchmark_snapshot"
+    },
+    "oxicloud": {
+      "benchmark_fields_unchanged": true,
+      "benchmark_upstream_reached": 735,
+      "current_source_matched_lines": 751,
+      "coverage_basis": "current_source_matched_project_gate"
+    },
+    "rustfs": {
+      "benchmark_fields_unchanged": true,
+      "benchmark_upstream_reached": 404,
+      "current_source_matched_lines": 2000,
+      "coverage_basis": "current_source_matched_project_gate"
+    },
+    "tuwunel": {
+      "benchmark_fields_unchanged": true,
+      "benchmark_upstream_reached": 1866,
+      "current_source_matched_lines": 0,
+      "coverage_basis": "historical_benchmark_snapshot"
+    }
+  },
+  "stats": {
+    "repos": 6,
+    "ported_loc": 10570,
+    "properties": 366,
+    "proved": 59,
+    "accepted": 364,
+    "upstream_reached": 9481,
+    "upstream_selected": 7713,
+    "ceiling_lines": 193341,
+    "ceiling_code_lines": 592028,
+    "security_kernel_lines": 70456,
+    "rust_loc": 13570,
+    "proof_loc": 43152,
+    "benchmark_properties": 101,
+    "benchmark_accepted": 99,
+    "benchmark_upstream_reached": 7684,
+    "current_source_matched_lines": 4255,
+    "historical_fallback_lines": 5226,
+    "whole_project_verified": false
+  },
+  "comparison_to_9296": {
+    "mixed_delta": 185,
+    "current_delta": 1504,
+    "historical_fallback_delta": -1319,
+    "note": "Current project source reach and full historical benchmark overlap; do not add them."
+  },
+  "index_sha256": "22eb9ecb6d98922012d8e5fe6b88dbb4cbead3516f0c063c1e80d22112b8f958"
+}

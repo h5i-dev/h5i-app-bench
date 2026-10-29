@@ -24,21 +24,33 @@ def project_files(port):
                   if ".lake" not in p.parts and p.is_file())
 
 
-def fresh_gate(app, root=ROOT):
-    """Latest gate must succeed and hash the complete current input set."""
+def fresh_record(app, actions, root=ROOT):
+    """Latest outcome must succeed and hash the complete current input set."""
     latest = None
     for path in sorted((root / "results/project-checks").glob("*/summary.json")):
         for row in json.loads(path.read_text()):
-            if row["app"] == app and any(c in row.get("command", []) for c in ("check", "prove")):
+            if row["app"] == app and any(c in row.get("command", []) for c in actions):
                 latest = row
-    if not latest or not latest.get("passed"):
+    if not latest or not latest.get("passed") or latest.get("inputs_unchanged") is False:
         return None
     port = root / "ports" / app
     expected = {str(p.relative_to(root)): hashlib.sha256(p.read_bytes()).hexdigest()
                 for p in project_files(port)}
     if latest.get("source_sha256") != expected:
         return None
-    names = tomllib.loads((port / "h5i-app.toml").read_text())["check"]["theorems"]
+    return latest
+
+
+def fresh_extraction(app, root=ROOT):
+    return fresh_record(app, ("extract",), root)
+
+
+def fresh_gate(app, root=ROOT):
+    """Latest full gate must cover all configured, unchanged statements."""
+    latest = fresh_record(app, ("check", "prove"), root)
+    if not latest:
+        return None
+    names = tomllib.loads((root / "ports" / app / "h5i-app.toml").read_text())["check"]["theorems"]
     if latest.get("gated_theorems") != names:
         return None
     return latest

@@ -4,7 +4,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from project_reach import dependencies, executable_lines, fresh_gate, project_files, theorem_type
+from project_reach import dependencies, executable_lines, fresh_extraction, fresh_gate, project_files, theorem_type
 
 
 class ProjectReachTests(unittest.TestCase):
@@ -48,6 +48,28 @@ class ProjectReachTests(unittest.TestCase):
                 path = port / relative
                 path.write_text("input")
                 self.assertIn(path, project_files(port))
+
+    def test_extraction_requires_current_complete_snapshot(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            port = root / "ports/example"
+            (port / "kernel/src").mkdir(parents=True)
+            source = port / "kernel/src/lib.rs"
+            source.write_text("pub fn check() {}")
+            evidence = root / "results/project-checks/001"
+            evidence.mkdir(parents=True)
+            row = {"app": "example", "command": ["h5i", "app", "extract", "--check"],
+                   "passed": True, "inputs_unchanged": True,
+                   "source_sha256": {str(p.relative_to(root)): hashlib.sha256(p.read_bytes()).hexdigest()
+                                     for p in project_files(port)}}
+            summary = evidence / "summary.json"
+            summary.write_text(json.dumps([row]))
+            self.assertIsNotNone(fresh_extraction("example", root))
+            summary.write_text(json.dumps([row | {"inputs_unchanged": False}]))
+            self.assertIsNone(fresh_extraction("example", root))
+            summary.write_text(json.dumps([row]))
+            source.write_text("pub fn changed() {}")
+            self.assertIsNone(fresh_extraction("example", root))
 
     def test_gate_rejects_new_inputs_and_latest_failure(self):
         with tempfile.TemporaryDirectory() as directory:

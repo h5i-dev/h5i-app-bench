@@ -17,58 +17,7 @@ set_option maxHeartbeats 1000000
 /- You can set the `maxRecDepth` value with the `-max-recdepth` CLI option -/
 set_option maxRecDepth 2048
 
-/- You can remove the following line by using the CLI option `-all-computable`: -/
-noncomputable section
-
 namespace artifactkeeper_kernel
-
-/-- [core::array::iter::IntoIter]
-    Source: '/rustc/library/core/src/array/iter.rs', lines 20:0-20:38
-    Name pattern: [core::array::iter::IntoIter]
-    Visibility: public -/
-@[rust_type "core::array::iter::IntoIter"]
-axiom core.array.iter.IntoIter (T : Type) (N : Std.Usize) : Type
-
-/-- [core::array::iter::{impl core::iter::traits::collect::IntoIterator<T, core::array::iter::IntoIter<T, N>> for [T; N]}::into_iter]:
-    Source: '/rustc/library/core/src/array/iter.rs', lines 59:4-59:40
-    Name pattern: [core::array::iter::{core::iter::traits::collect::IntoIterator<[@T; @N], @T, core::array::iter::IntoIter<@T, @N>>}::into_iter]
-    Visibility: public -/
-@[rust_fun
-  "core::array::iter::{core::iter::traits::collect::IntoIterator<[@T; @N], @T, core::array::iter::IntoIter<@T, @N>>}::into_iter"]
-axiom Array.Insts.CoreIterTraitsCollectIntoIteratorTIntoIter.into_iter
-  {T : Type} {N : Std.Usize} :
-  Array T N → Result (core.array.iter.IntoIter T N)
-
-/-- [core::array::iter::{impl core::iter::traits::iterator::Iterator<T> for core::array::iter::IntoIter<T, N>}::next]:
-    Source: '/rustc/library/core/src/array/iter.rs', lines 245:4-245:44
-    Name pattern: [core::array::iter::{core::iter::traits::iterator::Iterator<core::array::iter::IntoIter<@T, @N>, @T>}::next]
-    Visibility: public -/
-@[rust_fun
-  "core::array::iter::{core::iter::traits::iterator::Iterator<core::array::iter::IntoIter<@T, @N>, @T>}::next"]
-axiom core.array.iter.IntoIter.Insts.CoreIterTraitsIteratorIterator.next
-  {T : Type} {N : Std.Usize} :
-  core.array.iter.IntoIter T N → Result ((Option T) ×
-    (core.array.iter.IntoIter T N))
-
-/-- [core::option::{core::option::Option<T>}::map]:
-    Source: '/rustc/library/core/src/option.rs', lines 1160:4-1162:53
-    Name pattern: [core::option::{core::option::Option<@T>}::map]
-    Visibility: public -/
-@[rust_fun "core::option::{core::option::Option<@T>}::map"]
-axiom core.option.Option.map
-  {T : Type} {U : Type} {F : Type} (opsfunctionFnOnceFTupleTUInst :
-  core.ops.function.FnOnce F T U) :
-  Option T → F → Result (Option U)
-
-/-- [core::option::{impl core::cmp::PartialEq<core::option::Option<T>> for core::option::Option<T>}::eq]:
-    Source: '/rustc/library/core/src/option.rs', lines 2441:4-2441:38
-    Name pattern: [core::option::{core::cmp::PartialEq<core::option::Option<@T>, core::option::Option<@T>>}::eq]
-    Visibility: public -/
-@[rust_fun
-  "core::option::{core::cmp::PartialEq<core::option::Option<@T>, core::option::Option<@T>>}::eq"]
-axiom core.option.Option.Insts.CoreCmpPartialEqOption.eq
-  {T : Type} (cmpPartialEqInst : core.cmp.PartialEq T T) :
-  Option T → Option T → Result Bool
 
 /-- [artifactkeeper_kernel::handlers::GateError]
     Source: 'prove/ports/artifactkeeper/kernel/src/handlers.rs', lines 14:0-19:1
@@ -8619,35 +8568,8 @@ def migration_safety.contains_call
   := do
   migration_safety.contains_call_loop0 stmt «name» «from»
 
-/-- [artifactkeeper_kernel::migration_safety::classify::{closure}]
-    Source: 'prove/ports/artifactkeeper/kernel/src/migration_safety.rs', lines 137:55-137:61 -/
-@[reducible]
-def migration_safety.classify.closure := Unit
-
-/-- [artifactkeeper_kernel::migration_safety::classify::{impl core::ops::function::FnOnce<((usize, usize),), usize> for artifactkeeper_kernel::migration_safety::classify::{closure}}::call_once]:
-    Source: 'prove/ports/artifactkeeper/kernel/src/migration_safety.rs', lines 137:55-137:61 -/
-def
-  migration_safety.classify.closure.Insts.CoreOpsFunctionFnOnceTuplePairUsizeUsizeUsize.call_once
-  (c : migration_safety.classify.closure)
-  (tupled_args : (Std.Usize × Std.Usize)) :
-  Result Std.Usize
-  := do
-  let (i, _) := tupled_args
-  ok i
-
-/-- Trait implementation: [artifactkeeper_kernel::migration_safety::classify::{impl core::ops::function::FnOnce<((usize, usize),), usize> for artifactkeeper_kernel::migration_safety::classify::{closure}}]
-    Source: 'prove/ports/artifactkeeper/kernel/src/migration_safety.rs', lines 137:55-137:61 -/
-@[reducible]
-def
-  migration_safety.classify.closure.Insts.CoreOpsFunctionFnOnceTuplePairUsizeUsizeUsize
-  : core.ops.function.FnOnce migration_safety.classify.closure (Std.Usize ×
-  Std.Usize) Std.Usize := {
-  call_once :=
-    migration_safety.classify.closure.Insts.CoreOpsFunctionFnOnceTuplePairUsizeUsizeUsize.call_once
-}
-
 /-- [artifactkeeper_kernel::migration_safety::classify]: loop body 1:
-    Source: 'prove/ports/artifactkeeper/kernel/src/migration_safety.rs', lines 135:8-141:9
+    Source: 'prove/ports/artifactkeeper/kernel/src/migration_safety.rs', lines 139:8-149:9
     Visibility: public -/
 @[rust_loop_body]
 def migration_safety.classify_loop0_loop0.body
@@ -8668,25 +8590,25 @@ def migration_safety.classify_loop0_loop0.body
           76#u8, 89#u8
           ]))
     let o1 ← migration_safety.find_phrase stmt s1 e
-    let o2 ←
-      core.option.Option.map
-        migration_safety.classify.closure.Insts.CoreOpsFunctionFnOnceTuplePairUsizeUsizeUsize
-        o1 ()
-    let i ← migration_safety.skip_ws stmt e
-    let b ←
-      core.option.Option.Insts.CoreCmpPartialEqOption.eq
-        core.cmp.PartialEqUsize o2 (some i)
-    if b
+    let concurrently ←
+      match o1 with
+      | none => ok false
+      | some p1 =>
+        do
+        let (start, _) := p1
+        let i ← migration_safety.skip_ws stmt e
+        ok (start = i)
+    if concurrently
     then ok (cont (e, out))
     else
       let s2 ← lift (Array.to_slice (Array.make 2#usize [ 79#u8, 78#u8 ]))
-      let o3 ← migration_safety.find_phrase stmt s2 e
-      match o3 with
+      let o2 ← migration_safety.find_phrase stmt s2 e
+      match o2 with
       | none => ok (cont (e, out))
       | some p1 =>
         let (_, on_end) := p1
-        let o4 ← migration_safety.identifier_after stmt on_end
-        match o4 with
+        let o3 ← migration_safety.identifier_after stmt on_end
+        match o3 with
         | none => ok (cont (e, out))
         | some table =>
           let out1 ←
@@ -8699,7 +8621,7 @@ def migration_safety.classify_loop0_loop0.body
           ok (cont (e, out1))
 
 /-- [artifactkeeper_kernel::migration_safety::classify]: loop 1:
-    Source: 'prove/ports/artifactkeeper/kernel/src/migration_safety.rs', lines 135:8-141:9
+    Source: 'prove/ports/artifactkeeper/kernel/src/migration_safety.rs', lines 139:8-149:9
     Visibility: public -/
 @[rust_loop]
 def migration_safety.classify_loop0_loop0
@@ -8713,40 +8635,53 @@ def migration_safety.classify_loop0_loop0
     («from», out)
 
 /-- [artifactkeeper_kernel::migration_safety::classify]: loop body 0:
-    Source: 'prove/ports/artifactkeeper/kernel/src/migration_safety.rs', lines 133:4-142:5
+    Source: 'prove/ports/artifactkeeper/kernel/src/migration_safety.rs', lines 135:4-150:5
     Visibility: public -/
 @[rust_loop_body]
 def migration_safety.classify_loop0.body
-  (stmt : Slice Std.U8)
-  (iter : core.array.iter.IntoIter (Slice Std.U8) 2#usize)
-  (out : alloc.vec.Vec migration_safety.Finding) :
-  Result (ControlFlow ((core.array.iter.IntoIter (Slice Std.U8) 2#usize) ×
-    (alloc.vec.Vec migration_safety.Finding)) (alloc.vec.Vec
-    migration_safety.Finding))
+  (stmt : Slice Std.U8) (out : alloc.vec.Vec migration_safety.Finding)
+  (opener_index : Std.I32) :
+  Result (ControlFlow ((alloc.vec.Vec migration_safety.Finding) × Std.I32)
+    (alloc.vec.Vec migration_safety.Finding))
   := do
-  let (o, iter1) ←
-    core.array.iter.IntoIter.Insts.CoreIterTraitsIteratorIterator.next iter
-  match o with
-  | none => ok (done out)
-  | some opener =>
+  if opener_index < 2#i32
+  then
+    let opener ←
+      if opener_index = 0#i32
+      then
+        ok (Array.to_slice
+          (Array.make 12#usize [
+            67#u8, 82#u8, 69#u8, 65#u8, 84#u8, 69#u8, 32#u8, 73#u8, 78#u8,
+            68#u8, 69#u8, 88#u8
+            ]))
+      else
+        ok (Array.to_slice
+          (Array.make 19#usize [
+            67#u8, 82#u8, 69#u8, 65#u8, 84#u8, 69#u8, 32#u8, 85#u8, 78#u8,
+            73#u8, 81#u8, 85#u8, 69#u8, 32#u8, 73#u8, 78#u8, 68#u8, 69#u8,
+            88#u8
+            ]))
+    let opener_index1 ← opener_index + 1#i32
     let out1 ← migration_safety.classify_loop0_loop0 0#usize stmt out opener
-    ok (cont (iter1, out1))
+    ok (cont (out1, opener_index1))
+  else ok (done out)
 
 /-- [artifactkeeper_kernel::migration_safety::classify]: loop 0:
-    Source: 'prove/ports/artifactkeeper/kernel/src/migration_safety.rs', lines 133:4-142:5
+    Source: 'prove/ports/artifactkeeper/kernel/src/migration_safety.rs', lines 135:4-150:5
     Visibility: public -/
 @[rust_loop]
 def migration_safety.classify_loop0
-  (iter : core.array.iter.IntoIter (Slice Std.U8) 2#usize)
-  (stmt : Slice Std.U8) (out : alloc.vec.Vec migration_safety.Finding) :
+  (stmt : Slice Std.U8) (out : alloc.vec.Vec migration_safety.Finding)
+  (opener_index : Std.I32) :
   Result (alloc.vec.Vec migration_safety.Finding)
   := do
   loop
-    (fun (iter1, out1) => migration_safety.classify_loop0.body stmt iter1 out1)
-    (iter, out)
+    (fun (out1, opener_index1) => migration_safety.classify_loop0.body stmt
+      out1 opener_index1)
+    (out, opener_index)
 
 /-- [artifactkeeper_kernel::migration_safety::classify]: loop body 2:
-    Source: 'prove/ports/artifactkeeper/kernel/src/migration_safety.rs', lines 144:4-148:5
+    Source: 'prove/ports/artifactkeeper/kernel/src/migration_safety.rs', lines 152:4-156:5
     Visibility: public -/
 @[rust_loop_body]
 def migration_safety.classify_loop1.body
@@ -8790,7 +8725,7 @@ def migration_safety.classify_loop1.body
         ok (cont (out1, e))
 
 /-- [artifactkeeper_kernel::migration_safety::classify]: loop 2:
-    Source: 'prove/ports/artifactkeeper/kernel/src/migration_safety.rs', lines 144:4-148:5
+    Source: 'prove/ports/artifactkeeper/kernel/src/migration_safety.rs', lines 152:4-156:5
     Visibility: public -/
 @[rust_loop]
 def migration_safety.classify_loop1
@@ -8803,7 +8738,7 @@ def migration_safety.classify_loop1
     (out, «from»)
 
 /-- [artifactkeeper_kernel::migration_safety::classify]: loop body 3:
-    Source: 'prove/ports/artifactkeeper/kernel/src/migration_safety.rs', lines 150:4-154:5
+    Source: 'prove/ports/artifactkeeper/kernel/src/migration_safety.rs', lines 158:4-162:5
     Visibility: public -/
 @[rust_loop_body]
 def migration_safety.classify_loop2.body
@@ -8841,7 +8776,7 @@ def migration_safety.classify_loop2.body
         ok (cont (out1, e))
 
 /-- [artifactkeeper_kernel::migration_safety::classify]: loop 3:
-    Source: 'prove/ports/artifactkeeper/kernel/src/migration_safety.rs', lines 150:4-154:5
+    Source: 'prove/ports/artifactkeeper/kernel/src/migration_safety.rs', lines 158:4-162:5
     Visibility: public -/
 @[rust_loop]
 def migration_safety.classify_loop2
@@ -8854,7 +8789,7 @@ def migration_safety.classify_loop2
     (out, «from»)
 
 /-- [artifactkeeper_kernel::migration_safety::classify]: loop body 4:
-    Source: 'prove/ports/artifactkeeper/kernel/src/migration_safety.rs', lines 156:4-159:5
+    Source: 'prove/ports/artifactkeeper/kernel/src/migration_safety.rs', lines 164:4-167:5
     Visibility: public -/
 @[rust_loop_body]
 def migration_safety.classify_loop3.body
@@ -8885,7 +8820,7 @@ def migration_safety.classify_loop3.body
       ok (cont (out1, e))
 
 /-- [artifactkeeper_kernel::migration_safety::classify]: loop 4:
-    Source: 'prove/ports/artifactkeeper/kernel/src/migration_safety.rs', lines 156:4-159:5
+    Source: 'prove/ports/artifactkeeper/kernel/src/migration_safety.rs', lines 164:4-167:5
     Visibility: public -/
 @[rust_loop]
 def migration_safety.classify_loop3
@@ -8898,7 +8833,7 @@ def migration_safety.classify_loop3
     (out, «from»)
 
 /-- [artifactkeeper_kernel::migration_safety::classify]: loop body 6:
-    Source: 'prove/ports/artifactkeeper/kernel/src/migration_safety.rs', lines 180:8-184:9
+    Source: 'prove/ports/artifactkeeper/kernel/src/migration_safety.rs', lines 199:8-203:9
     Visibility: public -/
 @[rust_loop_body]
 def migration_safety.classify_loop4_loop0.body
@@ -8934,7 +8869,7 @@ def migration_safety.classify_loop4_loop0.body
         ok (cont (e, out1))
 
 /-- [artifactkeeper_kernel::migration_safety::classify]: loop 6:
-    Source: 'prove/ports/artifactkeeper/kernel/src/migration_safety.rs', lines 180:8-184:9
+    Source: 'prove/ports/artifactkeeper/kernel/src/migration_safety.rs', lines 199:8-203:9
     Visibility: public -/
 @[rust_loop]
 def migration_safety.classify_loop4_loop0
@@ -8948,40 +8883,63 @@ def migration_safety.classify_loop4_loop0
     («from», out)
 
 /-- [artifactkeeper_kernel::migration_safety::classify]: loop body 5:
-    Source: 'prove/ports/artifactkeeper/kernel/src/migration_safety.rs', lines 178:4-185:5
+    Source: 'prove/ports/artifactkeeper/kernel/src/migration_safety.rs', lines 190:4-204:5
     Visibility: public -/
 @[rust_loop_body]
 def migration_safety.classify_loop4.body
-  (stmt : Slice Std.U8)
-  (iter : core.array.iter.IntoIter (Slice Std.U8) 4#usize)
-  (out : alloc.vec.Vec migration_safety.Finding) :
-  Result (ControlFlow ((core.array.iter.IntoIter (Slice Std.U8) 4#usize) ×
-    (alloc.vec.Vec migration_safety.Finding)) (alloc.vec.Vec
-    migration_safety.Finding))
+  (stmt : Slice Std.U8) (out : alloc.vec.Vec migration_safety.Finding)
+  (opener_index : Std.I32) :
+  Result (ControlFlow ((alloc.vec.Vec migration_safety.Finding) × Std.I32)
+    (alloc.vec.Vec migration_safety.Finding))
   := do
-  let (o, iter1) ←
-    core.array.iter.IntoIter.Insts.CoreIterTraitsIteratorIterator.next iter
-  match o with
-  | none => ok (done out)
-  | some opener =>
+  if opener_index < 4#i32
+  then
+    let opener ←
+      match opener_index with
+      | 0#iscalar =>
+        ok (Array.to_slice
+          (Array.make 7#usize [
+            67#u8, 76#u8, 85#u8, 83#u8, 84#u8, 69#u8, 82#u8
+            ]))
+      | 1#iscalar =>
+        ok (Array.to_slice
+          (Array.make 11#usize [
+            86#u8, 65#u8, 67#u8, 85#u8, 85#u8, 77#u8, 32#u8, 70#u8, 85#u8,
+            76#u8, 76#u8
+            ]))
+      | 2#iscalar =>
+        ok (Array.to_slice
+          (Array.make 13#usize [
+            82#u8, 69#u8, 73#u8, 78#u8, 68#u8, 69#u8, 88#u8, 32#u8, 84#u8,
+            65#u8, 66#u8, 76#u8, 69#u8
+            ]))
+      | _ =>
+        ok (Array.to_slice
+          (Array.make 13#usize [
+            82#u8, 69#u8, 73#u8, 78#u8, 68#u8, 69#u8, 88#u8, 32#u8, 73#u8,
+            78#u8, 68#u8, 69#u8, 88#u8
+            ]))
+    let opener_index1 ← opener_index + 1#i32
     let out1 ← migration_safety.classify_loop4_loop0 0#usize stmt out opener
-    ok (cont (iter1, out1))
+    ok (cont (out1, opener_index1))
+  else ok (done out)
 
 /-- [artifactkeeper_kernel::migration_safety::classify]: loop 5:
-    Source: 'prove/ports/artifactkeeper/kernel/src/migration_safety.rs', lines 178:4-185:5
+    Source: 'prove/ports/artifactkeeper/kernel/src/migration_safety.rs', lines 190:4-204:5
     Visibility: public -/
 @[rust_loop]
 def migration_safety.classify_loop4
-  (iter : core.array.iter.IntoIter (Slice Std.U8) 4#usize)
-  (stmt : Slice Std.U8) (out : alloc.vec.Vec migration_safety.Finding) :
+  (stmt : Slice Std.U8) (out : alloc.vec.Vec migration_safety.Finding)
+  (opener_index : Std.I32) :
   Result (alloc.vec.Vec migration_safety.Finding)
   := do
   loop
-    (fun (iter1, out1) => migration_safety.classify_loop4.body stmt iter1 out1)
-    (iter, out)
+    (fun (out1, opener_index1) => migration_safety.classify_loop4.body stmt
+      out1 opener_index1)
+    (out, opener_index)
 
 /-- [artifactkeeper_kernel::migration_safety::classify]: loop body 8:
-    Source: 'prove/ports/artifactkeeper/kernel/src/migration_safety.rs', lines 172:12-175:13
+    Source: 'prove/ports/artifactkeeper/kernel/src/migration_safety.rs', lines 183:12-186:13
     Visibility: public -/
 @[rust_loop_body]
 def migration_safety.classify_loop5_loop0.body
@@ -9009,7 +8967,7 @@ def migration_safety.classify_loop5_loop0.body
       ok (cont (e, out1))
 
 /-- [artifactkeeper_kernel::migration_safety::classify]: loop 8:
-    Source: 'prove/ports/artifactkeeper/kernel/src/migration_safety.rs', lines 172:12-175:13
+    Source: 'prove/ports/artifactkeeper/kernel/src/migration_safety.rs', lines 183:12-186:13
     Visibility: public -/
 @[rust_loop]
 def migration_safety.classify_loop5_loop0
@@ -9023,40 +8981,49 @@ def migration_safety.classify_loop5_loop0
     («from», out)
 
 /-- [artifactkeeper_kernel::migration_safety::classify]: loop body 7:
-    Source: 'prove/ports/artifactkeeper/kernel/src/migration_safety.rs', lines 170:8-176:9
+    Source: 'prove/ports/artifactkeeper/kernel/src/migration_safety.rs', lines 179:8-187:9
     Visibility: public -/
 @[rust_loop_body]
 def migration_safety.classify_loop5.body
-  (stmt : Slice Std.U8)
-  (iter : core.array.iter.IntoIter (Slice Std.U8) 2#usize)
-  (out : alloc.vec.Vec migration_safety.Finding) :
-  Result (ControlFlow ((core.array.iter.IntoIter (Slice Std.U8) 2#usize) ×
-    (alloc.vec.Vec migration_safety.Finding)) (alloc.vec.Vec
-    migration_safety.Finding))
+  (stmt : Slice Std.U8) (out : alloc.vec.Vec migration_safety.Finding)
+  (opener_index : Std.I32) :
+  Result (ControlFlow ((alloc.vec.Vec migration_safety.Finding) × Std.I32)
+    (alloc.vec.Vec migration_safety.Finding))
   := do
-  let (o, iter1) ←
-    core.array.iter.IntoIter.Insts.CoreIterTraitsIteratorIterator.next iter
-  match o with
-  | none => ok (done out)
-  | some opener =>
+  if opener_index < 2#i32
+  then
+    let opener ←
+      if opener_index = 0#i32
+      then
+        ok (Array.to_slice
+          (Array.make 6#usize [ 85#u8, 80#u8, 68#u8, 65#u8, 84#u8, 69#u8 ]))
+      else
+        ok (Array.to_slice
+          (Array.make 11#usize [
+            68#u8, 69#u8, 76#u8, 69#u8, 84#u8, 69#u8, 32#u8, 70#u8, 82#u8,
+            79#u8, 77#u8
+            ]))
+    let opener_index1 ← opener_index + 1#i32
     let out1 ← migration_safety.classify_loop5_loop0 0#usize stmt out opener
-    ok (cont (iter1, out1))
+    ok (cont (out1, opener_index1))
+  else ok (done out)
 
 /-- [artifactkeeper_kernel::migration_safety::classify]: loop 7:
-    Source: 'prove/ports/artifactkeeper/kernel/src/migration_safety.rs', lines 170:8-176:9
+    Source: 'prove/ports/artifactkeeper/kernel/src/migration_safety.rs', lines 179:8-187:9
     Visibility: public -/
 @[rust_loop]
 def migration_safety.classify_loop5
-  (iter : core.array.iter.IntoIter (Slice Std.U8) 2#usize)
-  (stmt : Slice Std.U8) (out : alloc.vec.Vec migration_safety.Finding) :
+  (stmt : Slice Std.U8) (out : alloc.vec.Vec migration_safety.Finding)
+  (opener_index : Std.I32) :
   Result (alloc.vec.Vec migration_safety.Finding)
   := do
   loop
-    (fun (iter1, out1) => migration_safety.classify_loop5.body stmt iter1 out1)
-    (iter, out)
+    (fun (out1, opener_index1) => migration_safety.classify_loop5.body stmt
+      out1 opener_index1)
+    (out, opener_index)
 
 /-- [artifactkeeper_kernel::migration_safety::classify]: loop body 10:
-    Source: 'prove/ports/artifactkeeper/kernel/src/migration_safety.rs', lines 180:8-184:9
+    Source: 'prove/ports/artifactkeeper/kernel/src/migration_safety.rs', lines 199:8-203:9
     Visibility: public -/
 @[rust_loop_body]
 def migration_safety.classify_loop6_loop0.body
@@ -9092,7 +9059,7 @@ def migration_safety.classify_loop6_loop0.body
         ok (cont (e, out1))
 
 /-- [artifactkeeper_kernel::migration_safety::classify]: loop 10:
-    Source: 'prove/ports/artifactkeeper/kernel/src/migration_safety.rs', lines 180:8-184:9
+    Source: 'prove/ports/artifactkeeper/kernel/src/migration_safety.rs', lines 199:8-203:9
     Visibility: public -/
 @[rust_loop]
 def migration_safety.classify_loop6_loop0
@@ -9106,126 +9073,134 @@ def migration_safety.classify_loop6_loop0
     («from», out)
 
 /-- [artifactkeeper_kernel::migration_safety::classify]: loop body 9:
-    Source: 'prove/ports/artifactkeeper/kernel/src/migration_safety.rs', lines 178:4-185:5
+    Source: 'prove/ports/artifactkeeper/kernel/src/migration_safety.rs', lines 190:4-204:5
     Visibility: public -/
 @[rust_loop_body]
 def migration_safety.classify_loop6.body
-  (stmt : Slice Std.U8)
-  (iter : core.array.iter.IntoIter (Slice Std.U8) 4#usize)
-  (out : alloc.vec.Vec migration_safety.Finding) :
-  Result (ControlFlow ((core.array.iter.IntoIter (Slice Std.U8) 4#usize) ×
-    (alloc.vec.Vec migration_safety.Finding)) (alloc.vec.Vec
-    migration_safety.Finding))
+  (stmt : Slice Std.U8) (out : alloc.vec.Vec migration_safety.Finding)
+  (opener_index : Std.I32) :
+  Result (ControlFlow ((alloc.vec.Vec migration_safety.Finding) × Std.I32)
+    (alloc.vec.Vec migration_safety.Finding))
   := do
-  let (o, iter1) ←
-    core.array.iter.IntoIter.Insts.CoreIterTraitsIteratorIterator.next iter
-  match o with
-  | none => ok (done out)
-  | some opener =>
+  if opener_index < 4#i32
+  then
+    let opener ←
+      match opener_index with
+      | 0#iscalar =>
+        ok (Array.to_slice
+          (Array.make 7#usize [
+            67#u8, 76#u8, 85#u8, 83#u8, 84#u8, 69#u8, 82#u8
+            ]))
+      | 1#iscalar =>
+        ok (Array.to_slice
+          (Array.make 11#usize [
+            86#u8, 65#u8, 67#u8, 85#u8, 85#u8, 77#u8, 32#u8, 70#u8, 85#u8,
+            76#u8, 76#u8
+            ]))
+      | 2#iscalar =>
+        ok (Array.to_slice
+          (Array.make 13#usize [
+            82#u8, 69#u8, 73#u8, 78#u8, 68#u8, 69#u8, 88#u8, 32#u8, 84#u8,
+            65#u8, 66#u8, 76#u8, 69#u8
+            ]))
+      | _ =>
+        ok (Array.to_slice
+          (Array.make 13#usize [
+            82#u8, 69#u8, 73#u8, 78#u8, 68#u8, 69#u8, 88#u8, 32#u8, 73#u8,
+            78#u8, 68#u8, 69#u8, 88#u8
+            ]))
+    let opener_index1 ← opener_index + 1#i32
     let out1 ← migration_safety.classify_loop6_loop0 0#usize stmt out opener
-    ok (cont (iter1, out1))
+    ok (cont (out1, opener_index1))
+  else ok (done out)
 
 /-- [artifactkeeper_kernel::migration_safety::classify]: loop 9:
-    Source: 'prove/ports/artifactkeeper/kernel/src/migration_safety.rs', lines 178:4-185:5
+    Source: 'prove/ports/artifactkeeper/kernel/src/migration_safety.rs', lines 190:4-204:5
     Visibility: public -/
 @[rust_loop]
 def migration_safety.classify_loop6
-  (iter : core.array.iter.IntoIter (Slice Std.U8) 4#usize)
-  (stmt : Slice Std.U8) (out : alloc.vec.Vec migration_safety.Finding) :
+  (stmt : Slice Std.U8) (out : alloc.vec.Vec migration_safety.Finding)
+  (opener_index : Std.I32) :
   Result (alloc.vec.Vec migration_safety.Finding)
   := do
   loop
-    (fun (iter1, out1) => migration_safety.classify_loop6.body stmt iter1 out1)
-    (iter, out)
+    (fun (out1, opener_index1) => migration_safety.classify_loop6.body stmt
+      out1 opener_index1)
+    (out, opener_index)
 
 /-- [artifactkeeper_kernel::migration_safety::classify]:
-    Source: 'prove/ports/artifactkeeper/kernel/src/migration_safety.rs', lines 131:0-187:1
+    Source: 'prove/ports/artifactkeeper/kernel/src/migration_safety.rs', lines 131:0-206:1
     Visibility: public -/
 def migration_safety.classify
   (stmt : Slice Std.U8) : Result (alloc.vec.Vec migration_safety.Finding) := do
-  let s ←
-    lift (Array.to_slice
-      (Array.make 12#usize [
-        67#u8, 82#u8, 69#u8, 65#u8, 84#u8, 69#u8, 32#u8, 73#u8, 78#u8, 68#u8,
-        69#u8, 88#u8
-        ]))
-  let s1 ←
-    lift (Array.to_slice
-      (Array.make 19#usize [
-        67#u8, 82#u8, 69#u8, 65#u8, 84#u8, 69#u8, 32#u8, 85#u8, 78#u8, 73#u8,
-        81#u8, 85#u8, 69#u8, 32#u8, 73#u8, 78#u8, 68#u8, 69#u8, 88#u8
-        ]))
-  let iter ←
-    Array.Insts.CoreIterTraitsCollectIntoIteratorTIntoIter.into_iter
-      (Array.make 2#usize [ s, s1 ])
   let out ←
-    migration_safety.classify_loop0 iter stmt (alloc.vec.Vec.new
-      migration_safety.Finding)
+    migration_safety.classify_loop0 stmt (alloc.vec.Vec.new
+      migration_safety.Finding) 0#i32
   let out1 ← migration_safety.classify_loop1 stmt out 0#usize
   let out2 ← migration_safety.classify_loop2 stmt out1 0#usize
   let out3 ← migration_safety.classify_loop3 stmt out2 0#usize
-  let s2 ←
+  let s ←
     lift (Array.to_slice
       (Array.make 10#usize [
         65#u8, 68#u8, 68#u8, 32#u8, 67#u8, 79#u8, 76#u8, 85#u8, 77#u8, 78#u8
         ]))
-  let o ← migration_safety.find_phrase stmt s2 0#usize
+  let o ← migration_safety.find_phrase stmt s 0#usize
   let out4 ←
     match o with
     | none => ok out3
     | some p =>
       do
       let (add_s, add_e) := p
-      let s3 ←
+      let s1 ←
         lift (Array.to_slice
           (Array.make 7#usize [
             68#u8, 69#u8, 70#u8, 65#u8, 85#u8, 76#u8, 84#u8
             ]))
-      let o1 ← migration_safety.find_phrase stmt s3 add_e
+      let o1 ← migration_safety.find_phrase stmt s1 add_e
       match o1 with
       | none => ok out3
       | some p1 =>
         let (_, def_e) := p1
-        let s4 ←
+        let s2 ←
           lift (Array.to_slice
             (Array.make 15#usize [
               103#u8, 101#u8, 110#u8, 95#u8, 114#u8, 97#u8, 110#u8, 100#u8,
               111#u8, 109#u8, 95#u8, 117#u8, 117#u8, 105#u8, 100#u8
               ]))
-        let b ← migration_safety.contains_call stmt def_e s4
+        let b ← migration_safety.contains_call stmt def_e s2
         let volatile ←
           if b
           then ok true
           else
             do
-            let s5 ←
+            let s3 ←
               lift (Array.to_slice
                 (Array.make 16#usize [
                   117#u8, 117#u8, 105#u8, 100#u8, 95#u8, 103#u8, 101#u8,
                   110#u8, 101#u8, 114#u8, 97#u8, 116#u8, 101#u8, 95#u8, 118#u8,
                   52#u8
                   ]))
-            let b1 ← migration_safety.contains_call stmt def_e s5
+            let b1 ← migration_safety.contains_call stmt def_e s3
             if b1
             then ok true
             else
-              let s6 ←
+              let s4 ←
                 lift (Array.to_slice
                   (Array.make 6#usize [
                     114#u8, 97#u8, 110#u8, 100#u8, 111#u8, 109#u8
                     ]))
-              let b2 ← migration_safety.contains_call stmt def_e s6
+              let b2 ← migration_safety.contains_call stmt def_e s4
               if b2
               then ok true
               else
-                let s7 ←
+                let s5 ←
                   lift (Array.to_slice
                     (Array.make 15#usize [
                       99#u8, 108#u8, 111#u8, 99#u8, 107#u8, 95#u8, 116#u8,
                       105#u8, 109#u8, 101#u8, 115#u8, 116#u8, 97#u8, 109#u8,
                       112#u8
                       ]))
-                migration_safety.contains_call stmt def_e s7
+                migration_safety.contains_call stmt def_e s5
         if volatile
         then
           let o2 ← migration_safety.alter_target stmt add_s
@@ -9239,91 +9214,26 @@ def migration_safety.classify
                  «at» := add_s
                } : migration_safety.Finding)
         else ok out3
-  let s3 ←
+  let s1 ←
     lift (Array.to_slice
       (Array.make 5#usize [ 76#u8, 73#u8, 77#u8, 73#u8, 84#u8 ]))
-  let o1 ← migration_safety.find_phrase stmt s3 0#usize
+  let o1 ← migration_safety.find_phrase stmt s1 0#usize
   let b := core.option.Option.is_some o1
   let bounded ←
     if b
     then ok true
     else
       do
-      let s4 ←
+      let s2 ←
         lift (Array.to_slice
           (Array.make 4#usize [ 76#u8, 79#u8, 79#u8, 80#u8 ]))
-      let o2 ← migration_safety.find_phrase stmt s4 0#usize
+      let o2 ← migration_safety.find_phrase stmt s2 0#usize
       ok (core.option.Option.is_some o2)
   if bounded
-  then
-    let s4 ←
-      lift (Array.to_slice
-        (Array.make 7#usize [
-          67#u8, 76#u8, 85#u8, 83#u8, 84#u8, 69#u8, 82#u8
-          ]))
-    let s5 ←
-      lift (Array.to_slice
-        (Array.make 11#usize [
-          86#u8, 65#u8, 67#u8, 85#u8, 85#u8, 77#u8, 32#u8, 70#u8, 85#u8, 76#u8,
-          76#u8
-          ]))
-    let s6 ←
-      lift (Array.to_slice
-        (Array.make 13#usize [
-          82#u8, 69#u8, 73#u8, 78#u8, 68#u8, 69#u8, 88#u8, 32#u8, 84#u8, 65#u8,
-          66#u8, 76#u8, 69#u8
-          ]))
-    let s7 ←
-      lift (Array.to_slice
-        (Array.make 13#usize [
-          82#u8, 69#u8, 73#u8, 78#u8, 68#u8, 69#u8, 88#u8, 32#u8, 73#u8, 78#u8,
-          68#u8, 69#u8, 88#u8
-          ]))
-    let iter1 ←
-      Array.Insts.CoreIterTraitsCollectIntoIteratorTIntoIter.into_iter
-        (Array.make 4#usize [ s4, s5, s6, s7 ])
-    migration_safety.classify_loop4 iter1 stmt out4
+  then migration_safety.classify_loop4 stmt out4 0#i32
   else
-    let s4 ←
-      lift (Array.to_slice
-        (Array.make 6#usize [ 85#u8, 80#u8, 68#u8, 65#u8, 84#u8, 69#u8 ]))
-    let s5 ←
-      lift (Array.to_slice
-        (Array.make 11#usize [
-          68#u8, 69#u8, 76#u8, 69#u8, 84#u8, 69#u8, 32#u8, 70#u8, 82#u8, 79#u8,
-          77#u8
-          ]))
-    let iter1 ←
-      Array.Insts.CoreIterTraitsCollectIntoIteratorTIntoIter.into_iter
-        (Array.make 2#usize [ s4, s5 ])
-    let out5 ← migration_safety.classify_loop5 iter1 stmt out4
-    let s6 ←
-      lift (Array.to_slice
-        (Array.make 7#usize [
-          67#u8, 76#u8, 85#u8, 83#u8, 84#u8, 69#u8, 82#u8
-          ]))
-    let s7 ←
-      lift (Array.to_slice
-        (Array.make 11#usize [
-          86#u8, 65#u8, 67#u8, 85#u8, 85#u8, 77#u8, 32#u8, 70#u8, 85#u8, 76#u8,
-          76#u8
-          ]))
-    let s8 ←
-      lift (Array.to_slice
-        (Array.make 13#usize [
-          82#u8, 69#u8, 73#u8, 78#u8, 68#u8, 69#u8, 88#u8, 32#u8, 84#u8, 65#u8,
-          66#u8, 76#u8, 69#u8
-          ]))
-    let s9 ←
-      lift (Array.to_slice
-        (Array.make 13#usize [
-          82#u8, 69#u8, 73#u8, 78#u8, 68#u8, 69#u8, 88#u8, 32#u8, 73#u8, 78#u8,
-          68#u8, 69#u8, 88#u8
-          ]))
-    let iter2 ←
-      Array.Insts.CoreIterTraitsCollectIntoIteratorTIntoIter.into_iter
-        (Array.make 4#usize [ s6, s7, s8, s9 ])
-    migration_safety.classify_loop6 iter2 stmt out5
+    let out5 ← migration_safety.classify_loop5 stmt out4 0#i32
+    migration_safety.classify_loop6 stmt out5 0#i32
 
 /-- [artifactkeeper_kernel::net::{impl core::cmp::PartialEq<artifactkeeper_kernel::net::IpAddr> for artifactkeeper_kernel::net::IpAddr}::eq]:
     Source: 'prove/ports/artifactkeeper/kernel/src/net.rs', lines 7:29-7:38

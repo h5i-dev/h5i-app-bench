@@ -1,0 +1,45 @@
+/home/ht2673/Dev/h5i-app-bench/prove/results/campaigns/finalize-gates-20261029T031353Z/MigrationSafetyDiagnostic.lean:25:32: error: Application type mismatch: The argument
+  __do_lift✝.getUnusedName
+has type
+  Name → Name
+but is expected to have type
+  Name
+in the application
+  g.assert __do_lift✝.getUnusedName
+/home/ht2673/Dev/h5i-app-bench/prove/results/campaigns/finalize-gates-20261029T031353Z/MigrationSafetyDiagnostic.lean:46:4: error: Tactic `artifactkeeper_kernel.Verified.MigrationSafety.tacticPush_facts` has not been implemented
+/home/ht2673/Dev/h5i-app-bench/prove/results/campaigns/finalize-gates-20261029T031353Z/MigrationSafetyDiagnostic.lean:46:4: error: Tactic `artifactkeeper_kernel.Verified.MigrationSafety.tacticPush_facts` has not been implemented
+/home/ht2673/Dev/h5i-app-bench/prove/results/campaigns/finalize-gates-20261029T031353Z/MigrationSafetyDiagnostic.lean:46:4: error: Tactic `artifactkeeper_kernel.Verified.MigrationSafety.tacticPush_facts` has not been implemented
+/home/ht2673/Dev/h5i-app-bench/prove/results/campaigns/finalize-gates-20261029T031353Z/MigrationSafetyDiagnostic.lean:52:0: error: (deterministic) timeout at `whnf`, maximum number of heartbeats (30000) has been reached
+
+Note: Use `set_option maxHeartbeats <num>` to set the limit.
+
+Hint: Additional diagnostic information may be available using the `set_option diagnostics true` command.
+/home/ht2673/Dev/h5i-app-bench/prove/results/campaigns/finalize-gates-20261029T031353Z/MigrationSafetyDiagnostic.lean:86:4: error: Tactic `artifactkeeper_kernel.Verified.MigrationSafety.tacticPush_facts` has not been implemented
+/home/ht2673/Dev/h5i-app-bench/prove/results/campaigns/finalize-gates-20261029T031353Z/MigrationSafetyDiagnostic.lean:86:4: error: Tactic `artifactkeeper_kernel.Verified.MigrationSafety.tacticPush_facts` has not been implemented
+/home/ht2673/Dev/h5i-app-bench/prove/results/campaigns/finalize-gates-20261029T031353Z/MigrationSafetyDiagnostic.lean:86:4: error: Tactic `artifactkeeper_kernel.Verified.MigrationSafety.tacticPush_facts` has not been implemented
+/home/ht2673/Dev/h5i-app-bench/prove/results/campaigns/finalize-gates-20261029T031353Z/MigrationSafetyDiagnostic.lean:86:4: error: Tactic `artifactkeeper_kernel.Verified.MigrationSafety.tacticPush_facts` has not been implemented
+/home/ht2673/Dev/h5i-app-bench/prove/results/campaigns/finalize-gates-20261029T031353Z/MigrationSafetyDiagnostic.lean:86:4: error: Tactic `artifactkeeper_kernel.Verified.MigrationSafety.tacticPush_facts` has not been implemented
+/home/ht2673/Dev/h5i-app-bench/prove/results/campaigns/finalize-gates-20261029T031353Z/MigrationSafetyDiagnostic.lean:86:4: error: Tactic `artifactkeeper_kernel.Verified.MigrationSafety.tacticPush_facts` has not been implemented
+/home/ht2673/Dev/h5i-app-bench/prove/results/campaigns/finalize-gates-20261029T031353Z/MigrationSafetyDiagnostic.lean:106:4: error: Tactic `artifactkeeper_kernel.Verified.MigrationSafety.tacticPush_facts` has not been implemented
+/home/ht2673/Dev/h5i-app-bench/prove/results/campaigns/finalize-gates-20261029T031353Z/MigrationSafetyDiagnostic.lean:106:4: error: Tactic `artifactkeeper_kernel.Verified.MigrationSafety.tacticPush_facts` has not been implemented
+/home/ht2673/Dev/h5i-app-bench/prove/results/campaigns/finalize-gates-20261029T031353Z/MigrationSafetyDiagnostic.lean:106:4: error: Tactic `artifactkeeper_kernel.Verified.MigrationSafety.tacticPush_facts` has not been implemented
+/home/ht2673/Dev/h5i-app-bench/prove/results/campaigns/finalize-gates-20261029T031353Z/MigrationSafetyDiagnostic.lean:106:4: error: Tactic `artifactkeeper_kernel.Verified.MigrationSafety.tacticPush_facts` has not been implemented
+/home/ht2673/Dev/h5i-app-bench/prove/results/campaigns/finalize-gates-20261029T031353Z/MigrationSafetyDiagnostic.lean:106:4: error: Tactic `artifactkeeper_kernel.Verified.MigrationSafety.tacticPush_facts` has not been implemented
+/home/ht2673/Dev/h5i-app-bench/prove/results/campaigns/finalize-gates-20261029T031353Z/MigrationSafetyDiagnostic.lean:106:4: error: Tactic `artifactkeeper_kernel.Verified.MigrationSafety.tacticPush_facts` has not been implemented
+/home/ht2673/Dev/h5i-app-bench/prove/results/campaigns/finalize-gates-20261029T031353Z/MigrationSafetyDiagnostic.lean:112:0: error: (deterministic) timeout at `whnf`, maximum number of heartbeats (30000) has been reached
+
+Note: Use `set_option maxHeartbeats <num>` to set the limit.
+
+Hint: Additional diagnostic information may be available using the `set_option diagnostics true` command.
+/home/ht2673/Dev/h5i-app-bench/prove/results/campaigns/finalize-gates-20261029T031353Z/MigrationSafetyDiagnostic.lean:146:4: error: Tactic `artifactkeeper_kernel.Verified.MigrationSafety.tacticPush_facts` has not been implemented
+/home/ht2673/Dev/h5i-app-bench/prove/results/campaigns/finalize-gates-20261029T031353Z/MigrationSafetyDiagnostic.lean:146:4: error: Tactic `artifactkeeper_kernel.Verified.MigrationSafety.tacticPush_facts` has not been implemented
+/home/ht2673/Dev/h5i-app-bench/prove/results/campaigns/finalize-gates-20261029T031353Z/MigrationSafetyDiagnostic.lean:146:4: error: Tactic `artifactkeeper_kernel.Verified.MigrationSafety.tacticPush_facts` has not been implemented
+/home/ht2673/Dev/h5i-app-bench/prove/results/campaigns/finalize-gates-20261029T031353Z/MigrationSafetyDiagnostic.lean:146:4: error: Tactic `artifactkeeper_kernel.Verified.MigrationSafety.tacticPush_facts` has not been implemented
+/home/ht2673/Dev/h5i-app-bench/prove/results/campaigns/finalize-gates-20261029T031353Z/MigrationSafetyDiagnostic.lean:146:4: error: Tactic `artifactkeeper_kernel.Verified.MigrationSafety.tacticPush_facts` has not been implemented
+/home/ht2673/Dev/h5i-app-bench/prove/results/campaigns/finalize-gates-20261029T031353Z/MigrationSafetyDiagnostic.lean:146:4: error: Tactic `artifactkeeper_kernel.Verified.MigrationSafety.tacticPush_facts` has not been implemented
+/home/ht2673/Dev/h5i-app-bench/prove/results/campaigns/finalize-gates-20261029T031353Z/MigrationSafetyDiagnostic.lean:166:4: error: Tactic `artifactkeeper_kernel.Verified.MigrationSafety.tacticPush_facts` has not been implemented
+/home/ht2673/Dev/h5i-app-bench/prove/results/campaigns/finalize-gates-20261029T031353Z/MigrationSafetyDiagnostic.lean:166:4: error: Tactic `artifactkeeper_kernel.Verified.MigrationSafety.tacticPush_facts` has not been implemented
+/home/ht2673/Dev/h5i-app-bench/prove/results/campaigns/finalize-gates-20261029T031353Z/MigrationSafetyDiagnostic.lean:166:4: error: Tactic `artifactkeeper_kernel.Verified.MigrationSafety.tacticPush_facts` has not been implemented
+/home/ht2673/Dev/h5i-app-bench/prove/results/campaigns/finalize-gates-20261029T031353Z/MigrationSafetyDiagnostic.lean:166:4: error: Tactic `artifactkeeper_kernel.Verified.MigrationSafety.tacticPush_facts` has not been implemented
+/home/ht2673/Dev/h5i-app-bench/prove/results/campaigns/finalize-gates-20261029T031353Z/MigrationSafetyDiagnostic.lean:166:4: error: Tactic `artifactkeeper_kernel.Verified.MigrationSafety.tacticPush_facts` has not been implemented
+/home/ht2673/Dev/h5i-app-bench/prove/results/campaigns/finalize-gates-20261029T031353Z/MigrationSafetyDiagnostic.lean:166:4: error: Tactic `artifactkeeper_kernel.Verified.MigrationSafety.tacticPush_facts` has not been implemented

@@ -1,0 +1,2 @@
+rustfs: running h5i app extract --check ports/rustfs
+rustfs: passed; results/project-checks/20261029T033110397135Z/rustfs.log
