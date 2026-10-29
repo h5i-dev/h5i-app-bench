@@ -137,9 +137,26 @@
       <section id="specs" class="block">
         <div class="block-head">
           <h2 class="term" data-n="04">Specs</h2>
-          <p>Selected properties verified against the current project sources. Expand an application to see its properties and open the statements and proofs.</p>
+          <p>Select a verified property to read its proof, compare upstream and h5i-app Rust, and inspect the extracted Lean.</p>
         </div>
-        <div id="project-properties"></div>
+        <div class="filters" role="search" aria-label="Filter verified properties">
+          <label class="field"><span>Application</span><select id="f-app"><option value="">All</option></select></label>
+          <label class="field grow"><span>Search</span><input id="f-q" type="search" placeholder="property or theorem" /></label>
+        </div>
+        <div class="table-wrap">
+          <table class="matrix sortable" id="matrix">
+            <thead><tr>
+              <th scope="col" data-sort="id">Property</th>
+              <th scope="col">Statement</th>
+              <th scope="col">Proof</th>
+              <th scope="col" class="num" data-sort="loc">Upstream lines</th>
+              <th scope="col" data-sort="checked">Checked</th>
+            </tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <p class="count" id="matrix-count" aria-live="polite"></p>
+        <p class="caption">Upstream lines are executable source reached by each property's type and extracted dependencies. Rows overlap; the overview counts each source line once.</p>
       </section>
 
       <section id="method" class="block">

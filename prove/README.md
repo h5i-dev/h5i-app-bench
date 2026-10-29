@@ -66,6 +66,12 @@ scripts/run-batch.sh claude-opus-5-5 claude 3   # dataset/subset20.txt, detached
 python3 harness/dashboard.py ../docs/prove/data  # publish results to the dashboard
 ```
 
+The dashboard also exports the current project property table, proof modules,
+and pinned upstream/ported Rust pairs. To refresh just those detail assets in
+an existing snapshot, run `python3 harness/project_details.py ../docs/prove/data`.
+This requires matching project check and extraction records plus the pinned
+repositories under `results/upstream/`; stale proof inputs stop the export.
+
 The rustfs and OxiCloud differential tests build against the upstream crates;
 link their checkouts with `RUSTFS_SRC=… OXICLOUD_SRC=… scripts/link-upstream.sh`.
 The `gemini` agent needs `BENCH_NODE` (a Node install) and `BENCH_GEMINI_CLI`

@@ -560,3 +560,11 @@ details.data-table td.scope { color: var(--faint); font-size: 12px; max-width: 6
 /* Cart batch comparisons share the application chart layout. */
 .batch-bars .bar-label { flex-basis: 100px; }
 .batch-bars .sub { display: block; color: var(--faint); font: 11.5px var(--sans); }
+
+/* Current project proof browser. */
+.matrix .spec-link { font: inherit; color: inherit; background: none; border: 0; padding: 0; text-align: left; cursor: pointer; }
+.matrix .spec-link:hover { text-decoration: underline; }
+.matrix .t-name { white-space: normal; overflow-wrap: anywhere; }
+.source-item { margin: 12px 0; border: 1px solid var(--line2); border-radius: 4px; padding: 10px; }
+.source-item > summary { cursor: pointer; font-family: var(--mono); overflow-wrap: anywhere; }
+.source-item .code { margin-top: 12px; }

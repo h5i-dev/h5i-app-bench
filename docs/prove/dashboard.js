@@ -177,22 +177,12 @@ function renderApps() {
     const eq = INDEX.equivalence[a.app];
 
     return `<tr><td>${esc(a.app)}<span class="sub"><a href="https://github.com/${esc(a.repo)}/tree/${esc(a.commit)}" target="_blank" rel="noreferrer">${esc(a.repo)} @ ${esc(a.commit)}</a></span></td>
-      <td>${barRow(a.accepted, a.specs)}${a.project_properties ? `<a class="sub" href="#project-properties">${fmt(a.project_properties.count)} project properties</a>` : ""}</td>
+      <td>${barRow(a.accepted, a.specs)}${a.project_properties ? `<a class="sub" href="#specs">${fmt(a.project_properties.count)} project properties</a>` : ""}</td>
       <td>${a.security_kernel_lines ? barRowPct(a.upstream_reached, a.security_kernel_lines, 1) : "–"}<span class="sub">current source gate</span></td>
       <td>${a.ceiling_lines ? barRowPct(a.upstream_reached, a.ceiling_lines, 1) : "–"}</td>
       <td class="c">${passMark(gate.extract, "extract --check")}</td>
       <td class="c">${passMark(eq, "differential tests")}</td>
       <td class="c">${passMark(gate.check, "h5i app check")}</td></tr>`;
-  }).join("");
-}
-
-function renderProjectProperties() {
-  $("#project-properties").innerHTML = appRows().filter((a) => a.project_properties).map((a) => {
-    const p = a.project_properties;
-    return `<details><summary>${esc(a.app)} · ${fmt(p.count)}/${fmt(p.count)} project properties verified</summary>
-      <p>Gate checked ${fmt(p.checked_theorems)} theorems across ${fmt(p.checked_modules)} modules on ${esc(p.when)}. This includes supporting lemmas.
-      <a href="${esc(p.source)}" target="_blank" rel="noreferrer">Statements and proofs</a>.</p>
-      <ol>${p.names.map((name) => `<li><code>${esc(name)}</code></li>`).join("")}</ol></details>`;
   }).join("");
 }
 
@@ -313,23 +303,19 @@ function renderEffortChart() {
 
 function filteredTasks() {
   const app = $("#f-app").value;
-  const st = $("#f-status").value;
   const q = $("#f-q").value.trim().toLowerCase();
-  return INDEX.tasks.filter((t) => {
+  return INDEX.project_tasks.filter((t) => {
     if (app && t.app !== app) return false;
-    if (st === "corrected" && !t.correction) return false;
-    if (st && st !== "corrected" && t.status !== st) return false;
     if (q && !`${t.id} ${t.property} ${t.theorem}`.toLowerCase().includes(q)) return false;
     return true;
   });
 }
 
-const STATUS_ORDER = { accepted: 2, stale: 1, open: 0 };
 function renderMatrix() {
   const all = filteredTasks();
   const sorted = SORT.matrix;
   const tasks = applySort("matrix", all, {
-    id: (t) => t.id, status: (t) => STATUS_ORDER[t.status], loc: (t) => t.loc, proof: (t) => t.proof_loc, prover: (t) => t.prover,
+    id: (t) => t.id, loc: (t) => t.loc, checked: (t) => t.checked_at,
   });
   let html = "";
   let app = null;
@@ -337,14 +323,14 @@ function renderMatrix() {
     if (!sorted && t.app !== app) {
       app = t.app;
       const a = INDEX.apps[app];
-      html += `<tr class="group"><td colspan="6">${esc(app)} · ${esc(a.repo)} · ${a.accepted}/${a.specs}</td></tr>`;
+      html += `<tr class="group"><td colspan="5">${esc(app)} · ${esc(a.repo)} · ${a.project_properties.count} verified properties</td></tr>`;
     }
-    html += `<tr class="task" tabindex="0" data-id="${esc(t.id)}"><td class="t-name">${esc(t.id)}</td><td class="t-prop">${esc(t.property)}</td>
-      <td>${statusChip(t)}</td><td class="num">${t.loc ? fmt(t.loc) : "–"}</td><td class="num">${t.proof_loc ?? "–"}</td><td class="prover">${esc(proverLabel(t.prover))}</td></tr>`;
+    html += `<tr class="task" data-id="${esc(t.id)}"><td class="t-name"><button type="button" class="spec-link">${esc(t.theorem.split(".").pop())}</button></td><td class="t-prop">${esc(t.property)}</td>
+      <td><span class="chip good">✓ verified</span></td><td class="num">${fmt(t.loc)}</td><td>${esc(t.checked_at.slice(0, 10))}</td></tr>`;
   }
-  if (!tasks.length) html = `<tr><td class="count" colspan="6">No spec matches the filters.</td></tr>`;
+  if (!tasks.length) html = `<tr><td class="count" colspan="5">No spec matches the filters.</td></tr>`;
   $("#matrix tbody").innerHTML = html;
-  $("#matrix-count").textContent = `${tasks.length} of ${INDEX.tasks.length} benchmark tasks · ${tasks.filter((t) => t.status === "accepted").length} accepted`;
+  $("#matrix-count").textContent = `${tasks.length} of ${INDEX.project_tasks.length} current project properties · ${tasks.filter((t) => t.status === "accepted").length} verified`;
 }
 
 // ---- Tooltip ----------------------------------------------------------------
@@ -364,125 +350,112 @@ function hideTip() {
 
 // ---- Spec drawer ------------------------------------------------------------
 
-const TABS = [
-  ["statement", "Statement"],
-  ["rust", "Rust"],
-  ["equivalence", "Equivalence"],
-  ["lean", "Lean"],
-  ["proof", "Proof"],
-];
+const TABS = [["statement", "Statement"], ["rust", "Rust comparison"], ["lean", "Extracted Lean"], ["proof", "Proof"]];
 
-async function loadTask(id) {
-  if (!cache.has(id)) cache.set(id, fetch(`${DATA}/tasks/${encodeURIComponent(id)}.json`).then((r) => r.json()));
-  return cache.get(id);
+async function loadTask(t) {
+  if (!cache.has(t.app)) cache.set(t.app, fetch(`${DATA}/projects/${encodeURIComponent(t.app)}.json`).then((r) => {
+    if (!r.ok) throw new Error(`Could not load ${t.app} sources (${r.status})`);
+    return r.json();
+  }).catch((err) => { cache.delete(t.app); throw err; }));
+  const asset = await cache.get(t.app);
+  const property = asset.properties[t.id];
+  if (!property) throw new Error("Property is missing from the source snapshot");
+  return { ...t, ...property, asset };
 }
 
-const ticks = (s) => esc(s).replace(/`([^`]+)`/g, "<code>$1</code>");
-function correctionNote(c) {
-  return c ? `<div class="correction"><strong>Statement corrected · ${esc(c.date)}</strong>${ticks(c.change)}. ${ticks(c.reason)}</div>` : "";
+function proofCode(d) {
+  return codeBlock({ title: d.theorem, sub: "Properties.lean", url: d.asset.modules.Properties.url,
+    code: d.statement, lang: "lean" });
 }
 
 function tabStatement(d) {
-  let h = correctionNote(d.verification.correction);
-  h += `<h3>Theorem</h3>`;
-  h += codeBlock({ title: d.theorem.split(".").pop(), sub: "Properties.lean", code: d.statement, lang: "lean" });
-  h += d.target.loc
-    ? `<p class="note">About ${fmt(d.target.loc)} upstream lines: ${d.target.fns.map((f) => `<code>${esc(f)}</code>`).join(", ")} and callees.</p>`
-    : `<p class="note">About port-only code; no upstream lines.</p>`;
-  h += `<h3>Spec definitions it uses</h3>`;
-  h += d.spec.length
-    ? d.spec.map((s) => codeBlock({ title: s.name, code: s.code, lang: "lean" })).join("")
-    : `<p class="empty">None; the statement uses only ported definitions.</p>`;
-  return h;
+  return proofCode(d) + `<p class="note">${fmt(d.loc)} upstream executable lines reached by this property's type and extracted dependencies. Property rows overlap; the overview deduplicates them.</p>
+    <p class="note">Open Rust comparison for the pinned source pairs, or Proof for the supporting Lean modules.</p>`;
 }
 
 function tabRust(d) {
-  if (!d.kernel.length) return `<p class="empty">No ported function referenced.</p>`;
-  let h = `<p class="note">Each ported function beside its upstream original. Port-only helpers replace iterators and library calls Aeneas lacks.</p>`;
-  for (const k of d.kernel) {
-    const up = d.upstream.find((u) => u.fn === k.fn);
-    h += `<p class="fn-title">${esc(k.fn)}</p><div class="pair">`;
-    h += up
-      ? codeBlock({ title: "upstream", sub: `${up.file}:${up.line}`, url: up.url, code: up.code, lang: "rust" })
-      : `<div class="missing">Port-only helper.</div>`;
-    h += codeBlock({ title: "h5i-app port", sub: `${k.file}:${k.line}`, url: k.url, code: k.code, lang: "rust" });
-    h += `</div>`;
+  let h = `<p class="note">Pinned upstream source beside the h5i-app Rust port, using the same declaration mappings as coverage accounting. One port declaration can map to several upstream items. These mappings do not establish complete behavioral equivalence.</p>`;
+  const firstMapped = d.dependencies.find((name) => d.items[name]?.length);
+  const ordered = [...d.dependencies].sort((a, b) => Number(Boolean(d.items[b]?.length)) - Number(Boolean(d.items[a]?.length)));
+  for (const name of ordered) {
+    const k = d.asset.declarations[name];
+    const originals = d.items[name] || [];
+    h += `<details class="source-item"${name === firstMapped ? " open" : ""}><summary>${esc(name)} · ${originals.length ? `${originals.length} upstream item(s)` : "no upstream mapping"}</summary><div class="pair">`;
+    h += originals.length ? `<div>${originals.map((key) => {
+      const u = d.asset.upstream[key];
+      return codeBlock({ title: "Upstream Rust", sub: `${u.file}:${u.line}`, url: u.url, code: u.code, lang: "rust" });
+    }).join("")}</div>` : `<div class="missing">No upstream mapping is recorded for this declaration.</div>`;
+    h += codeBlock({ title: "h5i-app Rust", sub: `${k.file}:${k.line}`, url: k.url, code: k.code, lang: "rust" }) + `</div></details>`;
   }
-  return h;
-}
-
-function tabEquivalence(d) {
-  const app = INDEX.apps[d.app];
-  const eq = INDEX.equivalence[d.app];
-  let h = eq
-    ? `<p class="note">Differential tests for ${esc(d.app)}: ${eq.passed ? "<span class=\"mark good\">✓</span> passed" : "<span class=\"mark bad\">✗</span> failed"} on ${esc(eq.when)}.</p>`
-    : "";
-  h += `<p class="note">Tests that run upstream and port on the same inputs. A mutated port must fail them.</p>`;
-  h += d.difftest.length
-    ? d.difftest.map((t) => codeBlock({ title: t.fn, sub: `${t.file}:${t.line}`, url: t.url, code: t.code, lang: "rust" })).join("")
-    : `<p class="empty">Covered through callers.</p>`;
-  h += `<h3>Deviations from upstream</h3><p class="note">Upstream: <a href="https://github.com/${esc(app.repo)}/tree/${esc(app.commit)}" target="_blank" rel="noreferrer">${esc(app.repo)} @ ${esc(app.commit)}</a> · <a href="${esc(app.port)}" target="_blank" rel="noreferrer">port</a></p>`;
-  h += `<details class="dev"><summary>Show the port's deviations file</summary><div class="dev-body">${app.deviations}</div></details>`;
-  return h;
+  return h + (d.dependencies.length ? "" : `<p class="empty">No extracted Rust definition in this property's type.</p>`);
 }
 
 function tabLean(d) {
-  if (!d.lean.length) return `<p class="empty">No generated definition referenced.</p>`;
-  return `<p class="note">Generated by Aeneas. Brackets name the Rust source item.</p>` +
-    d.lean.map((l) => codeBlock({ title: l.name, sub: l.rust, code: l.code, lang: "lean" })).join("");
+  return `<p class="note">Aeneas definitions reached by this property's type, including their extracted dependencies.</p>` + d.dependencies.map((name) => {
+    const k = d.asset.declarations[name];
+    return `<details class="source-item"><summary>${esc(name)}</summary>${codeBlock({ title: name, sub: k.rust_path, code: k.lean, lang: "lean" })}</details>`;
+  }).join("");
 }
 
 function tabProof(d) {
-  const v = d.verification;
-  let h = correctionNote(v.correction);
-  if (v.status === "open") {
-    h += `<p class="empty">No accepted proof yet.</p>`;
-  } else {
-    h += `<dl class="kv"><dt>status</dt><dd>${statusChip({ status: v.status })}</dd>
-      <dt>prover</dt><dd>${esc(proverLabel(v.prover))}</dd>
-      <dt>re-checked</dt><dd>${esc(v.checked_at)} UTC${v.check_s ? ` · ${v.check_s} s` : ""}</dd>
-      <dt>axioms</dt><dd>${(v.axioms || []).map((a) => `<code>${esc(a)}</code>`).join(", ")}</dd>
-      <dt>proof lines</dt><dd>${fmt(v.proof_loc)}</dd></dl>`;
-    if (INDEX.proofs && v.code) h += codeBlock({ title: "Solution.lean", sub: "accepted proof", code: v.code, lang: "lean" });
-  }
-  if (d.runs.length) {
-    const rows = [...d.runs].sort((a, b) => b.passed - a.passed || a.minutes - b.minutes).map((r) =>
-      `<tr><td>${esc(r.model)}</td><td>${r.passed ? `<span class="mark good">✓</span> built` : `<span class="mark bad">✗</span> ${esc(r.reason || "")}`}</td><td class="num">${r.minutes}</td><td class="num">${r.proof_loc ?? "–"}</td></tr>`).join("");
-    h += `<h3>Agent attempts</h3><div class="table-wrap"><table class="runs"><thead><tr><th>Model</th><th>Outcome</th><th class="num">Minutes</th><th class="num">Proof lines</th></tr></thead><tbody>${rows}</tbody></table></div>`;
-  }
+  let h = `<dl class="kv"><dt>status</dt><dd><span class="chip good">✓ verified</span></dd>
+    <dt>project gate</dt><dd>${esc(d.asset.checked_at)}</dd>
+    <dt>upstream revision</dt><dd><code>${esc(d.asset.revision)}</code></dd></dl>`;
+  h += proofCode(d);
+  h += d.helpers.map((helper) => codeBlock({ title: helper.name, sub: "Properties.lean", code: helper.code, lang: "lean" })).join("");
+  h += `<h3>Supporting proof modules</h3><p class="note">Source modules referenced by the proof and their local imports. Modules include supporting definitions and lemmas.</p>`;
+  h += d.modules.map((name) => {
+    const m = d.asset.modules[name];
+    return `<details class="source-item"><summary>${esc(m.file)}</summary>${codeBlock({ title: m.file, url: m.url, code: m.code, lang: "lean" })}</details>`;
+  }).join("");
+  const app = INDEX.apps[d.app];
+  h += `<p class="note"><a href="${esc(app.port)}/proofs/Properties.lean">All property statements and proofs ↗</a> · <a href="${esc(app.port)}/DEVIATIONS.md">Port deviations ↗</a></p>`;
   return h;
 }
 
-const RENDER = { statement: tabStatement, rust: tabRust, equivalence: tabEquivalence, lean: tabLean, proof: tabProof };
+const RENDER = { statement: tabStatement, rust: tabRust, lean: tabLean, proof: tabProof };
 let current = null;
 let lastFocus = null;
+let drawerRequest = 0;
 
 function selectTab(name) {
+  if (!current || !RENDER[name]) return;
   for (const b of $("#d-tabs").children) b.setAttribute("aria-selected", String(b.dataset.tab === name));
   $("#d-body").innerHTML = RENDER[name](current);
   $("#d-body").scrollTop = 0;
 }
 
 async function openTask(id, tab) {
-  const t = INDEX.tasks.find((x) => x.id === id);
+  const t = INDEX.project_tasks.find((x) => x.id === id);
   if (!t) return;
+  const request = ++drawerRequest;
   lastFocus = document.activeElement;
   const drawer = $("#drawer");
   drawer.hidden = false;
   document.body.style.overflow = "hidden";
   $("#d-app").textContent = `${t.app} · ${INDEX.apps[t.app].repo}`;
-  $("#d-title").textContent = t.id;
+  $("#d-title").textContent = t.theorem.split(".").pop();
   $("#d-property").textContent = t.property;
   $("#d-body").innerHTML = `<p class="empty">Loading…</p>`;
-  current = await loadTask(id);
-  $("#d-tabs").innerHTML = TABS.map(([k, label]) =>
-    `<button role="tab" type="button" data-tab="${k}">${label}${k === "proof" && t.status === "accepted" ? " ✓" : ""}</button>`).join("");
-  selectTab(tab || "statement");
+  $("#d-tabs").innerHTML = "";
+  current = null;
   $(".close", drawer).focus();
-  if (location.hash.slice(1) !== id) history.replaceState(null, "", `#${id}`);
+  try {
+    const detail = await loadTask(t);
+    if (request !== drawerRequest) return;
+    current = detail;
+    $("#d-tabs").innerHTML = TABS.map(([k, label]) =>
+      `<button role="tab" type="button" data-tab="${k}">${label}${k === "proof" ? " ✓" : ""}</button>`).join("");
+    selectTab(tab || "statement");
+    history.replaceState(null, "", `#${encodeURIComponent(id)}`);
+  } catch (err) {
+    if (request === drawerRequest) $("#d-body").innerHTML = `<p class="empty">${esc(err.message)}</p>`;
+  }
 }
 
 function closeTask() {
+  ++drawerRequest;
+  current = null;
   $("#drawer").hidden = true;
   document.body.style.overflow = "";
   history.replaceState(null, "", location.pathname + location.search);
@@ -500,12 +473,52 @@ async function main() {
   renderTiles();
   sortable("apps-table", renderApps);
   renderApps();
-  renderProjectProperties();
   renderPerf();
   sortable("effort-table", renderEffort);
   renderEffort();
 
-
+  const sel = $("#f-app");
+  for (const app of Object.keys(INDEX.apps)) sel.insertAdjacentHTML("beforeend", `<option value="${esc(app)}">${esc(app)}</option>`);
+  sortable("matrix", renderMatrix);
+  renderMatrix();
+  for (const id of ["#f-app", "#f-q"]) $(id).addEventListener("input", renderMatrix);
+  const tbody = $("#matrix tbody");
+  tbody.addEventListener("click", (e) => {
+    const tr = e.target.closest("tr.task");
+    if (tr) openTask(tr.dataset.id);
+  });
+  tbody.addEventListener("keydown", (e) => {
+    const tr = e.target.closest("tr.task");
+    if (tr && (e.key === "Enter" || e.key === " ")) {
+      e.preventDefault();
+      openTask(tr.dataset.id);
+    }
+  });
+  $("#d-tabs").addEventListener("click", (e) => {
+    const b = e.target.closest("button[data-tab]");
+    if (b) selectTab(b.dataset.tab);
+  });
+  $("#drawer").addEventListener("click", (e) => {
+    if (e.target.closest("[data-close]")) closeTask();
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && !$("#drawer").hidden) closeTask();
+    if (e.key === "Tab" && !$("#drawer").hidden) {
+      const items = [...$("#drawer").querySelectorAll('button, a[href], summary')];
+      const visible = items.filter((el) => el.getClientRects().length);
+      const first = visible[0], last = visible[visible.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    }
+  });
+  const fromHash = () => {
+    try {
+      const id = decodeURIComponent(location.hash.slice(1));
+      if (id && INDEX.project_tasks.some((t) => t.id === id)) openTask(id);
+    } catch (_) { /* Ignore malformed external fragments. */ }
+  };
+  window.addEventListener("hashchange", fromHash);
+  fromHash();
 }
 
 main().catch((err) => {

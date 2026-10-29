@@ -677,6 +677,8 @@ def main():
         index.setdefault("benchmark_generated", index["generated"])
         refresh_project_checks(index)
         index["generated"] = time.strftime("%Y-%m-%d %H:%M")
+        from project_details import write_details
+        write_details(index, out, ROOT)
         path.write_text(json.dumps(index, ensure_ascii=False))
         print(f"{index['stats']['accepted']}/{index['stats']['properties']} properties -> {out}")
         return
@@ -782,6 +784,8 @@ def main():
              "tasks": index_tasks, "proofs": not a.no_proofs, "time_limit_min": 30,
              "performance": performance(), "equivalence": equivalence(), "gates": gates()}
     refresh_project_checks(index)
+    from project_details import write_details
+    write_details(index, out, ROOT)
     (out / "index.json").write_text(json.dumps(index, ensure_ascii=False))
     print(f"{len(index_tasks)} tasks, {sum(len(v) for v in runs.values())} runs, {len(columns)} columns -> {out}",
           file=sys.stderr)
