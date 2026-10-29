@@ -1,6 +1,15 @@
 # Source coverage recount (2026-10-29)
 
-Current source-matched dependency reach is **9,902 upstream executable lines**,
+Current source-matched dependency reach is **10,098 upstream executable lines**,
+with **405/405 configured property targets passing** and zero historical fallback.
+The [OxiCloud policy expansion](OXICLOUD_POLICY_EXPANSION.md) adds 196 lines and
+15 properties after the recount below. OxiCloud now reaches 947 lines; the other
+five applications are unchanged. All current gates and extractions match their
+source fingerprints. The 20,000-line objective remains open.
+
+## Recount before policy expansion
+
+Before policy expansion, source-matched dependency reach was **9,902 upstream executable lines**,
 with **390/390 configured property targets passing**. The previous 5,662 figure
 was incomplete: Kanidm mapped only the four added modules; Tuwunel had no current
 project mapping. This recount adds 4,240 lines of accounting without changing
@@ -19,7 +28,7 @@ Rust kernels, generated Lean, proof statements, extraction roots or proof bodies
 Historical fallback is zero. The historical benchmark snapshot still has
 7,684 lines with 99/101 accepted task/model results; it overlaps current project
 coverage and must never be added to it. The 20,000-line objective remains open;
-the current mapped count is 98 lines short of 10,000.
+the recount checkpoint was 98 lines short of 10,000.
 
 ## Reproducible evidence
 
@@ -54,7 +63,7 @@ Exact per-property dependencies, source spans, hashes and deduplicated line sets
 are saved in [Kanidm evidence](../results/source-coverage/kanidm-project-reach.json)
 and [Tuwunel evidence](../results/source-coverage/tuwunel-project-reach.json).
 All six application totals are reflected in [dashboard data](../../docs/prove/data/index.json).
-Passing proof and extraction records remain those listed in
+For that recount, passing proof and extraction records remained those listed in
 [totality completion](TOTALITY_COMPLETION.md); no expensive Lean rebuild was
 needed because none of their fingerprinted inputs changed. Accounting tests
 (`test_project_reach.py`, eight; `test_dashboard_accounting.py`, two) pass.

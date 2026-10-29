@@ -1,6 +1,6 @@
 {
   "upstream_revision": "8c0dd334cf065ad11f60f9be24e2aafd5dda7550",
-  "mapping_sha256": "af18c1da026deca5805fe9c8d4648d67419ddb988510c40bc29b8b71935a7b0a",
+  "mapping_sha256": "22d84eefc3b9a7eb55c56b764fe63c2c0608436919ce28f33860ebd63b176ebb",
   "lines": {
     "src/application/ports/authorization_ports.rs": [
       242,
@@ -305,6 +305,202 @@
       830
     ],
     "src/domain/entities/drive.rs": [
+      252,
+      253,
+      254,
+      255,
+      256,
+      257,
+      258,
+      259,
+      260,
+      261,
+      262,
+      263,
+      272,
+      281,
+      282,
+      283,
+      342,
+      343,
+      344,
+      345,
+      346,
+      347,
+      348,
+      376,
+      377,
+      378,
+      379,
+      380,
+      381,
+      382,
+      383,
+      384,
+      385,
+      386,
+      387,
+      388,
+      389,
+      390,
+      391,
+      392,
+      393,
+      394,
+      395,
+      396,
+      397,
+      400,
+      401,
+      402,
+      403,
+      404,
+      405,
+      406,
+      407,
+      412,
+      413,
+      414,
+      415,
+      416,
+      417,
+      418,
+      419,
+      420,
+      421,
+      422,
+      423,
+      424,
+      425,
+      426,
+      427,
+      428,
+      429,
+      430,
+      439,
+      440,
+      441,
+      442,
+      443,
+      444,
+      445,
+      446,
+      447,
+      448,
+      449,
+      450,
+      451,
+      452,
+      453,
+      454,
+      455,
+      456,
+      457,
+      459,
+      460,
+      461,
+      470,
+      471,
+      472,
+      473,
+      474,
+      475,
+      476,
+      477,
+      478,
+      491,
+      506,
+      507,
+      508,
+      509,
+      510,
+      511,
+      512,
+      513,
+      514,
+      515,
+      516,
+      517,
+      518,
+      519,
+      520,
+      521,
+      522,
+      523,
+      524,
+      525,
+      526,
+      527,
+      528,
+      529,
+      530,
+      548,
+      549,
+      550,
+      551,
+      552,
+      553,
+      554,
+      555,
+      556,
+      557,
+      558,
+      559,
+      560,
+      561,
+      562,
+      563,
+      564,
+      565,
+      582,
+      583,
+      584,
+      585,
+      586,
+      587,
+      588,
+      589,
+      590,
+      591,
+      592,
+      593,
+      594,
+      595,
+      596,
+      597,
+      598,
+      599,
+      600,
+      601,
+      602,
+      603,
+      604,
+      605,
+      606,
+      607,
+      624,
+      625,
+      626,
+      627,
+      628,
+      629,
+      630,
+      631,
+      632,
+      633,
+      634,
+      635,
+      636,
+      637,
+      638,
+      639,
+      640,
+      641,
+      642,
+      643,
+      644,
+      645,
+      646,
       662,
       663,
       664,
@@ -766,7 +962,7 @@
       3066
     ]
   },
-  "upstream_reached": 751,
+  "upstream_reached": 947,
   "properties": [
     {
       "name": "oxicloud_kernel.Properties.migration_readonly_blocks_mutations",
@@ -3493,6 +3689,411 @@
           "start": 180,
           "end": 293,
           "sha256": "e40ac7eae290e1732835bddbd6efd46a7c8f369c2205005798a42b92feccceed"
+        }
+      ]
+    },
+    {
+      "name": "oxicloud_kernel.Properties.policy_resolve_spec",
+      "generated_dependencies": [
+        "drivepolicy.override_bool",
+        "drivepolicy.override_cap",
+        "drivepolicy.resolve"
+      ],
+      "items": [
+        {
+          "declaration": "drivepolicy.resolve",
+          "file": "src/domain/entities/drive.rs",
+          "self_ty": "DrivePolicies",
+          "name": "resolve",
+          "kind": "method",
+          "start": 368,
+          "end": 407,
+          "sha256": "8a109de8c428e56c7dc4f819d108995bf407d45879280f86c371bc867834abde"
+        }
+      ]
+    },
+    {
+      "name": "oxicloud_kernel.Properties.policy_public_links_ok",
+      "generated_dependencies": [
+        "drivepolicy.refuse_public_links"
+      ],
+      "items": [
+        {
+          "declaration": "drivepolicy.refuse_public_links",
+          "file": "src/domain/entities/drive.rs",
+          "self_ty": "DrivePolicies",
+          "name": "refuse_public_links",
+          "kind": "method",
+          "start": 480,
+          "end": 530,
+          "sha256": "3ce6b924338c3c70441f04e7a6b9e0ed054ad89562f68e44504cb1507af4f3be"
+        }
+      ]
+    },
+    {
+      "name": "oxicloud_kernel.Properties.policy_sharing_ok",
+      "generated_dependencies": [
+        "drivepolicy.refuse_sharing"
+      ],
+      "items": [
+        {
+          "declaration": "drivepolicy.refuse_sharing",
+          "file": "src/domain/entities/drive.rs",
+          "self_ty": "DrivePolicies",
+          "name": "refuse_sharing",
+          "kind": "method",
+          "start": 532,
+          "end": 565,
+          "sha256": "bb1a5f84503681144ea0bb05b47d751eea9d846c76da3e66aa0a978a1531c98e"
+        }
+      ]
+    },
+    {
+      "name": "oxicloud_kernel.Properties.policy_owner_changes_ok",
+      "generated_dependencies": [
+        "drivepolicy.refuse_owner_role_change"
+      ],
+      "items": [
+        {
+          "declaration": "drivepolicy.refuse_owner_role_change",
+          "file": "src/domain/entities/drive.rs",
+          "self_ty": "DrivePolicies",
+          "name": "refuse_owner_role_change",
+          "kind": "method",
+          "start": 567,
+          "end": 607,
+          "sha256": "70399a2c2cf3b02e699eac23f2b9aede63e497a471b49a33b294b0aef3c3460a"
+        }
+      ]
+    },
+    {
+      "name": "oxicloud_kernel.Properties.policy_cross_drive_move_ok",
+      "generated_dependencies": [
+        "drivepolicy.refuse_cross_drive_move"
+      ],
+      "items": [
+        {
+          "declaration": "drivepolicy.refuse_cross_drive_move",
+          "file": "src/domain/entities/drive.rs",
+          "self_ty": "DrivePolicies",
+          "name": "refuse_cross_drive_move",
+          "kind": "method",
+          "start": 609,
+          "end": 646,
+          "sha256": "192ba798ec30e757d908acfcedb0435ef3b2039fa3e638d0e6b914d5104a5d5e"
+        }
+      ]
+    },
+    {
+      "name": "oxicloud_kernel.Properties.policy_external_sharing_ok",
+      "generated_dependencies": [
+        "drivepolicy.refuse_external_sharing"
+      ],
+      "items": [
+        {
+          "declaration": "drivepolicy.refuse_external_sharing",
+          "file": "src/domain/entities/drive.rs",
+          "self_ty": "DrivePolicies",
+          "name": "refuse_external_sharing",
+          "kind": "method",
+          "start": 648,
+          "end": 693,
+          "sha256": "b7af325c9b68b47a1a643eb470c272d504f1184420e1f91aee922ffd727c24d8"
+        }
+      ]
+    },
+    {
+      "name": "oxicloud_kernel.Properties.policy_knobs_ok",
+      "generated_dependencies": [
+        "policycompare.policy_knobs"
+      ],
+      "items": [
+        {
+          "declaration": "policycompare.policy_knobs",
+          "file": "src/domain/entities/drive.rs",
+          "self_ty": "",
+          "name": "POLICY_KNOBS",
+          "kind": "const",
+          "start": 246,
+          "end": 263,
+          "sha256": "1692d3d9a5adae9038d422c28b54ccf15354864c89f8a4aba30046b46d5efa6e"
+        }
+      ]
+    },
+    {
+      "name": "oxicloud_kernel.Properties.policy_non_defaultable_ok",
+      "generated_dependencies": [
+        "policycompare.non_defaultable_knobs"
+      ],
+      "items": [
+        {
+          "declaration": "policycompare.non_defaultable_knobs",
+          "file": "src/domain/entities/drive.rs",
+          "self_ty": "",
+          "name": "NON_DEFAULTABLE_KNOBS",
+          "kind": "const",
+          "start": 265,
+          "end": 272,
+          "sha256": "0c38f44bc7acc37121ccbc3bc84dbb492ce6122ac6d9c1dad9ebcc745e968ab8"
+        }
+      ]
+    },
+    {
+      "name": "oxicloud_kernel.Properties.policy_applies_ok",
+      "generated_dependencies": [
+        "policycompare.knob_applies_to_kind"
+      ],
+      "items": [
+        {
+          "declaration": "policycompare.knob_applies_to_kind",
+          "file": "src/domain/entities/drive.rs",
+          "self_ty": "",
+          "name": "knob_applies_to_kind",
+          "kind": "fn",
+          "start": 274,
+          "end": 283,
+          "sha256": "22a9dbabc77be73f5c5991a372e0fa5f1ec99cc59d93f94727885722847acd4c"
+        }
+      ]
+    },
+    {
+      "name": "oxicloud_kernel.Properties.policy_strictness_ok",
+      "generated_dependencies": [
+        "policycompare.knob_strictness"
+      ],
+      "items": [
+        {
+          "declaration": "policycompare.knob_strictness",
+          "file": "src/domain/entities/drive.rs",
+          "self_ty": "",
+          "name": "knob_strictness",
+          "kind": "fn",
+          "start": 342,
+          "end": 348,
+          "sha256": "296df2763a1f1e9c5f5adb68d3b04b3a57cd808ab775777b94ab774915327926"
+        }
+      ]
+    },
+    {
+      "name": "oxicloud_kernel.Properties.policy_value_ok",
+      "generated_dependencies": [
+        "policycompare.knob_value"
+      ],
+      "items": [
+        {
+          "declaration": "policycompare.knob_value",
+          "file": "src/domain/entities/drive.rs",
+          "self_ty": "DrivePolicies",
+          "name": "knob_value",
+          "kind": "method",
+          "start": 409,
+          "end": 430,
+          "sha256": "597e2f7167ed7a6dd91f6b561eab572b17462be7a25ba98162b1514c97ab0d26"
+        }
+      ]
+    },
+    {
+      "name": "oxicloud_kernel.Properties.policy_bool_ok",
+      "generated_dependencies": [
+        "policycompare.knob_bool",
+        "policycompare.knob_value"
+      ],
+      "items": [
+        {
+          "declaration": "policycompare.knob_bool",
+          "file": "src/domain/entities/drive.rs",
+          "self_ty": "DrivePolicies",
+          "name": "knob_bool",
+          "kind": "method",
+          "start": 459,
+          "end": 461,
+          "sha256": "3fbfad0d83d8bc19a7d728e414a1ff9d4095d38faacba4403e0872bab08fe4de"
+        },
+        {
+          "declaration": "policycompare.knob_value",
+          "file": "src/domain/entities/drive.rs",
+          "self_ty": "DrivePolicies",
+          "name": "knob_value",
+          "kind": "method",
+          "start": 409,
+          "end": 430,
+          "sha256": "597e2f7167ed7a6dd91f6b561eab572b17462be7a25ba98162b1514c97ab0d26"
+        }
+      ]
+    },
+    {
+      "name": "oxicloud_kernel.Properties.policy_refinement_ok",
+      "generated_dependencies": [
+        "policycompare.at_least_as_strict_on",
+        "policycompare.knob_bool",
+        "policycompare.knob_strictness",
+        "policycompare.knob_value"
+      ],
+      "items": [
+        {
+          "declaration": "policycompare.at_least_as_strict_on",
+          "file": "src/domain/entities/drive.rs",
+          "self_ty": "DrivePolicies",
+          "name": "at_least_as_strict_on",
+          "kind": "method",
+          "start": 432,
+          "end": 457,
+          "sha256": "1d966bcdbfe3fea0db1da3d321f33a885556246f6b0c86ddd5d9de493b7c9955"
+        },
+        {
+          "declaration": "policycompare.knob_bool",
+          "file": "src/domain/entities/drive.rs",
+          "self_ty": "DrivePolicies",
+          "name": "knob_bool",
+          "kind": "method",
+          "start": 459,
+          "end": 461,
+          "sha256": "3fbfad0d83d8bc19a7d728e414a1ff9d4095d38faacba4403e0872bab08fe4de"
+        },
+        {
+          "declaration": "policycompare.knob_strictness",
+          "file": "src/domain/entities/drive.rs",
+          "self_ty": "",
+          "name": "knob_strictness",
+          "kind": "fn",
+          "start": 342,
+          "end": 348,
+          "sha256": "296df2763a1f1e9c5f5adb68d3b04b3a57cd808ab775777b94ab774915327926"
+        },
+        {
+          "declaration": "policycompare.knob_value",
+          "file": "src/domain/entities/drive.rs",
+          "self_ty": "DrivePolicies",
+          "name": "knob_value",
+          "kind": "method",
+          "start": 409,
+          "end": 430,
+          "sha256": "597e2f7167ed7a6dd91f6b561eab572b17462be7a25ba98162b1514c97ab0d26"
+        }
+      ]
+    },
+    {
+      "name": "oxicloud_kernel.Properties.policy_checked_refinement_transitive",
+      "generated_dependencies": [
+        "policycompare.at_least_as_strict_on",
+        "policycompare.knob_bool",
+        "policycompare.knob_strictness",
+        "policycompare.knob_value"
+      ],
+      "items": [
+        {
+          "declaration": "policycompare.at_least_as_strict_on",
+          "file": "src/domain/entities/drive.rs",
+          "self_ty": "DrivePolicies",
+          "name": "at_least_as_strict_on",
+          "kind": "method",
+          "start": 432,
+          "end": 457,
+          "sha256": "1d966bcdbfe3fea0db1da3d321f33a885556246f6b0c86ddd5d9de493b7c9955"
+        },
+        {
+          "declaration": "policycompare.knob_bool",
+          "file": "src/domain/entities/drive.rs",
+          "self_ty": "DrivePolicies",
+          "name": "knob_bool",
+          "kind": "method",
+          "start": 459,
+          "end": 461,
+          "sha256": "3fbfad0d83d8bc19a7d728e414a1ff9d4095d38faacba4403e0872bab08fe4de"
+        },
+        {
+          "declaration": "policycompare.knob_strictness",
+          "file": "src/domain/entities/drive.rs",
+          "self_ty": "",
+          "name": "knob_strictness",
+          "kind": "fn",
+          "start": 342,
+          "end": 348,
+          "sha256": "296df2763a1f1e9c5f5adb68d3b04b3a57cd808ab775777b94ab774915327926"
+        },
+        {
+          "declaration": "policycompare.knob_value",
+          "file": "src/domain/entities/drive.rs",
+          "self_ty": "DrivePolicies",
+          "name": "knob_value",
+          "kind": "method",
+          "start": 409,
+          "end": 430,
+          "sha256": "597e2f7167ed7a6dd91f6b561eab572b17462be7a25ba98162b1514c97ab0d26"
+        }
+      ]
+    },
+    {
+      "name": "oxicloud_kernel.Properties.policy_weaker_ok",
+      "generated_dependencies": [
+        "policycompare.append_weaker",
+        "policycompare.at_least_as_strict_on",
+        "policycompare.knob_applies_to_kind",
+        "policycompare.knob_bool",
+        "policycompare.knob_strictness",
+        "policycompare.knob_value",
+        "policycompare.weaker_than"
+      ],
+      "items": [
+        {
+          "declaration": "policycompare.at_least_as_strict_on",
+          "file": "src/domain/entities/drive.rs",
+          "self_ty": "DrivePolicies",
+          "name": "at_least_as_strict_on",
+          "kind": "method",
+          "start": 432,
+          "end": 457,
+          "sha256": "1d966bcdbfe3fea0db1da3d321f33a885556246f6b0c86ddd5d9de493b7c9955"
+        },
+        {
+          "declaration": "policycompare.knob_applies_to_kind",
+          "file": "src/domain/entities/drive.rs",
+          "self_ty": "",
+          "name": "knob_applies_to_kind",
+          "kind": "fn",
+          "start": 274,
+          "end": 283,
+          "sha256": "22a9dbabc77be73f5c5991a372e0fa5f1ec99cc59d93f94727885722847acd4c"
+        },
+        {
+          "declaration": "policycompare.knob_bool",
+          "file": "src/domain/entities/drive.rs",
+          "self_ty": "DrivePolicies",
+          "name": "knob_bool",
+          "kind": "method",
+          "start": 459,
+          "end": 461,
+          "sha256": "3fbfad0d83d8bc19a7d728e414a1ff9d4095d38faacba4403e0872bab08fe4de"
+        },
+        {
+          "declaration": "policycompare.knob_strictness",
+          "file": "src/domain/entities/drive.rs",
+          "self_ty": "",
+          "name": "knob_strictness",
+          "kind": "fn",
+          "start": 342,
+          "end": 348,
+          "sha256": "296df2763a1f1e9c5f5adb68d3b04b3a57cd808ab775777b94ab774915327926"
+        },
+        {
+          "declaration": "policycompare.knob_value",
+          "file": "src/domain/entities/drive.rs",
+          "self_ty": "DrivePolicies",
+          "name": "knob_value",
+          "kind": "method",
+          "start": 409,
+          "end": 430,
+          "sha256": "597e2f7167ed7a6dd91f6b561eab572b17462be7a25ba98162b1514c97ab0d26"
+        },
+        {
+          "declaration": "policycompare.weaker_than",
+          "file": "src/domain/entities/drive.rs",
+          "self_ty": "DrivePolicies",
+          "name": "weaker_than",
+          "kind": "method",
+          "start": 463,
+          "end": 478,
+          "sha256": "e0a466ac70d12f7b4798d80e704b856006a541ea84c614b923c5d2c464913ca7"
         }
       ]
     }

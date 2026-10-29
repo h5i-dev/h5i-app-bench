@@ -69,3 +69,33 @@ make the tests fail. `props.rs` checks every statement in
 `drive_keeps_an_owner` and `refused_create_or_set_writes_nothing` are about
 creating grants and setting roles; revocation is outside them.
 `create_respects_sharing_policies` is about `create_grant`.
+
+## Policy expansion (2026-10-29)
+
+`drivepolicy` models all ten typed policy fields, explicit boolean overrides,
+and expiry-cap inheritance from pinned `domain/entities/drive.rs`.
+`policycompare` models canonical knob order, the non-defaultable read-only knob,
+kind applicability, typed values, the three strictness directions, and ordered
+drift findings. Comparison includes an `Other` knob for unknown names; mapping
+raw strings/JSON values to the typed carriers remains a trusted input boundary.
+The fixed ten-element comparison pipeline replaces the upstream iterator.
+
+Five policy guards preserve their allow/refuse decisions. Audit events, refusal
+messages, UUID representation and caller context stay outside the formal model.
+The owner-change guard explicitly models the administrator flag; this does not
+extend the older ACL/grant API statements to general administrator callers.
+Cross-drive callers still establish that source and destination differ.
+
+The new canonical statements prove override resolution, exact successful-result
+specifications for comparison and guard decisions, and comparison transitivity.
+Vector-returning statements retain their successful-execution hypotheses; they
+are not unconditional allocation/termination guarantees.
+
+`policy-difftest` compiles the entire pinned upstream `drive.rs` unchanged,
+including its tests. Its only upstream-facing adapters are the authorization
+subject carrier and unsupported-operation error construction/display. It checks
+20,000 seeded policy scenarios against upstream, including expiry boundaries,
+all three principal kinds, administrator bypass, both drive kinds, every known
+knob and an unknown knob. These are differential tests, not formal equivalence.
+The two kernels and proof modules are adapted from `oxicloud-verify` at
+`61cd60e`; unrelated modules from that branch are not imported.

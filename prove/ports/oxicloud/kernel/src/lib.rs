@@ -6,3 +6,6 @@
 pub mod acl;
 pub mod grantapi;
 pub mod model;
+
+pub mod drivepolicy;
+pub mod policycompare;

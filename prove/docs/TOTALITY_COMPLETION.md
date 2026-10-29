@@ -46,9 +46,11 @@ gate settings are used. The permitted kernel axioms are `propext`,
 
 The [coverage recount](COVERAGE_RECOUNT.md) completes the missing core Kanidm
 and Tuwunel source mappings. All six current gates and extractions match their
-source inputs: **390/390 configured targets**, with **9,902 deduplicated pinned
+source inputs: **405/405 configured targets**, with **10,098 deduplicated pinned
 upstream executable lines** reached through theorem types and generated
 implementation dependencies. Kanidm contributes 2,705 and Tuwunel 1,955.
+The [OxiCloud policy expansion](OXICLOUD_POLICY_EXPANSION.md) subsequently adds
+15 targets and 196 lines (751 → 947); the pre-expansion recount was 9,902 lines.
 The previous 5,662 total omitted Kanidm's core mapping and all Tuwunel mapping;
 the increase of 4,240 is an accounting correction, not new proof expansion.
 
@@ -62,6 +64,7 @@ that flag nor the line count asserts complete upstream behavioral equivalence.
 
 Statement preservation: `test_statements.py` (1 test). Exact reach accounting:
 `test_project_reach.py` (8 tests), `test_dashboard_accounting.py` (2 tests).
-All pass. The configured theorem lists match the previous commit exactly.
+All pass. The Nora, Kanidm and Tuwunel theorem lists remain unchanged.
+OxiCloud retains its previous 11 and adds 15 policy targets.
 Every public function in Kanidm's four added extraction modules remains an
 extraction root.

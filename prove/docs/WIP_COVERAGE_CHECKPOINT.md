@@ -48,3 +48,13 @@ and extraction evidence. Historical fallback is zero; the independent benchmark
 snapshot remains 7,684 and must not be added. This corrects the earlier 5,662
 partial-map figure, adding 4,240 without changing proofs. See the
 [recount and limitations](COVERAGE_RECOUNT.md).
+
+## OxiCloud policy expansion (2026-10-29)
+
+Current source-matched dependency reach is **10,098 lines**, with **405/405**
+configured targets passing and zero historical fallback. OxiCloud adds 15
+properties and 196 lines (751 → 947). All six gates and extraction checks match
+current inputs. The [policy expansion report](OXICLOUD_POLICY_EXPANSION.md)
+contains scope, limitations, exact gate/extraction records and differential
+comparison evidence. This supersedes the numerical snapshots above; the
+20,000-line goal remains open.
