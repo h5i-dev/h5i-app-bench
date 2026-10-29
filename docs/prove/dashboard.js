@@ -132,7 +132,7 @@ function renderHeader() {
   $("#property-total").textContent = fmt(s.properties);
   const parts = [
     `[ snapshot <b>${esc(INDEX.generated)}</b> ]`,
-    `[ <b>${s.benchmark_accepted}/${s.benchmark_properties}</b> benchmark proofs accepted ]`,
+    `[ <b>${s.accepted}/${s.properties}</b> current properties checked ]`,
     `[ <b>${Object.keys(INDEX.apps).length}</b> servers ]`,
     `<span class="live">[ interim ]</span>`,
   ];
@@ -147,8 +147,8 @@ function renderTiles() {
   const med = median(m);
   const proofs = INDEX.tasks.filter((t) => t.status === "accepted" && t.proof_loc != null).map((t) => t.proof_loc);
   const tiles = [
-    [`${s.benchmark_accepted}<small>/${s.benchmark_properties}</small>`, "benchmark proofs accepted", "historical task and model results", [s.benchmark_accepted, s.benchmark_properties]],
-    [kLines(s.current_source_matched_lines), "current gated source reach", `${kLines(s.benchmark_upstream_reached)} historical benchmark lines · ${s.whole_project_verified ? "all six project gates pass" : "whole-project verification incomplete"}`],
+    [`${s.accepted}<small>/${s.properties}</small>`, "current properties checked", `${s.benchmark_accepted}/${s.benchmark_properties} historical benchmark results`, [s.accepted, s.properties]],
+    [fmt(s.current_source_matched_lines), "current gated source reach", `${kLines(s.benchmark_upstream_reached)} historical benchmark lines · ${s.whole_project_verified ? "all six project gates pass" : "whole-project verification incomplete"}`],
     [med == null ? "–" : ratioText(med), "median runtime ratio", `kernel ÷ upstream · ${m.length} workloads${m.length ? ` · ${ratioText(Math.min(...m))}–${ratioText(Math.max(...m))}` : ""}`],
     [kLines(s.proof_loc), "lines of Lean proof", `median ${fmt(median(proofs))} per benchmark task · ${kLines(s.rust_loc)} lines of ported Rust`],
   ];
