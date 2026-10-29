@@ -1,3 +1,23 @@
+import Verified.AcpDefaults0
+import Verified.AcpDefaults1
+import Verified.AcpDefaults2
+import Verified.AcpDefaults3
+import Verified.AcpDefaults4
+import Verified.AcpDefaults5
+import Verified.AcpDefaults6
+import Verified.AcpDefaults7
+import Verified.AcpDefaults8
+import Verified.AcpDefaults9
+import Verified.AcpDefaults10
+import Verified.AcpDefaults11
+import Verified.AcpDefaults12
+import Verified.AcpDefaults13
+import Verified.AcpDefaults14
+import Verified.AcpDefaults15
+import Verified.AcpDefaults16
+import Verified.AcpDefaults17
+import Verified.AcpDefaults18
+import Verified.AcpDefaults19
 import Verified.MigrationDefaults
 import Verified.ValueObservers
 import Verified.SyntaxTypes
@@ -656,5 +676,66 @@ theorem migration_defaults_dl15_complete (r : migration_defaults.SystemConfig)
 theorem migration_defaults_dl_1_12_complete (r : migration_defaults.SystemConfig)
  (h : migration_defaults.dl_1_12 = ok r) : Verified.MigrationDefaults.Complete Verified.MigrationDefaults.shortSentinel r :=
  Verified.MigrationDefaults.dl_1_12_complete r h
+
+
+/-- Complete built-in profile record, including all permission lists and full encoded filter. -/
+theorem acp_defaults_dl11_oauth2_manage_complete : acp_defaults.dl11_oauth2_manage ⦃r => Verified.AcpDefaults.view r = Verified.AcpDefaults.expected_dl11_oauth2_manage⦄ := Verified.AcpDefaults.dl11_oauth2_manage_complete
+
+/-- Complete built-in profile record, including all permission lists and full encoded filter. -/
+theorem acp_defaults_dl11_acp_manage_v1_complete : acp_defaults.dl11_acp_manage_v1 ⦃r => Verified.AcpDefaults.view r = Verified.AcpDefaults.expected_dl11_acp_manage_v1⦄ := Verified.AcpDefaults.dl11_acp_manage_v1_complete
+
+/-- Complete built-in profile record, including all permission lists and full encoded filter. -/
+theorem acp_defaults_dl11_application_manage_dl8_complete : acp_defaults.dl11_application_manage_dl8 ⦃r => Verified.AcpDefaults.view r = Verified.AcpDefaults.expected_dl11_application_manage_dl8⦄ := Verified.AcpDefaults.dl11_application_manage_dl8_complete
+
+/-- Complete built-in profile record, including all permission lists and full encoded filter. -/
+theorem acp_defaults_dl11_domain_admin_dl9_complete : acp_defaults.dl11_domain_admin_dl9 ⦃r => Verified.AcpDefaults.view r = Verified.AcpDefaults.expected_dl11_domain_admin_dl9⦄ := Verified.AcpDefaults.dl11_domain_admin_dl9_complete
+
+/-- Complete built-in profile record, including all permission lists and full encoded filter. -/
+theorem acp_defaults_dl11_service_account_entry_manager_v1_complete : acp_defaults.dl11_service_account_entry_manager_v1 ⦃r => Verified.AcpDefaults.view r = Verified.AcpDefaults.expected_dl11_service_account_entry_manager_v1⦄ := Verified.AcpDefaults.dl11_service_account_entry_manager_v1_complete
+
+/-- Complete built-in profile record, including all permission lists and full encoded filter. -/
+theorem acp_defaults_dl11_schema_write_attrs_v1_complete : acp_defaults.dl11_schema_write_attrs_v1 ⦃r => Verified.AcpDefaults.view r = Verified.AcpDefaults.expected_dl11_schema_write_attrs_v1⦄ := Verified.AcpDefaults.dl11_schema_write_attrs_v1_complete
+
+/-- Complete built-in profile record, including all permission lists and full encoded filter. -/
+theorem acp_defaults_dl11_group_manage_dl9_complete : acp_defaults.dl11_group_manage_dl9 ⦃r => Verified.AcpDefaults.view r = Verified.AcpDefaults.expected_dl11_group_manage_dl9⦄ := Verified.AcpDefaults.dl11_group_manage_dl9_complete
+
+/-- Complete built-in profile record, including all permission lists and full encoded filter. -/
+theorem acp_defaults_dl11_group_account_policy_manage_dl8_complete : acp_defaults.dl11_group_account_policy_manage_dl8 ⦃r => Verified.AcpDefaults.view r = Verified.AcpDefaults.expected_dl11_group_account_policy_manage_dl8⦄ := Verified.AcpDefaults.dl11_group_account_policy_manage_dl8_complete
+
+/-- Complete built-in profile record, including all permission lists and full encoded filter. -/
+theorem acp_defaults_dl11_schema_write_classes_v1_complete : acp_defaults.dl11_schema_write_classes_v1 ⦃r => Verified.AcpDefaults.view r = Verified.AcpDefaults.expected_dl11_schema_write_classes_v1⦄ := Verified.AcpDefaults.dl11_schema_write_classes_v1_complete
+
+/-- Complete built-in profile record, including all permission lists and full encoded filter. -/
+theorem acp_defaults_dl11_application_entry_manager_dl8_complete : acp_defaults.dl11_application_entry_manager_dl8 ⦃r => Verified.AcpDefaults.view r = Verified.AcpDefaults.expected_dl11_application_entry_manager_dl8⦄ := Verified.AcpDefaults.dl11_application_entry_manager_dl8_complete
+
+/-- Complete built-in profile record, including all permission lists and full encoded filter. -/
+theorem acp_defaults_dl11_sync_account_manage_v1_complete : acp_defaults.dl11_sync_account_manage_v1 ⦃r => Verified.AcpDefaults.view r = Verified.AcpDefaults.expected_dl11_sync_account_manage_v1⦄ := Verified.AcpDefaults.dl11_sync_account_manage_v1_complete
+
+/-- Complete built-in profile record, including all permission lists and full encoded filter. -/
+theorem acp_defaults_dl12_service_account_entry_manager_v1_complete : acp_defaults.dl12_service_account_entry_manager_v1 ⦃r => Verified.AcpDefaults.view r = Verified.AcpDefaults.expected_dl12_service_account_entry_manager_v1⦄ := Verified.AcpDefaults.dl12_service_account_entry_manager_v1_complete
+
+/-- Complete built-in profile record, including all permission lists and full encoded filter. -/
+theorem acp_defaults_dl12_group_manage_dl9_complete : acp_defaults.dl12_group_manage_dl9 ⦃r => Verified.AcpDefaults.view r = Verified.AcpDefaults.expected_dl12_group_manage_dl9⦄ := Verified.AcpDefaults.dl12_group_manage_dl9_complete
+
+/-- Complete built-in profile record, including all permission lists and full encoded filter. -/
+theorem acp_defaults_dl13_oauth2_manage_complete : acp_defaults.dl13_oauth2_manage ⦃r => Verified.AcpDefaults.view r = Verified.AcpDefaults.expected_dl13_oauth2_manage⦄ := Verified.AcpDefaults.dl13_oauth2_manage_complete
+
+/-- Complete built-in profile record, including all permission lists and full encoded filter. -/
+theorem acp_defaults_dl13_acp_manage_v1_complete : acp_defaults.dl13_acp_manage_v1 ⦃r => Verified.AcpDefaults.view r = Verified.AcpDefaults.expected_dl13_acp_manage_v1⦄ := Verified.AcpDefaults.dl13_acp_manage_v1_complete
+
+/-- Complete built-in profile record, including all permission lists and full encoded filter. -/
+theorem acp_defaults_dl13_application_manage_dl8_complete : acp_defaults.dl13_application_manage_dl8 ⦃r => Verified.AcpDefaults.view r = Verified.AcpDefaults.expected_dl13_application_manage_dl8⦄ := Verified.AcpDefaults.dl13_application_manage_dl8_complete
+
+/-- Complete built-in profile record, including all permission lists and full encoded filter. -/
+theorem acp_defaults_dl13_application_entry_manager_dl8_complete : acp_defaults.dl13_application_entry_manager_dl8 ⦃r => Verified.AcpDefaults.view r = Verified.AcpDefaults.expected_dl13_application_entry_manager_dl8⦄ := Verified.AcpDefaults.dl13_application_entry_manager_dl8_complete
+
+/-- Complete built-in profile record, including all permission lists and full encoded filter. -/
+theorem acp_defaults_dl13_sync_account_manage_v1_complete : acp_defaults.dl13_sync_account_manage_v1 ⦃r => Verified.AcpDefaults.view r = Verified.AcpDefaults.expected_dl13_sync_account_manage_v1⦄ := Verified.AcpDefaults.dl13_sync_account_manage_v1_complete
+
+/-- Complete built-in profile record, including all permission lists and full encoded filter. -/
+theorem acp_defaults_dl14_oauth2_manage_complete : acp_defaults.dl14_oauth2_manage ⦃r => Verified.AcpDefaults.view r = Verified.AcpDefaults.expected_dl14_oauth2_manage⦄ := Verified.AcpDefaults.dl14_oauth2_manage_complete
+
+/-- Complete built-in profile record, including all permission lists and full encoded filter. -/
+theorem acp_defaults_dl14_domain_admin_dl9_complete : acp_defaults.dl14_domain_admin_dl9 ⦃r => Verified.AcpDefaults.view r = Verified.AcpDefaults.expected_dl14_domain_admin_dl9⦄ := Verified.AcpDefaults.dl14_domain_admin_dl9_complete
 
 end kanidm_kernel.Properties

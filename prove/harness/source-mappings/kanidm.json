@@ -2176,6 +2176,640 @@
         "end": 738,
         "sha256": "64fc5e7992c4d511018fbf24a2ad8c09b3f6f53d37bad296e96294f3e8f6edc7"
       }
+    ],
+    "acp_defaults.dl11_oauth2_manage": [
+      {
+        "file": "server/lib/src/migration_data/dl11/access.rs",
+        "self_ty": "",
+        "name": "IDM_ACP_OAUTH2_MANAGE",
+        "kind": "static",
+        "start": 540,
+        "end": 646,
+        "sha256": "adecd2f65b09b7ac93990d7b7648ef3f87e5284840464615ec6615f4567d2973"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl12/access.rs",
+        "self_ty": "",
+        "name": "IDM_ACP_OAUTH2_MANAGE",
+        "kind": "static",
+        "start": 547,
+        "end": 653,
+        "sha256": "adecd2f65b09b7ac93990d7b7648ef3f87e5284840464615ec6615f4567d2973"
+      }
+    ],
+    "acp_defaults.dl11_acp_manage_v1": [
+      {
+        "file": "server/lib/src/migration_data/dl11/access.rs",
+        "self_ty": "",
+        "name": "IDM_ACP_ACP_MANAGE_V1",
+        "kind": "static",
+        "start": 336,
+        "end": 427,
+        "sha256": "3a697d2663824e9000be61d18368e8013898b9dd0850d65f4339eb8ebd9b01e1"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl12/access.rs",
+        "self_ty": "",
+        "name": "IDM_ACP_ACP_MANAGE_V1",
+        "kind": "static",
+        "start": 339,
+        "end": 430,
+        "sha256": "3a697d2663824e9000be61d18368e8013898b9dd0850d65f4339eb8ebd9b01e1"
+      }
+    ],
+    "acp_defaults.dl11_application_manage_dl8": [
+      {
+        "file": "server/lib/src/migration_data/dl11/access.rs",
+        "self_ty": "",
+        "name": "IDM_ACP_APPLICATION_MANAGE_DL8",
+        "kind": "static",
+        "start": 1750,
+        "end": 1819,
+        "sha256": "9774a7558abc9de1a81e4a25946f98e93faaa0faecf8b661156fa59ee3fb5645"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl12/access.rs",
+        "self_ty": "",
+        "name": "IDM_ACP_APPLICATION_MANAGE_DL8",
+        "kind": "static",
+        "start": 1793,
+        "end": 1862,
+        "sha256": "9774a7558abc9de1a81e4a25946f98e93faaa0faecf8b661156fa59ee3fb5645"
+      }
+    ],
+    "acp_defaults.dl11_domain_admin_dl9": [
+      {
+        "file": "server/lib/src/migration_data/dl11/access.rs",
+        "self_ty": "",
+        "name": "IDM_ACP_DOMAIN_ADMIN_DL9",
+        "kind": "static",
+        "start": 647,
+        "end": 704,
+        "sha256": "74e1c332f1076a8721eaad395783067135ee908eb874498eddf09f37cdc9386d"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl12/access.rs",
+        "self_ty": "",
+        "name": "IDM_ACP_DOMAIN_ADMIN_DL9",
+        "kind": "static",
+        "start": 655,
+        "end": 712,
+        "sha256": "74e1c332f1076a8721eaad395783067135ee908eb874498eddf09f37cdc9386d"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl13/access.rs",
+        "self_ty": "",
+        "name": "IDM_ACP_DOMAIN_ADMIN_DL9",
+        "kind": "static",
+        "start": 677,
+        "end": 734,
+        "sha256": "74e1c332f1076a8721eaad395783067135ee908eb874498eddf09f37cdc9386d"
+      }
+    ],
+    "acp_defaults.dl11_service_account_entry_manager_v1": [
+      {
+        "file": "server/lib/src/migration_data/dl11/access.rs",
+        "self_ty": "",
+        "name": "IDM_ACP_SERVICE_ACCOUNT_ENTRY_MANAGER_V1",
+        "kind": "static",
+        "start": 1595,
+        "end": 1653,
+        "sha256": "ae34049a9c31bb1490adeaef04d00649cfcddef2575f46b5dfd3c695416eee10"
+      }
+    ],
+    "acp_defaults.dl11_schema_write_attrs_v1": [
+      {
+        "file": "server/lib/src/migration_data/dl11/access.rs",
+        "self_ty": "",
+        "name": "IDM_ACP_SCHEMA_WRITE_ATTRS_V1",
+        "kind": "static",
+        "start": 227,
+        "end": 283,
+        "sha256": "721716ca7519bb1249f8fa92196d83d02fb8dae70b9edac9a2bb0cce42d8f053"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl12/access.rs",
+        "self_ty": "",
+        "name": "IDM_ACP_SCHEMA_WRITE_ATTRS_V1",
+        "kind": "static",
+        "start": 228,
+        "end": 284,
+        "sha256": "721716ca7519bb1249f8fa92196d83d02fb8dae70b9edac9a2bb0cce42d8f053"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl13/access.rs",
+        "self_ty": "",
+        "name": "IDM_ACP_SCHEMA_WRITE_ATTRS_V1",
+        "kind": "static",
+        "start": 227,
+        "end": 283,
+        "sha256": "721716ca7519bb1249f8fa92196d83d02fb8dae70b9edac9a2bb0cce42d8f053"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl14/access.rs",
+        "self_ty": "",
+        "name": "IDM_ACP_SCHEMA_WRITE_ATTRS_V1",
+        "kind": "static",
+        "start": 227,
+        "end": 283,
+        "sha256": "721716ca7519bb1249f8fa92196d83d02fb8dae70b9edac9a2bb0cce42d8f053"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl15/access.rs",
+        "self_ty": "",
+        "name": "IDM_ACP_SCHEMA_WRITE_ATTRS_V1",
+        "kind": "static",
+        "start": 227,
+        "end": 283,
+        "sha256": "721716ca7519bb1249f8fa92196d83d02fb8dae70b9edac9a2bb0cce42d8f053"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl_1_12/access.rs",
+        "self_ty": "",
+        "name": "IDM_ACP_SCHEMA_WRITE_ATTRS_V1",
+        "kind": "static",
+        "start": 227,
+        "end": 283,
+        "sha256": "721716ca7519bb1249f8fa92196d83d02fb8dae70b9edac9a2bb0cce42d8f053"
+      }
+    ],
+    "acp_defaults.dl11_group_manage_dl9": [
+      {
+        "file": "server/lib/src/migration_data/dl11/access.rs",
+        "self_ty": "",
+        "name": "IDM_ACP_GROUP_MANAGE_DL9",
+        "kind": "static",
+        "start": 1139,
+        "end": 1194,
+        "sha256": "7a602d5849831184f43dbf07cd7c5c5ddf2481f0d2751fcdd3a2c3f1822bcea3"
+      }
+    ],
+    "acp_defaults.dl11_group_account_policy_manage_dl8": [
+      {
+        "file": "server/lib/src/migration_data/dl11/access.rs",
+        "self_ty": "",
+        "name": "IDM_ACP_GROUP_ACCOUNT_POLICY_MANAGE_DL8",
+        "kind": "static",
+        "start": 486,
+        "end": 539,
+        "sha256": "38dcf9b1af8b01180f6b153d47ddeb833b1193bd93c2402556d46eb62be201ca"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl12/access.rs",
+        "self_ty": "",
+        "name": "IDM_ACP_GROUP_ACCOUNT_POLICY_MANAGE_DL8",
+        "kind": "static",
+        "start": 492,
+        "end": 545,
+        "sha256": "38dcf9b1af8b01180f6b153d47ddeb833b1193bd93c2402556d46eb62be201ca"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl13/access.rs",
+        "self_ty": "",
+        "name": "IDM_ACP_GROUP_ACCOUNT_POLICY_MANAGE_DL8",
+        "kind": "static",
+        "start": 492,
+        "end": 545,
+        "sha256": "38dcf9b1af8b01180f6b153d47ddeb833b1193bd93c2402556d46eb62be201ca"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl14/access.rs",
+        "self_ty": "",
+        "name": "IDM_ACP_GROUP_ACCOUNT_POLICY_MANAGE_DL8",
+        "kind": "static",
+        "start": 492,
+        "end": 545,
+        "sha256": "38dcf9b1af8b01180f6b153d47ddeb833b1193bd93c2402556d46eb62be201ca"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl15/access.rs",
+        "self_ty": "",
+        "name": "IDM_ACP_GROUP_ACCOUNT_POLICY_MANAGE_DL8",
+        "kind": "static",
+        "start": 492,
+        "end": 545,
+        "sha256": "38dcf9b1af8b01180f6b153d47ddeb833b1193bd93c2402556d46eb62be201ca"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl_1_12/access.rs",
+        "self_ty": "",
+        "name": "IDM_ACP_GROUP_ACCOUNT_POLICY_MANAGE_DL8",
+        "kind": "static",
+        "start": 492,
+        "end": 545,
+        "sha256": "38dcf9b1af8b01180f6b153d47ddeb833b1193bd93c2402556d46eb62be201ca"
+      }
+    ],
+    "acp_defaults.dl11_schema_write_classes_v1": [
+      {
+        "file": "server/lib/src/migration_data/dl11/access.rs",
+        "self_ty": "",
+        "name": "IDM_ACP_SCHEMA_WRITE_CLASSES_V1",
+        "kind": "static",
+        "start": 284,
+        "end": 335,
+        "sha256": "241d1d6b30b7188c7844f1bc0e70ee3a2fea247fbe92bcbc590813d1a2c7b1fe"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl12/access.rs",
+        "self_ty": "",
+        "name": "IDM_ACP_SCHEMA_WRITE_CLASSES_V1",
+        "kind": "static",
+        "start": 286,
+        "end": 337,
+        "sha256": "241d1d6b30b7188c7844f1bc0e70ee3a2fea247fbe92bcbc590813d1a2c7b1fe"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl13/access.rs",
+        "self_ty": "",
+        "name": "IDM_ACP_SCHEMA_WRITE_CLASSES_V1",
+        "kind": "static",
+        "start": 285,
+        "end": 336,
+        "sha256": "241d1d6b30b7188c7844f1bc0e70ee3a2fea247fbe92bcbc590813d1a2c7b1fe"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl14/access.rs",
+        "self_ty": "",
+        "name": "IDM_ACP_SCHEMA_WRITE_CLASSES_V1",
+        "kind": "static",
+        "start": 285,
+        "end": 336,
+        "sha256": "241d1d6b30b7188c7844f1bc0e70ee3a2fea247fbe92bcbc590813d1a2c7b1fe"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl15/access.rs",
+        "self_ty": "",
+        "name": "IDM_ACP_SCHEMA_WRITE_CLASSES_V1",
+        "kind": "static",
+        "start": 285,
+        "end": 336,
+        "sha256": "241d1d6b30b7188c7844f1bc0e70ee3a2fea247fbe92bcbc590813d1a2c7b1fe"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl_1_12/access.rs",
+        "self_ty": "",
+        "name": "IDM_ACP_SCHEMA_WRITE_CLASSES_V1",
+        "kind": "static",
+        "start": 285,
+        "end": 336,
+        "sha256": "241d1d6b30b7188c7844f1bc0e70ee3a2fea247fbe92bcbc590813d1a2c7b1fe"
+      }
+    ],
+    "acp_defaults.dl11_application_entry_manager_dl8": [
+      {
+        "file": "server/lib/src/migration_data/dl11/access.rs",
+        "self_ty": "",
+        "name": "IDM_ACP_APPLICATION_ENTRY_MANAGER_DL8",
+        "kind": "static",
+        "start": 1820,
+        "end": 1871,
+        "sha256": "78091aa60f4284abbf8a3638ecc900e8ee8835a062277c0a901783fdd9cf24d5"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl12/access.rs",
+        "self_ty": "",
+        "name": "IDM_ACP_APPLICATION_ENTRY_MANAGER_DL8",
+        "kind": "static",
+        "start": 1864,
+        "end": 1915,
+        "sha256": "78091aa60f4284abbf8a3638ecc900e8ee8835a062277c0a901783fdd9cf24d5"
+      }
+    ],
+    "acp_defaults.dl11_sync_account_manage_v1": [
+      {
+        "file": "server/lib/src/migration_data/dl11/access.rs",
+        "self_ty": "",
+        "name": "IDM_ACP_SYNC_ACCOUNT_MANAGE_V1",
+        "kind": "static",
+        "start": 705,
+        "end": 755,
+        "sha256": "3c6a2a9a9ebe93d5e983b1dcdd60424e5784afcd9973d4035aeb221fd41efeed"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl12/access.rs",
+        "self_ty": "",
+        "name": "IDM_ACP_SYNC_ACCOUNT_MANAGE_V1",
+        "kind": "static",
+        "start": 714,
+        "end": 764,
+        "sha256": "3c6a2a9a9ebe93d5e983b1dcdd60424e5784afcd9973d4035aeb221fd41efeed"
+      }
+    ],
+    "acp_defaults.dl12_service_account_entry_manager_v1": [
+      {
+        "file": "server/lib/src/migration_data/dl12/access.rs",
+        "self_ty": "",
+        "name": "IDM_ACP_SERVICE_ACCOUNT_ENTRY_MANAGER_V1",
+        "kind": "static",
+        "start": 1632,
+        "end": 1691,
+        "sha256": "d41acdaa34125a3abedda91fcfc0a41ae39c82279b6b2dec8e4aa097f12ef0cf"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl13/access.rs",
+        "self_ty": "",
+        "name": "IDM_ACP_SERVICE_ACCOUNT_ENTRY_MANAGER_V1",
+        "kind": "static",
+        "start": 1662,
+        "end": 1721,
+        "sha256": "d41acdaa34125a3abedda91fcfc0a41ae39c82279b6b2dec8e4aa097f12ef0cf"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl14/access.rs",
+        "self_ty": "",
+        "name": "IDM_ACP_SERVICE_ACCOUNT_ENTRY_MANAGER_V1",
+        "kind": "static",
+        "start": 1672,
+        "end": 1731,
+        "sha256": "d41acdaa34125a3abedda91fcfc0a41ae39c82279b6b2dec8e4aa097f12ef0cf"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl15/access.rs",
+        "self_ty": "",
+        "name": "IDM_ACP_SERVICE_ACCOUNT_ENTRY_MANAGER_V1",
+        "kind": "static",
+        "start": 1688,
+        "end": 1747,
+        "sha256": "d41acdaa34125a3abedda91fcfc0a41ae39c82279b6b2dec8e4aa097f12ef0cf"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl_1_12/access.rs",
+        "self_ty": "",
+        "name": "IDM_ACP_SERVICE_ACCOUNT_ENTRY_MANAGER_V1",
+        "kind": "static",
+        "start": 1688,
+        "end": 1747,
+        "sha256": "d41acdaa34125a3abedda91fcfc0a41ae39c82279b6b2dec8e4aa097f12ef0cf"
+      }
+    ],
+    "acp_defaults.dl12_group_manage_dl9": [
+      {
+        "file": "server/lib/src/migration_data/dl12/access.rs",
+        "self_ty": "",
+        "name": "IDM_ACP_GROUP_MANAGE_DL9",
+        "kind": "static",
+        "start": 1161,
+        "end": 1217,
+        "sha256": "e13ad10c4194d6839c8ed644ea232d4e4dd0fb1beeddb8ea82e6797933d4950f"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl13/access.rs",
+        "self_ty": "",
+        "name": "IDM_ACP_GROUP_MANAGE_DL9",
+        "kind": "static",
+        "start": 1184,
+        "end": 1240,
+        "sha256": "e13ad10c4194d6839c8ed644ea232d4e4dd0fb1beeddb8ea82e6797933d4950f"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl14/access.rs",
+        "self_ty": "",
+        "name": "IDM_ACP_GROUP_MANAGE_DL9",
+        "kind": "static",
+        "start": 1194,
+        "end": 1250,
+        "sha256": "e13ad10c4194d6839c8ed644ea232d4e4dd0fb1beeddb8ea82e6797933d4950f"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl15/access.rs",
+        "self_ty": "",
+        "name": "IDM_ACP_GROUP_MANAGE_DL9",
+        "kind": "static",
+        "start": 1194,
+        "end": 1250,
+        "sha256": "e13ad10c4194d6839c8ed644ea232d4e4dd0fb1beeddb8ea82e6797933d4950f"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl_1_12/access.rs",
+        "self_ty": "",
+        "name": "IDM_ACP_GROUP_MANAGE_DL9",
+        "kind": "static",
+        "start": 1194,
+        "end": 1250,
+        "sha256": "e13ad10c4194d6839c8ed644ea232d4e4dd0fb1beeddb8ea82e6797933d4950f"
+      }
+    ],
+    "acp_defaults.dl13_oauth2_manage": [
+      {
+        "file": "server/lib/src/migration_data/dl13/access.rs",
+        "self_ty": "",
+        "name": "IDM_ACP_OAUTH2_MANAGE",
+        "kind": "static",
+        "start": 547,
+        "end": 654,
+        "sha256": "e2d19d2baace753b7a3e2398c1b519e3f9d326fffa351ab04110828c17f335ff"
+      }
+    ],
+    "acp_defaults.dl13_acp_manage_v1": [
+      {
+        "file": "server/lib/src/migration_data/dl13/access.rs",
+        "self_ty": "",
+        "name": "IDM_ACP_ACP_MANAGE_V1",
+        "kind": "static",
+        "start": 338,
+        "end": 430,
+        "sha256": "5678b2518b391375b4169b67c40eb54b9eafdc5b93b37c6f55276da52610ba40"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl14/access.rs",
+        "self_ty": "",
+        "name": "IDM_ACP_ACP_MANAGE_V1",
+        "kind": "static",
+        "start": 338,
+        "end": 430,
+        "sha256": "5678b2518b391375b4169b67c40eb54b9eafdc5b93b37c6f55276da52610ba40"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl15/access.rs",
+        "self_ty": "",
+        "name": "IDM_ACP_ACP_MANAGE_V1",
+        "kind": "static",
+        "start": 338,
+        "end": 430,
+        "sha256": "5678b2518b391375b4169b67c40eb54b9eafdc5b93b37c6f55276da52610ba40"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl_1_12/access.rs",
+        "self_ty": "",
+        "name": "IDM_ACP_ACP_MANAGE_V1",
+        "kind": "static",
+        "start": 338,
+        "end": 430,
+        "sha256": "5678b2518b391375b4169b67c40eb54b9eafdc5b93b37c6f55276da52610ba40"
+      }
+    ],
+    "acp_defaults.dl13_application_manage_dl8": [
+      {
+        "file": "server/lib/src/migration_data/dl13/access.rs",
+        "self_ty": "",
+        "name": "IDM_ACP_APPLICATION_MANAGE_DL8",
+        "kind": "static",
+        "start": 1823,
+        "end": 1893,
+        "sha256": "3ba4141d14f5d9bce01f627bc70fb1bd50c3eb35d70de9480f1c257ec1120aba"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl14/access.rs",
+        "self_ty": "",
+        "name": "IDM_ACP_APPLICATION_MANAGE_DL8",
+        "kind": "static",
+        "start": 1833,
+        "end": 1903,
+        "sha256": "3ba4141d14f5d9bce01f627bc70fb1bd50c3eb35d70de9480f1c257ec1120aba"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl15/access.rs",
+        "self_ty": "",
+        "name": "IDM_ACP_APPLICATION_MANAGE_DL8",
+        "kind": "static",
+        "start": 1849,
+        "end": 1919,
+        "sha256": "3ba4141d14f5d9bce01f627bc70fb1bd50c3eb35d70de9480f1c257ec1120aba"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl_1_12/access.rs",
+        "self_ty": "",
+        "name": "IDM_ACP_APPLICATION_MANAGE_DL8",
+        "kind": "static",
+        "start": 1849,
+        "end": 1919,
+        "sha256": "3ba4141d14f5d9bce01f627bc70fb1bd50c3eb35d70de9480f1c257ec1120aba"
+      }
+    ],
+    "acp_defaults.dl13_application_entry_manager_dl8": [
+      {
+        "file": "server/lib/src/migration_data/dl13/access.rs",
+        "self_ty": "",
+        "name": "IDM_ACP_APPLICATION_ENTRY_MANAGER_DL8",
+        "kind": "static",
+        "start": 1895,
+        "end": 1947,
+        "sha256": "cfdcf3dd886f9867971844cb2111c71da09b47f4eba25d03f695749fc627695b"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl14/access.rs",
+        "self_ty": "",
+        "name": "IDM_ACP_APPLICATION_ENTRY_MANAGER_DL8",
+        "kind": "static",
+        "start": 1905,
+        "end": 1957,
+        "sha256": "cfdcf3dd886f9867971844cb2111c71da09b47f4eba25d03f695749fc627695b"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl15/access.rs",
+        "self_ty": "",
+        "name": "IDM_ACP_APPLICATION_ENTRY_MANAGER_DL8",
+        "kind": "static",
+        "start": 1921,
+        "end": 1973,
+        "sha256": "cfdcf3dd886f9867971844cb2111c71da09b47f4eba25d03f695749fc627695b"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl_1_12/access.rs",
+        "self_ty": "",
+        "name": "IDM_ACP_APPLICATION_ENTRY_MANAGER_DL8",
+        "kind": "static",
+        "start": 1921,
+        "end": 1973,
+        "sha256": "cfdcf3dd886f9867971844cb2111c71da09b47f4eba25d03f695749fc627695b"
+      }
+    ],
+    "acp_defaults.dl13_sync_account_manage_v1": [
+      {
+        "file": "server/lib/src/migration_data/dl13/access.rs",
+        "self_ty": "",
+        "name": "IDM_ACP_SYNC_ACCOUNT_MANAGE_V1",
+        "kind": "static",
+        "start": 736,
+        "end": 786,
+        "sha256": "159eaecfc4d872b3add1e9ed555cdd3ea6e391ad1bbbd1babe2daae3f85b99f1"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl14/access.rs",
+        "self_ty": "",
+        "name": "IDM_ACP_SYNC_ACCOUNT_MANAGE_V1",
+        "kind": "static",
+        "start": 743,
+        "end": 793,
+        "sha256": "159eaecfc4d872b3add1e9ed555cdd3ea6e391ad1bbbd1babe2daae3f85b99f1"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl15/access.rs",
+        "self_ty": "",
+        "name": "IDM_ACP_SYNC_ACCOUNT_MANAGE_V1",
+        "kind": "static",
+        "start": 743,
+        "end": 793,
+        "sha256": "159eaecfc4d872b3add1e9ed555cdd3ea6e391ad1bbbd1babe2daae3f85b99f1"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl_1_12/access.rs",
+        "self_ty": "",
+        "name": "IDM_ACP_SYNC_ACCOUNT_MANAGE_V1",
+        "kind": "static",
+        "start": 743,
+        "end": 793,
+        "sha256": "159eaecfc4d872b3add1e9ed555cdd3ea6e391ad1bbbd1babe2daae3f85b99f1"
+      }
+    ],
+    "acp_defaults.dl14_oauth2_manage": [
+      {
+        "file": "server/lib/src/migration_data/dl14/access.rs",
+        "self_ty": "",
+        "name": "IDM_ACP_OAUTH2_MANAGE",
+        "kind": "static",
+        "start": 547,
+        "end": 658,
+        "sha256": "2b20be1093d50dd4fd019d6b2387633320b7d60bd9800893ba37367f693eeef5"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl15/access.rs",
+        "self_ty": "",
+        "name": "IDM_ACP_OAUTH2_MANAGE",
+        "kind": "static",
+        "start": 547,
+        "end": 658,
+        "sha256": "2b20be1093d50dd4fd019d6b2387633320b7d60bd9800893ba37367f693eeef5"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl_1_12/access.rs",
+        "self_ty": "",
+        "name": "IDM_ACP_OAUTH2_MANAGE",
+        "kind": "static",
+        "start": 547,
+        "end": 658,
+        "sha256": "2b20be1093d50dd4fd019d6b2387633320b7d60bd9800893ba37367f693eeef5"
+      }
+    ],
+    "acp_defaults.dl14_domain_admin_dl9": [
+      {
+        "file": "server/lib/src/migration_data/dl14/access.rs",
+        "self_ty": "",
+        "name": "IDM_ACP_DOMAIN_ADMIN_DL9",
+        "kind": "static",
+        "start": 681,
+        "end": 741,
+        "sha256": "d0f320429e2b85a46bdef7851fcfb1cc9ba24fb9321a4728b7d9d9d1129c06b5"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl15/access.rs",
+        "self_ty": "",
+        "name": "IDM_ACP_DOMAIN_ADMIN_DL9",
+        "kind": "static",
+        "start": 681,
+        "end": 741,
+        "sha256": "d0f320429e2b85a46bdef7851fcfb1cc9ba24fb9321a4728b7d9d9d1129c06b5"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl_1_12/access.rs",
+        "self_ty": "",
+        "name": "IDM_ACP_DOMAIN_ADMIN_DL9",
+        "kind": "static",
+        "start": 681,
+        "end": 741,
+        "sha256": "d0f320429e2b85a46bdef7851fcfb1cc9ba24fb9321a4728b7d9d9d1129c06b5"
+      }
     ]
   },
   "meaning": "Exact pinned item dependency reach from canonical theorem types; source correspondence is documented in ports/kanidm/DEVIATIONS.md. Counts source items reached by modeled operations, not behavioral equivalence or proof of omitted I/O, parsing, presentation, library internals, or other documented deviations."

@@ -69,5 +69,19 @@
     "reference_identity": "prove/ports/kanidm/difftest/migration_defaults/identity.json",
     "log": "kanidm-defaults-differential.log",
     "command": "CARGO_TARGET_DIR=/tmp/prove-kanidm-defaults-target cargo test --release --manifest-path prove/ports/kanidm/kernel/Cargo.toml --test migration_defaults -- --nocapture"
+  },
+  "kanidm_acp_defaults": {
+    "passed": true,
+    "tests": 1,
+    "versions": 6,
+    "original_initializers": 66,
+    "distinct_records": 20,
+    "fields_per_record": 15,
+    "upstream_revision": "f608c4fe14dfd8d5df8edeed470bf1fb92060abd",
+    "reference_extractor": "prove/ports/kanidm/difftest/acp_defaults/extract_upstream.py",
+    "reference_metadata": "prove/ports/kanidm/difftest/acp_defaults/metadata.json",
+    "reference_regenerated_identical": true,
+    "log": "kanidm-acp-differential.log",
+    "command": "CARGO_TARGET_DIR=/tmp/prove-kanidm-acp-target cargo test --release --manifest-path prove/ports/kanidm/kernel/Cargo.toml --test acp_defaults -- --nocapture"
   }
 }

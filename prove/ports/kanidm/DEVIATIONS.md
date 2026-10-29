@@ -248,3 +248,26 @@ pinned git object. A minimal typed entry/map/value adapter preserves class, UUID
 description and Unicode-lowercased password-set behavior. Seven release tests
 compare complete entries, all 637 distinct passwords per version, non-ASCII and
 case-fold boundaries, and the version-specific sentinel difference.
+
+### Complete built-in ACP default initializers
+
+The `acp_defaults` port reconstructs all fields of eleven selected built-in
+profiles in each of dl11, dl12, dl13, dl14, dl15, and dl_1_12 at the same pin.
+Twenty distinct records cover all 66 exact initializer spans. Identical full
+records share an owned constructor; differing historical records remain distinct.
+LazyLock initialization is represented by a fresh owned value. Static UTF-8
+strings use byte vectors; UUIDs use their exact u128 value. Attribute and class
+variants use the injective sorted u16 dictionaries in
+`difftest/acp_defaults/metadata.json`, including their pinned canonical strings.
+Receiver tags are 0=None, 1=Group, 2=EntryManager; groups retain every UUID.
+The target retains the complete filter tree in a lossless prefix encoding:
+Eq=0 followed by u16-LE byte length/string for attribute then value; And=1
+and Or=2 followed by u16-LE child count and child encodings; AndNot=3 plus
+child; SelfUuid=4. Empty bytes designate absent target. All selected targets
+are present. This is data construction, not filter evaluation or entry conversion.
+No persistence, global lazy state, allocation behavior or access-engine equivalence
+is claimed. Theorems establish unconditional success and the exact entire record,
+including every default empty permission list, against independent Lean models.
+Pinned differential tests compile all original initializer bodies unchanged with
+minimal enum/UUID/filter carriers and compare every represented field. The portable
+extractor rebuilds those bodies, dictionaries and reference projection from git.

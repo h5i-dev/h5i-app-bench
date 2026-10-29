@@ -1,24 +1,24 @@
 {
-  "recorded_at": "2026-10-29T17:31:27.606558+00:00",
+  "recorded_at": "2026-10-29T18:09:12.134046+00:00",
   "branch": "prove-20k-expansion",
   "baseline": {
     "lines": 10098,
     "properties": 405
   },
   "accepted": {
-    "lines": 16512,
-    "properties": 589
+    "lines": 20765,
+    "properties": 609
   },
   "target_lines": 20000,
-  "remaining_lines": 3488,
+  "remaining_lines": 0,
   "apps": {
     "artifactkeeper": {
       "lines": 1566,
       "properties": 31
     },
     "kanidm": {
-      "lines": 7283,
-      "properties": 122
+      "lines": 11536,
+      "properties": 142
     },
     "nora": {
       "lines": 1467,
@@ -43,8 +43,8 @@
       "extract": "20261029T130949735809Z"
     },
     "kanidm": {
-      "check": "20261029T172157647825Z",
-      "extract": "20261029T172158849985Z"
+      "check": "20261029T180421291839Z",
+      "extract": "20261029T180720498436Z"
     },
     "nora": {
       "check": "20261029T160557354150Z",
@@ -63,6 +63,16 @@
       "extract": "20261029T061611362186Z"
     }
   },
-  "validation": "All six canonical project gates and matching extraction checks fresh; 13 dashboard/accounting/reach harness tests passed.",
-  "goal_complete": false
+  "validation": "All six canonical project gates and matching exact extraction checks fresh and source-matched; official dashboard refreshed; 13 dashboard/accounting/reach/project-detail tests passed.",
+  "goal_complete": false,
+  "target_reached": true,
+  "latest_batch": {
+    "name": "Kanidm built-in ACP default initializers",
+    "lines_added": 4253,
+    "properties_added": 20,
+    "original_initializers": 66,
+    "distinct_records": 20,
+    "versions": 6
+  },
+  "goal_note": "20,000-line target reached by accepted checkpoint; final whole-branch review and main merge not performed in this session (out of scope)."
 }

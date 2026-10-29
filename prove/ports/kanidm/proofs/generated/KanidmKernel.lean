@@ -7463,6 +7463,1587 @@ def account_policy.fold_from
   let acc1 ← account_policy.fold_from_loop policies acc 0#usize
   account_policy.finalize acc1
 
+/-- [kanidm_kernel::acp_defaults::Profile]
+    Source: 'prove/ports/kanidm/kernel/src/acp_defaults.rs', lines 3:0-19:1
+    Visibility: public -/
+structure acp_defaults.Profile where
+  classes : alloc.vec.Vec Std.U16
+  «name» : alloc.vec.Vec Std.U8
+  uuid : Std.U128
+  description : alloc.vec.Vec Std.U8
+  receiver : Std.U8
+  groups : alloc.vec.Vec Std.U128
+  target : alloc.vec.Vec Std.U8
+  search_attrs : alloc.vec.Vec Std.U16
+  modify_present_attrs : alloc.vec.Vec Std.U16
+  modify_removed_attrs : alloc.vec.Vec Std.U16
+  modify_classes : alloc.vec.Vec Std.U16
+  modify_present_classes : alloc.vec.Vec Std.U16
+  modify_remove_classes : alloc.vec.Vec Std.U16
+  create_classes : alloc.vec.Vec Std.U16
+  create_attrs : alloc.vec.Vec Std.U16
+
+/-- [kanidm_kernel::acp_defaults::dl11_oauth2_manage]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_defaults.rs', lines 22:0-40:1
+    Visibility: public -/
+def acp_defaults.dl11_oauth2_manage : Result acp_defaults.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 6#usize [ 15#u16, 3#u16, 0#u16, 1#u16, 2#u16, 4#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 21#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 111#u8,
+        97#u8, 117#u8, 116#u8, 104#u8, 50#u8, 95#u8, 109#u8, 97#u8, 110#u8,
+        97#u8, 103#u8, 101#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 69#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 109#u8, 97#u8, 110#u8,
+        97#u8, 103#u8, 105#u8, 110#u8, 103#u8, 32#u8, 79#u8, 65#u8, 117#u8,
+        116#u8, 104#u8, 50#u8, 32#u8, 114#u8, 101#u8, 115#u8, 111#u8, 117#u8,
+        114#u8, 99#u8, 101#u8, 32#u8, 115#u8, 101#u8, 114#u8, 118#u8, 101#u8,
+        114#u8, 32#u8, 105#u8, 110#u8, 116#u8, 101#u8, 103#u8, 114#u8, 97#u8,
+        116#u8, 105#u8, 111#u8, 110#u8, 115#u8, 46#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 39#u128 ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 76#usize [
+        1#u8, 2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 22#u8, 0#u8, 111#u8, 97#u8, 117#u8, 116#u8, 104#u8, 50#u8,
+        95#u8, 114#u8, 101#u8, 115#u8, 111#u8, 117#u8, 114#u8, 99#u8, 101#u8,
+        95#u8, 115#u8, 101#u8, 114#u8, 118#u8, 101#u8, 114#u8, 3#u8, 2#u8,
+        2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8,
+        8#u8, 0#u8, 114#u8, 101#u8, 99#u8, 121#u8, 99#u8, 108#u8, 101#u8,
+        100#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 9#u8,
+        0#u8, 116#u8, 111#u8, 109#u8, 98#u8, 115#u8, 116#u8, 111#u8, 110#u8,
+        101#u8
+        ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 20#usize [
+        16#u16, 19#u16, 20#u16, 49#u16, 68#u16, 63#u16, 59#u16, 60#u16, 61#u16,
+        62#u16, 56#u16, 50#u16, 53#u16, 54#u16, 51#u16, 57#u16, 31#u16, 64#u16,
+        52#u16, 36#u16
+        ])
+  let v6 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 17#usize [
+        19#u16, 20#u16, 49#u16, 59#u16, 60#u16, 62#u16, 61#u16, 50#u16, 53#u16,
+        54#u16, 51#u16, 57#u16, 31#u16, 64#u16, 52#u16, 34#u16, 35#u16
+        ])
+  let v7 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 19#usize [
+        19#u16, 20#u16, 49#u16, 63#u16, 59#u16, 60#u16, 61#u16, 62#u16, 56#u16,
+        50#u16, 53#u16, 54#u16, 51#u16, 57#u16, 31#u16, 64#u16, 52#u16, 34#u16,
+        35#u16
+        ])
+  let v8 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v9 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 5#usize [ 15#u16, 5#u16, 12#u16, 13#u16, 14#u16 ])
+  let v10 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 17#usize [
+        16#u16, 19#u16, 49#u16, 20#u16, 58#u16, 59#u16, 60#u16, 62#u16, 61#u16,
+        50#u16, 53#u16, 54#u16, 51#u16, 57#u16, 31#u16, 64#u16, 52#u16
+        ])
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933493#u128,
+      description := v2,
+      receiver := 1#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v7,
+      modify_classes := v8,
+      modify_present_classes := v8,
+      modify_remove_classes := v8,
+      create_classes := v9,
+      create_attrs := v10
+    }
+
+/-- [kanidm_kernel::acp_defaults::dl11_acp_manage_v1]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_defaults.rs', lines 43:0-61:1
+    Visibility: public -/
+def acp_defaults.dl11_acp_manage_v1 : Result acp_defaults.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 6#usize [ 15#u16, 3#u16, 0#u16, 1#u16, 2#u16, 4#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 18#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 97#u8,
+        99#u8, 112#u8, 95#u8, 109#u8, 97#u8, 110#u8, 97#u8, 103#u8, 101#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 51#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 97#u8, 99#u8, 99#u8,
+        101#u8, 115#u8, 115#u8, 32#u8, 112#u8, 114#u8, 111#u8, 102#u8, 105#u8,
+        108#u8, 101#u8, 115#u8, 32#u8, 109#u8, 97#u8, 110#u8, 97#u8, 103#u8,
+        101#u8, 109#u8, 101#u8, 110#u8, 116#u8, 46#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 17#u128 ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 76#usize [
+        1#u8, 2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 22#u8, 0#u8, 97#u8, 99#u8, 99#u8, 101#u8, 115#u8, 115#u8,
+        95#u8, 99#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8, 108#u8, 95#u8,
+        112#u8, 114#u8, 111#u8, 102#u8, 105#u8, 108#u8, 101#u8, 3#u8, 2#u8,
+        2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8,
+        8#u8, 0#u8, 114#u8, 101#u8, 99#u8, 121#u8, 99#u8, 108#u8, 101#u8,
+        100#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 9#u8,
+        0#u8, 116#u8, 111#u8, 109#u8, 98#u8, 115#u8, 116#u8, 111#u8, 110#u8,
+        101#u8
+        ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 12#usize [
+        16#u16, 49#u16, 19#u16, 4#u16, 8#u16, 10#u16, 9#u16, 7#u16, 6#u16,
+        5#u16, 3#u16, 2#u16
+        ])
+  let v6 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 5#usize [ 3#u16, 4#u16, 2#u16, 0#u16, 1#u16 ])
+  let v7 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933465#u128,
+      description := v2,
+      receiver := 1#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v5,
+      modify_removed_attrs := v5,
+      modify_classes := v6,
+      modify_present_classes := v7,
+      modify_remove_classes := v7,
+      create_classes := v6,
+      create_attrs := v5
+    }
+
+/-- [kanidm_kernel::acp_defaults::dl11_application_manage_dl8]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_defaults.rs', lines 64:0-82:1
+    Visibility: public -/
+def acp_defaults.dl11_application_manage_dl8
+  : Result acp_defaults.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 6#usize [ 15#u16, 3#u16, 0#u16, 1#u16, 2#u16, 4#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 26#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 97#u8,
+        112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8, 105#u8, 111#u8,
+        110#u8, 95#u8, 109#u8, 97#u8, 110#u8, 97#u8, 103#u8, 101#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 75#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 99#u8, 114#u8, 101#u8,
+        97#u8, 116#u8, 105#u8, 110#u8, 103#u8, 32#u8, 97#u8, 110#u8, 100#u8,
+        32#u8, 100#u8, 101#u8, 108#u8, 101#u8, 116#u8, 105#u8, 110#u8, 103#u8,
+        32#u8, 97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8,
+        105#u8, 111#u8, 110#u8, 115#u8, 32#u8, 105#u8, 110#u8, 32#u8, 116#u8,
+        104#u8, 101#u8, 32#u8, 100#u8, 105#u8, 114#u8, 101#u8, 99#u8, 116#u8,
+        111#u8, 114#u8, 121#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 80#u128 ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 65#usize [
+        1#u8, 2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 11#u8, 0#u8, 97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8,
+        97#u8, 116#u8, 105#u8, 111#u8, 110#u8, 3#u8, 2#u8, 2#u8, 0#u8, 0#u8,
+        5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 8#u8, 0#u8, 114#u8,
+        101#u8, 99#u8, 121#u8, 99#u8, 108#u8, 101#u8, 100#u8, 0#u8, 5#u8, 0#u8,
+        99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 9#u8, 0#u8, 116#u8, 111#u8,
+        109#u8, 98#u8, 115#u8, 116#u8, 111#u8, 110#u8, 101#u8
+        ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 11#usize [
+        16#u16, 80#u16, 49#u16, 19#u16, 20#u16, 43#u16, 78#u16, 12#u16, 79#u16,
+        41#u16, 29#u16
+        ])
+  let v6 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 8#usize [
+        49#u16, 19#u16, 20#u16, 43#u16, 78#u16, 12#u16, 41#u16, 29#u16
+        ])
+  let v7 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 9#usize [
+        49#u16, 19#u16, 20#u16, 43#u16, 78#u16, 12#u16, 79#u16, 41#u16, 29#u16
+        ])
+  let v8 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v9 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 4#usize [ 15#u16, 5#u16, 17#u16, 7#u16 ])
+  let v10 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 8#usize [
+        16#u16, 80#u16, 49#u16, 19#u16, 20#u16, 43#u16, 41#u16, 29#u16
+        ])
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933555#u128,
+      description := v2,
+      receiver := 1#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v7,
+      modify_classes := v8,
+      modify_present_classes := v8,
+      modify_remove_classes := v8,
+      create_classes := v9,
+      create_attrs := v10
+    }
+
+/-- [kanidm_kernel::acp_defaults::dl11_domain_admin_dl9]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_defaults.rs', lines 85:0-103:1
+    Visibility: public -/
+def acp_defaults.dl11_domain_admin_dl9 : Result acp_defaults.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 4#usize [ 15#u16, 3#u16, 2#u16, 4#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 20#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 100#u8,
+        111#u8, 109#u8, 97#u8, 105#u8, 110#u8, 95#u8, 97#u8, 100#u8, 109#u8,
+        105#u8, 110#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 67#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 103#u8, 114#u8, 97#u8,
+        110#u8, 116#u8, 105#u8, 110#u8, 103#u8, 32#u8, 100#u8, 111#u8, 109#u8,
+        97#u8, 105#u8, 110#u8, 32#u8, 105#u8, 110#u8, 102#u8, 111#u8, 32#u8,
+        97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 105#u8, 115#u8, 116#u8, 114#u8,
+        97#u8, 116#u8, 105#u8, 111#u8, 110#u8, 32#u8, 108#u8, 111#u8, 99#u8,
+        97#u8, 108#u8, 108#u8, 121#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 32#u128 ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 89#usize [
+        1#u8, 2#u8, 0#u8, 0#u8, 4#u8, 0#u8, 117#u8, 117#u8, 105#u8, 100#u8,
+        36#u8, 0#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8,
+        45#u8, 48#u8, 48#u8, 48#u8, 48#u8, 45#u8, 48#u8, 48#u8, 48#u8, 48#u8,
+        45#u8, 48#u8, 48#u8, 48#u8, 48#u8, 45#u8, 102#u8, 102#u8, 102#u8,
+        102#u8, 102#u8, 102#u8, 48#u8, 48#u8, 48#u8, 48#u8, 50#u8, 53#u8, 3#u8,
+        2#u8, 2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 8#u8, 0#u8, 114#u8, 101#u8, 99#u8, 121#u8, 99#u8, 108#u8,
+        101#u8, 100#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8,
+        9#u8, 0#u8, 116#u8, 111#u8, 109#u8, 98#u8, 115#u8, 116#u8, 111#u8,
+        110#u8, 101#u8
+        ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 14#usize [
+        16#u16, 49#u16, 80#u16, 22#u16, 23#u16, 25#u16, 24#u16, 38#u16, 26#u16,
+        27#u16, 36#u16, 37#u16, 81#u16, 31#u16
+        ])
+  let v6 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 9#usize [
+        23#u16, 24#u16, 38#u16, 26#u16, 22#u16, 37#u16, 34#u16, 35#u16, 31#u16
+        ])
+  let v7 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 9#usize [
+        23#u16, 26#u16, 24#u16, 38#u16, 22#u16, 37#u16, 34#u16, 35#u16, 31#u16
+        ])
+  let v8 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933478#u128,
+      description := v2,
+      receiver := 1#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v7,
+      modify_classes := v8,
+      modify_present_classes := v8,
+      modify_remove_classes := v8,
+      create_classes := v8,
+      create_attrs := v8
+    }
+
+/-- [kanidm_kernel::acp_defaults::dl11_service_account_entry_manager_v1]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_defaults.rs', lines 106:0-124:1
+    Visibility: public -/
+def acp_defaults.dl11_service_account_entry_manager_v1
+  : Result acp_defaults.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 4#usize [ 15#u16, 3#u16, 2#u16, 4#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 37#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 115#u8,
+        101#u8, 114#u8, 118#u8, 105#u8, 99#u8, 101#u8, 95#u8, 97#u8, 99#u8,
+        99#u8, 111#u8, 117#u8, 110#u8, 116#u8, 95#u8, 101#u8, 110#u8, 116#u8,
+        114#u8, 121#u8, 95#u8, 109#u8, 97#u8, 110#u8, 97#u8, 103#u8, 101#u8,
+        114#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 74#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 97#u8, 108#u8, 108#u8,
+        111#u8, 119#u8, 105#u8, 110#u8, 103#u8, 32#u8, 101#u8, 110#u8, 116#u8,
+        114#u8, 121#u8, 32#u8, 109#u8, 97#u8, 110#u8, 97#u8, 103#u8, 101#u8,
+        114#u8, 115#u8, 32#u8, 116#u8, 111#u8, 32#u8, 109#u8, 111#u8, 100#u8,
+        105#u8, 102#u8, 121#u8, 32#u8, 115#u8, 101#u8, 114#u8, 118#u8, 105#u8,
+        99#u8, 101#u8, 32#u8, 97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8,
+        116#u8, 115#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U128)
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 86#usize [
+        1#u8, 3#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 7#u8, 0#u8, 97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8,
+        116#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 15#u8,
+        0#u8, 115#u8, 101#u8, 114#u8, 118#u8, 105#u8, 99#u8, 101#u8, 95#u8,
+        97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8, 3#u8, 2#u8, 2#u8,
+        0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 8#u8,
+        0#u8, 114#u8, 101#u8, 99#u8, 121#u8, 99#u8, 108#u8, 101#u8, 100#u8,
+        0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 9#u8, 0#u8,
+        116#u8, 111#u8, 109#u8, 98#u8, 115#u8, 116#u8, 111#u8, 110#u8, 101#u8
+        ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 16#usize [
+        16#u16, 49#u16, 68#u16, 80#u16, 29#u16, 20#u16, 69#u16, 30#u16, 42#u16,
+        78#u16, 65#u16, 66#u16, 0#u16, 1#u16, 12#u16, 79#u16
+        ])
+  let v6 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 6#usize [ 20#u16, 69#u16, 66#u16, 0#u16, 1#u16, 12#u16 ])
+  let v7 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 9#usize [
+        20#u16, 69#u16, 66#u16, 78#u16, 65#u16, 0#u16, 1#u16, 12#u16, 79#u16
+        ])
+  let v8 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933537#u128,
+      description := v2,
+      receiver := 2#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v7,
+      modify_classes := v8,
+      modify_present_classes := v8,
+      modify_remove_classes := v8,
+      create_classes := v8,
+      create_attrs := v8
+    }
+
+/-- [kanidm_kernel::acp_defaults::dl11_schema_write_attrs_v1]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_defaults.rs', lines 127:0-145:1
+    Visibility: public -/
+def acp_defaults.dl11_schema_write_attrs_v1 : Result acp_defaults.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 5#usize [ 15#u16, 3#u16, 0#u16, 2#u16, 4#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 26#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 115#u8,
+        99#u8, 104#u8, 101#u8, 109#u8, 97#u8, 95#u8, 119#u8, 114#u8, 105#u8,
+        116#u8, 101#u8, 95#u8, 97#u8, 116#u8, 116#u8, 114#u8, 115#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 56#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 109#u8, 97#u8, 110#u8,
+        97#u8, 103#u8, 101#u8, 109#u8, 101#u8, 110#u8, 116#u8, 32#u8, 111#u8,
+        102#u8, 32#u8, 115#u8, 99#u8, 104#u8, 101#u8, 109#u8, 97#u8, 32#u8,
+        97#u8, 116#u8, 116#u8, 114#u8, 105#u8, 98#u8, 117#u8, 116#u8, 101#u8,
+        115#u8, 46#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 16#u128 ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 67#usize [
+        1#u8, 2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 13#u8, 0#u8, 97#u8, 116#u8, 116#u8, 114#u8, 105#u8, 98#u8,
+        117#u8, 116#u8, 101#u8, 116#u8, 121#u8, 112#u8, 101#u8, 3#u8, 2#u8,
+        2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8,
+        8#u8, 0#u8, 114#u8, 101#u8, 99#u8, 121#u8, 99#u8, 108#u8, 101#u8,
+        100#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 9#u8,
+        0#u8, 116#u8, 111#u8, 109#u8, 98#u8, 115#u8, 116#u8, 111#u8, 110#u8,
+        101#u8
+        ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 8#usize [
+        16#u16, 19#u16, 32#u16, 77#u16, 47#u16, 13#u16, 74#u16, 80#u16
+        ])
+  let v6 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 5#usize [ 19#u16, 32#u16, 77#u16, 47#u16, 74#u16 ])
+  let v7 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v8 ← alloc.vec.FromVecArray.from (Array.make 2#usize [ 15#u16, 8#u16 ])
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933464#u128,
+      description := v2,
+      receiver := 1#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v6,
+      modify_classes := v7,
+      modify_present_classes := v7,
+      modify_remove_classes := v7,
+      create_classes := v8,
+      create_attrs := v5
+    }
+
+/-- [kanidm_kernel::acp_defaults::dl11_group_manage_dl9]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_defaults.rs', lines 148:0-166:1
+    Visibility: public -/
+def acp_defaults.dl11_group_manage_dl9 : Result acp_defaults.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 6#usize [ 15#u16, 3#u16, 0#u16, 1#u16, 2#u16, 4#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 20#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 103#u8,
+        114#u8, 111#u8, 117#u8, 112#u8, 95#u8, 109#u8, 97#u8, 110#u8, 97#u8,
+        103#u8, 101#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 69#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 99#u8, 114#u8, 101#u8,
+        97#u8, 116#u8, 105#u8, 110#u8, 103#u8, 32#u8, 97#u8, 110#u8, 100#u8,
+        32#u8, 100#u8, 101#u8, 108#u8, 101#u8, 116#u8, 105#u8, 110#u8, 103#u8,
+        32#u8, 103#u8, 114#u8, 111#u8, 117#u8, 112#u8, 115#u8, 32#u8, 105#u8,
+        110#u8, 32#u8, 116#u8, 104#u8, 101#u8, 32#u8, 100#u8, 105#u8, 114#u8,
+        101#u8, 99#u8, 116#u8, 111#u8, 114#u8, 121#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 21#u128 ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 108#usize [
+        1#u8, 2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 5#u8, 0#u8, 103#u8, 114#u8, 111#u8, 117#u8, 112#u8, 3#u8, 2#u8,
+        3#u8, 0#u8, 0#u8, 8#u8, 0#u8, 109#u8, 101#u8, 109#u8, 98#u8, 101#u8,
+        114#u8, 111#u8, 102#u8, 36#u8, 0#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8,
+        48#u8, 48#u8, 48#u8, 45#u8, 48#u8, 48#u8, 48#u8, 48#u8, 45#u8, 48#u8,
+        48#u8, 48#u8, 48#u8, 45#u8, 48#u8, 48#u8, 48#u8, 48#u8, 45#u8, 48#u8,
+        48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 49#u8, 48#u8, 48#u8,
+        48#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 8#u8,
+        0#u8, 114#u8, 101#u8, 99#u8, 121#u8, 99#u8, 108#u8, 101#u8, 100#u8,
+        0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 9#u8, 0#u8,
+        116#u8, 111#u8, 109#u8, 98#u8, 115#u8, 116#u8, 111#u8, 110#u8, 101#u8
+        ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 10#usize [
+        16#u16, 49#u16, 80#u16, 68#u16, 80#u16, 19#u16, 43#u16, 45#u16, 28#u16,
+        29#u16
+        ])
+  let v6 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 5#usize [ 49#u16, 19#u16, 43#u16, 45#u16, 29#u16 ])
+  let v7 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v8 ←
+    alloc.vec.FromVecArray.from (Array.make 2#usize [ 15#u16, 11#u16 ])
+  let v9 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 7#usize [
+        16#u16, 49#u16, 80#u16, 19#u16, 43#u16, 45#u16, 29#u16
+        ])
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933474#u128,
+      description := v2,
+      receiver := 1#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v6,
+      modify_classes := v7,
+      modify_present_classes := v7,
+      modify_remove_classes := v7,
+      create_classes := v8,
+      create_attrs := v9
+    }
+
+/-- [kanidm_kernel::acp_defaults::dl11_group_account_policy_manage_dl8]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_defaults.rs', lines 169:0-187:1
+    Visibility: public -/
+def acp_defaults.dl11_group_account_policy_manage_dl8
+  : Result acp_defaults.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 4#usize [ 15#u16, 3#u16, 2#u16, 4#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 35#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 103#u8,
+        114#u8, 111#u8, 117#u8, 112#u8, 95#u8, 97#u8, 99#u8, 99#u8, 111#u8,
+        117#u8, 110#u8, 116#u8, 95#u8, 112#u8, 111#u8, 108#u8, 105#u8, 99#u8,
+        121#u8, 95#u8, 109#u8, 97#u8, 110#u8, 97#u8, 103#u8, 101#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 62#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 109#u8, 97#u8, 110#u8,
+        97#u8, 103#u8, 101#u8, 109#u8, 101#u8, 110#u8, 116#u8, 32#u8, 111#u8,
+        102#u8, 32#u8, 97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8,
+        32#u8, 112#u8, 111#u8, 108#u8, 105#u8, 99#u8, 121#u8, 32#u8, 111#u8,
+        110#u8, 32#u8, 103#u8, 114#u8, 111#u8, 117#u8, 112#u8, 115#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 71#u128 ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 59#usize [
+        1#u8, 2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 5#u8, 0#u8, 103#u8, 114#u8, 111#u8, 117#u8, 112#u8, 3#u8, 2#u8,
+        2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8,
+        8#u8, 0#u8, 114#u8, 101#u8, 99#u8, 121#u8, 99#u8, 108#u8, 101#u8,
+        100#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 9#u8,
+        0#u8, 116#u8, 111#u8, 109#u8, 98#u8, 115#u8, 116#u8, 111#u8, 110#u8,
+        101#u8
+        ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 11#usize [
+        16#u16, 49#u16, 80#u16, 15#u16, 14#u16, 18#u16, 67#u16, 82#u16, 40#u16,
+        39#u16, 11#u16
+        ])
+  let v6 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 9#usize [
+        16#u16, 15#u16, 14#u16, 18#u16, 67#u16, 82#u16, 40#u16, 39#u16, 11#u16
+        ])
+  let v7 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 6#u16 ])
+  let v8 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933513#u128,
+      description := v2,
+      receiver := 1#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v6,
+      modify_classes := v7,
+      modify_present_classes := v8,
+      modify_remove_classes := v8,
+      create_classes := v8,
+      create_attrs := v8
+    }
+
+/-- [kanidm_kernel::acp_defaults::dl11_schema_write_classes_v1]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_defaults.rs', lines 190:0-208:1
+    Visibility: public -/
+def acp_defaults.dl11_schema_write_classes_v1
+  : Result acp_defaults.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 5#usize [ 15#u16, 3#u16, 0#u16, 2#u16, 4#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 28#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 115#u8,
+        99#u8, 104#u8, 101#u8, 109#u8, 97#u8, 95#u8, 119#u8, 114#u8, 105#u8,
+        116#u8, 101#u8, 95#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 101#u8,
+        115#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 53#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 109#u8, 97#u8, 110#u8,
+        97#u8, 103#u8, 101#u8, 109#u8, 101#u8, 110#u8, 116#u8, 32#u8, 111#u8,
+        102#u8, 32#u8, 115#u8, 99#u8, 104#u8, 101#u8, 109#u8, 97#u8, 32#u8,
+        99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 101#u8, 115#u8, 46#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 16#u128 ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 63#usize [
+        1#u8, 2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 9#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 116#u8,
+        121#u8, 112#u8, 101#u8, 3#u8, 2#u8, 2#u8, 0#u8, 0#u8, 5#u8, 0#u8,
+        99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 8#u8, 0#u8, 114#u8, 101#u8,
+        99#u8, 121#u8, 99#u8, 108#u8, 101#u8, 100#u8, 0#u8, 5#u8, 0#u8, 99#u8,
+        108#u8, 97#u8, 115#u8, 115#u8, 9#u8, 0#u8, 116#u8, 111#u8, 109#u8,
+        98#u8, 115#u8, 116#u8, 111#u8, 110#u8, 101#u8
+        ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 8#usize [
+        16#u16, 17#u16, 19#u16, 75#u16, 44#u16, 76#u16, 48#u16, 80#u16
+        ])
+  let v6 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 4#usize [ 49#u16, 19#u16, 44#u16, 48#u16 ])
+  let v7 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 4#usize [ 16#u16, 19#u16, 44#u16, 48#u16 ])
+  let v8 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v9 ←
+    alloc.vec.FromVecArray.from (Array.make 2#usize [ 15#u16, 10#u16 ])
+  let v10 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 6#usize [ 16#u16, 17#u16, 19#u16, 44#u16, 48#u16, 80#u16 ])
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933472#u128,
+      description := v2,
+      receiver := 1#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v7,
+      modify_classes := v8,
+      modify_present_classes := v8,
+      modify_remove_classes := v8,
+      create_classes := v9,
+      create_attrs := v10
+    }
+
+/-- [kanidm_kernel::acp_defaults::dl11_application_entry_manager_dl8]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_defaults.rs', lines 211:0-229:1
+    Visibility: public -/
+def acp_defaults.dl11_application_entry_manager_dl8
+  : Result acp_defaults.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 4#usize [ 15#u16, 3#u16, 2#u16, 4#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 33#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 97#u8,
+        112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8, 105#u8, 111#u8,
+        110#u8, 95#u8, 101#u8, 110#u8, 116#u8, 114#u8, 121#u8, 95#u8, 109#u8,
+        97#u8, 110#u8, 97#u8, 103#u8, 101#u8, 114#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 77#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 97#u8, 108#u8, 108#u8,
+        111#u8, 119#u8, 105#u8, 110#u8, 103#u8, 32#u8, 69#u8, 110#u8, 116#u8,
+        114#u8, 121#u8, 77#u8, 97#u8, 110#u8, 97#u8, 103#u8, 101#u8, 114#u8,
+        32#u8, 116#u8, 111#u8, 32#u8, 114#u8, 101#u8, 97#u8, 100#u8, 32#u8,
+        97#u8, 110#u8, 100#u8, 32#u8, 109#u8, 111#u8, 100#u8, 105#u8, 102#u8,
+        121#u8, 32#u8, 97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8,
+        116#u8, 105#u8, 111#u8, 110#u8, 115#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U128)
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 65#usize [
+        1#u8, 2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 11#u8, 0#u8, 97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8,
+        97#u8, 116#u8, 105#u8, 111#u8, 110#u8, 3#u8, 2#u8, 2#u8, 0#u8, 0#u8,
+        5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 8#u8, 0#u8, 114#u8,
+        101#u8, 99#u8, 121#u8, 99#u8, 108#u8, 101#u8, 100#u8, 0#u8, 5#u8, 0#u8,
+        99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 9#u8, 0#u8, 116#u8, 111#u8,
+        109#u8, 98#u8, 115#u8, 116#u8, 111#u8, 110#u8, 101#u8
+        ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 11#usize [
+        16#u16, 80#u16, 49#u16, 20#u16, 43#u16, 78#u16, 12#u16, 79#u16, 19#u16,
+        41#u16, 29#u16
+        ])
+  let v6 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 7#usize [
+        49#u16, 19#u16, 20#u16, 43#u16, 78#u16, 12#u16, 41#u16
+        ])
+  let v7 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 8#usize [
+        49#u16, 19#u16, 20#u16, 43#u16, 78#u16, 12#u16, 79#u16, 41#u16
+        ])
+  let v8 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933554#u128,
+      description := v2,
+      receiver := 2#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v7,
+      modify_classes := v8,
+      modify_present_classes := v8,
+      modify_remove_classes := v8,
+      create_classes := v8,
+      create_attrs := v8
+    }
+
+/-- [kanidm_kernel::acp_defaults::dl11_sync_account_manage_v1]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_defaults.rs', lines 232:0-250:1
+    Visibility: public -/
+def acp_defaults.dl11_sync_account_manage_v1
+  : Result acp_defaults.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 6#usize [ 15#u16, 3#u16, 0#u16, 1#u16, 2#u16, 4#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 27#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 115#u8,
+        121#u8, 110#u8, 99#u8, 95#u8, 97#u8, 99#u8, 99#u8, 111#u8, 117#u8,
+        110#u8, 116#u8, 95#u8, 109#u8, 97#u8, 110#u8, 97#u8, 103#u8, 101#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 75#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 109#u8, 97#u8, 110#u8,
+        97#u8, 103#u8, 105#u8, 110#u8, 103#u8, 32#u8, 73#u8, 68#u8, 77#u8,
+        32#u8, 115#u8, 121#u8, 110#u8, 99#u8, 104#u8, 114#u8, 111#u8, 110#u8,
+        105#u8, 115#u8, 97#u8, 116#u8, 105#u8, 111#u8, 110#u8, 32#u8, 97#u8,
+        99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8, 115#u8, 32#u8, 47#u8,
+        32#u8, 99#u8, 111#u8, 110#u8, 110#u8, 101#u8, 99#u8, 116#u8, 105#u8,
+        111#u8, 110#u8, 115#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 32#u128 ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 66#usize [
+        1#u8, 2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 12#u8, 0#u8, 115#u8, 121#u8, 110#u8, 99#u8, 95#u8, 97#u8,
+        99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8, 3#u8, 2#u8, 2#u8, 0#u8,
+        0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 8#u8, 0#u8,
+        114#u8, 101#u8, 99#u8, 121#u8, 99#u8, 108#u8, 101#u8, 100#u8, 0#u8,
+        5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 9#u8, 0#u8, 116#u8,
+        111#u8, 109#u8, 98#u8, 115#u8, 116#u8, 111#u8, 110#u8, 101#u8
+        ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 9#usize [
+        16#u16, 80#u16, 49#u16, 19#u16, 33#u16, 72#u16, 71#u16, 73#u16, 70#u16
+        ])
+  let v6 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 5#usize [ 49#u16, 19#u16, 72#u16, 71#u16, 73#u16 ])
+  let v7 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 7#usize [
+        49#u16, 19#u16, 33#u16, 72#u16, 71#u16, 70#u16, 73#u16
+        ])
+  let v8 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v9 ←
+    alloc.vec.FromVecArray.from (Array.make 2#usize [ 15#u16, 18#u16 ])
+  let v10 ←
+    alloc.vec.FromVecArray.from (Array.make 3#usize [ 16#u16, 49#u16, 19#u16 ])
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933541#u128,
+      description := v2,
+      receiver := 1#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v7,
+      modify_classes := v8,
+      modify_present_classes := v8,
+      modify_remove_classes := v8,
+      create_classes := v9,
+      create_attrs := v10
+    }
+
+/-- [kanidm_kernel::acp_defaults::dl12_service_account_entry_manager_v1]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_defaults.rs', lines 253:0-271:1
+    Visibility: public -/
+def acp_defaults.dl12_service_account_entry_manager_v1
+  : Result acp_defaults.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 4#usize [ 15#u16, 3#u16, 2#u16, 4#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 37#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 115#u8,
+        101#u8, 114#u8, 118#u8, 105#u8, 99#u8, 101#u8, 95#u8, 97#u8, 99#u8,
+        99#u8, 111#u8, 117#u8, 110#u8, 116#u8, 95#u8, 101#u8, 110#u8, 116#u8,
+        114#u8, 121#u8, 95#u8, 109#u8, 97#u8, 110#u8, 97#u8, 103#u8, 101#u8,
+        114#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 74#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 97#u8, 108#u8, 108#u8,
+        111#u8, 119#u8, 105#u8, 110#u8, 103#u8, 32#u8, 101#u8, 110#u8, 116#u8,
+        114#u8, 121#u8, 32#u8, 109#u8, 97#u8, 110#u8, 97#u8, 103#u8, 101#u8,
+        114#u8, 115#u8, 32#u8, 116#u8, 111#u8, 32#u8, 109#u8, 111#u8, 100#u8,
+        105#u8, 102#u8, 121#u8, 32#u8, 115#u8, 101#u8, 114#u8, 118#u8, 105#u8,
+        99#u8, 101#u8, 32#u8, 97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8,
+        116#u8, 115#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U128)
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 86#usize [
+        1#u8, 3#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 7#u8, 0#u8, 97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8,
+        116#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 15#u8,
+        0#u8, 115#u8, 101#u8, 114#u8, 118#u8, 105#u8, 99#u8, 101#u8, 95#u8,
+        97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8, 3#u8, 2#u8, 2#u8,
+        0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 8#u8,
+        0#u8, 114#u8, 101#u8, 99#u8, 121#u8, 99#u8, 108#u8, 101#u8, 100#u8,
+        0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 9#u8, 0#u8,
+        116#u8, 111#u8, 109#u8, 98#u8, 115#u8, 116#u8, 111#u8, 110#u8, 101#u8
+        ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 17#usize [
+        16#u16, 49#u16, 68#u16, 80#u16, 29#u16, 20#u16, 69#u16, 30#u16, 42#u16,
+        78#u16, 65#u16, 66#u16, 0#u16, 1#u16, 12#u16, 79#u16, 43#u16
+        ])
+  let v6 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 6#usize [ 20#u16, 69#u16, 66#u16, 0#u16, 1#u16, 12#u16 ])
+  let v7 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 9#usize [
+        20#u16, 69#u16, 66#u16, 78#u16, 65#u16, 0#u16, 1#u16, 12#u16, 79#u16
+        ])
+  let v8 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933537#u128,
+      description := v2,
+      receiver := 2#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v7,
+      modify_classes := v8,
+      modify_present_classes := v8,
+      modify_remove_classes := v8,
+      create_classes := v8,
+      create_attrs := v8
+    }
+
+/-- [kanidm_kernel::acp_defaults::dl12_group_manage_dl9]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_defaults.rs', lines 274:0-292:1
+    Visibility: public -/
+def acp_defaults.dl12_group_manage_dl9 : Result acp_defaults.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 6#usize [ 15#u16, 3#u16, 0#u16, 1#u16, 2#u16, 4#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 20#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 103#u8,
+        114#u8, 111#u8, 117#u8, 112#u8, 95#u8, 109#u8, 97#u8, 110#u8, 97#u8,
+        103#u8, 101#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 69#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 99#u8, 114#u8, 101#u8,
+        97#u8, 116#u8, 105#u8, 110#u8, 103#u8, 32#u8, 97#u8, 110#u8, 100#u8,
+        32#u8, 100#u8, 101#u8, 108#u8, 101#u8, 116#u8, 105#u8, 110#u8, 103#u8,
+        32#u8, 103#u8, 114#u8, 111#u8, 117#u8, 112#u8, 115#u8, 32#u8, 105#u8,
+        110#u8, 32#u8, 116#u8, 104#u8, 101#u8, 32#u8, 100#u8, 105#u8, 114#u8,
+        101#u8, 99#u8, 116#u8, 111#u8, 114#u8, 121#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 21#u128 ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 108#usize [
+        1#u8, 2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 5#u8, 0#u8, 103#u8, 114#u8, 111#u8, 117#u8, 112#u8, 3#u8, 2#u8,
+        3#u8, 0#u8, 0#u8, 8#u8, 0#u8, 109#u8, 101#u8, 109#u8, 98#u8, 101#u8,
+        114#u8, 111#u8, 102#u8, 36#u8, 0#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8,
+        48#u8, 48#u8, 48#u8, 45#u8, 48#u8, 48#u8, 48#u8, 48#u8, 45#u8, 48#u8,
+        48#u8, 48#u8, 48#u8, 45#u8, 48#u8, 48#u8, 48#u8, 48#u8, 45#u8, 48#u8,
+        48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 49#u8, 48#u8, 48#u8,
+        48#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 8#u8,
+        0#u8, 114#u8, 101#u8, 99#u8, 121#u8, 99#u8, 108#u8, 101#u8, 100#u8,
+        0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 9#u8, 0#u8,
+        116#u8, 111#u8, 109#u8, 98#u8, 115#u8, 116#u8, 111#u8, 110#u8, 101#u8
+        ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 11#usize [
+        16#u16, 49#u16, 80#u16, 68#u16, 80#u16, 19#u16, 43#u16, 45#u16, 46#u16,
+        28#u16, 29#u16
+        ])
+  let v6 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 5#usize [ 49#u16, 19#u16, 43#u16, 45#u16, 29#u16 ])
+  let v7 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v8 ←
+    alloc.vec.FromVecArray.from (Array.make 2#usize [ 15#u16, 11#u16 ])
+  let v9 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 7#usize [
+        16#u16, 49#u16, 80#u16, 19#u16, 43#u16, 45#u16, 29#u16
+        ])
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933474#u128,
+      description := v2,
+      receiver := 1#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v6,
+      modify_classes := v7,
+      modify_present_classes := v7,
+      modify_remove_classes := v7,
+      create_classes := v8,
+      create_attrs := v9
+    }
+
+/-- [kanidm_kernel::acp_defaults::dl13_oauth2_manage]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_defaults.rs', lines 295:0-313:1
+    Visibility: public -/
+def acp_defaults.dl13_oauth2_manage : Result acp_defaults.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 6#usize [ 15#u16, 3#u16, 0#u16, 1#u16, 2#u16, 4#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 21#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 111#u8,
+        97#u8, 117#u8, 116#u8, 104#u8, 50#u8, 95#u8, 109#u8, 97#u8, 110#u8,
+        97#u8, 103#u8, 101#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 69#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 109#u8, 97#u8, 110#u8,
+        97#u8, 103#u8, 105#u8, 110#u8, 103#u8, 32#u8, 79#u8, 65#u8, 117#u8,
+        116#u8, 104#u8, 50#u8, 32#u8, 114#u8, 101#u8, 115#u8, 111#u8, 117#u8,
+        114#u8, 99#u8, 101#u8, 32#u8, 115#u8, 101#u8, 114#u8, 118#u8, 101#u8,
+        114#u8, 32#u8, 105#u8, 110#u8, 116#u8, 101#u8, 103#u8, 114#u8, 97#u8,
+        116#u8, 105#u8, 111#u8, 110#u8, 115#u8, 46#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 39#u128 ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 76#usize [
+        1#u8, 2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 22#u8, 0#u8, 111#u8, 97#u8, 117#u8, 116#u8, 104#u8, 50#u8,
+        95#u8, 114#u8, 101#u8, 115#u8, 111#u8, 117#u8, 114#u8, 99#u8, 101#u8,
+        95#u8, 115#u8, 101#u8, 114#u8, 118#u8, 101#u8, 114#u8, 3#u8, 2#u8,
+        2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8,
+        8#u8, 0#u8, 114#u8, 101#u8, 99#u8, 121#u8, 99#u8, 108#u8, 101#u8,
+        100#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 9#u8,
+        0#u8, 116#u8, 111#u8, 109#u8, 98#u8, 115#u8, 116#u8, 111#u8, 110#u8,
+        101#u8
+        ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 21#usize [
+        16#u16, 19#u16, 20#u16, 49#u16, 80#u16, 68#u16, 63#u16, 59#u16, 60#u16,
+        61#u16, 62#u16, 56#u16, 50#u16, 53#u16, 54#u16, 51#u16, 57#u16, 31#u16,
+        64#u16, 52#u16, 36#u16
+        ])
+  let v6 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 17#usize [
+        19#u16, 20#u16, 49#u16, 59#u16, 60#u16, 62#u16, 61#u16, 50#u16, 53#u16,
+        54#u16, 51#u16, 57#u16, 31#u16, 64#u16, 52#u16, 34#u16, 35#u16
+        ])
+  let v7 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 19#usize [
+        19#u16, 20#u16, 49#u16, 63#u16, 59#u16, 60#u16, 61#u16, 62#u16, 56#u16,
+        50#u16, 53#u16, 54#u16, 51#u16, 57#u16, 31#u16, 64#u16, 52#u16, 34#u16,
+        35#u16
+        ])
+  let v8 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v9 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 5#usize [ 15#u16, 5#u16, 12#u16, 13#u16, 14#u16 ])
+  let v10 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 17#usize [
+        16#u16, 19#u16, 49#u16, 20#u16, 58#u16, 59#u16, 60#u16, 62#u16, 61#u16,
+        50#u16, 53#u16, 54#u16, 51#u16, 57#u16, 31#u16, 64#u16, 52#u16
+        ])
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933493#u128,
+      description := v2,
+      receiver := 1#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v7,
+      modify_classes := v8,
+      modify_present_classes := v8,
+      modify_remove_classes := v8,
+      create_classes := v9,
+      create_attrs := v10
+    }
+
+/-- [kanidm_kernel::acp_defaults::dl13_acp_manage_v1]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_defaults.rs', lines 316:0-334:1
+    Visibility: public -/
+def acp_defaults.dl13_acp_manage_v1 : Result acp_defaults.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 6#usize [ 15#u16, 3#u16, 0#u16, 1#u16, 2#u16, 4#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 18#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 97#u8,
+        99#u8, 112#u8, 95#u8, 109#u8, 97#u8, 110#u8, 97#u8, 103#u8, 101#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 51#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 97#u8, 99#u8, 99#u8,
+        101#u8, 115#u8, 115#u8, 32#u8, 112#u8, 114#u8, 111#u8, 102#u8, 105#u8,
+        108#u8, 101#u8, 115#u8, 32#u8, 109#u8, 97#u8, 110#u8, 97#u8, 103#u8,
+        101#u8, 109#u8, 101#u8, 110#u8, 116#u8, 46#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 17#u128 ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 76#usize [
+        1#u8, 2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 22#u8, 0#u8, 97#u8, 99#u8, 99#u8, 101#u8, 115#u8, 115#u8,
+        95#u8, 99#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8, 108#u8, 95#u8,
+        112#u8, 114#u8, 111#u8, 102#u8, 105#u8, 108#u8, 101#u8, 3#u8, 2#u8,
+        2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8,
+        8#u8, 0#u8, 114#u8, 101#u8, 99#u8, 121#u8, 99#u8, 108#u8, 101#u8,
+        100#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 9#u8,
+        0#u8, 116#u8, 111#u8, 109#u8, 98#u8, 115#u8, 116#u8, 111#u8, 110#u8,
+        101#u8
+        ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 13#usize [
+        16#u16, 49#u16, 80#u16, 19#u16, 4#u16, 8#u16, 10#u16, 9#u16, 7#u16,
+        6#u16, 5#u16, 3#u16, 2#u16
+        ])
+  let v6 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 12#usize [
+        16#u16, 49#u16, 19#u16, 4#u16, 8#u16, 10#u16, 9#u16, 7#u16, 6#u16,
+        5#u16, 3#u16, 2#u16
+        ])
+  let v7 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 5#usize [ 3#u16, 4#u16, 2#u16, 0#u16, 1#u16 ])
+  let v8 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933465#u128,
+      description := v2,
+      receiver := 1#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v6,
+      modify_classes := v7,
+      modify_present_classes := v8,
+      modify_remove_classes := v8,
+      create_classes := v7,
+      create_attrs := v6
+    }
+
+/-- [kanidm_kernel::acp_defaults::dl13_application_manage_dl8]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_defaults.rs', lines 337:0-355:1
+    Visibility: public -/
+def acp_defaults.dl13_application_manage_dl8
+  : Result acp_defaults.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 6#usize [ 15#u16, 3#u16, 0#u16, 1#u16, 2#u16, 4#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 26#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 97#u8,
+        112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8, 105#u8, 111#u8,
+        110#u8, 95#u8, 109#u8, 97#u8, 110#u8, 97#u8, 103#u8, 101#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 75#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 99#u8, 114#u8, 101#u8,
+        97#u8, 116#u8, 105#u8, 110#u8, 103#u8, 32#u8, 97#u8, 110#u8, 100#u8,
+        32#u8, 100#u8, 101#u8, 108#u8, 101#u8, 116#u8, 105#u8, 110#u8, 103#u8,
+        32#u8, 97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8,
+        105#u8, 111#u8, 110#u8, 115#u8, 32#u8, 105#u8, 110#u8, 32#u8, 116#u8,
+        104#u8, 101#u8, 32#u8, 100#u8, 105#u8, 114#u8, 101#u8, 99#u8, 116#u8,
+        111#u8, 114#u8, 121#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 80#u128 ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 65#usize [
+        1#u8, 2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 11#u8, 0#u8, 97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8,
+        97#u8, 116#u8, 105#u8, 111#u8, 110#u8, 3#u8, 2#u8, 2#u8, 0#u8, 0#u8,
+        5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 8#u8, 0#u8, 114#u8,
+        101#u8, 99#u8, 121#u8, 99#u8, 108#u8, 101#u8, 100#u8, 0#u8, 5#u8, 0#u8,
+        99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 9#u8, 0#u8, 116#u8, 111#u8,
+        109#u8, 98#u8, 115#u8, 116#u8, 111#u8, 110#u8, 101#u8
+        ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 12#usize [
+        16#u16, 80#u16, 49#u16, 68#u16, 19#u16, 20#u16, 43#u16, 78#u16, 12#u16,
+        79#u16, 41#u16, 29#u16
+        ])
+  let v6 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 8#usize [
+        49#u16, 19#u16, 20#u16, 43#u16, 78#u16, 12#u16, 41#u16, 29#u16
+        ])
+  let v7 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 9#usize [
+        49#u16, 19#u16, 20#u16, 43#u16, 78#u16, 12#u16, 79#u16, 41#u16, 29#u16
+        ])
+  let v8 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v9 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 4#usize [ 15#u16, 5#u16, 17#u16, 7#u16 ])
+  let v10 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 8#usize [
+        16#u16, 80#u16, 49#u16, 19#u16, 20#u16, 43#u16, 41#u16, 29#u16
+        ])
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933555#u128,
+      description := v2,
+      receiver := 1#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v7,
+      modify_classes := v8,
+      modify_present_classes := v8,
+      modify_remove_classes := v8,
+      create_classes := v9,
+      create_attrs := v10
+    }
+
+/-- [kanidm_kernel::acp_defaults::dl13_application_entry_manager_dl8]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_defaults.rs', lines 358:0-376:1
+    Visibility: public -/
+def acp_defaults.dl13_application_entry_manager_dl8
+  : Result acp_defaults.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 4#usize [ 15#u16, 3#u16, 2#u16, 4#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 33#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 97#u8,
+        112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8, 105#u8, 111#u8,
+        110#u8, 95#u8, 101#u8, 110#u8, 116#u8, 114#u8, 121#u8, 95#u8, 109#u8,
+        97#u8, 110#u8, 97#u8, 103#u8, 101#u8, 114#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 77#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 97#u8, 108#u8, 108#u8,
+        111#u8, 119#u8, 105#u8, 110#u8, 103#u8, 32#u8, 69#u8, 110#u8, 116#u8,
+        114#u8, 121#u8, 77#u8, 97#u8, 110#u8, 97#u8, 103#u8, 101#u8, 114#u8,
+        32#u8, 116#u8, 111#u8, 32#u8, 114#u8, 101#u8, 97#u8, 100#u8, 32#u8,
+        97#u8, 110#u8, 100#u8, 32#u8, 109#u8, 111#u8, 100#u8, 105#u8, 102#u8,
+        121#u8, 32#u8, 97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8,
+        116#u8, 105#u8, 111#u8, 110#u8, 115#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U128)
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 65#usize [
+        1#u8, 2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 11#u8, 0#u8, 97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8,
+        97#u8, 116#u8, 105#u8, 111#u8, 110#u8, 3#u8, 2#u8, 2#u8, 0#u8, 0#u8,
+        5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 8#u8, 0#u8, 114#u8,
+        101#u8, 99#u8, 121#u8, 99#u8, 108#u8, 101#u8, 100#u8, 0#u8, 5#u8, 0#u8,
+        99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 9#u8, 0#u8, 116#u8, 111#u8,
+        109#u8, 98#u8, 115#u8, 116#u8, 111#u8, 110#u8, 101#u8
+        ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 12#usize [
+        16#u16, 80#u16, 49#u16, 68#u16, 20#u16, 43#u16, 78#u16, 12#u16, 79#u16,
+        19#u16, 41#u16, 29#u16
+        ])
+  let v6 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 7#usize [
+        49#u16, 19#u16, 20#u16, 43#u16, 78#u16, 12#u16, 41#u16
+        ])
+  let v7 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 8#usize [
+        49#u16, 19#u16, 20#u16, 43#u16, 78#u16, 12#u16, 79#u16, 41#u16
+        ])
+  let v8 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933554#u128,
+      description := v2,
+      receiver := 2#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v7,
+      modify_classes := v8,
+      modify_present_classes := v8,
+      modify_remove_classes := v8,
+      create_classes := v8,
+      create_attrs := v8
+    }
+
+/-- [kanidm_kernel::acp_defaults::dl13_sync_account_manage_v1]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_defaults.rs', lines 379:0-397:1
+    Visibility: public -/
+def acp_defaults.dl13_sync_account_manage_v1
+  : Result acp_defaults.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 6#usize [ 15#u16, 3#u16, 0#u16, 1#u16, 2#u16, 4#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 27#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 115#u8,
+        121#u8, 110#u8, 99#u8, 95#u8, 97#u8, 99#u8, 99#u8, 111#u8, 117#u8,
+        110#u8, 116#u8, 95#u8, 109#u8, 97#u8, 110#u8, 97#u8, 103#u8, 101#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 75#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 109#u8, 97#u8, 110#u8,
+        97#u8, 103#u8, 105#u8, 110#u8, 103#u8, 32#u8, 73#u8, 68#u8, 77#u8,
+        32#u8, 115#u8, 121#u8, 110#u8, 99#u8, 104#u8, 114#u8, 111#u8, 110#u8,
+        105#u8, 115#u8, 97#u8, 116#u8, 105#u8, 111#u8, 110#u8, 32#u8, 97#u8,
+        99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8, 115#u8, 32#u8, 47#u8,
+        32#u8, 99#u8, 111#u8, 110#u8, 110#u8, 101#u8, 99#u8, 116#u8, 105#u8,
+        111#u8, 110#u8, 115#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 32#u128 ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 66#usize [
+        1#u8, 2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 12#u8, 0#u8, 115#u8, 121#u8, 110#u8, 99#u8, 95#u8, 97#u8,
+        99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8, 3#u8, 2#u8, 2#u8, 0#u8,
+        0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 8#u8, 0#u8,
+        114#u8, 101#u8, 99#u8, 121#u8, 99#u8, 108#u8, 101#u8, 100#u8, 0#u8,
+        5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 9#u8, 0#u8, 116#u8,
+        111#u8, 109#u8, 98#u8, 115#u8, 116#u8, 111#u8, 110#u8, 101#u8
+        ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 9#usize [
+        16#u16, 49#u16, 80#u16, 19#u16, 33#u16, 72#u16, 71#u16, 73#u16, 70#u16
+        ])
+  let v6 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 5#usize [ 49#u16, 19#u16, 72#u16, 71#u16, 73#u16 ])
+  let v7 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 7#usize [
+        49#u16, 19#u16, 33#u16, 72#u16, 71#u16, 70#u16, 73#u16
+        ])
+  let v8 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v9 ←
+    alloc.vec.FromVecArray.from (Array.make 2#usize [ 15#u16, 18#u16 ])
+  let v10 ←
+    alloc.vec.FromVecArray.from (Array.make 3#usize [ 16#u16, 49#u16, 19#u16 ])
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933541#u128,
+      description := v2,
+      receiver := 1#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v7,
+      modify_classes := v8,
+      modify_present_classes := v8,
+      modify_remove_classes := v8,
+      create_classes := v9,
+      create_attrs := v10
+    }
+
+/-- [kanidm_kernel::acp_defaults::dl14_oauth2_manage]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_defaults.rs', lines 400:0-418:1
+    Visibility: public -/
+def acp_defaults.dl14_oauth2_manage : Result acp_defaults.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 6#usize [ 15#u16, 3#u16, 0#u16, 1#u16, 2#u16, 4#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 21#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 111#u8,
+        97#u8, 117#u8, 116#u8, 104#u8, 50#u8, 95#u8, 109#u8, 97#u8, 110#u8,
+        97#u8, 103#u8, 101#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 69#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 109#u8, 97#u8, 110#u8,
+        97#u8, 103#u8, 105#u8, 110#u8, 103#u8, 32#u8, 79#u8, 65#u8, 117#u8,
+        116#u8, 104#u8, 50#u8, 32#u8, 114#u8, 101#u8, 115#u8, 111#u8, 117#u8,
+        114#u8, 99#u8, 101#u8, 32#u8, 115#u8, 101#u8, 114#u8, 118#u8, 101#u8,
+        114#u8, 32#u8, 105#u8, 110#u8, 116#u8, 101#u8, 103#u8, 114#u8, 97#u8,
+        116#u8, 105#u8, 111#u8, 110#u8, 115#u8, 46#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 39#u128 ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 76#usize [
+        1#u8, 2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 22#u8, 0#u8, 111#u8, 97#u8, 117#u8, 116#u8, 104#u8, 50#u8,
+        95#u8, 114#u8, 101#u8, 115#u8, 111#u8, 117#u8, 114#u8, 99#u8, 101#u8,
+        95#u8, 115#u8, 101#u8, 114#u8, 118#u8, 101#u8, 114#u8, 3#u8, 2#u8,
+        2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8,
+        8#u8, 0#u8, 114#u8, 101#u8, 99#u8, 121#u8, 99#u8, 108#u8, 101#u8,
+        100#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 9#u8,
+        0#u8, 116#u8, 111#u8, 109#u8, 98#u8, 115#u8, 116#u8, 111#u8, 110#u8,
+        101#u8
+        ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 22#usize [
+        16#u16, 19#u16, 20#u16, 49#u16, 80#u16, 68#u16, 63#u16, 59#u16, 60#u16,
+        61#u16, 62#u16, 56#u16, 50#u16, 53#u16, 54#u16, 55#u16, 51#u16, 57#u16,
+        31#u16, 64#u16, 52#u16, 36#u16
+        ])
+  let v6 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 18#usize [
+        19#u16, 20#u16, 49#u16, 59#u16, 60#u16, 62#u16, 61#u16, 50#u16, 53#u16,
+        54#u16, 55#u16, 51#u16, 57#u16, 31#u16, 64#u16, 52#u16, 34#u16, 35#u16
+        ])
+  let v7 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 20#usize [
+        19#u16, 20#u16, 49#u16, 63#u16, 59#u16, 60#u16, 61#u16, 62#u16, 56#u16,
+        50#u16, 53#u16, 54#u16, 55#u16, 51#u16, 57#u16, 31#u16, 64#u16, 52#u16,
+        34#u16, 35#u16
+        ])
+  let v8 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v9 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 5#usize [ 15#u16, 5#u16, 12#u16, 13#u16, 14#u16 ])
+  let v10 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 18#usize [
+        16#u16, 19#u16, 49#u16, 20#u16, 58#u16, 59#u16, 60#u16, 62#u16, 61#u16,
+        50#u16, 53#u16, 54#u16, 55#u16, 51#u16, 57#u16, 31#u16, 64#u16, 52#u16
+        ])
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933493#u128,
+      description := v2,
+      receiver := 1#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v7,
+      modify_classes := v8,
+      modify_present_classes := v8,
+      modify_remove_classes := v8,
+      create_classes := v9,
+      create_attrs := v10
+    }
+
+/-- [kanidm_kernel::acp_defaults::dl14_domain_admin_dl9]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_defaults.rs', lines 421:0-439:1
+    Visibility: public -/
+def acp_defaults.dl14_domain_admin_dl9 : Result acp_defaults.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 4#usize [ 15#u16, 3#u16, 2#u16, 4#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 20#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 100#u8,
+        111#u8, 109#u8, 97#u8, 105#u8, 110#u8, 95#u8, 97#u8, 100#u8, 109#u8,
+        105#u8, 110#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 67#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 103#u8, 114#u8, 97#u8,
+        110#u8, 116#u8, 105#u8, 110#u8, 103#u8, 32#u8, 100#u8, 111#u8, 109#u8,
+        97#u8, 105#u8, 110#u8, 32#u8, 105#u8, 110#u8, 102#u8, 111#u8, 32#u8,
+        97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 105#u8, 115#u8, 116#u8, 114#u8,
+        97#u8, 116#u8, 105#u8, 111#u8, 110#u8, 32#u8, 108#u8, 111#u8, 99#u8,
+        97#u8, 108#u8, 108#u8, 121#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 32#u128 ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 89#usize [
+        1#u8, 2#u8, 0#u8, 0#u8, 4#u8, 0#u8, 117#u8, 117#u8, 105#u8, 100#u8,
+        36#u8, 0#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8,
+        45#u8, 48#u8, 48#u8, 48#u8, 48#u8, 45#u8, 48#u8, 48#u8, 48#u8, 48#u8,
+        45#u8, 48#u8, 48#u8, 48#u8, 48#u8, 45#u8, 102#u8, 102#u8, 102#u8,
+        102#u8, 102#u8, 102#u8, 48#u8, 48#u8, 48#u8, 48#u8, 50#u8, 53#u8, 3#u8,
+        2#u8, 2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 8#u8, 0#u8, 114#u8, 101#u8, 99#u8, 121#u8, 99#u8, 108#u8,
+        101#u8, 100#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8,
+        9#u8, 0#u8, 116#u8, 111#u8, 109#u8, 98#u8, 115#u8, 116#u8, 111#u8,
+        110#u8, 101#u8
+        ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 15#usize [
+        16#u16, 49#u16, 80#u16, 22#u16, 21#u16, 23#u16, 25#u16, 24#u16, 38#u16,
+        26#u16, 27#u16, 36#u16, 37#u16, 81#u16, 31#u16
+        ])
+  let v6 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 10#usize [
+        23#u16, 24#u16, 38#u16, 26#u16, 22#u16, 21#u16, 37#u16, 34#u16, 35#u16,
+        31#u16
+        ])
+  let v7 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 10#usize [
+        23#u16, 26#u16, 24#u16, 38#u16, 22#u16, 21#u16, 37#u16, 34#u16, 35#u16,
+        31#u16
+        ])
+  let v8 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933478#u128,
+      description := v2,
+      receiver := 1#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v7,
+      modify_classes := v8,
+      modify_present_classes := v8,
+      modify_remove_classes := v8,
+      create_classes := v8,
+      create_attrs := v8
+    }
+
 /-- [kanidm_kernel::credential_commit::Policy]
     Source: 'prove/ports/kanidm/kernel/src/credential_commit.rs', lines 5:0-5:94
     Visibility: public -/
