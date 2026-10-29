@@ -1,0 +1,31 @@
+Verified/SchemaTags.lean:55:75: warning: This simp argument is unused:
+  Bool.or_comm
+
+Hint: Omit it from the simp argument list.
+  simp [schema_tags.partial_accepts, partial_acceptsAllowed, Bool.or_c̵o̵m̵m̵,̵ ̵B̵o̵o̵l.̵o̵r̵_̵l̵eft_comm]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+Verified/SchemaTags.lean:108:87: warning: This simp argument is unused:
+  Bool.or_comm
+
+Hint: Omit it from the simp argument list.
+  simp [schema_tags.value_accepts, value_acceptsAllowed,
+  ̲  ̲ ̲ ̲B̵o̵o̵l̵.̵o̵r̵_̵c̵o̵m̵m̵,̵ ̵Bool.or_left_comm]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+Verified/SchemaTags.lean:108:101: warning: This simp argument is unused:
+  Bool.or_left_comm
+
+Hint: Omit it from the simp argument list.
+  simp [schema_tags.value_accepts, value_acceptsAllowed, Bool.or_comm,̵ ̵B̵o̵o̵l̵.̵o̵r̵_̵l̵e̵f̵t̵_̵c̵o̵m̵m̵]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+Verified/SchemaTags.lean:108:120: warning: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+l̵e̵f̵t̵_̵c̵o̵m̵m̵]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+Verified/SchemaTags.lean:108:120: warning: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`

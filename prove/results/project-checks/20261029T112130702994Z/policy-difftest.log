@@ -1,0 +1,42 @@
+   Compiling oxicloud-policy-difftest v0.1.0 (/home/ht2673/Dev/h5i-app-bench/prove/ports/oxicloud/policy-difftest)
+warning: method `pick` is never used
+  --> src/lib.rs:39:12
+   |
+26 | impl Rng {
+   | -------- method in this implementation
+...
+39 |     pub fn pick<T: Copy>(&mut self, xs: &[T]) -> T {
+   |            ^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `oxicloud-policy-difftest` (lib test) generated 1 warning
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2.16s
+     Running unittests src/lib.rs (prove/ports/oxicloud/policy-difftest/target/debug/deps/oxicloud_policy_difftest-71fc0bada84367b1)
+
+running 16 tests
+test domain::entities::drive::policy_default_tests::an_absent_cap_override_inherits_rather_than_clearing_the_cap ... ok
+test domain::entities::drive::policy_default_tests::a_compliant_drive_reports_nothing ... ok
+test domain::entities::drive::policy_default_tests::forbid_flags_treat_true_as_stricter ... ok
+test domain::entities::drive::policy_default_tests::no_cap_is_the_laxest_value_of_all ... ok
+test domain::entities::drive::policy_default_tests::index_opt_ins_are_inverted_true_is_laxer ... ok
+test domain::entities::drive::policy_default_tests::owner_role_change_is_never_compared_on_a_personal_drive ... ok
+test domain::entities::drive::policy_default_tests::read_only_is_never_reported_as_drift ... ok
+test domain::entities::drive::policy_default_tests::resolve_lets_an_override_win_over_the_default ... ok
+test domain::entities::drive::policy_default_tests::resolve_takes_the_default_when_nothing_is_overridden ... ok
+test domain::entities::drive::policy_default_tests::weaker_than_reports_every_violated_knob_not_a_verdict ... ok
+test domain::entities::drive::public_link_gate_tests::narrow_knob_wins_the_reason_when_both_are_set ... ok
+test domain::entities::drive::public_link_gate_tests::permitted_when_neither_knob_is_set ... ok
+test domain::entities::drive::public_link_gate_tests::refused_by_forbid_sharing_alone ... ok
+test domain::entities::drive::public_link_gate_tests::refused_by_the_narrow_knob ... ok
+test tests::drive_policy_differential ... ok
+test tests::policy_comparison_differential ... ok
+
+test result: ok. 16 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.12s
+
+   Doc-tests oxicloud_policy_difftest
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

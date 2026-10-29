@@ -1,0 +1,104 @@
+[
+  {
+    "raw_excluded": "artifactkeeper-remove-opaque-extract.log",
+    "reviewable": "artifactkeeper-remove-opaque-extract.txt",
+    "raw_sha256": "e9cab84f7b53ec2c28c4a9e7a70a9cf936762884c67c3c4def297e4e5d1f2e03",
+    "reviewable_sha256": "1942f94f4412102861c0a9dc94053c5f5893e8b5ce2ab45854579aa28793c705"
+  },
+  {
+    "raw_excluded": "oxicloud-regenerate.log",
+    "reviewable": "oxicloud-regenerate.txt",
+    "raw_sha256": "d0387e2a48ad813e9ac40b471b4925d90f18f34be3aadf11ecaf93e1b21a32ce",
+    "reviewable_sha256": "94706b72cb0f03899f1a030109cc5a95eebb478ea81e389fe46649b9b575e191"
+  },
+  {
+    "raw_excluded": "rustfs-normalized-regenerate.log",
+    "reviewable": "rustfs-normalized-regenerate.txt",
+    "raw_sha256": "cfdcf58b33f8255015413a35ed2eb456159bea4a8db7b1c823d621aa20366341",
+    "reviewable_sha256": "fbf06a00943b8928b36ad9136acb3ea83bf06b3846aa220ba6e5c5a61382e248"
+  },
+  {
+    "raw_excluded": "rustfs-regenerate.log",
+    "reviewable": "rustfs-regenerate.txt",
+    "raw_sha256": "3f5b781376240ee3fdcdbef033179a54837131c6555f8b7ec5966e4ae088661a",
+    "reviewable_sha256": "b24b8726e6f2b95f4b51c715dfdd2308f660bb92e2a8cf22a9e8a83232e60e1d"
+  },
+  {
+    "standard_log": "prove/results/project-checks/20261029T031744205585Z/artifactkeeper.log",
+    "raw_sha256": "587c708c2bed57594be15b010ea59e667c3e92126a4800d1ed60adaeee70828b",
+    "reviewable_sha256": "4970d6cbfb150e3e8fd9960759078fedd89e9d351454aea1916ed9d9e9f157df",
+    "normalization": "ANSI removed; transient progress rows omitted; completed progress totals preserved. Raw original retained locally and excluded from commit."
+  },
+  {
+    "standard_log": "prove/results/project-checks/20261029T031744205585Z/kanidm.log",
+    "raw_sha256": "e067daf8b48c2f96ed062fb21db0031273f6c539c0809192a095f4f7da9a5b0a",
+    "reviewable_sha256": "46707960780a6da1ca55c371ef4b58a80763042fa193b8bea36a18beeb606370",
+    "normalization": "ANSI removed; transient progress rows omitted; completed progress totals preserved. Raw original retained locally and excluded from commit."
+  },
+  {
+    "standard_log": "prove/results/project-checks/20261029T031744205585Z/nora.log",
+    "raw_sha256": "5eee7b93e888c69cdfc836fbdad0082feca8fd7e126ae13fa88cbea90114eb2b",
+    "reviewable_sha256": "9cfcff9f94b3b5a8a6345985cc0b4dff7554caf74abade6fecb4171a8772b7cb",
+    "normalization": "ANSI removed; transient progress rows omitted; completed progress totals preserved. Raw original retained locally and excluded from commit."
+  },
+  {
+    "standard_log": "prove/results/project-checks/20261029T031744205585Z/tuwunel.log",
+    "raw_sha256": "4985749cd60d0223917544921d53bfca74571c307ef4eb3402ab6121c38f9c03",
+    "reviewable_sha256": "e78adfed21916521724af493a27c1458a99ca6d9d08d3a8d5f86e4d065c4f5f7",
+    "normalization": "ANSI removed; transient progress rows omitted; completed progress totals preserved. Raw original retained locally and excluded from commit."
+  },
+  {
+    "standard_log": "prove/results/project-checks/20261029T031901027303Z/oxicloud.log",
+    "raw_sha256": "03c1a23185ed16321b35515f615620055cfb262594273c8d3203ef16acc0446b",
+    "reviewable_sha256": "b2e03d9b33d105d985efce7b09e440e1ff9b7c710acb3b6f7aa4b4b5cdb001f1",
+    "normalization": "ANSI removed; transient progress rows omitted; completed progress totals preserved. Raw original retained locally and excluded from commit."
+  },
+  {
+    "standard_log": "prove/results/project-checks/20261029T031901027303Z/rustfs.log",
+    "raw_sha256": "dc4676ccae0d92f5b2ec44f9e50e0c83a9c4edbf73b48cf8e986df8561b594a8",
+    "reviewable_sha256": "b55c59170cf6ff2e62bd84c4a12c5f394b29caa16ea20866f6a78d2dbb856ead",
+    "normalization": "ANSI removed; transient progress rows omitted; completed progress totals preserved. Raw original retained locally and excluded from commit."
+  },
+  {
+    "standard_log": "prove/results/project-checks/20261029T032544890817Z/oxicloud.log",
+    "raw_sha256": "99abf8bf0f6ad4b97fbcbea61e2f3b7f8a07f18e85c5ffad1ba3ea060b88cb31",
+    "reviewable_sha256": "fb5b81822e61ffac13224767f7684e4926a43457dbcdf41d7b631d7026c36357",
+    "normalization": "ANSI removed; transient progress rows omitted; completed progress totals preserved. Raw original retained locally and excluded from commit."
+  },
+  {
+    "standard_log": "prove/results/project-checks/20261029T032544890817Z/rustfs.log",
+    "raw_sha256": "d6f53c5c2aec8eebafc6e1bcdddfd41cc0b539c4d4c2afef2c31995c0509fac0",
+    "reviewable_sha256": "d8ac5cd98ea7d54f5a23aa5f490d108e5cbbe3c6a5f2635185279af794739699",
+    "normalization": "ANSI removed; transient progress rows omitted; completed progress totals preserved. Raw original retained locally and excluded from commit."
+  },
+  {
+    "standard_log": "prove/results/project-checks/20261029T033110397135Z/rustfs.log",
+    "raw_sha256": "2d78966def9deb4244f42ed3f90ebd6af8058dc8e02dee7302051428d2162811",
+    "reviewable_sha256": "b7632dfe9058385b9ff60f471258180c3cbc478a1d4fa4671b2b32382e96c4a7",
+    "normalization": "ANSI removed; transient progress rows omitted; completed progress totals preserved. Raw original retained locally and excluded from commit."
+  },
+  {
+    "standard_log": "prove/results/project-checks/20261029T033643509171Z/artifactkeeper.log",
+    "raw_sha256": "3543f061f7d205799d63db02f38f3d1292d70f73d7a2261a36cb35c71a7c1dce",
+    "reviewable_sha256": "1918e10ea558596cde3786c17879b76ea397e9e4635bf2c872ae9c8fc34b0009",
+    "normalization": "ANSI removed; transient progress rows omitted; completed progress totals preserved. Raw original retained locally and excluded from commit."
+  },
+  {
+    "standard_log": "prove/results/project-checks/20261029T033643509171Z/kanidm.log",
+    "raw_sha256": "6c3074d1b724180f8139e9713aca480a6897ca531cb418cf5ecbb838daf5cb61",
+    "reviewable_sha256": "911a519f4a8a3c33f2805abfe622f7a4fbf2b4f42a35fdb77a532d5c30b2d8e1",
+    "normalization": "ANSI removed; transient progress rows omitted; completed progress totals preserved. Raw original retained locally and excluded from commit."
+  },
+  {
+    "standard_log": "prove/results/project-checks/20261029T034442127760Z/nora.log",
+    "raw_sha256": "48b550152dc0b8b92803aa0180c9582122ea455082c64f7d1a621012eaad672a",
+    "reviewable_sha256": "a615d6432cfec4b3b7a3e84e476b194956bbbef2bd95ac2e169f869db86e154a",
+    "normalization": "ANSI removed; transient progress rows omitted; completed progress totals preserved. Raw original retained locally and excluded from commit."
+  },
+  {
+    "standard_log": "prove/results/project-checks/20261029T034559678470Z/artifactkeeper.log",
+    "raw_sha256": "d1bcf5c3a823ce83fc93325898efef0ce31c4a9cd7134e61374771303893c350",
+    "reviewable_sha256": "ce8c1f3284fbc0f838e49e858ff0e19610144aaf91f1fcae1605bd8a94c9b28b",
+    "normalization": "ANSI removed; transient progress rows omitted; completed progress totals preserved. Raw original retained locally and excluded from commit."
+  }
+]

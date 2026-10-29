@@ -132,7 +132,7 @@ function renderHeader() {
   $("#property-total").textContent = fmt(s.properties);
   const parts = [
     `[ snapshot <b>${esc(INDEX.generated)}</b> ]`,
-    `[ <b>${s.accepted}/${s.properties}</b> specs accepted ]`,
+    `[ <b>${s.benchmark_accepted}/${s.benchmark_properties}</b> benchmark proofs accepted ]`,
     `[ <b>${Object.keys(INDEX.apps).length}</b> servers ]`,
     `<span class="live">[ interim ]</span>`,
   ];
@@ -147,8 +147,8 @@ function renderTiles() {
   const med = median(m);
   const proofs = INDEX.tasks.filter((t) => t.status === "accepted" && t.proof_loc != null).map((t) => t.proof_loc);
   const tiles = [
-    [`${s.accepted}<small>/${s.properties}</small>`, "specs verified", `re-checked · ${pctText(s.accepted, s.properties)}`, [s.accepted, s.properties]],
-    [kLines(s.upstream_reached), "upstream lines reached", `${pctText(s.upstream_reached, s.security_kernel_lines, 1)} of ${kLines(s.security_kernel_lines)} security-kernel lines · ${pctText(s.upstream_reached, s.ceiling_lines, 1)} of the ${kLines(s.ceiling_lines)} kernel ceiling`, [s.upstream_reached, s.upstream_selected]],
+    [`${s.benchmark_accepted}<small>/${s.benchmark_properties}</small>`, "benchmark proofs accepted", "historical task and model results", [s.benchmark_accepted, s.benchmark_properties]],
+    [kLines(s.current_source_matched_lines), "current gated source reach", `${kLines(s.benchmark_upstream_reached)} historical benchmark lines · ${s.whole_project_verified ? "all six project gates pass" : "whole-project verification incomplete"}`],
     [med == null ? "–" : ratioText(med), "median runtime ratio", `kernel ÷ upstream · ${m.length} workloads${m.length ? ` · ${ratioText(Math.min(...m))}–${ratioText(Math.max(...m))}` : ""}`],
     [kLines(s.proof_loc), "lines of Lean proof", `median ${fmt(median(proofs))} per benchmark task · ${kLines(s.rust_loc)} lines of ported Rust`],
   ];
@@ -173,7 +173,7 @@ function renderApps() {
 
     return `<tr><td>${esc(a.app)}<span class="sub"><a href="https://github.com/${esc(a.repo)}/tree/${esc(a.commit)}" target="_blank" rel="noreferrer">${esc(a.repo)} @ ${esc(a.commit)}</a></span></td>
       <td>${barRow(a.accepted, a.specs)}${a.project_properties ? `<a class="sub" href="#project-properties">${fmt(a.project_properties.count)} project properties</a>` : ""}</td>
-      <td>${a.security_kernel_lines ? barRowPct(a.upstream_reached, a.security_kernel_lines, 1) : "–"}</td>
+      <td>${a.security_kernel_lines ? barRowPct(a.upstream_reached, a.security_kernel_lines, 1) : "–"}<span class="sub">${a.coverage_basis === "current_source_matched_project_gate" ? "current source gate" : "historical benchmark"}</span></td>
       <td>${a.ceiling_lines ? barRowPct(a.upstream_reached, a.ceiling_lines, 1) : "–"}</td>
       <td class="c">${passMark(gate.extract, "extract --check")}</td>
       <td class="c">${passMark(eq, "differential tests")}</td>

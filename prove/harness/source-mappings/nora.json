@@ -1,0 +1,336 @@
+{
+  "upstream_revision": "f864a9a95e8669b00202c18b0b774ab0fc2e56cc",
+  "meaning": "Exact pinned item/fragment reach. JWT validation is excluded; only claims fragment mapped. Crypto, caches, identifiers and I/O boundaries remain documented in DEVIATIONS.md. Reach is not complete equivalence.",
+  "declarations": {
+    "Role.can_admin": [
+      {
+        "file": "nora-registry/src/tokens.rs",
+        "self_ty": "Role",
+        "name": "can_admin",
+        "kind": "method",
+        "start": 63,
+        "end": 65,
+        "sha256": "eb6a0eeab7cbba72c4af6c9782a4c78b26e7f0b686f791a99111386b28836e36"
+      }
+    ],
+    "Role.can_write": [
+      {
+        "file": "nora-registry/src/tokens.rs",
+        "self_ty": "Role",
+        "name": "can_write",
+        "kind": "method",
+        "start": 59,
+        "end": 61,
+        "sha256": "b8e8ed719728f8413b4fecb4117c25de0384465fe252f1214a06563d95a7a071"
+      }
+    ],
+    "enforce_namespace_scope": [
+      {
+        "file": "nora-registry/src/auth/namespace.rs",
+        "self_ty": "",
+        "name": "enforce_namespace_scope",
+        "kind": "fn",
+        "start": 90,
+        "end": 157,
+        "sha256": "c7d6d700926b5256a9001202cfb6d580ba06768d5f45aef43e67edc412b6b7db"
+      }
+    ],
+    "from_oidc_scopes": [
+      {
+        "file": "nora-registry/src/auth/namespace.rs",
+        "self_ty": "NamespaceAuthority",
+        "name": "from_oidc_scopes",
+        "kind": "method",
+        "start": 55,
+        "end": 81,
+        "sha256": "94504165b478890b5500770d9004fbf44f15320d6ce6ef3f1a2ff48a8090e4cc"
+      }
+    ],
+    "glob_match": [
+      {
+        "file": "nora-registry/src/auth/oidc.rs",
+        "self_ty": "",
+        "name": "glob_match",
+        "kind": "fn",
+        "start": 366,
+        "end": 409,
+        "sha256": "ddf10c9091a999abdd98ccc5fe6bac4014b04818cdd37f63587a3b54c96cef9b"
+      }
+    ],
+    "lockout.AuthFailureTracker.check_blocked": [
+      {
+        "file": "nora-registry/src/auth/mod.rs",
+        "self_ty": "AuthFailureTracker",
+        "name": "check_blocked",
+        "kind": "method",
+        "start": 78,
+        "end": 93,
+        "sha256": "1a12c5cf4b87c0bf3cf44d22bdca65b65699489a3b78053d85dfed2b8eed38e3"
+      }
+    ],
+    "match_role": [
+      {
+        "file": "nora-registry/src/auth/oidc.rs",
+        "self_ty": "OidcValidator",
+        "name": "match_role",
+        "kind": "method",
+        "start": 344,
+        "end": 363,
+        "sha256": "9c2912246d084b5842c0c4b67bdfb44fe2ab1784b1fe55f8d945644f2c067cbb"
+      }
+    ],
+    "middleware.auth_middleware": [
+      {
+        "file": "nora-registry/src/auth/mod.rs",
+        "self_ty": "",
+        "name": "auth_middleware",
+        "kind": "fn",
+        "start": 225,
+        "end": 632,
+        "sha256": "4c9442ab24d06113f50fcb10012c1c132c0cd714843723b03029fe8bdf7582fe"
+      }
+    ],
+    "middleware.is_admin_path": [
+      {
+        "file": "nora-registry/src/auth/mod.rs",
+        "self_ty": "",
+        "name": "is_admin_path",
+        "kind": "fn",
+        "start": 150,
+        "end": 160,
+        "sha256": "2d1a0de5ed86307f3780916175db68030071a16672160e92ca9add81f65b9f8a"
+      }
+    ],
+    "middleware.is_docker_path": [
+      {
+        "file": "nora-registry/src/auth/mod.rs",
+        "self_ty": "",
+        "name": "is_docker_path",
+        "kind": "fn",
+        "start": 138,
+        "end": 148,
+        "sha256": "d4e22b6fd9ad31e9c94ca986035f60e214fde29cb7293beddcb18dded9435fa7"
+      }
+    ],
+    "middleware.is_public_path": [
+      {
+        "file": "nora-registry/src/auth/mod.rs",
+        "self_ty": "",
+        "name": "is_public_path",
+        "kind": "fn",
+        "start": 116,
+        "end": 125,
+        "sha256": "dcea45ad72ac30dab328aebd0e84aab70bb9603e73ba65dd5ec4979ffa3ce7b2"
+      }
+    ],
+    "middleware.is_web_surface": [
+      {
+        "file": "nora-registry/src/auth/mod.rs",
+        "self_ty": "",
+        "name": "is_web_surface",
+        "kind": "fn",
+        "start": 127,
+        "end": 136,
+        "sha256": "dd65df3859c1bd0380edb3057bff2e265332be5d15884186b67b4908b2113d4d"
+      }
+    ],
+    "namespace_match": [
+      {
+        "file": "nora-registry/src/validation.rs",
+        "self_ty": "",
+        "name": "namespace_match",
+        "kind": "fn",
+        "start": 360,
+        "end": 402,
+        "sha256": "f42721a04f69fd697c144a05ffa52ca2e327f20e38d1fd135e4b11d1aec6ad51"
+      }
+    ],
+    "net.TrustedProxies.contains": [
+      {
+        "file": "nora-registry/src/config/auth.rs",
+        "self_ty": "TrustedProxies",
+        "name": "contains",
+        "kind": "method",
+        "start": 68,
+        "end": 103,
+        "sha256": "e27a13aff24883be6406800557a834628bd3b6e31d4d86a1f44313adfc096961"
+      }
+    ],
+    "net.resolve_client_ip": [
+      {
+        "file": "nora-registry/src/auth/mod.rs",
+        "self_ty": "",
+        "name": "resolve_client_ip",
+        "kind": "fn",
+        "start": 162,
+        "end": 196,
+        "sha256": "05b81879b7804d3fec764b297428a93494b93db9757deefaf2eecf1045a86c7e"
+      }
+    ],
+    "permission_import.map_to_proposal": [
+      {
+        "file": "nora-registry/src/import/permissions.rs",
+        "self_ty": "",
+        "name": "map_to_proposal",
+        "kind": "fn",
+        "start": 92,
+        "end": 217,
+        "sha256": "52e681be945b56cf966e489a219aab06606bda954274b39fb2f440f90d18dc3c"
+      }
+    ],
+    "permission_import.narrow_admin": [
+      {
+        "file": "nora-registry/src/import/permissions.rs",
+        "self_ty": "",
+        "name": "narrow_admin",
+        "kind": "fn",
+        "start": 219,
+        "end": 224,
+        "sha256": "d3284ae8c2389ee576f6b9a98f5f8df2a6a4238561cb660776ba1f7dc726484a"
+      }
+    ],
+    "segment_glob": [
+      {
+        "file": "nora-registry/src/validation.rs",
+        "self_ty": "",
+        "name": "segment_glob",
+        "kind": "fn",
+        "start": 428,
+        "end": 458,
+        "sha256": "d0d5ded35bd5d1f9c28374ced8376bf1e0d2f47b158c63a79badc4d3171e6882"
+      }
+    ],
+    "segments_match": [
+      {
+        "file": "nora-registry/src/validation.rs",
+        "self_ty": "",
+        "name": "segments_match",
+        "kind": "fn",
+        "start": 404,
+        "end": 426,
+        "sha256": "f27902352eb3c82d5ca91bd013d6f2331a48b7a53bbbd61a2c389fbcf5092934"
+      }
+    ],
+    "tokens.invalidate_cache": [
+      {
+        "file": "nora-registry/src/tokens.rs",
+        "self_ty": "TokenStore",
+        "name": "invalidate_cache",
+        "kind": "method",
+        "start": 373,
+        "end": 380,
+        "sha256": "2b36f8e2a4399022237d2ccb59debc60a49e3cae0f4f03e234dce1218d0aa2a1"
+      }
+    ],
+    "tokens.is_valid_hash_prefix": [
+      {
+        "file": "nora-registry/src/tokens.rs",
+        "self_ty": "",
+        "name": "is_valid_hash_prefix",
+        "kind": "fn",
+        "start": 430,
+        "end": 437,
+        "sha256": "7bebe16dde31d536e2b42226091bb0ef8f6ac06fa5c3152668dd5382a2064eb7"
+      }
+    ],
+    "tokens.revoke_all_for_user": [
+      {
+        "file": "nora-registry/src/tokens.rs",
+        "self_ty": "TokenStore",
+        "name": "revoke_all_for_user",
+        "kind": "method",
+        "start": 405,
+        "end": 427,
+        "sha256": "dbd98ddfbbc04e869de651fb43d7372a2d73a3451cca9949c385ad958e1911d1"
+      }
+    ],
+    "tokens.revoke_token": [
+      {
+        "file": "nora-registry/src/tokens.rs",
+        "self_ty": "TokenStore",
+        "name": "revoke_token",
+        "kind": "method",
+        "start": 382,
+        "end": 403,
+        "sha256": "5d45cb33cfdd73e44f3f0ace4ab313f1765ed398bd931993946654db08615205"
+      }
+    ],
+    "tokens.verify_token": [
+      {
+        "file": "nora-registry/src/tokens.rs",
+        "self_ty": "TokenStore",
+        "name": "verify_token",
+        "kind": "method",
+        "start": 187,
+        "end": 284,
+        "sha256": "7351299fb196609eb4a38b360b517860f2661d541cd25b29ebe17d1b71761108"
+      }
+    ],
+    "validate_claims": [
+      {
+        "file": "nora-registry/src/auth/oidc.rs",
+        "self_ty": "OidcValidator",
+        "name": "validate_token",
+        "kind": "method-fragment",
+        "start": 204,
+        "end": 232,
+        "sha256": "fcc4f5ab535c30b0bc7e3b3fe6bdfa7cf2b3c771cf37351953f8d8e81b0ead25"
+      }
+    ],
+    "validation.ends_with_ci": [
+      {
+        "file": "nora-registry/src/validation.rs",
+        "self_ty": "",
+        "name": "ends_with_ci",
+        "kind": "fn",
+        "start": 54,
+        "end": 60,
+        "sha256": "13247e10593c0026707bb87880db2784d55696ef194f34c3cff7006e7299768d"
+      }
+    ],
+    "validation.validate_digest": [
+      {
+        "file": "nora-registry/src/validation.rs",
+        "self_ty": "",
+        "name": "validate_digest",
+        "kind": "fn",
+        "start": 216,
+        "end": 286,
+        "sha256": "bc9948669433a662b1ee9f70e327470221c04cc61e6daa07672218a594c96c72"
+      }
+    ],
+    "validation.validate_docker_name": [
+      {
+        "file": "nora-registry/src/validation.rs",
+        "self_ty": "",
+        "name": "validate_docker_name",
+        "kind": "fn",
+        "start": 129,
+        "end": 214,
+        "sha256": "e7da941c22e6de51e133865e163e0cd3cd39e08d44c5d63236bd99683bd18c54"
+      }
+    ],
+    "validation.validate_docker_reference": [
+      {
+        "file": "nora-registry/src/validation.rs",
+        "self_ty": "",
+        "name": "validate_docker_reference",
+        "kind": "fn",
+        "start": 288,
+        "end": 336,
+        "sha256": "fdb13322c5e890a4e9dc4e3b7ef09e0949a6c9fbc2f7ba06c45fa5349cb4328f"
+      }
+    ],
+    "validation.validate_storage_key": [
+      {
+        "file": "nora-registry/src/validation.rs",
+        "self_ty": "",
+        "name": "validate_storage_key",
+        "kind": "fn",
+        "start": 71,
+        "end": 127,
+        "sha256": "7de0c163424302205e97b5f7270dccadf38dbb1d8f684e4f9d272e643bd8a1ea"
+      }
+    ]
+  }
+}

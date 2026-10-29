@@ -11,12 +11,14 @@ class OriginalStatementTests(unittest.TestCase):
         originals = {}
         selected = [task for task in bench.tasks(extra=False).values()
                     if task["src"].startswith("bench:ports/")]
-        self.assertEqual(len(selected), 103)
+        self.assertEqual(len(selected), 101)
+        prefix = subprocess.check_output(["git", "rev-parse", "--show-prefix"],
+                                         cwd=bench.ROOT, text=True).strip()
         for task in selected:
             path = str((bench.src_dir(task) / "proofs" / f"{task['module']}.lean").relative_to(bench.ROOT))
             if path not in originals:
                 originals[path] = subprocess.check_output(
-                    ["git", "show", f"HEAD:{path}"], cwd=bench.ROOT, text=True)
+                    ["git", "show", f"HEAD:{prefix}{path}"], cwd=bench.ROOT, text=True)
             name = task["theorem"].rsplit(".", 1)[1]
             match = re.search(rf"^theorem {re.escape(name)}\b(.*?)\s:=(?:\s|$)",
                               originals[path], re.S | re.M)

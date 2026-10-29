@@ -1,0 +1,325 @@
+
+[earlier output omitted]
+
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/TotpPolicy.lean:35:94: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+⚠ [1732/1738] Replayed Verified.TokenExpiry
+warning: Verified/TokenExpiry.lean:36:15: This simp argument is unused:
+  hd
+
+Hint: Omit it from the simp argument list.
+  simp only [h̵d̵,̵ ̵IScalar.lt_equiv, IScalar.ofInt_val_eq]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/TokenExpiry.lean:41:2: 'all_goals split <;> simp_all' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/TokenExpiry.lean:42:2: 'all_goals omega' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/TokenExpiry.lean:41:12: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: Verified/TokenExpiry.lean:42:12: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: Verified/TokenExpiry.lean:50:15: This simp argument is unused:
+  hreq
+
+Hint: Omit it from the simp argument list.
+  simp only [hr̵e̵q̵,̵ ̵h̵apply, hd, Bool.false_eq_true, Bool.true_eq_false,
+  ̵  ̵ ̵ ̵ ̵ ̵not_false_eq_true, and_false,
+  ̲  ̲ ̲ ̲ ̲ ̲and_true, or_true, or_false, false_or,
+  ̵  ̵ ̵ ̵ ̵ ̵true_or, ↓reduceIte, IScalar.lt_equiv]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/TokenExpiry.lean:50:21: This simp argument is unused:
+  happly
+
+Hint: Omit it from the simp argument list.
+  simp only [hreq, ha̵p̵p̵l̵y̵,̵ ̵h̵d, Bool.false_eq_true, Bool.true_eq_false,
+  ̵  ̵ ̵ ̵ ̵ ̵not_false_eq_true, and_false,
+  ̲  ̲ ̲ ̲ ̲ ̲and_true, or_true, or_false, false_or,
+  ̵  ̵ ̵ ̵ ̵ ̵true_or, ↓reduceIte, IScalar.lt_equiv]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/TokenExpiry.lean:50:29: This simp argument is unused:
+  hd
+
+Hint: Omit it from the simp argument list.
+  simp only [hreq, happly, h̵d̵,̵ ̵Bool.false_eq_true, Bool.true_eq_false,
+  ̵  ̵ ̵ ̵ ̵ ̵not_false_eq_true, and_false,
+  ̲  ̲ ̲ ̲ ̲ ̲and_true, or_true, or_false, false_or,
+  ̵  ̵ ̵ ̵ ̵ ̵true_or, ↓reduceIte, IScalar.lt_equiv]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/TokenExpiry.lean:51:6: This simp argument is unused:
+  not_false_eq_true
+
+Hint: Omit it from the simp argument list.
+  simp only [hreq, happly, hd, Bool.false_eq_true, Bool.true_eq_false, n̵o̵t̵_̵f̵a̵l̵s̵e̵_̵e̵q̵_̵t̵r̵u̵e̵,̵ ̵and_false, and_true,
+  ̲  ̲ ̲ ̲ ̲ ̲or_true, or_false, false_or, true_or, ↓reduceIte, IScalar.lt_equiv]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/TokenExpiry.lean:51:65: This simp argument is unused:
+  false_or
+
+Hint: Omit it from the simp argument list.
+  simp only [hreq, happly, hd, Bool.false_eq_true, Bool.true_eq_false, not_false_eq_true,
+  ̲  ̲ ̲ ̲ ̲ ̲and_false, and_true, or_true, or_false, f̵a̵l̵s̵e̵_̵o̵r̵,̵true_or, ↓reduceIte, IScalar.lt_equiv]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/TokenExpiry.lean:52:6: This simp argument is unused:
+  true_or
+
+Hint: Omit it from the simp argument list.
+  simp only [hreq, happly, hd, Bool.false_eq_true, Bool.true_eq_false, not_false_eq_true,
+  ̲  ̲ ̲ ̲ ̲ ̲and_false, and_true, or_true, or_false, false_or, t̵r̵u̵e̵_̵o̵r̵,̵ ̵↓reduceIte, IScalar.lt_equiv]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/TokenExpiry.lean:53:41: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+ℹ [1733/1738] Replayed Verified.Derived
+info: Verified/Derived.lean:6:0: h5i_derive_all: no eq spec for artifactkeeper_kernel.net.Walk; derive it by hand
+info: Verified/Derived.lean:6:0: h5i_derive_all: no eq spec for artifactkeeper_kernel.net.IpAddr; derive it by hand
+✔ [1734/1738] Built Verified.ArtifactkeeperAnonymousNeverMutates (36s)
+⚠ [1735/1741] Built Verified.ArtifactkeeperMutationNeedsAction (94s)
+warning: Verified/ArtifactkeeperMutationNeedsAction.lean:53:16: This simp argument is unused:
+  List.getElem?_eq_none
+
+Hint: Omit it from the simp argument list.
+  simp [̵L̵i̵s̵t̵.̵g̵e̵t̵E̵l̵e̵m̵?̵_̵e̵q̵_̵n̵o̵n̵e̵,̵ ̵s̵h̵o̵w̵[̲s̲h̲o̲w̲ a.val.length ≤ j by scalar_tac, show b.val.length ≤ j by scalar_tac]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/ArtifactkeeperMutationNeedsAction.lean:136:51: This simp argument is unused:
+  hn
+
+Hint: Omit it from the simp argument list.
+  simp only ̵[̵h̵n̵]̵
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/ArtifactkeeperMutationNeedsAction.lean:177:57: This simp argument is unused:
+  hc
+
+Hint: Omit it from the simp argument list.
+  simp only ̵[̵h̵c̵]̵
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/ArtifactkeeperMutationNeedsAction.lean:178:18: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: Verified/ArtifactkeeperMutationNeedsAction.lean:185:12: 'simp_all' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/ArtifactkeeperMutationNeedsAction.lean:185:12: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: Verified/ArtifactkeeperMutationNeedsAction.lean:206:26: This simp argument is unused:
+  SearchStep
+
+Hint: Omit it from the simp argument list.
+  simp_all [S̵e̵a̵r̵c̵h̵S̵t̵e̵p̵,̵ ̵RoleGrants]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/ArtifactkeeperMutationNeedsAction.lean:209:8: This simp argument is unused:
+  RoleGrants
+
+Hint: Omit it from the simp argument list.
+  simp ̵[̵R̵o̵l̵e̵G̵r̵a̵n̵t̵s̵]̵
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/ArtifactkeeperMutationNeedsAction.lean:230:26: This simp argument is unused:
+  SearchStep
+
+Hint: Omit it from the simp argument list.
+  simp_all [S̵e̵a̵r̵c̵h̵S̵t̵e̵p̵,̵ ̵nats]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/ArtifactkeeperMutationNeedsAction.lean:249:2: 'all_goals aesop' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/ArtifactkeeperMutationNeedsAction.lean:249:12: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: Verified/ArtifactkeeperMutationNeedsAction.lean:268:4: 'all_goals try simp_all [SearchStep, Option.getD]' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/ArtifactkeeperMutationNeedsAction.lean:268:14: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: Verified/ArtifactkeeperMutationNeedsAction.lean:275:12: 'simp_all' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/ArtifactkeeperMutationNeedsAction.lean:275:12: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: Verified/ArtifactkeeperMutationNeedsAction.lean:341:49: This simp argument is unused:
+  bind_tc_ok
+
+Hint: Omit it from the simp argument list.
+  simp (config := { maxSteps := 1000000 }) only [bind_t̵c̵_̵ok, b̵i̵n̵d̵_̵o̵k̵,̵ ̵hpost, hwrite, middleware.respond,
+      Bool.false_eq_true, Bool.not_false, decide_false, decide_true, reduceIte] at h
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/ArtifactkeeperMutationNeedsAction.lean:342:24: This simp argument is unused:
+  Bool.not_false
+
+Hint: Omit it from the simp argument list.
+  simp (config := { maxSteps := 1000000 }) only [bind_tc_ok, bind_ok, hpost, hwrite,
+  ̲  ̲ ̲ ̲middleware.respond,
+  ̵  ̵ ̵ ̵Bool.false_eq_true, B̵o̵o̵l̵.̵n̵o̵t̵_̵f̵a̵l̵s̵e̵,̵ ̵decide_false, decide_true, reduceIte] at h
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/ArtifactkeeperMutationNeedsAction.lean:342:40: This simp argument is unused:
+  decide_false
+
+Hint: Omit it from the simp argument list.
+  simp (config := { maxSteps := 1000000 }) only [bind_tc_ok, bind_ok, hpost, hwrite,
+  ̲  ̲ ̲ ̲middleware.respond, Bool.false_eq_true, Bool.not_false, d̵e̵c̵i̵d̵e̵_̵f̵a̵l̵s̵e̵,̵ ̵decide_true, reduceIte] at h
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/ArtifactkeeperMutationNeedsAction.lean:342:54: This simp argument is unused:
+  decide_true
+
+Hint: Omit it from the simp argument list.
+  simp (config := { maxSteps := 1000000 }) only [bind_tc_ok, bind_ok, hpost, hwrite,
+  ̲  ̲ ̲ ̲middleware.respond, Bool.false_eq_true, Bool.not_false, decide_false, d̵e̵c̵i̵d̵e̵_̵t̵r̵u̵e̵,̵ ̵reduceIte] at h
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/ArtifactkeeperMutationNeedsAction.lean:374:28: This simp argument is unused:
+  Bool.true_eq_false
+
+Hint: Omit it from the simp argument list.
+  simp (config := { maxSteps := 1000000 }) only [bind_ok, reduceIte,
+          Bool.false_eq_true, B̵o̵o̵l̵.̵t̵r̵u̵e̵_̵e̵q̵_̵f̵a̵l̵s̵e̵,̵ ̵core.option.Option.is_none,
+  ̵  ̵ ̵ ̵ ̵ ̵ ̵ ̵core.option.Option.is_some, Option.isNone,
+  ̲  ̲ ̲ ̲ ̲ ̲ ̲ ̲Option.isSome, decide_true,
+  ̵  ̵ ̵ ̵ ̵ ̵ ̵ ̵decide_false, Bool.not_true, Bool.not_false] at h
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/ArtifactkeeperMutationNeedsAction.lean:375:66: This simp argument is unused:
+  decide_true
+
+Hint: Omit it from the simp argument list.
+  simp (config := { maxSteps := 1000000 }) only [bind_ok, reduceIte,
+          Bool.false_eq_true, Bool.true_eq_false, core.option.Option.is_none,
+          core.option.Option.is_some, Option.isNone, Option.isSome, decide_t̵r̵u̵e̵,̵
+  ̵ ̵ ̵ ̵ ̵ ̵ ̵ ̵ ̵d̵e̵c̵i̵d̵e̵_̵false, Bool.not_true,
+  ̲  ̲ ̲ ̲ ̲ ̲ ̲ ̲Bool.not_false] at h
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/ArtifactkeeperMutationNeedsAction.lean:376:8: This simp argument is unused:
+  decide_false
+
+Hint: Omit it from the simp argument list.
+  simp (config := { maxSteps := 1000000 }) only [bind_ok, reduceIte,
+          Bool.false_eq_true, Bool.true_eq_false, core.option.Option.is_none,
+          core.option.Option.is_some, Option.isNone, Option.isSome, decide_true,
+  ̵  ̵ ̵ ̵ ̵ ̵ ̵ ̵d̵e̵c̵i̵d̵e̵_̵f̵a̵l̵s̵e̵,̵ ̵Bool.not_true,
+  ̲  ̲ ̲ ̲ ̲ ̲ ̲ ̲Bool.not_false] at h
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/ArtifactkeeperMutationNeedsAction.lean:376:22: This simp argument is unused:
+  Bool.not_true
+
+Hint: Omit it from the simp argument list.
+  simp (config := { maxSteps := 1000000 }) only [bind_ok, reduceIte,
+          Bool.false_eq_true, Bool.true_eq_false, core.option.Option.is_none,
+          core.option.Option.is_some, Option.isNone, Option.isSome, decide_true,
+  ̵  ̵ ̵ ̵ ̵ ̵ ̵ ̵decide_false,
+  ̲ B̵o̵o̵l̵.̵n̵o̵t̵_̵t̵r̵u̵e̵,̵  ̲ ̲ ̲ ̲ ̲ ̲Bool.not_false] at h
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/ArtifactkeeperMutationNeedsAction.lean:376:37: This simp argument is unused:
+  Bool.not_false
+
+Hint: Omit it from the simp argument list.
+  simp (config := { maxSteps := 1000000 }) only [bind_ok, reduceIte,
+          Bool.false_eq_true, Bool.true_eq_false, core.option.Option.is_none,
+          core.option.Option.is_some, Option.isNone, Option.isSome, decide_true,
+  ̵  ̵ ̵ ̵ ̵ ̵ ̵ ̵decide_false,
+  ̲  ̲ ̲ ̲ ̲ ̲ ̲ ̲Bool.not_true,̵ ̵B̵o̵o̵l̵.̵n̵o̵t̵_̵f̵a̵l̵s̵e̵] at h
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/ArtifactkeeperMutationNeedsAction.lean:384:32: This simp argument is unused:
+  ha
+
+Hint: Omit it from the simp argument list.
+  simp_all ̵[̵h̵a̵]̵
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/ArtifactkeeperMutationNeedsAction.lean:402:16: This simp argument is unused:
+  bind_ok
+
+Hint: Omit it from the simp argument list.
+  simp [̵b̵i̵n̵d̵_̵o̵k̵]̵ ̵at h
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/ArtifactkeeperMutationNeedsAction.lean:378:6: 'all_goals h5i_invert h' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+✔ [1738/1749] Built Verified.ArtifactkeeperAnonymousNeedsRule (81s)
+⚠ [1739/1749] Replayed Verified.ArtifactkeeperVisibilityTotal
+warning: Verified/ArtifactkeeperVisibilityTotal.lean:346:53: Variable name `hp` is not explicitly referenced.
+
+The binding can be removed (if unused) or named `_` (if used implicitly).
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Verified/ArtifactkeeperVisibilityTotal.lean:528:63: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: Verified/ArtifactkeeperVisibilityTotal.lean:808:21: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: Verified/ArtifactkeeperVisibilityTotal.lean:1049:21: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: Verified/ArtifactkeeperVisibilityTotal.lean:1065:65: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: Verified/ArtifactkeeperVisibilityTotal.lean:1180:21: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+⚠ [1744/1749] Replayed Verified.ArtifactkeeperAdminAudited
+warning: Verified/ArtifactkeeperAdminAudited.lean:31:18: This simp argument is unused:
+  Prod.mk.injEq
+
+Hint: Omit it from the simp argument list.
+  simp only [̵P̵r̵o̵d̵.̵m̵k̵.̵i̵n̵j̵E̵q̵,̵ ̵m̵i̵d̵d̵l̵e̵w̵a̵r̵e̵.̵O̵u̵t̵c̵o̵m̵e̵.̵R̵e̵s̵p̵o̵n̵d̵.̵i̵n̵j̵E̵q̵,̵[̲m̲i̲d̲d̲l̲e̲w̲a̲r̲e̲.̲O̲u̲t̲c̲o̲m̲e̲.̲R̲e̲s̲p̲o̲n̲d̲.̲i̲n̲j̲E̲q̲,̲ reduceCtorEq, and_false] at h
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+✔ [1751/1753] Built Verified.ArtifactkeeperTicketConsumed (174s)
+⚠ [1752/1753] Built Properties (8.1s)
+warning: Properties.lean:119:97: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: Properties.lean:135:89: 'assumption' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Properties.lean:135:89: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: Properties.lean:188:94: 'assumption' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Properties.lean:188:94: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+Build completed successfully (1753 jobs).
+
+note: Verified.MigrationSafety is not built by `lake build`, so its theorems are not gated
+note: solutions.artifactkeeper-admin-audited.Solution is not built by `lake build`, so its theorems are not gated
+note: solutions.artifactkeeper-only-admin-rules.Solution is not built by `lake build`, so its theorems are not gated
+$ lake env lean /home/ht2673/Dev/h5i-app-bench/prove/ports/artifactkeeper/proofs/.lake/h5i/Gate.lean
+gate: 763 theorems in 22 modules checked against propext, Classical.choice, Quot.sound
+
+Error: ports/artifactkeeper: proof gate failed:
+  generated/ArtifactkeeperKernel.lean:30: declares an axiom: axiom core.array.iter.IntoIter (T : Type) (N : Std.Usize) : Type
+  generated/ArtifactkeeperKernel.lean:38: declares an axiom: axiom Array.Insts.CoreIterTraitsCollectIntoIteratorTIntoIter.into_iter
+  generated/ArtifactkeeperKernel.lean:48: declares an axiom: axiom core.array.iter.IntoIter.Insts.CoreIterTraitsIteratorIterator.next
+  generated/ArtifactkeeperKernel.lean:58: declares an axiom: axiom core.option.Option.map
+  generated/ArtifactkeeperKernel.lean:69: declares an axiom: axiom core.option.Option.Insts.CoreCmpPartialEqOption.eq

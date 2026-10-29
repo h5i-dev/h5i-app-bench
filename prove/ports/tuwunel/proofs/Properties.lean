@@ -1,9 +1,20 @@
+import Verified.TuwunelMessagesAfterLeaving
+import Verified.TuwunelContextVisible
+import Verified.TuwunelContextMatchesSpec
+import Verified.TuwunelContextAgreesWithMessages
+import Verified.TuwunelRelationsVisible
+import Verified.TuwunelThreadsVisible
+import Verified.TuwunelWorldReadableServed
+import Verified.TuwunelInitialSyncVisible
+import Verified.TuwunelInitialSyncDeparture
+import Verified.TuwunelServerSeesJoined
 import Verified.TuwunelMessagesVisible
 import Verified.TuwunelMessagesOrdered
 import Verified.TuwunelContextBaseServedByEvent
 import Verified.TuwunelRoomEventVisible
 import Verified.TuwunelStateReadsNeedMembership
 import Verified.TuwunelJoinedMembersNeedJoin
+import Verified.TuwunelTransitionTotal
 import Spec
 open Aeneas Aeneas.Std Result tuwunel_kernel tuwunel_kernel.Spec
 open H5iAppLib hiding lit
@@ -46,7 +57,7 @@ theorem messages_nothing_after_leaving (s : Snapshot) (u room : U64) (frm upto :
     (hj : ¬ Joined s u.val room.val) (hl : ∀ l, leftCount s u.val room.val = some l → (l : Int) ≤ p.count.val) :
     ∀ e ∈ chunk.val, ∀ q ∈ timeline s, q.event_id = e → p.count.val < q.count.val →
       q.state = .None ∨ ∃ hq, q.state = .Hash hq ∧ visibilityAt s hq.val = .WorldReadable := by
-  sorry
+  apply tuwunel_kernel.Verified.TuwunelMessagesAfterLeaving.messages_nothing_after_leaving <;> assumption
 
 /-- `/context` returns a base event, events before and events after, all in
 the room and visible to the user. -/
@@ -55,7 +66,7 @@ theorem context_visible (s : Snapshot) (u room ev lim : U64) (f : Filter)
     (h : transition s ⟨u, .Context room ev lim f⟩ = ok (.Ok (.Context base st en before after state)))
     (hk : Keys s) :
     base = ev ∧ ∀ e ∈ base :: (before.val ++ after.val), InRoom s room.val e.val ∧ Visible s u.val room.val e.val := by
-  sorry
+  apply tuwunel_kernel.Verified.TuwunelContextVisible.context_visible <;> assumption
 
 /-- Where the history visibility at an event is `joined` or `invited`, the
 events `/context` returns satisfy the Matrix spec's rule. -/
@@ -65,7 +76,7 @@ theorem context_matches_spec (s : Snapshot) (u room ev lim : U64) (f : Filter)
     (hk : Keys s) :
     ∀ e ∈ base :: (before.val ++ after.val), ∀ p hp, eventOf s e.val = some p → p.state = .Hash hp →
       (visibilityAt s hp.val = .Joined ∨ visibilityAt s hp.val = .Invited) → MatrixVisible s u.val room.val e.val := by
-  sorry
+  apply tuwunel_kernel.Verified.TuwunelContextMatchesSpec.context_matches_spec <;> assumption
 
 /-- `/context` and `/messages` agree: the events after the base event are
 the first page of `/messages` forward from the base event's count, and the
@@ -80,7 +91,7 @@ theorem context_agrees_with_messages (s : Snapshot) (u room ev lim : U64) (f : F
     (h1 : transition s ⟨u, .Messages room (.At c) .Absent .Forward k1 f⟩ = ok (.Ok (.Messages st1 en1 c1)))
     (h2 : transition s ⟨u, .Messages room (.At c) .Absent .Backward k2 f⟩ = ok (.Ok (.Messages st2 en2 c2))) :
     after = c1 ∧ before = c2 := by
-  sorry
+  apply tuwunel_kernel.Verified.TuwunelContextAgreesWithMessages.context_agrees_with_messages <;> assumption
 
 /-- The base event `/context` serves, `/event` serves too. -/
 theorem context_base_served_by_event (s : Snapshot) (u room ev lim : U64) (f : Filter)
@@ -101,7 +112,7 @@ theorem relations_visible (s : Snapshot) (u room ev : U64) (rt : Option RelType)
     (hk : Keys s) :
     (Joined s u.val room.val ∨ Invited s u.val room.val ∨ OnceJoined s u.val room.val ∨ WorldReadableNow s room.val) ∧
       ∀ e ∈ chunk.val, InRoom s room.val e.val ∧ Visible s u.val room.val e.val := by
-  sorry
+  apply tuwunel_kernel.Verified.TuwunelRelationsVisible.relations_visible <;> assumption
 
 /-- `/threads` returns thread roots of the room the user may see. -/
 theorem threads_visible (s : Snapshot) (u room : U64) (frm : Token) (lim : Option U64) (part : Bool)
@@ -109,7 +120,7 @@ theorem threads_visible (s : Snapshot) (u room : U64) (frm : Token) (lim : Optio
     (h : transition s ⟨u, .Threads room frm lim part⟩ = ok (.Ok (.Threads chunk nb)))
     (hk : Keys s) :
     ∀ e ∈ chunk.val, InRoom s room.val e.val ∧ Visible s u.val room.val e.val := by
-  sorry
+  apply tuwunel_kernel.Verified.TuwunelThreadsVisible.threads_visible <;> assumption
 
 /-- `/event` returns the event asked for, and only if the rule lets the user
 see it when asking in that room. -/
@@ -124,7 +135,7 @@ theorem world_readable_event_served (s : Snapshot) (u room ev : U64) (p : Pdu) (
     (he : eventOf s ev.val = some p) (hs : p.state = .Hash hp)
     (hw : visibilityAt s hp.val = .WorldReadable) (hi : ¬ Ignored s u.val p) :
     transition s ⟨u, .RoomEvent room ev⟩ = ok (.Ok (.RoomEvent ev)) := by
-  sorry
+  apply tuwunel_kernel.Verified.TuwunelWorldReadableServed.world_readable_event_served <;> assumption
 
 /-- The room state, one state event and the member list need the user to be
 joined, invited, once joined, or the room to be world-readable. -/
@@ -147,7 +158,7 @@ theorem initial_sync_visible (s : Snapshot) (u room : U64) (lim : Option U64)
     (h : transition s ⟨u, .InitialSync room lim⟩ = ok (.Ok (.InitialSync m state chunk st en)))
     (hk : Keys s) :
     ∀ e ∈ chunk.val, InRoom s room.val e.val ∧ Visible s u.val room.val e.val := by
-  sorry
+  apply tuwunel_kernel.Verified.TuwunelInitialSyncVisible.initial_sync_visible <;> assumption
 
 /-- A user whose membership in the room's current state is a leave or a
 ban sees the room as of their departure in `initialSync`: no event after it. -/
@@ -158,7 +169,7 @@ theorem initial_sync_stops_at_departure (s : Snapshot) (u room : U64) (lim : Opt
     (hm : stateLookup s h0 .Member u.val = some p) (ht : p ∈ timeline s)
     (hleave : p.membership = .Is .Leave ∨ p.membership = .Is .Ban) :
     ∀ e ∈ chunk.val, ∃ q ∈ timeline s, q.event_id = e ∧ q.count.val ≤ p.count.val := by
-  sorry
+  apply tuwunel_kernel.Verified.TuwunelInitialSyncDeparture.initial_sync_stops_at_departure <;> assumption
 
 /-- Over federation, an event whose history visibility is `joined` is shown
 to a server only if one of its users, joined to the room now, was joined at
@@ -167,7 +178,7 @@ theorem server_sees_joined_only (s : Snapshot) (origin room ev : U64) (p : Pdu) 
     (h : transition s ⟨0#u64, .ServerCanSee origin room ev⟩ = ok (.Ok (.CanSee true)))
     (he : eventOf s ev.val = some p) (hs : p.state = .Hash hp) (hj : visibilityAt s hp.val = .Joined) :
     ∃ m, Joined s m room.val ∧ m / 1000 = origin.val ∧ membershipAt s hp.val m = .Join := by
-  sorry
+  apply tuwunel_kernel.Verified.TuwunelServerSeesJoined.server_sees_joined_only <;> assumption
 
 /-- Every request gets a reply: the kernel neither panics nor loops, when the
 relation rows `n` satisfy `(n + 1) ^ 4 < Usize.max`. The relations walker keeps
@@ -176,6 +187,6 @@ last level adds its continuation and a child stream over up to `n` relations,
 so the queue holds at most `1 + 2 (n + n^2 + n^3) + n^4 ≤ (n + 1)^4` entries. -/
 theorem transition_total (s : Snapshot) (req : Request) (hr : (s.relations.length + 1) ^ 4 < Usize.max) :
     ∃ r, transition s req = ok r := by
-  sorry
+  exact tuwunel_kernel.Verified.TuwunelTransitionTotal.transition_total s req hr
 
 end tuwunel_kernel.Properties

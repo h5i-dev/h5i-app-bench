@@ -1,0 +1,287 @@
+{
+  "pin": "f608c4fe14dfd8d5df8edeed470bf1fb92060abd",
+  "schema_sha256": "55512cfbfdf56ce44b80d9da4aa692116d5ec0663f78c006cb07be8e1133473f",
+  "value_sha256": "8d039c78bacc78b6c6bcdf8163b2f9168b23e88a96a88e10a8ee508dd9b79f1e",
+  "syntaxes": [
+    [
+      "Utf8String",
+      "0"
+    ],
+    [
+      "Utf8StringInsensitive",
+      "1"
+    ],
+    [
+      "Uuid",
+      "2"
+    ],
+    [
+      "Boolean",
+      "3"
+    ],
+    [
+      "SyntaxId",
+      "4"
+    ],
+    [
+      "IndexId",
+      "5"
+    ],
+    [
+      "ReferenceUuid",
+      "6"
+    ],
+    [
+      "JsonFilter",
+      "7"
+    ],
+    [
+      "Credential",
+      "8"
+    ],
+    [
+      "SecretUtf8String",
+      "9"
+    ],
+    [
+      "SshKey",
+      "10"
+    ],
+    [
+      "SecurityPrincipalName",
+      "11"
+    ],
+    [
+      "Uint32",
+      "12"
+    ],
+    [
+      "Cid",
+      "13"
+    ],
+    [
+      "Utf8StringIname",
+      "14"
+    ],
+    [
+      "NsUniqueId",
+      "15"
+    ],
+    [
+      "DateTime",
+      "16"
+    ],
+    [
+      "EmailAddress",
+      "17"
+    ],
+    [
+      "Url",
+      "18"
+    ],
+    [
+      "OauthScope",
+      "19"
+    ],
+    [
+      "OauthScopeMap",
+      "20"
+    ],
+    [
+      "PrivateBinary",
+      "21"
+    ],
+    [
+      "IntentToken",
+      "22"
+    ],
+    [
+      "Passkey",
+      "23"
+    ],
+    [
+      "AttestedPasskey",
+      "24"
+    ],
+    [
+      "Session",
+      "25"
+    ],
+    [
+      "JwsKeyEs256",
+      "26"
+    ],
+    [
+      "JwsKeyRs256",
+      "27"
+    ],
+    [
+      "Oauth2Session",
+      "28"
+    ],
+    [
+      "UiHint",
+      "29"
+    ],
+    [
+      "TotpSecret",
+      "30"
+    ],
+    [
+      "ApiToken",
+      "31"
+    ],
+    [
+      "AuditLogString",
+      "32"
+    ],
+    [
+      "EcKeyPrivate",
+      "33"
+    ],
+    [
+      "Image",
+      "34"
+    ],
+    [
+      "CredentialType",
+      "35"
+    ],
+    [
+      "WebauthnAttestationCaList",
+      "36"
+    ],
+    [
+      "OauthClaimMap",
+      "37"
+    ],
+    [
+      "KeyInternal",
+      "38"
+    ],
+    [
+      "HexString",
+      "39"
+    ],
+    [
+      "Certificate",
+      "40"
+    ],
+    [
+      "ApplicationPassword",
+      "41"
+    ],
+    [
+      "Json",
+      "42"
+    ],
+    [
+      "Message",
+      "43"
+    ],
+    [
+      "Sha256",
+      "44"
+    ],
+    [
+      "Int64",
+      "45"
+    ],
+    [
+      "Uint64",
+      "46"
+    ]
+  ],
+  "partial_tags": {
+    "Bool": 1,
+    "Syntax": 1,
+    "Index": 1,
+    "Uuid": 1,
+    "Refer": 1,
+    "Iutf8": 1,
+    "Iname": 1,
+    "Utf8": 1,
+    "JsonFilt": 1,
+    "Cred": 1,
+    "SecretValue": 0,
+    "SshKey": 1,
+    "Spn": 2,
+    "Uint32": 1,
+    "Int64": 1,
+    "Uint64": 1,
+    "Cid": 1,
+    "Nsuniqueid": 1,
+    "DateTime": 1,
+    "EmailAddress": 1,
+    "Url": 1,
+    "OauthScope": 1,
+    "OauthClaimValue": 3,
+    "OauthClaim": 2,
+    "PrivateBinary": 0,
+    "IntentToken": 1,
+    "Passkey": 1,
+    "AttestedPasskey": 1,
+    "UiHint": 1,
+    "CredentialType": 1,
+    "HexString": 1,
+    "Sha256": 1,
+    "Json": 0,
+    "PhoneNumber": 1,
+    "Address": 1,
+    "PublicBinary": 1,
+    "RestrictedString": 1,
+    "Image": 1
+  },
+  "value_tags": {
+    "Bool": 1,
+    "Syntax": 1,
+    "Index": 1,
+    "Uuid": 1,
+    "Refer": 1,
+    "Iutf8": 1,
+    "Iname": 1,
+    "Utf8": 1,
+    "JsonFilt": 1,
+    "Cred": 2,
+    "SecretValue": 1,
+    "SshKey": 2,
+    "Spn": 2,
+    "Uint32": 1,
+    "Int64": 1,
+    "Uint64": 1,
+    "Cid": 1,
+    "Nsuniqueid": 1,
+    "DateTime": 1,
+    "EmailAddress": 2,
+    "Url": 1,
+    "OauthScope": 1,
+    "OauthScopeMap": 2,
+    "OauthClaimValue": 3,
+    "OauthClaimMap": 2,
+    "PrivateBinary": 1,
+    "IntentToken": 2,
+    "Passkey": 3,
+    "AttestedPasskey": 3,
+    "Session": 2,
+    "ApiToken": 2,
+    "Oauth2Session": 2,
+    "JwsKeyEs256": 1,
+    "JwsKeyRs256": 1,
+    "UiHint": 1,
+    "TotpSecret": 2,
+    "Image": 1,
+    "CredentialType": 1,
+    "WebauthnAttestationCaList": 1,
+    "KeyInternal": -1,
+    "HexString": 1,
+    "Certificate": 1,
+    "ApplicationPassword": 1,
+    "Json": 1,
+    "Sha256": 1,
+    "PhoneNumber": 1,
+    "Address": 1,
+    "PublicBinary": 1,
+    "RestrictedString": 1,
+    "AuditLogString": 1
+  }
+}

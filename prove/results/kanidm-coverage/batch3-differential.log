@@ -1,0 +1,10 @@
+   Compiling kanidm-kernel v0.1.0 (/home/ht2673/Dev/h5i-app-bench/prove/ports/kanidm/kernel)
+    Finished `release` profile [optimized] target(s) in 2.01s
+     Running tests/credential_commit.rs (prove/ports/kanidm/kernel/target/release/deps/credential_commit-53a323cd3b4b5036)
+
+running 1 test
+252 exhaustive credential-commit comparisons
+test exhaustive_commit_decision ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

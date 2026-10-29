@@ -1,0 +1,4 @@
+oxicloud: running h5i app extract --check ports/oxicloud
+oxicloud: passed; results/project-checks/20261029T032544890817Z/oxicloud.log
+rustfs: running h5i app extract --check ports/rustfs
+rustfs: failed; results/project-checks/20261029T032544890817Z/rustfs.log

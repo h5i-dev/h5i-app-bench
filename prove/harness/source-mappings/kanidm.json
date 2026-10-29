@@ -1,0 +1,1242 @@
+{
+  "upstream_revision": "f608c4fe14dfd8d5df8edeed470bf1fb92060abd",
+  "declarations": {
+    "access.create_allow_operation": [
+      {
+        "file": "server/lib/src/server/access/mod.rs",
+        "self_ty": "AccessControlsTransaction",
+        "name": "create_allow_operation",
+        "kind": "method",
+        "start": 746,
+        "end": 835,
+        "sha256": "a1528ec3635e77632b342ad4f4dda9f03fcb75890738ca2e3d595529db868f5d"
+      }
+    ],
+    "access.delete_allow_operation": [
+      {
+        "file": "server/lib/src/server/access/mod.rs",
+        "self_ty": "AccessControlsTransaction",
+        "name": "delete_allow_operation",
+        "kind": "method",
+        "start": 867,
+        "end": 889,
+        "sha256": "b54cc767922fb5b36aeba724107a8d3be242a6119a653071b9dbaf7371f16bc4"
+      }
+    ],
+    "access.delete_related_acp": [
+      {
+        "file": "server/lib/src/server/access/mod.rs",
+        "self_ty": "AccessControlsTransaction",
+        "name": "delete_related_acp",
+        "kind": "method",
+        "start": 837,
+        "end": 865,
+        "sha256": "56ef9b46e162e0ef1808e6bf622e22ab692460be38947f46af283deb94ddfc3b"
+      }
+    ],
+    "access.effective_permission_check": [
+      {
+        "file": "server/lib/src/server/access/mod.rs",
+        "self_ty": "AccessControlsTransaction",
+        "name": "effective_permission_check",
+        "kind": "method",
+        "start": 891,
+        "end": 938,
+        "sha256": "5beae613d90a92b79ea16a10a43a99e5f96e50ba5fee8a5a2f3bfa49efbbc1a4"
+      }
+    ],
+    "access.entry_effective_permission_check": [
+      {
+        "file": "server/lib/src/server/access/mod.rs",
+        "self_ty": "AccessControlsTransaction",
+        "name": "entry_effective_permission_check",
+        "kind": "method",
+        "start": 940,
+        "end": 1005,
+        "sha256": "6b868af81bcac20b7f406050b9eb6e74a2a1e481b3e531149d535f66c7049ce8"
+      }
+    ],
+    "access.filter_entries": [
+      {
+        "file": "server/lib/src/server/access/mod.rs",
+        "self_ty": "AccessControlsTransaction",
+        "name": "filter_entries",
+        "kind": "method",
+        "start": 309,
+        "end": 363,
+        "sha256": "b3387d3e1fb64ee07860299eb2fe5dea6cfbb5eecbcee93897d6d739190f023d"
+      }
+    ],
+    "access.modify_allow_operation": [
+      {
+        "file": "server/lib/src/server/access/mod.rs",
+        "self_ty": "AccessControlsTransaction",
+        "name": "modify_allow_operation",
+        "kind": "method",
+        "start": 526,
+        "end": 546,
+        "sha256": "8ba60cf17106c02e555b4eb4d8a394e79e4b8e9cf064f0b7e11dc36a0f6d8882"
+      }
+    ],
+    "access.modify_allow_operation_per_entry": [
+      {
+        "file": "server/lib/src/server/access/mod.rs",
+        "self_ty": "AccessControlsTransaction",
+        "name": "modify_allow_operation_per_entry",
+        "kind": "method",
+        "start": 585,
+        "end": 744,
+        "sha256": "c090aa3f6cf62f50a1fdd41a506346998f6221cc859b25adba127c90faf26dc5"
+      }
+    ],
+    "access.modify_related_acp": [
+      {
+        "file": "server/lib/src/server/access/mod.rs",
+        "self_ty": "AccessControlsTransaction",
+        "name": "modify_related_acp",
+        "kind": "method",
+        "start": 493,
+        "end": 524,
+        "sha256": "b96cc678aa09521ad5d2e9763199a3630ddbea615bf95f33bf66bdce241be5ef"
+      }
+    ],
+    "access.resolve_access_conditions": [
+      {
+        "file": "server/lib/src/server/access/mod.rs",
+        "self_ty": "",
+        "name": "resolve_access_conditions",
+        "kind": "fn",
+        "start": 168,
+        "end": 210,
+        "sha256": "76815a69b6c3d4f0094fbbf82b7b44e8d4a3cdf4f0a03b3eabcc888c967d5e01"
+      }
+    ],
+    "access.search_filter_entry_attributes": [
+      {
+        "file": "server/lib/src/server/access/mod.rs",
+        "self_ty": "AccessControlsTransaction",
+        "name": "search_filter_entry_attributes",
+        "kind": "method",
+        "start": 375,
+        "end": 491,
+        "sha256": "20c666e108c9e1e8943e349bb3d72e1434547475335d9ef0596d37f69368dea5"
+      }
+    ],
+    "access.search_related_acp": [
+      {
+        "file": "server/lib/src/server/access/mod.rs",
+        "self_ty": "AccessControlsTransaction",
+        "name": "search_related_acp",
+        "kind": "method",
+        "start": 222,
+        "end": 307,
+        "sha256": "ed09240730afe86c75577c7291b05c93d62061525fd0fe031a4ef94865c2005e"
+      }
+    ],
+    "account_policy.combine": [
+      {
+        "file": "server/lib/src/idm/accountpolicy.rs",
+        "self_ty": "ResolvedAccountPolicy",
+        "name": "fold_from",
+        "kind": "method",
+        "start": 101,
+        "end": 185,
+        "sha256": "39ec561064f5a4b02db2bb26776cffb0aa0e7e0c9ca50f61082411449c742c30"
+      }
+    ],
+    "account_policy.finalize": [
+      {
+        "file": "server/lib/src/idm/accountpolicy.rs",
+        "self_ty": "ResolvedAccountPolicy",
+        "name": "fold_from",
+        "kind": "method",
+        "start": 101,
+        "end": 185,
+        "sha256": "39ec561064f5a4b02db2bb26776cffb0aa0e7e0c9ca50f61082411449c742c30"
+      }
+    ],
+    "account_policy.fold_from": [
+      {
+        "file": "server/lib/src/idm/accountpolicy.rs",
+        "self_ty": "ResolvedAccountPolicy",
+        "name": "fold_from",
+        "kind": "method",
+        "start": 101,
+        "end": 185,
+        "sha256": "39ec561064f5a4b02db2bb26776cffb0aa0e7e0c9ca50f61082411449c742c30"
+      }
+    ],
+    "account_policy.initial": [
+      {
+        "file": "server/lib/src/idm/accountpolicy.rs",
+        "self_ty": "ResolvedAccountPolicy",
+        "name": "fold_from",
+        "kind": "method",
+        "start": 101,
+        "end": 185,
+        "sha256": "39ec561064f5a4b02db2bb26776cffb0aa0e7e0c9ca50f61082411449c742c30"
+      }
+    ],
+    "create_acc.apply_create_access": [
+      {
+        "file": "server/lib/src/server/access/create.rs",
+        "self_ty": "",
+        "name": "apply_create_access",
+        "kind": "fn",
+        "start": 30,
+        "end": 119,
+        "sha256": "0e510be57031038176e8cf782587f233fa459c38ed995cbbf0fef0b1b7554b2a"
+      }
+    ],
+    "create_acc.create_filter_entry": [
+      {
+        "file": "server/lib/src/server/access/create.rs",
+        "self_ty": "",
+        "name": "create_filter_entry",
+        "kind": "fn",
+        "start": 121,
+        "end": 271,
+        "sha256": "9446726dce3b6e6a16a3b24c5f003c54df7709cfcfbf2c4523c7576aec44b061"
+      }
+    ],
+    "create_acc.message_queue": [
+      {
+        "file": "server/lib/src/server/access/create.rs",
+        "self_ty": "",
+        "name": "message_queue",
+        "kind": "fn",
+        "start": 339,
+        "end": 369,
+        "sha256": "7562a36f22b57fde45eb7de0db61d227470fbca7ed89d892af883196f8cec358"
+      }
+    ],
+    "create_acc.migration_filter_entry": [
+      {
+        "file": "server/lib/src/server/access/create.rs",
+        "self_ty": "",
+        "name": "migration_filter_entry",
+        "kind": "fn",
+        "start": 312,
+        "end": 337,
+        "sha256": "3f567e9d10c87e6a6a1575d6ace4b0a5feebfb94ec152bd97870a63aa47ec7da"
+      }
+    ],
+    "create_acc.protected_filter_entry": [
+      {
+        "file": "server/lib/src/server/access/create.rs",
+        "self_ty": "",
+        "name": "protected_filter_entry",
+        "kind": "fn",
+        "start": 273,
+        "end": 310,
+        "sha256": "d88b2c03e95ff4b785e640fc2d5ef553ea33adfb75b0d757f2c672b252c05a71"
+      }
+    ],
+    "credential_commit.can_commit": [
+      {
+        "file": "server/lib/src/idm/credupdatesession.rs",
+        "self_ty": "CredentialUpdateSession",
+        "name": "can_commit",
+        "kind": "method",
+        "start": 217,
+        "end": 292,
+        "sha256": "b914b0f9f8104b26df03cdc3da7a694ccb87181bc60c5ccbbe23c2d34ac1d789"
+      }
+    ],
+    "delete_acc.apply_delete_access": [
+      {
+        "file": "server/lib/src/server/access/delete.rs",
+        "self_ty": "",
+        "name": "apply_delete_access",
+        "kind": "fn",
+        "start": 22,
+        "end": 51,
+        "sha256": "691e987ebd90f32001cc2077b2076cdf6044d4e5bd427306fb8332c33298ef5f"
+      }
+    ],
+    "delete_acc.delete_filter_entry": [
+      {
+        "file": "server/lib/src/server/access/delete.rs",
+        "self_ty": "",
+        "name": "delete_filter_entry",
+        "kind": "fn",
+        "start": 53,
+        "end": 170,
+        "sha256": "76b1a3971ee737ecbecdf051c64eeb9316fbd69c783b7797ecec0e1b8f9cdec6"
+      }
+    ],
+    "delete_acc.protected_filter_entry": [
+      {
+        "file": "server/lib/src/server/access/delete.rs",
+        "self_ty": "",
+        "name": "protected_filter_entry",
+        "kind": "fn",
+        "start": 172,
+        "end": 211,
+        "sha256": "1087750e268c5dd4c875e1ef15ba98d131bf8681948d00a0106592bbea71c4cc"
+      }
+    ],
+    "entry_impl.attribute_endswith": [
+      {
+        "file": "server/lib/src/entry.rs",
+        "self_ty": "Entry",
+        "name": "attribute_endswith",
+        "kind": "method",
+        "start": 3010,
+        "end": 3020,
+        "sha256": "2e06ac390829f3197e775c2134b88efb38dee08dc4727ae5491b50c2056c773c"
+      }
+    ],
+    "entry_impl.attribute_equality": [
+      {
+        "file": "server/lib/src/entry.rs",
+        "self_ty": "Entry",
+        "name": "attribute_equality",
+        "kind": "method",
+        "start": 2973,
+        "end": 2984,
+        "sha256": "98f5c457e5f80966856daabdd70aab965ad1af004e2fae226937a82286ab7278"
+      }
+    ],
+    "entry_impl.attribute_lessthan": [
+      {
+        "file": "server/lib/src/entry.rs",
+        "self_ty": "Entry",
+        "name": "attribute_lessthan",
+        "kind": "method",
+        "start": 3022,
+        "end": 3032,
+        "sha256": "7c8e957a7f0cd66739772fe671d6f676230bcc35c734404ba91be31a6e204cbe"
+      }
+    ],
+    "entry_impl.attribute_pres": [
+      {
+        "file": "server/lib/src/entry.rs",
+        "self_ty": "Entry",
+        "name": "attribute_pres",
+        "kind": "method",
+        "start": 2968,
+        "end": 2971,
+        "sha256": "ce700371812564f36c5334fdc1d036cee00117fc21e41bba0bb0b3bd7e696234"
+      }
+    ],
+    "entry_impl.attribute_startswith": [
+      {
+        "file": "server/lib/src/entry.rs",
+        "self_ty": "Entry",
+        "name": "attribute_startswith",
+        "kind": "method",
+        "start": 2998,
+        "end": 3008,
+        "sha256": "3fc37b47d2e67a9ccc7246e20077e5179eac3bed9a0eec4fff00b540d39c1e29"
+      }
+    ],
+    "entry_impl.attribute_substring": [
+      {
+        "file": "server/lib/src/entry.rs",
+        "self_ty": "Entry",
+        "name": "attribute_substring",
+        "kind": "method",
+        "start": 2986,
+        "end": 2996,
+        "sha256": "ee8471f19ce13a213bf617d088e1e7e720d6194a4f8519cad220d937938974d0"
+      }
+    ],
+    "entry_impl.entry_match_no_index": [
+      {
+        "file": "server/lib/src/entry.rs",
+        "self_ty": "Entry",
+        "name": "entry_match_no_index",
+        "kind": "method",
+        "start": 3038,
+        "end": 3043,
+        "sha256": "0e34d3d98c62e6a5fc11a72c01b23411792c507e23110ce938e483664055a3f3"
+      }
+    ],
+    "entry_impl.entry_match_no_index_inner": [
+      {
+        "file": "server/lib/src/entry.rs",
+        "self_ty": "Entry",
+        "name": "entry_match_no_index_inner",
+        "kind": "method",
+        "start": 3048,
+        "end": 3071,
+        "sha256": "eabf68754cb8ab558b18922c58f7c4fd74c1fdad724776e0f8617203ddff28fd"
+      }
+    ],
+    "entry_impl.get_ava_as_iutf8": [
+      {
+        "file": "server/lib/src/entry.rs",
+        "self_ty": "Entry",
+        "name": "get_ava_as_iutf8",
+        "kind": "method",
+        "start": 2695,
+        "end": 2697,
+        "sha256": "a1af4b184dd9f6a8e72f445d40c6ad619d673b04800327753366e3f1ecdf2064"
+      }
+    ],
+    "entry_impl.get_ava_as_oauthscopemaps": [
+      {
+        "file": "server/lib/src/entry.rs",
+        "self_ty": "Entry",
+        "name": "get_ava_as_oauthscopemaps",
+        "kind": "method",
+        "start": 2724,
+        "end": 2729,
+        "sha256": "f63019a8471bd729572669d3d26b1aeee67fd3b946d1157045f949435329d096"
+      }
+    ],
+    "entry_impl.get_ava_names": [
+      {
+        "file": "server/lib/src/entry.rs",
+        "self_ty": "Entry",
+        "name": "get_ava_names",
+        "kind": "method",
+        "start": 2664,
+        "end": 2668,
+        "sha256": "408a4c04890309dfb7f2ec855bca4ac7be852a92b912bc60407db69a36223534"
+      }
+    ],
+    "entry_impl.get_ava_refer": [
+      {
+        "file": "server/lib/src/entry.rs",
+        "self_ty": "Entry",
+        "name": "get_ava_refer",
+        "kind": "method",
+        "start": 2684,
+        "end": 2686,
+        "sha256": "fc1fe2c06dfa67737d85086e5a0fbf3476368755d988b6a7302dca05f47a6541"
+      }
+    ],
+    "entry_impl.get_ava_set": [
+      {
+        "file": "server/lib/src/entry.rs",
+        "self_ty": "Entry",
+        "name": "get_ava_set",
+        "kind": "method",
+        "start": 2679,
+        "end": 2682,
+        "sha256": "9c0778deb8c2963866d2b3770e2c853b27241c5d96fb9da64ddae2eb1ea09676"
+      }
+    ],
+    "entry_impl.get_ava_single_refer": [
+      {
+        "file": "server/lib/src/entry.rs",
+        "self_ty": "Entry",
+        "name": "get_ava_single_refer",
+        "kind": "method",
+        "start": 2895,
+        "end": 2897,
+        "sha256": "e0e0def67e78d80486c718f6dd4ac43573995c6231c7a94215c587afc321c42c"
+      }
+    ],
+    "entry_impl.get_uuid_init": [
+      {
+        "file": "server/lib/src/entry.rs",
+        "self_ty": "Entry",
+        "name": "get_uuid",
+        "kind": "method",
+        "start": 278,
+        "end": 283,
+        "sha256": "70c6a562cab24f0d36ec3bc78900b819fafd3eebefd3f7870d86ed457b5ea264"
+      }
+    ],
+    "entry_impl.reduce_attributes": [
+      {
+        "file": "server/lib/src/entry.rs",
+        "self_ty": "Entry",
+        "name": "reduce_attributes",
+        "kind": "method",
+        "start": 1944,
+        "end": 1975,
+        "sha256": "fd0629b299d79a7ecedac6bfa31343ef1ca8f24087cb16b22e349d19c8b5e367"
+      }
+    ],
+    "filter_impl.fc_get_attr_set": [
+      {
+        "file": "server/lib/src/filter.rs",
+        "self_ty": "FilterComp",
+        "name": "get_attr_set",
+        "kind": "method",
+        "start": 853,
+        "end": 872,
+        "sha256": "1fb253853ff5edc2349489fa9974b7d230697cf8a70b5b2e8525c2014790ac12"
+      }
+    ],
+    "filter_impl.get_attr_set": [
+      {
+        "file": "server/lib/src/filter.rs",
+        "self_ty": "Filter",
+        "name": "get_attr_set",
+        "kind": "method",
+        "start": 607,
+        "end": 612,
+        "sha256": "bb21203a2481f76a308f901b41b1f278cd877df5f75ef315dfe3152f912c9917"
+      }
+    ],
+    "filter_impl.resolve_no_idx": [
+      {
+        "file": "server/lib/src/filter.rs",
+        "self_ty": "FilterResolved",
+        "name": "resolve_no_idx",
+        "kind": "method",
+        "start": 1601,
+        "end": 1659,
+        "sha256": "655035756a8d49b334244e4c55415c8fc29bf5ee8c37591fcd011be966152c96"
+      }
+    ],
+    "identity_impl.access_scope": [
+      {
+        "file": "server/lib/src/server/identity.rs",
+        "self_ty": "Identity",
+        "name": "access_scope",
+        "kind": "method",
+        "start": 281,
+        "end": 283,
+        "sha256": "54c540510bbc39d854d0929bae2c4ddb733202a584fce617b750b84d1c133739"
+      }
+    ],
+    "identity_impl.get_memberof": [
+      {
+        "file": "server/lib/src/server/identity.rs",
+        "self_ty": "Identity",
+        "name": "get_memberof",
+        "kind": "method",
+        "start": 366,
+        "end": 371,
+        "sha256": "c5394cf36cb977edd610aff4b521a8fa02d2883e9a0638c3e59abf804192cdcf"
+      }
+    ],
+    "identity_impl.get_uuid": [
+      {
+        "file": "server/lib/src/server/identity.rs",
+        "self_ty": "Identity",
+        "name": "get_uuid",
+        "kind": "method",
+        "start": 324,
+        "end": 330,
+        "sha256": "05540b364582712104437a29af513da54ea93100d29a7aab0b9cfa35777afc12"
+      }
+    ],
+    "identity_impl.role_get_uuid": [
+      {
+        "file": "server/lib/src/server/identity.rs",
+        "self_ty": "InternalRole",
+        "name": "get_uuid",
+        "kind": "method",
+        "start": 91,
+        "end": 98,
+        "sha256": "21a85bdb745efcfe82df73f4f20a677620136d124d50a247fff00fdcfe4c424d"
+      }
+    ],
+    "migration.migration_entry_attrs": [
+      {
+        "file": "server/lib/src/server/access/migration.rs",
+        "self_ty": "",
+        "name": "migration_entry_attrs",
+        "kind": "fn",
+        "start": 41,
+        "end": 148,
+        "sha256": "c791c1540ad49af1bf4fc95c35752be3eb03290eed92a86c5e14da9f20de4ef5"
+      }
+    ],
+    "migration.migration_entry_classes": [
+      {
+        "file": "server/lib/src/server/access/migration.rs",
+        "self_ty": "",
+        "name": "MIGRATION_ENTRY_CLASSES",
+        "kind": "static",
+        "start": 4,
+        "end": 25,
+        "sha256": "0bafe6803080deb21e4e402d1a482dead0fa54537456ebd4f51252c527a7c45d"
+      }
+    ],
+    "migration.migration_ignore_classes": [
+      {
+        "file": "server/lib/src/server/access/migration.rs",
+        "self_ty": "",
+        "name": "MIGRATION_IGNORE_CLASSES",
+        "kind": "static",
+        "start": 27,
+        "end": 39,
+        "sha256": "c922e34c3839872bd8001fdf9629fa837c0fdf6abb1ad7f6e402520c0b57add8"
+      }
+    ],
+    "modify_acc.apply_modify_access": [
+      {
+        "file": "server/lib/src/server/access/modify.rs",
+        "self_ty": "",
+        "name": "apply_modify_access",
+        "kind": "fn",
+        "start": 28,
+        "end": 241,
+        "sha256": "a8d45bb74c29962af81656c29d9f748dc834fe7faa61b1696ab0b336f54d6d50"
+      }
+    ],
+    "modify_acc.modify_ident_test": [
+      {
+        "file": "server/lib/src/server/access/modify.rs",
+        "self_ty": "",
+        "name": "modify_ident_test",
+        "kind": "fn",
+        "start": 243,
+        "end": 277,
+        "sha256": "66dcc4c12b2a8650c4f21dd7571ba00817f60a6ec16578dd9506ce240a2564ec"
+      }
+    ],
+    "modify_acc.modify_migration_attrs": [
+      {
+        "file": "server/lib/src/server/access/modify.rs",
+        "self_ty": "",
+        "name": "modify_migration_attrs",
+        "kind": "fn",
+        "start": 490,
+        "end": 521,
+        "sha256": "8f02bb5aa86c0f9170c03e47810eacd91ae7ecd2da5ad8f94299ca8a93d068f0"
+      }
+    ],
+    "modify_acc.modify_pres_test": [
+      {
+        "file": "server/lib/src/server/access/modify.rs",
+        "self_ty": "",
+        "name": "modify_pres_test",
+        "kind": "fn",
+        "start": 279,
+        "end": 306,
+        "sha256": "b51c44716933172b31a687469067b2edbb502b70fb92a3ba45c4d7097f26ab59"
+      }
+    ],
+    "modify_acc.modify_protected_attrs": [
+      {
+        "file": "server/lib/src/server/access/modify.rs",
+        "self_ty": "",
+        "name": "modify_protected_attrs",
+        "kind": "fn",
+        "start": 359,
+        "end": 390,
+        "sha256": "057f7f9c591b18200c32f58aaf607f7123a9d289d5d3237437e692fbd4371051"
+      }
+    ],
+    "modify_acc.modify_protected_entry_attrs": [
+      {
+        "file": "server/lib/src/server/access/modify.rs",
+        "self_ty": "",
+        "name": "modify_protected_entry_attrs",
+        "kind": "fn",
+        "start": 392,
+        "end": 488,
+        "sha256": "a0c4cc759b24553dd1351a060d86a3b0fbd70a1926c8f5ec05d04b355957121d"
+      }
+    ],
+    "modify_acc.modify_sync_constrain": [
+      {
+        "file": "server/lib/src/server/access/modify.rs",
+        "self_ty": "",
+        "name": "modify_sync_constrain",
+        "kind": "fn",
+        "start": 308,
+        "end": 357,
+        "sha256": "463c96e4140e4b5f379562a6b8afa99768516c74f26c998c5884f2c180451d09"
+      }
+    ],
+    "protected.locked_entry_classes": [
+      {
+        "file": "server/lib/src/server/access/protected.rs",
+        "self_ty": "",
+        "name": "LOCKED_ENTRY_CLASSES",
+        "kind": "static",
+        "start": 74,
+        "end": 82,
+        "sha256": "3b02a46d4cd83e9e41d088007809a1fe561de45a54e2c7ccbfa235bf304637c4"
+      }
+    ],
+    "protected.protected_entry_classes": [
+      {
+        "file": "server/lib/src/server/access/protected.rs",
+        "self_ty": "",
+        "name": "PROTECTED_ENTRY_CLASSES",
+        "kind": "static",
+        "start": 4,
+        "end": 19,
+        "sha256": "c9af2eb668c2033368b52efd1e6901c7b4f4a65ae6cd2fdcd4d9c518071867e8"
+      }
+    ],
+    "protected.protected_mod_entry_classes": [
+      {
+        "file": "server/lib/src/server/access/protected.rs",
+        "self_ty": "",
+        "name": "PROTECTED_MOD_ENTRY_CLASSES",
+        "kind": "static",
+        "start": 21,
+        "end": 40,
+        "sha256": "cf5a7432a41a752524858855584833c478cee86f163eed4e2a5e91c52b82e542"
+      }
+    ],
+    "protected.protected_mod_pres_entry_classes": [
+      {
+        "file": "server/lib/src/server/access/protected.rs",
+        "self_ty": "",
+        "name": "PROTECTED_MOD_PRES_ENTRY_CLASSES",
+        "kind": "static",
+        "start": 42,
+        "end": 56,
+        "sha256": "ebed50e9cde50a40c31ecc88378748473a0e0123945607d1366e57b242751ece"
+      }
+    ],
+    "protected.protected_mod_rem_entry_classes": [
+      {
+        "file": "server/lib/src/server/access/protected.rs",
+        "self_ty": "",
+        "name": "PROTECTED_MOD_REM_ENTRY_CLASSES",
+        "kind": "static",
+        "start": 58,
+        "end": 72,
+        "sha256": "c9ed8a054a4fe907e09055a37e506fa4cddd8b97da9f7cf5b3c07aba13a0a799"
+      }
+    ],
+    "schema_tags.ava_accepts": [
+      {
+        "file": "server/lib/src/schema.rs",
+        "self_ty": "SchemaAttribute",
+        "name": "validate_ava",
+        "kind": "method",
+        "start": 368,
+        "end": 387,
+        "sha256": "d4ba0aa99675b0a1d8b7abd7248fd2783d94b57ba411900ebe3b93755685307f"
+      }
+    ],
+    "schema_tags.partial_accepts": [
+      {
+        "file": "server/lib/src/schema.rs",
+        "self_ty": "SchemaAttribute",
+        "name": "validate_partialvalue",
+        "kind": "method",
+        "start": 219,
+        "end": 297,
+        "sha256": "2f63fe77fdfeac35e9d2ac6b40a3f1fb67600590011b42dc100c8f940947ae59"
+      }
+    ],
+    "schema_tags.value_accepts": [
+      {
+        "file": "server/lib/src/schema.rs",
+        "self_ty": "SchemaAttribute",
+        "name": "validate_value",
+        "kind": "method",
+        "start": 299,
+        "end": 366,
+        "sha256": "6d4fd71a9624bed0d33d56faf52bfc9cc187f4b032545f635952080873dbd8ae"
+      }
+    ],
+    "search_acc.apply_search_access": [
+      {
+        "file": "server/lib/src/server/access/search.rs",
+        "self_ty": "",
+        "name": "apply_search_access",
+        "kind": "fn",
+        "start": 17,
+        "end": 80,
+        "sha256": "7977dc9e8f2ea823f882ef630e6c843223718bc7f7d821231b247f1808ab80c0"
+      }
+    ],
+    "search_acc.search_applications_filter_entry": [
+      {
+        "file": "server/lib/src/server/access/search.rs",
+        "self_ty": "",
+        "name": "search_applications_filter_entry",
+        "kind": "fn",
+        "start": 263,
+        "end": 306,
+        "sha256": "a9259bafd74d30d7c4104d31503aecac0a12f52e02a5cd4626dac5c005abba31"
+      }
+    ],
+    "search_acc.search_filter_entry": [
+      {
+        "file": "server/lib/src/server/access/search.rs",
+        "self_ty": "",
+        "name": "search_filter_entry",
+        "kind": "fn",
+        "start": 82,
+        "end": 216,
+        "sha256": "52298ecf023465f4fa249e09c6e01f9811d23d43aee9d390837811b721a56e15"
+      }
+    ],
+    "search_acc.search_oauth2_filter_entry": [
+      {
+        "file": "server/lib/src/server/access/search.rs",
+        "self_ty": "",
+        "name": "search_oauth2_filter_entry",
+        "kind": "fn",
+        "start": 218,
+        "end": 261,
+        "sha256": "fa4339f5501de0228bebb3f5899a053b821570100668ef5a9c127dc504ee9df2"
+      }
+    ],
+    "search_acc.search_sync_account_filter_entry": [
+      {
+        "file": "server/lib/src/server/access/search.rs",
+        "self_ty": "",
+        "name": "search_sync_account_filter_entry",
+        "kind": "fn",
+        "start": 308,
+        "end": 362,
+        "sha256": "5db30b4c08097ad324667075ad3dd10924ca6450b9a1d290bd3c88b8adf24194"
+      }
+    ],
+    "softlock.apply_time_step": [
+      {
+        "file": "server/lib/src/credential/softlock.rs",
+        "self_ty": "CredSoftLock",
+        "name": "apply_time_step",
+        "kind": "method",
+        "start": 189,
+        "end": 238,
+        "sha256": "f456f076ee47a4384e7e54fd9c3921cb2ea997d765ff6559432e72cdcad31ad4"
+      }
+    ],
+    "softlock.failure_next_state": [
+      {
+        "file": "server/lib/src/credential/softlock.rs",
+        "self_ty": "CredSoftLockPolicy",
+        "name": "failure_next_state",
+        "kind": "method",
+        "start": 75,
+        "end": 151,
+        "sha256": "12d234ba1133e4245eb3f9adb7ded7d145ceaa3e24d18919cebe91d8b96f1b60"
+      }
+    ],
+    "softlock.is_valid": [
+      {
+        "file": "server/lib/src/credential/softlock.rs",
+        "self_ty": "CredSoftLock",
+        "name": "is_valid",
+        "kind": "method",
+        "start": 240,
+        "end": 243,
+        "sha256": "c5c5d7425f94a862d95c4e6d2461efa0bc0d0d6b62c8b8ba65b239929cabb9cc"
+      }
+    ],
+    "softlock.new": [
+      {
+        "file": "server/lib/src/credential/softlock.rs",
+        "self_ty": "CredSoftLock",
+        "name": "new",
+        "kind": "method",
+        "start": 181,
+        "end": 187,
+        "sha256": "00c8da4f45976a3b5f06dee6f61845df795c09bc10494850c181c396741ea7cb"
+      }
+    ],
+    "softlock.record_failure": [
+      {
+        "file": "server/lib/src/credential/softlock.rs",
+        "self_ty": "CredSoftLock",
+        "name": "record_failure",
+        "kind": "method",
+        "start": 245,
+        "end": 267,
+        "sha256": "547cc6e30cea81a3c0489ee5b7d09b5e36874e5ff3f769655608877db07a762b"
+      }
+    ],
+    "valueset.as_iutf8_set": [
+      {
+        "file": "server/lib/src/valueset/iutf8.rs",
+        "self_ty": "ValueSetIutf8",
+        "name": "as_iutf8_set",
+        "kind": "method",
+        "start": 207,
+        "end": 209,
+        "sha256": "71ad89f98428fa4dac6ab9577c259ebb4551eb8a2783ce83cab385a11fe6fa4c"
+      }
+    ],
+    "valueset.as_oauthscopemap": [
+      {
+        "file": "server/lib/src/valueset/oauth.rs",
+        "self_ty": "ValueSetOauthScopeMap",
+        "name": "as_oauthscopemap",
+        "kind": "method",
+        "start": 433,
+        "end": 435,
+        "sha256": "52b4543b52f7f6e89736b973e068c6e7c7e9a855392e103cb1cb4f8738fa3c24"
+      }
+    ],
+    "valueset.as_refer_set": [
+      {
+        "file": "server/lib/src/valueset/uuid.rs",
+        "self_ty": "ValueSetRefer",
+        "name": "as_refer_set",
+        "kind": "method",
+        "start": 410,
+        "end": 412,
+        "sha256": "a7bfe69a4454f88b77576c0aec812cca41172435cc11c2158773e9eef266e9a6"
+      }
+    ],
+    "valueset.to_refer_single": [
+      {
+        "file": "server/lib/src/valueset/uuid.rs",
+        "self_ty": "ValueSetRefer",
+        "name": "to_refer_single",
+        "kind": "method",
+        "start": 402,
+        "end": 408,
+        "sha256": "79d96c131bd4e33b98ca59fb3cafcbd71af7b9a709422549bcf3c0e623b95562"
+      }
+    ],
+    "valueset.to_str": [
+      {
+        "file": "server/lib/src/value.rs",
+        "self_ty": "PartialValue",
+        "name": "to_str",
+        "kind": "method",
+        "start": 952,
+        "end": 959,
+        "sha256": "b0b42e326889bd2dc7bbe8252c4a095b917357609107686b64238f47d9ac925d"
+      },
+      {
+        "file": "server/lib/src/value.rs",
+        "self_ty": "Value",
+        "name": "to_str",
+        "kind": "method",
+        "start": 2004,
+        "end": 2011,
+        "sha256": "c054a5ad27abd74ea8e5536851a21994302cce1bf17861f041bb70a4a9fcd119"
+      }
+    ],
+    "valueset.to_uuid_single": [
+      {
+        "file": "server/lib/src/valueset/uuid.rs",
+        "self_ty": "ValueSetUuid",
+        "name": "to_uuid_single",
+        "kind": "method",
+        "start": 174,
+        "end": 180,
+        "sha256": "c903d0216c4a090ecd1e74d6e3ee4dcbafe0379cc6529ce904a290098e3a90f9"
+      }
+    ],
+    "valueset.vs_contains": [
+      {
+        "file": "server/lib/src/valueset/utf8.rs",
+        "self_ty": "ValueSetUtf8",
+        "name": "contains",
+        "kind": "method",
+        "start": 81,
+        "end": 86,
+        "sha256": "07d4f8d90f3e7bc68e53d561cc4c7a93accb5565a5585486b4d1d539d9ae46f6"
+      },
+      {
+        "file": "server/lib/src/valueset/iutf8.rs",
+        "self_ty": "ValueSetIutf8",
+        "name": "contains",
+        "kind": "method",
+        "start": 84,
+        "end": 89,
+        "sha256": "8d6a0bd6a191e45a3cccd2e48dc066d34a19fba975c3d8f31a3b9dae5b64fcc7"
+      },
+      {
+        "file": "server/lib/src/valueset/iname.rs",
+        "self_ty": "ValueSetIname",
+        "name": "contains",
+        "kind": "method",
+        "start": 86,
+        "end": 91,
+        "sha256": "c6a08fa6de26e323e50bb03045995d7f39e30e81445ed190ddb11a112a9a958d"
+      },
+      {
+        "file": "server/lib/src/valueset/uuid.rs",
+        "self_ty": "ValueSetUuid",
+        "name": "contains",
+        "kind": "method",
+        "start": 86,
+        "end": 91,
+        "sha256": "38ff3b3094e323ddaa4b69d86619b740ef4a47a40285c4577091a878797bbd8a"
+      },
+      {
+        "file": "server/lib/src/valueset/uuid.rs",
+        "self_ty": "ValueSetRefer",
+        "name": "contains",
+        "kind": "method",
+        "start": 316,
+        "end": 321,
+        "sha256": "27de6afbad125c199315f8df146d331313f945c09949a5ea79477d6788b1e397"
+      },
+      {
+        "file": "server/lib/src/valueset/uint32.rs",
+        "self_ty": "ValueSetUint32",
+        "name": "contains",
+        "kind": "method",
+        "start": 83,
+        "end": 88,
+        "sha256": "4ef488aa637a671dac5340cfc69b5eaa5863fa84a51feb59a15516ab957770ad"
+      },
+      {
+        "file": "server/lib/src/valueset/oauth.rs",
+        "self_ty": "ValueSetOauthScopeMap",
+        "name": "contains",
+        "kind": "method",
+        "start": 323,
+        "end": 328,
+        "sha256": "5132433c5172d26eec8acb4889cdebfbc25699e72802523ae0b1afa5b8cb0706"
+      }
+    ],
+    "valueset.vs_endswith": [
+      {
+        "file": "server/lib/src/valueset/utf8.rs",
+        "self_ty": "ValueSetUtf8",
+        "name": "endswith",
+        "kind": "method",
+        "start": 120,
+        "end": 134,
+        "sha256": "dd8e1608f2a9518a26b737ecd8c50f1cce14caed6b6c81d82261f835f302f4a8"
+      },
+      {
+        "file": "server/lib/src/valueset/iutf8.rs",
+        "self_ty": "ValueSetIutf8",
+        "name": "endswith",
+        "kind": "method",
+        "start": 111,
+        "end": 119,
+        "sha256": "df05612372168de3441d8fa0e0944f2db94f17aa313110d88c004b63c9ccc0dd"
+      },
+      {
+        "file": "server/lib/src/valueset/iname.rs",
+        "self_ty": "ValueSetIname",
+        "name": "endswith",
+        "kind": "method",
+        "start": 113,
+        "end": 121,
+        "sha256": "119467e0daf84cdf16f02c11a4cff9a5b0b2c6d03605b941774e39746f6bc9d0"
+      },
+      {
+        "file": "server/lib/src/valueset/uuid.rs",
+        "self_ty": "ValueSetUuid",
+        "name": "endswith",
+        "kind": "method",
+        "start": 101,
+        "end": 103,
+        "sha256": "e67ad3eae27ff5493f9c8fa0b908ae207845fd111b6e2f7898f535955990dd71"
+      },
+      {
+        "file": "server/lib/src/valueset/uuid.rs",
+        "self_ty": "ValueSetRefer",
+        "name": "endswith",
+        "kind": "method",
+        "start": 331,
+        "end": 333,
+        "sha256": "e67ad3eae27ff5493f9c8fa0b908ae207845fd111b6e2f7898f535955990dd71"
+      },
+      {
+        "file": "server/lib/src/valueset/uint32.rs",
+        "self_ty": "ValueSetUint32",
+        "name": "endswith",
+        "kind": "method",
+        "start": 98,
+        "end": 100,
+        "sha256": "e67ad3eae27ff5493f9c8fa0b908ae207845fd111b6e2f7898f535955990dd71"
+      },
+      {
+        "file": "server/lib/src/valueset/oauth.rs",
+        "self_ty": "ValueSetOauthScopeMap",
+        "name": "endswith",
+        "kind": "method",
+        "start": 338,
+        "end": 340,
+        "sha256": "e67ad3eae27ff5493f9c8fa0b908ae207845fd111b6e2f7898f535955990dd71"
+      }
+    ],
+    "valueset.vs_lessthan": [
+      {
+        "file": "server/lib/src/valueset/utf8.rs",
+        "self_ty": "ValueSetUtf8",
+        "name": "lessthan",
+        "kind": "method",
+        "start": 136,
+        "end": 138,
+        "sha256": "c3f3ba7ef809f63aa21822d235421582b37309375f080d60c0c34f3e8de201ea"
+      },
+      {
+        "file": "server/lib/src/valueset/iutf8.rs",
+        "self_ty": "ValueSetIutf8",
+        "name": "lessthan",
+        "kind": "method",
+        "start": 121,
+        "end": 123,
+        "sha256": "c3f3ba7ef809f63aa21822d235421582b37309375f080d60c0c34f3e8de201ea"
+      },
+      {
+        "file": "server/lib/src/valueset/iname.rs",
+        "self_ty": "ValueSetIname",
+        "name": "lessthan",
+        "kind": "method",
+        "start": 123,
+        "end": 125,
+        "sha256": "c3f3ba7ef809f63aa21822d235421582b37309375f080d60c0c34f3e8de201ea"
+      },
+      {
+        "file": "server/lib/src/valueset/uuid.rs",
+        "self_ty": "ValueSetUuid",
+        "name": "lessthan",
+        "kind": "method",
+        "start": 105,
+        "end": 110,
+        "sha256": "a096f34eaa847496c4f73ccbc21406ef4cce2b605db91d308544efe7327a5a0d"
+      },
+      {
+        "file": "server/lib/src/valueset/uuid.rs",
+        "self_ty": "ValueSetRefer",
+        "name": "lessthan",
+        "kind": "method",
+        "start": 335,
+        "end": 340,
+        "sha256": "c37e57150505153e910c986dd2be4cbdc48df2710e5e03cd8ed8a87437f4152b"
+      },
+      {
+        "file": "server/lib/src/valueset/uint32.rs",
+        "self_ty": "ValueSetUint32",
+        "name": "lessthan",
+        "kind": "method",
+        "start": 102,
+        "end": 107,
+        "sha256": "87c47e5b467400def0fc27723187b54e8c6ac56d9fb7794cf72bc70a98293966"
+      },
+      {
+        "file": "server/lib/src/valueset/oauth.rs",
+        "self_ty": "ValueSetOauthScopeMap",
+        "name": "lessthan",
+        "kind": "method",
+        "start": 342,
+        "end": 344,
+        "sha256": "c3f3ba7ef809f63aa21822d235421582b37309375f080d60c0c34f3e8de201ea"
+      }
+    ],
+    "valueset.vs_startswith": [
+      {
+        "file": "server/lib/src/valueset/utf8.rs",
+        "self_ty": "ValueSetUtf8",
+        "name": "startswith",
+        "kind": "method",
+        "start": 104,
+        "end": 118,
+        "sha256": "8bdce6be260928300c626e773e16873a9ef988d5500d59b747609d6a97df1bdd"
+      },
+      {
+        "file": "server/lib/src/valueset/iutf8.rs",
+        "self_ty": "ValueSetIutf8",
+        "name": "startswith",
+        "kind": "method",
+        "start": 101,
+        "end": 109,
+        "sha256": "2727a2eb3b22d096d7ba58b41902e08b927956d7233dc58ab86808153141dc60"
+      },
+      {
+        "file": "server/lib/src/valueset/iname.rs",
+        "self_ty": "ValueSetIname",
+        "name": "startswith",
+        "kind": "method",
+        "start": 103,
+        "end": 111,
+        "sha256": "ad4292f1a65bda4a5508e7f39594b42d2b55831d547aac1fc496db35ac20d96b"
+      },
+      {
+        "file": "server/lib/src/valueset/uuid.rs",
+        "self_ty": "ValueSetUuid",
+        "name": "startswith",
+        "kind": "method",
+        "start": 97,
+        "end": 99,
+        "sha256": "669e7810805e3485306464e6255b379d45a885a09d39730fd73f09979b6cb74d"
+      },
+      {
+        "file": "server/lib/src/valueset/uuid.rs",
+        "self_ty": "ValueSetRefer",
+        "name": "startswith",
+        "kind": "method",
+        "start": 327,
+        "end": 329,
+        "sha256": "669e7810805e3485306464e6255b379d45a885a09d39730fd73f09979b6cb74d"
+      },
+      {
+        "file": "server/lib/src/valueset/uint32.rs",
+        "self_ty": "ValueSetUint32",
+        "name": "startswith",
+        "kind": "method",
+        "start": 94,
+        "end": 96,
+        "sha256": "669e7810805e3485306464e6255b379d45a885a09d39730fd73f09979b6cb74d"
+      },
+      {
+        "file": "server/lib/src/valueset/oauth.rs",
+        "self_ty": "ValueSetOauthScopeMap",
+        "name": "startswith",
+        "kind": "method",
+        "start": 334,
+        "end": 336,
+        "sha256": "669e7810805e3485306464e6255b379d45a885a09d39730fd73f09979b6cb74d"
+      }
+    ],
+    "valueset.vs_substring": [
+      {
+        "file": "server/lib/src/valueset/utf8.rs",
+        "self_ty": "ValueSetUtf8",
+        "name": "substring",
+        "kind": "method",
+        "start": 88,
+        "end": 102,
+        "sha256": "868577c9678b223dbf9bccea5646714aa5ea3ff24ad13510c664886724bb26a5"
+      },
+      {
+        "file": "server/lib/src/valueset/iutf8.rs",
+        "self_ty": "ValueSetIutf8",
+        "name": "substring",
+        "kind": "method",
+        "start": 91,
+        "end": 99,
+        "sha256": "b8ed2568903ab08ebed82a26d015b12f4884ec7c660e254ae770458bbc647f27"
+      },
+      {
+        "file": "server/lib/src/valueset/iname.rs",
+        "self_ty": "ValueSetIname",
+        "name": "substring",
+        "kind": "method",
+        "start": 93,
+        "end": 101,
+        "sha256": "6d7de74b83fe32136097733dccd51cdbfff50504a28d8869dfe147ae70d9722e"
+      },
+      {
+        "file": "server/lib/src/valueset/uuid.rs",
+        "self_ty": "ValueSetUuid",
+        "name": "substring",
+        "kind": "method",
+        "start": 93,
+        "end": 95,
+        "sha256": "e6febbaacaf8484ced9be8e000bd0294fd253cb8478253c2a9db9dc72fec512f"
+      },
+      {
+        "file": "server/lib/src/valueset/uuid.rs",
+        "self_ty": "ValueSetRefer",
+        "name": "substring",
+        "kind": "method",
+        "start": 323,
+        "end": 325,
+        "sha256": "e6febbaacaf8484ced9be8e000bd0294fd253cb8478253c2a9db9dc72fec512f"
+      },
+      {
+        "file": "server/lib/src/valueset/uint32.rs",
+        "self_ty": "ValueSetUint32",
+        "name": "substring",
+        "kind": "method",
+        "start": 90,
+        "end": 92,
+        "sha256": "e6febbaacaf8484ced9be8e000bd0294fd253cb8478253c2a9db9dc72fec512f"
+      },
+      {
+        "file": "server/lib/src/valueset/oauth.rs",
+        "self_ty": "ValueSetOauthScopeMap",
+        "name": "substring",
+        "kind": "method",
+        "start": 330,
+        "end": 332,
+        "sha256": "e6febbaacaf8484ced9be8e000bd0294fd253cb8478253c2a9db9dc72fec512f"
+      }
+    ]
+  },
+  "meaning": "Exact pinned item dependency reach from canonical theorem types; source correspondence is documented in ports/kanidm/DEVIATIONS.md. Counts source items reached by modeled operations, not behavioral equivalence or proof of omitted I/O, parsing, presentation, library internals, or other documented deviations."
+}

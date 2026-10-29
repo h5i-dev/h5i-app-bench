@@ -1,3 +1,22 @@
+import Verified.AccountPolicy
+import Verified.CredentialCommit
+import Verified.SchemaTags
+import Verified.RecoveredProtectedDenyOverridesModify
+import Verified.RecoveredProtectedDenyOverridesCreate
+import Verified.RecoveredSearchAttrsGranted
+import Verified.RecoveredAnonymousReadsByProfileOnly
+import Verified.RecoveredDeleteNeedsProfile
+import Verified.RecoveredCreateNeedsProfile
+import Verified.RecoveredModifyNeedsProfile
+import Verified.RecoveredCreateProtected
+import Verified.RecoveredTombstoneLocked
+import Verified.RecoveredProtectedClassNeverAdded
+import Verified.RecoveredSyncObjectConstrained
+import Verified.RecoveredAccountRequestCreatesSignups
+import Verified.RecoveredMatchEqSpec
+import Verified.RecoveredStrContainsSpec
+import Verified.RecoveredEffectivePermissionCheckTotal
+import Verified.SoftLock
 import Verified.KanidmSynchroniseSeesNothing
 import Verified.KanidmReadonlyCannotModify
 import Verified.KanidmDeleteProtected
@@ -13,14 +32,14 @@ theorem protected_deny_overrides_modify (ident : Identity)
     (related : Slice profiles.AccessControlModifyResolved) (sa : Slice SyncAgreement) (e : Entry)
     (h : modify_acc.modify_protected_attrs ident e = ok .Deny) :
     modify_acc.apply_modify_access ident related sa e = ok .Deny := by
-  sorry
+  apply kanidm_kernel.Verified.RecoveredProtectedDenyOverridesModify.protected_deny_overrides_modify <;> assumption
 
 /-- When the protection rules deny a create, no profile can allow it. -/
 theorem protected_deny_overrides_create (ident : Identity)
     (related : Slice profiles.AccessControlCreateResolved) (e : Entry)
     (h : create_acc.protected_filter_entry ident e = ok .Deny) :
     create_acc.apply_create_access ident related e = ok .Deny := by
-  sorry
+  apply kanidm_kernel.Verified.RecoveredProtectedDenyOverridesCreate.protected_deny_overrides_create <;> assumption
 
 /-! ## Search -/
 
@@ -32,7 +51,7 @@ theorem search_attrs_granted (ctl : AccessControlsInner) (se : SearchEvent) (es 
     (h : access.search_filter_entry_attributes ctl se es = ok (.Ok rs))
     (hr : r ∈ rs.val) (hx : x ∈ r.attrs.val) :
     ∃ e ∈ es.val, e.uuid = r.uuid ∧ x ∈ e.attrs.val ∧ SearchGrants ctl se.ident e (nats x.attr.val) := by
-  sorry
+  apply kanidm_kernel.Verified.RecoveredSearchAttrsGranted.search_attrs_granted <;> assumption
 
 /-- The anonymous user gets nothing from the OAuth2 and application rules: what
 it may read comes from the profiles alone. -/
@@ -43,7 +62,7 @@ theorem anonymous_reads_by_profile_only (ident : Identity) (u : IdentUser)
     (hs : ¬ HasClass u.entry "sync_object")
     (h : search_acc.apply_search_access ident related e = ok (.Allow attrs)) (hx : x ∈ attrs.val) :
     ∃ acs ∈ related.val, x ∈ acs.attrs.val := by
-  sorry
+  apply kanidm_kernel.Verified.RecoveredAnonymousReadsByProfileOnly.anonymous_reads_by_profile_only <;> assumption
 
 /-- A sync agreement, or a user session scoped to synchronisation, sees no
 entries. -/
@@ -67,7 +86,7 @@ theorem readonly_cannot_modify (ctl : AccessControlsInner) (me : ModifyEvent) (e
 theorem delete_needs_profile (ctl : AccessControlsInner) (de : DeleteEvent) (es : Slice Entry) (e : Entry)
     (hu : IsUser de.ident) (h : access.delete_allow_operation ctl de es = ok (.Ok true)) (he : e ∈ es.val) :
     ∃ acd ∈ ctl.acps_delete.val, Applies de.ident acd.acp e := by
-  sorry
+  apply kanidm_kernel.Verified.RecoveredDeleteNeedsProfile.delete_needs_profile <;> assumption
 
 /-- A user creates an entry only through a create profile with a group
 receiver that covers the user, whose target matches the entry, and which
@@ -77,7 +96,7 @@ theorem create_needs_profile (ctl : AccessControlsInner) (ce : CreateEvent) (es 
     ∃ acc ∈ ctl.acps_create.val,
       (∃ gs, acc.acp.receiver = .Group gs) ∧ Applies ce.ident acc.acp e ∧
       (∀ a ∈ e.attrs.val, a.attr ∈ acc.attrs.val) ∧ (∀ c ∈ classes e, c ∈ names acc.classes.val) := by
-  sorry
+  apply kanidm_kernel.Verified.RecoveredCreateNeedsProfile.create_needs_profile <;> assumption
 
 /-- A user modification asks to set an attribute only where some modify
 profile that applies to the entry allows it. -/
@@ -86,7 +105,7 @@ theorem modify_needs_profile (ctl : AccessControlsInner) (me : ModifyEvent) (es 
     (hu : IsUser me.ident) (h : access.modify_allow_operation ctl me es = ok (.Ok true))
     (he : e ∈ es.val) (hm : m ∈ me.modlist.val) (ha : presAttr m = some a) :
     ∃ acm ∈ ctl.acps_modify.val, a ∈ names acm.presattrs.val ∧ Applies me.ident acm.acp e := by
-  sorry
+  apply kanidm_kernel.Verified.RecoveredModifyNeedsProfile.modify_needs_profile <;> assumption
 
 /-! ## Protected entries -/
 
@@ -104,14 +123,14 @@ theorem create_protected (ctl : AccessControlsInner) (ce : CreateEvent) (es : Sl
     (hk : IsUser ce.ident ∨ ce.ident.origin = .Internal .Migration)
     (h : access.create_allow_operation ctl ce es = ok (.Ok true)) (he : e ∈ es.val) :
     (∀ u, uuidOf e = some u → UUID_ANONYMOUS < u) ∧ ∀ c ∈ classes e, c ∉ protectedEntryClasses := by
-  sorry
+  apply kanidm_kernel.Verified.RecoveredCreateProtected.create_protected <;> assumption
 
 /-- Only the internal system identity modifies a tombstone. -/
 theorem tombstone_locked (ctl : AccessControlsInner) (me : ModifyEvent) (es : Slice Entry) (e : Entry) (b : Bool)
     (hn : me.ident.origin ≠ .Internal .System) (he : e ∈ es.val) (ht : HasClass e "tombstone")
     (h : access.modify_allow_operation ctl me es = ok (.Ok b)) :
     b = false := by
-  sorry
+  apply kanidm_kernel.Verified.RecoveredTombstoneLocked.tombstone_locked <;> assumption
 
 /-- Only the internal system identity adds a protected class to an entry. -/
 theorem protected_class_never_added (ctl : AccessControlsInner) (me : ModifyEvent) (es : Slice Entry)
@@ -120,7 +139,7 @@ theorem protected_class_never_added (ctl : AccessControlsInner) (me : ModifyEven
     (h : access.modify_allow_operation ctl me es = ok (.Ok true))
     (hm : .Present a v ∈ me.modlist.val) (hc : nats a.val = lit "class") (hv : strOf v = some c) :
     c ∉ protectedModPresClasses := by
-  sorry
+  apply kanidm_kernel.Verified.RecoveredProtectedClassNeverAdded.protected_class_never_added <;> assumption
 
 /-! ## Synchronised entries -/
 
@@ -134,7 +153,7 @@ theorem sync_object_constrained (ctl : AccessControlsInner) (me : ModifyEvent) (
     (hb : UUID_ANONYMOUS < e.uuid) (hp : ∀ c ∈ classes e, c ∉ protectedModEntryClasses)
     (hm : m ∈ me.modlist.val) (ha : presAttr m = some a) :
     ∃ p, refers e "sync_parent_uuid" = some [p] ∧ (a ∈ syncAttrs ∨ a ∈ agreementAttrs ctl.sync_agreements.val p) := by
-  sorry
+  apply kanidm_kernel.Verified.RecoveredSyncObjectConstrained.sync_object_constrained <;> assumption
 
 /-! ## Internal identities -/
 
@@ -147,7 +166,7 @@ theorem account_request_creates_signups (ctl : AccessControlsInner) (ce : Create
     (∀ x ∈ e.attrs.val,
       nats x.attr.val ∈ ["class", "delete_after", "displayname", "mail", "name", "uuid"].map lit) ∧
     ∀ c ∈ classes e, c ∈ ["object", "account_signup_request"].map lit := by
-  sorry
+  apply kanidm_kernel.Verified.RecoveredAccountRequestCreatesSignups.account_request_creates_signups <;> assumption
 
 /-! ## The filter matcher -/
 
@@ -156,12 +175,12 @@ attribute holds the value. -/
 theorem match_eq_spec (e : Entry) (a : alloc.vec.Vec U8) (v : PartialValue) :
     entry_impl.entry_match_no_index_inner e (.Eq a v) = ok true ↔
       ∃ vs, ava e (nats a.val) = some vs ∧ ValueContains vs v := by
-  sorry
+  apply kanidm_kernel.Verified.RecoveredMatchEqSpec.match_eq_spec <;> assumption
 
 /-- The substring test of `Cnt` terms is `List.IsInfix`. -/
 theorem str_contains_spec (hay needle : Slice U8) :
     valueset.str_contains hay needle = ok (decide (needle.val <:+: hay.val)) := by
-  sorry
+  apply kanidm_kernel.Verified.RecoveredStrContainsSpec.str_contains_spec <;> assumption
 
 /-! ## Totality -/
 
@@ -179,6 +198,108 @@ theorem effective_permission_check_total (ctl : AccessControlsInner) (ident : Id
         m.pres_classes.length + m.rem_classes.length)).sum +
       (ctl.sync_agreements.val.map (·.attrs.length)).sum + 73 < Usize.max) :
     ∃ y, access.effective_permission_check ctl ident attrs es = ok y := by
-  sorry
+  apply kanidm_kernel.Verified.RecoveredEffectivePermissionCheckTotal.effective_permission_check_total <;> assumption
+
+
+
+open kanidm_kernel.Verified.SoftLock
+
+theorem soft_lock_apply_time_step_spec (lock : softlock.SoftLock) (ct : softlock.Time) (expiry : Option softlock.Time) :
+    softlock.apply_time_step lock ct expiry = ok (timeStep lock ct expiry) := by
+  apply kanidm_kernel.Verified.SoftLock.apply_time_step_spec <;> assumption
+
+theorem soft_lock_is_valid_spec (lock : softlock.SoftLock) :
+    softlock.is_valid lock = ok (match lock.state with | .Locked .. => false | _ => true) := by
+  apply kanidm_kernel.Verified.SoftLock.is_valid_spec <;> assumption
+
+theorem soft_lock_new_spec (policy : softlock.Policy) :
+    softlock.new policy = ok {state := .Init, policy := policy, last_expire_at := {secs := 0#u64, nanos := 0#u32}} := by
+  apply kanidm_kernel.Verified.SoftLock.new_spec <;> assumption
+
+theorem soft_lock_password_lockout (count : Usize) (ct : softlock.Time) (s : softlock.State)
+    (hc : 100 ≤ count.val)
+    (h : softlock.failure_next_state .Password count ct = ok s) :
+    ∃ reset, s = .Locked count reset reset ∧ reset.nanos = 0#u32 := by
+  apply kanidm_kernel.Verified.SoftLock.password_lockout <;> assumption
+
+theorem soft_lock_totp_lockout (step : U64) (count : Usize) (ct : softlock.Time) (s : softlock.State)
+    (hc : 3 ≤ count.val)
+    (h : softlock.failure_next_state (.Totp step) count ct = ok s) :
+    ∃ reset, s = .Locked count reset reset ∧ reset.nanos = 0#u32 := by
+  apply kanidm_kernel.Verified.SoftLock.totp_lockout <;> assumption
+
+theorem soft_lock_webauthn_failure (count : Usize) (ct : softlock.Time) (s : softlock.State)
+    (h : softlock.failure_next_state .Webauthn count ct = ok s) :
+    ∃ reset, s = .Locked count reset reset ∧ reset.nanos = ct.nanos ∧
+      reset.secs.val = ct.secs.val + 1 := by
+  apply kanidm_kernel.Verified.SoftLock.webauthn_failure <;> assumption
+
+theorem soft_lock_unrestricted_failure (count : Usize) (ct : softlock.Time) :
+    softlock.failure_next_state .Unrestricted count ct = ok .Init := by
+  apply kanidm_kernel.Verified.SoftLock.unrestricted_failure <;> assumption
+
+theorem soft_lock_failure_records_count (policy : softlock.Policy) (count : Usize) (ct : softlock.Time)
+    (s : softlock.State) (h : softlock.failure_next_state policy count ct = ok s) :
+    (policy = .Unrestricted ∧ s = .Init) ∨
+      ∃ reset unlock, s = .Locked count reset unlock := by
+  apply kanidm_kernel.Verified.SoftLock.failure_records_count <;> assumption
+
+theorem soft_lock_record_failure_spec (lock : softlock.SoftLock) (ct : softlock.Time)
+    (out : softlock.SoftLock) (h : softlock.record_failure lock ct = ok out) :
+    out.policy = lock.policy ∧ out.last_expire_at = lock.last_expire_at ∧
+    ((lock.policy = .Unrestricted ∧ out.state = .Init) ∨
+      ∃ count reset unlock, out.state = .Locked count reset unlock ∧
+        count.val = (match lock.state with | .Init => 0 | .Locked n .. => n.val | .Unlocked n _ => n.val) + 1) := by
+  apply kanidm_kernel.Verified.SoftLock.record_failure_spec <;> assumption
+
+open kanidm_kernel.Verified.SchemaTags
+
+theorem schema_tags_partial_accepts_spec (syn : schema_tags.Syntax) (tag : U16) :
+    schema_tags.partial_accepts syn tag =
+      ok (decide (tag ∈ partial_acceptsAllowed syn)) := by
+  apply kanidm_kernel.Verified.SchemaTags.partial_accepts_spec <;> assumption
+
+theorem schema_tags_value_accepts_spec (syn : schema_tags.Syntax) (tag : U16) (valid : Bool) :
+    schema_tags.value_accepts syn tag valid =
+      ok (valid && decide (tag ∈ value_acceptsAllowed syn)) := by
+  apply kanidm_kernel.Verified.SchemaTags.value_accepts_spec <;> assumption
+
+theorem schema_tags_ava_accepts_spec (multi : Bool) (count : Usize) (expected actual : U16) (valid : Bool) :
+    schema_tags.ava_accepts multi count expected actual valid =
+      ok (decide (multi = true ∨ count.val ≤ 1) && decide (expected = actual) && valid) := by
+  apply kanidm_kernel.Verified.SchemaTags.ava_accepts_spec <;> assumption
+
+open kanidm_kernel.Verified.CredentialCommit
+
+theorem credential_commit_can_commit_spec (policy : credential_commit.Policy) (primary : Option Bool)
+    (passkeys attested : Bool) (caEmpty : Option Bool) :
+    credential_commit.can_commit policy primary passkeys attested caEmpty =
+      ok (decision policy primary passkeys attested caEmpty) := by
+  apply kanidm_kernel.Verified.CredentialCommit.can_commit_spec <;> assumption
+
+theorem credential_commit_invalid_denied (primary : Option Bool) (passkeys attested : Bool) (caEmpty : Option Bool) :
+    ∃ d, credential_commit.can_commit .Invalid primary passkeys attested caEmpty = ok d ∧
+      d.can_commit = false ∧ d.policy_warning = some .Unsatisfiable := by
+  apply kanidm_kernel.Verified.CredentialCommit.invalid_denied <;> assumption
+
+
+open kanidm_kernel.Verified.AccountPolicy
+
+theorem account_policy_option_max_spec (a b : Option U64) :
+    account_policy.option_max a b = ok (maxOption a b) := by
+  apply kanidm_kernel.Verified.AccountPolicy.option_max_spec <;> assumption
+
+theorem account_policy_combine_spec (a b : account_policy.Policy) :
+    account_policy.combine a b = ok (combine a b) := by
+  apply kanidm_kernel.Verified.AccountPolicy.combine_spec <;> assumption
+
+theorem account_policy_finalize_spec (a : account_policy.Policy) :
+    account_policy.finalize a = ok (finalize a) := by
+  apply kanidm_kernel.Verified.AccountPolicy.finalize_spec <;> assumption
+
+theorem account_policy_fold_from_spec (policies : Slice account_policy.Policy) :
+    account_policy.fold_from policies
+      ⦃ r => r = finalize (policies.val.foldl combine initial) ⦄ := by
+  apply kanidm_kernel.Verified.AccountPolicy.fold_from_spec <;> assumption
 
 end kanidm_kernel.Properties

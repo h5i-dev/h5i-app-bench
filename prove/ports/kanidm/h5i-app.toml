@@ -1,7 +1,28 @@
 # Standard h5i-app project. Keep every selected theorem in the final gate.
 [extract]
 crate = "kernel"
-start-from = ["access"]
+# Extract every public function in these modules; derived formatting/equality
+# implementations are outside the verification roots and need no opaque stubs.
+start-from = [
+  "access",
+  "softlock::after",
+  "softlock::same_time",
+  "softlock::plus_seconds",
+  "softlock::failure_next_state",
+  "softlock::new",
+  "softlock::apply_time_step",
+  "softlock::is_valid",
+  "softlock::record_failure",
+  "schema_tags::partial_accepts",
+  "schema_tags::value_accepts",
+  "schema_tags::ava_accepts",
+  "credential_commit::can_commit",
+  "account_policy::initial",
+  "account_policy::option_max",
+  "account_policy::combine",
+  "account_policy::finalize",
+  "account_policy::fold_from",
+]
 
 [check]
 theorems = [
@@ -23,4 +44,22 @@ theorems = [
   "kanidm_kernel.Properties.match_eq_spec",
   "kanidm_kernel.Properties.str_contains_spec",
   "kanidm_kernel.Properties.effective_permission_check_total",
+  "kanidm_kernel.Properties.soft_lock_apply_time_step_spec",
+  "kanidm_kernel.Properties.soft_lock_is_valid_spec",
+  "kanidm_kernel.Properties.soft_lock_new_spec",
+  "kanidm_kernel.Properties.soft_lock_password_lockout",
+  "kanidm_kernel.Properties.soft_lock_totp_lockout",
+  "kanidm_kernel.Properties.soft_lock_webauthn_failure",
+  "kanidm_kernel.Properties.soft_lock_unrestricted_failure",
+  "kanidm_kernel.Properties.soft_lock_failure_records_count",
+  "kanidm_kernel.Properties.soft_lock_record_failure_spec",
+  "kanidm_kernel.Properties.schema_tags_partial_accepts_spec",
+  "kanidm_kernel.Properties.schema_tags_value_accepts_spec",
+  "kanidm_kernel.Properties.schema_tags_ava_accepts_spec",
+  "kanidm_kernel.Properties.credential_commit_can_commit_spec",
+  "kanidm_kernel.Properties.credential_commit_invalid_denied",
+  "kanidm_kernel.Properties.account_policy_option_max_spec",
+  "kanidm_kernel.Properties.account_policy_combine_spec",
+  "kanidm_kernel.Properties.account_policy_finalize_spec",
+  "kanidm_kernel.Properties.account_policy_fold_from_spec",
 ]

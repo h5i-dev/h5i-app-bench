@@ -1,0 +1,267 @@
+Verified/EntryValidation.lean:28:6: warning: 'all_goals try simp_all' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+Verified/EntryValidation.lean:29:6: warning: 'all_goals try scalar_tac' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+Verified/EntryValidation.lean:36:6: warning: 'all_goals try simp_all' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+Verified/EntryValidation.lean:37:6: warning: 'all_goals try scalar_tac' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+Verified/EntryValidation.lean:28:16: warning: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+Verified/EntryValidation.lean:29:16: warning: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+Verified/EntryValidation.lean:36:16: warning: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+Verified/EntryValidation.lean:37:16: warning: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+Verified/EntryValidation.lean:114:43: warning: '(try simp_all)' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+Verified/EntryValidation.lean:114:39: warning: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+Verified/EntryValidation.lean:114:58: warning: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+Verified/EntryValidation.lean:114:93: warning: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+Verified/EntryValidation.lean:146:4: error: unsolved goals
+case Ok
+entry : entry_validation.Entry
+attrs : Slice entry_validation.AttributeSchema
+may : Slice U16
+extensible : Bool
+i : Usize
+hi : ↑i ≤ (↑entry.attrs).length
+j : Usize
+hlt : ↑j < (↑entry.attrs).length
+hstep :
+  attributesModel (List.drop ↑i ↑entry.attrs) (↑attrs) (↑may) extensible =
+    match attributeModel (↑entry.attrs)[↑j] (↑attrs) (↑may) extensible with
+    | core.result.Result.Ok PUnit.unit => attributesModel (List.drop (↑j + 1) ↑entry.attrs) (↑attrs) (↑may) extensible
+    | core.result.Result.Err e => core.result.Result.Err e
+hj : ↑j ≤ (↑entry.attrs).length
+a : entry_validation.Attribute
+_✝² : [> let a ← entry.attrs.index_usize j <]
+r : core.result.Result Unit entry_validation.Error
+_✝¹ : [> let r ← entry_validation.validate_attribute a attrs may extensible <]
+cf : core.ops.control_flow.ControlFlow (core.result.Result Never entry_validation.Error) Unit
+_✝ : [> let cf ← core.result.Result.Insts.CoreOpsTry.branch r <]
+a✝¹ : Unit
+i2 : Usize
+_ : [> let i2 ← j + 1#usize <]
+a✝ : Unit
+right✝ :
+  attributesModel (List.drop ↑j ↑entry.attrs) (↑attrs) (↑may) extensible =
+    match attributeModel (↑entry.attrs)[↑j] (↑attrs) (↑may) extensible with
+    | core.result.Result.Ok PUnit.unit => attributesModel (List.drop (↑j + 1) ↑entry.attrs) (↑attrs) (↑may) extensible
+    | core.result.Result.Err e => core.result.Result.Err e
+a_post : a = (↑entry.attrs)[↑j]
+r_post : r = attributeModel (↑entry.attrs)[↑j] (↑attrs) (↑may) extensible
+cf_post :
+  match attributeModel (↑entry.attrs)[↑j] (↑attrs) (↑may) extensible with
+  | core.result.Result.Ok v => True
+  | core.result.Result.Err e => False
+h✝ : cf = core.ops.control_flow.ControlFlow.Continue a✝¹
+i2_post : ↑i2 = ↑j + 1
+⊢ (attributesModel (List.drop (↑j + 1) ↑entry.attrs) (↑attrs) (↑may) extensible =
+      match attributeModel (↑entry.attrs)[↑j] (↑attrs) (↑may) extensible with
+      | core.result.Result.Ok PUnit.unit => attributesModel (List.drop (↑j + 1) ↑entry.attrs) (↑attrs) (↑may) extensible
+      | core.result.Result.Err e => core.result.Result.Err e) ∧
+    (↑entry.attrs).length - (↑j + 1) < (↑entry.attrs).length - ↑j
+
+case Err
+entry : entry_validation.Entry
+attrs : Slice entry_validation.AttributeSchema
+may : Slice U16
+extensible : Bool
+i : Usize
+hi : ↑i ≤ (↑entry.attrs).length
+j : Usize
+hlt : ↑j < (↑entry.attrs).length
+hstep :
+  attributesModel (List.drop ↑i ↑entry.attrs) (↑attrs) (↑may) extensible =
+    match attributeModel (↑entry.attrs)[↑j] (↑attrs) (↑may) extensible with
+    | core.result.Result.Ok PUnit.unit => attributesModel (List.drop (↑j + 1) ↑entry.attrs) (↑attrs) (↑may) extensible
+    | core.result.Result.Err e => core.result.Result.Err e
+hj : ↑j ≤ (↑entry.attrs).length
+a : entry_validation.Attribute
+_✝² : [> let a ← entry.attrs.index_usize j <]
+r : core.result.Result Unit entry_validation.Error
+_✝¹ : [> let r ← entry_validation.validate_attribute a attrs may extensible <]
+cf : core.ops.control_flow.ControlFlow (core.result.Result Never entry_validation.Error) Unit
+_✝ : [> let cf ← core.result.Result.Insts.CoreOpsTry.branch r <]
+a✝¹ : Unit
+i2 : Usize
+_ : [> let i2 ← j + 1#usize <]
+a✝ : entry_validation.Error
+right✝ :
+  attributesModel (List.drop ↑j ↑entry.attrs) (↑attrs) (↑may) extensible =
+    match attributeModel (↑entry.attrs)[↑j] (↑attrs) (↑may) extensible with
+    | core.result.Result.Ok PUnit.unit => attributesModel (List.drop (↑j + 1) ↑entry.attrs) (↑attrs) (↑may) extensible
+    | core.result.Result.Err e => core.result.Result.Err e
+a_post : a = (↑entry.attrs)[↑j]
+r_post : r = attributeModel (↑entry.attrs)[↑j] (↑attrs) (↑may) extensible
+cf_post :
+  match attributeModel (↑entry.attrs)[↑j] (↑attrs) (↑may) extensible with
+  | core.result.Result.Ok v => True
+  | core.result.Result.Err e => False
+h✝ : cf = core.ops.control_flow.ControlFlow.Continue a✝¹
+i2_post : ↑i2 = ↑j + 1
+⊢ (attributesModel (List.drop (↑j + 1) ↑entry.attrs) (↑attrs) (↑may) extensible =
+      match attributeModel (↑entry.attrs)[↑j] (↑attrs) (↑may) extensible with
+      | core.result.Result.Ok PUnit.unit => attributesModel (List.drop (↑j + 1) ↑entry.attrs) (↑attrs) (↑may) extensible
+      | core.result.Result.Err e => core.result.Result.Err e) ∧
+    (↑entry.attrs).length - (↑j + 1) < (↑entry.attrs).length - ↑j
+
+case Ok
+entry : entry_validation.Entry
+attrs : Slice entry_validation.AttributeSchema
+may : Slice U16
+extensible : Bool
+i : Usize
+hi : ↑i ≤ (↑entry.attrs).length
+j : Usize
+hlt : ↑j < (↑entry.attrs).length
+hstep :
+  attributesModel (List.drop ↑i ↑entry.attrs) (↑attrs) (↑may) extensible =
+    match attributeModel (↑entry.attrs)[↑j] (↑attrs) (↑may) extensible with
+    | core.result.Result.Ok PUnit.unit => attributesModel (List.drop (↑j + 1) ↑entry.attrs) (↑attrs) (↑may) extensible
+    | core.result.Result.Err e => core.result.Result.Err e
+hj : ↑j ≤ (↑entry.attrs).length
+a : entry_validation.Attribute
+_✝² : [> let a ← entry.attrs.index_usize j <]
+r : core.result.Result Unit entry_validation.Error
+_✝¹ : [> let r ← entry_validation.validate_attribute a attrs may extensible <]
+cf : core.ops.control_flow.ControlFlow (core.result.Result Never entry_validation.Error) Unit
+_✝ : [> let cf ← core.result.Result.Insts.CoreOpsTry.branch r <]
+residual : core.result.Result Never entry_validation.Error
+r1 : entry_validation.Error
+_ :
+  [> let r1 ←
+    core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual Unit
+      (core.convert.FromSame entry_validation.Error) residual <]
+x✝¹ : entry_validation.Error
+x✝ : core.result.Result Unit entry_validation.Error
+a✝ : Unit
+right✝ :
+  attributesModel (List.drop ↑j ↑entry.attrs) (↑attrs) (↑may) extensible =
+    match attributeModel (↑entry.attrs)[↑j] (↑attrs) (↑may) extensible with
+    | core.result.Result.Ok PUnit.unit => attributesModel (List.drop (↑j + 1) ↑entry.attrs) (↑attrs) (↑may) extensible
+    | core.result.Result.Err e => core.result.Result.Err e
+a_post : a = (↑entry.attrs)[↑j]
+r_post : r = attributeModel (↑entry.attrs)[↑j] (↑attrs) (↑may) extensible
+cf_post :
+  match attributeModel (↑entry.attrs)[↑j] (↑attrs) (↑may) extensible with
+  | core.result.Result.Ok v => False
+  | core.result.Result.Err e => x✝¹ = e
+h✝ : cf = core.ops.control_flow.ControlFlow.Break (core.result.Result.Err x✝¹)
+residual_post : residual = core.result.Result.Err x✝¹
+r1_post : r1 = x✝¹
+x_post : x✝ = core.result.Result.Err x✝¹
+⊢ core.result.Result.Err x✝¹ =
+    match attributeModel (↑entry.attrs)[↑j] (↑attrs) (↑may) extensible with
+    | core.result.Result.Ok PUnit.unit => attributesModel (List.drop (↑j + 1) ↑entry.attrs) (↑attrs) (↑may) extensible
+    | core.result.Result.Err e => core.result.Result.Err e
+
+case Err
+entry : entry_validation.Entry
+attrs : Slice entry_validation.AttributeSchema
+may : Slice U16
+extensible : Bool
+i : Usize
+hi : ↑i ≤ (↑entry.attrs).length
+j : Usize
+hlt : ↑j < (↑entry.attrs).length
+hstep :
+  attributesModel (List.drop ↑i ↑entry.attrs) (↑attrs) (↑may) extensible =
+    match attributeModel (↑entry.attrs)[↑j] (↑attrs) (↑may) extensible with
+    | core.result.Result.Ok PUnit.unit => attributesModel (List.drop (↑j + 1) ↑entry.attrs) (↑attrs) (↑may) extensible
+    | core.result.Result.Err e => core.result.Result.Err e
+hj : ↑j ≤ (↑entry.attrs).length
+a : entry_validation.Attribute
+_✝² : [> let a ← entry.attrs.index_usize j <]
+r : core.result.Result Unit entry_validation.Error
+_✝¹ : [> let r ← entry_validation.validate_attribute a attrs may extensible <]
+cf : core.ops.control_flow.ControlFlow (core.result.Result Never entry_validation.Error) Unit
+_✝ : [> let cf ← core.result.Result.Insts.CoreOpsTry.branch r <]
+residual : core.result.Result Never entry_validation.Error
+r1 : entry_validation.Error
+_ :
+  [> let r1 ←
+    core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual Unit
+      (core.convert.FromSame entry_validation.Error) residual <]
+x✝¹ : entry_validation.Error
+x✝ : core.result.Result Unit entry_validation.Error
+a✝ : entry_validation.Error
+right✝ :
+  attributesModel (List.drop ↑j ↑entry.attrs) (↑attrs) (↑may) extensible =
+    match attributeModel (↑entry.attrs)[↑j] (↑attrs) (↑may) extensible with
+    | core.result.Result.Ok PUnit.unit => attributesModel (List.drop (↑j + 1) ↑entry.attrs) (↑attrs) (↑may) extensible
+    | core.result.Result.Err e => core.result.Result.Err e
+a_post : a = (↑entry.attrs)[↑j]
+r_post : r = attributeModel (↑entry.attrs)[↑j] (↑attrs) (↑may) extensible
+cf_post :
+  match attributeModel (↑entry.attrs)[↑j] (↑attrs) (↑may) extensible with
+  | core.result.Result.Ok v => False
+  | core.result.Result.Err e => x✝¹ = e
+h✝ : cf = core.ops.control_flow.ControlFlow.Break (core.result.Result.Err x✝¹)
+residual_post : residual = core.result.Result.Err x✝¹
+r1_post : r1 = x✝¹
+x_post : x✝ = core.result.Result.Err x✝¹
+⊢ core.result.Result.Err x✝¹ =
+    match attributeModel (↑entry.attrs)[↑j] (↑attrs) (↑may) extensible with
+    | core.result.Result.Ok PUnit.unit => attributesModel (List.drop (↑j + 1) ↑entry.attrs) (↑attrs) (↑may) extensible
+    | core.result.Result.Err e => core.result.Result.Err e
+Verified/EntryValidation.lean:204:6: warning: 'all_goals try simp_all' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+Verified/EntryValidation.lean:205:6: warning: 'all_goals try scalar_tac' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+Verified/EntryValidation.lean:204:16: warning: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+Verified/EntryValidation.lean:205:16: warning: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+Verified/EntryValidation.lean:235:6: warning: 'all_goals try simp_all' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+Verified/EntryValidation.lean:236:6: warning: 'all_goals try scalar_tac' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+Verified/EntryValidation.lean:235:16: warning: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+Verified/EntryValidation.lean:236:16: warning: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+Verified/EntryValidation.lean:263:2: warning: 'all_goals try scalar_tac' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+Verified/EntryValidation.lean:263:12: warning: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+Verified/EntryValidation.lean:342:55: warning: This simp argument is unused:
+  Option.isSome_iff_ne_none
+
+Hint: Omit it from the simp argument list.
+  simp_all [Option.isSome_eq_isSome,̵ ̵O̵p̵t̵i̵o̵n̵.̵i̵s̵S̵o̵m̵e̵_̵i̵f̵f̵_̵n̵e̵_̵n̵o̵n̵e̵]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+Verified/EntryValidation.lean:348:6: warning: 'all_goals try scalar_tac' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+Verified/EntryValidation.lean:348:16: warning: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`

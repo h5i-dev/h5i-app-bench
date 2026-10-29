@@ -1,0 +1,300 @@
+{
+  "schema_version": 1,
+  "upstream": {
+    "repository": "https://github.com/kanidm/kanidm",
+    "commit": "f608c4fe14dfd8d5df8edeed470bf1fb92060abd"
+  },
+  "mappings": [
+    {
+      "declaration": "kanidm_kernel.softlock.new",
+      "upstream": {
+        "path": "server/lib/src/credential/softlock.rs",
+        "self_ty": "CredSoftLock",
+        "name": "new",
+        "start": 181,
+        "end": 187
+      },
+      "theorems": [
+        "kanidm_kernel.Verified.SoftLock.new_spec"
+      ],
+      "claim": "complete-result"
+    },
+    {
+      "declaration": "kanidm_kernel.softlock.apply_time_step",
+      "upstream": {
+        "path": "server/lib/src/credential/softlock.rs",
+        "self_ty": "CredSoftLock",
+        "name": "apply_time_step",
+        "start": 189,
+        "end": 238
+      },
+      "theorems": [
+        "kanidm_kernel.Verified.SoftLock.apply_time_step_spec"
+      ],
+      "claim": "complete-result"
+    },
+    {
+      "declaration": "kanidm_kernel.softlock.is_valid",
+      "upstream": {
+        "path": "server/lib/src/credential/softlock.rs",
+        "self_ty": "CredSoftLock",
+        "name": "is_valid",
+        "start": 240,
+        "end": 243
+      },
+      "theorems": [
+        "kanidm_kernel.Verified.SoftLock.is_valid_spec"
+      ],
+      "claim": "complete-result"
+    },
+    {
+      "declaration": "kanidm_kernel.softlock.failure_next_state",
+      "upstream": {
+        "path": "server/lib/src/credential/softlock.rs",
+        "self_ty": "CredSoftLockPolicy",
+        "name": "failure_next_state",
+        "start": 75,
+        "end": 151
+      },
+      "theorems": [
+        "kanidm_kernel.Verified.SoftLock.password_lockout",
+        "kanidm_kernel.Verified.SoftLock.totp_lockout",
+        "kanidm_kernel.Verified.SoftLock.webauthn_failure",
+        "kanidm_kernel.Verified.SoftLock.unrestricted_failure",
+        "kanidm_kernel.Verified.SoftLock.failure_records_count"
+      ],
+      "claim": "successful-result-security-properties; checked arithmetic failure behavior not yet characterized"
+    },
+    {
+      "declaration": "kanidm_kernel.softlock.record_failure",
+      "upstream": {
+        "path": "server/lib/src/credential/softlock.rs",
+        "self_ty": "CredSoftLock",
+        "name": "record_failure",
+        "start": 245,
+        "end": 267
+      },
+      "theorems": [
+        "kanidm_kernel.Verified.SoftLock.record_failure_spec"
+      ],
+      "claim": "successful-result-counter-and-lockout-invariant; overflow failure not excluded"
+    },
+    {
+      "declaration": "kanidm_kernel.schema_tags.partial_accepts",
+      "upstream": {
+        "path": "server/lib/src/schema.rs",
+        "self_ty": "SchemaAttribute",
+        "name": "validate_partialvalue",
+        "start": 219,
+        "end": 297
+      },
+      "theorems": [
+        "kanidm_kernel.Properties.schema_tags_partial_accepts_spec"
+      ],
+      "claim": "complete-result under documented caller object projections; intrinsic validators not attributed"
+    },
+    {
+      "declaration": "kanidm_kernel.schema_tags.value_accepts",
+      "upstream": {
+        "path": "server/lib/src/schema.rs",
+        "self_ty": "SchemaAttribute",
+        "name": "validate_value",
+        "start": 299,
+        "end": 366
+      },
+      "theorems": [
+        "kanidm_kernel.Properties.schema_tags_value_accepts_spec"
+      ],
+      "claim": "complete-result under documented caller object projections; intrinsic validators not attributed"
+    },
+    {
+      "declaration": "kanidm_kernel.schema_tags.ava_accepts",
+      "upstream": {
+        "path": "server/lib/src/schema.rs",
+        "self_ty": "SchemaAttribute",
+        "name": "validate_ava",
+        "start": 368,
+        "end": 387
+      },
+      "theorems": [
+        "kanidm_kernel.Properties.schema_tags_ava_accepts_spec"
+      ],
+      "claim": "complete-result under documented caller object projections; intrinsic validators not attributed"
+    },
+    {
+      "declaration": "kanidm_kernel.credential_commit.can_commit",
+      "upstream": {
+        "path": "server/lib/src/idm/credupdatesession.rs",
+        "self_ty": "CredentialUpdateSession",
+        "name": "can_commit",
+        "start": 217,
+        "end": 292
+      },
+      "theorems": [
+        "kanidm_kernel.Properties.credential_commit_can_commit_spec"
+      ],
+      "claim": "complete-result under documented caller object projections; intrinsic validators not attributed"
+    },
+    {
+      "declaration": "kanidm_kernel.account_policy.fold_from",
+      "upstream": {
+        "path": "server/lib/src/idm/accountpolicy.rs",
+        "self_ty": "ResolvedAccountPolicy",
+        "name": "fold_from",
+        "start": 101,
+        "end": 185
+      },
+      "theorems": [
+        "kanidm_kernel.Properties.account_policy_fold_from_spec"
+      ],
+      "claim": "complete scalar projection only; attestation CA-list intersection result excluded"
+    }
+  ],
+  "upstream_revision": "f608c4fe14dfd8d5df8edeed470bf1fb92060abd",
+  "meaning": "Exact pinned item reach; theorem claims and boundary representation changes recorded per mapping and in DEVIATIONS.md. Not complete application equivalence.",
+  "declarations": {
+    "softlock.new": [
+      {
+        "file": "server/lib/src/credential/softlock.rs",
+        "self_ty": "CredSoftLock",
+        "name": "new",
+        "kind": "method",
+        "start": 181,
+        "end": 187,
+        "sha256": "00c8da4f45976a3b5f06dee6f61845df795c09bc10494850c181c396741ea7cb"
+      }
+    ],
+    "softlock.apply_time_step": [
+      {
+        "file": "server/lib/src/credential/softlock.rs",
+        "self_ty": "CredSoftLock",
+        "name": "apply_time_step",
+        "kind": "method",
+        "start": 189,
+        "end": 238,
+        "sha256": "f456f076ee47a4384e7e54fd9c3921cb2ea997d765ff6559432e72cdcad31ad4"
+      }
+    ],
+    "softlock.is_valid": [
+      {
+        "file": "server/lib/src/credential/softlock.rs",
+        "self_ty": "CredSoftLock",
+        "name": "is_valid",
+        "kind": "method",
+        "start": 240,
+        "end": 243,
+        "sha256": "c5c5d7425f94a862d95c4e6d2461efa0bc0d0d6b62c8b8ba65b239929cabb9cc"
+      }
+    ],
+    "softlock.failure_next_state": [
+      {
+        "file": "server/lib/src/credential/softlock.rs",
+        "self_ty": "CredSoftLockPolicy",
+        "name": "failure_next_state",
+        "kind": "method",
+        "start": 75,
+        "end": 151,
+        "sha256": "12d234ba1133e4245eb3f9adb7ded7d145ceaa3e24d18919cebe91d8b96f1b60"
+      }
+    ],
+    "softlock.record_failure": [
+      {
+        "file": "server/lib/src/credential/softlock.rs",
+        "self_ty": "CredSoftLock",
+        "name": "record_failure",
+        "kind": "method",
+        "start": 245,
+        "end": 267,
+        "sha256": "547cc6e30cea81a3c0489ee5b7d09b5e36874e5ff3f769655608877db07a762b"
+      }
+    ],
+    "schema_tags.partial_accepts": [
+      {
+        "file": "server/lib/src/schema.rs",
+        "self_ty": "SchemaAttribute",
+        "name": "validate_partialvalue",
+        "kind": "method",
+        "start": 219,
+        "end": 297,
+        "sha256": "2f63fe77fdfeac35e9d2ac6b40a3f1fb67600590011b42dc100c8f940947ae59"
+      }
+    ],
+    "schema_tags.value_accepts": [
+      {
+        "file": "server/lib/src/schema.rs",
+        "self_ty": "SchemaAttribute",
+        "name": "validate_value",
+        "kind": "method",
+        "start": 299,
+        "end": 366,
+        "sha256": "6d4fd71a9624bed0d33d56faf52bfc9cc187f4b032545f635952080873dbd8ae"
+      }
+    ],
+    "schema_tags.ava_accepts": [
+      {
+        "file": "server/lib/src/schema.rs",
+        "self_ty": "SchemaAttribute",
+        "name": "validate_ava",
+        "kind": "method",
+        "start": 368,
+        "end": 387,
+        "sha256": "d4ba0aa99675b0a1d8b7abd7248fd2783d94b57ba411900ebe3b93755685307f"
+      }
+    ],
+    "credential_commit.can_commit": [
+      {
+        "file": "server/lib/src/idm/credupdatesession.rs",
+        "self_ty": "CredentialUpdateSession",
+        "name": "can_commit",
+        "kind": "method",
+        "start": 217,
+        "end": 292,
+        "sha256": "b914b0f9f8104b26df03cdc3da7a694ccb87181bc60c5ccbbe23c2d34ac1d789"
+      }
+    ],
+    "account_policy.initial": [
+      {
+        "file": "server/lib/src/idm/accountpolicy.rs",
+        "self_ty": "ResolvedAccountPolicy",
+        "name": "fold_from",
+        "kind": "fn",
+        "start": 101,
+        "end": 185,
+        "sha256": "39ec561064f5a4b02db2bb26776cffb0aa0e7e0c9ca50f61082411449c742c30"
+      }
+    ],
+    "account_policy.combine": [
+      {
+        "file": "server/lib/src/idm/accountpolicy.rs",
+        "self_ty": "ResolvedAccountPolicy",
+        "name": "fold_from",
+        "kind": "fn",
+        "start": 101,
+        "end": 185,
+        "sha256": "39ec561064f5a4b02db2bb26776cffb0aa0e7e0c9ca50f61082411449c742c30"
+      }
+    ],
+    "account_policy.finalize": [
+      {
+        "file": "server/lib/src/idm/accountpolicy.rs",
+        "self_ty": "ResolvedAccountPolicy",
+        "name": "fold_from",
+        "kind": "fn",
+        "start": 101,
+        "end": 185,
+        "sha256": "39ec561064f5a4b02db2bb26776cffb0aa0e7e0c9ca50f61082411449c742c30"
+      }
+    ],
+    "account_policy.fold_from": [
+      {
+        "file": "server/lib/src/idm/accountpolicy.rs",
+        "self_ty": "ResolvedAccountPolicy",
+        "name": "fold_from",
+        "kind": "fn",
+        "start": 101,
+        "end": 185,
+        "sha256": "39ec561064f5a4b02db2bb26776cffb0aa0e7e0c9ca50f61082411449c742c30"
+      }
+    ]
+  }
+}

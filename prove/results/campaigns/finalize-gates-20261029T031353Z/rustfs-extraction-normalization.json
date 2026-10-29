@@ -1,0 +1,7 @@
+{
+  "finding": "Completed normalized regeneration exactly equals original artifact. Final non-overlapping standard extraction check passed with immutable complete input hashes.",
+  "source_path_root": "prove/ via GIT_WORK_TREE",
+  "old_sha256": "ae4efb8bf1ac8056507e5b024d884bd8fb09bdfce7e2b498fa9930472926cc95",
+  "normalized_regenerated_sha256": "ae4efb8bf1ac8056507e5b024d884bd8fb09bdfce7e2b498fa9930472926cc95",
+  "accepted_extraction_log": "results/project-checks/20261029T033110397135Z/rustfs.log"
+}

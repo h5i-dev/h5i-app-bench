@@ -1,0 +1,12 @@
+   Compiling kanidm-kernel v0.1.0 (/home/ht2673/Dev/h5i-app-bench/prove/ports/kanidm/kernel)
+    Finished `release` profile [optimized] target(s) in 1.55s
+     Running tests/entry_validation.rs (prove/ports/kanidm/kernel/target/release/deps/entry_validation-e2fce26eae4b0637)
+
+running 2 tests
+Targeted deep decisions: every error category, precedence, recycled/extensible and full AVA boundaries
+test pinned_entry_deep_decisions ... ok
+100000 complete entry-validation results including exact ordered error payloads
+test pinned_entry_validation ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.45s
+

@@ -93,3 +93,9 @@ inputs, with its premises holding at least 300 times.
 | server name lists | regex sets | exact names | the test alphabet has no patterns |
 | `Option::clone`, `Vec::is_empty`, `truncate`, `div_ceil` | library | written out | Aeneas axiomatizes them |
 | modules | `message`, `context`, `state`, ... | `api_message`, `svc_accessor`, ... | a Lean module name must not equal a local variable name |
+
+Outbound proxy domain policy (`proxy_policy.rs`) follows pinned `core/config/proxy.rs` domain parsing, exact suffix/case-sensitive matching, specificity, ordered include/exclude selection, and first-match-before-scheme-validation selection. Strings are UTF-8 byte vectors; parsed request URL domain/scheme and proxy endpoint scheme enter explicitly. Endpoint identity is its rule index (global index zero). URL parsing, IP-host domain classification, environment snapshot construction, resolver configuration and networking remain external and are not claimed. The implicit empty-include wildcard is kept distinct from parsing the literal `*`, exactly as upstream. Differential tests compare complete decisions against verbatim pinned methods, including malformed domain patterns and unsupported endpoint schemes.
+
+The proxy empty-include test uses `len() == 0`, equivalent to `is_empty()`,
+to use Aeneas’s defined vector-length model instead of an opaque library axiom.
+Both proxy extraction roots and all configured proof targets are retained.

@@ -1,0 +1,248 @@
+{
+  "upstream_revision": "8c0dd334cf065ad11f60f9be24e2aafd5dda7550",
+  "meaning": "Exact qualified item reach. Current-table/SQL and non-admin abstractions are documented in DEVIATIONS.md; cache implementation and email/notification handler bodies excluded. Reach is not complete equivalence.",
+  "declarations": {
+    "acl.check": [
+      {
+        "file": "src/infrastructure/services/pg_acl_engine.rs",
+        "self_ty": "PgAclEngine",
+        "name": "check_inner",
+        "kind": "method",
+        "start": 1497,
+        "end": 1666,
+        "sha256": "991d7bfa481d3a34dd61db9a37c8bd6780a386756ce44f09d681df6b9c6d098d"
+      }
+    ],
+    "acl.clear_role": [
+      {
+        "file": "src/infrastructure/services/pg_acl_engine.rs",
+        "self_ty": "PgAclEngine",
+        "name": "clear_role",
+        "kind": "method",
+        "start": 3031,
+        "end": 3066,
+        "sha256": "36d8bc862cfc503dd53e3d69a4b497f461d3ff164492146ac14ecbe328d683de"
+      }
+    ],
+    "acl.direct_grant_exists": [
+      {
+        "file": "src/infrastructure/services/pg_acl_engine.rs",
+        "self_ty": "PgAclEngine",
+        "name": "direct_grant_exists",
+        "kind": "method",
+        "start": 782,
+        "end": 839,
+        "sha256": "1f13d9e509aa2a6f1186414d0ce8f8a84426539aedad8d3013df55636936b172"
+      }
+    ],
+    "acl.drive_of": [
+      {
+        "file": "src/infrastructure/services/pg_acl_engine.rs",
+        "self_ty": "PgAclEngine",
+        "name": "drive_of",
+        "kind": "method",
+        "start": 743,
+        "end": 764,
+        "sha256": "5c7d2de0c6b112fa8a6d4bbcf2da6654ab2bc1d9967de9d0a23f157a8dbb447a"
+      }
+    ],
+    "acl.expand_user": [
+      {
+        "file": "src/infrastructure/services/pg_acl_engine.rs",
+        "self_ty": "PgAclEngine",
+        "name": "expand_user",
+        "kind": "method",
+        "start": 594,
+        "end": 671,
+        "sha256": "451beb07a2f8647b23a469ebdc208b9fa24abd5a454c7f2f58c0440c73a3a9d5"
+      }
+    ],
+    "acl.file_parent_folder": [
+      {
+        "file": "src/infrastructure/services/pg_acl_engine.rs",
+        "self_ty": "PgAclEngine",
+        "name": "query_parent_point",
+        "kind": "method",
+        "start": 1083,
+        "end": 1093,
+        "sha256": "f5988ff395d4b970713fc786457433a281bd2ad78f90dfd870bf74c1806bcb31"
+      }
+    ],
+    "acl.folder_cascade_grant_exists": [
+      {
+        "file": "src/infrastructure/services/pg_acl_engine.rs",
+        "self_ty": "PgAclEngine",
+        "name": "folder_cascade_grant_exists",
+        "kind": "method",
+        "start": 841,
+        "end": 874,
+        "sha256": "b119d3bca18006adb3f1c0e002ef3e7b2577d213d3fe49b2142f7a43bf14ff00"
+      }
+    ],
+    "acl.groups_for_user": [
+      {
+        "file": "src/infrastructure/repositories/pg/subject_group_pg_repository.rs",
+        "self_ty": "SubjectGroupPgRepository",
+        "name": "groups_for_user",
+        "kind": "method",
+        "start": 524,
+        "end": 548,
+        "sha256": "4f1c322c9d0ce478e44376bcde2358b9977589aebcca66068ba1996c32015a6d"
+      }
+    ],
+    "acl.read_only_gate_applies": [
+      {
+        "file": "src/infrastructure/services/pg_acl_engine.rs",
+        "self_ty": "PgAclEngine",
+        "name": "read_only_gate_applies",
+        "kind": "method",
+        "start": 1386,
+        "end": 1407,
+        "sha256": "5dc9fa284ba46b9df985e08c1d2ea61e8b145e7e3e9283227f5f406a96d09d08"
+      }
+    ],
+    "acl.role_grants": [
+      {
+        "file": "src/domain/services/authorization.rs",
+        "self_ty": "Role",
+        "name": "expand",
+        "kind": "method",
+        "start": 317,
+        "end": 341,
+        "sha256": "f8891244ee5036d3fad2978f77b4e9a72d7afb27bff1a04d21b0584ddde9a160"
+      }
+    ],
+    "acl.role_implies": [
+      {
+        "file": "src/domain/services/authorization.rs",
+        "self_ty": "",
+        "name": "roles_implying",
+        "kind": "fn",
+        "start": 387,
+        "end": 408,
+        "sha256": "61ff1526899bc2b0653bcfab7f4ea0f118db490e2d63363017f5e5cf7180652e"
+      }
+    ],
+    "acl.set_role": [
+      {
+        "file": "src/infrastructure/services/pg_acl_engine.rs",
+        "self_ty": "PgAclEngine",
+        "name": "set_role",
+        "kind": "method",
+        "start": 2962,
+        "end": 3029,
+        "sha256": "1884a7dd408e22c20ca1a6b7bcbdf6e99522c90b62ea78a61e570a251a6e6083"
+      }
+    ],
+    "acl.subject_match_set": [
+      {
+        "file": "src/infrastructure/services/pg_acl_engine.rs",
+        "self_ty": "PgAclEngine",
+        "name": "subject_match_set",
+        "kind": "method",
+        "start": 673,
+        "end": 696,
+        "sha256": "e6d2d7743d84972aaaf817df78c4cbd96cd849e0fcbbaddf0075fe3fe6c11b63"
+      }
+    ],
+    "grantapi.refuse_external_sharing": [
+      {
+        "file": "src/domain/entities/drive.rs",
+        "self_ty": "DrivePolicies",
+        "name": "refuse_external_sharing",
+        "kind": "method",
+        "start": 648,
+        "end": 693,
+        "sha256": "b7af325c9b68b47a1a643eb470c272d504f1184420e1f91aee922ffd727c24d8"
+      }
+    ],
+    "grantapi.refuse_if_forbid_external_sharing": [
+      {
+        "file": "src/application/services/drive_management_service.rs",
+        "self_ty": "DriveManagementService",
+        "name": "refuse_if_forbid_external_sharing",
+        "kind": "method",
+        "start": 652,
+        "end": 694,
+        "sha256": "5f5f48b9c891ced261ec95ac47e8ff8c020b58267ba8a2b08f59e9a94b9bb2a9"
+      }
+    ],
+    "grantapi.refuse_if_forbid_owner_role_change": [
+      {
+        "file": "src/application/services/drive_management_service.rs",
+        "self_ty": "DriveManagementService",
+        "name": "refuse_if_forbid_owner_role_change",
+        "kind": "method",
+        "start": 721,
+        "end": 786,
+        "sha256": "81511f7f6e3739eb9ce5b30eb27a1810632159315c4883698bddf708f8f1a600"
+      }
+    ],
+    "grantapi.refuse_if_last_owner_change": [
+      {
+        "file": "src/application/services/drive_management_service.rs",
+        "self_ty": "DriveManagementService",
+        "name": "refuse_if_last_owner_change",
+        "kind": "method",
+        "start": 788,
+        "end": 830,
+        "sha256": "9e4daf3da34ea959f21a583dc6be6f6165fd665692c9ca15ebdc97de40d6f417"
+      }
+    ],
+    "grantapi.refuse_if_personal": [
+      {
+        "file": "src/application/services/drive_management_service.rs",
+        "self_ty": "DriveManagementService",
+        "name": "refuse_if_personal",
+        "kind": "method",
+        "start": 698,
+        "end": 719,
+        "sha256": "3a472958dabe7adbc6e9dc85d9ecfdf661d2f974828a3f102fcc72902a643dc9"
+      }
+    ],
+    "grantapi.remove_member": [
+      {
+        "file": "src/application/services/drive_management_service.rs",
+        "self_ty": "DriveManagementService",
+        "name": "remove_member",
+        "kind": "method",
+        "start": 295,
+        "end": 367,
+        "sha256": "517990f5b1a9d202aff9dcc3ccb3bad249276f870254e67af14f742e7b143380"
+      }
+    ],
+    "grantapi.require": [
+      {
+        "file": "src/application/ports/authorization_ports.rs",
+        "self_ty": "AuthorizationEngine",
+        "name": "require",
+        "kind": "method",
+        "start": 216,
+        "end": 329,
+        "sha256": "9b951bcf6b07d912c41160e7f49a97e932368caeb76b6ebe383fe549197d2058"
+      }
+    ],
+    "grantapi.revoke": [
+      {
+        "file": "src/infrastructure/services/pg_acl_engine.rs",
+        "self_ty": "PgAclEngine",
+        "name": "revoke",
+        "kind": "method",
+        "start": 2925,
+        "end": 2932,
+        "sha256": "616ab621e04331f8087cf7e995ee313e5eba2df11cc122ddad6dbe498071ece5"
+      }
+    ],
+    "grantapi.set_member_role": [
+      {
+        "file": "src/application/services/drive_management_service.rs",
+        "self_ty": "DriveManagementService",
+        "name": "set_member_role",
+        "kind": "method",
+        "start": 180,
+        "end": 293,
+        "sha256": "e40ac7eae290e1732835bddbd6efd46a7c8f369c2205005798a42b92feccceed"
+      }
+    ]
+  }
+}

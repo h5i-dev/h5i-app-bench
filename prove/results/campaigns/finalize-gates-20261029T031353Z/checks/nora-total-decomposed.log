@@ -1,0 +1,42 @@
+⚠ [146/230] Replayed Aeneas.Std.WP
+warning: Aeneas/Std/WP.lean:756:4: 'simp -failIfUnchanged only' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Aeneas/Std/WP.lean:761:4: 'simp -failIfUnchanged only' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Aeneas/Std/WP.lean:896:11: 'cases i' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Aeneas/Std/WP.lean:896:23: 'simp' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Aeneas/Std/WP.lean:927:19: 'simp at hspec' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+⚠ [1264/1380] Replayed Aeneas.Std.Core.Core
+warning: Aeneas/Std/Core/Core.lean:38:4: The namespace 'core' is duplicated in the declaration 'Aeneas.Std.core.core.clone.CloneGlobal'
+
+Note: This linter can be disabled with `set_option linter.dupNamespace false`
+warning: Aeneas/Std/Core/Core.lean:59:4: The namespace 'core' is duplicated in the declaration 'Aeneas.Std.core.core.clone.CloneBox'
+
+Note: This linter can be disabled with `set_option linter.dupNamespace false`
+warning: Aeneas/Std/Core/Core.lean:68:4: The namespace 'core' is duplicated in the declaration 'Aeneas.Std.core.core.marker.CopyBool'
+
+Note: This linter can be disabled with `set_option linter.dupNamespace false`
+ℹ [1732/1734] Replayed Verified.Derived
+info: Verified/Derived.lean:6:0: h5i_derive_all: no eq spec for nora_kernel.net.IpAddr; derive it by hand
+info: Verified/Derived.lean:6:0: h5i_derive_all: no eq spec for nora_kernel.validation.ValidationError; derive it by hand
+info: Verified/Derived.lean:6:0: h5i_derive_all: no clone spec for nora_kernel.tokens.TokenFile; derive it by hand
+info: Verified/Derived.lean:6:0: h5i_derive_all: no clone spec for nora_kernel.tokens.TokenStore; derive it by hand
+⚠ [1733/1734] Replayed Verified.NoraMiddlewareSupport
+warning: Verified/NoraMiddlewareSupport.lean:235:4: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+✖ [1734/1734] Building Verified.NoraMiddlewareTotal (10s)
+trace: .> LEAN_PATH=/dev/shm/h5i-cache/lake/leanprover-lean4-v4.31.0-dc4cdc4e98604e9b/packages/Cli/.lake/build/lib/lean:/dev/shm/h5i-cache/lake/leanprover-lean4-v4.31.0-dc4cdc4e98604e9b/packages/batteries/.lake/build/lib/lean:/dev/shm/h5i-cache/lake/leanprover-lean4-v4.31.0-dc4cdc4e98604e9b/packages/Qq/.lake/build/lib/lean:/dev/shm/h5i-cache/lake/leanprover-lean4-v4.31.0-dc4cdc4e98604e9b/packages/aesop/.lake/build/lib/lean:/dev/shm/h5i-cache/lake/leanprover-lean4-v4.31.0-dc4cdc4e98604e9b/packages/proofwidgets/.lake/build/lib/lean:/dev/shm/h5i-cache/lake/leanprover-lean4-v4.31.0-dc4cdc4e98604e9b/packages/importGraph/.lake/build/lib/lean:/dev/shm/h5i-cache/lake/leanprover-lean4-v4.31.0-dc4cdc4e98604e9b/packages/LeanSearchClient/.lake/build/lib/lean:/dev/shm/h5i-cache/lake/leanprover-lean4-v4.31.0-dc4cdc4e98604e9b/packages/plausible/.lake/build/lib/lean:/dev/shm/h5i-cache/lake/leanprover-lean4-v4.31.0-dc4cdc4e98604e9b/packages/mathlib/.lake/build/lib/lean:/dev/shm/h5i-cache/lake/leanprover-lean4-v4.31.0-dc4cdc4e98604e9b/packages/aeneas/backends/lean/.lake/build/lib/lean:/dev/shm/h5i-cache/lake/leanprover-lean4-v4.31.0-dc4cdc4e98604e9b/packages/h5i_app_lib/crates/h5i-app-core/proofs/.lake/build/lib/lean:/home/ht2673/Dev/h5i-app-bench/prove/ports/nora/proofs/.lake/build/lib/lean /home/ht2673/.elan/toolchains/leanprover--lean4---v4.31.0/bin/lean /home/ht2673/Dev/h5i-app-bench/prove/ports/nora/proofs/Verified/NoraMiddlewareTotal.lean -o /home/ht2673/Dev/h5i-app-bench/prove/ports/nora/proofs/.lake/build/lib/lean/Verified/NoraMiddlewareTotal.olean -i /home/ht2673/Dev/h5i-app-bench/prove/ports/nora/proofs/.lake/build/lib/lean/Verified/NoraMiddlewareTotal.ilean -c /home/ht2673/Dev/h5i-app-bench/prove/ports/nora/proofs/.lake/build/ir/Verified/NoraMiddlewareTotal.c --setup /home/ht2673/Dev/h5i-app-bench/prove/ports/nora/proofs/.lake/build/ir/Verified/NoraMiddlewareTotal.setup.json --json
+error: Verified/NoraMiddlewareTotal.lean:14:2: `simp` failed: maximum number of steps exceeded
+error: Lean exited with code 1
+Some required targets logged failures:
+- Verified.NoraMiddlewareTotal
+error: build failed

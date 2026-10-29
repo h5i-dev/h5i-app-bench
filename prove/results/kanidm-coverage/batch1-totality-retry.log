@@ -1,0 +1,427 @@
+⚠ [146/179] Replayed Aeneas.Std.WP
+warning: Aeneas/Std/WP.lean:756:4: 'simp -failIfUnchanged only' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Aeneas/Std/WP.lean:761:4: 'simp -failIfUnchanged only' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Aeneas/Std/WP.lean:896:11: 'cases i' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Aeneas/Std/WP.lean:896:23: 'simp' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Aeneas/Std/WP.lean:927:19: 'simp at hspec' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+⚠ [1264/1318] Replayed Aeneas.Std.Core.Core
+warning: Aeneas/Std/Core/Core.lean:38:4: The namespace 'core' is duplicated in the declaration 'Aeneas.Std.core.core.clone.CloneGlobal'
+
+Note: This linter can be disabled with `set_option linter.dupNamespace false`
+warning: Aeneas/Std/Core/Core.lean:59:4: The namespace 'core' is duplicated in the declaration 'Aeneas.Std.core.core.clone.CloneBox'
+
+Note: This linter can be disabled with `set_option linter.dupNamespace false`
+warning: Aeneas/Std/Core/Core.lean:68:4: The namespace 'core' is duplicated in the declaration 'Aeneas.Std.core.core.marker.CopyBool'
+
+Note: This linter can be disabled with `set_option linter.dupNamespace false`
+✖ [1732/1732] Building Verified.RecoveredEffectivePermissionCheckTotal (1467s)
+trace: .> LEAN_PATH=/dev/shm/h5i-cache/lake/leanprover-lean4-v4.31.0-dc4cdc4e98604e9b/packages/Cli/.lake/build/lib/lean:/dev/shm/h5i-cache/lake/leanprover-lean4-v4.31.0-dc4cdc4e98604e9b/packages/batteries/.lake/build/lib/lean:/dev/shm/h5i-cache/lake/leanprover-lean4-v4.31.0-dc4cdc4e98604e9b/packages/Qq/.lake/build/lib/lean:/dev/shm/h5i-cache/lake/leanprover-lean4-v4.31.0-dc4cdc4e98604e9b/packages/aesop/.lake/build/lib/lean:/dev/shm/h5i-cache/lake/leanprover-lean4-v4.31.0-dc4cdc4e98604e9b/packages/proofwidgets/.lake/build/lib/lean:/dev/shm/h5i-cache/lake/leanprover-lean4-v4.31.0-dc4cdc4e98604e9b/packages/importGraph/.lake/build/lib/lean:/dev/shm/h5i-cache/lake/leanprover-lean4-v4.31.0-dc4cdc4e98604e9b/packages/LeanSearchClient/.lake/build/lib/lean:/dev/shm/h5i-cache/lake/leanprover-lean4-v4.31.0-dc4cdc4e98604e9b/packages/plausible/.lake/build/lib/lean:/dev/shm/h5i-cache/lake/leanprover-lean4-v4.31.0-dc4cdc4e98604e9b/packages/mathlib/.lake/build/lib/lean:/dev/shm/h5i-cache/lake/leanprover-lean4-v4.31.0-dc4cdc4e98604e9b/packages/aeneas/backends/lean/.lake/build/lib/lean:/dev/shm/h5i-cache/lake/leanprover-lean4-v4.31.0-dc4cdc4e98604e9b/packages/h5i_app_lib/crates/h5i-app-core/proofs/.lake/build/lib/lean:/home/ht2673/Dev/h5i-app-bench/prove/ports/kanidm/proofs/.lake/build/lib/lean /home/ht2673/.elan/toolchains/leanprover--lean4---v4.31.0/bin/lean /home/ht2673/Dev/h5i-app-bench/prove/ports/kanidm/proofs/Verified/RecoveredEffectivePermissionCheckTotal.lean -o /home/ht2673/Dev/h5i-app-bench/prove/ports/kanidm/proofs/.lake/build/lib/lean/Verified/RecoveredEffectivePermissionCheckTotal.olean -i /home/ht2673/Dev/h5i-app-bench/prove/ports/kanidm/proofs/.lake/build/lib/lean/Verified/RecoveredEffectivePermissionCheckTotal.ilean -c /home/ht2673/Dev/h5i-app-bench/prove/ports/kanidm/proofs/.lake/build/ir/Verified/RecoveredEffectivePermissionCheckTotal.c --setup /home/ht2673/Dev/h5i-app-bench/prove/ports/kanidm/proofs/.lake/build/ir/Verified/RecoveredEffectivePermissionCheckTotal.setup.json --json
+info: Verified/RecoveredEffectivePermissionCheckTotal.lean:15:0: h5i_derive_all: no eq spec for kanidm_kernel.softlock.Policy; derive it by hand
+info: Verified/RecoveredEffectivePermissionCheckTotal.lean:15:0: h5i_derive_all: no eq spec for kanidm_kernel.softlock.State; derive it by hand
+info: Verified/RecoveredEffectivePermissionCheckTotal.lean:15:0: h5i_derive_all: no eq spec for kanidm_kernel.softlock.SoftLock; derive it by hand
+error: Verified/RecoveredEffectivePermissionCheckTotal.lean:1198:2: Unknown identifier `modify_acc.modify_scopedResult_acp_loop`
+error: Verified/RecoveredEffectivePermissionCheckTotal.lean:1198:129: Invalid field notation: Type of
+  r
+is not known; cannot resolve field `val`
+
+Hint: Consider replacing the field projection with a call to one of the following:
+  • `AddUnits.val`
+  • `Byte.val`
+  • `Char.val`
+  • `Fin.val`
+  • `Finset.val`
+  • `Float.val`
+  • `Float32.val`
+  • `FloatSpec.val`
+  • `NonScalar.val`
+  • `PNat.val`
+  • `Subtype.val`
+  • `Units.val`
+  • `ZMod.val`
+  • `Array.Mem.val`
+  • `LLVM.AttributeIndex.val`
+  • `LLVM.CodegenFileType.val`
+  • `LLVM.DLLStorageClass.val`
+  • `LLVM.IntPredicate.val`
+  • `LLVM.Linkage.val`
+  • `LLVM.Visibility.val`
+  • `Lean.ElabBlock.val`
+  • `Lean.ElabInline.val`
+  • `Lean.ExprStructEq.val`
+  • `OrderHom.Subtype.val`
+  • `ST.Out.val`
+  • `Vector.Mem.val`
+  • `Array.val`
+  • `IScalar.val`
+  • `Slice.val`
+  • `UScalar.val`
+  • `Lean.Doc.Parser.val`
+  • `Lean.Doc.WithSyntax.val`
+  • `Lean.Elab.FieldInfo.val`
+  • `Lean.Language.DynamicSnapshot.val`
+  • `Lean.Language.SyntaxGuarded.val`
+  • `Lean.Meta.InstanceEntry.val`
+  • `Lean.Meta.UnificationHintEntry.val`
+  • `Lean.Server.WithRpcRef.val`
+  • `Std.Time.Timestamp.val`
+  • `Std.Time.WallTime.val`
+  • `Step.Test.U8.val`
+  • `Batteries.BinomialHeap.Imp.FindMin.val`
+  • `Lean.Elab.ComputedFields.Context.val`
+  • `Lean.Elab.Term.LetRecToLift.val`
+  • `Lean.Elab.Term.NamedArg.val`
+  • `Lean.Meta.Match.Example.val`
+  • `Lean.Meta.Match.Pattern.val`
+  • `Lean.Meta.Sym.BitVecValue.val`
+  • `Lean.Meta.Sym.FinValue.val`
+  • `Lean.Meta.SynthInstance.Instance.val`
+  • `Std.Sat.AIG.Fanin.val`
+  • `Std.Time.Internal.UnitVal.val`
+  • `alloc.vec.Vec.val`
+  • `Lean.Compiler.LCNF.FixedParams.AbsValue.val`
+  • `Lean.Elab.Term.StructInst.FieldView.val`
+  • `Lean.Meta.Try.Collector.InductionCandidate.val`
+  • `Mathlib.Tactic.Ring.Common.Result.val`
+  • `Std.Tactic.BVDecide.BVExpr.WithCache.val`
+  • `Lean.Meta.Grind.Arith.Cutsat.SymbolicBound.val`
+error: Verified/RecoveredEffectivePermissionCheckTotal.lean:1199:9: Unknown identifier `modify_acc.modify_scopedResult_acp_loop`
+error: Verified/RecoveredEffectivePermissionCheckTotal.lean:1218:2: Unknown identifier `modify_acc.modify_scopedResult_acp`
+error: Verified/RecoveredEffectivePermissionCheckTotal.lean:1218:105: Invalid field notation: Type of
+  r
+is not known; cannot resolve field `val`
+
+Hint: Consider replacing the field projection with a call to one of the following:
+  • `AddUnits.val`
+  • `Byte.val`
+  • `Char.val`
+  • `Fin.val`
+  • `Finset.val`
+  • `Float.val`
+  • `Float32.val`
+  • `FloatSpec.val`
+  • `NonScalar.val`
+  • `PNat.val`
+  • `Subtype.val`
+  • `Units.val`
+  • `ZMod.val`
+  • `Array.Mem.val`
+  • `LLVM.AttributeIndex.val`
+  • `LLVM.CodegenFileType.val`
+  • `LLVM.DLLStorageClass.val`
+  • `LLVM.IntPredicate.val`
+  • `LLVM.Linkage.val`
+  • `LLVM.Visibility.val`
+  • `Lean.ElabBlock.val`
+  • `Lean.ElabInline.val`
+  • `Lean.ExprStructEq.val`
+  • `OrderHom.Subtype.val`
+  • `ST.Out.val`
+  • `Vector.Mem.val`
+  • `Array.val`
+  • `IScalar.val`
+  • `Slice.val`
+  • `UScalar.val`
+  • `Lean.Doc.Parser.val`
+  • `Lean.Doc.WithSyntax.val`
+  • `Lean.Elab.FieldInfo.val`
+  • `Lean.Language.DynamicSnapshot.val`
+  • `Lean.Language.SyntaxGuarded.val`
+  • `Lean.Meta.InstanceEntry.val`
+  • `Lean.Meta.UnificationHintEntry.val`
+  • `Lean.Server.WithRpcRef.val`
+  • `Std.Time.Timestamp.val`
+  • `Std.Time.WallTime.val`
+  • `Step.Test.U8.val`
+  • `Batteries.BinomialHeap.Imp.FindMin.val`
+  • `Lean.Elab.ComputedFields.Context.val`
+  • `Lean.Elab.Term.LetRecToLift.val`
+  • `Lean.Elab.Term.NamedArg.val`
+  • `Lean.Meta.Match.Example.val`
+  • `Lean.Meta.Match.Pattern.val`
+  • `Lean.Meta.Sym.BitVecValue.val`
+  • `Lean.Meta.Sym.FinValue.val`
+  • `Lean.Meta.SynthInstance.Instance.val`
+  • `Std.Sat.AIG.Fanin.val`
+  • `Std.Time.Internal.UnitVal.val`
+  • `alloc.vec.Vec.val`
+  • `Lean.Compiler.LCNF.FixedParams.AbsValue.val`
+  • `Lean.Elab.Term.StructInst.FieldView.val`
+  • `Lean.Meta.Try.Collector.InductionCandidate.val`
+  • `Mathlib.Tactic.Ring.Common.Result.val`
+  • `Std.Tactic.BVDecide.BVExpr.WithCache.val`
+  • `Lean.Meta.Grind.Arith.Cutsat.SymbolicBound.val`
+error: Verified/RecoveredEffectivePermissionCheckTotal.lean:1219:9: Unknown identifier `modify_acc.modify_scopedResult_acp`
+error: Verified/RecoveredEffectivePermissionCheckTotal.lean:1257:0: (deterministic) timeout at `whnf`, maximum number of heartbeats (8000000) has been reached
+
+Note: Use `set_option maxHeartbeats <num>` to set the limit.
+
+Hint: Additional diagnostic information may be available using the `set_option diagnostics true` command.
+error: Verified/RecoveredEffectivePermissionCheckTotal.lean:1257:2: (kernel) unknown constant 'kanidm_kernel.Verified.RecoveredEffectivePermissionCheckTotal.migration_migration_entry_attrs_total'
+error: Verified/RecoveredEffectivePermissionCheckTotal.lean:1263:16: (kernel) unknown constant 'kanidm_kernel.Verified.RecoveredEffectivePermissionCheckTotal.migration_migration_entry_attrs_total'
+error: Verified/RecoveredEffectivePermissionCheckTotal.lean:1379:2: Tactic `apply` failed: could not unify the conclusion of `spec_bind
+  (modify_protected_spec amr1 40 hamr1 denied1 ?m.271)`
+  Std.bind
+      (match amr1 with
+      | AccessModResult.Deny =>
+        ok
+          (true, alloc.vec.Vec.new (alloc.vec.Vec U8), alloc.vec.Vec.new (alloc.vec.Vec U8),
+            alloc.vec.Vec.new (alloc.vec.Vec U8), alloc.vec.Vec.new (alloc.vec.Vec U8))
+      | AccessModResult.Ignore =>
+        ok
+          (denied1, alloc.vec.Vec.new (alloc.vec.Vec U8), alloc.vec.Vec.new (alloc.vec.Vec U8),
+            alloc.vec.Vec.new (alloc.vec.Vec U8), alloc.vec.Vec.new (alloc.vec.Vec U8))
+      | AccessModResult.Allow a a_1 a_2 a_3 =>
+        ok
+          (denied1, alloc.vec.Vec.new (alloc.vec.Vec U8), alloc.vec.Vec.new (alloc.vec.Vec U8),
+            alloc.vec.Vec.new (alloc.vec.Vec U8), alloc.vec.Vec.new (alloc.vec.Vec U8))
+      | AccessModResult.Constrain p r pc rc => do
+        let r ← bset.extend (alloc.vec.Vec.new (alloc.vec.Vec U8)) r.deref
+        let p ← bset.extend (alloc.vec.Vec.new (alloc.vec.Vec U8)) p.deref
+        let pc ←
+          match pc with
+            | none => ok (alloc.vec.Vec.new (alloc.vec.Vec U8))
+            | some pc => bset.extend (alloc.vec.Vec.new (alloc.vec.Vec U8)) pc.deref
+        let rc ←
+          match rc with
+            | none => ok (alloc.vec.Vec.new (alloc.vec.Vec U8))
+            | some rc => bset.extend (alloc.vec.Vec.new (alloc.vec.Vec U8)) rc.deref
+        ok (denied1, p, r, pc, rc))
+      ?m.265 ⦃
+    ?m.266 ⦄
+with the goal
+  (do
+      let (denied2, constrain_pres, constrain_rem, constrain_pres_cls, constrain_rem_cls) ←
+        match amr1 with
+          | AccessModResult.Deny =>
+            ok
+              (true, alloc.vec.Vec.new (alloc.vec.Vec U8), alloc.vec.Vec.new (alloc.vec.Vec U8),
+                alloc.vec.Vec.new (alloc.vec.Vec U8), alloc.vec.Vec.new (alloc.vec.Vec U8))
+          | AccessModResult.Ignore =>
+            ok
+              (denied1, alloc.vec.Vec.new (alloc.vec.Vec U8), alloc.vec.Vec.new (alloc.vec.Vec U8),
+                alloc.vec.Vec.new (alloc.vec.Vec U8), alloc.vec.Vec.new (alloc.vec.Vec U8))
+          | AccessModResult.Constrain pres_attr rem_attr pres_cls rem_cls => do
+            let constrain_rem1 ← bset.extend (alloc.vec.Vec.new (alloc.vec.Vec U8)) rem_attr.deref
+            let constrain_pres1 ← bset.extend (alloc.vec.Vec.new (alloc.vec.Vec U8)) pres_attr.deref
+            let constrain_pres_cls1 ←
+              match pres_cls with
+                | none => ok (alloc.vec.Vec.new (alloc.vec.Vec U8))
+                | some pres_cls1 => bset.extend (alloc.vec.Vec.new (alloc.vec.Vec U8)) pres_cls1.deref
+            let v ←
+              match rem_cls with
+                | none => ok (alloc.vec.Vec.new (alloc.vec.Vec U8))
+                | some pres_cls1 => bset.extend (alloc.vec.Vec.new (alloc.vec.Vec U8)) pres_cls1.deref
+            ok (denied1, constrain_pres1, constrain_rem1, constrain_pres_cls1, v)
+          | AccessModResult.Allow a a_1 a_2 a_3 =>
+            ok
+              (denied1, alloc.vec.Vec.new (alloc.vec.Vec U8), alloc.vec.Vec.new (alloc.vec.Vec U8),
+                alloc.vec.Vec.new (alloc.vec.Vec U8), alloc.vec.Vec.new (alloc.vec.Vec U8))
+      let (denied3, constrain_pres1, allow_pres1, constrain_rem1, allow_rem1, allow_pres_cls1, allow_rem_cls1) ←
+        if grant = true then ok (denied2, constrain_pres, ap, constrain_rem, ar, apc, arc)
+          else
+            if denied2 = true then ok (true, constrain_pres, ap, constrain_rem, ar, apc, arc)
+            else do
+              let amr2 ← modify_acc.modify_sync_constrain ident entry sync_agreements
+              let (denied4, constrain_pres2, constrain_rem2) ←
+                match amr2 with
+                  | AccessModResult.Deny => ok (true, constrain_pres, constrain_rem)
+                  | AccessModResult.Ignore => ok (false, constrain_pres, constrain_rem)
+                  | AccessModResult.Constrain pres_attr rem_attr a a_1 => do
+                    let constrain_rem3 ← bset.extend constrain_rem rem_attr.deref
+                    let constrain_pres3 ← bset.extend constrain_pres pres_attr.deref
+                    ok (false, constrain_pres3, constrain_rem3)
+                  | AccessModResult.Allow a a_1 a_2 a_3 => ok (false, constrain_pres, constrain_rem)
+              let scoped_acp ← modify_acc.modify_scoped_acp related_acp ident_memberof ident_uuid entry
+              let amr3 ← modify_acc.modify_pres_test scoped_acp.deref
+              let (b, v, v1, v2, v3) ←
+                match amr3 with
+                  | AccessModResult.Deny => ok (true, ap, ar, apc, arc)
+                  | AccessModResult.Ignore => ok (denied4, ap, ar, apc, arc)
+                  | AccessModResult.Constrain a a_1 a_2 a_3 => ok (denied4, ap, ar, apc, arc)
+                  | AccessModResult.Allow pres_attr rem_attr pres_class rem_class => do
+                    let allow_pres2 ← bset.extend ap pres_attr.deref
+                    let allow_rem2 ← bset.extend ar rem_attr.deref
+                    let allow_pres_cls2 ← bset.extend apc pres_class.deref
+                    let allow_rem_cls2 ← bset.extend arc rem_class.deref
+                    ok (denied4, allow_pres2, allow_rem2, allow_pres_cls2, allow_rem_cls2)
+              ok (b, constrain_pres2, v, constrain_rem2, v1, v2, v3)
+      if denied3 = true then ok modify_acc.ModifyResult.Deny
+        else
+          if grant = true then ok modify_acc.ModifyResult.Grant
+          else do
+            let allowed_pres ←
+              if (constrain_pres1.len != 0#usize) = true then bset.intersection constrain_pres1.deref allow_pres1.deref
+                else ok allow_pres1
+            let allowed_rem ←
+              if (constrain_rem1.len != 0#usize) = true then bset.intersection constrain_rem1.deref allow_rem1.deref
+                else ok allow_rem1
+            let allowed_pres_cls ←
+              if (constrain_pres_cls.len != 0#usize) = true then
+                  bset.intersection constrain_pres_cls.deref allow_pres_cls1.deref
+                else ok allow_pres_cls1
+            let allowed_rem_cls ←
+              if (constrain_rem_cls.len != 0#usize) = true then
+                  bset.intersection constrain_rem_cls.deref allow_rem_cls1.deref
+                else ok allow_rem_cls1
+            let allowed_pres_cls1 ← «protected».remove_protected_mod_pres allowed_pres_cls.deref
+            let allowed_rem_cls1 ← «protected».remove_protected_mod_rem allowed_rem_cls.deref
+            ok (modify_acc.ModifyResult.Allow allowed_pres allowed_rem allowed_pres_cls1 allowed_rem_cls1)) ⦃
+    r => True ⦄
+
+Note: The full type of `spec_bind (modify_protected_spec amr1 40 hamr1 denied1 ?m.271)` is
+  qimp_spec (fun r => FourBound 40 r) ?m.265 ?m.266 →
+    Std.bind
+        (match amr1 with
+        | AccessModResult.Deny =>
+          ok
+            (true, alloc.vec.Vec.new (alloc.vec.Vec U8), alloc.vec.Vec.new (alloc.vec.Vec U8),
+              alloc.vec.Vec.new (alloc.vec.Vec U8), alloc.vec.Vec.new (alloc.vec.Vec U8))
+        | AccessModResult.Ignore =>
+          ok
+            (denied1, alloc.vec.Vec.new (alloc.vec.Vec U8), alloc.vec.Vec.new (alloc.vec.Vec U8),
+              alloc.vec.Vec.new (alloc.vec.Vec U8), alloc.vec.Vec.new (alloc.vec.Vec U8))
+        | AccessModResult.Allow a a_1 a_2 a_3 =>
+          ok
+            (denied1, alloc.vec.Vec.new (alloc.vec.Vec U8), alloc.vec.Vec.new (alloc.vec.Vec U8),
+              alloc.vec.Vec.new (alloc.vec.Vec U8), alloc.vec.Vec.new (alloc.vec.Vec U8))
+        | AccessModResult.Constrain p r pc rc => do
+          let r ← bset.extend (alloc.vec.Vec.new (alloc.vec.Vec U8)) r.deref
+          let p ← bset.extend (alloc.vec.Vec.new (alloc.vec.Vec U8)) p.deref
+          let pc ←
+            match pc with
+              | none => ok (alloc.vec.Vec.new (alloc.vec.Vec U8))
+              | some pc => bset.extend (alloc.vec.Vec.new (alloc.vec.Vec U8)) pc.deref
+          let rc ←
+            match rc with
+              | none => ok (alloc.vec.Vec.new (alloc.vec.Vec U8))
+              | some rc => bset.extend (alloc.vec.Vec.new (alloc.vec.Vec U8)) rc.deref
+          ok (denied1, p, r, pc, rc))
+        ?m.265 ⦃
+      ?m.266 ⦄
+
+case a
+ident : Identity
+related_acp : Slice profiles.AccessControlModifyResolved
+sync_agreements : Slice SyncAgreement
+entry : Entry
+hcap : cost resolvedModifyWeight ↑related_acp + cost syncWeight ↑sync_agreements + 73 < Usize.max
+ident_memberof : Option (alloc.vec.Vec U128)
+ident_uuid : U128
+abr : AccessBasicResult
+denied grant : Bool
+a✝ : True
+amr : AccessModResult
+hamr :
+  match amr with
+  | AccessModResult.Allow p r pc rc => (↑p).length ≤ 73 ∧ (↑r).length ≤ 73 ∧ (↑pc).length ≤ 73 ∧ (↑rc).length ≤ 73
+  | AccessModResult.Constrain p r pc rc =>
+    (↑p).length ≤ 73 ∧
+      (↑r).length ≤ 73 ∧
+        (∀ (xs : alloc.vec.Vec (alloc.vec.Vec U8)), pc = some xs → (↑xs).length ≤ 73) ∧
+          ∀ (xs : alloc.vec.Vec (alloc.vec.Vec U8)), rc = some xs → (↑xs).length ≤ 73
+  | x => True
+denied1 : Bool
+ap ar apc arc : alloc.vec.Vec (alloc.vec.Vec U8)
+hallow : (↑ap).length ≤ 73 ∧ (↑ar).length ≤ 73 ∧ (↑apc).length ≤ 73 ∧ (↑arc).length ≤ 73
+amr1 : AccessModResult
+hamr1 :
+  match amr1 with
+  | AccessModResult.Allow p r pc rc => (↑p).length ≤ 40 ∧ (↑r).length ≤ 40 ∧ (↑pc).length ≤ 40 ∧ (↑rc).length ≤ 40
+  | AccessModResult.Constrain p r pc rc =>
+    (↑p).length ≤ 40 ∧
+      (↑r).length ≤ 40 ∧
+        (∀ (xs : alloc.vec.Vec (alloc.vec.Vec U8)), pc = some xs → (↑xs).length ≤ 40) ∧
+          ∀ (xs : alloc.vec.Vec (alloc.vec.Vec U8)), rc = some xs → (↑xs).length ≤ 40
+  | x => True
+⊢ (do
+      let (denied2, constrain_pres, constrain_rem, constrain_pres_cls, constrain_rem_cls) ←
+        match amr1 with
+          | AccessModResult.Deny =>
+            ok
+              (true, alloc.vec.Vec.new (alloc.vec.Vec U8), alloc.vec.Vec.new (alloc.vec.Vec U8),
+                alloc.vec.Vec.new (alloc.vec.Vec U8), alloc.vec.Vec.new (alloc.vec.Vec U8))
+          | AccessModResult.Ignore =>
+            ok
+              (denied1, alloc.vec.Vec.new (alloc.vec.Vec U8), alloc.vec.Vec.new (alloc.vec.Vec U8),
+                alloc.vec.Vec.new (alloc.vec.Vec U8), alloc.vec.Vec.new (alloc.vec.Vec U8))
+          | AccessModResult.Constrain pres_attr rem_attr pres_cls rem_cls => do
+            let constrain_rem1 ← bset.extend (alloc.vec.Vec.new (alloc.vec.Vec U8)) rem_attr.deref
+            let constrain_pres1 ← bset.extend (alloc.vec.Vec.new (alloc.vec.Vec U8)) pres_attr.deref
+            let constrain_pres_cls1 ←
+              match pres_cls with
+                | none => ok (alloc.vec.Vec.new (alloc.vec.Vec U8))
+                | some pres_cls1 => bset.extend (alloc.vec.Vec.new (alloc.vec.Vec U8)) pres_cls1.deref
+            let v ←
+              match rem_cls with
+                | none => ok (alloc.vec.Vec.new (alloc.vec.Vec U8))
+                | some pres_cls1 => bset.extend (alloc.vec.Vec.new (alloc.vec.Vec U8)) pres_cls1.deref
+            ok (denied1, constrain_pres1, constrain_rem1, constrain_pres_cls1, v)
+          | AccessModResult.Allow a a_1 a_2 a_3 =>
+            ok
+              (denied1, alloc.vec.Vec.new (alloc.vec.Vec U8), alloc.vec.Vec.new (alloc.vec.Vec U8),
+                alloc.vec.Vec.new (alloc.vec.Vec U8), alloc.vec.Vec.new (alloc.vec.Vec U8))
+      let (denied3, constrain_pres1, allow_pres1, constrain_rem1, allow_rem1, allow_pres_cls1, allow_rem_cls1) ←
+        if grant = true then ok (denied2, constrain_pres, ap, constrain_rem, ar, apc, arc)
+          else
+            if denied2 = true then ok (true, constrain_pres, ap, constrain_rem, ar, apc, arc)
+            else do
+              let amr2 ← modify_acc.modify_sync_constrain ident entry sync_agreements
+              let (denied4, constrain_pres2, constrain_rem2) ←
+                match amr2 with
+                  | AccessModResult.Deny => ok (true, constrain_pres, constrain_rem)
+                  | AccessModResult.Ignore => ok (false, constrain_pres, constrain_rem)
+                  | AccessModResult.Constrain pres_attr rem_attr a a_1 => do
+                    let constrain_rem3 ← bset.extend constrain_rem rem_attr.deref
+                    let constrain_pres3 ← bset.extend constrain_pres pres_attr.deref
+                    ok (false, constrain_pres3, constrain_rem3)
+                  | AccessModResult.Allow a a_1 a_2 a_3 => ok (false, constrain_pres, constrain_rem)
+              let scoped_acp ← modify_acc.modify_scoped_acp related_acp ident_memberof ident_uuid entry
+              let amr3 ← modify_acc.modify_pres_test scoped_acp.deref
+              let (b, v, v1, v2, v3) ←
+                match amr3 with
+                  | AccessModResult.Deny => ok (true, ap, ar, apc, arc)
+                  | AccessModResult.Ignore => ok (denied4, ap, ar, apc, arc)
+                  | AccessModResult.Constrain a a_1 a_2 a_3 => ok (denied4, ap, ar, apc, arc)
+                  | AccessModResult.Allow pres_attr rem_attr pres_class rem_class => do
+                    let allow_pres2 ← bset.extend ap pres_attr.deref
+                    let allow_rem2 ← bset.extend ar rem_attr.deref
+                    let allow_pres_cls2 ← bset.extend apc pres_class.deref
+                    let allow_rem_cls2 ← bset.extend arc rem_class.deref
+                    ok (denied4, allow_pres2, allow_rem2, allow_pres_cls2, allow_rem_cls2)
+              ok (b, constrain_pres2, v, constrain_rem2, v1, v2, v3)
+      if denied3 = true then ok modify_acc.ModifyResult.Deny
+        else
+          if grant = true then ok modify_acc.ModifyResult.Grant
+          else do
+            let allowed_pres ←
+              if (constrain_pres1.len != 0#usize) = true then bset.intersection constrain_pres1.deref allow_pres1.deref
+                else ok allow_pres1
+            let allowed_rem ←
+              if (constrain_rem1.len != 0#usize) = true then bset.intersection constrain_rem1.deref allow_rem1.deref
+                else ok allow_rem1
+            let allowed_pres_cls ←
+              if (constrain_pres_cls.len != 0#usize) = true then
+                  bset.intersection constrain_pres_cls.deref allow_pres_cls1.deref
+                else ok allow_pres_cls1
+            let allowed_rem_cls ←
+              if (constrain_rem_cls.len != 0#usize) = true then
+                  bset.intersection constrain_rem_cls.deref allow_rem_cls1.deref
+                else ok allow_rem_cls1
+            let allowed_pres_cls1 ← «protected».remove_protected_mod_pres allowed_pres_cls.deref
+            let allowed_rem_cls1 ← «protected».remove_protected_mod_rem allowed_rem_cls.deref
+            ok (modify_acc.ModifyResult.Allow allowed_pres allowed_rem allowed_pres_cls1 allowed_rem_cls1)) ⦃
+    r => True ⦄
+error: Lean exited with code 1
+Some required targets logged failures:
+- Verified.RecoveredEffectivePermissionCheckTotal
+error: build failed

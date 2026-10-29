@@ -1,7 +1,7 @@
 # Standard h5i-app project. Keep every selected theorem in the final gate.
 [extract]
 crate = "kernel"
-start-from = ["transition","validation","middleware::auth_middleware","tokens::revoke_token","tokens::revoke_all_for_user"]
+start-from = ["transition","validation","middleware::auth_middleware","tokens::revoke_token","tokens::revoke_all_for_user","permission_import::map_to_proposal"]
 
 [check]
 theorems = [
@@ -30,4 +30,10 @@ theorems = [
   "nora_kernel.Properties.middleware_total",
   "nora_kernel.Properties.revoked_token_rejected",
   "nora_kernel.Properties.revoke_all_effective",
+  "nora_kernel.Properties.permission_strongest",
+  "nora_kernel.Properties.permission_narrow",
+  "nora_kernel.Properties.permission_role",
+  "nora_kernel.Properties.permission_never_admin",
+  "nora_kernel.Properties.permission_write_opt_in",
+  "nora_kernel.Properties.permission_report_safe",
 ]

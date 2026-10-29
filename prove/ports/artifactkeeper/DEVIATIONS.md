@@ -87,3 +87,42 @@ data types.
   never changes the decision: a ticket only resolves for GET and HEAD, which
   are not writes. The mutation check confirms this mutation is equivalent.
 - `mutation_needs_action` leaves out paths for which `is_non_mutating_format_post` holds.
+
+## Token expiration policy expansion (7c42891)
+
+`token_expiry.rs` ports `ApiTokenExpiryPolicy::default`, `validate` and
+`resolve_expiry` from `services/token_expiry_policy.rs`. All booleans, optional
+lifetimes, i64 bounds, error precedence and result fields are retained. Formatted
+upstream error strings become six stable error categories; message rendering,
+environment loading, persistence and activation are outside this port. Minting
+does not revalidate stored policies upstream: configured defaults are returned
+unchanged even for invalid configurations. The specification preserves that
+behavior. `difftest/token-expiry/run.py` extracts the pinned pure upstream bodies
+and compares default, validation and resolution with full i64 boundary/random
+inputs; it normalizes only error text into those categories.
+
+## TOTP policy expansion (7c42891)
+
+`totp_policy.rs` ports the complete pure login requirement, policy coverage,
+strictness, enforcing and policy activation decisions from
+`services/totp_policy.rs`. All five upstream authentication providers remain
+distinct. Existing enrollment takes precedence even over service-account and
+identity-provider exemptions. The activation result preserves refusal variants
+and environment-pin precedence. Parsing, display messages, storage and effective
+policy I/O are excluded. `difftest/totp-policy/run.py` extracts the pinned pure
+bodies and exhausts every finite input combination (279 comparisons).
+
+## Migration-safety scanner expansion (7c42891)
+
+The byte kernel ports `mask_sql`, `find_phrase`, `identifier_after`, `skip_ws`,
+`alter_target`, and `classify` from `backend/src/migration_safety.rs`. Tables and
+masked SQL are byte vectors rather than allocated UTF-8 strings; Finding kind
+strings become an enum. Fixed classifier needles are ASCII; the exported generic
+phrase search is equivalent for ASCII needles (upstream `split_whitespace` also
+accepts Unicode whitespace, which this byte helper does not). Caller offsets
+must describe byte boundaries for upstream string operations. This batch does
+not port filesystem traversal, historical allowlist data, reporting, or the
+whole migration gate. Differential tests compare every ordered finding and byte
+offset against verbatim pinned functions, including all227 pinned SQL files as
+test inputs. Those SQL files contribute no source coverage. Formal scanner
+properties and standard gates are required before adding reach credit.

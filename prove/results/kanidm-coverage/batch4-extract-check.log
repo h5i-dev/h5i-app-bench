@@ -1,0 +1,2 @@
+kanidm: running h5i app extract --check ports/kanidm
+kanidm: passed; results/project-checks/20261028T205629015687Z/kanidm.log

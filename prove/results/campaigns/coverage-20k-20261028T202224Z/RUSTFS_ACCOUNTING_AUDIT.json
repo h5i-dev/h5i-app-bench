@@ -1,0 +1,1161 @@
+{
+  "gate_fresh": true,
+  "counted": 1986,
+  "ported_ledger_lines": 2533,
+  "reached_unmapped_declarations": [
+    "acts.Action.Insts.CoreCmpPartialEqAction.eq",
+    "acts.Family.Insts.CoreCmpPartialEqFamily.eq",
+    "acts.is_s3",
+    "acts.set_is_match_for_effect_loop",
+    "acts.set_is_match_for_effect_loop.body",
+    "actsets.action_count",
+    "actsets.action_name",
+    "actsets.admin_name",
+    "actsets.admin_name_0",
+    "actsets.admin_name_1",
+    "actsets.admin_name_2",
+    "actsets.admin_name_3",
+    "actsets.admin_name_4",
+    "actsets.admin_name_5",
+    "actsets.contains_name",
+    "actsets.contains_name_loop",
+    "actsets.contains_name_loop.body",
+    "actsets.covers",
+    "actsets.covers_loop",
+    "actsets.covers_loop.body",
+    "actsets.kms_name",
+    "actsets.kms_name_0",
+    "actsets.kms_name_1",
+    "actsets.member",
+    "actsets.member_loop",
+    "actsets.member_loop.body",
+    "actsets.push_unique_loop",
+    "actsets.push_unique_loop.body",
+    "actsets.s3_name",
+    "actsets.s3_name_0",
+    "actsets.s3_name_1",
+    "actsets.s3_name_2",
+    "actsets.s3_name_3",
+    "actsets.s3_name_4",
+    "actsets.sts_name",
+    "awsvars.ClaimStrings.Insts.CoreCloneClone.clone",
+    "awsvars.clone_list",
+    "awsvars.clone_list_loop",
+    "awsvars.clone_list_loop.body",
+    "awsvars.clone_opt_list",
+    "awsvars.closing",
+    "awsvars.closing_loop",
+    "awsvars.closing_loop.body",
+    "awsvars.dedup",
+    "awsvars.dedup_loop",
+    "awsvars.dedup_loop.body",
+    "awsvars.extend",
+    "awsvars.extend_loop",
+    "awsvars.extend_loop.body",
+    "awsvars.fixpoint",
+    "awsvars.pass_all",
+    "awsvars.pass_from",
+    "awsvars.pending_clone",
+    "awsvars.resolve_aws_variables_with_depth",
+    "awsvars.scan",
+    "awsvars.splice",
+    "awsvars.splice_loop0",
+    "awsvars.splice_loop0.body",
+    "awsvars.splice_loop1",
+    "awsvars.splice_loop1.body",
+    "awsvars.splice_loop2",
+    "awsvars.splice_loop2.body",
+    "awsvars.texts",
+    "awsvars.texts_loop",
+    "awsvars.texts_loop.body",
+    "awsvars.userid_strings",
+    "awsvars.wrap_all",
+    "awsvars.wrap_all_loop",
+    "awsvars.wrap_all_loop.body",
+    "bytes.concat",
+    "bytes.concat_loop",
+    "bytes.concat_loop.body",
+    "bytes.contains",
+    "bytes.eq",
+    "bytes.eq_loop",
+    "bytes.eq_loop.body",
+    "bytes.find_from",
+    "bytes.find_from_loop",
+    "bytes.find_from_loop.body",
+    "bytes.lower",
+    "bytes.lower_loop",
+    "bytes.lower_loop.body",
+    "bytes.member",
+    "bytes.member_loop",
+    "bytes.member_loop.body",
+    "bytes.parse_digits",
+    "bytes.parse_i64",
+    "bytes.replace",
+    "bytes.replace_loop0",
+    "bytes.replace_loop0.body",
+    "bytes.replace_loop0_loop0",
+    "bytes.replace_loop0_loop0.body",
+    "bytes.slice",
+    "bytes.slice_loop",
+    "bytes.slice_loop.body",
+    "bytes.starts_with",
+    "bytes.starts_with_at",
+    "bytes.starts_with_at_loop",
+    "bytes.starts_with_at_loop.body",
+    "claims.append_string_values",
+    "claims.append_string_values_loop",
+    "claims.append_string_values_loop.body",
+    "claims.array_uses_tag",
+    "claims.case_fold_lookup",
+    "claims.case_fold_lookup_loop",
+    "claims.case_fold_lookup_loop.body",
+    "claims.find",
+    "claims.find_loop",
+    "claims.find_loop.body",
+    "claims.lookup_strings",
+    "claims.object_uses_tag",
+    "claims.split_values",
+    "claims.split_values_loop",
+    "claims.split_values_loop.body",
+    "claims.unique_values",
+    "claims.unique_values_loop",
+    "claims.unique_values_loop.body",
+    "claims.value_strings",
+    "claims.value_strings_loop",
+    "claims.value_strings_loop.body",
+    "conddata.Functions.Insts.CoreCloneClone.clone",
+    "conddata.Op.Insts.CoreCmpPartialEqOp.eq",
+    "conddata.addr_inner_eq",
+    "conddata.addr_inner_eq_loop",
+    "conddata.addr_inner_eq_loop.body",
+    "conddata.addr_pairs_eq",
+    "conddata.addr_pairs_eq_loop",
+    "conddata.addr_pairs_eq_loop.body",
+    "conddata.all_hold",
+    "conddata.all_hold_loop",
+    "conddata.all_hold_loop.body",
+    "conddata.base64_digit",
+    "conddata.binary_evaluate_loop",
+    "conddata.binary_evaluate_loop.body",
+    "conddata.binary_from_encoded_values_loop",
+    "conddata.binary_from_encoded_values_loop.body",
+    "conddata.binary_inner_eq",
+    "conddata.binary_inner_eq_loop",
+    "conddata.binary_inner_eq_loop.body",
+    "conddata.binary_key_matches",
+    "conddata.binary_key_matches_loop",
+    "conddata.binary_key_matches_loop.body",
+    "conddata.bool_inner_eq",
+    "conddata.bool_inner_eq_loop",
+    "conddata.bool_inner_eq_loop.body",
+    "conddata.clone_inner_loop",
+    "conddata.clone_inner_loop.body",
+    "conddata.condition_view",
+    "conddata.contains_condition",
+    "conddata.contains_condition_loop",
+    "conddata.contains_condition_loop.body",
+    "conddata.contains_key_name_loop",
+    "conddata.contains_key_name_loop.body",
+    "conddata.date_inner_eq",
+    "conddata.date_inner_eq_loop",
+    "conddata.date_inner_eq_loop.body",
+    "conddata.decode_base64",
+    "conddata.decode_base64_loop",
+    "conddata.decode_base64_loop.body",
+    "conddata.inner_has_value",
+    "conddata.inner_has_value_loop",
+    "conddata.inner_has_value_loop.body",
+    "conddata.key_eq",
+    "conddata.key_names_loop",
+    "conddata.key_names_loop.body",
+    "conddata.key_presence",
+    "conddata.key_presence_loop",
+    "conddata.key_presence_loop.body",
+    "conddata.legacy_pairs",
+    "conddata.legacy_pairs_loop",
+    "conddata.legacy_pairs_loop.body",
+    "conddata.list_covers",
+    "conddata.list_covers_loop",
+    "conddata.list_covers_loop.body",
+    "conddata.matching_view",
+    "conddata.num_inner_eq",
+    "conddata.num_inner_eq_loop",
+    "conddata.num_inner_eq_loop.body",
+    "conddata.num_op",
+    "conddata.op_name",
+    "conddata.op_name_late",
+    "conddata.str_op",
+    "conddata.string_covers",
+    "conddata.string_covers_loop",
+    "conddata.string_covers_loop.body",
+    "conddata.string_inner_eq",
+    "conddata.string_inner_eq_loop",
+    "conddata.string_inner_eq_loop.body",
+    "conddata.string_set_eq",
+    "conddata.to_key_with_suffix_loop",
+    "conddata.to_key_with_suffix_loop.body",
+    "conddata.views",
+    "conddata.views_loop",
+    "conddata.views_loop.body",
+    "condfuncs.IpAddr.Insts.CoreCmpPartialEqIpAddr.eq",
+    "condfuncs.Key.Insts.CoreCloneClone.clone",
+    "condfuncs.Quantifier.Insts.CoreCmpPartialEqQuantifier.eq",
+    "condfuncs.addr_func_loop",
+    "condfuncs.addr_func_loop.body",
+    "condfuncs.addr_key",
+    "condfuncs.addr_key_loop",
+    "condfuncs.addr_key_loop.body",
+    "condfuncs.all_hold",
+    "condfuncs.all_hold_loop",
+    "condfuncs.all_hold_loop.body",
+    "condfuncs.any_like",
+    "condfuncs.any_like_loop",
+    "condfuncs.any_like_loop.body",
+    "condfuncs.any_net",
+    "condfuncs.any_net_loop",
+    "condfuncs.any_net_loop.body",
+    "condfuncs.any_references",
+    "condfuncs.any_references_loop",
+    "condfuncs.any_references_loop.body",
+    "condfuncs.bool_func_loop",
+    "condfuncs.bool_func_loop.body",
+    "condfuncs.cond_references",
+    "condfuncs.condition_evaluate",
+    "condfuncs.eval_cond",
+    "condfuncs.first_value",
+    "condfuncs.functions_evaluate",
+    "condfuncs.get_value",
+    "condfuncs.get_value_loop",
+    "condfuncs.get_value_loop.body",
+    "condfuncs.has_any_key_in",
+    "condfuncs.key_lookup_name",
+    "condfuncs.keys_named",
+    "condfuncs.keys_named_loop",
+    "condfuncs.keys_named_loop.body",
+    "condfuncs.keys_present",
+    "condfuncs.keys_present_loop",
+    "condfuncs.keys_present_loop.body",
+    "condfuncs.like_step",
+    "condfuncs.net_contains",
+    "condfuncs.null_func_loop",
+    "condfuncs.null_func_loop.body",
+    "condfuncs.null_ok",
+    "condfuncs.num_func_loop",
+    "condfuncs.num_func_loop.body",
+    "condfuncs.num_op",
+    "condfuncs.parse_ip",
+    "condfuncs.parse_ip_loop",
+    "condfuncs.parse_ip_loop.body",
+    "condfuncs.policy_values",
+    "condfuncs.policy_values_loop0",
+    "condfuncs.policy_values_loop0.body",
+    "condfuncs.policy_values_loop0_loop0",
+    "condfuncs.policy_values_loop0_loop0.body",
+    "condfuncs.references_key_name",
+    "condfuncs.replace_first_common",
+    "condfuncs.replace_first_common_loop",
+    "condfuncs.replace_first_common_loop.body",
+    "condfuncs.str_eval_like_loop",
+    "condfuncs.str_eval_like_loop.body",
+    "condfuncs.str_eval_loop",
+    "condfuncs.str_eval_loop.body",
+    "condfuncs.str_func_loop",
+    "condfuncs.str_func_loop.body",
+    "condfuncs.value_count",
+    "dates.calendar_fields",
+    "dates.civil_days",
+    "dates.compare",
+    "dates.digits",
+    "dates.digits_loop",
+    "dates.digits_loop.body",
+    "dates.evaluate_loop",
+    "dates.evaluate_loop.body",
+    "dates.fraction",
+    "dates.fraction_loop",
+    "dates.fraction_loop.body",
+    "dates.leap_valid",
+    "dates.month_days",
+    "dates.nanos",
+    "dates.offset",
+    "dates.parse_rfc3339",
+    "dates.parse_value",
+    "dates.time_fields",
+    "defaults.all_kms_keys",
+    "defaults.allow",
+    "defaults.default_version",
+    "defaults.kms_auditor",
+    "defaults.kms_key_administrator",
+    "defaults.kms_key_user",
+    "docdata.default_doc",
+    "extras.is_match_as_pattern_prefix_loop",
+    "extras.is_match_as_pattern_prefix_loop.body",
+    "extras.unique_values",
+    "extras.unique_values_loop",
+    "extras.unique_values_loop.body",
+    "keynames.COMMON_KEYS_LEN",
+    "keynames.common_key",
+    "keytables.aws_name",
+    "keytables.contains_name",
+    "keytables.contains_name_loop",
+    "keytables.contains_name_loop.body",
+    "keytables.is_server_derived_condition_key_loop",
+    "keytables.is_server_derived_condition_key_loop.body",
+    "keytables.jwt_name",
+    "keytables.jwt_name_0",
+    "keytables.jwt_name_1",
+    "keytables.key_count",
+    "keytables.key_name",
+    "keytables.ldap_name",
+    "keytables.s3_name",
+    "keytables.s3_name_0",
+    "keytables.s3_name_1",
+    "keytables.server_derived_key_names_loop",
+    "keytables.server_derived_key_names_loop.body",
+    "keytables.sts_name",
+    "keytables.svc_name",
+    "manage.Statement.Insts.CoreCloneClone.clone",
+    "manage.allows_match",
+    "manage.allows_match_loop",
+    "manage.allows_match_loop.body",
+    "manage.append_statements",
+    "manage.append_statements_loop",
+    "manage.append_statements_loop.body",
+    "manage.bp_statement_view",
+    "manage.bucket_allows_match",
+    "manage.bucket_allows_match_loop",
+    "manage.bucket_allows_match_loop.body",
+    "manage.bucket_denies_clear",
+    "manage.bucket_denies_clear_loop",
+    "manage.bucket_denies_clear_loop.body",
+    "manage.bucket_is_valid_loop",
+    "manage.bucket_is_valid_loop.body",
+    "manage.bucket_policy_needs_existing_object_tag_for_args_loop",
+    "manage.bucket_policy_needs_existing_object_tag_for_args_loop.body",
+    "manage.bucket_policy_uses_existing_object_tag_conditions_loop",
+    "manage.bucket_policy_uses_existing_object_tag_conditions_loop.body",
+    "manage.condition_uses_tag",
+    "manage.denies_clear",
+    "manage.denies_clear_loop",
+    "manage.denies_clear_loop.body",
+    "manage.drop_duplicate_statements_loop",
+    "manage.drop_duplicate_statements_loop.body",
+    "manage.index_member",
+    "manage.index_member_loop",
+    "manage.index_member_loop.body",
+    "manage.is_valid_loop",
+    "manage.is_valid_loop.body",
+    "manage.list_uses_tag",
+    "manage.list_uses_tag_loop",
+    "manage.list_uses_tag_loop.body",
+    "manage.mark_duplicates",
+    "manage.mark_duplicates_loop",
+    "manage.mark_duplicates_loop.body",
+    "manage.match_resource_loop",
+    "manage.match_resource_loop.body",
+    "manage.merge_policies_loop",
+    "manage.merge_policies_loop.body",
+    "manage.overwritten",
+    "manage.overwritten_loop",
+    "manage.overwritten_loop.body",
+    "manage.policy_needs_existing_object_tag_for_args_loop",
+    "manage.policy_needs_existing_object_tag_for_args_loop.body",
+    "manage.policy_uses_existing_object_tag_conditions_loop",
+    "manage.policy_uses_existing_object_tag_conditions_loop.body",
+    "manage.retained_statements",
+    "manage.retained_statements_loop",
+    "manage.retained_statements_loop.body",
+    "manage.statement_view",
+    "manage.version_is_valid",
+    "pathclean.back_to_slash",
+    "pathclean.back_to_slash_loop",
+    "pathclean.back_to_slash_loop.body",
+    "pathclean.clean_loop0",
+    "pathclean.clean_loop0.body",
+    "pathclean.clean_loop1",
+    "pathclean.clean_loop1.body",
+    "pathclean.copy_element",
+    "pathclean.copy_element_loop",
+    "pathclean.copy_element_loop.body",
+    "policies.bp_denies_pass",
+    "policies.bp_denies_pass_loop",
+    "policies.bp_denies_pass_loop.body",
+    "policies.bp_some_allow",
+    "policies.bp_some_allow_loop",
+    "policies.bp_some_allow_loop.body",
+    "policies.denies_pass",
+    "policies.denies_pass_loop",
+    "policies.denies_pass_loop.body",
+    "policies.some_allow",
+    "policies.some_allow_loop",
+    "policies.some_allow_loop.body",
+    "resets.covers",
+    "resets.covers_loop",
+    "resets.covers_loop.body",
+    "resets.member",
+    "resets.member_loop",
+    "resets.member_loop.body",
+    "resets.set_match_resource_loop",
+    "resets.set_match_resource_loop.body",
+    "rsrc.Resource.Insts.CoreCloneClone.clone",
+    "rsrc.Resource.Insts.CoreCmpPartialEqResource.eq",
+    "rsrc.pattern_matches",
+    "rsrc.resource_is_match_loop",
+    "rsrc.resource_is_match_loop.body",
+    "rsrc.set_is_match_loop",
+    "rsrc.set_is_match_loop.body",
+    "rsrc.substitute_common",
+    "rsrc.substitute_common_loop",
+    "rsrc.substitute_common_loop.body",
+    "stmts.Effect.Insts.CoreCloneClone.clone",
+    "stmts.Effect.Insts.CoreCmpPartialEqEffect.eq",
+    "stmts.Principal.Insts.CoreCloneClone.clone",
+    "stmts.all_kms",
+    "stmts.all_kms_loop",
+    "stmts.all_kms_loop.body",
+    "stmts.any_simple_match",
+    "stmts.any_simple_match_loop",
+    "stmts.any_simple_match_loop.body",
+    "stmts.has_family",
+    "stmts.has_family_loop",
+    "stmts.has_family_loop.body",
+    "stmts.is_list_bucket",
+    "stmts.kms_only",
+    "stmts.kms_only_loop",
+    "stmts.kms_only_loop.body",
+    "unicode.append_scalar",
+    "unicode.lower",
+    "unicode.lower_loop",
+    "unicode.lower_loop.body",
+    "unicode.lowercase_scalar",
+    "unicode.lowercase_scalar_loop",
+    "unicode.lowercase_scalar_loop.body",
+    "unicode.range_0",
+    "unicode.range_1",
+    "unicode.range_2",
+    "unicode.range_3",
+    "unicode.range_4",
+    "unicode.range_5",
+    "unicode.range_6",
+    "unicode.range_7",
+    "unicode.range_8",
+    "unicode.range_chunk",
+    "unicode.scalar_at",
+    "unicode.singleton",
+    "unicode.trim",
+    "unicode.trim_loop",
+    "unicode.trim_loop.body",
+    "unicode.whitespace",
+    "unicode.within",
+    "valids.action_family_loop",
+    "valids.action_family_loop.body",
+    "valids.action_selection_valid",
+    "valids.checked_action_family",
+    "valids.error",
+    "valids.family_allows_empty_resource",
+    "valids.family_is_kms",
+    "valids.family_is_mixed",
+    "valids.has_kms_action",
+    "valids.has_kms_action_loop",
+    "valids.has_kms_action_loop.body",
+    "valids.has_kms_resource",
+    "valids.has_kms_resource_loop",
+    "valids.has_kms_resource_loop.body",
+    "valids.is_admin_loop",
+    "valids.is_admin_loop.body",
+    "valids.is_sts_loop",
+    "valids.is_sts_loop.body",
+    "valids.kms_alias_valid",
+    "valids.kms_key_valid",
+    "valids.resource_pattern_valid",
+    "valids.resources_is_valid_loop",
+    "valids.resources_is_valid_loop.body",
+    "valids.statement_resource_rules",
+    "varctx.array_strings",
+    "varctx.array_strings_loop",
+    "varctx.array_strings_loop.body",
+    "varctx.clone_option",
+    "varctx.resolve_custom_variable_loop",
+    "varctx.resolve_custom_variable_loop.body",
+    "varctx.scalar_string"
+  ],
+  "ledger_items_with_missing_lines": [
+    {
+      "upstream": "crates/policy/src/policy/action.rs:25 ActionSet",
+      "kind": "struct",
+      "loc": 1,
+      "missing_lines": 1,
+      "kernel": [
+        "actsets::as_slice",
+        "actsets::push_unique"
+      ]
+    },
+    {
+      "upstream": "crates/policy/src/policy/action.rs:168 Action",
+      "kind": "enum",
+      "loc": 7,
+      "missing_lines": 7,
+      "kernel": [
+        "Action"
+      ]
+    },
+    {
+      "upstream": "crates/policy/src/policy/action.rs:250 S3Action",
+      "kind": "enum",
+      "loc": 73,
+      "missing_lines": 73,
+      "kernel": [
+        "actsets::action_name",
+        "actsets::action_count",
+        "actsets::contains_name"
+      ]
+    },
+    {
+      "upstream": "crates/policy/src/policy/action.rs:405 AdminAction",
+      "kind": "enum",
+      "loc": 93,
+      "missing_lines": 93,
+      "kernel": [
+        "actsets::action_name",
+        "actsets::action_count",
+        "actsets::contains_name"
+      ]
+    },
+    {
+      "upstream": "crates/policy/src/policy/action.rs:720 StsAction",
+      "kind": "enum",
+      "loc": 4,
+      "missing_lines": 4,
+      "kernel": [
+        "actsets::action_name",
+        "actsets::action_count",
+        "actsets::contains_name"
+      ]
+    },
+    {
+      "upstream": "crates/policy/src/policy/action.rs:729 KmsAction",
+      "kind": "enum",
+      "loc": 20,
+      "missing_lines": 20,
+      "kernel": [
+        "actsets::action_name",
+        "actsets::action_count",
+        "actsets::contains_name"
+      ]
+    },
+    {
+      "upstream": "crates/policy/src/policy/doc.rs:20 PolicyDoc",
+      "kind": "struct",
+      "loc": 16,
+      "missing_lines": 16,
+      "kernel": [
+        "docdata::PolicyDoc",
+        "docdata::default_doc"
+      ]
+    },
+    {
+      "upstream": "crates/policy/src/policy/effect.rs:21 Effect",
+      "kind": "enum",
+      "loc": 4,
+      "missing_lines": 4,
+      "kernel": [
+        "Effect"
+      ]
+    },
+    {
+      "upstream": "crates/policy/src/policy/function/addr.rs:20 AddrFunc",
+      "kind": "type",
+      "loc": 1,
+      "missing_lines": 1,
+      "kernel": [
+        "conddata::AddrFunc"
+      ]
+    },
+    {
+      "upstream": "crates/policy/src/policy/function/addr.rs:44 AddrFuncValue",
+      "kind": "struct",
+      "loc": 1,
+      "missing_lines": 1,
+      "kernel": [
+        "conddata::AddrFuncValue"
+      ]
+    },
+    {
+      "upstream": "crates/policy/src/policy/function/binary.rs:21 BinaryFunc",
+      "kind": "type",
+      "loc": 1,
+      "missing_lines": 1,
+      "kernel": [
+        "conddata::BinaryFunc"
+      ]
+    },
+    {
+      "upstream": "crates/policy/src/policy/function/binary.rs:23 BinaryFuncValueError",
+      "kind": "enum",
+      "loc": 3,
+      "missing_lines": 3,
+      "kernel": [
+        "conddata::BinaryFuncValueError"
+      ]
+    },
+    {
+      "upstream": "crates/policy/src/policy/function/binary.rs:29 BinaryFuncValue",
+      "kind": "struct",
+      "loc": 4,
+      "missing_lines": 4,
+      "kernel": [
+        "conddata::BinaryFuncValue"
+      ]
+    },
+    {
+      "upstream": "crates/policy/src/policy/function/bool_null.rs:20 BoolFunc",
+      "kind": "type",
+      "loc": 1,
+      "missing_lines": 1,
+      "kernel": [
+        "conddata::BoolFunc"
+      ]
+    },
+    {
+      "upstream": "crates/policy/src/policy/function/bool_null.rs:49 BoolFuncValue",
+      "kind": "struct",
+      "loc": 1,
+      "missing_lines": 1,
+      "kernel": [
+        "conddata::BoolFuncValue"
+      ]
+    },
+    {
+      "upstream": "crates/policy/src/policy/function/condition.rs:26 Condition",
+      "kind": "enum",
+      "loc": 31,
+      "missing_lines": 31,
+      "kernel": [
+        "Condition"
+      ]
+    },
+    {
+      "upstream": "crates/policy/src/policy/function/condition.rs:176 Condition::references_key_name",
+      "kind": "method",
+      "loc": 32,
+      "missing_lines": 32,
+      "kernel": [
+        "references_key_name"
+      ]
+    },
+    {
+      "upstream": "crates/policy/src/policy/function/date.rs:20 DateFunc",
+      "kind": "type",
+      "loc": 1,
+      "missing_lines": 1,
+      "kernel": [
+        "conddata::DateFunc"
+      ]
+    },
+    {
+      "upstream": "crates/policy/src/policy/function/date.rs:43 DateFuncValue",
+      "kind": "struct",
+      "loc": 1,
+      "missing_lines": 1,
+      "kernel": [
+        "conddata::DateFuncValue"
+      ]
+    },
+    {
+      "upstream": "crates/policy/src/policy/function/func.rs:24 InnerFunc",
+      "kind": "struct",
+      "loc": 1,
+      "missing_lines": 1,
+      "kernel": [
+        "conddata::InnerFunc"
+      ]
+    },
+    {
+      "upstream": "crates/policy/src/policy/function/func.rs:27 FuncKeyValue",
+      "kind": "struct",
+      "loc": 4,
+      "missing_lines": 4,
+      "kernel": [
+        "conddata::FuncKeyValue"
+      ]
+    },
+    {
+      "upstream": "crates/policy/src/policy/function/key.rs:20 Key",
+      "kind": "struct",
+      "loc": 4,
+      "missing_lines": 4,
+      "kernel": [
+        "Key"
+      ]
+    },
+    {
+      "upstream": "crates/policy/src/policy/function/key.rs:37 Key::var_name",
+      "kind": "method",
+      "loc": 3,
+      "missing_lines": 3,
+      "kernel": [
+        "common_key",
+        "keynames::*"
+      ]
+    },
+    {
+      "upstream": "crates/policy/src/policy/function/key.rs:41 Key::name",
+      "kind": "method",
+      "loc": 7,
+      "missing_lines": 7,
+      "kernel": [
+        "key_lookup_name"
+      ]
+    },
+    {
+      "upstream": "crates/policy/src/policy/function/key_name.rs:19 KeyName",
+      "kind": "enum",
+      "loc": 8,
+      "missing_lines": 8,
+      "kernel": [
+        "keynames::*"
+      ]
+    },
+    {
+      "upstream": "crates/policy/src/policy/function/key_name.rs:101 KeyName::prefix",
+      "kind": "method",
+      "loc": 10,
+      "missing_lines": 10,
+      "kernel": [
+        "wrap_all"
+      ]
+    },
+    {
+      "upstream": "crates/policy/src/policy/function/key_name.rs:112 KeyName::name",
+      "kind": "method",
+      "loc": 3,
+      "missing_lines": 3,
+      "kernel": [
+        "common_key",
+        "get_value",
+        "key_lookup_name",
+        "keynames::*",
+        "value_count"
+      ]
+    },
+    {
+      "upstream": "crates/policy/src/policy/function/key_name.rs:140 KeyName::var_name",
+      "kind": "method",
+      "loc": 10,
+      "missing_lines": 10,
+      "kernel": [
+        "common_key",
+        "keynames::*"
+      ]
+    },
+    {
+      "upstream": "crates/policy/src/policy/function/key_name.rs:165 S3KeyName",
+      "kind": "enum",
+      "loc": 28,
+      "missing_lines": 28,
+      "kernel": [
+        "keytables::KeyFamily",
+        "keytables::key_count",
+        "keytables::key_name",
+        "keytables::contains_name"
+      ]
+    },
+    {
+      "upstream": "crates/policy/src/policy/function/key_name.rs:245 JwtKeyName",
+      "kind": "enum",
+      "loc": 25,
+      "missing_lines": 25,
+      "kernel": [
+        "keytables::KeyFamily",
+        "keytables::key_count",
+        "keytables::key_name",
+        "keytables::contains_name"
+      ]
+    },
+    {
+      "upstream": "crates/policy/src/policy/function/key_name.rs:318 SvcKeyName",
+      "kind": "enum",
+      "loc": 3,
+      "missing_lines": 3,
+      "kernel": [
+        "keytables::KeyFamily",
+        "keytables::key_count",
+        "keytables::key_name",
+        "keytables::contains_name"
+      ]
+    },
+    {
+      "upstream": "crates/policy/src/policy/function/key_name.rs:325 LdapKeyName",
+      "kind": "enum",
+      "loc": 5,
+      "missing_lines": 5,
+      "kernel": [
+        "keytables::KeyFamily",
+        "keytables::key_count",
+        "keytables::key_name",
+        "keytables::contains_name"
+      ]
+    },
+    {
+      "upstream": "crates/policy/src/policy/function/key_name.rs:338 StsKeyName",
+      "kind": "enum",
+      "loc": 3,
+      "missing_lines": 3,
+      "kernel": [
+        "keytables::KeyFamily",
+        "keytables::key_count",
+        "keytables::key_name",
+        "keytables::contains_name"
+      ]
+    },
+    {
+      "upstream": "crates/policy/src/policy/function/key_name.rs:345 AwsKeyName",
+      "kind": "enum",
+      "loc": 14,
+      "missing_lines": 14,
+      "kernel": [
+        "keytables::KeyFamily",
+        "keytables::key_count",
+        "keytables::key_name",
+        "keytables::contains_name"
+      ]
+    },
+    {
+      "upstream": "crates/policy/src/policy/function/number.rs:23 NumberFunc",
+      "kind": "type",
+      "loc": 1,
+      "missing_lines": 1,
+      "kernel": [
+        "conddata::NumberFunc"
+      ]
+    },
+    {
+      "upstream": "crates/policy/src/policy/function/number.rs:25 NumberFuncValue",
+      "kind": "struct",
+      "loc": 1,
+      "missing_lines": 1,
+      "kernel": [
+        "conddata::NumberFuncValue"
+      ]
+    },
+    {
+      "upstream": "crates/policy/src/policy/function/string.rs:31 StringFunc",
+      "kind": "type",
+      "loc": 1,
+      "missing_lines": 1,
+      "kernel": [
+        "conddata::StringFunc"
+      ]
+    },
+    {
+      "upstream": "crates/policy/src/policy/function/string.rs:204 StringFuncValue",
+      "kind": "struct",
+      "loc": 1,
+      "missing_lines": 1,
+      "kernel": [
+        "str_eval",
+        "str_eval_like"
+      ]
+    },
+    {
+      "upstream": "crates/policy/src/policy/function.rs:33 Quantifier",
+      "kind": "enum",
+      "loc": 5,
+      "missing_lines": 5,
+      "kernel": [
+        "Quantifier"
+      ]
+    },
+    {
+      "upstream": "crates/policy/src/policy/function.rs:63 Functions",
+      "kind": "struct",
+      "loc": 5,
+      "missing_lines": 5,
+      "kernel": [
+        "Functions"
+      ]
+    },
+    {
+      "upstream": "crates/policy/src/policy/function.rs:71 Functions::evaluate",
+      "kind": "method",
+      "loc": 3,
+      "missing_lines": 3,
+      "kernel": [
+        "addr_func",
+        "addr_key",
+        "num_func"
+      ]
+    },
+    {
+      "upstream": "crates/policy/src/policy/function.rs:105 Functions::references_key_name",
+      "kind": "method",
+      "loc": 7,
+      "missing_lines": 7,
+      "kernel": [
+        "references_key_name"
+      ]
+    },
+    {
+      "upstream": "crates/policy/src/policy/id.rs:21 ID",
+      "kind": "struct",
+      "loc": 1,
+      "missing_lines": 1,
+      "kernel": [
+        "valids::id_as_slice"
+      ]
+    },
+    {
+      "upstream": "crates/policy/src/policy/policy.rs:23 DEFAULT_VERSION",
+      "kind": "const",
+      "loc": 1,
+      "missing_lines": 1,
+      "kernel": [
+        "defaults::default_version"
+      ]
+    },
+    {
+      "upstream": "crates/policy/src/policy/policy.rs:35 Args",
+      "kind": "struct",
+      "loc": 11,
+      "missing_lines": 11,
+      "kernel": [
+        "Args"
+      ]
+    },
+    {
+      "upstream": "crates/policy/src/policy/policy.rs:57 Policy",
+      "kind": "struct",
+      "loc": 5,
+      "missing_lines": 5,
+      "kernel": [
+        "policies::*"
+      ]
+    },
+    {
+      "upstream": "crates/policy/src/policy/policy.rs:182 BucketPolicyArgs",
+      "kind": "struct",
+      "loc": 9,
+      "missing_lines": 9,
+      "kernel": [
+        "BucketPolicyArgs"
+      ]
+    },
+    {
+      "upstream": "crates/policy/src/policy/policy.rs:193 BucketPolicy",
+      "kind": "struct",
+      "loc": 5,
+      "missing_lines": 5,
+      "kernel": [
+        "policies::*"
+      ]
+    },
+    {
+      "upstream": "crates/policy/src/policy/policy.rs:369 KMS_KEY_ADMINISTRATOR",
+      "kind": "const",
+      "loc": 1,
+      "missing_lines": 1,
+      "kernel": [
+        "defaults::kms_key_administrator"
+      ]
+    },
+    {
+      "upstream": "crates/policy/src/policy/policy.rs:371 KMS_KEY_USER",
+      "kind": "const",
+      "loc": 1,
+      "missing_lines": 1,
+      "kernel": [
+        "defaults::kms_key_user"
+      ]
+    },
+    {
+      "upstream": "crates/policy/src/policy/policy.rs:373 KMS_AUDITOR",
+      "kind": "const",
+      "loc": 1,
+      "missing_lines": 1,
+      "kernel": [
+        "defaults::kms_auditor"
+      ]
+    },
+    {
+      "upstream": "crates/policy/src/policy/policy.rs:376 ALL_KMS_KEYS",
+      "kind": "const",
+      "loc": 1,
+      "missing_lines": 1,
+      "kernel": [
+        "defaults::all_kms_keys"
+      ]
+    },
+    {
+      "upstream": "crates/policy/src/policy/principal.rs:20 Principal",
+      "kind": "struct",
+      "loc": 4,
+      "missing_lines": 4,
+      "kernel": [
+        "Principal"
+      ]
+    },
+    {
+      "upstream": "crates/policy/src/policy/principal.rs:63 PrincipalFormat",
+      "kind": "enum",
+      "loc": 4,
+      "missing_lines": 4,
+      "kernel": [
+        "extras::PrincipalFormat"
+      ]
+    },
+    {
+      "upstream": "crates/policy/src/policy/principal.rs:70 PrincipalObject",
+      "kind": "struct",
+      "loc": 4,
+      "missing_lines": 4,
+      "kernel": [
+        "extras::PrincipalObject"
+      ]
+    },
+    {
+      "upstream": "crates/policy/src/policy/principal.rs:79 PrincipalValues",
+      "kind": "enum",
+      "loc": 4,
+      "missing_lines": 4,
+      "kernel": [
+        "extras::PrincipalValues"
+      ]
+    },
+    {
+      "upstream": "crates/policy/src/policy/resource.rs:29 ResourceSet",
+      "kind": "struct",
+      "loc": 1,
+      "missing_lines": 1,
+      "kernel": [
+        "resets::ResourceSet"
+      ]
+    },
+    {
+      "upstream": "crates/policy/src/policy/resource.rs:166 Resource",
+      "kind": "enum",
+      "loc": 4,
+      "missing_lines": 4,
+      "kernel": [
+        "Resource"
+      ]
+    },
+    {
+      "upstream": "crates/policy/src/policy/resource.rs:189 Resource::is_match",
+      "kind": "method",
+      "loc": 3,
+      "missing_lines": 3,
+      "kernel": [
+        "resets::is_match"
+      ]
+    },
+    {
+      "upstream": "crates/policy/src/policy/statement.rs:25 Statement",
+      "kind": "struct",
+      "loc": 9,
+      "missing_lines": 9,
+      "kernel": [
+        "Statement",
+        "stmts::*"
+      ]
+    },
+    {
+      "upstream": "crates/policy/src/policy/statement.rs:83 ActionFamily",
+      "kind": "enum",
+      "loc": 7,
+      "missing_lines": 7,
+      "kernel": [
+        "valids::ActionFamily"
+      ]
+    },
+    {
+      "upstream": "crates/policy/src/policy/statement.rs:105 Statement::is_kms",
+      "kind": "method",
+      "loc": 8,
+      "missing_lines": 8,
+      "kernel": [
+        "is_kms"
+      ]
+    },
+    {
+      "upstream": "crates/policy/src/policy/statement.rs:385 BPStatement",
+      "kind": "struct",
+      "loc": 10,
+      "missing_lines": 10,
+      "kernel": [
+        "BPStatement",
+        "stmts::*"
+      ]
+    },
+    {
+      "upstream": "crates/policy/src/policy/utils/path.rs:15 LazyBuf",
+      "kind": "struct",
+      "loc": 5,
+      "missing_lines": 5,
+      "kernel": [
+        "pathclean::*"
+      ]
+    },
+    {
+      "upstream": "crates/policy/src/policy/utils/path.rs:26 LazyBuf::index",
+      "kind": "method",
+      "loc": 3,
+      "missing_lines": 3,
+      "kernel": [
+        "back_to_slash"
+      ]
+    },
+    {
+      "upstream": "crates/policy/src/policy/utils/path.rs:30 LazyBuf::append",
+      "kind": "method",
+      "loc": 15,
+      "missing_lines": 15,
+      "kernel": [
+        "copy_element"
+      ]
+    },
+    {
+      "upstream": "crates/policy/src/policy/utils/path.rs:47 LazyBuf::string",
+      "kind": "method",
+      "loc": 6,
+      "missing_lines": 6,
+      "kernel": [
+        "condfuncs::*"
+      ]
+    },
+    {
+      "upstream": "crates/policy/src/policy/utils.rs:22 ClaimLookup",
+      "kind": "enum",
+      "loc": 5,
+      "missing_lines": 5,
+      "kernel": [
+        "claims::ClaimLookup"
+      ]
+    },
+    {
+      "upstream": "crates/policy/src/policy/variables.rs:23 VariableContext",
+      "kind": "struct",
+      "loc": 10,
+      "missing_lines": 10,
+      "kernel": [
+        "varctx::VariableContext"
+      ]
+    },
+    {
+      "upstream": "crates/policy/src/policy/variables.rs:118 PolicyVariableResolver::resolve_multiple",
+      "kind": "method",
+      "loc": 3,
+      "missing_lines": 3,
+      "kernel": [
+        "resolve_multiple"
+      ]
+    },
+    {
+      "upstream": "crates/policy/src/policy/variables.rs:124 VariableResolver",
+      "kind": "struct",
+      "loc": 3,
+      "missing_lines": 3,
+      "kernel": [
+        "awsvars::*"
+      ]
+    }
+  ]
+}

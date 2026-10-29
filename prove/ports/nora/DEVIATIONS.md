@@ -69,3 +69,17 @@ of inputs. Mutations of the kernel make these tests fail.
 | `Option::clone`, `?` on `Option` | | `match` | not in Aeneas' library |
 | `revoke_token` | `fs::remove_file` errors other than NotFound give `Storage` | not modeled | removing a listed file succeeds |
 | module names | | `oracle`, `lockout` | a module may not share a name with a local variable in the generated Lean |
+
+## Permission import proposal
+
+`permission_import` ports the complete pure `import/permissions.rs`
+`map_to_proposal` decision pipeline: group flattening, maximum effective verb,
+repo-scope provenance, sorted user emission, admin narrowing, write opt-in,
+OIDC suggestions, ordered audit events and both warnings. It creates no
+credentials. Names and repositories use order-preserving interned `u64` ids;
+text rendering, source-host metadata and the inert notice are outside the
+kernel. Typed audit events render back to the original strings in the
+reference test; OIDC repository ids render as the original name plus `/**`.
+The differential test compares the complete rendered report against verbatim
+pinned upstream bodies on 200,512 cases. Numeric ids are not a claim about
+arbitrary UTF-8 interning or display escaping; those stay at the boundary.

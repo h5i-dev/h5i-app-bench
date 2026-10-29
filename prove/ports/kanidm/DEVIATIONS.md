@@ -91,3 +91,75 @@ than `i + needle.len() <= hay.len()`. The two agree in Rust, where a slice holds
 at most `isize::MAX` bytes; in the extracted model a slice may hold
 `Usize.max`, where the sum overflows. The rewrite keeps the original theorem
 statements free of a length precondition.
+
+## Credential soft-lock expansion (2026-10-28)
+
+`softlock.rs` ports `credential/softlock.rs` at the same full revision
+`f608c4fe14dfd8d5df8edeed470bf1fb92060abd`. `Time { secs, nanos }` represents
+canonical `std::time::Duration` components, preserving nanosecond precision.
+The Rust adapter must supply `nanos < 1_000_000_000`. Time comparison and
+addition by whole seconds agree on canonical durations; reset deadlines
+explicitly have zero nanoseconds. Count, time overflow, and zero TOTP period
+retain checked Rust failure behavior. `apply_time_step` and `record_failure`
+return the updated record instead of mutating a borrowed record. Source maps
+are in `source-map.json`; helpers implementing Duration primitives add no
+upstream application source coverage.
+
+The canonical time-step theorem proves its complete result for all extracted
+states, with no length/time precondition. New/validity are exact. Failure
+policy and recording theorems prove security properties of successful results
+(counter retention/increment, locking, and saturated reset deadlines), rather
+than absence of arithmetic failure or full behavioral equivalence. Differential
+tests compare every state field and validity against unmodified pinned bodies
+with controlled arbitrary states: 600,000 fixed-seed random comparisons and
+3,168 exact time/threshold cases. The reference reproduction command is
+`python3 difftest/extract_softlock.py <pinned-bare-git-dir>`; the test is
+`cargo test --release --locked --manifest-path kernel/Cargo.toml --test softlock`.
+
+## Schema dispatch (2026-10 coverage batch)
+
+`schema_tags::{partial_accepts,value_accepts,ava_accepts}` ports the complete
+schema discrimination decisions in `SchemaAttribute::{validate_partialvalue,
+validate_value,validate_ava}` at the same pin. The 47 syntax constructors are
+preserved. Partial/full value constructors are represented by explicit U16 tag
+IDs in `difftest/schema/tags.json`; arbitrary tag IDs outside that table are
+outside the upstream representation. Payload fields are observationally
+irrelevant to partial dispatch. Full payload `Value::validate`, AVA intrinsic
+`ValueSet::validate`, AVA count and actual syntax are caller projections. Their
+implementations are not covered by the dispatch proof. Rejection's attribute
+name is the caller's same attribute and is omitted from the Boolean return.
+
+All 41,830 combinations of upstream tags, payload validity and AVA structural
+conditions agree with the unmodified pinned method bodies. Reference extraction
+is reproducible with `python3 difftest/schema/prepare.py <pinned-bare-git>`.
+Run `cargo test --release --locked --test schema_tags -- --nocapture` in kernel.
+The Lean membership specifications cover arbitrary U16 tags, not just the finite
+differential cases, and the exact AVA relation covers arbitrary Usize counts.
+
+## Credential update commit decision (2026-10 coverage batch)
+
+`credential_commit::can_commit` ports the entire commit/warning policy decision
+at `idm/credupdatesession.rs::CredentialUpdateSession::can_commit`. Its inputs
+are exact observations used by that function: credential policy, primary
+presence and `Credential::is_mfa`, passkey/attested-passkey collection presence,
+and optional attestation-list emptiness. It does not validate credential
+cryptography or list contents. Ordered warnings are represented as three slots
+(policy warning, attestation warning, missing credentials); this is isomorphic
+to the upstream warning list, including the fact an empty attestation list
+warns without itself preventing commit. No warnings are conflated or reordered.
+The 252 input combinations are exhaustively compared with the original pinned
+method body and exact ordered warning vectors. `difftest/credential_commit/`
+retains a reproducible method extractor and immutable source identity.
+
+## Scalar account-policy resolution (2026-10 coverage batch)
+
+`account_policy::fold_from` preserves the scalar projection of
+`ResolvedAccountPolicy::fold_from` at f608c4f, including defaults, expiry minima,
+password and credential-rank maxima, optional search-limit maxima, optional
+fallback conjunction, and the final single-factor NIST minimum. Credential types
+are their exact upstream ordered U16 discriminants. CA-list intersection and
+its cryptographic payload result are excluded; this projection does not claim
+complete behavioral equivalence of the entire upstream method. Differential
+reference copies the full original method unchanged and independently varies
+CA masks while comparing every scalar output field. Current test includes
+20,049 resolution cases, including empty input and policy/password boundaries.

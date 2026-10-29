@@ -1,0 +1,1546 @@
+{
+  "upstream_revision": "e870a6d25bbf02323b7841b0c5e2230a56551970",
+  "review": "Explicit kernel-to-upstream item mappings; renamed helpers and trait methods use qualified file/type/name identities. Unmapped helpers contribute no source.",
+  "declarations": {
+    "acts.action_requires_explicit_grant": [
+      {
+        "file": "crates/policy/src/policy/action.rs",
+        "self_ty": "",
+        "name": "action_requires_explicit_grant",
+        "kind": "fn",
+        "start": 195,
+        "end": 200,
+        "sha256": "851c56c4e9baabcefbed137b4a967d915ded9515e49bc1675ee91099e85465d7"
+      }
+    ],
+    "acts.action_is_match_for_effect": [
+      {
+        "file": "crates/policy/src/policy/action.rs",
+        "self_ty": "Action",
+        "name": "is_match_for_effect",
+        "kind": "method",
+        "start": 183,
+        "end": 192,
+        "sha256": "27cca4b1d5d5279614a50cd7f50ebccbb3fc50e17c0793c71009f4b2110e6597"
+      }
+    ],
+    "acts.set_is_match_for_effect": [
+      {
+        "file": "crates/policy/src/policy/action.rs",
+        "self_ty": "ActionSet",
+        "name": "is_match_for_effect",
+        "kind": "method",
+        "start": 64,
+        "end": 80,
+        "sha256": "db47a1595d3048747864d8d2106650282937d1ad52c9644c0d0fb2fc00096eb8"
+      }
+    ],
+    "acts.statement_covers": [
+      {
+        "file": "crates/policy/src/policy/action.rs",
+        "self_ty": "ActionSet",
+        "name": "statement_covers",
+        "kind": "method",
+        "start": 82,
+        "end": 96,
+        "sha256": "3292a3bac17660a35a1f388adab775027a0dadaa04d2b0fb80336569547708bd"
+      }
+    ],
+    "acts.is_table_resource_scoped": [
+      {
+        "file": "crates/policy/src/policy/action.rs",
+        "self_ty": "AdminAction",
+        "name": "is_table_resource_scoped",
+        "kind": "method",
+        "start": 595,
+        "end": 619,
+        "sha256": "9da809dd6fa0ffaa52847dc37a491ba0e777371b09e7dfa9e94259f5b5d947b6"
+      }
+    ],
+    "actsets.is_empty": [
+      {
+        "file": "crates/policy/src/policy/action.rs",
+        "self_ty": "ActionSet",
+        "name": "is_empty",
+        "kind": "method",
+        "start": 49,
+        "end": 52,
+        "sha256": "61b8b19a0d5128e8bc535b98dbb36c0dcccaeb006b5f2ac10300d4ddc294decb"
+      }
+    ],
+    "actsets.as_slice": [
+      {
+        "file": "crates/policy/src/policy/action.rs",
+        "self_ty": "ActionSet",
+        "name": "deref",
+        "kind": "method",
+        "start": 102,
+        "end": 104,
+        "sha256": "a935ffb2f02ecd2275eae3fc03f67da9ede12d3f7c823cd8e16e7a2773e761dc"
+      }
+    ],
+    "actsets.push_unique": [
+      {
+        "file": "crates/policy/src/policy/action.rs",
+        "self_ty": "ActionSet",
+        "name": "push_unique",
+        "kind": "method",
+        "start": 54,
+        "end": 58,
+        "sha256": "5122193b5343a89a114c2607421c1b72eed783b51d3e6afff0c384283c333ef6"
+      }
+    ],
+    "actsets.set_is_match": [
+      {
+        "file": "crates/policy/src/policy/action.rs",
+        "self_ty": "ActionSet",
+        "name": "is_match",
+        "kind": "method",
+        "start": 60,
+        "end": 62,
+        "sha256": "8d14ba9feccf09f83472f92d57d42110cd5d79227bf2d37c0edba31f344a4cd1"
+      }
+    ],
+    "actsets.is_valid": [
+      {
+        "file": "crates/policy/src/policy/action.rs",
+        "self_ty": "ActionSet",
+        "name": "is_valid",
+        "kind": "method",
+        "start": 109,
+        "end": 111,
+        "sha256": "85f26512a75d92864cd6e4ae91df3f9cc653f618e8107020f8aace8dcde71591"
+      }
+    ],
+    "actsets.eq": [
+      {
+        "file": "crates/policy/src/policy/action.rs",
+        "self_ty": "ActionSet",
+        "name": "eq",
+        "kind": "method",
+        "start": 115,
+        "end": 117,
+        "sha256": "775be5c215068f463e42cc6ef04bbdb70cd4558d8f2cb48301e2c4c3b01da8ee"
+      }
+    ],
+    "actsets.action_is_match": [
+      {
+        "file": "crates/policy/src/policy/action.rs",
+        "self_ty": "Action",
+        "name": "is_match",
+        "kind": "method",
+        "start": 179,
+        "end": 181,
+        "sha256": "8d14ba9feccf09f83472f92d57d42110cd5d79227bf2d37c0edba31f344a4cd1"
+      }
+    ],
+    "actsets.admin_is_valid": [
+      {
+        "file": "crates/policy/src/policy/action.rs",
+        "self_ty": "AdminAction",
+        "name": "is_valid",
+        "kind": "method",
+        "start": 622,
+        "end": 717,
+        "sha256": "8befc4dcaa098e633d709a70a28881195525b66b7d36a96cd9ffe0670f69bf3c"
+      }
+    ],
+    "wildmatch.is_simple_match": [
+      {
+        "file": "crates/policy/src/policy/utils/wildcard.rs",
+        "self_ty": "",
+        "name": "is_simple_match",
+        "kind": "fn",
+        "start": 15,
+        "end": 21,
+        "sha256": "f3bcc86309797721cb72c253e88484ae00d264747aa52712f8dade5cb1b31e79"
+      }
+    ],
+    "wildmatch.is_match": [
+      {
+        "file": "crates/policy/src/policy/utils/wildcard.rs",
+        "self_ty": "",
+        "name": "is_match",
+        "kind": "fn",
+        "start": 23,
+        "end": 29,
+        "sha256": "2e871f34dec30492245efe7ad423736a74d88bd0d08a1abf1f0ae550151960cf"
+      }
+    ],
+    "wildmatch.inner_match": [
+      {
+        "file": "crates/policy/src/policy/utils/wildcard.rs",
+        "self_ty": "",
+        "name": "inner_match",
+        "kind": "fn",
+        "start": 59,
+        "end": 72,
+        "sha256": "2c6c1692dd3773832d127e055ab78dacd48325e091f6c66274fbebc0f190d8d2"
+      }
+    ],
+    "wildmatch.deep_match": [
+      {
+        "file": "crates/policy/src/policy/utils/wildcard.rs",
+        "self_ty": "",
+        "name": "deep_match",
+        "kind": "fn",
+        "start": 74,
+        "end": 101,
+        "sha256": "9b2a74725f88c9d8d3a945723a64c2d7669c3e2e070d946c2e53568972a0d9d7"
+      }
+    ],
+    "pathclean.clean": [
+      {
+        "file": "crates/policy/src/policy/utils/path.rs",
+        "self_ty": "",
+        "name": "clean",
+        "kind": "fn",
+        "start": 55,
+        "end": 112,
+        "sha256": "3088b689cf4d987519508a63f31f0ed55ecce3ab1f574d84804888b0c3067cb4"
+      }
+    ],
+    "extras.is_match_as_pattern_prefix": [
+      {
+        "file": "crates/policy/src/policy/utils/wildcard.rs",
+        "self_ty": "",
+        "name": "is_match_as_pattern_prefix",
+        "kind": "fn",
+        "start": 31,
+        "end": 57,
+        "sha256": "63ef9a3827aff2cae5e3fae56f55c3107a67440b321a130213a9c211c96606f9"
+      }
+    ],
+    "extras.lazybuf_new": [
+      {
+        "file": "crates/policy/src/policy/utils/path.rs",
+        "self_ty": "LazyBuf",
+        "name": "new",
+        "kind": "method",
+        "start": 22,
+        "end": 24,
+        "sha256": "e52bec6f3d6a3a580c1496249a2b35d50c55124e953d20f244c93dc606238340"
+      }
+    ],
+    "extras.principal_values_into_set": [
+      {
+        "file": "crates/policy/src/policy/principal.rs",
+        "self_ty": "PrincipalValues",
+        "name": "into_set",
+        "kind": "method",
+        "start": 87,
+        "end": 92,
+        "sha256": "5b99f04cf878d2b4d338ac8e7e5e43aa432235a79e5d733848c6037c90082871"
+      }
+    ],
+    "awsvars.resolve_aws_variables": [
+      {
+        "file": "crates/policy/src/policy/variables.rs",
+        "self_ty": "",
+        "name": "resolve_aws_variables",
+        "kind": "fn",
+        "start": 254,
+        "end": 285,
+        "sha256": "3ef85aec88f09e8716746483229dde037488a7594fa5f12127e9bfde68e2237d"
+      }
+    ],
+    "awsvars.resolve_single_pass": [
+      {
+        "file": "crates/policy/src/policy/variables.rs",
+        "self_ty": "",
+        "name": "resolve_single_pass",
+        "kind": "fn",
+        "start": 295,
+        "end": 395,
+        "sha256": "ea6f18b982e73999d3afb90a9b705a4479172306c6085b7c00de8bc122212ec2"
+      }
+    ],
+    "awsvars.resolve": [
+      {
+        "file": "crates/policy/src/policy/variables.rs",
+        "self_ty": "VariableResolver",
+        "name": "resolve",
+        "kind": "method",
+        "start": 215,
+        "end": 235,
+        "sha256": "950a22d5f23285578895448ec98af915be4f6301184a3362d38d6ca174240e02"
+      }
+    ],
+    "awsvars.resolve_multiple": [
+      {
+        "file": "crates/policy/src/policy/variables.rs",
+        "self_ty": "VariableResolver",
+        "name": "resolve_multiple",
+        "kind": "method",
+        "start": 237,
+        "end": 247,
+        "sha256": "d0eae1366b9554a948aee355bef74269152e75871e13f1fa91fad89b47e6013e"
+      }
+    ],
+    "varctx.context_new": [
+      {
+        "file": "crates/policy/src/policy/variables.rs",
+        "self_ty": "VariableContext",
+        "name": "new",
+        "kind": "method",
+        "start": 37,
+        "end": 39,
+        "sha256": "e76ed46aab3af85e2c77e6048c01d33f3305c046ad6e49d90529c2239a119466"
+      }
+    ],
+    "varctx.resolver_new": [
+      {
+        "file": "crates/policy/src/policy/variables.rs",
+        "self_ty": "VariableResolver",
+        "name": "new",
+        "kind": "method",
+        "start": 130,
+        "end": 132,
+        "sha256": "b3db26db70ac2c3a56876556b6dba5ec0deb3f46f4f5e865852b2f6e6e714a30"
+      }
+    ],
+    "varctx.get_claim_as_strings": [
+      {
+        "file": "crates/policy/src/policy/variables.rs",
+        "self_ty": "VariableResolver",
+        "name": "get_claim_as_strings",
+        "kind": "method",
+        "start": 134,
+        "end": 155,
+        "sha256": "66ae3ea3c9ef9ac127251e19caeab9f4d2f9704eb71f66b63bf073285120b689"
+      }
+    ],
+    "varctx.resolve_username": [
+      {
+        "file": "crates/policy/src/policy/variables.rs",
+        "self_ty": "VariableResolver",
+        "name": "resolve_username",
+        "kind": "method",
+        "start": 157,
+        "end": 159,
+        "sha256": "c8dde306e6b340058b4a894461c37420d5ae347900e2001e78717bd13001ec25"
+      }
+    ],
+    "varctx.resolve_userid": [
+      {
+        "file": "crates/policy/src/policy/variables.rs",
+        "self_ty": "VariableResolver",
+        "name": "resolve_userid",
+        "kind": "method",
+        "start": 161,
+        "end": 165,
+        "sha256": "7692b32357326ce1adb7ab0d65889dba3e0897b06a2f23c2a475d49500724bab"
+      }
+    ],
+    "varctx.resolve_principal_type": [
+      {
+        "file": "crates/policy/src/policy/variables.rs",
+        "self_ty": "VariableResolver",
+        "name": "resolve_principal_type",
+        "kind": "method",
+        "start": 167,
+        "end": 179,
+        "sha256": "d9f04c1145f5d9b007d425bd57922ac09c9966b651752e93495ebc142b1c601d"
+      }
+    ],
+    "varctx.resolve_secure_transport": [
+      {
+        "file": "crates/policy/src/policy/variables.rs",
+        "self_ty": "VariableResolver",
+        "name": "resolve_secure_transport",
+        "kind": "method",
+        "start": 181,
+        "end": 183,
+        "sha256": "501b23ba097a3dffdf65866af3f26973f80db50a8ef240dffa11138268a7edb6"
+      }
+    ],
+    "varctx.resolve_account_id": [
+      {
+        "file": "crates/policy/src/policy/variables.rs",
+        "self_ty": "VariableResolver",
+        "name": "resolve_account_id",
+        "kind": "method",
+        "start": 195,
+        "end": 197,
+        "sha256": "870768e439ff003eb485908902eabbfe88e49bbbefbba720105ca654d4c4065e"
+      }
+    ],
+    "varctx.resolve_region": [
+      {
+        "file": "crates/policy/src/policy/variables.rs",
+        "self_ty": "VariableResolver",
+        "name": "resolve_region",
+        "kind": "method",
+        "start": 199,
+        "end": 201,
+        "sha256": "49e125824bcab7e140dfa3e5ef368663d3e3d8e281177970938c6a62e9bd5abf"
+      }
+    ],
+    "varctx.resolve_source_ip": [
+      {
+        "file": "crates/policy/src/policy/variables.rs",
+        "self_ty": "VariableResolver",
+        "name": "resolve_source_ip",
+        "kind": "method",
+        "start": 203,
+        "end": 205,
+        "sha256": "68b9bd4311721c911d80a17a852e93a6f685882afd243eca4216fea6c05cab0b"
+      }
+    ],
+    "varctx.resolve_custom_variable": [
+      {
+        "file": "crates/policy/src/policy/variables.rs",
+        "self_ty": "VariableResolver",
+        "name": "resolve_custom_variable",
+        "kind": "method",
+        "start": 207,
+        "end": 210,
+        "sha256": "ab81008e46b9964ff9a3d62ff732f9fd63617936d85cb5a433bbb7aa7ce7823f"
+      }
+    ],
+    "varctx.resolve": [
+      {
+        "file": "crates/policy/src/policy/variables.rs",
+        "self_ty": "VariableResolver",
+        "name": "resolve",
+        "kind": "method",
+        "start": 215,
+        "end": 235,
+        "sha256": "950a22d5f23285578895448ec98af915be4f6301184a3362d38d6ca174240e02"
+      }
+    ],
+    "varctx.resolve_multiple": [
+      {
+        "file": "crates/policy/src/policy/variables.rs",
+        "self_ty": "VariableResolver",
+        "name": "resolve_multiple",
+        "kind": "method",
+        "start": 237,
+        "end": 247,
+        "sha256": "d0eae1366b9554a948aee355bef74269152e75871e13f1fa91fad89b47e6013e"
+      }
+    ],
+    "varctx.is_dynamic": [
+      {
+        "file": "crates/policy/src/policy/variables.rs",
+        "self_ty": "VariableResolver",
+        "name": "is_dynamic",
+        "kind": "method",
+        "start": 249,
+        "end": 251,
+        "sha256": "9ec4bee1973e69e3a2ceceed49800dba7d542d51af99130a179370c26b73b09b"
+      }
+    ],
+    "claims.case_insensitive_eq": [
+      {
+        "file": "crates/policy/src/policy/utils.rs",
+        "self_ty": "",
+        "name": "case_insensitive_eq",
+        "kind": "fn",
+        "start": 29,
+        "end": 33,
+        "sha256": "5a79cffc1979e117b9c33b997b2b3e585921682dc0e8e97b0c10f5c7de55f767"
+      }
+    ],
+    "claims.get_claim_case_insensitive": [
+      {
+        "file": "crates/policy/src/policy/utils.rs",
+        "self_ty": "",
+        "name": "get_claim_case_insensitive",
+        "kind": "fn",
+        "start": 35,
+        "end": 55,
+        "sha256": "a2bac011a3cd256c04a7231b823adbc66c5d7920fa3c64e1f463ca025aa6d138"
+      }
+    ],
+    "claims.values_from_claims": [
+      {
+        "file": "crates/policy/src/policy/utils.rs",
+        "self_ty": "",
+        "name": "_get_values_from_claims",
+        "kind": "fn",
+        "start": 57,
+        "end": 89,
+        "sha256": "e89e27571f675f8f6b3269371364bfb50871376ab79e81d8e657d7954b4c6e12"
+      }
+    ],
+    "claims.split_path": [
+      {
+        "file": "crates/policy/src/policy/utils.rs",
+        "self_ty": "",
+        "name": "_split_path",
+        "kind": "fn",
+        "start": 91,
+        "end": 111,
+        "sha256": "df4345c890f20e3df2867b7b3596772f1bad345f82e5265c9c77aab4fa7c6220"
+      }
+    ],
+    "claims.get_values_from_claims": [
+      {
+        "file": "crates/policy/src/policy/policy.rs",
+        "self_ty": "",
+        "name": "get_values_from_claims",
+        "kind": "fn",
+        "start": 245,
+        "end": 277,
+        "sha256": "00c65ee29aae586b97540d423c03610f749cd242153ab381d4f22bbb12f3cb2e"
+      }
+    ],
+    "claims.get_policies_from_claims": [
+      {
+        "file": "crates/policy/src/policy/policy.rs",
+        "self_ty": "",
+        "name": "get_policies_from_claims",
+        "kind": "fn",
+        "start": 279,
+        "end": 281,
+        "sha256": "f79cd92613c7d20e53bd04e033a20e1be597246f3590046a501046278c44dec3"
+      }
+    ],
+    "claims.iam_policy_claim_name_sa": [
+      {
+        "file": "crates/policy/src/policy/policy.rs",
+        "self_ty": "",
+        "name": "iam_policy_claim_name_sa",
+        "kind": "fn",
+        "start": 283,
+        "end": 285,
+        "sha256": "413d5e05e944844bbb3793a3cf7b30a44bb940cb6b5953f33fc8f5902740c3e4"
+      }
+    ],
+    "claims.is_existing_object_tag_condition_key": [
+      {
+        "file": "crates/policy/src/policy/policy.rs",
+        "self_ty": "",
+        "name": "is_existing_object_tag_condition_key",
+        "kind": "fn",
+        "start": 287,
+        "end": 292,
+        "sha256": "22a306141a302a1633e7be25c53e4876e7c64ab5bbaa6e160b7025217ca6d9a2"
+      }
+    ],
+    "claims.value_uses_existing_object_tag": [
+      {
+        "file": "crates/policy/src/policy/policy.rs",
+        "self_ty": "",
+        "name": "value_uses_existing_object_tag_condition_key",
+        "kind": "fn",
+        "start": 294,
+        "end": 302,
+        "sha256": "07c8f759739d0c1de62f0f8bbcdb0bc716e87793510937c4e789ea9441b6884a"
+      }
+    ],
+    "claims.args_get_policies": [
+      {
+        "file": "crates/policy/src/policy/policy.rs",
+        "self_ty": "Args",
+        "name": "get_policies",
+        "kind": "method",
+        "start": 52,
+        "end": 54,
+        "sha256": "bd045f9c7b160aa6d362dc6116e8aab5b39e6951f7ca692df93f950b1d81b074"
+      }
+    ],
+    "claims.get_role_arn": [
+      {
+        "file": "crates/policy/src/policy/policy.rs",
+        "self_ty": "Args",
+        "name": "get_role_arn",
+        "kind": "method",
+        "start": 49,
+        "end": 51,
+        "sha256": "d6dbd0f12a1a0db908bc78bcdff938ff3cbbfeae846e4d79c260dbf27bc3ebfc"
+      }
+    ],
+    "rsrc.resource_is_match": [
+      {
+        "file": "crates/policy/src/policy/resource.rs",
+        "self_ty": "Resource",
+        "name": "is_match_with_resolver",
+        "kind": "method",
+        "start": 193,
+        "end": 235,
+        "sha256": "53d356adc2dd49aab2857d40749843230c0fe8575d5c2ec65027f24f3786f216"
+      }
+    ],
+    "rsrc.is_kms": [
+      {
+        "file": "crates/policy/src/policy/resource.rs",
+        "self_ty": "Resource",
+        "name": "is_kms",
+        "kind": "method",
+        "start": 185,
+        "end": 187,
+        "sha256": "64883a76ac91a292080e07dfdc10fbf6e44b82b26fa78fabe4d22b6e3f862c68"
+      }
+    ],
+    "rsrc.set_is_match": [
+      {
+        "file": "crates/policy/src/policy/resource.rs",
+        "self_ty": "ResourceSet",
+        "name": "is_match_with_resolver",
+        "kind": "method",
+        "start": 67,
+        "end": 80,
+        "sha256": "8db0d43c5afae54e6cef060f5a19ba65ac72fd4165bc8b30b32dfbe96d5f7da0"
+      }
+    ],
+    "resets.is_empty": [
+      {
+        "file": "crates/policy/src/policy/resource.rs",
+        "self_ty": "ResourceSet",
+        "name": "is_empty",
+        "kind": "method",
+        "start": 52,
+        "end": 55,
+        "sha256": "47d93711b755b542a92c8c7c930551006f64bb3be15780e0e240730fe9eb68cf"
+      }
+    ],
+    "resets.as_slice": [
+      {
+        "file": "crates/policy/src/policy/resource.rs",
+        "self_ty": "ResourceSet",
+        "name": "deref",
+        "kind": "method",
+        "start": 96,
+        "end": 98,
+        "sha256": "a935ffb2f02ecd2275eae3fc03f67da9ede12d3f7c823cd8e16e7a2773e761dc"
+      }
+    ],
+    "resets.push_unique": [
+      {
+        "file": "crates/policy/src/policy/resource.rs",
+        "self_ty": "ResourceSet",
+        "name": "push_unique",
+        "kind": "method",
+        "start": 57,
+        "end": 61,
+        "sha256": "e5eb4b83f086a6eca45a13c5c755fb34ea9ebf217025530a20e98c28d9fca2ea"
+      }
+    ],
+    "resets.eq": [
+      {
+        "file": "crates/policy/src/policy/resource.rs",
+        "self_ty": "ResourceSet",
+        "name": "eq",
+        "kind": "method",
+        "start": 113,
+        "end": 115,
+        "sha256": "775be5c215068f463e42cc6ef04bbdb70cd4558d8f2cb48301e2c4c3b01da8ee"
+      }
+    ],
+    "resets.is_match": [
+      {
+        "file": "crates/policy/src/policy/resource.rs",
+        "self_ty": "ResourceSet",
+        "name": "is_match",
+        "kind": "method",
+        "start": 63,
+        "end": 65,
+        "sha256": "d03e8a2410817473c523c77a0607c81fa7fb7ead4cc0dbfd1ecf985a1c53693b"
+      }
+    ],
+    "resets.set_match_resource": [
+      {
+        "file": "crates/policy/src/policy/resource.rs",
+        "self_ty": "ResourceSet",
+        "name": "match_resource",
+        "kind": "method",
+        "start": 82,
+        "end": 90,
+        "sha256": "2ec82e92b58d9f721e59c5a81303c856490db7629b1fe3c95952479cfe624314"
+      }
+    ],
+    "resets.set_matches": [
+      {
+        "file": "crates/policy/src/policy/resource.rs",
+        "self_ty": "ResourceSet",
+        "name": "is_match_with_resolver",
+        "kind": "method",
+        "start": 67,
+        "end": 80,
+        "sha256": "8db0d43c5afae54e6cef060f5a19ba65ac72fd4165bc8b30b32dfbe96d5f7da0"
+      }
+    ],
+    "resets.match_resource": [
+      {
+        "file": "crates/policy/src/policy/resource.rs",
+        "self_ty": "Resource",
+        "name": "match_resource",
+        "kind": "method",
+        "start": 237,
+        "end": 239,
+        "sha256": "ad5f3aec23970c21dcbf3ef0af5a098369f9c672e859ce9821686d7078f2b2e9"
+      }
+    ],
+    "valids.default_is_valid": [
+      {
+        "file": "crates/policy/src/policy/policy.rs",
+        "self_ty": "Validator",
+        "name": "is_valid",
+        "kind": "method",
+        "start": 30,
+        "end": 32,
+        "sha256": "85f26512a75d92864cd6e4ae91df3f9cc653f618e8107020f8aace8dcde71591"
+      }
+    ],
+    "valids.id_is_empty": [
+      {
+        "file": "crates/policy/src/policy/id.rs",
+        "self_ty": "ID",
+        "name": "is_empty",
+        "kind": "method",
+        "start": 25,
+        "end": 28,
+        "sha256": "dd3a11e569144ea4a4b33524fef901b579c326adbdeb9f488dede4b3e2a12e4e"
+      }
+    ],
+    "valids.id_is_valid": [
+      {
+        "file": "crates/policy/src/policy/id.rs",
+        "self_ty": "ID",
+        "name": "is_valid",
+        "kind": "method",
+        "start": 33,
+        "end": 36,
+        "sha256": "d1a112ff8de132f8d35806dc2535b130627722f6bd7b27679e49c292f5f5ab05"
+      }
+    ],
+    "valids.id_as_slice": [
+      {
+        "file": "crates/policy/src/policy/id.rs",
+        "self_ty": "ID",
+        "name": "deref",
+        "kind": "method",
+        "start": 48,
+        "end": 50,
+        "sha256": "a935ffb2f02ecd2275eae3fc03f67da9ede12d3f7c823cd8e16e7a2773e761dc"
+      }
+    ],
+    "valids.effect_is_valid": [
+      {
+        "file": "crates/policy/src/policy/effect.rs",
+        "self_ty": "Effect",
+        "name": "is_valid",
+        "kind": "method",
+        "start": 53,
+        "end": 55,
+        "sha256": "85f26512a75d92864cd6e4ae91df3f9cc653f618e8107020f8aace8dcde71591"
+      }
+    ],
+    "valids.principal_is_valid": [
+      {
+        "file": "crates/policy/src/policy/principal.rs",
+        "self_ty": "Principal",
+        "name": "is_valid",
+        "kind": "method",
+        "start": 145,
+        "end": 150,
+        "sha256": "e0e0203a70645908667ec1d66b960e432308b26ea9322ce2734be72f26287be4"
+      }
+    ],
+    "valids.resource_is_valid": [
+      {
+        "file": "crates/policy/src/policy/resource.rs",
+        "self_ty": "Resource",
+        "name": "is_valid",
+        "kind": "method",
+        "start": 260,
+        "end": 284,
+        "sha256": "f522d49f2dc595b3a6c7b6a7d14a9d1277294cea756336c0e91493aa787fa422"
+      }
+    ],
+    "valids.resources_is_valid": [
+      {
+        "file": "crates/policy/src/policy/resource.rs",
+        "self_ty": "ResourceSet",
+        "name": "is_valid",
+        "kind": "method",
+        "start": 103,
+        "end": 109,
+        "sha256": "0e4c26660021fb7e8861370a9860d965e6996017f417ed42a216c5d957ccce78"
+      }
+    ],
+    "valids.is_admin": [
+      {
+        "file": "crates/policy/src/policy/statement.rs",
+        "self_ty": "Statement",
+        "name": "is_admin",
+        "kind": "method",
+        "start": 115,
+        "end": 123,
+        "sha256": "c5e3afe6140c1d387b0892da96f8578e988574b6c3ef6a67c0a6a402fd0fcffc"
+      }
+    ],
+    "valids.is_sts": [
+      {
+        "file": "crates/policy/src/policy/statement.rs",
+        "self_ty": "Statement",
+        "name": "is_sts",
+        "kind": "method",
+        "start": 125,
+        "end": 133,
+        "sha256": "6812dffcf9291b8189ed2e943627dfa5c1edfceaf83035bfc1656f25dc922c29"
+      }
+    ],
+    "valids.action_family": [
+      {
+        "file": "crates/policy/src/policy/statement.rs",
+        "self_ty": "Statement",
+        "name": "action_family",
+        "kind": "method",
+        "start": 135,
+        "end": 175,
+        "sha256": "36c94d07e0ef267a43849e10bd474df8b2bd0ad1cc577d69c5502758b32b263f"
+      }
+    ],
+    "valids.statement_is_valid": [
+      {
+        "file": "crates/policy/src/policy/statement.rs",
+        "self_ty": "Statement",
+        "name": "is_valid",
+        "kind": "method",
+        "start": 310,
+        "end": 367,
+        "sha256": "ac556472202ec68669e7d966b01b4ddd0b5df97cb814bba60eea435fe3ff06ed"
+      }
+    ],
+    "valids.bp_statement_is_valid": [
+      {
+        "file": "crates/policy/src/policy/statement.rs",
+        "self_ty": "BPStatement",
+        "name": "is_valid",
+        "kind": "method",
+        "start": 465,
+        "end": 512,
+        "sha256": "350595e2674bfe65b50393c4fe00729973c9b827c1e44c5f62a4447b118b253f"
+      }
+    ],
+    "stmts.build_resource": [
+      {
+        "file": "crates/policy/src/policy/statement.rs",
+        "self_ty": "",
+        "name": "build_resource",
+        "kind": "fn",
+        "start": 62,
+        "end": 81,
+        "sha256": "e6f7385ffcc803c599a7cc688127e8210e6afa25e98d54fef2f5df85f1a65e7f"
+      }
+    ],
+    "stmts.resolver_for": [
+      {
+        "file": "crates/policy/src/policy/statement.rs",
+        "self_ty": "",
+        "name": "variable_resolver_for_policy_args",
+        "kind": "fn",
+        "start": 44,
+        "end": 60,
+        "sha256": "86befea0794f9491242e8651d7ab77038b03c83a3f2662b9728d0b73c5afca89"
+      }
+    ],
+    "stmts.skips_resource_match": [
+      {
+        "file": "crates/policy/src/policy/statement.rs",
+        "self_ty": "Statement",
+        "name": "skips_resource_match_for_args",
+        "kind": "method",
+        "start": 93,
+        "end": 103,
+        "sha256": "761272d5e00846fe365b64a1c3cc4a11ccfaa6067fa642cad8f11c84226c9f72"
+      }
+    ],
+    "stmts.kms_key_scope_matches": [
+      {
+        "file": "crates/policy/src/policy/statement.rs",
+        "self_ty": "Statement",
+        "name": "kms_key_scope_matches",
+        "kind": "method",
+        "start": 177,
+        "end": 245,
+        "sha256": "62cfc5abf0320bb04058dcf059c8dd548f1717d95d40d208bd2bbc4704628a3a"
+      }
+    ],
+    "stmts.reaches_condition_eval": [
+      {
+        "file": "crates/policy/src/policy/statement.rs",
+        "self_ty": "Statement",
+        "name": "request_reaches_condition_eval",
+        "kind": "method",
+        "start": 247,
+        "end": 291,
+        "sha256": "631999d686ecb4acb1446acde8193a830b6740b1af078bace38241f88684f41d"
+      }
+    ],
+    "stmts.statement_is_allowed": [
+      {
+        "file": "crates/policy/src/policy/statement.rs",
+        "self_ty": "Statement",
+        "name": "is_allowed",
+        "kind": "method",
+        "start": 293,
+        "end": 305,
+        "sha256": "201ea9269b10724d4515a8c77089282199da9d40d132a160339784d65a7d5060"
+      }
+    ],
+    "stmts.bp_reaches_condition_eval": [
+      {
+        "file": "crates/policy/src/policy/statement.rs",
+        "self_ty": "BPStatement",
+        "name": "request_reaches_condition_eval",
+        "kind": "method",
+        "start": 409,
+        "end": 448,
+        "sha256": "ba437ac9cba7caa53016297c0128c39d8fdd832ef4f3feb72321fe1378d0f9a0"
+      }
+    ],
+    "stmts.bp_statement_is_allowed": [
+      {
+        "file": "crates/policy/src/policy/statement.rs",
+        "self_ty": "BPStatement",
+        "name": "is_allowed",
+        "kind": "method",
+        "start": 450,
+        "end": 460,
+        "sha256": "7037df717bf2c98484f2a6312ef359ef346efb5f5e49ca9f0dce78889ed7fd6f"
+      }
+    ],
+    "stmts.principal_is_match": [
+      {
+        "file": "crates/policy/src/policy/principal.rs",
+        "self_ty": "Principal",
+        "name": "is_match",
+        "kind": "method",
+        "start": 128,
+        "end": 140,
+        "sha256": "027de7bf438af00aca44ada47a009ffb8842a6ef8bc87866613a7da0cb146b69"
+      }
+    ],
+    "stmts.effect_is_allowed": [
+      {
+        "file": "crates/policy/src/policy/effect.rs",
+        "self_ty": "Effect",
+        "name": "is_allowed",
+        "kind": "method",
+        "start": 42,
+        "end": 48,
+        "sha256": "f21d323d8d6d5aafadc09a5900b4bcea6d61fe20bfe0db03b054a846f22ded7b"
+      }
+    ],
+    "policies.policy_is_allowed": [
+      {
+        "file": "crates/policy/src/policy/policy.rs",
+        "self_ty": "Policy",
+        "name": "is_allowed",
+        "kind": "method",
+        "start": 69,
+        "end": 96,
+        "sha256": "2f2f4ac6ff4a539308eb520e4141cb7b6c67cd4eb87c7c1088ad816d23bed241"
+      }
+    ],
+    "policies.bucket_policy_is_allowed": [
+      {
+        "file": "crates/policy/src/policy/policy.rs",
+        "self_ty": "BucketPolicy",
+        "name": "is_allowed",
+        "kind": "method",
+        "start": 208,
+        "end": 226,
+        "sha256": "a92bb3ec496c93b7f81d004af2200120f10f2706f656c64f54e0c3b00d2658f5"
+      }
+    ],
+    "manage.statement_eq": [
+      {
+        "file": "crates/policy/src/policy/statement.rs",
+        "self_ty": "Statement",
+        "name": "eq",
+        "kind": "method",
+        "start": 375,
+        "end": 382,
+        "sha256": "da1a8264dae27bac8916cccccfd9d3c0375f15ba2466771a8896564b0e5cdcd3"
+      }
+    ],
+    "manage.statement_is_allowed": [
+      {
+        "file": "crates/policy/src/policy/statement.rs",
+        "self_ty": "Statement",
+        "name": "is_allowed",
+        "kind": "method",
+        "start": 293,
+        "end": 305,
+        "sha256": "201ea9269b10724d4515a8c77089282199da9d40d132a160339784d65a7d5060"
+      }
+    ],
+    "manage.bp_statement_is_allowed": [
+      {
+        "file": "crates/policy/src/policy/statement.rs",
+        "self_ty": "BPStatement",
+        "name": "is_allowed",
+        "kind": "method",
+        "start": 450,
+        "end": 460,
+        "sha256": "7037df717bf2c98484f2a6312ef359ef346efb5f5e49ca9f0dce78889ed7fd6f"
+      }
+    ],
+    "manage.drop_duplicate_statements": [
+      {
+        "file": "crates/policy/src/policy/policy.rs",
+        "self_ty": "Policy",
+        "name": "drop_duplicate_statements",
+        "kind": "method",
+        "start": 107,
+        "end": 135,
+        "sha256": "d535191f3173cbbb8dda1a4be8ca84966352cedef387460ef6c4bd9467fc2651"
+      }
+    ],
+    "manage.merge_policies": [
+      {
+        "file": "crates/policy/src/policy/policy.rs",
+        "self_ty": "Policy",
+        "name": "merge_policies",
+        "kind": "method",
+        "start": 136,
+        "end": 149,
+        "sha256": "f70b15a927f69de4ce00f900efac1cf47e44a3db45995d50604442dd58765ba5"
+      }
+    ],
+    "manage.is_empty": [
+      {
+        "file": "crates/policy/src/policy/policy.rs",
+        "self_ty": "Policy",
+        "name": "is_empty",
+        "kind": "method",
+        "start": 151,
+        "end": 153,
+        "sha256": "2f0133e9d728380dad29c4147dd08fbc13953430a3380f3710c2d11a704f93d5"
+      }
+    ],
+    "manage.match_resource": [
+      {
+        "file": "crates/policy/src/policy/policy.rs",
+        "self_ty": "Policy",
+        "name": "match_resource",
+        "kind": "method",
+        "start": 98,
+        "end": 105,
+        "sha256": "84b2f3752e45d9d0d56e45c590d32a13671a3d9067888fd44900d3a5c7509838"
+      }
+    ],
+    "manage.is_valid": [
+      {
+        "file": "crates/policy/src/policy/policy.rs",
+        "self_ty": "Policy",
+        "name": "is_valid",
+        "kind": "method",
+        "start": 169,
+        "end": 179,
+        "sha256": "8b614934652985e8fee87b59e29d04ca889cef0901d2dd4bfccdd971580cc1a6"
+      }
+    ],
+    "manage.validate": [
+      {
+        "file": "crates/policy/src/policy/policy.rs",
+        "self_ty": "Policy",
+        "name": "validate",
+        "kind": "method",
+        "start": 155,
+        "end": 157,
+        "sha256": "093ad3543191de785611ffd3bb0b284a7a75f47bf99768b2e09a0b2d37f31c03"
+      }
+    ],
+    "manage.policy_is_allowed": [
+      {
+        "file": "crates/policy/src/policy/policy.rs",
+        "self_ty": "Policy",
+        "name": "is_allowed",
+        "kind": "method",
+        "start": 69,
+        "end": 96,
+        "sha256": "2f2f4ac6ff4a539308eb520e4141cb7b6c67cd4eb87c7c1088ad816d23bed241"
+      }
+    ],
+    "manage.bucket_is_valid": [
+      {
+        "file": "crates/policy/src/policy/policy.rs",
+        "self_ty": "BucketPolicy",
+        "name": "is_valid",
+        "kind": "method",
+        "start": 232,
+        "end": 242,
+        "sha256": "8b614934652985e8fee87b59e29d04ca889cef0901d2dd4bfccdd971580cc1a6"
+      }
+    ],
+    "manage.bucket_policy_is_allowed": [
+      {
+        "file": "crates/policy/src/policy/policy.rs",
+        "self_ty": "BucketPolicy",
+        "name": "is_allowed",
+        "kind": "method",
+        "start": 208,
+        "end": 226,
+        "sha256": "a92bb3ec496c93b7f81d004af2200120f10f2706f656c64f54e0c3b00d2658f5"
+      }
+    ],
+    "manage.functions_use_existing_object_tag": [
+      {
+        "file": "crates/policy/src/policy/policy.rs",
+        "self_ty": "",
+        "name": "functions_use_existing_object_tag",
+        "kind": "fn",
+        "start": 304,
+        "end": 309,
+        "sha256": "1033b6659a91ea3db4c55c5e9eba4bd986f35fe2690838882dc0111a9dfb0f15"
+      }
+    ],
+    "manage.policy_uses_existing_object_tag_conditions": [
+      {
+        "file": "crates/policy/src/policy/policy.rs",
+        "self_ty": "",
+        "name": "policy_uses_existing_object_tag_conditions",
+        "kind": "fn",
+        "start": 311,
+        "end": 316,
+        "sha256": "d685632a4dae0cadb359e032838e94d82def69cc2f78240257e454974b19359a"
+      }
+    ],
+    "manage.bucket_policy_uses_existing_object_tag_conditions": [
+      {
+        "file": "crates/policy/src/policy/policy.rs",
+        "self_ty": "",
+        "name": "bucket_policy_uses_existing_object_tag_conditions",
+        "kind": "fn",
+        "start": 318,
+        "end": 323,
+        "sha256": "6ed9e59daec72eb74e95e6ac78d38946e0d0cdf002537be6f3ef82d8a4fbc17c"
+      }
+    ],
+    "manage.policy_needs_existing_object_tag_for_args": [
+      {
+        "file": "crates/policy/src/policy/policy.rs",
+        "self_ty": "",
+        "name": "policy_needs_existing_object_tag_for_args",
+        "kind": "fn",
+        "start": 325,
+        "end": 340,
+        "sha256": "fa51236a2e10a78273ee98eea71c68905c9ecd3165cbefc18151a4ee364cdbcf"
+      }
+    ],
+    "manage.bucket_policy_needs_existing_object_tag_for_args": [
+      {
+        "file": "crates/policy/src/policy/policy.rs",
+        "self_ty": "",
+        "name": "bucket_policy_needs_existing_object_tag_for_args",
+        "kind": "fn",
+        "start": 342,
+        "end": 356,
+        "sha256": "d999c3295c0ac418c77fe55517f2f2ddcc79a51630c4f10f342e5ac39e23dc70"
+      }
+    ],
+    "docdata.new_at": [
+      {
+        "file": "crates/policy/src/policy/doc.rs",
+        "self_ty": "PolicyDoc",
+        "name": "new_at",
+        "kind": "method",
+        "start": 51,
+        "end": 64,
+        "sha256": "1848381240b089e548420319575dbb024f8f68abc1438adab6ebd159b935f0c5"
+      }
+    ],
+    "docdata.update_at": [
+      {
+        "file": "crates/policy/src/policy/doc.rs",
+        "self_ty": "PolicyDoc",
+        "name": "update_at",
+        "kind": "method",
+        "start": 70,
+        "end": 79,
+        "sha256": "017aece49648ea73690bf16f6e61111546905655c643f40101f6c0a24a522bf9"
+      }
+    ],
+    "docdata.default_policy": [
+      {
+        "file": "crates/policy/src/policy/doc.rs",
+        "self_ty": "PolicyDoc",
+        "name": "default_policy",
+        "kind": "method",
+        "start": 81,
+        "end": 88,
+        "sha256": "ef0fdad5ddb8aa48fa7e21247a8f4b86e4c39d9c3b0ead4e2fdf3d7356090769"
+      }
+    ],
+    "conddata.clone_key_value": [
+      {
+        "file": "crates/policy/src/policy/function/func.rs",
+        "self_ty": "FuncKeyValue",
+        "name": "clone",
+        "kind": "method",
+        "start": 34,
+        "end": 39,
+        "sha256": "ce247c9d1029b10daa0019f22dee67f6b1eb93f565a0bf822f20783d2077e61b"
+      }
+    ],
+    "conddata.clone_inner": [
+      {
+        "file": "crates/policy/src/policy/function/func.rs",
+        "self_ty": "InnerFunc",
+        "name": "clone",
+        "kind": "method",
+        "start": 43,
+        "end": 45,
+        "sha256": "f9145c47230e8cdf59130e04e7775cc80829288d0495b6a6b29eeba6b01893c5"
+      }
+    ],
+    "conddata.key_names": [
+      {
+        "file": "crates/policy/src/policy/function/func.rs",
+        "self_ty": "InnerFunc",
+        "name": "key_names",
+        "kind": "method",
+        "start": 49,
+        "end": 51,
+        "sha256": "17404b18299ae8bb6979379b4321e353fce8137244fd16f9bd9d6e77adbbf70d"
+      }
+    ],
+    "conddata.contains_key_name": [
+      {
+        "file": "crates/policy/src/policy/function/func.rs",
+        "self_ty": "InnerFunc",
+        "name": "contains_key_name",
+        "kind": "method",
+        "start": 53,
+        "end": 55,
+        "sha256": "e8f387fe418f92dde2dcdc3ee95a03ea60e01dfdf183f715b957de01a546c4c1"
+      }
+    ],
+    "conddata.key_is": [
+      {
+        "file": "crates/policy/src/policy/function/key.rs",
+        "self_ty": "Key",
+        "name": "is",
+        "kind": "method",
+        "start": 33,
+        "end": 35,
+        "sha256": "98340070c8a98921d1ee4d420dd4343ba0e921c8fd548c256c1c095ee1f3e71b"
+      }
+    ],
+    "conddata.binary_eq": [
+      {
+        "file": "crates/policy/src/policy/function/binary.rs",
+        "self_ty": "BinaryFuncValue",
+        "name": "eq",
+        "kind": "method",
+        "start": 81,
+        "end": 83,
+        "sha256": "0febb2d1075a3f5e85fe8546c4e417f38354da56227db6d74c02f8bfd6a8dd20"
+      }
+    ],
+    "conddata.binary_new": [
+      {
+        "file": "crates/policy/src/policy/function/binary.rs",
+        "self_ty": "BinaryFuncValue",
+        "name": "new",
+        "kind": "method",
+        "start": 44,
+        "end": 47,
+        "sha256": "19167b5998d63f0c1e9003382ba848513c7671780e070e9be68573442f42dbcd"
+      }
+    ],
+    "conddata.binary_from_encoded_values": [
+      {
+        "file": "crates/policy/src/policy/function/binary.rs",
+        "self_ty": "BinaryFuncValue",
+        "name": "from_encoded_values",
+        "kind": "method",
+        "start": 49,
+        "end": 59,
+        "sha256": "fc735289586026a17288d411246391b932be5880b8be80e50147b4f03b4cce97"
+      }
+    ],
+    "conddata.binary_evaluate": [
+      {
+        "file": "crates/policy/src/policy/function/binary.rs",
+        "self_ty": "BinaryFunc",
+        "name": "evaluate",
+        "kind": "method",
+        "start": 137,
+        "end": 178,
+        "sha256": "3cfd1501d3fec01d9c9f9d708ff14c0278eaa5d87630a7fffc975bb9efdba6bf"
+      }
+    ],
+    "conddata.to_key": [
+      {
+        "file": "crates/policy/src/policy/function/condition.rs",
+        "self_ty": "Condition",
+        "name": "to_key",
+        "kind": "method",
+        "start": 102,
+        "end": 134,
+        "sha256": "4158e35e4b4cee0d71a72635389368c7f44ba3dce8b8dcece34c1ed72b7b0838"
+      }
+    ],
+    "conddata.to_key_with_suffix": [
+      {
+        "file": "crates/policy/src/policy/function/condition.rs",
+        "self_ty": "Condition",
+        "name": "to_key_with_suffix",
+        "kind": "method",
+        "start": 136,
+        "end": 141,
+        "sha256": "0fd75c24fbdaac62746a5c81be1cd8312f79bd9c7f9036275bba3bbfb4c21688"
+      }
+    ],
+    "conddata.has_any_key_in": [
+      {
+        "file": "crates/policy/src/policy/function/condition.rs",
+        "self_ty": "Condition",
+        "name": "has_any_key_in",
+        "kind": "method",
+        "start": 143,
+        "end": 174,
+        "sha256": "108e12b05a25f9a36e4789e11d236494e989eece7e2c0df21b836245e986fce1"
+      }
+    ],
+    "conddata.is_negate": [
+      {
+        "file": "crates/policy/src/policy/function/condition.rs",
+        "self_ty": "Condition",
+        "name": "is_negate",
+        "kind": "method",
+        "start": 289,
+        "end": 295,
+        "sha256": "74967423769fe6344258247da2990e12393a7bfbc4769b3e1fbc6a906c57dccf"
+      }
+    ],
+    "conddata.condition_eq": [
+      {
+        "file": "crates/policy/src/policy/function/condition.rs",
+        "self_ty": "Condition",
+        "name": "eq",
+        "kind": "method",
+        "start": 333,
+        "end": 366,
+        "sha256": "96ac738e8415b9395de6532114d229fe5c84b3dc1b799b587331829cb93073ea"
+      }
+    ],
+    "conddata.condition_evaluate": [
+      {
+        "file": "crates/policy/src/policy/function/condition.rs",
+        "self_ty": "Condition",
+        "name": "evaluate_with_resolver",
+        "kind": "method",
+        "start": 209,
+        "end": 287,
+        "sha256": "c16b40ff64d912f3ee0a97debca29dc5341caf64602612245b7504d347cee421"
+      }
+    ],
+    "conddata.functions_eq": [
+      {
+        "file": "crates/policy/src/policy/function.rs",
+        "self_ty": "Functions",
+        "name": "eq",
+        "kind": "method",
+        "start": 208,
+        "end": 219,
+        "sha256": "5c5ece6776e25d45d59ef2f2c2d02b45a566eefa2906dec02e6b267772c300d4"
+      }
+    ],
+    "conddata.is_empty": [
+      {
+        "file": "crates/policy/src/policy/function.rs",
+        "self_ty": "Functions",
+        "name": "is_empty",
+        "kind": "method",
+        "start": 101,
+        "end": 103,
+        "sha256": "a97a0351b57a9437e09c1413b229eab3dd04c56081f32d5223879645048f2630"
+      }
+    ],
+    "conddata.functions_evaluate": [
+      {
+        "file": "crates/policy/src/policy/function.rs",
+        "self_ty": "Functions",
+        "name": "evaluate_with_resolver",
+        "kind": "method",
+        "start": 75,
+        "end": 99,
+        "sha256": "6b386061263a422e29dbac40416191661d3eab4d684a201804d053657fab420d"
+      }
+    ],
+    "condfuncs.str_func": [
+      {
+        "file": "crates/policy/src/policy/function/string.rs",
+        "self_ty": "StringFunc",
+        "name": "evaluate_with_resolver",
+        "kind": "method",
+        "start": 34,
+        "end": 73,
+        "sha256": "abbe901ba8dc57bc95bd84ead966d6e82ecef102c0266c83dfbcab140b1f18f3"
+      }
+    ],
+    "condfuncs.str_eval": [
+      {
+        "file": "crates/policy/src/policy/function/string.rs",
+        "self_ty": "FuncKeyValue",
+        "name": "eval",
+        "kind": "method",
+        "start": 77,
+        "end": 135,
+        "sha256": "9ad30b4e10f9ef148b1d82676c4e1223fa710e1d5b799f5cf1a42a1e97f4faae"
+      }
+    ],
+    "condfuncs.str_eval_like": [
+      {
+        "file": "crates/policy/src/policy/function/string.rs",
+        "self_ty": "FuncKeyValue",
+        "name": "eval_like",
+        "kind": "method",
+        "start": 137,
+        "end": 201,
+        "sha256": "2a878e6f88b0ef38a31cef8d876fb9a3f152d06bfd7890d7aaf229b11421017b"
+      }
+    ],
+    "condfuncs.num_func": [
+      {
+        "file": "crates/policy/src/policy/function/number.rs",
+        "self_ty": "NumberFunc",
+        "name": "evaluate",
+        "kind": "method",
+        "start": 29,
+        "end": 46,
+        "sha256": "9baea0c085466962c2457a029de9b1c8fbfe0c7733f4a94c74de83106535e55f"
+      }
+    ],
+    "condfuncs.addr_func": [
+      {
+        "file": "crates/policy/src/policy/function/addr.rs",
+        "self_ty": "AddrFunc",
+        "name": "evaluate",
+        "kind": "method",
+        "start": 23,
+        "end": 41,
+        "sha256": "6e0c4bc21eb493a806b6fa3f5738e1ca42a6dfd77e23d10a4d79cb1ab455d51b"
+      }
+    ],
+    "dates.evaluate": [
+      {
+        "file": "crates/policy/src/policy/function/date.rs",
+        "self_ty": "DateFunc",
+        "name": "evaluate",
+        "kind": "method",
+        "start": 23,
+        "end": 40,
+        "sha256": "5693f7e31dde47ad27d5050ec36e7fed06ebcc40fc8e441dfe775a7f010644ed"
+      }
+    ],
+    "condfuncs.bool_func": [
+      {
+        "file": "crates/policy/src/policy/function/bool_null.rs",
+        "self_ty": "BoolFunc",
+        "name": "evaluate_bool",
+        "kind": "method",
+        "start": 22,
+        "end": 33,
+        "sha256": "aed66f6123797b10021d28232518da3cfcc09332aca004c0dc9c4d9a285d2a04"
+      }
+    ],
+    "condfuncs.null_func": [
+      {
+        "file": "crates/policy/src/policy/function/bool_null.rs",
+        "self_ty": "BoolFunc",
+        "name": "evaluate_null",
+        "kind": "method",
+        "start": 35,
+        "end": 46,
+        "sha256": "0e8f0c8a95dd91f0fbf6590ae6f715c2bacc6fff374555891247dbbdeaf4c092"
+      }
+    ],
+    "keytables.is_server_derived": [
+      {
+        "file": "crates/policy/src/policy/function/key_name.rs",
+        "self_ty": "KeyName",
+        "name": "is_server_derived",
+        "kind": "method",
+        "start": 116,
+        "end": 132,
+        "sha256": "dd74618308cd45f0c323bcf336c417fca5870c014d17abadeb4ccc7619a708a5"
+      }
+    ],
+    "keytables.server_derived_key_names": [
+      {
+        "file": "crates/policy/src/policy/function/key_name.rs",
+        "self_ty": "KeyName",
+        "name": "server_derived_key_names",
+        "kind": "method",
+        "start": 134,
+        "end": 138,
+        "sha256": "37a19b0ff5b1a8ac1dc24e13380e6719cf5f9033fc7bd474644cfcbe50c85018"
+      }
+    ],
+    "keytables.is_server_derived_condition_key": [
+      {
+        "file": "crates/policy/src/policy/function.rs",
+        "self_ty": "",
+        "name": "is_server_derived_condition_key",
+        "kind": "fn",
+        "start": 53,
+        "end": 61,
+        "sha256": "61d9ff3229265628832843e919e406ed85250b489387f04f1d1149f574a4301f"
+      }
+    ],
+    "defaults.kms_allow": [
+      {
+        "file": "crates/policy/src/policy/policy.rs",
+        "self_ty": "",
+        "name": "kms_allow",
+        "kind": "fn",
+        "start": 382,
+        "end": 393,
+        "sha256": "76ce678dde06e93b5600d191b9759b4b8db9de67e47ad95275baf69b77c26961"
+      }
+    ],
+    "defaults.assume_role_allow": [
+      {
+        "file": "crates/policy/src/policy/policy.rs",
+        "self_ty": "",
+        "name": "assume_role_allow",
+        "kind": "fn",
+        "start": 395,
+        "end": 407,
+        "sha256": "266d134208b23c920159f648df4fee1600a99d190d966226dfa3468807f4e543"
+      }
+    ],
+    "defaults.default_policies": [
+      {
+        "file": "crates/policy/src/policy/policy.rs",
+        "self_ty": "",
+        "name": "DEFAULT_POLICIES",
+        "kind": "static",
+        "start": 409,
+        "end": 638,
+        "sha256": "983a53e994feb2ea47e1448edd7216d742cb2b0ca5ed7636ada5f415df792c1a"
+      }
+    ],
+    "condfuncs.key_lookup_name": [
+      {
+        "file": "crates/policy/src/policy/function/key.rs",
+        "self_ty": "Key",
+        "name": "name",
+        "kind": "method",
+        "start": 41,
+        "end": 47,
+        "sha256": "22a88e1fae3a0a0dd5b28d968e24f529803fa38f4203986669a1a55b3a7c9800"
+      }
+    ],
+    "condfuncs.references_key_name": [
+      {
+        "file": "crates/policy/src/policy/function.rs",
+        "self_ty": "Functions",
+        "name": "references_key_name",
+        "kind": "method",
+        "start": 105,
+        "end": 111,
+        "sha256": "2c6c0d4bf5059a11473d669041702f878476a0ee45f17a4beae5ef5c696dc5a0"
+      }
+    ]
+  }
+}

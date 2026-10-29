@@ -1,0 +1,3 @@
+{"revision": "7c42891cd64f144df6197b8801c9cca4f0e0f5a7", "path": "backend/src/migration_safety.rs", "source_sha256": "4ec4dc5f24181f5be193f4021854692e5af7cd6c7759a4545280f774cca601fc", "selected_sha256": "b5c203ef67c0045211cd360ab25fb15291b5b894e57a97aefaead36d4b94ab8d"}
+{"pinned_sql_files": 227, "corpus_sha256": "846af11810dc9d119d5e35809a45c94ed1c35b4b8f16e04f51694d079ebb29b5"}
+PASS 1130555 SQL mask/search comparisons; exact byte positions, nested comments, quote escapes, Unicode comments/literals

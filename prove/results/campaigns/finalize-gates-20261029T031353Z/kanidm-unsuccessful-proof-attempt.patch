@@ -1,0 +1,18 @@
+--- original-canonical.lean
++++ failed-restored-experiment.lean
+@@ -143,12 +143,12 @@
+     · simp only [hg, if_true]
+       simp only [WP.spec_ok, Prod.fst, Prod.snd]
+       omega
+-    · simp only [hg, if_false]
++    · simp -failIfUnchanged only [hg, Bool.false_eq_true, ↓reduceIte]
+       by_cases hd : denied2 = true
+-      · simp only [hd, if_true]
++      · simp -failIfUnchanged only [hd, ↓reduceIte]
+         simp only [WP.spec_ok, Prod.fst, Prod.snd]
+         omega
+-      · simp only [hd, if_false]
++      · simp -failIfUnchanged only [hd, Bool.false_eq_true, ↓reduceIte]
+         step as ⟨amr2, hamr2⟩
+         apply WP.spec_bind (modify_sync_spec amr2 _ hamr2 cp cr (by omega) (by omega))
+         rintro ⟨denied4, cp2, cr2⟩ hsync

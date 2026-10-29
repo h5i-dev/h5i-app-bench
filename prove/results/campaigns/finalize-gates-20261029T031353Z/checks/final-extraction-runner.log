@@ -1,0 +1,4 @@
+artifactkeeper: running h5i app extract --check ports/artifactkeeper
+artifactkeeper: passed; results/project-checks/20261029T033643509171Z/artifactkeeper.log
+kanidm: running h5i app extract --check ports/kanidm
+kanidm: passed; results/project-checks/20261029T033643509171Z/kanidm.log

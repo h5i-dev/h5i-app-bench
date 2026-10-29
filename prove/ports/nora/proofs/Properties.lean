@@ -1,3 +1,19 @@
+import Verified.PermissionImport
+import Verified.NoraProviderCeiling
+import Verified.NoraRuleNarrows
+import Verified.NoraGlobMatch
+import Verified.NoraSegmentGlob
+import Verified.NoraTotal
+import Verified.NoraNoCredentials
+import Verified.NoraWritesNeedWriteRole
+import Verified.NoraLockout
+import Verified.NoraCatalogTokenPages
+import Verified.NoraFailureRecorded
+import Verified.NoraFailuresCleared
+import Verified.NoraStorageKey
+import Verified.NoraDockerName
+import Verified.NoraMiddlewareTotal
+import Verified.NoraRevoke
 import Verified.NoraReference
 import Verified.NoraRevokeAll
 import Verified.NoraReadOnly
@@ -29,7 +45,7 @@ theorem provider_ceiling (p : OidcProvider) (c : Claims) (r : Request) (x : Repl
     (h : transition p c r = ok (.Ok x)) (he : p.namespace_scope_enforcement = .Enforce)
     (hn : r.namespace = some ns) (hu : ¬ Unrestricted p.namespace_scope.val) :
     InScope p.namespace_scope.val ns.val := by
-  sorry
+  apply nora_kernel.Verified.NoraProviderCeiling.provider_ceiling <;> assumption
 
 /-- A rule's scope narrows the provider's: an enforced, namespaced request
 that goes through is also inside the matched rule's scope. -/
@@ -39,7 +55,7 @@ theorem rule_narrows (p : OidcProvider) (c : Claims) (r : Request) (x : Reply) (
     (hn : r.namespace = some ns) (hm : FirstMatch p (subject c) i)
     (hs : (p.role_rules.val[i]).namespace_scope = some sc) (hu : ¬ Unrestricted sc.val) :
     InScope sc.val ns.val := by
-  sorry
+  apply nora_kernel.Verified.NoraRuleNarrows.rule_narrows <;> assumption
 
 /-- In audit mode a namespace mismatch is logged, never denied. -/
 theorem audit_never_denies (p : OidcProvider) (c : Claims) (r : Request)
@@ -60,12 +76,12 @@ and the function fails. Rust slices hold at most `isize::MAX` bytes, so the boun
 only excludes lengths Rust cannot have. -/
 theorem glob_match_spec (pattern v : Slice U8) (hlt : pattern.length < Usize.max) :
     glob_match pattern v = ok (globSpec (nats pattern.val) (nats v.val)) := by
-  sorry
+  apply nora_kernel.Verified.NoraGlobMatch.glob_match_spec <;> assumption
 
 /-- The backtracking segment matcher agrees with the plain recursive glob. -/
 theorem segment_glob_spec (pattern v : Slice U8) :
     segment_glob pattern v = ok (segGlobSpec (nats pattern.val) (nats v.val)) := by
-  sorry
+  apply nora_kernel.Verified.NoraSegmentGlob.segment_glob_spec <;> assumption
 
 /-- The kernel never panics, overflows or loops, for role-rule patterns,
 namespace scopes and a request namespace shorter than `Usize.max` (see `glob_match_spec`: a longer one
@@ -77,7 +93,7 @@ theorem transition_total (p : OidcProvider) (c : Claims) (r : Request)
       ∀ rule ∈ p.role_rules.val, ∀ sc, rule.namespace_scope = some sc → ∀ s ∈ sc.val, s.length < Usize.max)
     (hreq : ∀ ns, r.«namespace» = some ns → ns.length < Usize.max) :
     ∃ y, transition p c r = ok y := by
-  sorry
+  apply nora_kernel.Verified.NoraTotal.transition_total <;> assumption
 
 /-! ## The middleware -/
 
@@ -97,7 +113,7 @@ theorem no_credentials_no_write_role (cfg : middleware.Config) (fs : Slice locko
     (he : cfg.enabled = true) (hn : req.auth_header = none)
     (h : middleware.auth_middleware cfg fs cr jw req = ok (ws, .Next a u r)) :
     r = none ∨ r = some .Read := by
-  sorry
+  apply nora_kernel.Verified.NoraNoCredentials.no_credentials_no_write_role <;> assumption
 
 /-- A write method on a gated path, other than the npm audit endpoints,
 reaches its handler only with a role that can write. -/
@@ -108,7 +124,7 @@ theorem writes_need_write_role (cfg : middleware.Config) (fs : Slice lockout.Fai
     (ho : ¬ IsOpen cfg (nats req.path.val)) (hn : isNpmAudit (nats req.path.val) = false)
     (h : middleware.auth_middleware cfg fs cr jw req = ok (ws, .Next a u r)) :
     r = some .Write ∨ r = some .Admin := by
-  sorry
+  apply nora_kernel.Verified.NoraWritesNeedWriteRole.writes_need_write_role <;> assumption
 
 /-- A locked-out client authenticates only on open paths. -/
 theorem locked_out_only_open (cfg : middleware.Config) (fs : Slice lockout.FailureEntry)
@@ -121,7 +137,7 @@ theorem locked_out_only_open (cfg : middleware.Config) (fs : Slice lockout.Failu
     (hu : nats u.val ≠ lit "anonymous")
     (h : middleware.auth_middleware cfg fs cr jw req = ok (ws, .Next a u r)) :
     IsOpen cfg (nats req.path.val) := by
-  sorry
+  apply nora_kernel.Verified.NoraLockout.locked_out_only_open <;> assumption
 
 /-- `/v2/_catalog` and the token pages are never served without credentials. -/
 theorem catalog_and_token_pages_need_credentials (cfg : middleware.Config)
@@ -131,7 +147,7 @@ theorem catalog_and_token_pages_need_credentials (cfg : middleware.Config)
     (hp : nats req.path.val = lit "/v2/_catalog" ∨ isTokenPage (nats req.path.val))
     (h : middleware.auth_middleware cfg fs cr jw req = ok (ws, o)) (hpass : Passes o) :
     req.auth_header ≠ none := by
-  sorry
+  apply nora_kernel.Verified.NoraCatalogTokenPages.catalog_and_token_pages_need_credentials <;> assumption
 
 /-- A failure is recorded only when the credentials were wrong. -/
 theorem failure_recorded_only_for_bad_credentials (cfg : middleware.Config)
@@ -140,7 +156,7 @@ theorem failure_recorded_only_for_bad_credentials (cfg : middleware.Config)
     (e : lockout.FailureEntry)
     (h : middleware.auth_middleware cfg fs cr jw req = ok (ws, o)) (hw : .PutFailures e ∈ ws.val) :
     o = .Deny .InvalidOrExpiredToken ∨ o = .Deny .InvalidUsernameOrPassword := by
-  sorry
+  apply nora_kernel.Verified.NoraFailureRecorded.failure_recorded_only_for_bad_credentials <;> assumption
 
 /-- The failure count is cleared only when the credentials were right. -/
 theorem failures_cleared_only_for_good_credentials (cfg : middleware.Config)
@@ -149,7 +165,7 @@ theorem failures_cleared_only_for_good_credentials (cfg : middleware.Config)
     (ip : net.IpAddr)
     (h : middleware.auth_middleware cfg fs cr jw req = ok (ws, o)) (hw : .ClearFailures ip ∈ ws.val) :
     Passes o ∨ o = .Deny .ReadOnlyToken ∨ o = .Deny .ReadOnlyOidc ∨ o = .Deny .AdminRequired := by
-  sorry
+  apply nora_kernel.Verified.NoraFailuresCleared.failures_cleared_only_for_good_credentials <;> assumption
 
 /-- An API token is accepted only with the `nra_` prefix and only while a
 cached or stored record for it has not expired. -/
@@ -181,7 +197,7 @@ theorem revoked_token_rejected (store store' : tokens.TokenStore) (cr : oracle.C
     (hs : oracle.Crypto.sha256_hex cr t = ok sha) (hp : p.val <+: sha.val)
     (h : tokens.verify_token store' cr t now mono = ok (ws, res)) :
     ∃ e, res = .Err e := by
-  sorry
+  apply nora_kernel.Verified.NoraRevoke.revoked_token_rejected <;> assumption
 
 /-- Once `revoke_all_for_user` removed a token of a user, no token
 authenticates as that user. -/
@@ -197,12 +213,12 @@ theorem revoke_all_effective (store store' : tokens.TokenStore) (cr : oracle.Cry
 /-- An accepted storage key stays inside its directory. -/
 theorem storage_key_safe (k : Slice U8) (h : validation.validate_storage_key k = ok (.Ok ())) :
     SafeKey (nats k.val) := by
-  sorry
+  apply nora_kernel.Verified.NoraStorageKey.storage_key_safe <;> assumption
 
 /-- An accepted Docker name has the OCI shape. -/
 theorem docker_name_shape (n : Slice U8) (h : validation.validate_docker_name n = ok (.Ok ())) :
     DockerNameShape (nats n.val) := by
-  sorry
+  apply nora_kernel.Verified.NoraDockerName.docker_name_shape <;> assumption
 
 /-- `validate_digest` accepts exactly the `sha256`/`sha512` digests. -/
 theorem digest_iff (d : Slice U8) :
@@ -222,6 +238,38 @@ theorem middleware_total (cfg : middleware.Config) (fs : Slice lockout.FailureEn
     (hf : ∀ e ∈ fs.val, e.failures.val < U32.max)
     (hpat : ∀ p b, cfg.oidc = some (p, b) → ∀ rule ∈ p.role_rules.val, rule.pattern.length < Usize.max) :
     ∃ y, middleware.auth_middleware cfg fs cr jw req = ok y := by
-  sorry
+  apply nora_kernel.Verified.NoraMiddlewareTotal.middleware_total <;> assumption
+
+
+/-- Permission merging retains the strongest input verb. -/
+theorem permission_strongest (a b : permission_import.Verb) :
+    ∃ v, permission_import.stronger a b = ok v ∧
+      Verified.PermissionImport.rank v = max (Verified.PermissionImport.rank a) (Verified.PermissionImport.rank b) := by
+  exact Verified.PermissionImport.stronger_spec a b
+
+/-- Admin import permissions are narrowed to write. -/
+theorem permission_narrow (v : permission_import.Verb) :
+    permission_import.narrow_admin v = ok (Verified.PermissionImport.narrow v) := by
+  exact Verified.PermissionImport.narrow_spec v
+
+/-- Exact token-role proposal for all verbs and write flags. -/
+theorem permission_role (v : permission_import.Verb) (grant : Bool) :
+    permission_import.token_role v grant = ok (Verified.PermissionImport.proposed v grant) := by
+  exact Verified.PermissionImport.token_role_spec v grant
+
+theorem permission_never_admin (v : permission_import.Verb) (grant : Bool) :
+    permission_import.token_role v grant ≠ ok .Admin := by
+  exact Verified.PermissionImport.never_admin v grant
+
+theorem permission_write_opt_in (v : permission_import.Verb) :
+    permission_import.token_role v false = ok .Read := by
+  exact Verified.PermissionImport.no_write_without_opt_in v
+
+/-- Every token in a complete permission-import report obeys least privilege. -/
+theorem permission_report_safe (principals : Slice permission_import.Principal) (grant : Bool)
+    (out : permission_import.Report)
+    (h : permission_import.map_to_proposal principals grant = ok out) :
+    ∀ t ∈ out.proposed_tokens.val, t.role ≠ .Admin ∧ (grant = false → t.role = .Read) := by
+  exact Verified.PermissionImport.report_safe principals grant out h
 
 end nora_kernel.Properties

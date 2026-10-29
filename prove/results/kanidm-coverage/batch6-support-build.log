@@ -1,0 +1,35 @@
+⚠ [146/276] Replayed Aeneas.Std.WP
+warning: Aeneas/Std/WP.lean:756:4: 'simp -failIfUnchanged only' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Aeneas/Std/WP.lean:761:4: 'simp -failIfUnchanged only' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Aeneas/Std/WP.lean:896:11: 'cases i' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Aeneas/Std/WP.lean:896:23: 'simp' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Aeneas/Std/WP.lean:927:19: 'simp at hspec' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+⚠ [1264/1400] Replayed Aeneas.Std.Core.Core
+warning: Aeneas/Std/Core/Core.lean:38:4: The namespace 'core' is duplicated in the declaration 'Aeneas.Std.core.core.clone.CloneGlobal'
+
+Note: This linter can be disabled with `set_option linter.dupNamespace false`
+warning: Aeneas/Std/Core/Core.lean:59:4: The namespace 'core' is duplicated in the declaration 'Aeneas.Std.core.core.clone.CloneBox'
+
+Note: This linter can be disabled with `set_option linter.dupNamespace false`
+warning: Aeneas/Std/Core/Core.lean:68:4: The namespace 'core' is duplicated in the declaration 'Aeneas.Std.core.core.marker.CopyBool'
+
+Note: This linter can be disabled with `set_option linter.dupNamespace false`
+✔ [1731/1732] Built Spec (8.0s)
+ℹ [1732/1732] Built Verified.EffectivePermissionSupport (60s)
+info: Verified/EffectivePermissionSupport.lean:15:0: h5i_derive_all: no eq spec for kanidm_kernel.account_policy.Resolved; derive it by hand
+info: Verified/EffectivePermissionSupport.lean:15:0: h5i_derive_all: no eq spec for kanidm_kernel.softlock.Policy; derive it by hand
+info: Verified/EffectivePermissionSupport.lean:15:0: h5i_derive_all: no eq spec for kanidm_kernel.credential_commit.Decision; derive it by hand
+info: Verified/EffectivePermissionSupport.lean:15:0: h5i_derive_all: no eq spec for kanidm_kernel.softlock.State; derive it by hand
+info: Verified/EffectivePermissionSupport.lean:15:0: h5i_derive_all: no eq spec for kanidm_kernel.account_policy.Policy; derive it by hand
+info: Verified/EffectivePermissionSupport.lean:15:0: h5i_derive_all: no eq spec for kanidm_kernel.softlock.SoftLock; derive it by hand
+Build completed successfully (1732 jobs).
