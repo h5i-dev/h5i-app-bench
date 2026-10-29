@@ -5,6 +5,14 @@ The original `transition_total` statement quantifies over every `Snapshot` and
 The following capacity obstruction is a mathematical construction, not a
 completed machine-checked counterexample or an executable allocation test.
 
+## Scope of the existing bounded theorem
+
+The current `Properties.transition_total` already requires
+`(s.relations.length + 1)^4 < Usize.max`. The totality follow-up preserves
+that statement. The construction below concerns the original unconditional
+claim; it does not refute the bounded theorem. See
+[totality proof status and evidence](TOTALITY_COMPLETION.md).
+
 ## Exact path
 
 - `ports/tuwunel/kernel/src/api_relations.rs:136`: the walk loop bounds the
@@ -48,7 +56,8 @@ proof needs this obstruction resolved. This input is far too large to
 allocate as a practical Rust test; that does not remove it from the Lean
 statement's quantification.
 
-No theorem statement, Rust implementation, generated code, or library was
-changed. Potential remedies (requiring separate authorization) include a
-bounded-size precondition or a queue representation which discards processed
-continuations. A proof of the exact full counterexample remains future work.
+The obstruction analysis itself changed no theorem statement or implementation.
+The existing bounded theorem now has a completed proof, retaining its quartic
+precondition; see the completion evidence linked above. An unconditional
+theorem would still need a different capacity argument or queue representation.
+A proof of the exact full counterexample remains future work.

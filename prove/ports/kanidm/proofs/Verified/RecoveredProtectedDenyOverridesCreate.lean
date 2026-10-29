@@ -1,3 +1,4 @@
+import Verified.MigrationEntryAttrsBound
 import Spec
 import H5iAppLib
 open Aeneas Aeneas.Std Result kanidm_kernel kanidm_kernel.Spec
@@ -25,7 +26,6 @@ namespace kanidm_kernel.Verified.RecoveredProtectedDenyOverridesCreate
     entry_impl.get_ava_as_iutf8 e a ⦃ _ => True ⦄ := by
   unfold entry_impl.get_ava_as_iutf8
   step*
-  cases vs <;> simp [valueset.as_iutf8_set]
 
 @[step] theorem contains_total (a : Slice (alloc.vec.Vec U8)) (b : Slice U8) :
     bset.contains a b ⦃ _ => True ⦄ := by
@@ -96,16 +96,7 @@ theorem starts_at_empty (hay needle : Slice U8) (offset : Usize)
   · simp
   · by_cases hn : needle.val.length = 0
     · step*
-      unfold valueset.str_contains_loop
-      rw [loop]
-      simp [valueset.str_contains_loop.body, starts_at_empty hay needle 0#usize hn]
     · step*
-      unfold valueset.str_contains_loop
-      apply loop_idx_spec _ (fun i => i) (last.val + 1) (fun _ => True) _ ?_
-        _ trivial (by simp)
-      intro i _ hi
-      unfold valueset.str_contains_loop.body
-      h5i_steps <;> scalar_tac
 
 @[step] theorem any_contains_total (set : Slice (alloc.vec.Vec U8)) (s : Slice U8) :
     valueset.any_contains set s ⦃ _ => True ⦄ := by
@@ -314,38 +305,7 @@ set_option maxRecDepth 8192 in
 @[step] theorem migration_attrs_bound (classes : Slice (alloc.vec.Vec U8)) :
     migration.migration_entry_attrs classes ⦃ r =>
       r.1.val.length ≤ 64 ∧ r.2.val.length ≤ 64 ⦄ := by
-  have hmax := usize_max_ge
-  unfold migration.migration_entry_attrs
-  -- Merge each optional class branch with a length bound, keeping later
-  -- insertions below the vector capacity without enumerating combinations.
-  step*
-  apply WP.spec_bind (Pₘ := fun r : alloc.vec.Vec (alloc.vec.Vec U8) => r.val.length ≤ 6)
-  · h5i_steps <;> scalar_tac
-  · intro attrs2 h2
-    step*
-    apply WP.spec_bind (Pₘ := fun r : alloc.vec.Vec (alloc.vec.Vec U8) ×
-        alloc.vec.Vec (alloc.vec.Vec U8) => r.1.val.length ≤ 11 ∧ r.2.val.length ≤ 3)
-    · h5i_steps <;> scalar_tac
-    · rintro ⟨attrs3, cls3⟩ ⟨h3, hc3⟩
-      step*
-      apply WP.spec_bind (Pₘ := fun r : alloc.vec.Vec (alloc.vec.Vec U8) ×
-          alloc.vec.Vec (alloc.vec.Vec U8) => r.1.val.length ≤ 19 ∧ r.2.val.length ≤ 3)
-      · h5i_steps
-        all_goals (simp only [Prod.fst, Prod.snd, alloc.vec.Vec.new, alloc.vec.Vec.from_val,
-          List.length_nil] at *; omega)
-      · rintro ⟨attrs4, cls4⟩ ⟨h4, hc4⟩
-        step*
-        apply WP.spec_bind (Pₘ := fun r : alloc.vec.Vec (alloc.vec.Vec U8) ×
-            alloc.vec.Vec (alloc.vec.Vec U8) => r.1.val.length ≤ 25 ∧ r.2.val.length ≤ 3)
-        · h5i_steps <;> scalar_tac
-        · rintro ⟨attrs5, cls5⟩ ⟨h5, hc5⟩
-          step*
-          apply WP.spec_bind (Pₘ := fun r : alloc.vec.Vec (alloc.vec.Vec U8) => r.val.length ≤ 33)
-          · h5i_steps <;> scalar_tac
-          · intro attrs6 h6
-            h5i_steps
-            all_goals (simp only [Prod.fst, Prod.snd, alloc.vec.Vec.new, alloc.vec.Vec.from_val,
-              List.length_nil] at *; omega)
+  exact kanidm_kernel.Verified.MigrationEntryAttrsBound.migration_attrs_bound classes
 
 @[step] theorem extend_empty_total (xs : Slice (alloc.vec.Vec U8)) :
     bset.extend (alloc.vec.Vec.new (alloc.vec.Vec U8)) xs ⦃ _ => True ⦄ := by

@@ -1,3 +1,4 @@
+import Verified.DerivedInstances
 import Spec
 import H5iAppLib
 open Aeneas Aeneas.Std Result kanidm_kernel kanidm_kernel.Spec
@@ -12,7 +13,6 @@ set_option linter.unusedTactic false
 set_option linter.unusedSimpArgs false
 set_option linter.unreachableTactic false
 
-h5i_derive_all
 
 @[simp, step_pre_simps, step_post_simps, scalar_tac_simps]
 theorem deref_val {α : Type} (v : alloc.vec.Vec α) : v.deref.val = v.val := by

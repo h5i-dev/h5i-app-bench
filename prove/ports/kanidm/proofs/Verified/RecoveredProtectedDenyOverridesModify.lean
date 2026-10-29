@@ -1,3 +1,4 @@
+import Verified.MigrationEntryAttrsBound
 import Spec
 import H5iAppLib
 open Aeneas Aeneas.Std Result kanidm_kernel kanidm_kernel.Spec
@@ -9,8 +10,6 @@ namespace kanidm_kernel.Verified.RecoveredProtectedDenyOverridesModify
     bset.bytes_eq a b ⦃ _ => True ⦄ := by
   unfold bset.bytes_eq
   step*
-  unfold bset.bytes_eq_loop
-  h5i_total (fun i => i) a.val.length
 
 @[step] theorem get_ava_set_total (e : Entry) (attr : Slice U8) :
     entry_impl.get_ava_set e attr ⦃ _ => True ⦄ := by
@@ -101,35 +100,8 @@ set_option maxHeartbeats 0 in
 set_option maxRecDepth 4096 in
 @[step] theorem migration_entry_attrs_total (classes : Slice (alloc.vec.Vec U8)) :
     migration.migration_entry_attrs classes ⦃ _ => True ⦄ := by
-  have hmax := usize_max_ge
-  unfold migration.migration_entry_attrs migration.ins
-  step*
-  -- Summarize each conditional before checking the rest of the function.
-  apply WP.spec_bind (Pₘ := fun out => out.val.length ≤ 6)
-  · split <;> step*
-  intro attrs hattrs
-  step*
-  apply WP.spec_bind (Pₘ := fun out => out.1.val.length ≤ 11 ∧ out.2.val.length ≤ 3)
-  · split <;> step*
-  rintro ⟨attrs, cls⟩ ⟨hattrs, hcls⟩
-  dsimp only at hattrs hcls
-  step*
-  apply WP.spec_bind (Pₘ := fun out => out.1.val.length ≤ 19 ∧ out.2.val.length ≤ 3)
-  · split <;> step*
-    simp only [vec_new_val, List.length_nil] at *
-    constructor <;> omega
-  rintro ⟨attrs, cls⟩ ⟨hattrs, hcls⟩
-  dsimp only at hattrs hcls
-  step*
-  apply WP.spec_bind (Pₘ := fun out => out.1.val.length ≤ 25 ∧ out.2.val.length ≤ 3)
-  · split <;> step*
-  rintro ⟨attrs, cls⟩ ⟨hattrs, hcls⟩
-  dsimp only at hattrs hcls
-  step*
-  apply WP.spec_bind (Pₘ := fun out => out.val.length ≤ 33)
-  · split <;> step*
-  intro attrs hattrs
-  h5i_steps
+  apply WP.spec_mono (kanidm_kernel.Verified.MigrationEntryAttrsBound.migration_attrs_bound classes)
+  simp [WP.qimp, WP.imp]
 
 @[step] theorem modify_migration_attrs_total (ident : Identity) (entry : Entry) :
     modify_acc.modify_migration_attrs ident entry ⦃ _ => True ⦄ := by

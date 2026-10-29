@@ -17,18 +17,7 @@ set_option maxHeartbeats 1000000
 /- You can set the `maxRecDepth` value with the `-max-recdepth` CLI option -/
 set_option maxRecDepth 2048
 
-/- You can remove the following line by using the CLI option `-all-computable`: -/
-noncomputable section
-
 namespace tuwunel_kernel
-
-/-- [alloc::vec::{alloc::vec::Vec<T>}::is_empty]:
-    Source: '/rustc/library/alloc/src/vec/mod.rs', lines 3160:4-3160:40
-    Name pattern: [alloc::vec::{alloc::vec::Vec<@T>}::is_empty]
-    Visibility: public -/
-@[rust_fun "alloc::vec::{alloc::vec::Vec<@T>}::is_empty"]
-axiom alloc.vec.Vec.is_empty
-  {T : Type} (A : Type) : alloc.vec.Vec T → Result Bool
 
 /-- [tuwunel_kernel::api_context::LIMIT_MAX]
     Source: 'prove/ports/tuwunel/kernel/src/api_context.rs', lines 5:0-5:31
@@ -9171,10 +9160,11 @@ def proxy_policy.for_host
     match inc with
     | none =>
       match exc with
-      | none => alloc.vec.Vec.is_empty Global rule.include
+      | none => let i := alloc.vec.Vec.len rule.include
+                ok (i = 0#usize)
       | some b =>
-        let b1 ← alloc.vec.Vec.is_empty Global rule.include
-        if b1
+        let i := alloc.vec.Vec.len rule.include
+        if i = 0#usize
         then
           let d ←
             alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice

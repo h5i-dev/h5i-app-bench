@@ -48,8 +48,8 @@ pub fn for_host(rule:&Rule,host:Option<&[u8]>)->bool {
     match (inc,exc){
         (Some(a),Some(b))=>more_specific(&rule.include[a],&rule.exclude[b]),
         (Some(_),None)=>true,
-        (None,Some(b)) if rule.include.is_empty()=>more_specific(&Domain::WildCard,&rule.exclude[b]),
-        (None,None)=>rule.include.is_empty(),
+        (None,Some(b)) if (rule.include.len()==0)=>more_specific(&Domain::WildCard,&rule.exclude[b]),
+        (None,None)=>(rule.include.len()==0),
         _=>false,
     }
 }

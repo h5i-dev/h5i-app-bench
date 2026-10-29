@@ -1,7 +1,28 @@
 # Standard h5i-app project. Keep every selected theorem in the final gate.
 [extract]
 crate = "kernel"
-start-from = ["access", "softlock", "schema_tags", "credential_commit", "account_policy"]
+# Extract every public function in these modules; derived formatting/equality
+# implementations are outside the verification roots and need no opaque stubs.
+start-from = [
+  "access",
+  "softlock::after",
+  "softlock::same_time",
+  "softlock::plus_seconds",
+  "softlock::failure_next_state",
+  "softlock::new",
+  "softlock::apply_time_step",
+  "softlock::is_valid",
+  "softlock::record_failure",
+  "schema_tags::partial_accepts",
+  "schema_tags::value_accepts",
+  "schema_tags::ava_accepts",
+  "credential_commit::can_commit",
+  "account_policy::initial",
+  "account_policy::option_max",
+  "account_policy::combine",
+  "account_policy::finalize",
+  "account_policy::fold_from",
+]
 
 [check]
 theorems = [

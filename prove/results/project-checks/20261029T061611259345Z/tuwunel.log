@@ -1,0 +1,359 @@
+
+[earlier output omitted]
+`
+warning: Verified/TuwunelJoinedMembersNeedJoin.lean:204:21: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+✔ [1736/1758] Built Verified.TuwunelRoomEventVisible (24s)
+⚠ [1737/1758] Built Verified.TuwunelServerSeesJoined (28s)
+warning: Verified/TuwunelServerSeesJoined.lean:341:55: This simp argument is unused:
+  vec_new_val
+
+Hint: Omit it from the simp argument list.
+  simp [inv,̵ ̵v̵e̵c̵_̵n̵e̵w̵_̵v̵a̵l̵]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/TuwunelServerSeesJoined.lean:345:23: This simp argument is unused:
+  Prod.fst
+
+Hint: Omit it from the simp argument list.
+  simp only [̵P̵r̵o̵d̵.̵f̵s̵t̵,̵ ̵P̵r̵o̵d̵.̵s̵n̵d̵]̵[̲P̲r̲o̲d̲.̲s̲n̲d̲]̲ at *
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/TuwunelServerSeesJoined.lean:345:33: This simp argument is unused:
+  Prod.snd
+
+Hint: Omit it from the simp argument list.
+  simp only [Prod.fst,̵ ̵P̵r̵o̵d̵.̵s̵n̵d̵] at *
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/TuwunelServerSeesJoined.lean:346:48: This simp argument is unused:
+  bind_tc_ok
+
+Hint: Omit it from the simp argument list.
+  simp only [alloc.vec.Vec.push, b̵i̵n̵d̵_̵t̵c̵_̵o̵k̵,̵ ̵bind_ok] at hout1
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/TuwunelServerSeesJoined.lean:346:60: This simp argument is unused:
+  bind_ok
+
+Hint: Omit it from the simp argument list.
+  simp only [alloc.vec.Vec.push, bind_tc_ok,̵ ̵b̵i̵n̵d̵_̵o̵k̵] at hout1
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/TuwunelServerSeesJoined.lean:350:2: 'all_goals try h5i_arith' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/TuwunelServerSeesJoined.lean:390:84: 'subst_vars' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+✔ [1738/1758] Built Verified.TuwunelMessagesOrdered (28s)
+⚠ [1739/1758] Built Verified.TuwunelContextVisible (29s)
+warning: Verified/TuwunelContextVisible.lean:613:5: Variable name `hk` is not explicitly referenced.
+
+The binding can be removed (if unused) or named `_` (if used implicitly).
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+✔ [1740/1758] Built Verified.TuwunelMessagesVisible (31s)
+⚠ [1741/1758] Built Verified.TuwunelContextAgreesWithMessages (31s)
+warning: Verified/TuwunelContextAgreesWithMessages.lean:614:5: Variable name `hk` is not explicitly referenced.
+
+The binding can be removed (if unused) or named `_` (if used implicitly).
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Verified/TuwunelContextAgreesWithMessages.lean:690:13: This simp argument is unused:
+  Prod.fst
+
+Hint: Omit it from the simp argument list.
+  simp only [̵P̵r̵o̵d̵.̵f̵s̵t̵,̵ ̵P̵r̵o̵d̵.̵s̵n̵d̵]̵[̲P̲r̲o̲d̲.̲s̲n̲d̲]̲ at hd hc ⊢
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/TuwunelContextAgreesWithMessages.lean:690:23: This simp argument is unused:
+  Prod.snd
+
+Hint: Omit it from the simp argument list.
+  simp only [Prod.fst,̵ ̵P̵r̵o̵d̵.̵s̵n̵d̵] at hd hc ⊢
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/TuwunelContextAgreesWithMessages.lean:697:34: This simp argument is unused:
+  hc_2
+
+Hint: Omit it from the simp argument list.
+  simp only [hc_1, if_pos, hi3, hc̵_̵2̵,̵ ̵h̵p, hp1, hb1, hevents1, hi4, bind_tc_ok] at hc
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/TuwunelContextAgreesWithMessages.lean:697:44: This simp argument is unused:
+  hp1
+
+Hint: Omit it from the simp argument list.
+  simp only [hc_1, if_pos, hi3, hc_2, hp, hp̵1̵,̵ ̵h̵b1, hevents1, hi4, bind_tc_ok] at hc
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/TuwunelContextAgreesWithMessages.lean:697:49: This simp argument is unused:
+  hb1
+
+Hint: Omit it from the simp argument list.
+  simp only [hc_1, if_pos, hi3, hc_2, hp, hp1, hb̵1̵,̵ ̵h̵events1, hi4, bind_tc_ok] at hc
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/TuwunelContextAgreesWithMessages.lean:697:54: This simp argument is unused:
+  hevents1
+
+Hint: Omit it from the simp argument list.
+  simp only [hc_1, if_pos, hi3, hc_2, hp, hp1, hb1, he̵v̵e̵n̵t̵s̵1̵,̵ ̵h̵i4, bind_tc_ok] at hc
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/TuwunelContextAgreesWithMessages.lean:697:69: This simp argument is unused:
+  bind_tc_ok
+
+Hint: Omit it from the simp argument list.
+  simp only [hc_1, if_pos, hi3, hc_2, hp, hp1, hb1, hevents1, hi4,̵ ̵b̵i̵n̵d̵_̵t̵c̵_̵o̵k̵] at hc
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/TuwunelContextAgreesWithMessages.lean:698:38: This simp argument is unused:
+  hp
+
+Hint: Omit it from the simp argument list.
+  simp only [bind_ok, hc_2, if_pos, hp,̵ ̵h̵p̵1, hb1, hevents1, hi4] at hc
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/TuwunelContextAgreesWithMessages.lean:698:62: This simp argument is unused:
+  hi4
+
+Hint: Omit it from the simp argument list.
+  simp only [bind_ok, hc_2, if_pos, hp, hp1, hb1, hevents1,̵ ̵h̵i̵4̵] at hc
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/TuwunelContextAgreesWithMessages.lean:705:34: This simp argument is unused:
+  hc_2
+
+Hint: Omit it from the simp argument list.
+  simp only [hc_1, if_pos, hi3, h̵c̵_̵2̵,̵ ̵if_neg, bind_tc_ok, ok.injEq] at hc
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/TuwunelContextAgreesWithMessages.lean:705:40: This simp argument is unused:
+  if_neg
+
+Hint: Omit it from the simp argument list.
+  simp only [hc_1, if_pos, hi3, hc_2, i̵f̵_̵n̵e̵g̵,̵ ̵bind_tc_ok, ok.injEq] at hc
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/TuwunelContextAgreesWithMessages.lean:705:48: This simp argument is unused:
+  bind_tc_ok
+
+Hint: Omit it from the simp argument list.
+  simp only [hc_1, if_pos, hi3, hc_2, if_neg, b̵i̵n̵d̵_̵t̵c̵_̵o̵k̵,̵ ̵ok.injEq] at hc
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/TuwunelContextAgreesWithMessages.lean:705:60: This simp argument is unused:
+  ok.injEq
+
+Hint: Omit it from the simp argument list.
+  simp only [hc_1, if_pos, hi3, hc_2, if_neg, bind_tc_ok,̵ ̵o̵k̵.̵i̵n̵j̵E̵q̵] at hc
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/TuwunelContextAgreesWithMessages.lean:707:21: This simp argument is unused:
+  if_neg
+
+Hint: Omit it from the simp argument list.
+  simp only [hc_1, i̵f̵_̵n̵e̵g̵,̵ ̵bind_tc_ok, ok.injEq] at hc
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/TuwunelContextAgreesWithMessages.lean:707:29: This simp argument is unused:
+  bind_tc_ok
+
+Hint: Omit it from the simp argument list.
+  simp only [hc_1, if_neg, b̵i̵n̵d̵_̵t̵c̵_̵o̵k̵,̵ ̵ok.injEq] at hc
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/TuwunelContextAgreesWithMessages.lean:707:41: This simp argument is unused:
+  ok.injEq
+
+Hint: Omit it from the simp argument list.
+  simp only [hc_1, if_neg, bind_tc_ok,̵ ̵o̵k̵.̵i̵n̵j̵E̵q̵] at hc
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/TuwunelContextAgreesWithMessages.lean:735:37: This simp argument is unused:
+  Bool.true_eq
+
+Hint: Omit it from the simp argument list.
+  simp only [hex, bind_ok, B̵o̵o̵l̵.̵t̵r̵u̵e̵_̵e̵q̵,̵ ̵if_true, if_false, hb, ht, hit, hshort] at h
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/TuwunelContextAgreesWithMessages.lean:735:60: This simp argument is unused:
+  if_false
+
+Hint: Omit it from the simp argument list.
+  simp only [hex, bind_ok, Bool.true_eq, if_true, i̵f̵_̵f̵a̵l̵s̵e̵,̵ ̵hb, ht, hit, hshort] at h
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/TuwunelContextAgreesWithMessages.lean:735:78: This simp argument is unused:
+  hit
+
+Hint: Omit it from the simp argument list.
+  simp only [hex, bind_ok, Bool.true_eq, if_true, if_false, hb, ht, hi̵t̵,̵ ̵h̵short] at h
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/TuwunelContextAgreesWithMessages.lean:745:15: This simp argument is unused:
+  Prod.fst
+
+Hint: Omit it from the simp argument list.
+  simp only [̵P̵r̵o̵d̵.̵f̵s̵t̵]̵ ̵at he
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/TuwunelContextAgreesWithMessages.lean:782:5: Variable name `hk` is not explicitly referenced.
+
+The binding can be removed (if unused) or named `_` (if used implicitly).
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+⚠ [1742/1758] Built Verified.TuwunelThreadsVisible (31s)
+warning: Verified/TuwunelThreadsVisible.lean:747:8: 'exact thread_loop1_ok s u room limit1 v _ _ (s1, threads) hx_1 hgood (by simp [ThreadInv])' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/TuwunelThreadsVisible.lean:747:8: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+⚠ [1743/1758] Built Verified.TuwunelMessagesAfterLeaving (32s)
+warning: Verified/TuwunelMessagesAfterLeaving.lean:628:54: Variable name `hq` is not explicitly referenced.
+
+The binding can be removed (if unused) or named `_` (if used implicitly).
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+⚠ [1744/1758] Built Verified.TuwunelContextMatchesSpec (34s)
+warning: Verified/TuwunelContextMatchesSpec.lean:613:5: Variable name `hk` is not explicitly referenced.
+
+The binding can be removed (if unused) or named `_` (if used implicitly).
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+⚠ [1745/1758] Built Verified.TuwunelWorldReadableServed (35s)
+warning: Verified/TuwunelWorldReadableServed.lean:393:2: 'all_goals try have hv := load_state_valid s h _ hr' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/TuwunelWorldReadableServed.lean:423:2: 'all_goals try have hv := state_get_valid s h .HistoryVisibility 0#u64 _ hr' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/TuwunelWorldReadableServed.lean:424:2: 'all_goals step*' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/TuwunelWorldReadableServed.lean:423:12: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: Verified/TuwunelWorldReadableServed.lean:424:12: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: Verified/TuwunelWorldReadableServed.lean:453:36: This simp argument is unused:
+  hpk
+
+Hint: Omit it from the simp argument list.
+  simp only [h̵p̵k̵,̵ ̵bind_tc_ok, bind_ok, Bool.false_eq_true, ite_false, ite_true]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/TuwunelWorldReadableServed.lean:453:41: This simp argument is unused:
+  bind_tc_ok
+
+Hint: Omit it from the simp argument list.
+  simp only [hpk, bind_t̵c̵_̵ok, b̵i̵n̵d̵_̵o̵k̵,̵ ̵Bool.false_eq_true, ite_false, ite_true]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/TuwunelWorldReadableServed.lean:453:62: This simp argument is unused:
+  Bool.false_eq_true
+
+Hint: Omit it from the simp argument list.
+  simp only [hpk, bind_tc_ok, bind_ok, B̵o̵o̵l̵.̵f̵a̵l̵s̵e̵_̵e̵q̵_̵t̵r̵u̵e̵,̵ ̵ite_false, ite_true]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/TuwunelWorldReadableServed.lean:453:82: This simp argument is unused:
+  ite_false
+
+Hint: Omit it from the simp argument list.
+  simp only [hpk, bind_tc_ok, bind_ok, Bool.false_eq_true, ite_f̵a̵l̵s̵e̵,̵ ̵i̵te̵_̵t̵rue]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/TuwunelWorldReadableServed.lean:453:93: This simp argument is unused:
+  ite_true
+
+Hint: Omit it from the simp argument list.
+  simp only [hpk, bind_tc_ok, bind_ok, Bool.false_eq_true, ite_false,̵ ̵i̵t̵e̵_̵t̵r̵u̵e̵]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/TuwunelWorldReadableServed.lean:455:44: This simp argument is unused:
+  hpk
+
+Hint: Omit it from the simp argument list.
+  simp_all [Ignored, messageLike, h̵p̵k̵,̵ ̵u64_val_eq]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+✔ [1746/1758] Built Verified.TuwunelTotalityTimeline (27s)
+⚠ [1747/1758] Built Verified.TuwunelRelationsVisible (47s)
+warning: Verified/TuwunelRelationsVisible.lean:917:8: This simp argument is unused:
+  List.mem_append
+
+Hint: Omit it from the simp argument list.
+  simp [̵L̵i̵s̵t̵.̵m̵e̵m̵_̵a̵p̵p̵e̵n̵d̵,̵ ̵L̵i̵s̵t̵.̵m̵e̵m̵_̵s̵i̵n̵g̵l̵e̵t̵o̵n̵]̵[̲L̲i̲s̲t̲.̲m̲e̲m̲_̲s̲i̲n̲g̲l̲e̲t̲o̲n̲]̲ at hw
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/TuwunelRelationsVisible.lean:917:25: This simp argument is unused:
+  List.mem_singleton
+
+Hint: Omit it from the simp argument list.
+  simp [List.mem_append,̵ ̵L̵i̵s̵t̵.̵m̵e̵m̵_̵s̵i̵n̵g̵l̵e̵t̵o̵n̵] at hw
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+⚠ [1748/1758] Built Verified.TuwunelInitialSyncVisible (88s)
+warning: Verified/TuwunelInitialSyncVisible.lean:802:5: Variable name `hk` is not explicitly referenced.
+
+The binding can be removed (if unused) or named `_` (if used implicitly).
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+⚠ [1749/1758] Built Verified.TuwunelInitialSyncDeparture (97s)
+warning: Verified/TuwunelInitialSyncDeparture.lean:802:5: Variable name `hk` is not explicitly referenced.
+
+The binding can be removed (if unused) or named `_` (if used implicitly).
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Verified/TuwunelInitialSyncDeparture.lean:1001:10: This simp argument is unused:
+  absIdx
+
+Hint: Omit it from the simp argument list.
+  simp [a̵b̵s̵I̵d̵x̵,̵ ̵hpidx] at hlookup
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/TuwunelInitialSyncDeparture.lean:1017:17: This simp argument is unused:
+  Prod.fst
+
+Hint: Omit it from the simp argument list.
+  simp only [̵P̵r̵o̵d̵.̵f̵s̵t̵]̵ ̵at henddep
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+✔ [1750/1758] Built Verified.TuwunelTotalityVisibility (181s)
+✔ [1751/1758] Built Verified.TuwunelTotalityMessages (163s)
+✔ [1752/1758] Built Verified.TuwunelTotalityWalker (44s)
+✔ [1753/1758] Built Verified.TuwunelTotalityRoutes (63s)
+✔ [1754/1758] Built Verified.TuwunelTotalityComposition (18s)
+✔ [1755/1758] Built Verified.TuwunelInitialSyncTotal (499s)
+✔ [1756/1758] Built Verified.TuwunelTransitionTotal (87s)
+⚠ [1757/1758] Built Properties (8.3s)
+warning: Properties.lean:130:75: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+Build completed successfully (1758 jobs).
+
+note: solutions.tuwunel-context-agrees-with-messages.Solution is not built by `lake build`, so its theorems are not gated
+note: solutions.tuwunel-context-base-served-by-event.Solution is not built by `lake build`, so its theorems are not gated
+note: solutions.tuwunel-context-matches-spec.Solution is not built by `lake build`, so its theorems are not gated
+note: solutions.tuwunel-context-visible.Solution is not built by `lake build`, so its theorems are not gated
+note: solutions.tuwunel-initial-sync-departure.Solution is not built by `lake build`, so its theorems are not gated
+note: solutions.tuwunel-initial-sync-stops-at-departure.Solution is not built by `lake build`, so its theorems are not gated
+note: solutions.tuwunel-initial-sync-visible.Solution is not built by `lake build`, so its theorems are not gated
+note: solutions.tuwunel-joined-members-need-join.Solution is not built by `lake build`, so its theorems are not gated
+note: solutions.tuwunel-messages-after-leaving.Solution is not built by `lake build`, so its theorems are not gated
+note: solutions.tuwunel-messages-nothing-after-leaving.Solution is not built by `lake build`, so its theorems are not gated
+note: solutions.tuwunel-relations-visible.Solution is not built by `lake build`, so its theorems are not gated
+note: solutions.tuwunel-room-event-visible.Solution is not built by `lake build`, so its theorems are not gated
+note: solutions.tuwunel-server-sees-joined.Solution is not built by `lake build`, so its theorems are not gated
+note: solutions.tuwunel-threads-visible.Solution is not built by `lake build`, so its theorems are not gated
+note: solutions.tuwunel-world-readable-served.Solution is not built by `lake build`, so its theorems are not gated
+$ lake env lean /home/ht2673/Dev/h5i-app-bench/prove/ports/tuwunel/proofs/.lake/h5i/Gate.lean
+gate: 1614 theorems in 27 modules checked against propext, Classical.choice, Quot.sound
+
+ports/tuwunel: proofs ok

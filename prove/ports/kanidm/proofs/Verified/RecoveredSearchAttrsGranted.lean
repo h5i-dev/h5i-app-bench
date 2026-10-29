@@ -1,10 +1,10 @@
+import Verified.DerivedInstances
 import Spec
 import H5iAppLib
 open Aeneas Aeneas.Std Result kanidm_kernel kanidm_kernel.Spec
 open H5iAppLib hiding lit
 open Aeneas.Std.WP
 
-h5i_derive_all
 
 namespace kanidm_kernel.Verified.RecoveredSearchAttrsGranted
 

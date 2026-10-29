@@ -14,6 +14,7 @@ import Verified.TuwunelContextBaseServedByEvent
 import Verified.TuwunelRoomEventVisible
 import Verified.TuwunelStateReadsNeedMembership
 import Verified.TuwunelJoinedMembersNeedJoin
+import Verified.TuwunelTransitionTotal
 import Spec
 open Aeneas Aeneas.Std Result tuwunel_kernel tuwunel_kernel.Spec
 open H5iAppLib hiding lit
@@ -186,6 +187,6 @@ last level adds its continuation and a child stream over up to `n` relations,
 so the queue holds at most `1 + 2 (n + n^2 + n^3) + n^4 ≤ (n + 1)^4` entries. -/
 theorem transition_total (s : Snapshot) (req : Request) (hr : (s.relations.length + 1) ^ 4 < Usize.max) :
     ∃ r, transition s req = ok r := by
-  sorry
+  exact tuwunel_kernel.Verified.TuwunelTransitionTotal.transition_total s req hr
 
 end tuwunel_kernel.Properties

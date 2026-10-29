@@ -1,34 +1,12 @@
-import Verified.MigrationBounds
+import Verified.EffectivePermissionModifyBounds
 open Aeneas Aeneas.Std Result kanidm_kernel kanidm_kernel.Spec
 open H5iAppLib hiding lit
 open Aeneas.Std.WP
 namespace kanidm_kernel.Verified.RecoveredEffectivePermissionCheckTotal
+set_option allowUnsafeReducibility true
+attribute [local reducible] Aeneas.Std.WP.Post
 set_option maxHeartbeats 2000000
 set_option maxRecDepth 4096
-@[step] theorem migration_migration_entry_attrs_total
-  (classes : Slice (alloc.vec.Vec Std.U8))  :
-  migration.migration_entry_attrs classes ⦃ r => r.1.val.length ≤ 73 ∧ r.2.val.length ≤ 73 ⦄ := by
-  unfold migration.migration_entry_attrs
-  total_steps
-
-@[step] theorem modify_acc_modify_migration_attrs_total
-  (ident : Identity) (entry : Entry)  :
-  modify_acc.modify_migration_attrs ident entry ⦃ r => ModBound 73 r ⦄ := by
-  unfold modify_acc.modify_migration_attrs
-  bounded_steps
-
-@[step] theorem modify_acc_modify_protected_entry_attrs_total
-  (classes : Slice (alloc.vec.Vec Std.U8))  :
-  modify_acc.modify_protected_entry_attrs classes ⦃ r => ModBound 40 r ⦄ := by
-  unfold modify_acc.modify_protected_entry_attrs
-  literal_steps
-
-@[step] theorem modify_acc_modify_protected_attrs_total
-  (ident : Identity) (entry : Entry)  :
-  modify_acc.modify_protected_attrs ident entry ⦃ r => ModBound 40 r ⦄ := by
-  unfold modify_acc.modify_protected_attrs
-  bounded_steps
-
 abbrev Attrs := alloc.vec.Vec (alloc.vec.Vec U8)
 
 def FourBound (n : Nat) (r : Bool × Attrs × Attrs × Attrs × Attrs) : Prop :=
@@ -143,14 +121,18 @@ theorem modify_allow_spec (amr : AccessModResult) (n : Nat) (hb : ModBound n amr
     · simp only [hg, if_true]
       simp only [WP.spec_ok, Prod.fst, Prod.snd]
       omega
-    · simp only [hg, if_false]
+    · simp only [hg, Bool.false_eq_true, ↓reduceIte]
       by_cases hd : denied2 = true
       · simp only [hd, if_true]
         simp only [WP.spec_ok, Prod.fst, Prod.snd]
         omega
-      · simp only [hd, if_false]
+      · simp only [hd, Bool.false_eq_true, ↓reduceIte]
         step as ⟨amr2, hamr2⟩
-        apply WP.spec_bind (modify_sync_spec amr2 _ hamr2 cp cr (by omega) (by omega))
+        have hsync := modify_sync_spec amr2 _ hamr2 cp cr (by omega) (by omega)
+        apply WP.spec_bind (Pₘ := fun x : Bool × Attrs × Attrs =>
+          x.2.1.val.length ≤ cp.val.length + (cost syncWeight sync_agreements.val + 4) ∧
+          x.2.2.val.length ≤ cr.val.length + (cost syncWeight sync_agreements.val + 4))
+        · cases amr2 <;> exact hsync
         rintro ⟨denied4, cp2, cr2⟩ hsync
         simp only [Prod.fst, Prod.snd] at hsync
         step as ⟨scopedResult, hscopedResult⟩
@@ -159,7 +141,7 @@ theorem modify_allow_spec (amr : AccessModResult) (n : Nat) (hb : ModBound n amr
           (by omega) (by omega) (by omega) (by omega))
         rintro ⟨b, p, r, pc, rc⟩ hallowed
         simp only [Prod.fst, Prod.snd] at hallowed
-        simp only [WP.spec_ok, Prod.fst, Prod.snd]
+        simp only [Aeneas.Std.uncurry, WP.spec_ok, Prod.fst, Prod.snd]
         omega
   · rintro ⟨denied3, cp1, ap1, cr1, ar1, apc1, arc1⟩ hbounds
     bounded_steps
