@@ -145,19 +145,24 @@ function renderTiles() {
   const apps = Object.values(INDEX.apps);
   const m = matchedPerf().map((p) => p.ratio);
   const med = median(m);
-  const proofs = INDEX.tasks.filter((t) => t.status === "accepted" && t.proof_loc != null).map((t) => t.proof_loc);
   const tiles = [
-    [`${s.accepted}<small>/${s.properties}</small>`, "current properties checked", `${s.benchmark_accepted}/${s.benchmark_properties} historical benchmark results`, [s.accepted, s.properties]],
-    [fmt(s.current_source_matched_lines), "current gated source reach", `${kLines(s.benchmark_upstream_reached)} historical benchmark lines · ${s.whole_project_verified ? "all six project gates pass" : "whole-project verification incomplete"}`],
+    [`${s.accepted}<small>/${s.properties}</small>`, "current properties checked", "source-matched project gates", [s.accepted, s.properties]],
+    [fmt(s.current_source_matched_lines), "current gated source reach", s.whole_project_verified ? "all six project gates pass" : "whole-project verification incomplete"],
     [med == null ? "–" : ratioText(med), "median runtime ratio", `kernel ÷ upstream · ${m.length} workloads${m.length ? ` · ${ratioText(Math.min(...m))}–${ratioText(Math.max(...m))}` : ""}`],
-    [kLines(s.proof_loc), "lines of Lean proof", `median ${fmt(median(proofs))} per benchmark task · ${kLines(s.rust_loc)} lines of ported Rust`],
+    [kLines(s.proof_loc), "lines of Lean proof", `${kLines(s.rust_loc)} lines of ported Rust across six projects`],
   ];
   $("#tiles").innerHTML = tiles.map(([v, l, sub, frac]) =>
     `<div class="tile"><span class="v">${v}</span><span class="l">${l}</span>${frac ? bar(...frac) : ""}<span class="s">${sub}</span></div>`).join("");
 }
 
 function appRows() {
-  return Object.entries(INDEX.apps).map(([app, a]) => ({ app, ...a }));
+  return Object.entries(INDEX.apps).map(([app, a]) => {
+    const count = a.project_properties?.count ?? 0;
+    const checked = INDEX.gates[app]?.check;
+    return { app, ...a, specs: count,
+      accepted: checked?.passed && checked?.source_matched ? count : 0,
+      upstream_reached: a.current_source_matched_lines ?? 0 };
+  });
 }
 
 function renderApps() {
@@ -173,7 +178,7 @@ function renderApps() {
 
     return `<tr><td>${esc(a.app)}<span class="sub"><a href="https://github.com/${esc(a.repo)}/tree/${esc(a.commit)}" target="_blank" rel="noreferrer">${esc(a.repo)} @ ${esc(a.commit)}</a></span></td>
       <td>${barRow(a.accepted, a.specs)}${a.project_properties ? `<a class="sub" href="#project-properties">${fmt(a.project_properties.count)} project properties</a>` : ""}</td>
-      <td>${a.security_kernel_lines ? barRowPct(a.upstream_reached, a.security_kernel_lines, 1) : "–"}<span class="sub">${a.coverage_basis === "current_source_matched_project_gate" ? "current source gate" : "historical benchmark"}</span></td>
+      <td>${a.security_kernel_lines ? barRowPct(a.upstream_reached, a.security_kernel_lines, 1) : "–"}<span class="sub">current source gate</span></td>
       <td>${a.ceiling_lines ? barRowPct(a.upstream_reached, a.ceiling_lines, 1) : "–"}</td>
       <td class="c">${passMark(gate.extract, "extract --check")}</td>
       <td class="c">${passMark(eq, "differential tests")}</td>
@@ -259,8 +264,7 @@ function renderPerf() {
 
 function renderEffort() {
   const rows = applySort("effort-table", appRows().map((a) => {
-    const proofs = INDEX.tasks.filter((t) => t.app === a.app && t.status === "accepted" && t.proof_loc != null).map((t) => t.proof_loc);
-    return { ...a, per: median(proofs), ratio: a.lean_loc / a.rust_loc };
+    return { ...a, per: a.specs, ratio: a.lean_loc / a.rust_loc };
   }), {
     app: (r) => r.app, rust: (r) => r.rust_loc, lean: (r) => r.lean_loc, ratio: (r) => r.ratio,
     spec: (r) => r.spec_loc, proof: (r) => r.proof_loc, per: (r) => r.per,
@@ -269,7 +273,6 @@ function renderEffort() {
     <td class="num">${fmt(a.rust_loc)}</td><td class="num">${fmt(a.lean_loc)}</td><td class="num">${a.ratio.toFixed(1)}×</td>
     <td class="num">${fmt(a.spec_loc)}</td><td class="num">${fmt(a.proof_loc)} <span class="of">· ${a.accepted} specs</span></td>
     <td class="num">${a.per == null ? "–" : fmt(a.per)}</td></tr>`).join("");
-  renderEffortChart();
 }
 
 function renderEffortChart() {
@@ -502,40 +505,7 @@ async function main() {
   sortable("effort-table", renderEffort);
   renderEffort();
 
-  const sel = $("#f-app");
-  for (const app of Object.keys(INDEX.apps)) sel.insertAdjacentHTML("beforeend", `<option value="${esc(app)}">${esc(app)}</option>`);
-  sortable("matrix", renderMatrix);
-  renderMatrix();
-  for (const id of ["#f-app", "#f-status", "#f-q"]) $(id).addEventListener("input", renderMatrix);
 
-  const tbody = $("#matrix tbody");
-  tbody.addEventListener("click", (e) => {
-    const tr = e.target.closest("tr.task");
-    if (tr) openTask(tr.dataset.id);
-  });
-  tbody.addEventListener("keydown", (e) => {
-    const tr = e.target.closest("tr.task");
-    if (tr && (e.key === "Enter" || e.key === " ")) {
-      e.preventDefault();
-      openTask(tr.dataset.id);
-    }
-  });
-  $("#d-tabs").addEventListener("click", (e) => {
-    const b = e.target.closest("button[data-tab]");
-    if (b) selectTab(b.dataset.tab);
-  });
-  $("#drawer").addEventListener("click", (e) => {
-    if (e.target.closest("[data-close]")) closeTask();
-  });
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && !$("#drawer").hidden) closeTask();
-  });
-  const fromHash = () => {
-    const id = decodeURIComponent(location.hash.slice(1));
-    if (id && INDEX.tasks.some((t) => t.id === id)) openTask(id);
-  };
-  window.addEventListener("hashchange", fromHash);
-  fromHash();
 }
 
 main().catch((err) => {

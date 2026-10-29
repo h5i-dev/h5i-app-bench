@@ -87,9 +87,9 @@
           </table>
         </div>
         <dl class="defs">
-          <div><dt>Specs accepted</dt><dd>Per application, the larger of the benchmark task set and the source-matched project gate set; the two sets are not added together. Project properties pass <code>h5i app check</code>; benchmark proofs were checked in their original task workspaces. Only <code>propext</code>, <code>Classical.choice</code> and <code>Quot.sound</code> are allowed.</dd></div>
+          <div><dt>Specs accepted</dt><dd>Selected project properties passing <code>h5i app check</code>, with a gate matching the current source inputs. Only <code>propext</code>, <code>Classical.choice</code> and <code>Quot.sound</code> are allowed.</dd></div>
           <div><dt>Of security kernel</dt><dd>Reached lines over the kernel-eligible lines whose module or name is about authentication, authorization, tokens, credentials, sessions, validation or visibility. Keyword-based; every selected spec is a security property.</dd></div>
-          <div><dt>Source freshness</dt><dd>Current gated source reach requires a complete gate and reproducible extraction matching all current inputs. Each app row labels its evidence basis. Historical benchmark reach describes the original task snapshots and does not verify changed project trees. Source lines are deduplicated within each pinned repository; current and historical totals are separate, overlapping measures.</dd></div>
+          <div><dt>Source freshness</dt><dd>Current gated source reach requires a complete gate and reproducible extraction matching all current inputs. Each app row labels its evidence basis. Source lines are deduplicated within each pinned repository.</dd></div>
           <div><dt>Of kernel ceiling</dt><dd>Upstream lines in functions that accepted theorems are about, over the module's kernel ceiling: the lines that could be a kernel at all (pure, synchronous, no I/O, clock, randomness or locks, transitively). A static estimate; see <code>harness/kernel_ceiling.py</code>.</dd></div>
           <div><dt>Gate</dt><dd><code>h5i app check</code>. Passes once every spec is proved.</dd></div>
         </dl>
@@ -126,50 +126,20 @@
                 <th scope="col" class="num" data-sort="ratio">Lean / Rust</th>
                 <th scope="col" class="num" data-sort="spec">Spec</th>
                 <th scope="col" class="num" data-sort="proof">Proof lines</th>
-                <th scope="col" class="num" data-sort="per">Median per spec</th>
+                <th scope="col" class="num" data-sort="per">Properties</th>
               </tr>
             </thead>
             <tbody></tbody>
           </table>
         </div>
-        <figure class="chart" id="effort-chart" aria-describedby="effort-caption"></figure>
-        <p class="caption" id="effort-caption">One mark per accepted benchmark task. Log scales.</p>
       </section>
 
       <section id="specs" class="block">
         <div class="block-head">
           <h2 class="term" data-n="04">Specs</h2>
-          <p>Project properties and the original 101 timed benchmark tasks. Open a task for its statement, code, Lean and proof.</p>
+          <p>Selected properties verified against the current project sources. Expand an application to see its properties and open the statements and proofs.</p>
         </div>
         <div id="project-properties"></div>
-        <div class="filters" role="search">
-          <label class="field"><span>Application</span><select id="f-app"><option value="">All</option></select></label>
-          <label class="field"><span>Status</span>
-            <select id="f-status">
-              <option value="">All</option>
-              <option value="accepted">Accepted</option>
-              <option value="open">Open</option>
-              <option value="corrected">Statement corrected</option>
-            </select>
-          </label>
-          <label class="field grow"><span>Search</span><input id="f-q" type="search" placeholder="spec, property or theorem" /></label>
-        </div>
-        <div class="table-wrap">
-          <table class="matrix sortable" id="matrix">
-            <thead>
-              <tr>
-                <th scope="col" data-sort="id">Spec</th>
-                <th scope="col">Property</th>
-                <th scope="col" data-sort="status">Status</th>
-                <th scope="col" class="num" data-sort="loc">Upstream lines</th>
-                <th scope="col" class="num" data-sort="proof">Proof lines</th>
-                <th scope="col" data-sort="prover">Prover</th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </table>
-        </div>
-        <p class="count" id="matrix-count"></p>
       </section>
 
       <section id="method" class="block">
@@ -185,9 +155,9 @@
           <li class="step lean"><span class="step-k">Lean 4</span><h3>Extracted model</h3>
             <p>Aeneas turns the port into Lean. A spec states each property.</p></li>
           <li class="step agent"><span class="step-k">Prover</span><h3>Proof</h3>
-            <p>Agents in an offline sandbox, 30 minutes per try, or by hand.</p></li>
+            <p>Lean proofs establish the selected properties of the extracted model.</p></li>
           <li class="step grade"><span class="step-k">Checker</span><h3>Accepted?</h3>
-            <p>Re-checked in isolation, then gated by <code>h5i app check</code>.</p></li>
+            <p>Every selected property is gated by <code>h5i app check</code>.</p></li>
         </ol>
         <div class="flow-notes">
           <p class="bracket diff"><strong>Differential tests.</strong> Upstream and port must agree on random inputs. Testing, not proof.</p>
