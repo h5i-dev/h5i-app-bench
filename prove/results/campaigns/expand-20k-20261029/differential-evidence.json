@@ -1,0 +1,17 @@
+{
+  "kanidm": {
+    "command": "cargo test --manifest-path prove/ports/kanidm/kernel/Cargo.toml --test entry_validation -- --nocapture",
+    "passed": true,
+    "random_cases": 100000,
+    "directed_cases": "all error categories and precedence; AVA/schema boundaries",
+    "reference_identity": "prove/ports/kanidm/difftest/entry_validation/identity.json",
+    "log": "kanidm-entry-differential.log"
+  },
+  "nora": {
+    "command": "cargo test --manifest-path prove/ports/nora/kernel/Cargo.toml --test circuit_breaker",
+    "passed": true,
+    "boundary_cases": 921600,
+    "reference_identity": "prove/ports/nora/difftest/circuit_breaker/identity.json",
+    "log": "nora-circuit-differential.log"
+  }
+}

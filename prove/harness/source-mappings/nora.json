@@ -331,6 +331,105 @@
         "end": 127,
         "sha256": "7de0c163424302205e97b5f7270dccadf38dbb1d8f684e4f9d272e643bd8a1ea"
       }
+    ],
+    "circuit_breaker.new": [
+      {
+        "file": "nora-registry/src/circuit_breaker.rs",
+        "self_ty": "BreakerInner",
+        "name": "new",
+        "kind": "method",
+        "start": 100,
+        "end": 109,
+        "sha256": "18b38a8074f17dbb79f70db24e426a4349428617810c5dd1685fcc8b223448c0"
+      }
+    ],
+    "circuit_breaker.is_stale": [
+      {
+        "file": "nora-registry/src/circuit_breaker.rs",
+        "self_ty": "BreakerInner",
+        "name": "is_stale",
+        "kind": "method",
+        "start": 121,
+        "end": 123,
+        "sha256": "a7ad6054a6f1949e10960525b097b10dd4b1ecb79dd60a668eeb0e76de2e0dd2"
+      }
+    ],
+    "circuit_breaker.grant_probe": [
+      {
+        "file": "nora-registry/src/circuit_breaker.rs",
+        "self_ty": "BreakerInner",
+        "name": "grant_probe",
+        "kind": "method",
+        "start": 112,
+        "end": 117,
+        "sha256": "8bdb77abb2cc38bcfdf298bd389a64fa92d7dad9c733541e53357471e9ffd8c3"
+      }
+    ],
+    "circuit_breaker.check": [
+      {
+        "file": "nora-registry/src/circuit_breaker.rs",
+        "self_ty": "CircuitBreakerRegistry",
+        "name": "check",
+        "kind": "method",
+        "start": 209,
+        "end": 285,
+        "sha256": "40118c818d478e41b7ee81903912cff3950a9258a3b2d35b2f6d61d303de8e60"
+      }
+    ],
+    "circuit_breaker.record_success": [
+      {
+        "file": "nora-registry/src/circuit_breaker.rs",
+        "self_ty": "CircuitBreakerRegistry",
+        "name": "record_success",
+        "kind": "method",
+        "start": 289,
+        "end": 319,
+        "sha256": "cf82bb891f7a01e524fdd479b3eaca5a9fa68f3a7104726559ede1b7a5850d02"
+      }
+    ],
+    "circuit_breaker.record_alive": [
+      {
+        "file": "nora-registry/src/circuit_breaker.rs",
+        "self_ty": "CircuitBreakerRegistry",
+        "name": "record_alive",
+        "kind": "method",
+        "start": 330,
+        "end": 360,
+        "sha256": "f8ebc50a70baa1e60596f1c1933735eb3cd0e20eb8602be14a127a306d4fc257"
+      }
+    ],
+    "circuit_breaker.record_failure": [
+      {
+        "file": "nora-registry/src/circuit_breaker.rs",
+        "self_ty": "CircuitBreakerRegistry",
+        "name": "record_failure",
+        "kind": "method",
+        "start": 365,
+        "end": 417,
+        "sha256": "f1ba0e68cfab338767346334d535fa001966c86d0c4b71cfa6af709cfe3ab0a3"
+      }
+    ],
+    "circuit_breaker.threshold": [
+      {
+        "file": "nora-registry/src/circuit_breaker.rs",
+        "self_ty": "CircuitBreakerRegistry",
+        "name": "threshold_for",
+        "kind": "method",
+        "start": 185,
+        "end": 191,
+        "sha256": "2253d73d1be7f70f95097c6ea47ff8d196a3827377aba2b4da718469749621dc"
+      }
+    ],
+    "circuit_breaker.reset_timeout": [
+      {
+        "file": "nora-registry/src/circuit_breaker.rs",
+        "self_ty": "CircuitBreakerRegistry",
+        "name": "reset_timeout_for",
+        "kind": "method",
+        "start": 194,
+        "end": 200,
+        "sha256": "107462f8d9e42c22f9b79663746576ece55c63a72cf883655b06f5a764bcc233"
+      }
     ]
   }
 }

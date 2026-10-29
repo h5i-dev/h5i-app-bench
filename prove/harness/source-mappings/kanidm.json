@@ -1236,6 +1236,17 @@
         "end": 332,
         "sha256": "e6febbaacaf8484ced9be8e000bd0294fd253cb8478253c2a9db9dc72fec512f"
       }
+    ],
+    "entry_validation.validate": [
+      {
+        "file": "server/lib/src/entry.rs",
+        "self_ty": "Entry<EntryValid, STATE>",
+        "name": "validate",
+        "kind": "method",
+        "start": 2026,
+        "end": 2271,
+        "sha256": "3924b1e6903318dc8c387619e81af7bd428e3091d334035598d043f4ef0f4c25"
+      }
     ]
   },
   "meaning": "Exact pinned item dependency reach from canonical theorem types; source correspondence is documented in ports/kanidm/DEVIATIONS.md. Counts source items reached by modeled operations, not behavioral equivalence or proof of omitted I/O, parsing, presentation, library internals, or other documented deviations."

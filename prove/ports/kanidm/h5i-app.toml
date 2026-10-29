@@ -4,6 +4,7 @@ crate = "kernel"
 # Extract every public function in these modules; derived formatting/equality
 # implementations are outside the verification roots and need no opaque stubs.
 start-from = [
+  "entry_validation::validate",
   "access",
   "softlock::after",
   "softlock::same_time",
@@ -26,6 +27,7 @@ start-from = [
 
 [check]
 theorems = [
+  "kanidm_kernel.Properties.entry_validation_spec",
   "kanidm_kernel.Properties.protected_deny_overrides_modify",
   "kanidm_kernel.Properties.protected_deny_overrides_create",
   "kanidm_kernel.Properties.search_attrs_granted",

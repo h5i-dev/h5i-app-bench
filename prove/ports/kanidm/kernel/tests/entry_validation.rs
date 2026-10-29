@@ -1,7 +1,6 @@
-// Candidate is staged outside the frozen proof inputs until the preceding gate finishes.
-#[path="../../difftest/entry_validation/kernel.rs"] mod candidate;
+// Exercise the canonical kernel against the verbatim pinned upstream method.
+use kanidm_kernel::entry_validation as candidate;
 #[path="../../difftest/entry_validation/reference.rs"] mod reference;
-use kanidm_kernel::schema_tags;
 use candidate::*;
 fn next(seed:&mut u64)->u64{*seed=seed.wrapping_mul(6364136223846793005).wrapping_add(1442695040888963407);*seed}
 fn ids(seed:&mut u64,max:u16)->Vec<u16>{let mut v=Vec::new();for k in 0..max{if next(seed)>>60<4{v.push(k)}}v}

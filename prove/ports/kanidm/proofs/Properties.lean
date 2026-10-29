@@ -1,3 +1,4 @@
+import Verified.EntryValidation
 import Verified.AccountPolicy
 import Verified.CredentialCommit
 import Verified.SchemaTags
@@ -301,5 +302,15 @@ theorem account_policy_fold_from_spec (policies : Slice account_policy.Policy) :
     account_policy.fold_from policies
       ⦃ r => r = finalize (policies.val.foldl combine initial) ⦄ := by
   apply kanidm_kernel.Verified.AccountPolicy.fold_from_spec <;> assumption
+
+/-- The complete entry schema decision, including the first error and ordered
+    payloads, assuming only that collected schema lists fit in a vector. -/
+theorem entry_validation_spec (entry : entry_validation.Entry)
+    (classes : Slice entry_validation.ClassSchema) (attrs : Slice entry_validation.AttributeSchema)
+    (hcap : kanidm_kernel.Verified.EntryValidation.capacity entry classes.val) :
+    entry_validation.validate entry classes attrs ⦃ r =>
+      kanidm_kernel.Verified.EntryValidation.outcome r =
+        kanidm_kernel.Verified.EntryValidation.validateModel entry classes.val attrs.val ⦄ := by
+  apply kanidm_kernel.Verified.EntryValidation.validate_spec <;> assumption
 
 end kanidm_kernel.Properties

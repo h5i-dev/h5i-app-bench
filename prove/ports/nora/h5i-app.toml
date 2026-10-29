@@ -1,7 +1,7 @@
 # Standard h5i-app project. Keep every selected theorem in the final gate.
 [extract]
 crate = "kernel"
-start-from = ["transition","validation","middleware::auth_middleware","tokens::revoke_token","tokens::revoke_all_for_user","permission_import::map_to_proposal"]
+start-from = ["transition","validation","middleware::auth_middleware","tokens::revoke_token","tokens::revoke_all_for_user","permission_import::map_to_proposal","circuit_breaker::check","circuit_breaker::record_success","circuit_breaker::record_alive","circuit_breaker::record_failure","circuit_breaker::new","circuit_breaker::threshold","circuit_breaker::reset_timeout"]
 
 [check]
 theorems = [
@@ -36,4 +36,11 @@ theorems = [
   "nora_kernel.Properties.permission_never_admin",
   "nora_kernel.Properties.permission_write_opt_in",
   "nora_kernel.Properties.permission_report_safe",
+  "nora_kernel.Properties.circuit_breaker_check_spec",
+  "nora_kernel.Properties.circuit_breaker_success_spec",
+  "nora_kernel.Properties.circuit_breaker_alive_spec",
+  "nora_kernel.Properties.circuit_breaker_failure_spec",
+  "nora_kernel.Properties.circuit_breaker_new_spec",
+  "nora_kernel.Properties.circuit_breaker_threshold_spec",
+  "nora_kernel.Properties.circuit_breaker_reset_spec",
 ]

@@ -73,16 +73,16 @@ pub fn validate(entry:&Entry,classes:&[ClassSchema],attrs:&[AttributeSchema])->R
  let names=match &entry.classes {None=>return Err(Error::NoClassFound),Some(n)=>n};
  let recycled=contains(names,2);let extensible=contains(names,1);
  let invalid=invalid_classes(classes,names);
- if !invalid.is_empty(){return Err(Error::InvalidClass(invalid))}
+ if !(invalid.len()==0){return Err(Error::InvalidClass(invalid))}
  let supplements=constraints(classes,names,0);
- if !supplements.is_empty() && overlap(&supplements,names).is_empty(){return Err(Error::SupplementsNotSatisfied(supplements))}
+ if !(supplements.len()==0) && (overlap(&supplements,names).len()==0){return Err(Error::SupplementsNotSatisfied(supplements))}
  let excluded=overlap(&constraints(classes,names,1),names);
- if !excluded.is_empty(){return Err(Error::ExcludesNotSatisfied(excluded))}
+ if !(excluded.len()==0){return Err(Error::ExcludesNotSatisfied(excluded))}
  let must=constraints(classes,names,2);
  // Complete schema lookup precedes missing-attribute errors, even for recycled entries.
  if !schema_complete(attrs,&must){return Err(Error::Corrupted)}
  let missing=missing_attributes(entry,attrs,&must);
- if !missing.is_empty() && !recycled{return Err(Error::MissingMustAttribute(missing))}
+ if !(missing.len()==0) && !recycled{return Err(Error::MissingMustAttribute(missing))}
  if extensible {validate_attributes(entry,attrs,&[],true)}else{
   let may=constraints(classes,names,3);
   if !schema_complete(attrs,&may){return Err(Error::Corrupted)}

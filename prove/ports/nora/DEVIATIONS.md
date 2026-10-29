@@ -1,7 +1,7 @@
 # nora: what the kernel covers and where it differs
 
-Upstream: getnora-io/nora @ f864a9a, `nora-registry/src/`. The kernel covers
-977 lines of it (`difftest/count_loc.py`).
+Upstream: getnora-io/nora @ f864a9a, `nora-registry/src/`. The current verified source reach is recorded by the full-project checks and
+`harness/project_reach.py`; `difftest/count_loc.py` is a historical port inventory.
 
 ## Covered
 
@@ -83,3 +83,37 @@ reference test; OIDC repository ids render as the original name plus `/**`.
 The differential test compares the complete rendered report against verbatim
 pinned upstream bodies on 200,512 cases. Numeric ids are not a claim about
 arbitrary UTF-8 interning or display escaping; those stay at the boundary.
+
+## Circuit breaker state transitions
+
+`kernel/src/circuit_breaker.rs` ports `BreakerInner::{new,is_stale,grant_probe}`
+and `CircuitBreakerRegistry::{check,record_success,record_alive,record_failure,
+threshold_for,reset_timeout_for}` from the same immutable Nora revision.
+The theorems compare every state field and returned probe token with a pure
+model over unbounded natural numbers. They include disabled operation, absent
+clock values, stalled probe recovery, background token zero, stale generation
+fencing, and the deliberate preservation of Closed/Open failure counts on 4xx.
+
+The port is one already-selected registry's decision core. Registry map lookup,
+locking, allocation, metrics, logging, and configuration override lookup are
+adapter boundaries. The resolver receives the result of that lookup as an
+`Option`; no registry map correctness or concurrent interleaving is claimed.
+An Instant is represented by the seconds elapsed at the current invocation;
+a freshly written Instant is `Some(0)`. A clock adapter must advance ages
+between calls and supply the same elapsed-second observations as upstream.
+No clock arithmetic or wall-clock synchronization is proved. CircuitOpen's
+registry-string payload is supplied by the adapter; `None` represents rejection.
+The checked counter preconditions are `generation < u64::MAX` for a potentially
+new probe and `failures < u32::MAX` for a potentially incremented failure tally.
+These exclude counter overflow, rather than assuming a successful decision.
+
+From `prove/`, `python3 ports/nora/difftest/circuit_breaker/prepare.py
+results/upstream/nora.git` regenerates the production reference directly from
+the pinned git object. Its decision methods
+are unchanged; the test supplies a deterministic clock, lock/config/metric/log
+adapters, and removes the serde derive. `cargo test --manifest-path
+ports/nora/kernel/Cargo.toml --test circuit_breaker` compares all state fields
+and tokens in 921,600 boundary-case comparisons, including arbitrary unreachable
+states, missing timestamps, zero timeout, stale generations, and integer limits.
+This differential evidence and source reach do not constitute a proof of the
+adapters or equivalence of the complete concurrent upstream service.

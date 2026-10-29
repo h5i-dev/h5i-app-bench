@@ -299,3 +299,5 @@ pub mod schema_tags;
 pub mod credential_commit;
 
 pub mod account_policy;
+
+pub mod entry_validation;

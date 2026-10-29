@@ -1,0 +1,11 @@
+{
+  "upstream_revision": "f864a9a95e8669b00202c18b0b774ab0fc2e56cc",
+  "file": "nora-registry/src/circuit_breaker.rs",
+  "file_sha256": "560d9724d6651ceca48da13ee472a3e92d2c123f2a8e749aaae4a700bcaa7125",
+  "production_sha256": "4af23bb339b977b1bf52157e8929eefcc25384cbb51f3ed6e95d9bf2b38a3312",
+  "adapters": [
+    "Instant uses deterministic elapsed-second clock",
+    "Remove serde serialization derive and inner module documentation",
+    "Test crate supplies config, lock, metrics and logging adapters"
+  ]
+}

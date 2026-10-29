@@ -1,3 +1,4 @@
+import Verified.CircuitBreaker
 import Verified.PermissionImport
 import Verified.NoraProviderCeiling
 import Verified.NoraRuleNarrows
@@ -271,5 +272,53 @@ theorem permission_report_safe (principals : Slice permission_import.Principal) 
     (h : permission_import.map_to_proposal principals grant = ok out) :
     ∀ t ∈ out.proposed_tokens.val, t.role ≠ .Admin ∧ (grant = false → t.role = .Read) := by
   exact Verified.PermissionImport.report_safe principals grant out h
+
+/-- Every breaker field and granted probe token, including zero-timeout and
+    stalled-probe recovery, agrees with the unbounded decision model. -/
+theorem circuit_breaker_check_spec (b : circuit_breaker.Breaker) (enabled : Bool)
+    (reset : U64) (hgen : b.generation.val < U64.max) :
+    circuit_breaker.check b enabled reset ⦃ r =>
+      (Verified.CircuitBreaker.view r.1, r.2.map (·.val)) =
+        Verified.CircuitBreaker.checkModel (Verified.CircuitBreaker.view b) enabled reset.val ⦄ := by
+  exact Verified.CircuitBreaker.check_spec b enabled reset hgen
+
+/-- A successful non-stale report closes the breaker and clears the failure tally. -/
+theorem circuit_breaker_success_spec (b : circuit_breaker.Breaker) (enabled : Bool) (token : U64) :
+    circuit_breaker.record_success b enabled token ⦃ r =>
+      Verified.CircuitBreaker.view r = Verified.CircuitBreaker.successModel
+        (Verified.CircuitBreaker.view b) enabled token.val ⦄ := by
+  exact Verified.CircuitBreaker.success_spec b enabled token
+
+/-- An alive/4xx report only clears HalfOpen, preserving Closed/Open failures. -/
+theorem circuit_breaker_alive_spec (b : circuit_breaker.Breaker) (enabled : Bool) (token : U64) :
+    circuit_breaker.record_alive b enabled token ⦃ r =>
+      Verified.CircuitBreaker.view r = Verified.CircuitBreaker.aliveModel
+        (Verified.CircuitBreaker.view b) enabled token.val ⦄ := by
+  exact Verified.CircuitBreaker.alive_spec b enabled token
+
+/-- Complete failure transition, including the generation fence and exact tally. -/
+theorem circuit_breaker_failure_spec (b : circuit_breaker.Breaker) (enabled : Bool)
+    (token : U64) (threshold : U32) (hcount : b.failures.val < U32.max) :
+    circuit_breaker.record_failure b enabled token threshold ⦃ r =>
+      Verified.CircuitBreaker.view r = Verified.CircuitBreaker.failureModel
+        (Verified.CircuitBreaker.view b) enabled token.val threshold.val ⦄ := by
+  exact Verified.CircuitBreaker.failure_spec b enabled token threshold hcount
+
+/-- A new per-registry breaker has no failure, outstanding probe, or generation. -/
+theorem circuit_breaker_new_spec : circuit_breaker.new ⦃ r =>
+    Verified.CircuitBreaker.view r = Verified.CircuitBreaker.fresh ⦄ := by
+  exact Verified.CircuitBreaker.new_spec
+
+/-- Per-registry failure thresholds override the default when present. -/
+theorem circuit_breaker_threshold_spec (fallback : U32) (overrideValue : Option U32) :
+    circuit_breaker.threshold fallback overrideValue ⦃ r =>
+      r.val = (overrideValue.map (·.val)).getD fallback.val ⦄ := by
+  exact Verified.CircuitBreaker.threshold_spec fallback overrideValue
+
+/-- Per-registry reset timeouts override the default when present. -/
+theorem circuit_breaker_reset_spec (fallback : U64) (overrideValue : Option U64) :
+    circuit_breaker.reset_timeout fallback overrideValue ⦃ r =>
+      r.val = (overrideValue.map (·.val)).getD fallback.val ⦄ := by
+  exact Verified.CircuitBreaker.reset_spec fallback overrideValue
 
 end nora_kernel.Properties

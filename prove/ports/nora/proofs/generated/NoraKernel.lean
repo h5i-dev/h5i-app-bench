@@ -19,6 +19,218 @@ set_option maxRecDepth 2048
 
 namespace nora_kernel
 
+/-- [nora_kernel::circuit_breaker::Phase]
+    Source: 'prove/ports/nora/kernel/src/circuit_breaker.rs', lines 7:0-11:1
+    Visibility: public -/
+@[discriminant isize]
+inductive circuit_breaker.Phase where
+| Closed : circuit_breaker.Phase
+| Open : circuit_breaker.Phase
+| HalfOpen : circuit_breaker.Phase
+
+/-- [nora_kernel::circuit_breaker::Breaker]
+    Source: 'prove/ports/nora/kernel/src/circuit_breaker.rs', lines 13:0-20:1
+    Visibility: public -/
+structure circuit_breaker.Breaker where
+  phase : circuit_breaker.Phase
+  failures : Std.U32
+  failure_age : Option Std.U64
+  in_flight : Bool
+  probe_age : Option Std.U64
+  generation : Std.U64
+
+/-- [nora_kernel::circuit_breaker::new]:
+    Source: 'prove/ports/nora/kernel/src/circuit_breaker.rs', lines 21:0-30:1
+    Visibility: public -/
+def circuit_breaker.new : Result circuit_breaker.Breaker := do
+  ok
+    {
+      phase := circuit_breaker.Phase.Closed,
+      failures := 0#u32,
+      failure_age := none,
+      in_flight := false,
+      probe_age := none,
+      generation := 0#u64
+    }
+
+/-- [nora_kernel::circuit_breaker::is_stale]:
+    Source: 'prove/ports/nora/kernel/src/circuit_breaker.rs', lines 31:0-33:1
+    Visibility: public -/
+def circuit_breaker.is_stale
+  (b : circuit_breaker.Breaker) (token : Std.U64) : Result Bool := do
+  if token != 0#u64
+  then ok (token != b.generation)
+  else ok false
+
+/-- [nora_kernel::circuit_breaker::grant_probe]:
+    Source: 'prove/ports/nora/kernel/src/circuit_breaker.rs', lines 34:0-40:1
+    Visibility: public -/
+def circuit_breaker.grant_probe
+  (b : circuit_breaker.Breaker) :
+  Result (circuit_breaker.Breaker × Std.U64)
+  := do
+  let token ← b.generation + 1#u64
+  ok
+    ({ b with in_flight := true, probe_age := (some 0#u64), generation := token
+     }, token)
+
+/-- [nora_kernel::circuit_breaker::check]:
+    Source: 'prove/ports/nora/kernel/src/circuit_breaker.rs', lines 42:0-75:1
+    Visibility: public -/
+def circuit_breaker.check
+  (b : circuit_breaker.Breaker) (enabled : Bool) (reset : Std.U64) :
+  Result (circuit_breaker.Breaker × (Option Std.U64))
+  := do
+  if enabled
+  then
+    match b.phase with
+    | circuit_breaker.Phase.Closed => ok (b, some 0#u64)
+    | circuit_breaker.Phase.Open =>
+      let (o, elapsed) ←
+        match b.failure_age with
+        | none => ok (none, core.num.U64.MAX)
+        | some n => ok (b.failure_age, n)
+      if elapsed >= reset
+      then
+        let (b1, token) ←
+          circuit_breaker.grant_probe
+            { b with phase := circuit_breaker.Phase.HalfOpen, failure_age := o
+            }
+        ok (b1, some token)
+      else ok ({ b with failure_age := o }, none)
+    | circuit_breaker.Phase.HalfOpen =>
+      let (o, stalled) ←
+        if reset > 0#u64
+        then
+          match b.probe_age with
+          | none => ok (none, true)
+          | some age => ok (b.probe_age, age >= reset)
+        else ok (b.probe_age, false)
+      if b.in_flight
+      then
+        if stalled
+        then
+          let (b1, token) ←
+            circuit_breaker.grant_probe { b with probe_age := o }
+          ok (b1, some token)
+        else ok ({ b with probe_age := o }, none)
+      else
+        let (b1, token) ←
+          circuit_breaker.grant_probe { b with probe_age := o }
+        ok (b1, some token)
+  else ok (b, some 0#u64)
+
+/-- [nora_kernel::circuit_breaker::record_success]:
+    Source: 'prove/ports/nora/kernel/src/circuit_breaker.rs', lines 76:0-85:1
+    Visibility: public -/
+def circuit_breaker.record_success
+  (b : circuit_breaker.Breaker) (enabled : Bool) (token : Std.U64) :
+  Result circuit_breaker.Breaker
+  := do
+  if enabled
+  then
+    let b1 ← circuit_breaker.is_stale b token
+    if b1
+    then ok b
+    else
+      ok
+        {
+          b
+            with
+            phase := circuit_breaker.Phase.Closed,
+            failures := 0#u32,
+            in_flight := false,
+            probe_age := none
+        }
+  else ok b
+
+/-- [nora_kernel::circuit_breaker::record_alive]:
+    Source: 'prove/ports/nora/kernel/src/circuit_breaker.rs', lines 86:0-100:1
+    Visibility: public -/
+def circuit_breaker.record_alive
+  (b : circuit_breaker.Breaker) (enabled : Bool) (token : Std.U64) :
+  Result circuit_breaker.Breaker
+  := do
+  if enabled
+  then
+    let b1 ← circuit_breaker.is_stale b token
+    if b1
+    then ok b
+    else
+      match b.phase with
+      | circuit_breaker.Phase.Closed => ok b
+      | circuit_breaker.Phase.Open => ok b
+      | circuit_breaker.Phase.HalfOpen =>
+        ok
+          {
+            b
+              with
+              phase := circuit_breaker.Phase.Closed,
+              failures := 0#u32,
+              in_flight := false,
+              probe_age := none
+          }
+  else ok b
+
+/-- [nora_kernel::circuit_breaker::record_failure]:
+    Source: 'prove/ports/nora/kernel/src/circuit_breaker.rs', lines 101:0-124:1
+    Visibility: public -/
+def circuit_breaker.record_failure
+  (b : circuit_breaker.Breaker) (enabled : Bool) (token : Std.U64)
+  (threshold : Std.U32) :
+  Result circuit_breaker.Breaker
+  := do
+  if enabled
+  then
+    let b1 ← circuit_breaker.is_stale b token
+    if b1
+    then ok b
+    else
+      match b.phase with
+      | circuit_breaker.Phase.Closed =>
+        let i ← b.failures + 1#u32
+        if i >= threshold
+        then
+          ok
+            {
+              b
+                with
+                phase := circuit_breaker.Phase.Open,
+                failures := i,
+                failure_age := (some 0#u64)
+            }
+        else ok { b with failures := i, failure_age := (some 0#u64) }
+      | circuit_breaker.Phase.Open => ok { b with failure_age := (some 0#u64) }
+      | circuit_breaker.Phase.HalfOpen =>
+        ok
+          {
+            b
+              with
+              phase := circuit_breaker.Phase.Open,
+              failure_age := (some 0#u64),
+              in_flight := false,
+              probe_age := none
+          }
+  else ok b
+
+/-- [nora_kernel::circuit_breaker::threshold]:
+    Source: 'prove/ports/nora/kernel/src/circuit_breaker.rs', lines 125:0-130:1
+    Visibility: public -/
+def circuit_breaker.threshold
+  (default : Std.U32) (override_value : Option Std.U32) : Result Std.U32 := do
+  match override_value with
+  | none => ok default
+  | some x => ok x
+
+/-- [nora_kernel::circuit_breaker::reset_timeout]:
+    Source: 'prove/ports/nora/kernel/src/circuit_breaker.rs', lines 131:0-136:1
+    Visibility: public -/
+def circuit_breaker.reset_timeout
+  (default : Std.U64) (override_value : Option Std.U64) : Result Std.U64 := do
+  match override_value with
+  | none => ok default
+  | some x => ok x
+
 /-- [nora_kernel::Role]
     Source: 'prove/ports/nora/kernel/src/lib.rs', lines 15:0-19:1
     Visibility: public -/

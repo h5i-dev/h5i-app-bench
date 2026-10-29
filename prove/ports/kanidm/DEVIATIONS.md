@@ -163,3 +163,32 @@ complete behavioral equivalence of the entire upstream method. Differential
 reference copies the full original method unchanged and independently varies
 CA masks while comparing every scalar output field. Current test includes
 20,049 resolution cases, including empty input and policy/password boundaries.
+
+## Complete entry schema validation (2026-10-29)
+
+`entry_validation::validate` ports the complete `Entry<EntryValid, STATE>::validate`
+decision in `entry.rs` at the pinned revision. The formal property proves
+termination without a panic and the exact first error, including ordered error
+payloads, against a list model. It covers conflict exemption, class lookup,
+supplements, exclusions, required attributes, recycled relaxation, extensible
+objects, phantom rejection, permitted attributes, and AVA syntax/cardinality.
+
+The adapter interns class and attribute identifiers as `u16`; class IDs 0, 1,
+and 2 mean conflict, extensibleobject, and recycled. Map/set inputs must be
+unique and ordered consistently with the upstream iteration order. The formal
+Rust decision is proved for arbitrary lists; its correspondence with upstream
+maps uses that adapter invariant. `class_present` models attribute presence;
+`classes = None` models a missing or non-iutf8 class value. Attribute names and
+schema map keys remain separate, preserving corrupt-schema and missing-attribute
+error precedence. Intrinsic ValueSet validation is a supplied `valid` Boolean;
+this proof does not validate each concrete ValueSet implementation.
+
+The only arithmetic precondition bounds the total length of all constraint
+lists gathered from the entry's classes by `usize::MAX`. It imposes no schema
+validity or acceptance assumption. Vector emptiness uses `len() == 0`, avoiding
+an unsupported external `Vec::is_empty` in the extraction.
+
+The differential test runs the canonical Rust module against the verbatim
+pinned upstream method with map, name, clock-free schema, and ValueSet adapters:
+100,000 generated cases plus targeted checks for every error, error ordering,
+recycled/extensible behavior, and AVA boundaries.

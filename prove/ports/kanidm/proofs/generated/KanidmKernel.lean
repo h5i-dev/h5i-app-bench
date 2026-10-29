@@ -7625,6 +7625,848 @@ def credential_commit.can_commit
         no_valid_credentials := false
       }
 
+/-- [kanidm_kernel::entry_validation::Attribute]
+    Source: 'prove/ports/kanidm/kernel/src/entry_validation.rs', lines 6:0-11:1
+    Visibility: public -/
+structure entry_validation.Attribute where
+  key : Std.U16
+  count : Std.Usize
+  «syntax» : Std.U16
+  valid : Bool
+
+/-- [kanidm_kernel::entry_validation::AttributeSchema]
+    Source: 'prove/ports/kanidm/kernel/src/entry_validation.rs', lines 13:0-19:1
+    Visibility: public -/
+structure entry_validation.AttributeSchema where
+  key : Std.U16
+  «name» : Std.U16
+  phantom : Bool
+  multi : Bool
+  «syntax» : Std.U16
+
+/-- [kanidm_kernel::entry_validation::ClassSchema]
+    Source: 'prove/ports/kanidm/kernel/src/entry_validation.rs', lines 21:0-31:1
+    Visibility: public -/
+structure entry_validation.ClassSchema where
+  key : Std.U16
+  systemmust : alloc.vec.Vec Std.U16
+  must : alloc.vec.Vec Std.U16
+  systemmay : alloc.vec.Vec Std.U16
+  may : alloc.vec.Vec Std.U16
+  systemsupplements : alloc.vec.Vec Std.U16
+  supplements : alloc.vec.Vec Std.U16
+  systemexcludes : alloc.vec.Vec Std.U16
+  excludes : alloc.vec.Vec Std.U16
+
+/-- [kanidm_kernel::entry_validation::Entry]
+    Source: 'prove/ports/kanidm/kernel/src/entry_validation.rs', lines 33:0-37:1
+    Visibility: public -/
+structure entry_validation.Entry where
+  class_present : Bool
+  classes : Option (alloc.vec.Vec Std.U16)
+  attrs : alloc.vec.Vec entry_validation.Attribute
+
+/-- [kanidm_kernel::entry_validation::Error]
+    Source: 'prove/ports/kanidm/kernel/src/entry_validation.rs', lines 39:0-50:1
+    Visibility: public -/
+@[discriminant isize]
+inductive entry_validation.Error where
+| NoClassFound : entry_validation.Error
+| InvalidClass : alloc.vec.Vec Std.U16 → entry_validation.Error
+| SupplementsNotSatisfied : alloc.vec.Vec Std.U16 → entry_validation.Error
+| ExcludesNotSatisfied : alloc.vec.Vec Std.U16 → entry_validation.Error
+| Corrupted : entry_validation.Error
+| MissingMustAttribute : alloc.vec.Vec Std.U16 → entry_validation.Error
+| PhantomAttribute : Std.U16 → entry_validation.Error
+| InvalidAttribute : Std.U16 → entry_validation.Error
+| InvalidAttributeSyntax : Std.U16 → entry_validation.Error
+| AttributeNotValidForClass : Std.U16 → entry_validation.Error
+
+/-- [kanidm_kernel::entry_validation::contains]: loop body 0:
+    Source: 'prove/ports/kanidm/kernel/src/entry_validation.rs', lines 53:4-60:1
+    Visibility: public -/
+@[rust_loop_body]
+def entry_validation.contains_loop.body
+  (xs : Slice Std.U16) (key : Std.U16) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := Slice.len xs
+  if i < i1
+  then
+    let i2 ← Slice.index_usize xs i
+    if i2 = key
+    then ok (done true)
+    else let i3 ← i + 1#usize
+         ok (cont i3)
+  else ok (done false)
+
+/-- [kanidm_kernel::entry_validation::contains]: loop 0:
+    Source: 'prove/ports/kanidm/kernel/src/entry_validation.rs', lines 53:4-60:1
+    Visibility: public -/
+@[rust_loop]
+def entry_validation.contains_loop
+  (xs : Slice Std.U16) (key : Std.U16) (i : Std.Usize) : Result Bool := do
+  loop
+    (fun i1 => entry_validation.contains_loop.body xs key i1)
+    i
+
+/-- [kanidm_kernel::entry_validation::contains]:
+    Source: 'prove/ports/kanidm/kernel/src/entry_validation.rs', lines 51:0-60:1
+    Visibility: public -/
+@[reducible]
+def entry_validation.contains
+  (xs : Slice Std.U16) (key : Std.U16) : Result Bool := do
+  entry_validation.contains_loop xs key 0#usize
+
+/-- [kanidm_kernel::entry_validation::class_index]: loop body 0:
+    Source: 'prove/ports/kanidm/kernel/src/entry_validation.rs', lines 63:4-70:1
+    Visibility: public -/
+@[rust_loop_body]
+def entry_validation.class_index_loop.body
+  (xs : Slice entry_validation.ClassSchema) (key : Std.U16) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize (Option Std.Usize))
+  := do
+  let i1 := Slice.len xs
+  if i < i1
+  then
+    let cs ← Slice.index_usize xs i
+    if cs.key = key
+    then ok (done (some i))
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else ok (done none)
+
+/-- [kanidm_kernel::entry_validation::class_index]: loop 0:
+    Source: 'prove/ports/kanidm/kernel/src/entry_validation.rs', lines 63:4-70:1
+    Visibility: public -/
+@[rust_loop]
+def entry_validation.class_index_loop
+  (xs : Slice entry_validation.ClassSchema) (key : Std.U16) (i : Std.Usize) :
+  Result (Option Std.Usize)
+  := do
+  loop
+    (fun i1 => entry_validation.class_index_loop.body xs key i1)
+    i
+
+/-- [kanidm_kernel::entry_validation::class_index]:
+    Source: 'prove/ports/kanidm/kernel/src/entry_validation.rs', lines 61:0-70:1
+    Visibility: public -/
+@[reducible]
+def entry_validation.class_index
+  (xs : Slice entry_validation.ClassSchema) (key : Std.U16) :
+  Result (Option Std.Usize)
+  := do
+  entry_validation.class_index_loop xs key 0#usize
+
+/-- [kanidm_kernel::entry_validation::attribute_index]: loop body 0:
+    Source: 'prove/ports/kanidm/kernel/src/entry_validation.rs', lines 73:4-80:1
+    Visibility: public -/
+@[rust_loop_body]
+def entry_validation.attribute_index_loop.body
+  (xs : Slice entry_validation.AttributeSchema) (key : Std.U16) (i : Std.Usize)
+  :
+  Result (ControlFlow Std.Usize (Option Std.Usize))
+  := do
+  let i1 := Slice.len xs
+  if i < i1
+  then
+    let «as» ← Slice.index_usize xs i
+    if «as».key = key
+    then ok (done (some i))
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else ok (done none)
+
+/-- [kanidm_kernel::entry_validation::attribute_index]: loop 0:
+    Source: 'prove/ports/kanidm/kernel/src/entry_validation.rs', lines 73:4-80:1
+    Visibility: public -/
+@[rust_loop]
+def entry_validation.attribute_index_loop
+  (xs : Slice entry_validation.AttributeSchema) (key : Std.U16) (i : Std.Usize)
+  :
+  Result (Option Std.Usize)
+  := do
+  loop
+    (fun i1 => entry_validation.attribute_index_loop.body xs key i1)
+    i
+
+/-- [kanidm_kernel::entry_validation::attribute_index]:
+    Source: 'prove/ports/kanidm/kernel/src/entry_validation.rs', lines 71:0-80:1
+    Visibility: public -/
+@[reducible]
+def entry_validation.attribute_index
+  (xs : Slice entry_validation.AttributeSchema) (key : Std.U16) :
+  Result (Option Std.Usize)
+  := do
+  entry_validation.attribute_index_loop xs key 0#usize
+
+/-- [kanidm_kernel::entry_validation::present]: loop body 0:
+    Source: 'prove/ports/kanidm/kernel/src/entry_validation.rs', lines 83:4-90:1
+    Visibility: public -/
+@[rust_loop_body]
+def entry_validation.present_loop.body
+  (xs : Slice entry_validation.Attribute) (key : Std.U16) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := Slice.len xs
+  if i < i1
+  then
+    let a ← Slice.index_usize xs i
+    if a.key = key
+    then ok (done true)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else ok (done false)
+
+/-- [kanidm_kernel::entry_validation::present]: loop 0:
+    Source: 'prove/ports/kanidm/kernel/src/entry_validation.rs', lines 83:4-90:1
+    Visibility: public -/
+@[rust_loop]
+def entry_validation.present_loop
+  (xs : Slice entry_validation.Attribute) (key : Std.U16) (i : Std.Usize) :
+  Result Bool
+  := do
+  loop
+    (fun i1 => entry_validation.present_loop.body xs key i1)
+    i
+
+/-- [kanidm_kernel::entry_validation::present]:
+    Source: 'prove/ports/kanidm/kernel/src/entry_validation.rs', lines 81:0-90:1
+    Visibility: public -/
+@[reducible]
+def entry_validation.present
+  (xs : Slice entry_validation.Attribute) (key : Std.U16) : Result Bool := do
+  entry_validation.present_loop xs key 0#usize
+
+/-- [kanidm_kernel::entry_validation::append]: loop body 0:
+    Source: 'prove/ports/kanidm/kernel/src/entry_validation.rs', lines 93:4-96:5 -/
+@[rust_loop_body]
+def entry_validation.append_loop.body
+  (xs : Slice Std.U16) (out : alloc.vec.Vec Std.U16) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Std.U16) × Std.Usize) (alloc.vec.Vec
+    Std.U16))
+  := do
+  let i1 := Slice.len xs
+  if i < i1
+  then
+    let i2 ← Slice.index_usize xs i
+    let out1 ← alloc.vec.Vec.push out i2
+    let i3 ← i + 1#usize
+    ok (cont (out1, i3))
+  else ok (done out)
+
+/-- [kanidm_kernel::entry_validation::append]: loop 0:
+    Source: 'prove/ports/kanidm/kernel/src/entry_validation.rs', lines 93:4-96:5 -/
+@[rust_loop]
+def entry_validation.append_loop
+  (out : alloc.vec.Vec Std.U16) (xs : Slice Std.U16) (i : Std.Usize) :
+  Result (alloc.vec.Vec Std.U16)
+  := do
+  loop
+    (fun (out1, i1) => entry_validation.append_loop.body xs out1 i1)
+    (out, i)
+
+/-- [kanidm_kernel::entry_validation::append]:
+    Source: 'prove/ports/kanidm/kernel/src/entry_validation.rs', lines 91:0-97:1 -/
+@[reducible]
+def entry_validation.append
+  (out : alloc.vec.Vec Std.U16) (xs : Slice Std.U16) :
+  Result (alloc.vec.Vec Std.U16)
+  := do
+  entry_validation.append_loop out xs 0#usize
+
+/-- [kanidm_kernel::entry_validation::class_constraints]:
+    Source: 'prove/ports/kanidm/kernel/src/entry_validation.rs', lines 98:0-115:1 -/
+def entry_validation.class_constraints
+  (c : entry_validation.ClassSchema) (kind : Std.U8) :
+  Result (alloc.vec.Vec Std.U16)
+  := do
+  if kind = 0#u8
+  then
+    let s := alloc.vec.Vec.deref c.systemsupplements
+    let out ← entry_validation.append (alloc.vec.Vec.new Std.U16) s
+    let s1 := alloc.vec.Vec.deref c.supplements
+    entry_validation.append out s1
+  else
+    if kind = 1#u8
+    then
+      let s := alloc.vec.Vec.deref c.systemexcludes
+      let out ← entry_validation.append (alloc.vec.Vec.new Std.U16) s
+      let s1 := alloc.vec.Vec.deref c.excludes
+      entry_validation.append out s1
+    else
+      let s := alloc.vec.Vec.deref c.systemmust
+      let out ← entry_validation.append (alloc.vec.Vec.new Std.U16) s
+      let s1 := alloc.vec.Vec.deref c.must
+      let out1 ← entry_validation.append out s1
+      if kind = 3#u8
+      then
+        let s2 := alloc.vec.Vec.deref c.systemmay
+        let out2 ← entry_validation.append out1 s2
+        let s3 := alloc.vec.Vec.deref c.may
+        entry_validation.append out2 s3
+      else ok out1
+
+/-- [kanidm_kernel::entry_validation::constraints]: loop body 0:
+    Source: 'prove/ports/kanidm/kernel/src/entry_validation.rs', lines 120:4-126:5
+    Visibility: public -/
+@[rust_loop_body]
+def entry_validation.constraints_loop.body
+  (classes : Slice entry_validation.ClassSchema) (names : Slice Std.U16)
+  (kind : Std.U8) (out : alloc.vec.Vec Std.U16) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Std.U16) × Std.Usize) (alloc.vec.Vec
+    Std.U16))
+  := do
+  let i1 := Slice.len names
+  if i < i1
+  then
+    let i2 ← Slice.index_usize names i
+    let o ← entry_validation.class_index classes i2
+    let out1 ←
+      match o with
+      | none => ok out
+      | some j =>
+        do
+        let cs ← Slice.index_usize classes j
+        let one ← entry_validation.class_constraints cs kind
+        let s := alloc.vec.Vec.deref one
+        entry_validation.append out s
+    let i3 ← i + 1#usize
+    ok (cont (out1, i3))
+  else ok (done out)
+
+/-- [kanidm_kernel::entry_validation::constraints]: loop 0:
+    Source: 'prove/ports/kanidm/kernel/src/entry_validation.rs', lines 120:4-126:5
+    Visibility: public -/
+@[rust_loop]
+def entry_validation.constraints_loop
+  (classes : Slice entry_validation.ClassSchema) (names : Slice Std.U16)
+  (kind : Std.U8) (out : alloc.vec.Vec Std.U16) (i : Std.Usize) :
+  Result (alloc.vec.Vec Std.U16)
+  := do
+  loop
+    (fun (out1, i1) => entry_validation.constraints_loop.body classes names
+      kind out1 i1)
+    (out, i)
+
+/-- [kanidm_kernel::entry_validation::constraints]:
+    Source: 'prove/ports/kanidm/kernel/src/entry_validation.rs', lines 117:0-128:1
+    Visibility: public -/
+@[reducible]
+def entry_validation.constraints
+  (classes : Slice entry_validation.ClassSchema) (names : Slice Std.U16)
+  (kind : Std.U8) :
+  Result (alloc.vec.Vec Std.U16)
+  := do
+  entry_validation.constraints_loop classes names kind (alloc.vec.Vec.new
+    Std.U16) 0#usize
+
+/-- [kanidm_kernel::entry_validation::invalid_classes]: loop body 0:
+    Source: 'prove/ports/kanidm/kernel/src/entry_validation.rs', lines 132:4-137:5
+    Visibility: public -/
+@[rust_loop_body]
+def entry_validation.invalid_classes_loop.body
+  (classes : Slice entry_validation.ClassSchema) (names : Slice Std.U16)
+  (out : alloc.vec.Vec Std.U16) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Std.U16) × Std.Usize) (alloc.vec.Vec
+    Std.U16))
+  := do
+  let i1 := Slice.len names
+  if i < i1
+  then
+    let i2 ← Slice.index_usize names i
+    let o ← entry_validation.class_index classes i2
+    let b := core.option.Option.is_none o
+    let out1 ← if b
+                 then alloc.vec.Vec.push out i2
+                 else ok out
+    let i3 ← i + 1#usize
+    ok (cont (out1, i3))
+  else ok (done out)
+
+/-- [kanidm_kernel::entry_validation::invalid_classes]: loop 0:
+    Source: 'prove/ports/kanidm/kernel/src/entry_validation.rs', lines 132:4-137:5
+    Visibility: public -/
+@[rust_loop]
+def entry_validation.invalid_classes_loop
+  (classes : Slice entry_validation.ClassSchema) (names : Slice Std.U16)
+  (out : alloc.vec.Vec Std.U16) (i : Std.Usize) :
+  Result (alloc.vec.Vec Std.U16)
+  := do
+  loop
+    (fun (out1, i1) => entry_validation.invalid_classes_loop.body classes names
+      out1 i1)
+    (out, i)
+
+/-- [kanidm_kernel::entry_validation::invalid_classes]:
+    Source: 'prove/ports/kanidm/kernel/src/entry_validation.rs', lines 129:0-139:1
+    Visibility: public -/
+@[reducible]
+def entry_validation.invalid_classes
+  (classes : Slice entry_validation.ClassSchema) (names : Slice Std.U16) :
+  Result (alloc.vec.Vec Std.U16)
+  := do
+  entry_validation.invalid_classes_loop classes names (alloc.vec.Vec.new
+    Std.U16) 0#usize
+
+/-- [kanidm_kernel::entry_validation::overlap]: loop body 0:
+    Source: 'prove/ports/kanidm/kernel/src/entry_validation.rs', lines 143:4-148:5
+    Visibility: public -/
+@[rust_loop_body]
+def entry_validation.overlap_loop.body
+  (xs : Slice Std.U16) (ys : Slice Std.U16) (out : alloc.vec.Vec Std.U16)
+  (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Std.U16) × Std.Usize) (alloc.vec.Vec
+    Std.U16))
+  := do
+  let i1 := Slice.len xs
+  if i < i1
+  then
+    let i2 ← Slice.index_usize xs i
+    let b ← entry_validation.contains ys i2
+    let out1 ← if b
+                 then alloc.vec.Vec.push out i2
+                 else ok out
+    let i3 ← i + 1#usize
+    ok (cont (out1, i3))
+  else ok (done out)
+
+/-- [kanidm_kernel::entry_validation::overlap]: loop 0:
+    Source: 'prove/ports/kanidm/kernel/src/entry_validation.rs', lines 143:4-148:5
+    Visibility: public -/
+@[rust_loop]
+def entry_validation.overlap_loop
+  (xs : Slice Std.U16) (ys : Slice Std.U16) (out : alloc.vec.Vec Std.U16)
+  (i : Std.Usize) :
+  Result (alloc.vec.Vec Std.U16)
+  := do
+  loop
+    (fun (out1, i1) => entry_validation.overlap_loop.body xs ys out1 i1)
+    (out, i)
+
+/-- [kanidm_kernel::entry_validation::overlap]:
+    Source: 'prove/ports/kanidm/kernel/src/entry_validation.rs', lines 140:0-150:1
+    Visibility: public -/
+@[reducible]
+def entry_validation.overlap
+  (xs : Slice Std.U16) (ys : Slice Std.U16) :
+  Result (alloc.vec.Vec Std.U16)
+  := do
+  entry_validation.overlap_loop xs ys (alloc.vec.Vec.new Std.U16) 0#usize
+
+/-- [kanidm_kernel::entry_validation::schema_complete]: loop body 0:
+    Source: 'prove/ports/kanidm/kernel/src/entry_validation.rs', lines 153:4-160:1
+    Visibility: public -/
+@[rust_loop_body]
+def entry_validation.schema_complete_loop.body
+  (attrs : Slice entry_validation.AttributeSchema) (names : Slice Std.U16)
+  (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := Slice.len names
+  if i < i1
+  then
+    let i2 ← Slice.index_usize names i
+    let o ← entry_validation.attribute_index attrs i2
+    let b := core.option.Option.is_none o
+    if b
+    then ok (done false)
+    else let i3 ← i + 1#usize
+         ok (cont i3)
+  else ok (done true)
+
+/-- [kanidm_kernel::entry_validation::schema_complete]: loop 0:
+    Source: 'prove/ports/kanidm/kernel/src/entry_validation.rs', lines 153:4-160:1
+    Visibility: public -/
+@[rust_loop]
+def entry_validation.schema_complete_loop
+  (attrs : Slice entry_validation.AttributeSchema) (names : Slice Std.U16)
+  (i : Std.Usize) :
+  Result Bool
+  := do
+  loop
+    (fun i1 => entry_validation.schema_complete_loop.body attrs names i1)
+    i
+
+/-- [kanidm_kernel::entry_validation::schema_complete]:
+    Source: 'prove/ports/kanidm/kernel/src/entry_validation.rs', lines 151:0-160:1
+    Visibility: public -/
+@[reducible]
+def entry_validation.schema_complete
+  (attrs : Slice entry_validation.AttributeSchema) (names : Slice Std.U16) :
+  Result Bool
+  := do
+  entry_validation.schema_complete_loop attrs names 0#usize
+
+/-- [kanidm_kernel::entry_validation::missing_attributes]: loop body 0:
+    Source: 'prove/ports/kanidm/kernel/src/entry_validation.rs', lines 164:4-171:5
+    Visibility: public -/
+@[rust_loop_body]
+def entry_validation.missing_attributes_loop.body
+  (attrs : Slice entry_validation.AttributeSchema) (must : Slice Std.U16)
+  (entry : entry_validation.Entry) (out : alloc.vec.Vec Std.U16)
+  (i : Std.Usize) :
+  Result (ControlFlow (entry_validation.Entry × (alloc.vec.Vec Std.U16) ×
+    Std.Usize) (alloc.vec.Vec Std.U16))
+  := do
+  let i1 := Slice.len must
+  if i < i1
+  then
+    let i2 ← Slice.index_usize must i
+    let o ← entry_validation.attribute_index attrs i2
+    let (entry1, out1) ←
+      match o with
+      | none => ok (entry, out)
+      | some j =>
+        do
+        let s := alloc.vec.Vec.deref entry.attrs
+        let «as» ← Slice.index_usize attrs j
+        let b ← entry_validation.present s «as».name
+        let v ← if b
+                  then ok out
+                  else alloc.vec.Vec.push out «as».name
+        ok (entry, v)
+    let i3 ← i + 1#usize
+    ok (cont (entry1, out1, i3))
+  else ok (done out)
+
+/-- [kanidm_kernel::entry_validation::missing_attributes]: loop 0:
+    Source: 'prove/ports/kanidm/kernel/src/entry_validation.rs', lines 164:4-171:5
+    Visibility: public -/
+@[rust_loop]
+def entry_validation.missing_attributes_loop
+  (entry : entry_validation.Entry)
+  (attrs : Slice entry_validation.AttributeSchema) (must : Slice Std.U16)
+  (out : alloc.vec.Vec Std.U16) (i : Std.Usize) :
+  Result (alloc.vec.Vec Std.U16)
+  := do
+  loop
+    (fun (entry1, out1, i1) => entry_validation.missing_attributes_loop.body
+      attrs must entry1 out1 i1)
+    (entry, out, i)
+
+/-- [kanidm_kernel::entry_validation::missing_attributes]:
+    Source: 'prove/ports/kanidm/kernel/src/entry_validation.rs', lines 161:0-173:1
+    Visibility: public -/
+@[reducible]
+def entry_validation.missing_attributes
+  (entry : entry_validation.Entry)
+  (attrs : Slice entry_validation.AttributeSchema) (must : Slice Std.U16) :
+  Result (alloc.vec.Vec Std.U16)
+  := do
+  entry_validation.missing_attributes_loop entry attrs must (alloc.vec.Vec.new
+    Std.U16) 0#usize
+
+/-- [kanidm_kernel::schema_tags::ava_accepts]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_tags.rs', lines 174:0-177:1
+    Visibility: public -/
+def schema_tags.ava_accepts
+  (multivalue : Bool) (count : Std.Usize) (expected_syntax : Std.U16)
+  (actual_syntax : Std.U16) (valid : Bool) :
+  Result Bool
+  := do
+  if multivalue
+  then if expected_syntax = actual_syntax
+       then ok valid
+       else ok false
+  else
+    if count > 1#usize
+    then ok false
+    else if expected_syntax = actual_syntax
+         then ok valid
+         else ok false
+
+/-- [kanidm_kernel::entry_validation::validate_attribute]:
+    Source: 'prove/ports/kanidm/kernel/src/entry_validation.rs', lines 174:0-201:1
+    Visibility: public -/
+def entry_validation.validate_attribute
+  (ava : entry_validation.Attribute)
+  (attrs : Slice entry_validation.AttributeSchema) (may : Slice Std.U16)
+  (extensible : Bool) :
+  Result (core.result.Result Unit entry_validation.Error)
+  := do
+  if extensible
+  then
+    let o ← entry_validation.attribute_index attrs ava.key
+    match o with
+    | none =>
+      ok (core.result.Result.Err (entry_validation.Error.InvalidAttribute
+        ava.key))
+    | some j =>
+      let a ← Slice.index_usize attrs j
+      if a.phantom
+      then
+        ok (core.result.Result.Err (entry_validation.Error.PhantomAttribute
+          ava.key))
+      else
+        let b ←
+          schema_tags.ava_accepts a.multi ava.count a.syntax ava.syntax
+            ava.valid
+        if b
+        then ok (core.result.Result.Ok ())
+        else
+          ok (core.result.Result.Err
+            (entry_validation.Error.InvalidAttributeSyntax ava.key))
+  else
+    let b ← entry_validation.contains may ava.key
+    if b
+    then
+      let o ← entry_validation.attribute_index attrs ava.key
+      match o with
+      | none => ok (core.result.Result.Err entry_validation.Error.Corrupted)
+      | some j =>
+        let a ← Slice.index_usize attrs j
+        let b1 ←
+          schema_tags.ava_accepts a.multi ava.count a.syntax ava.syntax
+            ava.valid
+        if b1
+        then ok (core.result.Result.Ok ())
+        else
+          ok (core.result.Result.Err
+            (entry_validation.Error.InvalidAttributeSyntax ava.key))
+    else
+      ok (core.result.Result.Err
+        (entry_validation.Error.AttributeNotValidForClass ava.key))
+
+/-- [kanidm_kernel::entry_validation::validate_attributes]: loop body 0:
+    Source: 'prove/ports/kanidm/kernel/src/entry_validation.rs', lines 209:4-214:1
+    Visibility: public -/
+@[rust_loop_body]
+def entry_validation.validate_attributes_loop.body
+  (entry : entry_validation.Entry)
+  (attrs : Slice entry_validation.AttributeSchema) (may : Slice Std.U16)
+  (extensible : Bool) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize (core.result.Result Unit
+    entry_validation.Error))
+  := do
+  let i1 := alloc.vec.Vec.len entry.attrs
+  if i < i1
+  then
+    let a ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+        entry_validation.Attribute) entry.attrs i
+    let r ← entry_validation.validate_attribute a attrs may extensible
+    let cf ← core.result.Result.Insts.CoreOpsTry.branch r
+    match cf with
+    | core.ops.control_flow.ControlFlow.Continue _ =>
+      let i2 ← i + 1#usize
+      ok (cont i2)
+    | core.ops.control_flow.ControlFlow.Break residual =>
+      let r1 ←
+        core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual
+          Unit (core.convert.FromSame entry_validation.Error) residual
+      ok (done r1)
+  else ok (done (core.result.Result.Ok ()))
+
+/-- [kanidm_kernel::entry_validation::validate_attributes]: loop 0:
+    Source: 'prove/ports/kanidm/kernel/src/entry_validation.rs', lines 209:4-214:1
+    Visibility: public -/
+@[rust_loop]
+def entry_validation.validate_attributes_loop
+  (entry : entry_validation.Entry)
+  (attrs : Slice entry_validation.AttributeSchema) (may : Slice Std.U16)
+  (extensible : Bool) (i : Std.Usize) :
+  Result (core.result.Result Unit entry_validation.Error)
+  := do
+  loop
+    (fun i1 => entry_validation.validate_attributes_loop.body entry attrs may
+      extensible i1)
+    i
+
+/-- [kanidm_kernel::entry_validation::validate_attributes]:
+    Source: 'prove/ports/kanidm/kernel/src/entry_validation.rs', lines 202:0-214:1
+    Visibility: public -/
+@[reducible]
+def entry_validation.validate_attributes
+  (entry : entry_validation.Entry)
+  (attrs : Slice entry_validation.AttributeSchema) (may : Slice Std.U16)
+  (extensible : Bool) :
+  Result (core.result.Result Unit entry_validation.Error)
+  := do
+  entry_validation.validate_attributes_loop entry attrs may extensible 0#usize
+
+/-- [kanidm_kernel::entry_validation::validate]:
+    Source: 'prove/ports/kanidm/kernel/src/entry_validation.rs', lines 215:0-265:1
+    Visibility: public -/
+def entry_validation.validate
+  (entry : entry_validation.Entry)
+  (classes : Slice entry_validation.ClassSchema)
+  (attrs : Slice entry_validation.AttributeSchema) :
+  Result (core.result.Result Unit entry_validation.Error)
+  := do
+  if entry.class_present
+  then
+    match entry.classes with
+    | none => ok (core.result.Result.Err entry_validation.Error.NoClassFound)
+    | some names =>
+      let s := alloc.vec.Vec.deref names
+      let b ← entry_validation.contains s 0#u16
+      if b
+      then ok (core.result.Result.Ok ())
+      else
+        let s1 := alloc.vec.Vec.deref names
+        let recycled ← entry_validation.contains s1 2#u16
+        let s2 := alloc.vec.Vec.deref names
+        let extensible ← entry_validation.contains s2 1#u16
+        let s3 := alloc.vec.Vec.deref names
+        let invalid ← entry_validation.invalid_classes classes s3
+        let i := alloc.vec.Vec.len invalid
+        if i = 0#usize
+        then
+          let s4 := alloc.vec.Vec.deref names
+          let supplements ← entry_validation.constraints classes s4 0#u8
+          let i1 := alloc.vec.Vec.len supplements
+          if i1 = 0#usize
+          then
+            let s5 := alloc.vec.Vec.deref names
+            let v ← entry_validation.constraints classes s5 1#u8
+            let s6 := alloc.vec.Vec.deref v
+            let s7 := alloc.vec.Vec.deref names
+            let excluded ← entry_validation.overlap s6 s7
+            let i2 := alloc.vec.Vec.len excluded
+            if i2 = 0#usize
+            then
+              let s8 := alloc.vec.Vec.deref names
+              let must ← entry_validation.constraints classes s8 2#u8
+              let s9 := alloc.vec.Vec.deref must
+              let b1 ← entry_validation.schema_complete attrs s9
+              if b1
+              then
+                let s10 := alloc.vec.Vec.deref must
+                let missing ←
+                  entry_validation.missing_attributes entry attrs s10
+                let i3 := alloc.vec.Vec.len missing
+                if i3 = 0#usize
+                then
+                  if extensible
+                  then
+                    let s11 ← lift (Array.to_slice (Std.Array.empty Std.U16))
+                    entry_validation.validate_attributes entry attrs s11 true
+                  else
+                    let s11 := alloc.vec.Vec.deref names
+                    let may ← entry_validation.constraints classes s11 3#u8
+                    let s12 := alloc.vec.Vec.deref may
+                    let b2 ← entry_validation.schema_complete attrs s12
+                    if b2
+                    then
+                      let s13 := alloc.vec.Vec.deref may
+                      entry_validation.validate_attributes entry attrs s13
+                        false
+                    else
+                      ok (core.result.Result.Err
+                        entry_validation.Error.Corrupted)
+                else
+                  if recycled
+                  then
+                    if extensible
+                    then
+                      let s11 ←
+                        lift (Array.to_slice (Std.Array.empty Std.U16))
+                      entry_validation.validate_attributes entry attrs s11 true
+                    else
+                      let s11 := alloc.vec.Vec.deref names
+                      let may ← entry_validation.constraints classes s11 3#u8
+                      let s12 := alloc.vec.Vec.deref may
+                      let b2 ← entry_validation.schema_complete attrs s12
+                      if b2
+                      then
+                        let s13 := alloc.vec.Vec.deref may
+                        entry_validation.validate_attributes entry attrs s13
+                          false
+                      else
+                        ok (core.result.Result.Err
+                          entry_validation.Error.Corrupted)
+                  else
+                    ok (core.result.Result.Err
+                      (entry_validation.Error.MissingMustAttribute missing))
+              else ok (core.result.Result.Err entry_validation.Error.Corrupted)
+            else
+              ok (core.result.Result.Err
+                (entry_validation.Error.ExcludesNotSatisfied excluded))
+          else
+            let s5 := alloc.vec.Vec.deref supplements
+            let s6 := alloc.vec.Vec.deref names
+            let v ← entry_validation.overlap s5 s6
+            let i2 := alloc.vec.Vec.len v
+            if i2 = 0#usize
+            then
+              ok (core.result.Result.Err
+                (entry_validation.Error.SupplementsNotSatisfied supplements))
+            else
+              let s7 := alloc.vec.Vec.deref names
+              let v1 ← entry_validation.constraints classes s7 1#u8
+              let s8 := alloc.vec.Vec.deref v1
+              let s9 := alloc.vec.Vec.deref names
+              let excluded ← entry_validation.overlap s8 s9
+              let i3 := alloc.vec.Vec.len excluded
+              if i3 = 0#usize
+              then
+                let s10 := alloc.vec.Vec.deref names
+                let must ← entry_validation.constraints classes s10 2#u8
+                let s11 := alloc.vec.Vec.deref must
+                let b1 ← entry_validation.schema_complete attrs s11
+                if b1
+                then
+                  let s12 := alloc.vec.Vec.deref must
+                  let missing ←
+                    entry_validation.missing_attributes entry attrs s12
+                  let i4 := alloc.vec.Vec.len missing
+                  if i4 = 0#usize
+                  then
+                    if extensible
+                    then
+                      let s13 ←
+                        lift (Array.to_slice (Std.Array.empty Std.U16))
+                      entry_validation.validate_attributes entry attrs s13 true
+                    else
+                      let s13 := alloc.vec.Vec.deref names
+                      let may ← entry_validation.constraints classes s13 3#u8
+                      let s14 := alloc.vec.Vec.deref may
+                      let b2 ← entry_validation.schema_complete attrs s14
+                      if b2
+                      then
+                        let s15 := alloc.vec.Vec.deref may
+                        entry_validation.validate_attributes entry attrs s15
+                          false
+                      else
+                        ok (core.result.Result.Err
+                          entry_validation.Error.Corrupted)
+                  else
+                    if recycled
+                    then
+                      if extensible
+                      then
+                        let s13 ←
+                          lift (Array.to_slice (Std.Array.empty Std.U16))
+                        entry_validation.validate_attributes entry attrs s13
+                          true
+                      else
+                        let s13 := alloc.vec.Vec.deref names
+                        let may ←
+                          entry_validation.constraints classes s13 3#u8
+                        let s14 := alloc.vec.Vec.deref may
+                        let b2 ← entry_validation.schema_complete attrs s14
+                        if b2
+                        then
+                          let s15 := alloc.vec.Vec.deref may
+                          entry_validation.validate_attributes entry attrs s15
+                            false
+                        else
+                          ok (core.result.Result.Err
+                            entry_validation.Error.Corrupted)
+                    else
+                      ok (core.result.Result.Err
+                        (entry_validation.Error.MissingMustAttribute missing))
+                else
+                  ok (core.result.Result.Err entry_validation.Error.Corrupted)
+              else
+                ok (core.result.Result.Err
+                  (entry_validation.Error.ExcludesNotSatisfied excluded))
+        else
+          ok (core.result.Result.Err (entry_validation.Error.InvalidClass
+            invalid))
+  else ok (core.result.Result.Err entry_validation.Error.NoClassFound)
+
 /-- [kanidm_kernel::schema_tags::Syntax]
     Source: 'prove/ports/kanidm/kernel/src/schema_tags.rs', lines 5:0-53:1
     Visibility: public -/
@@ -7804,25 +8646,6 @@ def schema_tags.value_accepts
     | schema_tags.Syntax.Int64 => ok (tag = 14#u16)
     | schema_tags.Syntax.Uint64 => ok (tag = 15#u16)
   else ok false
-
-/-- [kanidm_kernel::schema_tags::ava_accepts]:
-    Source: 'prove/ports/kanidm/kernel/src/schema_tags.rs', lines 174:0-177:1
-    Visibility: public -/
-def schema_tags.ava_accepts
-  (multivalue : Bool) (count : Std.Usize) (expected_syntax : Std.U16)
-  (actual_syntax : Std.U16) (valid : Bool) :
-  Result Bool
-  := do
-  if multivalue
-  then if expected_syntax = actual_syntax
-       then ok valid
-       else ok false
-  else
-    if count > 1#usize
-    then ok false
-    else if expected_syntax = actual_syntax
-         then ok valid
-         else ok false
 
 /-- [kanidm_kernel::softlock::Time]
     Source: 'prove/ports/kanidm/kernel/src/softlock.rs', lines 4:0-4:49
