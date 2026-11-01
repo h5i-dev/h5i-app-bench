@@ -1,4 +1,9 @@
-# Continue toward 100k
+# Handoff toward 100k — paused by request
+
+Expansion stopped at user request on 2026-11-01 after accepted commit `1bb4102`:
+42,975 source lines / 1,197 canonical properties. The target is unfinished;
+57,025 lines remain. The candidates below are a future work queue, not ongoing
+work or accepted coverage. Resume only on a new user request.
 
 The baseline before this batch is 42,773 accepted lines / 1,174 properties.
 The closed-record backend supplies complete field models rather than a field

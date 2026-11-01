@@ -4,7 +4,8 @@ Accepted source: **42,975 lines / 1,197 canonical properties**.
 
 This adds 202 deduplicated pinned executable source lines and 23 properties to
 2731f10 (42,773 lines / 1,174 properties). Every previous canonical theorem
-statement is unchanged. The 100,000-line goal remains active; 57,025 lines remain.
+statement is unchanged. The 100,000-line goal is paused by user request as of 2026-11-01; 57,025 lines
+remain. Accepted code and evidence are committed and pushed as `1bb4102`.
 
 | Application | Accepted source lines | Canonical properties |
 | --- | ---: | ---: |

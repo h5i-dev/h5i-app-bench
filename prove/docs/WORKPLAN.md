@@ -1,8 +1,48 @@
 # Real-world Rust verification campaign
 
 This campaign uses one standard h5i-app project per application: `kernel/`,
-`proofs/`, and `h5i-app.toml`. The release criterion is `h5i app prove`, not a
+`proofs/`, and `h5i-app.toml`. The release criterion is `h5i app check`, not a
 historical agent score or a candidate proof in an isolated task workspace.
+
+## Current stopping point — paused by request (2026-11-01)
+
+Coverage expansion is paused at **42,975 accepted deduplicated pinned executable
+source lines and 1,197 canonical project properties**, committed and pushed as
+`1bb4102` on `prove-20k-expansion`. The 100,000-line objective remains unfinished;
+**57,025 lines remain**. Resume expansion only on a new user request.
+
+| Application | Accepted source lines | Canonical properties |
+| --- | ---: | ---: |
+| ArtifactKeeper | 2,122 | 99 |
+| Kanidm | 31,103 | 545 |
+| Nora | 1,959 | 61 |
+| OxiCloud | 3,794 | 198 |
+| RustFS | 2,000 | 270 |
+| Tuwunel | 1,997 | 24 |
+| **Total** | **42,975** | **1,197** |
+
+The final batch adds 202 lines and 23 complete record-constructor properties.
+Every returned field and successful termination are stated. All 1,174 prior
+canonical property statements remain unchanged. All six applications have fresh
+successful proof/axiom gates and extraction evidence. Pinned-body comparisons,
+byte-identical regeneration, the source attribute audit and all 23 harness tests
+pass. Constructor proofs do not establish runtime configuration enforcement or
+whole-application equivalence.
+
+The dashboard data is refreshed locally; it has not been deployed. Historical
+benchmark accounting remains 101 tasks / 99 accepted, separate from canonical
+project properties. Runtime measurements were not refreshed in this batch.
+
+Durable evidence: [checkpoint report](../results/campaigns/coverage-closed-records-20261101/STATUS.md)
+and [acceptance record](../results/campaigns/coverage-closed-records-20261101/accepted-checkpoint.json).
+The [handoff](../results/campaigns/coverage-closed-records-20261101/NEXT.md) records
+142 experimental forwarding constructors with universal Lean proofs and retained
+source-body comparisons. Their 715 inventory lines are **not accepted coverage**;
+production integration, deduplication and gates remain. Experimental files under
+`/tmp` are disposable and must be reconstructed from pinned sources if absent.
+
+Earlier checkpoints and work-queue states below are historical; this stopping
+point supersedes their statements that expansion is active or gates are pending.
 
 ## Scope and completion criteria
 
