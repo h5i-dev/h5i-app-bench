@@ -1,3 +1,4 @@
+import Verified.Asyncapi
 import Verified.DisplayClassifiers
 import Verified.FiniteCatalog
 import Verified.OxicloudDavState
@@ -978,5 +979,142 @@ theorem display_icon_special_class_with_ext_complete (mime : Slice U8) (ext : Op
 theorem display_category_with_ext_complete (mime : Slice U8) (ext : Option (Slice U8)) :
     display_classifiers.category_with_ext mime ext ⦃r => r = Verified.DisplayClassifiers.category_with_ext_model mime.val (ext.map Slice.val)⦄ :=
   Verified.DisplayClassifiers.category_with_ext_complete mime ext
+
+end oxicloud_kernel.Properties
+-- Complete closed pinned AsyncAPI schema values.
+namespace oxicloud_kernel.Properties
+open Verified.Asyncapi
+
+theorem asyncapi_channels_complete :
+    asyncapi.channels ⦃r => r.val.flatMap alloc.vec.Vec.val = channels_model⦄ :=
+  Verified.Asyncapi.channels_complete
+
+theorem asyncapi_operations_complete :
+    asyncapi.operations ⦃r => r.val.flatMap alloc.vec.Vec.val = operations_model⦄ :=
+  Verified.Asyncapi.operations_complete
+
+theorem asyncapi_components_complete :
+    asyncapi.components ⦃r => r.val.flatMap alloc.vec.Vec.val = components_model⦄ :=
+  Verified.Asyncapi.components_complete
+
+theorem asyncapi_topic_params_schema_complete :
+    asyncapi.topic_params_schema ⦃r => r.val.flatMap alloc.vec.Vec.val = topic_params_schema_model⦄ :=
+  Verified.Asyncapi.topic_params_schema_complete
+
+theorem asyncapi_rpc_success_response_schema_complete :
+    asyncapi.rpc_success_response_schema ⦃r => r.val.flatMap alloc.vec.Vec.val = rpc_success_response_schema_model⦄ :=
+  Verified.Asyncapi.rpc_success_response_schema_complete
+
+theorem asyncapi_rpc_pong_response_schema_complete :
+    asyncapi.rpc_pong_response_schema ⦃r => r.val.flatMap alloc.vec.Vec.val = rpc_pong_response_schema_model⦄ :=
+  Verified.Asyncapi.rpc_pong_response_schema_complete
+
+theorem asyncapi_rpc_pong_result_schema_complete :
+    asyncapi.rpc_pong_result_schema ⦃r => r.val.flatMap alloc.vec.Vec.val = rpc_pong_result_schema_model⦄ :=
+  Verified.Asyncapi.rpc_pong_result_schema_complete
+
+theorem asyncapi_rpc_error_response_schema_complete :
+    asyncapi.rpc_error_response_schema ⦃r => r.val.flatMap alloc.vec.Vec.val = rpc_error_response_schema_model⦄ :=
+  Verified.Asyncapi.rpc_error_response_schema_complete
+
+theorem asyncapi_rpc_error_object_schema_complete :
+    asyncapi.rpc_error_object_schema ⦃r => r.val.flatMap alloc.vec.Vec.val = rpc_error_object_schema_model⦄ :=
+  Verified.Asyncapi.rpc_error_object_schema_complete
+
+theorem asyncapi_rpc_error_code_schema_complete :
+    asyncapi.rpc_error_code_schema ⦃r => r.val.flatMap alloc.vec.Vec.val = rpc_error_code_schema_model⦄ :=
+  Verified.Asyncapi.rpc_error_code_schema_complete
+
+theorem asyncapi_rpc_error_message_schema_complete :
+    asyncapi.rpc_error_message_schema ⦃r => r.val.flatMap alloc.vec.Vec.val = rpc_error_message_schema_model⦄ :=
+  Verified.Asyncapi.rpc_error_message_schema_complete
+
+theorem asyncapi_folder_event_notification_schema_complete :
+    asyncapi.folder_event_notification_schema ⦃r => r.val.flatMap alloc.vec.Vec.val = folder_event_notification_schema_model⦄ :=
+  Verified.Asyncapi.folder_event_notification_schema_complete
+
+theorem asyncapi_event_params_schema_complete :
+    asyncapi.event_params_schema ⦃r => r.val.flatMap alloc.vec.Vec.val = event_params_schema_model⦄ :=
+  Verified.Asyncapi.event_params_schema_complete
+
+theorem asyncapi_event_kind_schema_complete :
+    asyncapi.event_kind_schema ⦃r => r.val.flatMap alloc.vec.Vec.val = event_kind_schema_model⦄ :=
+  Verified.Asyncapi.event_kind_schema_complete
+
+theorem asyncapi_event_data_union_schema_complete :
+    asyncapi.event_data_union_schema ⦃r => r.val.flatMap alloc.vec.Vec.val = event_data_union_schema_model⦄ :=
+  Verified.Asyncapi.event_data_union_schema_complete
+
+theorem asyncapi_file_created_schema_complete :
+    asyncapi.file_created_schema ⦃r => r.val.flatMap alloc.vec.Vec.val = file_created_schema_model⦄ :=
+  Verified.Asyncapi.file_created_schema_complete
+
+theorem asyncapi_file_renamed_schema_complete :
+    asyncapi.file_renamed_schema ⦃r => r.val.flatMap alloc.vec.Vec.val = file_renamed_schema_model⦄ :=
+  Verified.Asyncapi.file_renamed_schema_complete
+
+theorem asyncapi_file_moved_schema_complete :
+    asyncapi.file_moved_schema ⦃r => r.val.flatMap alloc.vec.Vec.val = file_moved_schema_model⦄ :=
+  Verified.Asyncapi.file_moved_schema_complete
+
+theorem asyncapi_file_deleted_schema_complete :
+    asyncapi.file_deleted_schema ⦃r => r.val.flatMap alloc.vec.Vec.val = file_deleted_schema_model⦄ :=
+  Verified.Asyncapi.file_deleted_schema_complete
+
+theorem asyncapi_folder_created_schema_complete :
+    asyncapi.folder_created_schema ⦃r => r.val.flatMap alloc.vec.Vec.val = folder_created_schema_model⦄ :=
+  Verified.Asyncapi.folder_created_schema_complete
+
+theorem asyncapi_folder_renamed_schema_complete :
+    asyncapi.folder_renamed_schema ⦃r => r.val.flatMap alloc.vec.Vec.val = folder_renamed_schema_model⦄ :=
+  Verified.Asyncapi.folder_renamed_schema_complete
+
+theorem asyncapi_folder_moved_schema_complete :
+    asyncapi.folder_moved_schema ⦃r => r.val.flatMap alloc.vec.Vec.val = folder_moved_schema_model⦄ :=
+  Verified.Asyncapi.folder_moved_schema_complete
+
+theorem asyncapi_folder_deleted_schema_complete :
+    asyncapi.folder_deleted_schema ⦃r => r.val.flatMap alloc.vec.Vec.val = folder_deleted_schema_model⦄ :=
+  Verified.Asyncapi.folder_deleted_schema_complete
+
+theorem asyncapi_notification_received_schema_complete :
+    asyncapi.notification_received_schema ⦃r => r.val.flatMap alloc.vec.Vec.val = notification_received_schema_model⦄ :=
+  Verified.Asyncapi.notification_received_schema_complete
+
+theorem asyncapi_job_run_started_schema_complete :
+    asyncapi.job_run_started_schema ⦃r => r.val.flatMap alloc.vec.Vec.val = job_run_started_schema_model⦄ :=
+  Verified.Asyncapi.job_run_started_schema_complete
+
+theorem asyncapi_job_run_progress_schema_complete :
+    asyncapi.job_run_progress_schema ⦃r => r.val.flatMap alloc.vec.Vec.val = job_run_progress_schema_model⦄ :=
+  Verified.Asyncapi.job_run_progress_schema_complete
+
+theorem asyncapi_job_run_ended_schema_complete :
+    asyncapi.job_run_ended_schema ⦃r => r.val.flatMap alloc.vec.Vec.val = job_run_ended_schema_model⦄ :=
+  Verified.Asyncapi.job_run_ended_schema_complete
+
+theorem asyncapi_revoked_notification_schema_complete :
+    asyncapi.revoked_notification_schema ⦃r => r.val.flatMap alloc.vec.Vec.val = revoked_notification_schema_model⦄ :=
+  Verified.Asyncapi.revoked_notification_schema_complete
+
+theorem asyncapi_revoked_params_schema_complete :
+    asyncapi.revoked_params_schema ⦃r => r.val.flatMap alloc.vec.Vec.val = revoked_params_schema_model⦄ :=
+  Verified.Asyncapi.revoked_params_schema_complete
+
+theorem asyncapi_revoked_reason_schema_complete :
+    asyncapi.revoked_reason_schema ⦃r => r.val.flatMap alloc.vec.Vec.val = revoked_reason_schema_model⦄ :=
+  Verified.Asyncapi.revoked_reason_schema_complete
+
+theorem asyncapi_collab_flush_params_schema_complete :
+    asyncapi.collab_flush_params_schema ⦃r => r.val.flatMap alloc.vec.Vec.val = collab_flush_params_schema_model⦄ :=
+  Verified.Asyncapi.collab_flush_params_schema_complete
+
+theorem asyncapi_collab_flush_result_schema_complete :
+    asyncapi.collab_flush_result_schema ⦃r => r.val.flatMap alloc.vec.Vec.val = collab_flush_result_schema_model⦄ :=
+  Verified.Asyncapi.collab_flush_result_schema_complete
+
+theorem asyncapi_collab_binary_frame_schema_complete :
+    asyncapi.collab_binary_frame_schema ⦃r => r.val.flatMap alloc.vec.Vec.val = collab_binary_frame_schema_model⦄ :=
+  Verified.Asyncapi.collab_binary_frame_schema_complete
 
 end oxicloud_kernel.Properties

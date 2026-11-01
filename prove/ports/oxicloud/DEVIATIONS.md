@@ -358,3 +358,26 @@ with a separate test wrapper. The corpus crosses literal and adversarial MIME
 values with all extension literals and absence, and adds 20,000 deterministic
 random UTF-8 pairs. Formal models use plain lists and ordered mathematical
 predicates, without calling extracted kernel functions.
+
+## Complete closed AsyncAPI schema values
+
+`asyncapi` ports 33 zero-argument builders in `src/bin/generate-asyncapi.rs`
+from the pinned revision. The complete returned JSON value is represented as
+compact UTF-8 JSON bytes with sorted object keys, using serde_json 1.0.154.
+The Rust kernel returns a fixed-size array of bounded byte vectors; flattening
+that array gives the complete serialization. Lean proves successful termination
+and equality of the entire flattened output with independent reference models
+that use different fragment boundaries. Shared fragment helpers have no separate
+upstream source mapping or line credit.
+
+The retained reference crate evaluates the 37 unchanged dependency-closed
+function bodies and the unchanged `error_code` constant module. Its differential
+test compares the complete bytes of all 33 closed outputs, exhausting their unit
+input domains. `harness/oxicloud_schemas.py audit --port ports/oxicloud` (from
+`prove/`) checks pinned sources and hashes, repeats reference evaluation,
+regenerates every artifact and runs those comparisons. Four parameterized
+helpers remain in the reference closure and receive no separate coverage claim.
+`main` and `build_asyncapi` are excluded because they read filesystem or build
+environment inputs. Descriptions embedded in a schema do not establish that the
+server, client, authentication middleware or collaborative editor implements
+those descriptions. The model concerns the returned JSON values.

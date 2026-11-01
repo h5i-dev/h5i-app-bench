@@ -1,0 +1,30 @@
+   Compiling asyncapi-reference v0.1.0 (/home/ht2673/Dev/h5i-app-bench/prove/ports/oxicloud/difftest/asyncapi)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.35s
+     Running unittests src/lib.rs (prove/ports/oxicloud/difftest/asyncapi/target/debug/deps/asyncapi_reference-bdaa5f20e2e18d45)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/main.rs (prove/ports/oxicloud/difftest/asyncapi/target/debug/deps/asyncapi_reference-005606877ef19073)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/complete.rs (prove/ports/oxicloud/difftest/asyncapi/target/debug/deps/complete-671981592da66c75)
+
+running 1 test
+test complete_closed_schema_values ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+
+   Doc-tests asyncapi_reference
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+Generated 33 closed schema roots and 333 shared fragments in /home/ht2673/Dev/h5i-app-bench/prove/ports/oxicloud.
+All retained pinned sources, complete closed values and generated artifacts audited.
+Accepted: {'lines': 42502, 'properties': 1173} ; remaining to 100k: 57498
